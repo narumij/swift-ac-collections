@@ -17,7 +17,7 @@
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 @usableFromInline
-protocol _ValueComparerBridge:
+protocol _BaseTraitBridge:
   _BaseType
     & _NodePtrType
     & _TreePayloadValue_KeyInterface
@@ -33,7 +33,7 @@ where
         & _BaseKey_LessThanInterface
 }
 
-extension _ValueComparerBridge {
+extension _BaseTraitBridge {
 
   @inlinable
   @inline(__always)
@@ -48,7 +48,7 @@ extension _ValueComparerBridge {
   }
 }
 
-extension _ValueComparerBridge where Self: _UnsafeNodePtrType, Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
+extension _BaseTraitBridge where Self: _UnsafeNodePtrType, Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
   @inlinable
   @inline(__always)

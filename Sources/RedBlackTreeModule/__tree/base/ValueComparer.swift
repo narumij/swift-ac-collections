@@ -53,6 +53,7 @@
 public protocol ValueComparer:
   _BaseType
     & _BaseComparableKey_LessThanProtocol
+    & _BaseEquatableKey_EquivProtocol
     & _BasePayloadValue_KeyInterface
     & _BaseNode_KeyInterface
 where _Key: Comparable {}

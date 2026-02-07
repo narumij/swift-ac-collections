@@ -20,7 +20,7 @@
 #endif
 
 public typealias ___TreeBase = ValueComparer & _Base_IsMultiTraitInterface
-public typealias ___TreeIndex = _BasePaylodValue_ElementInterface
+public typealias ___TreeIndex = _BasePaylodValue_ElementInterface & _BaseNode_SignedDistanceInterface
 
 // コレクション実装の基点
 public protocol ___Root {

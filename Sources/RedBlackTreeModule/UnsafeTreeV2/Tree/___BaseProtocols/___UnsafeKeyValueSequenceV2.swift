@@ -26,7 +26,7 @@ protocol ___UnsafeKeyValueSequenceV2__:
     & UnsafeTreeRangeBaseInterface
     & _MapBridge
 where
-  Base: KeyValueComparer & _PairBase_ElementProtocol
+  Base: KeyValueComparer & _PairBase_ElementProtocol & _BaseNode_SignedDistanceInterface
 {
   var ___first: _PayloadValue? { get }
   var ___last: _PayloadValue? { get }

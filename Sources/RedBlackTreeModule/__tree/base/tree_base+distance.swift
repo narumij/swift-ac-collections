@@ -24,14 +24,15 @@ public protocol _BaseNode_SignedDistanceInterface: _NodePtrType {
 
 extension _BaseNode_PtrCompProtocol {
 
-  public typealias difference_type = Int
-
-  public typealias _InputIter = _NodePtr
+//  public typealias difference_type = Int
+//
+//  public typealias _InputIter = _NodePtr
 
   @inlinable
   @inline(__always)
   public static func
-    ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
+//    ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
+  ___signed_distance(_ __first: _NodePtr, _ __last: _NodePtr) -> Int
   {
     guard __first != __last else { return 0 }
     var (__first, __last) = (__first, __last)

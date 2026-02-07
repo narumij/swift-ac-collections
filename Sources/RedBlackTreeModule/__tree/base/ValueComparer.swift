@@ -54,8 +54,8 @@ public protocol ValueComparer:
   _BaseType
     & _BasePayloadValue_KeyInterface
     & _BaseKey_LessThanProtocol
-    & _BaseNode_PtrCompProtocol_b
     & _BaseNode_KeyInterface
+    & _UnsafeNodePtrType
 where _Key: Comparable {}
 
 // MARK: -

@@ -179,7 +179,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
 #endif
 
 extension RedBlackTreeSet: CompareUniqueTrait {}
-extension RedBlackTreeSet: ScalarValueComparer & _UnsafeNodePtrType {}
+extension RedBlackTreeSet: ScalarValueTrait & _UnsafeNodePtrType {}
 extension RedBlackTreeSet: _ScalarBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeSet: _BaseNode_PtrCompProtocol_b {}
 

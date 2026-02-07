@@ -39,7 +39,7 @@ public struct _LinkingPair<Key, Value> {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 }
 
-extension KeyValueComparer where _PayloadValue == _LinkingPair<_Key, _MappedValue> {
+extension KeyValueTrait where _PayloadValue == _LinkingPair<_Key, _MappedValue> {
 
   @inlinable @inline(__always)
   public static func __key(_ element: _PayloadValue) -> _Key { element.key }
@@ -49,7 +49,7 @@ extension KeyValueComparer where _PayloadValue == _LinkingPair<_Key, _MappedValu
 }
 
 @usableFromInline
-protocol ___LRULinkList: KeyValueComparer & _Base_IsMultiTraitInterface & _UnsafeNodePtrType
+protocol ___LRULinkList: KeyValueTrait & _Base_IsMultiTraitInterface & _UnsafeNodePtrType
 where _PayloadValue == _LinkingPair<_Key, _MappedValue>
 {
   associatedtype Value

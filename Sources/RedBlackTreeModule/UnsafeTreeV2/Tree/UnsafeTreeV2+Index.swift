@@ -37,7 +37,7 @@ extension UnsafeTreeV2 where Base: ___TreeIndex {
   public typealias _PayloadValues = RedBlackTreeIteratorV2.Values<Base>
 }
 
-extension UnsafeTreeV2 where Base: KeyValueComparer & ___TreeIndex {
+extension UnsafeTreeV2 where Base: PairValueTrait & ___TreeIndex {
 
   public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
 }

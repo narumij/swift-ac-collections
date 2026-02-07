@@ -70,7 +70,7 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2 where Base: KeyValueComparer {
+extension UnsafeTreeV2 where Base: PairValueTrait {
 
   @inlinable
   @inline(__always)
@@ -232,7 +232,7 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2 where Base: KeyValueComparer {
+extension UnsafeTreeV2 where Base: PairValueTrait {
 
   @inlinable
   @inline(__always)

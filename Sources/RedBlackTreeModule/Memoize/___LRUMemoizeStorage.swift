@@ -111,7 +111,7 @@ extension ___LRUMemoizeStorage {
 
 extension ___LRUMemoizeStorage: ___LRULinkList & IntThreeWayComparator {}
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}
-extension ___LRUMemoizeStorage: KeyValueComparer & _UnsafeNodePtrType {
+extension ___LRUMemoizeStorage: KeyValueTrait & _UnsafeNodePtrType {
   
   @inlinable
   @inline(__always)

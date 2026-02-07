@@ -28,7 +28,7 @@ extension RedBlackTreeSliceV2 {
       & UnsafeIndexProtocol_tree
   where
     Base: ___TreeBase
-      & KeyValueComparer
+      & PairValueTrait
       & _PairBase_ElementProtocol
       & _BaseNode_SignedDistanceInterface
       & _BaseNode_PtrCompInterface

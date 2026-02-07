@@ -67,14 +67,15 @@ where
 // MARK: -
 
 /// 要素とキーが一致する場合のひな形
-public protocol ScalarValueComparer:
+public protocol ScalarValueTrait:
   ComparableKeyTrait
     & _ScalarBaseType
     & _BasePayloadValue_KeyInterface
+    & _ScalarBase_ElementProtocol
 {}
 
 /// 要素がキーバリューの場合のひな形
-public protocol KeyValueComparer:
+public protocol KeyValueTrait:
   ComparableKeyTrait
     & _KeyValueBaseType
     & _BasePayloadValue_KeyInterface
@@ -83,9 +84,10 @@ public protocol KeyValueComparer:
 {}
 
 /// 要素がキーバリューでペイロードがペアの場合のひな形
-public protocol PairKeyValueComparer:
-  KeyValueComparer
+public protocol PairValueTrait:
+  KeyValueTrait
     & _PairBasePayloadValue_KeyProtocol
     & _PairBasePayloadValue_MappedValueProtocol
     & _PairBasePayloadValue_WithMappedValueProtocol
+    & _PairBase_ElementProtocol
 {}

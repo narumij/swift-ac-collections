@@ -122,7 +122,7 @@ where
 
 extension UnsafeIterator.Tied
 where
-  Source.Base: KeyValueComparer,
+  Source.Base: PairValueTrait,
   Base: ___TreeIndex,
   Self: ReverseIterator
 {

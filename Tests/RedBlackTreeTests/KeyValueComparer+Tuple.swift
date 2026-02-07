@@ -10,7 +10,7 @@ import RedBlackTreeModule
 // KeyValueの内部実装はPairに移行済み
 // 以下はテストでのみ使っている
 
-extension KeyValueComparer where _PayloadValue == (key: _Key, value: _MappedValue) {
+extension KeyValueTrait where _PayloadValue == (key: _Key, value: _MappedValue) {
 
   @inlinable
   @inline(__always)

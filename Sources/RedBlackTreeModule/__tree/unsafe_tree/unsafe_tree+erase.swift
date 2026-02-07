@@ -16,8 +16,11 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol EraseProtocol: EraseInterface, RemoveInteface, DellocationInterface
- {}
+protocol EraseProtocol:
+  EraseInterface
+    & RemoveInteface
+    & DellocationInterface
+{}
 
 extension EraseProtocol {
 
@@ -31,7 +34,7 @@ extension EraseProtocol {
     destroy(__p)
     return __r
   }
-  
+
   /// - WARNING: メモリ破壊の可能性がある。範囲検査済みの場合にのみ用いること
   @inlinable
   @inline(__always)
@@ -47,10 +50,15 @@ extension EraseProtocol {
 }
 
 @usableFromInline
-protocol EraseUniqueProtocol: EraseUniqueInteface, FindInteface, EndInterface, EraseInterface { }
+protocol EraseUniqueProtocol:
+  EraseUniqueInteface
+    & FindInteface
+    & EndInterface
+    & EraseInterface
+{}
 
 extension EraseUniqueProtocol {
-  
+
   /// メモリ破壊できない
   @inlinable
   @inline(never)
@@ -65,10 +73,14 @@ extension EraseUniqueProtocol {
 }
 
 @usableFromInline
-protocol EraseMultiProtocol: EraseMultiInteface, EqualInterface, EraseInterface { }
+protocol EraseMultiProtocol:
+  EraseMultiInteface
+    & EqualInterface
+    & EraseInterface
+{}
 
 extension EraseMultiProtocol {
-  
+
   /// メモリ破壊できない
   @inlinable
   @inline(__always)

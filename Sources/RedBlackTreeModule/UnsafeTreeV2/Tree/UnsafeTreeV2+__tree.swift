@@ -116,14 +116,7 @@ extension UnsafeTreeV2: TreeNodeRefAccessInterface {
 
 // MARK: - TreeNodeValueProtocol
 
-extension UnsafeTreeV2: _TreeNode_KeyProtocol {
-
-//  @inlinable
-//  @inline(__always)
-//  package func __get_value(_ p: _NodePtr) -> _Key {
-//    Base.__key(p.__value_().pointee)
-//  }
-}
+extension UnsafeTreeV2: _TreeNode_KeyProtocol {}
 
 // MARK: - BeginNodeProtocol
 

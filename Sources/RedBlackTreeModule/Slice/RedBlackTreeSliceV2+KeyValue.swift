@@ -31,6 +31,7 @@ extension RedBlackTreeSliceV2 {
       & KeyValueComparer
       & _PairBase_ElementProtocol
       & _BaseNode_SignedDistanceInterface
+      & _BaseNode_PtrCompInterface
   {
 
     public typealias Tree = UnsafeTreeV2<Base>

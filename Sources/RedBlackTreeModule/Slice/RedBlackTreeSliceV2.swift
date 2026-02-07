@@ -30,9 +30,9 @@ extension RedBlackTreeSliceV2 {
       & UnsafeIndexProtocol_tree
   where
     Base: ___TreeBase
-      & ___TreeIndex
       & _ScalarBase_ElementProtocol
       & _BaseNode_SignedDistanceInterface
+      & _BaseNode_PtrCompInterface
   {
 
     public typealias Tree = UnsafeTreeV2<Base>

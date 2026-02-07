@@ -15,11 +15,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: 名称変更
-
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 @usableFromInline
-protocol ValueComparator:
+protocol _ValueComparerBridge:
   _BaseType
     & _TreeRawValue_KeyInterface
     & _TreeKey_CompInterface
@@ -35,7 +33,7 @@ where
         & _BaseKey_LessThanInterface
 }
 
-extension ValueComparator {
+extension _ValueComparerBridge {
 
   @inlinable
   @inline(__always)
@@ -50,7 +48,7 @@ extension ValueComparator {
   }
 }
 
-extension ValueComparator {
+extension _ValueComparerBridge {
 
   @inlinable
   @inline(__always)
@@ -65,7 +63,7 @@ extension ValueComparator {
   }
 }
 
-extension ValueComparator where Base: _BasePayloadValue_MappedValueInterface {
+extension _ValueComparerBridge where Base: _BasePayloadValue_MappedValueInterface {
   
   @usableFromInline
   typealias _MappedValue = Base._MappedValue
@@ -77,7 +75,7 @@ extension ValueComparator where Base: _BasePayloadValue_MappedValueInterface {
   }
 }
 
-extension ValueComparator where Base: _BasePayloadValue_MappedValueInterface {
+extension _ValueComparerBridge where Base: _BasePayloadValue_MappedValueInterface {
   
   @inlinable
   @inline(__always)

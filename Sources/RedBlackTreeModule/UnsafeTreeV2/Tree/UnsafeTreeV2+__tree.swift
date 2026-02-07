@@ -240,7 +240,7 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2: ValueComparator {}
+extension UnsafeTreeV2: _ValueComparerBridge {}
 extension UnsafeTreeV2: BoundBothInterface {
 
   @inlinable

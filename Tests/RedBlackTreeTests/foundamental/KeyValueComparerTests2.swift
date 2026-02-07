@@ -8,7 +8,7 @@
 import RedBlackTreeModule
 import XCTest
 
-final class KeyValueComparerTests2: RedBlackTreeTestCase, KeyValueComparer, CompareUniqueTrait {
+final class KeyValueComparerTests2: RedBlackTreeTestCase, KeyValueComparer, CompareUniqueTrait, _UnsafeNodePtrType {
   
   static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
     p.__value_(as: _PayloadValue.self).pointee.key

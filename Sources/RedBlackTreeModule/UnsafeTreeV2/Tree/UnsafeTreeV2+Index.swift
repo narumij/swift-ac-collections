@@ -42,7 +42,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer & ___TreeIndex {
   public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
 }
 
-extension UnsafeTreeV2 where Base: _BaseNode_SignedDistanceInterface {
+extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
   
   // この実装がないと、迷子になる?
   @inlinable

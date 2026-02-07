@@ -49,8 +49,9 @@ extension KeyValueComparer where _PayloadValue == _LinkingPair<_Key, _MappedValu
 }
 
 @usableFromInline
-protocol ___LRULinkList: KeyValueComparer & _Base_IsMultiTraitInterface
-where _PayloadValue == _LinkingPair<_Key, _MappedValue> {
+protocol ___LRULinkList: KeyValueComparer & _Base_IsMultiTraitInterface & _UnsafeNodePtrType
+where _PayloadValue == _LinkingPair<_Key, _MappedValue>
+{
   associatedtype Value
   var __tree_: Tree { get set }
   var _rankHighest: _NodePtr { get set }

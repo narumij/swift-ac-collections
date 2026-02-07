@@ -24,13 +24,11 @@ protocol _ValueComparerBridge:
     & _TreeKey_CompInterface
 where
   _Key == Base._Key,
-  _NodePtr == Base._NodePtr,
-  _NodeRef == Base._NodeRef,
   _PayloadValue == Base._PayloadValue
 {
   associatedtype
     Base:
-      _NodePtrType
+  _NodePtrType
         & _BasePayloadValue_KeyInterface
         & _BaseKey_LessThanInterface
 }
@@ -50,7 +48,7 @@ extension _ValueComparerBridge {
   }
 }
 
-extension _ValueComparerBridge where Base: _BaseNode_SignedDistanceInterface {
+extension _ValueComparerBridge where Self: _UnsafeNodePtrType, Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
   @inlinable
   @inline(__always)

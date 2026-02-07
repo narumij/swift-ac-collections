@@ -15,7 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _ScalarBaseRawValue_KeyProtocol: _ScalarBaseType & _BaseRawValue_KeyInterface {}
+public protocol _ScalarBaseRawValue_KeyProtocol: _ScalarBaseType & _BasePayload_KeyInterface {}
 
 extension _ScalarBaseRawValue_KeyProtocol {
 

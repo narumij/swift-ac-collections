@@ -59,7 +59,7 @@ extension _BaseNode_PtrCompProtocol {
 public protocol _BaseNode_PtrUniqueCompProtocol:
   _BaseNode_PtrUniqueCompInterface
     & _BaseKey_LessThanInterface
-    & _BaseNode_KeyProtocol
+    & _BaseNode_KeyInterface
 {}
 
 extension _BaseNode_PtrUniqueCompProtocol {
@@ -72,5 +72,3 @@ extension _BaseNode_PtrUniqueCompProtocol {
     return value_comp(__get_value(l), __get_value(r))
   }
 }
-
-

@@ -13,28 +13,6 @@ protocol UnsafeTreeSealedRangeProtocol: UnsafeTreeSealedRangeBaseInterface, _Pay
 extension UnsafeTreeSealedRangeProtocol {
 
   @inlinable @inline(__always)
-  internal var ___first: _PayloadValue? {
-    ___is_empty
-      ? nil
-      : try? _sealed_start
-        .map { __tree_[$0.pointer] }
-        .get()
-  }
-
-  @inlinable @inline(__always)
-  internal var ___last: _PayloadValue? {
-    ___is_empty
-      ? nil
-      : try? _sealed_end
-        .map { __tree_.__tree_prev_iter($0.pointer) }
-        .map { __tree_[$0] }
-        .get()
-  }
-}
-
-extension UnsafeTreeSealedRangeProtocol {
-
-  @inlinable @inline(__always)
   internal func ___first(where predicate: (_PayloadValue) throws -> Bool) rethrows -> _PayloadValue?
   {
     var result: _PayloadValue?

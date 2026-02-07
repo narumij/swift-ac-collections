@@ -57,6 +57,25 @@ extension _SubSequenceV2 {
     }
     return __tree_.___ptr_range_comp(start, i, end)
   }
+  
+  @inlinable @inline(__always)
+  internal var ___first: _PayloadValue? {
+    ___is_empty
+      ? nil
+      : try? _sealed_start
+        .map { __tree_[$0.pointer] }
+        .get()
+  }
+
+  @inlinable @inline(__always)
+  internal var ___last: _PayloadValue? {
+    ___is_empty
+      ? nil
+      : try? _sealed_end
+        .map { __tree_.__tree_prev_iter($0.pointer) }
+        .map { __tree_[$0] }
+        .get()
+  }
 }
 
 #if COMPATIBLE_ATCODER_2025

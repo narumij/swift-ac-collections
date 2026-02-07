@@ -15,7 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _PairBaseRawValue_KeyProtocol: _PairBaseType & _BaseRawValue_KeyInterface {}
+public protocol _PairBaseRawValue_KeyProtocol: _PairBaseType & _BasePayload_KeyInterface {}
 
 extension _PairBaseRawValue_KeyProtocol {
 
@@ -25,7 +25,7 @@ extension _PairBaseRawValue_KeyProtocol {
 }
 
 public protocol _PairBaseRawValue_MappedValueProtocol: _PairBaseType
-    & _BaseRawValue_MappedValueInterface
+    & _BasePayload_MappedValueInterface
 {}
 
 extension _PairBaseRawValue_MappedValueProtocol {

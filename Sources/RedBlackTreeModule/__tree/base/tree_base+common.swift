@@ -20,7 +20,7 @@
 /// `__key(_:)`が定義されてる場合に`__get_value(_:)`を定義する
 public protocol _BaseNode_KeyProtocol:
   _BaseNode_KeyInterface
-    & _BaseRawValue_KeyInterface
+    & _BasePayload_KeyInterface
     & _BaseNode_PayloadValueInterface
 {
   static func __get_value(_: _NodePtr) -> _Key

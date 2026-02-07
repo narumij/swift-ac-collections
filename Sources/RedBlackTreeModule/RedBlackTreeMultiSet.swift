@@ -71,9 +71,12 @@ extension RedBlackTreeMultiSet {
 extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase {}
 extension RedBlackTreeMultiSet: CompareMultiTrait {}
 extension RedBlackTreeMultiSet: ScalarValueComparer {
-  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {
-    p.__value_().pointee
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {
+    p.__value_(as: _PayloadValue.self).pointee
   }
+//  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {
+//    p.__value_().pointee
+//  }
 }
 extension RedBlackTreeMultiSet: _ScalarBase_ElementProtocol {}
 

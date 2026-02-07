@@ -112,6 +112,9 @@ extension ___LRUMemoizeStorage {
 extension ___LRUMemoizeStorage: ___LRULinkList & IntThreeWayComparator {}
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}
 extension ___LRUMemoizeStorage: KeyValueComparer {
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> Key {
+    p.__value_(as: _PayloadValue.self).pointee.key
+  }
   
   public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> KeyValue {
     p.__value_().pointee

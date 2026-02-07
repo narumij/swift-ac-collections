@@ -15,10 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _BaseNode_PayloadValueInterface: _NodePtrType & _PayloadValueType {
-  static func __value_(_ p: _NodePtr) -> _PayloadValue
-}
-
 #if true
   // 非常に重要なポイントなので元ソース尊重よりもわかりやすさを優先しつつ、
   // エクスキューズ的に#ifで元の名前をリスペクトする感じ？
@@ -39,12 +35,17 @@ public protocol _BaseNode_PayloadValueInterface: _NodePtrType & _PayloadValueTyp
   }
 #endif
 
-public protocol _BaseRawValue_KeyInterface: _KeyType & _PayloadValueType {
+// 配列インデックス方式ではこれを経由する必要があるが、ポインタ方式では縛りがない
+public protocol _BaseNode_PayloadValueInterface: _NodePtrType & _PayloadValueType {
+  static func __value_(_ p: _NodePtr) -> _PayloadValue
+}
+
+public protocol _BasePayload_KeyInterface: _KeyType & _PayloadValueType {
   /// 要素から比較キー値がとれること
   static func __key(_: _PayloadValue) -> _Key
 }
 
-public protocol _BaseRawValue_MappedValueInterface: _PayloadValueType & _MappedValueType {
+public protocol _BasePayload_MappedValueInterface: _PayloadValueType & _MappedValueType {
   static func ___mapped_value(_: _PayloadValue) -> _MappedValue
 }
 

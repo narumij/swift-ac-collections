@@ -27,7 +27,10 @@ protocol ___UnsafeKeyValueSequenceV2__:
     & _MapBridge
 where
   Base: KeyValueComparer & _PairBase_ElementProtocol
-{}
+{
+  var ___first: _PayloadValue? { get }
+  var ___last: _PayloadValue? { get }
+}
 
 extension ___UnsafeKeyValueSequenceV2__ {
 
@@ -94,9 +97,6 @@ extension ___UnsafeKeyValueSequenceV2__ {
     __tree_.___copy_to_array(
       _sealed_start.pointer!, _sealed_end.pointer!, transform: Base.__element_)
   }
-}
-
-extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
   @inline(__always)

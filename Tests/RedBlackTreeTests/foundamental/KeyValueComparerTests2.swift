@@ -10,6 +10,10 @@ import XCTest
 
 final class KeyValueComparerTests2: RedBlackTreeTestCase, KeyValueComparer, CompareUniqueTrait {
   
+  static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
+    p.__value_(as: _PayloadValue.self).pointee.key
+  }
+
   static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeModule.UnsafeNode>) -> (key: _Key, value: _MappedValue) {
     fatalError()
   }

@@ -33,4 +33,3 @@ protocol _TreeNode_PtrCompBitmapInterface: _NodePtrType {
 public protocol _Tree_IsMultiTraitInterface {
   var isMulti: Bool { get }
 }
-

@@ -182,7 +182,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inlinable
   internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
     @inline(__always) get {
-      return Base.__element_(__tree_[_unsafe_raw: try! __tree_.__purified_(position).get().pointer])
+      return Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
     }
   }
 }

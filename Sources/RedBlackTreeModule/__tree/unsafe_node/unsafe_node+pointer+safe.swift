@@ -114,6 +114,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
+  /// 他のケースと異なり、endも有効となる
   @inlinable
   package var isValid: Bool {
     switch purified {

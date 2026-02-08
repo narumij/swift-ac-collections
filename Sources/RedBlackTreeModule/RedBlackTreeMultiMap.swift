@@ -276,8 +276,8 @@ extension RedBlackTreeMultiMap {
           !p.___is_end else {
       return nil
     }
-    let old = __tree_[p]
-    __tree_[p].value = newValue
+    let old = __tree_[_unsafe_raw: p]
+    __tree_[_unsafe_raw: p].value = newValue
     return Self.__element_(old)
   }
 }

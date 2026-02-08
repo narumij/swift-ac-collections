@@ -17,8 +17,8 @@ extension UnsafeTreeSealedRangeProtocol {
   {
     var result: _PayloadValue?
     try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
-      if try predicate(__tree_[__p]) {
-        result = __tree_[__p]
+      if try predicate(__tree_[_unsafe_raw: __p]) {
+        result = __tree_[_unsafe_raw: __p]
         cont = false
       }
     }
@@ -34,7 +34,7 @@ extension UnsafeTreeSealedRangeProtocol {
   {
     var __r = UnsafeNode.nullptr
     try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
-      if try predicate(__tree_[__p]) {
+      if try predicate(__tree_[_unsafe_raw: __p]) {
         __r = __p
         cont = false
       }

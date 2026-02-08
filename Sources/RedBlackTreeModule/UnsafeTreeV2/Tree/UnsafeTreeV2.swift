@@ -89,10 +89,9 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  // _NodePtrがIntだった頃の名残
   @nonobjc
   @inlinable
-  internal subscript(_ pointer: _NodePtr) -> _PayloadValue {
+  internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {
     @inline(__always) _read {
       yield pointer.__value_().pointee
     }
@@ -106,12 +105,12 @@ extension UnsafeTreeV2 {
 
   @nonobjc
   @inlinable
-  internal subscript(_ pointer: _SealedPtr) -> _PayloadValue {
+  internal subscript(_unsafe pointer: _SealedPtr) -> _PayloadValue {
     @inline(__always) _read {
-      yield self[try! pointer.get().pointer]
+      yield self[_unsafe_raw: try! pointer.get().pointer]
     }
     @inline(__always) _modify {
-      yield &self[try! pointer.get().pointer]
+      yield &self[_unsafe_raw: try! pointer.get().pointer]
     }
   }
 }

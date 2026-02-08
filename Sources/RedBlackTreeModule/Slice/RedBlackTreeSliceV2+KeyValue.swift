@@ -116,14 +116,14 @@ extension RedBlackTreeSliceV2.KeyValue {
     @inline(__always)
     public var first: Element? {
       guard !___is_empty else { return nil }
-      return Base.__element_(__tree_[_start])
+      return Base.__element_(__tree_[_unsafe_raw: _start])
     }
 
     @inlinable
     @inline(__always)
     public var last: Element? {
       guard !___is_empty else { return nil }
-      return Base.__element_(__tree_[__tree_prev_iter(_end)])
+      return Base.__element_(__tree_[_unsafe_raw: __tree_prev_iter(_end)])
     }
 
     /// - Complexity: O(log *n*)

@@ -63,7 +63,7 @@ extension _SubSequenceV2 {
     ___is_empty
       ? nil
       : try? _sealed_start
-        .map { __tree_[$0.pointer] }
+        .map { __tree_[_unsafe_raw: $0.pointer] }
         .get()
   }
 
@@ -73,7 +73,7 @@ extension _SubSequenceV2 {
       ? nil
       : try? _sealed_end
         .map { __tree_.__tree_prev_iter($0.pointer) }
-        .map { __tree_[$0] }
+        .map { __tree_[_unsafe_raw: $0] }
         .get()
   }
 }

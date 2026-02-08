@@ -119,7 +119,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
     @inline(__always)
     public var first: Element? {
       guard _start != _end else { return nil }
-      return __tree_[_start]
+      return __tree_[_unsafe_raw: _start]
     }
 
     /// - Complexity: O(`count`)
@@ -142,7 +142,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   @inlinable
   public subscript(position: Index) -> Element {
     @inline(__always) _read {
-      yield self[_checked: position]
+      yield self[_unsafe: position]
     }
   }
 }

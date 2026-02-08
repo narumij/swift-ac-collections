@@ -49,7 +49,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   @inline(__always)
   internal func _forEach(_ body: (_PayloadValue) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-      try body(__tree_[$0])
+      try body(__tree_[_unsafe_raw: $0])
     }
   }
 }
@@ -139,7 +139,7 @@ protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexPr
     @inline(__always)
     internal func _forEach(_ body: (Index, _PayloadValue) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-        try body(___index($0.sealed), __tree_[$0])
+        try body(___index($0.sealed), __tree_[_unsafe_raw: $0])
       }
     }
   }
@@ -148,9 +148,9 @@ protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexPr
 extension ___UnsafeKeyOnlySequenceV2 {
 
   @inlinable
-  internal subscript(_checked position: Index) -> _PayloadValue {
+  internal subscript(_unsafe position: Index) -> _PayloadValue {
     @inline(__always) _read {
-      yield __tree_[__tree_.__purified_(position)]
+      yield __tree_[_unsafe: __tree_.__purified_(position)]
     }
   }
 }
@@ -162,7 +162,7 @@ extension ___UnsafeKeyOnlySequenceV2 {
   internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     var result: Index?
     try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
-      if try predicate(__tree_[__p]) {
+      if try predicate(__tree_[_unsafe_raw: __p]) {
         result = ___index(__p.sealed)
         cont = false
       }

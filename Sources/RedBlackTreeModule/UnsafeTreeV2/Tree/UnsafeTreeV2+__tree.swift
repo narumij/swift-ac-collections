@@ -284,12 +284,12 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func ___min() -> _PayloadValue? {
-    __root == nullptr ? nil : self[__tree_min(__root)]
+    __root == nullptr ? nil : self[_unsafe_raw: __tree_min(__root)]
   }
 
   @inlinable
   @inline(__always)
   internal func ___max() -> _PayloadValue? {
-    __root == nullptr ? nil : self[__tree_max(__root)]
+    __root == nullptr ? nil : self[_unsafe_raw: __tree_max(__root)]
   }
 }

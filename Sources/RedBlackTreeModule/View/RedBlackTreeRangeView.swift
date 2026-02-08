@@ -151,7 +151,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   public var first: Element? {
     let (_start, _end) = _range
     guard _start != _end else { return nil }
-    return __tree_[_start.pointer!]
+    return __tree_[_unsafe_raw: _start.pointer!]
   }
 
   @inlinable
@@ -159,7 +159,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   public var last: Element? {
     let (_start, _end) = _range
     guard _start != _end else { return nil }
-    return __tree_[__tree_prev_iter(_end.pointer!)]
+    return __tree_[_unsafe_raw: __tree_prev_iter(_end.pointer!)]
   }
 }
 

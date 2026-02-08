@@ -665,7 +665,7 @@ extension RedBlackTreeMultiSet {
     /// - Complexity: O(1)
     @inlinable
     public subscript(position: Index) -> _PayloadValue {
-      @inline(__always) _read { yield self[_checked: position] }
+      @inline(__always) _read { yield self[_unsafe: position] }
     }
   #endif
 

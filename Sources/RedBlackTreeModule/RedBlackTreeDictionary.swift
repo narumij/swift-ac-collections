@@ -287,7 +287,7 @@ extension RedBlackTreeDictionary {
         yield &value
       } else {
         //        _ensureUnique()
-        var helper = ___ModifyHelper(pointer: &__tree_[__ptr].value)
+        var helper = ___ModifyHelper(pointer: &__tree_[_unsafe_raw: __ptr].value)
         defer {
           if helper.isNil {
             _ = __tree_.erase(__ptr)
@@ -322,7 +322,7 @@ extension RedBlackTreeDictionary {
       } else {
         __tree_.ensureUnique()
       }
-      yield &__tree_[__ptr].value
+      yield &__tree_[_unsafe_raw: __ptr].value
     }
   }
 
@@ -381,7 +381,7 @@ extension RedBlackTreeDictionary {
   ) {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(Self.__payload_(newMember))
-    return (__inserted, __inserted ? newMember : Self.__element_(__tree_[__r]))
+    return (__inserted, __inserted ? newMember : Self.__element_(__tree_[_unsafe_raw: __r]))
   }
 }
 
@@ -398,8 +398,8 @@ extension RedBlackTreeDictionary {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(Self.__payload_((key, value)))
     guard !__inserted else { return nil }
-    let oldMember = __tree_[__r]
-    __tree_[__r] = Self.__payload_((key, value))
+    let oldMember = __tree_[_unsafe_raw: __r]
+    __tree_[_unsafe_raw: __r] = Self.__payload_((key, value))
     return oldMember.value
   }
 }

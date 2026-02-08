@@ -385,7 +385,7 @@
     /// - Complexity: O(1)
     @inlinable
     public subscript(position: Index) -> Element {
-      @inline(__always) _read { yield self[_checked: position] }
+      @inline(__always) _read { yield self[_unsafe: position] }
     }
 
     /// Indexがsubscriptやremoveで利用可能か判別します

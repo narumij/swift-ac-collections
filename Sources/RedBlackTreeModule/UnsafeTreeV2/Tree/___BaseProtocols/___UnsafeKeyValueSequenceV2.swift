@@ -38,7 +38,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inline(__always)
   internal func ___value_for(_ __k: _Key) -> _PayloadValue? {
     let __ptr = __tree_.find(__k)
-    return __ptr.___is_null_or_end ? nil : __tree_[__ptr]
+    return __ptr.___is_null_or_end ? nil : __tree_[_unsafe_raw: __ptr]
   }
 }
 
@@ -152,7 +152,7 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inline(__always)
   internal func _forEach(_ body: (Element) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-      try body(Base.__element_(__tree_[$0]))
+      try body(Base.__element_(__tree_[_unsafe_raw: $0]))
     }
   }
 }
@@ -168,7 +168,7 @@ protocol ___UnsafeKeyValueSequenceV2: ___UnsafeKeyValueSequenceV2__ & ___UnsafeI
     @inline(__always)
     internal func _forEach(_ body: (Index, Element) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-        try body(___index($0.sealed), Base.__element_(__tree_[$0]))
+        try body(___index($0.sealed), Base.__element_(__tree_[_unsafe_raw: $0]))
       }
     }
   }
@@ -182,7 +182,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   @inlinable
   internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
     @inline(__always) get {
-      return Base.__element_(__tree_[try! __tree_.__purified_(position).get().pointer])
+      return Base.__element_(__tree_[_unsafe_raw: try! __tree_.__purified_(position).get().pointer])
     }
   }
 }
@@ -194,7 +194,7 @@ extension ___UnsafeKeyValueSequenceV2 {
   internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
     var result: Index?
     try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
-      if try predicate(Base.__element_((__tree_[__p]))) {
+      if try predicate(Base.__element_((__tree_[_unsafe_raw: __p]))) {
         result = ___index(__p.sealed)
         cont = false
       }

@@ -86,11 +86,11 @@ extension _SequenceV2 {
   
   @inlinable @inline(__always)
   internal var ___first: _PayloadValue? {
-    ___is_empty ? nil : __tree_[_start]
+    ___is_empty ? nil : __tree_[_unsafe_raw: _start]
   }
 
   @inlinable @inline(__always)
   internal var ___last: _PayloadValue? {
-    ___is_empty ? nil : __tree_[__tree_.__tree_prev_iter(_end)]
+    ___is_empty ? nil : __tree_[_unsafe_raw: __tree_.__tree_prev_iter(_end)]
   }
 }

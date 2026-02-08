@@ -122,7 +122,7 @@ extension ___UnsafeIndexV2 {
   @inlinable @inline(__always)
   internal func _isValid(index: Index) -> Bool {
     // ___is_endのみを判定するわけじゃないので、お清めお祓いが必要
-    __tree_.__sealed_(index).purified.___is_end == false
+    __tree_.__sealed_(index).___is_end == false
   }
 }
 

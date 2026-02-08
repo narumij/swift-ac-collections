@@ -11,8 +11,8 @@ where Base: ___TreeBase & ScalarValueTrait {
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-    self.startIndex = try! _start.unchecked_trackingTag.get()
-    self.endIndex = try! _end.unchecked_trackingTag.get()
+    self.startIndex = _start.trackingTag
+    self.endIndex = _end.trackingTag
   }
 
   public typealias Index = TaggedSeal

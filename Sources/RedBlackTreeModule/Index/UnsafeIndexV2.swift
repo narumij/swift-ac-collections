@@ -49,7 +49,7 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @usableFromInline
   internal var trackingTag: TaggedSeal {
-    sealed.flatMap(\.tag)
+    sealed.trackingTag
   }
 
   @usableFromInline
@@ -318,6 +318,14 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   internal func __sealed_(_ index: UnsafeIndexV2) -> _SealedPtr {
-    tied === index.tied ? index.sealed : _resolve(index.trackingTag)
+    tied === index.tied
+    ? index.sealed.purified
+    : _resolve(index.sealed.purified.trackingTag).purified
+  }
+}
+
+extension UnsafeIndexV2 {
+  public var isValid: Bool {
+    sealed.purified.isValid
   }
 }

@@ -99,10 +99,10 @@ public enum SealError: Error {
 }
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
-
+  
   @inlinable
-  var unchecked_trackingTag: Result<TaggedSeal, SealError> {
-    map { $0.tag }
+  var trackingTag: TaggedSeal {
+    flatMap(\.tag)
   }
 
   @usableFromInline
@@ -124,16 +124,19 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @usableFromInline
   func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
+    // TODO: purified要不要の再確認
     try? purified.map { $0.pointer.__value_() }.get()
   }
 
   @inlinable
   var pointer: UnsafeMutablePointer<UnsafeNode>? {
+    // TODO: purified要不要の再確認
     try? purified.map { $0.pointer }.get()
   }
   
   @inlinable
   var temporaryUnseal: Result<UnsafeMutablePointer<UnsafeNode>, SealError> {
+    // TODO: purified要不要の再確認
     purified.map { $0.pointer }
   }
 }

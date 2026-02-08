@@ -181,7 +181,9 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func __sealed_(_ index: Index) -> _SealedPtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-    tied === index.tied ? index.sealed : self.resolve(index.trackingTag)
+    tied === index.tied
+    ? index.sealed.purified
+    : self.resolve(index.sealed.purified.trackingTag).purified
   }
 }
 

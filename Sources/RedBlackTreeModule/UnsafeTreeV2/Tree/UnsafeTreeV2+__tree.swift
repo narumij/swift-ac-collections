@@ -116,14 +116,7 @@ extension UnsafeTreeV2: TreeNodeRefAccessInterface {
 
 // MARK: - TreeNodeValueProtocol
 
-extension UnsafeTreeV2: _TreeNode_KeyProtocol {
-
-//  @inlinable
-//  @inline(__always)
-//  package func __get_value(_ p: _NodePtr) -> _Key {
-//    Base.__key(p.__value_().pointee)
-//  }
-}
+extension UnsafeTreeV2: _TreeNode_KeyProtocol {}
 
 // MARK: - BeginNodeProtocol
 
@@ -240,7 +233,10 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2: ValueComparator {}
+extension UnsafeTreeV2: _PayloadKeyBridge & _ValueCompBridge {}
+
+extension UnsafeTreeV2: _SignedDistanceBridge where Base: _BaseNode_SignedDistanceInterface {}
+
 extension UnsafeTreeV2: BoundBothInterface {
 
   @inlinable
@@ -277,8 +273,23 @@ extension UnsafeTreeV2: EraseProtocol {}
 extension UnsafeTreeV2: EraseUniqueProtocol {}
 extension UnsafeTreeV2: EraseMultiProtocol {}
 extension UnsafeTreeV2: _TreeNode_PtrCompProtocol, _TreeNode_PtrCompUniqueProtocol {}
-extension UnsafeTreeV2: CountProtocol_ptr, DistanceProtocol_ptr {}
+extension UnsafeTreeV2: CountProtocol_ptr {}
 extension UnsafeTreeV2: InsertLastProtocol_ptr {}
 extension UnsafeTreeV2: CompareProtocol {}
 extension UnsafeTreeV2: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2: TreeAlgorithmProtocol_ptr {}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func ___min() -> _PayloadValue? {
+    __root == nullptr ? nil : self[_unsafe_raw: __tree_min(__root)]
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___max() -> _PayloadValue? {
+    __root == nullptr ? nil : self[_unsafe_raw: __tree_max(__root)]
+  }
+}

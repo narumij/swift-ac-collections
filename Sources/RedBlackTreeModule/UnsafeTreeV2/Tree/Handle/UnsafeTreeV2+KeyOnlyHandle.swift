@@ -151,7 +151,7 @@ extension UnsafeTreeV2KeyOnlyHandle: InsertUniqueInterface, InsertUniqueProtocol
 extension UnsafeTreeV2KeyOnlyHandle: _TreeNode_PtrCompInterface, _Tree_IsMultiTraitInterface,
   _TreeNode_PtrCompProtocol, _TreeNode_PtrCompUniqueProtocol
 {}
-extension UnsafeTreeV2KeyOnlyHandle: DistanceProtocol_ptr, CountProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: CountProtocol_ptr {}
 
 extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmProtocol_ptr {}

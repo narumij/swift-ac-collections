@@ -53,20 +53,20 @@ extension UnsafeIterator {
     >
 
   public
-    typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
+    typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = Tied<
       _MappedValue<Base, _RemoveTrait<_Obverse2>>
     >
   public
-    typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
+    typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = Tied<
       _MappedValue<Base, _RemoveTrait<_Reverse2>>
     >
 
   public
-    typealias KeyValueObverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
+    typealias KeyValueObverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = Tied<
       _KeyValue<Base, _RemoveTrait<_Obverse2>>
     >
   public
-    typealias KeyValueReverse<Base: ___TreeBase & ___TreeIndex & KeyValueComparer> = Tied<
+    typealias KeyValueReverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = Tied<
       _KeyValue<Base, _RemoveTrait<_Reverse2>>
     >
 }

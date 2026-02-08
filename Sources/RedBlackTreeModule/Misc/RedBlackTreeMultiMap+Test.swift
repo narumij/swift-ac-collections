@@ -19,7 +19,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   package func ___is_garbaged(_ index: Index) -> Bool {
-    switch __tree_.__sealed_(index).purified {
+    switch __tree_.__purified_(index).purified {
     case .failure:
       return true
     default:

@@ -5,14 +5,14 @@
 //  Created by narumij on 2026/01/29.
 //
 
-public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost
-    & _ScalarBase_ElementProtocol, BidirectionalSequence
-where Base: ___TreeBase {
+public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost, BidirectionalSequence
+where Base: ___TreeBase & ScalarValueTrait {
+
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-    self.startIndex = try! _start.unchecked_trackingTag.get()
-    self.endIndex = try! _end.unchecked_trackingTag.get()
+    self.startIndex = _start.trackingTag
+    self.endIndex = _end.trackingTag
   }
 
   public typealias Index = TaggedSeal
@@ -38,8 +38,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   //  @usableFromInline
   //  var _range: (_NodePtr, _NodePtr) {
   //    guard
-  //      let _start = __tree_.resolve(startIndex).pointer,
-  //      let _end = __tree_.resolve(endIndex).pointer
+  //      let _start = __tree_.__retrieve_(startIndex).pointer,
+  //      let _end = __tree_.__retrieve_(endIndex).pointer
   //    else {
   //      return (__tree_.__end_node, __tree_.__end_node)
   //    }
@@ -50,8 +50,8 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   @usableFromInline
   var _range: (_SealedPtr, _SealedPtr) {
-    let _start = __tree_.resolve(startIndex)
-    let _end = __tree_.resolve(endIndex)
+    let _start = __tree_.__retrieve_(startIndex)
+    let _end = __tree_.__retrieve_(endIndex)
     guard
       _start.isValid, _end.isValid
     else {
@@ -125,7 +125,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   }
 }
 
-extension RedBlackTreeKeyOnlyRangeView {
+extension RedBlackTreeKeyOnlyRangeView
+where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
   /// - Complexity: O(log *n* + *k*)
   @inlinable
@@ -150,7 +151,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   public var first: Element? {
     let (_start, _end) = _range
     guard _start != _end else { return nil }
-    return __tree_[_start.pointer!]
+    return __tree_[_unsafe_raw: _start.pointer!]
   }
 
   @inlinable
@@ -158,7 +159,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   public var last: Element? {
     let (_start, _end) = _range
     guard _start != _end else { return nil }
-    return __tree_[__tree_prev_iter(_end.pointer!)]
+    return __tree_[_unsafe_raw: __tree_prev_iter(_end.pointer!)]
   }
 }
 
@@ -435,7 +436,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     @inline(__always)
     public func isValid(index: Index) -> Bool {
       guard
-        let i: _NodePtr = __tree_.resolve(index).pointer,
+        let i: _NodePtr = __tree_.retrieve(index).pointer,
         !i.___is_end
       else {
         return false

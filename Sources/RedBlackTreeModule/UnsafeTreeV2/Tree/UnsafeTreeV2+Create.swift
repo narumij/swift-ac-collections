@@ -95,7 +95,7 @@ extension UnsafeTreeV2 where Base._Key == Base._PayloadValue {
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     for __k in elements {
-      if __parent == tree.end || __key(tree.__value_(__parent)) != __key(__k) {
+      if __parent == tree.end || Base.__key(tree.__value_(__parent)) != Base.__key(__k) {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
       }
@@ -105,7 +105,7 @@ extension UnsafeTreeV2 where Base._Key == Base._PayloadValue {
   }
 }
 
-extension UnsafeTreeV2 where Base: KeyValueComparer {
+extension UnsafeTreeV2 where Base: PairValueTrait {
 
   /// ソート済みの配列から木を生成する
   ///
@@ -125,7 +125,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
     var (__parent, __child) = tree.___max_ref()
     for __k in elements {
       let __v = transform(__k)
-      if __parent == tree.end || __key(tree.__value_(__parent)) != __key(__v) {
+      if __parent == tree.end || Base.__key(tree.__value_(__parent)) != Base.__key(__v) {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
       } else {
@@ -169,7 +169,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer {
   }
 }
 
-extension UnsafeTreeV2 where Base: KeyValueComparer & ___UnsafeKeyValueSequenceV2 {
+extension UnsafeTreeV2 where Base: PairValueTrait {
 
   /// ソート済みの配列から木を生成する
   ///
@@ -193,7 +193,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer & ___UnsafeKeyValueSequenceV
       if __parent == tree.end || Base.__key(tree.__value_(__parent)) != __k {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(
-          __parent, __child, Base.___tree_value((__k, [__v])))
+          __parent, __child, Base.__payload_((__k, [__v])))
       } else {
         tree.___with_mapped_value(__parent) {
           $0.append(__v)
@@ -224,7 +224,7 @@ extension UnsafeTreeV2 where Base: KeyValueComparer & ___UnsafeKeyValueSequenceV
       let __k = try keyForValue(__v)
       // ならしO(1)
       (__parent, __child) = tree.___emplace_hint_right(
-        __parent, __child, Base.___tree_value((__k, __v)))
+        __parent, __child, Base.__payload_((__k, __v)))
     }
     assert(tree.__tree_invariant(tree.__root))
     return tree

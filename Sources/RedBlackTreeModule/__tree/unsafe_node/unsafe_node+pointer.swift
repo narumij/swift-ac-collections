@@ -74,11 +74,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 }
 
-//extension UnsafeMutablePointer where Pointee == UnsafeNode {
-//  @inlinable @inline(__always)
-//  var isPayloadEmpty: Bool { pointee.isPayloadEmpty }
-//}
-
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   /// ゆっくりendを返す
@@ -86,6 +81,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   /// どのくらいゆっくりかというとO(log N)ぐらい
   ///
   /// ルートのペアレントまたはペアレントがヌルなのがend
+  @usableFromInline
   func __slow_end() -> _NodePtr {
     var __r = self
     while __r.__parent_ != .nullptr {

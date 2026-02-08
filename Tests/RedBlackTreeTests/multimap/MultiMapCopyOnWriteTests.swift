@@ -178,7 +178,6 @@ import XCTest
         }
       }
       XCTAssertEqual(xy[1]!.count, 0)
-      throw XCTSkip("CoWの挙動変更のため")
       XCTAssertEqual(xy[1]!._copyCount, 0)
       XCTAssertEqual(loopCount, count / N)
     }
@@ -199,8 +198,7 @@ import XCTest
           }
         }
         XCTAssertEqual(xy[1]!.count, 0)
-        throw XCTSkip("CoWの挙動変更のため")
-        XCTAssertEqual(xy[1]!._copyCount, 0)
+        XCTAssertEqual(xy[1]!._copyCount, 1)
         XCTAssertEqual(loopCount, count / N)
       }
     #endif

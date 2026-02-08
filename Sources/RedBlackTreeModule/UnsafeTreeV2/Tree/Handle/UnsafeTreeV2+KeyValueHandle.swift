@@ -43,7 +43,7 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
 
 extension UnsafeTreeV2
 where
-  Base: KeyValueComparer,
+  Base: PairValueTrait,
   _Key: Comparable,
   _PayloadValue == RedBlackTreePair<_Key, Base._MappedValue>
 {

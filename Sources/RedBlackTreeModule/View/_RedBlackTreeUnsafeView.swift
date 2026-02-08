@@ -13,7 +13,7 @@ public struct _RedBlackTreeUnsafeView<Base>:
   _KeyBride,
   _PayloadValueBride,
   UnsafeIndexBinding,
-  ___UnsafeBaseSequenceV2,
+  _SequenceV2,
   ___UnsafeIndexV2
 where
   Base: ___TreeBase & ___TreeIndex
@@ -26,6 +26,14 @@ where
 
   @usableFromInline
   internal var __tree_: Tree
+}
+
+extension _RedBlackTreeUnsafeView {
+  
+  @usableFromInline
+  func ___index(_ p: _SealedPtr) -> Index {
+    Index(sealed: p, tie: __tree_.tied)
+  }
 }
 
 extension _RedBlackTreeUnsafeView {

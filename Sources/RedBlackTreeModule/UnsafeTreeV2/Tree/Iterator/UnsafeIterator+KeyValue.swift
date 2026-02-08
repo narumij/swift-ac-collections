@@ -23,7 +23,7 @@ extension UnsafeIterator {
     IteratorProtocol,
     Sequence
   where
-    Base: ___TreeBase & KeyValueComparer,
+    Base: ___TreeBase & PairValueTrait,
     Source: IteratorProtocol & Sequence & UnsafeIteratorProtocol,
     Source.Element == UnsafeMutablePointer<UnsafeNode>
   {

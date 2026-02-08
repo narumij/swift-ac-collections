@@ -23,14 +23,16 @@ extension RedBlackTreeSliceV2 {
 
   @frozen
   public struct KeyOnly:
-    ___UnsafeCommonV2
-      & ___UnsafeSubSequenceV2
+    UnsafeTreeRangeBaseInterface
+      & _SubSequenceV2
       & ___UnsafeIndexV2
       & ___UnsafeKeyOnlySequenceV2
+      & UnsafeIndexProtocol_tree
   where
-    Base: ___TreeBase & ___TreeIndex,
-    Base._Key == Base._PayloadValue,
-    Base._Key: Comparable
+    Base: ___TreeBase
+      & ScalarValueTrait
+      & _BaseNode_SignedDistanceInterface
+      & _BaseNode_PtrCompInterface
   {
 
     public typealias Tree = UnsafeTreeV2<Base>
@@ -61,7 +63,7 @@ extension RedBlackTreeSliceV2 {
 extension RedBlackTreeSliceV2.KeyOnly: Sequence {}
 
 extension RedBlackTreeSliceV2.KeyOnly {
-  
+
   @usableFromInline
   var _start: _NodePtr { _sealed_start.pointer! }
 
@@ -117,13 +119,13 @@ extension RedBlackTreeSliceV2.KeyOnly {
     @inline(__always)
     public var first: Element? {
       guard _start != _end else { return nil }
-      return __tree_[_start]
+      return __tree_[_unsafe_raw: _start]
     }
 
     /// - Complexity: O(`count`)
     @inlinable
     public func firstIndex(of member: Element) -> Index? {
-      ___first_index { $0 == member }
+      ___first_index { Base.value_equiv($0, member) }
     }
 
     /// - Complexity: O(`count`)
@@ -140,7 +142,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   @inlinable
   public subscript(position: Index) -> Element {
     @inline(__always) _read {
-      yield self[_checked: position]
+      yield self[_unsafe: position]
     }
   }
 }
@@ -244,7 +246,7 @@ extension RedBlackTreeSliceV2.KeyOnly {
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    (try? __tree_.__sealed_(i).map { ___contains($0.pointer) }.get()) ?? false
+    (try? __tree_.__purified_(i).map { ___contains($0.pointer) }.get()) ?? false
   }
 }
 

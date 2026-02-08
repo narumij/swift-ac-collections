@@ -21,10 +21,11 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2__: UnsafeTreeSealedRangeProtocol, _ScalarBase_ElementProtocol,
-  _PayloadValueBride, _KeyBride
+protocol ___UnsafeKeyOnlySequenceV2__:
+  UnsafeTreeSealedRangeProtocol
+    & _SetBridge
 where
-  Base: ___TreeIndex
+  Base: ScalarValueTrait & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
 {}
 
 extension ___UnsafeKeyOnlySequenceV2__ {
@@ -48,7 +49,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   @inline(__always)
   internal func _forEach(_ body: (_PayloadValue) throws -> Void) rethrows {
     try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-      try body(__tree_[$0])
+      try body(__tree_[_unsafe_raw: $0])
     }
   }
 }
@@ -83,7 +84,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
     let (lower, upper) = rawRange.relative(to: __tree_)
     return .init(tree: __tree_, start: lower, end: upper)
   }
-  
+
   @inlinable
   public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
     -> RedBlackTreeKeyOnlyRangeView<Base>
@@ -97,7 +98,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 
   @inlinable
   public func ___unchecked_subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
-  -> RedBlackTreeKeyOnlyRangeView<Base>
+    -> RedBlackTreeKeyOnlyRangeView<Base>
   {
     let (lower, upper) = rawRange.relative(to: __tree_)
     return .init(__tree_: __tree_, _start: lower, _end: upper)
@@ -112,7 +113,8 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   internal func _elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (_PayloadValue, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
-    try __tree_.elementsEqual(_sealed_start.pointer!, _sealed_end.pointer!, other, by: areEquivalent)
+    try __tree_.elementsEqual(
+      _sealed_start.pointer!, _sealed_end.pointer!, other, by: areEquivalent)
   }
 
   // 制約で値の型が一致する必要があり、KeyValue側では標準実装を使っている
@@ -121,12 +123,13 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   internal func _lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (_PayloadValue, _PayloadValue) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, _PayloadValue == OtherSequence.Element {
-    try __tree_.lexicographicallyPrecedes(_sealed_start.pointer!, _sealed_end.pointer!, other, by: areInIncreasingOrder)
+    try __tree_.lexicographicallyPrecedes(
+      _sealed_start.pointer!, _sealed_end.pointer!, other, by: areInIncreasingOrder)
   }
 }
 
 @usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, ___UnsafeIndexBaseV2 {}
+protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexProviderProtocol {}
 
 #if COMPATIBLE_ATCODER_2025
   extension ___UnsafeKeyOnlySequenceV2 {
@@ -136,7 +139,7 @@ protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, ___UnsafeInde
     @inline(__always)
     internal func _forEach(_ body: (Index, _PayloadValue) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-        try body(___index($0.sealed), __tree_[$0])
+        try body(___index($0.sealed), __tree_[_unsafe_raw: $0])
       }
     }
   }
@@ -145,9 +148,25 @@ protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, ___UnsafeInde
 extension ___UnsafeKeyOnlySequenceV2 {
 
   @inlinable
-  internal subscript(_checked position: Index) -> _PayloadValue {
+  internal subscript(_unsafe position: Index) -> _PayloadValue {
     @inline(__always) _read {
-      yield __tree_[try! __tree_.__sealed_(position).get().pointer]
+      yield __tree_[_unsafe: __tree_.__purified_(position)]
     }
+  }
+}
+
+extension ___UnsafeKeyOnlySequenceV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    var result: Index?
+    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
+      if try predicate(__tree_[_unsafe_raw: __p]) {
+        result = ___index(__p.sealed)
+        cont = false
+      }
+    }
+    return result
   }
 }

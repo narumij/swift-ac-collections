@@ -34,7 +34,7 @@
         return collection.lowerBound(l)
       case .upper(let r):
         return collection.upperBound(r)
-      case .advanced(let __self, by: let offset):
+      case .advanced(let __self, by: let offset, _):
         let i = __self.relative(to: collection)
         return collection.index(i, offsetBy: offset)
       case .before(let __self):

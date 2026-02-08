@@ -30,7 +30,7 @@ import Foundation
 ///
 /// C++の双方向イテレータに近い内容となっている
 @frozen
-public struct UnsafeIndexV2<Base>: UnsafeTreeBinding, UnsafeIndexingProtocol
+public struct UnsafeIndexV2<Base>: UnsafeTreeBinding, UnsafeIndexProtocol_tie
 where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = UnsafeTreeV2<Base>
@@ -40,7 +40,7 @@ where Base: ___TreeBase & ___TreeIndex {
   typealias _PayloadValue = Tree._PayloadValue
 
   @usableFromInline
-  internal var _rawTag: _RawTrackingTag {
+  package var _rawTag: _RawTrackingTag {
     // benchmark5で謎のコンパイルエラーが発生する
     // バグ報告はいったん見送り
     // (try? sealed.map(\.tag).map(\._rawTag).get()) ?? .nullptr
@@ -49,7 +49,7 @@ where Base: ___TreeBase & ___TreeIndex {
 
   @usableFromInline
   internal var trackingTag: TaggedSeal {
-    sealed.flatMap(\.tag)
+    sealed.trackingTag
   }
 
   @usableFromInline
@@ -114,7 +114,7 @@ extension UnsafeIndexV2: Equatable {
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
       guard let r = rhs.sealed.pointer,
-        let l = rhs.__sealed_(lhs).pointer
+        let l = rhs.__purified_(lhs).pointer
       else {
         preconditionFailure(.garbagedIndex)
       }
@@ -134,7 +134,7 @@ extension UnsafeIndexV2 {
   public func distance(to other: Self) -> Int {
     guard
       let from = sealed.pointer,
-      let to = __sealed_(other).pointer
+      let to = __purified_(other).pointer
     else {
       preconditionFailure(.garbagedIndex)
     }
@@ -295,29 +295,31 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  package func resolve(tag: TagSeal_) -> _SealedPtr {
-    switch tag {
-    case .end:
-      return tied.end_ptr.map { $0.sealed } ?? .failure(.null)
-    case .tag(raw: let raw, seal: let seal):
-      guard raw < tied.capacity else {
-        return .failure(.unknown)
-      }
-      return tied[raw]
-      .map { .success(.uncheckedSeal($0, seal)) }
-      ?? .failure(.null)
+  internal func __purified_(_ index: UnsafeIndexV2) -> _SealedPtr {
+    tied === index.tied
+      ? index.sealed.purified
+      : tied.__retrieve_(index.sealed.purified.trackingTag).purified
+  }
+}
+
+extension UnsafeIndexV2 {
+  @inlinable
+  public var isValid: Bool {
+    sealed.purified.isValid
+  }
+}
+
+extension UnsafeIndexV2: CustomStringConvertible {
+  public var description: String {
+    switch sealed {
+    case .success(let t):
+      "UnsafeIndexV2<\(t)>"
+    case .failure(let e):
+      "UnsafeIndexV2<\(e)>"
     }
   }
+}
 
-  @inlinable
-  @inline(__always)
-  package func _resolve(_ tag: TaggedSeal) -> _SealedPtr {
-    tag.flatMap { resolve(tag: $0) }
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func __sealed_(_ index: UnsafeIndexV2) -> _SealedPtr {
-    tied === index.tied ? index.sealed : _resolve(index.trackingTag)
-  }
+extension UnsafeIndexV2: CustomDebugStringConvertible {
+  public var debugDescription: String { description }
 }

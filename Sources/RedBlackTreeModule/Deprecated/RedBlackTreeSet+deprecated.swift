@@ -8,8 +8,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_.__sealed_(bounds.lowerBound),
-        end: __tree_.__sealed_(bounds.upperBound))
+        start: __tree_.__purified_(bounds.lowerBound),
+        end: __tree_.__purified_(bounds.upperBound))
     }
   }
 
@@ -130,8 +130,8 @@
     public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
-        start: __tree_.__sealed_(bounds.lowerBound),
-        end: __tree_.__sealed_(bounds.upperBound))
+        start: __tree_.__purified_(bounds.lowerBound),
+        end: __tree_.__purified_(bounds.upperBound))
     }
   }
 #endif
@@ -153,8 +153,8 @@
       let bounds = bounds.relative(to: self)
       __tree_.ensureUnique()
       ___remove(
-      from: __tree_.__sealed_(bounds.lowerBound).pointer!,
-      to: __tree_.__sealed_(bounds.upperBound).pointer!)
+        from: __tree_.__purified_(bounds.lowerBound).pointer!,
+        to: __tree_.__purified_(bounds.upperBound).pointer!)
     }
   }
 #endif
@@ -247,7 +247,7 @@
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
       __tree_.ensureUnique()
-      guard let __p = __tree_.__sealed_(index).pointer else {
+      guard let __p = __tree_.__purified_(index).pointer else {
         fatalError(.invalidIndex)
       }
       return _unchecked_remove(at: __p).payload
@@ -294,14 +294,16 @@
     }
   }
 
-  extension RedBlackTreeSet {
+  #if COMPATIBLE_ATCODER_2025
+    extension RedBlackTreeSet {
 
-    /// - Complexity: O(log *n*), where *n* is the number of elements.
-    @inlinable
-    public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
-      ___index_equal_range(element)
+      /// - Complexity: O(log *n*), where *n* is the number of elements.
+      @inlinable
+      public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
+        ___index_equal_range(element)
+      }
     }
-  }
+  #endif
 
   extension RedBlackTreeSet {
 
@@ -383,7 +385,7 @@
     /// - Complexity: O(1)
     @inlinable
     public subscript(position: Index) -> Element {
-      @inline(__always) _read { yield self[_checked: position] }
+      @inline(__always) _read { yield self[_unsafe: position] }
     }
 
     /// Indexがsubscriptやremoveで利用可能か判別します
@@ -418,17 +420,17 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-// MARK: - SubSequence
+  // MARK: - SubSequence
 
-extension RedBlackTreeSet {
+  extension RedBlackTreeSet {
 
-  public typealias SubSequence = RedBlackTreeSliceV2<Base>.KeyOnly
-}
+    public typealias SubSequence = RedBlackTreeSliceV2<Base>.KeyOnly
+  }
 
-// MARK: - Index Range
+  // MARK: - Index Range
 
-extension RedBlackTreeSet {
+  extension RedBlackTreeSet {
 
-  public typealias Indices = Tree.Indices
-}
+    public typealias Indices = Tree.Indices
+  }
 #endif

@@ -140,10 +140,10 @@ final class RedBlackTreeSetBidirectionalCollectionTests: RedBlackTreeTestCase {
     let didMove = set.formIndex(&idx, offsetBy: 2, limitedBy: limit)
 
     // 事後条件:
-    // - 移動失敗でfalse
-    // - idxは移動せずstartIndexのまま
+    // - 限度到達でfalse
+    // - idxはlimitまで移動
     XCTAssertFalse(didMove)
-    XCTAssertEqual(idx, set.startIndex)
+    XCTAssertEqual(idx, limit)
 
     // 実行: offsetBy(1, limitedBy: limit) → 制限内で移動成功
     var idx2 = set.startIndex

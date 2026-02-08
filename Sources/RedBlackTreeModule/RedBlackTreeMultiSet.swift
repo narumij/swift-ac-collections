@@ -70,11 +70,9 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase {}
 extension RedBlackTreeMultiSet: CompareMultiTrait {}
-extension RedBlackTreeMultiSet: ScalarValueComparer {
-  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {
-    p.__value_().pointee
-  }
-}
+extension RedBlackTreeMultiSet: ScalarValueTrait {}
+extension RedBlackTreeMultiSet: _ScalarBasePayload_KeyProtocol_ptr {}
+extension RedBlackTreeMultiSet: _BaseNode_NodeCompareProtocol {}
 
 // MARK: - Creating a MultSet
 
@@ -190,8 +188,8 @@ extension RedBlackTreeMultiSet {
     public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
-        start: __tree_.__sealed_(bounds.lowerBound),
-        end: __tree_.__sealed_(bounds.upperBound))
+        start: __tree_.__purified_(bounds.lowerBound),
+        end: __tree_.__purified_(bounds.upperBound))
     }
   #endif
 }
@@ -362,7 +360,7 @@ extension RedBlackTreeMultiSet {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
-    guard case .success(let __p) = __tree_.__sealed_(index) else {
+    guard case .success(let __p) = __tree_.__purified_(index) else {
       fatalError(.invalidIndex)
     }
     return _unchecked_remove(at: __p.pointer).payload
@@ -407,8 +405,8 @@ extension RedBlackTreeMultiSet {
       let bounds = bounds.relative(to: self)
       __tree_.ensureUnique()
       ___remove(
-        from: __tree_.__sealed_(bounds.lowerBound).pointer!,
-        to: __tree_.__sealed_(bounds.upperBound).pointer!)
+        from: __tree_.__purified_(bounds.lowerBound).pointer!,
+        to: __tree_.__purified_(bounds.upperBound).pointer!)
     }
   #endif
 
@@ -667,7 +665,7 @@ extension RedBlackTreeMultiSet {
     /// - Complexity: O(1)
     @inlinable
     public subscript(position: Index) -> _PayloadValue {
-      @inline(__always) _read { yield self[_checked: position] }
+      @inline(__always) _read { yield self[_unsafe: position] }
     }
   #endif
 

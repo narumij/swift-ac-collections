@@ -85,7 +85,7 @@ extension ___LRUMemoizeStorage {
         return nil
       }
       ___prepend(___pop(__ptr))
-      return __tree_[__ptr].value
+      return __tree_[_unsafe_raw: __ptr].value
     }
     @inline(__always)
     set {
@@ -109,20 +109,14 @@ extension ___LRUMemoizeStorage {
   }
 }
 
-extension ___LRUMemoizeStorage: ___LRULinkList & UnsafeMutableTreeRangeProtocol & IntThreeWayComparator & __BaseHosting {
-  
-  @inlinable @inline(__always)
-  var _start: _NodePtr { __tree_.__begin_node_ }
-  
-  @inlinable @inline(__always)
-  var _end: _NodePtr { __tree_.__end_node }
-}
-
+extension ___LRUMemoizeStorage: ___LRULinkList & IntThreeWayComparator {}
 extension ___LRUMemoizeStorage: CompareUniqueTrait {}
-extension ___LRUMemoizeStorage: KeyValueComparer {
+extension ___LRUMemoizeStorage: KeyValueTrait & _UnsafeNodePtrType {
   
-  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> KeyValue {
-    p.__value_().pointee
+  @inlinable
+  @inline(__always)
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> Key {
+    p.__value_(as: _PayloadValue.self).pointee.key
   }
 
   @inlinable

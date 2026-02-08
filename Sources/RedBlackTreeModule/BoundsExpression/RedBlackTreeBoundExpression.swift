@@ -34,13 +34,15 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
   case end
   /// - Complexity: O(`by`)
   /// ただし評価時の計算量
-  case advanced(Self, by: Int)
+  case advanced(Self, by: Int, limit: Self? = nil)
   /// - Complexity: O(1)
   /// ただし評価時の計算量
   case before(Self)
   /// - Complexity: O(1)
   /// ただし評価時の計算量
   case after(Self)
+  
+  // TODO: last追加の検討
 }
 
 extension RedBlackTreeBoundExpression {
@@ -52,8 +54,8 @@ extension RedBlackTreeBoundExpression {
   public var before: Self { .before(self) }
   /// - Complexity: O(`offset`)
   /// ただし評価時の計算量
-  public func advanced(by offset: Int) -> Self {
-    .advanced(self, by: offset)
+  public func advanced(by offset: Int, limit: Self? = nil) -> Self {
+    .advanced(self, by: offset, limit: limit)
   }
 }
 

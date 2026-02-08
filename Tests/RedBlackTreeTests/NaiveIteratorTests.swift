@@ -17,7 +17,7 @@ import XCTest
       let it = UnsafeIterator._Obverse(
         _start: a.__tree_.__begin_node_,
         _end: a.__tree_.__end_node)
-      XCTAssertEqual(it.map { a.__tree_[$0] }, [Int](0..<5))
+      XCTAssertEqual(it.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5))
     }
 
     func testNaiveReverse() throws {
@@ -25,7 +25,7 @@ import XCTest
       let it = UnsafeIterator._Reverse(
         _start: a.__tree_.__begin_node_,
         _end: a.__tree_.__end_node)
-      XCTAssertEqual(it.map { a.__tree_[$0] }, [Int](0..<5).reversed())
+      XCTAssertEqual(it.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5).reversed())
     }
 
     func testWrappedForward() throws {
@@ -34,7 +34,7 @@ import XCTest
         source: UnsafeIterator._Obverse(
           _start: a.__tree_.__begin_node_,
           _end: a.__tree_.__end_node))
-      XCTAssertEqual(wrapped.map { a.__tree_[$0] }, [Int](0..<5))
+      XCTAssertEqual(wrapped.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5))
     }
 
     func testWrappedReverse() throws {
@@ -43,7 +43,7 @@ import XCTest
         source: UnsafeIterator._Reverse(
           _start: a.__tree_.__begin_node_,
           _end: a.__tree_.__end_node))
-      XCTAssertEqual(wrapped.map { a.__tree_[$0] }, [Int](0..<5).reversed())
+      XCTAssertEqual(wrapped.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5).reversed())
     }
 
     func testValuesForward() throws {

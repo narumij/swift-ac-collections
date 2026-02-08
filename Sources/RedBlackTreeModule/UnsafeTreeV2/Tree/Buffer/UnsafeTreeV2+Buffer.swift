@@ -67,7 +67,7 @@ extension UnsafeTreeV2Buffer {
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 0) { managedBuffer in
       return .init(allocator: allocator, nullptr: nullptr, capacity: nodeCapacity)
     }
-    assert(nodeCapacity <= storage.header.freshPoolCapacity)
+    assert(nodeCapacity <= storage.header.freshPoolCapacity, "必要最低容量を満たしていること")
     return unsafeDowncast(storage, to: UnsafeTreeV2Buffer.self)
   }
 }

@@ -179,11 +179,9 @@ public struct RedBlackTreeSet<Element: Comparable> {
 #endif
 
 extension RedBlackTreeSet: CompareUniqueTrait {}
-extension RedBlackTreeSet: ScalarValueComparer {
-  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {
-    p.__value_().pointee
-  }
-}
+extension RedBlackTreeSet: ScalarValueTrait & _UnsafeNodePtrType {}
+extension RedBlackTreeSet: _ScalarBasePayload_KeyProtocol_ptr {}
+extension RedBlackTreeSet: _BaseNode_NodeCompareProtocol {}
 
 // MARK: - Creating a Set
 
@@ -305,7 +303,7 @@ extension RedBlackTreeSet {
   ) {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
-    return (__inserted, __inserted ? newMember : __tree_[__r])
+    return (__inserted, __inserted ? newMember : __tree_[_unsafe_raw: __r])
   }
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
@@ -316,8 +314,8 @@ extension RedBlackTreeSet {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     guard !__inserted else { return nil }
-    let oldMember = __tree_[__r]
-    __tree_[__r] = newMember
+    let oldMember = __tree_[_unsafe_raw: __r]
+    __tree_[_unsafe_raw: __r] = newMember
     return oldMember
   }
 }
@@ -601,9 +599,10 @@ extension RedBlackTreeSet {
     public func distance(from start: Index, to end: Index)
       -> Int
     {
-      guard let d = __tree_.___distance(
-        from: start.relative(to: __tree_),
-        to: end.relative(to: __tree_))
+      guard
+        let d = __tree_.___distance(
+          from: start.relative(to: __tree_),
+          to: end.relative(to: __tree_))
       else { fatalError(.invalidIndex) }
       return d
     }
@@ -694,11 +693,9 @@ extension RedBlackTreeSet {
     )
       -> Index?
     {
-      let __l = limit.relative(to: __tree_).map(\.pointer)
-      return try? i.relative(to: __tree_)
-        .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-        .map { .taggedSeal($0) }
-        .get()
+      var i = i
+      let result = formIndex(&i, offsetBy: distance, limitedBy: limit)
+      return result ? i : nil
     }
   }
 
@@ -735,11 +732,24 @@ extension RedBlackTreeSet {
     )
       -> Bool
     {
-      if let result = index(i, offsetBy: distance, limitedBy: limit) {
-        i = result
-        return true
+      let __l = limit.relative(to: __tree_).map(\.pointer)
+      
+      let sealed = i.relative(to: __tree_)
+        .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
+        .flatMap { .taggedSeal($0) }
+
+      guard !sealed.isError(.limit) else {
+        i = limit
+        return false
       }
-      return false
+      
+      guard case .success = sealed else {
+        return false
+      }
+      
+      i = sealed
+      
+      return true
     }
   }
 
@@ -763,7 +773,7 @@ extension RedBlackTreeSet {
     public subscript(position: Index) -> Element {
       @inline(__always) get {
         guard
-          let p: _NodePtr = __tree_.resolve(position).pointer,
+          let p: _NodePtr = __tree_.__retrieve_(position).pointer,
           !p.___is_end
         else {
           fatalError(.invalidIndex)
@@ -779,7 +789,7 @@ extension RedBlackTreeSet {
     @inline(__always)
     public func isValid(index: Index) -> Bool {
       guard
-        let p: _NodePtr = __tree_.resolve(index).pointer,
+        let p: _NodePtr = __tree_.__retrieve_(index).pointer,
         !p.___is_end
       else {
         return false

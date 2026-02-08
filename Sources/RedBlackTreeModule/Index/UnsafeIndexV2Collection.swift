@@ -26,7 +26,7 @@
 
 public
   struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>:
-    UnsafeTreeBinding, UnsafeIndexingProtocol
+    UnsafeTreeBinding, UnsafeIndexProtocol_tie
 {
   public typealias Element = Index
   public typealias SubSequence = Self
@@ -52,14 +52,10 @@ public
 extension UnsafeIndexV2Collection {
 
   @usableFromInline
-  var _start: _NodePtr {
-    _sealed_start.pointer!
-  }
+  var _start: _NodePtr { _sealed_start.pointer! }
 
   @usableFromInline
-  var _end: _NodePtr {
-    _sealed_end.pointer!
-  }
+  var _end: _NodePtr { _sealed_end.pointer! }
 }
 
 #if COMPATIBLE_ATCODER_2025

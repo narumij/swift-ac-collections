@@ -70,7 +70,7 @@ extension _FreshPool {
   @inlinable
   //  @inline(__always)
   mutating func pushFreshBucket(capacity: Int) {
-    assert(freshBucketHead == nil || capacity != 0)
+    assert(freshBucketHead == nil || capacity != 0, "先頭のみ容量0を許容し、移行は容量0を許容しないこと")
     let (pointer, _) = freshBucketAllocator.createBucket(capacity: capacity)
     freshBucketLast?.pointee.next = pointer
     freshBucketLast = pointer
@@ -108,7 +108,7 @@ extension _FreshPool {
   @inlinable
   @inline(__always)
   subscript(___tracking_tag: Int) -> _NodePtr {
-    assert(___tracking_tag >= 0)
+    assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
     var remaining = ___tracking_tag
     var p = freshBucketHead?.accessor(payload: payload)
     while let h = p {

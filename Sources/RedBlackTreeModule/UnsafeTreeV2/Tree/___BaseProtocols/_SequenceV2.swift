@@ -21,102 +21,76 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeBaseSequenceV2__: UnsafeTreeHost, _PayloadValueBride, _KeyBride
-{}
+protocol _SequenceV2: UnsafeTreeHost, _PayloadValueBride, _KeyBride {}
 
-extension ___UnsafeBaseSequenceV2__ {
-  
-  @inlinable
-  @inline(__always)
+extension _SequenceV2 {
+
+  @inlinable @inline(__always)
+  internal var ___is_empty: Bool {
+    __tree_.count == 0
+  }
+
+  @inlinable @inline(__always)
   internal var ___count: Int {
     __tree_.count
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___contains(_ __k: _Key) -> Bool {
     __tree_.__count_unique(__k) != 0
   }
 }
 
-extension ___UnsafeBaseSequenceV2__ {
+extension _SequenceV2 {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   package var _start: _NodePtr {
     __tree_.__begin_node_
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   package var _end: _NodePtr {
     __tree_.__end_node
   }
-  
-  @inlinable
-  @inline(__always)
+
+  @inlinable @inline(__always)
   package var _sealed_start: _SealedPtr {
     __tree_.__begin_node_.sealed
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   package var _sealed_end: _SealedPtr {
     __tree_.__end_node.sealed
   }
 
-
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   package var ___capacity: Int {
     __tree_.capacity
   }
 }
 
-extension ___UnsafeBaseSequenceV2__ {
+extension _SequenceV2 {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___min() -> _PayloadValue? {
-    __tree_.__root == __tree_.nullptr ? nil : __tree_[__tree_.__tree_min(__tree_.__root)]
+    __tree_.___min()
   }
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   internal func ___max() -> _PayloadValue? {
-    __tree_.__root == __tree_.nullptr ? nil : __tree_[__tree_.__tree_max(__tree_.__root)]
+    __tree_.___max()
   }
 }
 
-// MARK: -
-
-@usableFromInline
-protocol ___UnsafeBaseSequenceV2: ___UnsafeBaseSequenceV2__, ___UnsafeIndexRangeBaseV2, _PayloadValueBride, _KeyBride
-{
-  func ___index_or_nil(_ p: _SealedPtr) -> Index?
-}
-
-extension ___UnsafeBaseSequenceV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func ___index_lower_bound(_ __k: _Key) -> Index {
-    ___index(__tree_.lower_bound(__k).sealed)
+extension _SequenceV2 {
+  
+  @inlinable @inline(__always)
+  internal var ___first: _PayloadValue? {
+    ___is_empty ? nil : __tree_[_unsafe_raw: _start]
   }
 
-  @inlinable
-  @inline(__always)
-  internal func ___index_upper_bound(_ __k: _Key) -> Index {
-    ___index(__tree_.upper_bound(__k).sealed)
-  }
-}
-
-extension ___UnsafeBaseSequenceV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func ___first_index(of member: _Key) -> Index? {
-    let ptr = __tree_.__ptr_(__tree_.__find_equal(member).__child)
-    return ___index_or_nil(ptr.sealed)
+  @inlinable @inline(__always)
+  internal var ___last: _PayloadValue? {
+    ___is_empty ? nil : __tree_[_unsafe_raw: __tree_.__tree_prev_iter(_end)]
   }
 }

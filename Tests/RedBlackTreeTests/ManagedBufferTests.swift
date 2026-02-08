@@ -5,7 +5,7 @@ import XCTest
 
   final class ManagedBufferTests: RedBlackTreeTestCase {
 
-    enum Base: ScalarValueComparer & CompareUniqueTrait & HasDefaultThreeWayComparator {
+    enum Base: ScalarValueTrait & CompareUniqueTrait & HasDefaultThreeWayComparator {
       typealias _Key = Int
       typealias Element = Int
     }

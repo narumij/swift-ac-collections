@@ -80,6 +80,12 @@ extension RedBlackTreeBoundExpression {
       case .debug(let e):
         return .failure(e)
     #endif
+
+    case .last:
+      return RedBlackTreeBoundExpression
+        .end
+        .before
+        .relative(to: __tree_)
     }
   }
 }

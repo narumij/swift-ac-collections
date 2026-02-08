@@ -46,6 +46,7 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
   case debug(SealError)
 #endif
   // TODO: last追加の検討
+  case last
 }
 
 extension RedBlackTreeBoundExpression {

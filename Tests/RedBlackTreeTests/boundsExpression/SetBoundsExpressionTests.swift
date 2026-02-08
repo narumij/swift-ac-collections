@@ -242,6 +242,10 @@
       XCTAssertTrue(a.isEqual(find(4), end()))
       XCTAssertTrue(a.isEqual(find(5), end()))
     }
+    
+    func testLast() throws {
+      XCTAssertTrue(a.isEqual(.last, end().before))
+    }
 
     func testPerformanceExample() throws {
       // This is an example of a performance test case.

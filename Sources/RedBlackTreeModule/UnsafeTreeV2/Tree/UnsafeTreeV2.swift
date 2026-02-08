@@ -178,6 +178,9 @@ extension UnsafeTreeV2 {
     }
   }
 
+  /// つながりをたぐりよせる
+  ///
+  /// 日本人的にはお祭りなどによくある千本引きのイメージ
   @inlinable
   @inline(__always)
   package func retrieve(_ tag: TaggedSeal) -> _SealedPtr {

@@ -35,7 +35,6 @@
       XCTAssertEqual(b0.pointee, 0) // 直感に反するが致し方なし
       XCTAssertEqual(b.sorted(), Array(1..<20))
       XCTAssertFalse(b.isValid(index: b0)) // とはいえこれがfalseにならないと困る.
-//      XCTAssertEqual(b[b0], 0)
     }
 
     func testSomething1() throws {

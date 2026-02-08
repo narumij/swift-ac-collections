@@ -295,32 +295,10 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  package func resolve(tag: TagSeal_) -> _SealedPtr {
-    switch tag {
-    case .end:
-      return tied.end_ptr.map { $0.sealed } ?? .failure(.null)
-    case .tag(let raw, let seal):
-      guard raw < tied.capacity else {
-        return .failure(.unknown)
-      }
-      return tied[raw]
-        .map { .success(.uncheckedSeal($0, seal)) }
-        ?? .failure(.null)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  package func _resolve(_ tag: TaggedSeal) -> _SealedPtr {
-    tag.flatMap { resolve(tag: $0) }
-  }
-
-  @inlinable
-  @inline(__always)
   internal func __purified_(_ index: UnsafeIndexV2) -> _SealedPtr {
     tied === index.tied
       ? index.sealed.purified
-      : _resolve(index.sealed.purified.trackingTag).purified
+      : tied.retrieve(index.sealed.purified.trackingTag).purified
   }
 }
 

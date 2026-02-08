@@ -28,7 +28,7 @@ extension Result where Success == TagSeal_, Failure == SealError {
   @inlinable @inline(__always)
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> _SealedPtr
   where Base: ___TreeBase {
-    __tree_.resolve(self)
+    __tree_.retrieve(self)
   }
 }
 

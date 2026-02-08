@@ -166,7 +166,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package func resolve(tag: TagSeal_) -> _SealedPtr {
+  package func _retrieve(tag: TagSeal_) -> _SealedPtr {
     switch tag {
     case .end:
       return end.sealed
@@ -180,8 +180,8 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package func resolve(_ tag: TaggedSeal) -> _SealedPtr {
-    tag.flatMap { resolve(tag: $0) }
+  package func retrieve(_ tag: TaggedSeal) -> _SealedPtr {
+    tag.flatMap { _retrieve(tag: $0) }
   }
 }
 
@@ -197,7 +197,7 @@ extension UnsafeTreeV2 {
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
     tied === index.tied
       ? index.sealed.purified
-      : self.resolve(index.sealed.purified.trackingTag).purified
+      : retrieve(index.sealed.purified.trackingTag).purified
   }
 }
 

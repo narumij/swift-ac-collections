@@ -135,6 +135,31 @@ extension _TiedRawBuffer {
   }
 }
 
+extension _TiedRawBuffer {
+
+  @inlinable
+  @inline(__always)
+  package func _retrieve(tag: TagSeal_) -> _SealedPtr {
+    switch tag {
+    case .end:
+      return end_ptr.map { $0.sealed } ?? .failure(.null)
+    case .tag(let raw, let seal):
+      guard raw < capacity else {
+        return .failure(.unknown)
+      }
+      return self[raw]
+        .map { .success(.uncheckedSeal($0, seal)) }
+        ?? .failure(.null)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  package func retrieve(_ tag: TaggedSeal) -> _SealedPtr {
+    tag.flatMap { _retrieve(tag: $0) }
+  }
+}
+
 // TODO: 空の場合のインデックスやレンジの動作が課題となる。
 
 /// The type-punned empty singleton storage instance.

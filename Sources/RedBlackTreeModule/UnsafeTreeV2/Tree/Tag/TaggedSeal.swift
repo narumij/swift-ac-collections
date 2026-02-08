@@ -5,6 +5,7 @@
 //  Created by narumij on 2026/02/05.
 //
 
+// SealedTagが適切な気がしてきている
 public typealias TaggedSeal = Result<TagSeal_, SealError>
 
 extension Result where Success == TagSeal_, Failure == SealError {

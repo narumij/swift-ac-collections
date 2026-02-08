@@ -8,8 +8,8 @@
 // * index(_:offsetBy:) / limitedBy: の境界判定
 // * CoW 後の index 無効化 (base・slice とも false になる)
 
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class RedBlackTreeDictionarySubSequenceTests: RedBlackTreeTestCase {
 
@@ -88,16 +88,17 @@ final class RedBlackTreeDictionarySubSequenceTests: RedBlackTreeTestCase {
     XCTAssertTrue(slice.isValid(index: idx))
 
     // CoW 発動する
-    let v = base.removeValue(forKey: "x") // 消せてないやないかーい
-    
+    let v = base.removeValue(forKey: "x")  // 消せてないやないかーい
+
     XCTAssertEqual(v, 1)
     XCTAssertNil(base["x"])
 
     // 共有ストレージの木が差し替わらないので、双方Valid
-    XCTAssertFalse(base.isValid(index: idx)) // 期待と逆
-    XCTAssertTrue(slice.isValid(index: idx)) // 期待と逆
-    
-    XCTAssertEqual(base._copyCount, 1)
-    XCTAssertEqual(slice._copyCount, 0)
+    XCTAssertFalse(base.isValid(index: idx))  // 期待と逆
+    XCTAssertTrue(slice.isValid(index: idx))  // 期待と逆
+    #if DEBUG
+      XCTAssertEqual(base._copyCount, 1)
+      XCTAssertEqual(slice._copyCount, 0)
+    #endif
   }
 }

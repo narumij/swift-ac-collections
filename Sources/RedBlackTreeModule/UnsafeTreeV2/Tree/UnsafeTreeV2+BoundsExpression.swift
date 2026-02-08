@@ -32,6 +32,12 @@ extension RedBlackTreeBoundExpression {
     case .start:
       return __tree_.__begin_node_.sealed
 
+    case .last:
+      return RedBlackTreeBoundExpression
+        .end
+        .before
+        .relative(to: __tree_)
+
     case .end:
       return __tree_.__end_node.sealed
 
@@ -80,12 +86,6 @@ extension RedBlackTreeBoundExpression {
       case .debug(let e):
         return .failure(e)
     #endif
-
-    case .last:
-      return RedBlackTreeBoundExpression
-        .end
-        .before
-        .relative(to: __tree_)
     }
   }
 }

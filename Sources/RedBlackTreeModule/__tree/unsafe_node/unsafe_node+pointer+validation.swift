@@ -49,11 +49,3 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     __parent_.___is_end
   }  
 }
-
-extension UnsafeMutablePointer where Pointee == UnsafeNode {
-
-  @usableFromInline
-  internal var ___is_slow_begin: Bool {
-    __tree_min(__slow_end().__left_) == self
-  }
-}

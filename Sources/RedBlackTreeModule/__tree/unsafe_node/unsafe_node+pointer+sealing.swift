@@ -29,7 +29,7 @@ public struct _NodePtrSealing: Equatable {
   @usableFromInline var pointer: _NodePtr
   /// 封印
   @usableFromInline var seal: UnsafeNode.Seal
-  
+
   // UnsafeNode.SealはUInt32となっていて、オーバーフローして一周すると、
   // かたわれどきが生じて同一判定となるが、これは仕様
 
@@ -52,7 +52,7 @@ public struct _NodePtrSealing: Equatable {
   static func uncheckedSeal(_ _p: _NodePtr) -> _NodePtrSealing {
     .init(_p: _p)
   }
-  
+
   // 特段の意味は無い。利用箇所での可読性向上のためのフック
   /// 過去の状態で封印する
   @inlinable @inline(__always)
@@ -92,3 +92,12 @@ public struct _NodePtrSealing: Equatable {
 
 // shieldのスペルもしらんのかとか言うやつがいそうな予感があるが、大きなお世話
 
+extension _NodePtrSealing: CustomStringConvertible {
+  public var description: String {
+    "_NodePtrSealing<\((tag: pointer.trackingTag, seal: seal, pointer))>"
+  }
+}
+
+extension _NodePtrSealing: CustomDebugStringConvertible {
+  public var debugDescription: String { description }
+}

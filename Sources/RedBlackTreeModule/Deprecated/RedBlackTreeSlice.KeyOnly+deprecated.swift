@@ -9,8 +9,8 @@
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
         tree: __tree_,
-        start: __tree_.__sealed_(bounds.lowerBound),
-        end: __tree_.__sealed_(bounds.upperBound))
+        start: __tree_.__purified_(bounds.lowerBound),
+        end: __tree_.__purified_(bounds.upperBound))
     }
   }
 #endif
@@ -37,8 +37,8 @@
       // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
       return .init(
         tree: __tree_,
-        start: __tree_.__sealed_(bounds.lowerBound),
-        end: __tree_.__sealed_(bounds.upperBound))
+        start: __tree_.__purified_(bounds.lowerBound),
+        end: __tree_.__purified_(bounds.upperBound))
     }
   }
 #endif

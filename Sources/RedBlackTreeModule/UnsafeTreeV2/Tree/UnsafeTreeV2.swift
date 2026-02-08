@@ -104,6 +104,20 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  @nonobjc
+  @inlinable
+  internal subscript(_ pointer: _SealedPtr) -> _PayloadValue {
+    @inline(__always) _read {
+      yield self[try! pointer.get().pointer]
+    }
+    @inline(__always) _modify {
+      yield &self[try! pointer.get().pointer]
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
   @inlinable
   internal func deinitialize() {
     withMutableHeader { header in
@@ -179,11 +193,11 @@ extension UnsafeTreeV2 {
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   @inline(__always)
-  internal func __sealed_(_ index: Index) -> _SealedPtr
+  internal func __purified_(_ index: Index) -> _SealedPtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
     tied === index.tied
-    ? index.sealed.purified
-    : self.resolve(index.sealed.purified.trackingTag).purified
+      ? index.sealed.purified
+      : self.resolve(index.sealed.purified.trackingTag).purified
   }
 }
 

@@ -92,8 +92,8 @@ extension _SubSequenceV2 {
       }
 
       guard
-        let l = __tree_.__sealed_(bounds.lowerBound).pointer,
-        let u = __tree_.__sealed_(bounds.upperBound).pointer
+        let l = __tree_.__purified_(bounds.lowerBound).pointer,
+        let u = __tree_.__purified_(bounds.upperBound).pointer
       else {
         return false
       }

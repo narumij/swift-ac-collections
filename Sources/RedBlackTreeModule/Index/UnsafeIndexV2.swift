@@ -114,7 +114,7 @@ extension UnsafeIndexV2: Equatable {
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
       guard let r = rhs.sealed.pointer,
-        let l = rhs.__sealed_(lhs).pointer
+        let l = rhs.__purified_(lhs).pointer
       else {
         preconditionFailure(.garbagedIndex)
       }
@@ -134,7 +134,7 @@ extension UnsafeIndexV2 {
   public func distance(to other: Self) -> Int {
     guard
       let from = sealed.pointer,
-      let to = __sealed_(other).pointer
+      let to = __purified_(other).pointer
     else {
       preconditionFailure(.garbagedIndex)
     }
@@ -299,13 +299,13 @@ extension UnsafeIndexV2 {
     switch tag {
     case .end:
       return tied.end_ptr.map { $0.sealed } ?? .failure(.null)
-    case .tag(raw: let raw, seal: let seal):
+    case .tag(let raw, let seal):
       guard raw < tied.capacity else {
         return .failure(.unknown)
       }
       return tied[raw]
-      .map { .success(.uncheckedSeal($0, seal)) }
-      ?? .failure(.null)
+        .map { .success(.uncheckedSeal($0, seal)) }
+        ?? .failure(.null)
     }
   }
 
@@ -317,15 +317,31 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  internal func __sealed_(_ index: UnsafeIndexV2) -> _SealedPtr {
+  internal func __purified_(_ index: UnsafeIndexV2) -> _SealedPtr {
     tied === index.tied
-    ? index.sealed.purified
-    : _resolve(index.sealed.purified.trackingTag).purified
+      ? index.sealed.purified
+      : _resolve(index.sealed.purified.trackingTag).purified
   }
 }
 
 extension UnsafeIndexV2 {
+  @inlinable
   public var isValid: Bool {
     sealed.purified.isValid
   }
+}
+
+extension UnsafeIndexV2: CustomStringConvertible {
+  public var description: String {
+    switch sealed {
+    case .success(let t):
+      "UnsafeIndexV2<\(t)>"
+    case .failure(let e):
+      "UnsafeIndexV2<\(e)>"
+    }
+  }
+}
+
+extension UnsafeIndexV2: CustomDebugStringConvertible {
+  public var debugDescription: String { description }
 }

@@ -33,8 +33,8 @@ extension ___UnsafeIndexV2 {
   internal func _distance(from start: Index, to end: Index) -> Int {
     guard
       let d = __tree_.___distance(
-        from: __tree_.__sealed_(start),
-        to: __tree_.__sealed_(end))
+        from: __tree_.__purified_(start),
+        to: __tree_.__purified_(end))
     else {
       fatalError(.invalidIndex)
     }
@@ -57,7 +57,7 @@ extension ___UnsafeIndexV2 {
   @inlinable @inline(__always)
   internal func _index(after i: Index) -> Index {
     var i = i
-    i.sealed = __tree_.___index(after: __tree_.__sealed_(i))
+    i.sealed = __tree_.___index(after: __tree_.__purified_(i))
     return i
   }
 
@@ -69,7 +69,7 @@ extension ___UnsafeIndexV2 {
   @inlinable @inline(__always)
   internal func _index(before i: Index) -> Index {
     var i = i
-    i.sealed = __tree_.___index(before: __tree_.__sealed_(i))
+    i.sealed = __tree_.___index(before: __tree_.__purified_(i))
     return i
   }
 
@@ -81,7 +81,7 @@ extension ___UnsafeIndexV2 {
   @inlinable @inline(__always)
   internal func _index(_ i: Index, offsetBy distance: Int) -> Index {
     var i = i
-    i.sealed = __tree_.___index(__tree_.__sealed_(i), offsetBy: distance)
+    i.sealed = __tree_.___index(__tree_.__purified_(i), offsetBy: distance)
     return i
   }
 
@@ -103,17 +103,18 @@ extension ___UnsafeIndexV2 {
   internal func _formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
-    let sealed = __tree_.___index(
-      __tree_.__sealed_(i), offsetBy: distance, limitedBy: __tree_.__sealed_(limit))
-    guard !sealed.isError(.limit) else {
-      i = limit
+    let index = __tree_.__purified_(i)
+    let limit = __tree_.__purified_(limit)
+    let result = __tree_.___index(index, offsetBy: distance, limitedBy: limit)
+    let limitAware = switch result {
+    case .failure(.limit): limit
+    default: result
+    }
+    guard limitAware.isValid else {
       return false
     }
-    guard sealed.isValid else {
-      return false
-    }
-    i.sealed = sealed
-    return true
+    i.sealed = limitAware
+    return result.isValid
   }
 }
 
@@ -121,8 +122,7 @@ extension ___UnsafeIndexV2 {
 
   @inlinable @inline(__always)
   internal func _isValid(index: Index) -> Bool {
-    // ___is_endのみを判定するわけじゃないので、お清めお祓いが必要
-    __tree_.__sealed_(index).___is_end == false
+    __tree_.__purified_(index).___is_end == false
   }
 }
 
@@ -135,8 +135,8 @@ extension ___UnsafeIndexV2 {
     ) -> Bool where R.Bound == Index {
 
       let bounds = bounds.relative(to: self)
-      if let _ = try? __tree_.__sealed_(bounds.lowerBound).get(),
-        let _ = try? __tree_.__sealed_(bounds.upperBound).get()
+      if let _ = try? __tree_.__purified_(bounds.lowerBound).get(),
+        let _ = try? __tree_.__purified_(bounds.upperBound).get()
       {
         return true
       }
@@ -152,7 +152,7 @@ extension ___UnsafeIndexV2 {
   @discardableResult
   @inlinable @inline(__always)
   public mutating func ___erase(_ ptr: Index) -> Index {
-    ___index(__tree_.erase(try! __tree_.__sealed_(ptr).get().pointer).sealed)
+    ___index(__tree_.erase(try! __tree_.__purified_(ptr).get().pointer).sealed)
   }
 }
 

@@ -773,7 +773,7 @@ extension RedBlackTreeSet {
     public subscript(position: Index) -> Element {
       @inline(__always) get {
         guard
-          let p: _NodePtr = __tree_.retrieve(position).pointer,
+          let p: _NodePtr = __tree_.__retrieve_(position).pointer,
           !p.___is_end
         else {
           fatalError(.invalidIndex)
@@ -789,7 +789,7 @@ extension RedBlackTreeSet {
     @inline(__always)
     public func isValid(index: Index) -> Bool {
       guard
-        let p: _NodePtr = __tree_.retrieve(index).pointer,
+        let p: _NodePtr = __tree_.__retrieve_(index).pointer,
         !p.___is_end
       else {
         return false

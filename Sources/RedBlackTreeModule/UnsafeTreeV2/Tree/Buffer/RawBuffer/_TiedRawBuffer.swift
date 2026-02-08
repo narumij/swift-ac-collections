@@ -139,7 +139,7 @@ extension _TiedRawBuffer {
 
   @inlinable
   @inline(__always)
-  package func _retrieve(tag: TagSeal_) -> _SealedPtr {
+  package func ___retrieve(tag: TagSeal_) -> _SealedPtr {
     switch tag {
     case .end:
       return end_ptr.map { $0.sealed } ?? .failure(.null)
@@ -158,8 +158,8 @@ extension _TiedRawBuffer {
   /// 日本人的にはお祭りなどによくある千本引きのイメージ
   @inlinable
   @inline(__always)
-  package func retrieve(_ tag: TaggedSeal) -> _SealedPtr {
-    tag.flatMap { _retrieve(tag: $0) }
+  package func __retrieve_(_ tag: TaggedSeal) -> _SealedPtr {
+    tag.flatMap { ___retrieve(tag: $0) }
   }
 }
 

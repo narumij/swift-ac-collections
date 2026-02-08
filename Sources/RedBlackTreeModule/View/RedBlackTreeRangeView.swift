@@ -38,8 +38,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   //  @usableFromInline
   //  var _range: (_NodePtr, _NodePtr) {
   //    guard
-  //      let _start = __tree_.retrieve(startIndex).pointer,
-  //      let _end = __tree_.retrieve(endIndex).pointer
+  //      let _start = __tree_.__retrieve_(startIndex).pointer,
+  //      let _end = __tree_.__retrieve_(endIndex).pointer
   //    else {
   //      return (__tree_.__end_node, __tree_.__end_node)
   //    }
@@ -50,8 +50,8 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   @usableFromInline
   var _range: (_SealedPtr, _SealedPtr) {
-    let _start = __tree_.retrieve(startIndex)
-    let _end = __tree_.retrieve(endIndex)
+    let _start = __tree_.__retrieve_(startIndex)
+    let _end = __tree_.__retrieve_(endIndex)
     guard
       _start.isValid, _end.isValid
     else {

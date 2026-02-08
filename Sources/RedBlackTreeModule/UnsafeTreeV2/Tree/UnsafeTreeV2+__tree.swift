@@ -278,3 +278,18 @@ extension UnsafeTreeV2: InsertLastProtocol_ptr {}
 extension UnsafeTreeV2: CompareProtocol {}
 extension UnsafeTreeV2: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2: TreeAlgorithmProtocol_ptr {}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func ___min() -> _PayloadValue? {
+    __root == nullptr ? nil : self[__tree_min(__root)]
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___max() -> _PayloadValue? {
+    __root == nullptr ? nil : self[__tree_max(__root)]
+  }
+}

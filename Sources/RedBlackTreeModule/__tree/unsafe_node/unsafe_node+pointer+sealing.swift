@@ -24,6 +24,8 @@
 @frozen
 public struct _NodePtrSealing: Equatable {
   /// ご神体の御名
+  ///
+  /// 八百万な方々
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   /// ご神体
   @usableFromInline var pointer: _NodePtr

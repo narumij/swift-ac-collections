@@ -772,8 +772,7 @@ extension RedBlackTreeSet {
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always) get {
-        let __s = __tree_.__purified_(position)
-        return __tree_[_unsafe: __s]
+        __tree_[_unsafe: __tree_.__purified_(position)]
       }
     }
 

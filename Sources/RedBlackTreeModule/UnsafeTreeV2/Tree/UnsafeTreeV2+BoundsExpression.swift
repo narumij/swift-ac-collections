@@ -44,11 +44,24 @@ extension RedBlackTreeBoundExpression {
     case .find(let __v):
       return __tree_.find(__v).sealed
 
-    case .advanced(let __self, by: let offset, limit: let limit):
-      // TODO: limit対応。limitに到達した場合、その値となる挙動
+    case .advanced(let __self, by: let offset, let limit):
       let __p = __self.relative(to: __tree_)
-      return __p.flatMap { __p in
-        ___tree_adv_iter(__p.pointer, offset).seal
+      let limit = limit?.relative(to: __tree_)
+      switch limit {
+      case .none:
+        return __p.flatMap {
+          ___tree_adv_iter($0.pointer, offset)
+        }
+        .seal
+      case .some(let __l):
+        let __r = __p.flatMap {
+          ___tree_adv_iter($0.pointer, offset, __l.temporaryUnseal)
+        }
+        .seal
+        return switch __r {
+        case .failure(.limit): __l
+        default: __r
+        }
       }
 
     case .before(let __self):

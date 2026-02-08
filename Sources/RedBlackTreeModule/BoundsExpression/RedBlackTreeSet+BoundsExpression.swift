@@ -20,11 +20,45 @@
 
   extension RedBlackTreeSet {
 
+    public func isValid(_ bound: RedBlackTreeBoundExpression<Element>) -> Bool {
+      let sealed = bound.relative(to: __tree_)
+      return sealed.isValid && !sealed.___is_end!
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    package func _isEqual(
+      _ l: RedBlackTreeBoundExpression<Element>, _ r: RedBlackTreeBoundExpression<Element>
+    ) -> Bool {
+      let l = l.relative(to: __tree_)
+      let r = r.relative(to: __tree_)
+      return l == r
+    }
+
+    package func _error(_ bound: RedBlackTreeBoundExpression<Element>) -> SealError? {
+      let sealed = bound.relative(to: __tree_)
+      switch sealed {
+      case .success: return nil
+      case .failure(let e): return e
+      }
+    }
+  }
+
+  extension RedBlackTreeSet {
+
     // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     @inlinable
     public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      return __tree_[_unsafe_raw: p]
+    }
+
+    @inlinable
+    public subscript(bound: RedBlackTreeBoundExpression<Element>, default d: Element) -> Element {
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get().pointer, !p.___is_end else { return d }
       return __tree_[_unsafe_raw: p]
     }
 
@@ -34,14 +68,6 @@
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return _unchecked_remove(at: p).payload
-    }
-
-    public func trackingTag(_ bound: RedBlackTreeBoundExpression<Element>)
-      -> TaggedSeal?
-    {
-      let p = bound.relative(to: __tree_)
-      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
-      return .taggedSeal(p)
     }
 
     // MARK: -

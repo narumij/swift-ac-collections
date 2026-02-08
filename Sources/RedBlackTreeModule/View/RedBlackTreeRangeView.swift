@@ -326,8 +326,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public subscript(tag: Index) -> Element {
     try! tag.relative(to: __tree_)
-      .map { $0.pointer }
-      .map { $0.__value_().pointee }
+      .map { $0.pointer.__value_().pointee }
       .get()
   }
 
@@ -335,8 +334,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public subscript(result tag: Index) -> Result<Element, SealError> {
     tag.relative(to: __tree_)
-      .map { $0.pointer }
-      .map { $0.__value_().pointee }
+      .map { $0.pointer.__value_().pointee }
   }
 }
 

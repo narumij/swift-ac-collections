@@ -325,9 +325,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   public subscript(tag: Index) -> Element {
-    try! tag.relative(to: __tree_)
-      .map { $0.pointer.__value_().pointee }
-      .get()
+    try! self[result: tag].get()
   }
 
   /// - Complexity: O(1)
@@ -434,7 +432,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     @inline(__always)
     public func isValid(index: Index) -> Bool {
       guard
-        let i: _NodePtr = __tree_.retrieve(index).pointer,
+        let i: _NodePtr = __tree_.__retrieve_(index).pointer,
         !i.___is_end
       else {
         return false

@@ -201,4 +201,10 @@ extension UnsafeTreeV2 {
       ? index.sealed.purified
       : __retrieve_(index.sealed.purified.trackingTag).purified
   }
+
+  @inlinable
+  @inline(__always)
+  internal func __purified_(_ trackingTag: TaggedSeal) -> _SealedPtr {
+    __retrieve_(trackingTag).purified
+  }
 }

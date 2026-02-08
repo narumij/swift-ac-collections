@@ -35,7 +35,7 @@
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return __tree_[_unsafe_raw: p]
     }
-    
+
     // 実は辞書の派生型という位置づけが自然な気もする
 
     @inlinable
@@ -47,6 +47,7 @@
   }
 
   extension RedBlackTreeSet {
+
     // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     public mutating func remove(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       __tree_.ensureUnique()
@@ -54,6 +55,9 @@
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return _unchecked_remove(at: p).payload
     }
+  }
+
+  extension RedBlackTreeSet {
 
     // MARK: -
 
@@ -120,7 +124,25 @@
 
 extension RedBlackTreeSet {
 
-  package func _isEqual(
+  package func _withSealed<R>(
+    _ b: RedBlackTreeBoundExpression<Element>,
+    _ body: (_SealedPtr) throws -> R
+  ) rethrows -> R {
+    let b = b.relative(to: __tree_)
+    return try body(b)
+  }
+
+  package func _withSealed<R>(
+    _ a: RedBlackTreeBoundExpression<Element>,
+    _ b: RedBlackTreeBoundExpression<Element>,
+    _ body: (_SealedPtr, _SealedPtr) throws -> R
+  ) rethrows -> R {
+    let a = a.relative(to: __tree_)
+    let b = b.relative(to: __tree_)
+    return try body(a, b)
+  }
+
+  package func isEqual(
     _ l: RedBlackTreeBoundExpression<Element>, _ r: RedBlackTreeBoundExpression<Element>
   ) -> Bool {
     let l = l.relative(to: __tree_)
@@ -128,11 +150,7 @@ extension RedBlackTreeSet {
     return l == r
   }
 
-  package func _error(_ bound: RedBlackTreeBoundExpression<Element>) -> SealError? {
-    let sealed = bound.relative(to: __tree_)
-    switch sealed {
-    case .success: return nil
-    case .failure(let e): return e
-    }
+  package func error(_ bound: RedBlackTreeBoundExpression<Element>) -> SealError? {
+    bound.relative(to: __tree_).error
   }
 }

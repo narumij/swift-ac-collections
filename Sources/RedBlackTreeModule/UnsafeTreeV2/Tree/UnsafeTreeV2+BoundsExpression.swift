@@ -76,6 +76,10 @@ extension RedBlackTreeBoundExpression {
         .advanced(__self, by: 1)
         .relative(to: __tree_)
 
+    #if DEBUG
+      case .debug(let e):
+        return .failure(e)
+    #endif
     }
   }
 }

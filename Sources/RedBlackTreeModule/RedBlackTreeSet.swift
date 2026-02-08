@@ -733,7 +733,7 @@ extension RedBlackTreeSet {
       -> Bool
     {
       let __l = limit.relative(to: __tree_).map(\.pointer)
-      
+
       let sealed = i.relative(to: __tree_)
         .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
         .flatMap { .taggedSeal($0) }
@@ -742,13 +742,13 @@ extension RedBlackTreeSet {
         i = limit
         return false
       }
-      
+
       guard case .success = sealed else {
         return false
       }
-      
+
       i = sealed
-      
+
       return true
     }
   }
@@ -759,7 +759,7 @@ extension RedBlackTreeSet {
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
       __tree_.ensureUnique()
-      guard case .success(let __p) = index.relative(to: __tree_).temporaryUnseal else {
+      guard let __p = index.relative(to: __tree_).pointer else {
         fatalError(.invalidIndex)
       }
       return _unchecked_remove(at: __p).payload
@@ -772,13 +772,8 @@ extension RedBlackTreeSet {
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always) get {
-        guard
-          let p: _NodePtr = __tree_.__retrieve_(position).pointer,
-          !p.___is_end
-        else {
-          fatalError(.invalidIndex)
-        }
-        return p.__value_().pointee
+        let __s = __tree_.__purified_(position)
+        return __tree_[_unsafe: __s]
       }
     }
 
@@ -788,13 +783,7 @@ extension RedBlackTreeSet {
     @inlinable
     @inline(__always)
     public func isValid(index: Index) -> Bool {
-      guard
-        let p: _NodePtr = __tree_.__retrieve_(index).pointer,
-        !p.___is_end
-      else {
-        return false
-      }
-      return true
+      __tree_.__purified_(index).___is_end == false
     }
   }
 #endif

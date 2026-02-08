@@ -42,6 +42,9 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
   /// ただし評価時の計算量
   case after(Self)
   
+#if DEBUG
+  case debug(SealError)
+#endif
   // TODO: last追加の検討
 }
 

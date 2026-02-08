@@ -6,10 +6,10 @@
 //
 
 #if COMPATIBLE_ATCODER_2025
-  @testable import RedBlackTreeModule
+  import RedBlackTreeModule
   import XCTest
 
-  final class SealdTests: XCTestCase {
+  final class SealedTests: XCTestCase {
 
     var a = RedBlackTreeSet<Int>(0..<20)
 

@@ -115,7 +115,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable
-  internal var isValid: Bool {
+  package var isValid: Bool {
     switch purified {
     case .success: true
     default: false
@@ -142,6 +142,25 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 }
 
 extension Result where Failure == SealError {
+  
+  @inlinable
+  package var isValid: Bool {
+    switch self {
+    case .success: true
+    default: false
+    }
+  }
+
+  @usableFromInline
+  package var error: SealError? {
+    switch self {
+    case .success:
+      return nil
+    case .failure(let failure):
+      return failure
+    }
+  }
+  
   @usableFromInline
   internal func isError(_ e: SealError) -> Bool {
     switch self {

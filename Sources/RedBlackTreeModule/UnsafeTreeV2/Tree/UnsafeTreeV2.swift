@@ -138,17 +138,6 @@ extension UnsafeTreeV2 {
   }
 #endif
 
-#if false
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    @inline(__always)
-    func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_PayloadValue> {
-      return _UnsafeNodeFreshBucketIterator<_PayloadValue>(bucket: _buffer.header.freshBucketHead)
-    }
-  }
-#endif
-
 // MARK: Index Resolver
 
 extension UnsafeTreeV2 {
@@ -162,6 +151,9 @@ extension UnsafeTreeV2 {
     default: tag < capacity ? .success(_buffer.header[tag]) : .failure(.unknown)
     }
   }
+}
+
+extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)

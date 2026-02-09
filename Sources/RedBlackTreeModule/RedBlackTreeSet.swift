@@ -601,8 +601,8 @@ extension RedBlackTreeSet {
     {
       guard
         let d = __tree_.___distance(
-          from: start.relative(to: __tree_),
-          to: end.relative(to: __tree_))
+          from: __tree_.__purified_(start),
+          to: __tree_.__purified_(end))
       else { fatalError(.invalidIndex) }
       return d
     }
@@ -663,7 +663,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     public func index(before i: Index) -> Index {
-      i.relative(to: __tree_)
+      __tree_.__purified_(i)
         .flatMap { ___tree_prev_iter($0.pointer) }
         .flatMap { .taggedSeal($0) }
     }
@@ -671,7 +671,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     public func index(after i: Index) -> Index {
-      i.relative(to: __tree_)
+      __tree_.__purified_(i)
         .flatMap { ___tree_next_iter($0.pointer) }
         .flatMap { .taggedSeal($0) }
     }
@@ -681,7 +681,7 @@ extension RedBlackTreeSet {
     public func index(_ i: Index, offsetBy distance: Int)
       -> TaggedSeal
     {
-      i.relative(to: __tree_)
+      __tree_.__purified_(i)
         .flatMap { ___tree_adv_iter($0.pointer, distance) }
         .flatMap { .taggedSeal($0) }
     }
@@ -732,9 +732,9 @@ extension RedBlackTreeSet {
     )
       -> Bool
     {
-      let __l = limit.relative(to: __tree_).map(\.pointer)
+      let __l = __tree_.__purified_(limit).map(\.pointer)
 
-      let sealed = i.relative(to: __tree_)
+      let sealed = __tree_.__purified_(i)
         .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
         .flatMap { .taggedSeal($0) }
 
@@ -759,7 +759,7 @@ extension RedBlackTreeSet {
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
       __tree_.ensureUnique()
-      guard let __p = index.relative(to: __tree_).pointer else {
+      guard let __p = __tree_.__purified_(index).pointer else {
         fatalError(.invalidIndex)
       }
       return _unchecked_remove(at: __p).payload
@@ -851,7 +851,7 @@ extension RedBlackTreeSet: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    _arrayDescription(for: self + [])
+    _arrayDescription(for: self)
   }
 }
 

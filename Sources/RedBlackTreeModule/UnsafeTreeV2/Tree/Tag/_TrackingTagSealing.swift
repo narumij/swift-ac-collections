@@ -11,19 +11,6 @@ public enum _TrackingTagSealing: Equatable {
   case tag(raw: _RawTrackingTag, seal: UnsafeNode.Seal)
 }
 
-#if DEBUG
-  extension _TrackingTagSealing {
-
-    @usableFromInline
-    internal var _rawTag: _RawTrackingTag {
-      switch self {
-      case .end: .end
-      case .tag(raw: let rag, seal: _): rag
-      }
-    }
-  }
-#endif
-
 extension _TrackingTagSealing {
 
   @inlinable
@@ -35,7 +22,7 @@ extension _TrackingTagSealing {
       fatalError(.invalidIndex)
     }
   }
-  
+
   @inlinable
   static func sealOrNil(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> Self? {
     switch raw {
@@ -43,66 +30,14 @@ extension _TrackingTagSealing {
     default: return nil
     }
   }
-  
+
   @inlinable
-  static func seal(_ p:  UnsafeMutablePointer<UnsafeNode>) -> Self {
+  static func seal(_ p: UnsafeMutablePointer<UnsafeNode>) -> Self {
     .seal(raw: p.pointee.___tracking_tag, seal: p.pointee.___recycle_count)
   }
-  
+
   @inlinable
   static func sealOrNil(_ p: UnsafeMutablePointer<UnsafeNode>) -> Self? {
     .sealOrNil(raw: p.pointee.___tracking_tag, seal: p.pointee.___recycle_count)
-  }
-}
-
-extension _TrackingTagSealing: RawRepresentable {
-
-  @inlinable
-  public init?(rawValue value: (raw: _RawTrackingTag, seal: UnsafeNode.Seal)) {
-    switch value {
-    case (.end, _):
-      self = .end
-    case (0..., _):
-      self = .tag(raw: value.raw, seal: value.seal)
-    default:
-      return nil
-    }
-  }
-
-  @inlinable
-  public var rawValue: (raw: _RawTrackingTag, seal: UnsafeNode.Seal) {
-    switch self {
-    case .end:
-      (.end, 0)
-    case .tag(let _TrackingTag, let gen):
-      (_TrackingTag, gen)
-    }
-  }
-}
-
-extension _TrackingTagSealing {
-  
-  @inlinable
-  var __is_null_or_end: Bool {
-    switch self {
-    case .end: true
-    case .tag(raw: let r, seal: _): ___is_null_or_end(r)
-    }
-  }
-  
-  @inlinable
-  var __is_null: Bool {
-    switch self {
-    case .end: true
-    case .tag(raw: let r, seal: _): r == .nullptr
-    }
-  }
-  
-  @inlinable
-  var __is_end: Bool {
-    switch self {
-    case .end: true
-    case .tag(raw: let r, seal: _): r == .end
-    }
   }
 }

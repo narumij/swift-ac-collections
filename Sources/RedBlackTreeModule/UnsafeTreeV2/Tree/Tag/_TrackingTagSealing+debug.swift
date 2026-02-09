@@ -6,35 +6,70 @@
 //
 
 #if DEBUG
-  extension Result where Success == _TrackingTagSealing, Failure == SealError {
-
-    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  extension _TrackingTagSealing {
 
     @usableFromInline
-    package var _rawTag: _RawTrackingTag {
-      guard let tag = try? get() else {
-        return .nullptr
+    internal var raw: _RawTrackingTag {
+      switch self {
+      case .end: .end
+      case .tag(raw: let rag, seal: _): rag
       }
-      return tag._rawTag
     }
+  }
+#endif
 
-    @usableFromInline
-    package var rawValue: (raw: _RawTrackingTag, seal: UnsafeNode.Seal)? {
-      guard let tag = try? get() else {
+#if DEBUG
+  extension _TrackingTagSealing: RawRepresentable {
+
+    @inlinable
+    public init?(rawValue value: (raw: _RawTrackingTag, seal: UnsafeNode.Seal)) {
+      switch value {
+      case (.end, _):
+        self = .end
+      case (0..., _):
+        self = .tag(raw: value.raw, seal: value.seal)
+      default:
         return nil
       }
-      return tag.rawValue
     }
 
-    package static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
-      if rawTag == .nullptr {
-        return .failure(.null)
+    @inlinable
+    public var rawValue: (raw: _RawTrackingTag, seal: UnsafeNode.Seal) {
+      switch self {
+      case .end:
+        (.end, 0)
+      case .tag(let _TrackingTag, let gen):
+        (_TrackingTag, gen)
       }
-      if rawTag == .end {
-        return .success(.end)
+    }
+  }
+#endif
+
+#if DEBUG
+  extension _TrackingTagSealing {
+
+    @inlinable
+    var __is_null_or_end: Bool? {
+      switch self {
+      case .end: nil
+      case .tag(raw: let r, seal: _): ___is_null_or_end(r)
       }
-      return .success(.tag(raw: rawTag, seal: 0))
     }
 
+    @inlinable
+    var __is_null: Bool? {
+      switch self {
+      case .end: nil
+      case .tag(raw: let r, seal: _): r == .nullptr
+      }
+    }
+
+    @inlinable
+    var __is_end: Bool? {
+      switch self {
+      case .end: nil
+      case .tag(raw: let r, seal: _): r == .end
+      }
+    }
   }
 #endif

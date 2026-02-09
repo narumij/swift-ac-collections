@@ -12,7 +12,9 @@ import XCTest
 
   final class UnsafeTreeBasicTests: RedBlackTreeTestCase {
 
-    enum Base: ScalarValueTrait & CompareUniqueTrait & IntThreeWayComparator & _ScalarBasePayloadValue_KeyProtocol, _UnsafeNodePtrType {
+    enum Base: ScalarValueTrait & CompareUniqueTrait & IntThreeWayComparator
+        & _ScalarBasePayloadValue_KeyProtocol, _UnsafeNodePtrType
+    {
       static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> Int {
         p.__value_(as: _PayloadValue.self).pointee
       }
@@ -103,7 +105,7 @@ import XCTest
       XCTAssertEqual(storage._buffer.header.recycleCount, 0)
       storage._buffer.header.___pushRecycle(storage._buffer.header[0])
       XCTAssertEqual(storage._buffer.header.recycleHead, storage._buffer.header[0])
-      XCTAssertEqual(storage.__left_(storage._buffer.header[0]), storage.nullptr)
+      XCTAssertEqual(storage._buffer.header[0].__left_, storage.nullptr)
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 1)
       storage._buffer.header.___pushRecycle(storage._buffer.header[1])
@@ -151,7 +153,7 @@ import XCTest
           s.pointee.__right_.index, c.pointee.__right_.index)
         XCTAssertEqual(
           s.pointee.__left_.index, c.pointee.__left_.index)
-        (s, c) = (storage.__left_(s), copy.__left_(c))
+        (s, c) = (s.__left_, c.__left_)
       }
     }
 

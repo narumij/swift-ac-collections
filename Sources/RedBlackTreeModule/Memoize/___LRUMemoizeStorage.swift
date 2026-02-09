@@ -99,7 +99,7 @@ extension ___LRUMemoizeStorage {
         }
         assert(__tree_.count < __tree_.capacity)
         let (__parent, __child) = __tree_.__find_equal(key)
-        if __tree_.__ptr_(__child) == __tree_.nullptr {
+        if __child.__ptr_ == __tree_.nullptr {
           let __h = __tree_.__construct_node(.init(key, __tree_.nullptr, __tree_.nullptr, newValue))
           __tree_.__insert_node_at(__parent, __child, __h)
           ___prepend(__h)

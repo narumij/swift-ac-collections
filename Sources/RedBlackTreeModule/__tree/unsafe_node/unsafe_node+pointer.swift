@@ -74,6 +74,19 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 }
 
+extension UnsafeMutablePointer
+where
+  Pointee == UnsafeMutablePointer<UnsafeNode>
+{
+
+  @inlinable
+  @inline(__always)
+  var __ptr_: UnsafeMutablePointer<UnsafeNode> {
+    _read { yield pointee }
+    _modify { yield &pointee }
+  }
+}
+
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   /// ゆっくりendを返す

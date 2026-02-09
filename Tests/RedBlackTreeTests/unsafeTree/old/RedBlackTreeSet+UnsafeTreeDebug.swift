@@ -5,23 +5,19 @@
 
     @inlinable
     var __nodes: [___Node] {
-      get {
-        (0..<__tree_.initializedCount).map {
-          .init(
-            __is_black_: __tree_.__is_black_($0),
-            __left_: __tree_.__left_($0),
-            __right_: __tree_.__right_($0),
-            __parent_: __tree_.__parent_($0))
-        }
+      (0..<__tree_.initializedCount).map {
+        .init(
+          __is_black_: __tree_.__is_black_($0),
+          __left_: __tree_.__left_($0),
+          __right_: __tree_.__right_($0),
+          __parent_: __tree_.__parent_($0))
       }
     }
 
     @inlinable
     var ___elements: [Element] {
-      get {
-        (0..<__tree_.initializedCount).map {
-          __tree_.__value_($0)
-        }
+      (0..<__tree_.initializedCount).map {
+        __tree_.__value_($0)
       }
     }
     @inlinable
@@ -52,10 +48,10 @@
       set { _end.pointee.__left_ = newValue }
     }
     @inlinable func __left_(_ p: _NodePtr) -> _NodePtr {
-      __tree_.__left_(p)
+      p.__left_
     }
     @inlinable func __right_(_ p: _NodePtr) -> _NodePtr {
-      __tree_.__right_(p)
+      p.__right_
     }
     @inlinable
     var __root: _NodePtr {

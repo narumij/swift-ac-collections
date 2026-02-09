@@ -41,7 +41,7 @@ extension UnsafeTreeV2 {
       // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.__left_ref(__tree_.end),
+        __tree_.end, __tree_.end.__left_ref,
         __tree_.__construct_node(__source.__value_(__first)))
       __first = __source.__tree_next_iter(__first)
     }
@@ -54,11 +54,11 @@ extension UnsafeTreeV2 {
       __first = __source.__tree_next_iter(__first)
 
       if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
+        __tree_.__insert_node_at(__max_node, __max_node.__right_ref, __nd)
         __max_node = __nd
       } else {
         let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __tree_.__ptr_(__child) == __tree_.nullptr {
+        if __child.__ptr_ == __tree_.nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
           __tree_.destroy(__nd)
@@ -96,7 +96,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     if __tree_.__root == __tree_.nullptr, __i != __last {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.__left_ref(__tree_.end),
+        __tree_.end, __tree_.end.__left_ref,
         __tree_.__construct_node(__source.__value_(__i)))
       __i = __source.__tree_next_iter(__i)
     }
@@ -109,14 +109,14 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
       __i = __source.__tree_next_iter(__i)
 
       if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
+        __tree_.__insert_node_at(__max_node, __max_node.__right_ref, __nd)
         __max_node = __nd
       } else {
         let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __tree_.__ptr_(__child) == __tree_.nullptr {
+        if __child.__ptr_ == __tree_.nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          try __tree_.___with_mapped_value(__tree_.__ptr_(__child)) { __mappedValue in
+          try __tree_.___with_mapped_value(__child.__ptr_) { __mappedValue in
             __mappedValue = try combine(__mappedValue, Base.___mapped_value(__tree_.__value_(__nd)))
           }
           __tree_.destroy(__nd)
@@ -155,7 +155,7 @@ extension UnsafeTreeV2 {
     if __tree_.__root == __tree_.nullptr, __first != __last {
       // Make sure we always have a root node
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.__left_ref(__tree_.end),
+        __tree_.end, __tree_.end.__left_ref,
         __tree_.__construct_node(__source.__value_(__first)))
       __first = __source.__tree_next_iter(__first)
     }
@@ -168,7 +168,7 @@ extension UnsafeTreeV2 {
 
       // Always check the max node first. This optimizes for sorted ranges inserted at the end.
       if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) {  // __node >= __max_val
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
+        __tree_.__insert_node_at(__max_node, __max_node.__right_ref, __nd)
         __max_node = __nd
       } else {
         var __parent: _NodePtr = __tree_.nullptr
@@ -204,7 +204,7 @@ extension UnsafeTreeV2 {
     if __tree_.__root == __tree_.nullptr, let __element = it.next() {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(transform(__element))
+        __tree_.end, __tree_.end.__left_ref, __tree_.__construct_node(transform(__element))
       )
     }
 
@@ -216,11 +216,11 @@ extension UnsafeTreeV2 {
       Tree.ensureCapacity(tree: &__tree_)
       let __nd = __tree_.__construct_node(transform(__element))
       if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
+        __tree_.__insert_node_at(__max_node, __max_node.__right_ref, __nd)
         __max_node = __nd
       } else {
         let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __tree_.__ptr_(__child) == __tree_.nullptr {
+        if __child.__ptr_ == __tree_.nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
           __tree_.destroy(__nd)
@@ -253,7 +253,8 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     if __tree_.__root == __tree_.nullptr, let __element = it.next().map(__t_) {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(__element))
+        __tree_.end, __tree_.end.__left_ref,
+        __tree_.__construct_node(__element))
     }
 
     if __tree_.__root == __tree_.nullptr { return __tree_ }
@@ -264,14 +265,14 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
       Tree.ensureCapacity(tree: &__tree_)
       let __nd = __tree_.__construct_node(__element)
       if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
+        __tree_.__insert_node_at(__max_node, __max_node.__right_ref, __nd)
         __max_node = __nd
       } else {
         let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __tree_.__ptr_(__child) == __tree_.nullptr {
+        if __child.__ptr_ == __tree_.nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          try __tree_.___with_mapped_value(__tree_.__ptr_(__child)) { __mappedValue in
+          try __tree_.___with_mapped_value(__child.__ptr_) { __mappedValue in
             __mappedValue = try combine(__mappedValue, Base.___mapped_value(__tree_.__value_(__nd)))
           }
           __tree_.destroy(__nd)
@@ -308,7 +309,7 @@ extension UnsafeTreeV2 {
     if __tree_.__root == __tree_.nullptr, let __element = it.next() {  // Make sure we always have a root node
       Tree.ensureCapacity(tree: &__tree_)
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.__left_ref(__tree_.end), __tree_.__construct_node(transform(__element))
+        __tree_.end, __tree_.end.__left_ref, __tree_.__construct_node(transform(__element))
       )
     }
 
@@ -321,7 +322,7 @@ extension UnsafeTreeV2 {
       let __nd = __tree_.__construct_node(transform(__element))
       // Always check the max node first. This optimizes for sorted ranges inserted at the end.
       if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) {  // __node >= __max_val
-        __tree_.__insert_node_at(__max_node, __tree_.__right_ref(__max_node), __nd)
+        __tree_.__insert_node_at(__max_node, __max_node.__right_ref, __nd)
         __max_node = __nd
       } else {
         var __parent: _NodePtr = __tree_.nullptr

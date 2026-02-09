@@ -6,7 +6,7 @@
     }
 
     package func __left_(_ p: Int) -> Int {
-      (try? self[__retrieve_: p].get()).map { __left_($0).trackingTag } ?? .nullptr
+      (try? self[__retrieve_: p].get()).map { $0.__left_.trackingTag } ?? .nullptr
     }
 
     package func __left_(_ p: Int, _ l: Int) {

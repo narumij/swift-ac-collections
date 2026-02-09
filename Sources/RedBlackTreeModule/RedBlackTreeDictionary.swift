@@ -332,11 +332,8 @@ extension RedBlackTreeDictionary {
     _ key: Key
   ) -> (__parent: Tree._NodePtr, __child: Tree._NodeRef, __ptr: Tree._NodePtr) {
 
-    // TODO: 内部がポインタに変更になったので、それに合わせた設計に変更すること
-
     let (__parent, __child) = __tree_.__find_equal(key)
-    let __ptr = __tree_.__ptr_(__child)
-    return (__parent, __child, __ptr)
+    return (__parent, __child, __child.__ptr_)
   }
 }
 
@@ -660,18 +657,20 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Key, to end: Key) -> SubSequence {
-      .init(tree: __tree_,
-            start: __tree_.lower_bound(start).sealed,
-            end: __tree_.lower_bound(end).sealed)
+      .init(
+        tree: __tree_,
+        start: __tree_.lower_bound(start).sealed,
+        end: __tree_.lower_bound(end).sealed)
     }
 
     /// キーレンジ `[start, end]` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Key, through end: Key) -> SubSequence {
-      .init(tree: __tree_,
-            start: __tree_.lower_bound(start).sealed,
-            end: __tree_.upper_bound(end).sealed)
+      .init(
+        tree: __tree_,
+        start: __tree_.lower_bound(start).sealed,
+        end: __tree_.upper_bound(end).sealed)
     }
   }
 #endif

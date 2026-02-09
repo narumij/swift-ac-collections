@@ -18,7 +18,8 @@
 #if !COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeSet {
-
+    
+    /// 該当する要素を取得可能かどうかの判定結果を返す
     public func isValid(_ bound: RedBlackTreeBoundExpression<Element>) -> Bool {
       let sealed = bound.relative(to: __tree_)
       return sealed.isValid && !sealed.___is_end!
@@ -29,7 +30,10 @@
 
     // 実は辞書の派生型という位置づけが自然な気もする
 
-    // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
+    /// 要素の位置に該当する要素を取得する
+    ///
+    /// 要素位置を評価した結果が末尾の次や失敗の場合、nilを返す
+    ///
     @inlinable
     public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       let p = bound.relative(to: __tree_)
@@ -40,7 +44,6 @@
 
   extension RedBlackTreeSet {
 
-    // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     public mutating func remove(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)

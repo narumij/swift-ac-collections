@@ -15,35 +15,88 @@
 //
 //===----------------------------------------------------------------------===//
 
+/// 要素の位置を表す内部DSL
+///
+/// 各API利用時に評価され、該当要素に置き換えられ、処理が行われる。
+/// 末尾の次や失敗がどのように扱われるかは各APIによる。
+///
+/// ---
+///
+/// ## Cases
+///
+/// - `start` : 先頭の要素
+/// - `last` : 末尾の要素
+/// - `end` : 末尾の次の要素
+/// - `lower(_:)` : 与えられた値以上の最初の要素
+/// - `upper(_:)` : 与えられた値より大きい最初の要素
+/// - `find(_:)` : 与えられた値と一致する要素
+/// - `advanced(_:offset:limit:)` : 基準位置から `offset` 進めた要素
+/// - `before(_:)` : 直前の要素
+/// - `after(_:)` : 直後の要素
+///
 @frozen
 public indirect enum RedBlackTreeBoundExpression<_Key> {
+  /// 先頭の要素を表す
+  ///
+  /// 該当する要素がない場合、末尾の次の要素で代替される
+  ///
   /// - Complexity: O(1)
   /// ただし評価時の計算量
   case start
-  /// - Complexity: O(log `count`)
-  /// ただし評価時の計算量
-  case lower(_Key)
-  /// - Complexity: O(log `count`)
-  /// ただし評価時の計算量
-  case upper(_Key)
-  /// - Complexity: O(log `count`)
-  /// ただし評価時の計算量
-  case find(_Key)
-  /// - Complexity: O(1)
-  /// ただし評価時の計算量
-  case end
-  /// - Complexity: O(`by`)
-  /// ただし評価時の計算量
-  case advanced(Self, by: Int, limit: Self? = nil)
-  /// - Complexity: O(1)
-  /// ただし評価時の計算量
-  case before(Self)
-  /// - Complexity: O(1)
-  /// ただし評価時の計算量
-  case after(Self)
+  /// 末尾の要素を表す
+  ///
+  /// 該当する要素がない場合、末尾の次の要素で代替される
+  ///
   /// - Complexity: O(log `count`)
   /// ただし評価時の計算量
   case last
+  /// 末尾の次の要素を表す
+  ///
+  /// - Complexity: O(1)
+  /// ただし評価時の計算量
+  case end
+  /// 与えられた値より小さくない最初の要素を表す
+  ///
+  /// 該当する要素がない場合、末尾の次の要素で代替される
+  ///
+  /// - Complexity: O(log `count`)
+  /// ただし評価時の計算量
+  case lower(_Key)
+  /// 与えられた値よりも大きい最初の要素を表す
+  ///
+  /// 該当する要素がない場合、末尾の次の要素で代替される
+  ///
+  /// - Complexity: O(log `count`)
+  /// ただし評価時の計算量
+  case upper(_Key)
+  /// 与えられた値と一致する要素を表す
+  ///
+  /// 該当する要素がない場合、末尾の次の要素で代替される
+  ///
+  /// - Complexity: O(log `count`)
+  /// ただし評価時の計算量
+  case find(_Key)
+  /// `offset`分進めた要素を表す
+  ///
+  /// 先頭及び末尾の次を越えた場合、失敗となる
+  ///
+  /// - Complexity: O(`by`)
+  /// ただし評価時の計算量
+  case advanced(Self, offset: Int, limit: Self? = nil)
+  /// 直前の要素を表す
+  ///
+  /// 先頭及び末尾の次を越えた場合、失敗となる
+  ///
+  /// - Complexity: O(1)
+  /// ただし評価時の計算量
+  case before(Self)
+  /// 直後の要素を表す
+  ///
+  /// 先頭及び末尾の次を越えた場合、失敗となる
+  ///
+  /// - Complexity: O(1)
+  /// ただし評価時の計算量
+  case after(Self)
   
   #if DEBUG
     /// - Complexity: O(1)
@@ -53,45 +106,85 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
 }
 
 extension RedBlackTreeBoundExpression {
-  /// - Complexity: O(1)
-  /// ただし評価時の計算量
-  public var after: Self { .after(self) }
+  /// 直前の要素を得る
+  ///
+  /// 先頭及び末尾の次を越えた場合、失敗となる
+  ///
   /// - Complexity: O(1)
   /// ただし評価時の計算量
   public var before: Self { .before(self) }
+  /// 直前の要素を得る
+  ///
+  /// 先頭及び末尾の次を越えた場合、失敗となる
+  ///
+  /// - Complexity: O(1)
+  /// ただし評価時の計算量
+  public var after: Self { .after(self) }
+  /// `offset`分進めた要素を得る
+  ///
+  /// 先頭及び末尾の次を越えた場合、失敗となる
+  ///
   /// - Complexity: O(`offset`)
   /// ただし評価時の計算量
   public func advanced(by offset: Int, limit: Self? = nil) -> Self {
-    .advanced(self, by: offset, limit: limit)
+    .advanced(self, offset: offset, limit: limit)
   }
 }
 
 // TODO: 以下を公開にするかどうかは要再検討
 
+/// 先頭の要素を表す
+///
+/// 該当する要素がない場合、末尾の次の要素で代替される
+///
 /// - Complexity: O(1)
 /// ただし評価時の計算量
 public func start<K>() -> RedBlackTreeBoundExpression<K> {
   .start
 }
 
+/// 末尾の要素を表す
+///
+/// 該当する要素がない場合、末尾の次の要素で代替される
+///
+/// - Complexity: O(1)
+/// ただし評価時の計算量
+public func last<K>() -> RedBlackTreeBoundExpression<K> {
+  .last
+}
+
+/// 末尾の次の要素を表す
+///
 /// - Complexity: O(1)
 /// ただし評価時の計算量
 public func end<K>() -> RedBlackTreeBoundExpression<K> {
   .end
 }
 
+/// 与えられた値より小さくない最初の要素を表す
+///
+/// 該当する要素がない場合、末尾の次の要素で代替される
+///
 /// - Complexity: O(log `count`)
 /// ただし評価時の計算量
 public func lowerBound<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
   .lower(k)
 }
 
+/// 与えられた値よりも大きい最初の要素を表す
+///
+/// 該当する要素がない場合、末尾の次の要素で代替される
+///
 /// - Complexity: O(log `count`)
 /// ただし評価時の計算量
 public func upperBound<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
   .upper(k)
 }
 
+/// 与えられた値と一致する要素を表す
+///
+/// 該当する要素がない場合、末尾の次の要素で代替される
+///
 /// - Complexity: O(log `count`)
 /// ただし評価時の計算量
 public func find<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {

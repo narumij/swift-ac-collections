@@ -50,7 +50,7 @@ extension RedBlackTreeBoundExpression {
     case .find(let __v):
       return __tree_.find(__v).sealed
 
-    case .advanced(let __self, by: let offset, let limit):
+    case .advanced(let __self, offset: let offset, let limit):
       let __p = __self.relative(to: __tree_)
       let limit = limit?.relative(to: __tree_)
       switch limit {
@@ -73,13 +73,13 @@ extension RedBlackTreeBoundExpression {
     case .before(let __self):
       return
         RedBlackTreeBoundExpression
-        .advanced(__self, by: -1)
+        .advanced(__self, offset: -1)
         .relative(to: __tree_)
 
     case .after(let __self):
       return
         RedBlackTreeBoundExpression
-        .advanced(__self, by: 1)
+        .advanced(__self, offset: 1)
         .relative(to: __tree_)
 
     #if DEBUG

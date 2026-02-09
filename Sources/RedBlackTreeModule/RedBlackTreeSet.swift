@@ -647,6 +647,8 @@ extension RedBlackTreeSet {
 
   extension RedBlackTreeSet {
 
+    /// 与えられた値より小さくない最初の要素へのインデックスを返す
+    ///
     /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
     /// 最初の位置（`Index`）を返します。
     ///
@@ -664,6 +666,8 @@ extension RedBlackTreeSet {
       .taggedSeal(__tree_.lower_bound(member))
     }
 
+    /// 与えられた値よりも大きい最初の要素へのインデックスを返す
+    ///
     /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
     /// 最初の位置（`Index`）を返します。
     ///

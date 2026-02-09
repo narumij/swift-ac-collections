@@ -51,8 +51,8 @@ where Base: ___TreeBase & ___TreeIndex {
   }
 
   @usableFromInline
-  internal var trackingTag: TaggedSeal {
-    sealed.trackingTag
+  internal var sealedTag: _SealedTag {
+    sealed.tag
   }
 
   @usableFromInline
@@ -100,7 +100,7 @@ extension UnsafeIndexV2: Equatable {
 
     // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
 
-    lhs.trackingTag == rhs.trackingTag
+    lhs.sealedTag == rhs.sealedTag
   }
 }
 
@@ -301,7 +301,7 @@ extension UnsafeIndexV2 {
   internal func __purified_(_ index: UnsafeIndexV2) -> _SealedPtr {
     tied === index.tied
       ? index.sealed.purified
-      : tied.__retrieve_(index.sealed.purified.trackingTag).purified
+      : tied.__retrieve_(index.sealed.purified.tag).purified
   }
 }
 

@@ -158,7 +158,7 @@ extension _TiedRawBuffer {
   /// 日本人的にはお祭りなどによくある千本引きのイメージ
   @inlinable
   @inline(__always)
-  package func __retrieve_(_ tag: TaggedSeal) -> _SealedPtr {
+  package func __retrieve_(_ tag: _SealedTag) -> _SealedPtr {
     tag.flatMap { ___retrieve(tag: $0) }
   }
 }

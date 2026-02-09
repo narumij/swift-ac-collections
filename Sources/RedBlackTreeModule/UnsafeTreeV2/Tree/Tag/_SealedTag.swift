@@ -10,7 +10,7 @@
 ///
 /// - note: for文の範囲指定に使えない
 ///
-public typealias TaggedSeal = Result<TagSeal_, SealError>
+public typealias _SealedTag = Result<TagSeal_, SealError>
 
 extension Result where Success == TagSeal_, Failure == SealError {
   // タグをsalt付きに移行する場合、タグの生成は木だけが行うよう準備する必要がある

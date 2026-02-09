@@ -11,11 +11,11 @@ where Base: ___TreeBase & ScalarValueTrait {
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-    self.startIndex = _start.trackingTag
-    self.endIndex = _end.trackingTag
+    self.startIndex = _start.tag
+    self.endIndex = _end.tag
   }
 
-  public typealias Index = TaggedSeal
+  public typealias Index = _SealedTag
   public typealias Element = Base._PayloadValue
 
   @usableFromInline
@@ -405,9 +405,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public func formIndex(
-    _ i: inout TaggedSeal,
+    _ i: inout _SealedTag,
     offsetBy distance: Int,
-    limitedBy limit: TaggedSeal
+    limitedBy limit: _SealedTag
   )
     -> Bool
   {

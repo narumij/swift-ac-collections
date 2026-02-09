@@ -101,7 +101,7 @@ public enum SealError: Error {
 extension Result where Success == _NodePtrSealing, Failure == SealError {
   
   @inlinable @inline(__always)
-  var trackingTag: TaggedSeal {
+  var tag: _SealedTag {
     flatMap(\.tag)
   }
 

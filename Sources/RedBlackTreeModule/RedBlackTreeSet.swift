@@ -591,7 +591,7 @@ extension RedBlackTreeSet {
     /// - Important:
     ///  要素及びノードが削除された場合、インデックスは無効になります。
     /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-    public typealias Index = TaggedSeal
+    public typealias Index = _SealedTag
     public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Base>
   }
 
@@ -600,7 +600,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element)
-      -> TaggedSeal?
+      -> _SealedTag?
     {
       .taggedSealOrNil(__tree_.find(member))
     }
@@ -609,7 +609,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O( `count` )
     @inlinable
     public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
-      -> TaggedSeal?
+      -> _SealedTag?
     {
       try ___first_tracking_tag(where: predicate)
     }
@@ -720,7 +720,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(_ i: Index, offsetBy distance: Int)
-      -> TaggedSeal
+      -> _SealedTag
     {
       __tree_.__purified_(i)
         .flatMap { ___tree_adv_iter($0.pointer, distance) }
@@ -730,7 +730,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(
-      _ i: TaggedSeal, offsetBy distance: Int, limitedBy limit: Index
+      _ i: _SealedTag, offsetBy distance: Int, limitedBy limit: Index
     )
       -> Index?
     {

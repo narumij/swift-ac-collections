@@ -174,7 +174,7 @@ extension UnsafeTreeV2 {
   /// 日本人的にはお祭りなどによくある千本引きのイメージ
   @inlinable
   @inline(__always)
-  package func __retrieve_(_ tag: TaggedSeal) -> _SealedPtr {
+  package func __retrieve_(_ tag: _SealedTag) -> _SealedPtr {
     tag.flatMap { ___retrieve(tag: $0) }
   }
 }
@@ -191,12 +191,12 @@ extension UnsafeTreeV2 {
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
     tied === index.tied
       ? index.sealed.purified
-      : __retrieve_(index.sealed.purified.trackingTag).purified
+      : __retrieve_(index.sealed.purified.tag).purified
   }
 
   @inlinable
   @inline(__always)
-  internal func __purified_(_ trackingTag: TaggedSeal) -> _SealedPtr {
-    __retrieve_(trackingTag).purified
+  internal func __purified_(_ sealedTag: _SealedTag) -> _SealedPtr {
+    __retrieve_(sealedTag).purified
   }
 }

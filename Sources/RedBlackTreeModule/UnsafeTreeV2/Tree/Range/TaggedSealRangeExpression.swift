@@ -10,44 +10,44 @@
 /// - note: for文の範囲指定に使えない
 ///
 public enum TaggedSealRangeExpression: Equatable {
-  public typealias Bound = TaggedSeal
+  public typealias Bound = _SealedTag
   /// `a..<b` のこと
-  case range(from: TaggedSeal, to: TaggedSeal)
+  case range(from: _SealedTag, to: _SealedTag)
   /// `a...b` のこと
-  case closedRange(from: TaggedSeal, through: TaggedSeal)
+  case closedRange(from: _SealedTag, through: _SealedTag)
   /// `..<b` のこと
-  case partialRangeTo(TaggedSeal)
+  case partialRangeTo(_SealedTag)
   /// `...b` のこと
-  case partialRangeThrough(TaggedSeal)
+  case partialRangeThrough(_SealedTag)
   /// `a...` のこと
-  case partialRangeFrom(TaggedSeal)
+  case partialRangeFrom(_SealedTag)
 }
 
-public func ..< (lhs: TaggedSeal, rhs: TaggedSeal)
+public func ..< (lhs: _SealedTag, rhs: _SealedTag)
   -> TaggedSealRangeExpression
 {
   .range(from: lhs, to: rhs)
 }
 
-public func ... (lhs: TaggedSeal, rhs: TaggedSeal)
+public func ... (lhs: _SealedTag, rhs: _SealedTag)
   -> TaggedSealRangeExpression
 {
   .closedRange(from: lhs, through: rhs)
 }
 
-public prefix func ..< (rhs: TaggedSeal)
+public prefix func ..< (rhs: _SealedTag)
   -> TaggedSealRangeExpression
 {
   .partialRangeTo(rhs)
 }
 
-public prefix func ... (rhs: TaggedSeal)
+public prefix func ... (rhs: _SealedTag)
   -> TaggedSealRangeExpression
 {
   .partialRangeThrough(rhs)
 }
 
-public postfix func ... (lhs: TaggedSeal)
+public postfix func ... (lhs: _SealedTag)
   -> TaggedSealRangeExpression
 {
   .partialRangeFrom(lhs)

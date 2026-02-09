@@ -47,7 +47,6 @@ extension _ValueCompBridge {
   }
 }
 
-/// ツリー使用条件をインジェクションされる側の実装プロトコル
 @usableFromInline
 protocol _SignedDistanceBridge: _BaseBridge
 where Base: _BaseNode_SignedDistanceInterface {
@@ -58,5 +57,29 @@ extension _SignedDistanceBridge {
   @inlinable @inline(__always)
   func ___signed_distance(_ l: Base._NodePtr, _ r: Base._NodePtr) -> Int {
     Base.___signed_distance(l, r)
+  }
+}
+
+@usableFromInline
+protocol _PtrCompBridge: _BaseBridge
+where Base: _BaseNode_PtrCompInterface & _NodePtrType {}
+
+extension _PtrCompBridge {
+
+  @inlinable @inline(__always)
+  func ___ptr_comp(_ l: Base._NodePtr, _ r: Base._NodePtr) -> Bool {
+    Base.___ptr_comp(l, r)
+  }
+}
+
+@usableFromInline
+protocol _PtrRangeCompBridge: _BaseBridge
+where Base: _BaseNode_PtrRangeCompProtocol & _NodePtrType {}
+
+extension _PtrRangeCompBridge {
+  
+  @inlinable @inline(__always)
+  func ___ptr_range_comp(_ __f: Base._NodePtr, _ __p: Base._NodePtr, _ __l: Base._NodePtr) -> Bool {
+    Base.___ptr_range_comp(__f, __p, __l)
   }
 }

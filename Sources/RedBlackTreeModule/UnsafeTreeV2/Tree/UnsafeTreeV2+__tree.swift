@@ -238,17 +238,13 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2: _PayloadKeyBridge & _ValueCompBridge {}
+extension UnsafeTreeV2: _PayloadKeyBridge & _ValueCompBridge & _PtrCompBridge
+    & _PtrRangeCompBridge
+{}
 
 extension UnsafeTreeV2: _SignedDistanceBridge where Base: _BaseNode_SignedDistanceInterface {}
 
 extension UnsafeTreeV2: BoundBothInterface {
-
-  @inlinable
-  @inline(__always)
-  package static var isMulti: Bool {
-    Base.isMulti
-  }
 
   @inlinable
   @inline(__always)
@@ -277,7 +273,6 @@ extension UnsafeTreeV2: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2: EraseProtocol {}
 extension UnsafeTreeV2: EraseUniqueProtocol {}
 extension UnsafeTreeV2: EraseMultiProtocol {}
-extension UnsafeTreeV2: _TreeNode_PtrCompProtocol, _TreeNode_PtrCompUniqueProtocol {}
 extension UnsafeTreeV2: CountProtocol_ptr {}
 extension UnsafeTreeV2: InsertLastProtocol_ptr {}
 extension UnsafeTreeV2: CompareProtocol {}

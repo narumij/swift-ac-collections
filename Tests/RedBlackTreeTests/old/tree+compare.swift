@@ -26,7 +26,7 @@
 import Foundation
 
 @usableFromInline
-protocol CompareBothProtocol_std: _TreeNode_PtrCompInterface, _TreeNode_PtrCompUniqueProtocol, _TreeNode_PtrCompMultiInterface, NodeBitmapProtocol_std {
+protocol CompareBothProtocol_std: _TreeNode_PtrCompInterface, _TreeNode_PtrCompUniqueInterface, _TreeNode_PtrCompMultiInterface, NodeBitmapProtocol_std {
   var isMulti: Bool { get }
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }

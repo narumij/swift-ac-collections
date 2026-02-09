@@ -135,7 +135,7 @@ final class SetSubSequenceTests: RedBlackTreeTestCase {
       base.insert(1)
       #if DEBUG
         // 内部的には再利用で同一ノードとなる
-        XCTAssertEqual(base.firstIndex(of: 1)?._rawTag, idx._rawTag, "これは固定された仕様では無く、あくまで確認")
+        XCTAssertEqual(base.firstIndex(of: 1)?.value, idx.value, "これは固定された仕様では無く、あくまで確認")
       #endif
 
       XCTAssertFalse(base.isValid(index: b_idx), "内部挙動変更でfalseとなった")

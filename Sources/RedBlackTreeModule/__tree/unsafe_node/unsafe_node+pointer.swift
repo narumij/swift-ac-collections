@@ -215,7 +215,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   @inline(__always)
-  var trackingTag: _RawTrackingTag {
+  var trackingTag: _TrackingTag {
     pointee.___tracking_tag
   }
 }

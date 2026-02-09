@@ -8,13 +8,13 @@
 @frozen
 public enum _TrackingTagSealing: Equatable {
   case end
-  case tag(raw: _RawTrackingTag, seal: UnsafeNode.Seal)
+  case tag(raw: _TrackingTag, seal: UnsafeNode.Seal)
 }
 
 extension _TrackingTagSealing {
 
   @inlinable
-  static func seal(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> Self {
+  static func seal(raw: _TrackingTag, seal: UnsafeNode.Seal) -> Self {
     switch raw {
     case .end: return .end
     case 0...: return .tag(raw: raw, seal: seal)
@@ -24,7 +24,7 @@ extension _TrackingTagSealing {
   }
 
   @inlinable
-  static func sealOrNil(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> Self? {
+  static func sealOrNil(raw: _TrackingTag, seal: UnsafeNode.Seal) -> Self? {
     switch raw {
     case 0...: return .tag(raw: raw, seal: seal)
     default: return nil

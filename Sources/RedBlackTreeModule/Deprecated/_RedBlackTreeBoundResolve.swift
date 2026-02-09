@@ -34,18 +34,18 @@
         return collection.lowerBound(l)
       case .upper(let r):
         return collection.upperBound(r)
-      case .advanced(let __self, by: let offset, _):
+      case .advanced(let __self, offset: let offset, _):
         let i = __self.relative(to: collection)
         return collection.index(i, offsetBy: offset)
       case .before(let __self):
         return
           RedBlackTreeBoundExpression
-          .advanced(__self, by: -1)
+          .advanced(__self, offset: -1)
           .relative(to: collection)
       case .after(let __self):
         return
           RedBlackTreeBoundExpression
-          .advanced(__self, by: 1)
+          .advanced(__self, offset: 1)
           .relative(to: collection)
       default:
         fatalError("NOT IMPLEMENTED YET")

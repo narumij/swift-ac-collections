@@ -111,7 +111,7 @@ public struct UnsafeNode {
   @inlinable
   @inline(__always)
   public init(
-    ___tracking_tag: _RawTrackingTag,
+    ___tracking_tag: _TrackingTag,
     __left_: Pointer,
     __right_: Pointer,
     __parent_: Pointer,
@@ -211,7 +211,7 @@ public struct UnsafeNode {
   /// 特殊値:
   /// - `nullptr` は `-2`
   /// - `end` は `-1`
-  public var ___tracking_tag: _RawTrackingTag
+  public var ___tracking_tag: _TrackingTag
 
   // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
   // nullptrは定数でもなにかコストがかかっていた記憶もある

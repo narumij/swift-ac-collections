@@ -193,7 +193,7 @@ extension UnsafeTreeV2BufferHeader {
      Violating this invariant may cause excessive traversal or undefined behavior.
     */
     @inlinable
-    subscript(___tracking_tag: _RawTrackingTag) -> _NodePtr {
+    subscript(___tracking_tag: _TrackingTag) -> _NodePtr {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
       var remaining = ___tracking_tag
       var p = freshBucketHead?.accessor(payload: payload)

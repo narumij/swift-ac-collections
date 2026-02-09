@@ -17,7 +17,7 @@
 
 @inlinable
 @inline(__always)
-func ___is_null_or_end__(tag: _RawTrackingTag) -> Bool {
+func ___is_null_or_end__(tag: _TrackingTag) -> Bool {
   // 名前が衝突するしパッケージ名を書きたくないため中継している
   ___is_null_or_end(tag)
 }

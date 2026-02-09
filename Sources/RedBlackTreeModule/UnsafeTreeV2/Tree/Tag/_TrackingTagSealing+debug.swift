@@ -9,7 +9,7 @@
   extension _TrackingTagSealing {
 
     @usableFromInline
-    internal var raw: _RawTrackingTag {
+    internal var raw: _TrackingTag {
       switch self {
       case .end: .end
       case .tag(raw: let rag, seal: _): rag
@@ -22,7 +22,7 @@
   extension _TrackingTagSealing: RawRepresentable {
 
     @inlinable
-    public init?(rawValue value: (raw: _RawTrackingTag, seal: UnsafeNode.Seal)) {
+    public init?(rawValue value: (raw: _TrackingTag, seal: UnsafeNode.Seal)) {
       switch value {
       case (.end, _):
         self = .end
@@ -34,7 +34,7 @@
     }
 
     @inlinable
-    public var rawValue: (raw: _RawTrackingTag, seal: UnsafeNode.Seal) {
+    public var rawValue: (raw: _TrackingTag, seal: UnsafeNode.Seal) {
       switch self {
       case .end:
         (.end, 0)

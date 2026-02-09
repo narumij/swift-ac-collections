@@ -1,7 +1,7 @@
 import Foundation
 import RedBlackTreeModule
 
-extension _RawTrackingTag {
+extension _TrackingTag {
   var offset: Int! {
     switch self {
     case .end:
@@ -14,6 +14,6 @@ extension _RawTrackingTag {
   }
 }
 
-extension _RawTrackingTag {
+extension _TrackingTag {
   var index: Int! { self }
 }

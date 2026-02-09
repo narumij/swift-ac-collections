@@ -61,7 +61,7 @@ extension Result where Success == _TrackingTagSealing, Failure == SealError {
   extension Result where Success == _TrackingTagSealing, Failure == SealError {
 
     @inlinable
-    var raw: Int? {
+    var value: _TrackingTag? {
       switch self {
       case .failure: nil
       case .success(let t): t.raw
@@ -76,22 +76,14 @@ extension Result where Success == _TrackingTagSealing, Failure == SealError {
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
     @usableFromInline
-    package var _rawTag: _RawTrackingTag {
-      guard let tag = try? get() else {
-        return .nullptr
-      }
-      return tag.raw
-    }
-
-    @usableFromInline
-    package var rawValue: (raw: _RawTrackingTag, seal: UnsafeNode.Seal)? {
+    package var rawValue: (raw: _TrackingTag, seal: UnsafeNode.Seal)? {
       guard let tag = try? get() else {
         return nil
       }
       return tag.rawValue
     }
 
-    package static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
+    package static func unsafe<Base>(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag) -> Self {
       if rawTag == .nullptr {
         return .failure(.null)
       }

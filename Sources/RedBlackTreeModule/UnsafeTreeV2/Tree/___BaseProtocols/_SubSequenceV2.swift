@@ -57,7 +57,7 @@ extension _SubSequenceV2 {
     }
     return __tree_.___ptr_range_comp(start, i, end)
   }
-  
+
   @inlinable @inline(__always)
   internal var ___first: _PayloadValue? {
     ___is_empty
@@ -98,8 +98,8 @@ extension _SubSequenceV2 {
         return false
       }
 
-      return __tree_.___ptr_range_contains(start, end, l)
-        && __tree_.___ptr_range_contains(start, end, u)
+      return __tree_.___ptr_range_comp(start, l, end)
+        && __tree_.___ptr_range_comp(start, u, end)
     }
   }
 #endif

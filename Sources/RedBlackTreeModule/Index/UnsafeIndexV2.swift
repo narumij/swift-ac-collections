@@ -43,15 +43,12 @@ where Base: ___TreeBase & ___TreeIndex {
   typealias _PayloadValue = Tree._PayloadValue
 
   @usableFromInline
-  package var _rawTag: _RawTrackingTag {
-    // benchmark5で謎のコンパイルエラーが発生する
-    // バグ報告はいったん見送り
-    // (try? sealed.map(\.tag).map(\._rawTag).get()) ?? .nullptr
-    (try? sealed.map(\.pointer.pointee.___tracking_tag).get()) ?? .nullptr
+  package var value: _TrackingTag? {
+    sealed.tag.value
   }
 
   @usableFromInline
-  internal var sealedTag: _SealedTag {
+  package var tag: _SealedTag {
     sealed.tag
   }
 
@@ -100,7 +97,7 @@ extension UnsafeIndexV2: Equatable {
 
     // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
 
-    lhs.sealedTag == rhs.sealedTag
+    lhs.tag == rhs.tag
   }
 }
 
@@ -214,7 +211,7 @@ extension UnsafeIndexV2 {
 #if DEBUG
   extension UnsafeIndexV2 {
     fileprivate init(
-      _unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, trackingTag: _RawTrackingTag
+      _unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, trackingTag: _TrackingTag
     ) {
       self.tied = _unsafe_tree.tied
       self.sealed = rawValue.sealed
@@ -227,7 +224,7 @@ extension UnsafeIndexV2 {
       .init(_unsafe_tree: tree, rawValue: rawValue, trackingTag: rawValue.pointee.___tracking_tag)
     }
 
-    internal static func unsafe(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
+    internal static func unsafe(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag) -> Self {
       if rawTag == .nullptr {
         return .init(_unsafe_tree: tree, rawValue: tree.nullptr, trackingTag: .nullptr)
       }

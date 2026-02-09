@@ -602,7 +602,7 @@ extension RedBlackTreeSet {
     public func firstIndex(of member: Element)
       -> _SealedTag?
     {
-      .taggedSealOrNil(__tree_.find(member))
+      .sealedTagOrNil(__tree_.find(member))
     }
 
     // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
@@ -620,12 +620,12 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var startIndex: Index { .taggedSeal(_start) }
+    public var startIndex: Index { .sealedTag(_start) }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var endIndex: Index { .taggedSeal(_end) }
+    public var endIndex: Index { .sealedTag(_end) }
   }
 
   extension RedBlackTreeSet {
@@ -663,7 +663,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ member: Element) -> Index {
-      .taggedSeal(__tree_.lower_bound(member))
+      .sealedTag(__tree_.lower_bound(member))
     }
 
     /// 与えられた値よりも大きい最初の要素へのインデックスを返す
@@ -683,7 +683,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ member: Element) -> Index {
-      .taggedSeal(__tree_.upper_bound(member))
+      .sealedTag(__tree_.upper_bound(member))
     }
   }
 
@@ -695,7 +695,7 @@ extension RedBlackTreeSet {
       lower: Index, upper: Index
     ) {
       let (lower, upper) = __tree_.__equal_range_unique(element)
-      return (.taggedSeal(lower), .taggedSeal(upper))
+      return (.sealedTag(lower), .sealedTag(upper))
     }
   }
 
@@ -706,7 +706,7 @@ extension RedBlackTreeSet {
     public func index(before i: Index) -> Index {
       __tree_.__purified_(i)
         .flatMap { ___tree_prev_iter($0.pointer) }
-        .flatMap { .taggedSeal($0) }
+        .flatMap { .sealedTag($0) }
     }
 
     /// - Complexity: O(1)
@@ -714,7 +714,7 @@ extension RedBlackTreeSet {
     public func index(after i: Index) -> Index {
       __tree_.__purified_(i)
         .flatMap { ___tree_next_iter($0.pointer) }
-        .flatMap { .taggedSeal($0) }
+        .flatMap { .sealedTag($0) }
     }
 
     /// - Complexity: O(`distance`)
@@ -724,7 +724,7 @@ extension RedBlackTreeSet {
     {
       __tree_.__purified_(i)
         .flatMap { ___tree_adv_iter($0.pointer, distance) }
-        .flatMap { .taggedSeal($0) }
+        .flatMap { .sealedTag($0) }
     }
 
     /// - Complexity: O(`distance`)
@@ -779,7 +779,7 @@ extension RedBlackTreeSet {
       let __l = __tree_.__purified_(limit).map(\.pointer)
 
       return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
-        i = $0.flatMap { .taggedSeal($0) }
+        i = $0.flatMap { .sealedTag($0) }
       }
     }
   }

@@ -157,7 +157,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package func ___retrieve(tag: TagSeal_) -> _SealedPtr {
+  package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
     switch tag {
     case .end:
       return end.sealed

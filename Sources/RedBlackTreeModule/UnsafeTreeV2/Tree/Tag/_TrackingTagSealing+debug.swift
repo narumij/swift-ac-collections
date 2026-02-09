@@ -6,7 +6,7 @@
 //
 
 #if DEBUG
-  extension Result where Success == TagSeal_, Failure == SealError {
+  extension Result where Success == _TrackingTagSealing, Failure == SealError {
 
     public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 

@@ -39,7 +39,7 @@ extension UnsafeTreeSealedRangeProtocol {
         cont = false
       }
     }
-    return .taggedSealOrNil(__r)
+    return .sealedTagOrNil(__r)
   }
 }
 

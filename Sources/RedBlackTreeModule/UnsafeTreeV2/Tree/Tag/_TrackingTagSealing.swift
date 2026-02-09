@@ -5,13 +5,14 @@
 //  Created by narumij on 2026/02/05.
 //
 
-public enum TagSeal_: Equatable {
+@frozen
+public enum _TrackingTagSealing: Equatable {
   case end
   case tag(raw: _RawTrackingTag, seal: UnsafeNode.Seal)
 }
 
 #if DEBUG
-  extension TagSeal_ {
+  extension _TrackingTagSealing {
 
     @usableFromInline
     internal var _rawTag: _RawTrackingTag {
@@ -23,7 +24,7 @@ public enum TagSeal_: Equatable {
   }
 #endif
 
-extension TagSeal_ {
+extension _TrackingTagSealing {
 
   @inlinable
   static func seal(raw: _RawTrackingTag, seal: UnsafeNode.Seal) -> Self {
@@ -54,7 +55,7 @@ extension TagSeal_ {
   }
 }
 
-extension TagSeal_: RawRepresentable {
+extension _TrackingTagSealing: RawRepresentable {
 
   @inlinable
   public init?(rawValue value: (raw: _RawTrackingTag, seal: UnsafeNode.Seal)) {
@@ -79,22 +80,25 @@ extension TagSeal_: RawRepresentable {
   }
 }
 
-extension TagSeal_ {
-  @usableFromInline
+extension _TrackingTagSealing {
+  
+  @inlinable
   var __is_null_or_end: Bool {
     switch self {
     case .end: true
     case .tag(raw: let r, seal: _): ___is_null_or_end(r)
     }
   }
-  @usableFromInline
+  
+  @inlinable
   var __is_null: Bool {
     switch self {
     case .end: true
     case .tag(raw: let r, seal: _): r == .nullptr
     }
   }
-  @usableFromInline
+  
+  @inlinable
   var __is_end: Bool {
     switch self {
     case .end: true

@@ -9,15 +9,15 @@
   import RedBlackTreeModule
   import XCTest
 
-  final class SealedTests2: XCTestCase {
-    
-    typealias SUT = RedBlackTreeSet<Int>
+  final class SealedTests3: XCTestCase {
 
-    var a = SUT(0..<20)
+    typealias SUT = RedBlackTreeKeyOnlyRangeView<RedBlackTreeSet<Int>>
+
+    var _a = RedBlackTreeSet<Int>(0..<20)
 
     override func setUpWithError() throws {
       // Put setup code here. This method is called before the invocation of each test method in the class.
-      a = .init(0..<20)
+      _a = .init(0..<20)
     }
 
     override func tearDownWithError() throws {
@@ -25,7 +25,8 @@
     }
 
     func testSomething() throws {
-      var b = a
+      let a: SUT = _a[_a.startIndex..<_a.endIndex]
+      var b: SUT = a
       XCTAssertTrue(b.isValid(index: a.startIndex))
       XCTAssertTrue(a.isValid(index: b.startIndex))
       XCTAssertEqual(a.startIndex, b.startIndex)
@@ -41,7 +42,8 @@
     }
 
     func testSomething1() throws {
-      var b = a
+      let a: SUT = _a[_a.startIndex..<_a.endIndex]
+      var b: SUT = a
       XCTAssertTrue(b.isValid(index: a.startIndex))
       XCTAssertTrue(a.isValid(index: b.startIndex))
       XCTAssertEqual(a.startIndex, b.startIndex)
@@ -55,6 +57,7 @@
     }
 
     func testSomething2() throws {
+      var a: SUT = _a[_a.startIndex..<_a.endIndex]
       XCTAssertTrue(a.isValid(index: a.startIndex))
       let a0 = a.startIndex
       a.removeFirst()

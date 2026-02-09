@@ -35,16 +35,16 @@ where Base: ___TreeBase & ScalarValueTrait {
 
 extension RedBlackTreeKeyOnlyRangeView {
 
-  //  @usableFromInline
-  //  var _range: (_NodePtr, _NodePtr) {
-  //    guard
-  //      let _start = __tree_.__retrieve_(startIndex).pointer,
-  //      let _end = __tree_.__retrieve_(endIndex).pointer
-  //    else {
-  //      return (__tree_.__end_node, __tree_.__end_node)
-  //    }
-  //    return (_start, _end)
-  //  }
+  @usableFromInline
+  var _raw_range: (_NodePtr, _NodePtr) {
+    guard
+      let _start = __tree_.__retrieve_(startIndex).pointer,
+      let _end = __tree_.__retrieve_(endIndex).pointer
+    else {
+      return (__tree_.__end_node, __tree_.__end_node)
+    }
+    return (_start, _end)
+  }
 
   // TODO: _NodePtrであるべきか、_SealedPtrであるべきか。使い分けの吟味
 
@@ -411,24 +411,11 @@ extension RedBlackTreeKeyOnlyRangeView {
   )
     -> Bool
   {
+    guard let ___i = __tree_.__purified_(i).pointer else { return false }
     let __l = __tree_.__purified_(limit).map(\.pointer)
-
-    let sealed = __tree_.__purified_(i)
-      .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-      .flatMap { .taggedSeal($0) }
-
-    guard !sealed.isError(.limit) else {
-      i = limit
-      return false
+    return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
+      i = $0.flatMap { .taggedSeal($0) }
     }
-
-    guard case .success = sealed else {
-      return false
-    }
-
-    i = sealed
-
-    return true
   }
 }
 
@@ -440,13 +427,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public func isValid(index: Index) -> Bool {
-    guard
-      let i: _NodePtr = __tree_.__retrieve_(index).pointer,
-      !i.___is_end
-    else {
-      return false
-    }
-    let (_start, _end) = _range
-    return __tree_.___ptr_closed_range_contains(_start.pointer!, _end.pointer!, i)
+    let i = __tree_.__purified_(index) // __retrieve_でもテストは通る
+    guard i.___is_end == false, let i = i.pointer else { return false }
+    let (_start, _end) = _raw_range
+    return __tree_.___ptr_closed_range_contains(_start, _end, i)
   }
 }

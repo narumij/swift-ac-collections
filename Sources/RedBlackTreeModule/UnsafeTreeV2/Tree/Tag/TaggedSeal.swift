@@ -26,15 +26,6 @@ extension Result where Success == TagSeal_, Failure == SealError {
 
 extension Result where Success == TagSeal_, Failure == SealError {
 
-  @inlinable @inline(__always)
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>) -> _SealedPtr
-  where Base: ___TreeBase {
-    __tree_.__purified_(self)
-  }
-}
-
-extension Result where Success == TagSeal_, Failure == SealError {
-
   @usableFromInline
   var __is_null_or_end: Bool {
     switch self {

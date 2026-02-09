@@ -64,22 +64,22 @@ extension TaggedSealRangeExpression {
 
     case .range(let from, let to):
       return .range(
-        from: from.relative(to: __tree_),
-        to: to.relative(to: __tree_))
+        from: __tree_.__purified_(from),
+        to: __tree_.__purified_(to))
 
     case .closedRange(let from, let through):
       return .closedRange(
-        from: from.relative(to: __tree_),
-        through: through.relative(to: __tree_))
+        from: __tree_.__purified_(from),
+        through: __tree_.__purified_(through))
 
     case .partialRangeTo(let to):
-      return .partialRangeTo(to.relative(to: __tree_))
+      return .partialRangeTo(__tree_.__purified_(to))
 
     case .partialRangeThrough(let through):
-      return .partialRangeThrough(through.relative(to: __tree_))
+      return .partialRangeThrough(__tree_.__purified_(through))
 
     case .partialRangeFrom(let from):
-      return .partialRangeFrom(from.relative(to: __tree_))
+      return .partialRangeFrom(__tree_.__purified_(from))
 
     case .unboundedRange:
       return .unboundedRange

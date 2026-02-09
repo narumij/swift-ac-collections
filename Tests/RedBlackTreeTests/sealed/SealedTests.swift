@@ -11,7 +11,9 @@
 
   final class SealedTests: XCTestCase {
 
-    var a = RedBlackTreeSet<Int>(0..<20)
+    typealias SUT = RedBlackTreeSet<Int>
+
+    var a = SUT(0..<20)
 
     override func setUpWithError() throws {
       // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -46,7 +48,7 @@
       XCTAssertTrue(b.isValid(index: a.startIndex))
       XCTAssertTrue(a.isValid(index: b.startIndex))
       XCTAssertEqual(a.startIndex, b.startIndex)
-      b.remove(19) // この時点でCoWが発生する
+      b.removeLast() // この時点でCoWが発生する
       let b0 = b.startIndex
       b.removeFirst() // CoWが発生しない
       XCTAssertFalse(b0.isValid) // 発行元に対するチェックは無効を示す

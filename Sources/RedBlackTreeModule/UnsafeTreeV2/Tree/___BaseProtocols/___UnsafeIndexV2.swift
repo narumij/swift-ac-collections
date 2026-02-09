@@ -103,18 +103,14 @@ extension ___UnsafeIndexV2 {
   internal func _formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
     -> Bool
   {
-    let index = __tree_.__purified_(i)
-    let limit = __tree_.__purified_(limit)
-    let result = __tree_.___index(index, offsetBy: distance, limitedBy: limit)
-    let limitAware = switch result {
-    case .failure(.limit): limit
-    default: result
+    guard let ___i = __tree_.__purified_(i).pointer
+    else { return false }
+
+    let __l = __tree_.__purified_(limit).map(\.pointer)
+
+    return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
+      i.sealed = $0.flatMap { $0.sealed }
     }
-    guard limitAware.isValid else {
-      return false
-    }
-    i.sealed = limitAware
-    return result.isValid
   }
 }
 

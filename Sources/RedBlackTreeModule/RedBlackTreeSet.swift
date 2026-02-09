@@ -448,6 +448,21 @@ extension RedBlackTreeSet {
   extension RedBlackTreeSet {
 
     @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      __tree_.ensureUnique()
+      guard let element = ___remove_last() else {
+        preconditionFailure(.emptyFirst)
+      }
+      return element.payload
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    @inlinable
     public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()
       try __tree_.___checking_erase_if(
@@ -732,24 +747,14 @@ extension RedBlackTreeSet {
     )
       -> Bool
     {
+      guard let ___i = __tree_.__purified_(i).pointer
+      else { return false }
+
       let __l = __tree_.__purified_(limit).map(\.pointer)
 
-      let sealed = __tree_.__purified_(i)
-        .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-        .flatMap { .taggedSeal($0) }
-
-      guard !sealed.isError(.limit) else {
-        i = limit
-        return false
+      return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
+        i = $0.flatMap { .taggedSeal($0) }
       }
-
-      guard case .success = sealed else {
-        return false
-      }
-
-      i = sealed
-
-      return true
     }
   }
 

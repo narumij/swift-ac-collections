@@ -15,6 +15,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+/* デッドコードここから。フォールバックされてないかチェックできる箇所なのでしばらく残す */
+
 // MARK: - TreeEndNodeProtocol
 
 extension UnsafeTreeV2: _pointer_type {
@@ -114,6 +116,8 @@ extension UnsafeTreeV2: TreeNodeRefAccessInterface {
   }
 }
 
+/* デッドコードここまで。フォールバックされてないかチェックできる箇所なのでしばらく残す */
+
 // MARK: - TreeNodeValueProtocol
 
 extension UnsafeTreeV2: _TreeNode_KeyProtocol {}
@@ -127,13 +131,13 @@ extension UnsafeTreeV2 {
 
     @inline(__always) get {
       //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
-//      origin.pointee.begin_ptr
+      //      origin.pointee.begin_ptr
       withMutableHeader { $0.begin_ptr.pointee }
     }
 
     @inline(__always)
     nonmutating set {
-//      origin.pointee.begin_ptr = newValue
+      //      origin.pointee.begin_ptr = newValue
       //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
       withMutableHeader { $0.begin_ptr.pointee = newValue }
 
@@ -148,7 +152,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   package var __end_node: _NodePtr {
-//    origin.pointee.end_ptr
+    //    origin.pointee.end_ptr
     withMutableHeader { $0.end_ptr }
   }
 }
@@ -162,7 +166,7 @@ extension UnsafeTreeV2 {
     @inlinable
     @inline(__always)
     package var __root: _NodePtr {
-      get { withMutableHeader { $0.__root } }
+      withMutableHeader { $0.__root }
     }
   #else
     @inlinable
@@ -178,8 +182,9 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   package func __root_ptr() -> _NodeRef {
-//    origin.pointee.__root_ptr()
-    withMutableHeader { $0.__root_ptr() }  }
+    //    origin.pointee.__root_ptr()
+    withMutableHeader { $0.__root_ptr() }
+  }
 }
 
 // MARK: - SizeProtocol
@@ -255,7 +260,7 @@ extension UnsafeTreeV2: BoundBothInterface {
 extension UnsafeTreeV2: IntThreeWayComparator {}
 extension UnsafeTreeV2: FindProtocol_ptr {}
 extension UnsafeTreeV2: FindEqualInterface, FindEqualProtocol_ptr {
-  
+
   @inlinable
   @inline(__always)
   package func __comp(_ __lhs: Base._Key, _ __rhs: Base._Key) -> __compare_result {

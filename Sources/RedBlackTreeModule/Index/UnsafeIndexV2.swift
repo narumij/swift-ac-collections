@@ -26,9 +26,12 @@ import Foundation
 
 // sealed化した結果、本当の不安が払拭されてしまい、このままでもべつにいっかという気持ちがわいている
 
-/// 赤黒木のノードへのインデックス
+/// 赤黒木用重量インデックス
 ///
 /// C++の双方向イテレータに近い内容となっている
+///
+/// - note: for文の範囲指定に使える
+///
 @frozen
 public struct UnsafeIndexV2<Base>: UnsafeTreeBinding, UnsafeIndexProtocol_tie
 where Base: ___TreeBase & ___TreeIndex {

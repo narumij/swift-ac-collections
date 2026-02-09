@@ -6,6 +6,10 @@
 //
 
 // SealedTagが適切な気がしてきている
+/// 赤黒木用軽量インデックス
+///
+/// - note: for文の範囲指定に使えない
+///
 public typealias TaggedSeal = Result<TagSeal_, SealError>
 
 extension Result where Success == TagSeal_, Failure == SealError {

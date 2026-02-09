@@ -7,7 +7,7 @@
 
 /// 赤黒木用軽量Range
 ///
-/// for文では使えない
+/// - note: for文の範囲指定に使えない
 ///
 public enum TaggedSealRangeExpression: Equatable {
   public typealias Bound = TaggedSeal

@@ -430,6 +430,6 @@ extension RedBlackTreeKeyOnlyRangeView {
     let i = __tree_.__purified_(index) // __retrieve_でもテストは通る
     guard i.___is_end == false, let i = i.pointer else { return false }
     let (_start, _end) = _raw_range
-    return __tree_.___ptr_closed_range_contains(_start, _end, i)
+    return __tree_.___ptr_range_comp(_start, i, _end)
   }
 }

@@ -5,6 +5,8 @@
 //  Created by narumij on 2026/01/31.
 //
 
+// TODO: 削除
+
 /// C++を模倣したい場合に使う
 ///
 public struct _RedBlackTreeUniqueView<Base>:

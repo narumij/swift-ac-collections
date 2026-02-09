@@ -179,9 +179,9 @@ extension RedBlackTreeMultiSet {
 
 // MARK: - Range Accessing Elements
 
-extension RedBlackTreeMultiSet {
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
 
-  #if COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
@@ -191,8 +191,8 @@ extension RedBlackTreeMultiSet {
         start: __tree_.__purified_(bounds.lowerBound),
         end: __tree_.__purified_(bounds.upperBound))
     }
-  #endif
-}
+  }
+#endif
 
 // MARK: - Insert
 
@@ -548,10 +548,10 @@ extension RedBlackTreeMultiSet {
 // MARK: - BidirectionalCollection
 
 #if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiSet: Sequence, Collection, BidirectionalCollection {}
-#else
-  extension RedBlackTreeMultiSet: Sequence {}
+  extension RedBlackTreeMultiSet: Collection, BidirectionalCollection {}
 #endif
+
+extension RedBlackTreeMultiSet: Sequence {}
 
 extension RedBlackTreeMultiSet {
 

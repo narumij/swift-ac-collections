@@ -47,7 +47,7 @@ extension UnsafeTreeSealedRangeProtocol {
 
   @inlinable @inline(__always)
   internal func _isIdentical(to other: Self) -> Bool {
-    __tree_.isIdentical(to: other.__tree_)
+    __tree_._isIdentical(to: other.__tree_)
       && _sealed_start == other._sealed_start
       && _sealed_end == other._sealed_end
   }

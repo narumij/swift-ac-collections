@@ -34,7 +34,6 @@
 /// - `before(_:)` : 直前の要素
 /// - `after(_:)` : 直後の要素
 ///
-@frozen
 public indirect enum RedBlackTreeBoundExpression<_Key> {
   /// 先頭の要素を表す
   ///
@@ -99,8 +98,6 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
   case after(Self)
   
   #if DEBUG
-    /// - Complexity: O(1)
-    /// ただし評価時の計算量
     case debug(SealError)
   #endif
 }

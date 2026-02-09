@@ -5,18 +5,16 @@
 //  Created by narumij on 2026/02/05.
 //
 
-#if DEBUG
-  extension _TrackingTagSealing {
+extension _TrackingTagSealing {
 
-    @usableFromInline
-    internal var raw: _TrackingTag {
-      switch self {
-      case .end: .end
-      case .tag(raw: let rag, seal: _): rag
-      }
+  @usableFromInline
+  internal var raw: _TrackingTag {
+    switch self {
+    case .end: .end
+    case .tag(raw: let rag, seal: _): rag
     }
   }
-#endif
+}
 
 #if DEBUG
   extension _TrackingTagSealing: RawRepresentable {

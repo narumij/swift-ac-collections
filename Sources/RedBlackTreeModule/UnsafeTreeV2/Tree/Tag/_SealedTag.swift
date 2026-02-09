@@ -57,18 +57,18 @@ extension Result where Success == _TrackingTagSealing, Failure == SealError {
   }
 #endif
 
-#if DEBUG
-  extension Result where Success == _TrackingTagSealing, Failure == SealError {
+extension Result where Success == _TrackingTagSealing, Failure == SealError {
 
-    @inlinable
-    var value: _TrackingTag? {
-      switch self {
-      case .failure: nil
-      case .success(let t): t.raw
-      }
+  @inlinable
+  var value: _TrackingTag? {
+    switch self {
+    case .failure:
+      return nil
+    case .success(let t):
+      return t.raw
     }
   }
-#endif
+}
 
 #if DEBUG
   extension Result where Success == _TrackingTagSealing, Failure == SealError {

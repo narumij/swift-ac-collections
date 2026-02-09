@@ -41,3 +41,18 @@ extension _TrackingTagSealing {
     .sealOrNil(raw: p.pointee.___tracking_tag, seal: p.pointee.___recycle_count)
   }
 }
+
+extension _TrackingTagSealing: CustomStringConvertible {
+  public var description: String {
+    switch self {
+    case .end:
+      "_TrackingTagSealing<end>"
+    case .tag(raw: let raw, seal: let seal):
+      "_TrackingTagSealing<\((tag: raw, seal: seal))>"
+    }
+  }
+}
+
+extension _TrackingTagSealing: CustomDebugStringConvertible {
+  public var debugDescription: String { description }
+}

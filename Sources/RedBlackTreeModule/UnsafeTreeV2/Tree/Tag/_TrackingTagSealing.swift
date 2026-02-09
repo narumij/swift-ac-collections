@@ -46,9 +46,9 @@ extension _TrackingTagSealing: CustomStringConvertible {
   public var description: String {
     switch self {
     case .end:
-      "_TrackingTagSealing<end>"
+      "_TrackingTagSealing.end"
     case .tag(raw: let raw, seal: let seal):
-      "_TrackingTagSealing<\((tag: raw, seal: seal))>"
+      "_TrackingTagSealing.tag\((raw: raw, seal: seal))"
     }
   }
 }

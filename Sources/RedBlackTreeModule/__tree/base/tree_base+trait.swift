@@ -27,7 +27,7 @@ public protocol ValueComparer:
 
 // MARK: -
 
-/// キーのComparable制限と比較の標準実装ひょ
+/// キーのComparable制限と比較の標準実装
 ///
 /// 比較実装を実際に使うかは、各実行形態側で決まり、ここで決めるわけではない
 ///

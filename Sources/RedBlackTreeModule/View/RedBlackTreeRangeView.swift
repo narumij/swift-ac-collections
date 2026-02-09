@@ -92,23 +92,23 @@ extension RedBlackTreeKeyOnlyRangeView {
 
 // MARK: -
 
-// TODO: 検討
-
-@usableFromInline
-package protocol BaseInit {
-  associatedtype Tree
-  init(__tree_: Tree)
+public protocol ScalarBaseInit: ___TreeBase & ScalarValueTrait {
+  static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self
 }
 
-extension RedBlackTreeSet: BaseInit {}
+extension RedBlackTreeKeyOnlyRangeView where Base: ScalarBaseInit {
+  public func unranged() -> Base { .create(self) }
+}
 
-extension RedBlackTreeKeyOnlyRangeView
-where
-  Base: BaseInit,
-  Base.Tree == UnsafeTreeV2<Base>
-{
-  package func unranged() -> Base {
-    Base(__tree_: __tree_)
+extension RedBlackTreeSet: ScalarBaseInit {
+  public static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self {
+    .init(__tree_: view.__tree_)
+  }
+}
+
+extension RedBlackTreeMultiSet: ScalarBaseInit {
+  public static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self {
+    .init(__tree_: view.__tree_)
   }
 }
 
@@ -427,7 +427,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public func isValid(index: Index) -> Bool {
-    let i = __tree_.__purified_(index) // __retrieve_でもテストは通る
+    let i = __tree_.__purified_(index)  // __retrieve_でもテストは通る
     guard i.___is_end == false, let i = i.pointer else { return false }
     let (_start, _end) = _raw_range
     return __tree_.___ptr_range_comp(_start, i, _end)

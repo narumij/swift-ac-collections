@@ -18,8 +18,6 @@ public enum TaggedSealRangeExpression: Equatable {
   case partialRangeThrough(TaggedSeal)
   /// `a...` のこと
   case partialRangeFrom(TaggedSeal)
-  /// `...` のこと
-  case unboundedRange
 }
 
 public func ..< (lhs: TaggedSeal, rhs: TaggedSeal)
@@ -73,16 +71,16 @@ extension TaggedSealRangeExpression {
         through: __tree_.__purified_(through))
 
     case .partialRangeTo(let to):
-      return .partialRangeTo(__tree_.__purified_(to))
+      return .partialRangeTo(
+        __tree_.__purified_(to))
 
     case .partialRangeThrough(let through):
-      return .partialRangeThrough(__tree_.__purified_(through))
+      return .partialRangeThrough(
+        __tree_.__purified_(through))
 
     case .partialRangeFrom(let from):
-      return .partialRangeFrom(__tree_.__purified_(from))
-
-    case .unboundedRange:
-      return .unboundedRange
+      return .partialRangeFrom(
+        __tree_.__purified_(from))
     }
   }
 

@@ -15,14 +15,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: sealed化
-
 // TODO: 仕様及び設計について再検討すること
 // プロトコル適合問題だけに対処して止まっている気がする
 // そもそも使いやすくすること自体が不可能かもしれない
-
-// TODO: 再度チューニングすること
-// 荒く書いた段階なのでいろいろ手抜きがある
 
 public
   struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>:
@@ -66,8 +61,8 @@ extension UnsafeIndexV2Collection {
 
 extension UnsafeIndexV2Collection {
 
-  public var startIndex: Index { ___index(_start.sealed) }
-  public var endIndex: Index { ___index(_end.sealed) }
+  public var startIndex: Index { ___index(_sealed_start) }
+  public var endIndex: Index { ___index(_sealed_end) }
 
   public func makeIterator() -> Iterator {
     .init(start: _sealed_start, end: _sealed_end, tie: tied)
@@ -95,13 +90,6 @@ extension UnsafeIndexV2Collection {
         start: bounds.lowerBound.sealed,
         end: bounds.upperBound.sealed,
         tie: bounds.lowerBound.tied)
-    }
-  #endif
-
-  #if !COMPATIBLE_ATCODER_2025
-    public subscript(bounds: UnsafeIndexV2RangeExpression<Base>) -> UnsafeIndexV2Collection {
-      let (lower, upper) = bounds.relative(to: tied)
-      return .init(start: lower, end: upper, tie: tied)
     }
   #endif
 }

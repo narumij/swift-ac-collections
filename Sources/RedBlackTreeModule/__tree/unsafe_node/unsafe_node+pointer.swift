@@ -80,10 +80,9 @@ where
 {
 
   @inlinable
-  @inline(__always)
   var __ptr_: UnsafeMutablePointer<UnsafeNode> {
-    _read { yield pointee }
-    _modify { yield &pointee }
+    @inline(__always) _read { yield pointee }
+    @inline(__always) _modify { yield &pointee }
   }
 }
 

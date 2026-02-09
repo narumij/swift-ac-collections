@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 public protocol _BaseNode_NodeCompareProtocol:
-  _BaseNode_PtrUniqueCompProtocol
+  _BaseNode_PtrUniqueCompInterface
     & _BaseNode_PtrCompProtocol
     & _BaseNode_SignedDistanceProtocol
 {}
@@ -122,5 +122,20 @@ extension _BaseNode_PtrUniqueCompProtocol {
     assert(!r.___is_null, "Node shouldn't be null")
     assert(!r.___is_end, "Node shouldn't be end")
     return value_comp(__get_value(l), __get_value(r))
+  }
+}
+
+public protocol _BaseComparableNode_PtrUniqueCompProtocol:
+  _BaseNode_PtrUniqueCompInterface
+    & _BaseKey_LessThanInterface
+    & _BaseNode_KeyInterface
+where _Key: Comparable
+{}
+
+extension _BaseComparableNode_PtrUniqueCompProtocol {
+
+  @inlinable @inline(__always)
+  public static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+    return __get_value(l) < __get_value(r)
   }
 }

@@ -35,7 +35,7 @@ public protocol ComparableKeyTrait:
   ValueComparer
     & _BaseComparableKey_LessThanProtocol
     & _BaseEquatableKey_EquivProtocol
-    & _BaseNode_PtrUniqueCompProtocol
+    & _BaseComparableNode_PtrUniqueCompProtocol
     & _BaseNode_PtrCompProtocol
     & _BaseNode_PtrRangeCompProtocol
 where

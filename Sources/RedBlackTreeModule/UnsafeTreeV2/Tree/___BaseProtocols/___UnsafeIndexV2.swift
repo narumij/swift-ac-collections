@@ -148,7 +148,7 @@ extension ___UnsafeIndexV2 {
   @discardableResult
   @inlinable @inline(__always)
   public mutating func ___erase(_ ptr: Index) -> Index {
-    ___index(__tree_.erase(try! __tree_.__purified_(ptr).get().pointer).sealed)
+    ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
   }
 }
 

@@ -15,9 +15,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _ScalarBaseRawValue_KeyProtocol: _ScalarBaseType & _BaseRawValue_KeyInterface {}
+public protocol _ScalarBasePayloadValue_KeyProtocol: _ScalarBaseType & _BasePayloadValue_KeyInterface {}
 
-extension _ScalarBaseRawValue_KeyProtocol {
+extension _ScalarBasePayloadValue_KeyProtocol {
 
   @inlinable
   @inline(__always)

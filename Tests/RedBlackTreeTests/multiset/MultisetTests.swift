@@ -344,12 +344,12 @@ final class MultisetTests: RedBlackTreeTestCase {
   #if DEBUG
     func testIndexLimit3() throws {
       let set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
-      XCTAssertEqual(set.startIndex._rawTag, 0)
-      XCTAssertEqual(set.index(before: set.endIndex)._rawTag, 4)
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1)._rawTag, 4)
+      XCTAssertEqual(set.startIndex.value, 0)
+      XCTAssertEqual(set.index(before: set.endIndex).value, 4)
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -1).value, 4)
       XCTAssertEqual(
-        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?._rawTag, 4)
-      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5)._rawTag, 0)
+        set.index(set.endIndex, offsetBy: -1, limitedBy: set.startIndex)?.value, 4)
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -5).value, 0)
       XCTAssertEqual(set.index(set.endIndex, offsetBy: -5), set.startIndex)
       XCTAssertNotEqual(
         set.index(set.endIndex, offsetBy: -4, limitedBy: set.index(set.endIndex, offsetBy: -4)),
@@ -369,72 +369,72 @@ final class MultisetTests: RedBlackTreeTestCase {
     }
   #endif
 
-#if COMPATIBLE_ATCODER_2025
-  func testRandom() throws {
-    var set = RedBlackTreeMultiSet<Int>()
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
+  #if COMPATIBLE_ATCODER_2025
+    func testRandom() throws {
+      var set = RedBlackTreeMultiSet<Int>()
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.removeAll(i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.removeAll(i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      for i in set {
+        set.removeAll(i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
     }
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for i in set {
-      set.removeAll(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-  }
 
-  func testRandom2() throws {
-    var set = RedBlackTreeMultiSet<Int>()
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
+    func testRandom2() throws {
+      var set = RedBlackTreeMultiSet<Int>()
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.removeAll(i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.removeAll(i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
+      for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
+        set.insert(i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+      XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
+      print("set.count", set.count)
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        print("set._copyCount", set._copyCount)
+      #endif
+      for i in set[set.startIndex..<set.endIndex] {
+        // erase multiなので、CoWなしだと、ポインタが破壊される
+        set.removeAll(i)
+        XCTAssertTrue(set.___tree_invariant())
+      }
     }
-    XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
-    print("set.count", set.count)
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      print("set._copyCount", set._copyCount)
-    #endif
-    for i in set[set.startIndex..<set.endIndex] {
-      // erase multiなので、CoWなしだと、ポインタが破壊される
-      set.removeAll(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-  }
   #endif
 
   func testRandom3() throws {
@@ -544,12 +544,12 @@ final class MultisetTests: RedBlackTreeTestCase {
   #if DEBUG
     func testRedBlackTreeSetLowerBound() throws {
       let numbers: RedBlackTreeMultiSet = [1, 3, 5, 7, 9]
-      XCTAssertEqual(numbers.lowerBound(4)._rawTag, 2)
+      XCTAssertEqual(numbers.lowerBound(4).value, 2)
     }
 
     func testRedBlackTreeSetUpperBound() throws {
       let numbers: RedBlackTreeMultiSet = [1, 3, 5, 7, 9]
-      XCTAssertEqual(numbers.upperBound(7)._rawTag, 4)
+      XCTAssertEqual(numbers.upperBound(7).value, 4)
     }
   #endif
 
@@ -570,9 +570,9 @@ final class MultisetTests: RedBlackTreeTestCase {
   #if DEBUG
     func testRedBlackTreeSetFirstIndex() throws {
       var members: RedBlackTreeMultiSet = [1, 3, 5, 7, 9]
-      XCTAssertEqual(members.firstIndex(of: 3)?._rawTag, .init(1))
+      XCTAssertEqual(members.firstIndex(of: 3)?.value, .init(1))
       XCTAssertEqual(members.firstIndex(of: 2), nil)
-      XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?._rawTag, .init(2))
+      XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?.value, .init(2))
       XCTAssertEqual(members.firstIndex(where: { $0 > 9 }), nil)
       XCTAssertEqual(members.sorted(), [1, 3, 5, 7, 9])
       XCTAssertEqual(members.removeFirst(), 1)
@@ -849,18 +849,18 @@ final class MultisetTests: RedBlackTreeTestCase {
     let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
     let sub = set[set.index(after: set.lowerBound(2))..<set.upperBound(2)]
     XCTAssertEqual(sub.map { $0 }, [2, 2])
-#if COMPATIBLE_ATCODER_2025
-    XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.upperBound(2))
-#endif
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.upperBound(2))
+    #endif
   }
 
   func testIndex3() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
     let sub = set[set.index(after: set.lowerBound(2))...set.index(before: set.upperBound(2))]
     XCTAssertEqual(sub.map { $0 }, [2, 2])
-#if COMPATIBLE_ATCODER_2025
-    XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.index(before: set.upperBound(2)))
-#endif
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.index(before: set.upperBound(2)))
+    #endif
   }
 
   #if !COMPATIBLE_ATCODER_2025
@@ -880,9 +880,9 @@ final class MultisetTests: RedBlackTreeTestCase {
       let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
       let sub = set[unchecked: set.index(after: set.lowerBound(2))..<set.upperBound(2)]
       XCTAssertEqual(sub.map { $0 }, [2, 2])
-#if COMPATIBLE_ATCODER_2025
-      XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.upperBound(2))
-#endif
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.upperBound(2))
+      #endif
     }
 
     func testIndex6() throws {
@@ -890,9 +890,9 @@ final class MultisetTests: RedBlackTreeTestCase {
       let sub = set[
         unchecked: set.index(after: set.lowerBound(2))...set.index(before: set.upperBound(2))]
       XCTAssertEqual(sub.map { $0 }, [2, 2])
-#if COMPATIBLE_ATCODER_2025
-      XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.index(before: set.upperBound(2)))
-#endif
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.index(before: set.upperBound(2)))
+      #endif
     }
   #endif
 
@@ -983,9 +983,9 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = RedBlackTreeMultiSet<Int>.Index
     #if DEBUG
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: -1)._rawTag, -1)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
       // UnsafeTreeでは、範囲外のインデックスを作成できない
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).trackingTag._rawTag, .nullptr)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).tag.value, nil)
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
@@ -1003,8 +1003,8 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = RedBlackTreeMultiSet<Int>.Index
     #if DEBUG
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: -1)._rawTag, -1)
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5)._rawTag, 5)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, 5)
 
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))

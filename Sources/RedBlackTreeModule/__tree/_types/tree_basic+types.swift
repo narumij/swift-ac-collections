@@ -15,13 +15,26 @@
 //
 //===----------------------------------------------------------------------===//
 
-// 型の解決を制約の一致任せにしているといろいろしんどいので、
-// 型に関して辿ると一意にここら辺に定まるようにする
-// 期待するところとして、コンパイル負荷軽減と、witnessテーブル削減あたり
-
-// 三方比較に関してはどこに配置するか迷っている（型がインターフェースを参照しているため）
-
-// `_Value`という型名はこのコードベースでは中途半端で混乱の元なので使用しない方針とする
+/*
+ プロトコルは、依存関係のもつれや循環を解消するために非常に細かく分解されている
+ 型に関して辿ると一意にここら辺に定まるようにする
+ 期待するところとして、コンパイル負荷軽減と、witnessテーブル削減あたり
+ `_Value`という型名はこのコードベースでは中途半端で混乱の元なので使用しない方針とする
+ 
+ ### protocolの分類
+ 
+ 型について語ってるだけのものはsuffixにTypeを使う
+ 型を利用してメソッドについて語ってるだけのものはSuffixにInterfaceを使う
+ 実装が混じってるものや未分類はsuffixにProtocolを使う
+ 移行の追加suffixは、配列ベースがstdかorg、ポインタベースはptr
+ たまに気分でsuffixナシをつかう
+ 
+ つまるところ、パスカルケースのプロトコル命名では、うそやまぎらわしいは許さないこと
+ 
+ TypeやInterfaceは、キャメルケースにし、一意に定まるようにする
+ 元のソースを尊重した別名系のものはスネークケースにする
+ 
+ */
 
 // MARK: - Primitives
 
@@ -146,6 +159,11 @@ public protocol _BasePaylodValue_ElementInterface: _PayloadValueType, _ElementTy
   static func __element_(_ __value: _PayloadValue) -> Element
 }
 
+/// DictionaryやMultiMapは、コレクション要素型から積載型への変換方法も必要になる
+public protocol _KeyValueBasePaylodValue_ElementInterface: _BasePaylodValue_ElementInterface {
+  static func __payload_(_ __e: Element) -> _PayloadValue
+}
+
 /// SetやMultiSetの、積載型からコレクション要素型への変換方法
 public protocol _ScalarBase_ElementProtocol:
   _BasePaylodValue_ElementInterface
@@ -154,24 +172,27 @@ public protocol _ScalarBase_ElementProtocol:
 
 extension _ScalarBase_ElementProtocol {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public static func __element_(_ __value: _PayloadValue) -> Element { __value }
 }
 
-/// DictionaryやMultiMapの積載型がペアの場合、コレクション要素型への変換方法
+/// DictionaryやMultiMap、積載型からコレクション要素型への変換方法
 public protocol _PairBase_ElementProtocol:
-  _BasePaylodValue_ElementInterface
+  _KeyValueBasePaylodValue_ElementInterface
     & _PairBaseType
     & _KeyValueElementType
 {}
 
 extension _PairBase_ElementProtocol {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public static func __element_(_ __value: _PayloadValue) -> Element {
     (__value.key, __value.value)
+  }
+
+  @inlinable @inline(__always)
+  public static func __payload_(_ __e: Element) -> _PayloadValue {
+    RedBlackTreePair(__e)
   }
 }
 

@@ -89,15 +89,28 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  // _NodePtrがIntだった頃の名残
   @nonobjc
   @inlinable
-  internal subscript(_ pointer: _NodePtr) -> _PayloadValue {
+  internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {
     @inline(__always) _read {
       yield pointer.__value_().pointee
     }
     @inline(__always) _modify {
       yield &pointer.__value_().pointee
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @nonobjc
+  @inlinable
+  internal subscript(_unsafe pointer: _SealedPtr) -> _PayloadValue {
+    @inline(__always) _read {
+      yield self[_unsafe_raw: try! pointer.get().pointer]
+    }
+    @inline(__always) _modify {
+      yield &self[_unsafe_raw: try! pointer.get().pointer]
     }
   }
 }
@@ -125,34 +138,26 @@ extension UnsafeTreeV2 {
   }
 #endif
 
-#if false
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    @inline(__always)
-    func makeFreshBucketIterator() -> _UnsafeNodeFreshBucketIterator<_PayloadValue> {
-      return _UnsafeNodeFreshBucketIterator<_PayloadValue>(bucket: _buffer.header.freshBucketHead)
-    }
-  }
-#endif
-
 // MARK: Index Resolver
 
 extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package subscript(_rawTag tag: _RawTrackingTag) -> _SafePtr {
+  package subscript(__retrieve_ tag: _TrackingTag) -> _SafePtr {
     switch tag {
     case .nullptr: .failure(.null)
     case .end: .success(end)
     default: tag < capacity ? .success(_buffer.header[tag]) : .failure(.unknown)
     }
   }
+}
+
+extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package func resolve(tag: TagSeal_) -> _SealedPtr {
+  package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
     switch tag {
     case .end:
       return end.sealed
@@ -164,10 +169,13 @@ extension UnsafeTreeV2 {
     }
   }
 
+  /// つながりをたぐりよせる
+  ///
+  /// 日本人的にはお祭りなどによくある千本引きのイメージ
   @inlinable
   @inline(__always)
-  package func resolve(_ tag: TaggedSeal) -> _SealedPtr {
-    tag.flatMap { resolve(tag: $0) }
+  package func __retrieve_(_ tag: _SealedTag) -> _SealedPtr {
+    tag.flatMap { ___retrieve(tag: $0) }
   }
 }
 
@@ -179,8 +187,16 @@ extension UnsafeTreeV2 {
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   @inline(__always)
-  internal func __sealed_(_ index: Index) -> _SealedPtr
+  internal func __purified_(_ index: Index) -> _SealedPtr
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-    tied === index.tied ? index.sealed : self.resolve(index.trackingTag)
+    tied === index.tied
+      ? index.sealed.purified
+      : __retrieve_(index.sealed.purified.tag).purified
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func __purified_(_ sealedTag: _SealedTag) -> _SealedPtr {
+    __retrieve_(sealedTag).purified
   }
 }

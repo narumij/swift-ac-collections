@@ -41,7 +41,7 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
     self.root_ptr = _ref(to: &head.end_ptr.pointee.__left_)
     self.freshBucketAllocator = allocator
     self.pushFreshBucket(head: head)
-    assert(begin_ptr.pointee == head.end_ptr)
+    assert(begin_ptr.pointee == head.end_ptr, "空の木の初期条件を満たしていること")
   }
 
   @usableFromInline var count: Int = 0
@@ -158,7 +158,7 @@ extension UnsafeTreeV2BufferHeader {
 
     @inlinable
     mutating func pushFreshBucket(capacity: Int) {
-      assert(freshBucketHead == nil || capacity != 0)
+      assert(freshBucketHead == nil || capacity != 0, "先頭のみ容量0を許容し、移行は容量0を許容しないこと")
       let (pointer, _) = freshBucketAllocator.createBucket(capacity: capacity)
       freshBucketLast?.pointee.next = pointer
       freshBucketLast = pointer
@@ -193,8 +193,8 @@ extension UnsafeTreeV2BufferHeader {
      Violating this invariant may cause excessive traversal or undefined behavior.
     */
     @inlinable
-    subscript(___tracking_tag: _RawTrackingTag) -> _NodePtr {
-      assert(___tracking_tag >= 0)
+    subscript(___tracking_tag: _TrackingTag) -> _NodePtr {
+      assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
       var remaining = ___tracking_tag
       var p = freshBucketHead?.accessor(payload: payload)
       while let h = p {
@@ -220,7 +220,7 @@ extension UnsafeTreeV2BufferHeader {
 
     @usableFromInline
     mutating func ___deallocFreshPool() {
-      assert(_tied == nil)
+      assert(_tied == nil, "メモリ管理権が移行されていないこと")
       freshBucketAllocator.deallocate(bucket: freshBucketHead)
     }
   }
@@ -283,11 +283,11 @@ extension UnsafeTreeV2BufferHeader {
   mutating public
     func ___popFresh() -> _NodePtr
   {
-    assert(freshPoolUsedCount < freshPoolCapacity)
+    assert(freshPoolUsedCount < freshPoolCapacity, "未使用容量の残数が0ではないこと")
     guard let p = popFresh() else {
       return nullptr
     }
-    assert(p.pointee.___tracking_tag == .debug)
+    assert(p.pointee.___tracking_tag == .debug, "未使用ノードであること")
     #if true
       p.initialize(to: nullptr.pointee)
       p.pointee.___tracking_tag = freshPoolUsedCount
@@ -306,20 +306,20 @@ extension UnsafeTreeV2BufferHeader {
   @inline(__always)
   public mutating func __construct_raw_node() -> _NodePtr {
     #if DEBUG
-      assert(recycleCount >= 0)
+      assert(recycleCount >= 0, "リサイクル残がある場合は新規ノードを利用しないこと")
     #endif
     let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
-    assert(p.pointee.___tracking_tag >= 0)
+    assert(p.pointee.___tracking_tag >= 0, "特殊ノードではないこと")
     return p
   }
 
   public mutating func __construct_node<T>(_ k: T) -> _NodePtr {
     #if DEBUG
-      assert(recycleCount >= 0)
+      assert(recycleCount >= 0, "リサイクル残がある場合は新規ノードを利用しないこと")
     #endif
     let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
     p.__value_().initialize(to: k)
-    assert(p.pointee.___tracking_tag >= 0)
+    assert(p.pointee.___tracking_tag >= 0, "特殊ノードではないこと")
     return p
   }
 }

@@ -151,7 +151,7 @@ extension _BucketAllocator {
   @inline(__always)
   public func createBucket(capacity: Int) -> (_BucketPointer, capacity: Int) {
 
-    assert(capacity != 0)
+    assert(capacity != 0, "先頭以外のバケットは容量0ではないこと")
 
     let (bytes, alignment) = (_allocationSize(capacity: capacity), _pair.alignment)
 

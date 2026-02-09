@@ -15,36 +15,41 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _PairBaseRawValue_KeyProtocol: _PairBaseType & _BaseRawValue_KeyInterface {}
+public protocol _PairBasePayloadValue_KeyProtocol:
+  _PairBaseType
+    & _BasePayloadValue_KeyInterface
+{}
 
-extension _PairBaseRawValue_KeyProtocol {
+extension _PairBasePayloadValue_KeyProtocol {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public static func __key(_ __v: _PayloadValue) -> _Key { __v.key }
 }
 
-public protocol _PairBaseRawValue_MappedValueProtocol: _PairBaseType
-    & _BaseRawValue_MappedValueInterface
+public protocol _PairBasePayloadValue_MappedValueProtocol:
+  _PairBaseType
+    & _BasePayloadValue_MappedValueInterface
 {}
 
-extension _PairBaseRawValue_MappedValueProtocol {
+extension _PairBasePayloadValue_MappedValueProtocol {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public static func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue { __v.value }
 }
 
-public protocol _BasePairRawValue_WithMappedValueProtocol: _PairBaseType & WithMappedValueInterface {}
+public protocol _PairBasePayloadValue_WithMappedValueProtocol:
+  _PairBaseType
+    & _BasePayloadValue_WithMappedValueInterface
+{}
 
-extension _BasePairRawValue_WithMappedValueProtocol {
+extension _PairBasePayloadValue_WithMappedValueProtocol {
 
-  @inlinable
-  @inline(__always)
+  @inlinable @inline(__always)
   public static func ___with_mapped_value<ResultType>(
     _ __v: inout _PayloadValue,
     _ __body: (inout _MappedValue) throws -> ResultType
   ) rethrows -> ResultType {
+
     try __body(&__v.value)
   }
 }

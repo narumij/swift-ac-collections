@@ -20,14 +20,17 @@ import Foundation
 extension RedBlackTreeSliceV2 {
 
   public struct KeyValue:
-    ___UnsafeCommonV2
-      & ___UnsafeSubSequenceV2
+    UnsafeTreeRangeBaseInterface
+      & _SubSequenceV2
       & ___UnsafeIndexV2
       & ___UnsafeKeyValueSequenceV2
       & UnsafeIndicesProtoocl
+      & UnsafeIndexProtocol_tree
   where
-    Base: ___TreeBase & ___TreeIndex & KeyValueComparer,
-    Base._PayloadValue == RedBlackTreePair<Base._Key, Base._MappedValue>
+    Base: ___TreeBase
+      & PairValueTrait
+      & _BaseNode_SignedDistanceInterface
+      & _BaseNode_PtrCompInterface
   {
 
     public typealias Tree = UnsafeTreeV2<Base>
@@ -113,20 +116,20 @@ extension RedBlackTreeSliceV2.KeyValue {
     @inline(__always)
     public var first: Element? {
       guard !___is_empty else { return nil }
-      return __element_(__tree_[_start])
+      return Base.__element_(__tree_[_unsafe_raw: _start])
     }
 
     @inlinable
     @inline(__always)
     public var last: Element? {
       guard !___is_empty else { return nil }
-      return __element_(__tree_[__tree_prev_iter(_end)])
+      return Base.__element_(__tree_[_unsafe_raw: __tree_prev_iter(_end)])
     }
 
     /// - Complexity: O(log *n*)
     @inlinable
     public func firstIndex(of key: _Key) -> Index? {
-      ___first_index { ($0 as _PayloadValue).key == key }
+      ___first_index { $0.key == key }
     }
 
     /// - Complexity: O(*n*)
@@ -245,7 +248,7 @@ extension RedBlackTreeSliceV2.KeyValue {
   @inlinable
   @inline(__always)
   public func isValid(index i: Index) -> Bool {
-    (try? __tree_.__sealed_(i).map { ___contains($0.pointer) }.get()) ?? false
+    (try? __tree_.__purified_(i).map { ___contains($0.pointer) }.get()) ?? false
   }
 }
 
@@ -373,3 +376,12 @@ extension RedBlackTreeSliceV2.KeyValue: CustomDebugStringConvertible {
     description
   }
 }
+
+#if AC_COLLECTIONS_INTERNAL_CHECKS
+  extension RedBlackTreeSliceV2.KeyValue {
+
+    package var _copyCount: UInt {
+      __tree_.copyCount
+    }
+  }
+#endif

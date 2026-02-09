@@ -5,48 +5,49 @@
 //  Created by narumij on 2026/01/29.
 //
 
-// これはfor文では使えない
+/// 赤黒木用軽量Range
+///
+/// - note: for文の範囲指定に使えない
+///
 public enum TaggedSealRangeExpression: Equatable {
-  public typealias Bound = TaggedSeal
+  public typealias Bound = _SealedTag
   /// `a..<b` のこと
-  case range(from: TaggedSeal, to: TaggedSeal)
+  case range(from: _SealedTag, to: _SealedTag)
   /// `a...b` のこと
-  case closedRange(from: TaggedSeal, through: TaggedSeal)
+  case closedRange(from: _SealedTag, through: _SealedTag)
   /// `..<b` のこと
-  case partialRangeTo(TaggedSeal)
+  case partialRangeTo(_SealedTag)
   /// `...b` のこと
-  case partialRangeThrough(TaggedSeal)
+  case partialRangeThrough(_SealedTag)
   /// `a...` のこと
-  case partialRangeFrom(TaggedSeal)
-  /// `...` のこと
-  case unboundedRange
+  case partialRangeFrom(_SealedTag)
 }
 
-public func ..< (lhs: TaggedSeal, rhs: TaggedSeal)
+public func ..< (lhs: _SealedTag, rhs: _SealedTag)
   -> TaggedSealRangeExpression
 {
   .range(from: lhs, to: rhs)
 }
 
-public func ... (lhs: TaggedSeal, rhs: TaggedSeal)
+public func ... (lhs: _SealedTag, rhs: _SealedTag)
   -> TaggedSealRangeExpression
 {
   .closedRange(from: lhs, through: rhs)
 }
 
-public prefix func ..< (rhs: TaggedSeal)
+public prefix func ..< (rhs: _SealedTag)
   -> TaggedSealRangeExpression
 {
   .partialRangeTo(rhs)
 }
 
-public prefix func ... (rhs: TaggedSeal)
+public prefix func ... (rhs: _SealedTag)
   -> TaggedSealRangeExpression
 {
   .partialRangeThrough(rhs)
 }
 
-public postfix func ... (lhs: TaggedSeal)
+public postfix func ... (lhs: _SealedTag)
   -> TaggedSealRangeExpression
 {
   .partialRangeFrom(lhs)
@@ -64,25 +65,25 @@ extension TaggedSealRangeExpression {
 
     case .range(let from, let to):
       return .range(
-        from: from.relative(to: __tree_),
-        to: to.relative(to: __tree_))
+        from: __tree_.__purified_(from),
+        to: __tree_.__purified_(to))
 
     case .closedRange(let from, let through):
       return .closedRange(
-        from: from.relative(to: __tree_),
-        through: through.relative(to: __tree_))
+        from: __tree_.__purified_(from),
+        through: __tree_.__purified_(through))
 
     case .partialRangeTo(let to):
-      return .partialRangeTo(to.relative(to: __tree_))
+      return .partialRangeTo(
+        __tree_.__purified_(to))
 
     case .partialRangeThrough(let through):
-      return .partialRangeThrough(through.relative(to: __tree_))
+      return .partialRangeThrough(
+        __tree_.__purified_(through))
 
     case .partialRangeFrom(let from):
-      return .partialRangeFrom(from.relative(to: __tree_))
-
-    case .unboundedRange:
-      return .unboundedRange
+      return .partialRangeFrom(
+        __tree_.__purified_(from))
     }
   }
 

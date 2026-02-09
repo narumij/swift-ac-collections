@@ -17,7 +17,7 @@
 
 @inlinable
 @inline(__always)
-func ___is_null_or_end__(tag: _RawTrackingTag) -> Bool {
+func ___is_null_or_end__(tag: _TrackingTag) -> Bool {
   // 名前が衝突するしパッケージ名を書きたくないため中継している
   ___is_null_or_end(tag)
 }
@@ -48,12 +48,4 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   internal var ___is_root: Bool {
     __parent_.___is_end
   }  
-}
-
-extension UnsafeMutablePointer where Pointee == UnsafeNode {
-
-  @usableFromInline
-  internal var ___is_slow_begin: Bool {
-    __tree_min(__slow_end().__left_) == self
-  }
 }

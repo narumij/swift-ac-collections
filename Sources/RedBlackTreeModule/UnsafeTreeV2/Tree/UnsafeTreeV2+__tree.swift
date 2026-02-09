@@ -15,6 +15,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+/* デッドコードここから。フォールバックされてないかチェックできる箇所なのでしばらく残す */
+
 // MARK: - TreeEndNodeProtocol
 
 extension UnsafeTreeV2: _pointer_type {
@@ -114,16 +116,11 @@ extension UnsafeTreeV2: TreeNodeRefAccessInterface {
   }
 }
 
+/* デッドコードここまで。フォールバックされてないかチェックできる箇所なのでしばらく残す */
+
 // MARK: - TreeNodeValueProtocol
 
-extension UnsafeTreeV2: _TreeNode_KeyProtocol {
-
-//  @inlinable
-//  @inline(__always)
-//  package func __get_value(_ p: _NodePtr) -> _Key {
-//    Base.__key(p.__value_().pointee)
-//  }
-}
+extension UnsafeTreeV2: _TreeNode_KeyProtocol {}
 
 // MARK: - BeginNodeProtocol
 
@@ -134,13 +131,13 @@ extension UnsafeTreeV2 {
 
     @inline(__always) get {
       //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
-//      origin.pointee.begin_ptr
+      //      origin.pointee.begin_ptr
       withMutableHeader { $0.begin_ptr.pointee }
     }
 
     @inline(__always)
     nonmutating set {
-//      origin.pointee.begin_ptr = newValue
+      //      origin.pointee.begin_ptr = newValue
       //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
       withMutableHeader { $0.begin_ptr.pointee = newValue }
 
@@ -155,7 +152,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   package var __end_node: _NodePtr {
-//    origin.pointee.end_ptr
+    //    origin.pointee.end_ptr
     withMutableHeader { $0.end_ptr }
   }
 }
@@ -169,7 +166,7 @@ extension UnsafeTreeV2 {
     @inlinable
     @inline(__always)
     package var __root: _NodePtr {
-      get { withMutableHeader { $0.__root } }
+      withMutableHeader { $0.__root }
     }
   #else
     @inlinable
@@ -185,8 +182,9 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   package func __root_ptr() -> _NodeRef {
-//    origin.pointee.__root_ptr()
-    withMutableHeader { $0.__root_ptr() }  }
+    //    origin.pointee.__root_ptr()
+    withMutableHeader { $0.__root_ptr() }
+  }
 }
 
 // MARK: - SizeProtocol
@@ -240,14 +238,13 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2: ValueComparator {}
-extension UnsafeTreeV2: BoundBothInterface {
+extension UnsafeTreeV2: _PayloadKeyBridge & _ValueCompBridge & _PtrCompBridge
+    & _PtrRangeCompBridge
+{}
 
-  @inlinable
-  @inline(__always)
-  package static var isMulti: Bool {
-    Base.isMulti
-  }
+extension UnsafeTreeV2: _SignedDistanceBridge where Base: _BaseNode_SignedDistanceInterface {}
+
+extension UnsafeTreeV2: BoundBothInterface {
 
   @inlinable
   @inline(__always)
@@ -259,7 +256,7 @@ extension UnsafeTreeV2: BoundBothInterface {
 extension UnsafeTreeV2: IntThreeWayComparator {}
 extension UnsafeTreeV2: FindProtocol_ptr {}
 extension UnsafeTreeV2: FindEqualInterface, FindEqualProtocol_ptr {
-  
+
   @inlinable
   @inline(__always)
   package func __comp(_ __lhs: Base._Key, _ __rhs: Base._Key) -> __compare_result {
@@ -276,9 +273,22 @@ extension UnsafeTreeV2: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2: EraseProtocol {}
 extension UnsafeTreeV2: EraseUniqueProtocol {}
 extension UnsafeTreeV2: EraseMultiProtocol {}
-extension UnsafeTreeV2: _TreeNode_PtrCompProtocol, _TreeNode_PtrCompUniqueProtocol {}
-extension UnsafeTreeV2: CountProtocol_ptr, DistanceProtocol_ptr {}
+extension UnsafeTreeV2: CountProtocol_ptr {}
 extension UnsafeTreeV2: InsertLastProtocol_ptr {}
-extension UnsafeTreeV2: CompareProtocol {}
 extension UnsafeTreeV2: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2: TreeAlgorithmProtocol_ptr {}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func ___min() -> _PayloadValue? {
+    __root == nullptr ? nil : self[_unsafe_raw: __tree_min(__root)]
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func ___max() -> _PayloadValue? {
+    __root == nullptr ? nil : self[_unsafe_raw: __tree_max(__root)]
+  }
+}

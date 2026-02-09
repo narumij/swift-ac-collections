@@ -21,10 +21,17 @@ protocol _TreeNode_PtrCompInterface: _NodePtrType {
 }
 
 @usableFromInline
+protocol _TreeNode_PtrCompUniqueInterface: _NodePtrType {
+  func ___ptr_comp_unique(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
+}
+
+// 配列インデックス方式向け
+@usableFromInline
 protocol _TreeNode_PtrCompMultiInterface: _NodePtrType {
   func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
 }
 
+// 配列インデックス方式向け
 @usableFromInline
 protocol _TreeNode_PtrCompBitmapInterface: _NodePtrType {
   func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
@@ -33,4 +40,3 @@ protocol _TreeNode_PtrCompBitmapInterface: _NodePtrType {
 public protocol _Tree_IsMultiTraitInterface {
   var isMulti: Bool { get }
 }
-

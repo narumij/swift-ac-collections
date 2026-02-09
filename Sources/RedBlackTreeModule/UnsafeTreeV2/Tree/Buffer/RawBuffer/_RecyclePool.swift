@@ -22,14 +22,16 @@ protocol _RecyclePool: _UnsafeNodePtrType {
   var freshPoolUsedCount: Int { get set }
   var nullptr: _NodePtr { get }
   var freshBucketAllocator: _BucketAllocator { get }
+  var end_ptr: _NodePtr { get }
 }
 
 extension _RecyclePool {
 
   @inlinable
   mutating func ___pushRecycle(_ p: _NodePtr) {
-    assert(p.pointee.___tracking_tag > .end)
-    assert(recycleHead != p)
+    assert(p.__parent_.___is_null || p.__slow_end() == end_ptr, "木が異なるのは不可")
+    assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
+    assert(recycleHead != p, "過剰リサイクル不可")
     count -= 1
     #if DEBUG || true
       p.pointee.___recycle_count &+= 1
@@ -62,7 +64,7 @@ extension _RecyclePool {
 
 #if DEBUG || GRAPHVIZ_DEBUG
   extension _RecyclePool {
-    
+
     @usableFromInline
     var recycleCount: Int {
       freshPoolUsedCount - count

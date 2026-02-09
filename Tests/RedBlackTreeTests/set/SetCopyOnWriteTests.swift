@@ -54,7 +54,6 @@ import XCTest
         tree.remove(v)
       }
       XCTAssertEqual(tree.count, 0)
-      throw XCTSkip("CoWの挙動変更のため")
       XCTAssertEqual(tree._copyCount, 0)  // これが0になる挙動にするか、1になる挙動にするか、悩み
     }
 
@@ -107,7 +106,6 @@ import XCTest
         }
       }
       XCTAssertEqual(xy[1]!.count, 0)
-      throw XCTSkip("CoWの挙動変更のため")
       XCTAssertEqual(xy[1]!._copyCount, 0)
       XCTAssertEqual(loopCount, count / N)
     }
@@ -121,14 +119,17 @@ import XCTest
         var loopCount = 0
         for i in 0..<count / N {
           loopCount += 1
+          // for文の場合イテレータに処理が移行するので木を保持しないが、
+          // forEachは利用ではこの分離ないので、CoWが発生するようになった
+          // 以前はこれを回避するよう設計で工夫していたが、その工夫自体のオーバーヘッドがもったいない
+          // わざわざsliceを改修するつもりもなく、このままとなります
           xy[1]?.elements(in: (i * N)..<(i * N + N)).forEach { i, v in
             xy[1]?.remove(at: i)
           }
         }
         XCTAssertEqual(xy[1]!.count, 0)
         //    XCTAssertEqual(xy[1]!.copyCount, count / N)
-        throw XCTSkip("CoWの挙動変更のため")
-        XCTAssertEqual(xy[1]!._copyCount, 0)
+        XCTAssertEqual(xy[1]!._copyCount, 1, "CoW関連構造の変更に伴い結果が変化")
         XCTAssertEqual(loopCount, count / N)
       }
     #endif

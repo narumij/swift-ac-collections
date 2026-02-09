@@ -11,8 +11,9 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
   #if DEBUG
     func testSetKeyAndValueComp() {
       let set: RedBlackTreeSet = [3, 1, 4, 5]
-      let keyComp = set.___key_comp
-      let valueComp = set.___value_comp
+      typealias SUT = RedBlackTreeSet<Int>
+      let keyComp = SUT.value_comp
+      let valueComp = { SUT.value_comp(SUT.__key($0), SUT.__key($1))}
 
       XCTAssertTrue(keyComp(1, 2))
       XCTAssertFalse(keyComp(2, 1))
@@ -47,8 +48,9 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
   #if DEBUG
     func testMultisetKeyAndValueComp() {
       let multi: RedBlackTreeMultiSet = [1, 2, 3]
-      let keyComp = multi.___key_comp
-      let valueComp = multi.___value_comp
+      typealias SUT = RedBlackTreeMultiSet<Int>
+      let keyComp = SUT.value_comp
+      let valueComp = { SUT.value_comp(SUT.__key($0), SUT.__key($1))}
 
       XCTAssertTrue(keyComp(1, 2))
       XCTAssertFalse(keyComp(3, 2))
@@ -59,9 +61,9 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
 
     func testDictionaryKeyValueCompAndEqualRange() {
       let dict: RedBlackTreeDictionary = ["a": 1, "b": 2, "c": 3]
-
-      let keyComp = dict.___key_comp
-      let valueComp = dict.___value_comp
+      typealias SUT = RedBlackTreeDictionary<String,Int>
+      let keyComp = SUT.value_comp
+      let valueComp = { SUT.value_comp(SUT.__key($0), SUT.__key($1))}
 
       XCTAssertTrue(keyComp("a", "b"))
       XCTAssertFalse(keyComp("c", "b"))
@@ -76,9 +78,9 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
 
     func testMultiMapKeyValueCompAndEqualRange() {
       let dict: RedBlackTreeMultiMap = ["a": 1, "b": 2, "c": 3]
-
-      let keyComp = dict.___key_comp
-      let valueComp = dict.___value_comp
+      typealias SUT = RedBlackTreeMultiMap<String,Int>
+      let keyComp = SUT.value_comp
+      let valueComp = { SUT.value_comp(SUT.__key($0), SUT.__key($1))}
 
       XCTAssertTrue(keyComp("a", "b"))
       XCTAssertFalse(keyComp("c", "b"))

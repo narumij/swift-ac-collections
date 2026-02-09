@@ -28,15 +28,15 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
-    assert(check())
+    assert(check(), "一括チェックに合格すること")
     let tree = withMutableHeader { header in
       UnsafeTreeV2._create(
         unsafeBufferObject:
           header.copyBuffer(Base._PayloadValue.self, minimumCapacity: minimumCapacity))
     }
-    assert(count == 0 || initializedCount == tree.initializedCount)
-    assert(count == 0 || equiv(with: tree))
-    assert(tree.check())
+    assert(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
+    assert(count == 0 || equiv(with: tree), "コピー前後で等価であること")
+    assert(tree.check(), "一括チェックに合格すること")
     return tree
   }
 }
@@ -86,7 +86,7 @@ extension UnsafeTreeV2BufferHeader {
     // CoW後の性能維持の為、freshBucket数は1を越えないこと
     // バケット数が1に保たれていると、フォールバックの___raw_indexによるアクセスがO(1)になる
     #if DEBUG
-      assert(_newBuffer.header.freshBucketCount <= 1)
+      assert(_newBuffer.header.freshBucketCount <= 1, "バケット数が単一またはなしであること")
     #endif
 
     _newBuffer.withUnsafeMutablePointerToHeader { newHeader in
@@ -102,7 +102,7 @@ extension UnsafeTreeV2BufferHeader {
 
       copyHeader(_PayloadValue.self, to: &newHeader.pointee, nullptr: nullptr)
 
-      assert(freshPoolUsedCount == newHeader.pointee.freshPoolUsedCount)
+      assert(freshPoolUsedCount == newHeader.pointee.freshPoolUsedCount, "コピー前後で初期化済み数が一致すること")
     }
 
     return _newBuffer
@@ -122,7 +122,8 @@ extension UnsafeTreeV2BufferHeader {
   ) {
 
     // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
-    let bucket = other.freshBucketHead!.accessor(payload: MemoryLayout<_PayloadValue>._memoryLayout)!
+    let bucket = other.freshBucketHead!.accessor(
+      payload: MemoryLayout<_PayloadValue>._memoryLayout)!
 
     /// 同一番号の新ノードを取得するメソッド内ユーティリティ
     @inline(__always)
@@ -163,7 +164,7 @@ extension UnsafeTreeV2BufferHeader {
 
     // ルートノードを設定
     other.__root = __ptr_(__root)
-    assert(__tree_invariant(other.__root))
+    assert(__tree_invariant(other.__root), "木の不変条件検査に合格すること")
 
     // __begin_nodeを初期化
     other.begin_ptr.pointee = __ptr_(begin_ptr.pointee)
@@ -173,10 +174,10 @@ extension UnsafeTreeV2BufferHeader {
     other.count = count
     other.freshPoolUsedCount = freshPoolUsedCount
 
-    assert(other.freshPoolUsedCount == freshPoolUsedCount)
-    assert(other.count == count)
+    assert(other.freshPoolUsedCount == freshPoolUsedCount, "コピー前後で初期化済み数が一致すること")
+    assert(other.count == count, "コピー前後で有効ノード数が一致すること")
 
-    assert(other.count <= other.freshPoolCapacity)
-    assert(other._tied == nil)
+    assert(other.count <= other.freshPoolCapacity, "容量が有効ノー度数を下回らないこと")
+    assert(other._tied == nil, "コピー後の木のメモリ管理権限が移行されていないこと")
   }
 }

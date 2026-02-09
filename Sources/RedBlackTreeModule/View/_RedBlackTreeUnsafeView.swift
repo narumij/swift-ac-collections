@@ -5,6 +5,8 @@
 //  Created by narumij on 2026/01/31.
 //
 
+// TODO: 削除
+
 /// 探索と削除に関して生木を扱う
 ///
 /// 挿入は用意しない
@@ -13,7 +15,7 @@ public struct _RedBlackTreeUnsafeView<Base>:
   _KeyBride,
   _PayloadValueBride,
   UnsafeIndexBinding,
-  ___UnsafeBaseSequenceV2,
+  _SequenceV2,
   ___UnsafeIndexV2
 where
   Base: ___TreeBase & ___TreeIndex
@@ -26,6 +28,14 @@ where
 
   @usableFromInline
   internal var __tree_: Tree
+}
+
+extension _RedBlackTreeUnsafeView {
+  
+  @usableFromInline
+  func ___index(_ p: _SealedPtr) -> Index {
+    Index(sealed: p, tie: __tree_.tied)
+  }
 }
 
 extension _RedBlackTreeUnsafeView {

@@ -39,7 +39,7 @@ public struct _LinkingPair<Key, Value> {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 }
 
-extension KeyValueComparer where _PayloadValue == _LinkingPair<_Key, _MappedValue> {
+extension KeyValueTrait where _PayloadValue == _LinkingPair<_Key, _MappedValue> {
 
   @inlinable @inline(__always)
   public static func __key(_ element: _PayloadValue) -> _Key { element.key }
@@ -49,8 +49,9 @@ extension KeyValueComparer where _PayloadValue == _LinkingPair<_Key, _MappedValu
 }
 
 @usableFromInline
-protocol ___LRULinkList: KeyValueComparer & _Base_IsMultiTraitInterface
-where _PayloadValue == _LinkingPair<_Key, _MappedValue> {
+protocol ___LRULinkList: KeyValueTrait & _Base_IsMultiTraitInterface & _UnsafeNodePtrType
+where _PayloadValue == _LinkingPair<_Key, _MappedValue>
+{
   associatedtype Value
   var __tree_: Tree { get set }
   var _rankHighest: _NodePtr { get set }
@@ -65,14 +66,14 @@ extension ___LRULinkList {
   @inline(__always)
   mutating func ___prepend(_ __p: _NodePtr) {
     if _rankHighest == __tree_.nullptr {
-      __tree_[__p].next = __tree_.nullptr
-      __tree_[__p].prev = __tree_.nullptr
+      __tree_[_unsafe_raw: __p].next = __tree_.nullptr
+      __tree_[_unsafe_raw: __p].prev = __tree_.nullptr
       _rankLowest = __p
       _rankHighest = __p
     } else {
-      __tree_[_rankHighest].prev = __p
-      __tree_[__p].next = _rankHighest
-      __tree_[__p].prev = __tree_.nullptr
+      __tree_[_unsafe_raw: _rankHighest].prev = __p
+      __tree_[_unsafe_raw: __p].next = _rankHighest
+      __tree_[_unsafe_raw: __p].prev = __tree_.nullptr
       _rankHighest = __p
     }
   }
@@ -82,20 +83,20 @@ extension ___LRULinkList {
   mutating func ___pop(_ __p: _NodePtr) -> _NodePtr {
 
     assert(
-      __p == _rankHighest || __tree_[__p].next != __tree_.nullptr
-        || __tree_[__p].prev != __tree_.nullptr,
+      __p == _rankHighest || __tree_[_unsafe_raw: __p].next != __tree_.nullptr
+        || __tree_[_unsafe_raw: __p].prev != __tree_.nullptr,
       "did not contain \(__p) ptr.")
 
     defer {
-      let prev = __tree_[__p].prev
-      let next = __tree_[__p].next
+      let prev = __tree_[_unsafe_raw: __p].prev
+      let next = __tree_[_unsafe_raw: __p].next
       if prev != __tree_.nullptr {
-        __tree_[prev].next = next
+        __tree_[_unsafe_raw: prev].next = next
       } else {
         _rankHighest = next
       }
       if next != __tree_.nullptr {
-        __tree_[next].prev = prev
+        __tree_[_unsafe_raw: next].prev = prev
       } else {
         _rankLowest = prev
       }
@@ -110,10 +111,10 @@ extension ___LRULinkList {
 
     defer {
       if _rankLowest != __tree_.nullptr {
-        _rankLowest = __tree_[_rankLowest].prev
+        _rankLowest = __tree_[_unsafe_raw: _rankLowest].prev
       }
       if _rankLowest != __tree_.nullptr {
-        __tree_[_rankLowest].next = __tree_.nullptr
+        __tree_[_unsafe_raw: _rankLowest].next = __tree_.nullptr
       } else {
         _rankHighest = __tree_.nullptr
       }

@@ -87,12 +87,9 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeDictionary: CompareUniqueTrait {}
-extension RedBlackTreeDictionary: KeyValueComparer {
-  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> RedBlackTreePair<Key, Value>
-  {
-    p.__value_().pointee
-  }
-}
+extension RedBlackTreeDictionary: PairValueTrait {}
+extension RedBlackTreeDictionary: _PairBasePayload_KeyProtocol_ptr {}
+extension RedBlackTreeDictionary: _BaseNode_NodeCompareProtocol {}
 
 // MARK: - Creating a Dictionay
 
@@ -123,7 +120,7 @@ extension RedBlackTreeDictionary {
     self.init(
       __tree_: .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
-        transform: Self.___tree_value
+        transform: Self.__payload_
       ))
   }
 }
@@ -141,7 +138,7 @@ extension RedBlackTreeDictionary {
       __tree_: try .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
         uniquingKeysWith: combine,
-        transform: Self.___tree_value
+        transform: Self.__payload_
       ))
   }
 }
@@ -283,14 +280,14 @@ extension RedBlackTreeDictionary {
         defer {
           if let value {
             //            _ensureUniqueAndCapacity()
-            let __h = __tree_.__construct_node(Self.___tree_value((key, value)))
+            let __h = __tree_.__construct_node(Self.__payload_((key, value)))
             __tree_.__insert_node_at(__parent, __child, __h)
           }
         }
         yield &value
       } else {
         //        _ensureUnique()
-        var helper = ___ModifyHelper(pointer: &__tree_[__ptr].value)
+        var helper = ___ModifyHelper(pointer: &__tree_[_unsafe_raw: __ptr].value)
         defer {
           if helper.isNil {
             _ = __tree_.erase(__ptr)
@@ -320,12 +317,12 @@ extension RedBlackTreeDictionary {
       var (__parent, __child, __ptr) = _prepareForKeyingModify(key)
       if __ptr == __tree_.nullptr {
         assert(__tree_.capacity > __tree_.count)
-        __ptr = __tree_.__construct_node(Self.___tree_value((key, defaultValue())))
+        __ptr = __tree_.__construct_node(Self.__payload_((key, defaultValue())))
         __tree_.__insert_node_at(__parent, __child, __ptr)
       } else {
         __tree_.ensureUnique()
       }
-      yield &__tree_[__ptr].value
+      yield &__tree_[_unsafe_raw: __ptr].value
     }
   }
 
@@ -335,11 +332,8 @@ extension RedBlackTreeDictionary {
     _ key: Key
   ) -> (__parent: Tree._NodePtr, __child: Tree._NodeRef, __ptr: Tree._NodePtr) {
 
-    // TODO: 内部がポインタに変更になったので、それに合わせた設計に変更すること
-
     let (__parent, __child) = __tree_.__find_equal(key)
-    let __ptr = __tree_.__ptr_(__child)
-    return (__parent, __child, __ptr)
+    return (__parent, __child, __child.__ptr_)
   }
 }
 
@@ -354,8 +348,8 @@ extension RedBlackTreeDictionary {
     public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
-        start: __tree_.__sealed_(bounds.lowerBound),
-        end: __tree_.__sealed_(bounds.upperBound))
+        start: __tree_.__purified_(bounds.lowerBound),
+        end: __tree_.__purified_(bounds.upperBound))
     }
   #endif
 }
@@ -383,8 +377,8 @@ extension RedBlackTreeDictionary {
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value(newMember))
-    return (__inserted, __inserted ? newMember : __element_(__tree_[__r]))
+    let (__r, __inserted) = __tree_.__insert_unique(Self.__payload_(newMember))
+    return (__inserted, __inserted ? newMember : Self.__element_(__tree_[_unsafe_raw: __r]))
   }
 }
 
@@ -399,10 +393,10 @@ extension RedBlackTreeDictionary {
     forKey key: Key
   ) -> Value? {
     __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(Self.___tree_value((key, value)))
+    let (__r, __inserted) = __tree_.__insert_unique(Self.__payload_((key, value)))
     guard !__inserted else { return nil }
-    let oldMember = __tree_[__r]
-    __tree_[__r] = Self.___tree_value((key, value))
+    let oldMember = __tree_[_unsafe_raw: __r]
+    __tree_[_unsafe_raw: __r] = Self.__payload_((key, value))
     return oldMember.value
   }
 }
@@ -453,7 +447,7 @@ extension RedBlackTreeDictionary {
         tree: __tree_,
         other,
         uniquingKeysWith: combine
-      ) { Self.___tree_value($0) }
+      ) { Self.__payload_($0) }
     }
   }
 
@@ -508,12 +502,12 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
+    __tree_.ensureUnique()
     let __i = __tree_.find(__k)
     if __i == __tree_.end {
       return nil
     }
     let value = __tree_.__value_(__i).value
-    __tree_.ensureUnique()
     _ = __tree_.erase(__i)
     return value
   }
@@ -548,10 +542,10 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
-    guard case .success(let __p) = __tree_.__sealed_(index) else {
+    guard case .success(let __p) = __tree_.__purified_(index) else {
       fatalError(.invalidIndex)
     }
-    return __element_(_unchecked_remove(at: __p.pointer).payload)
+    return Self.__element_(_unchecked_remove(at: __p.pointer).payload)
   }
 
   #if COMPATIBLE_ATCODER_2025
@@ -570,8 +564,8 @@ extension RedBlackTreeDictionary {
       let bounds = bounds.relative(to: self)
       __tree_.ensureUnique()
       ___remove(
-        from: __tree_.__sealed_(bounds.lowerBound).pointer!,
-        to: __tree_.__sealed_(bounds.upperBound).pointer!)
+        from: __tree_.__purified_(bounds.lowerBound).pointer!,
+        to: __tree_.__purified_(bounds.upperBound).pointer!)
     }
   #endif
 }
@@ -663,18 +657,20 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Key, to end: Key) -> SubSequence {
-      .init(tree: __tree_,
-            start: __tree_.lower_bound(start).sealed,
-            end: __tree_.lower_bound(end).sealed)
+      .init(
+        tree: __tree_,
+        start: __tree_.lower_bound(start).sealed,
+        end: __tree_.lower_bound(end).sealed)
     }
 
     /// キーレンジ `[start, end]` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Key, through end: Key) -> SubSequence {
-      .init(tree: __tree_,
-            start: __tree_.lower_bound(start).sealed,
-            end: __tree_.upper_bound(end).sealed)
+      .init(
+        tree: __tree_,
+        start: __tree_.lower_bound(start).sealed,
+        end: __tree_.upper_bound(end).sealed)
     }
   }
 #endif
@@ -690,7 +686,7 @@ extension RedBlackTreeDictionary {
   ) rethrows -> Self {
     .init(
       __tree_: try __tree_.___filter(_start, _end) {
-        try isIncluded(__element_($0))
+        try isIncluded(Self.__element_($0))
       })
   }
 }
@@ -1027,7 +1023,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    _isTriviallyIdentical(to: other)
+    _isIdentical(to: other)
   }
 }
 
@@ -1107,7 +1103,7 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
     @inlinable
     public init<Source>(naive sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
-      self.init(__tree_: .create_unique(naive: sequence, transform: Self.___tree_value))
+      self.init(__tree_: .create_unique(naive: sequence, transform: Base.__payload_(_:)))
     }
   }
 #endif

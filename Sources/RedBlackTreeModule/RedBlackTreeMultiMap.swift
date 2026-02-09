@@ -91,11 +91,9 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
 extension RedBlackTreeMultiMap: CompareMultiTrait {}
-extension RedBlackTreeMultiMap: KeyValueComparer {
-  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> RedBlackTreePair<Key, Value> {
-    p.__value_().pointee
-  }  
-}
+extension RedBlackTreeMultiMap: PairValueTrait {}
+extension RedBlackTreeMultiMap: _PairBasePayload_KeyProtocol_ptr {}
+extension RedBlackTreeMultiMap: _BaseNode_NodeCompareProtocol {}
 
 // MARK: - Creating a MultiMap
 
@@ -123,7 +121,7 @@ extension RedBlackTreeMultiMap {
     self.init(
       __tree_:
         .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) {
-          Self.___tree_value($0)
+          Self.__payload_($0)
         })
   }
 }
@@ -233,8 +231,8 @@ extension RedBlackTreeMultiMap {
   public subscript(bounds: Range<Index>) -> SubSequence {
     return .init(
       tree: __tree_,
-      start: __tree_.__sealed_(bounds.lowerBound),
-      end: __tree_.__sealed_(bounds.upperBound))
+      start: __tree_.__purified_(bounds.lowerBound),
+      end: __tree_.__purified_(bounds.upperBound))
   }
   #endif
 }
@@ -261,7 +259,7 @@ extension RedBlackTreeMultiMap {
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_.ensureUniqueAndCapacity()
-    _ = __tree_.__insert_multi(Self.___tree_value(newMember))
+    _ = __tree_.__insert_multi(Self.__payload_(newMember))
     return (true, newMember)
   }
 }
@@ -274,13 +272,13 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
     __tree_.ensureUnique()
-    guard let p = try? __tree_.__sealed_(ptr).get().pointer,
+    guard let p = try? __tree_.__purified_(ptr).get().pointer,
           !p.___is_end else {
       return nil
     }
-    let old = __tree_[p]
-    __tree_[p].value = newValue
-    return __element_(old)
+    let old = __tree_[_unsafe_raw: p]
+    __tree_[_unsafe_raw: p].value = newValue
+    return Self.__element_(old)
   }
 }
 
@@ -316,7 +314,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
     __tree_.ensureUnique { __tree_ in
-      .___insert_range_multi(tree: __tree_, other.map { Self.___tree_value($0) })
+      .___insert_range_multi(tree: __tree_, other.map { Self.__payload_($0) })
     }
   }
 
@@ -456,10 +454,10 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
-    guard case .success(let __p) = __tree_.__sealed_(index) else {
+    guard case .success(let __p) = __tree_.__purified_(index) else {
       fatalError(.invalidIndex)
     }
-    return __element_(_unchecked_remove(at: __p.pointer).payload)
+    return Self.__element_(_unchecked_remove(at: __p.pointer).payload)
   }
 
 #if COMPATIBLE_ATCODER_2025
@@ -478,8 +476,8 @@ extension RedBlackTreeMultiMap {
     let bounds = bounds.relative(to: self)
     __tree_.ensureUnique()
     ___remove(
-      from: __tree_.__sealed_(bounds.lowerBound).pointer!,
-      to: __tree_.__sealed_(bounds.upperBound).pointer!)
+      from: __tree_.__purified_(bounds.lowerBound).pointer!,
+      to: __tree_.__purified_(bounds.upperBound).pointer!)
   }
 #endif
 }
@@ -598,7 +596,7 @@ extension RedBlackTreeMultiMap {
   ) rethrows -> Self {
     .init(
       __tree_: try __tree_.___filter(_start, _end) {
-        try isIncluded(__element_($0))
+        try isIncluded(Self.__element_($0))
       }
     )
   }
@@ -941,7 +939,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    _isTriviallyIdentical(to: other)
+    _isIdentical(to: other)
   }
 }
 
@@ -1020,6 +1018,6 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public init<Source>(naive sequence: __owned Source)
   where Element == Source.Element, Source: Sequence {
-    self.init(__tree_: .create_multi(naive: sequence, transform: Self.___tree_value))
+    self.init(__tree_: .create_multi(naive: sequence, transform: Self.__payload_))
   }
 }

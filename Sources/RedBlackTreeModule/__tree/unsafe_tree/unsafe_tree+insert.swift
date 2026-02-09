@@ -57,7 +57,7 @@ extension InsertNodeAtProtocol_ptr {
 @usableFromInline
 protocol InsertUniqueProtocol_ptr:
   _UnsafeNodePtrType
-    & _TreeRawValue_KeyInterface
+    & _TreePayloadValue_KeyInterface
     & InsertNodeAtInterface
     & InsertUniqueInterface
     & FindEqualInterface
@@ -97,7 +97,7 @@ extension InsertUniqueProtocol_ptr {
 }
 
 @usableFromInline
-protocol InsertMultiProtocol: AllocationInterface & _TreeRawValue_KeyInterface & FindLeafInterface
+protocol InsertMultiProtocol: AllocationInterface & _TreePayloadValue_KeyInterface & FindLeafInterface
     & InsertNodeAtInterface & NullPtrInterface
 {}
 

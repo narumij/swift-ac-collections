@@ -24,12 +24,14 @@
 @frozen
 public struct _NodePtrSealing: Equatable {
   /// ご神体の御名
+  ///
+  /// 八百万な方々
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   /// ご神体
   @usableFromInline var pointer: _NodePtr
   /// 封印
   @usableFromInline var seal: UnsafeNode.Seal
-  
+
   // UnsafeNode.SealはUInt32となっていて、オーバーフローして一周すると、
   // かたわれどきが生じて同一判定となるが、これは仕様
 
@@ -52,7 +54,7 @@ public struct _NodePtrSealing: Equatable {
   static func uncheckedSeal(_ _p: _NodePtr) -> _NodePtrSealing {
     .init(_p: _p)
   }
-  
+
   // 特段の意味は無い。利用箇所での可読性向上のためのフック
   /// 過去の状態で封印する
   @inlinable @inline(__always)
@@ -83,12 +85,22 @@ public struct _NodePtrSealing: Equatable {
 
   /// 引換券
   @inlinable @inline(__always)
-  var tag: TaggedSeal {
+  var tag: _SealedTag {
     .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
   }
 }
 
 // ふざけてるのが半分。残り半分は通常使わない言葉や概念から以外と大切な部分であることを察してもらうため。
+// というか用語群として混ざらないようにするため
 
 // shieldのスペルもしらんのかとか言うやつがいそうな予感があるが、大きなお世話
 
+extension _NodePtrSealing: CustomStringConvertible {
+  public var description: String {
+    "_NodePtrSealing<\((tag: pointer.trackingTag, seal: seal, pointer))>"
+  }
+}
+
+extension _NodePtrSealing: CustomDebugStringConvertible {
+  public var debugDescription: String { description }
+}

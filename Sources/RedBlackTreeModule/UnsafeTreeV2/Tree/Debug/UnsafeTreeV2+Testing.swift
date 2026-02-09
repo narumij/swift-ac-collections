@@ -6,43 +6,43 @@
     }
 
     package func __left_(_ p: Int) -> Int {
-      (try? self[_rawTag: p].get()).map { __left_($0).trackingTag } ?? .nullptr
+      (try? self[__retrieve_: p].get()).map { $0.__left_.trackingTag } ?? .nullptr
     }
 
     package func __left_(_ p: Int, _ l: Int) {
-      __left_(try! self[_rawTag: p].get(), try! self[_rawTag: l].get())
+      __left_(try! self[__retrieve_: p].get(), try! self[__retrieve_: l].get())
     }
 
     package func __right_(_ p: Int) -> Int {
-      __right_(try! self[_rawTag: p].get()).trackingTag
+      __right_(try! self[__retrieve_: p].get()).trackingTag
     }
 
     package func __right_(_ p: Int, _ l: Int) {
-      __right_(try! self[_rawTag: p].get(), try! self[_rawTag: l].get())
+      __right_(try! self[__retrieve_: p].get(), try! self[__retrieve_: l].get())
     }
 
     package func __parent_(_ p: Int) -> Int {
-      __parent_(try! self[_rawTag: p].get()).trackingTag
+      __parent_(try! self[__retrieve_: p].get()).trackingTag
     }
 
     package func __parent_(_ p: Int, _ l: Int) {
-      __parent_(try! self[_rawTag: p].get(), try! self[_rawTag: l].get())
+      __parent_(try! self[__retrieve_: p].get(), try! self[__retrieve_: l].get())
     }
 
     package func __is_black_(_ p: Int) -> Bool {
-      __is_black_(try! self[_rawTag: p].get())
+      __is_black_(try! self[__retrieve_: p].get())
     }
 
     package func __is_black_(_ p: Int, _ b: Bool) {
-      __is_black_(try! self[_rawTag: p].get(), b)
+      __is_black_(try! self[__retrieve_: p].get(), b)
     }
 
     package func __value_(_ p: Int) -> _PayloadValue {
-      __value_(try! self[_rawTag: p].get())
+      __value_(try! self[__retrieve_: p].get())
     }
 
     package func ___element(_ p: Int, _ __v: _PayloadValue) {
-      ___element(try! self[_rawTag: p].get(), __v)
+      ___element(try! self[__retrieve_: p].get(), __v)
     }
   }
 

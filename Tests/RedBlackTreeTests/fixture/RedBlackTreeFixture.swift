@@ -14,7 +14,7 @@ import XCTest
 #endif
 
 #if DEBUG
-  protocol RedBlackTreeDebugFixture: ___TreeBase {
+  protocol RedBlackTreeDebugFixture: ___TreeBase & _UnsafeNodePtrType {
     associatedtype Base: ___TreeBase
     var __tree_: UnsafeTreeV2<Base> { get set }
   }

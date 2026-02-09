@@ -99,13 +99,13 @@ public enum SealError: Error {
 }
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
-
-  @inlinable
-  var unchecked_trackingTag: Result<TaggedSeal, SealError> {
-    map { $0.tag }
+  
+  @inlinable @inline(__always)
+  var tag: _SealedTag {
+    flatMap(\.tag)
   }
 
-  @usableFromInline
+  @inlinable
   internal var ___is_end: Bool? {
     // endは世代が変わらず、成仏もしないのでお清めお祓いが無駄
     try? map { $0.pointer.___is_end }.get()
@@ -114,31 +114,54 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
-  @usableFromInline
-  internal var isValid: Bool {
+  /// 他のケースと異なり、endも有効となる
+  @inlinable
+  package var isValid: Bool {
     switch purified {
     case .success: true
     default: false
     }
   }
 
-  @usableFromInline
+  @inlinable
   func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
+    // TODO: purified要不要の再確認
     try? purified.map { $0.pointer.__value_() }.get()
   }
 
   @inlinable
   var pointer: UnsafeMutablePointer<UnsafeNode>? {
+    // TODO: purified要不要の再確認
     try? purified.map { $0.pointer }.get()
   }
   
   @inlinable
   var temporaryUnseal: Result<UnsafeMutablePointer<UnsafeNode>, SealError> {
+    // TODO: purified要不要の再確認
     purified.map { $0.pointer }
   }
 }
 
 extension Result where Failure == SealError {
+  
+  @inlinable
+  package var isValid: Bool {
+    switch self {
+    case .success: true
+    default: false
+    }
+  }
+
+  @usableFromInline
+  package var error: SealError? {
+    switch self {
+    case .success:
+      return nil
+    case .failure(let failure):
+      return failure
+    }
+  }
+  
   @usableFromInline
   internal func isError(_ e: SealError) -> Bool {
     switch self {

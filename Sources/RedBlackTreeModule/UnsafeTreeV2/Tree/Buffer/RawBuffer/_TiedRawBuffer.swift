@@ -87,8 +87,8 @@ extension _TiedRawBuffer {
     }
 
     @inlinable
-    subscript(___tracking_tag: _RawTrackingTag) -> _NodePtr? {
-      assert(___tracking_tag >= 0)
+    subscript(___tracking_tag: _TrackingTag) -> _NodePtr? {
+      assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
       var remaining = ___tracking_tag
       var p = bucketHead?.accessor(payload: deallocator.payload)
       while let h = p {
@@ -99,7 +99,7 @@ extension _TiedRawBuffer {
         remaining -= cap
         p = h.next(payload: deallocator.payload)
       }
-      assert(false)
+      assert(false, "ここには到達しないこと")
       return nil
     }
   }
@@ -109,7 +109,7 @@ extension _TiedRawBuffer {
 
   @nonobjc
   @inlinable
-  subscript(___tracking_tag: _RawTrackingTag) -> _NodePtr? {
+  subscript(___tracking_tag: _TrackingTag) -> _NodePtr? {
     header[___tracking_tag]
   }
 
@@ -132,6 +132,34 @@ extension _TiedRawBuffer {
   var isValueAccessAllowed: Bool {
     get { header.isValueAccessAllowed }
     set { withUnsafeMutablePointerToHeader { $0.pointee.isValueAccessAllowed = newValue } }
+  }
+}
+
+extension _TiedRawBuffer {
+
+  @inlinable
+  @inline(__always)
+  package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
+    switch tag {
+    case .end:
+      return end_ptr.map { $0.sealed } ?? .failure(.null)
+    case .tag(let raw, let seal):
+      guard raw < capacity else {
+        return .failure(.unknown)
+      }
+      return self[raw]
+        .map { .success(.uncheckedSeal($0, seal)) }
+        ?? .failure(.null)
+    }
+  }
+
+  /// つながりをたぐりよせる
+  ///
+  /// 日本人的にはお祭りなどによくある千本引きのイメージ
+  @inlinable
+  @inline(__always)
+  package func __retrieve_(_ tag: _SealedTag) -> _SealedPtr {
+    tag.flatMap { ___retrieve(tag: $0) }
   }
 }
 

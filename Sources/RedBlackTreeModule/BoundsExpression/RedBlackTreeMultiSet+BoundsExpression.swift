@@ -23,7 +23,7 @@
     public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
-      return __tree_[p]
+      return __tree_[_unsafe_raw: p]
     }
 
     // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
@@ -34,12 +34,12 @@
       return _unchecked_remove(at: p).payload
     }
 
-    public func trackingTag(_ bound: RedBlackTreeBoundExpression<Element>)
-      -> TaggedSeal?
+    public func sealedTag(_ bound: RedBlackTreeBoundExpression<Element>)
+      -> _SealedTag?
     {
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
-      return .taggedSeal(p)
+      return .sealedTag(p)
     }
 
     // MARK: -

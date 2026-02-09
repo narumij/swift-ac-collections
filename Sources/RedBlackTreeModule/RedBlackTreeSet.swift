@@ -179,11 +179,9 @@ public struct RedBlackTreeSet<Element: Comparable> {
 #endif
 
 extension RedBlackTreeSet: CompareUniqueTrait {}
-extension RedBlackTreeSet: ScalarValueComparer {
-  public static func __value_(_ p: UnsafeMutablePointer<UnsafeNode>) -> Element {
-    p.__value_().pointee
-  }
-}
+extension RedBlackTreeSet: ScalarValueTrait & _UnsafeNodePtrType {}
+extension RedBlackTreeSet: _ScalarBasePayload_KeyProtocol_ptr {}
+extension RedBlackTreeSet: _BaseNode_NodeCompareProtocol {}
 
 // MARK: - Creating a Set
 
@@ -305,7 +303,7 @@ extension RedBlackTreeSet {
   ) {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
-    return (__inserted, __inserted ? newMember : __tree_[__r])
+    return (__inserted, __inserted ? newMember : __tree_[_unsafe_raw: __r])
   }
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
@@ -316,8 +314,8 @@ extension RedBlackTreeSet {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     guard !__inserted else { return nil }
-    let oldMember = __tree_[__r]
-    __tree_[__r] = newMember
+    let oldMember = __tree_[_unsafe_raw: __r]
+    __tree_[_unsafe_raw: __r] = newMember
     return oldMember
   }
 }
@@ -403,24 +401,26 @@ extension RedBlackTreeSet {
 
 // MARK: - Removal
 
-extension RedBlackTreeSet {
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
 
-  /// - Complexity: O(1)
-  @inlinable
-  //  @inline(__always)
-  public mutating func popMin() -> Element? {
-    __tree_.ensureUnique()
-    return ___remove_first()?.payload
-  }
+    /// - Complexity: O(1)
+    @inlinable
+    //  @inline(__always)
+    public mutating func popMin() -> Element? {
+      __tree_.ensureUnique()
+      return ___remove_first()?.payload
+    }
 
-  /// - Complexity: O(log `count`)
-  @inlinable
-  //  @inline(__always)
-  public mutating func popMax() -> Element? {
-    __tree_.ensureUnique()
-    return ___remove_last()?.payload
+    /// - Complexity: O(log `count`)
+    @inlinable
+    //  @inline(__always)
+    public mutating func popMax() -> Element? {
+      __tree_.ensureUnique()
+      return ___remove_last()?.payload
+    }
   }
-}
+#endif
 
 extension RedBlackTreeSet {
 
@@ -432,6 +432,26 @@ extension RedBlackTreeSet {
     __tree_.ensureUnique()
     return __tree_.update { $0.___erase_unique(member) } ? member : nil
   }
+}
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    /// - Important: 削除後は、インデックスが無効になります。
+    /// - Complexity: O(1)
+    @inlinable
+    @discardableResult
+    public mutating func remove(at index: Index) -> Element {
+      __tree_.ensureUnique()
+      guard let __p = __tree_.__purified_(index).pointer else {
+        fatalError(.invalidIndex)
+      }
+      return _unchecked_remove(at: __p).payload
+    }
+  }
+#endif
+
+extension RedBlackTreeSet {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
@@ -445,6 +465,21 @@ extension RedBlackTreeSet {
     return element.payload
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      __tree_.ensureUnique()
+      guard let element = ___remove_last() else {
+        preconditionFailure(.emptyFirst)
+      }
+      return element.payload
+    }
+  }
+#endif
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
@@ -556,7 +591,7 @@ extension RedBlackTreeSet {
     /// - Important:
     ///  要素及びノードが削除された場合、インデックスは無効になります。
     /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-    public typealias Index = TaggedSeal
+    public typealias Index = _SealedTag
     public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Base>
   }
 
@@ -565,16 +600,16 @@ extension RedBlackTreeSet {
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element)
-      -> TaggedSeal?
+      -> _SealedTag?
     {
-      .taggedSealOrNil(__tree_.find(member))
+      .sealedTagOrNil(__tree_.find(member))
     }
 
     // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
     /// - Complexity: O( `count` )
     @inlinable
     public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
-      -> TaggedSeal?
+      -> _SealedTag?
     {
       try ___first_tracking_tag(where: predicate)
     }
@@ -585,12 +620,12 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var startIndex: Index { .taggedSeal(_start) }
+    public var startIndex: Index { .sealedTag(_start) }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var endIndex: Index { .taggedSeal(_end) }
+    public var endIndex: Index { .sealedTag(_end) }
   }
 
   extension RedBlackTreeSet {
@@ -601,9 +636,10 @@ extension RedBlackTreeSet {
     public func distance(from start: Index, to end: Index)
       -> Int
     {
-      guard let d = __tree_.___distance(
-        from: start.relative(to: __tree_),
-        to: end.relative(to: __tree_))
+      guard
+        let d = __tree_.___distance(
+          from: __tree_.__purified_(start),
+          to: __tree_.__purified_(end))
       else { fatalError(.invalidIndex) }
       return d
     }
@@ -611,6 +647,8 @@ extension RedBlackTreeSet {
 
   extension RedBlackTreeSet {
 
+    /// 与えられた値より小さくない最初の要素へのインデックスを返す
+    ///
     /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
     /// 最初の位置（`Index`）を返します。
     ///
@@ -625,9 +663,11 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ member: Element) -> Index {
-      .taggedSeal(__tree_.lower_bound(member))
+      .sealedTag(__tree_.lower_bound(member))
     }
 
+    /// 与えられた値よりも大きい最初の要素へのインデックスを返す
+    ///
     /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
     /// 最初の位置（`Index`）を返します。
     ///
@@ -643,7 +683,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ member: Element) -> Index {
-      .taggedSeal(__tree_.upper_bound(member))
+      .sealedTag(__tree_.upper_bound(member))
     }
   }
 
@@ -655,7 +695,7 @@ extension RedBlackTreeSet {
       lower: Index, upper: Index
     ) {
       let (lower, upper) = __tree_.__equal_range_unique(element)
-      return (.taggedSeal(lower), .taggedSeal(upper))
+      return (.sealedTag(lower), .sealedTag(upper))
     }
   }
 
@@ -664,41 +704,39 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     public func index(before i: Index) -> Index {
-      i.relative(to: __tree_)
+      __tree_.__purified_(i)
         .flatMap { ___tree_prev_iter($0.pointer) }
-        .flatMap { .taggedSeal($0) }
+        .flatMap { .sealedTag($0) }
     }
 
     /// - Complexity: O(1)
     @inlinable
     public func index(after i: Index) -> Index {
-      i.relative(to: __tree_)
+      __tree_.__purified_(i)
         .flatMap { ___tree_next_iter($0.pointer) }
-        .flatMap { .taggedSeal($0) }
+        .flatMap { .sealedTag($0) }
     }
 
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(_ i: Index, offsetBy distance: Int)
-      -> TaggedSeal
+      -> _SealedTag
     {
-      i.relative(to: __tree_)
+      __tree_.__purified_(i)
         .flatMap { ___tree_adv_iter($0.pointer, distance) }
-        .flatMap { .taggedSeal($0) }
+        .flatMap { .sealedTag($0) }
     }
 
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(
-      _ i: TaggedSeal, offsetBy distance: Int, limitedBy limit: Index
+      _ i: _SealedTag, offsetBy distance: Int, limitedBy limit: Index
     )
       -> Index?
     {
-      let __l = limit.relative(to: __tree_).map(\.pointer)
-      return try? i.relative(to: __tree_)
-        .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-        .map { .taggedSeal($0) }
-        .get()
+      var i = i
+      let result = formIndex(&i, offsetBy: distance, limitedBy: limit)
+      return result ? i : nil
     }
   }
 
@@ -735,24 +773,14 @@ extension RedBlackTreeSet {
     )
       -> Bool
     {
-      if let result = index(i, offsetBy: distance, limitedBy: limit) {
-        i = result
-        return true
-      }
-      return false
-    }
-  }
+      guard let ___i = __tree_.__purified_(i).pointer
+      else { return false }
 
-  extension RedBlackTreeSet {
+      let __l = __tree_.__purified_(limit).map(\.pointer)
 
-    @inlinable
-    @discardableResult
-    public mutating func remove(at index: Index) -> Element {
-      __tree_.ensureUnique()
-      guard case .success(let __p) = index.relative(to: __tree_).temporaryUnseal else {
-        fatalError(.invalidIndex)
+      return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
+        i = $0.flatMap { .sealedTag($0) }
       }
-      return _unchecked_remove(at: __p).payload
     }
   }
 
@@ -762,13 +790,7 @@ extension RedBlackTreeSet {
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always) get {
-        guard
-          let p: _NodePtr = __tree_.resolve(position).pointer,
-          !p.___is_end
-        else {
-          fatalError(.invalidIndex)
-        }
-        return p.__value_().pointee
+        __tree_[_unsafe: __tree_.__purified_(position)]
       }
     }
 
@@ -778,13 +800,7 @@ extension RedBlackTreeSet {
     @inlinable
     @inline(__always)
     public func isValid(index: Index) -> Bool {
-      guard
-        let p: _NodePtr = __tree_.resolve(index).pointer,
-        !p.___is_end
-      else {
-        return false
-      }
-      return true
+      __tree_.__purified_(index).___is_end == false
     }
   }
 #endif
@@ -853,7 +869,7 @@ extension RedBlackTreeSet: CustomStringConvertible {
 
   @inlinable
   public var description: String {
-    _arrayDescription(for: self + [])
+    _arrayDescription(for: self)
   }
 }
 
@@ -912,7 +928,7 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    _isTriviallyIdentical(to: other)
+    _isIdentical(to: other)
   }
 }
 

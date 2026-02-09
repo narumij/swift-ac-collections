@@ -26,11 +26,14 @@ import Foundation
 
 // sealed化した結果、本当の不安が払拭されてしまい、このままでもべつにいっかという気持ちがわいている
 
-/// 赤黒木のノードへのインデックス
+/// 赤黒木用重量インデックス
 ///
 /// C++の双方向イテレータに近い内容となっている
+///
+/// - note: for文の範囲指定に使える
+///
 @frozen
-public struct UnsafeIndexV2<Base>: UnsafeTreeBinding, UnsafeIndexingProtocol
+public struct UnsafeIndexV2<Base>: UnsafeTreeBinding, UnsafeIndexProtocol_tie
 where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = UnsafeTreeV2<Base>
@@ -40,16 +43,13 @@ where Base: ___TreeBase & ___TreeIndex {
   typealias _PayloadValue = Tree._PayloadValue
 
   @usableFromInline
-  internal var _rawTag: _RawTrackingTag {
-    // benchmark5で謎のコンパイルエラーが発生する
-    // バグ報告はいったん見送り
-    // (try? sealed.map(\.tag).map(\._rawTag).get()) ?? .nullptr
-    (try? sealed.map(\.pointer.pointee.___tracking_tag).get()) ?? .nullptr
+  package var value: _TrackingTag? {
+    sealed.tag.value
   }
 
   @usableFromInline
-  internal var trackingTag: TaggedSeal {
-    sealed.flatMap(\.tag)
+  package var tag: _SealedTag {
+    sealed.tag
   }
 
   @usableFromInline
@@ -97,7 +97,7 @@ extension UnsafeIndexV2: Equatable {
 
     // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
 
-    lhs.trackingTag == rhs.trackingTag
+    lhs.tag == rhs.tag
   }
 }
 
@@ -114,7 +114,7 @@ extension UnsafeIndexV2: Equatable {
     @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
       guard let r = rhs.sealed.pointer,
-        let l = rhs.__sealed_(lhs).pointer
+        let l = rhs.__purified_(lhs).pointer
       else {
         preconditionFailure(.garbagedIndex)
       }
@@ -134,7 +134,7 @@ extension UnsafeIndexV2 {
   public func distance(to other: Self) -> Int {
     guard
       let from = sealed.pointer,
-      let to = __sealed_(other).pointer
+      let to = __purified_(other).pointer
     else {
       preconditionFailure(.garbagedIndex)
     }
@@ -211,7 +211,7 @@ extension UnsafeIndexV2 {
 #if DEBUG
   extension UnsafeIndexV2 {
     fileprivate init(
-      _unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, trackingTag: _RawTrackingTag
+      _unsafe_tree: UnsafeTreeV2<Base>, rawValue: _NodePtr, trackingTag: _TrackingTag
     ) {
       self.tied = _unsafe_tree.tied
       self.sealed = rawValue.sealed
@@ -224,7 +224,7 @@ extension UnsafeIndexV2 {
       .init(_unsafe_tree: tree, rawValue: rawValue, trackingTag: rawValue.pointee.___tracking_tag)
     }
 
-    internal static func unsafe(tree: UnsafeTreeV2<Base>, rawTag: _RawTrackingTag) -> Self {
+    internal static func unsafe(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag) -> Self {
       if rawTag == .nullptr {
         return .init(_unsafe_tree: tree, rawValue: tree.nullptr, trackingTag: .nullptr)
       }
@@ -295,29 +295,31 @@ extension UnsafeIndexV2 {
 
   @inlinable
   @inline(__always)
-  package func resolve(tag: TagSeal_) -> _SealedPtr {
-    switch tag {
-    case .end:
-      return tied.end_ptr.map { $0.sealed } ?? .failure(.null)
-    case .tag(raw: let raw, seal: let seal):
-      guard raw < tied.capacity else {
-        return .failure(.unknown)
-      }
-      return tied[raw]
-      .map { .success(.uncheckedSeal($0, seal)) }
-      ?? .failure(.null)
+  internal func __purified_(_ index: UnsafeIndexV2) -> _SealedPtr {
+    tied === index.tied
+      ? index.sealed.purified
+      : tied.__retrieve_(index.sealed.purified.tag).purified
+  }
+}
+
+extension UnsafeIndexV2 {
+  @inlinable
+  public var isValid: Bool {
+    sealed.purified.isValid
+  }
+}
+
+extension UnsafeIndexV2: CustomStringConvertible {
+  public var description: String {
+    switch sealed {
+    case .success(let t):
+      "UnsafeIndexV2<\(t)>"
+    case .failure(let e):
+      "UnsafeIndexV2<\(e)>"
     }
   }
+}
 
-  @inlinable
-  @inline(__always)
-  package func _resolve(_ tag: TaggedSeal) -> _SealedPtr {
-    tag.flatMap { resolve(tag: $0) }
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func __sealed_(_ index: UnsafeIndexV2) -> _SealedPtr {
-    tied === index.tied ? index.sealed : _resolve(index.trackingTag)
-  }
+extension UnsafeIndexV2: CustomDebugStringConvertible {
+  public var debugDescription: String { description }
 }

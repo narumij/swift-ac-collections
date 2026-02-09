@@ -17,7 +17,7 @@
 
 @frozen
 public struct UnsafeIndexV2RangeExpression<Base>: UnsafeTreeBinding,
-  UnsafeIndexingProtocol
+  UnsafeIndexProtocol_tie
 where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = UnsafeTreeV2<Base>
@@ -114,4 +114,3 @@ public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
   }
 #endif
 
-// MARK: -

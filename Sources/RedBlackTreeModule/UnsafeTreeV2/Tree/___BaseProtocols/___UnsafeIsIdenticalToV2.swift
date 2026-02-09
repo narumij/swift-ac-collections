@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol ___UnsafeIsIdenticalToV2: UnsafeTreeRangeProtocol {}
+protocol ___UnsafeIsIdenticalToV2: UnsafeTreeSealedRangeProtocol {}
 
 // MARK: - Is Identical To
 
@@ -60,6 +60,6 @@ extension ___UnsafeIsIdenticalToV2 {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    _isTriviallyIdentical(to: other)
+    _isIdentical(to: other)
   }
 }

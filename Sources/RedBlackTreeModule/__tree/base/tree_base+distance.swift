@@ -15,21 +15,29 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: 別のプロトコルにする
-// 手抜きをしてしまって、微妙に違うプロトコルにぶら下がっている
+public protocol _BaseNode_SignedDistanceInterface: _NodePtrType {
+  static func ___signed_distance(_: _NodePtr, _: _NodePtr) -> Int
+}
 
-extension _BaseNode_PtrCompProtocol {
+public protocol _BaseNode_SignedDistanceProtocol:
+  _UnsafeNodePtrType
+    & _BaseNode_SignedDistanceInterface
+    & _BaseNode_PtrCompInterface
+where
+  difference_type == Int,
+  _InputIter == _NodePtr
+{
+  associatedtype difference_type
+  associatedtype _InputIter
+}
 
-  @usableFromInline
-  typealias difference_type = Int
-
-  @usableFromInline
-  typealias _InputIter = _NodePtr
+extension _BaseNode_SignedDistanceProtocol {
 
   @inlinable
   @inline(__always)
-  static func
-    ___signed_distance(_ __first: _InputIter, _ __last: _InputIter) -> difference_type
+  public static func
+    ___signed_distance(_ __first: _InputIter, _ __last: _InputIter)
+    -> difference_type
   {
     guard __first != __last else { return 0 }
     var (__first, __last) = (__first, __last)

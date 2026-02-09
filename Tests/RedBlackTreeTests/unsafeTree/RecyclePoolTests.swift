@@ -17,6 +17,7 @@ import XCTest
       var count: Int = 0
       var freshPoolUsedCount: Int = 0
       var nullptr: _NodePtr { .nullptr }
+      var end_ptr: _NodePtr { .nullptr }
       var freshBucketAllocator: _BucketAllocator = .init(
         valueType: Bool.self, deinitialize: { $0.assumingMemoryBound(to: Bool.self).pointee = false })
     }

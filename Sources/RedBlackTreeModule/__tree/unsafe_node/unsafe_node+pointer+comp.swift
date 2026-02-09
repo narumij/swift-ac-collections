@@ -64,6 +64,20 @@ internal func ___ptr_comp_multi(
   return __tree_is_left_child(__l)
 }
 
+// ノードの高さを数える
+@inlinable
+@inline(__always)
+internal func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
+  assert(!__p.___is_null, "Node shouldn't be null")
+  var __h = 0
+  var __p = __p
+  while !__p.___is_root {
+    __p = __p.__parent_
+    __h += 1
+  }
+  return __h
+}
+
 // ノードの大小を比較する
 @inlinable
 //  @inline(__always)

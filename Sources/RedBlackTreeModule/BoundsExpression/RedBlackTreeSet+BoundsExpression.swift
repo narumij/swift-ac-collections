@@ -16,33 +16,43 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet: UnsafeMutableTreeHost {}
+
+  extension RedBlackTreeSet {
+    
+    /// 該当する要素を取得可能かどうかの判定結果を返す
+    public func isValid(_ bound: RedBlackTreeBoundExpression<Element>) -> Bool {
+      let sealed = bound.relative(to: __tree_)
+      return sealed.isValid && !sealed.___is_end!
+    }
+  }
 
   extension RedBlackTreeSet {
 
-    // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
+    // 実は辞書の派生型という位置づけが自然な気もする
+
+    /// 要素の位置に該当する要素を取得する
+    ///
+    /// 要素位置を評価した結果が末尾の次や失敗の場合、nilを返す
+    ///
     @inlinable
     public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
-      return __tree_[p]
+      return __tree_[_unsafe_raw: p]
     }
+  }
 
-    // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
+  extension RedBlackTreeSet {
+
     public mutating func remove(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return _unchecked_remove(at: p).payload
     }
+  }
 
-    public func trackingTag(_ bound: RedBlackTreeBoundExpression<Element>)
-      -> TaggedSeal?
-    {
-      let p = bound.relative(to: __tree_)
-      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
-      return .taggedSeal(p)
-    }
+  extension RedBlackTreeSet {
 
     // MARK: -
 
@@ -85,6 +95,7 @@
     public mutating func removeAll(
       in bounds: RedBlackTreeBoundRangeExpression<Element>
     ) {
+      
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
@@ -97,12 +108,52 @@
       in bounds: RedBlackTreeBoundRangeExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
+      
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
       try __tree_.___erase_if(lower.pointer!, upper.pointer!, shouldBeRemoved: shouldBeRemoved)
+    }
+  }
+#endif
+
+#if DEBUG
+  extension RedBlackTreeSet {
+
+    package func _withSealed<R>(
+      _ b: RedBlackTreeBoundExpression<Element>,
+      _ body: (_SealedPtr) throws -> R
+    ) rethrows -> R {
+      let b = b.relative(to: __tree_)
+      return try body(b)
+    }
+
+    package func _withSealed<R>(
+      _ a: RedBlackTreeBoundExpression<Element>,
+      _ b: RedBlackTreeBoundExpression<Element>,
+      _ body: (_SealedPtr, _SealedPtr) throws -> R
+    ) rethrows -> R {
+      let a = a.relative(to: __tree_)
+      let b = b.relative(to: __tree_)
+      return try body(a, b)
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    package func _isEqual(
+      _ l: RedBlackTreeBoundExpression<Element>,
+      _ r: RedBlackTreeBoundExpression<Element>
+    ) -> Bool {
+      let l = l.relative(to: __tree_)
+      let r = r.relative(to: __tree_)
+      return l == r
+    }
+
+    package func _error(_ bound: RedBlackTreeBoundExpression<Element>) -> SealError? {
+      bound.relative(to: __tree_).error
     }
   }
 #endif

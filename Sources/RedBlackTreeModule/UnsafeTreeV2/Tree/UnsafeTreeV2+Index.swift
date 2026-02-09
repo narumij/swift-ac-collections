@@ -37,18 +37,18 @@ extension UnsafeTreeV2 where Base: ___TreeIndex {
   public typealias _PayloadValues = RedBlackTreeIteratorV2.Values<Base>
 }
 
-extension UnsafeTreeV2 where Base: KeyValueComparer & ___TreeIndex {
+extension UnsafeTreeV2 where Base: PairValueTrait & ___TreeIndex {
 
   public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
 }
 
-extension UnsafeTreeV2 {
-
+extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
+  
   // この実装がないと、迷子になる?
   @inlinable
   @inline(__always)
   internal func
-    ___distance(from start: _SealedPtr, to end: _SealedPtr) -> Int?
+  ___distance(from start: _SealedPtr, to end: _SealedPtr) -> Int?
   {
     guard
       let start = start.purified.pointer,
@@ -58,6 +58,9 @@ extension UnsafeTreeV2 {
     }
     return ___signed_distance(start, end)
   }
+}
+
+extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
@@ -81,9 +84,8 @@ extension UnsafeTreeV2 {
   @inline(__always)
   internal func
     ___index(_ i: _SealedPtr, offsetBy distance: Int, limitedBy limit: _SealedPtr)
-    -> _SealedPtr?
+    -> _SealedPtr
   {
-    let i = i.flatMap { ___tree_adv_iter($0.pointer, distance, limit.temporaryUnseal) }.seal
-    return i.isError(.limit) ? nil : i
+    i.flatMap { ___tree_adv_iter($0.pointer, distance, limit.temporaryUnseal) }.seal
   }
 }

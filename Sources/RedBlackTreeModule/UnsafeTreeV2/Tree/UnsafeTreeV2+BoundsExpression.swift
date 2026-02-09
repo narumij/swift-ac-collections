@@ -32,6 +32,12 @@ extension RedBlackTreeBoundExpression {
     case .start:
       return __tree_.__begin_node_.sealed
 
+    case .last:
+      return RedBlackTreeBoundExpression
+        .end
+        .before
+        .relative(to: __tree_)
+
     case .end:
       return __tree_.__end_node.sealed
 
@@ -44,24 +50,42 @@ extension RedBlackTreeBoundExpression {
     case .find(let __v):
       return __tree_.find(__v).sealed
 
-    case .advanced(let __self, by: let offset):
+    case .advanced(let __self, offset: let offset, let limit):
       let __p = __self.relative(to: __tree_)
-      return __p.flatMap { __p in
-        ___tree_adv_iter(__p.pointer, offset).seal
+      let limit = limit?.relative(to: __tree_)
+      switch limit {
+      case .none:
+        return __p.flatMap {
+          ___tree_adv_iter($0.pointer, offset)
+        }
+        .seal
+      case .some(let __l):
+        let __r = __p.flatMap {
+          ___tree_adv_iter($0.pointer, offset, __l.temporaryUnseal)
+        }
+        .seal
+        return switch __r {
+        case .failure(.limit): __l
+        default: __r
+        }
       }
 
     case .before(let __self):
       return
         RedBlackTreeBoundExpression
-        .advanced(__self, by: -1)
+        .advanced(__self, offset: -1)
         .relative(to: __tree_)
 
     case .after(let __self):
       return
         RedBlackTreeBoundExpression
-        .advanced(__self, by: 1)
+        .advanced(__self, offset: 1)
         .relative(to: __tree_)
 
+    #if DEBUG
+      case .debug(let e):
+        return .failure(e)
+    #endif
     }
   }
 }

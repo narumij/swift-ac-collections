@@ -15,6 +15,10 @@
 //
 //===----------------------------------------------------------------------===//
 
+/// 内部Range
+///
+/// ポインタ付き
+///
 public enum UnsafeTreeSealedRangeExpression: Equatable {
 
   public typealias Bound = _SealedPtr
@@ -122,35 +126,35 @@ public postfix func ... (lhs: _SealedPtr) -> UnsafeTreeSealedRangeExpression {
 // MARK: -
 
 #if false
-public func ..< (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeSealedRangeExpression
-{
-  .range(from: lhs.sealed, to: rhs.sealed)
-}
+  public func ..< (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
+    -> UnsafeTreeSealedRangeExpression
+  {
+    .range(from: lhs.sealed, to: rhs.sealed)
+  }
 
-public func ... (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeSealedRangeExpression
-{
-  .closedRange(from: lhs.sealed, through: rhs.sealed)
-}
+  public func ... (lhs: UnsafeMutablePointer<UnsafeNode>, rhs: UnsafeMutablePointer<UnsafeNode>)
+    -> UnsafeTreeSealedRangeExpression
+  {
+    .closedRange(from: lhs.sealed, through: rhs.sealed)
+  }
 
-public prefix func ..< (rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeSealedRangeExpression
-{
-  .partialRangeTo(rhs.sealed)
-}
+  public prefix func ..< (rhs: UnsafeMutablePointer<UnsafeNode>)
+    -> UnsafeTreeSealedRangeExpression
+  {
+    .partialRangeTo(rhs.sealed)
+  }
 
-public prefix func ... (rhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeSealedRangeExpression
-{
-  .partialRangeThrough(rhs.sealed)
-}
+  public prefix func ... (rhs: UnsafeMutablePointer<UnsafeNode>)
+    -> UnsafeTreeSealedRangeExpression
+  {
+    .partialRangeThrough(rhs.sealed)
+  }
 
-public postfix func ... (lhs: UnsafeMutablePointer<UnsafeNode>)
-  -> UnsafeTreeSealedRangeExpression
-{
-  .partialRangeFrom(lhs.sealed)
-}
+  public postfix func ... (lhs: UnsafeMutablePointer<UnsafeNode>)
+    -> UnsafeTreeSealedRangeExpression
+  {
+    .partialRangeFrom(lhs.sealed)
+  }
 #endif
 
 // MARK: -

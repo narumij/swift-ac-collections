@@ -5,7 +5,10 @@
 //  Created by narumij on 2026/01/29.
 //
 
-// これはfor文では使えない
+/// 赤黒木用軽量Range
+///
+/// for文では使えない
+///
 public enum TaggedSealRangeExpression: Equatable {
   public typealias Bound = TaggedSeal
   /// `a..<b` のこと

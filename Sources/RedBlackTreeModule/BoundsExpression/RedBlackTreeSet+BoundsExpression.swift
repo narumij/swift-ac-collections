@@ -16,7 +16,6 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet: UnsafeMutableTreeHost {}
 
   extension RedBlackTreeSet {
 
@@ -28,20 +27,13 @@
 
   extension RedBlackTreeSet {
 
+    // 実は辞書の派生型という位置づけが自然な気もする
+
     // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     @inlinable
     public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
-      return __tree_[_unsafe_raw: p]
-    }
-
-    // 実は辞書の派生型という位置づけが自然な気もする
-
-    @inlinable
-    public subscript(bound: RedBlackTreeBoundExpression<Element>, default d: Element) -> Element {
-      let p = bound.relative(to: __tree_)
-      guard let p = try? p.get().pointer, !p.___is_end else { return d }
       return __tree_[_unsafe_raw: p]
     }
   }
@@ -100,6 +92,7 @@
     public mutating func removeAll(
       in bounds: RedBlackTreeBoundRangeExpression<Element>
     ) {
+      
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
@@ -112,6 +105,7 @@
       in bounds: RedBlackTreeBoundRangeExpression<Element>,
       where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
+      
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
@@ -122,35 +116,41 @@
   }
 #endif
 
-extension RedBlackTreeSet {
+#if DEBUG
+  extension RedBlackTreeSet {
 
-  package func _withSealed<R>(
-    _ b: RedBlackTreeBoundExpression<Element>,
-    _ body: (_SealedPtr) throws -> R
-  ) rethrows -> R {
-    let b = b.relative(to: __tree_)
-    return try body(b)
+    package func _withSealed<R>(
+      _ b: RedBlackTreeBoundExpression<Element>,
+      _ body: (_SealedPtr) throws -> R
+    ) rethrows -> R {
+      let b = b.relative(to: __tree_)
+      return try body(b)
+    }
+
+    package func _withSealed<R>(
+      _ a: RedBlackTreeBoundExpression<Element>,
+      _ b: RedBlackTreeBoundExpression<Element>,
+      _ body: (_SealedPtr, _SealedPtr) throws -> R
+    ) rethrows -> R {
+      let a = a.relative(to: __tree_)
+      let b = b.relative(to: __tree_)
+      return try body(a, b)
+    }
   }
 
-  package func _withSealed<R>(
-    _ a: RedBlackTreeBoundExpression<Element>,
-    _ b: RedBlackTreeBoundExpression<Element>,
-    _ body: (_SealedPtr, _SealedPtr) throws -> R
-  ) rethrows -> R {
-    let a = a.relative(to: __tree_)
-    let b = b.relative(to: __tree_)
-    return try body(a, b)
-  }
+  extension RedBlackTreeSet {
 
-  package func isEqual(
-    _ l: RedBlackTreeBoundExpression<Element>, _ r: RedBlackTreeBoundExpression<Element>
-  ) -> Bool {
-    let l = l.relative(to: __tree_)
-    let r = r.relative(to: __tree_)
-    return l == r
-  }
+    package func _isEqual(
+      _ l: RedBlackTreeBoundExpression<Element>,
+      _ r: RedBlackTreeBoundExpression<Element>
+    ) -> Bool {
+      let l = l.relative(to: __tree_)
+      let r = r.relative(to: __tree_)
+      return l == r
+    }
 
-  package func error(_ bound: RedBlackTreeBoundExpression<Element>) -> SealError? {
-    bound.relative(to: __tree_).error
+    package func _error(_ bound: RedBlackTreeBoundExpression<Element>) -> SealError? {
+      bound.relative(to: __tree_).error
+    }
   }
-}
+#endif

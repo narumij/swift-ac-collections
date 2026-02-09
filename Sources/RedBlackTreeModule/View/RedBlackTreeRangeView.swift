@@ -305,7 +305,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   public func isTriviallyIdentical(to other: Self) -> Bool {
     let (_start, _end) = _range
     let (_other_start, _other_end) = other._range
-    return __tree_.isTriviallyIdentical(to: other.__tree_) && _start == _other_start
+    return __tree_.isIdentical(to: other.__tree_) && _start == _other_start
       && _end == _other_end
   }
 }

@@ -60,6 +60,6 @@ extension ___UnsafeIsIdenticalToV2 {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    _isTriviallyIdentical(to: other)
+    _isIdentical(to: other)
   }
 }

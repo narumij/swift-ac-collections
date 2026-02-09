@@ -401,24 +401,26 @@ extension RedBlackTreeSet {
 
 // MARK: - Removal
 
-extension RedBlackTreeSet {
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
 
-  /// - Complexity: O(1)
-  @inlinable
-  //  @inline(__always)
-  public mutating func popMin() -> Element? {
-    __tree_.ensureUnique()
-    return ___remove_first()?.payload
-  }
+    /// - Complexity: O(1)
+    @inlinable
+    //  @inline(__always)
+    public mutating func popMin() -> Element? {
+      __tree_.ensureUnique()
+      return ___remove_first()?.payload
+    }
 
-  /// - Complexity: O(log `count`)
-  @inlinable
-  //  @inline(__always)
-  public mutating func popMax() -> Element? {
-    __tree_.ensureUnique()
-    return ___remove_last()?.payload
+    /// - Complexity: O(log `count`)
+    @inlinable
+    //  @inline(__always)
+    public mutating func popMax() -> Element? {
+      __tree_.ensureUnique()
+      return ___remove_last()?.payload
+    }
   }
-}
+#endif
 
 extension RedBlackTreeSet {
 
@@ -430,6 +432,26 @@ extension RedBlackTreeSet {
     __tree_.ensureUnique()
     return __tree_.update { $0.___erase_unique(member) } ? member : nil
   }
+}
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    /// - Important: 削除後は、インデックスが無効になります。
+    /// - Complexity: O(1)
+    @inlinable
+    @discardableResult
+    public mutating func remove(at index: Index) -> Element {
+      __tree_.ensureUnique()
+      guard let __p = __tree_.__purified_(index).pointer else {
+        fatalError(.invalidIndex)
+      }
+      return _unchecked_remove(at: __p).payload
+    }
+  }
+#endif
+
+extension RedBlackTreeSet {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
@@ -755,19 +777,6 @@ extension RedBlackTreeSet {
       return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
         i = $0.flatMap { .taggedSeal($0) }
       }
-    }
-  }
-
-  extension RedBlackTreeSet {
-
-    @inlinable
-    @discardableResult
-    public mutating func remove(at index: Index) -> Element {
-      __tree_.ensureUnique()
-      guard let __p = __tree_.__purified_(index).pointer else {
-        fatalError(.invalidIndex)
-      }
-      return _unchecked_remove(at: __p).payload
     }
   }
 

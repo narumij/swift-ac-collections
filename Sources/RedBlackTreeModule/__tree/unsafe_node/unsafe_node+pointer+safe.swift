@@ -23,7 +23,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   ///
   /// 重ねてsealしないこと
   @inlinable @inline(__always)
-  var seal: _SealedPtr { flatMap { $0.sealed } }
+  var sealed: _SealedPtr { flatMap { $0.sealed } }
 }
 
 public typealias _SealedPtr = Result<_NodePtrSealing, SealError>

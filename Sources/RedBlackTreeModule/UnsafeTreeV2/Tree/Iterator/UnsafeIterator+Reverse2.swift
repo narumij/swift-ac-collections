@@ -52,7 +52,7 @@ extension UnsafeIterator {
       // start に到達（exclusive）なら終了
       guard cur != start else { return nil }
       
-      _sealed_current = _purified_current.flatMap { ___tree_prev_iter($0.pointer) }.seal
+      _sealed_current = _purified_current.flatMap { ___tree_prev_iter($0.pointer) }.sealed
       
       // prev の結果が壊れてたらオコ！（end→start の途中で壊れた）
       guard let p = try? _sealed_current.get() else {

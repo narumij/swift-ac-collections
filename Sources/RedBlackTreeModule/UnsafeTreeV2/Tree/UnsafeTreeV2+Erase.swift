@@ -50,7 +50,7 @@ extension UnsafeTreeV2 {
       if try shouldBeRemoved(__value_(__first.pointer!)) {
         __first = erase(__first.purified.pointer!).sealed
       } else {
-        __first = ___tree_next_iter(__first.purified.pointer!).seal
+        __first = ___tree_next_iter(__first.purified.pointer!).sealed
       }
     }
     return __last

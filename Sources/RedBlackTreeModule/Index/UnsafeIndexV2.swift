@@ -144,7 +144,7 @@ extension UnsafeIndexV2 {
   public func advanced(by n: Int) -> Self {
     let adv = sealed.purified.flatMap { ___tree_adv_iter($0.pointer, n) }
     var result = self
-    result.sealed = adv.seal
+    result.sealed = adv.sealed
     return result
   }
 }
@@ -157,7 +157,7 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var next: Self? {
-    let next = sealed.purified.flatMap { ___tree_next_iter($0.pointer) }.seal
+    let next = sealed.purified.flatMap { ___tree_next_iter($0.pointer) }.sealed
     guard next.isValid, tied.isValueAccessAllowed else { return nil }
     var result = self
     result.sealed = next
@@ -170,7 +170,7 @@ extension UnsafeIndexV2 {
   @inlinable
   @inline(__always)
   public var previous: Self? {
-    let prev = sealed.purified.flatMap { ___tree_prev_iter($0.pointer) }.seal
+    let prev = sealed.purified.flatMap { ___tree_prev_iter($0.pointer) }.sealed
     guard prev.isValid, tied.isValueAccessAllowed else { return nil }
     var result = self
     result.sealed = prev

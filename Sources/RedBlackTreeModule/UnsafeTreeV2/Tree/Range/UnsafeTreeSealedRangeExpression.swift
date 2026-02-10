@@ -56,11 +56,11 @@ extension UnsafeTreeSealedRangeExpression {
     case .range(let lhs, let rhs):
       return (lhs, rhs)
     case .closedRange(let lhs, let rhs):
-      return (lhs, rhs.flatMap { ___tree_next_iter($0.pointer) }.seal)
+      return (lhs, rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
     case .partialRangeTo(let rhs):
       return (_start(__tree_), rhs)
     case .partialRangeThrough(let rhs):
-      return (_start(__tree_), rhs.flatMap { ___tree_next_iter($0.pointer) }.seal)
+      return (_start(__tree_), rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
     case .partialRangeFrom(let lhs):
       return (lhs, _end(__tree_))
     case .unboundedRange:
@@ -88,11 +88,11 @@ extension UnsafeTreeSealedRangeExpression {
     case .range(let lhs, let rhs):
       return (lhs, rhs)
     case .closedRange(let lhs, let rhs):
-      return (lhs, rhs.flatMap { ___tree_next_iter($0.pointer) }.seal)
+      return (lhs, rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
     case .partialRangeTo(let rhs):
       return (_start(tied), rhs)
     case .partialRangeThrough(let rhs):
-      return (_start(tied), rhs.flatMap { ___tree_next_iter($0.pointer) }.seal)
+      return (_start(tied), rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
     case .partialRangeFrom(let lhs):
       return (lhs, _end(tied))
     case .unboundedRange:

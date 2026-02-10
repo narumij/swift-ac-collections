@@ -52,7 +52,7 @@ extension UnsafeIterator {
       // 終端に到達
       guard _p != _end else { return nil }
       
-      _sealed_current = _purified_current.flatMap { ___tree_next_iter($0.pointer) }.seal
+      _sealed_current = _purified_current.flatMap { ___tree_next_iter($0.pointer) }.sealed
       
       return _p.pointer
     }

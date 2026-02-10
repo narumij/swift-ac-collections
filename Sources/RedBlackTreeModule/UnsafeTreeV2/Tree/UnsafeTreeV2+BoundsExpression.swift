@@ -58,12 +58,12 @@ extension RedBlackTreeBoundExpression {
         return __p.flatMap {
           ___tree_adv_iter($0.pointer, offset)
         }
-        .seal
+        .sealed
       case .some(let __l):
         let __r = __p.flatMap {
           ___tree_adv_iter($0.pointer, offset, __l.temporaryUnseal)
         }
-        .seal
+        .sealed
         return switch __r {
         case .failure(.limit): __l
         default: __r
@@ -83,18 +83,18 @@ extension RedBlackTreeBoundExpression {
         .relative(to: __tree_)
       
     case .lessThan(let __v):
-      return ___tree_prev_iter(__tree_.lower_bound(__v)).seal
+      return ___tree_prev_iter(__tree_.lower_bound(__v)).sealed
       
     case .greaterThen(let __v):
       return __tree_.upper_bound(__v).sealed
       
     case .lessThanOrEqual(let __v):
       let __f = __tree_.find(__v).sealed
-      return __f.isValid ? __f : ___tree_prev_iter(__tree_.lower_bound(__v)).seal
+      return __f.exists ? __f : ___tree_prev_iter(__tree_.lower_bound(__v)).sealed
       
     case .greaterThenOrEqual(let __v):
       let __f = __tree_.find(__v).sealed
-      return __f.isValid ? __f : __tree_.upper_bound(__v).sealed
+      return __f.exists ? __f : __tree_.upper_bound(__v).sealed
 
     #if DEBUG
       case .debug(let e):

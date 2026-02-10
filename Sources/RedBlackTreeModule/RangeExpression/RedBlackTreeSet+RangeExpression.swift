@@ -36,7 +36,7 @@
     public subscript(bounds: UnboundedRange) -> RedBlackTreeKeyOnlyRangeView<Base> {
       .init(__tree_: __tree_, _start: _sealed_start, _end: _sealed_end)
     }
-    
+
     @inlinable
     public subscript(bounds: TaggedSealRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
       let (lower, upper) = bounds.relative(to: __tree_)
@@ -51,7 +51,7 @@
       __tree_.ensureUnique()
       _ = ___remove(from: _start, to: _end)
     }
-    
+
     @inlinable
     public mutating func removeAll(in bounds: TaggedSealRangeExpression) {
       __tree_.ensureUnique()
@@ -70,9 +70,7 @@
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(
-        lower.pointer!, upper.pointer!,
-        shouldBeRemoved: shouldBeRemoved)
+      try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
   }
 #endif
@@ -85,7 +83,8 @@
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Element, to end: Element)
-    -> RedBlackTreeKeyOnlyRangeView<Base> {
+      -> RedBlackTreeKeyOnlyRangeView<Base>
+    {
       // APIはstride関数とsequence関数を参考にした
       .init(
         __tree_: __tree_,
@@ -97,7 +96,8 @@
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Element, through end: Element)
-    ->  RedBlackTreeKeyOnlyRangeView<Base> {
+      -> RedBlackTreeKeyOnlyRangeView<Base>
+    {
       // APIはstride関数とsequence関数を参考にした
       .init(
         __tree_: __tree_,

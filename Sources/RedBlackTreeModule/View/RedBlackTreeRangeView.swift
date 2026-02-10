@@ -5,6 +5,8 @@
 //  Created by narumij on 2026/01/29.
 //
 
+import Foundation
+
 public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost, BidirectionalSequence
 where Base: ___TreeBase & ScalarValueTrait {
 
@@ -120,8 +122,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public var count: Int {
-    let (l, u) = _range
-    return (try? ___safe_distance(l.pointer!, u.pointer!).get()) ?? 0
+    let (l, u) = _raw_range
+    return (try? ___safe_distance(l, u).get()) ?? 0
   }
 }
 
@@ -149,17 +151,17 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public var first: Element? {
-    let (_start, _end) = _range
+    let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
-    return __tree_[_unsafe_raw: _start.pointer!]
+    return __tree_[_unsafe_raw: _start]
   }
 
   @inlinable
   @inline(__always)
   public var last: Element? {
-    let (_start, _end) = _range
+    let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
-    return __tree_[_unsafe_raw: __tree_prev_iter(_end.pointer!)]
+    return __tree_[_unsafe_raw: __tree_prev_iter(_end)]
   }
 }
 
@@ -169,9 +171,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   @discardableResult
   public mutating func popFirst() -> Element? {
     __tree_.ensureUnique()
-    let (_start, _end) = _range
+    let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
-    let (_p, _r) = _unchecked_remove(at: _start.pointer!)
+    let (_p, _r) = _unchecked_remove(at: _start)
     startIndex = .sealedTag(_p)
     return _r
   }
@@ -180,18 +182,18 @@ extension RedBlackTreeKeyOnlyRangeView {
   @discardableResult
   public mutating func popLast() -> Element? {
     __tree_.ensureUnique()
-    let (_start, _end) = _range
+    let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
-    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end.pointer!)).payload
+    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
   }
 
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
     __tree_.ensureUnique()
-    let (_start, _end) = _range
+    let (_start, _end) = _raw_range
     guard _start != _end else { fatalError(.emptyFirst) }
-    let (_p, _r) = _unchecked_remove(at: _start.pointer!)
+    let (_p, _r) = _unchecked_remove(at: _start)
     startIndex = .sealedTag(_p)
     return _r
   }
@@ -200,24 +202,26 @@ extension RedBlackTreeKeyOnlyRangeView {
   @discardableResult
   public mutating func removeLast() -> Element {
     __tree_.ensureUnique()
-    let (_start, _end) = _range
+    let (_start, _end) = _raw_range
     guard _start != _end else { fatalError(.emptyLast) }
-    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end.pointer!)).payload
+    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
   }
 
   @inlinable
   public mutating func removeAll() {
     __tree_.ensureUnique()
-    let (_start, _end) = _range
-    __tree_.___checking_erase(_start.pointer!, _end.pointer!)
+    let (_start, _end) = _raw_range
+    __tree_.___erase(_start, _end)
   }
 
   @inlinable
   public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_.ensureUnique()
     let (_start, _end) = _range
-    try __tree_.___checking_erase_if(
-      _start.pointer!, _end.pointer!, shouldBeRemoved: shouldBeRemoved)
+    let result = try __tree_.___erase_if(_start, _end, shouldBeRemoved: shouldBeRemoved)
+    if case .failure(let e) = result {
+      fatalError(e.localizedDescription)
+    }
   }
 }
 
@@ -230,8 +234,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   public func elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
-    let (_start, _end) = _range
-    return try __tree_.elementsEqual(_start.pointer!, _end.pointer!, other, by: areEquivalent)
+    let (_start, _end) = _raw_range
+    return try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -241,9 +245,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   public func lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
-    let (_start, _end) = _range
+    let (_start, _end) = _raw_range
     return try __tree_.lexicographicallyPrecedes(
-      _start.pointer!, _end.pointer!, other, by: areInIncreasingOrder)
+      _start, _end, other, by: areInIncreasingOrder)
   }
 }
 

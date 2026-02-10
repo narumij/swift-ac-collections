@@ -22,10 +22,8 @@ extension UnsafeTreeV2 {
   /// 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
   @inlinable
   @discardableResult
-  func ___checking_erase(
-    _ __first: _NodePtr,
-    _ __last: _NodePtr
-  ) -> _NodePtr {
+  func ___erase(_ __first: _NodePtr, _ __last: _NodePtr) -> _NodePtr {
+
     var __first = __first
     while __first != __last {
       guard !__first.___is_end else {
@@ -36,42 +34,23 @@ extension UnsafeTreeV2 {
     return __last
   }
 
-  /// 末尾チェック無しの削除ループ
-  @inlinable
-  @discardableResult
-  func ___erase_if(
-    _ __first: _NodePtr,
-    _ __last: _NodePtr,
-    shouldBeRemoved: (_PayloadValue) throws -> Bool
-  ) rethrows -> _NodePtr {
-    var __first = __first
-    while __first != __last {
-      if try shouldBeRemoved(__value_(__first)) {
-        __first = erase(__first)
-      } else {
-        __first = __tree_next_iter(__first)
-      }
-    }
-    return __last
-  }
-  
   /// 末尾チェック付きの削除ループ
   @inlinable
   @discardableResult
-  func ___checking_erase_if(
-    _ __first: _NodePtr,
-    _ __last: _NodePtr,
+  func ___erase_if(
+    _ __first: _SealedPtr, _ __last: _SealedPtr,
     shouldBeRemoved: (_PayloadValue) throws -> Bool
-  ) rethrows -> _NodePtr {
+  ) rethrows -> _SealedPtr {
+
     var __first = __first
     while __first != __last {
-      guard !__first.___is_end else {
-        fatalError(.outOfBounds)
+      guard __first.exists else {
+        return .failure(.upperOutOfBounds)
       }
-      if try shouldBeRemoved(__value_(__first)) {
-        __first = erase(__first)
+      if try shouldBeRemoved(__value_(__first.pointer!)) {
+        __first = erase(__first.purified.pointer!).sealed
       } else {
-        __first = __tree_next_iter(__first)
+        __first = ___tree_next_iter(__first.purified.pointer!).seal
       }
     }
     return __last

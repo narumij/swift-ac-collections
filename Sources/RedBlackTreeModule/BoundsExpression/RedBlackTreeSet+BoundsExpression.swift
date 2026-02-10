@@ -101,7 +101,7 @@
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      __tree_.___checking_erase(lower.pointer!, upper.pointer!)
+      __tree_.___erase(lower.pointer!, upper.pointer!)
     }
 
     public mutating func removeAll(
@@ -114,7 +114,7 @@
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(lower.pointer!, upper.pointer!, shouldBeRemoved: shouldBeRemoved)
+      try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
   }
 #endif

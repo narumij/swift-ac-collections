@@ -41,6 +41,6 @@ extension UnsafeMutableTreeRangeProtocol {
   @inlinable @inline(__always)
   package mutating func ___unchecked_remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
     guard from != _end else { return __tree_.end }
-    return __tree_.___checking_erase(from, to)
+    return __tree_.___erase(from, to)
   }
 }

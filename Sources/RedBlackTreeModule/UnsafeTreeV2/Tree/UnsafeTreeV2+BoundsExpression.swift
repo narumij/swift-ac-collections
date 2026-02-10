@@ -81,6 +81,20 @@ extension RedBlackTreeBoundExpression {
         RedBlackTreeBoundExpression
         .advanced(__self, offset: 1)
         .relative(to: __tree_)
+      
+    case .lessThan(let __v):
+      return ___tree_prev_iter(__tree_.lower_bound(__v)).seal
+      
+    case .greaterThen(let __v):
+      return __tree_.upper_bound(__v).sealed
+      
+    case .lessThanOrEqual(let __v):
+      let __f = __tree_.find(__v).sealed
+      return __f.isValid ? __f : ___tree_prev_iter(__tree_.lower_bound(__v)).seal
+      
+    case .greaterThenOrEqual(let __v):
+      let __f = __tree_.find(__v).sealed
+      return __f.isValid ? __f : __tree_.upper_bound(__v).sealed
 
     #if DEBUG
       case .debug(let e):

@@ -12,8 +12,7 @@ extension RedBlackTreeSet {
   }
 
   @inlinable public func lessThanOrEqual(_ p: Element) -> Element? {
-    let lo = lowerBound(p)
-    return (lo.pointee.map { p < $0 } ?? true) ? lo.previous?.pointee : lo.pointee
+    return (firstIndex(of: p) ?? (lowerBound(p).previous))?.pointee
   }
 
   @inlinable public func greaterThan(_ p: Element) -> Element? {
@@ -21,8 +20,7 @@ extension RedBlackTreeSet {
   }
 
   @inlinable public func greaterThanOrEqual(_ p: Element) -> Element? {
-    let lo = lowerBound(p)
-    return (lo.pointee.map { p == $0 } ?? false) ? lo.pointee : upperBound(p).pointee
+    return (firstIndex(of: p) ?? (upperBound(p)))?.pointee
   }
 }
 #endif

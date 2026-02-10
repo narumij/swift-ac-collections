@@ -101,27 +101,24 @@ extension UnsafeIndexV2: Equatable {
   }
 }
 
-#if COMPATIBLE_ATCODER_2025
-  // 本当は削除したいが、Collection適応でRange適応が必須なため、仕方なく残している
-  extension UnsafeIndexV2: Comparable {
+extension UnsafeIndexV2: Comparable {
 
-    /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(1)
-    ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n*)
-    ///
-    ///   内部動作がユニークな場合、値の比較で解決できますが、
-    ///   内部動作がマルチの場合、ノード位置での比較となるので重くなります。
-    @inlinable
-    @inline(__always)
-    public static func < (lhs: Self, rhs: Self) -> Bool {
-      guard let r = rhs.sealed.pointer,
-        let l = rhs.__purified_(lhs).pointer
-      else {
-        preconditionFailure(.garbagedIndex)
-      }
-      return Base.___ptr_comp(l, r)
+  /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(1)
+  ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n*)
+  ///
+  ///   内部動作がユニークな場合、値の比較で解決できますが、
+  ///   内部動作がマルチの場合、ノード位置での比較となるので重くなります。
+  @inlinable
+  @inline(__always)
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    guard let r = rhs.sealed.pointer,
+      let l = rhs.__purified_(lhs).pointer
+    else {
+      preconditionFailure(.garbagedIndex)
     }
+    return Base.___ptr_comp(l, r)
   }
-#endif
+}
 
 // Stridableできるが、Range<Index>に標準実装が生えることと、
 // その実装が要素アクセスのたびに範囲チェックを行うことを嫌って、Stridableをやめている
@@ -263,31 +260,6 @@ public func - <Base>(lhs: UnsafeIndexV2<Base>, rhs: Int) -> UnsafeIndexV2<Base> 
 public func - <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>) -> Int {
   rhs.distance(to: lhs)
 }
-
-// MARK: - Optional
-
-#if !COMPATIBLE_ATCODER_2025
-  // TODO: 再検討
-  // こういうものが必要になるのもどうかとおもうが、
-  // かといってIndexの返却をIndex!にするのは標準で前例がみつかってないし、
-  // Index?もどうかとおもい、悩むポイント
-  extension UnsafeIndexV2 {
-
-    /// オプショナル型を返却します。
-    ///
-    /// 型を書く負担を軽減するためのものです。
-    ///
-    /// 例えば以下のように書きたい場合に用います。
-    /// ```swift
-    /// let st = RedBlackTreeSet<Int>(0..<10)
-    /// var it = st.startIndex.some()
-    /// while it != st.endIndex {
-    ///   it = it?.next
-    /// }
-    /// ```
-    public func some() -> Self? { .some(self) }
-  }
-#endif
 
 // MARK: Index Resolver
 

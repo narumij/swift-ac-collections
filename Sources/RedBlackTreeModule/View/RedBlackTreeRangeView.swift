@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost, BidirectionalSequence
+public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost
 where Base: ___TreeBase & ScalarValueTrait {
 
   @usableFromInline
@@ -117,6 +117,14 @@ extension RedBlackTreeMultiSet: ScalarBaseInit {
 // MARK: -
 
 extension RedBlackTreeKeyOnlyRangeView {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var isEmpty: Bool {
+    let (l, u) = _raw_range
+    return l != u
+  }
 
   /// - Complexity: O(`count`)
   @inlinable

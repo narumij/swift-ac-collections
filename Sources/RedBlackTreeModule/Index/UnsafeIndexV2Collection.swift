@@ -53,11 +53,7 @@ extension UnsafeIndexV2Collection {
   var _end: _NodePtr { _sealed_end.pointer! }
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection {}
-#else
-  extension UnsafeIndexV2Collection: Sequence {}
-#endif
+extension UnsafeIndexV2Collection: Sequence, Collection, BidirectionalCollection {}
 
 extension UnsafeIndexV2Collection {
 
@@ -84,14 +80,12 @@ extension UnsafeIndexV2Collection {
     position
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
-      .init(
-        start: bounds.lowerBound.sealed,
-        end: bounds.upperBound.sealed,
-        tie: bounds.lowerBound.tied)
-    }
-  #endif
+  public subscript(bounds: Range<Index>) -> UnsafeIndexV2Collection {
+    .init(
+      start: bounds.lowerBound.sealed,
+      end: bounds.upperBound.sealed,
+      tie: bounds.lowerBound.tied)
+  }
 }
 
 #if swift(>=5.5)

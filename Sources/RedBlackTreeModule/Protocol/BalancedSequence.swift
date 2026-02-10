@@ -51,8 +51,9 @@ public protocol BalancedView: BalancedSequence {
 
 // MARK: -
 
-public protocol BalancedCollection: Sequence {
-
+public protocol BalancedCollection: BalancedSequence {
+  
+  associatedtype Key
   associatedtype Index: Equatable
   associatedtype View: BalancedView
   associatedtype RangeExpression = TaggedSealRangeExpression
@@ -63,13 +64,17 @@ public protocol BalancedCollection: Sequence {
   var startIndex: Index { get }
   var endIndex: Index { get }
 
-  func index(after i: Index) -> Index
-  func index(before i: Index) -> Index
+  func index(after: Index) -> Index
+  func index(before: Index) -> Index
+  func index(_: Index, offsetBy distance: Int)
+  func index(_: _SealedTag, offsetBy distance: Int, limitedBy limit: Index)
 
-  func formIndex(after i: inout Index)
-  func formIndex(before i: inout Index)
+  func formIndex(after: inout Index)
+  func formIndex(before: inout Index)
+  func formIndex(_: inout Index, offsetBy distance: Int)
+  func formIndex(_: inout Index, offsetBy distance: Int, limitedBy limit: Index) -> Bool
 
-  mutating func remove(_: Element) -> Element?
+  mutating func remove(_: Key) -> Element?
   mutating func removeAll()
   mutating func removeAll(keepingCapacity keepCapacity: Bool)
 
@@ -78,8 +83,9 @@ public protocol BalancedCollection: Sequence {
   subscript(position: RedBlackTreeBoundExpression<Element>) -> Element? { get }
   subscript(range: RedBlackTreeBoundRangeExpression<Element>) -> View { get }
 
-  func lowerBound(_ member: Element) -> Index
-  func upperBound(_ member: Element) -> Index
+  func lowerBound(_: Element) -> Index
+  func upperBound(_: Element) -> Index
+  func find(_: Element) -> Index?
 
   mutating func erase(_: Index) -> Index
   mutating func erase(_: RangeExpression)

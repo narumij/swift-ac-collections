@@ -100,12 +100,16 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
   // TODO: greaterThen,lessThan,等の検討
   // こちらの実現は簡単そう
   // greaterThanとupperは同じ
+  /// 与えられた値より小さい要素のうち最大のものを表す
   case lessThan(_Key)  // TODO: コーナーケース検討
+  /// 与えられた値より大きい要素のうち最小のものを表す
   case greaterThen(_Key)
 
   // TODO: greaterThenOrEqual,lessThenOrEqual,等の検討
   // こちらはやや難しめ
+  /// 与えられた値以下の要素のうち最大のものを表す
   case lessThanOrEqual(_Key)  // TODO: コーナーケース検討
+  /// 与えられた値以上の要素のうち最小のものを表す
   case greaterThenOrEqual(_Key)
 
   #if DEBUG

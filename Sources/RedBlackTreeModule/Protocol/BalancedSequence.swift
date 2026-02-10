@@ -13,7 +13,6 @@
 public protocol BalancedSequence: Sequence {
 
   var isEmpty: Bool { get }
-  var count: Int { get }
 
   var first: Element? { get }
   var last: Element? { get }
@@ -45,6 +44,8 @@ extension BalancedSequence {
 
 public protocol BalancedView: BalancedSequence {
 
+  // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
+
   mutating func erase()
   mutating func erase(where: (Element) throws -> Bool) rethrows
 }
@@ -52,11 +53,15 @@ public protocol BalancedView: BalancedSequence {
 // MARK: -
 
 public protocol BalancedCollection: BalancedSequence {
-  
+
   associatedtype Key
   associatedtype Index: Equatable
   associatedtype View: BalancedView
   associatedtype RangeExpression = TaggedSealRangeExpression
+  associatedtype Bound = RedBlackTreeBoundExpression<Element>
+  associatedtype BoundRange = RedBlackTreeBoundRangeExpression<Element>
+
+  var count: Int { get }
 
   subscript(position: Index) -> Element { get }
   subscript(range: RangeExpression) -> View { get }
@@ -85,15 +90,19 @@ public protocol BalancedCollection: BalancedSequence {
 
   func lowerBound(_: Element) -> Index
   func upperBound(_: Element) -> Index
+  
   func find(_: Element) -> Index?
+
+  // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
 
   mutating func erase(_: Index) -> Index
   mutating func erase(_: RangeExpression)
   mutating func erase(_: RangeExpression, where: (Element) throws -> Bool) rethrows
-  mutating func erase(_: RedBlackTreeBoundExpression<Element>) -> Element?
-  mutating func erase(_: RedBlackTreeBoundRangeExpression<Element>)
-  mutating func erase(_: RedBlackTreeBoundRangeExpression<Element>, where: (Element) throws -> Bool)
-    rethrows
+
+  mutating func erase(_: Bound) -> Element?
+  mutating func erase(_: BoundRange)
+  mutating func erase(_: BoundRange, where: (Element) throws -> Bool) rethrows
+
   mutating func eraseAll(where: (Element) throws -> Bool) rethrows
   mutating func eraseAll()
 }

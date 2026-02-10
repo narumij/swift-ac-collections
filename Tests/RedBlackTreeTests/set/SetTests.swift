@@ -31,13 +31,15 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertGreaterThanOrEqual(numbers.capacity, 4)
   }
 
-  func testInitNaive0() throws {
-    let set = RedBlackTreeSet<Int>(naive: 0..<0)
-    XCTAssertEqual(set.elements, (0..<0) + [])
-    XCTAssertEqual(set.count, 0)
-    XCTAssertTrue(set.isEmpty)
-    XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testInitNaive0() throws {
+      let set = RedBlackTreeSet<Int>(naive: 0..<0)
+      XCTAssertEqual(set.elements, (0..<0) + [])
+      XCTAssertEqual(set.count, 0)
+      XCTAssertTrue(set.isEmpty)
+      XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
+    }
+  #endif
 
   func testInitRange() throws {
     let set = RedBlackTreeSet<Int>(0..<10000)
@@ -63,13 +65,15 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
   }
 
-  func testInitCollection3() throws {
-    let set = RedBlackTreeSet<Int>(naive: [2, 3, 3, 0, 0, 1, 1, 1])
-    XCTAssertEqual(set.elements, [0, 1, 2, 3])
-    XCTAssertEqual(set.count, 4)
-    XCTAssertFalse(set.isEmpty)
-    XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testInitCollection3() throws {
+      let set = RedBlackTreeSet<Int>(naive: [2, 3, 3, 0, 0, 1, 1, 1])
+      XCTAssertEqual(set.elements, [0, 1, 2, 3])
+      XCTAssertEqual(set.count, 4)
+      XCTAssertFalse(set.isEmpty)
+      XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
+    }
+  #endif
 
   func testExample3() throws {
     let b: RedBlackTreeSet<Int> = [1, 2, 3]
@@ -1118,19 +1122,19 @@ final class SetTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testIsValidRangeSmoke() throws {
-    let a = RedBlackTreeSet<Int>(naive: [0, 1, 2, 3, 4, 5])
-    XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
-  }
-
-  func testSortedReversed() throws {
-    let source = [0, 1, 2, 3, 4, 5]
-    let a = RedBlackTreeSet<Int>(naive: source)
-    XCTAssertEqual(a.sorted() + [], source)
-    XCTAssertEqual(a.reversed() + [], source.reversed())
-  }
-
   #if COMPATIBLE_ATCODER_2025
+    func testIsValidRangeSmoke() throws {
+      let a = RedBlackTreeSet<Int>(naive: [0, 1, 2, 3, 4, 5])
+      XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+    }
+
+    func testSortedReversed() throws {
+      let source = [0, 1, 2, 3, 4, 5]
+      let a = RedBlackTreeSet<Int>(naive: source)
+      XCTAssertEqual(a.sorted() + [], source)
+      XCTAssertEqual(a.reversed() + [], source.reversed())
+    }
+
     func testForEach_enumeration() throws {
       let source = [0, 1, 2, 3, 4, 5]
       let a = RedBlackTreeSet<Int>(naive: source)
@@ -1141,13 +1145,13 @@ final class SetTests: RedBlackTreeTestCase {
         p = p?.next
       }
     }
-  #endif
 
-  func testInitNaive_with_Sequence() throws {
-    let source = [0, 1, 2, 3, 4, 5]
-    let a = RedBlackTreeSet<Int>(naive: AnySequence(source))
-    XCTAssertEqual(a.sorted() + [], source)
-  }
+    func testInitNaive_with_Sequence() throws {
+      let source = [0, 1, 2, 3, 4, 5]
+      let a = RedBlackTreeSet<Int>(naive: AnySequence(source))
+      XCTAssertEqual(a.sorted() + [], source)
+    }
+  #endif
 
   func testInsertEmpty() throws {
     var a = RedBlackTreeSet<Int>()

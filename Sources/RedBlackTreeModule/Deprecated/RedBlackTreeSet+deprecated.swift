@@ -1,4 +1,44 @@
 #if COMPATIBLE_ATCODER_2025
+  // これは、お節介すぎるので削ることにする
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(*n* log *n* + *n*)
+    @inlinable
+    public init<Source>(_ sequence: __owned Source)
+    where Element == Source.Element, Source: Sequence {
+      self.init(__tree_: .create_unique(sorted: sequence.sorted()))
+    }
+  }
+
+  // MARK: - Init naive
+
+  // これを標準に引き上げ
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(*n* log *n*)
+    ///
+    /// 省メモリでの初期化
+    @inlinable
+    public init<Source>(naive sequence: __owned Source)
+    where Element == Source.Element, Source: Sequence {
+      self.init(__tree_: .create_unique(naive: sequence))
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// - Important: 昇順を想定して処理を省いている。降順に用いた場合未定義
+    /// - Complexity: ならしO(*n*)
+    @inlinable
+    public init<R>(_ range: __owned R)
+    where R: RangeExpression, R: Collection, R.Element == Element {
+      precondition(range is Range<Element> || range is ClosedRange<Element>)
+      self.init(__tree_: .create(range: range))
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet: Collection, BidirectionalCollection {}
 #endif
 

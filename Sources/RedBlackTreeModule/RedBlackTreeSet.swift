@@ -202,27 +202,34 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet {
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
 
-  /// - Complexity: O(*n* log *n* + *n*)
-  @inlinable
-  public init<Source>(_ sequence: __owned Source)
-  where Element == Source.Element, Source: Sequence {
-    self.init(__tree_: .create_unique(sorted: sequence.sorted()))
+    /// - Complexity: O(*n* log *n*)
+    /// ただし、ソート済みの場合、ならしO(*n*)
+    @inlinable
+    public init<Source>(_ sequence: __owned Source)
+    where Element == Source.Element, Source: Sequence {
+      self.init(
+        __tree_:
+          .___insert_range_unique(
+            tree: .create(),
+            sequence))
+    }
+
+    /// - Complexity: O(*n* log *n*)
+    /// ただし、ソート済みの場合、ならしO(*n*)
+    @inlinable
+    public init<Source>(_ collection: __owned Source)
+    where Element == Source.Element, Source: Collection {
+      self.init(
+        __tree_:
+          .___insert_range_unique(
+            tree: .create(minimumCapacity: collection.count),
+            collection))
+    }
   }
-}
-
-extension RedBlackTreeSet {
-
-  /// - Important: 昇順を想定して処理を省いている。降順に用いた場合未定義
-  /// - Complexity: O(*n*)
-  @inlinable
-  public init<R>(_ range: __owned R)
-  where R: RangeExpression, R: Collection, R.Element == Element {
-    precondition(range is Range<Element> || range is ClosedRange<Element>)
-    self.init(__tree_: .create(range: range))
-  }
-}
+#endif
 
 // MARK: - Inspecting a Set
 
@@ -999,17 +1006,3 @@ extension RedBlackTreeSet: Hashable where Element: Hashable {
     }
   }
 #endif
-
-// MARK: - Init naive
-
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(*n* log *n*)
-  ///
-  /// 省メモリでの初期化
-  @inlinable
-  public init<Source>(naive sequence: __owned Source)
-  where Element == Source.Element, Source: Sequence {
-    self.init(__tree_: .create_unique(naive: sequence))
-  }
-}

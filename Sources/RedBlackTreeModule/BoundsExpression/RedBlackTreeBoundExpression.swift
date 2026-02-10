@@ -97,8 +97,12 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
   /// ただし評価時の計算量
   case after(Self)
   
-  // TODO: greater,less,等の検討
-  
+  // TODO: greaterThen,lessThan,等の検討
+  // こちらの実現は簡単そう
+
+  // TODO: greaterThenOrEqual,lessThenOrEqual,等の検討
+  // こちらはやや難しめ
+
   #if DEBUG
     case debug(SealError)
   #endif

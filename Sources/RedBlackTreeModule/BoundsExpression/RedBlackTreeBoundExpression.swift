@@ -100,12 +100,12 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
   // TODO: greaterThen,lessThan,等の検討
   // こちらの実現は簡単そう
   // greaterThanとupperは同じ
-  case lessThan(_Key)
+  case lessThan(_Key)  // TODO: コーナーケース検討
   case greaterThen(_Key)
 
   // TODO: greaterThenOrEqual,lessThenOrEqual,等の検討
   // こちらはやや難しめ
-  case lessThanOrEqual(_Key)
+  case lessThanOrEqual(_Key)  // TODO: コーナーケース検討
   case greaterThenOrEqual(_Key)
 
   #if DEBUG
@@ -197,4 +197,22 @@ public func upperBound<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
 /// ただし評価時の計算量
 public func find<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
   .find(k)
+}
+
+// 一時的にオマージュ
+
+public func lt<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
+  .lessThan(k)
+}
+
+public func gt<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
+  .greaterThen(k)
+}
+
+public func le<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
+  .lessThanOrEqual(k)
+}
+
+public func ge<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
+  .greaterThenOrEqual(k)
 }

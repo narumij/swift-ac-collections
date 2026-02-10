@@ -231,6 +231,23 @@ extension RedBlackTreeKeyOnlyRangeView {
       fatalError(e.localizedDescription)
     }
   }
+  
+  @inlinable
+  public mutating func erase() {
+    __tree_.ensureUnique()
+    let (_start, _end) = _raw_range
+    __tree_.___erase(_start, _end)
+  }
+
+  @inlinable
+  public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+    __tree_.ensureUnique()
+    let (_start, _end) = _range
+    let result = try __tree_.___erase_if(_start, _end, shouldBeRemoved: shouldBeRemoved)
+    if case .failure(let e) = result {
+      fatalError(e.localizedDescription)
+    }
+  }
 }
 
 extension RedBlackTreeKeyOnlyRangeView {

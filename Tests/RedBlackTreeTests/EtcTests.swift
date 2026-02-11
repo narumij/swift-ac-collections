@@ -1103,7 +1103,7 @@ final class EtcTests: RedBlackTreeTestCase {
 
       var set = RedBlackTreeSet<Int>(0..<20)
 
-      set[lowerBound(10).advanced(by: 2)..<end()].removeAll {
+      set[lowerBound(10).advanced(by: 2)..<end()].erase {
         $0 % 2 == 0
       }
 
@@ -1119,7 +1119,7 @@ final class EtcTests: RedBlackTreeTestCase {
       let set = RedBlackTreeSet<Int>(0..<20)
       var range = set[lowerBound(10).advanced(by: 2)..<end()]
 
-      range.removeAll {
+      range.erase {
         $0 % 2 == 0
       }
 

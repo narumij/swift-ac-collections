@@ -108,7 +108,9 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
 extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
 
   @usableFromInline
-  package var value: _TrackingTag? { try? map(\.rawValue.pointer.trackingTag).get() }
+  package var value: _TrackingTag {
+    (try? map(\.rawValue.pointer.trackingTag).get()) ?? .nullptr
+  }
 }
 
 #if DEBUG

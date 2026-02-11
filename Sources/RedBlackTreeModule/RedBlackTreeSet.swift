@@ -829,6 +829,19 @@ extension RedBlackTreeSet {
         __tree_[_unsafe: __tree_.__purified_(position)]
       }
     }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(_result position: Index) -> Result<Element, SealError> {
+      __tree_.__purified_(position)
+        .map { $0.pointer.__value_().pointee }
+    }
+  }
+
+  extension RedBlackTreeSet {
 
     /// Indexがsubscriptやremoveで利用可能か判別します
     ///

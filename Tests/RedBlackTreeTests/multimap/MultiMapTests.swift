@@ -1059,9 +1059,9 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = Target<Int, String>.Index
     #if DEBUG
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
       // UnsafeTreeは範囲外のインデックスを作成できない
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, nil)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr)
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
@@ -1081,8 +1081,8 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = Target<Int, String>.Index
     #if DEBUG
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, 5)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, 5)
 
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))

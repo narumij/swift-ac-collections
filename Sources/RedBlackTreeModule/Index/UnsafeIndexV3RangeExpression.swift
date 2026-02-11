@@ -36,11 +36,6 @@ extension UnsafeIndexV3RangeExpression {
   func relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> (_SealedPtr, _SealedPtr) {
     rawRange.sealed.relative(to: __tree_)
   }
-
-  @usableFromInline
-  func relative(to tied: _TiedRawBuffer) -> (_SealedPtr, _SealedPtr) {
-    rawRange.sealed.relative(to: tied)
-  }
 }
 
 // MARK: - Range Expression

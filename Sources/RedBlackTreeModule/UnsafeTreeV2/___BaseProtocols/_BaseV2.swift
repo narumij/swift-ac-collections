@@ -140,6 +140,8 @@ protocol _RedBlackTreeKeyValuesBase:
     & ___UnsafeKeyValueSequenceV2
 {}
 
+// MARK: -
+
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase__:
   UnsafeMutableTreeRangeProtocol
@@ -147,8 +149,9 @@ protocol _RedBlackTreeKeyOnlyBase__:
     & _SetBridge
     & _CompareV2
     & _SequenceV2
-    & ___UnsafeKeyOnlySequenceV2__
 {}
+
+// MARK: -
 
 @usableFromInline
 protocol _ScalarBasePayload_KeyProtocol_ptr:

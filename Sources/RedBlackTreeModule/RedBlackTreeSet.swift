@@ -550,7 +550,13 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first(where: predicate)
+    for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+      let __e = __tree_[_unsafe_raw: __c]
+      if try predicate(__e) {
+        return __e
+      }
+    }
+    return nil
   }
 }
 
@@ -577,7 +583,7 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public func makeIterator() -> Tree._PayloadValues {
-    _makeIterator()
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 }
 
@@ -641,8 +647,12 @@ extension RedBlackTreeSet {
     public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
       -> Index?
     {
-      // TODO: FIXME
-      try ___first_(where: predicate).flatMap(___index_or_nil)
+      for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+        if try predicate(__tree_[_unsafe_raw: __c]) {
+          return ___index(__c.sealed)
+        }
+      }
+      return nil
     }
   }
 
@@ -858,7 +868,7 @@ extension RedBlackTreeSet {
   public func elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
-    try _elementsEqual(other, by: areEquivalent)
+    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -868,7 +878,7 @@ extension RedBlackTreeSet {
   public func lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
-    try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
   }
 }
 
@@ -880,7 +890,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    _elementsEqual(other, by: ==)
+    elementsEqual(other, by: ==)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -889,7 +899,7 @@ extension RedBlackTreeSet {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    _lexicographicallyPrecedes(other, by: <)
+    lexicographicallyPrecedes(other, by: <)
   }
 }
 
@@ -972,7 +982,7 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    _isIdentical(to: other)
+    __tree_._isIdentical(to: other.__tree_)
   }
 }
 

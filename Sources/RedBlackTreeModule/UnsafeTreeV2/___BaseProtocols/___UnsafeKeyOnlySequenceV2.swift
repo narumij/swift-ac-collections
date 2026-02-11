@@ -29,12 +29,15 @@ where
 {}
 
 extension ___UnsafeKeyOnlySequenceV2__ {
-
+  
   @inlinable
   @inline(__always)
   internal func _makeIterator() -> Tree._PayloadValues {
     .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
+}
+
+extension ___UnsafeKeyOnlySequenceV2__ {
 
   @inlinable
   @inline(__always)
@@ -143,30 +146,30 @@ protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexPr
       }
     }
   }
-#endif
 
-extension ___UnsafeKeyOnlySequenceV2 {
+  extension ___UnsafeKeyOnlySequenceV2 {
 
-  @inlinable
-  internal subscript(_unsafe position: Index) -> _PayloadValue {
-    @inline(__always) _read {
-      yield __tree_[_unsafe: __tree_.__purified_(position)]
+    @inlinable
+    internal subscript(_unsafe position: Index) -> _PayloadValue {
+      @inline(__always) _read {
+        yield __tree_[_unsafe: __tree_.__purified_(position)]
+      }
     }
   }
-}
 
 extension ___UnsafeKeyOnlySequenceV2 {
 
   @inlinable
   @inline(__always)
   internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    var result: Index?
-    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
-      if try predicate(__tree_[_unsafe_raw: __p]) {
-        result = ___index(__p.sealed)
-        cont = false
+    
+    for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+      if try predicate(__tree_[_unsafe_raw: __c]) {
+        return ___index(__c.sealed)
       }
     }
-    return result
+    
+    return nil
   }
 }
+#endif

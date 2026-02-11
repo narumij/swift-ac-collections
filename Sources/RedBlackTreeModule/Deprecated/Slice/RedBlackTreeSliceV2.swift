@@ -125,13 +125,18 @@ extension RedBlackTreeSliceV2.KeyOnly {
     /// - Complexity: O(`count`)
     @inlinable
     public func firstIndex(of member: Element) -> Index? {
-      ___first_index { Base.value_equiv($0, member) }
+      firstIndex { Base.value_equiv($0, member) }
     }
 
     /// - Complexity: O(`count`)
     @inlinable
     public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-      try ___first_index(where: predicate)
+      for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+        if try predicate(__tree_[_unsafe_raw: __c]) {
+          return ___index(__c.sealed)
+        }
+      }
+      return nil
     }
   }
 #endif
@@ -142,12 +147,10 @@ extension RedBlackTreeSliceV2.KeyOnly {
   @inlinable
   public subscript(position: Index) -> Element {
     @inline(__always) _read {
-      yield self[_unsafe: position]
+      yield __tree_[_unsafe: __tree_.__purified_(position)]
     }
   }
 }
-#if COMPATIBLE_ATCODER_2025
-#endif
 
 extension RedBlackTreeSliceV2.KeyOnly {
 

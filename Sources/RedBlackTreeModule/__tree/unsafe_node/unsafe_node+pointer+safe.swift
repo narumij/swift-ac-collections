@@ -111,8 +111,8 @@ public enum SealError: Error {
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable @inline(__always)
-  var trackingTag: _TrackingTag? {
-    try? map(\.pointer.trackingTag).get()
+  var trackingTag: _TrackingTag {
+    (try? map(\.pointer.trackingTag).get()) ?? .nullptr
   }
 
   @inlinable

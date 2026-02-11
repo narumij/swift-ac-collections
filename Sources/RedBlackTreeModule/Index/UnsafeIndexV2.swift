@@ -270,7 +270,7 @@ extension UnsafeIndexV2 {
   internal func __purified_(_ index: UnsafeIndexV2) -> _SealedPtr {
     tied === index.tied
       ? index.sealed.purified
-    : tied.__retrieve_(index.sealed.purified.trackingTag ?? .nullptr).purified
+    : tied.__retrieve_(index.sealed.purified.trackingTag).purified
   }
 }
 

@@ -52,7 +52,7 @@ extension _TiedRawBuffer {
 extension _TiedRawBuffer {
   @nonobjc
   @inlinable
-  public func isTriviallyIdentical(to other: _TiedRawBuffer) -> Bool {
+  public func _isIdentical(to other: _TiedRawBuffer) -> Bool {
     self === other
   }
 }
@@ -137,6 +137,9 @@ extension _TiedRawBuffer {
 
 extension _TiedRawBuffer {
 
+  /// つながりをたぐりよせる
+  ///
+  /// 日本人的にはお祭りなどによくある千本引きのイメージ
   @inlinable
   @inline(__always)
   package func __retrieve_(_ tag: _TrackingTag) -> _SafePtr {
@@ -146,9 +149,7 @@ extension _TiedRawBuffer {
     default: tag < capacity ? .success(self[tag]!) : .failure(.unknown)
     }
   }
-  /// つながりをたぐりよせる
-  ///
-  /// 日本人的にはお祭りなどによくある千本引きのイメージ
+  
   @inlinable
   @inline(__always)
   package func __retrieve_(_ tag: _TrackingTag) -> _SealedPtr {

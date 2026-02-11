@@ -24,18 +24,6 @@
       self.init(__tree_: .create_unique(naive: sequence))
     }
   }
-
-  extension RedBlackTreeSet {
-
-    /// - Important: 昇順を想定して処理を省いている。降順に用いた場合未定義
-    /// - Complexity: ならしO(*n*)
-    @inlinable
-    public init<R>(_ range: __owned R)
-    where R: RangeExpression, R: Collection, R.Element == Element {
-      precondition(range is Range<Element> || range is ClosedRange<Element>)
-      self.init(__tree_: .create(range: range))
-    }
-  }
 #endif
 
 #if COMPATIBLE_ATCODER_2025

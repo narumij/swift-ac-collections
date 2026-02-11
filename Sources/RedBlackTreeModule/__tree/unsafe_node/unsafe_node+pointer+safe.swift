@@ -15,6 +15,16 @@
 //
 //===----------------------------------------------------------------------===//
 
+/*
+ _SafePtrも、_SealedPtrも、それほど安全ではない
+ 
+ _SealedTag（今後廃止予定）はメモリ非依存なので安全。ただし利用時に解決のコストがかかる
+ _TieWrappedPtrは依存メモリ付きなので、安全
+ 
+ 対してこの二つのPtrは、依存木と依存メモリの寿命に関与していない
+ 
+ */
+
 /// ポインタ操作でいちいちsealingしたくない場合に使う
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 

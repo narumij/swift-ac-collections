@@ -85,8 +85,8 @@ public struct _NodePtrSealing: Equatable {
 
   /// 引換券
   @inlinable @inline(__always)
-  var tag: _SealedTag {
-    .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
+  var trackingTag: _TrackingTag {
+    pointer.pointee.___tracking_tag
   }
 }
 

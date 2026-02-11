@@ -75,6 +75,14 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
 
 // MARK: -
 
+/// 外部に出す場合、あるいは木が常に一致するとは限らない場合に使うポインタ
+///
+/// `_TieWrappedPtr`は`_SealedPtr`にメモリ寿命を付与したもの
+///
+/// `_NodePtr`は内部用の最速
+///
+/// `_SealedPtr`は外部での変更リスクがある場合に使う
+/// 
 public typealias _TieWrappedPtr = Result<_TieWrap<_NodePtrSealing>, SealError>
 
 extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
@@ -100,7 +108,7 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
 extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
 
   @usableFromInline
-  package var value: _TrackingTag? { try? map(\.rawValue.tag.value).get() }
+  package var value: _TrackingTag? { try? map(\.rawValue.pointer.trackingTag).get() }
 }
 
 #if DEBUG
@@ -113,7 +121,7 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
         return .failure(.null)
       }
 
-      return tree[__retrieve_: rawTag]
+      return tree.__retrieve_(rawTag)
         .flatMap(\.sealed)
         .flatMap { $0.band(tree.tied) }
     }

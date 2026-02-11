@@ -111,8 +111,8 @@ public enum SealError: Error {
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable @inline(__always)
-  var tag: _SealedTag {
-    flatMap(\.tag)
+  var trackingTag: _TrackingTag? {
+    try? map(\.pointer.trackingTag).get()
   }
 
   @inlinable
@@ -157,6 +157,11 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   }
 }
 
+extension Result {
+  
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+}
+
 extension Result where Failure == SealError {
 
   @inlinable
@@ -186,9 +191,4 @@ extension Result where Failure == SealError {
       return failure == e
     }
   }
-}
-
-extension Result {
-  
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 }

@@ -144,38 +144,21 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  package subscript(__retrieve_ tag: _TrackingTag) -> _SafePtr {
+  package func __retrieve_(_ tag: _TrackingTag) -> _SafePtr {
     switch tag {
     case .nullptr: .failure(.null)
     case .end: .success(end)
     default: tag < capacity ? .success(_buffer.header[tag]) : .failure(.unknown)
     }
   }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
-    switch tag {
-    case .end:
-      return end.sealed
-    case .tag(let raw, let seal):
-      guard raw < capacity else {
-        return .failure(.unknown)
-      }
-      return .success(.uncheckedSeal(_buffer.header[raw], seal))
-    }
-  }
-
+  
   /// つながりをたぐりよせる
   ///
   /// 日本人的にはお祭りなどによくある千本引きのイメージ
   @inlinable
   @inline(__always)
-  package func __retrieve_(_ tag: _SealedTag) -> _SealedPtr {
-    tag.flatMap { ___retrieve(tag: $0) }
+  package func __retrieve_(_ tag: _TrackingTag) -> _SealedPtr {
+    __retrieve_(tag).sealed
   }
 }
 
@@ -191,20 +174,14 @@ extension UnsafeTreeV2 {
   where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
     tied === index.tied
       ? index.sealed.purified
-      : __retrieve_(index.sealed.purified.tag).purified
+      : __retrieve_(index.sealed.purified.trackingTag ?? .nullptr).purified
   }
-  
+
   @inlinable
   @inline(__always)
   internal func __purified_(_ index: UnsafeIndexV3) -> _SealedPtr {
     tied === index.tied
       ? index.sealed.purified
-      : __retrieve_(index.sealed.purified.tag).purified
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func __purified_(_ sealedTag: _SealedTag) -> _SealedPtr {
-    __retrieve_(sealedTag).purified
+      : __retrieve_(index.sealed.purified.trackingTag ?? .nullptr).purified
   }
 }

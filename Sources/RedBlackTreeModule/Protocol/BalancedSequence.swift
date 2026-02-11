@@ -57,14 +57,14 @@ public protocol BalancedCollection: BalancedSequence {
   associatedtype Key
   associatedtype Index: Equatable
   associatedtype View: BalancedView
-  associatedtype RangeExpression = TaggedSealRangeExpression
+  associatedtype Range = UnsafeIndexV3RangeExpression
   associatedtype Bound = RedBlackTreeBoundExpression<Element>
   associatedtype BoundRange = RedBlackTreeBoundRangeExpression<Element>
 
   var count: Int { get }
 
   subscript(position: Index) -> Element { get }
-  subscript(range: RangeExpression) -> View { get }
+  subscript(range: Range) -> View { get }
 
   var startIndex: Index { get }
   var endIndex: Index { get }
@@ -90,14 +90,13 @@ public protocol BalancedCollection: BalancedSequence {
 
   func lowerBound(_: Element) -> Index
   func upperBound(_: Element) -> Index
-  
   func find(_: Element) -> Index?
 
   // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
 
   mutating func erase(_: Index) -> Index
-  mutating func erase(_: RangeExpression)
-  mutating func erase(_: RangeExpression, where: (Element) throws -> Bool) rethrows
+  mutating func erase(_: Range)
+  mutating func erase(_: Range, where: (Element) throws -> Bool) rethrows
 
   mutating func erase(_: Bound) -> Element?
   mutating func erase(_: BoundRange)

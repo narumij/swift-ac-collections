@@ -5,6 +5,8 @@
 //  Created by narumij on 2026/02/10.
 //
 
+// 手に負えなくなりそうなのでAPIまでは実装しなさそう
+
 //
 // unchecked用のBoundExpressionの下地
 // キー値比較だけで保証できる範囲を取り扱う

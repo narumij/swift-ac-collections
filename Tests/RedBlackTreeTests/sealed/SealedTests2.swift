@@ -48,9 +48,9 @@
       b.removeLast()  // この時点でCoWが発生する
       let b0 = b.startIndex
       b.removeFirst()  // CoWが発生しない
-      XCTAssertTrue(b0.isValid)  // bそのものは有効
+      XCTAssertFalse(b0.isValid)
       XCTAssertFalse(b.isValid(index: b0))
-      XCTAssertTrue(a.isValid(index: b0))  // aにとっては有効なまま
+      XCTAssertFalse(a.isValid(index: b0))
       XCTAssertEqual(b.sorted(), Array(1..<19))
     }
 
@@ -58,7 +58,7 @@
       XCTAssertTrue(a.isValid(index: a.startIndex))
       let a0 = a.startIndex
       a.removeFirst()
-      XCTAssertTrue(a0.isValid)  // 発行元に対するチェックは無効を示す
+      XCTAssertFalse(a0.isValid)  // 発行元に対するチェックは無効を示す
       XCTAssertFalse(a.isValid(index: a0))
       XCTAssertEqual(a.sorted(), Array(1..<20))
     }

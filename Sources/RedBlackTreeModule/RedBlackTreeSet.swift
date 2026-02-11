@@ -601,8 +601,21 @@ extension RedBlackTreeSet {
     /// - Important:
     ///  要素及びノードが削除された場合、インデックスは無効になります。
     /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-    public typealias Index = _SealedTag
+    public typealias Index = UnsafeIndexV3
     public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Base>
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
+      UnsafeIndexV3(sealed: p, tie: __tree_.tied)
+    }
+
+    @inlinable
+    func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
+      p.exists ? UnsafeIndexV3(sealed: p, tie: __tree_.tied) : nil
+    }
   }
 
   extension RedBlackTreeSet {
@@ -610,18 +623,19 @@ extension RedBlackTreeSet {
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element)
-      -> _SealedTag?
+      -> Index?
     {
-      .sealedTagOrNil(__tree_.find(member))
+      ___index_or_nil(__tree_.find(member).sealed)
     }
 
     // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
     /// - Complexity: O( `count` )
     @inlinable
     public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
-      -> _SealedTag?
+      -> Index?
     {
-      try ___first_tracking_tag(where: predicate)
+      // TODO: FIXME
+      try ___first_(where: predicate).flatMap(___index_or_nil)
     }
   }
 
@@ -630,12 +644,12 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var startIndex: Index { .sealedTag(_start) }
+    public var startIndex: Index { ___index(_sealed_start) }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public var endIndex: Index { .sealedTag(_end) }
+    public var endIndex: Index { ___index(_sealed_end) }
   }
 
   extension RedBlackTreeSet {
@@ -673,7 +687,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ member: Element) -> Index {
-      .sealedTag(__tree_.lower_bound(member))
+      ___index(__tree_.lower_bound(member).sealed)
     }
 
     /// 与えられた値よりも大きい最初の要素へのインデックスを返す
@@ -693,7 +707,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ member: Element) -> Index {
-      .sealedTag(__tree_.upper_bound(member))
+      ___index(__tree_.upper_bound(member).sealed)
     }
   }
 
@@ -705,7 +719,7 @@ extension RedBlackTreeSet {
       lower: Index, upper: Index
     ) {
       let (lower, upper) = __tree_.__equal_range_unique(element)
-      return (.sealedTag(lower), .sealedTag(upper))
+      return (___index(lower.sealed), ___index(upper.sealed))
     }
   }
 
@@ -714,33 +728,33 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     public func index(before i: Index) -> Index {
-      __tree_.__purified_(i)
-        .flatMap { ___tree_prev_iter($0.pointer) }
-        .flatMap { .sealedTag($0) }
+      var i = i
+      formIndex(before: &i)
+      return i
     }
 
     /// - Complexity: O(1)
     @inlinable
     public func index(after i: Index) -> Index {
-      __tree_.__purified_(i)
-        .flatMap { ___tree_next_iter($0.pointer) }
-        .flatMap { .sealedTag($0) }
+      var i = i
+      formIndex(after: &i)
+      return i
     }
 
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(_ i: Index, offsetBy distance: Int)
-      -> _SealedTag
+      -> Index
     {
-      __tree_.__purified_(i)
-        .flatMap { ___tree_adv_iter($0.pointer, distance) }
-        .flatMap { .sealedTag($0) }
+      var i = i
+      formIndex(&i, offsetBy: distance)
+      return i
     }
 
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(
-      _ i: _SealedTag, offsetBy distance: Int, limitedBy limit: Index
+      _ i: Index, offsetBy distance: Int, limitedBy limit: Index
     )
       -> Index?
     {
@@ -756,21 +770,21 @@ extension RedBlackTreeSet {
     @inlinable
     @inline(__always)
     public func formIndex(before i: inout Index) {
-      i = index(before: i)
+      i.sealed = __tree_.___index(before: __tree_.__purified_(i))
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public func formIndex(after i: inout Index) {
-      i = index(after: i)
+      i.sealed = __tree_.___index(after: __tree_.__purified_(i))
     }
 
     /// - Complexity: O(*d*)
     @inlinable
     //  @inline(__always)
     public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-      i = index(i, offsetBy: distance)
+      i.sealed = __tree_.___index(__tree_.__purified_(i), offsetBy: distance)
     }
 
     /// - Complexity: O(*d*)
@@ -789,7 +803,7 @@ extension RedBlackTreeSet {
       let __l = __tree_.__purified_(limit).map(\.pointer)
 
       return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
-        i = $0.flatMap { .sealedTag($0) }
+        i.sealed = $0.flatMap { $0.sealed }
       }
     }
   }

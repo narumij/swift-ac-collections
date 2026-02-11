@@ -20,6 +20,12 @@ protocol UnsafeIndexProviderProtocol: UnsafeIndexBinding & UnsafeTreeHost {
   func ___index(_ p: _SealedPtr) -> Index
 }
 
+@usableFromInline
+protocol UnsafeIndexV3ProviderProtocol {
+  associatedtype Index = UnsafeIndexV3
+  func ___index(_ p: _SealedPtr) -> Index
+}
+
 extension UnsafeIndexProviderProtocol {
 
   @inlinable @inline(__always)

@@ -13,11 +13,11 @@ where Base: ___TreeBase & ScalarValueTrait {
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-    self.startIndex = _start.tag
-    self.endIndex = _end.tag
+    self.startIndex = .init(sealed: _start, tie: __tree_.tied)
+    self.endIndex = .init(sealed: _end, tie: __tree_.tied)
   }
 
-  public typealias Index = _SealedTag
+  public typealias Index = UnsafeIndexV3
   public typealias Element = Base._PayloadValue
 
   @usableFromInline
@@ -40,8 +40,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   @usableFromInline
   var _raw_range: (_NodePtr, _NodePtr) {
     guard
-      let _start = __tree_.__retrieve_(startIndex).pointer,
-      let _end = __tree_.__retrieve_(endIndex).pointer
+      let _start = __tree_.__purified_(startIndex).pointer,
+      let _end = __tree_.__purified_(endIndex).pointer
     else {
       return (__tree_.__end_node, __tree_.__end_node)
     }
@@ -52,8 +52,8 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   @usableFromInline
   var _range: (_SealedPtr, _SealedPtr) {
-    let _start = __tree_.__retrieve_(startIndex)
-    let _end = __tree_.__retrieve_(endIndex)
+    let _start = __tree_.__purified_(startIndex)
+    let _end = __tree_.__purified_(endIndex)
     guard
       _start.isValid, _end.isValid
     else {
@@ -176,13 +176,26 @@ extension RedBlackTreeKeyOnlyRangeView {
 extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
+  func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
+    UnsafeIndexV3(sealed: p, tie: __tree_.tied)
+  }
+
+  @inlinable
+  func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
+    p.exists ? UnsafeIndexV3(sealed: p, tie: __tree_.tied) : nil
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView {
+
+  @inlinable
   @discardableResult
   public mutating func popFirst() -> Element? {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
     let (_p, _r) = _unchecked_remove(at: _start)
-    startIndex = .sealedTag(_p)
+    startIndex = ___index(_p.sealed)
     return _r
   }
 
@@ -202,7 +215,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     let (_start, _end) = _raw_range
     guard _start != _end else { fatalError(.emptyFirst) }
     let (_p, _r) = _unchecked_remove(at: _start)
-    startIndex = .sealedTag(_p)
+    startIndex = ___index(_p.sealed)
     return _r
   }
 
@@ -231,7 +244,7 @@ extension RedBlackTreeKeyOnlyRangeView {
       fatalError(e.localizedDescription)
     }
   }
-  
+
   @inlinable
   public mutating func erase() {
     __tree_.ensureUnique()
@@ -370,17 +383,17 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   public func index(before i: Index) -> Index {
-    __tree_.__purified_(i)
-      .flatMap { ___tree_prev_iter($0.pointer) }
-      .flatMap { .sealedTag($0) }
+    var i = i
+    formIndex(before: &i)
+    return i
   }
 
   /// - Complexity: O(1)
   @inlinable
   public func index(after i: Index) -> Index {
-    __tree_.__purified_(i)
-      .flatMap { ___tree_next_iter($0.pointer) }
-      .flatMap { .sealedTag($0) }
+    var i = i
+    formIndex(after: &i)
+    return i
   }
 }
 
@@ -389,9 +402,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(`distance`)
   @inlinable
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    __tree_.__purified_(i)
-      .flatMap { ___tree_adv_iter($0.pointer, distance) }
-      .flatMap { .sealedTag($0) }
+    var i = i
+    formIndex(&i, offsetBy: distance)
+    return i
   }
 
   /// - Complexity: O(`distance`)
@@ -413,37 +426,40 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @inline(__always)
   public func formIndex(before i: inout Index) {
-    i = index(before: i)
+    i.sealed = __tree_.___index(before: __tree_.__purified_(i))
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public func formIndex(after i: inout Index) {
-    i = index(after: i)
+    i.sealed = __tree_.___index(after: __tree_.__purified_(i))
   }
 
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    i = index(i, offsetBy: distance)
+    i.sealed = __tree_.___index(__tree_.__purified_(i), offsetBy: distance)
   }
 
   /// - Complexity: O(*d*)
   @inlinable
   @inline(__always)
   public func formIndex(
-    _ i: inout _SealedTag,
+    _ i: inout Index,
     offsetBy distance: Int,
-    limitedBy limit: _SealedTag
+    limitedBy limit: Index
   )
     -> Bool
   {
-    guard let ___i = __tree_.__purified_(i).pointer else { return false }
+    guard let ___i = __tree_.__purified_(i).pointer
+    else { return false }
+
     let __l = __tree_.__purified_(limit).map(\.pointer)
+
     return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
-      i = $0.flatMap { .sealedTag($0) }
+      i.sealed = $0.flatMap { $0.sealed }
     }
   }
 }

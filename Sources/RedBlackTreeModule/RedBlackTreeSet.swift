@@ -824,7 +824,7 @@ extension RedBlackTreeSet {
     @inlinable
     @inline(__always)
     public func isValid(index: Index) -> Bool {
-      __tree_.__purified_(index).___is_end == false
+      __tree_.__purified_(index).exists
     }
   }
 #endif

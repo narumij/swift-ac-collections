@@ -88,22 +88,6 @@ extension UnsafeIndexV3 {
   @usableFromInline package var tag: _SealedTag { sealed.tag }
 }
 
-extension UnsafeIndexV3 {
-
-//  @inlinable
-//  static func sealedTagOrNil(_ t: UnsafeMutablePointer<UnsafeNode>?) -> UnsafeIndexV3? {
-////    t.flatMap { .sealOrNil($0) }.map { .success($0) }
-//    fatalError()
-//  }
-
-//  @inlinable
-//  static func sealedTag(_ t: UnsafeMutablePointer<UnsafeNode>) -> UnsafeIndexV3 {
-////    .success(.seal(t))
-////    fatalError()
-//    .init(sealed: t.sealed, tie: <#T##_TiedRawBuffer#>)
-//  }
-}
-
 #if DEBUG
   extension UnsafeIndexV3 {
     fileprivate init<Base: ___TreeBase>(

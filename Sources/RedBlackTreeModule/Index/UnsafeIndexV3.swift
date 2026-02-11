@@ -22,10 +22,10 @@ public typealias UnsafeIndexV3 = _TieWrappedPtr
 extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
 
   /// ポインタを利用する際に用いる
-  @inlinable @inline(__always)
+  @inlinable
   var purified: Result { flatMap { $0.purified } }
 
-  @inlinable
+  @usableFromInline
   package var isValid: Bool {
     switch purified {
     case .success: true
@@ -33,7 +33,7 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
     }
   }
 
-  @inlinable
+  @inlinable @inline(__always)
   package var sealed: _SealedPtr {
     map(\.rawValue)
   }
@@ -48,13 +48,16 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
 #if DEBUG
   extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
 
-    internal static func unsafe<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag)
+    package static func unsafe<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag)
       -> Self
     {
       if rawTag == .nullptr {
         return .failure(.null)
       }
-      return tree[__retrieve_: rawTag].flatMap(\.sealed).flatMap { $0.band(tree.tied) }
+      
+      return tree[__retrieve_: rawTag]
+        .flatMap(\.sealed)
+        .flatMap { $0.band(tree.tied) }
     }
   }
 #endif

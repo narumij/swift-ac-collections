@@ -41,20 +41,6 @@ extension UnsafeTreeSealedRangeProtocol {
     }
     return __r.sealed
   }
-
-  @inlinable @inline(__always)
-  internal func ___first_tracking_tag(where predicate: (_PayloadValue) throws -> Bool) rethrows
-    -> _SealedTag?
-  {
-    var __r = UnsafeNode.nullptr
-    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
-      if try predicate(__tree_[_unsafe_raw: __p]) {
-        __r = __p
-        cont = false
-      }
-    }
-    return .sealedTagOrNil(__r)
-  }
 }
 
 extension UnsafeTreeSealedRangeProtocol {

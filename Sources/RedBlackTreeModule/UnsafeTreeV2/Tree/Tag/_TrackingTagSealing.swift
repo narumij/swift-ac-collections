@@ -13,6 +13,17 @@ public enum _TrackingTagSealing: Equatable {
 
 extension _TrackingTagSealing {
 
+  @usableFromInline
+  internal var raw: _TrackingTag {
+    switch self {
+    case .end: .end
+    case .tag(raw: let rag, seal: _): rag
+    }
+  }
+}
+
+extension _TrackingTagSealing {
+
   @inlinable
   static func seal(raw: _TrackingTag, seal: UnsafeNode.Seal) -> Self {
     switch raw {
@@ -24,21 +35,8 @@ extension _TrackingTagSealing {
   }
 
   @inlinable
-  static func sealOrNil(raw: _TrackingTag, seal: UnsafeNode.Seal) -> Self? {
-    switch raw {
-    case 0...: return .tag(raw: raw, seal: seal)
-    default: return nil
-    }
-  }
-
-  @inlinable
   static func seal(_ p: UnsafeMutablePointer<UnsafeNode>) -> Self {
     .seal(raw: p.pointee.___tracking_tag, seal: p.pointee.___recycle_count)
-  }
-
-  @inlinable
-  static func sealOrNil(_ p: UnsafeMutablePointer<UnsafeNode>) -> Self? {
-    .sealOrNil(raw: p.pointee.___tracking_tag, seal: p.pointee.___recycle_count)
   }
 }
 

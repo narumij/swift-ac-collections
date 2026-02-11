@@ -34,14 +34,6 @@
       return _unchecked_remove(at: p).payload
     }
 
-    public func sealedTag(_ bound: RedBlackTreeBoundExpression<Element>)
-      -> _SealedTag?
-    {
-      let p = bound.relative(to: __tree_)
-      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
-      return .sealedTag(p)
-    }
-
     // MARK: -
 
     public func count(

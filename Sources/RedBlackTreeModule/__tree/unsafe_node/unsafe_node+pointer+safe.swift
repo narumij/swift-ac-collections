@@ -187,3 +187,8 @@ extension Result where Failure == SealError {
     }
   }
 }
+
+extension Result {
+  
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+}

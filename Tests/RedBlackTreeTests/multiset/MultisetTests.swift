@@ -703,84 +703,80 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.elements(in: 2..<3).map { $0 }, [2, 2, 2])
   }
 
-  #if !SKIP_MULTISET_INDEX_BUG
-    func testIndex0() throws {
-      let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
+  func testIndex0() throws {
+    let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
+    var i = set.startIndex
+    for _ in 0..<set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.index(after: i)), 1)
+      i = set.index(after: i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for _ in 0..<set.count {
+      XCTAssertEqual(set.distance(from: i, to: set.index(before: i)), -1)
+      i = set.index(before: i)
+    }
+    XCTAssertEqual(i, set.startIndex)
+    for _ in 0..<set.count {
+      XCTAssertEqual(set.distance(from: set.index(after: i), to: i), -1)
+      i = set.index(after: i)
+    }
+    XCTAssertEqual(i, set.endIndex)
+    for _ in 0..<set.count {
+      XCTAssertEqual(set.distance(from: set.index(before: i), to: i), 1)
+      i = set.index(before: i)
+    }
+  }
+
+  func testIndex00() throws {
+    let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
+    do {
       var i = set.startIndex
-      for _ in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.index(after: i)), 1)
+      for j in 0..<set.count {
+        XCTAssertEqual(set.distance(from: set.startIndex, to: i), j)
         i = set.index(after: i)
       }
       XCTAssertEqual(i, set.endIndex)
-      for _ in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.index(before: i)), -1)
+      for j in 0..<set.count {
+        XCTAssertEqual(set.distance(from: set.endIndex, to: i), -j)
         i = set.index(before: i)
       }
       XCTAssertEqual(i, set.startIndex)
-      for _ in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.index(after: i), to: i), -1)
-        i = set.index(after: i)
+      for j in 0..<set.count {
+        XCTAssertEqual(set.distance(from: i, to: set.startIndex), -j)
+        set.formIndex(after: &i)
       }
       XCTAssertEqual(i, set.endIndex)
-      for _ in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.index(before: i), to: i), 1)
-        i = set.index(before: i)
+      for j in 0..<set.count {
+        XCTAssertEqual(set.distance(from: i, to: set.endIndex), j)
+        set.formIndex(before: &i)
       }
+      XCTAssertEqual(i, set.startIndex)
     }
-  #endif
-
-  #if !SKIP_MULTISET_INDEX_BUG
-    func testIndex00() throws {
-      let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
-      do {
-        var i = set.startIndex
-        for j in 0..<set.count {
-          XCTAssertEqual(set.distance(from: set.startIndex, to: i), j)
-          i = set.index(after: i)
-        }
-        XCTAssertEqual(i, set.endIndex)
-        for j in 0..<set.count {
-          XCTAssertEqual(set.distance(from: set.endIndex, to: i), -j)
-          i = set.index(before: i)
-        }
-        XCTAssertEqual(i, set.startIndex)
-        for j in 0..<set.count {
-          XCTAssertEqual(set.distance(from: i, to: set.startIndex), -j)
-          set.formIndex(after: &i)
-        }
-        XCTAssertEqual(i, set.endIndex)
-        for j in 0..<set.count {
-          XCTAssertEqual(set.distance(from: i, to: set.endIndex), j)
-          set.formIndex(before: &i)
-        }
-        XCTAssertEqual(i, set.startIndex)
+    let sub = set.elements(in: 2..<5)
+    do {
+      var i = sub.startIndex
+      for j in 0..<sub.count {
+        XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
+        i = sub.index(after: i)
       }
-      let sub = set.elements(in: 2..<5)
-      do {
-        var i = sub.startIndex
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
-          i = sub.index(after: i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: sub.endIndex, to: i), -j)
-          i = sub.index(before: i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
-          sub.formIndex(after: &i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
-          sub.formIndex(before: &i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
+      XCTAssertEqual(i, sub.endIndex)
+      for j in 0..<sub.count {
+        XCTAssertEqual(sub.distance(from: sub.endIndex, to: i), -j)
+        i = sub.index(before: i)
       }
+      XCTAssertEqual(i, sub.startIndex)
+      for j in 0..<sub.count {
+        XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
+        sub.formIndex(after: &i)
+      }
+      XCTAssertEqual(i, sub.endIndex)
+      for j in 0..<sub.count {
+        XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
+        sub.formIndex(before: &i)
+      }
+      XCTAssertEqual(i, sub.startIndex)
     }
-  #endif
+  }
 
   func testIndex000() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]

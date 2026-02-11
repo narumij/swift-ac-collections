@@ -19,50 +19,13 @@
 public struct UnsafeIndexV3RangeExpression: _UnsafeNodePtrType {
 
   @usableFromInline
-  internal var rawRange: UnsafeTreeSealedRangeExpression {
-    switch _rawRange {
-    case .range(let from, let to):
-        .range(from: from.sealed, to: to.sealed)
-    case .closedRange(let from, let through):
-        .closedRange(from: from.sealed, through: through.sealed)
-    case .partialRangeTo(let bound):
-        .partialRangeTo(bound.sealed)
-    case .partialRangeThrough(let bound):
-        .partialRangeThrough(bound.sealed)
-    case .partialRangeFrom(let bound):
-        .partialRangeFrom(bound.sealed)
-    case .unboundedRange:
-        .unboundedRange
-    }
-  }
-
-  @usableFromInline
-  internal var _rawRange: UnsafeTreeTieWrappedRangeExpression
-
-  // MARK: -
+  internal var rawRange: _TieWrappedRangeExpression
 
   @inlinable
   @inline(__always)
-  internal init(rawValue: UnsafeTreeTieWrappedRangeExpression) {
-    self._rawRange = rawValue
+  internal init(rawValue: _TieWrappedRangeExpression) {
+    self.rawRange = rawValue
   }
-}
-
-public enum UnsafeTreeTieWrappedRangeExpression: Equatable {
-
-  public typealias Bound = _TieWrappedPtr
-  /// `a..<b` のこと
-  case range(from: Bound, to: Bound)
-  /// `a...b` のこと
-  case closedRange(from: Bound, through: Bound)
-  /// `..<b` のこと
-  case partialRangeTo(Bound)
-  /// `...b` のこと
-  case partialRangeThrough(Bound)
-  /// `a...` のこと
-  case partialRangeFrom(Bound)
-  /// `...` のこと
-  case unboundedRange
 }
 
 // 削除の悩みがつきまとうので、Sequence適合せず、ループはできないようにする
@@ -71,12 +34,12 @@ extension UnsafeIndexV3RangeExpression {
 
   @usableFromInline
   func relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> (_SealedPtr, _SealedPtr) {
-    rawRange.relative(to: __tree_)
+    rawRange.sealed.relative(to: __tree_)
   }
 
   @usableFromInline
   func relative(to tied: _TiedRawBuffer) -> (_SealedPtr, _SealedPtr) {
-    rawRange.relative(to: tied)
+    rawRange.sealed.relative(to: tied)
   }
 }
 
@@ -116,4 +79,45 @@ public prefix func ... (rhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
 @inline(__always)
 public postfix func ... (lhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
   return .init(rawValue: .partialRangeFrom(lhs))
+}
+
+// MARK: -
+
+extension UnsafeIndexV3RangeExpression {
+
+  public enum _TieWrappedRangeExpression: Equatable {
+
+    public typealias Bound = _TieWrappedPtr
+    /// `a..<b` のこと
+    case range(from: Bound, to: Bound)
+    /// `a...b` のこと
+    case closedRange(from: Bound, through: Bound)
+    /// `..<b` のこと
+    case partialRangeTo(Bound)
+    /// `...b` のこと
+    case partialRangeThrough(Bound)
+    /// `a...` のこと
+    case partialRangeFrom(Bound)
+    /// `...` のこと
+    case unboundedRange
+  }
+}
+
+extension UnsafeIndexV3RangeExpression._TieWrappedRangeExpression {
+  var sealed: UnsafeTreeSealedRangeExpression {
+    switch self {
+    case .range(let from, let to):
+      .range(from: from.sealed, to: to.sealed)
+    case .closedRange(let from, let through):
+      .closedRange(from: from.sealed, through: through.sealed)
+    case .partialRangeTo(let bound):
+      .partialRangeTo(bound.sealed)
+    case .partialRangeThrough(let bound):
+      .partialRangeThrough(bound.sealed)
+    case .partialRangeFrom(let bound):
+      .partialRangeFrom(bound.sealed)
+    case .unboundedRange:
+      .unboundedRange
+    }
+  }
 }

@@ -25,13 +25,14 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
 
   @inlinable
   package var sealed: _SealedPtr {
-    get { map(\.rawValue) }
-    set { self = newValue.band(tied!) }
+    map(\.rawValue)
   }
 }
 
 extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
-  @usableFromInline package var value: _TrackingTag? { try? map(\.rawValue.tag.value).get() }
+
+  @usableFromInline
+  package var value: _TrackingTag? { try? map(\.rawValue.tag.value).get() }
 }
 
 #if DEBUG

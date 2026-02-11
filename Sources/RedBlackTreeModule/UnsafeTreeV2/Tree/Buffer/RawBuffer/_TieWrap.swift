@@ -55,16 +55,6 @@ extension _NodePtrSealing {
   }
 }
 
-//extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
-//
-//  // 某バンドオマージュ
-//
-//  @inlinable
-//  func band(_ tie: _TiedRawBuffer) -> _TiedPtr {
-//    sealed.flatMap { $0.band(tie) }
-//  }
-//}
-
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   // 某バンドオマージュ
@@ -78,7 +68,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
 
   @inlinable
-  var tied: _TiedRawBuffer! {
+  var tied: _TiedRawBuffer? {
     try? map(\.tied).get()
   }
 }

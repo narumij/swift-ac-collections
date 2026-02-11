@@ -396,7 +396,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public func index(after i: Index) -> Index {
     __tree_.__purified_(i)
-      .flatMap { ___tree_prev_iter($0.pointer) }
+      .flatMap { ___tree_next_iter($0.pointer) }
       .flatMap { $0.sealed.band(__tree_.tied) }
   }
 }

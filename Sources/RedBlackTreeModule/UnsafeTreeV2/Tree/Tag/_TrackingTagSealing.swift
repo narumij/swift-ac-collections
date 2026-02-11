@@ -6,6 +6,7 @@
 //
 
 // 一度削除したが、情報欠落でデグレになったので、復活
+/// トラッキング番号解決の補助データ構造
 @frozen
 public enum _TrackingTagSealing: Equatable {
   case end

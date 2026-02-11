@@ -6,9 +6,6 @@
 //
 
 /// 赤黒木用軽量インデックス
-///
-/// - note: for文の範囲指定に使えない
-///
 public typealias _SealedTag = Result<_TrackingTagSealing, SealError>
 
 extension Result where Success == _TrackingTagSealing, Failure == SealError {

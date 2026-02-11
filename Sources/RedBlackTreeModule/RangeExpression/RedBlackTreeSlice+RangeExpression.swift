@@ -40,14 +40,5 @@
     public subscript(bounds: _RangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
       ___subscript(bounds.rawRange)
     }
-
-    @inlinable
-    public subscript(bounds: TaggedSealRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
-      }
-      return .init(__tree_: __tree_, _start: lower, _end: upper)
-    }
   }
 #endif

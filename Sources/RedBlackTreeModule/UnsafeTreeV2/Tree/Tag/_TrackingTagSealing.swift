@@ -5,6 +5,9 @@
 //  Created by narumij on 2026/02/05.
 //
 
+// 削除しようとしたが、急に不安になったので、一旦見送り
+// 余裕があり削除して大丈夫と確信がもてるなら、削って構わない
+// やっぱり削除して大丈夫そう
 @frozen
 public enum _TrackingTagSealing: Equatable {
   case end

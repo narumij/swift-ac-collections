@@ -1,16 +1,27 @@
+//===----------------------------------------------------------------------===//
 //
-//  TagSeal_.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/02/05.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
-// 一度削除したが、情報欠落でデグレになったので、復活
-public typealias _SealedTag = Result<_TrackingTagSealing, SealError>
+@usableFromInline
+package typealias _SealedTag = Result<_TrackingTagSealing, SealError>
 
 /// トラッキング番号解決の補助データ構造
 @frozen
-public enum _TrackingTagSealing: Equatable {
+@usableFromInline
+package enum _TrackingTagSealing: Equatable {
   case end
   case tag(raw: _TrackingTag, seal: UnsafeNode.Seal)
 }
@@ -28,21 +39,4 @@ extension _TrackingTagSealing {
       fatalError(.invalidIndex)
     }
   }
-}
-
-extension _TrackingTagSealing: CustomStringConvertible {
-
-  public var description: String {
-    switch self {
-    case .end:
-      "_TrackingTagSealing.end"
-    case .tag(let raw, let seal):
-      "_TrackingTagSealing.tag\((raw: raw, seal: seal))"
-    }
-  }
-}
-
-extension _TrackingTagSealing: CustomDebugStringConvertible {
-
-  public var debugDescription: String { description }
 }

@@ -56,17 +56,21 @@ extension _TieWrap where RawValue == _NodePtrSealing {
 
 extension _NodePtrSealing {
 
+  // 某バンドオマージュ
+  
   @inlinable
-  func tie(_ tie: _TiedRawBuffer) -> _TieWrap<_NodePtrSealing> {
+  func band(_ tie: _TiedRawBuffer) -> _TieWrap<_NodePtrSealing> {
     .init(rawValue: self, tie: tie)
   }
 }
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
+  // 某バンドオマージュ
+
   @inlinable
-  func tie(_ tie: _TiedRawBuffer) -> Result<_TieWrap<_NodePtrSealing>, SealError> {
-    map { $0.tie(tie) }
+  func band(_ tie: _TiedRawBuffer) -> Result<_TieWrap<_NodePtrSealing>, SealError> {
+    map { $0.band(tie) }
   }
 }
 

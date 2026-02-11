@@ -19,7 +19,7 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
   @inlinable
   package var sealed: _SealedPtr {
     get { map(\.rawValue) }
-    set { self = newValue.tie(tied!) }
+    set { self = newValue.band(tied!) }
   }
 }
 
@@ -36,7 +36,7 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
       if rawTag == .nullptr {
         return .failure(.null)
       }
-      return tree[__retrieve_: rawTag].flatMap(\.sealed).map { $0.tie(tree.tied) }
+      return tree[__retrieve_: rawTag].flatMap(\.sealed).map { $0.band(tree.tied) }
     }
   }
 #endif

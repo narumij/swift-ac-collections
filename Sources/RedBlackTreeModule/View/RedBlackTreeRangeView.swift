@@ -13,8 +13,8 @@ where Base: ___TreeBase & ScalarValueTrait {
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-    self.startIndex = _start.tie(__tree_.tied)
-    self.endIndex = _end.tie(__tree_.tied)
+    self.startIndex = _start.band(__tree_.tied)
+    self.endIndex = _end.band(__tree_.tied)
   }
 
   public typealias Index = UnsafeIndexV3
@@ -181,12 +181,12 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
   func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
-    p.tie(__tree_.tied)
+    p.band(__tree_.tied)
   }
 
   @inlinable
   func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
-    p.exists ? p.tie(__tree_.tied) : nil
+    p.exists ? p.band(__tree_.tied) : nil
   }
 }
 

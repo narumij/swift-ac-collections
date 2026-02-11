@@ -387,17 +387,17 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   public func index(before i: Index) -> Index {
-    var i = i
-    formIndex(before: &i)
-    return i
+    __tree_.__purified_(i)
+      .flatMap { ___tree_prev_iter($0.pointer) }
+      .flatMap { $0.sealed.band(__tree_.tied) }
   }
 
   /// - Complexity: O(1)
   @inlinable
   public func index(after i: Index) -> Index {
-    var i = i
-    formIndex(after: &i)
-    return i
+    __tree_.__purified_(i)
+      .flatMap { ___tree_prev_iter($0.pointer) }
+      .flatMap { $0.sealed.band(__tree_.tied) }
   }
 }
 
@@ -406,9 +406,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(`distance`)
   @inlinable
   public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    var i = i
-    formIndex(&i, offsetBy: distance)
-    return i
+    __tree_.__purified_(i)
+      .flatMap { ___tree_adv_iter($0.pointer, distance) }
+      .flatMap { $0.sealed.band(__tree_.tied) }
   }
 
   /// - Complexity: O(`distance`)
@@ -425,26 +425,26 @@ extension RedBlackTreeKeyOnlyRangeView {
 }
 
 extension RedBlackTreeKeyOnlyRangeView {
-
+  
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public func formIndex(before i: inout Index) {
-    i.sealed = __tree_.___index(before: __tree_.__purified_(i))
+    i = index(before: i)
   }
-
+  
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public func formIndex(after i: inout Index) {
-    i.sealed = __tree_.___index(after: __tree_.__purified_(i))
+    i = index(after: i)
   }
+}
+
+extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(*d*)
   @inlinable
-  //  @inline(__always)
   public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    i.sealed = __tree_.___index(__tree_.__purified_(i), offsetBy: distance)
+    i = index(i, offsetBy: distance)
   }
 
   /// - Complexity: O(*d*)
@@ -463,7 +463,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     let __l = __tree_.__purified_(limit).map(\.pointer)
 
     return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
-      i.sealed = $0.flatMap { $0.sealed }
+      i = $0.flatMap { $0.sealed.band(__tree_.tied) }
     }
   }
 }

@@ -7,16 +7,14 @@
 
 public typealias _TiedPtr = Result<_TieWrap<_NodePtrSealing>, SealError>
 
+public typealias UnsafeIndexV3 = _TiedPtr
+
 extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
 
   /// ポインタを利用する際に用いる
   @inlinable @inline(__always)
   var purified: Result { flatMap { $0.purified } }
-}
 
-public typealias UnsafeIndexV3 = _TiedPtr
-
-extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
   @inlinable
   package var isValid: Bool {
     switch purified {

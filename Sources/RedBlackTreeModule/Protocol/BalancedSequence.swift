@@ -42,14 +42,6 @@ extension BalancedSequence {
   }
 }
 
-public protocol BalancedView: BalancedSequence {
-
-  // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
-
-  mutating func erase()
-  mutating func erase(where: (Element) throws -> Bool) rethrows
-}
-
 // MARK: -
 
 public protocol BalancedCollection: BalancedSequence {
@@ -104,4 +96,14 @@ public protocol BalancedCollection: BalancedSequence {
 
   mutating func eraseAll(where: (Element) throws -> Bool) rethrows
   mutating func eraseAll()
+}
+
+// MARK: -
+
+public protocol BalancedView: BalancedSequence {
+
+  // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
+
+  mutating func erase()
+  mutating func erase(where: (Element) throws -> Bool) rethrows
 }

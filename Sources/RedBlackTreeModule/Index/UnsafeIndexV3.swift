@@ -5,9 +5,9 @@
 //  Created by narumij on 2026/02/11.
 //
 
-public typealias _TiedPtr = Result<_TieWrap<_NodePtrSealing>, SealError>
+public typealias _TieWrappedPtr = Result<_TieWrap<_NodePtrSealing>, SealError>
 
-public typealias UnsafeIndexV3 = _TiedPtr
+public typealias UnsafeIndexV3 = _TieWrappedPtr
 
 extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
 

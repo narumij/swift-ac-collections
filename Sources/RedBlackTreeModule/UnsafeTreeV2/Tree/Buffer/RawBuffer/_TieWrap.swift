@@ -50,7 +50,7 @@ extension _NodePtrSealing {
   // 某バンドオマージュ
   
   @inlinable
-  func band(_ tie: _TiedRawBuffer) -> _TiedPtr {
+  func band(_ tie: _TiedRawBuffer) -> _TieWrappedPtr {
     isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, tie: tie))
   }
 }
@@ -70,7 +70,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   // 某バンドオマージュ
 
   @inlinable
-  func band(_ tie: _TiedRawBuffer) -> _TiedPtr {
+  func band(_ tie: _TiedRawBuffer) -> _TieWrappedPtr {
     flatMap { $0.band(tie) }
   }
 }

@@ -50,7 +50,7 @@ public struct UnsafeIndexV3RangeExpression: _UnsafeNodePtrType {
 
 public enum UnsafeTreeTieWrappedRangeExpression: Equatable {
 
-  public typealias Bound = _TiedPtr
+  public typealias Bound = _TieWrappedPtr
   /// `a..<b` のこと
   case range(from: Bound, to: Bound)
   /// `a...b` のこと

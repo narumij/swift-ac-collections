@@ -17,7 +17,7 @@ where Base: ___TreeBase & ScalarValueTrait {
     self.endIndex = _end.band(__tree_.tied)
   }
 
-  public typealias Index = UnsafeIndexV3
+  public typealias Index = _TieWrappedPtr
   public typealias Element = Base._PayloadValue
 
   @usableFromInline

@@ -152,8 +152,27 @@ extension _TiedRawBuffer {
   
   @inlinable
   @inline(__always)
-  package func __retrieve_(_ tag: _TrackingTag) -> _SealedPtr {
-    __retrieve_(tag).sealed
+  package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
+    switch tag {
+    case .end:
+      return end_ptr.map { $0.sealed } ?? .failure(.null)
+    case .tag(let raw, let seal):
+      guard raw < capacity else {
+        return .failure(.unknown)
+      }
+      return self[raw]
+        .map { .success(.uncheckedSeal($0, seal)) }
+        ?? .failure(.null)
+    }
+  }
+  
+  /// つながりをたぐりよせる
+  ///
+  /// 日本人的にはお祭りなどによくある千本引きのイメージ
+  @inlinable
+  @inline(__always)
+  package func __retrieve_(_ tag: _SealedTag) -> _SealedPtr {
+    tag.flatMap { ___retrieve(tag: $0) }
   }
 }
 

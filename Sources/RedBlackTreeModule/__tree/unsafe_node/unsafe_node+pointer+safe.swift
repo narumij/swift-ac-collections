@@ -114,6 +114,11 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   var trackingTag: _TrackingTag {
     (try? map(\.pointer.trackingTag).get()) ?? .nullptr
   }
+  
+  @inlinable @inline(__always)
+  var tag: _SealedTag {
+    flatMap(\.tag)
+  }
 
   @inlinable
   internal var ___is_end: Bool? {

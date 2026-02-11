@@ -118,7 +118,7 @@ extension ___UnsafeIndexV2 {
 
   @inlinable @inline(__always)
   internal func _isValid(index: Index) -> Bool {
-    __tree_.__purified_(index).___is_end == false
+    __tree_.__purified_(index).exists
   }
 }
 

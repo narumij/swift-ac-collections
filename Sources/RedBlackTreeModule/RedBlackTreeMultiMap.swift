@@ -151,23 +151,20 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var isEmpty: Bool {
-    ___is_empty
+    count == 0
   }
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var capacity: Int {
-    ___capacity
+    __tree_.capacity
   }
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var count: Int {
-    ___count
+    __tree_.count
   }
 }
 
@@ -187,7 +184,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(log *n*)
   @inlinable
   public func contains(key: Key) -> Bool {
-    ___contains(key)
+    __tree_.__count_unique(key) != 0
   }
 }
 
@@ -199,14 +196,14 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public var first: Element? {
-    ___first
+    isEmpty ? nil : Base.__element_(__tree_[_unsafe_raw: _start])
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
   public var last: Element? {
-    ___last
+    isEmpty ? nil : Base.__element_(__tree_[_unsafe_raw: __tree_.__tree_prev_iter(_end)])
   }
 }
 
@@ -224,16 +221,16 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-#if COMPATIBLE_ATCODER_2025
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    return .init(
-      tree: __tree_,
-      start: __tree_.__purified_(bounds.lowerBound),
-      end: __tree_.__purified_(bounds.upperBound))
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public subscript(bounds: Range<Index>) -> SubSequence {
+      return .init(
+        tree: __tree_,
+        start: __tree_.__purified_(bounds.lowerBound),
+        end: __tree_.__purified_(bounds.upperBound))
+    }
   #endif
 }
 
@@ -273,7 +270,8 @@ extension RedBlackTreeMultiMap {
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
     __tree_.ensureUnique()
     guard let p = try? __tree_.__purified_(ptr).get().pointer,
-          !p.___is_end else {
+      !p.___is_end
+    else {
       return nil
     }
     let old = __tree_[_unsafe_raw: p]
@@ -460,26 +458,26 @@ extension RedBlackTreeMultiMap {
     return Self.__element_(_unchecked_remove(at: __p.pointer).payload)
   }
 
-#if COMPATIBLE_ATCODER_2025
-  /// Removes the specified subrange of elements from the collection.
-  ///
-  /// - Important: 削除後は、subrangeのインデックスが無効になります。
-  /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
-  ///     range must be valid indices of the collection.
-  /// - Returns: The key-value pair that correspond to `index`.
-  /// - Complexity: O(`m ) where  `m` is the size of `bounds`
-  @inlinable
-  public mutating func removeSubrange<R: RangeExpression>(
-    _ bounds: R
-  ) where R.Bound == Index {
+  #if COMPATIBLE_ATCODER_2025
+    /// Removes the specified subrange of elements from the collection.
+    ///
+    /// - Important: 削除後は、subrangeのインデックスが無効になります。
+    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
+    ///     range must be valid indices of the collection.
+    /// - Returns: The key-value pair that correspond to `index`.
+    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
+    @inlinable
+    public mutating func removeSubrange<R: RangeExpression>(
+      _ bounds: R
+    ) where R.Bound == Index {
 
-    let bounds = bounds.relative(to: self)
-    __tree_.ensureUnique()
-    ___remove(
-      from: __tree_.__purified_(bounds.lowerBound).pointer!,
-      to: __tree_.__purified_(bounds.upperBound).pointer!)
-  }
-#endif
+      let bounds = bounds.relative(to: self)
+      __tree_.ensureUnique()
+      ___remove(
+        from: __tree_.__purified_(bounds.lowerBound).pointer!,
+        to: __tree_.__purified_(bounds.upperBound).pointer!)
+    }
+  #endif
 }
 
 extension RedBlackTreeMultiMap {
@@ -529,13 +527,13 @@ extension RedBlackTreeMultiMap {
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
   public func min() -> Element? {
-    ___min()
+    __tree_.___min().map(Base.__element_)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public func max() -> Element? {
-    ___max()
+    __tree_.___max().map(Base.__element_)
   }
 }
 
@@ -569,18 +567,20 @@ extension RedBlackTreeMultiMap {
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Key, to end: Key) -> SubSequence {
-      .init(tree: __tree_,
-            start: __tree_.lower_bound(start).sealed,
-            end: __tree_.lower_bound(end).sealed)
+      .init(
+        tree: __tree_,
+        start: __tree_.lower_bound(start).sealed,
+        end: __tree_.lower_bound(end).sealed)
     }
 
     /// キーレンジ `[start, upper]` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
     @inlinable
     public func sequence(from start: Key, through end: Key) -> SubSequence {
-      .init(tree: __tree_,
-            start: __tree_.lower_bound(start).sealed,
-            end: __tree_.upper_bound(end).sealed)
+      .init(
+        tree: __tree_,
+        start: __tree_.lower_bound(start).sealed,
+        end: __tree_.upper_bound(end).sealed)
     }
   }
 #endif
@@ -626,9 +626,9 @@ extension RedBlackTreeMultiMap {
 // MARK: - BidirectionalCollection
 
 #if COMPATIBLE_ATCODER_2025
-extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {}
+  extension RedBlackTreeMultiMap: Sequence, Collection, BidirectionalCollection {}
 #else
-extension RedBlackTreeMultiMap: Sequence {}
+  extension RedBlackTreeMultiMap: Sequence {}
 #endif
 
 extension RedBlackTreeMultiMap {
@@ -760,17 +760,17 @@ extension RedBlackTreeMultiMap {
     _isValid(index: index)
   }
 
-#if COMPATIBLE_ATCODER_2025
-  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
-  where R.Bound == Index {
-    _isValid(bounds)
-  }
-#endif
+  #if COMPATIBLE_ATCODER_2025
+    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
+    where R.Bound == Index {
+      _isValid(bounds)
+    }
+  #endif
 
   /// - Complexity: O(1)
   @inlinable

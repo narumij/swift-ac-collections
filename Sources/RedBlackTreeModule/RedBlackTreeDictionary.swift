@@ -168,23 +168,20 @@ extension RedBlackTreeDictionary {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var isEmpty: Bool {
-    ___is_empty
+    count == 0
   }
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var capacity: Int {
-    ___capacity
+    __tree_.capacity
   }
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var count: Int {
-    ___count
+    __tree_.count
   }
 }
 
@@ -204,7 +201,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log *n*)
   @inlinable
   public func contains(key: Key) -> Bool {
-    ___contains(key)
+    __tree_.__count_unique(key) != 0
   }
 }
 
@@ -216,13 +213,13 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public var first: Element? {
-    ___first
+    isEmpty ? nil : Base.__element_(__tree_[_unsafe_raw: _start])
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public var last: Element? {
-    ___last
+    isEmpty ? nil : Base.__element_(__tree_[_unsafe_raw: __tree_.__tree_prev_iter(_end)])
   }
 }
 
@@ -617,13 +614,13 @@ extension RedBlackTreeDictionary {
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
   public func min() -> Element? {
-    ___min()
+    __tree_.___min().map(Base.__element_)
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public func max() -> Element? {
-    ___max()
+    __tree_.___max().map(Base.__element_)
   }
 }
 

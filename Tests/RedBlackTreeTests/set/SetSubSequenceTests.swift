@@ -130,7 +130,7 @@ final class SetSubSequenceTests: RedBlackTreeTestCase {
       XCTAssertFalse(base.isValid(index: b_idx)) // これは従来と同じ挙動
       XCTAssertFalse(base.isValid(index: idx)) // これは従来と同じ挙動
 //      XCTAssertFalse(slice.isValid(index: idx)) // なぜ連動してfalseになる想定だったのか思い出せない
-      XCTAssertTrue(slice.isValid(index: idx), " 内部挙動の変更でCoW後のslideに強く紐付いている")
+      XCTAssertTrue(slice.isValid(index: idx), " 内部挙動の変更でCoW後のsliceに強く紐付いている")
 
       base.insert(1)
       #if DEBUG

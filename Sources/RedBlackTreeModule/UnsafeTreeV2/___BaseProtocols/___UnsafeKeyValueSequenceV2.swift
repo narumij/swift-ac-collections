@@ -27,10 +27,7 @@ protocol ___UnsafeKeyValueSequenceV2__:
     & _MapBridge
 where
   Base: PairValueTrait & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
-{
-  var ___first: _PayloadValue? { get }
-  var ___last: _PayloadValue? { get }
-}
+{}
 
 extension ___UnsafeKeyValueSequenceV2__ {
 
@@ -39,35 +36,6 @@ extension ___UnsafeKeyValueSequenceV2__ {
   internal func ___value_for(_ __k: _Key) -> _PayloadValue? {
     let __ptr = __tree_.find(__k)
     return __ptr.___is_null_or_end ? nil : __tree_[_unsafe_raw: __ptr]
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2__ {
-
-  @inlinable
-  @inline(__always)
-  internal var ___first: Element? {
-    ___first.map(Base.__element_)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal var ___last: Element? {
-    ___last.map(Base.__element_)
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2__ {
-
-  @inlinable
-  internal func ___min() -> Element? {
-    __tree_.___min().map(Base.__element_)
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  internal func ___max() -> Element? {
-    __tree_.___max().map(Base.__element_)
   }
 }
 

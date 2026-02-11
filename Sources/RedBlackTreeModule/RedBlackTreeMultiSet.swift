@@ -119,23 +119,20 @@ extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var isEmpty: Bool {
-    ___is_empty
+    count == 0
   }
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var capacity: Int {
-    ___capacity
+    __tree_.capacity
   }
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var count: Int {
-    ___count
+    __tree_.count
   }
 }
 
@@ -155,7 +152,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(*n*)
   @inlinable
   public func contains(_ member: Element) -> Bool {
-    ___contains(member)
+    __tree_.__count_unique(member) != 0
   }
 }
 
@@ -167,13 +164,13 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   public var first: Element? {
-    ___first
+    isEmpty ? nil : __tree_[_unsafe_raw: _start]
   }
 
   /// - Complexity: O(log *n*)
   @inlinable
   public var last: Element? {
-    ___last
+    isEmpty ? nil : __tree_[_unsafe_raw: __tree_.__tree_prev_iter(_end)]
   }
 }
 
@@ -468,13 +465,13 @@ extension RedBlackTreeMultiSet {
   /// O(1)が欲しい場合、firstが等価でO(1)
   @inlinable
   public func min() -> Element? {
-    ___min()
+    __tree_.___min()
   }
 
   /// - Complexity: O(*n*)
   @inlinable
   public func max() -> Element? {
-    ___max()
+    __tree_.___max()
   }
 }
 

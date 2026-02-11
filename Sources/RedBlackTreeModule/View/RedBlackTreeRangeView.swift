@@ -23,11 +23,8 @@ where Base: ___TreeBase & ScalarValueTrait {
 
   @usableFromInline
   internal var __tree_: Tree
-
-  // CoW時に木が変化するため、対策が必要
-  // 一つがIndex
-  // もう一つはTagをつかうこと
-  // Indexはポインタをキャッシュしてるのでベスト
+  
+  // _SealedPtr不可
   public var startIndex: Index
   public let endIndex: Index
 }

@@ -6,9 +6,7 @@
 //
 
 @usableFromInline
-protocol UnsafeTreeSealedRangeProtocol: UnsafeTreeSealedRangeBaseInterface, _PayloadValueBride {
-  var ___is_empty: Bool { get }
-}
+protocol UnsafeTreeSealedRangeProtocol: UnsafeTreeSealedRangeBaseInterface, _PayloadValueBride {}
 
 extension UnsafeTreeSealedRangeProtocol {
 

@@ -151,7 +151,7 @@ extension UnsafeTreeV2 {
     default: tag < capacity ? .success(_buffer.header[tag]) : .failure(.unknown)
     }
   }
-  
+
   @inlinable
   @inline(__always)
   package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
@@ -165,7 +165,7 @@ extension UnsafeTreeV2 {
       return .success(.uncheckedSeal(_buffer.header[raw], seal))
     }
   }
-  
+
   /// つながりをたぐりよせる
   ///
   /// 日本人的にはお祭りなどによくある千本引きのイメージ

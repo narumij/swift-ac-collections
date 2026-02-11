@@ -19,9 +19,9 @@
 @frozen
 public struct _TieWrap<RawValue> {
 
-  @usableFromInline var rawValue: RawValue
+  @usableFromInline let rawValue: RawValue
 
-  @usableFromInline var tied: _TiedRawBuffer
+  @usableFromInline let tied: _TiedRawBuffer
 
   @inlinable @inline(__always)
   init(rawValue: RawValue, tie: _TiedRawBuffer) {
@@ -31,6 +31,7 @@ public struct _TieWrap<RawValue> {
 }
 
 extension _TieWrap: Equatable where RawValue: Equatable {
+  
   public static func == (lhs: _TieWrap<RawValue>, rhs: _TieWrap<RawValue>) -> Bool {
     lhs.rawValue == rhs.rawValue && lhs.tied.end_ptr == rhs.tied.end_ptr
   }
@@ -39,18 +40,8 @@ extension _TieWrap: Equatable where RawValue: Equatable {
 extension _TieWrap where RawValue == _NodePtrSealing {
 
   @inlinable @inline(__always)
-  var isUnsealed: Bool {
-    rawValue.isUnsealed
-  }
-
-  @inlinable @inline(__always)
   var purified: Result<Self, SealError> {
-    rawValue.purified.map { .init(rawValue: $0, tie: tied) }
-  }
-
-  @inlinable @inline(__always)
-  var tag: _SealedTag {
-    rawValue.tag
+    rawValue.isUnsealed ? .failure(.unsealed) : .success(self)
   }
 }
 
@@ -59,8 +50,8 @@ extension _NodePtrSealing {
   // 某バンドオマージュ
   
   @inlinable
-  func band(_ tie: _TiedRawBuffer) -> _TieWrap<_NodePtrSealing> {
-    .init(rawValue: self, tie: tie)
+  func band(_ tie: _TiedRawBuffer) -> _TiedPtr {
+    isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, tie: tie))
   }
 }
 
@@ -69,8 +60,8 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   // 某バンドオマージュ
 
   @inlinable
-  func band(_ tie: _TiedRawBuffer) -> Result<_TieWrap<_NodePtrSealing>, SealError> {
-    map { $0.band(tie) }
+  func band(_ tie: _TiedRawBuffer) -> _TiedPtr {
+    flatMap { $0.band(tie) }
   }
 }
 

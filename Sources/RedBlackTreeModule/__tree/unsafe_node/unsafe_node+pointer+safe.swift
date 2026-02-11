@@ -53,15 +53,6 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   var purified: Result { flatMap { $0.purified } }
 }
 
-public typealias _TiedPtr = Result<_TieWrap<_NodePtrSealing>, SealError>
-
-extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
-
-  /// ポインタを利用する際に用いる
-  @inlinable @inline(__always)
-  var purified: Result { flatMap { $0.purified } }
-}
-
 public enum SealError: Error {
 
   /// nullptrが生じた

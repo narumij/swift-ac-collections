@@ -5,6 +5,15 @@
 //  Created by narumij on 2026/02/11.
 //
 
+public typealias _TiedPtr = Result<_TieWrap<_NodePtrSealing>, SealError>
+
+extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
+
+  /// ポインタを利用する際に用いる
+  @inlinable @inline(__always)
+  var purified: Result { flatMap { $0.purified } }
+}
+
 public typealias UnsafeIndexV3 = _TiedPtr
 
 extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
@@ -36,7 +45,7 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
       if rawTag == .nullptr {
         return .failure(.null)
       }
-      return tree[__retrieve_: rawTag].flatMap(\.sealed).map { $0.band(tree.tied) }
+      return tree[__retrieve_: rawTag].flatMap(\.sealed).flatMap { $0.band(tree.tied) }
     }
   }
 #endif

@@ -13,8 +13,8 @@ where Base: ___TreeBase & ScalarValueTrait {
   @usableFromInline
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-    self.startIndex = .init(sealed: _start, tie: __tree_.tied)
-    self.endIndex = .init(sealed: _end, tie: __tree_.tied)
+    self.startIndex = _start.tie(__tree_.tied)
+    self.endIndex = _end.tie(__tree_.tied)
   }
 
   public typealias Index = UnsafeIndexV3
@@ -23,6 +23,10 @@ where Base: ___TreeBase & ScalarValueTrait {
   @usableFromInline
   internal var __tree_: Tree
 
+  // CoW時に木が変化するため、対策が必要
+  // 一つがIndex
+  // もう一つはTagをつかうこと
+  // Indexはポインタをキャッシュしてるのでベスト
   public var startIndex: Index
   public let endIndex: Index
 }
@@ -177,12 +181,12 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
   func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
-    UnsafeIndexV3(sealed: p, tie: __tree_.tied)
+    p.tie(__tree_.tied)
   }
 
   @inlinable
   func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
-    p.exists ? UnsafeIndexV3(sealed: p, tie: __tree_.tied) : nil
+    p.exists ? p.tie(__tree_.tied) : nil
   }
 }
 

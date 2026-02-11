@@ -70,10 +70,14 @@ extension Result where Success == _TrackingTagSealing, Failure == SealError {
   }
 }
 
-#if DEBUG
-  extension Result where Success == _TrackingTagSealing, Failure == SealError {
+extension Result {
+  
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+}
 
-    public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+#if DEBUG
+
+  extension Result where Success == _TrackingTagSealing, Failure == SealError {
 
     @usableFromInline
     package var rawValue: (raw: _TrackingTag, seal: UnsafeNode.Seal)? {

@@ -609,12 +609,12 @@ extension RedBlackTreeSet {
 
     @inlinable
     func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
-      UnsafeIndexV3(sealed: p, tie: __tree_.tied)
+      p.tie(__tree_.tied)
     }
 
     @inlinable
     func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
-      p.exists ? UnsafeIndexV3(sealed: p, tie: __tree_.tied) : nil
+      p.exists ? p.tie(__tree_.tied) : nil
     }
   }
 

@@ -145,7 +145,26 @@ extension RedBlackTreeMultiMap {
   }
 }
 
+// MARK: -
+
+extension RedBlackTreeMultiMap {
+
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
+  }
+}
+
 // MARK: - Inspecting a MultiMap
+
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(1)
+  @inlinable
+  public var capacity: Int {
+    __tree_.capacity
+  }
+}
 
 extension RedBlackTreeMultiMap {
 
@@ -153,12 +172,6 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public var isEmpty: Bool {
     count == 0
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var capacity: Int {
-    __tree_.capacity
   }
 
   /// - Complexity: O(1)
@@ -277,14 +290,6 @@ extension RedBlackTreeMultiMap {
     let old = __tree_[_unsafe_raw: p]
     __tree_[_unsafe_raw: p].value = newValue
     return Self.__element_(old)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
-  @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 

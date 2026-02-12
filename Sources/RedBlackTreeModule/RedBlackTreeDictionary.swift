@@ -162,7 +162,26 @@ extension RedBlackTreeDictionary {
   }
 }
 
+// MARK: -
+
+extension RedBlackTreeDictionary {
+
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
+  }
+}
+
 // MARK: - Inspecting a MultiMap
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(1)
+  @inlinable
+  public var capacity: Int {
+    __tree_.capacity
+  }
+}
 
 extension RedBlackTreeDictionary {
 
@@ -170,12 +189,6 @@ extension RedBlackTreeDictionary {
   @inlinable
   public var isEmpty: Bool {
     count == 0
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var capacity: Int {
-    __tree_.capacity
   }
 
   /// - Complexity: O(1)
@@ -395,14 +408,6 @@ extension RedBlackTreeDictionary {
     let oldMember = __tree_[_unsafe_raw: __r]
     __tree_[_unsafe_raw: __r] = Self.__payload_((key, value))
     return oldMember.value
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 

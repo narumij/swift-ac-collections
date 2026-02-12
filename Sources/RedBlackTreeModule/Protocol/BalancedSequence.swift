@@ -47,16 +47,20 @@ extension BalancedSequence {
 public protocol BalancedCollection: BalancedSequence {
 
   associatedtype Key
+  
   associatedtype Index: Equatable
-  associatedtype View: BalancedView
-  associatedtype Range = UnsafeIndexV3RangeExpression
+  associatedtype IndexRange = UnsafeIndexV3RangeExpression
+  
   associatedtype Bound = RedBlackTreeBoundExpression<Element>
   associatedtype BoundRange = RedBlackTreeBoundRangeExpression<Element>
+  
+  associatedtype View: BalancedView
+  
 
   var count: Int { get }
 
   subscript(position: Index) -> Element { get }
-  subscript(range: Range) -> View { get }
+  subscript(range: IndexRange) -> View { get }
 
   var startIndex: Index { get }
   var endIndex: Index { get }
@@ -71,14 +75,10 @@ public protocol BalancedCollection: BalancedSequence {
   func formIndex(_: inout Index, offsetBy distance: Int)
   func formIndex(_: inout Index, offsetBy distance: Int, limitedBy limit: Index) -> Bool
 
-  mutating func remove(_: Key) -> Element?
-  mutating func removeAll()
-  mutating func removeAll(keepingCapacity keepCapacity: Bool)
-
   // MARK: -
 
-  subscript(position: RedBlackTreeBoundExpression<Element>) -> Element? { get }
-  subscript(range: RedBlackTreeBoundRangeExpression<Element>) -> View { get }
+  subscript(position: Bound) -> Element? { get }
+  subscript(range: BoundRange) -> View { get }
 
   func lowerBound(_: Element) -> Index
   func upperBound(_: Element) -> Index
@@ -87,8 +87,8 @@ public protocol BalancedCollection: BalancedSequence {
   // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
 
   mutating func erase(_: Index) -> Index
-  mutating func erase(_: Range)
-  mutating func erase(_: Range, where: (Element) throws -> Bool) rethrows
+  mutating func erase(_: IndexRange)
+  mutating func erase(_: IndexRange, where: (Element) throws -> Bool) rethrows
 
   mutating func erase(_: Bound) -> Element?
   mutating func erase(_: BoundRange)
@@ -96,6 +96,7 @@ public protocol BalancedCollection: BalancedSequence {
 
   mutating func eraseAll(where: (Element) throws -> Bool) rethrows
   mutating func eraseAll()
+  mutating func eraseAll(keepingCapacity keepCapacity: Bool)
 }
 
 // MARK: -

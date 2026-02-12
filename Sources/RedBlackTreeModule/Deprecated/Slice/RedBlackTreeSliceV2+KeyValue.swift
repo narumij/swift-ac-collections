@@ -78,18 +78,6 @@ extension RedBlackTreeSliceV2.KeyValue {
 
 extension RedBlackTreeSliceV2.KeyValue {
 
-  #if !COMPATIBLE_ATCODER_2025
-    // 2025でpublicになってなかったのは痛恨のミス。でも標準実装が動くはず
-    @inlinable
-    @inline(__always)
-    public func forEach(_ body: (Element) throws -> Void) rethrows {
-      try _forEach(body)
-    }
-  #endif
-}
-
-extension RedBlackTreeSliceV2.KeyValue {
-
   /// - Complexity: O(log *n* + *k*)
   @inlinable
   @inline(__always)

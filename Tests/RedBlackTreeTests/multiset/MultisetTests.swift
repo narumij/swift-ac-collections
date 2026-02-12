@@ -25,7 +25,7 @@ final class MultisetTests: RedBlackTreeTestCase {
   }
 
   func testInitNaive0() throws {
-    let set = RedBlackTreeMultiSet<Int>(naive: 0..<0)
+    let set = RedBlackTreeMultiSet<Int>(0..<0)
     XCTAssertEqual(set.elements, (0..<0) + [])
     XCTAssertEqual(set.count, 0)
     XCTAssertTrue(set.isEmpty)
@@ -65,7 +65,7 @@ final class MultisetTests: RedBlackTreeTestCase {
   }
 
   func testInitCollection4() throws {
-    let set = RedBlackTreeMultiSet<Int>(naive: [2, 3, 3, 0, 0, 1, 1, 1])
+    let set = RedBlackTreeMultiSet<Int>([2, 3, 3, 0, 0, 1, 1, 1])
     XCTAssertEqual(set.sorted(), [0, 0, 1, 1, 1, 2, 3, 3])
     XCTAssertEqual(set.count, 8)
     XCTAssertFalse(set.isEmpty)
@@ -1363,13 +1363,13 @@ final class MultisetTests: RedBlackTreeTestCase {
   #endif
 
   func testIsValidRangeSmoke() throws {
-    let a = RedBlackTreeMultiSet<Int>(naive: [0, 1, 2, 3, 4, 5])
+    let a = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5])
     XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
   }
 
   func testSortedReversed() throws {
     let source = [0, 1, 2, 3, 4, 5]
-    let a = RedBlackTreeMultiSet<Int>(naive: source)
+    let a = RedBlackTreeMultiSet<Int>(source)
     XCTAssertEqual(a.sorted() + [], source)
     XCTAssertEqual(a.reversed() + [], source.reversed())
   }
@@ -1389,7 +1389,7 @@ final class MultisetTests: RedBlackTreeTestCase {
 
   func testInitNaive_with_Sequence() throws {
     let source = [0, 1, 2, 3, 4, 5]
-    let a = RedBlackTreeMultiSet<Int>(naive: AnySequence(source))
+    let a = RedBlackTreeMultiSet<Int>(AnySequence(source))
     XCTAssertEqual(a.sorted() + [], source)
   }
 

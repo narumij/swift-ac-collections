@@ -83,37 +83,39 @@ final class DictionaryRemoveTests: RedBlackTreeTestCase {
     XCTAssertNil(dict.last)
   }
 
-  func testRemoveWithIndices() throws {
-    var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-    for i in members.indices {
-      members.remove(at: i)
+  #if COMPATIBLE_ATCODER_2025
+    func testRemoveWithIndices() throws {
+      var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
+      for i in members.indices {
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members.map { $0.key }, [])
     }
-    XCTAssertEqual(members.map { $0.key }, [])
-  }
 
-  func testRemoveWithIndices2() throws {
-    var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-    members.indices.forEach { i in
-      members.remove(at: i)
+    func testRemoveWithIndices2() throws {
+      var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
+      members.indices.forEach { i in
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members.map { $0.key }, [])
     }
-    XCTAssertEqual(members.map { $0.key }, [])
-  }
 
-  func testRemoveWithIndices3() throws {
-    var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-    for i in members.indices.reversed() {
-      members.remove(at: i)
+    func testRemoveWithIndices3() throws {
+      var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
+      for i in members.indices.reversed() {
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members.map { $0.key }, [])
     }
-    XCTAssertEqual(members.map { $0.key }, [])
-  }
 
-  func testRemoveWithIndices4() throws {
-    var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-    members.indices.reversed().forEach { i in
-      members.remove(at: i)
+    func testRemoveWithIndices4() throws {
+      var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
+      members.indices.reversed().forEach { i in
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members.map { $0.key }, [])
     }
-    XCTAssertEqual(members.map { $0.key }, [])
-  }
+  #endif
 
   #if DEBUG
     func testRemoveWith___Indices() throws {

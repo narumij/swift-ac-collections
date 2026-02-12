@@ -80,18 +80,6 @@ extension RedBlackTreeSliceV2.KeyOnly {
 
 extension RedBlackTreeSliceV2.KeyOnly {
 
-  #if !COMPATIBLE_ATCODER_2025
-    // 2025でpublicになってなかったのは痛恨のミス。でも標準実装が動くはず
-    @inlinable
-    @inline(__always)
-    public func forEach(_ body: (Element) throws -> Void) rethrows {
-      try _forEach(body)
-    }
-  #endif
-}
-
-extension RedBlackTreeSliceV2.KeyOnly {
-
   /// - Complexity: O(log `Base.count` + `count`)
   @inlinable
   @inline(__always)
@@ -110,36 +98,6 @@ extension RedBlackTreeSliceV2.KeyOnly {
   @inline(__always)
   public var endIndex: Index { _endIndex }
 }
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSliceV2.KeyOnly {
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var first: Element? {
-      guard _start != _end else { return nil }
-      return __tree_[_unsafe_raw: _start]
-    }
-
-    /// - Complexity: O(`count`)
-    @inlinable
-    public func firstIndex(of member: Element) -> Index? {
-      firstIndex { Base.value_equiv($0, member) }
-    }
-
-    /// - Complexity: O(`count`)
-    @inlinable
-    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-      for __c in __tree_.sequence(_sealed_start, _sealed_end) {
-        if try predicate(__tree_[_unsafe_raw: __c]) {
-          return ___index(__c.sealed)
-        }
-      }
-      return nil
-    }
-  }
-#endif
 
 extension RedBlackTreeSliceV2.KeyOnly {
 
@@ -179,15 +137,6 @@ extension RedBlackTreeSliceV2.KeyOnly {
     // 標準のArrayが単純に加算することにならい、範囲チェックをしない
     _index(after: i)
   }
-
-  #if !COMPATIBLE_ATCODER_2025
-    @inlinable
-    //  @inline(__always)
-    public func index(_ i: Index, offsetBy distance: Int) -> Index {
-      // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
-      _index(i, offsetBy: distance)
-    }
-  #endif
 
   /// - Complexity: O(*d*)
   @inlinable

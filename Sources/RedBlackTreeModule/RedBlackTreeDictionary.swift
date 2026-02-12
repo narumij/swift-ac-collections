@@ -45,12 +45,6 @@ import Foundation
 @frozen
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
-  /// - Important:
-  ///  要素及びノードが削除された場合、インデックスは無効になります。
-  /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-  public
-    typealias Index = Tree.Index
-
   public
     typealias KeyValue = (key: Key, value: Value)
 
@@ -349,9 +343,9 @@ extension RedBlackTreeDictionary {
 
 // MARK: - Range Accessing Keys and Values
 
-extension RedBlackTreeDictionary {
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
 
-  #if COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
@@ -361,8 +355,8 @@ extension RedBlackTreeDictionary {
         start: __tree_.__purified_(bounds.lowerBound),
         end: __tree_.__purified_(bounds.upperBound))
     }
-  #endif
-}
+  }
+#endif
 
 // MARK: - Insert
 
@@ -499,22 +493,6 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func removeValue(forKey __k: Key) -> Value? {
-    __tree_.ensureUnique()
-    let __i = __tree_.find(__k)
-    if __i == __tree_.end {
-      return nil
-    }
-    let value = __tree_.__value_(__i).value
-    _ = __tree_.erase(__i)
-    return value
-  }
-
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -536,6 +514,9 @@ extension RedBlackTreeDictionary {
     }
     return remove(at: index(before: endIndex))
   }
+}
+
+extension RedBlackTreeDictionary {
 
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
@@ -549,8 +530,30 @@ extension RedBlackTreeDictionary {
     }
     return Self.__element_(_unchecked_remove(at: __p.pointer).payload)
   }
+}
 
-  #if COMPATIBLE_ATCODER_2025
+extension RedBlackTreeDictionary {
+
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func removeValue(forKey __k: Key) -> Value? {
+    __tree_.ensureUnique()
+    let __i = __tree_.find(__k)
+    if __i == __tree_.end {
+      return nil
+    }
+    let value = __tree_.__value_(__i).value
+    _ = __tree_.erase(__i)
+    return value
+  }
+}
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
     /// Removes the specified subrange of elements from the collection.
     ///
     /// - Important: 削除後は、subrangeのインデックスが無効になります。
@@ -569,8 +572,8 @@ extension RedBlackTreeDictionary {
         from: __tree_.__purified_(bounds.lowerBound).pointer!,
         to: __tree_.__purified_(bounds.upperBound).pointer!)
     }
-  #endif
-}
+  }
+#endif
 
 extension RedBlackTreeDictionary {
 
@@ -583,32 +586,6 @@ extension RedBlackTreeDictionary {
     } else {
       self = .init()
     }
-  }
-}
-
-// MARK: Finding Elements
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func lowerBound(_ p: Key) -> Index {
-    ___index_lower_bound(p)
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func upperBound(_ p: Key) -> Index {
-    ___index_upper_bound(p)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
-    ___index_equal_range(key)
   }
 }
 
@@ -637,45 +614,6 @@ extension RedBlackTreeDictionary {
     try ___first(where: predicate)
   }
 }
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func firstIndex(of key: Key) -> Index? {
-    ___first_index(of: key)
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
-  }
-}
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeDictionary {
-    /// キーレンジ `[start, end)` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Key, to end: Key) -> SubSequence {
-      .init(
-        tree: __tree_,
-        start: __tree_.lower_bound(start).sealed,
-        end: __tree_.lower_bound(end).sealed)
-    }
-
-    /// キーレンジ `[start, end]` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Key, through end: Key) -> SubSequence {
-      .init(
-        tree: __tree_,
-        start: __tree_.lower_bound(start).sealed,
-        end: __tree_.upper_bound(end).sealed)
-    }
-  }
-#endif
 
 // MARK: - Transformation
 
@@ -719,10 +657,10 @@ extension RedBlackTreeDictionary {
 // MARK: - BidirectionalCollection
 
 #if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeDictionary: Sequence, Collection, BidirectionalCollection {}
-#else
-  extension RedBlackTreeDictionary: Sequence {}
+  extension RedBlackTreeDictionary: Collection, BidirectionalCollection {}
 #endif
+
+extension RedBlackTreeDictionary: Sequence {}
 
 extension RedBlackTreeDictionary {
 
@@ -732,30 +670,111 @@ extension RedBlackTreeDictionary {
   public func makeIterator() -> Tree._KeyValues {
     _makeIterator()
   }
+}
 
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try _forEach(body)
-  }
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
 
-  #if COMPATIBLE_ATCODER_2025
-    /// 特殊なforEach
-    @inlinable
-    @inline(__always)
-    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-      try _forEach(body)
-    }
-  #endif
-
-  #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(*n*)
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
       _sorted()
     }
-  #endif
+  }
+#endif
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func reversed() -> Tree._KeyValues.Reversed {
+    _reversed()
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  /// - Important:
+  ///  要素及びノードが削除された場合、インデックスは無効になります。
+  /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+  public typealias Index = Tree.Index
+}
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// 特殊なforEach
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  }
+#endif
+
+// MARK: Finding Elements
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func lowerBound(_ p: Key) -> Index {
+    ___index_lower_bound(p)
+  }
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func upperBound(_ p: Key) -> Index {
+    ___index_upper_bound(p)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
+    ___index_equal_range(key)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  public func firstIndex(of key: Key) -> Index? {
+    ___first_index(of: key)
+  }
+
+  /// - Complexity: O(*n*)
+  @inlinable
+  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+    try ___first_index(where: predicate)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(*d* + log *n*)
+  @inlinable
+  //  @inline(__always)
+  public func distance(from start: Index, to end: Index) -> Int {
+    _distance(from: start, to: end)
+  }
+}
+
+extension RedBlackTreeDictionary {
 
   /// - Complexity: O(1)
   @inlinable
@@ -766,13 +785,9 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public var endIndex: Index { _endIndex }
+}
 
-  /// - Complexity: O(*d* + log *n*)
-  @inlinable
-  //  @inline(__always)
-  public func distance(from start: Index, to end: Index) -> Int {
-    _distance(from: start, to: end)
-  }
+extension RedBlackTreeDictionary {
 
   /// - Complexity: O(1)
   @inlinable
@@ -784,22 +799,8 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func formIndex(after i: inout Index) {
-    _formIndex(after: &i)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
   public func index(before i: Index) -> Index {
     _index(before: i)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(before i: inout Index) {
-    _formIndex(before: &i)
   }
 
   /// - Complexity: O(*d*)
@@ -812,15 +813,32 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    _formIndex(&i, offsetBy: distance)
+  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+    _index(i, offsetBy: distance, limitedBy: limit)
+  }
+}
+
+extension RedBlackTreeDictionary {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func formIndex(after i: inout Index) {
+    _formIndex(after: &i)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public func formIndex(before i: inout Index) {
+    _formIndex(before: &i)
   }
 
   /// - Complexity: O(*d*)
   @inlinable
   //  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    _index(i, offsetBy: distance, limitedBy: limit)
+  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
+    _formIndex(&i, offsetBy: distance)
   }
 
   /// - Complexity: O(*d*)
@@ -831,6 +849,9 @@ extension RedBlackTreeDictionary {
   {
     _formIndex(&i, offsetBy: distance, limitedBy: limit)
   }
+}
+
+extension RedBlackTreeDictionary {
 
   /*
    しばらく苦しめられていたテストコードのコンパイルエラーについて。
@@ -863,8 +884,10 @@ extension RedBlackTreeDictionary {
   public func isValid(index: Index) -> Bool {
     _isValid(index: index)
   }
+}
 
-  #if COMPATIBLE_ATCODER_2025
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
     /// RangeExpressionがsubscriptやremoveで利用可能か判別します
     ///
     /// - Complexity: O(1)
@@ -874,22 +897,18 @@ extension RedBlackTreeDictionary {
     where R.Bound == Index {
       _isValid(bounds)
     }
-  #endif
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func reversed() -> Tree._KeyValues.Reversed {
-    _reversed()
   }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var indices: Indices {
-    _indices
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var indices: Indices {
+      _indices
+    }
   }
-}
+#endif
 
 // MARK: -
 

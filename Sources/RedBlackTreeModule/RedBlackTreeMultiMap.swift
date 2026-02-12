@@ -566,30 +566,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-    /// キーレンジ `[start, upper)` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Key, to end: Key) -> SubSequence {
-      .init(
-        tree: __tree_,
-        start: __tree_.lower_bound(start).sealed,
-        end: __tree_.lower_bound(end).sealed)
-    }
-
-    /// キーレンジ `[start, upper]` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Key, through end: Key) -> SubSequence {
-      .init(
-        tree: __tree_,
-        start: __tree_.lower_bound(start).sealed,
-        end: __tree_.upper_bound(end).sealed)
-    }
-  }
-#endif
-
 // MARK: - Transformation
 
 extension RedBlackTreeMultiMap {

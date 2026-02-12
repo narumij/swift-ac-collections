@@ -52,7 +52,7 @@ final class Performaces: RedBlackTreeTestCase {
         #if COMPATIBLE_ATCODER_2025
           set.removeSubrange(set.startIndex..<set.endIndex)
         #else
-          set.removeAll(in: set.startIndex..<set.endIndex)
+          set.erase(set.startIndex..<set.endIndex)
         #endif
       }
     }

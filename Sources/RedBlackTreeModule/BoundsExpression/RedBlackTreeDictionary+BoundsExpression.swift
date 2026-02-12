@@ -18,27 +18,11 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    public subscript(bounds: RedBlackTreeBoundRangeExpression<Key>) -> SubSequence {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
-      }
-      return .init(tree: __tree_, start: lower, end: upper)
-    }
-
-    public subscript(unchecked bounds: RedBlackTreeBoundRangeExpression<Key>) -> SubSequence {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      return .init(tree: __tree_, start: lower, end: upper)
-    }
-
-    public func indices(bounds: RedBlackTreeBoundRangeExpression<Key>)
-      -> UnsafeIndexV2Collection<Self>
-    {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
-      }
-      return .init(start: lower, end: upper, tie: __tree_.tied)
+    @inlinable
+    public subscript(bound: RedBlackTreeBoundExpression<Key>) -> Element? {
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      return Base.__element_(__tree_[_unsafe_raw: p])
     }
 
     public mutating func removeBounds(_ bounds: RedBlackTreeBoundRangeExpression<Key>) {
@@ -77,6 +61,25 @@
       let (lower, upper) = bounds.relative(to: __tree_)
       try __tree_.___erase_if(
         lower, upper, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+    
+    public subscript(bounds: RedBlackTreeBoundRangeExpression<Key>)
+      -> RedBlackTreeKeyValueRangeView<Self>
+    {
+      @inline(__always) get {
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
+        return .init(__tree_: __tree_, _start: lower, _end: upper)
+      }
+      @inline(__always) _modify {
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
+        var view = RedBlackTreeKeyValueRangeView(__tree_: __tree_, _start: lower, _end: upper)
+        self = RedBlackTreeDictionary()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeDictionary(__tree_: view.__tree_) }
+        yield &view
+      }
     }
   }
 #endif

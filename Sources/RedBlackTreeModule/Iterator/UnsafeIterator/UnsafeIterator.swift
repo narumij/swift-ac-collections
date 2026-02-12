@@ -62,11 +62,11 @@ extension UnsafeIterator {
     >
 
   public
-    typealias KeyValueObverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = Tied<
+    typealias KeyValueObverse<Base: ___TreeBase & PairValueTrait> = Tied<
       _KeyValue<Base, _RemoveTrait<_Obverse2>>
     >
   public
-    typealias KeyValueReverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = Tied<
+    typealias KeyValueReverse<Base: ___TreeBase & PairValueTrait> = Tied<
       _KeyValue<Base, _RemoveTrait<_Reverse2>>
     >
 }

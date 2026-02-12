@@ -79,7 +79,12 @@ extension RedBlackTreeDictionary {
   public typealias Base = Self
 }
 
-extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase {}
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase {}
+#else
+  extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase__ {}
+#endif
+
 extension RedBlackTreeDictionary: CompareUniqueTrait {}
 extension RedBlackTreeDictionary: PairValueTrait {}
 extension RedBlackTreeDictionary: _PairBasePayload_KeyProtocol_ptr {}
@@ -684,237 +689,11 @@ extension RedBlackTreeDictionary {
   }
 #endif
 
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func reversed() -> Tree._KeyValues.Reversed {
-    _reversed()
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  /// - Important:
-  ///  要素及びノードが削除された場合、インデックスは無効になります。
-  /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-  public typealias Index = Tree.Index
-}
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeDictionary {
-
-    /// 特殊なforEach
-    @inlinable
-    @inline(__always)
-    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-      try _forEach(body)
-    }
-  }
-
-  extension RedBlackTreeDictionary {
-
-    @inlinable
-    @inline(__always)
-    public func forEach(_ body: (Element) throws -> Void) rethrows {
-      try _forEach(body)
-    }
-  }
-#endif
-
-// MARK: Finding Elements
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func lowerBound(_ p: Key) -> Index {
-    ___index_lower_bound(p)
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func upperBound(_ p: Key) -> Index {
-    ___index_upper_bound(p)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
-    ___index_equal_range(key)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func firstIndex(of key: Key) -> Index? {
-    ___first_index(of: key)
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(*d* + log *n*)
-  @inlinable
-  //  @inline(__always)
-  public func distance(from start: Index, to end: Index) -> Int {
-    _distance(from: start, to: end)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var startIndex: Index { _startIndex }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var endIndex: Index { _endIndex }
-}
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func index(after i: Index) -> Index {
-    _index(after: i)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func index(before i: Index) -> Index {
-    _index(before: i)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    _index(i, offsetBy: distance)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    _index(i, offsetBy: distance, limitedBy: limit)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(after i: inout Index) {
-    _formIndex(after: &i)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(before i: inout Index) {
-    _formIndex(before: &i)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    _formIndex(&i, offsetBy: distance)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
-  {
-    _formIndex(&i, offsetBy: distance, limitedBy: limit)
-  }
-}
-
-extension RedBlackTreeDictionary {
-
-  /*
-   しばらく苦しめられていたテストコードのコンパイルエラーについて。
-  
-   typecheckでクラッシュしてることはクラッシュログから読み取れる。
-   推論に失敗するバグを踏んでいると想定し、型をちゃんと書くことで様子を見ることにした。
-  
-   型推論のバグなんて直せる気がまったくせず、ごくごく一部の天才のミラクルムーブ期待なので、
-   これでクラッシュが落ち着くようならElementを返すメンバー全てで型をちゃんと書くのが安全かもしれない
-  
-   type packは型を書けないケースなので、この迂回策が使えず、バグ修正を待つばかり
-   */
-
-  /// - Complexity: O(1)
-  @inlinable
-  //  public subscript(position: Index) -> Element {
-  public subscript(position: Index) -> (key: Key, value: Value) {
-    //    @inline(__always) get { ___element(self[_checked: position]) }
-    // コンパイラがクラッシュする
-    //    @inline(__always) _read { yield self[_checked: position] }
-    // コンパイラがクラッシュする場合もある
-    @inline(__always) get { self[_checked: position] }
-  }
-
-  /// Indexがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid(index: Index) -> Bool {
-    _isValid(index: index)
-  }
-}
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeDictionary {
-    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
-    where R.Bound == Index {
-      _isValid(bounds)
-    }
-  }
-
-  extension RedBlackTreeDictionary {
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var indices: Indices {
-      _indices
-    }
-  }
-#endif
-
 // MARK: -
 
-extension RedBlackTreeDictionary {
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
 
-  #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
@@ -928,22 +707,261 @@ extension RedBlackTreeDictionary {
     public var values: Values {
       _values()
     }
-  #endif
-}
+  }
+#endif
 
-// MARK: - SubSequence
+// MARK: -
 
-extension RedBlackTreeDictionary {
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
 
-  public typealias SubSequence = RedBlackTreeSliceV2<Self>.KeyValue
-}
+    /// - Important:
+    ///  要素及びノードが削除された場合、インデックスは無効になります。
+    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    public typealias Index = UnsafeIndexV3
+    public typealias SubSequence = RedBlackTreeKeyValueRangeView<Base>
+  }
 
-// MARK: - Index Range
+  extension RedBlackTreeDictionary {
 
-extension RedBlackTreeDictionary {
+    @inlinable
+    func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
+      p.band(__tree_.tied)
+    }
 
-  public typealias Indices = Tree.Indices
-}
+    @inlinable
+    func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
+      p.exists ? p.band(__tree_.tied) : nil
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
+    /// - Complexity: O( log `count` )
+    @inlinable
+    public func firstIndex(of key: Key)
+      -> Index?
+    {
+      ___index_or_nil(__tree_.find(key).sealed)
+    }
+
+    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
+    /// - Complexity: O( `count` )
+    @inlinable
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
+      -> Index?
+    {
+      for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+        if try predicate(Base.__element_(__tree_[_unsafe_raw: __c])) {
+          return ___index(__c.sealed)
+        }
+      }
+      return nil
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var startIndex: Index { ___index(_sealed_start) }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var endIndex: Index { ___index(_sealed_end) }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @inline(__always)
+    public func distance(from start: Index, to end: Index)
+      -> Int
+    {
+      guard
+        let d = __tree_.___distance(
+          from: __tree_.__purified_(start),
+          to: __tree_.__purified_(end))
+      else { fatalError(.invalidIndex) }
+      return d
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// 与えられた値より小さくない最初の要素へのインデックスを返す
+    ///
+    /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
+    /// 最初の位置（`Index`）を返します。
+    ///
+    /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
+    /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
+    /// - `lowerBound(3)` は要素 `3` の位置を返します。
+    /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
+    /// - `lowerBound(10)` は `endIndex` を返します。
+    ///
+    /// - Parameter member: 二分探索で検索したい要素
+    /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func lowerBound(_ key: Key) -> Index {
+      ___index(__tree_.lower_bound(key).sealed)
+    }
+
+    /// 与えられた値よりも大きい最初の要素へのインデックスを返す
+    ///
+    /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
+    /// 最初の位置（`Index`）を返します。
+    ///
+    /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
+    /// - `upperBound(3)` は要素 `5` の位置を返します。
+    ///   （`3` より大きい値が最初に現れる場所）
+    /// - `upperBound(5)` は要素 `7` の位置を返します。
+    ///   （`5` と等しい要素は含まないため、`5` の直後）
+    /// - `upperBound(9)` は `endIndex` を返します。
+    ///
+    /// - Parameter member: 二分探索で検索したい要素
+    /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func upperBound(_ key: Key) -> Index {
+      ___index(__tree_.upper_bound(key).sealed)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func equalRange(_ key: Key) -> (
+      lower: Index, upper: Index
+    ) {
+      let (lower, upper) = __tree_.__equal_range_multi(key)
+      return (___index(lower.sealed), ___index(upper.sealed))
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public func index(before i: Index) -> Index {
+      __tree_.__purified_(i)
+        .flatMap { ___tree_prev_iter($0.pointer) }
+        .flatMap { $0.sealed.band(__tree_.tied) }
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    public func index(after i: Index) -> Index {
+      __tree_.__purified_(i)
+        .flatMap { ___tree_next_iter($0.pointer) }
+        .flatMap { $0.sealed.band(__tree_.tied) }
+    }
+
+    /// - Complexity: O(`distance`)
+    @inlinable
+    public func index(_ i: Index, offsetBy distance: Int)
+      -> Index
+    {
+      __tree_.__purified_(i)
+        .flatMap { ___tree_adv_iter($0.pointer, distance) }
+        .flatMap { $0.sealed.band(__tree_.tied) }
+    }
+
+    /// - Complexity: O(`distance`)
+    @inlinable
+    public func index(
+      _ i: Index, offsetBy distance: Int, limitedBy limit: Index
+    )
+      -> Index?
+    {
+      var i = i
+      let result = formIndex(&i, offsetBy: distance, limitedBy: limit)
+      return result ? i : nil
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(before i: inout Index) {
+      i = index(before: i)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(after i: inout Index) {
+      i = index(after: i)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func formIndex(_ i: inout Index, offsetBy distance: Int) {
+      i = index(i, offsetBy: distance)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    @inline(__always)
+    public func formIndex(
+      _ i: inout Index,
+      offsetBy distance: Int,
+      limitedBy limit: Index
+    )
+      -> Bool
+    {
+      guard let ___i = __tree_.__purified_(i).pointer
+      else { return false }
+
+      let __l = __tree_.__purified_(limit).map(\.pointer)
+
+      return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
+        i = $0.flatMap { $0.sealed.band(__tree_.tied) }
+      }
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always) get {
+        Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
+      }
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(_result position: Index) -> Result<Element, SealError> {
+      __tree_.__purified_(position)
+        .map { $0.pointer.__value_().pointee }
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// Indexがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid(index: Index) -> Bool {
+      __tree_.__purified_(index).exists
+    }
+  }
+#endif
 
 // MARK: - ExpressibleByDictionaryLiteral
 

@@ -18,7 +18,8 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    public typealias _RangeExpression = UnsafeIndexV2RangeExpression<Self>
+    public typealias View = RedBlackTreeKeyValueRangeView<Base>
+    public typealias IndexRange = UnsafeIndexV3RangeExpression
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
@@ -26,47 +27,53 @@
     }
 
     @inlinable
-    public func isValid(_ bounds: _RangeExpression) -> Bool {
+    public func isValid(_ bounds: IndexRange) -> Bool {
       let (l, u) = bounds.relative(to: __tree_)
       return l.isValid && u.isValid
     }
 
     @inlinable
-    public subscript(bounds: UnboundedRange) -> SubSequence {
-      ___subscript(.unboundedRange)
+    public subscript(bounds: UnboundedRange) -> View {
+      .init(__tree_: __tree_, _start: _sealed_start, _end: _sealed_end)
     }
 
     @inlinable
-    public subscript(bounds: _RangeExpression) -> SubSequence {
-      ___subscript(bounds.rawRange)
+    public subscript(bounds: IndexRange) -> View {
+      let (lower, upper) = bounds.relative(to: __tree_)
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        fatalError(.invalidIndex)
+      }
+      return .init(__tree_: __tree_, _start: lower, _end: upper)
     }
 
     @inlinable
-    public mutating func removeSubrange(_ bounds: UnboundedRange) {
+    public mutating func erase(_ bounds: UnboundedRange) {
       __tree_.ensureUnique()
       _ = ___remove(from: _start, to: _end)
     }
 
     @inlinable
-    public mutating func removeSubrange(_ bounds: _RangeExpression) {
+    public mutating func erase(_ bounds: IndexRange) {
       __tree_.ensureUnique()
-      let (lower, upper) = unwrapLowerUpperOrFatal(bounds.relative(to: __tree_))
-      _ = ___remove(from: lower, to: upper)
+      let (lower, upper) = bounds.relative(to: __tree_)
+      _ = ___remove(from: lower.pointer!, to: upper.pointer!)
     }
 
     @inlinable
-    public mutating func removeSubrange(
-      _ bounds: _RangeExpression,
-      where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows {
+    public mutating func erase(
+      _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
 
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.rawRange.relative(to: __tree_)
+      let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(
-        lower, upper, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
+      try __tree_.___erase_if(lower, upper) {
+        try shouldBeRemoved(Base.__element_($0))
+      }
     }
   }
 #endif
@@ -78,9 +85,9 @@
     @inlinable
     public func sequence(from start: Key, to end: Key) -> SubSequence {
       .init(
-        tree: __tree_,
-        start: __tree_.lower_bound(start).sealed,
-        end: __tree_.lower_bound(end).sealed)
+        __tree_: __tree_,
+        _start: __tree_.lower_bound(start).sealed,
+        _end: __tree_.lower_bound(end).sealed)
     }
 
     /// キーレンジ `[start, end]` に含まれる要素のスライス
@@ -88,9 +95,9 @@
     @inlinable
     public func sequence(from start: Key, through end: Key) -> SubSequence {
       .init(
-        tree: __tree_,
-        start: __tree_.lower_bound(start).sealed,
-        end: __tree_.upper_bound(end).sealed)
+        __tree_: __tree_,
+        _start: __tree_.lower_bound(start).sealed,
+        _end: __tree_.upper_bound(end).sealed)
     }
   }
 #endif

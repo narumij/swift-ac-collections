@@ -43,6 +43,7 @@ final class RedBlackTreeDictionarySubSequenceTests: RedBlackTreeTestCase {
 
   // MARK: offsetBy / limitedBy ------------------------------------------
 
+#if COMPATIBLE_ATCODER_2025
   func testSliceIndexOffsetting() {
     let dict: RedBlackTreeDictionary = [
       10: 0, 11: 1, 12: 2, 13: 3, 14: 4,
@@ -101,4 +102,5 @@ final class RedBlackTreeDictionarySubSequenceTests: RedBlackTreeTestCase {
       XCTAssertEqual(slice._copyCount, 0)
     #endif
   }
+  #endif
 }

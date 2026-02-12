@@ -151,6 +151,16 @@ protocol _RedBlackTreeKeyOnlyBase__:
     & _SequenceV2
 {}
 
+@usableFromInline
+protocol _RedBlackTreeKeyValuesBase__:
+  UnsafeMutableTreeRangeProtocol
+    & UnsafeTreeRangeBaseInterface
+    & _MapBridge
+    & _CompareV2
+    & _SequenceV2
+    & ___UnsafeKeyValueSequenceV2__
+{}
+
 // MARK: -
 
 @usableFromInline

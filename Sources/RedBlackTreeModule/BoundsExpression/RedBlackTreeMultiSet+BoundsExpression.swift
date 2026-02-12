@@ -16,6 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
+
   extension RedBlackTreeMultiSet {
     public typealias Bound = RedBlackTreeBoundExpression<Element>
     public typealias BoundRange = RedBlackTreeBoundRangeExpression<Element>
@@ -26,7 +27,7 @@
     /// 該当する要素を取得可能かどうかの判定結果を返す
     @inlinable
     public func isValid(_ bound: Bound) -> Bool {
-      
+
       let sealed = bound.relative(to: __tree_)
       return sealed.isValid && !sealed.___is_end!
     }
@@ -37,7 +38,7 @@
     // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     @inlinable
     public subscript(bound: Bound) -> Element? {
-      
+
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return __tree_[_unsafe_raw: p]
@@ -49,7 +50,7 @@
     // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     @inlinable
     public mutating func erase(_ bound: Bound) -> Element? {
-      
+
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
@@ -63,7 +64,7 @@
 
     @inlinable
     public func count(_ bounds: BoundRange) -> Int? {
-      
+
       guard let d = distance(bounds), d >= 0 else {
         return nil
       }

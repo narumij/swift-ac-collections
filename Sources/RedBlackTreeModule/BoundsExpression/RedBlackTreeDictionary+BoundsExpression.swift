@@ -16,6 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
+
   extension RedBlackTreeDictionary {
     public typealias Bound = RedBlackTreeBoundExpression<Key>
     public typealias BoundRange = RedBlackTreeBoundRangeExpression<Key>

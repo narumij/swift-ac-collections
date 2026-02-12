@@ -16,6 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
+
   extension RedBlackTreeSet {
     public typealias Bound = RedBlackTreeBoundExpression<Element>
     public typealias BoundRange = RedBlackTreeBoundRangeExpression<Element>

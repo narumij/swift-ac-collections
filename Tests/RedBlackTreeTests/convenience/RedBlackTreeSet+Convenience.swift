@@ -52,12 +52,12 @@ extension RedBlackTreeSet {
 
   @inlinable
   public mutating func removeSubrange(_ range: Range<Element>) {
-    removeAll(in: lowerBound(range.lowerBound) ..< lowerBound(range.upperBound))
+    erase(lowerBound(range.lowerBound) ..< lowerBound(range.upperBound))
   }
   
   @inlinable
   public mutating func removeSubrange(_ range: ClosedRange<Element>) {
-    removeAll(in: lowerBound(range.lowerBound) ..< upperBound(range.upperBound))
+    erase(lowerBound(range.lowerBound) ..< upperBound(range.upperBound))
   }
 }
 #endif

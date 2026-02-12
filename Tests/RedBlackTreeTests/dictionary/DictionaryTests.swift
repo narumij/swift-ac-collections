@@ -556,21 +556,23 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertEqual(set[1...5].map { $0.key }, [1, 2, 3, 4, 5])
   }
 
-  func testSubsequence4() throws {
-    let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    let sub = set[1..<3]
-    throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
-    // スキップを直そうとしたが、テストの意図がよく分からない。当時のたまたまの仕様になっているような
-    XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testSubsequence4() throws {
+      let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      let sub = set[1..<3]
+      throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
+      // スキップを直そうとしたが、テストの意図がよく分からない。当時のたまたまの仕様になっているような
+      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
+    }
 
-  func testSubsequence5() throws {
-    let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    let sub = set[1..<3]
-    XCTAssertEqual(sub[set.lowerBound(1)..<set.lowerBound(3)].map { $0.key }, [1, 2])
-    XCTAssertEqual(sub[sub.startIndex..<sub.endIndex].map { $0.key }, [1, 2])
-    XCTAssertEqual(sub[sub.startIndex..<sub.index(before: sub.endIndex)].map { $0.key }, [1])
-  }
+    func testSubsequence5() throws {
+      let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      let sub = set[1..<3]
+      XCTAssertEqual(sub[set.lowerBound(1)..<set.lowerBound(3)].map { $0.key }, [1, 2])
+      XCTAssertEqual(sub[sub.startIndex..<sub.endIndex].map { $0.key }, [1, 2])
+      XCTAssertEqual(sub[sub.startIndex..<sub.index(before: sub.endIndex)].map { $0.key }, [1])
+    }
+  #endif
 
   func testSubsequence6() throws {
     let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
@@ -843,19 +845,19 @@ final class DictionaryTests: RedBlackTreeTestCase {
       let l2 = set.lowerBound(2)
       let u2 = set.upperBound(4)
       XCTAssertEqual(
-        set[unchecked: l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init($0, $0 * 10) })
+        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init($0, $0 * 10) })
       XCTAssertEqual(
-        set[unchecked: l2...].map { RedBlackTreePair($0) },
+        set[l2...].map { RedBlackTreePair($0) },
         [2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
       XCTAssertEqual(
-        set[unchecked: u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init($0, $0 * 10) })
+        set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init($0, $0 * 10) })
       XCTAssertEqual(
-        set[unchecked: ..<u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4].map { .init($0, $0 * 10) })
+        set[..<u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4].map { .init($0, $0 * 10) })
       XCTAssertEqual(
-        set[unchecked: ...u2].map { RedBlackTreePair($0) },
+        set[...u2].map { RedBlackTreePair($0) },
         [1, 2, 3, 4, 6].map { .init($0, $0 * 10) })
       XCTAssertEqual(
-        set[unchecked: ..<set.endIndex].map { RedBlackTreePair($0) },
+        set[..<set.endIndex].map { RedBlackTreePair($0) },
         [1, 2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
     }
   #endif

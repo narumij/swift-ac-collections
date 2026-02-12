@@ -512,19 +512,37 @@ extension RedBlackTreeSet {
   }
 #endif
 
-extension RedBlackTreeSet {
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
 
-  /// - Complexity: O(1)
-  @inlinable
-  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    if keepCapacity {
-      __tree_.ensureUnique()
-      __tree_.deinitialize()
-    } else {
-      self = .init()
+    /// - Complexity: O(1)
+    @inlinable
+    public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+      if keepCapacity {
+        __tree_.ensureUnique()
+        __tree_.deinitialize()
+      } else {
+        self = .init()
+      }
     }
   }
-}
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+      if keepCapacity {
+        __tree_.ensureUnique()
+        __tree_.deinitialize()
+      } else {
+        self = .init()
+      }
+    }
+  }
+#endif
 
 // MARK: -
 
@@ -853,7 +871,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func isValid(index: Index) -> Bool {
+    public func isValid(_ index: Index) -> Bool {
       __tree_.__purified_(index).exists
     }
   }

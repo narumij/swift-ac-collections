@@ -424,6 +424,12 @@
     public func isValid(index: Index) -> Bool {
       _isValid(index: index)
     }
+    
+    @inlinable
+    @inline(__always)
+    public func isValid(_ index: Index) -> Bool {
+      _isValid(index: index)
+    }
   }
 
   extension RedBlackTreeSet {

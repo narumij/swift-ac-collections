@@ -76,7 +76,11 @@ for x in q {
         e[vz].remove(vx)
       }
     }
-    e[vx].removeAll()
+    #if COMPATIBLE_ATCODER_2025
+      e[vx].removeAll()
+    #else
+      e[vx].removeAll()
+    #endif
   }
   fastPrint(m)
 }

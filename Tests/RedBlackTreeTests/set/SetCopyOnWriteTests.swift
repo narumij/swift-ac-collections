@@ -101,7 +101,7 @@ import XCTest
           #if COMPATIBLE_ATCODER_2025
             xy[1]?.removeSubrange(lo..<hi)
           #else
-            xy[1]?.removeAll(in: lo..<hi)
+            xy[1]?.erase(lo..<hi)
           #endif
         }
       }

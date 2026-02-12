@@ -74,7 +74,7 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
     #if COMPATIBLE_ATCODER_2025
       ms.removeSubrange(l..<r)
     #else
-      ms.removeAll(in: l..<r)
+      ms.erase(l..<r)
     #endif
     XCTAssertEqual(ms.sorted(), [0, 1, 3, 4])
   }

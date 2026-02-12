@@ -877,8 +877,8 @@ final class SetTests: RedBlackTreeTestCase {
 
   func testIndexValidation() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-    XCTAssertTrue(set.isValid(index: set.startIndex))
-    XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
+    XCTAssertTrue(set.isValid(set.startIndex))
+    XCTAssertFalse(set.isValid(set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = RedBlackTreeSet<Int>.Index
     #if DEBUG
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
@@ -886,13 +886,13 @@ final class SetTests: RedBlackTreeTestCase {
       // その後できるようになった
       // 挙動が変わった
       //    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5)._rawTag, 5)
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5)))
+      XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+      XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
+      XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
+      XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
+      XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 3)))
+      XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 4)))
+      XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: 5)))
     #endif
   }
 

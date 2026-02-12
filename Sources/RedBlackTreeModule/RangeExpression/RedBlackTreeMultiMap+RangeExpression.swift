@@ -42,16 +42,6 @@
     }
 
     @inlinable
-    public subscript(unchecked bounds: UnboundedRange) -> SubSequence {
-      ___unchecked_subscript(.unboundedRange)
-    }
-
-    @inlinable
-    public subscript(unchecked bounds: _RangeExpression) -> SubSequence {
-      ___unchecked_subscript(bounds.rawRange)
-    }
-
-    @inlinable
     public mutating func removeSubrange(_ bounds: UnboundedRange) {
       __tree_.ensureUnique()
       _ = ___remove(from: _start, to: _end)

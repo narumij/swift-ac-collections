@@ -56,11 +56,9 @@ public protocol BalancedCollection: BalancedSequence {
   
   associatedtype View: BalancedView
   
-
   var count: Int { get }
 
   subscript(position: Index) -> Element { get }
-  subscript(range: IndexRange) -> View { get }
 
   var startIndex: Index { get }
   var endIndex: Index { get }
@@ -74,9 +72,18 @@ public protocol BalancedCollection: BalancedSequence {
   func formIndex(before: inout Index)
   func formIndex(_: inout Index, offsetBy distance: Int)
   func formIndex(_: inout Index, offsetBy distance: Int, limitedBy limit: Index) -> Bool
+  
+  mutating func removeAll()
+  mutating func removeAll(keepingCapacity keepCapacity: Bool)
 
   // MARK: -
 
+  func isValid(_ index: Index) -> Bool
+  func isValid(_ bounds: IndexRange) -> Bool
+  func isValid(_ bound: Bound) -> Bool
+  func isValid(_ bound: BoundRange) -> Bool
+
+  subscript(range: IndexRange) -> View { get }
   subscript(position: Bound) -> Element? { get }
   subscript(range: BoundRange) -> View { get }
 
@@ -94,9 +101,7 @@ public protocol BalancedCollection: BalancedSequence {
   mutating func erase(_: BoundRange)
   mutating func erase(_: BoundRange, where: (Element) throws -> Bool) rethrows
 
-  mutating func eraseAll(where: (Element) throws -> Bool) rethrows
-  mutating func eraseAll()
-  mutating func eraseAll(keepingCapacity keepCapacity: Bool)
+  mutating func erase(where: (Element) throws -> Bool) rethrows
 }
 
 // MARK: -

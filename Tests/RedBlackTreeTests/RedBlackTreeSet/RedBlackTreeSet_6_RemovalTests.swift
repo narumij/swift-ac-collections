@@ -80,9 +80,9 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     let start = set.index(after: set.startIndex)
     let end = set.index(start, offsetBy: 3)
     #if COMPATIBLE_ATCODER_2025
-    set.removeSubrange(start..<end)
+      set.removeSubrange(start..<end)
     #else
-    set.removeAll(in: start..<end)
+      set.erase(start..<end)
     #endif
     XCTAssertEqual(set.sorted(), [1, 5], "指定範囲の要素を削除すること")
   }
@@ -90,7 +90,11 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
   /// removeAll() がセットを空にすること
   func test_removeAll() {
     var set = RedBlackTreeSet([1, 2, 3])
-    set.removeAll()
+    #if COMPATIBLE_ATCODER_2025
+      set.removeAll()
+    #else
+      set.removeAll()
+    #endif
     XCTAssertTrue(set.isEmpty, "removeAll() 実行後、セットは空になること")
   }
 
@@ -179,7 +183,7 @@ extension RedBlackTreeSetRemoveTests {
 
     // 事後条件:
     // - 削除したindexは無効になること
-    XCTAssertFalse(set.isValid(index: index), "削除後、当該indexは無効になること")
+    XCTAssertFalse(set.isValid(index), "削除後、当該indexは無効になること")
   }
 }
 

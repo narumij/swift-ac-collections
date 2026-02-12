@@ -151,7 +151,7 @@ final class EtcTests: RedBlackTreeTestCase {
         let j = i
         i = b.index(after: i)
         b.remove(at: j)  // jはこの時点で無効になる
-        XCTAssertFalse(b.isValid(index: j))
+        XCTAssertFalse(b.isValid(j))
       }
       XCTAssertEqual(b.count, 0)
     }
@@ -161,7 +161,7 @@ final class EtcTests: RedBlackTreeTestCase {
       #if COMPATIBLE_ATCODER_2025
         b.removeSubrange(b.startIndex..<b.endIndex)  // startIndexからendIndex -1までが無効になる
       #else
-        b.removeAll(in: b.startIndex..<b.endIndex)  // startIndexからendIndex -1までが無効になる
+        b.erase(b.startIndex..<b.endIndex)  // startIndexからendIndex -1までが無効になる
       #endif
       XCTAssertEqual(b.count, 0)
     }
@@ -170,7 +170,7 @@ final class EtcTests: RedBlackTreeTestCase {
       var b: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
       var i = b.startIndex  // 都度異なる値となる
       while i != b.endIndex {  // endIndexは特殊な値なので、不変です。
-        XCTAssertTrue(b.isValid(index: i))  // 次を指しているの有効
+        XCTAssertTrue(b.isValid(i))  // 次を指しているの有効
         // extensionを書けばこのように利用可能
         i = b.erase(at: i)
       }

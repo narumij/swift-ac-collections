@@ -219,9 +219,9 @@ extension RedBlackTreeMultiMap {
 
 // MARK: - Range Accessing Keys and Values
 
-extension RedBlackTreeMultiMap {
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
 
-  #if COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
@@ -231,8 +231,8 @@ extension RedBlackTreeMultiMap {
         start: __tree_.__purified_(bounds.lowerBound),
         end: __tree_.__purified_(bounds.upperBound))
     }
-  #endif
-}
+  }
+#endif
 
 // MARK: - Insert
 

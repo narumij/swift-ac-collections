@@ -18,24 +18,27 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
+    public typealias View = RedBlackTreeKeyOnlyRangeView<Base>
+    public typealias IndexRange = UnsafeIndexV3RangeExpression
+
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
       true
     }
 
     @inlinable
-    public func isValid(_ bounds: UnsafeIndexV3RangeExpression) -> Bool {
+    public func isValid(_ bounds: IndexRange) -> Bool {
       let (l, u) = bounds.relative(to: __tree_)
       return l.isValid && u.isValid
     }
-    
+
     @inlinable
-    public subscript(bounds: UnboundedRange) -> RedBlackTreeKeyOnlyRangeView<Base> {
+    public subscript(bounds: UnboundedRange) -> View {
       .init(__tree_: __tree_, _start: _sealed_start, _end: _sealed_end)
     }
 
     @inlinable
-    public subscript(bounds: UnsafeIndexV3RangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
+    public subscript(bounds: IndexRange) -> View {
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
@@ -44,22 +47,21 @@
     }
 
     @inlinable
-    public mutating func removeAll(in bounds: UnboundedRange) {
+    public mutating func erase(_ bounds: UnboundedRange) {
       __tree_.ensureUnique()
       _ = ___remove(from: _start, to: _end)
     }
 
     @inlinable
-    public mutating func removeAll(in bounds: UnsafeIndexV3RangeExpression) {
+    public mutating func erase(_ bounds: IndexRange) {
       __tree_.ensureUnique()
       let (lower, upper) = unwrapLowerUpperOrFatal(bounds.relative(to: __tree_))
       _ = ___remove(from: lower, to: upper)
     }
 
     @inlinable
-    public mutating func removeAll(
-      in bounds: UnsafeIndexV3RangeExpression,
-      where shouldBeRemoved: (Element) throws -> Bool
+    public mutating func erase(
+      _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
       __tree_.ensureUnique()
@@ -74,7 +76,7 @@
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
-    
+
     /// 値レンジ `[start, end)` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
     @inlinable
@@ -87,7 +89,7 @@
         _start: __tree_.lower_bound(start).sealed,
         _end: __tree_.lower_bound(end).sealed)
     }
-    
+
     /// 値レンジ `[start, end]` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
     @inlinable
@@ -99,31 +101,6 @@
         __tree_: __tree_,
         _start: __tree_.lower_bound(start).sealed,
         _end: __tree_.upper_bound(end).sealed)
-    }
-  }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiSet {
-
-    @inlinable
-    public subscript(bounds: UnboundedRange) -> SubSequence {
-      ___subscript(.unboundedRange)
-    }
-
-    @inlinable
-    public subscript(bounds: _RangeExpression) -> SubSequence {
-      ___subscript(bounds.rawRange)
-    }
-
-    @inlinable
-    public subscript(unchecked bounds: UnboundedRange) -> SubSequence {
-      ___unchecked_subscript(.unboundedRange)
-    }
-
-    @inlinable
-    public subscript(unchecked bounds: _RangeExpression) -> SubSequence {
-      ___unchecked_subscript(bounds.rawRange)
     }
   }
 #endif

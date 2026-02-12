@@ -764,13 +764,15 @@ final class MultiMapTests: RedBlackTreeTestCase {
     //      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
   }
 
-  func testSubsequence5() throws {
-    let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    let sub = set.elements(in: 1..<3)
-    XCTAssertEqual(sub[set.lowerBound(1)..<set.lowerBound(3)].map { $0.key }, [1, 2])
-    XCTAssertEqual(sub[sub.startIndex..<sub.endIndex].map { $0.key }, [1, 2])
-    XCTAssertEqual(sub[sub.startIndex..<sub.index(before: sub.endIndex)].map { $0.key }, [1])
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testSubsequence5() throws {
+      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      let sub = set.elements(in: 1..<3)
+      XCTAssertEqual(sub[set.lowerBound(1)..<set.lowerBound(3)].map { $0.key }, [1, 2])
+      XCTAssertEqual(sub[sub.startIndex..<sub.endIndex].map { $0.key }, [1, 2])
+      XCTAssertEqual(sub[sub.startIndex..<sub.index(before: sub.endIndex)].map { $0.key }, [1])
+    }
+  #endif
 
   func testSubsequence6() throws {
     let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
@@ -1039,16 +1041,16 @@ final class MultiMapTests: RedBlackTreeTestCase {
       let l2 = set.lowerBound(2)
       let u2 = set.upperBound(4)
       AssertEquenceEqual(
-        set[unchecked: l2..<u2].map { $0 }, [2, 3, 4].map { keyValue($0, $0 * 10) })
+        set[l2..<u2].map { $0 }, [2, 3, 4].map { keyValue($0, $0 * 10) })
       AssertEquenceEqual(
-        set[unchecked: l2...].map { $0 }, [2, 3, 4, 6, 7].map { keyValue($0, $0 * 10) })
-      AssertEquenceEqual(set[unchecked: u2...].map { $0 }, [6, 7].map { keyValue($0, $0 * 10) })
+        set[l2...].map { $0 }, [2, 3, 4, 6, 7].map { keyValue($0, $0 * 10) })
+      AssertEquenceEqual(set[u2...].map { $0 }, [6, 7].map { keyValue($0, $0 * 10) })
       AssertEquenceEqual(
-        set[unchecked: ..<u2].map { $0 }, [1, 2, 3, 4].map { keyValue($0, $0 * 10) })
+        set[..<u2].map { $0 }, [1, 2, 3, 4].map { keyValue($0, $0 * 10) })
       AssertEquenceEqual(
-        set[unchecked: ...u2].map { $0 }, [1, 2, 3, 4, 6].map { keyValue($0, $0 * 10) })
+        set[...u2].map { $0 }, [1, 2, 3, 4, 6].map { keyValue($0, $0 * 10) })
       AssertEquenceEqual(
-        set[unchecked: ..<set.endIndex].map { $0 },
+        set[..<set.endIndex].map { $0 },
         [1, 2, 3, 4, 6, 7].map { keyValue($0, $0 * 10) })
     }
   #endif

@@ -273,6 +273,26 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (_PayloadValue) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+    /// 特殊なforEach
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Index, _PayloadValue) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeMultiSet {
     @available(*, deprecated)

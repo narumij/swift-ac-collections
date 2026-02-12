@@ -75,8 +75,10 @@ public protocol BalancedCollection: BalancedSequence {
 
   mutating func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element)
   mutating func update(with newMember: Element) -> Element?
-  
+
   mutating func remove(_ member: Element) -> Element?
+  mutating func remove(at index: Index) -> Element
+
   mutating func removeAll()
   mutating func removeAll(keepingCapacity keepCapacity: Bool)
 

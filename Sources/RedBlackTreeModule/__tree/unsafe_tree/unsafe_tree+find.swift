@@ -213,6 +213,28 @@ extension FindProtocol_ptr {
       return end
     #else
       // llvmの__treeに寄せたが、multimapの挙動が変わってしまうので保留
+
+      // chat gptが言うには、multimapでfindが何を返すかは未規定だから仕様違反ではないそう
+      // でもますます使えないことになる
+
+      // https://en.cppreference.com/w/cpp/container/multimap/find.html
+
+      // 1,2) Finds an element with key equivalent to key.If there are several elements with the requested key in the container, any of them may be returned.
+      // 確かにどれか返せばいいことになってる
+
+      // https://learn.microsoft.com/en-us/cpp/standard-library/multimap-class?view=msvc-170&utm_source=chatgpt.com
+
+      // Returns an iterator addressing the first location of an element in a multimap that has a key equivalent to a specified key.
+      // MSは、先頭になっている
+
+      // 戻すのもありではあるけど、先頭を消す操作はViewで可能なので、注意だけ書く方向にしそう。でもモヤる
+
+      // https://en.cppreference.com/w/cpp/container/multimap.html?utm_source=chatgpt.com
+
+      // The order of the key-value pairs whose keys compare equivalent is the order of insertion and does not change.
+
+      // 同値キーの場合は挿入順となることが保証されている
+
       let (_, __match) = __find_equal(__v)
       if __match.pointee == nullptr {
         return end

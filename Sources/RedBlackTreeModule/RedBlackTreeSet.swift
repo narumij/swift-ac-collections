@@ -243,7 +243,26 @@ extension RedBlackTreeSet {
   }
 }
 
+// MARK: -
+
+extension RedBlackTreeSet {
+
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
+  }
+}
+
 // MARK: - Inspecting a Set
+
+extension RedBlackTreeSet {
+
+  /// - Complexity: O(1)
+  @inlinable
+  public var capacity: Int {
+    __tree_.capacity
+  }
+}
 
 extension RedBlackTreeSet {
 
@@ -251,12 +270,6 @@ extension RedBlackTreeSet {
   @inlinable
   public var isEmpty: Bool {
     count == 0
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var capacity: Int {
-    __tree_.capacity
   }
 
   /// - Complexity: O(1)
@@ -333,14 +346,6 @@ extension RedBlackTreeSet {
     let oldMember = __tree_[_unsafe_raw: __r]
     __tree_[_unsafe_raw: __r] = newMember
     return oldMember
-  }
-}
-
-extension RedBlackTreeSet {
-
-  @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -439,35 +444,6 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  @discardableResult
-  public mutating func remove(_ member: Element) -> Element? {
-    __tree_.ensureUnique()
-    return __tree_.update { $0.___erase_unique(member) } ? member : nil
-  }
-}
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet {
-
-    /// - Important: 削除後は、インデックスが無効になります。
-    /// - Complexity: O(1)
-    @inlinable
-    @discardableResult
-    public mutating func remove(at index: Index) -> Element {
-      __tree_.ensureUnique()
-      guard let __p = __tree_.__purified_(index).pointer else {
-        fatalError(.invalidIndex)
-      }
-      return _unchecked_remove(at: __p).payload
-    }
-  }
-#endif
-
-extension RedBlackTreeSet {
-
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
   @inlinable
   @discardableResult
@@ -495,19 +471,31 @@ extension RedBlackTreeSet {
   }
 #endif
 
+extension RedBlackTreeSet {
+
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
+  @inlinable
+  @discardableResult
+  public mutating func remove(_ member: Element) -> Element? {
+    __tree_.ensureUnique()
+    return __tree_.update { $0.___erase_unique(member) } ? member : nil
+  }
+}
+
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// - Important: 削除後は、インデックスが無効になります。
+    /// - Complexity: O(1)
     @inlinable
-    public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+    @discardableResult
+    public mutating func remove(at index: Index) -> Element {
       __tree_.ensureUnique()
-      let result = try __tree_.___erase_if(
-        __tree_.__begin_node_.sealed,
-        __tree_.__end_node.sealed,
-        shouldBeRemoved: shouldBeRemoved)
-      if case .failure(let e) = result {
-        fatalError(e.localizedDescription)
+      guard let __p = __tree_.__purified_(index).pointer else {
+        fatalError(.invalidIndex)
       }
+      return _unchecked_remove(at: __p).payload
     }
   }
 #endif
@@ -539,6 +527,25 @@ extension RedBlackTreeSet {
         __tree_.deinitialize()
       } else {
         self = .init()
+      }
+    }
+  }
+#endif
+
+// MARK: -
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    @inlinable
+    public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      __tree_.ensureUnique()
+      let result = try __tree_.___erase_if(
+        __tree_.__begin_node_.sealed,
+        __tree_.__end_node.sealed,
+        shouldBeRemoved: shouldBeRemoved)
+      if case .failure(let e) = result {
+        fatalError(e.localizedDescription)
       }
     }
   }

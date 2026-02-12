@@ -1,4 +1,32 @@
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(*n* log *n* + *n*)
+    @inlinable
+    public init<Source>(_ sequence: __owned Source)
+    where Element == Source.Element, Source: Sequence {
+      self.init(__tree_: .create_multi(sorted: sequence.sorted()))
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  // MARK: - Init naive
+
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(*n* log *n*)
+    ///
+    /// 省メモリでの初期化
+    @inlinable
+    public init<Source>(naive sequence: __owned Source)
+    where Element == Source.Element, Source: Sequence {
+      self.init(__tree_: .create_multi(naive: sequence))
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet: Collection, BidirectionalCollection {}
 #endif
 

@@ -47,15 +47,15 @@ extension BalancedSequence {
 public protocol BalancedCollection: BalancedSequence {
 
   associatedtype Key
-  
+
   associatedtype Index: Equatable
   associatedtype IndexRange = UnsafeIndexV3RangeExpression
-  
+
   associatedtype Bound = RedBlackTreeBoundExpression<Element>
   associatedtype BoundRange = RedBlackTreeBoundRangeExpression<Element>
-  
+
   associatedtype View: BalancedView
-  
+
   var count: Int { get }
 
   subscript(position: Index) -> Element { get }
@@ -72,7 +72,11 @@ public protocol BalancedCollection: BalancedSequence {
   func formIndex(before: inout Index)
   func formIndex(_: inout Index, offsetBy distance: Int)
   func formIndex(_: inout Index, offsetBy distance: Int, limitedBy limit: Index) -> Bool
+
+  mutating func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element)
+  mutating func update(with newMember: Element) -> Element?
   
+  mutating func remove(_ member: Element) -> Element?
   mutating func removeAll()
   mutating func removeAll(keepingCapacity keepCapacity: Bool)
 
@@ -102,6 +106,10 @@ public protocol BalancedCollection: BalancedSequence {
   mutating func erase(_: BoundRange, where: (Element) throws -> Bool) rethrows
 
   mutating func erase(where: (Element) throws -> Bool) rethrows
+}
+
+public protocol BalancedMultiCollection: BalancedCollection {
+  mutating func eraseMulti(_ member: Element) -> Int
 }
 
 // MARK: -

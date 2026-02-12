@@ -87,15 +87,34 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet {
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(*n* log *n* + *n*)
-  @inlinable
-  public init<Source>(_ sequence: __owned Source)
-  where Element == Source.Element, Source: Sequence {
-    self.init(__tree_: .create_multi(sorted: sequence.sorted()))
+    /// - Complexity: O(*n* log *n*)
+    /// ただし、ソート済みの場合、ならしO(*n*)
+    @inlinable
+    public init<Source>(_ sequence: __owned Source)
+    where Element == Source.Element, Source: Sequence {
+      self.init(
+        __tree_:
+          .___insert_range_multi(
+            tree: .create(),
+            sequence))
+    }
+
+    /// - Complexity: O(*n* log *n*)
+    /// ただし、ソート済みの場合、ならしO(*n*)
+    @inlinable
+    public init<Source>(_ collection: __owned Source)
+    where Element == Source.Element, Source: Collection {
+      self.init(
+        __tree_:
+          .___insert_range_multi(
+            tree: .create(minimumCapacity: collection.count),
+            collection))
+    }
   }
-}
+#endif
 
 extension RedBlackTreeMultiSet {
 
@@ -109,7 +128,26 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+// MARK: -
+
+extension RedBlackTreeMultiSet {
+
+  @inlinable
+  public mutating func reserveCapacity(_ minimumCapacity: Int) {
+    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
+  }
+}
+
 // MARK: - Inspecting a MultiSet
+
+extension RedBlackTreeMultiSet {
+
+  /// - Complexity: O(1)
+  @inlinable
+  public var capacity: Int {
+    __tree_.capacity
+  }
+}
 
 extension RedBlackTreeMultiSet {
 
@@ -117,12 +155,6 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public var isEmpty: Bool {
     count == 0
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public var capacity: Int {
-    __tree_.capacity
   }
 
   /// - Complexity: O(1)
@@ -186,14 +218,6 @@ extension RedBlackTreeMultiSet {
     __tree_.ensureUniqueAndCapacity()
     _ = __tree_.__insert_multi(newMember)
     return (true, newMember)
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
-  @inlinable
-  public mutating func reserveCapacity(_ minimumCapacity: Int) {
-    __tree_.ensureUniqueAndCapacity(to: minimumCapacity)
   }
 }
 
@@ -334,6 +358,34 @@ extension RedBlackTreeMultiSet {
 extension RedBlackTreeMultiSet {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  @discardableResult
+  public mutating func removeFirst() -> Element {
+    __tree_.ensureUnique()
+    guard let element = ___remove_first() else {
+      preconditionFailure(.emptyFirst)
+    }
+    return element.payload
+  }
+
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @discardableResult
+  public mutating func removeLast() -> Element {
+    __tree_.ensureUnique()
+    guard let element = ___remove_last() else {
+      preconditionFailure(.emptyFirst)
+    }
+    return element.payload
+  }
+}
+
+extension RedBlackTreeMultiSet {
+
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
@@ -360,34 +412,6 @@ extension RedBlackTreeMultiSet {
     }
   }
 #endif
-
-extension RedBlackTreeMultiSet {
-
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func removeFirst() -> Element {
-    __tree_.ensureUnique()
-    guard let element = ___remove_first() else {
-      preconditionFailure(.emptyFirst)
-    }
-    return element.payload
-  }
-
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @discardableResult
-  public mutating func removeLast() -> Element {
-    __tree_.ensureUnique()
-    guard let element = ___remove_last() else {
-      preconditionFailure(.emptyFirst)
-    }
-    return element.payload
-  }
-}
 
 extension RedBlackTreeMultiSet {
 
@@ -966,17 +990,3 @@ extension RedBlackTreeMultiSet: Hashable where Element: Hashable {
     }
   }
 #endif
-
-// MARK: - Init naive
-
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(*n* log *n*)
-  ///
-  /// 省メモリでの初期化
-  @inlinable
-  public init<Source>(naive sequence: __owned Source)
-  where Element == Source.Element, Source: Sequence {
-    self.init(__tree_: .create_multi(naive: sequence))
-  }
-}

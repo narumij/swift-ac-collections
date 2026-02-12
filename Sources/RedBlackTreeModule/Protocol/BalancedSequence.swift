@@ -19,11 +19,11 @@ public protocol BalancedSequence: Sequence {
 
   mutating func popFirst() -> Element?
   mutating func removeFirst() -> Element
-  mutating func removeFirst(_ k: Int)
+  mutating func removeFirst(_: Int)
 
   mutating func popLast() -> Element?
   mutating func removeLast() -> Element
-  mutating func removeLast(_ k: Int)
+  mutating func removeLast(_: Int)
 
   func sorted() -> [Element]
   func reversed() -> [Element]
@@ -65,29 +65,29 @@ public protocol BalancedCollection: BalancedSequence {
 
   func index(after: Index) -> Index
   func index(before: Index) -> Index
-  func index(_: Index, offsetBy distance: Int)
-  func index(_: Index, offsetBy distance: Int, limitedBy limit: Index)
+  func index(_: Index, offsetBy: Int)
+  func index(_: Index, offsetBy: Int, limitedBy: Index)
 
   func formIndex(after: inout Index)
   func formIndex(before: inout Index)
-  func formIndex(_: inout Index, offsetBy distance: Int)
-  func formIndex(_: inout Index, offsetBy distance: Int, limitedBy limit: Index) -> Bool
+  func formIndex(_: inout Index, offsetBy: Int)
+  func formIndex(_: inout Index, offsetBy: Int, limitedBy: Index) -> Bool
 
-  mutating func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element)
-  mutating func update(with newMember: Element) -> Element?
+  mutating func insert(_: Element) -> (inserted: Bool, memberAfterInsert: Element)
+  mutating func update(with: Element) -> Element?
 
-  mutating func remove(_ member: Element) -> Element?
-  mutating func remove(at index: Index) -> Element
+  mutating func remove(_: Element) -> Element?
+  mutating func remove(at: Index) -> Element
 
   mutating func removeAll()
   mutating func removeAll(keepingCapacity keepCapacity: Bool)
 
   // MARK: -
 
-  func isValid(_ index: Index) -> Bool
-  func isValid(_ bounds: IndexRange) -> Bool
-  func isValid(_ bound: Bound) -> Bool
-  func isValid(_ bound: BoundRange) -> Bool
+  func isValid(_: Index) -> Bool
+  func isValid(_: IndexRange) -> Bool
+  func isValid(_: Bound) -> Bool
+  func isValid(_: BoundRange) -> Bool
 
   subscript(range: IndexRange) -> View { get }
   subscript(position: Bound) -> Element? { get }
@@ -111,7 +111,7 @@ public protocol BalancedCollection: BalancedSequence {
 }
 
 public protocol BalancedMultiCollection: BalancedCollection {
-  mutating func eraseMulti(_ member: Element) -> Int
+  mutating func eraseMulti(_: Element) -> Int
 }
 
 // MARK: -

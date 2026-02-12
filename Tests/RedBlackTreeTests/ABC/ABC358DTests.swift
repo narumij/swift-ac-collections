@@ -25,7 +25,7 @@ final class ABC358DTests: RedBlackTreeTestCase {
       var A = RedBlackTreeMultiSet(_A)
       var ans = 0
       for b in B {
-        guard let i = A.remove(lowerBound(b)) else {
+        guard let i = A.erase(lowerBound(b)) else {
           ans = -1
           break
         }

@@ -104,7 +104,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
           y = new_y
         case "L":
           let new_x = x - d
-          yx[y]?.removeAll(in: lowerBound(new_x)..<upperBound(x)) { v in
+          yx[y]?.erase(lowerBound(new_x)..<upperBound(x)) { v in
             ans += 1
             xy[v]?.remove(y)
             return true
@@ -112,7 +112,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
           x = new_x
         case "R":
           let new_x = x + d
-          yx[y]?.removeAll(in: lowerBound(x)..<upperBound(new_x)) { v in
+          yx[y]?.erase(lowerBound(x)..<upperBound(new_x)) { v in
             ans += 1
             xy[v]?.remove(y)
             return true

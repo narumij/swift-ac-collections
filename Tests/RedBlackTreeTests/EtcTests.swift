@@ -1054,10 +1054,10 @@ final class EtcTests: RedBlackTreeTestCase {
         let _ = a.indices(bounds: .start ..< .end)
         let _ = a.indices(bounds: .lower(3) ..< .lower(4))
       #endif
-      let _ = a.removeAll(in: .lower(10) ..< .lower(100)) { n in
+      let _ = a.erase(.lower(10) ..< .lower(100)) { n in
         n % 2 == 1
       }
-      let _ = a.removeAll(in: .lower(10) ... .upper(100)) { n in
+      let _ = a.erase(.lower(10) ... .upper(100)) { n in
         n % 2 == 0
       }
       let _ = a[.lower(10) ... .end]

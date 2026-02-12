@@ -16,6 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
+
   extension RedBlackTreeDictionary {
 
     public typealias View = RedBlackTreeKeyValueRangeView<Base>

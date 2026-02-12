@@ -16,6 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
+
   extension RedBlackTreeMultiSet {
 
     public typealias View = RedBlackTreeKeyOnlyRangeView<Base>

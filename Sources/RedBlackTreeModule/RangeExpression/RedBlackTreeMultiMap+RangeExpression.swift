@@ -16,6 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
+
   extension RedBlackTreeMultiMap {
 
     public typealias _RangeExpression = UnsafeIndexV2RangeExpression<Self>

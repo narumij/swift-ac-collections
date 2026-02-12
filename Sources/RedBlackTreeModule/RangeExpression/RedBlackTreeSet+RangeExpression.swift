@@ -19,6 +19,7 @@
 
 // 新形式
 #if !COMPATIBLE_ATCODER_2025
+
   extension RedBlackTreeSet {
 
     public typealias View = RedBlackTreeKeyOnlyRangeView<Base>

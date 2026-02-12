@@ -17,15 +17,65 @@
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
+    public typealias Bound = RedBlackTreeBoundExpression<Key>
+    public typealias BoundRange = RedBlackTreeBoundRangeExpression<Key>
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// 該当する要素を取得可能かどうかの判定結果を返す
+    public func isValid(_ bound: Bound) -> Bool {
+
+      let sealed = bound.relative(to: __tree_)
+      return sealed.isValid && !sealed.___is_end!
+    }
+  }
+
+  extension RedBlackTreeDictionary {
 
     @inlinable
-    public subscript(bound: RedBlackTreeBoundExpression<Key>) -> Element? {
+    public subscript(bound: Bound) -> Element? {
+
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return Base.__element_(__tree_[_unsafe_raw: p])
     }
+  }
 
-    public mutating func removeBounds(_ bounds: RedBlackTreeBoundRangeExpression<Key>) {
+  extension RedBlackTreeDictionary {
+
+    public mutating func remove(_ bound: Bound) -> Element? {
+
+      __tree_.ensureUnique()
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      return Base.__element_(_unchecked_remove(at: p).payload)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    // MARK: -
+
+    public func count(_ bounds: BoundRange) -> Int? {
+
+      guard let d = distance(bounds), d >= 0 else {
+        return nil
+      }
+      return d
+    }
+
+    public func distance(_ bounds: BoundRange) -> Int? {
+
+      let (lower, upper) = bounds.relative(to: __tree_)
+      return __tree_.___distance(from: lower, to: upper)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    public mutating func removeBounds(_ bounds: BoundRange) {
+
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
@@ -34,41 +84,24 @@
       __tree_.___erase(lower.pointer!, upper.pointer!)
     }
 
-    public mutating func removeBounds(unchecked bounds: RedBlackTreeBoundRangeExpression<Key>) {
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      __tree_.___erase(lower.pointer!, upper.pointer!)
-    }
-
     public mutating func removeBounds(
-      _ bounds: RedBlackTreeBoundRangeExpression<Key>,
-      where shouldBeRemoved: (Element) throws -> Bool
+      _ bounds: BoundRange, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
+
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(
-        lower, upper, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
-    }
-
-    public mutating func removeBounds(
-      unchecked bounds: RedBlackTreeBoundRangeExpression<Key>,
-      where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows {
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
       try __tree_.___erase_if(
         lower, upper, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
     }
   }
 
   extension RedBlackTreeDictionary {
-    
-    public subscript(bounds: RedBlackTreeBoundRangeExpression<Key>)
-      -> RedBlackTreeKeyValueRangeView<Self>
-    {
+
+    public subscript(bounds: BoundRange) -> View {
+
       @inline(__always) get {
         let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
         return .init(__tree_: __tree_, _start: lower, _end: upper)

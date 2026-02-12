@@ -46,13 +46,13 @@ extension BalancedSequence {
 
 public protocol BalancedCollection: BalancedSequence {
 
-  associatedtype Key
+  associatedtype _Key
 
   associatedtype Index: Equatable
   associatedtype IndexRange = UnsafeIndexV3RangeExpression
 
-  associatedtype Bound = RedBlackTreeBoundExpression<Element>
-  associatedtype BoundRange = RedBlackTreeBoundRangeExpression<Element>
+  associatedtype Bound = RedBlackTreeBoundExpression<_Key>
+  associatedtype BoundRange = RedBlackTreeBoundRangeExpression<_Key>
 
   associatedtype View: BalancedView
 

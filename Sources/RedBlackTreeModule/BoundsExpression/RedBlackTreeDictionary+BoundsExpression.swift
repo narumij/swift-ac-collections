@@ -24,6 +24,7 @@
   extension RedBlackTreeDictionary {
 
     /// 該当する要素を取得可能かどうかの判定結果を返す
+    @inlinable
     public func isValid(_ bound: Bound) -> Bool {
 
       let sealed = bound.relative(to: __tree_)
@@ -44,7 +45,8 @@
 
   extension RedBlackTreeDictionary {
 
-    public mutating func remove(_ bound: Bound) -> Element? {
+    @inlinable
+    public mutating func erase(_ bound: Bound) -> Element? {
 
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)
@@ -57,6 +59,7 @@
 
     // MARK: -
 
+    @inlinable
     public func count(_ bounds: BoundRange) -> Int? {
 
       guard let d = distance(bounds), d >= 0 else {
@@ -65,6 +68,7 @@
       return d
     }
 
+    @inlinable
     public func distance(_ bounds: BoundRange) -> Int? {
 
       let (lower, upper) = bounds.relative(to: __tree_)
@@ -74,6 +78,7 @@
 
   extension RedBlackTreeDictionary {
 
+    @inlinable
     public mutating func removeBounds(_ bounds: BoundRange) {
 
       __tree_.ensureUnique()
@@ -84,6 +89,7 @@
       __tree_.___erase(lower.pointer!, upper.pointer!)
     }
 
+    @inlinable
     public mutating func removeBounds(
       _ bounds: BoundRange, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
@@ -100,6 +106,7 @@
 
   extension RedBlackTreeDictionary {
 
+    @inlinable
     public subscript(bounds: BoundRange) -> View {
 
       @inline(__always) get {

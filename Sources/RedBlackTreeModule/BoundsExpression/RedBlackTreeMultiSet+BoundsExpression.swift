@@ -48,7 +48,7 @@
 
     // Swiftの段階的開示という哲学にしたがうと、ポインターよりこちらの方がましな気がする
     @inlinable
-    public mutating func remove(_ bound: Bound) -> Element? {
+    public mutating func erase(_ bound: Bound) -> Element? {
       
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)

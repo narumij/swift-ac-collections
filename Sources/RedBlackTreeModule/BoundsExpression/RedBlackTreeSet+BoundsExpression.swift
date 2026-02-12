@@ -50,7 +50,7 @@
   extension RedBlackTreeSet {
 
     @inlinable
-    public mutating func remove(_ bound: Bound) -> Element? {
+    public mutating func erase(_ bound: Bound) -> Element? {
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }

@@ -422,14 +422,14 @@ extension RedBlackTreeSet {
 
     /// - Complexity: O(1)
     @inlinable
-    public mutating func popMin() -> Element? {
+    public mutating func popFirst() -> Element? {
       __tree_.ensureUnique()
       return ___remove_first()?.payload
     }
 
     /// - Complexity: O(log `count`)
     @inlinable
-    public mutating func popMax() -> Element? {
+    public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
       return ___remove_last()?.payload
     }

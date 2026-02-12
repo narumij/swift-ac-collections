@@ -40,20 +40,11 @@ import Foundation
 @frozen
 public struct RedBlackTreeMultiSet<Element: Comparable> {
 
-  public
-    typealias Element = Element
+  public typealias Element = Element
 
-  /// - Important:
-  ///  要素及びノードが削除された場合、インデックスは無効になります。
-  /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-  public
-    typealias Index = Tree.Index
+  public typealias _Key = Element
 
-  public
-    typealias _Key = Element
-
-  public
-    typealias _PayloadValue = Element
+  public typealias _PayloadValue = Element
 
   @usableFromInline
   var __tree_: Tree
@@ -68,7 +59,12 @@ extension RedBlackTreeMultiSet {
   public typealias Base = Self
 }
 
-extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase {}
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase {}
+#else
+  extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase__ {}
+#endif
+
 extension RedBlackTreeMultiSet: CompareMultiTrait {}
 extension RedBlackTreeMultiSet: ScalarValueTrait {}
 extension RedBlackTreeMultiSet: _ScalarBasePayload_KeyProtocol_ptr {}
@@ -175,21 +171,6 @@ extension RedBlackTreeMultiSet {
 }
 
 // MARK: - Range Accessing Elements
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiSet {
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript(bounds: Range<Index>) -> SubSequence {
-      return .init(
-        tree: __tree_,
-        start: __tree_.__purified_(bounds.lowerBound),
-        end: __tree_.__purified_(bounds.upperBound))
-    }
-  }
-#endif
 
 // MARK: - Insert
 
@@ -333,10 +314,22 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   public mutating func popFirst() -> Element? {
-    guard !isEmpty else { return nil }
-    return remove(at: startIndex)
+    __tree_.ensureUnique()
+    return ___remove_first()?.payload
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(log `count`)
+    @inlinable
+    public mutating func popLast() -> Element? {
+      __tree_.ensureUnique()
+      return ___remove_last()?.payload
+    }
+  }
+#endif
 
 extension RedBlackTreeMultiSet {
 
@@ -349,19 +342,26 @@ extension RedBlackTreeMultiSet {
     __tree_._strongEnsureUnique()
     return __tree_.___erase_unique(member) ? member : nil
   }
+}
 
-  /// - Important: 削除後は、インデックスが無効になります。
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func remove(at index: Index) -> Element {
-    __tree_.ensureUnique()
-    guard case .success(let __p) = __tree_.__purified_(index) else {
-      fatalError(.invalidIndex)
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    /// - Important: 削除後は、インデックスが無効になります。
+    /// - Complexity: O(1)
+    @inlinable
+    @discardableResult
+    public mutating func remove(at index: Index) -> Element {
+      __tree_.ensureUnique()
+      guard let __p = __tree_.__purified_(index).pointer else {
+        fatalError(.invalidIndex)
+      }
+      return _unchecked_remove(at: __p).payload
     }
-    return _unchecked_remove(at: __p.pointer).payload
   }
+#endif
+
+extension RedBlackTreeMultiSet {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
   /// - Complexity: O(1)
@@ -369,10 +369,11 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
-    guard !isEmpty else {
+    __tree_.ensureUnique()
+    guard let element = ___remove_first() else {
       preconditionFailure(.emptyFirst)
     }
-    return remove(at: startIndex)
+    return element.payload
   }
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -380,32 +381,15 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
-    guard !isEmpty else {
-      preconditionFailure(.emptyLast)
+    __tree_.ensureUnique()
+    guard let element = ___remove_last() else {
+      preconditionFailure(.emptyFirst)
     }
-    return remove(at: index(before: endIndex))
+    return element.payload
   }
+}
 
-  #if COMPATIBLE_ATCODER_2025
-    /// Removes the specified subrange of elements from the collection.
-    ///
-    /// - Important: 削除後は、subrangeのインデックスが無効になります。
-    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
-    ///     range must be valid indices of the collection.
-    /// - Returns: The key-value pair that correspond to `index`.
-    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
-    @inlinable
-    public mutating func removeSubrange<R: RangeExpression>(
-      _ bounds: R
-    ) where R.Bound == Index {
-
-      let bounds = bounds.relative(to: self)
-      __tree_.ensureUnique()
-      ___remove(
-        from: __tree_.__purified_(bounds.lowerBound).pointer!,
-        to: __tree_.__purified_(bounds.upperBound).pointer!)
-    }
-  #endif
+extension RedBlackTreeMultiSet {
 
   // TODO: イテレータ利用の注意をドキュメントすること
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -433,30 +417,6 @@ extension RedBlackTreeMultiSet {
 }
 
 // MARK: Finding Elements
-
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func lowerBound(_ member: Element) -> Index {
-    ___index_lower_bound(member)
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func upperBound(_ member: Element) -> Index {
-    ___index_upper_bound(member)
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func equalRange(_ element: Element) -> (lower: Index, upper: Index) {
-    ___index_equal_range(element)
-  }
-}
 
 extension RedBlackTreeMultiSet {
 
@@ -490,50 +450,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func firstIndex(of member: Element) -> Index? {
-    ___first_index(of: member)
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    for __c in __tree_.sequence(_sealed_start, _sealed_end) {
-      if try predicate(__tree_[_unsafe_raw: __c]) {
-        return ___index(__c.sealed)
-      }
-    }
-    return nil
-  }
-}
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiSet {
-    /// 値レンジ `[start, end)` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Element, to end: Element) -> SubSequence {
-      .init(
-        tree: __tree_,
-        start: __tree_.lower_bound(start).sealed,
-        end: __tree_.lower_bound(end).sealed)
-    }
-
-    /// 値レンジ `[start, end]` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Element, through end: Element) -> SubSequence {
-      .init(
-        tree: __tree_,
-        start: __tree_.lower_bound(start).sealed,
-        end: __tree_.upper_bound(end).sealed)
-    }
-  }
-#endif
-
 // MARK: - Transformation
 
 #if !COMPATIBLE_ATCODER_2025
@@ -555,10 +471,6 @@ extension RedBlackTreeMultiSet {
 // MARK: - Collection
 // MARK: - BidirectionalCollection
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiSet: Collection, BidirectionalCollection {}
-#endif
-
 extension RedBlackTreeMultiSet: Sequence {}
 
 extension RedBlackTreeMultiSet {
@@ -567,150 +479,303 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   public func makeIterator() -> Tree._PayloadValues {
-    _makeIterator()
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+  }
+}
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (_PayloadValue) throws -> Void) rethrows {
+      try _forEach(body)
+    }
   }
 
-  @inlinable
-  @inline(__always)
-  public func forEach(_ body: (_PayloadValue) throws -> Void) rethrows {
-    try _forEach(body)
-  }
-
-  #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
     /// 特殊なforEach
     @inlinable
     @inline(__always)
     public func forEach(_ body: (Index, _PayloadValue) throws -> Void) rethrows {
       try _forEach(body)
     }
-  #endif
+  }
+#endif
 
-  #if !COMPATIBLE_ATCODER_2025
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
     /// - Complexity: O(*n*)
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
-      _sorted()
+      __tree_.___copy_all_to_array()
     }
-  #endif
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var startIndex: Index { _startIndex }
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func reversed() -> [Element] {
+      __tree_.___rev_copy_all_to_array()
+    }
+  }
+#endif
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var endIndex: Index { _endIndex }
+// MARK: -
 
-  /// - Complexity: O(*d* + log *n*)
-  @inlinable
-  //  @inline(__always)
-  public func distance(from start: Index, to end: Index) -> Int {
-    _distance(from: start, to: end)
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    /// - Important:
+    ///  要素及びノードが削除された場合、インデックスは無効になります。
+    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    public typealias Index = UnsafeIndexV3
+    public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Base>
   }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func index(after i: Index) -> Index {
-    _index(after: i)
-  }
+  extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(after i: inout Index) {
-    _formIndex(after: &i)
-  }
+    @inlinable
+    func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
+      p.band(__tree_.tied)
+    }
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func index(before i: Index) -> Index {
-    _index(before: i)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(before i: inout Index) {
-    _formIndex(before: &i)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    _index(i, offsetBy: distance)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    _formIndex(&i, offsetBy: distance)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    _index(i, offsetBy: distance, limitedBy: limit)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
-  {
-    _formIndex(&i, offsetBy: distance, limitedBy: limit)
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: Index) -> Element {
-    @inline(__always) _read {
-      yield __tree_[_unsafe: __tree_.__purified_(position)]
+    @inlinable
+    func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
+      p.exists ? p.band(__tree_.tied) : nil
     }
   }
 
-  /// Indexがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid(index: Index) -> Bool {
-    _isValid(index: index)
+  extension RedBlackTreeMultiSet {
+    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
+    /// - Complexity: O( log `count` )
+    @inlinable
+    public func firstIndex(of member: Element)
+      -> Index?
+    {
+      ___index_or_nil(__tree_.find(member).sealed)
+    }
+
+    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
+    /// - Complexity: O( `count` )
+    @inlinable
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
+      -> Index?
+    {
+      for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+        if try predicate(__tree_[_unsafe_raw: __c]) {
+          return ___index(__c.sealed)
+        }
+      }
+      return nil
+    }
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var startIndex: Index { ___index(_sealed_start) }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var endIndex: Index { ___index(_sealed_end) }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @inline(__always)
+    public func distance(from start: Index, to end: Index)
+      -> Int
+    {
+      guard
+        let d = __tree_.___distance(
+          from: __tree_.__purified_(start),
+          to: __tree_.__purified_(end))
+      else { fatalError(.invalidIndex) }
+      return d
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// 与えられた値より小さくない最初の要素へのインデックスを返す
+    ///
+    /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
+    /// 最初の位置（`Index`）を返します。
+    ///
+    /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
+    /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
+    /// - `lowerBound(3)` は要素 `3` の位置を返します。
+    /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
+    /// - `lowerBound(10)` は `endIndex` を返します。
+    ///
+    /// - Parameter member: 二分探索で検索したい要素
+    /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func lowerBound(_ member: Element) -> Index {
+      ___index(__tree_.lower_bound(member).sealed)
+    }
+
+    /// 与えられた値よりも大きい最初の要素へのインデックスを返す
+    ///
+    /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
+    /// 最初の位置（`Index`）を返します。
+    ///
+    /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
+    /// - `upperBound(3)` は要素 `5` の位置を返します。
+    ///   （`3` より大きい値が最初に現れる場所）
+    /// - `upperBound(5)` は要素 `7` の位置を返します。
+    ///   （`5` と等しい要素は含まないため、`5` の直後）
+    /// - `upperBound(9)` は `endIndex` を返します。
+    ///
+    /// - Parameter member: 二分探索で検索したい要素
+    /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func upperBound(_ member: Element) -> Index {
+      ___index(__tree_.upper_bound(member).sealed)
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func equalRange(_ element: Element) -> (
+      lower: Index, upper: Index
+    ) {
+      let (lower, upper) = __tree_.__equal_range_multi(element)
+      return (___index(lower.sealed), ___index(upper.sealed))
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public func index(before i: Index) -> Index {
+      __tree_.__purified_(i)
+        .flatMap { ___tree_prev_iter($0.pointer) }
+        .flatMap { $0.sealed.band(__tree_.tied) }
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    public func index(after i: Index) -> Index {
+      __tree_.__purified_(i)
+        .flatMap { ___tree_next_iter($0.pointer) }
+        .flatMap { $0.sealed.band(__tree_.tied) }
+    }
+
+    /// - Complexity: O(`distance`)
+    @inlinable
+    public func index(_ i: Index, offsetBy distance: Int)
+      -> Index
+    {
+      __tree_.__purified_(i)
+        .flatMap { ___tree_adv_iter($0.pointer, distance) }
+        .flatMap { $0.sealed.band(__tree_.tied) }
+    }
+
+    /// - Complexity: O(`distance`)
+    @inlinable
+    public func index(
+      _ i: Index, offsetBy distance: Int, limitedBy limit: Index
+    )
+      -> Index?
+    {
+      var i = i
+      let result = formIndex(&i, offsetBy: distance, limitedBy: limit)
+      return result ? i : nil
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(before i: inout Index) {
+      i = index(before: i)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(after i: inout Index) {
+      i = index(after: i)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func formIndex(_ i: inout Index, offsetBy distance: Int) {
+      i = index(i, offsetBy: distance)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    @inline(__always)
+    public func formIndex(
+      _ i: inout Index,
+      offsetBy distance: Int,
+      limitedBy limit: Index
+    )
+      -> Bool
+    {
+      guard let ___i = __tree_.__purified_(i).pointer
+      else { return false }
+
+      let __l = __tree_.__purified_(limit).map(\.pointer)
+
+      return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
+        i = $0.flatMap { $0.sealed.band(__tree_.tied) }
+      }
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always) get {
+        __tree_[_unsafe: __tree_.__purified_(position)]
+      }
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(_result position: Index) -> Result<Element, SealError> {
+      __tree_.__purified_(position)
+        .map { $0.pointer.__value_().pointee }
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// Indexがsubscriptやremoveで利用可能か判別します
     ///
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
-    where R.Bound == Index {
-      _isValid(bounds)
+    public func isValid(index: Index) -> Bool {
+      __tree_.__purified_(index).exists
     }
-  #endif
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func reversed() -> Tree._PayloadValues.Reversed {
-    _reversed()
   }
+#endif
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var indices: Indices {
-    _indices
-  }
+extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
@@ -719,7 +784,7 @@ extension RedBlackTreeMultiSet {
   public func elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (_PayloadValue, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
-    try _elementsEqual(other, by: areEquivalent)
+    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -729,7 +794,7 @@ extension RedBlackTreeMultiSet {
   public func lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (_PayloadValue, _PayloadValue) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, _PayloadValue == OtherSequence.Element {
-    try _lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
   }
 }
 
@@ -741,7 +806,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    _elementsEqual(other, by: ==)
+    elementsEqual(other, by: ==)
   }
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -750,22 +815,8 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
-    _lexicographicallyPrecedes(other, by: <)
+    lexicographicallyPrecedes(other, by: <)
   }
-}
-
-// MARK: - SubSequence: Sequence
-
-extension RedBlackTreeMultiSet {
-
-  public typealias SubSequence = RedBlackTreeSliceV2<Self>.KeyOnly
-}
-
-// MARK: - Index Range
-
-extension RedBlackTreeMultiSet {
-
-  public typealias Indices = Tree.Indices
 }
 
 // MARK: - Protocol Conformance
@@ -847,7 +898,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    _isIdentical(to: other)
+    __tree_._isIdentical(to: other.__tree_)
   }
 }
 

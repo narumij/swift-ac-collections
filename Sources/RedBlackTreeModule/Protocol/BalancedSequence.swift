@@ -87,7 +87,7 @@ public protocol BalancedCollection: BalancedSequence {
   // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
 
   mutating func erase(_: Index) -> Index
-  mutating func erase(_: IndexRange)
+  mutating func erase(_: IndexRange) -> Index
   mutating func erase(_: IndexRange, where: (Element) throws -> Bool) rethrows
 
   mutating func erase(_: Bound) -> Element?

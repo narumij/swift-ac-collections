@@ -56,10 +56,10 @@ import XCTest
       }
       XCTAssertEqual(tree.count, 0)
       #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
+        XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
       #else
-//      XCTAssertEqual(tree._copyCount, 0) // 強強度CoWの廃止により、コピー回数は増えない。
-      XCTAssertEqual(tree._copyCount, 1) // 廃止過程なので、まだコピーされる
+        //      XCTAssertEqual(tree._copyCount, 0) // 強強度CoWの廃止により、コピー回数は増えない。
+        XCTAssertEqual(tree._copyCount, 1)  // 廃止過程なので、まだコピーされる
       #endif
     }
 
@@ -114,7 +114,11 @@ import XCTest
         if let lo = xy[1]?.lowerBound(i * N),
           let hi = xy[1]?.upperBound(i * N + N)
         {
-          xy[1]?.removeSubrange(lo..<hi)
+          #if COMPATIBLE_ATCODER_2025
+            xy[1]?.removeSubrange(lo..<hi)
+          #else
+            xy[1]?.removeAll(in: lo..<hi)
+          #endif
         }
       }
       XCTAssertEqual(xy[1]!.count, 0)

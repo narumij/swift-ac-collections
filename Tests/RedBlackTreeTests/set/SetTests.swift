@@ -935,11 +935,11 @@ final class SetTests: RedBlackTreeTestCase {
     func testPopMin() {
       do {
         var d = RedBlackTreeSet<Int>()
-        XCTAssertNil(d.popMin())
+        XCTAssertNil(d.popFirst())
       }
       do {
         var d: RedBlackTreeSet<Int> = [1]
-        XCTAssertEqual(d.popMin(), 1)
+        XCTAssertEqual(d.popFirst(), 1)
       }
     }
   #endif

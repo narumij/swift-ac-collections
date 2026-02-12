@@ -10,7 +10,7 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
       let popped = set.popFirst()
       XCTAssertNil(popped, "空セットの場合、popFirst() は nil を返すこと")
     #else
-      let popped = set.popMin()
+      let popped = set.popFirst()
       XCTAssertNil(popped, "空セットの場合、popMin() は nil を返すこと")
     #endif
   }
@@ -22,7 +22,7 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
       let popped = set.popFirst()
       XCTAssertNotNil(popped, "空でないセットでは popFirst() が要素を返すこと")
     #else
-      let popped = set.popMin()
+      let popped = set.popFirst()
       XCTAssertNotNil(popped, "空でないセットでは popMin() が要素を返すこと")
     #endif
     XCTAssertTrue([1, 2, 3].contains(popped!), "取り出した要素が元のセット内の要素であること")

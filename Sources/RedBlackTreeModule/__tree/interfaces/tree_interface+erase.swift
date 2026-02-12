@@ -23,10 +23,14 @@ protocol EraseInterface: _NodePtrType {
 
 @usableFromInline
 protocol EraseUniqueInteface: _KeyType {
+  // llvmにも同じものがいるので、3本アンスコは間違い
+  // こっちはまだ戻りが違うのでわかる
   func ___erase_unique(_ __k: _Key) -> Bool
 }
 
 @usableFromInline
 protocol EraseMultiInteface: _KeyType {
+  // llvmにも同じものがいるので、3本アンスコは間違い
+  // 特にこっち。なんで3本にしたのか謎
   func ___erase_multi(_ __k: _Key) -> Int
 }

@@ -135,7 +135,7 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
 #if COMPATIBLE_ATCODER_2025
     XCTAssertEqual(s.popFirst(), 1)
 #else
-    XCTAssertEqual(s.popMin(), 1)
+    XCTAssertEqual(s.popFirst(), 1)
 #endif
     XCTAssertEqual(s.sorted(), [2, 3])
 

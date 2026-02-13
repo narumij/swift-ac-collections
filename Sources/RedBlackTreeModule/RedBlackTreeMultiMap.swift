@@ -580,16 +580,18 @@ extension RedBlackTreeMultiMap {
   }
 }
 
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(`count`)
+  @inlinable
+  @inline(__always)
+  public func sorted() -> [Element] {
+    __tree_.___copy_all_to_array(transform: Base.__element_)
+  }
+}
+
 #if !COMPATIBLE_ATCODER_2025
-
   extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(`count`)
-    @inlinable
-    @inline(__always)
-    public func sorted() -> [Element] {
-      __tree_.___copy_all_to_array(transform: Base.__element_)
-    }
 
     /// - Complexity: O(`count`)
     @inlinable

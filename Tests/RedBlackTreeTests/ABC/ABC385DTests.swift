@@ -36,7 +36,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
         switch c {
         case "U":
           let new_y = y + d
-          xy[x]?.sequence(from: y, through: new_y).forEach { i, v in
+          xy[x]?.elements(in: y...new_y).forEach { i, v in
             ans += 1
             yx[v]?.remove(x)
             xy[x]?.remove(at: i)
@@ -44,7 +44,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
           y = new_y
         case "D":
           let new_y = y - d
-          xy[x]?.sequence(from: new_y, through: y).forEach { i, v in
+          xy[x]?.elements(in: new_y...y).forEach { i, v in
             ans += 1
             yx[v]?.remove(x)
             xy[x]?.remove(at: i)
@@ -52,7 +52,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
           y = new_y
         case "L":
           let new_x = x - d
-          yx[y]?.sequence(from: new_x, through: x).forEach { i, v in
+          yx[y]?.elements(in: new_x...x).forEach { i, v in
             ans += 1
             xy[v]?.remove(y)
             yx[y]?.remove(at: i)
@@ -60,7 +60,7 @@ final class ABC385DTests: RedBlackTreeTestCase {
           x = new_x
         case "R":
           let new_x = x + d
-          yx[y]?.sequence(from: x, through: new_x).forEach { i, v in
+          yx[y]?.elements(in: x...new_x).forEach { i, v in
             ans += 1
             xy[v]?.remove(y)
             yx[y]?.remove(at: i)

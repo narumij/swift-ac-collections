@@ -36,11 +36,13 @@ final class DictionaryRemoveTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict.remove(at: i).value, 1)
   }
 
-  func testRemove() throws {
-    var dict = [1: 1, 2: 2, 3: 3] as RedBlackTreeDictionary<Int, Int>
-    let i = dict.firstIndex { (k, v) in k == 1 }!
-    XCTAssertEqual(dict.remove(at: i).value, 1)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testRemove() throws {
+      var dict = [1: 1, 2: 2, 3: 3] as RedBlackTreeDictionary<Int, Int>
+      let i = dict.firstIndex { (k, v) in k == 1 }!
+      XCTAssertEqual(dict.remove(at: i).value, 1)
+    }
+  #endif
 
   func testRemoveFirst() throws {
     var members: RedBlackTreeDictionary<Int, Int> = [1: 2, 3: 4, 5: 6, 7: 8, 9: 10]

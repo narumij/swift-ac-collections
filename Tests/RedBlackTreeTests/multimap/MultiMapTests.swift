@@ -712,9 +712,11 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict.last?.key, 3)
     XCTAssertEqual(dict.last?.value, 33)
     XCTAssertEqual(dict.first(where: { $0.value == 22 })?.key, 2)
-    XCTAssertEqual(dict.firstIndex(where: { $0.value == 22 }), dict.index(after: dict.startIndex))
     XCTAssertEqual(dict.first(where: { $0.value == 44 })?.key, nil)
-    XCTAssertEqual(dict.firstIndex(where: { $0.value == 44 }), nil)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(dict.firstIndex(where: { $0.value == 22 }), dict.index(after: dict.startIndex))
+      XCTAssertEqual(dict.firstIndex(where: { $0.value == 44 }), nil)
+    #endif
     XCTAssertTrue(dict.contains(where: { $0.value / $0.key == 11 }))
     XCTAssertFalse(dict.contains(where: { $0.value / $0.key == 22 }))
     XCTAssertTrue(dict.allSatisfy({ $0.value / $0.key == 11 }))

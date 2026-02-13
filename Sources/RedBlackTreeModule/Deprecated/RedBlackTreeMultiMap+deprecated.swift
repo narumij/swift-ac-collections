@@ -1,4 +1,40 @@
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(*n*), where *n* is the number of elements.
+    @inlinable
+    public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+      for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+        let __e = Base.__element_(__tree_[_unsafe_raw: __c])
+        if try predicate(__e) {
+          return __e
+        }
+      }
+      return nil
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
+    /// - Complexity: O( `count` )
+    @inlinable
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
+      -> Index?
+    {
+      for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+        if try predicate(Base.__element_(__tree_[_unsafe_raw: __c])) {
+          return ___index(__c.sealed)
+        }
+      }
+      return nil
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap: Collection, BidirectionalCollection {}
 #endif
 

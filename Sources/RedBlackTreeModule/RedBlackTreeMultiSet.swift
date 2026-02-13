@@ -459,21 +459,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    for __c in __tree_.sequence(_sealed_start, _sealed_end) {
-      let __e = __tree_[_unsafe_raw: __c]
-      if try predicate(__e) {
-        return __e
-      }
-    }
-    return nil
-  }
-}
-
 // MARK: - Transformation
 
 #if !COMPATIBLE_ATCODER_2025
@@ -559,20 +544,6 @@ extension RedBlackTreeMultiSet {
       -> Index?
     {
       ___index_or_nil(__tree_.find(member).sealed)
-    }
-
-    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
-    /// - Complexity: O( `count` )
-    @inlinable
-    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
-      -> Index?
-    {
-      for __c in __tree_.sequence(_sealed_start, _sealed_end) {
-        if try predicate(__tree_[_unsafe_raw: __c]) {
-          return ___index(__c.sealed)
-        }
-      }
-      return nil
     }
   }
 

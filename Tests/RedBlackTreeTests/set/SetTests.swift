@@ -521,8 +521,10 @@ final class SetTests: RedBlackTreeTestCase {
       var members: RedBlackTreeSet = [1, 3, 5, 7, 9]
       XCTAssertEqual(members.firstIndex(of: 3)?.value, .init(1))
       XCTAssertEqual(members.firstIndex(of: 2), nil)
-      XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?.value, .init(2))
-      XCTAssertEqual(members.firstIndex(where: { $0 > 9 }), nil)
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?.value, .init(2))
+        XCTAssertEqual(members.firstIndex(where: { $0 > 9 }), nil)
+      #endif
       XCTAssertEqual(members.sorted(), [1, 3, 5, 7, 9])
       XCTAssertEqual(members.removeFirst(), 1)
       XCTAssertEqual(members.removeFirst(), 3)
@@ -537,9 +539,11 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict.first, 1)
     XCTAssertEqual(dict.last, 5)
     XCTAssertEqual(dict.first(where: { $0 > 4 }), 5)
-    XCTAssertEqual(dict.firstIndex(where: { $0 > 4 }), dict.index(before: dict.endIndex))
     XCTAssertEqual(dict.first(where: { $0 > 5 }), nil)
-    XCTAssertEqual(dict.firstIndex(where: { $0 > 5 }), nil)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(dict.firstIndex(where: { $0 > 4 }), dict.index(before: dict.endIndex))
+      XCTAssertEqual(dict.firstIndex(where: { $0 > 5 }), nil)
+    #endif
     XCTAssertTrue(dict.contains(where: { $0 > 3 }))
     XCTAssertFalse(dict.contains(where: { $0 > 5 }))
     XCTAssertTrue(dict.allSatisfy({ $0 > 0 }))

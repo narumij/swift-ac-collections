@@ -46,11 +46,13 @@ final class MultiMapRemoveTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict.remove(at: i).value, 1)
   }
 
-  func testRemove() throws {
-    var dict = [1: 1, 2: 2, 3: 3] as RedBlackTreeMultiMap<Int, Int>
-    let i = dict.firstIndex { kv in __key(kv) == 1 }!
-    XCTAssertEqual(dict.remove(at: i).value, 1)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testRemove() throws {
+      var dict = [1: 1, 2: 2, 3: 3] as RedBlackTreeMultiMap<Int, Int>
+      let i = dict.firstIndex { kv in __key(kv) == 1 }!
+      XCTAssertEqual(dict.remove(at: i).value, 1)
+    }
+  #endif
 
   func testRemoveFirst() throws {
     var members: RedBlackTreeMultiMap<Int, Int> = [1: 2, 3: 4, 5: 6, 7: 8, 9: 10]

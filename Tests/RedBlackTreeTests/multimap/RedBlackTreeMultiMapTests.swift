@@ -1,8 +1,8 @@
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {
-  
+
   func testInsertAndContains() {
     var map = RedBlackTreeMultiMap<String, Int>()
     map.insert(key: "a", value: 1)
@@ -56,11 +56,13 @@ final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {
       XCTFail("Expected to find key 'a'")
     }
 
-    if let idx = map.firstIndex(where: { $0.value == 2 }) {
-      XCTAssertEqual(map[idx].value, 2)
-    } else {
-      XCTFail("Expected to find value 2")
-    }
+    #if COMPATIBLE_ATCODER_2025
+      if let idx = map.firstIndex(where: { $0.value == 2 }) {
+        XCTAssertEqual(map[idx].value, 2)
+      } else {
+        XCTFail("Expected to find value 2")
+      }
+    #endif
   }
 
   func testRemoveValuesForKey() {

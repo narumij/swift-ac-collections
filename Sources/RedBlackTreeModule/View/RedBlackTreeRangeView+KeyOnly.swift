@@ -8,10 +8,10 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost
+public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost, BalancedView
 where Base: ___TreeBase & ScalarValueTrait {
 
-  @usableFromInline
+  @inlinable
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
     self.startIndex = _start.band(__tree_.tied)

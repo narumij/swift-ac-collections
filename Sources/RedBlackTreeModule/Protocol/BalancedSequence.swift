@@ -100,14 +100,14 @@ public protocol BalancedCollection: BalancedSequence {
   // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
 
   mutating func erase(_: Index) -> Index
+  mutating func erase(where: (Element) throws -> Bool) rethrows
+  
   mutating func erase(_: IndexRange) -> Index
   mutating func erase(_: IndexRange, where: (Element) throws -> Bool) rethrows
 
   mutating func erase(_: Bound) -> Element?
   mutating func erase(_: BoundRange)
   mutating func erase(_: BoundRange, where: (Element) throws -> Bool) rethrows
-
-  mutating func erase(where: (Element) throws -> Bool) rethrows
 }
 
 public protocol BalancedMultiCollection: BalancedCollection {

@@ -91,7 +91,8 @@ extension RedBlackTreeMultiSet {
   extension RedBlackTreeMultiSet {
 
     /// - Complexity: O(*n* log *n*)
-    /// ただし、ソート済みの場合、ならしO(*n*)
+    ///   ソート済み列からの逐次挿入では探索が不要となり、再平衡は償却 O(1) のため、
+    ///   全体の構築コストは O(*n*)
     @inlinable
     public init<Source>(_ sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
@@ -103,7 +104,8 @@ extension RedBlackTreeMultiSet {
     }
 
     /// - Complexity: O(*n* log *n*)
-    /// ただし、ソート済みの場合、ならしO(*n*)
+    ///   ソート済み列からの逐次挿入では探索が不要となり、再平衡は償却 O(1) のため、
+    ///   全体の構築コストは O(*n*)
     @inlinable
     public init<Source>(_ collection: __owned Source)
     where Element == Source.Element, Source: Collection {

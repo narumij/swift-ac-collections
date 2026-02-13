@@ -113,14 +113,11 @@ extension RedBlackTreeMultiMap {
 }
 
 #if !COMPATIBLE_ATCODER_2025
-
-  // MARK: - Init naive
-
   extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(*n* log *n*)
-    ///
-    /// 省メモリでの初期化
+    ///   ソート済み列からの逐次挿入では探索が不要となり、再平衡は償却 O(1) のため、
+    ///   全体の構築コストは O(*n*)
     @inlinable
     public init<S>(multiKeysWithValues keysAndValues: __owned S)
     where S: Sequence, S.Element == (Key, Value) {
@@ -133,8 +130,8 @@ extension RedBlackTreeMultiMap {
     }
 
     /// - Complexity: O(*n* log *n*)
-    ///
-    /// 省メモリでの初期化
+    ///   ソート済み列からの逐次挿入では探索が不要となり、再平衡は償却 O(1) のため、
+    ///   全体の構築コストは O(*n*)
     @inlinable
     public init<S>(multiKeysWithValues keysAndValues: __owned S)
     where S: Collection, S.Element == (Key, Value) {

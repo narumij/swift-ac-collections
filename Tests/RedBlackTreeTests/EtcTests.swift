@@ -1229,4 +1229,10 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertNotNil(a.index(a.lowerBound(10), offsetBy: 10, limitedBy: a.lowerBound(20)))
     XCTAssertNil(a.index(a.lowerBound(10), offsetBy: 11, limitedBy: a.lowerBound(20)))
   }
+  
+  func testDict() throws {
+    var d = [Int:Int]()
+    XCTAssertEqual(d[0, default: -1], -1)
+    XCTAssertEqual(d[0], nil)
+  }
 }

@@ -1,3 +1,49 @@
+// MARK: - Range Accessing Keys and Values
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public subscript(bounds: Range<Index>) -> SubSequence {
+      return .init(
+        tree: __tree_,
+        start: __tree_.__purified_(bounds.lowerBound),
+        end: __tree_.__purified_(bounds.upperBound))
+    }
+  }
+#endif
+
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Removes the specified subrange of elements from the collection.
+    ///
+    /// - Important: 削除後は、subrangeのインデックスが無効になります。
+    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
+    ///     range must be valid indices of the collection.
+    /// - Returns: The key-value pair that correspond to `index`.
+    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
+    @inlinable
+    public mutating func removeSubrange<R: RangeExpression>(
+      _ bounds: R
+    ) where R.Bound == Index {
+
+      let bounds = bounds.relative(to: self)
+      __tree_.ensureUnique()
+      ___remove(
+        from: __tree_.__purified_(bounds.lowerBound).pointer!,
+        to: __tree_.__purified_(bounds.upperBound).pointer!)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary: Collection, BidirectionalCollection {}
+#endif
+
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 

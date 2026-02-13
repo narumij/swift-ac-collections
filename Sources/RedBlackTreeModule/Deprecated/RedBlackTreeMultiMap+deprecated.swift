@@ -2,6 +2,23 @@
   extension RedBlackTreeMultiMap: Collection, BidirectionalCollection {}
 #endif
 
+// MARK: - Range Accessing Keys and Values
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public subscript(bounds: Range<Index>) -> SubSequence {
+      return .init(
+        tree: __tree_,
+        start: __tree_.__purified_(bounds.lowerBound),
+        end: __tree_.__purified_(bounds.upperBound))
+    }
+  }
+#endif
+
 #if COMPATIBLE_ATCODER_2025
 
   // MARK: Finding Elements
@@ -380,6 +397,19 @@
       let lower = __tree_.lower_bound(keyRange.lowerBound)
       let upper = __tree_.upper_bound(keyRange.upperBound)
       ___remove(from: lower, to: upper)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @inline(__always)
+    public subscript(key: Key) -> SubSequence {
+      let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
+      return .init(tree: __tree_, start: lo.sealed, end: hi.sealed)
     }
   }
 #endif

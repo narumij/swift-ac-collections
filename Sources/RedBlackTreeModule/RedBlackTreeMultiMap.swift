@@ -230,23 +230,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: - Range Accessing Keys and Values
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public subscript(bounds: Range<Index>) -> SubSequence {
-      return .init(
-        tree: __tree_,
-        start: __tree_.__purified_(bounds.lowerBound),
-        end: __tree_.__purified_(bounds.upperBound))
-    }
-  }
-#endif
-
 // MARK: - Insert
 
 extension RedBlackTreeMultiMap {
@@ -847,17 +830,11 @@ extension RedBlackTreeMultiMap {
 
 // MARK: - SubSequence
 
-extension RedBlackTreeMultiMap {
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
 
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(log *n*)
-    @inlinable
-    @inline(__always)
-    public subscript(key: Key) -> SubSequence {
-      let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-      return .init(tree: __tree_, start: lo.sealed, end: hi.sealed)
-    }
-  #else
+    // TODO: Viewを返すよう変更する検討
+
     //  /// - Complexity: O(log *n*)
     //  @inlinable
     //  @inline(__always)
@@ -872,8 +849,8 @@ extension RedBlackTreeMultiMap {
       let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
       return .init(start: lo.sealed, end: hi.sealed, tie: __tree_.tied)
     }
-  #endif
-}
+  }
+#endif
 
 // MARK: - ExpressibleByDictionaryLiteral
 

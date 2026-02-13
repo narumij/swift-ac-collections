@@ -73,7 +73,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     //      s.remove(at: s.endIndex)
   }
 
-  #if COMPATIBLE_ATCODER_2025
+  #if COMPATIBLE_ATCODER_2025 && !USE_SIMPLE_COPY_ON_WRITE
     func testSmokeRemove0() throws {
       var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
       XCTAssertEqual(s + [], (0..<2_000).flatMap { [$0, $0] })
@@ -94,12 +94,14 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testSmokeRemove2() throws {
-    var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
-    for i in s.elements(in: 0..<10_000) + [] {
-      s.removeAll(i)
+  #if !USE_SIMPLE_COPY_ON_WRITE
+    func testSmokeRemove2() throws {
+      var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
+      for i in s.elements(in: 0..<10_000) + [] {
+        s.removeAll(i)
+      }
     }
-  }
+  #endif
 
   func testSmokeRemove00() throws {
     throw XCTSkip("いままでまぐれで通っていたんだと思う。")

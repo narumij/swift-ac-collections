@@ -392,10 +392,12 @@ final class MultisetTests: RedBlackTreeTestCase {
         set.insert(i)
         XCTAssertTrue(set.___tree_invariant())
       }
-      for i in set {
-        set.removeAll(i)
-        XCTAssertTrue(set.___tree_invariant())
-      }
+      #if !USE_SIMPLE_COPY_ON_WRITE
+        for i in set {
+          set.removeAll(i)
+          XCTAssertTrue(set.___tree_invariant())
+        }
+      #endif
     }
 
     func testRandom2() throws {
@@ -429,11 +431,13 @@ final class MultisetTests: RedBlackTreeTestCase {
       #if AC_COLLECTIONS_INTERNAL_CHECKS
         print("set._copyCount", set._copyCount)
       #endif
-      for i in set[set.startIndex..<set.endIndex] {
-        // erase multiなので、CoWなしだと、ポインタが破壊される
-        set.removeAll(i)
-        XCTAssertTrue(set.___tree_invariant())
-      }
+      #if !USE_SIMPLE_COPY_ON_WRITE
+        for i in set[set.startIndex..<set.endIndex] {
+          // erase multiなので、CoWなしだと、ポインタが破壊される
+          set.removeAll(i)
+          XCTAssertTrue(set.___tree_invariant())
+        }
+      #endif
     }
   #endif
 

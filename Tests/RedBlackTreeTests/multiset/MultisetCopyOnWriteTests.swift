@@ -55,11 +55,11 @@ import XCTest
         tree.removeAll(v)  // strong ensure unique
       }
       XCTAssertEqual(tree.count, 0)
-      #if COMPATIBLE_ATCODER_2025
+      #if !USE_SIMPLE_COPY_ON_WRITE
+        // TODO: 再度検討
         XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
       #else
-        //      XCTAssertEqual(tree._copyCount, 0) // 強強度CoWの廃止により、コピー回数は増えない。
-        XCTAssertEqual(tree._copyCount, 1)  // 廃止過程なので、まだコピーされる
+        XCTAssertEqual(tree._copyCount, 0)  // 強強度CoWの廃止により、コピー回数は増えない。
       #endif
     }
 

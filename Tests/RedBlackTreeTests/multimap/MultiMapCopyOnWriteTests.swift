@@ -68,7 +68,11 @@ import XCTest
         tree.removeFirst(forKey: v.key)  // strong ensure unique
       }
       XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
+      #if USE_SIMPLE_COPY_ON_WRITE
+        XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
+      #else
+        XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
+      #endif
     }
 
     func testSet3_2() throws {
@@ -122,7 +126,11 @@ import XCTest
         tree.removeAll(forKey: v.key)
       }
       XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
+      #if USE_SIMPLE_COPY_ON_WRITE
+        XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
+      #else
+        XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
+      #endif
     }
 
     func testSet8() throws {

@@ -18,6 +18,8 @@ var defines: [String] = [
   // "ALLOCATION_DRILL" // リリース時はオフ
 
   //  "USE_C_MALLOC",
+  
+  "USE_SIMPLE_COPY_ON_WRITE",
 
   //  "DEATH_TEST",
   //  "BENCHMARK",

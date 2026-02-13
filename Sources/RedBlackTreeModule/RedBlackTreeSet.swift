@@ -175,7 +175,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase {}
 #else
-  extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase__ {}
+  extension RedBlackTreeSet: _RedBlackTreeKeyOnly {}
 #endif
 
 extension RedBlackTreeSet: CompareUniqueTrait {}

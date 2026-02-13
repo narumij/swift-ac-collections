@@ -86,7 +86,7 @@ extension RedBlackTreeMultiMap {
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
 #else
-  extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase__ {}
+  extension RedBlackTreeMultiMap: _RedBlackTreeKeyValues {}
 #endif
 //extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
 

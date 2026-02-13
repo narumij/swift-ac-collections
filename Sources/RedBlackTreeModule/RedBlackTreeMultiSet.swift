@@ -62,7 +62,7 @@ extension RedBlackTreeMultiSet {
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase {}
 #else
-  extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase__ {}
+  extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnly {}
 #endif
 
 extension RedBlackTreeMultiSet: CompareMultiTrait {}

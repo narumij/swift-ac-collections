@@ -82,7 +82,7 @@ extension RedBlackTreeDictionary {
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase {}
 #else
-  extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase__ {}
+  extension RedBlackTreeDictionary: _RedBlackTreeKeyValues {}
 #endif
 
 extension RedBlackTreeDictionary: CompareUniqueTrait {}

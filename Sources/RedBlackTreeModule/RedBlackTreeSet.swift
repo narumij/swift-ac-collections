@@ -839,6 +839,16 @@ extension RedBlackTreeSet {
 // MARK: -
 
 #if !COMPATIBLE_ATCODER_2025
+
+  extension RedBlackTreeSet {
+
+    @discardableResult
+    @inlinable @inline(__always)
+    public mutating func erase(_ ptr: Index) -> Index {
+      ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
+    }
+  }
+
   extension RedBlackTreeSet {
 
     @inlinable

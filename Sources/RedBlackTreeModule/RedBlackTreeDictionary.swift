@@ -508,10 +508,16 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first(where: predicate)
+    for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+      let __e = Base.__element_(__tree_[_unsafe_raw: __c])
+      if try predicate(__e) {
+        return __e
+      }
+    }
+    return nil
   }
 }
 
@@ -564,18 +570,26 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public func makeIterator() -> Tree._KeyValues {
-    _makeIterator()
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
   }
 }
 
 #if !COMPATIBLE_ATCODER_2025
+
   extension RedBlackTreeDictionary {
 
-    /// - Complexity: O(*n*)
+    /// - Complexity: O(`count`)
     @inlinable
     @inline(__always)
     public func sorted() -> [Element] {
-      _sorted()
+      __tree_.___copy_all_to_array(transform: Base.__element_)
+    }
+
+    /// - Complexity: O(`count`)
+    @inlinable
+    @inline(__always)
+    public func reversed() -> [Element] {
+      __tree_.___rev_copy_all_to_array(transform: Base.__element_)
     }
   }
 #endif
@@ -589,14 +603,14 @@ extension RedBlackTreeDictionary {
     @inlinable
     @inline(__always)
     public var keys: Keys {
-      _keys()
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var values: Values {
-      _values()
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
     }
   }
 #endif
@@ -953,7 +967,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    _isIdentical(to: other)
+    __tree_._isIdentical(to: other.__tree_)
   }
 }
 

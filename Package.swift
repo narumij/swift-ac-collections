@@ -19,7 +19,7 @@ var defines: [String] = [
 
   //  "USE_C_MALLOC",
 
-  "USE_SIMPLE_COPY_ON_WRITE",
+//  "USE_SIMPLE_COPY_ON_WRITE",
 
   //  "DEATH_TEST",
   //  "BENCHMARK",

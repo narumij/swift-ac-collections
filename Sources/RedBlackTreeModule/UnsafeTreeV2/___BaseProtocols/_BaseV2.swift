@@ -158,7 +158,6 @@ protocol _RedBlackTreeKeyValuesBase__:
     & _MapBridge
     & _CompareV2
     & _SequenceV2
-    & ___UnsafeKeyValueSequenceV2__
 {}
 
 // MARK: -

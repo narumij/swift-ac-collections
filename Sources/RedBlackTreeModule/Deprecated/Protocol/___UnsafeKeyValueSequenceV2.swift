@@ -32,16 +32,6 @@ where
 extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
-  @inline(__always)
-  internal func ___value_for(_ __k: _Key) -> _PayloadValue? {
-    let __ptr = __tree_.find(__k)
-    return __ptr.___is_null_or_end ? nil : __tree_[_unsafe_raw: __ptr]
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2__ {
-
-  @inlinable
   internal func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
     try ___first { try predicate(Base.__element_($0)) }.map(Base.__element_)
   }
@@ -92,27 +82,27 @@ extension ___UnsafeKeyValueSequenceV2__ {
   }
 }
 
-extension ___UnsafeKeyValueSequenceV2__ {
-
-  @inlinable
-  public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
-    -> RedBlackTreeSliceV2<Base>.KeyValue
-  {
-    let (lower, upper) = rawRange.relative(to: __tree_)
-    guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-      fatalError(.invalidIndex)
-    }
-    return .init(tree: __tree_, start: lower, end: upper)
-  }
-
-  @inlinable
-  public func ___unchecked_subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
-    -> RedBlackTreeSliceV2<Base>.KeyValue
-  {
-    let (lower, upper) = rawRange.relative(to: __tree_)
-    return .init(tree: __tree_, start: lower, end: upper)
-  }
-}
+//extension ___UnsafeKeyValueSequenceV2__ {
+//
+//  @inlinable
+//  public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
+//    -> RedBlackTreeSliceV2<Base>.KeyValue
+//  {
+//    let (lower, upper) = rawRange.relative(to: __tree_)
+//    guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+//      fatalError(.invalidIndex)
+//    }
+//    return .init(tree: __tree_, start: lower, end: upper)
+//  }
+//
+//  @inlinable
+//  public func ___unchecked_subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
+//    -> RedBlackTreeSliceV2<Base>.KeyValue
+//  {
+//    let (lower, upper) = rawRange.relative(to: __tree_)
+//    return .init(tree: __tree_, start: lower, end: upper)
+//  }
+//}
 
 extension ___UnsafeKeyValueSequenceV2__ {
 

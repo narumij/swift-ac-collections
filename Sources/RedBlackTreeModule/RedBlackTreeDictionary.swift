@@ -109,20 +109,42 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary {
+#if !COMPATIBLE_ATCODER_2025
 
-  /// - Complexity: O(*n* log *n* + *n*)
-  @inlinable
-  public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
-  where S: Sequence, S.Element == (Key, Value) {
+  // MARK: - Init naive
 
-    self.init(
-      __tree_: .create_unique(
-        sorted: keysAndValues.sorted { $0.0 < $1.0 },
-        transform: Self.__payload_
-      ))
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(*n* log *n*)
+    ///
+    /// 省メモリでの初期化
+    @inlinable
+    public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
+    where S: Sequence, S.Element == (Key, Value) {
+      self.init(
+        __tree_:
+          .___insert_range_unique(
+            tree: .create(),
+            keysAndValues,
+            transform: Base.__payload_(_:)))
+    }
+
+    /// - Complexity: O(*n* log *n*)
+    ///
+    /// 省メモリでの初期化
+    @inlinable
+    public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
+    where S: Collection, S.Element == (Key, Value) {
+      self.init(
+        __tree_:
+          .___insert_range_unique(
+            tree:
+              .create(minimumCapacity: keysAndValues.count),
+            keysAndValues,
+            transform: Base.__payload_(_:)))
+    }
   }
-}
+#endif
 
 extension RedBlackTreeDictionary {
 
@@ -839,6 +861,27 @@ extension RedBlackTreeDictionary {
   }
 #endif
 
+// MARK: -
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      __tree_.ensureUnique()
+      let result = try __tree_.___erase_if(
+        __tree_.__begin_node_.sealed,
+        __tree_.__end_node.sealed,
+        shouldBeRemoved: { try shouldBeRemoved(Base.__element_($0)) })
+      if case .failure(let e) = result {
+        fatalError(e.localizedDescription)
+      }
+    }
+  }
+#endif
+
+// MARK: - Protocol Conformance
+
 // MARK: - ExpressibleByDictionaryLiteral
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
@@ -1003,23 +1046,6 @@ extension RedBlackTreeDictionary: Hashable where Key: Hashable, Value: Hashable 
     @inlinable
     public init(from decoder: Decoder) throws {
       self.init(__tree_: try .create(from: decoder))
-    }
-  }
-#endif
-
-#if !COMPATIBLE_ATCODER_2025
-
-  // MARK: - Init naive
-
-  extension RedBlackTreeDictionary {
-
-    /// - Complexity: O(*n* log *n*)
-    ///
-    /// 省メモリでの初期化
-    @inlinable
-    public init<Source>(naive sequence: __owned Source)
-    where Element == Source.Element, Source: Sequence {
-      self.init(__tree_: .create_unique(naive: sequence, transform: Base.__payload_(_:)))
     }
   }
 #endif

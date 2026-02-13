@@ -230,23 +230,25 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   }
 
-  func testInitNaive() throws {
-    do {
-      let dict = Target(
-        naive: [(1, 10), (1, 11), (2, 20), (2, 22)].map { keyValue($0, $1) })
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
-        XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
-      #else
-        XCTAssertEqual(dict.keys + [], [1, 1, 2, 2])
-        XCTAssertEqual(dict.values + [], [10, 11, 20, 22])
-      #endif
-      XCTAssertEqual(dict[0].map(\.value), [])
-      XCTAssertEqual(dict[1].map(\.value), [10, 11])
-      XCTAssertEqual(dict[2].map(\.value), [20, 22])
-      XCTAssertEqual(dict[3].map(\.value), [])
+  #if COMPATIBLE_ATCODER_2025
+    func testInitNaive() throws {
+      do {
+        let dict = Target(
+          naive: [(1, 10), (1, 11), (2, 20), (2, 22)].map { keyValue($0, $1) })
+        #if COMPATIBLE_ATCODER_2025
+          XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
+          XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
+        #else
+          XCTAssertEqual(dict.keys + [], [1, 1, 2, 2])
+          XCTAssertEqual(dict.values + [], [10, 11, 20, 22])
+        #endif
+        XCTAssertEqual(dict[0].map(\.value), [])
+        XCTAssertEqual(dict[1].map(\.value), [10, 11])
+        XCTAssertEqual(dict[2].map(\.value), [20, 22])
+        XCTAssertEqual(dict[3].map(\.value), [])
+      }
     }
-  }
+  #endif
 
   #if false
     func testInitGroupingBy_() throws {
@@ -1110,10 +1112,12 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   }
 
-  func testIsValidRangeSmoke() throws {
-    let a = RedBlackTreeMultiMap<Int, Int>(naive: [0, 1, 2, 3, 4, 5].map { keyValue($0, $0) })
-    XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testIsValidRangeSmoke() throws {
+      let a = RedBlackTreeMultiMap<Int, Int>(naive: [0, 1, 2, 3, 4, 5].map { keyValue($0, $0) })
+      XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+    }
+  #endif
 
   #if !COMPATIBLE_ATCODER_2025
     func testSortedReversed() throws {
@@ -1137,7 +1141,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if COMPATIBLE_ATCODER_2025
     func testInitNaive_with_Sequence() throws {
       let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
       let a = RedBlackTreeMultiMap<Int, Int>(naive: AnySequence(source))
@@ -1145,7 +1149,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if COMPATIBLE_ATCODER_2025
     func testFilter() throws {
       let s = RedBlackTreeMultiMap<Int, String>(naive: (0..<5).map { ($0, "\($0)") })
       XCTAssertEqual(s.filter { _ in true }, s)

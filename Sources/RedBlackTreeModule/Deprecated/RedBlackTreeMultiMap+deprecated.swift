@@ -1,6 +1,38 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
+    /// - Complexity: O(*n* log *n* + *n*)
+    @inlinable
+    public init<S>(multiKeysWithValues keysAndValues: __owned S)
+    where S: Sequence, S.Element == (Key, Value) {
+      self.init(
+        __tree_:
+          .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) {
+            Self.__payload_($0)
+          })
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  // MARK: - Init naive
+
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(*n* log *n*)
+    ///
+    /// 省メモリでの初期化
+    @inlinable
+    public init<Source>(naive sequence: __owned Source)
+    where Element == Source.Element, Source: Sequence {
+      self.init(__tree_: .create_multi(naive: sequence, transform: Self.__payload_))
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
     /// - Complexity: O(*n*), where *n* is the number of elements.
     @inlinable
     public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {

@@ -534,25 +534,6 @@ extension RedBlackTreeSet {
 
 // MARK: -
 
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet {
-
-    @inlinable
-    public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-      __tree_.ensureUnique()
-      let result = try __tree_.___erase_if(
-        __tree_.__begin_node_.sealed,
-        __tree_.__end_node.sealed,
-        shouldBeRemoved: shouldBeRemoved)
-      if case .failure(let e) = result {
-        fatalError(e.localizedDescription)
-      }
-    }
-  }
-#endif
-
-// MARK: -
-
 extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
@@ -855,49 +836,24 @@ extension RedBlackTreeSet {
   }
 #endif
 
-extension RedBlackTreeSet {
+// MARK: -
 
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence {
-    try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    @inlinable
+    public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      __tree_.ensureUnique()
+      let result = try __tree_.___erase_if(
+        __tree_.__begin_node_.sealed,
+        __tree_.__end_node.sealed,
+        shouldBeRemoved: shouldBeRemoved)
+      if case .failure(let e) = result {
+        fatalError(e.localizedDescription)
+      }
+    }
   }
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
-    try __tree_.lexicographicallyPrecedes(_start, _end, other, by: areInIncreasingOrder)
-  }
-}
-
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: ==)
-  }
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: <)
-  }
-}
+#endif
 
 // MARK: - Protocol Adaption
 

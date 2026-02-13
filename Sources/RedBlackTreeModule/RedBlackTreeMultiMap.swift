@@ -112,19 +112,42 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-extension RedBlackTreeMultiMap {
+#if !COMPATIBLE_ATCODER_2025
 
-  /// - Complexity: O(*n* log *n* + *n*)
-  @inlinable
-  public init<S>(multiKeysWithValues keysAndValues: __owned S)
-  where S: Sequence, S.Element == (Key, Value) {
-    self.init(
-      __tree_:
-        .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) {
-          Self.__payload_($0)
-        })
+  // MARK: - Init naive
+
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(*n* log *n*)
+    ///
+    /// 省メモリでの初期化
+    @inlinable
+    public init<S>(multiKeysWithValues keysAndValues: __owned S)
+    where S: Sequence, S.Element == (Key, Value) {
+      self.init(
+        __tree_:
+          .___insert_range_multi(
+            tree: .create(),
+            keysAndValues,
+            transform: Base.__payload_(_:)))
+    }
+
+    /// - Complexity: O(*n* log *n*)
+    ///
+    /// 省メモリでの初期化
+    @inlinable
+    public init<S>(multiKeysWithValues keysAndValues: __owned S)
+    where S: Collection, S.Element == (Key, Value) {
+      self.init(
+        __tree_:
+          .___insert_range_multi(
+            tree:
+              .create(minimumCapacity: keysAndValues.count),
+            keysAndValues,
+            transform: Base.__payload_(_:)))
+    }
   }
-}
+#endif
 
 extension RedBlackTreeMultiMap {
   // Dictionaryからぱくってきたが、割と様子見
@@ -840,6 +863,27 @@ extension RedBlackTreeMultiMap {
   }
 #endif
 
+// MARK: -
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    @inlinable
+    public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      __tree_.ensureUnique()
+      let result = try __tree_.___erase_if(
+        __tree_.__begin_node_.sealed,
+        __tree_.__end_node.sealed,
+        shouldBeRemoved: { try shouldBeRemoved(Base.__element_($0)) })
+      if case .failure(let e) = result {
+        fatalError(e.localizedDescription)
+      }
+    }
+  }
+#endif
+
+// MARK: - Protocol Conformance
+
 // MARK: - ExpressibleByDictionaryLiteral
 
 extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
@@ -997,17 +1041,3 @@ extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
     }
   }
 #endif
-
-// MARK: - Init naive
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(*n* log *n*)
-  ///
-  /// 省メモリでの初期化
-  @inlinable
-  public init<Source>(naive sequence: __owned Source)
-  where Element == Source.Element, Source: Sequence {
-    self.init(__tree_: .create_multi(naive: sequence, transform: Self.__payload_))
-  }
-}

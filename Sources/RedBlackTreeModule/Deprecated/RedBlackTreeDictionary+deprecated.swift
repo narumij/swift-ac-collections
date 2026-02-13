@@ -1,6 +1,23 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
+    /// - Complexity: O(*n* log *n* + *n*)
+    @inlinable
+    public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
+    where S: Sequence, S.Element == (Key, Value) {
+
+      self.init(
+        __tree_: .create_unique(
+          sorted: keysAndValues.sorted { $0.0 < $1.0 },
+          transform: Self.__payload_
+        ))
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
     /// - Complexity: O(*n*), where *n* is the number of elements.
     @inlinable
     public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {

@@ -79,26 +79,26 @@
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeDictionary {
-    /// キーレンジ `[start, end)` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Key, to end: Key) -> SubSequence {
-      .init(
-        __tree_: __tree_,
-        _start: __tree_.lower_bound(start).sealed,
-        _end: __tree_.lower_bound(end).sealed)
-    }
-
-    /// キーレンジ `[start, end]` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Key, through end: Key) -> SubSequence {
-      .init(
-        __tree_: __tree_,
-        _start: __tree_.lower_bound(start).sealed,
-        _end: __tree_.upper_bound(end).sealed)
-    }
-  }
-#endif
+//#if !COMPATIBLE_ATCODER_2025
+//  extension RedBlackTreeDictionary {
+//    /// キーレンジ `[start, end)` に含まれる要素のスライス
+//    /// - Complexity: O(log *n*)
+//    @inlinable
+//    public func sequence(from start: Key, to end: Key) -> SubSequence {
+//      .init(
+//        __tree_: __tree_,
+//        _start: __tree_.lower_bound(start).sealed,
+//        _end: __tree_.lower_bound(end).sealed)
+//    }
+//
+//    /// キーレンジ `[start, end]` に含まれる要素のスライス
+//    /// - Complexity: O(log *n*)
+//    @inlinable
+//    public func sequence(from start: Key, through end: Key) -> SubSequence {
+//      .init(
+//        __tree_: __tree_,
+//        _start: __tree_.lower_bound(start).sealed,
+//        _end: __tree_.upper_bound(end).sealed)
+//    }
+//  }
+//#endif

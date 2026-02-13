@@ -11,22 +11,11 @@ import RedBlackTreeModule
   }
   extension RedBlackTreeSet {
     func elements(in range: Range<Element>) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      sequence(from: range.lowerBound, to: range.upperBound)
+      self[lowerBound(range.lowerBound)..<lowerBound(range.upperBound)]
     }
 
     func elements(in range: ClosedRange<Element>) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      sequence(from: range.lowerBound, through: range.upperBound)
-    }
-  }
-#else
-  extension RedBlackTreeSet {
-    public func sequence(from start: Element, to end: Element) -> SubSequence {
-      self[lowerBound(start)..<lowerBound(end)]
-    }
-  }
-  extension RedBlackTreeSet {
-    public func sequence(from start: Element, through end: Element) -> SubSequence {
-      self[lowerBound(start)..<upperBound(end)]
+      self[lowerBound(range.lowerBound)..<upperBound(range.upperBound)]
     }
   }
 #endif
@@ -42,10 +31,10 @@ import RedBlackTreeModule
   }
   extension RedBlackTreeMultiSet {
     func elements(in range: Range<Element>) -> SubSequence {
-      sequence(from: range.lowerBound, to: range.upperBound)
+      self[lowerBound(range.lowerBound)..<lowerBound(range.upperBound)]
     }
     func elements(in range: ClosedRange<Element>) -> SubSequence {
-      sequence(from: range.lowerBound, through: range.upperBound)
+      self[lowerBound(range.lowerBound)..<upperBound(range.upperBound)]
     }
   }
 #endif
@@ -61,10 +50,10 @@ import RedBlackTreeModule
   }
   extension RedBlackTreeMultiMap {
     func elements(in range: Range<Key>) -> SubSequence {
-      sequence(from: range.lowerBound, to: range.upperBound)
+      self[lowerBound(range.lowerBound)..<lowerBound(range.upperBound)]
     }
     func elements(in range: ClosedRange<Key>) -> SubSequence {
-      sequence(from: range.lowerBound, through: range.upperBound)
+      self[lowerBound(range.lowerBound)..<upperBound(range.upperBound)]
     }
   }
 #endif
@@ -80,10 +69,10 @@ import RedBlackTreeModule
   }
   extension RedBlackTreeDictionary {
     func elements(in range: Range<Key>) -> SubSequence {
-      sequence(from: range.lowerBound, to: range.upperBound)
+      self[lowerBound(range.lowerBound)..<lowerBound(range.upperBound)]
     }
     func elements(in range: ClosedRange<Key>) -> SubSequence {
-      sequence(from: range.lowerBound, through: range.upperBound)
+      self[lowerBound(range.lowerBound)..<upperBound(range.upperBound)]
     }
   }
 #endif

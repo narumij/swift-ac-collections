@@ -74,34 +74,3 @@
     }
   }
 #endif
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiSet {
-
-    /// 値レンジ `[start, end)` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Element, to end: Element)
-      -> RedBlackTreeKeyOnlyRangeView<Base>
-    {
-      // APIはstride関数とsequence関数を参考にした
-      .init(
-        __tree_: __tree_,
-        _start: __tree_.lower_bound(start).sealed,
-        _end: __tree_.lower_bound(end).sealed)
-    }
-
-    /// 値レンジ `[start, end]` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Element, through end: Element)
-      -> RedBlackTreeKeyOnlyRangeView<Base>
-    {
-      // APIはstride関数とsequence関数を参考にした
-      .init(
-        __tree_: __tree_,
-        _start: __tree_.lower_bound(start).sealed,
-        _end: __tree_.upper_bound(end).sealed)
-    }
-  }
-#endif

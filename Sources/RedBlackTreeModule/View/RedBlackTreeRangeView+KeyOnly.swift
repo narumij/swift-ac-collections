@@ -233,32 +233,6 @@ extension RedBlackTreeKeyOnlyRangeView {
   }
 }
 
-extension RedBlackTreeKeyOnlyRangeView {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence {
-    let (_start, _end) = _raw_range
-    return try __tree_.elementsEqual(_start, _end, other, by: areEquivalent)
-  }
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  @inline(__always)
-  public func lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
-    let (_start, _end) = _raw_range
-    return try __tree_.lexicographicallyPrecedes(
-      _start, _end, other, by: areInIncreasingOrder)
-  }
-}
-
 extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the

@@ -109,25 +109,25 @@ extension RedBlackTreeKeyValueRangeView {
 
 // MARK: -
 
-//public protocol ScalarBaseInit: ___TreeBase & ScalarValueTrait {
-//  static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self
-//}
-//
-//extension RedBlackTreeKeyOnlyRangeView where Base: ScalarBaseInit {
-//  public func unranged() -> Base { .create(self) }
-//}
-//
-//extension RedBlackTreeSet: ScalarBaseInit {
-//  public static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self {
-//    .init(__tree_: view.__tree_)
-//  }
-//}
-//
-//extension RedBlackTreeMultiSet: ScalarBaseInit {
-//  public static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self {
-//    .init(__tree_: view.__tree_)
-//  }
-//}
+public protocol KeyValueBaseInit: ___TreeBase & PairValueTrait {
+  static func create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self
+}
+
+extension RedBlackTreeKeyValueRangeView where Base: KeyValueBaseInit {
+  public func unranged() -> Base { .create(self) }
+}
+
+extension RedBlackTreeDictionary: KeyValueBaseInit {
+  public static func create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self {
+    .init(__tree_: view.__tree_)
+  }
+}
+
+extension RedBlackTreeMultiMap: KeyValueBaseInit {
+  public static func create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self {
+    .init(__tree_: view.__tree_)
+  }
+}
 
 // MARK: -
 

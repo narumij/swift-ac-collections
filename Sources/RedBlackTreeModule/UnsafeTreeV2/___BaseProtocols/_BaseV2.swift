@@ -115,49 +115,24 @@ typealias _SetBridge = _PayloadValueBride & _KeyBride & _ElementBride
 @usableFromInline
 typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride & _ElementBride
 
-@usableFromInline
-protocol _RedBlackTreeKeyOnlyBase:
-  UnsafeMutableTreeRangeProtocol
-    & UnsafeIndexProtocol_tree
-    & UnsafeIndicesProtoocl
-    & UnsafeTreeRangeBaseInterface
-    & _SetBridge
-    & _CompareV2
-    & _SequenceV2
-    & ___UnsafeIndexV2
-    & ___UnsafeKeyOnlySequenceV2
-{}
-
-@usableFromInline
-protocol _RedBlackTreeKeyValuesBase:
-  UnsafeMutableTreeRangeProtocol
-    & UnsafeIndexProtocol_tree
-    & UnsafeIndicesProtoocl
-    & _MapBridge
-    & _CompareV2
-    & _SequenceV2
-    & ___UnsafeIndexV2
-    & ___UnsafeKeyValueSequenceV2
-{}
-
 // MARK: -
 
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase__:
-  UnsafeMutableTreeRangeProtocol
-    & UnsafeTreeRangeBaseInterface
+  UnsafeTreeRangeBaseInterface
     & _SetBridge
     & _CompareV2
     & _SequenceV2
+    & _RemoveV2
 {}
 
 @usableFromInline
 protocol _RedBlackTreeKeyValuesBase__:
-  UnsafeMutableTreeRangeProtocol
-    & UnsafeTreeRangeBaseInterface
+  UnsafeTreeRangeBaseInterface
     & _MapBridge
     & _CompareV2
     & _SequenceV2
+    & _RemoveV2
 {}
 
 // MARK: -

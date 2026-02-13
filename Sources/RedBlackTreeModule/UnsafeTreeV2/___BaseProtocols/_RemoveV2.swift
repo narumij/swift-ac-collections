@@ -6,9 +6,9 @@
 //
 
 @usableFromInline
-protocol UnsafeMutableTreeRangeProtocol: UnsafeMutableTreeRangeBaseInterface, _PayloadValueBride {}
+protocol _RemoveV2: UnsafeMutableTreeRangeBaseInterface, _PayloadValueBride {}
 
-extension UnsafeMutableTreeRangeProtocol {
+extension _RemoveV2 {
 
   @discardableResult
   @inlinable @inline(__always)
@@ -25,7 +25,7 @@ extension UnsafeMutableTreeRangeProtocol {
   }
 }
 
-extension UnsafeMutableTreeRangeProtocol {
+extension _RemoveV2 {
 
   @discardableResult
   @inlinable @inline(__always)

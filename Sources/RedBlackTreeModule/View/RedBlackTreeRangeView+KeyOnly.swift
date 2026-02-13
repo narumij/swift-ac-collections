@@ -113,10 +113,6 @@ public protocol ScalarBaseInit: ___TreeBase & ScalarValueTrait {
   static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self
 }
 
-extension RedBlackTreeKeyOnlyRangeView where Base: ScalarBaseInit {
-  public func unranged() -> Base { .create(self) }
-}
-
 extension RedBlackTreeSet: ScalarBaseInit {
   public static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self {
     .init(__tree_: view.__tree_)
@@ -127,6 +123,10 @@ extension RedBlackTreeMultiSet: ScalarBaseInit {
   public static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self {
     .init(__tree_: view.__tree_)
   }
+}
+
+extension RedBlackTreeKeyOnlyRangeView where Base: ScalarBaseInit {
+  public func unranged() -> Base { .create(self) }
 }
 
 // MARK: -

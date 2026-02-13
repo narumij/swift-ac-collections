@@ -24,35 +24,37 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
     try super.tearDownWithError()
   }
 
-  func testExample0() throws {
-    for i in target1.indices {
-      target1.remove(at: i)
+  #if COMPATIBLE_ATCODER_2025
+    func testExample0() throws {
+      for i in target1.indices {
+        target1.remove(at: i)
+      }
+      XCTAssertTrue(target1.isEmpty)
     }
-    XCTAssertTrue(target1.isEmpty)
-  }
 
-  func testExample1() throws {
-    target1.indices.forEach { i in
-      target1.remove(at: i)
+    func testExample1() throws {
+      target1.indices.forEach { i in
+        target1.remove(at: i)
+      }
+      XCTAssertTrue(target1.isEmpty)
     }
-    XCTAssertTrue(target1.isEmpty)
-  }
+  #endif
 
-#if DEBUG
-  func testExample___0() throws {
-    for i in target1.___node_positions() {
-      target1._unchecked_remove(at: i)
+  #if DEBUG
+    func testExample___0() throws {
+      for i in target1.___node_positions() {
+        target1._unchecked_remove(at: i)
+      }
+      XCTAssertTrue(target1.isEmpty)
     }
-    XCTAssertTrue(target1.isEmpty)
-  }
 
-  func testExample___1() throws {
-    target1.___node_positions().forEach { i in
-      target1._unchecked_remove(at: i)
+    func testExample___1() throws {
+      target1.___node_positions().forEach { i in
+        target1._unchecked_remove(at: i)
+      }
+      XCTAssertTrue(target1.isEmpty)
     }
-    XCTAssertTrue(target1.isEmpty)
-  }
-#endif
+  #endif
 
   #if false
     func testExample2() throws {
@@ -157,9 +159,9 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
   }
 
   func testRemoveFirst() throws {
-#if !USE_OLD_FIND
-    throw XCTSkip("挙動が変わるためスキップ")
-#endif
+    #if !USE_OLD_FIND
+      throw XCTSkip("挙動が変わるためスキップ")
+    #endif
     do {
       XCTAssertFalse(target1.removeFirst(forKey: 3))
       let expected = [(0, 0), (0, 1), (0, 2), (1, 5), (1, 4), (1, 3), (2, 6), (2, 7), (2, 8)]

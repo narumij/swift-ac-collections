@@ -47,12 +47,6 @@ import Foundation
 @frozen
 public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 
-  /// - Important:
-  ///  要素及びノードが削除された場合、インデックスは無効になります。
-  /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-  public
-    typealias Index = Tree.Index
-
   #if COMPATIBLE_ATCODER_2025
     public
       typealias KeyValue = (key: Key, value: Value)
@@ -89,7 +83,13 @@ extension RedBlackTreeMultiMap {
   public typealias Base = Self
 }
 
-extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
+#else
+  extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase__ {}
+#endif
+//extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
+
 extension RedBlackTreeMultiMap: CompareMultiTrait {}
 extension RedBlackTreeMultiMap: PairValueTrait {}
 extension RedBlackTreeMultiMap: _PairBasePayload_KeyProtocol_ptr {}
@@ -449,6 +449,9 @@ extension RedBlackTreeMultiMap {
     }
     return remove(at: index(before: endIndex))
   }
+}
+
+extension RedBlackTreeMultiMap {
 
   /// - Important: 削除後は、インデックスが無効になります。
   /// - Complexity: O(1)
@@ -463,30 +466,6 @@ extension RedBlackTreeMultiMap {
     return Self.__element_(_unchecked_remove(at: __p.pointer).payload)
   }
 }
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    /// Removes the specified subrange of elements from the collection.
-    ///
-    /// - Important: 削除後は、subrangeのインデックスが無効になります。
-    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
-    ///     range must be valid indices of the collection.
-    /// - Returns: The key-value pair that correspond to `index`.
-    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
-    @inlinable
-    public mutating func removeSubrange<R: RangeExpression>(
-      _ bounds: R
-    ) where R.Bound == Index {
-
-      let bounds = bounds.relative(to: self)
-      __tree_.ensureUnique()
-      ___remove(
-        from: __tree_.__purified_(bounds.lowerBound).pointer!,
-        to: __tree_.__purified_(bounds.upperBound).pointer!)
-    }
-  }
-#endif
 
 extension RedBlackTreeMultiMap {
 
@@ -564,54 +543,9 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: Finding Elements
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func lowerBound(_ p: Key) -> Index {
-    ___index_lower_bound(p)
-  }
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func upperBound(_ p: Key) -> Index {
-    ___index_upper_bound(p)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
-    ___index_equal_range(key)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func firstIndex(of key: Key) -> Index? {
-    ___first_index(of: key)
-  }
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    try ___first_index(where: predicate)
-  }
-}
-
 // MARK: - Sequence
 // MARK: - Collection
 // MARK: - BidirectionalCollection
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap: Collection, BidirectionalCollection {}
-#endif
 
 extension RedBlackTreeMultiMap: Sequence {}
 
@@ -637,17 +571,6 @@ extension RedBlackTreeMultiMap {
   }
 #endif
 
-
-extension RedBlackTreeMultiMap {
-  
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func reversed() -> Tree._KeyValues.Reversed {
-    _reversed()
-  }
-}
-
 // MARK: -
 
 extension RedBlackTreeMultiMap {
@@ -669,169 +592,258 @@ extension RedBlackTreeMultiMap {
   #endif
 }
 
+// MARK: -
 
-#if COMPATIBLE_ATCODER_2025
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// - Important:
+    ///  要素及びノードが削除された場合、インデックスは無効になります。
+    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    public typealias Index = UnsafeIndexV3
+    public typealias SubSequence = RedBlackTreeKeyValueRangeView<Base>
+  }
+
   extension RedBlackTreeMultiMap {
 
     @inlinable
-    @inline(__always)
-    public func forEach(_ body: (Element) throws -> Void) rethrows {
-      try _forEach(body)
+    func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
+      p.band(__tree_.tied)
     }
 
-    /// 特殊なforEach
+    @inlinable
+    func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
+      p.exists ? p.band(__tree_.tied) : nil
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
+    /// - Complexity: O( log `count` )
+    @inlinable
+    public func firstIndex(of key: Key)
+      -> Index?
+    {
+      ___index_or_nil(__tree_.find(key).sealed)
+    }
+
+    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
+    /// - Complexity: O( `count` )
+    @inlinable
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows
+      -> Index?
+    {
+      for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+        if try predicate(Base.__element_(__tree_[_unsafe_raw: __c])) {
+          return ___index(__c.sealed)
+        }
+      }
+      return nil
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-      try _forEach(body)
+    public var startIndex: Index { ___index(_sealed_start) }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var endIndex: Index { ___index(_sealed_end) }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @inline(__always)
+    public func distance(from start: Index, to end: Index)
+      -> Int
+    {
+      guard
+        let d = __tree_.___distance(
+          from: __tree_.__purified_(start),
+          to: __tree_.__purified_(end))
+      else { fatalError(.invalidIndex) }
+      return d
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    /// 与えられた値より小さくない最初の要素へのインデックスを返す
+    ///
+    /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
+    /// 最初の位置（`Index`）を返します。
+    ///
+    /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
+    /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
+    /// - `lowerBound(3)` は要素 `3` の位置を返します。
+    /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
+    /// - `lowerBound(10)` は `endIndex` を返します。
+    ///
+    /// - Parameter member: 二分探索で検索したい要素
+    /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func lowerBound(_ key: Key) -> Index {
+      ___index(__tree_.lower_bound(key).sealed)
+    }
+
+    /// 与えられた値よりも大きい最初の要素へのインデックスを返す
+    ///
+    /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
+    /// 最初の位置（`Index`）を返します。
+    ///
+    /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
+    /// - `upperBound(3)` は要素 `5` の位置を返します。
+    ///   （`3` より大きい値が最初に現れる場所）
+    /// - `upperBound(5)` は要素 `7` の位置を返します。
+    ///   （`5` と等しい要素は含まないため、`5` の直後）
+    /// - `upperBound(9)` は `endIndex` を返します。
+    ///
+    /// - Parameter member: 二分探索で検索したい要素
+    /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func upperBound(_ key: Key) -> Index {
+      ___index(__tree_.upper_bound(key).sealed)
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func equalRange(_ key: Key) -> (
+      lower: Index, upper: Index
+    ) {
+      let (lower, upper) = __tree_.__equal_range_multi(key)
+      return (___index(lower.sealed), ___index(upper.sealed))
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public func index(before i: Index) -> Index {
+      __tree_.__purified_(i)
+        .flatMap { ___tree_prev_iter($0.pointer) }
+        .flatMap { $0.sealed.band(__tree_.tied) }
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    public func index(after i: Index) -> Index {
+      __tree_.__purified_(i)
+        .flatMap { ___tree_next_iter($0.pointer) }
+        .flatMap { $0.sealed.band(__tree_.tied) }
+    }
+
+    /// - Complexity: O(`distance`)
+    @inlinable
+    public func index(_ i: Index, offsetBy distance: Int)
+      -> Index
+    {
+      __tree_.__purified_(i)
+        .flatMap { ___tree_adv_iter($0.pointer, distance) }
+        .flatMap { $0.sealed.band(__tree_.tied) }
+    }
+
+    /// - Complexity: O(`distance`)
+    @inlinable
+    public func index(
+      _ i: Index, offsetBy distance: Int, limitedBy limit: Index
+    )
+      -> Index?
+    {
+      var i = i
+      let result = formIndex(&i, offsetBy: distance, limitedBy: limit)
+      return result ? i : nil
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(before i: inout Index) {
+      i = index(before: i)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(after i: inout Index) {
+      i = index(after: i)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func formIndex(_ i: inout Index, offsetBy distance: Int) {
+      i = index(i, offsetBy: distance)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    @inline(__always)
+    public func formIndex(
+      _ i: inout Index,
+      offsetBy distance: Int,
+      limitedBy limit: Index
+    )
+      -> Bool
+    {
+      guard let ___i = __tree_.__purified_(i).pointer
+      else { return false }
+
+      let __l = __tree_.__purified_(limit).map(\.pointer)
+
+      return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
+        i = $0.flatMap { $0.sealed.band(__tree_.tied) }
+      }
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always) get {
+        Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
+      }
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(_result position: Index) -> Result<Element, SealError> {
+      __tree_.__purified_(position)
+        .map { $0.pointer.__value_().pointee }
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    /// Indexがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid(index: Index) -> Bool {
+      __tree_.__purified_(index).exists
     }
   }
 #endif
-
-extension RedBlackTreeMultiMap {
-  
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var startIndex: Index { _startIndex }
-  
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var endIndex: Index { _endIndex }
-}
-
-extension RedBlackTreeMultiMap {
-  
-  /// - Complexity: O(*d* + log *n*)
-  @inlinable
-  //  @inline(__always)
-  public func distance(from start: Index, to end: Index) -> Int {
-    _distance(from: start, to: end)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-  
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func index(after i: Index) -> Index {
-    _index(after: i)
-  }
-  
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func index(before i: Index) -> Index {
-    _index(before: i)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int) -> Index {
-    _index(i, offsetBy: distance)
-  }
-
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
-    _index(i, offsetBy: distance, limitedBy: limit)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-  
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(after i: inout Index) {
-    _formIndex(after: &i)
-  }
-  
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func formIndex(before i: inout Index) {
-    _formIndex(before: &i)
-  }
-  
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-    _formIndex(&i, offsetBy: distance)
-  }
-  
-  /// - Complexity: O(*d*)
-  @inlinable
-  //  @inline(__always)
-  public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-  -> Bool
-  {
-    _formIndex(&i, offsetBy: distance, limitedBy: limit)
-  }
-}
-
-extension RedBlackTreeMultiMap {
-  
-  /*
-   コメントアウトの多さはテストコードのコンパイラクラッシュに由来する。
-   */
-  
-  /// - Complexity: O(1)
-  @inlinable
-  //  public subscript(position: Index) -> Element {
-  public subscript(position: Index) -> (key: Key, value: Value) {
-    //    @inline(__always) get { ___element(self[_checked: position]) }
-    @inline(__always) get { self[_checked: position] }
-  }
-  
-  /// Indexがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid(index: Index) -> Bool {
-    _isValid(index: index)
-  }
-  
-#if COMPATIBLE_ATCODER_2025
-  /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
-  where R.Bound == Index {
-    _isValid(bounds)
-  }
-#endif
-}
-
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var indices: Indices {
-    _indices
-  }
-}
-
-extension RedBlackTreeMultiMap {
-
-  public typealias SubSequence = RedBlackTreeSliceV2<Self>.KeyValue
-}
-
-// MARK: - Index Range
-
-extension RedBlackTreeMultiMap {
-
-  public typealias Indices = Tree.Indices
-}
 
 // MARK: - SubSequence
 

@@ -16,32 +16,74 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
+
+  extension RedBlackTreeMultiMap {}
+
+  extension RedBlackTreeMultiMap {
+    public typealias Bound = RedBlackTreeBoundExpression<Key>
+    public typealias BoundRange = RedBlackTreeBoundRangeExpression<Key>
+  }
+
   extension RedBlackTreeMultiMap {
 
-    public subscript(bounds: RedBlackTreeBoundRangeExpression<Key>) -> SubSequence {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
+    /// 該当する要素を取得可能かどうかの判定結果を返す
+    @inlinable
+    public func isValid(_ bound: Bound) -> Bool {
+
+      let sealed = bound.relative(to: __tree_)
+      return sealed.isValid && !sealed.___is_end!
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    @inlinable
+    public subscript(bound: Bound) -> Element? {
+
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      return Base.__element_(__tree_[_unsafe_raw: p])
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    @inlinable
+    public mutating func erase(_ bound: Bound) -> Element? {
+
+      __tree_.ensureUnique()
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      return Base.__element_(_unchecked_remove(at: p).payload)
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    // MARK: -
+
+    @inlinable
+    public func count(_ bounds: BoundRange) -> Int? {
+
+      guard let d = distance(bounds), d >= 0 else {
+        return nil
       }
-      return .init(tree: __tree_, start: lower, end: upper)
+      return d
     }
 
-    public subscript(unchecked bounds: RedBlackTreeBoundRangeExpression<Key>) -> SubSequence {
+    @inlinable
+    public func distance(_ bounds: BoundRange) -> Int? {
+
       let (lower, upper) = bounds.relative(to: __tree_)
-      return .init(tree: __tree_, start: lower, end: upper)
+      return __tree_.___distance(from: lower, to: upper)
     }
+  }
 
-    public func indices(bounds: RedBlackTreeBoundRangeExpression<Key>)
-      -> UnsafeIndexV2Collection<Self>
-    {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
-      }
-      return .init(start: lower, end: upper, tie: __tree_.tied)
-    }
+  extension RedBlackTreeMultiMap {
 
-    public mutating func removeBounds(_ bounds: RedBlackTreeBoundRangeExpression<Key>) {
+    @inlinable
+    public mutating func removeBounds(_ bounds: BoundRange) {
+
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
@@ -50,16 +92,11 @@
       __tree_.___erase(lower.pointer!, upper.pointer!)
     }
 
-    public mutating func removeBounds(unchecked bounds: RedBlackTreeBoundRangeExpression<Key>) {
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      __tree_.___erase(lower.pointer!, upper.pointer!)
-    }
-
+    @inlinable
     public mutating func removeBounds(
-      _ bounds: RedBlackTreeBoundRangeExpression<Key>,
-      where shouldBeRemoved: (Element) throws -> Bool
+      _ bounds: BoundRange, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
+
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
@@ -68,15 +105,24 @@
       try __tree_.___erase_if(
         lower, upper, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
     }
+  }
 
-    public mutating func removeBounds(
-      unchecked bounds: RedBlackTreeBoundRangeExpression<Key>,
-      where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows {
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      try __tree_.___erase_if(
-        lower, upper, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
+  extension RedBlackTreeMultiMap {
+
+    @inlinable
+    public subscript(bounds: BoundRange) -> View {
+
+      @inline(__always) get {
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
+        return .init(__tree_: __tree_, _start: lower, _end: upper)
+      }
+      @inline(__always) _modify {
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
+        var view = RedBlackTreeKeyValueRangeView(__tree_: __tree_, _start: lower, _end: upper)
+        self = RedBlackTreeMultiMap()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeMultiMap(__tree_: view.__tree_) }
+        yield &view
+      }
     }
   }
 #endif

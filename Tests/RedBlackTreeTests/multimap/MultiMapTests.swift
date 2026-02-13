@@ -730,39 +730,41 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(d, [1: 11, 2: 22, 3: 33])
   }
 
-  func testSubsequence() throws {
-    var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    let sub = set.elements(in: 2..<4)
-    XCTAssertEqual(sub[set.lowerBound(2)].value, "b")
-    XCTAssertEqual(sub[set.lowerBound(3)].value, "c")
-    XCTAssertEqual(set.lowerBound(4), sub.endIndex)
-    XCTAssertEqual(set.upperBound(3), sub.endIndex)
-    XCTAssertEqual(sub.count, 2)
-    XCTAssertEqual(sub.map { $0.key }, [2, 3])
-    XCTAssertEqual(sub.map { $0.value }, ["b", "c"])
-    #if COMPATIBLE_ATCODER_2025
-      set.remove(contentsOf: 2..<4)
-      XCTAssertEqual(set.map { $0.key }, [1, 4, 5])
-      XCTAssertEqual(set.map { $0.value }, ["a", "d", "e"])
-    #endif
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testSubsequence() throws {
+      var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      let sub = set.elements(in: 2..<4)
+      XCTAssertEqual(sub[set.lowerBound(2)].value, "b")
+      XCTAssertEqual(sub[set.lowerBound(3)].value, "c")
+      XCTAssertEqual(set.lowerBound(4), sub.endIndex)
+      XCTAssertEqual(set.upperBound(3), sub.endIndex)
+      XCTAssertEqual(sub.count, 2)
+      XCTAssertEqual(sub.map { $0.key }, [2, 3])
+      XCTAssertEqual(sub.map { $0.value }, ["b", "c"])
+      #if COMPATIBLE_ATCODER_2025
+        set.remove(contentsOf: 2..<4)
+        XCTAssertEqual(set.map { $0.key }, [1, 4, 5])
+        XCTAssertEqual(set.map { $0.value }, ["a", "d", "e"])
+      #endif
+    }
 
-  func testSubsequence2() throws {
-    var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    let sub = set.elements(in: 2...4)
-    XCTAssertEqual(sub[set.lowerBound(2)].value, "b")
-    XCTAssertEqual(sub[set.upperBound(3)].value, "d")
-    XCTAssertEqual(set.lowerBound(5), sub.endIndex)
-    XCTAssertEqual(set.upperBound(4), sub.endIndex)
-    XCTAssertEqual(sub.count, 3)
-    XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
-    XCTAssertEqual(sub.map { $0.value }, ["b", "c", "d"])
-    #if COMPATIBLE_ATCODER_2025
-      set.remove(contentsOf: 2...4)
-      XCTAssertEqual(set.map { $0.key }, [1, 5])
-      XCTAssertEqual(set.map { $0.value }, ["a", "e"])
-    #endif
-  }
+    func testSubsequence2() throws {
+      var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      let sub = set.elements(in: 2...4)
+      XCTAssertEqual(sub[set.lowerBound(2)].value, "b")
+      XCTAssertEqual(sub[set.upperBound(3)].value, "d")
+      XCTAssertEqual(set.lowerBound(5), sub.endIndex)
+      XCTAssertEqual(set.upperBound(4), sub.endIndex)
+      XCTAssertEqual(sub.count, 3)
+      XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
+      XCTAssertEqual(sub.map { $0.value }, ["b", "c", "d"])
+      #if COMPATIBLE_ATCODER_2025
+        set.remove(contentsOf: 2...4)
+        XCTAssertEqual(set.map { $0.key }, [1, 5])
+        XCTAssertEqual(set.map { $0.value }, ["a", "e"])
+      #endif
+    }
+  #endif
 
   func testSubsequence4() throws {
     //      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
@@ -889,29 +891,31 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertEqual(i, set.startIndex)
     }
     let sub = set.elements(in: 2..<5)
-    do {
-      var i = sub.startIndex
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
-        i = sub.index(after: i)
+    #if COMPATIBLE_ATCODER_2025
+      do {
+        var i = sub.startIndex
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
+          i = sub.index(after: i)
+        }
+        XCTAssertEqual(i, sub.endIndex)
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: sub.endIndex, to: i), -j)
+          i = sub.index(before: i)
+        }
+        XCTAssertEqual(i, sub.startIndex)
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
+          sub.formIndex(after: &i)
+        }
+        XCTAssertEqual(i, sub.endIndex)
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
+          sub.formIndex(before: &i)
+        }
+        XCTAssertEqual(i, sub.startIndex)
       }
-      XCTAssertEqual(i, sub.endIndex)
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: sub.endIndex, to: i), -j)
-        i = sub.index(before: i)
-      }
-      XCTAssertEqual(i, sub.startIndex)
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
-        sub.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, sub.endIndex)
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
-        sub.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, sub.startIndex)
-    }
+    #endif
   }
 
   func testIndex000() throws {
@@ -940,94 +944,98 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertEqual(i, set.startIndex)
     }
     let sub = set.elements(in: 2..<5)
-    do {
-      var i = sub.startIndex
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
-        sub.formIndex(after: &i)
+    #if COMPATIBLE_ATCODER_2025
+      do {
+        var i = sub.startIndex
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
+          sub.formIndex(after: &i)
+        }
+        XCTAssertEqual(i, sub.endIndex)
+        for j in 0..<sub.count {
+          XCTAssertEqual(set.distance(from: sub.endIndex, to: i), -j)
+          set.formIndex(before: &i)
+        }
+        XCTAssertEqual(i, sub.startIndex)
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
+          set.formIndex(after: &i)
+        }
+        XCTAssertEqual(i, sub.endIndex)
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
+          set.formIndex(before: &i)
+        }
+        XCTAssertEqual(i, sub.startIndex)
       }
+    #endif
+  }
+
+  #if COMPATIBLE_ATCODER_2025
+    func testIndex100() throws {
+      let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
+      XCTAssertEqual(set.index(set.startIndex, offsetBy: 6), set.endIndex)
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -6), set.startIndex)
+      let sub = set.elements(in: 2..<5)
+      XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
+      XCTAssertEqual(sub.index(sub.startIndex, offsetBy: 3), sub.endIndex)
+      XCTAssertEqual(sub.index(sub.endIndex, offsetBy: -3), sub.startIndex)
+    }
+
+    func testIndex10() throws {
+      let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
+      XCTAssertNotNil(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex))
+      XCTAssertNil(set.index(set.startIndex, offsetBy: 7, limitedBy: set.endIndex))
+      XCTAssertNotNil(set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex))
+      XCTAssertNil(set.index(set.endIndex, offsetBy: -7, limitedBy: set.startIndex))
+      let sub = set.elements(in: 2..<5)
+      XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
+      XCTAssertNotNil(sub.index(sub.startIndex, offsetBy: 3, limitedBy: sub.endIndex))
+      XCTAssertNil(sub.index(sub.startIndex, offsetBy: 4, limitedBy: sub.endIndex))
+      XCTAssertNotNil(sub.index(sub.endIndex, offsetBy: -3, limitedBy: sub.startIndex))
+      XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
+    }
+
+    func testIndex11() throws {
+      let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
+      var i = set.startIndex
+      XCTAssertTrue(set.formIndex(&i, offsetBy: 6, limitedBy: set.endIndex))
+      i = set.startIndex
+      XCTAssertFalse(set.formIndex(&i, offsetBy: 7, limitedBy: set.endIndex))
+      i = set.endIndex
+      XCTAssertTrue(set.formIndex(&i, offsetBy: -6, limitedBy: set.startIndex))
+      i = set.endIndex
+      XCTAssertFalse(set.formIndex(&i, offsetBy: -7, limitedBy: set.startIndex))
+      let sub = set.elements(in: 2..<5)
+      XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
+      i = sub.startIndex
+      XCTAssertTrue(sub.formIndex(&i, offsetBy: 3, limitedBy: sub.endIndex))
+      i = sub.startIndex
+      XCTAssertFalse(sub.formIndex(&i, offsetBy: 4, limitedBy: sub.endIndex))
+      i = sub.endIndex
+      XCTAssertTrue(sub.formIndex(&i, offsetBy: -3, limitedBy: sub.startIndex))
+      i = sub.endIndex
+      XCTAssertFalse(sub.formIndex(&i, offsetBy: -4, limitedBy: sub.startIndex))
+    }
+
+    func testIndex12() throws {
+      let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
+      var i = set.startIndex
+      set.formIndex(&i, offsetBy: 6)
+      XCTAssertEqual(i, set.endIndex)
+      i = set.endIndex
+      set.formIndex(&i, offsetBy: -6)
+      XCTAssertEqual(i, set.startIndex)
+      let sub = set.elements(in: 2..<5)
+      XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
+      i = sub.startIndex
+      sub.formIndex(&i, offsetBy: 3)
       XCTAssertEqual(i, sub.endIndex)
-      for j in 0..<sub.count {
-        XCTAssertEqual(set.distance(from: sub.endIndex, to: i), -j)
-        set.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, sub.startIndex)
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
-        set.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, sub.endIndex)
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
-        set.formIndex(before: &i)
-      }
+      i = sub.endIndex
+      sub.formIndex(&i, offsetBy: -3)
       XCTAssertEqual(i, sub.startIndex)
     }
-  }
-
-  func testIndex100() throws {
-    let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
-    XCTAssertEqual(set.index(set.startIndex, offsetBy: 6), set.endIndex)
-    XCTAssertEqual(set.index(set.endIndex, offsetBy: -6), set.startIndex)
-    let sub = set.elements(in: 2..<5)
-    XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
-    XCTAssertEqual(sub.index(sub.startIndex, offsetBy: 3), sub.endIndex)
-    XCTAssertEqual(sub.index(sub.endIndex, offsetBy: -3), sub.startIndex)
-  }
-
-  func testIndex10() throws {
-    let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
-    XCTAssertNotNil(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex))
-    XCTAssertNil(set.index(set.startIndex, offsetBy: 7, limitedBy: set.endIndex))
-    XCTAssertNotNil(set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex))
-    XCTAssertNil(set.index(set.endIndex, offsetBy: -7, limitedBy: set.startIndex))
-    let sub = set.elements(in: 2..<5)
-    XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
-    XCTAssertNotNil(sub.index(sub.startIndex, offsetBy: 3, limitedBy: sub.endIndex))
-    XCTAssertNil(sub.index(sub.startIndex, offsetBy: 4, limitedBy: sub.endIndex))
-    XCTAssertNotNil(sub.index(sub.endIndex, offsetBy: -3, limitedBy: sub.startIndex))
-    XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
-  }
-
-  func testIndex11() throws {
-    let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
-    var i = set.startIndex
-    XCTAssertTrue(set.formIndex(&i, offsetBy: 6, limitedBy: set.endIndex))
-    i = set.startIndex
-    XCTAssertFalse(set.formIndex(&i, offsetBy: 7, limitedBy: set.endIndex))
-    i = set.endIndex
-    XCTAssertTrue(set.formIndex(&i, offsetBy: -6, limitedBy: set.startIndex))
-    i = set.endIndex
-    XCTAssertFalse(set.formIndex(&i, offsetBy: -7, limitedBy: set.startIndex))
-    let sub = set.elements(in: 2..<5)
-    XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
-    i = sub.startIndex
-    XCTAssertTrue(sub.formIndex(&i, offsetBy: 3, limitedBy: sub.endIndex))
-    i = sub.startIndex
-    XCTAssertFalse(sub.formIndex(&i, offsetBy: 4, limitedBy: sub.endIndex))
-    i = sub.endIndex
-    XCTAssertTrue(sub.formIndex(&i, offsetBy: -3, limitedBy: sub.startIndex))
-    i = sub.endIndex
-    XCTAssertFalse(sub.formIndex(&i, offsetBy: -4, limitedBy: sub.startIndex))
-  }
-
-  func testIndex12() throws {
-    let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
-    var i = set.startIndex
-    set.formIndex(&i, offsetBy: 6)
-    XCTAssertEqual(i, set.endIndex)
-    i = set.endIndex
-    set.formIndex(&i, offsetBy: -6)
-    XCTAssertEqual(i, set.startIndex)
-    let sub = set.elements(in: 2..<5)
-    XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
-    i = sub.startIndex
-    sub.formIndex(&i, offsetBy: 3)
-    XCTAssertEqual(i, sub.endIndex)
-    i = sub.endIndex
-    sub.formIndex(&i, offsetBy: -3)
-    XCTAssertEqual(i, sub.startIndex)
-  }
+  #endif
 
   func testRangeSubscript() throws {
     let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]

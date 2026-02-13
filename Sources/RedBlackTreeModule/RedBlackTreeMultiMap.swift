@@ -220,15 +220,42 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-extension RedBlackTreeMultiMap {
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(log *n*)
-  @inlinable
-  public func values(forKey key: Key) -> Values {
-    let (lo, hi) = __tree_.__equal_range_multi(key)
-    return .init(start: lo.sealed, end: hi.sealed, tie: __tree_.tied)
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @inline(__always)
+    public subscript(key: Key) -> View {
+      let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
+      return .init(__tree_: __tree_, _start: lo.sealed, _end: hi.sealed)
+    }
   }
-}
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func values(forKey key: Key) -> [_MappedValue] {
+      let (lo, hi) = __tree_.__equal_range_multi(key)
+      return __tree_.___copy_to_array(lo, hi, transform: Base.___mapped_value)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func values(forKey key: Key) -> Values {
+      let (lo, hi) = __tree_.__equal_range_multi(key)
+      return .init(start: lo.sealed, end: hi.sealed, tie: __tree_.tied)
+    }
+  }
+#endif
 
 // MARK: - Insert
 
@@ -809,30 +836,6 @@ extension RedBlackTreeMultiMap {
     @inline(__always)
     public func isValid(index: Index) -> Bool {
       __tree_.__purified_(index).exists
-    }
-  }
-#endif
-
-// MARK: - SubSequence
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    // TODO: Viewを返すよう変更する検討
-
-    //  /// - Complexity: O(log *n*)
-    //  @inlinable
-    //  @inline(__always)
-    //  public subscript(key: Key) -> [Value] {
-    //    let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-    //    return __tree_.___copy_to_array(lo, hi) { $0.value }
-    //  }
-    /// - Complexity: O(log *n*)
-    @inlinable
-    @inline(__always)
-    public subscript(key: Key) -> Values {
-      let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-      return .init(start: lo.sealed, end: hi.sealed, tie: __tree_.tied)
     }
   }
 #endif

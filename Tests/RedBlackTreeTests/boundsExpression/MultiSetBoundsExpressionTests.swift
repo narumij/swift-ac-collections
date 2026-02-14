@@ -64,10 +64,37 @@
       XCTAssertEqual(Array(b), [0, 2])
     }
 
+    func testSubscriptBoundsView() throws {
+      let view = a[lowerBound(0)..<upperBound(2)]
+      XCTAssertEqual(Array(view), [0, 1, 2])
+    }
+
+    func testSubscriptBoundsModifyPopFirst() throws {
+      var b = RedBlackTreeMultiSet<Int>([0, 1, 1, 2])
+      let removed = b[lowerBound(0)..<upperBound(1)].popFirst()
+      XCTAssertEqual(removed, 0)
+      XCTAssertEqual(Array(b), [1, 1, 2])
+    }
+
+    func testEqualRangeMulti() throws {
+      let view = a[equalRange(1)]
+      XCTAssertEqual(Array(view), [1])
+
+      let b = RedBlackTreeMultiSet<Int>([0, 1, 1, 2])
+      let view2 = b[equalRange(1)]
+      XCTAssertEqual(Array(view2), [1, 1])
+    }
+
     func testEraseRangeWhere() throws {
       var b = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
       b.erase(lowerBound(0)..<upperBound(4)) { $0 % 2 == 0 }
       XCTAssertEqual(Array(b), [1, 3])
+    }
+
+    func testEraesBounds() throws {
+      var b = RedBlackTreeMultiSet<Int>([0, 1, 1, 2, 3])
+      b.eraes(lowerBound(1)..<upperBound(2))
+      XCTAssertEqual(Array(b), [0, 3])
     }
   }
 #endif

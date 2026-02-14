@@ -64,6 +64,24 @@
       XCTAssertEqual(Array(b).map { $0.key }, [0, 2])
     }
 
+    func testSubscriptBoundsView() throws {
+      let view = a[lowerBound(0)..<upperBound(2)]
+      XCTAssertEqual(Array(view).map { $0.key }, [0, 1, 2])
+    }
+
+    func testSubscriptBoundsModifyPopFirst() throws {
+      var b: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d"]
+      let removed = b[lowerBound(0)..<upperBound(1)].popFirst()
+      XCTAssertEqual(removed?.key, 0)
+      XCTAssertEqual(Array(b).map { $0.key }, [1, 2, 3])
+    }
+
+    func testEraseBounds() throws {
+      var b: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+      b.erase(lowerBound(1)..<upperBound(3))
+      XCTAssertEqual(Array(b).map { $0.key }, [0, 4])
+    }
+
     func testRemoveBoundsWhere() throws {
       var b: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
       b.erase(lowerBound(0)..<upperBound(4)) { $0.key % 2 == 0 }

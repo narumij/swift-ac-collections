@@ -241,6 +241,46 @@
 
     func testLast() throws {
       XCTAssertTrue(a._isEqual(.last, end().before))
+      XCTAssertEqual(a[last()], 2)
+    }
+
+    func testCountDistanceAndEraseBound() throws {
+      var b = RedBlackTreeSet<Int>(0..<3)
+      XCTAssertEqual(b.count(lowerBound(0)..<upperBound(2)), 3)
+      XCTAssertEqual(b.distance(lowerBound(0)..<upperBound(2)), 3)
+
+      let removed = b.erase(find(1))
+      XCTAssertEqual(removed, 1)
+      XCTAssertEqual(Array(b), [0, 2])
+    }
+
+    func testLessGreaterHelpers() throws {
+      XCTAssertEqual(a[lt(1)], 0)
+      XCTAssertEqual(a[gt(1)], 2)
+      XCTAssertEqual(a[le(1)], 1)
+      XCTAssertEqual(a[ge(1)], 1)
+    }
+
+    func testBoundRangeOperators() throws {
+      let view1 = a[lowerBound(0)..<upperBound(2)]
+      XCTAssertEqual(Array(view1), [0, 1, 2])
+
+      let view2 = a[lowerBound(0)...lowerBound(1)]
+      XCTAssertEqual(Array(view2), [0, 1])
+
+      let view3 = a[..<upperBound(1)]
+      XCTAssertEqual(Array(view3), [0, 1])
+
+      let view4 = a[...upperBound(1)]
+      XCTAssertEqual(Array(view4), [0, 1, 2])
+
+      let view5 = a[lowerBound(1)...]
+      XCTAssertEqual(Array(view5), [1, 2])
+    }
+
+    func testEqualRange() throws {
+      let view = a[equalRange(1)]
+      XCTAssertEqual(Array(view), [1])
     }
   }
 #endif

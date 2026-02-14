@@ -603,19 +603,37 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var keys: Keys {
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-    }
+    #if false
+      /// - Complexity: O(1)
+      @inlinable
+      @inline(__always)
+      public var keys: Keys {
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+      }
 
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var values: Values {
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-    }
+      /// - Complexity: O(1)
+      @inlinable
+      @inline(__always)
+      public var values: Values {
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+      }
+    #else
+      // 速いし気にすること減るし、こっちのほうがいいかなって
+
+      /// - Complexity: O(1)
+      @inlinable
+      @inline(__always)
+      public var keys: [Key] {
+        __tree_.___copy_all_to_array(transform: Base.__key)
+      }
+
+      /// - Complexity: O(1)
+      @inlinable
+      @inline(__always)
+      public var values: [Value] {
+        __tree_.___copy_all_to_array(transform: Base.___mapped_value)
+      }
+    #endif
   }
 #endif
 

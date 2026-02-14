@@ -107,9 +107,11 @@ extension UnsafeTreeV2 {
   @inlinable
   internal subscript(_unsafe pointer: _SealedPtr) -> _PayloadValue {
     @inline(__always) _read {
+      precondition(pointer.exists)
       yield self[_unsafe_raw: try! pointer.get().pointer]
     }
     @inline(__always) _modify {
+      precondition(pointer.exists)
       yield &self[_unsafe_raw: try! pointer.get().pointer]
     }
   }

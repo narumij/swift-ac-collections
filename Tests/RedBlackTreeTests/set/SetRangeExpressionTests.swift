@@ -165,6 +165,7 @@
       let upper = source.index(source.startIndex, offsetBy: 6)
 
       target.erase(lower..<upper)
+      // CoW救済方針の都合、これを落とすことが出来ない
 
       XCTAssertEqual(Array(source), [0, 1, 2, 3, 4, 5, 6, 7])
       XCTAssertEqual(Array(target), [100, 101, 106, 107])

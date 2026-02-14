@@ -244,10 +244,9 @@
       XCTAssertEqual(a[last()], 2)
     }
 
-    func testCountDistanceAndEraseBound() throws {
+    func testViewCountAndEraseBound() throws {
       var b = RedBlackTreeSet<Int>(0..<3)
-      XCTAssertEqual(b.count(lowerBound(0)..<upperBound(2)), 3)
-      XCTAssertEqual(b.distance(lowerBound(0)..<upperBound(2)), 3)
+      XCTAssertEqual(b[lowerBound(0)..<upperBound(2)].count, 3)
 
       let removed = b.erase(find(1))
       XCTAssertEqual(removed, 1)

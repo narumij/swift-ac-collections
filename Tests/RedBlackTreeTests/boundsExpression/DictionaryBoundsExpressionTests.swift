@@ -51,10 +51,8 @@
       XCTAssertEqual(a[.last]?.key, 2)
     }
 
-    func testCountDistance() throws {
-      XCTAssertEqual(a.count(lowerBound(0)..<upperBound(2)), 3)
-      XCTAssertEqual(a.distance(lowerBound(0)..<upperBound(2)), 3)
-      XCTAssertEqual(a.count(lowerBound(2)..<lowerBound(1)), nil)
+    func testViewCount() throws {
+      XCTAssertEqual(a[lowerBound(0)..<upperBound(2)].count, 3)
     }
 
     func testEraseBound() throws {

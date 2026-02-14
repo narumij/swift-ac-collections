@@ -60,27 +60,6 @@
 
   extension RedBlackTreeMultiSet {
 
-    // MARK: -
-
-    @inlinable
-    public func count(_ bounds: BoundRange) -> Int? {
-
-      guard let d = distance(bounds), d >= 0 else {
-        return nil
-      }
-      return d
-    }
-
-    @inlinable
-    public func distance(_ bounds: BoundRange) -> Int? {
-
-      let (lower, upper) = bounds.relative(to: __tree_)
-      return __tree_.___distance(from: lower, to: upper)
-    }
-  }
-
-  extension RedBlackTreeMultiSet {
-
     @inlinable
     public mutating func eraes(_ bounds: BoundRange) {
 

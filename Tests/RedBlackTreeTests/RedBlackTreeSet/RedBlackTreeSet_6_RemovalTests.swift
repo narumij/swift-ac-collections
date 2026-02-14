@@ -170,6 +170,26 @@ extension RedBlackTreeSetRemoveTests {
 
 extension RedBlackTreeSetRemoveTests {
 
+  #if !COMPATIBLE_ATCODER_2025
+    /// erase(_:) が指定インデックスの要素を削除し、次のインデックスを返すこと
+    func test_erase_index_returnsNext() {
+      var set = RedBlackTreeSet([1, 2, 3])
+      let index = set.index(after: set.startIndex) // element 2
+      let nextIndex = set.erase(index)
+
+      XCTAssertEqual(set.sorted(), [1, 3])
+      XCTAssertEqual(set[nextIndex], 3)
+    }
+
+    /// erase(where:) が条件に合致する要素を削除すること
+    func test_erase_where() {
+      var set = RedBlackTreeSet([1, 2, 3, 4, 5])
+      set.erase { $0 % 2 == 0 }
+
+      XCTAssertEqual(set.sorted(), [1, 3, 5])
+    }
+  #endif
+
   /// remove後にindexが無効化されること
   func test_isValid_index_afterRemoval() {
     // 事前条件: 集合に[1, 2, 3, 4, 5]

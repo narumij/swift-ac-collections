@@ -112,6 +112,22 @@
       XCTAssertEqual(Array(set), [0, 1, 3, 5, 7])
     }
 
+    func testSubscriptModifyUnboundedPopFirst() {
+      var set = RedBlackTreeSet(0..<5)
+      let removed = set[...].popFirst()
+      XCTAssertEqual(removed, 0)
+      XCTAssertEqual(Array(set), [1, 2, 3, 4])
+    }
+
+    func testEraseRangeWhereFromSet() {
+      var set = RedBlackTreeSet(0..<8)
+      let lower = set.index(set.startIndex, offsetBy: 1)
+      let upper = set.index(set.startIndex, offsetBy: 7)
+
+      set.erase(lower..<upper) { $0 % 2 == 0 }
+      XCTAssertEqual(Array(set), [0, 1, 3, 5, 7])
+    }
+
     func testEraseUnboundedRange() {
       var set = RedBlackTreeSet(0..<3)
       set.erase(...)

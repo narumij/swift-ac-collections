@@ -629,6 +629,7 @@ extension RedBlackTreeMultiMap {
       }
     #else
       // 速いし気にすること減るし、こっちのほうがいいかなって
+      // TODO: どっちの方針にするか検討確定すること
 
       /// - Complexity: O(1)
       @inlinable

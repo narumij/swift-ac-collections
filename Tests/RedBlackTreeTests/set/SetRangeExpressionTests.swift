@@ -157,5 +157,17 @@
       set.erase(lower..<upper) { $0 % 2 == 0 }
       XCTAssertEqual(Array(set), [0, 1, 3, 5, 7])
     }
+
+    func testEraseRangeFromDifferentTreeMutatesTargetAfterCoWMatch() {
+      var source = RedBlackTreeSet(0..<8)
+      var target = RedBlackTreeSet(100..<108)
+      let lower = source.index(source.startIndex, offsetBy: 2)
+      let upper = source.index(source.startIndex, offsetBy: 6)
+
+      target.erase(lower..<upper)
+
+      XCTAssertEqual(Array(source), [0, 1, 2, 3, 4, 5, 6, 7])
+      XCTAssertEqual(Array(target), [100, 101, 106, 107])
+    }
   }
 #endif

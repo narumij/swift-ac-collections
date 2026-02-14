@@ -95,7 +95,7 @@
     @inlinable
     subscript(unchecked _start: _SealedPtr, _end: _SealedPtr) -> View {
       @inline(__always) get {
-        .init(__tree_: __tree_, _start: _start, _end: _end)
+        RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: _start, _end: _end)
       }
       @inline(__always) _modify {
         var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: _start, _end: _end)

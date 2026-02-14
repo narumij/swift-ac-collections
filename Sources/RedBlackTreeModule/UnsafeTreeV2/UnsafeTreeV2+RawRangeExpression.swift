@@ -18,12 +18,17 @@
 extension UnsafeTreeV2 {
 
   @inlinable
+  func isValidNodeRange(lower: _NodePtr, upper: _NodePtr) -> Bool {
+    lower == upper || ___ptr_comp(lower, upper)
+  }
+
+  @inlinable
   func isValidSealedRange(lower: _SealedPtr, upper: _SealedPtr) -> Bool {
 
     guard
       let lower = lower.pointer,
       let upper = upper.pointer,
-      lower == upper || ___ptr_comp(lower, upper)
+      isValidNodeRange(lower: lower, upper: upper)
     else {
       return false
     }

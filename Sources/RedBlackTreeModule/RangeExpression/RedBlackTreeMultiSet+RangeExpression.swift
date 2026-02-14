@@ -70,8 +70,8 @@
     @inlinable
     public mutating func erase(_ bounds: IndexRange) {
       __tree_.ensureUnique()
-      let (lower, upper) = unwrapLowerUpperOrFatal(bounds.relative(to: __tree_))
-      _ = ___remove(from: lower, to: upper)
+      let (lower, upper) = bounds.relative(to: __tree_)
+      _ = ___remove(from: lower.pointer!, to: upper.pointer!)
     }
 
     @inlinable

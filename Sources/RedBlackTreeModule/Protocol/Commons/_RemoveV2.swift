@@ -31,7 +31,7 @@ extension _RemoveV2 {
   @inlinable @inline(__always)
   package mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
     guard from != _end else { return __tree_.end }
-    guard __tree_.isValidSealedRange(lower: from.sealed, upper: to.sealed) else {
+    guard __tree_.isValidNodeRange(lower: from, upper: to) else {
       fatalError(.invalidIndex)
     }
     return __tree_.erase(from, to)

@@ -34,7 +34,9 @@ extension UnsafeIndexV3RangeExpression {
 
   @usableFromInline
   func relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> (_SealedPtr, _SealedPtr) {
-    rawRange.sealed.relative(to: __tree_)
+    // TODO: 木の同一性チェックが抜けていて危ない。修正すること
+    //    rawRange.sealed.relative(to: __tree_)
+    __tree_.__purified_(rawRange).relative(to: __tree_)
   }
 }
 
@@ -111,6 +113,30 @@ extension UnsafeIndexV3RangeExpression._TieWrappedRangeExpression {
       .partialRangeThrough(bound.sealed)
     case .partialRangeFrom(let bound):
       .partialRangeFrom(bound.sealed)
+    case .unboundedRange:
+      .unboundedRange
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func __purified_(_ index: UnsafeIndexV3RangeExpression._TieWrappedRangeExpression)
+    -> UnsafeTreeSealedRangeExpression
+  {
+    switch index {
+    case .range(let from, let to):
+      .range(from: __purified_(from), to: __purified_(to))
+    case .closedRange(let from, let through):
+      .closedRange(from: __purified_(from), through: __purified_(through))
+    case .partialRangeTo(let bound):
+      .partialRangeTo(__purified_(bound))
+    case .partialRangeThrough(let bound):
+      .partialRangeThrough(__purified_(bound))
+    case .partialRangeFrom(let bound):
+      .partialRangeFrom(__purified_(bound))
     case .unboundedRange:
       .unboundedRange
     }

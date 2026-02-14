@@ -1,4 +1,8 @@
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase {}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// - Complexity: O(*n* log *n* + *n*)

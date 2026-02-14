@@ -83,9 +83,7 @@ extension RedBlackTreeMultiMap {
   public typealias Base = Self
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
-#else
+#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap: _RedBlackTreeKeyValues {}
 #endif
 //extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}

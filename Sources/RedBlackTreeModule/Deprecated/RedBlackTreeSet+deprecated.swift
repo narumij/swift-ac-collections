@@ -1,4 +1,8 @@
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase {}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   // これは、お節介すぎるので削ることにする
   extension RedBlackTreeSet {
 
@@ -441,7 +445,7 @@
     public func isValid(index: Index) -> Bool {
       _isValid(index: index)
     }
-    
+
     @inlinable
     @inline(__always)
     public func isValid(_ index: Index) -> Bool {

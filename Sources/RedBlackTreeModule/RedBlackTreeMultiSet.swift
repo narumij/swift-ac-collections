@@ -59,9 +59,7 @@ extension RedBlackTreeMultiSet {
   public typealias Base = Self
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase {}
-#else
+#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnly {}
 #endif
 

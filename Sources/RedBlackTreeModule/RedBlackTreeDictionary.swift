@@ -79,9 +79,7 @@ extension RedBlackTreeDictionary {
   public typealias Base = Self
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase {}
-#else
+#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary: _RedBlackTreeKeyValues {}
 #endif
 

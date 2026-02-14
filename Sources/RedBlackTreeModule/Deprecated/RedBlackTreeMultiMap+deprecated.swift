@@ -1,4 +1,8 @@
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(*n* log *n* + *n*)

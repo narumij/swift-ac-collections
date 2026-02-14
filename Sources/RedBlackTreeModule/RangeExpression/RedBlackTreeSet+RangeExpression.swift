@@ -37,16 +37,30 @@
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> View {
-      .init(__tree_: __tree_, _start: _sealed_start, _end: _sealed_end)
+      @inline(__always) get {
+        self[unchecked: _sealed_start, _sealed_end]
+      }
+      @inline(__always) _modify {
+        yield &self[unchecked: _sealed_start, _sealed_end]
+      }
     }
 
     @inlinable
     public subscript(bounds: IndexRange) -> View {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
+      @inline(__always) get {
+        let (lower, upper) = bounds.relative(to: __tree_)
+        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        return self[unchecked: lower, upper]
       }
-      return .init(__tree_: __tree_, _start: lower, _end: upper)
+      @inline(__always) _modify {
+        let (lower, upper) = bounds.relative(to: __tree_)
+        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        yield &self[unchecked: lower, upper]
+      }
     }
 
     @inlinable
@@ -77,4 +91,21 @@
       try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
   }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    subscript(unchecked _start: _SealedPtr, _end: _SealedPtr) -> View {
+      @inline(__always) get {
+        .init(__tree_: __tree_, _start: _start, _end: _end)
+      }
+      @inline(__always) _modify {
+        var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: _start, _end: _end)
+        self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
+        yield &view
+      }
+    }
+  }
+
 #endif

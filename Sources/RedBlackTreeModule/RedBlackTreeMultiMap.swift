@@ -247,8 +247,14 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public subscript(key: Key) -> View {
-      let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-      return .init(__tree_: __tree_, _start: lo.sealed, _end: hi.sealed)
+      @inline(__always) get {
+        let (lower, upper) = ___equal_range(key)
+        return self[unchecked: lower.sealed, upper.sealed]
+      }
+      @inline(__always) _modify {
+        let (lower, upper) = ___equal_range(key)
+        yield &self[unchecked: lower.sealed, upper.sealed]
+      }
     }
   }
 #endif

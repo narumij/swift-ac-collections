@@ -114,15 +114,14 @@
 
       @inline(__always) get {
         let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
-        return .init(__tree_: __tree_, _start: lower, _end: upper)
+        return self[unchecked: lower, upper]
       }
+
       @inline(__always) _modify {
         let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
-        var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
-        self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
-        defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
-        yield &view
+        yield &self[unchecked: lower, upper]
       }
+
     }
   }
 #endif

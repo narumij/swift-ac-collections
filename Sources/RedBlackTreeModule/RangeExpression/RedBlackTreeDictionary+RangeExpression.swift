@@ -35,16 +35,30 @@
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> View {
-      .init(__tree_: __tree_, _start: _sealed_start, _end: _sealed_end)
+      @inline(__always) get {
+        self[unchecked: _sealed_start, _sealed_end]
+      }
+      @inline(__always) _modify {
+        yield &self[unchecked: _sealed_start, _sealed_end]
+      }
     }
 
     @inlinable
     public subscript(bounds: IndexRange) -> View {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
+      @inline(__always) get {
+        let (lower, upper) = bounds.relative(to: __tree_)
+        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        return self[unchecked: lower, upper]
       }
-      return .init(__tree_: __tree_, _start: lower, _end: upper)
+      @inline(__always) _modify {
+        let (lower, upper) = bounds.relative(to: __tree_)
+        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        yield &self[unchecked: lower, upper]
+      }
     }
 
     @inlinable
@@ -77,28 +91,20 @@
       }
     }
   }
-#endif
 
-//#if !COMPATIBLE_ATCODER_2025
-//  extension RedBlackTreeDictionary {
-//    /// キーレンジ `[start, end)` に含まれる要素のスライス
-//    /// - Complexity: O(log *n*)
-//    @inlinable
-//    public func sequence(from start: Key, to end: Key) -> SubSequence {
-//      .init(
-//        __tree_: __tree_,
-//        _start: __tree_.lower_bound(start).sealed,
-//        _end: __tree_.lower_bound(end).sealed)
-//    }
-//
-//    /// キーレンジ `[start, end]` に含まれる要素のスライス
-//    /// - Complexity: O(log *n*)
-//    @inlinable
-//    public func sequence(from start: Key, through end: Key) -> SubSequence {
-//      .init(
-//        __tree_: __tree_,
-//        _start: __tree_.lower_bound(start).sealed,
-//        _end: __tree_.upper_bound(end).sealed)
-//    }
-//  }
-//#endif
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    subscript(unchecked _start: _SealedPtr, _end: _SealedPtr) -> View {
+      @inline(__always) get {
+        .init(__tree_: __tree_, _start: _start, _end: _end)
+      }
+      @inline(__always) _modify {
+        var view = RedBlackTreeKeyValueRangeView(__tree_: __tree_, _start: _start, _end: _end)
+        self = RedBlackTreeDictionary()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeDictionary(__tree_: view.__tree_) }
+        yield &view
+      }
+    }
+  }
+#endif

@@ -34,8 +34,7 @@ extension UnsafeIndexV3RangeExpression {
 
   @usableFromInline
   func relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> (_SealedPtr, _SealedPtr) {
-    // TODO: 木の同一性チェックが抜けていて危ない。修正すること
-    //    rawRange.sealed.relative(to: __tree_)
+    // CoW対応があるので、同一木制限はできない
     __tree_.__purified_(rawRange).relative(to: __tree_)
   }
 }

@@ -51,5 +51,15 @@ struct RangeExpressionInvalidIndexDictionaryTests {
       dict.erase(lower..<upper) { _ in false }
     }
   }
+
+  @Test
+  func `Dictionaryでlowerがupperより大きい場合、dict.eraseがSIGSEGV以外で停止すること`() async {
+    await #expect(processExitsWith: .signal(SIGTRAP)) {
+      var dict: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+      let lower = dict.index(dict.startIndex, offsetBy: 3)
+      let upper = dict.index(dict.startIndex, offsetBy: 1)
+      dict.erase(lower..<upper)
+    }
+  }
 }
 #endif

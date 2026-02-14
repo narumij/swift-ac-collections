@@ -51,5 +51,15 @@ struct RangeExpressionInvalidIndexMultiMapTests {
       map.erase(lower..<upper) { _ in false }
     }
   }
+
+  @Test
+  func `MultiMapでlowerがupperより大きい場合、map.eraseがSIGSEGV以外で停止すること`() async {
+    await #expect(processExitsWith: .signal(SIGTRAP)) {
+      var map: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+      let lower = map.index(map.startIndex, offsetBy: 3)
+      let upper = map.index(map.startIndex, offsetBy: 1)
+      map.erase(lower..<upper)
+    }
+  }
 }
 #endif

@@ -51,5 +51,15 @@ struct RangeExpressionInvalidIndexMultiSetTests {
       set.erase(lower..<upper) { _ in false }
     }
   }
+
+  @Test
+  func `MultiSetでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること`() async {
+    await #expect(processExitsWith: .signal(SIGTRAP)) {
+      var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+      let lower = set.index(set.startIndex, offsetBy: 6)
+      let upper = set.index(set.startIndex, offsetBy: 2)
+      set.erase(lower..<upper)
+    }
+  }
 }
 #endif

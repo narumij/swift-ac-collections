@@ -30,7 +30,7 @@
     @inlinable
     public func isValid(_ bounds: IndexRange) -> Bool {
       let (l, u) = bounds.relative(to: __tree_)
-      return l.isValid && u.isValid
+      return __tree_.isValidSealedRange(lower: l, upper: u) && l.isValid && u.isValid
     }
 
     @inlinable
@@ -71,6 +71,9 @@
     public mutating func erase(_ bounds: IndexRange) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        fatalError(.invalidIndex)
+      }
       _ = ___remove(from: lower.pointer!, to: upper.pointer!)
     }
 

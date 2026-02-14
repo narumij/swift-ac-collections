@@ -125,7 +125,7 @@ extension RedBlackTreeBoundExpression {
   /// - Complexity: O(1)
   /// ただし評価時の計算量
   public var before: Self { .before(self) }
-  /// 直前の要素を得る
+  /// 直後の要素を得る
   ///
   /// 先頭及び末尾の次を越えた場合、失敗となる
   ///
@@ -213,10 +213,18 @@ public func gt<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
   .greaterThen(k)
 }
 
+public func greaterThan<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
+  .greaterThen(k)
+}
+
 public func le<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
   .lessThanOrEqual(k)
 }
 
 public func ge<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
+  .greaterThenOrEqual(k)
+}
+
+public func greaterThanOrEqual<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
   .greaterThenOrEqual(k)
 }

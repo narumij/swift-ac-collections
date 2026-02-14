@@ -91,7 +91,7 @@
 
     func testEraesBounds() throws {
       var b = RedBlackTreeMultiSet<Int>([0, 1, 1, 2, 3])
-      b.eraes(lowerBound(1)..<upperBound(2))
+      b.erase(lowerBound(1)..<upperBound(2))
       XCTAssertEqual(Array(b), [0, 3])
     }
   }

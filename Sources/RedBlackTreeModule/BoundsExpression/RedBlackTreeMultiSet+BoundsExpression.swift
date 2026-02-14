@@ -61,7 +61,7 @@
   extension RedBlackTreeMultiSet {
 
     @inlinable
-    public mutating func eraes(_ bounds: BoundRange) {
+    public mutating func erase(_ bounds: BoundRange) {
 
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)

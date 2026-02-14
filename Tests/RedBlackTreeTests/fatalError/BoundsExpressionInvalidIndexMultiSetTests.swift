@@ -13,10 +13,10 @@ import Testing
 struct BoundsExpressionInvalidIndexMultiSetTests {
 
   @Test
-  func `MultiSetでBoundRangeが不正な場合、eraesがSIGSEGV以外で停止すること`() async {
+  func `MultiSetでBoundRangeが不正な場合、eraseがSIGSEGV以外で停止すること`() async {
     await #expect(processExitsWith: .signal(SIGTRAP)) {
       var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
-      set.eraes(lowerBound(3)..<lowerBound(1))
+      set.erase(lowerBound(3)..<lowerBound(1))
     }
   }
 

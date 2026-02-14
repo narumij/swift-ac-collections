@@ -82,7 +82,7 @@
   extension RedBlackTreeMultiMap {
 
     @inlinable
-    public mutating func removeBounds(_ bounds: BoundRange) {
+    public mutating func erase(_ bounds: BoundRange) {
 
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
@@ -93,7 +93,7 @@
     }
 
     @inlinable
-    public mutating func removeBounds(
+    public mutating func erase(
       _ bounds: BoundRange, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 

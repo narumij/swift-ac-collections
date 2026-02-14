@@ -201,3 +201,27 @@ extension UnsafeTreeV2 {
       : __retrieve_(index.sealed.purified.tag).purified
   }
 }
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  internal func __purified_(_ index: _RawRangeExpression<_TieWrappedPtr>)
+    -> _RawRangeExpression<_SealedPtr>
+  {
+    switch index {
+    case .range(let from, let to):
+      .range(from: __purified_(from), to: __purified_(to))
+    case .closedRange(let from, let through):
+      .closedRange(from: __purified_(from), through: __purified_(through))
+    case .partialRangeTo(let bound):
+      .partialRangeTo(__purified_(bound))
+    case .partialRangeThrough(let bound):
+      .partialRangeThrough(__purified_(bound))
+    case .partialRangeFrom(let bound):
+      .partialRangeFrom(__purified_(bound))
+    case .unboundedRange:
+      .unboundedRange
+    }
+  }
+}

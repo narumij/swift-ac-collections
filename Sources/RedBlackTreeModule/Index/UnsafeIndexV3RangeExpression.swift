@@ -19,12 +19,12 @@
 public struct UnsafeIndexV3RangeExpression: _UnsafeNodePtrType {
 
   @usableFromInline
-  internal var rawRange: _TieWrappedRangeExpression
+  internal var range: _RawRangeExpression<_TieWrappedPtr>
 
   @inlinable
   @inline(__always)
-  internal init(rawValue: _TieWrappedRangeExpression) {
-    self.rawRange = rawValue
+  internal init(_ range: _RawRangeExpression<_TieWrappedPtr>) {
+    self.range = range
   }
 }
 
@@ -35,7 +35,7 @@ extension UnsafeIndexV3RangeExpression {
   @usableFromInline
   func relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> (_SealedPtr, _SealedPtr) {
     // CoW対応があるので、同一木制限はできない
-    __tree_.__purified_(rawRange).relative(to: __tree_)
+    __tree_.__purified_(range).relative(to: __tree_)
   }
 }
 
@@ -47,7 +47,7 @@ public func ..< (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
   -> UnsafeIndexV3RangeExpression
 {
   guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
-  return .init(rawValue: .range(from: lhs, to: rhs))
+  return .init(.range(from: lhs, to: rhs))
 }
 
 @inlinable
@@ -56,88 +56,26 @@ public func ... (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
   -> UnsafeIndexV3RangeExpression
 {
   guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
-  return .init(rawValue: .closedRange(from: lhs, through: rhs))
+  return .init(.closedRange(from: lhs, through: rhs))
 }
 
 @inlinable
 @inline(__always)
 public prefix func ..< (rhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
-  return .init(rawValue: .partialRangeTo(rhs))
+  return .init(.partialRangeTo(rhs))
 }
 
 @inlinable
 @inline(__always)
 public prefix func ... (rhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
-  return .init(rawValue: .partialRangeThrough(rhs))
+  return .init(.partialRangeThrough(rhs))
 }
 
 @inlinable
 @inline(__always)
 public postfix func ... (lhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
-  return .init(rawValue: .partialRangeFrom(lhs))
+  return .init(.partialRangeFrom(lhs))
 }
 
 // MARK: -
 
-extension UnsafeIndexV3RangeExpression {
-
-  public enum _TieWrappedRangeExpression: Equatable {
-
-    public typealias Bound = _TieWrappedPtr
-    /// `a..<b` のこと
-    case range(from: Bound, to: Bound)
-    /// `a...b` のこと
-    case closedRange(from: Bound, through: Bound)
-    /// `..<b` のこと
-    case partialRangeTo(Bound)
-    /// `...b` のこと
-    case partialRangeThrough(Bound)
-    /// `a...` のこと
-    case partialRangeFrom(Bound)
-    /// `...` のこと
-    case unboundedRange
-  }
-}
-
-extension UnsafeIndexV3RangeExpression._TieWrappedRangeExpression {
-  var sealed: UnsafeTreeSealedRangeExpression {
-    switch self {
-    case .range(let from, let to):
-      .range(from: from.sealed, to: to.sealed)
-    case .closedRange(let from, let through):
-      .closedRange(from: from.sealed, through: through.sealed)
-    case .partialRangeTo(let bound):
-      .partialRangeTo(bound.sealed)
-    case .partialRangeThrough(let bound):
-      .partialRangeThrough(bound.sealed)
-    case .partialRangeFrom(let bound):
-      .partialRangeFrom(bound.sealed)
-    case .unboundedRange:
-      .unboundedRange
-    }
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func __purified_(_ index: UnsafeIndexV3RangeExpression._TieWrappedRangeExpression)
-    -> UnsafeTreeSealedRangeExpression
-  {
-    switch index {
-    case .range(let from, let to):
-      .range(from: __purified_(from), to: __purified_(to))
-    case .closedRange(let from, let through):
-      .closedRange(from: __purified_(from), through: __purified_(through))
-    case .partialRangeTo(let bound):
-      .partialRangeTo(__purified_(bound))
-    case .partialRangeThrough(let bound):
-      .partialRangeThrough(__purified_(bound))
-    case .partialRangeFrom(let bound):
-      .partialRangeFrom(__purified_(bound))
-    case .unboundedRange:
-      .unboundedRange
-    }
-  }
-}

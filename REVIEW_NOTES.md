@@ -32,6 +32,7 @@
 ## Index / Range の注意
 - 削除で Index は無効化される。
 - isValid を使うべき箇所と、使わない前提の箇所を区別する。
+- ポインタ異常（unsealed 等）の扱いは、BoundExpression は空相当、RangeExpression は fatal が基本方針。
 
 ## レビュー観点
 - 暗黙の不変性を壊していないか。

@@ -31,5 +31,26 @@ struct RangeExpressionInvalidIndexTests {
             _ = set[lower...]
         }
     }
+  
+    @Test
+    func `RangeExpressionでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること`() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+            var set = RedBlackTreeSet<Int>(0..<10)
+            let lower = set.index(set.startIndex, offsetBy: 6)
+            let upper = set.index(set.startIndex, offsetBy: 2)
+            set[lower..<upper].erase(where: { _ in false })
+        }
+    }
+
+    @Test
+    func `RangeExpressionでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること`() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+            var set = RedBlackTreeSet<Int>(0..<10)
+            let lower = set.index(set.startIndex, offsetBy: 6)
+            let upper = set.index(set.startIndex, offsetBy: 2)
+            set.erase(lower..<upper) { _ in false }
+        }
+    }
+
 }
 #endif

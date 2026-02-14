@@ -25,13 +25,13 @@ final class RedBlackTreeSetUtilityTests: RedBlackTreeTestCase {
   func test_isValid_index_valid() {
     let set = RedBlackTreeSet([1, 2, 3])
     let index = set.startIndex
-    XCTAssertTrue(set.isValid(index: index))
+    XCTAssertTrue(set.isValid(index))
   }
 
   /// isValid(index:) が無効インデックスを正しく判定すること
   func test_isValid_index_invalid() {
     let set = RedBlackTreeSet([1, 2, 3])
     let invalidIndex = set.endIndex
-    XCTAssertFalse(set.isValid(index: invalidIndex))
+    XCTAssertFalse(set.isValid(invalidIndex))
   }
 }

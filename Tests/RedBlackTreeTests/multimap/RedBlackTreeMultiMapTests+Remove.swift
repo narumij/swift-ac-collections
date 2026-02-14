@@ -1,5 +1,5 @@
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 extension RedBlackTreeMultiMapTests {
 
@@ -24,28 +24,29 @@ extension RedBlackTreeMultiMapTests {
     var map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("c", 3), ("d", 4)]
     let start = map.lowerBound("b")
     let end = map.lowerBound("d")
-    map.removeSubrange(start..<end)  // remove b and c
     #if COMPATIBLE_ATCODER_2025
+      map.removeSubrange(start..<end)  // remove b and c
       XCTAssertEqual(map.keys() + [], ["a", "d"])
     #else
+      map.erase(start..<end)  // remove b and c
       XCTAssertEqual(map.keys + [], ["a", "d"])
     #endif
   }
 
-#if COMPATIBLE_ATCODER_2025
-  func testRemoveContentsOfRange() {
-    var map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("c", 3), ("d", 4)]
-    map.remove(contentsOf: "b"..<"d")
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(map.keys() + [], ["a", "d"])
-    #else
-      XCTAssertEqual(map.keys + [], ["a", "d"])
-    #endif
+  #if COMPATIBLE_ATCODER_2025
+    func testRemoveContentsOfRange() {
+      var map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("c", 3), ("d", 4)]
+      map.remove(contentsOf: "b"..<"d")
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertEqual(map.keys() + [], ["a", "d"])
+      #else
+        XCTAssertEqual(map.keys + [], ["a", "d"])
+      #endif
 
-    map.remove(contentsOf: "a"..."d")
-    XCTAssertTrue(map.isEmpty)
-  }
-#endif
+      map.remove(contentsOf: "a"..."d")
+      XCTAssertTrue(map.isEmpty)
+    }
+  #endif
 
   func testRemoveAtIndex() {
     var map: RedBlackTreeMultiMap = [("a", 10), ("b", 20)]

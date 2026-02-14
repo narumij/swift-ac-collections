@@ -15,11 +15,12 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: 範囲不正がfatalになるかどうかのテストを追加すること
-
-// 新形式
 #if !COMPATIBLE_ATCODER_2025
+
   extension RedBlackTreeSet {
+
+    public typealias View = RedBlackTreeKeyOnlyRangeView<Base>
+    public typealias IndexRange = UnsafeIndexV3RangeExpression
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
@@ -27,82 +28,85 @@
     }
 
     @inlinable
-    public func isValid(_ bounds: TaggedSealRangeExpression) -> Bool {
+    public func isValid(_ bounds: IndexRange) -> Bool {
       let (l, u) = bounds.relative(to: __tree_)
-      return l.isValid && u.isValid
+      return __tree_.isValidSealedRange(lower: l, upper: u) && l.isValid && u.isValid
     }
 
     @inlinable
-    public subscript(bounds: UnboundedRange) -> RedBlackTreeKeyOnlyRangeView<Base> {
-      .init(__tree_: __tree_, _start: _sealed_start, _end: _sealed_end)
+    public subscript(bounds: UnboundedRange) -> View {
+      @inline(__always) get {
+        self[unchecked: _sealed_start, _sealed_end]
+      }
+      @inline(__always) _modify {
+        yield &self[unchecked: _sealed_start, _sealed_end]
+      }
     }
-    
+
     @inlinable
-    public subscript(bounds: TaggedSealRangeExpression) -> RedBlackTreeKeyOnlyRangeView<Base> {
+    public subscript(bounds: IndexRange) -> View {
+      @inline(__always) get {
+        let (lower, upper) = bounds.relative(to: __tree_)
+        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        return self[unchecked: lower, upper]
+      }
+      @inline(__always) _modify {
+        let (lower, upper) = bounds.relative(to: __tree_)
+        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        yield &self[unchecked: lower, upper]
+      }
+    }
+
+    @inlinable
+    public mutating func erase(_ bounds: UnboundedRange) {
+      __tree_.ensureUnique()
+      _ = ___remove(from: _start, to: _end)
+    }
+
+    @inlinable
+    public mutating func erase(_ bounds: IndexRange) {
+      __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      return .init(__tree_: __tree_, _start: lower, _end: upper)
-    }
-
-    @inlinable
-    public mutating func removeAll(in bounds: UnboundedRange) {
-      __tree_.ensureUnique()
-      _ = ___remove(from: _start, to: _end)
-    }
-    
-    @inlinable
-    public mutating func removeAll(in bounds: TaggedSealRangeExpression) {
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
       _ = ___remove(from: lower.pointer!, to: upper.pointer!)
     }
 
     @inlinable
-    public mutating func removeAll(
-      in bounds: TaggedSealRangeExpression,
-      where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows {
+    public mutating func erase(
+      _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
 
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(
-        lower.pointer!, upper.pointer!,
-        shouldBeRemoved: shouldBeRemoved)
+      try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
   }
-#endif
 
-// 旧形式
-#if !COMPATIBLE_ATCODER_2025
-  // BoundExpressionにより不要になった
   extension RedBlackTreeSet {
-    /// 値レンジ `[start, end)` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func sequence(from start: Element, to end: Element)
-    -> RedBlackTreeKeyOnlyRangeView<Base> {
-      // APIはstride関数とsequence関数を参考にした
-      .init(
-        __tree_: __tree_,
-        _start: __tree_.lower_bound(start).sealed,
-        _end: __tree_.lower_bound(end).sealed)
-    }
 
-    /// 値レンジ `[start, end]` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
     @inlinable
-    public func sequence(from start: Element, through end: Element)
-    ->  RedBlackTreeKeyOnlyRangeView<Base> {
-      // APIはstride関数とsequence関数を参考にした
-      .init(
-        __tree_: __tree_,
-        _start: __tree_.lower_bound(start).sealed,
-        _end: __tree_.upper_bound(end).sealed)
+    subscript(unchecked _start: _SealedPtr, _end: _SealedPtr) -> View {
+      @inline(__always) get {
+        RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: _start, _end: _end)
+      }
+      @inline(__always) _modify {
+        var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: _start, _end: _end)
+        self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
+        yield &view
+      }
     }
   }
+
 #endif

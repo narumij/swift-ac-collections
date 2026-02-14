@@ -16,9 +16,11 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
+
   extension RedBlackTreeMultiSet {
 
-    public typealias _RangeExpression = UnsafeIndexV2RangeExpression<Self>
+    public typealias View = RedBlackTreeKeyOnlyRangeView<Base>
+    public typealias IndexRange = UnsafeIndexV3RangeExpression
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
@@ -26,48 +28,58 @@
     }
 
     @inlinable
-    public func isValid(_ bounds: _RangeExpression) -> Bool {
+    public func isValid(_ bounds: IndexRange) -> Bool {
       let (l, u) = bounds.relative(to: __tree_)
-      return l.isValid && u.isValid
+      return __tree_.isValidSealedRange(lower: l, upper: u) && l.isValid && u.isValid
     }
 
     @inlinable
-    public subscript(bounds: UnboundedRange) -> SubSequence {
-      ___subscript(.unboundedRange)
+    public subscript(bounds: UnboundedRange) -> View {
+      @inline(__always) get {
+        self[unchecked: _sealed_start, _sealed_end]
+      }
+      @inline(__always) _modify {
+        yield &self[unchecked: _sealed_start, _sealed_end]
+      }
     }
 
     @inlinable
-    public subscript(bounds: _RangeExpression) -> SubSequence {
-      ___subscript(bounds.rawRange)
+    public subscript(bounds: IndexRange) -> View {
+      @inline(__always) get {
+        let (lower, upper) = bounds.relative(to: __tree_)
+        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        return self[unchecked: lower, upper]
+      }
+      @inline(__always) _modify {
+        let (lower, upper) = bounds.relative(to: __tree_)
+        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        yield &self[unchecked: lower, upper]
+      }
     }
 
     @inlinable
-    public subscript(unchecked bounds: UnboundedRange) -> SubSequence {
-      ___unchecked_subscript(.unboundedRange)
-    }
-
-    @inlinable
-    public subscript(unchecked bounds: _RangeExpression) -> SubSequence {
-      ___unchecked_subscript(bounds.rawRange)
-    }
-
-    @inlinable
-    public mutating func removeSubrange(_ bounds: UnboundedRange) {
+    public mutating func erase(_ bounds: UnboundedRange) {
       __tree_.ensureUnique()
       _ = ___remove(from: _start, to: _end)
     }
 
     @inlinable
-    public mutating func removeSubrange(_ bounds: _RangeExpression) {
+    public mutating func erase(_ bounds: IndexRange) {
       __tree_.ensureUnique()
-      let (lower, upper) = unwrapLowerUpperOrFatal(bounds.relative(to: __tree_))
-      _ = ___remove(from: lower, to: upper)
+      let (lower, upper) = bounds.relative(to: __tree_)
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        fatalError(.invalidIndex)
+      }
+      _ = ___remove(from: lower.pointer!, to: upper.pointer!)
     }
 
     @inlinable
-    public mutating func removeSubrange(
-      _ bounds: _RangeExpression,
-      where shouldBeRemoved: (Element) throws -> Bool
+    public mutating func erase(
+      _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
       __tree_.ensureUnique()
@@ -75,9 +87,24 @@
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___checking_erase_if(
-        lower.pointer!, upper.pointer!,
-        shouldBeRemoved: shouldBeRemoved)
+      try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
   }
+
+  extension RedBlackTreeMultiSet {
+
+    @inlinable
+    subscript(unchecked _start: _SealedPtr, _end: _SealedPtr) -> View {
+      @inline(__always) get {
+        .init(__tree_: __tree_, _start: _start, _end: _end)
+      }
+      @inline(__always) _modify {
+        var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: _start, _end: _end)
+        self = RedBlackTreeMultiSet()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeMultiSet(__tree_: view.__tree_) }
+        yield &view
+      }
+    }
+  }
+
 #endif

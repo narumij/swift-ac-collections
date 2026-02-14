@@ -151,7 +151,7 @@ final class EtcTests: RedBlackTreeTestCase {
         let j = i
         i = b.index(after: i)
         b.remove(at: j)  // jはこの時点で無効になる
-        XCTAssertFalse(b.isValid(index: j))
+        XCTAssertFalse(b.isValid(j))
       }
       XCTAssertEqual(b.count, 0)
     }
@@ -161,7 +161,7 @@ final class EtcTests: RedBlackTreeTestCase {
       #if COMPATIBLE_ATCODER_2025
         b.removeSubrange(b.startIndex..<b.endIndex)  // startIndexからendIndex -1までが無効になる
       #else
-        b.removeAll(in: b.startIndex..<b.endIndex)  // startIndexからendIndex -1までが無効になる
+        b.erase(b.startIndex..<b.endIndex)  // startIndexからendIndex -1までが無効になる
       #endif
       XCTAssertEqual(b.count, 0)
     }
@@ -170,7 +170,7 @@ final class EtcTests: RedBlackTreeTestCase {
       var b: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
       var i = b.startIndex  // 都度異なる値となる
       while i != b.endIndex {  // endIndexは特殊な値なので、不変です。
-        XCTAssertTrue(b.isValid(index: i))  // 次を指しているの有効
+        XCTAssertTrue(b.isValid(i))  // 次を指しているの有効
         // extensionを書けばこのように利用可能
         i = b.erase(at: i)
       }
@@ -599,257 +599,259 @@ final class EtcTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testSubRev9() throws {
-    let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-      ("a", 0), ("b", 1), ("c", 2),
-    ])
-    do {
-      var result = [String]()
-      #if COMPATIBLE_ATCODER_2025
-        a[a.endIndex..<a.endIndex].reversed().keys().forEach { i in
-          result.append(i)
-        }
-      #else
-        a[a.endIndex..<a.endIndex].reversed().keys.forEach { i in
-          result.append(i)
-        }
-      #endif
-      XCTAssertEqual(result, [])
-    }
-    do {
-      var result = [String]()
-      #if COMPATIBLE_ATCODER_2025
-        a[a.endIndex..<a.endIndex].keys().reversed().forEach { i in
-          result.append(i)
-        }
-      #else
-        a[a.endIndex..<a.endIndex].keys.reversed().forEach { i in
-          result.append(i)
-        }
-      #endif
-      XCTAssertEqual(result, [])
-    }
-  }
-
-  func testSubRev10() throws {
-    let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-      ("a", 0), ("b", 1), ("c", 2),
-    ])
-    do {
-      var result = [String]()
-      #if COMPATIBLE_ATCODER_2025
-        a[a.startIndex..<a.startIndex].reversed().keys().forEach { i in
-          result.append(i)
-        }
-      #else
-        a[a.startIndex..<a.startIndex].reversed().keys.forEach { i in
-          result.append(i)
-        }
-      #endif
-      XCTAssertEqual(result, [])
-    }
-    do {
-      var result = [String]()
-      #if COMPATIBLE_ATCODER_2025
-        a[a.startIndex..<a.startIndex].keys().reversed().forEach { i in
-          result.append(i)
-        }
-      #else
-        a[a.startIndex..<a.startIndex].keys.reversed().forEach { i in
-          result.append(i)
-        }
-      #endif
-      XCTAssertEqual(result, [])
-    }
-  }
-
-  func testSubRev11() throws {
-    let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-      ("a", 0), ("b", 1), ("c", 2),
-    ])
-    do {
-      var result = [String]()
-      #if COMPATIBLE_ATCODER_2025
-        a[a.startIndex..<a.endIndex].reversed().keys().forEach { i in
-          result.append(i)
-        }
-      #else
-        a[a.startIndex..<a.endIndex].reversed().keys.forEach { i in
-          result.append(i)
-        }
-      #endif
-      XCTAssertEqual(result, ["c", "b", "a"])
-    }
-    do {
-      var result = [String]()
-      #if COMPATIBLE_ATCODER_2025
-        a[a.startIndex..<a.endIndex].keys().reversed().forEach { i in
-          result.append(i)
-        }
-      #else
-        a[a.startIndex..<a.endIndex].keys.reversed().forEach { i in
-          result.append(i)
-        }
-      #endif
-      XCTAssertEqual(result, ["c", "b", "a"])
-    }
-  }
-
-  func testSubRev12() throws {
-    let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-      ("a", 0), ("b", 1), ("c", 2),
-    ])
-    do {
-      var result = [Int]()
-      #if COMPATIBLE_ATCODER_2025
-        a[a.endIndex..<a.endIndex].reversed().values().forEach { i in
-          result.append(i)
-        }
-      #else
-        a[a.endIndex..<a.endIndex].reversed().values.forEach { i in
-          result.append(i)
-        }
-      #endif
-      XCTAssertEqual(result, [])
-    }
-    do {
-      var result = [Int]()
-      #if COMPATIBLE_ATCODER_2025
-        a[a.endIndex..<a.endIndex].values().reversed().forEach { i in
-          result.append(i)
-        }
-      #else
-        a[a.endIndex..<a.endIndex].values.reversed().forEach { i in
-          result.append(i)
-        }
-      #endif
-      XCTAssertEqual(result, [])
-    }
-  }
-
-  func testSubRev13() throws {
-    let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-      ("a", 0), ("b", 1), ("c", 2),
-    ])
-    do {
-      var result = [Int]()
-      #if COMPATIBLE_ATCODER_2025
-        a[a.startIndex..<a.startIndex].reversed().values().forEach { i in
-          result.append(i)
-        }
-      #else
-        a[a.startIndex..<a.startIndex].reversed().values.forEach { i in
-          result.append(i)
-        }
-      #endif
-      XCTAssertEqual(result, [])
-    }
-    do {
-      var result = [Int]()
-      #if COMPATIBLE_ATCODER_2025
-        a[a.startIndex..<a.startIndex].values().reversed().forEach { i in
-          result.append(i)
-        }
-      #else
-        a[a.startIndex..<a.startIndex].values.reversed().forEach { i in
-          result.append(i)
-        }
-      #endif
-      XCTAssertEqual(result, [])
-    }
-  }
-
-  func testSubRev14() throws {
-    let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-      ("a", 0), ("b", 1), ("c", 2),
-    ])
-    do {
-      var result = [Int]()
-      #if COMPATIBLE_ATCODER_2025
-        a[a.startIndex..<a.endIndex].reversed().values().forEach { i in
-          result.append(i)
-        }
-      #else
-        a[a.startIndex..<a.endIndex].reversed().values.forEach { i in
-          result.append(i)
-        }
-      #endif
-      XCTAssertEqual(result, [2, 1, 0])
-    }
-    do {
-      var result = [Int]()
-      #if COMPATIBLE_ATCODER_2025
-        a[a.startIndex..<a.endIndex].values().reversed().forEach { i in
-          result.append(i)
-        }
-      #else
-        a[a.startIndex..<a.endIndex].values.reversed().forEach { i in
-          result.append(i)
-        }
-      #endif
-      XCTAssertEqual(result, [2, 1, 0])
-    }
-  }
-
-  func testSubRev15() throws {
-    let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-      ("a", 0), ("b", 1), ("c", 2),
-    ])
-    do {
-      var result = [RedBlackTreeDictionary<String, Int>.Index]()
-      a[a.endIndex..<a.endIndex].reversed().indices.forEach { i in
-        result.append(i)
+  #if COMPATIBLE_ATCODER_2025
+    func testSubRev9() throws {
+      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
+        ("a", 0), ("b", 1), ("c", 2),
+      ])
+      do {
+        var result = [String]()
+        #if COMPATIBLE_ATCODER_2025
+          a[a.endIndex..<a.endIndex].reversed().keys().forEach { i in
+            result.append(i)
+          }
+        #else
+          a[a.endIndex..<a.endIndex].reversed().keys.forEach { i in
+            result.append(i)
+          }
+        #endif
+        XCTAssertEqual(result, [])
       }
-      XCTAssertEqual(result, [])
-    }
-    do {
-      var result = [RedBlackTreeDictionary<String, Int>.Index]()
-      a[a.endIndex..<a.endIndex].indices.reversed().forEach { i in
-        result.append(i)
+      do {
+        var result = [String]()
+        #if COMPATIBLE_ATCODER_2025
+          a[a.endIndex..<a.endIndex].keys().reversed().forEach { i in
+            result.append(i)
+          }
+        #else
+          a[a.endIndex..<a.endIndex].keys.reversed().forEach { i in
+            result.append(i)
+          }
+        #endif
+        XCTAssertEqual(result, [])
       }
-      XCTAssertEqual(result, [])
     }
-  }
 
-  func testSubRev16() throws {
-    let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-      ("a", 0), ("b", 1), ("c", 2),
-    ])
-    do {
-      var result = [RedBlackTreeDictionary<String, Int>.Index]()
-      a[a.startIndex..<a.startIndex].reversed().indices.forEach { i in
-        result.append(i)
+    func testSubRev10() throws {
+      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
+        ("a", 0), ("b", 1), ("c", 2),
+      ])
+      do {
+        var result = [String]()
+        #if COMPATIBLE_ATCODER_2025
+          a[a.startIndex..<a.startIndex].reversed().keys().forEach { i in
+            result.append(i)
+          }
+        #else
+          a[a.startIndex..<a.startIndex].reversed().keys.forEach { i in
+            result.append(i)
+          }
+        #endif
+        XCTAssertEqual(result, [])
       }
-      XCTAssertEqual(result, [])
-    }
-    do {
-      var result = [RedBlackTreeDictionary<String, Int>.Index]()
-      a[a.startIndex..<a.startIndex].indices.reversed().forEach { i in
-        result.append(i)
+      do {
+        var result = [String]()
+        #if COMPATIBLE_ATCODER_2025
+          a[a.startIndex..<a.startIndex].keys().reversed().forEach { i in
+            result.append(i)
+          }
+        #else
+          a[a.startIndex..<a.startIndex].keys.reversed().forEach { i in
+            result.append(i)
+          }
+        #endif
+        XCTAssertEqual(result, [])
       }
-      XCTAssertEqual(result, [])
     }
-  }
 
-  func testSubRev17() throws {
-    let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-      ("a", 0), ("b", 1), ("c", 2),
-    ])
-    do {
-      var result = [RedBlackTreeDictionary<String, Int>.Index]()
-      a[a.startIndex..<a.endIndex].reversed().indices.forEach { i in
-        result.append(i)
+    func testSubRev11() throws {
+      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
+        ("a", 0), ("b", 1), ("c", 2),
+      ])
+      do {
+        var result = [String]()
+        #if COMPATIBLE_ATCODER_2025
+          a[a.startIndex..<a.endIndex].reversed().keys().forEach { i in
+            result.append(i)
+          }
+        #else
+          a[a.startIndex..<a.endIndex].reversed().keys.forEach { i in
+            result.append(i)
+          }
+        #endif
+        XCTAssertEqual(result, ["c", "b", "a"])
       }
-      XCTAssertEqual(result, [2, 1, 0].map { a.startIndex + $0 })
-    }
-    do {
-      var result = [RedBlackTreeDictionary<String, Int>.Index]()
-      a[a.startIndex..<a.endIndex].indices.reversed().forEach { i in
-        result.append(i)
+      do {
+        var result = [String]()
+        #if COMPATIBLE_ATCODER_2025
+          a[a.startIndex..<a.endIndex].keys().reversed().forEach { i in
+            result.append(i)
+          }
+        #else
+          a[a.startIndex..<a.endIndex].keys.reversed().forEach { i in
+            result.append(i)
+          }
+        #endif
+        XCTAssertEqual(result, ["c", "b", "a"])
       }
-      XCTAssertEqual(result, [2, 1, 0].map { a.startIndex + $0 })
     }
-  }
+
+    func testSubRev12() throws {
+      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
+        ("a", 0), ("b", 1), ("c", 2),
+      ])
+      do {
+        var result = [Int]()
+        #if COMPATIBLE_ATCODER_2025
+          a[a.endIndex..<a.endIndex].reversed().values().forEach { i in
+            result.append(i)
+          }
+        #else
+          a[a.endIndex..<a.endIndex].reversed().values.forEach { i in
+            result.append(i)
+          }
+        #endif
+        XCTAssertEqual(result, [])
+      }
+      do {
+        var result = [Int]()
+        #if COMPATIBLE_ATCODER_2025
+          a[a.endIndex..<a.endIndex].values().reversed().forEach { i in
+            result.append(i)
+          }
+        #else
+          a[a.endIndex..<a.endIndex].values.reversed().forEach { i in
+            result.append(i)
+          }
+        #endif
+        XCTAssertEqual(result, [])
+      }
+    }
+
+    func testSubRev13() throws {
+      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
+        ("a", 0), ("b", 1), ("c", 2),
+      ])
+      do {
+        var result = [Int]()
+        #if COMPATIBLE_ATCODER_2025
+          a[a.startIndex..<a.startIndex].reversed().values().forEach { i in
+            result.append(i)
+          }
+        #else
+          a[a.startIndex..<a.startIndex].reversed().values.forEach { i in
+            result.append(i)
+          }
+        #endif
+        XCTAssertEqual(result, [])
+      }
+      do {
+        var result = [Int]()
+        #if COMPATIBLE_ATCODER_2025
+          a[a.startIndex..<a.startIndex].values().reversed().forEach { i in
+            result.append(i)
+          }
+        #else
+          a[a.startIndex..<a.startIndex].values.reversed().forEach { i in
+            result.append(i)
+          }
+        #endif
+        XCTAssertEqual(result, [])
+      }
+    }
+
+    func testSubRev14() throws {
+      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
+        ("a", 0), ("b", 1), ("c", 2),
+      ])
+      do {
+        var result = [Int]()
+        #if COMPATIBLE_ATCODER_2025
+          a[a.startIndex..<a.endIndex].reversed().values().forEach { i in
+            result.append(i)
+          }
+        #else
+          a[a.startIndex..<a.endIndex].reversed().values.forEach { i in
+            result.append(i)
+          }
+        #endif
+        XCTAssertEqual(result, [2, 1, 0])
+      }
+      do {
+        var result = [Int]()
+        #if COMPATIBLE_ATCODER_2025
+          a[a.startIndex..<a.endIndex].values().reversed().forEach { i in
+            result.append(i)
+          }
+        #else
+          a[a.startIndex..<a.endIndex].values.reversed().forEach { i in
+            result.append(i)
+          }
+        #endif
+        XCTAssertEqual(result, [2, 1, 0])
+      }
+    }
+
+    func testSubRev15() throws {
+      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
+        ("a", 0), ("b", 1), ("c", 2),
+      ])
+      do {
+        var result = [RedBlackTreeDictionary<String, Int>.Index]()
+        a[a.endIndex..<a.endIndex].reversed().indices.forEach { i in
+          result.append(i)
+        }
+        XCTAssertEqual(result, [])
+      }
+      do {
+        var result = [RedBlackTreeDictionary<String, Int>.Index]()
+        a[a.endIndex..<a.endIndex].indices.reversed().forEach { i in
+          result.append(i)
+        }
+        XCTAssertEqual(result, [])
+      }
+    }
+
+    func testSubRev16() throws {
+      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
+        ("a", 0), ("b", 1), ("c", 2),
+      ])
+      do {
+        var result = [RedBlackTreeDictionary<String, Int>.Index]()
+        a[a.startIndex..<a.startIndex].reversed().indices.forEach { i in
+          result.append(i)
+        }
+        XCTAssertEqual(result, [])
+      }
+      do {
+        var result = [RedBlackTreeDictionary<String, Int>.Index]()
+        a[a.startIndex..<a.startIndex].indices.reversed().forEach { i in
+          result.append(i)
+        }
+        XCTAssertEqual(result, [])
+      }
+    }
+
+    func testSubRev17() throws {
+      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
+        ("a", 0), ("b", 1), ("c", 2),
+      ])
+      do {
+        var result = [RedBlackTreeDictionary<String, Int>.Index]()
+        a[a.startIndex..<a.endIndex].reversed().indices.forEach { i in
+          result.append(i)
+        }
+        XCTAssertEqual(result, [2, 1, 0].map { a.startIndex + $0 })
+      }
+      do {
+        var result = [RedBlackTreeDictionary<String, Int>.Index]()
+        a[a.startIndex..<a.endIndex].indices.reversed().forEach { i in
+          result.append(i)
+        }
+        XCTAssertEqual(result, [2, 1, 0].map { a.startIndex + $0 })
+      }
+    }
+  #endif
 
   static func allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
     typealias _PayloadValue = Int
@@ -1052,10 +1054,10 @@ final class EtcTests: RedBlackTreeTestCase {
         let _ = a.indices(bounds: .start ..< .end)
         let _ = a.indices(bounds: .lower(3) ..< .lower(4))
       #endif
-      let _ = a.removeAll(in: .lower(10) ..< .lower(100)) { n in
+      let _ = a.erase(.lower(10) ..< .lower(100)) { n in
         n % 2 == 1
       }
-      let _ = a.removeAll(in: .lower(10) ... .upper(100)) { n in
+      let _ = a.erase(.lower(10) ... .upper(100)) { n in
         n % 2 == 0
       }
       let _ = a[.lower(10) ... .end]
@@ -1103,7 +1105,7 @@ final class EtcTests: RedBlackTreeTestCase {
 
       var set = RedBlackTreeSet<Int>(0..<20)
 
-      set[lowerBound(10).advanced(by: 2)..<end()].removeAll {
+      set[lowerBound(10).advanced(by: 2)..<end()].erase {
         $0 % 2 == 0
       }
 
@@ -1119,7 +1121,7 @@ final class EtcTests: RedBlackTreeTestCase {
       let set = RedBlackTreeSet<Int>(0..<20)
       var range = set[lowerBound(10).advanced(by: 2)..<end()]
 
-      range.removeAll {
+      range.erase {
         $0 % 2 == 0
       }
 
@@ -1226,5 +1228,11 @@ final class EtcTests: RedBlackTreeTestCase {
     var a = RedBlackTreeSet(0..<100)
     XCTAssertNotNil(a.index(a.lowerBound(10), offsetBy: 10, limitedBy: a.lowerBound(20)))
     XCTAssertNil(a.index(a.lowerBound(10), offsetBy: 11, limitedBy: a.lowerBound(20)))
+  }
+  
+  func testDict() throws {
+    var d = [Int:Int]()
+    XCTAssertEqual(d[0, default: -1], -1)
+    XCTAssertEqual(d[0], nil)
   }
 }

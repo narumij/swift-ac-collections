@@ -88,6 +88,12 @@ public struct _NodePtrSealing: Equatable {
   var tag: _SealedTag {
     .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
   }
+  
+  /// 引換券
+  @inlinable @inline(__always)
+  var trackingTag: _TrackingTag {
+    pointer.pointee.___tracking_tag
+  }
 }
 
 // ふざけてるのが半分。残り半分は通常使わない言葉や概念から以外と大切な部分であることを察してもらうため。

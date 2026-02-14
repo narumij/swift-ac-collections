@@ -21,39 +21,18 @@ final class ABC358DTests: RedBlackTreeTestCase {
   }
 
   #if !COMPATIBLE_ATCODER_2025
-  func testABC358D(N: Int, M: Int, _A: [Int], B: [Int]) throws {
-    #if true
-    var A = RedBlackTreeMultiSet(_A)
-    var ans = 0
-    for b in B {
-      // ぜんぜんうれしさがない
-      let result: Int? = A._withUnsafeMutableTree { A in
-        let i = A.lowerBound(b)
-        guard i != A.end() else { return nil }
-        let result = A[i]
-        _ = A.erase(i)
-        return result
+    func testABC358D(N: Int, M: Int, _A: [Int], B: [Int]) throws {
+      var A = RedBlackTreeMultiSet(_A)
+      var ans = 0
+      for b in B {
+        guard let i = A.erase(lowerBound(b)) else {
+          ans = -1
+          break
+        }
+        ans += i
       }
-      guard let result else {
-        ans = -1
-        break
-      }
-      ans += result
+      print(ans)
     }
-    print(ans)
-    #else
-    var A = RedBlackTreeMultiSet(_A)
-    var ans = 0
-    for b in B {
-      guard let i = A.remove(lowerBound(b)) else {
-        ans = -1
-        break
-      }
-      ans += i
-    }
-    print(ans)
-    #endif
-  }
   #else
     func testABC358D(N: Int, M: Int, _A: [Int], B: [Int]) throws {
       var A = RedBlackTreeMultiSet(_A)

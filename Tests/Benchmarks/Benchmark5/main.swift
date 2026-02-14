@@ -172,7 +172,7 @@ for count in [1000000] {
 reset()
 for count in [1000000] {
   var fixture = Fixture<Int>(0..<count)
-  benchmark("RBT popMin \(count)") {
+  benchmark("RBT popFirst \(count)") {
     let _ = fixture.popMin()
   }
 }
@@ -205,7 +205,7 @@ for count in [1000000] {
 reset()
 for count in [1000000] {
   var fixture = Heap<Int>(0..<count)
-  benchmark("Heap popMin \(count)") {
+  benchmark("Heap popFirst \(count)") {
     let _ = fixture.popMin()
   }
 }

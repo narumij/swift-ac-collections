@@ -21,48 +21,75 @@ final class ABC370DTests: RedBlackTreeTestCase {
   }
 
   #if !COMPATIBLE_ATCODER_2025
-  func ABC370D(H: Int, W: Int, Q: [(Int, Int)]) throws {
-    let _g1 = RedBlackTreeSet<Int>(0..<W)
-    let _g2 = RedBlackTreeSet<Int>(0..<H)
-    nonisolated(unsafe) var g1: [RedBlackTreeSet<Int>] = .init(repeating: _g1, count: H)
-    nonisolated(unsafe) var g2: [RedBlackTreeSet<Int>] = .init(repeating: _g2, count: W)
+    func ABC370D(H: Int, W: Int, Q: [(Int, Int)]) throws {
+      
+      let _g1 = RedBlackTreeSet<Int>(0..<W)
+      let _g2 = RedBlackTreeSet<Int>(0..<H)
+      
+      nonisolated(unsafe) var g1: [RedBlackTreeSet<Int>] = .init(repeating: _g1, count: H)
+      nonisolated(unsafe) var g2: [RedBlackTreeSet<Int>] = .init(repeating: _g2, count: W)
 
-    func erase(_ i: Int, _ j: Int) {
-      _ = g1[i].remove(j)
-      _ = g2[j].remove(i)
+      for (R, C) in Q {
+        
+        // 合ってるかどうかわからない。雰囲気で書いて動いている程度
+        
+        g2[C][lt(R)...gt(R)].erase {
+          g1[$0].remove(C)
+          return true
+        }
+
+        g1[R][lt(C)...gt(C)].erase {
+          g2[$0].remove(R)
+          return true
+        }
+        
+      }
+
+      print(g1.map(\.count).reduce(0, +))
     }
+  #elseif !COMPATIBLE_ATCODER_2025
+    func ABC370D(H: Int, W: Int, Q: [(Int, Int)]) throws {
+      let _g1 = RedBlackTreeSet<Int>(0..<W)
+      let _g2 = RedBlackTreeSet<Int>(0..<H)
+      nonisolated(unsafe) var g1: [RedBlackTreeSet<Int>] = .init(repeating: _g1, count: H)
+      nonisolated(unsafe) var g2: [RedBlackTreeSet<Int>] = .init(repeating: _g2, count: W)
 
-    for (R, C) in Q {
-
-      if g1[R].contains(C) {
-        erase(R, C)
-        continue
+      func erase(_ i: Int, _ j: Int) {
+        _ = g1[i].remove(j)
+        _ = g2[j].remove(i)
       }
 
-      if let r = g2[C][lowerBound(R).before] {
-        erase(r, C)
+      for (R, C) in Q {
+
+        if g1[R].contains(C) {
+          erase(R, C)
+          continue
+        }
+
+        if let r = g2[C][lowerBound(R).before] {
+          erase(r, C)
+        }
+
+        if let r = g2[C][lowerBound(R)] {
+          erase(r, C)
+        }
+
+        if let c = g1[R][lowerBound(C).before] {
+          erase(R, c)
+        }
+
+        if let c = g1[R][lowerBound(C)] {
+          erase(R, c)
+        }
       }
 
-      if let r = g2[C][lowerBound(R)] {
-        erase(r, C)
+      var ans = 0
+      for i in 0..<H {
+        ans += g1[i].count
       }
 
-      if let c = g1[R][lowerBound(C).before] {
-        erase(R, c)
-      }
-
-      if let c = g1[R][lowerBound(C)] {
-        erase(R, c)
-      }
+      print(ans)
     }
-
-    var ans = 0
-    for i in 0..<H {
-      ans += g1[i].count
-    }
-
-    print(ans)
-  }
   #elseif true
     func ABC370D(H: Int, W: Int, Q: [(Int, Int)]) throws {
       let _g1 = RedBlackTreeSet<Int>(0..<W)

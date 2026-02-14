@@ -1,5 +1,50 @@
 #if COMPATIBLE_ATCODER_2025
+  // これは、お節介すぎるので削ることにする
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(*n* log *n* + *n*)
+    @inlinable
+    public init<Source>(_ sequence: __owned Source)
+    where Element == Source.Element, Source: Sequence {
+      self.init(__tree_: .create_unique(sorted: sequence.sorted()))
+    }
+  }
+
+  // MARK: - Init naive
+
+  // これを標準に引き上げ
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(*n* log *n*)
+    ///
+    /// 省メモリでの初期化
+    @inlinable
+    public init<Source>(naive sequence: __owned Source)
+    where Element == Source.Element, Source: Sequence {
+      self.init(__tree_: .create_unique(naive: sequence))
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet: Collection, BidirectionalCollection {}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(*n*), where *n* is the number of elements.
+    @inlinable
+    public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+      for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+        let __e = __tree_[_unsafe_raw: __c]
+        if try predicate(__e) {
+          return __e
+        }
+      }
+      return nil
+    }
+  }
 #endif
 
 #if COMPATIBLE_ATCODER_2025
@@ -394,6 +439,12 @@
     @inlinable
     @inline(__always)
     public func isValid(index: Index) -> Bool {
+      _isValid(index: index)
+    }
+    
+    @inlinable
+    @inline(__always)
+    public func isValid(_ index: Index) -> Bool {
       _isValid(index: index)
     }
   }

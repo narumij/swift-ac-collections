@@ -1,4 +1,329 @@
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(*n* log *n* + *n*)
+    @inlinable
+    public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
+    where S: Sequence, S.Element == (Key, Value) {
+
+      self.init(
+        __tree_: .create_unique(
+          sorted: keysAndValues.sorted { $0.0 < $1.0 },
+          transform: Self.__payload_
+        ))
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(*n*), where *n* is the number of elements.
+    @inlinable
+    public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+      for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+        let __e = Base.__element_(__tree_[_unsafe_raw: __c])
+        if try predicate(__e) {
+          return __e
+        }
+      }
+      return nil
+    }
+  }
+#endif
+
+// MARK: - Range Accessing Keys and Values
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public subscript(bounds: Range<Index>) -> SubSequence {
+      return .init(
+        tree: __tree_,
+        start: __tree_.__purified_(bounds.lowerBound),
+        end: __tree_.__purified_(bounds.upperBound))
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Removes the specified subrange of elements from the collection.
+    ///
+    /// - Important: 削除後は、subrangeのインデックスが無効になります。
+    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
+    ///     range must be valid indices of the collection.
+    /// - Returns: The key-value pair that correspond to `index`.
+    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
+    @inlinable
+    public mutating func removeSubrange<R: RangeExpression>(
+      _ bounds: R
+    ) where R.Bound == Index {
+
+      let bounds = bounds.relative(to: self)
+      __tree_.ensureUnique()
+      ___remove(
+        from: __tree_.__purified_(bounds.lowerBound).pointer!,
+        to: __tree_.__purified_(bounds.upperBound).pointer!)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary: Collection, BidirectionalCollection {}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func reversed() -> Tree._KeyValues.Reversed {
+      _reversed()
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// 特殊なforEach
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// - Important:
+    ///  要素及びノードが削除された場合、インデックスは無効になります。
+    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    public typealias Index = Tree.Index
+  }
+
+  // MARK: Finding Elements
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func lowerBound(_ p: Key) -> Index {
+      ___index_lower_bound(p)
+    }
+
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func upperBound(_ p: Key) -> Index {
+      ___index_upper_bound(p)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func equalRange(_ key: Key) -> (lower: Index, upper: Index) {
+      ___index_equal_range(key)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func firstIndex(of key: Key) -> Index? {
+      ___first_index(of: key)
+    }
+
+    /// - Complexity: O(*n*)
+    @inlinable
+    public func firstIndex(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+      try ___first_index(where: predicate)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(*d* + log *n*)
+    @inlinable
+    //  @inline(__always)
+    public func distance(from start: Index, to end: Index) -> Int {
+      _distance(from: start, to: end)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var startIndex: Index { _startIndex }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var endIndex: Index { _endIndex }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func index(after i: Index) -> Index {
+      _index(after: i)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func index(before i: Index) -> Index {
+      _index(before: i)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+      _index(i, offsetBy: distance)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
+      _index(i, offsetBy: distance, limitedBy: limit)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(after i: inout Index) {
+      _formIndex(after: &i)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func formIndex(before i: inout Index) {
+      _formIndex(before: &i)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func formIndex(_ i: inout Index, offsetBy distance: Int) {
+      _formIndex(&i, offsetBy: distance)
+    }
+
+    /// - Complexity: O(*d*)
+    @inlinable
+    //  @inline(__always)
+    public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
+      -> Bool
+    {
+      _formIndex(&i, offsetBy: distance, limitedBy: limit)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /*
+     しばらく苦しめられていたテストコードのコンパイルエラーについて。
+    
+     typecheckでクラッシュしてることはクラッシュログから読み取れる。
+     推論に失敗するバグを踏んでいると想定し、型をちゃんと書くことで様子を見ることにした。
+    
+     型推論のバグなんて直せる気がまったくせず、ごくごく一部の天才のミラクルムーブ期待なので、
+     これでクラッシュが落ち着くようならElementを返すメンバー全てで型をちゃんと書くのが安全かもしれない
+    
+     type packは型を書けないケースなので、この迂回策が使えず、バグ修正を待つばかり
+     */
+
+    /// - Complexity: O(1)
+    @inlinable
+    //  public subscript(position: Index) -> Element {
+    public subscript(position: Index) -> (key: Key, value: Value) {
+      //    @inline(__always) get { ___element(self[_checked: position]) }
+      // コンパイラがクラッシュする
+      //    @inline(__always) _read { yield self[_checked: position] }
+      // コンパイラがクラッシュする場合もある
+      @inline(__always) get { self[_checked: position] }
+    }
+
+    /// Indexがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid(index: Index) -> Bool {
+      _isValid(index: index)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
+    where R.Bound == Index {
+      _isValid(bounds)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var indices: Indices {
+      _indices
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  // MARK: - SubSequence
+
+  extension RedBlackTreeDictionary {
+
+    public typealias SubSequence = RedBlackTreeSliceV2<Self>.KeyValue
+  }
+
+  // MARK: - Index Range
+
+  extension RedBlackTreeDictionary {
+
+    public typealias Indices = Tree.Indices
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeDictionary {
     @available(*, deprecated)

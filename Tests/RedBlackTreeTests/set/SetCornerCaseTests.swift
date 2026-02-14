@@ -49,7 +49,7 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
     var set: RedBlackTreeSet = [0, 1, 2]
     let idx = set.firstIndex(of: 1)!
     set.remove(1)
-    XCTAssertFalse(set.isValid(index: idx))  // 無効になっていること
+    XCTAssertFalse(set.isValid(idx))  // 無効になっていること
   }
 
   func testCopyOnWrite() {
@@ -77,7 +77,7 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
 #if COMPATIBLE_ATCODER_2025
     set.removeSubrange(lhs..<rhs)  // 2,3,4 を削除
     #else
-    set.removeAll(in: lhs..<rhs)  // 2,3,4 を削除
+    set.erase(lhs..<rhs)  // 2,3,4 を削除
 #endif
     XCTAssertEqual(set.sorted(), [0, 1, 5])
   }
@@ -135,7 +135,7 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
 #if COMPATIBLE_ATCODER_2025
     XCTAssertEqual(s.popFirst(), 1)
 #else
-    XCTAssertEqual(s.popMin(), 1)
+    XCTAssertEqual(s.popFirst(), 1)
 #endif
     XCTAssertEqual(s.sorted(), [2, 3])
 

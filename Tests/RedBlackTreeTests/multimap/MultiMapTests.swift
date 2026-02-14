@@ -68,159 +68,78 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(numbers.distance(from: numbers.startIndex, to: numbers.endIndex), 0)
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testUsage1() throws {
-      // 意外と普通のユースケースでバグがあることが判明
-      var map = Target<Int, Int>()
-      XCTAssertEqual(map[0].map(\.value), [])
-      map.insert((0, 1))
-      //    map.updateValue(1, forKey: 0)
-      XCTAssertEqual(map[0].map(\.value), [1])
-      XCTAssertEqual(map[1].map(\.value), [])
-      XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, [(0, 1)]).allSatisfy(==))
-      map.removeAll(forKey: 0)
-      //    map.removeValue(forKey: 0)
-      XCTAssertEqual(map[0].map(\.value), [])
-      XCTAssertEqual(map[1].map(\.value), [])
-      XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, []).allSatisfy(==))
-      map.insert((1, 2))
-      //    map.updateValue(20, forKey: 10)
-      XCTAssertEqual(map[0].map(\.value), [])
-      XCTAssertEqual(map[1].map(\.value), [2])
-      XCTAssertEqual(map.map(\.key), [1])
-      XCTAssertEqual(map.map(\.value), [2])
-      map.removeAll(forKey: 1)
-      //    map.removeValue(forKey: 10)
-      XCTAssertEqual(map[0].map(\.value), [])
-      XCTAssertEqual(map[1].map(\.value), [])
-      XCTAssertEqual(map.map(\.key), [])
-      XCTAssertEqual(map.map(\.value), [])
-    }
-  #else
-    func testUsage1() throws {
-      // 意外と普通のユースケースでバグがあることが判明
-      var map = Target<Int, Int>()
-      XCTAssertEqual(map[0] + [], [])
-      map.insert((0, 1))
-      //    map.updateValue(1, forKey: 0)
-      XCTAssertEqual(map[0] + [], [1])
-      XCTAssertEqual(map[1] + [], [])
-      XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, [(0, 1)]).allSatisfy(==))
-      map.removeAll(forKey: 0)
-      //    map.removeValue(forKey: 0)
-      XCTAssertEqual(map[0] + [], [])
-      XCTAssertEqual(map[1] + [], [])
-      XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, []).allSatisfy(==))
-      map.insert((1, 2))
-      //    map.updateValue(20, forKey: 10)
-      XCTAssertEqual(map[0] + [], [])
-      XCTAssertEqual(map[1] + [], [2])
-      XCTAssertEqual(map.map(\.key), [1])
-      XCTAssertEqual(map.map(\.value), [2])
-      map.removeAll(forKey: 1)
-      //    map.removeValue(forKey: 10)
-      XCTAssertEqual(map[0] + [], [])
-      XCTAssertEqual(map[1] + [], [])
-      XCTAssertEqual(map.map(\.key), [])
-      XCTAssertEqual(map.map(\.value), [])
-    }
-  #endif
+  func testUsage1() throws {
+    // 意外と普通のユースケースでバグがあることが判明
+    var map = Target<Int, Int>()
+    XCTAssertEqual(map[0].map(\.value), [])
+    map.insert((0, 1))
+    //    map.updateValue(1, forKey: 0)
+    XCTAssertEqual(map[0].map(\.value), [1])
+    XCTAssertEqual(map[1].map(\.value), [])
+    XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, [(0, 1)]).allSatisfy(==))
+    map.removeAll(forKey: 0)
+    //    map.removeValue(forKey: 0)
+    XCTAssertEqual(map[0].map(\.value), [])
+    XCTAssertEqual(map[1].map(\.value), [])
+    XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, []).allSatisfy(==))
+    map.insert((1, 2))
+    //    map.updateValue(20, forKey: 10)
+    XCTAssertEqual(map[0].map(\.value), [])
+    XCTAssertEqual(map[1].map(\.value), [2])
+    XCTAssertEqual(map.map(\.key), [1])
+    XCTAssertEqual(map.map(\.value), [2])
+    map.removeAll(forKey: 1)
+    //    map.removeValue(forKey: 10)
+    XCTAssertEqual(map[0].map(\.value), [])
+    XCTAssertEqual(map[1].map(\.value), [])
+    XCTAssertEqual(map.map(\.key), [])
+    XCTAssertEqual(map.map(\.value), [])
+  }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testUsage2() throws {
-      var map = Target<Int, Int>()
-      XCTAssertEqual(map[0].map(\.value), [])
-      map.insert((0, 0))
-      XCTAssertEqual(map[0].map(\.value), [0])
-      XCTAssertEqual(map[1].map(\.value), [])
-      map.insert((1, 2))
-      XCTAssertEqual(map[0].map(\.value), [0])
-      XCTAssertEqual(map[1].map(\.value), [2])
-      map.removeAll(forKey: 0)
-      XCTAssertEqual(map[0].map(\.value), [])
-      XCTAssertEqual(map[1].map(\.value), [2])
-      map.removeAll(forKey: 1)
-      XCTAssertEqual(map[0].map(\.value), [])
-      XCTAssertEqual(map[1].map(\.value), [])
-      map.insert((1, 3))
-      XCTAssertEqual(map[0].map(\.value), [])
-      XCTAssertEqual(map[1].map(\.value), [3])
-    }
-  #else
-    func testUsage2() throws {
-      var map = Target<Int, Int>()
-      XCTAssertEqual(map[0] + [], [])
-      map.insert((0, 0))
-      XCTAssertEqual(map[0] + [], [0])
-      XCTAssertEqual(map[1] + [], [])
-      map.insert((1, 2))
-      XCTAssertEqual(map[0] + [], [0])
-      XCTAssertEqual(map[1] + [], [2])
-      map.removeAll(forKey: 0)
-      XCTAssertEqual(map[0] + [], [])
-      XCTAssertEqual(map[1] + [], [2])
-      map.removeAll(forKey: 1)
-      XCTAssertEqual(map[0] + [], [])
-      XCTAssertEqual(map[1] + [], [])
-      map.insert((1, 3))
-      XCTAssertEqual(map[0] + [], [])
-      XCTAssertEqual(map[1] + [], [3])
-    }
-  #endif
+  func testUsage2() throws {
+    var map = Target<Int, Int>()
+    XCTAssertEqual(map[0].map(\.value), [])
+    map.insert((0, 0))
+    XCTAssertEqual(map[0].map(\.value), [0])
+    XCTAssertEqual(map[1].map(\.value), [])
+    map.insert((1, 2))
+    XCTAssertEqual(map[0].map(\.value), [0])
+    XCTAssertEqual(map[1].map(\.value), [2])
+    map.removeAll(forKey: 0)
+    XCTAssertEqual(map[0].map(\.value), [])
+    XCTAssertEqual(map[1].map(\.value), [2])
+    map.removeAll(forKey: 1)
+    XCTAssertEqual(map[0].map(\.value), [])
+    XCTAssertEqual(map[1].map(\.value), [])
+    map.insert((1, 3))
+    XCTAssertEqual(map[0].map(\.value), [])
+    XCTAssertEqual(map[1].map(\.value), [3])
+  }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testUsage3() throws {
-      var map = Target<Int, Int>()
-      map.insert((0, 0))
-      XCTAssertEqual(map[0].map(\.value), [0])
-      map.remove(at: map.startIndex)
-      XCTAssertEqual(map[0].map(\.value), [])
-      XCTAssertTrue(map.isEmpty)
-      map.insert((0, 0))
-      XCTAssertEqual(map[0].map(\.value), [0])
-      map.remove(at: map.startIndex)
-      XCTAssertEqual(map[0].map(\.value), [])
-      XCTAssertTrue(map.isEmpty)
-    }
-  #else
-    func testUsage3() throws {
-      var map = Target<Int, Int>()
-      map.insert((0, 0))
-      XCTAssertEqual(map[0] + [], [0])
-      map.remove(at: map.startIndex)
-      XCTAssertEqual(map[0] + [], [])
-      XCTAssertTrue(map.isEmpty)
-      map.insert((0, 0))
-      XCTAssertEqual(map[0] + [], [0])
-      map.remove(at: map.startIndex)
-      XCTAssertEqual(map[0] + [], [])
-      XCTAssertTrue(map.isEmpty)
-    }
-  #endif
+  func testUsage3() throws {
+    var map = Target<Int, Int>()
+    map.insert((0, 0))
+    XCTAssertEqual(map[0].map(\.value), [0])
+    map.remove(at: map.startIndex)
+    XCTAssertEqual(map[0].map(\.value), [])
+    XCTAssertTrue(map.isEmpty)
+    map.insert((0, 0))
+    XCTAssertEqual(map[0].map(\.value), [0])
+    map.remove(at: map.startIndex)
+    XCTAssertEqual(map[0].map(\.value), [])
+    XCTAssertTrue(map.isEmpty)
+  }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testLiteral() throws {
-      let map: Target<Int, Int> = [1: 0, 1: 2, 3: 4, 5: 6, 5: 7]
-      XCTAssertEqual(map[1].map(\.value), [0, 2])
-      XCTAssertEqual(map[3].map(\.value), [4])
-      XCTAssertEqual(map[5].map(\.value), [6, 7])
-      XCTAssertEqual(map.count(forKey: 0), 0)
-      XCTAssertEqual(map.count(forKey: 1), 2)
-      XCTAssertEqual(map.count(forKey: 3), 1)
-      XCTAssertEqual(map.count(forKey: 5), 2)
-    }
-  #else
-    func testLiteral() throws {
-      let map: Target<Int, Int> = [1: 0, 1: 2, 3: 4, 5: 6, 5: 7]
-      XCTAssertEqual(map[1] + [], [0, 2])
-      XCTAssertEqual(map[3] + [], [4])
-      XCTAssertEqual(map[5] + [], [6, 7])
-      XCTAssertEqual(map.count(forKey: 0), 0)
-      XCTAssertEqual(map.count(forKey: 1), 2)
-      XCTAssertEqual(map.count(forKey: 3), 1)
-      XCTAssertEqual(map.count(forKey: 5), 2)
-    }
-  #endif
+  func testLiteral() throws {
+    let map: Target<Int, Int> = [1: 0, 1: 2, 3: 4, 5: 6, 5: 7]
+    XCTAssertEqual(map[1].map(\.value), [0, 2])
+    XCTAssertEqual(map[3].map(\.value), [4])
+    XCTAssertEqual(map[5].map(\.value), [6, 7])
+    XCTAssertEqual(map.count(forKey: 0), 0)
+    XCTAssertEqual(map.count(forKey: 1), 2)
+    XCTAssertEqual(map.count(forKey: 3), 1)
+    XCTAssertEqual(map.count(forKey: 5), 2)
+  }
 
   func testSmoke() throws {
     let b: Target<Int, [Int]> = [1: [1, 2], 2: [2, 3], 3: [3, 4]]
@@ -238,71 +157,37 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict[3], nil)
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testInitUniqueKeysWithValues() throws {
-      let dict = Target(multiKeysWithValues: [(1, 10), (2, 20)])
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(dict.keys() + [], [1, 2])
-        XCTAssertEqual(dict.values() + [], [10, 20])
-      #else
-        XCTAssertEqual(dict.keys + [], [1, 2])
-        XCTAssertEqual(dict.values + [], [10, 20])
-      #endif
-      XCTAssertEqual(dict[0].map(\.value), [])
-      XCTAssertEqual(dict[1].map(\.value), [10])
-      XCTAssertEqual(dict[2].map(\.value), [20])
-      XCTAssertEqual(dict[3].map(\.value), [])
-    }
-  #else
-    func testInitUniqueKeysWithValues() throws {
-      let dict = Target(multiKeysWithValues: [(1, 10), (2, 20)])
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(dict.keys() + [], [1, 2])
-        XCTAssertEqual(dict.values() + [], [10, 20])
-      #else
-        XCTAssertEqual(dict.keys + [], [1, 2])
-        XCTAssertEqual(dict.values + [], [10, 20])
-      #endif
-      XCTAssertEqual(dict[0] + [], [])
-      XCTAssertEqual(dict[1] + [], [10])
-      XCTAssertEqual(dict[2] + [], [20])
-      XCTAssertEqual(dict[3] + [], [])
-    }
-  #endif
+  func testInitUniqueKeysWithValues() throws {
+    let dict = Target(multiKeysWithValues: [(1, 10), (2, 20)])
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(dict.keys() + [], [1, 2])
+      XCTAssertEqual(dict.values() + [], [10, 20])
+    #else
+      XCTAssertEqual(dict.keys + [], [1, 2])
+      XCTAssertEqual(dict.values + [], [10, 20])
+    #endif
+    XCTAssertEqual(dict[0].map(\.value), [])
+    XCTAssertEqual(dict[1].map(\.value), [10])
+    XCTAssertEqual(dict[2].map(\.value), [20])
+    XCTAssertEqual(dict[3].map(\.value), [])
+  }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testInitUniqueKeysWithValues2() throws {
-      let dict = Target(multiKeysWithValues: AnySequence([(1, 10), (2, 20)]))
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(dict.keys() + [], [1, 2])
-        XCTAssertEqual(dict.values() + [], [10, 20])
-      #else
-        XCTAssertEqual(dict.keys + [], [1, 2])
-        XCTAssertEqual(dict.values + [], [10, 20])
-      #endif
-      XCTAssertEqual(dict[0].map(\.value), [])
-      XCTAssertEqual(dict[1].map(\.value), [10])
-      XCTAssertEqual(dict[2].map(\.value), [20])
-      XCTAssertEqual(dict[3].map(\.value), [])
-    }
-  #else
-    func testInitUniqueKeysWithValues2() throws {
-      let dict = Target(multiKeysWithValues: AnySequence([(1, 10), (2, 20)]))
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(dict.keys() + [], [1, 2])
-        XCTAssertEqual(dict.values() + [], [10, 20])
-      #else
-        XCTAssertEqual(dict.keys + [], [1, 2])
-        XCTAssertEqual(dict.values + [], [10, 20])
-      #endif
-      XCTAssertEqual(dict[0] + [], [])
-      XCTAssertEqual(dict[1] + [], [10])
-      XCTAssertEqual(dict[2] + [], [20])
-      XCTAssertEqual(dict[3] + [], [])
-    }
-  #endif
+  func testInitUniqueKeysWithValues2() throws {
+    let dict = Target(multiKeysWithValues: AnySequence([(1, 10), (2, 20)]))
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(dict.keys() + [], [1, 2])
+      XCTAssertEqual(dict.values() + [], [10, 20])
+    #else
+      XCTAssertEqual(dict.keys + [], [1, 2])
+      XCTAssertEqual(dict.values + [], [10, 20])
+    #endif
+    XCTAssertEqual(dict[0].map(\.value), [])
+    XCTAssertEqual(dict[1].map(\.value), [10])
+    XCTAssertEqual(dict[2].map(\.value), [20])
+    XCTAssertEqual(dict[3].map(\.value), [])
+  }
 
-  #if false
+  #if true
     func testInitUniquingKeysWith_() throws {
       do {
         let dict = [Int: Int](
@@ -327,43 +212,23 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if COMPATIBLE_ATCODER_2025
-    func testInitUniquingKeysWith() throws {
-      do {
-        let dict = Target(
-          multiKeysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
-        #if COMPATIBLE_ATCODER_2025
-          XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
-          XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
-        #else
-          XCTAssertEqual(dict.keys + [], [1, 1, 2, 2])
-          XCTAssertEqual(dict.values + [], [10, 11, 20, 22])
-        #endif
-        XCTAssertEqual(dict[0].map(\.value), [])
-        XCTAssertEqual(dict[1].map(\.value), [10, 11])
-        XCTAssertEqual(dict[2].map(\.value), [20, 22])
-        XCTAssertEqual(dict[3].map(\.value), [])
-      }
+  func testInitUniquingKeysWith() throws {
+    do {
+      let dict = Target(
+        multiKeysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
+        XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
+      #else
+        XCTAssertEqual(dict.keys + [], [1, 1, 2, 2])
+        XCTAssertEqual(dict.values + [], [10, 11, 20, 22])
+      #endif
+      XCTAssertEqual(dict[0].map(\.value), [])
+      XCTAssertEqual(dict[1].map(\.value), [10, 11])
+      XCTAssertEqual(dict[2].map(\.value), [20, 22])
+      XCTAssertEqual(dict[3].map(\.value), [])
     }
-  #else
-    func testInitUniquingKeysWith() throws {
-      do {
-        let dict = Target(
-          multiKeysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
-        #if COMPATIBLE_ATCODER_2025
-          XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
-          XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
-        #else
-          XCTAssertEqual(dict.keys + [], [1, 1, 2, 2])
-          XCTAssertEqual(dict.values + [], [10, 11, 20, 22])
-        #endif
-        XCTAssertEqual(dict[0] + [], [])
-        XCTAssertEqual(dict[1] + [], [10, 11])
-        XCTAssertEqual(dict[2] + [], [20, 22])
-        XCTAssertEqual(dict[3] + [], [])
-      }
-    }
-  #endif
+  }
 
   #if COMPATIBLE_ATCODER_2025
     func testInitNaive() throws {
@@ -381,24 +246,6 @@ final class MultiMapTests: RedBlackTreeTestCase {
         XCTAssertEqual(dict[1].map(\.value), [10, 11])
         XCTAssertEqual(dict[2].map(\.value), [20, 22])
         XCTAssertEqual(dict[3].map(\.value), [])
-      }
-    }
-  #else
-    func testInitNaive() throws {
-      do {
-        let dict = Target(
-          naive: [(1, 10), (1, 11), (2, 20), (2, 22)].map { keyValue($0, $1) })
-        #if COMPATIBLE_ATCODER_2025
-          XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
-          XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
-        #else
-          XCTAssertEqual(dict.keys + [], [1, 1, 2, 2])
-          XCTAssertEqual(dict.values + [], [10, 11, 20, 22])
-        #endif
-        XCTAssertEqual(dict[0] + [], [])
-        XCTAssertEqual(dict[1] + [], [10, 11])
-        XCTAssertEqual(dict[2] + [], [20, 22])
-        XCTAssertEqual(dict[3] + [], [])
       }
     }
   #endif
@@ -448,38 +295,20 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if COMPATIBLE_ATCODER_2025
-    func testUpdate() throws {
-      var dict = [1: 1, 2: 2, 3: 3] as Target<Int, Int>
-      #if DEBUG
-        XCTAssertEqual(
-          dict.updateValue(
-            0,
-            at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawValue: dict.__tree_.nullptr))?
-            .value,
-          nil)
-      #endif
-      XCTAssertEqual(dict.updateValue(0, at: dict.endIndex)?.value, nil)
-      XCTAssertEqual(dict[1].map(\.value), [1])
-      XCTAssertEqual(dict.updateValue(10, at: dict.firstIndex(of: 1)!)?.value, 1)
-      XCTAssertEqual(dict[1].map(\.value), [10])
-    }
-  #else
-    func testUpdate() throws {
-      var dict = [1: 1, 2: 2, 3: 3] as Target<Int, Int>
-      #if DEBUG
-        XCTAssertEqual(
-          dict.updateValue(
-            0,
-            at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawTag: Int.nullptr))?.value,
-          nil)
-      #endif
-      XCTAssertEqual(dict.updateValue(0, at: dict.endIndex)?.value, nil)
-      XCTAssertEqual(dict[1] + [], [1])
-      XCTAssertEqual(dict.updateValue(10, at: dict.firstIndex(of: 1)!)?.value, 1)
-      XCTAssertEqual(dict[1] + [], [10])
-    }
-  #endif
+  func testUpdate() throws {
+    var dict = [1: 1, 2: 2, 3: 3] as Target<Int, Int>
+    #if DEBUG
+      XCTAssertEqual(
+        dict.updateValue(
+          0,
+          at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawTag: Int.nullptr))?.value,
+        nil)
+    #endif
+    XCTAssertEqual(dict.updateValue(0, at: dict.endIndex)?.value, nil)
+    XCTAssertEqual(dict[1].map(\.value), [1])
+    XCTAssertEqual(dict.updateValue(10, at: dict.firstIndex(of: 1)!)?.value, 1)
+    XCTAssertEqual(dict[1].map(\.value), [10])
+  }
 
   func testBound() throws {
     let dict = [1: 10, 3: 30, 5: 50] as Target<Int, Int>
@@ -593,10 +422,13 @@ final class MultiMapTests: RedBlackTreeTestCase {
       set.insert((i, i))
       XCTAssertTrue(set.___tree_invariant())
     }
-    for i in set {
-      set.removeAll(forKey: i.key)
-      XCTAssertTrue(set.___tree_invariant())
-    }
+    #if !USE_SIMPLE_COPY_ON_WRITE
+      // TODO: 再度検討
+      for i in set {
+        set.removeAll(forKey: i.key)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+    #endif
   }
 
   func testRandom2() throws {
@@ -635,11 +467,15 @@ final class MultiMapTests: RedBlackTreeTestCase {
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       print("set._copyCount", set._copyCount)
     #endif
-    for i in set[set.startIndex..<set.endIndex] {
-      // erase multiなので、CoWなしだと、ポインタが破壊される
-      set.removeAll(forKey: i.key)
-      XCTAssertTrue(set.___tree_invariant())
-    }
+
+    #if !USE_SIMPLE_COPY_ON_WRITE
+      // TODO: 再度検討
+      for i in set[set.startIndex..<set.endIndex] {
+        // erase multiなので、CoWなしだと、ポインタが破壊される
+        set.removeAll(forKey: i.key)
+        XCTAssertTrue(set.___tree_invariant())
+      }
+    #endif
   }
 
   func testRandom3() throws {
@@ -705,9 +541,11 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict.last?.key, 3)
     XCTAssertEqual(dict.last?.value, 33)
     XCTAssertEqual(dict.first(where: { $0.value == 22 })?.key, 2)
-    XCTAssertEqual(dict.firstIndex(where: { $0.value == 22 }), dict.index(after: dict.startIndex))
     XCTAssertEqual(dict.first(where: { $0.value == 44 })?.key, nil)
-    XCTAssertEqual(dict.firstIndex(where: { $0.value == 44 }), nil)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(dict.firstIndex(where: { $0.value == 22 }), dict.index(after: dict.startIndex))
+      XCTAssertEqual(dict.firstIndex(where: { $0.value == 44 }), nil)
+    #endif
     XCTAssertTrue(dict.contains(where: { $0.value / $0.key == 11 }))
     XCTAssertFalse(dict.contains(where: { $0.value / $0.key == 22 }))
     XCTAssertTrue(dict.allSatisfy({ $0.value / $0.key == 11 }))
@@ -723,39 +561,41 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(d, [1: 11, 2: 22, 3: 33])
   }
 
-  func testSubsequence() throws {
-    var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    let sub = set.elements(in: 2..<4)
-    XCTAssertEqual(sub[set.lowerBound(2)].value, "b")
-    XCTAssertEqual(sub[set.lowerBound(3)].value, "c")
-    XCTAssertEqual(set.lowerBound(4), sub.endIndex)
-    XCTAssertEqual(set.upperBound(3), sub.endIndex)
-    XCTAssertEqual(sub.count, 2)
-    XCTAssertEqual(sub.map { $0.key }, [2, 3])
-    XCTAssertEqual(sub.map { $0.value }, ["b", "c"])
-    #if COMPATIBLE_ATCODER_2025
-      set.remove(contentsOf: 2..<4)
-      XCTAssertEqual(set.map { $0.key }, [1, 4, 5])
-      XCTAssertEqual(set.map { $0.value }, ["a", "d", "e"])
-    #endif
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testSubsequence() throws {
+      var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      let sub = set.elements(in: 2..<4)
+      XCTAssertEqual(sub[set.lowerBound(2)].value, "b")
+      XCTAssertEqual(sub[set.lowerBound(3)].value, "c")
+      XCTAssertEqual(set.lowerBound(4), sub.endIndex)
+      XCTAssertEqual(set.upperBound(3), sub.endIndex)
+      XCTAssertEqual(sub.count, 2)
+      XCTAssertEqual(sub.map { $0.key }, [2, 3])
+      XCTAssertEqual(sub.map { $0.value }, ["b", "c"])
+      #if COMPATIBLE_ATCODER_2025
+        set.remove(contentsOf: 2..<4)
+        XCTAssertEqual(set.map { $0.key }, [1, 4, 5])
+        XCTAssertEqual(set.map { $0.value }, ["a", "d", "e"])
+      #endif
+    }
 
-  func testSubsequence2() throws {
-    var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    let sub = set.elements(in: 2...4)
-    XCTAssertEqual(sub[set.lowerBound(2)].value, "b")
-    XCTAssertEqual(sub[set.upperBound(3)].value, "d")
-    XCTAssertEqual(set.lowerBound(5), sub.endIndex)
-    XCTAssertEqual(set.upperBound(4), sub.endIndex)
-    XCTAssertEqual(sub.count, 3)
-    XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
-    XCTAssertEqual(sub.map { $0.value }, ["b", "c", "d"])
-    #if COMPATIBLE_ATCODER_2025
-      set.remove(contentsOf: 2...4)
-      XCTAssertEqual(set.map { $0.key }, [1, 5])
-      XCTAssertEqual(set.map { $0.value }, ["a", "e"])
-    #endif
-  }
+    func testSubsequence2() throws {
+      var set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      let sub = set.elements(in: 2...4)
+      XCTAssertEqual(sub[set.lowerBound(2)].value, "b")
+      XCTAssertEqual(sub[set.upperBound(3)].value, "d")
+      XCTAssertEqual(set.lowerBound(5), sub.endIndex)
+      XCTAssertEqual(set.upperBound(4), sub.endIndex)
+      XCTAssertEqual(sub.count, 3)
+      XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
+      XCTAssertEqual(sub.map { $0.value }, ["b", "c", "d"])
+      #if COMPATIBLE_ATCODER_2025
+        set.remove(contentsOf: 2...4)
+        XCTAssertEqual(set.map { $0.key }, [1, 5])
+        XCTAssertEqual(set.map { $0.value }, ["a", "e"])
+      #endif
+    }
+  #endif
 
   func testSubsequence4() throws {
     //      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
@@ -764,13 +604,15 @@ final class MultiMapTests: RedBlackTreeTestCase {
     //      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
   }
 
-  func testSubsequence5() throws {
-    let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    let sub = set.elements(in: 1..<3)
-    XCTAssertEqual(sub[set.lowerBound(1)..<set.lowerBound(3)].map { $0.key }, [1, 2])
-    XCTAssertEqual(sub[sub.startIndex..<sub.endIndex].map { $0.key }, [1, 2])
-    XCTAssertEqual(sub[sub.startIndex..<sub.index(before: sub.endIndex)].map { $0.key }, [1])
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testSubsequence5() throws {
+      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
+      let sub = set.elements(in: 1..<3)
+      XCTAssertEqual(sub[set.lowerBound(1)..<set.lowerBound(3)].map { $0.key }, [1, 2])
+      XCTAssertEqual(sub[sub.startIndex..<sub.endIndex].map { $0.key }, [1, 2])
+      XCTAssertEqual(sub[sub.startIndex..<sub.index(before: sub.endIndex)].map { $0.key }, [1])
+    }
+  #endif
 
   func testSubsequence6() throws {
     let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
@@ -880,29 +722,31 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertEqual(i, set.startIndex)
     }
     let sub = set.elements(in: 2..<5)
-    do {
-      var i = sub.startIndex
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
-        i = sub.index(after: i)
+    #if COMPATIBLE_ATCODER_2025
+      do {
+        var i = sub.startIndex
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
+          i = sub.index(after: i)
+        }
+        XCTAssertEqual(i, sub.endIndex)
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: sub.endIndex, to: i), -j)
+          i = sub.index(before: i)
+        }
+        XCTAssertEqual(i, sub.startIndex)
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
+          sub.formIndex(after: &i)
+        }
+        XCTAssertEqual(i, sub.endIndex)
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
+          sub.formIndex(before: &i)
+        }
+        XCTAssertEqual(i, sub.startIndex)
       }
-      XCTAssertEqual(i, sub.endIndex)
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: sub.endIndex, to: i), -j)
-        i = sub.index(before: i)
-      }
-      XCTAssertEqual(i, sub.startIndex)
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
-        sub.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, sub.endIndex)
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
-        sub.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, sub.startIndex)
-    }
+    #endif
   }
 
   func testIndex000() throws {
@@ -931,94 +775,98 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertEqual(i, set.startIndex)
     }
     let sub = set.elements(in: 2..<5)
-    do {
-      var i = sub.startIndex
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
-        sub.formIndex(after: &i)
+    #if COMPATIBLE_ATCODER_2025
+      do {
+        var i = sub.startIndex
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
+          sub.formIndex(after: &i)
+        }
+        XCTAssertEqual(i, sub.endIndex)
+        for j in 0..<sub.count {
+          XCTAssertEqual(set.distance(from: sub.endIndex, to: i), -j)
+          set.formIndex(before: &i)
+        }
+        XCTAssertEqual(i, sub.startIndex)
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
+          set.formIndex(after: &i)
+        }
+        XCTAssertEqual(i, sub.endIndex)
+        for j in 0..<sub.count {
+          XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
+          set.formIndex(before: &i)
+        }
+        XCTAssertEqual(i, sub.startIndex)
       }
+    #endif
+  }
+
+  #if COMPATIBLE_ATCODER_2025
+    func testIndex100() throws {
+      let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
+      XCTAssertEqual(set.index(set.startIndex, offsetBy: 6), set.endIndex)
+      XCTAssertEqual(set.index(set.endIndex, offsetBy: -6), set.startIndex)
+      let sub = set.elements(in: 2..<5)
+      XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
+      XCTAssertEqual(sub.index(sub.startIndex, offsetBy: 3), sub.endIndex)
+      XCTAssertEqual(sub.index(sub.endIndex, offsetBy: -3), sub.startIndex)
+    }
+
+    func testIndex10() throws {
+      let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
+      XCTAssertNotNil(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex))
+      XCTAssertNil(set.index(set.startIndex, offsetBy: 7, limitedBy: set.endIndex))
+      XCTAssertNotNil(set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex))
+      XCTAssertNil(set.index(set.endIndex, offsetBy: -7, limitedBy: set.startIndex))
+      let sub = set.elements(in: 2..<5)
+      XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
+      XCTAssertNotNil(sub.index(sub.startIndex, offsetBy: 3, limitedBy: sub.endIndex))
+      XCTAssertNil(sub.index(sub.startIndex, offsetBy: 4, limitedBy: sub.endIndex))
+      XCTAssertNotNil(sub.index(sub.endIndex, offsetBy: -3, limitedBy: sub.startIndex))
+      XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
+    }
+
+    func testIndex11() throws {
+      let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
+      var i = set.startIndex
+      XCTAssertTrue(set.formIndex(&i, offsetBy: 6, limitedBy: set.endIndex))
+      i = set.startIndex
+      XCTAssertFalse(set.formIndex(&i, offsetBy: 7, limitedBy: set.endIndex))
+      i = set.endIndex
+      XCTAssertTrue(set.formIndex(&i, offsetBy: -6, limitedBy: set.startIndex))
+      i = set.endIndex
+      XCTAssertFalse(set.formIndex(&i, offsetBy: -7, limitedBy: set.startIndex))
+      let sub = set.elements(in: 2..<5)
+      XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
+      i = sub.startIndex
+      XCTAssertTrue(sub.formIndex(&i, offsetBy: 3, limitedBy: sub.endIndex))
+      i = sub.startIndex
+      XCTAssertFalse(sub.formIndex(&i, offsetBy: 4, limitedBy: sub.endIndex))
+      i = sub.endIndex
+      XCTAssertTrue(sub.formIndex(&i, offsetBy: -3, limitedBy: sub.startIndex))
+      i = sub.endIndex
+      XCTAssertFalse(sub.formIndex(&i, offsetBy: -4, limitedBy: sub.startIndex))
+    }
+
+    func testIndex12() throws {
+      let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
+      var i = set.startIndex
+      set.formIndex(&i, offsetBy: 6)
+      XCTAssertEqual(i, set.endIndex)
+      i = set.endIndex
+      set.formIndex(&i, offsetBy: -6)
+      XCTAssertEqual(i, set.startIndex)
+      let sub = set.elements(in: 2..<5)
+      XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
+      i = sub.startIndex
+      sub.formIndex(&i, offsetBy: 3)
       XCTAssertEqual(i, sub.endIndex)
-      for j in 0..<sub.count {
-        XCTAssertEqual(set.distance(from: sub.endIndex, to: i), -j)
-        set.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, sub.startIndex)
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
-        set.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, sub.endIndex)
-      for j in 0..<sub.count {
-        XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
-        set.formIndex(before: &i)
-      }
+      i = sub.endIndex
+      sub.formIndex(&i, offsetBy: -3)
       XCTAssertEqual(i, sub.startIndex)
     }
-  }
-
-  func testIndex100() throws {
-    let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
-    XCTAssertEqual(set.index(set.startIndex, offsetBy: 6), set.endIndex)
-    XCTAssertEqual(set.index(set.endIndex, offsetBy: -6), set.startIndex)
-    let sub = set.elements(in: 2..<5)
-    XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
-    XCTAssertEqual(sub.index(sub.startIndex, offsetBy: 3), sub.endIndex)
-    XCTAssertEqual(sub.index(sub.endIndex, offsetBy: -3), sub.startIndex)
-  }
-
-  func testIndex10() throws {
-    let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
-    XCTAssertNotNil(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex))
-    XCTAssertNil(set.index(set.startIndex, offsetBy: 7, limitedBy: set.endIndex))
-    XCTAssertNotNil(set.index(set.endIndex, offsetBy: -6, limitedBy: set.startIndex))
-    XCTAssertNil(set.index(set.endIndex, offsetBy: -7, limitedBy: set.startIndex))
-    let sub = set.elements(in: 2..<5)
-    XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
-    XCTAssertNotNil(sub.index(sub.startIndex, offsetBy: 3, limitedBy: sub.endIndex))
-    XCTAssertNil(sub.index(sub.startIndex, offsetBy: 4, limitedBy: sub.endIndex))
-    XCTAssertNotNil(sub.index(sub.endIndex, offsetBy: -3, limitedBy: sub.startIndex))
-    XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
-  }
-
-  func testIndex11() throws {
-    let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
-    var i = set.startIndex
-    XCTAssertTrue(set.formIndex(&i, offsetBy: 6, limitedBy: set.endIndex))
-    i = set.startIndex
-    XCTAssertFalse(set.formIndex(&i, offsetBy: 7, limitedBy: set.endIndex))
-    i = set.endIndex
-    XCTAssertTrue(set.formIndex(&i, offsetBy: -6, limitedBy: set.startIndex))
-    i = set.endIndex
-    XCTAssertFalse(set.formIndex(&i, offsetBy: -7, limitedBy: set.startIndex))
-    let sub = set.elements(in: 2..<5)
-    XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
-    i = sub.startIndex
-    XCTAssertTrue(sub.formIndex(&i, offsetBy: 3, limitedBy: sub.endIndex))
-    i = sub.startIndex
-    XCTAssertFalse(sub.formIndex(&i, offsetBy: 4, limitedBy: sub.endIndex))
-    i = sub.endIndex
-    XCTAssertTrue(sub.formIndex(&i, offsetBy: -3, limitedBy: sub.startIndex))
-    i = sub.endIndex
-    XCTAssertFalse(sub.formIndex(&i, offsetBy: -4, limitedBy: sub.startIndex))
-  }
-
-  func testIndex12() throws {
-    let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
-    var i = set.startIndex
-    set.formIndex(&i, offsetBy: 6)
-    XCTAssertEqual(i, set.endIndex)
-    i = set.endIndex
-    set.formIndex(&i, offsetBy: -6)
-    XCTAssertEqual(i, set.startIndex)
-    let sub = set.elements(in: 2..<5)
-    XCTAssertEqual(sub.map { $0.key }, [2, 3, 4])
-    i = sub.startIndex
-    sub.formIndex(&i, offsetBy: 3)
-    XCTAssertEqual(i, sub.endIndex)
-    i = sub.endIndex
-    sub.formIndex(&i, offsetBy: -3)
-    XCTAssertEqual(i, sub.startIndex)
-  }
+  #endif
 
   func testRangeSubscript() throws {
     let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
@@ -1039,16 +887,16 @@ final class MultiMapTests: RedBlackTreeTestCase {
       let l2 = set.lowerBound(2)
       let u2 = set.upperBound(4)
       AssertEquenceEqual(
-        set[unchecked: l2..<u2].map { $0 }, [2, 3, 4].map { keyValue($0, $0 * 10) })
+        set[l2..<u2].map { $0 }, [2, 3, 4].map { keyValue($0, $0 * 10) })
       AssertEquenceEqual(
-        set[unchecked: l2...].map { $0 }, [2, 3, 4, 6, 7].map { keyValue($0, $0 * 10) })
-      AssertEquenceEqual(set[unchecked: u2...].map { $0 }, [6, 7].map { keyValue($0, $0 * 10) })
+        set[l2...].map { $0 }, [2, 3, 4, 6, 7].map { keyValue($0, $0 * 10) })
+      AssertEquenceEqual(set[u2...].map { $0 }, [6, 7].map { keyValue($0, $0 * 10) })
       AssertEquenceEqual(
-        set[unchecked: ..<u2].map { $0 }, [1, 2, 3, 4].map { keyValue($0, $0 * 10) })
+        set[..<u2].map { $0 }, [1, 2, 3, 4].map { keyValue($0, $0 * 10) })
       AssertEquenceEqual(
-        set[unchecked: ...u2].map { $0 }, [1, 2, 3, 4, 6].map { keyValue($0, $0 * 10) })
+        set[...u2].map { $0 }, [1, 2, 3, 4, 6].map { keyValue($0, $0 * 10) })
       AssertEquenceEqual(
-        set[unchecked: ..<set.endIndex].map { $0 },
+        set[..<set.endIndex].map { $0 },
         [1, 2, 3, 4, 6, 7].map { keyValue($0, $0 * 10) })
     }
   #endif
@@ -1059,9 +907,9 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = Target<Int, String>.Index
     #if DEBUG
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
       // UnsafeTreeは範囲外のインデックスを作成できない
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, nil)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr)
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
@@ -1081,8 +929,8 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isValid(index: set.endIndex))
     typealias Index = Target<Int, String>.Index
     #if DEBUG
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, 5)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, 5)
 
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
@@ -1264,10 +1112,12 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   }
 
-  func testIsValidRangeSmoke() throws {
-    let a = RedBlackTreeMultiMap<Int, Int>(naive: [0, 1, 2, 3, 4, 5].map { keyValue($0, $0) })
-    XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testIsValidRangeSmoke() throws {
+      let a = RedBlackTreeMultiMap<Int, Int>(naive: [0, 1, 2, 3, 4, 5].map { keyValue($0, $0) })
+      XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+    }
+  #endif
 
   #if !COMPATIBLE_ATCODER_2025
     func testSortedReversed() throws {
@@ -1291,7 +1141,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if COMPATIBLE_ATCODER_2025
     func testInitNaive_with_Sequence() throws {
       let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
       let a = RedBlackTreeMultiMap<Int, Int>(naive: AnySequence(source))
@@ -1299,7 +1149,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if COMPATIBLE_ATCODER_2025
     func testFilter() throws {
       let s = RedBlackTreeMultiMap<Int, String>(naive: (0..<5).map { ($0, "\($0)") })
       XCTAssertEqual(s.filter { _ in true }, s)

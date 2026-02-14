@@ -8,8 +8,8 @@
 // * index(_:offsetBy:) / limitedBy: の境界判定
 // * CoW 後の index 無効化 (base・slice とも false になる)
 
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class MultiMapSubSequenceTests: RedBlackTreeTestCase {
 
@@ -45,52 +45,54 @@ final class MultiMapSubSequenceTests: RedBlackTreeTestCase {
 
   // MARK: offsetBy / limitedBy ------------------------------------------
 
-  func testSliceIndexOffsetting() {
-    let dict: Target = [
-      10: 0, 11: 1, 12: 2, 13: 3, 14: 4,
-    ]
-    let slice = dict.elements(in: 11...13)  // 11,12,13
+  #if COMPATIBLE_ATCODER_2025
+    func testSliceIndexOffsetting() {
+      let dict: Target = [
+        10: 0, 11: 1, 12: 2, 13: 3, 14: 4,
+      ]
+      let slice = dict.elements(in: 11...13)  // 11,12,13
 
-    let idx = slice.index(slice.startIndex, offsetBy: 2)
-    XCTAssertEqual(slice[idx].key, 13)
+      let idx = slice.index(slice.startIndex, offsetBy: 2)
+      XCTAssertEqual(slice[idx].key, 13)
 
-    let nilIdx = slice.index(
-      slice.startIndex,
-      offsetBy: 10,
-      limitedBy: slice.endIndex)
-    XCTAssertNil(nilIdx)
-  }
+      let nilIdx = slice.index(
+        slice.startIndex,
+        offsetBy: 10,
+        limitedBy: slice.endIndex)
+      XCTAssertNil(nilIdx)
+    }
 
-  // MARK: 距離の対称性 ---------------------------------------------------
+    // MARK: 距離の対称性 ---------------------------------------------------
 
-  func testDistanceSymmetry() {
-    let dict: Target = [
-      0: "zero", 1: "one", 2: "two",
-      3: "three", 4: "four", 5: "five",
-    ]
-    let slice = dict.elements(in: 1...4)  // 1,2,3,4
+    func testDistanceSymmetry() {
+      let dict: Target = [
+        0: "zero", 1: "one", 2: "two",
+        3: "three", 4: "four", 5: "five",
+      ]
+      let slice = dict.elements(in: 1...4)  // 1,2,3,4
 
-    let i = slice.index(slice.startIndex, offsetBy: 1)  // 2
-    let j = slice.index(slice.startIndex, offsetBy: 3)  // 4
+      let i = slice.index(slice.startIndex, offsetBy: 1)  // 2
+      let j = slice.index(slice.startIndex, offsetBy: 3)  // 4
 
-    XCTAssertEqual(slice.distance(from: i, to: j), 2)
-    XCTAssertEqual(slice.distance(from: j, to: i), -2)
-  }
+      XCTAssertEqual(slice.distance(from: i, to: j), 2)
+      XCTAssertEqual(slice.distance(from: j, to: i), -2)
+    }
 
-  // MARK: CoW 後の index 無効化 -----------------------------------------
+    // MARK: CoW 後の index 無効化 -----------------------------------------
 
-  func testIndexInvalidationAfterCoWMutation() {
-    var base: Target = [
-      "x": 1, "y": 2, "z": 3,
-    ]
-    let slice = base.elements(in: "x"..."y")  // x,y
+    func testIndexInvalidationAfterCoWMutation() {
+      var base: Target = [
+        "x": 1, "y": 2, "z": 3,
+      ]
+      let slice = base.elements(in: "x"..."y")  // x,y
 
-    let idx = slice.firstIndex(where: { $0.key == "x" })!
+      let idx = slice.firstIndex(where: { $0.key == "x" })!
 
-    // CoW 発動
-    _ = base.removeAll(forKey: "x")
+      // CoW 発動
+      _ = base.removeAll(forKey: "x")
 
-    XCTAssertFalse(base.isValid(index: idx))
-    XCTAssertTrue(slice.isValid(index: idx))
-  }
+      XCTAssertFalse(base.isValid(index: idx))
+      XCTAssertTrue(slice.isValid(index: idx))
+    }
+  #endif
 }

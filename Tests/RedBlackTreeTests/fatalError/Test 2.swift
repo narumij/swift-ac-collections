@@ -18,9 +18,9 @@
         var a = RedBlackTreeSet((0..<5).map { $0 * 5 })
         var it = a[a.firstIndex(of: 5)!..<a.firstIndex(of: 20)!].makeIterator()
         #expect(a + [] == [0, 5, 10, 15, 20])
-        #expect(a.firstIndex(of: 20)?.rawValue?.raw == 4)
+        #expect(a.firstIndex(of: 20)?.value == 4)
         a.remove(5)
-        #expect(a.firstIndex(of: 1)?.rawValue?.raw == nil)
+        #expect(a.firstIndex(of: 1)?.value == nil)
         #expect(a + [] == [0, 10, 15, 20])
         #expect(it.next() == nil) // ここで落ちる
 //        #expect(it.next() == nil)
@@ -33,10 +33,10 @@
         var a = RedBlackTreeSet((0..<5).map { $0 * 5 })
         var it = a[a.firstIndex(of: 5)!..<a.firstIndex(of: 20)!].makeIterator()
         #expect(a + [] == [0, 5, 10, 15, 20])
-        #expect(a.firstIndex(of: 20)?.rawValue?.raw == 4)
+        #expect(a.firstIndex(of: 20)?.value == 4)
         a.remove(20)
         a.insert(1)
-        #expect(a.firstIndex(of: 1)?.rawValue?.raw == 4)
+        #expect(a.firstIndex(of: 1)?.value == 4)
         #expect(a + [] == [0, 1, 5, 10, 15])
         #expect(it.next() == 5) // ここで落ちてほしい
 //        #expect(it.next() == 10)
@@ -50,11 +50,11 @@
         var a = RedBlackTreeSet((0..<5).map { $0 * 5 })
         var it = a[a.firstIndex(of: 5)!..<a.firstIndex(of: 20)!].makeIterator()
         #expect(a + [] == [0, 5, 10, 15, 20])
-        #expect(a.firstIndex(of: 20)?.rawValue?.raw == 4)
+        #expect(a.firstIndex(of: 20)?.value == 4)
         a.remove(20)
         a.insert(30)
         a.insert(25)
-        #expect(a.firstIndex(of: 30)?.rawValue?.raw == 4)
+        #expect(a.firstIndex(of: 30)?.value == 4)
         #expect(a + [] == [0, 5, 10, 15, 25, 30])
         #expect(it.next() == 5) // ここで落ちてほしい
 //        #expect(it.next() == 10)
@@ -89,7 +89,7 @@
         var a = RedBlackTreeSet((0..<5).map { $0 * 5 })
         var it = a[a.firstIndex(of: 5)!..<a.lowerBound(20)].makeIterator()
         #expect(a + [] == [0, 5, 10, 15, 20])
-        #expect(a.firstIndex(of: 20)?.rawValue?.raw == 4)
+        #expect(a.firstIndex(of: 20)?.value == 4)
         a.remove(10) // remove awareが1個先まですすんでるので、先頭の次を消すと落ちる
         // xこの挙動をどうするかは悩み
         // oそもそもイテレータ作成後に元の配列を編集した場合の挙動は未定義ということでいいのだとおもう

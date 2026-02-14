@@ -52,7 +52,7 @@ final class Performaces: RedBlackTreeTestCase {
         #if COMPATIBLE_ATCODER_2025
           set.removeSubrange(set.startIndex..<set.endIndex)
         #else
-          set.removeAll(in: set.startIndex..<set.endIndex)
+          set.erase(set.startIndex..<set.endIndex)
         #endif
       }
     }
@@ -89,13 +89,15 @@ final class Performaces: RedBlackTreeTestCase {
       }
     }
 
-    func testPerformanceExample7() throws {
-      //    throw XCTSkip()
-      let set = RedBlackTreeSet<Int>(0..<10_000_000)
-      self.measure {
-        _ = set.firstIndex { $0 > 10_000_000 }
+    #if COMPATIBLE_ATCODER_2025
+      func testPerformanceExample7() throws {
+        //    throw XCTSkip()
+        let set = RedBlackTreeSet<Int>(0..<10_000_000)
+        self.measure {
+          _ = set.firstIndex { $0 > 10_000_000 }
+        }
       }
-    }
+    #endif
 
     func testPerformanceExample8() throws {
       //    throw XCTSkip()

@@ -16,67 +16,89 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
+
+  extension RedBlackTreeDictionary {
+    public typealias Bound = RedBlackTreeBoundExpression<Key>
+    public typealias BoundRange = RedBlackTreeBoundRangeExpression<Key>
+  }
+
   extension RedBlackTreeDictionary {
 
-    public subscript(bounds: RedBlackTreeBoundRangeExpression<Key>) -> SubSequence {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
-      }
-      return .init(tree: __tree_, start: lower, end: upper)
-    }
+    /// 該当する要素を取得可能かどうかの判定結果を返す
+    @inlinable
+    public func isValid(_ bound: Bound) -> Bool {
 
-    public subscript(unchecked bounds: RedBlackTreeBoundRangeExpression<Key>) -> SubSequence {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      return .init(tree: __tree_, start: lower, end: upper)
+      let sealed = bound.relative(to: __tree_)
+      return sealed.isValid && !sealed.___is_end!
     }
+  }
 
-    public func indices(bounds: RedBlackTreeBoundRangeExpression<Key>)
-      -> UnsafeIndexV2Collection<Self>
-    {
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
-      }
-      return .init(start: lower, end: upper, tie: __tree_.tied)
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    public subscript(bound: Bound) -> Element? {
+
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      return Base.__element_(__tree_[_unsafe_raw: p])
     }
+  }
 
-    public mutating func removeBounds(_ bounds: RedBlackTreeBoundRangeExpression<Key>) {
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    public mutating func erase(_ bound: Bound) -> Element? {
+
+      __tree_.ensureUnique()
+      let p = bound.relative(to: __tree_)
+      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      return Base.__element_(_unchecked_remove(at: p).payload)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    public mutating func erase(_ bounds: BoundRange) {
+
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      __tree_.___checking_erase(lower.pointer!, upper.pointer!)
+      __tree_.___erase(lower.pointer!, upper.pointer!)
     }
 
-    public mutating func removeBounds(unchecked bounds: RedBlackTreeBoundRangeExpression<Key>) {
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      __tree_.___checking_erase(lower.pointer!, upper.pointer!)
-    }
-
-    public mutating func removeBounds(
-      _ bounds: RedBlackTreeBoundRangeExpression<Key>,
-      where shouldBeRemoved: (Element) throws -> Bool
+    @inlinable
+    public mutating func erase(
+      _ bounds: BoundRange, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
+
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___checking_erase_if(
-        lower.pointer!, upper.pointer!, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
+      try __tree_.___erase_if(
+        lower, upper, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
     }
+  }
 
-    public mutating func removeBounds(
-      unchecked bounds: RedBlackTreeBoundRangeExpression<Key>,
-      where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows {
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      try __tree_.___checking_erase_if(
-        lower.pointer!, upper.pointer!, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    public subscript(bounds: BoundRange) -> View {
+
+      @inline(__always) get {
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
+        return self[unchecked: lower, upper]
+      }
+
+      @inline(__always) _modify {
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
+        yield &self[unchecked: lower, upper]
+      }
+
     }
   }
 #endif

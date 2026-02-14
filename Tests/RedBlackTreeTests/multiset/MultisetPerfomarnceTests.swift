@@ -5,7 +5,7 @@ final class MultisetPerfomarnceTests: RedBlackTreeTestCase {
 
   #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceDistanceFromTo() throws {
-//      throw XCTSkip()
+      //      throw XCTSkip()
       let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
       self.measure {
         // BidirectionalCollectionの実装の場合、0.3sec
@@ -16,7 +16,7 @@ final class MultisetPerfomarnceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceIndexOffsetBy1() throws {
-//      throw XCTSkip()
+      //      throw XCTSkip()
       let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.index(s.startIndex, offsetBy: 1_000_000), s.endIndex)
@@ -24,7 +24,7 @@ final class MultisetPerfomarnceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceIndexOffsetBy2() throws {
-//      throw XCTSkip()
+      //      throw XCTSkip()
       let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.index(s.endIndex, offsetBy: -1_000_000), s.startIndex)
@@ -32,7 +32,7 @@ final class MultisetPerfomarnceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceFirstIndex1() throws {
-//      throw XCTSkip()
+      //      throw XCTSkip()
       let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.firstIndex(of: 1_000_000 - 1), s.index(before: s.endIndex))
@@ -40,7 +40,7 @@ final class MultisetPerfomarnceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceFirstIndex2() throws {
-//      throw XCTSkip()
+      //      throw XCTSkip()
       let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.firstIndex(of: 0), s.startIndex)
@@ -48,35 +48,38 @@ final class MultisetPerfomarnceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceFirstIndex3() throws {
-//      throw XCTSkip()
+      //      throw XCTSkip()
       let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.firstIndex(of: 1_000_000), nil)
       }
     }
 
-    func testPerformanceFirstIndex4() throws {
-//      throw XCTSkip()
-      let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
-      self.measure {
-        XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 - 1 }), s.index(before: s.endIndex))
+    #if COMPATIBLE_ATCODER_2025
+      func testPerformanceFirstIndex4() throws {
+        //      throw XCTSkip()
+        let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
+        self.measure {
+          XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 - 1 }), s.index(before: s.endIndex))
+        }
       }
-    }
 
-    func testPerformanceFirstIndex5() throws {
-//      throw XCTSkip()
-      let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
-      self.measure {
-        XCTAssertEqual(s.firstIndex(where: { $0 >= 0 }), s.startIndex)
+      func testPerformanceFirstIndex5() throws {
+        //      throw XCTSkip()
+        let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
+        self.measure {
+          XCTAssertEqual(s.firstIndex(where: { $0 >= 0 }), s.startIndex)
+        }
       }
-    }
 
-    func testPerformanceFirstIndex6() throws {
-//      throw XCTSkip()
-      let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
-      self.measure {
-        XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
+      func testPerformanceFirstIndex6() throws {
+        //      throw XCTSkip()
+        let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
+        self.measure {
+          XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
+        }
       }
-    }
+    #endif
+  
   #endif
 }

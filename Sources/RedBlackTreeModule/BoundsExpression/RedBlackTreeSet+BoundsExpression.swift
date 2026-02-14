@@ -18,9 +18,15 @@
 #if !COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeSet {
-    
+    public typealias Bound = RedBlackTreeBoundExpression<Element>
+    public typealias BoundRange = RedBlackTreeBoundRangeExpression<Element>
+  }
+
+  extension RedBlackTreeSet {
+
     /// 該当する要素を取得可能かどうかの判定結果を返す
-    public func isValid(_ bound: RedBlackTreeBoundExpression<Element>) -> Bool {
+    @inlinable
+    public func isValid(_ bound: Bound) -> Bool {
       let sealed = bound.relative(to: __tree_)
       return sealed.isValid && !sealed.___is_end!
     }
@@ -35,7 +41,7 @@
     /// 要素位置を評価した結果が末尾の次や失敗の場合、nilを返す
     ///
     @inlinable
-    public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
+    public subscript(bound: Bound) -> Element? {
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return __tree_[_unsafe_raw: p]
@@ -44,7 +50,8 @@
 
   extension RedBlackTreeSet {
 
-    public mutating func remove(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
+    @inlinable
+    public mutating func erase(_ bound: Bound) -> Element? {
       __tree_.ensureUnique()
       let p = bound.relative(to: __tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
@@ -54,67 +61,46 @@
 
   extension RedBlackTreeSet {
 
-    // MARK: -
+    @inlinable
+    public mutating func erase(_ bounds: BoundRange) {
 
-    public func count(
-      _ bounds: RedBlackTreeBoundRangeExpression<Element>
-    )
-      -> Int?
-    {
-      guard let d = distance(bounds), d >= 0 else {
-        return nil
-      }
-      return d
-    }
-
-    public func distance(
-      _ bounds: RedBlackTreeBoundRangeExpression<Element>
-    )
-      -> Int?
-    {
+      __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
-      return __tree_.___distance(from: lower, to: upper)
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        fatalError(.invalidIndex)
+      }
+      __tree_.___erase(lower.pointer!, upper.pointer!)
     }
 
-    public subscript(bounds: RedBlackTreeBoundRangeExpression<Element>)
-      -> RedBlackTreeKeyOnlyRangeView<Self>
-    {
+    @inlinable
+    public mutating func erase(
+      _ bounds: BoundRange, where shouldBeRemoved: (Element) throws -> Bool
+    ) rethrows {
+
+      __tree_.ensureUnique()
+      let (lower, upper) = bounds.relative(to: __tree_)
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        fatalError(.invalidIndex)
+      }
+      try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    public subscript(bounds: BoundRange) -> View {
+
       @inline(__always) get {
         let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
-        return .init(__tree_: __tree_, _start: lower, _end: upper)
+        return self[unchecked: lower, upper]
       }
+
       @inline(__always) _modify {
         let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
-        var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: lower, _end: upper)
-        self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
-        defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
-        yield &view
+        yield &self[unchecked: lower, upper]
       }
-    }
 
-    public mutating func removeAll(
-      in bounds: RedBlackTreeBoundRangeExpression<Element>
-    ) {
-      
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
-      }
-      __tree_.___checking_erase(lower.pointer!, upper.pointer!)
-    }
-
-    public mutating func removeAll(
-      in bounds: RedBlackTreeBoundRangeExpression<Element>,
-      where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows {
-      
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
-      }
-      try __tree_.___erase_if(lower.pointer!, upper.pointer!, shouldBeRemoved: shouldBeRemoved)
     }
   }
 #endif

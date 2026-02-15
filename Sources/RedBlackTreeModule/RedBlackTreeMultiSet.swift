@@ -610,11 +610,9 @@ extension RedBlackTreeMultiSet {
 
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
-    public func equalRange(_ element: Element) -> (
-      lower: Index, upper: Index
-    ) {
+    public func equalRange(_ element: Element) -> UnsafeIndexV3Range {
       let (lower, upper) = __tree_.__equal_range_multi(element)
-      return (___index(lower.sealed), ___index(upper.sealed))
+      return .init(.init(lowerBound: ___index(lower.sealed), upperBound: ___index(upper.sealed)))
     }
   }
 
@@ -740,18 +738,18 @@ extension RedBlackTreeMultiSet {
 // MARK: -
 
 #if !COMPATIBLE_ATCODER_2025
-extension RedBlackTreeMultiSet {
+  extension RedBlackTreeMultiSet {
 
-  // TODO: イテレータ利用の注意をドキュメントすること
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n* : *k*)
-  @inlinable
-  @discardableResult
-  public mutating func eraseMulti(_ member: Element) -> Element? {
-    __tree_._strongEnsureUnique()
-    return __tree_.___erase_multi(member) != 0 ? member : nil
+    // TODO: イテレータ利用の注意をドキュメントすること
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Complexity: O(log *n* : *k*)
+    @inlinable
+    @discardableResult
+    public mutating func eraseMulti(_ member: Element) -> Element? {
+      __tree_._strongEnsureUnique()
+      return __tree_.___erase_multi(member) != 0 ? member : nil
+    }
   }
-}
 #endif
 
 #if !COMPATIBLE_ATCODER_2025

@@ -5,7 +5,6 @@
 //  Created by narumij on 2026/02/15.
 //
 
-@frozen
 public struct _RawRange<Bound> {
 
   @usableFromInline

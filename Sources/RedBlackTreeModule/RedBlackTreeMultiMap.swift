@@ -745,11 +745,9 @@ extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
-    public func equalRange(_ key: Key) -> (
-      lower: Index, upper: Index
-    ) {
+    public func equalRange(_ key: Key) -> UnsafeIndexV3Range {
       let (lower, upper) = __tree_.__equal_range_multi(key)
-      return (___index(lower.sealed), ___index(upper.sealed))
+      return .init(.init(lowerBound: ___index(lower.sealed), upperBound: ___index(upper.sealed)))
     }
   }
 

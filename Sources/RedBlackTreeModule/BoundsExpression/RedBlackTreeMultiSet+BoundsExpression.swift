@@ -58,6 +58,8 @@
     }
   }
 
+  // MARK: -
+
   extension RedBlackTreeMultiSet {
 
     @inlinable

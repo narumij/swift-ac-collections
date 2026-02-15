@@ -59,8 +59,11 @@
     }
   }
 
-  extension RedBlackTreeSet {
+  // MARK: -
 
+  extension RedBlackTreeSet {
+    
+    // TODO: 条件の再検証
     @inlinable
     public func isValid(_ bounds: BoundRange) -> Bool {
       let range = bounds._evaluate(__tree_)._relative(to: __tree_)
@@ -68,6 +71,9 @@
         && range.lowerBound.isValid
         && range.upperBound.isValid
     }
+  }
+
+  extension RedBlackTreeSet {
 
     @inlinable
     public mutating func erase(_ bounds: BoundRange) {

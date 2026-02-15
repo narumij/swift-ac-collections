@@ -42,7 +42,8 @@ final class RedBlackTreeSetSearchTests: RedBlackTreeTestCase {
   func test_equalRange_shouldReturnCorrectRange() {
     let set = RedBlackTreeSet([1, 2, 3, 4, 5])
 
-    let (lower, upper) = set.equalRange(3)
+    let r = set.equalRange(3)
+    let (lower, upper) = (r.lowerBound, r.upperBound)
     XCTAssertEqual(set[lower], 3)
     XCTAssertEqual(upper, set.index(after: lower))
   }

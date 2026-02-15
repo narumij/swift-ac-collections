@@ -20,7 +20,7 @@
   extension RedBlackTreeSet {
 
     public typealias View = RedBlackTreeKeyOnlyRangeView<Base>
-    public typealias IndexRange = UnsafeIndexV3RangeExpression
+    public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
@@ -28,7 +28,7 @@
     }
 
     @inlinable
-    public func isValid(_ bounds: IndexRange) -> Bool {
+    public func isValid(_ bounds: IndexRangeExpression) -> Bool {
       let (l, u) = bounds.relative(to: __tree_)
       return __tree_.isValidSealedRange(lower: l, upper: u) && l.isValid && u.isValid
     }
@@ -44,7 +44,27 @@
     }
 
     @inlinable
-    public subscript(bounds: IndexRange) -> View {
+    public subscript(bounds: UnsafeIndexV3Range) -> View {
+      @inline(__always) get {
+        // TODO: 木の同一性チェックを行うこと
+        let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
+        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        return self[unchecked: lower, upper]
+      }
+      @inline(__always) _modify {
+        // TODO: 木の同一性チェックを行うこと
+        let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
+        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        yield &self[unchecked: lower, upper]
+      }
+    }
+
+    @inlinable
+    public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
         let (lower, upper) = bounds.relative(to: __tree_)
         guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
@@ -68,7 +88,18 @@
     }
 
     @inlinable
-    public mutating func erase(_ bounds: IndexRange) {
+    public mutating func erase(_ bounds: UnsafeIndexV3Range) {
+      __tree_.ensureUnique()
+      // TODO: 木の同一性チェックを行うこと
+      let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        fatalError(.invalidIndex)
+      }
+      _ = ___remove(from: lower.pointer!, to: upper.pointer!)
+    }
+
+    @inlinable
+    public mutating func erase(_ bounds: IndexRangeExpression) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
@@ -79,7 +110,7 @@
 
     @inlinable
     public mutating func erase(
-      _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
+      _ bounds: IndexRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
     )
       rethrows
     {

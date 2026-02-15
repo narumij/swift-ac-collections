@@ -20,7 +20,7 @@
   extension RedBlackTreeMultiSet {
 
     public typealias View = RedBlackTreeKeyOnlyRangeView<Base>
-    public typealias IndexRange = UnsafeIndexV3RangeExpression
+    public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
@@ -28,7 +28,7 @@
     }
 
     @inlinable
-    public func isValid(_ bounds: IndexRange) -> Bool {
+    public func isValid(_ bounds: IndexRangeExpression) -> Bool {
       let (l, u) = bounds.relative(to: __tree_)
       return __tree_.isValidSealedRange(lower: l, upper: u) && l.isValid && u.isValid
     }
@@ -44,7 +44,7 @@
     }
 
     @inlinable
-    public subscript(bounds: IndexRange) -> View {
+    public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
         let (lower, upper) = bounds.relative(to: __tree_)
         guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
@@ -68,7 +68,7 @@
     }
 
     @inlinable
-    public mutating func erase(_ bounds: IndexRange) {
+    public mutating func erase(_ bounds: IndexRangeExpression) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
@@ -79,7 +79,7 @@
 
     @inlinable
     public mutating func erase(
-      _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
+      _ bounds: IndexRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
       __tree_.ensureUnique()

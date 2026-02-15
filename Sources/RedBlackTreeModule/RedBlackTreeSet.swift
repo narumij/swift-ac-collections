@@ -709,11 +709,9 @@ extension RedBlackTreeSet {
 
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
-    public func equalRange(_ element: Element) -> (
-      lower: Index, upper: Index
-    ) {
+    public func equalRange(_ element: Element) -> UnsafeIndexV3Range {
       let (lower, upper) = __tree_.__equal_range_unique(element)
-      return (___index(lower.sealed), ___index(upper.sealed))
+      return .init(.init(lowerBound: ___index(lower.sealed), upperBound: ___index(upper.sealed)))
     }
   }
 

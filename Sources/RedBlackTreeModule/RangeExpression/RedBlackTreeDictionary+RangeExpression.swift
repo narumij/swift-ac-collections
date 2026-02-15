@@ -30,8 +30,10 @@
     @inlinable
     public func isValid(_ bounds: UnsafeIndexV3Range) -> Bool {
       // TODO: 木の同一性チェックを行うこと
-      let (l, u) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
-      return __tree_.isValidSealedRange(lower: l, upper: u) && l.isValid && u.isValid
+      let r = __tree_.__purified_(bounds.range)
+      return __tree_.isValidSealedRange(lower: r.lowerBound, upper: r.upperBound)
+        && r.lowerBound.isValid
+        && r.upperBound.isValid
     }
 
     @inlinable
@@ -151,6 +153,25 @@
   }
 
   extension RedBlackTreeDictionary {
+
+    @inlinable
+    subscript(unchecked range: _RawRange<_SealedPtr>) -> View {
+      @inline(__always) get {
+        RedBlackTreeKeyValueRangeView(
+          __tree_: __tree_,
+          _start: range.lowerBound,
+          _end: range.upperBound)
+      }
+      @inline(__always) _modify {
+        var view = RedBlackTreeKeyValueRangeView(
+          __tree_: __tree_,
+          _start: range.lowerBound,
+          _end: range.upperBound)
+        self = RedBlackTreeDictionary()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeDictionary(__tree_: view.__tree_) }
+        yield &view
+      }
+    }
 
     @inlinable
     subscript(unchecked _start: _SealedPtr, _end: _SealedPtr) -> View {

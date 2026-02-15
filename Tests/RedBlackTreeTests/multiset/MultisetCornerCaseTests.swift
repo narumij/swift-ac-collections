@@ -35,9 +35,15 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
     XCTAssertNotNil(ms.remove(5))  // 1 個だけ
     XCTAssertEqual(ms.count(of: 5), 2)
 
-    XCTAssertNotNil(ms.removeAll(5))  // 全消し
-    XCTAssertFalse(ms.contains(5))
-    XCTAssertNil(ms.removeAll(5))  // もう無いので nil
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertNotNil(ms.removeAll(5))  // 全消し
+      XCTAssertFalse(ms.contains(5))
+      XCTAssertNil(ms.removeAll(5))  // もう無いので nil
+    #else
+      XCTAssertNotNil(ms.eraseMulti(5))  // 全消し
+      XCTAssertFalse(ms.contains(5))
+      XCTAssertNil(ms.eraseMulti(5))  // もう無いので nil
+    #endif
   }
 
   func testLowerUpperBoundsWithDuplicates() {
@@ -100,8 +106,13 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
           _ = ms.remove(v)
           ref.removeOne(v)
         case 2:  // removeAll
-          _ = ms.removeAll(v)
-          ref.removeAll(v)
+          #if COMPATIBLE_ATCODER_2025
+            _ = ms.removeAll(v)
+            ref.removeAll(v)
+          #else
+            _ = ms.eraseMulti(v)
+            ref.removeAll(v)
+          #endif
         default:  // count check only
           break
         }

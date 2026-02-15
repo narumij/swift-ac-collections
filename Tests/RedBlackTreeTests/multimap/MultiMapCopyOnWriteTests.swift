@@ -45,7 +45,11 @@ import XCTest
       XCTAssertEqual(set._copyCount, 0)
       set.insert(key: 0, value: 0)
       XCTAssertEqual(set._copyCount, 0)
-      set.removeAll(forKey: 0)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(forKey: 0)
+      #else
+        set.eraseMulti(0)
+      #endif
       XCTAssertEqual(set._copyCount, 0)
       _ = set.lowerBound(0)
       _ = set.upperBound(0)
@@ -114,7 +118,11 @@ import XCTest
     func testSet6() throws {
       tree._copyCount = 0
       for v in tree.filter({ _ in true }) {
-        tree.removeAll(forKey: v.key)
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(forKey: v.key)
+        #else
+          tree.eraseMulti(v.key)
+        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
@@ -123,7 +131,11 @@ import XCTest
     func testSet7() throws {
       tree._copyCount = 0
       for v in tree {
-        tree.removeAll(forKey: v.key)
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(forKey: v.key)
+        #else
+          tree.eraseMulti(v.key)
+        #endif
       }
       XCTAssertEqual(tree.count, 0)
       #if USE_SIMPLE_COPY_ON_WRITE
@@ -136,7 +148,11 @@ import XCTest
     func testSet8() throws {
       tree._copyCount = 0
       for v in tree + [] {
-        tree.removeAll(forKey: v.key)
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(forKey: v.key)
+        #else
+          tree.eraseMulti(v.key)
+        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
@@ -145,7 +161,11 @@ import XCTest
     func testSet9() throws {
       tree._copyCount = 0
       tree.forEach { v in
-        tree.removeAll(forKey: v.key)
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(forKey: v.key)
+        #else
+          tree.eraseMulti(v.key)
+        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 1)
@@ -154,7 +174,11 @@ import XCTest
     func testSet10() throws {
       tree._copyCount = 0
       for v in tree + [] {
-        tree.removeAll(forKey: v.key)
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(forKey: v.key)
+        #else
+          tree.eraseMulti(v.key)
+        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
@@ -163,7 +187,11 @@ import XCTest
     func testSet11() throws {
       tree._copyCount = 0
       for v in tree.filter({ _ in true }) {
-        tree.removeAll(forKey: v.key)
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(forKey: v.key)
+        #else
+          tree.eraseMulti(v.key)
+        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)

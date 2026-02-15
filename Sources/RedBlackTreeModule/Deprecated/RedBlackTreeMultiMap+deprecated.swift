@@ -457,6 +457,21 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
+    // TODO: イテレータ利用の注意をドキュメントすること
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @discardableResult
+    public mutating func removeAll(forKey key: Key) -> Int {
+      __tree_._strongEnsureUnique()
+      return __tree_.___erase_multi(key)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
     /// - Complexity: O(log *n*)
     @inlinable
     @inline(__always)

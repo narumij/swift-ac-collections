@@ -77,7 +77,11 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(map[0].map(\.value), [1])
     XCTAssertEqual(map[1].map(\.value), [])
     XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, [(0, 1)]).allSatisfy(==))
-    map.removeAll(forKey: 0)
+    #if COMPATIBLE_ATCODER_2025
+      map.removeAll(forKey: 0)
+    #else
+      map.eraseMulti(0)
+    #endif
     //    map.removeValue(forKey: 0)
     XCTAssertEqual(map[0].map(\.value), [])
     XCTAssertEqual(map[1].map(\.value), [])
@@ -88,7 +92,11 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(map[1].map(\.value), [2])
     XCTAssertEqual(map.map(\.key), [1])
     XCTAssertEqual(map.map(\.value), [2])
-    map.removeAll(forKey: 1)
+    #if COMPATIBLE_ATCODER_2025
+      map.removeAll(forKey: 1)
+    #else
+      map.eraseMulti(1)
+    #endif
     //    map.removeValue(forKey: 10)
     XCTAssertEqual(map[0].map(\.value), [])
     XCTAssertEqual(map[1].map(\.value), [])
@@ -105,10 +113,18 @@ final class MultiMapTests: RedBlackTreeTestCase {
     map.insert((1, 2))
     XCTAssertEqual(map[0].map(\.value), [0])
     XCTAssertEqual(map[1].map(\.value), [2])
-    map.removeAll(forKey: 0)
+    #if COMPATIBLE_ATCODER_2025
+      map.removeAll(forKey: 0)
+    #else
+      map.eraseMulti(0)
+    #endif
     XCTAssertEqual(map[0].map(\.value), [])
     XCTAssertEqual(map[1].map(\.value), [2])
-    map.removeAll(forKey: 1)
+    #if COMPATIBLE_ATCODER_2025
+      map.removeAll(forKey: 1)
+    #else
+      map.eraseMulti(1)
+    #endif
     XCTAssertEqual(map[0].map(\.value), [])
     XCTAssertEqual(map[1].map(\.value), [])
     map.insert((1, 3))
@@ -407,7 +423,11 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(forKey: i)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(forKey: i)
+      #else
+        set.eraseMulti(i)
+      #endif
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -415,7 +435,11 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(forKey: i)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(forKey: i)
+      #else
+        set.eraseMulti(i)
+      #endif
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -440,7 +464,11 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
     XCTAssertEqual(set.map { $0.value }, set[set.startIndex..<set.endIndex].map { $0.value })
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(forKey: i)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(forKey: i)
+      #else
+        set.eraseMulti(i)
+      #endif
       XCTAssertTrue(set.___tree_invariant())
     }
     XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
@@ -452,7 +480,11 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
     XCTAssertEqual(set.map { $0.value }, set[set.startIndex..<set.endIndex].map { $0.value })
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(forKey: i)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(forKey: i)
+      #else
+        set.eraseMulti(i)
+      #endif
       XCTAssertTrue(set.___tree_invariant())
     }
     XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
@@ -485,7 +517,11 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(forKey: i)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(forKey: i)
+      #else
+        set.eraseMulti(i)
+      #endif
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -493,7 +529,11 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(forKey: i)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(forKey: i)
+      #else
+        set.eraseMulti(i)
+      #endif
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -509,7 +549,11 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(forKey: i)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(forKey: i)
+      #else
+        set.eraseMulti(i)
+      #endif
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -517,7 +561,11 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(forKey: i)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(forKey: i)
+      #else
+        set.eraseMulti(i)
+      #endif
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {

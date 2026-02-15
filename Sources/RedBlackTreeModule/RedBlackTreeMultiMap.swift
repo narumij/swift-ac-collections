@@ -316,11 +316,8 @@ extension RedBlackTreeMultiMap {
   @discardableResult
   public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
     __tree_.ensureUnique()
-    guard let p = try? __tree_.__purified_(ptr).get().pointer,
-      !p.___is_end
-    else {
-      return nil
-    }
+    guard let p = __tree_.__purified_(ptr).pointer, p.sealed.exists
+    else { return nil }
     let old = __tree_[_unsafe_raw: p]
     __tree_[_unsafe_raw: p].value = newValue
     return Self.__element_(old)
@@ -446,16 +443,6 @@ extension RedBlackTreeMultiMap {
   public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
     __tree_.ensureUnique()
     return __tree_.___erase_unique(key)
-  }
-
-  // TODO: イテレータ利用の注意をドキュメントすること
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n* + *k*)
-  @inlinable
-  @discardableResult
-  public mutating func removeAll(forKey key: Key) -> Int {
-    __tree_._strongEnsureUnique()
-    return __tree_.___erase_multi(key)
   }
 }
 
@@ -886,6 +873,21 @@ extension RedBlackTreeMultiMap {
 #endif
 
 // MARK: -
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    // TODO: イテレータ利用の注意をドキュメントすること
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @discardableResult
+    public mutating func eraseMulti(_ key: Key) -> Int {
+      __tree_._strongEnsureUnique()
+      return __tree_.___erase_multi(key)
+    }
+  }
+#endif
 
 #if !COMPATIBLE_ATCODER_2025
 

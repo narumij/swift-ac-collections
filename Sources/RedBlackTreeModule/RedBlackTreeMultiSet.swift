@@ -415,19 +415,6 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  // TODO: イテレータ利用の注意をドキュメントすること
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n* : *k*)
-  @inlinable
-  @discardableResult
-  public mutating func removeAll(_ member: Element) -> Element? {
-    __tree_._strongEnsureUnique()
-    return __tree_.___erase_multi(member) != 0 ? member : nil
-  }
-}
-
-extension RedBlackTreeMultiSet {
-
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -751,6 +738,21 @@ extension RedBlackTreeMultiSet {
 #endif
 
 // MARK: -
+
+#if !COMPATIBLE_ATCODER_2025
+extension RedBlackTreeMultiSet {
+
+  // TODO: イテレータ利用の注意をドキュメントすること
+  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Complexity: O(log *n* : *k*)
+  @inlinable
+  @discardableResult
+  public mutating func eraseMulti(_ member: Element) -> Element? {
+    __tree_._strongEnsureUnique()
+    return __tree_.___erase_multi(member) != 0 ? member : nil
+  }
+}
+#endif
 
 #if !COMPATIBLE_ATCODER_2025
 

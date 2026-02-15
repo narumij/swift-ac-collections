@@ -138,6 +138,9 @@
       var set = RedBlackTreeSet(0..<3)
       set[...].erase()
       XCTAssertTrue(set.isEmpty)
+      #if DEBUG
+        XCTAssertEqual(set._copyCount, 0)
+      #endif
     }
 
     func testEraseRange() {

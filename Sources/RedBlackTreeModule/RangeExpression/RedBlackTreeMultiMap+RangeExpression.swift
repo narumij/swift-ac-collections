@@ -29,15 +29,18 @@
 
     @inlinable
     public func isValid(_ bounds: UnsafeIndexV3Range) -> Bool {
-      // TODO: 木の同一性チェックを行うこと
-      let (l, u) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
-      return __tree_.isValidSealedRange(lower: l, upper: u) && l.isValid && u.isValid
+      let range = __tree_.__purified_(bounds.range)
+      return __tree_.isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
+        && range.lowerBound.isValid
+        && range.upperBound.isValid
     }
 
     @inlinable
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
-      let (l, u) = bounds.relative(to: __tree_)
-      return __tree_.isValidSealedRange(lower: l, upper: u) && l.isValid && u.isValid
+      let range = __tree_.__purified_(bounds._relative(to: __tree_))
+      return __tree_.isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
+        && range.lowerBound.isValid
+        && range.upperBound.isValid
     }
 
     @inlinable
@@ -53,38 +56,36 @@
     @inlinable
     public subscript(bounds: UnsafeIndexV3Range) -> View {
       @inline(__always) get {
-        // TODO: 木の同一性チェックを行うこと
-        let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
-        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        let range = __tree_.__purified_(bounds.range)
+        guard __tree_.isValidSealedRange(range) else {
           fatalError(.invalidIndex)
         }
-        return self[unchecked: lower, upper]
+        return self[unchecked: range]
       }
       @inline(__always) _modify {
-        // TODO: 木の同一性チェックを行うこと
-        let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
-        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        let range = __tree_.__purified_(bounds.range)
+        guard __tree_.isValidSealedRange(range) else {
           fatalError(.invalidIndex)
         }
-        yield &self[unchecked: lower, upper]
+        yield &self[unchecked: range]
       }
     }
 
     @inlinable
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
-        let (lower, upper) = bounds.relative(to: __tree_)
-        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        let range = __tree_.__purified_(bounds._relative(to: __tree_))
+        guard __tree_.isValidSealedRange(range) else {
           fatalError(.invalidIndex)
         }
-        return self[unchecked: lower, upper]
+        return self[unchecked: range]
       }
       @inline(__always) _modify {
-        let (lower, upper) = bounds.relative(to: __tree_)
-        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        let range = __tree_.__purified_(bounds._relative(to: __tree_))
+        guard __tree_.isValidSealedRange(range) else {
           fatalError(.invalidIndex)
         }
-        yield &self[unchecked: lower, upper]
+        yield &self[unchecked: range]
       }
     }
 
@@ -97,22 +98,21 @@
     @inlinable
     public mutating func erase(_ bounds: UnsafeIndexV3Range) {
       __tree_.ensureUnique()
-      // TODO: 木の同一性チェックを行うこと
-      let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+      let range = __tree_.__purified_(bounds.range)
+      guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
-      _ = ___remove(from: lower.pointer!, to: upper.pointer!)
+      _ = ___remove(from: range.lowerBound.pointer!, to: range.upperBound.pointer!)
     }
 
     @inlinable
     public mutating func erase(_ bounds: IndexRangeExpression) {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+      let range = __tree_.__purified_(bounds._relative(to: __tree_))
+      guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
-      _ = ___remove(from: lower.pointer!, to: upper.pointer!)
+      _ = ___remove(from: range.lowerBound.pointer!, to: range.upperBound.pointer!)
     }
 
     @inlinable
@@ -122,12 +122,11 @@
       rethrows
     {
       __tree_.ensureUnique()
-      // TODO: 木の同一性チェックを行うこと
-      let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+      let range = __tree_.__purified_(bounds.range)
+      guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(lower, upper) {
+      try __tree_.___erase_if(range.lowerBound, range.upperBound) {
         try shouldBeRemoved(Base.__element_($0))
       }
     }
@@ -140,11 +139,11 @@
     {
 
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+      let range = __tree_.__purified_(bounds._relative(to: __tree_))
+      guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(lower, upper) {
+      try __tree_.___erase_if(range.lowerBound, range.upperBound) {
         try shouldBeRemoved(Base.__element_($0))
       }
     }

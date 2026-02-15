@@ -40,7 +40,8 @@
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
       let range = __tree_.__purified_(bounds._relative(to: __tree_))
       return __tree_.isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
-        && range.lowerBound.isValid && range.upperBound.isValid
+        && range.lowerBound.isValid
+        && range.upperBound.isValid
     }
 
     @inlinable

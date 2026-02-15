@@ -43,7 +43,7 @@ final class RedBlackTreeSetSearchTests: RedBlackTreeTestCase {
     let set = RedBlackTreeSet([1, 2, 3, 4, 5])
 
     let r = set.equalRange(3)
-    let (lower, upper) = (r.lowerBound, r.upperBound)
+    let (lower, upper) = (r.lower, r.upper)
     XCTAssertEqual(set[lower], 3)
     XCTAssertEqual(upper, set.index(after: lower))
   }

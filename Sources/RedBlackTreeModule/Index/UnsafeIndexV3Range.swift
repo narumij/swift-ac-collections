@@ -8,6 +8,14 @@
 @frozen
 public struct UnsafeIndexV3Range: _UnsafeNodePtrType {
 
+  package var lower: _TieWrappedPtr {
+    range.lowerBound
+  }
+
+  package var upper: _TieWrappedPtr {
+    range.upperBound
+  }
+  
   public var lowerBound: _TieWrappedPtr {
     range.lowerBound
   }

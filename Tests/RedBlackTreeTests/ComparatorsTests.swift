@@ -27,7 +27,7 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
   func testSetEqualRange() {
     let set: RedBlackTreeSet = [1, 2, 3, 4, 5]
     let r = set.equalRange(3)
-    let (lo, hi) = (r.lowerBound, r.upperBound)
+    let (lo, hi) = (r.lower, r.upper)
     XCTAssertEqual(set[lo], 3)
     XCTAssertEqual(set.distance(from: lo, to: hi), 1)
   }

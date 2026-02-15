@@ -107,7 +107,7 @@ extension RedBlackTreeBoundExpression {
 extension RedBlackTreeBoundRangeExpression {
 
   @inlinable @inline(__always)
-  func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
+  func _evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
     -> _RawRangeExpression<_SealedPtr>
   where
     Base: ___TreeBase,
@@ -156,6 +156,6 @@ extension RedBlackTreeBoundRangeExpression {
     Base: ___TreeBase,
     Base._Key == _Key
   {
-    evaluate(__tree_).relative(to: __tree_)
+    _evaluate(__tree_).relative(to: __tree_)
   }
 }

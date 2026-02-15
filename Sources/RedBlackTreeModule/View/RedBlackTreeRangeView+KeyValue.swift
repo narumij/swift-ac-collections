@@ -226,7 +226,7 @@ extension RedBlackTreeKeyValueRangeView {
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_.ensureUnique()
     let (_start, _end) = _range
-    let result = try __tree_.___erase_if(_start, _end, shouldBeRemoved: { try shouldBeRemoved(Base.__element_($0)) })
+    let result = try __tree_.___erase_if(_start, _end, { try shouldBeRemoved(Base.__element_($0)) })
     if case .failure(let e) = result {
       fatalError(e.localizedDescription)
     }

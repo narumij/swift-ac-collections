@@ -39,7 +39,7 @@ extension UnsafeTreeV2 {
   @discardableResult
   func ___erase_if(
     _ __first: _SealedPtr, _ __last: _SealedPtr,
-    shouldBeRemoved: (_PayloadValue) throws -> Bool
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
   ) rethrows -> _SealedPtr {
 
     var __first = __first

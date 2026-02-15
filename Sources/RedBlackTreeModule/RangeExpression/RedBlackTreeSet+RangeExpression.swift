@@ -127,7 +127,7 @@
       guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(range.lowerBound, range.upperBound, shouldBeRemoved: shouldBeRemoved)
+      try __tree_.___erase_if(range.lowerBound, range.upperBound, shouldBeRemoved)
     }
 
     @inlinable
@@ -142,7 +142,7 @@
       guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(range.lowerBound, range.upperBound, shouldBeRemoved: shouldBeRemoved)
+      try __tree_.___erase_if(range.lowerBound, range.upperBound, shouldBeRemoved)
     }
   }
 

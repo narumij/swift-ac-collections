@@ -82,7 +82,7 @@
         fatalError(.invalidIndex)
       }
       try __tree_.___erase_if(
-        lower, upper, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
+        lower, upper, { try shouldBeRemoved($0.tuple) })
     }
   }
 

@@ -894,7 +894,7 @@ extension RedBlackTreeDictionary {
       let result = try __tree_.___erase_if(
         __tree_.__begin_node_.sealed,
         __tree_.__end_node.sealed,
-        shouldBeRemoved: { try shouldBeRemoved(Base.__element_($0)) })
+        { try shouldBeRemoved(Base.__element_($0)) })
       if case .failure(let e) = result {
         fatalError(e.localizedDescription)
       }

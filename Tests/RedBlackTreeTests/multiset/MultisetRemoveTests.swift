@@ -34,16 +34,29 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
 
   func testRemoveAll() throws {
     var set = RedBlackTreeMultiSet<Int>([0, 0, 1, 1, 2])
-    XCTAssertEqual(set.removeAll(0), 0)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(0), nil)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(1), 1)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(1), nil)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(2), 2)
-    XCTAssertTrue(set.sorted().isEmpty)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.removeAll(0), 0)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(0), nil)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(1), 1)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(1), nil)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(2), 2)
+      XCTAssertTrue(set.sorted().isEmpty)
+    #else
+      XCTAssertEqual(set.eraseMulti(0), 0)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(0), nil)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(1), 1)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(1), nil)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(2), 2)
+      XCTAssertTrue(set.sorted().isEmpty)
+    #endif
   }
 
   #if false
@@ -160,11 +173,19 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
 
   func testRemoveLimit() throws {
     var members: RedBlackTreeMultiSet = [Int.min, Int.min, Int.max, Int.max]
-    XCTAssertEqual(members.count, 4)
-    members.removeAll(Int.min)
-    XCTAssertEqual(members.count, 2)
-    members.removeAll(Int.max)
-    XCTAssertEqual(members.count, 0)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(members.count, 4)
+      members.removeAll(Int.min)
+      XCTAssertEqual(members.count, 2)
+      members.removeAll(Int.max)
+      XCTAssertEqual(members.count, 0)
+    #else
+      XCTAssertEqual(members.count, 4)
+      members.eraseMulti(Int.min)
+      XCTAssertEqual(members.count, 2)
+      members.eraseMulti(Int.max)
+      XCTAssertEqual(members.count, 0)
+    #endif
   }
 
   func testRemoveFirst() throws {

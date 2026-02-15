@@ -33,8 +33,13 @@ final class MultiMapRemoveTests: RedBlackTreeTestCase {
 
   func testRemoveKey() throws {
     var dict = [1: 1, 2: 2, 3: 3] as RedBlackTreeMultiMap<Int, Int>
-    XCTAssertEqual(dict.removeAll(forKey: 0), 0)
-    XCTAssertEqual(dict.removeAll(forKey: 1), 1)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(dict.removeAll(forKey: 0), 0)
+      XCTAssertEqual(dict.removeAll(forKey: 1), 1)
+    #else
+      XCTAssertEqual(dict.eraseMulti(0), 0)
+      XCTAssertEqual(dict.eraseMulti(1), 1)
+    #endif
     XCTAssertEqual(dict, [2: 2, 3: 3])
     XCTAssertEqual(dict.first?.key, 2)
     XCTAssertEqual(dict.last?.key, 3)

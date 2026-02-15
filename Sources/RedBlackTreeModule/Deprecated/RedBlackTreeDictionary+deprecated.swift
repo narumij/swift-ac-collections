@@ -1,4 +1,8 @@
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase {}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// - Complexity: O(*n* log *n* + *n*)

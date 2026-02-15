@@ -79,9 +79,7 @@ extension RedBlackTreeDictionary {
   public typealias Base = Self
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase {}
-#else
+#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary: _RedBlackTreeKeyValues {}
 #endif
 
@@ -619,6 +617,7 @@ extension RedBlackTreeDictionary {
       }
     #else
       // 速いし気にすること減るし、こっちのほうがいいかなって
+      // TODO: どっちの方針にするか検討確定すること
 
       /// - Complexity: O(1)
       @inlinable

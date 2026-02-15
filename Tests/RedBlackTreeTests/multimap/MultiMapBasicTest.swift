@@ -1,5 +1,5 @@
-import XCTest
 import RedBlackTreeModule
+import XCTest
 
 final class MultiMapBasicTest: RedBlackTreeTestCase {
 
@@ -30,7 +30,11 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
       ("apple", 1), ("banana", 2), ("apple", 3),
     ])
 
-    XCTAssertEqual(multiMap.removeAll(forKey: "apple"), 2)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(multiMap.removeAll(forKey: "apple"), 2)
+    #else
+      XCTAssertEqual(multiMap.eraseMulti("apple"), 2)
+    #endif
     XCTAssertFalse(multiMap.contains(key: "apple"))
     XCTAssertEqual(multiMap.count(forKey: "apple"), 0)
 
@@ -50,9 +54,9 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
 
     let lb = multiMap.lowerBound("a")
     let ub = multiMap.upperBound("a")
-#if COMPATIBLE_ATCODER_2025
-    XCTAssertLessThan(lb, ub)
-#endif
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertLessThan(lb, ub)
+    #endif
     XCTAssertEqual(multiMap.distance(from: lb, to: ub), 2)
 
     let lb2 = multiMap.lowerBound("z")
@@ -62,11 +66,11 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
   func testExpressibleByLiteralAndSequence() {
     let multiMap: RedBlackTreeMultiMap = [("x", 10), ("y", 20), ("x", 30)]
     XCTAssertEqual(multiMap.count, 3)
-#if COMPATIBLE_ATCODER_2025
-    XCTAssertEqual(Set(multiMap.keys()), ["x", "y"])
-#else
-    XCTAssertEqual(Set(multiMap.keys), ["x", "y"])
-#endif
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(Set(multiMap.keys()), ["x", "y"])
+    #else
+      XCTAssertEqual(Set(multiMap.keys), ["x", "y"])
+    #endif
     XCTAssertEqual(multiMap.values(forKey: "x").sorted(), [10, 30])
 
     var collected: [String: [Int]] = [:]
@@ -90,16 +94,16 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     XCTAssertTrue(desc.contains("\"b\": 2"))
   }
 
-#if COMPATIBLE_ATCODER_2025
-  func testRemoveContentsOfRange() {
-    var multiMap: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("c", 3), ("d", 4)]
-    multiMap.remove(contentsOf: "b"..."c")
-    XCTAssertFalse(multiMap.contains(key: "b"))
-    XCTAssertFalse(multiMap.contains(key: "c"))
-    XCTAssertTrue(multiMap.contains(key: "a"))
-    XCTAssertTrue(multiMap.contains(key: "d"))
-  }
-#endif
+  #if COMPATIBLE_ATCODER_2025
+    func testRemoveContentsOfRange() {
+      var multiMap: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("c", 3), ("d", 4)]
+      multiMap.remove(contentsOf: "b"..."c")
+      XCTAssertFalse(multiMap.contains(key: "b"))
+      XCTAssertFalse(multiMap.contains(key: "c"))
+      XCTAssertTrue(multiMap.contains(key: "a"))
+      XCTAssertTrue(multiMap.contains(key: "d"))
+    }
+  #endif
 
   func testPrint() {
     var multiMap = RedBlackTreeMultiMap<String, Int>()

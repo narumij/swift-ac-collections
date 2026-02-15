@@ -173,5 +173,11 @@
       XCTAssertEqual(Array(source), [0, 1, 2, 3, 4, 5, 6, 7])
       XCTAssertEqual(Array(target), [100, 101, 106, 107])
     }
+
+    func testEqualRange() {
+      let set = RedBlackTreeSet([0, 1, 1, 2, 3, 4, 5])
+      XCTAssertEqual(Array(set[set.equalRange(1)]), [1])
+    }
+
   }
 #endif

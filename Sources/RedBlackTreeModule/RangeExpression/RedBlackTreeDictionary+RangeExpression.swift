@@ -44,6 +44,26 @@
     }
 
     @inlinable
+    public subscript(bounds: UnsafeIndexV3Range) -> View {
+      @inline(__always) get {
+        // TODO: 木の同一性チェックを行うこと
+        let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
+        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        return self[unchecked: lower, upper]
+      }
+      @inline(__always) _modify {
+        // TODO: 木の同一性チェックを行うこと
+        let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
+        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+          fatalError(.invalidIndex)
+        }
+        yield &self[unchecked: lower, upper]
+      }
+    }
+
+    @inlinable
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
         let (lower, upper) = bounds.relative(to: __tree_)
@@ -68,6 +88,17 @@
     }
 
     @inlinable
+    public mutating func erase(_ bounds: UnsafeIndexV3Range) {
+      __tree_.ensureUnique()
+      // TODO: 木の同一性チェックを行うこと
+      let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        fatalError(.invalidIndex)
+      }
+      _ = ___remove(from: lower.pointer!, to: upper.pointer!)
+    }
+
+    @inlinable
     public mutating func erase(_ bounds: IndexRangeExpression) {
       __tree_.ensureUnique()
       let (lower, upper) = bounds.relative(to: __tree_)
@@ -75,6 +106,23 @@
         fatalError(.invalidIndex)
       }
       _ = ___remove(from: lower.pointer!, to: upper.pointer!)
+    }
+
+    @inlinable
+    public mutating func erase(
+      _ bounds: UnsafeIndexV3Range, where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+      __tree_.ensureUnique()
+      // TODO: 木の同一性チェックを行うこと
+      let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        fatalError(.invalidIndex)
+      }
+      try __tree_.___erase_if(lower, upper) {
+        try shouldBeRemoved(Base.__element_($0))
+      }
     }
 
     @inlinable

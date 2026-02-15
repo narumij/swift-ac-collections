@@ -107,6 +107,19 @@
       }
       _ = ___remove(from: lower.pointer!, to: upper.pointer!)
     }
+    
+    @inlinable
+    public mutating func erase(_ bounds: UnsafeIndexV3Range, where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows {
+      __tree_.ensureUnique()
+      // TODO: 木の同一性チェックを行うこと
+      let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
+      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        fatalError(.invalidIndex)
+      }
+        try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
+    }
 
     @inlinable
     public mutating func erase(

@@ -35,7 +35,9 @@ extension UnsafeIndexV3RangeExpression {
   @usableFromInline
   func relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> (_SealedPtr, _SealedPtr) {
     // CoW対応があるので、同一木制限はできない
-    __tree_.__purified_(range).relative(to: __tree_)
+//    __tree_.__purified_(range).relative(to: __tree_)
+    let r = __tree_.__purified_(range.relative(to: __tree_))
+    return (r.lowerBound, r.upperBound)
   }
 }
 

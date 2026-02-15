@@ -5,24 +5,11 @@
 //  Created by narumij on 2026/02/15.
 //
 
+/// equalRangeの結果オブジェクト
+///
+// 本当は作りたくなかったが、lowerBoundやupperBoundがオプショナルになるのもいまいちなので、しかたなく。
 @frozen
 public struct UnsafeIndexV3Range: _UnsafeNodePtrType {
-
-  package var lower: _TieWrappedPtr {
-    range.lowerBound
-  }
-
-  package var upper: _TieWrappedPtr {
-    range.upperBound
-  }
-  
-  public var lowerBound: _TieWrappedPtr {
-    range.lowerBound
-  }
-
-  public var upperBound: _TieWrappedPtr {
-    range.upperBound
-  }
 
   @inlinable
   @inline(__always)
@@ -38,5 +25,30 @@ public struct UnsafeIndexV3Range: _UnsafeNodePtrType {
   @inline(__always)
   internal init(_ range: _RawRange<_TieWrappedPtr>) {
     self.range = range
+  }
+}
+
+// 削除の悩みがつきまとうので、Sequence適合せず、ループはできないようにする
+// 当然RangeExpressionなんかには適合しない
+
+extension UnsafeIndexV3Range {
+
+  public var lowerBound: _TieWrappedPtr {
+    range.lowerBound
+  }
+
+  public var upperBound: _TieWrappedPtr {
+    range.upperBound
+  }
+}
+
+extension UnsafeIndexV3Range {
+
+  package var lower: _TieWrappedPtr {
+    range.lowerBound
+  }
+
+  package var upper: _TieWrappedPtr {
+    range.upperBound
   }
 }

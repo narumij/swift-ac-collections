@@ -86,3 +86,68 @@ extension _RawRangeExpression where Bound == _SealedPtr {
     }
   }
 }
+
+extension _RawRangeExpression where Bound == _TieWrappedPtr {
+
+  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedPtr {
+    __tree_.__begin_node_.sealed.band(__tree_.tied)
+  }
+
+  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedPtr {
+    __tree_.__end_node.sealed.band(__tree_.tied)
+  }
+
+  @usableFromInline
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> _RawRange<_TieWrappedPtr>
+  where
+    Base: ___TreeBase
+  {
+    switch self {
+
+    case .range(let lhs, let rhs):
+      return .init(
+        lowerBound: lhs,
+        upperBound: rhs)
+
+    case .closedRange(let lhs, let rhs):
+      return .init(
+        lowerBound: lhs,
+        upperBound:
+          rhs
+          .flatMap {
+            ___tree_next_iter($0.rawValue.pointer)
+              .sealed
+              .band($0.tied)
+          }
+      )
+
+    case .partialRangeTo(let rhs):
+      return .init(
+        lowerBound: _start(__tree_),
+        upperBound: rhs)
+
+    case .partialRangeThrough(let rhs):
+      return .init(
+        lowerBound: _start(__tree_),
+        upperBound:
+          rhs
+          .flatMap {
+            ___tree_next_iter($0.rawValue.pointer)
+              .sealed
+              .band($0.tied)
+          }
+      )
+
+    case .partialRangeFrom(let lhs):
+      return .init(
+        lowerBound: lhs,
+        upperBound: _end(__tree_))
+
+    case .unboundedRange:
+      return .init(
+        lowerBound: _start(__tree_),
+        upperBound: _end(__tree_))
+    }
+  }
+}

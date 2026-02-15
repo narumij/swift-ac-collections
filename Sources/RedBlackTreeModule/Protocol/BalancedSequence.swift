@@ -76,10 +76,6 @@ public protocol BalancedCollection: BalancedSequence {
   func formIndex(_: inout Index, offsetBy: Int)
   func formIndex(_: inout Index, offsetBy: Int, limitedBy: Index) -> Bool
 
-  mutating func insert(_: Element) -> (inserted: Bool, memberAfterInsert: Element)
-  mutating func update(with: Element) -> Element?
-
-  mutating func remove(_: Element) -> Element?
   mutating func remove(at: Index) -> Element
 
   mutating func removeAll()
@@ -98,9 +94,10 @@ public protocol BalancedCollection: BalancedSequence {
   subscript(position: Bound) -> Element? { get }
   subscript(range: BoundRangeExpression) -> View { get }
 
-  func lowerBound(_: Element) -> Index
-  func upperBound(_: Element) -> Index
-  func find(_: Element) -> Index?
+  func lowerBound(_: _Key) -> Index
+  func upperBound(_: _Key) -> Index
+  
+  func find(_: _Key) -> Index
 
   // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
 
@@ -119,7 +116,7 @@ public protocol BalancedCollection: BalancedSequence {
 }
 
 public protocol BalancedMultiCollection: BalancedCollection {
-  mutating func eraseMulti(_: Element) -> Int
+  mutating func eraseMulti(_: _Key) -> Int
 }
 
 // MARK: -

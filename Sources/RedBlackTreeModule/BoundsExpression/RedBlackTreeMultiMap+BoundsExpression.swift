@@ -30,7 +30,7 @@
     @inlinable
     public func isValid(_ bound: Bound) -> Bool {
 
-      let sealed = bound.relative(to: __tree_)
+      let sealed = bound.evaluate(__tree_)
       return sealed.isValid && !sealed.___is_end!
     }
   }
@@ -40,7 +40,7 @@
     @inlinable
     public subscript(bound: Bound) -> Element? {
 
-      let p = bound.relative(to: __tree_)
+      let p = bound.evaluate(__tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return Base.__element_(__tree_[_unsafe_raw: p])
     }
@@ -52,7 +52,7 @@
     public mutating func erase(_ bound: Bound) -> Element? {
 
       __tree_.ensureUnique()
-      let p = bound.relative(to: __tree_)
+      let p = bound.evaluate(__tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return Base.__element_(_unchecked_remove(at: p).payload)
     }
@@ -64,7 +64,7 @@
     public mutating func erase(_ bounds: BoundRange) {
 
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds.evaluate(__tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -77,7 +77,7 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds.evaluate(__tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -92,12 +92,12 @@
     public subscript(bounds: BoundRange) -> View {
 
       @inline(__always) get {
-        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.evaluate(__tree_))
         return self[unchecked: lower, upper]
       }
 
       @inline(__always) _modify {
-        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.evaluate(__tree_))
         yield &self[unchecked: lower, upper]
       }
 

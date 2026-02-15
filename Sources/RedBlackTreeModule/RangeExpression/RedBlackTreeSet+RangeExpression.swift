@@ -28,6 +28,13 @@
     }
 
     @inlinable
+    public func isValid(_ bounds: UnsafeIndexV3Range) -> Bool {
+      // TODO: 木の同一性チェックを行うこと
+      let (l, u) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
+      return __tree_.isValidSealedRange(lower: l, upper: u) && l.isValid && u.isValid
+    }
+
+    @inlinable
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
       let (l, u) = bounds.relative(to: __tree_)
       return __tree_.isValidSealedRange(lower: l, upper: u) && l.isValid && u.isValid
@@ -107,18 +114,20 @@
       }
       _ = ___remove(from: lower.pointer!, to: upper.pointer!)
     }
-    
+
     @inlinable
-    public mutating func erase(_ bounds: UnsafeIndexV3Range, where shouldBeRemoved: (Element) throws -> Bool
+    public mutating func erase(
+      _ bounds: UnsafeIndexV3Range, where shouldBeRemoved: (Element) throws -> Bool
     )
-      rethrows {
+      rethrows
+    {
       __tree_.ensureUnique()
       // TODO: 木の同一性チェックを行うこと
       let (lower, upper) = (bounds.lowerBound.sealed, bounds.upperBound.sealed)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
-        try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
+      try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
     }
 
     @inlinable

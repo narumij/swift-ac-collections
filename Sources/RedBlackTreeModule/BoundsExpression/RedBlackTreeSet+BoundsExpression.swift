@@ -27,7 +27,7 @@
     /// 該当する要素を取得可能かどうかの判定結果を返す
     @inlinable
     public func isValid(_ bound: Bound) -> Bool {
-      let sealed = bound.relative(to: __tree_)
+      let sealed = bound.evaluate(__tree_)
       return sealed.isValid && !sealed.___is_end!
     }
   }
@@ -42,7 +42,7 @@
     ///
     @inlinable
     public subscript(bound: Bound) -> Element? {
-      let p = bound.relative(to: __tree_)
+      let p = bound.evaluate(__tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return __tree_[_unsafe_raw: p]
     }
@@ -53,7 +53,7 @@
     @inlinable
     public mutating func erase(_ bound: Bound) -> Element? {
       __tree_.ensureUnique()
-      let p = bound.relative(to: __tree_)
+      let p = bound.evaluate(__tree_)
       guard let p = try? p.get().pointer, !p.___is_end else { return nil }
       return _unchecked_remove(at: p).payload
     }
@@ -65,7 +65,7 @@
     public mutating func erase(_ bounds: BoundRange) {
 
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds.evaluate(__tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -78,7 +78,7 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
+      let (lower, upper) = bounds.evaluate(__tree_)
       guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
         fatalError(.invalidIndex)
       }
@@ -92,12 +92,12 @@
     public subscript(bounds: BoundRange) -> View {
 
       @inline(__always) get {
-        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.evaluate(__tree_))
         return self[unchecked: lower, upper]
       }
 
       @inline(__always) _modify {
-        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
+        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.evaluate(__tree_))
         yield &self[unchecked: lower, upper]
       }
 
@@ -112,7 +112,7 @@
       _ b: RedBlackTreeBoundExpression<Element>,
       _ body: (_SealedPtr) throws -> R
     ) rethrows -> R {
-      let b = b.relative(to: __tree_)
+      let b = b.evaluate(__tree_)
       return try body(b)
     }
 
@@ -121,8 +121,8 @@
       _ b: RedBlackTreeBoundExpression<Element>,
       _ body: (_SealedPtr, _SealedPtr) throws -> R
     ) rethrows -> R {
-      let a = a.relative(to: __tree_)
-      let b = b.relative(to: __tree_)
+      let a = a.evaluate(__tree_)
+      let b = b.evaluate(__tree_)
       return try body(a, b)
     }
   }
@@ -133,13 +133,13 @@
       _ l: RedBlackTreeBoundExpression<Element>,
       _ r: RedBlackTreeBoundExpression<Element>
     ) -> Bool {
-      let l = l.relative(to: __tree_)
-      let r = r.relative(to: __tree_)
+      let l = l.evaluate(__tree_)
+      let r = r.evaluate(__tree_)
       return l == r
     }
 
     package func _error(_ bound: RedBlackTreeBoundExpression<Element>) -> SealError? {
-      bound.relative(to: __tree_).error
+      bound.evaluate(__tree_).error
     }
   }
 #endif

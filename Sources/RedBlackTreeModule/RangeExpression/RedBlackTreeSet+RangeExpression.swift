@@ -20,7 +20,8 @@
   extension RedBlackTreeSet {
 
     public typealias View = RedBlackTreeKeyOnlyRangeView<Base>
-    public typealias IndexRange = UnsafeIndexV3RangeExpression
+    public typealias IndexRange = UnsafeIndexV3Range
+    public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
@@ -29,52 +30,96 @@
 
     @inlinable
     public func isValid(_ bounds: IndexRange) -> Bool {
-      let (l, u) = bounds.relative(to: __tree_)
-      return __tree_.isValidSealedRange(lower: l, upper: u) && l.isValid && u.isValid
+      let range = __tree_.__purified_(bounds.range)
+      return __tree_.isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
+        && range.lowerBound.isValid
+        && range.upperBound.isValid
+    }
+
+    @inlinable
+    public func isValid(_ bounds: IndexRangeExpression) -> Bool {
+      let range = __tree_.__purified_(bounds.relative(to: __tree_))
+      return __tree_.isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
+        && range.lowerBound.isValid
+        && range.upperBound.isValid
     }
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> View {
       @inline(__always) get {
-        self[unchecked: _sealed_start, _sealed_end]
+        self[unchecked: ___sealed_range]
       }
       @inline(__always) _modify {
-        yield &self[unchecked: _sealed_start, _sealed_end]
+        yield &self[unchecked: ___sealed_range]
       }
     }
 
     @inlinable
     public subscript(bounds: IndexRange) -> View {
       @inline(__always) get {
-        let (lower, upper) = bounds.relative(to: __tree_)
-        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        let range = __tree_.__purified_(bounds.range)
+        guard __tree_.isValidSealedRange(range) else {
           fatalError(.invalidIndex)
         }
-        return self[unchecked: lower, upper]
+        return self[unchecked: range]
       }
       @inline(__always) _modify {
-        let (lower, upper) = bounds.relative(to: __tree_)
-        guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+        let range = __tree_.__purified_(bounds.range)
+        guard __tree_.isValidSealedRange(range) else {
           fatalError(.invalidIndex)
         }
-        yield &self[unchecked: lower, upper]
+        yield &self[unchecked: range]
+      }
+    }
+
+    @inlinable
+    public subscript(bounds: IndexRangeExpression) -> View {
+      @inline(__always) get {
+        let range = __tree_.__purified_(bounds.relative(to: __tree_))
+        guard __tree_.isValidSealedRange(range) else {
+          fatalError(.invalidIndex)
+        }
+        return self[unchecked: range]
+      }
+      @inline(__always) _modify {
+        let range = __tree_.__purified_(bounds.relative(to: __tree_))
+        guard __tree_.isValidSealedRange(range) else {
+          fatalError(.invalidIndex)
+        }
+        yield &self[unchecked: range]
       }
     }
 
     @inlinable
     public mutating func erase(_ bounds: UnboundedRange) {
       __tree_.ensureUnique()
-      _ = ___remove(from: _start, to: _end)
+      _ = __tree_.erase(_start, _end)
     }
 
     @inlinable
     public mutating func erase(_ bounds: IndexRange) {
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+      let range = __tree_.__purified_(bounds.range)
+      guard __tree_.isValidSealedRange(range),
+        let __l = range.lowerBound.pointer,
+        let __u = range.upperBound.pointer
+      else {
         fatalError(.invalidIndex)
       }
-      _ = ___remove(from: lower.pointer!, to: upper.pointer!)
+      _ = __tree_.erase(__l, __u)
+    }
+
+    @inlinable
+    public mutating func erase(_ bounds: IndexRangeExpression) {
+      __tree_.ensureUnique()
+      let range = __tree_.__purified_(bounds.relative(to: __tree_))
+      guard __tree_.isValidSealedRange(range),
+        let __l = range.lowerBound.pointer,
+        let __u = range.upperBound.pointer
+      else {
+        fatalError(.invalidIndex)
+      }
+      _ = __tree_.erase(__l, __u)
     }
 
     @inlinable
@@ -83,25 +128,47 @@
     )
       rethrows
     {
-
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+      let range = __tree_.__purified_(bounds.range)
+      guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(lower, upper, shouldBeRemoved: shouldBeRemoved)
+      try __tree_.___erase_if(range.lowerBound, range.upperBound, shouldBeRemoved)
+    }
+
+    @inlinable
+    public mutating func erase(
+      _ bounds: IndexRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+
+      __tree_.ensureUnique()
+      let range = __tree_.__purified_(bounds.relative(to: __tree_))
+      guard __tree_.isValidSealedRange(range) else {
+        fatalError(.invalidIndex)
+      }
+      try __tree_.___erase_if(range.lowerBound, range.upperBound, shouldBeRemoved)
     }
   }
 
   extension RedBlackTreeSet {
 
     @inlinable
-    subscript(unchecked _start: _SealedPtr, _end: _SealedPtr) -> View {
+    subscript(unchecked range: _RawRange<_SealedPtr>) -> View {
+
       @inline(__always) get {
-        RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: _start, _end: _end)
+        RedBlackTreeKeyOnlyRangeView(
+          __tree_: __tree_,
+          _start: range.lowerBound,
+          _end: range.upperBound)
       }
+
       @inline(__always) _modify {
-        var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: _start, _end: _end)
+        var view = RedBlackTreeKeyOnlyRangeView(
+          __tree_: __tree_,
+          _start: range.lowerBound,
+          _end: range.upperBound)
         self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
         defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
         yield &view

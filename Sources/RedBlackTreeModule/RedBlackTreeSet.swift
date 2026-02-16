@@ -172,9 +172,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   }
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet: _RedBlackTreeKeyOnlyBase {}
-#else
+#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet: _RedBlackTreeKeyOnly {}
 #endif
 
@@ -711,11 +709,9 @@ extension RedBlackTreeSet {
 
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
-    public func equalRange(_ element: Element) -> (
-      lower: Index, upper: Index
-    ) {
+    public func equalRange(_ element: Element) -> UnsafeIndexV3Range {
       let (lower, upper) = __tree_.__equal_range_unique(element)
-      return (___index(lower.sealed), ___index(upper.sealed))
+      return .init(.init(lowerBound: ___index(lower.sealed), upperBound: ___index(upper.sealed)))
     }
   }
 
@@ -803,28 +799,11 @@ extension RedBlackTreeSet {
       }
     }
   }
+#endif
 
-  extension RedBlackTreeSet {
+// MARK: -
 
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(position: Index) -> Element {
-      @inline(__always) get {
-        __tree_[_unsafe: __tree_.__purified_(position)]
-      }
-    }
-  }
-
-  extension RedBlackTreeSet {
-
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(_result position: Index) -> Result<Element, SealError> {
-      __tree_.__purified_(position)
-        .map { $0.pointer.__value_().pointee }
-    }
-  }
-
+#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Indexがsubscriptやremoveで利用可能か判別します
@@ -836,11 +815,17 @@ extension RedBlackTreeSet {
       __tree_.__purified_(index).exists
     }
   }
-#endif
 
-// MARK: -
+  extension RedBlackTreeSet {
 
-#if !COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always) get {
+        __tree_[_unsafe: __tree_.__purified_(position)]
+      }
+    }
+  }
 
   extension RedBlackTreeSet {
 
@@ -859,7 +844,7 @@ extension RedBlackTreeSet {
       let result = try __tree_.___erase_if(
         __tree_.__begin_node_.sealed,
         __tree_.__end_node.sealed,
-        shouldBeRemoved: shouldBeRemoved)
+        shouldBeRemoved)
       if case .failure(let e) = result {
         fatalError(e.localizedDescription)
       }

@@ -9,7 +9,7 @@
   import XCTest
   import RedBlackTreeModule
 
-  final class MultiMapBoundsExpressionTests: XCTestCase {
+  final class MultiMapBoundsExpressionTests: RedBlackTreeTestCase {
 
     let a: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c"]
 

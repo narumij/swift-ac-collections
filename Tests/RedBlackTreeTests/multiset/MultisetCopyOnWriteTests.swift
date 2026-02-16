@@ -31,7 +31,11 @@ import XCTest
       XCTAssertEqual(set._copyCount, 0)
       set.insert(0)
       XCTAssertEqual(set._copyCount, 0)
-      set.removeAll(0)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(0)
+      #else
+        set.eraseMulti(0)
+      #endif
       XCTAssertEqual(set._copyCount, 0)
       _ = set.lowerBound(0)
       _ = set.upperBound(0)
@@ -52,10 +56,14 @@ import XCTest
       var tree = RedBlackTreeMultiSet<Int>(0..<20)
       tree._copyCount = 0
       for v in tree {
-        tree.removeAll(v)  // strong ensure unique
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(v)  // strong ensure unique
+        #else
+          tree.eraseMulti(v)  // strong ensure unique
+        #endif
       }
       XCTAssertEqual(tree.count, 0)
-      #if !USE_SIMPLE_COPY_ON_WRITE
+      #if COMPATIBLE_ATCODER_2025
         // TODO: 再度検討
         XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
       #else
@@ -67,7 +75,11 @@ import XCTest
       var tree = RedBlackTreeMultiSet<Int>(0..<20)
       tree._copyCount = 0
       for v in tree + [] {
-        tree.removeAll(v)  // strong ensure unique
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(v)  // strong ensure unique
+        #else
+          tree.eraseMulti(v)  // strong ensure unique
+        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
@@ -77,7 +89,11 @@ import XCTest
       var tree = RedBlackTreeMultiSet<Int>(0..<20)
       tree._copyCount = 0
       tree.forEach { v in
-        tree.removeAll(v)
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(v)
+        #else
+          tree.eraseMulti(v)
+        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 1)
@@ -87,7 +103,11 @@ import XCTest
       var tree = RedBlackTreeMultiSet<Int>(0..<20)
       tree._copyCount = 0
       for v in tree + [] {
-        tree.removeAll(v)
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(v)
+        #else
+          tree.eraseMulti(v)
+        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
@@ -97,7 +117,11 @@ import XCTest
       var tree = RedBlackTreeMultiSet<Int>(0..<20)
       tree._copyCount = 0
       for v in tree.filter({ _ in true }) {
-        tree.removeAll(v)
+        #if COMPATIBLE_ATCODER_2025
+          tree.removeAll(v)
+        #else
+          tree.eraseMulti(v)
+        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)

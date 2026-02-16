@@ -47,11 +47,6 @@ where Base: ___TreeBase & ___TreeIndex {
     sealed.trackingTag
   }
 
-//  @usableFromInline
-//  package var tag: _SealedTag {
-//    sealed.tag
-//  }
-
   @usableFromInline
   internal var rawValue: _NodePtr { sealed.pointer! }
 

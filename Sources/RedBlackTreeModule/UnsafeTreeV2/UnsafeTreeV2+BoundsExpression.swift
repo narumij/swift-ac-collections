@@ -20,7 +20,7 @@ import Foundation
 extension RedBlackTreeBoundExpression {
 
   @inlinable @inline(__always)
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+  func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
     -> _SealedPtr
   where
     Base: ___TreeBase,
@@ -36,7 +36,7 @@ extension RedBlackTreeBoundExpression {
       return RedBlackTreeBoundExpression
         .end
         .before
-        .relative(to: __tree_)
+        .evaluate(__tree_)
 
     case .end:
       return __tree_.__end_node.sealed
@@ -51,8 +51,8 @@ extension RedBlackTreeBoundExpression {
       return __tree_.find(__v).sealed
 
     case .advanced(let __self, offset: let offset, let limit):
-      let __p = __self.relative(to: __tree_)
-      let limit = limit?.relative(to: __tree_)
+      let __p = __self.evaluate(__tree_)
+      let limit = limit?.evaluate(__tree_)
       switch limit {
       case .none:
         return __p.flatMap {
@@ -74,25 +74,25 @@ extension RedBlackTreeBoundExpression {
       return
         RedBlackTreeBoundExpression
         .advanced(__self, offset: -1)
-        .relative(to: __tree_)
+        .evaluate(__tree_)
 
     case .after(let __self):
       return
         RedBlackTreeBoundExpression
         .advanced(__self, offset: 1)
-        .relative(to: __tree_)
+        .evaluate(__tree_)
       
     case .lessThan(let __v):
       return ___tree_prev_iter(__tree_.lower_bound(__v)).sealed
       
-    case .greaterThen(let __v):
+    case .greaterThan(let __v):
       return __tree_.upper_bound(__v).sealed
       
     case .lessThanOrEqual(let __v):
       let __f = __tree_.find(__v).sealed
       return __f.exists ? __f : ___tree_prev_iter(__tree_.lower_bound(__v)).sealed
       
-    case .greaterThenOrEqual(let __v):
+    case .greaterThanOrEqual(let __v):
       let __f = __tree_.find(__v).sealed
       return __f.exists ? __f : __tree_.upper_bound(__v).sealed
 
@@ -107,8 +107,8 @@ extension RedBlackTreeBoundExpression {
 extension RedBlackTreeBoundRangeExpression {
 
   @inlinable @inline(__always)
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> UnsafeTreeSealedRangeExpression
+  func _evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
+    -> _RawRangeExpression<_SealedPtr>
   where
     Base: ___TreeBase,
     Base._Key == _Key
@@ -117,22 +117,22 @@ extension RedBlackTreeBoundRangeExpression {
 
     case .range(let from, let to):
       return .range(
-        from: from.relative(to: __tree_),
-        to: to.relative(to: __tree_))
+        from: from.evaluate(__tree_),
+        to: to.evaluate(__tree_))
 
     case .closedRange(let from, let through):
       return .closedRange(
-        from: from.relative(to: __tree_),
-        through: through.relative(to: __tree_))
+        from: from.evaluate(__tree_),
+        through: through.evaluate(__tree_))
 
     case .partialRangeTo(let to):
-      return .partialRangeTo(to.relative(to: __tree_))
+      return .partialRangeTo(to.evaluate(__tree_))
 
     case .partialRangeThrough(let through):
-      return .partialRangeThrough(through.relative(to: __tree_))
+      return .partialRangeThrough(through.evaluate(__tree_))
 
     case .partialRangeFrom(let from):
-      return .partialRangeFrom(from.relative(to: __tree_))
+      return .partialRangeFrom(from.evaluate(__tree_))
 
     case .equalRange(let __v):
       let (lower, upper) =
@@ -144,18 +144,5 @@ extension RedBlackTreeBoundRangeExpression {
         from: lower.sealed,
         to: upper.sealed)
     }
-  }
-
-  @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> (
-      _SealedPtr,
-      _SealedPtr
-    )
-  where
-    Base: ___TreeBase,
-    Base._Key == _Key
-  {
-    relative(to: __tree_).relative(to: __tree_)
   }
 }

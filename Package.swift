@@ -19,15 +19,15 @@ var defines: [String] = [
 
   //  "USE_C_MALLOC",
 
-  "USE_SIMPLE_COPY_ON_WRITE",
+  // "DEATH_TEST",
 
-//    "DEATH_TEST",
-  //  "BENCHMARK",
-  //  "ENABLE_PERFORMANCE_TESTING"
+  // "BENCHMARK",
+  // "ENABLE_PERFORMANCE_TESTING"
 ]
 
 var _settings: [SwiftSetting] =
   [
+    
 //    .define("COMPATIBLE_ATCODER_2025"),
     // このコードベースは当初、2025新ジャッジ搭載を目指して開発し、無事に搭載できました。
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
@@ -45,13 +45,6 @@ var _settings: [SwiftSetting] =
 
     .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
-
-    // TODO: デフォルトで単純CoWとなるようにする（multi系のテストが問題)
-    //    .define("USE_SIMPLE_COPY_ON_WRITE"),  // この定義は今後悩み
-    // 注意: COMPATIBLE_ATCODER_2025が優先し、その場合この定義は無効になります。
-    // 平衡二分探索木(赤黒木)の魅力と言えば、探索や削除の速度だと思います。
-    // CoWが効くと都度コピーが発生し、この魅力が損なわれてしまうため、現在はキャンセル気味の動作となっています。
-    // 安全側に振る場合は、(COMPATIBLE_ATCODER_2025を無効にし)、この定義を有効にしてください。
   ]
   + defines.map { .define($0) }
 

@@ -20,10 +20,12 @@ where Base: ___TreeBase & PairValueTrait {
 
   public typealias Index = _TieWrappedPtr
   public typealias Element = Base.Element
+  public typealias Key = Base._Key
+  public typealias Value = Base._MappedValue
 
   @usableFromInline
   internal var __tree_: Tree
-  
+
   // _SealedPtr不可
   public var startIndex: Index
   public let endIndex: Index
@@ -49,8 +51,6 @@ extension RedBlackTreeKeyValueRangeView {
     }
     return (_start, _end)
   }
-
-  // TODO: _NodePtrであるべきか、_SealedPtrであるべきか。使い分けの吟味
 
   @inlinable
   var _range: (_SealedPtr, _SealedPtr) {
@@ -104,6 +104,25 @@ extension RedBlackTreeKeyValueRangeView {
   public __consuming func reversed() -> [Element] {
     let (_start, _end) = _range
     return __tree_.___rev_copy_to_array(_start.pointer!, _end.pointer!, transform: Base.__element_)
+  }
+}
+
+extension RedBlackTreeKeyValueRangeView {
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var keys: [Key] {
+    let (_start, _end) = _range
+    return __tree_.___copy_to_array(_start.pointer!, _end.pointer!, transform: Base.__key)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var values: [Value] {
+    let (_start, _end) = _range
+    return __tree_.___copy_to_array(_start.pointer!, _end.pointer!, transform: Base.___mapped_value)
   }
 }
 
@@ -219,6 +238,7 @@ extension RedBlackTreeKeyValueRangeView {
   public mutating func erase() {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
+    // ややチェックが甘いので末端チェック付き削除が必要
     __tree_.___erase(_start, _end)
   }
 
@@ -226,7 +246,7 @@ extension RedBlackTreeKeyValueRangeView {
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_.ensureUnique()
     let (_start, _end) = _range
-    let result = try __tree_.___erase_if(_start, _end, shouldBeRemoved: { try shouldBeRemoved(Base.__element_($0)) })
+    let result = try __tree_.___erase_if(_start, _end, { try shouldBeRemoved(Base.__element_($0)) })
     if case .failure(let e) = result {
       fatalError(e.localizedDescription)
     }
@@ -299,6 +319,8 @@ extension RedBlackTreeKeyValueRangeView {
 // MARK: -
 
 extension RedBlackTreeKeyValueRangeView {
+
+  // TODO: 削除検討
 
   /// Indexがsubscriptで利用可能か判別します
   ///

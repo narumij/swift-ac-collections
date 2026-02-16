@@ -1,4 +1,8 @@
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(*n* log *n* + *n*)
@@ -43,6 +47,29 @@
         }
       }
       return nil
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeFirst(forKey key: Key) -> Bool {
+      __tree_._strongEnsureUnique()
+      return __tree_.___erase_unique(key)
+    }
+
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
+      __tree_.ensureUnique()
+      return __tree_.___erase_unique(key)
     }
   }
 #endif
@@ -446,6 +473,21 @@
       let lower = __tree_.lower_bound(keyRange.lowerBound)
       let upper = __tree_.upper_bound(keyRange.upperBound)
       ___remove(from: lower, to: upper)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    // TODO: イテレータ利用の注意をドキュメントすること
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @discardableResult
+    public mutating func removeAll(forKey key: Key) -> Int {
+      __tree_._strongEnsureUnique()
+      return __tree_.___erase_multi(key)
     }
   }
 #endif

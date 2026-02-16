@@ -27,6 +27,8 @@ public protocol BalancedSequence: Sequence {
 
   func sorted() -> [Element]
   func reversed() -> [Element]
+
+  // multimapをちゃんとつかってくれる人がいた場合、firstIndex(where:)は必要そう
 }
 
 extension BalancedSequence {
@@ -49,10 +51,11 @@ public protocol BalancedCollection: BalancedSequence {
   associatedtype _Key
 
   associatedtype Index: Equatable
-  associatedtype IndexRange = UnsafeIndexV3RangeExpression
+  associatedtype IndexRange = UnsafeIndexV3Range
+  associatedtype IndexRangeExpression = UnsafeIndexV3RangeExpression
 
   associatedtype Bound = RedBlackTreeBoundExpression<_Key>
-  associatedtype BoundRange = RedBlackTreeBoundRangeExpression<_Key>
+  associatedtype BoundRangeExpression = RedBlackTreeBoundRangeExpression<_Key>
 
   associatedtype View: BalancedView
 
@@ -73,10 +76,6 @@ public protocol BalancedCollection: BalancedSequence {
   func formIndex(_: inout Index, offsetBy: Int)
   func formIndex(_: inout Index, offsetBy: Int, limitedBy: Index) -> Bool
 
-  mutating func insert(_: Element) -> (inserted: Bool, memberAfterInsert: Element)
-  mutating func update(with: Element) -> Element?
-
-  mutating func remove(_: Element) -> Element?
   mutating func remove(at: Index) -> Element
 
   mutating func removeAll()
@@ -86,32 +85,39 @@ public protocol BalancedCollection: BalancedSequence {
 
   func isValid(_: Index) -> Bool
   func isValid(_: IndexRange) -> Bool
+  func isValid(_: IndexRangeExpression) -> Bool
   func isValid(_: Bound) -> Bool
-  func isValid(_: BoundRange) -> Bool
+  func isValid(_: BoundRangeExpression) -> Bool
 
   subscript(range: IndexRange) -> View { get }
+  subscript(range: IndexRangeExpression) -> View { get }
   subscript(position: Bound) -> Element? { get }
-  subscript(range: BoundRange) -> View { get }
+  subscript(range: BoundRangeExpression) -> View { get }
 
-  func lowerBound(_: Element) -> Index
-  func upperBound(_: Element) -> Index
-  func find(_: Element) -> Index?
+  func lowerBound(_: _Key) -> Index
+  func upperBound(_: _Key) -> Index
+  
+  func find(_: _Key) -> Index
 
   // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
 
   mutating func erase(_: Index) -> Index
   mutating func erase(where: (Element) throws -> Bool) rethrows
-  
+
   mutating func erase(_: IndexRange) -> Index
   mutating func erase(_: IndexRange, where: (Element) throws -> Bool) rethrows
 
+  mutating func erase(_: IndexRangeExpression) -> Index
+  mutating func erase(_: IndexRangeExpression, where: (Element) throws -> Bool) rethrows
+
   mutating func erase(_: Bound) -> Element?
-  mutating func erase(_: BoundRange)
-  mutating func erase(_: BoundRange, where: (Element) throws -> Bool) rethrows
+  mutating func erase(_: BoundRangeExpression)
+  mutating func erase(_: BoundRangeExpression, where: (Element) throws -> Bool) rethrows
 }
 
 public protocol BalancedMultiCollection: BalancedCollection {
-  mutating func eraseMulti(_: Element) -> Int
+  mutating func eraseUnique(_: _Key) -> Element?
+  mutating func eraseMulti(_: _Key) -> Int
 }
 
 // MARK: -

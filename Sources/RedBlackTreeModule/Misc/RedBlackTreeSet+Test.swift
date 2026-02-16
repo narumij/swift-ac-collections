@@ -44,3 +44,53 @@ extension RedBlackTreeSet {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(_result position: Index) -> Result<Element, SealError> {
+      __tree_.__purified_(position)
+        .map { $0.pointer.__value_().pointee }
+    }
+  }
+#endif
+
+#if DEBUG
+  extension RedBlackTreeSet {
+
+    package func _withSealed<R>(
+      _ b: RedBlackTreeBoundExpression<Element>,
+      _ body: (_SealedPtr) throws -> R
+    ) rethrows -> R {
+      let b = b.evaluate(__tree_)
+      return try body(b)
+    }
+
+    package func _withSealed<R>(
+      _ a: RedBlackTreeBoundExpression<Element>,
+      _ b: RedBlackTreeBoundExpression<Element>,
+      _ body: (_SealedPtr, _SealedPtr) throws -> R
+    ) rethrows -> R {
+      let a = a.evaluate(__tree_)
+      let b = b.evaluate(__tree_)
+      return try body(a, b)
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    package func _isEqual(
+      _ l: RedBlackTreeBoundExpression<Element>,
+      _ r: RedBlackTreeBoundExpression<Element>
+    ) -> Bool {
+      let l = l.evaluate(__tree_)
+      let r = r.evaluate(__tree_)
+      return l == r
+    }
+
+    package func _error(_ bound: RedBlackTreeBoundExpression<Element>) -> SealError? {
+      bound.evaluate(__tree_).error
+    }
+  }
+#endif

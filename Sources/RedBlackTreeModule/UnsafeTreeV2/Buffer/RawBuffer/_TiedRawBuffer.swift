@@ -135,6 +135,14 @@ extension _TiedRawBuffer {
   }
 }
 
+/// The type-punned empty singleton storage instance.
+@usableFromInline
+nonisolated(unsafe) package let _emptyDeallocator =
+  _TiedRawBuffer
+  .create(bucket: nil, deallocator: .init(valueType: Void.self, deinitialize: { _ in }))
+
+// MARK: - COMPATIBLE_ATCODER_2025用
+
 extension _TiedRawBuffer {
 
   /// つながりをたぐりよせる
@@ -175,9 +183,3 @@ extension _TiedRawBuffer {
     tag.flatMap { ___retrieve(tag: $0) }
   }
 }
-
-/// The type-punned empty singleton storage instance.
-@usableFromInline
-nonisolated(unsafe) package let _emptyDeallocator =
-  _TiedRawBuffer
-  .create(bucket: nil, deallocator: .init(valueType: Void.self, deinitialize: { _ in }))

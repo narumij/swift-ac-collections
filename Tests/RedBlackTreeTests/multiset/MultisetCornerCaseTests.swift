@@ -32,12 +32,20 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
 
   func testRemoveOneVersusRemoveAll() {
     var ms: RedBlackTreeMultiSet = [5, 5, 5]
-    XCTAssertNotNil(ms.remove(5))  // 1 個だけ
-    XCTAssertEqual(ms.count(of: 5), 2)
 
-    XCTAssertNotNil(ms.removeAll(5))  // 全消し
-    XCTAssertFalse(ms.contains(5))
-    XCTAssertNil(ms.removeAll(5))  // もう無いので nil
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertNotNil(ms.remove(5))  // 1 個だけ
+      XCTAssertEqual(ms.count(of: 5), 2)
+      XCTAssertNotNil(ms.removeAll(5))  // 全消し
+      XCTAssertFalse(ms.contains(5))
+      XCTAssertNil(ms.removeAll(5))  // もう無いので nil
+    #else
+      XCTAssertNotNil(ms.eraseUnique(5))  // 1 個だけ
+      XCTAssertEqual(ms.count(of: 5), 2)
+      XCTAssertNotEqual(ms.eraseMulti(5), 0)  // 全消し
+      XCTAssertFalse(ms.contains(5))
+      XCTAssertEqual(ms.eraseMulti(5), 0)  // もう無いので 0
+    #endif
   }
 
   func testLowerUpperBoundsWithDuplicates() {
@@ -97,11 +105,21 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
           ms.insert(v)
           ref.insert(v)
         case 1:  // remove one
-          _ = ms.remove(v)
-          ref.removeOne(v)
+          #if COMPATIBLE_ATCODER_2025
+            _ = ms.remove(v)
+            ref.removeOne(v)
+          #else
+            _ = ms.eraseUnique(v)
+            ref.removeOne(v)
+          #endif
         case 2:  // removeAll
-          _ = ms.removeAll(v)
-          ref.removeAll(v)
+          #if COMPATIBLE_ATCODER_2025
+            _ = ms.removeAll(v)
+            ref.removeAll(v)
+          #else
+            _ = ms.eraseMulti(v)
+            ref.removeAll(v)
+          #endif
         default:  // count check only
           break
         }

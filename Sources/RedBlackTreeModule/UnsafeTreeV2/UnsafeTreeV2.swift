@@ -179,15 +179,8 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func __purified_(_ index: UnsafeIndexV2<Base>) -> _SealedPtr
-  where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-    tied === index.tied
-      ? index.sealed.purified
-      : __retrieve_(index.sealed.purified.tag).purified
-  }
+  
+  // _SealedPtrをpurifiedする処理は間違い。外部に晒さない用途なので。
 
   /// インデックスをポインタに解決する
   ///
@@ -195,7 +188,7 @@ extension UnsafeTreeV2 {
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   @inline(__always)
-  internal func __purified_(_ index: UnsafeIndexV3) -> _SealedPtr {
+  internal func __purified_(_ index: _TieWrappedPtr) -> _SealedPtr {
     tied === index.tied
       ? index.sealed.purified
       : __retrieve_(index.sealed.purified.tag).purified
@@ -203,25 +196,31 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
+  
+  // _SealedPtrをpurifiedする処理は間違い。外部に晒さない用途なので。
 
   @inlinable
   @inline(__always)
-  internal func __purified_(_ index: _RawRangeExpression<_TieWrappedPtr>)
-    -> _RawRangeExpression<_SealedPtr>
+  internal func __purified_(_ range: _RawRange<_TieWrappedPtr>)
+    -> _RawRange<_SealedPtr>
   {
-    switch index {
-    case .range(let from, let to):
-      .range(from: __purified_(from), to: __purified_(to))
-    case .closedRange(let from, let through):
-      .closedRange(from: __purified_(from), through: __purified_(through))
-    case .partialRangeTo(let bound):
-      .partialRangeTo(__purified_(bound))
-    case .partialRangeThrough(let bound):
-      .partialRangeThrough(__purified_(bound))
-    case .partialRangeFrom(let bound):
-      .partialRangeFrom(__purified_(bound))
-    case .unboundedRange:
-      .unboundedRange
-    }
+    .init(
+      lowerBound: __purified_(range.lowerBound),
+      upperBound: __purified_(range.upperBound))
   }
 }
+
+// MARK: - COMPATIBLE_ATCODER_2025用
+
+extension UnsafeTreeV2 {
+  
+  @inlinable
+  @inline(__always)
+  internal func __purified_(_ index: UnsafeIndexV2<Base>) -> _SealedPtr
+  where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
+    tied === index.tied
+    ? index.sealed.purified
+    : __retrieve_(index.sealed.purified.tag).purified
+  }
+}
+

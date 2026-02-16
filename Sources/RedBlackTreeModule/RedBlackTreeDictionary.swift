@@ -79,9 +79,7 @@ extension RedBlackTreeDictionary {
   public typealias Base = Self
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase {}
-#else
+#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary: _RedBlackTreeKeyValues {}
 #endif
 
@@ -619,6 +617,7 @@ extension RedBlackTreeDictionary {
       }
     #else
       // 速いし気にすること減るし、こっちのほうがいいかなって
+      // TODO: どっちの方針にするか検討確定すること
 
       /// - Complexity: O(1)
       @inlinable
@@ -749,11 +748,9 @@ extension RedBlackTreeDictionary {
 
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
-    public func equalRange(_ key: Key) -> (
-      lower: Index, upper: Index
-    ) {
-      let (lower, upper) = __tree_.__equal_range_multi(key)
-      return (___index(lower.sealed), ___index(upper.sealed))
+    public func equalRange(_ key: Key) -> UnsafeIndexV3Range {
+      let (lower, upper) = __tree_.__equal_range_unique(key)
+      return .init(.init(lowerBound: ___index(lower.sealed), upperBound: ___index(upper.sealed)))
     }
   }
 
@@ -841,28 +838,11 @@ extension RedBlackTreeDictionary {
       }
     }
   }
+#endif
 
-  extension RedBlackTreeDictionary {
+// MARK: -
 
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(position: Index) -> Element {
-      @inline(__always) get {
-        Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
-      }
-    }
-  }
-
-  extension RedBlackTreeDictionary {
-
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(_result position: Index) -> Result<Element, SealError> {
-      __tree_.__purified_(position)
-        .map { $0.pointer.__value_().pointee }
-    }
-  }
-
+#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// Indexがsubscriptやremoveで利用可能か判別します
@@ -874,11 +854,17 @@ extension RedBlackTreeDictionary {
       __tree_.__purified_(index).exists
     }
   }
-#endif
 
-// MARK: -
+  extension RedBlackTreeDictionary {
 
-#if !COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always) get {
+        Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
+      }
+    }
+  }
 
   extension RedBlackTreeDictionary {
 
@@ -897,7 +883,7 @@ extension RedBlackTreeDictionary {
       let result = try __tree_.___erase_if(
         __tree_.__begin_node_.sealed,
         __tree_.__end_node.sealed,
-        shouldBeRemoved: { try shouldBeRemoved(Base.__element_($0)) })
+        { try shouldBeRemoved(Base.__element_($0)) })
       if case .failure(let e) = result {
         fatalError(e.localizedDescription)
       }

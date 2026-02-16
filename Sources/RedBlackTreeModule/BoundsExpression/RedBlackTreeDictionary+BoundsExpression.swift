@@ -28,7 +28,7 @@
     @inlinable
     public func isValid(_ bound: Bound) -> Bool {
 
-      let sealed = bound.relative(to: __tree_)
+      let sealed = bound.evaluate(__tree_)
       return sealed.isValid && !sealed.___is_end!
     }
   }
@@ -38,8 +38,8 @@
     @inlinable
     public subscript(bound: Bound) -> Element? {
 
-      let p = bound.relative(to: __tree_)
-      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      let p = bound.evaluate(__tree_)
+      guard let p = p.pointer, !p.___is_end else { return nil }
       return Base.__element_(__tree_[_unsafe_raw: p])
     }
   }
@@ -50,37 +50,25 @@
     public mutating func erase(_ bound: Bound) -> Element? {
 
       __tree_.ensureUnique()
-      let p = bound.relative(to: __tree_)
-      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      let p = bound.evaluate(__tree_)
+      guard let p = p.pointer, !p.___is_end else { return nil }
       return Base.__element_(_unchecked_remove(at: p).payload)
     }
   }
 
+  // MARK: -
+
   extension RedBlackTreeDictionary {
 
+    /// 該当する要素を取得可能かどうかの判定結果を返す
+    ///
+    /// これがfalseの場合でもBoundRange関連APIはクラッシュしない
     @inlinable
-    public mutating func erase(_ bounds: BoundRange) {
-
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
-      }
-      __tree_.___erase(lower.pointer!, upper.pointer!)
-    }
-
-    @inlinable
-    public mutating func erase(
-      _ bounds: BoundRange, where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows {
-
-      __tree_.ensureUnique()
-      let (lower, upper) = bounds.relative(to: __tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-        fatalError(.invalidIndex)
-      }
-      try __tree_.___erase_if(
-        lower, upper, shouldBeRemoved: { try shouldBeRemoved($0.tuple) })
+    public func isValid(_ bounds: BoundRange) -> Bool {
+      let range = bounds._evaluate(__tree_).relative(to: __tree_)
+      return __tree_.isValidSealedRange(range)
+        && range.lowerBound.isValid
+        && range.upperBound.isValid
     }
   }
 
@@ -90,15 +78,45 @@
     public subscript(bounds: BoundRange) -> View {
 
       @inline(__always) get {
-        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
-        return self[unchecked: lower, upper]
+
+        let range = __tree_.sanitizeSealedRange(
+          bounds._evaluate(__tree_).relative(to: __tree_))
+
+        return self[unchecked: range]
       }
 
       @inline(__always) _modify {
-        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.relative(to: __tree_))
-        yield &self[unchecked: lower, upper]
-      }
 
+        let range = __tree_.sanitizeSealedRange(
+          bounds._evaluate(__tree_).relative(to: __tree_))
+
+        yield &self[unchecked: range]
+      }
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    public mutating func erase(_ bounds: BoundRange) {
+
+      __tree_.ensureUnique()
+      let range = __tree_.sanitizeSealedRange(
+        bounds._evaluate(__tree_).relative(to: __tree_))
+      __tree_.___erase(range.lowerBound.pointer!, range.upperBound.pointer!)
+    }
+
+    @inlinable
+    public mutating func erase(
+      _ bounds: BoundRange, where shouldBeRemoved: (Element) throws -> Bool
+    ) rethrows {
+
+      __tree_.ensureUnique()
+      let range = __tree_.sanitizeSealedRange(
+        bounds._evaluate(__tree_).relative(to: __tree_))
+      try __tree_.___erase_if(range.lowerBound, range.upperBound) {
+        try shouldBeRemoved($0.tuple)
+      }
     }
   }
 #endif

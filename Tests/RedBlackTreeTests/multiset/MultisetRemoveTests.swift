@@ -10,40 +10,77 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
 
   func testRemove1() throws {
     var set = RedBlackTreeMultiSet<Int>([0, 0, 1, 1, 2])
-    XCTAssertEqual(set.remove(0), 0)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(0), 0)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(1), 1)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(1), 1)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(2), 2)
-    XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(0), nil)
-    XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(1), nil)
-    XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(2), nil)
-    XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(3), nil)
-    XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.remove(4), nil)
-    XCTAssertTrue(set.sorted().isEmpty)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.remove(0), 0)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.remove(0), 0)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.remove(1), 1)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.remove(1), 1)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.remove(2), 2)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.remove(0), nil)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.remove(1), nil)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.remove(2), nil)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.remove(3), nil)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.remove(4), nil)
+      XCTAssertTrue(set.sorted().isEmpty)
+    #else
+      XCTAssertTrue(set.eraseUnique(0))
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertTrue(set.eraseUnique(0))
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertTrue(set.eraseUnique(1))
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertTrue(set.eraseUnique(1))
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertTrue(set.eraseUnique(2))
+      XCTAssertTrue(set.sorted().isEmpty)
+    
+      XCTAssertFalse(set.eraseUnique(0))
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertFalse(set.eraseUnique(1))
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertFalse(set.eraseUnique(2))
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertFalse(set.eraseUnique(3))
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertFalse(set.eraseUnique(4))
+      XCTAssertTrue(set.sorted().isEmpty)
+    #endif
   }
 
   func testRemoveAll() throws {
     var set = RedBlackTreeMultiSet<Int>([0, 0, 1, 1, 2])
-    XCTAssertEqual(set.removeAll(0), 0)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(0), nil)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(1), 1)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(1), nil)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(2), 2)
-    XCTAssertTrue(set.sorted().isEmpty)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.removeAll(0), 0)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(0), nil)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(1), 1)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(1), nil)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(2), 2)
+      XCTAssertTrue(set.sorted().isEmpty)
+    #else
+      XCTAssertEqual(set.eraseMulti(0), 2)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(0), 0)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(1), 2)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(1), 0)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(2), 1)
+      XCTAssertTrue(set.sorted().isEmpty)
+    #endif
   }
 
   #if false
@@ -73,7 +110,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     //      s.remove(at: s.endIndex)
   }
 
-  #if COMPATIBLE_ATCODER_2025 && !USE_SIMPLE_COPY_ON_WRITE
+  #if COMPATIBLE_ATCODER_2025
     func testSmokeRemove0() throws {
       var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
       XCTAssertEqual(s + [], (0..<2_000).flatMap { [$0, $0] })
@@ -94,7 +131,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if !USE_SIMPLE_COPY_ON_WRITE
+  #if COMPATIBLE_ATCODER_2025
     func testSmokeRemove2() throws {
       var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
       for i in s.elements(in: 0..<10_000) + [] {
@@ -160,11 +197,19 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
 
   func testRemoveLimit() throws {
     var members: RedBlackTreeMultiSet = [Int.min, Int.min, Int.max, Int.max]
-    XCTAssertEqual(members.count, 4)
-    members.removeAll(Int.min)
-    XCTAssertEqual(members.count, 2)
-    members.removeAll(Int.max)
-    XCTAssertEqual(members.count, 0)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(members.count, 4)
+      members.removeAll(Int.min)
+      XCTAssertEqual(members.count, 2)
+      members.removeAll(Int.max)
+      XCTAssertEqual(members.count, 0)
+    #else
+      XCTAssertEqual(members.count, 4)
+      members.eraseMulti(Int.min)
+      XCTAssertEqual(members.count, 2)
+      members.eraseMulti(Int.max)
+      XCTAssertEqual(members.count, 0)
+    #endif
   }
 
   func testRemoveFirst() throws {

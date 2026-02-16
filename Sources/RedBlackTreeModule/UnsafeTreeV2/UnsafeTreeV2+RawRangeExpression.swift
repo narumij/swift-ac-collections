@@ -35,22 +35,31 @@ extension UnsafeTreeV2 {
 
     return true
   }
+
+  @inlinable
+  func isValidSealedRange(_ range: _RawRange<_SealedPtr>) -> Bool {
+    isValidSealedRange(
+      lower: range.lowerBound,
+      upper: range.upperBound)
+  }
 }
 
 extension UnsafeTreeV2 {
 
   @inlinable
-  func sanitizeSealedRange(_ tuple: (lower: _SealedPtr, upper: _SealedPtr))
-    -> (_SealedPtr, _SealedPtr)
+  func sanitizeSealedRange(_ range: _RawRange<_SealedPtr>)
+    -> _RawRange<_SealedPtr>
   {
-    let (lower, upper) = tuple
+    let (lower, upper) = (range.lowerBound, range.upperBound)
+    let e = __end_node.sealed
     guard
       let l = lower.pointer,
       let u = upper.pointer
     else {
-      let e = __end_node.sealed
-      return (e, e)
+      return .init(lowerBound: e, upperBound: e)
     }
-    return !___ptr_comp(u, l) ? (lower, upper) : (__end_node.sealed, __end_node.sealed)
+    return !___ptr_comp(u, l)
+      ? .init(lowerBound: lower, upperBound: upper)
+      : .init(lowerBound: e, upperBound: e)
   }
 }

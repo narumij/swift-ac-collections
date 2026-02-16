@@ -1,4 +1,8 @@
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyBase {}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// - Complexity: O(*n* log *n* + *n*)
@@ -39,6 +43,21 @@
         }
       }
       return nil
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @inline(__always)
+    @discardableResult
+    public mutating func remove(_ member: Element) -> Element? {
+      __tree_._strongEnsureUnique()
+      return __tree_.___erase_unique(member) ? member : nil
     }
   }
 #endif
@@ -456,6 +475,22 @@
       ___remove(
         from: __tree_.__purified_(bounds.lowerBound).pointer!,
         to: __tree_.__purified_(bounds.upperBound).pointer!)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+
+  extension RedBlackTreeMultiSet {
+
+    // TODO: イテレータ利用の注意をドキュメントすること
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Complexity: O(log *n* : *k*)
+    @inlinable
+    @discardableResult
+    public mutating func removeAll(_ member: Element) -> Element? {
+      __tree_._strongEnsureUnique()
+      return __tree_.___erase_multi(member) != 0 ? member : nil
     }
   }
 #endif

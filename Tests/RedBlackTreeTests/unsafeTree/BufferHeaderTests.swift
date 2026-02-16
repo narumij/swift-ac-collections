@@ -14,14 +14,6 @@ import XCTest
 
     typealias Fixture = UnsafeTreeV2BufferHeader
 
-    override func setUpWithError() throws {
-      // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-      // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
     func testEmptyInitial() throws {
       var header = Fixture(Int.self, nullptr: .nullptr, capacity: 0)
       XCTAssertEqual(header.recycleHead, .nullptr)
@@ -104,11 +96,11 @@ import XCTest
       header.___deallocFreshPool()
     }
 
-    func testPerformanceExample() throws {
-      // This is an example of a performance test case.
-      self.measure {
-        // Put the code you want to measure the time of here.
-      }
-    }
+//    func testPerformanceExample() throws {
+//      // This is an example of a performance test case.
+//      self.measure {
+//        // Put the code you want to measure the time of here.
+//      }
+//    }
   }
 #endif

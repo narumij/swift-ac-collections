@@ -35,7 +35,8 @@ final class RedBlackTreeMultiMapTests_: RedBlackTreeTestCase {
     multiDict.insert(key: "apple", value: 3)
     multiDict.insert(key: "banana", value: 2)
 
-    let (lower, upper) = multiDict.equalRange("apple")
+    let r = multiDict.equalRange("apple")
+    let (lower, upper) = (r.lower, r.upper)
     var result: [Int] = []
     var it = lower
     while it != upper {

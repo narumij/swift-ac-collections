@@ -9,21 +9,24 @@
   import RedBlackTreeModule
   import XCTest
 
-  final class SealedTests: XCTestCase {
+  final class SealedTests: RedBlackTreeTestCase {
 
     typealias SUT = RedBlackTreeSet<Int>
 
-    var a = SUT(0..<20)
+    var a = SUT()
 
     override func setUpWithError() throws {
       // Put setup code here. This method is called before the invocation of each test method in the class.
+      try super.setUpWithError()
       a = .init(0..<20)
     }
 
     override func tearDownWithError() throws {
       // Put teardown code here. This method is called after the invocation of each test method in the class.
+      a = .init()
+      try super.tearDownWithError()
     }
-
+    
     func testSomething() throws {
       var b = a
       XCTAssertTrue(b.isValid(index: a.startIndex))

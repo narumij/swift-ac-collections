@@ -92,26 +92,49 @@ final class MultisetTests: RedBlackTreeTestCase {
 
   func testRemove() throws {
     var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
-    XCTAssertEqual(set.removeAll(0), 0)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(1), 1)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(2), 2)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(3), 3)
-    XCTAssertFalse(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(4), 4)
-    XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(0), nil)
-    XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(1), nil)
-    XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(2), nil)
-    XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(3), nil)
-    XCTAssertTrue(set.sorted().isEmpty)
-    XCTAssertEqual(set.removeAll(4), nil)
-    XCTAssertTrue(set.sorted().isEmpty)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.removeAll(0), 0)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(1), 1)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(2), 2)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(3), 3)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(4), 4)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(0), nil)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(1), nil)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(2), nil)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(3), nil)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.removeAll(4), nil)
+      XCTAssertTrue(set.sorted().isEmpty)
+    #else
+      XCTAssertEqual(set.eraseMulti(0), 1)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(1), 1)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(2), 1)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(3), 1)
+      XCTAssertFalse(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(4), 1)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(0), 0)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(1), 0)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(2), 0)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(3), 0)
+      XCTAssertTrue(set.sorted().isEmpty)
+      XCTAssertEqual(set.eraseMulti(4), 0)
+      XCTAssertTrue(set.sorted().isEmpty)
+    #endif
   }
 
   #if DEBUG
@@ -154,10 +177,17 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.contains(3), true)
     XCTAssertEqual(set.contains(4), true)
     XCTAssertEqual(set.contains(5), false)
-    XCTAssertEqual(set.removeAll(1), 1)
-    XCTAssertEqual(set.removeAll(3), 3)
-    XCTAssertEqual(set.removeAll(1), nil)
-    XCTAssertEqual(set.removeAll(3), nil)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.removeAll(1), 1)
+      XCTAssertEqual(set.removeAll(3), 3)
+      XCTAssertEqual(set.removeAll(1), nil)
+      XCTAssertEqual(set.removeAll(3), nil)
+    #else
+      XCTAssertEqual(set.eraseMulti(1), 1)
+      XCTAssertEqual(set.eraseMulti(3), 1)
+      XCTAssertEqual(set.eraseMulti(1), 0)
+      XCTAssertEqual(set.eraseMulti(3), 0)
+    #endif
     XCTAssertEqual(set.sorted(), [0, 2, 4])
     XCTAssertEqual(set.contains(-1), false)
     XCTAssertEqual(set.contains(0), true)
@@ -166,10 +196,17 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.contains(3), false)
     XCTAssertEqual(set.contains(4), true)
     XCTAssertEqual(set.contains(5), false)
-    XCTAssertEqual(set.removeAll(2), 2)
-    XCTAssertEqual(set.removeAll(1), nil)
-    XCTAssertEqual(set.removeAll(2), nil)
-    XCTAssertEqual(set.removeAll(3), nil)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.removeAll(2), 2)
+      XCTAssertEqual(set.removeAll(1), nil)
+      XCTAssertEqual(set.removeAll(2), nil)
+      XCTAssertEqual(set.removeAll(3), nil)
+    #else
+      XCTAssertEqual(set.eraseMulti(2), 1)
+      XCTAssertEqual(set.eraseMulti(1), 0)
+      XCTAssertEqual(set.eraseMulti(2), 0)
+      XCTAssertEqual(set.eraseMulti(3), 0)
+    #endif
     XCTAssertEqual(set.sorted(), [0, 4])
     XCTAssertEqual(set.contains(-1), false)
     XCTAssertEqual(set.contains(0), true)
@@ -178,11 +215,19 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.contains(3), false)
     XCTAssertEqual(set.contains(4), true)
     XCTAssertEqual(set.contains(5), false)
-    XCTAssertEqual(set.removeAll(0), 0)
-    XCTAssertEqual(set.removeAll(1), nil)
-    XCTAssertEqual(set.removeAll(2), nil)
-    XCTAssertEqual(set.removeAll(3), nil)
-    XCTAssertEqual(set.removeAll(4), 4)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.removeAll(0), 0)
+      XCTAssertEqual(set.removeAll(1), nil)
+      XCTAssertEqual(set.removeAll(2), nil)
+      XCTAssertEqual(set.removeAll(3), nil)
+      XCTAssertEqual(set.removeAll(4), 4)
+    #else
+      XCTAssertEqual(set.eraseMulti(0), 1)
+      XCTAssertEqual(set.eraseMulti(1), 0)
+      XCTAssertEqual(set.eraseMulti(2), 0)
+      XCTAssertEqual(set.eraseMulti(3), 0)
+      XCTAssertEqual(set.eraseMulti(4), 1)
+    #endif
     XCTAssertEqual(set.contains(-1), false)
     XCTAssertEqual(set.contains(0), false)
     XCTAssertEqual(set.contains(1), false)
@@ -218,10 +263,17 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.right(4).index, 5)
     XCTAssertEqual(set.right(5).index, 5)
     XCTAssertEqual(set.right(6).index, 5)
-    XCTAssertEqual(set.removeAll(1), 1)
-    XCTAssertEqual(set.removeAll(3), 3)
-    XCTAssertEqual(set.removeAll(1), nil)
-    XCTAssertEqual(set.removeAll(3), nil)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.removeAll(1), 1)
+      XCTAssertEqual(set.removeAll(3), 3)
+      XCTAssertEqual(set.removeAll(1), nil)
+      XCTAssertEqual(set.removeAll(3), nil)
+    #else
+      XCTAssertEqual(set.eraseMulti(1), 1)
+      XCTAssertEqual(set.eraseMulti(3), 1)
+      XCTAssertEqual(set.eraseMulti(1), 0)
+      XCTAssertEqual(set.eraseMulti(3), 0)
+    #endif
     XCTAssertEqual(set.sorted(), [0, 2, 4])
     XCTAssertEqual(set.left(-1).index, 0)
     XCTAssertEqual(set.left(0).index, 0)
@@ -237,10 +289,17 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.right(3).index, 2)
     XCTAssertEqual(set.right(4).index, 3)
     XCTAssertEqual(set.right(5).index, 3)
-    XCTAssertEqual(set.removeAll(2), 2)
-    XCTAssertEqual(set.removeAll(1), nil)
-    XCTAssertEqual(set.removeAll(2), nil)
-    XCTAssertEqual(set.removeAll(3), nil)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.removeAll(2), 2)
+      XCTAssertEqual(set.removeAll(1), nil)
+      XCTAssertEqual(set.removeAll(2), nil)
+      XCTAssertEqual(set.removeAll(3), nil)
+    #else
+      XCTAssertEqual(set.eraseMulti(2), 1)
+      XCTAssertEqual(set.eraseMulti(1), 0)
+      XCTAssertEqual(set.eraseMulti(2), 0)
+      XCTAssertEqual(set.eraseMulti(3), 0)
+    #endif
     XCTAssertEqual(set.sorted(), [0, 4])
     XCTAssertEqual(set.left(-1).index, 0)
     XCTAssertEqual(set.left(0).index, 0)
@@ -256,11 +315,19 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.right(3).index, 1)
     XCTAssertEqual(set.right(4).index, 2)
     XCTAssertEqual(set.right(5).index, 2)
-    XCTAssertEqual(set.removeAll(0), 0)
-    XCTAssertEqual(set.removeAll(1), nil)
-    XCTAssertEqual(set.removeAll(2), nil)
-    XCTAssertEqual(set.removeAll(3), nil)
-    XCTAssertEqual(set.removeAll(4), 4)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.removeAll(0), 0)
+      XCTAssertEqual(set.removeAll(1), nil)
+      XCTAssertEqual(set.removeAll(2), nil)
+      XCTAssertEqual(set.removeAll(3), nil)
+      XCTAssertEqual(set.removeAll(4), 4)
+    #else
+      XCTAssertEqual(set.eraseMulti(0), 1)
+      XCTAssertEqual(set.eraseMulti(1), 0)
+      XCTAssertEqual(set.eraseMulti(2), 0)
+      XCTAssertEqual(set.eraseMulti(3), 0)
+      XCTAssertEqual(set.eraseMulti(4), 1)
+    #endif
     XCTAssertEqual(set.left(-1).index, 0)
     XCTAssertEqual(set.left(0).index, 0)
     XCTAssertEqual(set.left(1).index, 0)
@@ -392,7 +459,7 @@ final class MultisetTests: RedBlackTreeTestCase {
         set.insert(i)
         XCTAssertTrue(set.___tree_invariant())
       }
-      #if !USE_SIMPLE_COPY_ON_WRITE
+      #if COMPATIBLE_ATCODER_2025
         for i in set {
           set.removeAll(i)
           XCTAssertTrue(set.___tree_invariant())
@@ -431,7 +498,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       #if AC_COLLECTIONS_INTERNAL_CHECKS
         print("set._copyCount", set._copyCount)
       #endif
-      #if !USE_SIMPLE_COPY_ON_WRITE
+      #if COMPATIBLE_ATCODER_2025
         for i in set[set.startIndex..<set.endIndex] {
           // erase multiなので、CoWなしだと、ポインタが破壊される
           set.removeAll(i)
@@ -448,7 +515,11 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(i)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(i)
+      #else
+        set.eraseMulti(i)
+      #endif
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -456,7 +527,11 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(i)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(i)
+      #else
+        set.eraseMulti(i)
+      #endif
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -472,7 +547,11 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(i)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(i)
+      #else
+        set.eraseMulti(i)
+      #endif
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -480,7 +559,11 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.removeAll(i)
+      #if COMPATIBLE_ATCODER_2025
+        set.removeAll(i)
+      #else
+        set.eraseMulti(i)
+      #endif
       XCTAssertTrue(set.___tree_invariant())
     }
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {

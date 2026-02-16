@@ -44,3 +44,15 @@ extension RedBlackTreeMultiSet {
     .init(_start: _sealed_start, _end: _sealed_end)
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(_result position: Index) -> Result<Element, SealError> {
+      __tree_.__purified_(position)
+        .map { $0.pointer.__value_().pointee }
+    }
+  }
+#endif

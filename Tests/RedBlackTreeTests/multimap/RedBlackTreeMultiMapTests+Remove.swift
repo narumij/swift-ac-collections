@@ -5,10 +5,17 @@ extension RedBlackTreeMultiMapTests {
 
   func testRemoveValuesForKey_MultipleAndZeroHit() {
     var map: RedBlackTreeMultiMap = [("a", 1), ("a", 2), ("b", 3)]
-    XCTAssertEqual(map.removeAll(forKey: "a"), 2)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(map.removeAll(forKey: "a"), 2)
+      XCTAssertEqual(map.count, 1)
+      //        XCTAssertEqual(map["b"], 3)
+      XCTAssertEqual(map.removeAll(forKey: "z"), 0)  // 存在しないキー
+    #else
+    XCTAssertEqual(map.eraseMulti("a"), 2)
     XCTAssertEqual(map.count, 1)
     //        XCTAssertEqual(map["b"], 3)
-    XCTAssertEqual(map.removeAll(forKey: "z"), 0)  // 存在しないキー
+    XCTAssertEqual(map.eraseMulti("z"), 0)  // 存在しないキー
+    #endif
   }
 
   func testRemoveFirstAndLast_NonEmpty() {

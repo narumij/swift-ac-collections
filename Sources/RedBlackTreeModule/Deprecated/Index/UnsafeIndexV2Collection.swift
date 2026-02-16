@@ -15,10 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: 仕様及び設計について再検討すること
-// プロトコル適合問題だけに対処して止まっている気がする
-// そもそも使いやすくすること自体が不可能かもしれない
-
 public
   struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>:
     UnsafeTreeBinding, UnsafeIndexProtocol_tie
@@ -91,14 +87,3 @@ extension UnsafeIndexV2Collection {
 #if swift(>=5.5)
   extension UnsafeIndexV2Collection: @unchecked Sendable {}
 #endif
-
-// MARK: - Is Identical To
-
-extension UnsafeIndexV2Collection {
-
-  @inlinable
-  @inline(__always)
-  public func isTriviallyIdentical(to other: Self) -> Bool {
-    tied === other.tied && _start == other._start && _end == other._end
-  }
-}

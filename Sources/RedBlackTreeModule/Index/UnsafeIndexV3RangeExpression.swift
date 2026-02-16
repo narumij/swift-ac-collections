@@ -16,15 +16,15 @@
 //===----------------------------------------------------------------------===//
 
 @frozen
-public struct UnsafeIndexV3RangeExpression: _UnsafeNodePtrType {
+public struct UnsafeIndexV3RangeExpression {
 
   @usableFromInline
-  internal var range: _RawRangeExpression<_TieWrappedPtr>
+  internal var rangeExpression: _RawRangeExpression<_TieWrappedPtr>
 
   @inlinable
   @inline(__always)
-  internal init(_ range: _RawRangeExpression<_TieWrappedPtr>) {
-    self.range = range
+  internal init(_ rangeExpression: _RawRangeExpression<_TieWrappedPtr>) {
+    self.rangeExpression = rangeExpression
   }
 }
 
@@ -33,9 +33,9 @@ public struct UnsafeIndexV3RangeExpression: _UnsafeNodePtrType {
 extension UnsafeIndexV3RangeExpression {
 
   @usableFromInline
-  func relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> (_SealedPtr, _SealedPtr) {
+  func relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> _RawRange<_TieWrappedPtr> {
     // CoW対応があるので、同一木制限はできない
-    __tree_.__purified_(range).relative(to: __tree_)
+    return rangeExpression.relative(to: __tree_)
   }
 }
 
@@ -43,7 +43,7 @@ extension UnsafeIndexV3RangeExpression {
 
 @inlinable
 @inline(__always)
-public func ..< (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
+public func ..< (lhs: _TieWrappedPtr, rhs: _TieWrappedPtr)
   -> UnsafeIndexV3RangeExpression
 {
   guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
@@ -52,7 +52,7 @@ public func ..< (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
 
 @inlinable
 @inline(__always)
-public func ... (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
+public func ... (lhs: _TieWrappedPtr, rhs: _TieWrappedPtr)
   -> UnsafeIndexV3RangeExpression
 {
   guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
@@ -61,21 +61,18 @@ public func ... (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
 
 @inlinable
 @inline(__always)
-public prefix func ..< (rhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
+public prefix func ..< (rhs: _TieWrappedPtr) -> UnsafeIndexV3RangeExpression {
   return .init(.partialRangeTo(rhs))
 }
 
 @inlinable
 @inline(__always)
-public prefix func ... (rhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
+public prefix func ... (rhs: _TieWrappedPtr) -> UnsafeIndexV3RangeExpression {
   return .init(.partialRangeThrough(rhs))
 }
 
 @inlinable
 @inline(__always)
-public postfix func ... (lhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
+public postfix func ... (lhs: _TieWrappedPtr) -> UnsafeIndexV3RangeExpression {
   return .init(.partialRangeFrom(lhs))
 }
-
-// MARK: -
-

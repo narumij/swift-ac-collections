@@ -45,7 +45,7 @@
     @inlinable
     public subscript(bound: Bound) -> Element? {
       let p = bound.evaluate(__tree_)
-      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      guard let p = p.pointer, !p.___is_end else { return nil }
       return __tree_[_unsafe_raw: p]
     }
   }
@@ -56,7 +56,7 @@
     public mutating func erase(_ bound: Bound) -> Element? {
       __tree_.ensureUnique()
       let p = bound.evaluate(__tree_)
-      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      guard let p = p.pointer, !p.___is_end else { return nil }
       return _unchecked_remove(at: p).payload
     }
   }
@@ -104,10 +104,8 @@
     public mutating func erase(_ bounds: BoundRange) {
 
       __tree_.ensureUnique()
-      let range = bounds._evaluate(__tree_).relative(to: __tree_)
-      guard __tree_.isValidSealedRange(range) else {
-        fatalError(.invalidIndex)
-      }
+      let range = __tree_.sanitizeSealedRange(
+        bounds._evaluate(__tree_).relative(to: __tree_))
       __tree_.___erase(range.lowerBound.pointer!, range.upperBound.pointer!)
     }
 
@@ -117,50 +115,9 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let range = bounds._evaluate(__tree_).relative(to: __tree_)
-      guard __tree_.isValidSealedRange(range) else {
-        fatalError(.invalidIndex)
-      }
+      let range = __tree_.sanitizeSealedRange(
+        bounds._evaluate(__tree_).relative(to: __tree_))
       try __tree_.___erase_if(range.lowerBound, range.upperBound, shouldBeRemoved)
-    }
-  }
-#endif
-
-#if DEBUG
-  extension RedBlackTreeSet {
-
-    package func _withSealed<R>(
-      _ b: RedBlackTreeBoundExpression<Element>,
-      _ body: (_SealedPtr) throws -> R
-    ) rethrows -> R {
-      let b = b.evaluate(__tree_)
-      return try body(b)
-    }
-
-    package func _withSealed<R>(
-      _ a: RedBlackTreeBoundExpression<Element>,
-      _ b: RedBlackTreeBoundExpression<Element>,
-      _ body: (_SealedPtr, _SealedPtr) throws -> R
-    ) rethrows -> R {
-      let a = a.evaluate(__tree_)
-      let b = b.evaluate(__tree_)
-      return try body(a, b)
-    }
-  }
-
-  extension RedBlackTreeSet {
-
-    package func _isEqual(
-      _ l: RedBlackTreeBoundExpression<Element>,
-      _ r: RedBlackTreeBoundExpression<Element>
-    ) -> Bool {
-      let l = l.evaluate(__tree_)
-      let r = r.evaluate(__tree_)
-      return l == r
-    }
-
-    package func _error(_ bound: RedBlackTreeBoundExpression<Element>) -> SealError? {
-      bound.evaluate(__tree_).error
     }
   }
 #endif

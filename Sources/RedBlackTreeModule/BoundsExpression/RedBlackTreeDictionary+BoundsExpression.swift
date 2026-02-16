@@ -39,7 +39,7 @@
     public subscript(bound: Bound) -> Element? {
 
       let p = bound.evaluate(__tree_)
-      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      guard let p = p.pointer, !p.___is_end else { return nil }
       return Base.__element_(__tree_[_unsafe_raw: p])
     }
   }
@@ -51,39 +51,8 @@
 
       __tree_.ensureUnique()
       let p = bound.evaluate(__tree_)
-      guard let p = try? p.get().pointer, !p.___is_end else { return nil }
+      guard let p = p.pointer, !p.___is_end else { return nil }
       return Base.__element_(_unchecked_remove(at: p).payload)
-    }
-  }
-
-  // MARK: -
-
-  extension RedBlackTreeDictionary {
-
-    @inlinable
-    public mutating func erase(_ bounds: BoundRange) {
-
-      __tree_.ensureUnique()
-      let range = bounds._evaluate(__tree_).relative(to: __tree_)
-      guard __tree_.isValidSealedRange(range) else {
-        fatalError(.invalidIndex)
-      }
-      __tree_.___erase(range.lowerBound.pointer!, range.upperBound.pointer!)
-    }
-
-    @inlinable
-    public mutating func erase(
-      _ bounds: BoundRange, where shouldBeRemoved: (Element) throws -> Bool
-    ) rethrows {
-
-      __tree_.ensureUnique()
-      let range = bounds._evaluate(__tree_).relative(to: __tree_)
-      guard __tree_.isValidSealedRange(range) else {
-        fatalError(.invalidIndex)
-      }
-      try __tree_.___erase_if(range.lowerBound, range.upperBound) {
-        try shouldBeRemoved($0.tuple)
-      }
     }
   }
 
@@ -107,7 +76,31 @@
 
         yield &self[unchecked: range]
       }
+    }
+  }
 
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    public mutating func erase(_ bounds: BoundRange) {
+
+      __tree_.ensureUnique()
+      let range = __tree_.sanitizeSealedRange(
+        bounds._evaluate(__tree_).relative(to: __tree_))
+      __tree_.___erase(range.lowerBound.pointer!, range.upperBound.pointer!)
+    }
+
+    @inlinable
+    public mutating func erase(
+      _ bounds: BoundRange, where shouldBeRemoved: (Element) throws -> Bool
+    ) rethrows {
+
+      __tree_.ensureUnique()
+      let range = __tree_.sanitizeSealedRange(
+        bounds._evaluate(__tree_).relative(to: __tree_))
+      try __tree_.___erase_if(range.lowerBound, range.upperBound) {
+        try shouldBeRemoved($0.tuple)
+      }
     }
   }
 #endif

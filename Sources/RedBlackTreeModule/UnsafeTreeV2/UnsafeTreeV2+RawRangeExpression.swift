@@ -47,34 +47,19 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  func sanitizeSealedRange(_ tuple: (lower: _SealedPtr, upper: _SealedPtr))
-    -> (_SealedPtr, _SealedPtr)
-  {
-    let (lower, upper) = tuple
-    guard
-      let l = lower.pointer,
-      let u = upper.pointer
-    else {
-      let e = __end_node.sealed
-      return (e, e)
-    }
-    return !___ptr_comp(u, l) ? (lower, upper) : (__end_node.sealed, __end_node.sealed)
-  }
-
-  @inlinable
   func sanitizeSealedRange(_ range: _RawRange<_SealedPtr>)
     -> _RawRange<_SealedPtr>
   {
     let (lower, upper) = (range.lowerBound, range.upperBound)
+    let e = __end_node.sealed
     guard
       let l = lower.pointer,
       let u = upper.pointer
     else {
-      let e = __end_node.sealed
       return .init(lowerBound: e, upperBound: e)
     }
     return !___ptr_comp(u, l)
       ? .init(lowerBound: lower, upperBound: upper)
-      : .init(lowerBound: __end_node.sealed, upperBound: __end_node.sealed)
+      : .init(lowerBound: e, upperBound: e)
   }
 }

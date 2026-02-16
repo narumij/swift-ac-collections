@@ -46,9 +46,6 @@ import Foundation
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   public
-    typealias KeyValue = (key: Key, value: Value)
-
-  public
     typealias Element = (key: Key, value: Value)
 
   public
@@ -425,7 +422,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public mutating func popFirst() -> KeyValue? {
+  public mutating func popFirst() -> Element? {
     guard !isEmpty else { return nil }
     return remove(at: startIndex)
   }

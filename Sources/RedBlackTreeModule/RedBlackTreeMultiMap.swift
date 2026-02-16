@@ -47,11 +47,6 @@ import Foundation
 @frozen
 public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 
-  #if COMPATIBLE_ATCODER_2025
-    public
-      typealias KeyValue = (key: Key, value: Value)
-  #endif
-
   public
     typealias Element = (key: Key, value: Value)
 
@@ -265,18 +260,6 @@ extension RedBlackTreeMultiMap {
     public func values(forKey key: Key) -> [_MappedValue] {
       let (lo, hi) = __tree_.__equal_range_multi(key)
       return __tree_.___copy_to_array(lo, hi, transform: Base.___mapped_value)
-    }
-  }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func values(forKey key: Key) -> Values {
-      let (lo, hi) = __tree_.__equal_range_multi(key)
-      return .init(start: lo.sealed, end: hi.sealed, tie: __tree_.tied)
     }
   }
 #endif

@@ -1,4 +1,12 @@
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+    public
+      typealias KeyValue = (key: Key, value: Value)
+
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase {}
 #endif
 

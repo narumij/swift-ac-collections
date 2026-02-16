@@ -20,6 +20,7 @@
   extension RedBlackTreeMultiSet {
 
     public typealias View = RedBlackTreeKeyOnlyRangeView<Base>
+    public typealias IndexRange = UnsafeIndexV3Range
     public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
 
     @inlinable
@@ -28,7 +29,7 @@
     }
 
     @inlinable
-    public func isValid(_ bounds: UnsafeIndexV3Range) -> Bool {
+    public func isValid(_ bounds: IndexRange) -> Bool {
       let range = __tree_.__purified_(bounds.range)
       return __tree_.isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
         && range.lowerBound.isValid
@@ -54,7 +55,7 @@
     }
 
     @inlinable
-    public subscript(bounds: UnsafeIndexV3Range) -> View {
+    public subscript(bounds: IndexRange) -> View {
       @inline(__always) get {
         let range = __tree_.__purified_(bounds.range)
         guard __tree_.isValidSealedRange(range) else {
@@ -96,7 +97,7 @@
     }
 
     @inlinable
-    public mutating func erase(_ bounds: UnsafeIndexV3Range) {
+    public mutating func erase(_ bounds: IndexRange) {
       __tree_.ensureUnique()
       let range = __tree_.__purified_(bounds.range)
       guard __tree_.isValidSealedRange(range) else {
@@ -117,7 +118,7 @@
 
     @inlinable
     public mutating func erase(
-      _ bounds: UnsafeIndexV3Range, where shouldBeRemoved: (Element) throws -> Bool
+      _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
     )
       rethrows
     {

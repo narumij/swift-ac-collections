@@ -55,7 +55,7 @@
     }
 
     @inlinable
-    public subscript(bounds: UnsafeIndexV3Range) -> View {
+    public subscript(bounds: IndexRange) -> View {
       @inline(__always) get {
         let range = __tree_.__purified_(bounds.range)
         guard __tree_.isValidSealedRange(range) else {
@@ -97,7 +97,7 @@
     }
 
     @inlinable
-    public mutating func erase(_ bounds: UnsafeIndexV3Range) {
+    public mutating func erase(_ bounds: IndexRange) {
       __tree_.ensureUnique()
       let range = __tree_.__purified_(bounds.range)
       guard __tree_.isValidSealedRange(range) else {
@@ -118,7 +118,7 @@
 
     @inlinable
     public mutating func erase(
-      _ bounds: UnsafeIndexV3Range, where shouldBeRemoved: (Element) throws -> Bool
+      _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
     )
       rethrows
     {

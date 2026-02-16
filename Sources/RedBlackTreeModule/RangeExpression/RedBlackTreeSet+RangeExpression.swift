@@ -45,11 +45,6 @@
     }
     
     @inlinable
-    var ___sealed_range: _RawRange<_SealedPtr> {
-      .init(lowerBound: _sealed_start, upperBound: _sealed_end)
-    }
-
-    @inlinable
     public subscript(bounds: UnboundedRange) -> View {
       @inline(__always) get {
         self[unchecked: ___sealed_range]

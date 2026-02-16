@@ -44,4 +44,9 @@ extension _SequenceV2 {
   package var _sealed_end: _SealedPtr {
     __tree_.__end_node.sealed
   }
+  
+  @inlinable
+  var ___sealed_range: _RawRange<_SealedPtr> {
+    .init(lowerBound: _sealed_start, upperBound: _sealed_end)
+  }
 }

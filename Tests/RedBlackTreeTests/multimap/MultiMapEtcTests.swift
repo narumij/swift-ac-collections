@@ -43,14 +43,14 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
   #if DEBUG
     func testExample___0() throws {
       for i in target1.___node_positions() {
-        target1._unchecked_remove(at: i)
+        target1.__tree_._unchecked_remove(at: i)
       }
       XCTAssertTrue(target1.isEmpty)
     }
 
     func testExample___1() throws {
       target1.___node_positions().forEach { i in
-        target1._unchecked_remove(at: i)
+        target1.__tree_._unchecked_remove(at: i)
       }
       XCTAssertTrue(target1.isEmpty)
     }

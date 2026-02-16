@@ -5,7 +5,6 @@
 //  Created by narumij on 2026/02/14.
 //
 
-
 @usableFromInline
 protocol _RedBlackTreeKeyOnlyBase:
   UnsafeIndexProtocol_tree
@@ -15,6 +14,7 @@ protocol _RedBlackTreeKeyOnlyBase:
     & _CompareV2
     & _SequenceV2
     & _RemoveV2
+    & ___RemoveV2
     & ___UnsafeIndexV2
     & ___UnsafeKeyOnlySequenceV2
 {}
@@ -27,6 +27,7 @@ protocol _RedBlackTreeKeyValuesBase:
     & _CompareV2
     & _SequenceV2
     & _RemoveV2
+    & ___RemoveV2
     & ___UnsafeIndexV2
     & ___UnsafeKeyValueSequenceV2
 {}

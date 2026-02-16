@@ -54,7 +54,7 @@
       __tree_.ensureUnique()
       let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
-      return _unchecked_remove(at: p).payload
+      return __tree_._unchecked_remove(at: p).payload
     }
   }
 

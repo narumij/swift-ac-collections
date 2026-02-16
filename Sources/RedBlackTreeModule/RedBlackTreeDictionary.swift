@@ -466,7 +466,7 @@ extension RedBlackTreeDictionary {
     guard case .success(let __p) = __tree_.__purified_(index) else {
       fatalError(.invalidIndex)
     }
-    return Self.__element_(_unchecked_remove(at: __p.pointer).payload)
+    return Self.__element_(__tree_._unchecked_remove(at: __p.pointer).payload)
   }
 }
 

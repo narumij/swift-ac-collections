@@ -176,7 +176,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
-    let (_p, _r) = _unchecked_remove(at: _start)
+    let (_p, _r) = __tree_._unchecked_remove(at: _start)
     startIndex = ___index(_p.sealed)
     return _r
   }
@@ -187,7 +187,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
-    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
+    return __tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
   }
 
   @inlinable
@@ -196,7 +196,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     guard _start != _end else { fatalError(.emptyFirst) }
-    let (_p, _r) = _unchecked_remove(at: _start)
+    let (_p, _r) = __tree_._unchecked_remove(at: _start)
     startIndex = ___index(_p.sealed)
     return _r
   }
@@ -207,7 +207,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     guard _start != _end else { fatalError(.emptyLast) }
-    return _unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
+    return __tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
   }
 }
 

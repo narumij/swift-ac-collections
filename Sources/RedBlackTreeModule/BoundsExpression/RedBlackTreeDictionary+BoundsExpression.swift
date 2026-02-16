@@ -52,7 +52,7 @@
       __tree_.ensureUnique()
       let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
-      return Base.__element_(_unchecked_remove(at: p).payload)
+      return Base.__element_(__tree_._unchecked_remove(at: p).payload)
     }
   }
 

@@ -130,7 +130,7 @@ final class MultiMapRemoveTests: RedBlackTreeTestCase {
     func testRemoveWith___Indices() throws {
       var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
       for i in members.___node_positions() {
-        members._unchecked_remove(at: i)
+        members.__tree_._unchecked_remove(at: i)
       }
       XCTAssertEqual(members.map { $0.key }, [])
     }
@@ -138,7 +138,7 @@ final class MultiMapRemoveTests: RedBlackTreeTestCase {
     func testRemoveWith___Indices2() throws {
       var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
       members.___node_positions().forEach { i in
-        members._unchecked_remove(at: i)
+        members.__tree_._unchecked_remove(at: i)
       }
       XCTAssertEqual(members.map { $0.key }, [])
     }
@@ -146,7 +146,7 @@ final class MultiMapRemoveTests: RedBlackTreeTestCase {
     func testRemoveWith___Indices3() throws {
       var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
       members.___node_positions().reversed().forEach { i in
-        members._unchecked_remove(at: i)
+        members.__tree_._unchecked_remove(at: i)
       }
       XCTAssertEqual(members.map { $0.key }, [])
     }
@@ -183,7 +183,7 @@ final class MultiMapRemoveTests: RedBlackTreeTestCase {
       func testRemoveWithSub___Indices() throws {
         var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
         for i in members[2..<8].___node_positions() {
-          members._unchecked_remove(at: i)
+          members.__tree_._unchecked_remove(at: i)
         }
         XCTAssertEqual(members.map { $0.key }, [0, 1, 8, 9])
       }
@@ -191,7 +191,7 @@ final class MultiMapRemoveTests: RedBlackTreeTestCase {
       func testRemoveWithSub___Indices2() throws {
         var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
         members[2..<8].___node_positions().forEach { i in
-          members._unchecked_remove(at: i)
+          members.__tree_._unchecked_remove(at: i)
         }
         XCTAssertEqual(members.map { $0.key }, [0, 1, 8, 9])
       }
@@ -199,7 +199,7 @@ final class MultiMapRemoveTests: RedBlackTreeTestCase {
       func testRemoveWithSub___Indices4() throws {
         var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
         members[2..<8].___node_positions().reversed().forEach { i in
-          members._unchecked_remove(at: i)
+          members.__tree_._unchecked_remove(at: i)
         }
         XCTAssertEqual(members.map { $0.key }, [0, 1, 8, 9])
       }

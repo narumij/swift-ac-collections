@@ -255,7 +255,7 @@
       guard case .success(let __p) = __tree_.__purified_(index) else {
         fatalError(.invalidIndex)
       }
-      return _unchecked_remove(at: __p.pointer).payload
+      return __tree_._unchecked_remove(at: __p.pointer).payload
     }
   }
 

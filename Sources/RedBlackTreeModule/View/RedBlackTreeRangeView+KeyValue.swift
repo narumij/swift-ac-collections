@@ -329,7 +329,7 @@ extension RedBlackTreeKeyValueRangeView {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public func isValid(index: Index) -> Bool {
+  package func isValid(index: Index) -> Bool {
     let i = __tree_.__purified_(index)  // __retrieve_でもテストは通る
     guard i.___is_end == false, let i = i.pointer else { return false }
     let (_start, _end) = _raw_range

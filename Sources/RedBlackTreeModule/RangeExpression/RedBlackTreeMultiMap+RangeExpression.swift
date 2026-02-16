@@ -93,27 +93,33 @@
     @inlinable
     public mutating func erase(_ bounds: UnboundedRange) {
       __tree_.ensureUnique()
-      _ = ___remove(from: _start, to: _end)
+      _ = __tree_.___erase(_start, _end)
     }
 
     @inlinable
     public mutating func erase(_ bounds: IndexRange) {
       __tree_.ensureUnique()
       let range = __tree_.__purified_(bounds.range)
-      guard __tree_.isValidSealedRange(range) else {
+      guard __tree_.isValidSealedRange(range),
+        let __l = range.lowerBound.pointer,
+        let __u = range.upperBound.pointer
+      else {
         fatalError(.invalidIndex)
       }
-      _ = ___remove(from: range.lowerBound.pointer!, to: range.upperBound.pointer!)
+      _ = __tree_.___erase(__l, __u)
     }
 
     @inlinable
     public mutating func erase(_ bounds: IndexRangeExpression) {
       __tree_.ensureUnique()
       let range = __tree_.__purified_(bounds.relative(to: __tree_))
-      guard __tree_.isValidSealedRange(range) else {
+      guard __tree_.isValidSealedRange(range),
+        let __l = range.lowerBound.pointer,
+        let __u = range.upperBound.pointer
+      else {
         fatalError(.invalidIndex)
       }
-      _ = ___remove(from: range.lowerBound.pointer!, to: range.upperBound.pointer!)
+      _ = __tree_.___erase(__l, __u)
     }
 
     @inlinable

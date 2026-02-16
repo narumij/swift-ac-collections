@@ -32,17 +32,19 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
 
   func testRemoveOneVersusRemoveAll() {
     var ms: RedBlackTreeMultiSet = [5, 5, 5]
-    XCTAssertNotNil(ms.remove(5))  // 1 個だけ
-    XCTAssertEqual(ms.count(of: 5), 2)
 
     #if COMPATIBLE_ATCODER_2025
+      XCTAssertNotNil(ms.remove(5))  // 1 個だけ
+      XCTAssertEqual(ms.count(of: 5), 2)
       XCTAssertNotNil(ms.removeAll(5))  // 全消し
       XCTAssertFalse(ms.contains(5))
       XCTAssertNil(ms.removeAll(5))  // もう無いので nil
     #else
-      XCTAssertNotNil(ms.eraseMulti(5))  // 全消し
+      XCTAssertNotNil(ms.eraseUnique(5))  // 1 個だけ
+      XCTAssertEqual(ms.count(of: 5), 2)
+      XCTAssertNotEqual(ms.eraseMulti(5), 0)  // 全消し
       XCTAssertFalse(ms.contains(5))
-      XCTAssertNil(ms.eraseMulti(5))  // もう無いので nil
+      XCTAssertEqual(ms.eraseMulti(5), 0)  // もう無いので 0
     #endif
   }
 
@@ -103,8 +105,13 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
           ms.insert(v)
           ref.insert(v)
         case 1:  // remove one
-          _ = ms.remove(v)
-          ref.removeOne(v)
+          #if COMPATIBLE_ATCODER_2025
+            _ = ms.remove(v)
+            ref.removeOne(v)
+          #else
+            _ = ms.eraseUnique(v)
+            ref.removeOne(v)
+          #endif
         case 2:  // removeAll
           #if COMPATIBLE_ATCODER_2025
             _ = ms.removeAll(v)

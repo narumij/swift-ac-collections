@@ -116,6 +116,7 @@ public protocol BalancedCollection: BalancedSequence {
 }
 
 public protocol BalancedMultiCollection: BalancedCollection {
+  mutating func eraseUnique(_: _Key) -> Element?
   mutating func eraseMulti(_: _Key) -> Int
 }
 

@@ -23,7 +23,7 @@ public enum _RawRangeExpression<Bound> {
 extension _RawRangeExpression: Equatable where Bound: Equatable {}
 
 extension _RawRangeExpression {
-  
+
   @inlinable
   func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SealedPtr {
     __tree_.__begin_node_.sealed
@@ -33,7 +33,7 @@ extension _RawRangeExpression {
   func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SealedPtr {
     __tree_.__end_node.sealed
   }
-  
+
   @inlinable
   func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedPtr {
     _start(__tree_).band(__tree_.tied)
@@ -152,23 +152,37 @@ extension _RawRangeExpression where Bound == _SealedPtr {
   }
 
   @usableFromInline
-  func __relative(to tied: _TiedRawBuffer) -> (_SealedPtr, _SealedPtr) {
+  func relative(to tied: _TiedRawBuffer) -> _RawRange<_SealedPtr> {
     guard tied.isValueAccessAllowed else {
-      return (.failure(.notAllowed), .failure(.notAllowed))
+      return .init(
+        lowerBound: .failure(.notAllowed),
+        upperBound: .failure(.notAllowed))
     }
     switch self {
     case .range(let lhs, let rhs):
-      return (lhs, rhs)
+      return .init(
+        lowerBound: lhs,
+        upperBound: rhs)
     case .closedRange(let lhs, let rhs):
-      return (lhs, rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
+      return .init(
+        lowerBound: lhs,
+        upperBound: rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
     case .partialRangeTo(let rhs):
-      return (__start(tied), rhs)
+      return .init(
+        lowerBound: __start(tied),
+        upperBound: rhs)
     case .partialRangeThrough(let rhs):
-      return (__start(tied), rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
+      return .init(
+        lowerBound: __start(tied),
+        upperBound: rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
     case .partialRangeFrom(let lhs):
-      return (lhs, __end(tied))
+      return .init(
+        lowerBound: lhs,
+        upperBound: __end(tied))
     case .unboundedRange:
-      return (__start(tied), __end(tied))
+      return .init(
+        lowerBound: __start(tied),
+        upperBound: __end(tied))
     }
   }
 }

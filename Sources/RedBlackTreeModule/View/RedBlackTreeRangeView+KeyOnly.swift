@@ -50,8 +50,6 @@ extension RedBlackTreeKeyOnlyRangeView {
     return (_start, _end)
   }
 
-  // TODO: _NodePtrであるべきか、_SealedPtrであるべきか。使い分けの吟味
-
   @inlinable
   var _range: (_SealedPtr, _SealedPtr) {
     let _start = __tree_.__purified_(startIndex)
@@ -219,6 +217,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   public mutating func erase() {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
+    // ややチェックが甘いので末端チェック付き削除が必要
     __tree_.___erase(_start, _end)
   }
 
@@ -299,6 +298,8 @@ extension RedBlackTreeKeyOnlyRangeView {
 // MARK: -
 
 extension RedBlackTreeKeyOnlyRangeView {
+
+  // TODO: 削除検討
 
   /// Indexがsubscriptで利用可能か判別します
   ///

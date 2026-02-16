@@ -32,9 +32,9 @@ class RedBlackTreeTestCase: XCTestCase {
       XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
       XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)
 
-      XCTAssertEqual(allocatedCount, deallocatedCount)
+      XCTAssertEqual(allocatedCount, deallocatedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
       // これで止まるケースは、スコープ外での初期化の影響のケースがあった
-       assert(allocatedCount == deallocatedCount)
+      assert(allocatedCount == deallocatedCount)
       allocatedCount = 0
       deallocatedCount = 0
     #endif

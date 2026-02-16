@@ -595,6 +595,15 @@ extension RedBlackTreeMultiSet {
 
   extension RedBlackTreeMultiSet {
 
+    /// - Complexity: O( log `count` )
+    @inlinable
+    public func find(_ member: Element) -> Index {
+      ___index(__tree_.find(member).sealed)
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func equalRange(_ element: Element) -> UnsafeIndexV3Range {

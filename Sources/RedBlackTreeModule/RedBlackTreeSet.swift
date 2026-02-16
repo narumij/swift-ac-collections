@@ -706,6 +706,16 @@ extension RedBlackTreeSet {
   }
 
   extension RedBlackTreeSet {
+    
+    /// - Complexity: O( log `count` )
+    @inlinable
+    public func find(_ member: Element) -> Index
+    {
+      ___index(__tree_.find(member).sealed)
+    }
+  }
+
+  extension RedBlackTreeSet {
 
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable

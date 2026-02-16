@@ -705,6 +705,15 @@ extension RedBlackTreeMultiMap {
 
   extension RedBlackTreeMultiMap {
 
+    /// - Complexity: O( log `count` )
+    @inlinable
+    public func find(_ key: Key) -> Index {
+      ___index(__tree_.find(key).sealed)
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func equalRange(_ key: Key) -> UnsafeIndexV3Range {

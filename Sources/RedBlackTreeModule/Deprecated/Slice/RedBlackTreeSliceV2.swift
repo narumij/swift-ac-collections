@@ -65,10 +65,10 @@ extension RedBlackTreeSliceV2.KeyOnly: Sequence {}
 extension RedBlackTreeSliceV2.KeyOnly {
 
   @usableFromInline
-  var _start: _NodePtr { _sealed_start.pointer! }
+  var _start: _NodePtr { _sealed_start.purified.pointer! }
 
   @usableFromInline
-  var _end: _NodePtr { _sealed_end.pointer! }
+  var _end: _NodePtr { _sealed_end.purified.pointer! }
 
   /// - Complexity: O(1)
   @inlinable

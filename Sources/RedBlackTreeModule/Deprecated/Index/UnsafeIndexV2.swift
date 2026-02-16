@@ -196,7 +196,7 @@ extension UnsafeIndexV2 {
     else {
       return nil
     }
-    return Base.__element_(sealed.__value_()!.pointee)
+    return Base.__element_(sealed.purified.__value_()!.pointee)
   }
 }
 

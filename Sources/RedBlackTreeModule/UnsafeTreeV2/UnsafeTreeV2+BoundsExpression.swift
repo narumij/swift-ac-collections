@@ -145,17 +145,4 @@ extension RedBlackTreeBoundRangeExpression {
         to: upper.sealed)
     }
   }
-
-  @usableFromInline
-  func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
-    -> (
-      _SealedPtr,
-      _SealedPtr
-    )
-  where
-    Base: ___TreeBase,
-    Base._Key == _Key
-  {
-    _evaluate(__tree_).relative(to: __tree_)
-  }
 }

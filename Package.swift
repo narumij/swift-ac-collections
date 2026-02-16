@@ -27,7 +27,6 @@ var defines: [String] = [
   
   
   
-  
 ]
 
 var _settings: [SwiftSetting] =

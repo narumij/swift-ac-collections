@@ -40,31 +40,30 @@ extension _RawRangeExpression where Bound == _SealedPtr {
   {
     switch self {
     case .range(let lhs, let rhs):
-      return .init(lowerBound: lhs, upperBound: rhs)
+      return .init(
+        lowerBound: lhs,
+        upperBound: rhs)
     case .closedRange(let lhs, let rhs):
       return .init(
-        lowerBound: lhs, upperBound: rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
+        lowerBound: lhs,
+        upperBound: rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
     case .partialRangeTo(let rhs):
-      return .init(lowerBound: _start(__tree_), upperBound: rhs)
+      return .init(
+        lowerBound: _start(__tree_),
+        upperBound: rhs)
     case .partialRangeThrough(let rhs):
       return .init(
         lowerBound: _start(__tree_),
         upperBound: rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
     case .partialRangeFrom(let lhs):
-      return .init(lowerBound: lhs, upperBound: _end(__tree_))
+      return .init(
+        lowerBound: lhs,
+        upperBound: _end(__tree_))
     case .unboundedRange:
-      return .init(lowerBound: _start(__tree_), upperBound: _end(__tree_))
+      return .init(
+        lowerBound: _start(__tree_),
+        upperBound: _end(__tree_))
     }
-  }
-
-  @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> (_from: _SealedPtr, _to: _SealedPtr)
-  where
-    Base: ___TreeBase
-  {
-    let r = _relative(to: __tree_)
-    return (r.lowerBound, r.upperBound)
   }
 }
 

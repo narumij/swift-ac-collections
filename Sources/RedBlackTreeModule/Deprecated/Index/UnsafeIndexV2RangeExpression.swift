@@ -56,7 +56,8 @@ extension UnsafeIndexV2RangeExpression {
 
   @usableFromInline
   func relative(to __tree_: Tree) -> (_SealedPtr, _SealedPtr) {
-    rawRange.relative(to: __tree_)
+    let r = rawRange._relative(to: __tree_)
+    return (r.lowerBound, r.upperBound)
   }
   
   @usableFromInline

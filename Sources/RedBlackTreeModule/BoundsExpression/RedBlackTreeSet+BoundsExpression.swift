@@ -32,6 +32,8 @@
     }
   }
 
+  // TODO: インデックス取得メソッドを追加するかどうか検討
+
   extension RedBlackTreeSet {
 
     // 実は辞書の派生型という位置づけが自然な気もする
@@ -62,7 +64,7 @@
   // MARK: -
 
   extension RedBlackTreeSet {
-    
+
     // TODO: 条件の再検証
     @inlinable
     public func isValid(_ bounds: BoundRange) -> Bool {

@@ -66,11 +66,11 @@
     public mutating func erase(_ bounds: BoundRange) {
 
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.evaluate(__tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+      let range = bounds._evaluate(__tree_)._relative(to: __tree_)
+      guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
-      __tree_.___erase(lower.pointer!, upper.pointer!)
+      __tree_.___erase(range.lowerBound.pointer!, range.upperBound.pointer!)
     }
 
     @inlinable
@@ -79,12 +79,13 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let (lower, upper) = bounds.evaluate(__tree_)
-      guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+      let range = bounds._evaluate(__tree_)._relative(to: __tree_)
+      guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(
-        lower, upper, { try shouldBeRemoved($0.tuple) })
+      try __tree_.___erase_if(range.lowerBound, range.upperBound) {
+        try shouldBeRemoved($0.tuple)
+      }
     }
   }
 
@@ -94,13 +95,19 @@
     public subscript(bounds: BoundRange) -> View {
 
       @inline(__always) get {
-        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.evaluate(__tree_))
-        return self[unchecked: lower, upper]
+
+        let range = __tree_.sanitizeSealedRange(
+          bounds._evaluate(__tree_)._relative(to: __tree_))
+
+        return self[unchecked: range]
       }
 
       @inline(__always) _modify {
-        let (lower, upper) = __tree_.sanitizeSealedRange(bounds.evaluate(__tree_))
-        yield &self[unchecked: lower, upper]
+
+        let range = __tree_.sanitizeSealedRange(
+          bounds._evaluate(__tree_)._relative(to: __tree_))
+
+        yield &self[unchecked: range]
       }
 
     }

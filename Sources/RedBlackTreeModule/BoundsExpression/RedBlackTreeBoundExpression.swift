@@ -103,14 +103,14 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
   /// 与えられた値より小さい要素のうち最大のものを表す
   case lessThan(_Key)  // TODO: コーナーケース検討
   /// 与えられた値より大きい要素のうち最小のものを表す
-  case greaterThen(_Key)
+  case greaterThan(_Key)
 
   // TODO: greaterThenOrEqual,lessThenOrEqual,等の検討
   // こちらはやや難しめ
   /// 与えられた値以下の要素のうち最大のものを表す
   case lessThanOrEqual(_Key)  // TODO: コーナーケース検討
   /// 与えられた値以上の要素のうち最小のものを表す
-  case greaterThenOrEqual(_Key)
+  case greaterThanOrEqual(_Key)
 
   #if DEBUG
     case debug(SealError)
@@ -210,11 +210,7 @@ public func lt<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
 }
 
 public func gt<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .greaterThen(k)
-}
-
-public func greaterThan<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .greaterThen(k)
+  .greaterThan(k)
 }
 
 public func le<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
@@ -222,9 +218,5 @@ public func le<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
 }
 
 public func ge<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .greaterThenOrEqual(k)
-}
-
-public func greaterThanOrEqual<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .greaterThenOrEqual(k)
+  .greaterThanOrEqual(k)
 }

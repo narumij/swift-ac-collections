@@ -85,14 +85,14 @@ extension RedBlackTreeBoundExpression {
     case .lessThan(let __v):
       return ___tree_prev_iter(__tree_.lower_bound(__v)).sealed
       
-    case .greaterThen(let __v):
+    case .greaterThan(let __v):
       return __tree_.upper_bound(__v).sealed
       
     case .lessThanOrEqual(let __v):
       let __f = __tree_.find(__v).sealed
       return __f.exists ? __f : ___tree_prev_iter(__tree_.lower_bound(__v)).sealed
       
-    case .greaterThenOrEqual(let __v):
+    case .greaterThanOrEqual(let __v):
       let __f = __tree_.find(__v).sealed
       return __f.exists ? __f : __tree_.upper_bound(__v).sealed
 

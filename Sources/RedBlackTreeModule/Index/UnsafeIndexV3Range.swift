@@ -11,13 +11,6 @@
 @frozen
 public struct UnsafeIndexV3Range {
 
-  @inlinable
-  @inline(__always)
-  internal init(lowerBound: _TieWrappedPtr, upperBound: _TieWrappedPtr) {
-    precondition(lowerBound.tied === upperBound.tied)
-    self.range = .init(lowerBound: lowerBound, upperBound: upperBound)
-  }
-
   @usableFromInline
   internal var range: _RawRange<_TieWrappedPtr>
 
@@ -30,6 +23,7 @@ public struct UnsafeIndexV3Range {
 
 // 削除の悩みがつきまとうので、Sequence適合せず、ループはできないようにする
 // 当然RangeExpressionなんかには適合しない
+// CoW発生を極力抑えることが赤黒木を活かすカギなので、Copyが多発するような使い方への誘導を減らす方針
 
 extension UnsafeIndexV3Range {
 

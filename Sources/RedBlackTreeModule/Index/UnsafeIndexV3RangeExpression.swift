@@ -19,12 +19,12 @@
 public struct UnsafeIndexV3RangeExpression {
 
   @usableFromInline
-  internal var range: _RawRangeExpression<_TieWrappedPtr>
+  internal var rangeExpression: _RawRangeExpression<_TieWrappedPtr>
 
   @inlinable
   @inline(__always)
-  internal init(_ range: _RawRangeExpression<_TieWrappedPtr>) {
-    self.range = range
+  internal init(_ rangeExpression: _RawRangeExpression<_TieWrappedPtr>) {
+    self.rangeExpression = rangeExpression
   }
 }
 
@@ -35,7 +35,7 @@ extension UnsafeIndexV3RangeExpression {
   @usableFromInline
   func relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> _RawRange<_TieWrappedPtr> {
     // CoW対応があるので、同一木制限はできない
-    return range.relative(to: __tree_)
+    return rangeExpression.relative(to: __tree_)
   }
 }
 
@@ -76,6 +76,3 @@ public prefix func ... (rhs: _TieWrappedPtr) -> UnsafeIndexV3RangeExpression {
 public postfix func ... (lhs: _TieWrappedPtr) -> UnsafeIndexV3RangeExpression {
   return .init(.partialRangeFrom(lhs))
 }
-
-// MARK: -
-

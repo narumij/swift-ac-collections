@@ -43,14 +43,19 @@
         && range.lowerBound.isValid
         && range.upperBound.isValid
     }
+    
+    @inlinable
+    var ___sealed_range: _RawRange<_SealedPtr> {
+      .init(lowerBound: _sealed_start, upperBound: _sealed_end)
+    }
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> View {
       @inline(__always) get {
-        self[unchecked: _sealed_start, _sealed_end]
+        self[unchecked: ___sealed_range]
       }
       @inline(__always) _modify {
-        yield &self[unchecked: _sealed_start, _sealed_end]
+        yield &self[unchecked: ___sealed_range]
       }
     }
 
@@ -150,30 +155,19 @@
 
     @inlinable
     subscript(unchecked range: _RawRange<_SealedPtr>) -> View {
+      
       @inline(__always) get {
         RedBlackTreeKeyOnlyRangeView(
           __tree_: __tree_,
           _start: range.lowerBound,
           _end: range.upperBound)
       }
+      
       @inline(__always) _modify {
         var view = RedBlackTreeKeyOnlyRangeView(
           __tree_: __tree_,
           _start: range.lowerBound,
           _end: range.upperBound)
-        self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
-        defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
-        yield &view
-      }
-    }
-
-    @inlinable
-    subscript(unchecked _start: _SealedPtr, _end: _SealedPtr) -> View {
-      @inline(__always) get {
-        RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: _start, _end: _end)
-      }
-      @inline(__always) _modify {
-        var view = RedBlackTreeKeyOnlyRangeView(__tree_: __tree_, _start: _start, _end: _end)
         self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
         defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
         yield &view

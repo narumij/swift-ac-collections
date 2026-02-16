@@ -247,11 +247,11 @@ extension RedBlackTreeMultiMap {
     public subscript(key: Key) -> View {
       @inline(__always) get {
         let (lower, upper) = ___equal_range(key)
-        return self[unchecked: lower.sealed, upper.sealed]
+        return self[unchecked: .init(lowerBound: lower.sealed, upperBound: upper.sealed)]
       }
       @inline(__always) _modify {
         let (lower, upper) = ___equal_range(key)
-        yield &self[unchecked: lower.sealed, upper.sealed]
+        yield &self[unchecked: .init(lowerBound: lower.sealed, upperBound: upper.sealed)]
       }
     }
   }

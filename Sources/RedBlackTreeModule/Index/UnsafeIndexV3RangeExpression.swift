@@ -33,17 +33,10 @@ public struct UnsafeIndexV3RangeExpression: _UnsafeNodePtrType {
 extension UnsafeIndexV3RangeExpression {
 
   @usableFromInline
-  func _relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> _RawRange<_TieWrappedPtr> {
+  func relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> _RawRange<_TieWrappedPtr> {
     // CoW対応があるので、同一木制限はできない
     return range.relative(to: __tree_)
   }
-
-//  @usableFromInline
-//  func relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> (_SealedPtr, _SealedPtr) {
-//    // CoW対応があるので、同一木制限はできない
-//    let r = __tree_.__purified_(range.relative(to: __tree_))
-//    return (r.lowerBound, r.upperBound)
-//  }
 }
 
 // MARK: - Range Expression

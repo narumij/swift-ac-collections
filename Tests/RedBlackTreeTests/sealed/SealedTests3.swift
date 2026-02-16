@@ -9,19 +9,22 @@
   import RedBlackTreeModule
   import XCTest
 
-  final class SealedTests3: XCTestCase {
+  final class SealedTests3: RedBlackTreeTestCase {
 
     typealias SUT = RedBlackTreeKeyOnlyRangeView<RedBlackTreeSet<Int>>
 
-    var _a = RedBlackTreeSet<Int>(0..<20)
+    var _a = RedBlackTreeSet<Int>()
 
     override func setUpWithError() throws {
       // Put setup code here. This method is called before the invocation of each test method in the class.
+      try super.setUpWithError()
       _a = .init(0..<20)
     }
 
     override func tearDownWithError() throws {
       // Put teardown code here. This method is called after the invocation of each test method in the class.
+      _a = .init()
+      try super.tearDownWithError()
     }
 
     func testSomething() throws {

@@ -9,7 +9,7 @@
   import XCTest
   import RedBlackTreeModule
 
-  final class DictionaryBoundsExpressionTests: XCTestCase {
+  final class DictionaryBoundsExpressionTests: RedBlackTreeTestCase {
 
     let a: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
 

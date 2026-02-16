@@ -58,6 +58,16 @@
 #endif
 
 #if DEBUG
-@usableFromInline nonisolated(unsafe) var allocatedCount = 0
 @usableFromInline nonisolated(unsafe) var deallocatedCount = 0
+@usableFromInline nonisolated(unsafe) var allocatedCount = 0
+//@usableFromInline nonisolated(unsafe) var _deallocatedCount = 0
+//@usableFromInline nonisolated(unsafe) var _allocatedCount = 0
+//@usableFromInline nonisolated(unsafe) var deallocatedCount: Int {
+//  get { _deallocatedCount }
+//  set { _deallocatedCount = newValue }
+//}
+//@usableFromInline nonisolated(unsafe) var allocatedCount: Int {
+//  get { _allocatedCount }
+//  set { _allocatedCount = newValue }
+//}
 #endif

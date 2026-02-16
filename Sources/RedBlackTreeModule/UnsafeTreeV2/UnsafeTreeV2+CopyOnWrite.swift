@@ -81,7 +81,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   internal mutating func _strongEnsureUnique() {
-    #if !USE_SIMPLE_COPY_ON_WRITE
+    #if COMPATIBLE_ATCODER_2025
       let isTreeUnique = isUnique()
       let isPoolUnique =
         _buffer.header._tied == nil

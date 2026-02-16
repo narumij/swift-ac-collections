@@ -63,7 +63,7 @@ import XCTest
         #endif
       }
       XCTAssertEqual(tree.count, 0)
-      #if !USE_SIMPLE_COPY_ON_WRITE
+      #if COMPATIBLE_ATCODER_2025
         // TODO: 再度検討
         XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
       #else

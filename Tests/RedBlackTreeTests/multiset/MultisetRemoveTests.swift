@@ -86,7 +86,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     //      s.remove(at: s.endIndex)
   }
 
-  #if COMPATIBLE_ATCODER_2025 && !USE_SIMPLE_COPY_ON_WRITE
+  #if COMPATIBLE_ATCODER_2025
     func testSmokeRemove0() throws {
       var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
       XCTAssertEqual(s + [], (0..<2_000).flatMap { [$0, $0] })
@@ -107,7 +107,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if !USE_SIMPLE_COPY_ON_WRITE
+  #if COMPATIBLE_ATCODER_2025
     func testSmokeRemove2() throws {
       var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
       for i in s.elements(in: 0..<10_000) + [] {

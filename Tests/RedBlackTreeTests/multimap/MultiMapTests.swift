@@ -446,7 +446,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
       set.insert((i, i))
       XCTAssertTrue(set.___tree_invariant())
     }
-    #if !USE_SIMPLE_COPY_ON_WRITE
+    #if COMPATIBLE_ATCODER_2025
       // TODO: 再度検討
       for i in set {
         set.removeAll(forKey: i.key)
@@ -500,7 +500,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
       print("set._copyCount", set._copyCount)
     #endif
 
-    #if !USE_SIMPLE_COPY_ON_WRITE
+    #if COMPATIBLE_ATCODER_2025
       // TODO: 再度検討
       for i in set[set.startIndex..<set.endIndex] {
         // erase multiなので、CoWなしだと、ポインタが破壊される

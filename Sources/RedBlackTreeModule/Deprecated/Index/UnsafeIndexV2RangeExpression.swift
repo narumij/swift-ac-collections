@@ -52,15 +52,6 @@ extension UnsafeIndexV2RangeExpression: Sequence {
   }
 }
 
-extension UnsafeIndexV2RangeExpression {
-
-  @inlinable
-  @inline(__always)
-  public func isTriviallyIdentical(to other: Self) -> Bool {
-    tied === other.tied && rawRange == other.rawRange
-  }
-}
-
 // MARK: - Range Expression
 
 @inlinable

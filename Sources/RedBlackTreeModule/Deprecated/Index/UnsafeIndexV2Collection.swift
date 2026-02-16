@@ -87,14 +87,3 @@ extension UnsafeIndexV2Collection {
 #if swift(>=5.5)
   extension UnsafeIndexV2Collection: @unchecked Sendable {}
 #endif
-
-// MARK: - Is Identical To
-
-extension UnsafeIndexV2Collection {
-
-  @inlinable
-  @inline(__always)
-  public func isTriviallyIdentical(to other: Self) -> Bool {
-    tied === other.tied && _start == other._start && _end == other._end
-  }
-}

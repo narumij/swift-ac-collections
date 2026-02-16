@@ -56,6 +56,22 @@
     }
   }
 
+  // MARK: -
+
+  extension RedBlackTreeDictionary {
+
+    /// 該当する要素を取得可能かどうかの判定結果を返す
+    ///
+    /// これがfalseの場合でもBoundRange関連APIはクラッシュしない
+    @inlinable
+    public func isValid(_ bounds: BoundRange) -> Bool {
+      let range = bounds._evaluate(__tree_).relative(to: __tree_)
+      return __tree_.isValidSealedRange(range)
+        && range.lowerBound.isValid
+        && range.upperBound.isValid
+    }
+  }
+
   extension RedBlackTreeDictionary {
 
     @inlinable

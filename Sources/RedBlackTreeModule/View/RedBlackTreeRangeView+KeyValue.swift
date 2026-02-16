@@ -20,6 +20,8 @@ where Base: ___TreeBase & PairValueTrait {
 
   public typealias Index = _TieWrappedPtr
   public typealias Element = Base.Element
+  public typealias Key = Base._Key
+  public typealias Value = Base._MappedValue
 
   @usableFromInline
   internal var __tree_: Tree
@@ -110,7 +112,7 @@ extension RedBlackTreeKeyValueRangeView {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var keys: [Base._Key] {
+  public var keys: [Key] {
     let (_start, _end) = _range
     return __tree_.___copy_to_array(_start.pointer!, _end.pointer!, transform: Base.__key)
   }
@@ -118,7 +120,7 @@ extension RedBlackTreeKeyValueRangeView {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public var values: [Base._MappedValue] {
+  public var values: [Value] {
     let (_start, _end) = _range
     return __tree_.___copy_to_array(_start.pointer!, _end.pointer!, transform: Base.___mapped_value)
   }

@@ -425,6 +425,7 @@ extension RedBlackTreeMultiMap {
   }
 }
 
+#if COMPATIBLE_ATCODER_2025
 extension RedBlackTreeMultiMap {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -445,6 +446,7 @@ extension RedBlackTreeMultiMap {
     return __tree_.___erase_unique(key)
   }
 }
+#endif
 
 extension RedBlackTreeMultiMap {
 

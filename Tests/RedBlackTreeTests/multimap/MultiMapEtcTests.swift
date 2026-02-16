@@ -163,7 +163,11 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
       throw XCTSkip("挙動が変わるためスキップ")
     #endif
     do {
-      XCTAssertFalse(target1.removeFirst(forKey: 3))
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertFalse(target1.removeFirst(forKey: 3))
+      #else
+        XCTAssertFalse(target1.eraseUnique(3))
+      #endif
       let expected = [(0, 0), (0, 1), (0, 2), (1, 5), (1, 4), (1, 3), (2, 6), (2, 7), (2, 8)]
       XCTAssertEqual(
         target1.map { __key($0) },
@@ -173,7 +177,11 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
         expected.map { $0.1 })
     }
     do {
-      XCTAssertTrue(target1.removeFirst(forKey: 1))
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertTrue(target1.removeFirst(forKey: 1))
+      #else
+        XCTAssertTrue(target1.eraseUnique(1))
+      #endif
       let expected = [(0, 0), (0, 1), (0, 2), (1, 4), (1, 3), (2, 6), (2, 7), (2, 8)]
       XCTAssertEqual(
         target1.map { __key($0) },
@@ -183,7 +191,11 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
         expected.map { $0.1 })
     }
     do {
-      XCTAssertTrue(target1.removeFirst(forKey: 2))
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertTrue(target1.removeFirst(forKey: 2))
+      #else
+        XCTAssertTrue(target1.eraseUnique(2))
+      #endif
       let expected = [(0, 0), (0, 1), (0, 2), (1, 4), (1, 3), (2, 7), (2, 8)]
       XCTAssertEqual(
         target1.map { __key($0) },
@@ -193,8 +205,13 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
         expected.map { $0.1 })
     }
     do {
-      XCTAssertTrue(target1.removeFirst(forKey: 0))
-      XCTAssertTrue(target1.removeFirst(forKey: 0))
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertTrue(target1.removeFirst(forKey: 0))
+        XCTAssertTrue(target1.removeFirst(forKey: 0))
+      #else
+        XCTAssertTrue(target1.eraseUnique(0))
+        XCTAssertTrue(target1.eraseUnique(0))
+      #endif
       let expected = [(0, 2), (1, 4), (1, 3), (2, 7), (2, 8)]
       XCTAssertEqual(
         target1.map { __key($0) },
@@ -204,8 +221,13 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
         expected.map { $0.1 })
     }
     do {
-      XCTAssertTrue(target1.removeFirst(forKey: 1))
-      XCTAssertTrue(target1.removeFirst(forKey: 2))
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertTrue(target1.removeFirst(forKey: 1))
+        XCTAssertTrue(target1.removeFirst(forKey: 2))
+      #else
+        XCTAssertTrue(target1.eraseUnique(1))
+        XCTAssertTrue(target1.eraseUnique(2))
+      #endif
       let expected = [(0, 2), (1, 3), (2, 8)]
       XCTAssertEqual(
         target1.map { __key($0) },
@@ -215,9 +237,15 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
         expected.map { $0.1 })
     }
     do {
-      XCTAssertTrue(target1.removeFirst(forKey: 0))
-      XCTAssertTrue(target1.removeFirst(forKey: 1))
-      XCTAssertTrue(target1.removeFirst(forKey: 2))
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertTrue(target1.removeFirst(forKey: 0))
+        XCTAssertTrue(target1.removeFirst(forKey: 1))
+        XCTAssertTrue(target1.removeFirst(forKey: 2))
+      #else
+        XCTAssertTrue(target1.eraseUnique(0))
+        XCTAssertTrue(target1.eraseUnique(1))
+        XCTAssertTrue(target1.eraseUnique(2))
+      #endif
       let expected: [(Int, Int)] = []
       XCTAssertEqual(
         target1.map { __key($0) },
@@ -318,7 +346,11 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
     }
 
     // キーと値のペアを削除
-    multimap.removeFirst(forKey: "apple")
+    #if COMPATIBLE_ATCODER_2025
+      multimap.removeFirst(forKey: "apple")
+    #else
+      multimap.eraseUnique("apple")
+    #endif
   }
 
   func testPerformanceExample() throws {

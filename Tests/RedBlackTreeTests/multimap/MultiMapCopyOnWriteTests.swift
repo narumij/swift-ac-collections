@@ -68,49 +68,77 @@ import XCTest
 
     func testSet3() throws {
       tree._copyCount = 0
-      for v in tree {
-        tree.removeFirst(forKey: v.key)  // strong ensure unique
-      }
-      XCTAssertEqual(tree.count, 0)
       #if !COMPATIBLE_ATCODER_2025
+        for v in tree {
+          tree.eraseUnique(v.key)  // strong ensure unique
+        }
+        XCTAssertEqual(tree.count, 0)
         XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
       #else
+        for v in tree {
+          tree.removeFirst(forKey: v.key)  // strong ensure unique
+        }
+        XCTAssertEqual(tree.count, 0)
         XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
       #endif
     }
 
     func testSet3_2() throws {
       tree._copyCount = 0
-      for v in tree + [] {
-        tree.removeFirst(forKey: v.key)  // strong ensure unique
-      }
+      #if !COMPATIBLE_ATCODER_2025
+        for v in tree + [] {
+          tree.eraseUnique(v.key)  // strong ensure unique
+        }
+      #else
+        for v in tree + [] {
+          tree.removeFirst(forKey: v.key)  // strong ensure unique
+        }
+      #endif
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
     }
 
     func testSet3_3() throws {
       tree._copyCount = 0
-      for v in tree + [] {
-        tree.removeFirst(_unsafeForKey: v.key)  // strong ensure unique
-      }
+      #if !COMPATIBLE_ATCODER_2025
+        for v in tree + [] {
+          tree.eraseUnique(v.key)  // strong ensure unique
+        }
+      #else
+        for v in tree + [] {
+          tree.removeFirst(_unsafeForKey: v.key)  // strong ensure unique
+        }
+      #endif
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
     }
 
     func testSet4() throws {
       tree._copyCount = 0
-      tree.forEach { v in
-        tree.removeFirst(forKey: v.key)
-      }
+      #if !COMPATIBLE_ATCODER_2025
+        tree.forEach { v in
+          tree.eraseUnique(v.key)
+        }
+      #else
+        tree.forEach { v in
+          tree.removeFirst(forKey: v.key)
+        }
+      #endif
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 1)
     }
 
     func testSet5() throws {
       tree._copyCount = 0
-      for v in tree + [] {
-        tree.removeFirst(forKey: v.key)
-      }
+      #if !COMPATIBLE_ATCODER_2025
+        for v in tree + [] {
+          tree.eraseUnique(v.key)
+        }
+      #else
+        for v in tree + [] {
+          tree.removeFirst(forKey: v.key)
+        }
+      #endif
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
     }

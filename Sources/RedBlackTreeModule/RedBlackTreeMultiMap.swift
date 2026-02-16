@@ -425,29 +425,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-#if COMPATIBLE_ATCODER_2025
-extension RedBlackTreeMultiMap {
-
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @discardableResult
-  public mutating func removeFirst(forKey key: Key) -> Bool {
-    __tree_._strongEnsureUnique()
-    return __tree_.___erase_unique(key)
-  }
-
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @discardableResult
-  public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
-    __tree_.ensureUnique()
-    return __tree_.___erase_unique(key)
-  }
-}
-#endif
-
 extension RedBlackTreeMultiMap {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。

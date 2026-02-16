@@ -383,21 +383,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiSet {
-
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n*)
-    @inlinable
-    @inline(__always)
-    @discardableResult
-    public mutating func remove(_ member: Element) -> Element? {
-      __tree_._strongEnsureUnique()
-      return __tree_.___erase_unique(member) ? member : nil
-    }
-  }
-#endif
-
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 

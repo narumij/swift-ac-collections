@@ -9,7 +9,7 @@
 ///
 // 本当は作りたくなかったが、lowerBoundやupperBoundがオプショナルになるのもいまいちなので、しかたなく。
 @frozen
-public struct UnsafeIndexV3Range: _UnsafeNodePtrType {
+public struct UnsafeIndexV3Range {
 
   @inlinable
   @inline(__always)

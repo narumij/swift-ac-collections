@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 @frozen
-public struct UnsafeIndexV3RangeExpression: _UnsafeNodePtrType {
+public struct UnsafeIndexV3RangeExpression {
 
   @usableFromInline
   internal var range: _RawRangeExpression<_TieWrappedPtr>
@@ -43,7 +43,7 @@ extension UnsafeIndexV3RangeExpression {
 
 @inlinable
 @inline(__always)
-public func ..< (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
+public func ..< (lhs: _TieWrappedPtr, rhs: _TieWrappedPtr)
   -> UnsafeIndexV3RangeExpression
 {
   guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
@@ -52,7 +52,7 @@ public func ..< (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
 
 @inlinable
 @inline(__always)
-public func ... (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
+public func ... (lhs: _TieWrappedPtr, rhs: _TieWrappedPtr)
   -> UnsafeIndexV3RangeExpression
 {
   guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
@@ -61,19 +61,19 @@ public func ... (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
 
 @inlinable
 @inline(__always)
-public prefix func ..< (rhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
+public prefix func ..< (rhs: _TieWrappedPtr) -> UnsafeIndexV3RangeExpression {
   return .init(.partialRangeTo(rhs))
 }
 
 @inlinable
 @inline(__always)
-public prefix func ... (rhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
+public prefix func ... (rhs: _TieWrappedPtr) -> UnsafeIndexV3RangeExpression {
   return .init(.partialRangeThrough(rhs))
 }
 
 @inlinable
 @inline(__always)
-public postfix func ... (lhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
+public postfix func ... (lhs: _TieWrappedPtr) -> UnsafeIndexV3RangeExpression {
   return .init(.partialRangeFrom(lhs))
 }
 

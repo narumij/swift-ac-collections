@@ -64,7 +64,7 @@
     public mutating func erase(_ bounds: BoundRange) {
 
       __tree_.ensureUnique()
-      let range = bounds._evaluate(__tree_)._relative(to: __tree_)
+      let range = bounds._evaluate(__tree_).relative(to: __tree_)
       guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
@@ -77,7 +77,7 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let range = bounds._evaluate(__tree_)._relative(to: __tree_)
+      let range = bounds._evaluate(__tree_).relative(to: __tree_)
       guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
@@ -95,7 +95,7 @@
       @inline(__always) get {
 
         let range = __tree_.sanitizeSealedRange(
-          bounds._evaluate(__tree_)._relative(to: __tree_))
+          bounds._evaluate(__tree_).relative(to: __tree_))
 
         return self[unchecked: range]
       }
@@ -103,7 +103,7 @@
       @inline(__always) _modify {
 
         let range = __tree_.sanitizeSealedRange(
-          bounds._evaluate(__tree_)._relative(to: __tree_))
+          bounds._evaluate(__tree_).relative(to: __tree_))
 
         yield &self[unchecked: range]
       }

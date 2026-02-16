@@ -22,18 +22,33 @@ public enum _RawRangeExpression<Bound> {
 
 extension _RawRangeExpression: Equatable where Bound: Equatable {}
 
-extension _RawRangeExpression where Bound == _SealedPtr {
-
+extension _RawRangeExpression {
+  
+  @inlinable
   func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SealedPtr {
     __tree_.__begin_node_.sealed
   }
 
+  @inlinable
   func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SealedPtr {
     __tree_.__end_node.sealed
   }
+  
+  @inlinable
+  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedPtr {
+    _start(__tree_).band(__tree_.tied)
+  }
+
+  @inlinable
+  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedPtr {
+    _end(__tree_).band(__tree_.tied)
+  }
+}
+
+extension _RawRangeExpression where Bound == _SealedPtr {
 
   @usableFromInline
-  func _relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> _RawRange<_SealedPtr>
   where
     Base: ___TreeBase
@@ -67,47 +82,7 @@ extension _RawRangeExpression where Bound == _SealedPtr {
   }
 }
 
-extension _RawRangeExpression where Bound == _SealedPtr {
-
-  func _start(_ tied: _TiedRawBuffer) -> _SealedPtr {
-    tied.begin_ptr.map { $0.pointee.sealed } ?? .failure(.null)
-  }
-
-  func _end(_ tied: _TiedRawBuffer) -> _SealedPtr {
-    tied.end_ptr.map { $0.sealed } ?? .failure(.null)
-  }
-
-  @usableFromInline
-  func relative(to tied: _TiedRawBuffer) -> (_SealedPtr, _SealedPtr) {
-    guard tied.isValueAccessAllowed else {
-      return (.failure(.notAllowed), .failure(.notAllowed))
-    }
-    switch self {
-    case .range(let lhs, let rhs):
-      return (lhs, rhs)
-    case .closedRange(let lhs, let rhs):
-      return (lhs, rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
-    case .partialRangeTo(let rhs):
-      return (_start(tied), rhs)
-    case .partialRangeThrough(let rhs):
-      return (_start(tied), rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
-    case .partialRangeFrom(let lhs):
-      return (lhs, _end(tied))
-    case .unboundedRange:
-      return (_start(tied), _end(tied))
-    }
-  }
-}
-
 extension _RawRangeExpression where Bound == _TieWrappedPtr {
-
-  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedPtr {
-    __tree_.__begin_node_.sealed.band(__tree_.tied)
-  }
-
-  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedPtr {
-    __tree_.__end_node.sealed.band(__tree_.tied)
-  }
 
   @usableFromInline
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
@@ -160,6 +135,40 @@ extension _RawRangeExpression where Bound == _TieWrappedPtr {
       return .init(
         lowerBound: _start(__tree_),
         upperBound: _end(__tree_))
+    }
+  }
+}
+
+// MARK: - COMPATIBLE_ATCODER_2025用
+
+extension _RawRangeExpression where Bound == _SealedPtr {
+
+  func __start(_ tied: _TiedRawBuffer) -> _SealedPtr {
+    tied.begin_ptr.map { $0.pointee.sealed } ?? .failure(.null)
+  }
+
+  func __end(_ tied: _TiedRawBuffer) -> _SealedPtr {
+    tied.end_ptr.map { $0.sealed } ?? .failure(.null)
+  }
+
+  @usableFromInline
+  func __relative(to tied: _TiedRawBuffer) -> (_SealedPtr, _SealedPtr) {
+    guard tied.isValueAccessAllowed else {
+      return (.failure(.notAllowed), .failure(.notAllowed))
+    }
+    switch self {
+    case .range(let lhs, let rhs):
+      return (lhs, rhs)
+    case .closedRange(let lhs, let rhs):
+      return (lhs, rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
+    case .partialRangeTo(let rhs):
+      return (__start(tied), rhs)
+    case .partialRangeThrough(let rhs):
+      return (__start(tied), rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
+    case .partialRangeFrom(let lhs):
+      return (lhs, __end(tied))
+    case .unboundedRange:
+      return (__start(tied), __end(tied))
     }
   }
 }

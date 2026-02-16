@@ -68,7 +68,7 @@
     // TODO: 条件の再検証
     @inlinable
     public func isValid(_ bounds: BoundRange) -> Bool {
-      let range = bounds._evaluate(__tree_)._relative(to: __tree_)
+      let range = bounds._evaluate(__tree_).relative(to: __tree_)
       return __tree_.isValidSealedRange(range)
         && range.lowerBound.isValid
         && range.upperBound.isValid
@@ -81,7 +81,7 @@
     public mutating func erase(_ bounds: BoundRange) {
 
       __tree_.ensureUnique()
-      let range = bounds._evaluate(__tree_)._relative(to: __tree_)
+      let range = bounds._evaluate(__tree_).relative(to: __tree_)
       guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
@@ -94,7 +94,7 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let range = bounds._evaluate(__tree_)._relative(to: __tree_)
+      let range = bounds._evaluate(__tree_).relative(to: __tree_)
       guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
@@ -110,7 +110,7 @@
       @inline(__always) get {
 
         let range = __tree_.sanitizeSealedRange(
-          bounds._evaluate(__tree_)._relative(to: __tree_))
+          bounds._evaluate(__tree_).relative(to: __tree_))
 
         return self[unchecked: range]
       }
@@ -118,7 +118,7 @@
       @inline(__always) _modify {
 
         let range = __tree_.sanitizeSealedRange(
-          bounds._evaluate(__tree_)._relative(to: __tree_))
+          bounds._evaluate(__tree_).relative(to: __tree_))
 
         yield &self[unchecked: range]
       }

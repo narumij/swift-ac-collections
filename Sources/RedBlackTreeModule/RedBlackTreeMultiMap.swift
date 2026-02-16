@@ -835,28 +835,11 @@ extension RedBlackTreeMultiMap {
       }
     }
   }
+#endif
 
-  extension RedBlackTreeMultiMap {
+// MARK: -
 
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(position: Index) -> Element {
-      @inline(__always) get {
-        Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
-      }
-    }
-  }
-
-  extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(_result position: Index) -> Result<Element, SealError> {
-      __tree_.__purified_(position)
-        .map { $0.pointer.__value_().pointee }
-    }
-  }
-
+#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
     /// Indexがsubscriptやremoveで利用可能か判別します
@@ -868,26 +851,17 @@ extension RedBlackTreeMultiMap {
       __tree_.__purified_(index).exists
     }
   }
-#endif
 
-// MARK: -
-
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
-    // TODO: イテレータ利用の注意をドキュメントすること
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n* + *k*)
+    /// - Complexity: O(1)
     @inlinable
-    @discardableResult
-    public mutating func eraseMulti(_ key: Key) -> Int {
-      __tree_._strongEnsureUnique()
-      return __tree_.___erase_multi(key)
+    public subscript(position: Index) -> Element {
+      @inline(__always) get {
+        Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
+      }
     }
   }
-#endif
-
-#if !COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeMultiMap {
 
@@ -910,6 +884,21 @@ extension RedBlackTreeMultiMap {
       if case .failure(let e) = result {
         fatalError(e.localizedDescription)
       }
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    // TODO: イテレータ利用の注意をドキュメントすること
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Complexity: O(log *n* + *k*)
+    @inlinable
+    @discardableResult
+    public mutating func eraseMulti(_ key: Key) -> Int {
+      __tree_._strongEnsureUnique()
+      return __tree_.___erase_multi(key)
     }
   }
 #endif

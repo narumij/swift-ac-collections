@@ -838,28 +838,11 @@ extension RedBlackTreeDictionary {
       }
     }
   }
+#endif
 
-  extension RedBlackTreeDictionary {
+// MARK: -
 
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(position: Index) -> Element {
-      @inline(__always) get {
-        Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
-      }
-    }
-  }
-
-  extension RedBlackTreeDictionary {
-
-    /// - Complexity: O(1)
-    @inlinable
-    public subscript(_result position: Index) -> Result<Element, SealError> {
-      __tree_.__purified_(position)
-        .map { $0.pointer.__value_().pointee }
-    }
-  }
-
+#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// Indexがsubscriptやremoveで利用可能か判別します
@@ -871,11 +854,17 @@ extension RedBlackTreeDictionary {
       __tree_.__purified_(index).exists
     }
   }
-#endif
 
-// MARK: -
+  extension RedBlackTreeDictionary {
 
-#if !COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always) get {
+        Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
+      }
+    }
+  }
 
   extension RedBlackTreeDictionary {
 

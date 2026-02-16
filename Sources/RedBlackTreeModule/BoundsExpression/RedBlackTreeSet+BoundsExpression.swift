@@ -78,6 +78,29 @@
   extension RedBlackTreeSet {
 
     @inlinable
+    public subscript(bounds: BoundRange) -> View {
+
+      @inline(__always) get {
+
+        let range = __tree_.sanitizeSealedRange(
+          bounds._evaluate(__tree_).relative(to: __tree_))
+
+        return self[unchecked: range]
+      }
+
+      @inline(__always) _modify {
+
+        let range = __tree_.sanitizeSealedRange(
+          bounds._evaluate(__tree_).relative(to: __tree_))
+
+        yield &self[unchecked: range]
+      }
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
     public mutating func erase(_ bounds: BoundRange) {
 
       __tree_.ensureUnique()
@@ -99,29 +122,6 @@
         fatalError(.invalidIndex)
       }
       try __tree_.___erase_if(range.lowerBound, range.upperBound, shouldBeRemoved)
-    }
-  }
-
-  extension RedBlackTreeSet {
-
-    @inlinable
-    public subscript(bounds: BoundRange) -> View {
-
-      @inline(__always) get {
-
-        let range = __tree_.sanitizeSealedRange(
-          bounds._evaluate(__tree_).relative(to: __tree_))
-
-        return self[unchecked: range]
-      }
-
-      @inline(__always) _modify {
-
-        let range = __tree_.sanitizeSealedRange(
-          bounds._evaluate(__tree_).relative(to: __tree_))
-
-        yield &self[unchecked: range]
-      }
     }
   }
 #endif

@@ -93,7 +93,7 @@
     @inlinable
     public mutating func erase(_ bounds: UnboundedRange) {
       __tree_.ensureUnique()
-      _ = __tree_.___erase(_start, _end)
+      _ = __tree_.erase(_start, _end)
     }
 
     @inlinable
@@ -106,7 +106,7 @@
       else {
         fatalError(.invalidIndex)
       }
-      _ = __tree_.___erase(__l, __u)
+      _ = __tree_.erase(__l, __u)
     }
 
     @inlinable
@@ -119,7 +119,7 @@
       else {
         fatalError(.invalidIndex)
       }
-      _ = __tree_.___erase(__l, __u)
+      _ = __tree_.erase(__l, __u)
     }
 
     @inlinable

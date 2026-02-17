@@ -86,6 +86,22 @@
       XCTAssertEqual(Array(b).map { $0.key }, [1, 3])
     }
 
+    func testLessThanAndOrEqualMulti() throws {
+      let b: RedBlackTreeMultiMap = [0: "a", 1: "b", 1: "c", 2: "d"]
+
+      XCTAssertEqual(b[lt(-1)]?.key, nil)
+      XCTAssertEqual(b[lt(0)]?.key, nil)
+      XCTAssertEqual(b[lt(1)]?.key, 0)
+      XCTAssertEqual(b[lt(2)]?.key, 1)
+      XCTAssertEqual(b[lt(3)]?.key, 2)
+
+      XCTAssertEqual(b[le(-1)]?.key, nil)
+      XCTAssertEqual(b[le(0)]?.key, 0)
+      XCTAssertEqual(b[le(1)]?.key, 1)
+      XCTAssertEqual(b[le(2)]?.key, 2)
+      XCTAssertEqual(b[le(3)]?.key, 2)
+    }
+
     func testLessGreaterHelpers() throws {
       XCTAssertEqual(a[lt(1)]?.key, 0)
       XCTAssertEqual(a[gt(1)]?.key, 2)

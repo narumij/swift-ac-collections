@@ -95,6 +95,22 @@
       XCTAssertEqual(Array(b), [0, 3])
     }
 
+    func testLessThanAndOrEqualMulti() throws {
+      let b = RedBlackTreeMultiSet<Int>([0, 1, 1, 2])
+
+      XCTAssertEqual(b[lt(-1)], nil)
+      XCTAssertEqual(b[lt(0)], nil)
+      XCTAssertEqual(b[lt(1)], 0)
+      XCTAssertEqual(b[lt(2)], 1)
+      XCTAssertEqual(b[lt(3)], 2)
+
+      XCTAssertEqual(b[le(-1)], nil)
+      XCTAssertEqual(b[le(0)], 0)
+      XCTAssertEqual(b[le(1)], 1)
+      XCTAssertEqual(b[le(2)], 2)
+      XCTAssertEqual(b[le(3)], 2)
+    }
+
     func testLessGreaterHelpers() throws {
       XCTAssertEqual(a[lt(1)], 0)
       XCTAssertEqual(a[gt(1)], 2)

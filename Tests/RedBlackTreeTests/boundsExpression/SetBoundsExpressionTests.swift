@@ -279,6 +279,37 @@
       XCTAssertEqual(Array(a[upperBound(10)..<lowerBound(-10)]), [])
     }
 
+    func testLessThanAllKeys() throws {
+      let cases: [(key: Int, expected: Int?)] = [
+        (-1, nil),
+        (0, nil),
+        (1, 0),
+        (2, 1),
+        (3, 2),
+        (4, 2),
+      ]
+
+      for (key, expected) in cases {
+        XCTAssertEqual(a[lt(key)], expected, "key=\(key)")
+        XCTAssertEqual(a.isValid(lt(key)), expected != nil, "key=\(key)")
+      }
+    }
+
+    func testLessThanOrEqualAllKeys() throws {
+      let cases: [(key: Int, expected: Int?)] = [
+        (-1, nil),
+        (0, 0),
+        (1, 1),
+        (2, 2),
+        (3, 2),
+      ]
+
+      for (key, expected) in cases {
+        XCTAssertEqual(a[le(key)], expected, "key=\(key)")
+        XCTAssertEqual(a.isValid(le(key)), expected != nil, "key=\(key)")
+      }
+    }
+
     func testLessGreaterHelpers() throws {
       XCTAssertEqual(a[lt(1)], 0)
       XCTAssertEqual(a[gt(1)], 2)

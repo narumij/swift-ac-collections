@@ -262,15 +262,13 @@
   extension RedBlackTreeDictionary {
 
     /*
-     しばらく苦しめられていたテストコードのコンパイルエラーについて。
-    
-     typecheckでクラッシュしてることはクラッシュログから読み取れる。
-     推論に失敗するバグを踏んでいると想定し、型をちゃんと書くことで様子を見ることにした。
-    
-     型推論のバグなんて直せる気がまったくせず、ごくごく一部の天才のミラクルムーブ期待なので、
-     これでクラッシュが落ち着くようならElementを返すメンバー全てで型をちゃんと書くのが安全かもしれない
-    
-     type packは型を書けないケースなので、この迂回策が使えず、バグ修正を待つばかり
+     Swiftコンパイラ（typecheck）の不具合回避メモ。
+
+     tuple型推論に失敗してtypecheckがクラッシュしていると見て、
+     返り値の型を明示する等の回避策を入れて様子を見ていた。
+
+     現在はかなり起きにくくなっているが、
+     元に戻すと再発するかどうかは未確認。
      */
 
     /// - Complexity: O(1)
@@ -278,9 +276,9 @@
     //  public subscript(position: Index) -> Element {
     public subscript(position: Index) -> (key: Key, value: Value) {
       //    @inline(__always) get { ___element(self[_checked: position]) }
-      // コンパイラがクラッシュする
+      // 一時期コンパイラがクラッシュすることがあった（現在は起きにくい）
       //    @inline(__always) _read { yield self[_checked: position] }
-      // コンパイラがクラッシュする場合もある
+      // 一時期コンパイラがクラッシュすることがあった（現在は起きにくい）
       @inline(__always) get { self[_checked: position] }
     }
 

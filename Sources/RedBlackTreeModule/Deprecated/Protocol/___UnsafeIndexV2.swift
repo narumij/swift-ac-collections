@@ -141,7 +141,6 @@ extension ___UnsafeIndexV2 {
   }
 #endif
 
-// TODO: 削除または正式公開の検討
 // 初期の名残
 extension ___UnsafeIndexV2 {
 

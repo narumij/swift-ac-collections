@@ -34,7 +34,6 @@
     @inlinable
     @inline(__always)
     public subscript(bounds: Range<Index>) -> SubSequence {
-      // TODO: ベースでの有効性しかチェックしていない。__containsのチェックにするか要検討
       return .init(
         tree: __tree_,
         start: __tree_.__purified_(bounds.lowerBound),

@@ -90,8 +90,6 @@ extension UnsafeIndexV2: Equatable {
   public static func == (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
 
-    // TODO: CoW抑制方針になったので、treeMissmatchが妥当かどうか再検討する
-
     lhs.value == rhs.value
   }
 }

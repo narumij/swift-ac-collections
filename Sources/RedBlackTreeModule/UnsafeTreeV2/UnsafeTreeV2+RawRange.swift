@@ -18,48 +18,35 @@
 extension UnsafeTreeV2 {
 
   @inlinable
-  func isValidNodeRange(lower: _NodePtr, upper: _NodePtr) -> Bool {
-    lower == upper || ___ptr_comp(lower, upper)
-  }
-
-  @inlinable
   func isValidSealedRange(lower: _SealedPtr, upper: _SealedPtr) -> Bool {
 
-    guard
-      let lower = lower.pointer,
-      let upper = upper.pointer,
-      isValidNodeRange(lower: lower, upper: upper)
-    else {
-      return false
+    let result = lower.flatMap { l in
+      upper.map { r in
+        l == r || Base.___ptr_comp(l.pointer, r.pointer)
+      }
     }
 
-    return true
+    return (try? result.get()) == true
   }
 
   @inlinable
   func isValidSealedRange(_ range: _RawRange<_SealedPtr>) -> Bool {
-    isValidSealedRange(
-      lower: range.lowerBound,
-      upper: range.upperBound)
+    isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
   }
 }
 
 extension UnsafeTreeV2 {
 
   @inlinable
+  var ___empty_range: _RawRange<_SealedPtr> {
+    let e = __end_node.sealed
+    return .init(lowerBound: e, upperBound: e)
+  }
+
+  @inlinable
   func sanitizeSealedRange(_ range: _RawRange<_SealedPtr>)
     -> _RawRange<_SealedPtr>
   {
-    let (lower, upper) = (range.lowerBound, range.upperBound)
-    let e = __end_node.sealed
-    guard
-      let l = lower.pointer,
-      let u = upper.pointer
-    else {
-      return .init(lowerBound: e, upperBound: e)
-    }
-    return !___ptr_comp(u, l)
-      ? .init(lowerBound: lower, upperBound: upper)
-      : .init(lowerBound: e, upperBound: e)
+    isValidSealedRange(range) ? range : ___empty_range
   }
 }

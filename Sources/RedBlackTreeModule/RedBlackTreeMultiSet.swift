@@ -461,7 +461,7 @@ extension RedBlackTreeMultiSet {
       __tree_.___copy_all_to_array()
     }
 
-    /// - Complexity: O(1)
+    /// - Complexity: O(`count`)
     @inlinable
     @inline(__always)
     public func reversed() -> [Element] {

@@ -618,14 +618,14 @@ extension RedBlackTreeDictionary {
       // 速いし気にすること減るし、こっちのほうがいいかなって
       // TODO: どっちの方針にするか検討確定すること
 
-      /// - Complexity: O(1)
+      /// - Complexity: O(`count`)
       @inlinable
       @inline(__always)
       public var keys: [Key] {
         __tree_.___copy_all_to_array(transform: Base.__key)
       }
 
-      /// - Complexity: O(1)
+      /// - Complexity: O(`count`)
       @inlinable
       @inline(__always)
       public var values: [Value] {

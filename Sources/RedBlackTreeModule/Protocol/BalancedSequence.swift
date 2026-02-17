@@ -68,7 +68,7 @@ public protocol BalancedCollection: BalancedSequence {
 
   func index(after: Index) -> Index
   func index(before: Index) -> Index
-  func index(_: Index, offsetBy: Int) -> Index?
+  func index(_: Index, offsetBy: Int) -> Index
   func index(_: Index, offsetBy: Int, limitedBy: Index) -> Index?
 
   func formIndex(after: inout Index)

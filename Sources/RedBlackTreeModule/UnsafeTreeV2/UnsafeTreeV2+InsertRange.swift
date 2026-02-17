@@ -116,9 +116,9 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         if __child.__ptr_ == __tree_.nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          try __tree_.___with_mapped_value(__child.__ptr_) { __mappedValue in
-            __mappedValue = try combine(__mappedValue, Base.___mapped_value(__tree_.__value_(__nd)))
-          }
+          __child.__ptr_.__value_(as: _PayloadValue.self).pointee.value = try combine(
+            Base.___mapped_value(__child.__ptr_.__value_().pointee),
+            Base.___mapped_value(__tree_.__value_(__nd)))
           __tree_.destroy(__nd)
         }
       }
@@ -272,9 +272,9 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         if __child.__ptr_ == __tree_.nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          try __tree_.___with_mapped_value(__child.__ptr_) { __mappedValue in
-            __mappedValue = try combine(__mappedValue, Base.___mapped_value(__tree_.__value_(__nd)))
-          }
+          __child.__ptr_.__value_(as: _PayloadValue.self).pointee.value = try combine(
+            Base.___mapped_value(__child.__ptr_.__value_().pointee),
+            Base.___mapped_value(__tree_.__value_(__nd)))
           __tree_.destroy(__nd)
         }
       }

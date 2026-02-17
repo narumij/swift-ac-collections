@@ -255,6 +255,30 @@
       XCTAssertEqual(Array(b), [0, 2])
     }
 
+    func testSubscriptBoundsModifyPopFirst() throws {
+      var b = RedBlackTreeSet<Int>(0..<4)
+      let removed = b[lowerBound(0)..<upperBound(2)].popFirst()
+      XCTAssertEqual(removed, 0)
+      XCTAssertEqual(Array(b), [1, 2, 3])
+    }
+
+    func testEraseBounds() throws {
+      var b = RedBlackTreeSet<Int>(0..<5)
+      b.erase(lowerBound(1)..<upperBound(3))
+      XCTAssertEqual(Array(b), [0, 4])
+    }
+
+    func testEraseBoundsWhere() throws {
+      var b = RedBlackTreeSet<Int>(0..<5)
+      b.erase(lowerBound(0)..<upperBound(4)) { $0 % 2 == 0 }
+      XCTAssertEqual(Array(b), [1, 3])
+    }
+
+    func testIsValidBoundsInvalidDoesNotCrash() throws {
+      XCTAssertFalse(a.isValid(upperBound(10)..<lowerBound(-10)))
+      XCTAssertEqual(Array(a[upperBound(10)..<lowerBound(-10)]), [])
+    }
+
     func testLessGreaterHelpers() throws {
       XCTAssertEqual(a[lt(1)], 0)
       XCTAssertEqual(a[gt(1)], 2)

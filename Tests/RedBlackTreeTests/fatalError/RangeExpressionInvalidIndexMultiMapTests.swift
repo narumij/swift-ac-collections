@@ -61,5 +61,45 @@ struct RangeExpressionInvalidIndexMultiMapTests {
       map.erase(lower..<upper)
     }
   }
+  @Test
+  func `MultiMapでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること`() async {
+    await #expect(processExitsWith: .signal(SIGTRAP)) {
+      let source: RedBlackTreeMultiMap = [0: "a", 1: "b", 1: "c", 2: "d"]
+      let range = source.equalRange(1)
+      let target: RedBlackTreeMultiMap = [10: "x", 11: "y", 12: "z"]
+      _ = target[range]
+    }
+  }
+
+  @Test
+  func `MultiMapでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること`() async {
+    await #expect(processExitsWith: .signal(SIGTRAP)) {
+      let source: RedBlackTreeMultiMap = [0: "a", 1: "b", 1: "c", 2: "d"]
+      let range = source.equalRange(1)
+      var target: RedBlackTreeMultiMap = [10: "x", 11: "y", 12: "z"]
+      target[range].erase(where: { _ in false })
+    }
+  }
+
+  @Test
+  func `MultiMapでIndexRangeを別の木に対して使った場合、map.eraseがSIGSEGV以外で停止すること`() async {
+    await #expect(processExitsWith: .signal(SIGTRAP)) {
+      let source: RedBlackTreeMultiMap = [0: "a", 1: "b", 1: "c", 2: "d"]
+      let range = source.equalRange(1)
+      var target: RedBlackTreeMultiMap = [10: "x", 11: "y", 12: "z"]
+      target.erase(range)
+    }
+  }
+
+  @Test
+  func `MultiMapでIndexRangeを別の木に対して使った場合、map.erase(where:)がSIGSEGV以外で停止すること`() async {
+    await #expect(processExitsWith: .signal(SIGTRAP)) {
+      let source: RedBlackTreeMultiMap = [0: "a", 1: "b", 1: "c", 2: "d"]
+      let range = source.equalRange(1)
+      var target: RedBlackTreeMultiMap = [10: "x", 11: "y", 12: "z"]
+      target.erase(range) { _ in false }
+    }
+  }
+
 }
 #endif

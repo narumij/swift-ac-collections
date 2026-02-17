@@ -138,6 +138,37 @@
       XCTAssertEqual(Array(map).map { $0.key }, [1, 3, 5])
     }
 
+    func testIndexRangeIsValid() {
+      let map: RedBlackTreeMultiMap = [3: "c", 1: "a", 1: "d", 2: "b", 4: "d", 5: "e"]
+      let range = map.equalRange(1)
+      XCTAssertTrue(map.isValid(range))
+      XCTAssertEqual(Array(map[range]).map { $0.value }, ["a", "d"])
+    }
+
+    func testSubscriptModifyIndexRangeErase() {
+      var map: RedBlackTreeMultiMap = [3: "c", 1: "a", 1: "d", 2: "b", 4: "d", 5: "e"]
+      let range = map.equalRange(1)
+
+      map[range].erase()
+      XCTAssertEqual(Array(map).map { $0.key }, [2, 3, 4, 5])
+    }
+
+    func testEraseIndexRange() {
+      var map: RedBlackTreeMultiMap = [3: "c", 1: "a", 1: "d", 2: "b", 4: "d", 5: "e"]
+      let range = map.equalRange(1)
+
+      map.erase(range)
+      XCTAssertEqual(Array(map).map { $0.key }, [2, 3, 4, 5])
+    }
+
+    func testEraseIndexRangeWithPredicate() {
+      var map: RedBlackTreeMultiMap = [3: "c", 1: "a", 1: "d", 2: "b", 4: "d", 5: "e"]
+      let range = map.equalRange(1)
+
+      map.erase(range) { $0.value == "a" }
+      XCTAssertEqual(Array(map).filter { $0.key == 1 }.map { $0.value }, ["d"])
+    }
+
     func testEqualRange() {
       let map: RedBlackTreeMultiMap = [3: "c", 1: "a", 1: "d", 2: "b", 4: "d", 5: "e"]
       XCTAssertEqual(Array(map[map.equalRange(1)].map(\.value)), ["a", "d"])

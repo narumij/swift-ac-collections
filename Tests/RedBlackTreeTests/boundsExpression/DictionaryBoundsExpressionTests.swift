@@ -85,5 +85,39 @@
       b.erase(lowerBound(0)..<upperBound(4)) { $0.key % 2 == 0 }
       XCTAssertEqual(Array(b).map { $0.key }, [1, 3])
     }
+
+    func testLessGreaterHelpers() throws {
+      XCTAssertEqual(a[lt(1)]?.key, 0)
+      XCTAssertEqual(a[gt(1)]?.key, 2)
+      XCTAssertEqual(a[le(1)]?.key, 1)
+      XCTAssertEqual(a[ge(1)]?.key, 1)
+    }
+
+    func testBoundRangeOperators() throws {
+      let view1 = a[lowerBound(0)..<upperBound(2)]
+      XCTAssertEqual(Array(view1).map { $0.key }, [0, 1, 2])
+
+      let view2 = a[lowerBound(0)...lowerBound(1)]
+      XCTAssertEqual(Array(view2).map { $0.key }, [0, 1])
+
+      let view3 = a[..<upperBound(1)]
+      XCTAssertEqual(Array(view3).map { $0.key }, [0, 1])
+
+      let view4 = a[...upperBound(1)]
+      XCTAssertEqual(Array(view4).map { $0.key }, [0, 1, 2])
+
+      let view5 = a[lowerBound(1)...]
+      XCTAssertEqual(Array(view5).map { $0.key }, [1, 2])
+    }
+
+    func testEqualRange() throws {
+      let view = a[equalRange(1)]
+      XCTAssertEqual(Array(view).map { $0.key }, [1])
+    }
+
+    func testIsValidBoundsInvalidDoesNotCrash() throws {
+      XCTAssertFalse(a.isValid(upperBound(10)..<lowerBound(-10)))
+      XCTAssertEqual(Array(a[upperBound(10)..<lowerBound(-10)]).map { $0.key }, [])
+    }
   }
 #endif

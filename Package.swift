@@ -19,10 +19,14 @@ var defines: [String] = [
 
   //  "USE_C_MALLOC",
 
-  // "DEATH_TEST",
+  
+   "DEATH_TEST",
 
   // "BENCHMARK",
   // "ENABLE_PERFORMANCE_TESTING"
+  
+  
+  
 ]
 
 var _settings: [SwiftSetting] =

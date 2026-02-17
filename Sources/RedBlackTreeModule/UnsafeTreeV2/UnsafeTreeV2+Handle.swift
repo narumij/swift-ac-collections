@@ -15,7 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeTreeV2 where _Key == _PayloadValue, _Key: Comparable {
+extension UnsafeTreeV2 where Base: ScalarValueTrait {
 
   @usableFromInline
   typealias Handle = UnsafeTreeV2KeyOnlyHandle<UnsafeTreeV2<Base>._PayloadValue>
@@ -36,6 +36,30 @@ extension UnsafeTreeV2 where _Key == _PayloadValue, _Key: Comparable {
     try _buffer.withUnsafeMutablePointers { header, elements in
       let handle = Handle(
         header: header, isMulti: isMulti)
+      return try body(handle)
+    }
+  }
+}
+
+extension UnsafeTreeV2 where Base: PairValueTrait {
+
+  @usableFromInline
+  typealias KeyValueHandle = UnsafeTreeV2KeyValueHandle<_Key, Base._MappedValue>
+
+  @inlinable
+  @inline(__always)
+  internal func read<R>(_ body: (KeyValueHandle) throws -> R) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      let handle = KeyValueHandle(header: header, origin: elements)
+      return try body(handle)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  internal func update<R>(_ body: (KeyValueHandle) throws -> R) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, elements in
+      let handle = KeyValueHandle(header: header, origin: elements)
       return try body(handle)
     }
   }

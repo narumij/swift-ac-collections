@@ -41,34 +41,7 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
   @usableFromInline var isMulti: Bool
 }
 
-extension UnsafeTreeV2
-where
-  Base: PairValueTrait,
-  _Key: Comparable,
-  _PayloadValue == RedBlackTreePair<_Key, Base._MappedValue>
-{
 
-  @usableFromInline
-  typealias KeyValueHandle = UnsafeTreeV2KeyValueHandle<_Key, Base._MappedValue>
-
-  @inlinable
-  @inline(__always)
-  internal func read<R>(_ body: (KeyValueHandle) throws -> R) rethrows -> R {
-    try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = KeyValueHandle(header: header, origin: elements)
-      return try body(handle)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func update<R>(_ body: (KeyValueHandle) throws -> R) rethrows -> R {
-    try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = KeyValueHandle(header: header, origin: elements)
-      return try body(handle)
-    }
-  }
-}
 
 extension UnsafeTreeV2KeyValueHandle {
 

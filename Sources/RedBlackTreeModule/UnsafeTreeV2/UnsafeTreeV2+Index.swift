@@ -18,26 +18,21 @@
 extension UnsafeTreeV2 where Base: ___TreeIndex {
 
   public typealias Index = UnsafeIndexV2<Base>
-  public typealias Pointee = Base.Element
+}
+
+extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
   @inlinable
   @inline(__always)
-  internal func makeIndex(sealed: _SealedPtr) -> Index {
-    .init(sealed: sealed, tie: tied)
+  internal func
+    ___distance(from start: _SealedPtr, to end: _SealedPtr) -> Int?
+  {
+    guard
+      let start = start.purified.pointer,
+      let end = end.purified.pointer
+    else {
+      return nil
+    }
+    return ___signed_distance(start, end)
   }
-}
-
-extension UnsafeTreeV2 where Base: ___TreeIndex {
-
-  public typealias Indices = UnsafeIndexV2Collection<Base>
-}
-
-extension UnsafeTreeV2 where Base: ___TreeIndex {
-
-  public typealias _PayloadValues = RedBlackTreeIteratorV2.Values<Base>
-}
-
-extension UnsafeTreeV2 where Base: PairValueTrait & ___TreeIndex {
-
-  public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
 }

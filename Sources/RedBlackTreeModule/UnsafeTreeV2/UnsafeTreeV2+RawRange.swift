@@ -33,9 +33,6 @@ extension UnsafeTreeV2 {
   func isValidSealedRange(_ range: _RawRange<_SealedPtr>) -> Bool {
     isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
   }
-}
-
-extension UnsafeTreeV2 {
 
   @inlinable
   var ___empty_range: _RawRange<_SealedPtr> {

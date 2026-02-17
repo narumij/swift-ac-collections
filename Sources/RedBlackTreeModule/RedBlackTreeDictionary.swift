@@ -263,7 +263,7 @@ extension RedBlackTreeDictionary {
       if let x = newValue {
         __tree_.setValue(x, forKey: key)
       } else {
-        removeValue(forKey: key)
+        _ = __tree_.___erase_unique(key)
       }
     }
 
@@ -288,8 +288,10 @@ extension RedBlackTreeDictionary {
       if __child.pointee.___is_null {
         __tree_.ensureCapacity()
         assert(__tree_.capacity > __tree_.count)
-        let __h = __tree_.__construct_node(Self.__payload_((key, defaultValue())))
-        __tree_.__insert_node_at(__parent, __child, __h)
+        __tree_.update {
+          let __h = $0.__construct_node(Self.__payload_((key, defaultValue())))
+          $0.__insert_node_at(__parent, __child, __h)
+        }
       }
       yield &__tree_[_unsafe_raw: __child.pointee].value
     }

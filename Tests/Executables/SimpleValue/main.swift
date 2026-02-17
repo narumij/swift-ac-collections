@@ -15,7 +15,7 @@ for count in [0, 32, 1024, 8192] {
     _ = sut[count == 0 ? 0 : i % count]
   }
 }
-#elseif false
+#elseif true
 for count in [0, 32, 1024, 8192] {
   var sut = SUT(uniqueKeysWithValues: (0..<count).map { ($0,0) })
   for i in 0..<1_000_000 {

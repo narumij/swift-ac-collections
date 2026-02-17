@@ -22,8 +22,10 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
       __child.__ptr_.__mapped_value_ptr(of: Base.self).pointee = x
     } else {
       ensureCapacity()
-      let __h = __construct_node(Base.__payload_((key, x)))
-      __insert_node_at(__parent, __child, __h)
+      update {
+        let __h = $0.__construct_node(Base.__payload_((key, x)))
+        $0.__insert_node_at(__parent, __child, __h)
+      }
     }
   }
 
@@ -48,13 +50,17 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
           if let value {
             unsafe __child.pointee.__mapped_value_ptr(of: Base.self).initialize(to: value)
           } else {
-            _ = erase(__child.pointee)
+            update {
+              _ = $0.erase(__child.pointee)
+            }
           }
         } else {
           if let value {
             ensureCapacity()
-            let __h = __construct_node(Base.__payload_((key, value)))
-            __insert_node_at(__parent, __child, __h)
+            update {
+              let __h = $0.__construct_node(Base.__payload_((key, value)))
+              $0.__insert_node_at(__parent, __child, __h)
+            }
           }
         }
       }

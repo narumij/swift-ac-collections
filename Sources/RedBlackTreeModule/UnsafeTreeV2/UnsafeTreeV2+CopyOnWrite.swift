@@ -104,8 +104,6 @@ extension UnsafeTreeV2 {
   internal mutating func ensureUniqueAndCapacity(
     to minimumCapacity: Int? = nil, linearly: Bool = false
   ) {
-    // TODO: まだなにか妙な重さがありそうなので、再度調査及びチューニングすること
-    
     let isUnique = isUnique()
 
     withMutableHeader { header in

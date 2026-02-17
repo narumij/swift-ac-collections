@@ -56,6 +56,25 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
+    /// - Complexity: O(*n* log(*m + n*))
+    @inlinable
+    @inline(__always)
+    public static func + (lhs: Self, rhs: Self) -> Self {
+      lhs.inserting(contentsOf: rhs)
+    }
+
+    /// - Complexity: O(*n* log(*m + n*))
+    @inlinable
+    @inline(__always)
+    public static func += (lhs: inout Self, rhs: Self) {
+      lhs.insert(contentsOf: rhs)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
     /// - Complexity: O(*n*), where *n* is the number of elements.
     @inlinable
     public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {

@@ -1342,83 +1342,85 @@ final class MultisetTests: RedBlackTreeTestCase {
     }
   }
 
-  func testAdd() throws {
-    do {
-      let a = RedBlackTreeMultiSet<Int>([0, 1])
-      let b = RedBlackTreeMultiSet<Int>([0, 1])
-      //      a.meld(b)
-      XCTAssertEqual((a + b) + [], [0, 0, 1, 1])
+  #if COMPATIBLE_ATCODER_2025
+    func testAdd() throws {
+      do {
+        let a = RedBlackTreeMultiSet<Int>([0, 1])
+        let b = RedBlackTreeMultiSet<Int>([0, 1])
+        //      a.meld(b)
+        XCTAssertEqual((a + b) + [], [0, 0, 1, 1])
+      }
+      do {
+        let a = RedBlackTreeMultiSet<Int>([0, 1])
+        let b = RedBlackTreeMultiSet<Int>([1, 2])
+        //      a.meld(b)
+        XCTAssertEqual((a + b) + [], [0, 1, 1, 2])
+      }
+      do {
+        let a = RedBlackTreeMultiSet<Int>([0, 1])
+        let b = RedBlackTreeMultiSet<Int>([2, 3])
+        //      a.meld(b)
+        XCTAssertEqual((a + b) + [], [0, 1, 2, 3])
+      }
+      do {
+        let a = RedBlackTreeMultiSet<Int>([0, 1])
+        let b = RedBlackTreeMultiSet<Int>([0, 1])
+        //      a.meld(b)
+        XCTAssertEqual((a + b) + [], [0, 0, 1, 1])
+      }
+      do {
+        let a = RedBlackTreeMultiSet<Int>([1, 2])
+        let b = RedBlackTreeMultiSet<Int>([0, 1])
+        //      a.meld(b)
+        XCTAssertEqual((a + b) + [], [0, 1, 1, 2])
+      }
+      do {
+        let a = RedBlackTreeMultiSet<Int>([2, 3])
+        let b = RedBlackTreeMultiSet<Int>([0, 1])
+        //      a.meld(b)
+        XCTAssertEqual((a + b) + [], [0, 1, 2, 3])
+      }
     }
-    do {
-      let a = RedBlackTreeMultiSet<Int>([0, 1])
-      let b = RedBlackTreeMultiSet<Int>([1, 2])
-      //      a.meld(b)
-      XCTAssertEqual((a + b) + [], [0, 1, 1, 2])
-    }
-    do {
-      let a = RedBlackTreeMultiSet<Int>([0, 1])
-      let b = RedBlackTreeMultiSet<Int>([2, 3])
-      //      a.meld(b)
-      XCTAssertEqual((a + b) + [], [0, 1, 2, 3])
-    }
-    do {
-      let a = RedBlackTreeMultiSet<Int>([0, 1])
-      let b = RedBlackTreeMultiSet<Int>([0, 1])
-      //      a.meld(b)
-      XCTAssertEqual((a + b) + [], [0, 0, 1, 1])
-    }
-    do {
-      let a = RedBlackTreeMultiSet<Int>([1, 2])
-      let b = RedBlackTreeMultiSet<Int>([0, 1])
-      //      a.meld(b)
-      XCTAssertEqual((a + b) + [], [0, 1, 1, 2])
-    }
-    do {
-      let a = RedBlackTreeMultiSet<Int>([2, 3])
-      let b = RedBlackTreeMultiSet<Int>([0, 1])
-      //      a.meld(b)
-      XCTAssertEqual((a + b) + [], [0, 1, 2, 3])
-    }
-  }
 
-  func testAddEqual() throws {
-    do {
-      var a = RedBlackTreeMultiSet<Int>([0, 1])
-      let b = RedBlackTreeMultiSet<Int>([0, 1])
-      a += b
-      XCTAssertEqual(a + [], [0, 0, 1, 1])
+    func testAddEqual() throws {
+      do {
+        var a = RedBlackTreeMultiSet<Int>([0, 1])
+        let b = RedBlackTreeMultiSet<Int>([0, 1])
+        a += b
+        XCTAssertEqual(a + [], [0, 0, 1, 1])
+      }
+      do {
+        var a = RedBlackTreeMultiSet<Int>([0, 1])
+        let b = RedBlackTreeMultiSet<Int>([1, 2])
+        a += b
+        XCTAssertEqual(a + [], [0, 1, 1, 2])
+      }
+      do {
+        var a = RedBlackTreeMultiSet<Int>([0, 1])
+        let b = RedBlackTreeMultiSet<Int>([2, 3])
+        a += b
+        XCTAssertEqual(a + [], [0, 1, 2, 3])
+      }
+      do {
+        var a = RedBlackTreeMultiSet<Int>([0, 1])
+        let b = RedBlackTreeMultiSet<Int>([0, 1])
+        a += b
+        XCTAssertEqual(a + [], [0, 0, 1, 1])
+      }
+      do {
+        var a = RedBlackTreeMultiSet<Int>([1, 2])
+        let b = RedBlackTreeMultiSet<Int>([0, 1])
+        a += b
+        XCTAssertEqual(a + [], [0, 1, 1, 2])
+      }
+      do {
+        var a = RedBlackTreeMultiSet<Int>([2, 3])
+        let b = RedBlackTreeMultiSet<Int>([0, 1])
+        a += b
+        XCTAssertEqual(a + [], [0, 1, 2, 3])
+      }
     }
-    do {
-      var a = RedBlackTreeMultiSet<Int>([0, 1])
-      let b = RedBlackTreeMultiSet<Int>([1, 2])
-      a += b
-      XCTAssertEqual(a + [], [0, 1, 1, 2])
-    }
-    do {
-      var a = RedBlackTreeMultiSet<Int>([0, 1])
-      let b = RedBlackTreeMultiSet<Int>([2, 3])
-      a += b
-      XCTAssertEqual(a + [], [0, 1, 2, 3])
-    }
-    do {
-      var a = RedBlackTreeMultiSet<Int>([0, 1])
-      let b = RedBlackTreeMultiSet<Int>([0, 1])
-      a += b
-      XCTAssertEqual(a + [], [0, 0, 1, 1])
-    }
-    do {
-      var a = RedBlackTreeMultiSet<Int>([1, 2])
-      let b = RedBlackTreeMultiSet<Int>([0, 1])
-      a += b
-      XCTAssertEqual(a + [], [0, 1, 1, 2])
-    }
-    do {
-      var a = RedBlackTreeMultiSet<Int>([2, 3])
-      let b = RedBlackTreeMultiSet<Int>([0, 1])
-      a += b
-      XCTAssertEqual(a + [], [0, 1, 2, 3])
-    }
-  }
+  #endif
 
   #if COMPATIBLE_ATCODER_2025
     func testLeftUnsafeSmoke() {

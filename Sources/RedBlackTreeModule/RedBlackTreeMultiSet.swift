@@ -314,21 +314,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(*n* log(*m + n*))
-  @inlinable
-  public static func + (lhs: Self, rhs: Self) -> Self {
-    lhs.inserting(contentsOf: rhs)
-  }
-
-  /// - Complexity: O(*n* log(*m + n*))
-  @inlinable
-  public static func += (lhs: inout Self, rhs: Self) {
-    lhs.insert(contentsOf: rhs)
-  }
-}
-
 // MARK: - Remove
 
 extension RedBlackTreeMultiSet {

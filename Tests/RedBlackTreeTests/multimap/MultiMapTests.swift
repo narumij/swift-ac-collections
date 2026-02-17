@@ -1142,23 +1142,25 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   }
 
-  func testAdd() throws {
-    do {
-      let a: Target<Int, Int> = [0: 10, 1: 30]
-      let b: Target<Int, Int> = [0: 20, 1: 40]
-      let c = a + b
-      AssertEquenceEqual(c + [], [(0, 10), (0, 20), (1, 30), (1, 40)].map { keyValue($0) })
+  #if COMPATIBLE_ATCODER_2025
+    func testAdd() throws {
+      do {
+        let a: Target<Int, Int> = [0: 10, 1: 30]
+        let b: Target<Int, Int> = [0: 20, 1: 40]
+        let c = a + b
+        AssertEquenceEqual(c + [], [(0, 10), (0, 20), (1, 30), (1, 40)].map { keyValue($0) })
+      }
     }
-  }
 
-  func testAddEqual() throws {
-    do {
-      var a: Target<Int, Int> = [0: 10, 1: 30]
-      let b: Target<Int, Int> = [0: 20, 1: 40]
-      a += b
-      AssertEquenceEqual(a + [], [(0, 10), (0, 20), (1, 30), (1, 40)].map { keyValue($0) })
+    func testAddEqual() throws {
+      do {
+        var a: Target<Int, Int> = [0: 10, 1: 30]
+        let b: Target<Int, Int> = [0: 20, 1: 40]
+        a += b
+        AssertEquenceEqual(a + [], [(0, 10), (0, 20), (1, 30), (1, 40)].map { keyValue($0) })
+      }
     }
-  }
+  #endif
 
   #if COMPATIBLE_ATCODER_2025
     func testIsValidRangeSmoke() throws {

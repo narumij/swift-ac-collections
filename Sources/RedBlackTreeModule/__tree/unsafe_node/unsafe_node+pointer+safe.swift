@@ -139,24 +139,25 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable
   func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
-    // TODO: purified要不要の再確認
+    // TODO: 利用側でpurified十分か繰り返し確認すること
     try? map { $0.pointer.__value_() }.get()
   }
 
   @inlinable
   var pointer: UnsafeMutablePointer<UnsafeNode>? {
-    // TODO: purified要不要の再確認
+    // TODO: 利用側でpurified十分か繰り返し確認すること
     try? map { $0.pointer }.get()
   }
 
   @inlinable
   var temporaryUnseal: Result<UnsafeMutablePointer<UnsafeNode>, SealError> {
-    // TODO: purified要不要の再確認
+    // TODO: 利用側でpurified十分か繰り返し確認すること
     map { $0.pointer }
   }
 
   @inlinable
   var exists: Bool {
+    // TODO: 利用側でpurified十分か繰り返し確認すること
     (try? map { !___is_null_or_end__(tag: $0.pointer.trackingTag) }.get()) ?? false
   }
 }

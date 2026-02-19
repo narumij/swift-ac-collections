@@ -933,20 +933,22 @@ final class EtcTests: RedBlackTreeTestCase {
   //    throw XCTSkip("\(hoge.filter { $0.capacity != 0 })")
   //  }
 
-  func testPtr5() throws {
-    do {
-      let a = RedBlackTreeSet<Int>([0])
-      XCTAssertEqual(a.__tree_.__tree_prev_iter(a._start), .nullptr)
+  #if DEBUG
+    func testPtr5() throws {
+      do {
+        let a = RedBlackTreeSet<Int>([0])
+        XCTAssertEqual(a.__tree_.__tree_prev_iter(a._start), .nullptr)
+      }
+      do {
+        let a = RedBlackTreeSet<Int>([0, 1])
+        XCTAssertEqual(a.__tree_.__tree_prev_iter(a._start), .nullptr)
+      }
+      do {
+        let a = RedBlackTreeSet<Int>([0, 1, 2])
+        XCTAssertEqual(a.__tree_.__tree_prev_iter(a._start), .nullptr)
+      }
     }
-    do {
-      let a = RedBlackTreeSet<Int>([0, 1])
-      XCTAssertEqual(a.__tree_.__tree_prev_iter(a._start), .nullptr)
-    }
-    do {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      XCTAssertEqual(a.__tree_.__tree_prev_iter(a._start), .nullptr)
-    }
-  }
+  #endif
 
   #if DEBUG
     func testRoundTrip() throws {

@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: やや古いのでスカラー版にあわせること
-
 /// DictionaryやMultimap用に特殊化されたハンドル
 ///
 /// `_Key`の取得に関して特殊化済みとなっている。
@@ -31,7 +29,7 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
   ) {
     self.header = header
     self.nullptr = header.pointee.nullptr
-    self.root_ptr = header.pointee.root_ptr
+    self.root_ref = header.pointee.root_ptr
     self.isMulti = isMulti
   }
   @usableFromInline typealias _Key = _Key
@@ -41,7 +39,7 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
   @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
   @usableFromInline let nullptr: _NodePtr
-  @usableFromInline let root_ptr: _NodeRef  // root_refのほうが名前として妥当かも
+  @usableFromInline let root_ref: _NodeRef
   @usableFromInline var isMulti: Bool
 }
 
@@ -114,13 +112,13 @@ extension UnsafeTreeV2KeyValueHandle {
   @inlinable
   @inline(__always)
   var __root: _NodePtr {
-    root_ptr.pointee
+    root_ref.pointee
   }
 
   @inlinable
   @inline(__always)
   func __root_ptr() -> _NodeRef {
-    root_ptr
+    root_ref
   }
 
   @inlinable

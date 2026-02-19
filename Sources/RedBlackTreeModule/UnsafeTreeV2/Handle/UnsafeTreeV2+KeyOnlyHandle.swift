@@ -31,7 +31,7 @@ struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
   ) {
     self.header = header
     self.nullptr = header.pointee.nullptr
-    self.root_ptr = header.pointee.root_ptr
+    self.root_ref = header.pointee.root_ptr
     self.isMulti = isMulti
   }
 
@@ -41,7 +41,7 @@ struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
 
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
   @usableFromInline let nullptr: _NodePtr
-  @usableFromInline let root_ptr: _NodeRef  // root_refのほうが名前として妥当かも
+  @usableFromInline let root_ref: _NodeRef
   @usableFromInline let isMulti: Bool
 }
 
@@ -104,13 +104,13 @@ extension UnsafeTreeV2KeyOnlyHandle {
   @inlinable
   @inline(__always)
   var __root: _NodePtr {
-    root_ptr.pointee
+    root_ref.pointee
   }
 
   @inlinable
   @inline(__always)
   func __root_ptr() -> _NodeRef {
-    root_ptr
+    root_ref
   }
 
   @inlinable

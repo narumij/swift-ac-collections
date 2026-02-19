@@ -41,10 +41,10 @@ extension RedBlackTreeBoundExpression {
     case .end:
       return __tree_.__end_node.sealed
 
-    case .lower(let __v):
+    case .lowerBound(let __v):
       return __tree_.lower_bound(__v).sealed
 
-    case .upper(let __v):
+    case .upperBound(let __v):
       return __tree_.upper_bound(__v).sealed
 
     case .find(let __v):

@@ -1054,13 +1054,13 @@ final class EtcTests: RedBlackTreeTestCase {
         let _ = a.indices(bounds: .start ..< .end)
         let _ = a.indices(bounds: .lower(3) ..< .lower(4))
       #endif
-      let _ = a.erase(.lower(10) ..< .lower(100)) { n in
+      let _ = a.erase(.lowerBound(10) ..< .lowerBound(100)) { n in
         n % 2 == 1
       }
-      let _ = a.erase(.lower(10) ... .upper(100)) { n in
+      let _ = a.erase(.lowerBound(10) ... .upperBound(100)) { n in
         n % 2 == 0
       }
-      let _ = a[.lower(10) ... .end]
+      let _ = a[.lowerBound(10) ... .end]
       let _ = a[...(.end)]
       let _ = a[.start...]
       let _ = a[start()...]
@@ -1159,9 +1159,9 @@ final class EtcTests: RedBlackTreeTestCase {
     func testBound() throws {
       var a = RedBlackTreeSet<Int>((0..<100).filter { $0 % 5 == 0 })
       XCTAssertEqual(a[.start], 0)
-      XCTAssertEqual(a[.lower(0)], 0)
-      XCTAssertEqual(a[.lower(3)], 5)
-      XCTAssertEqual(a[.upper(5)], 10)
+      XCTAssertEqual(a[.lowerBound(0)], 0)
+      XCTAssertEqual(a[.lowerBound(3)], 5)
+      XCTAssertEqual(a[.upperBound(5)], 10)
       XCTAssertEqual(a[.end], nil)
     }
 

@@ -27,10 +27,12 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
   @inlinable
   internal init(
     header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>,
-    origin: UnsafeMutableRawPointer
+    isMulti: Bool
   ) {
     self.header = header
-    self.isMulti = false
+    self.nullptr = header.pointee.nullptr
+    self.root_ptr = header.pointee.root_ptr
+    self.isMulti = isMulti
   }
   @usableFromInline typealias _Key = _Key
   @usableFromInline typealias _PayloadValue = RedBlackTreePair<_Key, _MappedValue>
@@ -38,10 +40,10 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
   @usableFromInline typealias _Pointer = _NodePtr
   @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
+  @usableFromInline let nullptr: _NodePtr
+  @usableFromInline let root_ptr: _NodeRef  // root_refのほうが名前として妥当かも
   @usableFromInline var isMulti: Bool
 }
-
-
 
 extension UnsafeTreeV2KeyValueHandle {
 
@@ -85,7 +87,63 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 }
 
-extension UnsafeTreeV2KeyValueHandle: UnsafeTreeAccessHandleBase {}
+extension UnsafeTreeV2KeyValueHandle {
+
+  @inlinable
+  @inline(__always)
+  public func __construct_node(_ k: _PayloadValue) -> _NodePtr {
+    let p = header.pointee.__construct_raw_node()
+    // あえてのdefer
+    defer { p.__value_().initialize(to: k) }
+    return p
+  }
+}
+
+extension UnsafeTreeV2KeyValueHandle {
+
+  @inlinable
+  var __begin_node_: _NodePtr {
+    get {
+      header.pointee.begin_ptr.pointee
+    }
+    nonmutating set {
+      header.pointee.begin_ptr.pointee = newValue
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  var __root: _NodePtr {
+    root_ptr.pointee
+  }
+
+  @inlinable
+  @inline(__always)
+  func __root_ptr() -> _NodeRef {
+    root_ptr
+  }
+
+  @inlinable
+  var end: _NodePtr {
+    header.pointee.end_ptr
+  }
+
+  @inlinable
+  var __end_node: _NodePtr {
+    header.pointee.end_ptr
+  }
+
+  @inlinable
+  func destroy(_ p: _NodePtr) {
+    header.pointee.___pushRecycle(p)
+  }
+
+  @inlinable
+  var __size_: Int {
+    get { header.pointee.count }
+    nonmutating set { /* NOP */  }
+  }
+}
 
 extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindInteface, FindProtocol_ptr {}

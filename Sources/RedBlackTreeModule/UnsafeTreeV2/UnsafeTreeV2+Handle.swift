@@ -50,7 +50,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   @inline(__always)
   internal func read<R>(_ body: (KeyValueHandle) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = KeyValueHandle(header: header, origin: elements)
+      let handle = KeyValueHandle(header: header, isMulti: isMulti)
       return try body(handle)
     }
   }
@@ -59,7 +59,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   @inline(__always)
   internal func update<R>(_ body: (KeyValueHandle) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, elements in
-      let handle = KeyValueHandle(header: header, origin: elements)
+      let handle = KeyValueHandle(header: header, isMulti: isMulti)
       return try body(handle)
     }
   }

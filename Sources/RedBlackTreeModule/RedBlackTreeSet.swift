@@ -623,7 +623,6 @@ extension RedBlackTreeSet {
   }
 
   extension RedBlackTreeSet {
-    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element)

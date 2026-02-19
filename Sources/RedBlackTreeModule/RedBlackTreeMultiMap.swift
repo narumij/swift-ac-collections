@@ -543,38 +543,20 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
 
   #if !COMPATIBLE_ATCODER_2025
-    #if false
-      /// - Complexity: O(1)
-      @inlinable
-      @inline(__always)
-      public var keys: Keys {
-        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-      }
 
-      /// - Complexity: O(1)
-      @inlinable
-      @inline(__always)
-      public var values: Values {
-        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-      }
-    #else
-      // 速いし気にすること減るし、こっちのほうがいいかなって
-      // TODO: どっちの方針にするか検討確定すること
+    /// - Complexity: O(`count`)
+    @inlinable
+    @inline(__always)
+    public var keys: [Key] {
+      __tree_.___copy_all_to_array(transform: Base.__key)
+    }
 
-      /// - Complexity: O(`count`)
-      @inlinable
-      @inline(__always)
-      public var keys: [Key] {
-        __tree_.___copy_all_to_array(transform: Base.__key)
-      }
-
-      /// - Complexity: O(`count`)
-      @inlinable
-      @inline(__always)
-      public var values: [Value] {
-        __tree_.___copy_all_to_array(transform: Base.___mapped_value)
-      }
-    #endif
+    /// - Complexity: O(`count`)
+    @inlinable
+    @inline(__always)
+    public var values: [Value] {
+      __tree_.___copy_all_to_array(transform: Base.___mapped_value)
+    }
   #endif
 }
 
@@ -604,7 +586,6 @@ extension RedBlackTreeMultiMap {
   }
 
   extension RedBlackTreeMultiMap {
-    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of key: Key)

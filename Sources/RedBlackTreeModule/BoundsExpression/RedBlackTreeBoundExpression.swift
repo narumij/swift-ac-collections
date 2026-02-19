@@ -97,7 +97,6 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
   /// ただし評価時の計算量
   case after(Self)
 
-  // TODO: greaterThen,lessThan,等の検討
   // こちらの実現は簡単そう
   // greaterThanとupperは同じ
   /// 与えられた値より小さい要素のうち最大のものを表す
@@ -105,7 +104,6 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
   /// 与えられた値より大きい要素のうち最小のものを表す
   case greaterThan(_Key)
 
-  // TODO: greaterThenOrEqual,lessThenOrEqual,等の検討
   // こちらはやや難しめ
   /// 与えられた値以下の要素のうち最大のものを表す
   case lessThanOrEqual(_Key)  // TODO: コーナーケース検討

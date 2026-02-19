@@ -314,21 +314,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet {
-
-  /// - Complexity: O(*n* log(*m + n*))
-  @inlinable
-  public static func + (lhs: Self, rhs: Self) -> Self {
-    lhs.inserting(contentsOf: rhs)
-  }
-
-  /// - Complexity: O(*n* log(*m + n*))
-  @inlinable
-  public static func += (lhs: inout Self, rhs: Self) {
-    lhs.insert(contentsOf: rhs)
-  }
-}
-
 // MARK: - Remove
 
 extension RedBlackTreeMultiSet {
@@ -395,7 +380,7 @@ extension RedBlackTreeMultiSet {
       guard let __p = __tree_.__purified_(index).pointer else {
         fatalError(.invalidIndex)
       }
-      return _unchecked_remove(at: __p).payload
+      return __tree_._unchecked_remove(at: __p).payload
     }
   }
 #endif
@@ -476,7 +461,7 @@ extension RedBlackTreeMultiSet {
       __tree_.___copy_all_to_array()
     }
 
-    /// - Complexity: O(1)
+    /// - Complexity: O(`count`)
     @inlinable
     @inline(__always)
     public func reversed() -> [Element] {
@@ -511,7 +496,6 @@ extension RedBlackTreeMultiSet {
   }
 
   extension RedBlackTreeMultiSet {
-    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element)
@@ -590,6 +574,15 @@ extension RedBlackTreeMultiSet {
     @inlinable
     public func upperBound(_ member: Element) -> Index {
       ___index(__tree_.upper_bound(member).sealed)
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    /// - Complexity: O( log `count` )
+    @inlinable
+    public func find(_ member: Element) -> Index {
+      ___index(__tree_.find(member).sealed)
     }
   }
 

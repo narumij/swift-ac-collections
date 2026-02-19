@@ -53,7 +53,7 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   @inline(__always)
   internal mutating func grow(_ newCapacity: Int) {
-    assert(freshPoolCapacity < newCapacity)
+    assert(freshPoolCapacity < newCapacity, "増加要求であること")
     pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
   }
 }
@@ -104,8 +104,6 @@ extension UnsafeTreeV2 {
   internal mutating func ensureUniqueAndCapacity(
     to minimumCapacity: Int? = nil, linearly: Bool = false
   ) {
-    // TODO: まだなにか妙な重さがありそうなので、再度調査及びチューニングすること
-    
     let isUnique = isUnique()
 
     withMutableHeader { header in
@@ -119,7 +117,7 @@ extension UnsafeTreeV2 {
         self = header.copy(minimumCapacity: growthCapacity)
         return
       }
-      assert(isReadOnly == false)
+      assert(isReadOnly == false, "変更禁止シングルトンではないこと")
       header.grow(growthCapacity)
     }
   }
@@ -141,7 +139,7 @@ extension UnsafeTreeV2 {
         self = header.copy(minimumCapacity: growthCapacity)
         return
       }
-      assert(isReadOnly == false)
+      assert(isReadOnly == false, "変更禁止シングルトンではないこと")
       header.grow(growthCapacity)
     }
   }
@@ -162,12 +160,12 @@ extension UnsafeTreeV2 {
         to: minimumCapacity,
         linearly: linearly)
       let limitedCapacity = min(limit, growthCapacity)
-      assert(growthCapacity > 0)
+      assert(growthCapacity > 0, "以降の処理は容量変更の場合のみ呼ばれること")
       if isReadOnly {
         self = header.copy(minimumCapacity: limitedCapacity)
         return
       }
-      assert(isReadOnly == false)
+      assert(isReadOnly == false, "変更禁止シングルトンではないこと")
       header.grow(limitedCapacity)
     }
   }

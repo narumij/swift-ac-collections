@@ -57,7 +57,7 @@
       __tree_.ensureUnique()
       let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
-      return _unchecked_remove(at: p).payload
+      return __tree_._unchecked_remove(at: p).payload
     }
   }
 
@@ -70,7 +70,7 @@
     /// これがfalseの場合でもBoundRange関連APIはクラッシュしない
     @inlinable
     public func isValid(_ bounds: BoundRange) -> Bool {
-      let range = bounds._evaluate(__tree_).relative(to: __tree_)
+      let range = bounds.evaluate(__tree_).relative(to: __tree_)
       return __tree_.isValidSealedRange(range)
         && range.lowerBound.isValid
         && range.upperBound.isValid
@@ -85,7 +85,7 @@
       @inline(__always) get {
 
         let range = __tree_.sanitizeSealedRange(
-          bounds._evaluate(__tree_).relative(to: __tree_))
+          bounds.evaluate(__tree_).relative(to: __tree_))
 
         return self[unchecked: range]
       }
@@ -93,7 +93,7 @@
       @inline(__always) _modify {
 
         let range = __tree_.sanitizeSealedRange(
-          bounds._evaluate(__tree_).relative(to: __tree_))
+          bounds.evaluate(__tree_).relative(to: __tree_))
 
         yield &self[unchecked: range]
       }
@@ -107,7 +107,7 @@
 
       __tree_.ensureUnique()
       let range = __tree_.sanitizeSealedRange(
-        bounds._evaluate(__tree_).relative(to: __tree_))
+        bounds.evaluate(__tree_).relative(to: __tree_))
       __tree_.___erase(range.lowerBound.pointer!, range.upperBound.pointer!)
     }
 
@@ -118,7 +118,7 @@
 
       __tree_.ensureUnique()
       let range = __tree_.sanitizeSealedRange(
-        bounds._evaluate(__tree_).relative(to: __tree_))
+        bounds.evaluate(__tree_).relative(to: __tree_))
       try __tree_.___erase_if(range.lowerBound, range.upperBound, shouldBeRemoved)
     }
   }

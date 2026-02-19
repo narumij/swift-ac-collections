@@ -46,9 +46,6 @@ import Foundation
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   public
-    typealias KeyValue = (key: Key, value: Value)
-
-  public
     typealias Element = (key: Key, value: Value)
 
   public
@@ -266,7 +263,7 @@ extension RedBlackTreeDictionary {
       if let x = newValue {
         __tree_.setValue(x, forKey: key)
       } else {
-        removeValue(forKey: key)
+        _ = __tree_.___erase_unique(key)
       }
     }
 
@@ -291,8 +288,10 @@ extension RedBlackTreeDictionary {
       if __child.pointee.___is_null {
         __tree_.ensureCapacity()
         assert(__tree_.capacity > __tree_.count)
-        let __h = __tree_.__construct_node(Self.__payload_((key, defaultValue())))
-        __tree_.__insert_node_at(__parent, __child, __h)
+        __tree_.update {
+          let __h = $0.__construct_node(Self.__payload_((key, defaultValue())))
+          $0.__insert_node_at(__parent, __child, __h)
+        }
       }
       yield &__tree_[_unsafe_raw: __child.pointee].value
     }
@@ -425,7 +424,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public mutating func popFirst() -> KeyValue? {
+  public mutating func popFirst() -> Element? {
     guard !isEmpty else { return nil }
     return remove(at: startIndex)
   }
@@ -469,7 +468,7 @@ extension RedBlackTreeDictionary {
     guard case .success(let __p) = __tree_.__purified_(index) else {
       fatalError(.invalidIndex)
     }
-    return Self.__element_(_unchecked_remove(at: __p.pointer).payload)
+    return Self.__element_(__tree_._unchecked_remove(at: __p.pointer).payload)
   }
 }
 
@@ -601,38 +600,19 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    #if false
-      /// - Complexity: O(1)
-      @inlinable
-      @inline(__always)
-      public var keys: Keys {
-        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-      }
+    /// - Complexity: O(`count`)
+    @inlinable
+    @inline(__always)
+    public var keys: [Key] {
+      __tree_.___copy_all_to_array(transform: Base.__key)
+    }
 
-      /// - Complexity: O(1)
-      @inlinable
-      @inline(__always)
-      public var values: Values {
-        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-      }
-    #else
-      // 速いし気にすること減るし、こっちのほうがいいかなって
-      // TODO: どっちの方針にするか検討確定すること
-
-      /// - Complexity: O(1)
-      @inlinable
-      @inline(__always)
-      public var keys: [Key] {
-        __tree_.___copy_all_to_array(transform: Base.__key)
-      }
-
-      /// - Complexity: O(1)
-      @inlinable
-      @inline(__always)
-      public var values: [Value] {
-        __tree_.___copy_all_to_array(transform: Base.___mapped_value)
-      }
-    #endif
+    /// - Complexity: O(`count`)
+    @inlinable
+    @inline(__always)
+    public var values: [Value] {
+      __tree_.___copy_all_to_array(transform: Base.___mapped_value)
+    }
   }
 #endif
 
@@ -741,6 +721,15 @@ extension RedBlackTreeDictionary {
     @inlinable
     public func upperBound(_ key: Key) -> Index {
       ___index(__tree_.upper_bound(key).sealed)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O( log `count` )
+    @inlinable
+    public func find(_ key: Key) -> Index {
+      ___index(__tree_.find(key).sealed)
     }
   }
 

@@ -1,4 +1,11 @@
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+    public
+      typealias KeyValue = (key: Key, value: Value)
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
 #endif
 
@@ -30,6 +37,37 @@
     public init<Source>(naive sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
       self.init(__tree_: .create_multi(naive: sequence, transform: Self.__payload_))
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(log *n*)
+    @inlinable
+    public func values(forKey key: Key) -> Values {
+      let (lo, hi) = __tree_.__equal_range_multi(key)
+      return .init(start: lo.sealed, end: hi.sealed, tie: __tree_.tied)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(*n* log(*m + n*))
+    @inlinable
+    @inline(__always)
+    public static func + (lhs: Self, rhs: Self) -> Self {
+      lhs.inserting(contentsOf: rhs)
+    }
+
+    /// - Complexity: O(*n* log(*m + n*))
+    @inlinable
+    @inline(__always)
+    public static func += (lhs: inout Self, rhs: Self) {
+      lhs.insert(contentsOf: rhs)
     }
   }
 #endif
@@ -480,7 +518,6 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
-    // TODO: イテレータ利用の注意をドキュメントすること
     /// - Important: 削除したメンバーを指すインデックスが無効になります。
     /// - Complexity: O(log *n* + *k*)
     @inlinable

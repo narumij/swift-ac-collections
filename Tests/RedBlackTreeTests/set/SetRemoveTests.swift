@@ -59,19 +59,19 @@ final class SetRemoveTests: RedBlackTreeTestCase {
 
   #if DEBUG
     func testRemoveAt() throws {
-      XCTAssertEqual(members._unchecked_remove(at: members.__tree_.__begin_node_).payload, 0)
+      XCTAssertEqual(members.__tree_._unchecked_remove(at: members.__tree_.__begin_node_).payload, 0)
       XCTAssertEqual(members.elements, [1, 2, 3, 4])
       XCTAssertEqual(members.count, 4)
-      XCTAssertEqual(members._unchecked_remove(at: members.__tree_.__begin_node_).payload, 1)
+      XCTAssertEqual(members.__tree_._unchecked_remove(at: members.__tree_.__begin_node_).payload, 1)
       XCTAssertEqual(members.elements, [2, 3, 4])
       XCTAssertEqual(members.count, 3)
-      XCTAssertEqual(members._unchecked_remove(at: members.__tree_.__begin_node_).payload, 2)
+      XCTAssertEqual(members.__tree_._unchecked_remove(at: members.__tree_.__begin_node_).payload, 2)
       XCTAssertEqual(members.elements, [3, 4])
       XCTAssertEqual(members.count, 2)
-      XCTAssertEqual(members._unchecked_remove(at: members.__tree_.__begin_node_).payload, 3)
+      XCTAssertEqual(members.__tree_._unchecked_remove(at: members.__tree_.__begin_node_).payload, 3)
       XCTAssertEqual(members.elements, [4])
       XCTAssertEqual(members.count, 1)
-      XCTAssertEqual(members._unchecked_remove(at: members.__tree_.__begin_node_).payload, 4)
+      XCTAssertEqual(members.__tree_._unchecked_remove(at: members.__tree_.__begin_node_).payload, 4)
       XCTAssertEqual(members.elements, [])
       XCTAssertEqual(members.count, 0)
     }
@@ -270,21 +270,21 @@ final class SetRemoveTest_10: RedBlackTreeTestCase {
   #if DEBUG
     func testRemoveWith___Indices() throws {
       for i in members.___node_positions() {
-        members._unchecked_remove(at: i)
+        members.__tree_._unchecked_remove(at: i)
       }
       XCTAssertEqual(members + [], [])
     }
 
     func testRemoveWith___Indices2() throws {
       members.___node_positions().forEach { i in
-        members._unchecked_remove(at: i)
+        members.__tree_._unchecked_remove(at: i)
       }
       XCTAssertEqual(members + [], [])
     }
 
     func testRemoveWith___Indices3() throws {
       members.___node_positions().reversed().forEach { i in
-        members._unchecked_remove(at: i)
+        members.__tree_._unchecked_remove(at: i)
       }
       XCTAssertEqual(members + [], [])
     }
@@ -323,21 +323,21 @@ final class SetRemoveTest_10: RedBlackTreeTestCase {
   #if DEBUG && COMPATIBLE_ATCODER_2025
     func testRemoveWithSub___Indices() throws {
       for i in members.elements(in: 2..<8).___node_positions() {
-        members._unchecked_remove(at: i)
+        members.__tree_._unchecked_remove(at: i)
       }
       XCTAssertEqual(members + [], [0, 1, 8, 9])
     }
 
     func testRemoveWithSub___Indices2() throws {
       members.elements(in: 2..<8).___node_positions().forEach { i in
-        members._unchecked_remove(at: i)
+        members.__tree_._unchecked_remove(at: i)
       }
       XCTAssertEqual(members + [], [0, 1, 8, 9])
     }
 
     func testRemoveWithSub___Indices4() throws {
       members.elements(in: 2..<8).___node_positions().reversed().forEach { i in
-        members._unchecked_remove(at: i)
+        members.__tree_._unchecked_remove(at: i)
       }
       XCTAssertEqual(members + [], [0, 1, 8, 9])
     }

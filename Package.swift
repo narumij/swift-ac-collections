@@ -19,7 +19,8 @@ var defines: [String] = [
 
   //  "USE_C_MALLOC",
 
-  // "DEATH_TEST",
+  
+//   "DEATH_TEST",
 
   // "BENCHMARK",
   // "ENABLE_PERFORMANCE_TESTING"
@@ -27,7 +28,6 @@ var defines: [String] = [
 
 var _settings: [SwiftSetting] =
   [
-    
 //    .define("COMPATIBLE_ATCODER_2025"),
     // このコードベースは当初、2025新ジャッジ搭載を目指して開発し、無事に搭載できました。
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。

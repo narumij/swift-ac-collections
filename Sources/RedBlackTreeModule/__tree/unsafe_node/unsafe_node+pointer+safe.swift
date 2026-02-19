@@ -16,14 +16,13 @@
 //===----------------------------------------------------------------------===//
 
 /*
- _SafePtrも、_SealedPtrも、それほど安全ではない
- 
- _SealedTag（今後廃止予定）はメモリ非依存なので安全。ただし利用時に解決のコストがかかる
- _TieWrappedPtrは依存メモリ付きなので、安全
- 
- 対してこの二つのPtrは、依存木と依存メモリの寿命に関与していない
- 
+ _SafePtrも、_SealedPtrも、内部利用向け。外部に渡してはいけない
+ _TieWrappedPtrは依存メモリ寿命付きなので外に渡しても大丈夫
  */
+
+// Note: ポインタを Result でくるんで使うことで、
+// 失敗が（不可逆に）伝播し、不用意にポインタに触ることを防ぎやすい。
+// まだ活用はしてないが、.failure 化を回収/解放の合図に利用する余地もある。
 
 /// ポインタ操作でいちいちsealingしたくない場合に使う
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
@@ -140,25 +139,26 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable
   func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
-    // TODO: purified要不要の再確認
-    try? purified.map { $0.pointer.__value_() }.get()
+    // TODO: 利用側でpurified十分か繰り返し確認すること
+    try? map { $0.pointer.__value_() }.get()
   }
 
   @inlinable
   var pointer: UnsafeMutablePointer<UnsafeNode>? {
-    // TODO: purified要不要の再確認
-    try? purified.map { $0.pointer }.get()
+    // TODO: 利用側でpurified十分か繰り返し確認すること
+    try? map { $0.pointer }.get()
   }
 
   @inlinable
   var temporaryUnseal: Result<UnsafeMutablePointer<UnsafeNode>, SealError> {
-    // TODO: purified要不要の再確認
-    purified.map { $0.pointer }
+    // TODO: 利用側でpurified十分か繰り返し確認すること
+    map { $0.pointer }
   }
 
   @inlinable
   var exists: Bool {
-    (try? purified.map { !___is_null_or_end__(tag: $0.pointer.trackingTag) }.get()) ?? false
+    // TODO: 利用側でpurified十分か繰り返し確認すること
+    (try? map { !___is_null_or_end__(tag: $0.pointer.trackingTag) }.get()) ?? false
   }
 }
 

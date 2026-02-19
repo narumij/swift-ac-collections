@@ -47,11 +47,6 @@ import Foundation
 @frozen
 public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 
-  #if COMPATIBLE_ATCODER_2025
-    public
-      typealias KeyValue = (key: Key, value: Value)
-  #endif
-
   public
     typealias Element = (key: Key, value: Value)
 
@@ -269,18 +264,6 @@ extension RedBlackTreeMultiMap {
   }
 #endif
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func values(forKey key: Key) -> Values {
-      let (lo, hi) = __tree_.__equal_range_multi(key)
-      return .init(start: lo.sealed, end: hi.sealed, tie: __tree_.tied)
-    }
-  }
-#endif
-
 // MARK: - Insert
 
 extension RedBlackTreeMultiMap {
@@ -393,23 +376,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(*n* log(*m + n*))
-  @inlinable
-  @inline(__always)
-  public static func + (lhs: Self, rhs: Self) -> Self {
-    lhs.inserting(contentsOf: rhs)
-  }
-
-  /// - Complexity: O(*n* log(*m + n*))
-  @inlinable
-  @inline(__always)
-  public static func += (lhs: inout Self, rhs: Self) {
-    lhs.insert(contentsOf: rhs)
-  }
-}
-
 // MARK: - Remove（削除）
 
 extension RedBlackTreeMultiMap {
@@ -463,7 +429,7 @@ extension RedBlackTreeMultiMap {
     guard case .success(let __p) = __tree_.__purified_(index) else {
       fatalError(.invalidIndex)
     }
-    return Self.__element_(_unchecked_remove(at: __p.pointer).payload)
+    return Self.__element_(__tree_._unchecked_remove(at: __p.pointer).payload)
   }
 }
 
@@ -577,38 +543,20 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
 
   #if !COMPATIBLE_ATCODER_2025
-    #if false
-      /// - Complexity: O(1)
-      @inlinable
-      @inline(__always)
-      public var keys: Keys {
-        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-      }
 
-      /// - Complexity: O(1)
-      @inlinable
-      @inline(__always)
-      public var values: Values {
-        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-      }
-    #else
-      // 速いし気にすること減るし、こっちのほうがいいかなって
-      // TODO: どっちの方針にするか検討確定すること
+    /// - Complexity: O(`count`)
+    @inlinable
+    @inline(__always)
+    public var keys: [Key] {
+      __tree_.___copy_all_to_array(transform: Base.__key)
+    }
 
-      /// - Complexity: O(1)
-      @inlinable
-      @inline(__always)
-      public var keys: [Key] {
-        __tree_.___copy_all_to_array(transform: Base.__key)
-      }
-
-      /// - Complexity: O(1)
-      @inlinable
-      @inline(__always)
-      public var values: [Value] {
-        __tree_.___copy_all_to_array(transform: Base.___mapped_value)
-      }
-    #endif
+    /// - Complexity: O(`count`)
+    @inlinable
+    @inline(__always)
+    public var values: [Value] {
+      __tree_.___copy_all_to_array(transform: Base.___mapped_value)
+    }
   #endif
 }
 
@@ -638,7 +586,6 @@ extension RedBlackTreeMultiMap {
   }
 
   extension RedBlackTreeMultiMap {
-    // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of key: Key)
@@ -717,6 +664,15 @@ extension RedBlackTreeMultiMap {
     @inlinable
     public func upperBound(_ key: Key) -> Index {
       ___index(__tree_.upper_bound(key).sealed)
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O( log `count` )
+    @inlinable
+    public func find(_ key: Key) -> Index {
+      ___index(__tree_.find(key).sealed)
     }
   }
 

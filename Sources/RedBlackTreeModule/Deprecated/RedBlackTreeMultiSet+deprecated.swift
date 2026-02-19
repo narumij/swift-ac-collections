@@ -33,6 +33,23 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
+    /// - Complexity: O(*n* log(*m + n*))
+    @inlinable
+    public static func + (lhs: Self, rhs: Self) -> Self {
+      lhs.inserting(contentsOf: rhs)
+    }
+
+    /// - Complexity: O(*n* log(*m + n*))
+    @inlinable
+    public static func += (lhs: inout Self, rhs: Self) {
+      lhs.insert(contentsOf: rhs)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
     /// - Complexity: O(*n*)
     @inlinable
     public func first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
@@ -255,7 +272,7 @@
       guard case .success(let __p) = __tree_.__purified_(index) else {
         fatalError(.invalidIndex)
       }
-      return _unchecked_remove(at: __p.pointer).payload
+      return __tree_._unchecked_remove(at: __p.pointer).payload
     }
   }
 
@@ -483,7 +500,6 @@
 
   extension RedBlackTreeMultiSet {
 
-    // TODO: イテレータ利用の注意をドキュメントすること
     /// - Important: 削除したメンバーを指すインデックスが無効になります。
     /// - Complexity: O(log *n* : *k*)
     @inlinable

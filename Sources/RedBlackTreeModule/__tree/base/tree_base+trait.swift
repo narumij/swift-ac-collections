@@ -56,7 +56,6 @@ public protocol KeyValueTrait:
     & _KeyValueBaseType
     & _BasePayloadValue_KeyInterface
     & _BasePayloadValue_MappedValueInterface
-    & _BasePayloadValue_WithMappedValueInterface
 {}
 
 /// 要素がキーバリューでペイロードがペアの場合のひな形
@@ -64,6 +63,5 @@ public protocol PairValueTrait:
   KeyValueTrait
     & _PairBasePayloadValue_KeyProtocol
     & _PairBasePayloadValue_MappedValueProtocol
-    & _PairBasePayloadValue_WithMappedValueProtocol
     & _PairBase_ElementProtocol
 {}

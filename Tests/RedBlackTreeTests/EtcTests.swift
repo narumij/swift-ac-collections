@@ -933,22 +933,22 @@ final class EtcTests: RedBlackTreeTestCase {
   //    throw XCTSkip("\(hoge.filter { $0.capacity != 0 })")
   //  }
 
-  // TODO: 再検討
-  // __tree_prev_iterの不定動作を解消する場合、以下となるが、性能上の問題で保留となっている
-  //  func testPtr5() throws {
-  //    do {
-  //      let a = RedBlackTreeSet<Int>([0])
-  //      XCTAssertEqual(a.__tree_.__tree_prev_iter(a.startIndex.rawValue), .nullptr)
-  //    }
-  //    do {
-  //      let a = RedBlackTreeSet<Int>([0,1])
-  //      XCTAssertEqual(a.__tree_.__tree_prev_iter(a.startIndex.rawValue), .nullptr)
-  //    }
-  //    do {
-  //      let a = RedBlackTreeSet<Int>([0,1,2])
-  //      XCTAssertEqual(a.__tree_.__tree_prev_iter(a.startIndex.rawValue), .nullptr)
-  //    }
-  //  }
+  #if DEBUG
+    func testPtr5() throws {
+      do {
+        let a = RedBlackTreeSet<Int>([0])
+        XCTAssertEqual(a.__tree_.__tree_prev_iter(a._start), .nullptr)
+      }
+      do {
+        let a = RedBlackTreeSet<Int>([0, 1])
+        XCTAssertEqual(a.__tree_.__tree_prev_iter(a._start), .nullptr)
+      }
+      do {
+        let a = RedBlackTreeSet<Int>([0, 1, 2])
+        XCTAssertEqual(a.__tree_.__tree_prev_iter(a._start), .nullptr)
+      }
+    }
+  #endif
 
   #if DEBUG
     func testRoundTrip() throws {
@@ -1229,9 +1229,9 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertNotNil(a.index(a.lowerBound(10), offsetBy: 10, limitedBy: a.lowerBound(20)))
     XCTAssertNil(a.index(a.lowerBound(10), offsetBy: 11, limitedBy: a.lowerBound(20)))
   }
-  
+
   func testDict() throws {
-    var d = [Int:Int]()
+    var d = [Int: Int]()
     XCTAssertEqual(d[0, default: -1], -1)
     XCTAssertEqual(d[0], nil)
   }

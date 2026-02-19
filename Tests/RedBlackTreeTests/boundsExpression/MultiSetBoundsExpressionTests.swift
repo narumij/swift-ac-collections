@@ -94,5 +94,50 @@
       b.erase(lowerBound(1)..<upperBound(2))
       XCTAssertEqual(Array(b), [0, 3])
     }
+
+    func testLessThanAndOrEqualMulti() throws {
+      let b = RedBlackTreeMultiSet<Int>([0, 1, 1, 2])
+
+      XCTAssertEqual(b[lt(-1)], nil)
+      XCTAssertEqual(b[lt(0)], nil)
+      XCTAssertEqual(b[lt(1)], 0)
+      XCTAssertEqual(b[lt(2)], 1)
+      XCTAssertEqual(b[lt(3)], 2)
+
+      XCTAssertEqual(b[le(-1)], nil)
+      XCTAssertEqual(b[le(0)], 0)
+      XCTAssertEqual(b[le(1)], 1)
+      XCTAssertEqual(b[le(2)], 2)
+      XCTAssertEqual(b[le(3)], 2)
+    }
+
+    func testLessGreaterHelpers() throws {
+      XCTAssertEqual(a[lt(1)], 0)
+      XCTAssertEqual(a[gt(1)], 2)
+      XCTAssertEqual(a[le(1)], 1)
+      XCTAssertEqual(a[ge(1)], 1)
+    }
+
+    func testBoundRangeOperators() throws {
+      let view1 = a[lowerBound(0)..<upperBound(2)]
+      XCTAssertEqual(Array(view1), [0, 1, 2])
+
+      let view2 = a[lowerBound(0)...lowerBound(1)]
+      XCTAssertEqual(Array(view2), [0, 1])
+
+      let view3 = a[..<upperBound(1)]
+      XCTAssertEqual(Array(view3), [0, 1])
+
+      let view4 = a[...upperBound(1)]
+      XCTAssertEqual(Array(view4), [0, 1, 2])
+
+      let view5 = a[lowerBound(1)...]
+      XCTAssertEqual(Array(view5), [1, 2])
+    }
+
+    func testIsValidBoundsInvalidDoesNotCrash() throws {
+      XCTAssertFalse(a.isValid(upperBound(10)..<lowerBound(-10)))
+      XCTAssertEqual(Array(a[upperBound(10)..<lowerBound(-10)]), [])
+    }
   }
 #endif

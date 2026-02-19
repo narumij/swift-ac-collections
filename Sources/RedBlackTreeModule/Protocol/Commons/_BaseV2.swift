@@ -55,22 +55,6 @@ protocol UnsafeMutableTreeHost: UnsafeTreeHost & _PayloadValueBride {
   var __tree_: Tree { get set }
 }
 
-extension UnsafeMutableTreeHost {
-
-  // たぶんめんどくさくなってサボってここにある
-
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  package mutating func _unchecked_remove(at ptr: _NodePtr) -> (
-    __r: _NodePtr, payload: _PayloadValue
-  ) {
-    let ___e = __tree_[_unsafe_raw: ptr]
-    let __r = __tree_.erase(ptr)
-    return (__r, ___e)
-  }
-}
-
 /// 区間指定メンバー
 @usableFromInline
 protocol UnsafeTreeRangeBaseInterface: UnsafeTreeHost {
@@ -78,6 +62,7 @@ protocol UnsafeTreeRangeBaseInterface: UnsafeTreeHost {
   var _end: _NodePtr { get }
 }
 
+/// 区間指定メンバー
 @usableFromInline
 protocol UnsafeTreeSealedRangeBaseInterface: UnsafeTreeHost {
   var _sealed_start: _SealedPtr { get }

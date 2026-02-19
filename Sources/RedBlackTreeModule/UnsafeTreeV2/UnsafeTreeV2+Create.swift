@@ -159,9 +159,9 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
       } else {
-        try tree.___with_mapped_value(__parent) { __mappedValue in
-          __mappedValue = try combine(__mappedValue, Base.___mapped_value(__v))
-        }
+        __parent.__value_(as: _PayloadValue.self).pointee.value = try combine(
+          Base.___mapped_value(__parent.__value_().pointee),
+          Base.___mapped_value(__v))
       }
     }
     assert(tree.__tree_invariant(tree.__root))
@@ -195,9 +195,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         (__parent, __child) = tree.___emplace_hint_right(
           __parent, __child, Base.__payload_((__k, [__v])))
       } else {
-        tree.___with_mapped_value(__parent) {
-          $0.append(__v)
-        }
+        __parent.__value_(as: _PayloadValue.self).pointee.value.append(__v)
       }
     }
     assert(tree.__tree_invariant(tree.__root))

@@ -36,20 +36,3 @@ extension _PairBasePayloadValue_MappedValueProtocol {
   @inlinable @inline(__always)
   public static func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue { __v.value }
 }
-
-public protocol _PairBasePayloadValue_WithMappedValueProtocol:
-  _PairBaseType
-    & _BasePayloadValue_WithMappedValueInterface
-{}
-
-extension _PairBasePayloadValue_WithMappedValueProtocol {
-
-  @inlinable @inline(__always)
-  public static func ___with_mapped_value<ResultType>(
-    _ __v: inout _PayloadValue,
-    _ __body: (inout _MappedValue) throws -> ResultType
-  ) rethrows -> ResultType {
-
-    try __body(&__v.value)
-  }
-}

@@ -174,6 +174,37 @@
       XCTAssertEqual(Array(target), [100, 101, 106, 107])
     }
 
+    func testIndexRangeIsValid() {
+      let set = RedBlackTreeSet(0..<8)
+      let range = set.equalRange(3)
+      XCTAssertTrue(set.isValid(range))
+      XCTAssertEqual(Array(set[range]), [3])
+    }
+
+    func testSubscriptModifyIndexRangeErase() {
+      var set = RedBlackTreeSet(0..<8)
+      let range = set.equalRange(3)
+
+      set[range].erase()
+      XCTAssertEqual(Array(set), [0, 1, 2, 4, 5, 6, 7])
+    }
+
+    func testEraseIndexRange() {
+      var set = RedBlackTreeSet(0..<8)
+      let range = set.equalRange(3)
+
+      set.erase(range)
+      XCTAssertEqual(Array(set), [0, 1, 2, 4, 5, 6, 7])
+    }
+
+    func testEraseIndexRangeWithPredicate() {
+      var set = RedBlackTreeSet(0..<8)
+      let range = set.equalRange(3)
+
+      set.erase(range) { $0 == 3 }
+      XCTAssertEqual(Array(set), [0, 1, 2, 4, 5, 6, 7])
+    }
+
     func testEqualRange() {
       let set = RedBlackTreeSet([0, 1, 1, 2, 3, 4, 5])
       XCTAssertEqual(Array(set[set.equalRange(1)]), [1])

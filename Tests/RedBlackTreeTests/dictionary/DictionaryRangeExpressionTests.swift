@@ -138,6 +138,37 @@
       XCTAssertEqual(Array(dict).map { $0.key }, [1, 3, 5])
     }
 
+    func testIndexRangeIsValid() {
+      let dict: RedBlackTreeDictionary = [3: "c", 1: "a", 2: "b", 4: "d"]
+      let range = dict.equalRange(2)
+      XCTAssertTrue(dict.isValid(range))
+      XCTAssertEqual(Array(dict[range]).map { $0.key }, [2])
+    }
+
+    func testSubscriptModifyIndexRangeErase() {
+      var dict: RedBlackTreeDictionary = [3: "c", 1: "a", 2: "b", 4: "d"]
+      let range = dict.equalRange(2)
+
+      dict[range].erase()
+      XCTAssertEqual(Array(dict).map { $0.key }, [1, 3, 4])
+    }
+
+    func testEraseIndexRange() {
+      var dict: RedBlackTreeDictionary = [3: "c", 1: "a", 2: "b", 4: "d"]
+      let range = dict.equalRange(2)
+
+      dict.erase(range)
+      XCTAssertEqual(Array(dict).map { $0.key }, [1, 3, 4])
+    }
+
+    func testEraseIndexRangeWithPredicate() {
+      var dict: RedBlackTreeDictionary = [3: "c", 1: "a", 2: "b", 4: "d", 5: "e"]
+      let range = dict.equalRange(2)
+
+      dict.erase(range) { $0.key == 2 }
+      XCTAssertEqual(Array(dict).map { $0.key }, [1, 3, 4, 5])
+    }
+
     func testEqualRange() {
       let map: RedBlackTreeDictionary = [3: "c", 1: "a", 2: "b", 4: "d", 5: "e"]
       XCTAssertEqual(Array(map[map.equalRange(1)].map(\.value)), ["a"])

@@ -61,14 +61,6 @@ public protocol _BaseKey_EquivInterface: _KeyType {
 
 // MARK: -
 
-public protocol _BasePayloadValue_WithMappedValueInterface: _PayloadValueType & _MappedValueType {
-  static func ___with_mapped_value<T>(
-    _ element: inout _PayloadValue, _ f: (inout _MappedValue) throws -> T
-  ) rethrows -> T
-}
-
-// MARK: -
-
 public protocol _Base_IsMultiTraitInterface {
   static var isMulti: Bool { get }
 }

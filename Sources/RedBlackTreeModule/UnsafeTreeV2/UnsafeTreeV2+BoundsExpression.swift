@@ -50,7 +50,7 @@ extension RedBlackTreeBoundExpression {
     case .find(let __v):
       return __tree_.find(__v).sealed
 
-    case .advanced(let __self, offset: let offset, let limit):
+    case .advanced(let __self, let offset, let limit):
       let __p = __self.evaluate(__tree_)
       let limit = limit?.evaluate(__tree_)
       switch limit {
@@ -81,17 +81,17 @@ extension RedBlackTreeBoundExpression {
         RedBlackTreeBoundExpression
         .advanced(__self, offset: 1)
         .evaluate(__tree_)
-      
+
     case .lessThan(let __v):
       return ___tree_prev_iter(__tree_.lower_bound(__v)).sealed
-      
+
     case .greaterThan(let __v):
       return __tree_.upper_bound(__v).sealed
-      
+
     case .lessThanOrEqual(let __v):
       let __f = __tree_.find(__v).sealed
       return __f.exists ? __f : ___tree_prev_iter(__tree_.lower_bound(__v)).sealed
-      
+
     case .greaterThanOrEqual(let __v):
       let __f = __tree_.find(__v).sealed
       return __f.exists ? __f : __tree_.upper_bound(__v).sealed
@@ -107,7 +107,7 @@ extension RedBlackTreeBoundExpression {
 extension RedBlackTreeBoundRangeExpression {
 
   @inlinable @inline(__always)
-  func _evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
+  func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
     -> _RawRangeExpression<_SealedPtr>
   where
     Base: ___TreeBase,

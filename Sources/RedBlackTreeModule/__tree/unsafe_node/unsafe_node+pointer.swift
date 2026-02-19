@@ -42,17 +42,19 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     _read { yield pointee.__parent_ }
     _modify { yield &pointee.__parent_ }
   }
-
+  
+  // NOTE: 移植の命名互換のための別名。意味は`__parent_`と同じ。
   @inlinable
   var __parent_unsafe: _NodePtr {
-    _read { yield pointee.__parent_ }
-    _modify { yield &pointee.__parent_ }
+    @inline(__always) get { __parent_ }
+    @inline(__always) set { __parent_ = newValue }
   }
 
+  // NOTE: 移植の命名互換のための別名。意味は`__parent_`と同じ。
   @inlinable
   var __set_parent: _NodePtr {
-    _read { yield pointee.__parent_ }
-    _modify { yield &pointee.__parent_ }
+    @inline(__always) get { __parent_ }
+    @inline(__always) set { __parent_ = newValue }
   }
 
   @inlinable

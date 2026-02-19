@@ -454,7 +454,6 @@ final class ConvenienceTests: RedBlackTreeTestCase {
   }
 
   func testSubSeq2() throws {
-    //    throw XCTSkip()
     let set: RedBlackTreeSet<Int> = .init((0..<10_000).reversed())
     for _ in 0..<1000 {
       var (a, b) = ((0..<10_000).randomElement()!, (0..<10_000).randomElement()!)

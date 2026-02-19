@@ -447,7 +447,6 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
     #if COMPATIBLE_ATCODER_2025
-      // TODO: 再度検討
       for i in set {
         set.removeAll(forKey: i.key)
         XCTAssertTrue(set.___tree_invariant())
@@ -501,7 +500,6 @@ final class MultiMapTests: RedBlackTreeTestCase {
     #endif
 
     #if COMPATIBLE_ATCODER_2025
-      // TODO: 再度検討
       for i in set[set.startIndex..<set.endIndex] {
         // erase multiなので、CoWなしだと、ポインタが破壊される
         set.removeAll(forKey: i.key)
@@ -644,13 +642,6 @@ final class MultiMapTests: RedBlackTreeTestCase {
       #endif
     }
   #endif
-
-  func testSubsequence4() throws {
-    //      let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    //      let sub = set.elements(in: 1..<3)
-    throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
-    //      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
-  }
 
   #if COMPATIBLE_ATCODER_2025
     func testSubsequence5() throws {

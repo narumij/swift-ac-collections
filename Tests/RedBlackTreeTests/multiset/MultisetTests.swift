@@ -761,13 +761,6 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set[1...5] + [], [1, 2, 3, 4, 5])
   }
 
-  func testSubsequence4() throws {
-    //    let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
-    //    let sub = set[1 ..< 3]
-    throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
-    //    XCTAssertNotEqual(sub[set.startIndex ..< set.endIndex].map{ $0 }, [1, 2, 3, 4, 5])
-  }
-
   #if COMPATIBLE_ATCODER_2025
     func testSubsequence5() throws {
       let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]

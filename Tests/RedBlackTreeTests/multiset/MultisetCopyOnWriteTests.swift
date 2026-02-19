@@ -64,7 +64,6 @@ import XCTest
       }
       XCTAssertEqual(tree.count, 0)
       #if COMPATIBLE_ATCODER_2025
-        // TODO: 再度検討
         XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
       #else
         XCTAssertEqual(tree._copyCount, 0)  // 強強度CoWの廃止により、コピー回数は増えない。

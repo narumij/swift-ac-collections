@@ -286,7 +286,6 @@ final class EtcTests: RedBlackTreeTestCase {
       XCTAssertEqual(a[...a.endIndex.advanced(by: -1)] + [], [0, 1, 2])
       XCTAssertEqual(a[..<a.endIndex.advanced(by: -1)] + [], [0, 1])
       XCTAssertNotEqual(b.endIndex, b.endIndex.advanced(by: -1))
-      //    throw XCTSkip()
       XCTAssertEqual(b[...b.endIndex.advanced(by: -1)] + [], [0, 1, 2])
       XCTAssertEqual(b[..<b.endIndex.advanced(by: -1)] + [], [0, 1])
       XCTAssertTrue(b[(b.startIndex + 1)...].elementsEqual([1, 2]))
@@ -377,7 +376,6 @@ final class EtcTests: RedBlackTreeTestCase {
     var formIndexFail = start
     let fail = sub.formIndex(&formIndexFail, offsetBy: 3, limitedBy: limit)
     XCTAssertFalse(fail)  // 事後条件: 失敗時にfalseを返すこと
-    //    throw XCTSkip("失敗するので、一旦スキップ") // 理解が間違っていた
     //    XCTAssertEqual(formIndexFail, start)  // 事後条件: インデックスが変わらないこと
     XCTAssertEqual(formIndexFail, limit)  // limitまで進んでいる。いつから？？？？
   }
@@ -411,7 +409,6 @@ final class EtcTests: RedBlackTreeTestCase {
       var formIndexFail = start
       let fail = sub.formIndex(&formIndexFail, offsetBy: 3, limitedBy: limit)
       XCTAssertFalse(fail)  // 事後条件: 失敗時にfalseを返すこと
-      //    throw XCTSkip("失敗するので、一旦スキップ") // 理解が間違っていた
       //    XCTAssertEqual(formIndexFail, start)  // 事後条件: インデックスが変わらないこと
       XCTAssertEqual(formIndexFail, limit)  // limitまで進んでいる。いつから？？？？
     }

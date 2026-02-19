@@ -645,9 +645,7 @@ extension RedBlackTreeDictionary {
     // TODO: 標準踏襲でOptionalとしてるが、やや疑問。再検討すること
     /// - Complexity: O( log `count` )
     @inlinable
-    public func firstIndex(of key: Key)
-      -> Index?
-    {
+    public func firstIndex(of key: Key) -> Index? {
       ___index_or_nil(__tree_.find(key).sealed)
     }
   }

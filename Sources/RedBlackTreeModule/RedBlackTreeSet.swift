@@ -625,9 +625,7 @@ extension RedBlackTreeSet {
   extension RedBlackTreeSet {
     /// - Complexity: O( log `count` )
     @inlinable
-    public func firstIndex(of member: Element)
-      -> Index?
-    {
+    public func firstIndex(of member: Element) -> Index? {
       ___index_or_nil(__tree_.find(member).sealed)
     }
   }
@@ -705,11 +703,10 @@ extension RedBlackTreeSet {
   }
 
   extension RedBlackTreeSet {
-    
+
     /// - Complexity: O( log `count` )
     @inlinable
-    public func find(_ member: Element) -> Index
-    {
+    public func find(_ member: Element) -> Index {
       ___index(__tree_.find(member).sealed)
     }
   }

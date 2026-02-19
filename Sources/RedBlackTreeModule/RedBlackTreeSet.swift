@@ -85,8 +85,9 @@ import Foundation
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// print(set[.lower(5)]) // -> 5
-/// print(set[.upper(5)]) // -> nil (endIndex 相当)
+/// print(set[.lowerBound(5)]) // -> 5
+/// print(set[.upperBound(5)]) // -> nil (end 相当)
+/// print(set[.find(2)]) // -> nil (見つからない)
 /// ```
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {

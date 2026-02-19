@@ -19,14 +19,10 @@ public enum UnsafeIterator {}
 
 extension UnsafeIterator {
 
-  // TODO: 常時trueを外す
-  // テストの修正が膨大なのであとまわしにしていた。
-  // ループ削除が非推奨という方針が明確になったので、
-  // パフォーマンスペナルティがある_RemoveAwareは妥当ではない。
-  #if COMPATIBLE_ATCODER_2025 || true
-    public typealias _RemoveTrait = _RemoveAware
-  #else
+  #if !COMPATIBLE_ATCODER_2025
     public typealias _RemoveTrait = _RemoveCheck
+  #else
+    public typealias _RemoveTrait = _RemoveAware
   #endif
 
   public

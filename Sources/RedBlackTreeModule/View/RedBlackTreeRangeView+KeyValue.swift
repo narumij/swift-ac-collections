@@ -320,13 +320,6 @@ extension RedBlackTreeKeyValueRangeView {
 
 extension RedBlackTreeKeyValueRangeView {
 
-  // TODO: 削除検討
-
-  /// Indexがsubscriptで利用可能か判別します
-  ///
-  /// endも含めた有効判定がしたい場合は、Index.isValidが利用可能です。
-  ///
-  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   package func isValid(index: Index) -> Bool {

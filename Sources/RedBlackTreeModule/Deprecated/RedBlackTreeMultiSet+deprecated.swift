@@ -500,7 +500,6 @@
 
   extension RedBlackTreeMultiSet {
 
-    // TODO: イテレータ利用の注意をドキュメントすること
     /// - Important: 削除したメンバーを指すインデックスが無効になります。
     /// - Complexity: O(log *n* : *k*)
     @inlinable

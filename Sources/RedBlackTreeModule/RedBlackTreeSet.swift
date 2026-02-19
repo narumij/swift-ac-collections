@@ -22,132 +22,72 @@
 
 import Foundation
 
+// 先頭ドキュメントは学習用途を想定し、実用的な使い方と誤用防止を優先して簡潔に記述する。
+
 /// # RedBlackTreeSet
 ///
-/// `RedBlackTreeSet` は、**赤黒木を用いて実装された、一意要素の順序付き集合**です。
-///
-/// 標準の `Set` と同様に、各要素は **高々一度だけ** 登場し、
-/// **効率的な所属判定（membership test）** を提供します。
-/// 一方で `Set` と異なり、`RedBlackTreeSet` は **要素をソート順（比較順）に保持** し、
-/// **順序付き走査** や **範囲検索** を効率的にサポートします。
-///
-/// この型は、**順序付き集合**・**高速検索**・
-/// **安定した計算量保証** を同時に満たしたい用途に適しています。
+/// `RedBlackTreeSet` は、赤黒木による **順序付き一意集合** です。
+/// 要素は常に比較順で保持されます。
 ///
 /// ```swift
-/// let set: RedBlackTreeSet = [3, 1, 4, 1, 5]
-/// // => [1, 3, 4, 5]
+/// var set: RedBlackTreeSet<Int> = []
+/// set.insert(3) // -> [3]
+/// set.insert(1) // -> [1, 3]
+/// set.insert(4) // -> [1, 3, 4]
+/// set.insert(1) // -> [1, 3, 4]
+/// set.insert(5) // -> [1, 3, 4, 5]
 /// ```
 ///
-/// ## 等価性（Equality）
+/// ## 削除（Removal）
 ///
-/// 2つの `RedBlackTreeSet` は、**同じ要素を含む場合に等しい**とみなされます。
-///
-/// 要素は常にソート順に保持されるため、**挿入順は等価性に影響しません**。
-/// これは標準 `Set` と同じ意味論です。
+/// 単一要素の削除と、範囲削除の両方をサポートします。
 ///
 /// ```swift
-/// let a: RedBlackTreeSet = [1, 2, 3]
-/// let b: RedBlackTreeSet = [3, 2, 1]
-/// a == b // true
+/// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+/// set.remove(3) // -> [1, 4, 5]
 /// ```
 ///
-/// ## 順序と走査（Ordering & Traversal）
-///
-/// `RedBlackTreeSet` は **要素を比較順に保持** します。
-///
-/// - `min` / `max`
-/// - 昇順・降順イテレーション
-/// - `lowerBound` / `upperBound`
-/// - 範囲ベースの探索
-///
-/// といった操作を **O(log N)** で提供します。
+/// `for` 文によるインデックスを介した連続削除は避けてください。
+/// インデックスとノードが密に紐付いているため、削除後に次の要素を取得する操作が
+/// 無効になる可能性があります。
+/// 連続削除には範囲削除 API を利用してください。
 ///
 /// ```swift
-/// set.lowerBound(3)
-/// set.upperBound(3)
+/// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+/// set[set.lowerBound(4)..<set.endIndex].erase() // -> [1, 3]
+/// ```
 ///
-/// for value in set {
-///   print(value) // 昇順
+/// ```swift
+/// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+/// set.erase(set.lowerBound(4)..<set.endIndex) // -> [1, 3]
+/// ```
+///
+/// C++ と同様に、`erase(_:) -> Index` を用いた逐次削除も可能です。
+/// 次のインデックスを受け取りながら安全に削除できます。
+///
+/// ```swift
+/// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+/// var i = set.startIndex
+/// while i != set.endIndex {
+///   i = set.erase(i)
 /// }
 /// ```
 ///
-/// ## 挿入・削除（Insertion & Removal）
+/// ## インデックス代替構文
 ///
-/// 赤黒木により、**挿入・削除・検索はすべて O(log N)** の計算量で保証されます。
-///
-/// ```swift
-/// set.insert(10)
-/// set.remove(3)
-/// set.contains(5)
-/// ```
-///
-/// 重複値は許可されず、挿入時に既存要素がある場合は
-/// **無視または更新** されます。
-///
-/// ## 範囲操作（Range Operations）
-///
-/// `RedBlackTreeSet` は **範囲ベースの効率的な操作**をサポートします。
-///
-/// - 範囲削除
-/// - 範囲イテレーション
-/// - 区間検索（range queries）
+/// `BoundExpression` は、インデックスの **安全な代替** として設計されています。
+/// インデックスを直接扱わずに要素または境界を指定できます。
 ///
 /// ```swift
-/// let subset = set.range(3..<10) // TODO: コード例を修正
+/// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+/// print(set[.start.advance(by: 1)]) // -> 3
 /// ```
 ///
-/// これらは、木構造を活かして **線形走査を避ける** 実装が可能です。
-///
-/// ## パフォーマンス特性（Performance Characteristics）
-///
-/// ### 要素検索（Lookup）
-///
-/// - **O(log N)** の最悪計算量保証
-/// - ハッシュに依存しないため、**衝突劣化が発生しません**
-///
-/// ### 挿入・削除（Insertion & Removal）
-///
-/// - **O(log N)**
-/// - 木の高さが平衡に保たれるため、**安定した性能**
-///
-/// ### 順序付き走査（Ordered Traversal）
-///
-/// - **O(N)** で昇順・降順走査
-/// - 中間ノードからの継続走査も効率的
-///
-/// ### メモリ特性（Memory Characteristics）
-///
-/// - 各要素はノードとして個別に管理される
-/// - `Array` や `HashTable` ベース構造より **ポインタオーバーヘッドがある**
-/// - 代わりに、**範囲検索・順序操作・最悪計算量保証** を提供
-///
-/// ## ハッシュ不要の利点（No Hashing Required）
-///
-/// `RedBlackTreeSet` はハッシュに依存しないため、以下の利点があります。
-///
-/// - `Hashable` 不要（`Comparable` のみ）
-/// - 悪意ある入力による **DoS 的ハッシュ衝突** を回避
-/// - **性能の予測可能性が高い**
-///
-/// ## Set / OrderedSet との使い分け
-///
-/// | 型                 | 内部構造           | 検索       | 順序     | 範囲検索 | 最悪計算量保証 |
-/// | ------------------ | ------------------ | ---------- | -------- | -------- | ---------------- |
-/// | `Set`              | Hash Table         | O(1) avg   | ❌       | ❌       | ❌               |
-/// | `OrderedSet`       | Array + Hash       | O(1) avg   | 挿入順   | ❌       | ❌               |
-/// | `RedBlackTreeSet`  | Red-Black Tree     | O(log N)   | ソート順 | ✅       | ✅               |
-///
-/// ## 使いどころ（When to Use）
-///
-/// `RedBlackTreeSet` は次のようなケースに向いています。
-///
-/// - **順序付き集合** が必要
-/// - **範囲検索 / lowerBound / upperBound** を多用
-/// - **最悪計算量の保証** が重要
-/// - **ハッシュ品質に依存したくない**
-/// - **アルゴリズム競技 / DB / インデックス / ルーティング構造**
-///
+/// ```swift
+/// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+/// print(set[.lower(5)]) // -> 5
+/// print(set[.upper(5)]) // -> nil (endIndex 相当)
+/// ```
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {
 

@@ -30,9 +30,9 @@
         return collection.startIndex
       case .end:
         return collection.endIndex
-      case .lower(let l):
+      case .lowerBound(let l):
         return collection.lowerBound(l)
-      case .upper(let r):
+      case .upperBound(let r):
         return collection.upperBound(r)
       case .advanced(let __self, offset: let offset, _):
         let i = __self.relative(to: collection)

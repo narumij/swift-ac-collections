@@ -22,73 +22,27 @@
 
 import Foundation
 
-// 先頭ドキュメントは学習用途を想定し、実用的な使い方と誤用防止を優先して簡潔に記述する。
-
-/// # RedBlackTreeSet
+/// `RedBlackTreeSet` は、`Element` 型の要素を一意に格納するための
+/// 赤黒木（Red-Black Tree）ベースの集合型です。
 ///
-/// `RedBlackTreeSet` は、赤黒木による **順序付き一意集合** です。
-/// 要素は常に比較順で保持されます。
-///
+/// ### 使用例
 /// ```swift
-/// var set: RedBlackTreeSet<Int> = []
-/// set.insert(3) // -> [3]
-/// set.insert(1) // -> [1, 3]
-/// set.insert(4) // -> [1, 3, 4]
-/// set.insert(1) // -> [1, 3, 4]
-/// set.insert(5) // -> [1, 3, 4, 5]
-/// ```
+/// var set: RedBlackTreeSet = [3, 1, 4, 1, 5, 9]
+/// print(set) // 出力例: [1, 3, 4, 5, 9]
 ///
-/// ## 削除（Removal）
+/// set.insert(2)
+/// print(set.contains(2)) // 出力例: true
 ///
-/// 単一要素の削除と、範囲削除の両方をサポートします。
+/// // 要素の削除
+/// set.remove(9)
+/// print(set) // 出力例: [1, 2, 3, 4, 5]
 ///
-/// ```swift
-/// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// set.remove(3) // -> [1, 4, 5]
-/// ```
-///
-/// `for` 文によるインデックスを介した連続削除は避けてください。
-/// インデックスとノードが密に紐付いているため、削除後に次の要素を取得する操作が
-/// 無効になる可能性があります。
-/// 連続削除には範囲削除 API を利用してください。
-///
-/// ```swift
-/// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// set[set.lowerBound(4)..<set.endIndex].erase() // -> [1, 3]
-/// ```
-///
-/// ```swift
-/// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// set.erase(set.lowerBound(4)..<set.endIndex) // -> [1, 3]
-/// ```
-///
-/// C++ と同様に、`erase(_:) -> Index` を用いた逐次削除も可能です。
-/// 次のインデックスを受け取りながら安全に削除できます。
-///
-/// ```swift
-/// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// var i = set.startIndex
-/// while i != set.endIndex {
-///   i = set.erase(i)
+/// // イテレーション
+/// for element in set {
+///     print(element)
 /// }
 /// ```
-///
-/// ## インデックス代替構文
-///
-/// `BoundExpression` は、インデックスの **安全な代替** として設計されています。
-/// インデックスを直接扱わずに要素または境界を指定できます。
-///
-/// ```swift
-/// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// print(set[.start.advance(by: 1)]) // -> 3
-/// ```
-///
-/// ```swift
-/// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// print(set[.lowerBound(5)]) // -> 5
-/// print(set[.upperBound(5)]) // -> nil (end 相当)
-/// print(set[.find(2)]) // -> nil (見つからない)
-/// ```
+/// - Important: `RedBlackTreeSet` はスレッドセーフではありません。
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {
 

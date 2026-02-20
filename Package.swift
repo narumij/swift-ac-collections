@@ -5,30 +5,22 @@ import Foundation
 import PackageDescription
 
 var defines: [String] = [
-  //  "AC_COLLECTIONS_INTERNAL_CHECKS",
   //  "TREE_INVARIANT_CHECKS",
   "GRAPHVIZ_DEBUG",
   //  "USING_ALGORITHMS",
   //  "USING_COLLECTIONS",
-  //  "DISABLE_COPY_ON_WRITE", // やや危険。クラッシュは減った。Unit Testが通らない箇所が増える
   //  "ENABLE_PERFORMANCE_TESTING",
-  //    "PERFOMANCE_CHECK",
+  //  "PERFOMANCE_CHECK",
   "WITHOUT_SIZECHECK",
-  //"USE_OLD_FIND",
-  // "ALLOCATION_DRILL" // リリース時はオフ
-
-  //  "USE_C_MALLOC",
-
-  
-//   "DEATH_TEST",
-
-  // "BENCHMARK",
-  // "ENABLE_PERFORMANCE_TESTING"
+  //  "USE_OLD_FIND",
+  //  "DEATH_TEST",
+  //  "BENCHMARK",
+  //  "ALLOCATION_DRILL" // リリース時はオフ
 ]
 
 var _settings: [SwiftSetting] =
   [
-//    .define("COMPATIBLE_ATCODER_2025"),
+    //    .define("COMPATIBLE_ATCODER_2025"),
     // このコードベースは当初、2025新ジャッジ搭載を目指して開発し、無事に搭載できました。
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
     // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
@@ -45,6 +37,11 @@ var _settings: [SwiftSetting] =
 
     .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
+    // オフにすることでいろいろスキップできる
+
+    // .define("USE_C_MALLOC"),
+    // swift_slowAllocを避ける動作をするマクロ定義
+    // 少しだけパフォーマンスが改善するが、利用には注意が必要
   ]
   + defines.map { .define($0) }
 

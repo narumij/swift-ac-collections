@@ -588,9 +588,7 @@ extension RedBlackTreeMultiMap {
   extension RedBlackTreeMultiMap {
     /// - Complexity: O( log `count` )
     @inlinable
-    public func firstIndex(of key: Key)
-      -> Index?
-    {
+    public func firstIndex(of key: Key) -> Index? {
       ___index_or_nil(__tree_.find(key).sealed)
     }
   }

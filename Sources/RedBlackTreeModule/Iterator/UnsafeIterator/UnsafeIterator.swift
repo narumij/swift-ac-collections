@@ -19,11 +19,10 @@ public enum UnsafeIterator {}
 
 extension UnsafeIterator {
 
-  #if COMPATIBLE_ATCODER_2025 || true
-    public typealias _RemoveTrait = _RemoveAware
-  #else
-  // 強化型CoWの廃止とRemoveAware廃止を同時にやるとfor文での削除ができなくなり、さすがにやりすぎかなと思っている
+  #if !COMPATIBLE_ATCODER_2025
     public typealias _RemoveTrait = _RemoveCheck
+  #else
+    public typealias _RemoveTrait = _RemoveAware
   #endif
 
   public

@@ -286,7 +286,6 @@ final class EtcTests: RedBlackTreeTestCase {
       XCTAssertEqual(a[...a.endIndex.advanced(by: -1)] + [], [0, 1, 2])
       XCTAssertEqual(a[..<a.endIndex.advanced(by: -1)] + [], [0, 1])
       XCTAssertNotEqual(b.endIndex, b.endIndex.advanced(by: -1))
-      //    throw XCTSkip()
       XCTAssertEqual(b[...b.endIndex.advanced(by: -1)] + [], [0, 1, 2])
       XCTAssertEqual(b[..<b.endIndex.advanced(by: -1)] + [], [0, 1])
       XCTAssertTrue(b[(b.startIndex + 1)...].elementsEqual([1, 2]))
@@ -377,7 +376,6 @@ final class EtcTests: RedBlackTreeTestCase {
     var formIndexFail = start
     let fail = sub.formIndex(&formIndexFail, offsetBy: 3, limitedBy: limit)
     XCTAssertFalse(fail)  // 事後条件: 失敗時にfalseを返すこと
-    //    throw XCTSkip("失敗するので、一旦スキップ") // 理解が間違っていた
     //    XCTAssertEqual(formIndexFail, start)  // 事後条件: インデックスが変わらないこと
     XCTAssertEqual(formIndexFail, limit)  // limitまで進んでいる。いつから？？？？
   }
@@ -411,7 +409,6 @@ final class EtcTests: RedBlackTreeTestCase {
       var formIndexFail = start
       let fail = sub.formIndex(&formIndexFail, offsetBy: 3, limitedBy: limit)
       XCTAssertFalse(fail)  // 事後条件: 失敗時にfalseを返すこと
-      //    throw XCTSkip("失敗するので、一旦スキップ") // 理解が間違っていた
       //    XCTAssertEqual(formIndexFail, start)  // 事後条件: インデックスが変わらないこと
       XCTAssertEqual(formIndexFail, limit)  // limitまで進んでいる。いつから？？？？
     }
@@ -1054,13 +1051,13 @@ final class EtcTests: RedBlackTreeTestCase {
         let _ = a.indices(bounds: .start ..< .end)
         let _ = a.indices(bounds: .lower(3) ..< .lower(4))
       #endif
-      let _ = a.erase(.lower(10) ..< .lower(100)) { n in
+      let _ = a.erase(.lowerBound(10) ..< .lowerBound(100)) { n in
         n % 2 == 1
       }
-      let _ = a.erase(.lower(10) ... .upper(100)) { n in
+      let _ = a.erase(.lowerBound(10) ... .upperBound(100)) { n in
         n % 2 == 0
       }
-      let _ = a[.lower(10) ... .end]
+      let _ = a[.lowerBound(10) ... .end]
       let _ = a[...(.end)]
       let _ = a[.start...]
       let _ = a[start()...]
@@ -1159,9 +1156,9 @@ final class EtcTests: RedBlackTreeTestCase {
     func testBound() throws {
       var a = RedBlackTreeSet<Int>((0..<100).filter { $0 % 5 == 0 })
       XCTAssertEqual(a[.start], 0)
-      XCTAssertEqual(a[.lower(0)], 0)
-      XCTAssertEqual(a[.lower(3)], 5)
-      XCTAssertEqual(a[.upper(5)], 10)
+      XCTAssertEqual(a[.lowerBound(0)], 0)
+      XCTAssertEqual(a[.lowerBound(3)], 5)
+      XCTAssertEqual(a[.upperBound(5)], 10)
       XCTAssertEqual(a[.end], nil)
     }
 

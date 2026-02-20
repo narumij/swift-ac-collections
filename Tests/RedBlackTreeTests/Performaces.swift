@@ -5,14 +5,12 @@ final class Performaces: RedBlackTreeTestCase {
 
   #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceExample00() throws {
-      //    throw XCTSkip()
       self.measure {
         let _ = Set<Int>(0..<10_000_000)
       }
     }
 
     func testPerformanceExample05() throws {
-      //    throw XCTSkip()
       self.measure {
         var set = Set<Int>(0..<10_000_000)
         for v in 0..<10_000_000 {
@@ -22,14 +20,12 @@ final class Performaces: RedBlackTreeTestCase {
     }
 
     func testPerformanceExample0() throws {
-      //    throw XCTSkip()
       self.measure {
         let _ = RedBlackTreeSet<Int>(0..<10_000_000)
       }
     }
 
     func testPerformanceExample1() throws {
-      //    throw XCTSkip()
       let set = RedBlackTreeSet<Int>(0..<10_000_000)
       self.measure {
         XCTAssertNotEqual(set[set.startIndex..<set.endIndex] + [], [])
@@ -37,7 +33,6 @@ final class Performaces: RedBlackTreeTestCase {
     }
 
     func testPerformanceExample2() throws {
-      //    throw XCTSkip()
       let set = RedBlackTreeSet<Int>(0..<10_000_000)
       self.measure {
         XCTAssertNotEqual(
@@ -46,7 +41,6 @@ final class Performaces: RedBlackTreeTestCase {
     }
 
     func testPerformanceExample3() throws {
-      //    throw XCTSkip()
       self.measure {
         var set = RedBlackTreeSet<Int>(0..<10_000_000)
         #if COMPATIBLE_ATCODER_2025
@@ -59,7 +53,6 @@ final class Performaces: RedBlackTreeTestCase {
 
     #if COMPATIBLE_ATCODER_2025
       func testPerformanceExample4() throws {
-        //    throw XCTSkip()
         self.measure {
           var set = RedBlackTreeSet<Int>(0..<10_000_000)
           set
@@ -71,7 +64,6 @@ final class Performaces: RedBlackTreeTestCase {
     #endif
 
     func testPerformanceExample5() throws {
-      //    throw XCTSkip()
       self.measure {
         var set = RedBlackTreeSet<Int>(0..<10_000_000)
         for v in 0..<10_000_000 {
@@ -81,7 +73,6 @@ final class Performaces: RedBlackTreeTestCase {
     }
 
     func testPerformanceExample6() throws {
-      //    throw XCTSkip()
       let set1 = RedBlackTreeSet<Int>(0..<10_000_000)
       let set2 = RedBlackTreeSet<Int>(0..<10_000_000)
       self.measure {
@@ -91,7 +82,6 @@ final class Performaces: RedBlackTreeTestCase {
 
     #if COMPATIBLE_ATCODER_2025
       func testPerformanceExample7() throws {
-        //    throw XCTSkip()
         let set = RedBlackTreeSet<Int>(0..<10_000_000)
         self.measure {
           _ = set.firstIndex { $0 > 10_000_000 }
@@ -100,7 +90,6 @@ final class Performaces: RedBlackTreeTestCase {
     #endif
 
     func testPerformanceExample8() throws {
-      //    throw XCTSkip()
       let set = RedBlackTreeSet<Int>(0..<10_000_000)
       self.measure {
         _ = set.first { $0 > 10_000_000 }
@@ -108,7 +97,6 @@ final class Performaces: RedBlackTreeTestCase {
     }
 
     func testPerformanceExample9() throws {
-      //    throw XCTSkip()
       self.measure {
         var xy: RedBlackTreeDictionary<Int, RedBlackTreeSet<Int>> = [1: .init(0..<2_000_000)]
         for i in 0..<2_000_000 {
@@ -118,7 +106,6 @@ final class Performaces: RedBlackTreeTestCase {
     }
 
     func testPerformanceExample10() throws {
-      //    throw XCTSkip()
       var xy: [Int: [Int]] = [1: (0..<2_000_000) + []]
       self.measure {
         for i in 0..<2_000_000 {
@@ -129,7 +116,6 @@ final class Performaces: RedBlackTreeTestCase {
     }
 
     func testPerformanceExample11() throws {
-      //    throw XCTSkip()
       var xy: [Int: [Int]] = [1: (0..<2_000_000) + []]
       self.measure {
         for i in 0..<2_000_000 {
@@ -142,7 +128,6 @@ final class Performaces: RedBlackTreeTestCase {
     }
 
     func testPerformanceExample12() throws {
-      //    throw XCTSkip()
       let set = RedBlackTreeSet<Int>(0..<10_000_000)
       self.measure {
         // func 0.125 sec

@@ -27,8 +27,8 @@
 /// - `start` : 先頭の要素
 /// - `last` : 末尾の要素
 /// - `end` : 末尾の次の要素
-/// - `lower(_:)` : 与えられた値以上の最初の要素
-/// - `upper(_:)` : 与えられた値より大きい最初の要素
+/// - `lowerBound(_:)` : 与えられた値以上の最初の要素
+/// - `upperBound(_:)` : 与えられた値より大きい最初の要素
 /// - `find(_:)` : 与えられた値と一致する要素
 /// - `advanced(_:offset:limit:)` : 基準位置から `offset` 進めた要素
 /// - `before(_:)` : 直前の要素
@@ -60,14 +60,14 @@ public indirect enum RedBlackTreeBoundExpression<_Key> {
   ///
   /// - Complexity: O(log `count`)
   /// ただし評価時の計算量
-  case lower(_Key)
+  case lowerBound(_Key)
   /// 与えられた値よりも大きい最初の要素を表す
   ///
   /// 該当する要素がない場合、末尾の次の要素で代替される
   ///
   /// - Complexity: O(log `count`)
   /// ただし評価時の計算量
-  case upper(_Key)
+  case upperBound(_Key)
   /// 与えられた値と一致する要素を表す
   ///
   /// 該当する要素がない場合、末尾の次の要素で代替される
@@ -178,7 +178,7 @@ public func end<K>() -> RedBlackTreeBoundExpression<K> {
 /// - Complexity: O(log `count`)
 /// ただし評価時の計算量
 public func lowerBound<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .lower(k)
+  .lowerBound(k)
 }
 
 /// 与えられた値よりも大きい最初の要素を表す
@@ -188,7 +188,7 @@ public func lowerBound<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
 /// - Complexity: O(log `count`)
 /// ただし評価時の計算量
 public func upperBound<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .upper(k)
+  .upperBound(k)
 }
 
 /// 与えられた値と一致する要素を表す

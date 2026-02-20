@@ -70,8 +70,6 @@ import XCTest
         XCTAssertEqual(it.next().map(\.pointee.___tracking_tag), nil)
       }
 
-      //      throw XCTSkip()
-
       XCTAssertEqual(
         storage.makeUsedNodeIterator().map(\.pointee.___tracking_tag),
         [0, 1, 2, 3])
@@ -132,7 +130,6 @@ import XCTest
     }
 
     func testDestroyStack2() async throws {
-      //    throw XCTSkip()
       var storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       _ = storage.__construct_node(0)
       _ = storage.__construct_node(2)
@@ -228,7 +225,6 @@ import XCTest
     }
 
     func testInsert() async throws {
-      //    throw XCTSkip()
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
       for i in 0..<5 {
         _ = storage.__insert_unique(i)
@@ -250,7 +246,6 @@ import XCTest
     }
 
     func testInsert2() async throws {
-      //    throw XCTSkip()
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
       for i in 0..<5 {
         _ = storage.__insert_unique(i)

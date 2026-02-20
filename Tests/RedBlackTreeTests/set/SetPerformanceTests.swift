@@ -25,7 +25,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
 
   #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceDistanceFromTo() throws {
-      //      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         // BidirectionalCollectionの実装の場合、0.3sec
@@ -36,7 +35,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceIndexOffsetBy1() throws {
-      //      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.index(s.startIndex, offsetBy: 1_000_000), s.endIndex)
@@ -44,7 +42,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceIndexOffsetBy2() throws {
-      //      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.index(s.endIndex, offsetBy: -1_000_000), s.startIndex)
@@ -52,7 +49,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceFirstIndex1() throws {
-      //      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.firstIndex(of: 1_000_000 - 1), s.index(before: s.endIndex))
@@ -60,7 +56,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceFirstIndex2() throws {
-      //      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.firstIndex(of: 0), s.startIndex)
@@ -68,7 +63,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceFirstIndex3() throws {
-      //      throw XCTSkip()
       let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       self.measure {
         XCTAssertEqual(s.firstIndex(of: 1_000_000), nil)
@@ -77,7 +71,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
 
     #if COMPATIBLE_ATCODER_2025
       func testPerformanceFirstIndex4() throws {
-        //      throw XCTSkip()
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         self.measure {
           XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 - 1 }), s.index(before: s.endIndex))
@@ -85,7 +78,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
       }
 
       func testPerformanceFirstIndex5() throws {
-        //      throw XCTSkip()
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         self.measure {
           XCTAssertEqual(s.firstIndex(where: { $0 >= 0 }), s.startIndex)
@@ -93,7 +85,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
       }
 
       func testPerformanceFirstIndex6() throws {
-        //      throw XCTSkip()
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         self.measure {
           XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
@@ -102,7 +93,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     #endif
 
     func testPerformanceInit0() throws {
-      //      throw XCTSkip()
       self.measure {
         let _ = RedBlackTreeSet<Int>(sequence)
       }
@@ -110,7 +100,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
 
     #if PERFOMANCE_CHECK
       func testPerformanceInit1() throws {
-        //      throw XCTSkip()
         self.measure {
           let _ = RedBlackTreeSet<Int>(_sequence: sequence)
         }
@@ -118,7 +107,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     #endif
 
     func testPerformanceInit2() throws {
-      //      throw XCTSkip()
       self.measure {
         let _ = RedBlackTreeSet<Int>(random)
       }
@@ -126,7 +114,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
 
     #if PERFOMANCE_CHECK
       func testPerformanceInit3() throws {
-        //      throw XCTSkip()
         self.measure {
           let _ = RedBlackTreeSet<Int>(_sequence: random)
         }
@@ -134,7 +121,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     #endif
 
     func testPerformanceDistance0() throws {
-      //    throw XCTSkip()
       let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 1_000_000)
       self.measure {
@@ -143,7 +129,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceDistance1() throws {
-      //    throw XCTSkip()
       let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       let l = set.index(before: set.endIndex)
       let r = set.endIndex
@@ -154,7 +139,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceDistance2() throws {
-      //    throw XCTSkip()
       let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       let l = set.endIndex
       let r = set.index(before: set.endIndex)
@@ -165,7 +149,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceDistance3() throws {
-      //    throw XCTSkip()
       let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       let l = set.index(before: set.endIndex)
       let r = set.index(before: l)
@@ -176,7 +159,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     }
 
     func testPerformanceDistance4() throws {
-      //    throw XCTSkip()
       let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
       let l = set.endIndex
       let r = set.endIndex
@@ -188,7 +170,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
 
     #if COMPATIBLE_ATCODER_2025
       func testPerformanceCompare0() throws {
-        //    throw XCTSkip()
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         XCTAssertTrue(set.startIndex < set.endIndex)
         XCTAssertFalse(set.startIndex == set.endIndex)
@@ -199,7 +180,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
       }
 
       func testPerformanceCompare1() throws {
-        //    throw XCTSkip()
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.index(before: set.endIndex)
         let r = set.endIndex
@@ -212,7 +192,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
       }
 
       func testPerformanceCompare2() throws {
-        //    throw XCTSkip()
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.endIndex
         let r = set.index(before: set.endIndex)
@@ -225,7 +204,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
       }
 
       func testPerformanceCompare3() throws {
-        //    throw XCTSkip()
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.index(before: set.endIndex)
         let r = set.index(before: l)
@@ -238,7 +216,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
       }
 
       func testPerformanceCompare4() throws {
-        //    throw XCTSkip()
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.endIndex
         let r = set.endIndex
@@ -251,7 +228,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
       }
 
       func testPerformanceCompare5() throws {
-        //    throw XCTSkip()
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let r = set.index(before: set.endIndex)
         let l = set.index(before: r)
@@ -269,7 +245,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
     #if DEBUG && false
       // <でinvalid判定する場合は以下のようにしたいが、invalid判定を削ったので、不要な仕様となった。
       func testInvalid() throws {
-        //    throw XCTSkip()
         var set: RedBlackTreeSet<Int> = .init(0..<2)
         set.reserveCapacity(4)
         XCTAssertGreaterThanOrEqual(set.capacity, 2)

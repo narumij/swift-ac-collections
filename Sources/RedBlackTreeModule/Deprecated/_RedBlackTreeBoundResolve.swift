@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/19.
 //
 
-#if COMPATIBLE_ATCODER_2025
+#if COMPATIBLE_ATCODER_2025 && false
 
   @usableFromInline
   protocol RedBlackTreeBoundResolverProtocol: Collection

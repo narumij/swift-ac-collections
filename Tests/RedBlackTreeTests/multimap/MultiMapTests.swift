@@ -942,20 +942,38 @@ final class MultiMapTests: RedBlackTreeTestCase {
 
   func testIndexValidation() throws {
     let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    XCTAssertTrue(set.isValid(index: set.startIndex))
-    XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
-    typealias Index = Target<Int, String>.Index
-    #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-      // UnsafeTreeは範囲外のインデックスを作成できない
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr)
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5)))
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertTrue(set.isValid(index: set.startIndex))
+      XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
+      typealias Index = Target<Int, String>.Index
+      #if DEBUG
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+        // UnsafeTreeは範囲外のインデックスを作成できない
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr)
+        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
+        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5)))
+      #endif
+    #else
+      XCTAssertTrue(set.isValid(set.startIndex))
+      XCTAssertFalse(set.isValid(set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
+      typealias Index = Target<Int, String>.Index
+      #if DEBUG
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+        // UnsafeTreeは範囲外のインデックスを作成できない
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr)
+        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 3)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 4)))
+        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: 5)))
+      #endif
     #endif
   }
 

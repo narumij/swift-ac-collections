@@ -26,8 +26,8 @@ import Foundation
 
 /// # RedBlackTreeSet
 ///
-/// `RedBlackTreeSet` は、赤黒木による **順序付き一意集合** です。
-/// 要素は常に比較順で保持されます。
+/// `RedBlackTreeSet` is an **ordered unique set** implemented using a red-black tree.
+/// Elements are always kept in sorted order.
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = []
@@ -38,18 +38,19 @@ import Foundation
 /// set.insert(5) // -> [1, 3, 4, 5]
 /// ```
 ///
-/// ## 削除（Removal）
+/// ## Removal
 ///
-/// 単一要素の削除と、範囲削除の両方をサポートします。
+/// Both single-element removal and range removal are supported.
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
 /// set.remove(3) // -> [1, 4, 5]
 /// ```
 ///
-/// `for` 文によるインデックスを介した連続削除は避けてください。
-/// インデックスとノードが密に紐付いているため、削除後に次のインデックスを取得する操作が無効になります。
-/// 連続削除には範囲削除 API を利用してください。
+/// Avoid performing repeated removals via indices in a `for` loop.
+/// Since indices are tightly coupled with tree nodes, removing an element
+/// invalidates the operation that retrieves the next index.
+/// Use the range-removal APIs for consecutive deletions instead.
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
@@ -61,8 +62,8 @@ import Foundation
 /// set.erase(set.lowerBound(4)..<set.endIndex) // -> [1, 3]
 /// ```
 ///
-/// C++ と同様に、`erase(_:) -> Index` を用いた逐次削除も可能です。
-/// 次のインデックスを受け取りながら削除できます。
+/// As in C++, sequential removal using `erase(_:) -> Index` is also supported.
+/// You can remove elements while receiving the next index.
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
@@ -72,10 +73,10 @@ import Foundation
 /// }
 /// ```
 ///
-/// ## インデックス代替構文
+/// ## Index Alternative Syntax
 ///
-/// `BoundExpression` は、インデックスの **安全な代替** として設計されています。
-/// インデックスを直接扱わずに要素または境界を指定できます。
+/// `BoundExpression` is designed as a **safe alternative** to direct index usage.
+/// It allows specifying elements or boundaries without handling indices directly.
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
@@ -85,11 +86,11 @@ import Foundation
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
 /// print(set[.lowerBound(5)]) // -> 5
-/// print(set[.upperBound(5)]) // -> nil (end 相当)
-/// print(set[.find(2)]) // -> nil (見つからない)
+/// print(set[.upperBound(5)]) // -> nil (equivalent to end)
+/// print(set[.find(2)]) // -> nil (not found)
 /// ```
-/// 
-/// - Important: `RedBlackTreeDictionary` はスレッドセーフではありません。
+///
+/// - Important: `RedBlackTreeDictionary` is not thread-safe.
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {
 
@@ -146,8 +147,9 @@ extension RedBlackTreeSet {
   extension RedBlackTreeSet {
 
     /// - Complexity: O(*n* log *n*)
-    ///   ソート済み列からの逐次挿入では探索が不要となり、再平衡は償却 O(1) のため、
-    ///   全体の構築コストは O(*n*)
+    ///   When inserting elements sequentially from an already sorted sequence,
+    ///   no search is required, and rebalancing is amortized O(1),
+    ///   so the overall construction cost becomes O(*n*).
     @inlinable
     public init<Source>(_ sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
@@ -159,8 +161,9 @@ extension RedBlackTreeSet {
     }
 
     /// - Complexity: O(*n* log *n*)
-    ///   ソート済み列からの逐次挿入では探索が不要となり、再平衡は償却 O(1) のため、
-    ///   全体の構築コストは O(*n*)
+    ///   When inserting elements sequentially from an already sorted sequence,
+    ///   no search is required, and rebalancing is amortized O(1),
+    ///   so the overall construction cost becomes O(*n*).
     @inlinable
     public init<Source>(_ collection: __owned Source)
     where Element == Source.Element, Source: Collection {

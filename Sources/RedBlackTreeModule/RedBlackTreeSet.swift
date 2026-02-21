@@ -178,8 +178,9 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Important: 昇順を想定して処理を省いている。降順に用いた場合未定義
-  /// - Complexity: ならしO(*n*)
+  /// - Important: This implementation assumes ascending order and omits certain checks.
+  ///   Using it with descending order results in undefined behavior.
+  /// - Complexity: Amortized O(*n*).
   @inlinable
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {

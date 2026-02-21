@@ -338,7 +338,8 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   ///
-  /// - Important: 空間計算量に余裕がある場合、unionの使用を推奨します
+  /// - Important: If sufficient space complexity is available,
+  ///   using `union` is recommended.
   @inlinable
   public func merging(_ other: RedBlackTreeSet<Element>) -> Self {
     var result: Self = self
@@ -388,7 +389,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(1)
   @inlinable
   @discardableResult
@@ -418,7 +419,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   @discardableResult
@@ -431,7 +432,7 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// - Important: 削除後は、インデックスが無効になります。
+    /// - Important: Indices that refer to removed members become invalid.
     /// - Complexity: O(1)
     @inlinable
     @discardableResult
@@ -548,8 +549,8 @@ extension RedBlackTreeSet {
   extension RedBlackTreeSet {
 
     /// - Important:
-    ///  要素及びノードが削除された場合、インデックスは無効になります。
-    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    ///   When an element or its corresponding node is removed, any related index becomes invalid.
+    ///   Using an invalid index may result in a runtime error or undefined behavior.
     public typealias Index = UnsafeIndexV3
     public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Base>
   }
@@ -607,39 +608,39 @@ extension RedBlackTreeSet {
 
   extension RedBlackTreeSet {
 
-    /// 与えられた値より小さくない最初の要素へのインデックスを返す
+    /// Returns the index of the first element that is not less than the given value.
     ///
-    /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
-    /// 最初の位置（`Index`）を返します。
+    /// `lowerBound(_:)` returns the first position (`Index`) where the value is
+    /// greater than or equal to the specified element `member`.
     ///
-    /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
-    /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
-    /// - `lowerBound(3)` は要素 `3` の位置を返します。
-    /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
-    /// - `lowerBound(10)` は `endIndex` を返します。
+    /// For example, given a sorted sequence `[1, 3, 5, 7, 9]`:
+    /// - `lowerBound(0)` returns the position of the first element `1` (i.e. `startIndex`).
+    /// - `lowerBound(3)` returns the position of element `3`.
+    /// - `lowerBound(4)` returns the position of element `5` (the first value ≥ `4`).
+    /// - `lowerBound(10)` returns `endIndex`.
     ///
-    /// - Parameter member: 二分探索で検索したい要素
-    /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
+    /// - Parameter member: The element to search for using binary search.
+    /// - Returns: The first `Index` whose value is greater than or equal to `member`.
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ member: Element) -> Index {
       ___index(__tree_.lower_bound(member).sealed)
     }
 
-    /// 与えられた値よりも大きい最初の要素へのインデックスを返す
+    /// Returns the index of the first element that is greater than the given value.
     ///
-    /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
-    /// 最初の位置（`Index`）を返します。
+    /// `upperBound(_:)` returns the first position (`Index`) where the value is
+    /// strictly greater than the specified element `member`.
     ///
-    /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
-    /// - `upperBound(3)` は要素 `5` の位置を返します。
-    ///   （`3` より大きい値が最初に現れる場所）
-    /// - `upperBound(5)` は要素 `7` の位置を返します。
-    ///   （`5` と等しい要素は含まないため、`5` の直後）
-    /// - `upperBound(9)` は `endIndex` を返します。
+    /// For example, given a sorted sequence `[1, 3, 5, 5, 7, 9]`:
+    /// - `upperBound(3)` returns the position of element `5`
+    ///   (the first value greater than `3`).
+    /// - `upperBound(5)` returns the position of element `7`
+    ///   (elements equal to `5` are excluded, so it points just after them).
+    /// - `upperBound(9)` returns `endIndex`.
     ///
-    /// - Parameter member: 二分探索で検索したい要素
-    /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
+    /// - Parameter member: The element to search for using binary search.
+    /// - Returns: The first `Index` whose value is strictly greater than `member`.
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ member: Element) -> Index {
@@ -757,7 +758,7 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// Indexがsubscriptやremoveで利用可能か判別します
+    /// Returns whether the given index is valid for use with subscript or remove operations.
     ///
     /// - Complexity: O(1)
     @inlinable

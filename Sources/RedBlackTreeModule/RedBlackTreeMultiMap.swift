@@ -22,27 +22,80 @@
 
 import Foundation
 
-/// `RedBlackTreeMultiMap` は、`Key` 型のキーと `Value` 型の値のペアを格納するための
-/// 赤黒木（Red-Black Tree）ベースのマルチマップ型です。
+// 先頭ドキュメントは学習用途を想定し、実用的な使い方と誤用防止を優先して簡潔に記述する。
+
+/// # RedBlackTreeMultiMap
 ///
-/// ### 使用例
+/// `RedBlackTreeMultiMap` は、赤黒木による **順序付きマップ（重複キー可）** です。
+/// キーは常に比較順で保持されます。
+/// 同一キー内の順序は挿入順になります。
+///
 /// ```swift
-/// /// `RedBlackTreeMultiMap` を使用する例
-/// var multimap = RedBlackTreeMultiMap<String, Int>()
-/// multimap.insert(key: "apple", value: 5)
-/// multimap.insert(key: "banana", value: 3)
-/// multimap.insert(key: "cherry", value: 7)
-///
-/// // キーを使用して値にアクセス
-/// let values = multimap.values(forKey: "banana")
-///
-/// values.forEach { value in
-///   print("banana の値は \(value) です。") // 出力例: banana の値は 3 です。
-/// }
-///
-/// // キーと値のペアを一つ削除
-/// multimap.removeFirst(forKey: "apple")
+/// var map: RedBlackTreeMultiMap<Int, String> = []
+/// map.insert(key: 3, value: "a") // -> [3: "a"]
+/// map.insert(key: 1, value: "b") // -> [1: "b", 3: "a"]
+/// map.insert(key: 4, value: "c") // -> [1: "b", 3: "a", 4: "c"]
+/// map.insert(key: 1, value: "d") // -> [1: "b", 1: "d", 3: "a", 4: "c"]
+/// map.insert(key: 5, value: "e") // -> [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
 /// ```
+///
+/// ## 削除（Removal）
+///
+/// 単一要素の削除と、範囲削除の両方をサポートします。
+///
+/// ```swift
+/// var map: RedBlackTreeMultiMap<Int, String> =
+///   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+/// map.remove(3) // -> [1: "b", 1: "d", 4: "c", 5: "e"]
+/// ```
+///
+/// `for` 文によるインデックスを介した連続削除は避けてください。
+/// インデックスとノードが密に紐付いているため、削除後に次のインデックスを取得する操作が無効になります。
+/// 連続削除には範囲削除 API を利用してください。
+///
+/// ```swift
+/// var map: RedBlackTreeMultiMap<Int, String> =
+///   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+/// map[map.lowerBound(4)..<map.endIndex].erase() // -> [1: "b", 1: "d", 3: "a"]
+/// ```
+///
+/// ```swift
+/// var map: RedBlackTreeMultiMap<Int, String> =
+///   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+/// map.erase(map.lowerBound(4)..<map.endIndex) // -> [1: "b", 1: "d", 3: "a"]
+/// ```
+///
+/// C++ と同様に、`erase(_:) -> Index` を用いた逐次削除も可能です。
+/// 次のインデックスを受け取りながら削除できます。
+///
+/// ```swift
+/// var map: RedBlackTreeMultiMap<Int, String> =
+///   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+/// var i = map.startIndex
+/// while i != map.endIndex {
+///   i = map.erase(i)
+/// }
+/// ```
+///
+/// ## インデックス代替構文
+///
+/// `BoundExpression` は、インデックスの **安全な代替** として設計されています。
+/// インデックスを直接扱わずに要素または境界を指定できます。
+///
+/// ```swift
+/// var map: RedBlackTreeMultiMap<Int, String> =
+///   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+/// print(map[.start.advance(by: 1)]) // -> (1, "d")
+/// ```
+///
+/// ```swift
+/// var map: RedBlackTreeMultiMap<Int, String> =
+///   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
+/// print(map[.lowerBound(5)]) // -> (5, "e")
+/// print(map[.upperBound(5)]) // -> nil (end 相当)
+/// print(map[.find(2)])       // -> nil (見つからない)
+/// ```
+///
 /// - Important: `RedBlackTreeMultiMap` はスレッドセーフではありません。
 @frozen
 public struct RedBlackTreeMultiMap<Key: Comparable, Value> {

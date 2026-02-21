@@ -48,8 +48,7 @@ import Foundation
 /// ```
 ///
 /// `for` 文によるインデックスを介した連続削除は避けてください。
-/// インデックスとノードが密に紐付いているため、削除後に次の要素を取得する操作が
-/// 無効になる可能性があります。
+/// インデックスとノードが密に紐付いているため、削除後に次のインデックスを取得する操作が無効になります。
 /// 連続削除には範囲削除 API を利用してください。
 ///
 /// ```swift
@@ -63,7 +62,7 @@ import Foundation
 /// ```
 ///
 /// C++ と同様に、`erase(_:) -> Index` を用いた逐次削除も可能です。
-/// 次のインデックスを受け取りながら安全に削除できます。
+/// 次のインデックスを受け取りながら削除できます。
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
@@ -89,6 +88,8 @@ import Foundation
 /// print(set[.upperBound(5)]) // -> nil (end 相当)
 /// print(set[.find(2)]) // -> nil (見つからない)
 /// ```
+/// 
+/// - Important: `RedBlackTreeDictionary` はスレッドセーフではありません。
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {
 

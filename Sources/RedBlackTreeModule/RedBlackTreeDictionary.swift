@@ -22,25 +22,67 @@
 
 import Foundation
 
-/// `RedBlackTreeDictionary` は、`Key` 型のキーと `Value` 型の値のペアをキーに対して一意に格納するための
-/// 赤黒木（Red-Black Tree）ベースの辞書型です。
+// 先頭ドキュメントは学習用途を想定し、実用的な使い方と誤用防止を優先して簡潔に記述する。
+
+/// # RedBlackTreeDictionary
 ///
-/// ### 使用例
+/// `RedBlackTreeDictionary` は、赤黒木による **順序付き辞書（一意キー）** です。
+/// キーは常に比較順で保持されます。
+///
 /// ```swift
-/// /// `RedBlackTreeDictionary` を使用する例
-/// var dictionary = RedBlackTreeDictionary<String, Int>()
-/// dictionary["apple"] = 5
-/// dictionary["banana"] = 3
-/// dictionary["cherry"] = 7
-///
-/// // キーを使用して値にアクセス
-/// if let value = dictionary.value(forKey: "banana") {
-///     print("banana の値は \(value) です。") // 出力例: banana の値は 3 です。
-/// }
-///
-/// // キーと値のペアを削除
-/// dictionary.remove(key: "apple")
+/// var dict: RedBlackTreeDictionary<Int, String> = [:]
+/// dict[3] = "c"   // -> [3: "c"]
+/// dict[1] = "a"   // -> [1: "a", 3: "c"]
+/// dict[4] = "d"   // -> [1: "a", 3: "c", 4: "d"]
+/// dict[1] = "aa"  // -> [1: "aa", 3: "c", 4: "d"] (更新)
 /// ```
+///
+/// ## 削除（Removal）
+///
+/// 単一要素の削除と、範囲削除の両方をサポートします。
+///
+/// ```swift
+/// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
+/// dict.removeValue(forKey: 3) // -> [1: "a", 4: "d", 5: "e"]
+/// ```
+///
+/// `for` 文によるインデックスを介した連続削除は避けてください。
+/// インデックスとノードが密に紐付いているため、削除後に次のインデックスを取得する操作が無効になります。
+/// 連続削除には範囲削除 API を利用してください。
+///
+/// ```swift
+/// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
+/// dict[dict.lowerBound(4)..<dict.endIndex].erase() // -> [1: "a", 3: "c"]
+/// ```
+///
+/// ```swift
+/// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
+/// dict.erase(dict.lowerBound(4)..<dict.endIndex) // -> [1: "a", 3: "c"]
+/// ```
+///
+/// C++ と同様に、`erase(_:) -> Index` を用いた逐次削除も可能です。
+/// 次のインデックスを受け取りながら削除できます。
+///
+/// ```swift
+/// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
+/// var i = dict.startIndex
+/// while i != dict.endIndex {
+///   i = dict.erase(i)
+/// }
+/// ```
+///
+/// ## インデックス代替構文
+///
+/// `BoundExpression` は、インデックスの **安全な代替** として設計されています。
+/// インデックスを直接扱わずに要素または境界を指定できます。
+///
+/// ```swift
+/// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
+/// print(dict[.lowerBound(4)]) // -> (4, "d")
+/// print(dict[.upperBound(5)]) // -> nil (end 相当)
+/// print(dict[.find(2)])       // -> nil (見つからない)
+/// ```
+///
 /// - Important: `RedBlackTreeDictionary` はスレッドセーフではありません。
 @frozen
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {

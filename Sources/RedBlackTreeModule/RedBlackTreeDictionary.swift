@@ -270,7 +270,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {
     __tree_.__count_unique(key) != 0

@@ -224,7 +224,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(log `count` + `distance`)
+  /// - Complexity: O(log `count` + `distance`), where `distance` is the number of matching elements.
   @inlinable
   public func count(of element: Element) -> Int {
     __tree_.__count_multi(element)
@@ -253,7 +253,7 @@ extension RedBlackTreeMultiSet {
     isEmpty ? nil : __tree_[_unsafe_raw: _start]
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public var last: Element? {
     isEmpty ? nil : __tree_[_unsafe_raw: __tree_.__tree_prev_iter(_end)]
@@ -808,7 +808,7 @@ extension RedBlackTreeMultiSet {
 
     // TODO: イテレータ利用の注意をドキュメントすること
     /// - Important: Indices that refer to removed members become invalid.
-    /// - Complexity: O(log `count` + `distance`)
+    /// - Complexity: O(log `count` + `distance`), where `distance` is the number of removed elements.
     @inlinable
     @discardableResult
     public mutating func eraseMulti(_ member: Element) -> Int {

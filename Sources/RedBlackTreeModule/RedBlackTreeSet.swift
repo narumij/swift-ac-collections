@@ -373,7 +373,7 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// - Complexity: O(1)
+    /// - Complexity: Amortized O(1)
     @inlinable
     public mutating func popFirst() -> Element? {
       __tree_.ensureUnique()
@@ -392,7 +392,7 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   /// - Important: Indices that refer to removed members become invalid.
-  /// - Complexity: O(1)
+  /// - Complexity: Amortized O(1)
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
@@ -407,6 +407,7 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// - Complexity: O(log *n*)
     @inlinable
     @discardableResult
     public mutating func removeLast() -> Element {
@@ -435,7 +436,7 @@ extension RedBlackTreeSet {
   extension RedBlackTreeSet {
 
     /// - Important: Indices that refer to removed members become invalid.
-    /// - Complexity: O(1)
+    /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
@@ -448,37 +449,19 @@ extension RedBlackTreeSet {
   }
 #endif
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet {
+extension RedBlackTreeSet {
 
-    /// - Complexity: O(1)
-    @inlinable
-    public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-      if keepCapacity {
-        __tree_.ensureUnique()
-        __tree_.deinitialize()
-      } else {
-        self = .init()
-      }
+  /// - Complexity: O(1)
+  @inlinable
+  public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
+    if keepCapacity {
+      __tree_.ensureUnique()
+      __tree_.deinitialize()
+    } else {
+      self = .init()
     }
   }
-#endif
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet {
-
-    /// - Complexity: O(1)
-    @inlinable
-    public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-      if keepCapacity {
-        __tree_.ensureUnique()
-        __tree_.deinitialize()
-      } else {
-        self = .init()
-      }
-    }
-  }
-#endif
+}
 
 // MARK: -
 
@@ -783,6 +766,7 @@ extension RedBlackTreeSet {
 
   extension RedBlackTreeSet {
 
+    /// - Complexity: Amortized O(1)
     @discardableResult
     @inlinable @inline(__always)
     public mutating func erase(_ ptr: Index) -> Index {

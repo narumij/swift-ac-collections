@@ -441,7 +441,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
   
-  /// - Complexity: O(1)
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   public mutating func popFirst() -> Element? {
@@ -465,7 +465,7 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
 
   /// - Important: Indices that refer to removed members become invalid.
-  /// - Complexity: O(1)
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   @discardableResult
@@ -491,7 +491,7 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
 
   /// - Important: Indices that refer to removed members become invalid.
-  /// - Complexity: O(1)
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   @discardableResult

@@ -378,7 +378,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(1)
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   public mutating func popFirst() -> Element? {
@@ -402,7 +402,7 @@ extension RedBlackTreeMultiSet {
 extension RedBlackTreeMultiSet {
 
   /// - Important: Indices that refer to removed members become invalid.
-  /// - Complexity: O(1)
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   @discardableResult
@@ -431,7 +431,7 @@ extension RedBlackTreeMultiSet {
   extension RedBlackTreeMultiSet {
 
     /// - Important: After removal, indices become invalid.
-    /// - Complexity: O(1)
+    /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult
     public mutating func remove(at index: Index) -> Element {

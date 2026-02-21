@@ -227,7 +227,7 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Complexity: O(log *n* + *k*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public func count(of element: Element) -> Int {
     __tree_.__count_unique(element)

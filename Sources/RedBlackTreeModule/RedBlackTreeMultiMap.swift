@@ -253,7 +253,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(log *n* + *k*)
+  /// - Complexity: O(log `count` + `distance`)
   @inlinable
   public func count(forKey key: Key) -> Int {
     __tree_.__count_multi(key)
@@ -264,7 +264,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {
     __tree_.__count_unique(key) != 0
@@ -916,7 +916,7 @@ extension RedBlackTreeMultiMap {
 
     // TODO: イテレータ利用の注意をドキュメントすること
     /// - Important: Indices that refer to removed members become invalid.
-    /// - Complexity: O(log *n* + *k*)
+    /// - Complexity: O(log `count` + `distance`)
     @inlinable
     @discardableResult
     public mutating func eraseMulti(_ key: Key) -> Int {

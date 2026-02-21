@@ -50,7 +50,7 @@
         self[unchecked: ___sealed_range]
       }
       @inline(__always) _modify {
-        yield &self[unchecked:___sealed_range]
+        yield &self[unchecked: ___sealed_range]
       }
     }
 
@@ -91,13 +91,15 @@
     }
 
     @inlinable
-    public mutating func erase(_ bounds: UnboundedRange) {
+    @discardableResult
+    public mutating func erase(_ bounds: UnboundedRange) -> Index {
       __tree_.ensureUnique()
-      _ = __tree_.erase(_start, _end)
+      return __tree_.erase(_start, _end).sealed.band(__tree_.tied)
     }
 
     @inlinable
-    public mutating func erase(_ bounds: IndexRange) {
+    @discardableResult
+    public mutating func erase(_ bounds: IndexRange) -> Index {
       __tree_.ensureUnique()
       let range = __tree_.__purified_(bounds.range)
       guard __tree_.isValidSealedRange(range),
@@ -106,11 +108,11 @@
       else {
         fatalError(.invalidIndex)
       }
-      _ = __tree_.erase(__l, __u)
+      return __tree_.erase(__l, __u).sealed.band(__tree_.tied)
     }
 
     @inlinable
-    public mutating func erase(_ bounds: IndexRangeExpression) {
+    public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
       __tree_.ensureUnique()
       let range = __tree_.__purified_(bounds.relative(to: __tree_))
       guard __tree_.isValidSealedRange(range),
@@ -119,7 +121,7 @@
       else {
         fatalError(.invalidIndex)
       }
-      _ = __tree_.erase(__l, __u)
+      return __tree_.erase(__l, __u).sealed.band(__tree_.tied)
     }
 
     @inlinable
@@ -156,14 +158,14 @@
 
     @inlinable
     subscript(unchecked range: _RawRange<_SealedPtr>) -> View {
-      
+
       @inline(__always) get {
         RedBlackTreeKeyOnlyRangeView(
           __tree_: __tree_,
           _start: range.lowerBound,
           _end: range.upperBound)
       }
-      
+
       @inline(__always) _modify {
         var view = RedBlackTreeKeyOnlyRangeView(
           __tree_: __tree_,

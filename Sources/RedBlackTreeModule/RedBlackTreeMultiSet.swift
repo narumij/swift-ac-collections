@@ -88,7 +88,7 @@ import Foundation
 /// print(set[.upperBound(5)]) // -> nil (end 相当)
 /// print(set[.find(2)]) // -> nil (見つからない)
 /// ```
-/// 
+///
 /// - Important: `RedBlackTreeDictionary` はスレッドセーフではありません。
 @frozen
 public struct RedBlackTreeMultiSet<Element: Comparable> {
@@ -743,7 +743,7 @@ extension RedBlackTreeMultiSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func isValid(index: Index) -> Bool {
+    public func isValid(_ index: Index) -> Bool {
       __tree_.__purified_(index).exists
     }
   }

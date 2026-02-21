@@ -21,7 +21,7 @@
 
   extension RedBlackTreeMultiMap {
     public typealias Bound = RedBlackTreeBoundExpression<Key>
-    public typealias BoundRange = RedBlackTreeBoundRangeExpression<Key>
+    public typealias BoundRangeExpression = RedBlackTreeBoundRangeExpression<Key>
   }
 
   extension RedBlackTreeMultiMap {
@@ -66,7 +66,7 @@
     ///
     /// これがfalseの場合でもBoundRange関連APIはクラッシュしない
     @inlinable
-    public func isValid(_ bounds: BoundRange) -> Bool {
+    public func isValid(_ bounds: BoundRangeExpression) -> Bool {
       let range = bounds.evaluate(__tree_).relative(to: __tree_)
       return __tree_.isValidSealedRange(range)
         && range.lowerBound.isValid
@@ -77,7 +77,7 @@
   extension RedBlackTreeMultiMap {
 
     @inlinable
-    public subscript(bounds: BoundRange) -> View {
+    public subscript(bounds: BoundRangeExpression) -> View {
 
       @inline(__always) get {
 
@@ -100,7 +100,7 @@
   extension RedBlackTreeMultiMap {
 
     @inlinable
-    public mutating func erase(_ bounds: BoundRange) {
+    public mutating func erase(_ bounds: BoundRangeExpression) {
 
       __tree_.ensureUnique()
       let range = __tree_.sanitizeSealedRange(
@@ -110,7 +110,7 @@
 
     @inlinable
     public mutating func erase(
-      _ bounds: BoundRange, where shouldBeRemoved: (Element) throws -> Bool
+      _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
       __tree_.ensureUnique()

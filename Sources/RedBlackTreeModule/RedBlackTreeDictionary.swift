@@ -472,6 +472,18 @@ extension RedBlackTreeDictionary {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(log `count`)
+    @inlinable
+    public mutating func popLast() -> Element? {
+      __tree_.ensureUnique()
+      return ___remove_last().map(\.payload).map(Base.__element_)
+    }
+  }
+#endif
+
 extension RedBlackTreeDictionary {
 
   /// - Important: 削除したメンバーを指すインデックスが無効になります。
@@ -878,7 +890,7 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func isValid(index: Index) -> Bool {
+    public func isValid(_ index: Index) -> Bool {
       __tree_.__purified_(index).exists
     }
   }

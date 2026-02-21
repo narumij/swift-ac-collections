@@ -19,7 +19,7 @@
 
   extension RedBlackTreeSet {
     public typealias Bound = RedBlackTreeBoundExpression<Element>
-    public typealias BoundRange = RedBlackTreeBoundRangeExpression<Element>
+    public typealias BoundRangeExpression = RedBlackTreeBoundRangeExpression<Element>
   }
 
   extension RedBlackTreeSet {
@@ -69,7 +69,7 @@
     ///
     /// これがfalseの場合でもBoundRange関連APIはクラッシュしない
     @inlinable
-    public func isValid(_ bounds: BoundRange) -> Bool {
+    public func isValid(_ bounds: BoundRangeExpression) -> Bool {
       let range = bounds.evaluate(__tree_).relative(to: __tree_)
       return __tree_.isValidSealedRange(range)
         && range.lowerBound.isValid
@@ -80,7 +80,7 @@
   extension RedBlackTreeSet {
 
     @inlinable
-    public subscript(bounds: BoundRange) -> View {
+    public subscript(bounds: BoundRangeExpression) -> View {
 
       @inline(__always) get {
 
@@ -103,7 +103,7 @@
   extension RedBlackTreeSet {
 
     @inlinable
-    public mutating func erase(_ bounds: BoundRange) {
+    public mutating func erase(_ bounds: BoundRangeExpression) {
 
       __tree_.ensureUnique()
       let range = __tree_.sanitizeSealedRange(
@@ -113,7 +113,7 @@
 
     @inlinable
     public mutating func erase(
-      _ bounds: BoundRange, where shouldBeRemoved: (Element) throws -> Bool
+      _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
       __tree_.ensureUnique()

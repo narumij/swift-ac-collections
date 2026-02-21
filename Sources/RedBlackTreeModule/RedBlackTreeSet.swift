@@ -486,7 +486,7 @@ extension RedBlackTreeSet {
 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   ///
-  /// O(1)が欲しい場合、firstが等価でO(1)
+  /// If O(1) is required, `first` provides an equivalent operation in O(1).
   @inlinable
   public func min() -> Element? {
     __tree_.___min()

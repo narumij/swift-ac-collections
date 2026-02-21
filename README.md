@@ -73,6 +73,11 @@ For example, the following names are technically declared as `public` but are no
 In general, compatibility is not guaranteed for these declarations.
 They may change or be removed in future releases without notice.
 
+## Documentation Language
+
+Some documentation comments may still be written in Japanese.
+English translation efforts are ongoing.
+
 ## License
 
 This library is distributed under the Apache License 2.0:

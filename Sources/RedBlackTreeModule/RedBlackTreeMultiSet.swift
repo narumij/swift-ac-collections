@@ -378,7 +378,6 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -794,7 +793,7 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Important: Indices that refer to removed members become invalid.
     /// - Complexity: O(log *n*)
     @inlinable
     @inline(__always)

@@ -22,21 +22,74 @@
 
 import Foundation
 
-/// `RedBlackTreeMultiSet` は、`Element` 型の要素を格納するための
-/// 赤黒木（Red-Black Tree）ベースのマルチセット型です。
+// 先頭ドキュメントは学習用途を想定し、実用的な使い方と誤用防止を優先して簡潔に記述する。
+
+/// # RedBlackTreeMultiSet
 ///
-/// ### 使用例
+/// `RedBlackTreeMultiSet` は、赤黒木による **順序付き集合（重複可）** です。
+/// 要素は常に比較順で保持されます。
+///
 /// ```swift
-/// var multiset = RedBlackTreeMultiSet<Int>()
-/// multiset.insert(5)
-/// multiset.insert(3)
-/// multiset.insert(5) // 重複した要素の挿入
-///
-/// // 要素の出現回数を確認
-/// print(multiset.count(of: 5)) // 出力例: 2
-/// print(multiset.count(of: 3)) // 出力例: 1
+/// var set: RedBlackTreeMultiSet<Int> = []
+/// set.insert(3) // -> [3]
+/// set.insert(1) // -> [1, 3]
+/// set.insert(4) // -> [1, 3, 4]
+/// set.insert(1) // -> [1, 1, 3, 4]
+/// set.insert(5) // -> [1, 1, 3, 4, 5]
 /// ```
-/// - Important: `RedBlackTreeMultiSet` はスレッドセーフではありません。
+///
+/// ## 削除（Removal）
+///
+/// 単一要素の削除と、範囲削除の両方をサポートします。
+///
+/// ```swift
+/// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+/// set.remove(3) // -> [1, 1, 4, 5]
+/// ```
+///
+/// `for` 文によるインデックスを介した連続削除は避けてください。
+/// インデックスとノードが密に紐付いているため、削除後に次のインデックスを取得する操作が無効になります。
+/// 連続削除には範囲削除 API を利用してください。
+///
+/// ```swift
+/// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+/// set[set.lowerBound(4)..<set.endIndex].erase() // -> [1, 1, 3]
+/// ```
+///
+/// ```swift
+/// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+/// set.erase(set.lowerBound(4)..<set.endIndex) // -> [1, 1, 3]
+/// ```
+///
+/// C++ と同様に、`erase(_:) -> Index` を用いた逐次削除も可能です。
+/// 次のインデックスを受け取りながら削除できます。
+///
+/// ```swift
+/// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+/// var i = set.startIndex
+/// while i != set.endIndex {
+///   i = set.erase(i)
+/// }
+/// ```
+///
+/// ## インデックス代替構文
+///
+/// `BoundExpression` は、インデックスの **安全な代替** として設計されています。
+/// インデックスを直接扱わずに要素または境界を指定できます。
+///
+/// ```swift
+/// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+/// print(set[.start.advance(by: 1)]) // -> 1
+/// ```
+///
+/// ```swift
+/// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+/// print(set[.lowerBound(5)]) // -> 5
+/// print(set[.upperBound(5)]) // -> nil (end 相当)
+/// print(set[.find(2)]) // -> nil (見つからない)
+/// ```
+///
+/// - Important: `RedBlackTreeDictionary` はスレッドセーフではありません。
 @frozen
 public struct RedBlackTreeMultiSet<Element: Comparable> {
 
@@ -690,7 +743,7 @@ extension RedBlackTreeMultiSet {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
-    public func isValid(index: Index) -> Bool {
+    public func isValid(_ index: Index) -> Bool {
       __tree_.__purified_(index).exists
     }
   }

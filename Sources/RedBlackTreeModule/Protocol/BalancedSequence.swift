@@ -78,7 +78,6 @@ public protocol BalancedCollection: BalancedSequence {
 
   mutating func remove(at: Index) -> Element
 
-  mutating func removeAll()
   mutating func removeAll(keepingCapacity keepCapacity: Bool)
 
   // MARK: -
@@ -116,7 +115,7 @@ public protocol BalancedCollection: BalancedSequence {
 }
 
 public protocol BalancedMultiCollection: BalancedCollection {
-  mutating func eraseUnique(_: _Key) -> Element?
+  mutating func eraseUnique(_: _Key) -> Bool
   mutating func eraseMulti(_: _Key) -> Int
 }
 
@@ -124,8 +123,23 @@ public protocol BalancedMultiCollection: BalancedCollection {
 
 public protocol BalancedView: BalancedSequence {
 
+  associatedtype Index = UnsafeIndexV3
+
   // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
 
-  mutating func erase()
+  mutating func erase() -> Index
   mutating func erase(where: (Element) throws -> Bool) rethrows
 }
+
+// MARK: -
+
+#if !COMPATIBLE_ATCODER_2025
+extension RedBlackTreeSet: BalancedCollection {}
+extension RedBlackTreeDictionary: BalancedCollection {}
+
+extension RedBlackTreeMultiSet: BalancedMultiCollection {}
+extension RedBlackTreeMultiMap: BalancedMultiCollection {}
+
+extension RedBlackTreeKeyOnlyRangeView: BalancedView { }
+extension RedBlackTreeKeyValueRangeView: BalancedView { }
+#endif

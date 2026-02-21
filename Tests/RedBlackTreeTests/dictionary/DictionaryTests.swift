@@ -877,17 +877,32 @@ final class DictionaryTests: RedBlackTreeTestCase {
 
   func testIndexValidation() throws {
     let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    XCTAssertTrue(set.isValid(index: set.startIndex))
-    XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
-    typealias Index = RedBlackTreeDictionary<Int, String>.Index
-    #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertTrue(set.isValid(index: set.startIndex))
+      XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
+      typealias Index = RedBlackTreeDictionary<Int, String>.Index
+      #if DEBUG
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
+      #endif
+    #else
+      XCTAssertTrue(set.isValid(set.startIndex))
+      XCTAssertFalse(set.isValid(set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
+      typealias Index = RedBlackTreeDictionary<Int, String>.Index
+      #if DEBUG
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 3)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 4)))
+      #endif
     #endif
   }
 

@@ -8,7 +8,7 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost, BalancedView
+public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost
 where Base: ___TreeBase & ScalarValueTrait {
 
   @inlinable
@@ -23,7 +23,7 @@ where Base: ___TreeBase & ScalarValueTrait {
 
   @usableFromInline
   internal var __tree_: Tree
-  
+
   // _SealedPtr不可
   public var startIndex: Index
   public let endIndex: Index
@@ -214,11 +214,12 @@ extension RedBlackTreeKeyOnlyRangeView {
 extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
-  public mutating func erase() {
+  @discardableResult
+  public mutating func erase() -> Index {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     // ややチェックが甘いので末端チェック付き削除が必要
-    __tree_.___erase(_start, _end)
+    return __tree_.___erase(_start, _end).sealed.band(__tree_.tied)
   }
 
   @inlinable

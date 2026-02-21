@@ -26,29 +26,31 @@ import Foundation
 
 /// # RedBlackTreeDictionary
 ///
-/// `RedBlackTreeDictionary` は、赤黒木による **順序付き辞書（一意キー）** です。
-/// キーは常に比較順で保持されます。
+/// `RedBlackTreeDictionary` is an **ordered dictionary (unique keys)**
+/// implemented using a red-black tree.
+/// Keys are always kept in sorted order.
 ///
 /// ```swift
 /// var dict: RedBlackTreeDictionary<Int, String> = [:]
 /// dict[3] = "c"   // -> [3: "c"]
 /// dict[1] = "a"   // -> [1: "a", 3: "c"]
 /// dict[4] = "d"   // -> [1: "a", 3: "c", 4: "d"]
-/// dict[1] = "aa"  // -> [1: "aa", 3: "c", 4: "d"] (更新)
+/// dict[1] = "aa"  // -> [1: "aa", 3: "c", 4: "d"] (updated)
 /// ```
 ///
-/// ## 削除（Removal）
+/// ## Removal
 ///
-/// 単一要素の削除と、範囲削除の両方をサポートします。
+/// Both single-element removal and range removal are supported.
 ///
 /// ```swift
 /// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
 /// dict.removeValue(forKey: 3) // -> [1: "a", 4: "d", 5: "e"]
 /// ```
 ///
-/// `for` 文によるインデックスを介した連続削除は避けてください。
-/// インデックスとノードが密に紐付いているため、削除後に次のインデックスを取得する操作が無効になります。
-/// 連続削除には範囲削除 API を利用してください。
+/// Avoid performing repeated removals via indices in a `for` loop.
+/// Since indices are tightly coupled with tree nodes, removing an element
+/// invalidates the operation that retrieves the next index.
+/// Use the range-removal APIs for consecutive deletions instead.
 ///
 /// ```swift
 /// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
@@ -60,8 +62,8 @@ import Foundation
 /// dict.erase(dict.lowerBound(4)..<dict.endIndex) // -> [1: "a", 3: "c"]
 /// ```
 ///
-/// C++ と同様に、`erase(_:) -> Index` を用いた逐次削除も可能です。
-/// 次のインデックスを受け取りながら削除できます。
+/// As in C++, sequential removal using `erase(_:) -> Index` is also supported.
+/// You can remove elements while receiving the next index.
 ///
 /// ```swift
 /// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
@@ -71,19 +73,19 @@ import Foundation
 /// }
 /// ```
 ///
-/// ## インデックス代替構文
+/// ## Index Alternative Syntax
 ///
-/// `BoundExpression` は、インデックスの **安全な代替** として設計されています。
-/// インデックスを直接扱わずに要素または境界を指定できます。
+/// `BoundExpression` is designed as a **safe alternative** to direct index usage.
+/// It allows specifying elements or boundaries without handling indices directly.
 ///
 /// ```swift
 /// var dict: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 4: "d", 5: "e"]
 /// print(dict[.lowerBound(4)]) // -> (4, "d")
-/// print(dict[.upperBound(5)]) // -> nil (end 相当)
-/// print(dict[.find(2)])       // -> nil (見つからない)
+/// print(dict[.upperBound(5)]) // -> nil (equivalent to end)
+/// print(dict[.find(2)])       // -> nil (not found)
 /// ```
 ///
-/// - Important: `RedBlackTreeDictionary` はスレッドセーフではありません。
+/// - Important: `RedBlackTreeDictionary` is not thread-safe.
 @frozen
 public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
@@ -150,8 +152,9 @@ extension RedBlackTreeDictionary {
   extension RedBlackTreeDictionary {
 
     /// - Complexity: O(*n* log *n*)
-    ///   ソート済み列からの逐次挿入では探索が不要となり、再平衡は償却 O(1) のため、
-    ///   全体の構築コストは O(*n*)
+    ///   When inserting elements sequentially from an already sorted sequence,
+    ///   no search is required, and rebalancing is amortized O(1),
+    ///   so the overall construction cost becomes O(*n*).
     @inlinable
     public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
     where S: Sequence, S.Element == (Key, Value) {
@@ -164,8 +167,9 @@ extension RedBlackTreeDictionary {
     }
 
     /// - Complexity: O(*n* log *n*)
-    ///   ソート済み列からの逐次挿入では探索が不要となり、再平衡は償却 O(1) のため、
-    ///   全体の構築コストは O(*n*)
+    ///   When inserting elements sequentially from an already sorted sequence,
+    ///   no search is required, and rebalancing is amortized O(1),
+    ///   so the overall construction cost becomes O(*n*).
     @inlinable
     public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
     where S: Collection, S.Element == (Key, Value) {

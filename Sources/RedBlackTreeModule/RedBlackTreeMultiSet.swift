@@ -26,8 +26,9 @@ import Foundation
 
 /// # RedBlackTreeMultiSet
 ///
-/// `RedBlackTreeMultiSet` は、赤黒木による **順序付き集合（重複可）** です。
-/// 要素は常に比較順で保持されます。
+/// `RedBlackTreeMultiSet` is an **ordered multiset (allowing duplicates)**
+/// implemented using a red-black tree.
+/// Elements are always kept in sorted order.
 ///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = []
@@ -38,18 +39,19 @@ import Foundation
 /// set.insert(5) // -> [1, 1, 3, 4, 5]
 /// ```
 ///
-/// ## 削除（Removal）
+/// ## Removal
 ///
-/// 単一要素の削除と、範囲削除の両方をサポートします。
+/// Both single-element removal and range removal are supported.
 ///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
 /// set.remove(3) // -> [1, 1, 4, 5]
 /// ```
 ///
-/// `for` 文によるインデックスを介した連続削除は避けてください。
-/// インデックスとノードが密に紐付いているため、削除後に次のインデックスを取得する操作が無効になります。
-/// 連続削除には範囲削除 API を利用してください。
+/// Avoid performing repeated removals via indices in a `for` loop.
+/// Since indices are tightly coupled with tree nodes, removing an element
+/// invalidates the operation that retrieves the next index.
+/// Use the range-removal APIs for consecutive deletions instead.
 ///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
@@ -61,8 +63,8 @@ import Foundation
 /// set.erase(set.lowerBound(4)..<set.endIndex) // -> [1, 1, 3]
 /// ```
 ///
-/// C++ と同様に、`erase(_:) -> Index` を用いた逐次削除も可能です。
-/// 次のインデックスを受け取りながら削除できます。
+/// As in C++, sequential removal using `erase(_:) -> Index` is also supported.
+/// You can remove elements while receiving the next index.
 ///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
@@ -72,10 +74,10 @@ import Foundation
 /// }
 /// ```
 ///
-/// ## インデックス代替構文
+/// ## Index Alternative Syntax
 ///
-/// `BoundExpression` は、インデックスの **安全な代替** として設計されています。
-/// インデックスを直接扱わずに要素または境界を指定できます。
+/// `BoundExpression` is designed as a **safe alternative** to direct index usage.
+/// It allows specifying elements or boundaries without handling indices directly.
 ///
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
@@ -85,11 +87,11 @@ import Foundation
 /// ```swift
 /// var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
 /// print(set[.lowerBound(5)]) // -> 5
-/// print(set[.upperBound(5)]) // -> nil (end 相当)
-/// print(set[.find(2)]) // -> nil (見つからない)
+/// print(set[.upperBound(5)]) // -> nil (equivalent to end)
+/// print(set[.find(2)]) // -> nil (not found)
 /// ```
 ///
-/// - Important: `RedBlackTreeDictionary` はスレッドセーフではありません。
+/// - Important: `RedBlackTreeMultiSet` is not thread-safe.
 @frozen
 public struct RedBlackTreeMultiSet<Element: Comparable> {
 
@@ -142,8 +144,9 @@ extension RedBlackTreeMultiSet {
   extension RedBlackTreeMultiSet {
 
     /// - Complexity: O(*n* log *n*)
-    ///   ソート済み列からの逐次挿入では探索が不要となり、再平衡は償却 O(1) のため、
-    ///   全体の構築コストは O(*n*)
+    ///   When inserting elements sequentially from an already sorted sequence,
+    ///   no search is required, and rebalancing is amortized O(1),
+    ///   so the overall construction cost becomes O(*n*).
     @inlinable
     public init<Source>(_ sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
@@ -155,8 +158,9 @@ extension RedBlackTreeMultiSet {
     }
 
     /// - Complexity: O(*n* log *n*)
-    ///   ソート済み列からの逐次挿入では探索が不要となり、再平衡は償却 O(1) のため、
-    ///   全体の構築コストは O(*n*)
+    ///   When inserting elements sequentially from an already sorted sequence,
+    ///   no search is required, and rebalancing is amortized O(1),
+    ///   so the overall construction cost becomes O(*n*).
     @inlinable
     public init<Source>(_ collection: __owned Source)
     where Element == Source.Element, Source: Collection {
@@ -171,8 +175,9 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Important: 昇順を想定して処理を省いている。降順に用いた場合未定義
-  /// - Complexity: O(*n*)
+  /// - Important: This implementation assumes ascending order and omits certain checks.
+  ///   Using it with descending order results in undefined behavior.
+  /// - Complexity: Amortized O(*n*).
   @inlinable
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {
@@ -281,7 +286,8 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   ///
-  /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
+  /// - Important: If sufficient space is available,
+  ///   using `meld` is recommended.
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
     __tree_.ensureUnique { __tree_ in
@@ -327,7 +333,8 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   ///
-  /// - Important: 空間計算量に余裕がある場合、meldingの使用を推奨します
+  /// - Important: If sufficient space is available,
+  ///   using `melding` is recommended.
   @inlinable
   public func inserting(contentsOf other: RedBlackTreeMultiSet<Element>) -> Self {
     var result = self
@@ -371,7 +378,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -395,7 +402,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -408,7 +415,7 @@ extension RedBlackTreeMultiSet {
     return element.payload
   }
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -424,7 +431,7 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// - Important: 削除後は、インデックスが無効になります。
+    /// - Important: After removal, indices become invalid.
     /// - Complexity: O(1)
     @inlinable
     @discardableResult
@@ -458,7 +465,7 @@ extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(*n*)
   ///
-  /// O(1)が欲しい場合、firstが等価でO(1)
+  /// If O(1) is required, `first` provides an equivalent operation in O(1).
   @inlinable
   public func min() -> Element? {
     __tree_.___min()
@@ -529,8 +536,8 @@ extension RedBlackTreeMultiSet {
   extension RedBlackTreeMultiSet {
 
     /// - Important:
-    ///  要素及びノードが削除された場合、インデックスは無効になります。
-    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    ///   When an element or its corresponding node is removed, any related index becomes invalid.
+    ///   Using an invalid index may result in a runtime error or undefined behavior.
     public typealias Index = UnsafeIndexV3
     public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Base>
   }
@@ -588,39 +595,39 @@ extension RedBlackTreeMultiSet {
 
   extension RedBlackTreeMultiSet {
 
-    /// 与えられた値より小さくない最初の要素へのインデックスを返す
+    /// Returns the index of the first element that is not less than the given value.
     ///
-    /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
-    /// 最初の位置（`Index`）を返します。
+    /// `lowerBound(_:)` returns the first position (`Index`) where the value is
+    /// greater than or equal to the specified element `member`.
     ///
-    /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
-    /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
-    /// - `lowerBound(3)` は要素 `3` の位置を返します。
-    /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
-    /// - `lowerBound(10)` は `endIndex` を返します。
+    /// For example, given a sorted sequence `[1, 3, 5, 7, 9]`:
+    /// - `lowerBound(0)` returns the position of the first element `1` (i.e. `startIndex`).
+    /// - `lowerBound(3)` returns the position of element `3`.
+    /// - `lowerBound(4)` returns the position of element `5` (the first value ≥ `4`).
+    /// - `lowerBound(10)` returns `endIndex`.
     ///
-    /// - Parameter member: 二分探索で検索したい要素
-    /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
+    /// - Parameter member: The element to search for using binary search.
+    /// - Returns: The first `Index` whose value is greater than or equal to `member`.
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ member: Element) -> Index {
       ___index(__tree_.lower_bound(member).sealed)
     }
 
-    /// 与えられた値よりも大きい最初の要素へのインデックスを返す
+    /// Returns the index of the first element that is greater than the given value.
     ///
-    /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
-    /// 最初の位置（`Index`）を返します。
+    /// `upperBound(_:)` returns the first position (`Index`) where the value is
+    /// strictly greater than the specified element `member`.
     ///
-    /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
-    /// - `upperBound(3)` は要素 `5` の位置を返します。
-    ///   （`3` より大きい値が最初に現れる場所）
-    /// - `upperBound(5)` は要素 `7` の位置を返します。
-    ///   （`5` と等しい要素は含まないため、`5` の直後）
-    /// - `upperBound(9)` は `endIndex` を返します。
+    /// For example, given a sorted sequence `[1, 3, 5, 5, 7, 9]`:
+    /// - `upperBound(3)` returns the position of element `5`
+    ///   (the first value greater than `3`).
+    /// - `upperBound(5)` returns the position of element `7`
+    ///   (elements equal to `5` are excluded, so it points just after them).
+    /// - `upperBound(9)` returns `endIndex`.
     ///
-    /// - Parameter member: 二分探索で検索したい要素
-    /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
+    /// - Parameter member: The element to search for using binary search.
+    /// - Returns: The first `Index` whose value is strictly greater than `member`.
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ member: Element) -> Index {
@@ -738,7 +745,7 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Indexがsubscriptやremoveで利用可能か判別します
+    /// Returns whether the index can be used with subscript or remove operations.
     ///
     /// - Complexity: O(1)
     @inlinable
@@ -801,7 +808,7 @@ extension RedBlackTreeMultiSet {
   extension RedBlackTreeMultiSet {
 
     // TODO: イテレータ利用の注意をドキュメントすること
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Important: Indices that refer to removed members become invalid.
     /// - Complexity: O(log *n* : *k*)
     @inlinable
     @discardableResult

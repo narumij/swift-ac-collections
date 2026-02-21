@@ -24,7 +24,7 @@
 
   extension RedBlackTreeSet {
 
-    /// 該当する要素を取得可能かどうかの判定結果を返す
+    /// Returns whether the corresponding element can be accessed.
     @inlinable
     public func isValid(_ bound: Bound) -> Bool {
       let sealed = bound.evaluate(__tree_)
@@ -38,9 +38,9 @@
 
     // 実は辞書の派生型という位置づけが自然な気もする
 
-    /// 要素の位置に該当する要素を取得する
+    /// Returns the element at the evaluated position.
     ///
-    /// 要素位置を評価した結果が末尾の次や失敗の場合、nilを返す
+    /// If the evaluated position is `endIndex` or the lookup fails, `nil` is returned.
     ///
     @inlinable
     public subscript(bound: Bound) -> Element? {
@@ -65,9 +65,9 @@
 
   extension RedBlackTreeSet {
 
-    /// 該当する要素を取得可能かどうかの判定結果を返す
+    /// Returns whether the corresponding element can be accessed.
     ///
-    /// これがfalseの場合でもBoundRange関連APIはクラッシュしない
+    /// Even if this returns `false`, BoundRange-related APIs will not crash.
     @inlinable
     public func isValid(_ bounds: BoundRangeExpression) -> Bool {
       let range = bounds.evaluate(__tree_).relative(to: __tree_)

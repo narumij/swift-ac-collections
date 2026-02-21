@@ -302,7 +302,8 @@ extension RedBlackTreeSet {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   ///
-  /// - Important: 空間計算量に余裕がある場合、formUnionの使用を推奨します
+  /// - Important: If sufficient space is available,
+  ///   using `formUnion` is recommended.
   @inlinable
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
     __tree_.ensureUnique { __tree_ in

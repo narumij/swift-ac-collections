@@ -348,22 +348,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
-    __tree_.ensureUnique()
-    guard let p = __tree_.__purified_(ptr).pointer, p.sealed.exists
-    else { return nil }
-    let old = __tree_[_unsafe_raw: p]
-    __tree_[_unsafe_raw: p].value = newValue
-    return Self.__element_(old)
-  }
-}
-
 // MARK: - Combining MultiMap
 
 extension RedBlackTreeMultiMap {

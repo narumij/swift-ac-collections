@@ -311,20 +311,22 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testUpdate() throws {
-    var dict = [1: 1, 2: 2, 3: 3] as Target<Int, Int>
-    #if DEBUG
-      XCTAssertEqual(
-        dict.updateValue(
-          0,
-          at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawTag: Int.nullptr))?.value,
-        nil)
-    #endif
-    XCTAssertEqual(dict.updateValue(0, at: dict.endIndex)?.value, nil)
-    XCTAssertEqual(dict[1].map(\.value), [1])
-    XCTAssertEqual(dict.updateValue(10, at: dict.firstIndex(of: 1)!)?.value, 1)
-    XCTAssertEqual(dict[1].map(\.value), [10])
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testUpdate() throws {
+      var dict = [1: 1, 2: 2, 3: 3] as Target<Int, Int>
+      #if DEBUG
+        XCTAssertEqual(
+          dict.updateValue(
+            0,
+            at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawTag: Int.nullptr))?.value,
+          nil)
+      #endif
+      XCTAssertEqual(dict.updateValue(0, at: dict.endIndex)?.value, nil)
+      XCTAssertEqual(dict[1].map(\.value), [1])
+      XCTAssertEqual(dict.updateValue(10, at: dict.firstIndex(of: 1)!)?.value, 1)
+      XCTAssertEqual(dict[1].map(\.value), [10])
+    }
+  #endif
 
   func testBound() throws {
     let dict = [1: 10, 3: 30, 5: 50] as Target<Int, Int>

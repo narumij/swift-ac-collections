@@ -259,7 +259,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(log *n* + *k*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public func count(forKey key: Key) -> Int {
     __tree_.__count_unique(key)
@@ -270,7 +270,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {
     __tree_.__count_unique(key) != 0
@@ -413,8 +413,8 @@ extension RedBlackTreeDictionary {
     }
   }
 
-  /// 辞書に `other` の要素をマージします。
-  /// キーが重複したときは `combine` の戻り値を採用します。
+  /// Merges the elements of `other` into the dictionary.
+  /// If duplicate keys are encountered, the result of `combine` is used.
   ///
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
@@ -445,7 +445,7 @@ extension RedBlackTreeDictionary {
     return result
   }
 
-  /// `self` と `other` をマージした新しい辞書を返します。
+  /// Returns a new dictionary by merging `self` and `other`.
   ///
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
@@ -464,10 +464,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// 最小キーのペアを取り出して削除
-  ///
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(1)
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   public mutating func popFirst() -> Element? {
@@ -490,8 +487,8 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(1)
+  /// - Important: Indices that refer to removed members become invalid.
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   @discardableResult
@@ -502,7 +499,7 @@ extension RedBlackTreeDictionary {
     return remove(at: startIndex)
   }
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -516,8 +513,8 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Important: 削除後は、インデックスが無効になります。
-  /// - Complexity: O(1)
+  /// - Important: Indices that refer to removed members become invalid.
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   @discardableResult
@@ -532,7 +529,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
@@ -551,6 +548,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+  /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -567,7 +565,7 @@ extension RedBlackTreeDictionary {
 
   /// - Complexity: O(log *n*)
   ///
-  /// O(1)が欲しい場合、firstが等価でO(1)
+  /// If O(1) is required, `first` provides an equivalent operation in O(1).
   @inlinable
   public func min() -> Element? {
     __tree_.___min().map(Base.__element_)
@@ -680,8 +678,8 @@ extension RedBlackTreeDictionary {
   extension RedBlackTreeDictionary {
 
     /// - Important:
-    ///  要素及びノードが削除された場合、インデックスは無効になります。
-    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    ///   When an element or its corresponding node is removed, any related index becomes invalid.
+    ///   Using an invalid index may result in a runtime error or undefined behavior.
     public typealias Index = UnsafeIndexV3
     public typealias SubSequence = RedBlackTreeKeyValueRangeView<Base>
   }
@@ -739,39 +737,38 @@ extension RedBlackTreeDictionary {
 
   extension RedBlackTreeDictionary {
 
-    /// 与えられた値より小さくない最初の要素へのインデックスを返す
+    /// Returns the index of the first element whose key is not less than the given key.
     ///
-    /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
-    /// 最初の位置（`Index`）を返します。
+    /// `lowerBound(_:)` returns the first position (`Index`) whose element has a key
+    /// greater than or equal to the specified `key`.
     ///
-    /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
-    /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
-    /// - `lowerBound(3)` は要素 `3` の位置を返します。
-    /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
-    /// - `lowerBound(10)` は `endIndex` を返します。
+    /// For example, given a key-sorted sequence `[1: "a", 3: "c", 5: "e", 7: "g", 9: "i"]`:
+    /// - `lowerBound(0)` returns the position of the first element `(1, "a")` (i.e. `startIndex`).
+    /// - `lowerBound(3)` returns the position of the element with key `3`, `(3, "c")`.
+    /// - `lowerBound(4)` returns the position of `(5, "e")` (the first key ≥ `4`).
+    /// - `lowerBound(10)` returns `endIndex`.
     ///
-    /// - Parameter member: 二分探索で検索したい要素
-    /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
+    /// - Parameter key: The key to search for using binary search.
+    /// - Returns: The first `Index` whose element’s key is greater than or equal to `key`.
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ key: Key) -> Index {
       ___index(__tree_.lower_bound(key).sealed)
     }
 
-    /// 与えられた値よりも大きい最初の要素へのインデックスを返す
+    /// Returns the index of the first element whose key is greater than the given key.
     ///
-    /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
-    /// 最初の位置（`Index`）を返します。
+    /// `upperBound(_:)` returns the first position (`Index`) whose element has a key
+    /// strictly greater than the specified `key`.
     ///
-    /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
-    /// - `upperBound(3)` は要素 `5` の位置を返します。
-    ///   （`3` より大きい値が最初に現れる場所）
-    /// - `upperBound(5)` は要素 `7` の位置を返します。
-    ///   （`5` と等しい要素は含まないため、`5` の直後）
-    /// - `upperBound(9)` は `endIndex` を返します。
+    /// For example, given a key-sorted sequence `[1: "a", 3: "c", 5: "e", 7: "g", 9: "i"]`:
+    /// - `upperBound(3)` returns the position of the element with key `5`, `(5, "e")`
+    ///   (the first key greater than `3`).
+    /// - `upperBound(5)` returns the position of the element with key `7`, `(7, "g")`.
+    /// - `upperBound(9)` returns `endIndex`.
     ///
-    /// - Parameter member: 二分探索で検索したい要素
-    /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
+    /// - Parameter key: The key to search for using binary search.
+    /// - Returns: The first `Index` whose element’s key is strictly greater than `key`.
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ key: Key) -> Index {
@@ -889,7 +886,7 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// Indexがsubscriptやremoveで利用可能か判別します
+    /// Returns whether the index can be used with subscript or remove operations.
     ///
     /// - Complexity: O(1)
     @inlinable
@@ -912,6 +909,7 @@ extension RedBlackTreeDictionary {
 
   extension RedBlackTreeDictionary {
 
+    /// - Complexity: Amortized O(1)
     @discardableResult
     @inlinable @inline(__always)
     public mutating func erase(_ ptr: Index) -> Index {
@@ -953,17 +951,16 @@ extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
 
 extension RedBlackTreeDictionary: ExpressibleByArrayLiteral {
 
-  /// `[("key", value), ...]` 形式のリテラルから辞書を生成します。
+  /// Creates a dictionary from a literal in the form `[("key", value), ...]`.
   ///
-  /// - Important: キーが重複していた場合は
-  ///   `Dictionary(uniqueKeysWithValues:)` と同じく **ランタイムエラー** になります。
-  ///   （重複を許容してマージしたい場合は `merge` / `merging` を使ってください）
+  /// - Important: If duplicate keys are present,
+  ///   a **runtime error** occurs, just like `Dictionary(uniqueKeysWithValues:)`.
+  ///   (If you want to allow duplicates and merge them, use `merge` / `merging`.)
   ///
-  /// 使用例
+  /// Example:
   /// ```swift
   /// let d: RedBlackTreeDictionary = [("a", 1), ("b", 2)]
   /// ```
-  /// - Complexity: O(*n* log *n*)
   @inlinable
   @inline(__always)
   public init(arrayLiteral elements: (Key, Value)...) {

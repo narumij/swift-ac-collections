@@ -24,7 +24,7 @@
 
   extension RedBlackTreeDictionary {
 
-    /// 該当する要素を取得可能かどうかの判定結果を返す
+    /// Returns whether the corresponding element can be accessed.
     @inlinable
     public func isValid(_ bound: Bound) -> Bool {
 
@@ -35,6 +35,10 @@
 
   extension RedBlackTreeDictionary {
 
+    /// Returns the element at the evaluated position.
+    ///
+    /// If the evaluated position is `endIndex` or the lookup fails, `nil` is returned.
+    ///
     @inlinable
     public subscript(bound: Bound) -> Element? {
 
@@ -60,9 +64,9 @@
 
   extension RedBlackTreeDictionary {
 
-    /// 該当する要素を取得可能かどうかの判定結果を返す
+    /// Returns whether the corresponding element can be accessed.
     ///
-    /// これがfalseの場合でもBoundRange関連APIはクラッシュしない
+    /// Even if this returns `false`, BoundRange-related APIs will not crash.
     @inlinable
     public func isValid(_ bounds: BoundRangeExpression) -> Bool {
       let range = bounds.evaluate(__tree_).relative(to: __tree_)

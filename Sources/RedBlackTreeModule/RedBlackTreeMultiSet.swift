@@ -224,7 +224,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(log *n* + *k*)
+  /// - Complexity: O(log `count` + `distance`), where `distance` is the number of matching elements.
   @inlinable
   public func count(of element: Element) -> Int {
     __tree_.__count_multi(element)
@@ -235,7 +235,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(*n*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public func contains(_ member: Element) -> Bool {
     __tree_.__count_unique(member) != 0
@@ -253,7 +253,7 @@ extension RedBlackTreeMultiSet {
     isEmpty ? nil : __tree_[_unsafe_raw: _start]
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public var last: Element? {
     isEmpty ? nil : __tree_[_unsafe_raw: __tree_.__tree_prev_iter(_end)]
@@ -378,8 +378,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// - Important: Indices that refer to removed members become invalid.
-  /// - Complexity: O(1)
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   public mutating func popFirst() -> Element? {
@@ -403,7 +402,7 @@ extension RedBlackTreeMultiSet {
 extension RedBlackTreeMultiSet {
 
   /// - Important: Indices that refer to removed members become invalid.
-  /// - Complexity: O(1)
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   @discardableResult
@@ -432,7 +431,7 @@ extension RedBlackTreeMultiSet {
   extension RedBlackTreeMultiSet {
 
     /// - Important: After removal, indices become invalid.
-    /// - Complexity: O(1)
+    /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
@@ -794,7 +793,7 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Important: Indices that refer to removed members become invalid.
     /// - Complexity: O(log *n*)
     @inlinable
     @inline(__always)
@@ -809,7 +808,7 @@ extension RedBlackTreeMultiSet {
 
     // TODO: イテレータ利用の注意をドキュメントすること
     /// - Important: Indices that refer to removed members become invalid.
-    /// - Complexity: O(log *n* : *k*)
+    /// - Complexity: O(log `count` + `distance`), where `distance` is the number of removed elements.
     @inlinable
     @discardableResult
     public mutating func eraseMulti(_ member: Element) -> Int {

@@ -5,7 +5,123 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.1] - 2025-?-?
+## [Unreleased]
+> Note: Entries after 2026-01-25 may be incomplete; see Git history for details.
+
+### Added
+- README.ja.mdを追加
+- BoundsExpressionの新API（RedBlackTreeBoundExpression / RedBlackTreeBoundRangeExpression）を追加
+- UnsafeIndexV3とRawRangeExpression系を追加
+- UnsafeIteratorにObverse/Reverse系のバリエーションを追加
+
+### Changed
+- BoundsExpression関連の配置と実装を更新（BoundExpression→BoundsExpression）
+- UnsafeIndexV2をDeprecatedに移動
+- README/Package.swiftの更新・整理
+
+### Fixed
+- release buildの修正
+- テストの修正
+- protocol conformanceの修正
+
+### Removed
+- death testをスキップ（テスト設定の変更）
+
+## [0.2.28] - 2026-01-25
+### Changed
+- UnsafeTreeV2の内部実装を整理
+- Memoizeの内部実装を整理
+### Fixed
+- テストの修正
+
+## [0.2.17] - 2026-01-25
+### Changed
+- BoundsExpression / RangeExpressionの実装を調整
+- allocation / erase周りの実装を調整
+### Fixed
+- ensureCapacity関連の修正
+- テストの修正
+
+## [0.2.16] - 2026-01-25
+### Added
+- BoundsExpressionを追加（Dictionary / Set / MultiSet / MultiMap）
+- RangeExpressionを追加（Dictionary / Set / MultiSet / MultiMap / Slice）
+- UnsafeIndexV2を追加
+- UnsafeTreeV2のDebug/Testing（Graphviz等）を追加
+### Changed
+- イテレーターの実装を更新（RedBlackTreeIteratorV2など）
+- Deprecated APIを整理
+
+## [0.2.15] - 2026-01-05
+### Added
+- UnsafeTreeV2を追加
+- Benchmarksを追加/更新
+### Removed
+- RedBlackTreeSlice（旧実装）を削除
+
+## [0.2.14] - 2025-12-27
+### Changed
+- Deprecated APIの調整
+- テストの整理
+
+## [0.2.13] - 2025-12-27
+### Changed
+- READMEの更新
+- 逆順イテレーター周りの調整
+
+## [0.2.12] - 2025-12-26
+### Added
+- 互換性維持のためのDeprecated APIを追加
+
+## [0.2.11] - 2025-12-25
+### Changed
+- Base/Protocol構成の整理（内部実装のリファクタリング）
+
+## [0.2.10] - 2025-12-24
+### Fixed
+- Memoizeの修正
+
+## [0.2.9] - 2025-12-24
+### Changed
+- Memoizeの調整
+
+## [0.2.8] - 2025-12-24
+### Added
+- KeyValueIterator等の追加
+### Removed
+- RedBlackTreeMap（型/実装/テスト）を削除
+
+## [0.2.7] - 2025-12-09
+### Changed
+- Key iterator周りの調整
+### Fixed
+- テストの修正
+
+## [0.2.6] - 2025-12-05
+### Changed
+- `__tree`の内部実装を更新
+
+## [0.2.5] - 2025-12-03
+### Changed
+- three way comparator周りの実装を更新
+- テストの修正
+
+## [0.2.4] - 2025-11-03
+### Fixed
+- Index周りの軽微な修正
+
+## [0.2.3] - 2025-11-03
+### Fixed
+- Index周りの軽微な修正
+
+## [0.2.2] - 2025-10-26
+### Changed
+- llvm(`__tree`)由来のlower/upper bound実装更新を反映（unique側の探索実装を調整）
+- リファクタリング・リネーム
+### Fixed
+- テストの修正
+
+## [0.2.1] - 2025-10-20
 ### Added
 - サブシーケンスのサブスクリプトにRangeExpression対応を追加
 ### Fixed

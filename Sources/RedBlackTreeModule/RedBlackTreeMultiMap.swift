@@ -253,7 +253,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(log *n* + *k*)
+  /// - Complexity: O(log `count` + `distance`), where `distance` is the number of matching elements.
   @inlinable
   public func count(forKey key: Key) -> Int {
     __tree_.__count_multi(key)
@@ -264,7 +264,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {
     __tree_.__count_unique(key) != 0
@@ -282,7 +282,7 @@ extension RedBlackTreeMultiMap {
     isEmpty ? nil : Base.__element_(__tree_[_unsafe_raw: _start])
   }
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log `count`)
   @inlinable
   @inline(__always)
   public var last: Element? {
@@ -371,7 +371,8 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   ///
-  /// - Important: 空間計算量に余裕がある場合、meldの使用を推奨します
+  /// - Important: If sufficient space is available,
+  ///   using `meld` is recommended.
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
     __tree_.ensureUnique { __tree_ in
@@ -394,6 +395,9 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
+  ///
+  /// - Important: If sufficient space is available,
+  ///   using `melding` is recommended.
   @inlinable
   public func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
     var result = self
@@ -436,10 +440,8 @@ extension RedBlackTreeMultiMap {
 // MARK: - Remove（削除）
 
 extension RedBlackTreeMultiMap {
-  /// 最小キーのペアを取り出して削除
-  ///
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(1)
+  
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   public mutating func popFirst() -> Element? {
@@ -462,8 +464,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
-  /// - Complexity: O(1)
+  /// - Important: Indices that refer to removed members become invalid.
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   @discardableResult
@@ -474,7 +476,7 @@ extension RedBlackTreeMultiMap {
     return remove(at: startIndex)
   }
 
-  /// - Important: 削除したメンバーを指すインデックスが無効になります。
+  /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -488,8 +490,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Important: 削除後は、インデックスが無効になります。
-  /// - Complexity: O(1)
+  /// - Important: Indices that refer to removed members become invalid.
+  /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
   @discardableResult
@@ -504,6 +506,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -518,9 +521,9 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(*n*)
   ///
-  /// O(1)が欲しい場合、firstが等価でO(1)
+  /// If O(1) is required, `first` provides an equivalent operation in O(1).
   @inlinable
   public func min() -> Element? {
     __tree_.___min().map(Base.__element_)
@@ -635,8 +638,8 @@ extension RedBlackTreeMultiMap {
   extension RedBlackTreeMultiMap {
 
     /// - Important:
-    ///  要素及びノードが削除された場合、インデックスは無効になります。
-    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    ///   When an element or its corresponding node is removed, any related index becomes invalid.
+    ///   Using an invalid index may result in a runtime error or undefined behavior.
     public typealias Index = UnsafeIndexV3
     public typealias SubSequence = RedBlackTreeKeyValueRangeView<Base>
   }
@@ -655,6 +658,7 @@ extension RedBlackTreeMultiMap {
   }
 
   extension RedBlackTreeMultiMap {
+    
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of key: Key) -> Index? {
@@ -694,39 +698,43 @@ extension RedBlackTreeMultiMap {
 
   extension RedBlackTreeMultiMap {
 
-    /// 与えられた値より小さくない最初の要素へのインデックスを返す
+    /// Returns the index of the first element whose key is not less than the given key.
     ///
-    /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
-    /// 最初の位置（`Index`）を返します。
+    /// `lowerBound(_:)` returns the first position (`Index`) whose element has a key
+    /// greater than or equal to the specified `key`.
+    /// If multiple elements share the same key, it points to the **first (earliest inserted)**
+    /// element among them.
     ///
-    /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
-    /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
-    /// - `lowerBound(3)` は要素 `3` の位置を返します。
-    /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
-    /// - `lowerBound(10)` は `endIndex` を返します。
+    /// For example, given a key-sorted sequence `[1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]`:
+    /// - `lowerBound(0)` returns the position of the first element `(1, "b")` (i.e. `startIndex`).
+    /// - `lowerBound(1)` returns the position of the first element with key `1`, `(1, "b")`.
+    /// - `lowerBound(2)` returns the position of `(3, "a")` (the first key ≥ `2`).
+    /// - `lowerBound(5)` returns the position of `(5, "e")`.
+    /// - `lowerBound(10)` returns `endIndex`.
     ///
-    /// - Parameter member: 二分探索で検索したい要素
-    /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
+    /// - Parameter key: The key to search for using binary search.
+    /// - Returns: The first `Index` whose element’s key is greater than or equal to `key`.
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ key: Key) -> Index {
       ___index(__tree_.lower_bound(key).sealed)
     }
 
-    /// 与えられた値よりも大きい最初の要素へのインデックスを返す
+    /// Returns the index of the first element whose key is greater than the given key.
     ///
-    /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
-    /// 最初の位置（`Index`）を返します。
+    /// `upperBound(_:)` returns the first position (`Index`) whose element has a key
+    /// strictly greater than the specified `key`.
+    /// If multiple elements share the same key, it points to the position **just after
+    /// the last element with that key**.
     ///
-    /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
-    /// - `upperBound(3)` は要素 `5` の位置を返します。
-    ///   （`3` より大きい値が最初に現れる場所）
-    /// - `upperBound(5)` は要素 `7` の位置を返します。
-    ///   （`5` と等しい要素は含まないため、`5` の直後）
-    /// - `upperBound(9)` は `endIndex` を返します。
+    /// For example, given a key-sorted sequence `[1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]`:
+    /// - `upperBound(1)` returns the position of `(3, "a")`
+    ///   (elements equal to key `1` are excluded, so it points just after them).
+    /// - `upperBound(3)` returns the position of `(4, "c")`.
+    /// - `upperBound(5)` returns `endIndex`.
     ///
-    /// - Parameter member: 二分探索で検索したい要素
-    /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
+    /// - Parameter key: The key to search for using binary search.
+    /// - Returns: The first `Index` whose element’s key is strictly greater than `key`.
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ key: Key) -> Index {
@@ -844,7 +852,7 @@ extension RedBlackTreeMultiMap {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
-    /// Indexがsubscriptやremoveで利用可能か判別します
+    /// Returns whether the index can be used with subscript or remove operations.
     ///
     /// - Complexity: O(1)
     @inlinable
@@ -893,7 +901,7 @@ extension RedBlackTreeMultiMap {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
+    /// - Important: Indices that refer to removed members become invalid.
     /// - Complexity: O(log *n*)
     @inlinable
     @inline(__always)
@@ -907,8 +915,8 @@ extension RedBlackTreeMultiMap {
   extension RedBlackTreeMultiMap {
 
     // TODO: イテレータ利用の注意をドキュメントすること
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n* + *k*)
+    /// - Important: Indices that refer to removed members become invalid.
+    /// - Complexity: O(log `count` + `distance`), where `distance` is the number of removed elements.
     @inlinable
     @discardableResult
     public mutating func eraseMulti(_ key: Key) -> Int {

@@ -6,8 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-> Note: Entries after 2026-01-25 may be incomplete; see Git history for details.
 
+### Added
+### Changed
+### Fixed
+### Removed
+
+## [0.3.0] - 2026-02-23
 ### Added
 - README.ja.mdを追加
 - BoundsExpressionの新API（RedBlackTreeBoundExpression / RedBlackTreeBoundRangeExpression）を追加

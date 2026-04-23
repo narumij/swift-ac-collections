@@ -179,7 +179,7 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
-  
+
   // _SealedPtrをpurifiedする処理は間違い。外部に晒さない用途なので。
 
   /// インデックスをポインタに解決する
@@ -196,7 +196,7 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
-  
+
   // _SealedPtrをpurifiedする処理は間違い。外部に晒さない用途なので。
 
   @inlinable
@@ -212,15 +212,16 @@ extension UnsafeTreeV2 {
 
 // MARK: - COMPATIBLE_ATCODER_2025用
 
-extension UnsafeTreeV2 {
-  
-  @inlinable
-  @inline(__always)
-  internal func __purified_(_ index: UnsafeIndexV2<Base>) -> _SealedPtr
-  where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-    tied === index.tied
-    ? index.sealed.purified
-    : __retrieve_(index.sealed.purified.tag).purified
-  }
-}
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeTreeV2 {
 
+    @inlinable
+    @inline(__always)
+    internal func __purified_(_ index: UnsafeIndexV2<Base>) -> _SealedPtr
+    where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
+      tied === index.tied
+        ? index.sealed.purified
+        : __retrieve_(index.sealed.purified.tag).purified
+    }
+  }
+#endif

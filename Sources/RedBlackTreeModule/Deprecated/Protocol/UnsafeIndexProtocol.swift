@@ -58,18 +58,20 @@ extension UnsafeIndexProtocol_tie {
   }
 }
 
-@usableFromInline
-protocol UnsafeIndexProtocol_tree: UnsafeIndexBinding & UnsafeTreeHost {
-  func ___index(_ p: _SealedPtr) -> Index
-}
-
-extension UnsafeIndexProtocol_tree {
-
-  @inlinable @inline(__always)
-  internal func ___index(_ p: _SealedPtr) -> Index {
-    Index(sealed: p, tie: __tree_.tied)
+#if COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  protocol UnsafeIndexProtocol_tree: UnsafeIndexBinding & UnsafeTreeHost {
+    func ___index(_ p: _SealedPtr) -> Index
   }
-}
+
+  extension UnsafeIndexProtocol_tree {
+
+    @inlinable @inline(__always)
+    internal func ___index(_ p: _SealedPtr) -> Index {
+      Index(sealed: p, tie: __tree_.tied)
+    }
+  }
+#endif
 
 #if COMPATIBLE_ATCODER_2025
   @usableFromInline

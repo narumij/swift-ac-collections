@@ -54,64 +54,66 @@ extension ___UnsafeIndexV2 {
     ___index(_sealed_end)
   }
 
-  @inlinable @inline(__always)
-  internal func _index(after i: Index) -> Index {
-    var i = i
-    i.sealed = __tree_.___index(after: __tree_.__purified_(i))
-    return i
-  }
-
-  @inlinable @inline(__always)
-  internal func _formIndex(after i: inout Index) {
-    i = _index(after: i)
-  }
-
-  @inlinable @inline(__always)
-  internal func _index(before i: Index) -> Index {
-    var i = i
-    i.sealed = __tree_.___index(before: __tree_.__purified_(i))
-    return i
-  }
-
-  @inlinable @inline(__always)
-  internal func _formIndex(before i: inout Index) {
-    i = _index(before: i)
-  }
-
-  @inlinable @inline(__always)
-  internal func _index(_ i: Index, offsetBy distance: Int) -> Index {
-    var i = i
-    i.sealed = __tree_.___index(__tree_.__purified_(i), offsetBy: distance)
-    return i
-  }
-
-  @inlinable @inline(__always)
-  internal func _formIndex(_ i: inout Index, offsetBy distance: Int) {
-    i = _index(i, offsetBy: distance)
-  }
-
-  @inlinable @inline(__always)
-  internal func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Index?
-  {
-    var i = i
-    let result = _formIndex(&i, offsetBy: distance, limitedBy: limit)
-    return result ? i : nil
-  }
-
-  @inlinable @inline(__always)
-  internal func _formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
-    -> Bool
-  {
-    guard let ___i = __tree_.__purified_(i).pointer
-    else { return false }
-
-    let __l = __tree_.__purified_(limit).map(\.pointer)
-
-    return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
-      i.sealed = $0.flatMap { $0.sealed }
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable @inline(__always)
+    internal func _index(after i: Index) -> Index {
+      var i = i
+      i.sealed = __tree_.___index(after: __tree_.__purified_(i))
+      return i
     }
-  }
+
+    @inlinable @inline(__always)
+    internal func _formIndex(after i: inout Index) {
+      i = _index(after: i)
+    }
+
+    @inlinable @inline(__always)
+    internal func _index(before i: Index) -> Index {
+      var i = i
+      i.sealed = __tree_.___index(before: __tree_.__purified_(i))
+      return i
+    }
+
+    @inlinable @inline(__always)
+    internal func _formIndex(before i: inout Index) {
+      i = _index(before: i)
+    }
+
+    @inlinable @inline(__always)
+    internal func _index(_ i: Index, offsetBy distance: Int) -> Index {
+      var i = i
+      i.sealed = __tree_.___index(__tree_.__purified_(i), offsetBy: distance)
+      return i
+    }
+
+    @inlinable @inline(__always)
+    internal func _formIndex(_ i: inout Index, offsetBy distance: Int) {
+      i = _index(i, offsetBy: distance)
+    }
+
+    @inlinable @inline(__always)
+    internal func _index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index)
+      -> Index?
+    {
+      var i = i
+      let result = _formIndex(&i, offsetBy: distance, limitedBy: limit)
+      return result ? i : nil
+    }
+
+    @inlinable @inline(__always)
+    internal func _formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
+      -> Bool
+    {
+      guard let ___i = __tree_.__purified_(i).pointer
+      else { return false }
+
+      let __l = __tree_.__purified_(limit).map(\.pointer)
+
+      return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
+        i.sealed = $0.flatMap { $0.sealed }
+      }
+    }
+  #endif
 }
 
 extension ___UnsafeIndexV2 {

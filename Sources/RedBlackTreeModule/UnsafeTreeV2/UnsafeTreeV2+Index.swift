@@ -17,7 +17,11 @@
 
 extension UnsafeTreeV2 where Base: ___TreeIndex {
 
-  public typealias Index = UnsafeIndexV2<Base>
+  #if COMPATIBLE_ATCODER_2025
+    public typealias Index = UnsafeIndexV2<Base>
+  #else
+    public typealias Index = UnsafeIndexV3
+  #endif
 }
 
 extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {

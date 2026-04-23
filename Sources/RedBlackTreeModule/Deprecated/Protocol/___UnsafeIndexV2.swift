@@ -27,34 +27,34 @@ protocol ___UnsafeIndexV2:
     & _KeyBride
 {}
 
-extension ___UnsafeIndexV2 {
+#if COMPATIBLE_ATCODER_2025
+  extension ___UnsafeIndexV2 {
 
-  @inlinable @inline(__always)
-  internal func _distance(from start: Index, to end: Index) -> Int {
-    guard
-      let d = __tree_.___distance(
-        from: __tree_.__purified_(start),
-        to: __tree_.__purified_(end))
-    else {
-      fatalError(.invalidIndex)
+    @inlinable @inline(__always)
+    internal func _distance(from start: Index, to end: Index) -> Int {
+      guard
+        let d = __tree_.___distance(
+          from: __tree_.__purified_(start),
+          to: __tree_.__purified_(end))
+      else {
+        fatalError(.invalidIndex)
+      }
+      return d
     }
-    return d
-  }
-}
-
-extension ___UnsafeIndexV2 {
-
-  @inlinable @inline(__always)
-  internal var _startIndex: Index {
-    ___index(_sealed_start)
   }
 
-  @inlinable @inline(__always)
-  internal var _endIndex: Index {
-    ___index(_sealed_end)
-  }
+  extension ___UnsafeIndexV2 {
 
-  #if COMPATIBLE_ATCODER_2025
+    @inlinable @inline(__always)
+    internal var _startIndex: Index {
+      ___index(_sealed_start)
+    }
+
+    @inlinable @inline(__always)
+    internal var _endIndex: Index {
+      ___index(_sealed_end)
+    }
+
     @inlinable @inline(__always)
     internal func _index(after i: Index) -> Index {
       var i = i
@@ -113,18 +113,16 @@ extension ___UnsafeIndexV2 {
         i.sealed = $0.flatMap { $0.sealed }
       }
     }
-  #endif
-}
-
-extension ___UnsafeIndexV2 {
-
-  @inlinable @inline(__always)
-  internal func _isValid(index: Index) -> Bool {
-    __tree_.__purified_(index).exists
   }
-}
 
-#if COMPATIBLE_ATCODER_2025
+  extension ___UnsafeIndexV2 {
+
+    @inlinable @inline(__always)
+    internal func _isValid(index: Index) -> Bool {
+      __tree_.__purified_(index).exists
+    }
+  }
+
   extension ___UnsafeIndexV2 where Self: Collection {
 
     @inlinable @inline(__always)
@@ -141,36 +139,36 @@ extension ___UnsafeIndexV2 {
       return false
     }
   }
+
+  // 初期の名残
+  extension ___UnsafeIndexV2 {
+
+    @discardableResult
+    @inlinable @inline(__always)
+    public mutating func ___erase(_ ptr: Index) -> Index {
+      ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
+    }
+  }
+
+  extension ___UnsafeIndexV2 {
+
+    @inlinable @inline(__always)
+    internal func ___index_lower_bound(_ __k: _Key) -> Index {
+      ___index(__tree_.lower_bound(__k).sealed)
+    }
+
+    @inlinable @inline(__always)
+    internal func ___index_upper_bound(_ __k: _Key) -> Index {
+      ___index(__tree_.upper_bound(__k).sealed)
+    }
+  }
+
+  extension ___UnsafeIndexV2 {
+
+    @inlinable @inline(__always)
+    internal func ___first_index(of member: _Key) -> Index? {
+      let ptr = __tree_.__find_equal(member).__child.__ptr_
+      return ___index_or_nil(ptr.sealed)
+    }
+  }
 #endif
-
-// 初期の名残
-extension ___UnsafeIndexV2 {
-
-  @discardableResult
-  @inlinable @inline(__always)
-  public mutating func ___erase(_ ptr: Index) -> Index {
-    ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
-  }
-}
-
-extension ___UnsafeIndexV2 {
-
-  @inlinable @inline(__always)
-  internal func ___index_lower_bound(_ __k: _Key) -> Index {
-    ___index(__tree_.lower_bound(__k).sealed)
-  }
-
-  @inlinable @inline(__always)
-  internal func ___index_upper_bound(_ __k: _Key) -> Index {
-    ___index(__tree_.upper_bound(__k).sealed)
-  }
-}
-
-extension ___UnsafeIndexV2 {
-
-  @inlinable @inline(__always)
-  internal func ___first_index(of member: _Key) -> Index? {
-    let ptr = __tree_.__find_equal(member).__child.__ptr_
-    return ___index_or_nil(ptr.sealed)
-  }
-}

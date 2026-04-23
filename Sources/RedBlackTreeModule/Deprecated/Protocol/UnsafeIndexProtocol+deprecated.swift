@@ -56,3 +56,18 @@ extension UnsafeIndexProtocol_tie {
     }
   }
 #endif
+
+#if COMPATIBLE_ATCODER_2025
+extension UnsafeIndexProviderProtocol {
+
+  @inlinable @inline(__always)
+  internal func ___index_or_nil(_ p: _SealedPtr) -> Index? {
+    !p.isValid ? nil : ___index(p)
+  }
+
+  @inlinable @inline(__always)
+  internal func ___index_or_nil(_ p: _SealedPtr?) -> Index? {
+    p.flatMap { ___index_or_nil($0) }
+  }
+}
+#endif

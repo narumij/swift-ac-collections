@@ -41,6 +41,7 @@ extension UnsafeIndexProviderProtocol {
   }
 }
 
+#if COMPATIBLE_ATCODER_2025
 /// Indexが何であるかをしり、その生成には何が必要で、どう生成するのかを知っている
 @usableFromInline
 protocol UnsafeIndexProtocol_tie: _UnsafeNodePtrType
@@ -57,6 +58,7 @@ extension UnsafeIndexProtocol_tie {
     Index(sealed: p, tie: tied)
   }
 }
+#endif
 
 #if COMPATIBLE_ATCODER_2025
   @usableFromInline

@@ -29,7 +29,9 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 where Base: ___TreeIndex {
 
   public typealias Pointee = Base.Element
-  public typealias Indices = UnsafeIndexV2Collection<Base>
+  #if COMPATIBLE_ATCODER_2025
+    public typealias Indices = UnsafeIndexV2Collection<Base>
+  #endif
 }
 
 extension UnsafeTreeV2 where Base: ___TreeIndex {

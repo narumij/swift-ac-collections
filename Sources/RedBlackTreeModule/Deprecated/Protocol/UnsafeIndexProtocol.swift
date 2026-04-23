@@ -10,10 +10,12 @@ where Index == UnsafeTreeV2<Base>.Index, Base: ___TreeIndex {
   associatedtype Index
 }
 
-public protocol UnsafeIndicesBinding: UnsafeTreeBinding
-where Indices == UnsafeTreeV2<Base>.Indices, Base: ___TreeIndex {
-  associatedtype Indices
-}
+#if COMPATIBLE_ATCODER_2025
+  public protocol UnsafeIndicesBinding: UnsafeTreeBinding
+  where Indices == UnsafeTreeV2<Base>.Indices, Base: ___TreeIndex {
+    associatedtype Indices
+  }
+#endif
 
 @usableFromInline
 protocol UnsafeIndexProviderProtocol: UnsafeIndexBinding & UnsafeTreeHost {
@@ -69,13 +71,15 @@ extension UnsafeIndexProtocol_tree {
   }
 }
 
-@usableFromInline
-protocol UnsafeIndicesProtoocl: UnsafeTreeSealedRangeBaseInterface & UnsafeIndicesBinding {}
+#if COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  protocol UnsafeIndicesProtoocl: UnsafeTreeSealedRangeBaseInterface & UnsafeIndicesBinding {}
 
-extension UnsafeIndicesProtoocl {
+  extension UnsafeIndicesProtoocl {
 
-  @inlinable @inline(__always)
-  internal var _indices: Indices {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    @inlinable @inline(__always)
+    internal var _indices: Indices {
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    }
   }
-}
+#endif

@@ -89,10 +89,12 @@ protocol ___UnsafeIndexRangeBaseV2:
     & UnsafeIndexProviderProtocol
 {}
 
-public typealias RedBlackTreeIndex = UnsafeIndexV2
-public typealias RedBlackTreeIndices = UnsafeIndexV2Collection
-public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2
-public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
+#if COMPATIBLE_ATCODER_2025
+  public typealias RedBlackTreeIndex = UnsafeIndexV2
+  public typealias RedBlackTreeIndices = UnsafeIndexV2Collection
+  public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2
+  public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
+#endif
 
 @usableFromInline
 typealias _SetBridge = _PayloadValueBride & _KeyBride & _ElementBride

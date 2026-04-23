@@ -1,14 +1,9 @@
 //
-//  UnsafeIndexingProtocol.swift
+//  UnsafeIndexProtocol+deprecated.swift
 //  swift-ac-collections
 //
-//  Created by narumij on 2026/01/13.
+//  Created by narumij on 2026/04/23.
 //
-
-public protocol UnsafeIndexBinding: UnsafeTreeBinding
-where Index == UnsafeTreeV2<Base>.Index, Base: ___TreeIndex {
-  associatedtype Index
-}
 
 #if COMPATIBLE_ATCODER_2025
   public protocol UnsafeIndicesBinding: UnsafeTreeBinding
@@ -17,31 +12,6 @@ where Index == UnsafeTreeV2<Base>.Index, Base: ___TreeIndex {
   }
 #endif
 
-@usableFromInline
-protocol UnsafeIndexProviderProtocol: UnsafeIndexBinding & UnsafeTreeHost {
-  func ___index(_ p: _SealedPtr) -> Index
-}
-
-@usableFromInline
-protocol UnsafeIndexV3ProviderProtocol {
-  associatedtype Index = UnsafeIndexV3
-  func ___index(_ p: _SealedPtr) -> Index
-}
-
-extension UnsafeIndexProviderProtocol {
-
-  @inlinable @inline(__always)
-  internal func ___index_or_nil(_ p: _SealedPtr) -> Index? {
-    !p.isValid ? nil : ___index(p)
-  }
-
-  @inlinable @inline(__always)
-  internal func ___index_or_nil(_ p: _SealedPtr?) -> Index? {
-    p.flatMap { ___index_or_nil($0) }
-  }
-}
-
-#if COMPATIBLE_ATCODER_2025
 /// Indexが何であるかをしり、その生成には何が必要で、どう生成するのかを知っている
 @usableFromInline
 protocol UnsafeIndexProtocol_tie: _UnsafeNodePtrType
@@ -58,7 +28,6 @@ extension UnsafeIndexProtocol_tie {
     Index(sealed: p, tie: tied)
   }
 }
-#endif
 
 #if COMPATIBLE_ATCODER_2025
   @usableFromInline

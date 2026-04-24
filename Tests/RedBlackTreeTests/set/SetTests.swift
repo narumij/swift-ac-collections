@@ -691,6 +691,32 @@ final class SetTests: RedBlackTreeTestCase {
     }
   }
 
+  #if !COMPATIBLE_ATCODER_2025
+    func testIndex0_() throws {
+      let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      var i = RedBlackTreeBoundExpression<Int>.start
+      for _ in 0..<set.count {
+        XCTAssertEqual(set.distance(from: i, to: set.bound(after: i)), 1)
+        i = set.bound(after: i)
+      }
+      //    XCTAssertEqual(i, RedBlackTreeBoundExpression<Int>.end)
+      for _ in 0..<set.count {
+        XCTAssertEqual(set.distance(from: i, to: set.bound(before: i)), -1)
+        i = set.bound(before: i)
+      }
+      //    XCTAssertEqual(i, set.startIndex)
+      for _ in 0..<set.count {
+        XCTAssertEqual(set.distance(from: set.bound(after: i), to: i), -1)
+        i = set.bound(after: i)
+      }
+      //    XCTAssertEqual(i, set.endIndex)
+      for _ in 0..<set.count {
+        XCTAssertEqual(set.distance(from: set.bound(before: i), to: i), 1)
+        i = set.bound(before: i)
+      }
+    }
+  #endif
+
   func testIndex00() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     do {
@@ -716,6 +742,19 @@ final class SetTests: RedBlackTreeTestCase {
       }
       XCTAssertEqual(i, set.startIndex)
     }
+    #if !COMPATIBLE_ATCODER_2025
+      do {
+        var i = RedBlackTreeBoundExpression<Int>.start
+        for j in 0..<set.count {
+          XCTAssertEqual(set.distance(from: .start, to: i), j)
+          i = set.bound(after: i)
+        }
+        for j in 0..<set.count {
+          XCTAssertEqual(set.distance(from: .end, to: i), -j)
+          i = set.bound(before: i)
+        }
+      }
+    #endif
     let sub = set.elements(in: 2..<5)
     #if COMPATIBLE_ATCODER_2025
       do {

@@ -21,6 +21,9 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.count, 0)
     XCTAssertTrue(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
+    #if !COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.distance(from: .start, to: .end), 0)
+    #endif
     XCTAssertEqual(set.count(of: 0), 0)
   }
 
@@ -47,6 +50,9 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.count, 10000)
     XCTAssertFalse(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
+    #if !COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.distance(from: .start, to: .end), 10000)
+    #endif
   }
 
   func testInitCollection1() throws {
@@ -55,6 +61,9 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.count, 10000)
     XCTAssertFalse(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
+    #if !COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.distance(from: .start, to: .end), 10000)
+    #endif
   }
 
   func testInitCollection2() throws {
@@ -63,6 +72,9 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.count, 4)
     XCTAssertFalse(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
+    #if !COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(set.distance(from: .start, to: .end), set.count)
+    #endif
   }
 
   #if COMPATIBLE_ATCODER_2025
@@ -78,6 +90,9 @@ final class SetTests: RedBlackTreeTestCase {
   func testExample3() throws {
     let b: RedBlackTreeSet<Int> = [1, 2, 3]
     XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), b.count)
+    #if !COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(b.distance(from: .start, to: .end), b.count)
+    #endif
   }
 
   #if DEBUG

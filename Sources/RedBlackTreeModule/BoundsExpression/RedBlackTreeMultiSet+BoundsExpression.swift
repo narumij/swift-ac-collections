@@ -35,6 +35,22 @@
 
   extension RedBlackTreeMultiSet {
 
+    @inlinable
+    @inline(__always)
+    public func distance(from start: Bound, to end: Bound)
+      -> Int
+    {
+      guard
+        let d = __tree_.___distance(
+          from: start.evaluate(__tree_),
+          to: end.evaluate(__tree_))
+      else { fatalError(.invalidIndex) }
+      return d
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
     /// Returns the element at the evaluated position.
     ///
     /// If the evaluated position is `endIndex` or the lookup fails, `nil` is returned.

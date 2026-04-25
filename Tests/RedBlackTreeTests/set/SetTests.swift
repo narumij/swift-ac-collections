@@ -691,7 +691,7 @@ final class SetTests: RedBlackTreeTestCase {
     }
   }
 
-  #if !COMPATIBLE_ATCODER_2025
+  #if !COMPATIBLE_ATCODER_2025 && DEBUG
     func testIndex0_() throws {
       let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
       var i = RedBlackTreeBoundExpression<Int>.start
@@ -742,7 +742,7 @@ final class SetTests: RedBlackTreeTestCase {
       }
       XCTAssertEqual(i, set.startIndex)
     }
-    #if !COMPATIBLE_ATCODER_2025
+    #if !COMPATIBLE_ATCODER_2025 && DEBUG
       do {
         var i = RedBlackTreeBoundExpression<Int>.start
         for j in 0..<set.count {

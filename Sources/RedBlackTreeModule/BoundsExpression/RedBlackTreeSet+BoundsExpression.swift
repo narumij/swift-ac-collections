@@ -32,6 +32,35 @@
     }
   }
 
+  extension RedBlackTreeSet {
+
+    @inlinable
+    @inline(__always)
+    public func distance(from start: Bound, to end: Bound)
+      -> Int
+    {
+      guard
+        let d = __tree_.___distance(
+          from: start.evaluate(__tree_),
+          to: end.evaluate(__tree_))
+      else { fatalError(.invalidIndex) }
+      return d
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    internal func bound(before i: Bound) -> Bound {
+      .before(i)
+    }
+
+    @inlinable
+    internal func bound(after i: Bound) -> Bound {
+      .after(i)
+    }
+  }
+
   // TODO: インデックス取得メソッドを追加するかどうか検討
 
   extension RedBlackTreeSet {

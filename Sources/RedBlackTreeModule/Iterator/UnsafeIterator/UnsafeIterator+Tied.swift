@@ -98,27 +98,29 @@ extension UnsafeIterator.Tied: Comparable where Source: Equatable, Element: Comp
   }
 #endif
 
-extension UnsafeIterator.Tied
-where
-  Source.Source.Element == UnsafeMutablePointer<UnsafeNode>,
-  Base: ___TreeIndex
-{
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeIterator.Tied
+  where
+    Source.Source.Element == UnsafeMutablePointer<UnsafeNode>,
+    Base: ___TreeIndex
+  {
 
-  /// - Complexity: O(1)
-  public var indices: UnsafeIterator.TiedIndexing<Source.Base, Source.Source> {
-    .init(_source: source._source, tie: tied)
-  }
+    /// - Complexity: O(1)
+    public var indices: UnsafeIterator.TiedIndexing<Source.Base, Source.Source> {
+      .init(_source: source._source, tie: tied)
+    }
 
-  @available(*, deprecated, message: "危険になった為")
-  @inlinable
-  @inline(__always)
-  package func ___node_positions() -> Source.Source {
-    // 多分lifetime延長しないとクラッシュする
-    // と思ったけどしなかった。念のためlifetimeとdeprecated
-    defer { _fixLifetime(self) }
-    return source._source
+    @available(*, deprecated, message: "危険になった為")
+    @inlinable
+    @inline(__always)
+    package func ___node_positions() -> Source.Source {
+      // 多分lifetime延長しないとクラッシュする
+      // と思ったけどしなかった。念のためlifetimeとdeprecated
+      defer { _fixLifetime(self) }
+      return source._source
+    }
   }
-}
+#endif
 
 extension UnsafeIterator.Tied
 where

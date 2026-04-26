@@ -87,6 +87,8 @@ public protocol BalancedCollection: BalancedSequence {
   func isValid(_: IndexRangeExpression) -> Bool
   func isValid(_: Bound) -> Bool
   func isValid(_: BoundRangeExpression) -> Bool
+  
+  func distance(from: Bound, to: Bound) -> Int
 
   subscript(range: IndexRange) -> View { get }
   subscript(range: IndexRangeExpression) -> View { get }

@@ -25,13 +25,15 @@ extension UnsafeIterator {
     public typealias _RemoveTrait = _RemoveAware
   #endif
 
-  public
-    typealias IndexObverse<Base: ___TreeBase & ___TreeIndex> =
-    TiedIndexing<Base, _RemoveTrait<_Obverse2>>
+  #if COMPATIBLE_ATCODER_2025
+    public
+      typealias IndexObverse<Base: ___TreeBase & ___TreeIndex> =
+      TiedIndexing<Base, _RemoveTrait<_Obverse2>>
 
-  public
-    typealias IndexReverse<Base: ___TreeBase & ___TreeIndex> =
-    TiedIndexing<Base, _RemoveTrait<_Reverse2>>
+    public
+      typealias IndexReverse<Base: ___TreeBase & ___TreeIndex> =
+      TiedIndexing<Base, _RemoveTrait<_Reverse2>>
+  #endif
 
   public
     typealias ValueObverse<Base: ___TreeBase> = Tied<

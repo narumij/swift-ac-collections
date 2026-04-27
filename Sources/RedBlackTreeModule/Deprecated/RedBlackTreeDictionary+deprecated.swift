@@ -21,7 +21,7 @@
       self.init(
         __tree_: .create_unique(
           sorted: keysAndValues.sorted { $0.0 < $1.0 },
-          transform: Self.__payload_
+          transform: Base.__payload_
         ))
     }
   }
@@ -322,7 +322,7 @@
 
   extension RedBlackTreeDictionary {
 
-    public typealias SubSequence = RedBlackTreeSliceV2<Self>.KeyValue
+    public typealias SubSequence = RedBlackTreeSliceV2<Base>.KeyValue
   }
 
   // MARK: - Index Range

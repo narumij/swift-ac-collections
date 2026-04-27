@@ -8,18 +8,20 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost
-where Base: ___TreeBase & ScalarValueTrait {
+public struct RedBlackTreeKeyOnlyRangeView<Container>: UnsafeMutableTreeHost
+where Container: ___Root,
+      Container.Base: ___TreeBase & ScalarValueTrait {
 
   @inlinable
-  internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
+  internal init(__tree_: UnsafeTreeV2<Container.Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
     self.startIndex = _start.band(__tree_.tied)
     self.endIndex = _end.band(__tree_.tied)
   }
 
+  public typealias Base = Container.Base
   public typealias Index = _TieWrappedPtr
-  public typealias Element = Base._PayloadValue
+  public typealias Element = Container.Base._PayloadValue
 
   @usableFromInline
   internal var __tree_: Tree
@@ -83,7 +85,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Base> {
+  public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Container.Base> {
     let (_start, _end) = _range
     return .init(start: _start, end: _end, tie: __tree_.tied)
   }
@@ -107,7 +109,7 @@ extension RedBlackTreeKeyOnlyRangeView {
 
 // MARK: -
 
-public protocol ScalarBaseInit: ___TreeBase & ScalarValueTrait {
+public protocol ScalarBaseInit: ___Root where Self.Base: ___TreeBase & ScalarValueTrait {
   static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self
 }
 
@@ -123,8 +125,8 @@ extension RedBlackTreeMultiSet: ScalarBaseInit {
   }
 }
 
-extension RedBlackTreeKeyOnlyRangeView where Base: ScalarBaseInit {
-  public func unranged() -> Base { .create(self) }
+extension RedBlackTreeKeyOnlyRangeView where Container: ScalarBaseInit {
+  public func unranged() -> Container { .create(self) }
 }
 
 // MARK: -

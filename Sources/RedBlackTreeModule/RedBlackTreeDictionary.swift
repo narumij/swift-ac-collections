@@ -98,15 +98,6 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   public
     typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
-  public
-    typealias _Key = Key
-
-  public
-    typealias _MappedValue = Value
-
-  public
-    typealias _PayloadValue = RedBlackTreePair<Key, Value>
-
   @usableFromInline
   var __tree_: Tree
 
@@ -117,17 +108,23 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 }
 
 extension RedBlackTreeDictionary {
-  public typealias Base = Self
+  @frozen
+  public enum Base {
+    public typealias Element = (key: Key, value: Value)
+    public typealias _Key = Key
+    public typealias _MappedValue = Value
+    public typealias _PayloadValue = RedBlackTreePair<Key, Value>
+  }
 }
+
+extension RedBlackTreeDictionary.Base: CompareUniqueTrait {}
+extension RedBlackTreeDictionary.Base: PairValueTrait {}
+extension RedBlackTreeDictionary.Base: _PairBasePayload_KeyProtocol_ptr {}
+extension RedBlackTreeDictionary.Base: _BaseNode_NodeCompareProtocol {}
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary: _RedBlackTreeKeyValues {}
 #endif
-
-extension RedBlackTreeDictionary: CompareUniqueTrait {}
-extension RedBlackTreeDictionary: PairValueTrait {}
-extension RedBlackTreeDictionary: _PairBasePayload_KeyProtocol_ptr {}
-extension RedBlackTreeDictionary: _BaseNode_NodeCompareProtocol {}
 
 // MARK: - Creating a Dictionay
 
@@ -197,7 +194,7 @@ extension RedBlackTreeDictionary {
       __tree_: try .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
         uniquingKeysWith: combine,
-        transform: Self.__payload_
+        transform: Base.__payload_
       ))
   }
 }
@@ -335,7 +332,7 @@ extension RedBlackTreeDictionary {
         __tree_.ensureCapacity()
         assert(__tree_.capacity > __tree_.count)
         __tree_.update {
-          let __h = $0.__construct_node(Self.__payload_((key, defaultValue())))
+          let __h = $0.__construct_node(Base.__payload_((key, defaultValue())))
           $0.__insert_node_at(__parent, __child, __h)
         }
       }
@@ -367,8 +364,8 @@ extension RedBlackTreeDictionary {
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(Self.__payload_(newMember))
-    return (__inserted, __inserted ? newMember : Self.__element_(__tree_[_unsafe_raw: __r]))
+    let (__r, __inserted) = __tree_.__insert_unique(Base.__payload_(newMember))
+    return (__inserted, __inserted ? newMember : Base.__element_(__tree_[_unsafe_raw: __r]))
   }
 }
 
@@ -383,10 +380,10 @@ extension RedBlackTreeDictionary {
     forKey key: Key
   ) -> Value? {
     __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(Self.__payload_((key, value)))
+    let (__r, __inserted) = __tree_.__insert_unique(Base.__payload_((key, value)))
     guard !__inserted else { return nil }
     let oldMember = __tree_[_unsafe_raw: __r]
-    __tree_[_unsafe_raw: __r] = Self.__payload_((key, value))
+    __tree_[_unsafe_raw: __r] = Base.__payload_((key, value))
     return oldMember.value
   }
 }
@@ -429,7 +426,7 @@ extension RedBlackTreeDictionary {
         tree: __tree_,
         other,
         uniquingKeysWith: combine
-      ) { Self.__payload_($0) }
+      ) { Base.__payload_($0) }
     }
   }
 
@@ -523,7 +520,7 @@ extension RedBlackTreeDictionary {
     guard case .success(let __p) = __tree_.__purified_(index) else {
       fatalError(.invalidIndex)
     }
-    return Self.__element_(__tree_._unchecked_remove(at: __p.pointer).payload)
+    return Base.__element_(__tree_._unchecked_remove(at: __p.pointer).payload)
   }
 }
 
@@ -589,7 +586,7 @@ extension RedBlackTreeDictionary {
   ) rethrows -> Self {
     .init(
       __tree_: try __tree_.___filter(_start, _end) {
-        try isIncluded(Self.__element_($0))
+        try isIncluded(Base.__element_($0))
       })
   }
 }
@@ -681,7 +678,7 @@ extension RedBlackTreeDictionary {
     ///   When an element or its corresponding node is removed, any related index becomes invalid.
     ///   Using an invalid index may result in a runtime error or undefined behavior.
     public typealias Index = UnsafeIndexV3
-    public typealias SubSequence = RedBlackTreeKeyValueRangeView<Base>
+    public typealias SubSequence = RedBlackTreeKeyValueRangeView<Self>
   }
 
   extension RedBlackTreeDictionary {

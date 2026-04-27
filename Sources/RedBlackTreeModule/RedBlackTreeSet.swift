@@ -97,15 +97,6 @@ public struct RedBlackTreeSet<Element: Comparable> {
   public
     typealias Element = Element
 
-  public
-    typealias _Key = Element
-
-  public
-    typealias _PayloadValue = Element
-
-  public
-    typealias Base = Self
-
   @usableFromInline
   var __tree_: Tree
 
@@ -115,14 +106,27 @@ public struct RedBlackTreeSet<Element: Comparable> {
   }
 }
 
+extension RedBlackTreeSet {
+  @frozen
+  public enum Base {
+    public typealias _Key = Element
+    public typealias _PayloadValue = Element
+  }
+}
+
+extension RedBlackTreeSet.Base: CompareUniqueTrait {}
+extension RedBlackTreeSet.Base: ScalarValueTrait & _UnsafeNodePtrType {}
+extension RedBlackTreeSet.Base: _ScalarBasePayload_KeyProtocol_ptr {}
+extension RedBlackTreeSet.Base: _BaseNode_NodeCompareProtocol {}
+
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet: _RedBlackTreeKeyOnly {}
 #endif
 
-extension RedBlackTreeSet: CompareUniqueTrait {}
-extension RedBlackTreeSet: ScalarValueTrait & _UnsafeNodePtrType {}
-extension RedBlackTreeSet: _ScalarBasePayload_KeyProtocol_ptr {}
-extension RedBlackTreeSet: _BaseNode_NodeCompareProtocol {}
+//extension RedBlackTreeSet: CompareUniqueTrait {}
+//extension RedBlackTreeSet: ScalarValueTrait & _UnsafeNodePtrType {}
+//extension RedBlackTreeSet: _ScalarBasePayload_KeyProtocol_ptr {}
+//extension RedBlackTreeSet: _BaseNode_NodeCompareProtocol {}
 
 // MARK: - Creating a Set
 
@@ -537,7 +541,7 @@ extension RedBlackTreeSet {
     ///   When an element or its corresponding node is removed, any related index becomes invalid.
     ///   Using an invalid index may result in a runtime error or undefined behavior.
     public typealias Index = UnsafeIndexV3
-    public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Base>
+    public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Self>
   }
 
   extension RedBlackTreeSet {

@@ -97,10 +97,6 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 
   public typealias Element = Element
 
-  public typealias _Key = Element
-
-  public typealias _PayloadValue = Element
-
   @usableFromInline
   var __tree_: Tree
 
@@ -111,17 +107,21 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 }
 
 extension RedBlackTreeMultiSet {
-  public typealias Base = Self
+  @frozen
+  public enum Base {
+    public typealias _Key = Element
+    public typealias _PayloadValue = Element
+  }
 }
+
+extension RedBlackTreeMultiSet.Base: CompareMultiTrait {}
+extension RedBlackTreeMultiSet.Base: ScalarValueTrait {}
+extension RedBlackTreeMultiSet.Base: _ScalarBasePayload_KeyProtocol_ptr {}
+extension RedBlackTreeMultiSet.Base: _BaseNode_NodeCompareProtocol {}
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnly {}
 #endif
-
-extension RedBlackTreeMultiSet: CompareMultiTrait {}
-extension RedBlackTreeMultiSet: ScalarValueTrait {}
-extension RedBlackTreeMultiSet: _ScalarBasePayload_KeyProtocol_ptr {}
-extension RedBlackTreeMultiSet: _BaseNode_NodeCompareProtocol {}
 
 // MARK: - Creating a MultSet
 
@@ -538,7 +538,7 @@ extension RedBlackTreeMultiSet {
     ///   When an element or its corresponding node is removed, any related index becomes invalid.
     ///   Using an invalid index may result in a runtime error or undefined behavior.
     public typealias Index = UnsafeIndexV3
-    public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Base>
+    public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Self>
   }
 
   extension RedBlackTreeMultiSet {

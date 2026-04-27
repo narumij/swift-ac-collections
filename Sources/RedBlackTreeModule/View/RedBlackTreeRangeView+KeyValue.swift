@@ -8,8 +8,9 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeKeyValueRangeView<Base>: UnsafeMutableTreeHost
-where Base: ___TreeBase & PairValueTrait {
+public struct RedBlackTreeKeyValueRangeView<Container>: UnsafeMutableTreeHost
+where Container: ___Root,
+Container.Base: ___TreeBase & PairValueTrait {
 
   @inlinable
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
@@ -18,10 +19,11 @@ where Base: ___TreeBase & PairValueTrait {
     self.endIndex = _end.band(__tree_.tied)
   }
 
+  public typealias Base = Container.Base
   public typealias Index = _TieWrappedPtr
-  public typealias Element = Base.Element
-  public typealias Key = Base._Key
-  public typealias Value = Base._MappedValue
+  public typealias Element = Container.Base.Element
+  public typealias Key = Container.Base._Key
+  public typealias Value = Container.Base._MappedValue
 
   @usableFromInline
   internal var __tree_: Tree
@@ -128,7 +130,7 @@ extension RedBlackTreeKeyValueRangeView {
 
 // MARK: -
 
-public protocol KeyValueBaseInit: ___TreeBase & PairValueTrait {
+public protocol KeyValueBaseInit: ___Root where Base: ___TreeBase & PairValueTrait {
   static func create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self
 }
 
@@ -144,8 +146,8 @@ extension RedBlackTreeMultiMap: KeyValueBaseInit {
   }
 }
 
-extension RedBlackTreeKeyValueRangeView where Base: KeyValueBaseInit {
-  public func unranged() -> Base { .create(self) }
+extension RedBlackTreeKeyValueRangeView where Container: KeyValueBaseInit {
+  public func unranged() -> Container { .create(self) }
 }
 
 // MARK: -

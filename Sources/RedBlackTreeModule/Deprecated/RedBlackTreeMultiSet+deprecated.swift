@@ -314,7 +314,7 @@
 
   extension RedBlackTreeMultiSet {
 
-    public typealias SubSequence = RedBlackTreeSliceV2<Self>.KeyOnly
+    public typealias SubSequence = RedBlackTreeSliceV2<Base>.KeyOnly
   }
 
   // MARK: - Index Range

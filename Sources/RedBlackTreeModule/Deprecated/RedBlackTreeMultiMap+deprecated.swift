@@ -19,7 +19,7 @@
       self.init(
         __tree_:
           .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) {
-            Self.__payload_($0)
+            Base.__payload_($0)
           })
     }
   }
@@ -36,7 +36,7 @@
     @inlinable
     public init<Source>(naive sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
-      self.init(__tree_: .create_multi(naive: sequence, transform: Self.__payload_))
+      self.init(__tree_: .create_multi(naive: sequence, transform: Base.__payload_))
     }
   }
 #endif
@@ -68,7 +68,7 @@ extension RedBlackTreeMultiMap {
     else { return nil }
     let old = __tree_[_unsafe_raw: p]
     __tree_[_unsafe_raw: p].value = newValue
-    return Self.__element_(old)
+    return Base.__element_(old)
   }
 }
 #endif
@@ -348,7 +348,7 @@ extension RedBlackTreeMultiMap {
 
   extension RedBlackTreeMultiMap {
 
-    public typealias SubSequence = RedBlackTreeSliceV2<Self>.KeyValue
+    public typealias SubSequence = RedBlackTreeSliceV2<Base>.KeyValue
   }
 
   // MARK: - Index Range

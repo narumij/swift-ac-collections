@@ -26,7 +26,7 @@ public typealias ___TreeIndex = _BasePaylodValue_ElementInterface
 
 public protocol _BaseBridge {
   /// 基本情報
-  associatedtype Base
+  associatedtype Base: ___TreeBase
 }
 
 // コレクション実装の基点
@@ -36,8 +36,8 @@ public protocol ___Root: _BaseBridge {
 }
 
 /// LRUキャッシュは異なるが、それ以外はBaseをホストしている
-public protocol __BaseHosting: _BaseBridge
-where Base == Self {}
+//public protocol __BaseHosting: _BaseBridge
+//where Base == Self {}
 
 /// 木にどれを使うのかしっている
 public protocol UnsafeTreeBinding: ___Root & _UnsafeNodePtrType

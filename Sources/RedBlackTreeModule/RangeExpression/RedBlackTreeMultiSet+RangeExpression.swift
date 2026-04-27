@@ -19,7 +19,7 @@
 
   extension RedBlackTreeMultiSet {
 
-    public typealias View = RedBlackTreeKeyOnlyRangeView<Base>
+    public typealias View = RedBlackTreeKeyOnlyRangeView<Self>
     public typealias IndexRange = UnsafeIndexV3Range
     public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
 
@@ -160,14 +160,14 @@
     subscript(unchecked range: _RawRange<_SealedPtr>) -> View {
 
       @inline(__always) get {
-        RedBlackTreeKeyOnlyRangeView(
+        View(
           __tree_: __tree_,
           _start: range.lowerBound,
           _end: range.upperBound)
       }
 
       @inline(__always) _modify {
-        var view = RedBlackTreeKeyOnlyRangeView(
+        var view = View(
           __tree_: __tree_,
           _start: range.lowerBound,
           _end: range.upperBound)

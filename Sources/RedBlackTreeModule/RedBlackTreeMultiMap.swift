@@ -121,6 +121,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 }
 
 extension RedBlackTreeMultiMap {
+  @frozen
   public enum Base {
     public typealias Element = (key: Key, value: Value)
     public typealias _Key = Key

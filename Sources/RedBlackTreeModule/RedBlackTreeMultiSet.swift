@@ -107,6 +107,7 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
 }
 
 extension RedBlackTreeMultiSet {
+  @frozen
   public enum Base {
     public typealias _Key = Element
     public typealias _PayloadValue = Element

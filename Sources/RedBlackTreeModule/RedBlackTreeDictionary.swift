@@ -108,6 +108,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 }
 
 extension RedBlackTreeDictionary {
+  @frozen
   public enum Base {
     public typealias Element = (key: Key, value: Value)
     public typealias _Key = Key

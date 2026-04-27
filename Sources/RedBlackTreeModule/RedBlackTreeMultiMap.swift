@@ -111,15 +111,6 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   public
     typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
-  public
-    typealias _Key = Key
-
-  public
-    typealias _MappedValue = Value
-
-  public
-    typealias _PayloadValue = RedBlackTreePair<Key, Value>
-
   @usableFromInline
   var __tree_: Tree
 
@@ -130,18 +121,23 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
 }
 
 extension RedBlackTreeMultiMap {
-  public typealias Base = Self
+  public enum Base {
+    public typealias Element = (key: Key, value: Value)
+    public typealias _Key = Key
+    public typealias _MappedValue = Value
+    public typealias _PayloadValue = RedBlackTreePair<Key, Value>
+  }
 }
+
+extension RedBlackTreeMultiMap.Base: CompareMultiTrait {}
+extension RedBlackTreeMultiMap.Base: PairValueTrait {}
+extension RedBlackTreeMultiMap.Base: _PairBasePayload_KeyProtocol_ptr {}
+extension RedBlackTreeMultiMap.Base: _BaseNode_NodeCompareProtocol {}
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap: _RedBlackTreeKeyValues {}
 #endif
 //extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
-
-extension RedBlackTreeMultiMap: CompareMultiTrait {}
-extension RedBlackTreeMultiMap: PairValueTrait {}
-extension RedBlackTreeMultiMap: _PairBasePayload_KeyProtocol_ptr {}
-extension RedBlackTreeMultiMap: _BaseNode_NodeCompareProtocol {}
 
 // MARK: - Creating a MultiMap
 
@@ -343,7 +339,7 @@ extension RedBlackTreeMultiMap {
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_.ensureUniqueAndCapacity()
-    _ = __tree_.__insert_multi(Self.__payload_(newMember))
+    _ = __tree_.__insert_multi(Base.__payload_(newMember))
     return (true, newMember)
   }
 }
@@ -373,7 +369,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
     __tree_.ensureUnique { __tree_ in
-      .___insert_range_multi(tree: __tree_, other.map { Self.__payload_($0) })
+      .___insert_range_multi(tree: __tree_, other.map { Base.__payload_($0) })
     }
   }
 
@@ -484,7 +480,7 @@ extension RedBlackTreeMultiMap {
     guard case .success(let __p) = __tree_.__purified_(index) else {
       fatalError(.invalidIndex)
     }
-    return Self.__element_(__tree_._unchecked_remove(at: __p.pointer).payload)
+    return Base.__element_(__tree_._unchecked_remove(at: __p.pointer).payload)
   }
 }
 
@@ -531,7 +527,7 @@ extension RedBlackTreeMultiMap {
   ) rethrows -> Self {
     .init(
       __tree_: try __tree_.___filter(_start, _end) {
-        try isIncluded(Self.__element_($0))
+        try isIncluded(Base.__element_($0))
       }
     )
   }
@@ -625,7 +621,7 @@ extension RedBlackTreeMultiMap {
     ///   When an element or its corresponding node is removed, any related index becomes invalid.
     ///   Using an invalid index may result in a runtime error or undefined behavior.
     public typealias Index = UnsafeIndexV3
-    public typealias SubSequence = RedBlackTreeKeyValueRangeView<Base>
+    public typealias SubSequence = RedBlackTreeKeyValueRangeView<Self>
   }
 
   extension RedBlackTreeMultiMap {

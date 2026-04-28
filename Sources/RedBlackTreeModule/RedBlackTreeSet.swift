@@ -123,11 +123,6 @@ extension RedBlackTreeSet.Base: _BaseNode_NodeCompareProtocol {}
   extension RedBlackTreeSet: _RedBlackTreeKeyOnly {}
 #endif
 
-//extension RedBlackTreeSet: CompareUniqueTrait {}
-//extension RedBlackTreeSet: ScalarValueTrait & _UnsafeNodePtrType {}
-//extension RedBlackTreeSet: _ScalarBasePayload_KeyProtocol_ptr {}
-//extension RedBlackTreeSet: _BaseNode_NodeCompareProtocol {}
-
 // MARK: - Creating a Set
 
 extension RedBlackTreeSet {

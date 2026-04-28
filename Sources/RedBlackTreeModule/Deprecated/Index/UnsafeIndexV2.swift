@@ -33,7 +33,7 @@ import Foundation
 /// - note: for文の範囲指定に使える
 ///
 @frozen
-public struct UnsafeIndexV2<Base>: UnsafeTreeBinding, UnsafeIndexProtocol_tie
+public struct UnsafeIndexV2<Base>: UnsafeTreeBindingV2, UnsafeIndexProtocol_tie
 where Base: ___TreeBase & ___TreeIndex {
 
   public typealias Tree = UnsafeTreeV2<Base>

@@ -35,57 +35,53 @@ public protocol ___Root: _BaseBridge {
   associatedtype Tree
 }
 
-/// LRUキャッシュは異なるが、それ以外はBaseをホストしている
-//public protocol __BaseHosting: _BaseBridge
-//where Base == Self {}
-
 /// 木にどれを使うのかしっている
-public protocol UnsafeTreeBinding: ___Root & _UnsafeNodePtrType
+public protocol UnsafeTreeBindingV2: ___Root & _UnsafeNodePtrType
 where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase {}
 
 /// 共通生木メンバー
 @usableFromInline
-protocol UnsafeTreeHost: UnsafeTreeBinding {
+protocol UnsafeTreeHostV2: UnsafeTreeBindingV2 {
   var __tree_: Tree { get }
 }
 
 /// 変更可能共通生木メンバー
 @usableFromInline
-protocol UnsafeMutableTreeHost: UnsafeTreeHost & _PayloadValueBride {
+protocol UnsafeMutableTreeHostV2: UnsafeTreeHostV2 & _PayloadValueBride {
   var __tree_: Tree { get set }
 }
 
 /// 区間指定メンバー
 @usableFromInline
-protocol UnsafeTreeRangeBaseInterface: UnsafeTreeHost {
+protocol UnsafeTreeRangeBaseInterfaceV2: UnsafeTreeHostV2 {
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
 
 /// 区間指定メンバー
 @usableFromInline
-protocol UnsafeTreeSealedRangeBaseInterface: UnsafeTreeHost {
+protocol UnsafeTreeSealedRangeBaseInterfaceV2: UnsafeTreeHostV2 {
   var _sealed_start: _SealedPtr { get }
   var _sealed_end: _SealedPtr { get }
 }
 
 /// 変更可能区間指定メンバー
 @usableFromInline
-protocol UnsafeMutableTreeRangeBaseInterface: UnsafeMutableTreeHost {
+protocol UnsafeMutableTreeRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
 
 /// 変更可能区間指定メンバー
 @usableFromInline
-protocol UnsafeMutableTreeSealedRangeBaseInterface: UnsafeMutableTreeHost {
+protocol UnsafeMutableTreeSealedRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
   var _sealed_start: _SealedPtr { get }
   var _sealed_end: _SealedPtr { get }
 }
 
 @usableFromInline
 protocol ___UnsafeIndexRangeBaseV2:
-  UnsafeTreeRangeBaseInterface
+  UnsafeTreeRangeBaseInterfaceV2
     & UnsafeIndexProviderProtocol
 {}
 
@@ -106,7 +102,7 @@ typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride & _Ele
 
 @usableFromInline
 protocol _RedBlackTreeKeyOnly:
-  UnsafeTreeRangeBaseInterface
+  UnsafeTreeRangeBaseInterfaceV2
     & _SetBridge
     & _CompareV2
     & _SequenceV2
@@ -115,7 +111,7 @@ protocol _RedBlackTreeKeyOnly:
 
 @usableFromInline
 protocol _RedBlackTreeKeyValues:
-  UnsafeTreeRangeBaseInterface
+  UnsafeTreeRangeBaseInterfaceV2
     & _MapBridge
     & _CompareV2
     & _SequenceV2

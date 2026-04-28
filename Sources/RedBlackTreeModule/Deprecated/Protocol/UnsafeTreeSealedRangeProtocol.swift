@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol UnsafeTreeSealedRangeProtocol: UnsafeTreeSealedRangeBaseInterface, _PayloadValueBride {}
+protocol UnsafeTreeSealedRangeProtocol: UnsafeTreeSealedRangeBaseInterfaceV2, _PayloadValueBride {}
 
 extension UnsafeTreeSealedRangeProtocol {
 

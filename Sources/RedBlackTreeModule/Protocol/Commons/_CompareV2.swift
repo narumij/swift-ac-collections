@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol _CompareV2: UnsafeTreeHost & _KeyBride {}
+protocol _CompareV2: UnsafeTreeHostV2 & _KeyBride {}
 
 extension _CompareV2 where Base: CompareUniqueTrait {
 

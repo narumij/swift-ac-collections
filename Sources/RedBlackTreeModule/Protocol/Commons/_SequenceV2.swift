@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol _SequenceV2: UnsafeTreeHost, _PayloadValueBride, _KeyBride {}
+protocol _SequenceV2: UnsafeTreeHostV2, _PayloadValueBride, _KeyBride {}
 
 extension _SequenceV2 {
 

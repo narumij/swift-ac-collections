@@ -6,7 +6,7 @@
 //
 
 @usableFromInline
-protocol ___RemoveV2: UnsafeMutableTreeRangeBaseInterface, _PayloadValueBride {}
+protocol ___RemoveV2: UnsafeMutableTreeRangeBaseInterfaceV2, _PayloadValueBride {}
 
 extension ___RemoveV2 {
 

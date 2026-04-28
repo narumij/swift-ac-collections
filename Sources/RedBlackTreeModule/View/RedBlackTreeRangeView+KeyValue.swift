@@ -8,7 +8,7 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeKeyValueRangeView<Container>: UnsafeMutableTreeHost
+public struct RedBlackTreeKeyValueRangeView<Container>: UnsafeMutableTreeHostV2
 where Container: ___Root,
 Container.Base: ___TreeBase & PairValueTrait {
 

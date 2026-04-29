@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 /// ポインタベースの木の基本型定義
-public protocol _UnsafeNodePtrType: _NodePtrType
+public protocol _UnsafeNodePtrType: ~Copyable, _NodePtrType
 where
   _NodePtr == UnsafeMutablePointer<UnsafeNode>,
   _NodeRef == UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>

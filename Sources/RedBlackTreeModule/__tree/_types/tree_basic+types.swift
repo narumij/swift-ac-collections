@@ -39,7 +39,7 @@
 // MARK: - Primitives
 
 /// ノードポインタ型の定義
-public protocol _NodePtrType {
+public protocol _NodePtrType: ~Copyable {
   /// ノードポインタ型
   ///
   /// _模式図_

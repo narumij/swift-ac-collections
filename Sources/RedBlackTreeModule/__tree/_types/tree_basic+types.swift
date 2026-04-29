@@ -39,7 +39,7 @@
 // MARK: - Primitives
 
 /// ノードポインタ型の定義
-public protocol _NodePtrType {
+public protocol _NodePtrType: ~Copyable {
   /// ノードポインタ型
   ///
   /// _模式図_
@@ -63,7 +63,7 @@ public protocol _NodePtrType {
 }
 
 /// ノードの積載値型の定義
-public protocol _PayloadValueType {
+public protocol _PayloadValueType: ~Copyable {
   /// ノードの積載値型
   ///
   /// _模式図_
@@ -76,7 +76,7 @@ public protocol _PayloadValueType {
 }
 
 /// 比較値型の定義
-public protocol _KeyType {
+public protocol _KeyType: ~Copyable {
   /// 比較値型
   ///
   /// set, multiset
@@ -98,7 +98,7 @@ public protocol _KeyType {
 }
 
 /// キーバリュー積載時の対応値型の定義
-public protocol _MappedValueType {
+public protocol _MappedValueType: ~Copyable {
   /// キーバリュー積載時の対応値型
   ///
   /// _模式図_
@@ -139,7 +139,7 @@ where _PayloadValue == RedBlackTreePair<_Key, _MappedValue> {}
 // MARK: -
 
 /// 各コレクションの要素はここまでの型と関連があるが、必ずしも一致するとは限らない
-public protocol _ElementType {
+public protocol _ElementType: ~Copyable {
   /// コレクションの要素型
   associatedtype Element
 }

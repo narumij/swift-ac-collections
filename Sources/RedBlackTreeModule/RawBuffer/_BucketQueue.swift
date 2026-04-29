@@ -74,7 +74,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   }
 }
 
-extension MemoryLayout {
+extension MemoryLayout where T: ~Copyable {
 
   @inlinable
   static var _memoryLayout: _MemoryLayout { .init(stride: stride, alignment: alignment) }

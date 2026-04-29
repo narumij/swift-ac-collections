@@ -1,5 +1,32 @@
 # RedBlackTreeModule
 
+## 新新方針
+
+### 動機
+
+Non Copyableにすると複雑さが軽減できる
+分岐が減り、その分速度向上がみこめる
+
+### 内容
+
+- 実験的な実装を積む
+- 性能を評価する
+- 将来的に差し替える
+
+### 具体的に
+
+- 実現困難なものは一旦廃止し、条件が整ったら復活する
+- ATCODER2025互換の廃止
+- CoWの廃止
+- コンテナを~Copyableにする
+- ツリーは~Copyableにする
+- TiedBufferの廃止
+- 公開APIも削る
+
+### 問題点
+
+lifetimeやborrowingSequence待ち
+
 ## 新方針
 
 ### 動機

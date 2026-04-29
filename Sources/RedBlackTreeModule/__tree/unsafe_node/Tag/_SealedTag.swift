@@ -36,7 +36,8 @@ extension _TrackingTagSealing {
     case 0...:
       return .tag(raw: raw, seal: seal)
     default:
-      fatalError(.invalidIndex)
+      // TODO: fix message
+      fatalError("Attempting to access RedBlackTree elements using an invalid index")
     }
   }
 }

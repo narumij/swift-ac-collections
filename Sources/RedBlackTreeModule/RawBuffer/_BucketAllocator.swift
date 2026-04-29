@@ -69,7 +69,7 @@ package struct _BucketAllocator {
 
   @inlinable
   @inline(__always)
-  public init<_PayloadValue>(
+  public init<_PayloadValue: ~Copyable>(
     valueType: _PayloadValue.Type,
     deinitialize: @escaping (UnsafeMutableRawPointer) -> Void
   ) {

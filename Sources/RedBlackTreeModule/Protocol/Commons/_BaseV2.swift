@@ -101,7 +101,7 @@ typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride & _Ele
 // MARK: -
 
 @usableFromInline
-protocol _RedBlackTreeKeyOnly:
+protocol _RedBlackTreeKeyOnlyV2:
   UnsafeTreeRangeBaseInterfaceV2
     & _SetBridge
     & _CompareV2
@@ -110,7 +110,7 @@ protocol _RedBlackTreeKeyOnly:
 {}
 
 @usableFromInline
-protocol _RedBlackTreeKeyValues:
+protocol _RedBlackTreeKeyValuesV2:
   UnsafeTreeRangeBaseInterfaceV2
     & _MapBridge
     & _CompareV2

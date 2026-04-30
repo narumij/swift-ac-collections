@@ -54,43 +54,11 @@
       }
     }
   }
-
-  extension UnsafeMutablePointer where Pointee == UnsafeNode {
-    package var index: Int { trackingTag }
-  }
-
-  extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
-    package var index: Int { self?.trackingTag ?? .nullptr }
-  }
 #endif
 
 // MARK: -- For assertions
 
 #if DEBUG
-  extension UnsafeNode {
-
-    @inlinable
-    package func equiv(with tree: UnsafeNode) -> Bool {
-      assert(___tracking_tag == tree.___tracking_tag)
-      assert(__left_.pointee.___tracking_tag == tree.__left_.pointee.___tracking_tag)
-      assert(__right_.pointee.___tracking_tag == tree.__right_.pointee.___tracking_tag)
-      assert(__parent_.pointee.___tracking_tag == tree.__parent_.pointee.___tracking_tag)
-      assert(__is_black_ == tree.__is_black_)
-      assert(___has_payload_content == tree.___has_payload_content)
-      guard
-        ___tracking_tag == tree.___tracking_tag,
-        __left_.pointee.___tracking_tag == tree.__left_.pointee.___tracking_tag,
-        __right_.pointee.___tracking_tag == tree.__right_.pointee.___tracking_tag,
-        __parent_.pointee.___tracking_tag == tree.__parent_.pointee.___tracking_tag,
-        __is_black_ == tree.__is_black_,
-        ___has_payload_content == tree.___has_payload_content
-      else {
-        return false
-      }
-      return true
-    }
-  }
-
   extension UnsafeTreeV2BufferHeader {
 
     @inlinable
@@ -152,51 +120,9 @@
       return true
     }
   }
+#endif
 
-  extension UnsafeNode {
-
-    @inlinable
-    package func nullCheck() -> Bool {
-      assert(___tracking_tag == .nullptr)
-      assert(__left_ == UnsafeNode.nullptr)
-      assert(__right_ == UnsafeNode.nullptr)
-      assert(__parent_ == UnsafeNode.nullptr)
-      assert(__is_black_ == false)
-      assert(___has_payload_content == true)
-      guard
-        ___tracking_tag == .nullptr,
-        __right_ == UnsafeNode.nullptr,
-        __right_ == UnsafeNode.nullptr,
-        __parent_ == UnsafeNode.nullptr,
-        __is_black_ == false,
-        // 判定を簡略化するための措置
-        ___has_payload_content == true
-      else {
-        return false
-      }
-      return true
-    }
-
-    @inlinable
-    package func endCheck() -> Bool {
-      assert(___tracking_tag == .end)
-      assert(__right_ == UnsafeNode.nullptr)
-      assert(__parent_ == UnsafeNode.nullptr)
-      assert(__is_black_ == false)
-      guard
-        ___tracking_tag == .end,
-        __right_ == UnsafeNode.nullptr,
-        __parent_ == UnsafeNode.nullptr,
-        __is_black_ == false,
-        // 判定を簡略化するための措置
-        ___has_payload_content == true
-      else {
-        return false
-      }
-      return true
-    }
-  }
-
+#if DEBUG
   extension UnsafeTreeV2 {
 
     @inlinable

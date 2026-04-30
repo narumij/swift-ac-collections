@@ -38,13 +38,15 @@ extension UnsafeIterator {
       source._sealed_end
     }
 
-
     @usableFromInline var source: Source
-    @usableFromInline
+    
+    @inlinable
     internal init(source: Source) {
       self.source = source
     }
 
+    @inlinable
+    @inline(__always)
     public mutating func next() -> _NodePtr? {
       guard let result = source.next() else { return nil }
       guard !result.___is_garbaged else {

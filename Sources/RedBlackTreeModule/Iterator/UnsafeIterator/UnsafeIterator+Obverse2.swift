@@ -26,7 +26,6 @@ extension UnsafeIterator {
     Equatable
   {
     @inlinable
-    @inline(__always)
     public init(_start: _SealedPtr, _end: _SealedPtr) {
       self._sealed_start = _start
       self._sealed_end = _end
@@ -35,6 +34,8 @@ extension UnsafeIterator {
 
     public var _sealed_start, _sealed_end, _sealed_current: _SealedPtr
 
+    @inlinable
+    @inline(__always)
     public mutating func next() -> _NodePtr? {
       
       let _purified_current = _sealed_current.purified

@@ -25,12 +25,14 @@ extension UnsafeIterator {
     Sequence,
     Equatable
   {
+    @inlinable
     public init(_start: _SealedPtr, _end: _SealedPtr) {
       self._start = _start.pointer!
       self._end = _end.pointer!
       self._current = _start.pointer!
     }
     
+    @inlinable
     public init(_start: _NodePtr, _end: _NodePtr) {
       self._start = _start
       self._end = _end
@@ -49,6 +51,8 @@ extension UnsafeIterator {
       fatalError()
     }
 
+    @inlinable
+    @inline(__always)
     public mutating func next() -> _NodePtr? {
       guard _current != _end else { return nil }
       // 最悪でもendで止まる

@@ -26,13 +26,14 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: UnsafeIteratorProtocol
   {
+    @inlinable
     public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
       self.init(source: .init(_start: _start, _end: _end))
     }
 
     public var _source: Source
 
-    @usableFromInline
+    @inlinable
     internal init(source: Source) {
       self._source = source
     }
@@ -45,6 +46,8 @@ extension UnsafeIterator {
       _source._sealed_end
     }
 
+    @inlinable
+    @inline(__always)
     public mutating func next() -> Base._PayloadValue? {
       return _source.next().map {
         $0.__value_().pointee

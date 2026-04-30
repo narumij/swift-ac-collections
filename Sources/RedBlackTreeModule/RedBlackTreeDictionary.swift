@@ -123,7 +123,7 @@ extension RedBlackTreeDictionary.Base: _PairBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeDictionary.Base: _BaseNode_NodeCompareProtocol {}
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeDictionary: _RedBlackTreeKeyValues {}
+  extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesV2 {}
 #endif
 
 // MARK: - Creating a Dictionay

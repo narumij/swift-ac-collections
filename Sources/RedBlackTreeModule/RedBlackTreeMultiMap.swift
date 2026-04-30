@@ -136,7 +136,7 @@ extension RedBlackTreeMultiMap.Base: _PairBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeMultiMap.Base: _BaseNode_NodeCompareProtocol {}
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap: _RedBlackTreeKeyValues {}
+  extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesV2 {}
 #endif
 //extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
 

@@ -120,7 +120,7 @@ extension RedBlackTreeSet.Base: _ScalarBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeSet.Base: _BaseNode_NodeCompareProtocol {}
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet: _RedBlackTreeKeyOnly {}
+  extension RedBlackTreeSet: _RedBlackTreeKeyOnlyV2 {}
 #endif
 
 // MARK: - Creating a Set

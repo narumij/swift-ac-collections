@@ -28,6 +28,7 @@ extension UnsafeIndexV4 {
 extension RedBlackTreeSet {
 
   //　コンパイルは通るが、CoWが効いた場合に、これだとやはりまずいかもしれない
+  // Undefined Behaviorにはできないので、end_node比較でトラップする必要がある
   @_lifetime(borrow self)
   @inlinable
   func ___index(_ p: _SealedPtr) -> UnsafeIndexV4 {

@@ -99,7 +99,10 @@ let package = Package(
       name: "RedBlackTreeModule",
       dependencies: [] + additionalDepencencies,
       exclude: ["MEMO.md"],
-      swiftSettings: _settings
+      swiftSettings: _settings + [
+        .enableExperimentalFeature("Lifetimes"),
+        .enableExperimentalFeature("LifetimeDependence")
+      ]
     ),
     .testTarget(
       name: "RedBlackTreeTests",

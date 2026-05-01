@@ -28,10 +28,12 @@ extension UnsafeIterator {
   {
     public var _source: Source
 
+    @inlinable
     public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
       self.init(source: .init(_start: _start, _end: _end))
     }
 
+    @inlinable
     internal init(source: Source) {
       self._source = source
     }
@@ -44,6 +46,8 @@ extension UnsafeIterator {
       _source._sealed_end
     }
     
+    @inlinable
+    @inline(__always)
     public mutating func next() -> Base._Key? {
       return _source.next().map {
         Base.__key($0.__value_().pointee)

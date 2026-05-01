@@ -30,7 +30,7 @@ extension UnsafeIterator {
     @usableFromInline
     var tied: _TiedRawBuffer
 
-    @usableFromInline
+    @inlinable
     init(
       start: _SealedPtr,
       end: _SealedPtr,
@@ -47,11 +47,14 @@ extension UnsafeIterator {
     @usableFromInline
     var source: Source
 
+    @inlinable
     internal init(_source: Source, tie: _TiedRawBuffer) {
       self.source = _source
       self.tied = tie
     }
 
+    @inlinable
+    @inline(__always)
     public mutating func next() -> Source.Element? {
       source.next()
     }

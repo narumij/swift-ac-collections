@@ -85,12 +85,11 @@ package struct _BucketAllocator {
   /// `_Payload` のstrideとalignement
   @usableFromInline
   let payload: _MemoryLayout
-  
+
   /// `Node|Value` のペア形式でのstrideとalignment
   @usableFromInline
   package let _pair: _MemoryLayout
 
-  
   /// ```
   /// |Bucket| |Node|Value|Node|Value|...
   ///        ^ ^
@@ -98,7 +97,7 @@ package struct _BucketAllocator {
   /// ```
   @usableFromInline
   package let startOffset: Int
-  
+
   /// 型を消去した `_Payload` のdeinitializer
   ///
   /// Genericsで型を特定した解放処理では、実行時に型情報へのアクセスが毎度かかり高コストなので、これを削減するためにこのようにしてある
@@ -189,7 +188,7 @@ extension _BucketAllocator {
 }
 
 extension _BucketAllocator {
-  
+
   @inlinable
   public func deinitialize(bucket b: _BucketPointer?) {
     var reserverHead = b
@@ -208,13 +207,13 @@ extension _BucketAllocator {
   @inlinable
   public func deallocate(bucket b: _BucketPointer?) {
     var reserverHead = b
+    if let h = reserverHead {
+      reserverHead = h.pointee.next
+      _deallocHeadBucket(h)
+    }
     while let h = reserverHead {
       reserverHead = h.pointee.next
-      if h == b {
-        _deallocHeadBucket(h)
-      } else {
-        _deallocBucket(h)
-      }
+      _deallocBucket(h)
     }
   }
 }
@@ -236,7 +235,7 @@ extension _BucketAllocator {
     b.deinitialize(count: 1)
     UnsafeMutableRawPointer(b)._deallocate()
   }
-  
+
   @inlinable
   func _deinitializeBeginNode(_ b: _BucketPointer) {
     UnsafeMutableRawPointer(b.begin_ptr)

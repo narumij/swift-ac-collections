@@ -18,7 +18,45 @@
 #if !COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeSet {
+    
+    /// A shorthand for `RedBlackTreeBoundExpression<Element>`.
+    ///
+    /// This type is used to describe element positions in the tree,
+    /// such as the first element, bounds, or relative offsets.
+    ///
+    /// - SeeAlso: `RedBlackTreeBoundExpression`
     public typealias Bound = RedBlackTreeBoundExpression<Element>
+    
+    /// A shorthand for `RedBlackTreeBoundRangeExpression<Element>`.
+      ///
+      /// This type represents ranges over the tree using `Bound` expressions
+      /// as endpoints.
+      ///
+      /// ## Example
+      ///
+      /// ```
+      /// let tree: RedBlackTreeSet<Int> = [1, 3, 5, 7, 9]
+      ///
+      /// // Elements in [3, 9)
+      /// let r1 = tree[.lowerBound(3) ..< .lowerBound(9)]
+      ///
+      /// // Elements in [5, ...]
+      /// let r2 = tree[.lowerBound(5)...]
+      ///
+      /// // Elements less than 7
+      /// let r3 = tree[..< .lowerBound(7)]
+      ///
+      /// // Elements equal to 5
+      /// let r4 = tree[equalRange(5)]
+      /// ```
+      ///
+      /// - Note:
+      ///   - Endpoints are evaluated in the tree's sort order.
+      ///   - Invalid ranges may trap at runtime.
+      ///
+      /// - SeeAlso:
+      ///   - `RedBlackTreeBoundRangeExpression`
+      ///   - `RedBlackTreeBoundExpression`
     public typealias BoundRangeExpression = RedBlackTreeBoundRangeExpression<Element>
   }
 

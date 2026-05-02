@@ -18,6 +18,13 @@
 #if !COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeDictionary {
+    
+    /// A shorthand for `RedBlackTreeBoundExpression<Element>`.
+    ///
+    /// This type is used to describe element positions in the tree,
+    /// such as the first element, bounds, or relative offsets.
+    ///
+    /// - SeeAlso: `RedBlackTreeBoundExpression`
     public typealias Bound = RedBlackTreeBoundExpression<Key>
     public typealias BoundRangeExpression = RedBlackTreeBoundRangeExpression<Key>
   }

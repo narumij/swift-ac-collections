@@ -7,6 +7,9 @@
 
 @frozen
 public struct UnsafeIndexV4: ~Escapable {
+  
+  @usableFromInline
+  package var __end_node: UnsafeMutablePointer<UnsafeNode>
 
   @usableFromInline
   package var ptr: _SealedPtr
@@ -14,11 +17,18 @@ public struct UnsafeIndexV4: ~Escapable {
   @_lifetime(borrow _unsafe_end_node)
   @inlinable
   init(_unsafe_end_node: UnsafeMutablePointer<UnsafeNode>, ptr: _SealedPtr) {
+    self.__end_node = _unsafe_end_node
     self.ptr = ptr
   }
 }
 
 extension UnsafeIndexV4 {
+  
+  public func assumeExactSameTree(_unsafe_end_node: UnsafeMutablePointer<UnsafeNode>) {
+    guard __end_node == _unsafe_end_node else {
+      fatalError()
+    }
+  }
 
   public mutating func edit(_ transform: (_SealedPtr) -> _SealedPtr) {
     ptr = transform(ptr)
@@ -56,6 +66,8 @@ extension RedBlackTreeSet {
   public func distance(from start: UnsafeIndexV4, to end: UnsafeIndexV4)
     -> Int
   {
+    start.assumeExactSameTree(_unsafe_end_node: __tree_.__end_node)
+    end.assumeExactSameTree(_unsafe_end_node: __tree_.__end_node)
     guard
       let d = __tree_.___distance(
         from: start.ptr.purified,
@@ -111,18 +123,21 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   public func formIndex(before i: inout UnsafeIndexV4) {
+    i.assumeExactSameTree(_unsafe_end_node: __tree_.__end_node)
     i.edit { $0.purified.flatMap { ___tree_prev_iter($0.pointer).sealed } }
   }
 
   /// - Complexity: O(1)
   @inlinable
   public func formIndex(after i: inout UnsafeIndexV4) {
+    i.assumeExactSameTree(_unsafe_end_node: __tree_.__end_node)
     i.edit { $0.purified.flatMap { ___tree_next_iter($0.pointer).sealed } }
   }
 
   /// - Complexity: O(*d*)
   @inlinable
   public func formIndex(_ i: inout UnsafeIndexV4, offsetBy distance: Int) {
+    i.assumeExactSameTree(_unsafe_end_node: __tree_.__end_node)
     i.edit { $0.purified.flatMap { ___tree_adv_iter($0.pointer, distance).sealed } }
   }
 
@@ -135,6 +150,9 @@ extension RedBlackTreeSet {
   )
     -> Bool
   {
+    i.assumeExactSameTree(_unsafe_end_node: __tree_.__end_node)
+    limit.assumeExactSameTree(_unsafe_end_node: __tree_.__end_node)
+
     guard let ___i = i.ptr.purified.pointer
     else { return false }
 

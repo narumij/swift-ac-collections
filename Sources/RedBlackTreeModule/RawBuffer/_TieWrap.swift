@@ -19,12 +19,14 @@
 @frozen
 public struct _TieWrap<RawValue> {
 
-  @usableFromInline let rawValue: RawValue
+  @usableFromInline
+  package let rawValue: RawValue
 
-  @usableFromInline let tied: _TiedRawBuffer
+  @usableFromInline
+  package let tied: _TiedRawBuffer
 
   @inlinable @inline(__always)
-  init(rawValue: RawValue, tie: _TiedRawBuffer) {
+  package init(rawValue: RawValue, tie: _TiedRawBuffer) {
     self.rawValue = rawValue
     self.tied = tie
   }
@@ -46,7 +48,7 @@ extension _TieWrap: Equatable where RawValue: Equatable {
 extension _TieWrap where RawValue == _NodePtrSealing {
 
   @inlinable @inline(__always)
-  var purified: Result<Self, SealError> {
+  package var purified: Result<Self, SealError> {
     rawValue.isUnsealed ? .failure(.unsealed) : .success(self)
   }
 }
@@ -56,7 +58,7 @@ extension _NodePtrSealing {
   // 某バンドオマージュ
 
   @inlinable
-  func band(_ tie: _TiedRawBuffer) -> _TieWrappedPtr {
+  package func band(_ tie: _TiedRawBuffer) -> _TieWrappedPtr {
     isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, tie: tie))
   }
 }
@@ -66,7 +68,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   // 某バンドオマージュ
 
   @inlinable
-  func band(_ tie: _TiedRawBuffer) -> _TieWrappedPtr {
+  package func band(_ tie: _TiedRawBuffer) -> _TieWrappedPtr {
     flatMap { $0.band(tie) }
   }
 }
@@ -74,7 +76,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
 
   @inlinable
-  var tied: _TiedRawBuffer? {
+  package var tied: _TiedRawBuffer? {
     try? map(\.tied).get()
   }
 }
@@ -95,7 +97,7 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
 
   /// ポインタを利用する際に用いる
   @inlinable
-  var purified: Result { flatMap { $0.purified } }
+  package var purified: Result { flatMap { $0.purified } }
 
   @usableFromInline
   package var isValid: Bool {

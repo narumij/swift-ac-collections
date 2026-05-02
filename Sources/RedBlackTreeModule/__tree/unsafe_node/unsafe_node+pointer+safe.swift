@@ -43,7 +43,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   ///
   /// 重ねてsealしないこと
   @inlinable @inline(__always)
-  var sealed: _SealedPtr {
+  package var sealed: _SealedPtr {
     if ___is_null {
       return .failure(.null)
     } else if ___is_garbaged {
@@ -59,7 +59,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   /// ポインタを利用する際に用いる
   @inlinable @inline(__always)
-  var purified: Result { flatMap { $0.purified } }
+  package var purified: Result { flatMap { $0.purified } }
 }
 
 public enum SealError: Error {
@@ -110,17 +110,17 @@ public enum SealError: Error {
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable @inline(__always)
-  var trackingTag: _TrackingTag {
+  package var trackingTag: _TrackingTag {
     (try? map(\.pointer.trackingTag).get()) ?? .nullptr
   }
   
   @inlinable @inline(__always)
-  var tag: _SealedTag {
+  package var tag: _SealedTag {
     flatMap(\.tag)
   }
 
   @inlinable
-  internal var ___is_end: Bool? {
+  package var ___is_end: Bool? {
     // endは世代が変わらず、成仏もしないのでお清めお祓いが無駄
     try? map { $0.pointer.___is_end }.get()
   }
@@ -138,25 +138,25 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   }
 
   @inlinable
-  func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
+  package func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
     // TODO: 利用側でpurified十分か繰り返し確認すること
     try? map { $0.pointer.__value_() }.get()
   }
 
   @inlinable
-  var pointer: UnsafeMutablePointer<UnsafeNode>? {
+  package var pointer: UnsafeMutablePointer<UnsafeNode>? {
     // TODO: 利用側でpurified十分か繰り返し確認すること
     try? map { $0.pointer }.get()
   }
 
   @inlinable
-  var temporaryUnseal: Result<UnsafeMutablePointer<UnsafeNode>, SealError> {
+  package var temporaryUnseal: Result<UnsafeMutablePointer<UnsafeNode>, SealError> {
     // TODO: 利用側でpurified十分か繰り返し確認すること
     map { $0.pointer }
   }
 
   @inlinable
-  var exists: Bool {
+  package var exists: Bool {
     // TODO: 利用側でpurified十分か繰り返し確認すること
     (try? map { !___is_null_or_end__(tag: $0.pointer.trackingTag) }.get()) ?? false
   }
@@ -188,7 +188,7 @@ extension Result where Failure == SealError {
   }
 
   @usableFromInline
-  internal func isError(_ e: SealError) -> Bool {
+  package func isError(_ e: SealError) -> Bool {
     switch self {
     case .success:
       return false

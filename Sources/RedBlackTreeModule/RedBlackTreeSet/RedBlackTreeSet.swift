@@ -188,8 +188,6 @@ extension RedBlackTreeSet {
   }
 }
 
-// MARK: - Range Accessing Elements
-
 // MARK: - Insertion
 
 extension RedBlackTreeSet {
@@ -219,7 +217,7 @@ extension RedBlackTreeSet {
   }
 }
 
-
+// MARK: -
 
 extension RedBlackTreeSet {
 

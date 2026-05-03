@@ -98,18 +98,26 @@ extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
   var __begin_node_: _NodePtr {
-    get {
-      header.pointee.begin_ptr.pointee
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      UnsafePointer(header.pointee.begin_ptr)
     }
-    nonmutating set {
-      header.pointee.begin_ptr.pointee = newValue
+    @inline(__always)
+    @_transparent
+    nonmutating unsafeMutableAddress {
+      header.pointee.begin_ptr
     }
   }
 
   @inlinable
   @inline(__always)
   var __root: _NodePtr {
-    root_ref.pointee
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      UnsafePointer(root_ref)
+    }
   }
 
   @inlinable

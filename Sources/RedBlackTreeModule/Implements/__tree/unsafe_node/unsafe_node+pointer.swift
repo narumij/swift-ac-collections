@@ -211,6 +211,20 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   {
     _ref(to: &__value_(as: Base._PayloadValue.self).pointee.value)
   }
+  
+  @inlinable
+  @inline(__always)
+  func __payload_ptr_<_PayloadValue>() -> UnsafePointer<_PayloadValue> {
+    UnsafeRawPointer(advanced(by: 1))
+      .assumingMemoryBound(to: _PayloadValue.self)
+  }
+
+  @inlinable
+  @inline(__always)
+  func __mutable_payload_ptr_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue> {
+    UnsafeMutableRawPointer(advanced(by: 1))
+      .assumingMemoryBound(to: _PayloadValue.self)
+  }
 }
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {

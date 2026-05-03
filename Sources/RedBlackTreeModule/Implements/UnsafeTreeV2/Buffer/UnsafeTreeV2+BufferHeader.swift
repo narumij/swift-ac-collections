@@ -87,8 +87,16 @@ extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   var __root: _NodePtr {
-    get { root_ptr.pointee }
-    nonmutating set { root_ptr.pointee = newValue }
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      UnsafePointer(root_ptr)
+    }
+    @inline(__always)
+    @_transparent
+    nonmutating unsafeMutableAddress {
+      root_ptr
+    }
   }
 
   @inlinable

@@ -49,9 +49,8 @@ extension UnsafeIterator {
     @inlinable
     @inline(__always)
     public mutating func next() -> Base._PayloadValue? {
-      return _source.next().map {
-        $0.__value_().pointee
-      }
+      guard let p = _source.next() else { return nil }
+      return p.__value_().pointee
     }
   }
 }

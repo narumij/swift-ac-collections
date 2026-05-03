@@ -24,7 +24,6 @@ package final class _TiedRawBuffer:
 {
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 
-  @inlinable
   deinit {
     withUnsafeMutablePointerToHeader { header in
       header.pointee.deallocate()

@@ -22,7 +22,6 @@ package final class UnsafeTreeV2Buffer:
   ManagedBuffer<UnsafeTreeV2BufferHeader, Void>
 {
   // MARK: - 解放処理
-  @inlinable
   deinit {
     withUnsafeMutablePointers { header, _ in
       if header.pointee.isRawBufferUniquelyOwned {

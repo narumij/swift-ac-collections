@@ -59,7 +59,7 @@ extension _FreshPool {
   //  @inline(__always)
   mutating func pushFreshBucket(head: _BucketPointer) {
     freshBucketHead = head
-    freshBucketCurrent = head.queue(payload: payload)
+    freshBucketCurrent = head.queue(payloadLayout: payload)
     freshBucketLast = head
     freshPoolCapacity += head.pointee.capacity
     #if DEBUG
@@ -131,7 +131,7 @@ extension _FreshPool {
   mutating func ___flushFreshPool() {
     freshBucketAllocator.deinitialize(bucket: freshBucketHead)
     freshPoolUsedCount = 0
-    freshBucketCurrent = freshBucketHead?.queue(payload: payload)
+    freshBucketCurrent = freshBucketHead?.queue(payloadLayout: payload)
   }
 
   @usableFromInline

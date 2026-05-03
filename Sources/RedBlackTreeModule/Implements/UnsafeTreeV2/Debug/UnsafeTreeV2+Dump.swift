@@ -79,8 +79,8 @@ extension UnsafeTreeV2BufferHeader {
       print(" copyCount              :", copyCount)
     #endif
 
-    print(" valueStride            :", payload.stride)
-    print(" valueAlignment         :", payload.alignment)
+    print(" valueStride            :", payloadLayout.stride)
+    print(" valueAlignment         :", payloadLayout.alignment)
   }
 }
 

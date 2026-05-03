@@ -76,7 +76,7 @@ extension UnsafeTreeV2BufferHeader {
 
   /// `_Payload`のstrideとalignement
   @inlinable
-  var payload: _MemoryLayout {
+  var payloadLayout: _MemoryLayout {
     freshBucketAllocator.payload
   }
 
@@ -157,7 +157,7 @@ extension UnsafeTreeV2BufferHeader {
     @inlinable
     mutating func pushFreshBucket(head: _BucketPointer) {
       freshBucketHead = head
-      freshBucketCurrent = head.queue(payload: payload)
+      freshBucketCurrent = head.queue(payloadLayout: payloadLayout)
       freshBucketLast = head
       freshPoolCapacity += head.pointee.capacity
       #if DEBUG
@@ -182,7 +182,7 @@ extension UnsafeTreeV2BufferHeader {
       if let p = freshBucketCurrent?.pop() {
         return p
       }
-      freshBucketCurrent = freshBucketCurrent?.next(payload: payload)
+      freshBucketCurrent = freshBucketCurrent?.next(payload: payloadLayout)
       return freshBucketCurrent?.pop()
     }
   }
@@ -205,14 +205,14 @@ extension UnsafeTreeV2BufferHeader {
     subscript(___tracking_tag: _TrackingTag) -> _NodePtr {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
       var remaining = ___tracking_tag
-      var p = freshBucketHead?.accessor(payload: payload)
+      var p = freshBucketHead?.accessor(payload: payloadLayout)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
           return h[remaining]
         }
         remaining -= cap
-        p = h.next(payload: payload)
+        p = h.next(payload: payloadLayout)
       }
       return nullptr
     }
@@ -224,7 +224,7 @@ extension UnsafeTreeV2BufferHeader {
     mutating func ___flushFreshPool() {
       freshBucketAllocator.deinitialize(bucket: freshBucketHead)
       freshPoolUsedCount = 0
-      freshBucketCurrent = freshBucketHead?.queue(payload: payload)
+      freshBucketCurrent = freshBucketHead?.queue(payloadLayout: payloadLayout)
     }
 
     @usableFromInline

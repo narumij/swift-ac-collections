@@ -77,7 +77,7 @@ extension _TiedRawBuffer {
     @usableFromInline
     typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 
-    @usableFromInline var bucketHead: _BucketPointer?
+    @usableFromInline let bucketHead: _BucketPointer?
     @usableFromInline let deallocator: _BucketAllocator
     @usableFromInline var isValueAccessAllowed: Bool
 

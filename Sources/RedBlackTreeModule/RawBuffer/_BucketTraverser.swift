@@ -59,7 +59,7 @@ struct _BucketTraverser: _UnsafeNodePtrType {
     return p
   }
 
-  @usableFromInline
+  @inlinable
   func nextCounts(payload: _MemoryLayout) -> _BucketTraverser? {
     guard let next = pointer.next else { return nil }
     return next._counts(isHead: false, payload: payload)

@@ -36,8 +36,10 @@ import XCTest
           // capacity回数popできること
           let p = header.freshBucketCurrent?.pop()
           p?.initialize(to: UnsafeNode.nullptr.pointee)
+          p?.__value_().initialize(to: 0)
           #if DEBUG
             nodeInitializedCount += 1
+            payloadInitializedCount += 1
           #endif
           XCTAssertNotEqual(p, nil)
           pointers.insert(p!)
@@ -65,7 +67,7 @@ import XCTest
       let count = (1..<100).reduce(0, +)
       for _ in 0..<count {
         // capacity回数popできること
-        let p = header.___popFresh()
+        let p = header.__construct_node(0)
         XCTAssertNotEqual(p, nil)
         pointers.insert(p)
       }
@@ -88,7 +90,12 @@ import XCTest
       }
 
       for _ in 0..<count {
-        XCTAssertNotNil(header.___popRecycle())
+        let p = header.___popRecycle()
+        XCTAssertNotNil(p)
+        p.__value_().initialize(to: 0)
+        #if DEBUG
+          payloadInitializedCount += 1
+        #endif
       }
       XCTAssertEqual(header.recycleHead, .nullptr)
       XCTAssertEqual(header.___popRecycle(), .nullptr)

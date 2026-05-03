@@ -37,6 +37,9 @@ extension _RecyclePool {
       p.pointee.___recycle_count &+= 1
     #endif
     freshBucketAllocator.deinitialize(p.advanced(by: 1))
+    #if DEBUG
+      payloadDeinitializedCount += 1
+    #endif
     #if GRAPHVIZ_DEBUG
       p.pointee.__right_ = nullptr
       p.pointee.__parent_ = nullptr

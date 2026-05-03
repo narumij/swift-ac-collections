@@ -323,6 +323,9 @@ extension UnsafeTreeV2BufferHeader {
     #endif
     let p = recycleHead == nullptr ? ___popFresh() : ___popRecycle()
     p.__value_().initialize(to: k)
+    #if DEBUG
+      payloadInitializedCount += 1
+    #endif
     assert(p.pointee.___tracking_tag >= 0, "特殊ノードではないこと")
     return p
   }

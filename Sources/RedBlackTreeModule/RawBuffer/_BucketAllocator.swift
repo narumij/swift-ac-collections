@@ -262,6 +262,9 @@ extension _BucketAllocator {
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1))
+        #if DEBUG
+          payloadDeinitializedCount += 1
+        #endif
       }
       p.deinitialize(count: 1)
       #if DEBUG

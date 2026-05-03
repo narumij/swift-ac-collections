@@ -84,7 +84,12 @@ extension UnsafeTreeV2KeyOnlyHandle {
   public func __construct_node(_ k: _PayloadValue) -> _NodePtr {
     let p = header.pointee.__construct_raw_node()
     // あえてのdefer
-    defer { p.__value_().initialize(to: k) }
+    defer {
+      p.__value_().initialize(to: k)
+      #if DEBUG
+        payloadInitializedCount += 1
+      #endif
+    }
     return p
   }
 }

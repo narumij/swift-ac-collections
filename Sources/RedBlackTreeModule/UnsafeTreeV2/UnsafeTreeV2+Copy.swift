@@ -162,6 +162,9 @@ extension UnsafeTreeV2BufferHeader {
       // 必要な場合、値を初期化する
       if s.pointee.___has_payload_content {
         d.__value_().initialize(to: s.__value_().pointee as _PayloadValue)
+        #if DEBUG
+          payloadInitializedCount += 1
+        #endif
       }
     }
 

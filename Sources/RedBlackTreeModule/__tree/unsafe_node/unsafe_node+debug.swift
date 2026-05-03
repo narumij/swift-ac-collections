@@ -126,4 +126,7 @@
 @usableFromInline nonisolated(unsafe) var nodeInitializedCount = 0
 @usableFromInline nonisolated(unsafe) var nodeDeinitializedCount = 0
 
+@usableFromInline nonisolated(unsafe) var payloadInitializedCount = 0
+@usableFromInline nonisolated(unsafe) var payloadDeinitializedCount = 0
+
 #endif

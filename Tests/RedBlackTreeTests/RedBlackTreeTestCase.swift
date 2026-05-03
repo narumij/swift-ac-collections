@@ -19,6 +19,10 @@ class RedBlackTreeTestCase: XCTestCase {
       allocatedCount = 0
       // アサート(a)時はdeallocatedCount = 0をコメントアウト
       deallocatedCount = 0
+//      XCTAssertEqual(nodeInitializedCount, 0)
+      XCTAssertEqual(nodeDeinitializedCount, 0)
+      nodeInitializedCount = 0
+      nodeDeinitializedCount = 0
     #endif
   }
 
@@ -35,8 +39,12 @@ class RedBlackTreeTestCase: XCTestCase {
       XCTAssertEqual(allocatedCount, deallocatedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
       // これで止まるケースは、スコープ外での初期化の影響のケースがあった
       assert(allocatedCount == deallocatedCount)
+      XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
+//      assert(nodeInitializedCount == nodeDeinitializedCount)
       allocatedCount = 0
       deallocatedCount = 0
+      nodeInitializedCount = 0
+      nodeDeinitializedCount = 0
     #endif
   }
 }

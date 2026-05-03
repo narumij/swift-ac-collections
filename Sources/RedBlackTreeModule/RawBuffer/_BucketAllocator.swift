@@ -133,6 +133,9 @@ extension _BucketAllocator {
     endNode.initialize(to: .create(tag: .end, nullptr: nullptr))
     beginPtr.initialize(to: endNode)
     header.initialize(to: .init(capacity: capacity))
+    #if DEBUG
+      nodeInitializedCount += 1
+    #endif
 
     #if DEBUG
       do {
@@ -248,6 +251,9 @@ extension _BucketAllocator {
     UnsafeMutableRawPointer(b.end_ptr)
       .assumingMemoryBound(to: UnsafeNode.self)
       .deinitialize(count: 1)
+    #if DEBUG
+      nodeDeinitializedCount += 1
+    #endif
   }
 
   @inlinable
@@ -258,6 +264,9 @@ extension _BucketAllocator {
         deinitialize(p.advanced(by: 1))
       }
       p.deinitialize(count: 1)
+      #if DEBUG
+        nodeDeinitializedCount += 1
+      #endif
     }
     #if DEBUG
       do {

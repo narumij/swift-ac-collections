@@ -23,7 +23,8 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
 
   @inlinable
   @inline(__always)
-  internal init<_PayloadValue: ~Copyable>(_ t: _PayloadValue.Type, nullptr: _NodePtr, capacity: Int) {
+  internal init<_PayloadValue: ~Copyable>(_ t: _PayloadValue.Type, nullptr: _NodePtr, capacity: Int)
+  {
     let allocator = _BucketAllocator(valueType: _PayloadValue.self) {
       $0.assumingMemoryBound(to: _PayloadValue.self)
         .deinitialize(count: 1)
@@ -116,7 +117,7 @@ extension UnsafeTreeV2BufferHeader {
       return _tied!
     }
   }
-  
+
   /// 確保済みメモリの内容を未初期化に戻し、木を空にする
   @inlinable
   internal mutating func deinitialize() {
@@ -185,11 +186,11 @@ extension UnsafeTreeV2BufferHeader {
      After a Copy-on-Write operation, node access is performed via index-based
      lookup. To guarantee O(1) address resolution and avoid bucket traversal,
      the FreshPool must contain exactly ONE bucket at this point.
-    
+
      Invariant:
        - During and immediately after CoW, `reserverBucketCount == 1`
        - Index-based access relies on a single contiguous bucket
-    
+
      Violating this invariant may cause excessive traversal or undefined behavior.
     */
     @inlinable
@@ -293,6 +294,9 @@ extension UnsafeTreeV2BufferHeader {
       p.pointee.___tracking_tag = freshPoolUsedCount
     #else
       p.initialize(to: .create(id: freshPoolUsedCount))
+    #endif
+    #if DEBUG
+      nodeInitializedCount += 1
     #endif
     freshPoolUsedCount += 1
     count += 1

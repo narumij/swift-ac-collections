@@ -122,4 +122,8 @@
       return true
     }
   }
+
+@usableFromInline nonisolated(unsafe) var nodeInitializedCount = 0
+@usableFromInline nonisolated(unsafe) var nodeDeinitializedCount = 0
+
 #endif

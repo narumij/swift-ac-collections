@@ -35,6 +35,10 @@ import XCTest
         for _ in 0..<i {
           // capacity回数popできること
           let p = header.freshBucketCurrent?.pop()
+          p?.initialize(to: UnsafeNode.nullptr.pointee)
+          #if DEBUG
+            nodeInitializedCount += 1
+          #endif
           XCTAssertNotEqual(p, nil)
           pointers.insert(p!)
         }
@@ -68,21 +72,21 @@ import XCTest
       // capacity回数で使い切ること
       XCTAssertEqual(header.popFresh(), nil)
       XCTAssertEqual(header.freshBucketCurrent?.pop(), nil)
-      header.freshPoolCapacity += 1 // アサート回避
+      header.freshPoolCapacity += 1  // アサート回避
       // 管理数に狂いが生じていても無理にポインタを返さない
       XCTAssertEqual(header.___popFresh(), .nullptr)
       // popしたポインタはユニーク個数で指定数あること
       XCTAssertEqual(pointers.count, count)
       // end nodeは別腹であること
       XCTAssertFalse(pointers.contains(header.end_ptr))
-      
+
       for p in pointers {
         // 0未満はsentinelなので、アサートではねられる
         p.pointee.___tracking_tag = Int.max
         header.___pushRecycle(p)
         XCTAssertNotEqual(header.recycleHead, .nullptr)
       }
-      
+
       for _ in 0..<count {
         XCTAssertNotNil(header.___popRecycle())
       }
@@ -96,11 +100,11 @@ import XCTest
       header.___deallocFreshPool()
     }
 
-//    func testPerformanceExample() throws {
-//      // This is an example of a performance test case.
-//      self.measure {
-//        // Put the code you want to measure the time of here.
-//      }
-//    }
+    //    func testPerformanceExample() throws {
+    //      // This is an example of a performance test case.
+    //      self.measure {
+    //        // Put the code you want to measure the time of here.
+    //      }
+    //    }
   }
 #endif

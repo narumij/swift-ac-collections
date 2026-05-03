@@ -8,19 +8,12 @@
 // MARK: - Creating a Set
 
 extension RedBlackTreeSet {
-
+  
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public init() {
     self.init(__tree_: .create())
-  }
-
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public init(minimumCapacity: Int) {
-    self.init(__tree_: .create(minimumCapacity: minimumCapacity))
   }
 }
 

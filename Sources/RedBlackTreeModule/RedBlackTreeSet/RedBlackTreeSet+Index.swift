@@ -5,6 +5,15 @@
 //  Created by narumij on 2026/05/04.
 //
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+    /// - Important:
+    ///   When an element or its corresponding node is removed, any related index becomes invalid.
+    ///   Using an invalid index may result in a runtime error or undefined behavior.
+    public typealias Index = UnsafeIndexV3
+  }
+#endif
+
 extension RedBlackTreeSet {
 
   /// - Complexity: O(1)
@@ -17,26 +26,6 @@ extension RedBlackTreeSet {
 }
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet {
-    /// - Important:
-    ///   When an element or its corresponding node is removed, any related index becomes invalid.
-    ///   Using an invalid index may result in a runtime error or undefined behavior.
-    public typealias Index = UnsafeIndexV3
-  }
-
-  extension RedBlackTreeSet {
-
-    @inlinable
-    func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
-      p.band(__tree_.tied)
-    }
-
-    @inlinable
-    func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
-      p.exists ? p.band(__tree_.tied) : nil
-    }
-  }
-
   extension RedBlackTreeSet {
     /// - Complexity: O( log `count` )
     @inlinable
@@ -175,6 +164,21 @@ extension RedBlackTreeSet {
     @inline(__always)
     public func isValid(_ index: Index) -> Bool {
       __tree_.__purified_(index).exists
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    @inlinable
+    func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
+      p.band(__tree_.tied)
+    }
+
+    @inlinable
+    func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
+      p.exists ? p.band(__tree_.tied) : nil
     }
   }
 #endif

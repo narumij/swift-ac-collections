@@ -738,33 +738,7 @@ extension RedBlackTreeSet: ExpressibleByArrayLiteral {
   }
 }
 
-// MARK: - CustomStringConvertible
 
-extension RedBlackTreeSet: CustomStringConvertible {
-
-  @inlinable
-  public var description: String {
-    _arrayDescription(for: self)
-  }
-}
-
-// MARK: - CustomDebugStringConvertible
-
-extension RedBlackTreeSet: CustomDebugStringConvertible {
-
-  public var debugDescription: String {
-    description
-  }
-}
-
-// MARK: - CustomReflectable
-
-extension RedBlackTreeSet: CustomReflectable {
-  /// The custom mirror for this instance.
-  public var customMirror: Mirror {
-    Mirror(self, unlabeledChildren: self + [], displayStyle: .set)
-  }
-}
 
 // MARK: - Is Identical To
 
@@ -807,67 +781,9 @@ extension RedBlackTreeSet {
   }
 }
 
-// MARK: - Equatable
-
-extension RedBlackTreeSet: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.__tree_ == rhs.__tree_
-  }
-}
-
-// MARK: - Comparable
-
-extension RedBlackTreeSet: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.__tree_ < rhs.__tree_
-  }
-}
-
-// MARK: - Hashable
-
-extension RedBlackTreeSet: Hashable where Element: Hashable {
-
-  @inlinable
-  @inline(__always)
-  public func hash(into hasher: inout Hasher) {
-    hasher.combine(__tree_)
-  }
-}
-
 // MARK: - Sendable
 
 #if swift(>=5.5)
   extension RedBlackTreeSet: @unchecked Sendable
   where Element: Sendable {}
-#endif
-
-// MARK: - Codable
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet: Encodable where Element: Encodable {
-
-    @inlinable
-    public func encode(to encoder: Encoder) throws {
-      var container = encoder.unkeyedContainer()
-      for element in self {
-        try container.encode(element)
-      }
-    }
-  }
-
-  extension RedBlackTreeSet: Decodable where Element: Decodable {
-
-    @inlinable
-    public init(from decoder: Decoder) throws {
-      self.init(__tree_: try .create(from: decoder))
-    }
-  }
 #endif

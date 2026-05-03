@@ -1,0 +1,18 @@
+//
+//  RedBlackTreeSet+Comparable.swift
+//  swift-ac-collections
+//
+//  Created by narumij on 2026/05/04.
+//
+
+// MARK: - Comparable
+
+extension RedBlackTreeSet: Comparable {
+
+  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+  @inlinable
+  @inline(__always)
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.__tree_ < rhs.__tree_
+  }
+}

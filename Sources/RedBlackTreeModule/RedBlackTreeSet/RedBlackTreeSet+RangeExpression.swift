@@ -15,11 +15,24 @@
 //
 //===----------------------------------------------------------------------===//
 
+// MARK: -
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Self>
+  }
+#endif
+
 #if !COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeSet {
 
     public typealias View = RedBlackTreeKeyOnlyRangeView<Self>
+  }
+
+  extension RedBlackTreeSet {
+
     public typealias IndexRange = UnsafeIndexV3Range
     public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
 
@@ -89,6 +102,9 @@
         yield &self[unchecked: range]
       }
     }
+  }
+
+  extension RedBlackTreeSet {
 
     @inlinable
     @discardableResult

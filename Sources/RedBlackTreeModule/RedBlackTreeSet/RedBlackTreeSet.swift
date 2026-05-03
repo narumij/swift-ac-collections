@@ -217,7 +217,57 @@ extension RedBlackTreeSet {
   }
 }
 
-// MARK: -
+// MARK: - Removal
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    /// - Complexity: Amortized O(1)
+    @inlinable
+    public mutating func popFirst() -> Element? {
+      __tree_.ensureUnique()
+      return ___remove_first()?.payload
+    }
+
+    /// - Complexity: O(log `count`)
+    @inlinable
+    public mutating func popLast() -> Element? {
+      __tree_.ensureUnique()
+      return ___remove_last()?.payload
+    }
+  }
+#endif
+
+extension RedBlackTreeSet {
+
+  /// - Important: Indices that refer to removed members become invalid.
+  /// - Complexity: Amortized O(1)
+  @inlinable
+  @discardableResult
+  public mutating func removeFirst() -> Element {
+    __tree_.ensureUnique()
+    guard let element = ___remove_first() else {
+      preconditionFailure(.emptyFirst)
+    }
+    return element.payload
+  }
+}
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      __tree_.ensureUnique()
+      guard let element = ___remove_last() else {
+        preconditionFailure(.emptyFirst)
+      }
+      return element.payload
+    }
+  }
+#endif
 
 extension RedBlackTreeSet {
 

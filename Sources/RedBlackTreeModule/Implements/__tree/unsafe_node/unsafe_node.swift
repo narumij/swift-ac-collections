@@ -173,11 +173,11 @@ public struct UnsafeNode {
   public var ___has_payload_content: Bool
 
   #if DEBUG || true
-  public typealias Seal = UInt32
-  // salt付きに変更することで、まったく縁の無い木のノードを受け付けにくくすることができる
-  // saltは新規作成時のみ更新され、コピーでは継承することで、CoWまたぎには影響しない
-  // 将来の実装課題
-  // end nodeのrecycle countをsalt置き場にすればいい
+    public typealias Seal = UInt32
+    // salt付きに変更することで、まったく縁の無い木のノードを受け付けにくくすることができる
+    // saltは新規作成時のみ更新され、コピーでは継承することで、CoWまたぎには影響しない
+    // 将来の実装課題
+    // end nodeのrecycle countをsalt置き場にすればいい
     /// 再利用された回数
     public var ___recycle_count: Seal = 0
   #endif
@@ -216,8 +216,10 @@ public struct UnsafeNode {
   // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
   // nullptrは定数でもなにかコストがかかっていた記憶もある
   // 過去のコードベースで再度調査してこういった諸々の問題が杞憂だった場合、optionalに変更してnullptrにnil変更しても良い
+//  @usableFromInline nonisolated(unsafe)
+//    package static let nullptr: UnsafeMutablePointer<UnsafeNode> = _singletonNull.nullptr
   @usableFromInline nonisolated(unsafe)
-    package static let nullptr: UnsafeMutablePointer<UnsafeNode> = _singletonNull.nullptr
+  package static var nullptr: UnsafeMutablePointer<UnsafeNode> { _singletonNull.nullptr }
 }
 
 @usableFromInline
@@ -243,29 +245,22 @@ extension UnsafeNode {
 
 extension UnsafeNode {
 
+  @frozen
   @usableFromInline
-  final class Null: ManagedBuffer<Int, UnsafeNode> {
-    @nonobjc
+  struct Null: ~Copyable {
     @inlinable
-    @inline(__always)
-    var nullptr: UnsafeMutablePointer<UnsafeNode> {
-      withUnsafeMutablePointerToElements { $0 }
+    internal init(nullptr: UnsafeMutablePointer<UnsafeNode>) {
+      self.nullptr = nullptr
     }
-    @inlinable
+    @usableFromInline var nullptr: UnsafeMutablePointer<UnsafeNode>
     deinit {
-      _ = withUnsafeMutablePointers { header, elements in
-        elements.deinitialize(count: header.pointee)
-      }
+      nullptr.deallocate()
     }
-    @nonobjc
-    @inlinable
-    @inline(__always)
+    @inlinable @inline(__always)
     internal static func create() -> Null {
-      let storage = Null.create(minimumCapacity: 1) { $0.capacity }
-      storage.withUnsafeMutablePointerToElements { nullptr in
-        nullptr.initialize(to: .create(tag: .nullptr, nullptr: nullptr))
-      }
-      return unsafeDowncast(storage, to: Null.self)
+      let nullptr = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+      nullptr.initialize(to: .create(tag: .nullptr, nullptr: nullptr))
+      return .init(nullptr: nullptr)
     }
   }
 }

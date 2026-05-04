@@ -21,7 +21,7 @@
 @usableFromInline
 package struct _BucketAccessor: _UnsafeNodePtrType {
 
-  @usableFromInline
+  @inlinable
   package init(
     pointer: UnsafeMutablePointer<_Bucket>,
     start: UnsafeMutablePointer<UnsafeNode>,
@@ -32,16 +32,16 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
     self.stride = stride
   }
 
-  let pointer: UnsafeMutablePointer<_Bucket>
-  let start: _NodePtr
-  let stride: Int
+  @usableFromInline let pointer: UnsafeMutablePointer<_Bucket>
+  @usableFromInline let start: _NodePtr
+  @usableFromInline let stride: Int
 
-  @usableFromInline
+  @inlinable
   var capacity: Int {
     _read { yield pointer.pointee.capacity }
   }
 
-  @usableFromInline
+  @inlinable
   package subscript(index: Int) -> _NodePtr {
     _read {
       yield
@@ -51,7 +51,7 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
     }
   }
 
-  @usableFromInline
+  @inlinable
   func next(payload: _MemoryLayout) -> _BucketAccessor? {
     guard let next = pointer.next else { return nil }
     return next._accessor(isHead: false, payload: payload)

@@ -92,11 +92,15 @@ extension UnsafeTreeV2 {
   @nonobjc
   @inlinable
   internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {
-    @inline(__always) _read {
-      yield pointer.__value_().pointee
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      UnsafePointer(pointer.__value_())
     }
-    @inline(__always) _modify {
-      yield &pointer.__value_().pointee
+    @inline(__always)
+    @_transparent
+    nonmutating unsafeMutableAddress {
+      pointer.__value_()
     }
   }
 }
@@ -105,14 +109,18 @@ extension UnsafeTreeV2 {
 
   @nonobjc
   @inlinable
-  internal subscript(_unsafe pointer: _SealedPtr) -> _PayloadValue {
-    @inline(__always) _read {
-      precondition(pointer.exists)
-      yield self[_unsafe_raw: pointer.pointer!]
+  internal subscript(_unsafe sealed: _SealedPtr) -> _PayloadValue {
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      precondition(sealed.exists)
+      return UnsafePointer(sealed.pointer!.__value_())
     }
-    @inline(__always) _modify {
-      precondition(pointer.exists)
-      yield &self[_unsafe_raw: pointer.pointer!]
+    @inline(__always)
+    @_transparent
+    nonmutating unsafeMutableAddress {
+      precondition(sealed.exists)
+      return sealed.pointer!.__value_()
     }
   }
 }

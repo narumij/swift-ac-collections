@@ -5,6 +5,12 @@
 //  Created by narumij on 2026/05/05.
 //
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+    public typealias SubSequence = RedBlackTreeKeyValueRangeView<Self>
+  }
+#endif
+
 // MARK: - Transformation
 
 extension RedBlackTreeDictionary {
@@ -40,11 +46,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-// MARK: - Collection Conformance
-
-// MARK: - Sequence
-// MARK: - Collection
-// MARK: - BidirectionalCollection
+// MARK: - Sequence Conformance
 
 extension RedBlackTreeDictionary: Sequence {}
 
@@ -96,12 +98,5 @@ extension RedBlackTreeDictionary {
     public var values: [Value] {
       __tree_.___copy_all_to_array(transform: Base.___mapped_value)
     }
-  }
-#endif
-
-// MARK: -
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeDictionary {
-    public typealias SubSequence = RedBlackTreeKeyValueRangeView<Self>
   }
 #endif

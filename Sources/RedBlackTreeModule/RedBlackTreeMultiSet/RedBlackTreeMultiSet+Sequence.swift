@@ -7,6 +7,14 @@
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
+    public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Self>
+  }
+#endif
+
+// MARK: -
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
 
     /// - Complexity: O(*n*)
     @inlinable
@@ -18,10 +26,7 @@
   }
 #endif
 
-// MARK: - Collection Conformance
-// MARK: - Sequence
-// MARK: - Collection
-// MARK: - BidirectionalCollection
+// MARK: - Sequence Conformance
 
 extension RedBlackTreeMultiSet: Sequence {}
 
@@ -51,13 +56,5 @@ extension RedBlackTreeMultiSet {
     public func reversed() -> [Element] {
       __tree_.___rev_copy_all_to_array()
     }
-  }
-#endif
-
-// MARK: -
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiSet {
-    public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Self>
   }
 #endif

@@ -24,7 +24,7 @@
   }
 #endif
 
-// MARK: - Sequence
+// MARK: - Sequence Conformance
 
 extension RedBlackTreeSet: Sequence {}
 

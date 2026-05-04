@@ -5,6 +5,13 @@
 //  Created by narumij on 2026/05/05.
 //
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    public typealias SubSequence = RedBlackTreeKeyValueRangeView<Self>
+  }
+#endif
+
 // MARK: - Transformation
 
 extension RedBlackTreeMultiMap {
@@ -41,9 +48,7 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-// MARK: - Sequence
-// MARK: - Collection
-// MARK: - BidirectionalCollection
+// MARK: - Sequence Conformance
 
 extension RedBlackTreeMultiMap: Sequence {}
 
@@ -100,12 +105,3 @@ extension RedBlackTreeMultiMap {
     }
   #endif
 }
-
-// MARK: -
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    public typealias SubSequence = RedBlackTreeKeyValueRangeView<Self>
-  }
-#endif

@@ -46,7 +46,7 @@ import XCTest
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
       storage.initializeMemory(as: UInt8.self, repeating: 0xE8, count: byteSize)
       let header = storage.assumingMemoryBound(to: _Bucket.self)
-      let start = header.start(isHead: true, valueAlignment: MemoryLayout<_PayloadValue>.alignment)
+      let start = header.start(storage: header.headerStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment)
       XCTAssertNotEqual(start, storage)
       for i in 0..<MemoryLayout<_Bucket>.stride {
         UnsafeMutableRawPointer(header)
@@ -140,7 +140,7 @@ import XCTest
       let start =
         storage
         .assumingMemoryBound(to: _Bucket.self)
-        .start(isHead: false, valueAlignment: MemoryLayout<_PayloadValue>.alignment)
+        .start(storage: header.otherStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment)
       XCTAssertNotEqual(start, storage)
       for i in 0..<MemoryLayout<_Bucket>.stride {
         storage

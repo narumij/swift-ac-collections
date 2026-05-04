@@ -9,6 +9,8 @@
 
 extension RedBlackTreeDictionary {
 
+  /// Creates a new, empty dictionary.
+  ///
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)

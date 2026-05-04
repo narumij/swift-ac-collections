@@ -9,6 +9,8 @@
 
 extension RedBlackTreeSet {
 
+  /// Creates a new, empty set.
+  ///
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)

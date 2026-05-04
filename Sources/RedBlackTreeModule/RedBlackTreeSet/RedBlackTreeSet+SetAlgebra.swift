@@ -89,7 +89,7 @@ extension RedBlackTreeSet: SetAlgebra {
   __algorithm/set_difference.h に準じた動作となっている。
 */
 extension RedBlackTreeSet {
-  
+
   @inlinable
   @inline(__always)
   public func difference(_ other: __owned RedBlackTreeSet<Element>)

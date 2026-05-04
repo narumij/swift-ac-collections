@@ -30,7 +30,7 @@
 */
 
 extension RedBlackTreeMultiSet {
-  
+
   @inlinable
   @inline(__always)
   public func union(_ other: __owned RedBlackTreeMultiSet<Element>)
@@ -50,7 +50,7 @@ extension RedBlackTreeMultiSet {
 }
 
 extension RedBlackTreeMultiSet {
-  
+
   @inlinable
   @inline(__always)
   public func symmetricDifference(_ other: __owned RedBlackTreeMultiSet<Element>)
@@ -70,7 +70,7 @@ extension RedBlackTreeMultiSet {
 }
 
 extension RedBlackTreeMultiSet {
-  
+
   @inlinable
   @inline(__always)
   public func intersection(_ other: RedBlackTreeMultiSet<Element>)
@@ -90,7 +90,7 @@ extension RedBlackTreeMultiSet {
 }
 
 extension RedBlackTreeMultiSet {
-  
+
   @inlinable
   @inline(__always)
   public func difference(_ other: __owned RedBlackTreeMultiSet<Element>)

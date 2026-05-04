@@ -1,0 +1,17 @@
+//
+//  RedBlackTreeSet+Subscript.swift
+//  swift-ac-collections
+//
+//  Created by narumij on 2026/05/05.
+//
+
+extension RedBlackTreeSet {
+
+  /// - Complexity: O(1)
+  @inlinable
+  public subscript(position: Index) -> Element {
+    @inline(__always) get {
+      __tree_[_unsafe: __tree_.__purified_(position)]
+    }
+  }
+}

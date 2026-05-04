@@ -23,3 +23,16 @@
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always) get {
+        Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
+      }
+    }
+  }
+#endif

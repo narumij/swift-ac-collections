@@ -144,6 +144,8 @@ extension RedBlackTreeMultiMap.Base: _BaseNode_NodeCompareProtocol {}
 
 extension RedBlackTreeMultiMap {
 
+  /// The total number of elements that the multi map can contain without allocating new storage.
+  ///
   /// - Complexity: O(1)
   @inlinable
   public var capacity: Int {
@@ -153,12 +155,16 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// A Boolean value that indicates whether the multi map is empty.
+  ///
   /// - Complexity: O(1)
   @inlinable
   public var isEmpty: Bool {
     count == 0
   }
 
+  /// The number of elements in the multi map.
+  ///
   /// - Complexity: O(1)
   @inlinable
   public var count: Int {
@@ -168,6 +174,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// Returns the number of elements equal to the given value.
+  ///
   /// - Complexity: O(log `count` + `distance`), where `distance` is the number of matching elements.
   @inlinable
   public func count(forKey key: Key) -> Int {
@@ -179,6 +187,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// Returns a Boolean value that indicates whether the given element exists in the set.
+  ///
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {
@@ -190,6 +200,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// The first element of the collection.
+  ///
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -197,6 +209,8 @@ extension RedBlackTreeMultiMap {
     isEmpty ? nil : Base.__element_(__tree_[_unsafe_raw: _start])
   }
 
+  /// The last element of the collection.
+  ///
   /// - Complexity: O(log `count`)
   @inlinable
   @inline(__always)
@@ -207,6 +221,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// Returns the minimum element in the sequence.
+  ///
   /// - Complexity: O(*n*)
   ///
   /// If O(1) is required, `first` provides an equivalent operation in O(1).
@@ -215,6 +231,8 @@ extension RedBlackTreeMultiMap {
     __tree_.___min().map(Base.__element_)
   }
 
+  /// Returns the maximum element in the sequence.
+  ///
   /// - Complexity: O(log *n*)
   @inlinable
   public func max() -> Element? {
@@ -257,6 +275,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// Inserts the given element in the set if it is not already present.
+  ///
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
@@ -267,6 +287,8 @@ extension RedBlackTreeMultiMap {
     insert((key, value))
   }
 
+  /// Inserts the given element into the set unconditionally.
+  ///
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
@@ -284,6 +306,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// Removes and returns the first element of the collection.
+  ///
   /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
@@ -296,6 +320,8 @@ extension RedBlackTreeMultiMap {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
+    /// Removes and returns the last element of the collection.
+    ///
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
@@ -307,7 +333,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Important: Indices that refer to removed members become invalid.
+  /// Removes the first element of the collection.
+  ///
   /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
@@ -319,7 +346,8 @@ extension RedBlackTreeMultiMap {
     return remove(at: startIndex)
   }
 
-  /// - Important: Indices that refer to removed members become invalid.
+  /// Removes the last element of the collection.
+  ///
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -333,7 +361,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Important: Indices that refer to removed members become invalid.
+  /// Removes the element at the given index of the set.
+  ///
   /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
@@ -349,7 +378,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// - Important: Indices that refer to removed members become invalid.
+  /// Removes all members from the set.
+  ///
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -365,6 +395,9 @@ extension RedBlackTreeMultiMap {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
+    /// Removes the element at the given position from the set and returns the index of the next element.
+    ///
+    /// - Complexity: Amortized O(1)
     @discardableResult
     @inlinable @inline(__always)
     public mutating func erase(_ ptr: Index) -> Index {
@@ -374,6 +407,9 @@ extension RedBlackTreeMultiMap {
 
   extension RedBlackTreeMultiMap {
 
+    /// Removes all elements that satisfy the given predicate.
+    ///
+    /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()
@@ -391,7 +427,12 @@ extension RedBlackTreeMultiMap {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
-    /// - Important: Indices that refer to removed members become invalid.
+    /// Removes a single element equivalent to the given key.
+    ///
+    /// If multiple elements with an equivalent key exist, an arbitrary one is removed.
+    ///
+    /// - Parameter member: The key of the element to remove.
+    /// - Returns: `true` if an element was removed; otherwise `false`.
     /// - Complexity: O(log *n*)
     @inlinable
     @inline(__always)
@@ -404,8 +445,10 @@ extension RedBlackTreeMultiMap {
 
   extension RedBlackTreeMultiMap {
 
-    // TODO: イテレータ利用の注意をドキュメントすること
-    /// - Important: Indices that refer to removed members become invalid.
+    /// Removes all elements equivalent to the given key.
+    ///
+    /// - Parameter member: The key of the elements to remove.
+    /// - Returns: The number of elements removed.
     /// - Complexity: O(log `count` + `distance`), where `distance` is the number of removed elements.
     @inlinable
     @discardableResult

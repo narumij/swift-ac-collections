@@ -139,7 +139,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(storage: header_storage, payload: payload)
+        var it = header._capacities(storage: header.headerStorage(), payload: payload)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -168,7 +168,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(storage: header_storage, payload: payload)
+        var it = header._capacities(storage: header.otherStorage(), payload: payload)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -197,6 +197,7 @@ extension _BucketAllocator {
     var reserverHead = b
     if let h = reserverHead {
       _deinitializeNodeAndValues(storage: h.headerStorage(), h)
+      h.pointee.count = 0
       reserverHead = h.pointee.next
     }
     while let h = reserverHead {

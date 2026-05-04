@@ -22,7 +22,7 @@
 @usableFromInline
 struct _BucketQueue {
 
-  @usableFromInline
+  @inlinable
   internal init(
     pointer: UnsafeMutablePointer<_Bucket>,
     start: UnsafeMutablePointer<UnsafeNode>,
@@ -33,25 +33,26 @@ struct _BucketQueue {
     self.stride = stride
   }
 
-  let pointer: UnsafeMutablePointer<_Bucket>
-  let start: UnsafeMutablePointer<UnsafeNode>
-  let stride: Int
+  @usableFromInline let pointer: UnsafeMutablePointer<_Bucket>
+  @usableFromInline let start: UnsafeMutablePointer<UnsafeNode>
+  @usableFromInline let stride: Int
 
+  @inlinable
+  @inline(__always)
   subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
     UnsafeMutableRawPointer(start)
       .advanced(by: stride * index)
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
-  @usableFromInline
+  @inlinable
   mutating func pop() -> UnsafeMutablePointer<UnsafeNode>? {
     guard pointer.count < pointer.capacity else { return nil }
-    let p = self[pointer.count]
-    pointer.pointee.count += 1
-    return p
+    defer { pointer.pointee.count += 1 }
+    return self[pointer.count]
   }
 
-  @usableFromInline
+  @inlinable
   func next(payload: _MemoryLayout) -> _BucketQueue? {
     guard let next = pointer.next else { return nil }
     return next._queue(isHead: false, payloadLayout: payload)

@@ -20,14 +20,6 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Self>
-  }
-#endif
-
-#if !COMPATIBLE_ATCODER_2025
-
-  extension RedBlackTreeSet {
-
     public typealias View = RedBlackTreeKeyOnlyRangeView<Self>
   }
 
@@ -195,9 +187,6 @@
     }
   }
 
-#endif
-
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// - Complexity: O(log *n*), where *n* is the number of elements.

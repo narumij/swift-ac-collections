@@ -7,6 +7,12 @@
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
+    public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Self>
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
 
     /// - Complexity: O(*n*)
     @inlinable

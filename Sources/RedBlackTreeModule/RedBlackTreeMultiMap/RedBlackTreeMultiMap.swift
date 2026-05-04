@@ -421,7 +421,7 @@ extension RedBlackTreeMultiMap {
 // MARK: - Remove（削除）
 
 extension RedBlackTreeMultiMap {
-  
+
   /// - Complexity: Amortized O(1)
   @inlinable
   @inline(__always)
@@ -639,7 +639,7 @@ extension RedBlackTreeMultiMap {
   }
 
   extension RedBlackTreeMultiMap {
-    
+
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of key: Key) -> Index? {
@@ -903,166 +903,6 @@ extension RedBlackTreeMultiMap {
     public mutating func eraseMulti(_ key: Key) -> Int {
       __tree_._strongEnsureUnique()
       return __tree_.___erase_multi(key)
-    }
-  }
-#endif
-
-// MARK: - Protocol Conformance
-
-// MARK: - ExpressibleByDictionaryLiteral
-
-extension RedBlackTreeMultiMap: ExpressibleByDictionaryLiteral {
-
-  /// - Complexity: O(*n* log *n*)
-  @inlinable
-  @inline(__always)
-  public init(dictionaryLiteral elements: (Key, Value)...) {
-    self.init(multiKeysWithValues: elements)
-  }
-}
-
-// MARK: - ExpressibleByArrayLiteral
-
-extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
-
-  /// - Complexity: O(*n* log *n*)
-  @inlinable
-  @inline(__always)
-  public init(arrayLiteral elements: (Key, Value)...) {
-    self.init(multiKeysWithValues: elements)
-  }
-}
-
-// MARK: - CustomStringConvertible
-
-extension RedBlackTreeMultiMap: CustomStringConvertible {
-
-  @inlinable
-  public var description: String {
-    _dictionaryDescription(for: self)
-  }
-}
-
-// MARK: - CustomDebugStringConvertible
-
-extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
-
-  public var debugDescription: String {
-    description
-  }
-}
-
-// MARK: - CustomReflectable
-
-extension RedBlackTreeMultiMap: CustomReflectable {
-  /// The custom mirror for this instance.
-  public var customMirror: Mirror {
-    Mirror(self, unlabeledChildren: self + [], displayStyle: .dictionary)
-  }
-}
-
-// MARK: - Is Identical To
-
-extension RedBlackTreeMultiMap {
-
-  /// Returns a boolean value indicating whether this set is identical to
-  /// `other`.
-  ///
-  /// Two set values are identical if there is no way to distinguish between
-  /// them.
-  ///
-  /// For any values `a`, `b`, and `c`:
-  ///
-  /// - `a.isTriviallyIdentical(to: a)` is always `true`. (Reflexivity)
-  /// - `a.isTriviallyIdentical(to: b)` implies `b.isTriviallyIdentical(to: a)`. (Symmetry)
-  /// - If `a.isTriviallyIdentical(to: b)` and `b.isTriviallyIdentical(to: c)` are both `true`,
-  ///   then `a.isTriviallyIdentical(to: c)` is also `true`. (Transitivity)
-  /// - `a.isTriviallyIdentical(b)` implies `a == b`
-  ///   - `a == b` does not imply `a.isTriviallyIdentical(b)`
-  ///
-  /// Values produced by copying the same value, with no intervening mutations,
-  /// will compare identical:
-  ///
-  /// ```swift
-  /// let d = c
-  /// print(c.isTriviallyIdentical(to: d))
-  /// // Prints true
-  /// ```
-  ///
-  /// Comparing sets this way includes comparing (normally) hidden
-  /// implementation details such as the memory location of any underlying set
-  /// storage object. Therefore, identical sets are guaranteed to compare equal
-  /// with `==`, but not all equal sets are considered identical.
-  ///
-  /// - Performance: O(1)
-  @inlinable
-  @inline(__always)
-  public func isTriviallyIdentical(to other: Self) -> Bool {
-    __tree_._isIdentical(to: other.__tree_)
-  }
-}
-
-// MARK: - Equatable
-
-extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.__tree_ == rhs.__tree_
-  }
-}
-
-// MARK: - Comparable
-
-extension RedBlackTreeMultiMap: Comparable where Value: Comparable {
-
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  @inline(__always)
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    lhs.__tree_ < rhs.__tree_
-  }
-}
-
-// MARK: - Hashable
-
-extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
-
-  @inlinable
-  @inline(__always)
-  public func hash(into hasher: inout Hasher) {
-    hasher.combine(__tree_)
-  }
-}
-
-// MARK: - Sendable
-
-#if swift(>=5.5)
-  extension RedBlackTreeMultiMap: @unchecked Sendable
-  where Key: Sendable, Value: Sendable {}
-#endif
-
-// MARK: - Codable
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap: Encodable where Key: Encodable, Value: Encodable {
-
-    @inlinable
-    public func encode(to encoder: Encoder) throws {
-      var container = encoder.unkeyedContainer()
-      for element in __tree_.unsafeValues(__tree_.__begin_node_, __tree_.__end_node) {
-        try container.encode(element)
-      }
-    }
-  }
-
-  extension RedBlackTreeMultiMap: Decodable where Key: Decodable, Value: Decodable {
-
-    @inlinable
-    public init(from decoder: Decoder) throws {
-      self.init(__tree_: try .create(from: decoder))
     }
   }
 #endif

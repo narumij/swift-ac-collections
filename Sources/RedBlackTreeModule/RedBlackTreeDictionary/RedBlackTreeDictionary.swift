@@ -230,6 +230,8 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
   // multi mapとの統一感のために復活
 
+  /// Inserts the given key-value pair in the set if it is not already present.
+  ///
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)
@@ -257,6 +259,8 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+  /// Updates the value stored in the dictionary for the given key, or adds a new key-value pair if the key does not exist.
+  ///
   /// - Complexity: O(log *n*)
   @inlinable
   @inline(__always)

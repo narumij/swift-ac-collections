@@ -24,6 +24,7 @@ import Foundation
 
 extension RedBlackTreeSet: SetAlgebra {
 
+  /// Returns a new set with the elements of both this and the given set.
   @inlinable
   @inline(__always)
   public func union(_ other: __owned RedBlackTreeSet<Element>)
@@ -34,6 +35,7 @@ extension RedBlackTreeSet: SetAlgebra {
     return result
   }
 
+  /// Returns a new set with the elements that are common to both this set and the given set.
   @inlinable
   @inline(__always)
   public func intersection(_ other: RedBlackTreeSet<Element>)
@@ -44,6 +46,7 @@ extension RedBlackTreeSet: SetAlgebra {
     return result
   }
 
+  /// Returns a new set with the elements that are either in this set or in the given set, but not in both.
   @inlinable
   @inline(__always)
   public func symmetricDifference(_ other: __owned RedBlackTreeSet<Element>)
@@ -54,6 +57,8 @@ extension RedBlackTreeSet: SetAlgebra {
     return result
   }
 
+  /// Adds the elements of the given set to the set.
+  ///
   /// - Complexity: O(*n* + *m*)
   @inlinable
   //  @inline(__always)
@@ -61,6 +66,8 @@ extension RedBlackTreeSet: SetAlgebra {
     __tree_ = __tree_.___meld_unique(other.__tree_)
   }
 
+  /// Removes the elements of this set that aren’t also in the given set.
+  ///
   /// - Complexity: O(*n* + *m*)
   @inlinable
   //  @inline(__always)
@@ -68,6 +75,8 @@ extension RedBlackTreeSet: SetAlgebra {
     __tree_ = __tree_.___intersection(other.__tree_)
   }
 
+  /// Removes the elements of the set that are also in the given set and adds the members of the given set that are not already in the set.
+  ///
   /// - Complexity: O(*n* + *m*)
   @inlinable
   //  @inline(__always)

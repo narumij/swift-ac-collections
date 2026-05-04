@@ -15,7 +15,7 @@ extension RedBlackTreeDictionary {
 }
 
 extension RedBlackTreeDictionary {
-  
+
   @inlinable
   @inline(__always)
   package func ___is_garbaged(_ index: Index) -> Bool {

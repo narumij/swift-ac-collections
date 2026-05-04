@@ -18,7 +18,7 @@
 #if !COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeDictionary {
-    
+
     /// A shorthand for `RedBlackTreeBoundExpression<Element>`.
     ///
     /// This type is used to describe element positions in the tree,

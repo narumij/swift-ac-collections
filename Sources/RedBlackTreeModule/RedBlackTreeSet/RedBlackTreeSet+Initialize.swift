@@ -8,7 +8,7 @@
 // MARK: - Creating a Set
 
 extension RedBlackTreeSet {
-  
+
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)

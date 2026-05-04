@@ -50,6 +50,3 @@ extension RedBlackTreeSet {
     }
   }
 #endif
-
-
-

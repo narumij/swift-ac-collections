@@ -205,7 +205,7 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   /// Returns the minimum element in the sequence.
-  /// 
+  ///
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   ///
   /// If O(1) is required, `first` provides an equivalent operation in O(1).

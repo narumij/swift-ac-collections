@@ -245,25 +245,6 @@ extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(log *n*)
     @inlinable
-    @inline(__always)
-    public subscript(key: Key) -> View {
-      @inline(__always) get {
-        let (lower, upper) = ___equal_range(key)
-        return self[unchecked: .init(lowerBound: lower.sealed, upperBound: upper.sealed)]
-      }
-      @inline(__always) _modify {
-        let (lower, upper) = ___equal_range(key)
-        yield &self[unchecked: .init(lowerBound: lower.sealed, upperBound: upper.sealed)]
-      }
-    }
-  }
-#endif
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(log *n*)
-    @inlinable
     public func values(forKey key: Key) -> [_MappedValue] {
       let (lo, hi) = __tree_.__equal_range_multi(key)
       return __tree_.___copy_to_array(lo, hi, transform: Base.___mapped_value)

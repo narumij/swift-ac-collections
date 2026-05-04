@@ -371,6 +371,12 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
+    /// Removes a single element equivalent to the given key.
+    ///
+    /// If multiple elements with an equivalent key exist, an arbitrary one is removed.
+    ///
+    /// - Parameter member: The key of the element to remove.
+    /// - Returns: `true` if an element was removed; otherwise `false`.
     /// - Complexity: O(log *n*)
     @inlinable
     @inline(__always)
@@ -383,6 +389,10 @@ extension RedBlackTreeMultiSet {
 
   extension RedBlackTreeMultiSet {
 
+    /// Removes all elements equivalent to the given key.
+    ///
+    /// - Parameter member: The key of the elements to remove.
+    /// - Returns: The number of elements removed.
     /// - Complexity: O(log `count` + `distance`), where `distance` is the number of removed elements.
     @inlinable
     @discardableResult

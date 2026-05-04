@@ -127,6 +127,8 @@ extension RedBlackTreeSet.Base: _BaseNode_NodeCompareProtocol {}
 
 extension RedBlackTreeSet {
 
+  /// The total number of elements that the set can contain without allocating new storage.
+  ///
   /// - Complexity: O(1)
   @inlinable
   public var capacity: Int {
@@ -136,12 +138,16 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// A Boolean value that indicates whether the set is empty.
+  ///
   /// - Complexity: O(1)
   @inlinable
   public var isEmpty: Bool {
     count == 0
   }
 
+  /// The number of elements in the set.
+  ///
   /// - Complexity: O(1)
   @inlinable
   public var count: Int {
@@ -151,6 +157,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// Returns the number of elements equal to the given value.
+  ///
   /// - Complexity: O(log `count`)
   @inlinable
   public func count(of element: Element) -> Int {
@@ -162,6 +170,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// Returns a Boolean value that indicates whether the given element exists in the set.
+  ///
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   @inline(never)
@@ -174,6 +184,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// The first element of the collection.
+  ///
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -181,6 +193,8 @@ extension RedBlackTreeSet {
     isEmpty ? nil : __tree_[_unsafe_raw: _start]
   }
 
+  /// The last element of the collection.
+  ///
   /// - Complexity: O(log `count`)
   @inlinable
   public var last: Element? {
@@ -190,6 +204,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// Returns the minimum element in the sequence.
+  /// 
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   ///
   /// If O(1) is required, `first` provides an equivalent operation in O(1).
@@ -198,6 +214,8 @@ extension RedBlackTreeSet {
     __tree_.___min()
   }
 
+  /// Returns the maximum element in the sequence.
+  ///
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func max() -> Element? {
@@ -209,6 +227,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// Inserts the given element in the set if it is not already present.
+  ///
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   @discardableResult
@@ -220,6 +240,8 @@ extension RedBlackTreeSet {
     return (__inserted, __inserted ? newMember : __tree_[_unsafe_raw: __r])
   }
 
+  /// Inserts the given element into the set unconditionally.
+  ///
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   @inline(__always)
@@ -234,12 +256,13 @@ extension RedBlackTreeSet {
   }
 }
 
-
 // MARK: - Removal
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// Removes and returns the first element of the collection.
+    ///
     /// - Complexity: Amortized O(1)
     @inlinable
     public mutating func popFirst() -> Element? {
@@ -247,6 +270,8 @@ extension RedBlackTreeSet {
       return ___remove_first()?.payload
     }
 
+    /// Removes and returns the last element of the collection.
+    ///
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
@@ -258,7 +283,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Important: Indices that refer to removed members become invalid.
+  /// Removes the first element of the collection.
+  ///
   /// - Complexity: Amortized O(1)
   @inlinable
   @discardableResult
@@ -274,6 +300,8 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// Removes the last element of the collection.
+    ///
     /// - Complexity: O(log *n*)
     @inlinable
     @discardableResult
@@ -289,7 +317,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// - Important: Indices that refer to removed members become invalid.
+  /// Removes the specified element from the set.
+  ///
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   @discardableResult
@@ -302,7 +331,8 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// - Important: Indices that refer to removed members become invalid.
+    /// Removes the element at the given index of the set.
+    ///
     /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult
@@ -318,6 +348,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// Removes all members from the set.
+  ///
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -333,6 +365,8 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// Removes the element at the given position from the set and returns the index of the next element.
+    ///
     /// - Complexity: Amortized O(1)
     @discardableResult
     @inlinable @inline(__always)
@@ -343,6 +377,9 @@ extension RedBlackTreeSet {
 
   extension RedBlackTreeSet {
 
+    /// Removes all elements that satisfy the given predicate.
+    ///
+    /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()

@@ -196,3 +196,15 @@
   }
 
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func equalRange(_ element: Element) -> UnsafeIndexV3Range {
+      let (lower, upper) = __tree_.__equal_range_unique(element)
+      return .init(.init(lowerBound: ___index(lower.sealed), upperBound: ___index(upper.sealed)))
+    }
+  }
+#endif

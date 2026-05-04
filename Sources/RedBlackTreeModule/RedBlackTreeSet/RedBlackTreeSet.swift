@@ -188,6 +188,23 @@ extension RedBlackTreeSet {
   }
 }
 
+extension RedBlackTreeSet {
+
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
+  ///
+  /// If O(1) is required, `first` provides an equivalent operation in O(1).
+  @inlinable
+  public func min() -> Element? {
+    __tree_.___min()
+  }
+
+  /// - Complexity: O(log *n*), where *n* is the number of elements.
+  @inlinable
+  public func max() -> Element? {
+    __tree_.___max()
+  }
+}
+
 // MARK: - Insertion
 
 extension RedBlackTreeSet {
@@ -216,6 +233,7 @@ extension RedBlackTreeSet {
     return oldMember
   }
 }
+
 
 // MARK: - Removal
 
@@ -311,88 +329,6 @@ extension RedBlackTreeSet {
     }
   }
 }
-
-// MARK: -
-
-extension RedBlackTreeSet {
-
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  ///
-  /// If O(1) is required, `first` provides an equivalent operation in O(1).
-  @inlinable
-  public func min() -> Element? {
-    __tree_.___min()
-  }
-
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  @inlinable
-  public func max() -> Element? {
-    __tree_.___max()
-  }
-}
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet {
-
-    /// Returns the index of the first element that is not less than the given value.
-    ///
-    /// `lowerBound(_:)` returns the first position (`Index`) where the value is
-    /// greater than or equal to the specified element `member`.
-    ///
-    /// For example, given a sorted sequence `[1, 3, 5, 7, 9]`:
-    /// - `lowerBound(0)` returns the position of the first element `1` (i.e. `startIndex`).
-    /// - `lowerBound(3)` returns the position of element `3`.
-    /// - `lowerBound(4)` returns the position of element `5` (the first value ≥ `4`).
-    /// - `lowerBound(10)` returns `endIndex`.
-    ///
-    /// - Parameter member: The element to search for using binary search.
-    /// - Returns: The first `Index` whose value is greater than or equal to `member`.
-    /// - Complexity: O(log *n*), where *n* is the number of elements.
-    @inlinable
-    public func lowerBound(_ member: Element) -> Index {
-      ___index(__tree_.lower_bound(member).sealed)
-    }
-
-    /// Returns the index of the first element that is greater than the given value.
-    ///
-    /// `upperBound(_:)` returns the first position (`Index`) where the value is
-    /// strictly greater than the specified element `member`.
-    ///
-    /// For example, given a sorted sequence `[1, 3, 5, 5, 7, 9]`:
-    /// - `upperBound(3)` returns the position of element `5`
-    ///   (the first value greater than `3`).
-    /// - `upperBound(5)` returns the position of element `7`
-    ///   (elements equal to `5` are excluded, so it points just after them).
-    /// - `upperBound(9)` returns `endIndex`.
-    ///
-    /// - Parameter member: The element to search for using binary search.
-    /// - Returns: The first `Index` whose value is strictly greater than `member`.
-    /// - Complexity: O(log *n*), where *n* is the number of elements.
-    @inlinable
-    public func upperBound(_ member: Element) -> Index {
-      ___index(__tree_.upper_bound(member).sealed)
-    }
-  }
-
-  extension RedBlackTreeSet {
-
-    /// - Complexity: O( log `count` )
-    @inlinable
-    public func find(_ member: Element) -> Index {
-      ___index(__tree_.find(member).sealed)
-    }
-  }
-
-  extension RedBlackTreeSet {
-
-    /// - Complexity: O(log *n*), where *n* is the number of elements.
-    @inlinable
-    public func equalRange(_ element: Element) -> UnsafeIndexV3Range {
-      let (lower, upper) = __tree_.__equal_range_unique(element)
-      return .init(.init(lowerBound: ___index(lower.sealed), upperBound: ___index(upper.sealed)))
-    }
-  }
-#endif
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {

@@ -139,7 +139,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(isHead: true, payload: payload)
+        var it = header._capacities(storage: header_storage, payload: payload)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -168,7 +168,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(isHead: false, payload: payload)
+        var it = header._capacities(storage: header_storage, payload: payload)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -195,12 +195,14 @@ extension _BucketAllocator {
   @inlinable
   public func deinitialize(bucket b: _BucketPointer?) {
     var reserverHead = b
-    var isHead = true
-    while let h = reserverHead {
+    if let h = reserverHead {
+      _deinitializeNodeAndValues(storage: h.headerStorage(), h)
       reserverHead = h.pointee.next
-      _deinitializeNodeAndValues(isHead: isHead, h)
+    }
+    while let h = reserverHead {
+      _deinitializeNodeAndValues(storage: h.otherStorage(), h)
       h.pointee.count = 0
-      isHead = false
+      reserverHead = h.pointee.next
     }
   }
 }
@@ -216,7 +218,7 @@ extension _BucketAllocator {
     }
     while let h = reserverHead {
       reserverHead = h.pointee.next
-      _deallocBucket(h)
+      _deallocOtherBucket(h)
     }
   }
 }
@@ -225,7 +227,7 @@ extension _BucketAllocator {
 
   @inlinable
   func _deallocHeadBucket(_ b: _BucketPointer) {
-    _deinitializeNodeAndValues(isHead: true, b)
+    _deinitializeNodeAndValues(storage: b.headerStorage(), b)
     _deinitializeEndNode(b)
     _deinitializeBeginNode(b)
     b.deinitialize(count: 1)
@@ -233,8 +235,8 @@ extension _BucketAllocator {
   }
 
   @inlinable
-  func _deallocBucket(_ b: _BucketPointer) {
-    _deinitializeNodeAndValues(isHead: false, b)
+  func _deallocOtherBucket(_ b: _BucketPointer) {
+    _deinitializeNodeAndValues(storage: b.otherStorage(), b)
     b.deinitialize(count: 1)
     UnsafeMutableRawPointer(b)._deallocate()
   }
@@ -257,8 +259,8 @@ extension _BucketAllocator {
   }
 
   @inlinable
-  func _deinitializeNodeAndValues(isHead: Bool, _ b: _BucketPointer) {
-    var it = b._counts(isHead: isHead, payload: payload)
+  func _deinitializeNodeAndValues(storage: UnsafeMutableRawPointer, _ b: _BucketPointer) {
+    var it = b._counts(storage: storage, payload: payload)
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1))
@@ -273,7 +275,7 @@ extension _BucketAllocator {
     }
     #if DEBUG
       do {
-        var it = b._capacities(isHead: isHead, payload: payload)
+        var it = b._capacities(storage: storage, payload: payload)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }

@@ -35,17 +35,17 @@ package struct _Bucket {
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
-  
+
   /// 次のバケットへのポインタ
   @inlinable
   @inline(__always)
   var next: UnsafeMutablePointer? { pointee.next }
-  
+
   /// 確保数
   @inlinable
   @inline(__always)
   var capacity: Int { pointee.capacity }
-  
+
   /// 使用数
   @inlinable
   @inline(__always)
@@ -102,12 +102,21 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   ///
   /// 確保数0の場合、確保領域の末尾の次のアドレスとなる
   @inlinable
+  @inline(__always)
   func storage(isHead: Bool) -> UnsafeMutableRawPointer {
-    if isHead {
-      UnsafeMutableRawPointer(end_ptr.advanced(by: 1))
-    } else {
-      UnsafeMutableRawPointer(advanced(by: 1))
-    }
+    isHead ? headerStorage() : otherStorage()
+  }
+
+  @inlinable
+  @inline(__always)
+  func headerStorage() -> UnsafeMutableRawPointer {
+    UnsafeMutableRawPointer(end_ptr.advanced(by: 1))
+  }
+
+  @inlinable
+  @inline(__always)
+  func otherStorage() -> UnsafeMutableRawPointer {
+    UnsafeMutableRawPointer(advanced(by: 1))
   }
 
   /// ノードの開始アドレスを返す
@@ -130,13 +139,17 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   ///
   @inlinable
   @inline(__always)
-  package func start(isHead: Bool, valueAlignment: Int) -> UnsafeMutablePointer<UnsafeNode> {
+  package func start(storage: UnsafeMutableRawPointer, valueAlignment: Int) -> UnsafeMutablePointer<
+    UnsafeNode
+  > {
     let headerAlignment = MemoryLayout<UnsafeNode>.alignment
     if valueAlignment <= headerAlignment {
-      return storage(isHead: isHead)
+      return
+        storage
         .assumingMemoryBound(to: UnsafeNode.self)
     }
-    return storage(isHead: isHead)
+    return
+      storage
       .advanced(by: MemoryLayout<UnsafeNode>.stride)
       .alignedUp(toMultipleOf: valueAlignment)
       .advanced(by: -MemoryLayout<UnsafeNode>.stride)

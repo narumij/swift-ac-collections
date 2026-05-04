@@ -140,7 +140,7 @@ extension UnsafeTreeV2BufferHeader {
       print("  next     :", nextDesc)
 
       let start = bucket.start(
-        isHead: isHead,
+        storage: bucket.storage(isHead: isHead),
         valueAlignment: payload.alignment
       )
       let stride = MemoryLayout<UnsafeNode>.stride + payload.stride
@@ -156,7 +156,7 @@ extension UnsafeTreeV2BufferHeader {
       print("  ---- entries ----")
 
       var it = bucket._capacities(
-        isHead: isHead,
+        storage: bucket.storage(isHead: isHead),
         payload: payload
       )
 
@@ -223,7 +223,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
     print(" alignment  :", payload.alignment)
     print(" valueStride:", payload.stride)
 
-    let start = start(isHead: isHead, valueAlignment: payload.alignment)
+    let start = start(storage: storage(isHead: isHead), valueAlignment: payload.alignment)
     let stride = MemoryLayout<UnsafeNode>.stride + payload.stride
 
     print(" header ptr :", self)
@@ -237,7 +237,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
 
     print(" ---- entries ----")
 
-    var it = _capacities(isHead: isHead, payload: payload)
+    var it = _capacities(storage: storage(isHead: isHead), payload: payload)
     var i = 0
 
     while let node = it.pop() {

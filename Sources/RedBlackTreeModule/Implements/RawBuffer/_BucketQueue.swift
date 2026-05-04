@@ -64,7 +64,8 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   @inline(__always)
   func _queue(isHead: Bool, payloadLayout: _MemoryLayout) -> _BucketQueue {
     .init(
-      pointer: self, start: start(isHead: isHead, valueAlignment: payloadLayout.alignment),
+      pointer: self,
+      start: start(storage: storage(isHead: isHead), valueAlignment: payloadLayout.alignment),
       stride: MemoryLayout<UnsafeNode>.stride + payloadLayout.stride)
   }
 

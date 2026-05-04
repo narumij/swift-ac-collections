@@ -109,13 +109,13 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
   @inline(__always)
-  func headerStorage() -> UnsafeMutableRawPointer {
+  package func headerStorage() -> UnsafeMutableRawPointer {
     UnsafeMutableRawPointer(end_ptr.advanced(by: 1))
   }
 
   @inlinable
   @inline(__always)
-  func otherStorage() -> UnsafeMutableRawPointer {
+  package func otherStorage() -> UnsafeMutableRawPointer {
     UnsafeMutableRawPointer(advanced(by: 1))
   }
 

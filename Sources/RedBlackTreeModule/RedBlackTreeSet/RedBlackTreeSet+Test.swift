@@ -49,7 +49,8 @@ extension RedBlackTreeSet {
 
     /// - Complexity: O(1)
     @inlinable
-    public subscript(_result position: Index) -> Result<Element, SealError> {
+    package subscript(_result position: Index) -> Result<Element, SealError> {
+      // なぜpublicにしたのか思い出せない
       __tree_.__purified_(position)
         .map { $0.pointer.__value_().pointee }
     }

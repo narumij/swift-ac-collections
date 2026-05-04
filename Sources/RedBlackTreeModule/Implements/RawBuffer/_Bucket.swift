@@ -104,18 +104,18 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   @inlinable
   @inline(__always)
   func storage(isHead: Bool) -> UnsafeMutableRawPointer {
-    isHead ? headerStorage() : otherStorage()
+    isHead ? primaryStorage() : secondaryStorage()
   }
 
   @inlinable
   @inline(__always)
-  package func headerStorage() -> UnsafeMutableRawPointer {
+  package func primaryStorage() -> UnsafeMutableRawPointer {
     UnsafeMutableRawPointer(end_ptr.advanced(by: 1))
   }
 
   @inlinable
   @inline(__always)
-  package func otherStorage() -> UnsafeMutableRawPointer {
+  package func secondaryStorage() -> UnsafeMutableRawPointer {
     UnsafeMutableRawPointer(advanced(by: 1))
   }
 

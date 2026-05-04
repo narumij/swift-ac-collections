@@ -29,7 +29,7 @@ struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _Unsaf
   internal init(bucket: BucketPointer?) {
     self.helper = bucket.flatMap {
       $0._counts(
-        storage: $0.headerStorage(),
+        storage: $0.primaryStorage(),
         payload:
           MemoryLayout<_PayloadValue>._memoryLayout)
     }

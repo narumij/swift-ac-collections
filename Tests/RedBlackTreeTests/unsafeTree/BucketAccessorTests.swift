@@ -30,7 +30,7 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
     let header = storage.assumingMemoryBound(to: _Bucket.self)
     let accessor = _BucketAccessor(
       pointer: header,
-      start: header.start(storage: header.otherStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment),
+      start: header.start(storage: header.secondaryStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment),
       stride: allocator._pair.stride)
     for i in 0..<capacity {
       accessor[i].initialize(to: .create(tag: .zero, nullptr: UnsafeNode.nullptr))

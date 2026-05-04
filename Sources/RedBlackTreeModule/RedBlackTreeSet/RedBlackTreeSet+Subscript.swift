@@ -7,6 +7,8 @@
 
 extension RedBlackTreeSet {
 
+  /// Accesses the element at the specified position.
+  ///
   /// - Complexity: O(1)
   @inlinable
   public subscript(position: Index) -> Element {

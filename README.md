@@ -1,15 +1,17 @@
 # swift-ac-collections
 
-`swift-ac-collections` は、[AtCoder][atcoder]での利用を想定したデータ構造等のオープソース・パッケージです。
+English | [日本語](README.ja.md)
+
+`swift-ac-collections` is an open-source package that provides data structures and related utilities intended for use on [AtCoder][atcoder].
 
 [![Swift](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml/badge.svg?branch=main)](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml)  
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-## 利用方法
+## Usage
 
-### Swift Package Manager での利用
+### Using Swift Package Manager
 
-`Package.swift` の `dependencies` に以下を追加してください:
+Add the following to the `dependencies` section of your `Package.swift`:
 
 ```Swift
 dependencies: [
@@ -19,7 +21,7 @@ dependencies: [
 ]
 ```
 
-さらに、ビルドターゲットに以下を追加します:
+Then add the following to your build target:
 
 ```Swift
 dependencies: [
@@ -27,7 +29,7 @@ dependencies: [
 ]
 ```
 
-ソースコード上で以下を記述してインポートできます:
+Import it in your source code:
 
 ```Swift
 import AcCollections
@@ -35,7 +37,7 @@ import AcCollections
 
 ## AtCoder 2025
 
-AtCoder2025ジャッジと同一のものをご要望の場合は以下をご利用ください。
+If you want to use the same version as the AtCoder 2025 judge environment, use the following:
 
 ```Swift
 dependencies: [
@@ -45,121 +47,128 @@ dependencies: [
 ]
 ```
 
-## 内容
+## Contents
 
-**注意** 次回ジャッジ更新と一般利用に向けた大幅な更新を行っており、以下は古い内容になります。
+**Note:** This section is outdated, as the package is undergoing major updates for the next judge update and for general use.
 
 ### RedBlackTreeModule
 
-本モジュールでは平衡二分探索木の一種、赤黒木（Red-Black Tree）を用いたコンテナを提供しています。
-具体的には以下で、それぞれ、C++のstd::set, std::multiset, std::map, std::multimapに相当します。
+This module provides containers based on Red-Black Trees, a type of balanced binary search tree.
+
+Specifically, it provides the following containers, corresponding to C++’s `std::set`, `std::multiset`, `std::map`, and `std::multimap`.
 
 #### 1. RedBlackTreeSet
 
-- **重複なし** の要素を管理する Set。  
-- 要素の挿入・削除・探索を平均的に `O(log n)` で行えます。  
-- `Collection` に適合しており、インデックスによる要素アクセスや `startIndex` / `endIndex` などが利用可能です。  
-- 境界探索メソッド（`lowerBound` / `upperBound`）なども提供しています。  
-- 使用例: [AtCoder 提出例 (ABC370D)](https://atcoder.jp/contests/abc370/submissions/62143443) / [AtCoder 提出例 (ABC385D)](https://atcoder.jp/contests/abc385/submissions/61848462) など。
+- A Set that manages **unique elements**.
+- Insertion, deletion, and search are generally performed in `O(log n)`.
+- Conforms to `Collection`, so indexed element access, `startIndex`, `endIndex`, and related APIs are available.
+- Provides boundary search methods such as `lowerBound` and `upperBound`.
+- Usage examples: [AtCoder submission example (ABC370D)](https://atcoder.jp/contests/abc370/submissions/62143443) / [AtCoder submission example (ABC385D)](https://atcoder.jp/contests/abc385/submissions/61848462), etc.
 
 #### 2. RedBlackTreeMultiSet
 
-- **重複あり** の要素を管理する MultiSet。  
-- `count(_:)` により、特定の要素が何個含まれるかを取得できます。  
-- その他の特性や使い方は `RedBlackTreeSet` に準じます。  
-- 使用例: [AtCoder 提出例 (ABC358D)](https://atcoder.jp/contests/abc358/submissions/62143179) など。
+- A MultiSet that manages elements **with duplicates**.
+- `count(_:)` returns how many times a specific element is contained.
+- Other characteristics and usage are similar to `RedBlackTreeSet`.
+- Usage example: [AtCoder submission example (ABC358D)](https://atcoder.jp/contests/abc358/submissions/62143179), etc.
 
 #### 3. RedBlackTreeMultiMap
-- **重複ありのキーと値** の要素を管理する Map。  
-- `count(forKey:)` により、特定キーの要素が何個含まれるかを取得できます。  
-- MultiSetやDictionaryをベースに、なるべくSwiftに寄せたAPIとなっています。
+
+- A Map that manages **duplicate keys and values**.
+- `count(forKey:)` returns how many elements exist for a specific key.
+- Its API is based on MultiSet and Dictionary, while trying to follow Swift conventions as much as possible.
 
 #### 4. RedBlackTreeDictionary
 
-- **キーと値** を管理する Dictionary。  
-- 基本的なキー検索・挿入・削除などの操作を `O(log n)` で行えます。  
-- 連想配列リテラル（`ExpressibleByDictionaryLiteral`）にも対応しています。
+- A Dictionary that manages **keys and values**.
+- Basic operations such as key lookup, insertion, and deletion are performed in `O(log n)`.
+- Supports dictionary literals via `ExpressibleByDictionaryLiteral`.
 
-#### 簡単な使用例
+#### Simple usage examples
 
 ```Swift
 import AcCollections
 
-// RedBlackTreeSet の例
+// RedBlackTreeSet example
 var set = RedBlackTreeSet<Int>()
 set.insert(10)
 set.insert(5)
-set.insert(5)    // 重複は無視される
-print(set)       // 例: [5, 10]
-print(set.min()) // 例: Optional(5)
+set.insert(5)    // duplicates are ignored
+print(set)       // example: [5, 10]
+print(set.min()) // example: Optional(5)
 
-// RedBlackTreeMultiSet の例
+// RedBlackTreeMultiSet example
 var multiset = RedBlackTreeMultiSet<Int>([1, 2, 2, 3])
 multiset.insert(2)
-print(multiset)       // 例: [1, 2, 2, 2, 3]
-print(multiset.count(2))  // 例: 3
+print(multiset)       // example: [1, 2, 2, 2, 3]
+print(multiset.count(2))  // example: 3
 
-// RedBlackTreeDictionary の例
+// RedBlackTreeDictionary example
 var dict = RedBlackTreeDictionary<String, Int>()
 dict["apple"] = 5
 dict["banana"] = 3
-print(dict) // 例: [apple: 5, banana: 3]
+print(dict) // example: [apple: 5, banana: 3]
 
-// RedBlackTreeMultiMap の例
+// RedBlackTreeMultiMap example
 var multimap = RedBlackTreeMultiMap<String, Int>()
 multimap.insert(key: "apple", value: 5)
 multimap.insert(key: "apple", value: 2)
 multimap.insert(key: "banana", value: 3)
-print(multimap)  // 例: [apple: 5, apple: 2, banana: 3]
+print(multimap)  // example: [apple: 5, apple: 2, banana: 3]
 ```
 
 #### Index
 
-赤黒木モジュールの各データ構造は木のノードを配列に格納しています。
-この内部配列のインデックス同士を比較した場合、順序と結果が一致しません。
+Each data structure in the Red-Black Tree module stores tree nodes in an internal array.
 
-Swift標準のプロトコルではインデックス比較と順序の一致を要求するため、抽象化されたインデックスを用いています。
-これが`Index`です。実際的にはC++のイテレータのような働きをします。
-赤黒木モジュールの大半のAPIではこの抽象化された`Index`を用いています。
+When comparing indices of this internal array, the comparison result does not match the sorted order of the elements.
 
-単なるIntによるIndexとは異なることに注意してください。
+Swift’s standard protocols require index comparison to be consistent with element order, so this module uses an abstracted index.
 
-- indicesプロパティはIndexのシーケンスを返します。
+This is `Index`. In practice, it behaves similarly to a C++ iterator.
 
-#### 削除時のIndex無効化と安全な範囲削除
+Most APIs in the Red-Black Tree module use this abstracted `Index`.
 
-削除操作を行うことで、対象のノードは内容がクリアされ、再利用管理リンクリストの一部となります。
+Please note that it is different from a simple `Int` index.
 
-削除されたノードを指すインデックスは単純に無効となります。
+- The `indices` property returns a sequence of `Index` values.
 
-範囲削除を行う際は、この挙動には十分に注意を払う必要があります。
+#### Index invalidation on deletion and safe range deletion
 
-- 削除されたノードへの参照を使い続けると、クラッシュします。
+When a deletion operation is performed, the target node is cleared and becomes part of a reuse-management linked list.
 
-- 有効無効の確認が必要な場合、isValid(index:)を使ってください。
+An index that points to a deleted node simply becomes invalid.
 
-- endIndexは例外で、内部的インデックスが常に不変です。
+You need to be careful about this behavior when performing range deletion.
 
-各種サブシーケンスやイテレーターには削除対策が施されています。このため、これらはほぼ問題なく範囲削除に利用できます。
+- Continuing to use a reference to a deleted node will crash.
 
-##### 範囲削除の例
+- If you need to check whether an index is valid, use `isValid(index:)`.
 
-0. 普通に削除する
+- `endIndex` is an exception; its internal index is always unchanged.
 
-この問題を迂回しない楽な使い方です。
-紆余曲折のすえに、安定してできるようになりました。
+Various subsequences and iterators include deletion-safety measures, so they can generally be used for range deletion without issue.
 
-IndexをStridableにした場合とても遅かったのですが（1要素毎にO(log *n*)等）、
-イテレータやシーケンスに別途用意したモノを利用することで速度を稼いでいます。
+##### Range deletion examples
 
-`..<` 演算子は通常Rangeを生成しますが、型推論次第で別のシーケンスとなります。
+0. Delete normally
 
-つまり、削除対策済みのシーケンスやイテレータに置き換わるため、意識せずに使えます。
+This is the easy way to avoid the problem.
+
+After many twists and turns, this has become stable.
+
+Making `Index` conform to `Strideable` was very slow, such as `O(log n)` per element.
+
+Instead, this implementation gains speed by using separately prepared iterators and sequences.
+
+The `..<` operator normally creates a `Range`, but depending on type inference, it can become another kind of sequence.
+
+In other words, it is replaced by a deletion-safe sequence or iterator, so you can use it without being conscious of the details.
 
 ```Swift
 var tree0: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
 for i in tree0.startIndex ..< tree0.endIndex {
-  tree0.remove(at: i) // iはこの時点で無効になる
+  tree0.remove(at: i) // i becomes invalid at this point
   print(tree0.isValid(index: i)) // false
 }
 print(tree0.count) // 0
@@ -168,7 +177,7 @@ print(tree0.count) // 0
 ```Swift
 var tree0: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
 for i in tree0.indices {
-  tree0.remove(at: i) // iはこの時点で無効になる
+  tree0.remove(at: i) // i becomes invalid at this point
   print(tree0.isValid(index: i)) // false
 }
 print(tree0.count) // 0
@@ -177,7 +186,7 @@ print(tree0.count) // 0
 ```Swift
 var tree0: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
 for i in (tree0.startIndex ..< tree0.endIndex).reversed() {
-  tree0.remove(at: i) // iはこの時点で無効になる
+  tree0.remove(at: i) // i becomes invalid at this point
   print(tree0.isValid(index: i)) // false
 }
 print(tree0.count) // 0
@@ -186,51 +195,53 @@ print(tree0.count) // 0
 ```Swift
 var tree0: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
 for i in tree0.indices.reversed() {
-  tree0.remove(at: i) // iはこの時点で無効になる
+  tree0.remove(at: i) // i becomes invalid at this point
   print(tree0.isValid(index: i)) // false
 }
 print(tree0.count) // 0
 ```
 
-対策済みのシーケンスやイテレータから外れた使い方をする場合、
-このあとの1~5のいずれかが役に立つと思います。
+If you use the container outside these deletion-safe sequences or iterators, one of methods 1 through 5 below may be useful.
 
-1. 削除の前に次のインデックスを取得する
+1. Get the next index before deleting
 
-この問題を迂回する、ベーシックな方法です。対策済みイテレータも内部で同じ事をしています。
+This is the basic way to avoid the problem. The deletion-safe iterators do the same thing internally.
 
 ```Swift
 var tree: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
 var i = tree.startIndex
-while i != tree.endIndex { // endIndexは不変
+while i != tree.endIndex { // endIndex is immutable
   let j = i
   i = tree.index(after: i)
-  tree.remove(at: j) // jはこの時点で無効になる
+  tree.remove(at: j) // j becomes invalid at this point
   print(tree.isValid(index: j)) // false
 }
 print(tree.count) // 0
 ```
 
-2. 特殊なforEachで削除する
+2. Delete using a special `forEach`
 
-インデックスと値でループでき、これを削除操作に利用できます。
-削除以外に何か処理が必要な場合に使います。たとえばABC385D等。
+You can loop over both index and value, and use this for deletion.
+
+Use this when you need to do something in addition to deletion, such as in ABC385D.
 
 ```Swift
 var tree: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
 tree[tree.startIndex ..< tree.endIndex].forEach { i, e in
   tree.remove(at: i)
-  print(e) // 各要素
+  print(e) // each element
   print(tree.isValid(index: i)) // false
 }
 print(tree.count) // 0
 ```
 
-3. removeSubrange(_:Range`<Index>`)で削除する
+3. Delete using `removeSubrange(_: Range<Index>)`
 
-インデックスの区間で削除対象を指定することが可能です。
-基本的にループを回すよりも、この方法で消す方が実行速度としては(定数倍の面で)速いです。
-計算量としては余り変わりません。
+You can specify the deletion target by an index range.
+
+In general, this is faster in constant factors than deleting in a loop.
+
+The asymptotic complexity is not very different.
 
 ```Swift
 var tree: RedBlackTreeSet<Int> = [0,1,2,3,4,5]
@@ -238,21 +249,21 @@ tree.removeSubrange(tree.startIndex ..< tree.endIndex)
 XCTAssertEqual(tree.count, 0)
 ```
 
-4. remove(contentsOf:Range`<Element>`)を使用して削除する。
+4. Delete using `remove(contentsOf: Range<Element>)`
 
-値の区間で削除対象を指定することが可能です。
-境界を探索する分すこし実行時間はかさみますが、これも速いです。
+You can specify the deletion target by a value range.
+
+It takes slightly more time because it needs to search for the boundaries, but this is also fast.
 
 ```Swift
 var tree: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
 tree.remove(contentsOf: 0 ..< 6)
-// 0〜5が削除され、結果は空
-
+// 0 through 5 are deleted, and the result is empty
 ```
 
-5. erase()を自作して削除する
+5. Define your own `erase()` and delete
 
-C++のsetと同じような削除コードを書くことも可能です。
+You can also write deletion code similar to C++’s `set`.
 
 ```Swift
 extension RedBlackTreeSet {
@@ -269,7 +280,7 @@ while idx != tree.endIndex {
 }
 ```
 
-x. 比較演算子の計算量がO(1)ではないためおすすめできませんが、比較でループを回すこともできます。 
+x. Not recommended because the comparison operator is not `O(1)`, but you can also loop using comparison.
 
 ```Swift
 var tree: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
@@ -279,21 +290,22 @@ while idx < tree.endIndex {
 }
 ```
 
-#### MultiSetのremove(:)
+#### `remove(_:)` in MultiSet
 
-エレメント指定による複数削除ではコピーオンライト判定が強めに設定されています。
+For deleting multiple elements by element value, copy-on-write checks are relatively strict.
 
-RedBlackTreeMultiSetのremove(:)や、その他コレクションのremove(contentsOf:)等。
+This applies to `remove(_:)` in `RedBlackTreeMultiSet`, and to APIs such as `remove(contentsOf:)` in other collections.
 
-使い方次第では全体コピーが繰り返し発生してしまう場合もあります。
+Depending on usage, repeated full copies may occur.
 
-これを避けるには、イテレータやサブシーケンスやインデックスなどが削除時点で消費済みとなっていることが望ましいです。
+To avoid this, it is preferable that iterators, subsequences, indices, and similar values have already been consumed at the time of deletion.
 
 ```Swift
 var multiset: RedBlackTreeMultiSet<Int> = [0,0,1,1,2,2]
 for member in multiset {
-  // この時点でイテレータが有効で、イテレータの破壊を予防するために内部コピーを行う
-  // この場合、1回内部コピーが行われる
+  // At this point, the iterator is still valid.
+  // To avoid invalidating the iterator, an internal copy is performed.
+  // In this case, one internal copy occurs.
   multiset.remove(member)
 }
 ```
@@ -301,23 +313,30 @@ for member in multiset {
 ```Swift
 var multiset: RedBlackTreeMultiSet<Int> = [0,0,1,1,2,2]
 for member in multiset.map({ $0 }) {
-  // イテレータが消費済みなため、コピーが発生しない
+  // The iterator has already been consumed, so no copy occurs.
   multiset.remove(member)
 }
 ```
 
-インデックスによる範囲削除にはこういった対策ができない事情があります。インデックスの無効化には十分ご注意ください。
+There are circumstances where this kind of protection cannot be applied to range deletion by index.
+
+Please be careful about index invalidation.
 
 #### MultiMap
 
-標準コンテナとの比較やSTLとの比較で漏れを潰していて未実装に気付いたため用意しました。
-このコンテナを対象とする問題を知らないため、AC実績もなく、APIやチューニングが甘い状態ですが、ここまでの他のコンテナをベースとしてるため、そこそこの性能には仕上がっています。
-辞書がマルチセットに退化したようなAPIとなっており、キーアクセスでの返却がサブシーケンスなこととあわせて、辞書と思うと絶望的に使いにくいものとなっています。
-現状、lowerBound, upperBound, equalRange, indices, enumeratedを駆使して使う必要があります。
+This container was added because missing functionality was noticed while comparing against standard containers and the STL.
+
+I do not know of any problems that target this container, so it has no AC track record, and its API and tuning are still rough.
+
+However, since it is based on the other containers built so far, its performance is reasonably good.
+
+Its API is like a dictionary degraded into a multiset, and combined with the fact that key access returns subsequences, it is desperately hard to use if you think of it as a dictionary.
+
+For now, you need to make full use of `lowerBound`, `upperBound`, `equalRange`, `indices`, and `enumerated`.
 
 ### PermutationModule
 
-#### 使い方
+#### Usage
 
 ```Swift
 import AcCollections
@@ -329,44 +348,60 @@ for p in [1,2].nextPermutations() {
 }
 ```
 
-#### 説明
+#### Description
 
-これの何が嬉しいかというと、辞書順での残りを列挙します。終了条件はソート済みと変わらない並びとなることで、その直前までが出力されます。
+The nice thing about this API is that it enumerates the remaining permutations in lexicographical order.
 
-ABC328Eという問題がありまして、C++で書かれた解説コードを読んだとき、C++はこの問題を力尽くで計算できると1年ぐらい勘違いしていました。そうではなく、辞書順の変化だけを行うnext_permutationsの挙動が理由で、組み合わせ数が減っていたために計算可能だったようです。
+The termination condition is when the sequence returns to the same order as the sorted order, and output stops just before that.
 
-28!を2秒で用意できるかどうかはライブラリの問題では無く、そもそも論でした。
+There is a problem called ABC328E. When I read the editorial code written in C++, I mistakenly thought for about a year that C++ could brute-force this problem.
 
-勘違いの結果、オーバーヘッドが少ない実装を追い求め、結果としてとても軽量な実装を生み出すこととなりました。おまけでunsafePermutationsとunsafeNextPermutationsというものもありますが、コピーオンライトをキャンセルして行わない動作となっています。
+That was not the case. It was computable because `next_permutation` only moves through lexicographical changes, reducing the number of combinations to consider.
 
-## アンダースコア付き宣言について
+Whether 28! can be prepared in two seconds is not a library issue; it was simply impossible in the first place.
 
-「アンダースコア付き宣言」は、完全修飾名のどこかにアンダースコア (`_`) で始まる部分が含まれる宣言のことを指します。たとえば、以下のような名前は技術的に `public` として宣言されていても、パブリックAPIには含まれません：
+Because of this misunderstanding, I pursued a low-overhead implementation, and as a result produced a very lightweight one.
 
-- `FooModule.Bar._someMember(value:)`（アンダースコア付きのメンバー）
-- `FooModule._Bar.someMember`（アンダースコア付きの型）
-- `_FooModule.Bar`（アンダースコア付きのモジュール）
-- `FooModule.Bar.init(_value:)`（アンダースコア付きの引数を持つイニシャライザ）
+As a bonus, `unsafePermutations` and `unsafeNextPermutations` are also provided. These cancel copy-on-write behavior and do not perform copying.
 
-また、`Sources`以外の、の各サブディレクトリに含まれる内容もパブリックAPIではありません。
-これらは自由に引用し、自前のライブラリとしてメンテナンスするための「盆栽」としてお使いください。
-将来のリリースで内容が変更されたり、削除される可能性があるため、必要な部分をコピーして独自に管理することを推奨します。
+## Declarations with underscores
 
-さらに、コードベース全般についても同様に、互換性が保証されることは期待しないでください。これらの宣言は必要に応じて変更される可能性があり、非互換な修正が加えられる場合があります。
+A “declaration with an underscore” refers to any declaration whose fully qualified name contains a component that starts with an underscore (`_`).
 
-## ライセンス
+For example, the following names are technically declared as `public`, but are not considered public API:
 
-このライブラリは [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) に基づいて配布しています。  
+- `FooModule.Bar._someMember(value:)` — a member with an underscore
+- `FooModule._Bar.someMember` — a type with an underscore
+- `_FooModule.Bar` — a module with an underscore
+- `FooModule.Bar.init(_value:)` — an initializer with an underscored argument
 
-RedBlackTreeModuleは LLVM による実装をもとに改変したものであり、オリジナルのライセンスに関しては  
-[https://llvm.org/LICENSE.txt](https://llvm.org/LICENSE.txt) をご参照ください。
+Also, contents included in subdirectories other than `Sources` are not public API.
 
-PermutationModuleは swift-algorithms による実装をもとに改変したものであり、オリジナルのライセンスに関しては  
-[https://github.com/apple/swift-algorithms/blob/main/LICENSE.txt](https://github.com/apple/swift-algorithms/blob/main/LICENSE.txt) をご参照ください。
+Feel free to quote these parts and use them as “bonsai” to maintain as your own library.
+
+Since they may be changed or removed in future releases, it is recommended that you copy the parts you need and manage them yourself.
+
+Similarly, do not expect compatibility to be guaranteed across the codebase in general.
+
+These declarations may be changed as needed, and incompatible changes may be introduced.
+
+## License
+
+This library is distributed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+RedBlackTreeModule is modified from an LLVM implementation.  
+For the original license, see:
+
+[https://llvm.org/LICENSE.txt](https://llvm.org/LICENSE.txt)
+
+PermutationModule is modified from an implementation by swift-algorithms.  
+For the original license, see:
+
+[https://github.com/apple/swift-algorithms/blob/main/LICENSE.txt](https://github.com/apple/swift-algorithms/blob/main/LICENSE.txt)
 
 ---
 
-不具合報告や機能追加の要望は、Issue または Pull Request をお寄せください。  
-ご利用いただきありがとうございます！
+Bug reports and feature requests are welcome via Issues or Pull Requests.  
+Thank you for using this package!
 
 [atcoder]: https://atcoder.jp/

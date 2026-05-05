@@ -9,8 +9,10 @@ import Foundation
 
 @frozen
 public struct RedBlackTreeKeyValueRangeView<Container>: UnsafeMutableTreeHostV2
-where Container: ___Root,
-Container.Base: ___TreeBase & PairValueTrait {
+where
+  Container: ___Root,
+  Container.Base: ___TreeBase & PairValueTrait
+{
 
   @inlinable
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {

@@ -13,12 +13,20 @@ class RedBlackTreeTestCase: XCTestCase {
       // DONE: 以下のアサートが止まるケースがあることについて、理由を調査すること
       // 直前にこのクラスを継承してないテストが走り、事後処理がないためだった。
       // assert(deallocatedCount == 0) // アサート(a)
+      // assert(payloadDeinitializedCount == 0)
       XCTAssertEqual(deallocatedCount, 0)
+      XCTAssertEqual(nodeDeinitializedCount, 0)
+      XCTAssertEqual(payloadDeinitializedCount, 0)
       // シングルトンはテストケース期間に開放されず、数があわなくなるので、その調整
       let dummy = RedBlackTreeSet<Int>()
       allocatedCount = 0
       // アサート(a)時はdeallocatedCount = 0をコメントアウト
       deallocatedCount = 0
+      //      XCTAssertEqual(nodeInitializedCount, 0)
+      nodeInitializedCount = 0
+      nodeDeinitializedCount = 0
+      payloadInitializedCount = 0
+      payloadDeinitializedCount = 0
     #endif
   }
 
@@ -35,8 +43,16 @@ class RedBlackTreeTestCase: XCTestCase {
       XCTAssertEqual(allocatedCount, deallocatedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
       // これで止まるケースは、スコープ外での初期化の影響のケースがあった
       assert(allocatedCount == deallocatedCount)
+      XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
+      assert(nodeInitializedCount == nodeDeinitializedCount)
+      XCTAssertEqual(
+        payloadInitializedCount, payloadDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
       allocatedCount = 0
       deallocatedCount = 0
+      nodeInitializedCount = 0
+      nodeDeinitializedCount = 0
+      payloadInitializedCount = 0
+      payloadDeinitializedCount = 0
     #endif
   }
 }

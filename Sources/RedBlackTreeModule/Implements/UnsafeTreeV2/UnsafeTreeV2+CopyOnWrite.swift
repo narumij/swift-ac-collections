@@ -20,11 +20,14 @@ import Foundation
 @inlinable
 func growth(from count: Int, to minimum: Int) -> Int {
   // TODO: ジャッジ搭載のタイミングで再度チューニングすること
+  
   if count < 3 {
+    // scale factor 2.0 when small amount
     return Swift.max(minimum, count << 1)
   }
-  // しばらく黄金比を試してみる
-  return Swift.max(minimum, count + (count >> 1) + (count >> 4) + (count >> 5) + (count >> 8))
+  
+  // scale factor 1.5
+  return Swift.max(minimum, count + (count >> 1))
 }
 
 // ぶれがひどい

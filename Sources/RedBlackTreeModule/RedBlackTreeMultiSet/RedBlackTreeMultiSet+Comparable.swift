@@ -19,6 +19,13 @@
 
 extension RedBlackTreeMultiSet: Comparable {
 
+  /// Returns a Boolean value indicating whether the value of the first
+  /// argument is less than that of the second argument.
+  ///
+  /// - Parameters:
+  ///   - lhs: A value to compare.
+  ///   - rhs: Another value to compare.
+  ///
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   @inline(__always)

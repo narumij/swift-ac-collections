@@ -15,8 +15,4 @@
 //
 //===----------------------------------------------------------------------===//
 
-// MARK: - Sendable
-
-#if swift(>=5.5)
-  extension RedBlackTreeSet: @unchecked Sendable where Element: Sendable {}
-#endif
+extension RedBlackTreeSet: @unchecked Sendable where Element: Sendable {}

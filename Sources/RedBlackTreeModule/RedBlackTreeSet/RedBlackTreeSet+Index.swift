@@ -43,6 +43,8 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// Returns the distance between two indices.
+    ///
     /// - Complexity: O(log *n* + *k*)
     @inlinable
     @inline(__always)
@@ -61,6 +63,9 @@
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
+
+    /// Returns the first index where the specified value appears in the collection.
+    ///
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element) -> Index? {
@@ -70,11 +75,15 @@
 
   extension RedBlackTreeSet {
 
+    /// The position of the first element in a nonempty array.
+    ///
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var startIndex: Index { ___index(_sealed_start) }
 
+    /// The array’s “past the end” position—that is, the position one greater than the last valid subscript argument.
+    ///
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
@@ -85,6 +94,8 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// Returns the position immediately before the given index.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public func index(before i: Index) -> Index {
@@ -93,6 +104,8 @@
         .flatMap { $0.sealed.band(__tree_.tied) }
     }
 
+    /// Replaces the given index with its successor.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public func index(after i: Index) -> Index {
@@ -101,6 +114,8 @@
         .flatMap { $0.sealed.band(__tree_.tied) }
     }
 
+    /// Returns an index that is the specified distance from the given index.
+    ///
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(_ i: Index, offsetBy distance: Int)
@@ -111,6 +126,8 @@
         .flatMap { $0.sealed.band(__tree_.tied) }
     }
 
+    /// Returns an index that is the specified distance from the given index, unless that distance is beyond a given limiting index.
+    ///
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(
@@ -126,6 +143,8 @@
 
   extension RedBlackTreeSet {
 
+    /// Replaces the given index with its predecessor.
+    ///
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
@@ -133,6 +152,8 @@
       i = index(before: i)
     }
 
+    /// Replaces the given index with its successor.
+    ///
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
@@ -140,6 +161,8 @@
       i = index(after: i)
     }
 
+    /// Offsets the given index by the specified distance.
+    ///
     /// - Complexity: O(*d*)
     @inlinable
     //  @inline(__always)
@@ -147,6 +170,8 @@
       i = index(i, offsetBy: distance)
     }
 
+    /// Offsets the given index by the specified distance, or so that it equals the given limiting index.
+    ///
     /// - Complexity: O(*d*)
     @inlinable
     @inline(__always)

@@ -1,28 +1,24 @@
-// Copyright 2025 narumij
+//===----------------------------------------------------------------------===//
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// This source file is part of the swift-ac-collections project
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
 // This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
 //
-// Copyright © 2003-2024 The LLVM Project.
+// Copyright © 2003-2026 The LLVM Project.
 // Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 import Foundation
 
-public struct _LinkingPair<Key, Value> {
+public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
+  
   @inlinable
   @inline(__always)
   public init(_ key: Key, _ prev: _NodePtr, _ next: _NodePtr, _ value: Value) {
@@ -35,8 +31,6 @@ public struct _LinkingPair<Key, Value> {
   public var prev: _NodePtr
   public var next: _NodePtr
   public var value: Value
-
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 }
 
 extension KeyValueTrait where _PayloadValue == _LinkingPair<_Key, _MappedValue> {
@@ -44,14 +38,38 @@ extension KeyValueTrait where _PayloadValue == _LinkingPair<_Key, _MappedValue> 
   @inlinable @inline(__always)
   public static func __key(_ element: _PayloadValue) -> _Key { element.key }
 
-  @inlinable @inline(__always)
-  public static func __value(_ element: _PayloadValue) -> _MappedValue { element.value }
+  @inlinable
+  @inline(__always)
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
+    p.__value_(as: _PayloadValue.self).pointee.key
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func ___mapped_value(_ element: _PayloadValue) -> _MappedValue {
+    element.value
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func ___with_mapped_value<T>(
+    _ element: inout _PayloadValue, _ f: (inout _MappedValue) throws -> T
+  ) rethrows -> T {
+    try f(&element.value)
+  }
+}
+
+public enum ___LRULinkListBase<_Key: Comparable, _MappedValue>: KeyValueTrait
+    & CompareUniqueTrait
+    & _UnsafeNodePtrType
+    & IntThreeWayComparator
+{
+  public typealias _PayloadValue = _LinkingPair<_Key, _MappedValue>
 }
 
 @usableFromInline
-protocol ___LRULinkList: KeyValueTrait & _Base_IsMultiTraitInterface & _UnsafeNodePtrType
-where _PayloadValue == _LinkingPair<_Key, _MappedValue>
-{
+protocol ___LRULinkList: _KeyType & _PayloadValueType & _MappedValueType & _UnsafeNodePtrType
+where _PayloadValue == _LinkingPair<_Key, _MappedValue>, _Key: Comparable {
   associatedtype Value
   var __tree_: Tree { get set }
   var _rankHighest: _NodePtr { get set }
@@ -59,8 +77,12 @@ where _PayloadValue == _LinkingPair<_Key, _MappedValue>
 }
 
 extension ___LRULinkList {
+  public typealias Base = ___LRULinkListBase<_Key, _MappedValue>
+}
 
-  public typealias Tree = UnsafeTreeV2<Self>
+extension ___LRULinkList {
+
+  public typealias Tree = UnsafeTreeV2<Base>
 
   @inlinable
   @inline(__always)

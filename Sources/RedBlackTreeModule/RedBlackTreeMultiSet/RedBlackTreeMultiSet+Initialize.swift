@@ -31,6 +31,8 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
+    /// Creates a new set from a finite sequence of items.
+    ///
     /// - Complexity: O(*n* log *n*)
     ///   When inserting elements sequentially from an already sorted sequence,
     ///   no search is required, and rebalancing is amortized O(1),
@@ -45,6 +47,8 @@ extension RedBlackTreeMultiSet {
             sequence))
     }
 
+    /// Creates a new set from a finite sequence of items.
+    ///
     /// - Complexity: O(*n* log *n*)
     ///   When inserting elements sequentially from an already sorted sequence,
     ///   no search is required, and rebalancing is amortized O(1),
@@ -63,6 +67,8 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
+  /// Creates a new set from a finite sequence of items.
+  ///
   /// - Important: This implementation assumes ascending order and omits certain checks.
   ///   Using it with descending order results in undefined behavior.
   /// - Complexity: Amortized O(*n*).

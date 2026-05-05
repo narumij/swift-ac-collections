@@ -26,14 +26,13 @@
 
   extension RedBlackTreeMultiSet {
 
+    /// Returns whether the index can be used with subscript or remove operations.
+    ///
+    /// - Complexity: O(1)
     @inlinable
-    func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
-      p.band(__tree_.tied)
-    }
-
-    @inlinable
-    func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
-      p.exists ? p.band(__tree_.tied) : nil
+    @inline(__always)
+    public func isValid(_ index: Index) -> Bool {
+      __tree_.__purified_(index).exists
     }
   }
 
@@ -222,18 +221,17 @@
   }
 #endif
 
-// MARK: -
-
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Returns whether the index can be used with subscript or remove operations.
-    ///
-    /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
-    public func isValid(_ index: Index) -> Bool {
-      __tree_.__purified_(index).exists
+    func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
+      p.band(__tree_.tied)
+    }
+
+    @inlinable
+    func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
+      p.exists ? p.band(__tree_.tied) : nil
     }
   }
 #endif

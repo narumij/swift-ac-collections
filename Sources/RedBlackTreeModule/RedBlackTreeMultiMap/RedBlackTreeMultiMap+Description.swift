@@ -9,6 +9,7 @@
 
 extension RedBlackTreeMultiMap: CustomStringConvertible {
 
+  /// A string that represents the contents of the set.
   @inlinable
   public var description: String {
     _dictionaryDescription(for: self)
@@ -19,6 +20,7 @@ extension RedBlackTreeMultiMap: CustomStringConvertible {
 
 extension RedBlackTreeMultiMap: CustomDebugStringConvertible {
 
+  /// A string that represents the contents of the set, suitable for debugging.
   public var debugDescription: String {
     description
   }

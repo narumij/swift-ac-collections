@@ -9,6 +9,8 @@
 
 extension RedBlackTreeDictionary: Equatable where Value: Equatable {
 
+  /// Returns a Boolean value indicating whether two sets have equal elements.
+  ///
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   @inline(__always)

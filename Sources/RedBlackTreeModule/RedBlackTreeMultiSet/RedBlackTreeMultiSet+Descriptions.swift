@@ -19,6 +19,7 @@
 
 extension RedBlackTreeMultiSet: CustomStringConvertible {
 
+  /// A string that represents the contents of the set.
   @inlinable
   public var description: String {
     _arrayDescription(for: self)
@@ -29,6 +30,7 @@ extension RedBlackTreeMultiSet: CustomStringConvertible {
 
 extension RedBlackTreeMultiSet: CustomDebugStringConvertible {
 
+  /// A string that represents the contents of the set, suitable for debugging.
   public var debugDescription: String {
     description
   }

@@ -19,6 +19,8 @@
 
 extension RedBlackTreeSet: Hashable where Element: Hashable {
 
+  /// Hashes the essential components of this value by feeding them into the given hasher.
+  ///
   @inlinable
   @inline(__always)
   public func hash(into hasher: inout Hasher) {

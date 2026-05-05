@@ -7,7 +7,7 @@
 
 extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(1)
+  /// Creates an empty set with preallocated space for at least the specified number of elements.
   @inlinable
   @inline(__always)
   public init(minimumCapacity: Int) {
@@ -19,6 +19,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+  /// Reserves enough space to store the specified number of elements.
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     __tree_.ensureUniqueAndCapacity(to: minimumCapacity)

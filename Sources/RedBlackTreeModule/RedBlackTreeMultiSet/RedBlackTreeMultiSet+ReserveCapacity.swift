@@ -7,7 +7,7 @@
 
 extension RedBlackTreeMultiSet {
 
-  /// - Complexity: O(1)
+  /// Creates an empty set with preallocated space for at least the specified number of elements.
   @inlinable @inline(__always)
   public init(minimumCapacity: Int) {
     self.init(__tree_: .create(minimumCapacity: minimumCapacity))
@@ -17,7 +17,8 @@ extension RedBlackTreeMultiSet {
 // MARK: -
 
 extension RedBlackTreeMultiSet {
-
+  
+  /// Reserves enough space to store the specified number of elements.
   @inlinable
   public mutating func reserveCapacity(_ minimumCapacity: Int) {
     __tree_.ensureUniqueAndCapacity(to: minimumCapacity)

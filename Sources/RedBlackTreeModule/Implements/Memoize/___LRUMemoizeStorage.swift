@@ -67,32 +67,47 @@ extension ___LRUMemoizeStorage {
 
   @inlinable
   public subscript(key: _Key) -> Value? {
-    @inline(__always)
-    mutating get {
+
+    @inline(__always) mutating get {
+      
       let __ptr = __tree_.find(key)
+      
       guard !__ptr.___is_null_or_end else {
         return nil
       }
+      
       ___prepend(___pop(__ptr))
+      
       return __tree_[_unsafe_raw: __ptr].value
     }
-    @inline(__always)
-    set {
-      if let newValue {
-        if __tree_.count < maxCount {
-          // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-          __tree_.ensureCapacity(limit: maxCount)
-        } else if __tree_.count == maxCount {
-          _ = __tree_.erase(___popRankLowest())
-        }
-        assert(__tree_.count < __tree_.capacity)
-        let (__parent, __child) = __tree_.__find_equal(key)
-        if __child.__ptr_ == __tree_.nullptr {
-          let __h = __tree_.__construct_node(.init(key, __tree_.nullptr, __tree_.nullptr, newValue))
-          __tree_.__insert_node_at(__parent, __child, __h)
-          ___prepend(__h)
-        }
+
+    @inline(__always) set {
+      
+      guard let newValue else {
+        fatalError()
       }
+
+      if __tree_.count == maxCount {
+        _ = __tree_.erase(___popRankLowest())
+      }
+
+      if __tree_.capacity < maxCount {
+        // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
+        __tree_.ensureCapacity(limit: maxCount)
+      }
+
+      assert(__tree_.count < __tree_.capacity)
+
+      let (__parent, __child) = __tree_.__find_equal(key)
+
+      guard __child.__ptr_ == .nullptr else {
+        fatalError()
+      }
+
+      let __h = __tree_.__construct_node(.init(key, .nullptr, .nullptr, newValue))
+      __tree_.__insert_node_at(__parent, __child, __h)
+      
+      ___prepend(__h)
     }
   }
 }

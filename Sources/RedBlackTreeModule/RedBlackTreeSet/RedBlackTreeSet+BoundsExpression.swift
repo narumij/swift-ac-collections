@@ -16,7 +16,6 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
-
   extension RedBlackTreeSet {
 
     /// A shorthand for `RedBlackTreeBoundExpression<Element>`.
@@ -72,6 +71,9 @@
 
   extension RedBlackTreeSet {
 
+    /// Returns the distance between two evaluated position.
+    ///
+    /// - Complexity: O(log *n* + *k*)
     @inlinable
     @inline(__always)
     public func distance(from start: Bound, to end: Bound)
@@ -83,19 +85,6 @@
           to: end.evaluate(__tree_))
       else { fatalError(.invalidIndex) }
       return d
-    }
-  }
-
-  extension RedBlackTreeSet {
-
-    @inlinable
-    internal func bound(before i: Bound) -> Bound {
-      .before(i)
-    }
-
-    @inlinable
-    internal func bound(after i: Bound) -> Bound {
-      .after(i)
     }
   }
 
@@ -127,8 +116,6 @@
       return __tree_._unchecked_remove(at: p).payload
     }
   }
-
-  // MARK: -
 
   extension RedBlackTreeSet {
 
@@ -187,6 +174,21 @@
       let range = __tree_.sanitizeSealedRange(
         bounds.evaluate(__tree_).relative(to: __tree_))
       try __tree_.___erase_if(range.lowerBound, range.upperBound, shouldBeRemoved)
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    @inlinable
+    internal func bound(before i: Bound) -> Bound {
+      .before(i)
+    }
+
+    @inlinable
+    internal func bound(after i: Bound) -> Bound {
+      .after(i)
     }
   }
 #endif

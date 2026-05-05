@@ -1,9 +1,19 @@
+//===----------------------------------------------------------------------===//
 //
-//  RedBlackTreeMultiSet+Initialize.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/05/05.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 // MARK: - Creating a MultSet
 
@@ -21,6 +31,8 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
+    /// Creates a new set from a finite sequence of items.
+    ///
     /// - Complexity: O(*n* log *n*)
     ///   When inserting elements sequentially from an already sorted sequence,
     ///   no search is required, and rebalancing is amortized O(1),
@@ -35,6 +47,8 @@ extension RedBlackTreeMultiSet {
             sequence))
     }
 
+    /// Creates a new set from a finite sequence of items.
+    ///
     /// - Complexity: O(*n* log *n*)
     ///   When inserting elements sequentially from an already sorted sequence,
     ///   no search is required, and rebalancing is amortized O(1),
@@ -53,6 +67,8 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
+  /// Creates a new set from a finite sequence of items.
+  ///
   /// - Important: This implementation assumes ascending order and omits certain checks.
   ///   Using it with descending order results in undefined behavior.
   /// - Complexity: Amortized O(*n*).

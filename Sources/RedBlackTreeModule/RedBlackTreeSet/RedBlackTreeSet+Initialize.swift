@@ -20,8 +20,6 @@
 extension RedBlackTreeSet {
 
   /// Creates a new, empty set.
-  ///
-  /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   public init() {
@@ -32,6 +30,8 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// Creates a new set from a finite sequence of items.
+    ///
     /// - Complexity: O(*n* log *n*)
     ///   When inserting elements sequentially from an already sorted sequence,
     ///   no search is required, and rebalancing is amortized O(1),
@@ -46,6 +46,8 @@ extension RedBlackTreeSet {
             sequence))
     }
 
+    /// Creates a new set from a finite sequence of items.
+    ///
     /// - Complexity: O(*n* log *n*)
     ///   When inserting elements sequentially from an already sorted sequence,
     ///   no search is required, and rebalancing is amortized O(1),
@@ -64,6 +66,8 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
+  /// Creates a new set from a finite sequence of items.
+  ///
   /// - Important: This implementation assumes ascending order and omits certain checks.
   ///   Using it with descending order results in undefined behavior.
   /// - Complexity: Amortized O(*n*).

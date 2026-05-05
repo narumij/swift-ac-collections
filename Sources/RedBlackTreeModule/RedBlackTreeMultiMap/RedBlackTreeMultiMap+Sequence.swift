@@ -1,9 +1,19 @@
+//===----------------------------------------------------------------------===//
 //
-//  RedBlackTreeMultiMap+Sequence.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/05/05.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
@@ -16,6 +26,8 @@
 
 extension RedBlackTreeMultiMap {
 
+  /// Returns a new multi map containing the key-value pairs of the dictionary that satisfy the given predicate.
+  ///
   /// - Complexity: O(*n*)
   @inlinable
   public func filter(
@@ -31,6 +43,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// Returns a new multi map containing the keys of this dictionary with the values transformed by the given closure.
+  ///
   /// - Complexity: O(*n*)
   @inlinable
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
@@ -39,6 +53,8 @@ extension RedBlackTreeMultiMap {
     .init(__tree_: try __tree_.___mapValues(_start, _end, transform))
   }
 
+  /// Returns a new multi map containing only the key-value pairs that have non-nil values as the result of transformation by the given closure.
+  ///
   /// - Complexity: O(*n*)
   @inlinable
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
@@ -54,6 +70,8 @@ extension RedBlackTreeMultiMap: Sequence {}
 
 extension RedBlackTreeMultiMap {
 
+  /// Returns an iterator over the dictionary’s key-value pairs.
+  ///
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -64,6 +82,8 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// Returns the elements of the sequence, sorted.
+  ///
   /// - Complexity: O(`count`)
   @inlinable
   @inline(__always)
@@ -75,6 +95,8 @@ extension RedBlackTreeMultiMap {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
+    /// Returns an array containing the elements of this sequence in reverse order.
+    ///
     /// - Complexity: O(`count`)
     @inlinable
     @inline(__always)
@@ -90,6 +112,8 @@ extension RedBlackTreeMultiMap {
 
   #if !COMPATIBLE_ATCODER_2025
 
+    /// A collection containing just the keys of the dictionary.
+    ///
     /// - Complexity: O(`count`)
     @inlinable
     @inline(__always)
@@ -97,6 +121,8 @@ extension RedBlackTreeMultiMap {
       __tree_.___copy_all_to_array(transform: Base.__key)
     }
 
+    /// A collection containing just the values of the dictionary.
+    ///
     /// - Complexity: O(`count`)
     @inlinable
     @inline(__always)

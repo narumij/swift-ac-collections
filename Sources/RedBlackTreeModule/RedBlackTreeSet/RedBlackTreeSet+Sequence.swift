@@ -24,6 +24,8 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// Returns a new set containing the elements of the set that satisfy the given predicate.
+    ///
     /// - Complexity: O(*n*)
     @inlinable
     public func filter(
@@ -40,6 +42,8 @@ extension RedBlackTreeSet: Sequence {}
 
 extension RedBlackTreeSet {
 
+  /// Returns an iterator over the members of the set.
+  ///
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
@@ -51,6 +55,8 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// Returns the elements of the sequence, sorted.
+    ///
     /// - Complexity: O(*n*)
     @inlinable
     @inline(__always)
@@ -58,6 +64,8 @@ extension RedBlackTreeSet {
       __tree_.___copy_all_to_array()
     }
 
+    /// Returns an array containing the elements of this sequence in reverse order.
+    /// 
     /// - Complexity: O(`count`)
     @inlinable
     @inline(__always)

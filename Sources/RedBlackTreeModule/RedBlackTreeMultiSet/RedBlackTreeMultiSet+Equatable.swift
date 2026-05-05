@@ -19,8 +19,12 @@
 
 extension RedBlackTreeMultiSet: Equatable {
 
-  /// Returns a Boolean value indicating whether two sets have equal elements.
+  /// Returns a Boolean value indicating whether two values are equal.
   ///
+  /// - Parameters:
+  ///   - lhs: A value to compare.
+  ///   - rhs: Another value to compare.
+  ///   
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   @inline(__always)

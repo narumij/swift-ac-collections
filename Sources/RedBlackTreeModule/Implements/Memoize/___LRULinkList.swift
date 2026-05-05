@@ -27,14 +27,14 @@ public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
     self.next = next
     self.value = value
   }
-  
+
   public var key: Key
   public var prev: _NodePtr
   public var next: _NodePtr
   public var value: Value
 }
 
-public protocol LinkPairValueTrait: KeyValueTrait
+public protocol LinkPairValueTrait: KeyValueTrait & CompareUniqueTrait & _UnsafeNodePtrType
 where _PayloadValue == _LinkingPair<_Key, _MappedValue> {}
 
 extension LinkPairValueTrait {
@@ -64,14 +64,12 @@ extension LinkPairValueTrait {
 }
 
 public enum ___LRULinkListBase<_Key: Comparable, _MappedValue>: LinkPairValueTrait
-    & CompareUniqueTrait
-    & _UnsafeNodePtrType
     & IntThreeWayComparator
 {}
 
 @usableFromInline
-protocol ___LRULinkList: _KeyType & _PayloadValueType & _MappedValueType & _UnsafeNodePtrType
-where _PayloadValue == _LinkingPair<_Key, _MappedValue>, _Key: Comparable {
+protocol ___LRULinkList: _KeyType & _MappedValueType & _UnsafeNodePtrType
+where _Key: Comparable {
   associatedtype Value
   var __tree_: Tree { get set }
   var _rankHighest: _NodePtr { get set }

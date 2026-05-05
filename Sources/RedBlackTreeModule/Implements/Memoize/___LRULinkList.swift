@@ -18,7 +18,7 @@
 import Foundation
 
 public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
-  
+
   @inlinable
   @inline(__always)
   public init(_ key: Key, _ prev: _NodePtr, _ next: _NodePtr, _ value: Value) {
@@ -27,13 +27,17 @@ public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
     self.next = next
     self.value = value
   }
+  
   public var key: Key
   public var prev: _NodePtr
   public var next: _NodePtr
   public var value: Value
 }
 
-extension KeyValueTrait where _PayloadValue == _LinkingPair<_Key, _MappedValue> {
+public protocol LinkPairValueTrait: KeyValueTrait
+where _PayloadValue == _LinkingPair<_Key, _MappedValue> {}
+
+extension LinkPairValueTrait {
 
   @inlinable @inline(__always)
   public static func __key(_ element: _PayloadValue) -> _Key { element.key }
@@ -59,13 +63,11 @@ extension KeyValueTrait where _PayloadValue == _LinkingPair<_Key, _MappedValue> 
   }
 }
 
-public enum ___LRULinkListBase<_Key: Comparable, _MappedValue>: KeyValueTrait
+public enum ___LRULinkListBase<_Key: Comparable, _MappedValue>: LinkPairValueTrait
     & CompareUniqueTrait
     & _UnsafeNodePtrType
     & IntThreeWayComparator
-{
-  public typealias _PayloadValue = _LinkingPair<_Key, _MappedValue>
-}
+{}
 
 @usableFromInline
 protocol ___LRULinkList: _KeyType & _PayloadValueType & _MappedValueType & _UnsafeNodePtrType

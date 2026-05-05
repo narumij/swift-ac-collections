@@ -26,22 +26,16 @@ public struct ___LRUMemoizeStorage<Parameters, Value>
 where Parameters: Comparable {
 
   public
-    typealias Key = Parameters
+    typealias _Key = Parameters
 
   public
-    typealias Value = Value
+    typealias _MappedValue = Value
 
   public
     typealias KeyValue = _LinkingPair<_Key, _MappedValue>
 
   public
     typealias _PayloadValue = KeyValue
-
-  public
-    typealias _Key = Key
-
-  public
-    typealias _MappedValue = Value
 
   public let maxCount: Int
 
@@ -72,11 +66,11 @@ extension ___LRUMemoizeStorage {
   }
 
   @inlinable
-  public subscript(key: Key) -> Value? {
+  public subscript(key: _Key) -> Value? {
     @inline(__always)
     mutating get {
       let __ptr = __tree_.find(key)
-      if __ptr.___is_null_or_end {
+      guard !__ptr.___is_null_or_end else {
         return nil
       }
       ___prepend(___pop(__ptr))
@@ -88,8 +82,7 @@ extension ___LRUMemoizeStorage {
         if __tree_.count < maxCount {
           // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
           __tree_.ensureCapacity(limit: maxCount)
-        }
-        if __tree_.count == maxCount {
+        } else if __tree_.count == maxCount {
           _ = __tree_.erase(___popRankLowest())
         }
         assert(__tree_.count < __tree_.capacity)

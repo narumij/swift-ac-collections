@@ -8,22 +8,26 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeKeyOnlyRangeView<Base>: UnsafeMutableTreeHost, BalancedView
-where Base: ___TreeBase & ScalarValueTrait {
+public struct RedBlackTreeKeyOnlyRangeView<Container>: UnsafeMutableTreeHostV2
+where
+  Container: ___Root,
+  Container.Base: ___TreeBase & ScalarValueTrait
+{
 
   @inlinable
-  internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
+  internal init(__tree_: UnsafeTreeV2<Container.Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
     self.startIndex = _start.band(__tree_.tied)
     self.endIndex = _end.band(__tree_.tied)
   }
 
+  public typealias Base = Container.Base
   public typealias Index = _TieWrappedPtr
-  public typealias Element = Base._PayloadValue
+  public typealias Element = Container.Base._PayloadValue
 
   @usableFromInline
   internal var __tree_: Tree
-  
+
   // _SealedPtr不可
   public var startIndex: Index
   public let endIndex: Index
@@ -83,7 +87,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
-  public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Base> {
+  public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Container.Base> {
     let (_start, _end) = _range
     return .init(start: _start, end: _end, tie: __tree_.tied)
   }
@@ -107,7 +111,7 @@ extension RedBlackTreeKeyOnlyRangeView {
 
 // MARK: -
 
-public protocol ScalarBaseInit: ___TreeBase & ScalarValueTrait {
+public protocol ScalarBaseInit: ___Root where Self.Base: ___TreeBase & ScalarValueTrait {
   static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self
 }
 
@@ -123,8 +127,8 @@ extension RedBlackTreeMultiSet: ScalarBaseInit {
   }
 }
 
-extension RedBlackTreeKeyOnlyRangeView where Base: ScalarBaseInit {
-  public func unranged() -> Base { .create(self) }
+extension RedBlackTreeKeyOnlyRangeView where Container: ScalarBaseInit {
+  public func unranged() -> Container { .create(self) }
 }
 
 // MARK: -
@@ -214,11 +218,12 @@ extension RedBlackTreeKeyOnlyRangeView {
 extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
-  public mutating func erase() {
+  @discardableResult
+  public mutating func erase() -> Index {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     // ややチェックが甘いので末端チェック付き削除が必要
-    __tree_.___erase(_start, _end)
+    return __tree_.___erase(_start, _end).sealed.band(__tree_.tied)
   }
 
   @inlinable

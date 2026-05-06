@@ -8,8 +8,11 @@
 import Foundation
 
 @frozen
-public struct RedBlackTreeKeyValueRangeView<Base>: UnsafeMutableTreeHost, BalancedView
-where Base: ___TreeBase & PairValueTrait {
+public struct RedBlackTreeKeyValueRangeView<Container>: UnsafeMutableTreeHostV2
+where
+  Container: ___Root,
+  Container.Base: ___TreeBase & PairValueTrait
+{
 
   @inlinable
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
@@ -18,10 +21,11 @@ where Base: ___TreeBase & PairValueTrait {
     self.endIndex = _end.band(__tree_.tied)
   }
 
+  public typealias Base = Container.Base
   public typealias Index = _TieWrappedPtr
-  public typealias Element = Base.Element
-  public typealias Key = Base._Key
-  public typealias Value = Base._MappedValue
+  public typealias Element = Container.Base.Element
+  public typealias Key = Container.Base._Key
+  public typealias Value = Container.Base._MappedValue
 
   @usableFromInline
   internal var __tree_: Tree
@@ -128,7 +132,7 @@ extension RedBlackTreeKeyValueRangeView {
 
 // MARK: -
 
-public protocol KeyValueBaseInit: ___TreeBase & PairValueTrait {
+public protocol KeyValueBaseInit: ___Root where Base: ___TreeBase & PairValueTrait {
   static func create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self
 }
 
@@ -144,8 +148,8 @@ extension RedBlackTreeMultiMap: KeyValueBaseInit {
   }
 }
 
-extension RedBlackTreeKeyValueRangeView where Base: KeyValueBaseInit {
-  public func unranged() -> Base { .create(self) }
+extension RedBlackTreeKeyValueRangeView where Container: KeyValueBaseInit {
+  public func unranged() -> Container { .create(self) }
 }
 
 // MARK: -
@@ -235,11 +239,12 @@ extension RedBlackTreeKeyValueRangeView {
 extension RedBlackTreeKeyValueRangeView {
 
   @inlinable
-  public mutating func erase() {
+  @discardableResult
+  public mutating func erase() -> Index {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     // ややチェックが甘いので末端チェック付き削除が必要
-    __tree_.___erase(_start, _end)
+    return __tree_.___erase(_start, _end).sealed.band(__tree_.tied)
   }
 
   @inlinable

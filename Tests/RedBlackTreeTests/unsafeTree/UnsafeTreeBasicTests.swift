@@ -127,6 +127,9 @@ import XCTest
       XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[0])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [])
       XCTAssertEqual(storage._buffer.header.recycleCount, 0)
+      #if DEBUG
+        payloadInitializedCount += 4
+      #endif
     }
 
     func testDestroyStack2() async throws {

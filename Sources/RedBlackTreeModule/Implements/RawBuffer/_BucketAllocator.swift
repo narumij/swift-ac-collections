@@ -42,7 +42,7 @@
 // ## Initial Capacity 0
 // |Bucket|ptr|Node|
 //
-// ## Resever Capacity to 1
+// ## Reserve Capacity to 1
 // |Bucket|ptr|Node|
 // |Bucket||Node|Value|
 //

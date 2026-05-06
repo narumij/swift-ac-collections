@@ -57,7 +57,7 @@ extension UnsafeTreeV2BufferHeader {
   @inline(__always)
   internal mutating func grow(_ newCapacity: Int) {
     assert(freshPoolCapacity < newCapacity, "増加要求であること")
-    pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
+    pushFreshBucket(additionalCapacity: newCapacity - freshPoolCapacity)
   }
 }
 
@@ -113,14 +113,13 @@ extension UnsafeTreeV2 {
       let minimumCapacity = minimumCapacity ?? (header.count + 1)
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
       guard shouldExpand || !isUnique else { return }
-      let growthCapacity = header._growthCapacity(
-        to: minimumCapacity)
+      let newCapacity = header._growthCapacity(to: minimumCapacity)
       if !isUnique {
-        self = header.copy(minimumCapacity: growthCapacity)
+        self = header.copy(minimumCapacity: newCapacity)
         return
       }
       assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-      header.grow(growthCapacity)
+      header.grow(newCapacity)
     }
   }
 }
@@ -134,14 +133,13 @@ extension UnsafeTreeV2 {
       let minimumCapacity = minimumCapacity ?? (header.count + 1)
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
       guard shouldExpand else { return }
-      let growthCapacity = header._growthCapacity(
-        to: minimumCapacity)
+      let newCapacity = header._growthCapacity(to: minimumCapacity)
       if isReadOnly {
-        self = header.copy(minimumCapacity: growthCapacity)
+        self = header.copy(minimumCapacity: newCapacity)
         return
       }
       assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-      header.grow(growthCapacity)
+      header.grow(newCapacity)
     }
   }
 }
@@ -157,10 +155,9 @@ extension UnsafeTreeV2 {
       let minimumCapacity = min(limit, minimumCapacity ?? (header.count + 1))
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
       guard shouldExpand else { return }
-      let growthCapacity = header._growthCapacity(
-        to: minimumCapacity)
-      let limitedCapacity = min(limit, growthCapacity)
-      assert(growthCapacity > 0, "以降の処理は容量変更の場合のみ呼ばれること")
+      let newCapacity = header._growthCapacity(to: minimumCapacity)
+      let limitedCapacity = min(limit, newCapacity)
+      assert(newCapacity > 0, "以降の処理は容量変更の場合のみ呼ばれること")
       if isReadOnly {
         self = header.copy(minimumCapacity: limitedCapacity)
         return

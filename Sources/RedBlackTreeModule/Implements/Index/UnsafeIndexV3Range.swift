@@ -46,6 +46,8 @@ extension UnsafeIndexV3Range {
   }
 }
 
+// 互換維持の為のコード。互換廃止の際に削ること
+
 extension UnsafeIndexV3Range {
 
   package var lower: _TieWrappedPtr {

@@ -247,16 +247,16 @@ import Foundation
 
     func buildGraphviz() -> Graphviz.Digraph {
       func isRed(_ i: _NodePtr) -> Bool {
-        !__is_black_(i)
+        !i.__is_black_
       }
       func isBlack(_ i: _NodePtr) -> Bool {
-        __is_black_(i)
+        i.__is_black_
       }
       func hasLeft(_ i: _NodePtr) -> Bool {
-        __left_(i) != nullptr
+        i.__left_ != nullptr
       }
       func hasRight(_ i: _NodePtr) -> Bool {
-        __right_(i) != nullptr
+        i.__right_ != nullptr
       }
       func offset(_ i: _NodePtr) -> _NodePtr? {
         switch i {
@@ -269,10 +269,10 @@ import Foundation
         }
       }
       func leftPair(_ i: _NodePtr) -> (_NodePtr, _NodePtr) {
-        (i, offset(__left_(i)) ?? end)
+        (i, offset(i.__right_) ?? end)
       }
       func rightPair(_ i: _NodePtr) -> (_NodePtr, _NodePtr) {
-        (i, offset(__right_(i)) ?? end)
+        (i, offset(i.__right_) ?? end)
       }
       func node(_ i: _NodePtr) -> String {
         switch i {

@@ -6,35 +6,35 @@
     }
 
     package func __left_(_ p: Int) -> Int {
-      (try? __retrieve_(p).get()).map { $0.__left_.trackingTag } ?? .nullptr
+      try! __retrieve_(p).get().pointee.__left_.trackingTag
     }
 
     package func __left_(_ p: Int, _ l: Int) {
-      __left_(try! __retrieve_(p).get(), try! __retrieve_(l).get())
+      try! __retrieve_(p).get().pointee.__left_ = try! __retrieve_(l).get()
     }
 
     package func __right_(_ p: Int) -> Int {
-      __right_(try! __retrieve_(p).get()).trackingTag
+      try! __retrieve_(p).get().pointee.__right_.trackingTag
     }
 
     package func __right_(_ p: Int, _ l: Int) {
-      __right_(try! __retrieve_(p).get(), try! __retrieve_(l).get())
+      try! __retrieve_(p).get().pointee.__right_ = try! __retrieve_(l).get()
     }
 
     package func __parent_(_ p: Int) -> Int {
-      __parent_(try! __retrieve_(p).get()).trackingTag
+      try! __retrieve_(p).get().pointee.__parent_.trackingTag
     }
 
     package func __parent_(_ p: Int, _ l: Int) {
-      __parent_(try! __retrieve_(p).get(), try! __retrieve_(l).get())
+      try! __retrieve_(p).get().pointee.__parent_ = try! __retrieve_(l).get()
     }
 
     package func __is_black_(_ p: Int) -> Bool {
-      __is_black_(try! __retrieve_(p).get())
+      try! __retrieve_(p).get().pointee.__is_black_
     }
 
     package func __is_black_(_ p: Int, _ b: Bool) {
-      __is_black_(try! __retrieve_(p).get(), b)
+      try! __retrieve_(p).get().pointee.__is_black_ = b
     }
 
     package func __value_(_ p: Int) -> _PayloadValue {

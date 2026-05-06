@@ -89,7 +89,6 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @nonobjc
   @inlinable
   internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {
     @inline(__always)
@@ -107,7 +106,6 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @nonobjc
   @inlinable
   internal subscript(_unsafe sealed: _SealedPtr) -> _PayloadValue {
     @inline(__always)

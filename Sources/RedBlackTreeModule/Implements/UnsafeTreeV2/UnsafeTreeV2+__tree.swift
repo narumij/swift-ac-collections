@@ -160,7 +160,6 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   #if !DEBUG
-    @nonobjc
     @inlinable
     @inline(__always)
     package var __root: _NodePtr {

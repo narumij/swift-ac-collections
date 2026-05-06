@@ -20,18 +20,24 @@
 @usableFromInline
 package struct _Bucket {
 
-  public typealias _Next = UnsafeMutablePointer<_Bucket>
+  @usableFromInline
+  package typealias _Next = UnsafeMutablePointer<_Bucket>
 
-  public init(capacity: Int) {
-    self.capacity = capacity
+  @inlinable
+  @inline(__always)
+  package init(capacity c: Int) {
+    capacity = c
   }
 
   /// 次のバケットへのポインタ
-  public var next: _Next? = nil
+  @usableFromInline
+  package var next: _Next? = nil
   /// 確保数
-  public let capacity: Int
+  @usableFromInline
+  package let capacity: Int
   /// 使用数
-  public var count: Int = 0
+  @usableFromInline
+  package var count: Int = 0
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {

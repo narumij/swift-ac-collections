@@ -1,9 +1,19 @@
+//===----------------------------------------------------------------------===//
 //
-//  _BridgeV2.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/02/07.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 /// ベースのキー型を受け継ぐ
 public protocol _KeyBride: _BaseBridge & _KeyType
@@ -77,7 +87,7 @@ protocol _PtrRangeCompBridge: _BaseBridge
 where Base: _BaseNode_PtrRangeCompProtocol & _NodePtrType {}
 
 extension _PtrRangeCompBridge {
-  
+
   @inlinable @inline(__always)
   func ___ptr_range_comp(_ __f: Base._NodePtr, _ __p: Base._NodePtr, _ __l: Base._NodePtr) -> Bool {
     Base.___ptr_range_comp(__f, __p, __l)

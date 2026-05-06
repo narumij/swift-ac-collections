@@ -31,7 +31,7 @@ extension UnsafeIndexProtocol_tie {
 
 #if COMPATIBLE_ATCODER_2025
   @usableFromInline
-  protocol UnsafeIndexProtocol_tree: UnsafeIndexBinding & UnsafeTreeHostV2 {
+  protocol UnsafeIndexProtocol_tree: UnsafeIndexBindingV2 & UnsafeTreeHostV2 {
     func ___index(_ p: _SealedPtr) -> Index
   }
 
@@ -58,7 +58,7 @@ extension UnsafeIndexProtocol_tie {
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-extension UnsafeIndexProviderProtocol {
+extension UnsafeIndexProviderProtocolV2 {
 
   @inlinable @inline(__always)
   internal func ___index_or_nil(_ p: _SealedPtr) -> Index? {

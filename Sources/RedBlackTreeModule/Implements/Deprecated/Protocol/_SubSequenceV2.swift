@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 @usableFromInline
-protocol _SubSequenceV2: UnsafeTreeSealedRangeProtocol, UnsafeIndexBinding {}
+protocol _SubSequenceV2: UnsafeTreeSealedRangeProtocol, UnsafeIndexBindingV2 {}
 
 extension _SubSequenceV2 {
 

@@ -23,7 +23,7 @@
 @usableFromInline
 protocol ___UnsafeIndexV2:
   UnsafeTreeSealedRangeProtocol
-    & UnsafeIndexProviderProtocol
+    & UnsafeIndexProviderProtocolV2
     & _KeyBride
 {}
 

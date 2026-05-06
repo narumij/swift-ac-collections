@@ -15,19 +15,12 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol UnsafeIndexBinding: UnsafeTreeBindingV2
+public protocol UnsafeIndexBindingV2: UnsafeTreeBindingV2
 where Index == UnsafeTreeV2<Base>.Index, Base: ___TreeIndex {
   associatedtype Index
 }
 
 @usableFromInline
-protocol UnsafeIndexProviderProtocol: UnsafeIndexBinding & UnsafeTreeHostV2 {
+protocol UnsafeIndexProviderProtocolV2: UnsafeIndexBindingV2 & UnsafeTreeHostV2 {
   func ___index(_ p: _SealedPtr) -> Index
 }
-
-@usableFromInline
-protocol UnsafeIndexV3ProviderProtocol {
-  associatedtype Index = UnsafeIndexV3
-  func ___index(_ p: _SealedPtr) -> Index
-}
-

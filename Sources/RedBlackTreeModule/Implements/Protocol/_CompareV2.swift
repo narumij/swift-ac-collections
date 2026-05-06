@@ -36,7 +36,7 @@ extension _CompareV2 where Base: CompareMultiTrait {
   }
 }
 
-extension _CompareV2 where Base: CompareUniqueTrait, Self: UnsafeIndexProviderProtocol {
+extension _CompareV2 where Base: CompareUniqueTrait, Self: UnsafeIndexProviderProtocolV2 {
 
   ///（重複なし）
   @inlinable @inline(__always)
@@ -46,7 +46,7 @@ extension _CompareV2 where Base: CompareUniqueTrait, Self: UnsafeIndexProviderPr
   }
 }
 
-extension _CompareV2 where Base: CompareMultiTrait, Self: UnsafeIndexProviderProtocol {
+extension _CompareV2 where Base: CompareMultiTrait, Self: UnsafeIndexProviderProtocolV2 {
 
   /// （重複あり）
   @inlinable @inline(__always)

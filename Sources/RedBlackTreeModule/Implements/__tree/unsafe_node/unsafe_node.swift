@@ -216,11 +216,11 @@ public struct UnsafeNode {
   // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
   // nullptrは定数でもなにかコストがかかっていた記憶もある
   // 過去のコードベースで再度調査してこういった諸々の問題が杞憂だった場合、optionalに変更してnullptrにnil変更しても良い
-  @exclusivity(unchecked)
-  @usableFromInline nonisolated(unsafe)
-    package static let nullptr: UnsafeMutablePointer<UnsafeNode> = _singletonNull.nullptr
+//  @exclusivity(unchecked)
 //  @usableFromInline nonisolated(unsafe)
-//  package static var nullptr: UnsafeMutablePointer<UnsafeNode> { _singletonNull.nullptr }
+//    package static let nullptr: UnsafeMutablePointer<UnsafeNode> = _singletonNull.nullptr
+  @usableFromInline nonisolated(unsafe)
+  package static var nullptr: UnsafeMutablePointer<UnsafeNode> { _singletonNull.nullptr }
 }
 
 @usableFromInline

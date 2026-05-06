@@ -1,99 +1,51 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project
+//
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
+//
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
+
 #if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
     public
       typealias KeyValue = (key: Key, value: Value)
+
   }
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
+  extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesBase {}
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
     /// - Complexity: O(*n* log *n* + *n*)
     @inlinable
-    public init<S>(multiKeysWithValues keysAndValues: __owned S)
+    public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
     where S: Sequence, S.Element == (Key, Value) {
+
       self.init(
-        __tree_:
-          .create_multi(sorted: keysAndValues.sorted { $0.0 < $1.0 }) {
-            Base.__payload_($0)
-          })
+        __tree_: .create_unique(
+          sorted: keysAndValues.sorted { $0.0 < $1.0 },
+          transform: Base.__payload_
+        ))
     }
   }
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  // MARK: - Init naive
-
-  extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(*n* log *n*)
-    ///
-    /// 省メモリでの初期化
-    @inlinable
-    public init<Source>(naive sequence: __owned Source)
-    where Element == Source.Element, Source: Sequence {
-      self.init(__tree_: .create_multi(naive: sequence, transform: Base.__payload_))
-    }
-  }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func values(forKey key: Key) -> Values {
-      let (lo, hi) = __tree_.__equal_range_multi(key)
-      return .init(start: lo.sealed, end: hi.sealed, tie: __tree_.tied)
-    }
-  }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-// 申し訳程度に用意したAPIだけど、これではどうも不十分なのでdeprecatedにする
-// 結局復活する可能性もあるにはある
-extension RedBlackTreeMultiMap {
-
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
-    __tree_.ensureUnique()
-    guard let p = __tree_.__purified_(ptr).pointer, p.sealed.exists
-    else { return nil }
-    let old = __tree_[_unsafe_raw: p]
-    __tree_[_unsafe_raw: p].value = newValue
-    return Base.__element_(old)
-  }
-}
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(*n* log(*m + n*))
-    @inlinable
-    @inline(__always)
-    public static func + (lhs: Self, rhs: Self) -> Self {
-      lhs.inserting(contentsOf: rhs)
-    }
-
-    /// - Complexity: O(*n* log(*m + n*))
-    @inlinable
-    @inline(__always)
-    public static func += (lhs: inout Self, rhs: Self) {
-      lhs.insert(contentsOf: rhs)
-    }
-  }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
     /// - Complexity: O(*n*), where *n* is the number of elements.
     @inlinable
@@ -109,37 +61,10 @@ extension RedBlackTreeMultiMap {
   }
 #endif
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n*)
-    @inlinable
-    @discardableResult
-    public mutating func removeFirst(forKey key: Key) -> Bool {
-      __tree_._strongEnsureUnique()
-      return __tree_.___erase_unique(key)
-    }
-
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n*)
-    @inlinable
-    @discardableResult
-    public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
-      __tree_.ensureUnique()
-      return __tree_.___erase_unique(key)
-    }
-  }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap: Collection, BidirectionalCollection {}
-#endif
-
 // MARK: - Range Accessing Keys and Values
 
 #if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
     /// - Complexity: O(1)
     @inlinable
@@ -154,10 +79,78 @@ extension RedBlackTreeMultiMap {
 #endif
 
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Removes the specified subrange of elements from the collection.
+    ///
+    /// - Important: 削除後は、subrangeのインデックスが無効になります。
+    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
+    ///     range must be valid indices of the collection.
+    /// - Returns: The key-value pair that correspond to `index`.
+    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
+    @inlinable
+    public mutating func removeSubrange<R: RangeExpression>(
+      _ bounds: R
+    ) where R.Bound == Index {
+
+      let bounds = bounds.relative(to: self)
+      __tree_.ensureUnique()
+      ___remove(
+        from: __tree_.__purified_(bounds.lowerBound).pointer!,
+        to: __tree_.__purified_(bounds.upperBound).pointer!)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary: Collection, BidirectionalCollection {}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func reversed() -> Tree._KeyValues.Reversed {
+      _reversed()
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// 特殊なforEach
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    @inline(__always)
+    public func forEach(_ body: (Element) throws -> Void) rethrows {
+      try _forEach(body)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// - Important:
+    ///  要素及びノードが削除された場合、インデックスは無効になります。
+    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    public typealias Index = Tree.Index
+  }
 
   // MARK: Finding Elements
 
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
     /// - Complexity: O(log *n*)
     @inlinable
@@ -172,7 +165,7 @@ extension RedBlackTreeMultiMap {
     }
   }
 
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
     /// - Complexity: O(log *n*)
     @inlinable
@@ -181,7 +174,7 @@ extension RedBlackTreeMultiMap {
     }
   }
 
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
     /// - Complexity: O(log *n*)
     @inlinable
@@ -196,24 +189,17 @@ extension RedBlackTreeMultiMap {
     }
   }
 
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
-    /// - Complexity: O(1)
+    /// - Complexity: O(*d* + log *n*)
     @inlinable
-    @inline(__always)
-    public func reversed() -> Tree._KeyValues.Reversed {
-      _reversed()
+    //  @inline(__always)
+    public func distance(from start: Index, to end: Index) -> Int {
+      _distance(from: start, to: end)
     }
   }
 
-  extension RedBlackTreeMultiMap {
-    /// - Important:
-    ///  要素及びノードが削除された場合、インデックスは無効になります。
-    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
-    public typealias Index = Tree.Index
-  }
-
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
     /// - Complexity: O(1)
     @inlinable
@@ -226,17 +212,7 @@ extension RedBlackTreeMultiMap {
     public var endIndex: Index { _endIndex }
   }
 
-  extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(*d* + log *n*)
-    @inlinable
-    //  @inline(__always)
-    public func distance(from start: Index, to end: Index) -> Int {
-      _distance(from: start, to: end)
-    }
-  }
-
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
     /// - Complexity: O(1)
     @inlinable
@@ -267,7 +243,7 @@ extension RedBlackTreeMultiMap {
     }
   }
 
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
     /// - Complexity: O(1)
     @inlinable
@@ -300,10 +276,16 @@ extension RedBlackTreeMultiMap {
     }
   }
 
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
     /*
-     コメントアウトの多さはテストコードのコンパイラクラッシュに由来する。
+     Swiftコンパイラ（typecheck）の不具合回避メモ。
+
+     tuple型推論に失敗してtypecheckがクラッシュしていると見て、
+     返り値の型を明示する等の回避策を入れて様子を見ていた。
+
+     現在はかなり起きにくくなっているが、
+     元に戻すと再発するかどうかは未確認。
      */
 
     /// - Complexity: O(1)
@@ -311,6 +293,9 @@ extension RedBlackTreeMultiMap {
     //  public subscript(position: Index) -> Element {
     public subscript(position: Index) -> (key: Key, value: Value) {
       //    @inline(__always) get { ___element(self[_checked: position]) }
+      // 一時期コンパイラがクラッシュすることがあった（現在は起きにくい）
+      //    @inline(__always) _read { yield self[_checked: position] }
+      // 一時期コンパイラがクラッシュすることがあった（現在は起きにくい）
       @inline(__always) get { self[_checked: position] }
     }
 
@@ -322,21 +307,23 @@ extension RedBlackTreeMultiMap {
     public func isValid(index: Index) -> Bool {
       _isValid(index: index)
     }
+  }
+#endif
 
-    #if COMPATIBLE_ATCODER_2025
-      /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-      ///
-      /// - Complexity: O(1)
-      @inlinable
-      @inline(__always)
-      public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
-      where R.Bound == Index {
-        _isValid(bounds)
-      }
-    #endif
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
+    where R.Bound == Index {
+      _isValid(bounds)
+    }
   }
 
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
     /// - Complexity: O(1)
     @inlinable
@@ -345,65 +332,27 @@ extension RedBlackTreeMultiMap {
       _indices
     }
   }
+#endif
 
-  extension RedBlackTreeMultiMap {
+#if COMPATIBLE_ATCODER_2025
+  // MARK: - SubSequence
+
+  extension RedBlackTreeDictionary {
 
     public typealias SubSequence = RedBlackTreeSliceV2<Base>.KeyValue
   }
 
   // MARK: - Index Range
 
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
     public typealias Indices = Tree.Indices
   }
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
 
-    /// Removes the specified subrange of elements from the collection.
-    ///
-    /// - Important: 削除後は、subrangeのインデックスが無効になります。
-    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
-    ///     range must be valid indices of the collection.
-    /// - Returns: The key-value pair that correspond to `index`.
-    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
-    @inlinable
-    public mutating func removeSubrange<R: RangeExpression>(
-      _ bounds: R
-    ) where R.Bound == Index {
-
-      let bounds = bounds.relative(to: self)
-      __tree_.ensureUnique()
-      ___remove(
-        from: __tree_.__purified_(bounds.lowerBound).pointer!,
-        to: __tree_.__purified_(bounds.upperBound).pointer!)
-    }
-  }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    @inlinable
-    @inline(__always)
-    public func forEach(_ body: (Element) throws -> Void) rethrows {
-      try _forEach(body)
-    }
-
-    /// 特殊なforEach
-    @inlinable
-    @inline(__always)
-    public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
-      try _forEach(body)
-    }
-  }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
     @available(*, deprecated)
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {
       .init(
@@ -413,7 +362,7 @@ extension RedBlackTreeMultiMap {
     }
   }
 
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
@@ -425,21 +374,21 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public func values() -> Values {
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+      _values()
     }
   }
 
   // Rangeの使い方としておかしいので、便利だが将来的に削除することにした
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
+    // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
     /// 範囲 `[lower, upper)` に含まれる要素を返します。
-    ///
-    /// index範囲ではないことに留意
+    /// - Complexity: O(log *n*)
     ///
     /// **Deprecated – 以下の代替コードをご利用ください。**
     ///
     /// ```swift
-    /// extension RedBlackTreeMultiMap {
+    /// extension RedBlackTreeDictionary {
     ///   public func sequence(from start: Key, to end: Key) -> SubSequence {
     ///     self[lowerBound(start)..<lowerBound(end)]
     ///   }
@@ -450,14 +399,14 @@ extension RedBlackTreeMultiMap {
       elements(in: bounds)
     }
 
+    // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
     /// 範囲 `[lower, upper]` に含まれる要素を返します。
-    ///
-    /// index範囲ではないことに留意
+    /// - Complexity: O(log *n*)
     ///
     /// **Deprecated – 以下の代替コードをご利用ください。**
     ///
     /// ```swift
-    /// extension RedBlackTreeMultiMap {
+    /// extension RedBlackTreeDictionary {
     ///   public func sequence(from start: Key, through end: Key) -> SubSequence {
     ///     self[lowerBound(start)..<upperBound(end)]
     ///   }
@@ -469,14 +418,14 @@ extension RedBlackTreeMultiMap {
     }
   }
 
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
     /// キーレンジ `[lower, upper)` に含まれる要素のスライス
     /// - Complexity: O(log *n*)
     ///
     /// **Deprecated – 以下の代替コードをご利用ください。**
     ///
     /// ```swift
-    /// extension RedBlackTreeMultiMap {
+    /// extension RedBlackTreeDictionary {
     ///   public func sequence(from start: Key, to end: Key) -> SubSequence {
     ///     self[lowerBound(start)..<lowerBound(end)]
     ///   }
@@ -496,7 +445,7 @@ extension RedBlackTreeMultiMap {
     /// **Deprecated – 以下の代替コードをご利用ください。**
     ///
     /// ```swift
-    /// extension RedBlackTreeMultiMap {
+    /// extension RedBlackTreeDictionary {
     ///   public func sequence(from start: Key, through end: Key) -> SubSequence {
     ///     self[lowerBound(start)..<upperBound(end)]
     ///   }
@@ -511,8 +460,9 @@ extension RedBlackTreeMultiMap {
     }
   }
 
-  extension RedBlackTreeMultiMap {
+  extension RedBlackTreeDictionary {
 
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
     /// - Complexity: O(log *n* + *k*)
     @inlinable
     @inline(__always)
@@ -523,6 +473,7 @@ extension RedBlackTreeMultiMap {
       ___remove(from: lower, to: upper)
     }
 
+    /// - Important: 削除したメンバーを指すインデックスが無効になります。
     /// - Complexity: O(log *n* + *k*)
     @inlinable
     @inline(__always)
@@ -536,35 +487,8 @@ extension RedBlackTreeMultiMap {
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n* + *k*)
-    @inlinable
-    @discardableResult
-    public mutating func removeAll(forKey key: Key) -> Int {
-      __tree_._strongEnsureUnique()
-      return __tree_.___erase_multi(key)
-    }
-  }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(log *n*)
-    @inlinable
-    @inline(__always)
-    public subscript(key: Key) -> SubSequence {
-      let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
-      return .init(tree: __tree_, start: lo.sealed, end: hi.sealed)
-    }
-  }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
   // 便利止まりだし、標準にならうと不自然なので、将来的に削除する
-  extension RedBlackTreeMultiMap where Value: Equatable {
+  extension RedBlackTreeDictionary where Value: Equatable {
 
     /// - Complexity: O(*m*), where *m* is the lesser of the length of the
     ///   sequence and the length of `other`.
@@ -577,7 +501,7 @@ extension RedBlackTreeMultiMap {
   }
 
   // 便利止まりだし、標準にならうと不自然なので、将来的に削除する
-  extension RedBlackTreeMultiMap where Value: Comparable {
+  extension RedBlackTreeDictionary where Value: Comparable {
 
     /// - Complexity: O(*m*), where *m* is the lesser of the length of the
     ///   sequence and the length of `other`.

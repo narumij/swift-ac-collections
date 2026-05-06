@@ -10,7 +10,7 @@
   protocol _RedBlackTreeKeyOnlyBase:
     UnsafeIndexProtocol_tree
       & UnsafeIndicesProtoocl
-      & UnsafeTreeRangeBaseInterface
+      & UnsafeTreeRangeBaseInterfaceV2
       & _SetBridge
       & _CompareV2
       & _SequenceV2

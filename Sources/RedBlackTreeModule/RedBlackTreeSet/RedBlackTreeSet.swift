@@ -49,12 +49,12 @@ import Foundation
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// set[set.lowerBound(4)..<set.endIndex].erase() // -> [1, 3]
+/// set[.lowerBound(4) ..< .endIndex].erase() // -> [1, 3]
 /// ```
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// set.erase(set.lowerBound(4)..<set.endIndex) // -> [1, 3]
+/// set.erase(.lowerBound(4) ..< .endIndex) // -> [1, 3]
 /// ```
 ///
 /// As in C++, sequential removal using `erase(_:) -> Index` is also supported.

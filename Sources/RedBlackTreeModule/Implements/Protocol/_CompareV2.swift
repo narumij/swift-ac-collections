@@ -1,9 +1,19 @@
+//===----------------------------------------------------------------------===//
 //
-//  ___CompareV2.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/02/07.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 @usableFromInline
 protocol _CompareV2: UnsafeTreeHostV2 & _KeyBride {}
@@ -26,7 +36,7 @@ extension _CompareV2 where Base: CompareMultiTrait {
   }
 }
 
-extension _CompareV2 where Base: CompareUniqueTrait, Self: UnsafeIndexProviderProtocol {
+extension _CompareV2 where Base: CompareUniqueTrait, Self: UnsafeIndexProviderProtocolV2 {
 
   ///（重複なし）
   @inlinable @inline(__always)
@@ -36,7 +46,7 @@ extension _CompareV2 where Base: CompareUniqueTrait, Self: UnsafeIndexProviderPr
   }
 }
 
-extension _CompareV2 where Base: CompareMultiTrait, Self: UnsafeIndexProviderProtocol {
+extension _CompareV2 where Base: CompareMultiTrait, Self: UnsafeIndexProviderProtocolV2 {
 
   /// （重複あり）
   @inlinable @inline(__always)

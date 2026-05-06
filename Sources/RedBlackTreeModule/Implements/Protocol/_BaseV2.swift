@@ -82,7 +82,7 @@ protocol UnsafeMutableTreeSealedRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
 @usableFromInline
 protocol ___UnsafeIndexRangeBaseV2:
   UnsafeTreeRangeBaseInterfaceV2
-    & UnsafeIndexProviderProtocol
+    & UnsafeIndexProviderProtocolV2
 {}
 
 #if COMPATIBLE_ATCODER_2025

@@ -91,7 +91,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 }
 
 @usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexProviderProtocol {}
+protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexProviderProtocolV2 {}
 
 #if COMPATIBLE_ATCODER_2025
   extension ___UnsafeKeyOnlySequenceV2 {

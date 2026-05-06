@@ -129,7 +129,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var (__parent, __child) = other.___max_ref()
     for __p in unsafeSequence(__first, __last) {
       guard let __mv = try transform(___mapped_value(__p)) else { continue }
-      UnsafeTreeV2<Other>.ensureCapacity(tree: &other)
+      other.ensureCapacity()
       (__parent, __child) = other.___emplace_hint_right(
         __parent, __child, Other.__payload_((__get_value(__p), __mv)))
       assert(other.__tree_invariant(other.__root))

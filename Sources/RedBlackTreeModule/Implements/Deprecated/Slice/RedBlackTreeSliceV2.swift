@@ -24,7 +24,7 @@ import Foundation
 
     @frozen
     public struct KeyOnly:
-      UnsafeTreeRangeBaseInterface
+      UnsafeTreeRangeBaseInterfaceV2
         & _SubSequenceV2
         & ___UnsafeIndexV2
         & ___UnsafeKeyOnlySequenceV2

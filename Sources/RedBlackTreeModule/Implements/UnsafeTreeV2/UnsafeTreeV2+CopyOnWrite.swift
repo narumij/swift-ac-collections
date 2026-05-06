@@ -20,12 +20,12 @@ import Foundation
 @inlinable
 func growth(from count: Int, to minimum: Int) -> Int {
   // TODO: ジャッジ搭載のタイミングで再度チューニングすること
-  
+
   if count < 3 {
     // scale factor 2.0 when small amount
     return Swift.max(minimum, count << 1)
   }
-  
+
   // scale factor 1.5
   return Swift.max(minimum, count + (count >> 1))
 }
@@ -44,8 +44,8 @@ extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   @inline(__always)
-  internal func _growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
-    linearly ? minimumCapacity : growth(from: count, to: minimumCapacity)
+  internal func _growthCapacity(to minimumCapacity: Int) -> Int {
+    growth(from: count, to: minimumCapacity)
   }
 }
 
@@ -57,7 +57,7 @@ extension UnsafeTreeV2BufferHeader {
   @inline(__always)
   internal mutating func grow(_ newCapacity: Int) {
     assert(freshPoolCapacity < newCapacity, "増加要求であること")
-    pushFreshBucket(capacity: newCapacity - freshPoolCapacity)
+    pushFreshBucket(additionalCapacity: newCapacity - freshPoolCapacity)
   }
 }
 
@@ -105,7 +105,7 @@ extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
   internal mutating func ensureUniqueAndCapacity(
-    to minimumCapacity: Int? = nil, linearly: Bool = false
+    to minimumCapacity: Int? = nil
   ) {
     let isUnique = isUnique()
 
@@ -113,15 +113,13 @@ extension UnsafeTreeV2 {
       let minimumCapacity = minimumCapacity ?? (header.count + 1)
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
       guard shouldExpand || !isUnique else { return }
-      let growthCapacity = header._growthCapacity(
-        to: minimumCapacity,
-        linearly: linearly)
+      let newCapacity = header._growthCapacity(to: minimumCapacity)
       if !isUnique {
-        self = header.copy(minimumCapacity: growthCapacity)
+        self = header.copy(minimumCapacity: newCapacity)
         return
       }
       assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-      header.grow(growthCapacity)
+      header.grow(newCapacity)
     }
   }
 }
@@ -129,41 +127,39 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
-  internal mutating func ensureCapacity(to minimumCapacity: Int? = nil, linearly: Bool = false) {
+  internal mutating func ensureCapacity(to minimumCapacity: Int? = nil) {
 
     withMutableHeader { header in
       let minimumCapacity = minimumCapacity ?? (header.count + 1)
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
       guard shouldExpand else { return }
-      let growthCapacity = header._growthCapacity(
-        to: minimumCapacity,
-        linearly: linearly)
+      let newCapacity = header._growthCapacity(to: minimumCapacity)
       if isReadOnly {
-        self = header.copy(minimumCapacity: growthCapacity)
+        self = header.copy(minimumCapacity: newCapacity)
         return
       }
       assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-      header.grow(growthCapacity)
+      header.grow(newCapacity)
     }
   }
 }
 
 extension UnsafeTreeV2 {
 
+  // LRUキャッシュ用
+  
   @inlinable @inline(__always)
   internal mutating func ensureCapacity(
-    to minimumCapacity: Int? = nil, limit: Int, linearly: Bool = false
+    to minimumCapacity: Int? = nil, limit: Int
   ) {
 
     withMutableHeader { header in
       let minimumCapacity = min(limit, minimumCapacity ?? (header.count + 1))
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
       guard shouldExpand else { return }
-      let growthCapacity = header._growthCapacity(
-        to: minimumCapacity,
-        linearly: linearly)
-      let limitedCapacity = min(limit, growthCapacity)
-      assert(growthCapacity > 0, "以降の処理は容量変更の場合のみ呼ばれること")
+      let newCapacity = header._growthCapacity(to: minimumCapacity)
+      let limitedCapacity = min(limit, newCapacity)
+      assert(newCapacity > 0, "以降の処理は容量変更の場合のみ呼ばれること")
       if isReadOnly {
         self = header.copy(minimumCapacity: limitedCapacity)
         return
@@ -171,42 +167,5 @@ extension UnsafeTreeV2 {
       assert(isReadOnly == false, "変更禁止シングルトンではないこと")
       header.grow(limitedCapacity)
     }
-  }
-}
-
-// MARK: -
-
-extension UnsafeTreeV2 {
-
-  // 以前の設計の際になにかを迂回した痕跡なのだけれども、なぜが思い出せない
-  @inlinable @inline(__always)
-  internal mutating func ensureUnique(
-    transform: (UnsafeTreeV2) throws -> UnsafeTreeV2
-  )
-    rethrows
-  {
-    ensureUnique()
-    self = try transform(self)
-  }
-}
-
-// MARK: -
-
-extension UnsafeTreeV2 {
-
-  // 以前の名残でクラスメソッド経由となっている。取り除くリファクタリングをして構わない
-
-  @inlinable
-  @inline(__always)
-  internal static func ensureCapacity(tree: inout UnsafeTreeV2, linearly: Bool = false) {
-    tree.ensureCapacity(linearly: linearly)
-  }
-
-  @inlinable
-  @inline(__always)
-  internal static func ensureCapacity(
-    tree: inout UnsafeTreeV2, minimumCapacity: Int, linearly: Bool = false
-  ) {
-    tree.ensureCapacity(to: minimumCapacity, linearly: linearly)
   }
 }

@@ -1,24 +1,19 @@
-// Copyright 2025 narumij
+//===----------------------------------------------------------------------===//
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// This source file is part of the swift-ac-collections project
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
 // This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
 //
-// Copyright © 2003-2024 The LLVM Project.
+// Copyright © 2003-2026 The LLVM Project.
 // Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 import Foundation
 
@@ -31,22 +26,16 @@ public struct ___LRUMemoizeStorage<Parameters, Value>
 where Parameters: Comparable {
 
   public
-    typealias Key = Parameters
+    typealias _Key = Parameters
 
   public
-    typealias Value = Value
+    typealias _MappedValue = Value
 
   public
     typealias KeyValue = _LinkingPair<_Key, _MappedValue>
 
   public
     typealias _PayloadValue = KeyValue
-
-  public
-    typealias _Key = Key
-
-  public
-    typealias _MappedValue = Value
 
   public let maxCount: Int
 
@@ -77,62 +66,53 @@ extension ___LRUMemoizeStorage {
   }
 
   @inlinable
-  public subscript(key: Key) -> Value? {
-    @inline(__always)
-    mutating get {
+  public subscript(key: _Key) -> Value? {
+
+    @inline(__always) mutating get {
+      
       let __ptr = __tree_.find(key)
-      if __ptr.___is_null_or_end {
+      
+      guard !__ptr.___is_null_or_end else {
         return nil
       }
+      
       ___prepend(___pop(__ptr))
+      
       return __tree_[_unsafe_raw: __ptr].value
     }
-    @inline(__always)
-    set {
-      if let newValue {
-        if __tree_.count < maxCount {
-          // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-          __tree_.ensureCapacity(limit: maxCount)
-        }
-        if __tree_.count == maxCount {
-          _ = __tree_.erase(___popRankLowest())
-        }
-        assert(__tree_.count < __tree_.capacity)
-        let (__parent, __child) = __tree_.__find_equal(key)
-        if __child.__ptr_ == __tree_.nullptr {
-          let __h = __tree_.__construct_node(.init(key, __tree_.nullptr, __tree_.nullptr, newValue))
-          __tree_.__insert_node_at(__parent, __child, __h)
-          ___prepend(__h)
-        }
+
+    @inline(__always) set {
+      
+      guard let newValue else {
+        fatalError()
       }
+
+      if __tree_.count == maxCount {
+        _ = __tree_.erase(___popRankLowest())
+      }
+
+      if __tree_.capacity < maxCount {
+        // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
+        __tree_.ensureCapacity(limit: maxCount)
+      }
+
+      assert(__tree_.count < __tree_.capacity)
+
+      let (__parent, __child) = __tree_.__find_equal(key)
+
+      guard __child.__ptr_ == .nullptr else {
+        fatalError()
+      }
+
+      let __h = __tree_.__construct_node(.init(key, .nullptr, .nullptr, newValue))
+      __tree_.__insert_node_at(__parent, __child, __h)
+      
+      ___prepend(__h)
     }
   }
 }
 
-extension ___LRUMemoizeStorage: ___LRULinkList & IntThreeWayComparator {}
-extension ___LRUMemoizeStorage: CompareUniqueTrait {}
-extension ___LRUMemoizeStorage: KeyValueTrait & _UnsafeNodePtrType {
-  
-  @inlinable
-  @inline(__always)
-  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> Key {
-    p.__value_(as: _PayloadValue.self).pointee.key
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func ___mapped_value(_ element: _PayloadValue) -> _MappedValue {
-    element.value
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func ___with_mapped_value<T>(
-    _ element: inout _PayloadValue, _ f: (inout _MappedValue) throws -> T
-  ) rethrows -> T {
-    try f(&element.value)
-  }
-}
+extension ___LRUMemoizeStorage: ___LRULinkList {}
 
 extension ___LRUMemoizeStorage {
 

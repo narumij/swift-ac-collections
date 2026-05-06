@@ -17,7 +17,7 @@
 
 #if COMPATIBLE_ATCODER_2025
   @frozen
-  public struct UnsafeIndexV2RangeExpression<Base>: UnsafeTreeBinding,
+  public struct UnsafeIndexV2RangeExpression<Base>: UnsafeTreeBindingV2,
     UnsafeIndexProtocol_tie
   where Base: ___TreeBase & ___TreeIndex {
 

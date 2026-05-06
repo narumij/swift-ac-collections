@@ -22,7 +22,7 @@ extension UnsafeTreeV2 {
   internal func ___copy_range(_ f: inout _NodePtr, _ l: _NodePtr, to r: inout Tree) {
     var (__parent, __child) = r.___max_ref()
     while f != l {
-      Tree.ensureCapacity(tree: &r)
+      r.ensureCapacity()
       (__parent, __child) = r.___emplace_hint_right(__parent, __child, self[_unsafe_raw: f])
       f = __tree_next_iter(f)
     }
@@ -49,7 +49,7 @@ extension UnsafeTreeV2 {
         self.__get_value(__first1))
       {
 
-        Tree.ensureCapacity(tree: &__result_)
+        __result_.ensureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, other[_unsafe_raw: __first2])
         __first2 = other.__tree_next_iter(__first2)
       } else {
@@ -60,7 +60,7 @@ extension UnsafeTreeV2 {
           __first2 = other.__tree_next_iter(__first2)
         }
 
-        Tree.ensureCapacity(tree: &__result_)
+        __result_.ensureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, self[_unsafe_raw: __first1])
         __first1 = __tree_next_iter(__first1)
       }
@@ -92,7 +92,7 @@ extension UnsafeTreeV2 {
         other.__get_value(__first2))
       {
 
-        Tree.ensureCapacity(tree: &__result_)
+        __result_.ensureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, self[_unsafe_raw: __first1])
         __first1 = __tree_next_iter(__first1)
       } else if value_comp(
@@ -100,15 +100,15 @@ extension UnsafeTreeV2 {
         self.__get_value(__first1))
       {
 
-        Tree.ensureCapacity(tree: &__result_)
+        __result_.ensureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, other[_unsafe_raw: __first2])
         __first2 = other.__tree_next_iter(__first2)
       } else {
-        Tree.ensureCapacity(tree: &__result_)
+        __result_.ensureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, self[_unsafe_raw: __first1])
         __first1 = __tree_next_iter(__first1)
 
-        Tree.ensureCapacity(tree: &__result_)
+        __result_.ensureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, other[_unsafe_raw: __first2])
         __first2 = other.__tree_next_iter(__first2)
       }
@@ -131,7 +131,7 @@ extension UnsafeTreeV2 {
         __first1 = __tree_next_iter(__first1)
       } else {
         if !value_comp(other.__get_value(__first2), self.__get_value(__first1)) {
-          Tree.ensureCapacity(tree: &__result_)
+          __result_.ensureCapacity()
           (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, self[_unsafe_raw: __first1])
           __first1 = __tree_next_iter(__first1)
         }
@@ -155,12 +155,12 @@ extension UnsafeTreeV2 {
         return __result_
       }
       if value_comp(self.__get_value(__first1), other.__get_value(__first2)) {
-        Tree.ensureCapacity(tree: &__result_)
+        __result_.ensureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, self[_unsafe_raw: __first1])
         __first1 = __tree_next_iter(__first1)
       } else {
         if value_comp(other.__get_value(__first2), self.__get_value(__first1)) {
-          Tree.ensureCapacity(tree: &__result_)
+          __result_.ensureCapacity()
           (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, other[_unsafe_raw: __first2])
         } else {
           __first1 = __tree_next_iter(__first1)
@@ -182,7 +182,7 @@ extension UnsafeTreeV2 {
     var (__first2, __last2) = (other.__begin_node_, other.__end_node)
     while __first1 != __last1, __first2 != __last2 {
       if value_comp(self.__get_value(__first1), other.__get_value(__first2)) {
-        Tree.ensureCapacity(tree: &__result_)
+        __result_.ensureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(__parent, __child, self[_unsafe_raw: __first1])
         __first1 = __tree_next_iter(__first1)
       } else if value_comp(other.__get_value(__first2), self.__get_value(__first1)) {

@@ -15,22 +15,18 @@
 //
 //===----------------------------------------------------------------------===//
 
-@usableFromInline
-protocol _RemoveV2: UnsafeMutableTreeRangeBaseInterfaceV2, _PayloadValueBride {}
+public struct _RawRange<Bound> {
 
-extension _RemoveV2 {
+  @usableFromInline
+  internal var lowerBound: Bound
 
-  @discardableResult
-  @inlinable @inline(__always)
-  package mutating func ___remove_first() -> (__r: _NodePtr, payload: _PayloadValue)? {
-    guard _start != _end else { return nil }
-    return __tree_._unchecked_remove(at: _start)
-  }
+  @usableFromInline
+  internal var upperBound: Bound
 
-  @discardableResult
-  @inlinable @inline(__always)
-  package mutating func ___remove_last() -> (__r: _NodePtr, payload: _PayloadValue)? {
-    guard _start != _end else { return nil }
-    return __tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end))
+  @inlinable
+  @inline(__always)
+  internal init(lowerBound: Bound, upperBound: Bound) {
+    self.lowerBound = lowerBound
+    self.upperBound = upperBound
   }
 }

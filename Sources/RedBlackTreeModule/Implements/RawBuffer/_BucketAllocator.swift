@@ -151,11 +151,11 @@ extension _BucketAllocator {
 
   @inlinable
   @inline(__always)
-  public func createBucket(capacity: Int) -> (_BucketPointer, capacity: Int) {
+  public func createBucket(bucketCapacity: Int) -> (_BucketPointer, capacity: Int) {
 
-    assert(capacity != 0, "先頭以外のバケットは容量0ではないこと")
+    assert(bucketCapacity != 0, "先頭以外のバケットは容量0ではないこと")
 
-    let (bytes, alignment) = (_allocationSize(capacity: capacity), _pair.alignment)
+    let (bytes, alignment) = (_allocationSize(capacity: bucketCapacity), _pair.alignment)
 
     let header_storage = UnsafeMutableRawPointer._allocate(
       byteCount: bytes,
@@ -164,7 +164,7 @@ extension _BucketAllocator {
     let header = UnsafeMutableRawPointer(header_storage)
       .assumingMemoryBound(to: _Bucket.self)
 
-    header.initialize(to: .init(capacity: capacity))
+    header.initialize(to: .init(capacity: bucketCapacity))
 
     #if DEBUG
       do {
@@ -175,7 +175,7 @@ extension _BucketAllocator {
       }
     #endif
 
-    return (header, capacity)
+    return (header, bucketCapacity)
   }
 }
 

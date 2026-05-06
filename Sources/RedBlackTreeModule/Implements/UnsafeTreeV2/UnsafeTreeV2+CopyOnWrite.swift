@@ -44,8 +44,8 @@ extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   @inline(__always)
-  internal func _growthCapacity(to minimumCapacity: Int, linearly: Bool) -> Int {
-    linearly ? minimumCapacity : growth(from: count, to: minimumCapacity)
+  internal func _growthCapacity(to minimumCapacity: Int) -> Int {
+    growth(from: count, to: minimumCapacity)
   }
 }
 
@@ -105,7 +105,7 @@ extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
   internal mutating func ensureUniqueAndCapacity(
-    to minimumCapacity: Int? = nil, linearly: Bool = false
+    to minimumCapacity: Int? = nil
   ) {
     let isUnique = isUnique()
 
@@ -114,8 +114,7 @@ extension UnsafeTreeV2 {
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
       guard shouldExpand || !isUnique else { return }
       let growthCapacity = header._growthCapacity(
-        to: minimumCapacity,
-        linearly: linearly)
+        to: minimumCapacity)
       if !isUnique {
         self = header.copy(minimumCapacity: growthCapacity)
         return
@@ -129,15 +128,14 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
-  internal mutating func ensureCapacity(to minimumCapacity: Int? = nil, linearly: Bool = false) {
+  internal mutating func ensureCapacity(to minimumCapacity: Int? = nil) {
 
     withMutableHeader { header in
       let minimumCapacity = minimumCapacity ?? (header.count + 1)
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
       guard shouldExpand else { return }
       let growthCapacity = header._growthCapacity(
-        to: minimumCapacity,
-        linearly: linearly)
+        to: minimumCapacity)
       if isReadOnly {
         self = header.copy(minimumCapacity: growthCapacity)
         return
@@ -152,7 +150,7 @@ extension UnsafeTreeV2 {
 
   @inlinable @inline(__always)
   internal mutating func ensureCapacity(
-    to minimumCapacity: Int? = nil, limit: Int, linearly: Bool = false
+    to minimumCapacity: Int? = nil, limit: Int
   ) {
 
     withMutableHeader { header in
@@ -160,8 +158,7 @@ extension UnsafeTreeV2 {
       let shouldExpand = header.freshPoolCapacity < minimumCapacity
       guard shouldExpand else { return }
       let growthCapacity = header._growthCapacity(
-        to: minimumCapacity,
-        linearly: linearly)
+        to: minimumCapacity)
       let limitedCapacity = min(limit, growthCapacity)
       assert(growthCapacity > 0, "以降の処理は容量変更の場合のみ呼ばれること")
       if isReadOnly {
@@ -198,15 +195,15 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal static func ensureCapacity(tree: inout UnsafeTreeV2, linearly: Bool = false) {
-    tree.ensureCapacity(linearly: linearly)
+  internal static func ensureCapacity(tree: inout UnsafeTreeV2) {
+    tree.ensureCapacity()
   }
 
   @inlinable
   @inline(__always)
   internal static func ensureCapacity(
-    tree: inout UnsafeTreeV2, minimumCapacity: Int, linearly: Bool = false
+    tree: inout UnsafeTreeV2, minimumCapacity: Int
   ) {
-    tree.ensureCapacity(to: minimumCapacity, linearly: linearly)
+    tree.ensureCapacity(to: minimumCapacity)
   }
 }

@@ -18,7 +18,7 @@
 #if COMPATIBLE_ATCODER_2025
   public
     struct UnsafeIndexV2Collection<Base: ___TreeBase & ___TreeIndex>:
-      UnsafeTreeBinding, UnsafeIndexProtocol_tie
+      UnsafeTreeBindingV2, UnsafeIndexProtocol_tie
   {
     public typealias Element = Index
     public typealias SubSequence = Self

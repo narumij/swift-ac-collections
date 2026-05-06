@@ -15,15 +15,17 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension RedBlackTreeSet {
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
 
-  /// Accesses the element at the specified position.
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: Index) -> Element {
-    @inline(__always) get {
-      __tree_[_unsafe: __tree_.__purified_(position)]
+    /// Accesses the element at the specified position.
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always) get {
+        __tree_[_unsafe: __tree_.__purified_(position)]
+      }
     }
   }
-}
+#endif

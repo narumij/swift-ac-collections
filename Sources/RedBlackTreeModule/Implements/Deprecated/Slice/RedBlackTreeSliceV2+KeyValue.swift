@@ -21,7 +21,7 @@ import Foundation
   extension RedBlackTreeSliceV2 {
 
     public struct KeyValue:
-      UnsafeTreeRangeBaseInterface
+      UnsafeTreeRangeBaseInterfaceV2
         & _SubSequenceV2
         & ___UnsafeIndexV2
         & ___UnsafeKeyValueSequenceV2

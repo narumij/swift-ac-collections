@@ -39,7 +39,7 @@ extension UnsafeTreeV2 {
 
     if __tree_.__root == __tree_.nullptr, __first != __last {
       // Make sure we always have a root node
-      Tree.ensureCapacity(tree: &__tree_)
+      __tree_.ensureCapacity()
       __tree_.__insert_node_at(
         __tree_.end, __tree_.end.__left_ref,
         __tree_.__construct_node(__source.__value_(__first)))
@@ -49,7 +49,7 @@ extension UnsafeTreeV2 {
     var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while __first != __last {
-      Tree.ensureCapacity(tree: &__tree_)
+      __tree_.ensureCapacity()
       let __nd = __tree_.__construct_node(__source.__value_(__first))
       __first = __source.__tree_next_iter(__first)
 
@@ -94,7 +94,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var __i = __first
 
     if __tree_.__root == __tree_.nullptr, __i != __last {  // Make sure we always have a root node
-      Tree.ensureCapacity(tree: &__tree_)
+      __tree_.ensureCapacity()
       __tree_.__insert_node_at(
         __tree_.end, __tree_.end.__left_ref,
         __tree_.__construct_node(__source.__value_(__i)))
@@ -104,7 +104,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while __i != __last {
-      Tree.ensureCapacity(tree: &__tree_)
+      __tree_.ensureCapacity()
       let __nd = __tree_.__construct_node(__source.__value_(__i))
       __i = __source.__tree_next_iter(__i)
 
@@ -148,7 +148,7 @@ extension UnsafeTreeV2 {
 
     var __tree_ = __tree_
 
-    Tree.ensureCapacity(tree: &__tree_, minimumCapacity: __tree_.__size_ + __source.__size_)
+    __tree_.ensureCapacity(to: __tree_.__size_ + __source.__size_)
 
     var __first = __first
 
@@ -202,7 +202,7 @@ extension UnsafeTreeV2 {
     var it = __source.makeIterator()
 
     if __tree_.__root == __tree_.nullptr, let __element = it.next() {  // Make sure we always have a root node
-      Tree.ensureCapacity(tree: &__tree_)
+      __tree_.ensureCapacity()
       __tree_.__insert_node_at(
         __tree_.end, __tree_.end.__left_ref, __tree_.__construct_node(transform(__element))
       )
@@ -213,7 +213,7 @@ extension UnsafeTreeV2 {
     var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while let __element = it.next() {
-      Tree.ensureCapacity(tree: &__tree_)
+      __tree_.ensureCapacity()
       let __nd = __tree_.__construct_node(transform(__element))
       if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
         __tree_.__insert_node_at(__max_node, __max_node.__right_ref, __nd)
@@ -251,7 +251,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var it = __source.makeIterator()
 
     if __tree_.__root == __tree_.nullptr, let __element = it.next().map(__t_) {  // Make sure we always have a root node
-      Tree.ensureCapacity(tree: &__tree_)
+      __tree_.ensureCapacity()
       __tree_.__insert_node_at(
         __tree_.end, __tree_.end.__left_ref,
         __tree_.__construct_node(__element))
@@ -262,7 +262,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while let __element = it.next().map(__t_) {
-      Tree.ensureCapacity(tree: &__tree_)
+      __tree_.ensureCapacity()
       let __nd = __tree_.__construct_node(__element)
       if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
         __tree_.__insert_node_at(__max_node, __max_node.__right_ref, __nd)
@@ -307,7 +307,7 @@ extension UnsafeTreeV2 {
     var it = __source.makeIterator()
 
     if __tree_.__root == __tree_.nullptr, let __element = it.next() {  // Make sure we always have a root node
-      Tree.ensureCapacity(tree: &__tree_)
+      __tree_.ensureCapacity()
       __tree_.__insert_node_at(
         __tree_.end, __tree_.end.__left_ref, __tree_.__construct_node(transform(__element))
       )
@@ -318,7 +318,7 @@ extension UnsafeTreeV2 {
     var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while let __element = it.next() {
-      Tree.ensureCapacity(tree: &__tree_)
+      __tree_.ensureCapacity()
       let __nd = __tree_.__construct_node(transform(__element))
       // Always check the max node first. This optimizes for sorted ranges inserted at the end.
       if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) {  // __node >= __max_val

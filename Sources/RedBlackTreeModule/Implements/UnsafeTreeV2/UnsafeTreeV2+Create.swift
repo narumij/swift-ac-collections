@@ -394,7 +394,7 @@ extension UnsafeTreeV2 where _PayloadValue: Decodable {
     var container = try decoder.unkeyedContainer()
     var tree: Tree = ._createWithNewBuffer(minimumCapacity: 0, nullptr: UnsafeNode.nullptr)
     if let count = container.count {
-      Tree.ensureCapacity(tree: &tree, minimumCapacity: count)
+      tree.ensureCapacity(to: count)
     }
 
     var (__parent, __child) = tree.___max_ref()

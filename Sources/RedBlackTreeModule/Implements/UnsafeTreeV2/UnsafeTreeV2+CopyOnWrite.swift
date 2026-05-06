@@ -20,12 +20,12 @@ import Foundation
 @inlinable
 func growth(from count: Int, to minimum: Int) -> Int {
   // TODO: ジャッジ搭載のタイミングで再度チューニングすること
-  
+
   if count < 3 {
     // scale factor 2.0 when small amount
     return Swift.max(minimum, count << 1)
   }
-  
+
   // scale factor 1.5
   return Swift.max(minimum, count + (count >> 1))
 }
@@ -146,6 +146,8 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  // LRUキャッシュ用
+  
   @inlinable @inline(__always)
   internal mutating func ensureCapacity(
     to minimumCapacity: Int? = nil, limit: Int
@@ -165,42 +167,5 @@ extension UnsafeTreeV2 {
       assert(isReadOnly == false, "変更禁止シングルトンではないこと")
       header.grow(limitedCapacity)
     }
-  }
-}
-
-// MARK: -
-
-extension UnsafeTreeV2 {
-
-  // 以前の設計の際になにかを迂回した痕跡なのだけれども、なぜが思い出せない
-  @inlinable @inline(__always)
-  internal mutating func ensureUnique(
-    transform: (UnsafeTreeV2) throws -> UnsafeTreeV2
-  )
-    rethrows
-  {
-    ensureUnique()
-    self = try transform(self)
-  }
-}
-
-// MARK: -
-
-extension UnsafeTreeV2 {
-
-  // 以前の名残でクラスメソッド経由となっている。取り除くリファクタリングをして構わない
-
-  @inlinable
-  @inline(__always)
-  internal static func ensureCapacity(tree: inout UnsafeTreeV2) {
-    tree.ensureCapacity()
-  }
-
-  @inlinable
-  @inline(__always)
-  internal static func ensureCapacity(
-    tree: inout UnsafeTreeV2, minimumCapacity: Int
-  ) {
-    tree.ensureCapacity(to: minimumCapacity)
   }
 }

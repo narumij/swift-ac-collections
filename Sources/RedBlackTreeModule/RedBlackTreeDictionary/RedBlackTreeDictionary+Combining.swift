@@ -27,14 +27,13 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
 
-    try __tree_.ensureUnique { __tree_ in
-      try .___insert_range_unique(
-        tree: __tree_,
-        other: other.__tree_,
-        other.__tree_.__begin_node_,
-        other.__tree_.__end_node,
-        uniquingKeysWith: combine)
-    }
+    __tree_.ensureUnique()
+    __tree_ = try .___insert_range_unique(
+      tree: __tree_,
+      other: other.__tree_,
+      other.__tree_.__begin_node_,
+      other.__tree_.__end_node,
+      uniquingKeysWith: combine)
   }
 
   /// Merges the elements of `other` into the dictionary.
@@ -48,13 +47,12 @@ extension RedBlackTreeDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
-    try __tree_.ensureUnique { __tree_ in
-      try .___insert_range_unique(
-        tree: __tree_,
-        other,
-        uniquingKeysWith: combine
-      ) { Base.__payload_($0) }
-    }
+    __tree_.ensureUnique()
+    __tree_ = try .___insert_range_unique(
+      tree: __tree_,
+      other,
+      uniquingKeysWith: combine
+    ) { Base.__payload_($0) }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

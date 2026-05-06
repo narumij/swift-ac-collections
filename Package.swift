@@ -103,7 +103,9 @@ let package = Package(
       name: "RedBlackTreeModule",
       dependencies: [] + additionalDepencencies,
       exclude: ["MEMO.md"],
-      swiftSettings: _settings
+      swiftSettings: _settings + [
+//        .strictMemorySafety()
+      ]
     ),
     .testTarget(
       name: "RedBlackTreeTests",

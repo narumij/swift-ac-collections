@@ -128,19 +128,17 @@ extension UnsafeTreeV2 {
 
   @inlinable
   package var __begin_node_: _NodePtr {
-
-    @inline(__always) get {
-      //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr }
-      //      origin.pointee.begin_ptr
-      withMutableHeader { $0.begin_ptr.pointee }
+    
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      UnsafePointer(withMutableHeader { $0.begin_ptr })
     }
 
     @inline(__always)
-    nonmutating set {
-      //      origin.pointee.begin_ptr = newValue
-      //      _buffer.withUnsafeMutablePointerToElements { $0.pointee.begin_ptr = newValue }
-      withMutableHeader { $0.begin_ptr.pointee = newValue }
-
+    @_transparent
+    nonmutating unsafeMutableAddress {
+      withMutableHeader { $0.begin_ptr }
     }
   }
 }

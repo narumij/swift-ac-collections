@@ -5,9 +5,13 @@ name: Swift
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+      - compatible/AtCoder/2025
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+      - compatible/AtCoder/2025
 
 jobs:
   build:

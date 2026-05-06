@@ -17,7 +17,7 @@ Add the following to the `dependencies` section of your `Package.swift`:
 dependencies: [
   .package(
     url: "https://github.com/narumij/swift-ac-collections",
-    branch: "main"),
+    branch: "compatible/AtCoder/2025"),
 ]
 ```
 

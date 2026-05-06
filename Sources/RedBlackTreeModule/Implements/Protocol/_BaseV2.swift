@@ -1,0 +1,147 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project
+//
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
+//
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
+
+#if COMPATIBLE_ATCODER_2025
+  public typealias CompareTrait = _Base_IsMultiTraitInterface
+#endif
+
+public typealias ___TreeBase = ComparableKeyTrait & _Base_IsMultiTraitInterface
+
+public typealias ___TreeIndex = _BasePaylodValue_ElementInterface
+  & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
+
+public protocol _BaseBridge {
+  /// 基本情報
+  associatedtype Base: ___TreeBase
+}
+
+// コレクション実装の基点
+public protocol ___Root: _BaseBridge {
+  /// 木
+  associatedtype Tree
+}
+
+/// 木にどれを使うのかしっている
+public protocol UnsafeTreeBindingV2: ___Root & _UnsafeNodePtrType
+where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase {}
+
+/// 共通生木メンバー
+@usableFromInline
+protocol UnsafeTreeHostV2: UnsafeTreeBindingV2 {
+  var __tree_: Tree { get }
+}
+
+/// 変更可能共通生木メンバー
+@usableFromInline
+protocol UnsafeMutableTreeHostV2: UnsafeTreeHostV2 & _PayloadValueBride {
+  var __tree_: Tree { get set }
+}
+
+/// 区間指定メンバー
+@usableFromInline
+protocol UnsafeTreeRangeBaseInterfaceV2: UnsafeTreeHostV2 {
+  var _start: _NodePtr { get }
+  var _end: _NodePtr { get }
+}
+
+/// 区間指定メンバー
+@usableFromInline
+protocol UnsafeTreeSealedRangeBaseInterfaceV2: UnsafeTreeHostV2 {
+  var _sealed_start: _SealedPtr { get }
+  var _sealed_end: _SealedPtr { get }
+}
+
+/// 変更可能区間指定メンバー
+@usableFromInline
+protocol UnsafeMutableTreeRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
+  var _start: _NodePtr { get }
+  var _end: _NodePtr { get }
+}
+
+/// 変更可能区間指定メンバー
+@usableFromInline
+protocol UnsafeMutableTreeSealedRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
+  var _sealed_start: _SealedPtr { get }
+  var _sealed_end: _SealedPtr { get }
+}
+
+@usableFromInline
+protocol ___UnsafeIndexRangeBaseV2:
+  UnsafeTreeRangeBaseInterfaceV2
+    & UnsafeIndexProviderProtocolV2
+{}
+
+#if COMPATIBLE_ATCODER_2025
+  public typealias RedBlackTreeIndex = UnsafeIndexV2
+  public typealias RedBlackTreeIndices = UnsafeIndexV2Collection
+  public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2
+  public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
+#endif
+
+@usableFromInline
+typealias _SetBridge = _PayloadValueBride & _KeyBride & _ElementBride
+
+@usableFromInline
+typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride & _ElementBride
+
+// MARK: -
+
+@usableFromInline
+protocol _RedBlackTreeKeyOnlyV2:
+  UnsafeTreeRangeBaseInterfaceV2
+    & _SetBridge
+    & _CompareV2
+    & _SequenceV2
+    & _RemoveV2
+{}
+
+@usableFromInline
+protocol _RedBlackTreeKeyValuesV2:
+  UnsafeTreeRangeBaseInterfaceV2
+    & _MapBridge
+    & _CompareV2
+    & _SequenceV2
+    & _RemoveV2
+{}
+
+// MARK: -
+
+@usableFromInline
+protocol _ScalarBasePayload_KeyProtocol_ptr:
+  _ScalarBaseType
+    & _ScalarBase_ElementProtocol
+    & _ScalarBasePayloadValue_KeyProtocol
+{}
+
+extension _ScalarBasePayload_KeyProtocol_ptr {
+
+  @inlinable @inline(__always)
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
+    p.__key_ptr(of: Self.self).pointee
+  }
+}
+
+@usableFromInline
+protocol _PairBasePayload_KeyProtocol_ptr: _PairBaseType & _PairBase_ElementProtocol {}
+
+extension _PairBasePayload_KeyProtocol_ptr {
+
+  @inlinable @inline(__always)
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
+    p.__key_ptr(of: Self.self).pointee
+  }
+}

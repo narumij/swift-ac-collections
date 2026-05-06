@@ -11,7 +11,7 @@ import XCTest
   @testable import RedBlackTreeModule
 
   final class RecyclePoolTests: RedBlackTreeTestCase {
-    
+
     struct Fixture: _UnsafeNodePtrType, _RecyclePool {
       var recycleHead: _NodePtr = .nullptr
       var count: Int = 0
@@ -19,28 +19,31 @@ import XCTest
       var nullptr: _NodePtr { .nullptr }
       var end_ptr: _NodePtr { .nullptr }
       var freshBucketAllocator: _BucketAllocator = .init(
-        valueType: Bool.self, deinitialize: { $0.assumingMemoryBound(to: Bool.self).pointee = false })
+        valueType: Bool.self,
+        deinitialize: { $0.assumingMemoryBound(to: Bool.self).pointee = false })
     }
-    
+
     struct FixtureNode {
       var node: UnsafeNode
       var initialized: Bool = true
       var padding: UInt64 = 0
     }
-    
+
     var fixture: Fixture = .init()
     var nodes: UnsafeMutablePointer<FixtureNode>!
-    
+
     let nodeCount = 10
 
     override func setUpWithError() throws {
+      try super.setUpWithError()
       // Put setup code here. This method is called before the invocation of each test method in the class.
       fixture = .init()
       nodes = UnsafeMutablePointer<FixtureNode>.allocate(capacity: nodeCount)
       for i in 0..<nodeCount {
         nodes
           .advanced(by: i)
-          .initialize(to:
+          .initialize(
+            to:
               .init(node: .create(tag: i, nullptr: UnsafeNode.nullptr)))
       }
       fixture.count = nodeCount
@@ -51,16 +54,21 @@ import XCTest
       // Put teardown code here. This method is called after the invocation of each test method in the class.
       nodes.deinitialize(count: nodeCount)
       nodes.deallocate()
+      try super.tearDownWithError()
     }
 
     func nodePointer(at i: Int) -> UnsafeMutablePointer<UnsafeNode> {
       _ref(to: &nodes.advanced(by: i).pointee.node)
     }
-    
+
     func testPush() throws {
       XCTAssertEqual(fixture.recycleHead, .nullptr)
       for i in 0..<nodeCount {
         XCTAssertEqual(fixture.recycleCount, i)
+        #if DEBUG
+          nodePointer(at: i).__value_().initialize(to: 0)
+          payloadInitializedCount += 1
+        #endif
         fixture.___pushRecycle(nodePointer(at: i))
         XCTAssertNotEqual(fixture.recycleHead, .nullptr)
         XCTAssertEqual(fixture.recycleCount, i + 1)
@@ -71,13 +79,17 @@ import XCTest
       for i in 0..<nodeCount {
         XCTAssertEqual(fixture.recycleCount, nodeCount - i)
         XCTAssertNotEqual(fixture.recycleHead, .nullptr)
-        _ = fixture.___popRecycle()
+        let p = fixture.___popRecycle()
         XCTAssertEqual(fixture.recycleCount, nodeCount - i - 1)
       }
     }
-    
+
     func testFlushSmoke() throws {
       for i in 0..<nodeCount {
+        #if DEBUG
+          nodePointer(at: i).__value_().initialize(to: 0)
+          payloadInitializedCount += 1
+        #endif
         fixture.___pushRecycle(nodePointer(at: i))
       }
       fixture.___flushRecyclePool()
@@ -90,6 +102,5 @@ import XCTest
         // Put the code you want to measure the time of here.
       }
     }
-
   }
 #endif

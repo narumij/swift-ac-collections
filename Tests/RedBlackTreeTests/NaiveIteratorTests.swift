@@ -48,7 +48,7 @@ import XCTest
 
     func testValuesForward() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
-      let it = UnsafeIterator._Payload<RedBlackTreeSet<Int>, UnsafeIterator._Obverse>(
+      let it = UnsafeIterator._Payload<RedBlackTreeSet<Int>.Base, UnsafeIterator._Obverse>(
         source: .init(
           _start: a.__tree_.__begin_node_,
           _end: a.__tree_.__end_node))
@@ -57,7 +57,7 @@ import XCTest
 
     func testValuesReverse() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
-      let it = UnsafeIterator._Payload<RedBlackTreeSet<Int>, UnsafeIterator._Reverse>(
+      let it = UnsafeIterator._Payload<RedBlackTreeSet<Int>.Base, UnsafeIterator._Reverse>(
         source: .init(
           _start: a.__tree_.__begin_node_,
           _end: a.__tree_.__end_node))

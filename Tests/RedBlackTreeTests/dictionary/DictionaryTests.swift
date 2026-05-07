@@ -858,20 +858,20 @@ final class DictionaryTests: RedBlackTreeTestCase {
       let l2 = set.lowerBound(2)
       let u2 = set.upperBound(4)
       XCTAssertEqual(
-        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init($0, $0 * 10) })
+        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init(key:$0, value:$0 * 10) })
       XCTAssertEqual(
         set[l2...].map { RedBlackTreePair($0) },
-        [2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
+        [2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init($0, $0 * 10) })
+        set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[..<u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4].map { .init($0, $0 * 10) })
+        set[..<u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4].map { .init(key:$0, value:$0 * 10) })
       XCTAssertEqual(
         set[...u2].map { RedBlackTreePair($0) },
-        [1, 2, 3, 4, 6].map { .init($0, $0 * 10) })
+        [1, 2, 3, 4, 6].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
         set[..<set.endIndex].map { RedBlackTreePair($0) },
-        [1, 2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
+        [1, 2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
     }
   #endif
 
@@ -1130,7 +1130,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
 
   #if !COMPATIBLE_ATCODER_2025
     func testSortedReversed() throws {
-      let source = [0, 1, 2, 3, 4, 5].map { RedBlackTreePair($0, $0 * 10) }
+      let source = [0, 1, 2, 3, 4, 5].map { RedBlackTreePair(key: $0, value: $0 * 10) }
       let a = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: source.map(\.tuple))
       XCTAssertEqual(a.sorted().map { RedBlackTreePair($0) }, source)
       XCTAssertEqual(a.reversed().map { RedBlackTreePair($0) }, source.reversed())

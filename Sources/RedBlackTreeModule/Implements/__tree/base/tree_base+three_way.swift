@@ -16,6 +16,8 @@
 //===----------------------------------------------------------------------===//
 
 // 三方比較関連は各現場で決定する方針に変わった。コレクション側では決定しない
+// baseはstaticメソッド集なのに対して、これらはインスタンスメソッドなので、配置場所が不適切かもしれない
+// 単に経緯都合でここには位置している
 
 @usableFromInline
 package
@@ -33,6 +35,8 @@ extension IntThreeWayComparator {
     __default_three_way_comparator(__lhs, __rhs)
   }
 }
+
+// MARK: -
 
 @usableFromInline
 package

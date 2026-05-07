@@ -28,6 +28,8 @@ package enum _TrackingTagSealing: Equatable {
 
 extension _TrackingTagSealing {
 
+  /// - Parameter raw
+  /// `_TrackingTag`はIntのエイリアス
   @inlinable
   static func seal(raw: _TrackingTag, seal: UnsafeNode.Seal) -> Self {
     switch raw {
@@ -36,6 +38,7 @@ extension _TrackingTagSealing {
     case 0...:
       return .tag(raw: raw, seal: seal)
     default:
+      // raw値が負のケース
       // TODO: fix message
       fatalError("Attempting to access RedBlackTree elements using an invalid index")
     }

@@ -26,6 +26,29 @@
 import Foundation
 
 @usableFromInline
+protocol _TreeNode_PtrCompInterface: _NodePtrType {
+  func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
+}
+
+@usableFromInline
+protocol _TreeNode_PtrCompUniqueInterface: _NodePtrType {
+  func ___ptr_comp_unique(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
+}
+
+// 配列インデックス方式向け
+@usableFromInline
+protocol _TreeNode_PtrCompMultiInterface: _NodePtrType {
+  func ___ptr_comp_multi(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
+}
+
+// 配列インデックス方式向け
+@usableFromInline
+protocol _TreeNode_PtrCompBitmapInterface: _NodePtrType {
+  func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool
+}
+
+
+@usableFromInline
 protocol CompareBothProtocol_std: _TreeNode_PtrCompInterface, _TreeNode_PtrCompUniqueInterface, _TreeNode_PtrCompMultiInterface, NodeBitmapProtocol_std {
   var isMulti: Bool { get }
   func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool

@@ -51,7 +51,12 @@ extension ___LRUHandle {
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
     __l < __r
   }
+}
 
+extension ___LRUHandle {
+  
+  public typealias __compare_result = __int_compare_result
+  
   @inlinable
   @inline(__always)
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
@@ -150,12 +155,9 @@ extension ___LRUHandle {
   }
 }
 
-extension ___LRUHandle {
-  public typealias __compare_result = __int_compare_result
-}
-
 extension ___LRUHandle: FindInteface, FindProtocol_ptr {}
-extension ___LRUHandle: FindEqualInterface, FindEqualProtocol_ptr {}
+// これに関して古いfind_equalがどうも速いので、そちらを使う
+extension ___LRUHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
 extension ___LRUHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension ___LRUHandle: RemoveInteface, RemoveProtocol_ptr {}
 extension ___LRUHandle: EraseProtocol {}

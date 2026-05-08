@@ -63,12 +63,6 @@ extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
   @inline(__always)
-  func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-    __default_three_way_comparator(__lhs, __rhs)
-  }
-
-  @inlinable
-  @inline(__always)
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
     __default_three_way_comparator(__lhs, __rhs)
   }
@@ -156,17 +150,20 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 }
 
+extension UnsafeTreeV2KeyValueHandle {
+  public typealias __compare_result = __int_compare_result
+}
+
 extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindInteface, FindProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
+extension UnsafeTreeV2KeyValueHandle: FindLeafProtocol_ptr, InsertMultiProtocol {}
 extension UnsafeTreeV2KeyValueHandle: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: EraseProtocol {}
 extension UnsafeTreeV2KeyValueHandle: EraseUniqueProtocol {}
+extension UnsafeTreeV2KeyValueHandle: CountProtocol_ptr {}
+
 extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmProtocol_ptr {}
-
-extension UnsafeTreeV2KeyValueHandle {
-  public typealias __compare_result = __int_compare_result
-}

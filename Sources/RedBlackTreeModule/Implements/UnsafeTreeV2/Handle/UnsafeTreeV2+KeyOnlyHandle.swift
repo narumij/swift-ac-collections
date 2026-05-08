@@ -161,6 +161,7 @@ extension UnsafeTreeV2KeyOnlyHandle: EraseUniqueProtocol {}
 extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface, FindEqualProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: FindLeafProtocol_ptr, InsertMultiProtocol {}
 extension UnsafeTreeV2KeyOnlyHandle: CountProtocol_ptr {}
 
 extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmBaseProtocol_ptr {}

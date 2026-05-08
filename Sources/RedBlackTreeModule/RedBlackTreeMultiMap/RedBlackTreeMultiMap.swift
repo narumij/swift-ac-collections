@@ -187,7 +187,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {
-    __tree_.__count_unique(key) != 0
+    __tree_.read { $0.__count_unique(key) != 0 }
   }
 }
 
@@ -273,7 +273,7 @@ extension RedBlackTreeMultiMap {
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_.ensureUniqueAndCapacity()
-    _ = __tree_.__insert_multi(Base.__payload_(newMember))
+    _ = __tree_.update { $0.__insert_multi(Base.__payload_(newMember)) }
     return (true, newMember)
   }
 }

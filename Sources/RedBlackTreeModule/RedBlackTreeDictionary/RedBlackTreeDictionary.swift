@@ -356,13 +356,15 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
     __tree_.ensureUnique()
-    let __i = __tree_.find(__k)
-    if __i == __tree_.end {
-      return nil
+    return __tree_.update {
+      let __i = $0.find(__k)
+      if __i == $0.end {
+        return nil
+      }
+      let value = $0.__value_(__i).value
+      _ = $0.erase(__i)
+      return value
     }
-    let value = __tree_.__value_(__i).value
-    _ = __tree_.erase(__i)
-    return value
   }
 }
 

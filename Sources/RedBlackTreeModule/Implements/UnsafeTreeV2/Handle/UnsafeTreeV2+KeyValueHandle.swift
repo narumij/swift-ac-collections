@@ -151,6 +151,15 @@ extension UnsafeTreeV2KeyValueHandle {
 }
 
 extension UnsafeTreeV2KeyValueHandle {
+  
+  @inlinable
+  @inline(__always)
+  package func __value_(_ p: _NodePtr) -> _PayloadValue {
+    p.__value_().pointee
+  }
+}
+
+extension UnsafeTreeV2KeyValueHandle {
   public typealias __compare_result = __int_compare_result
 }
 

@@ -1112,7 +1112,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     #if COMPATIBLE_ATCODER_2025
       a.removeSubrange(a.lowerBound(2)..<a.upperBound(4))
     #else
-      a.erase(a.lowerBound(2)..<a.upperBound(4))
+    _ = a.erase(a.lowerBound(2)..<a.upperBound(4))
     #endif
 
     #if COMPATIBLE_ATCODER_2025

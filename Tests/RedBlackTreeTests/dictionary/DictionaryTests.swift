@@ -838,17 +838,17 @@ final class DictionaryTests: RedBlackTreeTestCase {
       let l2 = set.lowerBound(2)
       let u2 = set.upperBound(4)
       XCTAssertEqual(
-        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init($0, $0 * 10) })
+        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[l2...].map { RedBlackTreePair($0) }, [2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
-      XCTAssertEqual(set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init($0, $0 * 10) })
+        set[l2...].map { RedBlackTreePair($0) }, [2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
+      XCTAssertEqual(set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[..<u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4].map { .init($0, $0 * 10) })
+        set[..<u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[...u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4, 6].map { .init($0, $0 * 10) })
+        set[...u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4, 6].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
         set[..<set.endIndex].map { RedBlackTreePair($0) },
-        [1, 2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
+        [1, 2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
     }
   #endif
 

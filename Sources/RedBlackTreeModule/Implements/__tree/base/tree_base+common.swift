@@ -63,16 +63,3 @@ extension _BaseComparableKey_LessThanProtocol {
     a < b
   }
 }
-
-public protocol _BaseEquatableKey_EquivProtocol: _BaseKey_EquivInterface
-where _Key: Equatable {}
-
-// Equatableプロトコルの場合標準実装を付与する
-extension _BaseEquatableKey_EquivProtocol {
-
-  @inlinable
-  @inline(__always)
-  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
-    lhs == rhs
-  }
-}

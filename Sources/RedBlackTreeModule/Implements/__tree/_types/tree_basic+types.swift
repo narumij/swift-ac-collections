@@ -171,7 +171,8 @@ public protocol _ScalarBase_ElementProtocol:
 {}
 
 extension _ScalarBase_ElementProtocol {
-
+  // KeyValueのケースと対になるよう用意してあるが、
+  // 実際にはオーバーヘッド削減のため使われていない
   @inlinable @inline(__always)
   public static func __element_(_ __value: _PayloadValue) -> Element { __value }
 }

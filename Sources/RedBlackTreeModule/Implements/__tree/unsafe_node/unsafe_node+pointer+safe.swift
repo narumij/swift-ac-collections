@@ -169,14 +169,6 @@ extension Result {
 
 extension Result where Failure == SealError {
 
-  @inlinable
-  package var isValid: Bool {
-    switch self {
-    case .success: true
-    default: false
-    }
-  }
-
   @usableFromInline
   package var error: SealError? {
     switch self {

@@ -108,7 +108,8 @@ extension _BaseNode_PtrRangeCompProtocol {
 
 /// Index用のメソッド中継
 ///
-/// 特殊キー用になっていて、現在使っていない
+/// 資料的に残されている
+/// 実際には特殊化されたものをつかっている
 public protocol _BaseNode_PtrUniqueCompProtocol:
   _BaseNode_PtrUniqueCompInterface
     & _BaseKey_LessThanInterface

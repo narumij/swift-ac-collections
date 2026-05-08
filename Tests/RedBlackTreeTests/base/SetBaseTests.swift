@@ -18,11 +18,13 @@ final class SetBaseTests: RedBlackTreeTestCase {
   typealias Fixture = RedBlackTreeSet<Int>
   typealias SUT = Fixture.Base
 
-  func testExample() throws {
-    let fixture = Fixture(0..<5)
-    XCTAssertTrue(SUT.___ptr_range_comp(fixture._end, fixture._end, fixture._end))
-    XCTAssertTrue(SUT.___ptr_range_comp(fixture._start, fixture._end, fixture._end))
-    XCTAssertTrue(
-      SUT.___ptr_range_comp(fixture._start, __tree_next_iter(fixture._start), fixture._end))
-  }
+  #if DEBUG
+    func testExample() throws {
+      let fixture = Fixture(0..<5)
+      XCTAssertTrue(SUT.___ptr_range_comp(fixture._end, fixture._end, fixture._end))
+      XCTAssertTrue(SUT.___ptr_range_comp(fixture._start, fixture._end, fixture._end))
+      XCTAssertTrue(
+        SUT.___ptr_range_comp(fixture._start, __tree_next_iter(fixture._start), fixture._end))
+    }
+  #endif
 }

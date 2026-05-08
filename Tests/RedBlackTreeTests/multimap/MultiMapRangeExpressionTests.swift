@@ -125,7 +125,7 @@
       let lower = map.index(map.startIndex, offsetBy: 1)
       let upper = map.index(map.startIndex, offsetBy: 3)
 
-      map.erase(lower..<upper)
+      _ = map.erase(lower..<upper)
       XCTAssertEqual(Array(map).map { $0.key }, [1, 4])
     }
 

@@ -88,7 +88,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public func sorted() -> [Element] {
-    __tree_.___copy_all_to_array(transform: Base.__element_)
+    __tree_.___copy_all_to_array(transform: __element_)
   }
 }
 
@@ -101,7 +101,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public func reversed() -> [Element] {
-      __tree_.___rev_copy_all_to_array(transform: Base.__element_)
+      __tree_.___rev_copy_all_to_array(transform: __element_)
     }
   }
 #endif
@@ -118,7 +118,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public var keys: [Key] {
-      __tree_.___copy_all_to_array(transform: Base.__key)
+      __tree_.___copy_all_to_array(transform: __key)
     }
 
     /// A collection containing just the values of the dictionary.
@@ -127,7 +127,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public var values: [Value] {
-      __tree_.___copy_all_to_array(transform: Base.___mapped_value)
+      __tree_.___copy_all_to_array(transform: ___mapped_value)
     }
   #endif
 }

@@ -27,7 +27,7 @@ final class MultiMapAdvancedTest: RedBlackTreeTestCase {
     #if COMPATIBLE_ATCODER_2025
       map.removeSubrange(lower..<upper)
     #else
-      map.erase(lower..<upper)
+    _ = map.erase(lower..<upper)
     #endif
     XCTAssertFalse(map.contains(key: "b"))
     XCTAssertFalse(map.contains(key: "c"))

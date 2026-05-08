@@ -41,17 +41,4 @@ extension RemoveProtocol_ptr {
     _ptr__tree_remove(__root, __ptr)
     return __r
   }
-
-  /// 返却値を利用しない場合に向けた実験版
-  @inlinable
-  @inline(__always)
-  internal func ___remove_node_pointer(_ __ptr: _NodePtr) {
-    if __begin_node_ == __ptr {
-      // 単に要素を削除したい場合、無駄な手間になるので限定してみた
-      __begin_node_ = __tree_next_iter(__ptr)
-    }
-    __size_ -= 1
-    // __root等は、llvmと異なり木の保持の仕方がリッチなうえ型チェックが邪魔なので直接とった方がいい
-    _ptr__tree_remove(__root, __ptr)
-  }
 }

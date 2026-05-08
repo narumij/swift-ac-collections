@@ -18,7 +18,7 @@
 /// DictionaryやMultiMapの内部保持に用いるデータ型
 ///
 /// Swift6.2でタプルの速度低下がみられたので、構造体を採用している
-/// 
+///
 @frozen
 public struct RedBlackTreePair<Key, Value> {
 
@@ -28,34 +28,19 @@ public struct RedBlackTreePair<Key, Value> {
     self.value = value
   }
 
-  @inlinable @inline(__always)
-  package init(_ key: Key, _ value: Value) {
-    self.key = key
-    self.value = value
-  }
-
-  @inlinable @inline(__always)
-  package init(_ tuple: (Key, Value)) {
-    (key, value) = tuple
-  }
-
   public var key: Key
-  public var value: Value  // mapped_valueのほうが、混乱が減るのでいい気がしてきている
-  public var tuple: (Key, Value) { (key, value) }
-
-  @inlinable @inline(__always)
-  public var first: Key { key }
-
-  @inlinable @inline(__always)
-  public var second: Value { value }
+  public var value: Value
 }
 
-#if swift(>=5.5)
-  extension RedBlackTreePair: Sendable where Key: Sendable, Value: Sendable {}
-#endif
+extension RedBlackTreePair {
+  public var tuple: (Key, Value) { (key, value) }
+}
+
+extension RedBlackTreePair: Sendable where Key: Sendable, Value: Sendable {}
 
 extension RedBlackTreePair: Hashable where Key: Hashable, Value: Hashable {}
 extension RedBlackTreePair: Equatable where Key: Equatable, Value: Equatable {}
+
 extension RedBlackTreePair: Comparable where Key: Comparable, Value: Comparable {
   public static func < (lhs: RedBlackTreePair<Key, Value>, rhs: RedBlackTreePair<Key, Value>)
     -> Bool
@@ -63,5 +48,6 @@ extension RedBlackTreePair: Comparable where Key: Comparable, Value: Comparable 
     (lhs.key, lhs.value) < (rhs.key, rhs.value)
   }
 }
+
 extension RedBlackTreePair: Encodable where Key: Encodable, Value: Encodable {}
 extension RedBlackTreePair: Decodable where Key: Decodable, Value: Decodable {}

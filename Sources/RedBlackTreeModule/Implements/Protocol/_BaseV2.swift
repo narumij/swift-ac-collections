@@ -116,6 +116,9 @@ protocol _RedBlackTreeKeyValuesV2:
     & _CompareV2
     & _SequenceV2
     & _RemoveV2
+    & _PayloadMappedValueBridge
+    & _PaylodElementBridge
+    & _ElementPayloadBridge
 {}
 
 // MARK: -

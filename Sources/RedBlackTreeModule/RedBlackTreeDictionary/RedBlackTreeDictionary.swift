@@ -208,7 +208,7 @@ extension RedBlackTreeDictionary {
   /// If O(1) is required, `first` provides an equivalent operation in O(1).
   @inlinable
   public func min() -> Element? {
-    __tree_.___min().map(Base.__element_)
+    __tree_.___min().map(__element_)
   }
 
   /// Returns the maximum element in the sequence.
@@ -216,7 +216,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log *n*)
   @inlinable
   public func max() -> Element? {
-    __tree_.___max().map(Base.__element_)
+    __tree_.___max().map(__element_)
   }
 }
 
@@ -297,7 +297,7 @@ extension RedBlackTreeDictionary {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return ___remove_last().map(\.payload).map(Base.__element_)
+      return ___remove_last().map(\.payload).map(__element_)
     }
   }
 #endif

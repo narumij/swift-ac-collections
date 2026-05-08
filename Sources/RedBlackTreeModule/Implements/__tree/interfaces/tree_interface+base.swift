@@ -132,3 +132,7 @@ protocol ValueInterface:
     & _TreeKey_CompInterface
     & _end_interface
 {}
+
+public protocol _Tree_IsMultiTraitInterface {
+  var isMulti: Bool { get }
+}

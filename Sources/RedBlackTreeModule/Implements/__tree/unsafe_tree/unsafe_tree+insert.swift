@@ -135,7 +135,7 @@ protocol InsertLastProtocol_ptr:
 {}
 
 extension InsertLastProtocol_ptr {
-
+  
   @inlinable
   @inline(__always)
   internal func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef) {
@@ -145,18 +145,23 @@ extension InsertLastProtocol_ptr {
     let __parent = __tree_max(__root)
     return (__parent, __parent.__right_ref)
   }
-
+  
   @inlinable
   @inline(__always)
   internal func
-    ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue)
-    -> (__parent: _NodePtr, __child: _NodeRef)
+  ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue)
+  -> (__parent: _NodePtr, __child: _NodeRef)
   {
     let __p = __construct_node(__k)
     __insert_node_at(__parent, __child, __p)
     return (__p, __p.__right_ref)
   }
+}
 
+extension InsertLastProtocol_ptr {
+
+  // 資料的に残してある
+  //
   // こちらのほうがAPIとしては収まりがいいが、かすかに上のモノの方が速い
   // 分岐の有無の差だとおもわれる
   @inlinable

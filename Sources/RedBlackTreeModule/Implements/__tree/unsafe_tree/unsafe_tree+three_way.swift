@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// 三方比較関連は各現場で決定する方針に変わった。コレクション側では決定しない
-
 @usableFromInline
 package
   protocol IntThreeWayComparator: _TreeKey_LazyThreeWayCompInterface
@@ -33,6 +31,8 @@ extension IntThreeWayComparator {
     __default_three_way_comparator(__lhs, __rhs)
   }
 }
+
+// MARK: -
 
 @usableFromInline
 package

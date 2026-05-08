@@ -160,6 +160,7 @@ public protocol _BasePaylodValue_ElementInterface: _PayloadValueType, _ElementTy
 }
 
 /// DictionaryやMultiMapは、コレクション要素型から積載型への変換方法も必要になる
+// TODO: 名前が変だ
 public protocol _KeyValueBasePaylodValue_ElementInterface: _BasePaylodValue_ElementInterface {
   static func __payload_(_ __e: Element) -> _PayloadValue
 }
@@ -171,7 +172,8 @@ public protocol _ScalarBase_ElementProtocol:
 {}
 
 extension _ScalarBase_ElementProtocol {
-
+  // KeyValueのケースと対になるよう用意してあるが、
+  // 実際にはオーバーヘッド削減のため使われていない
   @inlinable @inline(__always)
   public static func __element_(_ __value: _PayloadValue) -> Element { __value }
 }
@@ -192,7 +194,7 @@ extension _PairBase_ElementProtocol {
 
   @inlinable @inline(__always)
   public static func __payload_(_ __e: Element) -> _PayloadValue {
-    RedBlackTreePair(__e)
+    RedBlackTreePair(key: __e.key, value: __e.value)
   }
 }
 

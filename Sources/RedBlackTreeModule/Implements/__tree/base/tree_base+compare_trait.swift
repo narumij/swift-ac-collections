@@ -28,3 +28,5 @@ extension CompareMultiTrait {
   @inlinable @inline(__always)
   public static var isMulti: Bool { true }
 }
+
+// 分岐を減らしたい気持ちはあるが、ホットパスというわけでもないので、無理にはやらない

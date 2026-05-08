@@ -15,6 +15,24 @@
 //
 //===----------------------------------------------------------------------===//
 
+// 結局のところ最も速い
+public typealias __int_compare_result = Int
+
+extension Int: ThreeWayCompareResult {}
+
+extension Int {
+  @inlinable
+  @inline(__always)
+  public func __less() -> Bool { self < 0 }
+  @inlinable
+  @inline(__always)
+  public func __greater() -> Bool { self > 0 }
+}
+
+// MARK: -
+
+// 以下は資料的に残している。
+
 // 特殊なキーを使いたい場合に使える
 public
   struct __lazy_compare_result<Base: _BaseKey_LessThanInterface>: ThreeWayCompareResult
@@ -77,20 +95,6 @@ public
   @inlinable
   @inline(__always)
   public func __greater() -> Bool { __res_ > 0 }
-}
-
-// 結局のところ最も速い
-public typealias __int_compare_result = Int
-
-extension Int: ThreeWayCompareResult {}
-
-extension Int {
-  @inlinable
-  @inline(__always)
-  public func __less() -> Bool { self < 0 }
-  @inlinable
-  @inline(__always)
-  public func __greater() -> Bool { self > 0 }
 }
 
 // 期待したほどじゃなかった

@@ -53,7 +53,7 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @usableFromInline var freshBucketHead: _BucketPointer?
   @usableFromInline var freshBucketLast: _BucketPointer?
   @usableFromInline let nullptr: _NodePtr
-  @usableFromInline var begin_ptr: _NodeRef
+  @usableFromInline let begin_ptr: _NodeRef
   @usableFromInline var root_ptr: _NodeRef
   @usableFromInline var freshBucketAllocator: _BucketAllocator
 

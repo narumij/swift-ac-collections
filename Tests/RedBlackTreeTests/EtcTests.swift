@@ -1130,31 +1130,33 @@ final class EtcTests: RedBlackTreeTestCase {
       #endif
     }
 
-    func testUnchecked() throws {
-      let a = RedBlackTreeSet<Int>(0..<100)
-      //      XCTAssertEqual(
-      //        a[unchecked: lowerBound(50)...upperBound(10)].reversed() + [],
-      //        (50..<100) + [],
-      //        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-      //      XCTAssertEqual(
-      //        a[unchecked: end()...start()] + [],
-      //        [],
-      //        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-      //      XCTAssertEqual(
-      //        a[unchecked: a.lowerBound(50)...a.lowerBound(10)] + [],
-      //        (50..<100) + [],
-      //        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-      //      XCTAssertEqual(
-      //        a[unchecked: a.endIndex...a.startIndex] + [],
-      //        [],
-      //        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
+    #if false
+      func testUnchecked() throws {
+        let a = RedBlackTreeSet<Int>(0..<100)
+        XCTAssertEqual(
+          a[unchecked: lowerBound(50)...upperBound(10)].reversed() + [],
+          (50..<100) + [],
+          "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
+        XCTAssertEqual(
+          a[unchecked: end()...start()] + [],
+          [],
+          "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
+        XCTAssertEqual(
+          a[unchecked: a.lowerBound(50)...a.lowerBound(10)] + [],
+          (50..<100) + [],
+          "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
+        XCTAssertEqual(
+          a[unchecked: a.endIndex...a.startIndex] + [],
+          [],
+          "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
 
-      //      XCTAssertEqual(a[unchecked: a.startIndex...a.endIndex] + [], [])
-      //      XCTAssertEqual((0..<100)[0...100] + [], [])
-    }
+        XCTAssertEqual(a[unchecked: a.startIndex...a.endIndex] + [], [])
+        XCTAssertEqual((0..<100)[0...100] + [], [])
+      }
+    #endif
 
     func testBound() throws {
-      var a = RedBlackTreeSet<Int>((0..<100).filter { $0 % 5 == 0 })
+      let a = RedBlackTreeSet<Int>((0..<100).filter { $0 % 5 == 0 })
       XCTAssertEqual(a[.start], 0)
       XCTAssertEqual(a[.lowerBound(0)], 0)
       XCTAssertEqual(a[.lowerBound(3)], 5)
@@ -1189,7 +1191,7 @@ final class EtcTests: RedBlackTreeTestCase {
     }
 
     func testRangeView() throws {
-      var a = RedBlackTreeSet(0..<20)
+      let a = RedBlackTreeSet(0..<20)
       var b = a[start()..<lowerBound(10)]
       XCTAssertEqual(b.popFirst(), 0)
       XCTAssertEqual(b.popFirst(), 1)
@@ -1216,19 +1218,19 @@ final class EtcTests: RedBlackTreeTestCase {
   #endif
 
   func testLimitedBy() throws {
-    var a = Array(0..<100)
+    let a = Array(0..<100)
     XCTAssertNotNil(a.index(10, offsetBy: 10, limitedBy: 20))
     XCTAssertNil(a.index(10, offsetBy: 11, limitedBy: 20))
   }
 
   func testLimitedBy2() throws {
-    var a = RedBlackTreeSet(0..<100)
+    let a = RedBlackTreeSet(0..<100)
     XCTAssertNotNil(a.index(a.lowerBound(10), offsetBy: 10, limitedBy: a.lowerBound(20)))
     XCTAssertNil(a.index(a.lowerBound(10), offsetBy: 11, limitedBy: a.lowerBound(20)))
   }
 
   func testDict() throws {
-    var d = [Int: Int]()
+    let d = [Int: Int]()
     XCTAssertEqual(d[0, default: -1], -1)
     XCTAssertEqual(d[0], nil)
   }

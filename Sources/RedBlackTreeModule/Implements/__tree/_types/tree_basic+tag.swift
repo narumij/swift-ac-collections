@@ -55,7 +55,7 @@ extension _TrackingTag {
     -1
   }
 
-  /// メモリでバッグのための`_TrackingTag`のダミー値
+  /// メモリデバッグのための`_TrackingTag`のダミー値
   @inlinable
   package static var debug: Self {
     -999

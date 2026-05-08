@@ -29,6 +29,16 @@ extension _SequenceV2 {
   package var _end: _NodePtr {
     __tree_.__end_node
   }
+  
+  @inlinable @inline(__always)
+  package var _safe_start: _SafePtr {
+    .success(__tree_.__begin_node_)
+  }
+
+  @inlinable @inline(__always)
+  package var _safe_end: _SafePtr {
+    .success(__tree_.__end_node)
+  }
 
   @inlinable @inline(__always)
   package var _sealed_start: _SealedPtr {

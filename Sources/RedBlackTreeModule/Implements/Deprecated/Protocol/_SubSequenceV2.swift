@@ -20,6 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
+#if COMPATIBLE_ATCODER_2025
 @usableFromInline
 protocol _SubSequenceV2: UnsafeTreeSealedRangeProtocol, UnsafeIndexBindingV2 {}
 
@@ -78,7 +79,6 @@ extension _SubSequenceV2 {
   }
 }
 
-#if COMPATIBLE_ATCODER_2025
   extension _SubSequenceV2 {
 
     @inlinable @inline(__always)

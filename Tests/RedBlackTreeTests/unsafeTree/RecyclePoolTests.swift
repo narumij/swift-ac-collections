@@ -79,7 +79,7 @@ import XCTest
       for i in 0..<nodeCount {
         XCTAssertEqual(fixture.recycleCount, nodeCount - i)
         XCTAssertNotEqual(fixture.recycleHead, .nullptr)
-        let p = fixture.___popRecycle()
+        _ = fixture.___popRecycle()
         XCTAssertEqual(fixture.recycleCount, nodeCount - i - 1)
       }
     }

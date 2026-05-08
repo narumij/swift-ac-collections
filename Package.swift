@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import Foundation
@@ -13,14 +13,14 @@ var defines: [String] = [
   //  "PERFOMANCE_CHECK",
   "WITHOUT_SIZECHECK",
   //  "USE_OLD_FIND",
-  //  "DEATH_TEST",
+//  "DEATH_TEST",
   //  "BENCHMARK",
   //  "ALLOCATION_DRILL" // リリース時はオフ
 ]
 
 var _settings: [SwiftSetting] =
   [
-//    .define("COMPATIBLE_ATCODER_2025"),
+    //    .define("COMPATIBLE_ATCODER_2025"),
     // このコードベースは当初、2025新ジャッジ搭載を目指して開発し、無事に搭載できました。
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
     // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
@@ -79,10 +79,10 @@ let package = Package(
     .package(
       url: "https://github.com/apple/swift-collections",
       from: "1.3.0"),
-    
+
     .package(
       url: "https://github.com/swiftlang/swift-docc-plugin",
-             from: "1.0.0"),
+      from: "1.0.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -103,7 +103,9 @@ let package = Package(
       name: "RedBlackTreeModule",
       dependencies: [] + additionalDepencencies,
       exclude: ["MEMO.md"],
-      swiftSettings: _settings
+      swiftSettings: _settings + [
+        //        .strictMemorySafety()
+      ]
     ),
     .testTarget(
       name: "RedBlackTreeTests",

@@ -93,7 +93,7 @@
     }
     @inlinable
     var nullptr: _NodePtr { __tree_.nullptr }
-    @inlinable
-    var end: _NodePtr { __tree_.end }
+//    @inlinable
+//    var end: _NodePtr { __tree_.end }
   }
 #endif

@@ -42,7 +42,7 @@
 // ## Initial Capacity 0
 // |Bucket|ptr|Node|
 //
-// ## Resever Capacity to 1
+// ## Reserve Capacity to 1
 // |Bucket|ptr|Node|
 // |Bucket||Node|Value|
 //
@@ -67,6 +67,7 @@ package struct _BucketAllocator {
     .init(valueType: Void.self, deinitialize: { _ in })
   }
 
+  //  @specialized(where _PayloadValue == Int) // 6.3以降になった際につける
   @inlinable
   @inline(__always)
   public init<_PayloadValue: ~Copyable>(
@@ -110,9 +111,10 @@ package struct _BucketAllocator {
 
 extension _BucketAllocator {
 
-  @inlinable
-  @inline(__always)
-  public func createHeadBucket(capacity: Int, nullptr: _NodePtr) -> (
+  //  @inlinable
+  //  @inline(__always)
+  @usableFromInline // レジスタ圧を下げることにした
+  package func createHeadBucket(capacity: Int, nullptr: _NodePtr) -> (
     _BucketPointer, capacity: Int
   ) {
 
@@ -149,9 +151,10 @@ extension _BucketAllocator {
     return (header, capacity)
   }
 
-  @inlinable
-  @inline(__always)
-  public func createBucket(bucketCapacity: Int) -> (_BucketPointer, capacity: Int) {
+  //  @inlinable
+  //  @inline(__always)
+  @usableFromInline // レジスタ圧を下げることにした
+  package func createBucket(bucketCapacity: Int) -> (_BucketPointer, capacity: Int) {
 
     assert(bucketCapacity != 0, "先頭以外のバケットは容量0ではないこと")
 
@@ -181,7 +184,7 @@ extension _BucketAllocator {
 
 extension _BucketAllocator {
 
-  @usableFromInline
+  @inlinable
   package func _allocationSize(capacity: Int) -> Int {
     let s2 = MemoryLayout<_Bucket>.stride
     let s01 = _pair.stride
@@ -193,7 +196,7 @@ extension _BucketAllocator {
 extension _BucketAllocator {
 
   @inlinable
-  public func deinitialize(bucket b: _BucketPointer?) {
+  package func deinitialize(bucket b: _BucketPointer?) {
     var reserverHead = b
     if let h = reserverHead {
       _deinitializeNodeAndValues(storage: h.primaryStorage(), h)
@@ -211,7 +214,7 @@ extension _BucketAllocator {
 extension _BucketAllocator {
 
   @inlinable
-  public func deallocate(bucket b: _BucketPointer?) {
+  package func deallocate(bucket b: _BucketPointer?) {
     var reserverHead = b
     if let h = reserverHead {
       reserverHead = h.pointee.next

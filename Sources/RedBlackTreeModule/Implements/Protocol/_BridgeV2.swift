@@ -44,6 +44,42 @@ extension _PayloadKeyBridge {
   }
 }
 
+@usableFromInline
+protocol _PayloadMappedValueBridge: _PayloadValueBride & _MappedValueBride
+where Base: _BasePayloadValue_MappedValueInterface {}
+
+extension _PayloadMappedValueBridge {
+
+  @inlinable @inline(__always)
+  func ___mapped_value(_ p: _PayloadValue) -> _MappedValue {
+    Base.___mapped_value(p)
+  }
+}
+
+@usableFromInline
+protocol _PaylodElementBridge: _BaseBridge & _PayloadKeyBridge & _ElementBride
+where Base: _BasePaylodValue_ElementInterface {}
+
+extension _PaylodElementBridge {
+  
+  @inlinable @inline(__always)
+  func __element_(_ __value: _PayloadValue) -> Element {
+    Base.__element_(__value)
+  }
+}
+
+@usableFromInline
+protocol _ElementPayloadBridge: _BaseBridge & _PayloadKeyBridge & _ElementBride
+where Base: _KeyValueBasePaylodValue_ElementInterface {}
+
+extension _ElementPayloadBridge {
+  
+  @inlinable @inline(__always)
+  func __payload_(_ __e: Element) -> _PayloadValue {
+    Base.__payload_(__e)
+  }
+}
+
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 @usableFromInline
 protocol _ValueCompBridge: _KeyBride

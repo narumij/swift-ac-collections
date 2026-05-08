@@ -107,6 +107,9 @@ extension _BaseNode_PtrRangeCompProtocol {
 }
 
 /// Index用のメソッド中継
+///
+/// 資料的に残されている
+/// 実際には特殊化されたものをつかっている
 public protocol _BaseNode_PtrUniqueCompProtocol:
   _BaseNode_PtrUniqueCompInterface
     & _BaseKey_LessThanInterface
@@ -125,6 +128,9 @@ extension _BaseNode_PtrUniqueCompProtocol {
   }
 }
 
+/// Index用のメソッド中継
+///
+/// Comparable特殊化のもの
 public protocol _BaseComparableNode_PtrUniqueCompProtocol:
   _BaseNode_PtrUniqueCompInterface
     & _BaseKey_LessThanInterface
@@ -136,6 +142,10 @@ extension _BaseComparableNode_PtrUniqueCompProtocol {
 
   @inlinable @inline(__always)
   public static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+    assert(!l.___is_null, "Node shouldn't be null")
+    assert(!l.___is_end, "Node shouldn't be end")
+    assert(!r.___is_null, "Node shouldn't be null")
+    assert(!r.___is_end, "Node shouldn't be end")
     return __get_value(l) < __get_value(r)
   }
 }

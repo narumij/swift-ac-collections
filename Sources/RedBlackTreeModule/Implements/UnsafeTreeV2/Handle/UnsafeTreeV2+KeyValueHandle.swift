@@ -163,6 +163,23 @@ extension UnsafeTreeV2KeyValueHandle {
   public typealias __compare_result = __int_compare_result
 }
 
+extension UnsafeTreeV2KeyValueHandle {
+
+  @inlinable
+  internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      UnsafePointer(pointer.__value_())
+    }
+    @inline(__always)
+    @_transparent
+    nonmutating unsafeMutableAddress {
+      pointer.__value_()
+    }
+  }
+}
+
 extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindInteface, FindProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}

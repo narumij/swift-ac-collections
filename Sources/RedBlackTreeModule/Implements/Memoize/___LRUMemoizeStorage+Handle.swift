@@ -176,6 +176,23 @@ extension ___LRUHandle {
   var capacity: Int { header.pointee.freshPoolCapacity }
 }
 
+extension ___LRUHandle {
+
+  @inlinable
+  internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      UnsafePointer(pointer.__value_())
+    }
+    @inline(__always)
+    @_transparent
+    nonmutating unsafeMutableAddress {
+      pointer.__value_()
+    }
+  }
+}
+
 extension UnsafeTreeV2 where Base: KeyValueTrait, Base._PayloadValue == _LinkingPair<_Key,Base._MappedValue> {
 
   @usableFromInline

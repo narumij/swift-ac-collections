@@ -107,6 +107,6 @@ do {
 
   }
 }
-#endif
 
 Benchmark.main()
+#endif

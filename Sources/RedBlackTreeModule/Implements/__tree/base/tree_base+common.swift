@@ -38,20 +38,6 @@ extension _BaseNode_KeyProtocol {
   }
 }
 
-/// 資料的に残されている
-///
-/// 実際には特殊化されたものをつかっている
-public protocol _BaseKey_EquivProtocol: _BaseKey_EquivInterface & _BaseKey_LessThanInterface {}
-
-extension _BaseKey_EquivProtocol {
-
-  @inlinable
-  @inline(__always)
-  public static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool {
-    !value_comp(lhs, rhs) && !value_comp(rhs, lhs)
-  }
-}
-
 public protocol _BaseComparableKey_LessThanProtocol: _BaseKey_LessThanInterface
 where _Key: Comparable {}
 

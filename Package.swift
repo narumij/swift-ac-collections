@@ -13,7 +13,7 @@ var defines: [String] = [
   //  "PERFOMANCE_CHECK",
   "WITHOUT_SIZECHECK",
   //  "USE_OLD_FIND",
-  //  "DEATH_TEST",
+  "DEATH_TEST",
   //  "BENCHMARK",
   //  "ALLOCATION_DRILL" // リリース時はオフ
 ]
@@ -79,10 +79,10 @@ let package = Package(
     .package(
       url: "https://github.com/apple/swift-collections",
       from: "1.3.0"),
-    
+
     .package(
       url: "https://github.com/swiftlang/swift-docc-plugin",
-             from: "1.0.0"),
+      from: "1.0.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -104,7 +104,7 @@ let package = Package(
       dependencies: [] + additionalDepencencies,
       exclude: ["MEMO.md"],
       swiftSettings: _settings + [
-//        .strictMemorySafety()
+        //        .strictMemorySafety()
       ]
     ),
     .testTarget(

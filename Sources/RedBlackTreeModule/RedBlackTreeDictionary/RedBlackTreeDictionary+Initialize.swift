@@ -44,7 +44,7 @@ extension RedBlackTreeDictionary {
           .___insert_range_unique(
             tree: .create(),
             keysAndValues,
-            transform: Base.__payload_(_:)))
+            transform: { Base.__payload_($0) }))
     }
 
     /// - Complexity: O(*n* log *n*)
@@ -60,7 +60,7 @@ extension RedBlackTreeDictionary {
             tree:
               .create(minimumCapacity: keysAndValues.count),
             keysAndValues,
-            transform: Base.__payload_(_:)))
+            transform: { Base.__payload_($0) }))
     }
   }
 #endif
@@ -78,7 +78,7 @@ extension RedBlackTreeDictionary {
       __tree_: try .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
         uniquingKeysWith: combine,
-        transform: Base.__payload_
+        transform: { Base.__payload_($0) }
       ))
   }
 }

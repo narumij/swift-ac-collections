@@ -242,7 +242,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     public func values(forKey key: Key) -> [_MappedValue] {
       let (lo, hi) = __tree_.__equal_range_multi(key)
-      return __tree_.___copy_to_array(lo, hi, transform: Base.___mapped_value)
+      return __tree_.___copy_to_array(lo, hi, transform: ___mapped_value)
     }
   }
 #endif

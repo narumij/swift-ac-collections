@@ -31,5 +31,6 @@
       & ___RemoveV2
       & ___UnsafeIndexV2
       & ___UnsafeKeyValueSequenceV2
+      & _PaylodElementBridge
   {}
 #endif

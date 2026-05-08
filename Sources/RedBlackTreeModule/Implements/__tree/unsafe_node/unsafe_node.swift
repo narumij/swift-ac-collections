@@ -125,9 +125,9 @@ public struct UnsafeNode {
     self.__is_black_ = __is_black_
     self.___has_payload_content = ___has_payload_content
   }
-  
+
   // MARK: - Meta data
-  
+
   /// A lightweight tracking tag used to identify and correlate nodes.
   ///
   /// This tag is **not** part of the tree's logical key and must not be used
@@ -158,8 +158,7 @@ public struct UnsafeNode {
   /// - `nullptr` は `-2`
   /// - `end` は `-1`
   public var ___tracking_tag: _TrackingTag
-  
-#if DEBUG || true
+
   public typealias Seal = UInt32
   // salt付きに変更することで、まったく縁の無い木のノードを受け付けにくくすることができる
   // saltは新規作成時のみ更新され、コピーでは継承することで、CoWまたぎには影響しない
@@ -167,7 +166,6 @@ public struct UnsafeNode {
   // end nodeのrecycle countをsalt置き場にすればいい
   /// 再利用された回数
   public var ___recycle_count: Seal = 0
-#endif
 
   /// Indicates whether the payload stored after this node is currently loaded.
   ///
@@ -183,7 +181,7 @@ public struct UnsafeNode {
   /// `false` の場合、ペイロードは未使用または回収済み。
   ///
   public var ___has_payload_content: Bool
-  
+
   // MARK: - Color
 
   /// Color flag of this red-black tree node.
@@ -218,15 +216,16 @@ public struct UnsafeNode {
   ///
   /// 赤黒木ノードの親ノードを指すポインタ。
   public var __parent_: Pointer
-  
+
   // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
   // nullptrは定数でもなにかコストがかかっていた記憶もある
   // 過去のコードベースで再度調査してこういった諸々の問題が杞憂だった場合、optionalに変更してnullptrにnil変更しても良い
-//  @exclusivity(unchecked)
-//  @usableFromInline nonisolated(unsafe)
-//    package static let nullptr: UnsafeMutablePointer<UnsafeNode> = _singletonNull.nullptr
+  //  @exclusivity(unchecked)
+  //  @usableFromInline nonisolated(unsafe)
+  //    package static let nullptr: UnsafeMutablePointer<UnsafeNode> = _singletonNull.nullptr
   @usableFromInline nonisolated(unsafe)
-  package static var nullptr: UnsafeMutablePointer<UnsafeNode> { _singletonNull.nullptr }
+    package static var nullptr: UnsafeMutablePointer<UnsafeNode>
+  { _singletonNull.nullptr }
 }
 
 @usableFromInline

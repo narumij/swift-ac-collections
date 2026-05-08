@@ -1131,7 +1131,7 @@ final class EtcTests: RedBlackTreeTestCase {
     }
 
     func testUnchecked() throws {
-      let a = RedBlackTreeSet<Int>(0..<100)
+      //      let a = RedBlackTreeSet<Int>(0..<100)
       //      XCTAssertEqual(
       //        a[unchecked: lowerBound(50)...upperBound(10)].reversed() + [],
       //        (50..<100) + [],

@@ -267,5 +267,14 @@ let package = Package(
       ],
       path: "Tests/Executables/MarriedSource",
       exclude: ["RedBlackTree.swift_"]),
+    .executableTarget(
+      name: "LRU",
+      dependencies: [
+        "AcCollections",
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Tests/Executables/LRU"),
   ]
 )
+
+

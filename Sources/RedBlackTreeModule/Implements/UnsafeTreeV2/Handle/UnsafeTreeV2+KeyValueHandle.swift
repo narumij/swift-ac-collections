@@ -165,7 +165,7 @@ extension UnsafeTreeV2KeyValueHandle {
 
 extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindInteface, FindProtocol_ptr {}
-extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr {}
+extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
 extension UnsafeTreeV2KeyValueHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindLeafProtocol_ptr, InsertMultiProtocol {}

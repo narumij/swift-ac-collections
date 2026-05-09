@@ -44,23 +44,8 @@ extension ___LRUHandle {
 
   @inlinable
   @inline(__always)
-  func __key(_ __v: _PayloadValue) -> _Key { __v.key }
-
-  @inlinable
-  @inline(__always)
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
     __l < __r
-  }
-}
-
-extension ___LRUHandle {
-  
-  public typealias __compare_result = __int_compare_result
-  
-  @inlinable
-  @inline(__always)
-  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-    __default_three_way_comparator(__lhs, __rhs)
   }
 }
 
@@ -146,15 +131,6 @@ extension ___LRUHandle {
   }
 }
 
-extension ___LRUHandle {
-
-  @inlinable
-  @inline(__always)
-  package func __value_(_ p: _NodePtr) -> _PayloadValue {
-    p.__value_().pointee
-  }
-}
-
 extension ___LRUHandle: FindInteface, FindProtocol_ptr {}
 // これに関して古いfind_equalがどうも速いので、そちらを使う
 extension ___LRUHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
@@ -176,23 +152,6 @@ extension ___LRUHandle {
   var capacity: Int { header.pointee.freshPoolCapacity }
 }
 
-extension ___LRUHandle {
-
-  @inlinable
-  internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {
-    @inline(__always)
-    @_transparent
-    unsafeAddress {
-      UnsafePointer(pointer.__value_())
-    }
-    @inline(__always)
-    @_transparent
-    nonmutating unsafeMutableAddress {
-      pointer.__value_()
-    }
-  }
-}
-
 extension UnsafeTreeV2 where Base: KeyValueTrait, Base._PayloadValue == _LinkingPair<_Key,Base._MappedValue> {
 
   @usableFromInline
@@ -201,7 +160,7 @@ extension UnsafeTreeV2 where Base: KeyValueTrait, Base._PayloadValue == _Linking
   @inlinable
   @inline(__always)
   internal func update<R>(_ body: (_LRUHandle) throws -> R) rethrows -> R {
-    try _buffer.withUnsafeMutablePointers { header, elements in
+    try _buffer.withUnsafeMutablePointers { header, _ in
       let handle = _LRUHandle(header: header)
       return try body(handle)
     }

@@ -49,16 +49,13 @@ extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
   @inline(__always)
-  func __key(_ __v: _PayloadValue) -> _Key { __v }
+  func __key(_ __v: _PayloadValue) -> _Key {
+    __v
+  }
 
   @inlinable
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
     __l < __r
-  }
-
-  @inlinable
-  func value_equiv(_ __l: _Key, _ __r: _Key) -> Bool {
-    __l == __r
   }
 
   @inlinable

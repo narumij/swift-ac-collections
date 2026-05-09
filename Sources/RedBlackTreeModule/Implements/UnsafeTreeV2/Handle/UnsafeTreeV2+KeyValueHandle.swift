@@ -57,12 +57,6 @@ extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
   @inline(__always)
-  func value_equiv(_ __l: _Key, _ __r: _Key) -> Bool {
-    __l == __r
-  }
-
-  @inlinable
-  @inline(__always)
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
     __default_three_way_comparator(__lhs, __rhs)
   }
@@ -153,44 +147,7 @@ extension UnsafeTreeV2KeyValueHandle {
 }
 
 extension UnsafeTreeV2KeyValueHandle {
-  
-  @inlinable
-  @inline(__always)
-  package func __value_(_ p: _NodePtr) -> _PayloadValue {
-    p.__value_().pointee
-  }
-}
-
-extension UnsafeTreeV2KeyValueHandle {
   public typealias __compare_result = __int_compare_result
-}
-
-extension UnsafeTreeV2KeyValueHandle {
-
-  @inlinable
-  @inline(__always)
-  var count: Int { header.pointee.count }
-
-  @inlinable
-  @inline(__always)
-  var capacity: Int { header.pointee.freshPoolCapacity }
-}
-
-extension UnsafeTreeV2KeyValueHandle {
-
-  @inlinable
-  internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {
-    @inline(__always)
-    @_transparent
-    unsafeAddress {
-      UnsafePointer(pointer.__value_())
-    }
-    @inline(__always)
-    @_transparent
-    nonmutating unsafeMutableAddress {
-      pointer.__value_()
-    }
-  }
 }
 
 extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}

@@ -361,7 +361,7 @@ extension RedBlackTreeDictionary {
       if __i == $0.end {
         return nil
       }
-      let value = $0.__value_(__i).value
+      let value = Base.__mapped_value_(__i)
       _ = $0.erase(__i)
       return value
     }

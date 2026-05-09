@@ -226,6 +226,16 @@
       #endif
     }
 
+    func testGet() throws {
+      var cache0 = ___LRUMemoizeStorage<TestKey, Int>(minimumCapacity: 2, maxCount: Int.max)
+      for i in 0..<10 {
+        cache0[i] = i
+      }
+      for i in 0..<10 {
+        XCTAssertEqual(cache0[i], i)
+      }
+    }
+
     func testPerformanceExample() throws {
       // This is an example of a performance test case.
       self.measure {

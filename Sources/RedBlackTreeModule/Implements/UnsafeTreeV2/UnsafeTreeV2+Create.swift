@@ -159,7 +159,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
       } else {
-        __parent.__value_(as: _PayloadValue.self).pointee.value = try combine(
+        Base.__mapped_value_ptr(__parent).pointee = try combine(
           Base.__mapped_value_(__parent),
           Base.___mapped_value(__v))
       }
@@ -195,7 +195,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         (__parent, __child) = tree.___emplace_hint_right(
           __parent, __child, Base.__payload_((__k, [__v])))
       } else {
-        __parent.__value_(as: _PayloadValue.self).pointee.value.append(__v)
+        Base.__mapped_value_ptr(__parent).pointee.append(__v)
       }
     }
     assert(tree.__tree_invariant(tree.__root))

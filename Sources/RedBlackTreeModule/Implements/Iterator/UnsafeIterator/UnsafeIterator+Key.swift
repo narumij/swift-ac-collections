@@ -37,7 +37,7 @@ extension UnsafeIterator {
     internal init(source: Source) {
       self._source = source
     }
-    
+
     public var _sealed_start: _SealedPtr {
       _source._sealed_start
     }
@@ -45,7 +45,7 @@ extension UnsafeIterator {
     public var _sealed_end: _SealedPtr {
       _source._sealed_end
     }
-    
+
     @inlinable
     @inline(__always)
     public mutating func next() -> Base._Key? {
@@ -66,11 +66,11 @@ where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeIteratorProtocol & Sequence
 {
-  public func reversed() -> UnsafeIterator._Key<Base,Source.ReversedIterator> {
+  public func reversed() -> UnsafeIterator._Key<Base, Source.ReversedIterator> {
     .init(source: _source.reversed())
   }
-  
-  public typealias Reversed = UnsafeIterator._Key<Base,Source.ReversedIterator>
+
+  public typealias Reversed = UnsafeIterator._Key<Base, Source.ReversedIterator>
 }
 
 extension UnsafeIterator._Key: ReverseIterator

@@ -57,7 +57,7 @@ import XCTest
       XCTAssertEqual(sut.count, 20)
       sut[...].popFirst()
       XCTAssertEqual(sut.count, 19)
-      sut[...].removeFirst(10)
+      sut[...].popFirst(10)
       XCTAssertEqual(sut.count, 9)
       sut[...end().before.before].popLast()
       XCTAssertEqual(sut.count, 8)
@@ -68,7 +68,29 @@ import XCTest
       XCTAssertEqual(sut.count, 20)
       sut[...].popLast()
       XCTAssertEqual(sut.count, 19)
-      sut[...].removeLast(10)
+      sut[...].popLast(10)
+      XCTAssertEqual(sut.count, 9)
+      sut[start().after...].popFirst()
+      XCTAssertEqual(sut.count, 8)
+      XCTAssertEqual(sut.map { $0.value }, [0, 2, 3, 4, 5, 6, 7, 8])
+    }
+    
+    func testExample4F() throws {
+      XCTAssertEqual(sut.count, 20)
+      sut[..<(.start.advanced(by: 1))].popFirst(3)
+      XCTAssertEqual(sut.count, 19)
+      sut[...].popFirst(10)
+      XCTAssertEqual(sut.count, 9)
+      sut[...end().before.before].popLast()
+      XCTAssertEqual(sut.count, 8)
+      XCTAssertEqual(sut.map { $0.value }, [11, 12, 13, 14, 15, 16, 17, 19])
+    }
+    
+    func testExample4L() throws {
+      XCTAssertEqual(sut.count, 20)
+      sut[...].popLast()
+      XCTAssertEqual(sut.count, 19)
+      sut[...].popLast(10)
       XCTAssertEqual(sut.count, 9)
       sut[start().after...].popFirst()
       XCTAssertEqual(sut.count, 8)

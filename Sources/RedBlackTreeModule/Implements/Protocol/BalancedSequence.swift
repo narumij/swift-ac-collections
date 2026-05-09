@@ -28,12 +28,12 @@ public protocol BalancedSequence: Sequence {
   var last: Element? { get }
 
   mutating func popFirst() -> Element?
+  mutating func popFirst(_: Int)
   mutating func removeFirst() -> Element
-  mutating func removeFirst(_: Int)
 
   mutating func popLast() -> Element?
+  mutating func popLast(_: Int)
   mutating func removeLast() -> Element
-  mutating func removeLast(_: Int)
 
   func sorted() -> [Element]
   func reversed() -> [Element]
@@ -43,14 +43,12 @@ public protocol BalancedSequence: Sequence {
 
 extension BalancedSequence {
 
-  public mutating func removeFirst(_ k: Int) {
-    precondition(k >= 0)
-    for _ in 0..<k { _ = removeFirst() }
+  public mutating func popFirst(_ k: Int) {
+    for _ in 0..<k { _ = popFirst() }
   }
 
-  public mutating func removeLast(_ k: Int) {
-    precondition(k >= 0)
-    for _ in 0..<k { _ = removeLast() }
+  public mutating func popLast(_ k: Int) {
+    for _ in 0..<k { _ = popLast() }
   }
 }
 
@@ -97,7 +95,7 @@ public protocol BalancedCollection: BalancedSequence {
   func isValid(_: IndexRangeExpression) -> Bool
   func isValid(_: Bound) -> Bool
   func isValid(_: BoundRangeExpression) -> Bool
-  
+
   func distance(from: Bound, to: Bound) -> Int
 
   subscript(range: IndexRange) -> View { get }
@@ -107,7 +105,7 @@ public protocol BalancedCollection: BalancedSequence {
 
   func lowerBound(_: _Key) -> Index
   func upperBound(_: _Key) -> Index
-  
+
   func find(_: _Key) -> Index
 
   // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
@@ -146,12 +144,12 @@ public protocol BalancedView: BalancedSequence {
 // MARK: -
 
 #if !COMPATIBLE_ATCODER_2025
-extension RedBlackTreeSet: BalancedCollection {}
-extension RedBlackTreeDictionary: BalancedCollection {}
+  extension RedBlackTreeSet: BalancedCollection {}
+  extension RedBlackTreeDictionary: BalancedCollection {}
 
-extension RedBlackTreeMultiSet: BalancedMultiCollection {}
-extension RedBlackTreeMultiMap: BalancedMultiCollection {}
+  extension RedBlackTreeMultiSet: BalancedMultiCollection {}
+  extension RedBlackTreeMultiMap: BalancedMultiCollection {}
 
-extension RedBlackTreeKeyOnlyRangeView: BalancedView { }
-extension RedBlackTreeKeyValueRangeView: BalancedView { }
+  extension RedBlackTreeKeyOnlyRangeView: BalancedView {}
+  extension RedBlackTreeKeyValueRangeView: BalancedView {}
 #endif

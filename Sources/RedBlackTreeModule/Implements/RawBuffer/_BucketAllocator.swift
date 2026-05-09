@@ -113,10 +113,8 @@ extension _BucketAllocator {
 
   //  @inlinable
   //  @inline(__always)
-  @usableFromInline // レジスタ圧を下げることにした
-  package func createHeadBucket(capacity: Int, nullptr: _NodePtr) -> (
-    _BucketPointer, capacity: Int
-  ) {
+  @usableFromInline  // レジスタ圧を下げることにした
+  package func createHeadBucket(capacity: Int, nullptr: _NodePtr) -> _BucketPointer {
 
     let (bytes, alignment) = (_allocationSize(capacity: capacity), _pair.alignment)
 
@@ -148,13 +146,13 @@ extension _BucketAllocator {
       }
     #endif
 
-    return (header, capacity)
+    return header
   }
 
   //  @inlinable
   //  @inline(__always)
-  @usableFromInline // レジスタ圧を下げることにした
-  package func createBucket(bucketCapacity: Int) -> (_BucketPointer, capacity: Int) {
+  @usableFromInline  // レジスタ圧を下げることにした
+  package func createBucket(bucketCapacity: Int) -> _BucketPointer {
 
     assert(bucketCapacity != 0, "先頭以外のバケットは容量0ではないこと")
 
@@ -178,7 +176,7 @@ extension _BucketAllocator {
       }
     #endif
 
-    return (header, bucketCapacity)
+    return header
   }
 }
 

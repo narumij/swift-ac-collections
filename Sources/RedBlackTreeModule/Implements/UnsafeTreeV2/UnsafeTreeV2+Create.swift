@@ -78,7 +78,7 @@ extension UnsafeTreeV2 {
 
 // MARK: -
 
-extension UnsafeTreeV2 where Base._Key == Base._PayloadValue {
+extension UnsafeTreeV2 where Base: ScalarValueTrait {
 
   /// ソート済みの配列から木を生成する
   ///
@@ -95,7 +95,7 @@ extension UnsafeTreeV2 where Base._Key == Base._PayloadValue {
     // 初期化直後はO(1)
     var (__parent, __child) = tree.___max_ref()
     for __k in elements {
-      if __parent == tree.end || Base.__key(tree.__value_(__parent)) != Base.__key(__k) {
+      if __parent == tree.end || Base.__key_(__parent) != Base.__key(__k) {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __k)
       }
@@ -125,7 +125,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var (__parent, __child) = tree.___max_ref()
     for __k in elements {
       let __v = transform(__k)
-      if __parent == tree.end || Base.__key(tree.__value_(__parent)) != Base.__key(__v) {
+      if __parent == tree.end || Base.__key_(__parent) != Base.__key(__v) {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
       } else {
@@ -155,12 +155,12 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var (__parent, __child) = tree.___max_ref()
     for __k in elements {
       let __v = transform(__k)
-      if __parent == tree.end || Base.__key(tree.__value_(__parent)) != Base.__key(__v) {
+      if __parent == tree.end || Base.__key_(__parent) != Base.__key(__v) {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
       } else {
         __parent.__value_(as: _PayloadValue.self).pointee.value = try combine(
-          Base.___mapped_value(__parent.__value_().pointee),
+          Base.__mapped_value_(__parent),
           Base.___mapped_value(__v))
       }
     }
@@ -190,7 +190,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     // ソートの計算量がO(*n* log *n*)
     for __v in elements {
       let __k = try keyForValue(__v)
-      if __parent == tree.end || Base.__key(tree.__value_(__parent)) != __k {
+      if __parent == tree.end || Base.__key_(__parent) != __k {
         // ならしO(1)
         (__parent, __child) = tree.___emplace_hint_right(
           __parent, __child, Base.__payload_((__k, [__v])))

@@ -52,7 +52,7 @@ extension UnsafeIterator {
     @inline(__always)
     public mutating func next() -> Base._MappedValue? {
       return _source.next().map {
-        Base.___mapped_value($0.__value_().pointee)
+        Base.__mapped_value_($0)
       }
     }
   }

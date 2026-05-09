@@ -53,8 +53,8 @@ extension UnsafeIterator {
     public mutating func next() -> (key: Base._Key, value: Base._MappedValue)? {
       return _source.next().map {
         (
-          Base.__key($0.__value_().pointee),
-          Base.___mapped_value($0.__value_().pointee)
+          Base.__key_($0),
+          Base.__mapped_value_($0)
         )
       }
     }

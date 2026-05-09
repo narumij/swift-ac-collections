@@ -102,7 +102,7 @@ extension ___LRUMemoizeStorage {
         
         let (__parent, __child) = __tree_.__find_equal(key)
         
-        guard __child.__ptr_ == __tree_.nullptr else {
+        guard __child.pointee == __tree_.nullptr else {
           fatalError()
         }
         

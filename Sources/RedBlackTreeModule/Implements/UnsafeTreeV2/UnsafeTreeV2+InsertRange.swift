@@ -58,7 +58,7 @@ extension UnsafeTreeV2 {
         __max_node = __nd
       } else {
         let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __child.__ptr_ == __tree_.nullptr {
+        if __child.pointee == __tree_.nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
           __tree_.destroy(__nd)
@@ -113,12 +113,12 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         __max_node = __nd
       } else {
         let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __child.__ptr_ == __tree_.nullptr {
+        if __child.pointee == __tree_.nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          __child.__ptr_.__value_(as: _PayloadValue.self).pointee.value = try combine(
-            Base.___mapped_value(__child.__ptr_.__value_().pointee),
-            Base.___mapped_value(__tree_.__value_(__nd)))
+          Base.__mapped_value_ptr(__child).pointee = try combine(
+            Base.__mapped_value_(__child),
+            Base.__mapped_value_(__nd))
           __tree_.destroy(__nd)
         }
       }
@@ -220,7 +220,7 @@ extension UnsafeTreeV2 {
         __max_node = __nd
       } else {
         let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __child.__ptr_ == __tree_.nullptr {
+        if __child.pointee == __tree_.nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
           __tree_.destroy(__nd)
@@ -269,12 +269,12 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         __max_node = __nd
       } else {
         let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __child.__ptr_ == __tree_.nullptr {
+        if __child.pointee == __tree_.nullptr {
           __tree_.__insert_node_at(__parent, __child, __nd)
         } else {
-          __child.__ptr_.__value_(as: _PayloadValue.self).pointee.value = try combine(
-            Base.___mapped_value(__child.__ptr_.__value_().pointee),
-            Base.___mapped_value(__tree_.__value_(__nd)))
+          Base.__mapped_value_ptr(__child).pointee = try combine(
+            Base.__mapped_value_(__child),
+            Base.__mapped_value_(__nd))
           __tree_.destroy(__nd)
         }
       }

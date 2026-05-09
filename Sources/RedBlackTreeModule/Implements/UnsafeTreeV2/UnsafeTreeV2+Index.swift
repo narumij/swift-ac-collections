@@ -15,14 +15,12 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeTreeV2 where Base: ___TreeIndex {
+#if !COMPATIBLE_ATCODER_2025
+  extension UnsafeTreeV2 where Base: ___TreeIndex {
 
-  #if COMPATIBLE_ATCODER_2025
-    public typealias Index = UnsafeIndexV2<Base>
-  #else
     public typealias Index = UnsafeIndexV3
-  #endif
-}
+  }
+#endif
 
 extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
@@ -37,6 +35,8 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
     else {
       return nil
     }
+    // TODO: デッドコードになってないかチェックすること
+    // ここが走らないと実質テストできてない
     return ___signed_distance(start, end)
   }
 }

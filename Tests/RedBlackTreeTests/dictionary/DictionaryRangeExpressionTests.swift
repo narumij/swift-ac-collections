@@ -125,7 +125,7 @@
       let lower = dict.index(dict.startIndex, offsetBy: 1)
       let upper = dict.index(dict.startIndex, offsetBy: 3)
 
-      dict.erase(lower..<upper)
+      _ = dict.erase(lower..<upper)
       XCTAssertEqual(Array(dict).map { $0.key }, [1, 4])
     }
 

@@ -162,7 +162,7 @@
     }
 
     func testEraseRangeFromDifferentTreeMutatesTargetAfterCoWMatch() {
-      var source = RedBlackTreeSet(0..<8)
+      let source = RedBlackTreeSet(0..<8)
       var target = RedBlackTreeSet(100..<108)
       let lower = source.index(source.startIndex, offsetBy: 2)
       let upper = source.index(source.startIndex, offsetBy: 6)

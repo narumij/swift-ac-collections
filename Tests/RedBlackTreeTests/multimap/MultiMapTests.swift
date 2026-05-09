@@ -10,8 +10,8 @@ func keyValue<K, V>(_ k: K, _ v: V) -> (key: K, value: V) { (k, v) }
 func keyValue<K, V>(_ kv: (K, V)) -> (key: K, value: V) {
   (kv.0, kv.1)
 }
-func _value<K, V>(_ k: K, _ v: V) -> RedBlackTreePair<K, V> { RedBlackTreePair(k, v) }
-func _value<K, V>(_ kv: (K, V)) -> RedBlackTreePair<K, V> { RedBlackTreePair(kv.0, kv.1) }
+func _value<K, V>(_ k: K, _ v: V) -> RedBlackTreePair<K, V> { RedBlackTreePair(key: k, value: v) }
+func _value<K, V>(_ kv: (K, V)) -> RedBlackTreePair<K, V> { RedBlackTreePair(key: kv.0, value: kv.1) }
 
 func tuple<K, V>(_ kv: (key: K, value: V)) -> (K, V) {
   (kv.key, kv.value)
@@ -311,20 +311,22 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testUpdate() throws {
-    var dict = [1: 1, 2: 2, 3: 3] as Target<Int, Int>
-    #if DEBUG
-      XCTAssertEqual(
-        dict.updateValue(
-          0,
-          at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawTag: Int.nullptr))?.value,
-        nil)
-    #endif
-    XCTAssertEqual(dict.updateValue(0, at: dict.endIndex)?.value, nil)
-    XCTAssertEqual(dict[1].map(\.value), [1])
-    XCTAssertEqual(dict.updateValue(10, at: dict.firstIndex(of: 1)!)?.value, 1)
-    XCTAssertEqual(dict[1].map(\.value), [10])
-  }
+  #if COMPATIBLE_ATCODER_2025
+    func testUpdate() throws {
+      var dict = [1: 1, 2: 2, 3: 3] as Target<Int, Int>
+      #if DEBUG
+        XCTAssertEqual(
+          dict.updateValue(
+            0,
+            at: Target<Int, Int>.Index.unsafe(tree: dict.__tree_, rawTag: Int.nullptr))?.value,
+          nil)
+      #endif
+      XCTAssertEqual(dict.updateValue(0, at: dict.endIndex)?.value, nil)
+      XCTAssertEqual(dict[1].map(\.value), [1])
+      XCTAssertEqual(dict.updateValue(10, at: dict.firstIndex(of: 1)!)?.value, 1)
+      XCTAssertEqual(dict[1].map(\.value), [10])
+    }
+  #endif
 
   func testBound() throws {
     let dict = [1: 10, 3: 30, 5: 50] as Target<Int, Int>
@@ -942,20 +944,38 @@ final class MultiMapTests: RedBlackTreeTestCase {
 
   func testIndexValidation() throws {
     let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    XCTAssertTrue(set.isValid(index: set.startIndex))
-    XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
-    typealias Index = Target<Int, String>.Index
-    #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-      // UnsafeTreeは範囲外のインデックスを作成できない
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr)
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5)))
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertTrue(set.isValid(index: set.startIndex))
+      XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
+      typealias Index = Target<Int, String>.Index
+      #if DEBUG
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+        // UnsafeTreeは範囲外のインデックスを作成できない
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr)
+        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
+        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5)))
+      #endif
+    #else
+      XCTAssertTrue(set.isValid(set.startIndex))
+      XCTAssertFalse(set.isValid(set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
+      typealias Index = Target<Int, String>.Index
+      #if DEBUG
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+        // UnsafeTreeは範囲外のインデックスを作成できない
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr)
+        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 3)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 4)))
+        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: 5)))
+      #endif
     #endif
   }
 

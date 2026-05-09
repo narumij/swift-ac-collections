@@ -838,17 +838,17 @@ final class DictionaryTests: RedBlackTreeTestCase {
       let l2 = set.lowerBound(2)
       let u2 = set.upperBound(4)
       XCTAssertEqual(
-        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init($0, $0 * 10) })
+        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[l2...].map { RedBlackTreePair($0) }, [2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
-      XCTAssertEqual(set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init($0, $0 * 10) })
+        set[l2...].map { RedBlackTreePair($0) }, [2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
+      XCTAssertEqual(set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[..<u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4].map { .init($0, $0 * 10) })
+        set[..<u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[...u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4, 6].map { .init($0, $0 * 10) })
+        set[...u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4, 6].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
         set[..<set.endIndex].map { RedBlackTreePair($0) },
-        [1, 2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
+        [1, 2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
     }
   #endif
 
@@ -858,36 +858,51 @@ final class DictionaryTests: RedBlackTreeTestCase {
       let l2 = set.lowerBound(2)
       let u2 = set.upperBound(4)
       XCTAssertEqual(
-        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init($0, $0 * 10) })
+        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init(key:$0, value:$0 * 10) })
       XCTAssertEqual(
         set[l2...].map { RedBlackTreePair($0) },
-        [2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
+        [2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init($0, $0 * 10) })
+        set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[..<u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4].map { .init($0, $0 * 10) })
+        set[..<u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4].map { .init(key:$0, value:$0 * 10) })
       XCTAssertEqual(
         set[...u2].map { RedBlackTreePair($0) },
-        [1, 2, 3, 4, 6].map { .init($0, $0 * 10) })
+        [1, 2, 3, 4, 6].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
         set[..<set.endIndex].map { RedBlackTreePair($0) },
-        [1, 2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
+        [1, 2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
     }
   #endif
 
   func testIndexValidation() throws {
     let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    XCTAssertTrue(set.isValid(index: set.startIndex))
-    XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
-    typealias Index = RedBlackTreeDictionary<Int, String>.Index
-    #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
-      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertTrue(set.isValid(index: set.startIndex))
+      XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
+      typealias Index = RedBlackTreeDictionary<Int, String>.Index
+      #if DEBUG
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
+        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
+      #endif
+    #else
+      XCTAssertTrue(set.isValid(set.startIndex))
+      XCTAssertFalse(set.isValid(set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
+      typealias Index = RedBlackTreeDictionary<Int, String>.Index
+      #if DEBUG
+        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 3)))
+        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 4)))
+      #endif
     #endif
   }
 
@@ -1097,7 +1112,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     #if COMPATIBLE_ATCODER_2025
       a.removeSubrange(a.lowerBound(2)..<a.upperBound(4))
     #else
-      a.erase(a.lowerBound(2)..<a.upperBound(4))
+    _ = a.erase(a.lowerBound(2)..<a.upperBound(4))
     #endif
 
     #if COMPATIBLE_ATCODER_2025
@@ -1115,7 +1130,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
 
   #if !COMPATIBLE_ATCODER_2025
     func testSortedReversed() throws {
-      let source = [0, 1, 2, 3, 4, 5].map { RedBlackTreePair($0, $0 * 10) }
+      let source = [0, 1, 2, 3, 4, 5].map { RedBlackTreePair(key: $0, value: $0 * 10) }
       let a = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: source.map(\.tuple))
       XCTAssertEqual(a.sorted().map { RedBlackTreePair($0) }, source)
       XCTAssertEqual(a.reversed().map { RedBlackTreePair($0) }, source.reversed())

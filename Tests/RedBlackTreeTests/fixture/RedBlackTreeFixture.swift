@@ -14,7 +14,7 @@ import XCTest
 #endif
 
 #if DEBUG
-  protocol RedBlackTreeDebugFixture: ___TreeBase & _UnsafeNodePtrType {
+  protocol RedBlackTreeDebugFixture: _UnsafeNodePtrType {
     associatedtype Base: ___TreeBase
     var __tree_: UnsafeTreeV2<Base> { get set }
   }
@@ -22,17 +22,17 @@ import XCTest
   extension RedBlackTreeDebugFixture {
 
     func __left_(_ p: _NodePtr) -> _NodePtr {
-      __tree_.__left_(p)
+      p.__left_
     }
     func __right_(_ p: _NodePtr) -> _NodePtr {
-      __tree_.__right_(p)
+      p.__right_
     }
     var __root: _NodePtr {
       get { __tree_.__root }
-      set { __tree_.__root = newValue }
+//      set { __tree_.__root = newValue }
     }
     mutating func __root(_ p: _NodePtr) {
-      __tree_.__left_(__tree_.end, p)
+      __tree_.__end_node.pointee.__left_ = p
     }
     func
       __tree_min(_ __x: _NodePtr) -> _NodePtr

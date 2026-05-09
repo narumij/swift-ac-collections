@@ -11,7 +11,7 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
   #if DEBUG
     func testSetKeyAndValueComp() {
       let set: RedBlackTreeSet = [3, 1, 4, 5]
-      typealias SUT = RedBlackTreeSet<Int>
+      typealias SUT = RedBlackTreeSet<Int>.Base
       let keyComp = SUT.value_comp
       let valueComp = { SUT.value_comp(SUT.__key($0), SUT.__key($1)) }
 
@@ -50,7 +50,7 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
   #if DEBUG
     func testMultisetKeyAndValueComp() {
       let multi: RedBlackTreeMultiSet = [1, 2, 3]
-      typealias SUT = RedBlackTreeMultiSet<Int>
+      typealias SUT = RedBlackTreeMultiSet<Int>.Base
       let keyComp = SUT.value_comp
       let valueComp = { SUT.value_comp(SUT.__key($0), SUT.__key($1)) }
 
@@ -63,7 +63,7 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
 
     func testDictionaryKeyValueCompAndEqualRange() {
       let dict: RedBlackTreeDictionary = ["a": 1, "b": 2, "c": 3]
-      typealias SUT = RedBlackTreeDictionary<String, Int>
+      typealias SUT = RedBlackTreeDictionary<String, Int>.Base
       let keyComp = SUT.value_comp
       let valueComp = { SUT.value_comp(SUT.__key($0), SUT.__key($1)) }
 
@@ -81,7 +81,7 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
 
     func testMultiMapKeyValueCompAndEqualRange() {
       let dict: RedBlackTreeMultiMap = ["a": 1, "b": 2, "c": 3]
-      typealias SUT = RedBlackTreeMultiMap<String, Int>
+      typealias SUT = RedBlackTreeMultiMap<String, Int>.Base
       let keyComp = SUT.value_comp
       let valueComp = { SUT.value_comp(SUT.__key($0), SUT.__key($1)) }
 

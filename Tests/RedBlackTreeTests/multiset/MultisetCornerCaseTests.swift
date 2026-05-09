@@ -62,7 +62,11 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
     var ms: RedBlackTreeMultiSet = [9, 9, 9]
     let idx = ms.firstIndex(of: 9)!
     ms.remove(at: idx)
-    XCTAssertFalse(ms.isValid(index: idx))
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertFalse(ms.isValid(index: idx))
+    #else
+      XCTAssertFalse(ms.isValid(idx))
+    #endif
   }
 
   func testCopyOnWriteBehavior() {
@@ -82,7 +86,7 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
     #if COMPATIBLE_ATCODER_2025
       ms.removeSubrange(l..<r)
     #else
-      ms.erase(l..<r)
+    _ = ms.erase(l..<r)
     #endif
     XCTAssertEqual(ms.sorted(), [0, 1, 3, 4])
   }

@@ -125,7 +125,11 @@ final class RedBlackTreeDictionaryExtendedTests: RedBlackTreeTestCase {
     var dict: RedBlackTreeDictionary = ["p": 9, "q": 8]
     let idx = dict.firstIndex(of: "p")!
     dict.remove(at: idx)
+#if COMPATIBLE_ATCODER_2025
     XCTAssertFalse(dict.isValid(index: idx))
+#else
+    XCTAssertFalse(dict.isValid(idx))
+#endif
 
     var copy = dict
     copy["q"] = 100

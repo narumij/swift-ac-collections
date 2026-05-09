@@ -2,7 +2,7 @@
 
 English | [日本語](README.ja.md)
 
-`swift-ac-collections` is an ordered data structure package designed for use with [AtCoder][atcoder].
+`swift-ac-collections` is an sorted data structure package designed for use with [AtCoder][atcoder].
 It provides high-performance sets and dictionaries based on Red-Black Trees.
 
 [![Swift](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml/badge.svg?branch=main)](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml)  
@@ -50,10 +50,10 @@ dependencies: [
 
 ## Containers
 
-- RedBlackTreeSet — Ordered set (no duplicate elements)
-- RedBlackTreeMultiSet — Ordered multiset (duplicates allowed)
-- RedBlackTreeDictionary — Ordered dictionary (unique keys)
-- RedBlackTreeMultiMap — Ordered map (duplicate keys allowed)
+- RedBlackTreeSet — Sorted set (no duplicate elements)
+- RedBlackTreeMultiSet — Sorted multiset (duplicates allowed)
+- RedBlackTreeDictionary — Sorted dictionary (unique keys)
+- RedBlackTreeMultiMap — Sorted map (duplicate keys allowed)
 
 ## Removal
 

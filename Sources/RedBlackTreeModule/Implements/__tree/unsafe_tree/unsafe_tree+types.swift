@@ -22,6 +22,9 @@ where
   _NodeRef == UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 {}
 
+// MARK: -
+// 以下はヘルパー類
+
 extension _KeyType where Self: _UnsafeNodePtrType {
   public typealias _KeyPtr = UnsafeMutablePointer<_Key>
 }

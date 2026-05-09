@@ -54,11 +54,11 @@ extension _UnsafeNodePtrType where Self: _PayloadValueType {
 
   @inlinable @inline(__always)
   static func __payload_(_ p: _NodePtr) -> _PayloadValue {
-    __payload_ptr(p).pointee
+    p.__value_().pointee
   }
   @inlinable @inline(__always)
   static func __payload_(_ p: _NodeRef) -> _PayloadValue {
-    __payload_ptr(p).pointee
+    p.pointee.__value_().pointee
   }
 }
 

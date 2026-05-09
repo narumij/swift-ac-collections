@@ -88,7 +88,7 @@ import XCTest
     
     func testExample4L() throws {
       XCTAssertEqual(sut.count, 20)
-      sut[...].popLast()
+      sut[(.start.advanced(by: 19))...].popLast(3)
       XCTAssertEqual(sut.count, 19)
       sut[...].popLast(10)
       XCTAssertEqual(sut.count, 9)

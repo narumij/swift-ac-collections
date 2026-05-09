@@ -15,56 +15,43 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// DictionaryやMultimap用に特殊化されたハンドル
+/// LRU用に特殊化されたハンドル
 ///
 /// `_Key`の取得に関して特殊化済みとなっている。
 ///
 @frozen
 @usableFromInline
-struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
+struct ___LRUHandle<_Key, _MappedValue> where _Key: Comparable {
   @inlinable
   internal init(
-    header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>,
-    isMulti: Bool
+    header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
   ) {
     self.header = header
     self.nullptr = header.pointee.nullptr
     self.root_ref = header.pointee.root_ptr
-    self.isMulti = isMulti
   }
   @usableFromInline typealias _Key = _Key
-  @usableFromInline typealias _PayloadValue = RedBlackTreePair<_Key, _MappedValue>
+  @usableFromInline typealias _PayloadValue = _LinkingPair<_Key, _MappedValue>
   @usableFromInline typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   @usableFromInline typealias _Pointer = _NodePtr
   @usableFromInline typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
   @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
   @usableFromInline let nullptr: _NodePtr
   @usableFromInline let root_ref: _NodeRef
-  @usableFromInline var isMulti: Bool
 }
 
-extension UnsafeTreeV2KeyValueHandle {
-
-  @inlinable
-  @inline(__always)
-  func __key(_ __v: _PayloadValue) -> _Key { __v.key }
+extension ___LRUHandle {
 
   @inlinable
   @inline(__always)
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
     __l < __r
   }
-
-  @inlinable
-  @inline(__always)
-  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-    __default_three_way_comparator(__lhs, __rhs)
-  }
 }
 
 // MARK: - TreeNodeValueProtocol
 
-extension UnsafeTreeV2KeyValueHandle {
+extension ___LRUHandle {
 
   @inlinable
   @inline(__always)
@@ -73,7 +60,7 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 }
 
-extension UnsafeTreeV2KeyValueHandle {
+extension ___LRUHandle {
 
   @inlinable
   @inline(__always)
@@ -90,7 +77,7 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 }
 
-extension UnsafeTreeV2KeyValueHandle {
+extension ___LRUHandle {
 
   @inlinable
   var __begin_node_: _NodePtr {
@@ -123,13 +110,11 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 
   @inlinable
-  @inline(__always)
   var end: _NodePtr {
     header.pointee.end_ptr
   }
 
   @inlinable
-  @inline(__always)
   var __end_node: _NodePtr {
     header.pointee.end_ptr
   }
@@ -146,20 +131,38 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 }
 
-extension UnsafeTreeV2KeyValueHandle {
-  public typealias __compare_result = __int_compare_result
+extension ___LRUHandle: FindInteface, FindProtocol_ptr {}
+// これに関して古いfind_equalがどうも速いので、そちらを使う
+extension ___LRUHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
+extension ___LRUHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
+extension ___LRUHandle: RemoveInteface, RemoveProtocol_ptr {}
+extension ___LRUHandle: EraseProtocol {}
+
+extension ___LRUHandle: TreeAlgorithmBaseProtocol_ptr {}
+extension ___LRUHandle: TreeAlgorithmProtocol_ptr {}
+
+extension ___LRUHandle {
+
+  @inlinable
+  @inline(__always)
+  var count: Int { header.pointee.count }
+
+  @inlinable
+  @inline(__always)
+  var capacity: Int { header.pointee.freshPoolCapacity }
 }
 
-extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
-extension UnsafeTreeV2KeyValueHandle: FindInteface, FindProtocol_ptr {}
-extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
-extension UnsafeTreeV2KeyValueHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
-extension UnsafeTreeV2KeyValueHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
-extension UnsafeTreeV2KeyValueHandle: FindLeafProtocol_ptr, InsertMultiProtocol {}
-extension UnsafeTreeV2KeyValueHandle: RemoveInteface, RemoveProtocol_ptr {}
-extension UnsafeTreeV2KeyValueHandle: EraseProtocol {}
-extension UnsafeTreeV2KeyValueHandle: EraseUniqueProtocol {}
-extension UnsafeTreeV2KeyValueHandle: CountProtocol_ptr {}
+extension UnsafeTreeV2 where Base: KeyValueTrait, Base._PayloadValue == _LinkingPair<_Key,Base._MappedValue> {
 
-extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmBaseProtocol_ptr {}
-extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmProtocol_ptr {}
+  @usableFromInline
+  typealias _LRUHandle = ___LRUHandle<_Key, Base._MappedValue>
+
+  @inlinable
+  @inline(__always)
+  internal func update<R>(_ body: (_LRUHandle) throws -> R) rethrows -> R {
+    try _buffer.withUnsafeMutablePointers { header, _ in
+      let handle = _LRUHandle(header: header)
+      return try body(handle)
+    }
+  }
+}

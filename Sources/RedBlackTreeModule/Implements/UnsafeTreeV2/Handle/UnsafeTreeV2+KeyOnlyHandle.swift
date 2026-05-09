@@ -49,16 +49,13 @@ extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
   @inline(__always)
-  func __key(_ __v: _PayloadValue) -> _Key { __v }
+  func __key(_ __v: _PayloadValue) -> _Key {
+    __v
+  }
 
   @inlinable
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
     __l < __r
-  }
-
-  @inlinable
-  func value_equiv(_ __l: _Key, _ __r: _Key) -> Bool {
-    __l == __r
   }
 
   @inlinable
@@ -161,6 +158,7 @@ extension UnsafeTreeV2KeyOnlyHandle: EraseUniqueProtocol {}
 extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface, FindEqualProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: FindLeafProtocol_ptr, InsertMultiProtocol {}
 extension UnsafeTreeV2KeyOnlyHandle: CountProtocol_ptr {}
 
 extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmBaseProtocol_ptr {}

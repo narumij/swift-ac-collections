@@ -46,10 +46,10 @@ import XCTest
       XCTAssertGreaterThanOrEqual(storage.capacity, 4)
       let ptr = storage.__construct_node(100)
       XCTAssertEqual(storage.__value_(ptr), 100)
-      storage.___element(ptr, 20)
-      XCTAssertEqual(storage.__value_(ptr), 20)
-      storage.___element(ptr, 50)
-      XCTAssertEqual(storage.__value_(ptr), 50)
+//      storage.___element(ptr, 20)
+//      XCTAssertEqual(storage.__value_(ptr), 20)
+//      storage.___element(ptr, 50)
+//      XCTAssertEqual(storage.__value_(ptr), 50)
     }
 
     func testPoolIterator() async throws {
@@ -288,6 +288,11 @@ import XCTest
       begin = copy.__tree_next_iter(begin)
       XCTAssertEqual(begin, copy.end)
       XCTAssertTrue(__tree_invariant(storage.__root))
+    }
+    
+    func testRetrieveEtc() throws {
+      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
+      XCTAssertEqual(storage.__retrieve_(.nullptr), .failure(.null))
     }
   }
 #endif

@@ -35,7 +35,7 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   @inlinable
   @inline(__always)
   internal init(allocator: _BucketAllocator, nullptr: _NodePtr, capacity: Int) {
-    let (head, _) = allocator.createHeadBucket(capacity: capacity, nullptr: nullptr)
+    let head = allocator.createHeadBucket(capacity: capacity, nullptr: nullptr)
     self.recycleHead = nullptr
     self.nullptr = nullptr
     self.begin_ptr = head.begin_ptr
@@ -168,7 +168,7 @@ extension UnsafeTreeV2BufferHeader {
     @inlinable
     mutating func pushFreshBucket(additionalCapacity: Int) {
       assert(freshBucketHead == nil || additionalCapacity != 0, "先頭のみ容量0を許容し、移行は容量0を許容しないこと")
-      let (pointer, _) = freshBucketAllocator.createBucket(bucketCapacity: additionalCapacity)
+      let pointer = freshBucketAllocator.createBucket(bucketCapacity: additionalCapacity)
       freshBucketLast?.pointee.next = pointer
       freshBucketLast = pointer
       freshPoolCapacity += additionalCapacity

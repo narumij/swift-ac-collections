@@ -13,7 +13,7 @@ var defines: [String] = [
   //  "PERFOMANCE_CHECK",
   "WITHOUT_SIZECHECK",
   //  "USE_OLD_FIND",
-//  "DEATH_TEST",
+  //  "DEATH_TEST",
   //  "BENCHMARK",
   //  "ALLOCATION_DRILL" // リリース時はオフ
 ]
@@ -267,5 +267,12 @@ let package = Package(
       ],
       path: "Tests/Executables/MarriedSource",
       exclude: ["RedBlackTree.swift_"]),
+    .executableTarget(
+      name: "LRU",
+      dependencies: [
+        "AcCollections",
+        .product(name: "AcFoundation", package: "swift-ac-foundation"),
+      ],
+      path: "Tests/Executables/LRU"),
   ]
 )

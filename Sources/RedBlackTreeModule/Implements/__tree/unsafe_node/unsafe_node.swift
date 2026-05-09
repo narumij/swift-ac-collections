@@ -126,61 +126,7 @@ public struct UnsafeNode {
     self.___has_payload_content = ___has_payload_content
   }
 
-  /// Left child pointer of this red-black tree node.
-  ///
-  /// ---
-  ///
-  /// 赤黒木ノードの左の子ノードを指すポインタ。
-  public var __left_: Pointer
-
-  /// Right child pointer of this red-black tree node.
-  ///
-  /// ---
-  ///
-  /// 赤黒木ノードの右の子ノードを指すポインタ。
-  public var __right_: Pointer
-
-  /// Parent pointer of this red-black tree node.
-  ///
-  /// ---
-  ///
-  /// 赤黒木ノードの親ノードを指すポインタ。
-  public var __parent_: Pointer
-
-  /// Color flag of this red-black tree node.
-  ///
-  /// `true` indicates black, `false` indicates red.
-  ///
-  /// ---
-  ///
-  /// 赤黒木ノードの色を表すフラグ。
-  /// `true` の場合は黒、`false` の場合は赤。
-  public var __is_black_: Bool = false
-
-  /// Indicates whether the payload stored after this node is currently loaded.
-  ///
-  /// When `true`, the associated payload memory is initialized and must be
-  /// deinitialized before reuse.
-  /// When `false`, the node is considered free / recycled.
-  ///
-  /// ---
-  ///
-  /// ノード直後に配置されたペイロードが有効（ロード済み）かどうかを示すフラグ。
-  ///
-  /// `true` の場合、ペイロードは初期化済みで解放対象となる。
-  /// `false` の場合、ペイロードは未使用または回収済み。
-  ///
-  public var ___has_payload_content: Bool
-
-  #if DEBUG || true
-    public typealias Seal = UInt32
-    // salt付きに変更することで、まったく縁の無い木のノードを受け付けにくくすることができる
-    // saltは新規作成時のみ更新され、コピーでは継承することで、CoWまたぎには影響しない
-    // 将来の実装課題
-    // end nodeのrecycle countをsalt置き場にすればいい
-    /// 再利用された回数
-    public var ___recycle_count: Seal = 0
-  #endif
+  // MARK: - Meta data
 
   /// A lightweight tracking tag used to identify and correlate nodes.
   ///
@@ -213,14 +159,73 @@ public struct UnsafeNode {
   /// - `end` は `-1`
   public var ___tracking_tag: _TrackingTag
 
+  public typealias Seal = UInt32
+  // salt付きに変更することで、まったく縁の無い木のノードを受け付けにくくすることができる
+  // saltは新規作成時のみ更新され、コピーでは継承することで、CoWまたぎには影響しない
+  // 将来の実装課題
+  // end nodeのrecycle countをsalt置き場にすればいい
+  /// 再利用された回数
+  public var ___recycle_count: Seal = 0
+
+  /// Indicates whether the payload stored after this node is currently loaded.
+  ///
+  /// When `true`, the associated payload memory is initialized and must be
+  /// deinitialized before reuse.
+  /// When `false`, the node is considered free / recycled.
+  ///
+  /// ---
+  ///
+  /// ノード直後に配置されたペイロードが有効（ロード済み）かどうかを示すフラグ。
+  ///
+  /// `true` の場合、ペイロードは初期化済みで解放対象となる。
+  /// `false` の場合、ペイロードは未使用または回収済み。
+  ///
+  public var ___has_payload_content: Bool
+
+  // MARK: - Color
+
+  /// Color flag of this red-black tree node.
+  ///
+  /// `true` indicates black, `false` indicates red.
+  ///
+  /// ---
+  ///
+  /// 赤黒木ノードの色を表すフラグ。
+  /// `true` の場合は黒、`false` の場合は赤。
+  public var __is_black_: Bool = false
+
+  // MARK: - Tree Links
+
+  /// Left child pointer of this red-black tree node.
+  ///
+  /// ---
+  ///
+  /// 赤黒木ノードの左の子ノードを指すポインタ。
+  public var __left_: Pointer
+
+  /// Right child pointer of this red-black tree node.
+  ///
+  /// ---
+  ///
+  /// 赤黒木ノードの右の子ノードを指すポインタ。
+  public var __right_: Pointer
+
+  /// Parent pointer of this red-black tree node.
+  ///
+  /// ---
+  ///
+  /// 赤黒木ノードの親ノードを指すポインタ。
+  public var __parent_: Pointer
+
   // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
   // nullptrは定数でもなにかコストがかかっていた記憶もある
   // 過去のコードベースで再度調査してこういった諸々の問題が杞憂だった場合、optionalに変更してnullptrにnil変更しても良い
-//  @exclusivity(unchecked)
-//  @usableFromInline nonisolated(unsafe)
-//    package static let nullptr: UnsafeMutablePointer<UnsafeNode> = _singletonNull.nullptr
+  //  @exclusivity(unchecked)
+  //  @usableFromInline nonisolated(unsafe)
+  //    package static let nullptr: UnsafeMutablePointer<UnsafeNode> = _singletonNull.nullptr
   @usableFromInline nonisolated(unsafe)
-  package static var nullptr: UnsafeMutablePointer<UnsafeNode> { _singletonNull.nullptr }
+    package static var nullptr: UnsafeMutablePointer<UnsafeNode>
+  { _singletonNull.nullptr }
 }
 
 @usableFromInline

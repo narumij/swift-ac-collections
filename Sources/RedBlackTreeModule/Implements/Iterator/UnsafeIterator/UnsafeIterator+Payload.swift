@@ -23,6 +23,7 @@ extension UnsafeIterator {
     IteratorProtocol,
     Sequence
   where
+    Base: _UnsafeNodePtrType,
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: UnsafeIteratorProtocol
   {
@@ -37,7 +38,7 @@ extension UnsafeIterator {
     internal init(source: Source) {
       self._source = source
     }
-    
+
     public var _sealed_start: _SealedPtr {
       _source._sealed_start
     }
@@ -52,7 +53,7 @@ extension UnsafeIterator {
       guard let p = _source.next() else {
         return nil
       }
-      return p.__value_().pointee as Base._PayloadValue
+      return Base.__payload_(p)
     }
   }
 }
@@ -67,10 +68,10 @@ where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeIteratorProtocol & Sequence
 {
-  public func reversed() -> UnsafeIterator._Payload<Base,Source.ReversedIterator> {
+  public func reversed() -> UnsafeIterator._Payload<Base, Source.ReversedIterator> {
     .init(source: _source.reversed())
   }
-  public typealias Reversed = UnsafeIterator._Payload<Base,Source.ReversedIterator>
+  public typealias Reversed = UnsafeIterator._Payload<Base, Source.ReversedIterator>
 }
 
 extension UnsafeIterator._Payload: ReverseIterator

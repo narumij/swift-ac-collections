@@ -170,7 +170,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(_ member: Element) -> Bool {
-    __tree_.__count_unique(member) != 0
+    __tree_.read { $0.__count_unique(member) != 0 }
   }
 }
 
@@ -231,7 +231,7 @@ extension RedBlackTreeMultiSet {
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_.ensureUniqueAndCapacity()
-    _ = __tree_.__insert_multi(newMember)
+    _ = __tree_.update { $0.__insert_multi(newMember) }
     return (true, newMember)
   }
 }

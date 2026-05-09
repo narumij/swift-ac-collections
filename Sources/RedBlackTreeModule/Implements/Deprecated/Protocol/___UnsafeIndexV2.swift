@@ -167,7 +167,7 @@ protocol ___UnsafeIndexV2:
 
     @inlinable @inline(__always)
     internal func ___first_index(of member: _Key) -> Index? {
-      let ptr = __tree_.__find_equal(member).__child.__ptr_
+      let ptr = __tree_.__find_equal(member).__child.pointee
       return ___index_or_nil(ptr.sealed)
     }
   }

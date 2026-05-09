@@ -83,22 +83,48 @@ extension RedBlackTreeSet: SetAlgebra {
 /*
   __algorithm/set_difference.h に準じた動作となっている。
 */
-extension RedBlackTreeSet {
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
 
-  @inlinable
-  @inline(__always)
-  public func difference(_ other: __owned RedBlackTreeSet<Element>)
-    -> RedBlackTreeSet<Element>
-  {
-    var result = self
-    result.formDifference(other)
-    return result
-  }
+    @inlinable
+    @inline(__always)
+    public func difference(_ other: __owned RedBlackTreeSet<Element>)
+      -> RedBlackTreeSet<Element>
+    {
+      var result = self
+      result.formDifference(other)
+      return result
+    }
 
-  /// - Complexity: O(*n* + *m*)
-  @inlinable
-  //  @inline(__always)
-  public mutating func formDifference(_ other: __owned RedBlackTreeSet<Element>) {
-    __tree_ = __tree_.___difference(other.__tree_)
+    /// - Complexity: O(*n* + *m*)
+    @inlinable
+    //  @inline(__always)
+    public mutating func formDifference(_ other: __owned RedBlackTreeSet<Element>) {
+      __tree_ = __tree_.___difference(other.__tree_)
+    }
   }
-}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    @available(*, deprecated, message: "This API is buggy and may behave incorrectly.")
+    @inlinable
+    @inline(__always)
+    public func difference(_ other: __owned RedBlackTreeSet<Element>)
+      -> RedBlackTreeSet<Element>
+    {
+      var result = self
+      result.formDifference(other)
+      return result
+    }
+
+    /// - Complexity: O(*n* + *m*)
+    @available(*, deprecated, message: "This API is buggy and may behave incorrectly.")
+    @inlinable
+    //  @inline(__always)
+    public mutating func formDifference(_ other: __owned RedBlackTreeSet<Element>) {
+      __tree_ = __tree_.___difference(other.__tree_)
+    }
+  }
+#endif

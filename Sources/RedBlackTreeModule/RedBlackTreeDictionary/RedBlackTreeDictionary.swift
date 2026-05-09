@@ -173,7 +173,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {
-    __tree_.__count_unique(key) != 0
+    __tree_.read { $0.__count_unique(key) != 0 }
   }
 }
 
@@ -247,7 +247,7 @@ extension RedBlackTreeDictionary {
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_.ensureUniqueAndCapacity()
-    let (__r, __inserted) = __tree_.__insert_unique(Base.__payload_(newMember))
+    let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
     return (__inserted, __inserted ? newMember : Base.__element_(__tree_[_unsafe_raw: __r]))
   }
 }
@@ -356,13 +356,15 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
     __tree_.ensureUnique()
-    let __i = __tree_.find(__k)
-    if __i == __tree_.end {
-      return nil
+    return __tree_.update {
+      let __i = $0.find(__k)
+      if __i == $0.end {
+        return nil
+      }
+      let value = Base.__mapped_value_(__i)
+      _ = $0.erase(__i)
+      return value
     }
-    let value = __tree_.__value_(__i).value
-    _ = __tree_.erase(__i)
-    return value
   }
 }
 

@@ -21,20 +21,11 @@ extension RedBlackTreeDictionary {
   @inlinable
   public subscript(key: Key) -> Value? {
 
-    @inline(__always) get {
-      __tree_.lookup(key)
+    @inline(__always) _read {
+      yield __tree_[key]
     }
 
-    set(newValue) {
-      if let x = newValue {
-        __tree_.setValue(x, forKey: key)
-      } else {
-        _ = __tree_.___erase_unique(key)
-      }
-    }
-
-    _modify {
-      defer { _fixLifetime(__tree_) }
+    @inline(__always) _modify {
       yield &__tree_[key]
     }
   }
@@ -44,13 +35,19 @@ extension RedBlackTreeDictionary {
   public subscript(
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
+    
     @inline(__always) get {
-      __tree_.lookup(key) ?? defaultValue()
+      __tree_[key] ?? defaultValue()
     }
-    @inline(__always) _modify {
-      defer { _fixLifetime(__tree_) }
+    
+    @inline(__always)
+    @_transparent
+    unsafeMutableAddress {
+      
       __tree_.ensureUnique()
+      
       let (__parent, __child) = __tree_.__find_equal(key)
+      
       if __child.pointee.___is_null {
         __tree_.ensureCapacity()
         assert(__tree_.capacity > __tree_.count)
@@ -59,7 +56,8 @@ extension RedBlackTreeDictionary {
           $0.__insert_node_at(__parent, __child, __h)
         }
       }
-      yield &__tree_[_unsafe_raw: __child.pointee].value
+      
+      return Base.__mapped_value_ptr(__child)
     }
   }
 }

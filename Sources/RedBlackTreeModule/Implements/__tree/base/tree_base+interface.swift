@@ -42,10 +42,12 @@ public protocol _BaseNode_PayloadValueInterface: _NodePtrType & _PayloadValueTyp
 
 public protocol _BasePayloadValue_KeyInterface: _KeyType & _PayloadValueType {
   /// 要素から比較キー値がとれること
-  static func __key(_: _PayloadValue) -> _Key
+//  @available(*, deprecated, renamed: "__key_")
+ static func __key(_: _PayloadValue) -> _Key
 }
 
 public protocol _BasePayloadValue_MappedValueInterface: _PayloadValueType & _MappedValueType {
+//  @available(*, deprecated, renamed: "__mapped_value_")
   static func ___mapped_value(_: _PayloadValue) -> _MappedValue
 }
 

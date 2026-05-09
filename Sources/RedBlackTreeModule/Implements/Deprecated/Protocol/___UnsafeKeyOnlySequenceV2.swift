@@ -29,7 +29,7 @@ where
 {}
 
 extension ___UnsafeKeyOnlySequenceV2__ {
-  
+
   @inlinable
   @inline(__always)
   internal func _makeIterator() -> Tree._PayloadValues {
@@ -48,13 +48,15 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 
 extension ___UnsafeKeyOnlySequenceV2__ {
 
-  @inlinable
-  @inline(__always)
-  internal func _forEach(_ body: (_PayloadValue) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-      try body(__tree_[_unsafe_raw: $0])
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    @inline(__always)
+    internal func _forEach(_ body: (_PayloadValue) throws -> Void) rethrows {
+      try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
+        try body(__tree_[_unsafe_raw: $0])
+      }
     }
-  }
+  #endif
 }
 
 extension ___UnsafeKeyOnlySequenceV2__ {
@@ -116,19 +118,19 @@ protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexPr
     }
   }
 
-extension ___UnsafeKeyOnlySequenceV2 {
+  extension ___UnsafeKeyOnlySequenceV2 {
 
-  @inlinable
-  @inline(__always)
-  internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    
-    for __c in __tree_.sequence(_sealed_start, _sealed_end) {
-      if try predicate(__tree_[_unsafe_raw: __c]) {
-        return ___index(__c.sealed)
+    @inlinable
+    @inline(__always)
+    internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+
+      for __c in __tree_.sequence(_sealed_start, _sealed_end) {
+        if try predicate(__tree_[_unsafe_raw: __c]) {
+          return ___index(__c.sealed)
+        }
       }
+
+      return nil
     }
-    
-    return nil
   }
-}
 #endif

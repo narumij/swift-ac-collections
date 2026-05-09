@@ -78,6 +78,7 @@ extension UnsafeTreeV2 {
 
 // MARK: -
 
+// TODO: デッドコードになってないかチェックすること
 extension UnsafeTreeV2 where Base: ScalarValueTrait {
 
   /// ソート済みの配列から木を生成する
@@ -105,6 +106,7 @@ extension UnsafeTreeV2 where Base: ScalarValueTrait {
   }
 }
 
+// TODO: デッドコードになってないかチェックすること
 extension UnsafeTreeV2 where Base: PairValueTrait {
 
   /// ソート済みの配列から木を生成する
@@ -294,6 +296,7 @@ extension UnsafeTreeV2 {
   }
 }
 
+// TODO: デッドコードになってないかチェックすること
 extension UnsafeTreeV2 {
 
   @inlinable

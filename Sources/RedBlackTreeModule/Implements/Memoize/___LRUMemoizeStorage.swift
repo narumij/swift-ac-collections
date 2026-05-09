@@ -40,6 +40,9 @@ where Parameters: Comparable {
   public let maxCount: Int
 
   @usableFromInline
+  let nullptr: _NodePtr
+  
+  @usableFromInline
   var _rankHighest: _NodePtr
 
   @usableFromInline
@@ -56,13 +59,14 @@ extension ___LRUMemoizeStorage {
   @inlinable
   @inline(__always)
   public init(minimumCapacity: Int = 0, maxCount: Int = Int.max) {
+    nullptr = UnsafeNode.nullptr
     // enxureUniqueをしないため、シングルトンインスタンスを避けている
-    __tree_ = ._createWithNewBuffer(minimumCapacity: minimumCapacity, nullptr: UnsafeNode.nullptr)
+    __tree_ = ._createWithNewBuffer(minimumCapacity: minimumCapacity, nullptr: nullptr)
     self.maxCount = maxCount
     // これら二つはコピーでケアされない
     // インデックス時代はそれでこまらなかった
     // コピーが発生する前提の場合、別途ケアをする必要がある
-    (_rankHighest, _rankLowest) = (__tree_.nullptr, __tree_.nullptr)
+    (_rankHighest, _rankLowest) = (nullptr, nullptr)
   }
 
   @inlinable

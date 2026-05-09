@@ -23,22 +23,6 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     return __ptr.___is_null_or_end ? nil : self[_unsafe_raw: __ptr].value
   }
 
-//  @inlinable
-//  @inline(__always)
-//  mutating func setValue(_ x: Base._MappedValue, forKey key: Base._Key) {
-//    ensureUnique()
-//    let (__parent, __child) = update { $0.__find_equal(key) }
-//    if !__child.pointee.___is_null {
-//      Base.__mapped_value_ptr(__child).pointee = x
-//    } else {
-//      ensureCapacity()
-//      update {
-//        let __h = $0.__construct_node(Base.__payload_((key, x)))
-//        $0.__insert_node_at(__parent, __child, __h)
-//      }
-//    }
-//  }
-
   @inlinable
   subscript(key: Base._Key) -> Base._MappedValue? {
     @inline(__always)

@@ -114,12 +114,12 @@ extension UnsafeTreeV2 {
       precondition(sealed.exists)
       return UnsafePointer(sealed.pointer!.__value_())
     }
-    @inline(__always)
-    @_transparent
-    nonmutating unsafeMutableAddress {
-      precondition(sealed.exists)
-      return sealed.pointer!.__value_()
-    }
+//    @inline(__always)
+//    @_transparent
+//    nonmutating unsafeMutableAddress {
+//      precondition(sealed.exists)
+//      return sealed.pointer!.__value_()
+//    }
   }
 }
 

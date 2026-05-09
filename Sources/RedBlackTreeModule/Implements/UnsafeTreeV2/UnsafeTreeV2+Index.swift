@@ -15,14 +15,12 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeTreeV2 where Base: ___TreeIndex {
+#if !COMPATIBLE_ATCODER_2025
+  extension UnsafeTreeV2 where Base: ___TreeIndex {
 
-  #if COMPATIBLE_ATCODER_2025
-    public typealias Index = UnsafeIndexV2<Base>
-  #else
     public typealias Index = UnsafeIndexV3
-  #endif
-}
+  }
+#endif
 
 extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
@@ -37,29 +35,9 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
     else {
       return nil
     }
+    // TODO: デッドコードになってないかチェックすること
+    // ここが走らないと実質テストできてない
     return ___signed_distance(start, end)
-  }
-}
-
-// TODO: デッドコードになってないかチェックすること
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @inline(__always)
-  internal func ___index(after i: _SealedPtr) -> _SealedPtr {
-    i.flatMap { ___tree_next_iter($0.pointer) }.sealed
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___index(before i: _SealedPtr) -> _SealedPtr {
-    i.flatMap { ___tree_prev_iter($0.pointer) }.sealed
-  }
-
-  @inlinable
-  @inline(__always)
-  internal func ___index(_ i: _SealedPtr, offsetBy distance: Int) -> _SealedPtr {
-    i.flatMap { ___tree_adv_iter($0.pointer, distance) }.sealed
   }
 }
 

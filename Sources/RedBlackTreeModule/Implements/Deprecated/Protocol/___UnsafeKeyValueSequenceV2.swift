@@ -31,10 +31,12 @@ where
 
 extension ___UnsafeKeyValueSequenceV2__ {
 
-  @inlinable
-  internal func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
-    try ___first { try predicate(Base.__element_($0)) }.map(Base.__element_)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    internal func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
+      try ___first { try predicate(Base.__element_($0)) }.map(Base.__element_)
+    }
+  #endif
 }
 
 extension ___UnsafeKeyValueSequenceV2__ {
@@ -106,13 +108,15 @@ extension ___UnsafeKeyValueSequenceV2__ {
 
 extension ___UnsafeKeyValueSequenceV2__ {
 
-  @inlinable
-  @inline(__always)
-  internal func _forEach(_ body: (Element) throws -> Void) rethrows {
-    try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-      try body(Base.__element_(__tree_[_unsafe_raw: $0]))
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    @inline(__always)
+    internal func _forEach(_ body: (Element) throws -> Void) rethrows {
+      try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
+        try body(Base.__element_(__tree_[_unsafe_raw: $0]))
+      }
     }
-  }
+  #endif
 }
 
 @usableFromInline
@@ -147,16 +151,18 @@ extension ___UnsafeKeyValueSequenceV2 {
 
 extension ___UnsafeKeyValueSequenceV2 {
 
-  @inlinable
-  @inline(__always)
-  internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
-    var result: Index?
-    try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
-      if try predicate(Base.__element_((__tree_[_unsafe_raw: __p]))) {
-        result = ___index(__p.sealed)
-        cont = false
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    @inline(__always)
+    internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
+      var result: Index?
+      try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
+        if try predicate(Base.__element_((__tree_[_unsafe_raw: __p]))) {
+          result = ___index(__p.sealed)
+          cont = false
+        }
       }
+      return result
     }
-    return result
-  }
+  #endif
 }

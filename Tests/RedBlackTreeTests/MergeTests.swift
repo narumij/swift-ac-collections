@@ -158,6 +158,26 @@ final class MergeTests: RedBlackTreeTestCase {
     lhs.merge([("イートハーブの香る", "香り"), ("Hoge", "Poge")]) { first, _ in first }
     XCTAssertEqual(lhs.dictionary, ["イートハーブの香る": "なんとか", "foo": "bar", "Hoge": "Hogehoge"])
   }
+
+  func testDictionaryAndSequence3() throws {
+    var lhs: RedBlackTreeDictionary<String, String> = [:]
+    lhs.merge([("a", "b"), ("イートハーブの香る", "香り"), ("Hoge", "Poge")]) { first, _ in first }
+    XCTAssertEqual(lhs.dictionary, ["a": "b", "イートハーブの香る": "香り", "Hoge": "Poge"])
+  }
+
+  func testDictionaryAndSequence4() throws {
+    var lhs: RedBlackTreeDictionary<String, String> = [
+      "イートハーブの香る": "なんとか", "Hoge": "Hogehoge", "foo": "bar",
+    ]
+    lhs.merge([]) { first, _ in first }
+    XCTAssertEqual(lhs.dictionary, ["イートハーブの香る": "なんとか", "foo": "bar", "Hoge": "Hogehoge"])
+  }
+
+  func testDictionaryAndSequence5() throws {
+    var lhs: RedBlackTreeDictionary<String, String> = [:]
+    lhs.merge([]) { first, _ in first }
+    XCTAssertEqual(lhs.dictionary, [:])
+  }
 }
 
 extension RedBlackTreeDictionary where Key: Hashable {

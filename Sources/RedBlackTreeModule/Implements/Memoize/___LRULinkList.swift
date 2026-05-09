@@ -106,8 +106,9 @@ extension ___LRULinkList {
   mutating func ___pop(_ __p: _NodePtr) -> _NodePtr {
 
     assert(
-      __p == _rankHighest || __tree_[_unsafe_raw: __p].next != nullptr
-        || __tree_[_unsafe_raw: __p].prev != nullptr,
+      __p == _rankHighest ||
+      __tree_[_unsafe_raw: __p].next != nullptr ||
+      __tree_[_unsafe_raw: __p].prev != nullptr,
       "did not contain \(__p) ptr.")
 
     defer {

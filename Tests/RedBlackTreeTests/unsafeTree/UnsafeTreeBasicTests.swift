@@ -289,5 +289,10 @@ import XCTest
       XCTAssertEqual(begin, copy.end)
       XCTAssertTrue(__tree_invariant(storage.__root))
     }
+    
+    func testRetrieveEtc() throws {
+      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
+      XCTAssertEqual(storage.__retrieve_(.nullptr), .failure(.null))
+    }
   }
 #endif

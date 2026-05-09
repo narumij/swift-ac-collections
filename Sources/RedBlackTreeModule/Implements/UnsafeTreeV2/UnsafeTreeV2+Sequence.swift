@@ -15,6 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+// TODO: デッドコードになってないかチェックすること
 extension UnsafeTreeV2 {
 
   @inlinable
@@ -271,6 +272,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  // TODO: デッドコードになってないかチェックすること
   @inlinable
   @inline(__always)
   internal func

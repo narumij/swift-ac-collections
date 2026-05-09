@@ -288,8 +288,8 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public mutating func popFirst() -> Element? {
-    guard !isEmpty else { return nil }
-    return remove(at: startIndex)
+    __tree_.ensureUnique()
+    return ___unchecked_remove_first().map(\.payload).map(__element_)
   }
 }
 
@@ -302,7 +302,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return ___remove_last().map(\.payload).map(__element_)
+      return ___unchecked_remove_last().map(\.payload).map(__element_)
     }
   }
 #endif
@@ -316,10 +316,11 @@ extension RedBlackTreeMultiMap {
   @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
-    guard !isEmpty else {
+    __tree_.ensureUnique()
+    guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
-    return remove(at: startIndex)
+    return element
   }
 
   /// Removes the last element of the collection.
@@ -328,10 +329,11 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
-    guard !isEmpty else {
-      preconditionFailure(.emptyLast)
+    __tree_.ensureUnique()
+    guard let element = popLast() else {
+      preconditionFailure(.emptyFirst)
     }
-    return remove(at: index(before: endIndex))
+    return element
   }
 }
 

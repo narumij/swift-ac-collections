@@ -91,7 +91,6 @@ typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride & _Ele
 protocol _RedBlackTreeKeyOnlyV2:
   UnsafeTreeRangeBaseInterfaceV2
     & _SetBridge
-    & _CompareV2
     & _SequenceV2
     & _RemoveV2
 {}
@@ -100,7 +99,6 @@ protocol _RedBlackTreeKeyOnlyV2:
 protocol _RedBlackTreeKeyValuesV2:
   UnsafeTreeRangeBaseInterfaceV2
     & _MapBridge
-    & _CompareV2
     & _SequenceV2
     & _RemoveV2
     & _PayloadMappedValueBridge

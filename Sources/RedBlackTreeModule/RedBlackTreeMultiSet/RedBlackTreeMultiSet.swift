@@ -288,7 +288,9 @@ extension RedBlackTreeMultiSet {
   @discardableResult
   public mutating func removeLast() -> Element {
     __tree_.ensureUnique()
-    guard let element = popLast() else {
+    guard
+      let element = ___unchecked_remove_last()?.payload
+    else {
       preconditionFailure(.emptyFirst)
     }
     return element

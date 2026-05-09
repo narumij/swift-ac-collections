@@ -325,7 +325,9 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func removeLast() -> Element {
     __tree_.ensureUnique()
-    guard let element = popLast() else {
+    guard
+      let element = ___unchecked_remove_last().map(\.payload).map(__element_)
+    else {
       preconditionFailure(.emptyFirst)
     }
     return element

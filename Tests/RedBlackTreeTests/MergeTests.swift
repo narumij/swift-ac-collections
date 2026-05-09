@@ -67,12 +67,28 @@ final class MergeTests: RedBlackTreeTestCase {
     XCTAssertEqual(rhs + [], [4, 5, 6])
   }
 
-  func testMultietAndMultiet() throws {
+  func testMultietAndMultiet1() throws {
     var lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6]
     let rhs: RedBlackTreeMultiSet<Int> = [4, 4, 5, 5, 6, 6]
     lhs.insert(contentsOf: rhs)
     XCTAssertEqual(lhs + [], [1, 2, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6])
     XCTAssertEqual(rhs + [], [4, 4, 5, 5, 6, 6])
+  }
+
+  func testMultietAndMultiet2() throws {
+    var lhs: RedBlackTreeMultiSet<Int> = []
+    let rhs: RedBlackTreeMultiSet<Int> = [4, 4, 5, 5, 6, 6]
+    lhs.insert(contentsOf: rhs)
+    XCTAssertEqual(lhs + [], [4, 4, 5, 5, 6, 6])
+    XCTAssertEqual(rhs + [], [4, 4, 5, 5, 6, 6])
+  }
+
+  func testMultietAndMultiet3() throws {
+    var lhs: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6]
+    let rhs: RedBlackTreeMultiSet<Int> = []
+    lhs.insert(contentsOf: rhs)
+    XCTAssertEqual(lhs + [], [1, 2, 3, 4, 5, 6])
+    XCTAssertEqual(rhs + [], [])
   }
 
   func testMultietAndSequence() throws {
@@ -108,7 +124,7 @@ final class MergeTests: RedBlackTreeTestCase {
     XCTAssertEqual(lhs.dictionary, ["イートハーブの香る": "なんとか", "foo": "bar", "Hoge": "Hogehoge"])
     XCTAssertEqual(rhs.dictionary, ["イートハーブの香る": "香り", "Hoge": "Poge"])
   }
-  
+
   func testDictionaryAndDictionary3() throws {
     var lhs: RedBlackTreeDictionary<String, String> = [
       "イートハーブの香る": "なんとか", "Hoge": "Hogehoge", "foo": "bar",
@@ -118,7 +134,7 @@ final class MergeTests: RedBlackTreeTestCase {
     XCTAssertEqual(lhs.dictionary, ["イートハーブの香る": "なんとか", "foo": "bar", "Hoge": "Hogehoge"])
     XCTAssertEqual(rhs.dictionary, [:])
   }
-  
+
   func testDictionaryAndDictionary4() throws {
     var lhs: RedBlackTreeDictionary<String, String> = []
     let rhs: RedBlackTreeDictionary<String, String> = ["イートハーブの香る": "香り", "Hoge": "Poge"]
@@ -126,8 +142,6 @@ final class MergeTests: RedBlackTreeTestCase {
     XCTAssertEqual(lhs.dictionary, ["イートハーブの香る": "香り", "Hoge": "Poge"])
     XCTAssertEqual(rhs.dictionary, ["イートハーブの香る": "香り", "Hoge": "Poge"])
   }
-
-
 
   func testDictionaryAndSequence() throws {
     var lhs: RedBlackTreeDictionary<String, String> = [

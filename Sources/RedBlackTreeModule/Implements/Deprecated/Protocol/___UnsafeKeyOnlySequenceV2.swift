@@ -92,10 +92,11 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   }
 }
 
-@usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexProviderProtocolV2 {}
-
 #if COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexProviderProtocolV2 {
+  }
+
   extension ___UnsafeKeyOnlySequenceV2 {
 
     @available(*, deprecated, message: "性能問題があり廃止")

@@ -80,19 +80,6 @@ protocol UnsafeMutableTreeSealedRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeIndexRangeBaseV2:
-  UnsafeTreeRangeBaseInterfaceV2
-    & UnsafeIndexProviderProtocolV2
-{}
-
-#if COMPATIBLE_ATCODER_2025
-  public typealias RedBlackTreeIndex = UnsafeIndexV2
-  public typealias RedBlackTreeIndices = UnsafeIndexV2Collection
-  public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2
-  public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
-#endif
-
-@usableFromInline
 typealias _SetBridge = _PayloadValueBride & _KeyBride & _ElementBride
 
 @usableFromInline

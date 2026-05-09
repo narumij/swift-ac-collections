@@ -119,10 +119,10 @@ extension ___UnsafeKeyValueSequenceV2__ {
   #endif
 }
 
-@usableFromInline
-protocol ___UnsafeKeyValueSequenceV2: ___UnsafeKeyValueSequenceV2__ & ___UnsafeIndexRangeBaseV2 {}
-
 #if COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  protocol ___UnsafeKeyValueSequenceV2: ___UnsafeKeyValueSequenceV2__ & ___UnsafeIndexRangeBaseV2 {}
+
   extension ___UnsafeKeyValueSequenceV2 {
 
     @available(*, deprecated, message: "性能問題があり廃止")
@@ -134,24 +134,22 @@ protocol ___UnsafeKeyValueSequenceV2: ___UnsafeKeyValueSequenceV2__ & ___UnsafeI
       }
     }
   }
-#endif
 
-extension ___UnsafeKeyValueSequenceV2 {
+  extension ___UnsafeKeyValueSequenceV2 {
 
-  // コンパイラの型推論のバグを踏んでいると想定し、型をちゃんと書くことにし、様子を見ている
-  // -> 今の設計だと影響があるが、過去のバグはこの方法では迂回できないことが確認できている
+    // コンパイラの型推論のバグを踏んでいると想定し、型をちゃんと書くことにし、様子を見ている
+    // -> 今の設計だと影響があるが、過去のバグはこの方法では迂回できないことが確認できている
 
-  @inlinable
-  internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
-    @inline(__always) get {
-      return Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
+    @inlinable
+    internal subscript(_checked position: Index) -> (key: _Key, value: _MappedValue) {
+      @inline(__always) get {
+        return Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
+      }
     }
   }
-}
 
-extension ___UnsafeKeyValueSequenceV2 {
+  extension ___UnsafeKeyValueSequenceV2 {
 
-  #if COMPATIBLE_ATCODER_2025
     @inlinable
     @inline(__always)
     internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
@@ -164,5 +162,5 @@ extension ___UnsafeKeyValueSequenceV2 {
       }
       return result
     }
-  #endif
-}
+  }
+#endif

@@ -176,64 +176,64 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       .assumingMemoryBound(to: _PayloadValue.self)
   }
 
-  /// `_PayloadValue`と`_Key`が一致する場合に、 ペイロードをキーとみなしたポインタ
-  ///
-  /// ```
-  /// ...|Node|Key|Node...
-  ///    |    ^--__key_ptr
-  ///    ^self
-  /// ```
-  @inlinable
-  @inline(__always)
-  func __key_ptr<Base: _ScalarBaseType>(of t: Base.Type)
-    -> UnsafeMutablePointer<Base._Key>
-  {
-    __value_()
-  }
+//  /// `_PayloadValue`と`_Key`が一致する場合に、 ペイロードをキーとみなしたポインタ
+//  ///
+//  /// ```
+//  /// ...|Node|Key|Node...
+//  ///    |    ^--__key_ptr
+//  ///    ^self
+//  /// ```
+//  @inlinable
+//  @inline(__always)
+//  func __key_ptr<Base: _ScalarBaseType>(of t: Base.Type)
+//    -> UnsafeMutablePointer<Base._Key>
+//  {
+//    __value_()
+//  }
 
-  /// `_PayloadValue`が`Pair`の場合のキーへのポインタ
-  ///
-  /// ```
-  /// ...|Node|Key|MappedValue|Node...
-  ///    |    ^--__key_ptr
-  ///    ^self
-  /// ```
-  @inlinable
-  @inline(__always)
-  func __key_ptr<Base: _PairBaseType>(of t: Base.Type)
-    -> UnsafeMutablePointer<Base._Key>
-  {
-    _ref(to: &__value_(as: Base._PayloadValue.self).pointee.key)
-  }
+//  /// `_PayloadValue`が`Pair`の場合のキーへのポインタ
+//  ///
+//  /// ```
+//  /// ...|Node|Key|MappedValue|Node...
+//  ///    |    ^--__key_ptr
+//  ///    ^self
+//  /// ```
+//  @inlinable
+//  @inline(__always)
+//  func __key_ptr<Base: _PairBaseType>(of t: Base.Type)
+//    -> UnsafeMutablePointer<Base._Key>
+//  {
+//    _ref(to: &__value_(as: Base._PayloadValue.self).pointee.key)
+//  }
 
-  /// `_PayloadValue`が`Pair`の場合のバリューへのポインタ
-  ///
-  /// ```
-  /// ...|Node|Key|MappedValue|Node...
-  ///    |        ^--__mapped_value_ptr
-  ///    ^self
-  /// ```
-  @inlinable
-  @inline(__always)
-  func __mapped_value_ptr<Base: _PairBaseType>(of t: Base.Type)
-    -> UnsafeMutablePointer<Base._MappedValue>
-  {
-    _ref(to: &__value_(as: Base._PayloadValue.self).pointee.value)
-  }
+//  /// `_PayloadValue`が`Pair`の場合のバリューへのポインタ
+//  ///
+//  /// ```
+//  /// ...|Node|Key|MappedValue|Node...
+//  ///    |        ^--__mapped_value_ptr
+//  ///    ^self
+//  /// ```
+//  @inlinable
+//  @inline(__always)
+//  func __mapped_value_ptr<Base: _PairBaseType>(of t: Base.Type)
+//    -> UnsafeMutablePointer<Base._MappedValue>
+//  {
+//    _ref(to: &__value_(as: Base._PayloadValue.self).pointee.value)
+//  }
   
-  @inlinable
-  @inline(__always)
-  func __payload_ptr_<_PayloadValue>() -> UnsafePointer<_PayloadValue> {
-    UnsafeRawPointer(advanced(by: 1))
-      .assumingMemoryBound(to: _PayloadValue.self)
-  }
-
-  @inlinable
-  @inline(__always)
-  func __mutable_payload_ptr_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue> {
-    UnsafeMutableRawPointer(advanced(by: 1))
-      .assumingMemoryBound(to: _PayloadValue.self)
-  }
+//  @inlinable
+//  @inline(__always)
+//  func __payload_ptr_<_PayloadValue>() -> UnsafePointer<_PayloadValue> {
+//    UnsafeRawPointer(advanced(by: 1))
+//      .assumingMemoryBound(to: _PayloadValue.self)
+//  }
+//
+//  @inlinable
+//  @inline(__always)
+//  func __mutable_payload_ptr_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue> {
+//    UnsafeMutableRawPointer(advanced(by: 1))
+//      .assumingMemoryBound(to: _PayloadValue.self)
+//  }
 }
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {

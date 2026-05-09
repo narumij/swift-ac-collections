@@ -23,27 +23,26 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     return __ptr.___is_null_or_end ? nil : self[_unsafe_raw: __ptr].value
   }
 
-  @inlinable
-  @inline(__always)
-  mutating func setValue(_ x: Base._MappedValue, forKey key: Base._Key) {
-    ensureUnique()
-    let (__parent, __child) = update { $0.__find_equal(key) }
-    if !__child.pointee.___is_null {
-      __child.__ptr_.__mapped_value_ptr(of: Base.self).pointee = x
-    } else {
-      ensureCapacity()
-      update {
-        let __h = $0.__construct_node(Base.__payload_((key, x)))
-        $0.__insert_node_at(__parent, __child, __h)
-      }
-    }
-  }
+//  @inlinable
+//  @inline(__always)
+//  mutating func setValue(_ x: Base._MappedValue, forKey key: Base._Key) {
+//    ensureUnique()
+//    let (__parent, __child) = update { $0.__find_equal(key) }
+//    if !__child.pointee.___is_null {
+//      Base.__mapped_value_ptr(__child).pointee = x
+//    } else {
+//      ensureCapacity()
+//      update {
+//        let __h = $0.__construct_node(Base.__payload_((key, x)))
+//        $0.__insert_node_at(__parent, __child, __h)
+//      }
+//    }
+//  }
 
   @inlinable
   subscript(key: Base._Key) -> Base._MappedValue? {
     @inline(__always)
     get {
-      assert(false, "Dummy definition; don't use.")
       return lookup(key)
     }
     @inline(__always)
@@ -52,28 +51,27 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
       let (__parent, __child) = __find_equal(key)
 
       var value: Base._MappedValue? =
-        unsafe (__child.pointee.___is_null
-        ? nil : __child.pointee.__mapped_value_ptr(of: Base.self).move())
+        __child.pointee.___is_null
+        ? nil
+        : Base.__mapped_value_ptr(__child).move()
 
       defer {
-        if !__child.pointee.___is_null {
-          if let value {
-            unsafe __child.pointee.__mapped_value_ptr(of: Base.self).initialize(to: value)
-          } else {
-            update {
-              _ = $0.erase(__child.pointee)
-            }
+        switch (value, __child.pointee.___is_null) {
+        case (.some(let value), false):
+          Base.__mapped_value_ptr(__child).initialize(to: value)
+        case (nil, false):
+          _ = update { $0.erase(__child.pointee) }
+        case (.some(let value), true):
+          ensureCapacity()
+          update {
+            let __h = $0.__construct_node(Base.__payload_((key, value)))
+            $0.__insert_node_at(__parent, __child, __h)
           }
-        } else {
-          if let value {
-            ensureCapacity()
-            update {
-              let __h = $0.__construct_node(Base.__payload_((key, value)))
-              $0.__insert_node_at(__parent, __child, __h)
-            }
-          }
+        case (nil, true):
+          break
         }
       }
+
       yield &value
     }
   }
@@ -84,7 +82,8 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   @inlinable
   @inline(__always)
   internal func ___mapped_value(_ __p: _NodePtr) -> Base._MappedValue {
-    Base.___mapped_value(__p.__value_().pointee)
+//    Base.___mapped_value(__p.__value_().pointee)
+    Base.__mapped_value_ptr(__p).pointee
   }
 }
 

@@ -21,3 +21,99 @@ where
   _NodePtr == UnsafeMutablePointer<UnsafeNode>,
   _NodeRef == UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 {}
+
+extension _KeyType where Self: _UnsafeNodePtrType {
+  public typealias _KeyPtr = UnsafeMutablePointer<_Key>
+}
+
+extension _PayloadValueType where Self: _UnsafeNodePtrType {
+  public typealias _PayloadPtr = UnsafeMutablePointer<_PayloadValue>
+}
+
+extension _MappedValueType where Self: _UnsafeNodePtrType {
+  public typealias _MappedValuePtr = UnsafeMutablePointer<_MappedValue>
+}
+
+extension _UnsafeNodePtrType where Self: _ScalarBaseType {
+  
+  /// ペイロードのポインタ
+  ///
+  /// ```
+  /// ...|Node|Payload|Node...
+  ///    |    ^--__payload_
+  ///    ^self
+  /// ```
+  @inlinable @inline(__always)
+  static func __payload_ptr(_ p: _NodePtr) -> _PayloadPtr {
+    p.__value_()
+  }
+  @inlinable @inline(__always)
+  static func __payload_ptr(_ p: _NodeRef) -> _PayloadPtr {
+    p.pointee.__value_()
+  }
+  
+  /// `_PayloadValue`と`_Key`が一致する場合に、 ペイロードをキーとみなしたポインタ
+  ///
+  /// ```
+  /// ...|Node|Key|Node...
+  ///    |    ^--__key_ptr
+  ///    ^self
+  /// ```
+  @inlinable @inline(__always)
+  static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
+    __payload_ptr(p)
+  }
+  @inlinable @inline(__always)
+  static func __key_ptr(_ p: _NodeRef) -> _KeyPtr {
+    __payload_ptr(p)
+  }
+}
+
+extension _UnsafeNodePtrType where Self: _PairBaseType {
+  
+  /// ペイロードのポインタ
+  ///
+  /// ```
+  /// ...|Node|Payload|Node...
+  ///    |    ^--__payload_
+  ///    ^self
+  /// ```
+  @inlinable @inline(__always)
+  static func __payload_ptr(_ p: _NodePtr) -> _PayloadPtr {
+    p.__value_()
+  }
+  @inlinable @inline(__always)
+  static func __payload_ptr(_ p: _NodeRef) -> _PayloadPtr {
+    p.pointee.__value_()
+  }
+  /// `_PayloadValue`が`Pair`の場合のキーへのポインタ
+  ///
+  /// ```
+  /// ...|Node|Key|MappedValue|Node...
+  ///    |    ^--__key_ptr
+  ///    ^self
+  /// ```
+  @inlinable @inline(__always)
+  static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
+    _ref(to: &__payload_ptr(p).pointee.key)
+  }
+  @inlinable @inline(__always)
+  static func __key_ptr(_ p: _NodeRef) -> _KeyPtr {
+    _ref(to: &__payload_ptr(p.pointee).pointee.key)
+  }
+  /// `_PayloadValue`が`Pair`の場合のバリューへのポインタ
+  ///
+  /// ```
+  /// ...|Node|Key|MappedValue|Node...
+  ///    |        ^--__mapped_value_ptr
+  ///    ^self
+  /// ```
+  @inlinable @inline(__always)
+  static func __mapped_value_ptr(_ p: _NodePtr) -> _MappedValuePtr {
+    _ref(to: &__payload_ptr(p).pointee.value)
+  }
+  @inlinable @inline(__always)
+  static func __mapped_value_ptr(_ p: _NodeRef) -> _MappedValuePtr {
+    _ref(to: &__payload_ptr(p.pointee).pointee.value)
+  }
+}

@@ -57,28 +57,20 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  #if !DEBUG
-    @inlinable
-    @inline(__always)
-    package var __root: _NodePtr {
-      withMutableHeader { $0.__root }
+  @inlinable
+  @inline(__always)
+  var __root: _NodePtr {
+    @inline(__always) _read {
+      yield withMutableHeader { $0.root_ptr }.pointee
     }
-  #else
-    @inlinable
-    @inline(__always)
-    package var __root: _NodePtr {
-      get { withMutableHeader { $0.__root } }
-      set { withMutableHeader { $0.__root = newValue } }
-    }
-  #endif
+  }
 
   // MARK: - RootPtrProtocol
 
   @inlinable
   @inline(__always)
   package func __root_ptr() -> _NodeRef {
-    //    origin.pointee.__root_ptr()
-    withMutableHeader { $0.__root_ptr() }
+    withMutableHeader { $0.root_ptr }
   }
 }
 
@@ -124,12 +116,6 @@ extension UnsafeTreeV2 {
   @inline(__always)
   package func __value_(_ p: _NodePtr) -> _PayloadValue {
     p.__value_().pointee
-  }
-
-  @inlinable
-  @inline(__always)
-  package func ___element(_ p: _NodePtr, _ __v: _PayloadValue) {
-    p.__value_().pointee = __v
   }
 }
 

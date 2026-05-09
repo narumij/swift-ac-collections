@@ -42,7 +42,8 @@
     }
 
     package func ___element(_ p: Int, _ __v: _PayloadValue) {
-      ___element(try! __retrieve_(p).get(), __v)
+//      ___element(try! __retrieve_(p).get(), __v)
+      try! __retrieve_(p).get().__value_().pointee = __v
     }
   }
 

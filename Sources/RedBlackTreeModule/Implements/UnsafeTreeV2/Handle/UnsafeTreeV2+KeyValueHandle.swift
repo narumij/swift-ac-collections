@@ -129,11 +129,13 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 
   @inlinable
+  @inline(__always)
   var end: _NodePtr {
     header.pointee.end_ptr
   }
 
   @inlinable
+  @inline(__always)
   var __end_node: _NodePtr {
     header.pointee.end_ptr
   }
@@ -161,6 +163,17 @@ extension UnsafeTreeV2KeyValueHandle {
 
 extension UnsafeTreeV2KeyValueHandle {
   public typealias __compare_result = __int_compare_result
+}
+
+extension UnsafeTreeV2KeyValueHandle {
+
+  @inlinable
+  @inline(__always)
+  var count: Int { header.pointee.count }
+
+  @inlinable
+  @inline(__always)
+  var capacity: Int { header.pointee.freshPoolCapacity }
 }
 
 extension UnsafeTreeV2KeyValueHandle {

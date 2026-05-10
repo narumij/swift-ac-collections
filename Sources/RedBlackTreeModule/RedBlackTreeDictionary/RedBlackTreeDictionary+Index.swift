@@ -137,27 +137,19 @@
     /// - Complexity: O(1)
     @inlinable
     public func index(before i: Index) -> Index {
-      __tree_.__purified_(i)
-        .flatMap { ___tree_prev_iter($0.pointer) }
-        .flatMap { $0.sealed.band(__tree_.tied) }
+      __tree_.prev_iter(i)
     }
 
     /// - Complexity: O(1)
     @inlinable
     public func index(after i: Index) -> Index {
-      __tree_.__purified_(i)
-        .flatMap { ___tree_next_iter($0.pointer) }
-        .flatMap { $0.sealed.band(__tree_.tied) }
+      __tree_.next_iter(i)
     }
 
     /// - Complexity: O(`distance`)
     @inlinable
-    public func index(_ i: Index, offsetBy distance: Int)
-      -> Index
-    {
-      __tree_.__purified_(i)
-        .flatMap { ___tree_adv_iter($0.pointer, distance) }
-        .flatMap { $0.sealed.band(__tree_.tied) }
+    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+      __tree_.adv_iter(i, offsetBy: distance)
     }
 
     /// - Complexity: O(`distance`)

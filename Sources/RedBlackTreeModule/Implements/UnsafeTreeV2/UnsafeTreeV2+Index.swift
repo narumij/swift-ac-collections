@@ -55,6 +55,33 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
 
 extension UnsafeTreeV2 {
 
+  @inlinable
+  @inline(__always)
+  func prev_iter(_ i: UnsafeIndexV3) -> UnsafeIndexV3 {
+    __purified_(i)
+      .flatMap { ___tree_prev_iter($0.pointer) }
+      .flatMap { $0.sealed.band(tied) }
+  }
+
+  @inlinable
+  @inline(__always)
+  func next_iter(_ i: UnsafeIndexV3) -> UnsafeIndexV3 {
+    __purified_(i)
+      .flatMap { ___tree_next_iter($0.pointer) }
+      .flatMap { $0.sealed.band(tied) }
+  }
+
+  @inlinable
+  @inline(__always)
+  func adv_iter(_ i: UnsafeIndexV3, offsetBy distance: Int) -> UnsafeIndexV3 {
+    __purified_(i)
+      .flatMap { ___tree_adv_iter($0.pointer, distance) }
+      .flatMap { $0.sealed.band(tied) }
+  }
+}
+
+extension UnsafeTreeV2 {
+
   public typealias _PayloadValues = RedBlackTreeIteratorV2.Values<Base>
 }
 

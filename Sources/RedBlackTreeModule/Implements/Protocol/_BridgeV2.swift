@@ -31,6 +31,23 @@ where _MappedValue == Base._MappedValue, Base: _MappedValueType {}
 public protocol _ElementBride: _BaseBridge & _ElementType
 where Element == Base.Element, Base: _ElementType {}
 
+@usableFromInline
+protocol _PayloadPointerBridge: _UnsafeNodePtrType & _PayloadValueBride
+where Base: _UnsafeNodePtrType & _PayloadValueType {}
+
+extension _PayloadPointerBridge {
+
+  @inlinable @inline(__always)
+  func __payload_ptr(_ p: _NodePtr) -> _PayloadPtr {
+    Base.__payload_ptr(p)
+  }
+
+  @inlinable @inline(__always)
+  static func __payload_(_ p: _NodePtr) -> _PayloadValue {
+    Base.__payload_(p)
+  }
+}
+
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 @usableFromInline
 protocol _PayloadKeyBridge: _PayloadValueBride & _KeyBride
@@ -61,7 +78,7 @@ protocol _PaylodElementBridge: _BaseBridge & _PayloadKeyBridge & _ElementBride
 where Base: _BasePaylodValue_ElementInterface {}
 
 extension _PaylodElementBridge {
-  
+
   @inlinable @inline(__always)
   func __element_(_ __value: _PayloadValue) -> Element {
     Base.__element_(__value)
@@ -73,7 +90,7 @@ protocol _ElementPayloadBridge: _BaseBridge & _PayloadKeyBridge & _ElementBride
 where Base: _KeyValueBasePaylodValue_ElementInterface {}
 
 extension _ElementPayloadBridge {
-  
+
   @inlinable @inline(__always)
   func __payload_(_ __e: Element) -> _PayloadValue {
     Base.__payload_(__e)

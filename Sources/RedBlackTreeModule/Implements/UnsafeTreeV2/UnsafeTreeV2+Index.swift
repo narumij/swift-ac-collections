@@ -37,7 +37,7 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
   @inlinable
   @inline(__always)
   internal func
-    ___distance(from start: _TieWrappedPtr, to end: _TieWrappedPtr) -> Int?
+    distance(from start: _TieWrappedPtr, to end: _TieWrappedPtr) -> Int?
   {
     return try? lifetA2(
       __purified_(start).map(\.pointer),
@@ -50,7 +50,7 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
   @inlinable
   @inline(__always)
   internal func
-    ___distance(
+    distance(
       from start: RedBlackTreeBoundExpression<_Key>, to end: RedBlackTreeBoundExpression<_Key>
     ) -> Int?
   {

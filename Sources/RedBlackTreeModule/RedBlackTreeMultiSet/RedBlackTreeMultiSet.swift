@@ -157,7 +157,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(log `count` + `distance`), where `distance` is the number of matching elements.
   @inlinable
   public func count(of element: Element) -> Int {
-    __tree_.__count_multi(element)
+    __tree_.update { $0.__count_multi(element) }
   }
 }
 
@@ -169,8 +169,8 @@ extension RedBlackTreeMultiSet {
   ///
   /// - Complexity: O(log `count`)
   @inlinable
-  public func contains(_ member: Element) -> Bool {
-    __tree_.read { $0.__count_unique(member) != 0 }
+  public func contains(_ element: Element) -> Bool {
+    __tree_.update { $0.__count_unique(element) != 0 }
   }
 }
 

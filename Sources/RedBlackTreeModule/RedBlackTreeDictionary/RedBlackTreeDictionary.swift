@@ -160,7 +160,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log `count`)
   @inlinable
   public func count(forKey key: Key) -> Int {
-    __tree_.__count_unique(key)
+    __tree_.read { $0.__count_unique(key) }
   }
 }
 

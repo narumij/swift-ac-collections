@@ -174,7 +174,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(log `count` + `distance`), where `distance` is the number of matching elements.
   @inlinable
   public func count(forKey key: Key) -> Int {
-    __tree_.__count_multi(key)
+    __tree_.read { $0.__count_multi(key) }
   }
 }
 

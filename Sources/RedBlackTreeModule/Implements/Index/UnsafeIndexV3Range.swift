@@ -45,16 +45,3 @@ extension UnsafeIndexV3Range {
     range.upperBound
   }
 }
-
-// 互換維持の為のコード。互換廃止の際に削ること
-
-extension UnsafeIndexV3Range {
-
-  package var lower: _TieWrappedPtr {
-    range.lowerBound
-  }
-
-  package var upper: _TieWrappedPtr {
-    range.upperBound
-  }
-}

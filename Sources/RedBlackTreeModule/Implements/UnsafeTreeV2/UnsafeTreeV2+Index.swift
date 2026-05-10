@@ -36,11 +36,13 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
     )
     .get()
   }
-  
+
   @inlinable
   @inline(__always)
   internal func
-    ___distance(from start: RedBlackTreeBoundExpression<_Key>, to end: RedBlackTreeBoundExpression<_Key>) -> Int?
+    ___distance(
+      from start: RedBlackTreeBoundExpression<_Key>, to end: RedBlackTreeBoundExpression<_Key>
+    ) -> Int?
   {
     return try? lifetA2(
       start.evaluate(self).map(\.pointer),

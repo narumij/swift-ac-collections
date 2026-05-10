@@ -67,7 +67,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func prev_iter(_ i: UnsafeIndexV3) -> UnsafeIndexV3 {
+  func prev_iter(_ i: _TieWrappedPtr) -> _TieWrappedPtr {
     __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
       .flatMap { $0.sealed.band(tied) }
@@ -75,7 +75,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func next_iter(_ i: UnsafeIndexV3) -> UnsafeIndexV3 {
+  func next_iter(_ i: _TieWrappedPtr) -> _TieWrappedPtr {
     __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
       .flatMap { $0.sealed.band(tied) }
@@ -83,7 +83,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func adv_iter(_ i: UnsafeIndexV3, offsetBy distance: Int) -> UnsafeIndexV3 {
+  func adv_iter(_ i: _TieWrappedPtr, offsetBy distance: Int) -> _TieWrappedPtr {
     __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .flatMap { $0.sealed.band(tied) }
@@ -91,8 +91,8 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func adv_iter(_ i: UnsafeIndexV3, offsetBy distance: Int, limitedBy limit: UnsafeIndexV3)
-    -> UnsafeIndexV3
+  func adv_iter(_ i: _TieWrappedPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedPtr)
+    -> _TieWrappedPtr
   {
     let __l = __purified_(limit).map(\.pointer)
     return __purified_(i)
@@ -102,8 +102,8 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func index_or_nil(_ i: UnsafeIndexV3, offsetBy distance: Int, limitedBy limit: UnsafeIndexV3)
-    -> UnsafeIndexV3?
+  func index_or_nil(_ i: _TieWrappedPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedPtr)
+    -> _TieWrappedPtr?
   {
     let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
     switch advanced {
@@ -117,7 +117,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   func form_index(
-    _ i: inout UnsafeIndexV3, offsetBy distance: Int, limitedBy limit: UnsafeIndexV3
+    _ i: inout _TieWrappedPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedPtr
   )
     -> Bool
   {

@@ -88,7 +88,7 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
-  
+
   @inlinable
   @inline(__always)
   public var underestimatedCount: Int { count }
@@ -126,6 +126,34 @@ extension UnsafeTreeV2 {
     unsafeAddress {
       precondition(sealed.exists)
       return UnsafePointer(sealed.pointer!.__value_())
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  func _unsafeAddress(_ position: _TieWrappedPtr) -> UnsafePointer<_PayloadValue> {
+    return UnsafePointer(_unsafeMutableAddress(position))
+  }
+
+  @inlinable
+  @inline(__always)
+  func _unsafeMutableAddress(_ position: _TieWrappedPtr) -> UnsafeMutablePointer<_PayloadValue> {
+    let sealed: _SealedPtr = __purified_(position)
+    precondition(sealed.exists)
+    return sealed.pointer!.__value_()
+  }
+
+  @inlinable
+  @inline(__always)
+  internal subscript(_unsafe position: _TieWrappedPtr) -> _PayloadValue {
+
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      _unsafeAddress(position)
     }
   }
 }

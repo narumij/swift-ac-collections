@@ -23,9 +23,9 @@
     /// - Complexity: O(1)
     @inlinable
     public subscript(position: Index) -> Element {
-      @inline(__always) get {
-        __tree_[_unsafe: __tree_.__purified_(position)]
-      }
+      @inline(__always)
+      @_transparent
+      unsafeAddress { __tree_._unsafeAddress(position) }
     }
   }
 #endif

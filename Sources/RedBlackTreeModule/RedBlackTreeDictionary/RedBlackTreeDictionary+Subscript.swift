@@ -69,10 +69,9 @@ extension RedBlackTreeDictionary {
     ///
     /// - Complexity: O(1)
     @inlinable
+    @inline(__always)
     public subscript(position: Index) -> Element {
-      @inline(__always) get {
-        Base.__element_(__tree_[_unsafe: __tree_.__purified_(position)])
-      }
+      Base.__element_(__tree_[_unsafe: position])
     }
   }
 #endif

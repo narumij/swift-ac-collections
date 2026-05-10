@@ -49,32 +49,14 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
     )
     .get()
   }
-  
-  @inlinable
-  @inline(__always)
-  internal func
-    ___distance(from start: _SealedPtr, to end: _SealedPtr) -> Int?
-  {
-    return try? lifetA2(
-      start.purified.map(\.pointer),
-      end.purified.map(\.pointer),
-      Base.___signed_distance
-    )
-    .get()
-  }
 }
 
-extension UnsafeTreeV2 where Base: ___TreeIndex {
-
-  public typealias Pointee = Base.Element
-}
-
-extension UnsafeTreeV2 where Base: ___TreeIndex {
+extension UnsafeTreeV2 {
 
   public typealias _PayloadValues = RedBlackTreeIteratorV2.Values<Base>
 }
 
-extension UnsafeTreeV2 where Base: PairValueTrait & ___TreeIndex {
+extension UnsafeTreeV2 where Base: PairValueTrait {
 
   public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
 }

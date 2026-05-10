@@ -165,9 +165,8 @@
     @inline(__always)
     public func formIndex(
       _ i: inout Index, offsetBy distance: Int, limitedBy limit: Index
-    )
-      -> Bool
-    {
+    ) -> Bool {
+      
       __tree_.form_index(&i, offsetBy: distance, limitedBy: limit)
     }
   }

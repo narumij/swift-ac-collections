@@ -156,9 +156,7 @@
     @inlinable
     public func index(
       _ i: Index, offsetBy distance: Int, limitedBy limit: Index
-    )
-      -> Index?
-    {
+    ) -> Index? {
       __tree_.index_or_nil(i, offsetBy: distance, limitedBy: limit)
     }
   }
@@ -190,12 +188,9 @@
     @inlinable
     @inline(__always)
     public func formIndex(
-      _ i: inout Index,
-      offsetBy distance: Int,
-      limitedBy limit: Index
-    )
-      -> Bool
-    {
+      _ i: inout Index, offsetBy distance: Int, limitedBy limit: Index
+    ) -> Bool {
+
       __tree_.form_index(&i, offsetBy: distance, limitedBy: limit)
     }
   }

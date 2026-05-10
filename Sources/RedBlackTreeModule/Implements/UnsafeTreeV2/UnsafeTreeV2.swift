@@ -215,19 +215,3 @@ extension UnsafeTreeV2 {
       upperBound: __purified_(range.upperBound))
   }
 }
-
-// MARK: - COMPATIBLE_ATCODER_2025用
-
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    @inline(__always)
-    internal func __purified_(_ index: UnsafeIndexV2<Base>) -> _SealedPtr
-    where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-      tied === index.tied
-        ? index.sealed.purified
-        : __retrieve_(index.sealed.purified.tag).purified
-    }
-  }
-#endif

@@ -78,6 +78,51 @@ extension UnsafeTreeV2 {
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .flatMap { $0.sealed.band(tied) }
   }
+
+  @inlinable
+  @inline(__always)
+  func adv_iter(_ i: UnsafeIndexV3, offsetBy distance: Int, limitedBy limit: UnsafeIndexV3)
+    -> UnsafeIndexV3
+  {
+    let __l = __purified_(limit).map(\.pointer)
+    return __purified_(i)
+      .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
+      .flatMap { $0.sealed.band(tied) }
+  }
+
+  @inlinable
+  @inline(__always)
+  func index_or_nil(_ i: UnsafeIndexV3, offsetBy distance: Int, limitedBy limit: UnsafeIndexV3)
+    -> UnsafeIndexV3?
+  {
+    let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
+    switch advanced {
+    case .success:
+      return advanced
+    case .failure:
+      return nil
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  func form_index(
+    _ i: inout UnsafeIndexV3, offsetBy distance: Int, limitedBy limit: UnsafeIndexV3
+  )
+    -> Bool
+  {
+    let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
+    switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
+    case .success:
+      i = advanced
+      return true
+    case .failure(.limit):
+      i = limit
+      return false
+    default:
+      return false
+    }
+  }
 }
 
 extension UnsafeTreeV2 {

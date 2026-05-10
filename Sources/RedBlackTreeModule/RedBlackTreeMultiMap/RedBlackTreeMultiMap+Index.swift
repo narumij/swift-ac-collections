@@ -165,9 +165,7 @@
     )
       -> Index?
     {
-      var i = i
-      let result = formIndex(&i, offsetBy: distance, limitedBy: limit)
-      return result ? i : nil
+      __tree_.index_or_nil(i, offsetBy: distance, limitedBy: limit)
     }
   }
 
@@ -204,14 +202,7 @@
     )
       -> Bool
     {
-      guard let ___i = __tree_.__purified_(i).pointer
-      else { return false }
-
-      let __l = __tree_.__purified_(limit).map(\.pointer)
-
-      return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
-        i = $0.flatMap { $0.sealed.band(__tree_.tied) }
-      }
+      __tree_.form_index(&i, offsetBy: distance, limitedBy: limit)
     }
   }
 #endif

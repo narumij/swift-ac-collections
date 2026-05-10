@@ -18,7 +18,7 @@
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @frozen
 @usableFromInline
-package struct _Bucket: ~Copyable {
+package struct _Bucket {
 
   @usableFromInline
   package typealias _Next = UnsafeMutablePointer<_Bucket>

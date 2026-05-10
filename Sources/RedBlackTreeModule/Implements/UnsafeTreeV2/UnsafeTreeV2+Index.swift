@@ -22,6 +22,16 @@
   }
 #endif
 
+extension UnsafeTreeV2 {
+
+  public typealias _PayloadValues = RedBlackTreeIteratorV2.Values<Base>
+}
+
+extension UnsafeTreeV2 where Base: PairValueTrait {
+
+  public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
+}
+
 extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
   @inlinable
@@ -123,14 +133,4 @@ extension UnsafeTreeV2 {
       return false
     }
   }
-}
-
-extension UnsafeTreeV2 {
-
-  public typealias _PayloadValues = RedBlackTreeIteratorV2.Values<Base>
-}
-
-extension UnsafeTreeV2 where Base: PairValueTrait {
-
-  public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
 }

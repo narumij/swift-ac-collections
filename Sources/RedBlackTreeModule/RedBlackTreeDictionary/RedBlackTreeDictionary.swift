@@ -187,15 +187,15 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public var first: Element? {
-    isEmpty ? nil : Base.__element_(__tree_[_unsafe_raw: _start])
+    isEmpty ? nil : __element_(Base.__payload_(_start))
   }
 
   /// The last element of the collection.
   ///
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : Base.__element_(__tree_[_unsafe_raw: __tree_.__tree_prev_iter(_end)])
+    __tree_.___max().map(__element_)
   }
 }
 
@@ -203,17 +203,15 @@ extension RedBlackTreeDictionary {
 
   /// Returns the minimum element in the sequence.
   ///
-  /// - Complexity: O(log *n*)
-  ///
-  /// If O(1) is required, `first` provides an equivalent operation in O(1).
+  /// - Complexity: O(1)
   @inlinable
   public func min() -> Element? {
-    __tree_.___min().map(__element_)
+    isEmpty ? nil : __element_(Base.__payload_(_start))
   }
 
   /// Returns the maximum element in the sequence.
   ///
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public func max() -> Element? {
     __tree_.___max().map(__element_)

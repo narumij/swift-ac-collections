@@ -244,14 +244,14 @@ extension RedBlackTreeKeyValueRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     // ややチェックが甘いので末端チェック付き削除が必要
-    return __tree_.___erase(_start, _end).sealed.band(__tree_.tied)
+    return __tree_.___erase_range(_start, _end).sealed.band(__tree_.tied)
   }
 
   @inlinable
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_.ensureUnique()
     let (_start, _end) = _range
-    let result = try __tree_.___erase_if(_start, _end, { try shouldBeRemoved(Base.__element_($0)) })
+    let result = try __tree_.___erase_ragen_if(_start, _end, { try shouldBeRemoved(Base.__element_($0)) })
     if case .failure(let e) = result {
       fatalError(e.localizedDescription)
     }

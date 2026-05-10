@@ -159,7 +159,7 @@
       __tree_.ensureUnique()
       let range = __tree_.sanitizeSealedRange(
         bounds.evaluate(__tree_).relative(to: __tree_))
-      __tree_.___erase(range.lowerBound.pointer!, range.upperBound.pointer!)
+      __tree_.___erase_range(range.lowerBound.pointer!, range.upperBound.pointer!)
     }
 
     @inlinable
@@ -170,7 +170,7 @@
       __tree_.ensureUnique()
       let range = __tree_.sanitizeSealedRange(
         bounds.evaluate(__tree_).relative(to: __tree_))
-      try __tree_.___erase_if(range.lowerBound, range.upperBound, shouldBeRemoved)
+      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound, shouldBeRemoved)
     }
   }
 #endif

@@ -22,7 +22,7 @@ extension UnsafeTreeV2 {
   /// 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
   @inlinable
   @discardableResult
-  func ___erase(_ __first: _NodePtr, _ __last: _NodePtr) -> _NodePtr {
+  func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _NodePtr {
 
     var __first = __first
     while __first != __last {
@@ -37,7 +37,7 @@ extension UnsafeTreeV2 {
   /// 末尾チェック付きの削除ループ
   @inlinable
   @discardableResult
-  func ___erase_if(
+  func ___erase_ragen_if(
     _ __first: _SealedPtr, _ __last: _SealedPtr,
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool
   ) rethrows -> _SealedPtr {

@@ -376,7 +376,7 @@ extension RedBlackTreeSet {
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()
-      let result = try __tree_.___erase_if(
+      let result = try __tree_.___erase_ragen_if(
         __tree_.__begin_node_.sealed,
         __tree_.__end_node.sealed,
         shouldBeRemoved)

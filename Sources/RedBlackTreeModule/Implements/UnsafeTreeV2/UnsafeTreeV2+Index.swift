@@ -134,3 +134,25 @@ extension UnsafeTreeV2 {
     }
   }
 }
+
+#if false
+extension UnsafeTreeV2 {
+
+  // Span対応準備のための実験コード
+  func nextBuffer(_ index: inout _TieWrappedPtr) -> UnsafeMutableBufferPointer<_PayloadValue>? {
+    defer { index = next_iter(index) }
+    return try? __purified_(index).map { Base.__payload_buffer($0.pointer) }.get()
+  }
+}
+
+extension RedBlackTreeSet {
+
+  // Spanは初期化が解放されてないようなので、OutputSpanで実験
+  // いまいちうまくいかない。そもそも~Copyableな本体じゃ無いとだめかも？
+  // それ以外にも、辞書の場合どうなるんだろう？という疑問がある
+  @_lifetime(borrow self)
+  func nextSpan(after index: inout Index, maximumCount: Int) -> OutputSpan<Element> {
+    .init(buffer: __tree_.nextBuffer(&index)!, initializedCount: 1)
+  }
+}
+#endif

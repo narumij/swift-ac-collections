@@ -135,7 +135,7 @@
       guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(range.lowerBound, range.upperBound) {
+      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound) {
         try shouldBeRemoved(Base.__element_($0))
       }
     }
@@ -152,7 +152,7 @@
       guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_if(range.lowerBound, range.upperBound) {
+      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound) {
         try shouldBeRemoved(Base.__element_($0))
       }
     }

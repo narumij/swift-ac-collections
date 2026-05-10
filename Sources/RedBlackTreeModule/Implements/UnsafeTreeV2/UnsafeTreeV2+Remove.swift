@@ -23,7 +23,7 @@ extension UnsafeTreeV2 {
   package mutating func _unchecked_remove(at ptr: _NodePtr) -> (
     __r: _NodePtr, payload: _PayloadValue
   ) {
-    let ___e = self[_unsafe_raw: ptr]
+    let ___e = Base.__payload_(ptr)
     let __r = erase(ptr)
     return (__r, ___e)
   }

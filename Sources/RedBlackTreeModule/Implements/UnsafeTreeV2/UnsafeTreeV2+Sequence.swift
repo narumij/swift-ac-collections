@@ -49,7 +49,7 @@ extension UnsafeTreeV2 {
       var __first = __begin_node_
       let __last = __end_node
       while __first != __last {
-        buffer.initialize(to: self[_unsafe_raw: __first])
+        buffer.initialize(to: Base.__payload_(__first))
         buffer = buffer + 1
         __first = __tree_next_iter(__first)
       }
@@ -67,7 +67,7 @@ extension UnsafeTreeV2 {
       var __last = __end_node
       while __first != __last {
         __last = __tree_prev_iter(__last)
-        buffer.initialize(to: self[_unsafe_raw: __last])
+        buffer.initialize(to: Base.__payload_(__last))
         buffer = buffer + 1
       }
     }
@@ -84,7 +84,7 @@ extension UnsafeTreeV2 {
       var __first = __begin_node_
       let __last = __end_node
       while __first != __last {
-        buffer.initialize(to: transform(self[_unsafe_raw: __first]))
+        buffer.initialize(to: transform(Base.__payload_(__first)))
         buffer = buffer + 1
         __first = __tree_next_iter(__first)
       }
@@ -102,7 +102,7 @@ extension UnsafeTreeV2 {
       var __last = __end_node
       while __first != __last {
         __last = __tree_prev_iter(__last)
-        buffer.initialize(to: transform(self[_unsafe_raw: __last]))
+        buffer.initialize(to: transform(Base.__payload_(__last)))
         buffer = buffer + 1
       }
     }
@@ -115,7 +115,7 @@ extension UnsafeTreeV2 {
     var result: [_PayloadValue] = []
     var __first = __first
     while __first != __last {
-      result.append(self[_unsafe_raw: __first])
+      result.append(Base.__payload_(__first))
       __first = __tree_next_iter(__first)
     }
     return result
@@ -129,7 +129,7 @@ extension UnsafeTreeV2 {
     var __last = __last
     while __first != __last {
       __last = __tree_prev_iter(__last)
-      result.append(self[_unsafe_raw: __last])
+      result.append(Base.__payload_(__last))
     }
     return result
   }
@@ -143,7 +143,7 @@ extension UnsafeTreeV2 {
     var result: [T] = []
     var __first = __first
     while __first != __last {
-      result.append(transform(self[_unsafe_raw: __first]))
+      result.append(transform(Base.__payload_(__first)))
       __first = __tree_next_iter(__first)
     }
     return result
@@ -159,7 +159,7 @@ extension UnsafeTreeV2 {
     var __last = __last
     while __first != __last {
       __last = __tree_prev_iter(__last)
-      result.append(transform(self[_unsafe_raw: __last]))
+      result.append(transform(Base.__payload_(__last)))
     }
     return result
   }

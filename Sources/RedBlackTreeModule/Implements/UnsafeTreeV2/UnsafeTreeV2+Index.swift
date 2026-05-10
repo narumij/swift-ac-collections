@@ -27,17 +27,40 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
   @inlinable
   @inline(__always)
   internal func
+    ___distance(from start: _TieWrappedPtr, to end: _TieWrappedPtr) -> Int?
+  {
+    return try? lifetA2(
+      __purified_(start).map(\.pointer),
+      __purified_(end).map(\.pointer),
+      Base.___signed_distance
+    )
+    .get()
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal func
+    ___distance(from start: RedBlackTreeBoundExpression<_Key>, to end: RedBlackTreeBoundExpression<_Key>) -> Int?
+  {
+    return try? lifetA2(
+      start.evaluate(self).map(\.pointer),
+      end.evaluate(self).map(\.pointer),
+      Base.___signed_distance
+    )
+    .get()
+  }
+  
+  @inlinable
+  @inline(__always)
+  internal func
     ___distance(from start: _SealedPtr, to end: _SealedPtr) -> Int?
   {
-    guard
-      let start = start.purified.pointer,
-      let end = end.purified.pointer
-    else {
-      return nil
-    }
-    // TODO: デッドコードになってないかチェックすること
-    // ここが走らないと実質テストできてない
-    return ___signed_distance(start, end)
+    return try? lifetA2(
+      start.purified.map(\.pointer),
+      end.purified.map(\.pointer),
+      Base.___signed_distance
+    )
+    .get()
   }
 }
 

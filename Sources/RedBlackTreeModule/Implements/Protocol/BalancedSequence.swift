@@ -133,7 +133,7 @@ public protocol BalancedMultiCollection: BalancedCollection {
 
 public protocol BalancedView: BalancedSequence {
 
-  associatedtype Index = UnsafeIndexV3
+  associatedtype Index
 
   // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
 

@@ -113,7 +113,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   package var trackingTag: _TrackingTag {
     (try? map(\.pointer.trackingTag).get()) ?? .nullptr
   }
-  
+
   @inlinable @inline(__always)
   package var tag: _SealedTag {
     flatMap(\.tag)
@@ -163,7 +163,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 }
 
 extension Result {
-  
+
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 }
 
@@ -187,5 +187,33 @@ extension Result where Failure == SealError {
     case .failure(let failure):
       return failure == e
     }
+  }
+}
+
+@inlinable
+@inline(__always)
+func lifetA2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> S) -> Result<S, E> {
+  switch (a, b) {
+  case (.success(let a), .success(let b)):
+    return .success(f(a, b))
+  case (.failure(let e), _):
+    return .failure(e)
+  case (_, .failure(let e)):
+    return .failure(e)
+  }
+}
+
+@inlinable
+@inline(__always)
+func liftM2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> Result<S, E>) -> Result<
+  S, E
+> {
+  switch (a, b) {
+  case (.success(let a), .success(let b)):
+    return f(a, b)
+  case (.failure(let e), _):
+    return .failure(e)
+  case (_, .failure(let e)):
+    return .failure(e)
   }
 }

@@ -32,18 +32,18 @@ public protocol _ElementBride: _BaseBridge & _ElementType
 where Element == Base.Element, Base: _ElementType {}
 
 @usableFromInline
-protocol _PayloadPointerBridge: _UnsafeNodePtrType & _PayloadValueBride
+protocol _PayloadPointerBridge: _UnsafeNodePtrType & _BaseBridge
 where Base: _UnsafeNodePtrType & _PayloadValueType {}
 
 extension _PayloadPointerBridge {
 
   @inlinable @inline(__always)
-  func __payload_ptr(_ p: _NodePtr) -> _PayloadPtr {
+  func __payload_ptr(_ p: Base._NodePtr) -> Base._PayloadPtr {
     Base.__payload_ptr(p)
   }
 
   @inlinable @inline(__always)
-  static func __payload_(_ p: _NodePtr) -> _PayloadValue {
+  func __payload_(_ p: Base._NodePtr) -> Base._PayloadValue {
     Base.__payload_(p)
   }
 }

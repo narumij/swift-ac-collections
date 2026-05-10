@@ -226,17 +226,6 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  // TODO: デッドコードになってないかチェックすること
-  #if COMPATIBLE_ATCODER_2025
-    @inlinable
-    @inline(__always)
-    internal func
-      sequence(_ __first: _SealedPtr, _ __last: _SealedPtr) -> UnsafeIterator._RemoveAwarePointers
-    {
-      .init(_start: __first, _end: __last)
-    }
-  #endif
-
   @inlinable
   @inline(__always)
   internal func

@@ -157,7 +157,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log `count`)
   @inlinable
   public func count(of element: Element) -> Int {
-    __tree_.read { $0.__count_unique(element) }
+    __tree_.update { $0.__count_unique(element) }
   }
 }
 
@@ -171,7 +171,7 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(never)
   public func contains(_ element: Element) -> Bool {
-    __tree_.read { $0.__count_unique(element) != 0 }
+    __tree_.update { $0.__count_unique(element) != 0 }
   }
 }
 

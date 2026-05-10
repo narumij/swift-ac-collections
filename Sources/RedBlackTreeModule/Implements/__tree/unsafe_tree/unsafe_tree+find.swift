@@ -117,7 +117,7 @@ extension FindEqualProtocol_ptr {
 
     while true {
 
-      let __comp_res = __comp(__v, __nd.__value_().pointee)
+      let __comp_res = __comp(__v, __get_value(__nd))
 
       if __comp_res.__less() {
         if __nd.__left_ == nullptr {

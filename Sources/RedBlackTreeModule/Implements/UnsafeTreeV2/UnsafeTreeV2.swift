@@ -88,6 +88,19 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
+  
+  @inlinable
+  @inline(__always)
+  public var underestimatedCount: Int { count }
+
+  @inlinable
+  @inline(__always)
+  var freeCapacity: Int {
+    withMutableHeader { $0.freshPoolCapacity - $0.count }
+  }
+}
+
+extension UnsafeTreeV2 {
 
   @inlinable
   internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {

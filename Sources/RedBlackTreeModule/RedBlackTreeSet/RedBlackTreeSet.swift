@@ -303,7 +303,7 @@ extension RedBlackTreeSet {
     public mutating func removeLast() -> Element {
       __tree_.ensureUnique()
       guard let element = popLast() else {
-        preconditionFailure(.emptyFirst)
+        preconditionFailure(.emptyLast)
       }
       return element
     }

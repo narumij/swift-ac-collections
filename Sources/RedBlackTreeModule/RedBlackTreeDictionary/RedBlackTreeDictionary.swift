@@ -328,7 +328,7 @@ extension RedBlackTreeDictionary {
     guard
       let element = ___unchecked_remove_last().map(\.payload).map(__element_)
     else {
-      preconditionFailure(.emptyFirst)
+      preconditionFailure(.emptyLast)
     }
     return element
   }

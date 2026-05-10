@@ -219,20 +219,20 @@ extension RedBlackTreeKeyValueRangeView {
   @discardableResult
   public mutating func removeFirst() -> Element {
     __tree_.ensureUnique()
-    let (_start, _end) = _raw_range
-    guard _start != _end else { fatalError(.emptyFirst) }
-    let (_p, _r) = __tree_._unchecked_remove(at: _start)
-    startIndex = ___index(_p.sealed)
-    return Base.__element_(_r)
+    guard let element = popFirst() else {
+      preconditionFailure(.emptyFirst)
+    }
+    return element
   }
 
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
     __tree_.ensureUnique()
-    let (_start, _end) = _raw_range
-    guard _start != _end else { fatalError(.emptyLast) }
-    return Base.__element_(__tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload)
+    guard let element = popLast() else {
+      preconditionFailure(.emptyLast)
+    }
+    return element
   }
 }
 

@@ -291,7 +291,7 @@ extension RedBlackTreeMultiSet {
     guard
       let element = ___unchecked_remove_last()?.payload
     else {
-      preconditionFailure(.emptyFirst)
+      preconditionFailure(.emptyLast)
     }
     return element
   }

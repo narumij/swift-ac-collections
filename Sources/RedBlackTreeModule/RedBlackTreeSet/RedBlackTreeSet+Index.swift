@@ -135,34 +135,30 @@
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func formIndex(before i: inout Index) {
-      i = index(before: i)
+      i = __tree_.prev_iter(i)
     }
 
     /// Replaces the given index with its successor.
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func formIndex(after i: inout Index) {
-      i = index(after: i)
+      i = __tree_.next_iter(i)
     }
 
     /// Offsets the given index by the specified distance.
     ///
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-      i = index(i, offsetBy: distance)
+      i = __tree_.adv_iter(i, offsetBy: distance)
     }
 
     /// Offsets the given index by the specified distance, or so that it equals the given limiting index.
     ///
     /// - Complexity: O(*d*)
     @inlinable
-    @inline(__always)
     public func formIndex(
       _ i: inout Index, offsetBy distance: Int, limitedBy limit: Index
     ) -> Bool {

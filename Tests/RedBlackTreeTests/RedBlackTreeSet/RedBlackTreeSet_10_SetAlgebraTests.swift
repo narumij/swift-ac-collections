@@ -1,6 +1,7 @@
 import RedBlackTreeModule
 import XCTest
 
+#if COMPATIBLE_ATCODER_2025 || USE_SET_ALGEBRA
 final class RedBlackTreeSetSetAlgebraTests: RedBlackTreeTestCase {
 
   /// unionが正しく動作すること
@@ -219,3 +220,4 @@ extension RedBlackTreeSetSetAlgebraTests {
     XCTAssertEqual(a.sorted(), [1, 2])
   }
 }
+#endif

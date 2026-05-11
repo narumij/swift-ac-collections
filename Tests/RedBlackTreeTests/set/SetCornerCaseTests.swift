@@ -74,11 +74,11 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
     var set: RedBlackTreeSet = [0, 1, 2, 3, 4, 5]
     let lhs = set.lowerBound(2)
     let rhs = set.lowerBound(5)
-#if COMPATIBLE_ATCODER_2025
-    set.removeSubrange(lhs..<rhs)  // 2,3,4 を削除
+    #if COMPATIBLE_ATCODER_2025
+      set.removeSubrange(lhs..<rhs)  // 2,3,4 を削除
     #else
-    set.erase(lhs..<rhs)  // 2,3,4 を削除
-#endif
+      set.erase(lhs..<rhs)  // 2,3,4 を削除
+    #endif
     XCTAssertEqual(set.sorted(), [0, 1, 5])
   }
 
@@ -116,10 +116,10 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
           XCTAssertEqual(rbTree.removeFirst(), stdSet.min()!)
           stdSet.remove(stdSet.min()!)
         case 3 where !rbTree.isEmpty:  // removeLast
-#if COMPATIBLE_ATCODER_2025
-          XCTAssertEqual(rbTree.removeLast(), stdSet.max()!)
-          stdSet.remove(stdSet.max()!)
-#endif
+          #if COMPATIBLE_ATCODER_2025
+            XCTAssertEqual(rbTree.removeLast(), stdSet.max()!)
+            stdSet.remove(stdSet.max()!)
+          #endif
         default:
           continue
         }
@@ -130,26 +130,28 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
     }
   }
 
-  func testPopFirstAndSubtracting() {
-    var s: RedBlackTreeSet = [3, 1, 2]
-#if COMPATIBLE_ATCODER_2025
-    XCTAssertEqual(s.popFirst(), 1)
-#else
-    XCTAssertEqual(s.popFirst(), 1)
-#endif
-    XCTAssertEqual(s.sorted(), [2, 3])
+  #if COMPATIBLE_ATCODER_2025 || USE_SET_ALGEBRA
+    func testPopFirstAndSubtracting() {
+      var s: RedBlackTreeSet = [3, 1, 2]
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertEqual(s.popFirst(), 1)
+      #else
+        XCTAssertEqual(s.popFirst(), 1)
+      #endif
+      XCTAssertEqual(s.sorted(), [2, 3])
 
-    let sub = s.subtracting([2])
-    XCTAssertEqual(sub.sorted(), [3])
+      let sub = s.subtracting([2])
+      XCTAssertEqual(sub.sorted(), [3])
 
-    s.subtract([2, 3])
-    XCTAssertTrue(s.isEmpty)
-  }
+      s.subtract([2, 3])
+      XCTAssertTrue(s.isEmpty)
+    }
 
-  func testSequenceUnionEquivalence() {
-    let base: RedBlackTreeSet = [1, 4]
-    let rbs = base.union([2, 4, 6])
-    let swift = Set([1, 4]).union([2, 4, 6])
-    XCTAssertEqual(rbs.sorted(), swift.sorted())
-  }
+    func testSequenceUnionEquivalence() {
+      let base: RedBlackTreeSet = [1, 4]
+      let rbs = base.union([2, 4, 6])
+      let swift = Set([1, 4]).union([2, 4, 6])
+      XCTAssertEqual(rbs.sorted(), swift.sorted())
+    }
+  #endif
 }

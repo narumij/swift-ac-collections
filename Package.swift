@@ -17,6 +17,7 @@ var defines: [String] = [
   //  "BENCHMARK",
   //  "ALLOCATION_DRILL" // リリース時はオフ
 //  "USE_C_MALLOC"
+//  "USE_SET_ALGEBRA" // 使うとinsertが遅くなる
 ]
 
 var _settings: [SwiftSetting] =

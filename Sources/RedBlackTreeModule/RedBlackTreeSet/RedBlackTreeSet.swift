@@ -169,7 +169,6 @@ extension RedBlackTreeSet {
   ///
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-  @inline(never)
   public func contains(_ element: Element) -> Bool {
     __tree_.update { $0.__count_unique(element) != 0 }
   }
@@ -237,7 +236,6 @@ extension RedBlackTreeSet {
   ///
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func update(with newMember: Element) -> Element? {
     __tree_.ensureUniqueAndCapacity()

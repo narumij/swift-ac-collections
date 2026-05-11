@@ -7,6 +7,7 @@
 import RedBlackTreeModule
 import XCTest
 
+#if COMPATIBLE_ATCODER_2025 || USE_SET_ALGEBRA
 final class RedBlackTreeSetAlgebraFullTests: RedBlackTreeTestCase {
 
   // MARK: ── 汎用比較ヘルパ ───────────────────────────────────────────────
@@ -139,3 +140,4 @@ final class RedBlackTreeSetAlgebraFullTests: RedBlackTreeTestCase {
     XCTAssertEqual(a.subtracting(a), empty)
   }
 }
+#endif

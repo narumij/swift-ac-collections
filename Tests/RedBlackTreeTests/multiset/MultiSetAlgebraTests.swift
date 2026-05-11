@@ -8,6 +8,7 @@
 import RedBlackTreeModule
 import XCTest
 
+#if COMPATIBLE_ATCODER_2025 || USE_SET_ALGEBRA
 final class MultiSetAlgebraTests: RedBlackTreeTestCase {
 
   override func setUpWithError() throws {
@@ -135,3 +136,4 @@ final class MultiSetAlgebraTests: RedBlackTreeTestCase {
     assertEquiv(lhs, [1])
   }
 }
+#endif

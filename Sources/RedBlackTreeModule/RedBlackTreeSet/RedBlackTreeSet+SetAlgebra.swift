@@ -20,7 +20,10 @@ import Foundation
 // SetAlgebra適合を削るとinsertが速くなる現象に遭遇した
 // inlinableとinline alwaysを削っても同等のパフォーマンスとなった
 // このため、inlineableもinline alwaysも削ることにした
+// contains, insert, update, removeをinlinableで特殊化をするだけにするよう揃えている
+// プロトコル適合自体をやめるのが一番速い
 
+#if COMPATIBLE_ATCODER_2025 || USE_SET_ALGEBRA
 extension RedBlackTreeSet: SetAlgebra {
 
   /// Returns a new set with the elements of both this and the given set.
@@ -111,4 +114,5 @@ extension RedBlackTreeSet: SetAlgebra {
       __tree_ = __tree_.___difference(other.__tree_)
     }
   }
+#endif
 #endif

@@ -82,13 +82,13 @@ extension RedBlackTreeKeyValueRangeView {
   }
   
   @inlinable
-  func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPointer {
-    p.band(__tree_.lazyTie)
+  func ___index(_ p: _SealedPtr) -> _LazyDetachPointer {
+    p.band(__tree_.lazyDetach)
   }
 
   @inlinable
-  func ___index_or_nil(_ p: _SealedPtr) -> _LazyTieWrappedPointer? {
-    p.exists ? p.band(__tree_.lazyTie) : nil
+  func ___index_or_nil(_ p: _SealedPtr) -> _LazyDetachPointer? {
+    p.exists ? p.band(__tree_.lazyDetach) : nil
   }
 }
 
@@ -101,7 +101,7 @@ extension RedBlackTreeKeyValueRangeView {
   @inline(__always)
   public __consuming func makeIterator() -> UnsafeIterator.KeyValueObverse<Base> {
     let (_start, _end) = _range
-    return .init(start: _start, end: _end, tie: __tree_.tied)
+    return .init(start: _start, end: _end, tie: __tree_.lazyDetach)
   }
 
   /// - Complexity: O(`count`)

@@ -67,10 +67,10 @@ extension UnsafeTreeV2 {
 
   // TODO: implement this
   @usableFromInline
-  var lazyTie: _LazyTiedRawBuffer {
+  var lazyDetach: _LazyDetach {
     _buffer.buffer === _emptyTreeStorage
 //    ? .create() : withMutableHeader { $0.tiedRawBufferProxy }
-    ? _emptyLazyTie : withMutableHeader { $0.tiedRawBufferProxy }
+    ? _emptyLazyDetach : withMutableHeader { $0.tiedRawBufferProxy }
   }
 }
 
@@ -245,7 +245,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal func __purified_(_ index: _LazyTieWrappedPointer) -> _SealedPtr {
+  internal func __purified_(_ index: _LazyDetachPointer) -> _SealedPtr {
     tied === index.tied
       ? index.sealed.purified
       : __retrieve_(index.sealed.purified.tag).purified

@@ -139,43 +139,43 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func prev_iter(_ i: _LazyTieWrappedPointer) -> _LazyTieWrappedPointer {
+  func prev_iter(_ i: _LazyDetachPointer) -> _LazyDetachPointer {
     __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
-      .flatMap { $0.sealed.band(lazyTie) }
+      .flatMap { $0.sealed.band(lazyDetach) }
   }
 
   @inlinable
   @inline(__always)
-  func next_iter(_ i: _LazyTieWrappedPointer) -> _LazyTieWrappedPointer {
+  func next_iter(_ i: _LazyDetachPointer) -> _LazyDetachPointer {
     __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
-      .flatMap { $0.sealed.band(lazyTie) }
+      .flatMap { $0.sealed.band(lazyDetach) }
   }
 
   @inlinable
   @inline(__always)
-  func adv_iter(_ i: _LazyTieWrappedPointer, offsetBy distance: Int) -> _LazyTieWrappedPointer {
+  func adv_iter(_ i: _LazyDetachPointer, offsetBy distance: Int) -> _LazyDetachPointer {
     __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
-      .flatMap { $0.sealed.band(lazyTie) }
+      .flatMap { $0.sealed.band(lazyDetach) }
   }
 
   @inlinable
   @inline(__always)
-  func adv_iter(_ i: _LazyTieWrappedPointer, offsetBy distance: Int, limitedBy limit: _LazyTieWrappedPointer)
-    -> _LazyTieWrappedPointer
+  func adv_iter(_ i: _LazyDetachPointer, offsetBy distance: Int, limitedBy limit: _LazyDetachPointer)
+    -> _LazyDetachPointer
   {
     let __l = __purified_(limit).map(\.pointer)
     return __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-      .flatMap { $0.sealed.band(lazyTie) }
+      .flatMap { $0.sealed.band(lazyDetach) }
   }
 
   @inlinable
   @inline(__always)
-  func index_or_nil(_ i: _LazyTieWrappedPointer, offsetBy distance: Int, limitedBy limit: _LazyTieWrappedPointer)
-    -> _LazyTieWrappedPointer?
+  func index_or_nil(_ i: _LazyDetachPointer, offsetBy distance: Int, limitedBy limit: _LazyDetachPointer)
+    -> _LazyDetachPointer?
   {
     let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
     switch advanced {
@@ -189,7 +189,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   func form_index(
-    _ i: inout _LazyTieWrappedPointer, offsetBy distance: Int, limitedBy limit: _LazyTieWrappedPointer
+    _ i: inout _LazyDetachPointer, offsetBy distance: Int, limitedBy limit: _LazyDetachPointer
   )
     -> Bool
   {

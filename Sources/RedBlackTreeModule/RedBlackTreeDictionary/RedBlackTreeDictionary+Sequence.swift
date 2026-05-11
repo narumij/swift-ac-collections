@@ -74,7 +74,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public func makeIterator() -> Tree._KeyValues {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
   }
 }
 

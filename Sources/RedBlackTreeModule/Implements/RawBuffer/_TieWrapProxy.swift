@@ -13,10 +13,10 @@ public struct _TieWrapProxy<RawValue> {
   package let rawValue: RawValue
 
   @usableFromInline
-  package let tied: _TiedRawBufferProxy
+  package let tied: _TiedRawBufferProxy?
 
   @inlinable @inline(__always)
-  package init(rawValue: RawValue, tie: _TiedRawBufferProxy) {
+  package init(rawValue: RawValue, tie: _TiedRawBufferProxy?) {
     self.rawValue = rawValue
     self.tied = tie
   }
@@ -48,7 +48,7 @@ extension _NodePtrSealing {
   // 某バンドオマージュ
 
   @inlinable
-  package func band(_ tie: _TiedRawBufferProxy) -> _TieWrappedProxyPtr {
+  package func band(_ tie: _TiedRawBufferProxy?) -> _TieWrappedProxyPtr {
     isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, tie: tie))
   }
 }
@@ -58,7 +58,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   // 某バンドオマージュ
 
   @inlinable
-  package func band(_ tie: _TiedRawBufferProxy) -> _TieWrappedProxyPtr {
+  package func band(_ tie: _TiedRawBufferProxy?) -> _TieWrappedProxyPtr {
     flatMap { $0.band(tie) }
   }
 }

@@ -8,6 +8,10 @@
 // TODO: implement this
 @usableFromInline
 final package class _TiedRawBufferProxy {
+
+  @usableFromInline
+  init() {}
+
   @usableFromInline
   var buffer: _TiedRawBuffer? {
     didSet {
@@ -25,3 +29,8 @@ final package class _TiedRawBufferProxy {
     buffer = nil
   }
 }
+
+/// The type-punned empty singleton storage instance.
+@exclusivity(unchecked)
+@usableFromInline
+nonisolated(unsafe) package let _emptyProxy = _TiedRawBufferProxy()

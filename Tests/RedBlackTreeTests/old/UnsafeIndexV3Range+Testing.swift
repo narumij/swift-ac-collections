@@ -13,11 +13,11 @@
 
   extension UnsafeIndexV3Range {
 
-    package var lower: _TieWrappedPtr {
+    package var lower: UnsafeIndexV3 {
       range.lowerBound
     }
 
-    package var upper: _TieWrappedPtr {
+    package var upper: UnsafeIndexV3 {
       range.upperBound
     }
   }

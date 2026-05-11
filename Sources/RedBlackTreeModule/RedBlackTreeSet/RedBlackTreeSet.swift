@@ -157,7 +157,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log `count`)
   @inlinable
   public func count(of element: Element) -> Int {
-    __tree_.__count_unique(element)
+    __tree_.update { $0.__count_unique(element) }
   }
 }
 
@@ -169,9 +169,8 @@ extension RedBlackTreeSet {
   ///
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-  @inline(never)
-  public func contains(_ member: Element) -> Bool {
-    __tree_.read { $0.__count_unique(member) != 0 }
+  public func contains(_ element: Element) -> Bool {
+    __tree_.update { $0.__count_unique(element) != 0 }
   }
 }
 
@@ -185,7 +184,7 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public var first: Element? {
-    isEmpty ? nil : __tree_[_unsafe_raw: _start]
+    isEmpty ? nil : Base.__payload_(_start)
   }
 
   /// The last element of the collection.
@@ -193,7 +192,7 @@ extension RedBlackTreeSet {
   /// - Complexity: O(log `count`)
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : __tree_[_unsafe_raw: __tree_.__tree_prev_iter(_end)]
+    __tree_.___max()
   }
 }
 
@@ -201,17 +200,15 @@ extension RedBlackTreeSet {
 
   /// Returns the minimum element in the sequence.
   ///
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
-  ///
-  /// If O(1) is required, `first` provides an equivalent operation in O(1).
+  /// - Complexity: O(1)
   @inlinable
   public func min() -> Element? {
-    __tree_.___min()
+    isEmpty ? nil : Base.__payload_(_start)
   }
 
   /// Returns the maximum element in the sequence.
   ///
-  /// - Complexity: O(log *n*), where *n* is the number of elements.
+  /// - Complexity: O(log `count`)
   @inlinable
   public func max() -> Element? {
     __tree_.___max()
@@ -239,7 +236,6 @@ extension RedBlackTreeSet {
   ///
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func update(with newMember: Element) -> Element? {
     __tree_.ensureUniqueAndCapacity()
@@ -262,7 +258,7 @@ extension RedBlackTreeSet {
     @inlinable
     public mutating func popFirst() -> Element? {
       __tree_.ensureUnique()
-      return ___remove_first()?.payload
+      return ___unchecked_remove_first()?.payload
     }
 
     /// Removes and returns the last element of the collection.
@@ -271,7 +267,7 @@ extension RedBlackTreeSet {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return ___remove_last()?.payload
+      return ___unchecked_remove_last()?.payload
     }
   }
 #endif
@@ -285,10 +281,10 @@ extension RedBlackTreeSet {
   @discardableResult
   public mutating func removeFirst() -> Element {
     __tree_.ensureUnique()
-    guard let element = ___remove_first() else {
+    guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
-    return element.payload
+    return element
   }
 }
 
@@ -302,10 +298,10 @@ extension RedBlackTreeSet {
     @discardableResult
     public mutating func removeLast() -> Element {
       __tree_.ensureUnique()
-      guard let element = ___remove_last() else {
-        preconditionFailure(.emptyFirst)
+      guard let element = popLast() else {
+        preconditionFailure(.emptyLast)
       }
-      return element.payload
+      return element
     }
   }
 #endif
@@ -352,7 +348,7 @@ extension RedBlackTreeSet {
       __tree_.ensureUnique()
       __tree_.deinitialize()
     } else {
-      self = .init()
+      __tree_ = .create()
     }
   }
 }
@@ -378,7 +374,7 @@ extension RedBlackTreeSet {
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()
-      let result = try __tree_.___erase_if(
+      let result = try __tree_.___erase_ragen_if(
         __tree_.__begin_node_.sealed,
         __tree_.__end_node.sealed,
         shouldBeRemoved)

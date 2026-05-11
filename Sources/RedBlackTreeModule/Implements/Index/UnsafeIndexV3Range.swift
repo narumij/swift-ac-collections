@@ -22,11 +22,11 @@
 public struct UnsafeIndexV3Range {
 
   @usableFromInline
-  internal var range: _RawRange<_TieWrappedPtr>
+  internal var range: _RawRange<UnsafeIndexV3>
 
   @inlinable
   @inline(__always)
-  internal init(_ range: _RawRange<_TieWrappedPtr>) {
+  internal init(_ range: _RawRange<UnsafeIndexV3>) {
     self.range = range
   }
 }
@@ -37,24 +37,11 @@ public struct UnsafeIndexV3Range {
 
 extension UnsafeIndexV3Range {
 
-  public var lowerBound: _TieWrappedPtr {
+  public var lowerBound: UnsafeIndexV3 {
     range.lowerBound
   }
 
-  public var upperBound: _TieWrappedPtr {
-    range.upperBound
-  }
-}
-
-// 互換維持の為のコード。互換廃止の際に削ること
-
-extension UnsafeIndexV3Range {
-
-  package var lower: _TieWrappedPtr {
-    range.lowerBound
-  }
-
-  package var upper: _TieWrappedPtr {
+  public var upperBound: UnsafeIndexV3 {
     range.upperBound
   }
 }

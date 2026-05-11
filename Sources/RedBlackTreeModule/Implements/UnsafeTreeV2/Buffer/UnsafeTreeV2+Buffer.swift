@@ -23,11 +23,18 @@ package final class UnsafeTreeV2Buffer:
 {
   // MARK: - 解放処理
   deinit {
+    
     withUnsafeMutablePointers { header, _ in
-      if header.pointee.isRawBufferUniquelyOwned {
-        header.pointee.___deallocFreshPool()
+      
+      if !header.pointee.isRawBufferProxyUniquelyOwned() {
+//        header.pointee.tiedRawBufferProxy.buffer = header.pointee.tiedRawBuffer
+        header.pointee._tiedProxy!.buffer = header.pointee.tiedRawBuffer
+      }
+      
+      if !header.pointee.isRawBufferUniquelyOwned {
+        header.pointee._tied!.isValueAccessAllowed = false
       } else {
-        header.pointee._tied?.isValueAccessAllowed = false
+        header.pointee.___deallocFreshPool()
       }
     }
   }

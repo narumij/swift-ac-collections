@@ -29,28 +29,38 @@ public protocol BalancedSequence: Sequence {
 
   mutating func popFirst() -> Element?
   mutating func removeFirst() -> Element
-  mutating func removeFirst(_: Int)
 
   mutating func popLast() -> Element?
   mutating func removeLast() -> Element
-  mutating func removeLast(_: Int)
 
   func sorted() -> [Element]
   func reversed() -> [Element]
-
-  // multimapをちゃんとつかってくれる人がいた場合、firstIndex(where:)は必要そう
 }
 
 extension BalancedSequence {
 
-  public mutating func removeFirst(_ k: Int) {
-    precondition(k >= 0)
-    for _ in 0..<k { _ = removeFirst() }
+  @discardableResult
+  public mutating func popFirst(_ k: Int) -> Int {
+    var i = 0
+    while i < k {
+      guard let _ = popFirst() else {
+        return i
+      }
+      i += 1
+    }
+    return i
   }
 
-  public mutating func removeLast(_ k: Int) {
-    precondition(k >= 0)
-    for _ in 0..<k { _ = removeLast() }
+  @discardableResult
+  public mutating func popLast(_ k: Int) -> Int {
+    var i = 0
+    while i < k {
+      guard let _ = popLast() else {
+        return i
+      }
+      i += 1
+    }
+    return i
   }
 }
 
@@ -76,6 +86,8 @@ public protocol BalancedCollection: BalancedSequence {
   var startIndex: Index { get }
   var endIndex: Index { get }
 
+  // multimapをちゃんとつかってくれる人がいた場合、firstIndex(where:)は必要そう
+
   func index(after: Index) -> Index
   func index(before: Index) -> Index
   func index(_: Index, offsetBy: Int) -> Index
@@ -97,7 +109,7 @@ public protocol BalancedCollection: BalancedSequence {
   func isValid(_: IndexRangeExpression) -> Bool
   func isValid(_: Bound) -> Bool
   func isValid(_: BoundRangeExpression) -> Bool
-  
+
   func distance(from: Bound, to: Bound) -> Int
 
   subscript(range: IndexRange) -> View { get }
@@ -107,7 +119,7 @@ public protocol BalancedCollection: BalancedSequence {
 
   func lowerBound(_: _Key) -> Index
   func upperBound(_: _Key) -> Index
-  
+
   func find(_: _Key) -> Index
 
   // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
@@ -135,7 +147,7 @@ public protocol BalancedMultiCollection: BalancedCollection {
 
 public protocol BalancedView: BalancedSequence {
 
-  associatedtype Index = UnsafeIndexV3
+  associatedtype Index
 
   // removeSubrangeや標準Rangeとのミスマッチがどうしてもあれなので、用語としてeraseを採用
 
@@ -146,12 +158,12 @@ public protocol BalancedView: BalancedSequence {
 // MARK: -
 
 #if !COMPATIBLE_ATCODER_2025
-extension RedBlackTreeSet: BalancedCollection {}
-extension RedBlackTreeDictionary: BalancedCollection {}
+  extension RedBlackTreeSet: BalancedCollection {}
+  extension RedBlackTreeDictionary: BalancedCollection {}
 
-extension RedBlackTreeMultiSet: BalancedMultiCollection {}
-extension RedBlackTreeMultiMap: BalancedMultiCollection {}
+  extension RedBlackTreeMultiSet: BalancedMultiCollection {}
+  extension RedBlackTreeMultiMap: BalancedMultiCollection {}
 
-extension RedBlackTreeKeyOnlyRangeView: BalancedView { }
-extension RedBlackTreeKeyValueRangeView: BalancedView { }
+  extension RedBlackTreeKeyOnlyRangeView: BalancedView {}
+  extension RedBlackTreeKeyValueRangeView: BalancedView {}
 #endif

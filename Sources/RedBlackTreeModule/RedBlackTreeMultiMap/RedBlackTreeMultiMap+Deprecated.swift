@@ -573,7 +573,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     @inline(__always)
     public subscript(key: Key) -> SubSequence {
-      let (lo, hi): (_NodePtr, _NodePtr) = self.___equal_range(key)
+      let (lo, hi): (_NodePtr, _NodePtr) = __tree_.__equal_range_multi(key)
       return .init(tree: __tree_, start: lo.sealed, end: hi.sealed)
     }
   }

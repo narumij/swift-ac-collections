@@ -22,7 +22,8 @@
 package final class _TiedRawBuffer:
   ManagedBuffer<_TiedRawBuffer.Header, Void>, _UnsafeNodePtrType
 {
-  public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
+  @usableFromInline
+  typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 
   deinit {
     withUnsafeMutablePointerToHeader { header in
@@ -35,6 +36,7 @@ extension _TiedRawBuffer {
 
   @nonobjc
   @inlinable
+  @inline(__always)
   static func create(
     bucket: _BucketPointer?,
     deallocator: _BucketAllocator
@@ -51,9 +53,8 @@ extension _TiedRawBuffer {
 extension _TiedRawBuffer {
 
   @frozen
-  public
-    struct Header
-  {
+  @usableFromInline
+  package struct Header {
 
     @inlinable
     internal init(

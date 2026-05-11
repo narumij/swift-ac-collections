@@ -20,14 +20,14 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@usableFromInline
-protocol ___UnsafeIndexV2:
-  UnsafeTreeSealedRangeProtocol
-    & UnsafeIndexProviderProtocolV2
-    & _KeyBride
-{}
-
 #if COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  protocol ___UnsafeIndexV2:
+    UnsafeTreeSealedRangeProtocol
+      & UnsafeIndexProviderProtocolV2
+      & _KeyBride
+  {}
+
   extension ___UnsafeIndexV2 {
 
     @inlinable @inline(__always)

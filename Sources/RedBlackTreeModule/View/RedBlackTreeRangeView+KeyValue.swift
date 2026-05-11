@@ -72,13 +72,23 @@ extension RedBlackTreeKeyValueRangeView {
 extension RedBlackTreeKeyValueRangeView {
 
   @inlinable
-  func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
+  func ___index(_ p: _SealedPtr) -> _TieWrappedPtr {
     p.band(__tree_.tied)
   }
 
   @inlinable
-  func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
+  func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedPtr? {
     p.exists ? p.band(__tree_.tied) : nil
+  }
+  
+  @inlinable
+  func ___index(_ p: _SealedPtr) -> _TieWrappedProxyPtr {
+    p.band(__tree_.lazyTie)
+  }
+
+  @inlinable
+  func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedProxyPtr? {
+    p.exists ? p.band(__tree_.lazyTie) : nil
   }
 }
 
@@ -219,20 +229,20 @@ extension RedBlackTreeKeyValueRangeView {
   @discardableResult
   public mutating func removeFirst() -> Element {
     __tree_.ensureUnique()
-    let (_start, _end) = _raw_range
-    guard _start != _end else { fatalError(.emptyFirst) }
-    let (_p, _r) = __tree_._unchecked_remove(at: _start)
-    startIndex = ___index(_p.sealed)
-    return Base.__element_(_r)
+    guard let element = popFirst() else {
+      preconditionFailure(.emptyFirst)
+    }
+    return element
   }
 
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
     __tree_.ensureUnique()
-    let (_start, _end) = _raw_range
-    guard _start != _end else { fatalError(.emptyLast) }
-    return Base.__element_(__tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload)
+    guard let element = popLast() else {
+      preconditionFailure(.emptyLast)
+    }
+    return element
   }
 }
 
@@ -244,14 +254,14 @@ extension RedBlackTreeKeyValueRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     // ややチェックが甘いので末端チェック付き削除が必要
-    return __tree_.___erase(_start, _end).sealed.band(__tree_.tied)
+    return __tree_.___erase_range(_start, _end).sealed.band(__tree_.tied)
   }
 
   @inlinable
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_.ensureUnique()
     let (_start, _end) = _range
-    let result = try __tree_.___erase_if(_start, _end, { try shouldBeRemoved(Base.__element_($0)) })
+    let result = try __tree_.___erase_ragen_if(_start, _end, { try shouldBeRemoved(Base.__element_($0)) })
     if case .failure(let e) = result {
       fatalError(e.localizedDescription)
     }
@@ -316,7 +326,7 @@ extension RedBlackTreeKeyValueRangeView {
   public func _isdentical(to other: Self) -> Bool {
     let (_start, _end) = _range
     let (_other_start, _other_end) = other._range
-    return __tree_._isIdentical(to: other.__tree_) && _start == _other_start
+    return __tree_.isIdentical(to: other.__tree_) && _start == _other_start
       && _end == _other_end
   }
 }

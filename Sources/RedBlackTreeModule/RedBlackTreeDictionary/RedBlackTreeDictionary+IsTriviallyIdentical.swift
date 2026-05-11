@@ -52,6 +52,6 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
-    __tree_._isIdentical(to: other.__tree_)
+    __tree_.isIdentical(to: other.__tree_)
   }
 }

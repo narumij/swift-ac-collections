@@ -64,6 +64,14 @@ extension UnsafeTreeV2 {
     _buffer.buffer === _emptyTreeStorage
       ? _emptyDeallocator : withMutableHeader { $0.tiedRawBuffer }
   }
+
+  // TODO: implement this
+  @usableFromInline
+  var lazyTie: _LazyTiedRawBuffer {
+    _buffer.buffer === _emptyTreeStorage
+//    ? .create() : withMutableHeader { $0.tiedRawBufferProxy }
+    ? _emptyLazyTie : withMutableHeader { $0.tiedRawBufferProxy }
+  }
 }
 
 extension UnsafeTreeV2: CustomStringConvertible {
@@ -85,6 +93,19 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  public var underestimatedCount: Int { count }
+
+  @inlinable
+  @inline(__always)
+  var freeCapacity: Int {
+    withMutableHeader { $0.freshPoolCapacity - $0.count }
+  }
 }
 
 extension UnsafeTreeV2 {
@@ -114,12 +135,34 @@ extension UnsafeTreeV2 {
       precondition(sealed.exists)
       return UnsafePointer(sealed.pointer!.__value_())
     }
-//    @inline(__always)
-//    @_transparent
-//    nonmutating unsafeMutableAddress {
-//      precondition(sealed.exists)
-//      return sealed.pointer!.__value_()
-//    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  func _unsafeAddress(_ position: UnsafeIndexV3) -> UnsafePointer<_PayloadValue> {
+    return UnsafePointer(_unsafeMutableAddress(position))
+  }
+
+  @inlinable
+  @inline(__always)
+  func _unsafeMutableAddress(_ position: UnsafeIndexV3) -> UnsafeMutablePointer<_PayloadValue> {
+    let sealed: _SealedPtr = __purified_(position)
+    precondition(sealed.exists)
+    return sealed.pointer!.__value_()
+  }
+
+  @inlinable
+  @inline(__always)
+  internal subscript(_unsafe position: UnsafeIndexV3) -> _PayloadValue {
+
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      _unsafeAddress(position)
+    }
   }
 }
 
@@ -199,6 +242,14 @@ extension UnsafeTreeV2 {
       ? index.sealed.purified
       : __retrieve_(index.sealed.purified.tag).purified
   }
+
+  @inlinable
+  @inline(__always)
+  internal func __purified_(_ index: _TieWrappedProxyPtr) -> _SealedPtr {
+    tied === index.tied
+      ? index.sealed.purified
+      : __retrieve_(index.sealed.purified.tag).purified
+  }
 }
 
 extension UnsafeTreeV2 {
@@ -207,7 +258,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal func __purified_(_ range: _RawRange<_TieWrappedPtr>)
+  internal func __purified_(_ range: _RawRange<UnsafeIndexV3>)
     -> _RawRange<_SealedPtr>
   {
     .init(
@@ -215,19 +266,3 @@ extension UnsafeTreeV2 {
       upperBound: __purified_(range.upperBound))
   }
 }
-
-// MARK: - COMPATIBLE_ATCODER_2025用
-
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    @inline(__always)
-    internal func __purified_(_ index: UnsafeIndexV2<Base>) -> _SealedPtr
-    where Index.Tree == UnsafeTreeV2, Index._NodePtr == _NodePtr {
-      tied === index.tied
-        ? index.sealed.purified
-        : __retrieve_(index.sealed.purified.tag).purified
-    }
-  }
-#endif

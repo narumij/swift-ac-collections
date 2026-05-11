@@ -27,13 +27,23 @@
   extension RedBlackTreeDictionary {
 
     @inlinable
-    func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
+    func ___index(_ p: _SealedPtr) -> _TieWrappedPtr {
       p.band(__tree_.tied)
     }
 
     @inlinable
-    func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
+    func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedPtr? {
       p.exists ? p.band(__tree_.tied) : nil
+    }
+    
+    @inlinable
+    func ___index(_ p: _SealedPtr) -> _TieWrappedProxyPtr {
+      p.band(__tree_.lazyTie)
+    }
+
+    @inlinable
+    func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedProxyPtr? {
+      p.exists ? p.band(__tree_.lazyTie) : nil
     }
   }
 
@@ -66,10 +76,7 @@
     public func distance(from start: Index, to end: Index)
       -> Int
     {
-      guard
-        let d = __tree_.___distance(
-          from: __tree_.__purified_(start),
-          to: __tree_.__purified_(end))
+      guard let d = __tree_.distance(from: start, to: end)
       else { fatalError(.invalidIndex) }
       return d
     }
@@ -140,39 +147,27 @@
     /// - Complexity: O(1)
     @inlinable
     public func index(before i: Index) -> Index {
-      __tree_.__purified_(i)
-        .flatMap { ___tree_prev_iter($0.pointer) }
-        .flatMap { $0.sealed.band(__tree_.tied) }
+      __tree_.prev_iter(i)
     }
 
     /// - Complexity: O(1)
     @inlinable
     public func index(after i: Index) -> Index {
-      __tree_.__purified_(i)
-        .flatMap { ___tree_next_iter($0.pointer) }
-        .flatMap { $0.sealed.band(__tree_.tied) }
+      __tree_.next_iter(i)
     }
 
     /// - Complexity: O(`distance`)
     @inlinable
-    public func index(_ i: Index, offsetBy distance: Int)
-      -> Index
-    {
-      __tree_.__purified_(i)
-        .flatMap { ___tree_adv_iter($0.pointer, distance) }
-        .flatMap { $0.sealed.band(__tree_.tied) }
+    public func index(_ i: Index, offsetBy distance: Int) -> Index {
+      __tree_.adv_iter(i, offsetBy: distance)
     }
 
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(
       _ i: Index, offsetBy distance: Int, limitedBy limit: Index
-    )
-      -> Index?
-    {
-      var i = i
-      let result = formIndex(&i, offsetBy: distance, limitedBy: limit)
-      return result ? i : nil
+    ) -> Index? {
+      __tree_.index_or_nil(i, offsetBy: distance, limitedBy: limit)
     }
   }
 
@@ -180,43 +175,29 @@
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func formIndex(before i: inout Index) {
-      i = index(before: i)
+      i = __tree_.prev_iter(i)
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func formIndex(after i: inout Index) {
-      i = index(after: i)
+      i = __tree_.next_iter(i)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func formIndex(_ i: inout Index, offsetBy distance: Int) {
-      i = index(i, offsetBy: distance)
+      i = __tree_.adv_iter(i, offsetBy: distance)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    @inline(__always)
     public func formIndex(
-      _ i: inout Index,
-      offsetBy distance: Int,
-      limitedBy limit: Index
-    )
-      -> Bool
-    {
-      guard let ___i = __tree_.__purified_(i).pointer
-      else { return false }
+      _ i: inout Index, offsetBy distance: Int, limitedBy limit: Index
+    ) -> Bool {
 
-      let __l = __tree_.__purified_(limit).map(\.pointer)
-
-      return ___form_index(___i, offsetBy: distance, limitedBy: __l) {
-        i = $0.flatMap { $0.sealed.band(__tree_.tied) }
-      }
+      __tree_.form_index(&i, offsetBy: distance, limitedBy: limit)
     }
   }
 #endif

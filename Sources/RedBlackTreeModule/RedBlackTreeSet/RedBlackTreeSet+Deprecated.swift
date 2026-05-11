@@ -260,7 +260,7 @@
     //  @inline(__always)
     public mutating func popFirst() -> Element? {
       __tree_.ensureUnique()
-      return ___remove_first()?.payload
+      return ___unchecked_remove_first()?.payload
     }
   }
 
@@ -272,7 +272,9 @@
     @discardableResult
     public mutating func removeLast() -> Element {
       __tree_.ensureUnique()
-      guard let element = ___remove_last() else {
+      guard
+        let element = ___unchecked_remove_last()
+      else {
         preconditionFailure(.emptyLast)
       }
       return element.payload

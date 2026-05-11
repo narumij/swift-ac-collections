@@ -1,6 +1,6 @@
 # swift-ac-collections
 
-`swift-ac-collections` は、[AtCoder][atcoder] 向けに設計された順序付きデータ構造パッケージです。
+`swift-ac-collections` は、[AtCoder][atcoder] 向けに設計されたソート済みデータ構造のパッケージです。
 赤黒木をベースとした高速な集合・辞書を提供します。
 
 [![Swift](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml/badge.svg?branch=main)](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml)  
@@ -48,10 +48,10 @@ dependencies: [
 
 ## コンテナ
 
-- RedBlackTreeSet — 順序付き集合（重複なし）
-- RedBlackTreeMultiSet — 順序付き集合（重複あり）
-- RedBlackTreeDictionary — 順序付き辞書（キー一意）
-- RedBlackTreeMultiMap — 順序付きマップ（重複キー可）
+- RedBlackTreeSet — ソート済み集合（重複なし）
+- RedBlackTreeMultiSet — ソート済み集合（重複あり）
+- RedBlackTreeDictionary — ソート済み辞書（キー一意）
+- RedBlackTreeMultiMap — ソート済みマップ（重複キー可）
 
 ## 削除について
 

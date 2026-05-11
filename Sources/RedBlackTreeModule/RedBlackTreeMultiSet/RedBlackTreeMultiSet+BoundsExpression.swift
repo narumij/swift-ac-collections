@@ -78,10 +78,7 @@
     public func distance(from start: Bound, to end: Bound)
       -> Int
     {
-      guard
-        let d = __tree_.___distance(
-          from: start.evaluate(__tree_),
-          to: end.evaluate(__tree_))
+      guard let d = __tree_.distance(from: start, to: end)
       else { fatalError(.invalidIndex) }
       return d
     }
@@ -161,7 +158,7 @@
       __tree_.ensureUnique()
       let range = __tree_.sanitizeSealedRange(
         bounds.evaluate(__tree_).relative(to: __tree_))
-      __tree_.___erase(range.lowerBound.pointer!, range.upperBound.pointer!)
+      __tree_.___erase_range(range.lowerBound.pointer!, range.upperBound.pointer!)
     }
 
     @inlinable
@@ -172,7 +169,7 @@
       __tree_.ensureUnique()
       let range = __tree_.sanitizeSealedRange(
         bounds.evaluate(__tree_).relative(to: __tree_))
-      try __tree_.___erase_if(range.lowerBound, range.upperBound, shouldBeRemoved)
+      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound, shouldBeRemoved)
     }
   }
 #endif

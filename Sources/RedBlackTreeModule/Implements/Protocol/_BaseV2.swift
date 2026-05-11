@@ -80,23 +80,11 @@ protocol UnsafeMutableTreeSealedRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
 }
 
 @usableFromInline
-protocol ___UnsafeIndexRangeBaseV2:
-  UnsafeTreeRangeBaseInterfaceV2
-    & UnsafeIndexProviderProtocolV2
-{}
-
-#if COMPATIBLE_ATCODER_2025
-  public typealias RedBlackTreeIndex = UnsafeIndexV2
-  public typealias RedBlackTreeIndices = UnsafeIndexV2Collection
-  public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2
-  public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
-#endif
+typealias _SetBridge = _PayloadPointerBridge & _PayloadValueBride & _KeyBride & _ElementBride
 
 @usableFromInline
-typealias _SetBridge = _PayloadValueBride & _KeyBride & _ElementBride
-
-@usableFromInline
-typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride & _ElementBride
+typealias _MapBridge = _PayloadPointerBridge & _PayloadValueBride & _KeyBride & _MappedValueBride
+  & _ElementBride
 
 // MARK: -
 
@@ -104,7 +92,6 @@ typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride & _Ele
 protocol _RedBlackTreeKeyOnlyV2:
   UnsafeTreeRangeBaseInterfaceV2
     & _SetBridge
-    & _CompareV2
     & _SequenceV2
     & _RemoveV2
 {}
@@ -113,7 +100,6 @@ protocol _RedBlackTreeKeyOnlyV2:
 protocol _RedBlackTreeKeyValuesV2:
   UnsafeTreeRangeBaseInterfaceV2
     & _MapBridge
-    & _CompareV2
     & _SequenceV2
     & _RemoveV2
     & _PayloadMappedValueBridge

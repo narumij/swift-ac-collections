@@ -6,6 +6,20 @@
 //
 
 #if COMPATIBLE_ATCODER_2025
+@usableFromInline
+protocol _CompareV2: UnsafeTreeHostV2 & _KeyBride {}
+
+extension _CompareV2 where Base: CompareMultiTrait {
+
+  /// （重複あり）
+  @inlinable @inline(__always)
+  internal func ___equal_range(_ k: _Key) -> (lower: _NodePtr, upper: _NodePtr) {
+    __tree_.__equal_range_multi(k)
+  }
+}
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   // TODO: デッドコードになってないかチェックすること
   extension _CompareV2 where Base: CompareUniqueTrait {
 
@@ -34,7 +48,7 @@
     /// （重複あり）
     @inlinable @inline(__always)
     internal func ___index_equal_range(_ k: _Key) -> (lower: Index, upper: Index) {
-      let (lo, hi) = ___equal_range(k)
+      let (lo, hi) = __tree_.__equal_range_multi(k)
       return (___index(lo.sealed), ___index(hi.sealed))
     }
   }

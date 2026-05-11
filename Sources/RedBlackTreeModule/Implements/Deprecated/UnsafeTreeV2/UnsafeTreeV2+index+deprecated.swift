@@ -43,3 +43,20 @@
   }
 #endif
 
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
+
+    @inlinable
+    @inline(__always)
+    internal func
+      ___distance(from start: _SealedPtr, to end: _SealedPtr) -> Int?
+    {
+      return try? lifetA2(
+        start.map(\.pointer),
+        end.map(\.pointer),
+        Base.___signed_distance
+      )
+      .get()
+    }
+  }
+#endif

@@ -24,6 +24,7 @@
   SwiftのSetAlgebraプロトコルがmulti_setを想定しているか不明なので、プロトコル適合はしていない。
 */
 
+#if COMPATIBLE_ATCODER_2025 || USE_SET_ALGEBRA
 extension RedBlackTreeMultiSet {
 
   @inlinable
@@ -128,4 +129,5 @@ extension RedBlackTreeMultiSet {
       __tree_ = __tree_.___difference(other.__tree_)
     }
   }
+#endif
 #endif

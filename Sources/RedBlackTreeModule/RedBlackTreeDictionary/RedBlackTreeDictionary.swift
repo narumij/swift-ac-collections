@@ -160,7 +160,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log `count`)
   @inlinable
   public func count(forKey key: Key) -> Int {
-    __tree_.__count_unique(key)
+    __tree_.update { $0.__count_unique(key) }
   }
 }
 
@@ -173,7 +173,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {
-    __tree_.read { $0.__count_unique(key) != 0 }
+    __tree_.update { $0.__count_unique(key) != 0 }
   }
 }
 
@@ -187,15 +187,15 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public var first: Element? {
-    isEmpty ? nil : Base.__element_(__tree_[_unsafe_raw: _start])
+    isEmpty ? nil : __element_(Base.__payload_(_start))
   }
 
   /// The last element of the collection.
   ///
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public var last: Element? {
-    isEmpty ? nil : Base.__element_(__tree_[_unsafe_raw: __tree_.__tree_prev_iter(_end)])
+    __tree_.___max().map(__element_)
   }
 }
 
@@ -203,17 +203,15 @@ extension RedBlackTreeDictionary {
 
   /// Returns the minimum element in the sequence.
   ///
-  /// - Complexity: O(log *n*)
-  ///
-  /// If O(1) is required, `first` provides an equivalent operation in O(1).
+  /// - Complexity: O(1)
   @inlinable
   public func min() -> Element? {
-    __tree_.___min().map(__element_)
+    isEmpty ? nil : __element_(Base.__payload_(_start))
   }
 
   /// Returns the maximum element in the sequence.
   ///
-  /// - Complexity: O(log *n*)
+  /// - Complexity: O(log `count`)
   @inlinable
   public func max() -> Element? {
     __tree_.___max().map(__element_)
@@ -283,8 +281,8 @@ extension RedBlackTreeDictionary {
   @inlinable
   @inline(__always)
   public mutating func popFirst() -> Element? {
-    guard !isEmpty else { return nil }
-    return remove(at: startIndex)
+    __tree_.ensureUnique()
+    return ___unchecked_remove_first().map(\.payload).map(__element_)
   }
 }
 
@@ -297,7 +295,7 @@ extension RedBlackTreeDictionary {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return ___remove_last().map(\.payload).map(__element_)
+      return ___unchecked_remove_last().map(\.payload).map(__element_)
     }
   }
 #endif
@@ -311,10 +309,11 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
-    guard !isEmpty else {
+    __tree_.ensureUnique()
+    guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
-    return remove(at: startIndex)
+    return element
   }
 
   /// Removes the last element of the collection.
@@ -323,10 +322,13 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
-    guard !isEmpty else {
+    __tree_.ensureUnique()
+    guard
+      let element = ___unchecked_remove_last().map(\.payload).map(__element_)
+    else {
       preconditionFailure(.emptyLast)
     }
-    return remove(at: index(before: endIndex))
+    return element
   }
 }
 
@@ -379,7 +381,7 @@ extension RedBlackTreeDictionary {
       __tree_.ensureUnique()
       __tree_.deinitialize()
     } else {
-      self = .init()
+      __tree_ = .create()
     }
   }
 }
@@ -405,7 +407,7 @@ extension RedBlackTreeDictionary {
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()
-      let result = try __tree_.___erase_if(
+      let result = try __tree_.___erase_ragen_if(
         __tree_.__begin_node_.sealed,
         __tree_.__end_node.sealed,
         { try shouldBeRemoved(Base.__element_($0)) })

@@ -31,6 +31,7 @@ extension _KeyType where Self: _UnsafeNodePtrType {
 
 extension _PayloadValueType where Self: _UnsafeNodePtrType {
   public typealias _PayloadPtr = UnsafeMutablePointer<_PayloadValue>
+  public typealias _PayloadBuffer = UnsafeMutableBufferPointer<_PayloadValue>
 }
 
 extension _MappedValueType where Self: _UnsafeNodePtrType {
@@ -62,6 +63,15 @@ extension _UnsafeNodePtrType where Self: _PayloadValueType {
   @inlinable @inline(__always)
   static func __payload_(_ p: _NodeRef) -> _PayloadValue {
     p.pointee.__value_().pointee
+  }
+  
+  @inlinable @inline(__always)
+  static func __payload_buffer(_ p: _NodePtr) -> _PayloadBuffer {
+    .init(start: __payload_ptr(p), count: 1)
+  }
+  @inlinable @inline(__always)
+  static func __payload_buffer(_ p: _NodeRef) -> _PayloadBuffer {
+    .init(start: __payload_ptr(p), count: 1)
   }
 }
 

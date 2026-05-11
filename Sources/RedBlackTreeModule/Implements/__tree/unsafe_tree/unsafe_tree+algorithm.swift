@@ -405,10 +405,10 @@ extension TreeAlgorithmProtocol_ptr {
         __y.__parent_unsafe.__right_ = __y
       }
       __y.__left_ = __z.__left_
-      __y.__left_.__set_parent = __y
+      __y.__left_.__set_parent(__y)
       __y.__right_ = __z.__right_
       if __y.__right_ != nullptr {
-        __y.__right_.__set_parent = __y
+        __y.__right_.__set_parent(__y)
       }
       __y.__is_black_ = __z.__is_black_
       if __root == __z {

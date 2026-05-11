@@ -33,7 +33,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _makeIterator() -> Tree._PayloadValues {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyTie)
   }
 }
 
@@ -42,7 +42,7 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _reversed() -> Tree._PayloadValues.Reversed {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyTie)
   }
 }
 
@@ -92,10 +92,11 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   }
 }
 
-@usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexProviderProtocolV2 {}
-
 #if COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexProviderProtocolV2 {
+  }
+
   extension ___UnsafeKeyOnlySequenceV2 {
 
     @available(*, deprecated, message: "性能問題があり廃止")

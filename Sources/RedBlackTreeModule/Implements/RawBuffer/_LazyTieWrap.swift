@@ -1,9 +1,19 @@
+//===----------------------------------------------------------------------===//
 //
-//  _TieWrapProxy.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/05/11.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 /// 結束バンド
 @frozen
@@ -48,7 +58,7 @@ extension _NodePtrSealing {
   // 某バンドオマージュ
 
   @inlinable
-  package func band(_ tie: _LazyTiedRawBuffer) -> _TieWrappedProxyPtr {
+  package func band(_ tie: _LazyTiedRawBuffer) -> _LazyTieWrappedPointer {
     isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, tie: tie))
   }
 }
@@ -58,7 +68,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   // 某バンドオマージュ
 
   @inlinable
-  package func band(_ tie: _LazyTiedRawBuffer) -> _TieWrappedProxyPtr {
+  package func band(_ tie: _LazyTiedRawBuffer) -> _LazyTieWrappedPointer {
     flatMap { $0.band(tie) }
   }
 }
@@ -81,7 +91,7 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
 ///
 /// `_SealedPtr`は外部での変更リスクがある場合に使う
 ///
-public typealias _TieWrappedProxyPtr = Result<_LazyTieWrap<_NodePtrSealing>, SealError>
+public typealias _LazyTieWrappedPointer = Result<_LazyTieWrap<_NodePtrSealing>, SealError>
 
 extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 

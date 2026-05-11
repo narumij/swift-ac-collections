@@ -139,7 +139,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func prev_iter(_ i: _TieWrappedProxyPtr) -> _TieWrappedProxyPtr {
+  func prev_iter(_ i: _LazyTieWrappedPointer) -> _LazyTieWrappedPointer {
     __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
       .flatMap { $0.sealed.band(lazyTie) }
@@ -147,7 +147,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func next_iter(_ i: _TieWrappedProxyPtr) -> _TieWrappedProxyPtr {
+  func next_iter(_ i: _LazyTieWrappedPointer) -> _LazyTieWrappedPointer {
     __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
       .flatMap { $0.sealed.band(lazyTie) }
@@ -155,7 +155,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func adv_iter(_ i: _TieWrappedProxyPtr, offsetBy distance: Int) -> _TieWrappedProxyPtr {
+  func adv_iter(_ i: _LazyTieWrappedPointer, offsetBy distance: Int) -> _LazyTieWrappedPointer {
     __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .flatMap { $0.sealed.band(lazyTie) }
@@ -163,8 +163,8 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func adv_iter(_ i: _TieWrappedProxyPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedProxyPtr)
-    -> _TieWrappedProxyPtr
+  func adv_iter(_ i: _LazyTieWrappedPointer, offsetBy distance: Int, limitedBy limit: _LazyTieWrappedPointer)
+    -> _LazyTieWrappedPointer
   {
     let __l = __purified_(limit).map(\.pointer)
     return __purified_(i)
@@ -174,8 +174,8 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  func index_or_nil(_ i: _TieWrappedProxyPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedProxyPtr)
-    -> _TieWrappedProxyPtr?
+  func index_or_nil(_ i: _LazyTieWrappedPointer, offsetBy distance: Int, limitedBy limit: _LazyTieWrappedPointer)
+    -> _LazyTieWrappedPointer?
   {
     let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
     switch advanced {
@@ -189,7 +189,7 @@ extension UnsafeTreeV2 {
   @inlinable
   @inline(__always)
   func form_index(
-    _ i: inout _TieWrappedProxyPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedProxyPtr
+    _ i: inout _LazyTieWrappedPointer, offsetBy distance: Int, limitedBy limit: _LazyTieWrappedPointer
   )
     -> Bool
   {

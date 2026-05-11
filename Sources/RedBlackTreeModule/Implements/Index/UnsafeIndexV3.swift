@@ -19,7 +19,7 @@
 ///
 /// - Important: 生成元以外の木での使用は未定義。
 //public typealias UnsafeIndexV3 = _TieWrappedPtr
-public typealias UnsafeIndexV3 = _TieWrappedProxyPtr
+public typealias UnsafeIndexV3 = _LazyTieWrappedPointer
 
 // 内部実装では CoW 由来の差異を救済することがある。
 // その結果として異なる木でも使えてしまう可能性があるが、仕様上は未定義。

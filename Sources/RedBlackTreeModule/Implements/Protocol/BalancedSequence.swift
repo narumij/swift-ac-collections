@@ -22,8 +22,6 @@
 // 平衡木の部分についても適応可能なことが望ましい
 public protocol BalancedSequence: Sequence {
 
-  associatedtype Key
-  
   var isEmpty: Bool { get }
 
   var first: Element? { get }
@@ -34,8 +32,6 @@ public protocol BalancedSequence: Sequence {
 
   mutating func popLast() -> Element?
   mutating func removeLast() -> Element
-  
-  mutating func insert(_ element: Element)
 
   func sorted() -> [Element]
   func reversed() -> [Element]

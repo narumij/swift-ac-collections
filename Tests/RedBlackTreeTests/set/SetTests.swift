@@ -491,6 +491,16 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertTrue(s.update(with: a) === b)
     XCTAssertEqual(s.update(with: A(x: 10, label: "c")), nil)
   }
+  
+  func testRedBlackTreeSetUpdate_() throws {
+    let a = A(x: 3, label: "a")
+    let b = A(x: 3, label: "b")
+    var s: Set<A> = [a]
+    XCTAssertFalse(a === b)
+    XCTAssertTrue(s.update(with: b) === a)
+    XCTAssertTrue(s.update(with: a) === b)
+    XCTAssertEqual(s.update(with: A(x: 10, label: "c")), nil)
+  }
 
   func testRedBlackTreeSetInsert() throws {
     let a = A(x: 3, label: "a")

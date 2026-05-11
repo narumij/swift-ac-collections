@@ -67,9 +67,9 @@ extension UnsafeTreeV2 {
 
   // TODO: implement this
   @usableFromInline
-  var tiedProxy: _TiedRawBufferProxy? {
+  var tiedProxy: _TiedRawBufferProxy {
     _buffer.buffer === _emptyTreeStorage
-    ? nil : withMutableHeader { $0.tiedRawBufferProxy }
+    ? .create() : withMutableHeader { $0.tiedRawBufferProxy }
   }
 }
 

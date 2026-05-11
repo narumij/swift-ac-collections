@@ -6,31 +6,49 @@
 //
 
 // TODO: implement this
-@usableFromInline
-final package class _TiedRawBufferProxy {
-
+#if false
   @usableFromInline
-  init() {}
+  final package class _TiedRawBufferProxy {
 
+    @nonobjc
+    @inlinable
+    @inline(__always)
+    init() {}
+
+    @usableFromInline
+    var buffer: _TiedRawBuffer?
+    
+    @inlinable
+    @inline(__always)
+    static func create() -> Self { .init() }
+  }
+#else
   @usableFromInline
-  var buffer: _TiedRawBuffer? {
-    didSet {
-      buffer?.isValueAccessAllowed = false
+  package final class _TiedRawBufferProxy: ManagedBuffer<_TiedRawBuffer?, Void> {
+
+    @inlinable
+    var buffer: _TiedRawBuffer? {
+      @inline(__always)
+      unsafeAddress {
+        UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
+      }
+      @inline(__always)
+      unsafeMutableAddress {
+        withUnsafeMutablePointerToHeader { $0 }
+      }
     }
   }
-  @nonobjc
-  @inlinable
-  @inline(__always)
-  var isValueAccessAllowed: Bool {
-    get { buffer?.isValueAccessAllowed ?? false }
-    set { buffer?.isValueAccessAllowed = newValue }
-  }
-  deinit {
-    buffer = nil
-  }
-}
 
-/// The type-punned empty singleton storage instance.
-@exclusivity(unchecked)
-@usableFromInline
-nonisolated(unsafe) package let _emptyProxy = _TiedRawBufferProxy()
+  extension _TiedRawBufferProxy {
+
+    @nonobjc
+    @inlinable
+    @inline(__always)
+    internal static func create() -> _TiedRawBufferProxy {
+      let storage = _TiedRawBufferProxy.create(minimumCapacity: 0) { managedBuffer in
+        return nil
+      }
+      return unsafeDowncast(storage, to: _TiedRawBufferProxy.self)
+    }
+  }
+#endif

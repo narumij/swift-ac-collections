@@ -110,14 +110,11 @@ extension UnsafeTreeV2BufferHeader {
     _tied == nil
   }
 
-  @usableFromInline
+  @inlinable
   mutating func isRawBufferProxyUniquelyOwned() -> Bool {
-//    _tiedProxy == nil || _tiedProxy?.isUniqueReference() ?? false
-//    fatalError()
-    guard let _ = _tiedProxy else { return false }
+    guard let _ = _tiedProxy else { return true }
     return isKnownUniquelyReferenced(&_tiedProxy!)
   }
-
   /// IndexやIteratorを結ぶ共有メモリ
   ///
   /// ヘッダーにとっては解放責任のデタッチ先
@@ -135,13 +132,13 @@ extension UnsafeTreeV2BufferHeader {
       return _tied!
     }
   }
-  
+
   @inlinable
   var tiedRawBufferProxy: _TiedRawBufferProxy {
     mutating get {
       // TODO: 一度の保証付きの実装にすること
       if _tiedProxy == nil {
-        _tiedProxy = .init()
+        _tiedProxy = .create()
       }
       return _tiedProxy!
     }

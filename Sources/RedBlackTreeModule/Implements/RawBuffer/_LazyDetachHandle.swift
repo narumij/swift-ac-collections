@@ -133,7 +133,7 @@ extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure ==
 
       return tree.__retrieve_(rawTag)
         .flatMap(\.sealed)
-        .flatMap { $0.band(tree.lazyTie) }
+        .flatMap { $0.band(tree.lazyDetach) }
     }
   }
 #endif

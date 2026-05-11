@@ -96,12 +96,12 @@ extension _RawRangeExpression {
   
   @inlinable
   func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyDetachPointer {
-    _start(__tree_).band(__tree_.lazyTie)
+    _start(__tree_).band(__tree_.lazyDetach)
   }
 
   @inlinable
   func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyDetachPointer {
-    _end(__tree_).band(__tree_.lazyTie)
+    _end(__tree_).band(__tree_.lazyDetach)
   }
 }
 

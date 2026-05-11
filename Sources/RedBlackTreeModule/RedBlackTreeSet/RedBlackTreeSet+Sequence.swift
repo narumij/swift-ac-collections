@@ -48,7 +48,7 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public func makeIterator() -> Tree._PayloadValues {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyTie)
+    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
   }
 }
 

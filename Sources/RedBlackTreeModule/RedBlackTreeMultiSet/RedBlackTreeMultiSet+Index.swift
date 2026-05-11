@@ -207,12 +207,12 @@
     
     @inlinable
     func ___index(_ p: _SealedPtr) -> _LazyDetachPointer {
-      p.band(__tree_.lazyTie)
+      p.band(__tree_.lazyDetach)
     }
 
     @inlinable
     func ___index_or_nil(_ p: _SealedPtr) -> _LazyDetachPointer? {
-      p.exists ? p.band(__tree_.lazyTie) : nil
+      p.exists ? p.band(__tree_.lazyDetach) : nil
     }
   }
 #endif

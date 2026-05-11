@@ -67,10 +67,10 @@ extension UnsafeTreeV2 {
 
   // TODO: implement this
   @usableFromInline
-  var lazyTie: _LazyDetach {
+  var lazyDetach: _LazyDetach {
     _buffer.buffer === _emptyTreeStorage
 //    ? .create() : withMutableHeader { $0.tiedRawBufferProxy }
-    ? _emptyLazyTie : withMutableHeader { $0.tiedRawBufferProxy }
+    ? _emptyLazyDetach : withMutableHeader { $0.tiedRawBufferProxy }
   }
 }
 

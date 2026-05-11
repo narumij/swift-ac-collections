@@ -54,5 +54,4 @@ extension _LazyDetach {
 
 /// The type-punned empty singleton storage instance.
 @usableFromInline
-nonisolated(unsafe) package let _emptyLazyTie =
-  _LazyDetach.create()
+nonisolated(unsafe) package let _emptyLazyDetach = _LazyDetach.create()

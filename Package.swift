@@ -61,10 +61,12 @@ let package = Package(
       targets: ["AcCollections"])
   ],
   dependencies: [
-    //     .package(
-    //       url: "https://github.com/apple/swift-collections.git",
-    //       branch: "main"
-    //     ),
+    .package(
+      url: "https://github.com/apple/swift-collections.git",
+      branch: "main",
+      traits: ["UnstableSortedCollections"]
+    ),
+
     .package(
       url: "https://github.com/apple/swift-algorithms.git",
       from: "1.2.1"),
@@ -77,9 +79,9 @@ let package = Package(
       url: "https://github.com/narumij/swift-ac-foundation",
       branch: "main"),
 
-    .package(
-      url: "https://github.com/apple/swift-collections",
-      from: "1.3.0"),
+    //    .package(
+    //      url: "https://github.com/apple/swift-collections",
+    //      from: "1.3.0"),
 
     .package(
       url: "https://github.com/swiftlang/swift-docc-plugin",
@@ -259,6 +261,9 @@ let package = Package(
         "AcCollections",
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
         .product(name: "Collections", package: "swift-collections"),
+        .product(
+          name: "SortedCollections",
+          package: "swift-collections"),
       ],
       path: "Tests/Executables/ABC411F"),
     .executableTarget(

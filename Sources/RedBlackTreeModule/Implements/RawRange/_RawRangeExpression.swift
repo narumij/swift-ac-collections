@@ -93,13 +93,23 @@ extension _RawRangeExpression {
   func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedPtr {
     _end(__tree_).band(__tree_.tied)
   }
+  
+  @inlinable
+  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedProxyPtr {
+    _start(__tree_).band(__tree_.tiedProxy)
+  }
+
+  @inlinable
+  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedProxyPtr {
+    _end(__tree_).band(__tree_.tiedProxy)
+  }
 }
 
-extension _RawRangeExpression where Bound == _TieWrappedPtr {
+extension _RawRangeExpression where Bound == UnsafeIndexV3 {
 
   @usableFromInline
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> _RawRange<_TieWrappedPtr>
+    -> _RawRange<UnsafeIndexV3>
   where
     Base: ___TreeBase
   {

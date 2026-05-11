@@ -227,13 +227,23 @@
   extension RedBlackTreeSet {
 
     @inlinable
-    func ___index(_ p: _SealedPtr) -> UnsafeIndexV3 {
+    func ___index(_ p: _SealedPtr) -> _TieWrappedPtr {
       p.band(__tree_.tied)
     }
 
     @inlinable
-    func ___index_or_nil(_ p: _SealedPtr) -> UnsafeIndexV3? {
+    func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedPtr? {
       p.exists ? p.band(__tree_.tied) : nil
+    }
+    
+    @inlinable
+    func ___index(_ p: _SealedPtr) -> _TieWrappedProxyPtr {
+      p.band(__tree_.tiedProxy)
+    }
+
+    @inlinable
+    func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedProxyPtr? {
+      p.exists ? p.band(__tree_.tiedProxy) : nil
     }
   }
 #endif

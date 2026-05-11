@@ -2,6 +2,7 @@ import AcFoundation
 import IOUtil
 import MT19937
 import RedBlackTreeModule
+import SortedCollections
 
 var mt = mt19937_64(seed: 0)
 
@@ -39,6 +40,7 @@ var p_rev = (0..<N) + []
 var p = (0..<N).map { [$0] }
 var _e: [RedBlackTreeSet<Int>] = .init(repeating: .init(), count: N)
 //var _e: [Set<Int>] = .init(repeating: .init(), count: N)
+//var _e: [SortedSet<Int>] = .init(repeating: .init(), count: N)
 let e = _e.withUnsafeMutableBufferPointer { $0.baseAddress! }
 var u: [Int] = []
 var v: [Int] = []

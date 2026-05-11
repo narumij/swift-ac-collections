@@ -37,7 +37,7 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
   @inlinable
   @inline(__always)
   internal func
-    distance(from start: _TieWrappedPtr, to end: _TieWrappedPtr) -> Int?
+    distance(from start: UnsafeIndexV3, to end: UnsafeIndexV3) -> Int?
   {
     return try? lifetA2(
       __purified_(start).map(\.pointer),
@@ -134,6 +134,79 @@ extension UnsafeTreeV2 {
     }
   }
 }
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @inline(__always)
+  func prev_iter(_ i: _TieWrappedProxyPtr) -> _TieWrappedProxyPtr {
+    __purified_(i)
+      .flatMap { ___tree_prev_iter($0.pointer) }
+      .flatMap { $0.sealed.band(tiedProxy) }
+  }
+
+  @inlinable
+  @inline(__always)
+  func next_iter(_ i: _TieWrappedProxyPtr) -> _TieWrappedProxyPtr {
+    __purified_(i)
+      .flatMap { ___tree_next_iter($0.pointer) }
+      .flatMap { $0.sealed.band(tiedProxy) }
+  }
+
+  @inlinable
+  @inline(__always)
+  func adv_iter(_ i: _TieWrappedProxyPtr, offsetBy distance: Int) -> _TieWrappedProxyPtr {
+    __purified_(i)
+      .flatMap { ___tree_adv_iter($0.pointer, distance) }
+      .flatMap { $0.sealed.band(tiedProxy) }
+  }
+
+  @inlinable
+  @inline(__always)
+  func adv_iter(_ i: _TieWrappedProxyPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedProxyPtr)
+    -> _TieWrappedProxyPtr
+  {
+    let __l = __purified_(limit).map(\.pointer)
+    return __purified_(i)
+      .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
+      .flatMap { $0.sealed.band(tiedProxy) }
+  }
+
+  @inlinable
+  @inline(__always)
+  func index_or_nil(_ i: _TieWrappedProxyPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedProxyPtr)
+    -> _TieWrappedProxyPtr?
+  {
+    let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
+    switch advanced {
+    case .success:
+      return advanced
+    case .failure:
+      return nil
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  func form_index(
+    _ i: inout _TieWrappedProxyPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedProxyPtr
+  )
+    -> Bool
+  {
+    let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
+    switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
+    case .success:
+      i = advanced
+      return true
+    case .failure(.limit):
+      i = limit
+      return false
+    default:
+      return false
+    }
+  }
+}
+
 
 #if false
 extension UnsafeTreeV2 {

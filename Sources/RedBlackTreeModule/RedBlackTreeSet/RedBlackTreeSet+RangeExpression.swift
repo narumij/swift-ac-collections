@@ -102,7 +102,7 @@
     @discardableResult
     public mutating func erase(_ bounds: UnboundedRange) -> Index {
       __tree_.ensureUnique()
-      return __tree_.erase(_start, _end).sealed.band(__tree_.tied)
+      return ___index(__tree_.erase(_start, _end).sealed)
     }
 
     @inlinable
@@ -116,7 +116,7 @@
       else {
         fatalError(.invalidIndex)
       }
-      return __tree_.erase(__l, __u).sealed.band(__tree_.tied)
+      return ___index(__tree_.erase(__l, __u).sealed)
     }
 
     @inlinable
@@ -130,7 +130,7 @@
       else {
         fatalError(.invalidIndex)
       }
-      return __tree_.erase(__l, __u).sealed.band(__tree_.tied)
+      return ___index(__tree_.erase(__l, __u).sealed)
     }
 
     @inlinable

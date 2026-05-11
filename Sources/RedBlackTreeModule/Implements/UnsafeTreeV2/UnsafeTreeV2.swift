@@ -245,7 +245,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @inline(__always)
-  internal func __purified_(_ index: _TieWrappedProxyPtr) -> _SealedPtr {
+  internal func __purified_(_ index: _LazyTieWrappedPointer) -> _SealedPtr {
     tied === index.tied
       ? index.sealed.purified
       : __retrieve_(index.sealed.purified.tag).purified

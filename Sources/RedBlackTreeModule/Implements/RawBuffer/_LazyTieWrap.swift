@@ -48,7 +48,7 @@ extension _NodePtrSealing {
   // 某バンドオマージュ
 
   @inlinable
-  package func band(_ tie: _LazyTiedRawBuffer) -> _TieWrappedProxyPtr {
+  package func band(_ tie: _LazyTiedRawBuffer) -> _LazyTieWrappedPointer {
     isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, tie: tie))
   }
 }
@@ -58,7 +58,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   // 某バンドオマージュ
 
   @inlinable
-  package func band(_ tie: _LazyTiedRawBuffer) -> _TieWrappedProxyPtr {
+  package func band(_ tie: _LazyTiedRawBuffer) -> _LazyTieWrappedPointer {
     flatMap { $0.band(tie) }
   }
 }
@@ -81,7 +81,7 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
 ///
 /// `_SealedPtr`は外部での変更リスクがある場合に使う
 ///
-public typealias _TieWrappedProxyPtr = Result<_LazyTieWrap<_NodePtrSealing>, SealError>
+public typealias _LazyTieWrappedPointer = Result<_LazyTieWrap<_NodePtrSealing>, SealError>
 
 extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 

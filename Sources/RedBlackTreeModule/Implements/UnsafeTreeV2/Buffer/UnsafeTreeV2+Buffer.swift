@@ -27,7 +27,7 @@ package final class UnsafeTreeV2Buffer:
     withUnsafeMutablePointers { header, _ in
       
       if !header.pointee.isRawBufferProxyUniquelyOwned() {
-//        header.pointee.tiedRawBufferProxy.buffer = header.pointee.tiedRawBuffer
+        // ポインタを直接さわるほうが、境界内での最適化よりもいい場合がある
         header.pointee._tiedProxy!.buffer = header.pointee.tiedRawBuffer
       }
       

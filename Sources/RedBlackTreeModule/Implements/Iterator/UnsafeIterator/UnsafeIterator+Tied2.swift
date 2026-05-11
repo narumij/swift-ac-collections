@@ -28,13 +28,13 @@ extension UnsafeIterator {
     public typealias Base = Source.Base
 
     @usableFromInline
-    var tied: _TiedRawBufferProxy
+    var tied: _LazyTiedRawBuffer
 
     @inlinable
     init(
       start: _SealedPtr,
       end: _SealedPtr,
-      tie: _TiedRawBufferProxy
+      tie: _LazyTiedRawBuffer
     ) {
       self.init(
         _source: .init(
@@ -48,7 +48,7 @@ extension UnsafeIterator {
     var source: Source
 
     @inlinable
-    internal init(_source: Source, tie: _TiedRawBufferProxy) {
+    internal init(_source: Source, tie: _LazyTiedRawBuffer) {
       self.source = _source
       self.tied = tie
     }

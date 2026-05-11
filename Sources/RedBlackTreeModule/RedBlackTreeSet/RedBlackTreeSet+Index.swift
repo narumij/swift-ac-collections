@@ -238,12 +238,12 @@
     
     @inlinable
     func ___index(_ p: _SealedPtr) -> _TieWrappedProxyPtr {
-      p.band(__tree_.tiedProxy)
+      p.band(__tree_.lazyTie)
     }
 
     @inlinable
     func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedProxyPtr? {
-      p.exists ? p.band(__tree_.tiedProxy) : nil
+      p.exists ? p.band(__tree_.lazyTie) : nil
     }
   }
 #endif

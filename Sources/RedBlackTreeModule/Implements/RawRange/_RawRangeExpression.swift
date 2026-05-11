@@ -96,12 +96,12 @@ extension _RawRangeExpression {
   
   @inlinable
   func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedProxyPtr {
-    _start(__tree_).band(__tree_.tiedProxy)
+    _start(__tree_).band(__tree_.lazyTie)
   }
 
   @inlinable
   func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedProxyPtr {
-    _end(__tree_).band(__tree_.tiedProxy)
+    _end(__tree_).band(__tree_.lazyTie)
   }
 }
 

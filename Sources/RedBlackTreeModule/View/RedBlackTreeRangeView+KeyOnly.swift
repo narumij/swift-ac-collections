@@ -81,12 +81,12 @@ extension RedBlackTreeKeyOnlyRangeView {
   
   @inlinable
   func ___index(_ p: _SealedPtr) -> _TieWrappedProxyPtr {
-    p.band(__tree_.tiedProxy)
+    p.band(__tree_.lazyTie)
   }
 
   @inlinable
   func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedProxyPtr? {
-    p.exists ? p.band(__tree_.tiedProxy) : nil
+    p.exists ? p.band(__tree_.lazyTie) : nil
   }
 }
 
@@ -99,7 +99,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inline(__always)
   public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Container.Base> {
     let (_start, _end) = _range
-    return .init(start: _start, end: _end, tie: __tree_.tiedProxy)
+    return .init(start: _start, end: _end, tie: __tree_.lazyTie)
   }
 
   /// - Complexity: O(`count`)

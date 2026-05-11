@@ -26,7 +26,7 @@
   }
 #else
   @usableFromInline
-  package final class _TiedRawBufferProxy: ManagedBuffer<_TiedRawBuffer?, Void> {
+  package final class _LazyTiedRawBuffer: ManagedBuffer<_TiedRawBuffer?, Void> {
 
     @inlinable
     var buffer: _TiedRawBuffer? {
@@ -41,16 +41,21 @@
     }
   }
 
-  extension _TiedRawBufferProxy {
+  extension _LazyTiedRawBuffer {
 
     @nonobjc
     @inlinable
     @inline(__always)
-    internal static func create() -> _TiedRawBufferProxy {
-      let storage = _TiedRawBufferProxy.create(minimumCapacity: 0) { managedBuffer in
+    internal static func create() -> _LazyTiedRawBuffer {
+      let storage = _LazyTiedRawBuffer.create(minimumCapacity: 0) { managedBuffer in
         return nil
       }
-      return unsafeDowncast(storage, to: _TiedRawBufferProxy.self)
+      return unsafeDowncast(storage, to: _LazyTiedRawBuffer.self)
     }
   }
 #endif
+
+/// The type-punned empty singleton storage instance.
+@usableFromInline
+nonisolated(unsafe) package let _emptyLazyTie =
+_LazyTiedRawBuffer.create()

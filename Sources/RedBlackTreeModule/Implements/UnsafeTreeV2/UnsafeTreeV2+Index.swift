@@ -142,7 +142,7 @@ extension UnsafeTreeV2 {
   func prev_iter(_ i: _TieWrappedProxyPtr) -> _TieWrappedProxyPtr {
     __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
-      .flatMap { $0.sealed.band(tiedProxy) }
+      .flatMap { $0.sealed.band(lazyTie) }
   }
 
   @inlinable
@@ -150,7 +150,7 @@ extension UnsafeTreeV2 {
   func next_iter(_ i: _TieWrappedProxyPtr) -> _TieWrappedProxyPtr {
     __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
-      .flatMap { $0.sealed.band(tiedProxy) }
+      .flatMap { $0.sealed.band(lazyTie) }
   }
 
   @inlinable
@@ -158,7 +158,7 @@ extension UnsafeTreeV2 {
   func adv_iter(_ i: _TieWrappedProxyPtr, offsetBy distance: Int) -> _TieWrappedProxyPtr {
     __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
-      .flatMap { $0.sealed.band(tiedProxy) }
+      .flatMap { $0.sealed.band(lazyTie) }
   }
 
   @inlinable
@@ -169,7 +169,7 @@ extension UnsafeTreeV2 {
     let __l = __purified_(limit).map(\.pointer)
     return __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-      .flatMap { $0.sealed.band(tiedProxy) }
+      .flatMap { $0.sealed.band(lazyTie) }
   }
 
   @inlinable

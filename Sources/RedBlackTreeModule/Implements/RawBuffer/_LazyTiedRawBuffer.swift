@@ -16,56 +16,43 @@
 //===----------------------------------------------------------------------===//
 
 // そもそもバッファの寿命園著自体がもう不要な気がした
+// -> 変な使い方しない限りオーバーヘッドに差が無いので、実験はしたが採用しなかった
 
-// TODO: implement this
-#if false
-  @usableFromInline
-  final package class _TiedRawBufferProxy {
+// 従来の結束バンドは、IndexやIteratorを作るたびにバッファの準備が始まっていて、必ず生成コストが生じていた
+// 行儀良く使う場合、寿命保証も解放遅延も必要ないので無駄なコストになっていた
+// これを代理オブジェクトを挟み、寿命保証を本体解放まで遅延することで、生成コストを抑制する方式
+// 行儀悪く使う場合のコストは増すが、そういう使い方は主たるユースケースではないので、気にしないことにした
 
-    @nonobjc
-    @inlinable
+@usableFromInline
+package final class _LazyTiedRawBuffer: ManagedBuffer<_TiedRawBuffer?, Void> {
+
+  @inlinable
+  var buffer: _TiedRawBuffer? {
     @inline(__always)
-    init() {}
-
-    @usableFromInline
-    var buffer: _TiedRawBuffer?
-    
-    @inlinable
+    unsafeAddress {
+      UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
+    }
     @inline(__always)
-    static func create() -> Self { .init() }
-  }
-#else
-  @usableFromInline
-  package final class _LazyTiedRawBuffer: ManagedBuffer<_TiedRawBuffer?, Void> {
-
-    @inlinable
-    var buffer: _TiedRawBuffer? {
-      @inline(__always)
-      unsafeAddress {
-        UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
-      }
-      @inline(__always)
-      unsafeMutableAddress {
-        withUnsafeMutablePointerToHeader { $0 }
-      }
+    unsafeMutableAddress {
+      withUnsafeMutablePointerToHeader { $0 }
     }
   }
+}
 
-  extension _LazyTiedRawBuffer {
+extension _LazyTiedRawBuffer {
 
-    @nonobjc
-    @inlinable
-    @inline(__always)
-    internal static func create() -> _LazyTiedRawBuffer {
-      let storage = _LazyTiedRawBuffer.create(minimumCapacity: 0) { managedBuffer in
-        return nil
-      }
-      return unsafeDowncast(storage, to: _LazyTiedRawBuffer.self)
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  internal static func create() -> _LazyTiedRawBuffer {
+    let storage = _LazyTiedRawBuffer.create(minimumCapacity: 0) { managedBuffer in
+      return nil
     }
+    return unsafeDowncast(storage, to: _LazyTiedRawBuffer.self)
   }
-#endif
+}
 
 /// The type-punned empty singleton storage instance.
 @usableFromInline
 nonisolated(unsafe) package let _emptyLazyTie =
-_LazyTiedRawBuffer.create()
+  _LazyTiedRawBuffer.create()

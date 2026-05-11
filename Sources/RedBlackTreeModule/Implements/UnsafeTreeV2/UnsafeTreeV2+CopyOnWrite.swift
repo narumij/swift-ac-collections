@@ -21,11 +21,16 @@ import Foundation
 func growth(from count: Int, to minimum: Int) -> Int {
   // TODO: ジャッジ搭載のタイミングで再度チューニングすること
 
-  if count < 3 {
-    // scale factor 2.0 when small amount
-    return Swift.max(minimum, count << 1)
+
+  if count == 0 {
+    return Swift.max(minimum, 2)
   }
 
+  if count < 3 {
+    // scale factor 4.0 when small amount
+    return Swift.max(minimum, count << 2)
+  }
+  
   // scale factor 1.5
   return Swift.max(minimum, count + (count >> 1))
 }
@@ -110,10 +115,10 @@ extension UnsafeTreeV2 {
     let isUnique = isUnique()
 
     withMutableHeader { header in
-      let minimumCapacity = minimumCapacity ?? (header.count + 1)
-      let shouldExpand = header.freshPoolCapacity < minimumCapacity
+      let requestCapacity = minimumCapacity ?? (header.count + 1)
+      let shouldExpand = header.freshPoolCapacity < requestCapacity
       guard shouldExpand || !isUnique else { return }
-      let newCapacity = header._growthCapacity(to: minimumCapacity)
+      let newCapacity = minimumCapacity ?? header._growthCapacity(to: header.count + 1)
       if !isUnique {
         self = header.copy(minimumCapacity: newCapacity)
         return
@@ -130,10 +135,10 @@ extension UnsafeTreeV2 {
   internal mutating func ensureCapacity(to minimumCapacity: Int? = nil) {
 
     withMutableHeader { header in
-      let minimumCapacity = minimumCapacity ?? (header.count + 1)
-      let shouldExpand = header.freshPoolCapacity < minimumCapacity
+      let requestCapacity = minimumCapacity ?? (header.count + 1)
+      let shouldExpand = header.freshPoolCapacity < requestCapacity
       guard shouldExpand else { return }
-      let newCapacity = header._growthCapacity(to: minimumCapacity)
+      let newCapacity = minimumCapacity ?? header._growthCapacity(to: header.count + 1)
       if isReadOnly {
         self = header.copy(minimumCapacity: newCapacity)
         return

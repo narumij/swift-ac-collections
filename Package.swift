@@ -16,6 +16,7 @@ var defines: [String] = [
   //  "DEATH_TEST",
   //  "BENCHMARK",
   //  "ALLOCATION_DRILL" // リリース時はオフ
+//  "USE_C_MALLOC"
 ]
 
 var _settings: [SwiftSetting] =

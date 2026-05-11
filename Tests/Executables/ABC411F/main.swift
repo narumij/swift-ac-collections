@@ -38,6 +38,7 @@ var q = qSource.makeIterator()
 var p_rev = (0..<N) + []
 var p = (0..<N).map { [$0] }
 var _e: [RedBlackTreeSet<Int>] = .init(repeating: .init(), count: N)
+//var _e: [Set<Int>] = .init(repeating: .init(), count: N)
 let e = _e.withUnsafeMutableBufferPointer { $0.baseAddress! }
 var u: [Int] = []
 var v: [Int] = []

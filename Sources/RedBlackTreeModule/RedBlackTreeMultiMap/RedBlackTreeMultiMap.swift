@@ -365,7 +365,7 @@ extension RedBlackTreeMultiMap {
       __tree_.ensureUnique()
       __tree_.deinitialize()
     } else {
-      self = .init()
+      __tree_ = .create()
     }
   }
 }

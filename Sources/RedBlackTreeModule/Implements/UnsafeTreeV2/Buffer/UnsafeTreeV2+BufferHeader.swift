@@ -110,7 +110,7 @@ extension UnsafeTreeV2BufferHeader {
     _tied == nil
   }
 
-  @usableFromInline
+  @inlinable
   mutating func isRawBufferProxyUniquelyOwned() -> Bool {
     guard let _ = _tiedProxy else { return true }
     return isKnownUniquelyReferenced(&_tiedProxy!)

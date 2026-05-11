@@ -9,23 +9,11 @@
 @usableFromInline
 final package class _TiedRawBufferProxy {
   
-  @usableFromInline
-  init() { }
-  
-  @usableFromInline
-  var buffer: _TiedRawBuffer? {
-    didSet {
-      buffer?.isValueAccessAllowed = false
-    }
-  }
   @nonobjc
   @inlinable
   @inline(__always)
-  var isValueAccessAllowed: Bool {
-    get { buffer?.isValueAccessAllowed ?? false }
-    set { buffer?.isValueAccessAllowed = newValue }
-  }
-  deinit {
-    buffer = nil
-  }
+  init() { }
+  
+  @usableFromInline
+  var buffer: _TiedRawBuffer?
 }

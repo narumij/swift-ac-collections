@@ -27,7 +27,7 @@ package final class UnsafeTreeV2Buffer:
       
       if !header.pointee.isRawBufferProxyUniquelyOwned() {
         header.pointee.tiedRawBufferProxy.buffer = header.pointee.tiedRawBuffer
-//        header.pointee._tiedProxy?.buffer = header.pointee.tiedRawBuffer
+//        header.pointee._tiedProxy!.buffer = header.pointee.tiedRawBuffer
       }
       
       if !header.pointee.isRawBufferUniquelyOwned {

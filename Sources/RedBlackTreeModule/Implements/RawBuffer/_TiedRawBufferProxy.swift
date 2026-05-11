@@ -8,6 +8,10 @@
 // TODO: implement this
 @usableFromInline
 final package class _TiedRawBufferProxy {
+  
+  @usableFromInline
+  init() { }
+  
   @usableFromInline
   var buffer: _TiedRawBuffer? {
     didSet {

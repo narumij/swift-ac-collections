@@ -31,7 +31,7 @@ extension _TieWrapProxy {
 extension _TieWrapProxy: Equatable where RawValue: Equatable {
 
   public static func == (lhs: _TieWrapProxy<RawValue>, rhs: _TieWrapProxy<RawValue>) -> Bool {
-    lhs.rawValue == rhs.rawValue && lhs.tied === rhs.tied
+    lhs.rawValue == rhs.rawValue // && lhs.tied === rhs.tied
   }
 }
 

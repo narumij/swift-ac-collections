@@ -62,6 +62,8 @@ package struct UnsafeTreeV2BufferHeader: _RecyclePool {
   /// - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
   @usableFromInline var _tied: _TiedRawBuffer?
 
+  @usableFromInline var _tiedProxy: _TiedRawBufferProxy?
+
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
   #endif
@@ -108,6 +110,11 @@ extension UnsafeTreeV2BufferHeader {
     _tied == nil
   }
 
+  @usableFromInline
+  mutating func isRawBufferProxyUniquelyOwned() -> Bool {
+    guard let _ = _tiedProxy else { return true }
+    return isKnownUniquelyReferenced(&_tiedProxy!)
+  }
   /// IndexやIteratorを結ぶ共有メモリ
   ///
   /// ヘッダーにとっては解放責任のデタッチ先
@@ -123,6 +130,17 @@ extension UnsafeTreeV2BufferHeader {
           deallocator: freshBucketAllocator)
       }
       return _tied!
+    }
+  }
+
+  @inlinable
+  var tiedRawBufferProxy: _TiedRawBufferProxy {
+    mutating get {
+      // TODO: 一度の保証付きの実装にすること
+      if _tiedProxy == nil {
+        _tiedProxy = .init()
+      }
+      return _tiedProxy!
     }
   }
 

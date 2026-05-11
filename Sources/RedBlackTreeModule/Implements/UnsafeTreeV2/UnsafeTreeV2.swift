@@ -64,11 +64,12 @@ extension UnsafeTreeV2 {
     _buffer.buffer === _emptyTreeStorage
       ? _emptyDeallocator : withMutableHeader { $0.tiedRawBuffer }
   }
-  
+
   // TODO: implement this
   @usableFromInline
   var tiedProxy: _TiedRawBufferProxy {
-    fatalError()
+    _buffer.buffer === _emptyTreeStorage
+    ? .init() : withMutableHeader { $0.tiedRawBufferProxy }
   }
 }
 
@@ -240,7 +241,7 @@ extension UnsafeTreeV2 {
       ? index.sealed.purified
       : __retrieve_(index.sealed.purified.tag).purified
   }
-  
+
   @inlinable
   @inline(__always)
   internal func __purified_(_ index: _TieWrappedProxyPtr) -> _SealedPtr {

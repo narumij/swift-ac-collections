@@ -5,6 +5,8 @@
 //  Created by narumij on 2026/05/11.
 //
 
+// そもそもバッファの寿命園著自体がもう不要な気がした
+
 // TODO: implement this
 #if false
   @usableFromInline

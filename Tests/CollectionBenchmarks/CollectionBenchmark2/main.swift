@@ -73,6 +73,15 @@ benchmark.add(
   }
 }
 
+#if false
+benchmark.addSimpleInput(
+  title: "Random unique Int",
+  input: { size in
+    Array(0..<size).shuffled()
+  }
+)
+#endif
+
 benchmark.main()
 
 // swift run -c release CollectionBenchmark2 run results --cycles 5

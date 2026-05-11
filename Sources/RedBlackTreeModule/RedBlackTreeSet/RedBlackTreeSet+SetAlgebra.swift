@@ -17,11 +17,13 @@
 
 import Foundation
 
+// SetAlgebra適合を削るとinsertが速くなる現象に遭遇した
+// inlinableとinline alwaysを削っても同等のパフォーマンスとなった
+// このため、inlineableもinline alwaysも削ることにした
+
 extension RedBlackTreeSet: SetAlgebra {
 
   /// Returns a new set with the elements of both this and the given set.
-  @inlinable
-  @inline(__always)
   public func union(_ other: __owned RedBlackTreeSet<Element>)
     -> RedBlackTreeSet<Element>
   {
@@ -31,8 +33,6 @@ extension RedBlackTreeSet: SetAlgebra {
   }
 
   /// Returns a new set with the elements that are common to both this set and the given set.
-  @inlinable
-  @inline(__always)
   public func intersection(_ other: RedBlackTreeSet<Element>)
     -> RedBlackTreeSet<Element>
   {
@@ -42,8 +42,6 @@ extension RedBlackTreeSet: SetAlgebra {
   }
 
   /// Returns a new set with the elements that are either in this set or in the given set, but not in both.
-  @inlinable
-  @inline(__always)
   public func symmetricDifference(_ other: __owned RedBlackTreeSet<Element>)
     -> RedBlackTreeSet<Element>
   {
@@ -55,8 +53,6 @@ extension RedBlackTreeSet: SetAlgebra {
   /// Adds the elements of the given set to the set.
   ///
   /// - Complexity: O(*n* + *m*)
-  @inlinable
-  //  @inline(__always)
   public mutating func formUnion(_ other: __owned RedBlackTreeSet<Element>) {
     __tree_ = __tree_.___meld_unique(other.__tree_)
   }
@@ -64,8 +60,6 @@ extension RedBlackTreeSet: SetAlgebra {
   /// Removes the elements of this set that aren’t also in the given set.
   ///
   /// - Complexity: O(*n* + *m*)
-  @inlinable
-  //  @inline(__always)
   public mutating func formIntersection(_ other: RedBlackTreeSet<Element>) {
     __tree_ = __tree_.___intersection(other.__tree_)
   }
@@ -73,8 +67,6 @@ extension RedBlackTreeSet: SetAlgebra {
   /// Removes the elements of the set that are also in the given set and adds the members of the given set that are not already in the set.
   ///
   /// - Complexity: O(*n* + *m*)
-  @inlinable
-  //  @inline(__always)
   public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeSet<Element>) {
     __tree_ = __tree_.___symmetric_difference(other.__tree_)
   }
@@ -86,8 +78,6 @@ extension RedBlackTreeSet: SetAlgebra {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    @inlinable
-    @inline(__always)
     public func difference(_ other: __owned RedBlackTreeSet<Element>)
       -> RedBlackTreeSet<Element>
     {
@@ -97,8 +87,6 @@ extension RedBlackTreeSet: SetAlgebra {
     }
 
     /// - Complexity: O(*n* + *m*)
-    @inlinable
-    //  @inline(__always)
     public mutating func formDifference(_ other: __owned RedBlackTreeSet<Element>) {
       __tree_ = __tree_.___difference(other.__tree_)
     }
@@ -109,8 +97,6 @@ extension RedBlackTreeSet: SetAlgebra {
   extension RedBlackTreeSet {
 
     @available(*, deprecated, message: "This API is buggy and may behave incorrectly.")
-    @inlinable
-    @inline(__always)
     public func difference(_ other: __owned RedBlackTreeSet<Element>)
       -> RedBlackTreeSet<Element>
     {
@@ -121,8 +107,6 @@ extension RedBlackTreeSet: SetAlgebra {
 
     /// - Complexity: O(*n* + *m*)
     @available(*, deprecated, message: "This API is buggy and may behave incorrectly.")
-    @inlinable
-    //  @inline(__always)
     public mutating func formDifference(_ other: __owned RedBlackTreeSet<Element>) {
       __tree_ = __tree_.___difference(other.__tree_)
     }

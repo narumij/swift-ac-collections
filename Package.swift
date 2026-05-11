@@ -86,6 +86,10 @@ let package = Package(
     .package(
       url: "https://github.com/swiftlang/swift-docc-plugin",
       from: "1.0.0"),
+
+    .package(
+      url: "https://github.com/apple/swift-collections-benchmark",
+      from: "0.0.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -280,5 +284,35 @@ let package = Package(
         .product(name: "AcFoundation", package: "swift-ac-foundation"),
       ],
       path: "Tests/Executables/LRU"),
+    .executableTarget(
+      name: "CollectionBenchmark0",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "SortedCollections", package: "swift-collections"),
+      ],
+      path: "Tests/CollectionBenchmarks/CollectionBenchmark0",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "CollectionBenchmark1",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "SortedCollections", package: "swift-collections"),
+      ],
+      path: "Tests/CollectionBenchmarks/CollectionBenchmark1",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "CollectionBenchmark2",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "SortedCollections", package: "swift-collections"),
+      ],
+      path: "Tests/CollectionBenchmarks/CollectionBenchmark2",
+      swiftSettings: _settings
+    ),
   ]
 )

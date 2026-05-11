@@ -22,33 +22,49 @@
 // 平衡木の部分についても適応可能なことが望ましい
 public protocol BalancedSequence: Sequence {
 
+  associatedtype Key
+  
   var isEmpty: Bool { get }
 
   var first: Element? { get }
   var last: Element? { get }
 
   mutating func popFirst() -> Element?
-  mutating func popFirst(_: Int)
   mutating func removeFirst() -> Element
 
   mutating func popLast() -> Element?
-  mutating func popLast(_: Int)
   mutating func removeLast() -> Element
+  
+  mutating func insert(_ element: Element)
 
   func sorted() -> [Element]
   func reversed() -> [Element]
-
-  // multimapをちゃんとつかってくれる人がいた場合、firstIndex(where:)は必要そう
 }
 
 extension BalancedSequence {
 
-  public mutating func popFirst(_ k: Int) {
-    for _ in 0..<k { _ = popFirst() }
+  @discardableResult
+  public mutating func popFirst(_ k: Int) -> Int {
+    var i = 0
+    while i < k {
+      guard let _ = popFirst() else {
+        return i
+      }
+      i += 1
+    }
+    return i
   }
 
-  public mutating func popLast(_ k: Int) {
-    for _ in 0..<k { _ = popLast() }
+  @discardableResult
+  public mutating func popLast(_ k: Int) -> Int {
+    var i = 0
+    while i < k {
+      guard let _ = popLast() else {
+        return i
+      }
+      i += 1
+    }
+    return i
   }
 }
 
@@ -73,6 +89,8 @@ public protocol BalancedCollection: BalancedSequence {
 
   var startIndex: Index { get }
   var endIndex: Index { get }
+
+  // multimapをちゃんとつかってくれる人がいた場合、firstIndex(where:)は必要そう
 
   func index(after: Index) -> Index
   func index(before: Index) -> Index

@@ -45,29 +45,29 @@ extension UnsafeIterator {
     >
 
   public
-    typealias KeyObverse<Base: ___TreeBase & ___TreeIndex> = Tied<
+    typealias KeyObverse<Base: ___TreeBase & ___TreeIndex> = Tied2<
       _Key<Base, _RemoveTrait<_Obverse2>>
     >
   public
-    typealias KeyReverse<Base: ___TreeBase & ___TreeIndex> = Tied<
+    typealias KeyReverse<Base: ___TreeBase & ___TreeIndex> = Tied2<
       _Key<Base, _RemoveTrait<_Reverse2>>
     >
 
   public
-    typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = Tied<
+    typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = Tied2<
       _MappedValue<Base, _RemoveTrait<_Obverse2>>
     >
   public
-    typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = Tied<
+    typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = Tied2<
       _MappedValue<Base, _RemoveTrait<_Reverse2>>
     >
 
   public
-    typealias KeyValueObverse<Base: ___TreeBase & PairValueTrait> = Tied<
+    typealias KeyValueObverse<Base: ___TreeBase & PairValueTrait> = Tied2<
       _KeyValue<Base, _RemoveTrait<_Obverse2>>
     >
   public
-    typealias KeyValueReverse<Base: ___TreeBase & PairValueTrait> = Tied<
+    typealias KeyValueReverse<Base: ___TreeBase & PairValueTrait> = Tied2<
       _KeyValue<Base, _RemoveTrait<_Reverse2>>
     >
 }

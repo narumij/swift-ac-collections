@@ -101,7 +101,7 @@ extension RedBlackTreeKeyValueRangeView {
   @inline(__always)
   public __consuming func makeIterator() -> UnsafeIterator.KeyValueObverse<Base> {
     let (_start, _end) = _range
-    return .init(start: _start, end: _end, tie: __tree_.tied)
+    return .init(start: _start, end: _end, tie: __tree_.lazyDetach)
   }
 
   /// - Complexity: O(`count`)

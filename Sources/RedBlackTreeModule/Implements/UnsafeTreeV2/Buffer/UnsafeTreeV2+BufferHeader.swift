@@ -138,7 +138,7 @@ extension UnsafeTreeV2BufferHeader {
     mutating get {
       // TODO: 一度の保証付きの実装にすること
       if _tiedProxy == nil {
-        _tiedProxy = .init()
+        _tiedProxy = .create()
       }
       return _tiedProxy!
     }

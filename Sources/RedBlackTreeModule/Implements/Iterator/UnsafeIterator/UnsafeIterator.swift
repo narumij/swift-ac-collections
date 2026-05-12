@@ -21,10 +21,10 @@ extension UnsafeIterator {
 
   #if !COMPATIBLE_ATCODER_2025
     public typealias _RemoveTrait = _RemoveCheck
-  public typealias _HogeTrait = Tied2
+    public typealias _TieTrait = Tied2
   #else
     public typealias _RemoveTrait = _RemoveAware
-    public typealias _HogeTrait = Tied
+    public typealias _TieTrait = Tied
   #endif
 
   #if COMPATIBLE_ATCODER_2025
@@ -38,38 +38,38 @@ extension UnsafeIterator {
   #endif
 
   public
-    typealias ValueObverse<Base: ___TreeBase> = _HogeTrait<
+    typealias ValueObverse<Base: ___TreeBase> = _TieTrait<
       _Payload<Base, _RemoveTrait<_Obverse2>>
     >
   public
-    typealias ValueReverse<Base: ___TreeBase> = _HogeTrait<
+    typealias ValueReverse<Base: ___TreeBase> = _TieTrait<
       _Payload<Base, _RemoveTrait<_Reverse2>>
     >
 
   public
-    typealias KeyObverse<Base: ___TreeBase & ___TreeIndex> = _HogeTrait<
+    typealias KeyObverse<Base: ___TreeBase & ___TreeIndex> = _TieTrait<
       _Key<Base, _RemoveTrait<_Obverse2>>
     >
   public
-    typealias KeyReverse<Base: ___TreeBase & ___TreeIndex> = _HogeTrait<
+    typealias KeyReverse<Base: ___TreeBase & ___TreeIndex> = _TieTrait<
       _Key<Base, _RemoveTrait<_Reverse2>>
     >
 
   public
-    typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = _HogeTrait<
+    typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = _TieTrait<
       _MappedValue<Base, _RemoveTrait<_Obverse2>>
     >
   public
-    typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = _HogeTrait<
+    typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = _TieTrait<
       _MappedValue<Base, _RemoveTrait<_Reverse2>>
     >
 
   public
-    typealias KeyValueObverse<Base: ___TreeBase & PairValueTrait> = _HogeTrait<
+    typealias KeyValueObverse<Base: ___TreeBase & PairValueTrait> = _TieTrait<
       _KeyValue<Base, _RemoveTrait<_Obverse2>>
     >
   public
-    typealias KeyValueReverse<Base: ___TreeBase & PairValueTrait> = _HogeTrait<
+    typealias KeyValueReverse<Base: ___TreeBase & PairValueTrait> = _TieTrait<
       _KeyValue<Base, _RemoveTrait<_Reverse2>>
     >
 }

@@ -145,22 +145,6 @@ where
     public func values() -> UnsafeIterator.MappedValueReverse<Base> {
       .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
     }
-  #else
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var keys: UnsafeIterator.KeyReverse<Base> {
-//      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
-      fatalError()
-    }
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var values: UnsafeIterator.MappedValueReverse<Base> {
-//      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
-      fatalError()
-    }
   #endif
 }
 

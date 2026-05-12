@@ -112,7 +112,7 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     multiMap.insert(key: "banana", value: 3)
     print(multiMap)  // 例: [apple: 5, apple: 2, banana: 3]
   }
-  
+
   func testMultiMapKeepsInsertionOrderForEquivalentKeys() {
     var tree = RedBlackTreeMultiMap<Int, String>()
 
@@ -124,23 +124,25 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
 
     XCTAssertEqual(values, ["a", "b", "c"])
   }
-  
-  func testMultiMapKeepsInsertionOrderAfterEraseAndReinsert() {
-    var tree = RedBlackTreeMultiMap<Int, String>()
 
-    tree.insert((1, "a"))
-    tree.insert((1, "b"))
-    tree.insert((1, "c"))
+  #if !COMPATIBLE_ATCODER_2025
+    func testMultiMapKeepsInsertionOrderAfterEraseAndReinsert() {
+      var tree = RedBlackTreeMultiMap<Int, String>()
 
-    tree[1].removeFirst()
+      tree.insert((1, "a"))
+      tree.insert((1, "b"))
+      tree.insert((1, "c"))
 
-    tree.insert((1, "d"))
+      tree[1].removeFirst()
 
-    let values = tree[1].map { $0.value }
+      tree.insert((1, "d"))
 
-    XCTAssertEqual(values, ["b", "c", "d"])
-  }
-  
+      let values = tree[1].map { $0.value }
+
+      XCTAssertEqual(values, ["b", "c", "d"])
+    }
+  #endif
+
   func testMultiMapKeepsInsertionOrderMixedWithOtherKeys() {
     var tree = RedBlackTreeMultiMap<Int, String>()
 

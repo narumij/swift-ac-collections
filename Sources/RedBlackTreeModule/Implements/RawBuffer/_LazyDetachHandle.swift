@@ -39,6 +39,7 @@ extension _LazyDetachHandle {
 
 extension _LazyDetachHandle: Equatable where RawValue: Equatable {
 
+  @inlinable
   public static func == (lhs: _LazyDetachHandle<RawValue>, rhs: _LazyDetachHandle<RawValue>) -> Bool {
     lhs.rawValue == rhs.rawValue && lhs.tied === rhs.tied
   }
@@ -112,7 +113,7 @@ extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure ==
 
 extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure == SealError {
 
-  @usableFromInline
+  @inlinable
   package var value: _TrackingTag {
     (try? map(\.rawValue.pointer.trackingTag).get()) ?? .nullptr
   }

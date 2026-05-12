@@ -10,13 +10,14 @@ benchmark.add(
 ) { input in
 
   return { timer in
+
+    var tree = RedBlackTreeSet<Int>()
+
+    for x in input {
+      tree.insert(x)
+    }
+
     timer.measure {
-
-      var tree = RedBlackTreeSet<Int>()
-
-      for x in input {
-        tree.insert(x)
-      }
 
       for x in input {
         tree.remove(x)
@@ -33,13 +34,14 @@ benchmark.add(
 ) { input in
 
   return { timer in
+
+    var tree = SortedSet<Int>()
+
+    for x in input {
+      tree.insert(x)
+    }
+
     timer.measure {
-
-      var tree = SortedSet<Int>()
-
-      for x in input {
-        tree.insert(x)
-      }
 
       for x in input {
         tree.remove(x)
@@ -56,13 +58,14 @@ benchmark.add(
 ) { input in
 
   return { timer in
+
+    var set = Set<Int>()
+
+    for x in input {
+      set.insert(x)
+    }
+
     timer.measure {
-
-      var set = Set<Int>()
-
-      for x in input {
-        set.insert(x)
-      }
 
       for x in input {
         set.remove(x)
@@ -74,15 +77,15 @@ benchmark.add(
 }
 
 #if false
-benchmark.addSimpleInput(
-  title: "Random unique Int",
-  input: { size in
-    Array(0..<size).shuffled()
-  }
-)
+  benchmark.addSimpleInput(
+    title: "Random unique Int",
+    input: { size in
+      Array(0..<size).shuffled()
+    }
+  )
 #endif
 
 benchmark.main()
 
-// swift run -c release CollectionBenchmark2 run results --cycles 5
-// swift run -c release CollectionBenchmark2 render results chart.png
+// swift run -c release CollectionBenchmark2 run results2 --cycles 5
+// swift run -c release CollectionBenchmark2 render results2 chart.remove.png

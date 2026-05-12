@@ -49,6 +49,6 @@ benchmark.add(
 
 benchmark.main()
 
-// swift run -c release CollectionBenchmark0 run results --cycles 5
-// swift run -c release CollectionBenchmark0 render results chart.png
+// swift run -c release CollectionBenchmark0 run results0 --cycles 5
+// swift run -c release CollectionBenchmark0 render results0 chart.contains.png
 

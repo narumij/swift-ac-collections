@@ -344,5 +344,27 @@ let package = Package(
       path: "Tests/CollectionBenchmarks/CollectionBenchmark5",
       swiftSettings: _settings
     ),
+    .executableTarget(
+      name: "CollectionBenchmark6",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "Collections", package: "swift-collections"),
+        .product(name: "SortedCollections", package: "swift-collections"),
+      ],
+      path: "Tests/CollectionBenchmarks/CollectionBenchmark6",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "CollectionBenchmark7",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "Collections", package: "swift-collections"),
+        .product(name: "SortedCollections", package: "swift-collections"),
+      ],
+      path: "Tests/CollectionBenchmarks/CollectionBenchmark7",
+      swiftSettings: _settings
+    ),
   ]
 )

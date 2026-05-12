@@ -80,7 +80,7 @@ extension RedBlackTreeKeyValueRangeView {
   func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedPtr? {
     p.exists ? p.band(__tree_.tied) : nil
   }
-  
+
   @inlinable
   func ___index(_ p: _SealedPtr) -> _LazyDetachPointer {
     p.band(__tree_.lazyDetach)
@@ -101,7 +101,11 @@ extension RedBlackTreeKeyValueRangeView {
   @inline(__always)
   public __consuming func makeIterator() -> UnsafeIterator.KeyValueObverse<Base> {
     let (_start, _end) = _range
-    return .init(start: _start, end: _end, tie: __tree_.lazyDetach)
+    #if !COMPATIBLE_ATCODER_2025
+      return .init(start: _start, end: _end, tie: __tree_.lazyDetach)
+    #else
+      return .init(start: _start, end: _end, tie: __tree_.tied)
+    #endif
   }
 
   /// - Complexity: O(`count`)
@@ -261,7 +265,8 @@ extension RedBlackTreeKeyValueRangeView {
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_.ensureUnique()
     let (_start, _end) = _range
-    let result = try __tree_.___erase_ragen_if(_start, _end, { try shouldBeRemoved(Base.__element_($0)) })
+    let result = try __tree_.___erase_ragen_if(
+      _start, _end, { try shouldBeRemoved(Base.__element_($0)) })
     if case .failure(let e) = result {
       fatalError(e.localizedDescription)
     }

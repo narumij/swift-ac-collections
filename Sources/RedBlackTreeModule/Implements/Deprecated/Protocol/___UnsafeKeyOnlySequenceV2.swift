@@ -33,7 +33,11 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _makeIterator() -> Tree._PayloadValues {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #if !COMPATIBLE_ATCODER_2025
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #else
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    #endif
   }
 }
 
@@ -42,7 +46,11 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _reversed() -> Tree._PayloadValues.Reversed {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #if !COMPATIBLE_ATCODER_2025
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #else
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    #endif
   }
 }
 

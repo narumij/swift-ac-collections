@@ -76,7 +76,11 @@ extension RedBlackTreeMultiMap {
   @inlinable
   @inline(__always)
   public func makeIterator() -> Tree._KeyValues {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #if !COMPATIBLE_ATCODER_2025
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #else
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    #endif
   }
 }
 

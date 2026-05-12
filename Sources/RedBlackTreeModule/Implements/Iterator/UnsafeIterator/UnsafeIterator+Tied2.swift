@@ -79,51 +79,7 @@ extension UnsafeIterator.Tied2: Comparable where Source: Equatable, Element: Com
   }
 }
 
-#if swift(>=5.5)
-  extension UnsafeIterator.Tied2: @unchecked Sendable
-  where Source: Sendable {}
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeIterator.Tied2
-  where
-    Source.Source.Element == UnsafeMutablePointer<UnsafeNode>,
-    Base: ___TreeIndex
-  {
-
-    @available(*, deprecated, message: "性能問題があり廃止")
-    public func forEach(_ body: (UnsafeIndexV2<Base>, Element) throws -> Void) rethrows
-    where Source.Source.Element == UnsafeMutablePointer<UnsafeNode> {
-      try zip(source._source, makeIterator()).forEach {
-        try body(.init(sealed: $0.sealed, tie: tied), $1)
-      }
-    }
-  }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeIterator.Tied2
-  where
-    Source.Source.Element == UnsafeMutablePointer<UnsafeNode>,
-    Base: ___TreeIndex
-  {
-
-    /// - Complexity: O(1)
-    public var indices: UnsafeIterator.TiedIndexing<Source.Base, Source.Source> {
-      .init(_source: source._source, tie: tied)
-    }
-
-    @available(*, deprecated, message: "危険になった為")
-    @inlinable
-    @inline(__always)
-    package func ___node_positions() -> Source.Source {
-      // 多分lifetime延長しないとクラッシュする
-      // と思ったけどしなかった。念のためlifetimeとdeprecated
-      defer { _fixLifetime(self) }
-      return source._source
-    }
-  }
-#endif
+extension UnsafeIterator.Tied2: @unchecked Sendable where Source: Sendable {}
 
 extension UnsafeIterator.Tied2
 where
@@ -131,26 +87,12 @@ where
   Base: ___TreeIndex,
   Self: ReverseIterator
 {
-  #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func keys() -> UnsafeIterator.KeyReverse<Base> {
-      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
-    }
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public func values() -> UnsafeIterator.MappedValueReverse<Base> {
-      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
-    }
-  #else
+  #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var keys: UnsafeIterator.KeyReverse<Base> {
-//      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
+      //      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
       fatalError()
     }
 
@@ -158,7 +100,7 @@ where
     @inlinable
     @inline(__always)
     public var values: UnsafeIterator.MappedValueReverse<Base> {
-//      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
+      //      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
       fatalError()
     }
   #endif

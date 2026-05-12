@@ -78,7 +78,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedPtr? {
     p.exists ? p.band(__tree_.tied) : nil
   }
-  
+
   @inlinable
   func ___index(_ p: _SealedPtr) -> _LazyDetachPointer {
     p.band(__tree_.lazyDetach)
@@ -99,7 +99,11 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inline(__always)
   public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Container.Base> {
     let (_start, _end) = _range
-    return .init(start: _start, end: _end, tie: __tree_.lazyDetach)
+    #if !COMPATIBLE_ATCODER_2025
+      return .init(start: _start, end: _end, tie: __tree_.lazyDetach)
+    #else
+      return .init(start: _start, end: _end, tie: __tree_.tied)
+    #endif
   }
 
   /// - Complexity: O(`count`)

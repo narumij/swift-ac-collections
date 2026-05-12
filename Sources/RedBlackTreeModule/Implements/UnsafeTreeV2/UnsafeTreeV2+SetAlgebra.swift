@@ -17,7 +17,6 @@
 
 extension UnsafeTreeV2 {
 
-  @usableFromInline
   mutating func ___copy_range(
     _ f: UnsafeMutablePointer<UnsafeNode>,
     _ l: UnsafeMutablePointer<UnsafeNode>,

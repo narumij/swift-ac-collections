@@ -60,6 +60,7 @@ extension UnsafeIterator {
     
     public typealias Reversed = _Reverse2
 
+    @inlinable
     public func reversed() -> UnsafeIterator._Reverse2 {
       .init(_start: _sealed_start, _end: _sealed_end)
     }

@@ -43,7 +43,6 @@ extension _LazyDetach {
 
   @nonobjc
   @inlinable
-  @inline(__always)
   internal static func create() -> _LazyDetach {
     let storage = _LazyDetach.create(minimumCapacity: 0) { managedBuffer in
       return nil

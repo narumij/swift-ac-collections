@@ -86,7 +86,7 @@ extension _TiedRawBuffer {
 extension _TiedRawBuffer {
 
   @nonobjc
-  @usableFromInline
+  @inlinable
   var isValueAccessAllowed: Bool {
     get { header.isValueAccessAllowed }
     set { withUnsafeMutablePointerToHeader { $0.pointee.isValueAccessAllowed = newValue } }

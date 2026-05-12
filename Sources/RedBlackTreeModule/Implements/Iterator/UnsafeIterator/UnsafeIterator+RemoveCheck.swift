@@ -26,6 +26,7 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: UnsafeIteratorProtocol
   {
+    @inlinable
     public init(_start: _SealedPtr, _end: _SealedPtr) {
       self.init(source: .init(_start: _start, _end: _end))
     }
@@ -62,6 +63,7 @@ where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeIteratorProtocol
 {
+  @inlinable
   public func reversed() -> UnsafeIterator._RemoveAware<Source.ReversedIterator> {
     .init(source: source.reversed())
   }

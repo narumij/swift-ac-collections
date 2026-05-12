@@ -101,8 +101,6 @@ extension RedBlackTreeMultiSet {
   public func melding(_ other: __owned RedBlackTreeMultiSet<Element>)
     -> RedBlackTreeMultiSet<Element>
   {
-    var result = self
-    result.meld(other)
-    return result
+    .init(__tree_: __tree_.___meld_multi(other.__tree_))
   }
 }

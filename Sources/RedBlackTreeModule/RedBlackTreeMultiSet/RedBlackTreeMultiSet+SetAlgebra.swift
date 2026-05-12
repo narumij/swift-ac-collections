@@ -24,7 +24,6 @@
   SwiftのSetAlgebraプロトコルがmulti_setを想定しているか不明なので、プロトコル適合はしていない。
 */
 
-#if COMPATIBLE_ATCODER_2025 || USE_SET_ALGEBRA
 extension RedBlackTreeMultiSet {
 
   @inlinable
@@ -32,9 +31,7 @@ extension RedBlackTreeMultiSet {
   public func union(_ other: __owned RedBlackTreeMultiSet<Element>)
     -> RedBlackTreeMultiSet<Element>
   {
-    var result = self
-    result.formUnion(other)
-    return result
+    .init(__tree_: __tree_.___meld_multi(other.__tree_))
   }
 
   /// - Complexity: O(*n* + *m*)
@@ -52,9 +49,7 @@ extension RedBlackTreeMultiSet {
   public func symmetricDifference(_ other: __owned RedBlackTreeMultiSet<Element>)
     -> RedBlackTreeMultiSet<Element>
   {
-    var result = self
-    result.formSymmetricDifference(other)
-    return result
+    .init(__tree_: __tree_.___symmetric_difference(other.__tree_))
   }
 
   /// - Complexity: O(*n* + *m*)
@@ -72,9 +67,7 @@ extension RedBlackTreeMultiSet {
   public func intersection(_ other: RedBlackTreeMultiSet<Element>)
     -> RedBlackTreeMultiSet<Element>
   {
-    var result = self
-    result.formIntersection(other)
-    return result
+    .init(__tree_: __tree_.___intersection(other.__tree_))
   }
 
   /// - Complexity: O(*n* + *m*)
@@ -93,9 +86,7 @@ extension RedBlackTreeMultiSet {
     public func difference(_ other: __owned RedBlackTreeMultiSet<Element>)
       -> RedBlackTreeMultiSet<Element>
     {
-      var result = self
-      result.formDifference(other)
-      return result
+      .init(__tree_: __tree_.___difference(other.__tree_))
     }
 
     /// - Complexity: O(*n* + *m*)
@@ -129,5 +120,4 @@ extension RedBlackTreeMultiSet {
       __tree_ = __tree_.___difference(other.__tree_)
     }
   }
-#endif
 #endif

@@ -82,7 +82,7 @@ extension UnsafeTreeV2 {
     while __first1 != __last1 {
 
       if __first2 == __last2 {
-        __result_.___copy_range(__first2, __last2, to: __parent, __child)
+        __result_.___copy_range(__first1, __last1, to: __parent, __child)
         return __result_
       }
 
@@ -153,7 +153,7 @@ extension UnsafeTreeV2 {
     var (__first2, __last2) = (other.__begin_node_, other.__end_node)
     while __first1 != __last1 {
       if __first2 == __last2 {
-        __result_.___copy_range(__first2, __last2, to: __parent, __child)
+        __result_.___copy_range(__first1, __last1, to: __parent, __child)
         return __result_
       }
       if value_comp(__get_value(__first1), other.__get_value(__first2)) {

@@ -130,28 +130,26 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
     }
   }
 
-  #if COMPATIBLE_ATCODER_2025 || USE_SET_ALGEBRA
-    func testPopFirstAndSubtracting() {
-      var s: RedBlackTreeSet = [3, 1, 2]
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(s.popFirst(), 1)
-      #else
-        XCTAssertEqual(s.popFirst(), 1)
-      #endif
-      XCTAssertEqual(s.sorted(), [2, 3])
+  func testPopFirstAndSubtracting() {
+    var s: RedBlackTreeSet = [3, 1, 2]
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(s.popFirst(), 1)
+    #else
+      XCTAssertEqual(s.popFirst(), 1)
+    #endif
+    XCTAssertEqual(s.sorted(), [2, 3])
 
-      let sub = s.subtracting([2])
-      XCTAssertEqual(sub.sorted(), [3])
+    let sub = s.subtracting([2])
+    XCTAssertEqual(sub.sorted(), [3])
 
-      s.subtract([2, 3])
-      XCTAssertTrue(s.isEmpty)
-    }
+    s.subtract([2, 3])
+    XCTAssertTrue(s.isEmpty)
+  }
 
-    func testSequenceUnionEquivalence() {
-      let base: RedBlackTreeSet = [1, 4]
-      let rbs = base.union([2, 4, 6])
-      let swift = Set([1, 4]).union([2, 4, 6])
-      XCTAssertEqual(rbs.sorted(), swift.sorted())
-    }
-  #endif
+  func testSequenceUnionEquivalence() {
+    let base: RedBlackTreeSet = [1, 4]
+    let rbs = base.union([2, 4, 6])
+    let swift = Set([1, 4]).union([2, 4, 6])
+    XCTAssertEqual(rbs.sorted(), swift.sorted())
+  }
 }

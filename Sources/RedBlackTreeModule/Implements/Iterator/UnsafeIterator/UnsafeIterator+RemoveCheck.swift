@@ -26,10 +26,11 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: UnsafeIteratorProtocol
   {
+    @inlinable
     public init(_start: _SealedPtr, _end: _SealedPtr) {
       self.init(source: .init(_start: _start, _end: _end))
     }
-    
+
     public var _sealed_start: _SealedPtr {
       source._sealed_start
     }
@@ -39,7 +40,7 @@ extension UnsafeIterator {
     }
 
     @usableFromInline var source: Source
-    
+
     @inlinable
     internal init(source: Source) {
       self.source = source
@@ -62,6 +63,7 @@ where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeIteratorProtocol
 {
+  @inlinable
   public func reversed() -> UnsafeIterator._RemoveAware<Source.ReversedIterator> {
     .init(source: source.reversed())
   }
@@ -73,7 +75,4 @@ extension UnsafeIterator._RemoveCheck: Equatable where Source: Equatable {}
 extension UnsafeIterator._RemoveCheck: ReverseIterator
 where Source: ReverseIterator {}
 
-#if swift(>=5.5)
-  extension UnsafeIterator._RemoveCheck: @unchecked Sendable
-  where Source: Sendable {}
-#endif
+extension UnsafeIterator._RemoveCheck: @unchecked Sendable where Source: Sendable {}

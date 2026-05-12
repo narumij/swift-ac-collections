@@ -44,7 +44,11 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _makeIterator() -> Tree._KeyValues {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #if !COMPATIBLE_ATCODER_2025
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #else
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    #endif
   }
 }
 
@@ -61,7 +65,11 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _reversed() -> Tree._KeyValues.Reversed {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #if !COMPATIBLE_ATCODER_2025
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #else
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    #endif
   }
 }
 
@@ -73,14 +81,22 @@ extension ___UnsafeKeyValueSequenceV2__ {
   @inlinable
   @inline(__always)
   internal func _keys() -> Keys {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #if !COMPATIBLE_ATCODER_2025
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #else
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    #endif
   }
 
   /// - Complexity: O(1)
   @inlinable
   @inline(__always)
   internal func _values() -> Values {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #if !COMPATIBLE_ATCODER_2025
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #else
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    #endif
   }
 }
 

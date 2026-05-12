@@ -62,6 +62,12 @@
 関係ないところは触れないよう、壊さないようにすること。
 が、O(log N)なチェックはできるだけ避けたい。
 
+### メモ
+
+$ swift build -c release --target ABC411F
+$ ls -l .build/release/ABC411F.build/main.swift.o
+$ otool -tvV .build/release/ABC411F.build/main.swift.o > ABC411F.asm
+
 __以下は古い内容__
 -------------------
 

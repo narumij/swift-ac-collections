@@ -62,7 +62,7 @@ extension UnsafeTreeV2 {
   var tied: _TiedRawBuffer {
     // コンパイラ最適化に頼らないためにベタ書き
     _buffer.buffer === _emptyTreeStorage
-      ? _emptyDeallocator : withMutableHeader { $0.tiedRawBuffer }
+      ? _emptyRawBuffer : withMutableHeader { $0.tiedRawBuffer }
   }
 
   // TODO: implement this

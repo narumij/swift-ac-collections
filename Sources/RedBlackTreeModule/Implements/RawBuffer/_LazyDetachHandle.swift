@@ -15,7 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// 結束バンド
 @frozen
 public struct _LazyDetachHandle<RawValue> {
 
@@ -40,6 +39,7 @@ extension _LazyDetachHandle {
 
 extension _LazyDetachHandle: Equatable where RawValue: Equatable {
 
+  @inlinable
   public static func == (lhs: _LazyDetachHandle<RawValue>, rhs: _LazyDetachHandle<RawValue>) -> Bool {
     lhs.rawValue == rhs.rawValue && lhs.tied === rhs.tied
   }
@@ -55,8 +55,6 @@ extension _LazyDetachHandle where RawValue == _NodePtrSealing {
 
 extension _NodePtrSealing {
 
-  // 某バンドオマージュ
-
   @inlinable
   package func band(_ tie: _LazyDetach) -> _LazyDetachPointer {
     isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, tie: tie))
@@ -64,8 +62,6 @@ extension _NodePtrSealing {
 }
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
-
-  // 某バンドオマージュ
 
   @inlinable
   package func band(_ tie: _LazyDetach) -> _LazyDetachPointer {
@@ -84,6 +80,8 @@ extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure ==
 // MARK: -
 
 /// 外部に出す場合、あるいは木が常に一致するとは限らない場合に使うポインタ
+///
+/// `_LazyDetachPointer`は、`_SealedPtr`に解放時メモリ延長を付与したもの
 ///
 /// `_TieWrappedPtr`は`_SealedPtr`にメモリ寿命を付与したもの
 ///
@@ -115,7 +113,7 @@ extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure ==
 
 extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure == SealError {
 
-  @usableFromInline
+  @inlinable
   package var value: _TrackingTag {
     (try? map(\.rawValue.pointer.trackingTag).get()) ?? .nullptr
   }

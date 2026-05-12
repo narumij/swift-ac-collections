@@ -48,7 +48,11 @@ extension RedBlackTreeSet {
   @inlinable
   @inline(__always)
   public func makeIterator() -> Tree._PayloadValues {
-    .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #if !COMPATIBLE_ATCODER_2025
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+    #else
+      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+    #endif
   }
 }
 
@@ -65,7 +69,7 @@ extension RedBlackTreeSet {
     }
 
     /// Returns an array containing the elements of this sequence in reverse order.
-    /// 
+    ///
     /// - Complexity: O(`count`)
     @inlinable
     @inline(__always)

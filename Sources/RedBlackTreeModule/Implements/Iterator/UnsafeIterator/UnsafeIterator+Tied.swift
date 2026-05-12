@@ -79,10 +79,7 @@ extension UnsafeIterator.Tied: Comparable where Source: Equatable, Element: Comp
   }
 }
 
-#if swift(>=5.5)
-  extension UnsafeIterator.Tied: @unchecked Sendable
-  where Source: Sendable {}
-#endif
+extension UnsafeIterator.Tied: @unchecked Sendable where Source: Sendable {}
 
 #if COMPATIBLE_ATCODER_2025
   extension UnsafeIterator.Tied
@@ -144,22 +141,6 @@ where
     @inline(__always)
     public func values() -> UnsafeIterator.MappedValueReverse<Base> {
       .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
-    }
-  #else
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var keys: UnsafeIterator.KeyReverse<Base> {
-//      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
-      fatalError()
-    }
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var values: UnsafeIterator.MappedValueReverse<Base> {
-//      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
-      fatalError()
     }
   #endif
 }

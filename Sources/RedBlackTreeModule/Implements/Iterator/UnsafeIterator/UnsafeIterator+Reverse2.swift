@@ -37,9 +37,9 @@ extension UnsafeIterator {
     @inlinable
     @inline(__always)
     public mutating func next() -> _NodePtr? {
-      
+
       let _purified_current = _sealed_current.purified
-      
+
       // 範囲 start が壊れてたらオコ！
       guard let start = try? _sealed_start.purified.get() else {
         fatalError(.invalidIndex)
@@ -52,19 +52,17 @@ extension UnsafeIterator {
 
       // start に到達（exclusive）なら終了
       guard cur != start else { return nil }
-      
+
       _sealed_current = _purified_current.flatMap { ___tree_prev_iter($0.pointer) }.sealed
-      
+
       // prev の結果が壊れてたらオコ！（end→start の途中で壊れた）
       guard let p = try? _sealed_current.get() else {
         fatalError(.invalidIndex)
       }
-      
+
       return p.pointer
     }
   }
 }
 
-#if swift(>=5.5)
-  extension UnsafeIterator._Reverse2: @unchecked Sendable {}
-#endif
+extension UnsafeIterator._Reverse2: @unchecked Sendable {}

@@ -31,7 +31,7 @@ extension UnsafeIterator {
       self._end = _end.pointer!
       self._current = _start.pointer!
     }
-    
+
     @inlinable
     public init(_start: _NodePtr, _end: _NodePtr) {
       self._start = _start
@@ -72,6 +72,4 @@ extension UnsafeIterator {
   }
 }
 
-#if swift(>=5.5)
-  extension UnsafeIterator._Obverse: @unchecked Sendable {}
-#endif
+extension UnsafeIterator._Obverse: @unchecked Sendable {}

@@ -86,7 +86,7 @@ extension _TiedRawBuffer {
 extension _TiedRawBuffer {
 
   @nonobjc
-  @usableFromInline
+  @inlinable
   var isValueAccessAllowed: Bool {
     get { header.isValueAccessAllowed }
     set { withUnsafeMutablePointerToHeader { $0.pointee.isValueAccessAllowed = newValue } }
@@ -95,6 +95,6 @@ extension _TiedRawBuffer {
 
 /// The type-punned empty singleton storage instance.
 @usableFromInline
-nonisolated(unsafe) package let _emptyDeallocator =
+nonisolated(unsafe) package let _emptyRawBuffer =
   _TiedRawBuffer
   .create(bucket: nil, deallocator: .init(valueType: Void.self, deinitialize: { _ in }))

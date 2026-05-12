@@ -40,6 +40,7 @@ extension _TieWrap {
 
 extension _TieWrap: Equatable where RawValue: Equatable {
 
+  @inlinable
   public static func == (lhs: _TieWrap<RawValue>, rhs: _TieWrap<RawValue>) -> Bool {
     lhs.rawValue == rhs.rawValue && lhs.tied.end_ptr == rhs.tied.end_ptr
   }
@@ -115,7 +116,7 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
 
 extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {
 
-  @usableFromInline
+  @inlinable
   package var value: _TrackingTag {
     (try? map(\.rawValue.pointer.trackingTag).get()) ?? .nullptr
   }

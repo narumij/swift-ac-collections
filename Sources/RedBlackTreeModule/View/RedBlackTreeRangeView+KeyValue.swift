@@ -17,12 +17,12 @@ where
   @inlinable
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-    self.startIndex = _start.band(__tree_.tied)
-    self.endIndex = _end.band(__tree_.tied)
+    self.startIndex = _start.band(__tree_.lazyDetach)
+    self.endIndex = _end.band(__tree_.lazyDetach)
   }
 
   public typealias Base = Container.Base
-  public typealias Index = _TieWrappedPtr
+  public typealias Index = UnsafeIndexV3
   public typealias Element = Container.Base.Element
   public typealias Key = Container.Base._Key
   public typealias Value = Container.Base._MappedValue
@@ -80,7 +80,7 @@ extension RedBlackTreeKeyValueRangeView {
   func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedPtr? {
     p.exists ? p.band(__tree_.tied) : nil
   }
-  
+
   @inlinable
   func ___index(_ p: _SealedPtr) -> _LazyDetachPointer {
     p.band(__tree_.lazyDetach)
@@ -101,7 +101,11 @@ extension RedBlackTreeKeyValueRangeView {
   @inline(__always)
   public __consuming func makeIterator() -> UnsafeIterator.KeyValueObverse<Base> {
     let (_start, _end) = _range
-    return .init(start: _start, end: _end, tie: __tree_.lazyDetach)
+    #if !COMPATIBLE_ATCODER_2025
+      return .init(start: _start, end: _end, tie: __tree_.lazyDetach)
+    #else
+      return .init(start: _start, end: _end, tie: __tree_.tied)
+    #endif
   }
 
   /// - Complexity: O(`count`)
@@ -254,14 +258,15 @@ extension RedBlackTreeKeyValueRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     // ややチェックが甘いので末端チェック付き削除が必要
-    return __tree_.___erase_range(_start, _end).sealed.band(__tree_.tied)
+    return __tree_.___erase_range(_start, _end).sealed.band(__tree_.lazyDetach)
   }
 
   @inlinable
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_.ensureUnique()
     let (_start, _end) = _range
-    let result = try __tree_.___erase_ragen_if(_start, _end, { try shouldBeRemoved(Base.__element_($0)) })
+    let result = try __tree_.___erase_ragen_if(
+      _start, _end, { try shouldBeRemoved(Base.__element_($0)) })
     if case .failure(let e) = result {
       fatalError(e.localizedDescription)
     }

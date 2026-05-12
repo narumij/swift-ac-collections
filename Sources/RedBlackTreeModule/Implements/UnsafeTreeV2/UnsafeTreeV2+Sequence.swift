@@ -17,7 +17,7 @@
 
 extension UnsafeTreeV2 {
 
-  @inlinable
+  @usableFromInline
   internal func elementsEqual<OtherSequence>(
     _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
     by areEquivalent: (_PayloadValue, OtherSequence.Element) throws -> Bool
@@ -28,7 +28,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @inlinable
+  @usableFromInline
   internal func lexicographicallyPrecedes<OtherSequence>(
     _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
     by areInIncreasingOrder: (_PayloadValue, _PayloadValue) throws -> Bool
@@ -39,7 +39,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @inlinable
+  @usableFromInline
   internal func
     ___copy_all_to_array() -> [_PayloadValue]
   {
@@ -56,7 +56,7 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @inlinable
+  @usableFromInline
   internal func
     ___rev_copy_all_to_array() -> [_PayloadValue]
   {
@@ -73,7 +73,7 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @inlinable
+  @usableFromInline
   internal func
     ___copy_all_to_array<T>(transform: (_PayloadValue) -> T)
     -> [T]
@@ -91,7 +91,7 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @inlinable
+  @usableFromInline
   internal func
     ___rev_copy_all_to_array<T>(transform: (_PayloadValue) -> T) -> [T]
   {
@@ -108,7 +108,7 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @inlinable
+  @usableFromInline
   internal func
     ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
   {
@@ -121,7 +121,7 @@ extension UnsafeTreeV2 {
     return result
   }
 
-  @inlinable
+  @usableFromInline
   internal func
     ___rev_copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
   {
@@ -134,7 +134,7 @@ extension UnsafeTreeV2 {
     return result
   }
 
-  @inlinable
+  @usableFromInline
   internal func
     ___copy_to_array<T>(
       _ __first: _NodePtr, _ __last: _NodePtr, transform: (_PayloadValue) -> T
@@ -149,7 +149,7 @@ extension UnsafeTreeV2 {
     return result
   }
 
-  @inlinable
+  @usableFromInline
   internal func
     ___rev_copy_to_array<T>(
       _ __first: _NodePtr, _ __last: _NodePtr, transform: (_PayloadValue) -> T
@@ -168,7 +168,6 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2: Equatable where _PayloadValue: Equatable {
 
   @inlinable
-  @inline(__always)
   public static func == (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
 
     if lhs.count != rhs.count {
@@ -190,7 +189,6 @@ extension UnsafeTreeV2: Equatable where _PayloadValue: Equatable {
 extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
 
   @inlinable
-  @inline(__always)
   public static func < (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
     !lhs.isIdentical(to: rhs)
       && lhs.lexicographicallyPrecedes(
@@ -203,8 +201,7 @@ extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
 
 extension UnsafeTreeV2 {
 
-  @inlinable
-  @inline(__always)
+  @usableFromInline
   internal func ___filter(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
@@ -226,8 +223,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @inlinable
-  @inline(__always)
+  @usableFromInline
   internal func
     unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
     -> UnsafeIterator._Obverse
@@ -235,8 +231,7 @@ extension UnsafeTreeV2 {
     .init(_start: __first, _end: __last)
   }
 
-  @inlinable
-  @inline(__always)
+  @usableFromInline
   internal func
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
     -> UnsafeIterator._Payload<Base, UnsafeIterator._Obverse>

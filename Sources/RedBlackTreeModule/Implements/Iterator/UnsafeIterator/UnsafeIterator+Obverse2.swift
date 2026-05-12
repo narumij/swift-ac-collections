@@ -37,9 +37,9 @@ extension UnsafeIterator {
     @inlinable
     @inline(__always)
     public mutating func next() -> _NodePtr? {
-      
+
       let _purified_current = _sealed_current.purified
-      
+
       // 範囲終端が壊れてたらオコ！
       guard let _end = try? _sealed_end.purified.get() else {
         fatalError(.invalidIndex)
@@ -49,15 +49,15 @@ extension UnsafeIterator {
       guard let _p = try? _purified_current.get() else {
         fatalError(.invalidIndex)
       }
-      
+
       // 終端に到達
       guard _p != _end else { return nil }
-      
+
       _sealed_current = _purified_current.flatMap { ___tree_next_iter($0.pointer) }.sealed
-      
+
       return _p.pointer
     }
-    
+
     public typealias Reversed = _Reverse2
 
     @inlinable
@@ -67,6 +67,4 @@ extension UnsafeIterator {
   }
 }
 
-#if swift(>=5.5)
-  extension UnsafeIterator._Obverse2: @unchecked Sendable {}
-#endif
+extension UnsafeIterator._Obverse2: @unchecked Sendable {}

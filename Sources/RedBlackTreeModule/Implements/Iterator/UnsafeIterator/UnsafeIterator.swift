@@ -21,7 +21,7 @@ extension UnsafeIterator {
 
   #if !COMPATIBLE_ATCODER_2025
     public typealias _RemoveTrait = _RemoveCheck
-    public typealias _TieTrait = Tied2
+    public typealias _TieTrait = LazyDetach
   #else
     public typealias _RemoveTrait = _RemoveAware
     public typealias _TieTrait = Tied

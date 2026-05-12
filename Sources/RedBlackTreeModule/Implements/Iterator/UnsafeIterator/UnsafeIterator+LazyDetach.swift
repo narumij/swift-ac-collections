@@ -17,7 +17,7 @@
 
 extension UnsafeIterator {
 
-  public struct Tied2<Source: IteratorProtocol>:
+  public struct LazyDetach<Source: IteratorProtocol>:
     _UnsafeNodePtrType,
     IteratorProtocol,
     Sequence
@@ -61,17 +61,17 @@ extension UnsafeIterator {
   }
 }
 
-extension UnsafeIterator.Tied2: Equatable where Source: Equatable {
+extension UnsafeIterator.LazyDetach: Equatable where Source: Equatable {
 
   @inlinable
   public static func == (
-    lhs: UnsafeIterator.Tied2<Source>, rhs: UnsafeIterator.Tied2<Source>
+    lhs: UnsafeIterator.LazyDetach<Source>, rhs: UnsafeIterator.LazyDetach<Source>
   ) -> Bool {
     lhs.source == rhs.source
   }
 }
 
-extension UnsafeIterator.Tied2: Comparable where Source: Equatable, Element: Comparable {
+extension UnsafeIterator.LazyDetach: Comparable where Source: Equatable, Element: Comparable {
 
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -79,9 +79,9 @@ extension UnsafeIterator.Tied2: Comparable where Source: Equatable, Element: Com
   }
 }
 
-extension UnsafeIterator.Tied2: @unchecked Sendable where Source: Sendable {}
+extension UnsafeIterator.LazyDetach: @unchecked Sendable where Source: Sendable {}
 
-extension UnsafeIterator.Tied2
+extension UnsafeIterator.LazyDetach
 where
   Source.Base: PairValueTrait,
   Base: ___TreeIndex,
@@ -92,31 +92,29 @@ where
     @inlinable
     @inline(__always)
     public var keys: UnsafeIterator.KeyReverse<Base> {
-      //      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
-      fatalError()
+      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)
     public var values: UnsafeIterator.MappedValueReverse<Base> {
-      //      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
-      fatalError()
+      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
     }
   #endif
 }
 
-extension UnsafeIterator.Tied2: ObverseIterator
+extension UnsafeIterator.LazyDetach: ObverseIterator
 where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeAssosiatedIterator & Sequence,
   Source.ReversedIterator.Base: ___TreeBase
 {
   @inlinable
-  public func reversed() -> UnsafeIterator.Tied2<Source.ReversedIterator> {
+  public func reversed() -> UnsafeIterator.LazyDetach<Source.ReversedIterator> {
     .init(_source: source.reversed(), tie: tied)
   }
 }
 
-extension UnsafeIterator.Tied2: ReverseIterator
+extension UnsafeIterator.LazyDetach: ReverseIterator
 where Source: ReverseIterator {}

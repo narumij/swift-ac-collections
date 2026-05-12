@@ -68,6 +68,7 @@ where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeIteratorProtocol
 {
+  @inlinable
   public func reversed() -> UnsafeIterator._RemoveAware<Source.ReversedIterator> {
     .init(source: source.reversed())
   }

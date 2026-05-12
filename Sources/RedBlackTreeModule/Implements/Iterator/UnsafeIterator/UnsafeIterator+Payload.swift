@@ -58,16 +58,14 @@ extension UnsafeIterator {
   }
 }
 
-#if swift(>=5.5)
-  extension UnsafeIterator._Payload: @unchecked Sendable
-  where Source: Sendable {}
-#endif
+extension UnsafeIterator._Payload: @unchecked Sendable where Source: Sendable {}
 
 extension UnsafeIterator._Payload: ObverseIterator
 where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeIteratorProtocol & Sequence
 {
+  @inlinable
   public func reversed() -> UnsafeIterator._Payload<Base, Source.ReversedIterator> {
     .init(source: _source.reversed())
   }

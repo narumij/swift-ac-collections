@@ -79,10 +79,7 @@ extension UnsafeIterator.Tied: Comparable where Source: Equatable, Element: Comp
   }
 }
 
-#if swift(>=5.5)
-  extension UnsafeIterator.Tied: @unchecked Sendable
-  where Source: Sendable {}
-#endif
+extension UnsafeIterator.Tied: @unchecked Sendable where Source: Sendable {}
 
 #if COMPATIBLE_ATCODER_2025
   extension UnsafeIterator.Tied

@@ -30,7 +30,7 @@ extension UnsafeIterator {
     public init(_start: _SealedPtr, _end: _SealedPtr) {
       self.init(source: .init(_start: _start, _end: _end))
     }
-    
+
     public var _sealed_start: _SealedPtr {
       source._sealed_start
     }
@@ -40,7 +40,7 @@ extension UnsafeIterator {
     }
 
     @usableFromInline var source: Source
-    
+
     @inlinable
     internal init(source: Source) {
       self.source = source
@@ -75,7 +75,4 @@ extension UnsafeIterator._RemoveCheck: Equatable where Source: Equatable {}
 extension UnsafeIterator._RemoveCheck: ReverseIterator
 where Source: ReverseIterator {}
 
-#if swift(>=5.5)
-  extension UnsafeIterator._RemoveCheck: @unchecked Sendable
-  where Source: Sendable {}
-#endif
+extension UnsafeIterator._RemoveCheck: @unchecked Sendable where Source: Sendable {}

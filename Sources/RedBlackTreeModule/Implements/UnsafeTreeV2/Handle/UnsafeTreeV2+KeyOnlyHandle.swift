@@ -46,33 +46,45 @@ struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
 }
 
 extension UnsafeTreeV2KeyOnlyHandle {
-
+  
   @inlinable
   @inline(__always)
   func __key(_ __v: _PayloadValue) -> _Key {
     __v
   }
-
+  
   @inlinable
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
     __l < __r
   }
+}
 
-  @inlinable
-  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
 #if false
+extension UnsafeTreeV2KeyOnlyHandle {
+  
+  @inlinable
+  @inline(__always)
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
   __default_three_way_comparator(__lhs, __rhs)
-#else
-  if __lhs < __rhs {
-    -1
-  } else if __lhs > __rhs {
-    1
-  } else {
-    0
-  }
-#endif
   }
 }
+#else
+extension UnsafeTreeV2KeyOnlyHandle {
+  
+  @specialized(where _Key == Int)
+  @inlinable
+  @inline(__always)
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
+    if __lhs < __rhs {
+      -1
+    } else if __lhs < __rhs {
+      1
+    } else {
+      0
+    }
+  }
+}
+#endif
 
 // MARK: - TreeNodeValueProtocol
 
@@ -166,7 +178,18 @@ extension UnsafeTreeV2KeyOnlyHandle: FindInteface, FindProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: RemoveInteface, RemoveProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: EraseProtocol {}
 extension UnsafeTreeV2KeyOnlyHandle: EraseUniqueProtocol {}
+
+#if true
 extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface, FindEqualProtocol_ptr {}
+#else
+extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface {
+  @inlinable
+  func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef) {
+    _FindEqual(header: header, __v).__find_equal()
+  }
+}
+#endif
+
 extension UnsafeTreeV2KeyOnlyHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: FindLeafProtocol_ptr, InsertMultiProtocol {}

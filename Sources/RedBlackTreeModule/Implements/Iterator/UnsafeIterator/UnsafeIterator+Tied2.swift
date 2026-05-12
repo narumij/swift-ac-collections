@@ -63,6 +63,7 @@ extension UnsafeIterator {
 
 extension UnsafeIterator.Tied2: Equatable where Source: Equatable {
 
+  @inlinable
   public static func == (
     lhs: UnsafeIterator.Tied2<Source>, rhs: UnsafeIterator.Tied2<Source>
   ) -> Bool {
@@ -73,7 +74,6 @@ extension UnsafeIterator.Tied2: Equatable where Source: Equatable {
 extension UnsafeIterator.Tied2: Comparable where Source: Equatable, Element: Comparable {
 
   @inlinable
-  @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
   }
@@ -112,6 +112,7 @@ where
   Source.ReversedIterator: UnsafeAssosiatedIterator & Sequence,
   Source.ReversedIterator.Base: ___TreeBase
 {
+  @inlinable
   public func reversed() -> UnsafeIterator.Tied2<Source.ReversedIterator> {
     .init(_source: source.reversed(), tie: tied)
   }

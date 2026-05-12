@@ -248,10 +248,10 @@ extension TreeAlgorithmProtocol_ptr {
   package func
     __tree_left_rotate(_ __x: _NodePtr)
   {
-    var __x = __x
+    let __x = __x
     assert(__x != nullptr, "node shouldn't be null")
     assert(__x.__right_ != nullptr, "node should have a right child")
-    var __y = __x.__right_
+    let __y = __x.__right_
     __x.__right_ = __y.__left_
     if __x.__right_ != nullptr {
       __x.__right_.__parent_ = __x
@@ -273,10 +273,10 @@ extension TreeAlgorithmProtocol_ptr {
   package func
     __tree_right_rotate(_ __x: _NodePtr)
   {
-    var __x = __x
+    let __x = __x
     assert(__x != nullptr, "node shouldn't be null")
     assert(__x.__left_ != nullptr, "node should have a left child")
-    var __y = __x.__left_
+    let __y = __x.__left_
     __x.__left_ = __y.__right_
     if __x.__left_ != nullptr {
       __x.__left_.__parent_ = __x
@@ -310,7 +310,7 @@ extension TreeAlgorithmProtocol_ptr {
     while __x != __root, !__x.__parent_unsafe.__is_black_ {
       // __x->__parent_ != __root because __x->__parent_->__is_black == false
       if __tree_is_left_child(__x.__parent_unsafe) {
-        var __y = __x.__parent_unsafe.__parent_unsafe.__right_
+        let __y = __x.__parent_unsafe.__parent_unsafe.__right_
         if __y != nullptr, !__y.__is_black_ {
           __x = __x.__parent_unsafe
           __x.__is_black_ = true
@@ -330,7 +330,7 @@ extension TreeAlgorithmProtocol_ptr {
           break
         }
       } else {
-        var __y = __x.__parent_unsafe.__parent_.__left_
+        let __y = __x.__parent_unsafe.__parent_.__left_
         if __y != nullptr, !__y.__is_black_ {
           __x = __x.__parent_unsafe
           __x.__is_black_ = true
@@ -372,7 +372,7 @@ extension TreeAlgorithmProtocol_ptr {
     // __y is either __z, or if __z has two children, __tree_next(__z).
     // __y will have at most one child.
     // __y will be the initial hole in the tree (make the hole at a leaf)
-    var __y = (__z.__left_ == nullptr || __z.__right_ == nullptr) ? __z : __tree_next(__z)
+    let __y = (__z.__left_ == nullptr || __z.__right_ == nullptr) ? __z : __tree_next(__z)
     // __x is __y's possibly null single child
     var __x = __y.__left_ != nullptr ? __y.__left_ : __y.__right_
     // __w is __x's possibly null uncle (will become __x's sibling)

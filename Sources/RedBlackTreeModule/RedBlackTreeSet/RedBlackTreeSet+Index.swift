@@ -67,7 +67,7 @@
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element) -> Index? {
-      ___index_or_nil(__tree_.find(member).sealed)
+      ___index_or_nil(__tree_.update { $0.find(member).sealed })
     }
   }
 
@@ -162,7 +162,7 @@
     public func formIndex(
       _ i: inout Index, offsetBy distance: Int, limitedBy limit: Index
     ) -> Bool {
-      
+
       __tree_.form_index(&i, offsetBy: distance, limitedBy: limit)
     }
   }
@@ -189,7 +189,7 @@
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ member: Element) -> Index {
-      ___index(__tree_.lower_bound(member).sealed)
+      ___index(__tree_.update { $0.lower_bound(member).sealed })
     }
 
     /// Returns the index of the first element that is greater than the given value.
@@ -209,7 +209,7 @@
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ member: Element) -> Index {
-      ___index(__tree_.upper_bound(member).sealed)
+      ___index(__tree_.update { $0.upper_bound(member).sealed })
     }
   }
 
@@ -218,7 +218,7 @@
     /// - Complexity: O( log `count` )
     @inlinable
     public func find(_ member: Element) -> Index {
-      ___index(__tree_.find(member).sealed)
+      ___index(__tree_.update{ $0.find(member).sealed })
     }
   }
 #endif
@@ -235,7 +235,7 @@
     func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedPtr? {
       p.exists ? p.band(__tree_.tied) : nil
     }
-    
+
     @inlinable
     func ___index(_ p: _SealedPtr) -> _LazyDetachPointer {
       p.band(__tree_.lazyDetach)

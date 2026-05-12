@@ -370,5 +370,60 @@ let package = Package(
       path: "Tests/CollectionBenchmarks/CollectionBenchmark7",
       swiftSettings: _settings
     ),
+    .executableTarget(
+      name: "CollectionBenchmark8",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "Collections", package: "swift-collections"),
+        .product(name: "SortedCollections", package: "swift-collections"),
+      ],
+      path: "Tests/CollectionBenchmarks/CollectionBenchmark8",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "CollectionBenchmark9",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "Collections", package: "swift-collections"),
+        .product(name: "SortedCollections", package: "swift-collections"),
+      ],
+      path: "Tests/CollectionBenchmarks/CollectionBenchmark9",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "CollectionBenchmark10",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "Collections", package: "swift-collections"),
+        .product(name: "SortedCollections", package: "swift-collections"),
+      ],
+      path: "Tests/CollectionBenchmarks/CollectionBenchmark10",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "CollectionBenchmark11",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "Collections", package: "swift-collections"),
+        .product(name: "SortedCollections", package: "swift-collections"),
+      ],
+      path: "Tests/CollectionBenchmarks/CollectionBenchmark11",
+      swiftSettings: _settings
+    ),
+    .executableTarget(
+      name: "CollectionBenchmark12",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "Collections", package: "swift-collections"),
+        .product(name: "SortedCollections", package: "swift-collections"),
+      ],
+      path: "Tests/CollectionBenchmarks/CollectionBenchmark12",
+      swiftSettings: _settings
+    ),
   ]
 )

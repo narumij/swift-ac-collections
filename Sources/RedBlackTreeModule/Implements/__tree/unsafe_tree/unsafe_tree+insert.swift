@@ -38,7 +38,7 @@ extension InsertNodeAtProtocol_ptr {
       _ __new_node: _NodePtr
     )
   {
-    var __new_node = __new_node
+    let __new_node = __new_node
     __new_node.__left_ = nullptr
     __new_node.__right_ = nullptr
     __new_node.__parent_ = __parent

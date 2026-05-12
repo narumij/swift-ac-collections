@@ -58,10 +58,7 @@ extension UnsafeIterator {
   }
 }
 
-#if swift(>=5.5)
-  extension UnsafeIterator._Key: @unchecked Sendable
-  where Source: Sendable {}
-#endif
+extension UnsafeIterator._Key: @unchecked Sendable where Source: Sendable {}
 
 extension UnsafeIterator._Key: ObverseIterator
 where

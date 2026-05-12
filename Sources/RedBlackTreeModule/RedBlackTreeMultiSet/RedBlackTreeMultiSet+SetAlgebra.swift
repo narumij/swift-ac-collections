@@ -22,6 +22,7 @@
   __algorithm/set_symmetric_difference.h
   に準じた動作となっている。
   SwiftのSetAlgebraプロトコルがmulti_setを想定しているか不明なので、プロトコル適合はしていない。
+ (swift-collectionsのissuesに対応してないと明言されていた)
 */
 
 extension RedBlackTreeMultiSet {

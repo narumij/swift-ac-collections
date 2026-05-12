@@ -17,7 +17,7 @@
 
 extension UnsafeTreeV2 {
 
-  @inlinable
+  @usableFromInline
   mutating func ___copy_range(
     _ f: UnsafeMutablePointer<UnsafeNode>,
     _ l: UnsafeMutablePointer<UnsafeNode>,
@@ -33,8 +33,8 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @inlinable
-  internal func ___meld_unique(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
+  @usableFromInline
+  func ___meld_unique(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
 
     var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
 
@@ -70,8 +70,8 @@ extension UnsafeTreeV2 {
     return __result_
   }
 
-  @inlinable
-  internal func ___meld_multi(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
+  @usableFromInline
+  func ___meld_multi(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
 
     var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
 
@@ -121,8 +121,8 @@ extension UnsafeTreeV2 {
     return __result_
   }
 
-  @inlinable
-  internal func ___intersection(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
+  @usableFromInline
+  func ___intersection(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
     // lower_boundを使う方法があるが、一旦楽に実装できそうな方からにしている
     var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
     var (__parent, __child) = __result_.___max_ref()
@@ -145,8 +145,8 @@ extension UnsafeTreeV2 {
   }
 
   /// - Complexity: O(*n* + *m*)
-  @inlinable
-  internal func ___symmetric_difference(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
+  @usableFromInline
+  func ___symmetric_difference(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
     var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
     var (__parent, __child) = __result_.___max_ref()
     var (__first1, __last1) = (__begin_node_, __end_node)
@@ -177,8 +177,8 @@ extension UnsafeTreeV2 {
   }
 
   /// - Complexity: O(*n* + *m*)
-  @inlinable
-  internal func ___difference(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
+  @usableFromInline
+  func ___difference(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
     var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
     var (__parent, __child) = __result_.___max_ref()
     var (__first1, __last1) = (__begin_node_, __end_node)

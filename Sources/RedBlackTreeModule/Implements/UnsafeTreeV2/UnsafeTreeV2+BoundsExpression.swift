@@ -19,7 +19,7 @@ import Foundation
 
 extension RedBlackTreeBoundExpression {
 
-  @inlinable
+  @inlinable @inline(__always)
   func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
     -> _SealedPtr
   where
@@ -106,7 +106,7 @@ extension RedBlackTreeBoundExpression {
 
 extension RedBlackTreeBoundRangeExpression {
 
-  @inlinable
+  @inlinable @inline(__always)
   func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
     -> _RawRangeExpression<_SealedPtr>
   where

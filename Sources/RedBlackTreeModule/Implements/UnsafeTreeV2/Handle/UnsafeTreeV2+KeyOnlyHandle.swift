@@ -60,7 +60,17 @@ extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-    __default_three_way_comparator(__lhs, __rhs)
+#if false
+  __default_three_way_comparator(__lhs, __rhs)
+#else
+  if __lhs < __rhs {
+    -1
+  } else if __lhs > __rhs {
+    1
+  } else {
+    0
+  }
+#endif
   }
 }
 

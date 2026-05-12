@@ -20,8 +20,7 @@
 package func __default_three_way_comparator<T: Comparable>(_ __lhs: T, _ __rhs: T) -> Int {
   if __lhs < __rhs {
     -1
-//  } else if __lhs > __rhs {
-  } else if __rhs < __lhs { // thunk Comparable.>を避けている
+  } else if __lhs > __rhs {
     1
   } else {
     0

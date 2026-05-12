@@ -23,7 +23,7 @@ protocol FindLeafInterface: _NodePtrType & _KeyType {
 
 @usableFromInline
 protocol FindEqualInterface: _NodePtrType & _KeyType {
-  @inlinable func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+  func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
 }
 
 @usableFromInline

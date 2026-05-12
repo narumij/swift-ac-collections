@@ -15,7 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// 結束バンド
 @frozen
 public struct _LazyDetachHandle<RawValue> {
 
@@ -55,8 +54,6 @@ extension _LazyDetachHandle where RawValue == _NodePtrSealing {
 
 extension _NodePtrSealing {
 
-  // 某バンドオマージュ
-
   @inlinable
   package func band(_ tie: _LazyDetach) -> _LazyDetachPointer {
     isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, tie: tie))
@@ -64,8 +61,6 @@ extension _NodePtrSealing {
 }
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
-
-  // 某バンドオマージュ
 
   @inlinable
   package func band(_ tie: _LazyDetach) -> _LazyDetachPointer {
@@ -84,6 +79,8 @@ extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure ==
 // MARK: -
 
 /// 外部に出す場合、あるいは木が常に一致するとは限らない場合に使うポインタ
+///
+/// `_LazyDetachPointer`は、メモリ寿命の付与を本体解放時に行うもの
 ///
 /// `_TieWrappedPtr`は`_SealedPtr`にメモリ寿命を付与したもの
 ///

@@ -17,12 +17,12 @@ where
   @inlinable
   internal init(__tree_: UnsafeTreeV2<Container.Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-    self.startIndex = _start.band(__tree_.tied)
-    self.endIndex = _end.band(__tree_.tied)
+    self.startIndex = _start.band(__tree_.lazyDetach)
+    self.endIndex = _end.band(__tree_.lazyDetach)
   }
 
   public typealias Base = Container.Base
-  public typealias Index = _TieWrappedPtr
+  public typealias Index = UnsafeIndexV3
   public typealias Element = Container.Base._PayloadValue
 
   @usableFromInline
@@ -233,7 +233,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     // ややチェックが甘いので末端チェック付き削除が必要
-    return __tree_.___erase_range(_start, _end).sealed.band(__tree_.tied)
+    return __tree_.___erase_range(_start, _end).sealed.band(__tree_.lazyDetach)
   }
 
   @inlinable

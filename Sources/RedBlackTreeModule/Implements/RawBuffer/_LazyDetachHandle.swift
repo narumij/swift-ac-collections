@@ -81,7 +81,7 @@ extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure ==
 
 /// 外部に出す場合、あるいは木が常に一致するとは限らない場合に使うポインタ
 ///
-/// `_LazyDetachPointer`は、メモリ寿命の付与を本体解放時に行うもの
+/// `_LazyDetachPointer`は、`_SealedPtr`に解放時メモリ延長を付与したもの
 ///
 /// `_TieWrappedPtr`は`_SealedPtr`にメモリ寿命を付与したもの
 ///

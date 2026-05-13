@@ -32,7 +32,8 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     @inline(__always)
     _modify {
       ensureUnique()
-      let (__parent, __child) = __find_equal(key)
+//      let (__parent, __child) = __find_equal(key)
+      let (__parent, __child) = update { $0.__find_equal(key) }
 
       var value: Base._MappedValue? =
         __child.pointee.___is_null

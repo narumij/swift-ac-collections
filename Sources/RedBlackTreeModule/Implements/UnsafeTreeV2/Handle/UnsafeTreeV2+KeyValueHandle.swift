@@ -54,11 +54,31 @@ extension UnsafeTreeV2KeyValueHandle {
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
     __l < __r
   }
+}
+
+#if false
+  extension UnsafeTreeV2KeyValueHandle {
+
+    @inlinable
+    @inline(__always)
+    func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
+      __default_three_way_comparator(__lhs, __rhs)
+    }
+  }
+#endif
+
+extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
   @inline(__always)
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-    __default_three_way_comparator(__lhs, __rhs)
+    if __lhs < __rhs {
+      -1
+    } else if __lhs > __rhs {
+      1
+    } else {
+      0
+    }
   }
 }
 
@@ -152,7 +172,19 @@ extension UnsafeTreeV2KeyValueHandle {
 
 extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindInteface, FindProtocol_ptr {}
-extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
+//extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
+
+#if false
+  extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
+#else
+  extension UnsafeTreeV2KeyValueHandle: FindEqualInterface {
+    @inlinable
+    func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef) {
+      _KeyValue_FindEqual<_Key,_MappedValue>(header: header).__find_equal(__v)
+    }
+  }
+#endif
+
 extension UnsafeTreeV2KeyValueHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindLeafProtocol_ptr, InsertMultiProtocol {}

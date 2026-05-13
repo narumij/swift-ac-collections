@@ -202,7 +202,7 @@ extension UnsafeTreeV2KeyOnlyHandle: EraseUniqueProtocol {}
   extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface {
     @inlinable
     func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef) {
-      _KeyOnly_FindEqual(header: header).__find_equal(__v)
+      _KeyOnly_FindEqual<_Key>(header: header).__find_equal(__v)
     }
   }
 #endif

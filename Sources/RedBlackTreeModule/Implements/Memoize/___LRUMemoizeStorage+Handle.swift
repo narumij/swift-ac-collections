@@ -133,7 +133,18 @@ extension ___LRUHandle {
 
 extension ___LRUHandle: FindInteface, FindProtocol_ptr {}
 // これに関して古いfind_equalがどうも速いので、そちらを使う
-extension ___LRUHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
+//extension ___LRUHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
+#if false
+  extension ___LRUHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
+#else
+  extension ___LRUHandle: FindEqualInterface {
+    @inlinable
+    func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef) {
+      _KeyValue_FindEqual<_Key,_MappedValue>(header: header).__find_equal(__v)
+    }
+  }
+#endif
+
 extension ___LRUHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension ___LRUHandle: RemoveInteface, RemoveProtocol_ptr {}
 extension ___LRUHandle: EraseProtocol {}

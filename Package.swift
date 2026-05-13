@@ -167,7 +167,7 @@ let package = Package(
           ],
           path: "Tests/Executables/\(name)")
     }
-    + (0...6).map { i in
+    + (0...7).map { i in
       .executableTarget(
         name: "Benchmark\(i)",
         dependencies: [

@@ -46,7 +46,7 @@ extension RedBlackTreeDictionary {
       
       __tree_.ensureUnique()
       
-      let (__parent, __child) = __tree_.update { $0.__find_equal(key) }
+      let (__parent, __child) = __tree_.__find_equal(key)
       
       if __child.pointee.___is_null {
         __tree_.ensureCapacity()

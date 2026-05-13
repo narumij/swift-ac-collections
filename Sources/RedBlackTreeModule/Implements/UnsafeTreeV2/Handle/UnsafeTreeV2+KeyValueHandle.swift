@@ -172,18 +172,7 @@ extension UnsafeTreeV2KeyValueHandle {
 
 extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindInteface, FindProtocol_ptr {}
-//extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
-
-#if false
-  extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
-#else
-  extension UnsafeTreeV2KeyValueHandle: FindEqualInterface {
-    @inlinable
-    func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef) {
-      _KeyValue_FindEqual<_Key,_MappedValue>(header: header).__find_equal(__v)
-    }
-  }
-#endif
+extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
 
 extension UnsafeTreeV2KeyValueHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}

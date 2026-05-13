@@ -11,7 +11,7 @@ import Foundation
 public struct RedBlackTreeKeyOnlyRangeView<Container>: UnsafeMutableTreeHostV2
 where
   Container: ___Root,
-  Container.Base: ___TreeBase & ScalarValueTrait
+  Container.Base: ___TreeBase & ScalarValueTrait & _BaseNode_PtrRangeCompInterface
 {
 
   @inlinable
@@ -125,7 +125,7 @@ extension RedBlackTreeKeyOnlyRangeView {
 
 // MARK: -
 
-public protocol ScalarBaseInit: ___Root where Self.Base: ___TreeBase & ScalarValueTrait {
+public protocol ScalarBaseInit: ___Root where Self.Base: ___TreeBase & ScalarValueTrait & _BaseNode_PtrRangeCompInterface {
   static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self
 }
 

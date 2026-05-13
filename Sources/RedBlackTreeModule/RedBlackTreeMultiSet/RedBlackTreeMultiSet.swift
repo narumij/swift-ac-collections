@@ -109,10 +109,11 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet.Base: CompareMultiTrait {}
+extension RedBlackTreeMultiSet.Base: MultiTraitHelper {}
 extension RedBlackTreeMultiSet.Base: ScalarValueTrait {}
 extension RedBlackTreeMultiSet.Base: _ScalarBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeMultiSet.Base: _BaseNode_NodeCompareProtocol {}
+extension RedBlackTreeMultiSet.Base: _BaseNode_SignedDistanceProtocol {}
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyV2 {}

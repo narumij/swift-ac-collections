@@ -125,7 +125,7 @@ extension _SignedDistanceBridge {
 
 @usableFromInline
 protocol _PtrCompBridge: _BaseBridge
-where Base: _BaseNode_PtrCompInterface & _NodePtrType {}
+where Base: _BaseNode_PtrCompInterface {}
 
 extension _PtrCompBridge {
 
@@ -137,7 +137,7 @@ extension _PtrCompBridge {
 
 @usableFromInline
 protocol _PtrRangeCompBridge: _BaseBridge
-where Base: _BaseNode_PtrRangeCompProtocol & _NodePtrType {}
+where Base: _BaseNode_PtrRangeCompInterface {}
 
 extension _PtrRangeCompBridge {
 

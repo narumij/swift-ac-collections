@@ -30,3 +30,25 @@ extension CompareMultiTrait {
 }
 
 // 分岐を減らしたい気持ちはあるが、ホットパスというわけでもないので、無理にはやらない
+
+public protocol TraitHelper: _NodePtrType {
+  static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
+  static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
+  static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool
+}
+
+public protocol UniqueTraitHelper: _Base_TraitHelperInterface
+where _TraitHelper == __UniqueTrait<Self> {}
+extension UniqueTraitHelper {
+  
+  @inlinable @inline(__always)
+  public static var isMulti: Bool { false }
+}
+
+public protocol MultiTraitHelper: _Base_TraitHelperInterface
+where _TraitHelper == __MultiTrait<Self> {}
+extension MultiTraitHelper {
+  
+  @inlinable @inline(__always)
+  public static var isMulti: Bool { true }
+}

@@ -15,7 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeTreeV2 {
+extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
   @inlinable
   func isValidSealedRange(lower: _SealedPtr, upper: _SealedPtr) -> Bool {
@@ -35,15 +35,18 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  var ___empty_range: _RawRange<_SealedPtr> {
-    let e = __end_node.sealed
-    return .init(lowerBound: e, upperBound: e)
-  }
-
-  @inlinable
   func sanitizeSealedRange(_ range: _RawRange<_SealedPtr>)
     -> _RawRange<_SealedPtr>
   {
     isValidSealedRange(range) ? range : ___empty_range
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  var ___empty_range: _RawRange<_SealedPtr> {
+    let e = __end_node.sealed
+    return .init(lowerBound: e, upperBound: e)
   }
 }

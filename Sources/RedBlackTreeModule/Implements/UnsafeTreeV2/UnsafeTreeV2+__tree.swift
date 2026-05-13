@@ -15,7 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 // MARK: - TreeNodeValueProtocol
 
 extension UnsafeTreeV2: _TreeNode_KeyProtocol {}
@@ -26,7 +25,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   package var __begin_node_: _NodePtr {
-    
+
     @inline(__always)
     @_transparent
     unsafeAddress {
@@ -119,9 +118,11 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2: _PayloadKeyBridge & _ValueCompBridge & _PtrCompBridge
-    & _PtrRangeCompBridge
-{}
+extension UnsafeTreeV2: _PayloadKeyBridge & _ValueCompBridge {}
+
+extension UnsafeTreeV2: _PtrCompBridge where Base: _BaseNode_PtrCompInterface {}
+
+extension UnsafeTreeV2: _PtrRangeCompBridge where Base: _BaseNode_PtrRangeCompInterface {}
 
 extension UnsafeTreeV2: _SignedDistanceBridge where Base: _BaseNode_SignedDistanceInterface {}
 

@@ -17,7 +17,7 @@ var defines: [String] = [
   //  "BENCHMARK",
   //  "ALLOCATION_DRILL" // リリース時はオフ
   //  "USE_C_MALLOC",
-  //  "USE_INT128",
+  //  "USE_INT128", // これはpackage traitにしたい
   //  "COLLECTION_BENCHMARK",
 ]
 

@@ -140,7 +140,7 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
       return !___ptr_comp(__p, __f)
     }
 
-#if false
+#if USE_INT128
     let (f, p, l) = (
       __f.___ptr_bitmap_128(),
       __p.___ptr_bitmap_128(),

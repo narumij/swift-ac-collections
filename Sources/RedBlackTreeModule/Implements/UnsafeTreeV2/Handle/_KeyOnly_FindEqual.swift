@@ -17,6 +17,7 @@
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 // プロトコルのthunk削減を意図し、なるべく隔離している
+// KeyValueタイプは`@specialized`を決めにくく、うまみがない
 #if !compiler(<6.3)
   @frozen
   @usableFromInline

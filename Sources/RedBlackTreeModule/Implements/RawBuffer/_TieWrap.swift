@@ -33,6 +33,8 @@ public struct _TieWrap<RawValue> {
 }
 
 extension _TieWrap {
+  
+  @inlinable
   public func map<U>(_ transform: (RawValue) throws -> U) rethrows -> _TieWrap<U> {
     .init(rawValue: try transform(rawValue), tie: tied)
   }

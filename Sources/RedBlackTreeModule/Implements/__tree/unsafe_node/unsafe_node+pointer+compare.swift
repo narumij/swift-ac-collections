@@ -151,7 +151,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     return __f
   }
 
-  #if false
+  #if USE_INT128
     // 128bit幅でかつ、必要なレジスタ数が削減されている
     @inlinable
     @inline(__always)
@@ -187,7 +187,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 }
 
-#if false
+#if USE_INT128
   /// 128bit版では速度が負けていて、64bit版では未定義が心配なので、お役御免
   @inlinable
   @inline(__always)

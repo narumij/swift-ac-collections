@@ -9,7 +9,7 @@ var mt = mt19937_64(seed: 0)
 
 typealias Fixture = RedBlackTreeSet
 
-print(Date.now)
+//print(Date.now)
 print()
 
 let N = 3 * 100000

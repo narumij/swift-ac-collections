@@ -45,7 +45,7 @@ import XCTest
       }
     }
 
-    #if false
+    #if USE_INT128
       func testNodeFlag128() {
         XCTAssertEqual(___ptr_bitmap_128(__root), 1 << (UInt128.bitWidth - 1))
         for (a, b) in (0...2).permutations(ofCount: 2).map({ ($0[0], $0[1]) }) {
@@ -74,7 +74,7 @@ import XCTest
       }
     }
 
-    #if false
+    #if USE_INT128
       func testNodeFlag128() {
         XCTAssertEqual(___ptr_bitmap_128(__root), 1 << (UInt128.bitWidth - 1))
         for (a, b) in (0...6).permutations(ofCount: 2).map({ ($0[0], $0[1]) }) {

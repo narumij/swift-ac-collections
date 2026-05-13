@@ -17,11 +17,12 @@ var defines: [String] = [
   //  "BENCHMARK",
   //  "ALLOCATION_DRILL" // リリース時はオフ
   //  "USE_C_MALLOC",
+  //  "USE_INT128",
+  //  "COLLECTION_BENCHMARK",
 ]
 
 var _settings: [SwiftSetting] =
   [
-
     //    .define("COMPATIBLE_ATCODER_2025"),
     // このコードベースは当初、2025新ジャッジ搭載を目指して開発し、無事に搭載できました。
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
@@ -51,16 +52,103 @@ let dependencyMap = ["USE_C_MALLOC": "_malloc_free"]
 let additionalDepencencies: [Target.Dependency] =
   defines.contains("USE_C_MALLOC") ? ["_malloc_free"] : []
 
+let platforms: [SupportedPlatform]? =
+  defines.contains("USE_INT128") || defines.contains("COLLECTION_BENCHMARK")
+  ? [.macOS(.v15), .iOS(.v18), .tvOS(.v18), .watchOS(.v11), .macCatalyst(.v18)]
+  : nil
+
+let _mt19937: Target = .target(
+  name: "_MT19937",
+  path: "Utilities/_MT19937",
+  publicHeadersPath: "include",
+  cxxSettings: [
+    .headerSearchPath("include"),
+    .define("NDEBUG", .when(configuration: .release)),
+    .unsafeFlags(["-std=c++17"]),
+  ])
+
+let mt19937: Target = .target(
+  name: "MT19937",
+  dependencies: ["_MT19937"],
+  path: "Utilities/MT19937")
+
+let _fastIO: Target = .target(
+  name: "_FastIO",
+  path: "Utilities/_FastIO",
+  publicHeadersPath: "include",
+  cSettings: [
+    .headerSearchPath("include"),
+    .define("NDEBUG", .when(configuration: .release)),
+  ])
+
+let IOUtil: Target = .target(
+  name: "IOUtil",
+  dependencies: ["_FastIO"],
+  path: "Utilities/IOUtil",
+  swiftSettings: _settings)
+
+let collectionBenchmarks: [Target] =
+  defines.contains("COLLECTION_BENCHMARK")
+  ? (0...12).map { i in
+    .executableTarget(
+      name: "CollectionBenchmark\(i)",
+      dependencies: [
+        "RedBlackTreeModule",
+        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+        .product(name: "Collections", package: "swift-collections"),
+        .product(name: "SortedCollections", package: "swift-collections"),
+      ],
+      path: "Tests/CollectionBenchmarks/CollectionBenchmark\(i)",
+      swiftSettings: _settings
+    )
+  } : []
+
+let executableTargets: [Target] =
+  [
+    "Executable",
+    "SimpleInsert",
+    "SimpleRemove",
+    "SimpleCreate",
+    "SimpleValue",
+    "MultiRoundTrip",
+    "ABC411F",
+    "LRU",
+  ]
+  .map { name in
+    .executableTarget(
+      name: "\(name)",
+      dependencies: [
+        "AcCollections",
+        "MT19937",
+        "IOUtil",
+        .product(name: "Collections", package: "swift-collections"),
+        .product(
+          name: "SortedCollections",
+          package: "swift-collections"),
+      ],
+      path: "Tests/Executables/\(name)")
+  }
+  + (0...7).map { i in
+    .executableTarget(
+      name: "Benchmark\(i)",
+      dependencies: [
+        "RedBlackTreeModule",
+        "MT19937",
+        "IOUtil",
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        .product(name: "Benchmark", package: "swift-benchmark"),
+        .product(name: "Collections", package: "swift-collections"),
+      ],
+      path: "Tests/Benchmarks/Benchmark\(i)",
+      swiftSettings: _settings
+    )
+  }
+  + collectionBenchmarks
+
 let package = Package(
   name: "swift-ac-collections",
-  //  platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17), .watchOS(.v10), .macCatalyst(.v17)],
-  //  platforms: [.macOS(.v15), .iOS(.v18), .tvOS(.v18), .watchOS(.v11), .macCatalyst(.v18)],
-  products: [
-    // Products define the executables and libraries a package produces, making them visible to other packages.
-    .library(
-      name: "AcCollections",
-      targets: ["AcCollections"])
-  ],
+  platforms: platforms,
+  products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   dependencies: [
 
     .package(
@@ -113,8 +201,8 @@ let package = Package(
 
     .target(
       name: "RedBlackTreeModule",
-      path: "Sources/RedBlackTreeModule",
       dependencies: [] + additionalDepencencies,
+      path: "Sources/RedBlackTreeModule",
       exclude: ["MEMO.md"],
       swiftSettings: _settings + [
         //        .strictMemorySafety()
@@ -143,71 +231,10 @@ let package = Package(
       swiftSettings: _settings
     ),
 
-    .target(
-      name: "_MT19937",
-      path: "Utilities/_MT19937",
-      publicHeadersPath: "include",
-      cxxSettings: [
-        .headerSearchPath("include"),
-        .define("NDEBUG", .when(configuration: .release)),
-        .unsafeFlags(["-std=c++17"]),
-      ]),
-
-    .target(
-      name: "MT19937",
-      path: "Utilities/MT19937",
-      dependencies: ["_MT19937"],
-      swiftSettings: _settings),
-
+    _mt19937,
+    mt19937,
+    _fastIO,
+    IOUtil,
   ]
-    + [
-      "Executable",
-      "SimpleInsert",
-      "SimpleRemove",
-      "SimpleCreate",
-      "SimpleValue",
-      "MultiRoundTrip",
-      "ABC411F",
-      "LRU",
-    ]
-    .map { name in
-      .executableTarget(
-        name: "\(name)",
-        dependencies: [
-          "AcCollections",
-          "MT19937",
-          .product(name: "Collections", package: "swift-collections"),
-          .product(
-            name: "SortedCollections",
-            package: "swift-collections"),
-        ],
-        path: "Tests/Executables/\(name)")
-    }
-    + (0...7).map { i in
-      .executableTarget(
-        name: "Benchmark\(i)",
-        dependencies: [
-          "RedBlackTreeModule",
-          "MT19937",
-          .product(name: "Algorithms", package: "swift-algorithms"),
-          .product(name: "Benchmark", package: "swift-benchmark"),
-          .product(name: "Collections", package: "swift-collections"),
-        ],
-        path: "Tests/Benchmarks/Benchmark\(i)",
-        swiftSettings: _settings
-      )
-    }
-    + (0...12).map { i in
-      .executableTarget(
-        name: "CollectionBenchmark\(i)",
-        dependencies: [
-          "RedBlackTreeModule",
-          .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-          .product(name: "Collections", package: "swift-collections"),
-          .product(name: "SortedCollections", package: "swift-collections"),
-        ],
-        path: "Tests/CollectionBenchmarks/CollectionBenchmark\(i)",
-        swiftSettings: _settings
-      )
-    }
+    + executableTargets
 )

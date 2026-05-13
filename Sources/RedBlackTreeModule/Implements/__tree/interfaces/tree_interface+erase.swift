@@ -17,20 +17,20 @@
 
 @usableFromInline
 protocol EraseInterface: _NodePtrType {
-  func erase(_ __p: _NodePtr) -> _NodePtr
-  func erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
+  @inlinable func erase(_ __p: _NodePtr) -> _NodePtr
+  @inlinable func erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
 }
 
 @usableFromInline
 protocol EraseUniqueInteface: _KeyType {
   // llvmにも同じものがいるので、3本アンスコは間違い
   // こっちはまだ戻りが違うのでわかる
-  func ___erase_unique(_ __k: _Key) -> Bool
+  @inlinable func ___erase_unique(_ __k: _Key) -> Bool
 }
 
 @usableFromInline
 protocol EraseMultiInteface: _KeyType {
   // llvmにも同じものがいるので、3本アンスコは間違い
   // 特にこっち。なんで3本にしたのか謎
-  func ___erase_multi(_ __k: _Key) -> Int
+  @inlinable func ___erase_multi(_ __k: _Key) -> Int
 }

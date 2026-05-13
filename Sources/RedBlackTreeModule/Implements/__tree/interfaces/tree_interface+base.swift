@@ -134,5 +134,5 @@ protocol ValueInterface:
 {}
 
 public protocol _Tree_IsMultiTraitInterface {
-  var isMulti: Bool { get }
+  @inlinable var isMulti: Bool { get }
 }

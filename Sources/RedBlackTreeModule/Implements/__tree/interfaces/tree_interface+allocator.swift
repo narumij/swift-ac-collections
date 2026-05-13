@@ -18,11 +18,11 @@
 @usableFromInline
 protocol AllocationInterface: _NodePtrType & _PayloadValueType {
   /// ノードを構築する
-  func __construct_node(_ k: _PayloadValue) -> _NodePtr
+  @inlinable func __construct_node(_ k: _PayloadValue) -> _NodePtr
 }
 
 @usableFromInline
 protocol DellocationInterface: _NodePtrType {
   /// ノードを破壊する
-  func destroy(_ p: _NodePtr)
+  @inlinable func destroy(_ p: _NodePtr)
 }

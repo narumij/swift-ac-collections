@@ -17,16 +17,16 @@
 
 @usableFromInline
 protocol FindLeafInterface: _NodePtrType & _KeyType {
-  func __find_leaf_low(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
-  func __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
+  @inlinable func __find_leaf_low(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
+  @inlinable func __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
 }
 
 @usableFromInline
 protocol FindEqualInterface: _NodePtrType & _KeyType {
-  func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
+  @inlinable func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
 }
 
 @usableFromInline
 protocol FindInteface: _NodePtrType & _KeyType {
-  func find(_ __v: _Key) -> _NodePtr
+  @inlinable func find(_ __v: _Key) -> _NodePtr
 }

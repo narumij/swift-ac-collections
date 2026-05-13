@@ -46,5 +46,5 @@ protocol _TreeKey_LazyThreeWayCompInterface: _KeyType & _ThreeWayResultType {
 
 @usableFromInline package
 protocol _TreeKey_ThreeWayCompInterface: _KeyType & _ThreeWayResultType {
-  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
+  @inlinable func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
 }

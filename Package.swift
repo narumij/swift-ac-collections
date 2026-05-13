@@ -57,36 +57,6 @@ let platforms: [SupportedPlatform]? =
   ? [.macOS(.v15), .iOS(.v18), .tvOS(.v18), .watchOS(.v11), .macCatalyst(.v18)]
   : nil
 
-let _mt19937: Target = .target(
-  name: "_MT19937",
-  path: "Utilities/_MT19937",
-  publicHeadersPath: "include",
-  cxxSettings: [
-    .headerSearchPath("include"),
-    .define("NDEBUG", .when(configuration: .release)),
-    .unsafeFlags(["-std=c++17"]),
-  ])
-
-let mt19937: Target = .target(
-  name: "MT19937",
-  dependencies: ["_MT19937"],
-  path: "Utilities/MT19937")
-
-let _fastIO: Target = .target(
-  name: "_FastIO",
-  path: "Utilities/_FastIO",
-  publicHeadersPath: "include",
-  cSettings: [
-    .headerSearchPath("include"),
-    .define("NDEBUG", .when(configuration: .release)),
-  ])
-
-let IOUtil: Target = .target(
-  name: "IOUtil",
-  dependencies: ["_FastIO"],
-  path: "Utilities/IOUtil",
-  swiftSettings: _settings)
-
 let collectionBenchmarks: [Target] =
   defines.contains("COLLECTION_BENCHMARK")
   ? (0...12).map { i in
@@ -103,6 +73,41 @@ let collectionBenchmarks: [Target] =
     )
   } : []
 
+// 順次削っていきたい
+let _mt19937: Target = .target(
+  name: "_MT19937",
+  path: "Utilities/_MT19937",
+  publicHeadersPath: "include",
+  cxxSettings: [
+    .headerSearchPath("include"),
+    .define("NDEBUG", .when(configuration: .release)),
+    .unsafeFlags(["-std=c++17"]),
+  ])
+
+// 順次削っていきたい
+let mt19937: Target = .target(
+  name: "MT19937",
+  dependencies: ["_MT19937"],
+  path: "Utilities/MT19937")
+
+// 順次削っていきたい
+let _fastIO: Target = .target(
+  name: "_FastIO",
+  path: "Utilities/_FastIO",
+  publicHeadersPath: "include",
+  cSettings: [
+    .headerSearchPath("include"),
+    .define("NDEBUG", .when(configuration: .release)),
+  ])
+
+// 順次削っていきたい
+let IOUtil: Target = .target(
+  name: "IOUtil",
+  dependencies: ["_FastIO"],
+  path: "Utilities/IOUtil",
+  swiftSettings: _settings)
+
+// 順次削っていきたい
 let executableTargets: [Target] =
   [
     "Executable",

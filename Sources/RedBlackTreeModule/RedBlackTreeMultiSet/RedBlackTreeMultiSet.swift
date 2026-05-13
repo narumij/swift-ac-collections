@@ -109,7 +109,7 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-extension RedBlackTreeMultiSet.Base: MultiTraitHelper {}
+extension RedBlackTreeMultiSet.Base: CompareMultiTraitHelper {}
 extension RedBlackTreeMultiSet.Base: ScalarValueTrait {}
 extension RedBlackTreeMultiSet.Base: _ScalarBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeMultiSet.Base: _BaseNode_NodeCompareProtocol {}

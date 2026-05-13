@@ -75,6 +75,10 @@ public protocol _BaseNode_PtrCompInterface: _UnsafeNodePtrType {
   static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }
 
+public protocol _BaseNode_PtrRangeCompInterface: _NodePtrType {
+  static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool
+}
+
 public protocol _Base_TraitHelperInterface: _UnsafeNodePtrType & _BaseNode_KeyInterface
     & _Base_IsMultiTraitInterface
 where _Key: Comparable {

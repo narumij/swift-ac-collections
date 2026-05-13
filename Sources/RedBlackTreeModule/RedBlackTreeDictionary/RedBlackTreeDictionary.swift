@@ -112,7 +112,7 @@ extension RedBlackTreeDictionary {
   }
 }
 
-extension RedBlackTreeDictionary.Base: UniqueTraitHelper {}
+extension RedBlackTreeDictionary.Base: CompareUniqueTraitHelper {}
 extension RedBlackTreeDictionary.Base: PairValueTrait {}
 extension RedBlackTreeDictionary.Base: _PairBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeDictionary.Base: _BaseNode_NodeCompareProtocol {}

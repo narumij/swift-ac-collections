@@ -109,7 +109,7 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet.Base: UniqueTraitHelper {}
+extension RedBlackTreeSet.Base: CompareUniqueTraitHelper {}
 extension RedBlackTreeSet.Base: ScalarValueTrait & _UnsafeNodePtrType {}
 extension RedBlackTreeSet.Base: _ScalarBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeSet.Base: _BaseNode_NodeCompareProtocol {}

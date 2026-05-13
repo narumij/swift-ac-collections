@@ -17,6 +17,6 @@
 
 @usableFromInline
 protocol EqualInterface: _NodePtrType & _KeyType {
-  func __equal_range_unique(_ __k: _Key) -> (_NodePtr, _NodePtr)
-  func __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
+  @inlinable func __equal_range_unique(_ __k: _Key) -> (_NodePtr, _NodePtr)
+  @inlinable func __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
 }

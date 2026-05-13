@@ -62,7 +62,6 @@
 #if DEBUG
   extension UnsafeTreeV2BufferHeader {
 
-    @inlinable
     package func equiv(with other: UnsafeTreeV2BufferHeader) -> Bool {
       // freshPoolCapacityは等価判定不可
       assert(freshPoolUsedCount == other.freshPoolUsedCount)
@@ -126,7 +125,6 @@
 #if DEBUG
   extension UnsafeTreeV2 {
 
-    @inlinable
     package func emptyCheck() -> Bool {
       assert(__tree_invariant(__root))
       assert(count == 0)
@@ -150,7 +148,7 @@
       return true
     }
 
-    @inlinable
+    @usableFromInline
     package func check() -> Bool {
       assert(UnsafeNode.nullptr.pointee.nullCheck())
       assert(end.pointee.endCheck())

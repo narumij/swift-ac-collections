@@ -64,17 +64,6 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 extension UnsafeTreeV2 where Base: PairValueTrait {
 
   @inlinable
-  @inline(__always)
-  internal func ___mapped_value(_ __p: _NodePtr) -> Base._MappedValue {
-//    Base.___mapped_value(__p.__value_().pointee)
-    Base.__mapped_value_ptr(__p).pointee
-  }
-}
-
-extension UnsafeTreeV2 where Base: PairValueTrait {
-
-  @inlinable
-  @inline(__always)
   internal func ___mapValues<Other>(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
@@ -88,7 +77,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     let other = UnsafeTreeV2<Other>.create(minimumCapacity: count)
     var (__parent, __child) = other.___max_ref()
     for __p in unsafeSequence(__first, __last) {
-      let __mapped_value = try transform(___mapped_value(__p))
+      let __mapped_value = try transform(Base.__mapped_value_(__p))
       (__parent, __child) = other.___emplace_hint_right(
         __parent, __child, Other.__payload_((__get_value(__p), __mapped_value)))
       assert(other.__tree_invariant(other.__root))
@@ -97,7 +86,6 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   }
 
   @inlinable
-  @inline(__always)
   internal func ___compactMapValues<Other>(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
@@ -111,7 +99,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var other = UnsafeTreeV2<Other>.create(minimumCapacity: count)
     var (__parent, __child) = other.___max_ref()
     for __p in unsafeSequence(__first, __last) {
-      guard let __mv = try transform(___mapped_value(__p)) else { continue }
+      guard let __mv = try transform(Base.__mapped_value_(__p)) else { continue }
       other.ensureCapacity()
       (__parent, __child) = other.___emplace_hint_right(
         __parent, __child, Other.__payload_((__get_value(__p), __mv)))

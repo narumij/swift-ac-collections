@@ -18,8 +18,9 @@
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 @frozen
 @usableFromInline
-package struct UnsafeTreeV2BufferHeader: _RecyclePool {
+package struct UnsafeTreeV2BufferHeader {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  public typealias _NodeRef = UnsafeMutablePointer<_NodePtr>
 
   @inlinable
   @inline(__always)
@@ -120,7 +121,7 @@ extension UnsafeTreeV2BufferHeader {
   /// ヘッダーにとっては解放責任のデタッチ先
   ///
   /// - WARNING: 触ると生成されるので不必要に触らないこと
-  @inlinable
+  @usableFromInline
   var tiedRawBuffer: _TiedRawBuffer {
     mutating get {
       // TODO: 一度の保証付きの実装にすること
@@ -145,7 +146,7 @@ extension UnsafeTreeV2BufferHeader {
   }
 
   /// 確保済みメモリの内容を未初期化に戻し、木を空にする
-  @inlinable
+  @usableFromInline
   internal mutating func deinitialize() {
     ___flushFreshPool()
     ___flushRecyclePool()
@@ -304,12 +305,79 @@ extension UnsafeTreeV2BufferHeader {
 
 #endif
 
+#if false
+  extension UnsafeTreeV2BufferHeader: _RecyclePool {}
+#else
+  /* ------------ _RecyclePoolのインライン化はじまり  -------------  */
+
+  extension UnsafeTreeV2BufferHeader {
+
+    @inlinable
+    mutating func ___pushRecycle(_ p: _NodePtr) {
+      assert(p.__parent_.___is_null || p.__slow_end() == end_ptr, "木が異なるのは不可")
+      assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
+      assert(recycleHead != p, "過剰リサイクル不可")
+      count -= 1
+      #if DEBUG || true
+        p.pointee.___recycle_count &+= 1
+      #endif
+      freshBucketAllocator.deinitialize(p.advanced(by: 1))
+      #if DEBUG
+        payloadDeinitializedCount += 1
+      #endif
+      #if GRAPHVIZ_DEBUG
+        p.pointee.__right_ = nullptr
+        p.pointee.__parent_ = nullptr
+      #endif
+      p.pointee.___has_payload_content = false
+      p.pointee.__left_ = recycleHead
+      recycleHead = p
+    }
+
+    @usableFromInline
+    mutating func ___popRecycle() -> _NodePtr {
+      let p = recycleHead
+      recycleHead = p.pointee.__left_
+      count += 1
+      p.pointee.___has_payload_content = true
+      return p
+    }
+
+    @usableFromInline
+    mutating func ___flushRecyclePool() {
+      recycleHead = nullptr
+      count = 0  // これは不適切な気がする
+    }
+  }
+
+  #if DEBUG || GRAPHVIZ_DEBUG
+    extension UnsafeTreeV2BufferHeader {
+
+      @usableFromInline
+      var recycleCount: Int {
+        freshPoolUsedCount - count
+      }
+
+      @usableFromInline
+      internal var ___recycleNodes: [Int] {
+        var nodes: [Int] = []
+        var last = recycleHead
+        while last != nullptr {
+          nodes.append(last.pointee.___tracking_tag)
+          last = last.pointee.__left_
+        }
+        return nodes
+      }
+    }
+  #endif
+
+/* ------------ _RecyclePoolのインライン化おわり  -------------  */
+#endif
+
 extension UnsafeTreeV2BufferHeader {
 
   @inlinable
-  mutating public
-    func ___popFresh() -> _NodePtr
-  {
+  mutating public func ___popFresh() -> _NodePtr {
     assert(freshPoolUsedCount < freshPoolCapacity, "未使用容量の残数が0ではないこと")
     guard let p = popFresh() else {
       return nullptr

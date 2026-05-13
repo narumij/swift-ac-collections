@@ -62,6 +62,7 @@ let package = Package(
       targets: ["AcCollections"])
   ],
   dependencies: [
+
     .package(
       url: "https://github.com/apple/swift-collections.git",
       branch: "main",
@@ -95,11 +96,13 @@ let package = Package(
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
+
     .target(
       name: "AcCollections",
       dependencies: ["RedBlackTreeModule", "PermutationModule"],
       swiftSettings: _settings
     ),
+
     .target(
       name: "_malloc_free",
       publicHeadersPath: "include",
@@ -107,16 +110,16 @@ let package = Package(
         .headerSearchPath("include"),
         .define("NDEBUG", .when(configuration: .release)),
       ]),
-    
+
     .target(
       name: "RedBlackTreeModule",
+      path: "Sources/RedBlackTreeModule",
       dependencies: [] + additionalDepencencies,
       exclude: ["MEMO.md"],
       swiftSettings: _settings + [
         //        .strictMemorySafety()
-      ],
-      path: "Sources/RedBlackTreeModule"),
-    
+      ]),
+
     .testTarget(
       name: "RedBlackTreeTests",
       dependencies: [
@@ -125,7 +128,7 @@ let package = Package(
       ],
       swiftSettings: _settings
     ),
-    
+
     .target(
       name: "PermutationModule",
       dependencies: [],
@@ -134,7 +137,7 @@ let package = Package(
     .testTarget(
       name: "PermutationTests",
       dependencies: [
-        //         .product(name: "Algorithms", package: "swift-algorithms"),
+        // .product(name: "Algorithms", package: "swift-algorithms"),
         "PermutationModule"
       ],
       swiftSettings: _settings
@@ -142,26 +145,20 @@ let package = Package(
 
     .target(
       name: "_MT19937",
+      path: "Utilities/_MT19937",
       publicHeadersPath: "include",
       cxxSettings: [
         .headerSearchPath("include"),
         .define("NDEBUG", .when(configuration: .release)),
         .unsafeFlags(["-std=c++17"]),
-      ],
-      path: "Utilities/_MT19937"),
+      ]),
 
     .target(
       name: "MT19937",
+      path: "Utilities/MT19937",
       dependencies: ["_MT19937"],
-      path: "Utilities/MT19937"),
+      swiftSettings: _settings),
 
-    .executableTarget(
-      name: "MarriedSource",
-      dependencies: [
-        .product(name: "AcFoundation", package: "swift-ac-foundation")
-      ],
-      path: "Tests/Executables/MarriedSource",
-      exclude: ["RedBlackTree.swift_"]),
   ]
     + [
       "Executable",
@@ -178,6 +175,7 @@ let package = Package(
         name: "\(name)",
         dependencies: [
           "AcCollections",
+          "MT19937",
           .product(name: "Collections", package: "swift-collections"),
           .product(
             name: "SortedCollections",
@@ -190,8 +188,8 @@ let package = Package(
         name: "Benchmark\(i)",
         dependencies: [
           "RedBlackTreeModule",
-          "MT19937"
-            .product(name: "Algorithms", package: "swift-algorithms"),
+          "MT19937",
+          .product(name: "Algorithms", package: "swift-algorithms"),
           .product(name: "Benchmark", package: "swift-benchmark"),
           .product(name: "Collections", package: "swift-collections"),
         ],

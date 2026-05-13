@@ -42,7 +42,7 @@ public struct __UniqueTrait<Base>: TraitHelper, _UnsafeNodePtrType
 where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
 
   @inlinable
-  public static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+  static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     return Base.__get_value(l) < Base.__get_value(r)
   }
 
@@ -93,7 +93,7 @@ public struct __MultiTrait<Base>: TraitHelper, _UnsafeNodePtrType
 where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
 
   @inlinable
-  public static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+  static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
     return Base.__get_value(l) < Base.__get_value(r)
   }
 

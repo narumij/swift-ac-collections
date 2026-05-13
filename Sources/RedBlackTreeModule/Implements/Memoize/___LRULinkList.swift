@@ -34,8 +34,13 @@ public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
   public var value: Value
 }
 
-public protocol LinkPairValueTrait: KeyValueTrait & CompareUniqueTrait & _UnsafeNodePtrType
+public protocol LinkPairValueTrait: KeyValueTrait & _Base_IsMultiTraitInterface & _UnsafeNodePtrType
 where _PayloadValue == _LinkingPair<_Key, _MappedValue> {}
+
+extension LinkPairValueTrait {
+  @inlinable
+  public static var isMulti: Bool { true }
+}
 
 extension LinkPairValueTrait {
 

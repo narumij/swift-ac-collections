@@ -181,6 +181,7 @@ extension NodeBitmapProtocol_std {
     return __f
   }
 
+#if false
   // 128bit幅でかつ、必要なレジスタ数が削減されている
   @inlinable
   @inline(__always)
@@ -196,6 +197,7 @@ extension NodeBitmapProtocol_std {
     }
     return __f
   }
+#endif
 
   // 64bit幅でかつ、必要なレジスタ数が削減されている
   @inlinable
@@ -213,11 +215,19 @@ extension NodeBitmapProtocol_std {
     return __f
   }
 
+#if false
   @inlinable
   @inline(__always)
   internal func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
     // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
     ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
   }
+#else
+  @inlinable
+  @inline(__always)
+  internal func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
+    ___ptr_bitmap_64(__l) < ___ptr_bitmap_64(__r)
+  }
+#endif
 }
 #endif

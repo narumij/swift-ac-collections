@@ -26,7 +26,9 @@ import XCTest
         try checkHeadAllocationSize(Int16.self, capacity: n)
         try checkHeadAllocationSize(Int32.self, capacity: n)
         try checkHeadAllocationSize(Int64.self, capacity: n)
+#if false
         try checkHeadAllocationSize(Int128.self, capacity: n)
+#endif
         try checkHeadAllocationSize(Int.self, capacity: n)
         try checkHeadAllocationSize(SIMD2<Int>.self, capacity: n)
         try checkHeadAllocationSize(SIMD3<Int>.self, capacity: n)
@@ -119,7 +121,9 @@ import XCTest
         try checkOtherAllocationSize(Int16.self, capacity: n)
         try checkOtherAllocationSize(Int32.self, capacity: n)
         try checkOtherAllocationSize(Int64.self, capacity: n)
+#if false
         try checkOtherAllocationSize(Int128.self, capacity: n)
+#endif
         try checkOtherAllocationSize(Int.self, capacity: n)
         try checkOtherAllocationSize(SIMD2<Int>.self, capacity: n)
         try checkOtherAllocationSize(SIMD3<Int>.self, capacity: n)

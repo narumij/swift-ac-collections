@@ -53,8 +53,8 @@ let additionalDepencencies: [Target.Dependency] =
 
 let package = Package(
   name: "swift-ac-collections",
-//    platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17), .watchOS(.v10), .macCatalyst(.v17)],
-  platforms: [.macOS(.v15), .iOS(.v18), .tvOS(.v18), .watchOS(.v11), .macCatalyst(.v18)],
+  //  platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17), .watchOS(.v10), .macCatalyst(.v17)],
+  //  platforms: [.macOS(.v15), .iOS(.v18), .tvOS(.v18), .watchOS(.v11), .macCatalyst(.v18)],
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(
@@ -76,9 +76,9 @@ let package = Package(
       url: "https://github.com/google/swift-benchmark",
       from: "0.1.0"),
 
-    .package(
-      url: "https://github.com/narumij/swift-ac-foundation",
-      branch: "main"),
+    //    .package(
+    //      url: "https://github.com/narumij/swift-ac-foundation",
+    //      branch: "main"),
 
     //    .package(
     //      url: "https://github.com/apple/swift-collections",
@@ -107,14 +107,16 @@ let package = Package(
         .headerSearchPath("include"),
         .define("NDEBUG", .when(configuration: .release)),
       ]),
+    
     .target(
       name: "RedBlackTreeModule",
       dependencies: [] + additionalDepencencies,
       exclude: ["MEMO.md"],
       swiftSettings: _settings + [
         //        .strictMemorySafety()
-      ]
-    ),
+      ],
+      path: "Sources/RedBlackTreeModule"),
+    
     .testTarget(
       name: "RedBlackTreeTests",
       dependencies: [
@@ -123,6 +125,7 @@ let package = Package(
       ],
       swiftSettings: _settings
     ),
+    
     .target(
       name: "PermutationModule",
       dependencies: [],
@@ -136,6 +139,22 @@ let package = Package(
       ],
       swiftSettings: _settings
     ),
+
+    .target(
+      name: "_MT19937",
+      publicHeadersPath: "include",
+      cxxSettings: [
+        .headerSearchPath("include"),
+        .define("NDEBUG", .when(configuration: .release)),
+        .unsafeFlags(["-std=c++17"]),
+      ],
+      path: "Utilities/_MT19937"),
+
+    .target(
+      name: "MT19937",
+      dependencies: ["_MT19937"],
+      path: "Utilities/MT19937"),
+
     .executableTarget(
       name: "MarriedSource",
       dependencies: [
@@ -144,37 +163,36 @@ let package = Package(
       path: "Tests/Executables/MarriedSource",
       exclude: ["RedBlackTree.swift_"]),
   ]
-  + [
-    "Executable",
-    "SimpleInsert",
-    "SimpleRemove",
-    "SimpleCreate",
-    "SimpleValue",
-    "MultiRoundTrip",
-    "ABC411F",
-    "LRU",
-  ]
+    + [
+      "Executable",
+      "SimpleInsert",
+      "SimpleRemove",
+      "SimpleCreate",
+      "SimpleValue",
+      "MultiRoundTrip",
+      "ABC411F",
+      "LRU",
+    ]
     .map { name in
-        .executableTarget(
-          name: "\(name)",
-          dependencies: [
-            "AcCollections",
-            .product(name: "AcFoundation", package: "swift-ac-foundation"),
-            .product(name: "Collections", package: "swift-collections"),
-            .product(
-              name: "SortedCollections",
-              package: "swift-collections"),
-          ],
-          path: "Tests/Executables/\(name)")
+      .executableTarget(
+        name: "\(name)",
+        dependencies: [
+          "AcCollections",
+          .product(name: "Collections", package: "swift-collections"),
+          .product(
+            name: "SortedCollections",
+            package: "swift-collections"),
+        ],
+        path: "Tests/Executables/\(name)")
     }
     + (0...7).map { i in
       .executableTarget(
         name: "Benchmark\(i)",
         dependencies: [
           "RedBlackTreeModule",
-          .product(name: "Algorithms", package: "swift-algorithms"),
+          "MT19937"
+            .product(name: "Algorithms", package: "swift-algorithms"),
           .product(name: "Benchmark", package: "swift-benchmark"),
-          .product(name: "AcFoundation", package: "swift-ac-foundation"),
           .product(name: "Collections", package: "swift-collections"),
         ],
         path: "Tests/Benchmarks/Benchmark\(i)",

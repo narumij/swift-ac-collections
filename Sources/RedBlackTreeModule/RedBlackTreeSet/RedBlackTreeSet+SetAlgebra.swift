@@ -24,9 +24,7 @@ extension RedBlackTreeSet: SetAlgebra {
   public func union(_ other: __owned RedBlackTreeSet<Element>)
     -> RedBlackTreeSet<Element>
   {
-    var result = self
-    result.formUnion(other)
-    return result
+    .init(__tree_: __tree_.___meld_unique(other.__tree_))
   }
 
   /// Returns a new set with the elements that are common to both this set and the given set.
@@ -34,9 +32,7 @@ extension RedBlackTreeSet: SetAlgebra {
   public func intersection(_ other: RedBlackTreeSet<Element>)
     -> RedBlackTreeSet<Element>
   {
-    var result = self
-    result.formIntersection(other)
-    return result
+    .init(__tree_: __tree_.___intersection(other.__tree_))
   }
 
   /// Returns a new set with the elements that are either in this set or in the given set, but not in both.
@@ -44,9 +40,7 @@ extension RedBlackTreeSet: SetAlgebra {
   public func symmetricDifference(_ other: __owned RedBlackTreeSet<Element>)
     -> RedBlackTreeSet<Element>
   {
-    var result = self
-    result.formSymmetricDifference(other)
-    return result
+    .init(__tree_: __tree_.___symmetric_difference(other.__tree_))
   }
 
   /// Adds the elements of the given set to the set.
@@ -84,9 +78,7 @@ extension RedBlackTreeSet: SetAlgebra {
     public func difference(_ other: __owned RedBlackTreeSet<Element>)
       -> RedBlackTreeSet<Element>
     {
-      var result = self
-      result.formDifference(other)
-      return result
+      .init(__tree_: __tree_.___difference(other.__tree_))
     }
 
     /// - Complexity: O(*n* + *m*)

@@ -54,7 +54,7 @@ extension UnsafeIterator {
     }
 
     @inlinable
-    @inline(__always)
+//    @inline(__always)
     public mutating func next() -> Source.Element? {
       source.next()
     }

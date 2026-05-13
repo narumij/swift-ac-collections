@@ -21,11 +21,8 @@ var defines: [String] = [
 
 var _settings: [SwiftSetting] =
   [
-    
-    
-    
-    
-//    .define("COMPATIBLE_ATCODER_2025"),
+
+    //    .define("COMPATIBLE_ATCODER_2025"),
     // このコードベースは当初、2025新ジャッジ搭載を目指して開発し、無事に搭載できました。
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
     // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
@@ -140,290 +137,61 @@ let package = Package(
       swiftSettings: _settings
     ),
     .executableTarget(
-      name: "Benchmark0",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Benchmarks/Benchmark0",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Benchmark1",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Benchmarks/Benchmark1",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Benchmark2",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Benchmarks/Benchmark2",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Benchmark3",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Benchmarks/Benchmark3",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Benchmark4",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Benchmarks/Benchmark4",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Benchmark5",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-        .product(name: "Collections", package: "swift-collections"),
-      ],
-      path: "Tests/Benchmarks/Benchmark5",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Benchmark6",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-        .product(name: "Collections", package: "swift-collections"),
-      ],
-      path: "Tests/Benchmarks/Benchmark6",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Executable",
-      dependencies: [
-        //         .product(name: "Collections", package: "swift-collections"),
-        "RedBlackTreeModule",
-        "PermutationModule",
-      ],
-      path: "Tests/Executables/Executable",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "SimpleInsert",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-        .product(name: "Collections", package: "swift-collections"),
-      ],
-      path: "Tests/Executables/SimpleInsert"),
-    .executableTarget(
-      name: "SimpleRemove",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Executables/SimpleRemove"),
-    .executableTarget(
-      name: "SimpleCreate",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Executables/SimpleCreate"),
-    .executableTarget(
-      name: "SimpleValue",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Executables/SimpleValue"),
-    .executableTarget(
-      name: "MultiRoundTrip",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-        .product(name: "Collections", package: "swift-collections"),
-      ],
-      path: "Tests/Executables/MultiRoundTrip"),
-    .executableTarget(
-      name: "ABC411F",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-        .product(name: "Collections", package: "swift-collections"),
-        .product(
-          name: "SortedCollections",
-          package: "swift-collections"),
-      ],
-      path: "Tests/Executables/ABC411F"),
-    .executableTarget(
       name: "MarriedSource",
       dependencies: [
         .product(name: "AcFoundation", package: "swift-ac-foundation")
       ],
       path: "Tests/Executables/MarriedSource",
       exclude: ["RedBlackTree.swift_"]),
-    .executableTarget(
-      name: "LRU",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Executables/LRU"),
-    .executableTarget(
-      name: "CollectionBenchmark0",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark0",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "CollectionBenchmark1",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark1",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "CollectionBenchmark2",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark2",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "CollectionBenchmark3",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark3",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "CollectionBenchmark4",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark4",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "CollectionBenchmark5",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark5",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "CollectionBenchmark6",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "Collections", package: "swift-collections"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark6",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "CollectionBenchmark7",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "Collections", package: "swift-collections"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark7",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "CollectionBenchmark8",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "Collections", package: "swift-collections"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark8",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "CollectionBenchmark9",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "Collections", package: "swift-collections"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark9",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "CollectionBenchmark10",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "Collections", package: "swift-collections"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark10",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "CollectionBenchmark11",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "Collections", package: "swift-collections"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark11",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "CollectionBenchmark12",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
-        .product(name: "Collections", package: "swift-collections"),
-        .product(name: "SortedCollections", package: "swift-collections"),
-      ],
-      path: "Tests/CollectionBenchmarks/CollectionBenchmark12",
-      swiftSettings: _settings
-    ),
   ]
+  + [
+    "Executable",
+    "SimpleInsert",
+    "SimpleRemove",
+    "SimpleCreate",
+    "SimpleValue",
+    "MultiRoundTrip",
+    "ABC411F",
+    "LRU",
+  ]
+    .map { name in
+        .executableTarget(
+          name: "\(name)",
+          dependencies: [
+            "AcCollections",
+            .product(name: "AcFoundation", package: "swift-ac-foundation"),
+            .product(name: "Collections", package: "swift-collections"),
+            .product(
+              name: "SortedCollections",
+              package: "swift-collections"),
+          ],
+          path: "Tests/Executables/\(name)")
+    }
+    + (0...7).map { i in
+      .executableTarget(
+        name: "Benchmark\(i)",
+        dependencies: [
+          "RedBlackTreeModule",
+          .product(name: "Algorithms", package: "swift-algorithms"),
+          .product(name: "Benchmark", package: "swift-benchmark"),
+          .product(name: "AcFoundation", package: "swift-ac-foundation"),
+          .product(name: "Collections", package: "swift-collections"),
+        ],
+        path: "Tests/Benchmarks/Benchmark\(i)",
+        swiftSettings: _settings
+      )
+    }
+    + (0...12).map { i in
+      .executableTarget(
+        name: "CollectionBenchmark\(i)",
+        dependencies: [
+          "RedBlackTreeModule",
+          .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
+          .product(name: "Collections", package: "swift-collections"),
+          .product(name: "SortedCollections", package: "swift-collections"),
+        ],
+        path: "Tests/CollectionBenchmarks/CollectionBenchmark\(i)",
+        swiftSettings: _settings
+      )
+    }
 )

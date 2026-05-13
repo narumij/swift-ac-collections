@@ -1,7 +1,6 @@
 import RedBlackTreeModule
 import XCTest
 
-#if COMPATIBLE_ATCODER_2025 || USE_SET_ALGEBRA
 final class SetAlgebraTests: RedBlackTreeTestCase {
 
   func testUnion0() throws {
@@ -161,4 +160,3 @@ final class SetAlgebraTests: RedBlackTreeTestCase {
     assertEquiv(lhs, [])
   }
 }
-#endif

@@ -22,24 +22,20 @@
   __algorithm/set_symmetric_difference.h
   に準じた動作となっている。
   SwiftのSetAlgebraプロトコルがmulti_setを想定しているか不明なので、プロトコル適合はしていない。
+ (swift-collectionsのissuesに対応してないと明言されていた)
 */
 
-#if COMPATIBLE_ATCODER_2025 || USE_SET_ALGEBRA
 extension RedBlackTreeMultiSet {
 
   @inlinable
-  @inline(__always)
   public func union(_ other: __owned RedBlackTreeMultiSet<Element>)
     -> RedBlackTreeMultiSet<Element>
   {
-    var result = self
-    result.formUnion(other)
-    return result
+    .init(__tree_: __tree_.___meld_multi(other.__tree_))
   }
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  //  @inline(__always)
   public mutating func formUnion(_ other: __owned RedBlackTreeMultiSet<Element>) {
     __tree_ = __tree_.___meld_multi(other.__tree_)
   }
@@ -48,18 +44,14 @@ extension RedBlackTreeMultiSet {
 extension RedBlackTreeMultiSet {
 
   @inlinable
-  @inline(__always)
   public func symmetricDifference(_ other: __owned RedBlackTreeMultiSet<Element>)
     -> RedBlackTreeMultiSet<Element>
   {
-    var result = self
-    result.formSymmetricDifference(other)
-    return result
+    .init(__tree_: __tree_.___symmetric_difference(other.__tree_))
   }
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  //  @inline(__always)
   public mutating func formSymmetricDifference(_ other: __owned RedBlackTreeMultiSet<Element>) {
     __tree_ = __tree_.___symmetric_difference(other.__tree_)
   }
@@ -68,18 +60,14 @@ extension RedBlackTreeMultiSet {
 extension RedBlackTreeMultiSet {
 
   @inlinable
-  @inline(__always)
   public func intersection(_ other: RedBlackTreeMultiSet<Element>)
     -> RedBlackTreeMultiSet<Element>
   {
-    var result = self
-    result.formIntersection(other)
-    return result
+    .init(__tree_: __tree_.___intersection(other.__tree_))
   }
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  //  @inline(__always)
   public mutating func formIntersection(_ other: RedBlackTreeMultiSet<Element>) {
     __tree_ = __tree_.___intersection(other.__tree_)
   }
@@ -89,18 +77,14 @@ extension RedBlackTreeMultiSet {
   extension RedBlackTreeMultiSet {
 
     @inlinable
-    @inline(__always)
     public func difference(_ other: __owned RedBlackTreeMultiSet<Element>)
       -> RedBlackTreeMultiSet<Element>
     {
-      var result = self
-      result.formDifference(other)
-      return result
+      .init(__tree_: __tree_.___difference(other.__tree_))
     }
 
     /// - Complexity: O(*n* + *m*)
     @inlinable
-    //  @inline(__always)
     public mutating func formDifference(_ other: __owned RedBlackTreeMultiSet<Element>) {
       __tree_ = __tree_.___difference(other.__tree_)
     }
@@ -112,7 +96,6 @@ extension RedBlackTreeMultiSet {
 
     @available(*, deprecated, message: "This API is buggy and may behave incorrectly.")
     @inlinable
-    @inline(__always)
     public func difference(_ other: __owned RedBlackTreeMultiSet<Element>)
       -> RedBlackTreeMultiSet<Element>
     {
@@ -124,10 +107,8 @@ extension RedBlackTreeMultiSet {
     /// - Complexity: O(*n* + *m*)
     @available(*, deprecated, message: "This API is buggy and may behave incorrectly.")
     @inlinable
-    //  @inline(__always)
     public mutating func formDifference(_ other: __owned RedBlackTreeMultiSet<Element>) {
       __tree_ = __tree_.___difference(other.__tree_)
     }
   }
-#endif
 #endif

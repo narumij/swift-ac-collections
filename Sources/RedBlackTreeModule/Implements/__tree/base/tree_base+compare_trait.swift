@@ -15,22 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-//@available(*, deprecated)
-//public protocol CompareUniqueTrait: _Base_IsMultiTraitInterface {}
-//
-//extension CompareUniqueTrait {
-//  @inlinable @inline(__always)
-//  public static var isMulti: Bool { false }
-//}
-//
-//@available(*, deprecated)
-//public protocol CompareMultiTrait: _Base_IsMultiTraitInterface {}
-//
-//extension CompareMultiTrait {
-//  @inlinable @inline(__always)
-//  public static var isMulti: Bool { true }
-//}
-
 // 分岐を減らしたい気持ちはあるが、ホットパスというわけでもないので、無理にはやらない
 
 public protocol TraitHelper: _UnsafeNodePtrType {
@@ -38,17 +22,17 @@ public protocol TraitHelper: _UnsafeNodePtrType {
   static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool
 }
 
-public protocol CompareUniqueTraitHelper: _Base_TraitHelperInterface
+public protocol CompareUniqueTrait: _Base_TraitHelperInterface
 where _TraitHelper == __UniqueTrait<Self> {}
-extension CompareUniqueTraitHelper {
+extension CompareUniqueTrait {
   
   @inlinable @inline(__always)
   public static var isMulti: Bool { false }
 }
 
-public protocol CompareMultiTraitHelper: _Base_TraitHelperInterface
+public protocol CompareMultiTrait: _Base_TraitHelperInterface
 where _TraitHelper == __MultiTrait<Self> {}
-extension CompareMultiTraitHelper {
+extension CompareMultiTrait {
   
   @inlinable @inline(__always)
   public static var isMulti: Bool { true }

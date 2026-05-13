@@ -58,7 +58,7 @@
 
 #if COMPATIBLE_ATCODER_2025
   // TODO: デッドコードになってないかチェックすること
-  extension _CompareV2 where Base: CompareUniqueTraitHelper {
+  extension _CompareV2 where Base: CompareUniqueTrait {
 
     ///（重複なし）
     @inlinable @inline(__always)
@@ -67,7 +67,7 @@
     }
   }
 
-  extension _CompareV2 where Base: CompareMultiTraitHelper {
+  extension _CompareV2 where Base: CompareMultiTrait {
 
     /// （重複あり）
     @inlinable @inline(__always)
@@ -77,7 +77,7 @@
   }
 
   // TODO: デッドコードになってないかチェックすること
-  extension _CompareV2 where Base: CompareUniqueTraitHelper, Self: UnsafeIndexProviderProtocolV2 {
+  extension _CompareV2 where Base: CompareUniqueTrait, Self: UnsafeIndexProviderProtocolV2 {
 
     ///（重複なし）
     @inlinable @inline(__always)
@@ -87,7 +87,7 @@
     }
   }
 
-  extension _CompareV2 where Base: CompareMultiTraitHelper, Self: UnsafeIndexProviderProtocolV2 {
+  extension _CompareV2 where Base: CompareMultiTrait, Self: UnsafeIndexProviderProtocolV2 {
 
     /// （重複あり）
     @inlinable @inline(__always)

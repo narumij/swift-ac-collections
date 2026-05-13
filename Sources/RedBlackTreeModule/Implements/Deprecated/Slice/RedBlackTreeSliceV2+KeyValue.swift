@@ -32,6 +32,7 @@ import Foundation
         & PairValueTrait
         & _BaseNode_SignedDistanceInterface
         & _BaseNode_PtrCompInterface
+        & _BaseNode_PtrRangeCompInterface
     {
 
       public typealias Tree = UnsafeTreeV2<Base>

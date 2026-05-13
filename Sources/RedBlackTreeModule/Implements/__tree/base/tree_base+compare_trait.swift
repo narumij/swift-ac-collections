@@ -15,21 +15,21 @@
 //
 //===----------------------------------------------------------------------===//
 
-@available(*, deprecated)
-public protocol CompareUniqueTrait: _Base_IsMultiTraitInterface {}
-
-extension CompareUniqueTrait {
-  @inlinable @inline(__always)
-  public static var isMulti: Bool { false }
-}
-
-@available(*, deprecated)
-public protocol CompareMultiTrait: _Base_IsMultiTraitInterface {}
-
-extension CompareMultiTrait {
-  @inlinable @inline(__always)
-  public static var isMulti: Bool { true }
-}
+//@available(*, deprecated)
+//public protocol CompareUniqueTrait: _Base_IsMultiTraitInterface {}
+//
+//extension CompareUniqueTrait {
+//  @inlinable @inline(__always)
+//  public static var isMulti: Bool { false }
+//}
+//
+//@available(*, deprecated)
+//public protocol CompareMultiTrait: _Base_IsMultiTraitInterface {}
+//
+//extension CompareMultiTrait {
+//  @inlinable @inline(__always)
+//  public static var isMulti: Bool { true }
+//}
 
 // 分岐を減らしたい気持ちはあるが、ホットパスというわけでもないので、無理にはやらない
 

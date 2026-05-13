@@ -10,6 +10,7 @@
   protocol _CompareV2: UnsafeTreeHostV2 & _KeyBride {}
 #endif
 
+#if false
 #if COMPATIBLE_ATCODER_2025
   // TODO: デッドコードになってないかチェックすること
   extension _CompareV2 where Base: CompareUniqueTrait {
@@ -50,6 +51,7 @@
       return (___index(lo.sealed), ___index(hi.sealed))
     }
   }
+#endif
 #endif
 
 // MARK: -

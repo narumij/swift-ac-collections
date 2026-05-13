@@ -151,30 +151,32 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     return __f
   }
 
-  // 128bit幅でかつ、必要なレジスタ数が削減されている
-  @inlinable
-  @inline(__always)
-  internal func ___ptr_bitmap_128() -> UInt128 {
-    assert(!___is_null, "Node shouldn't be null")
-    assert(!___is_end, "Node shouldn't be end")
-    var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
-    var __p = self
-    while !__p.___is_root {
-      __f &>>= 1
-      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt128.bitWidth &- 1)
-      __p = __p.__parent_
+  #if USE_INT128
+    // 128bit幅でかつ、必要なレジスタ数が削減されている
+    @inlinable
+    @inline(__always)
+    internal func ___ptr_bitmap_128() -> UInt128 {
+      assert(!___is_null, "Node shouldn't be null")
+      assert(!___is_end, "Node shouldn't be end")
+      var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
+      var __p = self
+      while !__p.___is_root {
+        __f &>>= 1
+        __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt128.bitWidth &- 1)
+        __p = __p.__parent_
+      }
+      return __f
     }
-    return __f
-  }
+  #endif
 
   // 64bit幅でかつ、必要なレジスタ数が削減されている
 
   @inlinable
   @inline(__always)
-  internal func ___ptr_bitmap_64() -> UInt {
+  internal func ___ptr_bitmap_64() -> UInt64 {
     assert(!___is_null, "Node shouldn't be null")
     assert(!___is_end, "Node shouldn't be end")
-    var __f: UInt = 1 &<< (UInt.bitWidth &- 1)
+    var __f: UInt64 = 1 &<< (UInt64.bitWidth &- 1)
     var __p = self
     while !__p.___is_root {
       __f &>>= 1
@@ -185,21 +187,23 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 }
 
-/// 128bit版では速度が負けていて、64bit版では未定義が心配なので、お役御免
-@inlinable
-@inline(__always)
-func ___ptr_comp_bitmap(
-  _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
-) -> Bool {
-  assert(!__l.___is_null, "Left node shouldn't be null")
-  assert(!__r.___is_null, "Right node shouldn't be null")
-  assert(!__l.___is_end, "Left node shouldn't be end")
-  assert(!__r.___is_end, "Right node shouldn't be end")
+#if USE_INT128
+  /// 128bit版では速度が負けていて、64bit版では未定義が心配なので、お役御免
+  @inlinable
+  @inline(__always)
+  func ___ptr_comp_bitmap(
+    _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
+  ) -> Bool {
+    assert(!__l.___is_null, "Left node shouldn't be null")
+    assert(!__r.___is_null, "Right node shouldn't be null")
+    assert(!__l.___is_end, "Left node shouldn't be end")
+    assert(!__r.___is_end, "Right node shouldn't be end")
 
-  assert(___ptr_comp_multi(__l, __r) == (__l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()))
+    assert(___ptr_comp_multi(__l, __r) == (__l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()))
 
-  // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
-  return __l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()
-  //  return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
-  //  return __l.___ptr_bitmap() < __r.___ptr_bitmap()
-}
+    // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
+    return __l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()
+    //  return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
+    //  return __l.___ptr_bitmap() < __r.___ptr_bitmap()
+  }
+#endif

@@ -12,7 +12,7 @@ func reset() {
 
 typealias Fixture = RedBlackTreeSet
 
-print(Date.now)
+//print(Date.now)
 print()
 
 print("\(RedBlackTreeSet<Int>.buildInfo)")

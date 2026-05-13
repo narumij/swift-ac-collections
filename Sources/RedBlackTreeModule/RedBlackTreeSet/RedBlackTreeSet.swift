@@ -113,6 +113,7 @@ extension RedBlackTreeSet.Base: CompareUniqueTrait {}
 extension RedBlackTreeSet.Base: ScalarValueTrait & _UnsafeNodePtrType {}
 extension RedBlackTreeSet.Base: _ScalarBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeSet.Base: _BaseNode_NodeCompareProtocol {}
+extension RedBlackTreeSet.Base: _BaseNode_SignedDistanceProtocol {}
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet: _RedBlackTreeKeyOnlyV2 {}

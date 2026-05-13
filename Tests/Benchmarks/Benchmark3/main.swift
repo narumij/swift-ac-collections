@@ -10,7 +10,7 @@ typealias Fixture = RedBlackTreeSet
 print("Benchmark3")
 print()
 print("UNSAFE_TREE_V2")
-print(Date.now)
+//print(Date.now)
 print()
 
 let limit = 24

@@ -22,7 +22,8 @@
 
 #if COMPATIBLE_ATCODER_2025
 @usableFromInline
-protocol _SubSequenceV2: UnsafeTreeSealedRangeProtocol, UnsafeIndexBindingV2 {}
+protocol _SubSequenceV2: UnsafeTreeSealedRangeProtocol, UnsafeIndexBindingV2
+where Base: _BaseNode_PtrRangeCompInterface {}
 
 extension _SubSequenceV2 {
 

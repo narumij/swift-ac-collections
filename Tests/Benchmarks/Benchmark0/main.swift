@@ -8,7 +8,7 @@ var mt = mt19937_64(seed: 0)
 typealias Fixture = RedBlackTreeSet
 
 print("UNSAFE_TREE＿V2")
-print(Date.now)
+//print(Date.now)
 print()
 
 print("\(RedBlackTreeSet<Int>.buildInfo)")

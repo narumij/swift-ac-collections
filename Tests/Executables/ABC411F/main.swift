@@ -1,4 +1,3 @@
-import AcFoundation
 import IOUtil
 import MT19937
 import RedBlackTreeModule
@@ -9,6 +8,7 @@ var mt = mt19937_64(seed: 0)
 let N = 3 * 100000
 var m = 3 * 100000
 let Q = 3 * 100000
+
 //var (N,m,Q) = (3 * 100000, 3 * 100000, 3 * 100000)
 
 // 制約 0 <= u < v < N
@@ -79,11 +79,7 @@ for x in q {
         e[vz].remove(vx)
       }
     }
-    #if COMPATIBLE_ATCODER_2025
-      e[vx].removeAll()
-    #else
-      e[vx].removeAll()
-    #endif
+    e[vx].removeAll()
   }
   fastPrint(m)
 }

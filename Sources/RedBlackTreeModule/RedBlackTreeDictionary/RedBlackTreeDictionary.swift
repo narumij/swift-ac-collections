@@ -116,6 +116,7 @@ extension RedBlackTreeDictionary.Base: CompareUniqueTrait {}
 extension RedBlackTreeDictionary.Base: PairValueTrait {}
 extension RedBlackTreeDictionary.Base: _PairBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeDictionary.Base: _BaseNode_NodeCompareProtocol {}
+extension RedBlackTreeDictionary.Base: _BaseNode_SignedDistanceProtocol {}
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesV2 {}

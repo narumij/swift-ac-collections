@@ -48,7 +48,6 @@ var _settings: [SwiftSetting] =
   ]
   + defines.map { .define($0) }
 
-let dependencyMap = ["USE_C_MALLOC": "_malloc_free"]
 let additionalDepencencies: [Target.Dependency] =
   defines.contains("USE_C_MALLOC") ? ["_malloc_free"] : []
 

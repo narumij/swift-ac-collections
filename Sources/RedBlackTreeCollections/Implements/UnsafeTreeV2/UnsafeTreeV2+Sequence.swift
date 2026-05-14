@@ -226,7 +226,7 @@ extension UnsafeTreeV2 {
   @usableFromInline
   internal func
     unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
-    -> UnsafeIterator._Obverse
+    -> UnsafeIterator._Obverse1
   {
     .init(_start: __first, _end: __last)
   }
@@ -234,7 +234,7 @@ extension UnsafeTreeV2 {
   @usableFromInline
   internal func
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
-    -> UnsafeIterator._Payload<Base, UnsafeIterator._Obverse>
+    -> UnsafeIterator._Payload<Base, UnsafeIterator._Obverse1>
   {
     .init(source: .init(_start: __first, _end: __last))
   }

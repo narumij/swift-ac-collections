@@ -17,21 +17,12 @@
 
 extension UnsafeIterator {
 
-  public struct _Obverse:
+  public struct _Obverse0:
     _UnsafeNodePtrType,
-    UnsafeIteratorProtocol,
-    ObverseIterator,
     IteratorProtocol,
     Sequence,
     Equatable
   {
-    @inlinable
-    public init(_start: _SealedPtr, _end: _SealedPtr) {
-      self._start = _start.pointer!
-      self._end = _end.pointer!
-      self._current = _start.pointer!
-    }
-
     @inlinable
     public init(_start: _NodePtr, _end: _NodePtr) {
       self._start = _start
@@ -43,33 +34,14 @@ extension UnsafeIterator {
     public let _end: _NodePtr
     public var _current: _NodePtr
 
-    public var _sealed_start: _SealedPtr {
-      fatalError()
-    }
-
-    public var _sealed_end: _SealedPtr {
-      fatalError()
-    }
-
     @inlinable
     @inline(__always)
     public mutating func next() -> _NodePtr? {
       guard _current != _end else { return nil }
-      // 最悪でもendで止まる
-      guard !_current.___is_end else {
-        fatalError(.outOfBounds)
-      }
-      let __r = _current
-      _current = __tree_next_iter(_current)
-      return __r
-    }
-
-    public typealias Reversed = _Reverse
-
-    public func reversed() -> UnsafeIterator._Reverse {
-      fatalError()
+      defer { _current = __tree_next_iter(_current) }
+      return _current
     }
   }
 }
 
-extension UnsafeIterator._Obverse: @unchecked Sendable {}
+extension UnsafeIterator._Obverse0: @unchecked Sendable {}

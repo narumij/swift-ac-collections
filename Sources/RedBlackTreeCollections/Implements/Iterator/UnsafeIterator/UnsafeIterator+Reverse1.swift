@@ -17,7 +17,7 @@
 
 extension UnsafeIterator {
 
-  public struct _Reverse:
+  public struct _Reverse1:
     _UnsafeNodePtrType,
     UnsafeIteratorProtocol,
     ReverseIterator,
@@ -65,4 +65,4 @@ extension UnsafeIterator {
   }
 }
 
-extension UnsafeIterator._Reverse: @unchecked Sendable {}
+extension UnsafeIterator._Reverse1: @unchecked Sendable {}

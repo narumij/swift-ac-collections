@@ -136,7 +136,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   /// (実際にはUIntで64bit幅)
   @inlinable
   @inline(__always)
-  internal func ___ptr_bitmap() -> UInt {
+  internal func ___ptr_bitmap_org() -> UInt {
     assert(!___is_null, "Node shouldn't be null")
     assert(!___is_end, "Node shouldn't be end")
     var __f: UInt = 1  // 終端flag
@@ -185,6 +185,20 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     }
     return __f
   }
+
+  #if USE_INT128
+    @inlinable
+    @inline(__always)
+    internal func ___ptr_bitmap() -> UInt128 {
+      ___ptr_bitmap_128()
+    }
+  #else
+    @inlinable
+    @inline(__always)
+    internal func ___ptr_bitmap() -> UInt64 {
+      ___ptr_bitmap_64()
+    }
+  #endif
 }
 
 #if USE_INT128
@@ -204,6 +218,14 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
     return __l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()
     //  return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
-    //  return __l.___ptr_bitmap() < __r.___ptr_bitmap()
+    //  return __l.___ptr_bitmap_org() < __r.___ptr_bitmap_org()
+  }
+#else
+  @inlinable
+  @inline(__always)
+  func ___ptr_comp_bitmap(
+    _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
+  ) -> Bool {
+    return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
   }
 #endif

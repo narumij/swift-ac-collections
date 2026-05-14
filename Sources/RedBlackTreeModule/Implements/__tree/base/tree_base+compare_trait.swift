@@ -17,15 +17,10 @@
 
 // 分岐を減らしたい気持ちはあるが、ホットパスというわけでもないので、無理にはやらない
 
-public protocol MultiplicityHelper: _UnsafeNodePtrType {
-  static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
-  static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool
-}
-
 public protocol UniqueMultiplicity: _Base_MultiplicityHelperInterface
 where _MultiplicityHelper == __UniqueHelper<Self> {}
 extension UniqueMultiplicity {
-  
+
   @inlinable @inline(__always)
   public static var isMulti: Bool { false }
 }
@@ -33,7 +28,7 @@ extension UniqueMultiplicity {
 public protocol MultiMultiplicity: _Base_MultiplicityHelperInterface
 where _MultiplicityHelper == __MultiHelper<Self> {}
 extension MultiMultiplicity {
-  
+
   @inlinable @inline(__always)
   public static var isMulti: Bool { true }
 }
@@ -140,19 +135,11 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
       return !___ptr_comp(__p, __f)
     }
 
-#if USE_INT128
     let (f, p, l) = (
-      __f.___ptr_bitmap_128(),
-      __p.___ptr_bitmap_128(),
-      __l.___ptr_bitmap_128()
+      __f.___ptr_bitmap(),
+      __p.___ptr_bitmap(),
+      __l.___ptr_bitmap()
     )
-#else
-    let (f, p, l) = (
-      __f.___ptr_bitmap_64(),
-      __p.___ptr_bitmap_64(),
-      __l.___ptr_bitmap_64()
-    )
-#endif
 
     // __f <= __p && __p <= __l
     return f <= p && p <= l

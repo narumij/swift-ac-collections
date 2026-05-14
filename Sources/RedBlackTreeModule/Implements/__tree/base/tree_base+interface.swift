@@ -79,6 +79,11 @@ public protocol _BaseNode_PtrRangeCompInterface: _NodePtrType {
   @inlinable static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool
 }
 
+public protocol MultiplicityHelper: _UnsafeNodePtrType {
+  static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
+  static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool
+}
+
 public protocol _Base_MultiplicityHelperInterface: _UnsafeNodePtrType & _BaseNode_KeyInterface
     & _Base_IsMultiInterface
 where _Key: Comparable {

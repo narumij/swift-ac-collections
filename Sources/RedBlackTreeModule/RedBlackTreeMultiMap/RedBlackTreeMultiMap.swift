@@ -125,7 +125,7 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-extension RedBlackTreeMultiMap.Base: CompareMultiTrait {}
+extension RedBlackTreeMultiMap.Base: MultiMultiplicity {}
 extension RedBlackTreeMultiMap.Base: PairValueTrait {}
 extension RedBlackTreeMultiMap.Base: _PairBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeMultiMap.Base: _BaseNode_NodeCompareProtocol {}

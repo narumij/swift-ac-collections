@@ -22,17 +22,17 @@ public protocol MultiplicityHelper: _UnsafeNodePtrType {
   static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool
 }
 
-public protocol CompareUniqueTrait: _Base_MultiplicityHelperInterface
+public protocol UniqueMultiplicity: _Base_MultiplicityHelperInterface
 where _MultiplicityHelper == __UniqueHelper<Self> {}
-extension CompareUniqueTrait {
+extension UniqueMultiplicity {
   
   @inlinable @inline(__always)
   public static var isMulti: Bool { false }
 }
 
-public protocol CompareMultiTrait: _Base_MultiplicityHelperInterface
+public protocol MultiMultiplicity: _Base_MultiplicityHelperInterface
 where _MultiplicityHelper == __MultiHelper<Self> {}
-extension CompareMultiTrait {
+extension MultiMultiplicity {
   
   @inlinable @inline(__always)
   public static var isMulti: Bool { true }

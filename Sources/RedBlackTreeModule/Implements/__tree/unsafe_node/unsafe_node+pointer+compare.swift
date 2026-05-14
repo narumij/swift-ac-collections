@@ -153,6 +153,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   #if USE_INT128
     // 128bit幅でかつ、必要なレジスタ数が削減されている
+    /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
     @inlinable
     @inline(__always)
     internal func ___ptr_bitmap_128() -> UInt128 {
@@ -170,7 +171,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   #endif
 
   // 64bit幅でかつ、必要なレジスタ数が削減されている
-
+  /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
   @inlinable
   @inline(__always)
   internal func ___ptr_bitmap_64() -> UInt64 {
@@ -187,12 +188,14 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 
   #if USE_INT128
+  /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
     @inlinable
     @inline(__always)
     internal func ___ptr_bitmap() -> UInt128 {
       ___ptr_bitmap_128()
     }
   #else
+  /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
     @inlinable
     @inline(__always)
     internal func ___ptr_bitmap() -> UInt64 {

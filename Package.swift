@@ -206,7 +206,7 @@ let package = Package(
     .target(
       name: "RedBlackTreeModule",
       dependencies: [] + additionalDepencencies,
-      path: "Sources/RedBlackTreeModule",
+      path: "Sources/RedBlackTreeCollections",
       exclude: ["MEMO.md"],
       swiftSettings: _settings + [
         //        .strictMemorySafety()

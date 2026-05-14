@@ -100,6 +100,35 @@ benchmark.add(
   }
 }
 
+benchmark.add(
+  title: "SortedSet<Int> CoW remove",
+  input: Int.self
+) { size in
+
+  return { timer in
+
+    let values = makeArray(size)
+    let target = size >> 1
+
+    var original = SortedSet<Int>()
+
+    for v in values {
+      original.insert(v)
+    }
+
+    timer.measure {
+
+      var copied = original
+
+      if size > 0 {
+        copied.remove(target)
+      }
+
+      blackHole(copied)
+    }
+  }
+}
+
 // MARK: - Dictionary CoW
 
 benchmark.add(
@@ -182,6 +211,35 @@ benchmark.add(
 
       if size > 0 {
         copied.removeValue(forKey: target)
+      }
+
+      blackHole(copied)
+    }
+  }
+}
+
+benchmark.add(
+  title: "SortedDictionary<Int, Int> CoW removeValue",
+  input: Int.self
+) { size in
+
+  return { timer in
+
+    let values = makeArray(size)
+    let target = size >> 1
+
+    var original = SortedDictionary<Int, Int>()
+
+    for v in values {
+      original[v] = v
+    }
+
+    timer.measure {
+
+      var copied = original
+
+      if size > 0 {
+        _ = copied.removeValue(forKey: target)
       }
 
       blackHole(copied)

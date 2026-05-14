@@ -18,7 +18,7 @@ var defines: [String] = [
   //  "ALLOCATION_DRILL" // リリース時はオフ
   //  "USE_C_MALLOC",
   //  "USE_INT128", // これはpackage traitにしたい
-//    "COLLECTION_BENCHMARK",
+  //  "COLLECTION_BENCHMARK",
 ]
 
 var _settings: [SwiftSetting] =

@@ -16,7 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #if COMPATIBLE_ATCODER_2025
-  public typealias CompareTrait = _Base_IsMultiTraitInterface
+  public typealias CompareTrait = _Base_IsMultiInterface
 #endif
 
 public typealias ___TreeBase = _UnsafeNodePtrType & ComparableKeyTrait & _Base_IsMultiInterface

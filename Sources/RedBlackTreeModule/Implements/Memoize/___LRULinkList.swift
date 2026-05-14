@@ -34,7 +34,7 @@ public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
   public var value: Value
 }
 
-public protocol LinkPairValueTrait: KeyValueTrait & _Base_IsMultiTraitInterface & _UnsafeNodePtrType
+public protocol LinkPairValueTrait: KeyValueTrait & _Base_IsMultiInterface & _UnsafeNodePtrType
 where _PayloadValue == _LinkingPair<_Key, _MappedValue> {}
 
 extension LinkPairValueTrait {

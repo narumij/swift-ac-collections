@@ -17,28 +17,28 @@
 
 // 分岐を減らしたい気持ちはあるが、ホットパスというわけでもないので、無理にはやらない
 
-public protocol TraitHelper: _UnsafeNodePtrType {
+public protocol MultiplicityHelper: _UnsafeNodePtrType {
   static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
   static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool
 }
 
-public protocol CompareUniqueTrait: _Base_TraitHelperInterface
-where _TraitHelper == __UniqueTrait<Self> {}
+public protocol CompareUniqueTrait: _Base_MultiplicityHelperInterface
+where _MultiplicityHelper == __UniqueHelper<Self> {}
 extension CompareUniqueTrait {
   
   @inlinable @inline(__always)
   public static var isMulti: Bool { false }
 }
 
-public protocol CompareMultiTrait: _Base_TraitHelperInterface
-where _TraitHelper == __MultiTrait<Self> {}
+public protocol CompareMultiTrait: _Base_MultiplicityHelperInterface
+where _MultiplicityHelper == __MultiHelper<Self> {}
 extension CompareMultiTrait {
   
   @inlinable @inline(__always)
   public static var isMulti: Bool { true }
 }
 
-public struct __UniqueTrait<Base>: TraitHelper, _UnsafeNodePtrType
+public struct __UniqueHelper<Base>: MultiplicityHelper, _UnsafeNodePtrType
 where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
 
   @inlinable
@@ -89,7 +89,7 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
   }
 }
 
-public struct __MultiTrait<Base>: TraitHelper, _UnsafeNodePtrType
+public struct __MultiHelper<Base>: MultiplicityHelper, _UnsafeNodePtrType
 where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
 
   @inlinable

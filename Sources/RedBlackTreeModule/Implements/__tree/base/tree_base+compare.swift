@@ -18,18 +18,17 @@
 public protocol _BaseNode_NodeCompareProtocol:
   _BaseNode_PtrCompInterface
     & _BaseNode_PtrRangeCompInterface
-    & _Base_TraitHelperInterface {}
+    & _Base_MultiplicityHelperInterface {}
 
 extension _BaseNode_NodeCompareProtocol {
 
   @inlinable
   public static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
-    _TraitHelper.___ptr_comp(l, r)
+    _MultiplicityHelper.___ptr_comp(l, r)
   }
 
   @inlinable
   public static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool {
-    _TraitHelper.___ptr_range_comp(__f, __p, __l)
+    _MultiplicityHelper.___ptr_range_comp(__f, __p, __l)
   }
 }
-

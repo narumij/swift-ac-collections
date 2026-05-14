@@ -63,7 +63,7 @@ public protocol _BaseKey_EquivInterface: _KeyType {
 
 // MARK: -
 
-public protocol _Base_IsMultiTraitInterface {
+public protocol _Base_IsMultiInterface {
   @inlinable static var isMulti: Bool { get }
 }
 
@@ -79,10 +79,10 @@ public protocol _BaseNode_PtrRangeCompInterface: _NodePtrType {
   @inlinable static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool
 }
 
-public protocol _Base_TraitHelperInterface: _UnsafeNodePtrType & _BaseNode_KeyInterface
-    & _Base_IsMultiTraitInterface
+public protocol _Base_MultiplicityHelperInterface: _UnsafeNodePtrType & _BaseNode_KeyInterface
+    & _Base_IsMultiInterface
 where _Key: Comparable {
-  associatedtype _TraitHelper: TraitHelper
+  associatedtype _MultiplicityHelper: MultiplicityHelper
 }
 
-public protocol _Base_TraitHelperProtocol: _Base_TraitHelperInterface {}
+public protocol _Base_MultiplicityHelperProtocol: _Base_MultiplicityHelperInterface {}

@@ -127,7 +127,9 @@ internal func ___ptr_comp_multi_org(
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
+  /// ルートからノードまでのパスをビットでコード化した値を返す
+  ///
+  /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
   ///
   /// 8bit幅で例えると、
   /// ルートは128 (0b10000000)
@@ -153,7 +155,9 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   #if USE_INT128
     // 128bit幅でかつ、必要なレジスタ数が削減されている
-    /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
+    /// ルートからノードまでのパスをビットでコード化した値を返す
+    ///
+    /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
     @inlinable
     @inline(__always)
     internal func ___ptr_bitmap_128() -> UInt128 {
@@ -171,7 +175,9 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   #endif
 
   // 64bit幅でかつ、必要なレジスタ数が削減されている
-  /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
+  /// ルートからノードまでのパスをビットでコード化した値を返す
+  ///
+  /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
   @inlinable
   @inline(__always)
   internal func ___ptr_bitmap_64() -> UInt64 {
@@ -188,14 +194,18 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 
   #if USE_INT128
-  /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
+    /// ルートからノードまでのパスをビットでコード化した値を返す
+    ///
+    /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
     @inlinable
     @inline(__always)
     internal func ___ptr_bitmap() -> UInt128 {
       ___ptr_bitmap_128()
     }
   #else
-  /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
+    /// ルートからノードまでのパスをビットでコード化した値を返す
+    ///
+    /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
     @inlinable
     @inline(__always)
     internal func ___ptr_bitmap() -> UInt64 {
@@ -205,7 +215,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 }
 
 #if USE_INT128
-  /// 128bit版では速度が負けていて、64bit版では未定義が心配なので、お役御免
+  // 128bit版では速度が負けていて、64bit版では未定義が心配なので、お役御免
   @inlinable
   @inline(__always)
   func ___ptr_comp_bitmap(

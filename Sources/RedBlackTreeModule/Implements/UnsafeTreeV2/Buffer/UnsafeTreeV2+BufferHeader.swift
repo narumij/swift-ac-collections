@@ -135,7 +135,7 @@ extension UnsafeTreeV2BufferHeader {
   }
 
   @inlinable
-  var tiedRawBufferProxy: _LazyDetach {
+  var lazyDetach: _LazyDetach {
     mutating get {
       // TODO: 一度の保証付きの実装にすること
       if _tiedProxy == nil {

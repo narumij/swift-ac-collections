@@ -123,7 +123,6 @@ let executableTargets: [Target] =
     "SimpleRemove",
     "SimpleCreate",
     "SimpleValue",
-    "MultiRoundTrip",
     "ABC411F",
     "LRU",
   ]

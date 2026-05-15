@@ -21,7 +21,6 @@ import Foundation
 func growth(from count: Int, to minimum: Int) -> Int {
   // TODO: ジャッジ搭載のタイミングで再度チューニングすること
 
-
   if count == 0 {
     return Swift.max(minimum, 2)
   }
@@ -30,7 +29,7 @@ func growth(from count: Int, to minimum: Int) -> Int {
     // scale factor 4.0 when small amount
     return Swift.max(minimum, count << 2)
   }
-  
+
   // scale factor 1.5
   return Swift.max(minimum, count + (count >> 1))
 }
@@ -147,12 +146,24 @@ extension UnsafeTreeV2 {
       header.grow(newCapacity)
     }
   }
+
+  @inlinable @inline(__always)
+  internal mutating func unsafeEnsureCapacity() {
+    assert(isReadOnly == false, "変更禁止シングルトンではないこと")
+    withMutableHeader { header in
+      let requestCapacity = header.count + 1
+      let shouldExpand = header.freshPoolCapacity < requestCapacity
+      guard shouldExpand else { return }
+      let newCapacity = header._growthCapacity(to: header.count + 1)
+      header.grow(newCapacity)
+    }
+  }
 }
 
 extension UnsafeTreeV2 {
 
   // LRUキャッシュ用
-  
+
   @inlinable @inline(__always)
   internal mutating func ensureCapacity(
     to minimumCapacity: Int? = nil, limit: Int

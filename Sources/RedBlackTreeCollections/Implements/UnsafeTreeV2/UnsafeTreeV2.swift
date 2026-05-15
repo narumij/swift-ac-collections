@@ -65,7 +65,9 @@ extension UnsafeTreeV2 {
       ? _emptyRawBuffer : withMutableHeader { $0.tiedRawBuffer }
   }
 
-  // TODO: implement this
+  /// 木に紐付く生バッファを遅延処理するプロクシ
+  ///
+  /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
   @usableFromInline
   var lazyDetach: _LazyDetach {
     _buffer.buffer === _emptyTreeStorage

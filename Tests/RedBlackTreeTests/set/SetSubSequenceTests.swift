@@ -115,7 +115,6 @@ final class SetSubSequenceTests: RedBlackTreeTestCase {
 
   #if COMPATIBLE_ATCODER_2025
     func testIndexInvalidationAfterBaseMutation() throws {
-      // TODO: 再度確認
       var base: RedBlackTreeSet = [0, 1, 2, 3]
       let slice = base.elements(in: 1..<3)  // [1,2]
 

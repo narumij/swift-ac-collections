@@ -1,13 +1,14 @@
-import AcFoundation
 import IOUtil
 import MT19937
 import RedBlackTreeModule
+import SortedCollections
 
 var mt = mt19937_64(seed: 0)
 
 let N = 3 * 100000
 var m = 3 * 100000
 let Q = 3 * 100000
+
 //var (N,m,Q) = (3 * 100000, 3 * 100000, 3 * 100000)
 
 // 制約 0 <= u < v < N
@@ -38,6 +39,8 @@ var q = qSource.makeIterator()
 var p_rev = (0..<N) + []
 var p = (0..<N).map { [$0] }
 var _e: [RedBlackTreeSet<Int>] = .init(repeating: .init(), count: N)
+//var _e: [Set<Int>] = .init(repeating: .init(), count: N)
+//var _e: [SortedSet<Int>] = .init(repeating: .init(), count: N)
 let e = _e.withUnsafeMutableBufferPointer { $0.baseAddress! }
 var u: [Int] = []
 var v: [Int] = []
@@ -76,11 +79,7 @@ for x in q {
         e[vz].remove(vx)
       }
     }
-    #if COMPATIBLE_ATCODER_2025
-      e[vx].removeAll()
-    #else
-      e[vx].removeAll()
-    #endif
+    e[vx].removeAll()
   }
   fastPrint(m)
 }

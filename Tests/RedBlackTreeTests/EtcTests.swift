@@ -1045,7 +1045,7 @@ final class EtcTests: RedBlackTreeTestCase {
     func testBoundsSmoke() throws {
       var a = RedBlackTreeSet<Int>()
       typealias Index = RedBlackTreeSet<Int>.Index
-      throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
+//      throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
       #if false
         // indexを廃止しようとしている
         let _ = a.indices(bounds: .start ..< .end)

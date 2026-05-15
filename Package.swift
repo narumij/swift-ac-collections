@@ -72,6 +72,15 @@ let collectionBenchmarks: [Target] =
     )
   } : []
 
+let collectionDependency: [Package.Dependency] =
+  defines.contains("COLLECTION_BENCHMARK")
+  ? [
+    .package(
+      url: "https://github.com/apple/swift-collections-benchmark",
+      from: "0.0.0")
+  ]
+  : []
+
 // 順次削っていきたい
 let _mt19937: Target = .target(
   name: "_MT19937",
@@ -176,15 +185,8 @@ let package = Package(
     //    .package(
     //      url: "https://github.com/apple/swift-collections",
     //      from: "1.3.0"),
-
-    .package(
-      url: "https://github.com/swiftlang/swift-docc-plugin",
-      from: "1.0.0"),
-
-    .package(
-      url: "https://github.com/apple/swift-collections-benchmark",
-      from: "0.0.0"),
-  ],
+  ]
+  + collectionDependency,
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.

@@ -4,18 +4,11 @@ import SortedCollections
 
 var benchmark = Benchmark(title: "Demo Benchmark")
 
-//benchmark.addSimple(
-//  title: "Array<Int> sorted",
-//  input: [Int].self
-//) { input in
-//  blackHole(input.sorted())
-//}
-
 benchmark.add(
-  title: "Set<Int> contains",
+  title: "RedBlackTreeSet<Int> contains",
   input: ([Int], [Int]).self
 ) { input, lookups in
-  let set = Set(input)
+  let set = RedBlackTreeSet(input)
   return { timer in
     for value in lookups {
       precondition(set.contains(value))
@@ -24,10 +17,10 @@ benchmark.add(
 }
 
 benchmark.add(
-  title: "RedBlackTreeSet<Int> contains",
+  title: "Set<Int> contains",
   input: ([Int], [Int]).self
 ) { input, lookups in
-  let set = RedBlackTreeSet(input)
+  let set = Set(input)
   return { timer in
     for value in lookups {
       precondition(set.contains(value))

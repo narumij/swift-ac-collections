@@ -61,8 +61,7 @@ benchmark.add(
       var sum = 0
 
       for target in targets {
-        let num = set[.lowerBound(target)]
-
+        _ = set[.lowerBound(target)]
         sum += 1
       }
 
@@ -70,6 +69,7 @@ benchmark.add(
     }
   }
 }
+
 // MARK: - Array
 
 benchmark.add(
@@ -165,27 +165,27 @@ benchmark.add(
     let targets = makeTargets(size)
 
     let set = SortedSet(values)
-    let array = Array(set)
 
     timer.measure {
 
       var sum = 0
 
       for target in targets {
-        var low = 0
-        var high = array.count
+        var low = set.startIndex
+        var high = set.endIndex
 
-        while low < high {
-          let mid = (low + high) >> 1
+        while low != high {
+          let distance = set.distance(from: low, to: high)
+          let mid = set.index(low, offsetBy: distance >> 1)
 
-          if array[mid] < target {
-            low = mid + 1
+          if set[mid] < target {
+            low = set.index(after: mid)
           } else {
             high = mid
           }
         }
 
-        if low != array.count {
+        if low != set.endIndex {
           sum += 1
         }
       }

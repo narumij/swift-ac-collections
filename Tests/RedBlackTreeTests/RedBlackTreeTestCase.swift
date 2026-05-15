@@ -18,7 +18,7 @@ class RedBlackTreeTestCase: XCTestCase {
       XCTAssertEqual(nodeDeinitializedCount, 0)
       XCTAssertEqual(payloadDeinitializedCount, 0)
       // シングルトンはテストケース期間に開放されず、数があわなくなるので、その調整
-      let dummy = RedBlackTreeSet<Int>()
+      _ = RedBlackTreeSet<Int>()
       allocatedCount = 0
       // アサート(a)時はdeallocatedCount = 0をコメントアウト
       deallocatedCount = 0

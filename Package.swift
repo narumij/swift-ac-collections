@@ -18,7 +18,7 @@ var defines: [String] = [
   //  "ALLOCATION_DRILL" // リリース時はオフ
   //  "USE_C_MALLOC",
   //  "USE_INT128", // これはpackage traitにしたい
-//  "COLLECTION_BENCHMARK",
+  //  "COLLECTION_BENCHMARK",
 ]
 
 var _settings: [SwiftSetting] =
@@ -58,7 +58,7 @@ let platforms: [SupportedPlatform]? =
 
 let collectionBenchmarks: [Target] =
   defines.contains("COLLECTION_BENCHMARK")
-  ? (0...13).map { i in
+  ? (0...14).map { i in
     .executableTarget(
       name: "CollectionBenchmark\(i)",
       dependencies: [
@@ -71,6 +71,15 @@ let collectionBenchmarks: [Target] =
       swiftSettings: _settings
     )
   } : []
+
+let collectionDependency: [Package.Dependency] =
+  defines.contains("COLLECTION_BENCHMARK")
+  ? [
+    .package(
+      url: "https://github.com/apple/swift-collections-benchmark",
+      from: "0.0.0")
+  ]
+  : []
 
 // 順次削っていきたい
 let _mt19937: Target = .target(
@@ -176,15 +185,8 @@ let package = Package(
     //    .package(
     //      url: "https://github.com/apple/swift-collections",
     //      from: "1.3.0"),
-
-    .package(
-      url: "https://github.com/swiftlang/swift-docc-plugin",
-      from: "1.0.0"),
-
-    .package(
-      url: "https://github.com/apple/swift-collections-benchmark",
-      from: "0.0.0"),
-  ],
+  ]
+  + collectionDependency,
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
@@ -206,7 +208,7 @@ let package = Package(
     .target(
       name: "RedBlackTreeModule",
       dependencies: [] + additionalDepencencies,
-      path: "Sources/RedBlackTreeModule",
+      path: "Sources/RedBlackTreeCollections",
       exclude: ["MEMO.md"],
       swiftSettings: _settings + [
         //        .strictMemorySafety()

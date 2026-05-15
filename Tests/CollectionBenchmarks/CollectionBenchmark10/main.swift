@@ -3,7 +3,7 @@ import RedBlackTreeModule
 import SortedCollections
 import Collections
 
-var benchmark = Benchmark(title: "CoW Benchmark")
+var benchmark = Benchmark(title: "CoW remove Benchmark")
 
 // MARK: - Parameters
 
@@ -14,13 +14,14 @@ func makeArray(_ size: Int) -> [Int] {
 // MARK: - Set CoW
 
 benchmark.add(
-  title: "RedBlackTreeSet<Int> CoW insert",
+  title: "RedBlackTreeSet<Int> CoW remove",
   input: Int.self
 ) { size in
 
   return { timer in
 
     let values = makeArray(size)
+    let target = size >> 1
 
     var original = RedBlackTreeSet<Int>()
 
@@ -32,7 +33,9 @@ benchmark.add(
 
       var copied = original
 
-      copied.insert(-1)
+      if size > 0 {
+        copied.remove(target)
+      }
 
       blackHole(copied)
     }
@@ -40,13 +43,14 @@ benchmark.add(
 }
 
 benchmark.add(
-  title: "Set<Int> CoW insert",
+  title: "Set<Int> CoW remove",
   input: Int.self
 ) { size in
 
   return { timer in
 
     let values = makeArray(size)
+    let target = size >> 1
 
     var original = Set<Int>()
 
@@ -58,7 +62,9 @@ benchmark.add(
 
       var copied = original
 
-      copied.insert(-1)
+      if size > 0 {
+        copied.remove(target)
+      }
 
       blackHole(copied)
     }
@@ -66,13 +72,14 @@ benchmark.add(
 }
 
 benchmark.add(
-  title: "OrderedSet<Int> CoW insert",
+  title: "OrderedSet<Int> CoW remove",
   input: Int.self
 ) { size in
 
   return { timer in
 
     let values = makeArray(size)
+    let target = size >> 1
 
     var original = OrderedSet<Int>()
 
@@ -84,7 +91,38 @@ benchmark.add(
 
       var copied = original
 
-      copied.append(-1)
+      if size > 0 {
+        copied.remove(target)
+      }
+
+      blackHole(copied)
+    }
+  }
+}
+
+benchmark.add(
+  title: "SortedSet<Int> CoW remove",
+  input: Int.self
+) { size in
+
+  return { timer in
+
+    let values = makeArray(size)
+    let target = size >> 1
+
+    var original = SortedSet<Int>()
+
+    for v in values {
+      original.insert(v)
+    }
+
+    timer.measure {
+
+      var copied = original
+
+      if size > 0 {
+        copied.remove(target)
+      }
 
       blackHole(copied)
     }
@@ -94,13 +132,14 @@ benchmark.add(
 // MARK: - Dictionary CoW
 
 benchmark.add(
-  title: "RedBlackTreeDictionary<Int, Int> CoW update",
+  title: "RedBlackTreeDictionary<Int, Int> CoW removeValue",
   input: Int.self
 ) { size in
 
   return { timer in
 
     let values = makeArray(size)
+    let target = size >> 1
 
     var original = RedBlackTreeDictionary<Int, Int>()
 
@@ -112,7 +151,9 @@ benchmark.add(
 
       var copied = original
 
-      copied[-1] = -1
+      if size > 0 {
+        copied.removeValue(forKey: target)
+      }
 
       blackHole(copied)
     }
@@ -120,13 +161,14 @@ benchmark.add(
 }
 
 benchmark.add(
-  title: "Dictionary<Int, Int> CoW update",
+  title: "Dictionary<Int, Int> CoW removeValue",
   input: Int.self
 ) { size in
 
   return { timer in
 
     let values = makeArray(size)
+    let target = size >> 1
 
     var original = Dictionary<Int, Int>()
 
@@ -138,7 +180,9 @@ benchmark.add(
 
       var copied = original
 
-      copied[-1] = -1
+      if size > 0 {
+        copied.removeValue(forKey: target)
+      }
 
       blackHole(copied)
     }
@@ -146,13 +190,14 @@ benchmark.add(
 }
 
 benchmark.add(
-  title: "OrderedDictionary<Int, Int> CoW update",
+  title: "OrderedDictionary<Int, Int> CoW removeValue",
   input: Int.self
 ) { size in
 
   return { timer in
 
     let values = makeArray(size)
+    let target = size >> 1
 
     var original = OrderedDictionary<Int, Int>()
 
@@ -164,7 +209,38 @@ benchmark.add(
 
       var copied = original
 
-      copied[-1] = -1
+      if size > 0 {
+        copied.removeValue(forKey: target)
+      }
+
+      blackHole(copied)
+    }
+  }
+}
+
+benchmark.add(
+  title: "SortedDictionary<Int, Int> CoW removeValue",
+  input: Int.self
+) { size in
+
+  return { timer in
+
+    let values = makeArray(size)
+    let target = size >> 1
+
+    var original = SortedDictionary<Int, Int>()
+
+    for v in values {
+      original[v] = v
+    }
+
+    timer.measure {
+
+      var copied = original
+
+      if size > 0 {
+        _ = copied.removeValue(forKey: target)
+      }
 
       blackHole(copied)
     }
@@ -174,4 +250,4 @@ benchmark.add(
 benchmark.main()
 
 // swift run -c release CollectionBenchmark10 run results10 --cycles 5
-// swift run -c release CollectionBenchmark10 render results10 chart.cow.png
+// swift run -c release CollectionBenchmark10 render results10 chart.cow.remove.png

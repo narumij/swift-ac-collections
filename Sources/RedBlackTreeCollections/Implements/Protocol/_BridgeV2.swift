@@ -32,10 +32,10 @@ public protocol _ElementBride: _BaseBridge & _ElementType
 where Element == Base.Element, Base: _ElementType {}
 
 @usableFromInline
-protocol _PayloadPointerBridge: _UnsafeNodePtrType & _BaseBridge
+protocol _NodPtrBridge_Payload: _UnsafeNodePtrType & _BaseBridge
 where Base: _UnsafeNodePtrType & _PayloadValueType {}
 
-extension _PayloadPointerBridge {
+extension _NodPtrBridge_Payload {
 
   @inlinable @inline(__always)
   func __payload_ptr(_ p: Base._NodePtr) -> Base._PayloadPtr {
@@ -50,10 +50,10 @@ extension _PayloadPointerBridge {
 
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 @usableFromInline
-protocol _PayloadKeyBridge: _PayloadValueBride & _KeyBride
+protocol _PayloadValueBridge_Key: _PayloadValueBride & _KeyBride
 where Base: _BasePayloadValue_KeyInterface {}
 
-extension _PayloadKeyBridge {
+extension _PayloadValueBridge_Key {
 
   @inlinable @inline(__always)
   public func __key(_ e: _PayloadValue) -> _Key {
@@ -62,10 +62,10 @@ extension _PayloadKeyBridge {
 }
 
 @usableFromInline
-protocol _PayloadMappedValueBridge: _PayloadValueBride & _MappedValueBride
+protocol _PayloadValueBridge_MappedValue: _PayloadValueBride & _MappedValueBride
 where Base: _BasePayloadValue_MappedValueInterface {}
 
-extension _PayloadMappedValueBridge {
+extension _PayloadValueBridge_MappedValue {
 
   @inlinable @inline(__always)
   func ___mapped_value(_ p: _PayloadValue) -> _MappedValue {
@@ -74,10 +74,10 @@ extension _PayloadMappedValueBridge {
 }
 
 @usableFromInline
-protocol _PaylodElementBridge: _BaseBridge & _PayloadKeyBridge & _ElementBride
+protocol _PaylodValueBridge_Element: _BaseBridge & _PayloadValueBridge_Key & _ElementBride
 where Base: _BasePaylodValue_ElementInterface {}
 
-extension _PaylodElementBridge {
+extension _PaylodValueBridge_Element {
 
   @inlinable @inline(__always)
   func __element_(_ __value: _PayloadValue) -> Element {
@@ -86,10 +86,10 @@ extension _PaylodElementBridge {
 }
 
 @usableFromInline
-protocol _ElementPayloadBridge: _BaseBridge & _PayloadKeyBridge & _ElementBride
+protocol _ElementBridge_Payload: _BaseBridge & _PayloadValueBridge_Key & _ElementBride
 where Base: _KeyValueBasePaylodValue_ElementInterface {}
 
-extension _ElementPayloadBridge {
+extension _ElementBridge_Payload {
 
   @inlinable @inline(__always)
   func __payload_(_ __e: Element) -> _PayloadValue {

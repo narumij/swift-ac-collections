@@ -118,7 +118,7 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2: _PayloadKeyBridge & _ValueCompBridge {}
+extension UnsafeTreeV2: _PayloadValueBridge_Key & _ValueCompBridge {}
 
 extension UnsafeTreeV2: _PtrCompBridge where Base: _BaseNode_PtrCompInterface {}
 

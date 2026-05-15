@@ -160,7 +160,6 @@ public protocol _BasePaylodValue_ElementInterface: _PayloadValueType, _ElementTy
 }
 
 /// DictionaryやMultiMapは、コレクション要素型から積載型への変換方法も必要になる
-// TODO: 名前が変だ
 public protocol _KeyValueBasePaylodValue_ElementInterface: _BasePaylodValue_ElementInterface {
   static func __payload_(_ __e: Element) -> _PayloadValue
 }

@@ -1,112 +1,99 @@
 import Benchmark
+import Collections
 import Foundation
 import MT19937
 import RedBlackTreeModule
+import IOUtil
 
 var mt = mt19937_64(seed: 0)
 
 typealias Fixture = RedBlackTreeSet
 
-#if !ALLOCATION_DRILL
-  print("needs define ALLOCATION_DRILL")
-  fatalError()
-#else
+//print(Date.now)
+print()
 
-  print("Benchmark4")
-  print()
-  print("UNSAFE_TREE_V2")
-  print(Date.now)
-  print()
+let N = 3 * 100000
+var m = 3 * 100000
+let Q = 3 * 100000
+//var (N,m,Q) = (3 * 100000, 3 * 100000, 3 * 100000)
 
-#if false
-  let settings: [(numer: Int, denom: Int, minimum: Int)] = []
+// 制約 0 <= u < v < N
+// if i != j then ([u[i],u[i]] != [u[j],v[j]])
+var uvSource: [(Int, Int)] = []
 
-  for count in (8..<12).map({ 1 << $0 }) {
-    for (numer, denom, minimum) in ((1...99).filter{ $0 % 2 == 0 }.map{ ($0, 100, 1) }) {
-      growSetting = (numer, denom, minimum)
-      benchmark("\(numer)/\(denom) - \(minimum) capacity to \(count)") {
-        var fixture = Fixture<Int>()
-        for i in 0..<count {
-          fixture.insert(i)
-        }
-      }
-    }
+var uvWork = Set<SIMD2<Int>>()
+while uvWork.count < m {
+  let u = (0..<N).randomElement(using: &mt)!
+  let v = (u..<N).randomElement(using: &mt)!
+  if !uvWork.contains([u, v]) {
+    uvWork.insert([u, v])
   }
-#endif
+}
+uvSource = uvWork.map { ($0.x, $0.y) }
+var qSource: [Int] = []
+while qSource.count < Q {
+  qSource.append((0..<m).randomElement(using: &mt)!)
+}
+
+assert(uvSource.count == m)
+assert(qSource.count == Q)
 
 do {
-  for count in (8..<12).map({ 1 << $0 }) {
-    let rounds = 200
-    let hi = count
-    let lo = count / 2
+  benchmark("ABC411F") {
     
-    for (numer, denom, minimum) in ((1...10).map{ ($0, 10, 1) }) {
-      benchmark("\(numer)/\(denom) - \(minimum) swing \(count)") {
-        var fixture = Fixture<Int>()
-        
-        for _ in 0..<rounds {
-          // grow to hi
-          for i in 0..<hi {
-            fixture.insert(i)
-          }
-          // shrink to lo
-          for i in 0..<lo {
-            fixture.remove(i)
-          }
-        }
-      }
-    }
-  }
-
-  do {
-    for count in (8..<12).map({ 1 << $0 }) {
-      
-      let R = 200_000
-      var targets = [Int](repeating: 0, count: R)
-      for i in 0..<R {
-        targets[i] = Int(mt.next() % UInt64(count))
-      }
-      
-      for (numer, denom, minimum) in ((1...10).map{ ($0, 10, 1) }) {
-        benchmark("\(numer)/\(denom) - \(minimum) random \(count)") {
-          var fixture = Fixture<Int>()
-          var cur = 0
-          
-          for k in targets {
-            while cur < k {
-              fixture.insert(cur)
-              cur += 1
-            }
-            while cur > k {
-              cur -= 1
-              fixture.remove(cur)
-            }
-          }
-        }
-      }
-    }
+    var uv = uvSource.makeIterator()
+    var q = qSource.makeIterator()
     
-    do {
-      
-      for count in (8..<12).map({ 1 << $0 }) {
-
-        for (numer, denom, minimum) in ((1...10).map{ ($0, 10, 1) }) {
-          
-          benchmark("\(numer)/\(denom) - \(minimum) lookup \(count)") {
-            var fixture = Fixture<Int>()
-            for i in 0..<count { fixture.insert(i) }
-            for i in 0..<count/2 { fixture.remove(i) }
-            
-            for _ in 0..<1_000_000 {
-              _ = fixture.contains(Int(mt.next() % UInt64(count)))
+    //var (N, m): (Int,Int) = stdin()
+    var p_rev = (0..<N) + []
+    var p = (0..<N).map { [$0] }
+    var _e: [RedBlackTreeSet<Int>] = .init(repeating: .init(), count: N)
+    //var _e: [Set<Int>] = .init(repeating: .init(), count: N)
+    //var _e: [SortedSet<Int>] = .init(repeating: .init(), count: N)
+    let e = _e.withUnsafeMutableBufferPointer { $0.baseAddress! }
+    var u: [Int] = []
+    var v: [Int] = []
+    for (_u, _v) in uv {
+      u.append(_u)
+      v.append(_v)
+      e[_u].insert(_v)
+      e[_v].insert(_u)
+    }
+    //let Q = Int.stdin
+    for x in q {
+      //  let x = Int.stdin - 1
+      var vx = p_rev[u[x]]
+      var vy = p_rev[v[x]]
+      if vx != vy {
+        let valx = (e[vx].count) + (p[vx].count)
+        let valy = (e[vy].count) + (p[vy].count)
+        if valx > valy { swap(&vx, &vy) }
+        let sz = p[vx].count
+        for j in 0..<sz {
+          p[vy].append(p[vx][j])
+          p_rev[p[vx][j]] = vy
+        }
+        p[vx].removeAll()
+        for vz in e[vx] {
+          if vz == vy {
+            m -= 1
+            e[vy].remove(vx)
+          } else {
+            if e[vy].contains(vz) {
+              m -= 1
+            } else {
+              e[vy].insert(vz)
+              e[vz].insert(vy)
             }
+            e[vz].remove(vx)
           }
         }
+        e[vx].removeAll()
       }
+//      fastPrint(m)
+//      blackHole(m)
     }
-
   }
 }
 
 Benchmark.main()
-#endif

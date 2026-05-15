@@ -141,7 +141,7 @@ let executableTargets: [Target] =
       ],
       path: "Tests/Executables/\(name)")
   }
-  + (0...7).map { i in
+  + (0...4).map { i in
     .executableTarget(
       name: "Benchmark\(i)",
       dependencies: [

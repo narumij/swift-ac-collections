@@ -2,82 +2,110 @@ import Benchmark
 import RedBlackTreeModule
 import MT19937
 import Foundation
+import Collections
 
 var mt = mt19937_64(seed: 0)
 
 typealias Fixture = RedBlackTreeSet
 
-print("Benchmark3")
+#if !BENCHMARK
+  print("needs define BENCHMARK")
+  fatalError()
+#else
+print(Date.now)
 print()
-print("UNSAFE_TREE_V2")
-//print(Date.now)
+
+print("\(RedBlackTreeSet<Int>.buildInfo)")
 print()
 
-let limit = 24
+//for count in [32, 128, 1024, 8192, 1024 * 32, 1024 * 128, 1024 * 1024, 1024 * 1024 * 2, 1024 * 1024 * 16, 1024 * 1024 * 128] {
+for count in [1024 * 1024 * 2, 1024 * 1024 * 16, 1024 * 1024 * 128] {
+  let fixture = Fixture<Int>(0..<count)
+  let ii = fixture.indices + []
+  let pair = zip(ii.shuffled(), ii.shuffled()) + []
+  
+  #if false
+  do {
+    var i = 0
+    benchmark("RBT ___dual_distance \(count)") {
+      let (a,b) = pair[i]
+      let _ = fixture.___dual_distance(start: a,end: b)
+      i += 1
+      i %= count
+    }
+  }
+  
+  do {
+    var i = 0
+    benchmark("RBT ___comp_distance \(count)") {
+      let (a,b) = pair[i]
+      let _ = fixture.___comp_distance(start: a,end: b)
+      i += 1
+      i %= count
+    }
+  }
+  #endif
+  
+  do {
+    var i = 0
+    benchmark("RBT ___comp_multi (1) \(count)") {
+      let (a,b) = pair[i]
+      let _ = fixture.___comp_mult(start: a,end: b)
+      i += 1
+      i %= count
+    }
+  }
+  
+  do {
+    var i = 0
+    benchmark("RBT ___comp_multi2 (1) \(count)") {
+      let (a,b) = pair[i]
+      let _ = fixture.___comp_mult2(start: a,end: b)
+      i += 1
+      i %= count
+    }
+  }
+  
+  do {
+    var i = 0
+    benchmark("RBT ___comp_bitmap (1) \(count)") {
+      let (a,b) = pair[i]
+      let _ = fixture.___comp_bitmap(start: a,end: b)
+      i += 1
+      i %= count
+    }
+  }
+  
+  do {
+    var i = 0
+    benchmark("RBT ___comp_multi (2) \(count)") {
+      let (a,b) = pair[i]
+      let _ = fixture.___comp_mult(start: a,end: b)
+      i += 1
+      i %= count
+    }
+  }
 
-for count in (0..<limit).filter({ $0 % 2 == 1 }).map({ 1 << $0 }) {
-  benchmark("reserveCapacity \(count)") {
-    var fixture = Fixture<Int>()
-    for i in 0..<count {
-      fixture.reserveCapacity(i)
+  do {
+    var i = 0
+    benchmark("RBT ___comp_multi2 (2) \(count)") {
+      let (a,b) = pair[i]
+      let _ = fixture.___comp_mult2(start: a,end: b)
+      i += 1
+      i %= count
+    }
+  }
+
+  do {
+    var i = 0
+    benchmark("RBT ___comp_bitmap (2) \(count)") {
+      let (a,b) = pair[i]
+      let _ = fixture.___comp_bitmap(start: a,end: b)
+      i += 1
+      i %= count
     }
   }
 }
-
-#if false
-#if false
-for count in (0..<limit).filter({ $0 % 2 == 1 }).map({ 1 << $0 }) {
-  let x = 16
-  benchmark("reserveCapacity \(count) x \(x)") {
-    var fixtures = Array<Fixture<Int>>(repeating: .init(), count: x)
-    for i in 0..<count {
-      for j in 0..<x {
-        fixtures[j].reserveCapacity(i)
-      }
-    }
-  }
-}
-#endif
-
-for count in (0..<limit).filter({ $0 % 2 == 1 }).map({ 1 << $0 }) {
-  benchmark("init with range \(count)") {
-    let fixture = Fixture<Int>(0..<count)
-  }
-}
-
-for count in (0..<limit).filter({ $0 % 2 == 1 }).map({ 1 << $0 }) {
-  benchmark("copy \(count)") {
-    let original = Fixture<Int>(0..<count)
-    var copy = original
-    copy.insert(count/2)
-  }
-}
-
-for count in (0..<limit).filter({ $0 % 2 == 1 }).map({ 1 << $0 }) {
-  benchmark("removeAll(true) \(count)") {
-    var fixture = Fixture<Int>(0..<count)
-    fixture.removeAll(keepingCapacity: true)
-  }
-}
-
-for count in (0..<limit).filter({ $0 % 2 == 1 }).map({ 1 << $0 }) {
-  benchmark("removeAll() \(count)") {
-    var fixture = Fixture<Int>(0..<count)
-    fixture.removeAll(keepingCapacity: false)
-  }
-}
-
-do {
-  for count in (0..<limit).filter({ $0 % 2 == 1 }).map({ 1 << $0 }) {
-    benchmark("multi copy \(count)") {
-      let original = Fixture<Int>(0..<1)
-      for _ in 0..<count {
-        var copy = original
-        copy.insert(count/2)
-      }
-    }
-  }
-}
-#endif
 
 Benchmark.main()
+#endif

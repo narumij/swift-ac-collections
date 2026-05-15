@@ -17,6 +17,7 @@
 
 extension UnsafeTreeV2 {
 
+  @inlinable
   mutating func ___copy_range(
     _ f: UnsafeMutablePointer<UnsafeNode>,
     _ l: UnsafeMutablePointer<UnsafeNode>,
@@ -32,7 +33,7 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @usableFromInline
+  @inlinable
   func ___meld_unique(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
 
     var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
@@ -69,7 +70,7 @@ extension UnsafeTreeV2 {
     return __result_
   }
 
-  @usableFromInline
+  @inlinable
   func ___meld_multi(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
 
     var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
@@ -120,7 +121,7 @@ extension UnsafeTreeV2 {
     return __result_
   }
 
-  @usableFromInline
+  @inlinable
   func ___intersection(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
     // lower_boundを使う方法があるが、一旦楽に実装できそうな方からにしている
     var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
@@ -144,7 +145,7 @@ extension UnsafeTreeV2 {
   }
 
   /// - Complexity: O(*n* + *m*)
-  @usableFromInline
+  @inlinable
   func ___symmetric_difference(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
     var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
     var (__parent, __child) = __result_.___max_ref()
@@ -176,7 +177,7 @@ extension UnsafeTreeV2 {
   }
 
   /// - Complexity: O(*n* + *m*)
-  @usableFromInline
+  @inlinable
   func ___difference(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
     var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
     var (__parent, __child) = __result_.___max_ref()

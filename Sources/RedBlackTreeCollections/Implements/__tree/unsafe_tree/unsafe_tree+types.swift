@@ -45,7 +45,7 @@ extension _UnsafeNodePtrType where Self: _PayloadValueType {
   /// ```
   /// ...|Node|Payload|Node...
   ///    |    ^--__payload_
-  ///    ^self
+  ///    ^-- UnsafeMutablePointer<UnsafeNode>
   /// ```
   @inlinable @inline(__always)
   static func __payload_ptr(_ p: _NodePtr) -> _PayloadPtr {
@@ -82,7 +82,7 @@ extension _UnsafeNodePtrType where Self: _ScalarBaseType {
   /// ```
   /// ...|Node|Key|Node...
   ///    |    ^--__key_ptr
-  ///    ^self
+  ///    ^-- UnsafeMutablePointer<UnsafeNode>
   /// ```
   @inlinable @inline(__always)
   static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
@@ -110,7 +110,7 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
   /// ```
   /// ...|Node|Key|MappedValue|Node...
   ///    |    ^--__key_ptr
-  ///    ^self
+  ///    ^-- UnsafeMutablePointer<UnsafeNode>
   /// ```
   @inlinable @inline(__always)
   static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
@@ -135,7 +135,7 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
   /// ```
   /// ...|Node|Key|MappedValue|Node...
   ///    |        ^--__mapped_value_ptr
-  ///    ^self
+  ///    ^-- UnsafeMutablePointer<UnsafeNode>
   /// ```
   @inlinable @inline(__always)
   static func __mapped_value_ptr(_ p: _NodePtr) -> _MappedValuePtr {

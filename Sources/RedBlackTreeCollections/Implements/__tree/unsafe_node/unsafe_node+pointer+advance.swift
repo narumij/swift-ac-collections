@@ -89,26 +89,3 @@ internal func
 
   return __x
 }
-
-#if COMPATIBLE_ATCODER_2025
-  @inlinable
-  @inline(__always)
-  internal func ___form_index(
-    _ i: UnsafeMutablePointer<UnsafeNode>, offsetBy distance: Int, limitedBy limit: _SafePtr,
-    _ body: (_SafePtr) -> Void
-  )
-    -> Bool
-  {
-    let advanced = ___tree_adv_iter(i, distance, limit)
-    switch advanced {
-    case .success:
-      body(advanced)
-      return true
-    case .failure(.limit):
-      body(limit)
-      return false
-    default:
-      return false
-    }
-  }
-#endif

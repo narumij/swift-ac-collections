@@ -47,6 +47,6 @@ protocol ___UnsafeIndexRangeBaseV2:
       & ___RemoveV2
       & ___UnsafeIndexV2
       & ___UnsafeKeyValueSequenceV2
-      & _PaylodElementBridge
+      & _PaylodValueBridge_Element
   {}
 #endif

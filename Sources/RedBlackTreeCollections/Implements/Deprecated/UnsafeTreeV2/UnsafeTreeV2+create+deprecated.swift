@@ -6,7 +6,6 @@
 //
 
 #if COMPATIBLE_ATCODER_2025
-  // TODO: デッドコードになってないかチェックすること
   extension UnsafeTreeV2 where Base: ScalarValueTrait {
 
     /// ソート済みの配列から木を生成する
@@ -34,7 +33,6 @@
     }
   }
 
-  // TODO: デッドコードになってないかチェックすること
   extension UnsafeTreeV2 where Base: PairValueTrait {
 
     /// ソート済みの配列から木を生成する
@@ -69,7 +67,6 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  // TODO: デッドコードになってないかチェックすること
   extension UnsafeTreeV2 {
 
     /// ソート済みの配列から木を生成する
@@ -114,7 +111,6 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-  // TODO: デッドコードになってないかチェックすること
   extension UnsafeTreeV2 {
 
     @inlinable

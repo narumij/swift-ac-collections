@@ -2,7 +2,6 @@
 
   // MARK: - COMPATIBLE_ATCODER_2025用
 
-  // TODO: デッドコードになってないかチェックすること
   extension _RawRangeExpression where Bound == _SealedPtr {
 
     func __start(_ tied: _TiedRawBuffer) -> _SealedPtr {

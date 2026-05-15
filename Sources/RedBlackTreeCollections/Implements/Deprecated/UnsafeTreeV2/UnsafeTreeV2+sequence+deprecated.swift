@@ -5,7 +5,6 @@
 //  Created by narumij on 2026/05/10.
 //
 
-// TODO: デッドコードになってないかチェックすること
 #if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 {
 
@@ -53,7 +52,6 @@
   }
 #endif
 
-// TODO: デッドコードになってないかチェックすること
 #if COMPATIBLE_ATCODER_2025
 extension UnsafeTreeV2 {
 

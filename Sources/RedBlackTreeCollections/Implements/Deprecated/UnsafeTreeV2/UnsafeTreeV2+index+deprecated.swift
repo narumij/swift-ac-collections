@@ -19,7 +19,6 @@
   }
 #endif
 
-// TODO: デッドコードになってないかチェックすること
 #if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 {
 

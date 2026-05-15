@@ -18,7 +18,6 @@
 /// 木のノード識別子
 ///
 /// - Important: 生成元以外の木での使用は未定義。
-//public typealias UnsafeIndexV3 = _TieWrappedPtr
 public typealias UnsafeIndexV3 = _LazyDetachPointer
 
 // 内部実装では CoW 由来の差異を救済することがある。

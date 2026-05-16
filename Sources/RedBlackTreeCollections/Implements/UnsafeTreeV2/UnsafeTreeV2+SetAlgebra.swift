@@ -36,7 +36,7 @@ extension UnsafeTreeV2 {
   @inlinable
   func ___meld_unique(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
 
-    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
+    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 1, nullptr: nullptr)
 
     var (__parent, __child) = __result_.___max_ref()
     var (__first1, __last1) = (__begin_node_, __end_node)
@@ -73,7 +73,7 @@ extension UnsafeTreeV2 {
   @inlinable
   func ___meld_multi(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
 
-    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
+    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 1, nullptr: nullptr)
 
     var (__parent, __child) = __result_.___max_ref()
     var (__first1, __last1) = (__begin_node_, __end_node)
@@ -124,7 +124,7 @@ extension UnsafeTreeV2 {
   @inlinable
   func ___intersection(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
     // lower_boundを使う方法があるが、一旦楽に実装できそうな方からにしている
-    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
+    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 1, nullptr: nullptr)
     var (__parent, __child) = __result_.___max_ref()
     var (__first1, __last1) = (__begin_node_, __end_node)
     var (__first2, __last2) = (other.__begin_node_, other.__end_node)
@@ -147,7 +147,7 @@ extension UnsafeTreeV2 {
   /// - Complexity: O(*n* + *m*)
   @inlinable
   func ___symmetric_difference(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
-    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
+    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 1, nullptr: nullptr)
     var (__parent, __child) = __result_.___max_ref()
     var (__first1, __last1) = (__begin_node_, __end_node)
     var (__first2, __last2) = (other.__begin_node_, other.__end_node)
@@ -179,7 +179,7 @@ extension UnsafeTreeV2 {
   /// - Complexity: O(*n* + *m*)
   @inlinable
   func ___difference(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
-    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
+    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 1, nullptr: nullptr)
     var (__parent, __child) = __result_.___max_ref()
     var (__first1, __last1) = (__begin_node_, __end_node)
     var (__first2, __last2) = (other.__begin_node_, other.__end_node)

@@ -88,6 +88,7 @@ extension UnsafeTreeV2Buffer: CustomStringConvertible {
 }
 
 /// The type-punned empty singleton storage instance.
+@exclusivity(unchecked)
 @usableFromInline
 nonisolated(unsafe) package let _emptyTreeStorage = UnsafeTreeV2Buffer.create(
   allocator: .create(), minimumCapacity: 0, nullptr: .nullptr)

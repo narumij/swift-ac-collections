@@ -18,7 +18,8 @@
 public protocol _BaseNode_NodeCompareProtocol:
   _BaseNode_PtrCompInterface
     & _BaseNode_PtrRangeCompInterface
-    & _Base_MultiplicityHelperInterface {}
+    & _Base_MultiplicityHelperInterface
+{}
 
 extension _BaseNode_NodeCompareProtocol {
 
@@ -30,5 +31,120 @@ extension _BaseNode_NodeCompareProtocol {
   @inlinable
   public static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool {
     _MultiplicityHelper.___ptr_range_comp(__f, __p, __l)
+  }
+}
+
+// MARK: -
+
+public struct __UniqueHelper<Base>: MultiplicityHelper, _UnsafeNodePtrType
+where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
+
+  @inlinable
+  static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+    return Base.__get_value(l) < Base.__get_value(r)
+  }
+
+  @inlinable
+  public static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+    assert(l.___is_end || !l.__parent_.___is_null)
+    assert(r.___is_end || !r.__parent_.___is_null)
+
+    guard
+      l != r,
+      !r.___is_end,
+      !l.___is_end
+    else {
+      return !l.___is_end && r.___is_end
+    }
+
+    return ___ptr_comp_unique(l, r)
+  }
+
+  /// ptrのrange判定
+  @inlinable
+  public static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool {
+
+    assert(!__f.___is_null)
+    assert(!__p.___is_null)
+    assert(!__l.___is_null)
+    assert(!__f.___is_garbaged)
+    assert(!__p.___is_garbaged)
+    assert(!__l.___is_garbaged)
+
+    guard !__f.___is_end else {
+      // end <= end <= endは有効
+      return __p.___is_end && __l.___is_end
+    }
+
+    guard !__l.___is_end else {
+
+      // __f <= __p
+      return !___ptr_comp(__p, __f)
+    }
+
+    // __f <= __p && __p <= __l
+    return !___ptr_comp_unique(__p, __f) && !___ptr_comp_unique(__l, __p)
+  }
+}
+
+public struct __MultiHelper<Base>: MultiplicityHelper, _UnsafeNodePtrType
+where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
+
+  @inlinable
+  static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+    return Base.__get_value(l) < Base.__get_value(r)
+  }
+
+  @inlinable
+  public static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
+    assert(l.___is_end || !l.__parent_.___is_null)
+    assert(r.___is_end || !r.__parent_.___is_null)
+
+    guard
+      l != r,
+      !r.___is_end,
+      !l.___is_end
+    else {
+      return !l.___is_end && r.___is_end
+    }
+
+    #if true
+      // ポインタ化によりこちらのほうが速くなった
+      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
+    #else
+      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_bitmap(l, r))
+    #endif
+  }
+
+  /// ptrのrange判定
+  @inlinable
+  public static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool {
+
+    assert(!__f.___is_null)
+    assert(!__p.___is_null)
+    assert(!__l.___is_null)
+    assert(!__f.___is_garbaged)
+    assert(!__p.___is_garbaged)
+    assert(!__l.___is_garbaged)
+
+    guard !__f.___is_end else {
+      // end <= end <= endは有効
+      return __p.___is_end && __l.___is_end
+    }
+
+    guard !__l.___is_end else {
+
+      // __f <= __p
+      return !___ptr_comp(__p, __f)
+    }
+
+    let (f, p, l) = (
+      __f.___ptr_bitmap(),
+      __p.___ptr_bitmap(),
+      __l.___ptr_bitmap()
+    )
+
+    // __f <= __p && __p <= __l
+    return f <= p && p <= l
   }
 }

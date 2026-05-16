@@ -71,7 +71,7 @@ extension UnsafeTreeV2 {
   @usableFromInline
   var lazyDetach: _LazyDetach {
     _buffer.buffer === _emptyTreeStorage
-    ? _emptyLazyDetach : withMutableHeader { $0.lazyDetach }
+      ? _emptyLazyDetach : withMutableHeader { $0.lazyDetach }
   }
 }
 
@@ -84,12 +84,18 @@ extension UnsafeTreeV2: CustomStringConvertible {
 extension UnsafeTreeV2 {
 
   @inlinable
-  @inline(__always)
-  var count: Int { withMutableHeader { $0.count } }
+  var count: Int {
+    @inline(__always)
+    //    get { withMutableHeader { $0.count } }
+    _read { yield _buffer.withUnsafeMutablePointerToHeader { $0.pointee.count } }
+  }
 
   @inlinable
-  @inline(__always)
-  var capacity: Int { withMutableHeader { $0.freshPoolCapacity } }
+  var capacity: Int {
+    @inline(__always)
+    //    get { withMutableHeader { $0.freshPoolCapacity } }
+    _read { yield _buffer.withUnsafeMutablePointerToHeader { $0.pointee.freshPoolCapacity } }
+  }
 
   @inlinable
   @inline(__always)

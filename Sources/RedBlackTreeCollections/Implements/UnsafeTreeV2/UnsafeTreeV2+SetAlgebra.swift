@@ -17,6 +17,7 @@
 
 extension UnsafeTreeV2 {
 
+  @inlinable
   mutating func ___copy_range(
     _ f: UnsafeMutablePointer<UnsafeNode>,
     _ l: UnsafeMutablePointer<UnsafeNode>,
@@ -26,16 +27,16 @@ extension UnsafeTreeV2 {
     var f = f
     var (__parent, __child) = (__parent, __child)
     while f != l {
-      ensureCapacity()
+      unsafeEnsureCapacity()
       (__parent, __child) = ___emplace_hint_right(__parent, __child, Base.__payload_(f))
       f = __tree_next_iter(f)
     }
   }
 
-  @usableFromInline
+  @inlinable
   func ___meld_unique(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
 
-    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
+    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 1, nullptr: nullptr)
 
     var (__parent, __child) = __result_.___max_ref()
     var (__first1, __last1) = (__begin_node_, __end_node)
@@ -49,7 +50,7 @@ extension UnsafeTreeV2 {
 
       if value_comp(other.__get_value(__first2), __get_value(__first1)) {
 
-        __result_.ensureCapacity()
+        __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
           __parent, __child, other[_unsafe_raw: __first2])
         __first2 = other.__tree_next_iter(__first2)
@@ -58,7 +59,7 @@ extension UnsafeTreeV2 {
           __first2 = other.__tree_next_iter(__first2)
         }
 
-        __result_.ensureCapacity()
+        __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
           __parent, __child, self[_unsafe_raw: __first1])
         __first1 = __tree_next_iter(__first1)
@@ -69,10 +70,10 @@ extension UnsafeTreeV2 {
     return __result_
   }
 
-  @usableFromInline
+  @inlinable
   func ___meld_multi(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
 
-    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
+    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 1, nullptr: nullptr)
 
     var (__parent, __child) = __result_.___max_ref()
     var (__first1, __last1) = (__begin_node_, __end_node)
@@ -90,7 +91,7 @@ extension UnsafeTreeV2 {
         other.__get_value(__first2))
       {
 
-        __result_.ensureCapacity()
+        __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
           __parent, __child, self[_unsafe_raw: __first1])
         __first1 = __tree_next_iter(__first1)
@@ -99,17 +100,17 @@ extension UnsafeTreeV2 {
         self.__get_value(__first1))
       {
 
-        __result_.ensureCapacity()
+        __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
           __parent, __child, other[_unsafe_raw: __first2])
         __first2 = other.__tree_next_iter(__first2)
       } else {
-        __result_.ensureCapacity()
+        __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
           __parent, __child, self[_unsafe_raw: __first1])
         __first1 = __tree_next_iter(__first1)
 
-        __result_.ensureCapacity()
+        __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
           __parent, __child, other[_unsafe_raw: __first2])
         __first2 = other.__tree_next_iter(__first2)
@@ -120,10 +121,10 @@ extension UnsafeTreeV2 {
     return __result_
   }
 
-  @usableFromInline
+  @inlinable
   func ___intersection(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
     // lower_boundを使う方法があるが、一旦楽に実装できそうな方からにしている
-    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
+    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 1, nullptr: nullptr)
     var (__parent, __child) = __result_.___max_ref()
     var (__first1, __last1) = (__begin_node_, __end_node)
     var (__first2, __last2) = (other.__begin_node_, other.__end_node)
@@ -132,7 +133,7 @@ extension UnsafeTreeV2 {
         __first1 = __tree_next_iter(__first1)
       } else {
         if !value_comp(other.__get_value(__first2), __get_value(__first1)) {
-          __result_.ensureCapacity()
+          __result_.unsafeEnsureCapacity()
           (__parent, __child) = __result_.___emplace_hint_right(
             __parent, __child, self[_unsafe_raw: __first1])
           __first1 = __tree_next_iter(__first1)
@@ -144,9 +145,9 @@ extension UnsafeTreeV2 {
   }
 
   /// - Complexity: O(*n* + *m*)
-  @usableFromInline
+  @inlinable
   func ___symmetric_difference(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
-    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
+    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 1, nullptr: nullptr)
     var (__parent, __child) = __result_.___max_ref()
     var (__first1, __last1) = (__begin_node_, __end_node)
     var (__first2, __last2) = (other.__begin_node_, other.__end_node)
@@ -156,13 +157,13 @@ extension UnsafeTreeV2 {
         return __result_
       }
       if value_comp(__get_value(__first1), other.__get_value(__first2)) {
-        __result_.ensureCapacity()
+        __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
           __parent, __child, self[_unsafe_raw: __first1])
         __first1 = __tree_next_iter(__first1)
       } else {
         if value_comp(other.__get_value(__first2), __get_value(__first1)) {
-          __result_.ensureCapacity()
+          __result_.unsafeEnsureCapacity()
           (__parent, __child) = __result_.___emplace_hint_right(
             __parent, __child, other[_unsafe_raw: __first2])
         } else {
@@ -176,15 +177,15 @@ extension UnsafeTreeV2 {
   }
 
   /// - Complexity: O(*n* + *m*)
-  @usableFromInline
+  @inlinable
   func ___difference(_ other: UnsafeTreeV2) -> UnsafeTreeV2 {
-    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
+    var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 1, nullptr: nullptr)
     var (__parent, __child) = __result_.___max_ref()
     var (__first1, __last1) = (__begin_node_, __end_node)
     var (__first2, __last2) = (other.__begin_node_, other.__end_node)
     while __first1 != __last1, __first2 != __last2 {
       if value_comp(__get_value(__first1), other.__get_value(__first2)) {
-        __result_.ensureCapacity()
+        __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
           __parent, __child, self[_unsafe_raw: __first1])
         __first1 = __tree_next_iter(__first1)

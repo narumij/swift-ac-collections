@@ -61,3 +61,21 @@ public protocol PairValueTrait:
     & _PairBasePayloadValue_MappedValueProtocol
     & _PairBase_ElementProtocol
 {}
+
+// 分岐を減らしたい気持ちはあるが、ホットパスというわけでもないので、無理にはやらない
+
+public protocol UniqueMultiplicity: _Base_MultiplicityHelperInterface
+where _MultiplicityHelper == __UniqueHelper<Self> {}
+extension UniqueMultiplicity {
+
+  @inlinable @inline(__always)
+  public static var isMulti: Bool { false }
+}
+
+public protocol MultiMultiplicity: _Base_MultiplicityHelperInterface
+where _MultiplicityHelper == __MultiHelper<Self> {}
+extension MultiMultiplicity {
+
+  @inlinable @inline(__always)
+  public static var isMulti: Bool { true }
+}

@@ -213,7 +213,7 @@ extension UnsafeTreeV2 {
     var (__parent, __child) = tree.___max_ref()
     for __p in unsafeSequence(__first, __last)
     where try isIncluded(__value_(__p)) {
-      tree.ensureCapacity()
+      tree.unsafeEnsureCapacity()
       (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __value_(__p))
       assert(tree.__tree_invariant(tree.__root))
     }

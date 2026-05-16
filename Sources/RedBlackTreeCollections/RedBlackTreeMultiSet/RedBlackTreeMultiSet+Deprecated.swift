@@ -476,18 +476,6 @@
       ___remove(from: lower, to: upper)
     }
   }
-
-  // 予備的に用意したものと推定。これを使わないと通らない問題に出会わない場合、削除とする
-  extension RedBlackTreeMultiSet {
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n* : *k*)
-    @inlinable
-    @discardableResult
-    public mutating func removeAll(_unsafe member: Element) -> Element? {
-      __tree_.ensureUnique()
-      return __tree_.___erase_multi(member) != 0 ? member : nil
-    }
-  }
 #endif
 
 #if COMPATIBLE_ATCODER_2025

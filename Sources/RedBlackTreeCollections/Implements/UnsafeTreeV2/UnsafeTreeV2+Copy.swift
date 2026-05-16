@@ -27,12 +27,27 @@ extension UnsafeTreeV2 {
   ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
   @inline(__always)
-  internal func copy(minimumCapacity: Int? = nil) -> UnsafeTreeV2 {
+  internal func copy(minimumCapacity: Int) -> UnsafeTreeV2 {
     assert(check(), "一括チェックに合格すること")
     let tree = withMutableHeader { header in
       UnsafeTreeV2._create(
         unsafeBufferObject:
           header.copyBuffer(Base._PayloadValue.self, minimumCapacity: minimumCapacity))
+    }
+    assert(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
+    assert(count == 0 || equiv(with: tree), "コピー前後で等価であること")
+    assert(tree.check(), "一括チェックに合格すること")
+    return tree
+  }
+
+  @inlinable
+  @inline(never) // 呼び出し元ホットパスのレジスタ圧低下を狙っている
+  internal func copy() -> UnsafeTreeV2 {
+    assert(check(), "一括チェックに合格すること")
+    let tree = withMutableHeader { header in
+      UnsafeTreeV2._create(
+        unsafeBufferObject:
+          header.copyBuffer(Base._PayloadValue.self, minimumCapacity: capacity))
     }
     assert(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
     assert(count == 0 || equiv(with: tree), "コピー前後で等価であること")

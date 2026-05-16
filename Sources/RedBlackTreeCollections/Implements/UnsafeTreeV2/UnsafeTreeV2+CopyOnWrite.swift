@@ -30,9 +30,7 @@ extension UnsafeTreeV2 {
   internal mutating func ensureUnique() {
     let isUnique = isUnique()
     guard !isUnique else { return }
-    withMutableHeader { header in
-      self = header.copy()
-    }
+    self = copy()
   }
 
   @inlinable

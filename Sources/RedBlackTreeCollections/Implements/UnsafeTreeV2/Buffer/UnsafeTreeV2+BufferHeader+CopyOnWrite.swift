@@ -58,7 +58,7 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   internal mutating func grow(_ newCapacity: Int) {
     assert(freshPoolCapacity < newCapacity, "増加要求であること")
-    pushFreshBucket(additionalCapacity: newCapacity - freshPoolCapacity)
+    pushFreshBucket(additionalCapacity: newCapacity &- freshPoolCapacity)
   }
 
   @inlinable

@@ -18,6 +18,8 @@
 import Foundation
 
 // TODO: 6.4になったら再度チューニング
+// ホットパスとコールドパスの分離に関して、まだ少しチューニングの余地があるが、うまみは少なめ？
+// 気が向いたら再トライすること
 
 extension UnsafeTreeV2 {
 
@@ -58,6 +60,8 @@ extension UnsafeTreeV2 {
     return tree
   }
 }
+
+// ファイル移動したいが移動すると遅くなる謎挙動があるため、まだしばらくこのまま
 
 extension UnsafeTreeV2BufferHeader {
 

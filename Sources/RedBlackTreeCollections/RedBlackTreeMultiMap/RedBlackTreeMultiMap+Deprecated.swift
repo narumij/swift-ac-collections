@@ -71,23 +71,23 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-// 申し訳程度に用意したAPIだけど、これではどうも不十分なのでdeprecatedにする
-// 結局復活する可能性もあるにはある
-extension RedBlackTreeMultiMap {
+  // 申し訳程度に用意したAPIだけど、これではどうも不十分なのでdeprecatedにする
+  // 結局復活する可能性もあるにはある
+  extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
-    __tree_.ensureUnique()
-    guard let p = __tree_.__purified_(ptr).pointer, p.sealed.exists
-    else { return nil }
-    let old = __tree_[_unsafe_raw: p]
-    __tree_[_unsafe_raw: p].value = newValue
-    return Base.__element_(old)
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @inline(__always)
+    @discardableResult
+    public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
+      __tree_.ensureUnique()
+      guard let p = __tree_.__purified_(ptr).pointer, p.sealed.exists
+      else { return nil }
+      let old = __tree_[_unsafe_raw: p]
+      __tree_[_unsafe_raw: p].value = newValue
+      return Base.__element_(old)
+    }
   }
-}
 #endif
 
 #if COMPATIBLE_ATCODER_2025
@@ -145,6 +145,24 @@ extension RedBlackTreeMultiMap {
     public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
       __tree_.ensureUnique()
       return __tree_.___erase_unique(key)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// Removes the last element of the collection.
+    ///
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      __tree_.ensureUnique()
+      guard let element = __tree_.___unchecked_remove_last().map(__element_) else {
+        preconditionFailure(.emptyLast)
+      }
+      return element
     }
   }
 #endif

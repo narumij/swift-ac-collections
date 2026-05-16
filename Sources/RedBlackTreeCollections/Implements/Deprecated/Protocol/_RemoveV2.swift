@@ -15,6 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if COMPATIBLE_ATCODER_2025
 @usableFromInline
 protocol _RemoveV2: UnsafeMutableTreeRangeBaseInterfaceV2, _PayloadValueBride {}
 
@@ -34,3 +35,4 @@ extension _RemoveV2 {
     return __tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end))
   }
 }
+#endif

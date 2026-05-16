@@ -246,7 +246,7 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   public mutating func popFirst() -> Element? {
     __tree_.ensureUnique()
-    return ___unchecked_remove_first()?.payload
+    return __tree_.___unchecked_remove_first()
   }
 }
 
@@ -259,7 +259,7 @@ extension RedBlackTreeMultiSet {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return ___unchecked_remove_last()?.payload
+      return __tree_.___unchecked_remove_last()
     }
   }
 #endif
@@ -273,28 +273,29 @@ extension RedBlackTreeMultiSet {
   @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
-    __tree_.ensureUnique()
     guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
     return element
   }
-
-  /// Removes the last element of the collection.
-  ///
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @discardableResult
-  public mutating func removeLast() -> Element {
-    __tree_.ensureUnique()
-    guard
-      let element = ___unchecked_remove_last()?.payload
-    else {
-      preconditionFailure(.emptyLast)
-    }
-    return element
-  }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    /// Removes the last element of the collection.
+    ///
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      guard let element = popLast() else {
+        preconditionFailure(.emptyLast)
+      }
+      return element
+    }
+  }
+#endif
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {

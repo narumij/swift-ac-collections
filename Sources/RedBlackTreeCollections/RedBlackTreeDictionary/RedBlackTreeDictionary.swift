@@ -283,7 +283,7 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   public mutating func popFirst() -> Element? {
     __tree_.ensureUnique()
-    return ___unchecked_remove_first().map(\.payload).map(__element_)
+    return __tree_.___unchecked_remove_first().map(__element_)
   }
 }
 
@@ -296,7 +296,7 @@ extension RedBlackTreeDictionary {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return ___unchecked_remove_last().map(\.payload).map(__element_)
+      return __tree_.___unchecked_remove_last().map(__element_)
     }
   }
 #endif
@@ -310,28 +310,29 @@ extension RedBlackTreeDictionary {
   @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
-    __tree_.ensureUnique()
     guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
     return element
   }
-
-  /// Removes the last element of the collection.
-  ///
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @discardableResult
-  public mutating func removeLast() -> Element {
-    __tree_.ensureUnique()
-    guard
-      let element = ___unchecked_remove_last().map(\.payload).map(__element_)
-    else {
-      preconditionFailure(.emptyLast)
-    }
-    return element
-  }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Removes the last element of the collection.
+    ///
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      guard let element = popLast() else {
+        preconditionFailure(.emptyLast)
+      }
+      return element
+    }
+  }
+#endif
 
 extension RedBlackTreeDictionary {
 

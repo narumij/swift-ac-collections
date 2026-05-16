@@ -84,6 +84,24 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
+    /// Removes the last element of the collection.
+    ///
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      __tree_.ensureUnique()
+      guard let element = __tree_.___unchecked_remove_last() else {
+        preconditionFailure(.emptyLast)
+      }
+      return element
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
     /// - Important: 削除したメンバーを指すインデックスが無効になります。
     /// - Complexity: O(log *n*)
     @inlinable

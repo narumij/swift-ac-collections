@@ -61,6 +61,24 @@
   }
 #endif
 
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Removes the last element of the collection.
+    ///
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      __tree_.ensureUnique()
+      guard let element = __tree_.___unchecked_remove_last().map(__element_) else {
+        preconditionFailure(.emptyLast)
+      }
+      return element
+    }
+  }
+#endif
+
 // MARK: - Range Accessing Keys and Values
 
 #if COMPATIBLE_ATCODER_2025

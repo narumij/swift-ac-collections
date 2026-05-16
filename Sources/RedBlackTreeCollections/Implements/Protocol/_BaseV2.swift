@@ -93,7 +93,6 @@ protocol _RedBlackTreeKeyOnlyV2:
   UnsafeTreeRangeBaseInterfaceV2
     & _SetBridge
     & _SequenceV2
-    & _RemoveV2
 {}
 
 @usableFromInline
@@ -101,7 +100,6 @@ protocol _RedBlackTreeKeyValuesV2:
   UnsafeTreeRangeBaseInterfaceV2
     & _MapBridge
     & _SequenceV2
-    & _RemoveV2
     & _PayloadValueBridge_MappedValue
     & _PaylodValueBridge_Element
     & _ElementBridge_Payload

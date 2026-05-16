@@ -259,7 +259,7 @@ extension RedBlackTreeSet {
     @inlinable
     public mutating func popFirst() -> Element? {
       __tree_.ensureUnique()
-      return ___unchecked_remove_first()?.payload
+      return __tree_.___unchecked_remove_first()
     }
 
     /// Removes and returns the last element of the collection.
@@ -268,7 +268,7 @@ extension RedBlackTreeSet {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return ___unchecked_remove_last()?.payload
+      return __tree_.___unchecked_remove_last()
     }
   }
 #endif
@@ -281,7 +281,6 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
-    __tree_.ensureUnique()
     guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
@@ -298,7 +297,6 @@ extension RedBlackTreeSet {
     @inlinable
     @discardableResult
     public mutating func removeLast() -> Element {
-      __tree_.ensureUnique()
       guard let element = popLast() else {
         preconditionFailure(.emptyLast)
       }

@@ -19,6 +19,7 @@ import Foundation
 
 extension UnsafeTreeV2 {
 
+  // デッドコードだけど削るとなぜか性能落ちるので温存
   /// 木のコピーを作成する
   ///
   /// - Parameters:

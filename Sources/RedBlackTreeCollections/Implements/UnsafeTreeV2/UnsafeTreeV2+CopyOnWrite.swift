@@ -107,37 +107,17 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  // linear
-  
   @inlinable @inline(__always)
-  internal mutating func ensureUniqueAndCapacity(to minimumCapacity: Int) {
+  internal mutating func ensureUniqueAndCapacity(
+    to minimumCapacity: Int? = nil
+  ) {
     let isUnique = isUnique()
 
     withMutableHeader { header in
-      let requestCapacity = minimumCapacity
+      let requestCapacity = minimumCapacity ?? (header.count + 1)
       let shouldExpand = header.freshPoolCapacity < requestCapacity
       guard shouldExpand || !isUnique else { return }
-      let newCapacity = minimumCapacity
-      if !isUnique {
-        self = header.copy(minimumCapacity: newCapacity)
-        return
-      }
-      assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-      header.grow(newCapacity)
-    }
-  }
-  
-  // non linear
-
-  @inlinable @inline(__always)
-  internal mutating func ensureUniqueAndCapacity() {
-    let isUnique = isUnique()
-
-    withMutableHeader { header in
-      let requestCapacity = header.count + 1
-      let shouldExpand = header.freshPoolCapacity < requestCapacity
-      guard shouldExpand || !isUnique else { return }
-      let newCapacity = header._growthCapacity(to: requestCapacity)
+      let newCapacity = minimumCapacity ?? header._growthCapacity(to: header.count + 1)
       if !isUnique {
         self = header.copy(minimumCapacity: newCapacity)
         return
@@ -149,8 +129,6 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
-  
-  // non linear
 
   @inlinable @inline(__always)
   internal mutating func ensureCapacity(to minimumCapacity: Int? = nil) {
@@ -168,8 +146,6 @@ extension UnsafeTreeV2 {
       header.grow(newCapacity)
     }
   }
-
-  // 生成がemptySingletonじゃないことが確定又は保証できる場合のみ利用可能
 
   @inlinable @inline(__always)
   internal mutating func unsafeEnsureCapacity() {

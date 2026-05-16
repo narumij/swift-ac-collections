@@ -59,6 +59,8 @@ extension UnsafeTreeV2 {
   }
 }
 
+// ファイル移動したいが移動すると遅くなる謎挙動があるため、まだしばらくこのまま
+
 extension UnsafeTreeV2BufferHeader {
 
   /// 木のコピーを作成する

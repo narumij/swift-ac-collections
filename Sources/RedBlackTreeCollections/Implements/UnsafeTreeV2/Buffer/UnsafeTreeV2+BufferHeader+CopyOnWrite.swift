@@ -77,7 +77,7 @@ extension UnsafeTreeV2BufferHeader {
 extension UnsafeTreeV2BufferHeader {
 
   // reserveCapacity用
-  
+
   @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
   internal mutating func _ensureCapacitySlow(to minimumCapacity: Int) {
     guard freshPoolCapacity < minimumCapacity else {
@@ -95,7 +95,7 @@ extension UnsafeTreeV2BufferHeader {
     }
     grow(cap.request)
   }
-  
+
   // LRU用
 
   @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
@@ -111,7 +111,7 @@ extension UnsafeTreeV2BufferHeader {
 extension UnsafeTreeV2BufferHeader {
 
   // reserveCapacity用
-  
+
   @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
   internal func _ensureUniqueSlow<Base>(to minimumCapacity: Int) -> UnsafeTreeV2<Base> {
     copy(minimumCapacity: minimumCapacity)
@@ -121,36 +121,11 @@ extension UnsafeTreeV2BufferHeader {
   internal func _ensureUniqueSlow<Base>() -> UnsafeTreeV2<Base> {
     copy(minimumCapacity: _requestCapacity().request)
   }
-  
+
   // LRU用
-  
+
   @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
   internal func _ensureUniqueSlow<Base>(limit: Int) -> UnsafeTreeV2<Base> {
     copy(minimumCapacity: _requestCapacity(limit: limit).request)
   }
 }
-
-#if RESERVE_CAPACITY_BENCH
-extension UnsafeTreeV2BufferHeader {
-  
-  @inlinable
-  internal func _requestCapacity(_capacity cap: Int) -> (require: Int, request: Int) {
-    let require = cap &+ 1
-    return (require, growth(from: freshPoolCapacity, to: require))
-  }
-  
-  @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
-  internal mutating func _ensureCapacitySlow(_capacity cap: Int) {
-    let cap = _requestCapacity(_capacity: cap)
-    guard freshPoolCapacity < cap.require else {
-      return
-    }
-    grow(cap.request)
-  }
-  
-  @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
-  internal func _ensureUniqueSlow<Base>(_capacity cap: Int) -> UnsafeTreeV2<Base> {
-    copy(minimumCapacity: _requestCapacity(_capacity: cap).request)
-  }
-}
-#endif

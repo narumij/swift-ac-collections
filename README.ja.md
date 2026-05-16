@@ -15,7 +15,7 @@
 dependencies: [
   .package(
     url: "https://github.com/narumij/swift-ac-collections",
-    branch: "main"),
+    branch: "compatible/AtCoder/2025"),
 ]
 ```
 

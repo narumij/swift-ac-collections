@@ -204,10 +204,7 @@ extension UnsafeTreeV2 where _PayloadValue: Decodable {
   internal static func create(from decoder: Decoder) throws -> UnsafeTreeV2 {
 
     var container = try decoder.unkeyedContainer()
-    var tree: Tree = ._createWithNewBuffer(minimumCapacity: 0, nullptr: UnsafeNode.nullptr)
-    if let count = container.count {
-      tree.ensureCapacity(to: count)
-    }
+    let tree: Tree = ._createWithNewBuffer(minimumCapacity: container.count ?? 0, nullptr: UnsafeNode.nullptr)
 
     var (__parent, __child) = tree.___max_ref()
     while !container.isAtEnd {

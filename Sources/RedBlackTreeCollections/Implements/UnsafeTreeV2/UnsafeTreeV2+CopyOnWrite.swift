@@ -61,9 +61,9 @@ extension UnsafeTreeV2 {
   internal mutating func ensureUniqueAndCapacity(to minimumCapacity: Int) {
 
     if !isUnique() {
-      self = withMutableHeader { $0._ensureUnique(to: minimumCapacity) }
+      self = withMutableHeader { $0._ensureUniqueSlow(to: minimumCapacity) }
     } else {
-      withMutableHeader { $0._ensureCapacity(to: minimumCapacity) }
+      withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
     }
   }
 
@@ -71,9 +71,9 @@ extension UnsafeTreeV2 {
   internal mutating func ensureUniqueAndCapacity() {
 
     if !isUnique() {
-      self = withMutableHeader { $0._ensureUnique() }
+      self = withMutableHeader { $0._ensureUniqueSlow() }
     } else {
-      withMutableHeader { $0._ensureCapacity() }
+      withMutableHeader { $0._ensureCapacitySlow() }
     }
   }
 }
@@ -84,10 +84,10 @@ extension UnsafeTreeV2 {
   internal mutating func ensureCapacity(to minimumCapacity: Int) {
 
     if isReadOnly {
-      self = withMutableHeader { $0._ensureUnique(to: minimumCapacity) }
+      self = withMutableHeader { $0._ensureUniqueSlow(to: minimumCapacity) }
     } else {
       assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-      withMutableHeader { $0._ensureCapacity(to: minimumCapacity) }
+      withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
     }
   }
 
@@ -95,17 +95,17 @@ extension UnsafeTreeV2 {
   internal mutating func ensureCapacity() {
 
     if isReadOnly {
-      self = withMutableHeader { $0._ensureUnique() }
+      self = withMutableHeader { $0._ensureUniqueSlow() }
     } else {
       assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-      withMutableHeader { $0._ensureCapacity() }
+      withMutableHeader { $0._ensureCapacitySlow() }
     }
   }
 
   @inlinable @inline(__always)
   internal mutating func unsafeEnsureCapacity() {
     assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-    withMutableHeader { $0._ensureCapacity() }
+    withMutableHeader { $0._ensureCapacitySlow() }
   }
 }
 
@@ -117,10 +117,10 @@ extension UnsafeTreeV2 {
   internal mutating func ensureCapacity(limit: Int) {
 
     if isReadOnly {
-      self = withMutableHeader { $0._ensureUnique(limit: limit) }
+      self = withMutableHeader { $0._ensureUniqueSlow(limit: limit) }
     } else {
       assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-      withMutableHeader { $0._ensureCapacity(limit: limit) }
+      withMutableHeader { $0._ensureCapacitySlow(limit: limit) }
     }
   }
 }

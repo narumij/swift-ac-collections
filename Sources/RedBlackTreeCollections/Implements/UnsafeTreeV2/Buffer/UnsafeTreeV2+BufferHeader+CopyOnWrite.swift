@@ -129,3 +129,28 @@ extension UnsafeTreeV2BufferHeader {
     copy(minimumCapacity: _requestCapacity(limit: limit).request)
   }
 }
+
+#if RESERVE_CAPACITY_BENCH
+extension UnsafeTreeV2BufferHeader {
+  
+  @inlinable
+  internal func _requestCapacity(_capacity cap: Int) -> (require: Int, request: Int) {
+    let require = cap &+ 1
+    return (require, growth(from: freshPoolCapacity, to: require))
+  }
+  
+  @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
+  internal mutating func _ensureCapacitySlow(_capacity cap: Int) {
+    let cap = _requestCapacity(_capacity: cap)
+    guard freshPoolCapacity < cap.require else {
+      return
+    }
+    grow(cap.request)
+  }
+  
+  @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
+  internal func _ensureUniqueSlow<Base>(_capacity cap: Int) -> UnsafeTreeV2<Base> {
+    copy(minimumCapacity: _requestCapacity(_capacity: cap).request)
+  }
+}
+#endif

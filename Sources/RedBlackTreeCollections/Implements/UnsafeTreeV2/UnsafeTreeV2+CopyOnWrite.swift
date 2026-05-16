@@ -122,3 +122,35 @@ extension UnsafeTreeV2 {
     }
   }
 }
+
+
+#if RESERVE_CAPACITY_BENCH
+extension UnsafeTreeV2 {
+  
+  @inlinable @inline(__always)
+  internal mutating func ensureUniqueAndCapacity(_capacity minimumCapacity: Int) {
+    
+    if !isUnique() {
+      self = withMutableHeader { $0._ensureUniqueSlow(_capacity: minimumCapacity) }
+    } else {
+      withMutableHeader { $0._ensureCapacitySlow(_capacity: minimumCapacity) }
+    }
+  }
+}
+
+extension RedBlackTreeSet {
+  
+  @inlinable
+  public mutating func _reserveCapacity(force minimumCapacity: Int) {
+    __tree_.ensureUniqueAndCapacity(_capacity: minimumCapacity)
+  }
+}
+
+extension RedBlackTreeDictionary {
+  
+  @inlinable
+  public mutating func _reserveCapacity(force minimumCapacity: Int) {
+    __tree_.ensureUniqueAndCapacity(_capacity: minimumCapacity)
+  }
+}
+#endif

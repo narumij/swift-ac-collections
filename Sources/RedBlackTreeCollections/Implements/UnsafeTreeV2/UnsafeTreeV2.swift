@@ -98,18 +98,15 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  @inline(__always)
   var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
 }
 
 extension UnsafeTreeV2 {
 
   @inlinable
-  @inline(__always)
   public var underestimatedCount: Int { count }
 
   @inlinable
-  @inline(__always)
   var freeCapacity: Int {
     withMutableHeader { $0.freshPoolCapacity - $0.count }
   }
@@ -147,12 +144,14 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  // subscript helperなので、__always
   @inlinable
   @inline(__always)
   func _unsafeAddress(_ position: UnsafeIndexV3) -> UnsafePointer<_PayloadValue> {
     return UnsafePointer(_unsafeMutableAddress(position))
   }
 
+  // subscript helperなので、__always
   @inlinable
   @inline(__always)
   func _unsafeMutableAddress(_ position: UnsafeIndexV3) -> UnsafeMutablePointer<_PayloadValue> {

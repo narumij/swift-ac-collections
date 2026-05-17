@@ -121,7 +121,6 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 
   @inlinable
-  @inline(__always)
   var __root: _NodePtr {
     @inline(__always)
     @_transparent
@@ -136,13 +135,11 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 
   @inlinable
-  @inline(__always)
   var end: _NodePtr {
     header.pointee.end_ptr
   }
 
   @inlinable
-  @inline(__always)
   var __end_node: _NodePtr {
     header.pointee.end_ptr
   }

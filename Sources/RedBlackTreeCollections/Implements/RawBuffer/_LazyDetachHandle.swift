@@ -107,7 +107,7 @@ extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure ==
     }
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   package var sealed: _SealedPtr {
     map(\.rawValue)
   }

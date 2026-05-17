@@ -24,7 +24,6 @@ package struct _Bucket {
   package typealias _Next = UnsafeMutablePointer<_Bucket>
 
   @inlinable
-  @inline(__always)
   package init(capacity c: Int) {
     capacity = c
   }
@@ -44,17 +43,14 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
 
   /// 次のバケットへのポインタ
   @inlinable
-  @inline(__always)
   var next: UnsafeMutablePointer? { pointee.next }
 
   /// 確保数
   @inlinable
-  @inline(__always)
   var capacity: Int { pointee.capacity }
 
   /// 使用数
   @inlinable
-  @inline(__always)
   var count: Int { pointee.count }
 
   /// beginノードポインタの開始アドレスを返す
@@ -68,7 +64,6 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   ///        ^--begin_ptr
   /// ```
   @inlinable
-  @inline(__always)
   var begin_ptr: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>> {
     UnsafeMutableRawPointer(advanced(by: 1))
       .assumingMemoryBound(to: UnsafeMutablePointer<UnsafeNode>.self)
@@ -85,7 +80,6 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   ///            ^--end_ptr
   /// ```
   @inlinable
-  @inline(__always)
   var end_ptr: UnsafeMutablePointer<UnsafeNode> {
     UnsafeMutableRawPointer(begin_ptr.advanced(by: 1))
       .assumingMemoryBound(to: UnsafeNode.self)
@@ -108,19 +102,16 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   ///
   /// 確保数0の場合、確保領域の末尾の次のアドレスとなる
   @inlinable
-  @inline(__always)
   func storage(isHead: Bool) -> UnsafeMutableRawPointer {
     isHead ? primaryStorage() : secondaryStorage()
   }
 
   @inlinable
-  @inline(__always)
   package func primaryStorage() -> UnsafeMutableRawPointer {
     UnsafeMutableRawPointer(end_ptr.advanced(by: 1))
   }
 
   @inlinable
-  @inline(__always)
   package func secondaryStorage() -> UnsafeMutableRawPointer {
     UnsafeMutableRawPointer(advanced(by: 1))
   }
@@ -144,7 +135,6 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   /// - WARNING: 確保数0の場合利用してはならない
   ///
   @inlinable
-  @inline(__always)
   package func start(storage: UnsafeMutableRawPointer, valueAlignment: Int) -> UnsafeMutablePointer<
     UnsafeNode
   > {

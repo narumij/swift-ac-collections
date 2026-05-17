@@ -142,7 +142,6 @@ extension UnsafeTreeV2KeyOnlyHandle {
   }
 
   @inlinable
-  @inline(__always)
   var __root: _NodePtr {
     @inline(__always)
     @_transparent
@@ -152,7 +151,6 @@ extension UnsafeTreeV2KeyOnlyHandle {
   }
 
   @inlinable
-  @inline(__always)
   func __root_ptr() -> _NodeRef {
     root_ref
   }

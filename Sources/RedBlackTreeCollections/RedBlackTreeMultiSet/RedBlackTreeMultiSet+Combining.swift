@@ -96,7 +96,6 @@ extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  @inline(__always)
   public func melding(_ other: __owned RedBlackTreeMultiSet<Element>)
     -> RedBlackTreeMultiSet<Element>
   {

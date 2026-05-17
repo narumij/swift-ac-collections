@@ -45,7 +45,6 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  @inline(__always)
   package var __end_node: _NodePtr {
     //    origin.pointee.end_ptr
     withMutableHeader { $0.end_ptr }
@@ -57,7 +56,6 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  @inline(__always)
   var __root: _NodePtr {
     @inline(__always) _read {
       yield withMutableHeader { $0.root_ptr }.pointee
@@ -125,7 +123,6 @@ extension UnsafeTreeV2: _SignedDistanceBridge where Base: _BaseNode_SignedDistan
 extension UnsafeTreeV2: BoundBothInterface {
 
   @inlinable
-//  @inline(__always)
   public var isMulti: Bool {
     Base.isMulti
   }

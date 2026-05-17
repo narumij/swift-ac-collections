@@ -72,7 +72,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public func makeIterator() -> Tree._KeyValues {
     #if !COMPATIBLE_ATCODER_2025
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
@@ -90,7 +89,6 @@ extension RedBlackTreeDictionary {
     ///
     /// - Complexity: O(`count`)
     @inlinable
-    @inline(__always)
     public func sorted() -> [Element] {
       __tree_.___copy_all_to_array(transform: __element_)
     }
@@ -99,7 +97,6 @@ extension RedBlackTreeDictionary {
     ///
     /// - Complexity: O(`count`)
     @inlinable
-    @inline(__always)
     public func reversed() -> [Element] {
       __tree_.___rev_copy_all_to_array(transform: __element_)
     }
@@ -115,7 +112,6 @@ extension RedBlackTreeDictionary {
     ///
     /// - Complexity: O(`count`)
     @inlinable
-    @inline(__always)
     public var keys: [Key] {
       __tree_.___copy_all_to_array(transform: __key)
     }
@@ -124,7 +120,6 @@ extension RedBlackTreeDictionary {
     ///
     /// - Complexity: O(`count`)
     @inlinable
-    @inline(__always)
     public var values: [Value] {
       __tree_.___copy_all_to_array(transform: ___mapped_value)
     }

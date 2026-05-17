@@ -96,7 +96,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   @usableFromInline
   var __tree_: Tree
 
-  @inlinable @inline(__always)
+  @inlinable
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
   }
@@ -186,7 +186,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var first: Element? {
     isEmpty ? nil : __element_(Base.__payload_(_start))
   }
@@ -228,7 +227,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -240,7 +238,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -257,7 +254,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func updateValue(
     _ value: Value,
@@ -280,7 +276,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
-  @inline(__always)
   public mutating func popFirst() -> Element? {
     __tree_.ensureUnique()
     return __tree_.___unchecked_remove_first().map(__element_)
@@ -307,7 +302,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
     guard let element = popFirst() else {
@@ -340,7 +334,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
@@ -356,7 +349,6 @@ extension RedBlackTreeDictionary {
   /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
     __tree_.ensureUnique()
@@ -395,7 +387,7 @@ extension RedBlackTreeDictionary {
     ///
     /// - Complexity: Amortized O(1)
     @discardableResult
-    @inlinable @inline(__always)
+    @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
       ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
     }

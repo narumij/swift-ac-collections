@@ -19,7 +19,6 @@ extension RedBlackTreeDictionary {
 
   /// Creates an empty set with preallocated space for at least the specified number of elements.
   @inlinable
-  @inline(__always)
   public init(minimumCapacity: Int) {
     self.init(__tree_: .create(minimumCapacity: minimumCapacity))
   }

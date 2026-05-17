@@ -23,7 +23,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public init() {
     self.init(__tree_: .create())
   }

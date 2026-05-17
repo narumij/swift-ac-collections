@@ -34,7 +34,7 @@
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
+//    @inline(__always)
     public func isValid(_ index: Index) -> Bool {
       __tree_.__purified_(index).exists
     }
@@ -48,7 +48,7 @@
     ///
     /// - Complexity: O(log *n* + *k*)
     @inlinable
-    @inline(__always)
+//    @inline(__always)
     public func distance(from start: Index, to end: Index)
       -> Int
     {
@@ -77,14 +77,14 @@
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
+//    @inline(__always)
     public var startIndex: Index { ___index(_sealed_start) }
 
     /// The array’s “past the end” position—that is, the position one greater than the last valid subscript argument.
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
+//    @inline(__always)
     public var endIndex: Index { ___index(_sealed_end) }
   }
 #endif

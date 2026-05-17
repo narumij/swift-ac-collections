@@ -21,7 +21,7 @@ extension RedBlackTreeSet {
 
   /// Creates a new, empty set.
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   public init() {
     self.init(__tree_: .create())
   }

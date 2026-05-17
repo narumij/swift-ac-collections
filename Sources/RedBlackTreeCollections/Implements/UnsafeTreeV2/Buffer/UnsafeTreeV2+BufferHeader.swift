@@ -276,7 +276,7 @@ extension UnsafeTreeV2BufferHeader {
     extension UnsafeTreeV2BufferHeader {
 
       @inlinable
-      @inline(__always)
+//      @inline(__always)
       var freshPoolActualCapacity: Int {
         var count = 0
         var p = freshBucketHead
@@ -288,7 +288,7 @@ extension UnsafeTreeV2BufferHeader {
       }
 
       @inlinable
-      @inline(__always)
+//      @inline(__always)
       var freshPoolActualCount: Int {
         var count = 0
         var p = freshBucketHead
@@ -400,8 +400,8 @@ extension UnsafeTreeV2BufferHeader {
 
 extension UnsafeTreeV2BufferHeader {
 
-  @inlinable
-  @inline(__always)
+//  @inlinable
+//  @inline(__always)
   public mutating func __construct_raw_node() -> _NodePtr {
     #if DEBUG
       assert(recycleCount >= 0, "リサイクル残がある場合は新規ノードを利用しないこと")

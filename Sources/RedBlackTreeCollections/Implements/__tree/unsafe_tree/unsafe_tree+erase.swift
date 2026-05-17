@@ -83,7 +83,7 @@ extension EraseMultiProtocol {
 
   /// メモリ破壊できない
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func ___erase_multi(_ __k: _Key) -> Int {
     var __p = __equal_range_multi(__k)
     var __r = 0

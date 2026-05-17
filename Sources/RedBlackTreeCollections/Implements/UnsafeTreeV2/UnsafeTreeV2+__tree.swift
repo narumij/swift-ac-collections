@@ -67,7 +67,7 @@ extension UnsafeTreeV2 {
   // MARK: - RootPtrProtocol
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   package func __root_ptr() -> _NodeRef {
     withMutableHeader { $0.root_ptr }
   }
@@ -93,7 +93,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   public func __construct_node(_ k: _PayloadValue) -> _NodePtr {
     withMutableHeader {
       $0.__construct_node(k)
@@ -101,7 +101,7 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func destroy(_ p: _NodePtr) {
     withMutableHeader {
       $0.___pushRecycle(p)
@@ -112,7 +112,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   package func __value_(_ p: _NodePtr) -> _PayloadValue {
     p.__value_().pointee
   }
@@ -129,7 +129,7 @@ extension UnsafeTreeV2: _SignedDistanceBridge where Base: _BaseNode_SignedDistan
 extension UnsafeTreeV2: BoundBothInterface {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   public var isMulti: Bool {
     Base.isMulti
   }
@@ -140,7 +140,7 @@ extension UnsafeTreeV2: FindProtocol_ptr {}
 extension UnsafeTreeV2: FindEqualInterface, FindEqualProtocol_ptr {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   package func __comp(_ __lhs: Base._Key, _ __rhs: Base._Key) -> __compare_result {
     __lazy_synth_three_way_comparator(__lhs, __rhs)
   }
@@ -163,13 +163,13 @@ extension UnsafeTreeV2: TreeAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2 {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func ___min() -> _PayloadValue? {
     __root == nullptr ? nil : Base.__payload_(__tree_min(__root))
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func ___max() -> _PayloadValue? {
     __root == nullptr ? nil : Base.__payload_(__tree_max(__root))
   }

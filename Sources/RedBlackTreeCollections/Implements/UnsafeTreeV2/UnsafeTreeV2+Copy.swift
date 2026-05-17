@@ -31,7 +31,7 @@ extension UnsafeTreeV2 {
   ///     - `nil` の場合はコピー元と同じ容量を使用する。
   ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func copy(minimumCapacity: Int) -> UnsafeTreeV2 {
     assert(check(), "一括チェックに合格すること")
     let tree = withMutableHeader { header in

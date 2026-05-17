@@ -18,7 +18,7 @@
 extension UnsafeTreeV2 {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   @discardableResult
   package mutating func _unchecked_remove(at ptr: _NodePtr) -> (
     __r: _NodePtr, payload: _PayloadValue

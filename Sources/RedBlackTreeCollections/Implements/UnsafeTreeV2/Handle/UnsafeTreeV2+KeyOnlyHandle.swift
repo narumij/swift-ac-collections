@@ -24,7 +24,8 @@
 @usableFromInline
 struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
 
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   internal init(
     header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>,
     isMulti: Bool
@@ -158,7 +159,7 @@ extension UnsafeTreeV2KeyOnlyHandle {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   func __root_ptr() -> _NodeRef {
     root_ref
   }

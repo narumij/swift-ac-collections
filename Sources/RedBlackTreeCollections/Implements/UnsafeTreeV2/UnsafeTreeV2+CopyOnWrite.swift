@@ -20,13 +20,13 @@ import Foundation
 extension UnsafeTreeV2 {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal mutating func isUnique() -> Bool {
     _buffer.isUniqueReference()
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal mutating func ensureUnique() {
     let isUnique = isUnique()
     guard !isUnique else { return }
@@ -34,7 +34,7 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal mutating func _strongEnsureUnique() {
     #if COMPATIBLE_ATCODER_2025
       let isTreeUnique = isUnique()
@@ -55,7 +55,8 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   internal mutating func ensureUniqueAndCapacity(to minimumCapacity: Int) {
 
     if !isUnique() {
@@ -65,7 +66,8 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   internal mutating func ensureUniqueAndCapacity() {
 
     if !isUnique() {
@@ -78,7 +80,8 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   internal mutating func ensureCapacity(to minimumCapacity: Int) {
 
     if isReadOnly {
@@ -89,7 +92,8 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   internal mutating func ensureCapacity() {
 
     if isReadOnly {
@@ -100,7 +104,8 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   internal mutating func unsafeEnsureCapacity() {
     assert(isReadOnly == false, "変更禁止シングルトンではないこと")
     withMutableHeader { $0._ensureCapacitySlow() }
@@ -111,7 +116,8 @@ extension UnsafeTreeV2 {
 
   // LRUキャッシュ用
 
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   internal mutating func ensureCapacity(limit: Int) {
 
     if isReadOnly {

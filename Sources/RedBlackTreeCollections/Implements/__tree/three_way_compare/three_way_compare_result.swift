@@ -60,7 +60,6 @@ public
 {
   @usableFromInline internal var __lhs_, __rhs_: T
   @inlinable
-  @inline(__always)
   internal init(_ __lhs_: T, _ __rhs_: T) {
     self.__lhs_ = __lhs_
     self.__rhs_ = __rhs_

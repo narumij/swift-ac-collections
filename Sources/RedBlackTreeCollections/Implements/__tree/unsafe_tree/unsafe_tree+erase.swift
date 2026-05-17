@@ -26,7 +26,6 @@ extension EraseProtocol {
 
   /// - WARNING: メモリ破壊の可能性がある。
   @inlinable
-//  @inline(__always)
   internal func
     erase(_ __p: _NodePtr) -> _NodePtr
   {
@@ -37,7 +36,6 @@ extension EraseProtocol {
 
   /// - WARNING: メモリ破壊の可能性がある。範囲検査済みの場合にのみ用いること
   @inlinable
-//  @inline(__always)
   internal func
     erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
   {
@@ -83,7 +81,6 @@ extension EraseMultiProtocol {
 
   /// メモリ破壊できない
   @inlinable
-//  @inline(__always)
   internal func ___erase_multi(_ __k: _Key) -> Int {
     var __p = __equal_range_multi(__k)
     var __r = 0

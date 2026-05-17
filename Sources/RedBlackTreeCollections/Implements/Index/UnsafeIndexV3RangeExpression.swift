@@ -22,7 +22,6 @@ public struct UnsafeIndexV3RangeExpression {
   internal var rangeExpression: _RawRangeExpression<UnsafeIndexV3>
 
   @inlinable
-  @inline(__always)
   internal init(_ rangeExpression: _RawRangeExpression<UnsafeIndexV3>) {
     self.rangeExpression = rangeExpression
   }

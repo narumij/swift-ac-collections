@@ -104,13 +104,11 @@ protocol InsertMultiProtocol: AllocationInterface & _TreePayloadValue_KeyInterfa
 extension InsertMultiProtocol {
 
   @inlinable
-  @inline(__always)
   internal func __insert_multi(_ x: _PayloadValue) -> _NodePtr {
     __emplace_multi(x)
   }
 
   @inlinable
-  @inline(__always)
   internal func
     __emplace_multi(_ __k: _PayloadValue) -> _NodePtr
   {
@@ -137,7 +135,6 @@ protocol InsertLastProtocol_ptr:
 extension InsertLastProtocol_ptr {
   
   @inlinable
-  @inline(__always)
   internal func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef) {
     if __root == nullptr {
       return (__end_node, __end_node.__left_ref)
@@ -147,7 +144,6 @@ extension InsertLastProtocol_ptr {
   }
   
   @inlinable
-  @inline(__always)
   internal func
   ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue)
   -> (__parent: _NodePtr, __child: _NodeRef)
@@ -165,7 +161,6 @@ extension InsertLastProtocol_ptr {
   // こちらのほうがAPIとしては収まりがいいが、かすかに上のモノの方が速い
   // 分岐の有無の差だとおもわれる
   @inlinable
-  @inline(__always)
   internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
     let __child = __p == end ? __end_node.__left_ref : __p.__right_ref
     //                        ^--- これの差
@@ -175,7 +170,6 @@ extension InsertLastProtocol_ptr {
   }
 
   @inlinable
-  @inline(__always)
   internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
     let __child = __p.__left_ref
     let __h = __construct_node(__k)

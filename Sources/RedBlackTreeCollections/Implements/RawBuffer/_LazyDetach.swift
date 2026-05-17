@@ -42,7 +42,7 @@ package final class _LazyDetach: ManagedBuffer<_TiedRawBuffer?, Void> {
 extension _LazyDetach {
 
   @nonobjc
-  @inlinable
+  @usableFromInline
   internal static func create() -> _LazyDetach {
     let storage = _LazyDetach.create(minimumCapacity: 0) { managedBuffer in
       return nil

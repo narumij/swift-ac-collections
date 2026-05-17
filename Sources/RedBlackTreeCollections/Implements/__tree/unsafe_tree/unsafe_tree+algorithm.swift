@@ -48,7 +48,6 @@ extension TreeAlgorithmBaseProtocol_ptr {
   /// Returns:  true if `__x` is a left child of its parent, else false
   /// Precondition:  `__x` != nullptr.
   @inlinable
-  @inline(__always)
   package func
     __tree_is_left_child(_ __x: _NodePtr) -> Bool
   {
@@ -124,7 +123,6 @@ extension TreeAlgorithmBaseProtocol_ptr {
 
   /// Returns:  pointer to the left-most node under `__x`.
   @inlinable
-  @inline(__always)
   package func
     __tree_min(_ __x: _NodePtr) -> _NodePtr
   {
@@ -138,7 +136,6 @@ extension TreeAlgorithmBaseProtocol_ptr {
 
   /// Returns:  pointer to the right-most node under `__x`.
   @inlinable
-  @inline(__always)
   package func
     __tree_max(_ __x: _NodePtr) -> _NodePtr
   {
@@ -152,7 +149,6 @@ extension TreeAlgorithmBaseProtocol_ptr {
 
   /// Returns:  pointer to the next in-order node after __x.
   @inlinable
-  @inline(__always)
   package func
     __tree_next(_ __x: _NodePtr) -> _NodePtr
   {
@@ -173,7 +169,6 @@ extension TreeAlgorithmBaseProtocol_ptr {
   /// to the actual root of the tree through a `__left_` pointer. Incrementing the end() pointer is UB, so we can assume that
   /// never happens.
   @inlinable
-  @inline(__always)
   package func
     __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   {
@@ -191,7 +186,6 @@ extension TreeAlgorithmBaseProtocol_ptr {
   /// Returns:  pointer to the previous in-order node before `__x`.
   /// Note: `__x` may be the end node.
   @inlinable
-  @inline(__always)
   package func
     __tree_prev_iter(_ __x: _NodePtr) -> _NodePtr
   {
@@ -244,7 +238,6 @@ extension TreeAlgorithmProtocol_ptr {
   /// Effects:  Makes `__x`->`__right_` the subtree root with `__x` as its left child
   ///           while preserving in-order order.
   @inlinable
-  @inline(__always)
   package func
     __tree_left_rotate(_ __x: _NodePtr)
   {
@@ -269,7 +262,6 @@ extension TreeAlgorithmProtocol_ptr {
   /// Effects:  Makes `__x`->`__left_` the subtree root with `__x` as its right child
   ///           while preserving in-order order.
   @inlinable
-  @inline(__always)
   package func
     __tree_right_rotate(_ __x: _NodePtr)
   {
@@ -299,7 +291,7 @@ extension TreeAlgorithmProtocol_ptr {
   /// Postcondition: `__tree_invariant(end_node->__left_)` == true.  end_node->`__left_`
   ///                may be different than the value passed in as `__root`.
   @inlinable
-  @inline(never)
+//  @inline(never)
   package func
     _ptr__tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
   {
@@ -359,7 +351,7 @@ extension TreeAlgorithmProtocol_ptr {
   ///                nor any of its children refer to `__z`.  end_node->`__left_`
   ///                may be different than the value passed in as `__root`.
   @inlinable
-  @inline(never)
+//  @inline(never)
   package func
     _ptr__tree_remove(_ __root: _NodePtr, _ __z: _NodePtr)
   {

@@ -30,7 +30,6 @@ extension RedBlackTreeDictionary: ExpressibleByArrayLiteral {
   /// let d: RedBlackTreeDictionary = [("a", 1), ("b", 2)]
   /// ```
   @inlinable
-  @inline(__always)
   public init(arrayLiteral elements: (Key, Value)...) {
     self.init(uniqueKeysWithValues: elements)
   }

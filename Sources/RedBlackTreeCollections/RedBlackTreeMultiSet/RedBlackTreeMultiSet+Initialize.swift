@@ -22,7 +22,7 @@ extension RedBlackTreeMultiSet {
   /// Creates a new, empty multi set.
   ///
   /// - Complexity: O(1)
-  @inlinable @inline(__always)
+  @inlinable
   public init() {
     self.init(__tree_: .create())
   }

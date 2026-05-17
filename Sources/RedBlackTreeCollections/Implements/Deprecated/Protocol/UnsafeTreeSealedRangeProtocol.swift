@@ -11,7 +11,7 @@ protocol UnsafeTreeSealedRangeProtocol: UnsafeTreeSealedRangeBaseInterfaceV2, _P
 extension UnsafeTreeSealedRangeProtocol {
 
   #if COMPATIBLE_ATCODER_2025
-    @inlinable @inline(__always)
+  @inlinable
     internal func ___first(where predicate: (_PayloadValue) throws -> Bool) rethrows
       -> _PayloadValue?
     {
@@ -30,7 +30,7 @@ extension UnsafeTreeSealedRangeProtocol {
 extension UnsafeTreeSealedRangeProtocol {
 
   #if COMPATIBLE_ATCODER_2025
-    @inlinable @inline(__always)
+  @inlinable
     internal func ___first_(where predicate: (_PayloadValue) throws -> Bool) rethrows
       -> _SealedPtr?
     {
@@ -48,7 +48,7 @@ extension UnsafeTreeSealedRangeProtocol {
 
 extension UnsafeTreeSealedRangeProtocol {
 
-  @inlinable @inline(__always)
+  @inlinable
   internal func _isIdentical(to other: Self) -> Bool {
     __tree_.isIdentical(to: other.__tree_)
       && _sealed_start == other._sealed_start

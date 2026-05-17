@@ -24,7 +24,7 @@ public struct _LazyDetachHandle<RawValue> {
   @usableFromInline
   package let tied: _LazyDetach
 
-  @inlinable @inline(__always)
+  @inlinable
   package init(rawValue: RawValue, tie: _LazyDetach) {
     self.rawValue = rawValue
     self.tied = tie
@@ -49,7 +49,7 @@ extension _LazyDetachHandle: Equatable where RawValue: Equatable {
 
 extension _LazyDetachHandle where RawValue == _NodePtrSealing {
 
-  @inlinable @inline(__always)
+  @inlinable
   package var purified: Result<Self, SealError> {
     rawValue.isUnsealed ? .failure(.unsealed) : .success(self)
   }
@@ -107,7 +107,7 @@ extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure ==
     }
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   package var sealed: _SealedPtr {
     map(\.rawValue)
   }

@@ -21,7 +21,6 @@ extension RedBlackTreeMultiSet: ExpressibleByArrayLiteral {
 
   /// - Complexity: O(*n* log *n*)
   @inlinable
-  @inline(__always)
   public init(arrayLiteral elements: Element...) {
     self.init(elements)
   }

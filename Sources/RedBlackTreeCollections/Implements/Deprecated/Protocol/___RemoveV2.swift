@@ -17,7 +17,7 @@ extension ___RemoveV2 {
   }
 
   @discardableResult
-  @inlinable @inline(__always)
+  @inlinable
   package mutating func ___remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
     guard from != _end else { return __tree_.end }
     guard isValidNodeRange(lower: from, upper: to) else {
@@ -27,7 +27,7 @@ extension ___RemoveV2 {
   }
 
   @discardableResult
-  @inlinable @inline(__always)
+  @inlinable
   package mutating func ___unchecked_remove(from: _NodePtr, to: _NodePtr) -> _NodePtr {
     guard from != _end else { return __tree_.end }
     return __tree_.___erase_range(from, to)

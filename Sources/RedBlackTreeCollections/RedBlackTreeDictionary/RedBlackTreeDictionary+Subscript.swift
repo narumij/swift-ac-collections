@@ -36,7 +36,7 @@ extension RedBlackTreeDictionary {
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
     
-    @inline(__always) get {
+    get {
       __tree_[key] ?? defaultValue()
     }
     

@@ -66,8 +66,7 @@ extension _TrackingTag {
 ///
 /// `_TrackingTag` は負数を特殊ノード識別に使用しているため、
 /// `0` 以上は通常ノード、`0` 未満は sentinel として扱われる。
-@inlinable
-@inline(__always)
+@usableFromInline
 package func ___is_null_or_end(_ ptr: _TrackingTag) -> Bool {
   ptr < 0
 }

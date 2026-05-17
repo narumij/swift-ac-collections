@@ -25,7 +25,7 @@ public struct _TieWrap<RawValue> {
   @usableFromInline
   package let tied: _TiedRawBuffer
 
-  @inlinable @inline(__always)
+  @inlinable
   package init(rawValue: RawValue, tie: _TiedRawBuffer) {
     self.rawValue = rawValue
     self.tied = tie
@@ -50,7 +50,7 @@ extension _TieWrap: Equatable where RawValue: Equatable {
 
 extension _TieWrap where RawValue == _NodePtrSealing {
 
-  @inlinable @inline(__always)
+  @inlinable
   package var purified: Result<Self, SealError> {
     rawValue.isUnsealed ? .failure(.unsealed) : .success(self)
   }
@@ -110,7 +110,7 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
     }
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   package var sealed: _SealedPtr {
     map(\.rawValue)
   }

@@ -23,7 +23,6 @@ where _Key: Comparable, __compare_result == __int_compare_result {}
 extension IntThreeWayComparator {
 
   @inlinable
-  @inline(__always)
   public func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __int_compare_result
@@ -44,7 +43,6 @@ where
 extension LazySynthThreeWayComparator {
 
   @inlinable
-  @inline(__always)
   public func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __lazy_compare_result<Self>
@@ -61,7 +59,6 @@ where _Key: Comparable, __compare_result == __comparable_compare_result<_Key> {}
 extension ComparableThreeWayComparator {
 
   @inlinable
-  @inline(__always)
   public func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __comparable_compare_result<

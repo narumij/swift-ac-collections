@@ -69,14 +69,12 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  @inline(__always)
   public mutating func meld(_ other: __owned RedBlackTreeMultiMap<Key, Value>) {
     __tree_ = __tree_.___meld_multi(other.__tree_)
   }
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  @inline(__always)
   public func melding(_ other: __owned RedBlackTreeMultiMap<Key, Value>)
     -> RedBlackTreeMultiMap<Key, Value>
   {

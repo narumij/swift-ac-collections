@@ -23,7 +23,7 @@
   @usableFromInline
   struct _KeyOnly_FindEqual<_Key: Comparable> {
 
-    @inlinable @inline(__always)
+    @inlinable
     internal init(header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>) {
       self.header = header
     }
@@ -38,7 +38,6 @@
 
     @specialized(where _Key == Int)
     @inlinable
-    @inline(__always)
     func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
       if __lhs < __rhs {
         -1

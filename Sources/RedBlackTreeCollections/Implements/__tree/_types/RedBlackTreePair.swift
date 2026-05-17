@@ -22,7 +22,7 @@
 @frozen
 public struct RedBlackTreePair<Key, Value> {
 
-  @inlinable @inline(__always)
+  @inlinable
   package init(key: Key, value: Value) {
     self.key = key
     self.value = value
@@ -33,6 +33,7 @@ public struct RedBlackTreePair<Key, Value> {
 }
 
 extension RedBlackTreePair {
+  @inlinable
   public var tuple: (Key, Value) { (key, value) }
 }
 
@@ -42,6 +43,7 @@ extension RedBlackTreePair: Hashable where Key: Hashable, Value: Hashable {}
 extension RedBlackTreePair: Equatable where Key: Equatable, Value: Equatable {}
 
 extension RedBlackTreePair: Comparable where Key: Comparable, Value: Comparable {
+  @inlinable
   public static func < (lhs: RedBlackTreePair<Key, Value>, rhs: RedBlackTreePair<Key, Value>)
     -> Bool
   {

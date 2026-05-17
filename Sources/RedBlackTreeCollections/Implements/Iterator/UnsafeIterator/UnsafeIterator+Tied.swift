@@ -54,7 +54,6 @@ extension UnsafeIterator {
     }
 
     @inlinable
-    @inline(__always)
     public mutating func next() -> Source.Element? {
       source.next()
     }
@@ -73,7 +72,6 @@ extension UnsafeIterator.Tied: Equatable where Source: Equatable {
 extension UnsafeIterator.Tied: Comparable where Source: Equatable, Element: Comparable {
 
   @inlinable
-  @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.lexicographicallyPrecedes(rhs)
   }
@@ -112,7 +110,6 @@ extension UnsafeIterator.Tied: @unchecked Sendable where Source: Sendable {}
 
     @available(*, deprecated, message: "危険になった為")
     @inlinable
-    @inline(__always)
     package func ___node_positions() -> Source.Source {
       // 多分lifetime延長しないとクラッシュする
       // と思ったけどしなかった。念のためlifetimeとdeprecated
@@ -131,14 +128,12 @@ where
   #if COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func keys() -> UnsafeIterator.KeyReverse<Base> {
       .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func values() -> UnsafeIterator.MappedValueReverse<Base> {
       .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
     }

@@ -36,7 +36,6 @@
     // MARK: -
 
     @inlinable
-    @inline(__always)
     internal init(rawValue: _RawRangeExpression<_SealedPtr>, tie: _TiedRawBuffer) {
       self.rawRange = rawValue
       self.tied = tie
@@ -56,7 +55,6 @@
   // MARK: - Range Expression
 
   @inlinable
-  @inline(__always)
   public func ..< <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>)
     -> UnsafeIndexV2RangeExpression<Base>
   {

@@ -46,11 +46,9 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
 extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
-  @inline(__always)
   func __key(_ __v: _PayloadValue) -> _Key { __v.key }
 
   @inlinable
-  @inline(__always)
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
     __l < __r
   }
@@ -60,7 +58,6 @@ extension UnsafeTreeV2KeyValueHandle {
   extension UnsafeTreeV2KeyValueHandle {
 
     @inlinable
-    @inline(__always)
     func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
       __default_three_way_comparator(__lhs, __rhs)
     }
@@ -70,7 +67,6 @@ extension UnsafeTreeV2KeyValueHandle {
 extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
-  @inline(__always)
   func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
     if __lhs < __rhs {
       -1
@@ -87,7 +83,6 @@ extension UnsafeTreeV2KeyValueHandle {
 extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
-  @inline(__always)
   func __get_value(_ p: _NodePtr) -> _Key {
     p.__value_(as: _PayloadValue.self).pointee.key
   }
@@ -96,7 +91,6 @@ extension UnsafeTreeV2KeyValueHandle {
 extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
-  @inline(__always)
   public func __construct_node(_ k: _PayloadValue) -> _NodePtr {
     let p = header.pointee.__construct_raw_node()
     // あえてのdefer
@@ -127,7 +121,6 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 
   @inlinable
-  @inline(__always)
   var __root: _NodePtr {
     @inline(__always)
     @_transparent
@@ -137,19 +130,16 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 
   @inlinable
-  @inline(__always)
   func __root_ptr() -> _NodeRef {
     root_ref
   }
 
   @inlinable
-  @inline(__always)
   var end: _NodePtr {
     header.pointee.end_ptr
   }
 
   @inlinable
-  @inline(__always)
   var __end_node: _NodePtr {
     header.pointee.end_ptr
   }

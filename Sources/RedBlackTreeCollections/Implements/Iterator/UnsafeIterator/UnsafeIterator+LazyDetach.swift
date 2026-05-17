@@ -54,7 +54,6 @@ extension UnsafeIterator {
     }
 
     @inlinable
-//    @inline(__always)
     public mutating func next() -> Source.Element? {
       source.next()
     }
@@ -90,14 +89,12 @@ where
   #if !COMPATIBLE_ATCODER_2025
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var keys: UnsafeIterator.KeyReverse<Base> {
       .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var values: UnsafeIterator.MappedValueReverse<Base> {
       .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
     }

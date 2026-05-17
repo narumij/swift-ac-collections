@@ -33,7 +33,7 @@
 #if RESERVE_CAPACITY_BENCH
   extension UnsafeTreeV2 {
 
-    @inlinable @inline(__always)
+    @inlinable
     internal mutating func ensureUniqueAndCapacity(_capacity minimumCapacity: Int) {
 
       if !isUnique() {

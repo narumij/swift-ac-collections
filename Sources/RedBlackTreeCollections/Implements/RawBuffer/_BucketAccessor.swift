@@ -61,7 +61,6 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
-  @inline(__always)
   func _accessor(isHead: Bool, payload: _MemoryLayout) -> _BucketAccessor {
     .init(
       pointer: self,

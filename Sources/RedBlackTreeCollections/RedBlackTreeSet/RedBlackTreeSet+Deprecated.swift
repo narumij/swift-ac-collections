@@ -166,7 +166,6 @@
     /// - Important: 削除したメンバーを指すインデックスが無効になります。
     /// - Complexity: O(log *n* + *k*)
     @inlinable
-    @inline(__always)
     public mutating func remove(contentsOf elementRange: Range<Element>) {
       __tree_._strongEnsureUnique()
       let lower = __tree_.lower_bound(elementRange.lowerBound)
@@ -177,7 +176,6 @@
     /// - Important: 削除したメンバーを指すインデックスが無効になります。
     /// - Complexity: O(log *n* + *k*)
     @inlinable
-    @inline(__always)
     public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
       __tree_._strongEnsureUnique()
       let lower = __tree_.lower_bound(elementRange.lowerBound)
@@ -231,7 +229,6 @@
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
     where R.Bound == Index {
       _isValid(bounds)
@@ -243,7 +240,6 @@
   extension RedBlackTreeSet {
     /// 特殊なforEach
     @inlinable
-    @inline(__always)
     public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
       try _forEach(body)
     }
@@ -257,7 +253,6 @@
     /// - Complexity: O(1)
     // @available(*, deprecated, renamed: "popMin")
     @inlinable
-    //  @inline(__always)
     public mutating func popFirst() -> Element? {
       __tree_.ensureUnique()
       return ___unchecked_remove_first()?.payload
@@ -377,73 +372,62 @@
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var startIndex: Index { _startIndex }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var endIndex: Index { _endIndex }
 
     /// - Complexity: O(*d* + log *n*)
     @inlinable
-    //  @inline(__always)
     public func distance(from start: Index, to end: Index) -> Int {
       _distance(from: start, to: end)
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func index(after i: Index) -> Index {
       _index(after: i)
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func formIndex(after i: inout Index) {
       _formIndex(after: &i)
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func index(before i: Index) -> Index {
       _index(before: i)
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func formIndex(before i: inout Index) {
       _formIndex(before: &i)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
       _index(i, offsetBy: distance)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func formIndex(_ i: inout Index, offsetBy distance: Int) {
       _formIndex(&i, offsetBy: distance)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
       _index(i, offsetBy: distance, limitedBy: limit)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
       -> Bool
     {
@@ -460,13 +444,11 @@
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func isValid(index: Index) -> Bool {
       _isValid(index: index)
     }
 
     @inlinable
-    @inline(__always)
     public func isValid(_ index: Index) -> Bool {
       _isValid(index: index)
     }
@@ -476,7 +458,6 @@
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var indices: Indices {
       _indices
     }
@@ -486,7 +467,6 @@
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func reversed() -> Tree._PayloadValues.Reversed {
       _reversed()
     }

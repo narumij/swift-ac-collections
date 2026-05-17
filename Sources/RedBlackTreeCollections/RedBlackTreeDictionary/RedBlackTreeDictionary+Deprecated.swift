@@ -61,6 +61,24 @@
   }
 #endif
 
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Removes the last element of the collection.
+    ///
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      __tree_.ensureUnique()
+      guard let element = __tree_.___unchecked_remove_last().map(__element_) else {
+        preconditionFailure(.emptyLast)
+      }
+      return element
+    }
+  }
+#endif
+
 // MARK: - Range Accessing Keys and Values
 
 #if COMPATIBLE_ATCODER_2025
@@ -68,7 +86,6 @@
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
@@ -111,7 +128,6 @@
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func reversed() -> Tree._KeyValues.Reversed {
       _reversed()
     }
@@ -123,7 +139,6 @@
 
     /// 特殊なforEach
     @inlinable
-    @inline(__always)
     public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
       try _forEach(body)
     }
@@ -132,7 +147,6 @@
   extension RedBlackTreeDictionary {
 
     @inlinable
-    @inline(__always)
     public func forEach(_ body: (Element) throws -> Void) rethrows {
       try _forEach(body)
     }
@@ -193,7 +207,6 @@
 
     /// - Complexity: O(*d* + log *n*)
     @inlinable
-    //  @inline(__always)
     public func distance(from start: Index, to end: Index) -> Int {
       _distance(from: start, to: end)
     }
@@ -203,12 +216,10 @@
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var startIndex: Index { _startIndex }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var endIndex: Index { _endIndex }
   }
 
@@ -216,28 +227,24 @@
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func index(after i: Index) -> Index {
       _index(after: i)
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func index(before i: Index) -> Index {
       _index(before: i)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
       _index(i, offsetBy: distance)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
       _index(i, offsetBy: distance, limitedBy: limit)
     }
@@ -247,28 +254,24 @@
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func formIndex(after i: inout Index) {
       _formIndex(after: &i)
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func formIndex(before i: inout Index) {
       _formIndex(before: &i)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func formIndex(_ i: inout Index, offsetBy distance: Int) {
       _formIndex(&i, offsetBy: distance)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
       -> Bool
     {
@@ -303,7 +306,6 @@
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func isValid(index: Index) -> Bool {
       _isValid(index: index)
     }
@@ -316,7 +318,6 @@
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
     where R.Bound == Index {
       _isValid(bounds)
@@ -327,7 +328,6 @@
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var indices: Indices {
       _indices
     }
@@ -365,14 +365,12 @@
   extension RedBlackTreeDictionary {
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func keys() -> Keys {
       _keys()
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func values() -> Values {
       _values()
     }
@@ -465,7 +463,6 @@
     /// - Important: 削除したメンバーを指すインデックスが無効になります。
     /// - Complexity: O(log *n* + *k*)
     @inlinable
-    @inline(__always)
     public mutating func remove(contentsOf keyRange: Range<Key>) {
       __tree_._strongEnsureUnique()
       let lower = __tree_.lower_bound(keyRange.lowerBound)
@@ -476,7 +473,6 @@
     /// - Important: 削除したメンバーを指すインデックスが無効になります。
     /// - Complexity: O(log *n* + *k*)
     @inlinable
-    @inline(__always)
     public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
       __tree_._strongEnsureUnique()
       let lower = __tree_.lower_bound(keyRange.lowerBound)
@@ -493,7 +489,6 @@
     /// - Complexity: O(*m*), where *m* is the lesser of the length of the
     ///   sequence and the length of `other`.
     @inlinable
-    @inline(__always)
     public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
     where OtherSequence: Sequence, Element == OtherSequence.Element {
       elementsEqual(other, by: ==)
@@ -506,7 +501,6 @@
     /// - Complexity: O(*m*), where *m* is the lesser of the length of the
     ///   sequence and the length of `other`.
     @inlinable
-    @inline(__always)
     public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
     where OtherSequence: Sequence, Element == OtherSequence.Element {
       lexicographicallyPrecedes(other, by: <)

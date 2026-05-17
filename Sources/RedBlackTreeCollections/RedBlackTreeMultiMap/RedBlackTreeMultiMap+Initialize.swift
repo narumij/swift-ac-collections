@@ -22,7 +22,7 @@ extension RedBlackTreeMultiMap {
   /// Creates a new, empty multi map.
   ///
   /// - Complexity: O(1)
-  @inlinable @inline(__always)
+  @inlinable
   public init() {
     self.init(__tree_: .create())
   }

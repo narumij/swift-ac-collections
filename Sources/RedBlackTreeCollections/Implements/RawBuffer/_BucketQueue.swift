@@ -62,7 +62,6 @@ struct _BucketQueue {
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
-  @inline(__always)
   func _queue(isHead: Bool, payloadLayout: _MemoryLayout) -> _BucketQueue {
     .init(
       pointer: self,

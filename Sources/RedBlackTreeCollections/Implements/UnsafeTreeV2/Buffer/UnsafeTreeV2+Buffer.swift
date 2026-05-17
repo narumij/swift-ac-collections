@@ -44,7 +44,6 @@ package final class UnsafeTreeV2Buffer:
 
 extension UnsafeTreeV2Buffer {
 
-  // __always必須
   //  @specialized(where _PayloadValue == Int) // 6.3以降になった際につける
   @nonobjc
   @inlinable

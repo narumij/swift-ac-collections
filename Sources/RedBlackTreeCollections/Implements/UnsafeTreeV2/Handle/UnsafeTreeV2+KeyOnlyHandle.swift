@@ -48,7 +48,6 @@ struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
 extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
-  @inline(__always)
   func __key(_ __v: _PayloadValue) -> _Key {
     __v
   }
@@ -63,7 +62,6 @@ extension UnsafeTreeV2KeyOnlyHandle {
   extension UnsafeTreeV2KeyOnlyHandle {
 
     @inlinable
-    @inline(__always)
     func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
       __default_three_way_comparator(__lhs, __rhs)
     }
@@ -74,7 +72,6 @@ extension UnsafeTreeV2KeyOnlyHandle {
   extension UnsafeTreeV2KeyOnlyHandle {
 
     @inlinable
-    @inline(__always)
     func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
       if __lhs < __rhs {
         -1
@@ -90,7 +87,6 @@ extension UnsafeTreeV2KeyOnlyHandle {
 
     @specialized(where _Key == Int)
     @inlinable
-    @inline(__always)
     func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
       if __lhs < __rhs {
         -1
@@ -108,7 +104,6 @@ extension UnsafeTreeV2KeyOnlyHandle {
 extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
-  @inline(__always)
   func __get_value(_ p: _NodePtr) -> _Key {
     p.__value_(as: _PayloadValue.self).pointee
   }
@@ -117,7 +112,6 @@ extension UnsafeTreeV2KeyOnlyHandle {
 extension UnsafeTreeV2KeyOnlyHandle {
 
   @inlinable
-  @inline(__always)
   public func __construct_node(_ k: _PayloadValue) -> _NodePtr {
     let p = header.pointee.__construct_raw_node()
     // あえてのdefer

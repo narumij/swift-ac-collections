@@ -45,7 +45,6 @@ func growth(from count: Int, to minimum: Int) -> Int {
 extension UnsafeTreeV2BufferHeader {
 
   @inlinable
-  @inline(__always)
   internal func _growthCapacity(to minimumCapacity: Int) -> Int {
     growth(from: count, to: minimumCapacity)
   }

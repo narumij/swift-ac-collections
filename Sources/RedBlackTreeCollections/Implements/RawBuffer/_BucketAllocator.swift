@@ -69,7 +69,6 @@ package struct _BucketAllocator {
 
   //  @specialized(where _PayloadValue == Int) // 6.3以降になった際につける
   @inlinable
-  @inline(__always)
   public init<_PayloadValue: ~Copyable>(
     valueType: _PayloadValue.Type,
     deinitialize: @escaping (UnsafeMutableRawPointer) -> Void
@@ -111,8 +110,6 @@ package struct _BucketAllocator {
 
 extension _BucketAllocator {
 
-  //  @inlinable
-  //  @inline(__always)
   @usableFromInline  // レジスタ圧を下げることにした
   package func createHeadBucket(capacity: Int, nullptr: _NodePtr) -> _BucketPointer {
 
@@ -149,8 +146,6 @@ extension _BucketAllocator {
     return header
   }
 
-  //  @inlinable
-  //  @inline(__always)
   @usableFromInline  // レジスタ圧を下げることにした
   package func createBucket(bucketCapacity: Int) -> _BucketPointer {
 

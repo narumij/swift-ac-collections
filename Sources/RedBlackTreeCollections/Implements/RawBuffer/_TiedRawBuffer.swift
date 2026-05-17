@@ -36,7 +36,6 @@ extension _TiedRawBuffer {
 
   @nonobjc
   @inlinable
-  @inline(__always)
   static func create(
     bucket: _BucketPointer?,
     deallocator: _BucketAllocator

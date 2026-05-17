@@ -23,7 +23,6 @@ package struct UnsafeTreeV2BufferHeader {
   public typealias _NodeRef = UnsafeMutablePointer<_NodePtr>
 
   @inlinable
-  @inline(__always)
   internal init<_PayloadValue: ~Copyable>(_ t: _PayloadValue.Type, nullptr: _NodePtr, capacity: Int)
   {
     let allocator = _BucketAllocator(valueType: _PayloadValue.self) {
@@ -34,7 +33,6 @@ package struct UnsafeTreeV2BufferHeader {
   }
 
   @inlinable
-  @inline(__always)
   internal init(allocator: _BucketAllocator, nullptr: _NodePtr, capacity: Int) {
     let head = allocator.createHeadBucket(capacity: capacity, nullptr: nullptr)
     self.recycleHead = nullptr

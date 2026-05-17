@@ -71,7 +71,6 @@ extension UnsafeTreeV2BufferHeader {
   ///     - `nil` の場合はコピー元と同じ容量を使用する。
   ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
-  //  @inline(never)
   internal func copy<Base>(minimumCapacity: Int? = nil) -> UnsafeTreeV2<Base> {
     UnsafeTreeV2<Base>._create(
       unsafeBufferObject:

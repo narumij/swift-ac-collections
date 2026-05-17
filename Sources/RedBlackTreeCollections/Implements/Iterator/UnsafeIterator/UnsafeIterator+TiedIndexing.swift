@@ -81,7 +81,6 @@
     extension UnsafeIterator.TiedIndexing: Comparable where Source: Equatable, Element: Comparable {
 
       @inlinable
-      @inline(__always)
       public static func < (lhs: Self, rhs: Self) -> Bool {
         lhs.lexicographicallyPrecedes(rhs)
       }

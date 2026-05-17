@@ -51,7 +51,6 @@ extension UnsafeIterator {
     }
 
     @inlinable
-    @inline(__always)
     public mutating func next() -> _NodePtr? {
       guard let __current else { return nil }
       guard !__current.pointee.isGarbaged else {

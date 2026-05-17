@@ -49,7 +49,6 @@ extension UnsafeIterator {
     }
 
     @inlinable
-    @inline(__always)
     public mutating func next() -> Base._Key? {
       return _source.next().map {
         Base.__key($0.__value_().pointee)

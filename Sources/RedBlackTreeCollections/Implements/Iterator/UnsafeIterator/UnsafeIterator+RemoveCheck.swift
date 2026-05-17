@@ -47,7 +47,6 @@ extension UnsafeIterator {
     }
 
     @inlinable
-    @inline(__always)
     public mutating func next() -> _NodePtr? {
       guard let result = source.next() else { return nil }
       guard !result.___is_garbaged else {

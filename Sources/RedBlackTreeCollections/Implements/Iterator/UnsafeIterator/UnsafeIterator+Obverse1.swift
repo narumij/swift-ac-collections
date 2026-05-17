@@ -52,7 +52,6 @@ extension UnsafeIterator {
     }
 
     @inlinable
-    @inline(__always)
     public mutating func next() -> _NodePtr? {
       guard _current != _end else { return nil }
       // 最悪でもendで止まる

@@ -34,7 +34,6 @@ where
 extension _BaseNode_SignedDistanceProtocol {
 
   @inlinable
-  @inline(__always)
   public static func
     ___signed_distance(_ __first: _InputIter, _ __last: _InputIter)
     -> difference_type

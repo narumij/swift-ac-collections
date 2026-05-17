@@ -15,18 +15,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-@inlinable
-@inline(__always)
-func ___is_null_or_end__(tag: _TrackingTag) -> Bool {
-  // 名前が衝突するしパッケージ名を書きたくないため中継している
-  ___is_null_or_end(tag)
-}
-
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   internal var ___is_null_or_end: Bool {
-//    ___is_null_or_end__(tag: pointee.___tracking_tag)
     pointee.___tracking_tag < 0
   }
 

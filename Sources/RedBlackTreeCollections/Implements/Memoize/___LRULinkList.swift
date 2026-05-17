@@ -20,7 +20,6 @@ import Foundation
 public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
 
   @inlinable
-  @inline(__always)
   public init(_ key: Key, _ prev: _NodePtr, _ next: _NodePtr, _ value: Value) {
     self.key = key
     self.prev = prev
@@ -44,23 +43,20 @@ extension LinkPairValueTrait {
 
 extension LinkPairValueTrait {
 
-  @inlinable @inline(__always)
+  @inlinable
   public static func __key(_ element: _PayloadValue) -> _Key { element.key }
 
   @inlinable
-  @inline(__always)
   public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
     p.__value_(as: _PayloadValue.self).pointee.key
   }
 
   @inlinable
-  @inline(__always)
   public static func ___mapped_value(_ element: _PayloadValue) -> _MappedValue {
     element.value
   }
 
   @inlinable
-  @inline(__always)
   public static func ___with_mapped_value<T>(
     _ element: inout _PayloadValue, _ f: (inout _MappedValue) throws -> T
   ) rethrows -> T {
@@ -91,7 +87,6 @@ extension ___LRULinkList {
   public typealias Tree = UnsafeTreeV2<Base>
 
   @inlinable
-  @inline(__always)
   mutating func ___prepend(_ __p: _NodePtr) {
     if _rankHighest == nullptr {
       __tree_[_unsafe_raw: __p].next = nullptr
@@ -107,7 +102,6 @@ extension ___LRULinkList {
   }
 
   @inlinable
-  @inline(__always)
   mutating func ___pop(_ __p: _NodePtr) -> _NodePtr {
 
     assert(
@@ -135,7 +129,6 @@ extension ___LRULinkList {
   }
 
   @inlinable
-  @inline(__always)
   mutating func ___popRankLowest() -> _NodePtr {
 
     defer {

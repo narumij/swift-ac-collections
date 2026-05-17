@@ -156,12 +156,12 @@ where Element == (key: _Key, value: _MappedValue) {}
 
 /// 積載型からコレクション要素型への変換方法を示すこと
 public protocol _BasePaylodValue_ElementInterface: _PayloadValueType, _ElementType {
-  static func __element_(_ __value: _PayloadValue) -> Element
+  @inlinable static func __element_(_ __value: _PayloadValue) -> Element
 }
 
 /// DictionaryやMultiMapは、コレクション要素型から積載型への変換方法も必要になる
 public protocol _KeyValueBasePaylodValue_ElementInterface: _BasePaylodValue_ElementInterface {
-  static func __payload_(_ __e: Element) -> _PayloadValue
+  @inlinable static func __payload_(_ __e: Element) -> _PayloadValue
 }
 
 /// SetやMultiSetの、積載型からコレクション要素型への変換方法
@@ -173,7 +173,7 @@ public protocol _ScalarBase_ElementProtocol:
 extension _ScalarBase_ElementProtocol {
   // KeyValueのケースと対になるよう用意してあるが、
   // 実際にはオーバーヘッド削減のため使われていない
-  @inlinable @inline(__always)
+  @inlinable
   public static func __element_(_ __value: _PayloadValue) -> Element { __value }
 }
 
@@ -186,12 +186,12 @@ public protocol _PairBase_ElementProtocol:
 
 extension _PairBase_ElementProtocol {
 
-  @inlinable @inline(__always)
+  @inlinable
   public static func __element_(_ __value: _PayloadValue) -> Element {
     (__value.key, __value.value)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   public static func __payload_(_ __e: Element) -> _PayloadValue {
     RedBlackTreePair(key: __e.key, value: __e.value)
   }

@@ -46,7 +46,6 @@ __root, have a non-null __parent_ field.
 /// Returns:  true if `__x` is a left child of its parent, else false
 /// Precondition:  `__x` != nullptr.
 @inlinable
-@inline(__always)
 internal func
   __tree_is_left_child(_ __x: UnsafeMutablePointer<UnsafeNode>) -> Bool
 {
@@ -122,7 +121,6 @@ internal func
 
 /// Returns:  pointer to the left-most node under `__x`.
 @inlinable
-@inline(__always)
 internal func
   __tree_min(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
@@ -136,7 +134,6 @@ internal func
 
 /// Returns:  pointer to the right-most node under `__x`.
 @inlinable
-@inline(__always)
 internal func
   __tree_max(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
@@ -150,7 +147,6 @@ internal func
 
 /// Returns:  pointer to the next in-order node after __x.
 @inlinable
-@inline(__always)
 internal func
   __tree_next(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
@@ -171,7 +167,6 @@ internal func
 /// to the actual root of the tree through a `__left_` pointer. Incrementing the end() pointer is UB, so we can assume that
 /// never happens.
 @inlinable
-@inline(__always)
 internal func
   __tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
@@ -189,7 +184,6 @@ internal func
 /// Returns:  pointer to the previous in-order node before `__x`.
 /// Note: `__x` may be the end node.
 @inlinable
-@inline(__always)
 internal func
   __tree_prev_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {

@@ -20,7 +20,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   nonisolated(unsafe)
   static var nullptr: _NodePtr {
     UnsafeNode.nullptr
@@ -63,13 +64,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 
   @inlinable
-  @inline(__always)
   var __left_ref: _NodeRef {
     _ref(to: &pointee.__left_)
   }
 
   @inlinable
-  @inline(__always)
   var __right_ref: _NodeRef {
     _ref(to: &pointee.__right_)
   }
@@ -111,7 +110,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   ///    ^self
   /// ```
   @inlinable
-  @inline(__always)
   var __raw_payload_: UnsafeMutableRawPointer {
     UnsafeMutableRawPointer(advanced(by: 1))
   }
@@ -128,7 +126,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   ///
   /// インスタンス名は既存踏襲で`__value_`。型としてはより明確な`_PayloadValue`となる。
   @inlinable
-  @inline(__always)
   func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue> {
     UnsafeMutableRawPointer(advanced(by: 1))
       .assumingMemoryBound(to: _PayloadValue.self)
@@ -146,7 +143,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   ///
   /// インスタンス名は既存踏襲で`__value_`。型としてはより明確な`_PayloadValue`となる。
   @inlinable
-  @inline(__always)
   package func __value_<_PayloadValue>(as t: _PayloadValue.Type) -> UnsafeMutablePointer<
     _PayloadValue
   > {
@@ -158,7 +154,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
-  @inline(__always)
   var trackingTag: _TrackingTag {
     pointee.___tracking_tag
   }
@@ -167,7 +162,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
-  @inline(__always)
   func _advanced(raw bytes: Int) -> UnsafeMutablePointer {
     UnsafeMutableRawPointer(self)
       .advanced(by: bytes)
@@ -182,7 +176,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   ///    ^--_advanced -1         ^--_advanced +1
   /// ```
   @inlinable
-  @inline(__always)
   func _advanced(with stride: Int, count: Int) -> UnsafeMutablePointer {
     _advanced(raw: (MemoryLayout<UnsafeNode>.stride + stride) * count)
   }
@@ -194,13 +187,12 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   ///    ^--_advanced -1   ^--self           ^--_advanced +1
   /// ```
   @inlinable
-  @inline(__always)
   func _advanced<_PayloadValue>(with t: _PayloadValue.Type, count: Int) -> UnsafeMutablePointer {
     _advanced(raw: (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_PayloadValue>.stride) * count)
   }
 }
 
-@inlinable @inline(__always)
+@inlinable
 package func _ref<T>(to a: inout T) -> UnsafeMutablePointer<T> {
   withUnsafeMutablePointer(to: &a) { $0 }
 }

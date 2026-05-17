@@ -22,10 +22,8 @@ extension Int: ThreeWayCompareResult {}
 
 extension Int {
   @inlinable
-  @inline(__always)
   public func __less() -> Bool { self < 0 }
   @inlinable
-  @inline(__always)
   public func __greater() -> Bool { self > 0 }
 }
 
@@ -42,21 +40,17 @@ public
   @usableFromInline internal var __lhs_: LHS
   @usableFromInline internal var __rhs_: RHS
   @inlinable
-  @inline(__always)
   internal init(_ __lhs_: LHS, _ __rhs_: RHS) {
     self.__lhs_ = __lhs_
     self.__rhs_ = __rhs_
   }
   @inlinable
-  @inline(__always)
   internal func __comp_(_ __lhs_: LHS, _ __rhs_: RHS) -> Bool {
     Base.value_comp(__lhs_, __rhs_)
   }
   @inlinable
-  @inline(__always)
   public func __less() -> Bool { __comp_(__lhs_, __rhs_) }
   @inlinable
-  @inline(__always)
   public func __greater() -> Bool { __comp_(__rhs_, __lhs_) }
 }
 
@@ -72,10 +66,8 @@ public
     self.__rhs_ = __rhs_
   }
   @inlinable
-  @inline(__always)
   public func __less() -> Bool { __lhs_ < __rhs_ }
   @inlinable
-  @inline(__always)
   public func __greater() -> Bool { __lhs_ > __rhs_ }
 }
 
@@ -85,15 +77,12 @@ public
 {
   @usableFromInline internal var __res_: Int
   @inlinable
-  @inline(__always)
   internal init(_ __res_: Int) {
     self.__res_ = __res_
   }
   @inlinable
-  @inline(__always)
   public func __less() -> Bool { __res_ < 0 }
   @inlinable
-  @inline(__always)
   public func __greater() -> Bool { __res_ > 0 }
 }
 
@@ -101,11 +90,11 @@ public
 public enum ___enum_compare_result: ThreeWayCompareResult {
   case less, greater, equal
 
-  @inlinable @inline(__always)
+  @inlinable
   public func __less() -> Bool {
     self == .less
   }
-  @inlinable @inline(__always)
+  @inlinable
   public func __greater() -> Bool {
     self == .greater
   }

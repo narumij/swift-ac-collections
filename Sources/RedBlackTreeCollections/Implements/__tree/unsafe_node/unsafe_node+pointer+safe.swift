@@ -32,7 +32,6 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   ///
   /// 重ねてsealしないこと
   @inlinable
-//  @inline(__always)
   var sealed: _SealedPtr { flatMap { $0.sealed } }
 }
 
@@ -44,7 +43,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   ///
   /// 重ねてsealしないこと
   @inlinable
-//  @inline(__always)
   package var sealed: _SealedPtr {
     if ___is_null {
       return .failure(.null)
@@ -61,7 +59,6 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   /// ポインタを利用する際に用いる
   @inlinable
-//  @inline(__always)
   package var purified: Result { flatMap { $0.purified } }
 }
 
@@ -113,13 +110,11 @@ public enum SealError: Error {
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable
-//  @inline(__always)
   package var trackingTag: _TrackingTag {
     (try? map(\.pointer.trackingTag).get()) ?? .nullptr
   }
 
   @inlinable
-//  @inline(__always)
   package var tag: _SealedTag {
     flatMap(\.tag)
   }
@@ -196,7 +191,6 @@ extension Result where Failure == SealError {
 }
 
 @inlinable
-//@inline(__always)
 func lifetA2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> S) -> Result<S, E> {
   switch (a, b) {
   case (.success(let a), .success(let b)):
@@ -209,7 +203,6 @@ func lifetA2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> S) ->
 }
 
 @inlinable
-//@inline(__always)
 func liftM2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> Result<S, E>) -> Result<
   S, E
 > {

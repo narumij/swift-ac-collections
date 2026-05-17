@@ -35,7 +35,7 @@ package final class _TiedRawBuffer:
 extension _TiedRawBuffer {
 
   @nonobjc
-  @inlinable
+  @usableFromInline
   static func create(
     bucket: _BucketPointer?,
     deallocator: _BucketAllocator
@@ -55,7 +55,7 @@ extension _TiedRawBuffer {
   @usableFromInline
   package struct Header {
 
-    @inlinable
+    @usableFromInline
     internal init(
       bucketHead: _TiedRawBuffer.Header._BucketPointer? = nil,
       deallocator: _BucketAllocator
@@ -71,11 +71,11 @@ extension _TiedRawBuffer {
     @usableFromInline
     typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
-    @usableFromInline let bucketHead: _BucketPointer?
-    @usableFromInline let deallocator: _BucketAllocator
-    @usableFromInline var isValueAccessAllowed: Bool
+    let bucketHead: _BucketPointer?
+    let deallocator: _BucketAllocator
+    var isValueAccessAllowed: Bool
 
-    @inlinable
+    @usableFromInline
     func deallocate() {
       deallocator.deallocate(bucket: bucketHead)
     }
@@ -85,7 +85,7 @@ extension _TiedRawBuffer {
 extension _TiedRawBuffer {
 
   @nonobjc
-  @inlinable
+  @usableFromInline
   var isValueAccessAllowed: Bool {
     get { header.isValueAccessAllowed }
     set { withUnsafeMutablePointerToHeader { $0.pointee.isValueAccessAllowed = newValue } }

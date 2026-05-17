@@ -17,7 +17,7 @@
 
 extension _TiedRawBuffer.Header {
 
-  @inlinable
+  @usableFromInline
   subscript(___tracking_tag: _TrackingTag) -> _NodePtr? {
     assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
     var remaining = ___tracking_tag
@@ -47,7 +47,7 @@ extension _TiedRawBuffer {
 extension _TiedRawBuffer {
 
   @nonobjc
-  @inlinable
+  @usableFromInline
   var begin_ptr: UnsafeMutablePointer<_NodePtr>? {
     header.bucketHead?.begin_ptr
   }
@@ -56,7 +56,7 @@ extension _TiedRawBuffer {
 extension _TiedRawBuffer {
 
   @nonobjc
-  @inlinable
+  @usableFromInline
   var end_ptr: _NodePtr? {
     header.bucketHead?.end_ptr
   }

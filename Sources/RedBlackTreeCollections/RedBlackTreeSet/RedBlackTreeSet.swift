@@ -96,7 +96,6 @@ public struct RedBlackTreeSet<Element: Comparable> {
   var __tree_: Tree
 
   @inlinable
-//  @inline(__always)
   package init(__tree_: Tree) {
     self.__tree_ = __tree_
   }
@@ -184,7 +183,6 @@ extension RedBlackTreeSet {
   ///
   /// - Complexity: O(1)
   @inlinable
-//  @inline(__always)
   public var first: Element? {
     isEmpty ? nil : Base.__payload_(_start)
   }
@@ -360,7 +358,7 @@ extension RedBlackTreeSet {
     ///
     /// - Complexity: Amortized O(1)
     @discardableResult
-    @inlinable @inline(__always)
+    @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
       ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
     }

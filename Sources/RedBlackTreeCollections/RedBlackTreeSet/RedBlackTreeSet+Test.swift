@@ -19,7 +19,6 @@ extension RedBlackTreeSet {
 
   /// releaseビルドでは無効化されています(?)
   @inlinable
-//  @inline(__always)
   package func ___tree_invariant() -> Bool {
     #if !WITHOUT_SIZECHECK
       // 並行してサイズもチェックする。その分遅い
@@ -34,7 +33,6 @@ extension RedBlackTreeSet {
 extension RedBlackTreeSet {
 
   @inlinable
-//  @inline(__always)
   package func ___is_garbaged(_ index: Tree.Index) -> Bool {
     switch __tree_.__purified_(index).purified {
     case .failure:

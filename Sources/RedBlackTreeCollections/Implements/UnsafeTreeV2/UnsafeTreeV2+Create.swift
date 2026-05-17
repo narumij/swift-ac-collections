@@ -24,7 +24,6 @@ extension UnsafeTreeV2 {
   /// サイズが0の場合に共有バッファを用いたインスタンスを返す。
   /// ensureUniqueが利用できない場面では他の生成メソッドを利用すること。
   @inlinable
-//  @inline(__always)
   internal static func create(
     minimumCapacity nodeCapacity: Int = 0
   ) -> UnsafeTreeV2 {
@@ -37,7 +36,6 @@ extension UnsafeTreeV2 {
   ///
   /// 直接呼ぶ必要はほとんど無い
   @inlinable
-//  @inline(__always)
   internal static func _createWithEmptySingleton() -> UnsafeTreeV2 {
     assert(_emptyTreeStorage.header.freshPoolCapacity == 0)
     return UnsafeTreeV2(
@@ -50,7 +48,6 @@ extension UnsafeTreeV2 {
   ///
   /// ensureUniqueが利用できない場面に限って直接呼ぶようにすること
   @inlinable
-//  @inline(__always)
   internal static func _createWithNewBuffer(
     minimumCapacity nodeCapacity: Int,
     nullptr: _NodePtr
@@ -65,7 +62,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-//  @inline(__always)
   internal static func _create(unsafeBufferObject buffer: AnyObject)
     -> UnsafeTreeV2
   {

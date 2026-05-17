@@ -48,7 +48,6 @@ extension UnsafeTreeV2Buffer {
   //  @specialized(where _PayloadValue == Int) // 6.3以降になった際につける
   @nonobjc
   @inlinable
-  @inline(__always)
   internal static func create<_PayloadValue>(
     _ t: _PayloadValue.Type,
     minimumCapacity nodeCapacity: Int,
@@ -64,7 +63,6 @@ extension UnsafeTreeV2Buffer {
 
   @nonobjc
   @inlinable
-  @inline(__always)
   internal static func create(
     allocator: _BucketAllocator,
     minimumCapacity nodeCapacity: Int,

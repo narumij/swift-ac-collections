@@ -35,7 +35,6 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
   @inlinable
-//  @inline(__always)
   internal func
     distance(from start: UnsafeIndexV3, to end: UnsafeIndexV3) -> Int?
   {
@@ -48,7 +47,6 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
   }
 
   @inlinable
-//  @inline(__always)
   internal func
     distance(
       from start: RedBlackTreeBoundExpression<_Key>, to end: RedBlackTreeBoundExpression<_Key>
@@ -66,7 +64,6 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
 extension UnsafeTreeV2 {
 
   @inlinable
-//  @inline(__always)
   func prev_iter(_ i: _TieWrappedPtr) -> _TieWrappedPtr {
     __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
@@ -74,7 +71,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-//  @inline(__always)
   func next_iter(_ i: _TieWrappedPtr) -> _TieWrappedPtr {
     __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
@@ -82,7 +78,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-//  @inline(__always)
   func adv_iter(_ i: _TieWrappedPtr, offsetBy distance: Int) -> _TieWrappedPtr {
     __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
@@ -90,7 +85,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-//  @inline(__always)
   func adv_iter(_ i: _TieWrappedPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedPtr)
     -> _TieWrappedPtr
   {
@@ -101,7 +95,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-//  @inline(__always)
   func index_or_nil(_ i: _TieWrappedPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedPtr)
     -> _TieWrappedPtr?
   {
@@ -115,7 +108,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-//  @inline(__always)
   func form_index(
     _ i: inout _TieWrappedPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedPtr
   )
@@ -138,7 +130,6 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-//  @inline(__always)
   func prev_iter(_ i: _LazyDetachPointer) -> _LazyDetachPointer {
     __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
@@ -146,7 +137,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-//  @inline(__always)
   func next_iter(_ i: _LazyDetachPointer) -> _LazyDetachPointer {
     __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
@@ -154,7 +144,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-//  @inline(__always)
   func adv_iter(_ i: _LazyDetachPointer, offsetBy distance: Int) -> _LazyDetachPointer {
     __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
@@ -162,7 +151,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-//  @inline(__always)
   func adv_iter(_ i: _LazyDetachPointer, offsetBy distance: Int, limitedBy limit: _LazyDetachPointer)
     -> _LazyDetachPointer
   {
@@ -173,7 +161,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-//  @inline(__always)
   func index_or_nil(_ i: _LazyDetachPointer, offsetBy distance: Int, limitedBy limit: _LazyDetachPointer)
     -> _LazyDetachPointer?
   {
@@ -187,7 +174,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-//  @inline(__always)
   func form_index(
     _ i: inout _LazyDetachPointer, offsetBy distance: Int, limitedBy limit: _LazyDetachPointer
   )

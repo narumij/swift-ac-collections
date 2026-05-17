@@ -31,7 +31,7 @@ protocol InsertNodeAtProtocol_ptr:
 extension InsertNodeAtProtocol_ptr {
 
   @inlinable
-  @inline(never)
+//  @inline(never)
   internal func
     __insert_node_at(
       _ __parent: _NodePtr, _ __child: _NodeRef,

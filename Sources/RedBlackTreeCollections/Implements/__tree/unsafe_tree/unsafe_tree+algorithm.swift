@@ -299,7 +299,7 @@ extension TreeAlgorithmProtocol_ptr {
   /// Postcondition: `__tree_invariant(end_node->__left_)` == true.  end_node->`__left_`
   ///                may be different than the value passed in as `__root`.
   @inlinable
-  @inline(never)
+//  @inline(never)
   package func
     _ptr__tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
   {
@@ -359,7 +359,7 @@ extension TreeAlgorithmProtocol_ptr {
   ///                nor any of its children refer to `__z`.  end_node->`__left_`
   ///                may be different than the value passed in as `__root`.
   @inlinable
-  @inline(never)
+//  @inline(never)
   package func
     _ptr__tree_remove(_ __root: _NodePtr, _ __z: _NodePtr)
   {

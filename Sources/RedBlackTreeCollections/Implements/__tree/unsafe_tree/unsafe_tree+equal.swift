@@ -33,7 +33,7 @@ protocol EqualProtocol_ptr:
 extension EqualProtocol_ptr {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func
     __equal_range_unique(_ __k: _Key) -> (_NodePtr, _NodePtr)
   {
@@ -60,7 +60,7 @@ extension EqualProtocol_ptr {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func
     __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
   {

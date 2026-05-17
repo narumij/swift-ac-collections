@@ -25,13 +25,13 @@ protocol BoundBothProtocol:
 extension BoundBothProtocol {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func lower_bound(_ __v: _Key) -> _NodePtr {
     isMulti ? __lower_bound_multi(__v) : __lower_bound_unique(__v)
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func upper_bound(_ __v: _Key) -> _NodePtr {
     isMulti ? __upper_bound_multi(__v) : __upper_bound_unique(__v)
   }
@@ -48,7 +48,7 @@ protocol BoundAlgorithmProtocol_ptr:
 extension BoundAlgorithmProtocol_ptr {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func
     __lower_upper_bound_unique_impl(_LowerBound: Bool, _ __v: _Key) -> _NodePtr
   {
@@ -72,25 +72,25 @@ extension BoundAlgorithmProtocol_ptr {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func __lower_bound_unique(_ __v: _Key) -> _NodePtr {
     __lower_upper_bound_unique_impl(_LowerBound: true, __v)
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func __upper_bound_unique(_ __v: _Key) -> _NodePtr {
     __lower_upper_bound_unique_impl(_LowerBound: false, __v)
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func __lower_bound_multi(_ __v: _Key) -> _NodePtr {
     __lower_bound_multi(__v, __root, __end_node)
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func __upper_bound_multi(_ __v: _Key) -> _NodePtr {
     __upper_bound_multi(__v, __root, __end_node)
   }
@@ -109,7 +109,7 @@ protocol BoundAlgorithmProtocol_common_ptr:
 extension BoundAlgorithmProtocol_common_ptr {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func
     __lower_bound_multi(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
   {
@@ -127,7 +127,7 @@ extension BoundAlgorithmProtocol_common_ptr {
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func
     __upper_bound_multi(_ __v: _Key, _ __root: _NodePtr, _ __result: _NodePtr) -> _NodePtr
   {
@@ -151,25 +151,25 @@ protocol BoundAlgorithmProtocol_old_ptr: BoundAlgorithmProtocol_common_ptr {}
 extension BoundAlgorithmProtocol_old_ptr {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func __lower_bound_unique(_ __v: _Key) -> _NodePtr {
     __lower_bound_multi(__v, __root, __end_node)
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func __upper_bound_unique(_ __v: _Key) -> _NodePtr {
     __upper_bound_multi(__v, __root, __end_node)
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func __lower_bound_multi(_ __v: _Key) -> _NodePtr {
     __lower_bound_multi(__v, __root, __end_node)
   }
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func __upper_bound_multi(_ __v: _Key) -> _NodePtr {
     __upper_bound_multi(__v, __root, __end_node)
   }

@@ -17,7 +17,7 @@
 
 // 遅い
 @inlinable
-@inline(__always)
+//@inline(__always)
 internal func
   ___dual_distance(
     _ __first: UnsafeMutablePointer<UnsafeNode>,
@@ -37,7 +37,7 @@ internal func
 }
 
 @inlinable
-@inline(__always)
+//@inline(__always)
 internal func
   __distance(
     _ __first: UnsafeMutablePointer<UnsafeNode>,
@@ -55,7 +55,7 @@ internal func
 }
 
 @inlinable
-@inline(__always)
+//@inline(__always)
 internal func
   ___safe_distance(
     _ __first: UnsafeMutablePointer<UnsafeNode>,

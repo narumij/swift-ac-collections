@@ -29,7 +29,7 @@ protocol RemoveProtocol_ptr:
 extension RemoveProtocol_ptr {
 
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   internal func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
     var __r = __ptr
     __r = __tree_next_iter(__r)

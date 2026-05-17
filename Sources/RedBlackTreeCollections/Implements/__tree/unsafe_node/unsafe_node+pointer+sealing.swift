@@ -36,13 +36,15 @@ public struct _NodePtrSealing: Equatable {
   // かたわれどきが生じて同一判定となるが、これは仕様
 
   /// 現在の状態で封印する
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   init(_p: _NodePtr) {
     self.init(_p: _p, _seal: _p.pointee.___recycle_count)
   }
 
   /// 過去の状態で封印する
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   init(_p: _NodePtr, _seal: UnsafeNode.Seal) {
     pointer = _p
     seal = _seal
@@ -50,14 +52,16 @@ public struct _NodePtrSealing: Equatable {
 
   // 特段の意味は無い。利用箇所での可読性向上のためのフック
   /// 現在の状態で封印する
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   static func uncheckedSeal(_ _p: _NodePtr) -> _NodePtrSealing {
     .init(_p: _p)
   }
 
   // 特段の意味は無い。利用箇所での可読性向上のためのフック
   /// 過去の状態で封印する
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   static func uncheckedSeal(_ _p: _NodePtr, _ seal: UnsafeNode.Seal) -> _NodePtrSealing {
     .init(_p: _p, _seal: seal)
   }
@@ -67,7 +71,8 @@ public struct _NodePtrSealing: Equatable {
   /// 結果が偽で封印が有効な場合は現世ノードであることをあらわす.
   ///
   /// 封印が剥がされたものは呪物扱い
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   var isUnsealed: Bool {
     // 死後と転生後を判定している
     // destroyで回収されてgarbagedになるとそれは死後.
@@ -77,20 +82,23 @@ public struct _NodePtrSealing: Equatable {
   }
 
   /// お清め
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   var purified: _SealedPtr {
     // validなpointerがendやnullに変化することはない
     isUnsealed ? .failure(.unsealed) : .success(self)
   }
 
   /// 引換券
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   var tag: _SealedTag {
     .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
   }
   
   /// 引換券
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   var trackingTag: _TrackingTag {
     pointer.pointee.___tracking_tag
   }

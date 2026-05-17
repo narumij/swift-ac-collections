@@ -124,7 +124,7 @@ extension TreeAlgorithmBaseProtocol_ptr {
 
   /// Returns:  pointer to the left-most node under `__x`.
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   package func
     __tree_min(_ __x: _NodePtr) -> _NodePtr
   {
@@ -138,7 +138,7 @@ extension TreeAlgorithmBaseProtocol_ptr {
 
   /// Returns:  pointer to the right-most node under `__x`.
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   package func
     __tree_max(_ __x: _NodePtr) -> _NodePtr
   {

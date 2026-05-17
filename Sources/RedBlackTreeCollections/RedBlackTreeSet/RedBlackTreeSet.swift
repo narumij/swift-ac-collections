@@ -95,7 +95,8 @@ public struct RedBlackTreeSet<Element: Comparable> {
   @usableFromInline
   var __tree_: Tree
 
-  @inlinable @inline(__always)
+  @inlinable
+//  @inline(__always)
   package init(__tree_: Tree) {
     self.__tree_ = __tree_
   }

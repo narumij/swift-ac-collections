@@ -26,7 +26,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   internal var ___is_null_or_end: Bool {
-    ___is_null_or_end__(tag: pointee.___tracking_tag)
+//    ___is_null_or_end__(tag: pointee.___tracking_tag)
+    pointee.___tracking_tag < 0
   }
 
   @inlinable

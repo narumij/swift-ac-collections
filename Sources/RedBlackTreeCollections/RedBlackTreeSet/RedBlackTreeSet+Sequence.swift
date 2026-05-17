@@ -46,7 +46,7 @@ extension RedBlackTreeSet {
   ///
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   public func makeIterator() -> Tree._PayloadValues {
     #if !COMPATIBLE_ATCODER_2025
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
@@ -63,7 +63,7 @@ extension RedBlackTreeSet {
     ///
     /// - Complexity: O(*n*)
     @inlinable
-    @inline(__always)
+//    @inline(__always)
     public func sorted() -> [Element] {
       __tree_.___copy_all_to_array()
     }
@@ -72,7 +72,7 @@ extension RedBlackTreeSet {
     ///
     /// - Complexity: O(`count`)
     @inlinable
-    @inline(__always)
+//    @inline(__always)
     public func reversed() -> [Element] {
       __tree_.___rev_copy_all_to_array()
     }

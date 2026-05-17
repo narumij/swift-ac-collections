@@ -50,7 +50,7 @@ extension RedBlackTreeSet {
   ///
   /// - Performance: O(1)
   @inlinable
-  @inline(__always)
+//  @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
     __tree_.isIdentical(to: other.__tree_)
   }

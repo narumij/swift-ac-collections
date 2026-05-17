@@ -90,7 +90,6 @@ extension RedBlackTreeMultiSet {
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  @inline(__always)
   public mutating func meld(_ other: __owned RedBlackTreeMultiSet<Element>) {
     __tree_ = __tree_.___meld_multi(other.__tree_)
   }

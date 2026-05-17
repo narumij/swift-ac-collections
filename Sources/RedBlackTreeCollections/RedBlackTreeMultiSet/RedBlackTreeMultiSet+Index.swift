@@ -30,7 +30,6 @@
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func isValid(_ index: Index) -> Bool {
       __tree_.__purified_(index).exists
     }

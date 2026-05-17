@@ -127,6 +127,7 @@ import Foundation
 
     /// - Complexity: O(1)
     @inlinable
+    @inline(__always)
     //  public subscript(position: Index) -> Element {
     public subscript(position: Index) -> (key: _Key, value: _MappedValue) {
       //    @inline(__always) get { ___element(self[_checked: position]) }

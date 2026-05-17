@@ -57,7 +57,6 @@ extension ___LRUMemoizeStorage {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable
-  @inline(__always)
   public init(minimumCapacity: Int = 0, maxCount: Int = Int.max) {
     nullptr = UnsafeNode.nullptr
     // enxureUniqueをしないため、シングルトンインスタンスを避けている
@@ -126,7 +125,6 @@ extension ___LRUMemoizeStorage: ___LRULinkList {}
 extension ___LRUMemoizeStorage {
 
   @inlinable
-  @inline(__always)
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity {
       __tree_.deinitialize()

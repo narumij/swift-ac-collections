@@ -16,7 +16,6 @@
 //===----------------------------------------------------------------------===//
 
 @inlinable
-//  @inline(__always)
 internal func ___ptr_comp_multi(
   _ __l: UnsafeMutablePointer<UnsafeNode>,
   _ __r: UnsafeMutablePointer<UnsafeNode>
@@ -66,7 +65,6 @@ internal func ___ptr_comp_multi(
 
 // ノードの高さを数える
 @inlinable
-@inline(__always)
 internal func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
   assert(!__p.___is_null, "Node shouldn't be null")
   var __h = 0
@@ -80,7 +78,6 @@ internal func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
 
 // ノードの大小を比較する
 @inlinable
-//  @inline(__always)
 internal func ___ptr_comp_multi_org(
   _ __l: UnsafeMutablePointer<UnsafeNode>,
   _ __r: UnsafeMutablePointer<UnsafeNode>
@@ -137,7 +134,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   /// ルートの右は192となる  (0b110000000)
   /// (実際にはUIntで64bit幅)
   @inlinable
-  @inline(__always)
   internal func ___ptr_bitmap_org() -> UInt {
     assert(!___is_null, "Node shouldn't be null")
     assert(!___is_end, "Node shouldn't be end")
@@ -159,7 +155,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     ///
     /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
     @inlinable
-    @inline(__always)
     internal func ___ptr_bitmap_128() -> UInt128 {
       assert(!___is_null, "Node shouldn't be null")
       assert(!___is_end, "Node shouldn't be end")
@@ -179,7 +174,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   ///
   /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
   @inlinable
-  @inline(__always)
   internal func ___ptr_bitmap_64() -> UInt64 {
     assert(!___is_null, "Node shouldn't be null")
     assert(!___is_end, "Node shouldn't be end")
@@ -198,7 +192,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     ///
     /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
     @inlinable
-    @inline(__always)
     internal func ___ptr_bitmap() -> UInt128 {
       ___ptr_bitmap_128()
     }
@@ -207,7 +200,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     ///
     /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
     @inlinable
-    @inline(__always)
     internal func ___ptr_bitmap() -> UInt64 {
       ___ptr_bitmap_64()
     }
@@ -217,7 +209,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 #if USE_INT128
   // 128bit版では速度が負けていて、64bit版では未定義が心配なので、お役御免
   @inlinable
-  @inline(__always)
   func ___ptr_comp_bitmap(
     _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
   ) -> Bool {
@@ -235,7 +226,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 #else
   @inlinable
-  @inline(__always)
   func ___ptr_comp_bitmap(
     _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
   ) -> Bool {

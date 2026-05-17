@@ -16,7 +16,6 @@
 //===----------------------------------------------------------------------===//
 
 @inlinable
-@inline(__always)
 internal func
   ___tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> _SafePtr
 {
@@ -29,7 +28,6 @@ internal func
 /// Returns:  pointer to the previous in-order node before `__x`.
 /// Note: `__x` may be the end node.
 @inlinable
-@inline(__always)
 internal func
   ___tree_prev_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> _SafePtr
 {
@@ -41,7 +39,6 @@ internal func
 }
 
 @inlinable
-@inline(__always)
 internal func
   ___tree_adv_iter(_ __x: UnsafeMutablePointer<UnsafeNode>, _ __n: Int)
   -> _SafePtr
@@ -65,7 +62,6 @@ internal func
 }
 
 @inlinable
-@inline(__always)
 internal func
   ___tree_adv_iter(_ __x: UnsafeMutablePointer<UnsafeNode>, _ __n: Int, _ __l: _SafePtr)
   -> _SafePtr

@@ -58,7 +58,6 @@ extension ___UnsafeIsIdenticalToV2 {
   ///
   /// - Performance: O(1)
   @inlinable
-  @inline(__always)
   public func isTriviallyIdentical(to other: Self) -> Bool {
     _isIdentical(to: other)
   }

@@ -25,7 +25,6 @@ struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _Unsaf
   typealias BucketPointer = UnsafeMutablePointer<_Bucket>
 
   @inlinable
-  @inline(__always)
   internal init(bucket: BucketPointer?) {
     self.helper = bucket.flatMap {
       $0._counts(
@@ -39,7 +38,6 @@ struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _Unsaf
   var helper: _BucketTraverser?
 
   @inlinable
-  @inline(__always)
   mutating func next() -> _NodePtr? {
     if let p = helper?.pop() {
       return p

@@ -26,13 +26,11 @@ extension _TreeNode_KeyProtocol {
 
   #if true
     @inlinable
-    @inline(__always)
     internal func __get_value(_ p: _NodePtr) -> _Key {
       __key(__value_(p))
     }
   #else
     @inlinable
-    @inline(__always)
     internal func __get_value(_ p: _NodePtr) -> __node_value_type {
       __key(__value_(p))
     }
@@ -51,7 +49,6 @@ extension BeginProtocol {
   // __begin_node_が圧倒的に速いため
   @available(*, deprecated, renamed: "__begin_node_")
   @inlinable
-  @inline(__always)
   /// 木の左端のノードを返す
   internal func begin() -> _NodePtr { __begin_node_ }
 }

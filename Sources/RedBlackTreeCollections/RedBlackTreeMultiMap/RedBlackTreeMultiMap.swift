@@ -109,7 +109,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   @usableFromInline
   var __tree_: Tree
 
-  @inlinable @inline(__always)
+  @inlinable
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
   }
@@ -200,7 +200,6 @@ extension RedBlackTreeMultiMap {
   ///
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var first: Element? {
     isEmpty ? nil : __element_(Base.__payload_(_start))
   }
@@ -209,7 +208,6 @@ extension RedBlackTreeMultiMap {
   ///
   /// - Complexity: O(log `count`)
   @inlinable
-  @inline(__always)
   public var last: Element? {
     __tree_.___max().map(__element_)
   }
@@ -254,7 +252,6 @@ extension RedBlackTreeMultiMap {
   ///
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -266,7 +263,6 @@ extension RedBlackTreeMultiMap {
   ///
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -285,10 +281,9 @@ extension RedBlackTreeMultiMap {
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
-  @inline(__always)
   public mutating func popFirst() -> Element? {
     __tree_.ensureUnique()
-    return ___unchecked_remove_first().map(\.payload).map(__element_)
+    return __tree_.___unchecked_remove_first().map(__element_)
   }
 }
 
@@ -301,7 +296,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return ___unchecked_remove_last().map(\.payload).map(__element_)
+      return __tree_.___unchecked_remove_last().map(__element_)
     }
   }
 #endif
@@ -312,31 +307,31 @@ extension RedBlackTreeMultiMap {
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
-    __tree_.ensureUnique()
     guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
     return element
   }
-
-  /// Removes the last element of the collection.
-  ///
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @discardableResult
-  public mutating func removeLast() -> Element {
-    __tree_.ensureUnique()
-    guard
-      let element = ___unchecked_remove_last().map(\.payload).map(__element_)
-    else {
-      preconditionFailure(.emptyLast)
-    }
-    return element
-  }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// Removes the last element of the collection.
+    ///
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      guard let element = popLast() else {
+        preconditionFailure(.emptyLast)
+      }
+      return element
+    }
+  }
+#endif
 
 extension RedBlackTreeMultiMap {
 
@@ -344,7 +339,6 @@ extension RedBlackTreeMultiMap {
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
@@ -378,7 +372,7 @@ extension RedBlackTreeMultiMap {
     ///
     /// - Complexity: Amortized O(1)
     @discardableResult
-    @inlinable @inline(__always)
+    @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
       ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
     }
@@ -414,7 +408,6 @@ extension RedBlackTreeMultiMap {
     /// - Returns: `true` if an element was removed; otherwise `false`.
     /// - Complexity: O(log *n*)
     @inlinable
-    @inline(__always)
     @discardableResult
     public mutating func eraseUnique(_ key: Key) -> Bool {
       __tree_._strongEnsureUnique()

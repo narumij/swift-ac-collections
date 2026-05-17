@@ -58,7 +58,7 @@ where Base: ___TreeBase & ___TreeIndex {
 
   // MARK: -
 
-  @inlinable @inline(__always)
+  @inlinable
   internal init(sealed: _SealedPtr, tie: _TiedRawBuffer) {
     self.tied = tie
     self.sealed = sealed
@@ -76,7 +76,6 @@ extension UnsafeIndexV2 {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public static func === (lhs: Self, rhs: Self) -> Bool {
     lhs.sealed == rhs.sealed
   }
@@ -86,7 +85,6 @@ extension UnsafeIndexV2: Equatable {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     // _tree比較は、CoWが発生した際に誤判定となり、邪魔となるので、省いている
 
@@ -102,7 +100,6 @@ extension UnsafeIndexV2: Comparable {
   ///   内部動作がユニークな場合、値の比較で解決できますが、
   ///   内部動作がマルチの場合、ノード位置での比較となるので重くなります。
   @inlinable
-  @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     guard let r = rhs.sealed.pointer,
       let l = rhs.__purified_(lhs).pointer
@@ -120,7 +117,6 @@ extension UnsafeIndexV2 {
   /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(*d*)
   ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n* + *d*)
   @inlinable
-  //  @inline(__always)
   public func distance(to other: Self) -> Int {
     guard
       let from = sealed.pointer,
@@ -133,7 +129,6 @@ extension UnsafeIndexV2 {
 
   /// - Complexity: O(*d*)
   @inlinable
-  //  @inline(__always)
   public func advanced(by n: Int) -> Self {
     let adv = sealed.purified.flatMap { ___tree_adv_iter($0.pointer, n) }
     var result = self
@@ -148,7 +143,6 @@ extension UnsafeIndexV2 {
   ///
   /// 操作が不正な場合に結果がnilとなる
   @inlinable
-  @inline(__always)
   public var next: Self? {
     let next = sealed.purified.flatMap { ___tree_next_iter($0.pointer) }.sealed
     guard next.isValid, tied.isValueAccessAllowed else { return nil }
@@ -161,7 +155,6 @@ extension UnsafeIndexV2 {
   ///
   /// 操作が不正な場合に結果がnilとなる
   @inlinable
-  @inline(__always)
   public var previous: Self? {
     let prev = sealed.purified.flatMap { ___tree_prev_iter($0.pointer) }.sealed
     guard prev.isValid, tied.isValueAccessAllowed else { return nil }
@@ -174,7 +167,6 @@ extension UnsafeIndexV2 {
 extension UnsafeIndexV2 {
 
   @inlinable
-  @inline(__always)
   public var isEnd: Bool {
     sealed.___is_end ?? false
   }
@@ -237,19 +229,16 @@ extension UnsafeIndexV2 {
 // MARK: - Convenience
 
 @inlinable
-@inline(__always)
 public func + <Base>(lhs: UnsafeIndexV2<Base>, rhs: Int) -> UnsafeIndexV2<Base> {
   lhs.advanced(by: rhs)
 }
 
 @inlinable
-@inline(__always)
 public func - <Base>(lhs: UnsafeIndexV2<Base>, rhs: Int) -> UnsafeIndexV2<Base> {
   lhs.advanced(by: -rhs)
 }
 
 @inlinable
-@inline(__always)
 public func - <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>) -> Int {
   rhs.distance(to: lhs)
 }
@@ -259,7 +248,6 @@ public func - <Base>(lhs: UnsafeIndexV2<Base>, rhs: UnsafeIndexV2<Base>) -> Int 
 extension UnsafeIndexV2 {
 
   @inlinable
-  @inline(__always)
   internal func __purified_(_ index: UnsafeIndexV2) -> _SealedPtr {
     tied === index.tied
       ? index.sealed.purified

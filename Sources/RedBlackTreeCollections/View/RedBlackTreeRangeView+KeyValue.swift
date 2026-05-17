@@ -98,7 +98,6 @@ extension RedBlackTreeKeyValueRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public __consuming func makeIterator() -> UnsafeIterator.KeyValueObverse<Base> {
     let (_start, _end) = _range
     #if !COMPATIBLE_ATCODER_2025
@@ -110,7 +109,6 @@ extension RedBlackTreeKeyValueRangeView {
 
   /// - Complexity: O(`count`)
   @inlinable
-  @inline(__always)
   public __consuming func sorted() -> [Element] {
     let (_start, _end) = _range
     return __tree_.___copy_to_array(_start.pointer!, _end.pointer!, transform: Base.__element_)
@@ -118,7 +116,6 @@ extension RedBlackTreeKeyValueRangeView {
 
   /// - Complexity: O(`count`)
   @inlinable
-  @inline(__always)
   public __consuming func reversed() -> [Element] {
     let (_start, _end) = _range
     return __tree_.___rev_copy_to_array(_start.pointer!, _end.pointer!, transform: Base.__element_)
@@ -129,7 +126,6 @@ extension RedBlackTreeKeyValueRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var keys: [Key] {
     let (_start, _end) = _range
     return __tree_.___copy_to_array(_start.pointer!, _end.pointer!, transform: Base.__key)
@@ -137,7 +133,6 @@ extension RedBlackTreeKeyValueRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var values: [Value] {
     let (_start, _end) = _range
     return __tree_.___copy_to_array(_start.pointer!, _end.pointer!, transform: Base.___mapped_value)
@@ -172,7 +167,6 @@ extension RedBlackTreeKeyValueRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var isEmpty: Bool {
     let (l, u) = _raw_range
     return l != u
@@ -180,7 +174,6 @@ extension RedBlackTreeKeyValueRangeView {
 
   /// - Complexity: O(`count`)
   @inlinable
-  @inline(__always)
   public var count: Int {
     let (l, u) = _raw_range
     return (try? ___safe_distance(l, u).get()) ?? 0
@@ -191,7 +184,6 @@ extension RedBlackTreeKeyValueRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var first: Element? {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
@@ -199,7 +191,6 @@ extension RedBlackTreeKeyValueRangeView {
   }
 
   @inlinable
-  @inline(__always)
   public var last: Element? {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
@@ -278,7 +269,6 @@ extension RedBlackTreeKeyValueRangeView where _PayloadValue: Equatable {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
-  @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     elementsEqual(other, by: ==)
@@ -290,7 +280,6 @@ extension RedBlackTreeKeyValueRangeView where _PayloadValue: Comparable {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
-  @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     lexicographicallyPrecedes(other, by: <)
@@ -301,7 +290,6 @@ extension RedBlackTreeKeyValueRangeView: Equatable where _PayloadValue: Equatabl
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
-  @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs._isdentical(to: rhs) || lhs.elementsEqual(rhs)
   }
@@ -311,7 +299,6 @@ extension RedBlackTreeKeyValueRangeView: Comparable where _PayloadValue: Compara
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
-  @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     !lhs._isdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
@@ -327,7 +314,6 @@ extension RedBlackTreeKeyValueRangeView: Comparable where _PayloadValue: Compara
 extension RedBlackTreeKeyValueRangeView {
 
   @inlinable
-  @inline(__always)
   public func _isdentical(to other: Self) -> Bool {
     let (_start, _end) = _range
     let (_other_start, _other_end) = other._range
@@ -341,7 +327,6 @@ extension RedBlackTreeKeyValueRangeView {
 extension RedBlackTreeKeyValueRangeView {
 
   @inlinable
-  @inline(__always)
   package func isValid(index: Index) -> Bool {
     let i = __tree_.__purified_(index)  // __retrieve_でもテストは通る
     guard i.___is_end == false, let i = i.pointer else { return false }

@@ -96,7 +96,6 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Container.Base> {
     let (_start, _end) = _range
     #if !COMPATIBLE_ATCODER_2025
@@ -108,7 +107,6 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(`count`)
   @inlinable
-  @inline(__always)
   public __consuming func sorted() -> [Element] {
     let (_start, _end) = _range
     return __tree_.___copy_to_array(_start.pointer!, _end.pointer!)
@@ -116,7 +114,6 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(`count`)
   @inlinable
-  @inline(__always)
   public __consuming func reversed() -> [Element] {
     let (_start, _end) = _range
     return __tree_.___rev_copy_to_array(_start.pointer!, _end.pointer!)
@@ -151,7 +148,6 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var isEmpty: Bool {
     let (l, u) = _raw_range
     return l != u
@@ -159,7 +155,6 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(`count`)
   @inlinable
-  @inline(__always)
   public var count: Int {
     let (l, u) = _raw_range
     return (try? ___safe_distance(l, u).get()) ?? 0
@@ -170,7 +165,6 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var first: Element? {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
@@ -178,7 +172,6 @@ extension RedBlackTreeKeyOnlyRangeView {
   }
 
   @inlinable
-  @inline(__always)
   public var last: Element? {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
@@ -256,7 +249,6 @@ extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Equatable {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
-  @inline(__always)
   public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     elementsEqual(other, by: ==)
@@ -268,7 +260,6 @@ extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Comparable {
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
   ///   sequence and the length of `other`.
   @inlinable
-  @inline(__always)
   public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
   where OtherSequence: Sequence, Element == OtherSequence.Element {
     lexicographicallyPrecedes(other, by: <)
@@ -279,7 +270,6 @@ extension RedBlackTreeKeyOnlyRangeView: Equatable where _PayloadValue: Equatable
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
-  @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs._isdentical(to: rhs) || lhs.elementsEqual(rhs)
   }
@@ -289,7 +279,6 @@ extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparab
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
-  @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
     !lhs._isdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
@@ -303,9 +292,8 @@ extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparab
 // MARK: - Is Identical To
 
 extension RedBlackTreeKeyOnlyRangeView {
-
+  // TODO: fix typo
   @inlinable
-  @inline(__always)
   public func _isdentical(to other: Self) -> Bool {
     let (_start, _end) = _range
     let (_other_start, _other_end) = other._range
@@ -319,7 +307,6 @@ extension RedBlackTreeKeyOnlyRangeView {
 extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
-  @inline(__always)
   package func isValid(index: Index) -> Bool {
     let i = __tree_.__purified_(index)  // __retrieve_でもテストは通る
     guard i.___is_end == false, let i = i.pointer else { return false }

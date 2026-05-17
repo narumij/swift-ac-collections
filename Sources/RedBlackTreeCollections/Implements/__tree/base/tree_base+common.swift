@@ -33,6 +33,7 @@ extension _BaseNode_KeyProtocol {
   /// 実際には特殊化されたものをつかっている
   ///
   /// `__key(_:)`が定義されてる場合に`__get_value(_:)`を定義する
+  @inlinable
   public static func __get_value(_ p: _NodePtr) -> _Key {
     __key(__value_(p))
   }
@@ -44,7 +45,6 @@ where _Key: Comparable {}
 extension _BaseComparableKey_LessThanProtocol {
   /// Comparableプロトコルの場合の標準実装
   @inlinable
-  @inline(__always)
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     a < b
   }

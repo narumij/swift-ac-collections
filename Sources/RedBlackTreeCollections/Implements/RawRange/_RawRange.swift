@@ -24,7 +24,6 @@ public struct _RawRange<Bound> {
   internal var upperBound: Bound
 
   @inlinable
-  @inline(__always)
   internal init(lowerBound: Bound, upperBound: Bound) {
     self.lowerBound = lowerBound
     self.upperBound = upperBound

@@ -18,7 +18,7 @@
 @frozen
 public struct UnsafeTreeV2<Base: ___TreeBase> {
 
-  @inlinable @inline(__always)
+  @inlinable
   internal init(_buffer: ManagedBufferPointer<Header, Void>) {
     self._buffer = _buffer
   }
@@ -40,17 +40,17 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @inlinable @inline(__always)
+  @inlinable
   package var nullptr: _NodePtr {
     withMutableHeader { $0.nullptr }
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   package var end: _NodePtr {
     withMutableHeader { $0.end_ptr }
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   var isReadOnly: Bool {
     _buffer.buffer === _emptyTreeStorage
   }
@@ -98,18 +98,15 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  @inline(__always)
   var initializedCount: Int { withMutableHeader { $0.freshPoolUsedCount } }
 }
 
 extension UnsafeTreeV2 {
 
   @inlinable
-  @inline(__always)
   public var underestimatedCount: Int { count }
 
   @inlinable
-  @inline(__always)
   var freeCapacity: Int {
     withMutableHeader { $0.freshPoolCapacity - $0.count }
   }
@@ -147,12 +144,14 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  // subscript helperなので、__always
   @inlinable
   @inline(__always)
   func _unsafeAddress(_ position: UnsafeIndexV3) -> UnsafePointer<_PayloadValue> {
     return UnsafePointer(_unsafeMutableAddress(position))
   }
 
+  // subscript helperなので、__always
   @inlinable
   @inline(__always)
   func _unsafeMutableAddress(_ position: UnsafeIndexV3) -> UnsafeMutablePointer<_PayloadValue> {
@@ -162,7 +161,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  @inline(__always)
   internal subscript(_unsafe position: UnsafeIndexV3) -> _PayloadValue {
 
     @inline(__always)
@@ -189,7 +187,6 @@ extension UnsafeTreeV2 {
   extension UnsafeTreeV2 {
 
     @inlinable
-    @inline(__always)
     func makeUsedNodeIterator() -> _FreshPoolUsedIterator<_PayloadValue> {
       return _buffer.header.makeUsedNodeIterator()
     }
@@ -201,7 +198,6 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  @inline(__always)
   package func __retrieve_(_ tag: _TrackingTag) -> _SafePtr {
     switch tag {
     case .nullptr: .failure(.null)
@@ -211,7 +207,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  @inline(__always)
   package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
     switch tag {
     case .end:
@@ -228,7 +223,6 @@ extension UnsafeTreeV2 {
   ///
   /// 日本人的にはお祭りなどによくある千本引きのイメージ
   @inlinable
-  @inline(__always)
   package func __retrieve_(_ tag: _SealedTag) -> _SealedPtr {
     tag.flatMap { ___retrieve(tag: $0) }
   }
@@ -243,7 +237,6 @@ extension UnsafeTreeV2 {
   /// 木が同一の場合、インデックスが保持するポインタを返す。
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
-  @inline(__always)
   internal func __purified_(_ index: _TieWrappedPtr) -> _SealedPtr {
     tied === index.tied
       ? index.sealed.purified
@@ -251,7 +244,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  @inline(__always)
   internal func __purified_(_ index: _LazyDetachPointer) -> _SealedPtr {
     tied === index.tied
       ? index.sealed.purified
@@ -264,7 +256,6 @@ extension UnsafeTreeV2 {
   // _SealedPtrをpurifiedする処理は間違い。外部に晒さない用途なので。
 
   @inlinable
-  @inline(__always)
   internal func __purified_(_ range: _RawRange<UnsafeIndexV3>)
     -> _RawRange<_SealedPtr>
   {

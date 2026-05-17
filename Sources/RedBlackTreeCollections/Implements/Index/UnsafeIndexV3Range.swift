@@ -25,7 +25,6 @@ public struct UnsafeIndexV3Range {
   internal var range: _RawRange<UnsafeIndexV3>
 
   @inlinable
-  @inline(__always)
   internal init(_ range: _RawRange<UnsafeIndexV3>) {
     self.range = range
   }

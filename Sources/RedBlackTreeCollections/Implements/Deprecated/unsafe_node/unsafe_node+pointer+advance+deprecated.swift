@@ -8,7 +8,6 @@
 
 #if COMPATIBLE_ATCODER_2025
   @inlinable
-  @inline(__always)
   internal func ___form_index(
     _ i: UnsafeMutablePointer<UnsafeNode>, offsetBy distance: Int, limitedBy limit: _SafePtr,
     _ body: (_SafePtr) -> Void

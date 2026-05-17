@@ -95,7 +95,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
   @usableFromInline
   var __tree_: Tree
 
-  @inlinable @inline(__always)
+  @inlinable
   package init(__tree_: Tree) {
     self.__tree_ = __tree_
   }
@@ -183,7 +183,6 @@ extension RedBlackTreeSet {
   ///
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var first: Element? {
     isEmpty ? nil : Base.__payload_(_start)
   }
@@ -259,7 +258,7 @@ extension RedBlackTreeSet {
     @inlinable
     public mutating func popFirst() -> Element? {
       __tree_.ensureUnique()
-      return ___unchecked_remove_first()?.payload
+      return __tree_.___unchecked_remove_first()
     }
 
     /// Removes and returns the last element of the collection.
@@ -268,7 +267,7 @@ extension RedBlackTreeSet {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return ___unchecked_remove_last()?.payload
+      return __tree_.___unchecked_remove_last()
     }
   }
 #endif
@@ -281,7 +280,6 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
-    __tree_.ensureUnique()
     guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
@@ -298,7 +296,6 @@ extension RedBlackTreeSet {
     @inlinable
     @discardableResult
     public mutating func removeLast() -> Element {
-      __tree_.ensureUnique()
       guard let element = popLast() else {
         preconditionFailure(.emptyLast)
       }
@@ -361,7 +358,7 @@ extension RedBlackTreeSet {
     ///
     /// - Complexity: Amortized O(1)
     @discardableResult
-    @inlinable @inline(__always)
+    @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
       ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
     }

@@ -37,12 +37,12 @@ where Base: _UnsafeNodePtrType & _PayloadValueType {}
 
 extension _NodePtrBridge_Payload {
 
-  @inlinable @inline(__always)
+  @inlinable
   func __payload_ptr(_ p: Base._NodePtr) -> Base._PayloadPtr {
     Base.__payload_ptr(p)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   func __payload_(_ p: Base._NodePtr) -> Base._PayloadValue {
     Base.__payload_(p)
   }
@@ -55,7 +55,7 @@ where Base: _BasePayloadValue_KeyInterface {}
 
 extension _PayloadValueBridge_Key {
 
-  @inlinable @inline(__always)
+  @inlinable
   public func __key(_ e: _PayloadValue) -> _Key {
     Base.__key(e)
   }
@@ -67,7 +67,7 @@ where Base: _BasePayloadValue_MappedValueInterface {}
 
 extension _PayloadValueBridge_MappedValue {
 
-  @inlinable @inline(__always)
+  @inlinable
   func ___mapped_value(_ p: _PayloadValue) -> _MappedValue {
     Base.___mapped_value(p)
   }
@@ -79,7 +79,7 @@ where Base: _BasePaylodValue_ElementInterface {}
 
 extension _PaylodValueBridge_Element {
 
-  @inlinable @inline(__always)
+  @inlinable
   func __element_(_ __value: _PayloadValue) -> Element {
     Base.__element_(__value)
   }
@@ -91,7 +91,7 @@ where Base: _KeyValueBasePaylodValue_ElementInterface {}
 
 extension _ElementBridge_Payload {
 
-  @inlinable @inline(__always)
+  @inlinable
   func __payload_(_ __e: Element) -> _PayloadValue {
     Base.__payload_(__e)
   }
@@ -104,7 +104,7 @@ where Base: _BaseKey_LessThanInterface {}
 
 extension _ValueCompBridge {
 
-  @inlinable @inline(__always)
+  @inlinable
   func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     Base.value_comp(a, b)
   }
@@ -117,7 +117,7 @@ where Base: _BaseNode_SignedDistanceInterface {
 
 extension _SignedDistanceBridge {
 
-  @inlinable @inline(__always)
+  @inlinable
   func ___signed_distance(_ l: Base._NodePtr, _ r: Base._NodePtr) -> Int {
     Base.___signed_distance(l, r)
   }
@@ -129,7 +129,7 @@ where Base: _BaseNode_PtrCompInterface {}
 
 extension _PtrCompBridge {
 
-  @inlinable @inline(__always)
+  @inlinable
   func ___ptr_comp(_ l: Base._NodePtr, _ r: Base._NodePtr) -> Bool {
     Base.___ptr_comp(l, r)
   }
@@ -141,7 +141,7 @@ where Base: _BaseNode_PtrRangeCompInterface {}
 
 extension _PtrRangeCompBridge {
 
-  @inlinable @inline(__always)
+  @inlinable
   func ___ptr_range_comp(_ __f: Base._NodePtr, _ __p: Base._NodePtr, _ __l: Base._NodePtr) -> Bool {
     Base.___ptr_range_comp(__f, __p, __l)
   }

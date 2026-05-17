@@ -16,7 +16,6 @@
 //===----------------------------------------------------------------------===//
 
 @inlinable
-@inline(__always)
 package func __default_three_way_comparator<T: Comparable>(_ __lhs: T, _ __rhs: T) -> Int {
   if __lhs < __rhs {
     -1
@@ -28,7 +27,6 @@ package func __default_three_way_comparator<T: Comparable>(_ __lhs: T, _ __rhs: 
 }
 
 @inlinable
-@inline(__always)
 package func ___default_three_way_comparator<T: Comparable>(_ __lhs: T, _ __rhs: T)
   -> ___enum_compare_result
 {

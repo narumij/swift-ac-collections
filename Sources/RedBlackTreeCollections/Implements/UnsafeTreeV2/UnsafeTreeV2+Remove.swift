@@ -18,7 +18,6 @@
 extension UnsafeTreeV2 {
 
   @inlinable
-  @inline(__always)
   @discardableResult
   package mutating func _unchecked_remove(at ptr: _NodePtr) -> (
     __r: _NodePtr, payload: _PayloadValue
@@ -26,5 +25,27 @@ extension UnsafeTreeV2 {
     let ___e = Base.__payload_(ptr)
     let __r = erase(ptr)
     return (__r, ___e)
+  }
+
+  @inlinable
+  package mutating func _unchecked_remove_v2(at ptr: _NodePtr) -> _PayloadValue {
+    let ___e = Base.__payload_(ptr)
+    _ = erase(ptr)
+    return ___e
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  package mutating func ___unchecked_remove_first() -> _PayloadValue? {
+    guard __begin_node_ != __end_node else { return nil }
+    return _unchecked_remove_v2(at: __begin_node_)
+  }
+
+  @inlinable
+  package mutating func ___unchecked_remove_last() -> _PayloadValue? {
+    guard __begin_node_ != __end_node else { return nil }
+    return _unchecked_remove_v2(at: __tree_prev_iter(__end_node))
   }
 }

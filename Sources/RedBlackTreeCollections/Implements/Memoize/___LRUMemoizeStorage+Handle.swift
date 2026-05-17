@@ -43,7 +43,6 @@ struct ___LRUHandle<_Key, _MappedValue> where _Key: Comparable {
 extension ___LRUHandle {
 
   @inlinable
-  @inline(__always)
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
     __l < __r
   }
@@ -54,7 +53,6 @@ extension ___LRUHandle {
 extension ___LRUHandle {
 
   @inlinable
-  @inline(__always)
   func __get_value(_ p: _NodePtr) -> _Key {
     p.__value_(as: _PayloadValue.self).pointee.key
   }
@@ -63,7 +61,6 @@ extension ___LRUHandle {
 extension ___LRUHandle {
 
   @inlinable
-  @inline(__always)
   public func __construct_node(_ k: _PayloadValue) -> _NodePtr {
     let p = header.pointee.__construct_raw_node()
     // あえてのdefer
@@ -104,7 +101,6 @@ extension ___LRUHandle {
   }
 
   @inlinable
-  @inline(__always)
   func __root_ptr() -> _NodeRef {
     root_ref
   }
@@ -145,11 +141,9 @@ extension ___LRUHandle: TreeAlgorithmProtocol_ptr {}
 extension ___LRUHandle {
 
   @inlinable
-  @inline(__always)
   var count: Int { header.pointee.count }
 
   @inlinable
-  @inline(__always)
   var capacity: Int { header.pointee.freshPoolCapacity }
 }
 
@@ -159,7 +153,6 @@ extension UnsafeTreeV2 where Base: KeyValueTrait, Base._PayloadValue == _Linking
   typealias _LRUHandle = ___LRUHandle<_Key, Base._MappedValue>
 
   @inlinable
-  @inline(__always)
   internal func update<R>(_ body: (_LRUHandle) throws -> R) rethrows -> R {
     try _buffer.withUnsafeMutablePointers { header, _ in
       let handle = _LRUHandle(header: header)

@@ -38,7 +38,6 @@ struct _BucketQueue {
   @usableFromInline let stride: Int
 
   @inlinable
-  @inline(__always)
   subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
     UnsafeMutableRawPointer(start)
       .advanced(by: stride * index)
@@ -62,7 +61,6 @@ struct _BucketQueue {
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
-  @inline(__always)
   func _queue(isHead: Bool, payloadLayout: _MemoryLayout) -> _BucketQueue {
     .init(
       pointer: self,

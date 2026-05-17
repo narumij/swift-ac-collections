@@ -53,7 +53,6 @@ import Foundation
       internal var _sealed_start, _sealed_end: _SealedPtr
 
       @inlinable
-      @inline(__always)
       internal init(tree: Tree, start: _SealedPtr, end: _SealedPtr) {
         __tree_ = tree
         _sealed_start = start
@@ -74,7 +73,6 @@ import Foundation
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public __consuming func makeIterator() -> Tree._PayloadValues {
       _makeIterator()
     }
@@ -84,7 +82,6 @@ import Foundation
 
     /// - Complexity: O(log `Base.count` + `count`)
     @inlinable
-    @inline(__always)
     public var count: Int { ___count }
   }
 
@@ -92,12 +89,10 @@ import Foundation
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var startIndex: Index { _startIndex }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var endIndex: Index { _endIndex }
   }
 
@@ -116,7 +111,6 @@ import Foundation
 
     /// - Complexity: O(log *n* + *k*)
     @inlinable
-    @inline(__always)
     public func distance(from start: Index, to end: Index) -> Int {
       _distance(from: start, to: end)
     }
@@ -126,7 +120,6 @@ import Foundation
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func index(before i: Index) -> Index {
       // 標準のArrayが単純に加算することにならい、範囲チェックをしない
       _index(before: i)
@@ -134,7 +127,6 @@ import Foundation
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func index(after i: Index) -> Index {
       // 標準のArrayが単純に加算することにならい、範囲チェックをしない
       _index(after: i)
@@ -142,7 +134,6 @@ import Foundation
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
       // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
       _index(i, offsetBy: distance, limitedBy: limit)
@@ -153,7 +144,6 @@ import Foundation
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func formIndex(after i: inout Index) {
       // 標準のArrayが単純に加算することにならい、範囲チェックをしない
       _formIndex(after: &i)
@@ -161,7 +151,6 @@ import Foundation
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func formIndex(before i: inout Index) {
       // 標準のArrayが単純に減算することにならい、範囲チェックをしない
       _formIndex(before: &i)
@@ -169,7 +158,6 @@ import Foundation
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func formIndex(_ i: inout Index, offsetBy distance: Int) {
       // 標準のArrayが単純に加減算することにならい、範囲チェックをしない
       _formIndex(&i, offsetBy: distance)
@@ -177,7 +165,6 @@ import Foundation
 
     /// - Complexity: O(*d*)
     @inlinable
-    @inline(__always)  // コールスタック無駄があるのでalways
     public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
       -> Bool
     {
@@ -198,7 +185,6 @@ import Foundation
     ///
     ///   ベースがmultiset, multimapの場合 O(log *n*)
     @inlinable
-    @inline(__always)
     public func isValid(index i: Index) -> Bool {
       (try? __tree_.__purified_(i).map { ___contains($0.pointer) }.get()) ?? false
     }
@@ -208,7 +194,6 @@ import Foundation
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func reversed() -> Tree._PayloadValues.Reversed {
       _reversed()
     }
@@ -218,7 +203,6 @@ import Foundation
 
     /// - Complexity: O(*n*)
     @inlinable
-    @inline(__always)
     public func sorted() -> [Element] {
       _sorted()
     }
@@ -229,7 +213,6 @@ import Foundation
     /// - Complexity: O(*m*), where *m* is the lesser of the length of the
     ///   sequence and the length of `other`.
     @inlinable
-    @inline(__always)
     public func elementsEqual<OtherSequence>(
       _ other: OtherSequence, by areEquivalent: (Element, OtherSequence.Element) throws -> Bool
     ) rethrows -> Bool where OtherSequence: Sequence {
@@ -239,7 +222,6 @@ import Foundation
     /// - Complexity: O(*m*), where *m* is the lesser of the length of the
     ///   sequence and the length of `other`.
     @inlinable
-    @inline(__always)
     public func lexicographicallyPrecedes<OtherSequence>(
       _ other: OtherSequence, by areInIncreasingOrder: (Element, Element) throws -> Bool
     ) rethrows -> Bool where OtherSequence: Sequence, Element == OtherSequence.Element {
@@ -252,7 +234,6 @@ import Foundation
     /// - Complexity: O(*m*), where *m* is the lesser of the length of the
     ///   sequence and the length of `other`.
     @inlinable
-    @inline(__always)
     public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
     where OtherSequence: Sequence, Element == OtherSequence.Element {
       _elementsEqual(other, by: ==)
@@ -264,7 +245,6 @@ import Foundation
     /// - Complexity: O(*m*), where *m* is the lesser of the length of the
     ///   sequence and the length of `other`.
     @inlinable
-    @inline(__always)
     public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
     where OtherSequence: Sequence, Element == OtherSequence.Element {
       _lexicographicallyPrecedes(other, by: <)
@@ -275,7 +255,6 @@ import Foundation
 
     /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
     @inlinable
-    @inline(__always)
     public static func == (lhs: Self, rhs: Self) -> Bool {
       lhs.isTriviallyIdentical(to: rhs) || lhs.elementsEqual(rhs)
     }
@@ -285,7 +264,6 @@ import Foundation
 
     /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
     @inlinable
-    @inline(__always)
     public static func < (lhs: Self, rhs: Self) -> Bool {
       !lhs.isTriviallyIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
     }

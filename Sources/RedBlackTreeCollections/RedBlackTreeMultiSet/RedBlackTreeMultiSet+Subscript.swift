@@ -21,7 +21,6 @@
 
     /// - Complexity: O(log *n*)
     @inlinable
-    @inline(__always)
     public subscript(element: Element) -> View {
       @inline(__always) get {
         let (lower, upper) = ___equal_range(element)

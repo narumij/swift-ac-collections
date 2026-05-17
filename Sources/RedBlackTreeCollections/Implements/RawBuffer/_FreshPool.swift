@@ -56,7 +56,6 @@ extension _FreshPool {
    */
 
   @inlinable
-  //  @inline(__always)
   mutating func pushFreshBucket(head: _BucketPointer) {
     freshBucketHead = head
     freshBucketCurrent = head.queue(payloadLayout: payload)
@@ -68,7 +67,6 @@ extension _FreshPool {
   }
 
   @inlinable
-  //  @inline(__always)
   mutating func pushFreshBucket(capacity: Int) {
     assert(freshBucketHead == nil || capacity != 0, "先頭のみ容量0を許容し、移行は容量0を許容しないこと")
     let pointer = freshBucketAllocator.createBucket(bucketCapacity: capacity)
@@ -81,7 +79,6 @@ extension _FreshPool {
   }
 
   @inlinable
-  //  @inline(__always)
   mutating func popFresh() -> _NodePtr? {
     if let p = freshBucketCurrent?.pop() {
       return p
@@ -126,8 +123,6 @@ extension _FreshPool {
 extension _FreshPool {
 
   @usableFromInline
-  //  @inlinable
-  //  @inline(__always)
   mutating func ___flushFreshPool() {
     freshBucketAllocator.deinitialize(bucket: freshBucketHead)
     freshPoolUsedCount = 0
@@ -135,8 +130,6 @@ extension _FreshPool {
   }
 
   @usableFromInline
-  //  @inlinable
-  //  @inline(__always)
   mutating func ___deallocFreshPool() {
     freshBucketAllocator.deallocate(bucket: freshBucketHead)
   }
@@ -149,7 +142,6 @@ extension _FreshPool {
 #if false
   extension _UnsafeNodeFreshPoolV3 {
     @inlinable
-    @inline(__always)
     func makeFreshBucketIterator<T>() -> _UnsafeNodeFreshBucketIterator<T> {
       return _UnsafeNodeFreshBucketIterator<T>(bucket: freshBucketHead)
     }
@@ -161,7 +153,6 @@ extension _FreshPool {
   @usableFromInline typealias PopIterator = _FreshPoolUsedIterator
 
   @inlinable
-  //  @inline(__always)
   func makeFreshPoolIterator<T>() -> _FreshPoolUsedIterator<T> {
     return _FreshPoolUsedIterator<T>(bucket: freshBucketHead)
   }
@@ -192,7 +183,6 @@ extension _FreshPool {
   extension _FreshPool {
 
     @inlinable
-    @inline(__always)
     var freshPoolActualCapacity: Int {
       var count = 0
       var p = freshBucketHead
@@ -204,7 +194,6 @@ extension _FreshPool {
     }
 
     @inlinable
-    @inline(__always)
     var freshPoolActualCount: Int {
       var count = 0
       var p = freshBucketHead

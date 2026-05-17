@@ -27,7 +27,7 @@ where Base: _BaseNode_PtrRangeCompInterface {}
 
 extension _SubSequenceV2 {
 
-  @inlinable @inline(__always)
+  @inlinable
   internal var ___is_empty: Bool {
     guard
       let start = _sealed_start.pointer,
@@ -38,7 +38,7 @@ extension _SubSequenceV2 {
     return start == end
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   internal var ___count: Int {
     guard
       let start = _sealed_start.pointer,
@@ -49,7 +49,7 @@ extension _SubSequenceV2 {
     return __distance(start, end)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   internal func ___contains(_ i: _NodePtr) -> Bool {
     guard
       let start = _sealed_start.pointer,
@@ -60,7 +60,7 @@ extension _SubSequenceV2 {
     return __tree_.___ptr_range_comp(start, i, end)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   internal var ___first: _PayloadValue? {
     ___is_empty
       ? nil
@@ -69,7 +69,7 @@ extension _SubSequenceV2 {
         .get()
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   internal var ___last: _PayloadValue? {
     ___is_empty
       ? nil
@@ -82,7 +82,7 @@ extension _SubSequenceV2 {
 
   extension _SubSequenceV2 {
 
-    @inlinable @inline(__always)
+    @inlinable
     internal func ___contains(_ bounds: Range<Index>) -> Bool {
 
       guard

@@ -96,7 +96,7 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
   @usableFromInline
   var __tree_: Tree
 
-  @inlinable @inline(__always)
+  @inlinable
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
   }
@@ -186,7 +186,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var first: Element? {
     isEmpty ? nil : __element_(Base.__payload_(_start))
   }
@@ -228,7 +227,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func insert(key: Key, value: Value) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -240,7 +238,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -257,7 +254,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func updateValue(
     _ value: Value,
@@ -280,10 +276,9 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
-  @inline(__always)
   public mutating func popFirst() -> Element? {
     __tree_.ensureUnique()
-    return ___unchecked_remove_first().map(\.payload).map(__element_)
+    return __tree_.___unchecked_remove_first().map(__element_)
   }
 }
 
@@ -296,7 +291,7 @@ extension RedBlackTreeDictionary {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return ___unchecked_remove_last().map(\.payload).map(__element_)
+      return __tree_.___unchecked_remove_last().map(__element_)
     }
   }
 #endif
@@ -307,31 +302,31 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
-    __tree_.ensureUnique()
     guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
     return element
   }
-
-  /// Removes the last element of the collection.
-  ///
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @discardableResult
-  public mutating func removeLast() -> Element {
-    __tree_.ensureUnique()
-    guard
-      let element = ___unchecked_remove_last().map(\.payload).map(__element_)
-    else {
-      preconditionFailure(.emptyLast)
-    }
-    return element
-  }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Removes the last element of the collection.
+    ///
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      guard let element = popLast() else {
+        preconditionFailure(.emptyLast)
+      }
+      return element
+    }
+  }
+#endif
 
 extension RedBlackTreeDictionary {
 
@@ -339,7 +334,6 @@ extension RedBlackTreeDictionary {
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
@@ -355,7 +349,6 @@ extension RedBlackTreeDictionary {
   /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
     __tree_.ensureUnique()
@@ -394,7 +387,7 @@ extension RedBlackTreeDictionary {
     ///
     /// - Complexity: Amortized O(1)
     @discardableResult
-    @inlinable @inline(__always)
+    @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
       ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
     }

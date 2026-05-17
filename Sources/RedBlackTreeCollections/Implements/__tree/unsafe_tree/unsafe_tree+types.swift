@@ -47,29 +47,29 @@ extension _UnsafeNodePtrType where Self: _PayloadValueType {
   ///    |    ^--__payload_
   ///    ^-- UnsafeMutablePointer<UnsafeNode>
   /// ```
-  @inlinable @inline(__always)
+  @inlinable
   static func __payload_ptr(_ p: _NodePtr) -> _PayloadPtr {
     p.__value_()
   }
-  @inlinable @inline(__always)
+  @inlinable
   static func __payload_ptr(_ p: _NodeRef) -> _PayloadPtr {
     p.pointee.__value_()
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   static func __payload_(_ p: _NodePtr) -> _PayloadValue {
     p.__value_().pointee
   }
-  @inlinable @inline(__always)
+  @inlinable
   static func __payload_(_ p: _NodeRef) -> _PayloadValue {
     p.pointee.__value_().pointee
   }
   
-  @inlinable @inline(__always)
+  @inlinable
   static func __payload_buffer(_ p: _NodePtr) -> _PayloadBuffer {
     .init(start: __payload_ptr(p), count: 1)
   }
-  @inlinable @inline(__always)
+  @inlinable
   static func __payload_buffer(_ p: _NodeRef) -> _PayloadBuffer {
     .init(start: __payload_ptr(p), count: 1)
   }
@@ -84,20 +84,20 @@ extension _UnsafeNodePtrType where Self: _ScalarBaseType {
   ///    |    ^--__key_ptr
   ///    ^-- UnsafeMutablePointer<UnsafeNode>
   /// ```
-  @inlinable @inline(__always)
+  @inlinable
   static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
     __payload_ptr(p)
   }
-  @inlinable @inline(__always)
+  @inlinable
   static func __key_ptr(_ p: _NodeRef) -> _KeyPtr {
     __payload_ptr(p)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   static func __key_(_ p: _NodePtr) -> _Key {
     __key_ptr(p).pointee
   }
-  @inlinable @inline(__always)
+  @inlinable
   static func __key_(_ p: _NodeRef) -> _Key {
     __key_ptr(p).pointee
   }
@@ -112,20 +112,20 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
   ///    |    ^--__key_ptr
   ///    ^-- UnsafeMutablePointer<UnsafeNode>
   /// ```
-  @inlinable @inline(__always)
+  @inlinable
   static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
     _ref(to: &__payload_ptr(p).pointee.key)
   }
-  @inlinable @inline(__always)
+  @inlinable
   static func __key_ptr(_ p: _NodeRef) -> _KeyPtr {
     _ref(to: &__payload_ptr(p.pointee).pointee.key)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   static func __key_(_ p: _NodePtr) -> _Key {
     __payload_(p).key
   }
-  @inlinable @inline(__always)
+  @inlinable
   static func __key_(_ p: _NodeRef) -> _Key {
     __payload_(p).key
   }
@@ -137,20 +137,20 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
   ///    |        ^--__mapped_value_ptr
   ///    ^-- UnsafeMutablePointer<UnsafeNode>
   /// ```
-  @inlinable @inline(__always)
+  @inlinable
   static func __mapped_value_ptr(_ p: _NodePtr) -> _MappedValuePtr {
     _ref(to: &__payload_ptr(p).pointee.value)
   }
-  @inlinable @inline(__always)
+  @inlinable
   static func __mapped_value_ptr(_ p: _NodeRef) -> _MappedValuePtr {
     _ref(to: &__payload_ptr(p.pointee).pointee.value)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   static func __mapped_value_(_ p: _NodePtr) -> _MappedValue {
     __payload_(p).value
   }
-  @inlinable @inline(__always)
+  @inlinable
   static func __mapped_value_(_ p: _NodeRef) -> _MappedValue {
     __payload_(p).value
   }

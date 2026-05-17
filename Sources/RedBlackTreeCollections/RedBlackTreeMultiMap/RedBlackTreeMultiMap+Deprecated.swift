@@ -71,23 +71,22 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-// 申し訳程度に用意したAPIだけど、これではどうも不十分なのでdeprecatedにする
-// 結局復活する可能性もあるにはある
-extension RedBlackTreeMultiMap {
+  // 申し訳程度に用意したAPIだけど、これではどうも不十分なのでdeprecatedにする
+  // 結局復活する可能性もあるにはある
+  extension RedBlackTreeMultiMap {
 
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @inline(__always)
-  @discardableResult
-  public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
-    __tree_.ensureUnique()
-    guard let p = __tree_.__purified_(ptr).pointer, p.sealed.exists
-    else { return nil }
-    let old = __tree_[_unsafe_raw: p]
-    __tree_[_unsafe_raw: p].value = newValue
-    return Base.__element_(old)
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
+      __tree_.ensureUnique()
+      guard let p = __tree_.__purified_(ptr).pointer, p.sealed.exists
+      else { return nil }
+      let old = __tree_[_unsafe_raw: p]
+      __tree_[_unsafe_raw: p].value = newValue
+      return Base.__element_(old)
+    }
   }
-}
 #endif
 
 #if COMPATIBLE_ATCODER_2025
@@ -95,14 +94,12 @@ extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(*n* log(*m + n*))
     @inlinable
-    @inline(__always)
     public static func + (lhs: Self, rhs: Self) -> Self {
       lhs.inserting(contentsOf: rhs)
     }
 
     /// - Complexity: O(*n* log(*m + n*))
     @inlinable
-    @inline(__always)
     public static func += (lhs: inout Self, rhs: Self) {
       lhs.insert(contentsOf: rhs)
     }
@@ -150,6 +147,24 @@ extension RedBlackTreeMultiMap {
 #endif
 
 #if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    /// Removes the last element of the collection.
+    ///
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      __tree_.ensureUnique()
+      guard let element = __tree_.___unchecked_remove_last().map(__element_) else {
+        preconditionFailure(.emptyLast)
+      }
+      return element
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap: Collection, BidirectionalCollection {}
 #endif
 
@@ -160,7 +175,6 @@ extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
@@ -217,7 +231,6 @@ extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func reversed() -> Tree._KeyValues.Reversed {
       _reversed()
     }
@@ -234,12 +247,10 @@ extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var startIndex: Index { _startIndex }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var endIndex: Index { _endIndex }
   }
 
@@ -247,7 +258,6 @@ extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(*d* + log *n*)
     @inlinable
-    //  @inline(__always)
     public func distance(from start: Index, to end: Index) -> Int {
       _distance(from: start, to: end)
     }
@@ -257,28 +267,24 @@ extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func index(after i: Index) -> Index {
       _index(after: i)
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func index(before i: Index) -> Index {
       _index(before: i)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
       _index(i, offsetBy: distance)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func index(_ i: Index, offsetBy distance: Int, limitedBy limit: Index) -> Index? {
       _index(i, offsetBy: distance, limitedBy: limit)
     }
@@ -288,28 +294,24 @@ extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func formIndex(after i: inout Index) {
       _formIndex(after: &i)
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func formIndex(before i: inout Index) {
       _formIndex(before: &i)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func formIndex(_ i: inout Index, offsetBy distance: Int) {
       _formIndex(&i, offsetBy: distance)
     }
 
     /// - Complexity: O(*d*)
     @inlinable
-    //  @inline(__always)
     public func formIndex(_ i: inout Index, offsetBy distance: Int, limitedBy limit: Index)
       -> Bool
     {
@@ -335,7 +337,6 @@ extension RedBlackTreeMultiMap {
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func isValid(index: Index) -> Bool {
       _isValid(index: index)
     }
@@ -345,7 +346,6 @@ extension RedBlackTreeMultiMap {
       ///
       /// - Complexity: O(1)
       @inlinable
-      @inline(__always)
       public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
       where R.Bound == Index {
         _isValid(bounds)
@@ -357,7 +357,6 @@ extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public var indices: Indices {
       _indices
     }
@@ -404,14 +403,12 @@ extension RedBlackTreeMultiMap {
   extension RedBlackTreeMultiMap {
 
     @inlinable
-    @inline(__always)
     public func forEach(_ body: (Element) throws -> Void) rethrows {
       try _forEach(body)
     }
 
     /// 特殊なforEach
     @inlinable
-    @inline(__always)
     public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
       try _forEach(body)
     }
@@ -433,14 +430,12 @@ extension RedBlackTreeMultiMap {
   extension RedBlackTreeMultiMap {
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func keys() -> Keys {
       _keys()
     }
 
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public func values() -> Values {
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
     }
@@ -532,7 +527,6 @@ extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(log *n* + *k*)
     @inlinable
-    @inline(__always)
     public mutating func remove(contentsOf keyRange: Range<Key>) {
       __tree_._strongEnsureUnique()
       let lower = __tree_.lower_bound(keyRange.lowerBound)
@@ -542,7 +536,6 @@ extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(log *n* + *k*)
     @inlinable
-    @inline(__always)
     public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
       __tree_._strongEnsureUnique()
       let lower = __tree_.lower_bound(keyRange.lowerBound)
@@ -586,7 +579,6 @@ extension RedBlackTreeMultiMap {
     /// - Complexity: O(*m*), where *m* is the lesser of the length of the
     ///   sequence and the length of `other`.
     @inlinable
-    @inline(__always)
     public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
     where OtherSequence: Sequence, Element == OtherSequence.Element {
       elementsEqual(other, by: ==)
@@ -599,7 +591,6 @@ extension RedBlackTreeMultiMap {
     /// - Complexity: O(*m*), where *m* is the lesser of the length of the
     ///   sequence and the length of `other`.
     @inlinable
-    @inline(__always)
     public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
     where OtherSequence: Sequence, Element == OtherSequence.Element {
       lexicographicallyPrecedes(other, by: <)

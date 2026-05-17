@@ -20,32 +20,32 @@ protocol _SequenceV2: UnsafeTreeHostV2, _PayloadValueBride, _KeyBride {}
 
 extension _SequenceV2 {
 
-  @inlinable @inline(__always)
+  @inlinable
   package var _start: _NodePtr {
     __tree_.__begin_node_
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   package var _end: _NodePtr {
     __tree_.__end_node
   }
   
-  @inlinable @inline(__always)
+  @inlinable
   package var _safe_start: _SafePtr {
     .success(__tree_.__begin_node_)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   package var _safe_end: _SafePtr {
     .success(__tree_.__end_node)
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   package var _sealed_start: _SealedPtr {
     __tree_.__begin_node_.sealed
   }
 
-  @inlinable @inline(__always)
+  @inlinable
   package var _sealed_end: _SealedPtr {
     __tree_.__end_node.sealed
   }

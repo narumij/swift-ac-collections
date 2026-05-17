@@ -20,6 +20,5 @@ public protocol _ScalarBasePayloadValue_KeyProtocol: _ScalarBaseType & _BasePayl
 extension _ScalarBasePayloadValue_KeyProtocol {
 
   @inlinable
-  @inline(__always)
   public static func __key(_ __v: _PayloadValue) -> _Key { __v }
 }

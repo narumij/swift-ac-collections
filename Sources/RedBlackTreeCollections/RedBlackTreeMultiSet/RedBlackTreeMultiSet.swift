@@ -95,7 +95,7 @@ public struct RedBlackTreeMultiSet<Element: Comparable> {
   @usableFromInline
   var __tree_: Tree
 
-  @inlinable @inline(__always)
+  @inlinable
   internal init(__tree_: Tree) {
     self.__tree_ = __tree_
   }
@@ -183,7 +183,6 @@ extension RedBlackTreeMultiSet {
   ///
   /// - Complexity: O(1)。
   @inlinable
-  @inline(__always)
   public var first: Element? {
     isEmpty ? nil : Base.__payload_(_start)
   }
@@ -224,7 +223,6 @@ extension RedBlackTreeMultiSet {
   ///
   /// - Complexity: O(log *n*)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
@@ -243,10 +241,9 @@ extension RedBlackTreeMultiSet {
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
-  @inline(__always)
   public mutating func popFirst() -> Element? {
     __tree_.ensureUnique()
-    return ___unchecked_remove_first()?.payload
+    return __tree_.___unchecked_remove_first()
   }
 }
 
@@ -259,7 +256,7 @@ extension RedBlackTreeMultiSet {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return ___unchecked_remove_last()?.payload
+      return __tree_.___unchecked_remove_last()
     }
   }
 #endif
@@ -270,31 +267,31 @@ extension RedBlackTreeMultiSet {
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
-  @inline(__always)
   @discardableResult
   public mutating func removeFirst() -> Element {
-    __tree_.ensureUnique()
     guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
     return element
   }
-
-  /// Removes the last element of the collection.
-  ///
-  /// - Complexity: O(log *n*)
-  @inlinable
-  @discardableResult
-  public mutating func removeLast() -> Element {
-    __tree_.ensureUnique()
-    guard
-      let element = ___unchecked_remove_last()?.payload
-    else {
-      preconditionFailure(.emptyLast)
-    }
-    return element
-  }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    /// Removes the last element of the collection.
+    ///
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func removeLast() -> Element {
+      guard let element = popLast() else {
+        preconditionFailure(.emptyLast)
+      }
+      return element
+    }
+  }
+#endif
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
@@ -339,7 +336,7 @@ extension RedBlackTreeMultiSet {
     ///
     /// - Complexity: Amortized O(1)
     @discardableResult
-    @inlinable @inline(__always)
+    @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
       ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
     }
@@ -375,7 +372,6 @@ extension RedBlackTreeMultiSet {
     /// - Returns: `true` if an element was removed; otherwise `false`.
     /// - Complexity: O(log *n*)
     @inlinable
-    @inline(__always)
     @discardableResult
     public mutating func eraseUnique(_ member: Element) -> Bool {
       __tree_._strongEnsureUnique()

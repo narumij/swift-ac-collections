@@ -75,7 +75,6 @@
     ///
     /// - Complexity: O(log *n* + *k*)
     @inlinable
-    @inline(__always)
     public func distance(from start: Bound, to end: Bound)
       -> Int
     {

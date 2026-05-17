@@ -43,7 +43,6 @@
   extension RedBlackTreeDictionary {
 
     @inlinable
-    @inline(__always)
     public func distance(from start: Bound, to end: Bound)
       -> Int
     {
@@ -101,7 +100,7 @@
     @inlinable
     public subscript(bounds: BoundRangeExpression) -> View {
 
-      @inline(__always) get {
+      get {
 
         let range = __tree_.sanitizeSealedRange(
           bounds.evaluate(__tree_).relative(to: __tree_))

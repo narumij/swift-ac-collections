@@ -31,7 +31,6 @@ where
 extension ___UnsafeKeyOnlySequenceV2__ {
 
   @inlinable
-  @inline(__always)
   internal func _makeIterator() -> Tree._PayloadValues {
     #if !COMPATIBLE_ATCODER_2025
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
@@ -44,7 +43,6 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 extension ___UnsafeKeyOnlySequenceV2__ {
 
   @inlinable
-  @inline(__always)
   internal func _reversed() -> Tree._PayloadValues.Reversed {
     #if !COMPATIBLE_ATCODER_2025
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
@@ -58,7 +56,6 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 
   #if COMPATIBLE_ATCODER_2025
     @inlinable
-    @inline(__always)
     internal func _forEach(_ body: (_PayloadValue) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
         try body(__tree_[_unsafe_raw: $0])
@@ -71,7 +68,6 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 
   /// - Complexity: O(*n*)
   @inlinable
-  @inline(__always)
   internal func _sorted() -> [_PayloadValue] {
     __tree_.___copy_to_array(_sealed_start.pointer!, _sealed_end.pointer!)
   }
@@ -81,7 +77,6 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 
   // めんどくさくなったので、KeyValue側では標準実装を使っている
   @inlinable
-  @inline(__always)
   internal func _elementsEqual<OtherSequence>(
     _ other: OtherSequence, by areEquivalent: (_PayloadValue, OtherSequence.Element) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence {
@@ -91,7 +86,6 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 
   // 制約で値の型が一致する必要があり、KeyValue側では標準実装を使っている
   @inlinable
-  @inline(__always)
   internal func _lexicographicallyPrecedes<OtherSequence>(
     _ other: OtherSequence, by areInIncreasingOrder: (_PayloadValue, _PayloadValue) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, _PayloadValue == OtherSequence.Element {
@@ -109,7 +103,6 @@ extension ___UnsafeKeyOnlySequenceV2__ {
 
     @available(*, deprecated, message: "性能問題があり廃止")
     @inlinable
-    @inline(__always)
     internal func _forEach(_ body: (Index, _PayloadValue) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
         try body(___index($0.sealed), __tree_[_unsafe_raw: $0])
@@ -130,7 +123,6 @@ extension ___UnsafeKeyOnlySequenceV2__ {
   extension ___UnsafeKeyOnlySequenceV2 {
 
     @inlinable
-    @inline(__always)
     internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
 
       for __c in __tree_.sequence(_sealed_start, _sealed_end) {

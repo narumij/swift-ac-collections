@@ -93,7 +93,6 @@ protocol _RedBlackTreeKeyOnlyV2:
   UnsafeTreeRangeBaseInterfaceV2
     & _SetBridge
     & _SequenceV2
-    & _RemoveV2
 {}
 
 @usableFromInline
@@ -101,7 +100,6 @@ protocol _RedBlackTreeKeyValuesV2:
   UnsafeTreeRangeBaseInterfaceV2
     & _MapBridge
     & _SequenceV2
-    & _RemoveV2
     & _PayloadValueBridge_MappedValue
     & _PaylodValueBridge_Element
     & _ElementBridge_Payload
@@ -118,7 +116,7 @@ protocol _ScalarBasePayload_KeyProtocol_ptr:
 
 extension _ScalarBasePayload_KeyProtocol_ptr {
 
-  @inlinable @inline(__always)
+  @inlinable
   public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
     p.__value_(as: _PayloadValue.self).pointee
   }
@@ -129,7 +127,7 @@ protocol _PairBasePayload_KeyProtocol_ptr: _PairBaseType & _PairBase_ElementProt
 
 extension _PairBasePayload_KeyProtocol_ptr {
 
-  @inlinable @inline(__always)
+  @inlinable
   public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
     p.__value_(as: _PayloadValue.self).pointee.key
   }

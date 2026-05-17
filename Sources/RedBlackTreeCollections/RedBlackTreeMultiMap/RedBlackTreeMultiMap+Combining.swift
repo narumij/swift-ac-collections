@@ -75,7 +75,6 @@ extension RedBlackTreeMultiMap {
 
   /// - Complexity: O(*n* + *m*)
   @inlinable
-  @inline(__always)
   public func melding(_ other: __owned RedBlackTreeMultiMap<Key, Value>)
     -> RedBlackTreeMultiMap<Key, Value>
   {

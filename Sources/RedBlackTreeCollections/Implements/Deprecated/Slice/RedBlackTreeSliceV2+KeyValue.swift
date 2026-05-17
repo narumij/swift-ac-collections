@@ -130,7 +130,7 @@ import Foundation
     //  public subscript(position: Index) -> Element {
     public subscript(position: Index) -> (key: _Key, value: _MappedValue) {
       //    @inline(__always) get { ___element(self[_checked: position]) }
-      @inline(__always) get { self[_checked: position] }
+      self[_checked: position]
     }
   }
 

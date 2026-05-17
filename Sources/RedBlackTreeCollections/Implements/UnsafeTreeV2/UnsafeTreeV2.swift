@@ -161,7 +161,6 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  @inline(__always)
   internal subscript(_unsafe position: UnsafeIndexV3) -> _PayloadValue {
 
     @inline(__always)

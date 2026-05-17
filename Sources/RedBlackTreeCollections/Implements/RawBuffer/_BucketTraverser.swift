@@ -42,9 +42,8 @@ struct _BucketTraverser: _UnsafeNodePtrType {
   @usableFromInline let stride: Int
 
   @inlinable
-  @inline(__always)
   subscript(index: Int) -> _NodePtr {
-    _read {
+    @inline(__always) _read {
       yield
       UnsafeMutableRawPointer(start)
         .advanced(by: stride * index)

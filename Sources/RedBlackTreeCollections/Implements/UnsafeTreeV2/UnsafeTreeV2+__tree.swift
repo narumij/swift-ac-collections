@@ -76,7 +76,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   package var __size_: Int {
-    @inline(__always) get {
+    get {
       withMutableHeader { $0.count }
     }
     nonmutating set {

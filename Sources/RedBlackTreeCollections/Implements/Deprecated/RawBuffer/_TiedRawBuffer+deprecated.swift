@@ -48,7 +48,6 @@ extension _TiedRawBuffer {
 
   @nonobjc
   @inlinable
-  @inline(__always)
   var begin_ptr: UnsafeMutablePointer<_NodePtr>? {
     header.bucketHead?.begin_ptr
   }
@@ -58,7 +57,6 @@ extension _TiedRawBuffer {
 
   @nonobjc
   @inlinable
-  @inline(__always)
   var end_ptr: _NodePtr? {
     header.bucketHead?.end_ptr
   }
@@ -73,7 +71,6 @@ extension _TiedRawBuffer {
     ///
     /// 日本人的にはお祭りなどによくある千本引きのイメージ
     @inlinable
-    @inline(__always)
     package func __retrieve_(_ tag: _TrackingTag) -> _SafePtr {
       switch tag {
       case .nullptr: .failure(.null)
@@ -87,7 +84,6 @@ extension _TiedRawBuffer {
 extension _TiedRawBuffer {
 
   @inlinable
-  @inline(__always)
   package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
     switch tag {
     case .end:
@@ -106,7 +102,6 @@ extension _TiedRawBuffer {
   ///
   /// 日本人的にはお祭りなどによくある千本引きのイメージ
   @inlinable
-  @inline(__always)
   package func __retrieve_(_ tag: _SealedTag) -> _SealedPtr {
     tag.flatMap { ___retrieve(tag: $0) }
   }

@@ -9,7 +9,6 @@
   extension UnsafeTreeV2 {
 
     @inlinable
-    @inline(__always)
     internal func
       ___for_each_(__p: _SealedPtr, __l: _SealedPtr, body: (_NodePtr) throws -> Void)
       rethrows
@@ -20,7 +19,6 @@
     }
 
     @inlinable
-    @inline(__always)
     internal func ___rev_for_each_(
       __p: _SealedPtr, __l: _SealedPtr, body: (_NodePtr) throws -> Void
     )
@@ -35,7 +33,6 @@
   extension UnsafeTreeV2 {
 
     @inlinable
-    @inline(__always)
     internal func ___for_each(
       __p: _SealedPtr, __l: _SealedPtr, body: (_NodePtr, inout Bool) throws -> Void
     )
@@ -56,7 +53,6 @@
 extension UnsafeTreeV2 {
 
     @inlinable
-    @inline(__always)
     internal func
       sequence(_ __first: _SealedPtr, _ __last: _SealedPtr) -> UnsafeIterator._RemoveAwarePointers
     {

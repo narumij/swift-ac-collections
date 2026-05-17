@@ -75,7 +75,6 @@
     ///
     /// - Complexity: O(*n*)
     @inlinable
-    @inline(__always)
     internal static func
       create_multi(sorted elements: __owned [Base._PayloadValue]) -> UnsafeTreeV2
     where Base._Key: Comparable {

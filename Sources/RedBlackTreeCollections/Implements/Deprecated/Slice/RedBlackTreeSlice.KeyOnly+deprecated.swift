@@ -20,7 +20,6 @@
 
     @available(*, deprecated, message: "性能問題があり廃止")
     @inlinable
-    @inline(__always)
     public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
       try _forEach(body)
     }
@@ -32,7 +31,6 @@
 
     /// - Complexity: O(log *n*)
     @inlinable
-    @inline(__always)
     public subscript(bounds: Range<Index>) -> SubSequence {
       return .init(
         tree: __tree_,
@@ -53,7 +51,6 @@
     ///
     ///   ベースがmultiset, multimapの場合 O(log *n*)
     @inlinable
-    @inline(__always)
     public func isValid<R: RangeExpression>(
       _ bounds: R
     ) -> Bool where R.Bound == Index {
@@ -70,7 +67,6 @@ extension RedBlackTreeSliceV2.KeyOnly {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   public var indices: Indices {
     _indices
   }

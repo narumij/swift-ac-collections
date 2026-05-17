@@ -42,7 +42,6 @@ extension ___UnsafeKeyValueSequenceV2__ {
 extension ___UnsafeKeyValueSequenceV2__ {
 
   @inlinable
-  @inline(__always)
   internal func _makeIterator() -> Tree._KeyValues {
     #if !COMPATIBLE_ATCODER_2025
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
@@ -56,14 +55,12 @@ extension ___UnsafeKeyValueSequenceV2__ {
 
   /// - Complexity: O(*n*)
   @inlinable
-  @inline(__always)
   internal func _sorted() -> [Element] {
     __tree_.___copy_to_array(
       _sealed_start.pointer!, _sealed_end.pointer!, transform: Base.__element_)
   }
 
   @inlinable
-  @inline(__always)
   internal func _reversed() -> Tree._KeyValues.Reversed {
     #if !COMPATIBLE_ATCODER_2025
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
@@ -79,7 +76,6 @@ extension ___UnsafeKeyValueSequenceV2__ {
   public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
   @inlinable
-  @inline(__always)
   internal func _keys() -> Keys {
     #if !COMPATIBLE_ATCODER_2025
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
@@ -90,7 +86,6 @@ extension ___UnsafeKeyValueSequenceV2__ {
 
   /// - Complexity: O(1)
   @inlinable
-  @inline(__always)
   internal func _values() -> Values {
     #if !COMPATIBLE_ATCODER_2025
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
@@ -126,7 +121,6 @@ extension ___UnsafeKeyValueSequenceV2__ {
 
   #if COMPATIBLE_ATCODER_2025
     @inlinable
-    @inline(__always)
     internal func _forEach(_ body: (Element) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
         try body(Base.__element_(__tree_[_unsafe_raw: $0]))
@@ -143,7 +137,6 @@ extension ___UnsafeKeyValueSequenceV2__ {
 
     @available(*, deprecated, message: "性能問題があり廃止")
     @inlinable
-    @inline(__always)
     internal func _forEach(_ body: (Index, Element) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
         try body(___index($0.sealed), Base.__element_(__tree_[_unsafe_raw: $0]))
@@ -167,7 +160,6 @@ extension ___UnsafeKeyValueSequenceV2__ {
   extension ___UnsafeKeyValueSequenceV2 {
 
     @inlinable
-    @inline(__always)
     internal func ___first_index(where predicate: (Element) throws -> Bool) rethrows -> Index? {
       var result: Index?
       try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in

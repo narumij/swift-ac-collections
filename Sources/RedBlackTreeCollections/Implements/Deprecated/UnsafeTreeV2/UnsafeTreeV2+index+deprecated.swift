@@ -23,19 +23,16 @@
   extension UnsafeTreeV2 {
 
     @inlinable
-    @inline(__always)
     internal func ___index(after i: _SealedPtr) -> _SealedPtr {
       i.flatMap { ___tree_next_iter($0.pointer) }.sealed
     }
 
     @inlinable
-    @inline(__always)
     internal func ___index(before i: _SealedPtr) -> _SealedPtr {
       i.flatMap { ___tree_prev_iter($0.pointer) }.sealed
     }
 
     @inlinable
-    @inline(__always)
     internal func ___index(_ i: _SealedPtr, offsetBy distance: Int) -> _SealedPtr {
       i.flatMap { ___tree_adv_iter($0.pointer, distance) }.sealed
     }
@@ -46,7 +43,6 @@
   extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
     @inlinable
-    @inline(__always)
     internal func
       ___distance(from start: _SealedPtr, to end: _SealedPtr) -> Int?
     {

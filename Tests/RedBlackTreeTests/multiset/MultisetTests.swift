@@ -17,6 +17,13 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.count(of: 0), 0)
   }
 
+  #if DEBUG
+    func testInitEmtpyLiteral() throws {
+      let set: RedBlackTreeMultiSet<Int> = []
+      XCTAssertTrue(set.__tree_.isReadOnly)
+    }
+  #endif
+
   func testRedBlackTreeCapacity() throws {
     var numbers: RedBlackTreeMultiSet<Int> = .init(minimumCapacity: 3)
     XCTAssertGreaterThanOrEqual(numbers.capacity, 3)

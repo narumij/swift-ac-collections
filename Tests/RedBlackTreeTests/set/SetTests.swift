@@ -27,6 +27,13 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.count(of: 0), 0)
   }
 
+  #if DEBUG
+    func testInitEmtpyLiteral() throws {
+      let set: RedBlackTreeSet<Int> = []
+      XCTAssertTrue(set.__tree_.isReadOnly)
+    }
+  #endif
+
   func testRedBlackTreeCapacity() throws {
     var numbers: RedBlackTreeSet<Int> = .init(minimumCapacity: 3)
     XCTAssertGreaterThanOrEqual(numbers.capacity, 3)
@@ -491,7 +498,7 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertTrue(s.update(with: a) === b)
     XCTAssertEqual(s.update(with: A(x: 10, label: "c")), nil)
   }
-  
+
   func testRedBlackTreeSetUpdate_() throws {
     let a = A(x: 3, label: "a")
     let b = A(x: 3, label: "b")

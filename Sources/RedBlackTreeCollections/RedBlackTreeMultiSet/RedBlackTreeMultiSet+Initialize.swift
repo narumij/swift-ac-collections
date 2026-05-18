@@ -56,11 +56,15 @@ extension RedBlackTreeMultiSet {
     @inlinable
     public init<Source>(_ collection: __owned Source)
     where Element == Source.Element, Source: Collection {
-      self.init(
-        __tree_:
-          .___insert_range_multi(
-            tree: .create(minimumCapacity: collection.count),
-            collection))
+      if collection.isEmpty {
+        self.init()
+      } else {
+        self.init(
+          __tree_:
+            .___insert_range_multi(
+              tree: .create(minimumCapacity: collection.count),
+              collection))
+      }
     }
   }
 #endif

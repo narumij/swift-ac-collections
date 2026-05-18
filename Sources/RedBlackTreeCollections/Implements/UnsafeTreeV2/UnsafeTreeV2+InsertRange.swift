@@ -48,7 +48,7 @@ extension UnsafeTreeV2 {
     var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while __first != __last {
-      __tree_.ensureCapacity()
+      __tree_.unsafeEnsureCapacity()
       let __nd = __tree_.__construct_node(__source.__value_(__first))
       __first = __source.__tree_next_iter(__first)
 
@@ -102,7 +102,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while __i != __last {
-      __tree_.ensureCapacity()
+      __tree_.unsafeEnsureCapacity()
       let __nd = __tree_.__construct_node(__source.__value_(__i))
       __i = __source.__tree_next_iter(__i)
 
@@ -210,7 +210,7 @@ extension UnsafeTreeV2 {
     var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while let __element = it.next() {
-      __tree_.ensureCapacity()
+      __tree_.unsafeEnsureCapacity()
       let __nd = __tree_.__construct_node(transform(__element))
       if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
         __tree_.__insert_node_at(__max_node, __max_node.__right_ref, __nd)
@@ -258,7 +258,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while let __element = it.next().map(__t_) {
-      __tree_.ensureCapacity()
+      __tree_.unsafeEnsureCapacity()
       let __nd = __tree_.__construct_node(__element)
       if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
         __tree_.__insert_node_at(__max_node, __max_node.__right_ref, __nd)
@@ -314,7 +314,7 @@ extension UnsafeTreeV2 {
     var __max_node = __tree_.__tree_max(__tree_.__root)
 
     while let __element = it.next() {
-      __tree_.ensureCapacity()
+      __tree_.unsafeEnsureCapacity()
       let __nd = __tree_.__construct_node(transform(__element))
       // Always check the max node first. This optimizes for sorted ranges inserted at the end.
       if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) {  // __node >= __max_val

@@ -38,26 +38,11 @@ extension RedBlackTreeDictionary {
     @inlinable
     public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
     where S: Sequence, S.Element == (Key, Value) {
+      // TODO: 重複があった場合に落ちるのが正しいかも？
       self.init(
         __tree_:
           .___insert_range_unique(
             tree: .create(),
-            keysAndValues,
-            transform: { Base.__payload_($0) }))
-    }
-
-    /// - Complexity: O(*n* log *n*)
-    ///   When inserting elements sequentially from an already sorted sequence,
-    ///   no search is required, and rebalancing is amortized O(1),
-    ///   so the overall construction cost becomes O(*n*).
-    @inlinable
-    public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
-    where S: Collection, S.Element == (Key, Value) {
-      self.init(
-        __tree_:
-          .___insert_range_unique(
-            tree:
-              .create(minimumCapacity: keysAndValues.count),
             keysAndValues,
             transform: { Base.__payload_($0) }))
     }
@@ -90,7 +75,7 @@ extension RedBlackTreeDictionary {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == [S.Element] {
-
+    // TODO: sortedは廃止したつもりだったが残っている
     self.init(
       __tree_: try .create_unique(
         sorted: try values.sorted {

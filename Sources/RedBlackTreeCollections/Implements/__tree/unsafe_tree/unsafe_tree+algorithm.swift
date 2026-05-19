@@ -25,24 +25,24 @@ package protocol TreeAlgorithmBaseProtocol_ptr:
 extension TreeAlgorithmBaseProtocol_ptr {
 
   /*
-  
+
    _NodePtr algorithms
-  
+
    The algorithms taking _NodePtr are red black tree algorithms.  Those
    algorithms taking a parameter named __root should assume that __root
    points to a proper red black tree (unless otherwise specified).
-  
+
    Each algorithm herein assumes that __root->__parent_ points to a non-null
    structure which has a member __left_ which points back to __root.  No other
    member is read or written to at __root->__parent_.
-  
+
    __root->__parent_ will be referred to below (in comments only) as end_node.
    end_node->__left_ is an externably accessible lvalue for __root, and can be
    changed by node insertion and removal (without explicit reference to end_node).
-  
+
    All nodes (with the exception of end_node), even the node referred to as
    __root, have a non-null __parent_ field.
-  
+
    */
 
   /// Returns:  true if `__x` is a left child of its parent, else false
@@ -169,6 +169,7 @@ extension TreeAlgorithmBaseProtocol_ptr {
   /// to the actual root of the tree through a `__left_` pointer. Incrementing the end() pointer is UB, so we can assume that
   /// never happens.
   @inlinable
+  @inline(__always)
   package func
     __tree_next_iter(_ __x: _NodePtr) -> _NodePtr
   {
@@ -291,7 +292,7 @@ extension TreeAlgorithmProtocol_ptr {
   /// Postcondition: `__tree_invariant(end_node->__left_)` == true.  end_node->`__left_`
   ///                may be different than the value passed in as `__root`.
   @inlinable
-//  @inline(never)
+  //  @inline(never)
   package func
     _ptr__tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
   {
@@ -351,7 +352,7 @@ extension TreeAlgorithmProtocol_ptr {
   ///                nor any of its children refer to `__z`.  end_node->`__left_`
   ///                may be different than the value passed in as `__root`.
   @inlinable
-//  @inline(never)
+  //  @inline(never)
   package func
     _ptr__tree_remove(_ __root: _NodePtr, _ __z: _NodePtr)
   {

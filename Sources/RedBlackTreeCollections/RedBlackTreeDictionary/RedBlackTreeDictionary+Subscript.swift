@@ -36,7 +36,7 @@ extension RedBlackTreeDictionary {
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
     
-    get {
+    @inline(__always) get {
       __tree_[key] ?? defaultValue()
     }
     
@@ -48,8 +48,8 @@ extension RedBlackTreeDictionary {
       
       let (__parent, __child) = __tree_.__find_equal(key)
       
-      if __child.pointee.___is_null {
-        __tree_.ensureCapacity()
+      if __child.pointee == .nullptr {
+        __tree_.unsafeEnsureCapacity()
         assert(__tree_.capacity > __tree_.count)
         __tree_.update {
           let __h = $0.__construct_node(Base.__payload_((key, defaultValue())))

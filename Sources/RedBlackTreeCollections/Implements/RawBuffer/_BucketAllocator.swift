@@ -178,6 +178,7 @@ extension _BucketAllocator {
 extension _BucketAllocator {
 
   @inlinable
+  @inline(__always)
   package func _allocationSize(capacity: Int) -> Int {
     let s2 = MemoryLayout<_Bucket>.stride
     let s01 = _pair.stride
@@ -188,7 +189,7 @@ extension _BucketAllocator {
 
 extension _BucketAllocator {
 
-  @inlinable
+  @usableFromInline
   package func deinitialize(bucket b: _BucketPointer?) {
     var reserverHead = b
     if let h = reserverHead {

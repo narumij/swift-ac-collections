@@ -11,7 +11,9 @@ func keyValue<K, V>(_ kv: (K, V)) -> (key: K, value: V) {
   (kv.0, kv.1)
 }
 func _value<K, V>(_ k: K, _ v: V) -> RedBlackTreePair<K, V> { RedBlackTreePair(key: k, value: v) }
-func _value<K, V>(_ kv: (K, V)) -> RedBlackTreePair<K, V> { RedBlackTreePair(key: kv.0, value: kv.1) }
+func _value<K, V>(_ kv: (K, V)) -> RedBlackTreePair<K, V> {
+  RedBlackTreePair(key: kv.0, value: kv.1)
+}
 
 func tuple<K, V>(_ kv: (key: K, value: V)) -> (K, V) {
   (kv.key, kv.value)
@@ -59,6 +61,17 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertNil(map.last)
     XCTAssertEqual(map.distance(from: map.startIndex, to: map.endIndex), 0)
   }
+
+  #if DEBUG
+    func testInitEmtpyArrayLiteral() throws {
+      let set: Target<Int, Int> = []
+      XCTAssertTrue(set.__tree_.isReadOnly)
+    }
+    func testInitEmtpyDictionaryLiteral() throws {
+      let set: Target<Int, Int> = [:]
+      XCTAssertTrue(set.__tree_.isReadOnly)
+    }
+  #endif
 
   func testRedBlackTreeCapacity() throws {
     var numbers: Target<Int, Int> = .init(minimumCapacity: 3)

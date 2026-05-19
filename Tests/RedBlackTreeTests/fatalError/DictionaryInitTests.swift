@@ -6,20 +6,22 @@
 //
 
 import Foundation
-import Testing
 import RedBlackTreeModule
+import Testing
 
-struct DictionaryInitTests {
+#if DEATH_TEST
+  struct DictionaryInitTests {
 
-  @Test func `標準辞書で落ちるかどうか？`() async throws {
-    await #expect(processExitsWith: .signal(SIGTRAP)) {
-      _ = [Int: Int](uniqueKeysWithValues: [(1, 1), (1, 2)])
+    @Test func `標準辞書で落ちるかどうか？`() async throws {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        _ = [Int: Int](uniqueKeysWithValues: [(1, 1), (1, 2)])
+      }
+    }
+
+    @Test func `辞書で落ちるかどうか？`() async throws {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        _ = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: [(1, 1), (1, 2)])
+      }
     }
   }
-  
-  @Test func `辞書で落ちるかどうか？`() async throws {
-    await #expect(processExitsWith: .signal(SIGTRAP)) {
-      _ = RedBlackTreeDictionary<Int,Int>(uniqueKeysWithValues: [(1, 1), (1, 2)])
-    }
-  }
-}
+#endif

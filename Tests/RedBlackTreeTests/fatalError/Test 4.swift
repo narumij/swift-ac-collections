@@ -34,7 +34,7 @@ fileprivate var _end: UnsafeMutablePointer<UnsafeNode> {
 nonisolated
 struct Test_4 {
   
-  enum SUT: _BaseNode_PtrUniqueCompProtocol {
+  enum SUT: UniqueMultiplicity {
     static func value_comp(_: Int, _: Int) -> Bool {
       fatalError()
     }
@@ -48,25 +48,25 @@ struct Test_4 {
 
   @Test mutating func `___ptr_comp_uniqueのassertその1`() async throws {
     await #expect(processExitsWith: .signal(SIGTRAP)) {
-      #expect(SUT.___ptr_comp_unique(.nullptr, _start) == true)
+      #expect(SUT._MultiplicityHelper.___ptr_comp_unique(.nullptr, _start) == true)
     }
   }
 
   @Test mutating func `___ptr_comp_uniqueのassertその2`() async throws {
     await #expect(processExitsWith: .signal(SIGTRAP)) {
-      #expect(SUT.___ptr_comp_unique(_end, _start) == true)
+      #expect(SUT._MultiplicityHelper.___ptr_comp_unique(_end, _start) == true)
     }
   }
 
   @Test mutating func `___ptr_comp_uniqueのassertその3`() async throws {
     await #expect(processExitsWith: .signal(SIGTRAP)) {
-      #expect(SUT.___ptr_comp_unique(_start, .nullptr) == true)
+      #expect(SUT._MultiplicityHelper.___ptr_comp_unique(_start, .nullptr) == true)
     }
   }
 
   @Test mutating func `___ptr_comp_uniqueのassertその4`() async throws {
     await #expect(processExitsWith: .signal(SIGTRAP)) {
-      #expect(SUT.___ptr_comp_unique(_start, _end) == true)
+      #expect(SUT._MultiplicityHelper.___ptr_comp_unique(_start, _end) == true)
     }
   }
 }

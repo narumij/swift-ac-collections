@@ -38,7 +38,6 @@ extension RedBlackTreeDictionary {
     @inlinable
     public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
     where S: Sequence, S.Element == (Key, Value) {
-      // TODO: 重複があった場合に落ちるのが正しいかも？
       self.init(
         __tree_:
           .___insert_range_unique(

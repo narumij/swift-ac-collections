@@ -56,7 +56,7 @@ extension RedBlackTreeDictionary {
     _ keysAndValues: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
-
+    // TODO: sortedは廃止したつもりだったが残っている
     self.init(
       __tree_: try .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },

@@ -46,6 +46,8 @@ extension RedBlackTreeDictionary {
             transform: { Base.__payload_($0) }))
     }
 
+    // TODO: いつか消す
+    // いまはベンチが落ちるので消していない
     /// - Complexity: O(*n* log *n*)
     ///   When inserting elements sequentially from an already sorted sequence,
     ///   no search is required, and rebalancing is amortized O(1),
@@ -57,7 +59,7 @@ extension RedBlackTreeDictionary {
         __tree_:
           .___insert_range_unique(
             tree:
-              .create(minimumCapacity: keysAndValues.count),
+              .create(),
             keysAndValues,
             transform: { Base.__payload_($0) }))
     }
@@ -72,7 +74,7 @@ extension RedBlackTreeDictionary {
     _ keysAndValues: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
-
+    // TODO: sortedは廃止したつもりだったが残っている
     self.init(
       __tree_: try .create_unique(
         sorted: keysAndValues.sorted { $0.0 < $1.0 },
@@ -90,7 +92,7 @@ extension RedBlackTreeDictionary {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == [S.Element] {
-
+    // TODO: sortedは廃止したつもりだったが残っている
     self.init(
       __tree_: try .create_unique(
         sorted: try values.sorted {

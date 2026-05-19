@@ -39,7 +39,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  @usableFromInline
+  @inlinable
   internal func
     ___copy_all_to_array() -> [_PayloadValue]
   {
@@ -56,7 +56,7 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @usableFromInline
+  @inlinable
   internal func
     ___rev_copy_all_to_array() -> [_PayloadValue]
   {
@@ -73,7 +73,7 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @usableFromInline
+  @inlinable
   internal func
     ___copy_all_to_array<T>(transform: (_PayloadValue) -> T)
     -> [T]
@@ -91,7 +91,7 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @usableFromInline
+  @inlinable
   internal func
     ___rev_copy_all_to_array<T>(transform: (_PayloadValue) -> T) -> [T]
   {
@@ -108,7 +108,7 @@ extension UnsafeTreeV2 {
     }
   }
 
-  @usableFromInline
+  @inlinable
   internal func
     ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
   {
@@ -121,7 +121,7 @@ extension UnsafeTreeV2 {
     return result
   }
 
-  @usableFromInline
+  @inlinable
   internal func
     ___rev_copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
   {
@@ -134,7 +134,7 @@ extension UnsafeTreeV2 {
     return result
   }
 
-  @usableFromInline
+  @inlinable
   internal func
     ___copy_to_array<T>(
       _ __first: _NodePtr, _ __last: _NodePtr, transform: (_PayloadValue) -> T
@@ -149,7 +149,7 @@ extension UnsafeTreeV2 {
     return result
   }
 
-  @usableFromInline
+  @inlinable
   internal func
     ___rev_copy_to_array<T>(
       _ __first: _NodePtr, _ __last: _NodePtr, transform: (_PayloadValue) -> T
@@ -201,7 +201,7 @@ extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
 
 extension UnsafeTreeV2 {
 
-  @usableFromInline
+  @inlinable
   internal func ___filter(
     _ __first: _NodePtr,
     _ __last: _NodePtr,

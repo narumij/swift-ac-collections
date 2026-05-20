@@ -290,6 +290,7 @@ extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparab
 // MARK: - Is Identical To
 
 extension RedBlackTreeKeyOnlyRangeView {
+  
   @inlinable
   public func _isIdentical(to other: Self) -> Bool {
     let (_start, _end) = _range

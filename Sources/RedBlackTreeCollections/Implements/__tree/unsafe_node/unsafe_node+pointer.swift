@@ -21,6 +21,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   public typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
 
   @inlinable
+  @inline(__always)
   nonisolated(unsafe)
   static var nullptr: _NodePtr {
     UnsafeNode.nullptr
@@ -28,26 +29,26 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   var __left_: _NodePtr {
-    _read { yield pointee.__left_ }
+    @inline(__always) _read { yield pointee.__left_ }
     nonmutating _modify { yield &pointee.__left_ }
   }
 
   @inlinable
   var __right_: _NodePtr {
-    _read { yield pointee.__right_ }
+    @inline(__always) _read { yield pointee.__right_ }
     nonmutating _modify { yield &pointee.__right_ }
   }
 
   @inlinable
   var __parent_: _NodePtr {
-    _read { yield pointee.__parent_ }
+    @inline(__always) _read { yield pointee.__parent_ }
     nonmutating _modify { yield &pointee.__parent_ }
   }
   
   // NOTE: 移植の命名互換のための別名。意味は`__parent_`と同じ。
   @inlinable
   var __parent_unsafe: _NodePtr {
-    _read { yield pointee.__parent_ }
+    @inline(__always) _read { yield pointee.__parent_ }
     nonmutating _modify { yield &pointee.__parent_ }
   }
 
@@ -58,16 +59,18 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   var __is_black_: Bool {
-    _read { yield pointee.__is_black_ }
+    @inline(__always) _read { yield pointee.__is_black_ }
     nonmutating _modify { yield &pointee.__is_black_ }
   }
 
   @inlinable
+  @inline(__always)
   var __left_ref: _NodeRef {
     _ref(to: &pointee.__left_)
   }
 
   @inlinable
+  @inline(__always)
   var __right_ref: _NodeRef {
     _ref(to: &pointee.__right_)
   }

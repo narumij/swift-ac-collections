@@ -55,13 +55,11 @@ extension RedBlackTreeDictionary {
       @inlinable
       public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
       where S: Collection, S.Element == (Key, Value) {
-        self.init(
-          __tree_:
-            .___insert_range_unique(
-              tree:
-                .create(),
-              keysAndValues,
-              transform: { Base.__payload_($0) }))
+        var tree = Tree.create()
+        tree.___insert_range_unique(keysAndValues) {
+          Base.__payload_($0)
+        }
+        self.init(__tree_: tree)
       }
     #endif
   }

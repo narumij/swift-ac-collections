@@ -20,6 +20,7 @@
 // C++のbidirectional_iterator相当と対応するコンテナ機能を定義している
 //
 // 平衡木の部分についても適応可能なことが望ましい
+#if DEBUG
 public protocol BalancedSequence: Sequence {
 
   var isEmpty: Bool { get }  // TODO: 取り除きたいが、取り除くとベンチが悪化するので放置している
@@ -154,10 +155,11 @@ public protocol BalancedView: BalancedSequence {
   mutating func erase() -> Index
   mutating func erase(where: (Element) throws -> Bool) rethrows
 }
+#endif
 
 // MARK: -
 
-#if !COMPATIBLE_ATCODER_2025
+#if DEBUG && !COMPATIBLE_ATCODER_2025
   // TODO: プロトコル適合を外したいが、なぜか性能に影響するので、外せずにいる
   extension RedBlackTreeSet: BalancedCollection {}
   extension RedBlackTreeDictionary: BalancedCollection {}

@@ -73,12 +73,10 @@ extension RedBlackTreeMultiMap {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == S.Element {
-    self.init(
-      __tree_: try .create_multi(
-        sorted: try values.sorted {
-          try keyForValue($0) < keyForValue($1)
-        },
-        by: keyForValue
-      ))
+    self.init(__tree_:
+        try .___insert_range_multi(
+          tree: .create(),
+          values,
+          transform: { Base.__payload_((try keyForValue($0), $0)) }))
   }
 }

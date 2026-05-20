@@ -325,8 +325,8 @@ extension UnsafeTreeV2 {
     ___insert_range_multi<S>(
       tree __tree_: UnsafeTreeV2,
       _ __source: __owned S,
-      transform: (S.Element) -> Base._PayloadValue
-    )
+      transform: (S.Element) throws -> Base._PayloadValue
+    ) rethrows
     -> UnsafeTreeV2
   where S: Sequence {
     var __tree_ = __tree_
@@ -336,7 +336,7 @@ extension UnsafeTreeV2 {
     if __tree_.__root == __tree_.nullptr, let __element = it.next() {  // Make sure we always have a root node
       __tree_.ensureCapacity()
       __tree_.__insert_node_at(
-        __tree_.end, __tree_.end.__left_ref, __tree_.__construct_node(transform(__element))
+        __tree_.end, __tree_.end.__left_ref, __tree_.__construct_node(try transform(__element))
       )
     }
 
@@ -346,7 +346,7 @@ extension UnsafeTreeV2 {
 
     while let __element = it.next() {
       __tree_.unsafeEnsureCapacity()
-      let __nd = __tree_.__construct_node(transform(__element))
+      let __nd = __tree_.__construct_node(try transform(__element))
       // Always check the max node first. This optimizes for sorted ranges inserted at the end.
       if !__tree_.value_comp(__tree_.__get_value(__nd), __tree_.__get_value(__max_node)) {  // __node >= __max_val
         __tree_.__insert_node_at(__max_node, __max_node.__right_ref, __nd)

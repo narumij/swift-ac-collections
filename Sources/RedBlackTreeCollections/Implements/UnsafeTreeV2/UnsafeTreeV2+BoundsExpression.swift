@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 extension RedBlackTreeBoundExpression {
 
   @inlinable

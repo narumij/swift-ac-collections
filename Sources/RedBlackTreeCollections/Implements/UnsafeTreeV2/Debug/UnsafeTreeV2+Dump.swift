@@ -6,6 +6,8 @@
 //
 
 #if DEBUG
+  fileprivate import Foundation
+
   extension UnsafeTreeV2 {
 
     func dump(label: String = "") {

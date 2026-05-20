@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 @usableFromInline
 package final class UnsafeTreeV2Buffer:
   ManagedBuffer<UnsafeTreeV2BufferHeader, Void>

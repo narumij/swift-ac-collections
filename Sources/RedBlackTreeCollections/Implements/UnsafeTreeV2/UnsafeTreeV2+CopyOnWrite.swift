@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 extension UnsafeTreeV2 {
 
   @inlinable

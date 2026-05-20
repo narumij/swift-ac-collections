@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 public struct _LinkingPair<Key, Value>: _UnsafeNodePtrType {
 
   @inlinable

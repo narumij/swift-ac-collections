@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 #if COMPATIBLE_ATCODER_2025
   public enum RedBlackTreeSliceV2<Base> {}
 

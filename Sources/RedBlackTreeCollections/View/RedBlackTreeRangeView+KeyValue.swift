@@ -257,8 +257,7 @@ extension RedBlackTreeKeyValueRangeView {
     let result = try __tree_.___erase_ragen_if(
       _start, _end, { try shouldBeRemoved(Base.__element_($0)) })
     if case .failure(let e) = result {
-      // fatalError(e.localizedDescription)
-      fatalError()  // TODO: FIX ME
+      fatalError(errorMessage(e))
     }
   }
 }

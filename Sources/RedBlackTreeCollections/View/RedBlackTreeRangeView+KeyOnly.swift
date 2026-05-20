@@ -237,8 +237,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     let (_start, _end) = _range
     let result = try __tree_.___erase_ragen_if(_start, _end, shouldBeRemoved)
     if case .failure(let e) = result {
-      // fatalError(e.localizedDescription)
-      fatalError()  // TODO: FIX ME
+      fatalError(errorMessage(e))
     }
   }
 }

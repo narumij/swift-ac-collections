@@ -389,8 +389,7 @@ extension RedBlackTreeMultiMap {
         __tree_.__end_node.sealed,
         { try shouldBeRemoved(Base.__element_($0)) })
       if case .failure(let e) = result {
-        // fatalError(e.localizedDescription)
-        fatalError()  // TODO: FIX ME
+        fatalError(errorMessage(e))
       }
     }
   }

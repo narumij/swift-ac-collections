@@ -107,6 +107,30 @@ public enum SealError: Error {
   case upperOutOfBounds
 }
 
+@usableFromInline
+func errorMessage<E: Error>(_ e: E) -> String {
+  switch e as? SealError {
+  case .null:
+    "Unexpected null pointer"
+  case .garbaged:
+    "Unexpected pointer to deallocated memory"
+  case .unknown:
+    "Unknown error"
+  case .limit:
+    "Reached the specified limit"
+  case .notAllowed:
+    "The pointer is no longer valid"
+  case .unsealed:
+    "The pointer is being used as a different node"
+  case .lowerOutOfBounds:
+    "Operation exceeded the lower bound of the balanced tree"
+  case .upperOutOfBounds:
+    "Operation exceeded the upper bound of the balanced tree"
+  default:
+    "\(e)"
+  }
+}
+
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable

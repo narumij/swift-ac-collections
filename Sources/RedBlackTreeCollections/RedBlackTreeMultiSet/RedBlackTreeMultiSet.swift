@@ -353,8 +353,7 @@ extension RedBlackTreeMultiSet {
         __tree_.__end_node.sealed,
         shouldBeRemoved)
       if case .failure(let e) = result {
-        // fatalError(e.localizedDescription)
-        fatalError()  // TODO: FIX ME
+        fatalError(errorMessage(e))
       }
     }
   }

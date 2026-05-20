@@ -77,7 +77,7 @@ extension UnsafeTreeV2 {
 
 // MARK: -
 
-#if true
+#if false
   extension UnsafeTreeV2 where Base: PairValueTrait {
 
     /// ソート済みの配列から木を生成する

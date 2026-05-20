@@ -167,6 +167,7 @@ internal func
 /// to the actual root of the tree through a `__left_` pointer. Incrementing the end() pointer is UB, so we can assume that
 /// never happens.
 @inlinable
+@inline(__always)
 internal func
   __tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {

@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 public enum RedBlackTreeIteratorV2 {}
 
 extension RedBlackTreeIteratorV2 {

@@ -36,7 +36,9 @@ class RedBlackTreeTestCase: XCTestCase {
       fatalError("singleton bufffer broken")
     }
     #if DEBUG
-      XCTAssertNil(_emptyTreeStorage.header._tied)
+      // XCTAssertNil(_emptyTreeStorage.header._tied)
+      // ホットパス改善のため最初から結束バンド済みにした
+      XCTAssertNotNil(_emptyTreeStorage.header._tied)
       XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
       XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)
 

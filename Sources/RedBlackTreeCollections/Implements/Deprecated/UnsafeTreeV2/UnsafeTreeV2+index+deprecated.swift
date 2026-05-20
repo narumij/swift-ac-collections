@@ -10,16 +10,12 @@
 
     public typealias Index = UnsafeIndexV2<Base>
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 where Base: ___TreeIndex {
 
     public typealias Indices = UnsafeIndexV2Collection<Base>
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 {
 
     @inlinable
@@ -37,9 +33,7 @@
       i.flatMap { ___tree_adv_iter($0.pointer, distance) }.sealed
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
     @inlinable

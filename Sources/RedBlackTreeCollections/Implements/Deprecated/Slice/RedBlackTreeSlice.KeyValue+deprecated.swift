@@ -1,8 +1,6 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2.KeyValue: Collection & BidirectionalCollection {}
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2.KeyValue {
 
     /// - Complexity: O(1)
@@ -17,9 +15,7 @@
       _values()
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2.KeyValue {
 
     @available(*, deprecated, message: "性能問題があり廃止")
@@ -28,9 +24,7 @@
       try _forEach(body)
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2.KeyValue {
 
     @available(*, deprecated)
@@ -41,9 +35,7 @@
         end: __tree_.__purified_(bounds.upperBound))
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2.KeyValue {
 
     /// - Complexity: O(log *n*)
@@ -55,9 +47,7 @@
         end: __tree_.__purified_(bounds.upperBound))
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2.KeyValue {
 
     /// RangeExpressionがsubscriptやremoveで利用可能か判別します

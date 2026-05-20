@@ -16,13 +16,13 @@
 //===----------------------------------------------------------------------===//
 
 #if COMPATIBLE_ATCODER_2025
-public protocol UnsafeIndexBindingV2: UnsafeTreeBindingV2
-where Index == UnsafeTreeV2<Base>.Index, Base: ___TreeIndex {
-  associatedtype Index
-}
+  public protocol UnsafeIndexBindingV2: UnsafeTreeBindingV2
+  where Index == UnsafeTreeV2<Base>.Index, Base: ___TreeIndex {
+    associatedtype Index
+  }
 
-@usableFromInline
-protocol UnsafeIndexProviderProtocolV2: UnsafeIndexBindingV2 & UnsafeTreeHostV2 {
-  func ___index(_ p: _SealedPtr) -> Index
-}
+  @usableFromInline
+  protocol UnsafeIndexProviderProtocolV2: UnsafeIndexBindingV2 & UnsafeTreeHostV2 {
+    func ___index(_ p: _SealedPtr) -> Index
+  }
 #endif

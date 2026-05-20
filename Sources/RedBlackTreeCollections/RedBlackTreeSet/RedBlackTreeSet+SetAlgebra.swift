@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 extension RedBlackTreeSet: SetAlgebra {
 
   /// Returns a new set with the elements of both this and the given set.

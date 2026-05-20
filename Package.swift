@@ -6,12 +6,12 @@ import PackageDescription
 
 var defines: [String] = [
   //  "TREE_INVARIANT_CHECKS",
-  "GRAPHVIZ_DEBUG",
+  //  "GRAPHVIZ_DEBUG",
   //  "USING_ALGORITHMS",
   //  "USING_COLLECTIONS",
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "PERFOMANCE_CHECK",
-  "WITHOUT_SIZECHECK",
+  "WITHOUT_SIZECHECK"
   //  "USE_OLD_FIND",
   //    "DEATH_TEST",
   //  "BENCHMARK",

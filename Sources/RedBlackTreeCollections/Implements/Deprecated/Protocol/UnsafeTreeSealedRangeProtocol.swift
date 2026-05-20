@@ -5,13 +5,14 @@
 //  Created by narumij on 2026/02/05.
 //
 
-@usableFromInline
-protocol UnsafeTreeSealedRangeProtocol: UnsafeTreeSealedRangeBaseInterfaceV2, _PayloadValueBride {}
+#if COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  protocol UnsafeTreeSealedRangeProtocol: UnsafeTreeSealedRangeBaseInterfaceV2, _PayloadValueBride {
+  }
 
-extension UnsafeTreeSealedRangeProtocol {
+  extension UnsafeTreeSealedRangeProtocol {
 
-  #if COMPATIBLE_ATCODER_2025
-  @inlinable
+    @inlinable
     internal func ___first(where predicate: (_PayloadValue) throws -> Bool) rethrows
       -> _PayloadValue?
     {
@@ -24,13 +25,11 @@ extension UnsafeTreeSealedRangeProtocol {
       }
       return result
     }
-  #endif
-}
+  }
 
-extension UnsafeTreeSealedRangeProtocol {
+  extension UnsafeTreeSealedRangeProtocol {
 
-  #if COMPATIBLE_ATCODER_2025
-  @inlinable
+    @inlinable
     internal func ___first_(where predicate: (_PayloadValue) throws -> Bool) rethrows
       -> _SealedPtr?
     {
@@ -43,15 +42,15 @@ extension UnsafeTreeSealedRangeProtocol {
       }
       return __r.sealed
     }
-  #endif
-}
-
-extension UnsafeTreeSealedRangeProtocol {
-
-  @inlinable
-  internal func _isIdentical(to other: Self) -> Bool {
-    __tree_.isIdentical(to: other.__tree_)
-      && _sealed_start == other._sealed_start
-      && _sealed_end == other._sealed_end
   }
-}
+
+  extension UnsafeTreeSealedRangeProtocol {
+
+    @inlinable
+    internal func _isIdentical(to other: Self) -> Bool {
+      __tree_.isIdentical(to: other.__tree_)
+        && _sealed_start == other._sealed_start
+        && _sealed_end == other._sealed_end
+    }
+  }
+#endif

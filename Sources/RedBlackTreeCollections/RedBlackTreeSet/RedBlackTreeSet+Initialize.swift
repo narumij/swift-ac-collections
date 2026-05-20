@@ -38,11 +38,9 @@ extension RedBlackTreeSet {
     @inlinable
     public init<Source>(_ sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
-      self.init(
-        __tree_:
-          .___insert_range_unique(
-            tree: .create(),
-            sequence))
+      var tree = Tree.create()
+      tree.___insert_range_unique(sequence)
+      self.init(__tree_: tree)
     }
   }
 #endif

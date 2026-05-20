@@ -63,6 +63,7 @@
 @usableFromInline
 package struct _BucketAllocator {
 
+  @usableFromInline
   static func create() -> Self {
     .init(valueType: Void.self, deinitialize: { _ in })
   }

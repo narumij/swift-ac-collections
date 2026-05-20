@@ -46,23 +46,25 @@ extension RedBlackTreeDictionary {
             transform: { Base.__payload_($0) }))
     }
 
-    // TODO: いつか消す
-    // いまはベンチが落ちるので消していない
-    /// - Complexity: O(*n* log *n*)
-    ///   When inserting elements sequentially from an already sorted sequence,
-    ///   no search is required, and rebalancing is amortized O(1),
-    ///   so the overall construction cost becomes O(*n*).
-    @inlinable
-    public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
-    where S: Collection, S.Element == (Key, Value) {
-      self.init(
-        __tree_:
-          .___insert_range_unique(
-            tree:
-              .create(),
-            keysAndValues,
-            transform: { Base.__payload_($0) }))
-    }
+    #if false
+      // TODO: いつか消す
+      // いまはベンチが落ちるので消していない
+      /// - Complexity: O(*n* log *n*)
+      ///   When inserting elements sequentially from an already sorted sequence,
+      ///   no search is required, and rebalancing is amortized O(1),
+      ///   so the overall construction cost becomes O(*n*).
+      @inlinable
+      public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
+      where S: Collection, S.Element == (Key, Value) {
+        self.init(
+          __tree_:
+            .___insert_range_unique(
+              tree:
+                .create(),
+              keysAndValues,
+              transform: { Base.__payload_($0) }))
+      }
+    #endif
   }
 #endif
 
@@ -74,13 +76,13 @@ extension RedBlackTreeDictionary {
     _ keysAndValues: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
-    // TODO: sortedは廃止したつもりだったが残っている
     self.init(
-      __tree_: try .create_unique(
-        sorted: keysAndValues.sorted { $0.0 < $1.0 },
-        uniquingKeysWith: combine,
-        transform: { Base.__payload_($0) }
-      ))
+      __tree_:
+        try .___insert_range_unique(
+          tree: .create(),
+          keysAndValues,
+          uniquingKeysWith: combine,
+          transform: { Base.__payload_($0) }))
   }
 }
 

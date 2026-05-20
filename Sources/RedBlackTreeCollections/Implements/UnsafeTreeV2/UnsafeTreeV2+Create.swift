@@ -17,13 +17,18 @@
 
 extension UnsafeTreeV2 {
 
+  @inlinable
+  internal static func create() -> UnsafeTreeV2 {
+    _createWithEmptySingleton()
+  }
+
   /// 木の生成を行う
   ///
   /// サイズが0の場合に共有バッファを用いたインスタンスを返す。
   /// ensureUniqueが利用できない場面では他の生成メソッドを利用すること。
   @inlinable
   internal static func create(
-    minimumCapacity nodeCapacity: Int = 0
+    minimumCapacity nodeCapacity: Int
   ) -> UnsafeTreeV2 {
     nodeCapacity == 0
       ? _createWithEmptySingleton()
@@ -198,7 +203,8 @@ extension UnsafeTreeV2 where _PayloadValue: Decodable {
   internal static func create(from decoder: Decoder) throws -> UnsafeTreeV2 {
 
     var container = try decoder.unkeyedContainer()
-    let tree: Tree = ._createWithNewBuffer(minimumCapacity: container.count ?? 0, nullptr: UnsafeNode.nullptr)
+    let tree: Tree = ._createWithNewBuffer(
+      minimumCapacity: container.count ?? 0, nullptr: UnsafeNode.nullptr)
 
     var (__parent, __child) = tree.___max_ref()
     while !container.isAtEnd {

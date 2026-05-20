@@ -21,64 +21,64 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 #if COMPATIBLE_ATCODER_2025
-@usableFromInline
-protocol _SubSequenceV2: UnsafeTreeSealedRangeProtocol, UnsafeIndexBindingV2
-where Base: _BaseNode_PtrRangeCompInterface {}
+  @usableFromInline
+  protocol _SubSequenceV2: UnsafeTreeSealedRangeProtocol, UnsafeIndexBindingV2
+  where Base: _BaseNode_PtrRangeCompInterface {}
 
-extension _SubSequenceV2 {
+  extension _SubSequenceV2 {
 
-  @inlinable
-  internal var ___is_empty: Bool {
-    guard
-      let start = _sealed_start.pointer,
-      let end = _sealed_end.pointer
-    else {
-      return true
+    @inlinable
+    internal var ___is_empty: Bool {
+      guard
+        let start = _sealed_start.pointer,
+        let end = _sealed_end.pointer
+      else {
+        return true
+      }
+      return start == end
     }
-    return start == end
-  }
 
-  @inlinable
-  internal var ___count: Int {
-    guard
-      let start = _sealed_start.pointer,
-      let end = _sealed_end.pointer
-    else {
-      return 0
+    @inlinable
+    internal var ___count: Int {
+      guard
+        let start = _sealed_start.pointer,
+        let end = _sealed_end.pointer
+      else {
+        return 0
+      }
+      return __distance(start, end)
     }
-    return __distance(start, end)
-  }
 
-  @inlinable
-  internal func ___contains(_ i: _NodePtr) -> Bool {
-    guard
-      let start = _sealed_start.pointer,
-      let end = _sealed_end.pointer
-    else {
-      return false
+    @inlinable
+    internal func ___contains(_ i: _NodePtr) -> Bool {
+      guard
+        let start = _sealed_start.pointer,
+        let end = _sealed_end.pointer
+      else {
+        return false
+      }
+      return __tree_.___ptr_range_comp(start, i, end)
     }
-    return __tree_.___ptr_range_comp(start, i, end)
-  }
 
-  @inlinable
-  internal var ___first: _PayloadValue? {
-    ___is_empty
-      ? nil
-      : try? _sealed_start
-        .map { __tree_[_unsafe_raw: $0.pointer] }
-        .get()
-  }
+    @inlinable
+    internal var ___first: _PayloadValue? {
+      ___is_empty
+        ? nil
+        : try? _sealed_start
+          .map { __tree_[_unsafe_raw: $0.pointer] }
+          .get()
+    }
 
-  @inlinable
-  internal var ___last: _PayloadValue? {
-    ___is_empty
-      ? nil
-      : try? _sealed_end
-        .map { __tree_.__tree_prev_iter($0.pointer) }
-        .map { __tree_[_unsafe_raw: $0] }
-        .get()
+    @inlinable
+    internal var ___last: _PayloadValue? {
+      ___is_empty
+        ? nil
+        : try? _sealed_end
+          .map { __tree_.__tree_prev_iter($0.pointer) }
+          .map { __tree_[_unsafe_raw: $0] }
+          .get()
+    }
   }
-}
 
   extension _SubSequenceV2 {
 

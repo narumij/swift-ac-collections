@@ -47,10 +47,8 @@
       }
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
-extension UnsafeTreeV2 {
+  extension UnsafeTreeV2 {
 
     @inlinable
     internal func
@@ -58,5 +56,5 @@ extension UnsafeTreeV2 {
     {
       .init(_start: __first, _end: __last)
     }
-}
+  }
 #endif

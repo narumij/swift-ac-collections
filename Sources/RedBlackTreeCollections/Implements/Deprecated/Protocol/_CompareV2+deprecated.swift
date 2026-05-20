@@ -8,11 +8,9 @@
 #if COMPATIBLE_ATCODER_2025
   @usableFromInline
   protocol _CompareV2: UnsafeTreeHostV2 & _KeyBride {}
-#endif
 
-// MARK: -
+  // MARK: -
 
-#if COMPATIBLE_ATCODER_2025
   extension _CompareV2 where Base: UniqueMultiplicity {
 
     ///（重複なし）

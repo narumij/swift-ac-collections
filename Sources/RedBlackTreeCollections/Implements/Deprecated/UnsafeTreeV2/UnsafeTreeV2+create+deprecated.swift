@@ -64,9 +64,7 @@
       return tree
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 {
 
     /// ソート済みの配列から木を生成する
@@ -107,9 +105,7 @@
       return tree
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 {
 
     @inlinable

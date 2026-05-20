@@ -10,26 +10,24 @@
   where Indices == UnsafeTreeV2<Base>.Indices, Base: ___TreeIndex {
     associatedtype Indices
   }
-#endif
 
-/// Indexが何であるかをしり、その生成には何が必要で、どう生成するのかを知っている
-@usableFromInline
-protocol UnsafeIndexProtocol_tie: _UnsafeNodePtrType
-where Index == UnsafeIndexV2<Base> {
-  associatedtype Base: ___TreeBase & ___TreeIndex
-  associatedtype Index
-  var tied: _TiedRawBuffer { get }
-}
-
-extension UnsafeIndexProtocol_tie {
-
-  @inlinable
-  package func ___index(_ p: _SealedPtr) -> Index {
-    Index(sealed: p, tie: tied)
+  /// Indexが何であるかをしり、その生成には何が必要で、どう生成するのかを知っている
+  @usableFromInline
+  protocol UnsafeIndexProtocol_tie: _UnsafeNodePtrType
+  where Index == UnsafeIndexV2<Base> {
+    associatedtype Base: ___TreeBase & ___TreeIndex
+    associatedtype Index
+    var tied: _TiedRawBuffer { get }
   }
-}
 
-#if COMPATIBLE_ATCODER_2025
+  extension UnsafeIndexProtocol_tie {
+
+    @inlinable
+    package func ___index(_ p: _SealedPtr) -> Index {
+      Index(sealed: p, tie: tied)
+    }
+  }
+
   @usableFromInline
   protocol UnsafeIndexProtocol_tree: UnsafeIndexBindingV2 & UnsafeTreeHostV2 {
     func ___index(_ p: _SealedPtr) -> Index
@@ -42,9 +40,7 @@ extension UnsafeIndexProtocol_tie {
       Index(sealed: p, tie: __tree_.tied)
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   @usableFromInline
   protocol UnsafeIndicesProtoocl: UnsafeTreeSealedRangeBaseInterfaceV2 & UnsafeIndicesBinding {}
 
@@ -55,19 +51,17 @@ extension UnsafeIndexProtocol_tie {
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
-extension UnsafeIndexProviderProtocolV2 {
+  extension UnsafeIndexProviderProtocolV2 {
 
-  @inlinable
-  internal func ___index_or_nil(_ p: _SealedPtr) -> Index? {
-    !p.isValid ? nil : ___index(p)
+    @inlinable
+    internal func ___index_or_nil(_ p: _SealedPtr) -> Index? {
+      !p.isValid ? nil : ___index(p)
+    }
+
+    @inlinable
+    internal func ___index_or_nil(_ p: _SealedPtr?) -> Index? {
+      p.flatMap { ___index_or_nil($0) }
+    }
   }
-
-  @inlinable
-  internal func ___index_or_nil(_ p: _SealedPtr?) -> Index? {
-    p.flatMap { ___index_or_nil($0) }
-  }
-}
 #endif

@@ -1,8 +1,6 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2.KeyOnly: Collection & BidirectionalCollection {}
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSlice.KeyOnly {
 
     @available(*, deprecated)
@@ -13,9 +11,7 @@
         end: __tree_.__purified_(bounds.upperBound))
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2.KeyOnly {
 
     @available(*, deprecated, message: "性能問題があり廃止")
@@ -24,9 +20,7 @@
       try _forEach(body)
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2.KeyOnly {
 
     /// - Complexity: O(log *n*)
@@ -38,9 +32,7 @@
         end: __tree_.__purified_(bounds.upperBound))
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2.KeyOnly {
 
     /// RangeExpressionがsubscriptやremoveで利用可能か判別します
@@ -58,17 +50,15 @@
       return ___contains(bounds)
     }
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
-extension RedBlackTreeSliceV2.KeyOnly: UnsafeIndicesProtoocl {}
+  extension RedBlackTreeSliceV2.KeyOnly: UnsafeIndicesProtoocl {}
 
-extension RedBlackTreeSliceV2.KeyOnly {
+  extension RedBlackTreeSliceV2.KeyOnly {
 
-  /// - Complexity: O(1)
-  @inlinable
-  public var indices: Indices {
-    _indices
+    /// - Complexity: O(1)
+    @inlinable
+    public var indices: Indices {
+      _indices
+    }
   }
-}
 #endif

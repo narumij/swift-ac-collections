@@ -269,7 +269,7 @@ extension RedBlackTreeKeyOnlyRangeView: Equatable where _PayloadValue: Equatable
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs._isdentical(to: rhs) || lhs.elementsEqual(rhs)
+    lhs._isIdentical(to: rhs) || lhs.elementsEqual(rhs)
   }
 }
 
@@ -278,7 +278,7 @@ extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparab
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs._isdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    !lhs._isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
 
@@ -290,9 +290,8 @@ extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparab
 // MARK: - Is Identical To
 
 extension RedBlackTreeKeyOnlyRangeView {
-  // TODO: fix typo
   @inlinable
-  public func _isdentical(to other: Self) -> Bool {
+  public func _isIdentical(to other: Self) -> Bool {
     let (_start, _end) = _range
     let (_other_start, _other_end) = other._range
     return __tree_.isIdentical(to: other.__tree_) && _start == _other_start

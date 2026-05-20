@@ -112,7 +112,9 @@
     internal static func create_unique<S>(naive sequence: __owned S) -> UnsafeTreeV2
     where Base._PayloadValue == S.Element, S: Sequence {
 
-      .___insert_range_unique(tree: .create(), sequence)
+      var tree = Self.create()
+      tree.___insert_range_unique(sequence)
+      return tree
     }
 
     @inlinable
@@ -121,14 +123,18 @@
     ) -> UnsafeTreeV2
     where S: Sequence {
 
-      .___insert_range_unique(tree: .create(), sequence, transform: transform)
+      var tree = Self.create()
+      tree.___insert_range_unique(sequence, transform: transform)
+      return tree
     }
 
     @inlinable
     internal static func create_multi<S>(naive sequence: __owned S) -> UnsafeTreeV2
     where Base._PayloadValue == S.Element, S: Sequence {
 
-      .___insert_range_multi(tree: .create(), sequence)
+      var tree = Self.create()
+      tree.___insert_range_multi(sequence) { $0 }
+      return tree
     }
 
     @inlinable
@@ -138,7 +144,9 @@
       -> UnsafeTreeV2
     where S: Sequence {
 
-      .___insert_range_multi(tree: .create(), sequence, transform: transform)
+      var tree = Self.create()
+      tree.___insert_range_multi(sequence, transform: transform)
+      return tree
     }
   }
 #endif

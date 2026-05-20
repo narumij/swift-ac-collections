@@ -44,7 +44,7 @@ extension UnsafeIndexV3RangeExpression {
 public func ..< (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
   -> UnsafeIndexV3RangeExpression
 {
-  guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
+  guard lhs.lazyDetach === rhs.lazyDetach else { fatalError(.treeMissmatch) }
   return .init(.range(from: lhs, to: rhs))
 }
 
@@ -52,7 +52,7 @@ public func ..< (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
 public func ... (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
   -> UnsafeIndexV3RangeExpression
 {
-  guard lhs.tied === rhs.tied else { fatalError(.treeMissmatch) }
+  guard lhs.lazyDetach === rhs.lazyDetach else { fatalError(.treeMissmatch) }
   return .init(.closedRange(from: lhs, through: rhs))
 }
 

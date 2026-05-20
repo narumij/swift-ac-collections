@@ -83,7 +83,7 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
   @inlinable
   package var tied: _TiedRawBuffer? {
     try? map(\.tied).get()
-  }
+  }  
 }
 
 // MARK: -

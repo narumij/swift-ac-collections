@@ -81,6 +81,13 @@ public struct _NodePtrSealing: Equatable {
   var purified: _SealedPtr {
     // validなpointerがendやnullに変化することはない
     isUnsealed ? .failure(.unsealed) : .success(self)
+//    if pointer.___is_garbaged {
+//      return .failure(.garbaged)
+//    }
+//    if pointer.pointee.___recycle_count != seal {
+//      return .failure(.unsealed)
+//    }
+//    return .success(self)
   }
 
   /// 引換券

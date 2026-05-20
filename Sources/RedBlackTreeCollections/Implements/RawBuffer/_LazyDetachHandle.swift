@@ -22,28 +22,29 @@ public struct _LazyDetachHandle<RawValue> {
   package let rawValue: RawValue
 
   @usableFromInline
-  package let tied: _LazyDetach
+  package let lazyDetach: _LazyDetach
 
   @inlinable
-  package init(rawValue: RawValue, tie: _LazyDetach) {
+  package init(rawValue: RawValue, lazyDetach: _LazyDetach) {
     self.rawValue = rawValue
-    self.tied = tie
+    self.lazyDetach = lazyDetach
   }
 }
 
 extension _LazyDetachHandle {
-  
+
   @inlinable
   public func map<U>(_ transform: (RawValue) throws -> U) rethrows -> _LazyDetachHandle<U> {
-    .init(rawValue: try transform(rawValue), tie: tied)
+    .init(rawValue: try transform(rawValue), lazyDetach: lazyDetach)
   }
 }
 
 extension _LazyDetachHandle: Equatable where RawValue: Equatable {
 
   @inlinable
-  public static func == (lhs: _LazyDetachHandle<RawValue>, rhs: _LazyDetachHandle<RawValue>) -> Bool {
-    lhs.rawValue == rhs.rawValue && lhs.tied === rhs.tied
+  public static func == (lhs: _LazyDetachHandle<RawValue>, rhs: _LazyDetachHandle<RawValue>) -> Bool
+  {
+    lhs.rawValue == rhs.rawValue && lhs.lazyDetach === rhs.lazyDetach
   }
 }
 
@@ -59,7 +60,7 @@ extension _NodePtrSealing {
 
   @inlinable
   package func band(_ tie: _LazyDetach) -> _LazyDetachPointer {
-    isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, tie: tie))
+    isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, lazyDetach: tie))
   }
 }
 
@@ -74,8 +75,18 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure == SealError {
 
   @inlinable
-  package var tied: _LazyDetach? {
-    try? map(\.tied).get()
+  package var lazyDetach: _LazyDetach? {
+    try? map(\.lazyDetach).get()
+  }
+
+  @inlinable
+  func __isSameLazyDetach(_ rhs: _LazyDetach?) -> Bool {
+    switch self {
+    case .success(let handle):
+      handle.lazyDetach === rhs
+    case .failure:
+      false
+    }
   }
 }
 

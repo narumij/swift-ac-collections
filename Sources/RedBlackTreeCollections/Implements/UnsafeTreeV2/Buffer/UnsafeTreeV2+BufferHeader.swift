@@ -61,7 +61,7 @@ package struct UnsafeTreeV2BufferHeader {
   /// - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
   @usableFromInline var _tied: _TiedRawBuffer?
 
-  @usableFromInline var _tiedProxy: _LazyDetach?
+  @usableFromInline var _lazyDetach: _LazyDetach?
 
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
@@ -110,9 +110,9 @@ extension UnsafeTreeV2BufferHeader {
   }
 
   @inlinable
-  mutating func isRawBufferProxyUniquelyOwned() -> Bool {
-    guard let _ = _tiedProxy else { return true }
-    return isKnownUniquelyReferenced(&_tiedProxy!)
+  mutating func isLazyDetachUniquelyOwned() -> Bool {
+    guard let _ = _lazyDetach else { return true }
+    return isKnownUniquelyReferenced(&_lazyDetach!)
   }
   /// IndexやIteratorを結ぶ共有メモリ
   ///
@@ -136,10 +136,10 @@ extension UnsafeTreeV2BufferHeader {
   var lazyDetach: _LazyDetach {
     mutating get {
       // TODO: 一度の保証付きの実装にすること
-      if _tiedProxy == nil {
-        _tiedProxy = .create()
+      if _lazyDetach == nil {
+        _lazyDetach = .create()
       }
-      return _tiedProxy!
+      return _lazyDetach!
     }
   }
 

@@ -128,7 +128,7 @@ extension _RawRangeExpression where Bound == UnsafeIndexV3 {
           .flatMap {
             ___tree_next_iter($0.rawValue.pointer)
               .sealed
-              .band($0.tied)
+              .band($0.lazyDetach)
           }
       )
 
@@ -145,7 +145,7 @@ extension _RawRangeExpression where Bound == UnsafeIndexV3 {
           .flatMap {
             ___tree_next_iter($0.rawValue.pointer)
               .sealed
-              .band($0.tied)
+              .band($0.lazyDetach)
           }
       )
 

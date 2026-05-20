@@ -27,8 +27,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
     __tree_.ensureUnique()
-    __tree_ = .___insert_range_multi(
-      tree: __tree_,
+    __tree_.___insert_range_multi(
       other: other.__tree_,
       other.__tree_.__begin_node_,
       other.__tree_.__end_node)
@@ -39,8 +38,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
     __tree_.ensureUnique()
-    __tree_ = .___insert_range_multi(
-      tree: __tree_,
+    __tree_.___insert_range_multi(
       other: other.__tree_,
       other.__tree_.__begin_node_,
       other.__tree_.__end_node)
@@ -51,7 +49,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
     __tree_.ensureUnique()
-    __tree_ = .___insert_range_multi(tree: __tree_, other)
+    __tree_.___insert_range_multi(other)
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

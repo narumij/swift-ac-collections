@@ -94,13 +94,11 @@ extension RedBlackTreeDictionary {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == [S.Element] {
-    // TODO: sortedは廃止したつもりだったが残っている
     self.init(
-      __tree_: try .create_unique(
-        sorted: try values.sorted {
-          try keyForValue($0) < keyForValue($1)
-        },
-        by: keyForValue
-      ))
+      __tree_:
+        try .___insert_range_unique(
+          tree: .create(),
+          grouping: values,
+          by: keyForValue))
   }
 }

@@ -310,6 +310,65 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
       }
     }
   }
+
+  @inlinable
+  internal static func ___insert_range_unique<S>(
+    tree __tree_: UnsafeTreeV2,
+    grouping values: __owned S,
+    by keyForValue: (S.Element) throws -> _Key
+  )
+    rethrows -> UnsafeTreeV2
+  where
+    S: Sequence, Base._MappedValue == [S.Element]
+  {
+    var __tree_ = __tree_
+    try __tree_.___insert_range_unique(grouping: values, by: keyForValue)
+    return __tree_
+  }
+
+  @inlinable
+  internal mutating func ___insert_range_unique<S>(
+    grouping values: __owned S,
+    by keyForValue: (S.Element) throws -> _Key
+  )
+    rethrows
+  where
+    S: Sequence, Base._MappedValue == [S.Element]
+  {
+    var it = values.makeIterator()
+
+    func __payload(_ e: S.Element) throws -> _PayloadValue {
+      Base.__payload_((try keyForValue(e), [e]))
+    }
+
+    if __root == nullptr, let __element = it.next() {  // Make sure we always have a root node
+      ensureCapacity()
+      __insert_node_at(
+        end, end.__left_ref,
+        __construct_node(try __payload(__element)))
+    }
+
+    if __root == nullptr { return }
+
+    var __max_node = __tree_max(__root)
+
+    while let __element = it.next() {
+      unsafeEnsureCapacity()
+      let __nd = __construct_node(try __payload(__element))
+      if value_comp(__get_value(__max_node), __get_value(__nd)) {  // __node > __max_node
+        __insert_node_at(__max_node, __max_node.__right_ref, __nd)
+        __max_node = __nd
+      } else {
+        let (__parent, __child) = __find_equal(__get_value(__nd))
+        if __child.pointee == nullptr {
+          __insert_node_at(__parent, __child, __nd)
+        } else {
+          Base.__mapped_value_ptr(__child).pointee.append(__element)
+          destroy(__nd)
+        }
+      }
+    }
+  }
 }
 
 extension UnsafeTreeV2 {

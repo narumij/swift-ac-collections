@@ -116,7 +116,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 where Base: PairValueTrait {
 
-  #if true
+  #if false
     /// ソート済みの配列から木を生成する
     ///
     /// ソート済み前提では、常に末尾への追加となり探索が不要になる

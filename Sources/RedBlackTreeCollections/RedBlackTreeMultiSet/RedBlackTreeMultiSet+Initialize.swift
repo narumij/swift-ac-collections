@@ -40,11 +40,9 @@ extension RedBlackTreeMultiSet {
     @inlinable
     public init<Source>(_ sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
-      self.init(
-        __tree_:
-          .___insert_range_multi(
-            tree: .create(),
-            sequence))
+      var tree = Tree.create()
+      tree.___insert_range_multi(sequence) { $0 }
+      self.init(__tree_: tree)
     }
 
     /// Creates a new set from a finite sequence of items.
@@ -59,11 +57,9 @@ extension RedBlackTreeMultiSet {
       if collection.isEmpty {
         self.init()
       } else {
-        self.init(
-          __tree_:
-            .___insert_range_multi(
-              tree: .create(minimumCapacity: collection.count),
-              collection))
+        var tree = Tree.create(minimumCapacity: collection.count)
+        tree.___insert_range_multi(collection) { $0 }
+        self.init(__tree_: tree)
       }
     }
   }

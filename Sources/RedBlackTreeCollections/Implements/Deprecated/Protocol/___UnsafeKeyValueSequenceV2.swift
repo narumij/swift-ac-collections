@@ -20,116 +20,112 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@usableFromInline
-protocol ___UnsafeKeyValueSequenceV2__:
-  UnsafeTreeSealedRangeProtocol
-    & UnsafeTreeRangeBaseInterfaceV2
-    & _MapBridge
-where
-  Base: PairValueTrait & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
-{}
+#if COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  protocol ___UnsafeKeyValueSequenceV2__:
+    UnsafeTreeSealedRangeProtocol
+      & UnsafeTreeRangeBaseInterfaceV2
+      & _MapBridge
+  where
+    Base: PairValueTrait & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
+  {}
 
-extension ___UnsafeKeyValueSequenceV2__ {
+  extension ___UnsafeKeyValueSequenceV2__ {
 
-  #if COMPATIBLE_ATCODER_2025
     @inlinable
     internal func ___first(where predicate: (Element) throws -> Bool) rethrows -> Element? {
       try ___first { try predicate(Base.__element_($0)) }.map(Base.__element_)
     }
-  #endif
-}
-
-extension ___UnsafeKeyValueSequenceV2__ {
-
-  @inlinable
-  internal func _makeIterator() -> Tree._KeyValues {
-    #if !COMPATIBLE_ATCODER_2025
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
-    #else
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-    #endif
-  }
-}
-
-extension ___UnsafeKeyValueSequenceV2__ {
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  internal func _sorted() -> [Element] {
-    __tree_.___copy_to_array(
-      _sealed_start.pointer!, _sealed_end.pointer!, transform: Base.__element_)
   }
 
-  @inlinable
-  internal func _reversed() -> Tree._KeyValues.Reversed {
-    #if !COMPATIBLE_ATCODER_2025
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
-    #else
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-    #endif
-  }
-}
+  extension ___UnsafeKeyValueSequenceV2__ {
 
-extension ___UnsafeKeyValueSequenceV2__ {
-
-  public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
-  public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
-
-  @inlinable
-  internal func _keys() -> Keys {
-    #if !COMPATIBLE_ATCODER_2025
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
-    #else
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-    #endif
+    @inlinable
+    internal func _makeIterator() -> Tree._KeyValues {
+      #if !COMPATIBLE_ATCODER_2025
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+      #else
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+      #endif
+    }
   }
 
-  /// - Complexity: O(1)
-  @inlinable
-  internal func _values() -> Values {
-    #if !COMPATIBLE_ATCODER_2025
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
-    #else
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-    #endif
+  extension ___UnsafeKeyValueSequenceV2__ {
+
+    /// - Complexity: O(*n*)
+    @inlinable
+    internal func _sorted() -> [Element] {
+      __tree_.___copy_to_array(
+        _sealed_start.pointer!, _sealed_end.pointer!, transform: Base.__element_)
+    }
+
+    @inlinable
+    internal func _reversed() -> Tree._KeyValues.Reversed {
+      #if !COMPATIBLE_ATCODER_2025
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+      #else
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+      #endif
+    }
   }
-}
 
-//extension ___UnsafeKeyValueSequenceV2__ {
-//
-//  @inlinable
-//  public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
-//    -> RedBlackTreeSliceV2<Base>.KeyValue
-//  {
-//    let (lower, upper) = rawRange.relative(to: __tree_)
-//    guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
-//      fatalError(.invalidIndex)
-//    }
-//    return .init(tree: __tree_, start: lower, end: upper)
-//  }
-//
-//  @inlinable
-//  public func ___unchecked_subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
-//    -> RedBlackTreeSliceV2<Base>.KeyValue
-//  {
-//    let (lower, upper) = rawRange.relative(to: __tree_)
-//    return .init(tree: __tree_, start: lower, end: upper)
-//  }
-//}
+  extension ___UnsafeKeyValueSequenceV2__ {
 
-extension ___UnsafeKeyValueSequenceV2__ {
+    public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
+    public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
-  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    internal func _keys() -> Keys {
+      #if !COMPATIBLE_ATCODER_2025
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+      #else
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+      #endif
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    internal func _values() -> Values {
+      #if !COMPATIBLE_ATCODER_2025
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+      #else
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+      #endif
+    }
+  }
+
+  //extension ___UnsafeKeyValueSequenceV2__ {
+  //
+  //  @inlinable
+  //  public func ___subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
+  //    -> RedBlackTreeSliceV2<Base>.KeyValue
+  //  {
+  //    let (lower, upper) = rawRange.relative(to: __tree_)
+  //    guard __tree_.isValidSealedRange(lower: lower, upper: upper) else {
+  //      fatalError(.invalidIndex)
+  //    }
+  //    return .init(tree: __tree_, start: lower, end: upper)
+  //  }
+  //
+  //  @inlinable
+  //  public func ___unchecked_subscript(_ rawRange: UnsafeTreeSealedRangeExpression)
+  //    -> RedBlackTreeSliceV2<Base>.KeyValue
+  //  {
+  //    let (lower, upper) = rawRange.relative(to: __tree_)
+  //    return .init(tree: __tree_, start: lower, end: upper)
+  //  }
+  //}
+
+  extension ___UnsafeKeyValueSequenceV2__ {
+
     @inlinable
     internal func _forEach(_ body: (Element) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
         try body(Base.__element_(__tree_[_unsafe_raw: $0]))
       }
     }
-  #endif
-}
+  }
 
-#if COMPATIBLE_ATCODER_2025
   @usableFromInline
   protocol ___UnsafeKeyValueSequenceV2: ___UnsafeKeyValueSequenceV2__ & ___UnsafeIndexRangeBaseV2 {}
 

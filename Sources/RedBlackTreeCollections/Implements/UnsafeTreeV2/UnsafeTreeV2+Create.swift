@@ -15,9 +15,12 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 extension UnsafeTreeV2 {
+
+  @inlinable
+  internal static func create() -> UnsafeTreeV2 {
+    _createWithEmptySingleton()
+  }
 
   /// 木の生成を行う
   ///
@@ -25,7 +28,7 @@ extension UnsafeTreeV2 {
   /// ensureUniqueが利用できない場面では他の生成メソッドを利用すること。
   @inlinable
   internal static func create(
-    minimumCapacity nodeCapacity: Int = 0
+    minimumCapacity nodeCapacity: Int
   ) -> UnsafeTreeV2 {
     nodeCapacity == 0
       ? _createWithEmptySingleton()
@@ -74,101 +77,6 @@ extension UnsafeTreeV2 {
 
 // MARK: -
 
-extension UnsafeTreeV2 where Base: PairValueTrait {
-
-  /// ソート済みの配列から木を生成する
-  ///
-  /// ソート済み前提では、常に末尾への追加となり探索が不要になる
-  ///
-  /// - Complexity: O(*n*)
-  @inlinable
-  internal static func create_unique<Element>(
-    sorted elements: __owned [Element],
-    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
-    transform: (Element) -> Base._PayloadValue
-  ) rethrows -> UnsafeTreeV2
-  where Base._Key: Comparable {
-
-    let count = elements.count
-    let tree: Tree = .create(minimumCapacity: count)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    for __k in elements {
-      let __v = transform(__k)
-      if __parent == tree.end || Base.__key_(__parent) != Base.__key(__v) {
-        // ならしO(1)
-        (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __v)
-      } else {
-        Base.__mapped_value_ptr(__parent).pointee = try combine(
-          Base.__mapped_value_(__parent),
-          Base.___mapped_value(__v))
-      }
-    }
-    assert(tree.__tree_invariant(tree.__root))
-    return tree
-  }
-}
-
-extension UnsafeTreeV2 where Base: PairValueTrait {
-
-  /// ソート済みの配列から木を生成する
-  ///
-  /// ソート済み前提では、常に末尾への追加となり探索が不要になる
-  ///
-  /// - Complexity: O(*n*)
-  @inlinable
-  internal static func create_unique<Element>(
-    sorted elements: __owned [Element],
-    by keyForValue: (Element) throws -> Base._Key
-  ) rethrows -> UnsafeTreeV2
-  where Base._Key: Comparable, Base._MappedValue == [Element] {
-
-    let count = elements.count
-    let tree: Tree = .create(minimumCapacity: count)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    // ソートの計算量がO(*n* log *n*)
-    for __v in elements {
-      let __k = try keyForValue(__v)
-      if __parent == tree.end || Base.__key_(__parent) != __k {
-        // ならしO(1)
-        (__parent, __child) = tree.___emplace_hint_right(
-          __parent, __child, Base.__payload_((__k, [__v])))
-      } else {
-        Base.__mapped_value_ptr(__parent).pointee.append(__v)
-      }
-    }
-    assert(tree.__tree_invariant(tree.__root))
-    return tree
-  }
-
-  /// ソート済みの配列から木を生成する
-  ///
-  /// ソート済み前提では、常に末尾への追加となり探索が不要になる
-  ///
-  /// - Complexity: O(*n*)
-  @inlinable
-  internal static func create_multi<Element>(
-    sorted elements: __owned [Element],
-    by keyForValue: (Element) throws -> Base._Key
-  ) rethrows -> UnsafeTreeV2
-  where Base._Key: Comparable, Base._MappedValue == Element {
-
-    let count = elements.count
-    let tree: Tree = .create(minimumCapacity: count)
-    // 初期化直後はO(1)
-    var (__parent, __child) = tree.___max_ref()
-    for __v in elements {
-      let __k = try keyForValue(__v)
-      // ならしO(1)
-      (__parent, __child) = tree.___emplace_hint_right(
-        __parent, __child, Base.__payload_((__k, __v)))
-    }
-    assert(tree.__tree_invariant(tree.__root))
-    return tree
-  }
-}
-
 extension UnsafeTreeV2 {
 
   /// Rangeから木を生成する
@@ -200,7 +108,8 @@ extension UnsafeTreeV2 where _PayloadValue: Decodable {
   internal static func create(from decoder: Decoder) throws -> UnsafeTreeV2 {
 
     var container = try decoder.unkeyedContainer()
-    let tree: Tree = ._createWithNewBuffer(minimumCapacity: container.count ?? 0, nullptr: UnsafeNode.nullptr)
+    let tree: Tree = ._createWithNewBuffer(
+      minimumCapacity: container.count ?? 0, nullptr: UnsafeNode.nullptr)
 
     var (__parent, __child) = tree.___max_ref()
     while !container.isAtEnd {

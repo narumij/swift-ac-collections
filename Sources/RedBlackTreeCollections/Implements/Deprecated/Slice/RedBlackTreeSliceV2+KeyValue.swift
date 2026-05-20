@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2 {
 

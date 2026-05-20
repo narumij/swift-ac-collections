@@ -15,8 +15,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
-
 // 先頭ドキュメントは学習用途を想定し、実用的な使い方と誤用防止を優先して簡潔に記述する。
 
 /// # RedBlackTreeMultiMap
@@ -391,7 +389,7 @@ extension RedBlackTreeMultiMap {
         __tree_.__end_node.sealed,
         { try shouldBeRemoved(Base.__element_($0)) })
       if case .failure(let e) = result {
-        fatalError(e.localizedDescription)
+        fatalError(errorMessage(e))
       }
     }
   }

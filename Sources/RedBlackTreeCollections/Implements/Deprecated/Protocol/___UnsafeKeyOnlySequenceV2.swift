@@ -20,81 +20,82 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-@usableFromInline
-protocol ___UnsafeKeyOnlySequenceV2__:
-  UnsafeTreeSealedRangeProtocol
-    & _SetBridge
-where
-  Base: ScalarValueTrait & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
-{}
-
-extension ___UnsafeKeyOnlySequenceV2__ {
-
-  @inlinable
-  internal func _makeIterator() -> Tree._PayloadValues {
-    #if !COMPATIBLE_ATCODER_2025
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
-    #else
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-    #endif
-  }
-}
-
-extension ___UnsafeKeyOnlySequenceV2__ {
-
-  @inlinable
-  internal func _reversed() -> Tree._PayloadValues.Reversed {
-    #if !COMPATIBLE_ATCODER_2025
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
-    #else
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-    #endif
-  }
-}
-
-extension ___UnsafeKeyOnlySequenceV2__ {
-
-  #if COMPATIBLE_ATCODER_2025
-    @inlinable
-    internal func _forEach(_ body: (_PayloadValue) throws -> Void) rethrows {
-      try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
-        try body(__tree_[_unsafe_raw: $0])
-      }
-    }
-  #endif
-}
-
-extension ___UnsafeKeyOnlySequenceV2__ {
-
-  /// - Complexity: O(*n*)
-  @inlinable
-  internal func _sorted() -> [_PayloadValue] {
-    __tree_.___copy_to_array(_sealed_start.pointer!, _sealed_end.pointer!)
-  }
-}
-
-extension ___UnsafeKeyOnlySequenceV2__ {
-
-  // めんどくさくなったので、KeyValue側では標準実装を使っている
-  @inlinable
-  internal func _elementsEqual<OtherSequence>(
-    _ other: OtherSequence, by areEquivalent: (_PayloadValue, OtherSequence.Element) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence {
-    try __tree_.elementsEqual(
-      _sealed_start.pointer!, _sealed_end.pointer!, other, by: areEquivalent)
-  }
-
-  // 制約で値の型が一致する必要があり、KeyValue側では標準実装を使っている
-  @inlinable
-  internal func _lexicographicallyPrecedes<OtherSequence>(
-    _ other: OtherSequence, by areInIncreasingOrder: (_PayloadValue, _PayloadValue) throws -> Bool
-  ) rethrows -> Bool where OtherSequence: Sequence, _PayloadValue == OtherSequence.Element {
-    try __tree_.lexicographicallyPrecedes(
-      _sealed_start.pointer!, _sealed_end.pointer!, other, by: areInIncreasingOrder)
-  }
-}
-
 #if COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  protocol ___UnsafeKeyOnlySequenceV2__:
+    UnsafeTreeSealedRangeProtocol
+      & _SetBridge
+  where
+    Base: ScalarValueTrait & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
+  {}
+
+  extension ___UnsafeKeyOnlySequenceV2__ {
+
+    @inlinable
+    internal func _makeIterator() -> Tree._PayloadValues {
+      #if !COMPATIBLE_ATCODER_2025
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+      #else
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+      #endif
+    }
+  }
+
+  extension ___UnsafeKeyOnlySequenceV2__ {
+
+    @inlinable
+    internal func _reversed() -> Tree._PayloadValues.Reversed {
+      #if !COMPATIBLE_ATCODER_2025
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+      #else
+        .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
+      #endif
+    }
+  }
+
+  extension ___UnsafeKeyOnlySequenceV2__ {
+
+    #if COMPATIBLE_ATCODER_2025
+      @inlinable
+      internal func _forEach(_ body: (_PayloadValue) throws -> Void) rethrows {
+        try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {
+          try body(__tree_[_unsafe_raw: $0])
+        }
+      }
+    #endif
+  }
+
+  extension ___UnsafeKeyOnlySequenceV2__ {
+
+    /// - Complexity: O(*n*)
+    @inlinable
+    internal func _sorted() -> [_PayloadValue] {
+      __tree_.___copy_to_array(_sealed_start.pointer!, _sealed_end.pointer!)
+    }
+  }
+
+  extension ___UnsafeKeyOnlySequenceV2__ {
+
+    // めんどくさくなったので、KeyValue側では標準実装を使っている
+    @inlinable
+    internal func _elementsEqual<OtherSequence>(
+      _ other: OtherSequence,
+      by areEquivalent: (_PayloadValue, OtherSequence.Element) throws -> Bool
+    ) rethrows -> Bool where OtherSequence: Sequence {
+      try __tree_.elementsEqual(
+        _sealed_start.pointer!, _sealed_end.pointer!, other, by: areEquivalent)
+    }
+
+    // 制約で値の型が一致する必要があり、KeyValue側では標準実装を使っている
+    @inlinable
+    internal func _lexicographicallyPrecedes<OtherSequence>(
+      _ other: OtherSequence, by areInIncreasingOrder: (_PayloadValue, _PayloadValue) throws -> Bool
+    ) rethrows -> Bool where OtherSequence: Sequence, _PayloadValue == OtherSequence.Element {
+      try __tree_.lexicographicallyPrecedes(
+        _sealed_start.pointer!, _sealed_end.pointer!, other, by: areInIncreasingOrder)
+    }
+  }
+
   @usableFromInline
   protocol ___UnsafeKeyOnlySequenceV2: ___UnsafeKeyOnlySequenceV2__, UnsafeIndexProviderProtocolV2 {
   }

@@ -42,7 +42,7 @@
     }
 
     package func ___element(_ p: Int, _ __v: _PayloadValue) {
-//      ___element(try! __retrieve_(p).get(), __v)
+      //      ___element(try! __retrieve_(p).get(), __v)
       try! __retrieve_(p).get().__value_().pointee = __v
     }
   }
@@ -182,31 +182,32 @@
     }
   }
 #else
-  extension UnsafeTreeV2 {
-    @inlinable
-    package func equiv(with tree: UnsafeTreeV2) -> Bool {
-      return true
-    }
-    @inlinable
-    package func check() -> Bool {
-      return true
-    }
-  }
+  //  extension UnsafeTreeV2 {
+  //    @inlinable
+  //    package func equiv(with tree: UnsafeTreeV2) -> Bool {
+  //      return true
+  //    }
+  //    @inlinable
+  //    package func check() -> Bool {
+  //      return true
+  //    }
+  //  }
 #endif
 
-extension RedBlackTreeSet {
-
-  #if USE_FRESH_POOL_V1
-    public static var buildInfo: String {
-      "USE_FRESH_POOL_V1"
-    }
-  #elseif USE_FRESH_POOL_V2
-    public static var buildInfo: String {
-      "USE_FRESH_POOL_V2"
-    }
+@usableFromInline
+func __equiv<Base>(_ lhs: UnsafeTreeV2<Base>, _ rhs: UnsafeTreeV2<Base>) -> Bool {
+  #if DEBUG
+    return lhs.equiv(with: rhs)
   #else
-    public static var buildInfo: String {
-      "USE_FRESH_POOL_V3"
-    }
+    fatalError()
+  #endif
+}
+
+@usableFromInline
+func __check<Base>(_ tree: UnsafeTreeV2<Base>) -> Bool {
+  #if DEBUG
+    return tree.check()
+  #else
+    fatalError()
   #endif
 }

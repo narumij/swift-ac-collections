@@ -33,20 +33,22 @@ public struct _TieWrap<RawValue> {
 }
 
 extension _TieWrap {
-  
+
   @inlinable
   public func map<U>(_ transform: (RawValue) throws -> U) rethrows -> _TieWrap<U> {
     .init(rawValue: try transform(rawValue), tie: tied)
   }
 }
 
-extension _TieWrap: Equatable where RawValue: Equatable {
+#if COMPATIBLE_ATCODER_2025
+  extension _TieWrap: Equatable where RawValue: Equatable {
 
-  @inlinable
-  public static func == (lhs: _TieWrap<RawValue>, rhs: _TieWrap<RawValue>) -> Bool {
-    lhs.rawValue == rhs.rawValue && lhs.tied.end_ptr == rhs.tied.end_ptr
+    @inlinable
+    public static func == (lhs: _TieWrap<RawValue>, rhs: _TieWrap<RawValue>) -> Bool {
+      lhs.rawValue == rhs.rawValue && lhs.tied.end_ptr == rhs.tied.end_ptr
+    }
   }
-}
+#endif
 
 extension _TieWrap where RawValue == _NodePtrSealing {
 
@@ -93,7 +95,7 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
 /// `_NodePtr`は内部用の最速
 ///
 /// `_SealedPtr`は外部での変更リスクがある場合に使う
-/// 
+///
 public typealias _TieWrappedPtr = Result<_TieWrap<_NodePtrSealing>, SealError>
 
 extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealError {

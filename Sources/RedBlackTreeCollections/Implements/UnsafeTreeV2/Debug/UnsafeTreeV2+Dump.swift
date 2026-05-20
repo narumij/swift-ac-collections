@@ -6,6 +6,8 @@
 //
 
 #if DEBUG
+  fileprivate import Foundation
+
   extension UnsafeTreeV2 {
 
     func dump(label: String = "") {
@@ -434,17 +436,19 @@
         print(" totalCapacity         :", totalCapacity)
         print(" totalUsed             :", totalUsed)
 
-        if let begin = self.begin_ptr?.pointee {
-          print(" begin_ptr             :", begin, "tag:", begin.pointee.___tracking_tag)
-        } else {
-          print(" begin_ptr             : nullptr")
-        }
+        #if COMPATIBLE_ATCODER_2025
+          if let begin = self.begin_ptr?.pointee {
+            print(" begin_ptr             :", begin, "tag:", begin.pointee.___tracking_tag)
+          } else {
+            print(" begin_ptr             : nullptr")
+          }
 
-        if let end = self.end_ptr {
-          print(" end_ptr               :", end, "tag:", end.pointee.___tracking_tag)
-        } else {
-          print(" end_ptr               : nullptr")
-        }
+          if let end = self.end_ptr {
+            print(" end_ptr               :", end, "tag:", end.pointee.___tracking_tag)
+          } else {
+            print(" end_ptr               : nullptr")
+          }
+        #endif
       }
     }
   }

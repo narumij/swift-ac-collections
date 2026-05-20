@@ -28,8 +28,7 @@ extension RedBlackTreeDictionary {
   ) rethrows {
 
     __tree_.ensureUnique()
-    __tree_ = try .___insert_range_unique(
-      tree: __tree_,
+    try __tree_.___insert_range_unique(
       other: other.__tree_,
       other.__tree_.__begin_node_,
       other.__tree_.__end_node,
@@ -48,8 +47,7 @@ extension RedBlackTreeDictionary {
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
 
     __tree_.ensureUnique()
-    __tree_ = try .___insert_range_unique(
-      tree: __tree_,
+    try __tree_.___insert_range_unique(
       other,
       uniquingKeysWith: combine
     ) { Base.__payload_($0) }

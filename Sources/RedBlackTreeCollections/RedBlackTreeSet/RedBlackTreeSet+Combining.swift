@@ -27,8 +27,7 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
     __tree_.ensureUnique()
-    __tree_ = .___insert_range_unique(
-      tree: __tree_,
+    __tree_.___insert_range_unique(
       other: other.__tree_,
       other.__tree_.__begin_node_,
       other.__tree_.__end_node)
@@ -39,8 +38,7 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func merge(_ other: RedBlackTreeMultiSet<Element>) {
     __tree_.ensureUnique()
-    __tree_ = .___insert_range_unique(
-      tree: __tree_,
+    __tree_.___insert_range_unique(
       other: other.__tree_,
       other.__tree_.__begin_node_,
       other.__tree_.__end_node)
@@ -51,7 +49,7 @@ extension RedBlackTreeSet {
   @inlinable
   public mutating func merge<S>(_ other: S) where S: Sequence, S.Element == Element {
     __tree_.ensureUnique()
-    __tree_ = .___insert_range_unique(tree: __tree_, other)
+    __tree_.___insert_range_unique(other)
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

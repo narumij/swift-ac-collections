@@ -20,8 +20,6 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-import Foundation
-
 extension String {
   
   @usableFromInline

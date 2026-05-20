@@ -83,7 +83,17 @@ extension Result where Success == _TieWrap<_NodePtrSealing>, Failure == SealErro
   @inlinable
   package var tied: _TiedRawBuffer? {
     try? map(\.tied).get()
-  }  
+  }
+  
+  @inlinable
+  func __isSameTied(_ rhs: _TiedRawBuffer?) -> Bool {
+    switch self {
+    case .success(let handle):
+      handle.tied === rhs
+    case .failure:
+      false
+    }
+  }
 }
 
 // MARK: -

@@ -235,7 +235,7 @@ extension UnsafeTreeV2 {
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   internal func __purified_(_ index: _TieWrappedPtr) -> _SealedPtr {
-    withMutableHeader { $0._tied === index.tied } // unsafeも試したが遅かった
+    withMutableHeader { index.__isSameTied($0._tied) }
       ? index.sealed.purified
       : __retrieve_(index.sealed.purified.tag).purified
   }

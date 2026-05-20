@@ -32,7 +32,7 @@ public struct _LazyDetachHandle<RawValue> {
 }
 
 extension _LazyDetachHandle {
-  
+
   @inlinable
   public func map<U>(_ transform: (RawValue) throws -> U) rethrows -> _LazyDetachHandle<U> {
     .init(rawValue: try transform(rawValue), lazyDetach: lazyDetach)
@@ -42,7 +42,8 @@ extension _LazyDetachHandle {
 extension _LazyDetachHandle: Equatable where RawValue: Equatable {
 
   @inlinable
-  public static func == (lhs: _LazyDetachHandle<RawValue>, rhs: _LazyDetachHandle<RawValue>) -> Bool {
+  public static func == (lhs: _LazyDetachHandle<RawValue>, rhs: _LazyDetachHandle<RawValue>) -> Bool
+  {
     lhs.rawValue == rhs.rawValue && lhs.lazyDetach === rhs.lazyDetach
   }
 }
@@ -72,21 +73,19 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 }
 
 extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure == SealError {
-  
-    @inlinable
-    package var lazyDetach: _LazyDetach? {
-      try? map(\.lazyDetach).get()
-    }
-  
+
   @inlinable
-  package var unsafeLazyDetach: _LazyDetach {
-    _read {
-      switch self {
-      case .success(let handle):
-        yield handle.lazyDetach
-      case .failure:
-        fatalError()
-      }
+  package var lazyDetach: _LazyDetach? {
+    try? map(\.lazyDetach).get()
+  }
+
+  @inlinable
+  func __isSameLazyDetach(_ rhs: _LazyDetach?) -> Bool {
+    switch self {
+    case .success(let handle):
+      handle.lazyDetach === rhs
+    case .failure:
+      false
     }
   }
 }

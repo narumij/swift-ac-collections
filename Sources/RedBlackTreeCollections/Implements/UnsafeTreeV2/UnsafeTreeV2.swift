@@ -60,9 +60,7 @@ extension UnsafeTreeV2 {
   /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
   @usableFromInline
   var tied: _TiedRawBuffer {
-    // コンパイラ最適化に頼らないためにベタ書き
-    _buffer.buffer === _emptyTreeStorage
-      ? _emptyRawBuffer : withMutableHeader { $0.tiedRawBuffer }
+    withMutableHeader { $0.tiedRawBuffer }
   }
 
   /// 木に紐付く生バッファを遅延処理するプロクシ
@@ -244,7 +242,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal func __purified_(_ index: _LazyDetachPointer) -> _SealedPtr {
-    withMutableHeader { $0._lazyDetach === index.unsafeLazyDetach }
+    withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
       ? index.sealed.purified
       : __retrieve_(index.sealed.purified.tag).purified
   }

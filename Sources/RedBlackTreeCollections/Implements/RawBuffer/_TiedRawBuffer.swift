@@ -92,8 +92,10 @@ extension _TiedRawBuffer {
   }
 }
 
-/// The type-punned empty singleton storage instance.
-@usableFromInline
-nonisolated(unsafe) package let _emptyRawBuffer =
-  _TiedRawBuffer
-  .create(bucket: nil, deallocator: .init(valueType: Void.self, deinitialize: { _ in }))
+#if false
+  /// The type-punned empty singleton storage instance.
+  @usableFromInline
+  nonisolated(unsafe) package let _emptyRawBuffer =
+    _TiedRawBuffer
+    .create(bucket: nil, deallocator: .init(valueType: Void.self, deinitialize: { _ in }))
+#endif

@@ -38,12 +38,11 @@ extension RedBlackTreeMultiMap {
     @inlinable
     public init<S>(multiKeysWithValues keysAndValues: __owned S)
     where S: Sequence, S.Element == (Key, Value) {
-      self.init(
-        __tree_:
-          .___insert_range_multi(
-            tree: .create(),
-            keysAndValues,
-            transform: { Base.__payload_($0) }))
+      var tree = Tree.create()
+      try tree.___insert_range_multi(keysAndValues) {
+        Base.__payload_($0)
+      }
+      self.init(__tree_: tree)
     }
 
     /// - Complexity: O(*n* log *n*)
@@ -53,13 +52,11 @@ extension RedBlackTreeMultiMap {
     @inlinable
     public init<S>(multiKeysWithValues keysAndValues: __owned S)
     where S: Collection, S.Element == (Key, Value) {
-      self.init(
-        __tree_:
-          .___insert_range_multi(
-            tree:
-              .create(minimumCapacity: keysAndValues.count),
-            keysAndValues,
-            transform: { Base.__payload_($0) }))
+      var tree = Tree.create(minimumCapacity: keysAndValues.count)
+      try tree.___insert_range_multi(keysAndValues) {
+        Base.__payload_($0)
+      }
+      self.init(__tree_: tree)
     }
   }
 #endif
@@ -73,10 +70,10 @@ extension RedBlackTreeMultiMap {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == S.Element {
-    self.init(__tree_:
-        try .___insert_range_multi(
-          tree: .create(),
-          values,
-          transform: { Base.__payload_((try keyForValue($0), $0)) }))
+    var tree = Tree.create()
+    try tree.___insert_range_multi(values) {
+      Base.__payload_((try keyForValue($0), $0))
+    }
+    self.init(__tree_: tree)
   }
 }

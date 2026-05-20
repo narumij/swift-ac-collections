@@ -38,12 +38,11 @@ extension RedBlackTreeDictionary {
     @inlinable
     public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
     where S: Sequence, S.Element == (Key, Value) {
-      self.init(
-        __tree_:
-          .___insert_range_unique(
-            tree: .create(),
-            keysAndValues,
-            transform: { Base.__payload_($0) }))
+      var tree = Tree.create()
+      tree.___insert_range_unique(keysAndValues) {
+        Base.__payload_($0)
+      }
+      self.init(__tree_: tree)
     }
 
     #if false
@@ -76,13 +75,11 @@ extension RedBlackTreeDictionary {
     _ keysAndValues: __owned S,
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows where S: Sequence, S.Element == (Key, Value) {
-    self.init(
-      __tree_:
-        try .___insert_range_unique(
-          tree: .create(),
-          keysAndValues,
-          uniquingKeysWith: combine,
-          transform: { Base.__payload_($0) }))
+    var tree = Tree.create()
+    try tree.___insert_range_unique(keysAndValues, uniquingKeysWith: combine) {
+      Base.__payload_($0)
+    }
+    self.init(__tree_: tree)
   }
 }
 
@@ -94,11 +91,8 @@ extension RedBlackTreeDictionary {
     grouping values: __owned S,
     by keyForValue: (S.Element) throws -> Key
   ) rethrows where Value == [S.Element] {
-    self.init(
-      __tree_:
-        try .___insert_range_unique(
-          tree: .create(),
-          grouping: values,
-          by: keyForValue))
+    var tree = Tree.create()
+    try tree.___insert_range_unique(grouping: values, by: keyForValue)
+    self.init(__tree_: tree)
   }
 }

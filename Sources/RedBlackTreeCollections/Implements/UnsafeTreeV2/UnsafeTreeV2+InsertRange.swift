@@ -166,15 +166,6 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  internal static func ___insert_range_unique<S>(tree __tree_: UnsafeTreeV2, _ __source: __owned S)
-    -> UnsafeTreeV2
-  where Base._PayloadValue == S.Element, S: Sequence {
-    var __tree_ = __tree_
-    __tree_.___insert_range_unique(__source)
-    return __tree_
-  }
-
-  @inlinable
   internal mutating func ___insert_range_unique<S>(_ __source: __owned S)
   where Base._PayloadValue == S.Element, S: Sequence {
 
@@ -209,64 +200,44 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  internal static func ___insert_range_unique<S>(
-    tree __tree_: UnsafeTreeV2,
+  internal mutating func ___insert_range_unique<S>(
     _ __source: __owned S,
     transform: (S.Element) -> Base._PayloadValue
-  ) -> UnsafeTreeV2
+  )
   where S: Sequence {
-    var __tree_ = __tree_
 
     var it = __source.makeIterator()
 
-    if __tree_.__root == __tree_.nullptr, let __element = it.next() {  // Make sure we always have a root node
-      __tree_.ensureCapacity()
-      __tree_.__insert_node_at(
-        __tree_.end, __tree_.end.__left_ref, __tree_.__construct_node(transform(__element))
+    if __root == nullptr, let __element = it.next() {  // Make sure we always have a root node
+      ensureCapacity()
+      __insert_node_at(
+        end, end.__left_ref, __construct_node(transform(__element))
       )
     }
 
-    if __tree_.__root == __tree_.nullptr { return __tree_ }
+    if __root == nullptr { return }
 
-    var __max_node = __tree_.__tree_max(__tree_.__root)
+    var __max_node = __tree_max(__root)
 
     while let __element = it.next() {
-      __tree_.unsafeEnsureCapacity()
-      let __nd = __tree_.__construct_node(transform(__element))
-      if __tree_.value_comp(__tree_.__get_value(__max_node), __tree_.__get_value(__nd)) {  // __node > __max_node
-        __tree_.__insert_node_at(__max_node, __max_node.__right_ref, __nd)
+      unsafeEnsureCapacity()
+      let __nd = __construct_node(transform(__element))
+      if value_comp(__get_value(__max_node), __get_value(__nd)) {  // __node > __max_node
+        __insert_node_at(__max_node, __max_node.__right_ref, __nd)
         __max_node = __nd
       } else {
-        let (__parent, __child) = __tree_.__find_equal(__tree_.__get_value(__nd))
-        if __child.pointee == __tree_.nullptr {
-          __tree_.__insert_node_at(__parent, __child, __nd)
+        let (__parent, __child) = __find_equal(__get_value(__nd))
+        if __child.pointee == nullptr {
+          __insert_node_at(__parent, __child, __nd)
         } else {
-          fatalError("Duplicate values for key: '\(__tree_.__get_value(__nd))'")
+          fatalError("Duplicate values for key: '\(__get_value(__nd))'")
         }
       }
     }
-
-    return __tree_
   }
 }
 
 extension UnsafeTreeV2 where Base: PairValueTrait {
-
-  @inlinable
-  internal static func ___insert_range_unique<S>(
-    tree __tree_: UnsafeTreeV2,
-    _ __source: S,
-    uniquingKeysWith combine: (Base._MappedValue, Base._MappedValue) throws -> Base._MappedValue,
-    transform __t_: (S.Element) -> Base._PayloadValue
-  )
-    rethrows -> UnsafeTreeV2
-  where
-    S: Sequence
-  {
-    var __tree_ = __tree_
-    try __tree_.___insert_range_unique(__source, uniquingKeysWith: combine, transform: __t_)
-    return __tree_
-  }
 
   @inlinable
   internal mutating func ___insert_range_unique<S>(
@@ -309,21 +280,6 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         }
       }
     }
-  }
-
-  @inlinable
-  internal static func ___insert_range_unique<S>(
-    tree __tree_: UnsafeTreeV2,
-    grouping values: __owned S,
-    by keyForValue: (S.Element) throws -> _Key
-  )
-    rethrows -> UnsafeTreeV2
-  where
-    S: Sequence, Base._MappedValue == [S.Element]
-  {
-    var __tree_ = __tree_
-    try __tree_.___insert_range_unique(grouping: values, by: keyForValue)
-    return __tree_
   }
 
   @inlinable
@@ -372,29 +328,6 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 }
 
 extension UnsafeTreeV2 {
-
-  @inlinable
-  internal static func
-    ___insert_range_multi<S>(tree __tree_: UnsafeTreeV2, _ __source: __owned S) -> UnsafeTreeV2
-  where Base._PayloadValue == S.Element, S: Sequence {
-    var __tree_ = __tree_
-    try __tree_.___insert_range_multi(__source) { $0 }
-    return __tree_
-  }
-
-  @inlinable
-  internal static func
-    ___insert_range_multi<S>(
-      tree __tree_: UnsafeTreeV2,
-      _ __source: __owned S,
-      transform: (S.Element) throws -> Base._PayloadValue
-    ) rethrows
-    -> UnsafeTreeV2
-  where S: Sequence {
-    var __tree_ = __tree_
-    try __tree_.___insert_range_multi(__source, transform: transform)
-    return __tree_
-  }
 
   @inlinable
   internal mutating func

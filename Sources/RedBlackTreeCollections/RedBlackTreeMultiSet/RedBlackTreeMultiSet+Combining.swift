@@ -49,7 +49,7 @@ extension RedBlackTreeMultiSet {
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == Element {
     __tree_.ensureUnique()
-    __tree_.___insert_range_multi(other)
+    __tree_.___insert_range_multi(other) { $0 }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

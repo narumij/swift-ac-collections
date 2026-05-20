@@ -166,7 +166,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  internal mutating func ___insert_range_unique<S>(_ __source: __owned S)
+  internal mutating func ___insert_range_unique<S>(_ __source: S)
   where Base._PayloadValue == S.Element, S: Sequence {
 
     var it = __source.makeIterator()
@@ -201,7 +201,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal mutating func ___insert_range_unique<S>(
-    _ __source: __owned S,
+    _ __source: S,
     transform: (S.Element) -> Base._PayloadValue
   )
   where S: Sequence {
@@ -284,7 +284,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
   @inlinable
   internal mutating func ___insert_range_unique<S>(
-    grouping values: __owned S,
+    grouping values: S,
     by keyForValue: (S.Element) throws -> _Key
   )
     rethrows
@@ -331,15 +331,8 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal mutating func
-    ___insert_range_multi<S>(_ __source: __owned S)
-  where Base._PayloadValue == S.Element, S: Sequence {
-    try ___insert_range_multi(__source) { $0 }
-  }
-
-  @inlinable
-  internal mutating func
     ___insert_range_multi<S>(
-      _ __source: __owned S,
+      _ __source: S,
       transform: (S.Element) throws -> Base._PayloadValue
     ) rethrows
   where S: Sequence {

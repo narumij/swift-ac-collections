@@ -38,7 +38,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func insert<S>(contentsOf other: S) where S: Sequence, S.Element == (Key, Value) {
     __tree_.ensureUnique()
-    __tree_.___insert_range_multi(other.map { Base.__payload_($0) })
+    __tree_.___insert_range_multi(other) { Base.__payload_($0) }
   }
 
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`

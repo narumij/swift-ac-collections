@@ -41,7 +41,7 @@ extension RedBlackTreeMultiSet {
     public init<Source>(_ sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
       var tree = Tree.create()
-      tree.___insert_range_multi(sequence)
+      tree.___insert_range_multi(sequence) { $0 }
       self.init(__tree_: tree)
     }
 
@@ -58,7 +58,7 @@ extension RedBlackTreeMultiSet {
         self.init()
       } else {
         var tree = Tree.create(minimumCapacity: collection.count)
-        tree.___insert_range_multi(collection)
+        tree.___insert_range_multi(collection) { $0 }
         self.init(__tree_: tree)
       }
     }

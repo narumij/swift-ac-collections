@@ -153,7 +153,7 @@ extension UnsafeTreeV2BufferHeader {
   }
 }
 
-#if false
+#if USE_FRESH_POOL_PROTOCOL
   extension UnsafeTreeV2BufferHeader: _FreshPool {}
 #else
   /* ------------ _FreshPoolのインライン化はじまり  -------------  */
@@ -251,15 +251,6 @@ extension UnsafeTreeV2BufferHeader {
     }
   }
 
-  #if false
-    extension UnsafeTreeV2BufferHeader {
-      @inlinable
-      func makeFreshBucketIterator<T>() -> _UnsafeNodeFreshBucketIterator<T> {
-        return _UnsafeNodeFreshBucketIterator<T>(bucket: freshBucketHead)
-      }
-    }
-  #endif
-
   extension UnsafeTreeV2BufferHeader {
 
     @usableFromInline typealias UsedIterator = _FreshPoolUsedIterator
@@ -301,7 +292,7 @@ extension UnsafeTreeV2BufferHeader {
 
 #endif
 
-#if false
+#if USE_RECYCLE_POOL_PROTOCOL
   extension UnsafeTreeV2BufferHeader: _RecyclePool {}
 #else
   /* ------------ _RecyclePoolのインライン化はじまり  -------------  */

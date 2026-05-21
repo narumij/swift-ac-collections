@@ -154,32 +154,18 @@
 
 #if DEBUG
   @usableFromInline
-  protocol _FreshPoolDebug {
+  protocol _FreshPoolDebug: _UnsafeNodePtrType {
     var freshBucketHead: _BucketPointer? { get set }
+    var freshBucketCurrent: _BucketQueue? { get set }
+    var freshBucketLast: _BucketPointer? { get set }
     var freshPoolCapacity: Int { get set }
+    var freshPoolUsedCount: Int { get set }
+    var count: Int { get set }
+    var nullptr: _NodePtr { get }
     var freshBucketCount: Int { get set }
+    var freshBucketAllocator: _BucketAllocator { get }
+    var payloadLayout: _MemoryLayout { get }
   }
-
-  #if false
-    extension _FreshPoolDebug {
-
-      func dumpFreshPool(label: String = "") {
-        print("==== FreshPoolV3 \(label) ====")
-        print(" bucketCount:", freshBucketCount)
-        print(" capacity:", freshPoolCapacity)
-        print(" usedCount:", freshPoolActualCount)
-
-        var i = 0
-        var p = freshBucketHead
-        while let h = p {
-          h.pointee.dump(label: "bucket[\(i)]")
-          p = h.pointee.next
-          i += 1
-        }
-        print("===========================")
-      }
-    }
-  #endif
 
   extension _FreshPoolDebug {
 

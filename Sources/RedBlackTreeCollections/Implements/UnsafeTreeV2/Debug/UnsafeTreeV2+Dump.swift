@@ -94,7 +94,7 @@
 
 #if DEBUG
 
-  extension UnsafeTreeV2BufferHeader {
+  extension _FreshPoolDebug {
 
     func dumpFreshPool<_PayloadValue>(
       _ t: _PayloadValue.Type,
@@ -272,62 +272,7 @@
 
 #if DEBUG
 
-  #if USE_RECYCLE_POOL_PROTOCOL
-    extension _RecyclePool {
-
-      func dumpRecyclePool(label: String = "") {
-        let title = "---- RecyclePool Dump \(label) ----"
-        print(title)
-        defer { print(String(repeating: "-", count: title.count)) }
-
-        let headDesc =
-          (recycleHead == nullptr)
-          ? "nullptr"
-          : String(format: "%p", recycleHead)
-
-        print(" count (tree)        :", count)
-        print(" freshPoolUsedCount  :", freshPoolUsedCount)
-        print(" recycleCount        :", recycleCount)
-        print(" recycleHead         :", headDesc)
-
-        print(" ---- recycle chain ----")
-
-        var i = 0
-        var p = recycleHead
-
-        while p != nullptr {
-          let node = p.pointee
-
-          let nextDesc =
-            (node.__left_ == nullptr)
-            ? "nullptr"
-            : String(format: "%p", node.__left_)
-
-          print(
-            String(
-              format: " [%03d] node=%p id=%lld recycle_count=%lld needs_deinit=%@ next=%@",
-              i,
-              p,
-              node.___tracking_tag,
-              node.___recycle_count,
-              node.___has_payload_content ? "true" : "false",
-              nextDesc
-            )
-          )
-
-          p = node.__left_
-          i &+= 1
-
-          if i > 1_000_000 {
-            print(" ⚠️ possible recycle chain loop detected")
-            break
-          }
-        }
-      }
-    }
-  #endif
-
-  extension UnsafeTreeV2BufferHeader {
+  extension _RecyclePoolDebug {
 
     func dumpRecyclePool(label: String = "") {
       let title = "---- RecyclePool Dump \(label) ----"
@@ -379,7 +324,6 @@
       }
     }
   }
-
 #endif
 
 // MARK: - TiedRawBuffer Dump

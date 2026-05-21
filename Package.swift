@@ -47,6 +47,7 @@ var _settings: [SwiftSetting] =
 
     // swift_slowAllocを避ける動作をするマクロ定義
     // 少しだけパフォーマンスが改善するが、利用には注意が必要
+    // 利用可能な型アライメントが8に制限される
     .define(
       "USE_C_MALLOC",
       .when(traits: ["USE_C_MALLOC"])

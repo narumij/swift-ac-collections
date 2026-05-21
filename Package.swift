@@ -63,6 +63,7 @@ var _settings: [SwiftSetting] =
 
     // ノードの付帯情報のビット幅を半分にするマクロ定義
     // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる
+    // 各種ベンチマークで余り差がみられないが、removeの際のfindの速度に変化がみられる
     // TODO: AtCoderジャッジ搭載時は必須
     .define(
       "USE_COMPACT_NODE_METADATA",

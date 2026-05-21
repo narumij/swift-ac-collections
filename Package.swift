@@ -11,7 +11,7 @@ var defines: [String] = [
   //  "USING_COLLECTIONS",
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "PERFOMANCE_CHECK",
-  "WITHOUT_SIZECHECK"
+  "WITHOUT_SIZECHECK",
   //  "USE_OLD_FIND",
   //    "DEATH_TEST",
   //  "BENCHMARK",
@@ -21,7 +21,7 @@ var defines: [String] = [
   //  "RESERVE_CAPACITY_BENCH",
   //  "USE_RECYCLE_POOL_PROTOCOL",
   //  "USE_FRESH_POOL_PROTOCOL",
-  //  "USE_COMPACT_NODE_METADATA",
+  "USE_COMPACT_NODE_METADATA",
 ]
 
 var _settings: [SwiftSetting] =
@@ -30,7 +30,7 @@ var _settings: [SwiftSetting] =
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
     // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
     // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
-    .define("COMPATIBLE_ATCODER_2025"),
+    //  .define("COMPATIBLE_ATCODER_2025"),
 
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
@@ -53,9 +53,17 @@ var _settings: [SwiftSetting] =
       .when(traits: ["USE_C_MALLOC"])
     ),
     
+    // 一部のポインタ比較で128bit幅のパス表現を用いる
+    // Int.maxサイズのノード数を用いる場合に必要となるが、現実的には不要
+    // 念のために用意してある
+    .define(
+      "USE_INT128",
+      .when(traits: ["USE_INT128"])
+    ),
+
     // ノードの付帯情報のビット幅を半分にするマクロ定義
     // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる
-    // TODO: AtCoderジャッジ搭載時はオンにする
+    // TODO: AtCoderジャッジ搭載時は必須
     .define(
       "USE_COMPACT_NODE_METADATA",
       .when(traits: ["USE_COMPACT_NODE_METADATA"])
@@ -83,6 +91,9 @@ let package = Package(
     ),
     .trait(
       name: "USE_C_MALLOC"
+    ),
+    .trait(
+      name: "USE_INT128"
     ),
   ],
   dependencies: [

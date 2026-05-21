@@ -84,7 +84,7 @@ import XCTest
 
       for p in pointers {
         // 0未満はsentinelなので、アサートではねられる
-        p.pointee.___tracking_tag = Int.max
+        p.pointee.___tracking_tag = _TrackingTag.max
         header.___pushRecycle(p)
         XCTAssertNotEqual(header.recycleHead, .nullptr)
       }

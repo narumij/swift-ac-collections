@@ -24,7 +24,7 @@
   extension UnsafeNode {
 
     @inlinable
-    func debugDescription(resolve: (Pointer?) -> Int?) -> String {
+    func debugDescription(resolve: (Pointer?) -> _TrackingTag?) -> String {
       let id = ___tracking_tag
       let l = resolve(__left_)
       let r = resolve(__right_)
@@ -48,11 +48,11 @@
   }
 
   extension UnsafeMutablePointer where Pointee == UnsafeNode {
-    package var index: Int { trackingTag }
+    package var index: _TrackingTag { trackingTag }
   }
 
   extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
-    package var index: Int { self?.trackingTag ?? .nullptr }
+    package var index: _TrackingTag { self?.trackingTag ?? .nullptr }
   }
 
   extension UnsafeNode {

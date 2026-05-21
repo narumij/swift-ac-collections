@@ -25,7 +25,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   #if DEBUG
-    func _nodeID(_ p: _NodePtr) -> Int? {
+    func _nodeID(_ p: _NodePtr) -> _TrackingTag? {
       return p.pointee.___tracking_tag
     }
   #endif

@@ -84,8 +84,8 @@
       }
 
       @usableFromInline
-      internal var ___recycleNodes: [Int] {
-        var nodes: [Int] = []
+      internal var ___recycleNodes: [_TrackingTag] {
+        var nodes: [_TrackingTag] = []
         var last = recycleHead
         while last != nullptr {
           nodes.append(last.pointee.___tracking_tag)

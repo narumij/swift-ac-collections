@@ -912,7 +912,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
       typealias Index = RedBlackTreeDictionary<Int, String>.Index
       #if DEBUG
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
         XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
         XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
         XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
@@ -934,7 +934,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, 5)
 
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))

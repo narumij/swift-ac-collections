@@ -38,8 +38,11 @@
 /// - `-1` : end（終端ノード）
 /// - `-999` : デバッグ用途のダミー値
 ///
+#if USE_COMPACT_NODE_METADATA
+public typealias _TrackingTag = Int32
+#else
 public typealias _TrackingTag = Int
-
+#endif
 
 extension _TrackingTag {
 

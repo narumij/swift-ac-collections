@@ -36,14 +36,14 @@ final class AllocationTests: RedBlackTreeTestCase {
         XCTAssertGreaterThanOrEqual(storage.capacity, 5)
         let actualCapacity = storage.capacity  // ManagedBufferの挙動が変わった
         for i in 0..<5 {
-          XCTAssertEqual(storage.__construct_node(-1).index, i)
+          XCTAssertEqual(storage.__construct_node(-1).index, _TrackingTag(i))
         }
         XCTAssertEqual(storage.capacity, actualCapacity)  // capacityが変動しないこと
         XCTAssertEqual(storage.initializedCount, 5)
         XCTAssertEqual(storage.count, 5)
         XCTAssertEqual(storage._buffer.header.recycleCount, 0)
         for i in (0..<5).reversed() {
-          storage.destroy(i)
+          storage.destroy(_TrackingTag(i))
         }
         XCTAssertEqual(storage.capacity, actualCapacity)
         XCTAssertEqual(storage.initializedCount, 5)

@@ -221,7 +221,7 @@ extension UnsafeTreeV2BufferHeader {
     @inlinable
     subscript(___tracking_tag: _TrackingTag) -> _NodePtr {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
-      var remaining = ___tracking_tag
+      var remaining = Int(truncatingIfNeeded: ___tracking_tag)
       var p = freshBucketHead?.accessor(payload: payloadLayout)
       while let h = p {
         let cap = h.capacity
@@ -331,7 +331,7 @@ extension UnsafeTreeV2BufferHeader {
     assert(p.pointee.___tracking_tag == .debug, "未使用ノードであること")
     #if true
       p.initialize(to: nullptr.pointee)
-      p.pointee.___tracking_tag = freshPoolUsedCount
+      p.pointee.___tracking_tag = _TrackingTag(truncatingIfNeeded: freshPoolUsedCount)
     #else
       p.initialize(to: .create(id: freshPoolUsedCount))
     #endif

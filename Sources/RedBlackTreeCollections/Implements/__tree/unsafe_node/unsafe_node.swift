@@ -158,7 +158,12 @@ public struct UnsafeNode {
   /// - `end` は `-1`
   public var ___tracking_tag: _TrackingTag
 
-  public typealias Seal = UInt32
+  #if USE_COMPACT_NODE_METADATA
+    public typealias Seal = UInt16
+  #else
+    public typealias Seal = UInt32
+  #endif
+  
   // salt付きに変更することで、まったく縁の無い木のノードを受け付けにくくすることができる
   // saltは新規作成時のみ更新され、コピーでは継承することで、CoWまたぎには影響しない
   // 将来の実装課題
@@ -291,7 +296,9 @@ extension UnsafeNode {
 extension UnsafeNode {
 
   @inlinable
-  package static func create(tag: Int, nullptr: UnsafeMutablePointer<UnsafeNode>) -> UnsafeNode {
+  package static func create(tag: _TrackingTag, nullptr: UnsafeMutablePointer<UnsafeNode>)
+    -> UnsafeNode
+  {
     .init(
       ___tracking_tag: tag,
       __left_: nullptr,

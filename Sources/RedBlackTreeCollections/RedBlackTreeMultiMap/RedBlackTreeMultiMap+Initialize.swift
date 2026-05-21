@@ -39,7 +39,7 @@ extension RedBlackTreeMultiMap {
     public init<S>(multiKeysWithValues keysAndValues: __owned S)
     where S: Sequence, S.Element == (Key, Value) {
       var tree = Tree.create()
-      try tree.___insert_range_multi(keysAndValues) {
+      tree.___insert_range_multi(keysAndValues) {
         Base.__payload_($0)
       }
       self.init(__tree_: tree)
@@ -53,7 +53,7 @@ extension RedBlackTreeMultiMap {
     public init<S>(multiKeysWithValues keysAndValues: __owned S)
     where S: Collection, S.Element == (Key, Value) {
       var tree = Tree.create(minimumCapacity: keysAndValues.count)
-      try tree.___insert_range_multi(keysAndValues) {
+      tree.___insert_range_multi(keysAndValues) {
         Base.__payload_($0)
       }
       self.init(__tree_: tree)

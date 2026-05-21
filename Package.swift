@@ -65,6 +65,7 @@ var _settings: [SwiftSetting] =
     // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる
     // 各種ベンチマークで余り差がみられないが、removeの際のfindの速度に変化がみられる
     // TODO: AtCoderジャッジ搭載時どちらがいいか、再度確認する
+    // GitHub Actionsのテスト実行時間をみると、あまり速くない事が気になる。
     .define(
       "USE_COMPACT_NODE_METADATA",
       .when(traits: ["USE_COMPACT_NODE_METADATA"])

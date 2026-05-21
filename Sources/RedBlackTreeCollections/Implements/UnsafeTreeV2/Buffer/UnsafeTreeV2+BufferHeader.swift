@@ -188,9 +188,9 @@ extension UnsafeTreeV2BufferHeader {
       let pointer = freshBucketAllocator.createBucket(bucketCapacity: additionalCapacity)
       freshBucketLast?.pointee.next = pointer
       freshBucketLast = pointer
-      freshPoolCapacity += additionalCapacity
+      freshPoolCapacity &+= additionalCapacity
       #if DEBUG
-        freshBucketCount += 1
+        freshBucketCount &+= 1
       #endif
     }
 

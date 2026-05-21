@@ -21,7 +21,7 @@ var defines: [String] = [
   //  "RESERVE_CAPACITY_BENCH",
   //  "USE_RECYCLE_POOL_PROTOCOL",
   //  "USE_FRESH_POOL_PROTOCOL",
-  "USE_COMPACT_NODE_METADATA",
+//  "USE_COMPACT_NODE_METADATA",
 ]
 
 var _settings: [SwiftSetting] =
@@ -64,7 +64,7 @@ var _settings: [SwiftSetting] =
     // ノードの付帯情報のビット幅を半分にするマクロ定義
     // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる
     // 各種ベンチマークで余り差がみられないが、removeの際のfindの速度に変化がみられる
-    // TODO: AtCoderジャッジ搭載時は必須
+    // TODO: AtCoderジャッジ搭載時どちらがいいか、再度確認する
     .define(
       "USE_COMPACT_NODE_METADATA",
       .when(traits: ["USE_COMPACT_NODE_METADATA"])

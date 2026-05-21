@@ -131,7 +131,7 @@
 
     @usableFromInline
     mutating func ___deallocFreshPool() {
-//      assert(_tied == nil, "メモリ管理権が移行されていないこと")
+      //      assert(_tied == nil, "メモリ管理権が移行されていないこと")
       freshBucketAllocator.deallocate(bucket: freshBucketHead)
     }
   }
@@ -150,8 +150,18 @@
 
 // MARK: - DEBUG
 
-  #if DEBUG && false
-    extension _UnsafeNodeFreshPoolV3 {
+#endif
+
+#if DEBUG
+  @usableFromInline
+  protocol _FreshPoolDebug {
+    var freshBucketHead: _BucketPointer? { get set }
+    var freshPoolCapacity: Int { get set }
+    var freshBucketCount: Int { get set }
+  }
+
+  #if false
+    extension _FreshPoolDebug {
 
       func dumpFreshPool(label: String = "") {
         print("==== FreshPoolV3 \(label) ====")
@@ -171,31 +181,30 @@
     }
   #endif
 
-  #if DEBUG
-    extension _FreshPool {
+  extension _FreshPoolDebug {
 
-      @inlinable
-      var freshPoolActualCapacity: Int {
-        var count = 0
-        var p = freshBucketHead
-        while let h = p {
-          count += h.pointee.capacity
-          p = h.pointee.next
-        }
-        return count
-      }
+    public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
 
-      @inlinable
-      var freshPoolActualCount: Int {
-        var count = 0
-        var p = freshBucketHead
-        while let h = p {
-          count += h.pointee.count
-          p = h.pointee.next
-        }
-        return count
+    @inlinable
+    var freshPoolActualCapacity: Int {
+      var count = 0
+      var p = freshBucketHead
+      while let h = p {
+        count += h.pointee.capacity
+        p = h.pointee.next
       }
+      return count
     }
 
-  #endif
+    @inlinable
+    var freshPoolActualCount: Int {
+      var count = 0
+      var p = freshBucketHead
+      while let h = p {
+        count += h.pointee.count
+        p = h.pointee.next
+      }
+      return count
+    }
+  }
 #endif

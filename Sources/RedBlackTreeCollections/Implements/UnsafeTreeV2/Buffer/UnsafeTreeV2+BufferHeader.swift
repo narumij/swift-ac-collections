@@ -261,33 +261,6 @@ extension UnsafeTreeV2BufferHeader {
     }
   }
 
-  #if DEBUG
-    extension UnsafeTreeV2BufferHeader {
-
-      @inlinable
-      var freshPoolActualCapacity: Int {
-        var count = 0
-        var p = freshBucketHead
-        while let h = p {
-          count += h.pointee.capacity
-          p = h.pointee.next
-        }
-        return count
-      }
-
-      @inlinable
-      var freshPoolActualCount: Int {
-        var count = 0
-        var p = freshBucketHead
-        while let h = p {
-          count += h.pointee.count
-          p = h.pointee.next
-        }
-        return count
-      }
-    }
-  #endif
-
 /* ------------ _FreshPoolのインライン化おわり  -------------  */
 
 #endif
@@ -336,29 +309,15 @@ extension UnsafeTreeV2BufferHeader {
       count = 0  // これは不適切な気がする
     }
   }
-
-  #if DEBUG || GRAPHVIZ_DEBUG
-    extension UnsafeTreeV2BufferHeader {
-
-      @usableFromInline
-      var recycleCount: Int {
-        freshPoolUsedCount - count
-      }
-
-      @usableFromInline
-      internal var ___recycleNodes: [Int] {
-        var nodes: [Int] = []
-        var last = recycleHead
-        while last != nullptr {
-          nodes.append(last.pointee.___tracking_tag)
-          last = last.pointee.__left_
-        }
-        return nodes
-      }
-    }
-  #endif
-
 /* ------------ _RecyclePoolのインライン化おわり  -------------  */
+#endif
+
+#if DEBUG
+extension UnsafeTreeV2BufferHeader: _FreshPoolDebug {}
+#endif
+
+#if DEBUG || GRAPHVIZ_DEBUG
+extension UnsafeTreeV2BufferHeader: _RecyclePoolDebug {}
 #endif
 
 extension UnsafeTreeV2BufferHeader {

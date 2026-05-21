@@ -65,9 +65,18 @@
       count = 0  // これは不適切な気がする
     }
   }
+#endif
 
-  #if DEBUG || GRAPHVIZ_DEBUG
-    extension _RecyclePool {
+#if DEBUG || GRAPHVIZ_DEBUG
+  @usableFromInline
+  protocol _RecyclePoolDebug: _UnsafeNodePtrType {
+    var recycleHead: _NodePtr { get set }
+    var count: Int { get set }
+    var freshPoolUsedCount: Int { get set }
+    var nullptr: _NodePtr { get }
+  }
+
+  extension _RecyclePoolDebug {
 
       @usableFromInline
       var recycleCount: Int {
@@ -84,6 +93,5 @@
         }
         return nodes
       }
-    }
-  #endif
+  }
 #endif

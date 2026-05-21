@@ -32,7 +32,16 @@ final class UnsafeTreeMemoryTests: RedBlackTreeTestCase {
   }
 
   func testStride() throws {
+
     #if !DEBUG
+      XCTAssertEqual(MemoryLayout<_Bucket>.size, 24)
+    #endif
+
+    #if !DEBUG && USE_COMPACT_NODE_METADATA
+      XCTAssertEqual(MemoryLayout<UnsafeNode>.stride, 32)
+    #endif
+
+    #if !DEBUG && !USE_COMPACT_NODE_METADATA
       XCTAssertEqual(MemoryLayout<UnsafeNode>.stride, 40)
     #endif
   }

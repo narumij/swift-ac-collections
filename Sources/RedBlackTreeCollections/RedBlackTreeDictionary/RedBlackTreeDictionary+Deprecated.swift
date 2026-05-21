@@ -38,7 +38,7 @@
       self.init(
         __tree_: .create_unique(
           sorted: keysAndValues.sorted { $0.0 < $1.0 },
-          transform: Base.__payload_
+          transform: { Base.__payload_($0) }
         ))
     }
   }

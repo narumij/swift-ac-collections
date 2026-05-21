@@ -7,7 +7,7 @@
 
 import XCTest
 
-#if DEBUG
+#if DEBUG && USE_RECYCLE_POOL_PROTOCOL
   @testable import RedBlackTreeModule
 
   final class RecyclePoolTests: RedBlackTreeTestCase {

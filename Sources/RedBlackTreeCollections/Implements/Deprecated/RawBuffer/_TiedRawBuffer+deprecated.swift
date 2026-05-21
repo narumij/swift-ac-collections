@@ -19,7 +19,7 @@
     @usableFromInline
     subscript(___tracking_tag: _TrackingTag) -> _NodePtr? {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
-      var remaining = ___tracking_tag
+      var remaining = Int(truncatingIfNeeded: ___tracking_tag)
       var p = bucketHead?.accessor(payload: deallocator.payload)
       while let h = p {
         let cap = h.capacity

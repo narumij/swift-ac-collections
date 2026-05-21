@@ -53,7 +53,7 @@
     @inlinable
     public init<Source>(naive sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
-      self.init(__tree_: .create_multi(naive: sequence, transform: Base.__payload_))
+      self.init(__tree_: .create_multi(naive: sequence, transform: { Base.__payload_($0) }))
     }
   }
 #endif

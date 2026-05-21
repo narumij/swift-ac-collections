@@ -1,47 +1,47 @@
 #if DEBUG
   extension UnsafeTreeV2 {
 
-    package func ___ptr_(_ p: _NodePtr) -> Int {
+    package func ___ptr_(_ p: _NodePtr) -> _TrackingTag {
       p.pointee.___tracking_tag
     }
 
-    package func __left_(_ p: Int) -> Int {
+    package func __left_(_ p: _TrackingTag) -> _TrackingTag {
       try! __retrieve_(p).get().pointee.__left_.trackingTag
     }
 
-    package func __left_(_ p: Int, _ l: Int) {
+    package func __left_(_ p: _TrackingTag, _ l: _TrackingTag) {
       try! __retrieve_(p).get().pointee.__left_ = try! __retrieve_(l).get()
     }
 
-    package func __right_(_ p: Int) -> Int {
+    package func __right_(_ p: _TrackingTag) -> _TrackingTag {
       try! __retrieve_(p).get().pointee.__right_.trackingTag
     }
 
-    package func __right_(_ p: Int, _ l: Int) {
+    package func __right_(_ p: _TrackingTag, _ l: _TrackingTag) {
       try! __retrieve_(p).get().pointee.__right_ = try! __retrieve_(l).get()
     }
 
-    package func __parent_(_ p: Int) -> Int {
+    package func __parent_(_ p: _TrackingTag) -> _TrackingTag {
       try! __retrieve_(p).get().pointee.__parent_.trackingTag
     }
 
-    package func __parent_(_ p: Int, _ l: Int) {
+    package func __parent_(_ p: _TrackingTag, _ l: _TrackingTag) {
       try! __retrieve_(p).get().pointee.__parent_ = try! __retrieve_(l).get()
     }
 
-    package func __is_black_(_ p: Int) -> Bool {
+    package func __is_black_(_ p: _TrackingTag) -> Bool {
       try! __retrieve_(p).get().pointee.__is_black_
     }
 
-    package func __is_black_(_ p: Int, _ b: Bool) {
+    package func __is_black_(_ p: _TrackingTag, _ b: Bool) {
       try! __retrieve_(p).get().pointee.__is_black_ = b
     }
 
-    package func __value_(_ p: Int) -> _PayloadValue {
+    package func __value_(_ p: _TrackingTag) -> _PayloadValue {
       __value_(try! __retrieve_(p).get())
     }
 
-    package func ___element(_ p: Int, _ __v: _PayloadValue) {
+    package func ___element(_ p: _TrackingTag, _ __v: _PayloadValue) {
       //      ___element(try! __retrieve_(p).get(), __v)
       try! __retrieve_(p).get().__value_().pointee = __v
     }
@@ -49,7 +49,7 @@
 
   extension UnsafeTreeV2 {
 
-    package func destroy(_ p: Int) {
+    package func destroy(_ p: _TrackingTag) {
       _buffer.withUnsafeMutablePointerToHeader { header in
         header.pointee.___pushRecycle(_buffer.header[p])
       }

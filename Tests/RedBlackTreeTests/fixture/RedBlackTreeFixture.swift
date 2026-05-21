@@ -83,11 +83,11 @@ extension RedBlackTreeFixture {
 }
 
 extension RedBlackTreeFixture {
-  func left(_ p: _Key) -> Int {
-    distance(from: startIndex, to: lowerBound(p))
+  func left(_ p: _Key) -> _TrackingTag {
+    _TrackingTag(distance(from: startIndex, to: lowerBound(p)))
   }
-  func right(_ p: _Key) -> Int {
-    distance(from: startIndex, to: upperBound(p))
+  func right(_ p: _Key) -> _TrackingTag {
+    _TrackingTag(distance(from: startIndex, to: upperBound(p)))
   }
 }
 

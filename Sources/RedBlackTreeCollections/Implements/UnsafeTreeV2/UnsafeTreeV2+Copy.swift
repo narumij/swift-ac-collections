@@ -43,7 +43,7 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  @inline(never) // 呼び出し元ホットパスのレジスタ圧低下を狙っている
+  @inline(never)  // 呼び出し元ホットパスのレジスタ圧低下を狙っている
   internal func copy() -> UnsafeTreeV2 {
     assert(__check(self), "一括チェックに合格すること")
     let tree = withMutableHeader { header in
@@ -52,7 +52,7 @@ extension UnsafeTreeV2 {
           header.copyBuffer(Base._PayloadValue.self, minimumCapacity: capacity))
     }
     assert(count == 0 || initializedCount == tree.initializedCount, "コピー前後で初期化済み数が一致すること")
-    assert(count == 0 || __equiv(self,tree), "コピー前後で等価であること")
+    assert(count == 0 || __equiv(self, tree), "コピー前後で等価であること")
     assert(__check(tree), "一括チェックに合格すること")
     return tree
   }
@@ -138,6 +138,15 @@ extension UnsafeTreeV2BufferHeader {
     nullptr: _NodePtr
   ) {
 
+    #if USE_COMPACT_NODE_METADATA
+    guard other.freshPoolCapacity < _TrackingTag.max else {
+      fatalError(
+        "Cannot copy tree: node count exceeds compact metadata limit. " +
+        "Build without USE_COMPACT_NODE_METADATA to support larger trees."
+      )
+    }
+    #endif
+
     // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
     let bucket = other.freshBucketHead!.accessor(
       payload: MemoryLayout<_PayloadValue>._memoryLayout)!
@@ -149,7 +158,7 @@ extension UnsafeTreeV2BufferHeader {
       return switch index {
       case .nullptr: nullptr
       case .end: other.end_ptr
-      default: bucket[index]
+      default: bucket[Int(truncatingIfNeeded: index)]
       }
     }
 

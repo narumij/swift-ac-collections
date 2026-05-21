@@ -153,7 +153,7 @@ extension UnsafeTreeV2BufferHeader {
   }
 }
 
-#if false
+#if USE_FRESH_POOL_PROTOCOL
   extension UnsafeTreeV2BufferHeader: _FreshPool {}
 #else
   /* ------------ _FreshPoolのインライン化はじまり  -------------  */
@@ -188,9 +188,9 @@ extension UnsafeTreeV2BufferHeader {
       let pointer = freshBucketAllocator.createBucket(bucketCapacity: additionalCapacity)
       freshBucketLast?.pointee.next = pointer
       freshBucketLast = pointer
-      freshPoolCapacity += additionalCapacity
+      freshPoolCapacity &+= additionalCapacity
       #if DEBUG
-        freshBucketCount += 1
+        freshBucketCount &+= 1
       #endif
     }
 
@@ -221,7 +221,7 @@ extension UnsafeTreeV2BufferHeader {
     @inlinable
     subscript(___tracking_tag: _TrackingTag) -> _NodePtr {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
-      var remaining = ___tracking_tag
+      var remaining = Int(truncatingIfNeeded: ___tracking_tag)
       var p = freshBucketHead?.accessor(payload: payloadLayout)
       while let h = p {
         let cap = h.capacity
@@ -251,15 +251,6 @@ extension UnsafeTreeV2BufferHeader {
     }
   }
 
-  #if false
-    extension UnsafeTreeV2BufferHeader {
-      @inlinable
-      func makeFreshBucketIterator<T>() -> _UnsafeNodeFreshBucketIterator<T> {
-        return _UnsafeNodeFreshBucketIterator<T>(bucket: freshBucketHead)
-      }
-    }
-  #endif
-
   extension UnsafeTreeV2BufferHeader {
 
     @usableFromInline typealias UsedIterator = _FreshPoolUsedIterator
@@ -270,38 +261,11 @@ extension UnsafeTreeV2BufferHeader {
     }
   }
 
-  #if DEBUG
-    extension UnsafeTreeV2BufferHeader {
-
-      @inlinable
-      var freshPoolActualCapacity: Int {
-        var count = 0
-        var p = freshBucketHead
-        while let h = p {
-          count += h.pointee.capacity
-          p = h.pointee.next
-        }
-        return count
-      }
-
-      @inlinable
-      var freshPoolActualCount: Int {
-        var count = 0
-        var p = freshBucketHead
-        while let h = p {
-          count += h.pointee.count
-          p = h.pointee.next
-        }
-        return count
-      }
-    }
-  #endif
-
 /* ------------ _FreshPoolのインライン化おわり  -------------  */
 
 #endif
 
-#if false
+#if USE_RECYCLE_POOL_PROTOCOL
   extension UnsafeTreeV2BufferHeader: _RecyclePool {}
 #else
   /* ------------ _RecyclePoolのインライン化はじまり  -------------  */
@@ -345,29 +309,15 @@ extension UnsafeTreeV2BufferHeader {
       count = 0  // これは不適切な気がする
     }
   }
-
-  #if DEBUG || GRAPHVIZ_DEBUG
-    extension UnsafeTreeV2BufferHeader {
-
-      @usableFromInline
-      var recycleCount: Int {
-        freshPoolUsedCount - count
-      }
-
-      @usableFromInline
-      internal var ___recycleNodes: [Int] {
-        var nodes: [Int] = []
-        var last = recycleHead
-        while last != nullptr {
-          nodes.append(last.pointee.___tracking_tag)
-          last = last.pointee.__left_
-        }
-        return nodes
-      }
-    }
-  #endif
-
 /* ------------ _RecyclePoolのインライン化おわり  -------------  */
+#endif
+
+#if DEBUG
+extension UnsafeTreeV2BufferHeader: _FreshPoolDebug {}
+#endif
+
+#if DEBUG || GRAPHVIZ_DEBUG
+extension UnsafeTreeV2BufferHeader: _RecyclePoolDebug {}
 #endif
 
 extension UnsafeTreeV2BufferHeader {
@@ -381,7 +331,7 @@ extension UnsafeTreeV2BufferHeader {
     assert(p.pointee.___tracking_tag == .debug, "未使用ノードであること")
     #if true
       p.initialize(to: nullptr.pointee)
-      p.pointee.___tracking_tag = freshPoolUsedCount
+      p.pointee.___tracking_tag = _TrackingTag(truncatingIfNeeded: freshPoolUsedCount)
     #else
       p.initialize(to: .create(id: freshPoolUsedCount))
     #endif

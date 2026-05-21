@@ -7,7 +7,7 @@
 
 import XCTest
 
-#if DEBUG
+#if DEBUG && USE_FRESH_POOL_PROTOCOL
   @testable import RedBlackTreeModule
 
   struct FreshPoolFixture<_PayloadValue>: _FreshPool {

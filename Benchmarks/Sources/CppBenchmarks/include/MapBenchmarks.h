@@ -38,6 +38,8 @@ extern void cpp_map_lookups(void *ptr, const intptr_t *start, size_t count, bool
 extern void cpp_map_subscript(void *ptr, const intptr_t *start, size_t count);
 extern void cpp_map_removals(void *ptr, const intptr_t *start, size_t count);
 
+extern void cpp_map_count(void *ptr, const intptr_t *start, size_t count, bool expectMatch);
+
 #ifdef __cplusplus
 }
 #endif

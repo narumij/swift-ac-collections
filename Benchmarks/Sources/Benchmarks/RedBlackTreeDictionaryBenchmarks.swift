@@ -331,7 +331,7 @@ extension Benchmark {
       let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
       return { timer in
         for i in lookups {
-          precondition(d.firstIndex(of: i) != nil)
+          precondition(d.index(forKey: i) != nil)
         }
       }
     }
@@ -343,7 +343,7 @@ extension Benchmark {
       let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
       return { timer in
         for i in lookups {
-          precondition(d.firstIndex(of: lookups.count + i) == nil)
+          precondition(d.index(forKey: lookups.count + i) == nil)
         }
       }
     }
@@ -440,6 +440,55 @@ extension Benchmark {
         }
       }
     }
+    
+    self.add(
+      title: "RedBlackTreeDictionary<Int, Int> successful contains(key:)",
+      input: ([Int], [Int]).self
+    ) { input, lookups in
+      let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
+      return { timer in
+        for i in lookups {
+          precondition(d.contains(key: i))
+        }
+      }
+    }
+
+    self.add(
+      title: "RedBlackTreeDictionary<Int, Int> unsuccessful contains(key:)",
+      input: ([Int], [Int]).self
+    ) { input, lookups in
+      let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
+      return { timer in
+        for i in lookups {
+          precondition(!d.contains(key: lookups.count + i))
+        }
+      }
+    }
 
   }
 }
+
+#if false
+extension RedBlackTreeDictionary {
+  
+  @inlinable
+  @inline(__always)
+  func index(forKey key: Key) -> Index? {
+    firstIndex(of: key)
+  }
+  
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var keys: KeyIterator<Tree, Key, Value> {
+    keys()
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public var values: ValueIterator<Tree, Key, Value> {
+    values()
+  }
+}
+#endif

@@ -71,10 +71,10 @@ __attribute__((noinline)) auto find(custom_map *map, intptr_t value) {
 void cpp_map_lookups(void *ptr, const intptr_t *start, size_t count, bool expectMatch) {
   auto map = static_cast<custom_map *>(ptr);
   for (auto it = start; it < start + count; ++it) {
-    auto finding = find(map, *it);
-    auto found = finding != map->end();
-    if (found != expectMatch) { abort(); }
-    if (expectMatch && finding->second != *it * 2) {
+    auto found = find(map, *it);
+    auto isMatch = found != map->end();
+    if (isMatch != expectMatch) { abort(); }
+    if (expectMatch && found->second != *it * 2) {
       abort();
     }
   }
@@ -91,5 +91,15 @@ void cpp_map_removals(void *ptr, const intptr_t *start, size_t count) {
   auto map = static_cast<custom_map *>(ptr);
   for (auto it = start; it < start + count; ++it) {
     identity(map)->erase(*it);
+  }
+}
+
+void cpp_map_count(void *ptr, const intptr_t *start, size_t count, bool expectMatch) {
+  auto map = static_cast<custom_map *>(ptr);
+  for (auto it = start; it < start + count; ++it) {
+    size_t count = map->count(*it);
+    if ((expectMatch ? 1 : 0) != count) {
+      abort();
+    }
   }
 }

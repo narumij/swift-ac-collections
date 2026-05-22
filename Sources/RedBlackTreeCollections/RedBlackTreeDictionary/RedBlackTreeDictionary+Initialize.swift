@@ -44,6 +44,20 @@ extension RedBlackTreeDictionary {
       }
       self.init(__tree_: tree)
     }
+    
+    /// - Complexity: O(*n* log *n*)
+    ///   When inserting elements sequentially from an already sorted sequence,
+    ///   no search is required, and rebalancing is amortized O(1),
+    ///   so the overall construction cost becomes O(*n*).
+    @inlinable
+    public init<S>(uniqueKeysWithValues keysAndValues: __owned S)
+    where S: Collection, S.Element == (Key, Value) {
+      var tree = Tree.create(minimumCapacity: keysAndValues.count)
+      tree.___insert_range_unique(keysAndValues) {
+        Base.__payload_($0)
+      }
+      self.init(__tree_: tree)
+    }
   }
 #endif
 

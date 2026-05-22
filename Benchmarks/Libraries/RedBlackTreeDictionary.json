@@ -45,6 +45,7 @@
           "title": "defaulted subscript, existing key",
           "tasks": [
             "std::map<intptr_t, intptr_t> subscript, existing key",
+            "Dictionary<Int, Int> defaulted subscript, _modify existing",
             "RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify existing",
           ]
         },
@@ -53,6 +54,7 @@
           "title": "defaulted subscript, new key",
           "tasks": [
             "std::map<intptr_t, intptr_t> subscript, new key",
+            "Dictionary<Int, Int> defaulted subscript, _modify missing",
             "RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify missing",
           ]
         },
@@ -68,7 +70,7 @@
           "kind": "chart",
           "title": "insert, reserving capacity",
           "tasks": [
-            "std::map<intptr_t, intptr_t> insert, reserving capacity",
+            "std::map<intptr_t, intptr_t> insert",
             "RedBlackTreeDictionary<Int, Int> subscript, insert, reserving capacity",
           ]
         },
@@ -86,6 +88,22 @@
           "tasks": [
             "std::map<intptr_t, intptr_t> erase missing",
             "RedBlackTreeDictionary<Int, Int> subscript, remove missing",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "successful contains",
+          "tasks": [
+            "std::map<intptr_t, intptr_t> successful count",
+            "RedBlackTreeDictionary<Int, Int> successful contains(key:)",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "unsuccessful contains",
+          "tasks": [
+            "std::map<intptr_t, intptr_t> unsuccessful count",
+            "RedBlackTreeDictionary<Int, Int> unsuccessful contains(key:)",
           ]
         },
       ]

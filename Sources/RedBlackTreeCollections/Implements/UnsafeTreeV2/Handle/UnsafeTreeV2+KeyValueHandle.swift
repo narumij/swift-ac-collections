@@ -64,6 +64,7 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 #endif
 
+#if compiler(<6.3)
 extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
@@ -77,6 +78,22 @@ extension UnsafeTreeV2KeyValueHandle {
     }
   }
 }
+#else
+extension UnsafeTreeV2KeyValueHandle {
+
+  @specialized(where _Key == Int, _MappedValue == Int)
+  @inlinable
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
+    if __lhs < __rhs {
+      -1
+    } else if __lhs > __rhs {
+      1
+    } else {
+      0
+    }
+  }
+}
+#endif
 
 // MARK: - TreeNodeValueProtocol
 

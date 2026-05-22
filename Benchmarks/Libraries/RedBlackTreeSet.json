@@ -1,0 +1,62 @@
+{
+  "kind": "group",
+  "title": "RedBlackTreeSet Benchmarks",
+  "directory": "RedBlackTreeSet",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "RedBlackTreeSet vs std::set",
+      "directory": "versus STL set",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "init from integer range",
+          "tasks": [
+            "std::set<intptr_t> insert from integer range",
+            "RedBlackTreeSet<Int> init from range",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "init from buffer of integers",
+          "tasks": [
+            "std::set<intptr_t> constructor from buffer",
+            "RedBlackTreeSet<Int> init from unsafe buffer",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "sequential iteration",
+          "tasks": [
+            "std::set<intptr_t> sequential iteration",
+            "RedBlackTreeSet<Int> sequential iteration",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "successful lookups",
+          "tasks": [
+            "std::set<intptr_t> successful find",
+            "RedBlackTreeSet<Int> successful contains",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "unsuccessful lookups",
+          "tasks": [
+            "std::set<intptr_t> unsuccessful find",
+            "RedBlackTreeSet<Int> unsuccessful contains",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "random removals",
+          "tasks": [
+            "std::set<intptr_t> erase",
+            "RedBlackTreeSet<Int> remove",
+          ]
+        },
+      ]
+    }
+  ]
+}

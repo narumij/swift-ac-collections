@@ -167,7 +167,7 @@ extension Benchmark {
       title: "RedBlackTreeDictionary<Int, Int> subscript, insert, unique",
       input: [Int].self
     ) { input in
-      var d: [Int: Int] = [:]
+      var d: RedBlackTreeDictionary<Int,Int> = [:]
       for i in input {
         d[i] = 2 * i
       }
@@ -179,7 +179,7 @@ extension Benchmark {
       title: "RedBlackTreeDictionary<Int, Int> subscript, insert, shared",
       input: [Int].self
     ) { input in
-      var d: [Int: Int] = [:]
+      var d: RedBlackTreeDictionary<Int,Int> = [:]
       for i in input {
         let copy = d
         d[i] = 2 * i
@@ -193,7 +193,7 @@ extension Benchmark {
       title: "RedBlackTreeDictionary<Int, Int> subscript, insert, reserving capacity",
       input: [Int].self
     ) { input in
-      var d: [Int: Int] = [:]
+      var d: RedBlackTreeDictionary<Int,Int> = [:]
       d.reserveCapacity(input.count)
       for i in input {
         d[i] = 2 * i

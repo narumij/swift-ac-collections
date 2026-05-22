@@ -357,7 +357,7 @@ extension Benchmark {
         }
       }
     }
-    
+
     self.add(
       title: "RedBlackTreeSet<Int> successful find",
       input: ([Int], [Int]).self
@@ -383,5 +383,29 @@ extension Benchmark {
       }
     }
 
+    self.add(
+      title: "RedBlackTreeSet<Int> successful [.find(:)]",
+      input: ([Int], [Int]).self
+    ) { input, lookups in
+      let set = RedBlackTreeSet(input)
+      return { timer in
+        for i in lookups {
+          precondition(set[.find(i)] != nil)
+        }
+      }
+    }
+
+    self.add(
+      title: "RedBlackTreeSet<Int> unsuccessful [.find(:)]",
+      input: ([Int], [Int]).self
+    ) { input, lookups in
+      let set = RedBlackTreeSet(input)
+      let lookups = lookups.map { $0 + input.count }
+      return { timer in
+        for i in lookups {
+          precondition(set[.find(i)] == nil)
+        }
+      }
+    }
   }
 }

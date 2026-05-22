@@ -1,5 +1,8 @@
 COMMIT=$(git rev-parse --short HEAD)-$(date +%Y%m%d-%H%M%S)
 
+mkdir -p ./Results/2M/RedBlackTreeSet
+mkdir -p ./Results/2M/RedBlackTreeDictionary
+
 swift run -c release benchmark library run \
   --library ./Libraries/RedBlackTreeSet.json \
   ./Results/2M/RedBlackTreeSet/results-${COMMIT}.json \

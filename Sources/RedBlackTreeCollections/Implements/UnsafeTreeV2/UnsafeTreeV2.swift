@@ -66,7 +66,7 @@ extension UnsafeTreeV2 {
   /// 木に紐付く生バッファを遅延処理するプロクシ
   ///
   /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
-  @usableFromInline
+  @inlinable
   var lazyDetach: _LazyDetach {
     withMutableHeader { $0.lazyDetach }
   }

@@ -166,7 +166,7 @@
           "title": "successful lookups",
           "tasks": [
             "std::set<intptr_t> successful find",
-            "RedBlackTreeSet<Int> successful contains",
+            "RedBlackTreeSet<Int> successful find",
           ]
         },
         {
@@ -174,7 +174,7 @@
           "title": "unsuccessful lookups",
           "tasks": [
             "std::set<intptr_t> unsuccessful find",
-            "RedBlackTreeSet<Int> unsuccessful contains",
+            "RedBlackTreeSet<Int> unsuccessful find",
           ]
         },
         {

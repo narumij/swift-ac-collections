@@ -89,3 +89,14 @@ cpp_set_removals(void *ptr, const intptr_t *start, size_t count)
     identity(set)->erase(*it);
   }
 }
+
+void
+cpp_set_count(void *ptr, const intptr_t *start, size_t count, bool expectMatch) {
+  auto map = static_cast<std::set<intptr_t> *>(ptr);
+  for (auto it = start; it < start + count; ++it) {
+    size_t count = map->count(*it);
+    if ((expectMatch ? 1 : 0) != count) {
+      abort();
+    }
+  }
+}

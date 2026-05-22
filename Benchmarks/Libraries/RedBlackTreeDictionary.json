@@ -5,6 +5,90 @@
   "contents": [
     {
       "kind": "group",
+      "title": "Operations",
+      "directory": "operations",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "operations",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> init(uniqueKeysWithValues:)",
+            "RedBlackTreeDictionary<Int, Int> sequential iteration",
+            "RedBlackTreeDictionary<Int, Int> subscript, successful lookups",
+            "RedBlackTreeDictionary<Int, Int> subscript, insert, unique",
+            "RedBlackTreeDictionary<Int, Int> subscript, remove existing, unique"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "iteration",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> sequential iteration",
+            "RedBlackTreeDictionary<Int, Int>.Keys sequential iteration",
+            "RedBlackTreeDictionary<Int, Int>.Values sequential iteration"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "lookups",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> subscript, successful lookups",
+            "RedBlackTreeDictionary<Int, Int> subscript, unsuccessful lookups",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, successful lookups",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, unsuccessful lookups",
+            "RedBlackTreeDictionary<Int, Int> successful index(forKey:)",
+            "RedBlackTreeDictionary<Int, Int> unsuccessful index(forKey:)"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "subscript",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> subscript, successful lookups",
+            "RedBlackTreeDictionary<Int, Int> subscript, unsuccessful lookups",
+            "RedBlackTreeDictionary<Int, Int> subscript, noop setter",
+            "RedBlackTreeDictionary<Int, Int> subscript, set existing",
+            "RedBlackTreeDictionary<Int, Int> subscript, _modify",
+            "RedBlackTreeDictionary<Int, Int> subscript, insert, unique",
+            "RedBlackTreeDictionary<Int, Int> subscript, insert, reserving capacity",
+            "RedBlackTreeDictionary<Int, Int> subscript, remove existing, unique",
+            "RedBlackTreeDictionary<Int, Int> subscript, remove missing"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "defaulted subscript",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, successful lookups",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, unsuccessful lookups",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify existing",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify missing"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "mutations",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> updateValue(_:forKey:), existing",
+            "RedBlackTreeDictionary<Int, Int> subscript, set existing",
+            "RedBlackTreeDictionary<Int, Int> subscript, _modify",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify existing"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "removals",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> subscript, remove existing, unique",
+            "RedBlackTreeDictionary<Int, Int> subscript, remove missing",
+            "RedBlackTreeDictionary<Int, Int> random removals (existing keys)",
+            "RedBlackTreeDictionary<Int, Int> random removals (missing keys)"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "group",
       "title": "RedBlackTreeDictionary vs std::map",
       "directory": "versus STL map",
       "contents": [

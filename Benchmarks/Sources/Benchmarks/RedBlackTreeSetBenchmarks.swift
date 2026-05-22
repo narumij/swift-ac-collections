@@ -261,67 +261,6 @@ extension Benchmark {
       }
     }
 
-    #if false
-      // RedBlackTreeSetAlgebra operations with Array
-      do {
-        for (percentage, start) in overlaps {
-          self.add(
-            title: "RedBlackTreeSet<Int> union with Array (\(percentage) overlap)",
-            input: [Int].self
-          ) { input in
-            let start = start(input.count)
-            let a = RedBlackTreeSet(input)
-            let b = Array(start..<start + input.count)
-            return { timer in
-              blackHole(a.union(identity(b)))
-            }
-          }
-        }
-
-        for (percentage, start) in overlaps {
-          self.add(
-            title: "RedBlackTreeSet<Int> intersection with Array (\(percentage) overlap)",
-            input: [Int].self
-          ) { input in
-            let start = start(input.count)
-            let a = RedBlackTreeSet(input)
-            let b = Array(start..<start + input.count)
-            return { timer in
-              blackHole(a.intersection(identity(b)))
-            }
-          }
-        }
-
-        for (percentage, start) in overlaps {
-          self.add(
-            title: "RedBlackTreeSet<Int> symmetricDifference with Array (\(percentage) overlap)",
-            input: [Int].self
-          ) { input in
-            let start = start(input.count)
-            let a = RedBlackTreeSet(input)
-            let b = Array(start..<start + input.count)
-            return { timer in
-              blackHole(a.symmetricDifference(identity(b)))
-            }
-          }
-        }
-
-        for (percentage, start) in overlaps {
-          self.add(
-            title: "RedBlackTreeSet<Int> subtracting Array (\(percentage) overlap)",
-            input: [Int].self
-          ) { input in
-            let start = start(input.count)
-            let a = RedBlackTreeSet(input)
-            let b = Array(start..<start + input.count)
-            return { timer in
-              blackHole(a.subtracting(identity(b)))
-            }
-          }
-        }
-      }
-    #endif
-
     // RedBlackTreeSetAlgebra mutations with Self
     do {
       for (percentage, start) in overlaps {
@@ -393,80 +332,6 @@ extension Benchmark {
       }
     }
 
-    #if false
-      // RedBlackTreeSetAlgebra mutations with Array
-      do {
-        for (percentage, start) in overlaps {
-          self.add(
-            title: "RedBlackTreeSet<Int> formUnion with Array (\(percentage) overlap)",
-            input: [Int].self
-          ) { input in
-            let start = start(input.count)
-            let b = Array(start..<start + input.count)
-            return { timer in
-              var a = RedBlackTreeSet(input)
-              timer.measure {
-                a.formUnion(identity(b))
-              }
-              blackHole(a)
-            }
-          }
-        }
-
-        for (percentage, start) in overlaps {
-          self.add(
-            title: "RedBlackTreeSet<Int> formIntersection with Array (\(percentage) overlap)",
-            input: [Int].self
-          ) { input in
-            let start = start(input.count)
-            let b = Array(start..<start + input.count)
-            return { timer in
-              var a = RedBlackTreeSet(input)
-              timer.measure {
-                a.formIntersection(identity(b))
-              }
-              blackHole(a)
-            }
-          }
-        }
-
-        for (percentage, start) in overlaps {
-          self.add(
-            title:
-              "RedBlackTreeSet<Int> formSymmetricDifference with Array (\(percentage) overlap)",
-            input: [Int].self
-          ) { input in
-            let start = start(input.count)
-            let b = Array(start..<start + input.count)
-            return { timer in
-              var a = RedBlackTreeSet(input)
-              timer.measure {
-                a.formSymmetricDifference(identity(b))
-              }
-              blackHole(a)
-            }
-          }
-        }
-
-        for (percentage, start) in overlaps {
-          self.add(
-            title: "RedBlackTreeSet<Int> subtract Array (\(percentage) overlap)",
-            input: [Int].self
-          ) { input in
-            let start = start(input.count)
-            let b = Array(start..<start + input.count)
-            return { timer in
-              var a = RedBlackTreeSet(input)
-              timer.measure {
-                a.subtract(identity(b))
-              }
-              blackHole(a)
-            }
-          }
-        }
-      }
-    #endif
-
     self.add(
       title: "RedBlackTreeSet<Int> equality, unique",
       input: Int.self
@@ -492,6 +357,5 @@ extension Benchmark {
         }
       }
     }
-
   }
 }

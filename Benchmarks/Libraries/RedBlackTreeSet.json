@@ -5,6 +5,135 @@
   "contents": [
     {
       "kind": "group",
+      "title": "Operations",
+      "directory": "operations",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "operations",
+          "tasks": [
+            "Set<Int> init from range",
+            "Set<Int> init from unsafe buffer",
+            "Set<Int> sequential iteration",
+            "Set<Int> successful contains",
+            "Set<Int> unsuccessful contains",
+            "Set<Int> insert",
+            "Set<Int> insert, reserving capacity",
+            "Set<Int> remove"
+          ]
+        },
+        {
+          "kind": "variants",
+          "charts": [
+            {
+              "kind": "chart",
+              "title": "union with Self",
+              "tasks": [
+                "Set<Int> union with Self (0% overlap)",
+                "Set<Int> union with Self (25% overlap)",
+                "Set<Int> union with Self (50% overlap)",
+                "Set<Int> union with Self (75% overlap)",
+                "Set<Int> union with Self (100% overlap)"
+              ]
+            },
+            {
+              "kind": "chart",
+              "title": "formUnion with Self",
+              "tasks": [
+                "Set<Int> formUnion with Self (0% overlap)",
+                "Set<Int> formUnion with Self (25% overlap)",
+                "Set<Int> formUnion with Self (50% overlap)",
+                "Set<Int> formUnion with Self (75% overlap)",
+                "Set<Int> formUnion with Self (100% overlap)",
+              ]
+            },
+          ]
+        },
+        {
+          "kind": "variants",
+          "charts": [
+            {
+              "kind": "chart",
+              "title": "intersection with Self",
+              "tasks": [
+                "Set<Int> intersection with Self (0% overlap)",
+                "Set<Int> intersection with Self (25% overlap)",
+                "Set<Int> intersection with Self (50% overlap)",
+                "Set<Int> intersection with Self (75% overlap)",
+                "Set<Int> intersection with Self (100% overlap)",
+              ]
+            },
+            {
+              "kind": "chart",
+              "title": "formIntersection with Self",
+              "tasks": [
+                "Set<Int> formIntersection with Self (0% overlap)",
+                "Set<Int> formIntersection with Self (25% overlap)",
+                "Set<Int> formIntersection with Self (50% overlap)",
+                "Set<Int> formIntersection with Self (75% overlap)",
+                "Set<Int> formIntersection with Self (100% overlap)",
+              ]
+            },
+          ]
+        },
+        {
+          "kind": "variants",
+          "charts": [
+            {
+              "kind": "chart",
+              "title": "symmetricDifference with Self",
+              "tasks": [
+                "Set<Int> symmetricDifference with Self (0% overlap)",
+                "Set<Int> symmetricDifference with Self (25% overlap)",
+                "Set<Int> symmetricDifference with Self (50% overlap)",
+                "Set<Int> symmetricDifference with Self (75% overlap)",
+                "Set<Int> symmetricDifference with Self (100% overlap)",
+              ]
+            },
+            {
+              "kind": "chart",
+              "title": "formSymmetricDifference with Self",
+              "tasks": [
+                "Set<Int> formSymmetricDifference with Self (0% overlap)",
+                "Set<Int> formSymmetricDifference with Self (25% overlap)",
+                "Set<Int> formSymmetricDifference with Self (50% overlap)",
+                "Set<Int> formSymmetricDifference with Self (75% overlap)",
+                "Set<Int> formSymmetricDifference with Self (100% overlap)",
+              ]
+            },
+          ]
+        },
+        {
+          "kind": "variants",
+          "charts": [
+            {
+              "kind": "chart",
+              "title": "subtracting Self",
+              "tasks": [
+                "Set<Int> subtracting Self (0% overlap)",
+                "Set<Int> subtracting Self (25% overlap)",
+                "Set<Int> subtracting Self (50% overlap)",
+                "Set<Int> subtracting Self (75% overlap)",
+                "Set<Int> subtracting Self (100% overlap)",
+              ]
+            },
+            {
+              "kind": "chart",
+              "title": "subtract Self",
+              "tasks": [
+                "Set<Int> subtract Self (0% overlap)",
+                "Set<Int> subtract Self (25% overlap)",
+                "Set<Int> subtract Self (50% overlap)",
+                "Set<Int> subtract Self (75% overlap)",
+                "Set<Int> subtract Self (100% overlap)",
+              ]
+            },
+          ]
+        },
+      ]
+    },
+    {
+      "kind": "group",
       "title": "RedBlackTreeSet vs std::set",
       "directory": "versus STL set",
       "contents": [
@@ -54,6 +183,22 @@
           "tasks": [
             "std::set<intptr_t> erase",
             "RedBlackTreeSet<Int> remove",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "successful contains",
+          "tasks": [
+            "std::set<intptr_t> successful count",
+            "RedBlackTreeSet<Int> successful contains",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "unsuccessful contains",
+          "tasks": [
+            "std::set<intptr_t> unsuccessful count",
+            "RedBlackTreeSet<Int> unsuccessful contains",
           ]
         },
       ]

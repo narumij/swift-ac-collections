@@ -122,5 +122,30 @@ extension Benchmark {
         set.destroy()
       }
     }
+    
+    self.add(
+      title: "std::set<intptr_t> successful count",
+      input: ([Int], [Int]).self
+    ) { input, lookups in
+      let map = CppSet(input)
+      return { timer in
+        lookups.withUnsafeBufferPointer { buffer in
+          cpp_map_count(map.ptr, buffer.baseAddress, buffer.count, true)
+        }
+      }
+    }
+    
+    self.add(
+      title: "std::set<intptr_t> unsuccessful count",
+      input: ([Int], [Int]).self
+    ) { input, lookups in
+      let map = CppSet(input)
+      let lookups = lookups.map { $0 + input.count }
+      return { timer in
+        lookups.withUnsafeBufferPointer { buffer in
+          cpp_map_count(map.ptr, buffer.baseAddress, buffer.count, false)
+        }
+      }
+    }
   }
 }

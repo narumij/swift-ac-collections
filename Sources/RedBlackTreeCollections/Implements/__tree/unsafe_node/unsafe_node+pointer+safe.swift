@@ -73,8 +73,16 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
 
   /// お清め
   @inlinable
-  var purified: _SafePtr {
-    flatMap { $0.___is_garbaged ? .failure(.garbaged) : .success($0) }
+  var checked: _SafePtr {
+    flatMap {
+      if $0.___is_null {
+        .failure(.null)
+      } else if $0.___is_garbaged {
+        .failure(.garbaged)
+      } else {
+        .success($0)
+      }
+    }
   }
 }
 
@@ -86,6 +94,10 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   var sealed: _SealedPtr { flatMap { $0.sealed } }
 }
 
+/// 世代管理付きポインタ
+///
+/// 外部的には、これをさらに寿命管理付きでラップして用いる
+/// 内部的にはこれを用いる理由は特にない、はず
 public typealias _SealedPtr = Result<_NodePtrSealing, SealError>
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {

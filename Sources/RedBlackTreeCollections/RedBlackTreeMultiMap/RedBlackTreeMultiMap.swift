@@ -385,8 +385,8 @@ extension RedBlackTreeMultiMap {
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()
       let result = try __tree_.___erase_ragen_if(
-        __tree_.__begin_node_.sealed,
-        __tree_.__end_node.sealed,
+        __tree_.__begin_node_.safe,
+        __tree_.__end_node.safe,
         { try shouldBeRemoved(Base.__element_($0)) })
       if case .failure(let e) = result {
         fatalError(errorMessage(e))

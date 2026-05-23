@@ -150,7 +150,7 @@
       rethrows
     {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_(bounds)
+      let range = __tree_.__purified_safe_(bounds)
       guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
@@ -165,7 +165,7 @@
     {
       __tree_.ensureUnique()
 //      let range = __tree_.__purified_(bounds.relative(to: __tree_))
-      let range = __tree_.__purified_(bounds).relative(to: __tree_)
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }

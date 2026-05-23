@@ -1,9 +1,19 @@
+//===----------------------------------------------------------------------===//
 //
-//  RedBlackTreeRangeView.swift
-//  swift-ac-collections
+// This source file is part of the swift-ac-collections project
 //
-//  Created by narumij on 2026/01/29.
+// Copyright (c) 2024 - 2026 narumij.
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
+// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by narumij.
+//
+//===----------------------------------------------------------------------===//
 
 @frozen
 public struct RedBlackTreeKeyOnlyRangeView<Container>: UnsafeMutableTreeHostV2
@@ -48,6 +58,18 @@ extension RedBlackTreeKeyOnlyRangeView {
       let _end = __tree_.__purified_(endIndex).pointer
     else {
       return (__tree_.__end_node, __tree_.__end_node)
+    }
+    return (_start, _end)
+  }
+
+  @inlinable
+  var _safe_range: (_SafePtr, _SafePtr) {
+    let _start = __tree_.__purified_safe_(startIndex)
+    let _end = __tree_.__purified_safe_(endIndex)
+    guard
+      _start.isValid, _end.isValid
+    else {
+      return (__tree_.__end_node.safe, __tree_.__end_node.safe)
     }
     return (_start, _end)
   }
@@ -106,21 +128,22 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(`count`)
   @inlinable
   public __consuming func sorted() -> [Element] {
-    let (_start, _end) = _range
-    return __tree_.___copy_to_array(_start.pointer!, _end.pointer!)
+    let (_start, _end) = _raw_range
+    return __tree_.___copy_to_array(_start, _end)
   }
 
   /// - Complexity: O(`count`)
   @inlinable
   public __consuming func reversed() -> [Element] {
-    let (_start, _end) = _range
-    return __tree_.___rev_copy_to_array(_start.pointer!, _end.pointer!)
+    let (_start, _end) = _raw_range
+    return __tree_.___rev_copy_to_array(_start, _end)
   }
 }
 
 // MARK: -
 
-public protocol ScalarBaseInit: ___Root where Self.Base: ___TreeBase & ScalarValueTrait & _BaseNode_PtrRangeCompInterface {
+public protocol ScalarBaseInit: ___Root
+where Self.Base: ___TreeBase & ScalarValueTrait & _BaseNode_PtrRangeCompInterface {
   static func create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self
 }
 
@@ -234,7 +257,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     __tree_.ensureUnique()
-    let (_start, _end) = _range
+    let (_start, _end) = _safe_range
     let result = try __tree_.___erase_ragen_if(_start, _end, shouldBeRemoved)
     if case .failure(let e) = result {
       fatalError(errorMessage(e))
@@ -290,11 +313,11 @@ extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparab
 // MARK: - Is Identical To
 
 extension RedBlackTreeKeyOnlyRangeView {
-  
+
   @inlinable
   public func _isIdentical(to other: Self) -> Bool {
-    let (_start, _end) = _range
-    let (_other_start, _other_end) = other._range
+    let (_start, _end) = _raw_range
+    let (_other_start, _other_end) = other._raw_range
     return __tree_.isIdentical(to: other.__tree_) && _start == _other_start
       && _end == _other_end
   }

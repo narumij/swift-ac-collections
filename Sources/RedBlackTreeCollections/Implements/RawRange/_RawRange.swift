@@ -29,27 +29,3 @@ public struct _RawRange<Bound> {
     self.upperBound = upperBound
   }
 }
-
-extension _RawRange where Bound == _SealedPtr {
-
-  @inlinable
-  var safe: _RawRange<_SafePtr> {
-    .init(lowerBound: lowerBound.map(\.pointer), upperBound: upperBound.map(\.pointer))
-  }
-}
-
-extension _RawRange where Bound == _SafePtr {
-
-  @inlinable
-  var sealed: _RawRange<_SealedPtr> {
-    .init(lowerBound: lowerBound.sealed, upperBound: upperBound.sealed)
-  }
-}
-
-extension _RawRange where Bound == UnsafeIndexV3 {
-
-  @inlinable
-  var sealed: _RawRange<_SealedPtr> {
-    .init(lowerBound: lowerBound.sealed, upperBound: upperBound.sealed)
-  }
-}

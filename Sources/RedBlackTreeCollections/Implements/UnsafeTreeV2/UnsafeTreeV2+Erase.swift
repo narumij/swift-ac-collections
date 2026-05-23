@@ -38,7 +38,8 @@ extension UnsafeTreeV2 {
   @inlinable
   @discardableResult
   func ___erase_ragen_if(
-    _ __first: _SealedPtr, _ __last: _SealedPtr,
+    _ __first: _SealedPtr,
+    _ __last: _SealedPtr,
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool
   ) rethrows -> _SealedPtr {
 
@@ -55,11 +56,13 @@ extension UnsafeTreeV2 {
     }
     return __last
   }
-  
+
+  /// 末尾チェック付きの削除ループ
   @inlinable
   @discardableResult
   func ___erase_ragen_if(
-    _ __first: _SafePtr, _ __last: _SafePtr,
+    _ __first: _SafePtr,
+    _ __last: _SafePtr,
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool
   ) rethrows -> _SafePtr {
 
@@ -69,9 +72,9 @@ extension UnsafeTreeV2 {
         return .failure(.upperOutOfBounds)
       }
       if try shouldBeRemoved(__value_(__first.pointer!)) {
-        __first = erase(__first.purified.pointer!).safe
+        __first = erase(__first.checked.pointer!).safe
       } else {
-        __first = ___tree_next_iter(__first.purified.pointer!)
+        __first = ___tree_next_iter(__first.checked.pointer!)
       }
     }
     return __last

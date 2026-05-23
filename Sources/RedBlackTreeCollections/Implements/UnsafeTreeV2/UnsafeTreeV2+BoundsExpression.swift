@@ -18,7 +18,7 @@
 extension UnsafeTreeV2 {
  
   @inlinable
-  func _evaluate(_ _internal: RedBlackTreeBoundExpressionV2<_Key>.Internal)
+  func evaluate(_ _internal: RedBlackTreeBoundExpressionV2<_Key>.Internal)
     -> _SafePtr
   {
     var ptr = _SafePtr.failure(.null)
@@ -33,7 +33,7 @@ extension UnsafeTreeV2 {
         ptr = __begin_node_.safe
         
       case .last:
-        ptr = _evaluate([.end, .before])
+        ptr = evaluate([.end, .before])
         
       case .end:
         ptr = __end_node.safe
@@ -54,7 +54,7 @@ extension UnsafeTreeV2 {
             ___tree_adv_iter($0, offset)
           }
         case .some(let __l):
-          let l = _evaluate(__l)
+          let l = evaluate(__l)
           let __r = ptr.flatMap {
             ___tree_adv_iter($0, offset, l)
           }
@@ -65,10 +65,10 @@ extension UnsafeTreeV2 {
         }
         
       case .before:
-        ptr = _evaluate([.pointer(ptr), .advanced(offset: -1)])
+        ptr = evaluate([.pointer(ptr), .advanced(offset: -1)])
         
       case .after:
-        ptr = _evaluate([.pointer(ptr), .advanced(offset: 1)])
+        ptr = evaluate([.pointer(ptr), .advanced(offset: 1)])
         
       case .lessThan(let __v):
         ptr = ___tree_prev_iter(lower_bound(__v))
@@ -97,20 +97,20 @@ extension UnsafeTreeV2 {
 extension RedBlackTreeBoundExpressionV2 {
   
   @inlinable
-  func _evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
+  func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
     -> _SafePtr
   where
     Base: ___TreeBase,
     Base._Key == _Key
   {
-    return __tree_._evaluate(_internal)
+    return __tree_.evaluate(_internal)
   }
 }
 
 extension RedBlackTreeBoundRangeExpression {
 
   @inlinable
-  func _evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
+  func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
     -> _RawRangeExpression<_SafePtr>
   where
     Base: ___TreeBase,
@@ -120,22 +120,22 @@ extension RedBlackTreeBoundRangeExpression {
 
     case .range(let from, let to):
       return .range(
-        from: from._evaluate(__tree_),
-        to: to._evaluate(__tree_))
+        from: from.evaluate(__tree_),
+        to: to.evaluate(__tree_))
 
     case .closedRange(let from, let through):
       return .closedRange(
-        from: from._evaluate(__tree_),
-        through: through._evaluate(__tree_))
+        from: from.evaluate(__tree_),
+        through: through.evaluate(__tree_))
 
     case .partialRangeTo(let to):
-      return .partialRangeTo(to._evaluate(__tree_))
+      return .partialRangeTo(to.evaluate(__tree_))
 
     case .partialRangeThrough(let through):
-      return .partialRangeThrough(through._evaluate(__tree_))
+      return .partialRangeThrough(through.evaluate(__tree_))
 
     case .partialRangeFrom(let from):
-      return .partialRangeFrom(from._evaluate(__tree_))
+      return .partialRangeFrom(from.evaluate(__tree_))
 
     case .equalRange(let __v):
       let (lower, upper) =

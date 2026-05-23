@@ -66,7 +66,7 @@
     @inlinable
     public func isValid(_ bound: Bound) -> Bool {
 
-      let sealed = bound._evaluate(__tree_)
+      let sealed = bound.evaluate(__tree_)
       return sealed.isValid && !sealed.___is_end!
     }
   }
@@ -92,7 +92,7 @@
     @inlinable
     public subscript(bound: Bound) -> Element? {
 
-      let p = bound._evaluate(__tree_)
+      let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
       return __tree_[_unsafe_raw: p]
     }
@@ -104,7 +104,7 @@
     public mutating func erase(_ bound: Bound) -> Element? {
 
       __tree_.ensureUnique()
-      let p = bound._evaluate(__tree_)
+      let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
       return __tree_._unchecked_remove(at: p).payload
     }
@@ -119,7 +119,7 @@
     /// Even if this returns `false`, BoundRange-related APIs will not crash.
     @inlinable
     public func isValid(_ bounds: BoundRangeExpression) -> Bool {
-      let range = bounds._evaluate(__tree_).relative(to: __tree_)
+      let range = bounds.evaluate(__tree_).relative(to: __tree_)
       return __tree_.isValidSafeRange(range)
         && range.lowerBound.isValid
         && range.upperBound.isValid
@@ -134,7 +134,7 @@
       @inline(__always) get {
 
         let range = __tree_.sanitizeSafeRange(
-          bounds._evaluate(__tree_).relative(to: __tree_))
+          bounds.evaluate(__tree_).relative(to: __tree_))
 
         return self[unchecked: range]
       }
@@ -142,7 +142,7 @@
       @inline(__always) _modify {
 
         let range = __tree_.sanitizeSafeRange(
-          bounds._evaluate(__tree_).relative(to: __tree_))
+          bounds.evaluate(__tree_).relative(to: __tree_))
 
         yield &self[unchecked: range]
       }
@@ -156,7 +156,7 @@
 
       __tree_.ensureUnique()
       let range = __tree_.sanitizeSafeRange(
-        bounds._evaluate(__tree_).relative(to: __tree_))
+        bounds.evaluate(__tree_).relative(to: __tree_))
       __tree_.___erase_range(range.lowerBound.pointer!, range.upperBound.pointer!)
     }
 
@@ -167,7 +167,7 @@
 
       __tree_.ensureUnique()
       let range = __tree_.sanitizeSafeRange(
-        bounds._evaluate(__tree_).relative(to: __tree_))
+        bounds.evaluate(__tree_).relative(to: __tree_))
       try __tree_.___erase_ragen_if(range.lowerBound.sealed, range.upperBound.sealed, shouldBeRemoved)
     }
   }

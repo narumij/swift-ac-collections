@@ -60,8 +60,8 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
 //    .get()
 
     return try? lifetA2(
-      start._evaluate(self),
-      end._evaluate(self),
+      start.evaluate(self),
+      end.evaluate(self),
       Base.___signed_distance
     )
     .get()

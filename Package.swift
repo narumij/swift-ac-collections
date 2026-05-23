@@ -11,7 +11,7 @@ var defines: [String] = [
   //  "USING_COLLECTIONS",
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "PERFOMANCE_CHECK",
-  "WITHOUT_SIZECHECK",
+  "WITHOUT_SIZECHECK"
   //  "USE_OLD_FIND",
   //    "DEATH_TEST",
   //  "BENCHMARK",
@@ -21,7 +21,7 @@ var defines: [String] = [
   //  "RESERVE_CAPACITY_BENCH",
   //  "USE_RECYCLE_POOL_PROTOCOL",
   //  "USE_FRESH_POOL_PROTOCOL",
-//  "USE_COMPACT_NODE_METADATA",
+  //  "USE_COMPACT_NODE_METADATA",
 ]
 
 var _settings: [SwiftSetting] =
@@ -52,7 +52,7 @@ var _settings: [SwiftSetting] =
       "USE_C_MALLOC",
       .when(traits: ["USE_C_MALLOC"])
     ),
-    
+
     // 一部のポインタ比較で128bit幅のパス表現を用いる
     // Int.maxサイズのノード数を用いる場合に必要となるが、現実的には不要
     // 念のために用意してある
@@ -69,6 +69,11 @@ var _settings: [SwiftSetting] =
     .define(
       "USE_COMPACT_NODE_METADATA",
       .when(traits: ["USE_COMPACT_NODE_METADATA"])
+    ),
+
+    .define(
+      "BENCHMARK",
+      .when(traits: ["BENCHMARK"])
     ),
   ]
   + defines.map { .define($0) }
@@ -96,6 +101,9 @@ let package = Package(
     ),
     .trait(
       name: "USE_INT128"
+    ),
+    .trait(
+      name: "BENCHMARK"
     ),
   ],
   dependencies: [

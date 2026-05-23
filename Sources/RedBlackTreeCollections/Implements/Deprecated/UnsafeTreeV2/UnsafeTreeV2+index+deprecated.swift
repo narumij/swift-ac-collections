@@ -40,7 +40,7 @@
     internal func
       ___distance(from start: _SealedPtr, to end: _SealedPtr) -> Int?
     {
-      return try? lifetA2(
+      return try? liftA2(
         start.map(\.pointer),
         end.map(\.pointer),
         Base.___signed_distance

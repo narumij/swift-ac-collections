@@ -81,25 +81,19 @@ public struct _NodePtrSealing: Equatable {
   var purified: _SealedPtr {
     // validなpointerがendやnullに変化することはない
     isUnsealed ? .failure(.unsealed) : .success(self)
-//    if pointer.___is_garbaged {
-//      return .failure(.garbaged)
-//    }
-//    if pointer.pointee.___recycle_count != seal {
-//      return .failure(.unsealed)
-//    }
-//    return .success(self)
+    //    if pointer.___is_garbaged {
+    //      return .failure(.garbaged)
+    //    }
+    //    if pointer.pointee.___recycle_count != seal {
+    //      return .failure(.unsealed)
+    //    }
+    //    return .success(self)
   }
 
   /// 引換券
   @inlinable
   var tag: _SealedTag {
     .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
-  }
-  
-  /// 引換券
-  @inlinable
-  var trackingTag: _TrackingTag {
-    pointer.pointee.___tracking_tag
   }
 }
 

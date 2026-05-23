@@ -71,7 +71,6 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
     (try? map { !$0.___is_null_or_end }.get()) ?? false
   }
 
-  /// お清め
   @inlinable
   var checked: _SafePtr {
     flatMap {
@@ -196,10 +195,12 @@ func errorMessage<E: Error>(_ e: E) -> String {
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
-  @inlinable
-  package var trackingTag: _TrackingTag {
-    (try? map(\.pointer.trackingTag).get()) ?? .nullptr
-  }
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    package var trackingTag: _TrackingTag {
+      (try? map(\.pointer.trackingTag).get()) ?? .nullptr
+    }
+  #endif
 
   @inlinable
   package var tag: _SealedTag {
@@ -224,22 +225,17 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
     }
   }
 
-  @inlinable
-  package func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
-    // TODO: 利用側でpurified十分か繰り返し確認すること
-    try? map { $0.pointer.__value_() }.get()
-  }
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    package func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
+      try? map { $0.pointer.__value_() }.get()
+    }
+  #endif
 
   @inlinable
   package var pointer: UnsafeMutablePointer<UnsafeNode>? {
     // TODO: 利用側でpurified十分か繰り返し確認すること
     try? map { $0.pointer }.get()
-  }
-
-  @inlinable
-  package var temporaryUnseal: Result<UnsafeMutablePointer<UnsafeNode>, SealError> {
-    // TODO: 利用側でpurified十分か繰り返し確認すること
-    map { $0.pointer }
   }
 
   @inlinable
@@ -265,20 +261,10 @@ extension Result where Failure == SealError {
       return failure
     }
   }
-
-  @usableFromInline
-  package func isError(_ e: SealError) -> Bool {
-    switch self {
-    case .success:
-      return false
-    case .failure(let failure):
-      return failure == e
-    }
-  }
 }
 
 @inlinable
-func lifetA2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> S) -> Result<S, E> {
+func liftA2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> S) -> Result<S, E> {
   switch (a, b) {
   case (.success(let a), .success(let b)):
     return .success(f(a, b))
@@ -289,16 +275,18 @@ func lifetA2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> S) ->
   }
 }
 
-@inlinable
-func liftM2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> Result<S, E>) -> Result<
-  S, E
-> {
-  switch (a, b) {
-  case (.success(let a), .success(let b)):
-    return f(a, b)
-  case (.failure(let e), _):
-    return .failure(e)
-  case (_, .failure(let e)):
-    return .failure(e)
+#if false
+  @inlinable
+  func liftM2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> Result<S, E>) -> Result<
+    S, E
+  > {
+    switch (a, b) {
+    case (.success(let a), .success(let b)):
+      return f(a, b)
+    case (.failure(let e), _):
+      return .failure(e)
+    case (_, .failure(let e)):
+      return .failure(e)
+    }
   }
-}
+#endif

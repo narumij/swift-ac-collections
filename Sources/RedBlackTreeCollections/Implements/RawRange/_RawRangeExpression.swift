@@ -32,6 +32,8 @@ public enum _RawRangeExpression<Bound> {
 
 extension _RawRangeExpression: Equatable where Bound: Equatable {}
 
+// TODO: 方針ぶれがひどいので、整理すること
+
 extension _RawRangeExpression {
 
   @inlinable

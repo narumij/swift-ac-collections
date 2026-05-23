@@ -275,3 +275,26 @@ extension UnsafeTreeV2 {
       upperBound: __purified_(range.upperBound))
   }
 }
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  internal func __purified_(_ range: _RawRangeExpression<UnsafeIndexV3>)
+    -> _RawRangeExpression<_SealedPtr>
+  {
+    switch range {
+    case .range(let from, let to):
+      .range(from: __purified_(from), to: __purified_(to))
+    case .closedRange(let from, let through):
+      .closedRange(from: __purified_(from), through: __purified_(through))
+    case .partialRangeTo(let bound):
+      .partialRangeTo(__purified_(bound))
+    case .partialRangeThrough(let bound):
+      .partialRangeThrough(__purified_(bound))
+    case .partialRangeFrom(let bound):
+      .partialRangeFrom(__purified_(bound))
+    case .unboundedRange:
+      .unboundedRange
+    }
+  }
+}

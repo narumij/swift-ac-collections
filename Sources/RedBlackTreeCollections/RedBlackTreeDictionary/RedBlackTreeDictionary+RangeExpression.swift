@@ -114,6 +114,7 @@
     @inlinable
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
       __tree_.ensureUnique()
+      // TODO: 先にお清めをしていないので、なにか未発見のバグがありそう
       let range = __tree_.__purified_(bounds.relative(to: __tree_))
       guard __tree_.isValidSealedRange(range),
         let __l = range.lowerBound.pointer,

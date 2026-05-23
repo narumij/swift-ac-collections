@@ -129,6 +129,19 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
+  internal subscript(_unsafe __safe_ptr_: _SafePtr) -> _PayloadValue {
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      precondition(__safe_ptr_.exists)
+      return UnsafePointer(__safe_ptr_.pointer!.__value_())
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
   internal subscript(_unsafe sealed: _SealedPtr) -> _PayloadValue {
     @inline(__always)
     @_transparent

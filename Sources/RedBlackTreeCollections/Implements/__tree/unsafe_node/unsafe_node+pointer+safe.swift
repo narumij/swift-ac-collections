@@ -27,6 +27,37 @@
 /// ポインタ操作でいちいちsealingしたくない場合に使う
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
+
+  /// ポインタを渡すときまたは受け取ったときに用いる
+  ///
+  /// 重ねてsealしないこと
+  @inlinable
+  package var safe: _SafePtr {
+    if ___is_null {
+      return .failure(.null)
+    } else if ___is_garbaged {
+      // これが発生するようだと基本的にそれはバグ
+      return .failure(.garbaged)
+    } else {
+      return .success(self)
+    }
+  }
+}
+
+extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
+
+  @inlinable
+  package var pointer: UnsafeMutablePointer<UnsafeNode>? {
+    try? map { $0 }.get()
+  }
+
+  @inlinable
+  public var exists: Bool {
+    (try? map { !$0.___is_null_or_end }.get()) ?? false
+  }
+}
+
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
   /// ポインタが変化した場合に用いる
   ///
@@ -180,7 +211,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   }
 
   @inlinable
-  package var exists: Bool {
+  public var exists: Bool {
     // TODO: 利用側でpurified十分か繰り返し確認すること
     (try? map { !___is_null_or_end($0.pointer.trackingTag) }.get()) ?? false
   }

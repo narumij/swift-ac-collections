@@ -93,10 +93,11 @@
     /// If the evaluated position is `endIndex` or the lookup fails, `nil` is returned.
     ///
     @inlinable
-    public subscript(bound: Bound) -> Element? {
-      let p = bound.evaluate(__tree_)
+    @inline(__always)
+    public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
+      let p = __tree_._evaluate(bound._internal)
       guard let p = p.pointer, !p.___is_end else { return nil }
-      return __tree_[_unsafe_raw: p]
+      return p.__value_(as: Element.self).pointee
     }
   }
 
@@ -105,7 +106,7 @@
     @inlinable
     public mutating func erase(_ bound: Bound) -> Element? {
       __tree_.ensureUnique()
-      let p = bound.evaluate(__tree_)
+      let p = bound._evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
       return __tree_._unchecked_remove(at: p).payload
     }
@@ -177,12 +178,14 @@
 
     @inlinable
     internal func bound(before i: Bound) -> Bound {
-      .before(i)
+//      .before(i)
+      i.before
     }
 
     @inlinable
     internal func bound(after i: Bound) -> Bound {
-      .after(i)
+//      .after(i)
+      i.after
     }
   }
 #endif

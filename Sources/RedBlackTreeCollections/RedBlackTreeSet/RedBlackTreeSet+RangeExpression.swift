@@ -35,7 +35,8 @@
 
     @inlinable
     public func isValid(_ bounds: IndexRange) -> Bool {
-      let range = __tree_.__purified_(bounds.range)
+//      let range = __tree_.__purified_(bounds.range)
+      let range = __tree_.__purified_safe_(bounds)
       // TODO: チェック過剰な気がする
       return __tree_.isValidSealedRange(range)
         && range.lowerBound.isValid
@@ -44,7 +45,8 @@
 
     @inlinable
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
-      let range = __tree_.__purified_(bounds.relative(to: __tree_))
+//      let range = __tree_.__purified_(bounds.relative(to: __tree_))
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       // TODO: チェック過剰な気がする
       return __tree_.isValidSealedRange(range)
         && range.lowerBound.isValid
@@ -64,14 +66,16 @@
     @inlinable
     public subscript(bounds: IndexRange) -> View {
       @inline(__always) get {
-        let range = __tree_.__purified_(bounds.range)
+//        let range = __tree_.__purified_(bounds.range)
+        let range = __tree_.__purified_safe_(bounds)
         guard __tree_.isValidSealedRange(range) else {
           fatalError(.invalidIndex)
         }
         return self[unchecked: range]
       }
       @inline(__always) _modify {
-        let range = __tree_.__purified_(bounds.range)
+//        let range = __tree_.__purified_(bounds.range)
+        let range = __tree_.__purified_safe_(bounds)
         guard __tree_.isValidSealedRange(range) else {
           fatalError(.invalidIndex)
         }
@@ -82,14 +86,16 @@
     @inlinable
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
-        let range = __tree_.__purified_(bounds.relative(to: __tree_))
+//        let range = __tree_.__purified_(bounds.relative(to: __tree_))
+        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
         guard __tree_.isValidSealedRange(range) else {
           fatalError(.invalidIndex)
         }
         return self[unchecked: range]
       }
       @inline(__always) _modify {
-        let range = __tree_.__purified_(bounds.relative(to: __tree_))
+//        let range = __tree_.__purified_(bounds.relative(to: __tree_))
+        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
         guard __tree_.isValidSealedRange(range) else {
           fatalError(.invalidIndex)
         }
@@ -111,7 +117,8 @@
     @discardableResult
     public mutating func erase(_ bounds: IndexRange) -> Index {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_(bounds.range)
+//      let range = __tree_.__purified_(bounds.range)
+      let range = __tree_.__purified_safe_(bounds)
       guard __tree_.isValidSealedRange(range),
         let __l = range.lowerBound.pointer,
         let __u = range.upperBound.pointer
@@ -125,7 +132,8 @@
     @discardableResult
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_(bounds.relative(to: __tree_))
+//      let range = __tree_.__purified_(bounds.relative(to: __tree_))
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       guard __tree_.isValidSealedRange(range),
         let __l = range.lowerBound.pointer,
         let __u = range.upperBound.pointer
@@ -142,7 +150,7 @@
       rethrows
     {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_(bounds.range)
+      let range = __tree_.__purified_(bounds)
       guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }
@@ -155,9 +163,9 @@
     )
       rethrows
     {
-
       __tree_.ensureUnique()
-      let range = __tree_.__purified_(bounds.relative(to: __tree_))
+//      let range = __tree_.__purified_(bounds.relative(to: __tree_))
+      let range = __tree_.__purified_(bounds).relative(to: __tree_)
       guard __tree_.isValidSealedRange(range) else {
         fatalError(.invalidIndex)
       }

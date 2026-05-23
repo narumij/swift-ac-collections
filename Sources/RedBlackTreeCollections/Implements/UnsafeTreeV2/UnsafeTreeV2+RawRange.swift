@@ -16,15 +16,22 @@
 //===----------------------------------------------------------------------===//
 
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
-  
+
   @inlinable
   func isValidSealedRange(_ range: _RawRange<_SealedPtr>) -> Bool {
-    isValidSafeRange(lower: range.lowerBound.map(\.pointer), upper: range.upperBound.map(\.pointer))
+    isValidSafeRange(
+      lower: range.lowerBound.map(\.pointer),
+      upper: range.upperBound.map(\.pointer))
+  }
+  
+  @inlinable
+  func isValidSealedRange(_ range: _RawRange<_SafePtr>) -> Bool {
+    isValidSafeRange(range)
   }
 }
 
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
-  
+
   @inlinable
   func isValidSafeRange(lower: _SafePtr, upper: _SafePtr) -> Bool {
 

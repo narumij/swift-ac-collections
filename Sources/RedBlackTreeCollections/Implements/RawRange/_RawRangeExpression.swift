@@ -32,9 +32,30 @@ public enum _RawRangeExpression<Bound> {
 
 extension _RawRangeExpression: Equatable where Bound: Equatable {}
 
+extension _RawRangeExpression where Bound == _SealedPtr {
+
+  @inlinable
+  internal var safe: _RawRangeExpression<_SafePtr> {
+    switch self {
+    case .range(let from, let to):
+      .range(from: from.map(\.pointer), to: to.map(\.pointer))
+    case .closedRange(let from, let through):
+      .closedRange(from: from.map(\.pointer), through: through.map(\.pointer))
+    case .partialRangeTo(let bound):
+      .partialRangeTo(bound.map(\.pointer))
+    case .partialRangeThrough(let bound):
+      .partialRangeThrough(bound.map(\.pointer))
+    case .partialRangeFrom(let bound):
+      .partialRangeFrom(bound.map(\.pointer))
+    case .unboundedRange:
+      .unboundedRange
+    }
+  }
+}
+
 // TODO: 方針ぶれがひどいので、整理すること
 
-extension _RawRangeExpression {
+extension _RawRangeExpression where Bound == _SafePtr {
 
   @inlinable
   func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SafePtr {
@@ -84,19 +105,6 @@ extension _RawRangeExpression where Bound == _SafePtr {
   }
 }
 
-extension _RawRangeExpression {
-
-  @inlinable
-  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SealedPtr {
-    __tree_.__begin_node_.sealed
-  }
-
-  @inlinable
-  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SealedPtr {
-    __tree_.__end_node.sealed
-  }
-}
-
 extension _RawRangeExpression where Bound == _SealedPtr {
 
   @usableFromInline
@@ -105,111 +113,6 @@ extension _RawRangeExpression where Bound == _SealedPtr {
   where
     Base: ___TreeBase
   {
-    switch self {
-    case .range(let lhs, let rhs):
-      return .init(
-        lowerBound: lhs,
-        upperBound: rhs)
-    case .closedRange(let lhs, let rhs):
-      return .init(
-        lowerBound: lhs,
-        upperBound: rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
-    case .partialRangeTo(let rhs):
-      return .init(
-        lowerBound: _start(__tree_),
-        upperBound: rhs)
-    case .partialRangeThrough(let rhs):
-      return .init(
-        lowerBound: _start(__tree_),
-        upperBound: rhs.flatMap { ___tree_next_iter($0.pointer) }.sealed)
-    case .partialRangeFrom(let lhs):
-      return .init(
-        lowerBound: lhs,
-        upperBound: _end(__tree_))
-    case .unboundedRange:
-      return .init(
-        lowerBound: _start(__tree_),
-        upperBound: _end(__tree_))
-    }
-  }
-}
-
-extension _RawRangeExpression {
-
-  @inlinable
-  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedPtr {
-    _start(__tree_).band(__tree_.tied)
-  }
-
-  @inlinable
-  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _TieWrappedPtr {
-    _end(__tree_).band(__tree_.tied)
-  }
-  
-  @inlinable
-  func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyDetachPointer {
-    _start(__tree_).band(__tree_.lazyDetach)
-  }
-
-  @inlinable
-  func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyDetachPointer {
-    _end(__tree_).band(__tree_.lazyDetach)
-  }
-}
-
-extension _RawRangeExpression where Bound == UnsafeIndexV3 {
-
-  @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> _RawRange<UnsafeIndexV3>
-  where
-    Base: ___TreeBase
-  {
-    switch self {
-
-    case .range(let lhs, let rhs):
-      return .init(
-        lowerBound: lhs,
-        upperBound: rhs)
-
-    case .closedRange(let lhs, let rhs):
-      return .init(
-        lowerBound: lhs,
-        upperBound:
-          rhs
-          .flatMap {
-            ___tree_next_iter($0.rawValue.pointer)
-              .sealed
-              .band($0.lazyDetach)
-          }
-      )
-
-    case .partialRangeTo(let rhs):
-      return .init(
-        lowerBound: _start(__tree_),
-        upperBound: rhs)
-
-    case .partialRangeThrough(let rhs):
-      return .init(
-        lowerBound: _start(__tree_),
-        upperBound:
-          rhs
-          .flatMap {
-            ___tree_next_iter($0.rawValue.pointer)
-              .sealed
-              .band($0.lazyDetach)
-          }
-      )
-
-    case .partialRangeFrom(let lhs):
-      return .init(
-        lowerBound: lhs,
-        upperBound: _end(__tree_))
-
-    case .unboundedRange:
-      return .init(
-        lowerBound: _start(__tree_),
-        upperBound: _end(__tree_))
-    }
+    return safe.relative(to: __tree_).sealed
   }
 }

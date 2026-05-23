@@ -55,4 +55,25 @@ extension UnsafeTreeV2 {
     }
     return __last
   }
+  
+  @inlinable
+  @discardableResult
+  func ___erase_ragen_if(
+    _ __first: _SafePtr, _ __last: _SafePtr,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+
+    var __first = __first
+    while __first != __last {
+      guard __first.exists else {
+        return .failure(.upperOutOfBounds)
+      }
+      if try shouldBeRemoved(__value_(__first.pointer!)) {
+        __first = erase(__first.purified.pointer!).safe
+      } else {
+        __first = ___tree_next_iter(__first.purified.pointer!)
+      }
+    }
+    return __last
+  }
 }

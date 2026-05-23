@@ -70,6 +70,12 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   public var exists: Bool {
     (try? map { !$0.___is_null_or_end }.get()) ?? false
   }
+
+  /// お清め
+  @inlinable
+  var purified: _SafePtr {
+    flatMap { $0.___is_garbaged ? .failure(.garbaged) : .success($0) }
+  }
 }
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {

@@ -36,7 +36,7 @@
     @inlinable
     public func isValid(_ bounds: IndexRange) -> Bool {
       let range = __tree_.__purified_(bounds.range)
-      return __tree_.isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
+      return __tree_.isValidSealedRange(range)
         && range.lowerBound.isValid
         && range.upperBound.isValid
     }
@@ -44,7 +44,7 @@
     @inlinable
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
       let range = __tree_.__purified_(bounds.relative(to: __tree_))
-      return __tree_.isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
+      return __tree_.isValidSealedRange(range)
         && range.lowerBound.isValid
         && range.upperBound.isValid
     }

@@ -263,6 +263,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  // TODO: この件の調査
   // _SealedPtrをpurifiedする処理は間違い。外部に晒さない用途なので。
 
   @inlinable

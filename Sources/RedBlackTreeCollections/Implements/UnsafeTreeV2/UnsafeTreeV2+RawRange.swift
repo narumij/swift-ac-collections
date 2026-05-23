@@ -16,23 +16,14 @@
 //===----------------------------------------------------------------------===//
 
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
-
-  @inlinable
-  func isValidSealedRange(lower: _SealedPtr, upper: _SealedPtr) -> Bool {
-
-    let result = lower.flatMap { l in
-      upper.map { r in
-        l == r || Base.___ptr_comp(l.pointer, r.pointer)
-      }
-    }
-
-    return (try? result.get()) == true
-  }
-
+  
   @inlinable
   func isValidSealedRange(_ range: _RawRange<_SealedPtr>) -> Bool {
-    isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
+    isValidSafeRange(lower: range.lowerBound.map(\.pointer), upper: range.upperBound.map(\.pointer))
   }
+}
+
+extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
   
   @inlinable
   func isValidSafeRange(lower: _SafePtr, upper: _SafePtr) -> Bool {

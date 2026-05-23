@@ -64,7 +64,7 @@
     /// Returns whether the corresponding element can be accessed.
     @inlinable
     public func isValid(_ bound: Bound) -> Bool {
-      let sealed = bound.evaluate(__tree_)
+      let sealed = bound._evaluate(__tree_)
       return sealed.isValid && !sealed.___is_end!
     }
   }

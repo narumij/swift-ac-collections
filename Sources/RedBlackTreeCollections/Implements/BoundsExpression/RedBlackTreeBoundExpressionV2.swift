@@ -15,8 +15,26 @@
 //
 //===----------------------------------------------------------------------===//
 
+/// An internal DSL that represents an element position.
+///
+/// It is evaluated when each API is used, replaced with the corresponding element, and then the operation is performed.
+/// How “past-the-end” and failures are handled depends on the API.
+///
+/// ---
+///
+/// ## Cases
+///
+/// - `start` : The first element
+/// - `last` : The last element
+/// - `end` : The past-the-end element
+/// - `lowerBound(_:)` : The first element that is not less than the given value
+/// - `upperBound(_:)` : The first element that is greater than the given value
+/// - `find(_:)` : The element equal to the given value
+/// - `advanced(_:offset:limit:)` : The element advanced by `offset` from a base position
+/// - `before(_:)` : The previous element
+/// - `after(_:)` : The next element
 public struct RedBlackTreeBoundExpressionV2<_Key> {
-  
+
   @inlinable
   init(_internal: Internal) {
     self._internal = _internal
@@ -55,51 +73,89 @@ extension RedBlackTreeBoundExpressionV2 {
 
 extension RedBlackTreeBoundExpressionV2 {
 
+  /// Represents the first element.
+  ///
+  /// If no such element exists, it is substituted with the past-the-end element.
+  ///
+  /// - Complexity: O(1)
+  ///   (when evaluated)
   @inlinable
   public static var start: Self {
     .init(_internal: [.start])
   }
 
+  /// Represents the last element.
+  ///
+  /// If no such element exists, it is substituted with the past-the-end element.
+  ///
+  /// - Complexity: O(log `count`)
+  ///   (when evaluated)
   @inlinable
   public static var last: Self {
     .init(_internal: [.last])
   }
 
+  /// Represents the past-the-end element.
+  ///
+  /// - Complexity: O(1)
+  ///   (when evaluated)
   @inlinable
   public static var end: Self {
     .init(_internal: [.end])
   }
 
+  /// Represents the first element that is not less than the given value.
+  ///
+  /// If no such element exists, it is substituted with the past-the-end element.
+  ///
+  /// - Complexity: O(log `count`)
+  ///   (when evaluated)
   @inlinable
   public static func lowerBound(_ k: _Key) -> Self {
     .init(_internal: [.lowerBound(k)])
   }
 
+  /// Represents the first element that is greater than the given value.
+  ///
+  /// If no such element exists, it is substituted with the past-the-end element.
+  ///
+  /// - Complexity: O(log `count`)
+  ///   (when evaluated)
   @inlinable
   public static func upperBound(_ k: _Key) -> Self {
     .init(_internal: [.upperBound(k)])
   }
 
+  /// Represents the element equal to the given value.
+  ///
+  /// If no such element exists, it is substituted with the past-the-end element.
+  ///
+  /// - Complexity: O(log `count`)
+  ///   (when evaluated)
   @inlinable
   public static func find(_ k: _Key) -> Self {
     .init(_internal: [.find(k)])
   }
 
+  /// Represents the greatest element that is less than the given value.
   @inlinable
   public static func lessThan(_ k: _Key) -> Self {
     .init(_internal: [.lessThan(k)])
   }
 
+  /// Represents the smallest element that is greater than the given value.
   @inlinable
   public static func greaterThan(_ k: _Key) -> Self {
     .init(_internal: [.greaterThan(k)])
   }
 
+  /// Represents the greatest element that is less than or equal to the given value.
   @inlinable
   public static func lessThanOrEqual(_ k: _Key) -> Self {
     .init(_internal: [.lessThanOrEqual(k)])
   }
 
+  /// Represents the smallest element that is greater than or equal to the given value.
   @inlinable
   public static func greaterThanOrEqual(_ k: _Key) -> Self {
     .init(_internal: [.greaterThanOrEqual(k)])
@@ -115,6 +171,12 @@ extension RedBlackTreeBoundExpressionV2 {
 
 extension RedBlackTreeBoundExpressionV2 {
 
+  /// Returns the previous element.
+  ///
+  /// Fails if it goes past the start or past-the-end.
+  ///
+  /// - Complexity: O(1)
+  ///   (when evaluated)
   @inlinable
   public var before: Self {
     var result = self
@@ -122,6 +184,12 @@ extension RedBlackTreeBoundExpressionV2 {
     return result
   }
 
+  /// Returns the next element.
+  ///
+  /// Fails if it goes past the start or past-the-end.
+  ///
+  /// - Complexity: O(1)
+  ///   (when evaluated)
   @inlinable
   public var after: Self {
     var result = self
@@ -129,6 +197,12 @@ extension RedBlackTreeBoundExpressionV2 {
     return result
   }
 
+  /// Returns the element advanced by `offset`.
+  ///
+  /// Fails if it goes past the start or past-the-end.
+  ///
+  /// - Complexity: O(`offset`)
+  ///   (when evaluated)
   @inlinable
   public func advanced(by offset: Int, limit: Self? = nil) -> Self {
     var result = self

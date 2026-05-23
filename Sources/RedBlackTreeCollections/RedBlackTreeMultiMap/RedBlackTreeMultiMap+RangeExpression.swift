@@ -161,6 +161,30 @@
   extension RedBlackTreeMultiMap {
 
     @inlinable
+    subscript(unchecked range: _RawRange<_SafePtr>) -> View {
+
+      @inline(__always) get {
+        View(
+          __tree_: __tree_,
+          _start: range.lowerBound.sealed,
+          _end: range.upperBound.sealed)
+      }
+
+      @inline(__always) _modify {
+        var view = View(
+          __tree_: __tree_,
+          _start: range.lowerBound.sealed,
+          _end: range.upperBound.sealed)
+        self = RedBlackTreeMultiMap()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeMultiMap(__tree_: view.__tree_) }
+        yield &view
+      }
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    @inlinable
     subscript(unchecked range: _RawRange<_SealedPtr>) -> View {
 
       @inline(__always) get {

@@ -218,9 +218,6 @@ extension UnsafeTreeV2 {
         ptr = find(__v).safe
         
       case .advanced(let offset, let limit):
-//        let limit = limit.map {
-//          _evaluate($0)
-//        }
         switch limit {
         case .none:
           ptr = ptr.flatMap {
@@ -333,7 +330,6 @@ extension RedBlackTreeBoundRangeExpression {
     }
   }
 
-  #if true
   @inlinable
   func _evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
     -> _RawRangeExpression<_SafePtr>
@@ -373,5 +369,4 @@ extension RedBlackTreeBoundRangeExpression {
         to: upper.safe)
     }
   }
-  #endif
 }

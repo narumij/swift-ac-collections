@@ -52,19 +52,19 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
       from start: RedBlackTreeBoundExpression<_Key>, to end: RedBlackTreeBoundExpression<_Key>
     ) -> Int?
   {
-    return try? lifetA2(
-      start.evaluate(self).map(\.pointer),
-      end.evaluate(self).map(\.pointer),
-      Base.___signed_distance
-    )
-    .get()
-
 //    return try? lifetA2(
-//      start._evaluate(self),
-//      end._evaluate(self),
+//      start.evaluate(self).map(\.pointer),
+//      end.evaluate(self).map(\.pointer),
 //      Base.___signed_distance
 //    )
 //    .get()
+
+    return try? lifetA2(
+      start._evaluate(self),
+      end._evaluate(self),
+      Base.___signed_distance
+    )
+    .get()
   }
 }
 

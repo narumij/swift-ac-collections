@@ -48,6 +48,20 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
 
   @inlinable
+  package var isValid: Bool {
+    switch self {
+    case .success: true
+    default: false
+    }
+  }
+
+  @inlinable
+  package var ___is_end: Bool? {
+    // endは世代が変わらず、成仏もしないのでお清めお祓いが無駄
+    try? map { $0.___is_end }.get()
+  }
+
+  @inlinable
   package var pointer: UnsafeMutablePointer<UnsafeNode>? {
     try? map { $0 }.get()
   }

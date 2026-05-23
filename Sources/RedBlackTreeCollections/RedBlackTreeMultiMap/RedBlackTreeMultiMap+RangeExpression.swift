@@ -75,13 +75,16 @@
     @inlinable
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
-        let range = __tree_.__purified_(bounds.relative(to: __tree_))
+        // TODO: 先にお清めをしていないので、なにか未発見のバグがありそう
+//        let range = __tree_.__purified_(bounds.relative(to: __tree_))
+        let range = __tree_.__purified_(bounds).relative(to: __tree_)
         guard __tree_.isValidSealedRange(range) else {
           fatalError(.invalidIndex)
         }
         return self[unchecked: range]
       }
       @inline(__always) _modify {
+        // TODO: 先にお清めをしていないので、なにか未発見のバグがありそう
         let range = __tree_.__purified_(bounds.relative(to: __tree_))
         guard __tree_.isValidSealedRange(range) else {
           fatalError(.invalidIndex)

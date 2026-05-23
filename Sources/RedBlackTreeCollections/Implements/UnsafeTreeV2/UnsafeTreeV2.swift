@@ -240,6 +240,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  // TODO: この件の調査
   // _SealedPtrをpurifiedする処理は間違い。外部に晒さない用途なので。
 
   /// インデックスをポインタに解決する
@@ -253,10 +254,21 @@ extension UnsafeTreeV2 {
       : __retrieve_(index.sealed.purified.tag).purified
   }
 
+  /// インデックスをポインタに解決する
+  ///
+  /// 木が同一の場合、インデックスが保持するポインタを返す。
+  /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   internal func __purified_(_ index: _LazyDetachPointer) -> _SealedPtr {
     withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+    // 木が同一のケース
+    // 中身を取り出し、生存確認を行って返している
       ? index.sealed.purified
+    // 木が異なるケース
+    // 中身を取り出し、元の木に対して生存確認を行ってからタグを取得
+    // タグで該当ポインタを取得
+    // 該当ポインタの生存確認を行う（解放確認で十分なところ、実装サボりで生存確認になっていそう）
+    // 要は、元の木と現在の木のどちらかで失効している場合、失効ポインタを返す動作
       : __retrieve_(index.sealed.purified.tag).purified
   }
 }
@@ -296,5 +308,12 @@ extension UnsafeTreeV2 {
     case .unboundedRange:
       .unboundedRange
     }
+  }
+
+  @inlinable
+  internal func __purified_(_ range: UnsafeIndexV3RangeExpression)
+    -> _RawRangeExpression<_SealedPtr>
+  {
+    __purified_(range.rangeExpression)
   }
 }

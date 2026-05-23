@@ -407,5 +407,34 @@ extension Benchmark {
         }
       }
     }
+    
+    self.add(
+      title: "RedBlackTreeSet<Int> successful __raw_find",
+      input: ([Int], [Int]).self
+    ) { input, lookups in
+      let set = RedBlackTreeSet(input)
+      return { timer in
+        for i in lookups {
+          precondition(set.__raw_find(i) != set.__raw_end)
+//          precondition(set.__raw_safe_find(i).exists)
+//          precondition(set.__value_find(i) == i)
+        }
+      }
+    }
+
+    self.add(
+      title: "RedBlackTreeSet<Int> unsuccessful __raw_find",
+      input: ([Int], [Int]).self
+    ) { input, lookups in
+      let set = RedBlackTreeSet(input)
+      let lookups = lookups.map { $0 + input.count }
+      return { timer in
+        for i in lookups {
+          precondition(set.__raw_find(i) == set.__raw_end)
+//          precondition(!set.__raw_safe_find(i).exists)
+//          precondition(set.__value_find(i) == nil)
+        }
+      }
+    }
   }
 }

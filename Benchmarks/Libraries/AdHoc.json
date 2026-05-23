@@ -1,0 +1,34 @@
+{
+  "kind": "group",
+  "title": "RedBlackTreeSet Benchmarks",
+  "directory": "RedBlackTreeSet Adhoc",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "RedBlackTreeSet vs std::set",
+      "directory": "versus STL set",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "successful lookups",
+          "tasks": [
+            "std::set<intptr_t> successful find",
+            "RedBlackTreeSet<Int> successful find",
+            "RedBlackTreeSet<Int> successful [.find(:)]",
+            "RedBlackTreeSet<Int> successful __raw_find",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "unsuccessful lookups",
+          "tasks": [
+            "std::set<intptr_t> unsuccessful find",
+            "RedBlackTreeSet<Int> unsuccessful find",
+            "RedBlackTreeSet<Int> unsuccessful [.find(:)]",
+            "RedBlackTreeSet<Int> unsuccessful __raw_find",
+          ]
+        },
+      ]
+    }
+  ]
+}

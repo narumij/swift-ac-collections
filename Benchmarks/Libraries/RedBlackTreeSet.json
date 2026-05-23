@@ -172,6 +172,7 @@
             "std::set<intptr_t> successful find",
             "RedBlackTreeSet<Int> successful find",
             "RedBlackTreeSet<Int> successful [.find(:)]",
+            "RedBlackTreeSet<Int> successful __raw_find",
           ]
         },
         {
@@ -181,6 +182,7 @@
             "std::set<intptr_t> unsuccessful find",
             "RedBlackTreeSet<Int> unsuccessful find",
             "RedBlackTreeSet<Int> unsuccessful [.find(:)]",
+            "RedBlackTreeSet<Int> unsuccessful __raw_find",
           ]
         },
         {

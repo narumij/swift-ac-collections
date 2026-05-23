@@ -11,9 +11,9 @@ var defines: [String] = [
   //  "USING_COLLECTIONS",
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "PERFOMANCE_CHECK",
-  "WITHOUT_SIZECHECK",
+  "WITHOUT_SIZECHECK"
   //  "USE_OLD_FIND",
-      "DEATH_TEST",
+  //  "DEATH_TEST",
   //  "BENCHMARK",
   //  "ALLOCATION_DRILL" // リリース時はオフ
   //  "USE_C_MALLOC",

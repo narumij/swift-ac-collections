@@ -18,25 +18,10 @@
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
   @inlinable
-  func isValidSealedRange(_ range: _RawRange<_SealedPtr>) -> Bool {
-    isValidSafeRange(
-      lower: range.lowerBound.map(\.pointer),
-      upper: range.upperBound.map(\.pointer))
-  }
-  
-  @inlinable
-  func isValidSealedRange(_ range: _RawRange<_SafePtr>) -> Bool {
-    isValidSafeRange(range)
-  }
-}
+  func isValidSafeRange(_ range: _RawRange<_SafePtr>) -> Bool {
 
-extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
-
-  @inlinable
-  func isValidSafeRange(lower: _SafePtr, upper: _SafePtr) -> Bool {
-
-    let result = lower.flatMap { l in
-      upper.map { r in
+    let result = range.lowerBound.flatMap { l in
+      range.upperBound.map { r in
         l == r || Base.___ptr_comp(l, r)
       }
     }
@@ -45,14 +30,7 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
   }
 
   @inlinable
-  func isValidSafeRange(_ range: _RawRange<_SafePtr>) -> Bool {
-    isValidSafeRange(lower: range.lowerBound, upper: range.upperBound)
-  }
-
-  @inlinable
-  func sanitizeSafeRange(_ range: _RawRange<_SafePtr>)
-    -> _RawRange<_SafePtr>
-  {
+  func sanitizeSafeRange(_ range: _RawRange<_SafePtr>) -> _RawRange<_SafePtr> {
     isValidSafeRange(range) ? range : ___safe_empty_range
   }
 }

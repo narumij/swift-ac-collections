@@ -273,35 +273,8 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  internal func __purified_safe_(_ index: _TieWrappedPtr) -> _SafePtr {
-    __purified_(index).map(\.pointer)
-  }
-
-  @inlinable
   internal func __purified_safe_(_ index: _LazyDetachPointer) -> _SafePtr {
     __purified_(index).map(\.pointer)
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  // TODO: この件の調査
-  // _SealedPtrをpurifiedする処理は間違い。外部に晒さない用途なので。
-
-  @inlinable
-  internal func __purified_(_raw_range: _RawRange<UnsafeIndexV3>)
-    -> _RawRange<_SealedPtr>
-  {
-    .init(
-      lowerBound: __purified_(_raw_range.lowerBound),
-      upperBound: __purified_(_raw_range.upperBound))
-  }
-
-  @inlinable
-  internal func __purified_(_ range: UnsafeIndexV3Range)
-    -> _RawRange<_SealedPtr>
-  {
-    __purified_(_raw_range: range.range)
   }
 }
 
@@ -321,36 +294,6 @@ extension UnsafeTreeV2 {
     -> _RawRange<_SafePtr>
   {
     __purified_safe_(_raw_range: range.range)
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  internal func __purified_(_raw_range_expression range: _RawRangeExpression<UnsafeIndexV3>)
-    -> _RawRangeExpression<_SealedPtr>
-  {
-    switch range {
-    case .range(let from, let to):
-      .range(from: __purified_(from), to: __purified_(to))
-    case .closedRange(let from, let through):
-      .closedRange(from: __purified_(from), through: __purified_(through))
-    case .partialRangeTo(let bound):
-      .partialRangeTo(__purified_(bound))
-    case .partialRangeThrough(let bound):
-      .partialRangeThrough(__purified_(bound))
-    case .partialRangeFrom(let bound):
-      .partialRangeFrom(__purified_(bound))
-    case .unboundedRange:
-      .unboundedRange
-    }
-  }
-
-  @inlinable
-  internal func __purified_(_ range: UnsafeIndexV3RangeExpression)
-    -> _RawRangeExpression<_SealedPtr>
-  {
-    __purified_(_raw_range_expression: range.rangeExpression)
   }
 }
 

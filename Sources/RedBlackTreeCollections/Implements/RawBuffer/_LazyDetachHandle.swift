@@ -31,14 +31,6 @@ public struct _LazyDetachHandle<RawValue> {
   }
 }
 
-extension _LazyDetachHandle {
-
-  @inlinable
-  public func map<U>(_ transform: (RawValue) throws -> U) rethrows -> _LazyDetachHandle<U> {
-    .init(rawValue: try transform(rawValue), lazyDetach: lazyDetach)
-  }
-}
-
 extension _LazyDetachHandle: Equatable where RawValue: Equatable {
 
   @inlinable

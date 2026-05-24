@@ -152,6 +152,8 @@ extension UnsafeTreeV2: InsertLastProtocol_ptr {}
 extension UnsafeTreeV2: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2: TreeAlgorithmProtocol_ptr {}
 
+extension UnsafeTreeV2: FindFirstProtocol_ptr {}
+
 extension UnsafeTreeV2 {
 
   @inlinable

@@ -101,7 +101,7 @@ protocol FindEqualProtocol_ptr:
 extension FindEqualProtocol_ptr {
 
   @inlinable
-// @inline(never)
+  // @inline(never)
   internal func
     __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
   {
@@ -237,5 +237,28 @@ extension FindProtocol_ptr {
       }
       return __match.pointee
     #endif
+  }
+}
+
+// よくよく考えてmulti系のfirstIndexの挙動が変わってしまっているので、修正が必要だった
+@usableFromInline
+protocol FindFirstProtocol_ptr:
+  _UnsafeNodePtrType
+    & BoundInteface
+    & EndInterface
+    & _TreeKey_CompInterface
+    & _TreeNode_KeyInterface
+{}
+
+extension FindFirstProtocol_ptr {
+
+  /// 旧型のfindと同じ挙動
+  @inlinable
+  internal func find_first(_ __v: _Key) -> _NodePtr {
+    let __p = lower_bound(__v)
+    if __p != end, !value_comp(__v, __get_value(__p)) {
+      return __p
+    }
+    return end
   }
 }

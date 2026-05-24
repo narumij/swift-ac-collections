@@ -21,12 +21,7 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
   @inlinable
   func isValidSafeRange(_ range: _RawRange<_SafePtr>) -> Bool {
-
-    let result = range.map2 { l, r in
-      l == r || Base.___ptr_comp(l, r)
-    }
-
-    return (try? result.get()) == true
+    (try? range.map2 { l, r in l == r || Base.___ptr_comp(l, r) }.get()) == true
   }
 
   @inlinable

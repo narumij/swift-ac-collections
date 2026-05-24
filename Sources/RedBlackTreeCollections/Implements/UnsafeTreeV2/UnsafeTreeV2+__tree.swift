@@ -156,10 +156,12 @@ extension UnsafeTreeV2: FindFirstProtocol_ptr {}
 
 extension UnsafeTreeV2 {
 
+  #if false
   @inlinable
   internal func ___min() -> _PayloadValue? {
     __root == nullptr ? nil : Base.__payload_(__tree_min(__root))
   }
+  #endif
 
   @inlinable
   internal func ___max() -> _PayloadValue? {

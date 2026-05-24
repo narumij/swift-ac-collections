@@ -19,7 +19,7 @@
 public struct RedBlackTreeKeyValueRangeView<Container>: UnsafeMutableTreeHostV2
 where
   Container: ___Root,
-  Container.Base: ___TreeBase & PairValueTrait & _BaseNode_PtrRangeCompInterface
+  Container.Base: ___TreeBase & PairValueTrait
 {
 
   @inlinable
@@ -162,24 +162,24 @@ extension RedBlackTreeKeyValueRangeView {
 // MARK: -
 
 public protocol KeyValueBaseInit: ___Root
-where Base: ___TreeBase & PairValueTrait & _BaseNode_PtrRangeCompInterface {
-  static func create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self
+where Base: ___TreeBase & PairValueTrait {
+  static func _create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self
 }
 
 extension RedBlackTreeDictionary: KeyValueBaseInit {
-  public static func create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self {
+  public static func _create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self {
     .init(__tree_: view.__tree_)
   }
 }
 
 extension RedBlackTreeMultiMap: KeyValueBaseInit {
-  public static func create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self {
+  public static func _create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self {
     .init(__tree_: view.__tree_)
   }
 }
 
 extension RedBlackTreeKeyValueRangeView where Container: KeyValueBaseInit {
-  public func unranged() -> Container { .create(self) }
+  public func unranged() -> Container { ._create(self) }
 }
 
 // MARK: -
@@ -346,13 +346,13 @@ extension RedBlackTreeKeyValueRangeView {
 
 // MARK: -
 
-extension RedBlackTreeKeyValueRangeView {
+extension RedBlackTreeKeyValueRangeView where Base: _BaseNode_PtrRangeCompInterface {
 
   @inlinable
   package func isValid(index: Index) -> Bool {
     let i = __tree_.__purified_(index)  // __retrieve_でもテストは通る
     guard i.___is_end == false, let i = i.pointer else { return false }
     let (_start, _end) = _raw_range
-    return __tree_.___ptr_range_comp(_start, i, _end)
+    return Base.___ptr_range_comp(_start, i, _end)
   }
 }

@@ -30,17 +30,20 @@ func growth(from count: Int, to minimum: Int) -> Int {
 
   // scale factor 1.5
   return Swift.max(minimum, count &+ (count &>> 1))
+
+  // scale factor 2.0
+  //  return Swift.max(minimum, count &+ count)
 }
 
 // ぶれがひどい
 // https://atcoder.jp/contests/abc411/submissions/72757331
-//return Swift.max(minimum, count + max(1, count))
+// return Swift.max(minimum, count &+ max(1, count))
 
 // Bench0は以下がよい
-// return Swift.max(minimum, count + max(1, count >> 3))
+// return Swift.max(minimum, count &+ max(1, count &>> 3))
 
 // 黄金比の4項近似
-//return Swift.max(minimum, count + (count >> 1) + (count >> 4) + (count >> 5) + (count >> 8))
+// return Swift.max(minimum, count &+ (count &>> 1) &+ (count &>> 4) &+ (count &>> 5) &+ (count &>> 8))
 
 extension UnsafeTreeV2BufferHeader {
 

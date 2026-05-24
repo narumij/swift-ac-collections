@@ -14,7 +14,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-      .package(name: "swift-ac-collections", path: ".."),
+      .package(name: "swift-ac-collections", path: "..", traits: ["BENCHMARK"]),
 //      .package(
 //        url: "https://github.com/narumij/swift-ac-collections",
 //        branch: "release/AtCoder/2025"),

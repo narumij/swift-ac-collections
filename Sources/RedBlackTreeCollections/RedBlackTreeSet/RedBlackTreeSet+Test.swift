@@ -79,7 +79,7 @@ extension RedBlackTreeSet {
       _ b: RedBlackTreeBoundExpression<Element>,
       _ body: (_SealedPtr) throws -> R
     ) rethrows -> R {
-      let b = b.evaluate(__tree_)
+      let b = b.evaluate(__tree_).sealed
       return try body(b)
     }
 
@@ -88,8 +88,8 @@ extension RedBlackTreeSet {
       _ b: RedBlackTreeBoundExpression<Element>,
       _ body: (_SealedPtr, _SealedPtr) throws -> R
     ) rethrows -> R {
-      let a = a.evaluate(__tree_)
-      let b = b.evaluate(__tree_)
+      let a = a.evaluate(__tree_).sealed
+      let b = b.evaluate(__tree_).sealed
       return try body(a, b)
     }
   }
@@ -100,13 +100,13 @@ extension RedBlackTreeSet {
       _ l: RedBlackTreeBoundExpression<Element>,
       _ r: RedBlackTreeBoundExpression<Element>
     ) -> Bool {
-      let l = l.evaluate(__tree_)
-      let r = r.evaluate(__tree_)
+      let l = l.evaluate(__tree_).sealed
+      let r = r.evaluate(__tree_).sealed
       return l == r
     }
 
     package func _error(_ bound: RedBlackTreeBoundExpression<Element>) -> SealError? {
-      bound.evaluate(__tree_).error
+      bound.evaluate(__tree_).sealed.error
     }
   }
 #endif

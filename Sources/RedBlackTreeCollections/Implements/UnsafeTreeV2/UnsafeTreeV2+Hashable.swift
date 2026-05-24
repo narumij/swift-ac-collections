@@ -19,8 +19,8 @@ extension UnsafeTreeV2: Hashable where _PayloadValue: Hashable {
 
   @inlinable
   public func hash(into hasher: inout Hasher) {
-    for __v in unsafeValues(__begin_node_, end) {
-      hasher.combine(__v)
+    for __p in unsafeSequence(__begin_node_, __end_node) {
+      hasher.combine(Base.__payload_(__p))
     }
   }
 }

@@ -130,7 +130,7 @@ extension Benchmark {
       let map = CppSet(input)
       return { timer in
         lookups.withUnsafeBufferPointer { buffer in
-          cpp_map_count(map.ptr, buffer.baseAddress, buffer.count, true)
+          cpp_set_count(map.ptr, buffer.baseAddress, buffer.count, true)
         }
       }
     }
@@ -143,7 +143,7 @@ extension Benchmark {
       let lookups = lookups.map { $0 + input.count }
       return { timer in
         lookups.withUnsafeBufferPointer { buffer in
-          cpp_map_count(map.ptr, buffer.baseAddress, buffer.count, false)
+          cpp_set_count(map.ptr, buffer.baseAddress, buffer.count, false)
         }
       }
     }

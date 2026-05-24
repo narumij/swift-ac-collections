@@ -93,10 +93,11 @@
     /// If the evaluated position is `endIndex` or the lookup fails, `nil` is returned.
     ///
     @inlinable
-    public subscript(bound: Bound) -> Element? {
+    @inline(__always)
+    public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
-      return __tree_[_unsafe_raw: p]
+      return p.__value_(as: Element.self).pointee
     }
   }
 
@@ -119,7 +120,7 @@
     @inlinable
     public func isValid(_ bounds: BoundRangeExpression) -> Bool {
       let range = bounds.evaluate(__tree_).relative(to: __tree_)
-      return __tree_.isValidSealedRange(range)
+      return __tree_.isValidSafeRange(range)
         && range.lowerBound.isValid
         && range.upperBound.isValid
     }
@@ -132,7 +133,7 @@
 
       @inline(__always) get {
 
-        let range = __tree_.sanitizeSealedRange(
+        let range = __tree_.sanitizeSafeRange(
           bounds.evaluate(__tree_).relative(to: __tree_))
 
         return self[unchecked: range]
@@ -140,7 +141,7 @@
 
       @inline(__always) _modify {
 
-        let range = __tree_.sanitizeSealedRange(
+        let range = __tree_.sanitizeSafeRange(
           bounds.evaluate(__tree_).relative(to: __tree_))
 
         yield &self[unchecked: range]
@@ -154,7 +155,7 @@
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitizeSealedRange(
+      let range = __tree_.sanitizeSafeRange(
         bounds.evaluate(__tree_).relative(to: __tree_))
       __tree_.___erase_range(range.lowerBound.pointer!, range.upperBound.pointer!)
     }
@@ -165,9 +166,10 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitizeSealedRange(
+      let range = __tree_.sanitizeSafeRange(
         bounds.evaluate(__tree_).relative(to: __tree_))
-      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound, shouldBeRemoved)
+      try __tree_.___erase_ragen_if(
+        range.lowerBound, range.upperBound, shouldBeRemoved)
     }
   }
 #endif
@@ -177,12 +179,14 @@
 
     @inlinable
     internal func bound(before i: Bound) -> Bound {
-      .before(i)
+      //      .before(i)
+      i.before
     }
 
     @inlinable
     internal func bound(after i: Bound) -> Bound {
-      .after(i)
+      //      .after(i)
+      i.after
     }
   }
 #endif

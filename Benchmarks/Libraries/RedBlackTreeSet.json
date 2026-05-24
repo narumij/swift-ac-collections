@@ -17,6 +17,8 @@
             "RedBlackTreeSet<Int> sequential iteration",
             "RedBlackTreeSet<Int> successful contains",
             "RedBlackTreeSet<Int> unsuccessful contains",
+            "RedBlackTreeSet<Int> successful find",
+            "RedBlackTreeSet<Int> unsuccessful find",
             "RedBlackTreeSet<Int> insert",
             "RedBlackTreeSet<Int> insert, reserving capacity",
             "RedBlackTreeSet<Int> remove"
@@ -166,7 +168,8 @@
           "title": "successful lookups",
           "tasks": [
             "std::set<intptr_t> successful find",
-            "RedBlackTreeSet<Int> successful contains",
+            "RedBlackTreeSet<Int> successful find",
+            "RedBlackTreeSet<Int> successful [.find(:)]",
           ]
         },
         {
@@ -174,7 +177,8 @@
           "title": "unsuccessful lookups",
           "tasks": [
             "std::set<intptr_t> unsuccessful find",
-            "RedBlackTreeSet<Int> unsuccessful contains",
+            "RedBlackTreeSet<Int> unsuccessful find",
+            "RedBlackTreeSet<Int> unsuccessful [.find(:)]",
           ]
         },
         {

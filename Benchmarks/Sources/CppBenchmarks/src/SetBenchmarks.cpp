@@ -82,6 +82,17 @@ cpp_set_lookups(void *ptr, const intptr_t *start, size_t count, bool expectMatch
 }
 
 void
+cpp_set_lookups_2(void *ptr, const intptr_t *start, size_t count, bool expectMatch)
+{
+  auto set = static_cast<std::set<intptr_t> *>(ptr);
+  for (auto it = start; it < start + count; ++it) {
+    auto it2 = set->find(*it);
+    auto found = it2 != set->end();
+    if (expectMatch && *it2 != *it) { abort(); }
+  }
+}
+
+void
 cpp_set_removals(void *ptr, const intptr_t *start, size_t count)
 {
   auto set = static_cast<std::set<intptr_t> *>(ptr);

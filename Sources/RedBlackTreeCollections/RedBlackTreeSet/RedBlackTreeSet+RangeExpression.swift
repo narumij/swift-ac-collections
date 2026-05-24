@@ -35,16 +35,18 @@
 
     @inlinable
     public func isValid(_ bounds: IndexRange) -> Bool {
-      let range = __tree_.__purified_(bounds.range)
-      return __tree_.isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
+      let range = __tree_.__purified_safe_(bounds)
+      // TODO: チェック過剰な気がする
+      return __tree_.isValidSafeRange(range)
         && range.lowerBound.isValid
         && range.upperBound.isValid
     }
 
     @inlinable
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
-      let range = __tree_.__purified_(bounds.relative(to: __tree_))
-      return __tree_.isValidSealedRange(lower: range.lowerBound, upper: range.upperBound)
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+      // TODO: チェック過剰な気がする
+      return __tree_.isValidSafeRange(range)
         && range.lowerBound.isValid
         && range.upperBound.isValid
     }
@@ -62,15 +64,15 @@
     @inlinable
     public subscript(bounds: IndexRange) -> View {
       @inline(__always) get {
-        let range = __tree_.__purified_(bounds.range)
-        guard __tree_.isValidSealedRange(range) else {
+        let range = __tree_.__purified_safe_(bounds)
+        guard __tree_.isValidSafeRange(range) else {
           fatalError(.invalidIndex)
         }
         return self[unchecked: range]
       }
       @inline(__always) _modify {
-        let range = __tree_.__purified_(bounds.range)
-        guard __tree_.isValidSealedRange(range) else {
+        let range = __tree_.__purified_safe_(bounds)
+        guard __tree_.isValidSafeRange(range) else {
           fatalError(.invalidIndex)
         }
         yield &self[unchecked: range]
@@ -80,15 +82,15 @@
     @inlinable
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
-        let range = __tree_.__purified_(bounds.relative(to: __tree_))
-        guard __tree_.isValidSealedRange(range) else {
+        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+        guard __tree_.isValidSafeRange(range) else {
           fatalError(.invalidIndex)
         }
         return self[unchecked: range]
       }
       @inline(__always) _modify {
-        let range = __tree_.__purified_(bounds.relative(to: __tree_))
-        guard __tree_.isValidSealedRange(range) else {
+        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+        guard __tree_.isValidSafeRange(range) else {
           fatalError(.invalidIndex)
         }
         yield &self[unchecked: range]
@@ -109,8 +111,8 @@
     @discardableResult
     public mutating func erase(_ bounds: IndexRange) -> Index {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_(bounds.range)
-      guard __tree_.isValidSealedRange(range),
+      let range = __tree_.__purified_safe_(bounds)
+      guard __tree_.isValidSafeRange(range),
         let __l = range.lowerBound.pointer,
         let __u = range.upperBound.pointer
       else {
@@ -123,8 +125,8 @@
     @discardableResult
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_(bounds.relative(to: __tree_))
-      guard __tree_.isValidSealedRange(range),
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+      guard __tree_.isValidSafeRange(range),
         let __l = range.lowerBound.pointer,
         let __u = range.upperBound.pointer
       else {
@@ -140,8 +142,8 @@
       rethrows
     {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_(bounds.range)
-      guard __tree_.isValidSealedRange(range) else {
+      let range = __tree_.__purified_safe_(bounds)
+      guard __tree_.isValidSafeRange(range) else {
         fatalError(.invalidIndex)
       }
       try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound, shouldBeRemoved)
@@ -153,13 +155,36 @@
     )
       rethrows
     {
-
       __tree_.ensureUnique()
-      let range = __tree_.__purified_(bounds.relative(to: __tree_))
-      guard __tree_.isValidSealedRange(range) else {
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+      guard __tree_.isValidSafeRange(range) else {
         fatalError(.invalidIndex)
       }
       try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound, shouldBeRemoved)
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    subscript(unchecked range: _RawRange<_SafePtr>) -> View {
+
+      @inline(__always) get {
+        View(
+          __tree_: __tree_,
+          _start: range.lowerBound.sealed,
+          _end: range.upperBound.sealed)
+      }
+
+      @inline(__always) _modify {
+        var view = View(
+          __tree_: __tree_,
+          _start: range.lowerBound.sealed,
+          _end: range.upperBound.sealed)
+        self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
+        yield &view
+      }
     }
   }
 

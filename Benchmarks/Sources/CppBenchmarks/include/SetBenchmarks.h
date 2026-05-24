@@ -40,7 +40,8 @@ extern void cpp_set_insert_integers(const intptr_t *start, size_t count, bool re
 extern void cpp_set_lookups(void *ptr, const intptr_t *start, size_t count, bool expectMatch);
 extern void cpp_set_removals(void *ptr, const intptr_t *start, size_t count);
 
-extern void cpp_map_count(void *ptr, const intptr_t *start, size_t count, bool expectMatch);
+extern void cpp_set_lookups_2(void *ptr, const intptr_t *start, size_t count, bool expectMatch);
+extern void cpp_set_count(void *ptr, const intptr_t *start, size_t count, bool expectMatch);
 
 #ifdef __cplusplus
 }

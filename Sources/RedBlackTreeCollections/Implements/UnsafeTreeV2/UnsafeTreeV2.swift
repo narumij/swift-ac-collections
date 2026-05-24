@@ -66,7 +66,7 @@ extension UnsafeTreeV2 {
   /// 木に紐付く生バッファを遅延処理するプロクシ
   ///
   /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
-  @usableFromInline
+  @inlinable
   var lazyDetach: _LazyDetach {
     withMutableHeader { $0.lazyDetach }
   }
@@ -122,6 +122,19 @@ extension UnsafeTreeV2 {
     @_transparent
     nonmutating unsafeMutableAddress {
       pointer.__value_()
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  internal subscript(_unsafe __safe_ptr_: _SafePtr) -> _PayloadValue {
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      precondition(__safe_ptr_.exists)
+      return UnsafePointer(__safe_ptr_.pointer!.__value_())
     }
   }
 }
@@ -227,8 +240,6 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  // _SealedPtrをpurifiedする処理は間違い。外部に晒さない用途なので。
-
   /// インデックスをポインタに解決する
   ///
   /// 木が同一の場合、インデックスが保持するポインタを返す。
@@ -240,24 +251,75 @@ extension UnsafeTreeV2 {
       : __retrieve_(index.sealed.purified.tag).purified
   }
 
+  /// インデックスをポインタに解決する
+  ///
+  /// 木が同一の場合、インデックスが保持するポインタを返す。
+  /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
   internal func __purified_(_ index: _LazyDetachPointer) -> _SealedPtr {
     withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+      // 木が同一のケース
+      // 中身を取り出し、生存確認を行って返している
       ? index.sealed.purified
+      // 木が異なるケース
+      // 中身を取り出し、元の木に対して生存確認を行ってからタグを取得
+      // タグで該当ポインタを取得
+      // 該当ポインタの生存確認を行う（解放確認で十分なところ、実装サボりで生存確認になっていそう）
+      // 要は、元の木と現在の木のどちらかで失効している場合、失効ポインタを返す動作
       : __retrieve_(index.sealed.purified.tag).purified
+  }
+
+  @inlinable
+  internal func __purified_safe_(_ index: _LazyDetachPointer) -> _SafePtr {
+    __purified_(index).map(\.pointer)
   }
 }
 
 extension UnsafeTreeV2 {
 
-  // _SealedPtrをpurifiedする処理は間違い。外部に晒さない用途なので。
-
   @inlinable
-  internal func __purified_(_ range: _RawRange<UnsafeIndexV3>)
-    -> _RawRange<_SealedPtr>
+  internal func __purified_safe_(_raw_range: _RawRange<UnsafeIndexV3>)
+    -> _RawRange<_SafePtr>
   {
     .init(
-      lowerBound: __purified_(range.lowerBound),
-      upperBound: __purified_(range.upperBound))
+      lowerBound: __purified_safe_(_raw_range.lowerBound),
+      upperBound: __purified_safe_(_raw_range.upperBound))
+  }
+
+  @inlinable
+  internal func __purified_safe_(_ range: UnsafeIndexV3Range)
+    -> _RawRange<_SafePtr>
+  {
+    __purified_safe_(_raw_range: range.range)
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  internal func __purified_safe_(_raw_range_expression range: _RawRangeExpression<UnsafeIndexV3>)
+    -> _RawRangeExpression<_SafePtr>
+  {
+    switch range {
+    case .range(let from, let to):
+      .range(from: __purified_safe_(from), to: __purified_safe_(to))
+    case .closedRange(let from, let through):
+      .closedRange(from: __purified_safe_(from), through: __purified_safe_(through))
+    case .partialRangeTo(let bound):
+      .partialRangeTo(__purified_safe_(bound))
+    case .partialRangeThrough(let bound):
+      .partialRangeThrough(__purified_safe_(bound))
+    case .partialRangeFrom(let bound):
+      .partialRangeFrom(__purified_safe_(bound))
+    case .unboundedRange:
+      .unboundedRange
+    }
+  }
+
+  @inlinable
+  internal func __purified_safe_(_ range: UnsafeIndexV3RangeExpression)
+    -> _RawRangeExpression<_SafePtr>
+  {
+    __purified_safe_(_raw_range_expression: range.rangeExpression)
   }
 }

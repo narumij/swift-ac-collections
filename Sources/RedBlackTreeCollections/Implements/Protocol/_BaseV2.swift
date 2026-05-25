@@ -129,6 +129,6 @@ extension _PairBasePayload_KeyProtocol_ptr {
 
   @inlinable
   public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
-    p.__value_(as: _PayloadValue.self).pointee.key
+    p.__value_(as: _PayloadValue.self).pointee.tuple.key
   }
 }

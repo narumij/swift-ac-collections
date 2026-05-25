@@ -23,7 +23,7 @@ public protocol _PairBasePayloadValue_KeyProtocol:
 extension _PairBasePayloadValue_KeyProtocol {
 
   @inlinable
-  public static func __key(_ __v: _PayloadValue) -> _Key { __v.key }
+  public static func __key(_ __v: _PayloadValue) -> _Key { __v.tuple.key }
 }
 
 public protocol _PairBasePayloadValue_MappedValueProtocol:
@@ -34,5 +34,5 @@ public protocol _PairBasePayloadValue_MappedValueProtocol:
 extension _PairBasePayloadValue_MappedValueProtocol {
 
   @inlinable
-  public static func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue { __v.value }
+  public static func ___mapped_value(_ __v: _PayloadValue) -> _MappedValue { __v.tuple.value }
 }

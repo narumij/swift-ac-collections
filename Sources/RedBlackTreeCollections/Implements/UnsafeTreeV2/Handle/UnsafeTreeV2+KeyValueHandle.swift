@@ -46,7 +46,7 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
 extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
-  func __key(_ __v: _PayloadValue) -> _Key { __v.key }
+  func __key(_ __v: _PayloadValue) -> _Key { __v.tuple.key }
 
   @inlinable
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
@@ -101,7 +101,7 @@ extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
   func __get_value(_ p: _NodePtr) -> _Key {
-    p.__value_(as: _PayloadValue.self).pointee.key
+    p.__value_(as: _PayloadValue.self).pointee.tuple.key
   }
 }
 

@@ -262,7 +262,7 @@ extension RedBlackTreeDictionary {
     guard !__inserted else { return nil }
     let oldMember = __tree_[_unsafe_raw: __r]
     __tree_[_unsafe_raw: __r] = Base.__payload_((key, value))
-    return oldMember.value
+    return oldMember.tuple.value
   }
 }
 

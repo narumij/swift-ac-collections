@@ -188,12 +188,12 @@ extension _PairBase_ElementProtocol {
 
   @inlinable
   public static func __element_(_ __value: _PayloadValue) -> Element {
-    (__value.key, __value.value)
+    __value.tuple
   }
 
   @inlinable
   public static func __payload_(_ __e: Element) -> _PayloadValue {
-    RedBlackTreePair(key: __e.key, value: __e.value)
+    RedBlackTreePair(tuple: __e)
   }
 }
 

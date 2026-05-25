@@ -114,20 +114,20 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
   /// ```
   @inlinable
   static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
-    _ref(to: &__payload_ptr(p).pointee.key)
+    _ref(to: &__payload_ptr(p).pointee.tuple.key)
   }
   @inlinable
   static func __key_ptr(_ p: _NodeRef) -> _KeyPtr {
-    _ref(to: &__payload_ptr(p.pointee).pointee.key)
+    _ref(to: &__payload_ptr(p.pointee).pointee.tuple.key)
   }
 
   @inlinable
   static func __key_(_ p: _NodePtr) -> _Key {
-    __payload_(p).key
+    __payload_(p).tuple.key
   }
   @inlinable
   static func __key_(_ p: _NodeRef) -> _Key {
-    __payload_(p).key
+    __payload_(p).tuple.key
   }
 
   /// `_PayloadValue`が`Pair`の場合のバリューへのポインタ
@@ -139,19 +139,19 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
   /// ```
   @inlinable
   static func __mapped_value_ptr(_ p: _NodePtr) -> _MappedValuePtr {
-    _ref(to: &__payload_ptr(p).pointee.value)
+    _ref(to: &__payload_ptr(p).pointee.tuple.value)
   }
   @inlinable
   static func __mapped_value_ptr(_ p: _NodeRef) -> _MappedValuePtr {
-    _ref(to: &__payload_ptr(p.pointee).pointee.value)
+    _ref(to: &__payload_ptr(p.pointee).pointee.tuple.value)
   }
 
   @inlinable
   static func __mapped_value_(_ p: _NodePtr) -> _MappedValue {
-    __payload_(p).value
+    __payload_(p).tuple.value
   }
   @inlinable
   static func __mapped_value_(_ p: _NodeRef) -> _MappedValue {
-    __payload_(p).value
+    __payload_(p).tuple.value
   }
 }

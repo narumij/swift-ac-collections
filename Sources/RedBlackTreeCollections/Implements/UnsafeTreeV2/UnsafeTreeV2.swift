@@ -67,7 +67,7 @@ extension UnsafeTreeV2 {
   ///
   /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
   @inlinable
-  var lazyDetach: _LazyDetach {
+  var lazyDetach: _LazyTie {
     withMutableHeader { $0.lazyDetach }
   }
 }
@@ -245,7 +245,7 @@ extension UnsafeTreeV2 {
   /// 木が同一の場合、インデックスが保持するポインタを返す。
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
-  internal func __purified_(_ index: _LazyDetachPointer) -> _SealedPtr {
+  internal func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
     withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
       // 木が同一のケース
       // 中身を取り出し、生存確認を行って返している
@@ -259,7 +259,7 @@ extension UnsafeTreeV2 {
   }
 
   @inlinable
-  internal func __purified_safe_(_ index: _LazyDetachPointer) -> _SafePtr {
+  internal func __purified_safe_(_ index: _LazyTieWrappedPtr) -> _SafePtr {
     __purified_(index).map(\.pointer)
   }
 }

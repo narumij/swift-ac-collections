@@ -61,7 +61,7 @@ package struct UnsafeTreeV2BufferHeader {
   /// - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
   @usableFromInline var _tied: _TiedRawBuffer?
 
-  @usableFromInline var _lazyDetach: _LazyDetach?
+  @usableFromInline var _lazyDetach: _LazyTie?
 
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
@@ -133,7 +133,7 @@ extension UnsafeTreeV2BufferHeader {
   }
 
   @inlinable
-  var lazyDetach: _LazyDetach {
+  var lazyDetach: _LazyTie {
     mutating get {
       // TODO: 一度の保証付きの実装にすること
       if _lazyDetach == nil {

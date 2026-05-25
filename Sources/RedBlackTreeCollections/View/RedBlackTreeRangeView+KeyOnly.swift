@@ -90,12 +90,12 @@ extension RedBlackTreeKeyOnlyRangeView {
 extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
-  func ___index(_ p: _SealedPtr) -> _LazyDetachPointer {
+  func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPtr {
     p.band(__tree_.lazyDetach)
   }
 
   @inlinable
-  func ___index_or_nil(_ p: _SealedPtr) -> _LazyDetachPointer? {
+  func ___index_or_nil(_ p: _SealedPtr) -> _LazyTieWrappedPtr? {
     p.exists ? p.band(__tree_.lazyDetach) : nil
   }
 }

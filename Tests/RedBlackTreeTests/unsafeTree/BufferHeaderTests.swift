@@ -13,6 +13,16 @@ import XCTest
   final class BufferHeaderTests: PointerRedBlackTreeTestCase {
 
     typealias Fixture = UnsafeTreeV2BufferHeader
+    let null_back = UnsafeNode.nullptr.pointee
+
+    override func setUpWithError() throws {
+      try super.setUpWithError()
+    }
+
+    override func tearDownWithError() throws {
+      UnsafeNode.nullptr.pointee = null_back
+      try super.tearDownWithError()
+    }
 
     func testEmptyInitial() throws {
       var header = Fixture(Int.self, nullptr: .nullptr, capacity: 0)
@@ -37,10 +47,9 @@ import XCTest
           let p = header.freshBucketCurrent?.pop()
           p?.initialize(to: UnsafeNode.nullptr.pointee)
           p?.__value_().initialize(to: 0)
-          #if DEBUG
-            nodeInitializedCount += 1
-            payloadInitializedCount += 1
-          #endif
+          p?.pointee.___has_payload_content = true
+          nodeInitializedCount += 1
+          payloadInitializedCount += 1
           XCTAssertNotEqual(p, nil)
           pointers.insert(p!)
         }
@@ -93,6 +102,7 @@ import XCTest
         let p = header.___popRecycle()
         XCTAssertNotNil(p)
         p.__value_().initialize(to: 0)
+        p.pointee.___has_payload_content = true
         #if DEBUG
           payloadInitializedCount += 1
         #endif

@@ -325,7 +325,7 @@ extension RedBlackTreeSet {
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
       __tree_.ensureUnique()
-      guard let __p = __tree_.__purified_(index).pointer else {
+      guard let __p = __tree_.__purified_(index).accessible.pointer else {
         fatalError(.invalidIndex)
       }
       return __tree_._unchecked_remove(at: __p).payload

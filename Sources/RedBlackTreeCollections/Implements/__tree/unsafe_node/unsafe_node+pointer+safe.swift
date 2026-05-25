@@ -130,6 +130,8 @@ public enum SealError: Error {
   ///
   /// 把握済みのケースは他のエラーとなるはずなので、これが生じるのは基本的にバグ
   case null
+  
+  case end
 
   /// 回収された
   ///
@@ -237,7 +239,13 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
     // TODO: 利用側でpurified十分か繰り返し確認すること
     try? map { $0.pointer }.get()
   }
+  
+  @inlinable
+  package var accessible: Self {
+    flatMap { $0.pointer.___is_null_or_end ? .failure(.end) : .success($0)  }
+  }
 
+  // TODO: 名前を変える
   @inlinable
   public var exists: Bool {
     // TODO: 利用側でpurified十分か繰り返し確認すること

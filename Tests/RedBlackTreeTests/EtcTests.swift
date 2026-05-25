@@ -1045,7 +1045,7 @@ final class EtcTests: RedBlackTreeTestCase {
     func testBoundsSmoke() throws {
       var a = RedBlackTreeSet<Int>()
       typealias Index = RedBlackTreeSet<Int>.Index
-//      throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
+      //      throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
       #if false
         // indexを廃止しようとしている
         let _ = a.indices(bounds: .start ..< .end)
@@ -1234,4 +1234,11 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(d[0, default: -1], -1)
     XCTAssertEqual(d[0], nil)
   }
+
+  #if DEBUG
+    func testStartIndex() throws {
+      let s = RedBlackTreeSet<Int>()
+      XCTAssertEqual(s._start.pointee.___tracking_tag, .end)
+    }
+  #endif
 }

@@ -166,7 +166,7 @@ extension UnsafeTreeV2 {
   @inline(__always)
   func _unsafeMutableAddress(_ position: UnsafeIndexV3) -> UnsafeMutablePointer<_PayloadValue> {
     let sealed: _SealedPtr = __purified_(position)
-    precondition(sealed.exists)
+    precondition(sealed.accessible.error == nil)
     return sealed.pointer!.__value_()
   }
 

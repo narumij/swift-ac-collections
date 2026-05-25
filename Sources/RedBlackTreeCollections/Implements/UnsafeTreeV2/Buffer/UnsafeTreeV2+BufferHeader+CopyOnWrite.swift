@@ -19,6 +19,7 @@
 func growth(from count: Int, to minimum: Int) -> Int {
   // TODO: ジャッジ搭載のタイミングで再度チューニングすること
 
+#if false
   if count == 0 {
     return Swift.max(minimum, 2)
   }
@@ -27,6 +28,7 @@ func growth(from count: Int, to minimum: Int) -> Int {
     // scale factor 4.0 when small amount
     return Swift.max(minimum, count &<< 2)
   }
+#endif
 
   // scale factor 1.5
   return Swift.max(minimum, count &+ (count &>> 1))

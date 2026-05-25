@@ -252,7 +252,7 @@ public struct UnsafeNode {
 }
 
 @usableFromInline
-nonisolated(unsafe) let _singletonNull: UnsafeNode.Null = .create()
+nonisolated(unsafe) package let _singletonNull: UnsafeNode.Null = .create()
 
 extension UnsafeNode {
 
@@ -275,12 +275,13 @@ extension UnsafeNode {
 
   @frozen
   @usableFromInline
-  struct Null: ~Copyable {
+  package struct Null: ~Copyable {
     @inlinable
     internal init(nullptr: UnsafeMutablePointer<UnsafeNode>) {
       self.nullptr = nullptr
     }
-    @usableFromInline var nullptr: UnsafeMutablePointer<UnsafeNode>
+    @usableFromInline
+    package var nullptr: UnsafeMutablePointer<UnsafeNode>
     deinit {
       nullptr.deallocate()
     }
@@ -288,6 +289,7 @@ extension UnsafeNode {
     internal static func create() -> Null {
       let nullptr = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
       nullptr.initialize(to: .create(tag: .nullptr, nullptr: nullptr))
+//      assert(nullptr.pointee.___has_payload_content == false)
       return .init(nullptr: nullptr)
     }
   }

@@ -8,21 +8,22 @@ var defines: [String] = [
   //  "TREE_INVARIANT_CHECKS",
   //  "GRAPHVIZ_DEBUG",
   //  "USING_ALGORITHMS",
-  //  "USING_COLLECTIONS",
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "PERFOMANCE_CHECK",
-  "WITHOUT_SIZECHECK"
+  //  "SIZECHECK",
   //  "USE_OLD_FIND",
-  //  "DEATH_TEST",
+  //  "DEATH_TEST"
   //  "BENCHMARK",
-  //  "ALLOCATION_DRILL" // リリース時はオフ
   //  "USE_C_MALLOC",
-  //  "USE_INT128", // これはpackage traitにしたい
-  //  "RESERVE_CAPACITY_BENCH",
-  //  "USE_RECYCLE_POOL_PROTOCOL",
-  //  "USE_FRESH_POOL_PROTOCOL",
+  //  "USE_INT128",
+    "USE_RECYCLE_POOL_PROTOCOL",
+    "USE_FRESH_POOL_PROTOCOL",
   //  "USE_COMPACT_NODE_METADATA",
 ]
+
+
+
+
 
 var _settings: [SwiftSetting] =
   [
@@ -31,7 +32,7 @@ var _settings: [SwiftSetting] =
     // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
     // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
     // .define("COMPATIBLE_ATCODER_2025"),
-      
+     
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
     .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),
@@ -75,6 +76,16 @@ var _settings: [SwiftSetting] =
       "BENCHMARK",
       .when(traits: ["BENCHMARK"])
     ),
+
+    .define(
+      "GRAPHVIZ_DEBUG",
+      .when(traits: ["GRAPHVIZ_DEBUG"])
+    ),
+
+    .define(
+      "DEATH_TEST",
+      .when(platforms: [.macOS])
+    ),
   ]
   + defines.map { .define($0) }
 
@@ -104,6 +115,9 @@ let package = Package(
     ),
     .trait(
       name: "BENCHMARK"
+    ),
+    .trait(
+      name: "GRAPHVIZ_DEBUG"
     ),
   ],
   dependencies: [

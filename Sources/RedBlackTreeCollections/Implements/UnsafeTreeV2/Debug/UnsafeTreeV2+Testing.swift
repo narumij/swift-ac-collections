@@ -181,17 +181,6 @@
       return true
     }
   }
-#else
-  //  extension UnsafeTreeV2 {
-  //    @inlinable
-  //    package func equiv(with tree: UnsafeTreeV2) -> Bool {
-  //      return true
-  //    }
-  //    @inlinable
-  //    package func check() -> Bool {
-  //      return true
-  //    }
-  //  }
 #endif
 
 @usableFromInline

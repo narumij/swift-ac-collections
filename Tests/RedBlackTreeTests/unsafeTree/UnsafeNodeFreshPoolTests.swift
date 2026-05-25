@@ -13,7 +13,7 @@ import XCTest
   struct FreshPoolFixture<_PayloadValue>: _FreshPool {
     var freshBucketCurrent: RedBlackTreeModule._BucketQueue?
 
-    var payload: _MemoryLayout
+    var payloadLayout: _MemoryLayout
 
     func didUpdateFreshBucketHead() {
 

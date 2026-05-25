@@ -245,7 +245,7 @@ extension UnsafeTreeV2 {
   /// 木が同一の場合、インデックスが保持するポインタを返す。
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
-  internal func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
+  package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
     withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
       // 木が同一のケース
       // 中身を取り出し、生存確認を行って返している

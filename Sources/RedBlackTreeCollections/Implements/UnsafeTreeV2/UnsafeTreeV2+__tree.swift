@@ -56,7 +56,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  var __root: _NodePtr {
+  package var __root: _NodePtr {
     @inline(__always) _read {
       yield withMutableHeader { $0.root_ptr }.pointee
     }

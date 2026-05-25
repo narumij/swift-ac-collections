@@ -106,15 +106,17 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
       }
     #endif
 
-    func testPerformanceInit2() throws {
-      self.measure {
-        // 昔は内部でソートしていたが、今はそのおせっかいをやめているので、
-        // ランダムなままの場合、並びによって性能が変化する
-        // GitHub Actionsのテストで性能低下を検出される場合もあるが、
-        // 意図的なリグレッションなので、特に対処しない
-        let _ = RedBlackTreeSet<Int>(random)
+    #if PERFOMANCE_CHECK
+      func testPerformanceInit2() throws {
+        self.measure {
+          // 昔は内部でソートしていたが、今はそのおせっかいをやめているので、
+          // ランダムなままの場合、並びによって性能が変化する
+          // GitHub Actionsのテストで性能低下を検出される場合もあるが、
+          // 意図的なリグレッションなので、特に対処しない
+          let _ = RedBlackTreeSet<Int>(random)
+        }
       }
-    }
+    #endif
 
     #if PERFOMANCE_CHECK
       func testPerformanceInit3() throws {

@@ -27,16 +27,6 @@
   extension RedBlackTreeMultiMap {
 
     @inlinable
-    func ___index(_ p: _SealedPtr) -> _TieWrappedPtr {
-      p.band(__tree_.tied)
-    }
-
-    @inlinable
-    func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedPtr? {
-      p.exists ? p.band(__tree_.tied) : nil
-    }
-    
-    @inlinable
     func ___index(_ p: _SealedPtr) -> _LazyDetachPointer {
       p.band(__tree_.lazyDetach)
     }

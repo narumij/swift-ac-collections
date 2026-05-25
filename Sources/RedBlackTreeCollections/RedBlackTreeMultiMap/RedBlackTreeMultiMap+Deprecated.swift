@@ -83,7 +83,7 @@
       guard let p = __tree_.__purified_(ptr).pointer, p.sealed.exists
       else { return nil }
       let old = __tree_[_unsafe_raw: p]
-      __tree_[_unsafe_raw: p].value = newValue
+      __tree_[_unsafe_raw: p].tuple.value = newValue
       return Base.__element_(old)
     }
   }

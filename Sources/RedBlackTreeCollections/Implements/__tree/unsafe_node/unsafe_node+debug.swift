@@ -88,15 +88,14 @@
       assert(__right_ == UnsafeNode.nullptr)
       assert(__parent_ == UnsafeNode.nullptr)
       assert(__is_black_ == false)
-      assert(___has_payload_content == true)
+      assert(___has_payload_content == false)
       guard
         ___tracking_tag == .nullptr,
         __right_ == UnsafeNode.nullptr,
         __right_ == UnsafeNode.nullptr,
         __parent_ == UnsafeNode.nullptr,
         __is_black_ == false,
-        // 判定を簡略化するための措置
-        ___has_payload_content == true
+        ___has_payload_content == false
       else {
         return false
       }
@@ -109,13 +108,13 @@
       assert(__right_ == UnsafeNode.nullptr)
       assert(__parent_ == UnsafeNode.nullptr)
       assert(__is_black_ == false)
+      assert(___has_payload_content == false)
       guard
         ___tracking_tag == .end,
         __right_ == UnsafeNode.nullptr,
         __parent_ == UnsafeNode.nullptr,
         __is_black_ == false,
-        // 判定を簡略化するための措置
-        ___has_payload_content == true
+        ___has_payload_content == false
       else {
         return false
       }

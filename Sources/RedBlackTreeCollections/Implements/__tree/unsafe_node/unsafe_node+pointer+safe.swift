@@ -36,7 +36,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   package var safe: _SafePtr {
     if ___is_null {
       return .failure(.null)
-    } else if ___is_garbaged {
+    } else if !___is_end, ___is_garbaged {
       // これが発生するようだと基本的にそれはバグ
       return .failure(.garbaged)
     } else {
@@ -108,7 +108,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   package var sealed: _SealedPtr {
     if ___is_null {
       return .failure(.null)
-    } else if ___is_garbaged {
+    } else if !___is_end, ___is_garbaged {
       // これが発生するようだと基本的にそれはバグ
       return .failure(.garbaged)
     } else {

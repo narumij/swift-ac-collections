@@ -58,7 +58,7 @@ class RedBlackTreeTestCase: XCTestCase {
       payloadDeinitializedCount = 0
     
     assert(UnsafeNode.nullptr.pointee.___tracking_tag == .nullptr)
-    assert(UnsafeNode.nullptr.pointee.___has_payload_content == true)
+    assert(UnsafeNode.nullptr.pointee.___has_payload_content == false)
     #endif
   }
 }

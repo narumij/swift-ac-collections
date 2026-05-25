@@ -1239,6 +1239,7 @@ final class EtcTests: RedBlackTreeTestCase {
     func testStartIndex() throws {
       let s = RedBlackTreeSet<Int>()
       XCTAssertEqual(s._start.pointee.___tracking_tag, .end)
+      XCTAssertEqual(s._start.pointee.___has_payload_content, false)
     }
   #endif
 }

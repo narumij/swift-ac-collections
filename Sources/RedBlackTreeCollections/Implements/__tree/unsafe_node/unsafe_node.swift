@@ -163,7 +163,7 @@ public struct UnsafeNode {
   #else
     public typealias Seal = UInt32
   #endif
-  
+
   // salt付きに変更することで、まったく縁の無い木のノードを受け付けにくくすることができる
   // saltは新規作成時のみ更新され、コピーでは継承することで、CoWまたぎには影響しない
   // 将来の実装課題
@@ -288,8 +288,9 @@ extension UnsafeNode {
     @inlinable
     internal static func create() -> Null {
       let nullptr = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
-      nullptr.initialize(to: .create(tag: .nullptr, nullptr: nullptr))
-//      assert(nullptr.pointee.___has_payload_content == false)
+      nullptr.initialize(to: .createSpecial(tag: .nullptr, nullptr: nullptr))
+      //      assert(nullptr.pointee.___has_payload_content == false)
+      nullptr.pointee.___has_payload_content = false
       return .init(nullptr: nullptr)
     }
   }
@@ -298,6 +299,18 @@ extension UnsafeNode {
 extension UnsafeNode {
 
   @inlinable
+  package static func createSpecial(tag: _TrackingTag, nullptr: UnsafeMutablePointer<UnsafeNode>)
+    -> UnsafeNode
+  {
+    .init(
+      ___tracking_tag: tag,
+      __left_: nullptr,
+      __right_: nullptr,
+      __parent_: nullptr,
+      ___has_payload_content: false)
+  }
+  
+  @inlinable
   package static func create(tag: _TrackingTag, nullptr: UnsafeMutablePointer<UnsafeNode>)
     -> UnsafeNode
   {
@@ -305,7 +318,8 @@ extension UnsafeNode {
       ___tracking_tag: tag,
       __left_: nullptr,
       __right_: nullptr,
-      __parent_: nullptr)
+      __parent_: nullptr,
+      ___has_payload_content: true)
   }
 }
 

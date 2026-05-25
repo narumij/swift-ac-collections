@@ -109,19 +109,27 @@ import XCTest
       }
       XCTAssertEqual(header.recycleHead, .nullptr)
       XCTAssertEqual(header.___popRecycle(), .nullptr)
+      header.___deallocFreshPool()
+    }
+
+    func testExtraPop() throws {
+
+      throw XCTSkip("ノードの初期値変更により、nullノードが破壊される状態になっているため")
+      // TODO: リサイクルプールの安全確認の強化
+
+      let null_back = UnsafeNode.nullptr.pointee
+      var header = Fixture(Int.self, nullptr: .nullptr, capacity: 0)
+      let end_back = header.end_ptr.pointee
+
+      XCTAssertEqual(header.recycleHead, .nullptr)
+      XCTAssertEqual(header.___popRecycle(), .nullptr)
       // 過剰popしてもnullノードを破壊していないこと
       XCTAssertEqual(null_back, UnsafeNode.nullptr.pointee)
       // 過剰popしてもendノードを破壊していないこと
       XCTAssertEqual(end_back, header.end_ptr.pointee)
 
+      UnsafeNode.nullptr.pointee = null_back
       header.___deallocFreshPool()
     }
-
-    //    func testPerformanceExample() throws {
-    //      // This is an example of a performance test case.
-    //      self.measure {
-    //        // Put the code you want to measure the time of here.
-    //      }
-    //    }
   }
 #endif

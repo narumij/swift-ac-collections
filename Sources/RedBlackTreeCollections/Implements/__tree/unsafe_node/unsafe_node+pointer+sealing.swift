@@ -73,7 +73,7 @@ public struct _NodePtrSealing: Equatable {
     // destroyで回収されてgarbagedになるとそれは死後.
     // 再度転生するとgarbagedではなくなる.
     // recycle countが不一致となれば転生済みノードであることがわかる.
-    pointer.___is_garbaged || pointer.pointee.___recycle_count != seal
+    (pointer.___is_garbaged && !pointer.___is_end) || pointer.pointee.___recycle_count != seal
   }
 
   /// お清め

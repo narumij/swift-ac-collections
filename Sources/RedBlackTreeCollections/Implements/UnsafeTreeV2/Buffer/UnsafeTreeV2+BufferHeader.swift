@@ -313,11 +313,11 @@ extension UnsafeTreeV2BufferHeader {
 #endif
 
 #if DEBUG
-extension UnsafeTreeV2BufferHeader: _FreshPoolDebug {}
+  extension UnsafeTreeV2BufferHeader: _FreshPoolDebug {}
 #endif
 
 #if DEBUG || GRAPHVIZ_DEBUG
-extension UnsafeTreeV2BufferHeader: _RecyclePoolDebug {}
+  extension UnsafeTreeV2BufferHeader: _RecyclePoolDebug {}
 #endif
 
 extension UnsafeTreeV2BufferHeader {
@@ -329,12 +329,17 @@ extension UnsafeTreeV2BufferHeader {
       return nullptr
     }
     assert(p.pointee.___tracking_tag == .debug, "未使用ノードであること")
-    #if true
+    #if false
       p.initialize(to: nullptr.pointee)
       p.pointee.___tracking_tag = _TrackingTag(truncatingIfNeeded: freshPoolUsedCount)
+      p.pointee.___has_payload_content = true
     #else
-      p.initialize(to: .create(id: freshPoolUsedCount))
+      p.initialize(
+        to: .create(
+          tag: _TrackingTag(truncatingIfNeeded: freshPoolUsedCount),
+          nullptr: nullptr))
     #endif
+    assert(p.pointee.___has_payload_content == true)
     #if DEBUG
       nodeInitializedCount += 1
     #endif

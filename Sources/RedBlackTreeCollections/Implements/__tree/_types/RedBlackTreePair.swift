@@ -23,33 +23,55 @@
 public struct RedBlackTreePair<Key, Value> {
 
   @inlinable
-  package init(key: Key, value: Value) {
-    self.key = key
-    self.value = value
+  package init(tuple: (key: Key, value: Value)) {
+    self.tuple = tuple
   }
 
-  public var key: Key
-  public var value: Value
+  public var tuple: (key: Key, value: Value)
 }
 
-extension RedBlackTreePair {
-  @inlinable
-  public var tuple: (Key, Value) { (key, value) }
-}
+extension RedBlackTreePair {}
 
 extension RedBlackTreePair: Sendable where Key: Sendable, Value: Sendable {}
 
-extension RedBlackTreePair: Hashable where Key: Hashable, Value: Hashable {}
-extension RedBlackTreePair: Equatable where Key: Equatable, Value: Equatable {}
-
-extension RedBlackTreePair: Comparable where Key: Comparable, Value: Comparable {
-  @inlinable
-  public static func < (lhs: RedBlackTreePair<Key, Value>, rhs: RedBlackTreePair<Key, Value>)
-    -> Bool
-  {
-    (lhs.key, lhs.value) < (rhs.key, rhs.value)
+extension RedBlackTreePair: Hashable where Key: Hashable, Value: Hashable {
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(tuple.key)
+    hasher.combine(tuple.value)
   }
 }
 
-extension RedBlackTreePair: Encodable where Key: Encodable, Value: Encodable {}
-extension RedBlackTreePair: Decodable where Key: Decodable, Value: Decodable {}
+extension RedBlackTreePair: Equatable where Key: Equatable, Value: Equatable {
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.tuple == rhs.tuple
+  }
+}
+
+extension RedBlackTreePair: Comparable where Key: Comparable, Value: Comparable {
+  @inlinable
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    lhs.tuple < rhs.tuple
+  }
+}
+
+extension RedBlackTreePair: Encodable where Key: Encodable, Value: Encodable {
+
+  @inlinable
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.unkeyedContainer()
+    try container.encode(tuple.key)
+    try container.encode(tuple.value)
+  }
+}
+
+extension RedBlackTreePair: Decodable where Key: Decodable, Value: Decodable {
+  @inlinable
+  public init(from decoder: Decoder) throws {
+    var container = try decoder.unkeyedContainer()
+    self.init(
+      tuple: (
+        key: try container.decode(Key.self),
+        value: try container.decode(Value.self)
+      ))
+  }
+}

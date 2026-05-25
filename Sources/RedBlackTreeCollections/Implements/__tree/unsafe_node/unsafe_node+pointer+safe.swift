@@ -27,6 +27,64 @@
 /// ポインタ操作でいちいちsealingしたくない場合に使う
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 
+extension UnsafeMutablePointer where Pointee == UnsafeNode {
+
+  /// ポインタを渡すときまたは受け取ったときに用いる
+  ///
+  /// 重ねてsealしないこと
+  @inlinable
+  package var safe: _SafePtr {
+    if ___is_null {
+      return .failure(.null)
+    } else if ___is_garbaged {
+      // これが発生するようだと基本的にそれはバグ
+      return .failure(.garbaged)
+    } else {
+      return .success(self)
+    }
+  }
+}
+
+extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
+
+  @inlinable
+  package var isValid: Bool {
+    switch self {
+    case .success: true
+    default: false
+    }
+  }
+
+  @inlinable
+  package var ___is_end: Bool? {
+    // endは世代が変わらず、成仏もしないのでお清めお祓いが無駄
+    try? map { $0.___is_end }.get()
+  }
+
+  @inlinable
+  package var pointer: UnsafeMutablePointer<UnsafeNode>? {
+    try? map { $0 }.get()
+  }
+
+  @inlinable
+  public var exists: Bool {
+    (try? map { !$0.___is_null_or_end }.get()) ?? false
+  }
+
+  @inlinable
+  var checked: _SafePtr {
+    flatMap {
+      if $0.___is_null {
+        .failure(.null)
+      } else if $0.___is_garbaged {
+        .failure(.garbaged)
+      } else {
+        .success($0)
+      }
+    }
+  }
+}
+
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
   /// ポインタが変化した場合に用いる
   ///
@@ -35,6 +93,10 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   var sealed: _SealedPtr { flatMap { $0.sealed } }
 }
 
+/// 世代管理付きポインタ
+///
+/// 外部的には、これをさらに寿命管理付きでラップして用いる
+/// 内部的にはこれを用いる理由は特にない、はず
 public typealias _SealedPtr = Result<_NodePtrSealing, SealError>
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
@@ -133,10 +195,12 @@ func errorMessage<E: Error>(_ e: E) -> String {
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
-  @inlinable
-  package var trackingTag: _TrackingTag {
-    (try? map(\.pointer.trackingTag).get()) ?? .nullptr
-  }
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    package var trackingTag: _TrackingTag {
+      (try? map(\.pointer.trackingTag).get()) ?? .nullptr
+    }
+  #endif
 
   @inlinable
   package var tag: _SealedTag {
@@ -161,11 +225,12 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
     }
   }
 
-  @inlinable
-  package func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
-    // TODO: 利用側でpurified十分か繰り返し確認すること
-    try? map { $0.pointer.__value_() }.get()
-  }
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    package func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
+      try? map { $0.pointer.__value_() }.get()
+    }
+  #endif
 
   @inlinable
   package var pointer: UnsafeMutablePointer<UnsafeNode>? {
@@ -174,13 +239,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   }
 
   @inlinable
-  package var temporaryUnseal: Result<UnsafeMutablePointer<UnsafeNode>, SealError> {
-    // TODO: 利用側でpurified十分か繰り返し確認すること
-    map { $0.pointer }
-  }
-
-  @inlinable
-  package var exists: Bool {
+  public var exists: Bool {
     // TODO: 利用側でpurified十分か繰り返し確認すること
     (try? map { !___is_null_or_end($0.pointer.trackingTag) }.get()) ?? false
   }
@@ -202,20 +261,10 @@ extension Result where Failure == SealError {
       return failure
     }
   }
-
-  @usableFromInline
-  package func isError(_ e: SealError) -> Bool {
-    switch self {
-    case .success:
-      return false
-    case .failure(let failure):
-      return failure == e
-    }
-  }
 }
 
 @inlinable
-func lifetA2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> S) -> Result<S, E> {
+func liftA2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> S) -> Result<S, E> {
   switch (a, b) {
   case (.success(let a), .success(let b)):
     return .success(f(a, b))
@@ -226,16 +275,18 @@ func lifetA2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> S) ->
   }
 }
 
-@inlinable
-func liftM2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> Result<S, E>) -> Result<
-  S, E
-> {
-  switch (a, b) {
-  case (.success(let a), .success(let b)):
-    return f(a, b)
-  case (.failure(let e), _):
-    return .failure(e)
-  case (_, .failure(let e)):
-    return .failure(e)
+#if false
+  @inlinable
+  func liftM2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> Result<S, E>) -> Result<
+    S, E
+  > {
+    switch (a, b) {
+    case (.success(let a), .success(let b)):
+      return f(a, b)
+    case (.failure(let e), _):
+      return .failure(e)
+    case (_, .failure(let e)):
+      return .failure(e)
+    }
   }
-}
+#endif

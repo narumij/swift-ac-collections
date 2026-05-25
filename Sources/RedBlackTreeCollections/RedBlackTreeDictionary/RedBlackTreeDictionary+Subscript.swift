@@ -37,18 +37,18 @@ extension RedBlackTreeDictionary {
   ) -> Value {
     
     @inline(__always) get {
-      __tree_[key] ?? defaultValue()
+      let __ptr = __tree_.update { $0.find(key) }
+      return __ptr == __tree_.__end_node ? defaultValue() : Base.__mapped_value_(__ptr)
     }
-    
+
     @inline(__always)
-    @_transparent
-    unsafeMutableAddress {
+    _modify {
       
       __tree_.ensureUnique()
       
       let (__parent, __child) = __tree_.__find_equal(key)
       
-      if __child.pointee == .nullptr {
+      if __child.pointee == __tree_.nullptr {
         __tree_.unsafeEnsureCapacity()
         assert(__tree_.capacity > __tree_.count)
         __tree_.update {
@@ -57,7 +57,7 @@ extension RedBlackTreeDictionary {
         }
       }
       
-      return Base.__mapped_value_ptr(__child)
+      yield &Base.__mapped_value_ptr(__child).pointee
     }
   }
 }

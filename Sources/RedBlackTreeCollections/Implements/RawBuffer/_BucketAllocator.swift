@@ -152,7 +152,7 @@ extension _BucketAllocator {
 
     assert(bucketCapacity != 0, "先頭以外のバケットは容量0ではないこと")
 
-    let (bytes, alignment) = (_allocationSize(capacity: bucketCapacity), _pair.alignment)
+    let (bytes, alignment) = (_allocationSizeNonzero(capacity: bucketCapacity), _pair.alignment)
 
     let header_storage = UnsafeMutableRawPointer._allocate(
       byteCount: bytes,
@@ -183,7 +183,17 @@ extension _BucketAllocator {
   package func _allocationSize(capacity: Int) -> Int {
     let s2 = MemoryLayout<_Bucket>.stride
     let s01 = _pair.stride
-    let size = s2 + s01 * capacity + (capacity == 0 ? 0 : startOffset)
+    let size = s2 &+ s01 &* capacity &+ (capacity == 0 ? 0 : startOffset)
+    return size
+  }
+  
+  @inlinable
+  @inline(__always)
+  package func _allocationSizeNonzero(capacity: Int) -> Int {
+    assert(capacity > 0)
+    let s2 = MemoryLayout<_Bucket>.stride
+    let s01 = _pair.stride
+    let size = s2 &+ s01 &* capacity &+ startOffset
     return size
   }
 }

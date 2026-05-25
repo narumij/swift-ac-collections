@@ -35,7 +35,7 @@
     func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedPtr? {
       p.exists ? p.band(__tree_.tied) : nil
     }
-    
+
     @inlinable
     func ___index(_ p: _SealedPtr) -> _LazyDetachPointer {
       p.band(__tree_.lazyDetach)
@@ -52,6 +52,14 @@
     @inlinable
     public func firstIndex(of key: Key) -> Index? {
       ___index_or_nil(__tree_.find(key).sealed)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+    /// - Complexity: O( log `count` )
+    @inlinable
+    public func index(forKey key: Key) -> Index? {
+      ___index_or_nil(__tree_.update { $0.find(key) }.sealed)
     }
   }
 

@@ -158,7 +158,12 @@ public struct UnsafeNode {
   /// - `end` は `-1`
   public var ___tracking_tag: _TrackingTag
 
-  public typealias Seal = UInt32
+  #if USE_COMPACT_NODE_METADATA
+    public typealias Seal = UInt16
+  #else
+    public typealias Seal = UInt32
+  #endif
+  
   // salt付きに変更することで、まったく縁の無い木のノードを受け付けにくくすることができる
   // saltは新規作成時のみ更新され、コピーでは継承することで、CoWまたぎには影響しない
   // 将来の実装課題
@@ -218,6 +223,7 @@ public struct UnsafeNode {
 
   // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
   // nullptrは定数でもなにかコストがかかっていた記憶もある
+  // (comp, beqより、cbzやcbnzの方が速い説)
   // 過去のコードベースで再度調査してこういった諸々の問題が杞憂だった場合、optionalに変更してnullptrにnil変更しても良い
   //  @exclusivity(unchecked)
   //  @usableFromInline nonisolated(unsafe)
@@ -225,6 +231,24 @@ public struct UnsafeNode {
   @usableFromInline nonisolated(unsafe)
     package static var nullptr: UnsafeMutablePointer<UnsafeNode>
   { _singletonNull.nullptr }
+
+  #if false
+    // TODO: 即値のnullptrを利用したケースの性能調査
+    // 今頃nullptrの作り方が判明した
+    // nullptrに実態がある現在の設計は未定義動作を踏みにくくある。これを失うデメリットは大きく、変更の工数も多い
+    // swift_onceで性能低下するのはイテレータのみで、他にバケットヘッダのサイズが少し減る程度のベネフィットとなる
+    // あまり現実的ではない
+    @inlinable
+    nonisolated(unsafe)
+      package static var nullptr: UnsafeMutablePointer<UnsafeNode>
+    {
+      #if true
+        unsafeBitCast(UInt(bitPattern: 0x0), to: UnsafeMutablePointer<UnsafeNode>.self)
+      #else
+        UnsafeMutablePointer<UnsafeNode>(bitPattern: 1)!  // 0だとクラッシュする
+      #endif
+    }
+  #endif
 }
 
 @usableFromInline
@@ -272,7 +296,9 @@ extension UnsafeNode {
 extension UnsafeNode {
 
   @inlinable
-  package static func create(tag: Int, nullptr: UnsafeMutablePointer<UnsafeNode>) -> UnsafeNode {
+  package static func create(tag: _TrackingTag, nullptr: UnsafeMutablePointer<UnsafeNode>)
+    -> UnsafeNode
+  {
     .init(
       ___tracking_tag: tag,
       __left_: nullptr,

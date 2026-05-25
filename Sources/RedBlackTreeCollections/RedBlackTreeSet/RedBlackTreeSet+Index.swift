@@ -158,7 +158,7 @@
     public func formIndex(
       _ i: inout Index, offsetBy distance: Int, limitedBy limit: Index
     ) -> Bool {
-      
+
       __tree_.form_index(&i, offsetBy: distance, limitedBy: limit)
     }
   }
@@ -214,7 +214,7 @@
     /// - Complexity: O( log `count` )
     @inlinable
     public func find(_ member: Element) -> Index {
-      ___index(__tree_.find(member).sealed)
+      ___index(__tree_.update { $0.find(member) }.sealed)
     }
   }
 #endif
@@ -231,7 +231,7 @@
     func ___index_or_nil(_ p: _SealedPtr) -> _TieWrappedPtr? {
       p.exists ? p.band(__tree_.tied) : nil
     }
-    
+
     @inlinable
     func ___index(_ p: _SealedPtr) -> _LazyDetachPointer {
       p.band(__tree_.lazyDetach)

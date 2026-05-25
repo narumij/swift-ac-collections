@@ -102,7 +102,7 @@
 
   extension ___UnsafeKeyOnlySequenceV2 {
 
-    @available(*, deprecated, message: "性能問題があり廃止")
+//    @available(*, deprecated, message: "性能問題があり廃止")
     @inlinable
     internal func _forEach(_ body: (Index, _PayloadValue) throws -> Void) rethrows {
       try __tree_.___for_each_(__p: _sealed_start, __l: _sealed_end) {

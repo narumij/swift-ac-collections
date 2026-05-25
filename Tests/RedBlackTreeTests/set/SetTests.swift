@@ -961,7 +961,7 @@ final class SetTests: RedBlackTreeTestCase {
       // その後できるようになった
       // 挙動が変わった
       //    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5)._rawTag, 5)
-      XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+      XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
       XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
       XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
       XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))

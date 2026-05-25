@@ -29,3 +29,11 @@ public struct _RawRange<Bound> {
     self.upperBound = upperBound
   }
 }
+
+extension _RawRange where Bound == _SafePtr {
+
+  @inlinable
+  func map2<T>(_ f: (Bound._NodePtr, Bound._NodePtr) -> T) -> Result<T, SealError> {
+    liftA2(lowerBound, upperBound, f)
+  }
+}

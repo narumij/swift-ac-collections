@@ -1,0 +1,211 @@
+{
+  "kind": "group",
+  "title": "RedBlackTreeSet Benchmarks",
+  "directory": "RedBlackTreeSet",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "Operations",
+      "directory": "operations",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "operations",
+          "tasks": [
+            "RedBlackTreeSet<Int> init from range",
+            "RedBlackTreeSet<Int> init from unsafe buffer",
+            "RedBlackTreeSet<Int> sequential iteration",
+            "RedBlackTreeSet<Int> successful contains",
+            "RedBlackTreeSet<Int> unsuccessful contains",
+            "RedBlackTreeSet<Int> successful find",
+            "RedBlackTreeSet<Int> unsuccessful find",
+            "RedBlackTreeSet<Int> insert",
+            "RedBlackTreeSet<Int> insert, reserving capacity",
+            "RedBlackTreeSet<Int> remove"
+          ]
+        },
+        {
+          "kind": "variants",
+          "charts": [
+            {
+              "kind": "chart",
+              "title": "union with Self",
+              "tasks": [
+                "RedBlackTreeSet<Int> union with Self (0% overlap)",
+                "RedBlackTreeSet<Int> union with Self (25% overlap)",
+                "RedBlackTreeSet<Int> union with Self (50% overlap)",
+                "RedBlackTreeSet<Int> union with Self (75% overlap)",
+                "RedBlackTreeSet<Int> union with Self (100% overlap)"
+              ]
+            },
+            {
+              "kind": "chart",
+              "title": "formUnion with Self",
+              "tasks": [
+                "RedBlackTreeSet<Int> formUnion with Self (0% overlap)",
+                "RedBlackTreeSet<Int> formUnion with Self (25% overlap)",
+                "RedBlackTreeSet<Int> formUnion with Self (50% overlap)",
+                "RedBlackTreeSet<Int> formUnion with Self (75% overlap)",
+                "RedBlackTreeSet<Int> formUnion with Self (100% overlap)",
+              ]
+            },
+          ]
+        },
+        {
+          "kind": "variants",
+          "charts": [
+            {
+              "kind": "chart",
+              "title": "intersection with Self",
+              "tasks": [
+                "RedBlackTreeSet<Int> intersection with Self (0% overlap)",
+                "RedBlackTreeSet<Int> intersection with Self (25% overlap)",
+                "RedBlackTreeSet<Int> intersection with Self (50% overlap)",
+                "RedBlackTreeSet<Int> intersection with Self (75% overlap)",
+                "RedBlackTreeSet<Int> intersection with Self (100% overlap)",
+              ]
+            },
+            {
+              "kind": "chart",
+              "title": "formIntersection with Self",
+              "tasks": [
+                "RedBlackTreeSet<Int> formIntersection with Self (0% overlap)",
+                "RedBlackTreeSet<Int> formIntersection with Self (25% overlap)",
+                "RedBlackTreeSet<Int> formIntersection with Self (50% overlap)",
+                "RedBlackTreeSet<Int> formIntersection with Self (75% overlap)",
+                "RedBlackTreeSet<Int> formIntersection with Self (100% overlap)",
+              ]
+            },
+          ]
+        },
+        {
+          "kind": "variants",
+          "charts": [
+            {
+              "kind": "chart",
+              "title": "symmetricDifference with Self",
+              "tasks": [
+                "RedBlackTreeSet<Int> symmetricDifference with Self (0% overlap)",
+                "RedBlackTreeSet<Int> symmetricDifference with Self (25% overlap)",
+                "RedBlackTreeSet<Int> symmetricDifference with Self (50% overlap)",
+                "RedBlackTreeSet<Int> symmetricDifference with Self (75% overlap)",
+                "RedBlackTreeSet<Int> symmetricDifference with Self (100% overlap)",
+              ]
+            },
+            {
+              "kind": "chart",
+              "title": "formSymmetricDifference with Self",
+              "tasks": [
+                "RedBlackTreeSet<Int> formSymmetricDifference with Self (0% overlap)",
+                "RedBlackTreeSet<Int> formSymmetricDifference with Self (25% overlap)",
+                "RedBlackTreeSet<Int> formSymmetricDifference with Self (50% overlap)",
+                "RedBlackTreeSet<Int> formSymmetricDifference with Self (75% overlap)",
+                "RedBlackTreeSet<Int> formSymmetricDifference with Self (100% overlap)",
+              ]
+            },
+          ]
+        },
+        {
+          "kind": "variants",
+          "charts": [
+            {
+              "kind": "chart",
+              "title": "subtracting Self",
+              "tasks": [
+                "RedBlackTreeSet<Int> subtracting Self (0% overlap)",
+                "RedBlackTreeSet<Int> subtracting Self (25% overlap)",
+                "RedBlackTreeSet<Int> subtracting Self (50% overlap)",
+                "RedBlackTreeSet<Int> subtracting Self (75% overlap)",
+                "RedBlackTreeSet<Int> subtracting Self (100% overlap)",
+              ]
+            },
+            {
+              "kind": "chart",
+              "title": "subtract Self",
+              "tasks": [
+                "RedBlackTreeSet<Int> subtract Self (0% overlap)",
+                "RedBlackTreeSet<Int> subtract Self (25% overlap)",
+                "RedBlackTreeSet<Int> subtract Self (50% overlap)",
+                "RedBlackTreeSet<Int> subtract Self (75% overlap)",
+                "RedBlackTreeSet<Int> subtract Self (100% overlap)",
+              ]
+            },
+          ]
+        },
+      ]
+    },
+    {
+      "kind": "group",
+      "title": "RedBlackTreeSet vs std::set",
+      "directory": "versus STL set",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "init from integer range",
+          "tasks": [
+            "std::set<intptr_t> insert from integer range",
+            "RedBlackTreeSet<Int> init from range",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "init from buffer of integers",
+          "tasks": [
+            "std::set<intptr_t> constructor from buffer",
+            "RedBlackTreeSet<Int> init from unsafe buffer",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "sequential iteration",
+          "tasks": [
+            "std::set<intptr_t> sequential iteration",
+            "RedBlackTreeSet<Int> sequential iteration",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "successful lookups",
+          "tasks": [
+            "std::set<intptr_t> successful find",
+            "RedBlackTreeSet<Int> successful find",
+            "RedBlackTreeSet<Int> successful [.find(:)]",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "unsuccessful lookups",
+          "tasks": [
+            "std::set<intptr_t> unsuccessful find",
+            "RedBlackTreeSet<Int> unsuccessful find",
+            "RedBlackTreeSet<Int> unsuccessful [.find(:)]",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "random removals",
+          "tasks": [
+            "std::set<intptr_t> erase",
+            "RedBlackTreeSet<Int> remove",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "successful contains",
+          "tasks": [
+            "std::set<intptr_t> successful count",
+            "RedBlackTreeSet<Int> successful contains",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "unsuccessful contains",
+          "tasks": [
+            "std::set<intptr_t> unsuccessful count",
+            "RedBlackTreeSet<Int> unsuccessful contains",
+          ]
+        },
+      ]
+    }
+  ]
+}

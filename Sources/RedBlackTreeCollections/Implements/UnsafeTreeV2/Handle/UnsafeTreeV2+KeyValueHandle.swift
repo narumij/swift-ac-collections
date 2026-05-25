@@ -46,7 +46,7 @@ struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {
 extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
-  func __key(_ __v: _PayloadValue) -> _Key { __v.key }
+  func __key(_ __v: _PayloadValue) -> _Key { __v.tuple.key }
 
   @inlinable
   func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
@@ -64,6 +64,7 @@ extension UnsafeTreeV2KeyValueHandle {
   }
 #endif
 
+#if compiler(<6.3)
 extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
@@ -77,6 +78,22 @@ extension UnsafeTreeV2KeyValueHandle {
     }
   }
 }
+#else
+extension UnsafeTreeV2KeyValueHandle {
+
+  @specialized(where _Key == Int, _MappedValue == Int)
+  @inlinable
+  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
+    if __lhs < __rhs {
+      -1
+    } else if __lhs > __rhs {
+      1
+    } else {
+      0
+    }
+  }
+}
+#endif
 
 // MARK: - TreeNodeValueProtocol
 
@@ -84,7 +101,7 @@ extension UnsafeTreeV2KeyValueHandle {
 
   @inlinable
   func __get_value(_ p: _NodePtr) -> _Key {
-    p.__value_(as: _PayloadValue.self).pointee.key
+    p.__value_(as: _PayloadValue.self).pointee.tuple.key
   }
 }
 

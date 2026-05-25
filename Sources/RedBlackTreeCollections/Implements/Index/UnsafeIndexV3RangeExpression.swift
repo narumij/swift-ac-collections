@@ -29,15 +29,6 @@ public struct UnsafeIndexV3RangeExpression {
 
 // 削除の悩みがつきまとうので、Sequence適合せず、ループはできないようにする
 
-extension UnsafeIndexV3RangeExpression {
-
-  @usableFromInline
-  func relative<Base: ___TreeBase>(to __tree_: UnsafeTreeV2<Base>) -> _RawRange<UnsafeIndexV3> {
-    // CoW対応があるので、同一木制限はできない
-    return rangeExpression.relative(to: __tree_)
-  }
-}
-
 // MARK: - Range Expression
 
 @inlinable

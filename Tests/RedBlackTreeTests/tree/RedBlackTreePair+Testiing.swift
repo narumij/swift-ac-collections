@@ -9,8 +9,11 @@ import RedBlackTreeModule
 
 extension RedBlackTreePair {
 
-  @inlinable @inline(__always)
-  package init(_ tuple: (Key, Value)) {
-    self.init(key: tuple.0, value: tuple.1)
+  public init(key: Key, value: Value) {
+    self.init(tuple: (key, value))
+  }
+  
+  public init(_ tuple: (Key, Value)) {
+    self.init(tuple: tuple)
   }
 }

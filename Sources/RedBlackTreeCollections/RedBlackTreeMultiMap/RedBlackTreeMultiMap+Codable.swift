@@ -17,7 +17,7 @@
 
 // MARK: - Codable
 
-#if !COMPATIBLE_ATCODER_2025 && false
+#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap: Encodable where Key: Encodable, Value: Encodable {
 
     /// Encodes the elements of this multi map into the given encoder in an unkeyed

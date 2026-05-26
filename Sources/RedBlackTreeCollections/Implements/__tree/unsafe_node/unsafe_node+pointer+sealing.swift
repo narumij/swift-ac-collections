@@ -93,18 +93,17 @@ public struct _NodePtrSealing: Equatable {
 
   @inlinable
   var deepPurified: _SealedPtr {
-    // validなpointerがendやnullに変化することはない
-    //    isUnsealed ? .failure(.unsealed) : .success(self)
-    //        if pointer.___is_garbaged {
-    //          return .failure(.garbaged)
-    //        }
-    if !pointer.___is_end, !pointer.___has_payload_content {
+    // 基本的にここにnullは到達しない
+    assert(!pointer.___is_null)
+    if pointer.___is_end {
+      return .success(self)
+    } else if !pointer.___has_payload_content {
       return .failure(.garbaged)
-    }
-    if isUnsealed {
+    } else if isUnsealed {
       return .failure(.unsealed)
+    } else {
+      return .success(self)
     }
-    return .success(self)
   }
 
   /// 引換券

@@ -16,14 +16,10 @@ var defines: [String] = [
   //  "BENCHMARK",
   //  "USE_C_MALLOC",
   //  "USE_INT128",
-    "USE_RECYCLE_POOL_PROTOCOL",
-    "USE_FRESH_POOL_PROTOCOL",
+  //    "USE_RECYCLE_POOL_PROTOCOL",
+  //    "USE_FRESH_POOL_PROTOCOL",
   //  "USE_COMPACT_NODE_METADATA",
 ]
-
-
-
-
 
 var _settings: [SwiftSetting] =
   [
@@ -32,7 +28,7 @@ var _settings: [SwiftSetting] =
     // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
     // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
     // .define("COMPATIBLE_ATCODER_2025"),
-     
+
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
     .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),

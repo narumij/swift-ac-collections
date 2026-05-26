@@ -61,7 +61,7 @@
       var b = a
       b.remove(5)
       XCTAssertEqual(i0.__recycle_count, 0)
-      XCTAssertEqual(b.__tree_.__purified_(i0).error, .garbaged)
+      XCTAssertEqual(b.__tree_.__purified_(i0).error, .garbaged) // TODO: この挙動について再検討
       b.insert(5)
       
       let i1 = b.find(5)

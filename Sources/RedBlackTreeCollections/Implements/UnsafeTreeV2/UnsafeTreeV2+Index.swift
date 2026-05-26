@@ -32,6 +32,21 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
 }
 
+extension UnsafeTreeV2 {
+
+  @inlinable
+  func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
+    assert(p != .nullptr)
+    return .unchecked(p, lazyDetach: lazyDetach)
+  }
+
+  @inlinable
+  func index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
+    assert(p != .nullptr)
+    return p.___has_payload_content ? .unchecked(p, lazyDetach: lazyDetach) : .none
+  }
+}
+
 extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
   @inlinable
@@ -135,21 +150,21 @@ extension UnsafeTreeV2 {
   func prev_iter(_ i: _LazyTieWrappedPtr) -> _LazyTieWrappedPtr {
     __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
-      .flatMap { $0.sealed.band(lazyDetach) }
+      .flatMap { index($0) }
   }
 
   @inlinable
   func next_iter(_ i: _LazyTieWrappedPtr) -> _LazyTieWrappedPtr {
     __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
-      .flatMap { $0.sealed.band(lazyDetach) }
+      .flatMap { index($0) }
   }
 
   @inlinable
   func adv_iter(_ i: _LazyTieWrappedPtr, offsetBy distance: Int) -> _LazyTieWrappedPtr {
     __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
-      .flatMap { $0.sealed.band(lazyDetach) }
+      .flatMap { index($0) }
   }
 
   @inlinable
@@ -161,7 +176,7 @@ extension UnsafeTreeV2 {
     let __l = __purified_(limit).map(\.pointer)
     return __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-      .flatMap { $0.sealed.band(lazyDetach) }
+      .flatMap { index($0) }
   }
 
   @inlinable

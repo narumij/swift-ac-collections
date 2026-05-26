@@ -126,6 +126,7 @@ extension UnsafeTreeV2 {
   }
 }
 
+#if false
 extension UnsafeTreeV2 {
 
   @inlinable
@@ -133,7 +134,7 @@ extension UnsafeTreeV2 {
     @inline(__always)
     @_transparent
     unsafeAddress {
-      precondition(__safe_ptr_.exists)
+      precondition(__safe_ptr_.___has_payload_content)
       return UnsafePointer(__safe_ptr_.pointer!.__value_())
     }
   }
@@ -146,11 +147,13 @@ extension UnsafeTreeV2 {
     @inline(__always)
     @_transparent
     unsafeAddress {
-      precondition(sealed.exists)
-      return UnsafePointer(sealed.pointer!.__value_())
+      let unsealed = sealed.unsafeUnsealed.accessible
+      precondition(unsealed.error == nil)
+      return UnsafePointer(unsealed.pointer!.__value_())
     }
   }
 }
+#endif
 
 extension UnsafeTreeV2 {
 
@@ -220,7 +223,7 @@ extension UnsafeTreeV2 {
   package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
     switch tag {
     case .end:
-      return end.sealed
+      return end.uncheckedSeal
     case .tag(let raw, let seal):
       guard raw < capacity else {
         return .failure(.unknown)
@@ -255,7 +258,7 @@ extension UnsafeTreeV2 {
       // タグで該当ポインタを取得
       // 該当ポインタの生存確認を行う（解放確認で十分なところ、実装サボりで生存確認になっていそう）
       // 要は、元の木と現在の木のどちらかで失効している場合、失効ポインタを返す動作
-      : __retrieve_(index.sealed.purified.tag).purified
+      : __retrieve_(index.sealed.purified.tag).deepPurified
   }
 
   @inlinable

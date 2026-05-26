@@ -103,6 +103,11 @@ public typealias _LazyTieWrappedPtr = Result<_LazyTieWrap<_NodePtrSealing>, Seal
 
 extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
+  @inlinable
+  static func unchecked(_ _p: _NodePtr, lazyDetach: _LazyTie) -> Self {
+    .success(.init(rawValue: .init(_p: _p), lazyDetach: lazyDetach))
+  }
+  
   /// ポインタを利用する際に用いる
   @inlinable
   package var purified: Result { flatMap { $0.purified } }
@@ -140,7 +145,7 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
       }
 
       return tree.__retrieve_(rawTag)
-        .flatMap(\.sealed)
+        .flatMap(\.uncheckedSeal)
         .flatMap { $0.band(tree.lazyDetach) }
     }
   }

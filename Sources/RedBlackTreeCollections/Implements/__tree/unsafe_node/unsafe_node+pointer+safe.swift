@@ -29,19 +29,32 @@ public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  /// ポインタを渡すときまたは受け取ったときに用いる
-  ///
-  /// 重ねてsealしないこと
-  @inlinable
-  package var safe: _SafePtr {
-    if ___is_null {
-      return .failure(.null)
-    } else if !___is_end, ___is_garbaged {
-      // これが発生するようだと基本的にそれはバグ
-      return .failure(.garbaged)
-    } else {
-      return .success(self)
+  #if true
+    /// ポインタを渡すときまたは受け取ったときに用いる
+    ///
+    /// 重ねてsealしないこと
+    @inlinable
+    package var safe: _SafePtr {
+      if ___is_null {
+        return .failure(.null)
+      } else if !___is_end, ___is_garbaged {
+        // これが発生するようだと基本的にそれはバグ
+        return .failure(.garbaged)
+      } else {
+        return .success(self)
+      }
     }
+  #endif
+
+  @inlinable
+  package var unchecked: _SafePtr {
+    assert(!___is_null)
+    return .success(self)
+  }
+
+  @inlinable
+  var ___has_payload_content: Bool {
+    pointee.___has_payload_content
   }
 }
 
@@ -83,6 +96,21 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
       }
     }
   }
+
+  @inlinable
+  var ___has_payload_content: Bool {
+    switch self {
+    case .success(let success):
+      success.pointee.___has_payload_content
+    case .failure(let failure):
+      false
+    }
+  }
+
+  @inlinable
+  var accessible: _SafePtr {
+    ___has_payload_content ? self : .failure(.garbaged)
+  }
 }
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
@@ -115,6 +143,12 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       return .success(.uncheckedSeal(self))
     }
   }
+
+  @inlinable
+  package var uncheckedSeal: _SealedPtr {
+    assert(___is_null)
+    return .success(.uncheckedSeal(self))
+  }
 }
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
@@ -122,6 +156,9 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   /// ポインタを利用する際に用いる
   @inlinable
   package var purified: Result { flatMap { $0.purified } }
+
+  @inlinable
+  package var deepPurified: Result { flatMap { $0.deepPurified } }
 }
 
 public enum SealError: Error {
@@ -130,7 +167,7 @@ public enum SealError: Error {
   ///
   /// 把握済みのケースは他のエラーとなるはずなので、これが生じるのは基本的にバグ
   case null
-  
+
   case end
 
   /// 回収された
@@ -239,10 +276,10 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
     // TODO: 利用側でpurified十分か繰り返し確認すること
     try? map { $0.pointer }.get()
   }
-  
+
   @inlinable
   package var accessible: Self {
-    flatMap { $0.pointer.___is_null_or_end ? .failure(.end) : .success($0)  }
+    flatMap { $0.pointer.___is_null_or_end ? .failure(.end) : .success($0) }
   }
 
   // TODO: 名前を変える

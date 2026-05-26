@@ -48,13 +48,13 @@ extension UnsafeTreeV2 {
 
     var __first = __first
     while __first != __last {
-      guard __first.exists else {
+      guard __first.___has_payload_content else {
         return .failure(.upperOutOfBounds)
       }
       if try shouldBeRemoved(__value_(__first.pointer!)) {
-        __first = erase(__first.checked.pointer!).safe
+        __first = erase(__first.accessible.pointer!).unchecked
       } else {
-        __first = ___tree_next_iter(__first.checked.pointer!)
+        __first = ___tree_next_iter(__first.accessible.pointer!)
       }
     }
     return __last

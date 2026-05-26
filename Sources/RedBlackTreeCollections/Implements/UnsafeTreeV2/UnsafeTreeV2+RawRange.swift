@@ -34,7 +34,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   var ___safe_empty_range: _RawRange<_SafePtr> {
-    let e = __end_node.safe
+    let e = __end_node.unchecked
     return .init(lowerBound: e, upperBound: e)
   }
 }

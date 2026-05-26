@@ -119,6 +119,11 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   /// 重ねてsealしないこと
   @inlinable
   var sealed: _SealedPtr { flatMap { $0.sealed } }
+  
+  @inlinable
+  package var uncheckedSeal: _SealedPtr {
+    map { .uncheckedSeal($0) }
+  }
 }
 
 /// 世代管理付きポインタ

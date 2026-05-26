@@ -128,7 +128,7 @@ extension _BucketAllocator {
     let endNode = header.end_ptr
     let beginPtr = header.begin_ptr
 
-    endNode.initialize(to: .createSpecial(tag: .end, nullptr: nullptr))
+    endNode.initialize(to: .create(tag: .end, nullptr: nullptr, ___has_payload_content: false))
     beginPtr.initialize(to: endNode)
     header.initialize(to: .init(capacity: capacity))
     #if DEBUG

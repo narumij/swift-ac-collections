@@ -278,9 +278,8 @@ extension UnsafeTreeV2BufferHeader {
       assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
       assert(recycleHead != p, "過剰リサイクル不可")
       count -= 1
-      #if DEBUG || true
-        p.pointee.___recycle_count &+= 1
-      #endif
+      // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
+      p.pointee.___recycle_count &+= 1
       freshBucketAllocator.deinitialize(p.advanced(by: 1))
       #if DEBUG
         payloadDeinitializedCount += 1
@@ -329,10 +328,9 @@ extension UnsafeTreeV2BufferHeader {
       return nullptr
     }
     assert(p.pointee.___tracking_tag == .debug, "未使用ノードであること")
-    #if false
-      p.initialize(to: nullptr.pointee)
+    #if true
+      p.initialize(to: UnsafeNode.template.pointee)
       p.pointee.___tracking_tag = _TrackingTag(truncatingIfNeeded: freshPoolUsedCount)
-      p.pointee.___has_payload_content = true
     #else
       p.initialize(
         to: .create(

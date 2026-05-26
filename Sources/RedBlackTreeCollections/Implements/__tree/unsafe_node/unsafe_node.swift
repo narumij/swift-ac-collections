@@ -249,6 +249,10 @@ public struct UnsafeNode {
       #endif
     }
   #endif
+
+  @usableFromInline nonisolated(unsafe)
+    package static var template: UnsafeMutablePointer<UnsafeNode>
+  { _singletonTemplate.template }
 }
 
 @usableFromInline
@@ -271,6 +275,9 @@ extension UnsafeNode {
   }
 }
 
+@usableFromInline
+nonisolated(unsafe) package let _singletonTemplate: UnsafeNode.Template = .create()
+
 extension UnsafeNode {
 
   @frozen
@@ -288,9 +295,7 @@ extension UnsafeNode {
     @inlinable
     internal static func create() -> Null {
       let nullptr = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
-      nullptr.initialize(to: .createSpecial(tag: .nullptr, nullptr: nullptr))
-      //      assert(nullptr.pointee.___has_payload_content == false)
-      nullptr.pointee.___has_payload_content = false
+      nullptr.initialize(to: .create(tag: .nullptr, nullptr: nullptr, ___has_payload_content: false))
       return .init(nullptr: nullptr)
     }
   }
@@ -298,20 +303,32 @@ extension UnsafeNode {
 
 extension UnsafeNode {
 
-  @inlinable
-  package static func createSpecial(tag: _TrackingTag, nullptr: UnsafeMutablePointer<UnsafeNode>)
-    -> UnsafeNode
-  {
-    .init(
-      ___tracking_tag: tag,
-      __left_: nullptr,
-      __right_: nullptr,
-      __parent_: nullptr,
-      ___has_payload_content: false)
+  @frozen
+  @usableFromInline
+  package struct Template: ~Copyable {
+    @inlinable
+    internal init(template: UnsafeMutablePointer<UnsafeNode>) {
+      self.template = template
+    }
+    @usableFromInline
+    package var template: UnsafeMutablePointer<UnsafeNode>
+    deinit {
+      template.deallocate()
+    }
+    @inlinable
+    internal static func create() -> Template {
+      let template = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+      template.initialize(to: .create(tag: 0, nullptr: nullptr))
+      assert(template.pointee.___has_payload_content == true)
+      return .init(template: template)
+    }
   }
-  
+}
+
+extension UnsafeNode {
+
   @inlinable
-  package static func create(tag: _TrackingTag, nullptr: UnsafeMutablePointer<UnsafeNode>)
+  package static func create(tag: _TrackingTag, nullptr: UnsafeMutablePointer<UnsafeNode>, ___has_payload_content: Bool = true)
     -> UnsafeNode
   {
     .init(
@@ -319,7 +336,7 @@ extension UnsafeNode {
       __left_: nullptr,
       __right_: nullptr,
       __parent_: nullptr,
-      ___has_payload_content: true)
+      ___has_payload_content: ___has_payload_content)
   }
 }
 

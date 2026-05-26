@@ -80,7 +80,8 @@
     @discardableResult
     public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
       __tree_.ensureUnique()
-      guard let p = __tree_.__purified_(ptr).pointer, p.sealed.exists
+      let unsealed = __tree_.__purified_(ptr).accessible
+      guard let p = unsealed.pointer
       else { return nil }
       let old = __tree_[_unsafe_raw: p]
       __tree_[_unsafe_raw: p].tuple.value = newValue

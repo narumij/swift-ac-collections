@@ -23,11 +23,11 @@
     public subscript(key: Key) -> View {
       @inline(__always) get {
         let (lower, upper) = __tree_.__equal_range_multi(key)
-        return self[unchecked: .init(lowerBound: lower.sealed, upperBound: upper.sealed)]
+        return self[unchecked: .init(lowerBound: lower, upperBound: upper)]
       }
       @inline(__always) _modify {
         let (lower, upper) = __tree_.__equal_range_multi(key)
-        yield &self[unchecked: .init(lowerBound: lower.sealed, upperBound: upper.sealed)]
+        yield &self[unchecked: .init(lowerBound: lower, upperBound: upper)]
       }
     }
   }

@@ -151,7 +151,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   package var uncheckedSeal: _SealedPtr {
-    assert(___is_null)
+    assert(!___is_null)
     return .success(.uncheckedSeal(self))
   }
 }

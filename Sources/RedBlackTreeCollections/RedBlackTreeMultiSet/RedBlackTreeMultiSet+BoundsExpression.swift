@@ -66,8 +66,7 @@
     @inlinable
     public func isValid(_ bound: Bound) -> Bool {
 
-      let sealed = bound.evaluate(__tree_)
-      return sealed.isValid && !sealed.___is_end!
+      bound.evaluate(__tree_).accessible.error == nil
     }
   }
 
@@ -121,8 +120,6 @@
     public func isValid(_ bounds: BoundRangeExpression) -> Bool {
       let range = bounds.evaluate(__tree_).relative(to: __tree_)
       return __tree_.isValidSafeRange(range)
-        && range.lowerBound.isValid
-        && range.upperBound.isValid
     }
   }
 

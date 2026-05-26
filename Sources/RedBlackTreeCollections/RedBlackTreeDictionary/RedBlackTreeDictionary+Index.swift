@@ -27,21 +27,31 @@
   extension RedBlackTreeDictionary {
 
     @inlinable
-    func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPtr {
-      p.band(__tree_.lazyDetach)
+    func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
+      __tree_.index(p)
     }
-
+    
     @inlinable
-    func ___index_or_nil(_ p: _SealedPtr) -> _LazyTieWrappedPtr? {
-      p.exists ? p.band(__tree_.lazyDetach) : nil
+    func ___index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
+      __tree_.index_or_nil(p)
     }
+    
+//    @inlinable
+//    func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPtr {
+//      p.band(__tree_.lazyDetach)
+//    }
+//
+//    @inlinable
+//    func ___index_or_nil(_ p: _SealedPtr) -> _LazyTieWrappedPtr? {
+//      try? p.flatMap { $0.accessible.map { $0.band(__tree_.lazyDetach) } }.get()
+//    }
   }
 
   extension RedBlackTreeDictionary {
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of key: Key) -> Index? {
-      ___index_or_nil(__tree_.find(key).sealed)
+      ___index_or_nil(__tree_.find(key))
     }
   }
 
@@ -49,7 +59,7 @@
     /// - Complexity: O( log `count` )
     @inlinable
     public func index(forKey key: Key) -> Index? {
-      ___index_or_nil(__tree_.update { $0.find(key) }.sealed)
+      ___index_or_nil(__tree_.update { $0.find(key) })
     }
   }
 
@@ -57,11 +67,11 @@
 
     /// - Complexity: O(1)
     @inlinable
-    public var startIndex: Index { ___index(_sealed_start) }
+    public var startIndex: Index { ___index(_start) }
 
     /// - Complexity: O(1)
     @inlinable
-    public var endIndex: Index { ___index(_sealed_end) }
+    public var endIndex: Index { ___index(_end) }
   }
 
   extension RedBlackTreeDictionary {
@@ -95,7 +105,7 @@
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ key: Key) -> Index {
-      ___index(__tree_.lower_bound(key).sealed)
+      ___index(__tree_.lower_bound(key))
     }
 
     /// Returns the index of the first element whose key is greater than the given key.
@@ -114,7 +124,7 @@
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ key: Key) -> Index {
-      ___index(__tree_.upper_bound(key).sealed)
+      ___index(__tree_.upper_bound(key))
     }
   }
 
@@ -123,7 +133,7 @@
     /// - Complexity: O( log `count` )
     @inlinable
     public func find(_ key: Key) -> Index {
-      ___index(__tree_.find(key).sealed)
+      ___index(__tree_.find(key))
     }
   }
 
@@ -133,7 +143,7 @@
     @inlinable
     public func equalRange(_ key: Key) -> UnsafeIndexV3Range {
       let (lower, upper) = __tree_.__equal_range_unique(key)
-      return .init(.init(lowerBound: ___index(lower.sealed), upperBound: ___index(upper.sealed)))
+      return .init(.init(lowerBound: ___index(lower), upperBound: ___index(upper)))
     }
   }
 
@@ -207,7 +217,7 @@
     /// - Complexity: O(1)
     @inlinable
     public func isValid(_ index: Index) -> Bool {
-      __tree_.__purified_(index).exists
+      __tree_.__purified_(index).accessible.error == nil
     }
   }
 #endif

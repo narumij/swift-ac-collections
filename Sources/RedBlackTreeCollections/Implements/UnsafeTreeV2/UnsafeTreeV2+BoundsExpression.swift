@@ -21,76 +21,81 @@ extension UnsafeTreeV2 {
   func evaluate(_ _internal: RedBlackTreeBoundExpressionV2<_Key>.Internal)
     -> _SafePtr
   {
-    var ptr = _SafePtr.failure(.null)
-
-    for i in _internal.indices {
-      switch _internal[i] {
-        
-      case .pointer(let p):
-        ptr = p
-        
-      case .start:
-        ptr = __begin_node_.safe
-        
-      case .last:
-        ptr = evaluate([.end, .before])
-        
-      case .end:
-        ptr = __end_node.safe
-        
-      case .lowerBound(let __v):
-        ptr = lower_bound(__v).safe
-        
-      case .upperBound(let __v):
-        ptr = upper_bound(__v).safe
-        
-      case .find(let __v):
-        ptr = find(__v).safe
-        
-      case .advanced(let offset, let limit):
-        switch limit {
-        case .none:
-          ptr = ptr.flatMap {
-            ___tree_adv_iter($0, offset)
+    _internal.withUnsafeBufferPointer { buffer in
+      
+      let _internal = buffer.baseAddress!
+      
+      var ptr = _SafePtr.failure(.null)
+      
+      for i in buffer.indices {
+        switch _internal[i] {
+          
+        case .pointer(let p):
+          ptr = p
+          
+        case .start:
+          ptr = __begin_node_.safe
+          
+        case .last:
+          ptr = evaluate([.end, .before])
+          
+        case .end:
+          ptr = __end_node.safe
+          
+        case .lowerBound(let __v):
+          ptr = lower_bound(__v).safe
+          
+        case .upperBound(let __v):
+          ptr = upper_bound(__v).safe
+          
+        case .find(let __v):
+          ptr = find(__v).safe
+          
+        case .advanced(let offset, let limit):
+          switch limit {
+          case .none:
+            ptr = ptr.flatMap {
+              ___tree_adv_iter($0, offset)
+            }
+          case .some(let __l):
+            let l = evaluate(__l)
+            let __r = ptr.flatMap {
+              ___tree_adv_iter($0, offset, l)
+            }
+            ptr = switch __r {
+            case .failure(.limit): l
+            default: __r
+            }
           }
-        case .some(let __l):
-          let l = evaluate(__l)
-          let __r = ptr.flatMap {
-            ___tree_adv_iter($0, offset, l)
-          }
-          ptr = switch __r {
-          case .failure(.limit): l
-          default: __r
-          }
-        }
-        
-      case .before:
-        ptr = evaluate([.pointer(ptr), .advanced(offset: -1)])
-        
-      case .after:
-        ptr = evaluate([.pointer(ptr), .advanced(offset: 1)])
-        
-      case .lessThan(let __v):
-        ptr = ___tree_prev_iter(lower_bound(__v))
-        
-      case .greaterThan(let __v):
-        ptr = upper_bound(__v).safe
-        
-      case .lessThanOrEqual(let __v):
-        let __f = find(__v).safe
-        ptr = __f.exists ? __f : ___tree_prev_iter(lower_bound(__v))
-        
-      case .greaterThanOrEqual(let __v):
-        let __f = find(__v).safe
-        ptr = __f.exists ? __f : upper_bound(__v).safe
-        
+          
+        case .before:
+          ptr = evaluate([.pointer(ptr), .advanced(offset: -1)])
+          
+        case .after:
+          ptr = evaluate([.pointer(ptr), .advanced(offset: 1)])
+          
+        case .lessThan(let __v):
+          ptr = ___tree_prev_iter(lower_bound(__v))
+          
+        case .greaterThan(let __v):
+          ptr = upper_bound(__v).safe
+          
+        case .lessThanOrEqual(let __v):
+          let __f = find(__v).safe
+          ptr = __f.exists ? __f : ___tree_prev_iter(lower_bound(__v))
+          
+        case .greaterThanOrEqual(let __v):
+          let __f = find(__v).safe
+          ptr = __f.exists ? __f : upper_bound(__v).safe
+          
 #if DEBUG
-      case .debug(let e):
-        return .failure(e)
+        case .debug(let e):
+          return .failure(e)
 #endif
+        }
       }
+      return ptr
     }
-    return ptr
   }
 }
 

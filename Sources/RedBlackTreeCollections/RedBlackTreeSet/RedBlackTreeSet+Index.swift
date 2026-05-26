@@ -35,7 +35,7 @@
     /// - Complexity: O(1)
     @inlinable
     public func isValid(_ index: Index) -> Bool {
-      __tree_.__purified_(index).exists
+      __tree_.__purified_(index).accessible.error == nil
     }
   }
 #endif
@@ -65,7 +65,7 @@
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element) -> Index? {
-      ___index_or_nil(__tree_.find(member).sealed)
+      ___index_or_nil(__tree_.find(member))
     }
   }
 
@@ -75,13 +75,13 @@
     ///
     /// - Complexity: O(1)
     @inlinable
-    public var startIndex: Index { ___index(_sealed_start) }
+    public var startIndex: Index { ___index(_start) }
 
     /// The array’s “past the end” position—that is, the position one greater than the last valid subscript argument.
     ///
     /// - Complexity: O(1)
     @inlinable
-    public var endIndex: Index { ___index(_sealed_end) }
+    public var endIndex: Index { ___index(_end) }
   }
 #endif
 
@@ -185,7 +185,7 @@
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ member: Element) -> Index {
-      ___index(__tree_.lower_bound(member).sealed)
+      ___index(__tree_.lower_bound(member))
     }
 
     /// Returns the index of the first element that is greater than the given value.
@@ -205,7 +205,7 @@
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ member: Element) -> Index {
-      ___index(__tree_.upper_bound(member).sealed)
+      ___index(__tree_.upper_bound(member))
     }
   }
 
@@ -214,7 +214,7 @@
     /// - Complexity: O( log `count` )
     @inlinable
     public func find(_ member: Element) -> Index {
-      __tree_.index(__tree_.update { $0.find(member) })
+      ___index(__tree_.update { $0.find(member) })
     }
   }
 #endif
@@ -223,13 +223,13 @@
   extension RedBlackTreeSet {
 
     @inlinable
-    func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPtr {
-      p.band(__tree_.lazyDetach)
+    func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
+      __tree_.index(p)
     }
 
     @inlinable
-    func ___index_or_nil(_ p: _SealedPtr) -> _LazyTieWrappedPtr? {
-      p.exists ? p.band(__tree_.lazyDetach) : nil
+    func ___index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
+      __tree_.index_or_nil(p)
     }
   }
 #endif

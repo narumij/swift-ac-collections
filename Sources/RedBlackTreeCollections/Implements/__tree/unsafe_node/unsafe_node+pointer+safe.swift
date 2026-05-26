@@ -102,7 +102,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
     switch self {
     case .success(let success):
       success.pointee.___has_payload_content
-    case .failure(let failure):
+    case .failure:
       false
     }
   }

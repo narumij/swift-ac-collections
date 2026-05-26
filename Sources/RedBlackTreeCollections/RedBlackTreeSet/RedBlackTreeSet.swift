@@ -358,7 +358,7 @@ extension RedBlackTreeSet {
     @discardableResult
     @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
-      ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
+      ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
     }
   }
 
@@ -371,8 +371,8 @@ extension RedBlackTreeSet {
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()
       let result = try __tree_.___erase_ragen_if(
-        __tree_.__begin_node_.safe,
-        __tree_.__end_node.safe,
+        __tree_.__begin_node_.unchecked,
+        __tree_.__end_node.unchecked,
         shouldBeRemoved)
       if case .failure(let e) = result {
         fatalError(errorMessage(e))

@@ -63,7 +63,7 @@
 
     /// Returns whether the corresponding element can be accessed.
     @inlinable
-    public func isValid(_ bound: Bound) -> Bool {
+    public func isValid(_ bound: RedBlackTreeBoundExpressionV2<Element>) -> Bool {
       let sealed = bound.evaluate(__tree_)
       return sealed.isValid && !sealed.___is_end!
     }
@@ -75,7 +75,7 @@
     ///
     /// - Complexity: O(log *n* + *k*)
     @inlinable
-    public func distance(from start: Bound, to end: Bound)
+    public func distance(from start: RedBlackTreeBoundExpressionV2<Element>, to end: RedBlackTreeBoundExpressionV2<Element>)
       -> Int
     {
       guard let d = __tree_.distance(from: start, to: end)
@@ -94,7 +94,7 @@
     ///
     @inlinable
     @inline(__always)
-    public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
+    public subscript(bound: RedBlackTreeBoundExpressionV2<Element>) -> Element? {
       let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
       return p.__value_(as: Element.self).pointee
@@ -104,7 +104,7 @@
   extension RedBlackTreeSet {
 
     @inlinable
-    public mutating func erase(_ bound: Bound) -> Element? {
+    public mutating func erase(_ bound: RedBlackTreeBoundExpressionV2<Element>) -> Element? {
       __tree_.ensureUnique()
       let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }

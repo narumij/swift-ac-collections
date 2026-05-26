@@ -37,13 +37,14 @@ extension UnsafeTreeV2 {
   @inlinable
   func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
     assert(p != .nullptr)
-    return .unchecked(p, lazyDetach: lazyDetach)
+//    return .unchecked(p, lazyDetach: lazyDetach)
+    return withMutableHeader { .unchecked(p, lazyDetach: $0.lazyDetach) }
   }
 
   @inlinable
   func index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
     assert(p != .nullptr)
-    return p.___has_payload_content ? .unchecked(p, lazyDetach: lazyDetach) : .none
+    return p.___has_payload_content ? index(p) : .none
   }
 }
 

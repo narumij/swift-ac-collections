@@ -27,7 +27,7 @@ extension UnsafeTreeV2 {
       
       var ptr = _SafePtr.failure(.null)
       
-      for i in buffer.indices {
+      for i in 0..<buffer.count {
         switch _internal[i] {
           
         case .pointer(let p):
@@ -37,7 +37,7 @@ extension UnsafeTreeV2 {
           ptr = __begin_node_.safe
           
         case .last:
-          ptr = evaluate([.end, .before])
+          ptr = ___tree_prev_iter(__end_node)
           
         case .end:
           ptr = __end_node.safe
@@ -69,11 +69,11 @@ extension UnsafeTreeV2 {
           }
           
         case .before:
-          ptr = evaluate([.pointer(ptr), .advanced(offset: -1)])
+          ptr = ptr.flatMap { ___tree_adv_iter($0, -1) }
           
         case .after:
-          ptr = evaluate([.pointer(ptr), .advanced(offset: 1)])
-          
+          ptr = ptr.flatMap { ___tree_adv_iter($0, 1) }
+
         case .lessThan(let __v):
           ptr = ___tree_prev_iter(lower_bound(__v))
           

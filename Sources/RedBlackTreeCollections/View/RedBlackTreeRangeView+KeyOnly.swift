@@ -67,9 +67,9 @@ extension RedBlackTreeKeyOnlyRangeView {
     let _start = __tree_.__purified_safe_(startIndex)
     let _end = __tree_.__purified_safe_(endIndex)
     guard
-      _start.isValid, _end.isValid
+      _start.error == nil, _end.error == nil
     else {
-      return (__tree_.__end_node.safe, __tree_.__end_node.safe)
+      return (__tree_.__end_node.unchecked, __tree_.__end_node.unchecked)
     }
     return (_start, _end)
   }
@@ -79,9 +79,9 @@ extension RedBlackTreeKeyOnlyRangeView {
     let _start = __tree_.__purified_(startIndex)
     let _end = __tree_.__purified_(endIndex)
     guard
-      _start.isValid, _end.isValid
+      _start.error == nil, _end.error == nil
     else {
-      return (__tree_.__end_node.sealed, __tree_.__end_node.sealed)
+      return (__tree_.__end_node.uncheckedSeal, __tree_.__end_node.uncheckedSeal)
     }
     return (_start, _end)
   }
@@ -90,13 +90,13 @@ extension RedBlackTreeKeyOnlyRangeView {
 extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
+  func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
+    __tree_.index(p)
+  }
+  
+  @inlinable
   func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPtr {
     p.band(__tree_.lazyDetach)
-  }
-
-  @inlinable
-  func ___index_or_nil(_ p: _SealedPtr) -> _LazyTieWrappedPtr? {
-    p.exists ? p.band(__tree_.lazyDetach) : nil
   }
 }
 
@@ -199,7 +199,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
     let (_p, _r) = __tree_._unchecked_remove(at: _start)
-    startIndex = ___index(_p.sealed)
+    startIndex = ___index(_p)
     return _r
   }
 
@@ -215,7 +215,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
-    __tree_.ensureUnique()
+//    __tree_.ensureUnique()
     guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
@@ -225,7 +225,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
-    __tree_.ensureUnique()
+//    __tree_.ensureUnique()
     guard let element = popLast() else {
       preconditionFailure(.emptyLast)
     }
@@ -241,7 +241,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     __tree_.ensureUnique()
     let (_start, _end) = _raw_range
     // ややチェックが甘いので末端チェック付き削除が必要
-    return __tree_.___erase_range(_start, _end).sealed.band(__tree_.lazyDetach)
+    return ___index(__tree_.___erase_range(_start, _end))
   }
 
   @inlinable
@@ -320,7 +320,7 @@ extension RedBlackTreeKeyOnlyRangeView where Base: _BaseNode_PtrRangeCompInterfa
   @inlinable
   package func isValid(index: Index) -> Bool {
     let i = __tree_.__purified_(index)  // __retrieve_でもテストは通る
-    guard i.___is_end == false, let i = i.pointer else { return false }
+    guard let i = i.accessible.pointer else { return false }
     let (_start, _end) = _raw_range
     return Base.___ptr_range_comp(_start, i, _end)
   }

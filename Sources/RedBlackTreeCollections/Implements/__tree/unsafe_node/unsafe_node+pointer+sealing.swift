@@ -73,7 +73,8 @@ public struct _NodePtrSealing: Equatable {
     // destroyで回収されてgarbagedになるとそれは死後.
     // 再度転生するとgarbagedではなくなる.
     // recycle countが不一致となれば転生済みノードであることがわかる.
-    (pointer.___is_garbaged && !pointer.___is_end) || pointer.pointee.___recycle_count != seal
+    //    (pointer.___is_garbaged && !pointer.___is_end) || pointer.pointee.___recycle_count != seal
+    pointer.pointee.___recycle_count != seal
   }
 
   /// お清め
@@ -89,18 +90,21 @@ public struct _NodePtrSealing: Equatable {
     //    }
     //    return .success(self)
   }
-  
+
   @inlinable
   var deepPurified: _SealedPtr {
     // validなpointerがendやnullに変化することはない
-    isUnsealed ? .failure(.unsealed) : .success(self)
-    //    if pointer.___is_garbaged {
-    //      return .failure(.garbaged)
-    //    }
-    //    if pointer.pointee.___recycle_count != seal {
-    //      return .failure(.unsealed)
-    //    }
-    //    return .success(self)
+    //    isUnsealed ? .failure(.unsealed) : .success(self)
+    //        if pointer.___is_garbaged {
+    //          return .failure(.garbaged)
+    //        }
+    if !pointer.___is_end, !pointer.___has_payload_content {
+      return .failure(.garbaged)
+    }
+    if isUnsealed {
+      return .failure(.unsealed)
+    }
+    return .success(self)
   }
 
   /// 引換券

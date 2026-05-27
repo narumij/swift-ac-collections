@@ -258,6 +258,7 @@ public struct UnsafeNode {
 @usableFromInline
 nonisolated(unsafe) package let _singletonNull: UnsafeNode.Null = .create()
 
+#if false
 extension UnsafeNode {
 
   /// 再利用プールに改修されている状態
@@ -274,6 +275,7 @@ extension UnsafeNode {
     !___has_payload_content
   }
 }
+#endif
 
 @usableFromInline
 nonisolated(unsafe) package let _singletonTemplate: UnsafeNode.Template = .create()

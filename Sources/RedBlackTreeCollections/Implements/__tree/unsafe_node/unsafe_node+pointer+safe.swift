@@ -29,23 +29,7 @@ public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  #if true
-    /// ポインタを渡すときまたは受け取ったときに用いる
-    ///
-    /// 重ねてsealしないこと
-    @inlinable
-    package var safe: _SafePtr {
-      if ___is_null {
-        return .failure(.null)
-      } else if !___is_end, ___is_garbaged {
-        // これが発生するようだと基本的にそれはバグ
-        return .failure(.garbaged)
-      } else {
-        return .success(self)
-      }
-    }
-  #endif
-
+  // 無効な生ポインタを返さないようにできているので、これで足りる
   @inlinable
   package var unchecked: _SafePtr {
     assert(!___is_null)
@@ -79,23 +63,27 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
     try? map { $0 }.get()
   }
 
-  @inlinable
-  public var exists: Bool {
-    (try? map { !$0.___is_null_or_end }.get()) ?? false
-  }
+  #if false
+    @inlinable
+    public var exists: Bool {
+      (try? map { !$0.___is_null_or_end }.get()) ?? false
+    }
+  #endif
 
-  @inlinable
-  var checked: _SafePtr {
-    flatMap {
-      if $0.___is_null {
-        .failure(.null)
-      } else if $0.___is_garbaged {
-        .failure(.garbaged)
-      } else {
-        .success($0)
+  #if false
+    @inlinable
+    var checked: _SafePtr {
+      flatMap {
+        if $0.___is_null {
+          .failure(.null)
+        } else if $0.___is_garbaged {
+          .failure(.garbaged)
+        } else {
+          .success($0)
+        }
       }
     }
-  }
+  #endif
 
   @inlinable
   var ___has_payload_content: Bool {
@@ -119,7 +107,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   /// 重ねてsealしないこと
   @inlinable
   var sealed: _SealedPtr { flatMap { $0.sealed } }
-  
+
   @inlinable
   package var uncheckedSeal: _SealedPtr {
     map { .uncheckedSeal($0) }
@@ -141,7 +129,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   package var sealed: _SealedPtr {
     if ___is_null {
       return .failure(.null)
-    } else if !___is_end, ___is_garbaged {
+    } else if !___is_end, !___has_payload_content {
       // これが発生するようだと基本的にそれはバグ
       return .failure(.garbaged)
     } else {
@@ -239,42 +227,26 @@ func errorMessage<E: Error>(_ e: E) -> String {
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
-  #if COMPATIBLE_ATCODER_2025
-    @inlinable
-    package var trackingTag: _TrackingTag {
-      (try? map(\.pointer.trackingTag).get()) ?? .nullptr
-    }
-  #endif
-
   @inlinable
   package var tag: _SealedTag {
     flatMap(\.tag)
   }
 
-  @inlinable
-  package var ___is_end: Bool? {
-    // endは世代が変わらず、成仏もしないのでお清めお祓いが無駄
-    try? map { $0.pointer.___is_end }.get()
-  }
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    package var trackingTag: _TrackingTag {
+      (try? map(\.pointer.trackingTag).get()) ?? .nullptr
+    }
+  
+    @inlinable
+    package var ___is_end: Bool? {
+      // endは世代が変わらず、成仏もしないのでお清めお祓いが無駄
+      try? map { $0.pointer.___is_end }.get()
+    }
+  #endif
 }
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
-
-  /// 他のケースと異なり、endも有効となる
-  @inlinable
-  package var isValid: Bool {
-    switch purified {
-    case .success: true
-    default: false
-    }
-  }
-
-  #if COMPATIBLE_ATCODER_2025
-    @inlinable
-    package func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
-      try? map { $0.pointer.__value_() }.get()
-    }
-  #endif
 
   @inlinable
   package var pointer: UnsafeMutablePointer<UnsafeNode>? {
@@ -284,16 +256,32 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable
   package var accessible: Self {
-//    flatMap { $0.pointer.___is_null_or_end ? .failure(.end) : .success($0) }
+    //    flatMap { $0.pointer.___is_null_or_end ? .failure(.end) : .success($0) }
     flatMap { $0.pointer.___has_payload_content ? .success($0) : .failure(.garbaged) }
   }
 
-  // TODO: 名前を変える
-  @inlinable
-  public var exists: Bool {
-    // TODO: 利用側でpurified十分か繰り返し確認すること
-    (try? map { !___is_null_or_end($0.pointer.trackingTag) }.get()) ?? false
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// 他のケースと異なり、endも有効となる
+    @inlinable
+    package var isValid: Bool {
+      switch purified {
+      case .success: true
+      default: false
+      }
+    }
+  
+    @inlinable
+    package func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
+      try? map { $0.pointer.__value_() }.get()
+    }
+  
+    // TODO: 名前を変える
+    @inlinable
+    public var exists: Bool {
+      // TODO: 利用側でpurified十分か繰り返し確認すること
+      (try? map { !___is_null_or_end($0.pointer.trackingTag) }.get()) ?? false
+    }
+  #endif
 }
 
 extension Result {

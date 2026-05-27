@@ -49,7 +49,7 @@ extension UnsafeIterator {
     @inlinable
     public mutating func next() -> _NodePtr? {
       guard let result = source.next() else { return nil }
-      guard !result.___is_garbaged else {
+      guard result.___has_payload_content else {
         fatalError(.garbagedIndex)
       }
       return result

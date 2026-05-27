@@ -34,22 +34,22 @@ extension UnsafeTreeV2 {
           ptr = p
           
         case .start:
-          ptr = __begin_node_.safe
+          ptr = __begin_node_.unchecked
           
         case .last:
           ptr = ___tree_prev_iter(__end_node)
           
         case .end:
-          ptr = __end_node.safe
+          ptr = __end_node.unchecked
           
         case .lowerBound(let __v):
-          ptr = lower_bound(__v).safe
+          ptr = lower_bound(__v).unchecked
           
         case .upperBound(let __v):
-          ptr = upper_bound(__v).safe
+          ptr = upper_bound(__v).unchecked
           
         case .find(let __v):
-          ptr = find(__v).safe
+          ptr = find(__v).unchecked
           
         case .advanced(let offset, let limit):
           switch limit {
@@ -78,15 +78,15 @@ extension UnsafeTreeV2 {
           ptr = ___tree_prev_iter(lower_bound(__v))
           
         case .greaterThan(let __v):
-          ptr = upper_bound(__v).safe
+          ptr = upper_bound(__v).unchecked
           
         case .lessThanOrEqual(let __v):
-          let __f = find(__v).safe
-          ptr = __f.exists ? __f : ___tree_prev_iter(lower_bound(__v))
+          let __f = find(__v).unchecked
+          ptr = __f.___has_payload_content ? __f : ___tree_prev_iter(lower_bound(__v))
           
         case .greaterThanOrEqual(let __v):
-          let __f = find(__v).safe
-          ptr = __f.exists ? __f : upper_bound(__v).safe
+          let __f = find(__v).unchecked
+          ptr = __f.___has_payload_content ? __f : upper_bound(__v).unchecked
           
 #if DEBUG
         case .debug(let e):
@@ -149,8 +149,8 @@ extension RedBlackTreeBoundRangeExpression {
         : __tree_.__equal_range_unique(__v)
 
       return .range(
-        from: lower.safe,
-        to: upper.safe)
+        from: lower.unchecked,
+        to: upper.unchecked)
     }
   }
 }

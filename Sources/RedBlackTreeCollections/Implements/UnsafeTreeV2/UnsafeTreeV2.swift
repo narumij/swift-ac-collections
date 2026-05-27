@@ -126,7 +126,7 @@ extension UnsafeTreeV2 {
   }
 }
 
-#if false
+#if COMPATIBLE_ATCODER_2025
 extension UnsafeTreeV2 {
 
   @inlinable
@@ -147,7 +147,7 @@ extension UnsafeTreeV2 {
     @inline(__always)
     @_transparent
     unsafeAddress {
-      let unsealed = sealed.unsafeUnsealed.accessible
+      let unsealed = sealed.accessible
       precondition(unsealed.error == nil)
       return UnsafePointer(unsealed.pointer!.__value_())
     }

@@ -38,12 +38,12 @@ extension _RawRangeExpression where Bound == _SafePtr {
 
   @inlinable
   func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SafePtr {
-    __tree_.__begin_node_.safe
+    __tree_.__begin_node_.unchecked
   }
 
   @inlinable
   func _end<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SafePtr {
-    __tree_.__end_node.safe
+    __tree_.__end_node.unchecked
   }
 }
 

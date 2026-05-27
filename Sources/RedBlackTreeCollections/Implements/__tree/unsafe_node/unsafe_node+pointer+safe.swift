@@ -287,7 +287,6 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable
   package var accessible: Self {
-    //    flatMap { $0.pointer.___is_null_or_end ? .failure(.end) : .success($0) }
     flatMap { $0.pointer.___has_payload_content ? .success($0) : .failure(.garbaged) }
   }
 

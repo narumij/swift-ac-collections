@@ -57,8 +57,13 @@ class RedBlackTreeTestCase: XCTestCase {
       payloadInitializedCount = 0
       payloadDeinitializedCount = 0
     
-    assert(UnsafeNode.nullptr.pointee.___tracking_tag == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__left_ == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__right_ == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__parent_ == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__is_black_ == false)
     assert(UnsafeNode.nullptr.pointee.___has_payload_content == false)
+    assert(UnsafeNode.nullptr.pointee.___recycle_count == 0)
+    assert(UnsafeNode.nullptr.pointee.___tracking_tag == .nullptr)
     #endif
   }
 }

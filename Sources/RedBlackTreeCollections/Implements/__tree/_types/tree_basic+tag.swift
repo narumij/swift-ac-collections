@@ -65,6 +65,7 @@ extension _TrackingTag {
   }
 }
 
+#if false
 /// 追跡タグが nullptr または end を表すかを判定する
 ///
 /// `_TrackingTag` は負数を特殊ノード識別に使用しているため、
@@ -73,3 +74,4 @@ extension _TrackingTag {
 package func ___is_null_or_end(_ ptr: _TrackingTag) -> Bool {
   ptr < 0
 }
+#endif

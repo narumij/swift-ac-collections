@@ -15,14 +15,46 @@
 //
 //===----------------------------------------------------------------------===//
 
-/*
- _SafePtrも、_SealedPtrも、内部利用向け。外部に渡してはいけない
- _TieWrappedPtrは依存メモリ寿命付きなので外に渡しても大丈夫
- */
-
-// Note: ポインタを Result でくるんで使うことで、
-// 失敗が（不可逆に）伝播し、不用意にポインタに触ることを防ぎやすい。
-// まだ活用はしてないが、.failure 化を回収/解放の合図に利用する余地もある。
+//
+// 不正なポインタとして以下がある
+// - nullptr
+// - 解放済みポインタ
+// - 再利用ポインタ
+//
+// 半分不正なポインタとして以下がある
+// - end
+//
+// nullptrを返すメソッドや関数は限られていて、__tree_next_iterや__tree_prev_iter等に限られる
+// これを防ぐには_SafePtrを用いてエラーとして捉え、以後のnullptrを防ぐようにする
+// これを徹底することで、_SafePtrを用いる限りnullptrを毎回チェックする必要から解放される
+//
+// endは範囲指定などでは終端として使われれたり、空の範囲を表現するのに用いられる
+// endが不正になるのは要素へのアクセスの場合に限られる。そういった場面でチェックしエラーとして伝播するようにする
+// このチェックはポインタの種別に関わらず常に必要
+//
+// 解放済みポインタを返すメソッドは存在しない。外部での変更に限られる
+// 解放済みポインタの可能性がある場合は内部にそれを取り込む際にチェックしエラーとして伝播またはトラップする
+//
+// 再利用済みポインタを返すメソッドはcontruct_nodeがある。外部から来たポインタと意味の不一致を起こす
+// 再利用済みポインタの可能性がある場合は内部にそれを取り込む前にチェックしエラーとして伝播またはトラップする
+//
+// これらが徹底できていると、気にするべきなのはendで大丈夫かどうかと、nullptrが漏れてないか、という点だけになる
+//
+// ---
+//
+// nullptrはノード終端として用いられている
+// 通常は0x0をnullptrとして用いるが、この実装では実態があり固有のアドレスがあり共通の番兵として表現されている
+//
+// endは木の根側の端として用いられている
+// 各木ごとにendがあり木ごとの実態ががある
+//
+// ---
+//
+// 木や基礎的な関数のレベルではなるべく生ポインタを用い、nullptrが漏れる可能性がある部分は_SafePtrを返す
+//
+// コンテナのレベルでは生ポインタ又は_SafePtrを常用することになり、
+// それ以外の特殊ポインタは受け取るとき、返す時のみとなる
+//
 
 /// ポインタ操作でいちいちsealingしたくない場合に使う
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
@@ -66,12 +98,16 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
 }
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
-  /// ポインタが変化した場合に用いる
-  ///
-  /// 重ねてsealしないこと
-  @inlinable
-  var sealed: _SealedPtr { flatMap { $0.sealed } }
 
+  #if false
+    /// ポインタが変化した場合に用いる
+    ///
+    /// 重ねてsealしないこと
+    @inlinable
+    var sealed: _SealedPtr { flatMap { $0.sealed } }
+  #endif
+
+  // 内部的に不正なポインタを返す場合、それは返す側のバグなので、ケアとしては最低限で足りる
   @inlinable
   package var uncheckedSeal: _SealedPtr {
     map { .uncheckedSeal($0) }
@@ -86,21 +122,24 @@ public typealias _SealedPtr = Result<_NodePtrSealing, SealError>
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  /// ポインタを渡すときまたは受け取ったときに用いる
-  ///
-  /// 重ねてsealしないこと
-  @inlinable
-  package var sealed: _SealedPtr {
-    if ___is_null {
-      return .failure(.null)
-    } else if !___is_end, !___has_payload_content {
-      // これが発生するようだと基本的にそれはバグ
-      return .failure(.garbaged)
-    } else {
-      return .success(.uncheckedSeal(self))
+  #if false
+    /// ポインタを渡すときまたは受け取ったときに用いる
+    ///
+    /// 重ねてsealしないこと
+    @inlinable
+    package var sealed: _SealedPtr {
+      if ___is_null {
+        return .failure(.null)
+      } else if !___is_end, !___has_payload_content {
+        // これが発生するようだと基本的にそれはバグ
+        return .failure(.garbaged)
+      } else {
+        return .success(.uncheckedSeal(self))
+      }
     }
-  }
+  #endif
 
+  // 内部的に不正なポインタを返す場合、それは返す側のバグなので、ケアとしては最低限で足りる
   @inlinable
   package var uncheckedSeal: _SealedPtr {
     assert(!___is_null)

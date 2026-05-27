@@ -4,6 +4,7 @@
   import RedBlackTreeModule
 #endif
 
+#if DEBUG
 extension RedBlackTreeDictionary {
 
   /// releaseビルドでは無効化されています(?)
@@ -18,6 +19,7 @@ extension RedBlackTreeDictionary {
     #endif
   }
 }
+#endif
 
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {

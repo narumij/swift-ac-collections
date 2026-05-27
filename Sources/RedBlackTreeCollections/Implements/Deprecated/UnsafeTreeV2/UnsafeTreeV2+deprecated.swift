@@ -5,7 +5,6 @@
 //  Created by narumij on 2026/05/10.
 //
 
-
 // MARK: - COMPATIBLE_ATCODER_2025用
 
 #if COMPATIBLE_ATCODER_2025

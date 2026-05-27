@@ -44,6 +44,7 @@ public struct _NodePtrSealing: Equatable {
   /// 過去の状態で封印する
   @inlinable
   init(_p: _NodePtr, _seal: UnsafeNode.Seal) {
+    assert(!_p.___is_null)
     pointer = _p
     seal = _seal
   }
@@ -80,8 +81,10 @@ public struct _NodePtrSealing: Equatable {
   /// お清め
   @inlinable
   var purified: _SealedPtr {
+    // 基本的にここにnullは到達しない
+    assert(!pointer.___is_null)
     // validなpointerがendやnullに変化することはない
-    isUnsealed ? .failure(.unsealed) : .success(self)
+    return isUnsealed ? .failure(.unsealed) : .success(self)
     //    if pointer.___is_garbaged {
     //      return .failure(.garbaged)
     //    }

@@ -35,16 +35,6 @@
     func ___index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
       __tree_.index_or_nil(p)
     }
-    
-//    @inlinable
-//    func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPtr {
-//      p.band(__tree_.lazyDetach)
-//    }
-//
-//    @inlinable
-//    func ___index_or_nil(_ p: _SealedPtr) -> _LazyTieWrappedPtr? {
-//      try? p.flatMap { $0.accessible.map { $0.band(__tree_.lazyDetach) } }.get()
-//    }
   }
 
   extension RedBlackTreeDictionary {

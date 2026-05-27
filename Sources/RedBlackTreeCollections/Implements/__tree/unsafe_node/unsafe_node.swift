@@ -163,7 +163,7 @@ public struct UnsafeNode {
   #else
     public typealias Seal = UInt32
   #endif
-  
+
   // salt付きに変更することで、まったく縁の無い木のノードを受け付けにくくすることができる
   // saltは新規作成時のみ更新され、コピーでは継承することで、CoWまたぎには影響しない
   // 将来の実装課題
@@ -233,11 +233,19 @@ public struct UnsafeNode {
   { _singletonNull.nullptr }
 
   #if false
-    // TODO: 即値のnullptrを利用したケースの性能調査
+    // DONE: (不可能）即値のnullptrを利用したケースの性能調査
+    //
     // 今頃nullptrの作り方が判明した
     // nullptrに実態がある現在の設計は未定義動作を踏みにくくある。これを失うデメリットは大きく、変更の工数も多い
     // swift_onceで性能低下するのはイテレータのみで、他にバケットヘッダのサイズが少し減る程度のベネフィットとなる
     // あまり現実的ではない
+    //
+    // __tree_is_left_childや__tree_prev_iterがとっても危険になる
+    // nullptrに実態がある今の設計でたまたま助けられていた模様
+    // __begin_nodeに対するprev操作がセグフォってつらい
+    //
+    // それ以外にも、フレームワーク的なチェックがまだある様子で、落ちる
+    //
     @inlinable
     nonisolated(unsafe)
       package static var nullptr: UnsafeMutablePointer<UnsafeNode>
@@ -249,45 +257,37 @@ public struct UnsafeNode {
       #endif
     }
   #endif
+
+  @usableFromInline nonisolated(unsafe)
+    package static var template: UnsafeMutablePointer<UnsafeNode>
+  { _singletonTemplate.template }
 }
 
 @usableFromInline
-nonisolated(unsafe) let _singletonNull: UnsafeNode.Null = .create()
+nonisolated(unsafe) package let _singletonNull: UnsafeNode.Null = .create()
 
-extension UnsafeNode {
-
-  /// 再利用プールに改修されている状態
-  ///
-  /// 初期化前のメモリの状態は不明だが、利用開始時に該当フラグがtrueとなり利用中を表す。
-  ///
-  /// その後回収されるとこのフラグはfalseとなり、notは回収されている状態を表す。
-  ///
-  /// あくまでそのように使えるというだけで全てのメモリ状態に対して完全に回収されている状態を表すわけではない。
-  ///
-  /// `___needs_deinitialize`を回収以外の目的で利用してる箇所の意図をハッキリさせるために別名を付与したカタチ。
-  @inlinable
-  var isGarbaged: Bool {
-    !___has_payload_content
-  }
-}
+@usableFromInline
+nonisolated(unsafe) package let _singletonTemplate: UnsafeNode.Template = .create()
 
 extension UnsafeNode {
 
   @frozen
   @usableFromInline
-  struct Null: ~Copyable {
+  package struct Null: ~Copyable {
     @inlinable
     internal init(nullptr: UnsafeMutablePointer<UnsafeNode>) {
       self.nullptr = nullptr
     }
-    @usableFromInline var nullptr: UnsafeMutablePointer<UnsafeNode>
+    @usableFromInline
+    package var nullptr: UnsafeMutablePointer<UnsafeNode>
     deinit {
       nullptr.deallocate()
     }
     @inlinable
     internal static func create() -> Null {
       let nullptr = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
-      nullptr.initialize(to: .create(tag: .nullptr, nullptr: nullptr))
+      nullptr.initialize(
+        to: .create(tag: .nullptr, nullptr: nullptr, ___has_payload_content: false))
       return .init(nullptr: nullptr)
     }
   }
@@ -295,15 +295,43 @@ extension UnsafeNode {
 
 extension UnsafeNode {
 
+  @frozen
+  @usableFromInline
+  package struct Template: ~Copyable {
+    @inlinable
+    internal init(template: UnsafeMutablePointer<UnsafeNode>) {
+      self.template = template
+    }
+    @usableFromInline
+    package var template: UnsafeMutablePointer<UnsafeNode>
+    deinit {
+      template.deallocate()
+    }
+    @inlinable
+    internal static func create() -> Template {
+      let template = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+      template.initialize(to: .create(tag: 0, nullptr: nullptr))
+      assert(template.pointee.___has_payload_content == true)
+      return .init(template: template)
+    }
+  }
+}
+
+extension UnsafeNode {
+
   @inlinable
-  package static func create(tag: _TrackingTag, nullptr: UnsafeMutablePointer<UnsafeNode>)
+  package static func create(
+    tag: _TrackingTag, nullptr: UnsafeMutablePointer<UnsafeNode>,
+    ___has_payload_content: Bool = true
+  )
     -> UnsafeNode
   {
     .init(
       ___tracking_tag: tag,
       __left_: nullptr,
       __right_: nullptr,
-      __parent_: nullptr)
+      __parent_: nullptr,
+      ___has_payload_content: ___has_payload_content)
   }
 }
 

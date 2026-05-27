@@ -67,7 +67,7 @@ extension UnsafeTreeV2 {
   ///
   /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
   @inlinable
-  var lazyDetach: _LazyDetach {
+  var lazyDetach: _LazyTie {
     withMutableHeader { $0.lazyDetach }
   }
 }
@@ -126,31 +126,34 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2 {
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeTreeV2 {
 
-  @inlinable
-  internal subscript(_unsafe __safe_ptr_: _SafePtr) -> _PayloadValue {
-    @inline(__always)
-    @_transparent
-    unsafeAddress {
-      precondition(__safe_ptr_.exists)
-      return UnsafePointer(__safe_ptr_.pointer!.__value_())
+    @inlinable
+    internal subscript(_unsafe __safe_ptr_: _SafePtr) -> _PayloadValue {
+      @inline(__always)
+      @_transparent
+      unsafeAddress {
+        precondition(__safe_ptr_.___has_payload_content)
+        return UnsafePointer(__safe_ptr_.pointer!.__value_())
+      }
     }
   }
-}
 
-extension UnsafeTreeV2 {
+  extension UnsafeTreeV2 {
 
-  @inlinable
-  internal subscript(_unsafe sealed: _SealedPtr) -> _PayloadValue {
-    @inline(__always)
-    @_transparent
-    unsafeAddress {
-      precondition(sealed.exists)
-      return UnsafePointer(sealed.pointer!.__value_())
+    @inlinable
+    internal subscript(_unsafe sealed: _SealedPtr) -> _PayloadValue {
+      @inline(__always)
+      @_transparent
+      unsafeAddress {
+        let unsealed = sealed.accessible
+        precondition(unsealed.error == nil)
+        return UnsafePointer(unsealed.pointer!.__value_())
+      }
     }
   }
-}
+#endif
 
 extension UnsafeTreeV2 {
 
@@ -166,7 +169,7 @@ extension UnsafeTreeV2 {
   @inline(__always)
   func _unsafeMutableAddress(_ position: UnsafeIndexV3) -> UnsafeMutablePointer<_PayloadValue> {
     let sealed: _SealedPtr = __purified_(position)
-    precondition(sealed.exists)
+    precondition(sealed.accessible.error == nil)
     return sealed.pointer!.__value_()
   }
 
@@ -220,7 +223,7 @@ extension UnsafeTreeV2 {
   package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
     switch tag {
     case .end:
-      return end.sealed
+      return end.uncheckedSeal
     case .tag(let raw, let seal):
       guard raw < capacity else {
         return .failure(.unknown)
@@ -245,19 +248,8 @@ extension UnsafeTreeV2 {
   /// 木が同一の場合、インデックスが保持するポインタを返す。
   /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
   @inlinable
-  internal func __purified_(_ index: _TieWrappedPtr) -> _SealedPtr {
-    withMutableHeader { index.__isSameTied($0._tied) }
-      ? index.sealed.purified
-      : __retrieve_(index.sealed.purified.tag).purified
-  }
-
-  /// インデックスをポインタに解決する
-  ///
-  /// 木が同一の場合、インデックスが保持するポインタを返す。
-  /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
-  @inlinable
-  internal func __purified_(_ index: _LazyDetachPointer) -> _SealedPtr {
-    withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+  package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
+    withMutableHeader { index.__isSameEnd($0.end_ptr) }
       // 木が同一のケース
       // 中身を取り出し、生存確認を行って返している
       ? index.sealed.purified
@@ -266,11 +258,11 @@ extension UnsafeTreeV2 {
       // タグで該当ポインタを取得
       // 該当ポインタの生存確認を行う（解放確認で十分なところ、実装サボりで生存確認になっていそう）
       // 要は、元の木と現在の木のどちらかで失効している場合、失効ポインタを返す動作
-      : __retrieve_(index.sealed.purified.tag).purified
+      : __retrieve_(index.sealed.purified.tag).deepPurified
   }
 
   @inlinable
-  internal func __purified_safe_(_ index: _LazyDetachPointer) -> _SafePtr {
+  internal func __purified_safe_(_ index: _LazyTieWrappedPtr) -> _SafePtr {
     __purified_(index).map(\.pointer)
   }
 }

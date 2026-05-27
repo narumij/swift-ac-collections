@@ -335,7 +335,7 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
-    guard case .success(let __p) = __tree_.__purified_(index) else {
+    guard case .success(let __p) = __tree_.__purified_(index).accessible else {
       fatalError(.invalidIndex)
     }
     return Base.__element_(__tree_._unchecked_remove(at: __p.pointer).payload)
@@ -387,7 +387,7 @@ extension RedBlackTreeDictionary {
     @discardableResult
     @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
-      ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
+      ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
     }
   }
 
@@ -400,8 +400,8 @@ extension RedBlackTreeDictionary {
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()
       let result = try __tree_.___erase_ragen_if(
-        __tree_.__begin_node_.safe,
-        __tree_.__end_node.safe,
+        __tree_.__begin_node_.unchecked,
+        __tree_.__end_node.unchecked,
         { try shouldBeRemoved(Base.__element_($0)) })
       if case .failure(let e) = result {
         fatalError(errorMessage(e))

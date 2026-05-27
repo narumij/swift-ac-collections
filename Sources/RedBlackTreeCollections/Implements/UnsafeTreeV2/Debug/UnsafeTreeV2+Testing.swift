@@ -127,6 +127,9 @@
 
     package func emptyCheck() -> Bool {
       assert(__tree_invariant(__root))
+      assert(end.pointee.__left_ == UnsafeNode.nullptr)
+      assert(__begin_node_ == end)
+      assert(end.pointee.___has_payload_content == false)
       assert(count == 0)
       assert(count <= initializedCount)
       assert(count <= capacity)
@@ -136,7 +139,7 @@
         __tree_invariant(__root),
         end.pointee.__left_ == UnsafeNode.nullptr,
         __begin_node_ == end,
-        end.pointee.___has_payload_content == true,
+        end.pointee.___has_payload_content == false,
         count == 0,
         count <= initializedCount,
         count <= capacity,
@@ -152,12 +155,13 @@
     package func check() -> Bool {
       assert(UnsafeNode.nullptr.pointee.nullCheck())
       assert(end.pointee.endCheck())
+      assert(count == 0 ? emptyCheck() : true)
+      assert(__tree_invariant(__root))
       assert(count >= 0)
       assert(count <= initializedCount)
       assert(count <= capacity)
       assert(initializedCount <= capacity)
       assert(isReadOnly ? count == 0 : true)
-      assert(__tree_invariant(__root))
       guard
         UnsafeNode.nullptr.pointee.nullCheck(),
         end.pointee.endCheck(),
@@ -181,17 +185,6 @@
       return true
     }
   }
-#else
-  //  extension UnsafeTreeV2 {
-  //    @inlinable
-  //    package func equiv(with tree: UnsafeTreeV2) -> Bool {
-  //      return true
-  //    }
-  //    @inlinable
-  //    package func check() -> Bool {
-  //      return true
-  //    }
-  //  }
 #endif
 
 @usableFromInline

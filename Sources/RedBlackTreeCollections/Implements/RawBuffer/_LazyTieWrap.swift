@@ -15,32 +15,37 @@
 //
 //===----------------------------------------------------------------------===//
 
+/// （遅延）結束バンド
 @frozen
-public struct _LazyDetachHandle<RawValue> {
+public struct _LazyTieWrap<RawValue> {
 
   @usableFromInline
   package let rawValue: RawValue
+  
+  @usableFromInline
+  package let end_ptr: UnsafeMutablePointer<UnsafeNode>
 
   @usableFromInline
-  package let lazyDetach: _LazyDetach
+  package let lazyDetach: _LazyTie
 
   @inlinable
-  package init(rawValue: RawValue, lazyDetach: _LazyDetach) {
+  package init(rawValue: RawValue, end_ptr: UnsafeMutablePointer<UnsafeNode>, lazyDetach: _LazyTie) {
     self.rawValue = rawValue
+    self.end_ptr = end_ptr
     self.lazyDetach = lazyDetach
   }
 }
 
-extension _LazyDetachHandle: Equatable where RawValue: Equatable {
+extension _LazyTieWrap: Equatable where RawValue: Equatable {
 
   @inlinable
-  public static func == (lhs: _LazyDetachHandle<RawValue>, rhs: _LazyDetachHandle<RawValue>) -> Bool
+  public static func == (lhs: _LazyTieWrap<RawValue>, rhs: _LazyTieWrap<RawValue>) -> Bool
   {
     lhs.rawValue == rhs.rawValue && lhs.lazyDetach === rhs.lazyDetach
   }
 }
 
-extension _LazyDetachHandle where RawValue == _NodePtrSealing {
+extension _LazyTieWrap where RawValue == _NodePtrSealing {
 
   @inlinable
   package var purified: Result<Self, SealError> {
@@ -50,32 +55,35 @@ extension _LazyDetachHandle where RawValue == _NodePtrSealing {
 
 extension _NodePtrSealing {
 
+  // 某バンドオマージュ
+
   @inlinable
-  package func band(_ tie: _LazyDetach) -> _LazyDetachPointer {
-    isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, lazyDetach: tie))
+  package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtr {
+    isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, end_ptr: __tree_.__end_node, lazyDetach: __tree_.lazyDetach))
   }
 }
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
+  // 某バンドオマージュ
   @inlinable
-  package func band(_ tie: _LazyDetach) -> _LazyDetachPointer {
-    flatMap { $0.band(tie) }
+  package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtr {
+    flatMap { $0.band(__tree_) }
   }
 }
 
-extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure == SealError {
+extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
   @inlinable
-  package var lazyDetach: _LazyDetach? {
+  package var lazyDetach: _LazyTie? {
     try? map(\.lazyDetach).get()
   }
 
   @inlinable
-  func __isSameLazyDetach(_ rhs: _LazyDetach?) -> Bool {
+  func __isSameEnd(_ rhs: UnsafeMutablePointer<UnsafeNode>) -> Bool {
     switch self {
     case .success(let handle):
-      handle.lazyDetach === rhs
+      handle.end_ptr == rhs
     case .failure:
       false
     }
@@ -94,10 +102,16 @@ extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure ==
 ///
 /// `_SealedPtr`は外部での変更リスクがある場合に使う
 ///
-public typealias _LazyDetachPointer = Result<_LazyDetachHandle<_NodePtrSealing>, SealError>
+public typealias _LazyTieWrappedPtr = Result<_LazyTieWrap<_NodePtrSealing>, SealError>
 
-extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure == SealError {
+extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
+  @inlinable
+  @inline(__always)
+  static func unchecked(_ _p: _NodePtr, end_ptr: UnsafeMutablePointer<UnsafeNode>, lazyDetach: _LazyTie) -> Self {
+    .success(.init(rawValue: .init(_p: _p), end_ptr: end_ptr, lazyDetach: lazyDetach))
+  }
+  
   /// ポインタを利用する際に用いる
   @inlinable
   package var purified: Result { flatMap { $0.purified } }
@@ -116,7 +130,7 @@ extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure ==
   }
 }
 
-extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure == SealError {
+extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
   @inlinable
   package var value: _TrackingTag {
@@ -125,7 +139,7 @@ extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure ==
 }
 
 #if DEBUG
-  extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure == SealError {
+  extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
     package static func unsafe<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag)
       -> Self
@@ -135,8 +149,8 @@ extension Result where Success == _LazyDetachHandle<_NodePtrSealing>, Failure ==
       }
 
       return tree.__retrieve_(rawTag)
-        .flatMap(\.sealed)
-        .flatMap { $0.band(tree.lazyDetach) }
+        .flatMap(\.uncheckedSeal)
+        .flatMap { $0.band(tree) }
     }
   }
 #endif

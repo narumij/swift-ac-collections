@@ -1045,7 +1045,7 @@ final class EtcTests: RedBlackTreeTestCase {
     func testBoundsSmoke() throws {
       var a = RedBlackTreeSet<Int>()
       typealias Index = RedBlackTreeSet<Int>.Index
-//      throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
+      //      throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
       #if false
         // indexを廃止しようとしている
         let _ = a.indices(bounds: .start ..< .end)
@@ -1233,5 +1233,23 @@ final class EtcTests: RedBlackTreeTestCase {
     let d = [Int: Int]()
     XCTAssertEqual(d[0, default: -1], -1)
     XCTAssertEqual(d[0], nil)
+  }
+
+  #if DEBUG
+    func testStartIndex() throws {
+      let s = RedBlackTreeSet<Int>()
+      XCTAssertEqual(s._start.pointee.___tracking_tag, .end)
+      XCTAssertEqual(s._start.pointee.___has_payload_content, false)
+    }
+  #endif
+  
+  func testIteratorAndRemove() throws {
+    var a = RedBlackTreeSet<Int>(0..<10)
+    var b: [Int] = []
+    for i in a {
+      a = [] // TODO: 削除した時点でループ終了するべきか検討（コストが気になる）
+      b.append(i)
+    }
+    XCTAssertEqual(b, (0..<10).map{ $0 })
   }
 }

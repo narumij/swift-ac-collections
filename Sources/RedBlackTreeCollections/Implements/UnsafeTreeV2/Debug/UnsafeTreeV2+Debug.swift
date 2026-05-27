@@ -9,7 +9,7 @@ extension UnsafeTreeV2 {
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
     /// CoWの発火回数を観察するためのプロパティ
-    internal var copyCount: UInt {
+    package var copyCount: UInt {
       get { _buffer.header.copyCount }
       set {
         _buffer.withUnsafeMutablePointerToHeader {

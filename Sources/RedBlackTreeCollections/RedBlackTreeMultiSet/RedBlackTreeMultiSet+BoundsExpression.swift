@@ -66,8 +66,7 @@
     @inlinable
     public func isValid(_ bound: Bound) -> Bool {
 
-      let sealed = bound.evaluate(__tree_)
-      return sealed.isValid && !sealed.___is_end!
+      bound.evaluate(__tree_).accessible.error == nil
     }
   }
 
@@ -93,7 +92,7 @@
     public subscript(bound: Bound) -> Element? {
 
       let p = bound.evaluate(__tree_)
-      guard let p = p.pointer, !p.___is_end else { return nil }
+      guard let p = p.accessible.pointer else { return nil }
       return __tree_[_unsafe_raw: p]
     }
   }
@@ -105,7 +104,7 @@
 
       __tree_.ensureUnique()
       let p = bound.evaluate(__tree_)
-      guard let p = p.pointer, !p.___is_end else { return nil }
+      guard let p = p.accessible.pointer else { return nil }
       return __tree_._unchecked_remove(at: p).payload
     }
   }
@@ -121,8 +120,6 @@
     public func isValid(_ bounds: BoundRangeExpression) -> Bool {
       let range = bounds.evaluate(__tree_).relative(to: __tree_)
       return __tree_.isValidSafeRange(range)
-        && range.lowerBound.isValid
-        && range.upperBound.isValid
     }
   }
 

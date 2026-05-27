@@ -264,7 +264,7 @@
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always) _read {
-        yield __tree_[_unsafe: __tree_.__purified_(position)]
+        yield __tree_[_unsafe_raw: __tree_.__purified_(position).pointer!]
       }
     }
   }

@@ -51,9 +51,11 @@
     package var index: _TrackingTag { trackingTag }
   }
 
-  extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
-    package var index: _TrackingTag { self?.trackingTag ?? .nullptr }
-  }
+  #if false
+    extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
+      package var index: _TrackingTag { self?.trackingTag ?? .nullptr }
+    }
+  #endif
 
   extension UnsafeNode {
 
@@ -88,15 +90,14 @@
       assert(__right_ == UnsafeNode.nullptr)
       assert(__parent_ == UnsafeNode.nullptr)
       assert(__is_black_ == false)
-      assert(___has_payload_content == true)
+      assert(___has_payload_content == false)
       guard
         ___tracking_tag == .nullptr,
         __right_ == UnsafeNode.nullptr,
         __right_ == UnsafeNode.nullptr,
         __parent_ == UnsafeNode.nullptr,
         __is_black_ == false,
-        // 判定を簡略化するための措置
-        ___has_payload_content == true
+        ___has_payload_content == false
       else {
         return false
       }
@@ -109,13 +110,13 @@
       assert(__right_ == UnsafeNode.nullptr)
       assert(__parent_ == UnsafeNode.nullptr)
       assert(__is_black_ == false)
+      assert(___has_payload_content == false)
       guard
         ___tracking_tag == .end,
         __right_ == UnsafeNode.nullptr,
         __parent_ == UnsafeNode.nullptr,
         __is_black_ == false,
-        // 判定を簡略化するための措置
-        ___has_payload_content == true
+        ___has_payload_content == false
       else {
         return false
       }
@@ -123,10 +124,10 @@
     }
   }
 
-@usableFromInline nonisolated(unsafe) var nodeInitializedCount = 0
-@usableFromInline nonisolated(unsafe) var nodeDeinitializedCount = 0
+  @usableFromInline nonisolated(unsafe) var nodeInitializedCount = 0
+  @usableFromInline nonisolated(unsafe) var nodeDeinitializedCount = 0
 
-@usableFromInline nonisolated(unsafe) var payloadInitializedCount = 0
-@usableFromInline nonisolated(unsafe) var payloadDeinitializedCount = 0
+  @usableFromInline nonisolated(unsafe) var payloadInitializedCount = 0
+  @usableFromInline nonisolated(unsafe) var payloadDeinitializedCount = 0
 
 #endif

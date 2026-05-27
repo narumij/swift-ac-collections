@@ -42,12 +42,12 @@ extension _SequenceV2 {
 
   @inlinable
   package var _sealed_start: _SealedPtr {
-    __tree_.__begin_node_.sealed
+    __tree_.__begin_node_.uncheckedSeal
   }
 
   @inlinable
   package var _sealed_end: _SealedPtr {
-    __tree_.__end_node.sealed
+    __tree_.__end_node.uncheckedSeal
   }
   
   @inlinable

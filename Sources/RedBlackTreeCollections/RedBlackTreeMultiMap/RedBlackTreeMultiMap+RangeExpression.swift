@@ -32,16 +32,12 @@
     public func isValid(_ bounds: IndexRange) -> Bool {
       let range = __tree_.__purified_safe_(bounds)
       return __tree_.isValidSafeRange(range)
-        && range.lowerBound.isValid
-        && range.upperBound.isValid
     }
 
     @inlinable
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       return __tree_.isValidSafeRange(range)
-        && range.lowerBound.isValid
-        && range.upperBound.isValid
     }
 
     @inlinable
@@ -94,7 +90,7 @@
     @discardableResult
     public mutating func erase(_ bounds: UnboundedRange) -> Index {
       __tree_.ensureUnique()
-      return ___index(__tree_.erase(_start, _end).sealed)
+      return ___index(__tree_.erase(_start, _end))
     }
 
     @inlinable
@@ -108,7 +104,7 @@
       else {
         fatalError(.invalidIndex)
       }
-      return ___index(__tree_.erase(__l, __u).sealed)
+      return ___index(__tree_.erase(__l, __u))
     }
 
     @inlinable
@@ -121,7 +117,7 @@
       else {
         fatalError(.invalidIndex)
       }
-      return ___index(__tree_.erase(__l, __u).sealed)
+      return ___index(__tree_.erase(__l, __u))
     }
 
     @inlinable
@@ -161,20 +157,44 @@
   extension RedBlackTreeMultiMap {
 
     @inlinable
-    subscript(unchecked range: _RawRange<_SafePtr>) -> View {
+    subscript(unchecked range: _RawRange<_NodePtr>) -> View {
 
       @inline(__always) get {
         View(
           __tree_: __tree_,
-          _start: range.lowerBound.sealed,
-          _end: range.upperBound.sealed)
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
       }
 
       @inline(__always) _modify {
         var view = View(
           __tree_: __tree_,
-          _start: range.lowerBound.sealed,
-          _end: range.upperBound.sealed)
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
+        self = RedBlackTreeMultiMap()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeMultiMap(__tree_: view.__tree_) }
+        yield &view
+      }
+    }
+  }
+
+  extension RedBlackTreeMultiMap {
+
+    @inlinable
+    subscript(unchecked range: _RawRange<_SafePtr>) -> View {
+
+      @inline(__always) get {
+        View(
+          __tree_: __tree_,
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
+      }
+
+      @inline(__always) _modify {
+        var view = View(
+          __tree_: __tree_,
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
         self = RedBlackTreeMultiMap()  // yield中のCoWキャンセル。考えた人賢い
         defer { self = RedBlackTreeMultiMap(__tree_: view.__tree_) }
         yield &view

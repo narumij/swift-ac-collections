@@ -167,7 +167,9 @@
 
     @inlinable
     internal func ___first_index(of member: _Key) -> Index? {
+      // TODO: 余力があればなおす。nullptrを返す不正があるため
       let ptr = __tree_.__find_equal(member).__child.pointee
+      // sealedのチェックが強いためたまたま動いていた模様
       return ___index_or_nil(ptr.sealed)
     }
   }

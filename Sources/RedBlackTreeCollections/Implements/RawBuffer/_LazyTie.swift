@@ -24,7 +24,7 @@
 // 行儀悪く使う場合のコストは増すが、そういう使い方は主たるユースケースではないので、気にしないことにした
 
 @usableFromInline
-package final class _LazyDetach: ManagedBuffer<_TiedRawBuffer?, Void> {
+package final class _LazyTie: ManagedBuffer<_TiedRawBuffer?, Void> {
 
   @inlinable
   var buffer: _TiedRawBuffer? {
@@ -39,18 +39,18 @@ package final class _LazyDetach: ManagedBuffer<_TiedRawBuffer?, Void> {
   }
 }
 
-extension _LazyDetach {
+extension _LazyTie {
 
   @nonobjc
   @usableFromInline
-  internal static func create() -> _LazyDetach {
-    let storage = _LazyDetach.create(minimumCapacity: 0) { managedBuffer in
+  internal static func create() -> _LazyTie {
+    let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
       return nil
     }
-    return unsafeDowncast(storage, to: _LazyDetach.self)
+    return unsafeDowncast(storage, to: _LazyTie.self)
   }
 }
 
 /// The type-punned empty singleton storage instance.
 @usableFromInline
-nonisolated(unsafe) package let _emptyLazyDetach = _LazyDetach.create()
+nonisolated(unsafe) package let _emptyLazyDetach = _LazyTie.create()

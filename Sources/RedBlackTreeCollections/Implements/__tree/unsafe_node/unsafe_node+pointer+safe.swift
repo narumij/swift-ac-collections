@@ -15,51 +15,96 @@
 //
 //===----------------------------------------------------------------------===//
 
-/*
- _SafePtrも、_SealedPtrも、内部利用向け。外部に渡してはいけない
- _TieWrappedPtrは依存メモリ寿命付きなので外に渡しても大丈夫
- */
+//
+// 不正なポインタとして以下がある
+// - nullptr
+// - 解放済みポインタ
+// - 再利用ポインタ
+//
+// 半分不正なポインタとして以下がある
+// - end
+//
+// nullptrを返すメソッドや関数は限られていて、__tree_next_iterや__tree_prev_iter等に限られる
+// これを防ぐには_SafePtrを用いてエラーとして捉え、以後のnullptrを防ぐようにする
+// これを徹底することで、_SafePtrを用いる限りnullptrを毎回チェックする必要から解放される
+//
+// endは範囲指定などでは終端として使われれたり、空の範囲を表現するのに用いられる
+// endが不正になるのは要素へのアクセスの場合に限られる。そういった場面でチェックしエラーとして伝播するようにする
+// このチェックはポインタの種別に関わらず常に必要
+//
+// 解放済みポインタを返すメソッドは存在しない。外部での変更に限られる
+// 解放済みポインタの可能性がある場合は内部にそれを取り込む際にチェックしエラーとして伝播またはトラップする
+//
+// 再利用済みポインタを返すメソッドはcontruct_nodeがある。外部から来たポインタと意味の不一致を起こす
+// 再利用済みポインタの可能性がある場合は内部にそれを取り込む前にチェックしエラーとして伝播またはトラップする
+//
+// これらが徹底できていると、気にするべきなのはendで大丈夫かどうかと、nullptrが漏れてないか、という点だけになる
+//
+// ---
+//
+// nullptrはノード終端として用いられている
+// 通常は0x0をnullptrとして用いるが、この実装では実態があり固有のアドレスがあり共通の番兵として表現されている
+//
+// endは木の根側の端として用いられている
+// 各木ごとにendがあり木ごとの実態ががある
+//
+// ---
+//
+// 木や基礎的な関数のレベルではなるべく生ポインタを用い、nullptrが漏れる可能性がある部分は_SafePtrを返す
+//
+// コンテナのレベルでは生ポインタ又は_SafePtrを常用することになり、
+// それ以外の特殊ポインタは受け取るとき、返す時のみとなる
+//
+// 不正なポインタのトラップ（fatalError）は、その利用が未定義動作、未規定動作となる場合に限定し、そこまで遅延してよい
+//
+// 再利用済みポインタの措置は未規定動作をユーザーにどの程度晒すかという問題である
+// この未基底動作予防は不慣れなユーザーへの配慮であり、熟練者へのメッセージとなる
+//
+// ---
+//
+// 追記:
+//
+// C++の__tree由来の部分を原木、内部木を生木と表現すると会話が楽
+//
+// コピー後の木やまったく異なる木については現在はゆるい動作となっているが、将来的に厳しくする可能性もある
+//
+// ---
+//
+// ギリギリの性能がどうしても必要な向きのために、_SafePtrをインデックスとするtraitを付与する可能性もある
+// （競技プログラミング用ではない）
+// （互換動作を削除して以後）
+//
 
-// Note: ポインタを Result でくるんで使うことで、
-// 失敗が（不可逆に）伝播し、不用意にポインタに触ることを防ぎやすい。
-// まだ活用はしてないが、.failure 化を回収/解放の合図に利用する余地もある。
-
-/// ポインタ操作でいちいちsealingしたくない場合に使う
+/// エラー補足付きポインタ
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  /// ポインタを渡すときまたは受け取ったときに用いる
-  ///
-  /// 重ねてsealしないこと
+  // 木側は無効な生ポインタを返さないようにできているので、これで足りる
   @inlinable
-  package var safe: _SafePtr {
-    if ___is_null {
-      return .failure(.null)
-    } else if ___is_garbaged {
-      // これが発生するようだと基本的にそれはバグ
-      return .failure(.garbaged)
-    } else {
-      return .success(self)
-    }
+  package var unchecked: _SafePtr {
+    assert(!___is_null)
+    return .success(self)
   }
+
+  /// ペイロードを持っているかどうかを返す
+  ///
+  /// nullptr、end、解放済みポインタかどうかをひとまとめに判定できる
+  @inlinable
+  var ___has_payload_content: Bool {
+    pointee.___has_payload_content
+  }
+
+  #if false
+    // 将来用
+    @inlinable
+    var pointer: UnsafeMutablePointer<UnsafeNode> {
+      fatalError()
+    }
+  #endif
 }
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
-
-  @inlinable
-  package var isValid: Bool {
-    switch self {
-    case .success: true
-    default: false
-    }
-  }
-
-  @inlinable
-  package var ___is_end: Bool? {
-    // endは世代が変わらず、成仏もしないのでお清めお祓いが無駄
-    try? map { $0.___is_end }.get()
-  }
 
   @inlinable
   package var pointer: UnsafeMutablePointer<UnsafeNode>? {
@@ -67,30 +112,28 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   }
 
   @inlinable
-  public var exists: Bool {
-    (try? map { !$0.___is_null_or_end }.get()) ?? false
+  var ___has_payload_content: Bool {
+    switch self {
+    case .success(let success):
+      success.pointee.___has_payload_content
+    case .failure:
+      false
+    }
   }
 
   @inlinable
-  var checked: _SafePtr {
-    flatMap {
-      if $0.___is_null {
-        .failure(.null)
-      } else if $0.___is_garbaged {
-        .failure(.garbaged)
-      } else {
-        .success($0)
-      }
-    }
+  var accessible: _SafePtr {
+    ___has_payload_content ? self : .failure(.garbaged)
   }
 }
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
-  /// ポインタが変化した場合に用いる
-  ///
-  /// 重ねてsealしないこと
+
+  // 内部的に不正なポインタを返す場合、それは返す側のバグなので、ケアとしては最低限で足りる
   @inlinable
-  var sealed: _SealedPtr { flatMap { $0.sealed } }
+  package var uncheckedSeal: _SealedPtr {
+    map { .uncheckedSeal($0) }
+  }
 }
 
 /// 世代管理付きポインタ
@@ -101,19 +144,11 @@ public typealias _SealedPtr = Result<_NodePtrSealing, SealError>
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  /// ポインタを渡すときまたは受け取ったときに用いる
-  ///
-  /// 重ねてsealしないこと
+  // 内部的に不正なポインタを返す場合、それは返す側のバグなので、ケアとしては最低限で足りる
   @inlinable
-  package var sealed: _SealedPtr {
-    if ___is_null {
-      return .failure(.null)
-    } else if ___is_garbaged {
-      // これが発生するようだと基本的にそれはバグ
-      return .failure(.garbaged)
-    } else {
-      return .success(.uncheckedSeal(self))
-    }
+  package var uncheckedSeal: _SealedPtr {
+    assert(!___is_null)
+    return .success(.uncheckedSeal(self))
   }
 }
 
@@ -122,6 +157,9 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   /// ポインタを利用する際に用いる
   @inlinable
   package var purified: Result { flatMap { $0.purified } }
+
+  @inlinable
+  package var deepPurified: Result { flatMap { $0.deepPurified } }
 }
 
 public enum SealError: Error {
@@ -195,42 +233,13 @@ func errorMessage<E: Error>(_ e: E) -> String {
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
-  #if COMPATIBLE_ATCODER_2025
-    @inlinable
-    package var trackingTag: _TrackingTag {
-      (try? map(\.pointer.trackingTag).get()) ?? .nullptr
-    }
-  #endif
-
   @inlinable
   package var tag: _SealedTag {
     flatMap(\.tag)
   }
-
-  @inlinable
-  package var ___is_end: Bool? {
-    // endは世代が変わらず、成仏もしないのでお清めお祓いが無駄
-    try? map { $0.pointer.___is_end }.get()
-  }
 }
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
-
-  /// 他のケースと異なり、endも有効となる
-  @inlinable
-  package var isValid: Bool {
-    switch purified {
-    case .success: true
-    default: false
-    }
-  }
-
-  #if COMPATIBLE_ATCODER_2025
-    @inlinable
-    package func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
-      try? map { $0.pointer.__value_() }.get()
-    }
-  #endif
 
   @inlinable
   package var pointer: UnsafeMutablePointer<UnsafeNode>? {
@@ -239,9 +248,8 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   }
 
   @inlinable
-  public var exists: Bool {
-    // TODO: 利用側でpurified十分か繰り返し確認すること
-    (try? map { !___is_null_or_end($0.pointer.trackingTag) }.get()) ?? false
+  package var accessible: Self {
+    flatMap { $0.pointer.___has_payload_content ? .success($0) : .failure(.garbaged) }
   }
 }
 

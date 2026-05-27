@@ -36,19 +36,13 @@
     @inlinable
     public func isValid(_ bounds: IndexRange) -> Bool {
       let range = __tree_.__purified_safe_(bounds)
-      // TODO: チェック過剰な気がする
       return __tree_.isValidSafeRange(range)
-        && range.lowerBound.isValid
-        && range.upperBound.isValid
     }
 
     @inlinable
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      // TODO: チェック過剰な気がする
       return __tree_.isValidSafeRange(range)
-        && range.lowerBound.isValid
-        && range.upperBound.isValid
     }
 
     @inlinable
@@ -104,7 +98,7 @@
     @discardableResult
     public mutating func erase(_ bounds: UnboundedRange) -> Index {
       __tree_.ensureUnique()
-      return ___index(__tree_.erase(_start, _end).sealed)
+      return ___index(__tree_.erase(_start, _end))
     }
 
     @inlinable
@@ -118,7 +112,7 @@
       else {
         fatalError(.invalidIndex)
       }
-      return ___index(__tree_.erase(__l, __u).sealed)
+      return ___index(__tree_.erase(__l, __u))
     }
 
     @inlinable
@@ -132,7 +126,7 @@
       else {
         fatalError(.invalidIndex)
       }
-      return ___index(__tree_.erase(__l, __u).sealed)
+      return ___index(__tree_.erase(__l, __u))
     }
 
     @inlinable
@@ -172,15 +166,15 @@
       @inline(__always) get {
         View(
           __tree_: __tree_,
-          _start: range.lowerBound.sealed,
-          _end: range.upperBound.sealed)
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
       }
 
       @inline(__always) _modify {
         var view = View(
           __tree_: __tree_,
-          _start: range.lowerBound.sealed,
-          _end: range.upperBound.sealed)
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
         self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
         defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
         yield &view
@@ -218,7 +212,7 @@
     @inlinable
     public func equalRange(_ element: Element) -> UnsafeIndexV3Range {
       let (lower, upper) = __tree_.__equal_range_unique(element)
-      return .init(.init(lowerBound: ___index(lower.sealed), upperBound: ___index(upper.sealed)))
+      return .init(.init(lowerBound: ___index(lower), upperBound: ___index(upper)))
     }
   }
 #endif

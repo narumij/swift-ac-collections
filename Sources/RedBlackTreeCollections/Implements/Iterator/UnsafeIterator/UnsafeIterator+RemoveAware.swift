@@ -53,7 +53,7 @@ extension UnsafeIterator {
     @inlinable
     public mutating func next() -> _NodePtr? {
       guard let __current else { return nil }
-      guard !__current.pointee.isGarbaged else {
+      guard __current.pointee.___has_payload_content else {
         fatalError(.invalidIndex)
       }
       self.__current = source.next()

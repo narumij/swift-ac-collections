@@ -83,7 +83,10 @@ extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   var end_ptr: _NodePtr {
-    freshBucketHead!.end_ptr
+    @inline(__always)
+    _read {
+      yield freshBucketHead!.end_ptr
+    }
   }
 
   @inlinable

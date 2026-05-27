@@ -107,6 +107,7 @@ public typealias _LazyTieWrappedPtr = Result<_LazyTieWrap<_NodePtrSealing>, Seal
 extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
   @inlinable
+  @inline(__always)
   static func unchecked(_ _p: _NodePtr, end_ptr: UnsafeMutablePointer<UnsafeNode>, lazyDetach: _LazyTie) -> Self {
     .success(.init(rawValue: .init(_p: _p), end_ptr: end_ptr, lazyDetach: lazyDetach))
   }

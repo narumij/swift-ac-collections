@@ -1,0 +1,23 @@
+{
+  "kind": "group",
+  "title": "RedBlackTreeSet Benchmarks",
+  "directory": "RedBlackTreeSet Adhoc2",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "Operations",
+      "directory": "operations",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "operations",
+          "tasks": [
+            "RedBlackTreeSet<Int> init from unsafe buffer",
+            "RedBlackTreeSet<Int> insert",
+            "RedBlackTreeSet<Int> insert, reserving capacity",
+          ]
+        },
+      ]
+    }
+  ]
+}

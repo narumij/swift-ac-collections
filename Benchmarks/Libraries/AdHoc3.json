@@ -1,7 +1,7 @@
 {
   "kind": "group",
-  "title": "RedBlackTreeSet Benchmarks",
-  "directory": "RedBlackTreeSet Adhoc2",
+  "title": "RedBlackTreeDictionary Benchmarks",
+  "directory": "RedBlackTreeDictionary Adhoc3",
   "contents": [
     {
       "kind": "group",
@@ -12,9 +12,7 @@
           "kind": "chart",
           "title": "operations",
           "tasks": [
-            "RedBlackTreeSet<Int> init from unsafe buffer",
-            "RedBlackTreeSet<Int> insert",
-            "RedBlackTreeSet<Int> insert, reserving capacity",
+            "RedBlackTreeDictionary<Int, Int> successful index(forKey:)",
           ]
         },
       ]

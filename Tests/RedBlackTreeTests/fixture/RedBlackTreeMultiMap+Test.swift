@@ -53,7 +53,7 @@ extension RedBlackTreeMultiMap {
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025
+#if DEBUG && !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
     /// - Complexity: O(1)

@@ -53,7 +53,7 @@ extension RedBlackTreeDictionary {
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025
+#if DEBUG && !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// - Complexity: O(1)

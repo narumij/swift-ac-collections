@@ -124,9 +124,9 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
     assert(!__p.___is_null)
     assert(!__l.___is_null)
     
-    assert(__f.___has_payload_content)
-    assert(__p.___has_payload_content)
-    assert(__l.___has_payload_content)
+    assert(__f.___is_end || __f.___has_payload_content)
+    assert(__p.___is_end || __p.___has_payload_content)
+    assert(__l.___is_end || __l.___has_payload_content)
 
     guard !__f.___is_end else {
       // end <= end <= endは有効

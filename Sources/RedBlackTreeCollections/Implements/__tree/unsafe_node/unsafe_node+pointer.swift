@@ -22,7 +22,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   nonisolated(unsafe)
-  static var nullptr: _NodePtr {
+    static var nullptr: _NodePtr
+  {
     UnsafeNode.nullptr
   }
 
@@ -43,12 +44,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     @inline(__always) _read { yield pointee.__parent_ }
     nonmutating _modify { yield &pointee.__parent_ }
   }
-  
+
   // NOTE: 移植の命名互換のための別名。意味は`__parent_`と同じ。
   @inlinable
   var __parent_unsafe: _NodePtr {
     @inline(__always) _read { yield pointee.__parent_ }
-    nonmutating _modify { yield &pointee.__parent_ }
   }
 
   @inlinable

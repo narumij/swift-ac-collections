@@ -17,52 +17,45 @@
 
 extension UnsafeIterator {
 
-  public struct _Reverse1:
+  public struct _Obverse3:
     _UnsafeNodePtrType,
     UnsafeIteratorProtocol,
-    ReverseIterator,
+    ObverseIterator,
     IteratorProtocol,
     Sequence,
     Equatable
   {
     @inlinable
     public init(_start: _SealedPtr, _end: _SealedPtr) {
-      self._start = _start.pointer!
-      self._end = _end.pointer!
-      self._current = _end.pointer!
+      self._safe_start = _start.map(\.pointer)
+      self._safe_end = _end.map(\.pointer)
+      self._safe_current = _start.map(\.pointer)
     }
 
-    @inlinable
-    public init(_start: _NodePtr, _end: _NodePtr) {
-      self._start = _start
-      self._end = _end
-      self._current = _end
-    }
+    public var _safe_start, _safe_end, _safe_current: _SafePtr
 
-    public let _start: _NodePtr
-    public let _end: _NodePtr
-    public var _current: _NodePtr
-
-    public var _sealed_start: _SealedPtr {
-      _start.uncheckedSeal
-    }
-
-    public var _sealed_end: _SealedPtr {
-      _end.uncheckedSeal
-    }
+    public var _sealed_start: _SealedPtr { _safe_start.uncheckedSeal }
+    public var _sealed_end: _SealedPtr { _safe_end.uncheckedSeal }
 
     @inlinable
     public mutating func next() -> _NodePtr? {
-      guard _current != _start else { return nil }
-      // 最悪でもnullで止まる
-      guard _current.___is_end || _current.___has_payload_content else {
+      guard _safe_current != _safe_end else { return nil }
+      // 最悪でもendで止まる
+      guard _safe_current.___has_payload_content else {
         fatalError(.outOfBounds)
       }
-      _current = __tree_prev_iter(_current)
-      // もう一度チェックが必要な気がする
-      return _current
+      let __r = _safe_current
+      _safe_current = _safe_current.flatMap { ___tree_next_iter($0) }
+      return __r.pointer
+    }
+
+    public typealias Reversed = _Reverse3
+
+    @inlinable
+    public func reversed() -> UnsafeIterator._Reverse3 {
+      .init(_start: _safe_start.uncheckedSeal, _end: _safe_end.uncheckedSeal)
     }
   }
 }
 
-extension UnsafeIterator._Reverse1: @unchecked Sendable {}
+extension UnsafeIterator._Obverse3: @unchecked Sendable {}

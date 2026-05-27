@@ -120,6 +120,16 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
       false
     }
   }
+  
+  @inlinable
+  var ___is_end: Bool {
+    switch self {
+    case .success(let success):
+      success.___is_end
+    case .failure:
+      false
+    }
+  }
 
   @inlinable
   var accessible: _SafePtr {

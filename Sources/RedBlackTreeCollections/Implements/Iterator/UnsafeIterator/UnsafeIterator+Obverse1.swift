@@ -44,18 +44,18 @@ extension UnsafeIterator {
     public var _current: _NodePtr
 
     public var _sealed_start: _SealedPtr {
-      fatalError()
+      _start.uncheckedSeal
     }
 
     public var _sealed_end: _SealedPtr {
-      fatalError()
+      _end.uncheckedSeal
     }
 
     @inlinable
     public mutating func next() -> _NodePtr? {
       guard _current != _end else { return nil }
       // 最悪でもendで止まる
-      guard !_current.___is_end else {
+      guard _current.___has_payload_content else {
         fatalError(.outOfBounds)
       }
       let __r = _current
@@ -66,7 +66,7 @@ extension UnsafeIterator {
     public typealias Reversed = _Reverse1
 
     public func reversed() -> UnsafeIterator._Reverse1 {
-      fatalError()
+      .init(_start: _sealed_start, _end: _sealed_end)
     }
   }
 }

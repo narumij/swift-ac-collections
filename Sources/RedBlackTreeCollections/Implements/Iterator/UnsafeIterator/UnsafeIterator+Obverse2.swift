@@ -39,13 +39,13 @@ extension UnsafeIterator {
 
       let _purified_current = _sealed_current.purified
 
-      // 範囲終端が壊れてたらオコ！
       guard let _end = try? _sealed_end.purified.get() else {
+        // 範囲終端が壊れている
         fatalError(.invalidIndex)
       }
 
-      // current が壊れてたらオコ！
       guard let _p = try? _purified_current.get() else {
+        // current が壊れている
         fatalError(.invalidIndex)
       }
 

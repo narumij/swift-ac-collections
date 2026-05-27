@@ -39,13 +39,13 @@ extension UnsafeIterator {
 
       let _purified_current = _sealed_current.purified
 
-      // 範囲 start が壊れてたらオコ！
       guard let start = try? _sealed_start.purified.get() else {
+        // 範囲 start が壊れている
         fatalError(.invalidIndex)
       }
 
-      // current が壊れてたらオコ！
       guard let cur = try? _purified_current.get() else {
+        // current が壊れている
         fatalError(.invalidIndex)
       }
 
@@ -54,8 +54,8 @@ extension UnsafeIterator {
 
       _sealed_current = _purified_current.flatMap { ___tree_prev_iter($0.pointer).uncheckedSeal }
 
-      // prev の結果が壊れてたらオコ！（end→start の途中で壊れた）
       guard let p = try? _sealed_current.get() else {
+        // prev の結果が壊れている（end→start の途中で壊れた）
         fatalError(.invalidIndex)
       }
 

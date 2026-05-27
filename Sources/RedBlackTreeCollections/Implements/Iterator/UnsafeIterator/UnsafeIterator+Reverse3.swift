@@ -17,7 +17,7 @@
 
 extension UnsafeIterator {
 
-  public struct _Reverse1:
+  public struct _Reverse3:
     _UnsafeNodePtrType,
     UnsafeIteratorProtocol,
     ReverseIterator,
@@ -27,42 +27,28 @@ extension UnsafeIterator {
   {
     @inlinable
     public init(_start: _SealedPtr, _end: _SealedPtr) {
-      self._start = _start.pointer!
-      self._end = _end.pointer!
-      self._current = _end.pointer!
+      self._safe_start = _start.map(\.pointer)
+      self._safe_end = _end.map(\.pointer)
+      self._safe_current = _end.map(\.pointer)
     }
 
-    @inlinable
-    public init(_start: _NodePtr, _end: _NodePtr) {
-      self._start = _start
-      self._end = _end
-      self._current = _end
-    }
+    public var _sealed_start: _SealedPtr { _safe_start.uncheckedSeal }
+    public var _sealed_end: _SealedPtr { _safe_end.uncheckedSeal }
 
-    public let _start: _NodePtr
-    public let _end: _NodePtr
-    public var _current: _NodePtr
-
-    public var _sealed_start: _SealedPtr {
-      _start.uncheckedSeal
-    }
-
-    public var _sealed_end: _SealedPtr {
-      _end.uncheckedSeal
-    }
+    public var _safe_start, _safe_end, _safe_current: _SafePtr
 
     @inlinable
     public mutating func next() -> _NodePtr? {
-      guard _current != _start else { return nil }
+      guard _safe_current != _safe_start else { return nil }
       // 最悪でもnullで止まる
-      guard _current.___is_end || _current.___has_payload_content else {
+      guard _safe_current.___is_end || _safe_current.___has_payload_content else {
         fatalError(.outOfBounds)
       }
-      _current = __tree_prev_iter(_current)
+      _safe_current = _safe_current.flatMap { ___tree_prev_iter($0) }
       // もう一度チェックが必要な気がする
-      return _current
+      return _safe_current.pointer
     }
   }
 }
 
-extension UnsafeIterator._Reverse1: @unchecked Sendable {}
+extension UnsafeIterator._Reverse3: @unchecked Sendable {}

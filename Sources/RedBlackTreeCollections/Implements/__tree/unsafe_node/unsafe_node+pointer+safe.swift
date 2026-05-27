@@ -55,19 +55,37 @@
 // コンテナのレベルでは生ポインタ又は_SafePtrを常用することになり、
 // それ以外の特殊ポインタは受け取るとき、返す時のみとなる
 //
+// 不正なポインタのトラップ（fatalError）は、その利用が未定義動作、未規定動作となる場合に限定し、そこまで遅延してよい
+//
+// 再利用済みポインタの措置は未規定動作をユーザーにどの程度晒すかという問題である
+// この未基底動作予防は不慣れなユーザーへの配慮であり、熟練者へのメッセージとなる
+//
+// ---
+//
+// 追記:
+//
+// C++の__tree由来の部分を原木、内部木を生木と表現すると会話が楽
+//
+// コピー後の木やまったく異なる木については現在はゆるい動作となっているが、将来的に厳しくする可能性もある
+//
+// (ギリギリの性能がどうしても必要な向きのために、_SafePtrをインデックスとするtraitを付与する可能性もある)
+//
 
-/// ポインタ操作でいちいちsealingしたくない場合に使う
+/// エラー補足付きポインタ
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  // 無効な生ポインタを返さないようにできているので、これで足りる
+  // 木側は無効な生ポインタを返さないようにできているので、これで足りる
   @inlinable
   package var unchecked: _SafePtr {
     assert(!___is_null)
     return .success(self)
   }
 
+  /// ペイロードを持っているかどうかを返す
+  ///
+  /// nullptr、end、解放済みポインタかどうかをひとまとめに判定できる
   @inlinable
   var ___has_payload_content: Bool {
     pointee.___has_payload_content

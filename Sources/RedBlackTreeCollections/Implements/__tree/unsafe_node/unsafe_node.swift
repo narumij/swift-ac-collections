@@ -233,11 +233,19 @@ public struct UnsafeNode {
   { _singletonNull.nullptr }
 
   #if false
-    // TODO: 即値のnullptrを利用したケースの性能調査
+    // DONE: (不可能）即値のnullptrを利用したケースの性能調査
+    //
     // 今頃nullptrの作り方が判明した
     // nullptrに実態がある現在の設計は未定義動作を踏みにくくある。これを失うデメリットは大きく、変更の工数も多い
     // swift_onceで性能低下するのはイテレータのみで、他にバケットヘッダのサイズが少し減る程度のベネフィットとなる
     // あまり現実的ではない
+    //
+    // __tree_is_left_childや__tree_prev_iterがとっても危険になる
+    // nullptrに実態がある今の設計でたまたま助けられていた模様
+    // __begin_nodeに対するprev操作がセグフォってつらい
+    //
+    // それ以外にも、フレームワーク的なチェックがまだある様子で、落ちる
+    //
     @inlinable
     nonisolated(unsafe)
       package static var nullptr: UnsafeMutablePointer<UnsafeNode>
@@ -297,7 +305,8 @@ extension UnsafeNode {
     @inlinable
     internal static func create() -> Null {
       let nullptr = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
-      nullptr.initialize(to: .create(tag: .nullptr, nullptr: nullptr, ___has_payload_content: false))
+      nullptr.initialize(
+        to: .create(tag: .nullptr, nullptr: nullptr, ___has_payload_content: false))
       return .init(nullptr: nullptr)
     }
   }
@@ -330,7 +339,10 @@ extension UnsafeNode {
 extension UnsafeNode {
 
   @inlinable
-  package static func create(tag: _TrackingTag, nullptr: UnsafeMutablePointer<UnsafeNode>, ___has_payload_content: Bool = true)
+  package static func create(
+    tag: _TrackingTag, nullptr: UnsafeMutablePointer<UnsafeNode>,
+    ___has_payload_content: Bool = true
+  )
     -> UnsafeNode
   {
     .init(

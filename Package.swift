@@ -19,6 +19,7 @@ var defines: [String] = [
   //    "USE_RECYCLE_POOL_PROTOCOL",
   //    "USE_FRESH_POOL_PROTOCOL",
   //  "USE_COMPACT_NODE_METADATA",
+  "USE_COW_ITERATOR"
 ]
 
 var _settings: [SwiftSetting] =

@@ -74,7 +74,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public func makeIterator() -> Tree._KeyValues {
     #if !COMPATIBLE_ATCODER_2025
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+      .init(start: _sealed_start, end: _sealed_end, tree: __tree_)
     #else
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
     #endif

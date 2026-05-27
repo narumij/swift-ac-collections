@@ -11,7 +11,7 @@
   import RedBlackTreeModule
 #endif
 
-#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025 && !USE_COW_ITERATOR
 
   struct Test_2 {
 

@@ -109,7 +109,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Container.Base> {
     let (_start, _end) = _range
     #if !COMPATIBLE_ATCODER_2025
-      return .init(start: _start, end: _end, tie: __tree_.lazyDetach)
+      return .init(start: _start, end: _end, tree: __tree_)
     #else
       return .init(start: _start, end: _end, tie: __tree_.tied)
     #endif

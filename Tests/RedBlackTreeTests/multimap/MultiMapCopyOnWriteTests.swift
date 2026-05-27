@@ -73,7 +73,11 @@ import XCTest
           tree.eraseUnique(v.key)  // strong ensure unique
         }
         XCTAssertEqual(tree.count, 0)
-        XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
+        #if USE_COW_ITERATOR
+          XCTAssertEqual(tree._copyCount, 1)
+        #else
+          XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
+        #endif
       #else
         for v in tree {
           tree.removeFirst(forKey: v.key)  // strong ensure unique
@@ -166,7 +170,7 @@ import XCTest
         #endif
       }
       XCTAssertEqual(tree.count, 0)
-      #if !COMPATIBLE_ATCODER_2025
+      #if !COMPATIBLE_ATCODER_2025 && !USE_COW_ITERATOR
         XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
       #else
         XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
@@ -241,7 +245,7 @@ import XCTest
           #if COMPATIBLE_ATCODER_2025
             xy[1]?.removeSubrange(lo..<hi)
           #else
-          _ = xy[1]?.erase(lo..<hi)
+            _ = xy[1]?.erase(lo..<hi)
           #endif
         }
       }

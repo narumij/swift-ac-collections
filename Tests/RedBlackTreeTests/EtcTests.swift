@@ -1174,21 +1174,23 @@ final class EtcTests: RedBlackTreeTestCase {
     //      XCTAssertEqual(it + [], [5,10]) // ここで落ちる
     //    }
 
-    func testItertor() throws {
-      var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
-      //      var it = a[a.lowerBound(5)..<a.firstIndex(of: 45)].makeIterator()
-      var it = a[lowerBound(5)..<find(45)].makeIterator()
-      a.remove(15)  // 二つ先以降を消しても影響がない
-      a.remove(35)  // 二つ先以降を消しても影響がない
-      //      a.remove(45)  // 二つ先以降を消しても影響がない
-      XCTAssertEqual(it.next(), 5)
-      XCTAssertEqual(it.next(), 10)
-      XCTAssertEqual(it.next(), 20)
-      XCTAssertEqual(it.next(), 25)
-      XCTAssertEqual(it.next(), 30)
-      XCTAssertEqual(it.next(), 40)
-      //      XCTAssertEqual(it.next(), 45)
-    }
+    #if !USE_COW_ITERATOR
+      func testItertor() throws {
+        var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
+        //      var it = a[a.lowerBound(5)..<a.firstIndex(of: 45)].makeIterator()
+        var it = a[lowerBound(5)..<find(45)].makeIterator()
+        a.remove(15)  // 二つ先以降を消しても影響がない
+        a.remove(35)  // 二つ先以降を消しても影響がない
+        //      a.remove(45)  // 二つ先以降を消しても影響がない
+        XCTAssertEqual(it.next(), 5)
+        XCTAssertEqual(it.next(), 10)
+        XCTAssertEqual(it.next(), 20)
+        XCTAssertEqual(it.next(), 25)
+        XCTAssertEqual(it.next(), 30)
+        XCTAssertEqual(it.next(), 40)
+        //      XCTAssertEqual(it.next(), 45)
+      }
+    #endif
 
     func testRangeView() throws {
       let a = RedBlackTreeSet(0..<20)
@@ -1242,14 +1244,14 @@ final class EtcTests: RedBlackTreeTestCase {
       XCTAssertEqual(s._start.pointee.___has_payload_content, false)
     }
   #endif
-  
+
   func testIteratorAndRemove() throws {
     var a = RedBlackTreeSet<Int>(0..<10)
     var b: [Int] = []
     for i in a {
-      a = [] // TODO: 削除した時点でループ終了するべきか検討（コストが気になる）
+      a = []  // TODO: 削除した時点でループ終了するべきか検討（コストが気になる）
       b.append(i)
     }
-    XCTAssertEqual(b, (0..<10).map{ $0 })
+    XCTAssertEqual(b, (0..<10).map { $0 })
   }
 }

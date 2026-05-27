@@ -17,6 +17,7 @@
 
 extension UnsafeIterator {
 
+  // 変に遅い
   public struct _Obverse3:
     _UnsafeNodePtrType,
     UnsafeIteratorProtocol,

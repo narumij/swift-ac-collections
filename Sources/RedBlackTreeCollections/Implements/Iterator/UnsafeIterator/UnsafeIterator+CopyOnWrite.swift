@@ -17,7 +17,7 @@
 
 extension UnsafeIterator {
 
-  public struct LazyTie<Source: IteratorProtocol>:
+  public struct CopyOnWrite<Source: IteratorProtocol>:
     _UnsafeNodePtrType,
     IteratorProtocol,
     Sequence
@@ -28,22 +28,8 @@ extension UnsafeIterator {
     public typealias Base = Source.Base
 
     @usableFromInline
-    var tied: _LazyTie
+    var tree: UnsafeTreeV2<Source.Base>
 
-    @inlinable
-    init(
-      start: _SealedPtr,
-      end: _SealedPtr,
-      tie: _LazyTie
-    ) {
-      self.init(
-        _source: .init(
-          Source.Base.self,
-          _start: start,
-          _end: end),
-        tie: tie)
-    }
-    
     @inlinable
     init(
       start: _SealedPtr,
@@ -55,16 +41,16 @@ extension UnsafeIterator {
           Source.Base.self,
           _start: start,
           _end: end),
-        tie: tree.lazyDetach)
+        tree: tree)
     }
 
     @usableFromInline
     var source: Source
 
     @inlinable
-    internal init(_source: Source, tie: _LazyTie) {
+    internal init(_source: Source, tree: UnsafeTreeV2<Source.Base>) {
       self.source = _source
-      self.tied = tie
+      self.tree = tree
     }
 
     @inlinable
@@ -74,17 +60,15 @@ extension UnsafeIterator {
   }
 }
 
-extension UnsafeIterator.LazyTie: Equatable where Source: Equatable {
+extension UnsafeIterator.CopyOnWrite: Equatable where Source: Equatable {
 
   @inlinable
-  public static func == (
-    lhs: UnsafeIterator.LazyTie<Source>, rhs: UnsafeIterator.LazyTie<Source>
-  ) -> Bool {
+  public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.source == rhs.source
   }
 }
 
-extension UnsafeIterator.LazyTie: Comparable where Source: Equatable, Element: Comparable {
+extension UnsafeIterator.CopyOnWrite: Comparable where Source: Equatable, Element: Comparable {
 
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -92,10 +76,10 @@ extension UnsafeIterator.LazyTie: Comparable where Source: Equatable, Element: C
   }
 }
 
-extension UnsafeIterator.LazyTie: @unchecked Sendable where Source: Sendable {}
+extension UnsafeIterator.CopyOnWrite: @unchecked Sendable where Source: Sendable {}
 
 #if false
-extension UnsafeIterator.LazyTie
+extension UnsafeIterator.COW
 where
   Source.Base: PairValueTrait,
   Base: ___TreeIndex,
@@ -105,29 +89,29 @@ where
     /// - Complexity: O(1)
     @inlinable
     public var keys: UnsafeIterator.KeyReverse<Base> {
-      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
+      .init(start: source._sealed_start, end: source._sealed_end, tree: tree)
     }
 
     /// - Complexity: O(1)
     @inlinable
     public var values: UnsafeIterator.MappedValueReverse<Base> {
-      .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
+      .init(start: source._sealed_start, end: source._sealed_end, tree: tree)
     }
   #endif
 }
 #endif
 
-extension UnsafeIterator.LazyTie: ObverseIterator
+extension UnsafeIterator.CopyOnWrite: ObverseIterator
 where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeAssosiatedIterator & Sequence,
-  Source.ReversedIterator.Base: ___TreeBase
+  Source.ReversedIterator.Base == Source.Base
 {
   @inlinable
-  public func reversed() -> UnsafeIterator.LazyTie<Source.ReversedIterator> {
-    .init(_source: source.reversed(), tie: tied)
+  public func reversed() -> UnsafeIterator.CopyOnWrite<Source.ReversedIterator> {
+    .init(_source: source.reversed(), tree: tree)
   }
 }
 
-extension UnsafeIterator.LazyTie: ReverseIterator
+extension UnsafeIterator.CopyOnWrite: ReverseIterator
 where Source: ReverseIterator {}

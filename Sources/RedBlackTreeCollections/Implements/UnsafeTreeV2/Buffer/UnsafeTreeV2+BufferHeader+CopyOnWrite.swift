@@ -19,21 +19,21 @@
 func growth(from count: Int, to minimum: Int) -> Int {
   // TODO: ジャッジ搭載のタイミングで再度チューニングすること
 
-#if true
-  if count == 0 {
-    return Swift.max(minimum, 2)
-  }
+  #if true
+    if count == 0 {
+      return Swift.max(minimum, 2)
+    }
 
-  if count < 9 {
-    // 0,  2,  8, 16, 24,  36,  54
-    // 0, +2, +6, +8, +8, +12, +18
-    // アロケーション発生タイミングを分散することで要素あたりのコストを下げたい
-    // つまり、+1が混じらないようにしている
+    if count < 9 {
+      // 0,  2,  8, 16, 24,  36,  54
+      // 0, +2, +6, +8, +8, +12, +18
+      // アロケーション発生タイミングを分散することで要素あたりのコストを下げたい
+      // つまり、+1が混じらないようにしている
 
-    // scale factor 4.0 when small amount
-    return Swift.max(minimum, count &<< 2)
-  }
-#endif
+      // scale factor 4.0 when small amount
+      return Swift.max(minimum, count &<< 2)
+    }
+  #endif
 
   // scale factor 1.5
   return Swift.max(minimum, count &+ (count &>> 1))
@@ -52,13 +52,15 @@ func growth(from count: Int, to minimum: Int) -> Int {
 // 黄金比の4項近似
 // return Swift.max(minimum, count &+ (count &>> 1) &+ (count &>> 4) &+ (count &>> 5) &+ (count &>> 8))
 
-extension UnsafeTreeV2BufferHeader {
+#if false
+  extension UnsafeTreeV2BufferHeader {
 
-  @inlinable
-  internal func _growthCapacity(to minimumCapacity: Int) -> Int {
-    growth(from: count, to: minimumCapacity)
+    @inlinable
+    internal func _growthCapacity(to minimumCapacity: Int) -> Int {
+      growth(from: count, to: minimumCapacity)
+    }
   }
-}
+#endif
 
 // MARK: -
 

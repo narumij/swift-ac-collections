@@ -17,7 +17,7 @@
 
 extension UnsafeIterator {
 
-  public struct LazyDetach<Source: IteratorProtocol>:
+  public struct LazyTie<Source: IteratorProtocol>:
     _UnsafeNodePtrType,
     IteratorProtocol,
     Sequence
@@ -60,17 +60,17 @@ extension UnsafeIterator {
   }
 }
 
-extension UnsafeIterator.LazyDetach: Equatable where Source: Equatable {
+extension UnsafeIterator.LazyTie: Equatable where Source: Equatable {
 
   @inlinable
   public static func == (
-    lhs: UnsafeIterator.LazyDetach<Source>, rhs: UnsafeIterator.LazyDetach<Source>
+    lhs: UnsafeIterator.LazyTie<Source>, rhs: UnsafeIterator.LazyTie<Source>
   ) -> Bool {
     lhs.source == rhs.source
   }
 }
 
-extension UnsafeIterator.LazyDetach: Comparable where Source: Equatable, Element: Comparable {
+extension UnsafeIterator.LazyTie: Comparable where Source: Equatable, Element: Comparable {
 
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -78,9 +78,9 @@ extension UnsafeIterator.LazyDetach: Comparable where Source: Equatable, Element
   }
 }
 
-extension UnsafeIterator.LazyDetach: @unchecked Sendable where Source: Sendable {}
+extension UnsafeIterator.LazyTie: @unchecked Sendable where Source: Sendable {}
 
-extension UnsafeIterator.LazyDetach
+extension UnsafeIterator.LazyTie
 where
   Source.Base: PairValueTrait,
   Base: ___TreeIndex,
@@ -101,17 +101,17 @@ where
   #endif
 }
 
-extension UnsafeIterator.LazyDetach: ObverseIterator
+extension UnsafeIterator.LazyTie: ObverseIterator
 where
   Source: ObverseIterator,
   Source.ReversedIterator: UnsafeAssosiatedIterator & Sequence,
   Source.ReversedIterator.Base: ___TreeBase
 {
   @inlinable
-  public func reversed() -> UnsafeIterator.LazyDetach<Source.ReversedIterator> {
+  public func reversed() -> UnsafeIterator.LazyTie<Source.ReversedIterator> {
     .init(_source: source.reversed(), tie: tied)
   }
 }
 
-extension UnsafeIterator.LazyDetach: ReverseIterator
+extension UnsafeIterator.LazyTie: ReverseIterator
 where Source: ReverseIterator {}

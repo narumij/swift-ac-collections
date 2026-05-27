@@ -13,9 +13,9 @@ import XCTest
   import RedBlackTreeModule
 #endif
 
-final class SetBaseTests: RedBlackTreeTestCase {
+final class MultiSetBaseTests: RedBlackTreeTestCase {
 
-  typealias Fixture = RedBlackTreeSet<Int>
+  typealias Fixture = RedBlackTreeMultiSet<Int>
   typealias SUT = Fixture.Base
 
   #if DEBUG

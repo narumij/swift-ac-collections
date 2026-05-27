@@ -129,7 +129,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
 
-  #if false
+  #if COMPATIBLE_ATCODER_2025
     /// ポインタが変化した場合に用いる
     ///
     /// 重ねてsealしないこと
@@ -152,7 +152,7 @@ public typealias _SealedPtr = Result<_NodePtrSealing, SealError>
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  #if false
+  #if COMPATIBLE_ATCODER_2025
     /// ポインタを渡すときまたは受け取ったときに用いる
     ///
     /// 重ねてsealしないこと
@@ -309,7 +309,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
     @inlinable
     public var exists: Bool {
       // TODO: 利用側でpurified十分か繰り返し確認すること
-      (try? map { !___is_null_or_end($0.pointer.trackingTag) }.get()) ?? false
+      (try? map { !$0.pointer.___is_end }.get()) ?? false
     }
   #endif
 }

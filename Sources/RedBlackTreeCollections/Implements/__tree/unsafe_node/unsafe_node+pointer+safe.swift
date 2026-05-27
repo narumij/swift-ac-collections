@@ -68,7 +68,12 @@
 //
 // コピー後の木やまったく異なる木については現在はゆるい動作となっているが、将来的に厳しくする可能性もある
 //
-// (ギリギリの性能がどうしても必要な向きのために、_SafePtrをインデックスとするtraitを付与する可能性もある)
+// ---
+//
+// ギリギリの性能がどうしても必要な向きのために、_SafePtrをインデックスとするtraitを付与する可能性もある
+// インデックスを変えることは可能だとは思うが、デバッグ時に木の解放問題をトラップできるような仕組みが必要そう
+// __purified_時にlazy tieが結束されている場合、fatalError()とする等？
+// 危険モードと、危険診断モードの追加になりそう？
 //
 
 /// エラー補足付きポインタ
@@ -90,6 +95,14 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   var ___has_payload_content: Bool {
     pointee.___has_payload_content
   }
+
+  #if false
+    // 将来用
+    @inlinable
+    var pointer: UnsafeMutablePointer<UnsafeNode> {
+      fatalError()
+    }
+  #endif
 }
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {

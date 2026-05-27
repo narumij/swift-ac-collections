@@ -19,12 +19,6 @@
 @usableFromInline
 package struct _MemoryLayout {
 
-  #if DEBUG
-    internal init<T: ~Copyable>(_ t: T.Type) {
-      self = MemoryLayout<T>._memoryLayout
-    }
-  #endif
-
   @inlinable
   internal init<T0: ~Copyable, T1: ~Copyable>(_ t0: T0.Type, _ t1: T1.Type) {
     self.stride = MemoryLayout<T0>.stride + MemoryLayout<T1>.stride
@@ -40,3 +34,11 @@ package struct _MemoryLayout {
   @usableFromInline package var stride: Int
   @usableFromInline package var alignment: Int
 }
+
+#if DEBUG
+  extension _MemoryLayout {
+    internal init<T: ~Copyable>(_ t: T.Type) {
+      self = MemoryLayout<T>._memoryLayout
+    }
+  }
+#endif

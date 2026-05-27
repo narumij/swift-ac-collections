@@ -33,6 +33,7 @@
 /// - `advanced(_:offset:limit:)` : The element advanced by `offset` from a base position
 /// - `before(_:)` : The previous element
 /// - `after(_:)` : The next element
+@frozen
 public struct RedBlackTreeBoundExpressionV2<_Key> {
 
   @inlinable

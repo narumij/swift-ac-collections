@@ -55,13 +55,15 @@ extension UnsafeTreeV2 {
     _buffer.buffer === _emptyTreeStorage
   }
 
-  /// 木に紐付いている生バッファ
-  ///
-  /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
-  @usableFromInline
-  var tied: _TiedRawBuffer {
-    withMutableHeader { $0.tiedRawBuffer }
-  }
+  #if false
+    /// 木に紐付いている生バッファ
+    ///
+    /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
+    @usableFromInline
+    var tied: _TiedRawBuffer {
+      withMutableHeader { $0.tiedRawBuffer }
+    }
+  #endif
 
   /// 木に紐付く生バッファを遅延処理するプロクシ
   ///

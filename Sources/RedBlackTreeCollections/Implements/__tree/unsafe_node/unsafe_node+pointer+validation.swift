@@ -17,10 +17,12 @@
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  @inlinable
-  internal var ___is_null_or_end: Bool {
-    pointee.___tracking_tag < 0
-  }
+  #if false
+    @inlinable
+    internal var ___is_null_or_end: Bool {
+      pointee.___tracking_tag < 0
+    }
+  #endif
 
   @inlinable
   internal var ___is_null: Bool {

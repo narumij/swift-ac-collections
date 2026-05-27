@@ -73,7 +73,7 @@ extension ___LRUMemoizeStorage {
       
       let __ptr = __tree_.update { $0.find(key) }
       
-      guard !__ptr.___is_null_or_end else {
+      guard !__ptr.___is_end else {
         return nil
       }
       

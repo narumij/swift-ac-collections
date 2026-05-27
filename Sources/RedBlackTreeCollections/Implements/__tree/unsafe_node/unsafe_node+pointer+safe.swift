@@ -45,20 +45,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
 
   @inlinable
-  package var isValid: Bool {
-    switch self {
-    case .success: true
-    default: false
-    }
-  }
-
-  @inlinable
-  package var ___is_end: Bool? {
-    // endは世代が変わらず、成仏もしないのでお清めお祓いが無駄
-    try? map { $0.___is_end }.get()
-  }
-
-  @inlinable
   package var pointer: UnsafeMutablePointer<UnsafeNode>? {
     try? map { $0 }.get()
   }
@@ -213,7 +199,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
     package var trackingTag: _TrackingTag {
       (try? map(\.pointer.trackingTag).get()) ?? .nullptr
     }
-  
+
     @inlinable
     package var ___is_end: Bool? {
       // endは世代が変わらず、成仏もしないのでお清めお祓いが無駄
@@ -245,12 +231,12 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
       default: false
       }
     }
-  
+
     @inlinable
     package func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue>? {
       try? map { $0.pointer.__value_() }.get()
     }
-  
+
     // TODO: 名前を変える
     @inlinable
     public var exists: Bool {

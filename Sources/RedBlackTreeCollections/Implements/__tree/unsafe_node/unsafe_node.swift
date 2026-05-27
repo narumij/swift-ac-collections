@@ -266,25 +266,6 @@ public struct UnsafeNode {
 @usableFromInline
 nonisolated(unsafe) package let _singletonNull: UnsafeNode.Null = .create()
 
-#if false
-extension UnsafeNode {
-
-  /// 再利用プールに改修されている状態
-  ///
-  /// 初期化前のメモリの状態は不明だが、利用開始時に該当フラグがtrueとなり利用中を表す。
-  ///
-  /// その後回収されるとこのフラグはfalseとなり、notは回収されている状態を表す。
-  ///
-  /// あくまでそのように使えるというだけで全てのメモリ状態に対して完全に回収されている状態を表すわけではない。
-  ///
-  /// `___needs_deinitialize`を回収以外の目的で利用してる箇所の意図をハッキリさせるために別名を付与したカタチ。
-  @inlinable
-  var isGarbaged: Bool {
-    !___has_payload_content
-  }
-}
-#endif
-
 @usableFromInline
 nonisolated(unsafe) package let _singletonTemplate: UnsafeNode.Template = .create()
 

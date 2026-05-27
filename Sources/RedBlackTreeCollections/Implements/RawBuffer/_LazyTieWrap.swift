@@ -80,16 +80,6 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
   }
 
   @inlinable
-  func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool {
-    switch self {
-    case .success(let handle):
-      handle.lazyDetach === rhs
-    case .failure:
-      false
-    }
-  }
-  
-  @inlinable
   func __isSameEnd(_ rhs: UnsafeMutablePointer<UnsafeNode>) -> Bool {
     switch self {
     case .success(let handle):

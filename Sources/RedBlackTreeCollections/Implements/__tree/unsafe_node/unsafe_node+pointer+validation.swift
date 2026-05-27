@@ -32,13 +32,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     pointee.___tracking_tag == .end
   }
 
-  #if false
-    @inlinable
-    internal var ___is_garbaged: Bool {
-      !pointee.___has_payload_content
-    }
-  #endif
-
   @inlinable
   internal var ___is_root: Bool {
     __parent_.___is_end

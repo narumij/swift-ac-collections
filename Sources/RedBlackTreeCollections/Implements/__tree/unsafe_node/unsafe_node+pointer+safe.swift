@@ -63,28 +63,6 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
     try? map { $0 }.get()
   }
 
-  #if false
-    @inlinable
-    public var exists: Bool {
-      (try? map { !$0.___is_null_or_end }.get()) ?? false
-    }
-  #endif
-
-  #if false
-    @inlinable
-    var checked: _SafePtr {
-      flatMap {
-        if $0.___is_null {
-          .failure(.null)
-        } else if $0.___is_garbaged {
-          .failure(.garbaged)
-        } else {
-          .success($0)
-        }
-      }
-    }
-  #endif
-
   @inlinable
   var ___has_payload_content: Bool {
     switch self {
@@ -160,8 +138,6 @@ public enum SealError: Error {
   ///
   /// 把握済みのケースは他のエラーとなるはずなので、これが生じるのは基本的にバグ
   case null
-
-  case end
 
   /// 回収された
   ///

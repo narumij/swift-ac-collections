@@ -25,8 +25,8 @@ where
   @inlinable
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-    self.startIndex = _start.band(__tree_.lazyDetach)
-    self.endIndex = _end.band(__tree_.lazyDetach)
+    self.startIndex = _start.band(__tree_)
+    self.endIndex = _end.band(__tree_)
   }
 
   public typealias Base = Container.Base
@@ -98,7 +98,7 @@ extension RedBlackTreeKeyValueRangeView {
   
   @inlinable
   func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPtr {
-    p.band(__tree_.lazyDetach)
+    p.band(__tree_)
   }
 }
 

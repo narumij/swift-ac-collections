@@ -21,13 +21,17 @@ public struct _LazyTieWrap<RawValue> {
 
   @usableFromInline
   package let rawValue: RawValue
+  
+  @usableFromInline
+  package let end_ptr: UnsafeMutablePointer<UnsafeNode>
 
   @usableFromInline
   package let lazyDetach: _LazyTie
 
   @inlinable
-  package init(rawValue: RawValue, lazyDetach: _LazyTie) {
+  package init(rawValue: RawValue, end_ptr: UnsafeMutablePointer<UnsafeNode>, lazyDetach: _LazyTie) {
     self.rawValue = rawValue
+    self.end_ptr = end_ptr
     self.lazyDetach = lazyDetach
   }
 }
@@ -54,18 +58,17 @@ extension _NodePtrSealing {
   // 某バンドオマージュ
 
   @inlinable
-  package func band(_ tie: _LazyTie) -> _LazyTieWrappedPtr {
-    isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, lazyDetach: tie))
+  package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtr {
+    isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, end_ptr: __tree_.__end_node, lazyDetach: __tree_.lazyDetach))
   }
 }
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   // 某バンドオマージュ
-
   @inlinable
-  package func band(_ tie: _LazyTie) -> _LazyTieWrappedPtr {
-    flatMap { $0.band(tie) }
+  package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtr {
+    flatMap { $0.band(__tree_) }
   }
 }
 
@@ -81,6 +84,16 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
     switch self {
     case .success(let handle):
       handle.lazyDetach === rhs
+    case .failure:
+      false
+    }
+  }
+  
+  @inlinable
+  func __isSameEnd(_ rhs: UnsafeMutablePointer<UnsafeNode>) -> Bool {
+    switch self {
+    case .success(let handle):
+      handle.end_ptr == rhs
     case .failure:
       false
     }
@@ -104,8 +117,8 @@ public typealias _LazyTieWrappedPtr = Result<_LazyTieWrap<_NodePtrSealing>, Seal
 extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
   @inlinable
-  static func unchecked(_ _p: _NodePtr, lazyDetach: _LazyTie) -> Self {
-    .success(.init(rawValue: .init(_p: _p), lazyDetach: lazyDetach))
+  static func unchecked(_ _p: _NodePtr, end_ptr: UnsafeMutablePointer<UnsafeNode>, lazyDetach: _LazyTie) -> Self {
+    .success(.init(rawValue: .init(_p: _p), end_ptr: end_ptr, lazyDetach: lazyDetach))
   }
   
   /// ポインタを利用する際に用いる
@@ -146,7 +159,7 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
 
       return tree.__retrieve_(rawTag)
         .flatMap(\.uncheckedSeal)
-        .flatMap { $0.band(tree.lazyDetach) }
+        .flatMap { $0.band(tree) }
     }
   }
 #endif

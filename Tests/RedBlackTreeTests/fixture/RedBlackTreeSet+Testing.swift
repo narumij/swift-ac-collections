@@ -49,18 +49,20 @@ extension RedBlackTreeSet {
   }
 }
 
-extension RedBlackTreeSet {
+#if DEBUG
+  extension RedBlackTreeSet {
 
-  @inlinable
-  package func ___is_garbaged(_ index: Index) -> Bool {
-    switch __tree_.__purified_(index).purified {
-    case .failure:
-      return true
-    default:
-      return false
+    @inlinable
+    package func ___is_garbaged(_ index: Index) -> Bool {
+      switch __tree_.__purified_(index).purified {
+      case .failure:
+        return true
+      default:
+        return false
+      }
     }
   }
-}
+#endif
 
 #if DEBUG
   extension RedBlackTreeSet {

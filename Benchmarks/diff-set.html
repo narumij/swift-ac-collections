@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Benchmark differentials</title>
+    <style type="text/css">
+      body {
+          font-family: -apple-system,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+      }
+      
+      summary { outline-style: none; }
+      
+      details.section { margin-bottom: 6pt; }
+      
+      details.section > summary {
+          font-weight: bold;
+          margin-top: 6pt;
+          margin-bottom: 6pt;
+      }
+      details.section > .details {
+          margin-top: 6pt;
+          margin-bottom: 12pt;
+          margin-left: 2em;
+      }
+      
+      details.item > summary {
+          margin-top: 2pt;
+          margin-bottom: 2pt;
+      }
+      details.item > .details {
+          margin-top: 6pt;
+          margin-bottom: 12pt;
+          margin-left: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Benchmark differentials</h1>
+    <ol>
+      <li>
+        <p>RedBlackTreeSet&lt;Int&gt; sequential iteration (score: 1.414, overall: 1.414, improvements: 1.414(#80), regressions: 1(#0))</p>
+        <svg width="1280.0px" height="480.0px" viewBox="0.0 0.0 1280.0 480.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+          <path d="M 0 0 L 0 480 L 1280 480 L 1280 0 z" fill="#FFFFFF" fill-opacity="1.0" stroke="none"/>
+          <text x="50" y="468.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">Average per-element processing time over input size (bands: min, mean, mean + 2stddev)</text>
+          <a xlink:href="https://github.com/apple/swift-collections-benchmark"><text x="1107" y="468.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">swift-collections-benchmark</text></a>
+          <path d="M 50 9 L 50 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="47" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">1</text>
+          <path d="M 106.19 9 L 106.19 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="103.19" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">2</text>
+          <path d="M 162.38 9 L 162.38 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="159.38" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">4</text>
+          <path d="M 218.57 9 L 218.57 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="215.57" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">8</text>
+          <path d="M 274.76 9 L 274.76 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="268.76" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">16</text>
+          <path d="M 330.95 9 L 330.95 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="324.95" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">32</text>
+          <path d="M 387.14 9 L 387.14 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="381.14" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">64</text>
+          <path d="M 443.33 9 L 443.33 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="434.83" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">128</text>
+          <path d="M 499.52 9 L 499.52 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="491.02" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">256</text>
+          <path d="M 555.71 9 L 555.71 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="547.21" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">512</text>
+          <path d="M 611.9 9 L 611.9 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="606.4" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">1k</text>
+          <path d="M 668.1 9 L 668.1 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="662.6" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">2k</text>
+          <path d="M 724.29 9 L 724.29 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="718.79" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">4k</text>
+          <path d="M 780.48 9 L 780.48 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="774.98" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">8k</text>
+          <path d="M 836.67 9 L 836.67 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="828.17" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">16k</text>
+          <path d="M 892.86 9 L 892.86 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="884.36" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">32k</text>
+          <path d="M 949.05 9 L 949.05 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="940.55" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">64k</text>
+          <path d="M 1005.2 9 L 1005.2 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="994.24" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">128k</text>
+          <path d="M 1061.4 9 L 1061.4 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="1050.4" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">256k</text>
+          <path d="M 1117.6 9 L 1117.6 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="1106.6" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">512k</text>
+          <path d="M 1173.8 9 L 1173.8 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="1166.8" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">1M</text>
+          <path d="M 1230 9 L 1230 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="1223" y="453.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">2M</text>
+          <path d="M 50 441 L 1230 441" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="27" y="442.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">1 ns</text>
+          <text x="1236" y="442.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">1 ns</text>
+          <path d="M 50 225 L 1230 225" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="21" y="226.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">10 ns</text>
+          <text x="1236" y="226.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">10 ns</text>
+          <path d="M 50 9 L 1230 9" fill="none" stroke-width="0.75" stroke="#000000" stroke-opacity="0.49804" stroke-linecap="butt" stroke-linejoin="round"/>
+          <text x="16" y="10.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">100 ns</text>
+          <text x="1236" y="10.7" font-family="Helvetica" font-size="10" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">100 ns</text>
+          <path d="M 50 375.98 L 1230 375.98" fill="none" stroke-width="0.5" stroke="#000000" stroke-opacity="0.25882" stroke-linecap="butt" stroke-linejoin="round" stroke-dasharray="6 3" stroke-dashoffset="0"/>
+          <path d="M 50 310.96 L 1230 310.96" fill="none" stroke-width="0.5" stroke="#000000" stroke-opacity="0.25882" stroke-linecap="butt" stroke-linejoin="round" stroke-dasharray="6 3" stroke-dashoffset="0"/>
+          <path d="M 50 245.93 L 1230 245.93" fill="none" stroke-width="0.5" stroke="#000000" stroke-opacity="0.25882" stroke-linecap="butt" stroke-linejoin="round" stroke-dasharray="6 3" stroke-dashoffset="0"/>
+          <path d="M 50 180.91 L 1230 180.91" fill="none" stroke-width="0.5" stroke="#000000" stroke-opacity="0.25882" stroke-linecap="butt" stroke-linejoin="round" stroke-dasharray="6 3" stroke-dashoffset="0"/>
+          <path d="M 50 115.89 L 1230 115.89" fill="none" stroke-width="0.5" stroke="#000000" stroke-opacity="0.25882" stroke-linecap="butt" stroke-linejoin="round" stroke-dasharray="6 3" stroke-dashoffset="0"/>
+          <path d="M 50 50.865 L 1230 50.865" fill="none" stroke-width="0.5" stroke="#000000" stroke-opacity="0.25882" stroke-linecap="butt" stroke-linejoin="round" stroke-dasharray="6 3" stroke-dashoffset="0"/>
+          <path d="M 74 33 L 74 88 L 485 88 L 485 33 z" fill="#FFFFFF" fill-opacity="1.0" stroke="none"/>
+          <clipPath id="clip-0">
+            <path d="M 50 9 L 50 441 L 1230 441 L 1230 9 z"/>
+          </clipPath>
+          <g clip-path="url(#clip-0)">
+            <path d="M 50 214.45L 106.19 307.2L 139.06 318.84L 162.38 314.48L 180.47 311.55L 195.25 311.96L 207.75 313.39L 218.57 317.24L 236.66 317.2L 251.44 317.01L 263.94 313.03L 274.76 314.55L 292.85 313.02L 307.63 313.4L 320.13 313.79L 330.95 310.13L 349.04 311L 363.82 307.06L 376.32 305.6L 387.14 308.45L 405.23 305.64L 420.01 303.86L 432.51 301.66L 443.33 302.02L 461.42 301.96L 476.2 300.47L 488.7 303.28L 499.52 300.18L 517.61 301.2L 532.39 299.31L 544.89 298.66L 555.71 301.65L 573.8 299.02L 588.58 298.55L 601.08 298.57L 611.9 298.4L 629.99 298.17L 644.77 297.91L 657.27 297.9L 668.1 300.35L 686.18 297.77L 700.96 299.26L 713.46 299.07L 724.29 295.87L 742.38 299.21L 757.16 295.77L 769.65 296.48L 780.48 296.49L 798.57 296.64L 813.35 295.8L 825.84 295.85L 836.67 296.73L 854.76 298.56L 869.54 296.1L 882.03 295.93L 892.86 296.5L 910.95 295.54L 925.73 298.13L 938.22 296.78L 949.05 295.16L 967.14 298.38L 981.92 298.15L 994.41 297.75L 1005.2 298.13L 1023.3 294.85L 1038.1 295.8L 1050.6 293.62L 1061.4 292.97L 1079.5 292.42L 1094.3 294.2L 1106.8 290.14L 1117.6 290.67L 1135.7 291.33L 1150.5 288.95L 1163 289.38L 1173.8 287.89L 1191.9 286.07L 1206.7 284.14L 1219.2 291.8L 1230 281.47L 1230 292.19L 1219.2 292.56L 1206.7 287.43L 1191.9 292.58L 1173.8 292.93L 1163 292.68L 1150.5 292.92L 1135.7 292.94L 1117.6 293.61L 1106.8 293.98L 1094.3 295.73L 1079.5 295.04L 1061.4 295.68L 1050.6 296.1L 1038.1 297.17L 1023.3 298.67L 1005.2 298.74L 994.41 299.03L 981.92 299.03L 967.14 298.83L 949.05 299.04L 938.22 298.91L 925.73 298.99L 910.95 298.93L 892.86 299.19L 882.03 299.2L 869.54 298.92L 854.76 299.27L 836.67 297.51L 825.84 299.16L 813.35 299.22L 798.57 299.16L 780.48 299.08L 769.65 299.18L 757.16 299.15L 742.38 299.22L 724.29 299.13L 713.46 299.39L 700.96 299.36L 686.18 300.39L 668.1 300.48L 657.27 300.53L 644.77 300.64L 629.99 300.76L 611.9 300.97L 601.08 301.15L 588.58 301.31L 573.8 301.6L 555.71 301.68L 544.89 301.87L 532.39 302.27L 517.61 302.69L 499.52 302.79L 488.7 303.35L 476.2 303.67L 461.42 304.52L 443.33 305.61L 432.51 304.81L 420.01 306.54L 405.23 306.66L 387.14 308.46L 376.32 308.31L 363.82 310.51L 349.04 311.44L 330.95 313.81L 320.13 314.44L 307.63 315.29L 292.85 315.96L 274.76 315.72L 263.94 317.01L 251.44 317.01L 236.66 319.13L 218.57 319.67L 207.75 315.56L 195.25 317.01L 180.47 321.26L 162.38 322.42L 139.06 324.29L 106.19 322.42L 50 317.01" fill="#007AFF" fill-opacity="0.30196078431372547" stroke="none"/>
+            <path d="M 50 94.965L 106.19 224.97L 139.06 248.59L 162.38 252.78L 180.47 257.55L 195.25 263.02L 207.75 267.57L 218.57 270.3L 236.66 268.48L 251.44 275.29L 263.94 280.55L 274.76 278.1L 292.85 277.94L 307.63 260.29L 320.13 281.06L 330.95 273.55L 349.04 269.49L 363.82 265.26L 376.32 264.07L 387.14 263.04L 405.23 268.62L 420.01 265.98L 432.51 267.16L 443.33 265.95L 461.42 268.59L 476.2 274.54L 488.7 272.44L 499.52 272L 517.61 274.83L 532.39 274.42L 544.89 274.42L 555.71 275.07L 573.8 274.46L 588.58 275.64L 601.08 274.61L 611.9 275.92L 629.99 275.75L 644.77 275.2L 657.27 276.05L 668.1 274.66L 686.18 279.32L 700.96 275.37L 713.46 275.32L 724.29 276.34L 742.38 275.54L 757.16 275.48L 769.65 276.03L 780.48 274.64L 798.57 273.73L 813.35 273.52L 825.84 274.76L 836.67 274.61L 854.76 272.99L 869.54 274.39L 882.03 272.26L 892.86 273.45L 910.95 272.8L 925.73 272.75L 938.22 272.87L 949.05 272.43L 967.14 272.95L 981.92 274.83L 994.41 273.28L 1005.2 272.59L 1023.3 272.19L 1038.1 270.45L 1050.6 270.62L 1061.4 271.06L 1079.5 269.61L 1094.3 271.07L 1106.8 269.78L 1117.6 268.9L 1135.7 268.88L 1150.5 267.71L 1163 268.84L 1173.8 269.05L 1191.9 263.11L 1206.7 267.89L 1219.2 265.41L 1230 269.25L 1230 271.93L 1219.2 271.69L 1206.7 271.87L 1191.9 271.89L 1173.8 270.9L 1163 271.94L 1150.5 272.03L 1135.7 271.98L 1117.6 271.92L 1106.8 271.23L 1094.3 272.79L 1079.5 273.88L 1061.4 273.58L 1050.6 273.98L 1038.1 274.19L 1023.3 275.15L 1005.2 275.69L 994.41 274.4L 981.92 275.79L 967.14 276.04L 949.05 275.8L 938.22 275.18L 925.73 274.48L 910.95 275.58L 892.86 275.82L 882.03 276.29L 869.54 274.77L 854.76 276.47L 836.67 274.68L 825.84 274.96L 813.35 276.74L 798.57 276.93L 780.48 276.51L 769.65 277.38L 757.16 276.67L 742.38 278.05L 724.29 276.63L 713.46 278.1L 700.96 278.46L 686.18 282.36L 668.1 278.06L 657.27 276.23L 644.77 278.08L 629.99 276.57L 611.9 276.12L 601.08 277.83L 588.58 275.92L 573.8 277.69L 555.71 275.63L 544.89 277.69L 532.39 277.18L 517.61 275.25L 499.52 275.2L 488.7 276.92L 476.2 274.69L 461.42 272.72L 443.33 268.7L 432.51 268.98L 420.01 268.89L 405.23 268.86L 387.14 265.07L 376.32 265.48L 363.82 268.05L 349.04 270.19L 330.95 274.52L 320.13 282.25L 307.63 272.27L 292.85 284.34L 274.76 278.11L 263.94 281.5L 251.44 276.13L 236.66 272.26L 218.57 273.9L 207.75 271.81L 195.25 266.01L 180.47 264.21L 162.38 258.73L 139.06 248.59L 106.19 231.05L 50 198.04" fill="#FF3B30" fill-opacity="0.30196078431372547" stroke="none"/>
+            <path d="M 50 282.51L 106.19 317.05L 139.06 323.01L 162.38 320.58L 180.47 317.71L 195.25 315.3L 207.75 315.05L 218.57 318.78L 236.66 318.42L 251.44 317.01L 263.94 315.53L 274.76 315.29L 292.85 315.11L 307.63 314.86L 320.13 314.2L 330.95 312.45L 349.04 311.28L 363.82 309.23L 376.32 307.63L 387.14 308.46L 405.23 306.39L 420.01 305.9L 432.51 303.65L 443.33 304.36L 461.42 303.71L 476.2 302.49L 488.7 303.32L 499.52 302.2L 517.61 302.35L 532.39 301.44L 544.89 300.69L 555.71 301.67L 573.8 300.91L 588.58 300.6L 601.08 300.51L 611.9 300.38L 629.99 300.15L 644.77 300.02L 657.27 299.93L 668.1 300.44L 686.18 299.78L 700.96 299.33L 713.46 299.28L 724.29 297.92L 742.38 299.21L 757.16 297.9L 769.65 298.56L 780.48 298.41L 798.57 298.51L 813.35 298.37L 825.84 298.29L 836.67 297.25L 854.76 299.02L 869.54 297.89L 882.03 298.05L 892.86 298.31L 910.95 298L 925.73 298.68L 938.22 298.13L 949.05 297.6L 967.14 298.67L 981.92 298.77L 994.41 298.66L 1005.2 298.52L 1023.3 297.63L 1038.1 296.71L 1050.6 295.5L 1061.4 294.91L 1079.5 294.44L 1094.3 295.19L 1106.8 292.66L 1117.6 292.64L 1135.7 292.5L 1150.5 291.88L 1163 291.8L 1173.8 291.21L 1191.9 291.01L 1206.7 286.31L 1219.2 292.32L 1230 289.21" fill="none" stroke-width="4" stroke="#007AFF" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 50 163.3L 106.19 228.99L 139.06 248.59L 162.38 256.89L 180.47 262.25L 195.25 265.01L 207.75 270.29L 218.57 273.08L 236.66 270.99L 251.44 275.94L 263.94 281.15L 274.76 278.11L 292.85 282.15L 307.63 269.35L 320.13 281.83L 330.95 274.18L 349.04 270.03L 363.82 267.03L 376.32 265.12L 387.14 264.33L 405.23 268.78L 420.01 267.82L 432.51 268.31L 443.33 267.68L 461.42 271.75L 476.2 274.66L 488.7 275.25L 499.52 274.01L 517.61 275.1L 532.39 276.17L 544.89 276.93L 555.71 275.42L 573.8 276.49L 588.58 275.83L 601.08 276.64L 611.9 276.05L 629.99 276.28L 644.77 277.06L 657.27 276.17L 668.1 276.8L 686.18 281.24L 700.96 277.32L 713.46 277.07L 724.29 276.55L 742.38 277.12L 757.16 276.37L 769.65 276.9L 780.48 275.87L 798.57 275.74L 813.35 275.55L 825.84 274.9L 836.67 274.65L 854.76 275.21L 869.54 274.66L 882.03 274.85L 892.86 274.95L 910.95 274.59L 925.73 273.88L 938.22 274.35L 949.05 274.71L 967.14 274.91L 981.92 275.44L 994.41 274.02L 1005.2 274.62L 1023.3 274.1L 1038.1 272.84L 1050.6 272.73L 1061.4 272.69L 1079.5 272.37L 1094.3 272.3L 1106.8 270.88L 1117.6 270.92L 1135.7 270.83L 1150.5 270.77L 1163 270.8L 1173.8 270.22L 1191.9 269.01L 1206.7 270.46L 1219.2 270.23L 1230 271.18" fill="none" stroke-width="4" stroke="#FF3B30" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 50 282.51L 106.19 317.05L 139.06 323.01L 162.38 320.58L 180.47 317.71L 195.25 315.3L 207.75 315.05L 218.57 318.78L 236.66 318.42L 251.44 317.01L 263.94 315.53L 274.76 315.29L 292.85 315.11L 307.63 314.86L 320.13 314.2L 330.95 312.45L 349.04 311.28L 363.82 309.23L 376.32 307.63L 387.14 308.46L 405.23 306.39L 420.01 305.9L 432.51 303.65L 443.33 304.36L 461.42 303.71L 476.2 302.49L 488.7 303.32L 499.52 302.2L 517.61 302.35L 532.39 301.44L 544.89 300.69L 555.71 301.67L 573.8 300.91L 588.58 300.6L 601.08 300.51L 611.9 300.38L 629.99 300.15L 644.77 300.02L 657.27 299.93L 668.1 300.44L 686.18 299.78L 700.96 299.33L 713.46 299.28L 724.29 297.92L 742.38 299.21L 757.16 297.9L 769.65 298.56L 780.48 298.41L 798.57 298.51L 813.35 298.37L 825.84 298.29L 836.67 297.25L 854.76 299.02L 869.54 297.89L 882.03 298.05L 892.86 298.31L 910.95 298L 925.73 298.68L 938.22 298.13L 949.05 297.6L 967.14 298.67L 981.92 298.77L 994.41 298.66L 1005.2 298.52L 1023.3 297.63L 1038.1 296.71L 1050.6 295.5L 1061.4 294.91L 1079.5 294.44L 1094.3 295.19L 1106.8 292.66L 1117.6 292.64L 1135.7 292.5L 1150.5 291.88L 1163 291.8L 1173.8 291.21L 1191.9 291.01L 1206.7 286.31L 1219.2 292.32L 1230 289.21" fill="none" stroke-width="0.5" stroke="#000000" stroke-opacity="0.30196" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 50 163.3L 106.19 228.99L 139.06 248.59L 162.38 256.89L 180.47 262.25L 195.25 265.01L 207.75 270.29L 218.57 273.08L 236.66 270.99L 251.44 275.94L 263.94 281.15L 274.76 278.11L 292.85 282.15L 307.63 269.35L 320.13 281.83L 330.95 274.18L 349.04 270.03L 363.82 267.03L 376.32 265.12L 387.14 264.33L 405.23 268.78L 420.01 267.82L 432.51 268.31L 443.33 267.68L 461.42 271.75L 476.2 274.66L 488.7 275.25L 499.52 274.01L 517.61 275.1L 532.39 276.17L 544.89 276.93L 555.71 275.42L 573.8 276.49L 588.58 275.83L 601.08 276.64L 611.9 276.05L 629.99 276.28L 644.77 277.06L 657.27 276.17L 668.1 276.8L 686.18 281.24L 700.96 277.32L 713.46 277.07L 724.29 276.55L 742.38 277.12L 757.16 276.37L 769.65 276.9L 780.48 275.87L 798.57 275.74L 813.35 275.55L 825.84 274.9L 836.67 274.65L 854.76 275.21L 869.54 274.66L 882.03 274.85L 892.86 274.95L 910.95 274.59L 925.73 273.88L 938.22 274.35L 949.05 274.71L 967.14 274.91L 981.92 275.44L 994.41 274.02L 1005.2 274.62L 1023.3 274.1L 1038.1 272.84L 1050.6 272.73L 1061.4 272.69L 1079.5 272.37L 1094.3 272.3L 1106.8 270.88L 1117.6 270.92L 1135.7 270.83L 1150.5 270.77L 1163 270.8L 1173.8 270.22L 1191.9 269.01L 1206.7 270.46L 1219.2 270.23L 1230 271.18" fill="none" stroke-width="0.5" stroke="#000000" stroke-opacity="0.30196" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <path d="M 74 33 L 74 88 L 485 88 L 485 33 z" fill="#FFFFFF" fill-opacity="0.7019607843137254" stroke-width="0.5" stroke="#000000" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M 88 52 L 108 52" fill="none" stroke-width="4" stroke="#FF3B30" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M 88 52 L 108 52" fill="none" stroke-width="0.5" stroke="#000000" stroke-opacity="0.30196" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="119" y="56.17" font-family="Menlo" font-size="12" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">before∶ RedBlackTreeSet&lt;Int&gt; sequential iteration</text>
+          <path d="M 88 69 L 108 69" fill="none" stroke-width="4" stroke="#007AFF" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M 88 69 L 108 69" fill="none" stroke-width="0.5" stroke="#000000" stroke-opacity="0.30196" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="119" y="73.17" font-family="Menlo" font-size="12" font-weight="normal" font-style="normal" fill="#000000" fill-opacity="1">after∶ RedBlackTreeSet&lt;Int&gt; sequential iteration</text>
+          <path d="M 50 9 L 50 441 L 1230 441 L 1230 9 z" fill="none" stroke-width="0.5" stroke="#000000" stroke-opacity="1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </li>
+      <li>
+        <p>RedBlackTreeSet&lt;Int&gt; unsuccessful find (score: 1.085, overall: 1.085, improvements: 1.085(#80), regressions: 1(#0))</p>
+      </li>
+      <li>
+        <p>RedBlackTreeSet&lt;Int&gt; successful find (score: 1.063, overall: 1.063, improvements: 1.063(#80), regressions: 1(#0))</p>
+      </li>
+    </ol>
+  </body>
+</html>

@@ -23,8 +23,8 @@ public enum UnsafeIterator {}
     // CoWを避ける方向ですすめていたが、ケアしきれなさそうなのでCoW導入を検討中
     // TODO: 再度検討し確定すること（夏休み目標）
     public typealias _TieTrait = CopyOnWrite
-    public typealias Obverse = _Obverse4
-    public typealias Reverse = _Reverse4
+    public typealias Obverse = _Obverse0
+    public typealias Reverse = _Reverse0
 
     public
       typealias ValueObverse<Base: ___TreeBase> = _TieTrait<

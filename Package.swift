@@ -83,6 +83,12 @@ var _settings: [SwiftSetting] =
       "DEATH_TEST",
       .when(platforms: [.macOS])
     ),
+
+    .unsafeFlags(
+      ["-Ounchecked"],
+      .when(
+        configuration: .release,
+        traits: ["_O_UNCHECKED"])),
   ]
   + defines.map { .define($0) }
 
@@ -115,6 +121,9 @@ let package = Package(
     ),
     .trait(
       name: "GRAPHVIZ_DEBUG"
+    ),
+    .trait(
+      name: "_O_UNCHECKED"
     ),
   ],
   dependencies: [

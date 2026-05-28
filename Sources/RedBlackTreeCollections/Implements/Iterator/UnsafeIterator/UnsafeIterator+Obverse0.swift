@@ -17,6 +17,7 @@
 
 extension UnsafeIterator {
 
+  @frozen
   public struct _Obverse0:
     _UnsafeNodePtrType,
     IteratorProtocol,
@@ -30,9 +31,9 @@ extension UnsafeIterator {
       self._current = _start
     }
 
-    public let _start: _NodePtr
-    public let _end: _NodePtr
-    public var _current: _NodePtr
+    @usableFromInline let _start: _NodePtr
+    @usableFromInline let _end: _NodePtr
+    @usableFromInline var _current: _NodePtr
 
     @inlinable
     public mutating func next() -> _NodePtr? {

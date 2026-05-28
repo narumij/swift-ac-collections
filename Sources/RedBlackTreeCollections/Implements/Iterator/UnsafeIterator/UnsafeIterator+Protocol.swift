@@ -35,7 +35,7 @@ public protocol ReverseIterator: IteratorProtocol {}
   public protocol UnsafeAssosiatedIterator: _UnsafeNodePtrType, IteratorProtocol
   where Source.Element == _NodePtr {
     associatedtype Base: ___TreeBase
-    associatedtype Source: IteratorProtocol & UnsafeIteratorProtocol
+    associatedtype Source: IteratorProtocol
     init(source: Source)
   }
 #endif

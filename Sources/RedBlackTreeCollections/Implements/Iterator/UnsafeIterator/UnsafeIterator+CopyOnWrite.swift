@@ -18,6 +18,7 @@
 #if !COMPATIBLE_ATCODER_2025
   extension UnsafeIterator {
 
+    @frozen
     public struct CopyOnWrite<Source>:
       _UnsafeNodePtrType,
       IteratorProtocol,
@@ -26,26 +27,30 @@
       Source: UnsafeAssosiatedIterator
     {
       public typealias Base = Source.Base
+      public typealias Tree = UnsafeTreeV2<Source.Base>
 
       @usableFromInline
-      var tree: UnsafeTreeV2<Source.Base>
+      var tree: Tree
 
       @inlinable
-      init(
-        start: _NodePtr,
-        end: _NodePtr,
-        tree: UnsafeTreeV2<Source.Base>
-      ) {
-        self.init(
-          _source: .init(source: .init(_start: start, _end: end)),
-          tree: tree)
+      init(start: _NodePtr, end: _NodePtr, tree: Tree)
+      where Source.Source == _Obverse0 {
+        self.source = .init(source: .init(_start: start, _end: end))
+        self.tree = tree
+      }
+
+      @inlinable
+      init(start: _NodePtr, end: _NodePtr, tree: Tree)
+      where Source.Source == _Reverse0 {
+        self.source = .init(source: .init(_start: start, _end: end))
+        self.tree = tree
       }
 
       @usableFromInline
       var source: Source
 
       @inlinable
-      internal init(_source: Source, tree: UnsafeTreeV2<Source.Base>) {
+      internal init(_source: Source, tree: Tree) {
         self.source = _source
         self.tree = tree
       }

@@ -41,7 +41,3 @@ public enum UnsafeIterator {}
     where Base: ___TreeBase & PairValueTrait
   }
 #endif
-
-extension UnsafeIterator {
-  public typealias _NaivePointers = _Obverse1
-}

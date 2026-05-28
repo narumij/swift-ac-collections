@@ -73,7 +73,7 @@ import XCTest
           tree.eraseUnique(v.key)  // strong ensure unique
         }
         XCTAssertEqual(tree.count, 0)
-        #if USE_COW_ITERATOR
+        #if true
           XCTAssertEqual(tree._copyCount, 1)
         #else
           XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
@@ -170,7 +170,7 @@ import XCTest
         #endif
       }
       XCTAssertEqual(tree.count, 0)
-      #if !COMPATIBLE_ATCODER_2025 && !USE_COW_ITERATOR
+      #if !COMPATIBLE_ATCODER_2025 && false
         XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
       #else
         XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする

@@ -1174,7 +1174,7 @@ final class EtcTests: RedBlackTreeTestCase {
     //      XCTAssertEqual(it + [], [5,10]) // ここで落ちる
     //    }
 
-    #if !USE_COW_ITERATOR
+    #if false
       func testItertor() throws {
         var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
         //      var it = a[a.lowerBound(5)..<a.firstIndex(of: 45)].makeIterator()

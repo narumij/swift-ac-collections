@@ -47,7 +47,7 @@ import XCTest
       XCTAssertEqual(set._copyCount, 0)
     }
 
-    #if !USE_COW_ITERATOR
+    #if false
       func testSet3() throws {
         var tree = RedBlackTreeSet<Int>(0..<20)
         tree._copyCount = 0

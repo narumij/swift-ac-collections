@@ -26,9 +26,9 @@ public enum UnsafeIterator {}
     where Base: ___TreeBase
 
     public typealias KeyObverse<Base> = _CopyOnWrite<_Key<Base, _Obverse0>>
-    where Base: ___TreeBase
+    where Base: ___TreeBase & PairValueTrait
     public typealias KeyReverse<Base> = _CopyOnWrite<_Key<Base, _Reverse0>>
-    where Base: ___TreeBase
+    where Base: ___TreeBase & PairValueTrait
 
     public typealias MappedValueObverse<Base> = _CopyOnWrite<_MappedValue<Base, _Obverse0>>
     where Base: ___TreeBase & PairValueTrait

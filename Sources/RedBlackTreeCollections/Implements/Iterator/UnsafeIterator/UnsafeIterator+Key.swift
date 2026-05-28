@@ -23,6 +23,7 @@ extension UnsafeIterator {
     IteratorProtocol,
     Sequence
   where
+    Base: ___TreeBase & PairValueTrait,
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: IteratorProtocol
   {
@@ -36,7 +37,7 @@ extension UnsafeIterator {
     @inlinable
     public mutating func next() -> Base._Key? {
       return _source.next().map {
-        Base.__key($0.__value_().pointee)
+        Base.__key_($0)
       }
     }
   }

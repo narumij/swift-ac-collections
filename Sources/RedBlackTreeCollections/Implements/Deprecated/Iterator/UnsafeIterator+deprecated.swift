@@ -28,11 +28,11 @@
       >
 
     public
-      typealias KeyObverse<Base: ___TreeBase & ___TreeIndex> = _TieTrait<
+      typealias KeyObverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = _TieTrait<
         _Key<Base, _RemoveTrait<_Obverse2>>
       >
     public
-      typealias KeyReverse<Base: ___TreeBase & ___TreeIndex> = _TieTrait<
+      typealias KeyReverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = _TieTrait<
         _Key<Base, _RemoveTrait<_Reverse2>>
       >
 

@@ -31,7 +31,7 @@ extension UnsafeIterator {
       var _source: Source
 
     @inlinable
-    internal init(source: Source) {
+    public init(source: Source) {
       self._source = source
     }
 
@@ -49,21 +49,6 @@ extension UnsafeIterator {
       @inlinable
       public var _sealed_end: _SealedPtr {
         _source._sealed_end
-      }
-    #else
-      @inlinable
-      public init(_ t: Base.Type, _start: _NodePtr, _end: _NodePtr) {
-        self.init(source: .init(_start: _start, _end: _end))
-      }
-
-      @inlinable
-      public var _start: _NodePtr {
-        _source._start
-      }
-
-      @inlinable
-      public var _end: _NodePtr {
-        _source._end
       }
     #endif
 

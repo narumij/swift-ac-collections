@@ -31,7 +31,7 @@ extension UnsafeIterator {
       var _source: Source
 
     @inlinable
-    internal init(source: Source) {
+    public init(source: Source) {
       self._source = source
     }
 
@@ -50,36 +50,31 @@ extension UnsafeIterator {
       public var _sealed_end: _SealedPtr {
         _source._sealed_end
       }
-    #else
-      @inlinable
-      public init(_ t: Base.Type, _start: _NodePtr, _end: _NodePtr) {
-        self.init(source: .init(_start: _start, _end: _end))
-      }
-
-      @inlinable
-      public var _start: _NodePtr {
-        _source._start
-      }
-
-      @inlinable
-      public var _end: _NodePtr {
-        _source._end
-      }
     #endif
 
     @inlinable
     public mutating func next() -> (key: Base._Key, value: Base._MappedValue)? {
-      return _source.next().map {
-        (
-          Base.__key_($0),
-          Base.__mapped_value_($0)
-        )
-      }
+      return _source.next().map { Base.__element_($0) }
     }
   }
 }
 
 extension UnsafeIterator._KeyValue: @unchecked Sendable where Source: Sendable {}
+
+extension UnsafeIterator._KeyValue
+{
+  /// - Complexity: O(1)
+  @inlinable
+  public func keys() -> UnsafeIterator._Key<Base, Source> {
+    .init(source: _source)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  public func values() -> UnsafeIterator._MappedValue<Base, Source> {
+    .init(source: _source)
+  }
+}
 
 extension UnsafeIterator._KeyValue: ObverseIterator
 where

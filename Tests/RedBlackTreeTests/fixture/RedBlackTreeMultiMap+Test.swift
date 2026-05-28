@@ -48,7 +48,7 @@ extension RedBlackTreeMultiMap {
   }
 #endif
 
-#if DEBUG
+#if DEBUG && COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
     package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {

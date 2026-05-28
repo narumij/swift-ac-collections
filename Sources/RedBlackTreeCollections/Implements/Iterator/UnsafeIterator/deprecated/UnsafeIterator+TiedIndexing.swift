@@ -77,15 +77,13 @@
     where Source: Sendable {}
   #endif
 
-  #if COMPATIBLE_ATCODER_2025
-    extension UnsafeIterator.TiedIndexing: Comparable where Source: Equatable, Element: Comparable {
+  extension UnsafeIterator.TiedIndexing: Comparable where Source: Equatable, Element: Comparable {
 
-      @inlinable
-      public static func < (lhs: Self, rhs: Self) -> Bool {
-        lhs.lexicographicallyPrecedes(rhs)
-      }
+    @inlinable
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+      lhs.lexicographicallyPrecedes(rhs)
     }
-  #endif
+  }
 
   extension UnsafeIterator.TiedIndexing: ObverseIterator
   where

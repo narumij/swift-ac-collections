@@ -17,67 +17,14 @@
 
 public enum UnsafeIterator {}
 
-extension UnsafeIterator {
+#if !COMPATIBLE_ATCODER_2025
+  extension UnsafeIterator {
 
-  #if !COMPATIBLE_ATCODER_2025
-    public typealias _RemoveTrait = _RemoveCheck
     // CoWを避ける方向ですすめていたが、ケアしきれなさそうなのでCoW導入を検討中
     // TODO: 再度検討し確定すること（夏休み目標）
     public typealias _TieTrait = CopyOnWrite
     public typealias Obverse = _Obverse4
     public typealias Reverse = _Reverse4
-  #else
-    public typealias _RemoveTrait = _RemoveAware
-    public typealias _TieTrait = Tied
-  #endif
-
-  #if COMPATIBLE_ATCODER_2025
-    public
-      typealias IndexObverse<Base: ___TreeBase & ___TreeIndex> =
-      TiedIndexing<Base, _RemoveTrait<_Obverse2>>
-
-    public
-      typealias IndexReverse<Base: ___TreeBase & ___TreeIndex> =
-      TiedIndexing<Base, _RemoveTrait<_Reverse2>>
-  #endif
-
-  #if COMPATIBLE_ATCODER_2025
-    public
-      typealias ValueObverse<Base: ___TreeBase> = _TieTrait<
-        _Payload<Base, _RemoveTrait<_Obverse2>>
-      >
-    public
-      typealias ValueReverse<Base: ___TreeBase> = _TieTrait<
-        _Payload<Base, _RemoveTrait<_Reverse2>>
-      >
-
-    public
-      typealias KeyObverse<Base: ___TreeBase & ___TreeIndex> = _TieTrait<
-        _Key<Base, _RemoveTrait<_Obverse2>>
-      >
-    public
-      typealias KeyReverse<Base: ___TreeBase & ___TreeIndex> = _TieTrait<
-        _Key<Base, _RemoveTrait<_Reverse2>>
-      >
-
-    public
-      typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = _TieTrait<
-        _MappedValue<Base, _RemoveTrait<_Obverse2>>
-      >
-    public
-      typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = _TieTrait<
-        _MappedValue<Base, _RemoveTrait<_Reverse2>>
-      >
-
-    public
-      typealias KeyValueObverse<Base: ___TreeBase & PairValueTrait> = _TieTrait<
-        _KeyValue<Base, _RemoveTrait<_Obverse2>>
-      >
-    public
-      typealias KeyValueReverse<Base: ___TreeBase & PairValueTrait> = _TieTrait<
-        _KeyValue<Base, _RemoveTrait<_Reverse2>>
-      >
-  #else
 
     public
       typealias ValueObverse<Base: ___TreeBase> = _TieTrait<
@@ -114,11 +61,9 @@ extension UnsafeIterator {
       typealias KeyValueReverse<Base: ___TreeBase & PairValueTrait> = _TieTrait<
         _KeyValue<Base, Reverse>
       >
-  #endif
-}
+  }
+#endif
 
 extension UnsafeIterator {
-  public typealias _RemoveAwarePointers = _RemoveAware<_Obverse2>
   public typealias _NaivePointers = _Obverse1
-  public typealias _RemoveAwareReversePointers = _RemoveAware<_Reverse2>
 }

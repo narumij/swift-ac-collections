@@ -27,6 +27,7 @@ public struct RedBlackTreePair<Key, Value> {
     self.tuple = tuple
   }
 
+  // elementにリネームしたい衝動がある
   public var tuple: (key: Key, value: Value)
 }
 

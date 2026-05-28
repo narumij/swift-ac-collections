@@ -46,7 +46,7 @@ extension RedBlackTreeDictionary {
   }
 #endif
 
-#if DEBUG
+#if DEBUG && COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {

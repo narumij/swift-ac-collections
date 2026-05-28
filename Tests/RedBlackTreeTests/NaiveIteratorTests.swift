@@ -27,7 +27,7 @@ import XCTest
         _end: a.__tree_.__end_node)
       XCTAssertEqual(it.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5).reversed())
     }
-    
+
     func testNaiveForward1() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator._Obverse1(
@@ -43,7 +43,7 @@ import XCTest
         _end: a.__tree_.__end_node)
       XCTAssertEqual(it.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5).reversed())
     }
-    
+
     func testNaiveForward2() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator._Obverse2(
@@ -59,7 +59,7 @@ import XCTest
         _end: a.__tree_.__end_node)
       XCTAssertEqual(it.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5).reversed())
     }
-    
+
     func testNaiveForward3() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator._Obverse3(
@@ -76,23 +76,25 @@ import XCTest
       XCTAssertEqual(it.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5).reversed())
     }
 
-    func testWrappedForward() throws {
-      let a = RedBlackTreeSet<Int>(0..<5)
-      let wrapped = UnsafeIterator._RemoveAware(
-        source: UnsafeIterator._Obverse1(
-          _start: a.__tree_.__begin_node_,
-          _end: a.__tree_.__end_node))
-      XCTAssertEqual(wrapped.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5))
-    }
+    #if COMPATIBLE_ATCODER_2025
+      func testWrappedForward() throws {
+        let a = RedBlackTreeSet<Int>(0..<5)
+        let wrapped = UnsafeIterator._RemoveAware(
+          source: UnsafeIterator._Obverse1(
+            _start: a.__tree_.__begin_node_,
+            _end: a.__tree_.__end_node))
+        XCTAssertEqual(wrapped.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5))
+      }
 
-    func testWrappedReverse() throws {
-      let a = RedBlackTreeSet<Int>(0..<5)
-      let wrapped = UnsafeIterator._RemoveAware(
-        source: UnsafeIterator._Reverse1(
-          _start: a.__tree_.__begin_node_,
-          _end: a.__tree_.__end_node))
-      XCTAssertEqual(wrapped.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5).reversed())
-    }
+      func testWrappedReverse() throws {
+        let a = RedBlackTreeSet<Int>(0..<5)
+        let wrapped = UnsafeIterator._RemoveAware(
+          source: UnsafeIterator._Reverse1(
+            _start: a.__tree_.__begin_node_,
+            _end: a.__tree_.__end_node))
+        XCTAssertEqual(wrapped.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5).reversed())
+      }
+    #endif
 
     func testValuesForward() throws {
       let a = RedBlackTreeSet<Int>(0..<5)

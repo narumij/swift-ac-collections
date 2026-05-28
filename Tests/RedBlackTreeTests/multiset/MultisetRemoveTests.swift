@@ -251,7 +251,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if DEBUG
+  #if DEBUG && COMPATIBLE_ATCODER_2025
     func testRemoveWith___Indices() throws {
       var members = RedBlackTreeMultiSet<Int>(0..<10)
       for i in members.___node_positions() {

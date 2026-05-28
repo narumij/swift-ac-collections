@@ -95,7 +95,7 @@ extension RedBlackTreeKeyValueRangeView {
   func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
     __tree_.index(p)
   }
-  
+
   @inlinable
   func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPtr {
     p.band(__tree_)
@@ -111,7 +111,7 @@ extension RedBlackTreeKeyValueRangeView {
   public __consuming func makeIterator() -> UnsafeIterator.KeyValueObverse<Base> {
     let (_start, _end) = _range
     #if !COMPATIBLE_ATCODER_2025
-      return .init(start: _start, end: _end, tree: __tree_)
+      return .init(start: _start.pointer!, end: _end.pointer!, tree: __tree_)
     #else
       return .init(start: _start, end: _end, tie: __tree_.tied)
     #endif

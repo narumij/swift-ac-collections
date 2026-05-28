@@ -26,17 +26,27 @@ extension UnsafeIterator {
     Sequence,
     Equatable
   {
-    @inlinable
-    public init(_start: _SealedPtr, _end: _SealedPtr) {
-      self._safe_start = _start.map(\.pointer)
-      self._safe_end = _end.map(\.pointer)
-      self._safe_current = _start.map(\.pointer)
-    }
-
     public var _safe_start, _safe_end, _safe_current: _SafePtr
 
-    public var _sealed_start: _SealedPtr { _safe_start.uncheckedSeal }
-    public var _sealed_end: _SealedPtr { _safe_end.uncheckedSeal }
+    #if COMPATIBLE_ATCODER_2025
+      @inlinable
+      public init(_start: _SealedPtr, _end: _SealedPtr) {
+        self._safe_start = _start.map(\.pointer)
+        self._safe_end = _end.map(\.pointer)
+        self._safe_current = _start.map(\.pointer)
+      }
+      public var _sealed_start: _SealedPtr { _safe_start.uncheckedSeal }
+      public var _sealed_end: _SealedPtr { _safe_end.uncheckedSeal }
+    #else
+      public var _start: _NodePtr { _safe_start.pointer! }
+      public var _end: _NodePtr { _safe_end.pointer! }
+    #endif
+    @inlinable
+    public init(_start: _NodePtr, _end: _NodePtr) {
+      self._safe_start = _start.unchecked
+      self._safe_end = _end.unchecked
+      self._safe_current = _start.unchecked
+    }
 
     @inlinable
     public mutating func next() -> _NodePtr? {
@@ -52,10 +62,17 @@ extension UnsafeIterator {
 
     public typealias Reversed = _Reverse3
 
-    @inlinable
-    public func reversed() -> UnsafeIterator._Reverse3 {
-      .init(_start: _safe_start.uncheckedSeal, _end: _safe_end.uncheckedSeal)
-    }
+    #if COMPATIBLE_ATCODER_2025
+      @inlinable
+      public func reversed() -> UnsafeIterator._Reverse3 {
+        .init(_start: _safe_start.uncheckedSeal, _end: _safe_end.uncheckedSeal)
+      }
+    #else
+      @inlinable
+      public func reversed() -> UnsafeIterator._Reverse3 {
+        .init(_start: _safe_start.pointer!, _end: _safe_end.pointer!)
+      }
+    #endif
   }
 }
 

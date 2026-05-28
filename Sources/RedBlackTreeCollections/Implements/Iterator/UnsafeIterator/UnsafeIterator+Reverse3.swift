@@ -25,15 +25,26 @@ extension UnsafeIterator {
     Sequence,
     Equatable
   {
+    #if COMPATIBLE_ATCODER_2025
+      @inlinable
+      public init(_start: _SealedPtr, _end: _SealedPtr) {
+        self._safe_start = _start.map(\.pointer)
+        self._safe_end = _end.map(\.pointer)
+        self._safe_current = _end.map(\.pointer)
+      }
+      public var _sealed_start: _SealedPtr { _safe_start.uncheckedSeal }
+      public var _sealed_end: _SealedPtr { _safe_end.uncheckedSeal }
+    #else
+      public var _start: _NodePtr { _safe_start.pointer! }
+      public var _end: _NodePtr { _safe_end.pointer! }
+    #endif
+    
     @inlinable
-    public init(_start: _SealedPtr, _end: _SealedPtr) {
-      self._safe_start = _start.map(\.pointer)
-      self._safe_end = _end.map(\.pointer)
-      self._safe_current = _end.map(\.pointer)
+    public init(_start: _NodePtr, _end: _NodePtr) {
+      self._safe_start = _start.unchecked
+      self._safe_end = _end.unchecked
+      self._safe_current = _end.unchecked
     }
-
-    public var _sealed_start: _SealedPtr { _safe_start.uncheckedSeal }
-    public var _sealed_end: _SealedPtr { _safe_end.uncheckedSeal }
 
     public var _safe_start, _safe_end, _safe_current: _SafePtr
 

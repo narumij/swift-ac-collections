@@ -15,48 +15,35 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeIterator {
+#if !COMPATIBLE_ATCODER_2025
+  extension UnsafeIterator {
 
-  public struct _Reverse4:
-    _UnsafeNodePtrType,
-    UnsafeIteratorProtocol,
-    IteratorProtocol,
-    Sequence,
-    Equatable
-  {
-    @inlinable
-    public init(_start: _SealedPtr, _end: _SealedPtr) {
-      self._start = _start.pointer!
-      self._end = _end.pointer!
-      self._current = _end.pointer!
-    }
+    public struct _Reverse4:
+      _UnsafeNodePtrType,
+      UnsafeIteratorProtocol,
+      IteratorProtocol,
+      Sequence,
+      Equatable
+    {
+      @inlinable
+      public init(_start: _NodePtr, _end: _NodePtr) {
+        self._start = _start
+        self._end = _end
+        self._current = _end
+      }
 
-    @inlinable
-    public init(_start: _NodePtr, _end: _NodePtr) {
-      self._start = _start
-      self._end = _end
-      self._current = _end
-    }
+      public let _start: _NodePtr
+      public let _end: _NodePtr
+      public var _current: _NodePtr
 
-    public var _sealed_start: _SealedPtr {
-      _start.uncheckedSeal
-    }
-
-    public var _sealed_end: _SealedPtr {
-      _end.uncheckedSeal
-    }
-
-    public let _start: _NodePtr
-    public let _end: _NodePtr
-    public var _current: _NodePtr
-
-    @inlinable
-    public mutating func next() -> _NodePtr? {
-      guard _current != _start else { return nil }
-      _current = __tree_prev_iter(_current)
-      return _current
+      @inlinable
+      public mutating func next() -> _NodePtr? {
+        guard _current != _start else { return nil }
+        _current = __tree_prev_iter(_current)
+        return _current
+      }
     }
   }
-}
 
-extension UnsafeIterator._Reverse4: @unchecked Sendable {}
+  extension UnsafeIterator._Reverse4: @unchecked Sendable {}
+#endif

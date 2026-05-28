@@ -29,24 +29,41 @@ extension UnsafeIterator {
     public var _source: Source
 
     @inlinable
-    public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
-      self.init(source: .init(_start: _start, _end: _end))
-    }
-
-    @inlinable
     internal init(source: Source) {
       self._source = source
     }
 
-    @inlinable
-    public var _sealed_start: _SealedPtr {
-      _source._sealed_start
-    }
+    #if COMPATIBLE_ATCODER_2025
+      @inlinable
+      public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
+        self.init(source: .init(_start: _start, _end: _end))
+      }
 
-    @inlinable
-    public var _sealed_end: _SealedPtr {
-      _source._sealed_end
-    }
+      @inlinable
+      public var _sealed_start: _SealedPtr {
+        _source._sealed_start
+      }
+
+      @inlinable
+      public var _sealed_end: _SealedPtr {
+        _source._sealed_end
+      }
+    #else
+      @inlinable
+      public init(_ t: Base.Type, _start: _NodePtr, _end: _NodePtr) {
+        self.init(source: .init(_start: _start, _end: _end))
+      }
+
+      @inlinable
+      public var _start: _NodePtr {
+        _source._start
+      }
+
+      @inlinable
+      public var _end: _NodePtr {
+        _source._end
+      }
+    #endif
 
     @inlinable
     public mutating func next() -> Base._Key? {

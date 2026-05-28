@@ -30,19 +30,21 @@ extension UnsafeIterator {
     @usableFromInline
     var tied: _TiedRawBuffer
 
-    @inlinable
-    init(
-      start: _SealedPtr,
-      end: _SealedPtr,
-      tie: _TiedRawBuffer
-    ) {
-      self.init(
-        _source: .init(
-          Source.Base.self,
-          _start: start,
-          _end: end),
-        tie: tie)
-    }
+    #if COMPATIBLE_ATCODER_2025
+      @inlinable
+      init(
+        start: _SealedPtr,
+        end: _SealedPtr,
+        tie: _TiedRawBuffer
+      ) {
+        self.init(
+          _source: .init(
+            Source.Base.self,
+            _start: start,
+            _end: end),
+          tie: tie)
+      }
+    #endif
 
     @usableFromInline
     var source: Source

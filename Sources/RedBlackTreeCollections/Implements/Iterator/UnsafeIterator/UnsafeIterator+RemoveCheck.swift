@@ -26,18 +26,35 @@ extension UnsafeIterator {
     Source.Element == UnsafeMutablePointer<UnsafeNode>,
     Source: UnsafeIteratorProtocol
   {
-    @inlinable
-    public init(_start: _SealedPtr, _end: _SealedPtr) {
-      self.init(source: .init(_start: _start, _end: _end))
-    }
+    #if COMPATIBLE_ATCODER_2025
+      public init(_start: _SealedPtr, _end: _SealedPtr) {
+        self.init(source: .init(_start: _start, _end: _end))
+      }
 
-    public var _sealed_start: _SealedPtr {
-      source._sealed_start
-    }
+      public var _sealed_start: _SealedPtr {
+        source._sealed_start
+      }
 
-    public var _sealed_end: _SealedPtr {
-      source._sealed_end
-    }
+      public var _sealed_end: _SealedPtr {
+        source._sealed_end
+      }
+    #else
+      public init(_start: _SealedPtr, _end: _SealedPtr) {
+        self.init(source: .init(_start: _start.pointer!, _end: _end.pointer!))
+      }
+
+      public init(_start: _NodePtr, _end: _NodePtr) {
+        self.init(source: .init(_start: _start, _end: _end))
+      }
+
+      public var _start: _NodePtr {
+        source._start
+      }
+
+      public var _end: _NodePtr {
+        source._end
+      }
+    #endif
 
     @usableFromInline var source: Source
 

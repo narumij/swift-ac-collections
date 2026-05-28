@@ -47,32 +47,32 @@ import XCTest
     func testNaiveForward2() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator._Obverse2(
-        _start: a.__tree_.__begin_node_.uncheckedSeal,
-        _end: a.__tree_.__end_node.uncheckedSeal)
+        _start: a.__tree_.__begin_node_,
+        _end: a.__tree_.__end_node)
       XCTAssertEqual(it.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5))
     }
 
     func testNaiveReverse2() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator._Reverse2(
-        _start: a.__tree_.__begin_node_.uncheckedSeal,
-        _end: a.__tree_.__end_node.uncheckedSeal)
+        _start: a.__tree_.__begin_node_,
+        _end: a.__tree_.__end_node)
       XCTAssertEqual(it.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5).reversed())
     }
     
     func testNaiveForward3() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator._Obverse3(
-        _start: a.__tree_.__begin_node_.uncheckedSeal,
-        _end: a.__tree_.__end_node.uncheckedSeal)
+        _start: a.__tree_.__begin_node_,
+        _end: a.__tree_.__end_node)
       XCTAssertEqual(it.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5))
     }
 
     func testNaiveReverse3() throws {
       let a = RedBlackTreeSet<Int>(0..<5)
       let it = UnsafeIterator._Reverse3(
-        _start: a.__tree_.__begin_node_.uncheckedSeal,
-        _end: a.__tree_.__end_node.uncheckedSeal)
+        _start: a.__tree_.__begin_node_,
+        _end: a.__tree_.__end_node)
       XCTAssertEqual(it.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5).reversed())
     }
 

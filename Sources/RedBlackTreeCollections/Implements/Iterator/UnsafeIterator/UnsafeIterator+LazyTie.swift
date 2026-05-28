@@ -30,33 +30,35 @@ extension UnsafeIterator {
     @usableFromInline
     var tied: _LazyTie
 
-    @inlinable
-    init(
-      start: _SealedPtr,
-      end: _SealedPtr,
-      tie: _LazyTie
-    ) {
-      self.init(
-        _source: .init(
-          Source.Base.self,
-          _start: start,
-          _end: end),
-        tie: tie)
-    }
-    
-    @inlinable
-    init(
-      start: _SealedPtr,
-      end: _SealedPtr,
-      tree: UnsafeTreeV2<Source.Base>
-    ) {
-      self.init(
-        _source: .init(
-          Source.Base.self,
-          _start: start,
-          _end: end),
-        tie: tree.lazyDetach)
-    }
+    #if COMPATIBLE_ATCODER_2025
+      @inlinable
+      init(
+        start: _SealedPtr,
+        end: _SealedPtr,
+        tie: _LazyTie
+      ) {
+        self.init(
+          _source: .init(
+            Source.Base.self,
+            _start: start,
+            _end: end),
+          tie: tie)
+      }
+    #else
+      @inlinable
+      init(
+        start: _NodePtr,
+        end: _NodePtr,
+        tree: UnsafeTreeV2<Source.Base>
+      ) {
+        self.init(
+          _source: .init(
+            Source.Base.self,
+            _start: start,
+            _end: end),
+          tie: tree.lazyDetach)
+      }
+    #endif
 
     @usableFromInline
     var source: Source
@@ -95,13 +97,12 @@ extension UnsafeIterator.LazyTie: Comparable where Source: Equatable, Element: C
 extension UnsafeIterator.LazyTie: @unchecked Sendable where Source: Sendable {}
 
 #if false
-extension UnsafeIterator.LazyTie
-where
-  Source.Base: PairValueTrait,
-  Base: ___TreeIndex,
-  Self: ReverseIterator
-{
-  #if !COMPATIBLE_ATCODER_2025
+  extension UnsafeIterator.LazyTie
+  where
+    Source.Base: PairValueTrait,
+    Base: ___TreeIndex,
+    Self: ReverseIterator
+  {
     /// - Complexity: O(1)
     @inlinable
     public var keys: UnsafeIterator.KeyReverse<Base> {
@@ -113,8 +114,7 @@ where
     public var values: UnsafeIterator.MappedValueReverse<Base> {
       .init(start: source._sealed_start, end: source._sealed_end, tie: tied)
     }
-  #endif
-}
+  }
 #endif
 
 extension UnsafeIterator.LazyTie: ObverseIterator

@@ -25,14 +25,26 @@ extension UnsafeIterator {
     Sequence,
     Equatable
   {
-    @inlinable
-    public init(_start: _SealedPtr, _end: _SealedPtr) {
-      self._sealed_start = _start
-      self._sealed_end = _end
-      self._sealed_current = _end
-    }
-
     public var _sealed_start, _sealed_end, _sealed_current: _SealedPtr
+
+    #if COMPATIBLE_ATCODER_2025
+      @inlinable
+      public init(_start: _SealedPtr, _end: _SealedPtr) {
+        self._sealed_start = _start
+        self._sealed_end = _end
+        self._sealed_current = _end
+      }
+    #else
+      public var _start: _NodePtr { _sealed_start.pointer! }
+      public var _end: _NodePtr { _sealed_end.pointer! }
+    #endif
+
+    @inlinable
+    public init(_start: _NodePtr, _end: _NodePtr) {
+      self._sealed_start = _start.uncheckedSeal
+      self._sealed_end = _end.uncheckedSeal
+      self._sealed_current = _end.uncheckedSeal
+    }
 
     @inlinable
     public mutating func next() -> _NodePtr? {

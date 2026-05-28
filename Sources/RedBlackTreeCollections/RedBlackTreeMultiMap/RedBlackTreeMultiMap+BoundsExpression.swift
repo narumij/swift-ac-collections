@@ -64,7 +64,7 @@
 
       let p = bound.evaluate(__tree_)
       guard let p = p.accessible.pointer else { return nil }
-      return Base.__element_(__tree_[_unsafe_raw: p])
+      return Base.__element_(p)
     }
   }
 

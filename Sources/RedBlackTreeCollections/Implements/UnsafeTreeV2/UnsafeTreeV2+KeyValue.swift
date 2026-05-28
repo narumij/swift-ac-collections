@@ -20,7 +20,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   @inlinable
   func lookup(_ key: Base._Key) -> Base._MappedValue? {
     let __ptr = update { $0.find(key) }
-    return __ptr.___is_end ? nil : self[_unsafe_raw: __ptr].tuple.value
+    return __ptr.___is_end ? nil : Base.__mapped_value_(__ptr)
   }
 
   @inlinable

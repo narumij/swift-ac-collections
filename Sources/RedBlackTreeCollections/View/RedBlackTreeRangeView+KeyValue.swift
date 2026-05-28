@@ -198,14 +198,14 @@ extension RedBlackTreeKeyValueRangeView {
   public var first: Element? {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
-    return Base.__element_(__tree_[_unsafe_raw: _start])
+    return Base.__element_(_start)
   }
 
   @inlinable
   public var last: Element? {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
-    return Base.__element_(__tree_[_unsafe_raw: __tree_prev_iter(_end)])
+    return Base.__element_(__tree_prev_iter(_end))
   }
 }
 

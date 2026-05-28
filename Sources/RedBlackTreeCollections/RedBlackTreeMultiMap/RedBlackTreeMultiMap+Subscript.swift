@@ -42,7 +42,7 @@
     @inlinable
     @inline(__always)
     public subscript(position: Index) -> Element {
-      Base.__element_(__tree_[_unsafe: position])
+      Base.__element_(__tree_._unsafeAddress(position).pointee)
     }
   }
 #endif

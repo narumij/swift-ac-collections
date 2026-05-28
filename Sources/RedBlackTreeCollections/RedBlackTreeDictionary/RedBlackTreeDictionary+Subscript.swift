@@ -35,7 +35,7 @@ extension RedBlackTreeDictionary {
   public subscript(
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
-    
+
     @inline(__always) get {
       let __ptr = __tree_.update { $0.find(key) }
       return __ptr == __tree_.__end_node ? defaultValue() : Base.__mapped_value_(__ptr)
@@ -43,11 +43,11 @@ extension RedBlackTreeDictionary {
 
     @inline(__always)
     _modify {
-      
+
       __tree_.ensureUnique()
-      
+
       let (__parent, __child) = __tree_.__find_equal(key)
-      
+
       if __child.pointee == __tree_.nullptr {
         __tree_.unsafeEnsureCapacity()
         assert(__tree_.capacity > __tree_.count)
@@ -56,7 +56,7 @@ extension RedBlackTreeDictionary {
           $0.__insert_node_at(__parent, __child, __h)
         }
       }
-      
+
       yield &Base.__mapped_value_ptr(__child).pointee
     }
   }
@@ -71,7 +71,7 @@ extension RedBlackTreeDictionary {
     @inlinable
     @inline(__always)
     public subscript(position: Index) -> Element {
-      Base.__element_(__tree_[_unsafe: position])
+      Base.__element_(__tree_._unsafeAddress(position).pointee)
     }
   }
 #endif

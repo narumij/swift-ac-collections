@@ -236,7 +236,7 @@ extension RedBlackTreeDictionary {
   ) {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
-    return (__inserted, __inserted ? newMember : Base.__element_(__tree_[_unsafe_raw: __r]))
+    return (__inserted, __inserted ? newMember : Base.__element_(__r))
   }
 }
 
@@ -254,9 +254,9 @@ extension RedBlackTreeDictionary {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(Base.__payload_((key, value)))
     guard !__inserted else { return nil }
-    let oldMember = __tree_[_unsafe_raw: __r]
-    __tree_[_unsafe_raw: __r] = Base.__payload_((key, value))
-    return oldMember.tuple.value
+    let oldMember = Base.__mapped_value_(__r)
+    Base.__mapped_value_ptr(__r).pointee = value
+    return oldMember
   }
 }
 

@@ -111,24 +111,24 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension UnsafeTreeV2 {
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeTreeV2 {
 
-  @inlinable
-  internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {
-    @inline(__always)
-    @_transparent
-    unsafeAddress {
-      UnsafePointer(pointer.__value_())
-    }
-    @inline(__always)
-    @_transparent
-    nonmutating unsafeMutableAddress {
-      pointer.__value_()
+    @inlinable
+    internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {
+      @inline(__always)
+      @_transparent
+      unsafeAddress {
+        UnsafePointer(pointer.__value_())
+      }
+      @inline(__always)
+      @_transparent
+      nonmutating unsafeMutableAddress {
+        pointer.__value_()
+      }
     }
   }
-}
 
-#if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 {
 
     @inlinable
@@ -175,15 +175,17 @@ extension UnsafeTreeV2 {
     return sealed.pointer!.__value_()
   }
 
-  @inlinable
-  internal subscript(_unsafe position: UnsafeIndexV3) -> _PayloadValue {
+  #if false
+    @inlinable
+    internal subscript(_unsafe position: UnsafeIndexV3) -> _PayloadValue {
 
-    @inline(__always)
-    @_transparent
-    unsafeAddress {
-      _unsafeAddress(position)
+      @inline(__always)
+      @_transparent
+      unsafeAddress {
+        _unsafeAddress(position)
+      }
     }
-  }
+  #endif
 }
 
 extension UnsafeTreeV2 {

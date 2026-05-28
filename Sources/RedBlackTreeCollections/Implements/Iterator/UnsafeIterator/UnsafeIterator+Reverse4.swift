@@ -48,4 +48,4 @@ extension UnsafeIterator {
   }
 }
 
-extension UnsafeIterator._Reverse0: @unchecked Sendable {}
+extension UnsafeIterator._Reverse4: @unchecked Sendable {}

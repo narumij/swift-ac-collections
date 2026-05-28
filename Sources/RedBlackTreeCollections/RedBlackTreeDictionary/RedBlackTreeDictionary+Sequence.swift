@@ -90,7 +90,7 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(`count`)
     @inlinable
     public func sorted() -> [Element] {
-      __tree_.___copy_all_to_array(Base.__element_)
+      __tree_.___copy_all_to_array({ Base.__element_($0) })
     }
 
     /// Returns an array containing the elements of this sequence in reverse order.
@@ -98,7 +98,7 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(`count`)
     @inlinable
     public func reversed() -> [Element] {
-      __tree_.___rev_copy_all_to_array(Base.__element_)
+      __tree_.___rev_copy_all_to_array({ Base.__element_($0) })
     }
   }
 #endif
@@ -143,7 +143,7 @@ extension RedBlackTreeDictionary {
       ///
       /// - Complexity: O(`count`)
       @inlinable
-      public var values: UnsafeIterator.ValueObverse<Base> {
+      public var values: UnsafeIterator.MappedValueObverse<Base> {
         .init(start: _start, end: _end, tree: __tree_)
       }
     #endif

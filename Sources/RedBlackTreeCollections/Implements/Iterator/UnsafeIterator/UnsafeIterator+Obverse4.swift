@@ -47,4 +47,4 @@ extension UnsafeIterator {
   }
 }
 
-extension UnsafeIterator._Obverse0: @unchecked Sendable {}
+extension UnsafeIterator._Obverse4: @unchecked Sendable {}

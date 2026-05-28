@@ -98,12 +98,6 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   public
     typealias Element = (key: Key, value: Value)
 
-  public
-    typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
-
-  public
-    typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
-
   @usableFromInline
   var __tree_: Tree
 

@@ -18,19 +18,23 @@
 extension UnsafeIterator {
 
   @frozen
-  public struct _Reverse0:
+  public struct _Reverse4:
     _UnsafeNodePtrType,
     IteratorProtocol,
     Sequence,
-    Equatable
+    Equatable,
+    TreeAlgorithmBaseProtocol_ptr
+
   {
     @inlinable
-    init(_start: _NodePtr, _end: _NodePtr) {
+    init(nullptr: _NodePtr, _start: _NodePtr, _end: _NodePtr) {
       self._start = _start
       self._end = _end
       self._current = _end
+      self.nullptr = nullptr
     }
 
+    @usableFromInline package let nullptr: _NodePtr
     @usableFromInline let _start: _NodePtr
     @usableFromInline let _end: _NodePtr
     @usableFromInline var _current: _NodePtr

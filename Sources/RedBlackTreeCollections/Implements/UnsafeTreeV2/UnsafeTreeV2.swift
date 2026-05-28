@@ -42,7 +42,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   package var nullptr: _NodePtr {
-    withMutableHeader { $0.nullptr }
+    _read { yield withMutableHeader { $0.nullptr } }
   }
 
   @inlinable

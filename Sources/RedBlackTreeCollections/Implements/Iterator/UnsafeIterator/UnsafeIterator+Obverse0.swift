@@ -25,7 +25,7 @@ extension UnsafeIterator {
     Equatable
   {
     @inlinable
-    public init(_start: _NodePtr, _end: _NodePtr) {
+    init(_start: _NodePtr, _end: _NodePtr) {
       self._start = _start
       self._end = _end
       self._current = _start

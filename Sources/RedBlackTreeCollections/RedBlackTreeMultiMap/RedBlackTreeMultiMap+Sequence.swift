@@ -112,6 +112,8 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
 
   #if !COMPATIBLE_ATCODER_2025
+    public typealias Keys = [Key]
+    public typealias Values = [Value]
 
     /// A collection containing just the keys of the dictionary.
     ///

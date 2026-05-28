@@ -37,7 +37,7 @@ extension UnsafeIterator {
 
     @inlinable
     public mutating func next() -> (key: Base._Key, value: Base._MappedValue)? {
-      return _source.next().map { Base.__element_($0) }
+      _source.next().map(Base.__element_)
     }
   }
 }

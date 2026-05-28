@@ -20,24 +20,24 @@ public enum UnsafeIterator {}
 #if !COMPATIBLE_ATCODER_2025
   extension UnsafeIterator {
 
-    public typealias ValueObverse<Base> = _CopyOnWrite<_Payload<Base, _Obverse0>>
+    public typealias ValueObverse<Base> = _CopyOnWrite<_Payload<Base, _Obverse4>>
     where Base: ___TreeBase
-    public typealias ValueReverse<Base> = _CopyOnWrite<_Payload<Base, _Reverse0>>
+    public typealias ValueReverse<Base> = _CopyOnWrite<_Payload<Base, _Reverse4>>
     where Base: ___TreeBase
 
-    public typealias KeyObverse<Base> = _CopyOnWrite<_Key<Base, _Obverse0>>
+    public typealias KeyObverse<Base> = _CopyOnWrite<_Key<Base, _Obverse4>>
     where Base: ___TreeBase & PairValueTrait
-    public typealias KeyReverse<Base> = _CopyOnWrite<_Key<Base, _Reverse0>>
-    where Base: ___TreeBase & PairValueTrait
-
-    public typealias MappedValueObverse<Base> = _CopyOnWrite<_MappedValue<Base, _Obverse0>>
-    where Base: ___TreeBase & PairValueTrait
-    public typealias MappedValueReverse<Base> = _CopyOnWrite<_MappedValue<Base, _Reverse0>>
+    public typealias KeyReverse<Base> = _CopyOnWrite<_Key<Base, _Reverse4>>
     where Base: ___TreeBase & PairValueTrait
 
-    public typealias KeyValueObverse<Base> = _CopyOnWrite<_KeyValue<Base, _Obverse0>>
+    public typealias MappedValueObverse<Base> = _CopyOnWrite<_MappedValue<Base, _Obverse4>>
     where Base: ___TreeBase & PairValueTrait
-    public typealias KeyValueReverse<Base> = _CopyOnWrite<_KeyValue<Base, _Reverse0>>
+    public typealias MappedValueReverse<Base> = _CopyOnWrite<_MappedValue<Base, _Reverse4>>
+    where Base: ___TreeBase & PairValueTrait
+
+    public typealias KeyValueObverse<Base> = _CopyOnWrite<_KeyValue<Base, _Obverse4>>
+    where Base: ___TreeBase & PairValueTrait
+    public typealias KeyValueReverse<Base> = _CopyOnWrite<_KeyValue<Base, _Reverse4>>
     where Base: ___TreeBase & PairValueTrait
   }
 #endif

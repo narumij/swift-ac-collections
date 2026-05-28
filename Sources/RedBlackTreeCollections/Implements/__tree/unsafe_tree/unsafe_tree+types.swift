@@ -61,10 +61,12 @@ extension _UnsafeNodePtrType where Self: _PayloadValueType {
   }
 
   @inlinable
+  @inline(__always)
   static func __payload_(_ p: _NodePtr) -> _PayloadValue {
     p.__value_().pointee
   }
   @inlinable
+  @inline(__always)
   static func __payload_(_ p: _NodeRef) -> _PayloadValue {
     p.pointee.__value_().pointee
   }
@@ -168,6 +170,7 @@ extension _UnsafeNodePtrType where Self: _PairBaseType & _KeyValueElementType {
   }
   
   @inlinable
+  @inline(__always)
   static func __element_(_ p: _NodePtr) -> Element {
     __payload_(p).tuple
   }

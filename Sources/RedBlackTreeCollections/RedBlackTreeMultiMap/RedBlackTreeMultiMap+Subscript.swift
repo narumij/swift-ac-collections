@@ -42,7 +42,13 @@
     @inlinable
     @inline(__always)
     public subscript(position: Index) -> Element {
-      Base.__element_(__tree_._unsafeAddress(position).pointee)
+      @inline(__always)
+      @_transparent
+      unsafeAddress {
+        withUnsafePointer(
+          to: __tree_._unsafeAddress(position).pointee.tuple
+        ) { $0 }
+      }
     }
   }
 #endif

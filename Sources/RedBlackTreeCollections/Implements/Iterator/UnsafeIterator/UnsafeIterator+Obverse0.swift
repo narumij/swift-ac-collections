@@ -15,6 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if COMPATIBLE_ATCODER_2025
 extension UnsafeIterator {
 
   @frozen
@@ -45,3 +46,4 @@ extension UnsafeIterator {
 }
 
 extension UnsafeIterator._Obverse0: @unchecked Sendable {}
+#endif

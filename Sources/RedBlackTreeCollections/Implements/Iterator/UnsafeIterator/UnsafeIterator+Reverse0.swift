@@ -15,33 +15,35 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeIterator {
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeIterator {
 
-  @frozen
-  public struct _Reverse0:
-    _UnsafeNodePtrType,
-    IteratorProtocol,
-    Sequence,
-    Equatable
-  {
-    @inlinable
-    init(_start: _NodePtr, _end: _NodePtr) {
-      self._start = _start
-      self._end = _end
-      self._current = _end
-    }
+    @frozen
+    public struct _Reverse0:
+      _UnsafeNodePtrType,
+      IteratorProtocol,
+      Sequence,
+      Equatable
+    {
+      @inlinable
+      init(_start: _NodePtr, _end: _NodePtr) {
+        self._start = _start
+        self._end = _end
+        self._current = _end
+      }
 
-    @usableFromInline let _start: _NodePtr
-    @usableFromInline let _end: _NodePtr
-    @usableFromInline var _current: _NodePtr
+      @usableFromInline let _start: _NodePtr
+      @usableFromInline let _end: _NodePtr
+      @usableFromInline var _current: _NodePtr
 
-    @inlinable
-    public mutating func next() -> _NodePtr? {
-      guard _current != _start else { return nil }
-      _current = __tree_prev_iter(_current)
-      return _current
+      @inlinable
+      public mutating func next() -> _NodePtr? {
+        guard _current != _start else { return nil }
+        _current = __tree_prev_iter(_current)
+        return _current
+      }
     }
   }
-}
 
-extension UnsafeIterator._Reverse0: @unchecked Sendable {}
+  extension UnsafeIterator._Reverse0: @unchecked Sendable {}
+#endif

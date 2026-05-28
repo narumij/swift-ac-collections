@@ -34,20 +34,6 @@
 
       @inlinable
       init(start: _NodePtr, end: _NodePtr, tree: Tree)
-      where Source.Source == _Obverse0 {
-        self.source = .init(source: .init(_start: start, _end: end))
-        self.tree = tree
-      }
-
-      @inlinable
-      init(start: _NodePtr, end: _NodePtr, tree: Tree)
-      where Source.Source == _Reverse0 {
-        self.source = .init(source: .init(_start: start, _end: end))
-        self.tree = tree
-      }
-
-      @inlinable
-      init(start: _NodePtr, end: _NodePtr, tree: Tree)
       where Source.Source == _Obverse4 {
         self.source = .init(source: .init(nullptr: tree.nullptr, _start: start, _end: end))
         self.tree = tree

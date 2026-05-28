@@ -39,7 +39,7 @@
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of member: Element) -> Index? {
-      ___index_or_nil(__tree_.find_first(member))
+      ___index_or_nil(__tree_.update { $0.find_first(member) })
     }
   }
 

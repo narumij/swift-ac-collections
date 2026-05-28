@@ -66,7 +66,7 @@
       }
 
       var __nd_ptr = __root_ptr
-      
+
       while true {
 
         let __comp_res = __comp(__v, __nd.__value_().pointee)

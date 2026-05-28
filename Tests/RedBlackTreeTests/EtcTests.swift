@@ -1254,4 +1254,10 @@ final class EtcTests: RedBlackTreeTestCase {
     }
     XCTAssertEqual(b, (0..<10).map { $0 })
   }
+  
+  func testDictDefault() throws {
+    let a = [Int:Int]()
+    XCTAssertEqual(a[3, default: 0], 0)
+    XCTAssertNil(a[3])
+  }
 }

@@ -56,7 +56,7 @@ import XCTest
         }
         XCTAssertEqual(tree.count, 0)
         // TODO: FIXME
-        XCTAssertEqual(tree._copyCount, 0)   // これが0になる挙動にするか、1になる挙動にするか、悩み
+        XCTAssertEqual(tree._copyCount, 0)  // これが0になる挙動にするか、1になる挙動にするか、悩み
       }
     #endif
 
@@ -136,5 +136,50 @@ import XCTest
         XCTAssertEqual(loopCount, count / N)
       }
     #endif
+
+    func testABC385DBehavior() throws {
+      let x = 0
+      let new_y = 8
+      let y = 0
+      var xy: [Int: RedBlackTreeSet<Int>] = .init(uniqueKeysWithValues: [(0, .init(0..<10))])
+      var yx: [Int: RedBlackTreeSet<Int>] = .init(
+        uniqueKeysWithValues: (0..<10).map { ($0, .init([0])) })
+
+      for v in xy.values {
+        XCTAssertEqual(v.count, 10)
+        XCTAssertEqual(v._copyCount, 0)
+      }
+      for v in yx.values {
+        XCTAssertEqual(v.count, 1)
+        #if COMPATIBLE_ATCODER_2025
+          XCTAssertEqual(v._copyCount, 0)
+        #else
+          XCTAssertEqual(v._copyCount, 1)
+        #endif
+      }
+
+      var ans = 0
+      var it = xy[x, default: []].lowerBound(y)
+      while it != xy[x, default: []].endIndex, xy[x, default: []][it] <= new_y {
+        ans += 1
+        yx[xy[x]![it]]?.remove(x)
+        #if COMPATIBLE_ATCODER_2025
+          it = xy[x]!.___erase(it)
+        #else
+          it = xy[x]!.erase(it)
+        #endif
+      }
+
+      for v in xy.values {
+        XCTAssertEqual(v._copyCount, 0, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
+      }
+      for v in yx.values {
+        #if COMPATIBLE_ATCODER_2025
+          XCTAssertEqual(v._copyCount, 0, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
+        #else
+          XCTAssertEqual(v._copyCount, 1, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
+        #endif
+      }
+    }
   }
 #endif

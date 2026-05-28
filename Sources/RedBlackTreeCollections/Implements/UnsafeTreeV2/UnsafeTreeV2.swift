@@ -55,7 +55,7 @@ extension UnsafeTreeV2 {
     _buffer.buffer === _emptyTreeStorage
   }
 
-  #if false
+  #if COMPATIBLE_ATCODER_2025
     /// 木に紐付いている生バッファ
     ///
     /// - WARNING: 触ると生成されてしまうため不用意に触らないこと

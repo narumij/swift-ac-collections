@@ -57,7 +57,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal func ___rev_copy_all_to_array<T>(transform: (_NodePtr) -> T) -> [T] {
-    
+
     return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
       initializedCount = count
       var buffer = buffer.baseAddress!
@@ -83,40 +83,14 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal func
-    ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
-  {
-    var result: [_PayloadValue] = []
-    var __first = __first
-    while __first != __last {
-      result.append(Base.__payload_(__first))
-      __first = __tree_next_iter(__first)
-    }
-    return result
-  }
-
-  @inlinable
-  internal func
-    ___rev_copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
-  {
-    var result: [_PayloadValue] = []
-    var __last = __last
-    while __first != __last {
-      __last = __tree_prev_iter(__last)
-      result.append(Base.__payload_(__last))
-    }
-    return result
-  }
-
-  @inlinable
-  internal func
     ___copy_to_array<T>(
-      _ __first: _NodePtr, _ __last: _NodePtr, transform: (_PayloadValue) -> T
+      _ __first: _NodePtr, _ __last: _NodePtr, transform: (_NodePtr) -> T
     ) -> [T]
   {
     var result: [T] = []
     var __first = __first
     while __first != __last {
-      result.append(transform(Base.__payload_(__first)))
+      result.append(transform(__first))
       __first = __tree_next_iter(__first)
     }
     return result
@@ -125,16 +99,30 @@ extension UnsafeTreeV2 {
   @inlinable
   internal func
     ___rev_copy_to_array<T>(
-      _ __first: _NodePtr, _ __last: _NodePtr, transform: (_PayloadValue) -> T
+      _ __first: _NodePtr, _ __last: _NodePtr, transform: (_NodePtr) -> T
     ) -> [T]
   {
     var result: [T] = []
     var __last = __last
     while __first != __last {
       __last = __tree_prev_iter(__last)
-      result.append(transform(Base.__payload_(__last)))
+      result.append(transform(__last))
     }
     return result
+  }
+
+  @inlinable
+  internal func
+    ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
+  {
+    ___copy_to_array(__first, __last, transform: Base.__payload_)
+  }
+
+  @inlinable
+  internal func
+    ___rev_copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
+  {
+    ___rev_copy_to_array(__first, __last, transform: Base.__payload_)
   }
 }
 
@@ -199,16 +187,16 @@ extension UnsafeTreeV2 {
   @usableFromInline
   internal func
     unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
-    -> UnsafeIterator._Obverse1
+    -> UnsafeIterator._Obverse4
   {
-    .init(_start: __first, _end: __last)
+    .init(nullptr: nullptr, _start: __first, _end: __last)
   }
 
   @usableFromInline
   internal func
     unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
-    -> UnsafeIterator._Payload<Base, UnsafeIterator._Obverse1>
+    -> UnsafeIterator._Payload<Base, UnsafeIterator._Obverse4>
   {
-    .init(source: .init(_start: __first, _end: __last))
+    .init(source: .init(nullptr: nullptr, _start: __first, _end: __last))
   }
 }

@@ -138,14 +138,14 @@ extension RedBlackTreeKeyValueRangeView {
   @inlinable
   public var keys: [Key] {
     let (_start, _end) = _raw_range
-    return __tree_.___copy_to_array(_start, _end, transform: Base.__key)
+    return __tree_.___copy_to_array(_start, _end) { Base.__key_($0) }
   }
 
   /// - Complexity: O(1)
   @inlinable
   public var values: [Value] {
     let (_start, _end) = _raw_range
-    return __tree_.___copy_to_array(_start, _end, transform: Base.___mapped_value)
+    return __tree_.___copy_to_array(_start, _end) { Base.__mapped_value_($0) }
   }
 }
 

@@ -24,7 +24,6 @@ extension UnsafeIterator {
     Sequence,
     Equatable,
     TreeAlgorithmBaseProtocol_ptr
-
   {
     @inlinable
     init(nullptr: _NodePtr, _start: _NodePtr, _end: _NodePtr) {

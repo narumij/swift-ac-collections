@@ -60,6 +60,28 @@ extension RedBlackTreeDictionary {
   }
 }
 
+#if false
+extension RedBlackTreeDictionary {
+
+  /// Accesses the element at the specified position.
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  @inline(__always)
+  public subscript(_pair position: Index) -> RedBlackTreePair<Key, Value> {
+    __tree_._unsafeAddress(position).pointee
+  }
+
+  @inlinable
+  @inline(__always)
+  public subscript(_element position: Index) -> Element {
+    __tree_._unsafeAddress(position).pointee.tuple
+  }
+}
+#endif
+
+
+
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
@@ -67,15 +89,12 @@ extension RedBlackTreeDictionary {
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public subscript(position: Index) -> Element {
       @inline(__always)
-      @_transparent
-      unsafeAddress {
-        withUnsafePointer(
-          to: __tree_._unsafeAddress(position).pointee.tuple
-        ) { $0 }
+      _read {
+        yield __tree_._unsafeAddress(position).pointee.tuple
       }
     }
   }
 #endif
+

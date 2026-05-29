@@ -167,3 +167,5 @@ extension UnsafeTreeV2 {
     __root == nullptr ? nil : Base.__payload_(__tree_max(__root))
   }
 }
+
+extension UnsafeTreeV2: FindFirstProtocol_ptr {}

@@ -21,8 +21,8 @@ extension RedBlackTreeDictionary {
   @inlinable
   public subscript(key: Key) -> Value? {
 
-    @inline(__always) _read {
-      yield __tree_[key]
+    @inline(__always) get {
+      __tree_.lookup(key)
     }
 
     @inline(__always) _modify {
@@ -36,12 +36,10 @@ extension RedBlackTreeDictionary {
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
 
-    @inline(__always) get {
-      let __ptr = __tree_.update { $0.find(key) }
-      return __ptr == __tree_.__end_node ? defaultValue() : Base.__mapped_value_(__ptr)
+    get {
+      __tree_.lookup(key) ?? defaultValue()
     }
 
-    @inline(__always)
     _modify {
 
       __tree_.ensureUnique()
@@ -57,7 +55,7 @@ extension RedBlackTreeDictionary {
         }
       }
 
-      yield &Base.__mapped_value_ptr(__child).pointee
+      yield &Base.__payload_ptr(__child.pointee).pointee.tuple.value
     }
   }
 }

@@ -26,8 +26,8 @@ extension UnsafeTreeV2 {
 
     var __first = __first
     while __first != __last {
-      guard !__first.___is_end else {
-        fatalError(.outOfBounds)
+      guard __first.___has_payload_content else {
+        fatalError(.outOfBounds) // エラー種別がしっくりこない
       }
       __first = erase(__first)
     }
@@ -49,7 +49,7 @@ extension UnsafeTreeV2 {
     var __first = __first
     while __first != __last {
       guard __first.___has_payload_content else {
-        return .failure(.upperOutOfBounds)
+        return .failure(.upperOutOfBounds) // エラー種別がしっくりこない
       }
       if try shouldBeRemoved(__value_(__first.pointer!)) {
         __first = erase(__first.accessible.pointer!).unchecked

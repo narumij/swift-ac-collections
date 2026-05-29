@@ -87,7 +87,6 @@ extension UnsafeTreeV2 {
     if isReadOnly {
       self = withMutableHeader { $0._ensureUniqueSlow(to: minimumCapacity) }
     } else {
-      assert(isReadOnly == false, "変更禁止シングルトンではないこと")
       withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
     }
   }
@@ -98,7 +97,6 @@ extension UnsafeTreeV2 {
     if isReadOnly {
       self = withMutableHeader { $0._ensureUniqueSlow() }
     } else {
-      assert(isReadOnly == false, "変更禁止シングルトンではないこと")
       withMutableHeader { $0._ensureCapacitySlow() }
     }
   }
@@ -120,7 +118,6 @@ extension UnsafeTreeV2 {
     if isReadOnly {
       self = withMutableHeader { $0._ensureUniqueSlow(limit: limit) }
     } else {
-      assert(isReadOnly == false, "変更禁止シングルトンではないこと")
       withMutableHeader { $0._ensureCapacitySlow(limit: limit) }
     }
   }

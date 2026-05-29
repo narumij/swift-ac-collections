@@ -37,6 +37,40 @@ extension UnsafeTreeV2 {
   }
 }
 
+extension UnsafeTreeV2: Equatable where _PayloadValue: Equatable {
+
+  @inlinable
+  public static func == (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
+
+    if lhs.count != rhs.count {
+      return false
+    }
+
+    if lhs.count == 0 || lhs.isIdentical(to: rhs) {
+      return true
+    }
+
+    return lhs.elementsEqual(
+      lhs.__begin_node_,
+      lhs.__end_node,
+      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
+      by: ==)
+  }
+}
+
+extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
+
+  @inlinable
+  public static func < (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
+    !lhs.isIdentical(to: rhs)
+      && lhs.lexicographicallyPrecedes(
+        lhs.__begin_node_,
+        lhs.__end_node,
+        rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
+        by: <)
+  }
+}
+
 extension UnsafeTreeV2 {
 
   @inlinable
@@ -123,40 +157,6 @@ extension UnsafeTreeV2 {
     ___rev_copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
   {
     ___rev_copy_to_array(__first, __last, transform: Base.__payload_)
-  }
-}
-
-extension UnsafeTreeV2: Equatable where _PayloadValue: Equatable {
-
-  @inlinable
-  public static func == (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
-
-    if lhs.count != rhs.count {
-      return false
-    }
-
-    if lhs.count == 0 || lhs.isIdentical(to: rhs) {
-      return true
-    }
-
-    return lhs.elementsEqual(
-      lhs.__begin_node_,
-      lhs.__end_node,
-      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
-      by: ==)
-  }
-}
-
-extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
-
-  @inlinable
-  public static func < (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
-    !lhs.isIdentical(to: rhs)
-      && lhs.lexicographicallyPrecedes(
-        lhs.__begin_node_,
-        lhs.__end_node,
-        rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
-        by: <)
   }
 }
 

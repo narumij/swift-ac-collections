@@ -35,7 +35,7 @@ final class RedBlackTreeMultiMapInitializationTests: RedBlackTreeTestCase {
 
   /// シーケンス初期化テスト（配列使用）
   func testSequenceInitialization() {
-    let multiMap = RedBlackTreeMultiMap<String, Int>(multiKeysWithValues: elements)
+    let multiMap = RedBlackTreeMultiMap<String, Int>(keysWithValues: elements)
 
     let expected = [
       ("apple", 1),
@@ -50,7 +50,7 @@ final class RedBlackTreeMultiMapInitializationTests: RedBlackTreeTestCase {
 
   /// シーケンス初期化テスト（AnySequence使用）
   func testSequenceInitializationWithAnySequence() {
-    let multiMap = RedBlackTreeMultiMap<String, Int>(multiKeysWithValues: AnySequence(elements))
+    let multiMap = RedBlackTreeMultiMap<String, Int>(keysWithValues: AnySequence(elements))
 
     let expected = [
       ("apple", 1),
@@ -106,7 +106,7 @@ final class RedBlackTreeMultiMapInitializationTests: RedBlackTreeTestCase {
 
   /// reserveCapacityにより容量が指定値以上に増加すること
   func test_reserveCapacity_shouldIncreaseCapacity2() {
-    var multiset = RedBlackTreeMultiMap<String, Int>(multiKeysWithValues: [("a", 1)])
+    var multiset = RedBlackTreeMultiMap<String, Int>(keysWithValues: [("a", 1)])
     let initialCount = multiset.count
 
     // 事前条件:

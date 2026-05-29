@@ -1075,8 +1075,8 @@ final class MultiMapTests: RedBlackTreeTestCase {
   }
 
   func testEqual2() throws {
-    let aa = Target<Int, Int>(multiKeysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
-    let bb = Target<Int, Int>(multiKeysWithValues: [3, 4, 5, 6, 7, 8].map { ($0, $0) })
+    let aa = Target<Int, Int>(keysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
+    let bb = Target<Int, Int>(keysWithValues: [3, 4, 5, 6, 7, 8].map { ($0, $0) })
     do {
       let a = aa[0..<0]
       let b = bb[3..<3]
@@ -1196,7 +1196,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
   #if !COMPATIBLE_ATCODER_2025
     func testSortedReversed() throws {
       let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
-      let a = RedBlackTreeMultiMap<Int, Int>(multiKeysWithValues: source)
+      let a = RedBlackTreeMultiMap<Int, Int>(keysWithValues: source)
       AssertEquenceEqual(a.sorted() + [], source)
       AssertEquenceEqual(a.reversed() + [], source.reversed())
     }

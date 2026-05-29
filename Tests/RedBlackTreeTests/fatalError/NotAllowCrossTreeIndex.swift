@@ -5,11 +5,10 @@
 //  Created by narumij on 2026/05/29.
 //
 
-import Testing
-import Foundation
-import RedBlackTreeModule
-
-#if !ALLOW_CROSS_TREE_INDEX
+#if !COMPATIBLE_ATCODER_2025 && !ALLOW_CROSS_TREE_INDEX
+  import Testing
+  import Foundation
+  import RedBlackTreeModule
 
   struct NotAllowCrossTreeIndex {
 

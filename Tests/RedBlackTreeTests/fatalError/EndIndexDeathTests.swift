@@ -31,7 +31,7 @@
     @Test
     func `MultiMapを末尾インデックスで削除した場合、SIGSEGV以外の方法で停止すること`() async {
       await #expect(processExitsWith: .signal(SIGTRAP)) {
-        var a = RedBlackTreeMultiMap<Int, Int>(multiKeysWithValues: (0..<100).map { ($0, $0) })
+        var a = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (0..<100).map { ($0, $0) })
         a.remove(at: a.endIndex)
       }
     }

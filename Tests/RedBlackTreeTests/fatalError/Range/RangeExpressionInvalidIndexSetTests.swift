@@ -10,7 +10,7 @@
   import RedBlackTreeModule
   import Testing
 
-  struct RangeExpressionInvalidIndexTests {
+  struct RangeExpressionInvalidIndexSetTests {
 
     @Test
     func `RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること`() async {

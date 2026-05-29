@@ -30,7 +30,7 @@
       }
     }
 
-    #if !COMPATIBLE_ATCODER_2025 && `かつ、コピーオンライト抑制をはじめた場合`
+    #if !COMPATIBLE_ATCODER_2025 && `かつ、コピーオンライト抑制をはじめた場合` && `それ以前に、APIが古いまま過ぎて中身がよく分からない`
       @Test
       func
         `MMultiSetRemoveTests testSmokeRemove0 removeAllで不正化したインデックスを使用した場合、SIGSEGV以外の方法で停止すること`()
@@ -45,7 +45,7 @@
           }
           #expect(s + [] == [])
           #if DEBUG && `かつ、強化コピーオンライトがまだ有効な場合`
-          #expect(s._copyCount == 1)
+            #expect(s._copyCount == 1)
           #endif
         }
       }
@@ -142,28 +142,32 @@
       }
     #endif
 
-    #if !COMPATIBLE_ATCODER_2025 && false
-      @Test
-      func `区間不正の場合、SIGSEGV以外の方法で停止すること (1)`() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
-          let a = RedBlackTreeSet<Int>(0..<100)
-          _ = a[unchecked: lowerBound(50)...upperBound(10)] + []
-        }
-      }
+    #if !COMPATIBLE_ATCODER_2025
 
-      @Test
-      func `区間不正の場合、SIGSEGV以外の方法で停止すること (2)`() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
-          let a = RedBlackTreeSet<Int>(0..<100)
-          _ = a[unchecked: end()...start()] + []
+      #if false
+        // BoundExpressionは結果に不確定要素がまじるので、握りつぶす方向になった
+        @Test
+        func `区間不正の場合、SIGSEGV以外の方法で停止すること (1)`() async {
+          await #expect(processExitsWith: .signal(SIGTRAP)) {
+            let a = RedBlackTreeSet<Int>(0..<100)
+            _ = a[lowerBound(50)...upperBound(10)] + []
+          }
         }
-      }
+
+        @Test
+        func `区間不正の場合、SIGSEGV以外の方法で停止すること (2)`() async {
+          await #expect(processExitsWith: .signal(SIGTRAP)) {
+            let a = RedBlackTreeSet<Int>(0..<100)
+            _ = a[end()...start()] + []
+          }
+        }
+      #endif
 
       @Test
       func `区間不正の場合、SIGSEGV以外の方法で停止すること (3)`() async {
         await #expect(processExitsWith: .signal(SIGTRAP)) {
           let a = RedBlackTreeSet<Int>(0..<100)
-          _ = a[unchecked: a.lowerBound(50)...a.lowerBound(10)] + []
+          _ = a[a.lowerBound(50)...a.lowerBound(10)] + []
         }
       }
 
@@ -171,31 +175,34 @@
       func `区間不正の場合、SIGSEGV以外の方法で停止すること (4)`() async {
         await #expect(processExitsWith: .signal(SIGTRAP)) {
           let a = RedBlackTreeSet<Int>(0..<100)
-          _ = a[unchecked: a.endIndex...a.startIndex] + []
+          _ = a[a.endIndex...a.startIndex] + []
         }
       }
 
-      @Test
-      func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (1)`() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
-          let a = RedBlackTreeSet<Int>(0..<100)
-          _ = a[unchecked: lowerBound(50)...upperBound(10)].reversed() + []
+      #if false
+        // BoundExpressionは結果に不確定要素がまじるので、握りつぶす方向になった
+        @Test
+        func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (1)`() async {
+          await #expect(processExitsWith: .signal(SIGTRAP)) {
+            let a = RedBlackTreeSet<Int>(0..<100)
+            _ = a[lowerBound(50)...upperBound(10)].reversed() + []
+          }
         }
-      }
 
-      @Test
-      func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (2)`() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
-          let a = RedBlackTreeSet<Int>(0..<100)
-          _ = a[unchecked: end()...start()].reversed() + []
+        @Test
+        func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (2)`() async {
+          await #expect(processExitsWith: .signal(SIGTRAP)) {
+            let a = RedBlackTreeSet<Int>(0..<100)
+            _ = a[end()...start()].reversed() + []
+          }
         }
-      }
+      #endif
 
       @Test
       func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (3)`() async {
         await #expect(processExitsWith: .signal(SIGTRAP)) {
           let a = RedBlackTreeSet<Int>(0..<100)
-          _ = a[unchecked: a.lowerBound(50)...a.lowerBound(10)].reversed() + []
+          _ = a[a.lowerBound(50)...a.lowerBound(10)].reversed() + []
         }
       }
 
@@ -203,7 +210,7 @@
       func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (4)`() async {
         await #expect(processExitsWith: .signal(SIGTRAP)) {
           let a = RedBlackTreeSet<Int>(0..<100)
-          _ = a[unchecked: a.endIndex...a.startIndex].reversed() + []
+          _ = a[a.endIndex...a.startIndex].reversed() + []
         }
       }
 
@@ -215,6 +222,5 @@
         }
       }
     #endif
-
   }
 #endif

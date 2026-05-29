@@ -952,6 +952,7 @@ final class SetTests: RedBlackTreeTestCase {
 
   func testIndexValidation() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+    XCTAssertEqual(set.capacity, 8, "一時しのぎのチェックテスト")
     XCTAssertTrue(set.isValid(set.startIndex))
     XCTAssertFalse(set.isValid(set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = RedBlackTreeSet<Int>.Index
@@ -967,7 +968,10 @@ final class SetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
       XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 3)))
       XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 4)))
+      // TODO: メモリ安全に不安があるので、再度調査すること。
       XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: 5)))
+    // 何のチェックをすり抜けたのかよく分からない
+    // __retrieve_に暫定処置はした
     #endif
   }
 

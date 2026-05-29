@@ -25,8 +25,10 @@ where
   @inlinable
   internal init(__tree_: UnsafeTreeV2<Container.Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-    self.startIndex = _start.band(__tree_)
-    self.endIndex = _end.band(__tree_)
+//    self.startIndex = _start.band(__tree_)
+//    self.endIndex = _end.band(__tree_)
+    self._sealed_start = _start
+    self._sealed_end = _end
   }
 
   public typealias Base = Container.Base
@@ -37,8 +39,16 @@ where
   internal var __tree_: Tree
 
   // _SealedPtr不可
-  public var startIndex: Index
-  public var endIndex: Index
+  public var startIndex: Index {
+    _sealed_start.band(__tree_)
+  }
+  
+  public var endIndex: Index {
+    _sealed_end.band(__tree_)
+  }
+  
+  @usableFromInline var _sealed_start: _SealedPtr
+  @usableFromInline var _sealed_end: _SealedPtr
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -62,8 +72,11 @@ extension RedBlackTreeKeyOnlyRangeView {
     // コピーが発生した場合インデックス引き継ぎを行う
     if copied {
       // コピー木であることがわかっているので千本引きが確実に行える（ハズレ無し）
-      startIndex = __tree_.__retrieve_(startIndex.sealed.purified.tag).band(__tree_)
-      endIndex = __tree_.__retrieve_(endIndex.sealed.purified.tag).band(__tree_)
+//      startIndex = __tree_.__retrieve_(startIndex.sealed.purified.tag).band(__tree_)
+//      endIndex = __tree_.__retrieve_(endIndex.sealed.purified.tag).band(__tree_)
+      
+      _sealed_start = __tree_.__retrieve_(_sealed_start.purified.tag)
+      _sealed_end = __tree_.__retrieve_(_sealed_end.purified.tag)
     }
   }
 }
@@ -73,8 +86,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   var _raw_range: (_NodePtr, _NodePtr) {
     guard
-      let _start = __tree_.__purified_(startIndex).pointer,
-      let _end = __tree_.__purified_(endIndex).pointer
+      let _start = _sealed_start.purified.pointer,
+      let _end = _sealed_end.purified.pointer
     else {
       return (__tree_.__end_node, __tree_.__end_node)
     }
@@ -83,8 +96,8 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
   var _safe_range: (_SafePtr, _SafePtr) {
-    let _start = __tree_.__purified_safe_(startIndex)
-    let _end = __tree_.__purified_safe_(endIndex)
+    let _start = _sealed_start.purified.map(\.pointer)
+    let _end = _sealed_end.purified.map(\.pointer)
     guard
       _start.error == nil, _end.error == nil
     else {
@@ -95,8 +108,8 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
   var _range: (_SealedPtr, _SealedPtr) {
-    let _start = __tree_.__purified_(startIndex)
-    let _end = __tree_.__purified_(endIndex)
+    let _start = _sealed_start.purified
+    let _end = _sealed_end.purified
     guard
       _start.error == nil, _end.error == nil
     else {
@@ -218,7 +231,8 @@ extension RedBlackTreeKeyOnlyRangeView {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
     let (_p, _r) = __tree_._unchecked_remove(at: _start)
-    startIndex = ___index(_p)
+//    startIndex = ___index(_p)
+    _sealed_start = _p.uncheckedSeal
     return _r
   }
 

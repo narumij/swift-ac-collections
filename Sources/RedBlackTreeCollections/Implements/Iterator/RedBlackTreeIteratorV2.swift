@@ -17,18 +17,9 @@
 
 public enum RedBlackTreeIteratorV2 {}
 
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeIteratorV2 {
-    public typealias Values = UnsafeIterator.ValueObverse
-    public typealias Keys = UnsafeIterator.KeyObverse
-    public typealias KeyValues = UnsafeIterator.KeyValueObverse
-    public typealias MappedValues = UnsafeIterator.MappedValueObverse
-  }
-#else
-  extension RedBlackTreeIteratorV2 {
-    public typealias Values = UnsafeIterator.ValueObverse
-    public typealias Keys = UnsafeIterator.KeyObverse
-    public typealias KeyValues = UnsafeIterator.KeyValueObverse
-    public typealias MappedValues = UnsafeIterator.MappedValueObverse
-  }
-#endif
+extension RedBlackTreeIteratorV2 {
+  public typealias Values = UnsafeIterator.ValueObverse
+  public typealias Keys = UnsafeIterator.KeyObverse
+  public typealias KeyValues = UnsafeIterator.KeyValueObverse
+  public typealias MappedValues = UnsafeIterator.MappedValueObverse
+}

@@ -16,66 +16,66 @@
 //===----------------------------------------------------------------------===//
 
 #if !COMPATIBLE_ATCODER_2025
-extension UnsafeIterator {
+  extension UnsafeIterator {
 
-  @frozen
-  public struct _CopyOnWrite<Source>:
-    _UnsafeNodePtrType,
-    IteratorProtocol,
-    Sequence
+    @frozen
+    public struct _CopyOnWrite<Source>:
+      _UnsafeNodePtrType,
+      IteratorProtocol,
+      Sequence
+    where
+      Source: UnsafeAssosiatedIterator
+    {
+      public typealias Base = Source.Base
+      public typealias Tree = UnsafeTreeV2<Source.Base>
+
+      @usableFromInline
+      var tree: Tree
+
+      @inlinable
+      init(start: _NodePtr, end: _NodePtr, tree: Tree)
+      where Source.Source == _Obverse4 {
+        self.source = .init(source: .init(nullptr: tree.nullptr, _start: start, _end: end))
+        self.tree = tree
+      }
+
+      @inlinable
+      init(start: _NodePtr, end: _NodePtr, tree: Tree)
+      where Source.Source == _Reverse4 {
+        self.source = .init(source: .init(nullptr: tree.nullptr, _start: start, _end: end))
+        self.tree = tree
+      }
+
+      @usableFromInline
+      var source: Source
+
+      @inlinable
+      internal init(_source: Source, tree: Tree) {
+        self.source = _source
+        self.tree = tree
+      }
+
+      @inlinable
+      public mutating func next() -> Source.Element? {
+        source.next()
+      }
+    }
+  }
+
+  extension UnsafeIterator._CopyOnWrite: @unchecked Sendable where Source: Sendable {}
+
+  extension UnsafeIterator._CopyOnWrite: ObverseIterator
   where
-    Source: UnsafeAssosiatedIterator
+    Source: ObverseIterator,
+    Source.ReversedIterator: UnsafeAssosiatedIterator & Sequence,
+    Source.ReversedIterator.Base == Source.Base
   {
-    public typealias Base = Source.Base
-    public typealias Tree = UnsafeTreeV2<Source.Base>
-
-    @usableFromInline
-    var tree: Tree
-
     @inlinable
-    init(start: _NodePtr, end: _NodePtr, tree: Tree)
-    where Source.Source == _Obverse4 {
-      self.source = .init(source: .init(nullptr: tree.nullptr, _start: start, _end: end))
-      self.tree = tree
-    }
-
-    @inlinable
-    init(start: _NodePtr, end: _NodePtr, tree: Tree)
-    where Source.Source == _Reverse4 {
-      self.source = .init(source: .init(nullptr: tree.nullptr, _start: start, _end: end))
-      self.tree = tree
-    }
-
-    @usableFromInline
-    var source: Source
-
-    @inlinable
-    internal init(_source: Source, tree: Tree) {
-      self.source = _source
-      self.tree = tree
-    }
-
-    @inlinable
-    public mutating func next() -> Source.Element? {
-      source.next()
+    public func reversed() -> UnsafeIterator._CopyOnWrite<Source.ReversedIterator> {
+      .init(_source: source.reversed(), tree: tree)
     }
   }
-}
 
-extension UnsafeIterator._CopyOnWrite: @unchecked Sendable where Source: Sendable {}
-
-extension UnsafeIterator._CopyOnWrite: ObverseIterator
-where
-  Source: ObverseIterator,
-  Source.ReversedIterator: UnsafeAssosiatedIterator & Sequence,
-  Source.ReversedIterator.Base == Source.Base
-{
-  @inlinable
-  public func reversed() -> UnsafeIterator._CopyOnWrite<Source.ReversedIterator> {
-    .init(_source: source.reversed(), tree: tree)
-  }
-}
-
-extension UnsafeIterator._CopyOnWrite: ReverseIterator
-where Source: ReverseIterator {}
+  extension UnsafeIterator._CopyOnWrite: ReverseIterator
+  where Source: ReverseIterator {}
 #endif

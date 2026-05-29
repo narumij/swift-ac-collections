@@ -25,8 +25,6 @@ where
   @inlinable
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-//    self.startIndex = _start.band(__tree_)
-//    self.endIndex = _end.band(__tree_)
     self._sealed_start = _start
     self._sealed_end = _end
   }
@@ -74,9 +72,6 @@ extension RedBlackTreeKeyValueRangeView {
     // コピーが発生した場合インデックス引き継ぎを行う
     if copied {
       // コピー木であることがわかっているので千本引きが確実に行える（ハズレ無し）
-//      startIndex = __tree_.__retrieve_(startIndex.sealed.purified.tag).band(__tree_)
-//      endIndex = __tree_.__retrieve_(endIndex.sealed.purified.tag).band(__tree_)
-      
       _sealed_start = __tree_.__retrieve_(_sealed_start.purified.tag)
       _sealed_end = __tree_.__retrieve_(_sealed_end.purified.tag)
     }
@@ -250,7 +245,6 @@ extension RedBlackTreeKeyValueRangeView {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
     let (_p, _r) = __tree_._unchecked_remove(at: _start)
-//    startIndex = ___index(_p)
     _sealed_start = _p.uncheckedSeal
     return Base.__element_(_r)
   }

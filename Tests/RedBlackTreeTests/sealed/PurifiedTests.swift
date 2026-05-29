@@ -51,7 +51,7 @@
       #if USE_HOGEHOGE
         XCTAssertEqual(b.__tree_.__purified_(i0).error, .unsealed)
       #else
-        XCTAssertEqual(b.__tree_.__purified_(i0).error, .newName)
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .treeMismatch)
       #endif
     }
 
@@ -68,7 +68,7 @@
       #if USE_HOGEHOGE
         XCTAssertEqual(b.__tree_.__purified_(i0).error, .garbaged)  // TODO: この挙動について再検討
       #else
-        XCTAssertEqual(b.__tree_.__purified_(i0).error, .newName)
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .treeMismatch)
       #endif
       b.insert(5)
 
@@ -79,7 +79,7 @@
       #if USE_HOGEHOGE
         XCTAssertEqual(b.__tree_.__purified_(i0).error, .unsealed)
       #else
-        XCTAssertEqual(b.__tree_.__purified_(i0).error, .newName)
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .treeMismatch)
       #endif
     }
 

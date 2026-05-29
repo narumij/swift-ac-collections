@@ -18,7 +18,9 @@ var defines: [String] = [
   //  "USE_INT128",
   //    "USE_RECYCLE_POOL_PROTOCOL",
   //    "USE_FRESH_POOL_PROTOCOL",
-  //  "USE_COMPACT_NODE_METADATA",
+  //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし
+  
+//  "USE_HOGEHOGE" // TODO: リネーム。木をまたいだインデックスの利用を許可するかどうか
 ]
 
 var _settings: [SwiftSetting] =

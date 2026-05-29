@@ -217,7 +217,7 @@ public enum SealError: Error {
   case upperOutOfBounds
 
   /// 木が不一致
-  case treeMismatch
+  case crossTree
 }
 
 @usableFromInline

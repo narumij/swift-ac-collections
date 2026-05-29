@@ -51,7 +51,7 @@
       #if ALLOW_CROSS_TREE_INDEX
         XCTAssertEqual(b.__tree_.__purified_(i0).error, .unsealed)
       #else
-        XCTAssertEqual(b.__tree_.__purified_(i0).error, .treeMismatch)
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .crossTree)
       #endif
     }
 
@@ -68,7 +68,7 @@
       #if ALLOW_CROSS_TREE_INDEX
         XCTAssertEqual(b.__tree_.__purified_(i0).error, .garbaged)  // TODO: この挙動について再検討
       #else
-        XCTAssertEqual(b.__tree_.__purified_(i0).error, .treeMismatch)
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .crossTree)
       #endif
       b.insert(5)
 
@@ -79,7 +79,7 @@
       #if ALLOW_CROSS_TREE_INDEX
         XCTAssertEqual(b.__tree_.__purified_(i0).error, .unsealed)
       #else
-        XCTAssertEqual(b.__tree_.__purified_(i0).error, .treeMismatch)
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .crossTree)
       #endif
     }
 

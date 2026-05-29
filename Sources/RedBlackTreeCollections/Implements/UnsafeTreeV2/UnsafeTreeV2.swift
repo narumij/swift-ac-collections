@@ -181,7 +181,7 @@ extension UnsafeTreeV2 {
     package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
       withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
         ? index.sealed.purified
-        : .failure(.treeMismatch)
+        : .failure(.crossTree)
     }
   #endif
 

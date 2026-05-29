@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/05/29.
 //
 
-#if !COMPATIBLE_ATCODER_2025 && !ALLOW_CROSS_TREE_INDEX
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025 && !ALLOW_CROSS_TREE_INDEX
   import Testing
   import Foundation
   import RedBlackTreeModule

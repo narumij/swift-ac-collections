@@ -5,6 +5,7 @@
 //  Created by narumij on 2026/05/30.
 //
 
+#if DEATH_TEST
 import Testing
 
 struct DeathTest {
@@ -14,3 +15,4 @@ struct DeathTest {
     // GW延長戦しすぎなうえ、電池が切れました
   }
 }
+#endif

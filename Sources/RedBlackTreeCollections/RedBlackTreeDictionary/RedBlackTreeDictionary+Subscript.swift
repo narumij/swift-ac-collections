@@ -61,28 +61,28 @@ extension RedBlackTreeDictionary {
 }
 
 #if false
-extension RedBlackTreeDictionary {
+  // 調査用
+  extension RedBlackTreeDictionary {
 
-  /// Accesses the element at the specified position.
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public subscript(_pair position: Index) -> RedBlackTreePair<Key, Value> {
-    __tree_._unsafeAddress(position).pointee
-  }
+    /// Accesses the element at the specified position.
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public subscript(_pair position: Index) -> RedBlackTreePair<Key, Value> {
+      __tree_._unsafeAddress(position).pointee
+    }
 
-  @inlinable
-  @inline(__always)
-  public subscript(_element position: Index) -> Element {
-    __tree_._unsafeAddress(position).pointee.tuple
+    @inlinable
+    @inline(__always)
+    public subscript(_element position: Index) -> Element {
+      __tree_._unsafeAddress(position).pointee.tuple
+    }
   }
-}
 #endif
 
-
-
-#if !COMPATIBLE_ATCODER_2025
+#if !COMPATIBLE_ATCODER_2025 && false
+  // やっぱりTupleはバギー
   extension RedBlackTreeDictionary {
 
     /// Accesses the element at the specified position.
@@ -98,3 +98,19 @@ extension RedBlackTreeDictionary {
   }
 #endif
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Accesses the element at the specified position.
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always)
+      get {
+        // unsafeAddress, _read、双方バグるので、基本のget。しくしく
+        __tree_._unsafeAddress(position).pointee.tuple
+      }
+    }
+  }
+#endif

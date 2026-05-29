@@ -968,7 +968,10 @@ final class SetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
       XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 3)))
       XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 4)))
-      XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: 5))) // TODO: メモリ安全に不安があるので、再度調査すること。
+      // TODO: メモリ安全に不安があるので、再度調査すること。
+      XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: 5)))
+    // 何のチェックをすり抜けたのかよく分からない
+    // __retrieve_に暫定処置はした
     #endif
   }
 

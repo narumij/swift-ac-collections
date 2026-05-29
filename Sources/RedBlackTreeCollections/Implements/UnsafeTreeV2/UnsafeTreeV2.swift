@@ -130,7 +130,9 @@ extension UnsafeTreeV2 {
     switch tag {
     case .nullptr: .failure(.null)
     case .end: .success(end)
-    default: tag < capacity ? .success(_buffer.header[tag]) : .failure(.unknown)
+      // capacityでは未初期化範囲を含む
+      // 少なからずノードが初期化されているのはinitializedCount
+    default: tag < initializedCount ? .success(_buffer.header[tag]) : .failure(.unknown)
     }
   }
 

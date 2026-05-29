@@ -52,7 +52,7 @@ extension UnsafeTreeV2 {
 
         __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
-          __parent, __child, other[_unsafe_raw: __first2])
+          __parent, __child, Base.__payload_(__first2))
         __first2 = other.__tree_next_iter(__first2)
       } else {
         if !value_comp(__get_value(__first1), other.__get_value(__first2)) {
@@ -61,7 +61,7 @@ extension UnsafeTreeV2 {
 
         __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
-          __parent, __child, self[_unsafe_raw: __first1])
+          __parent, __child, Base.__payload_(__first1))
         __first1 = __tree_next_iter(__first1)
       }
     }
@@ -93,7 +93,7 @@ extension UnsafeTreeV2 {
 
         __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
-          __parent, __child, self[_unsafe_raw: __first1])
+          __parent, __child, Base.__payload_(__first1))
         __first1 = __tree_next_iter(__first1)
       } else if value_comp(
         other.__get_value(__first2),
@@ -102,17 +102,17 @@ extension UnsafeTreeV2 {
 
         __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
-          __parent, __child, other[_unsafe_raw: __first2])
+          __parent, __child, Base.__payload_(__first2))
         __first2 = other.__tree_next_iter(__first2)
       } else {
         __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
-          __parent, __child, self[_unsafe_raw: __first1])
+          __parent, __child, Base.__payload_(__first1))
         __first1 = __tree_next_iter(__first1)
 
         __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
-          __parent, __child, other[_unsafe_raw: __first2])
+          __parent, __child, Base.__payload_(__first2))
         __first2 = other.__tree_next_iter(__first2)
       }
     }
@@ -135,7 +135,7 @@ extension UnsafeTreeV2 {
         if !value_comp(other.__get_value(__first2), __get_value(__first1)) {
           __result_.unsafeEnsureCapacity()
           (__parent, __child) = __result_.___emplace_hint_right(
-            __parent, __child, self[_unsafe_raw: __first1])
+            __parent, __child, Base.__payload_(__first1))
           __first1 = __tree_next_iter(__first1)
         }
         __first2 = other.__tree_next_iter(__first2)
@@ -159,13 +159,13 @@ extension UnsafeTreeV2 {
       if value_comp(__get_value(__first1), other.__get_value(__first2)) {
         __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
-          __parent, __child, self[_unsafe_raw: __first1])
+          __parent, __child, Base.__payload_(__first1))
         __first1 = __tree_next_iter(__first1)
       } else {
         if value_comp(other.__get_value(__first2), __get_value(__first1)) {
           __result_.unsafeEnsureCapacity()
           (__parent, __child) = __result_.___emplace_hint_right(
-            __parent, __child, other[_unsafe_raw: __first2])
+            __parent, __child, Base.__payload_(__first2))
         } else {
           __first1 = __tree_next_iter(__first1)
         }
@@ -187,7 +187,7 @@ extension UnsafeTreeV2 {
       if value_comp(__get_value(__first1), other.__get_value(__first2)) {
         __result_.unsafeEnsureCapacity()
         (__parent, __child) = __result_.___emplace_hint_right(
-          __parent, __child, self[_unsafe_raw: __first1])
+          __parent, __child, Base.__payload_(__first1))
         __first1 = __tree_next_iter(__first1)
       } else if value_comp(other.__get_value(__first2), __get_value(__first1)) {
         __first2 = other.__tree_next_iter(__first2)

@@ -87,14 +87,14 @@ extension ___LRULinkList {
   @inlinable
   mutating func ___prepend(_ __p: _NodePtr) {
     if _rankHighest == nullptr {
-      __tree_[_unsafe_raw: __p].next = nullptr
-      __tree_[_unsafe_raw: __p].prev = nullptr
+      Base.__payload_ptr(__p).pointee.next = nullptr
+      Base.__payload_ptr(__p).pointee.prev = nullptr
       _rankLowest = __p
       _rankHighest = __p
     } else {
-      __tree_[_unsafe_raw: _rankHighest].prev = __p
-      __tree_[_unsafe_raw: __p].next = _rankHighest
-      __tree_[_unsafe_raw: __p].prev = nullptr
+      Base.__payload_ptr(_rankHighest).pointee.prev = __p
+      Base.__payload_ptr(__p).pointee.next = _rankHighest
+      Base.__payload_ptr(__p).pointee.prev = nullptr
       _rankHighest = __p
     }
   }
@@ -104,20 +104,20 @@ extension ___LRULinkList {
 
     assert(
       __p == _rankHighest ||
-      __tree_[_unsafe_raw: __p].next != nullptr ||
-      __tree_[_unsafe_raw: __p].prev != nullptr,
+      Base.__payload_ptr(__p).pointee.next != nullptr ||
+      Base.__payload_ptr(__p).pointee.prev != nullptr,
       "did not contain \(__p) ptr.")
 
     defer {
-      let prev = __tree_[_unsafe_raw: __p].prev
-      let next = __tree_[_unsafe_raw: __p].next
+      let prev = Base.__payload_(__p).prev
+      let next = Base.__payload_(__p).next
       if prev != nullptr {
-        __tree_[_unsafe_raw: prev].next = next
+        Base.__payload_ptr(prev).pointee.next = next
       } else {
         _rankHighest = next
       }
       if next != nullptr {
-        __tree_[_unsafe_raw: next].prev = prev
+        Base.__payload_ptr(next).pointee.prev = prev
       } else {
         _rankLowest = prev
       }
@@ -131,10 +131,10 @@ extension ___LRULinkList {
 
     defer {
       if _rankLowest != nullptr {
-        _rankLowest = __tree_[_unsafe_raw: _rankLowest].prev
+        _rankLowest = Base.__payload_(_rankLowest).prev
       }
       if _rankLowest != nullptr {
-        __tree_[_unsafe_raw: _rankLowest].next = nullptr
+        Base.__payload_ptr(_rankLowest).pointee.next = nullptr
       } else {
         _rankHighest = nullptr
       }

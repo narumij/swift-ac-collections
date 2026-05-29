@@ -267,7 +267,7 @@ final class SetRemoveTest_10: RedBlackTreeTestCase {
     }
   #endif
 
-  #if DEBUG
+  #if DEBUG && COMPATIBLE_ATCODER_2025
     func testRemoveWith___Indices() throws {
       for i in members.___node_positions() {
         members.__tree_._unchecked_remove(at: i)

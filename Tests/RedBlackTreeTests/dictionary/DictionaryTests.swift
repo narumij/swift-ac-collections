@@ -418,6 +418,12 @@ final class DictionaryTests: RedBlackTreeTestCase {
   func testArrayAccess1() throws {
     let set = [0: 0, 1: 10, 2: 20, 3: 30, 4: 40] as RedBlackTreeDictionary<Int, Int>
     XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 0)].key, 0)
+    XCTAssertEqual(set.index(set.startIndex, offsetBy: 0), set.startIndex)
+//    XCTAssertEqual(set[_pair: set.startIndex], .init((0,0)))
+//    XCTAssertEqual(set[_element: set.startIndex].key, 0)
+//    XCTAssertEqual(set[_element: set.startIndex].value, 0)
+    XCTAssertEqual(set[set.startIndex].key, 0)
+    XCTAssertEqual(set[set.startIndex].value, 0)
     XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 1)].key, 1)
     XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 2)].key, 2)
     XCTAssertEqual(set[set.index(set.startIndex, offsetBy: 3)].key, 3)

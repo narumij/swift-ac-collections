@@ -52,11 +52,22 @@
       XCTAssertEqual(a.startIndex, b.startIndex)
       b.removeLast()  // この時点でCoWが発生する
       let b0 = b.startIndex
+#if false
+      // いまかんがえると、挙動としておかしい
+      XCTAssertEqual(a.startIndex, b.startIndex, "引き継ぎをしない場合、a.startIndexと同一")
       b.removeFirst()  // CoWが発生しない
-      XCTAssertTrue(b0.isValid)  // bそのものは有効
+      XCTAssertTrue(b0.isValid, "引き継ぎをしない場合、a.startIndexと同一なので有効")  // bそのものは有効
       XCTAssertFalse(b.isValid(index: b0))
-      XCTAssertTrue(a.isValid(index: b0))  // aにとっては有効なまま
+      XCTAssertTrue(a.isValid(index: b0), "引き継ぎをしない場合、a.startIndexと同一なので有効")  // aにとっては有効なまま
       XCTAssertEqual(b.sorted(), Array(1..<19))
+#else
+      XCTAssertNotEqual(a.startIndex, b.startIndex, "CoW発生時にインデックスも変わっている")
+      b.removeFirst()  // CoWが発生しない
+      XCTAssertFalse(b0.isValid, "bでは削除しているので不適格となる")
+      XCTAssertFalse(b.isValid(index: b0), "すでに解放されているインデックスなので不適格")
+      XCTAssertFalse(a.isValid(index: b0), "すでに解放されているインデックスなので不適格")
+      XCTAssertEqual(b.sorted(), Array(1..<19), "先頭と末尾が削除された残りとなる")
+#endif
     }
 
     func testSomething2() throws {

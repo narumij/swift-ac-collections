@@ -79,7 +79,7 @@ extension ___LRUMemoizeStorage {
       
       ___prepend(___pop(__ptr))
             
-      return __tree_[_unsafe_raw: __ptr].value
+      return Base.__payload_(__ptr).value
     }
 
     @inline(__always) set {

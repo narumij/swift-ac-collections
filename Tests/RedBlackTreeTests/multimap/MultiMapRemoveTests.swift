@@ -126,7 +126,7 @@ final class MultiMapRemoveTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if DEBUG
+  #if DEBUG && COMPATIBLE_ATCODER_2025
     func testRemoveWith___Indices() throws {
       var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
       for i in members.___node_positions() {

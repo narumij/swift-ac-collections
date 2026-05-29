@@ -429,6 +429,10 @@
   }
 
   extension RedBlackTreeMultiMap {
+    
+    public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
+    public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+
     /// - Complexity: O(1)
     @inlinable
     public func keys() -> Keys {
@@ -595,6 +599,17 @@
     public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
     where OtherSequence: Sequence, Element == OtherSequence.Element {
       lexicographicallyPrecedes(other, by: <)
+    }
+  }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+
+    @inlinable
+    public mutating func ___erase(_ position: Index) -> Index {
+      defer { remove(at: position) }
+      return index(after: position)
     }
   }
 #endif

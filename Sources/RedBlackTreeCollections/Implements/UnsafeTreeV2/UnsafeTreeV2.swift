@@ -42,7 +42,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   package var nullptr: _NodePtr {
-    withMutableHeader { $0.nullptr }
+    _read { yield withMutableHeader { $0.nullptr } }
   }
 
   @inlinable
@@ -55,7 +55,7 @@ extension UnsafeTreeV2 {
     _buffer.buffer === _emptyTreeStorage
   }
 
-  #if false
+  #if COMPATIBLE_ATCODER_2025
     /// 木に紐付いている生バッファ
     ///
     /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
@@ -114,99 +114,12 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {
-    @inline(__always)
-    @_transparent
-    unsafeAddress {
-      UnsafePointer(pointer.__value_())
-    }
-    @inline(__always)
-    @_transparent
-    nonmutating unsafeMutableAddress {
-      pointer.__value_()
-    }
-  }
-}
-
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    internal subscript(_unsafe __safe_ptr_: _SafePtr) -> _PayloadValue {
-      @inline(__always)
-      @_transparent
-      unsafeAddress {
-        precondition(__safe_ptr_.___has_payload_content)
-        return UnsafePointer(__safe_ptr_.pointer!.__value_())
-      }
-    }
-  }
-
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    internal subscript(_unsafe sealed: _SealedPtr) -> _PayloadValue {
-      @inline(__always)
-      @_transparent
-      unsafeAddress {
-        let unsealed = sealed.accessible
-        precondition(unsealed.error == nil)
-        return UnsafePointer(unsealed.pointer!.__value_())
-      }
-    }
-  }
-#endif
-
-extension UnsafeTreeV2 {
-
-  // subscript helperなので、__always
-  @inlinable
-  @inline(__always)
-  func _unsafeAddress(_ position: UnsafeIndexV3) -> UnsafePointer<_PayloadValue> {
-    return UnsafePointer(_unsafeMutableAddress(position))
-  }
-
-  // subscript helperなので、__always
-  @inlinable
-  @inline(__always)
-  func _unsafeMutableAddress(_ position: UnsafeIndexV3) -> UnsafeMutablePointer<_PayloadValue> {
-    let sealed: _SealedPtr = __purified_(position)
-    precondition(sealed.accessible.error == nil)
-    return sealed.pointer!.__value_()
-  }
-
-  @inlinable
-  internal subscript(_unsafe position: UnsafeIndexV3) -> _PayloadValue {
-
-    @inline(__always)
-    @_transparent
-    unsafeAddress {
-      _unsafeAddress(position)
-    }
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
   internal func deinitialize() {
     withMutableHeader { header in
       header.deinitialize()
     }
   }
 }
-
-// MARK: Refresh Pool Iterator
-
-#if DEBUG
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    func makeUsedNodeIterator() -> _FreshPoolUsedIterator<_PayloadValue> {
-      return _buffer.header.makeUsedNodeIterator()
-    }
-  }
-#endif
 
 // MARK: Index Resolver
 
@@ -245,23 +158,32 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  /// インデックスをポインタに解決する
-  ///
-  /// 木が同一の場合、インデックスが保持するポインタを返す。
-  /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
-  @inlinable
-  package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
-    withMutableHeader { index.__isSameEnd($0.end_ptr) }
-      // 木が同一のケース
-      // 中身を取り出し、生存確認を行って返している
-      ? index.sealed.purified
-      // 木が異なるケース
-      // 中身を取り出し、元の木に対して生存確認を行ってからタグを取得
-      // タグで該当ポインタを取得
-      // 該当ポインタの生存確認を行う（解放確認で十分なところ、実装サボりで生存確認になっていそう）
-      // 要は、元の木と現在の木のどちらかで失効している場合、失効ポインタを返す動作
-      : __retrieve_(index.sealed.purified.tag).deepPurified
-  }
+  #if ALLOW_CROSS_TREE_INDEX
+    /// インデックスをポインタに解決する
+    ///
+    /// 木が同一の場合、インデックスが保持するポインタを返す。
+    /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
+    @inlinable
+    package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
+      withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+        // 木が同一のケース
+        // 中身を取り出し、生存確認を行って返している
+        ? index.sealed.purified
+        // 木が異なるケース
+        // 中身を取り出し、元の木に対して生存確認を行ってからタグを取得
+        // タグで該当ポインタを取得
+        // 該当ポインタの生存確認を行う（解放確認で十分なところ、実装サボりで生存確認になっていそう）
+        // 要は、元の木と現在の木のどちらかで失効している場合、失効ポインタを返す動作
+        : __retrieve_(index.sealed.purified.tag).deepPurified
+    }
+  #else
+    @inlinable
+    package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
+      withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+        ? index.sealed.purified
+        : .failure(.crossTree)
+    }
+  #endif
 
   @inlinable
   internal func __purified_safe_(_ index: _LazyTieWrappedPtr) -> _SafePtr {

@@ -39,6 +39,18 @@ extension Benchmark {
         }
       }
     }
+    
+    self.add(
+      title: "RedBlackTreeDictionary<Int, Int> sequential iteration (inlined buffer)",
+      input: [Int].self
+    ) { input in
+      let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.map { ($0, 2 * $0) })
+      return { timer in
+        for item in d {
+          blackHole(item)
+        }
+      }
+    }
 
     self.add(
       title: "RedBlackTreeDictionary<Int, Int>.Keys sequential iteration",
@@ -64,32 +76,30 @@ extension Benchmark {
       }
     }
 
-    #if false
-      self.add(
-        title: "RedBlackTreeDictionary<Int, Int> sequential iteration, indices",
-        input: [Int].self
-      ) { input in
-        let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
-        return { timer in
-          for i in d.indices {
-            blackHole(d[i])
-          }
+    self.add(
+      title: "RedBlackTreeDictionary<Int, Int> sequential iteration, indices",
+      input: [Int].self
+    ) { input in
+      let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
+      return { timer in
+        for i in d.__indices {
+          blackHole(d[i])
         }
       }
+    }
 
-      self.add(
-        title: "RedBlackTreeDictionary<Int, Int> indexing subscript",
-        input: ([Int], [Int]).self
-      ) { input, lookups in
-        let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
-        let indices = lookups.map { d.index(forKey: $0)! }
-        return { timer in
-          for i in indices {
-            blackHole(d[i])
-          }
+    self.add(
+      title: "RedBlackTreeDictionary<Int, Int> indexing subscript",
+      input: ([Int], [Int]).self
+    ) { input, lookups in
+      let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
+      let indices = lookups.map { d.index(forKey: $0)! }
+      return { timer in
+        for i in indices {
+          blackHole(d[i])
         }
       }
-    #endif
+    }
 
     self.add(
       title: "RedBlackTreeDictionary<Int, Int> subscript, successful lookups",
@@ -169,7 +179,7 @@ extension Benchmark {
       title: "RedBlackTreeDictionary<Int, Int> subscript, insert, unique",
       input: [Int].self
     ) { input in
-      var d: RedBlackTreeDictionary<Int,Int> = [:]
+      var d: RedBlackTreeDictionary<Int, Int> = [:]
       for i in input {
         d[i] = 2 * i
       }
@@ -181,7 +191,7 @@ extension Benchmark {
       title: "RedBlackTreeDictionary<Int, Int> subscript, insert, shared",
       input: [Int].self
     ) { input in
-      var d: RedBlackTreeDictionary<Int,Int> = [:]
+      var d: RedBlackTreeDictionary<Int, Int> = [:]
       for i in input {
         let copy = d
         d[i] = 2 * i
@@ -195,7 +205,7 @@ extension Benchmark {
       title: "RedBlackTreeDictionary<Int, Int> subscript, insert, reserving capacity",
       input: [Int].self
     ) { input in
-      var d: RedBlackTreeDictionary<Int,Int> = [:]
+      var d: RedBlackTreeDictionary<Int, Int> = [:]
       d.reserveCapacity(input.count)
       for i in input {
         d[i] = 2 * i
@@ -442,7 +452,7 @@ extension Benchmark {
         }
       }
     }
-    
+
     self.add(
       title: "RedBlackTreeDictionary<Int, Int> successful contains(key:)",
       input: ([Int], [Int]).self
@@ -471,26 +481,26 @@ extension Benchmark {
 }
 
 #if false
-extension RedBlackTreeDictionary {
-  
-  @inlinable
-  @inline(__always)
-  func index(forKey key: Key) -> Index? {
-    firstIndex(of: key)
-  }
-  
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var keys: KeyIterator<Tree, Key, Value> {
-    keys()
-  }
+  extension RedBlackTreeDictionary {
 
-  /// - Complexity: O(1)
-  @inlinable
-  @inline(__always)
-  public var values: ValueIterator<Tree, Key, Value> {
-    values()
+    @inlinable
+    @inline(__always)
+    func index(forKey key: Key) -> Index? {
+      firstIndex(of: key)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var keys: KeyIterator<Tree, Key, Value> {
+      keys()
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    @inline(__always)
+    public var values: ValueIterator<Tree, Key, Value> {
+      values()
+    }
   }
-}
 #endif

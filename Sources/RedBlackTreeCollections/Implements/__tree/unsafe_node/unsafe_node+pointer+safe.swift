@@ -122,6 +122,16 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   }
 
   @inlinable
+  var ___is_end: Bool {
+    switch self {
+    case .success(let success):
+      success.___is_end
+    case .failure:
+      false
+    }
+  }
+
+  @inlinable
   var accessible: _SafePtr {
     ___has_payload_content ? self : .failure(.garbaged)
   }
@@ -205,6 +215,9 @@ public enum SealError: Error {
   ///
   /// 平衡木の上限を超えた操作を行ったことを表す
   case upperOutOfBounds
+
+  /// 木が不一致
+  case crossTree
 }
 
 @usableFromInline

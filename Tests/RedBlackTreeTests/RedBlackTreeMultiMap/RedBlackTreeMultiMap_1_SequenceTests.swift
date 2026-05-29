@@ -11,7 +11,7 @@ final class RedBlackTreeMultiMapSequenceTests: RedBlackTreeTestCase {
   ]
   
   func testSequenceConformance() {
-    let multiMap = RedBlackTreeMultiMap<String, Int>(multiKeysWithValues: elements)
+    let multiMap = RedBlackTreeMultiMap<String, Int>(keysWithValues: elements)
 
     var collectedPairs = [(String, Int)]()
 
@@ -32,7 +32,7 @@ final class RedBlackTreeMultiMapSequenceTests: RedBlackTreeTestCase {
   }
   
   func testSequenceConformance2() {
-    let multiMap = RedBlackTreeMultiMap<String, Int>(multiKeysWithValues: elements)
+    let multiMap = RedBlackTreeMultiMap<String, Int>(keysWithValues: elements)
 
     var collectedPairs = [(String, Int)]()
 

@@ -48,7 +48,7 @@ extension RedBlackTreeMultiMap {
   }
 #endif
 
-#if DEBUG
+#if DEBUG && COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
     package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
@@ -67,4 +67,14 @@ extension RedBlackTreeMultiMap {
         .map { $0.pointer.__value_().pointee }
     }
   }
+#endif
+
+#if COMPATIBLE_ATCODER_2025
+extension RedBlackTreeMultiMap {
+  @inlinable
+  public init<S>(keysWithValues keysAndValues: __owned S)
+  where S: Sequence, S.Element == (Key, Value) {
+    self.init(multiKeysWithValues: keysAndValues)
+  }
+}
 #endif

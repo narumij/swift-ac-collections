@@ -41,7 +41,7 @@
     /// - Complexity: O( log `count` )
     @inlinable
     public func firstIndex(of key: Key) -> Index? {
-      ___index_or_nil(__tree_.find(key))
+      ___index_or_nil(__tree_.update { $0.find_first(key) })
     }
   }
 
@@ -49,7 +49,7 @@
     /// - Complexity: O( log `count` )
     @inlinable
     public func index(forKey key: Key) -> Index? {
-      ___index_or_nil(__tree_.update { $0.find(key) })
+      ___index_or_nil(__tree_.update { $0.find_first(key) })
     }
   }
 

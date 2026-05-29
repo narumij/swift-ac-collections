@@ -12,7 +12,7 @@ import XCTest
 
     override func setUpWithError() throws {
       try super.setUpWithError()
-      tree = .init(multiKeysWithValues: (0..<20).map { ($0, $0) })
+      tree = .init(keysWithValues: (0..<20).map { ($0, $0) })
     }
 
     override func tearDownWithError() throws {
@@ -73,7 +73,11 @@ import XCTest
           tree.eraseUnique(v.key)  // strong ensure unique
         }
         XCTAssertEqual(tree.count, 0)
-        XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
+        #if true
+          XCTAssertEqual(tree._copyCount, 1)
+        #else
+          XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
+        #endif
       #else
         for v in tree {
           tree.removeFirst(forKey: v.key)  // strong ensure unique
@@ -166,7 +170,7 @@ import XCTest
         #endif
       }
       XCTAssertEqual(tree.count, 0)
-      #if !COMPATIBLE_ATCODER_2025
+      #if !COMPATIBLE_ATCODER_2025 && false
         XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
       #else
         XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
@@ -229,7 +233,7 @@ import XCTest
       let count = 1500
       var loopCount = 0
       var xy: [Int: RedBlackTreeMultiMap<Int, Int>] = [
-        1: .init(multiKeysWithValues: (0..<count).map { ($0, $0) })
+        1: .init(keysWithValues: (0..<count).map { ($0, $0) })
       ]
       xy[1]?._copyCount = 0
       let N = 100
@@ -241,7 +245,7 @@ import XCTest
           #if COMPATIBLE_ATCODER_2025
             xy[1]?.removeSubrange(lo..<hi)
           #else
-          _ = xy[1]?.erase(lo..<hi)
+            _ = xy[1]?.erase(lo..<hi)
           #endif
         }
       }

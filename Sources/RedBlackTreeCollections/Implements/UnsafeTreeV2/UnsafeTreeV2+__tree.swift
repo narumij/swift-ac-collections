@@ -129,6 +129,7 @@ extension UnsafeTreeV2: BoundBothInterface {
 }
 
 extension UnsafeTreeV2: IntThreeWayComparator {}
+
 extension UnsafeTreeV2: FindProtocol_ptr {}
 extension UnsafeTreeV2: FindEqualInterface, FindEqualProtocol_ptr {
 
@@ -152,15 +153,13 @@ extension UnsafeTreeV2: InsertLastProtocol_ptr {}
 extension UnsafeTreeV2: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2: TreeAlgorithmProtocol_ptr {}
 
-extension UnsafeTreeV2: FindFirstProtocol_ptr {}
-
 extension UnsafeTreeV2 {
 
   #if false
-  @inlinable
-  internal func ___min() -> _PayloadValue? {
-    __root == nullptr ? nil : Base.__payload_(__tree_min(__root))
-  }
+    @inlinable
+    internal func ___min() -> _PayloadValue? {
+      __root == nullptr ? nil : Base.__payload_(__tree_min(__root))
+    }
   #endif
 
   @inlinable
@@ -168,3 +167,5 @@ extension UnsafeTreeV2 {
     __root == nullptr ? nil : Base.__payload_(__tree_max(__root))
   }
 }
+
+extension UnsafeTreeV2: FindFirstProtocol_ptr {}

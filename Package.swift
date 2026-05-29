@@ -18,7 +18,9 @@ var defines: [String] = [
   //  "USE_INT128",
   //    "USE_RECYCLE_POOL_PROTOCOL",
   //    "USE_FRESH_POOL_PROTOCOL",
-  //  "USE_COMPACT_NODE_METADATA",
+  //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし
+
+  //  "ALLOW_CROSS_TREE_INDEX", //木をまたいだインデックスの利用を許可するかどうか
 ]
 
 var _settings: [SwiftSetting] =
@@ -82,6 +84,12 @@ var _settings: [SwiftSetting] =
       "DEATH_TEST",
       .when(platforms: [.macOS])
     ),
+
+    .unsafeFlags(
+      ["-Ounchecked"],
+      .when(
+        configuration: .release,
+        traits: ["_O_UNCHECKED"])),
   ]
   + defines.map { .define($0) }
 
@@ -114,6 +122,9 @@ let package = Package(
     ),
     .trait(
       name: "GRAPHVIZ_DEBUG"
+    ),
+    .trait(
+      name: "_O_UNCHECKED"
     ),
   ],
   dependencies: [

@@ -15,6 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if COMPATIBLE_ATCODER_2025
 extension UnsafeIterator {
 
   public struct _KeyValue<Base, Source>:
@@ -61,8 +62,51 @@ extension UnsafeIterator {
     }
   }
 }
+#else
+extension UnsafeIterator {
+
+  public struct _KeyValue<Base, Source>:
+    _UnsafeNodePtrType,
+    UnsafeAssosiatedIterator,
+    IteratorProtocol,
+    Sequence
+  where
+    Base: ___TreeBase & PairValueTrait,
+    Source: IteratorProtocol,
+    Source.Element == UnsafeMutablePointer<UnsafeNode>
+  {
+    public
+      var _source: Source
+
+    @inlinable
+    public init(source: Source) {
+      self._source = source
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func next() -> (key: Base._Key, value: Base._MappedValue)? {
+      _source.next().map(Base.__element_)
+    }
+  }
+}
+#endif
 
 extension UnsafeIterator._KeyValue: @unchecked Sendable where Source: Sendable {}
+
+extension UnsafeIterator._KeyValue {
+  /// - Complexity: O(1)
+  @inlinable
+  public func keys() -> UnsafeIterator._Key<Base, Source> {
+    .init(source: _source)
+  }
+
+  /// - Complexity: O(1)
+  @inlinable
+  public func values() -> UnsafeIterator._MappedValue<Base, Source> {
+    .init(source: _source)
+  }
+}
 
 extension UnsafeIterator._KeyValue: ObverseIterator
 where

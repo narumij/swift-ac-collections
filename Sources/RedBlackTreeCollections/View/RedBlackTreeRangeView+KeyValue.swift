@@ -25,8 +25,8 @@ where
   @inlinable
   internal init(__tree_: UnsafeTreeV2<Base>, _start: _SealedPtr, _end: _SealedPtr) {
     self.__tree_ = __tree_
-    self.startIndex = _start.band(__tree_)
-    self.endIndex = _end.band(__tree_)
+    self._sealed_start = _start
+    self._sealed_end = _end
   }
 
   public typealias Base = Container.Base
@@ -38,9 +38,16 @@ where
   @usableFromInline
   internal var __tree_: Tree
 
-  // _SealedPtr不可
-  public var startIndex: Index
-  public let endIndex: Index
+  public var startIndex: Index {
+    _sealed_start.band(__tree_)
+  }
+  
+  public var endIndex: Index {
+    _sealed_end.band(__tree_)
+  }
+
+  @usableFromInline var _sealed_start: _SealedPtr
+  @usableFromInline var _sealed_end: _SealedPtr
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -52,12 +59,31 @@ where
 #endif
 
 extension RedBlackTreeKeyValueRangeView {
+  
+  @inlinable
+  internal mutating func _ensureUnique() {
+    // 異なる木のインデックスを無効扱いにするための準備措置
+    // Viewだけはインデックス引き継ぎが必要
+    
+    // 元の木がユニーク参照では無かった場合、コピーが発生する
+    let copied = __tree_.__ensureUnique()
+    
+    // コピーが発生した場合インデックス引き継ぎを行う
+    if copied {
+      // コピー木であることがわかっているので千本引きが確実に行える（ハズレ無し）
+      _sealed_start = __tree_.__retrieve_(_sealed_start.purified.tag)
+      _sealed_end = __tree_.__retrieve_(_sealed_end.purified.tag)
+    }
+  }
+}
+
+extension RedBlackTreeKeyValueRangeView {
 
   @inlinable
   var _raw_range: (_NodePtr, _NodePtr) {
     guard
-      let _start = __tree_.__purified_(startIndex).pointer,
-      let _end = __tree_.__purified_(endIndex).pointer
+      let _start = _sealed_start.purified.pointer,
+      let _end = _sealed_end.purified.pointer
     else {
       return (__tree_.__end_node, __tree_.__end_node)
     }
@@ -66,8 +92,8 @@ extension RedBlackTreeKeyValueRangeView {
 
   @inlinable
   var _safe_range: (_SafePtr, _SafePtr) {
-    let _start = __tree_.__purified_safe_(startIndex)
-    let _end = __tree_.__purified_safe_(endIndex)
+    let _start = _sealed_start.purified.map(\.pointer)
+    let _end = _sealed_end.purified.map(\.pointer)
     guard
       _start.error == nil, _end.error == nil
     else {
@@ -78,8 +104,8 @@ extension RedBlackTreeKeyValueRangeView {
 
   @inlinable
   var _range: (_SealedPtr, _SealedPtr) {
-    let _start = __tree_.__purified_(startIndex)
-    let _end = __tree_.__purified_(endIndex)
+    let _start = _sealed_start.purified
+    let _end = _sealed_end.purified
     guard
       _start.error == nil, _end.error == nil
     else {
@@ -95,7 +121,7 @@ extension RedBlackTreeKeyValueRangeView {
   func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
     __tree_.index(p)
   }
-  
+
   @inlinable
   func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPtr {
     p.band(__tree_)
@@ -111,7 +137,7 @@ extension RedBlackTreeKeyValueRangeView {
   public __consuming func makeIterator() -> UnsafeIterator.KeyValueObverse<Base> {
     let (_start, _end) = _range
     #if !COMPATIBLE_ATCODER_2025
-      return .init(start: _start, end: _end, tie: __tree_.lazyDetach)
+      return .init(start: _start.pointer!, end: _end.pointer!, tree: __tree_)
     #else
       return .init(start: _start, end: _end, tie: __tree_.tied)
     #endif
@@ -138,14 +164,14 @@ extension RedBlackTreeKeyValueRangeView {
   @inlinable
   public var keys: [Key] {
     let (_start, _end) = _raw_range
-    return __tree_.___copy_to_array(_start, _end, transform: Base.__key)
+    return __tree_.___copy_to_array(_start, _end) { Base.__key_($0) }
   }
 
   /// - Complexity: O(1)
   @inlinable
   public var values: [Value] {
     let (_start, _end) = _raw_range
-    return __tree_.___copy_to_array(_start, _end, transform: Base.___mapped_value)
+    return __tree_.___copy_to_array(_start, _end) { Base.__mapped_value_($0) }
   }
 }
 
@@ -198,14 +224,14 @@ extension RedBlackTreeKeyValueRangeView {
   public var first: Element? {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
-    return Base.__element_(__tree_[_unsafe_raw: _start])
+    return Base.__element_(_start)
   }
 
   @inlinable
   public var last: Element? {
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
-    return Base.__element_(__tree_[_unsafe_raw: __tree_prev_iter(_end)])
+    return Base.__element_(__tree_prev_iter(_end))
   }
 }
 
@@ -214,18 +240,18 @@ extension RedBlackTreeKeyValueRangeView {
   @inlinable
   @discardableResult
   public mutating func popFirst() -> Element? {
-    __tree_.ensureUnique()
+    _ensureUnique()
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
     let (_p, _r) = __tree_._unchecked_remove(at: _start)
-    startIndex = ___index(_p)
+    _sealed_start = _p.uncheckedSeal
     return Base.__element_(_r)
   }
 
   @inlinable
   @discardableResult
   public mutating func popLast() -> Element? {
-    __tree_.ensureUnique()
+    _ensureUnique()
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
     return Base.__element_(__tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload)
@@ -234,7 +260,7 @@ extension RedBlackTreeKeyValueRangeView {
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
-    __tree_.ensureUnique()
+    _ensureUnique()
     guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
@@ -244,7 +270,7 @@ extension RedBlackTreeKeyValueRangeView {
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
-    __tree_.ensureUnique()
+    _ensureUnique()
     guard let element = popLast() else {
       preconditionFailure(.emptyLast)
     }
@@ -257,7 +283,7 @@ extension RedBlackTreeKeyValueRangeView {
   @inlinable
   @discardableResult
   public mutating func erase() -> Index {
-    __tree_.ensureUnique()
+    _ensureUnique()
     let (_start, _end) = _raw_range
     // ややチェックが甘いので末端チェック付き削除が必要
     return ___index(__tree_.___erase_range(_start, _end))
@@ -265,7 +291,7 @@ extension RedBlackTreeKeyValueRangeView {
 
   @inlinable
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-    __tree_.ensureUnique()
+    _ensureUnique()
     let (_start, _end) = _safe_range
     let result = try __tree_.___erase_ragen_if(_start, _end) {
       try shouldBeRemoved(Base.__element_($0))

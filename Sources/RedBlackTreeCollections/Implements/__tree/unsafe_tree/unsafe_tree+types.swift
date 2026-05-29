@@ -38,6 +38,10 @@ extension _MappedValueType where Self: _UnsafeNodePtrType {
   public typealias _MappedValuePtr = UnsafeMutablePointer<_MappedValue>
 }
 
+extension _ElementType where Self: _UnsafeNodePtrType {
+  public typealias _ElementValuePtr = UnsafeMutablePointer<Element>
+}
+
 extension _UnsafeNodePtrType where Self: _PayloadValueType {
 
   /// ペイロードのポインタ
@@ -57,10 +61,12 @@ extension _UnsafeNodePtrType where Self: _PayloadValueType {
   }
 
   @inlinable
+  @inline(__always)
   static func __payload_(_ p: _NodePtr) -> _PayloadValue {
     p.__value_().pointee
   }
   @inlinable
+  @inline(__always)
   static func __payload_(_ p: _NodeRef) -> _PayloadValue {
     p.pointee.__value_().pointee
   }
@@ -104,7 +110,7 @@ extension _UnsafeNodePtrType where Self: _ScalarBaseType {
 }
 
 extension _UnsafeNodePtrType where Self: _PairBaseType {
-
+  
   /// `_PayloadValue`が`Pair`の場合のキーへのポインタ
   ///
   /// ```
@@ -120,7 +126,7 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
   static func __key_ptr(_ p: _NodeRef) -> _KeyPtr {
     _ref(to: &__payload_ptr(p.pointee).pointee.tuple.key)
   }
-
+  
   @inlinable
   static func __key_(_ p: _NodePtr) -> _Key {
     __payload_(p).tuple.key
@@ -129,7 +135,7 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
   static func __key_(_ p: _NodeRef) -> _Key {
     __payload_(p).tuple.key
   }
-
+  
   /// `_PayloadValue`が`Pair`の場合のバリューへのポインタ
   ///
   /// ```
@@ -145,7 +151,7 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
   static func __mapped_value_ptr(_ p: _NodeRef) -> _MappedValuePtr {
     _ref(to: &__payload_ptr(p.pointee).pointee.tuple.value)
   }
-
+  
   @inlinable
   static func __mapped_value_(_ p: _NodePtr) -> _MappedValue {
     __payload_(p).tuple.value
@@ -153,5 +159,19 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
   @inlinable
   static func __mapped_value_(_ p: _NodeRef) -> _MappedValue {
     __payload_(p).tuple.value
+  }
+}
+
+extension _UnsafeNodePtrType where Self: _PairBaseType & _KeyValueElementType {
+  
+  @inlinable
+  static func __element__ptr(_ p: _NodePtr) -> _ElementValuePtr {
+    _ref(to: &__payload_ptr(p).pointee.tuple)
+  }
+  
+  @inlinable
+  @inline(__always)
+  static func __element_(_ p: _NodePtr) -> Element {
+    __payload_(p).tuple
   }
 }

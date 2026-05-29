@@ -18,9 +18,12 @@
 extension UnsafeTreeV2 where Base: PairValueTrait {
 
   @inlinable
+  @inline(__always)
   func lookup(_ key: Base._Key) -> Base._MappedValue? {
-    let __ptr = update { $0.find(key) }
-    return __ptr.___is_end ? nil : self[_unsafe_raw: __ptr].tuple.value
+    //    let __ptr = update { $0.find(key) }
+    //    return __ptr.___is_end ? nil : Base.__mapped_value_(__ptr)
+    let __ptr = update { $0.__find_equal(key).__child }
+    return __ptr.pointee == nullptr ? nil : Base.__mapped_value_(__ptr.pointee)
   }
 
   @inlinable
@@ -29,30 +32,33 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     get {
       return lookup(key)
     }
-    @inline(__always)
+    
     _modify {
       ensureUnique()
+      
       let (__parent, __child) = __find_equal(key)
 
-      var value: Base._MappedValue? =
-        __child.pointee == nullptr
-        ? nil
-        : Base.__mapped_value_ptr(__child).move()
+      let found = __child.pointee != nullptr
+
+      var value: Base._MappedValue? = found ? Base.__mapped_value_ptr(__child).move() : nil
 
       defer {
-        switch (value, __child.pointee == nullptr) {
-        case (.some(let value), false):
-          Base.__mapped_value_ptr(__child).initialize(to: value)
-        case (nil, false):
-          _ = update { $0.erase(__child.pointee) }
-        case (.some(let value), true):
-          ensureCapacity()
-          update {
-            let __h = $0.__construct_node(Base.__payload_((key, value)))
-            $0.__insert_node_at(__parent, __child, __h)
+        if let value {
+          if found {
+            Base.__mapped_value_ptr(__child).initialize(to: value)
+          } else {
+            unsafeEnsureCapacity()
+            update {
+              let __h = $0.__construct_node(Base.__payload_((key, value)))
+              $0.__insert_node_at(__parent, __child, __h)
+            }
           }
-        case (nil, true):
-          break
+        } else {
+          if found {
+            _ = update { $0.erase(__child.pointee) }
+          } else {
+            /* NOP */
+          }
         }
       }
 

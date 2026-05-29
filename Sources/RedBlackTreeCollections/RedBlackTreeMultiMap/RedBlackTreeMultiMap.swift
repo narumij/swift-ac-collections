@@ -98,12 +98,6 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
   public
     typealias Element = (key: Key, value: Value)
 
-  public
-    typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
-
-  public
-    typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
-
   @usableFromInline
   var __tree_: Tree
 
@@ -237,7 +231,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     public func values(forKey key: Key) -> [_MappedValue] {
       let (lo, hi) = __tree_.__equal_range_multi(key)
-      return __tree_.___copy_to_array(lo, hi, transform: ___mapped_value)
+      return __tree_.___copy_to_array(lo, hi) { Base.__mapped_value_($0) }
     }
   }
 #endif

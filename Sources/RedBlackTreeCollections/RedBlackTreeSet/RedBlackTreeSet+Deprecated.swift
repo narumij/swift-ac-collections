@@ -488,3 +488,14 @@
     public typealias Indices = Tree.Indices
   }
 #endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    @inlinable
+    public mutating func ___erase(_ position: Index) -> Index {
+      defer { remove(at: position) }
+      return index(after: position)
+    }
+  }
+#endif

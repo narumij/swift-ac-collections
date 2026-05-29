@@ -74,7 +74,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public func makeIterator() -> Tree._KeyValues {
     #if !COMPATIBLE_ATCODER_2025
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+      .init(start: _start, end: _end, tree: __tree_)
     #else
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
     #endif
@@ -90,7 +90,7 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(`count`)
     @inlinable
     public func sorted() -> [Element] {
-      __tree_.___copy_all_to_array(transform: __element_)
+      __tree_.___copy_all_to_array { Base.__element_($0) }
     }
 
     /// Returns an array containing the elements of this sequence in reverse order.
@@ -98,7 +98,7 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(`count`)
     @inlinable
     public func reversed() -> [Element] {
-      __tree_.___rev_copy_all_to_array(transform: __element_)
+      __tree_.___rev_copy_all_to_array { Base.__element_($0) }
     }
   }
 #endif
@@ -108,20 +108,44 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// A collection containing just the keys of the dictionary.
-    ///
-    /// - Complexity: O(`count`)
-    @inlinable
-    public var keys: [Key] {
-      __tree_.___copy_all_to_array(transform: __key)
-    }
+    #if false
+      public typealias Keys = [Key]
+      public typealias Values = [Value]
 
-    /// A collection containing just the values of the dictionary.
-    ///
-    /// - Complexity: O(`count`)
-    @inlinable
-    public var values: [Value] {
-      __tree_.___copy_all_to_array(transform: ___mapped_value)
-    }
+      /// A collection containing just the keys of the dictionary.
+      ///
+      /// - Complexity: O(`count`)
+      @inlinable
+      public var keys: [Key] {
+        __tree_.___copy_all_to_array(Base.__key_)
+      }
+
+      /// A collection containing just the values of the dictionary.
+      ///
+      /// - Complexity: O(`count`)
+      @inlinable
+      public var values: [Value] {
+        __tree_.___copy_all_to_array(Base.__mapped_value_)
+      }
+    #else
+      public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
+      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+
+      /// A collection containing just the keys of the dictionary.
+      ///
+      /// - Complexity: O(`count`)
+      @inlinable
+      public var keys: UnsafeIterator.KeyObverse<Base> {
+        .init(start: _start, end: _end, tree: __tree_)
+      }
+
+      /// A collection containing just the values of the dictionary.
+      ///
+      /// - Complexity: O(`count`)
+      @inlinable
+      public var values: UnsafeIterator.MappedValueObverse<Base> {
+        .init(start: _start, end: _end, tree: __tree_)
+      }
+    #endif
   }
 #endif

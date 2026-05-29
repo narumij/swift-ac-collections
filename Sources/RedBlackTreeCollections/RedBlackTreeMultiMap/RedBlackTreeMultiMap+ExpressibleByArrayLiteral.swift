@@ -19,9 +19,17 @@
 
 extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
 
-  /// - Complexity: O(*n* log *n*)
-  @inlinable
-  public init(arrayLiteral elements: (Key, Value)...) {
-    self.init(multiKeysWithValues: elements)
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(*n* log *n*)
+    @inlinable
+    public init(arrayLiteral elements: (Key, Value)...) {
+      self.init(multiKeysWithValues: elements)
+    }
+  #else
+    /// - Complexity: O(*n* log *n*)
+    @inlinable
+    public init(arrayLiteral elements: (Key, Value)...) {
+      self.init(keysWithValues: elements)
+    }
+  #endif
 }

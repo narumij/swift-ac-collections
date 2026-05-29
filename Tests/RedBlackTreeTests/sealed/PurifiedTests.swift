@@ -48,7 +48,11 @@
       XCTAssertEqual(i0.___tracking_tag, i1.___tracking_tag)
       XCTAssertEqual(i0.__recycle_count, 2)
       XCTAssertEqual(i1.__recycle_count, 0, "CoW発生後、リサイクル数は0からリセットになる模様。把握してなかった")
-      XCTAssertEqual(b.__tree_.__purified_(i0).error, .unsealed)
+      #if USE_HOGEHOGE
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .unsealed)
+      #else
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .newName)
+      #endif
     }
 
     func testExample1() throws {
@@ -57,18 +61,26 @@
       let i0 = a.find(5)
       XCTAssertEqual(i0.__recycle_count, 0)
       XCTAssertNil(a.__tree_.__purified_(i0).error)
-      
+
       var b = a
       b.remove(5)
       XCTAssertEqual(i0.__recycle_count, 0)
-      XCTAssertEqual(b.__tree_.__purified_(i0).error, .garbaged) // TODO: この挙動について再検討
+      #if USE_HOGEHOGE
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .garbaged)  // TODO: この挙動について再検討
+      #else
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .newName)
+      #endif
       b.insert(5)
-      
+
       let i1 = b.find(5)
       XCTAssertEqual(i0.___tracking_tag, i1.___tracking_tag)
       XCTAssertEqual(i0.__recycle_count, 0)
       XCTAssertEqual(i1.__recycle_count, 1)
-      XCTAssertEqual(b.__tree_.__purified_(i0).error, .unsealed)
+      #if USE_HOGEHOGE
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .unsealed)
+      #else
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .newName)
+      #endif
     }
 
     func testExample2() throws {

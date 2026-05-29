@@ -363,6 +363,10 @@
   }
 
   extension RedBlackTreeDictionary {
+    
+    public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
+    public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+
     /// - Complexity: O(1)
     @inlinable
     public func keys() -> Keys {

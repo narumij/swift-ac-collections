@@ -215,6 +215,10 @@ public enum SealError: Error {
   ///
   /// 平衡木の上限を超えた操作を行ったことを表す
   case upperOutOfBounds
+  
+  // TODO: 名前変更
+  // 木の不一致によるエラー
+  case newName
 }
 
 @usableFromInline

@@ -38,7 +38,6 @@ where
   @usableFromInline
   internal var __tree_: Tree
 
-  // _SealedPtr不可
   public var startIndex: Index {
     _sealed_start.band(__tree_)
   }

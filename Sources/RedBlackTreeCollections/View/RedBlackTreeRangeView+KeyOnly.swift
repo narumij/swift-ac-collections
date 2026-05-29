@@ -36,15 +36,14 @@ where
   @usableFromInline
   internal var __tree_: Tree
 
-  // _SealedPtr不可
   public var startIndex: Index {
     _sealed_start.band(__tree_)
   }
-  
+
   public var endIndex: Index {
     _sealed_end.band(__tree_)
   }
-  
+
   @usableFromInline var _sealed_start: _SealedPtr
   @usableFromInline var _sealed_end: _SealedPtr
 }
@@ -58,15 +57,15 @@ where
 #endif
 
 extension RedBlackTreeKeyOnlyRangeView {
-  
+
   @inlinable
   internal mutating func _ensureUnique() {
     // 異なる木のインデックスを無効扱いにするための準備措置
     // Viewだけはインデックス引き継ぎが必要
-    
+
     // 元の木がユニーク参照では無かった場合、コピーが発生する
     let copied = __tree_.__ensureUnique()
-    
+
     // コピーが発生した場合インデックス引き継ぎを行う
     if copied {
       // コピー木であることがわかっているので千本引きが確実に行える（ハズレ無し）

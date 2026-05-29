@@ -28,6 +28,14 @@ extension UnsafeTreeV2 {
     guard !isUnique else { return }
     self = copy()
   }
+  
+  @inlinable
+  internal mutating func __ensureUnique() -> Bool {
+    let isUnique = isUnique()
+    guard !isUnique else { return false }
+    self = copy()
+    return true
+  }
 
   @inlinable
   internal mutating func _strongEnsureUnique() {

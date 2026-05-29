@@ -38,7 +38,7 @@ where
 
   // _SealedPtr不可
   public var startIndex: Index
-  public let endIndex: Index
+  public var endIndex: Index
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -48,6 +48,25 @@ where
     }
   }
 #endif
+
+extension RedBlackTreeKeyOnlyRangeView {
+  
+  @inlinable
+  internal mutating func _ensureUnique() {
+    // 異なる木のインデックスを無効扱いにするための準備措置
+    // Viewだけはインデックス引き継ぎが必要
+    
+    // 元の木がユニーク参照では無かった場合、コピーが発生する
+    let copied = __tree_.__ensureUnique()
+    
+    // コピーが発生した場合インデックス引き継ぎを行う
+    if copied {
+      // コピー木であることがわかっているので千本引きが確実に行える（ハズレ無し）
+      startIndex = __tree_.__retrieve_(startIndex.sealed.purified.tag).band(__tree_)
+      endIndex = __tree_.__retrieve_(endIndex.sealed.purified.tag).band(__tree_)
+    }
+  }
+}
 
 extension RedBlackTreeKeyOnlyRangeView {
 
@@ -195,7 +214,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @discardableResult
   public mutating func popFirst() -> Element? {
-    __tree_.ensureUnique()
+    _ensureUnique()
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
     let (_p, _r) = __tree_._unchecked_remove(at: _start)
@@ -206,7 +225,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @discardableResult
   public mutating func popLast() -> Element? {
-    __tree_.ensureUnique()
+    _ensureUnique()
     let (_start, _end) = _raw_range
     guard _start != _end else { return nil }
     return __tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
@@ -215,7 +234,6 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @discardableResult
   public mutating func removeFirst() -> Element {
-    //    __tree_.ensureUnique()
     guard let element = popFirst() else {
       preconditionFailure(.emptyFirst)
     }
@@ -225,7 +243,6 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @discardableResult
   public mutating func removeLast() -> Element {
-    //    __tree_.ensureUnique()
     guard let element = popLast() else {
       preconditionFailure(.emptyLast)
     }
@@ -238,7 +255,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @discardableResult
   public mutating func erase() -> Index {
-    __tree_.ensureUnique()
+    _ensureUnique()
     let (_start, _end) = _raw_range
     // ややチェックが甘いので末端チェック付き削除が必要
     return ___index(__tree_.___erase_range(_start, _end))
@@ -246,7 +263,7 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-    __tree_.ensureUnique()
+    _ensureUnique()
     let (_start, _end) = _safe_range
     let result = try __tree_.___erase_ragen_if(_start, _end, shouldBeRemoved)
     if case .failure(let e) = result {

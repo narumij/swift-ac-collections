@@ -40,7 +40,7 @@ where
 
   // _SealedPtr不可
   public var startIndex: Index
-  public let endIndex: Index
+  public var endIndex: Index
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -50,6 +50,25 @@ where
     }
   }
 #endif
+
+extension RedBlackTreeKeyValueRangeView {
+  
+  @inlinable
+  internal mutating func _ensureUnique() {
+    // 異なる木のインデックスを無効扱いにするための準備措置
+    // Viewだけはインデックス引き継ぎが必要
+    
+    // 元の木がユニーク参照では無かった場合、コピーが発生する
+    let copied = __tree_.__ensureUnique()
+    
+    // コピーが発生した場合インデックス引き継ぎを行う
+    if copied {
+      // コピー木であることがわかっているので千本引きが確実に行える（ハズレ無し）
+      startIndex = __tree_.__retrieve_(startIndex.sealed.purified.tag).band(__tree_)
+      endIndex = __tree_.__retrieve_(endIndex.sealed.purified.tag).band(__tree_)
+    }
+  }
+}
 
 extension RedBlackTreeKeyValueRangeView {
 

@@ -34,6 +34,15 @@ extension Benchmark {
         blackHole(RedBlackTreeSet(buffer))
       }
     }
+    
+    self.addSimple(
+      title: "RedBlackTreeSet<Int> init from sorted",
+      input: [Int].self
+    ) { input in
+      input.withUnsafeBufferPointer { buffer in
+        blackHole(RedBlackTreeSet(buffer.sorted()))
+      }
+    }
 
     self.add(
       title: "RedBlackTreeSet<Int> sequential iteration",
@@ -358,110 +367,110 @@ extension Benchmark {
       }
     }
 
-#if true
-    self.add(
-      title: "RedBlackTreeSet<Int> successful find",
-      input: ([Int], [Int]).self
-    ) { input, lookups in
-      let set = RedBlackTreeSet(input)
-      return { timer in
-        for i in lookups {
-          precondition(set.find(i) != set.endIndex)
+    #if true
+      self.add(
+        title: "RedBlackTreeSet<Int> successful find",
+        input: ([Int], [Int]).self
+      ) { input, lookups in
+        let set = RedBlackTreeSet(input)
+        return { timer in
+          for i in lookups {
+            precondition(set.find(i) != set.endIndex)
+          }
         }
       }
-    }
 
-    self.add(
-      title: "RedBlackTreeSet<Int> unsuccessful find",
-      input: ([Int], [Int]).self
-    ) { input, lookups in
-      let set = RedBlackTreeSet(input)
-      let lookups = lookups.map { $0 + input.count }
-      return { timer in
-        for i in lookups {
-          precondition(set.find(i) == set.endIndex)
+      self.add(
+        title: "RedBlackTreeSet<Int> unsuccessful find",
+        input: ([Int], [Int]).self
+      ) { input, lookups in
+        let set = RedBlackTreeSet(input)
+        let lookups = lookups.map { $0 + input.count }
+        return { timer in
+          for i in lookups {
+            precondition(set.find(i) == set.endIndex)
+          }
         }
       }
-    }
 
-    self.add(
-      title: "RedBlackTreeSet<Int> successful [.find(:)]",
-      input: ([Int], [Int]).self
-    ) { input, lookups in
-      let set = RedBlackTreeSet(input)
-      return { timer in
-        for i in lookups {
-          precondition(set[.find(i)] != nil)
+      self.add(
+        title: "RedBlackTreeSet<Int> successful [.find(:)]",
+        input: ([Int], [Int]).self
+      ) { input, lookups in
+        let set = RedBlackTreeSet(input)
+        return { timer in
+          for i in lookups {
+            precondition(set[.find(i)] != nil)
+          }
         }
       }
-    }
 
-    self.add(
-      title: "RedBlackTreeSet<Int> unsuccessful [.find(:)]",
-      input: ([Int], [Int]).self
-    ) { input, lookups in
-      let set = RedBlackTreeSet(input)
-      let lookups = lookups.map { $0 + input.count }
-      return { timer in
-        for i in lookups {
-          precondition(set[.find(i)] == nil)
+      self.add(
+        title: "RedBlackTreeSet<Int> unsuccessful [.find(:)]",
+        input: ([Int], [Int]).self
+      ) { input, lookups in
+        let set = RedBlackTreeSet(input)
+        let lookups = lookups.map { $0 + input.count }
+        return { timer in
+          for i in lookups {
+            precondition(set[.find(i)] == nil)
+          }
         }
       }
-    }
-    
-    self.add(
-      title: "RedBlackTreeSet<Int> successful __raw_find",
-      input: ([Int], [Int]).self
-    ) { input, lookups in
-      let set = RedBlackTreeSet(input)
-      return { timer in
-        for i in lookups {
-          precondition(set.__raw_find(i) != set.__raw_end)
-//          precondition(set.__raw_safe_find(i).exists)
-//          precondition(set.__value_find(i) == i)
-        }
-      }
-    }
 
-    self.add(
-      title: "RedBlackTreeSet<Int> unsuccessful __raw_find",
-      input: ([Int], [Int]).self
-    ) { input, lookups in
-      let set = RedBlackTreeSet(input)
-      let lookups = lookups.map { $0 + input.count }
-      return { timer in
-        for i in lookups {
-          precondition(set.__raw_find(i) == set.__raw_end)
-//          precondition(!set.__raw_safe_find(i).exists)
-//          precondition(set.__value_find(i) == nil)
+      self.add(
+        title: "RedBlackTreeSet<Int> successful __raw_find",
+        input: ([Int], [Int]).self
+      ) { input, lookups in
+        let set = RedBlackTreeSet(input)
+        return { timer in
+          for i in lookups {
+            precondition(set.__raw_find(i) != set.__raw_end)
+            //          precondition(set.__raw_safe_find(i).exists)
+            //          precondition(set.__value_find(i) == i)
+          }
         }
       }
-    }
-#else
-    self.add(
-      title: "RedBlackTreeSet<Int> successful find",
-      input: ([Int], [Int]).self
-    ) { input, lookups in
-      let set = RedBlackTreeSet(input)
-      return { timer in
-        for i in lookups {
-          precondition(set.firstIndex(of: i) != nil)
-        }
-      }
-    }
 
-    self.add(
-      title: "RedBlackTreeSet<Int> unsuccessful find",
-      input: ([Int], [Int]).self
-    ) { input, lookups in
-      let set = RedBlackTreeSet(input)
-      let lookups = lookups.map { $0 + input.count }
-      return { timer in
-        for i in lookups {
-          precondition(set.firstIndex(of: i) == nil)
+      self.add(
+        title: "RedBlackTreeSet<Int> unsuccessful __raw_find",
+        input: ([Int], [Int]).self
+      ) { input, lookups in
+        let set = RedBlackTreeSet(input)
+        let lookups = lookups.map { $0 + input.count }
+        return { timer in
+          for i in lookups {
+            precondition(set.__raw_find(i) == set.__raw_end)
+            //          precondition(!set.__raw_safe_find(i).exists)
+            //          precondition(set.__value_find(i) == nil)
+          }
         }
       }
-    }
-#endif
+    #else
+      self.add(
+        title: "RedBlackTreeSet<Int> successful find",
+        input: ([Int], [Int]).self
+      ) { input, lookups in
+        let set = RedBlackTreeSet(input)
+        return { timer in
+          for i in lookups {
+            precondition(set.firstIndex(of: i) != nil)
+          }
+        }
+      }
+
+      self.add(
+        title: "RedBlackTreeSet<Int> unsuccessful find",
+        input: ([Int], [Int]).self
+      ) { input, lookups in
+        let set = RedBlackTreeSet(input)
+        let lookups = lookups.map { $0 + input.count }
+        return { timer in
+          for i in lookups {
+            precondition(set.firstIndex(of: i) == nil)
+          }
+        }
+      }
+    #endif
   }
 }

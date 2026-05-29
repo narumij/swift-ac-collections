@@ -153,6 +153,7 @@
           "tasks": [
             "std::set<intptr_t> constructor from buffer",
             "RedBlackTreeSet<Int> init from unsafe buffer",
+            "RedBlackTreeSet<Int> init from sorted",
           ]
         },
         {

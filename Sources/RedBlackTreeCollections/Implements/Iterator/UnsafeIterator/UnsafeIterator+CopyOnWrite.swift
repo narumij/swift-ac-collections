@@ -15,6 +15,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if !COMPATIBLE_ATCODER_2025
 extension UnsafeIterator {
 
   @frozen
@@ -77,3 +78,4 @@ where
 
 extension UnsafeIterator._CopyOnWrite: ReverseIterator
 where Source: ReverseIterator {}
+#endif

@@ -15,6 +15,49 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if COMPATIBLE_ATCODER_2025
+extension UnsafeIterator {
+
+  public struct _Key<Base: ___TreeBase, Source: IteratorProtocol & Sequence>:
+    _UnsafeNodePtrType,
+    UnsafeAssosiatedIterator,
+    IteratorProtocol,
+    Sequence
+  where
+    Source.Element == UnsafeMutablePointer<UnsafeNode>,
+    Source: UnsafeIteratorProtocol
+  {
+    public var _source: Source
+
+    @inlinable
+    public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
+      self.init(source: .init(_start: _start, _end: _end))
+    }
+
+    @inlinable
+    internal init(source: Source) {
+      self._source = source
+    }
+
+    @inlinable
+    public var _sealed_start: _SealedPtr {
+      _source._sealed_start
+    }
+
+    @inlinable
+    public var _sealed_end: _SealedPtr {
+      _source._sealed_end
+    }
+
+    @inlinable
+    public mutating func next() -> Base._Key? {
+      return _source.next().map {
+        Base.__key($0.__value_().pointee)
+      }
+    }
+  }
+}
+#else
 extension UnsafeIterator {
 
   public struct _Key<Base: ___TreeBase, Source>:
@@ -41,6 +84,7 @@ extension UnsafeIterator {
     }
   }
 }
+#endif
 
 extension UnsafeIterator._Key: @unchecked Sendable where Source: Sendable {}
 
@@ -59,23 +103,3 @@ where
 
 extension UnsafeIterator._Key: ReverseIterator
 where Source: ReverseIterator {}
-
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeIterator._Key {
-
-    @inlinable
-    public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
-      self.init(source: .init(_start: _start, _end: _end))
-    }
-
-    @inlinable
-    public var _sealed_start: _SealedPtr {
-      _source._sealed_start
-    }
-
-    @inlinable
-    public var _sealed_end: _SealedPtr {
-      _source._sealed_end
-    }
-  }
-#endif

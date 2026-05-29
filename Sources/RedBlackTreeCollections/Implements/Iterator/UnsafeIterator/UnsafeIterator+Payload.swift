@@ -15,32 +15,76 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeIterator {
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeIterator {
 
-  public struct _Payload<Base: ___TreeBase, Source>:
-    _UnsafeNodePtrType,
-    UnsafeAssosiatedIterator,
-    IteratorProtocol,
-    Sequence
-  where
-    Base: _UnsafeNodePtrType,
-    Source.Element == UnsafeMutablePointer<UnsafeNode>,
-    Source: IteratorProtocol
-  {
-    public var _source: Source
+    public struct _Payload<Base: ___TreeBase, Source: IteratorProtocol & Sequence>:
+      _UnsafeNodePtrType,
+      UnsafeAssosiatedIterator,
+      IteratorProtocol,
+      Sequence
+    where
+      Base: _UnsafeNodePtrType,
+      Source.Element == UnsafeMutablePointer<UnsafeNode>,
+      Source: UnsafeIteratorProtocol
+    {
+      @inlinable
+      public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
+        self.init(source: .init(_start: _start, _end: _end))
+      }
 
-    @inlinable
-    public init(source: Source) {
-      self._source = source
-    }
+      public var _source: Source
 
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> Base._PayloadValue? {
-      _source.next().map(Base.__payload_)
+      @inlinable
+      internal init(source: Source) {
+        self._source = source
+      }
+
+      public var _sealed_start: _SealedPtr {
+        _source._sealed_start
+      }
+
+      public var _sealed_end: _SealedPtr {
+        _source._sealed_end
+      }
+
+      @inlinable
+      public mutating func next() -> Base._PayloadValue? {
+        guard let p = _source.next() else {
+          return nil
+        }
+        return Base.__payload_(p)
+      }
     }
   }
-}
+#else
+  extension UnsafeIterator {
+
+    public struct _Payload<Base: ___TreeBase, Source>:
+      _UnsafeNodePtrType,
+      UnsafeAssosiatedIterator,
+      IteratorProtocol,
+      Sequence
+    where
+      Base: _UnsafeNodePtrType,
+      Source.Element == UnsafeMutablePointer<UnsafeNode>,
+      Source: IteratorProtocol
+    {
+      public var _source: Source
+
+      @inlinable
+      public init(source: Source) {
+        self._source = source
+      }
+
+      @inlinable
+      @inline(__always)
+      public mutating func next() -> Base._PayloadValue? {
+        _source.next().map(Base.__payload_)
+      }
+    }
+  }
+#endif
 
 extension UnsafeIterator._Payload: @unchecked Sendable where Source: Sendable {}
 
@@ -58,22 +102,3 @@ where
 
 extension UnsafeIterator._Payload: ReverseIterator
 where Source: ReverseIterator {}
-
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeIterator._Payload {
-    @inlinable
-    public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
-      self.init(source: .init(_start: _start, _end: _end))
-    }
-
-    @inlinable
-    public var _sealed_start: _SealedPtr {
-      _source._sealed_start
-    }
-
-    @inlinable
-    public var _sealed_end: _SealedPtr {
-      _source._sealed_end
-    }
-  }
-#endif

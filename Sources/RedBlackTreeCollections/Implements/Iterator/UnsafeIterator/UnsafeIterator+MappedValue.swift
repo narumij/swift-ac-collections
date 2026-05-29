@@ -15,35 +15,81 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeIterator {
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeIterator {
 
-  public struct _MappedValue<Base, Source>:
-    _UnsafeNodePtrType,
-    UnsafeAssosiatedIterator,
-    IteratorProtocol,
-    Sequence
-  where
-    Base: ___TreeBase & PairValueTrait,
-    Source: IteratorProtocol,
-    Source.Element == UnsafeMutablePointer<UnsafeNode>
-  {
-    public
-      var _source: Source
+    public struct _MappedValue<Base, Source>:
+      _UnsafeNodePtrType,
+      UnsafeAssosiatedIterator,
+      IteratorProtocol,
+      Sequence
+    where
+      Base: ___TreeBase & PairValueTrait,
+      Source: IteratorProtocol & Sequence & UnsafeIteratorProtocol,
+      Source.Element == UnsafeMutablePointer<UnsafeNode>
+    {
+      @inlinable
+      public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
+        self.init(source: .init(_start: _start, _end: _end))
+      }
 
-    @inlinable
-    public init(source: Source) {
-      self._source = source
-    }
+      public
+        var _source: Source
 
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> Base._MappedValue? {
-      return _source.next().map {
-        Base.__mapped_value_($0)
+      @inlinable
+      internal init(source: Source) {
+        self._source = source
+      }
+
+      @inlinable
+      public var _sealed_start: _SealedPtr {
+        _source._sealed_start
+      }
+
+      @inlinable
+      public var _sealed_end: _SealedPtr {
+        _source._sealed_end
+      }
+
+      @inlinable
+      public mutating func next() -> Base._MappedValue? {
+        return _source.next().map {
+          Base.__mapped_value_($0)
+        }
       }
     }
   }
-}
+#else
+  extension UnsafeIterator {
+
+    public struct _MappedValue<Base, Source>:
+      _UnsafeNodePtrType,
+      UnsafeAssosiatedIterator,
+      IteratorProtocol,
+      Sequence
+    where
+      Base: ___TreeBase & PairValueTrait,
+      Source: IteratorProtocol,
+      Source.Element == UnsafeMutablePointer<UnsafeNode>
+    {
+      public
+        var _source: Source
+
+      @inlinable
+      public init(source: Source) {
+        self._source = source
+      }
+
+      @inlinable
+      @inline(__always)
+      public mutating func next() -> Base._MappedValue? {
+        return _source.next().map {
+          Base.__mapped_value_($0)
+        }
+      }
+    }
+  }
+#endif
 
 extension UnsafeIterator._MappedValue: @unchecked Sendable where Source: Sendable {}
 
@@ -61,23 +107,3 @@ where
 
 extension UnsafeIterator._MappedValue: ReverseIterator
 where Source: ReverseIterator {}
-
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeIterator._MappedValue {
-
-    @inlinable
-    public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
-      self.init(source: .init(_start: _start, _end: _end))
-    }
-
-    @inlinable
-    public var _sealed_start: _SealedPtr {
-      _source._sealed_start
-    }
-
-    @inlinable
-    public var _sealed_end: _SealedPtr {
-      _source._sealed_end
-    }
-  }
-#endif

@@ -12,7 +12,7 @@ import XCTest
 
     override func setUpWithError() throws {
       try super.setUpWithError()
-      tree = .init(multiKeysWithValues: (0..<20).map { ($0, $0) })
+      tree = .init(keysWithValues: (0..<20).map { ($0, $0) })
     }
 
     override func tearDownWithError() throws {
@@ -233,7 +233,7 @@ import XCTest
       let count = 1500
       var loopCount = 0
       var xy: [Int: RedBlackTreeMultiMap<Int, Int>] = [
-        1: .init(multiKeysWithValues: (0..<count).map { ($0, $0) })
+        1: .init(keysWithValues: (0..<count).map { ($0, $0) })
       ]
       xy[1]?._copyCount = 0
       let N = 100

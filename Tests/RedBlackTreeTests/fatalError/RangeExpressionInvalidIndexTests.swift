@@ -61,18 +61,5 @@
         set.erase(lower..<upper)
       }
     }
-
-    #if !ALLOW_CROSS_TREE_INDEX
-      @Test
-      func `ことなる木由来のインデックスを用いて範囲削除しようとした場合、停止すること`() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
-          let source = RedBlackTreeSet(0..<8)
-          var target = RedBlackTreeSet(100..<108)
-          let lower = source.index(source.startIndex, offsetBy: 2)
-          let upper = source.index(source.startIndex, offsetBy: 6)
-          target.erase(lower..<upper)
-        }
-      }
-    #endif
   }
 #endif

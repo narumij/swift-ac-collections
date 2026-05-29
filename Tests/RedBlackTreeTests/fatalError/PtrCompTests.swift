@@ -32,7 +32,7 @@ fileprivate var _end: UnsafeMutablePointer<UnsafeNode> {
 }
 
 nonisolated
-struct Test_4 {
+struct PtrCompTests {
   
   enum SUT: UniqueMultiplicity {
     static func value_comp(_: Int, _: Int) -> Bool {

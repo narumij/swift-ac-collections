@@ -22,6 +22,6 @@ extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
   /// - Complexity: O(*n* log *n*)
   @inlinable
   public init(arrayLiteral elements: (Key, Value)...) {
-    self.init(multiKeysWithValues: elements)
+    self.init(keysWithValues: elements)
   }
 }

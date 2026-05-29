@@ -187,7 +187,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
   }
 
   func testInitUniqueKeysWithValues() throws {
-    let dict = Target(multiKeysWithValues: [(1, 10), (2, 20)])
+    let dict = Target(keysWithValues: [(1, 10), (2, 20)])
     #if COMPATIBLE_ATCODER_2025
       XCTAssertEqual(dict.keys() + [], [1, 2])
       XCTAssertEqual(dict.values() + [], [10, 20])
@@ -202,7 +202,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
   }
 
   func testInitUniqueKeysWithValues2() throws {
-    let dict = Target(multiKeysWithValues: AnySequence([(1, 10), (2, 20)]))
+    let dict = Target(keysWithValues: AnySequence([(1, 10), (2, 20)]))
     #if COMPATIBLE_ATCODER_2025
       XCTAssertEqual(dict.keys() + [], [1, 2])
       XCTAssertEqual(dict.values() + [], [10, 20])
@@ -244,7 +244,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
   func testInitUniquingKeysWith() throws {
     do {
       let dict = Target(
-        multiKeysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
+        keysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
       #if COMPATIBLE_ATCODER_2025
         XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
         XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])

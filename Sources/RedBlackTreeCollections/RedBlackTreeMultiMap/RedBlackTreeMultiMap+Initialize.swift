@@ -36,7 +36,7 @@ extension RedBlackTreeMultiMap {
     ///   no search is required, and rebalancing is amortized O(1),
     ///   so the overall construction cost becomes O(*n*).
     @inlinable
-    public init<S>(multiKeysWithValues keysAndValues: __owned S)
+    public init<S>(keysWithValues keysAndValues: __owned S)
     where S: Sequence, S.Element == (Key, Value) {
       var tree = Tree.create()
       tree.___insert_range_multi(keysAndValues) {
@@ -50,7 +50,7 @@ extension RedBlackTreeMultiMap {
     ///   no search is required, and rebalancing is amortized O(1),
     ///   so the overall construction cost becomes O(*n*).
     @inlinable
-    public init<S>(multiKeysWithValues keysAndValues: __owned S)
+    public init<S>(keysWithValues keysAndValues: __owned S)
     where S: Collection, S.Element == (Key, Value) {
       var tree = Tree.create(minimumCapacity: keysAndValues.count)
       tree.___insert_range_multi(keysAndValues) {

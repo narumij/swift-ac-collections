@@ -13,7 +13,7 @@
 
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025 && false
 
-  struct Test_2 {
+  struct IteratorInvariantTests {
 
     @Test func `イテレータの不変条件違反の件0`() async throws {
       // Write your test here and use APIs like `#expect(...)` to check expected conditions.

@@ -161,7 +161,7 @@
       XCTAssertEqual(Array(set), [0, 1, 3, 5, 7])
     }
 
-    #if USE_HOGEHOGE
+    #if ALLOW_CROSS_TREE_INDEX
       func testEraseRangeFromDifferentTreeMutatesTargetAfterCoWMatch() {
         let source = RedBlackTreeSet(0..<8)
         var target = RedBlackTreeSet(100..<108)

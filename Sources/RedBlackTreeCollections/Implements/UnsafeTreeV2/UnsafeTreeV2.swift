@@ -158,7 +158,7 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  #if USE_HOGEHOGE
+  #if ALLOW_CROSS_TREE_INDEX
     /// インデックスをポインタに解決する
     ///
     /// 木が同一の場合、インデックスが保持するポインタを返す。

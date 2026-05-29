@@ -62,7 +62,7 @@
       }
     }
 
-    #if !USE_HOGEHOGE
+    #if !ALLOW_CROSS_TREE_INDEX
       @Test
       func `ことなる木由来のインデックスを用いて範囲削除しようとした場合、停止すること`() async {
         await #expect(processExitsWith: .signal(SIGTRAP)) {

@@ -190,28 +190,4 @@
       }
     }
   }
-
-  extension RedBlackTreeDictionary {
-
-    @inlinable
-    subscript(unchecked range: _RawRange<_SealedPtr>) -> View {
-
-      @inline(__always) get {
-        View(
-          __tree_: __tree_,
-          _start: range.lowerBound,
-          _end: range.upperBound)
-      }
-
-      @inline(__always) _modify {
-        var view = View(
-          __tree_: __tree_,
-          _start: range.lowerBound,
-          _end: range.upperBound)
-        self = RedBlackTreeDictionary()  // yield中のCoWキャンセル。考えた人賢い
-        defer { self = RedBlackTreeDictionary(__tree_: view.__tree_) }
-        yield &view
-      }
-    }
-  }
 #endif

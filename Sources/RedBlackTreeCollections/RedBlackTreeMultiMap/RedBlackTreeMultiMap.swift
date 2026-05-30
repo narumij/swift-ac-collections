@@ -382,9 +382,7 @@ extension RedBlackTreeMultiMap {
         __tree_.__begin_node_.unchecked,
         __tree_.__end_node.unchecked,
         { try shouldBeRemoved(Base.__element_($0)) })
-      if case .failure(let e) = result {
-        fatalError(errorMessage(e))
-      }
+      assert(result.error == nil)
     }
   }
 #endif

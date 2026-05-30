@@ -417,6 +417,32 @@ extension Benchmark {
           }
         }
       }
+    
+    self.add(
+      title: "RedBlackTreeSet<Int> successful isValid(.find(:))",
+      input: ([Int], [Int]).self
+    ) { input, lookups in
+      let set = RedBlackTreeSet(input)
+      return { timer in
+        for i in lookups {
+          precondition(set.isValid(.find(i)))
+        }
+      }
+    }
+
+    self.add(
+      title: "RedBlackTreeSet<Int> unsuccessful isValid(.find(:))",
+      input: ([Int], [Int]).self
+    ) { input, lookups in
+      let set = RedBlackTreeSet(input)
+      let lookups = lookups.map { $0 + input.count }
+      return { timer in
+        for i in lookups {
+          precondition(!set.isValid(.find(i)))
+        }
+      }
+    }
+
 
       self.add(
         title: "RedBlackTreeSet<Int> successful __raw_find",

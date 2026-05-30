@@ -28,7 +28,7 @@
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      true
+      return __tree_.isValid(safeRange: ___safe_range)
     }
 
     @inlinable

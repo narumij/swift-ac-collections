@@ -64,8 +64,8 @@
     /// Returns whether the corresponding element can be accessed.
     @inlinable
     public func isValid(_ bound: RedBlackTreeBoundExpressionV2<Element>) -> Bool {
-      let sealed = bound.evaluate(__tree_)
-      return sealed.___has_payload_content
+      let _safe_ptr_ = bound.evaluate(__tree_)
+      return _safe_ptr_.___has_payload_content
     }
   }
 

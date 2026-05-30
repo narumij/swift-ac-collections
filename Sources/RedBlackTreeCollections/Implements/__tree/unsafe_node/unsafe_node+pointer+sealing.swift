@@ -38,7 +38,9 @@ public struct _NodePtrSealing: Equatable {
   /// 現在の状態で封印する
   @inlinable
   init(_p: _NodePtr) {
-    self.init(_p: _p, _seal: _p.pointee.___recycle_count)
+    assert(!_p.___is_null)
+    pointer = _p
+    seal = _p.pointee.___recycle_count
   }
 
   /// 過去の状態で封印する

@@ -32,27 +32,16 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
 }
 
-extension UnsafeTreeV2BufferHeader {
-  
-  @inlinable
-  mutating func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
-    assert(p != .nullptr)
-    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
-  }
-}
-
 extension UnsafeTreeV2 {
 
   @inlinable
   func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
-    assert(p != .nullptr)
     return withMutableHeader { $0.index(p) }
   }
 
   @inlinable
   func index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
-    assert(p != .nullptr)
-    return p.___has_payload_content ? .some(index(p)) : .none
+    return withMutableHeader { $0.index_or_nil(p) }
   }
 }
 

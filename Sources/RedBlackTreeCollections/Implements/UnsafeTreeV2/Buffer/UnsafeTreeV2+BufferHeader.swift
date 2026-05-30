@@ -156,6 +156,21 @@ extension UnsafeTreeV2BufferHeader {
   }
 }
 
+extension UnsafeTreeV2BufferHeader {
+
+  @inlinable
+  mutating func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
+    assert(p != .nullptr)
+    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
+  }
+
+  @inlinable
+  mutating func index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
+    assert(p != .nullptr)
+    return p.___has_payload_content ? .some(index(p)) : .none
+  }
+}
+
 #if USE_FRESH_POOL_PROTOCOL
   extension UnsafeTreeV2BufferHeader: _FreshPool {}
 #else

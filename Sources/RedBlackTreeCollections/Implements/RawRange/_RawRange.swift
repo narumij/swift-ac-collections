@@ -47,3 +47,13 @@ extension _RawRange where Bound == _SafePtr {
       upperBound: upperBound.uncheckedSeal)
   }
 }
+
+extension _RawRange where Bound == UnsafeMutablePointer<UnsafeNode> {
+
+  @inlinable
+  var unchecked: _RawRange<_SafePtr> {
+    .init(
+      lowerBound: lowerBound.unchecked,
+      upperBound: upperBound.unchecked)
+  }
+}

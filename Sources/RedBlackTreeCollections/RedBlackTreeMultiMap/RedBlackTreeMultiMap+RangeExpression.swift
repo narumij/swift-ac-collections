@@ -49,10 +49,10 @@
     @inlinable
     public subscript(bounds: UnboundedRange) -> View {
       @inline(__always) get {
-        self[unchecked: ___sealed_range]
+        self[_safeRange: ___safe_range]
       }
       @inline(__always) _modify {
-        yield &self[unchecked: ___sealed_range]
+        yield &self[_safeRange: ___safe_range]
       }
     }
 
@@ -60,16 +60,10 @@
     public subscript(bounds: IndexRange) -> View {
       @inline(__always) get {
         let range = __tree_.__purified_safe_(bounds)
-        guard __tree_.isValid(safeRange: range) else {
-          fatalError(.invalidIndex)
-        }
         return self[_safeRange: range]
       }
       @inline(__always) _modify {
         let range = __tree_.__purified_safe_(bounds)
-        guard __tree_.isValid(safeRange: range) else {
-          fatalError(.invalidIndex)
-        }
         yield &self[_safeRange: range]
       }
     }
@@ -78,16 +72,10 @@
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
         let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-        guard __tree_.isValid(safeRange: range) else {
-          fatalError(.invalidIndex)
-        }
         return self[_safeRange: range]
       }
       @inline(__always) _modify {
         let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-        guard __tree_.isValid(safeRange: range) else {
-          fatalError(.invalidIndex)
-        }
         yield &self[_safeRange: range]
       }
     }
@@ -99,7 +87,7 @@
     @discardableResult
     public mutating func erase(_ bounds: UnboundedRange) -> Index {
       __tree_.ensureUnique()
-      return ___index(__tree_.erase(_start, _end))
+      return erase(_safeRange: ___safe_range)
     }
 
     @inlinable
@@ -107,26 +95,15 @@
     public mutating func erase(_ bounds: IndexRange) -> Index {
       __tree_.ensureUnique()
       let range = __tree_.__purified_safe_(bounds)
-      guard __tree_.isValid(safeRange: range),
-        let __l = range.lowerBound.pointer,
-        let __u = range.upperBound.pointer
-      else {
-        fatalError(.invalidIndex)
-      }
-      return ___index(__tree_.erase(__l, __u))
+      return erase(_safeRange: range)
     }
 
     @inlinable
+    @discardableResult
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
       __tree_.ensureUnique()
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      guard __tree_.isValid(safeRange: range),
-        let __l = range.lowerBound.pointer,
-        let __u = range.upperBound.pointer
-      else {
-        fatalError(.invalidIndex)
-      }
-      return ___index(__tree_.erase(__l, __u))
+      return erase(_safeRange: range)
     }
   }
 
@@ -140,12 +117,7 @@
     {
       __tree_.ensureUnique()
       let range = __tree_.__purified_safe_(bounds)
-      guard __tree_.isValid(safeRange: range) else {
-        fatalError(.invalidIndex)
-      }
-      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound) {
-        try shouldBeRemoved(Base.__element_($0))
-      }
+      return try erase(_safeRange: range, where: shouldBeRemoved)
     }
 
     @inlinable
@@ -154,15 +126,9 @@
     )
       rethrows
     {
-
       __tree_.ensureUnique()
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      guard __tree_.isValid(safeRange: range) else {
-        fatalError(.invalidIndex)
-      }
-      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound) {
-        try shouldBeRemoved(Base.__element_($0))
-      }
+      return try erase(_safeRange: range, where: shouldBeRemoved)
     }
   }
 
@@ -218,30 +184,6 @@
           __tree_: __tree_,
           _start: range.lowerBound.uncheckedSeal,
           _end: range.upperBound.uncheckedSeal)
-        self = RedBlackTreeMultiMap()  // yield中のCoWキャンセル。考えた人賢い
-        defer { self = RedBlackTreeMultiMap(__tree_: view.__tree_) }
-        yield &view
-      }
-    }
-  }
-
-  extension RedBlackTreeMultiMap {
-
-    @inlinable
-    subscript(unchecked range: _RawRange<_SealedPtr>) -> View {
-
-      @inline(__always) get {
-        View(
-          __tree_: __tree_,
-          _start: range.lowerBound,
-          _end: range.upperBound)
-      }
-
-      @inline(__always) _modify {
-        var view = View(
-          __tree_: __tree_,
-          _start: range.lowerBound,
-          _end: range.upperBound)
         self = RedBlackTreeMultiMap()  // yield中のCoWキャンセル。考えた人賢い
         defer { self = RedBlackTreeMultiMap(__tree_: view.__tree_) }
         yield &view

@@ -75,7 +75,10 @@
     ///
     /// - Complexity: O(log *n* + *k*)
     @inlinable
-    public func distance(from start: RedBlackTreeBoundExpressionV2<Element>, to end: RedBlackTreeBoundExpressionV2<Element>)
+    public func distance(
+      from start: RedBlackTreeBoundExpressionV2<Element>,
+      to end: RedBlackTreeBoundExpressionV2<Element>
+    )
       -> Int
     {
       guard let d = __tree_.distance(from: start, to: end)

@@ -20,7 +20,7 @@
   extension RedBlackTreeMultiMap {}
 
   extension RedBlackTreeMultiMap {
-    
+
     /// A shorthand for `RedBlackTreeBoundExpression<Element>`.
     ///
     /// This type is used to describe element positions in the tree,
@@ -108,7 +108,7 @@
       }
 
       @inline(__always) _modify {
-        
+
         let range = __tree_.sanitize(
           safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
 

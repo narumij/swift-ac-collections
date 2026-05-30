@@ -51,6 +51,11 @@ extension _SequenceV2 {
   }
   
   @inlinable
+  var ___safe_range: _RawRange<_SafePtr> {
+    .init(lowerBound: _safe_start, upperBound: _safe_end)
+  }
+  
+  @inlinable
   var ___sealed_range: _RawRange<_SealedPtr> {
     .init(lowerBound: _sealed_start, upperBound: _sealed_end)
   }

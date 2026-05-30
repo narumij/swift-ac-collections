@@ -21,6 +21,16 @@
         _ = set[lower..<upper]
       }
     }
+    
+    @Test
+    func `RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること2`() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var set = RedBlackTreeSet<Int>(0..<10)
+        let lower = set.index(set.startIndex, offsetBy: 6)
+        let upper = set.index(set.startIndex, offsetBy: 2)
+        set[lower..<upper].erase()
+      }
+    }
 
     @Test
     func `RangeExpressionで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること`() async {
@@ -29,6 +39,16 @@
         let lower = set.index(set.startIndex, offsetBy: 3)
         set.remove(at: lower)
         _ = set[lower...]
+      }
+    }
+    
+    @Test
+    func `RangeExpressionで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること2`() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var set = RedBlackTreeSet<Int>(0..<10)
+        let lower = set.index(set.startIndex, offsetBy: 3)
+        set.remove(at: lower)
+        set[lower...].erase()
       }
     }
 

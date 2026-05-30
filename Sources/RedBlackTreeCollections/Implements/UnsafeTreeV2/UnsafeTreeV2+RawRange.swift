@@ -20,13 +20,13 @@
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
   @inlinable
-  func isValidSafeRange(_ range: _RawRange<_SafePtr>) -> Bool {
+  func isValid(safeRange range: _RawRange<_SafePtr>) -> Bool {
     (try? range.map2 { l, r in l == r || Base.___ptr_comp(l, r) }.get()) == true
   }
 
   @inlinable
-  func sanitizeSafeRange(_ range: _RawRange<_SafePtr>) -> _RawRange<_SafePtr> {
-    isValidSafeRange(range) ? range : ___safe_empty_range
+  func sanitize(safeRange range: _RawRange<_SafePtr>) -> _RawRange<_SafePtr> {
+    isValid(safeRange: range) ? range : ___safe_empty_range
   }
 }
 

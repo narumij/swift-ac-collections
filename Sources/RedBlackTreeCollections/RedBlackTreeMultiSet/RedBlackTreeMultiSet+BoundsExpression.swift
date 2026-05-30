@@ -119,7 +119,7 @@
     @inlinable
     public func isValid(_ bounds: BoundRangeExpression) -> Bool {
       let range = bounds.evaluate(__tree_).relative(to: __tree_)
-      return __tree_.isValidSafeRange(range)
+      return __tree_.isValid(safeRange: range)
     }
   }
 
@@ -130,16 +130,16 @@
 
       @inline(__always) get {
 
-        let range = __tree_.sanitizeSafeRange(
-          bounds.evaluate(__tree_).relative(to: __tree_))
+        let range = __tree_.sanitize(
+          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
 
         return self[unchecked: range]
       }
 
       @inline(__always) _modify {
 
-        let range = __tree_.sanitizeSafeRange(
-          bounds.evaluate(__tree_).relative(to: __tree_))
+        let range = __tree_.sanitize(
+          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
 
         yield &self[unchecked: range]
       }
@@ -152,8 +152,8 @@
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitizeSafeRange(
-        bounds.evaluate(__tree_).relative(to: __tree_))
+      let range = __tree_.sanitize(
+        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
       __tree_.___erase_range(range.lowerBound.pointer!, range.upperBound.pointer!)
     }
 
@@ -163,8 +163,8 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitizeSafeRange(
-        bounds.evaluate(__tree_).relative(to: __tree_))
+      let range = __tree_.sanitize(
+        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
       try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound, shouldBeRemoved)
     }
   }

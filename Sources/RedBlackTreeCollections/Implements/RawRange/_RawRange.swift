@@ -37,3 +37,13 @@ extension _RawRange where Bound == _SafePtr {
     liftA2(lowerBound, upperBound, f)
   }
 }
+
+extension _RawRange where Bound == _SafePtr {
+
+  @inlinable
+  var uncheckedSeal: _RawRange<_SealedPtr> {
+    .init(
+      lowerBound: lowerBound.uncheckedSeal,
+      upperBound: upperBound.uncheckedSeal)
+  }
+}

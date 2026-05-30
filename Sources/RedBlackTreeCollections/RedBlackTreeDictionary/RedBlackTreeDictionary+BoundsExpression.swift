@@ -102,7 +102,7 @@
         let range = __tree_.sanitize(
           safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
 
-        return self[unchecked: range]
+        return self[_safeRange: range]
       }
 
       @inline(__always) _modify {
@@ -110,7 +110,7 @@
         let range = __tree_.sanitize(
           safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
 
-        yield &self[unchecked: range]
+        yield &self[_safeRange: range]
       }
     }
   }

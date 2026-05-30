@@ -57,14 +57,14 @@
         guard __tree_.isValid(safeRange: range) else {
           fatalError(.invalidIndex)
         }
-        return self[unchecked: range]
+        return self[_safeRange: range]
       }
       @inline(__always) _modify {
         let range = __tree_.__purified_safe_(bounds)
         guard __tree_.isValid(safeRange: range) else {
           fatalError(.invalidIndex)
         }
-        yield &self[unchecked: range]
+        yield &self[_safeRange: range]
       }
     }
 
@@ -75,14 +75,14 @@
         guard __tree_.isValid(safeRange: range) else {
           fatalError(.invalidIndex)
         }
-        return self[unchecked: range]
+        return self[_safeRange: range]
       }
       @inline(__always) _modify {
         let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
         guard __tree_.isValid(safeRange: range) else {
           fatalError(.invalidIndex)
         }
-        yield &self[unchecked: range]
+        yield &self[_safeRange: range]
       }
     }
 
@@ -157,17 +157,60 @@
   extension RedBlackTreeDictionary {
 
     @inlinable
-    subscript(unchecked range: _RawRange<_SafePtr>) -> View {
+    @discardableResult
+    mutating func erase(_safeRange range: _RawRange<_SafePtr>) -> Index {
+      assert(__tree_.isUnique())
+      guard __tree_.isValid(safeRange: range),
+        let __l = range.lowerBound.pointer,
+        let __u = range.upperBound.pointer
+      else {
+        fatalError(.invalidIndex)
+      }
+      return ___index(__tree_.erase(__l, __u))
+    }
+
+    @inlinable
+    mutating func erase(
+      _safeRange range: _RawRange<_SafePtr>,
+      where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+      assert(__tree_.isUnique())
+      guard __tree_.isValid(safeRange: range) else {
+        fatalError(.invalidIndex)
+      }
+      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound) {
+        try shouldBeRemoved(Base.__element_($0))
+      }
+    }
+
+    @inlinable
+    subscript(_safeRange range: _RawRange<_SafePtr>) -> View {
 
       @inline(__always) get {
-        self[unchecked: range.uncheckedSeal]
+        guard __tree_.isValid(safeRange: range) else {
+          fatalError(.invalidIndex)
+        }
+        return View(
+          __tree_: __tree_,
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
       }
 
       @inline(__always) _modify {
-        yield &self[unchecked: range.uncheckedSeal]
+        guard __tree_.isValid(safeRange: range) else {
+          fatalError(.invalidIndex)
+        }
+        var view = View(
+          __tree_: __tree_,
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
+        self = RedBlackTreeDictionary()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeDictionary(__tree_: view.__tree_) }
+        yield &view
       }
-    }
-  }
+    }  }
 
   extension RedBlackTreeDictionary {
 

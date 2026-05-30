@@ -27,6 +27,9 @@
 
     public typealias IndexRange = UnsafeIndexV3Range
     public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
+  }
+
+  extension RedBlackTreeSet {
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
@@ -107,6 +110,9 @@
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       return erase(_safeRange: range)
     }
+  }
+
+  extension RedBlackTreeSet {
 
     @inlinable
     public mutating func erase(

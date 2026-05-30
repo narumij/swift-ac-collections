@@ -22,6 +22,9 @@
     public typealias View = RedBlackTreeKeyValueRangeView<Self>
     public typealias IndexRange = UnsafeIndexV3Range
     public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
+  }
+
+  extension RedBlackTreeDictionary {
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
@@ -39,6 +42,9 @@
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       return __tree_.isValid(safeRange: range)
     }
+  }
+
+  extension RedBlackTreeDictionary {
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> View {
@@ -85,6 +91,9 @@
         yield &self[_safeRange: range]
       }
     }
+  }
+
+  extension RedBlackTreeDictionary {
 
     @inlinable
     @discardableResult
@@ -119,6 +128,9 @@
       }
       return ___index(__tree_.erase(__l, __u))
     }
+  }
+
+  extension RedBlackTreeDictionary {
 
     @inlinable
     public mutating func erase(
@@ -210,7 +222,8 @@
         defer { self = RedBlackTreeDictionary(__tree_: view.__tree_) }
         yield &view
       }
-    }  }
+    }
+  }
 
   extension RedBlackTreeDictionary {
 

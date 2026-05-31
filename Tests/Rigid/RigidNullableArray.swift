@@ -1,10 +1,3 @@
-//
-//  RigidNullableArray.swift
-//  swift-ac-collections
-//
-//  Created by narumij on 2026/06/01.
-//
-
 @frozen
 public struct RigidNullableArray<Element>: ~Copyable {
 
@@ -27,6 +20,7 @@ public struct RigidNullableArray<Element>: ~Copyable {
       }
     }
     __payload.deallocate()
+    __has_paylord_content.deinitialize(count: capacity)
     __has_paylord_content.deallocate()
   }
 

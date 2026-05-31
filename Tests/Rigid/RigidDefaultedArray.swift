@@ -22,6 +22,7 @@ public struct RigidDefaultedArray<Element>: ~Copyable {
       }
     }
     __payload.deallocate()
+    __has_paylord_content.deinitialize(count: capacity)
     __has_paylord_content.deallocate()
   }
 

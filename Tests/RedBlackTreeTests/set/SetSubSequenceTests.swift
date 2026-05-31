@@ -4,7 +4,7 @@
 // Tests target に追加して `swift test` で実行
 // モジュール名を合わせて下さい → YourPackageName
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class SetSubSequenceTests: RedBlackTreeTestCase {

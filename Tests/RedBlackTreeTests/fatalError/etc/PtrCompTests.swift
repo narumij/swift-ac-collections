@@ -9,7 +9,7 @@ import Testing
 import Foundation
 
 #if DEBUG && DEATH_TEST
-@testable import RedBlackTreeModule
+@testable import RedBlackTreeCollections
 
 nonisolated(unsafe)
 fileprivate var start = UnsafeNode(___tracking_tag: 0, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
@@ -39,7 +39,7 @@ struct PtrCompTests {
       fatalError()
     }
     
-    static func __get_value(_: UnsafeMutablePointer<RedBlackTreeModule.UnsafeNode>) -> Int {
+    static func __get_value(_: UnsafeMutablePointer<RedBlackTreeCollections.UnsafeNode>) -> Int {
       fatalError()
     }
     

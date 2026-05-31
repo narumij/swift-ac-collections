@@ -8,7 +8,7 @@
 #if DEATH_TEST
   import Testing
   import Foundation
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025 && false

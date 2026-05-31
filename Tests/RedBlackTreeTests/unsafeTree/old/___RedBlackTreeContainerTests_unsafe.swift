@@ -11,7 +11,7 @@ import XCTest
 // テストのセットアップがマニアックでしんどい
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   final class ___RedBlackTreeContainerTests: RedBlackTreeTestCase {
 

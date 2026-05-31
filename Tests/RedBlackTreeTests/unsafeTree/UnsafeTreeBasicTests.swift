@@ -8,7 +8,7 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   final class UnsafeTreeBasicTests: RedBlackTreeTestCase {
 
@@ -18,7 +18,7 @@ import XCTest
       static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> Int {
         p.__value_(as: _PayloadValue.self).pointee
       }
-      static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeModule.UnsafeNode>) -> Int {
+      static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeCollections.UnsafeNode>) -> Int {
         fatalError()
       }
       typealias _Key = Int

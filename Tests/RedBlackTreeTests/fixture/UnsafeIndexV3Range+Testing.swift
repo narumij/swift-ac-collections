@@ -6,10 +6,8 @@
 //
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
   // 互換維持の為のコード。互換廃止の際に削ること
-
-  import RedBlackTreeModule
 
   extension UnsafeIndexV3Range {
 

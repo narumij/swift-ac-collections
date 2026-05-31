@@ -7,9 +7,9 @@ public struct RigidArray2D<Element>: ~Copyable {
   @usableFromInline let __payload: UnsafeMutablePointer<Element>
 
   @inlinable
-  public init(defaultValue: Element, capacity: (width: Int, height: Int)) {
-    self.capacity = capacity
-    let totalCapacity = capacity.width * capacity.height
+  public init(defaultValue: Element, H: Int, W: Int) {
+    self.capacity = (W, H)
+    let totalCapacity = W * H
     self.__has_paylord_content = .allocate(capacity: totalCapacity)
     self.__has_paylord_content.initialize(repeating: false, count: totalCapacity)
     self.__payload = .allocate(capacity: totalCapacity)

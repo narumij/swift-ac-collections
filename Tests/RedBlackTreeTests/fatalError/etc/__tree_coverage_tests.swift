@@ -7,7 +7,7 @@
 
 #if DEBUG && DEATH_TEST
   import Foundation
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
   import Testing
 
   struct __tree_coverage_tests {

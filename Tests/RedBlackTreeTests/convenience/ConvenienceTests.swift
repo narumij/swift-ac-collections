@@ -5,7 +5,7 @@
 //  Created by narumij on 2024/09/16.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class ConvenienceTests: RedBlackTreeTestCase {

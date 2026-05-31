@@ -5,7 +5,7 @@
 //  Created by narumij on 2025/09/29.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class KeyValueComparerTests: RedBlackTreeTestCase, KeyValueTrait, UniqueMultiplicity, _UnsafeNodePtrType {
@@ -14,7 +14,7 @@ final class KeyValueComparerTests: RedBlackTreeTestCase, KeyValueTrait, UniqueMu
     p.__value_(as: _PayloadValue.self).pointee.key
   }
   
-  static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeModule.UnsafeNode>) -> (key: _Key, value: _MappedValue) {
+  static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeCollections.UnsafeNode>) -> (key: _Key, value: _MappedValue) {
     fatalError()
   }
 

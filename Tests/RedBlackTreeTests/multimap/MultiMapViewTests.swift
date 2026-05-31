@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/02/14.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 #if !COMPATIBLE_ATCODER_2025

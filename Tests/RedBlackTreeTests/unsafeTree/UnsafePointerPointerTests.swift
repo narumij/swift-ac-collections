@@ -1,7 +1,7 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   final class UnsafePointerPointerTests: RedBlackTreeTestCase {
 

@@ -1,4 +1,4 @@
-# RedBlackTreeModule
+# RedBlackTreeCollections
 
 <!-- 追記: 速度が出なかったので保留 -->
 <!--## 新新方針-->

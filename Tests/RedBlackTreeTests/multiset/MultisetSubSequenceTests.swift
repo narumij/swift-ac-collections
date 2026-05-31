@@ -6,7 +6,7 @@
 //   - BidirectionalCollection の規約を満たすか
 //   - 基 multiset 変化時に index が無効化されるか
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class RedBlackTreeMultisetSubSequenceTests: RedBlackTreeTestCase {

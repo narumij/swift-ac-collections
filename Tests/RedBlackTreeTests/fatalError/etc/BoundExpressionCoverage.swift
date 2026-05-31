@@ -7,7 +7,7 @@
 
 #if DEBUG && DEATH_TEST && !COMPATIBLE_ATCODER_2025
   import Foundation
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
   import Testing
 
   struct BoundExpressionCoverage {

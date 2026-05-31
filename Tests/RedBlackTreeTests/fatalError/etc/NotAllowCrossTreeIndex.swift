@@ -8,7 +8,7 @@
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025 && !ALLOW_CROSS_TREE_INDEX
   import Testing
   import Foundation
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 
   struct NotAllowCrossTreeIndex {
 

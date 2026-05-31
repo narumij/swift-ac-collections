@@ -7,7 +7,7 @@
 
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   import Foundation
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
   import Testing
 
   struct BoundsExpressionInvalidIndexDictionaryTests {

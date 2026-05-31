@@ -256,6 +256,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
 extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Equatable {
 
   /// - Complexity: O(*m*), where *m* is the lesser of the length of the
@@ -295,6 +296,7 @@ extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparab
     !lhs._isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
   }
 }
+#endif
 
 #if swift(>=5.5)
   extension RedBlackTreeKeyOnlyRangeView: @unchecked Sendable

@@ -114,6 +114,7 @@ extension RedBlackTreeDictionary {
   extension RedBlackTreeDictionary {
 
     #if false
+      // 標準に倣うと、Collections適合が必要なのでこちらになる
       public typealias Keys = [Key]
       public typealias Values = [Value]
 
@@ -133,6 +134,7 @@ extension RedBlackTreeDictionary {
         __tree_.___copy_all_to_array(Base.__mapped_value_)
       }
     #else
+      // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
       public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
       public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 

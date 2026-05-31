@@ -138,6 +138,7 @@ extension RedBlackTreeKeyValueRangeView {
 }
 
 #if false
+  // 標準に倣うと、Collections適合が必要なのでこちらになる
   extension RedBlackTreeKeyValueRangeView {
 
     /// - Complexity: O(1)
@@ -155,6 +156,7 @@ extension RedBlackTreeKeyValueRangeView {
     }
   }
 #else
+  // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
   extension RedBlackTreeKeyValueRangeView {
 
     public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>

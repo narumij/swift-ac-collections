@@ -37,15 +37,6 @@ extension UnsafeTreeV2 {
 
 // MARK: Refresh Pool Iterator
 
-#if DEBUG
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    func makeUsedNodeIterator() -> _FreshPoolUsedIterator<_PayloadValue> {
-      return _buffer.header.makeUsedNodeIterator()
-    }
-  }
-#endif
 
 #if DEBUG
   extension UnsafeTreeV2 {

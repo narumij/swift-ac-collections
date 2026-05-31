@@ -20,7 +20,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if GRAPHVIZ_DEBUG
+#if DEBUG
+  @testable import RedBlackTreeCollections
+
   extension UnsafeTreeV2 {
 
     /// グラフビズオブジェクトを生成します
@@ -67,9 +69,6 @@
     }
   #endif
 
-#endif
-
-#if GRAPHVIZ_DEBUG
   public enum Graphviz {}
 
   extension Graphviz {

@@ -40,15 +40,6 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   #if DEBUG
-    func _nodeID(_ p: _NodePtr) -> _TrackingTag? {
-      return p.pointee.___tracking_tag
-    }
-  #endif
-}
-
-extension UnsafeTreeV2 {
-
-  #if DEBUG
     func dumpTree(label: String = "") {
       print("==== UnsafeTree \(label) ====")
       print(" count:", count)
@@ -60,7 +51,7 @@ extension UnsafeTreeV2 {
       var it = makeUsedNodeIterator()
       while let p = it.next() {
         print(
-          p.pointee.debugDescription { self._nodeID($0!) }
+          p.pointee.dumpNode()
         )
       }
       print("============================")

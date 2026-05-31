@@ -92,6 +92,7 @@
         "tag:", end_ptr.pointee.___tracking_tag)
 
       print(" tiedRawBuffer present  :", _tied != nil)
+      print(" lazyDetach present     :", _lazyDetach != nil)
       print(" uniquelyOwned          :", isRawBufferUniquelyOwned)
 
       #if AC_COLLECTIONS_INTERNAL_CHECKS

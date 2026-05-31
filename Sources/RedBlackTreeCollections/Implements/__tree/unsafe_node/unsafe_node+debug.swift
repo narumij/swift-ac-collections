@@ -24,11 +24,11 @@
   extension UnsafeNode {
 
     @inlinable
-    func debugDescription(resolve: (Pointer?) -> _TrackingTag?) -> String {
+    func dumpNode() -> String {
       let id = ___tracking_tag
-      let l = resolve(__left_)
-      let r = resolve(__right_)
-      let p = resolve(__parent_)
+      let l = __left_ == .nullptr ? nil : __left_.pointee.___tracking_tag
+      let r = __right_ == .nullptr ? nil : __right_.pointee.___tracking_tag
+      let p = __parent_ == .nullptr ? nil : __parent_.pointee.___tracking_tag
       let color = __is_black_ ? "B" : "R"
       #if DEBUG || true
         let rc = ___recycle_count
@@ -38,11 +38,11 @@
 
       return """
         - node[\(id)] \(color)
-          L: \(l.map(String.init) ?? "nil")
-          R: \(r.map(String.init) ?? "nil")
-          P: \(p.map(String.init) ?? "nil")
-          needsDeinit: \(___has_payload_content)
-          recycleCount: \(rc)
+           L: \(l.map(String.init) ?? "nil")
+           R: \(r.map(String.init) ?? "nil")
+           P: \(p.map(String.init) ?? "nil")
+           needsDeinit: \(___has_payload_content)
+           recycleCount: \(rc)
         """
     }
   }

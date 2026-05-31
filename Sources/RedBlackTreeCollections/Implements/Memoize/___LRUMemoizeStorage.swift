@@ -77,13 +77,8 @@ extension ___LRUMemoizeStorage {
     @inline(__always) mutating get {
       
       let __ptr = __tree_.update { $0.find(key) }
-      
-      guard !__ptr.___is_end else {
-        return nil
-      }
-      
+      guard !__ptr.___is_end else { return nil }
       ___prepend(___pop(__ptr))
-            
       return Base.__payload_(__ptr).value
     }
 
@@ -93,32 +88,25 @@ extension ___LRUMemoizeStorage {
         fatalError()
       }
 
-      if __tree_.capacity < maxCount {
-        // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-        __tree_.ensureCapacity(limit: maxCount)
-      }
-      
-      let __h = __tree_.update { __tree_ in
+      __tree_.ensureCapacity(limit: maxCount)
+
+      __tree_.update { __tree_ in
         
         if __tree_.count == maxCount {
           _ = __tree_.erase(___popRankLowest())
         }
-
-        assert(__tree_.count < __tree_.capacity)
         
         let (__parent, __child) = __tree_.__find_equal(key)
         
-        guard __child.pointee == __tree_.nullptr else {
-          fatalError()
-        }
+        precondition(__child.pointee == __tree_.nullptr)
+        
+        assert(__tree_.count < __tree_.capacity)
         
         let __h = __tree_.__construct_node(.init(key, __tree_.nullptr, __tree_.nullptr, newValue))
         __tree_.__insert_node_at(__parent, __child, __h)
         
-        return __h
+        ___prepend(__h)
       }
-      
-      ___prepend(__h)
     }
   }
 }

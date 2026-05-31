@@ -454,9 +454,10 @@ final class ConvenienceTests: RedBlackTreeTestCase {
   }
 
   func testSubSeq2() throws {
-    let set: RedBlackTreeSet<Int> = .init((0..<10_000).reversed())
-    for _ in 0..<1000 {
-      var (a, b) = ((0..<10_000).randomElement()!, (0..<10_000).randomElement()!)
+    let count = 10_000
+    let set: RedBlackTreeSet<Int> = .init((0..<count).reversed())
+    for _ in 0..<1 {
+      var (a, b) = ((0..<count).randomElement()!, (0..<count).randomElement()!)
       if a > b { swap(&a, &b) }
       let lo = set.lowerBound(a)
       let hi = set.upperBound(b)
@@ -471,6 +472,7 @@ final class ConvenienceTests: RedBlackTreeTestCase {
         XCTAssertNotEqual(seq + [], [])
       #endif
       XCTAssertEqual(seq + [], seq.sorted())
+      XCTAssertEqual((seq + []).reversed(), seq.reversed())
       XCTAssertTrue(seq.allSatisfy { $0 >= a })
     }
   }

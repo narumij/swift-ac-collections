@@ -1,95 +1,100 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
 #if COMPATIBLE_ATCODER_2025
-extension UnsafeIterator {
+  extension UnsafeIterator {
 
-  public struct _KeyValue<Base, Source>:
-    _UnsafeNodePtrType,
-    UnsafeAssosiatedIterator,
-    IteratorProtocol,
-    Sequence
-  where
-    Base: ___TreeBase & PairValueTrait,
-    Source: IteratorProtocol & Sequence & UnsafeIteratorProtocol,
-    Source.Element == UnsafeMutablePointer<UnsafeNode>
-  {
-    @inlinable
-    public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
-      self.init(source: .init(_start: _start, _end: _end))
-    }
+    public struct _KeyValue<Base, Source>:
+      _UnsafeNodePtrType,
+      UnsafeAssosiatedIterator,
+      IteratorProtocol,
+      Sequence
+    where
+      Base: ___TreeBase & PairValueTrait,
+      Source: IteratorProtocol & Sequence & UnsafeIteratorProtocol,
+      Source.Element == UnsafeMutablePointer<UnsafeNode>
+    {
+      @inlinable
+      public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
+        self.init(source: .init(_start: _start, _end: _end))
+      }
 
-    public
-      var _source: Source
+      public
+        var _source: Source
 
-    @inlinable
-    internal init(source: Source) {
-      self._source = source
-    }
+      @inlinable
+      internal init(source: Source) {
+        self._source = source
+      }
 
-    @inlinable
-    public var _sealed_start: _SealedPtr {
-      _source._sealed_start
-    }
+      @inlinable
+      public var _sealed_start: _SealedPtr {
+        _source._sealed_start
+      }
 
-    @inlinable
-    public var _sealed_end: _SealedPtr {
-      _source._sealed_end
-    }
+      @inlinable
+      public var _sealed_end: _SealedPtr {
+        _source._sealed_end
+      }
 
-    @inlinable
-    public mutating func next() -> (key: Base._Key, value: Base._MappedValue)? {
-      return _source.next().map {
-        (
-          Base.__key_($0),
-          Base.__mapped_value_($0)
-        )
+      @inlinable
+      public mutating func next() -> (key: Base._Key, value: Base._MappedValue)? {
+        return _source.next().map {
+          (
+            Base.__key_($0),
+            Base.__mapped_value_($0)
+          )
+        }
       }
     }
   }
-}
 #else
-extension UnsafeIterator {
+  extension UnsafeIterator {
 
-  public struct _KeyValue<Base, Source>:
-    _UnsafeNodePtrType,
-    UnsafeAssosiatedIterator,
-    IteratorProtocol,
-    Sequence
-  where
-    Base: ___TreeBase & PairValueTrait,
-    Source: IteratorProtocol,
-    Source.Element == UnsafeMutablePointer<UnsafeNode>
-  {
-    public
-      var _source: Source
+    public struct _KeyValue<Base, Source>:
+      _UnsafeNodePtrType,
+      UnsafeAssosiatedIterator,
+      IteratorProtocol,
+      Sequence
+    where
+      Base: ___TreeBase & PairValueTrait,
+      Source: IteratorProtocol,
+      Source.Element == UnsafeMutablePointer<UnsafeNode>
+    {
+      public
+        var _source: Source
 
-    @inlinable
-    public init(source: Source) {
-      self._source = source
-    }
+      @inlinable
+      public init(source: Source) {
+        self._source = source
+      }
 
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> (key: Base._Key, value: Base._MappedValue)? {
-      _source.next().map(Base.__element_)
+      @inlinable
+      @inline(__always)
+      public mutating func next() -> (key: Base._Key, value: Base._MappedValue)? {
+        _source.next().map(Base.__element_)
+      }
     }
   }
-}
 #endif
 
 extension UnsafeIterator._KeyValue: @unchecked Sendable where Source: Sendable {}

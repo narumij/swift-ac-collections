@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -32,27 +37,16 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
 }
 
-extension UnsafeTreeV2BufferHeader {
-  
-  @inlinable
-  mutating func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
-    assert(p != .nullptr)
-    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
-  }
-}
-
 extension UnsafeTreeV2 {
 
   @inlinable
   func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
-    assert(p != .nullptr)
     return withMutableHeader { $0.index(p) }
   }
 
   @inlinable
   func index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
-    assert(p != .nullptr)
-    return p.___has_payload_content ? .some(index(p)) : .none
+    return withMutableHeader { $0.index_or_nil(p) }
   }
 }
 

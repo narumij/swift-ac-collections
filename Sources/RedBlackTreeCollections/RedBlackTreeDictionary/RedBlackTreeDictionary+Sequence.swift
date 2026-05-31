@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -109,6 +114,7 @@ extension RedBlackTreeDictionary {
   extension RedBlackTreeDictionary {
 
     #if false
+      // 標準に倣うと、Collections適合が必要なのでこちらになる
       public typealias Keys = [Key]
       public typealias Values = [Value]
 
@@ -128,6 +134,7 @@ extension RedBlackTreeDictionary {
         __tree_.___copy_all_to_array(Base.__mapped_value_)
       }
     #else
+      // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
       public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
       public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
@@ -135,7 +142,7 @@ extension RedBlackTreeDictionary {
       ///
       /// - Complexity: O(`count`)
       @inlinable
-      public var keys: UnsafeIterator.KeyObverse<Base> {
+      public var keys: Keys {
         .init(start: _start, end: _end, tree: __tree_)
       }
 
@@ -143,7 +150,7 @@ extension RedBlackTreeDictionary {
       ///
       /// - Complexity: O(`count`)
       @inlinable
-      public var values: UnsafeIterator.MappedValueObverse<Base> {
+      public var values: Values {
         .init(start: _start, end: _end, tree: __tree_)
       }
     #endif

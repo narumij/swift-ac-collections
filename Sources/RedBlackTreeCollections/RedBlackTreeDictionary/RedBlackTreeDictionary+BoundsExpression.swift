@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -88,7 +93,7 @@
     @inlinable
     public func isValid(_ bounds: BoundRangeExpression) -> Bool {
       let range = bounds.evaluate(__tree_).relative(to: __tree_)
-      return __tree_.isValidSafeRange(range)
+      return __tree_.isValid(safeRange: range)
     }
   }
 
@@ -99,18 +104,18 @@
 
       get {
 
-        let range = __tree_.sanitizeSafeRange(
-          bounds.evaluate(__tree_).relative(to: __tree_))
+        let range = __tree_.sanitize(
+          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
 
-        return self[unchecked: range]
+        return self[_safeRange: range]
       }
 
       @inline(__always) _modify {
 
-        let range = __tree_.sanitizeSafeRange(
-          bounds.evaluate(__tree_).relative(to: __tree_))
+        let range = __tree_.sanitize(
+          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
 
-        yield &self[unchecked: range]
+        yield &self[_safeRange: range]
       }
     }
   }
@@ -121,8 +126,8 @@
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitizeSafeRange(
-        bounds.evaluate(__tree_).relative(to: __tree_))
+      let range = __tree_.sanitize(
+        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
       __tree_.___erase_range(range.lowerBound.pointer!, range.upperBound.pointer!)
     }
 
@@ -132,8 +137,8 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitizeSafeRange(
-        bounds.evaluate(__tree_).relative(to: __tree_))
+      let range = __tree_.sanitize(
+        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
       try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound) {
         try shouldBeRemoved($0.tuple)
       }

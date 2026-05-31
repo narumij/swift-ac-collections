@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -41,7 +46,7 @@ where
   public var startIndex: Index {
     _sealed_start.band(__tree_)
   }
-  
+
   public var endIndex: Index {
     _sealed_end.band(__tree_)
   }
@@ -59,15 +64,15 @@ where
 #endif
 
 extension RedBlackTreeKeyValueRangeView {
-  
+
   @inlinable
   internal mutating func _ensureUnique() {
     // 異なる木のインデックスを無効扱いにするための準備措置
     // Viewだけはインデックス引き継ぎが必要
-    
+
     // 元の木がユニーク参照では無かった場合、コピーが発生する
     let copied = __tree_.__ensureUnique()
-    
+
     // コピーが発生した場合インデックス引き継ぎを行う
     if copied {
       // コピー木であることがわかっているので千本引きが確実に行える（ハズレ無し）
@@ -87,30 +92,8 @@ extension RedBlackTreeKeyValueRangeView {
     else {
       return (__tree_.__end_node, __tree_.__end_node)
     }
-    return (_start, _end)
-  }
-
-  @inlinable
-  var _safe_range: (_SafePtr, _SafePtr) {
-    let _start = _sealed_start.purified.map(\.pointer)
-    let _end = _sealed_end.purified.map(\.pointer)
-    guard
-      _start.error == nil, _end.error == nil
-    else {
-      return (__tree_.__end_node.unchecked, __tree_.__end_node.unchecked)
-    }
-    return (_start, _end)
-  }
-
-  @inlinable
-  var _range: (_SealedPtr, _SealedPtr) {
-    let _start = _sealed_start.purified
-    let _end = _sealed_end.purified
-    guard
-      _start.error == nil, _end.error == nil
-    else {
-      return (__tree_.__end_node.uncheckedSeal, __tree_.__end_node.uncheckedSeal)
-    }
+    assert(_start == _end || ___ptr_comp_bitmap(_start, _end))
+    assert(___ptr_comp_bitmap(_start, _end) == ___ptr_comp_multi(_start, _end))
     return (_start, _end)
   }
 }
@@ -121,27 +104,23 @@ extension RedBlackTreeKeyValueRangeView {
   func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
     __tree_.index(p)
   }
-
-  @inlinable
-  func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPtr {
-    p.band(__tree_)
-  }
 }
 
-extension RedBlackTreeKeyValueRangeView: Sequence {}
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyValueRangeView: Sequence {}
+
+  extension RedBlackTreeKeyValueRangeView {
+
+    /// - Complexity: O(1)
+    @inlinable
+    public __consuming func makeIterator() -> UnsafeIterator.KeyValueObverse<Base> {
+      let (_start, _end) = _raw_range
+      return .init(start: _start, end: _end, tree: __tree_)
+    }
+  }
+#endif
 
 extension RedBlackTreeKeyValueRangeView {
-
-  /// - Complexity: O(1)
-  @inlinable
-  public __consuming func makeIterator() -> UnsafeIterator.KeyValueObverse<Base> {
-    let (_start, _end) = _range
-    #if !COMPATIBLE_ATCODER_2025
-      return .init(start: _start.pointer!, end: _end.pointer!, tree: __tree_)
-    #else
-      return .init(start: _start, end: _end, tie: __tree_.tied)
-    #endif
-  }
 
   /// - Complexity: O(`count`)
   @inlinable
@@ -158,22 +137,46 @@ extension RedBlackTreeKeyValueRangeView {
   }
 }
 
-extension RedBlackTreeKeyValueRangeView {
+#if false
+  // 標準に倣うと、Collections適合が必要なのでこちらになる
+  extension RedBlackTreeKeyValueRangeView {
 
-  /// - Complexity: O(1)
-  @inlinable
-  public var keys: [Key] {
-    let (_start, _end) = _raw_range
-    return __tree_.___copy_to_array(_start, _end) { Base.__key_($0) }
-  }
+    /// - Complexity: O(1)
+    @inlinable
+    public var keys: [Key] {
+      let (_start, _end) = _raw_range
+      return __tree_.___copy_to_array(_start, _end) { Base.__key_($0) }
+    }
 
-  /// - Complexity: O(1)
-  @inlinable
-  public var values: [Value] {
-    let (_start, _end) = _raw_range
-    return __tree_.___copy_to_array(_start, _end) { Base.__mapped_value_($0) }
+    /// - Complexity: O(1)
+    @inlinable
+    public var values: [Value] {
+      let (_start, _end) = _raw_range
+      return __tree_.___copy_to_array(_start, _end) { Base.__mapped_value_($0) }
+    }
   }
-}
+#else
+  // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
+  extension RedBlackTreeKeyValueRangeView {
+
+    public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
+    public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+
+    /// - Complexity: O(1)
+    @inlinable
+    public var keys: Keys {
+      let (_start, _end) = _raw_range
+      return .init(start: _start, end: _end, tree: __tree_)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    public var values: Values {
+      let (_start, _end) = _raw_range
+      return .init(start: _start, end: _end, tree: __tree_)
+    }
+  }
+#endif
 
 // MARK: -
 
@@ -292,13 +295,11 @@ extension RedBlackTreeKeyValueRangeView {
   @inlinable
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     _ensureUnique()
-    let (_start, _end) = _safe_range
-    let result = try __tree_.___erase_ragen_if(_start, _end) {
+    let (_start, _end) = _raw_range
+    let result = try __tree_.___erase_ragen_if(_start.unchecked, _end.unchecked) {
       try shouldBeRemoved(Base.__element_($0))
     }
-    if case .failure(let e) = result {
-      fatalError(errorMessage(e))
-    }
+    assert(result.error == nil)
   }
 }
 

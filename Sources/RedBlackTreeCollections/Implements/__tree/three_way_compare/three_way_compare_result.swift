@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -29,46 +34,48 @@ extension Int {
 
 // MARK: -
 
-// 以下は資料的に残している。
+#if false
+  // 以下は資料的に残している。
 
-// 特殊なキーを使いたい場合に使える
-public
-  struct __lazy_compare_result<Base: _BaseKey_LessThanInterface>: ThreeWayCompareResult
-{
-  public typealias LHS = Base._Key
-  public typealias RHS = Base._Key
-  @usableFromInline internal var __lhs_: LHS
-  @usableFromInline internal var __rhs_: RHS
-  @inlinable
-  internal init(_ __lhs_: LHS, _ __rhs_: RHS) {
-    self.__lhs_ = __lhs_
-    self.__rhs_ = __rhs_
+  // 特殊なキーを使いたい場合に使える
+  public
+    struct __lazy_compare_result<Base: _BaseKey_LessThanInterface>: ThreeWayCompareResult
+  {
+    public typealias LHS = Base._Key
+    public typealias RHS = Base._Key
+    @usableFromInline internal var __lhs_: LHS
+    @usableFromInline internal var __rhs_: RHS
+    @inlinable
+    internal init(_ __lhs_: LHS, _ __rhs_: RHS) {
+      self.__lhs_ = __lhs_
+      self.__rhs_ = __rhs_
+    }
+    @inlinable
+    internal func __comp_(_ __lhs_: LHS, _ __rhs_: RHS) -> Bool {
+      Base.value_comp(__lhs_, __rhs_)
+    }
+    @inlinable
+    public func __less() -> Bool { __comp_(__lhs_, __rhs_) }
+    @inlinable
+    public func __greater() -> Bool { __comp_(__rhs_, __lhs_) }
   }
-  @inlinable
-  internal func __comp_(_ __lhs_: LHS, _ __rhs_: RHS) -> Bool {
-    Base.value_comp(__lhs_, __rhs_)
-  }
-  @inlinable
-  public func __less() -> Bool { __comp_(__lhs_, __rhs_) }
-  @inlinable
-  public func __greater() -> Bool { __comp_(__rhs_, __lhs_) }
-}
 
-// バグって速かった。直したら普通
-public
-  struct __comparable_compare_result<T: Comparable>: ThreeWayCompareResult
-{
-  @usableFromInline internal var __lhs_, __rhs_: T
-  @inlinable
-  internal init(_ __lhs_: T, _ __rhs_: T) {
-    self.__lhs_ = __lhs_
-    self.__rhs_ = __rhs_
+  // バグって速かった。直したら普通
+  public
+    struct __comparable_compare_result<T: Comparable>: ThreeWayCompareResult
+  {
+    @usableFromInline internal var __lhs_, __rhs_: T
+    @inlinable
+    internal init(_ __lhs_: T, _ __rhs_: T) {
+      self.__lhs_ = __lhs_
+      self.__rhs_ = __rhs_
+    }
+    @inlinable
+    public func __less() -> Bool { __lhs_ < __rhs_ }
+    @inlinable
+    public func __greater() -> Bool { __lhs_ > __rhs_ }
   }
-  @inlinable
-  public func __less() -> Bool { __lhs_ < __rhs_ }
-  @inlinable
-  public func __greater() -> Bool { __lhs_ > __rhs_ }
-}
+#endif
 
 // 安定して速い
 public

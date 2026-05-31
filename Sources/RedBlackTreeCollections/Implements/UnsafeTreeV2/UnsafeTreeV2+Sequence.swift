@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -34,6 +39,40 @@ extension UnsafeTreeV2 {
     by areInIncreasingOrder: (_PayloadValue, _PayloadValue) throws -> Bool
   ) rethrows -> Bool where OtherSequence: Sequence, _PayloadValue == OtherSequence.Element {
     try unsafeValues(__first, __last).lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+  }
+}
+
+extension UnsafeTreeV2: Equatable where _PayloadValue: Equatable {
+
+  @inlinable
+  public static func == (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
+
+    if lhs.count != rhs.count {
+      return false
+    }
+
+    if lhs.count == 0 || lhs.isIdentical(to: rhs) {
+      return true
+    }
+
+    return lhs.elementsEqual(
+      lhs.__begin_node_,
+      lhs.__end_node,
+      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
+      by: ==)
+  }
+}
+
+extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
+
+  @inlinable
+  public static func < (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
+    !lhs.isIdentical(to: rhs)
+      && lhs.lexicographicallyPrecedes(
+        lhs.__begin_node_,
+        lhs.__end_node,
+        rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
+        by: <)
   }
 }
 
@@ -87,13 +126,17 @@ extension UnsafeTreeV2 {
       _ __first: _NodePtr, _ __last: _NodePtr, transform: (_NodePtr) -> T
     ) -> [T]
   {
-    var result: [T] = []
-    var __first = __first
-    while __first != __last {
-      result.append(transform(__first))
-      __first = __tree_next_iter(__first)
+    let count = __distance(__first, __last)
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      var __first = __first
+      while __first != __last {
+        buffer.initialize(to: transform(__first))
+        buffer += 1
+        __first = __tree_next_iter(__first)
+      }
     }
-    return result
   }
 
   @inlinable
@@ -102,13 +145,17 @@ extension UnsafeTreeV2 {
       _ __first: _NodePtr, _ __last: _NodePtr, transform: (_NodePtr) -> T
     ) -> [T]
   {
-    var result: [T] = []
-    var __last = __last
-    while __first != __last {
-      __last = __tree_prev_iter(__last)
-      result.append(transform(__last))
+    let count = __distance(__first, __last)
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      var __last = __last
+      while __first != __last {
+        __last = __tree_prev_iter(__last)
+        buffer.initialize(to: transform(__last))
+        buffer += 1
+      }
     }
-    return result
   }
 
   @inlinable
@@ -123,40 +170,6 @@ extension UnsafeTreeV2 {
     ___rev_copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
   {
     ___rev_copy_to_array(__first, __last, transform: Base.__payload_)
-  }
-}
-
-extension UnsafeTreeV2: Equatable where _PayloadValue: Equatable {
-
-  @inlinable
-  public static func == (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
-
-    if lhs.count != rhs.count {
-      return false
-    }
-
-    if lhs.count == 0 || lhs.isIdentical(to: rhs) {
-      return true
-    }
-
-    return lhs.elementsEqual(
-      lhs.__begin_node_,
-      lhs.__end_node,
-      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
-      by: ==)
-  }
-}
-
-extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
-
-  @inlinable
-  public static func < (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
-    !lhs.isIdentical(to: rhs)
-      && lhs.lexicographicallyPrecedes(
-        lhs.__begin_node_,
-        lhs.__end_node,
-        rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
-        by: <)
   }
 }
 

@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -30,6 +35,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   subscript(key: Base._Key) -> Base._MappedValue? {
     @inline(__always)
     get {
+      // これはダミー実装らしい。つかっちゃだめっぽい
       return lookup(key)
     }
     
@@ -102,11 +108,11 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
     Other: PairValueTrait,
     Other._Key == Base._Key
   {
-    var other = UnsafeTreeV2<Other>.create(minimumCapacity: count)
+    var other = UnsafeTreeV2<Other>._createWithNewBuffer(minimumCapacity: 2, nullptr: nullptr)
     var (__parent, __child) = other.___max_ref()
     for __p in unsafeSequence(__first, __last) {
       guard let __mv = try transform(Base.__mapped_value_(__p)) else { continue }
-      other.ensureCapacity()
+      other.unsafeEnsureCapacity()
       (__parent, __child) = other.___emplace_hint_right(
         __parent, __child, Other.__payload_((__get_value(__p), __mv)))
       assert(other.__tree_invariant(other.__root))

@@ -6,7 +6,7 @@
 //
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   /// Returns:  pointer to a node which has no children
   @inlinable

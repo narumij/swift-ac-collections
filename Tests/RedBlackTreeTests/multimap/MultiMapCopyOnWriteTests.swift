@@ -1,7 +1,7 @@
 import XCTest
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   final class MultiMapCopyOnWriteTests: RedBlackTreeTestCase {
 

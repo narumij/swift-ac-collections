@@ -8,10 +8,10 @@
 import XCTest
 
 #if DEBUG && USE_FRESH_POOL_PROTOCOL
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   struct FreshPoolFixture<_PayloadValue>: _FreshPool {
-    var freshBucketCurrent: RedBlackTreeModule._BucketQueue?
+    var freshBucketCurrent: RedBlackTreeCollections._BucketQueue?
 
     var payloadLayout: _MemoryLayout
 
@@ -28,7 +28,7 @@ import XCTest
     var count: Int = 0
     var freshBucketCount: Int = 0
     var nullptr: _NodePtr { UnsafeNode.nullptr }
-    var freshBucketAllocator: RedBlackTreeModule._BucketAllocator
+    var freshBucketAllocator: RedBlackTreeCollections._BucketAllocator
   }
 
   final class UnsafeNodeFreshPoolTests: RedBlackTreeTestCase {

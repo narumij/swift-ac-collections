@@ -7,7 +7,7 @@
 
 #if DEATH_TEST
   import Foundation
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
   import Testing
 
   struct TestFatalError {

@@ -1,5 +1,5 @@
 import XCTest
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 #if !COMPATIBLE_ATCODER_2025
 final class DictionaryCodableTests: CodableFixture {

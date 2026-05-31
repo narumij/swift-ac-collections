@@ -4,7 +4,7 @@
 // すべての SetAlgebra API を網羅するテスト。
 // 既存の CornerCaseTests と併用して OK。
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class RedBlackTreeSetAlgebraFullTests: RedBlackTreeTestCase {

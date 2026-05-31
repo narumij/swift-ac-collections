@@ -5,7 +5,7 @@
 //  Created by narumij on 2025/08/02.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class MultiSetAlgebraTests: RedBlackTreeTestCase {

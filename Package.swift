@@ -68,7 +68,7 @@ var _settings: [SwiftSetting] =
     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
 
     .define("DEATH_TEST", .when(platforms: [.macOS])),
-    
+
     // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
     .unsafeFlags(["-Ounchecked"], .when(configuration: .release, traits: ["_O_UNCHECKED"])),
   ]
@@ -120,7 +120,7 @@ let package = Package(
 
     .target(
       name: "AcCollections",
-      dependencies: ["RedBlackTreeModule", "PermutationModule"],
+      dependencies: ["RedBlackTreeCollections", "RedBlackTreeModule", "PermutationModule"],
       swiftSettings: _settings
     ),
 
@@ -133,7 +133,7 @@ let package = Package(
       ]),
 
     .target(
-      name: "RedBlackTreeModule",
+      name: "RedBlackTreeCollections",
       dependencies: [] + additionalDepencencies,
       path: "Sources/RedBlackTreeCollections",
       exclude: ["MEMO.md"],
@@ -141,11 +141,16 @@ let package = Package(
         // .strictMemorySafety()
       ]),
 
+    .target(
+      name: "RedBlackTreeModule",
+      dependencies: ["RedBlackTreeCollections"],
+    ),
+
     .testTarget(
       name: "RedBlackTreeTests",
       dependencies: [
         .product(name: "Algorithms", package: "swift-algorithms"),
-        "RedBlackTreeModule",
+        "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
     ),

@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/05/08.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 extension RedBlackTreePair {
 

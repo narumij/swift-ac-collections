@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import Testing
 
 #if DEATH_TEST

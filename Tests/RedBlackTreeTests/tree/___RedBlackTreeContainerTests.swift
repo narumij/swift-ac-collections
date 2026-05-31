@@ -10,7 +10,7 @@ import XCTest
 // 結構ディープな内容なので温存する必要がある
 
 #if DEBUG && false
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   final class ___RedBlackTreeContainerTests: RedBlackTreeTestCase {
 

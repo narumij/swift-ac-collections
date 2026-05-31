@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/07.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class UnsafeTreeMemoryTests: RedBlackTreeTestCase {

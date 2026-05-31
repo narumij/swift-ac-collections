@@ -1,7 +1,7 @@
 // RedBlackTreeMultisetCornerCaseTests.swift
 // swift-tools-version:5.10
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 /// シンプル Count ディクショナリを Swift 標準 Multiset 代わりに利用

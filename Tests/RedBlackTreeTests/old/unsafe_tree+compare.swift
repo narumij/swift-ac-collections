@@ -17,7 +17,7 @@
 
 // MARK: -
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   @usableFromInline
   protocol CompareProtocol: _TreeNode_PtrCompInterface {}

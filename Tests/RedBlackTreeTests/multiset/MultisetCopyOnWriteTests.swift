@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS

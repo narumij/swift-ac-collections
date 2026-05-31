@@ -7,7 +7,7 @@
 
 #if DEBUG && !COMPATIBLE_ATCODER_2025
   import XCTest
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 

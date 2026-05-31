@@ -46,7 +46,7 @@ where
   public var startIndex: Index {
     _sealed_start.band(__tree_)
   }
-  
+
   public var endIndex: Index {
     _sealed_end.band(__tree_)
   }
@@ -64,15 +64,15 @@ where
 #endif
 
 extension RedBlackTreeKeyValueRangeView {
-  
+
   @inlinable
   internal mutating func _ensureUnique() {
     // 異なる木のインデックスを無効扱いにするための準備措置
     // Viewだけはインデックス引き継ぎが必要
-    
+
     // 元の木がユニーク参照では無かった場合、コピーが発生する
     let copied = __tree_.__ensureUnique()
-    
+
     // コピーが発生した場合インデックス引き継ぎを行う
     if copied {
       // コピー木であることがわかっているので千本引きが確実に行える（ハズレ無し）
@@ -95,29 +95,19 @@ extension RedBlackTreeKeyValueRangeView {
     return (_start, _end)
   }
 
-  @inlinable
-  var _safe_range: (_SafePtr, _SafePtr) {
-    let _start = _sealed_start.purified.map(\.pointer)
-    let _end = _sealed_end.purified.map(\.pointer)
-    guard
-      _start.error == nil, _end.error == nil
-    else {
-      return (__tree_.__end_node.unchecked, __tree_.__end_node.unchecked)
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    var _range: (_SealedPtr, _SealedPtr) {
+      let _start = _sealed_start.purified
+      let _end = _sealed_end.purified
+      guard
+        _start.error == nil, _end.error == nil
+      else {
+        return (__tree_.__end_node.uncheckedSeal, __tree_.__end_node.uncheckedSeal)
+      }
+      return (_start, _end)
     }
-    return (_start, _end)
-  }
-
-  @inlinable
-  var _range: (_SealedPtr, _SealedPtr) {
-    let _start = _sealed_start.purified
-    let _end = _sealed_end.purified
-    guard
-      _start.error == nil, _end.error == nil
-    else {
-      return (__tree_.__end_node.uncheckedSeal, __tree_.__end_node.uncheckedSeal)
-    }
-    return (_start, _end)
-  }
+  #endif
 }
 
 extension RedBlackTreeKeyValueRangeView {
@@ -125,11 +115,6 @@ extension RedBlackTreeKeyValueRangeView {
   @inlinable
   func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
     __tree_.index(p)
-  }
-
-  @inlinable
-  func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPtr {
-    p.band(__tree_)
   }
 }
 
@@ -140,10 +125,11 @@ extension RedBlackTreeKeyValueRangeView {
   /// - Complexity: O(1)
   @inlinable
   public __consuming func makeIterator() -> UnsafeIterator.KeyValueObverse<Base> {
-    let (_start, _end) = _range
     #if !COMPATIBLE_ATCODER_2025
-      return .init(start: _start.pointer!, end: _end.pointer!, tree: __tree_)
+      let (_start, _end) = _raw_range
+      return .init(start: _start, end: _end, tree: __tree_)
     #else
+      let (_start, _end) = _range
       return .init(start: _start, end: _end, tie: __tree_.tied)
     #endif
   }
@@ -297,13 +283,11 @@ extension RedBlackTreeKeyValueRangeView {
   @inlinable
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     _ensureUnique()
-    let (_start, _end) = _safe_range
-    let result = try __tree_.___erase_ragen_if(_start, _end) {
+    let (_start, _end) = _raw_range
+    let result = try __tree_.___erase_ragen_if(_start.unchecked, _end.unchecked) {
       try shouldBeRemoved(Base.__element_($0))
     }
-    if case .failure(let e) = result {
-      fatalError(errorMessage(e))
-    }
+    assert(result.error == nil)
   }
 }
 

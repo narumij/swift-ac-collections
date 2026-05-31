@@ -93,29 +93,19 @@ extension RedBlackTreeKeyOnlyRangeView {
     return (_start, _end)
   }
 
-  @inlinable
-  var _safe_range: (_SafePtr, _SafePtr) {
-    let _start = _sealed_start.purified.map(\.pointer)
-    let _end = _sealed_end.purified.map(\.pointer)
-    guard
-      _start.error == nil, _end.error == nil
-    else {
-      return (__tree_.__end_node.unchecked, __tree_.__end_node.unchecked)
+  #if COMPATIBLE_ATCODER_2025
+    @inlinable
+    var _range: (_SealedPtr, _SealedPtr) {
+      let _start = _sealed_start.purified
+      let _end = _sealed_end.purified
+      guard
+        _start.error == nil, _end.error == nil
+      else {
+        return (__tree_.__end_node.uncheckedSeal, __tree_.__end_node.uncheckedSeal)
+      }
+      return (_start, _end)
     }
-    return (_start, _end)
-  }
-
-  @inlinable
-  var _range: (_SealedPtr, _SealedPtr) {
-    let _start = _sealed_start.purified
-    let _end = _sealed_end.purified
-    guard
-      _start.error == nil, _end.error == nil
-    else {
-      return (__tree_.__end_node.uncheckedSeal, __tree_.__end_node.uncheckedSeal)
-    }
-    return (_start, _end)
-  }
+  #endif
 }
 
 extension RedBlackTreeKeyOnlyRangeView {
@@ -123,11 +113,6 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
     __tree_.index(p)
-  }
-
-  @inlinable
-  func ___index(_ p: _SealedPtr) -> _LazyTieWrappedPtr {
-    p.band(__tree_)
   }
 }
 
@@ -138,10 +123,11 @@ extension RedBlackTreeKeyOnlyRangeView {
   /// - Complexity: O(1)
   @inlinable
   public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Container.Base> {
-    let (_start, _end) = _range
     #if !COMPATIBLE_ATCODER_2025
-      return .init(start: _start.pointer!, end: _end.pointer!, tree: __tree_)
+      let (_start, _end) = _raw_range
+      return .init(start: _start, end: _end, tree: __tree_)
     #else
+      let (_start, _end) = _range
       return .init(start: _start, end: _end, tie: __tree_.tied)
     #endif
   }
@@ -276,11 +262,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
     _ensureUnique()
-    let (_start, _end) = _safe_range
-    let result = try __tree_.___erase_ragen_if(_start, _end, shouldBeRemoved)
-    if case .failure(let e) = result {
-      fatalError(errorMessage(e))
-    }
+    let (_start, _end) = _raw_range
+    let result = try __tree_.___erase_ragen_if(_start.unchecked, _end.unchecked, shouldBeRemoved)
+    assert(result.error == nil)
   }
 }
 

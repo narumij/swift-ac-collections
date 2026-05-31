@@ -90,6 +90,8 @@ extension RedBlackTreeKeyOnlyRangeView {
     else {
       return (__tree_.__end_node, __tree_.__end_node)
     }
+    assert(_start == _end || ___ptr_comp_bitmap(_start, _end))
+    assert(___ptr_comp_bitmap(_start, _end) == ___ptr_comp_multi(_start, _end))
     return (_start, _end)
   }
 

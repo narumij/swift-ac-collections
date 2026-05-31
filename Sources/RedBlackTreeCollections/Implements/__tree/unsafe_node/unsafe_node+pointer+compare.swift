@@ -234,6 +234,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   func ___ptr_comp_bitmap(
     _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
   ) -> Bool {
-    return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
+    #if false
+      return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
+    #else
+      return (__l.___is_end ? .max : __l.___ptr_bitmap_64())
+        < (__r.___is_end ? .max : __r.___ptr_bitmap_64())
+    #endif
   }
 #endif

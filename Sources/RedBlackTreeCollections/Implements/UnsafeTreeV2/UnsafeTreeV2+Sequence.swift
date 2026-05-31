@@ -126,13 +126,17 @@ extension UnsafeTreeV2 {
       _ __first: _NodePtr, _ __last: _NodePtr, transform: (_NodePtr) -> T
     ) -> [T]
   {
-    var result: [T] = []
-    var __first = __first
-    while __first != __last {
-      result.append(transform(__first))
-      __first = __tree_next_iter(__first)
+    let count = __distance(__first, __last)
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      var __first = __first
+      while __first != __last {
+        buffer.initialize(to: transform(__first))
+        buffer += 1
+        __first = __tree_next_iter(__first)
+      }
     }
-    return result
   }
 
   @inlinable
@@ -141,13 +145,17 @@ extension UnsafeTreeV2 {
       _ __first: _NodePtr, _ __last: _NodePtr, transform: (_NodePtr) -> T
     ) -> [T]
   {
-    var result: [T] = []
-    var __last = __last
-    while __first != __last {
-      __last = __tree_prev_iter(__last)
-      result.append(transform(__last))
+    let count = __distance(__first, __last)
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      var __last = __last
+      while __first != __last {
+        __last = __tree_prev_iter(__last)
+        buffer.initialize(to: transform(__last))
+        buffer += 1
+      }
     }
-    return result
   }
 
   @inlinable

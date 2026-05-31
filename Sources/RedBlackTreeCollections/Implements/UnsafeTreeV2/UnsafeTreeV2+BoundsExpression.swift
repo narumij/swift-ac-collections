@@ -21,41 +21,46 @@
 //===----------------------------------------------------------------------===//
 
 extension UnsafeTreeV2 {
- 
+
   @inlinable
   func evaluate(_ _internal: RedBlackTreeBoundExpressionV2<_Key>.Internal)
     -> _SafePtr
   {
     _internal.withUnsafeBufferPointer { buffer in
-      
+
       let _internal = buffer.baseAddress!
-      
+
       var ptr = _SafePtr.failure(.null)
-      
+
       for i in 0..<buffer.count {
         switch _internal[i] {
-          
-        case .pointer(let p):
-          ptr = p
-          
+
+        case .index(let i):
+          switch __purified_(i) {
+          case .success(let s):
+            ptr = s.pointer.unchecked
+          case .failure:
+            ptr = .failure(.null)
+          }
+
         case .start:
           ptr = __begin_node_.unchecked
-          
+
         case .last:
           ptr = ___tree_prev_iter(__end_node)
-          
+
         case .end:
           ptr = __end_node.unchecked
-          
+
         case .lowerBound(let __v):
           ptr = lower_bound(__v).unchecked
-          
+
         case .upperBound(let __v):
           ptr = upper_bound(__v).unchecked
-          
+
         case .find(let __v):
           ptr = find(__v).unchecked
-          
+
         case .advanced(let offset, let limit):
           switch limit {
           case .none:
@@ -67,36 +72,37 @@ extension UnsafeTreeV2 {
             let __r = ptr.flatMap {
               ___tree_adv_iter($0, offset, l)
             }
-            ptr = switch __r {
-            case .failure(.limit): l
-            default: __r
-            }
+            ptr =
+              switch __r {
+              case .failure(.limit): l
+              default: __r
+              }
           }
-          
+
         case .before:
           ptr = ptr.flatMap { ___tree_adv_iter($0, -1) }
-          
+
         case .after:
           ptr = ptr.flatMap { ___tree_adv_iter($0, 1) }
 
         case .lessThan(let __v):
           ptr = ___tree_prev_iter(lower_bound(__v))
-          
+
         case .greaterThan(let __v):
           ptr = upper_bound(__v).unchecked
-          
+
         case .lessThanOrEqual(let __v):
           let __f = find(__v).unchecked
           ptr = __f.___has_payload_content ? __f : ___tree_prev_iter(lower_bound(__v))
-          
+
         case .greaterThanOrEqual(let __v):
           let __f = find(__v).unchecked
           ptr = __f.___has_payload_content ? __f : upper_bound(__v).unchecked
-          
-#if DEBUG
-        case .debug(let e):
-          return .failure(e)
-#endif
+
+        #if DEBUG
+          case .debug(let e):
+            return .failure(e)
+        #endif
         }
       }
       return ptr
@@ -105,7 +111,7 @@ extension UnsafeTreeV2 {
 }
 
 extension RedBlackTreeBoundExpressionV2 {
-  
+
   @inlinable
   func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
     -> _SafePtr

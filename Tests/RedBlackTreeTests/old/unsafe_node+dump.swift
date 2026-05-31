@@ -21,6 +21,8 @@
 //===----------------------------------------------------------------------===//
 
 #if DEBUG
+  @testable import RedBlackTreeCollections
+
   extension UnsafeNode {
 
     @inlinable

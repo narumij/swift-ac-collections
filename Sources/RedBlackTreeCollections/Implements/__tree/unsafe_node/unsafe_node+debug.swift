@@ -23,7 +23,7 @@
 #if DEBUG
   extension UnsafeNode {
 
-    @inlinable
+    @usableFromInline
     package func equiv(with tree: UnsafeNode) -> Bool {
       assert(___tracking_tag == tree.___tracking_tag)
       assert(__left_.pointee.___tracking_tag == tree.__left_.pointee.___tracking_tag)
@@ -47,7 +47,7 @@
 
   extension UnsafeNode {
 
-    @inlinable
+    @usableFromInline
     package func nullCheck() -> Bool {
       assert(___tracking_tag == .nullptr)
       assert(__left_ == UnsafeNode.nullptr)
@@ -68,7 +68,7 @@
       return true
     }
 
-    @inlinable
+    @usableFromInline
     package func endCheck() -> Bool {
       assert(___tracking_tag == .end)
       assert(__right_ == UnsafeNode.nullptr)

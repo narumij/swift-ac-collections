@@ -21,7 +21,8 @@
 //===----------------------------------------------------------------------===//
 
 #if DEBUG
-  fileprivate import Foundation
+  @testable import RedBlackTreeCollections
+  import Foundation
 
   extension UnsafeTreeV2 {
 

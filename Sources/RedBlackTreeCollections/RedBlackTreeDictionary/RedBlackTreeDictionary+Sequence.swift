@@ -140,7 +140,7 @@ extension RedBlackTreeDictionary {
       ///
       /// - Complexity: O(`count`)
       @inlinable
-      public var keys: UnsafeIterator.KeyObverse<Base> {
+      public var keys: Keys {
         .init(start: _start, end: _end, tree: __tree_)
       }
 
@@ -148,7 +148,7 @@ extension RedBlackTreeDictionary {
       ///
       /// - Complexity: O(`count`)
       @inlinable
-      public var values: UnsafeIterator.MappedValueObverse<Base> {
+      public var values: Values {
         .init(start: _start, end: _end, tree: __tree_)
       }
     #endif

@@ -149,22 +149,44 @@ extension RedBlackTreeKeyValueRangeView {
   }
 }
 
-extension RedBlackTreeKeyValueRangeView {
+#if false
+  extension RedBlackTreeKeyValueRangeView {
 
-  /// - Complexity: O(1)
-  @inlinable
-  public var keys: [Key] {
-    let (_start, _end) = _raw_range
-    return __tree_.___copy_to_array(_start, _end) { Base.__key_($0) }
-  }
+    /// - Complexity: O(1)
+    @inlinable
+    public var keys: [Key] {
+      let (_start, _end) = _raw_range
+      return __tree_.___copy_to_array(_start, _end) { Base.__key_($0) }
+    }
 
-  /// - Complexity: O(1)
-  @inlinable
-  public var values: [Value] {
-    let (_start, _end) = _raw_range
-    return __tree_.___copy_to_array(_start, _end) { Base.__mapped_value_($0) }
+    /// - Complexity: O(1)
+    @inlinable
+    public var values: [Value] {
+      let (_start, _end) = _raw_range
+      return __tree_.___copy_to_array(_start, _end) { Base.__mapped_value_($0) }
+    }
   }
-}
+#else
+  extension RedBlackTreeKeyValueRangeView {
+
+    public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
+    public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+
+    /// - Complexity: O(1)
+    @inlinable
+    public var keys: Keys {
+      let (_start, _end) = _raw_range
+      return .init(start: _start, end: _end, tree: __tree_)
+    }
+
+    /// - Complexity: O(1)
+    @inlinable
+    public var values: Values {
+      let (_start, _end) = _raw_range
+      return .init(start: _start, end: _end, tree: __tree_)
+    }
+  }
+#endif
 
 // MARK: -
 

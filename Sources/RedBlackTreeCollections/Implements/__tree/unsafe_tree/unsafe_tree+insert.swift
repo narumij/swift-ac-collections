@@ -159,6 +159,7 @@ extension InsertLastProtocol_ptr {
   }
 }
 
+#if false
 extension InsertLastProtocol_ptr {
 
   // 資料的に残してある
@@ -182,3 +183,4 @@ extension InsertLastProtocol_ptr {
     return __h
   }
 }
+#endif

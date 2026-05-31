@@ -94,20 +94,6 @@ extension RedBlackTreeKeyOnlyRangeView {
     assert(___ptr_comp_bitmap(_start, _end) == ___ptr_comp_multi(_start, _end))
     return (_start, _end)
   }
-
-  #if COMPATIBLE_ATCODER_2025
-    @inlinable
-    var _range: (_SealedPtr, _SealedPtr) {
-      let _start = _sealed_start.purified
-      let _end = _sealed_end.purified
-      guard
-        _start.error == nil, _end.error == nil
-      else {
-        return (__tree_.__end_node.uncheckedSeal, __tree_.__end_node.uncheckedSeal)
-      }
-      return (_start, _end)
-    }
-  #endif
 }
 
 extension RedBlackTreeKeyOnlyRangeView {
@@ -118,21 +104,21 @@ extension RedBlackTreeKeyOnlyRangeView {
   }
 }
 
-extension RedBlackTreeKeyOnlyRangeView: Sequence {}
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyOnlyRangeView: Sequence {}
 
-extension RedBlackTreeKeyOnlyRangeView {
+  extension RedBlackTreeKeyOnlyRangeView {
 
-  /// - Complexity: O(1)
-  @inlinable
-  public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Container.Base> {
-    #if !COMPATIBLE_ATCODER_2025
+    /// - Complexity: O(1)
+    @inlinable
+    public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Container.Base> {
       let (_start, _end) = _raw_range
       return .init(start: _start, end: _end, tree: __tree_)
-    #else
-      let (_start, _end) = _range
-      return .init(start: _start, end: _end, tie: __tree_.tied)
-    #endif
+    }
   }
+#endif
+
+extension RedBlackTreeKeyOnlyRangeView {
 
   /// - Complexity: O(`count`)
   @inlinable

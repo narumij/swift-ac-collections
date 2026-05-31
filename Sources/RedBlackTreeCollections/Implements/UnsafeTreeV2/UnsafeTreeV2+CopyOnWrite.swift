@@ -122,11 +122,7 @@ extension UnsafeTreeV2 {
     
     // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
     guard capacity < limit else { return }
-
-    if isReadOnly {
-      self = withMutableHeader { $0._ensureUniqueSlow(limit: limit) }
-    } else {
-      withMutableHeader { $0._ensureCapacitySlow(limit: limit) }
-    }
+    assert(!isReadOnly)
+    withMutableHeader { $0._ensureCapacitySlow(limit: limit) }
   }
 }

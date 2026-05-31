@@ -136,8 +136,10 @@ extension UnsafeTreeV2 {
     if __first == __last {
       return
     }
+    
+    assert(isUnique())
 
-    ensureCapacity(to: __size_ + __source.__size_)
+    unsafeEnsureCapacity(to: __size_ + __source.__size_)
 
     var __first = __first
 

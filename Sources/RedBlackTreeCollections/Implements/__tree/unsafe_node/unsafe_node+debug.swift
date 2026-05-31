@@ -24,36 +24,6 @@
   extension UnsafeNode {
 
     @inlinable
-    func dumpNode() -> String {
-      let id = ___tracking_tag
-      let l = __left_ == .nullptr ? nil : __left_.pointee.___tracking_tag
-      let r = __right_ == .nullptr ? nil : __right_.pointee.___tracking_tag
-      let p = __parent_ == .nullptr ? nil : __parent_.pointee.___tracking_tag
-      let color = __is_black_ ? "B" : "R"
-      #if DEBUG || true
-        let rc = ___recycle_count
-      #else
-        let rc = -1
-      #endif
-
-      return """
-        - node[\(id)] \(color)
-           L: \(l.map(String.init) ?? "nil")
-           R: \(r.map(String.init) ?? "nil")
-           P: \(p.map(String.init) ?? "nil")
-           needsDeinit: \(___has_payload_content)
-           recycleCount: \(rc)
-        """
-    }
-  }
-
-  extension UnsafeMutablePointer where Pointee == UnsafeNode {
-    package var index: _TrackingTag { trackingTag }
-  }
-
-  extension UnsafeNode {
-
-    @inlinable
     package func equiv(with tree: UnsafeNode) -> Bool {
       assert(___tracking_tag == tree.___tracking_tag)
       assert(__left_.pointee.___tracking_tag == tree.__left_.pointee.___tracking_tag)

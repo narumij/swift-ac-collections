@@ -29,43 +29,43 @@
     }
   }
 
-#if true
-  extension UnsafeTreeHostV2 {
+  #if true
+    extension UnsafeTreeHostV2 {
 
-    /// グラフビズオブジェクトを生成します
-    ///
-    /// デバッガで、以下のようにすると、Graphvizのソースをコンソールに出力できます。
-    ///
-    /// ```
-    /// p print(set.___graphviz())
-    /// ```
-    ///
-    /// ```
-    /// digraph {
-    /// node [shape = circle style = filled fillcolor = red]; 1 4
-    /// node [shape = circle style = filled fillcolor = blue fontcolor = white]; begin stack
-    /// node [shape = circle style = filled fillcolor = black fontcolor = white];
-    /// end -> 2 [label = "left"]
-    /// begin -> 0 [label = "left"]
-    /// stack -> 1 [label = "left"]
-    /// 2 -> 0 [label = "left"]
-    /// 1 -> 1 [label = "right"]
-    /// 2 -> 3 [label = "right"]
-    /// 3 -> 4 [label = "right"]
-    /// }
-    /// ```
-    ///
-    /// 上のソースは、以下のような操作をした直後のものです。
-    /// ```
-    /// var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-    /// set.remove(1)
-    /// ```
-    ///
-    public func ___graphviz() -> Graphviz.Digraph {
-      __tree_.___graphviz()
+      /// グラフビズオブジェクトを生成します
+      ///
+      /// デバッガで、以下のようにすると、Graphvizのソースをコンソールに出力できます。
+      ///
+      /// ```
+      /// p print(set.___graphviz())
+      /// ```
+      ///
+      /// ```
+      /// digraph {
+      /// node [shape = circle style = filled fillcolor = red]; 1 4
+      /// node [shape = circle style = filled fillcolor = blue fontcolor = white]; begin stack
+      /// node [shape = circle style = filled fillcolor = black fontcolor = white];
+      /// end -> 2 [label = "left"]
+      /// begin -> 0 [label = "left"]
+      /// stack -> 1 [label = "left"]
+      /// 2 -> 0 [label = "left"]
+      /// 1 -> 1 [label = "right"]
+      /// 2 -> 3 [label = "right"]
+      /// 3 -> 4 [label = "right"]
+      /// }
+      /// ```
+      ///
+      /// 上のソースは、以下のような操作をした直後のものです。
+      /// ```
+      /// var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
+      /// set.remove(1)
+      /// ```
+      ///
+      public func ___graphviz() -> Graphviz.Digraph {
+        __tree_.___graphviz()
+      }
     }
-  }
-#endif
+  #endif
 
 #endif
 
@@ -162,13 +162,13 @@
 
   extension Array where Element == Graphviz.EdgeProperty {
     static var begin: [Graphviz.EdgeProperty] {
-      [.label(""),.labelAngle(45)]
+      [.label(""), .labelAngle(45)]
     }
     static var left: [Graphviz.EdgeProperty] {
-      [.label("left"),.labelAngle(45)]
+      [.label("left"), .labelAngle(45)]
     }
     static var right: [Graphviz.EdgeProperty] {
-      [.label("right"),.labelAngle(-45)]
+      [.label("right"), .labelAngle(-45)]
     }
   }
 
@@ -294,7 +294,10 @@
         if i == end {
           return "end"
         } else {
-          let c = String("\(i.__value_(as: _PayloadValue.self).pointee)".flatMap { $0 == "\n" ? ["\n", "n"] : [$0] })
+          let c = String(
+            "\(i.__value_(as: _PayloadValue.self).pointee)".flatMap {
+              $0 == "\n" ? ["\n", "n"] : [$0]
+            })
           //          let l: String = "\\\"\(c)\\\"\\n#\(i)"
           let l: String = "\(c)\\n\\n#\(i.pointee.___tracking_tag)"
           return "\(i.pointee.___tracking_tag) [tag = \"\(l)\"];"
@@ -316,7 +319,7 @@
           "__tree_invariant: \(__tree_invariant(__root))",
         ])
         #if AC_COLLECTIONS_INTERNAL_CHECKS
-        ll.append("- copyCount: \(_buffer.header.copyCount)")
+          ll.append("- copyCount: \(_buffer.header.copyCount)")
         #endif
 
         let l = ll.joined(separator: "\\n")
@@ -331,10 +334,13 @@
       }
       let initializedCount = _buffer.header.freshPoolUsedCount
       let destroyNode = _buffer.header.recycleHead
-      let reds = (0..<initializedCount).map{ try! __retrieve_($0).get() }.filter(isRed).map(nodeV)
-      let blacks = (0..<initializedCount).map{ try! __retrieve_($0).get() }.filter(isBlack).map(nodeV)
-      let lefts: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map{ try! __retrieve_($0).get() }.filter(hasLeft).map(leftPair)
-      let rights: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map{ try! __retrieve_($0).get() }.filter(hasRight).map(rightPair)
+      let reds = (0..<initializedCount).map { try! __retrieve_($0).get() }.filter(isRed).map(nodeV)
+      let blacks = (0..<initializedCount).map { try! __retrieve_($0).get() }.filter(isBlack).map(
+        nodeV)
+      let lefts: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map { try! __retrieve_($0).get() }
+        .filter(hasLeft).map(leftPair)
+      let rights: [(_NodePtr, _NodePtr)] = (0..<initializedCount).map { try! __retrieve_($0).get() }
+        .filter(hasRight).map(rightPair)
       var digraph = Graphviz.Digraph()
       digraph.options.append(.splines(.line))
       digraph.nodes.append((.red, reds))

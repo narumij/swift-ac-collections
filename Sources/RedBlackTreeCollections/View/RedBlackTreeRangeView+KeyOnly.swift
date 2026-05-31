@@ -42,11 +42,11 @@ where
   internal var __tree_: Tree
 
   public var startIndex: Index {
-    _sealed_start.band(__tree_)
+    ___index(_sealed_start.pointer!)
   }
 
   public var endIndex: Index {
-    _sealed_end.band(__tree_)
+    ___index(_sealed_end.pointer!)
   }
 
   @usableFromInline var _sealed_start: _SealedPtr

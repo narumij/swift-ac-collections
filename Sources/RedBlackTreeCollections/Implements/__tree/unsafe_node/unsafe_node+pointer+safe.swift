@@ -173,8 +173,10 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   @inlinable
   package var purified: Result { flatMap { $0.purified } }
 
-  @inlinable
-  package var deepPurified: Result { flatMap { $0.deepPurified } }
+  #if ALLOW_CROSS_TREE_INDEX
+    @inlinable
+    package var deepPurified: Result { flatMap { $0.deepPurified } }
+  #endif
 }
 
 public enum SealError: Error {

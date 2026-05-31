@@ -51,12 +51,6 @@
     package var index: _TrackingTag { trackingTag }
   }
 
-  #if false
-    extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
-      package var index: _TrackingTag { self?.trackingTag ?? .nullptr }
-    }
-  #endif
-
   extension UnsafeNode {
 
     @inlinable
@@ -129,5 +123,4 @@
 
   @usableFromInline nonisolated(unsafe) var payloadInitializedCount = 0
   @usableFromInline nonisolated(unsafe) var payloadDeinitializedCount = 0
-
 #endif

@@ -44,11 +44,11 @@ where
   internal var __tree_: Tree
 
   public var startIndex: Index {
-    _sealed_start.band(__tree_)
+    ___index(_sealed_start.pointer!)
   }
 
   public var endIndex: Index {
-    _sealed_end.band(__tree_)
+    ___index(_sealed_end.pointer!)
   }
 
   @usableFromInline var _sealed_start: _SealedPtr
@@ -137,45 +137,47 @@ extension RedBlackTreeKeyValueRangeView {
   }
 }
 
-#if false
-  // 標準に倣うと、Collections適合が必要なのでこちらになる
-  extension RedBlackTreeKeyValueRangeView {
+#if !COMPATIBLE_ATCODER_2025
+  #if false
+    // 標準に倣うと、Collections適合が必要なのでこちらになる
+    extension RedBlackTreeKeyValueRangeView {
 
-    /// - Complexity: O(1)
-    @inlinable
-    public var keys: [Key] {
-      let (_start, _end) = _raw_range
-      return __tree_.___copy_to_array(_start, _end) { Base.__key_($0) }
+      /// - Complexity: O(1)
+      @inlinable
+      public var keys: [Key] {
+        let (_start, _end) = _raw_range
+        return __tree_.___copy_to_array(_start, _end) { Base.__key_($0) }
+      }
+
+      /// - Complexity: O(1)
+      @inlinable
+      public var values: [Value] {
+        let (_start, _end) = _raw_range
+        return __tree_.___copy_to_array(_start, _end) { Base.__mapped_value_($0) }
+      }
     }
+  #else
+    // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
+    extension RedBlackTreeKeyValueRangeView {
 
-    /// - Complexity: O(1)
-    @inlinable
-    public var values: [Value] {
-      let (_start, _end) = _raw_range
-      return __tree_.___copy_to_array(_start, _end) { Base.__mapped_value_($0) }
+      public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
+      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+
+      /// - Complexity: O(1)
+      @inlinable
+      public var keys: Keys {
+        let (_start, _end) = _raw_range
+        return .init(start: _start, end: _end, tree: __tree_)
+      }
+
+      /// - Complexity: O(1)
+      @inlinable
+      public var values: Values {
+        let (_start, _end) = _raw_range
+        return .init(start: _start, end: _end, tree: __tree_)
+      }
     }
-  }
-#else
-  // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
-  extension RedBlackTreeKeyValueRangeView {
-
-    public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
-    public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
-
-    /// - Complexity: O(1)
-    @inlinable
-    public var keys: Keys {
-      let (_start, _end) = _raw_range
-      return .init(start: _start, end: _end, tree: __tree_)
-    }
-
-    /// - Complexity: O(1)
-    @inlinable
-    public var values: Values {
-      let (_start, _end) = _raw_range
-      return .init(start: _start, end: _end, tree: __tree_)
-    }
-  }
+  #endif
 #endif
 
 // MARK: -
@@ -303,45 +305,47 @@ extension RedBlackTreeKeyValueRangeView {
   }
 }
 
-extension RedBlackTreeKeyValueRangeView where _PayloadValue: Equatable {
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeKeyValueRangeView where _PayloadValue: Equatable {
 
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: ==)
+    /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+    ///   sequence and the length of `other`.
+    @inlinable
+    public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+    where OtherSequence: Sequence, Element == OtherSequence.Element {
+      elementsEqual(other, by: ==)
+    }
   }
-}
 
-extension RedBlackTreeKeyValueRangeView where _PayloadValue: Comparable {
+  extension RedBlackTreeKeyValueRangeView where _PayloadValue: Comparable {
 
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: <)
+    /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+    ///   sequence and the length of `other`.
+    @inlinable
+    public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+    where OtherSequence: Sequence, Element == OtherSequence.Element {
+      lexicographicallyPrecedes(other, by: <)
+    }
   }
-}
 
-extension RedBlackTreeKeyValueRangeView: Equatable where _PayloadValue: Equatable {
+  extension RedBlackTreeKeyValueRangeView: Equatable where _PayloadValue: Equatable {
 
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs._isdentical(to: rhs) || lhs.elementsEqual(rhs)
+    /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+    @inlinable
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+      lhs._isdentical(to: rhs) || lhs.elementsEqual(rhs)
+    }
   }
-}
 
-extension RedBlackTreeKeyValueRangeView: Comparable where _PayloadValue: Comparable {
+  extension RedBlackTreeKeyValueRangeView: Comparable where _PayloadValue: Comparable {
 
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs._isdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+    @inlinable
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+      !lhs._isdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    }
   }
-}
+#endif
 
 #if swift(>=5.5)
   extension RedBlackTreeKeyValueRangeView: @unchecked Sendable

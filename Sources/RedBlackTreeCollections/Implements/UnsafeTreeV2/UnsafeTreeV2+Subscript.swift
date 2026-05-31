@@ -39,21 +39,6 @@ extension UnsafeTreeV2 {
   }
 }
 
-#if false
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    internal subscript(_unsafe position: UnsafeIndexV3) -> _PayloadValue {
-
-      @inline(__always)
-      @_transparent
-      unsafeAddress {
-        _unsafeAddress(position)
-      }
-    }
-  }
-#endif
-
 #if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 {
 

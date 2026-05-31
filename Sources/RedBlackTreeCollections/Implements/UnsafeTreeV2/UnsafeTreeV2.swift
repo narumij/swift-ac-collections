@@ -69,14 +69,6 @@ extension UnsafeTreeV2 {
       withMutableHeader { $0.tiedRawBuffer }
     }
   #endif
-
-  /// 木に紐付く生バッファを遅延処理するプロクシ
-  ///
-  /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
-  @inlinable
-  var lazyDetach: _LazyTie {
-    withMutableHeader { $0.lazyDetach }
-  }
 }
 
 extension UnsafeTreeV2: CustomStringConvertible {
@@ -135,8 +127,8 @@ extension UnsafeTreeV2 {
     switch tag {
     case .nullptr: .failure(.null)
     case .end: .success(end)
-      // capacityでは未初期化範囲を含む
-      // 少なからずノードが初期化されているのはinitializedCount
+    // capacityでは未初期化範囲を含む
+    // 少なからずノードが初期化されているのはinitializedCount
     default: tag < initializedCount ? .success(_buffer.header[tag]) : .failure(.unknown)
     }
   }

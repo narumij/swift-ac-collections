@@ -33,7 +33,9 @@ extension UnsafeTreeV2 {
     guard !isUnique else { return }
     self = copy()
   }
-  
+
+  // View用
+
   @inlinable
   internal mutating func __ensureUnique() -> Bool {
     let isUnique = isUnique()
@@ -42,23 +44,12 @@ extension UnsafeTreeV2 {
     return true
   }
 
-  @inlinable
-  internal mutating func _strongEnsureUnique() {
-    #if COMPATIBLE_ATCODER_2025
-      let isTreeUnique = isUnique()
-      let isPoolUnique =
-        _buffer.header._tied == nil
-        ? true : isKnownUniquelyReferenced(&_buffer.header._tied!)
-
-      if isTreeUnique, isPoolUnique {
-        /* NOP */
-      } else {
-        self = self.copy()
-      }
-    #else
+  #if !COMPATIBLE_ATCODER_2025
+    @inlinable
+    internal mutating func _strongEnsureUnique() {
       return ensureUnique()
-    #endif
-  }
+    }
+  #endif
 }
 
 extension UnsafeTreeV2 {
@@ -87,16 +78,6 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  internal mutating func ensureCapacity(to minimumCapacity: Int) {
-
-    if isReadOnly {
-      self = withMutableHeader { $0._ensureUniqueSlow(to: minimumCapacity) }
-    } else {
-      withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
-    }
-  }
-
-  @inlinable
   internal mutating func ensureCapacity() {
 
     if isReadOnly {
@@ -111,6 +92,12 @@ extension UnsafeTreeV2 {
     assert(isReadOnly == false, "変更禁止シングルトンではないこと")
     withMutableHeader { $0._ensureCapacitySlow() }
   }
+
+  @inlinable
+  internal mutating func unsafeEnsureCapacity(to minimumCapacity: Int) {
+    assert(isReadOnly == false, "変更禁止シングルトンではないこと")
+    withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
+  }
 }
 
 extension UnsafeTreeV2 {
@@ -119,14 +106,10 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal mutating func ensureCapacity(limit: Int) {
-    
+
     // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
     guard capacity < limit else { return }
-
-    if isReadOnly {
-      self = withMutableHeader { $0._ensureUniqueSlow(limit: limit) }
-    } else {
-      withMutableHeader { $0._ensureCapacitySlow(limit: limit) }
-    }
+    assert(!isReadOnly)
+    withMutableHeader { $0._ensureCapacitySlow(limit: limit) }
   }
 }

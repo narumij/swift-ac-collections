@@ -26,7 +26,7 @@ public struct _LazyTieWrap<RawValue> {
 
   @usableFromInline
   package let rawValue: RawValue
-  
+
   @usableFromInline
   package let lazyDetach: _LazyTie
 
@@ -40,8 +40,7 @@ public struct _LazyTieWrap<RawValue> {
 extension _LazyTieWrap: Equatable where RawValue: Equatable {
 
   @inlinable
-  public static func == (lhs: _LazyTieWrap<RawValue>, rhs: _LazyTieWrap<RawValue>) -> Bool
-  {
+  public static func == (lhs: _LazyTieWrap<RawValue>, rhs: _LazyTieWrap<RawValue>) -> Bool {
     lhs.rawValue == rhs.rawValue && lhs.lazyDetach === rhs.lazyDetach
   }
 }
@@ -51,25 +50,6 @@ extension _LazyTieWrap where RawValue == _NodePtrSealing {
   @inlinable
   package var purified: Result<Self, SealError> {
     rawValue.isUnsealed ? .failure(.unsealed) : .success(self)
-  }
-}
-
-extension _NodePtrSealing {
-
-  // 某バンドオマージュ
-
-  @inlinable
-  package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtr {
-    isUnsealed ? .failure(.unsealed) : .success(.init(rawValue: self, lazyDetach: __tree_.lazyDetach))
-  }
-}
-
-extension Result where Success == _NodePtrSealing, Failure == SealError {
-
-  // 某バンドオマージュ
-  @inlinable
-  package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtr {
-    flatMap { $0.band(__tree_) }
   }
 }
 
@@ -112,7 +92,7 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
   static func unchecked(_ _p: _NodePtr, end_ptr: _NodePtr, lazyDetach: _LazyTie) -> Self {
     .success(.init(rawValue: .init(_p: _p), lazyDetach: lazyDetach))
   }
-  
+
   /// ポインタを利用する際に用いる
   @inlinable
   package var purified: Result { flatMap { $0.purified } }
@@ -140,6 +120,15 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
 }
 
 #if DEBUG
+  extension _NodePtrSealing {
+
+    @inlinable
+    package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtr {
+      isUnsealed
+        ? .failure(.unsealed) : .success(.init(rawValue: self, lazyDetach: __tree_.lazyDetach))
+    }
+  }
+
   extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
     package static func unsafe<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag)

@@ -57,7 +57,7 @@ extension RedBlackTreeBoundExpressionV2 {
 
   @usableFromInline
   enum Op {
-    case pointer(_SafePtr)
+    case index(UnsafeIndexV3)
     case start
     case last
     case end
@@ -165,6 +165,11 @@ extension RedBlackTreeBoundExpressionV2 {
   @inlinable
   public static func greaterThanOrEqual(_ k: _Key) -> Self {
     .init(_internal: [.greaterThanOrEqual(k)])
+  }
+
+  @inlinable
+  public static func index(_ p: UnsafeIndexV3) -> Self {
+    .init(_internal: [.index(p)])
   }
 
   #if DEBUG

@@ -137,11 +137,4 @@ extension UnsafeTreeV2BufferHeader {
   internal func _ensureUniqueSlow<Base>() -> UnsafeTreeV2<Base> {
     copy(minimumCapacity: _requestCapacity().request)
   }
-
-  // LRU用
-
-  @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
-  internal func _ensureUniqueSlow<Base>(limit: Int) -> UnsafeTreeV2<Base> {
-    copy(minimumCapacity: _requestCapacity(limit: limit).request)
-  }
 }

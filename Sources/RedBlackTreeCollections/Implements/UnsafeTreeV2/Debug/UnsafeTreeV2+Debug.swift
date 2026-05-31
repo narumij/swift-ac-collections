@@ -79,3 +79,15 @@ extension UnsafeTreeV2 {
     }
   }
 #endif
+
+#if DEBUG
+  extension UnsafeTreeV2 {
+    /// 木に紐付く生バッファを遅延処理するプロクシ
+    ///
+    /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
+    @inlinable
+    var lazyDetach: _LazyTie {
+      withMutableHeader { $0.lazyDetach }
+    }
+  }
+#endif

@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/05/30.
 //
 
-#if DEATH_TEST
+#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   import Foundation
   @testable import RedBlackTreeModule
   import Testing

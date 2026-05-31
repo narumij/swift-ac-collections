@@ -144,6 +144,7 @@ let package = Package(
     .target(
       name: "RedBlackTreeModule",
       dependencies: ["RedBlackTreeCollections"],
+      path: "Sources/_RedBlackTreeModule"
     ),
 
     .testTarget(

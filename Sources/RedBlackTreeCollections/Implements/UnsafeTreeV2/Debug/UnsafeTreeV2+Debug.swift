@@ -20,9 +20,9 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if AC_COLLECTIONS_INTERNAL_CHECKS
 extension UnsafeTreeV2 {
 
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
     /// CoWの発火回数を観察するためのプロパティ
     package var copyCount: UInt {
       get { _buffer.header.copyCount }
@@ -32,8 +32,8 @@ extension UnsafeTreeV2 {
         }
       }
     }
-  #endif
 }
+#endif
 
 // MARK: Refresh Pool Iterator
 

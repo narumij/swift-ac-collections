@@ -59,15 +59,6 @@
     package func equiv(with tree: UnsafeTreeV2) -> Bool {
       // isReadOnlyは等価判定不可
       assert(__end_node.pointee.equiv(with: tree.__end_node.pointee))
-      //      assert(
-      //        makeFreshPoolIterator()
-      //          .elementsEqual(
-      //            tree.makeFreshPoolIterator(),
-      //            by: {
-      //              assert($0.pointee.equiv(with: $1.pointee))
-      //              return $0.pointee.equiv(with: $1.pointee)
-      //            }))
-
       assert(__begin_node_.pointee.___tracking_tag == tree.__begin_node_.pointee.___tracking_tag)
       assert(_buffer.header.equiv(with: tree._buffer.header))
       guard
@@ -146,12 +137,6 @@
         initializedCount <= capacity,
         isReadOnly ? count == 0 : true,
         true
-        //      _buffer.header.___recycleNodes.count == _buffer.header.recycleCount,
-        //      (makeFreshBucketIterator() + []).first == _buffer.header.freshBucketHead,
-        //      _buffer.header.freshBucketCurrent.map({
-        //        makeFreshBucketIterator().contains($0)
-        //      }) ?? true,
-        //      (makeFreshBucketIterator() + []).last == _buffer.header.freshBucketLast
       else {
         return false
       }

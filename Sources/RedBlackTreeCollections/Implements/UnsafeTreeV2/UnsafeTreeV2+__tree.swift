@@ -169,6 +169,11 @@ extension UnsafeTreeV2 {
   internal func ___max() -> _PayloadValue? {
     __root == nullptr ? nil : Base.__payload_(__tree_max(__root))
   }
+  
+  @inlinable
+  internal func ___max() -> _NodePtr? {
+    __root == nullptr ? nil : __tree_max(__root)
+  }
 }
 
 extension UnsafeTreeV2: FindFirstProtocol_ptr {}

@@ -64,12 +64,12 @@ extension _ValueCompBridge {
 
 @usableFromInline
 protocol _PaylodValueBridge_Element: _BaseBridge & _PayloadValueBridge_Key & _ElementBride
-where Base: _BasePaylodValue_ElementInterface {}
+where Base: _UnsafeNodePtrType & _PairBaseType & _KeyValueElementType {}
 
 extension _PaylodValueBridge_Element {
 
   @inlinable
-  func __element_(_ __value: _PayloadValue) -> Element {
-    Base.__element_(__value)
+  func __element_(_ __p: Base._NodePtr) -> Element {
+    Base.__element_(__p)
   }
 }

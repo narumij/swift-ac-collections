@@ -198,7 +198,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable
   public var first: Element? {
-    isEmpty ? nil : __element_(Base.__payload_(_start))
+    isEmpty ? nil : __element_(_start)
   }
 
   /// The last element of the collection.
@@ -217,7 +217,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: O(1)
   @inlinable
   public func min() -> Element? {
-    isEmpty ? nil : __element_(Base.__payload_(_start))
+    isEmpty ? nil : __element_(_start)
   }
 
   /// Returns the maximum element in the sequence.
@@ -280,7 +280,7 @@ extension RedBlackTreeMultiMap {
   @inlinable
   public mutating func popFirst() -> Element? {
     __tree_.ensureUnique()
-    return __tree_.___unchecked_remove_first().map(__element_)
+    return __tree_.___unchecked_remove_first().map { Base.__element_($0) }
   }
 }
 
@@ -293,7 +293,7 @@ extension RedBlackTreeMultiMap {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return __tree_.___unchecked_remove_last().map(__element_)
+      return __tree_.___unchecked_remove_last().map { Base.__element_($0) }
     }
   }
 #endif

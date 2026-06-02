@@ -119,7 +119,10 @@ let package = Package(
 
     .target(
       name: "AcCollections",
-      dependencies: ["RedBlackTreeCollections", "RedBlackTreeModule", "PermutationModule"],
+      dependencies: [
+        "RedBlackTreeCollections",
+        "RedBlackTreeModule",
+        "PermutationModule"],
       swiftSettings: _settings
     ),
 

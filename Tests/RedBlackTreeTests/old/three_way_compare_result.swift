@@ -4,25 +4,25 @@
 //
 //  Created by narumij on 2026/06/01.
 //
-
-// 期待したほどじゃなかった
-public enum ___enum_compare_result: ThreeWayCompareResult {
-  case less, greater, equal
-
-  @inlinable
-  public func __less() -> Bool {
-    self == .less
-  }
-  @inlinable
-  public func __greater() -> Bool {
-    self == .greater
-  }
-}
-
-// MARK: -
-
 #if DEBUG
   @testable import RedBlackTreeCollections
+
+  // 期待したほどじゃなかった
+  public enum ___enum_compare_result: ThreeWayCompareResult {
+    case less, greater, equal
+
+    @inlinable
+    public func __less() -> Bool {
+      self == .less
+    }
+    @inlinable
+    public func __greater() -> Bool {
+      self == .greater
+    }
+  }
+
+  // MARK: -
+
   // 以下は資料的に残している。
 
   // 特殊なキーを使いたい場合に使える

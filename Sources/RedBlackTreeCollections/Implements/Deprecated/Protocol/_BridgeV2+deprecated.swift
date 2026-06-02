@@ -12,3 +12,13 @@
     }
   }
 #endif
+
+#if COMPATIBLE_ATCODER_2025
+  extension _PaylodValueBridge_Element where Base: _BasePaylodValue_ElementInterface {
+
+    @inlinable
+    func __element_(_ __value: _PayloadValue) -> Element {
+      Base.__element_(__value)
+    }
+  }
+#endif

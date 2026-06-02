@@ -49,6 +49,7 @@
       @inline(__always)
       get {
         // unsafeAddress, _read、双方バグるので、基本のget。しくしく
+        // TODO: unsafeAddressを用いている箇所のリリースビルドでのテストを拡充すること
         __tree_._unsafeAddress(position).pointee.tuple
       }
     }

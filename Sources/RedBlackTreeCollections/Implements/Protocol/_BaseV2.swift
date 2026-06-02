@@ -85,10 +85,10 @@ protocol UnsafeMutableTreeSealedRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
 }
 
 @usableFromInline
-typealias _SetBridge = _NodePtrBridge_Payload & _PayloadValueBride & _KeyBride & _ElementBride
+typealias _SetBridge = _PayloadValueBride & _KeyBride & _ElementBride
 
 @usableFromInline
-typealias _MapBridge = _NodePtrBridge_Payload & _PayloadValueBride & _KeyBride & _MappedValueBride
+typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride
   & _ElementBride
 
 // MARK: -
@@ -105,9 +105,7 @@ protocol _RedBlackTreeKeyValuesV2:
   UnsafeTreeRangeBaseInterfaceV2
     & _MapBridge
     & _SequenceV2
-    & _PayloadValueBridge_MappedValue
     & _PaylodValueBridge_Element
-    & _ElementBridge_Payload
 {}
 
 // MARK: -

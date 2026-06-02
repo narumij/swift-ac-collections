@@ -139,7 +139,9 @@ extension UnsafeTreeV2 {
     case .end:
       return end.uncheckedSeal
     case .tag(let raw, let seal):
-      guard raw < capacity else {
+      // capacityでは未初期化範囲を含む
+      // 少なからずノードが初期化されているのはinitializedCount
+      guard raw < initializedCount else {
         return .failure(.unknown)
       }
       return .success(.uncheckedSeal(_buffer.header[raw], seal))

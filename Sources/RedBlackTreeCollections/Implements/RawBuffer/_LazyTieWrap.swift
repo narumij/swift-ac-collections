@@ -124,8 +124,7 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
 
     @inlinable
     package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtr {
-      isUnsealed
-        ? .failure(.unsealed) : .success(.init(rawValue: self, lazyDetach: __tree_.lazyDetach))
+      .success(.init(rawValue: self, lazyDetach: __tree_.lazyDetach))
     }
   }
 

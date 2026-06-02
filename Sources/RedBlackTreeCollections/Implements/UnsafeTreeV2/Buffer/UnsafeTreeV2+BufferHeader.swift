@@ -244,6 +244,7 @@ extension UnsafeTreeV2BufferHeader {
     @inlinable
     subscript(___tracking_tag: _TrackingTag) -> _NodePtr {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
+      assert(___tracking_tag < freshPoolUsedCount)
       var remaining = Int(truncatingIfNeeded: ___tracking_tag)
       var p = freshBucketHead?.accessor(payload: payloadLayout)
       while let h = p {

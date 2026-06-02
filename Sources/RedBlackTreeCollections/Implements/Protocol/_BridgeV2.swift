@@ -49,18 +49,6 @@ extension _PayloadValueBridge_Key {
   }
 }
 
-@usableFromInline
-protocol _PaylodValueBridge_Element: _BaseBridge & _PayloadValueBridge_Key & _ElementBride
-where Base: _BasePaylodValue_ElementInterface {}
-
-extension _PaylodValueBridge_Element {
-
-  @inlinable
-  func __element_(_ __value: _PayloadValue) -> Element {
-    Base.__element_(__value)
-  }
-}
-
 /// ツリー使用条件をインジェクションされる側の実装プロトコル
 @usableFromInline
 protocol _ValueCompBridge: _KeyBride
@@ -74,17 +62,14 @@ extension _ValueCompBridge {
   }
 }
 
-#if COMPATIBLE_ATCODER_2025
-  @usableFromInline
-  protocol _PtrRangeCompBridge: _BaseBridge
-  where Base: _BaseNode_PtrRangeCompInterface {}
+@usableFromInline
+protocol _PaylodValueBridge_Element: _BaseBridge & _PayloadValueBridge_Key & _ElementBride
+where Base: _BasePaylodValue_ElementInterface {}
 
-  extension _PtrRangeCompBridge {
+extension _PaylodValueBridge_Element {
 
-    @inlinable
-    func ___ptr_range_comp(_ __f: Base._NodePtr, _ __p: Base._NodePtr, _ __l: Base._NodePtr) -> Bool
-    {
-      Base.___ptr_range_comp(__f, __p, __l)
-    }
+  @inlinable
+  func __element_(_ __value: _PayloadValue) -> Element {
+    Base.__element_(__value)
   }
-#endif
+}

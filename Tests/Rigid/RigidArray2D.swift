@@ -102,3 +102,49 @@ extension RigidArray2D {
     }
   }
 }
+
+
+public struct Hoge<Element> {
+  @inlinable
+  internal init(
+    capacity: Int,
+    __payload: UnsafeMutablePointer<Element>
+  ) {
+    self.capacity = capacity
+    self.__payload = __payload
+  }
+
+  @usableFromInline let capacity: Int
+  @usableFromInline let __payload: UnsafeMutablePointer<Element>
+
+  @inlinable
+  public subscript(position: Int) -> Element {
+    @inline(__always)
+    unsafeAddress {
+      return UnsafePointer(__payload + position)
+    }
+    @inline(__always)
+    unsafeMutableAddress {
+      return __payload + position
+    }
+  }
+
+  func max() -> Element? where Element: FixedWidthInteger {
+    var val: Element?
+    for i in 0..<capacity {
+      if __has_paylord_content[i] {
+        switch val {
+        case .some(let v):
+          val = Swift.max(v, __payload[i])
+        case .none:
+          val = __payload[i]
+        }
+      }
+    }
+    return val
+  }
+}
+
+extension Hoge: Sequence {
+  
+}

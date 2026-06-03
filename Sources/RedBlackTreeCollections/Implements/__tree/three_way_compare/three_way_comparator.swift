@@ -30,16 +30,3 @@ package func __default_three_way_comparator<T: Comparable>(_ __lhs: T, _ __rhs: 
     0
   }
 }
-
-@inlinable
-package func ___default_three_way_comparator<T: Comparable>(_ __lhs: T, _ __rhs: T)
-  -> ___enum_compare_result
-{
-  if __lhs < __rhs {
-    .less
-  } else if __lhs > __rhs {
-    .greater
-  } else {
-    .equal
-  }
-}

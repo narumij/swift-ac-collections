@@ -119,11 +119,9 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2: _PayloadValueBridge_Key & _ValueCompBridge {}
 
-extension UnsafeTreeV2: _PtrCompBridge where Base: _BaseNode_PtrCompInterface {}
-
-extension UnsafeTreeV2: _PtrRangeCompBridge where Base: _BaseNode_PtrRangeCompInterface {}
-
-extension UnsafeTreeV2: _SignedDistanceBridge where Base: _BaseNode_SignedDistanceInterface {}
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeTreeV2: _PtrRangeCompBridge where Base: _BaseNode_PtrRangeCompInterface {}
+#endif
 
 extension UnsafeTreeV2: BoundBothInterface {
 
@@ -170,6 +168,11 @@ extension UnsafeTreeV2 {
   @inlinable
   internal func ___max() -> _PayloadValue? {
     __root == nullptr ? nil : Base.__payload_(__tree_max(__root))
+  }
+  
+  @inlinable
+  internal func ___max() -> _NodePtr? {
+    __root == nullptr ? nil : __tree_max(__root)
   }
 }
 

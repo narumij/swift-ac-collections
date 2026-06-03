@@ -38,14 +38,3 @@ public struct UnsafeIndexV3Range {
 // 削除の悩みがつきまとうので、Sequence適合せず、ループはできないようにする
 // 当然RangeExpressionなんかには適合しない
 // CoW発生を極力抑えることが赤黒木を活かすカギなので、Copyが多発するような使い方への誘導を減らす方針
-
-extension UnsafeIndexV3Range {
-
-  public var lowerBound: UnsafeIndexV3 {
-    range.lowerBound
-  }
-
-  public var upperBound: UnsafeIndexV3 {
-    range.upperBound
-  }
-}

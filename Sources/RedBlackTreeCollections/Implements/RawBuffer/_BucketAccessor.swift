@@ -58,8 +58,8 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
 
   @inlinable
   func next(payload: _MemoryLayout) -> _BucketAccessor? {
-    guard let next = pointer.next else { return nil }
-    return next._accessor(isHead: false, payload: payload)
+    assert(pointer.next != nil) // 利用側でカウント管理している様子
+    return pointer.next!._accessor(isHead: false, payload: payload)
   }
 }
 

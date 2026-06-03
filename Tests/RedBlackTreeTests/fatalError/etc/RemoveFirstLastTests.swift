@@ -7,7 +7,7 @@
 
 #if DEATH_TEST
   import Foundation
-  @testable import RedBlackTreeCollections
+  import RedBlackTreeCollections
   import Testing
 
   struct RemoveFirstLastTests {

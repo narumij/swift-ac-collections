@@ -7,7 +7,7 @@
 
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   import Foundation
-  @testable import RedBlackTreeCollections
+  import RedBlackTreeCollections
   import Testing
 
   struct EraseTests {
@@ -69,16 +69,28 @@
 
     @Test func `erase evens on RedBlackTreeMultiMap`() async throws {
       var a = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (0..<10).map { ($0, $0 + 3) })
+      #expect(a.count == 10)
+      #expect(a.keys + [] == [0,1,2,3,4,5,6,7,8,9])
+      #expect(a.values + [] == [3,4,5,6,7,8,9,10,11,12])
       var it = a.startIndex
+      var array: [Int] = []
+      var count = 10
       while it != a.endIndex {
+        #expect(a.count >= 5)
         if a[it].key % 2 == 0 {
+          array.append(a[it].key)
           it = a.erase(it)
+          count -= 1
+          #expect(a.count == count)
         } else {
           it = a.index(after: it)
+          #expect(a.count == count)
         }
+        #expect(a.count >= 5)
       }
       #expect(a.allSatisfy { $0.key % 2 == 1 })
       #expect(a.count == 5)
+      #expect(array == [0,2,4,6,8])
     }
 
     @Test func `erase() on RedBlackTreeDictionary`() async throws {

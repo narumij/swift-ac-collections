@@ -34,7 +34,7 @@ extension _SequenceV2 {
   package var _end: _NodePtr {
     __tree_.__end_node
   }
-  
+
   @inlinable
   package var _safe_start: _SafePtr {
     .success(__tree_.__begin_node_)
@@ -46,22 +46,7 @@ extension _SequenceV2 {
   }
 
   @inlinable
-  package var _sealed_start: _SealedPtr {
-    __tree_.__begin_node_.uncheckedSeal
-  }
-
-  @inlinable
-  package var _sealed_end: _SealedPtr {
-    __tree_.__end_node.uncheckedSeal
-  }
-  
-  @inlinable
   var ___safe_range: _RawRange<_SafePtr> {
     .init(lowerBound: _safe_start, upperBound: _safe_end)
-  }
-  
-  @inlinable
-  var ___sealed_range: _RawRange<_SealedPtr> {
-    .init(lowerBound: _sealed_start, upperBound: _sealed_end)
   }
 }

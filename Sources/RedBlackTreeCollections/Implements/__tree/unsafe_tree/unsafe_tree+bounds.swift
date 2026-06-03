@@ -141,6 +141,7 @@ extension BoundAlgorithmProtocol_common_ptr {
   }
 }
 
+#if false
 @usableFromInline
 protocol BoundAlgorithmProtocol_old_ptr: BoundAlgorithmProtocol_common_ptr {}
 
@@ -166,3 +167,4 @@ extension BoundAlgorithmProtocol_old_ptr {
     __upper_bound_multi(__v, __root, __end_node)
   }
 }
+#endif

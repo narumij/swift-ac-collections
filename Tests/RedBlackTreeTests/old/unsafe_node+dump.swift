@@ -20,32 +20,32 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if AC_COLLECTIONS_INTERNAL_CHECKS
-extension UnsafeTreeV2 {
-
-    /// CoWの発火回数を観察するためのプロパティ
-    package var copyCount: UInt {
-      get { _buffer.header.copyCount }
-      set {
-        _buffer.withUnsafeMutablePointerToHeader {
-          $0.pointee.copyCount = newValue
-        }
-      }
-    }
-}
-#endif
-
-// MARK: Refresh Pool Iterator
-
-
 #if DEBUG
-  extension UnsafeTreeV2 {
-    /// 木に紐付く生バッファを遅延処理するプロクシ
-    ///
-    /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
+  @testable import RedBlackTreeCollections
+
+  extension UnsafeNode {
+
     @inlinable
-    var lazyDetach: _LazyTie {
-      withMutableHeader { $0.lazyDetach }
+    func dumpNode() -> String {
+      let id = ___tracking_tag
+      let l = __left_ == .nullptr ? nil : __left_.pointee.___tracking_tag
+      let r = __right_ == .nullptr ? nil : __right_.pointee.___tracking_tag
+      let p = __parent_ == .nullptr ? nil : __parent_.pointee.___tracking_tag
+      let color = __is_black_ ? "B" : "R"
+      #if DEBUG || true
+        let rc = ___recycle_count
+      #else
+        let rc = -1
+      #endif
+
+      return """
+        - node[\(id)] \(color)
+           L: \(l.map(String.init) ?? "nil")
+           R: \(r.map(String.init) ?? "nil")
+           P: \(p.map(String.init) ?? "nil")
+           needsDeinit: \(___has_payload_content)
+           recycleCount: \(rc)
+        """
     }
   }
 #endif

@@ -101,20 +101,22 @@ public struct _NodePtrSealing: Equatable {
     //    return .success(self)
   }
 
-  @inlinable
-  var deepPurified: _SealedPtr {
-    // 基本的にここにnullは到達しない
-    assert(!pointer.___is_null)
-    if pointer.___is_end {
-      return .success(self)
-    } else if !pointer.___has_payload_content {
-      return .failure(.garbaged)
-    } else if isUnsealed {
-      return .failure(.unsealed)
-    } else {
-      return .success(self)
+  #if ALLOW_CROSS_TREE_INDEX
+    @inlinable
+    var deepPurified: _SealedPtr {
+      // 基本的にここにnullは到達しない
+      assert(!pointer.___is_null)
+      if pointer.___is_end {
+        return .success(self)
+      } else if !pointer.___has_payload_content {
+        return .failure(.garbaged)
+      } else if isUnsealed {
+        return .failure(.unsealed)
+      } else {
+        return .success(self)
+      }
     }
-  }
+  #endif
 
   /// 引換券
   @inlinable

@@ -23,58 +23,9 @@
 #if DEBUG
   extension UnsafeTreeV2 {
 
-    package func ___ptr_(_ p: _NodePtr) -> _TrackingTag {
-      p.pointee.___tracking_tag
-    }
-
-    package func __left_(_ p: _TrackingTag) -> _TrackingTag {
-      try! __retrieve_(p).get().pointee.__left_.trackingTag
-    }
-
-    package func __left_(_ p: _TrackingTag, _ l: _TrackingTag) {
-      try! __retrieve_(p).get().pointee.__left_ = try! __retrieve_(l).get()
-    }
-
-    package func __right_(_ p: _TrackingTag) -> _TrackingTag {
-      try! __retrieve_(p).get().pointee.__right_.trackingTag
-    }
-
-    package func __right_(_ p: _TrackingTag, _ l: _TrackingTag) {
-      try! __retrieve_(p).get().pointee.__right_ = try! __retrieve_(l).get()
-    }
-
-    package func __parent_(_ p: _TrackingTag) -> _TrackingTag {
-      try! __retrieve_(p).get().pointee.__parent_.trackingTag
-    }
-
-    package func __parent_(_ p: _TrackingTag, _ l: _TrackingTag) {
-      try! __retrieve_(p).get().pointee.__parent_ = try! __retrieve_(l).get()
-    }
-
-    package func __is_black_(_ p: _TrackingTag) -> Bool {
-      try! __retrieve_(p).get().pointee.__is_black_
-    }
-
-    package func __is_black_(_ p: _TrackingTag, _ b: Bool) {
-      try! __retrieve_(p).get().pointee.__is_black_ = b
-    }
-
-    package func __value_(_ p: _TrackingTag) -> _PayloadValue {
-      __value_(try! __retrieve_(p).get())
-    }
-
-    package func ___element(_ p: _TrackingTag, _ __v: _PayloadValue) {
-      //      ___element(try! __retrieve_(p).get(), __v)
-      try! __retrieve_(p).get().__value_().pointee = __v
-    }
-  }
-
-  extension UnsafeTreeV2 {
-
-    package func destroy(_ p: _TrackingTag) {
-      _buffer.withUnsafeMutablePointerToHeader { header in
-        header.pointee.___pushRecycle(_buffer.header[p])
-      }
+    @inlinable
+    func makeUsedNodeIterator() -> _FreshPoolUsedIterator<_PayloadValue> {
+      return _buffer.header.makeUsedNodeIterator()
     }
   }
 #endif
@@ -108,15 +59,6 @@
     package func equiv(with tree: UnsafeTreeV2) -> Bool {
       // isReadOnlyは等価判定不可
       assert(__end_node.pointee.equiv(with: tree.__end_node.pointee))
-      //      assert(
-      //        makeFreshPoolIterator()
-      //          .elementsEqual(
-      //            tree.makeFreshPoolIterator(),
-      //            by: {
-      //              assert($0.pointee.equiv(with: $1.pointee))
-      //              return $0.pointee.equiv(with: $1.pointee)
-      //            }))
-
       assert(__begin_node_.pointee.___tracking_tag == tree.__begin_node_.pointee.___tracking_tag)
       assert(_buffer.header.equiv(with: tree._buffer.header))
       guard
@@ -195,12 +137,6 @@
         initializedCount <= capacity,
         isReadOnly ? count == 0 : true,
         true
-        //      _buffer.header.___recycleNodes.count == _buffer.header.recycleCount,
-        //      (makeFreshBucketIterator() + []).first == _buffer.header.freshBucketHead,
-        //      _buffer.header.freshBucketCurrent.map({
-        //        makeFreshBucketIterator().contains($0)
-        //      }) ?? true,
-        //      (makeFreshBucketIterator() + []).last == _buffer.header.freshBucketLast
       else {
         return false
       }

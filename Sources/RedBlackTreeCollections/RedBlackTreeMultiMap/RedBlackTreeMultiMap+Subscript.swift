@@ -45,14 +45,12 @@
     ///
     /// - Complexity: O(1)
     @inlinable
-    @inline(__always)
     public subscript(position: Index) -> Element {
       @inline(__always)
-      @_transparent
-      unsafeAddress {
-        withUnsafePointer(
-          to: __tree_._unsafeAddress(position).pointee.tuple
-        ) { $0 }
+      get {
+        // unsafeAddress, _read、双方バグるので、基本のget。しくしく
+        // TODO: unsafeAddressを用いている箇所のリリースビルドでのテストを拡充すること
+        __tree_._unsafeAddress(position).pointee.tuple
       }
     }
   }

@@ -6,7 +6,6 @@ import PackageDescription
 
 var defines: [String] = [
   //  "TREE_INVARIANT_CHECKS",
-  //  "GRAPHVIZ_DEBUG",
   //  "USING_ALGORITHMS",
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "PERFOMANCE_CHECK",
@@ -120,7 +119,10 @@ let package = Package(
 
     .target(
       name: "AcCollections",
-      dependencies: ["RedBlackTreeCollections", "RedBlackTreeModule", "PermutationModule"],
+      dependencies: [
+        "RedBlackTreeCollections",
+        "RedBlackTreeModule",
+        "PermutationModule"],
       swiftSettings: _settings
     ),
 

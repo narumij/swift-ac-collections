@@ -23,43 +23,7 @@
 #if DEBUG
   extension UnsafeNode {
 
-    @inlinable
-    func debugDescription(resolve: (Pointer?) -> _TrackingTag?) -> String {
-      let id = ___tracking_tag
-      let l = resolve(__left_)
-      let r = resolve(__right_)
-      let p = resolve(__parent_)
-      let color = __is_black_ ? "B" : "R"
-      #if DEBUG || true
-        let rc = ___recycle_count
-      #else
-        let rc = -1
-      #endif
-
-      return """
-        - node[\(id)] \(color)
-          L: \(l.map(String.init) ?? "nil")
-          R: \(r.map(String.init) ?? "nil")
-          P: \(p.map(String.init) ?? "nil")
-          needsDeinit: \(___has_payload_content)
-          recycleCount: \(rc)
-        """
-    }
-  }
-
-  extension UnsafeMutablePointer where Pointee == UnsafeNode {
-    package var index: _TrackingTag { trackingTag }
-  }
-
-  #if false
-    extension Optional where Wrapped == UnsafeMutablePointer<UnsafeNode> {
-      package var index: _TrackingTag { self?.trackingTag ?? .nullptr }
-    }
-  #endif
-
-  extension UnsafeNode {
-
-    @inlinable
+    @usableFromInline
     package func equiv(with tree: UnsafeNode) -> Bool {
       assert(___tracking_tag == tree.___tracking_tag)
       assert(__left_.pointee.___tracking_tag == tree.__left_.pointee.___tracking_tag)
@@ -83,7 +47,7 @@
 
   extension UnsafeNode {
 
-    @inlinable
+    @usableFromInline
     package func nullCheck() -> Bool {
       assert(___tracking_tag == .nullptr)
       assert(__left_ == UnsafeNode.nullptr)
@@ -104,7 +68,7 @@
       return true
     }
 
-    @inlinable
+    @usableFromInline
     package func endCheck() -> Bool {
       assert(___tracking_tag == .end)
       assert(__right_ == UnsafeNode.nullptr)
@@ -129,5 +93,4 @@
 
   @usableFromInline nonisolated(unsafe) var payloadInitializedCount = 0
   @usableFromInline nonisolated(unsafe) var payloadDeinitializedCount = 0
-
 #endif

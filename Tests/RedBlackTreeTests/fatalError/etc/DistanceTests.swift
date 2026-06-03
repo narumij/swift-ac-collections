@@ -7,7 +7,7 @@
 
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025
   import Foundation
-  @testable import RedBlackTreeCollections
+  import RedBlackTreeCollections
   import Testing
 
   struct DistanceTests {

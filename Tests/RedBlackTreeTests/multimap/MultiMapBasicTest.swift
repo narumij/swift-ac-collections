@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class MultiMapBasicTest: RedBlackTreeTestCase {
@@ -26,7 +26,7 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
   }
 
   func testRemovalOperations() {
-    var multiMap = RedBlackTreeMultiMap<String, Int>(multiKeysWithValues: [
+    var multiMap = RedBlackTreeMultiMap<String, Int>(keysWithValues: [
       ("apple", 1), ("banana", 2), ("apple", 3),
     ])
 
@@ -50,7 +50,7 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
 
   func testBoundsAndIndexing() {
     let elements = [("a", 1), ("a", 2), ("b", 3), ("c", 4)]
-    let multiMap = RedBlackTreeMultiMap(multiKeysWithValues: elements)
+    let multiMap = RedBlackTreeMultiMap(keysWithValues: elements)
 
     let lb = multiMap.lowerBound("a")
     let ub = multiMap.upperBound("a")

@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -139,12 +144,12 @@ extension UnsafeTreeV2BufferHeader {
   ) {
 
     #if USE_COMPACT_NODE_METADATA
-    guard other.freshPoolCapacity < _TrackingTag.max else {
-      fatalError(
-        "Cannot copy tree: node count exceeds compact metadata limit. " +
-        "Build without USE_COMPACT_NODE_METADATA to support larger trees."
-      )
-    }
+      guard other.freshPoolCapacity < _TrackingTag.max else {
+        fatalError(
+          "Cannot copy tree: node count exceeds compact metadata limit. "
+            + "Build without USE_COMPACT_NODE_METADATA to support larger trees."
+        )
+      }
     #endif
 
     // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
@@ -188,6 +193,8 @@ extension UnsafeTreeV2BufferHeader {
       // 必要な場合、値を初期化する
       if s.pointee.___has_payload_content {
         d.__value_().initialize(to: s.__value_().pointee as _PayloadValue)
+        // TODO: `___recycle_count`のコピーについて再検討
+        // d.pointee.___recycle_count = s.pointee.___recycle_count
         #if DEBUG
           payloadInitializedCount += 1
         #endif

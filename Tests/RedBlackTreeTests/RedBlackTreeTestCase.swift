@@ -1,9 +1,9 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 class RedBlackTreeTestCase: XCTestCase {
@@ -48,13 +48,22 @@ class RedBlackTreeTestCase: XCTestCase {
       XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
       assert(nodeInitializedCount == nodeDeinitializedCount)
       XCTAssertEqual(
-        payloadInitializedCount, payloadDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
+        payloadInitializedCount, payloadDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある (\(nodeInitializedCount))")
+//    assert(payloadInitializedCount == payloadDeinitializedCount)
       allocatedCount = 0
       deallocatedCount = 0
       nodeInitializedCount = 0
       nodeDeinitializedCount = 0
       payloadInitializedCount = 0
       payloadDeinitializedCount = 0
+    
+    assert(UnsafeNode.nullptr.pointee.__left_ == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__right_ == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__parent_ == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__is_black_ == false)
+    assert(UnsafeNode.nullptr.pointee.___has_payload_content == false)
+    assert(UnsafeNode.nullptr.pointee.___recycle_count == 0)
+    assert(UnsafeNode.nullptr.pointee.___tracking_tag == .nullptr)
     #endif
   }
 }

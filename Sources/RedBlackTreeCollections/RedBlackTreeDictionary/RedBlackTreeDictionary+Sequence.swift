@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -74,7 +79,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public func makeIterator() -> Tree._KeyValues {
     #if !COMPATIBLE_ATCODER_2025
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.lazyDetach)
+      .init(start: _start, end: _end, tree: __tree_)
     #else
       .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
     #endif
@@ -90,7 +95,7 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(`count`)
     @inlinable
     public func sorted() -> [Element] {
-      __tree_.___copy_all_to_array(transform: __element_)
+      __tree_.___copy_all_to_array { Base.__element_($0) }
     }
 
     /// Returns an array containing the elements of this sequence in reverse order.
@@ -98,7 +103,7 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(`count`)
     @inlinable
     public func reversed() -> [Element] {
-      __tree_.___rev_copy_all_to_array(transform: __element_)
+      __tree_.___rev_copy_all_to_array { Base.__element_($0) }
     }
   }
 #endif
@@ -108,20 +113,46 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// A collection containing just the keys of the dictionary.
-    ///
-    /// - Complexity: O(`count`)
-    @inlinable
-    public var keys: [Key] {
-      __tree_.___copy_all_to_array(transform: __key)
-    }
+    #if false
+      // 標準に倣うと、Collections適合が必要なのでこちらになる
+      public typealias Keys = [Key]
+      public typealias Values = [Value]
 
-    /// A collection containing just the values of the dictionary.
-    ///
-    /// - Complexity: O(`count`)
-    @inlinable
-    public var values: [Value] {
-      __tree_.___copy_all_to_array(transform: ___mapped_value)
-    }
+      /// A collection containing just the keys of the dictionary.
+      ///
+      /// - Complexity: O(`count`)
+      @inlinable
+      public var keys: [Key] {
+        __tree_.___copy_all_to_array(Base.__key_)
+      }
+
+      /// A collection containing just the values of the dictionary.
+      ///
+      /// - Complexity: O(`count`)
+      @inlinable
+      public var values: [Value] {
+        __tree_.___copy_all_to_array(Base.__mapped_value_)
+      }
+    #else
+      // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
+      public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
+      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+
+      /// A collection containing just the keys of the dictionary.
+      ///
+      /// - Complexity: O(`count`)
+      @inlinable
+      public var keys: Keys {
+        .init(start: _start, end: _end, tree: __tree_)
+      }
+
+      /// A collection containing just the values of the dictionary.
+      ///
+      /// - Complexity: O(`count`)
+      @inlinable
+      public var values: Values {
+        .init(start: _start, end: _end, tree: __tree_)
+      }
+    #endif
   }
 #endif

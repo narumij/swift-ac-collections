@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -42,7 +47,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   package var nullptr: _NodePtr {
-    withMutableHeader { $0.nullptr }
+    _read { yield withMutableHeader { $0.nullptr } }
   }
 
   @inlinable
@@ -55,21 +60,15 @@ extension UnsafeTreeV2 {
     _buffer.buffer === _emptyTreeStorage
   }
 
-  /// 木に紐付いている生バッファ
-  ///
-  /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
-  @usableFromInline
-  var tied: _TiedRawBuffer {
-    withMutableHeader { $0.tiedRawBuffer }
-  }
-
-  /// 木に紐付く生バッファを遅延処理するプロクシ
-  ///
-  /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
-  @inlinable
-  var lazyDetach: _LazyDetach {
-    withMutableHeader { $0.lazyDetach }
-  }
+  #if COMPATIBLE_ATCODER_2025
+    /// 木に紐付いている生バッファ
+    ///
+    /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
+    @usableFromInline
+    var tied: _TiedRawBuffer {
+      withMutableHeader { $0.tiedRawBuffer }
+    }
+  #endif
 }
 
 extension UnsafeTreeV2: CustomStringConvertible {
@@ -112,96 +111,12 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  internal subscript(_unsafe_raw pointer: _NodePtr) -> _PayloadValue {
-    @inline(__always)
-    @_transparent
-    unsafeAddress {
-      UnsafePointer(pointer.__value_())
-    }
-    @inline(__always)
-    @_transparent
-    nonmutating unsafeMutableAddress {
-      pointer.__value_()
-    }
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  internal subscript(_unsafe __safe_ptr_: _SafePtr) -> _PayloadValue {
-    @inline(__always)
-    @_transparent
-    unsafeAddress {
-      precondition(__safe_ptr_.exists)
-      return UnsafePointer(__safe_ptr_.pointer!.__value_())
-    }
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  internal subscript(_unsafe sealed: _SealedPtr) -> _PayloadValue {
-    @inline(__always)
-    @_transparent
-    unsafeAddress {
-      precondition(sealed.exists)
-      return UnsafePointer(sealed.pointer!.__value_())
-    }
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  // subscript helperなので、__always
-  @inlinable
-  @inline(__always)
-  func _unsafeAddress(_ position: UnsafeIndexV3) -> UnsafePointer<_PayloadValue> {
-    return UnsafePointer(_unsafeMutableAddress(position))
-  }
-
-  // subscript helperなので、__always
-  @inlinable
-  @inline(__always)
-  func _unsafeMutableAddress(_ position: UnsafeIndexV3) -> UnsafeMutablePointer<_PayloadValue> {
-    let sealed: _SealedPtr = __purified_(position)
-    precondition(sealed.exists)
-    return sealed.pointer!.__value_()
-  }
-
-  @inlinable
-  internal subscript(_unsafe position: UnsafeIndexV3) -> _PayloadValue {
-
-    @inline(__always)
-    @_transparent
-    unsafeAddress {
-      _unsafeAddress(position)
-    }
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
   internal func deinitialize() {
     withMutableHeader { header in
       header.deinitialize()
     }
   }
 }
-
-// MARK: Refresh Pool Iterator
-
-#if DEBUG
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    func makeUsedNodeIterator() -> _FreshPoolUsedIterator<_PayloadValue> {
-      return _buffer.header.makeUsedNodeIterator()
-    }
-  }
-#endif
 
 // MARK: Index Resolver
 
@@ -212,7 +127,9 @@ extension UnsafeTreeV2 {
     switch tag {
     case .nullptr: .failure(.null)
     case .end: .success(end)
-    default: tag < capacity ? .success(_buffer.header[tag]) : .failure(.unknown)
+    // capacityでは未初期化範囲を含む
+    // 少なからずノードが初期化されているのはinitializedCount
+    default: tag < initializedCount ? .success(_buffer.header[tag]) : .failure(.unknown)
     }
   }
 
@@ -220,9 +137,11 @@ extension UnsafeTreeV2 {
   package func ___retrieve(tag: _TrackingTagSealing) -> _SealedPtr {
     switch tag {
     case .end:
-      return end.sealed
+      return end.uncheckedSeal
     case .tag(let raw, let seal):
-      guard raw < capacity else {
+      // capacityでは未初期化範囲を含む
+      // 少なからずノードが初期化されているのはinitializedCount
+      guard raw < initializedCount else {
         return .failure(.unknown)
       }
       return .success(.uncheckedSeal(_buffer.header[raw], seal))
@@ -240,37 +159,35 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  /// インデックスをポインタに解決する
-  ///
-  /// 木が同一の場合、インデックスが保持するポインタを返す。
-  /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
-  @inlinable
-  internal func __purified_(_ index: _TieWrappedPtr) -> _SealedPtr {
-    withMutableHeader { index.__isSameTied($0._tied) }
-      ? index.sealed.purified
-      : __retrieve_(index.sealed.purified.tag).purified
-  }
-
-  /// インデックスをポインタに解決する
-  ///
-  /// 木が同一の場合、インデックスが保持するポインタを返す。
-  /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
-  @inlinable
-  internal func __purified_(_ index: _LazyDetachPointer) -> _SealedPtr {
-    withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
-      // 木が同一のケース
-      // 中身を取り出し、生存確認を行って返している
-      ? index.sealed.purified
-      // 木が異なるケース
-      // 中身を取り出し、元の木に対して生存確認を行ってからタグを取得
-      // タグで該当ポインタを取得
-      // 該当ポインタの生存確認を行う（解放確認で十分なところ、実装サボりで生存確認になっていそう）
-      // 要は、元の木と現在の木のどちらかで失効している場合、失効ポインタを返す動作
-      : __retrieve_(index.sealed.purified.tag).purified
-  }
+  #if ALLOW_CROSS_TREE_INDEX
+    /// インデックスをポインタに解決する
+    ///
+    /// 木が同一の場合、インデックスが保持するポインタを返す。
+    /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
+    @inlinable
+    package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
+      withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+        // 木が同一のケース
+        // 中身を取り出し、生存確認を行って返している
+        ? index.sealed.purified
+        // 木が異なるケース
+        // 中身を取り出し、元の木に対して生存確認を行ってからタグを取得
+        // タグで該当ポインタを取得
+        // 該当ポインタの生存確認を行う（解放確認で十分なところ、実装サボりで生存確認になっていそう）
+        // 要は、元の木と現在の木のどちらかで失効している場合、失効ポインタを返す動作
+        : __retrieve_(index.sealed.purified.tag).deepPurified
+    }
+  #else
+    @inlinable
+    package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
+      withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+        ? index.sealed.purified
+        : .failure(.crossTree)
+    }
+  #endif
 
   @inlinable
-  internal func __purified_safe_(_ index: _LazyDetachPointer) -> _SafePtr {
+  internal func __purified_safe_(_ index: _LazyTieWrappedPtr) -> _SafePtr {
     __purified_(index).map(\.pointer)
   }
 }

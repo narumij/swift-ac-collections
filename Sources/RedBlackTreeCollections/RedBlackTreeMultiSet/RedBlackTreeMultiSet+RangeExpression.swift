@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -22,35 +27,37 @@
     public typealias View = RedBlackTreeKeyOnlyRangeView<Self>
     public typealias IndexRange = UnsafeIndexV3Range
     public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
+  }
+
+  extension RedBlackTreeMultiSet {
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      true
+      return __tree_.isValid(safeRange: ___safe_range)
     }
 
     @inlinable
     public func isValid(_ bounds: IndexRange) -> Bool {
       let range = __tree_.__purified_safe_(bounds)
-      return __tree_.isValidSafeRange(range)
-        && range.lowerBound.isValid
-        && range.upperBound.isValid
+      return __tree_.isValid(safeRange: range)
     }
 
     @inlinable
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      return __tree_.isValidSafeRange(range)
-        && range.lowerBound.isValid
-        && range.upperBound.isValid
+      return __tree_.isValid(safeRange: range)
     }
+  }
+
+  extension RedBlackTreeMultiSet {
 
     @inlinable
     public subscript(bounds: UnboundedRange) -> View {
       @inline(__always) get {
-        self[unchecked: ___sealed_range]
+        self[_safeRange: ___safe_range]
       }
       @inline(__always) _modify {
-        yield &self[unchecked: ___sealed_range]
+        yield &self[_safeRange: ___safe_range]
       }
     }
 
@@ -58,17 +65,11 @@
     public subscript(bounds: IndexRange) -> View {
       @inline(__always) get {
         let range = __tree_.__purified_safe_(bounds)
-        guard __tree_.isValidSafeRange(range) else {
-          fatalError(.invalidIndex)
-        }
-        return self[unchecked: range]
+        return self[_safeRange: range]
       }
       @inline(__always) _modify {
         let range = __tree_.__purified_safe_(bounds)
-        guard __tree_.isValidSafeRange(range) else {
-          fatalError(.invalidIndex)
-        }
-        yield &self[unchecked: range]
+        yield &self[_safeRange: range]
       }
     }
 
@@ -76,25 +77,22 @@
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
         let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-        guard __tree_.isValidSafeRange(range) else {
-          fatalError(.invalidIndex)
-        }
-        return self[unchecked: range]
+        return self[_safeRange: range]
       }
       @inline(__always) _modify {
         let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-        guard __tree_.isValidSafeRange(range) else {
-          fatalError(.invalidIndex)
-        }
-        yield &self[unchecked: range]
+        yield &self[_safeRange: range]
       }
     }
+  }
+
+  extension RedBlackTreeMultiSet {
 
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: UnboundedRange) -> Index {
       __tree_.ensureUnique()
-      return ___index(__tree_.erase(_start, _end).sealed)
+      return erase(_safeRange: ___safe_range)
     }
 
     @inlinable
@@ -102,27 +100,19 @@
     public mutating func erase(_ bounds: IndexRange) -> Index {
       __tree_.ensureUnique()
       let range = __tree_.__purified_safe_(bounds)
-      guard __tree_.isValidSafeRange(range),
-        let __l = range.lowerBound.pointer,
-        let __u = range.upperBound.pointer
-      else {
-        fatalError(.invalidIndex)
-      }
-      return ___index(__tree_.erase(__l, __u).sealed)
+      return erase(_safeRange: range)
     }
 
     @inlinable
+    @discardableResult
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
       __tree_.ensureUnique()
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      guard __tree_.isValidSafeRange(range),
-        let __l = range.lowerBound.pointer,
-        let __u = range.upperBound.pointer
-      else {
-        fatalError(.invalidIndex)
-      }
-      return ___index(__tree_.erase(__l, __u).sealed)
+      return erase(_safeRange: range)
     }
+  }
+
+  extension RedBlackTreeMultiSet {
 
     @inlinable
     public mutating func erase(
@@ -132,10 +122,7 @@
     {
       __tree_.ensureUnique()
       let range = __tree_.__purified_safe_(bounds)
-      guard __tree_.isValidSafeRange(range) else {
-        fatalError(.invalidIndex)
-      }
-      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound, shouldBeRemoved)
+      return try erase(_safeRange: range, where: shouldBeRemoved)
     }
 
     @inlinable
@@ -144,62 +131,66 @@
     )
       rethrows
     {
-
       __tree_.ensureUnique()
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      guard __tree_.isValidSafeRange(range) else {
+      return try erase(_safeRange: range, where: shouldBeRemoved)
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    @inlinable
+    @discardableResult
+    mutating func erase(_safeRange range: _RawRange<_SafePtr>) -> Index {
+      assert(__tree_.isUnique())
+      guard __tree_.isValid(safeRange: range),
+        let __l = range.lowerBound.pointer,
+        let __u = range.upperBound.pointer
+      else {
+        fatalError(.invalidIndex)
+      }
+      return ___index(__tree_.erase(__l, __u))
+    }
+
+    @inlinable
+    mutating func erase(
+      _safeRange range: _RawRange<_SafePtr>,
+      where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+      assert(__tree_.isUnique())
+      guard __tree_.isValid(safeRange: range) else {
         fatalError(.invalidIndex)
       }
       try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound, shouldBeRemoved)
     }
-  }
-
-  extension RedBlackTreeMultiSet {
 
     @inlinable
-    subscript(unchecked range: _RawRange<_SafePtr>) -> View {
+    subscript(_safeRange range: _RawRange<_SafePtr>) -> View {
 
       @inline(__always) get {
-        View(
+        guard __tree_.isValid(safeRange: range) else {
+          fatalError(.invalidIndex)
+        }
+        return View(
           __tree_: __tree_,
-          _start: range.lowerBound.sealed,
-          _end: range.upperBound.sealed)
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
       }
 
       @inline(__always) _modify {
+        guard __tree_.isValid(safeRange: range) else {
+          fatalError(.invalidIndex)
+        }
         var view = View(
           __tree_: __tree_,
-          _start: range.lowerBound.sealed,
-          _end: range.upperBound.sealed)
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
         self = RedBlackTreeMultiSet()  // yield中のCoWキャンセル。考えた人賢い
         defer { self = RedBlackTreeMultiSet(__tree_: view.__tree_) }
         yield &view
       }
     }
   }
-
-  extension RedBlackTreeMultiSet {
-
-    @inlinable
-    subscript(unchecked range: _RawRange<_SealedPtr>) -> View {
-
-      @inline(__always) get {
-        View(
-          __tree_: __tree_,
-          _start: range.lowerBound,
-          _end: range.upperBound)
-      }
-
-      @inline(__always) _modify {
-        var view = View(
-          __tree_: __tree_,
-          _start: range.lowerBound,
-          _end: range.upperBound)
-        self = RedBlackTreeMultiSet()  // yield中のCoWキャンセル。考えた人賢い
-        defer { self = RedBlackTreeMultiSet(__tree_: view.__tree_) }
-        yield &view
-      }
-    }
-  }
-
 #endif

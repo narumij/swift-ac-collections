@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -87,14 +92,14 @@ extension ___LRULinkList {
   @inlinable
   mutating func ___prepend(_ __p: _NodePtr) {
     if _rankHighest == nullptr {
-      __tree_[_unsafe_raw: __p].next = nullptr
-      __tree_[_unsafe_raw: __p].prev = nullptr
+      Base.__payload_ptr(__p).pointee.next = nullptr
+      Base.__payload_ptr(__p).pointee.prev = nullptr
       _rankLowest = __p
       _rankHighest = __p
     } else {
-      __tree_[_unsafe_raw: _rankHighest].prev = __p
-      __tree_[_unsafe_raw: __p].next = _rankHighest
-      __tree_[_unsafe_raw: __p].prev = nullptr
+      Base.__payload_ptr(_rankHighest).pointee.prev = __p
+      Base.__payload_ptr(__p).pointee.next = _rankHighest
+      Base.__payload_ptr(__p).pointee.prev = nullptr
       _rankHighest = __p
     }
   }
@@ -104,20 +109,20 @@ extension ___LRULinkList {
 
     assert(
       __p == _rankHighest ||
-      __tree_[_unsafe_raw: __p].next != nullptr ||
-      __tree_[_unsafe_raw: __p].prev != nullptr,
+      Base.__payload_ptr(__p).pointee.next != nullptr ||
+      Base.__payload_ptr(__p).pointee.prev != nullptr,
       "did not contain \(__p) ptr.")
 
     defer {
-      let prev = __tree_[_unsafe_raw: __p].prev
-      let next = __tree_[_unsafe_raw: __p].next
+      let prev = Base.__payload_(__p).prev
+      let next = Base.__payload_(__p).next
       if prev != nullptr {
-        __tree_[_unsafe_raw: prev].next = next
+        Base.__payload_ptr(prev).pointee.next = next
       } else {
         _rankHighest = next
       }
       if next != nullptr {
-        __tree_[_unsafe_raw: next].prev = prev
+        Base.__payload_ptr(next).pointee.prev = prev
       } else {
         _rankLowest = prev
       }
@@ -131,10 +136,10 @@ extension ___LRULinkList {
 
     defer {
       if _rankLowest != nullptr {
-        _rankLowest = __tree_[_unsafe_raw: _rankLowest].prev
+        _rankLowest = Base.__payload_(_rankLowest).prev
       }
       if _rankLowest != nullptr {
-        __tree_[_unsafe_raw: _rankLowest].next = nullptr
+        Base.__payload_ptr(_rankLowest).pointee.next = nullptr
       } else {
         _rankHighest = nullptr
       }

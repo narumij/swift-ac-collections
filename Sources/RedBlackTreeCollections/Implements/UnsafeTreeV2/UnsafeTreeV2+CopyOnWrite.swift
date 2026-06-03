@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -29,23 +34,22 @@ extension UnsafeTreeV2 {
     self = copy()
   }
 
-  @inlinable
-  internal mutating func _strongEnsureUnique() {
-    #if COMPATIBLE_ATCODER_2025
-      let isTreeUnique = isUnique()
-      let isPoolUnique =
-        _buffer.header._tied == nil
-        ? true : isKnownUniquelyReferenced(&_buffer.header._tied!)
+  // View用
 
-      if isTreeUnique, isPoolUnique {
-        /* NOP */
-      } else {
-        self = self.copy()
-      }
-    #else
-      return ensureUnique()
-    #endif
+  @inlinable
+  internal mutating func __ensureUnique() -> Bool {
+    let isUnique = isUnique()
+    guard !isUnique else { return false }
+    self = copy()
+    return true
   }
+
+  #if !COMPATIBLE_ATCODER_2025
+    @inlinable
+    internal mutating func _strongEnsureUnique() {
+      return ensureUnique()
+    }
+  #endif
 }
 
 extension UnsafeTreeV2 {
@@ -74,23 +78,11 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  internal mutating func ensureCapacity(to minimumCapacity: Int) {
-
-    if isReadOnly {
-      self = withMutableHeader { $0._ensureUniqueSlow(to: minimumCapacity) }
-    } else {
-      assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-      withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
-    }
-  }
-
-  @inlinable
   internal mutating func ensureCapacity() {
 
     if isReadOnly {
       self = withMutableHeader { $0._ensureUniqueSlow() }
     } else {
-      assert(isReadOnly == false, "変更禁止シングルトンではないこと")
       withMutableHeader { $0._ensureCapacitySlow() }
     }
   }
@@ -99,6 +91,12 @@ extension UnsafeTreeV2 {
   internal mutating func unsafeEnsureCapacity() {
     assert(isReadOnly == false, "変更禁止シングルトンではないこと")
     withMutableHeader { $0._ensureCapacitySlow() }
+  }
+
+  @inlinable
+  internal mutating func unsafeEnsureCapacity(to minimumCapacity: Int) {
+    assert(isReadOnly == false, "変更禁止シングルトンではないこと")
+    withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
   }
 }
 
@@ -109,11 +107,9 @@ extension UnsafeTreeV2 {
   @inlinable
   internal mutating func ensureCapacity(limit: Int) {
 
-    if isReadOnly {
-      self = withMutableHeader { $0._ensureUniqueSlow(limit: limit) }
-    } else {
-      assert(isReadOnly == false, "変更禁止シングルトンではないこと")
-      withMutableHeader { $0._ensureCapacitySlow(limit: limit) }
-    }
+    // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
+    guard capacity < limit else { return }
+    assert(!isReadOnly)
+    withMutableHeader { $0._ensureCapacitySlow(limit: limit) }
   }
 }

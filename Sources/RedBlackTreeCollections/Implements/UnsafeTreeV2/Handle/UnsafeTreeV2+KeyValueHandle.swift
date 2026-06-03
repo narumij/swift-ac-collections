@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -65,34 +70,34 @@ extension UnsafeTreeV2KeyValueHandle {
 #endif
 
 #if compiler(<6.3)
-extension UnsafeTreeV2KeyValueHandle {
+  extension UnsafeTreeV2KeyValueHandle {
 
-  @inlinable
-  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-    if __lhs < __rhs {
-      -1
-    } else if __lhs > __rhs {
-      1
-    } else {
-      0
+    @inlinable
+    func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
+      if __lhs < __rhs {
+        -1
+      } else if __lhs > __rhs {
+        1
+      } else {
+        0
+      }
     }
   }
-}
 #else
-extension UnsafeTreeV2KeyValueHandle {
+  extension UnsafeTreeV2KeyValueHandle {
 
-  @specialized(where _Key == Int, _MappedValue == Int)
-  @inlinable
-  func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
-    if __lhs < __rhs {
-      -1
-    } else if __lhs > __rhs {
-      1
-    } else {
-      0
+    @specialized(where _Key == Int, _MappedValue == Int)
+    @inlinable
+    func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
+      if __lhs < __rhs {
+        -1
+      } else if __lhs > __rhs {
+        1
+      } else {
+        0
+      }
     }
   }
-}
 #endif
 
 // MARK: - TreeNodeValueProtocol
@@ -177,17 +182,22 @@ extension UnsafeTreeV2KeyValueHandle {
   public typealias __compare_result = __int_compare_result
 }
 
-extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: FindInteface, FindProtocol_ptr {}
-extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}
+extension UnsafeTreeV2KeyValueHandle: FindEqualInterface, FindEqualProtocol_ptr {}
+extension UnsafeTreeV2KeyValueHandle: FindLeafProtocol_ptr {}
+
+extension UnsafeTreeV2KeyValueHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
+extension UnsafeTreeV2KeyValueHandle: FindFirstProtocol_ptr {}
+
+extension UnsafeTreeV2KeyValueHandle: CountProtocol_ptr {}
 
 extension UnsafeTreeV2KeyValueHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
-extension UnsafeTreeV2KeyValueHandle: FindLeafProtocol_ptr, InsertMultiProtocol {}
-extension UnsafeTreeV2KeyValueHandle: RemoveInteface, RemoveProtocol_ptr {}
+extension UnsafeTreeV2KeyValueHandle: InsertMultiProtocol {}
+
 extension UnsafeTreeV2KeyValueHandle: EraseProtocol {}
 extension UnsafeTreeV2KeyValueHandle: EraseUniqueProtocol {}
-extension UnsafeTreeV2KeyValueHandle: CountProtocol_ptr {}
+extension UnsafeTreeV2KeyValueHandle: RemoveInteface, RemoveProtocol_ptr {}
 
 extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2KeyValueHandle: TreeAlgorithmProtocol_ptr {}

@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -227,7 +232,7 @@ extension RedBlackTreeSet {
   ) {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
-    return (__inserted, __inserted ? newMember : __tree_[_unsafe_raw: __r])
+    return (__inserted, __inserted ? newMember : Base.__payload_(__r))
   }
 
   /// Inserts the given element into the set unconditionally.
@@ -239,8 +244,8 @@ extension RedBlackTreeSet {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
     guard !__inserted else { return nil }
-    let oldMember = __tree_[_unsafe_raw: __r]
-    __tree_[_unsafe_raw: __r] = newMember
+    let oldMember = Base.__payload_(__r)
+    Base.__payload_ptr(__r).pointee = newMember
     return oldMember
   }
 }
@@ -325,7 +330,7 @@ extension RedBlackTreeSet {
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
       __tree_.ensureUnique()
-      guard let __p = __tree_.__purified_(index).pointer else {
+      guard let __p = __tree_.__purified_(index).accessible.pointer else {
         fatalError(.invalidIndex)
       }
       return __tree_._unchecked_remove(at: __p).payload
@@ -358,7 +363,7 @@ extension RedBlackTreeSet {
     @discardableResult
     @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
-      ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
+      ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
     }
   }
 
@@ -371,12 +376,10 @@ extension RedBlackTreeSet {
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()
       let result = try __tree_.___erase_ragen_if(
-        __tree_.__begin_node_.safe,
-        __tree_.__end_node.safe,
+        __tree_.__begin_node_.unchecked,
+        __tree_.__end_node.unchecked,
         shouldBeRemoved)
-      if case .failure(let e) = result {
-        fatalError(errorMessage(e))
-      }
+      assert(result.error == nil)
     }
   }
 #endif

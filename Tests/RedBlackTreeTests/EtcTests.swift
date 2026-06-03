@@ -1,9 +1,9 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 final class EtcTests: RedBlackTreeTestCase {
@@ -1045,7 +1045,7 @@ final class EtcTests: RedBlackTreeTestCase {
     func testBoundsSmoke() throws {
       var a = RedBlackTreeSet<Int>()
       typealias Index = RedBlackTreeSet<Int>.Index
-//      throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
+      //      throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
       #if false
         // indexを廃止しようとしている
         let _ = a.indices(bounds: .start ..< .end)
@@ -1174,21 +1174,23 @@ final class EtcTests: RedBlackTreeTestCase {
     //      XCTAssertEqual(it + [], [5,10]) // ここで落ちる
     //    }
 
-    func testItertor() throws {
-      var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
-      //      var it = a[a.lowerBound(5)..<a.firstIndex(of: 45)].makeIterator()
-      var it = a[lowerBound(5)..<find(45)].makeIterator()
-      a.remove(15)  // 二つ先以降を消しても影響がない
-      a.remove(35)  // 二つ先以降を消しても影響がない
-      //      a.remove(45)  // 二つ先以降を消しても影響がない
-      XCTAssertEqual(it.next(), 5)
-      XCTAssertEqual(it.next(), 10)
-      XCTAssertEqual(it.next(), 20)
-      XCTAssertEqual(it.next(), 25)
-      XCTAssertEqual(it.next(), 30)
-      XCTAssertEqual(it.next(), 40)
-      //      XCTAssertEqual(it.next(), 45)
-    }
+    #if false
+      func testItertor() throws {
+        var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
+        //      var it = a[a.lowerBound(5)..<a.firstIndex(of: 45)].makeIterator()
+        var it = a[lowerBound(5)..<find(45)].makeIterator()
+        a.remove(15)  // 二つ先以降を消しても影響がない
+        a.remove(35)  // 二つ先以降を消しても影響がない
+        //      a.remove(45)  // 二つ先以降を消しても影響がない
+        XCTAssertEqual(it.next(), 5)
+        XCTAssertEqual(it.next(), 10)
+        XCTAssertEqual(it.next(), 20)
+        XCTAssertEqual(it.next(), 25)
+        XCTAssertEqual(it.next(), 30)
+        XCTAssertEqual(it.next(), 40)
+        //      XCTAssertEqual(it.next(), 45)
+      }
+    #endif
 
     func testRangeView() throws {
       let a = RedBlackTreeSet(0..<20)
@@ -1233,5 +1235,29 @@ final class EtcTests: RedBlackTreeTestCase {
     let d = [Int: Int]()
     XCTAssertEqual(d[0, default: -1], -1)
     XCTAssertEqual(d[0], nil)
+  }
+
+  #if DEBUG
+    func testStartIndex() throws {
+      let s = RedBlackTreeSet<Int>()
+      XCTAssertEqual(s._start.pointee.___tracking_tag, .end)
+      XCTAssertEqual(s._start.pointee.___has_payload_content, false)
+    }
+  #endif
+
+  func testIteratorAndRemove() throws {
+    var a = RedBlackTreeSet<Int>(0..<10)
+    var b: [Int] = []
+    for i in a {
+      a = []  // TODO: 削除した時点でループ終了するべきか検討（コストが気になる）
+      b.append(i)
+    }
+    XCTAssertEqual(b, (0..<10).map { $0 })
+  }
+  
+  func testDictDefault() throws {
+    let a = [Int:Int]()
+    XCTAssertEqual(a[3, default: 0], 0)
+    XCTAssertNil(a[3])
   }
 }

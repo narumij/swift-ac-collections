@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -56,7 +61,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  var __root: _NodePtr {
+  package var __root: _NodePtr {
     @inline(__always) _read {
       yield withMutableHeader { $0.root_ptr }.pointee
     }
@@ -114,11 +119,9 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2: _PayloadValueBridge_Key & _ValueCompBridge {}
 
-extension UnsafeTreeV2: _PtrCompBridge where Base: _BaseNode_PtrCompInterface {}
-
-extension UnsafeTreeV2: _PtrRangeCompBridge where Base: _BaseNode_PtrRangeCompInterface {}
-
-extension UnsafeTreeV2: _SignedDistanceBridge where Base: _BaseNode_SignedDistanceInterface {}
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeTreeV2: _PtrRangeCompBridge where Base: _BaseNode_PtrRangeCompInterface {}
+#endif
 
 extension UnsafeTreeV2: BoundBothInterface {
 
@@ -129,6 +132,7 @@ extension UnsafeTreeV2: BoundBothInterface {
 }
 
 extension UnsafeTreeV2: IntThreeWayComparator {}
+
 extension UnsafeTreeV2: FindProtocol_ptr {}
 extension UnsafeTreeV2: FindEqualInterface, FindEqualProtocol_ptr {
 
@@ -152,19 +156,24 @@ extension UnsafeTreeV2: InsertLastProtocol_ptr {}
 extension UnsafeTreeV2: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2: TreeAlgorithmProtocol_ptr {}
 
-extension UnsafeTreeV2: FindFirstProtocol_ptr {}
-
 extension UnsafeTreeV2 {
 
   #if false
-  @inlinable
-  internal func ___min() -> _PayloadValue? {
-    __root == nullptr ? nil : Base.__payload_(__tree_min(__root))
-  }
+    @inlinable
+    internal func ___min() -> _PayloadValue? {
+      __root == nullptr ? nil : Base.__payload_(__tree_min(__root))
+    }
   #endif
 
   @inlinable
   internal func ___max() -> _PayloadValue? {
     __root == nullptr ? nil : Base.__payload_(__tree_max(__root))
   }
+  
+  @inlinable
+  internal func ___max() -> _NodePtr? {
+    __root == nullptr ? nil : __tree_max(__root)
+  }
 }
+
+extension UnsafeTreeV2: FindFirstProtocol_ptr {}

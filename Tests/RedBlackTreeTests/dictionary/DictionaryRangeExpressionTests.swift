@@ -6,7 +6,7 @@
 //
 
 #if !COMPATIBLE_ATCODER_2025
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
   import XCTest
 
   final class DictionaryRangeExpressionTests: RedBlackTreeTestCase {

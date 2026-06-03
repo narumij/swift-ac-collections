@@ -1,7 +1,7 @@
 // RedBlackTreeSetCornerCaseTests.swift
 // swift-tools-version:5.10
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {

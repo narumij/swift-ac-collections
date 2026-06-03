@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -33,6 +38,7 @@
 /// - `advanced(_:offset:limit:)` : The element advanced by `offset` from a base position
 /// - `before(_:)` : The previous element
 /// - `after(_:)` : The next element
+@frozen
 public struct RedBlackTreeBoundExpressionV2<_Key> {
 
   @inlinable
@@ -51,7 +57,7 @@ extension RedBlackTreeBoundExpressionV2 {
 
   @usableFromInline
   enum Op {
-    case pointer(_SafePtr)
+    case index(UnsafeIndexV3)
     case start
     case last
     case end
@@ -159,6 +165,11 @@ extension RedBlackTreeBoundExpressionV2 {
   @inlinable
   public static func greaterThanOrEqual(_ k: _Key) -> Self {
     .init(_internal: [.greaterThanOrEqual(k)])
+  }
+
+  @inlinable
+  public static func index(_ p: UnsafeIndexV3) -> Self {
+    .init(_internal: [.index(p)])
   }
 
   #if DEBUG

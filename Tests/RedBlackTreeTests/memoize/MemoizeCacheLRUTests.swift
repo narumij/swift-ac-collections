@@ -1,5 +1,5 @@
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
   import XCTest
 
   extension ___LRULinkList {

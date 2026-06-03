@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -80,10 +85,10 @@ protocol UnsafeMutableTreeSealedRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
 }
 
 @usableFromInline
-typealias _SetBridge = _NodePtrBridge_Payload & _PayloadValueBride & _KeyBride & _ElementBride
+typealias _SetBridge = _PayloadValueBride & _KeyBride & _ElementBride
 
 @usableFromInline
-typealias _MapBridge = _NodePtrBridge_Payload & _PayloadValueBride & _KeyBride & _MappedValueBride
+typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride
   & _ElementBride
 
 // MARK: -
@@ -100,9 +105,7 @@ protocol _RedBlackTreeKeyValuesV2:
   UnsafeTreeRangeBaseInterfaceV2
     & _MapBridge
     & _SequenceV2
-    & _PayloadValueBridge_MappedValue
     & _PaylodValueBridge_Element
-    & _ElementBridge_Payload
 {}
 
 // MARK: -

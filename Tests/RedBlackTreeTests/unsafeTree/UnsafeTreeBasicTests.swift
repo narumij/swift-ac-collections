@@ -8,7 +8,7 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   final class UnsafeTreeBasicTests: RedBlackTreeTestCase {
 
@@ -18,7 +18,7 @@ import XCTest
       static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> Int {
         p.__value_(as: _PayloadValue.self).pointee
       }
-      static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeModule.UnsafeNode>) -> Int {
+      static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeCollections.UnsafeNode>) -> Int {
         fatalError()
       }
       typealias _Key = Int
@@ -101,35 +101,56 @@ import XCTest
       XCTAssertEqual(storage._buffer.header.recycleHead, storage.nullptr)
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [])
       XCTAssertEqual(storage._buffer.header.recycleCount, 0)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 0)
       storage._buffer.header.___pushRecycle(storage._buffer.header[0])
       XCTAssertEqual(storage._buffer.header.recycleHead, storage._buffer.header[0])
       XCTAssertEqual(storage._buffer.header[0].__left_, storage.nullptr)
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 1)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 1)
       storage._buffer.header.___pushRecycle(storage._buffer.header[1])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [1, 0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 2)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 2)
       storage._buffer.header.___pushRecycle(storage._buffer.header[2])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [2, 1, 0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 3)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 3)
       storage._buffer.header.___pushRecycle(storage._buffer.header[3])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [3, 2, 1, 0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 4)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 4)
       XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[3])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [2, 1, 0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 3)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 4)
       XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[2])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [1, 0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 2)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 4)
       XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[1])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 1)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 4)
       XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[0])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [])
       XCTAssertEqual(storage._buffer.header.recycleCount, 0)
-      #if DEBUG
-        payloadInitializedCount += 4
-      #endif
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 4)
+      
+      for i in 0..<4 {
+        // pop時にtrueにする仕様なため
+        XCTAssertTrue(storage._buffer.header[i].pointee.___has_payload_content)
+        storage._buffer.header[i].pointee.___has_payload_content = false
+      }
     }
 
     func testDestroyStack2() async throws {

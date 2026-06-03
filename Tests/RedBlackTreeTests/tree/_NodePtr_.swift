@@ -1,5 +1,5 @@
 import Foundation
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 extension _TrackingTag {
   var offset: Int! {

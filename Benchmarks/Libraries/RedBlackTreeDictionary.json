@@ -25,7 +25,8 @@
           "tasks": [
             "RedBlackTreeDictionary<Int, Int> sequential iteration",
             "RedBlackTreeDictionary<Int, Int>.Keys sequential iteration",
-            "RedBlackTreeDictionary<Int, Int>.Values sequential iteration"
+            "RedBlackTreeDictionary<Int, Int>.Values sequential iteration",
+            "RedBlackTreeDictionary<Int, Int> sequential iteration, indices"
           ]
         },
         {

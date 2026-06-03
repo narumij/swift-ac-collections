@@ -1,81 +1,48 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
 public enum UnsafeIterator {}
 
-extension UnsafeIterator {
+#if !COMPATIBLE_ATCODER_2025
+  extension UnsafeIterator {
 
-  #if !COMPATIBLE_ATCODER_2025
-    public typealias _RemoveTrait = _RemoveCheck
-    public typealias _TieTrait = LazyDetach
-  #else
-    public typealias _RemoveTrait = _RemoveAware
-    public typealias _TieTrait = Tied
-  #endif
+    public typealias ValueObverse<Base> = _CopyOnWrite<_Payload<Base, _Obverse4>>
+    where Base: ___TreeBase
+    public typealias ValueReverse<Base> = _CopyOnWrite<_Payload<Base, _Reverse4>>
+    where Base: ___TreeBase
 
-  #if COMPATIBLE_ATCODER_2025
-    public
-      typealias IndexObverse<Base: ___TreeBase & ___TreeIndex> =
-      TiedIndexing<Base, _RemoveTrait<_Obverse2>>
+    public typealias KeyObverse<Base> = _CopyOnWrite<_Key<Base, _Obverse4>>
+    where Base: ___TreeBase & PairValueTrait
+    public typealias KeyReverse<Base> = _CopyOnWrite<_Key<Base, _Reverse4>>
+    where Base: ___TreeBase & PairValueTrait
 
-    public
-      typealias IndexReverse<Base: ___TreeBase & ___TreeIndex> =
-      TiedIndexing<Base, _RemoveTrait<_Reverse2>>
-  #endif
+    public typealias MappedValueObverse<Base> = _CopyOnWrite<_MappedValue<Base, _Obverse4>>
+    where Base: ___TreeBase & PairValueTrait
+    public typealias MappedValueReverse<Base> = _CopyOnWrite<_MappedValue<Base, _Reverse4>>
+    where Base: ___TreeBase & PairValueTrait
 
-  public
-    typealias ValueObverse<Base: ___TreeBase> = _TieTrait<
-      _Payload<Base, _RemoveTrait<_Obverse2>>
-    >
-  public
-    typealias ValueReverse<Base: ___TreeBase> = _TieTrait<
-      _Payload<Base, _RemoveTrait<_Reverse2>>
-    >
-
-  public
-    typealias KeyObverse<Base: ___TreeBase & ___TreeIndex> = _TieTrait<
-      _Key<Base, _RemoveTrait<_Obverse2>>
-    >
-  public
-    typealias KeyReverse<Base: ___TreeBase & ___TreeIndex> = _TieTrait<
-      _Key<Base, _RemoveTrait<_Reverse2>>
-    >
-
-  public
-    typealias MappedValueObverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = _TieTrait<
-      _MappedValue<Base, _RemoveTrait<_Obverse2>>
-    >
-  public
-    typealias MappedValueReverse<Base: ___TreeBase & ___TreeIndex & PairValueTrait> = _TieTrait<
-      _MappedValue<Base, _RemoveTrait<_Reverse2>>
-    >
-
-  public
-    typealias KeyValueObverse<Base: ___TreeBase & PairValueTrait> = _TieTrait<
-      _KeyValue<Base, _RemoveTrait<_Obverse2>>
-    >
-  public
-    typealias KeyValueReverse<Base: ___TreeBase & PairValueTrait> = _TieTrait<
-      _KeyValue<Base, _RemoveTrait<_Reverse2>>
-    >
-}
-
-extension UnsafeIterator {
-  public typealias _RemoveAwarePointers = _RemoveAware<_Obverse2>
-  public typealias _NaivePointers = _Obverse1
-  public typealias _RemoveAwareReversePointers = _RemoveAware<_Reverse2>
-}
+    public typealias KeyValueObverse<Base> = _CopyOnWrite<_KeyValue<Base, _Obverse4>>
+    where Base: ___TreeBase & PairValueTrait
+    public typealias KeyValueReverse<Base> = _CopyOnWrite<_KeyValue<Base, _Reverse4>>
+    where Base: ___TreeBase & PairValueTrait
+  }
+#endif

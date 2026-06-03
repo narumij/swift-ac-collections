@@ -6,22 +6,19 @@ import PackageDescription
 
 var defines: [String] = [
   //  "TREE_INVARIANT_CHECKS",
-  //  "GRAPHVIZ_DEBUG",
   //  "USING_ALGORITHMS",
-  //  "USING_COLLECTIONS",
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "PERFOMANCE_CHECK",
-  "WITHOUT_SIZECHECK"
+  //  "SIZECHECK",
   //  "USE_OLD_FIND",
-  //  "DEATH_TEST",
+  //  "DEATH_TEST"
   //  "BENCHMARK",
-  //  "ALLOCATION_DRILL" // リリース時はオフ
   //  "USE_C_MALLOC",
-  //  "USE_INT128", // これはpackage traitにしたい
-  //  "RESERVE_CAPACITY_BENCH",
+  //  "USE_INT128",
   //  "USE_RECYCLE_POOL_PROTOCOL",
   //  "USE_FRESH_POOL_PROTOCOL",
-  //  "USE_COMPACT_NODE_METADATA",
+  //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし
+  //  "ALLOW_CROSS_TREE_INDEX", //木をまたいだインデックスの利用を許可するかどうか
 ]
 
 var _settings: [SwiftSetting] =
@@ -48,18 +45,12 @@ var _settings: [SwiftSetting] =
     // swift_slowAllocを避ける動作をするマクロ定義
     // 少しだけパフォーマンスが改善するが、利用には注意が必要
     // 利用可能な型アライメントが8に制限される
-    .define(
-      "USE_C_MALLOC",
-      .when(traits: ["USE_C_MALLOC"])
-    ),
+    .define("USE_C_MALLOC", .when(traits: ["USE_C_MALLOC"])),
 
     // 一部のポインタ比較で128bit幅のパス表現を用いる
     // Int.maxサイズのノード数を用いる場合に必要となるが、現実的には不要
     // 念のために用意してある
-    .define(
-      "USE_INT128",
-      .when(traits: ["USE_INT128"])
-    ),
+    .define("USE_INT128", .when(traits: ["USE_INT128"])),
 
     // ノードの付帯情報のビット幅を半分にするマクロ定義
     // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる
@@ -71,10 +62,14 @@ var _settings: [SwiftSetting] =
       .when(traits: ["USE_COMPACT_NODE_METADATA"])
     ),
 
-    .define(
-      "BENCHMARK",
-      .when(traits: ["BENCHMARK"])
-    ),
+    .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
+
+    .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
+
+    .define("DEATH_TEST", .when(platforms: [.macOS])),
+
+    // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
+    .unsafeFlags(["-Ounchecked"], .when(configuration: .release, traits: ["_O_UNCHECKED"])),
   ]
   + defines.map { .define($0) }
 
@@ -105,6 +100,12 @@ let package = Package(
     .trait(
       name: "BENCHMARK"
     ),
+    .trait(
+      name: "GRAPHVIZ_DEBUG"
+    ),
+    .trait(
+      name: "_O_UNCHECKED"
+    ),
   ],
   dependencies: [
 
@@ -118,7 +119,10 @@ let package = Package(
 
     .target(
       name: "AcCollections",
-      dependencies: ["RedBlackTreeModule", "PermutationModule"],
+      dependencies: [
+        "RedBlackTreeCollections",
+        "RedBlackTreeModule",
+        "PermutationModule"],
       swiftSettings: _settings
     ),
 
@@ -131,7 +135,7 @@ let package = Package(
       ]),
 
     .target(
-      name: "RedBlackTreeModule",
+      name: "RedBlackTreeCollections",
       dependencies: [] + additionalDepencencies,
       path: "Sources/RedBlackTreeCollections",
       exclude: ["MEMO.md"],
@@ -139,11 +143,17 @@ let package = Package(
         // .strictMemorySafety()
       ]),
 
+    .target(
+      name: "RedBlackTreeModule",
+      dependencies: ["RedBlackTreeCollections"],
+      path: "Sources/_RedBlackTreeModule"
+    ),
+
     .testTarget(
       name: "RedBlackTreeTests",
       dependencies: [
         .product(name: "Algorithms", package: "swift-algorithms"),
-        "RedBlackTreeModule",
+        "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
     ),

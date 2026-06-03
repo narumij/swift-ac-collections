@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/02/14.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 #if !COMPATIBLE_ATCODER_2025
@@ -20,7 +20,7 @@ import XCTest
       // Put setup code here. This method is called before the invocation of each test method in the class.
       try super.setUpWithError()
       sut = .init(
-        multiKeysWithValues: (0..<5).flatMap { repeatElement($0, count: 4) + [] }.enumerated().map {
+        keysWithValues: (0..<5).flatMap { repeatElement($0, count: 4) + [] }.enumerated().map {
           ($1, $0)
         })
     }

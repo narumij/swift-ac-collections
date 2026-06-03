@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -38,12 +43,15 @@ public struct _NodePtrSealing: Equatable {
   /// 現在の状態で封印する
   @inlinable
   init(_p: _NodePtr) {
-    self.init(_p: _p, _seal: _p.pointee.___recycle_count)
+    assert(!_p.___is_null)
+    pointer = _p
+    seal = _p.pointee.___recycle_count
   }
 
   /// 過去の状態で封印する
   @inlinable
   init(_p: _NodePtr, _seal: UnsafeNode.Seal) {
+    assert(!_p.___is_null)
     pointer = _p
     seal = _seal
   }
@@ -73,14 +81,17 @@ public struct _NodePtrSealing: Equatable {
     // destroyで回収されてgarbagedになるとそれは死後.
     // 再度転生するとgarbagedではなくなる.
     // recycle countが不一致となれば転生済みノードであることがわかる.
-    pointer.___is_garbaged || pointer.pointee.___recycle_count != seal
+    //    (pointer.___is_garbaged && !pointer.___is_end) || pointer.pointee.___recycle_count != seal
+    pointer.pointee.___recycle_count != seal
   }
 
   /// お清め
   @inlinable
   var purified: _SealedPtr {
+    // 基本的にここにnullは到達しない
+    assert(!pointer.___is_null)
     // validなpointerがendやnullに変化することはない
-    isUnsealed ? .failure(.unsealed) : .success(self)
+    return isUnsealed ? .failure(.unsealed) : .success(self)
     //    if pointer.___is_garbaged {
     //      return .failure(.garbaged)
     //    }
@@ -89,6 +100,23 @@ public struct _NodePtrSealing: Equatable {
     //    }
     //    return .success(self)
   }
+
+  #if ALLOW_CROSS_TREE_INDEX
+    @inlinable
+    var deepPurified: _SealedPtr {
+      // 基本的にここにnullは到達しない
+      assert(!pointer.___is_null)
+      if pointer.___is_end {
+        return .success(self)
+      } else if !pointer.___has_payload_content {
+        return .failure(.garbaged)
+      } else if isUnsealed {
+        return .failure(.unsealed)
+      } else {
+        return .success(self)
+      }
+    }
+  #endif
 
   /// 引換券
   @inlinable

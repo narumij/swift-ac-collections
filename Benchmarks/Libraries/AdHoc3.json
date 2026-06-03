@@ -1,0 +1,22 @@
+{
+  "kind": "group",
+  "title": "RedBlackTreeDictionary Benchmarks",
+  "directory": "RedBlackTreeDictionary Adhoc3",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "Operations",
+      "directory": "operations",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "operations",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> sequential iteration",
+            "RedBlackTreeDictionary<Int, Int> sequential iteration (inlined buffer)"
+          ]
+        },
+      ]
+    }
+  ]
+}

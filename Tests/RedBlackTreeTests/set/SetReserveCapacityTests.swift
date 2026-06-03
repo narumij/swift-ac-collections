@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 final class SetReserveCapacityTests: RedBlackTreeTestCase {
 

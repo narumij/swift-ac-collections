@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -63,9 +68,9 @@
 
     /// Returns whether the corresponding element can be accessed.
     @inlinable
-    public func isValid(_ bound: Bound) -> Bool {
-      let sealed = bound.evaluate(__tree_)
-      return sealed.isValid && !sealed.___is_end!
+    public func isValid(_ bound: RedBlackTreeBoundExpressionV2<Element>) -> Bool {
+      let _safe_ptr_ = bound.evaluate(__tree_)
+      return _safe_ptr_.___has_payload_content
     }
   }
 
@@ -75,7 +80,10 @@
     ///
     /// - Complexity: O(log *n* + *k*)
     @inlinable
-    public func distance(from start: Bound, to end: Bound)
+    public func distance(
+      from start: RedBlackTreeBoundExpressionV2<Element>,
+      to end: RedBlackTreeBoundExpressionV2<Element>
+    )
       -> Int
     {
       guard let d = __tree_.distance(from: start, to: end)
@@ -94,7 +102,7 @@
     ///
     @inlinable
     @inline(__always)
-    public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
+    public subscript(bound: RedBlackTreeBoundExpressionV2<Element>) -> Element? {
       let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
       return p.__value_(as: Element.self).pointee
@@ -104,7 +112,7 @@
   extension RedBlackTreeSet {
 
     @inlinable
-    public mutating func erase(_ bound: Bound) -> Element? {
+    public mutating func erase(_ bound: RedBlackTreeBoundExpressionV2<Element>) -> Element? {
       __tree_.ensureUnique()
       let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
@@ -120,9 +128,7 @@
     @inlinable
     public func isValid(_ bounds: BoundRangeExpression) -> Bool {
       let range = bounds.evaluate(__tree_).relative(to: __tree_)
-      return __tree_.isValidSafeRange(range)
-        && range.lowerBound.isValid
-        && range.upperBound.isValid
+      return __tree_.isValid(safeRange: range)
     }
   }
 
@@ -133,18 +139,18 @@
 
       @inline(__always) get {
 
-        let range = __tree_.sanitizeSafeRange(
-          bounds.evaluate(__tree_).relative(to: __tree_))
+        let range = __tree_.sanitize(
+          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
 
-        return self[unchecked: range]
+        return self[_safeRange: range]
       }
 
       @inline(__always) _modify {
 
-        let range = __tree_.sanitizeSafeRange(
-          bounds.evaluate(__tree_).relative(to: __tree_))
+        let range = __tree_.sanitize(
+          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
 
-        yield &self[unchecked: range]
+        yield &self[_safeRange: range]
       }
     }
   }
@@ -155,8 +161,8 @@
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitizeSafeRange(
-        bounds.evaluate(__tree_).relative(to: __tree_))
+      let range = __tree_.sanitize(
+        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
       __tree_.___erase_range(range.lowerBound.pointer!, range.upperBound.pointer!)
     }
 
@@ -166,27 +172,10 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitizeSafeRange(
-        bounds.evaluate(__tree_).relative(to: __tree_))
+      let range = __tree_.sanitize(
+        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
       try __tree_.___erase_ragen_if(
         range.lowerBound, range.upperBound, shouldBeRemoved)
-    }
-  }
-#endif
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet {
-
-    @inlinable
-    internal func bound(before i: Bound) -> Bound {
-      //      .before(i)
-      i.before
-    }
-
-    @inlinable
-    internal func bound(after i: Bound) -> Bound {
-      //      .after(i)
-      i.after
     }
   }
 #endif

@@ -1,101 +1,117 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
 extension UnsafeTreeV2 {
- 
+
   @inlinable
   func evaluate(_ _internal: RedBlackTreeBoundExpressionV2<_Key>.Internal)
     -> _SafePtr
   {
-    var ptr = _SafePtr.failure(.null)
+    _internal.withUnsafeBufferPointer { buffer in
 
-    for i in _internal.indices {
-      switch _internal[i] {
-        
-      case .pointer(let p):
-        ptr = p
-        
-      case .start:
-        ptr = __begin_node_.safe
-        
-      case .last:
-        ptr = evaluate([.end, .before])
-        
-      case .end:
-        ptr = __end_node.safe
-        
-      case .lowerBound(let __v):
-        ptr = lower_bound(__v).safe
-        
-      case .upperBound(let __v):
-        ptr = upper_bound(__v).safe
-        
-      case .find(let __v):
-        ptr = find(__v).safe
-        
-      case .advanced(let offset, let limit):
-        switch limit {
-        case .none:
-          ptr = ptr.flatMap {
-            ___tree_adv_iter($0, offset)
+      let _internal = buffer.baseAddress!
+
+      var ptr = _SafePtr.failure(.null)
+
+      for i in 0..<buffer.count {
+        switch _internal[i] {
+
+        case .index(let i):
+          switch __purified_(i) {
+          case .success(let s):
+            ptr = s.pointer.unchecked
+          case .failure:
+            ptr = .failure(.null)
           }
-        case .some(let __l):
-          let l = evaluate(__l)
-          let __r = ptr.flatMap {
-            ___tree_adv_iter($0, offset, l)
+
+        case .start:
+          ptr = __begin_node_.unchecked
+
+        case .last:
+          ptr = ___tree_prev_iter(__end_node)
+
+        case .end:
+          ptr = __end_node.unchecked
+
+        case .lowerBound(let __v):
+          ptr = lower_bound(__v).unchecked
+
+        case .upperBound(let __v):
+          ptr = upper_bound(__v).unchecked
+
+        case .find(let __v):
+          ptr = find(__v).unchecked
+
+        case .advanced(let offset, let limit):
+          switch limit {
+          case .none:
+            ptr = ptr.flatMap {
+              ___tree_adv_iter($0, offset)
+            }
+          case .some(let __l):
+            let l = evaluate(__l)
+            let __r = ptr.flatMap {
+              ___tree_adv_iter($0, offset, l)
+            }
+            ptr =
+              switch __r {
+              case .failure(.limit): l
+              default: __r
+              }
           }
-          ptr = switch __r {
-          case .failure(.limit): l
-          default: __r
-          }
+
+        case .before:
+          ptr = ptr.flatMap { ___tree_adv_iter($0, -1) }
+
+        case .after:
+          ptr = ptr.flatMap { ___tree_adv_iter($0, 1) }
+
+        case .lessThan(let __v):
+          ptr = ___tree_prev_iter(lower_bound(__v))
+
+        case .greaterThan(let __v):
+          ptr = upper_bound(__v).unchecked
+
+        case .lessThanOrEqual(let __v):
+          let __f = find(__v).unchecked
+          ptr = __f.___has_payload_content ? __f : ___tree_prev_iter(lower_bound(__v))
+
+        case .greaterThanOrEqual(let __v):
+          let __f = find(__v).unchecked
+          ptr = __f.___has_payload_content ? __f : upper_bound(__v).unchecked
+
+        #if DEBUG
+          case .debug(let e):
+            return .failure(e)
+        #endif
         }
-        
-      case .before:
-        ptr = evaluate([.pointer(ptr), .advanced(offset: -1)])
-        
-      case .after:
-        ptr = evaluate([.pointer(ptr), .advanced(offset: 1)])
-        
-      case .lessThan(let __v):
-        ptr = ___tree_prev_iter(lower_bound(__v))
-        
-      case .greaterThan(let __v):
-        ptr = upper_bound(__v).safe
-        
-      case .lessThanOrEqual(let __v):
-        let __f = find(__v).safe
-        ptr = __f.exists ? __f : ___tree_prev_iter(lower_bound(__v))
-        
-      case .greaterThanOrEqual(let __v):
-        let __f = find(__v).safe
-        ptr = __f.exists ? __f : upper_bound(__v).safe
-        
-#if DEBUG
-      case .debug(let e):
-        return .failure(e)
-#endif
       }
+      return ptr
     }
-    return ptr
   }
 }
 
 extension RedBlackTreeBoundExpressionV2 {
-  
+
   @inlinable
   func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)
     -> _SafePtr
@@ -144,8 +160,8 @@ extension RedBlackTreeBoundRangeExpression {
         : __tree_.__equal_range_unique(__v)
 
       return .range(
-        from: lower.safe,
-        to: upper.safe)
+        from: lower.unchecked,
+        to: upper.unchecked)
     }
   }
 }

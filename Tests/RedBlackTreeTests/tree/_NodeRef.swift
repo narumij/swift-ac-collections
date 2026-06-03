@@ -1,5 +1,5 @@
 import Foundation
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 #if DEBUG
 extension _PointerIndexRef {

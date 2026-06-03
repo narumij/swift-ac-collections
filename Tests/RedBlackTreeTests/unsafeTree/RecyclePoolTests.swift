@@ -8,11 +8,11 @@
 import XCTest
 
 #if DEBUG && USE_RECYCLE_POOL_PROTOCOL
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   final class RecyclePoolTests: RedBlackTreeTestCase {
 
-    struct Fixture: _UnsafeNodePtrType, _RecyclePool {
+    struct Fixture: _UnsafeNodePtrType, _RecyclePool, _RecyclePoolDebug {
       var recycleHead: _NodePtr = .nullptr
       var count: Int = 0
       var freshPoolUsedCount: Int = 0

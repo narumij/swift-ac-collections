@@ -358,7 +358,7 @@ ABC328Eという問題がありまして、C++で書かれた解説コードを�
 
 このライブラリは [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) に基づいて配布しています。  
 
-RedBlackTreeModuleは LLVM による実装をもとに改変したものであり、オリジナルのライセンスに関しては  
+RedBlackTreeCollectionsの`__tree`は LLVM による実装をもとに改変したものであり、オリジナルのライセンスに関しては  
 [https://llvm.org/LICENSE.txt](https://llvm.org/LICENSE.txt) をご参照ください。
 
 PermutationModuleは swift-algorithms による実装をもとに改変したものであり、オリジナルのライセンスに関しては  

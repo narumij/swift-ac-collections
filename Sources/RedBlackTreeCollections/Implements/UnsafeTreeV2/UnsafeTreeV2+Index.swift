@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -30,6 +35,19 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 where Base: PairValueTrait {
 
   public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
+    return withMutableHeader { $0.index(p) }
+  }
+
+  @inlinable
+  func index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
+    return withMutableHeader { $0.index_or_nil(p) }
+  }
 }
 
 extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
@@ -132,43 +150,43 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
 extension UnsafeTreeV2 {
 
   @inlinable
-  func prev_iter(_ i: _LazyDetachPointer) -> _LazyDetachPointer {
+  func prev_iter(_ i: _LazyTieWrappedPtr) -> _LazyTieWrappedPtr {
     __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
-      .flatMap { $0.sealed.band(lazyDetach) }
+      .flatMap { index($0) }
   }
 
   @inlinable
-  func next_iter(_ i: _LazyDetachPointer) -> _LazyDetachPointer {
+  func next_iter(_ i: _LazyTieWrappedPtr) -> _LazyTieWrappedPtr {
     __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
-      .flatMap { $0.sealed.band(lazyDetach) }
+      .flatMap { index($0) }
   }
 
   @inlinable
-  func adv_iter(_ i: _LazyDetachPointer, offsetBy distance: Int) -> _LazyDetachPointer {
+  func adv_iter(_ i: _LazyTieWrappedPtr, offsetBy distance: Int) -> _LazyTieWrappedPtr {
     __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
-      .flatMap { $0.sealed.band(lazyDetach) }
+      .flatMap { index($0) }
   }
 
   @inlinable
   func adv_iter(
-    _ i: _LazyDetachPointer, offsetBy distance: Int, limitedBy limit: _LazyDetachPointer
+    _ i: _LazyTieWrappedPtr, offsetBy distance: Int, limitedBy limit: _LazyTieWrappedPtr
   )
-    -> _LazyDetachPointer
+    -> _LazyTieWrappedPtr
   {
     let __l = __purified_(limit).map(\.pointer)
     return __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-      .flatMap { $0.sealed.band(lazyDetach) }
+      .flatMap { index($0) }
   }
 
   @inlinable
   func index_or_nil(
-    _ i: _LazyDetachPointer, offsetBy distance: Int, limitedBy limit: _LazyDetachPointer
+    _ i: _LazyTieWrappedPtr, offsetBy distance: Int, limitedBy limit: _LazyTieWrappedPtr
   )
-    -> _LazyDetachPointer?
+    -> _LazyTieWrappedPtr?
   {
     let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
     switch advanced {
@@ -181,7 +199,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func form_index(
-    _ i: inout _LazyDetachPointer, offsetBy distance: Int, limitedBy limit: _LazyDetachPointer
+    _ i: inout _LazyTieWrappedPtr, offsetBy distance: Int, limitedBy limit: _LazyTieWrappedPtr
   )
     -> Bool
   {

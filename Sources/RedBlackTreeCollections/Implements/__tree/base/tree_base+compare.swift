@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -67,9 +72,9 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
     assert(!__f.___is_null)
     assert(!__p.___is_null)
     assert(!__l.___is_null)
-    assert(!__f.___is_garbaged)
-    assert(!__p.___is_garbaged)
-    assert(!__l.___is_garbaged)
+    assert(__l.___is_end || __f.___has_payload_content)
+    assert(__l.___is_end || __p.___has_payload_content)
+    assert(__l.___is_end || __l.___has_payload_content)
 
     guard !__f.___is_end else {
       // end <= end <= endは有効
@@ -123,9 +128,10 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
     assert(!__f.___is_null)
     assert(!__p.___is_null)
     assert(!__l.___is_null)
-    assert(!__f.___is_garbaged)
-    assert(!__p.___is_garbaged)
-    assert(!__l.___is_garbaged)
+    
+    assert(__f.___is_end || __f.___has_payload_content)
+    assert(__p.___is_end || __p.___has_payload_content)
+    assert(__l.___is_end || __l.___has_payload_content)
 
     guard !__f.___is_end else {
       // end <= end <= endは有効

@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -182,12 +187,7 @@ extension UnsafeTreeV2KeyOnlyHandle {
   typealias __compare_result = __int_compare_result
 }
 
-extension UnsafeTreeV2KeyOnlyHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: FindInteface, FindProtocol_ptr {}
-extension UnsafeTreeV2KeyOnlyHandle: RemoveInteface, RemoveProtocol_ptr {}
-extension UnsafeTreeV2KeyOnlyHandle: EraseProtocol {}
-extension UnsafeTreeV2KeyOnlyHandle: EraseUniqueProtocol {}
-
 #if compiler(<6.3)
   extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface, FindEqualProtocol_ptr {}
 #else
@@ -198,11 +198,20 @@ extension UnsafeTreeV2KeyOnlyHandle: EraseUniqueProtocol {}
     }
   }
 #endif
+extension UnsafeTreeV2KeyOnlyHandle: FindLeafProtocol_ptr {}
+
+extension UnsafeTreeV2KeyOnlyHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: FindFirstProtocol_ptr {}
+
+extension UnsafeTreeV2KeyOnlyHandle: CountProtocol_ptr {}
 
 extension UnsafeTreeV2KeyOnlyHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
-extension UnsafeTreeV2KeyOnlyHandle: FindLeafProtocol_ptr, InsertMultiProtocol {}
-extension UnsafeTreeV2KeyOnlyHandle: CountProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: InsertMultiProtocol {}
+
+extension UnsafeTreeV2KeyOnlyHandle: EraseProtocol {}
+extension UnsafeTreeV2KeyOnlyHandle: EraseUniqueProtocol {}
+extension UnsafeTreeV2KeyOnlyHandle: RemoveInteface, RemoveProtocol_ptr {}
 
 extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmProtocol_ptr {}

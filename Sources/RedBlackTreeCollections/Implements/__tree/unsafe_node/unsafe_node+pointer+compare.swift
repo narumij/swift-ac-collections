@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -76,78 +81,7 @@ internal func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
   return __h
 }
 
-// ノードの大小を比較する
-@inlinable
-internal func ___ptr_comp_multi_org(
-  _ __l: UnsafeMutablePointer<UnsafeNode>,
-  _ __r: UnsafeMutablePointer<UnsafeNode>
-)
-  -> Bool
-{
-  assert(!__l.___is_null, "Left node shouldn't be null")
-  assert(!__r.___is_null, "Right node shouldn't be null")
-  guard
-    !__l.___is_end,
-    !__r.___is_end,
-    __l != __r
-  else {
-    return !__l.___is_end && __r.___is_end
-  }
-  var (__l, __lh) = (__l, ___ptr_height(__l))
-  var (__r, __rh) = (__r, ___ptr_height(__r))
-  // __rの高さを詰める
-  while __lh < __rh {
-    // 共通祖先が__lだった場合
-    if __r.__parent_ == __l {
-      // __rが左でなければ（つまり右）、__lが小さい
-      return !__tree_is_left_child(__r)
-    }
-    (__r, __rh) = (__r.__parent_, __rh - 1)
-  }
-  // __lの高さを詰める
-  while __lh > __rh {
-    // 共通祖先が__rだった場合
-    if __l.__parent_ == __r {
-      // __lが左であれば、__lが小さい
-      return __tree_is_left_child(__l)
-    }
-    (__l, __lh) = (__l.__parent_, __lh - 1)
-  }
-  // 親が一致するまで、両方の高さを詰める
-  while __l.__parent_ != __r.__parent_ {
-    (__l, __r) = (__l.__parent_, __r.__parent_)
-  }
-  // 共通祖先が__lと__r以外だった場合
-  // 共通祖先の左が__lであれば、__lが小さい
-  return __tree_is_left_child(__l)
-}
-
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
-
-  /// ルートからノードまでのパスをビットでコード化した値を返す
-  ///
-  /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
-  ///
-  /// 8bit幅で例えると、
-  /// ルートは128 (0b10000000)
-  /// ルートの左は64 (0b010000000)
-  /// ルートの右は192となる  (0b110000000)
-  /// (実際にはUIntで64bit幅)
-  @inlinable
-  internal func ___ptr_bitmap_org() -> UInt {
-    assert(!___is_null, "Node shouldn't be null")
-    assert(!___is_end, "Node shouldn't be end")
-    var __f: UInt = 1  // 終端flag
-    var __h = 1  // 終端flag分
-    var __p = self
-    while !__p.___is_root {
-      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< __h
-      __p = __p.__parent_
-      __h &+= 1
-    }
-    __f &<<= UInt.bitWidth &- __h
-    return __f
-  }
 
   #if USE_INT128
     // 128bit幅でかつ、必要なレジスタ数が削減されている
@@ -167,25 +101,26 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       }
       return __f
     }
-  #endif
+  #else
 
-  // 64bit幅でかつ、必要なレジスタ数が削減されている
-  /// ルートからノードまでのパスをビットでコード化した値を返す
-  ///
-  /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
-  @inlinable
-  internal func ___ptr_bitmap_64() -> UInt64 {
-    assert(!___is_null, "Node shouldn't be null")
-    assert(!___is_end, "Node shouldn't be end")
-    var __f: UInt64 = 1 &<< (UInt64.bitWidth &- 1)
-    var __p = self
-    while !__p.___is_root {
-      __f &>>= 1
-      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt.bitWidth &- 1)
-      __p = __p.__parent_
+    // 64bit幅でかつ、必要なレジスタ数が削減されている
+    /// ルートからノードまでのパスをビットでコード化した値を返す
+    ///
+    /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
+    @inlinable
+    internal func ___ptr_bitmap_64() -> UInt64 {
+      assert(!___is_null, "Node shouldn't be null")
+      assert(!___is_end, "Node shouldn't be end")
+      var __f: UInt64 = 1 &<< (UInt64.bitWidth &- 1)
+      var __p = self
+      while !__p.___is_root {
+        __f &>>= 1
+        __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt.bitWidth &- 1)
+        __p = __p.__parent_
+      }
+      return __f
     }
-    return __f
-  }
+  #endif
 
   #if USE_INT128
     /// ルートからノードまでのパスをビットでコード化した値を返す
@@ -229,6 +164,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   func ___ptr_comp_bitmap(
     _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
   ) -> Bool {
-    return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
+    #if false
+      return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
+    #else
+      return (__l.___is_end ? .max : __l.___ptr_bitmap_64())
+        < (__r.___is_end ? .max : __r.___ptr_bitmap_64())
+    #endif
   }
 #endif

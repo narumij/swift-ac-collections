@@ -8,9 +8,9 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 final class SetBaseTests: RedBlackTreeTestCase {
@@ -34,4 +34,11 @@ final class SetBaseTests: RedBlackTreeTestCase {
     XCTAssertEqual(SUT.__element_(0), 0)
     XCTAssertEqual(SUT.__element_(Int.max), Int.max)
   }
+
+  #if DEBUG
+    func testHoge() throws {
+      let fixture = Fixture(0..<5)
+      XCTAssertTrue(SUT.___ptr_range_comp(fixture._start, fixture._end, fixture._end))
+    }
+  #endif
 }

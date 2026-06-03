@@ -1,58 +1,31 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
 #if DEBUG
   extension UnsafeTreeV2 {
 
-    package func ___ptr_(_ p: _NodePtr) -> _TrackingTag {
-      p.pointee.___tracking_tag
-    }
-
-    package func __left_(_ p: _TrackingTag) -> _TrackingTag {
-      try! __retrieve_(p).get().pointee.__left_.trackingTag
-    }
-
-    package func __left_(_ p: _TrackingTag, _ l: _TrackingTag) {
-      try! __retrieve_(p).get().pointee.__left_ = try! __retrieve_(l).get()
-    }
-
-    package func __right_(_ p: _TrackingTag) -> _TrackingTag {
-      try! __retrieve_(p).get().pointee.__right_.trackingTag
-    }
-
-    package func __right_(_ p: _TrackingTag, _ l: _TrackingTag) {
-      try! __retrieve_(p).get().pointee.__right_ = try! __retrieve_(l).get()
-    }
-
-    package func __parent_(_ p: _TrackingTag) -> _TrackingTag {
-      try! __retrieve_(p).get().pointee.__parent_.trackingTag
-    }
-
-    package func __parent_(_ p: _TrackingTag, _ l: _TrackingTag) {
-      try! __retrieve_(p).get().pointee.__parent_ = try! __retrieve_(l).get()
-    }
-
-    package func __is_black_(_ p: _TrackingTag) -> Bool {
-      try! __retrieve_(p).get().pointee.__is_black_
-    }
-
-    package func __is_black_(_ p: _TrackingTag, _ b: Bool) {
-      try! __retrieve_(p).get().pointee.__is_black_ = b
-    }
-
-    package func __value_(_ p: _TrackingTag) -> _PayloadValue {
-      __value_(try! __retrieve_(p).get())
-    }
-
-    package func ___element(_ p: _TrackingTag, _ __v: _PayloadValue) {
-      //      ___element(try! __retrieve_(p).get(), __v)
-      try! __retrieve_(p).get().__value_().pointee = __v
-    }
-  }
-
-  extension UnsafeTreeV2 {
-
-    package func destroy(_ p: _TrackingTag) {
-      _buffer.withUnsafeMutablePointerToHeader { header in
-        header.pointee.___pushRecycle(_buffer.header[p])
-      }
+    @inlinable
+    func makeUsedNodeIterator() -> _FreshPoolUsedIterator<_PayloadValue> {
+      return _buffer.header.makeUsedNodeIterator()
     }
   }
 #endif
@@ -86,15 +59,6 @@
     package func equiv(with tree: UnsafeTreeV2) -> Bool {
       // isReadOnlyは等価判定不可
       assert(__end_node.pointee.equiv(with: tree.__end_node.pointee))
-      //      assert(
-      //        makeFreshPoolIterator()
-      //          .elementsEqual(
-      //            tree.makeFreshPoolIterator(),
-      //            by: {
-      //              assert($0.pointee.equiv(with: $1.pointee))
-      //              return $0.pointee.equiv(with: $1.pointee)
-      //            }))
-
       assert(__begin_node_.pointee.___tracking_tag == tree.__begin_node_.pointee.___tracking_tag)
       assert(_buffer.header.equiv(with: tree._buffer.header))
       guard
@@ -127,6 +91,9 @@
 
     package func emptyCheck() -> Bool {
       assert(__tree_invariant(__root))
+      assert(end.pointee.__left_ == UnsafeNode.nullptr)
+      assert(__begin_node_ == end)
+      assert(end.pointee.___has_payload_content == false)
       assert(count == 0)
       assert(count <= initializedCount)
       assert(count <= capacity)
@@ -136,7 +103,7 @@
         __tree_invariant(__root),
         end.pointee.__left_ == UnsafeNode.nullptr,
         __begin_node_ == end,
-        end.pointee.___has_payload_content == true,
+        end.pointee.___has_payload_content == false,
         count == 0,
         count <= initializedCount,
         count <= capacity,
@@ -152,12 +119,13 @@
     package func check() -> Bool {
       assert(UnsafeNode.nullptr.pointee.nullCheck())
       assert(end.pointee.endCheck())
+      assert(count == 0 ? emptyCheck() : true)
+      assert(__tree_invariant(__root))
       assert(count >= 0)
       assert(count <= initializedCount)
       assert(count <= capacity)
       assert(initializedCount <= capacity)
       assert(isReadOnly ? count == 0 : true)
-      assert(__tree_invariant(__root))
       guard
         UnsafeNode.nullptr.pointee.nullCheck(),
         end.pointee.endCheck(),
@@ -169,29 +137,12 @@
         initializedCount <= capacity,
         isReadOnly ? count == 0 : true,
         true
-        //      _buffer.header.___recycleNodes.count == _buffer.header.recycleCount,
-        //      (makeFreshBucketIterator() + []).first == _buffer.header.freshBucketHead,
-        //      _buffer.header.freshBucketCurrent.map({
-        //        makeFreshBucketIterator().contains($0)
-        //      }) ?? true,
-        //      (makeFreshBucketIterator() + []).last == _buffer.header.freshBucketLast
       else {
         return false
       }
       return true
     }
   }
-#else
-  //  extension UnsafeTreeV2 {
-  //    @inlinable
-  //    package func equiv(with tree: UnsafeTreeV2) -> Bool {
-  //      return true
-  //    }
-  //    @inlinable
-  //    package func check() -> Bool {
-  //      return true
-  //    }
-  //  }
 #endif
 
 @usableFromInline

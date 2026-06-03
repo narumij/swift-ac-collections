@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 // 以下を参考にした便利メソッド群
 // https://github.com/tatyam-prime/SortedSet

@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -84,12 +89,6 @@ public struct RedBlackTreeDictionary<Key: Comparable, Value> {
 
   public
     typealias Element = (key: Key, value: Value)
-
-  public
-    typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
-
-  public
-    typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
   @usableFromInline
   var __tree_: Tree
@@ -185,7 +184,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable
   public var first: Element? {
-    isEmpty ? nil : __element_(Base.__payload_(_start))
+    isEmpty ? nil : __element_(_start)
   }
 
   /// The last element of the collection.
@@ -204,7 +203,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable
   public func min() -> Element? {
-    isEmpty ? nil : __element_(Base.__payload_(_start))
+    isEmpty ? nil : __element_(_start)
   }
 
   /// Returns the maximum element in the sequence.
@@ -242,7 +241,7 @@ extension RedBlackTreeDictionary {
   ) {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
-    return (__inserted, __inserted ? newMember : Base.__element_(__tree_[_unsafe_raw: __r]))
+    return (__inserted, __inserted ? newMember : Base.__element_(__r))
   }
 }
 
@@ -260,9 +259,9 @@ extension RedBlackTreeDictionary {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.__insert_unique(Base.__payload_((key, value)))
     guard !__inserted else { return nil }
-    let oldMember = __tree_[_unsafe_raw: __r]
-    __tree_[_unsafe_raw: __r] = Base.__payload_((key, value))
-    return oldMember.tuple.value
+    let oldMember = Base.__mapped_value_(__r)
+    Base.__mapped_value_ptr(__r).pointee = value
+    return oldMember
   }
 }
 
@@ -276,7 +275,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   public mutating func popFirst() -> Element? {
     __tree_.ensureUnique()
-    return __tree_.___unchecked_remove_first().map(__element_)
+    return __tree_.___unchecked_remove_first().map { Base.__element_($0) }
   }
 }
 
@@ -289,7 +288,7 @@ extension RedBlackTreeDictionary {
     @inlinable
     public mutating func popLast() -> Element? {
       __tree_.ensureUnique()
-      return __tree_.___unchecked_remove_last().map(__element_)
+      return __tree_.___unchecked_remove_last().map { Base.__element_($0) }
     }
   }
 #endif
@@ -335,7 +334,7 @@ extension RedBlackTreeDictionary {
   @discardableResult
   public mutating func remove(at index: Index) -> Element {
     __tree_.ensureUnique()
-    guard case .success(let __p) = __tree_.__purified_(index) else {
+    guard case .success(let __p) = __tree_.__purified_(index).accessible else {
       fatalError(.invalidIndex)
     }
     return Base.__element_(__tree_._unchecked_remove(at: __p.pointer).payload)
@@ -387,7 +386,7 @@ extension RedBlackTreeDictionary {
     @discardableResult
     @inlinable
     public mutating func erase(_ ptr: Index) -> Index {
-      ___index(__tree_.erase(__tree_.__purified_(ptr).pointer!).sealed)
+      ___index(__tree_.erase(__tree_.__purified_(ptr).accessible.pointer!))
     }
   }
 
@@ -400,13 +399,10 @@ extension RedBlackTreeDictionary {
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()
       let result = try __tree_.___erase_ragen_if(
-        __tree_.__begin_node_.safe,
-        __tree_.__end_node.safe,
+        __tree_.__begin_node_.unchecked,
+        __tree_.__end_node.unchecked,
         { try shouldBeRemoved(Base.__element_($0)) })
-      if case .failure(let e) = result {
-        fatalError(errorMessage(e))
-      }
+      assert(result.error == nil)
     }
   }
 #endif
-

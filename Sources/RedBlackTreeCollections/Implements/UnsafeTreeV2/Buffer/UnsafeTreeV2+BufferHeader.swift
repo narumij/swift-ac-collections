@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -61,7 +66,7 @@ package struct UnsafeTreeV2BufferHeader {
   /// - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
   @usableFromInline var _tied: _TiedRawBuffer?
 
-  @usableFromInline var _lazyDetach: _LazyDetach?
+  @usableFromInline var _lazyDetach: _LazyTie?
 
   #if DEBUG
     @usableFromInline var freshBucketCount: Int = 0
@@ -83,7 +88,10 @@ extension UnsafeTreeV2BufferHeader {
 
   @inlinable
   var end_ptr: _NodePtr {
-    freshBucketHead!.end_ptr
+    @inline(__always)
+    _read {
+      yield freshBucketHead!.end_ptr
+    }
   }
 
   @inlinable
@@ -133,7 +141,7 @@ extension UnsafeTreeV2BufferHeader {
   }
 
   @inlinable
-  var lazyDetach: _LazyDetach {
+  var lazyDetach: _LazyTie {
     mutating get {
       // TODO: 一度の保証付きの実装にすること
       if _lazyDetach == nil {
@@ -150,6 +158,21 @@ extension UnsafeTreeV2BufferHeader {
     ___flushRecyclePool()
     begin_ptr.pointee = end_ptr
     end_ptr.pointee.__left_ = nullptr
+  }
+}
+
+extension UnsafeTreeV2BufferHeader {
+
+  @inlinable
+  mutating func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
+    assert(p != .nullptr)
+    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
+  }
+
+  @inlinable
+  mutating func index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
+    assert(p != .nullptr)
+    return p.___has_payload_content ? .some(index(p)) : .none
   }
 }
 
@@ -221,6 +244,7 @@ extension UnsafeTreeV2BufferHeader {
     @inlinable
     subscript(___tracking_tag: _TrackingTag) -> _NodePtr {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
+      assert(___tracking_tag < freshPoolUsedCount)
       var remaining = Int(truncatingIfNeeded: ___tracking_tag)
       var p = freshBucketHead?.accessor(payload: payloadLayout)
       while let h = p {
@@ -278,9 +302,8 @@ extension UnsafeTreeV2BufferHeader {
       assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
       assert(recycleHead != p, "過剰リサイクル不可")
       count -= 1
-      #if DEBUG || true
-        p.pointee.___recycle_count &+= 1
-      #endif
+      // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
+      p.pointee.___recycle_count &+= 1
       freshBucketAllocator.deinitialize(p.advanced(by: 1))
       #if DEBUG
         payloadDeinitializedCount += 1
@@ -313,11 +336,11 @@ extension UnsafeTreeV2BufferHeader {
 #endif
 
 #if DEBUG
-extension UnsafeTreeV2BufferHeader: _FreshPoolDebug {}
+  extension UnsafeTreeV2BufferHeader: _FreshPoolDebug {}
 #endif
 
 #if DEBUG || GRAPHVIZ_DEBUG
-extension UnsafeTreeV2BufferHeader: _RecyclePoolDebug {}
+  extension UnsafeTreeV2BufferHeader: _RecyclePoolDebug {}
 #endif
 
 extension UnsafeTreeV2BufferHeader {
@@ -330,11 +353,15 @@ extension UnsafeTreeV2BufferHeader {
     }
     assert(p.pointee.___tracking_tag == .debug, "未使用ノードであること")
     #if true
-      p.initialize(to: nullptr.pointee)
+      p.initialize(to: UnsafeNode.template.pointee)
       p.pointee.___tracking_tag = _TrackingTag(truncatingIfNeeded: freshPoolUsedCount)
     #else
-      p.initialize(to: .create(id: freshPoolUsedCount))
+      p.initialize(
+        to: .create(
+          tag: _TrackingTag(truncatingIfNeeded: freshPoolUsedCount),
+          nullptr: nullptr))
     #endif
+    assert(p.pointee.___has_payload_content == true)
     #if DEBUG
       nodeInitializedCount += 1
     #endif

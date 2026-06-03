@@ -1,17 +1,22 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
@@ -72,14 +77,9 @@ extension ___LRUMemoizeStorage {
     @inline(__always) mutating get {
       
       let __ptr = __tree_.update { $0.find(key) }
-      
-      guard !__ptr.___is_null_or_end else {
-        return nil
-      }
-      
+      guard !__ptr.___is_end else { return nil }
       ___prepend(___pop(__ptr))
-            
-      return __tree_[_unsafe_raw: __ptr].value
+      return Base.__payload_(__ptr).value
     }
 
     @inline(__always) set {
@@ -88,32 +88,25 @@ extension ___LRUMemoizeStorage {
         fatalError()
       }
 
-      if __tree_.capacity < maxCount {
-        // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
-        __tree_.ensureCapacity(limit: maxCount)
-      }
-      
-      let __h = __tree_.update { __tree_ in
+      __tree_.ensureCapacity(limit: maxCount)
+
+      __tree_.update { __tree_ in
         
         if __tree_.count == maxCount {
           _ = __tree_.erase(___popRankLowest())
         }
-
-        assert(__tree_.count < __tree_.capacity)
         
         let (__parent, __child) = __tree_.__find_equal(key)
         
-        guard __child.pointee == __tree_.nullptr else {
-          fatalError()
-        }
+        precondition(__child.pointee == __tree_.nullptr)
+        
+        assert(__tree_.count < __tree_.capacity)
         
         let __h = __tree_.__construct_node(.init(key, __tree_.nullptr, __tree_.nullptr, newValue))
         __tree_.__insert_node_at(__parent, __child, __h)
         
-        return __h
+        ___prepend(__h)
       }
-      
-      ___prepend(__h)
     }
   }
 }

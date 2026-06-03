@@ -12,9 +12,11 @@
           "kind": "chart",
           "title": "operations",
           "tasks": [
-            "RedBlackTreeSet<Int> init from unsafe buffer",
-            "RedBlackTreeSet<Int> insert",
-            "RedBlackTreeSet<Int> insert, reserving capacity",
+            "RedBlackTreeSet<Int> symmetricDifference with Self (0% overlap)",
+            "RedBlackTreeSet<Int> symmetricDifference with Self (25% overlap)",
+            "RedBlackTreeSet<Int> symmetricDifference with Self (50% overlap)",
+            "RedBlackTreeSet<Int> symmetricDifference with Self (75% overlap)",
+            "RedBlackTreeSet<Int> symmetricDifference with Self (100% overlap)",
           ]
         },
       ]

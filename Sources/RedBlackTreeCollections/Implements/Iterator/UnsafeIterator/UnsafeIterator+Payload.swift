@@ -1,61 +1,95 @@
 //===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-ac-collections project
+// This source file is part of the swift-ac-collections project.
 //
-// Copyright (c) 2024 - 2026 narumij.
-// Licensed under Apache License v2.0 with Runtime Library Exception
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
 //
-// This code is based on work originally distributed under the Apache License 2.0 with LLVM Exceptions:
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
 //
 // Copyright © 2003-2026 The LLVM Project.
-// Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
 // The original license can be found at https://llvm.org/LICENSE.txt
 //
-// This Swift implementation includes modifications and adaptations made by narumij.
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeIterator {
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeIterator {
 
-  public struct _Payload<Base: ___TreeBase, Source: IteratorProtocol & Sequence>:
-    _UnsafeNodePtrType,
-    UnsafeAssosiatedIterator,
-    IteratorProtocol,
-    Sequence
-  where
-    Base: _UnsafeNodePtrType,
-    Source.Element == UnsafeMutablePointer<UnsafeNode>,
-    Source: UnsafeIteratorProtocol
-  {
-    @inlinable
-    public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
-      self.init(source: .init(_start: _start, _end: _end))
-    }
-
-    public var _source: Source
-
-    @inlinable
-    internal init(source: Source) {
-      self._source = source
-    }
-
-    public var _sealed_start: _SealedPtr {
-      _source._sealed_start
-    }
-
-    public var _sealed_end: _SealedPtr {
-      _source._sealed_end
-    }
-
-    @inlinable
-    public mutating func next() -> Base._PayloadValue? {
-      guard let p = _source.next() else {
-        return nil
+    public struct _Payload<Base: ___TreeBase, Source: IteratorProtocol & Sequence>:
+      _UnsafeNodePtrType,
+      UnsafeAssosiatedIterator,
+      IteratorProtocol,
+      Sequence
+    where
+      Base: _UnsafeNodePtrType,
+      Source.Element == UnsafeMutablePointer<UnsafeNode>,
+      Source: UnsafeIteratorProtocol
+    {
+      @inlinable
+      public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
+        self.init(source: .init(_start: _start, _end: _end))
       }
-      return Base.__payload_(p)
+
+      public var _source: Source
+
+      @inlinable
+      internal init(source: Source) {
+        self._source = source
+      }
+
+      public var _sealed_start: _SealedPtr {
+        _source._sealed_start
+      }
+
+      public var _sealed_end: _SealedPtr {
+        _source._sealed_end
+      }
+
+      @inlinable
+      public mutating func next() -> Base._PayloadValue? {
+        guard let p = _source.next() else {
+          return nil
+        }
+        return Base.__payload_(p)
+      }
     }
   }
-}
+#else
+  extension UnsafeIterator {
+
+    public struct _Payload<Base: ___TreeBase, Source>:
+      _UnsafeNodePtrType,
+      UnsafeAssosiatedIterator,
+      IteratorProtocol,
+      Sequence
+    where
+      Base: _UnsafeNodePtrType,
+      Source.Element == UnsafeMutablePointer<UnsafeNode>,
+      Source: IteratorProtocol
+    {
+      public var _source: Source
+
+      @inlinable
+      public init(source: Source) {
+        self._source = source
+      }
+
+      @inlinable
+      @inline(__always)
+      public mutating func next() -> Base._PayloadValue? {
+        _source.next().map(Base.__payload_)
+      }
+    }
+  }
+#endif
 
 extension UnsafeIterator._Payload: @unchecked Sendable where Source: Sendable {}
 

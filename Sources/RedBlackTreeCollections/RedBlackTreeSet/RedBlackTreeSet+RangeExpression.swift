@@ -1,0 +1,211 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+// MARK: -
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    public typealias View = RedBlackTreeKeyOnlyRangeView<Self>
+  }
+
+  extension RedBlackTreeSet {
+
+    public typealias IndexRange = UnsafeIndexV3Range
+    public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    public func isValid(_ bounds: UnboundedRange) -> Bool {
+      return __tree_.isValid(safeRange: ___safe_range)
+    }
+
+    @inlinable
+    public func isValid(_ bounds: IndexRange) -> Bool {
+      let range = __tree_.__purified_safe_(bounds)
+      return __tree_.isValid(safeRange: range)
+    }
+
+    @inlinable
+    public func isValid(_ bounds: IndexRangeExpression) -> Bool {
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+      return __tree_.isValid(safeRange: range)
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    public subscript(bounds: UnboundedRange) -> View {
+      @inline(__always) get {
+        self[_safeRange: ___safe_range]
+      }
+      @inline(__always) _modify {
+        yield &self[_safeRange: ___safe_range]
+      }
+    }
+
+    @inlinable
+    public subscript(bounds: IndexRange) -> View {
+      @inline(__always) get {
+        let range = __tree_.__purified_safe_(bounds)
+        return self[_safeRange: range]
+      }
+      @inline(__always) _modify {
+        let range = __tree_.__purified_safe_(bounds)
+        yield &self[_safeRange: range]
+      }
+    }
+
+    @inlinable
+    public subscript(bounds: IndexRangeExpression) -> View {
+      @inline(__always) get {
+        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+        return self[_safeRange: range]
+      }
+      @inline(__always) _modify {
+        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+        yield &self[_safeRange: range]
+      }
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    @discardableResult
+    public mutating func erase(_ bounds: UnboundedRange) -> Index {
+      __tree_.ensureUnique()
+      return erase(_safeRange: ___safe_range)
+    }
+
+    @inlinable
+    @discardableResult
+    public mutating func erase(_ bounds: IndexRange) -> Index {
+      __tree_.ensureUnique()
+      let range = __tree_.__purified_safe_(bounds)
+      return erase(_safeRange: range)
+    }
+
+    @inlinable
+    @discardableResult
+    public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
+      __tree_.ensureUnique()
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+      return erase(_safeRange: range)
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    public mutating func erase(
+      _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+      __tree_.ensureUnique()
+      let range = __tree_.__purified_safe_(bounds)
+      return try erase(_safeRange: range, where: shouldBeRemoved)
+    }
+
+    @inlinable
+    public mutating func erase(
+      _ bounds: IndexRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+      __tree_.ensureUnique()
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+      return try erase(_safeRange: range, where: shouldBeRemoved)
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    @discardableResult
+    mutating func erase(_safeRange range: _RawRange<_SafePtr>) -> Index {
+      assert(__tree_.isUnique())
+      guard __tree_.isValid(safeRange: range),
+        let __l = range.lowerBound.pointer,
+        let __u = range.upperBound.pointer
+      else {
+        fatalError(.invalidIndex)
+      }
+      return ___index(__tree_.erase(__l, __u))
+    }
+
+    @inlinable
+    mutating func erase(
+      _safeRange range: _RawRange<_SafePtr>,
+      where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+      assert(__tree_.isUnique())
+      guard __tree_.isValid(safeRange: range) else {
+        fatalError(.invalidIndex)
+      }
+      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound, shouldBeRemoved)
+    }
+
+    @inlinable
+    subscript(_safeRange range: _RawRange<_SafePtr>) -> View {
+
+      @inline(__always) get {
+        guard __tree_.isValid(safeRange: range) else {
+          fatalError(.invalidIndex)
+        }
+        return View(
+          __tree_: __tree_,
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
+      }
+
+      @inline(__always) _modify {
+        guard __tree_.isValid(safeRange: range) else {
+          fatalError(.invalidIndex)
+        }
+        var view = View(
+          __tree_: __tree_,
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
+        self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
+        yield &view
+      }
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    @inlinable
+    public func equalRange(_ element: Element) -> UnsafeIndexV3Range {
+      let (lower, upper) = __tree_.__equal_range_unique(element)
+      return .init(.init(lowerBound: ___index(lower), upperBound: ___index(upper)))
+    }
+  }
+#endif

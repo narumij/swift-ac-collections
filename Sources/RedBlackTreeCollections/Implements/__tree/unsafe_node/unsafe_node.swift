@@ -1,0 +1,343 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+/// A red-black tree node designed for use in raw (unsafe) memory.
+///
+///  ### UnsafeNode Binary Layout Assumptions
+///
+///  This type is designed to be embedded in a low-level allocator with the
+///  following binary memory layout per element:
+///
+///    | padding | UnsafeNode | Value |
+///
+///  Layout assumptions:
+///
+///  1. Padding before the node
+///     - Padding may exist *before* this `UnsafeNode` instance.
+///     - The padding is used to satisfy the alignment requirements of `Value`.
+///     - `UnsafeNode` itself does NOT account for this padding.
+///
+///  2. Node position
+///     - `UnsafeNode` is placed at an address such that the memory immediately
+///       following it is correctly aligned for `Value`.
+///     - This invariant is enforced by the allocator, not by `UnsafeNode`.
+///
+///  3. Value position (external invariant)
+///     - The associated `Value` is stored immediately after this node.
+///     - Given a pointer `p: UnsafeMutablePointer<UnsafeNode>`,
+///       the corresponding value is located at:
+///
+///           p.advanced(by: 1)
+///
+///  4. Responsibility boundary
+///     - `UnsafeNode` assumes the above layout invariant is already satisfied.
+///     - It performs no alignment checks and no pointer arithmetic by itself.
+///     - Breaking this invariant results in undefined behavior.
+///
+///  5. Memory management flag
+///     - `___needs_deinitialize` indicates whether the associated `Value`
+///       requires deinitialization.
+///     - This flag is managed by higher-level allocators / pools.
+///
+///  ⚠️ IMPORTANT:
+///     - Do NOT change the size or field order of `UnsafeNode`
+///       without updating the allocator that enforces this layout.
+///
+/// ---
+///
+/// 生メモリ上で使用する赤黒木ノード。
+///
+/// ※ 開発者注: 「生メモリ」は研ナオコの「ナマタマゴ」と同じ発音。
+///
+/// ### UnsafeNode のバイナリレイアウト前提
+///
+/// この型は、低レベルアロケータに埋め込まれることを前提として設計されており、
+/// 各要素は以下のバイナリメモリレイアウトを持つ。
+///
+///   | padding | UnsafeNode | PayloadValue |
+///
+/// レイアウトに関する前提条件:
+///
+/// 1. ノード前のパディング
+///    - この `UnsafeNode` インスタンスの *直前* にパディングが存在する場合がある。
+///    - このパディングは `PayloadValue` のアライメント要件を満たすためのものである。
+///    - `UnsafeNode` 自身は、このパディングを一切考慮しない。
+///
+/// 2. ノードの配置位置
+///    - `UnsafeNode` は、その直後のメモリが `PayloadValue` に対して
+///      正しくアラインされる位置に配置される。
+///    - この不変条件は `UnsafeNode` ではなく、アロケータによって保証される。
+///
+/// 3. Value の配置位置（外部不変条件）
+///    - 対応する `PayloadValue` は、このノードの直後に連続して格納される。
+///    - `p: UnsafeMutablePointer<UnsafeNode>` が与えられた場合、
+///      対応する `Payload` は次の位置に存在する:
+///
+///          p.advanced(by: 1)
+///
+/// 4. 責務の境界
+///    - `UnsafeNode` は、上記のレイアウト不変条件がすでに満たされていることを前提とする。
+///    - アライメントチェックやポインタ演算は一切行わない。
+///    - この不変条件が破られた場合の挙動は未定義である。
+///
+/// 5. メモリ管理フラグ
+///    - `___has_payload_content` は、対応する `PayloadValue` が
+///      deinitialize を必要とするかどうかを示す。
+///    - このフラグは、より上位のアロケータ／プールによって管理される。
+///
+/// ⚠️ 重要:
+///    - このレイアウトを保証しているアロケータを更新せずに、
+///      `UnsafeNode` のサイズやフィールド順序を変更してはならない。
+///
+@frozen
+public struct UnsafeNode {
+
+  public typealias Pointer = UnsafeMutablePointer<UnsafeNode>
+
+  @inlinable
+  public init(
+    ___tracking_tag: _TrackingTag,
+    __left_: Pointer,
+    __right_: Pointer,
+    __parent_: Pointer,
+    __is_black_: Bool = false,
+    ___has_payload_content: Bool = true
+  ) {
+    self.___tracking_tag = ___tracking_tag
+    self.__left_ = __left_
+    self.__right_ = __right_
+    self.__parent_ = __parent_
+    self.__is_black_ = __is_black_
+    self.___has_payload_content = ___has_payload_content
+  }
+
+  // MARK: - Meta data
+
+  /// A lightweight tracking tag used to identify and correlate nodes.
+  ///
+  /// This tag is **not** part of the tree's logical key and must not be used
+  /// for ordering or lookup semantics.
+  ///
+  /// Primary purposes:
+  /// - Tracking node identity across Copy-on-Write (CoW) operations
+  /// - Distinguishing sentinel nodes (e.g. nullptr, end, debug)
+  /// - Supporting debugging, diagnostics, and structural verification
+  ///
+  /// Special values:
+  /// - `nullptr` uses `-2`
+  /// - `end` uses `-1`
+  ///
+  /// ---
+  ///
+  /// ノードを追跡・識別するための軽量タグ。
+  ///
+  /// この値は木の論理キーではなく、
+  /// 順序付けや検索には使用してはならない。
+  ///
+  /// 主な用途:
+  /// - Copy-on-Write (CoW) 時のノード同一性の維持
+  /// - nullptr / end / debug などの特殊ノードの識別
+  /// - デバッグ・診断・構造検証の補助
+  ///
+  /// 特殊値:
+  /// - `nullptr` は `-2`
+  /// - `end` は `-1`
+  public var ___tracking_tag: _TrackingTag
+
+  #if USE_COMPACT_NODE_METADATA
+    public typealias Seal = UInt16
+  #else
+    public typealias Seal = UInt32
+  #endif
+
+  // salt付きに変更することで、まったく縁の無い木のノードを受け付けにくくすることができる
+  // saltは新規作成時のみ更新され、コピーでは継承することで、CoWまたぎには影響しない
+  // 将来の実装課題
+  // end nodeのrecycle countをsalt置き場にすればいい
+  /// 再利用された回数
+  public var ___recycle_count: Seal = 0
+
+  /// Indicates whether the payload stored after this node is currently loaded.
+  ///
+  /// When `true`, the associated payload memory is initialized and must be
+  /// deinitialized before reuse.
+  /// When `false`, the node is considered free / recycled.
+  ///
+  /// ---
+  ///
+  /// ノード直後に配置されたペイロードが有効（ロード済み）かどうかを示すフラグ。
+  ///
+  /// `true` の場合、ペイロードは初期化済みで解放対象となる。
+  /// `false` の場合、ペイロードは未使用または回収済み。
+  ///
+  public var ___has_payload_content: Bool
+
+  // MARK: - Color
+
+  /// Color flag of this red-black tree node.
+  ///
+  /// `true` indicates black, `false` indicates red.
+  ///
+  /// ---
+  ///
+  /// 赤黒木ノードの色を表すフラグ。
+  /// `true` の場合は黒、`false` の場合は赤。
+  public var __is_black_: Bool = false
+
+  // MARK: - Tree Links
+
+  /// Left child pointer of this red-black tree node.
+  ///
+  /// ---
+  ///
+  /// 赤黒木ノードの左の子ノードを指すポインタ。
+  public var __left_: Pointer
+
+  /// Right child pointer of this red-black tree node.
+  ///
+  /// ---
+  ///
+  /// 赤黒木ノードの右の子ノードを指すポインタ。
+  public var __right_: Pointer
+
+  /// Parent pointer of this red-black tree node.
+  ///
+  /// ---
+  ///
+  /// 赤黒木ノードの親ノードを指すポインタ。
+  public var __parent_: Pointer
+
+  // non optionalを選択したのは、コードのあちこちにチェックコードが自動で挟まって遅くなることを懸念しての措置
+  // nullptrは定数でもなにかコストがかかっていた記憶もある
+  // (comp, beqより、cbzやcbnzの方が速い説)
+  // 過去のコードベースで再度調査してこういった諸々の問題が杞憂だった場合、optionalに変更してnullptrにnil変更しても良い
+  //  @exclusivity(unchecked)
+  //  @usableFromInline nonisolated(unsafe)
+  //    package static let nullptr: UnsafeMutablePointer<UnsafeNode> = _singletonNull.nullptr
+  @usableFromInline nonisolated(unsafe)
+    package static var nullptr: UnsafeMutablePointer<UnsafeNode>
+  { _singletonNull.nullptr }
+
+  #if false
+    // DONE: (不可能）即値のnullptrを利用したケースの性能調査
+    //
+    // 今頃nullptrの作り方が判明した
+    // nullptrに実態がある現在の設計は未定義動作を踏みにくくある。これを失うデメリットは大きく、変更の工数も多い
+    // swift_onceで性能低下するのはイテレータのみで、他にバケットヘッダのサイズが少し減る程度のベネフィットとなる
+    // あまり現実的ではない
+    //
+    // __tree_is_left_childや__tree_prev_iterがとっても危険になる
+    // nullptrに実態がある今の設計でたまたま助けられていた模様
+    // __begin_nodeに対するprev操作がセグフォってつらい
+    //
+    // それ以外にも、フレームワーク的なチェックがまだある様子で、落ちる
+    //
+    @inlinable
+    nonisolated(unsafe)
+      package static var nullptr: UnsafeMutablePointer<UnsafeNode>
+    {
+      #if true
+        unsafeBitCast(UInt(bitPattern: 0x0), to: UnsafeMutablePointer<UnsafeNode>.self)
+      #else
+        UnsafeMutablePointer<UnsafeNode>(bitPattern: 1)!  // 0だとクラッシュする
+      #endif
+    }
+  #endif
+
+  @usableFromInline nonisolated(unsafe)
+    package static var template: UnsafeMutablePointer<UnsafeNode>
+  { _singletonTemplate.template }
+}
+
+@usableFromInline
+nonisolated(unsafe) package let _singletonNull: UnsafeNode.Null = .create()
+
+@usableFromInline
+nonisolated(unsafe) package let _singletonTemplate: UnsafeNode.Template = .create()
+
+extension UnsafeNode {
+
+  @frozen
+  @usableFromInline
+  package struct Null: ~Copyable {
+    @inlinable
+    internal init(nullptr: UnsafeMutablePointer<UnsafeNode>) {
+      self.nullptr = nullptr
+    }
+    @usableFromInline
+    package var nullptr: UnsafeMutablePointer<UnsafeNode>
+    deinit {
+      nullptr.deallocate()
+    }
+    @inlinable
+    internal static func create() -> Null {
+      let nullptr = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+      nullptr.initialize(
+        to: .create(tag: .nullptr, nullptr: nullptr, ___has_payload_content: false))
+      return .init(nullptr: nullptr)
+    }
+  }
+}
+
+extension UnsafeNode {
+
+  @frozen
+  @usableFromInline
+  package struct Template: ~Copyable {
+    @inlinable
+    internal init(template: UnsafeMutablePointer<UnsafeNode>) {
+      self.template = template
+    }
+    @usableFromInline
+    package var template: UnsafeMutablePointer<UnsafeNode>
+    deinit {
+      template.deallocate()
+    }
+    @inlinable
+    internal static func create() -> Template {
+      let template = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+      template.initialize(to: .create(tag: 0, nullptr: nullptr))
+      assert(template.pointee.___has_payload_content == true)
+      return .init(template: template)
+    }
+  }
+}
+
+extension UnsafeNode {
+
+  @inlinable
+  package static func create(
+    tag: _TrackingTag, nullptr: UnsafeMutablePointer<UnsafeNode>,
+    ___has_payload_content: Bool = true
+  )
+    -> UnsafeNode
+  {
+    .init(
+      ___tracking_tag: tag,
+      __left_: nullptr,
+      __right_: nullptr,
+      __parent_: nullptr,
+      ___has_payload_content: ___has_payload_content)
+  }
+}
+
+extension UnsafeNode: Equatable {}

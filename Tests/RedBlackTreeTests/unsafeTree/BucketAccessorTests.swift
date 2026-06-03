@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/21.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class BucketAccessorTests: RedBlackTreeTestCase {
@@ -39,7 +39,7 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
     // This is an example of a performance test case.
     self.measure {
       // Put the code you want to measure the time of here.
-      var sum = 0
+      var sum = 0 as _TrackingTag
       for _ in 0..<1_000_000 {
         for j in 0..<capacity {
           sum += accessor[j].pointee.___tracking_tag

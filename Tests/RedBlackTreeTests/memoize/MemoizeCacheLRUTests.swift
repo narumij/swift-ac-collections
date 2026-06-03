@@ -1,5 +1,5 @@
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
   import XCTest
 
   extension ___LRULinkList {
@@ -224,6 +224,16 @@
         XCTAssertEqual(cache0._copyCount, 0)  // キャパシティ変化以外でコピーが発生しない
         _fixLifetime(cache1)
       #endif
+    }
+
+    func testGet() throws {
+      var cache0 = ___LRUMemoizeStorage<TestKey, Int>(minimumCapacity: 2, maxCount: Int.max)
+      for i in 0..<10 {
+        cache0[i] = i
+      }
+      for i in 0..<10 {
+        XCTAssertEqual(cache0[i], i)
+      }
     }
 
     func testPerformanceExample() throws {

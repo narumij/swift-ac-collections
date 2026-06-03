@@ -6,9 +6,9 @@
 //
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
-extension TreeAlgorithmProtocol_std where _NodePtr == Int, _NodeRef == _PointerIndexRef {
+extension TreeAlgorithmProtocol_std where _NodePtr == _TrackingTag, _NodeRef == _PointerIndexRef {
 
   @inlinable
   @inline(__always)
@@ -36,7 +36,7 @@ extension TreeAlgorithmProtocol_std where _NodePtr == Int, _NodeRef == _PointerI
   }
 }
 
-extension TreeAlgorithmProtocol_std where _NodePtr == Int, _NodeRef == _PointerIndexRef {
+extension TreeAlgorithmProtocol_std where _NodePtr == _TrackingTag, _NodeRef == _PointerIndexRef {
 
   @inlinable
   @inline(__always)

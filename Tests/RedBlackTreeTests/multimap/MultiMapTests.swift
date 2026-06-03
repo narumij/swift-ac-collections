@@ -1,17 +1,19 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 func keyValue<K, V>(_ k: K, _ v: V) -> (key: K, value: V) { (k, v) }
 func keyValue<K, V>(_ kv: (K, V)) -> (key: K, value: V) {
   (kv.0, kv.1)
 }
-func _value<K, V>(_ k: K, _ v: V) -> RedBlackTreePair<K, V> { RedBlackTreePair(k, v) }
-func _value<K, V>(_ kv: (K, V)) -> RedBlackTreePair<K, V> { RedBlackTreePair(kv.0, kv.1) }
+func _value<K, V>(_ k: K, _ v: V) -> RedBlackTreePair<K, V> { RedBlackTreePair(key: k, value: v) }
+func _value<K, V>(_ kv: (K, V)) -> RedBlackTreePair<K, V> {
+  RedBlackTreePair(key: kv.0, value: kv.1)
+}
 
 func tuple<K, V>(_ kv: (key: K, value: V)) -> (K, V) {
   (kv.key, kv.value)
@@ -59,6 +61,17 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertNil(map.last)
     XCTAssertEqual(map.distance(from: map.startIndex, to: map.endIndex), 0)
   }
+
+  #if DEBUG
+    func testInitEmtpyArrayLiteral() throws {
+      let set: Target<Int, Int> = []
+      XCTAssertTrue(set.__tree_.isReadOnly)
+    }
+    func testInitEmtpyDictionaryLiteral() throws {
+      let set: Target<Int, Int> = [:]
+      XCTAssertTrue(set.__tree_.isReadOnly)
+    }
+  #endif
 
   func testRedBlackTreeCapacity() throws {
     var numbers: Target<Int, Int> = .init(minimumCapacity: 3)
@@ -174,7 +187,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
   }
 
   func testInitUniqueKeysWithValues() throws {
-    let dict = Target(multiKeysWithValues: [(1, 10), (2, 20)])
+    let dict = Target(keysWithValues: [(1, 10), (2, 20)])
     #if COMPATIBLE_ATCODER_2025
       XCTAssertEqual(dict.keys() + [], [1, 2])
       XCTAssertEqual(dict.values() + [], [10, 20])
@@ -189,7 +202,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
   }
 
   func testInitUniqueKeysWithValues2() throws {
-    let dict = Target(multiKeysWithValues: AnySequence([(1, 10), (2, 20)]))
+    let dict = Target(keysWithValues: AnySequence([(1, 10), (2, 20)]))
     #if COMPATIBLE_ATCODER_2025
       XCTAssertEqual(dict.keys() + [], [1, 2])
       XCTAssertEqual(dict.values() + [], [10, 20])
@@ -231,7 +244,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
   func testInitUniquingKeysWith() throws {
     do {
       let dict = Target(
-        multiKeysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
+        keysWithValues: [(1, 10), (1, 11), (2, 20), (2, 22)])
       #if COMPATIBLE_ATCODER_2025
         XCTAssertEqual(dict.keys() + [], [1, 1, 2, 2])
         XCTAssertEqual(dict.values() + [], [10, 11, 20, 22])
@@ -968,7 +981,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
         // UnsafeTreeは範囲外のインデックスを作成できない
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr)
-        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
         XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
         XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
         XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
@@ -991,7 +1004,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, 5)
 
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
@@ -1062,8 +1075,8 @@ final class MultiMapTests: RedBlackTreeTestCase {
   }
 
   func testEqual2() throws {
-    let aa = Target<Int, Int>(multiKeysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
-    let bb = Target<Int, Int>(multiKeysWithValues: [3, 4, 5, 6, 7, 8].map { ($0, $0) })
+    let aa = Target<Int, Int>(keysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
+    let bb = Target<Int, Int>(keysWithValues: [3, 4, 5, 6, 7, 8].map { ($0, $0) })
     do {
       let a = aa[0..<0]
       let b = bb[3..<3]
@@ -1183,7 +1196,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
   #if !COMPATIBLE_ATCODER_2025
     func testSortedReversed() throws {
       let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
-      let a = RedBlackTreeMultiMap<Int, Int>(multiKeysWithValues: source)
+      let a = RedBlackTreeMultiMap<Int, Int>(keysWithValues: source)
       AssertEquenceEqual(a.sorted() + [], source)
       AssertEquenceEqual(a.reversed() + [], source.reversed())
     }

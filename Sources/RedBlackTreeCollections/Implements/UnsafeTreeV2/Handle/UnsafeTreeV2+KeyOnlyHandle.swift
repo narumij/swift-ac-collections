@@ -1,0 +1,217 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+// NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
+/// SetやMultiset用に特殊化されたハンドル
+///
+/// `_Key`の取得に関して特殊化済みとなっている。
+///
+@frozen
+@usableFromInline
+struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {
+
+  @inlinable
+  internal init(
+    header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>,
+    isMulti: Bool
+  ) {
+    self.header = header
+    self.nullptr = header.pointee.nullptr
+    self.root_ref = header.pointee.root_ptr
+    self.isMulti = isMulti
+  }
+
+  @usableFromInline typealias _Key = _Key
+  @usableFromInline typealias _PayloadValue = _Key
+  @usableFromInline typealias _Pointer = _NodePtr
+
+  @usableFromInline let header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader>
+  @usableFromInline let nullptr: _NodePtr
+  @usableFromInline let root_ref: _NodeRef
+  @usableFromInline let isMulti: Bool
+}
+
+extension UnsafeTreeV2KeyOnlyHandle {
+
+  @inlinable
+  func __key(_ __v: _PayloadValue) -> _Key {
+    __v
+  }
+
+  @inlinable
+  func value_comp(_ __l: _Key, _ __r: _Key) -> Bool {
+    __l < __r
+  }
+}
+
+#if false
+  extension UnsafeTreeV2KeyOnlyHandle {
+
+    @inlinable
+    func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
+      __default_three_way_comparator(__lhs, __rhs)
+    }
+  }
+#endif
+
+#if compiler(<6.3)
+  extension UnsafeTreeV2KeyOnlyHandle {
+
+    @inlinable
+    func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
+      if __lhs < __rhs {
+        -1
+      } else if __lhs > __rhs {
+        1
+      } else {
+        0
+      }
+    }
+  }
+#else
+  extension UnsafeTreeV2KeyOnlyHandle {
+
+    @specialized(where _Key == Int)
+    @inlinable
+    func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __int_compare_result {
+      if __lhs < __rhs {
+        -1
+      } else if __lhs > __rhs {
+        1
+      } else {
+        0
+      }
+    }
+  }
+#endif
+
+// MARK: - TreeNodeValueProtocol
+
+extension UnsafeTreeV2KeyOnlyHandle {
+
+  @inlinable
+  func __get_value(_ p: _NodePtr) -> _Key {
+    p.__value_(as: _PayloadValue.self).pointee
+  }
+}
+
+extension UnsafeTreeV2KeyOnlyHandle {
+
+  @inlinable
+  public func __construct_node(_ k: _PayloadValue) -> _NodePtr {
+    let p = header.pointee.__construct_raw_node()
+    // あえてのdefer
+    defer {
+      p.__value_().initialize(to: k)
+      #if DEBUG
+        payloadInitializedCount += 1
+      #endif
+    }
+    return p
+  }
+}
+
+extension UnsafeTreeV2KeyOnlyHandle {
+
+  @inlinable
+  var __begin_node_: _NodePtr {
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      UnsafePointer(header.pointee.begin_ptr)
+    }
+    @inline(__always)
+    @_transparent
+    nonmutating unsafeMutableAddress {
+      header.pointee.begin_ptr
+    }
+  }
+
+  @inlinable
+  var __root: _NodePtr {
+    @inline(__always)
+    @_transparent
+    unsafeAddress {
+      UnsafePointer(root_ref)
+    }
+  }
+
+  @inlinable
+  func __root_ptr() -> _NodeRef {
+    root_ref
+  }
+
+  @inlinable
+  var end: _NodePtr {
+    header.pointee.end_ptr
+  }
+
+  @inlinable
+  var __end_node: _NodePtr {
+    header.pointee.end_ptr
+  }
+
+  @inlinable
+  func destroy(_ p: _NodePtr) {
+    header.pointee.___pushRecycle(p)
+  }
+
+  @inlinable
+  var __size_: Int {
+    get { header.pointee.count }
+    nonmutating set { /* NOP */  }
+  }
+}
+
+extension UnsafeTreeV2KeyOnlyHandle {
+  @usableFromInline
+  typealias __compare_result = __int_compare_result
+}
+
+extension UnsafeTreeV2KeyOnlyHandle: FindInteface, FindProtocol_ptr {}
+#if compiler(<6.3)
+  extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface, FindEqualProtocol_ptr {}
+#else
+  extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface {
+    @inlinable
+    func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef) {
+      _KeyOnly_FindEqual<_Key>(header: header).__find_equal(__v)
+    }
+  }
+#endif
+extension UnsafeTreeV2KeyOnlyHandle: FindLeafProtocol_ptr {}
+
+extension UnsafeTreeV2KeyOnlyHandle: BoundBothProtocol, BoundAlgorithmProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: FindFirstProtocol_ptr {}
+
+extension UnsafeTreeV2KeyOnlyHandle: CountProtocol_ptr {}
+
+extension UnsafeTreeV2KeyOnlyHandle: InsertNodeAtInterface, InsertNodeAtProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: InsertUniqueInterface, InsertUniqueProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: InsertMultiProtocol {}
+
+extension UnsafeTreeV2KeyOnlyHandle: EraseProtocol {}
+extension UnsafeTreeV2KeyOnlyHandle: EraseUniqueProtocol {}
+extension UnsafeTreeV2KeyOnlyHandle: RemoveInteface, RemoveProtocol_ptr {}
+
+extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmBaseProtocol_ptr {}
+extension UnsafeTreeV2KeyOnlyHandle: TreeAlgorithmProtocol_ptr {}

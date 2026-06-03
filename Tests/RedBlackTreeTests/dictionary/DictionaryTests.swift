@@ -1,9 +1,9 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 extension Optional where Wrapped == Int {
@@ -33,6 +33,17 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertEqual(map.distance(from: map.startIndex, to: map.endIndex), 0)
     XCTAssertEqual(map.count(forKey: 0), 0)
   }
+
+  #if DEBUG
+    func testInitEmtpyArrayLiteral() throws {
+      let set: RedBlackTreeDictionary<Int, Int> = []
+      XCTAssertTrue(set.__tree_.isReadOnly)
+    }
+    func testInitEmtpyDictionaryLiteral() throws {
+      let set: RedBlackTreeDictionary<Int, Int> = [:]
+      XCTAssertTrue(set.__tree_.isReadOnly)
+    }
+  #endif
 
   func testRedBlackTreeCapacity() throws {
     var numbers: RedBlackTreeDictionary<Int, Int> = .init(minimumCapacity: 3)
@@ -838,17 +849,21 @@ final class DictionaryTests: RedBlackTreeTestCase {
       let l2 = set.lowerBound(2)
       let u2 = set.upperBound(4)
       XCTAssertEqual(
-        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init($0, $0 * 10) })
+        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[l2...].map { RedBlackTreePair($0) }, [2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
-      XCTAssertEqual(set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init($0, $0 * 10) })
+        set[l2...].map { RedBlackTreePair($0) },
+        [2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[..<u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4].map { .init($0, $0 * 10) })
+        set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[...u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4, 6].map { .init($0, $0 * 10) })
+        set[..<u2].map { RedBlackTreePair($0) },
+        [1, 2, 3, 4].map { .init(key: $0, value: $0 * 10) })
+      XCTAssertEqual(
+        set[...u2].map { RedBlackTreePair($0) },
+        [1, 2, 3, 4, 6].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
         set[..<set.endIndex].map { RedBlackTreePair($0) },
-        [1, 2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
+        [1, 2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
     }
   #endif
 
@@ -858,20 +873,21 @@ final class DictionaryTests: RedBlackTreeTestCase {
       let l2 = set.lowerBound(2)
       let u2 = set.upperBound(4)
       XCTAssertEqual(
-        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init($0, $0 * 10) })
+        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
         set[l2...].map { RedBlackTreePair($0) },
-        [2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
+        [2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init($0, $0 * 10) })
+        set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
-        set[..<u2].map { RedBlackTreePair($0) }, [1, 2, 3, 4].map { .init($0, $0 * 10) })
+        set[..<u2].map { RedBlackTreePair($0) },
+        [1, 2, 3, 4].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
         set[...u2].map { RedBlackTreePair($0) },
-        [1, 2, 3, 4, 6].map { .init($0, $0 * 10) })
+        [1, 2, 3, 4, 6].map { .init(key: $0, value: $0 * 10) })
       XCTAssertEqual(
         set[..<set.endIndex].map { RedBlackTreePair($0) },
-        [1, 2, 3, 4, 6, 7].map { .init($0, $0 * 10) })
+        [1, 2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
     }
   #endif
 
@@ -896,7 +912,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
       typealias Index = RedBlackTreeDictionary<Int, String>.Index
       #if DEBUG
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
         XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
         XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
         XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
@@ -918,7 +934,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, 5)
 
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
@@ -1112,7 +1128,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     #if COMPATIBLE_ATCODER_2025
       a.removeSubrange(a.lowerBound(2)..<a.upperBound(4))
     #else
-      a.erase(a.lowerBound(2)..<a.upperBound(4))
+      _ = a.erase(a.lowerBound(2)..<a.upperBound(4))
     #endif
 
     #if COMPATIBLE_ATCODER_2025
@@ -1130,7 +1146,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
 
   #if !COMPATIBLE_ATCODER_2025
     func testSortedReversed() throws {
-      let source = [0, 1, 2, 3, 4, 5].map { RedBlackTreePair($0, $0 * 10) }
+      let source = [0, 1, 2, 3, 4, 5].map { RedBlackTreePair(key: $0, value: $0 * 10) }
       let a = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: source.map(\.tuple))
       XCTAssertEqual(a.sorted().map { RedBlackTreePair($0) }, source)
       XCTAssertEqual(a.reversed().map { RedBlackTreePair($0) }, source.reversed())

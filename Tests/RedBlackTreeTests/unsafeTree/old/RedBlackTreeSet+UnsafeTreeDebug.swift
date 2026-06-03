@@ -1,5 +1,5 @@
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   extension RedBlackTreeSet {
 
@@ -7,17 +7,17 @@
     var __nodes: [___Node] {
       (0..<__tree_.initializedCount).map {
         .init(
-          __is_black_: __tree_.__is_black_($0),
-          __left_: __tree_.__left_($0),
-          __right_: __tree_.__right_($0),
-          __parent_: __tree_.__parent_($0))
+          __is_black_: __tree_.__is_black_(_TrackingTag($0)),
+          __left_: __tree_.__left_(_TrackingTag($0)),
+          __right_: __tree_.__right_(_TrackingTag($0)),
+          __parent_: __tree_.__parent_(_TrackingTag($0)))
       }
     }
 
     @inlinable
     var ___elements: [Element] {
       (0..<__tree_.initializedCount).map {
-        __tree_.__value_($0)
+        __tree_.__value_(_TrackingTag($0))
       }
     }
     @inlinable
@@ -93,7 +93,7 @@
     }
     @inlinable
     var nullptr: _NodePtr { __tree_.nullptr }
-    @inlinable
-    var end: _NodePtr { __tree_.end }
+//    @inlinable
+//    var end: _NodePtr { __tree_.end }
   }
 #endif

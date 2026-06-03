@@ -1,9 +1,9 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 #if DEBUG
@@ -76,7 +76,7 @@ import XCTest
 
     #if TREE_INVARIANT_CHECKS
       func testBalancing0() throws {
-        __root = __nodes.count
+        __root = _TrackingTag(__nodes.count)
         __nodes.append(
           .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .end))
         XCTAssertEqual(__nodes.count, 1)

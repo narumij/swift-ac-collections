@@ -1,9 +1,9 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 final class AllocationTests: RedBlackTreeTestCase {
@@ -36,14 +36,14 @@ final class AllocationTests: RedBlackTreeTestCase {
         XCTAssertGreaterThanOrEqual(storage.capacity, 5)
         let actualCapacity = storage.capacity  // ManagedBufferの挙動が変わった
         for i in 0..<5 {
-          XCTAssertEqual(storage.__construct_node(-1).index, i)
+          XCTAssertEqual(storage.__construct_node(-1).index, _TrackingTag(i))
         }
         XCTAssertEqual(storage.capacity, actualCapacity)  // capacityが変動しないこと
         XCTAssertEqual(storage.initializedCount, 5)
         XCTAssertEqual(storage.count, 5)
         XCTAssertEqual(storage._buffer.header.recycleCount, 0)
         for i in (0..<5).reversed() {
-          storage.destroy(i)
+          storage.destroy(_TrackingTag(i))
         }
         XCTAssertEqual(storage.capacity, actualCapacity)
         XCTAssertEqual(storage.initializedCount, 5)
@@ -96,9 +96,9 @@ final class AllocationTests: RedBlackTreeTestCase {
       do {
         var A = RedBlackTreeSet<Int>()
         let B = A
-        XCTAssertTrue(A.__tree_._isIdentical(to: B.__tree_))
+        XCTAssertTrue(A.__tree_.isIdentical(to: B.__tree_))
         A.__tree_.ensureUnique()
-        XCTAssertTrue(!A.__tree_._isIdentical(to: B.__tree_))
+        XCTAssertTrue(!A.__tree_.isIdentical(to: B.__tree_))
       }
 
       #if AC_COLLECTIONS_INTERNAL_CHECKS

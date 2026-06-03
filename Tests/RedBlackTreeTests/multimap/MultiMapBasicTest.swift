@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class MultiMapBasicTest: RedBlackTreeTestCase {
@@ -26,7 +26,7 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
   }
 
   func testRemovalOperations() {
-    var multiMap = RedBlackTreeMultiMap<String, Int>(multiKeysWithValues: [
+    var multiMap = RedBlackTreeMultiMap<String, Int>(keysWithValues: [
       ("apple", 1), ("banana", 2), ("apple", 3),
     ])
 
@@ -50,7 +50,7 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
 
   func testBoundsAndIndexing() {
     let elements = [("a", 1), ("a", 2), ("b", 3), ("c", 4)]
-    let multiMap = RedBlackTreeMultiMap(multiKeysWithValues: elements)
+    let multiMap = RedBlackTreeMultiMap(keysWithValues: elements)
 
     let lb = multiMap.lowerBound("a")
     let ub = multiMap.upperBound("a")
@@ -111,5 +111,49 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     multiMap.insert(key: "apple", value: 2)
     multiMap.insert(key: "banana", value: 3)
     print(multiMap)  // 例: [apple: 5, apple: 2, banana: 3]
+  }
+
+  func testMultiMapKeepsInsertionOrderForEquivalentKeys() {
+    var tree = RedBlackTreeMultiMap<Int, String>()
+
+    tree.insert((1, "a"))
+    tree.insert((1, "b"))
+    tree.insert((1, "c"))
+
+    let values = tree[1].map { $0.value }
+
+    XCTAssertEqual(values, ["a", "b", "c"])
+  }
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testMultiMapKeepsInsertionOrderAfterEraseAndReinsert() {
+      var tree = RedBlackTreeMultiMap<Int, String>()
+
+      tree.insert((1, "a"))
+      tree.insert((1, "b"))
+      tree.insert((1, "c"))
+
+      tree[1].removeFirst()
+
+      tree.insert((1, "d"))
+
+      let values = tree[1].map { $0.value }
+
+      XCTAssertEqual(values, ["b", "c", "d"])
+    }
+  #endif
+
+  func testMultiMapKeepsInsertionOrderMixedWithOtherKeys() {
+    var tree = RedBlackTreeMultiMap<Int, String>()
+
+    tree.insert((1, "a"))
+    tree.insert((2, "x"))
+    tree.insert((1, "b"))
+    tree.insert((0, "z"))
+    tree.insert((1, "c"))
+
+    let values = tree[1].map { $0.value }
+
+    XCTAssertEqual(values, ["a", "b", "c"])
   }
 }

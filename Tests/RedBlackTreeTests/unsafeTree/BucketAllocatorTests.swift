@@ -8,7 +8,7 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   final class BucketAllocatorTests: RedBlackTreeTestCase {
 
@@ -26,7 +26,9 @@ import XCTest
         try checkHeadAllocationSize(Int16.self, capacity: n)
         try checkHeadAllocationSize(Int32.self, capacity: n)
         try checkHeadAllocationSize(Int64.self, capacity: n)
-        try checkHeadAllocationSize(Int128.self, capacity: n)
+        #if USE_INT128
+          try checkHeadAllocationSize(Int128.self, capacity: n)
+        #endif
         try checkHeadAllocationSize(Int.self, capacity: n)
         try checkHeadAllocationSize(SIMD2<Int>.self, capacity: n)
         try checkHeadAllocationSize(SIMD3<Int>.self, capacity: n)
@@ -39,14 +41,17 @@ import XCTest
 
     func checkHeadAllocationSize<_PayloadValue>(_ t: _PayloadValue.Type, capacity: Int) throws {
       let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _ in }
-      var (byteSize, alignment) = (allocator._allocationSize(capacity: capacity), allocator._pair.alignment)
+      var (byteSize, alignment) = (
+        allocator._allocationSize(capacity: capacity), allocator._pair.alignment
+      )
       byteSize += MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
       byteSize += MemoryLayout<UnsafeNode>.stride
       let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
       storage.initializeMemory(as: UInt8.self, repeating: 0xE8, count: byteSize)
       let header = storage.assumingMemoryBound(to: _Bucket.self)
-      let start = header.start(storage: header.primaryStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment)
+      let start = header.start(
+        storage: header.primaryStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment)
       XCTAssertNotEqual(start, storage)
       for i in 0..<MemoryLayout<_Bucket>.stride {
         UnsafeMutableRawPointer(header)
@@ -119,7 +124,9 @@ import XCTest
         try checkOtherAllocationSize(Int16.self, capacity: n)
         try checkOtherAllocationSize(Int32.self, capacity: n)
         try checkOtherAllocationSize(Int64.self, capacity: n)
-        try checkOtherAllocationSize(Int128.self, capacity: n)
+        #if USE_INT128
+          try checkOtherAllocationSize(Int128.self, capacity: n)
+        #endif
         try checkOtherAllocationSize(Int.self, capacity: n)
         try checkOtherAllocationSize(SIMD2<Int>.self, capacity: n)
         try checkOtherAllocationSize(SIMD3<Int>.self, capacity: n)
@@ -132,7 +139,9 @@ import XCTest
 
     func checkOtherAllocationSize<_PayloadValue>(_ t: _PayloadValue.Type, capacity: Int) throws {
       let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _ in }
-      let (byteSize, alignment) = (allocator._allocationSize(capacity: capacity), allocator._pair.alignment)
+      let (byteSize, alignment) = (
+        allocator._allocationSize(capacity: capacity), allocator._pair.alignment
+      )
       let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
       storage.initializeMemory(as: UInt8.self, repeating: 0xE8, count: byteSize)
@@ -140,7 +149,8 @@ import XCTest
       let start =
         storage
         .assumingMemoryBound(to: _Bucket.self)
-        .start(storage: header.secondaryStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment)
+        .start(
+          storage: header.secondaryStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment)
       XCTAssertNotEqual(start, storage)
       for i in 0..<MemoryLayout<_Bucket>.stride {
         storage

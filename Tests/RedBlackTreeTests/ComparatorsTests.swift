@@ -1,9 +1,9 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
@@ -24,28 +24,30 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testSetEqualRange() {
-    let set: RedBlackTreeSet = [1, 2, 3, 4, 5]
-    let r = set.equalRange(3)
-    let (lo, hi) = (r.lower, r.upper)
-    XCTAssertEqual(set[lo], 3)
-    XCTAssertEqual(set.distance(from: lo, to: hi), 1)
-  }
-
-  func testMultisetEqualRange() {
-    let multi: RedBlackTreeMultiSet = [1, 2, 2, 2, 3, 4]
-    let r = multi.equalRange(2)
-    let (lo, hi) = (r.lower, r.upper)
-
-    var count = 0
-    var idx = lo
-    while idx != hi {
-      XCTAssertEqual(multi[idx], 2)
-      count += 1
-      idx = multi.index(after: idx)
+  #if DEBUG
+    func testSetEqualRange() {
+      let set: RedBlackTreeSet = [1, 2, 3, 4, 5]
+      let r = set.equalRange(3)
+      let (lo, hi) = (r.lower, r.upper)
+      XCTAssertEqual(set[lo], 3)
+      XCTAssertEqual(set.distance(from: lo, to: hi), 1)
     }
-    XCTAssertEqual(count, 3)
-  }
+
+    func testMultisetEqualRange() {
+      let multi: RedBlackTreeMultiSet = [1, 2, 2, 2, 3, 4]
+      let r = multi.equalRange(2)
+      let (lo, hi) = (r.lower, r.upper)
+
+      var count = 0
+      var idx = lo
+      while idx != hi {
+        XCTAssertEqual(multi[idx], 2)
+        count += 1
+        idx = multi.index(after: idx)
+      }
+      XCTAssertEqual(count, 3)
+    }
+  #endif
 
   #if DEBUG
     func testMultisetKeyAndValueComp() {

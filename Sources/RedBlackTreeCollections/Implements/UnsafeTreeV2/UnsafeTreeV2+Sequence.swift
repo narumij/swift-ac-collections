@@ -1,0 +1,237 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+extension UnsafeTreeV2 {
+
+  @usableFromInline
+  internal func elementsEqual<OtherSequence>(
+    _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
+    by areEquivalent: (_PayloadValue, OtherSequence.Element) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence {
+    try unsafeValues(__first, __last).elementsEqual(other, by: areEquivalent)
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @usableFromInline
+  internal func lexicographicallyPrecedes<OtherSequence>(
+    _ __first: _NodePtr, _ __last: _NodePtr, _ other: OtherSequence,
+    by areInIncreasingOrder: (_PayloadValue, _PayloadValue) throws -> Bool
+  ) rethrows -> Bool where OtherSequence: Sequence, _PayloadValue == OtherSequence.Element {
+    try unsafeValues(__first, __last).lexicographicallyPrecedes(other, by: areInIncreasingOrder)
+  }
+}
+
+extension UnsafeTreeV2: Equatable where _PayloadValue: Equatable {
+
+  @inlinable
+  public static func == (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
+
+    if lhs.count != rhs.count {
+      return false
+    }
+
+    if lhs.count == 0 || lhs.isIdentical(to: rhs) {
+      return true
+    }
+
+    return lhs.elementsEqual(
+      lhs.__begin_node_,
+      lhs.__end_node,
+      rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
+      by: ==)
+  }
+}
+
+extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
+
+  @inlinable
+  public static func < (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
+    !lhs.isIdentical(to: rhs)
+      && lhs.lexicographicallyPrecedes(
+        lhs.__begin_node_,
+        lhs.__end_node,
+        rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
+        by: <)
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  internal func ___copy_all_to_array<T>(transform: (_NodePtr) -> T) -> [T] {
+
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      var __first = __begin_node_
+      let __last = __end_node
+      while __first != __last {
+        buffer.initialize(to: transform(__first))
+        buffer = buffer + 1
+        __first = __tree_next_iter(__first)
+      }
+    }
+  }
+
+  @inlinable
+  internal func ___rev_copy_all_to_array<T>(transform: (_NodePtr) -> T) -> [T] {
+
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      let __first = __begin_node_
+      var __last = __end_node
+      while __first != __last {
+        __last = __tree_prev_iter(__last)
+        buffer.initialize(to: transform(__last))
+        buffer = buffer + 1
+      }
+    }
+  }
+
+  @inlinable
+  internal func ___copy_all_to_array() -> [_PayloadValue] {
+    ___copy_all_to_array(transform: Base.__payload_)
+  }
+
+  @inlinable
+  internal func ___rev_copy_all_to_array() -> [_PayloadValue] {
+    ___rev_copy_all_to_array(transform: Base.__payload_)
+  }
+
+  @inlinable
+  internal func
+    ___copy_to_array<T>(
+      _ __first: _NodePtr, _ __last: _NodePtr, transform: (_NodePtr) -> T
+    ) -> [T]
+  {
+    let count = __distance(__first, __last)
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      var __first = __first
+      while __first != __last {
+        buffer.initialize(to: transform(__first))
+        buffer += 1
+        __first = __tree_next_iter(__first)
+      }
+    }
+  }
+
+  @inlinable
+  internal func
+    ___rev_copy_to_array<T>(
+      _ __first: _NodePtr, _ __last: _NodePtr, transform: (_NodePtr) -> T
+    ) -> [T]
+  {
+    let count = __distance(__first, __last)
+    return .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      initializedCount = count
+      var buffer = buffer.baseAddress!
+      var __last = __last
+      while __first != __last {
+        __last = __tree_prev_iter(__last)
+        buffer.initialize(to: transform(__last))
+        buffer += 1
+      }
+    }
+  }
+
+  @inlinable
+  internal func
+    ___copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
+  {
+    ___copy_to_array(__first, __last, transform: Base.__payload_)
+  }
+
+  @inlinable
+  internal func
+    ___rev_copy_to_array(_ __first: _NodePtr, _ __last: _NodePtr) -> [_PayloadValue]
+  {
+    ___rev_copy_to_array(__first, __last, transform: Base.__payload_)
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  internal func ___filter(
+    _ __first: _NodePtr,
+    _ __last: _NodePtr,
+    _ isIncluded: (_PayloadValue) throws -> Bool
+  )
+    rethrows -> UnsafeTreeV2
+  {
+    var tree: Tree = ._createWithNewBuffer(minimumCapacity: 0, nullptr: nullptr)
+    var (__parent, __child) = tree.___max_ref()
+    for __p in unsafeSequence(__first, __last)
+    where try isIncluded(__value_(__p)) {
+      tree.unsafeEnsureCapacity()
+      (__parent, __child) = tree.___emplace_hint_right(__parent, __child, __value_(__p))
+      assert(tree.__tree_invariant(tree.__root))
+    }
+    return tree
+  }
+}
+
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeTreeV2 {
+
+    @usableFromInline
+    internal func
+      unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
+      -> UnsafeIterator._Obverse1
+    {
+      .init(_start: __first, _end: __last)
+    }
+
+    @usableFromInline
+    internal func
+      unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
+      -> UnsafeIterator._Payload<Base, UnsafeIterator._Obverse1>
+    {
+      .init(source: .init(_start: __first, _end: __last))
+    }
+  }
+
+#else
+  extension UnsafeTreeV2 {
+
+    @usableFromInline
+    internal func
+      unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
+      -> UnsafeIterator._Obverse4
+    {
+      .init(nullptr: nullptr, _start: __first, _end: __last)
+    }
+
+    @usableFromInline
+    internal func
+      unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
+      -> UnsafeIterator._Payload<Base, UnsafeIterator._Obverse4>
+    {
+      .init(source: .init(nullptr: nullptr, _start: __first, _end: __last))
+    }
+  }
+#endif

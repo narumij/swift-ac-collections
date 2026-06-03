@@ -1,0 +1,48 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+@usableFromInline
+protocol RemoveProtocol_ptr:
+  _UnsafeNodePtrType
+    & BeginNodeInterface
+    & EndNodeInterface
+    & RootInterface
+    & SizeInterface
+    & RemoveInteface
+    & TreeAlgorithmProtocol_ptr
+{}
+
+extension RemoveProtocol_ptr {
+
+  @inlinable
+  internal func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {
+    var __r = __ptr
+    __r = __tree_next_iter(__r)
+    if __begin_node_ == __ptr {
+      __begin_node_ = __r
+    }
+    __size_ -= 1
+    // _std__tree_remove(__end_node.__left_, __ptr)
+    _ptr__tree_remove(__root, __ptr)
+    return __r
+  }
+}

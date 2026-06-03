@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import Foundation
@@ -6,92 +6,126 @@ import PackageDescription
 
 var defines: [String] = [
   //  "TREE_INVARIANT_CHECKS",
-  "GRAPHVIZ_DEBUG",
   //  "USING_ALGORITHMS",
-  //  "USING_COLLECTIONS",
   //  "ENABLE_PERFORMANCE_TESTING",
   //  "PERFOMANCE_CHECK",
-  "WITHOUT_SIZECHECK",
+  //  "SIZECHECK",
   //  "USE_OLD_FIND",
-  //  "DEATH_TEST",
+  //  "DEATH_TEST"
   //  "BENCHMARK",
-  //  "ALLOCATION_DRILL" // リリース時はオフ
+  //  "USE_C_MALLOC",
+  //  "USE_INT128",
+  //  "USE_RECYCLE_POOL_PROTOCOL",
+  //  "USE_FRESH_POOL_PROTOCOL",
+  //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし
+  //  "ALLOW_CROSS_TREE_INDEX", //木をまたいだインデックスの利用を許可するかどうか
 ]
 
 var _settings: [SwiftSetting] =
   [
-    .define("COMPATIBLE_ATCODER_2025"),
     // このコードベースは当初、2025新ジャッジ搭載を目指して開発し、無事に搭載できました。
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
     // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
     // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
+    .define("COMPATIBLE_ATCODER_2025"),
 
-    .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
+    .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),
 
-    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
     // ツリーの不変性チェックの有効無効を切り替えるマクロ定義
     // 対象のメソッドは必ずassertかXCTAssert...を介して利用する。
     // このため、リリース時はどちらにせよ無効になる
+    .define("TREE_INVARIANT_CHECKS", .when(configuration: .debug)),
 
-    .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
     // コーディング時に頻繁にテストする場合の回転向上のためのマクロ定義
     // オフにすることでいろいろスキップできる
+    .define("ENABLE_PERFORMANCE_TESTING", .when(configuration: .release)),
 
-    // .define("USE_C_MALLOC"),
     // swift_slowAllocを避ける動作をするマクロ定義
     // 少しだけパフォーマンスが改善するが、利用には注意が必要
+    // 利用可能な型アライメントが8に制限される
+    .define("USE_C_MALLOC", .when(traits: ["USE_C_MALLOC"])),
+
+    // 一部のポインタ比較で128bit幅のパス表現を用いる
+    // Int.maxサイズのノード数を用いる場合に必要となるが、現実的には不要
+    // 念のために用意してある
+    .define("USE_INT128", .when(traits: ["USE_INT128"])),
+
+    // ノードの付帯情報のビット幅を半分にするマクロ定義
+    // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる
+    // 各種ベンチマークで余り差がみられないが、removeの際のfindの速度に変化がみられる
+    // TODO: AtCoderジャッジ搭載時どちらがいいか、再度確認する
+    // GitHub Actionsのテスト実行時間をみると、あまり速くない事が気になる。
+    .define(
+      "USE_COMPACT_NODE_METADATA",
+      .when(traits: ["USE_COMPACT_NODE_METADATA"])
+    ),
+
+    .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
+
+    .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
+
+    .define("DEATH_TEST", .when(platforms: [.macOS])),
+
+    // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
+    .unsafeFlags(["-Ounchecked"], .when(configuration: .release, traits: ["_O_UNCHECKED"])),
   ]
   + defines.map { .define($0) }
 
-let dependencyMap = ["USE_C_MALLOC": "_malloc_free"]
 let additionalDepencencies: [Target.Dependency] =
   defines.contains("USE_C_MALLOC") ? ["_malloc_free"] : []
 
+let platforms: [SupportedPlatform]? =
+  defines.contains("USE_INT128")
+  ? [.macOS(.v15), .iOS(.v18), .tvOS(.v18), .watchOS(.v11), .macCatalyst(.v18)]
+  : nil
+
 let package = Package(
   name: "swift-ac-collections",
-  //  platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17), .watchOS(.v10), .macCatalyst(.v17)],
-  platforms: [.macOS(.v15), .iOS(.v18), .tvOS(.v18), .watchOS(.v11), .macCatalyst(.v18)],
-  products: [
-    // Products define the executables and libraries a package produces, making them visible to other packages.
-    .library(
-      name: "AcCollections",
-      targets: ["AcCollections"])
+  platforms: platforms,
+  products: [.library(name: "AcCollections", targets: ["AcCollections"])],
+  traits: [
+    .trait(
+      name: "USE_COMPACT_NODE_METADATA",
+      description:
+        "Use compact node metadata to reduce memory footprint and improve cache locality. This may limit the maximum number of nodes in a single tree."
+    ),
+    .trait(
+      name: "USE_C_MALLOC"
+    ),
+    .trait(
+      name: "USE_INT128"
+    ),
+    .trait(
+      name: "BENCHMARK"
+    ),
+    .trait(
+      name: "GRAPHVIZ_DEBUG"
+    ),
+    .trait(
+      name: "_O_UNCHECKED"
+    ),
   ],
   dependencies: [
-    //     .package(
-    //       url: "https://github.com/apple/swift-collections.git",
-    //       branch: "main"
-    //     ),
+
     .package(
       url: "https://github.com/apple/swift-algorithms.git",
-      from: "1.2.1"),
-
-    .package(
-      url: "https://github.com/google/swift-benchmark",
-      from: "0.1.0"),
-
-    .package(
-      url: "https://github.com/narumij/swift-ac-foundation",
-      branch: "main"),
-
-    .package(
-      url: "https://github.com/apple/swift-collections",
-      from: "1.3.0"),
-    
-    .package(
-      url: "https://github.com/swiftlang/swift-docc-plugin",
-             from: "1.0.0"),
+      from: "1.2.1")
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
+
     .target(
       name: "AcCollections",
-      dependencies: ["RedBlackTreeModule", "PermutationModule"],
+      dependencies: [
+        "RedBlackTreeCollections",
+        "RedBlackTreeModule",
+        "PermutationModule"],
       swiftSettings: _settings
     ),
+
     .target(
       name: "_malloc_free",
       publicHeadersPath: "include",
@@ -99,20 +133,31 @@ let package = Package(
         .headerSearchPath("include"),
         .define("NDEBUG", .when(configuration: .release)),
       ]),
+
+    .target(
+      name: "RedBlackTreeCollections",
+      dependencies: [] + additionalDepencencies,
+      path: "Sources/RedBlackTreeCollections",
+      exclude: ["MEMO.md"],
+      swiftSettings: _settings + [
+        // .strictMemorySafety()
+      ]),
+
     .target(
       name: "RedBlackTreeModule",
-      dependencies: [] + additionalDepencencies,
-      exclude: ["MEMO.md"],
-      swiftSettings: _settings
+      dependencies: ["RedBlackTreeCollections"],
+      path: "Sources/_RedBlackTreeModule"
     ),
+
     .testTarget(
       name: "RedBlackTreeTests",
       dependencies: [
         .product(name: "Algorithms", package: "swift-algorithms"),
-        "RedBlackTreeModule",
+        "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
     ),
+
     .target(
       name: "PermutationModule",
       dependencies: [],
@@ -121,149 +166,10 @@ let package = Package(
     .testTarget(
       name: "PermutationTests",
       dependencies: [
-        //         .product(name: "Algorithms", package: "swift-algorithms"),
+        // .product(name: "Algorithms", package: "swift-algorithms"),
         "PermutationModule"
       ],
       swiftSettings: _settings
     ),
-    .executableTarget(
-      name: "Benchmark0",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Benchmarks/Benchmark0",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Benchmark1",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Benchmarks/Benchmark1",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Benchmark2",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Benchmarks/Benchmark2",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Benchmark3",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Benchmarks/Benchmark3",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Benchmark4",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Benchmarks/Benchmark4",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Benchmark5",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-        .product(name: "Collections", package: "swift-collections"),
-      ],
-      path: "Tests/Benchmarks/Benchmark5",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Benchmark6",
-      dependencies: [
-        "RedBlackTreeModule",
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        .product(name: "Benchmark", package: "swift-benchmark"),
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-        .product(name: "Collections", package: "swift-collections"),
-      ],
-      path: "Tests/Benchmarks/Benchmark6",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "Executable",
-      dependencies: [
-        //         .product(name: "Collections", package: "swift-collections"),
-        "RedBlackTreeModule",
-        "PermutationModule",
-      ],
-      path: "Tests/Executables/Executable",
-      swiftSettings: _settings
-    ),
-    .executableTarget(
-      name: "SimpleInsert",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-        .product(name: "Collections", package: "swift-collections"),
-      ],
-      path: "Tests/Executables/SimpleInsert"),
-    .executableTarget(
-      name: "SimpleRemove",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Executables/SimpleRemove"),
-    .executableTarget(
-      name: "SimpleCreate",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Executables/SimpleCreate"),
-    .executableTarget(
-      name: "SimpleValue",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-      ],
-      path: "Tests/Executables/SimpleValue"),
-    .executableTarget(
-      name: "MultiRoundTrip",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-        .product(name: "Collections", package: "swift-collections"),
-      ],
-      path: "Tests/Executables/MultiRoundTrip"),
-    .executableTarget(
-      name: "ABC411F",
-      dependencies: [
-        "AcCollections",
-        .product(name: "AcFoundation", package: "swift-ac-foundation"),
-        .product(name: "Collections", package: "swift-collections"),
-      ],
-      path: "Tests/Executables/ABC411F"),
-    .executableTarget(
-      name: "MarriedSource",
-      dependencies: [
-        .product(name: "AcFoundation", package: "swift-ac-foundation")
-      ],
-      path: "Tests/Executables/MarriedSource",
-      exclude: ["RedBlackTree.swift_"]),
   ]
 )

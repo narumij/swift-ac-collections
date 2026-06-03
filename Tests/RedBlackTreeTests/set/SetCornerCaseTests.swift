@@ -1,7 +1,7 @@
 // RedBlackTreeSetCornerCaseTests.swift
 // swift-tools-version:5.10
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
@@ -74,11 +74,11 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
     var set: RedBlackTreeSet = [0, 1, 2, 3, 4, 5]
     let lhs = set.lowerBound(2)
     let rhs = set.lowerBound(5)
-#if COMPATIBLE_ATCODER_2025
-    set.removeSubrange(lhs..<rhs)  // 2,3,4 を削除
+    #if COMPATIBLE_ATCODER_2025
+      set.removeSubrange(lhs..<rhs)  // 2,3,4 を削除
     #else
-    set.erase(lhs..<rhs)  // 2,3,4 を削除
-#endif
+      set.erase(lhs..<rhs)  // 2,3,4 を削除
+    #endif
     XCTAssertEqual(set.sorted(), [0, 1, 5])
   }
 
@@ -116,10 +116,10 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
           XCTAssertEqual(rbTree.removeFirst(), stdSet.min()!)
           stdSet.remove(stdSet.min()!)
         case 3 where !rbTree.isEmpty:  // removeLast
-#if COMPATIBLE_ATCODER_2025
-          XCTAssertEqual(rbTree.removeLast(), stdSet.max()!)
-          stdSet.remove(stdSet.max()!)
-#endif
+          #if COMPATIBLE_ATCODER_2025
+            XCTAssertEqual(rbTree.removeLast(), stdSet.max()!)
+            stdSet.remove(stdSet.max()!)
+          #endif
         default:
           continue
         }
@@ -132,11 +132,11 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
 
   func testPopFirstAndSubtracting() {
     var s: RedBlackTreeSet = [3, 1, 2]
-#if COMPATIBLE_ATCODER_2025
-    XCTAssertEqual(s.popFirst(), 1)
-#else
-    XCTAssertEqual(s.popFirst(), 1)
-#endif
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(s.popFirst(), 1)
+    #else
+      XCTAssertEqual(s.popFirst(), 1)
+    #endif
     XCTAssertEqual(s.sorted(), [2, 3])
 
     let sub = s.subtracting([2])

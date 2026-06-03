@@ -1,9 +1,9 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 final class MultisetRemoveTests: RedBlackTreeTestCase {
@@ -42,7 +42,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
       XCTAssertFalse(set.sorted().isEmpty)
       XCTAssertTrue(set.eraseUnique(2))
       XCTAssertTrue(set.sorted().isEmpty)
-    
+
       XCTAssertFalse(set.eraseUnique(0))
       XCTAssertTrue(set.sorted().isEmpty)
       XCTAssertFalse(set.eraseUnique(1))
@@ -139,40 +139,6 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
       }
     }
   #endif
-
-  func testSmokeRemove00() throws {
-    throw XCTSkip("いままでまぐれで通っていたんだと思う。")
-    var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
-    XCTAssertEqual(s + [], (0..<2_000).flatMap { [$0, $0] })
-    for i in s {
-      #if COMPATIBLE_ATCODER_2025
-        s.removeAll(_unsafe: i)
-      #endif
-    }
-  }
-
-  func testSmokeRemove10() throws {
-    throw XCTSkip("いままでまぐれで通っていたんだと思う。")
-    var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
-    let b = s.lowerBound(0)
-    let e = s.lowerBound(10_000)
-    XCTAssertEqual(s[b..<e] + [], (0..<2_000).flatMap { [$0, $0] })
-    XCTAssertEqual(s.elements(in: 0..<10_000) + [], (0..<2_000).flatMap { [$0, $0] })
-    for i in s.elements(in: 0..<10_000) {
-      #if COMPATIBLE_ATCODER_2025
-        s.removeAll(_unsafe: i)
-      #endif
-    }
-  }
-
-  func testSmokeRemove20() throws {
-    var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
-    for i in s.elements(in: 0..<10_000) + [] {
-      #if COMPATIBLE_ATCODER_2025
-        s.removeAll(_unsafe: i)
-      #endif
-    }
-  }
 
   func testRedBlackTreeSetRemove() throws {
     var s: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4]
@@ -285,7 +251,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if DEBUG
+  #if DEBUG && COMPATIBLE_ATCODER_2025
     func testRemoveWith___Indices() throws {
       var members = RedBlackTreeMultiSet<Int>(0..<10)
       for i in members.___node_positions() {

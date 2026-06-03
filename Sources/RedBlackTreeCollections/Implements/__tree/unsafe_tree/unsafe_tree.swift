@@ -1,0 +1,59 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+@usableFromInline
+protocol _TreeNode_KeyProtocol:
+  _TreeNode_KeyInterface
+    & _TreePayloadValue_KeyInterface
+    & _TreeNode_PayloadValueInterface
+{}
+
+extension _TreeNode_KeyProtocol {
+
+  #if true
+    @inlinable
+    internal func __get_value(_ p: _NodePtr) -> _Key {
+      __key(__value_(p))
+    }
+  #else
+    @inlinable
+    internal func __get_value(_ p: _NodePtr) -> __node_value_type {
+      __key(__value_(p))
+    }
+  #endif
+}
+
+@usableFromInline
+protocol BeginProtocol: BeginNodeInterface {
+  // __begin_node_が圧倒的に速いため
+  @available(*, deprecated, renamed: "__begin_node_")
+  /// 木の左端のノードを返す
+  @inlinable func begin() -> _NodePtr
+}
+
+extension BeginProtocol {
+  // __begin_node_が圧倒的に速いため
+  @available(*, deprecated, renamed: "__begin_node_")
+  @inlinable
+  /// 木の左端のノードを返す
+  internal func begin() -> _NodePtr { __begin_node_ }
+}

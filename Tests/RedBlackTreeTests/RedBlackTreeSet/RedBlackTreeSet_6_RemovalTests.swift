@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
@@ -6,29 +6,38 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
   /// popFirst() が空セットの場合に nil を返すこと
   func test_popFirst_empty() {
     var set = RedBlackTreeSet<Int>()
-    #if COMPATIBLE_ATCODER_2025
-      let popped = set.popFirst()
-      XCTAssertNil(popped, "空セットの場合、popFirst() は nil を返すこと")
-    #else
-      let popped = set.popFirst()
-      XCTAssertNil(popped, "空セットの場合、popMin() は nil を返すこと")
-    #endif
+    let popped = set.popFirst()
+    XCTAssertNil(popped, "空セットの場合、popFirst() は nil を返すこと")
   }
 
   /// popFirst() が要素を正しく取り出し、セットが更新されること
   func test_popFirst_nonEmpty() {
     var set = RedBlackTreeSet([1, 2, 3])
-    #if COMPATIBLE_ATCODER_2025
-      let popped = set.popFirst()
-      XCTAssertNotNil(popped, "空でないセットでは popFirst() が要素を返すこと")
-    #else
-      let popped = set.popFirst()
-      XCTAssertNotNil(popped, "空でないセットでは popMin() が要素を返すこと")
-    #endif
+    let popped = set.popFirst()
+    XCTAssertNotNil(popped, "空でないセットでは popMin() が要素を返すこと")
     XCTAssertTrue([1, 2, 3].contains(popped!), "取り出した要素が元のセット内の要素であること")
     XCTAssertEqual(set.count, 2, "popFirst() 実行後、要素数が 1 減少すること")
     XCTAssertFalse(set.contains(popped!), "取り出した要素はセットから削除されていること")
   }
+
+  #if !COMPATIBLE_ATCODER_2025
+    /// popFirst() が空セットの場合に nil を返すこと
+    func test_popLast_empty() {
+      var set = RedBlackTreeSet<Int>()
+      let popped = set.popLast()
+      XCTAssertNil(popped, "空セットの場合、popLast() は nil を返すこと")
+    }
+
+    /// popLast() が要素を正しく取り出し、セットが更新されること
+    func test_popLast_nonEmpty() {
+      var set = RedBlackTreeSet([1, 2, 3])
+      let popped = set.popLast()
+      XCTAssertNotNil(popped, "空でないセットでは popMin() が要素を返すこと")
+      XCTAssertTrue([1, 2, 3].contains(popped!), "取り出した要素が元のセット内の要素であること")
+      XCTAssertEqual(set.count, 2, "popFirst() 実行後、要素数が 1 減少すること")
+      XCTAssertFalse(set.contains(popped!), "取り出した要素はセットから削除されていること")
+    }
+  #endif
 
   /// remove(_:) が指定要素を削除し、要素数が減ること
   func test_remove_element() {
@@ -174,7 +183,7 @@ extension RedBlackTreeSetRemoveTests {
     /// erase(_:) が指定インデックスの要素を削除し、次のインデックスを返すこと
     func test_erase_index_returnsNext() {
       var set = RedBlackTreeSet([1, 2, 3])
-      let index = set.index(after: set.startIndex) // element 2
+      let index = set.index(after: set.startIndex)  // element 2
       let nextIndex = set.erase(index)
 
       XCTAssertEqual(set.sorted(), [1, 3])

@@ -1,0 +1,52 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+@usableFromInline
+protocol _SequenceV2: UnsafeTreeHostV2, _PayloadValueBride, _KeyBride {}
+
+extension _SequenceV2 {
+
+  @inlinable
+  package var _start: _NodePtr {
+    __tree_.__begin_node_
+  }
+
+  @inlinable
+  package var _end: _NodePtr {
+    __tree_.__end_node
+  }
+
+  @inlinable
+  package var _safe_start: _SafePtr {
+    .success(__tree_.__begin_node_)
+  }
+
+  @inlinable
+  package var _safe_end: _SafePtr {
+    .success(__tree_.__end_node)
+  }
+
+  @inlinable
+  var ___safe_range: _RawRange<_SafePtr> {
+    .init(lowerBound: _safe_start, upperBound: _safe_end)
+  }
+}

@@ -165,6 +165,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
   ) -> Bool {
     #if false
+      // 単に元の実装。検査がないので使うと落ちる
       return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
     #else
       return (__l.___is_end ? .max : __l.___ptr_bitmap_64())

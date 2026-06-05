@@ -142,6 +142,7 @@ extension BoundAlgorithmProtocol_common_ptr {
 }
 
 #if false
+// 実験用に残してある
 @usableFromInline
 protocol BoundAlgorithmProtocol_old_ptr: BoundAlgorithmProtocol_common_ptr {}
 

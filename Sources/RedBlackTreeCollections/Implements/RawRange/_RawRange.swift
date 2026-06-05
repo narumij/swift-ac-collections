@@ -43,18 +43,6 @@ extension _RawRange where Bound == _SafePtr {
   }
 }
 
-#if false
-extension _RawRange where Bound == _SafePtr {
-
-  @inlinable
-  var uncheckedSeal: _RawRange<_SealedPtr> {
-    .init(
-      lowerBound: lowerBound.uncheckedSeal,
-      upperBound: upperBound.uncheckedSeal)
-  }
-}
-#endif
-
 extension _RawRange where Bound == UnsafeMutablePointer<UnsafeNode> {
 
   @inlinable

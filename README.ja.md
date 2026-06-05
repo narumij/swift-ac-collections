@@ -1,7 +1,17 @@
 # swift-ac-collections
 
-`swift-ac-collections` は、[AtCoder][atcoder] 向けに設計されたソート済みデータ構造のパッケージです。
-赤黒木をベースとした高速な集合・辞書を提供します。
+## コンセプト
+
+swift-ac-collections は、
+
+**「C++ の std::set / std::multiset を前提とした [AtCoder][atcoder] の問題を、
+Swift でも実用的な性能で解けるようにする」**
+
+ことを目的として設計されています。
+
+競技プログラミングで頻出する順序付き集合・辞書を、
+赤黒木ベースで提供します。
+C++ 標準ライブラリとの性能乖離をできるだけ小さくすることを重視しています。
 
 [![Swift](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml/badge.svg?branch=main)](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml)  
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)

@@ -111,13 +111,15 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
   }
 }
 
-extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
+#if false
+  extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
-  @inlinable
-  package var value: _TrackingTag {
-    (try? map(\.rawValue.pointer.trackingTag).get()) ?? .nullptr
+    @inlinable
+    package var value: _TrackingTag {
+      (try? map(\.rawValue.pointer.trackingTag).get()) ?? .nullptr
+    }
   }
-}
+#endif
 
 #if DEBUG
   extension _NodePtrSealing {

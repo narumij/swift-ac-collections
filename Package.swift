@@ -122,7 +122,10 @@ let package = Package(
       dependencies: [
         "RedBlackTreeCollections",
         "RedBlackTreeModule",
-        "PermutationModule"],
+        "PermutationModule",
+        "OptionalArrayModule",
+        "BareArrayModule",
+      ],
       swiftSettings: _settings
     ),
 
@@ -156,6 +159,26 @@ let package = Package(
         "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
+    ),
+
+    .target(
+      name: "OptionalArrayModule",
+    ),
+    .testTarget(
+      name: "OptionalArrayModuleTests",
+      dependencies: [
+        "OptionalArrayModule"
+      ]
+    ),
+
+    .target(
+      name: "BareArrayModule",
+    ),
+    .testTarget(
+      name: "BareArrayModuleTests",
+      dependencies: [
+        "BareArrayModule"
+      ]
     ),
 
     .target(

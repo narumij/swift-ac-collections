@@ -1,3 +1,6 @@
+// コピペで提出に使っていただいて構いません。
+// 提出の際のライセンス記載は不要です。
+
 /// メモ化用配列
 ///
 /// 配列ベースのメモ化に用いる配列です。
@@ -68,8 +71,11 @@ public struct OptionalArray1D<Element>: ~Copyable {
 }
 
 extension OptionalArray1D {
-
+  
   public var indices: Range<Int> { 0..<count }
+}
+
+extension OptionalArray1D {
 
   @inlinable
   var description: String {

@@ -1,4 +1,3 @@
-
 /// メモ化用配列
 ///
 /// 配列ベースのメモ化に用いる配列です。
@@ -59,7 +58,8 @@ public struct OptionalArray1D<Element>: ~Copyable {
           hasPayload[position] = true
           (payload + position).initialize(to: value)
         } else {
-
+          hasPayload[position] = false
+          (payload + position).deinitialize(count: 1)
         }
       }
       yield &value
@@ -128,7 +128,7 @@ public struct OptionalArray2D<Element>: ~Copyable {
   }
 
   @inlinable
-  public subscript(position: Int) -> OptionalArray1DSlice<Element> {
+  public subscript(position: Int) -> OptionalArray1DView<Element> {
     @inline(__always)
     get {
       precondition(position < height)
@@ -197,7 +197,7 @@ public struct OptionalArray3D<Element>: ~Copyable {
   }
 
   @inlinable
-  public subscript(position: Int) -> OptionalArray2DSlice<Element> {
+  public subscript(position: Int) -> OptionalArray2DView<Element> {
     @inline(__always)
     get {
       precondition(position < depth)
@@ -264,7 +264,7 @@ public struct OptionalArray4D<Element>: ~Copyable {
   }
 
   @inlinable
-  public subscript(position: Int) -> OptionalArray3DSlice<Element> {
+  public subscript(position: Int) -> OptionalArray3DView<Element> {
     @inline(__always)
     get {
       precondition(position < size3)
@@ -290,7 +290,7 @@ extension OptionalArray4D {
 
 // MARK: -
 
-public struct OptionalArray1DSlice<Element> {
+public struct OptionalArray1DView<Element> {
 
   @inlinable
   internal init(
@@ -327,7 +327,8 @@ public struct OptionalArray1DSlice<Element> {
           hasPayload[position] = true
           (payload + position).initialize(to: value)
         } else {
-
+          hasPayload[position] = false
+          (payload + position).deinitialize(count: 1)
         }
       }
       yield &value
@@ -335,7 +336,11 @@ public struct OptionalArray1DSlice<Element> {
   }
 }
 
-public struct OptionalArray2DSlice<Element> {
+extension OptionalArray1DView {
+  var indices: Range<Int> { 0..<count }
+}
+
+public struct OptionalArray2DView<Element> {
 
   @inlinable
   internal init(
@@ -355,7 +360,7 @@ public struct OptionalArray2DSlice<Element> {
   @usableFromInline let height: Int
 
   @inlinable
-  public subscript(position: Int) -> OptionalArray1DSlice<Element> {
+  public subscript(position: Int) -> OptionalArray1DView<Element> {
     @inline(__always)
     get {
       precondition(position < height)
@@ -372,7 +377,11 @@ public struct OptionalArray2DSlice<Element> {
   }
 }
 
-public struct OptionalArray3DSlice<Element> {
+extension OptionalArray2DView {
+  var indices: Range<Int> { 0..<height }
+}
+
+public struct OptionalArray3DView<Element> {
 
   @inlinable
   internal init(
@@ -394,7 +403,7 @@ public struct OptionalArray3DSlice<Element> {
   @usableFromInline let depth: Int
 
   @inlinable
-  public subscript(position: Int) -> OptionalArray2DSlice<Element> {
+  public subscript(position: Int) -> OptionalArray2DView<Element> {
     @inline(__always)
     get {
       precondition(position < height)
@@ -410,4 +419,8 @@ public struct OptionalArray3DSlice<Element> {
       /* NOP */
     }
   }
+}
+
+extension OptionalArray3DView {
+  var indices: Range<Int> { 0..<depth }
 }

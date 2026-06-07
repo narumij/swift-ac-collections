@@ -1,4 +1,3 @@
-
 /// 競技プログラミング用多次元配列
 ///
 /// ヒープ領域に確保される軽量な多次元配列です。
@@ -12,6 +11,16 @@ public struct BareArray<Element>: ~Copyable {
     let capacity = count
     self.payload = .allocate(capacity: capacity)
     self.payload.initialize(repeating: value, count: capacity)
+    self.count = count
+  }
+
+  @inlinable
+  init(count: Int, _ f: () -> Element) {
+    let capacity = count
+    self.payload = .allocate(capacity: capacity)
+    for i in 0..<count {
+      (payload + i).initialize(to: f())
+    }
     self.count = count
   }
 
@@ -60,13 +69,24 @@ public struct BareArray2D<Element>: ~Copyable {
     self.height = height
   }
 
+  @inlinable
+  init(width: Int, height: Int, _ f: () -> Element) {
+    self.capacity = height * width
+    self.payload = .allocate(capacity: capacity)
+    for i in 0..<capacity {
+      (payload + i).initialize(to: f())
+    }
+    self.width = width
+    self.height = height
+  }
+
   @usableFromInline let capacity: Int
   @usableFromInline let payload: UnsafeMutablePointer<Element>
   @usableFromInline let width: Int
   @usableFromInline let height: Int
 
   @inlinable
-  public subscript(position: Int) -> BareArraySlice<Element> {
+  public subscript(position: Int) -> BareArray1DView<Element> {
 
     @inline(__always)
     get {
@@ -109,6 +129,18 @@ public struct BareArray3D<Element>: ~Copyable {
     self.depth = depth
   }
 
+  @inlinable
+  init(width: Int, height: Int, depth: Int, _ f: () -> Element) {
+    self.capacity = height * width * depth
+    self.payload = .allocate(capacity: capacity)
+    for i in 0..<capacity {
+      (payload + i).initialize(to: f())
+    }
+    self.width = width
+    self.height = height
+    self.depth = depth
+  }
+
   @usableFromInline let capacity: Int
   @usableFromInline let payload: UnsafeMutablePointer<Element>
   @usableFromInline let width: Int
@@ -116,7 +148,7 @@ public struct BareArray3D<Element>: ~Copyable {
   @usableFromInline let depth: Int
 
   @inlinable
-  public subscript(position: Int) -> BareArraySlice2D<Element> {
+  public subscript(position: Int) -> BareArray2DView<Element> {
 
     @inline(__always)
     get {
@@ -154,6 +186,19 @@ public struct BareArray4D<Element>: ~Copyable {
     self.size3 = size3
   }
 
+  @inlinable
+  init(size0: Int, size1: Int, size2: Int, size3: Int, _ f: () -> Element) {
+    self.capacity = size0 * size1 * size2 * size3
+    self.payload = .allocate(capacity: capacity)
+    for i in 0..<capacity {
+      (payload + i).initialize(to: f())
+    }
+    self.size0 = size0
+    self.size1 = size1
+    self.size2 = size2
+    self.size3 = size3
+  }
+
   @usableFromInline let capacity: Int
   @usableFromInline let payload: UnsafeMutablePointer<Element>
   @usableFromInline let size0: Int
@@ -162,7 +207,7 @@ public struct BareArray4D<Element>: ~Copyable {
   @usableFromInline let size3: Int
 
   @inlinable
-  public subscript(position: Int) -> BareArraySlice3D<Element> {
+  public subscript(position: Int) -> BareArray3DView<Element> {
 
     @inline(__always)
     get {
@@ -191,7 +236,7 @@ extension BareArray4D {
 
 // MARK: -
 
-public struct BareArraySlice<Element> {
+public struct BareArray1DView<Element> {
 
   @inlinable
   internal init(payload: UnsafeMutablePointer<Element>, count: Int) {
@@ -217,12 +262,12 @@ public struct BareArraySlice<Element> {
   }
 }
 
-extension BareArraySlice {
+extension BareArray1DView {
 
   public var indices: Range<Int> { 0..<count }
 }
 
-public struct BareArraySlice2D<Element> {
+public struct BareArray2DView<Element> {
 
   @inlinable
   internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int) {
@@ -238,7 +283,7 @@ public struct BareArraySlice2D<Element> {
   @usableFromInline let height: Int
 
   @inlinable
-  public subscript(position: Int) -> BareArraySlice<Element> {
+  public subscript(position: Int) -> BareArray1DView<Element> {
 
     @inline(__always)
     get {
@@ -253,12 +298,12 @@ public struct BareArraySlice2D<Element> {
   }
 }
 
-extension BareArraySlice2D {
+extension BareArray2DView {
 
   public var indices: Range<Int> { 0..<height }
 }
 
-public struct BareArraySlice3D<Element> {
+public struct BareArray3DView<Element> {
 
   @inlinable
   internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int) {
@@ -276,7 +321,7 @@ public struct BareArraySlice3D<Element> {
   @usableFromInline let depth: Int
 
   @inlinable
-  public subscript(position: Int) -> BareArraySlice2D<Element> {
+  public subscript(position: Int) -> BareArray2DView<Element> {
 
     @inline(__always)
     get {
@@ -291,7 +336,7 @@ public struct BareArraySlice3D<Element> {
   }
 }
 
-extension BareArraySlice3D {
+extension BareArray3DView {
 
   public var indices: Range<Int> { 0..<depth }
 }

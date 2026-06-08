@@ -454,3 +454,5 @@ public struct OptionalArray3DView<Element> {
 extension OptionalArray3DView {
   var indices: Range<Int> { 0..<depth }
 }
+
+// Bare Naked Ladies オマージュかもしれない

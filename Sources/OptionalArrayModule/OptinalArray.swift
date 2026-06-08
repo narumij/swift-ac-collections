@@ -56,7 +56,7 @@ public struct OptionalArray1D<Element>: ~Copyable {
 
     @inline(__always)
     get {
-      precondition(position < count)
+      precondition(0 <= position && position < count)
       guard hasPayload[position] else {
         return nil
       }
@@ -65,7 +65,7 @@ public struct OptionalArray1D<Element>: ~Copyable {
 
     @inline(__always)
     _modify {
-      precondition(position < count)
+      precondition(0 <= position && position < count)
       var value = hasPayload[position] ? (payload + position).move() : nil
       defer {
         if let value {
@@ -148,7 +148,7 @@ public struct OptionalArray2D<Element>: ~Copyable {
   public subscript(position: Int) -> OptionalArray1DView<Element> {
     @inline(__always)
     get {
-      precondition(position < height)
+      precondition(0 <= position && position < height)
       return .init(
         hasPayload: hasPayload + width * position,
         payload: payload + width * position,
@@ -217,7 +217,7 @@ public struct OptionalArray3D<Element>: ~Copyable {
   public subscript(position: Int) -> OptionalArray2DView<Element> {
     @inline(__always)
     get {
-      precondition(position < depth)
+      precondition(0 <= position && position < depth)
       return .init(
         hasPayload: hasPayload + width * height * position,
         payload: payload + width * height * position,
@@ -288,7 +288,7 @@ public struct OptionalArray4D<Element>: ~Copyable {
   public subscript(position: Int) -> OptionalArray3DView<Element> {
     @inline(__always)
     get {
-      precondition(position < size3)
+      precondition(0 <= position && position < size3)
       return .init(
         hasPayload: hasPayload + size0 * size1 * size2 * position,
         payload: payload + size0 * size1 * size2 * position,
@@ -335,7 +335,7 @@ public struct OptionalArray1DView<Element> {
 
     @inline(__always)
     get {
-      precondition(position < count)
+      precondition(0 <= position && position < count)
       guard hasPayload[position] else {
         return nil
       }
@@ -344,7 +344,7 @@ public struct OptionalArray1DView<Element> {
 
     @inline(__always)
     _modify {
-      precondition(position < count)
+      precondition(0 <= position && position < count)
       var value = hasPayload[position] ? (payload + position).move() : nil
       defer {
         if let value {
@@ -390,7 +390,7 @@ public struct OptionalArray2DView<Element> {
   public subscript(position: Int) -> OptionalArray1DView<Element> {
     @inline(__always)
     get {
-      precondition(position < height)
+      precondition(0 <= position && position < height)
       return .init(
         hasPayload: hasPayload + width * position,
         payload: payload + width * position,
@@ -436,7 +436,7 @@ public struct OptionalArray3DView<Element> {
   public subscript(position: Int) -> OptionalArray2DView<Element> {
     @inline(__always)
     get {
-      precondition(position < height)
+      precondition(0 <= position && position < height)
       return .init(
         hasPayload: hasPayload + width * position,
         payload: payload + width * position,

@@ -274,5 +274,84 @@ import XCTest
         Array(array4d[0][0][0].indices),
         [0, 1])
     }
+
+    func testBareArrayCloneCreatesIndependentStorage() {
+      var array = BareArray<Int>(repeating: 0, count: 3)
+
+      array[1] = 123
+
+      var clone = array.clone()
+
+      clone[1] = 999
+
+      XCTAssertEqual(array[1], 123)
+      XCTAssertEqual(clone[1], 999)
+    }
+
+    func testBareArray2DCloneCreatesIndependentStorage() {
+      var array = BareArray2D<Int>(
+        repeating: 0,
+        width: 2,
+        height: 2)
+
+      array[1][0] = 123
+
+      var clone = array.clone()
+
+      clone[1][0] = 999
+
+      XCTAssertEqual(array[1][0], 123)
+      XCTAssertEqual(clone[1][0], 999)
+    }
+
+    func testBareArray3DCloneCreatesIndependentStorage() {
+      var array = BareArray3D<Int>(
+        repeating: 0,
+        width: 2,
+        height: 2,
+        depth: 2)
+
+      array[1][0][1] = 123
+
+      var clone = array.clone()
+
+      clone[1][0][1] = 999
+
+      XCTAssertEqual(array[1][0][1], 123)
+      XCTAssertEqual(clone[1][0][1], 999)
+    }
+
+    func testBareArray4DCloneCreatesIndependentStorage() {
+      var array = BareArray4D<Int>(
+        repeating: 0,
+        size0: 2,
+        size1: 2,
+        size2: 2,
+        size3: 2)
+
+      array[1][1][1][1] = 123
+
+      var clone = array.clone()
+
+      clone[1][1][1][1] = 999
+
+      XCTAssertEqual(array[1][1][1][1], 123)
+      XCTAssertEqual(clone[1][1][1][1], 999)
+    }
+
+    func testBareArrayCloneWithString() {
+      var array = BareArray<String>(
+        repeating: "",
+        count: 2)
+
+      array[0] = "abc"
+
+      var clone = array.clone()
+
+      clone[0] = "xyz"
+
+      XCTAssertEqual(array[0], "abc")
+      XCTAssertEqual(clone[0], "xyz")
+    }
   }
 #endif

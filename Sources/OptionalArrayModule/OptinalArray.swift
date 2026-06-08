@@ -225,6 +225,10 @@ extension OptionalArray3D {
   public var indices: Range<Int> { 0..<depth }
 }
 
+/// メモ化用配列
+///
+/// 配列ベースのメモ化に用いる配列です。
+/// 未初期化値の番兵を用意することなく利用できます。
 @frozen
 public struct OptionalArray4D<Element>: ~Copyable {
 
@@ -296,6 +300,9 @@ extension OptionalArray4D {
 
 // MARK: -
 
+/// 要素アクセスの為の一時データ構造
+///
+/// 参照型の挙動をする
 public struct OptionalArray1DView<Element> {
 
   @inlinable
@@ -346,6 +353,9 @@ extension OptionalArray1DView {
   var indices: Range<Int> { 0..<count }
 }
 
+/// 要素アクセスの為の一時データ構造
+///
+/// 参照型の挙動をする
 public struct OptionalArray2DView<Element> {
 
   @inlinable
@@ -387,6 +397,9 @@ extension OptionalArray2DView {
   var indices: Range<Int> { 0..<height }
 }
 
+/// 要素アクセスの為の一時データ構造
+///
+/// 参照型の挙動をする
 public struct OptionalArray3DView<Element> {
 
   @inlinable

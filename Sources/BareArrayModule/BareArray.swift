@@ -239,6 +239,9 @@ extension BareArray4D {
 
 // MARK: -
 
+/// 要素アクセスの為の一時データ構造
+///
+/// 参照型の挙動をする
 public struct BareArray1DView<Element> {
 
   @inlinable
@@ -270,6 +273,9 @@ extension BareArray1DView {
   public var indices: Range<Int> { 0..<count }
 }
 
+/// 要素アクセスの為の一時データ構造
+///
+/// 参照型の挙動をする
 public struct BareArray2DView<Element> {
 
   @inlinable
@@ -306,6 +312,9 @@ extension BareArray2DView {
   public var indices: Range<Int> { 0..<height }
 }
 
+/// 要素アクセスの為の一時データ構造
+///
+/// 参照型の挙動をする
 public struct BareArray3DView<Element> {
 
   @inlinable

@@ -86,6 +86,8 @@ extension OptionalArray1D {
   public var indices: Range<Int> { 0..<count }
 }
 
+extension OptionalArray1D: @unchecked Sendable where Element: Sendable { }
+
 extension OptionalArray1D {
 
   @inlinable
@@ -167,6 +169,8 @@ extension OptionalArray2D {
   public var indices: Range<Int> { 0..<height }
 }
 
+extension OptionalArray2D: @unchecked Sendable where Element: Sendable { }
+
 /// メモ化用配列
 ///
 /// 配列ベースのメモ化に用いる配列です。
@@ -235,6 +239,8 @@ extension OptionalArray3D {
 
   public var indices: Range<Int> { 0..<depth }
 }
+
+extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
 
 /// メモ化用配列
 ///
@@ -308,6 +314,8 @@ extension OptionalArray4D {
 
   public var indices: Range<Int> { 0..<size3 }
 }
+
+extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
 
 // MARK: -
 

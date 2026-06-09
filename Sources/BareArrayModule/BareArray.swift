@@ -80,6 +80,8 @@ extension BareArray {
   public var indices: Range<Int> { 0..<count }
 }
 
+extension BareArray: @unchecked Sendable where Element: Sendable { }
+
 /// 競技プログラミング用多次元配列
 ///
 /// ヒープ領域に確保される軽量な多次元配列です。
@@ -154,6 +156,8 @@ extension BareArray2D {
   @inlinable
   public var indices: Range<Int> { 0..<height }
 }
+
+extension BareArray2D: @unchecked Sendable where Element: Sendable { }
 
 /// 競技プログラミング用多次元配列
 ///
@@ -234,6 +238,8 @@ extension BareArray3D {
   public var indices: Range<Int> { 0..<depth }
 }
 
+extension BareArray3D: @unchecked Sendable where Element: Sendable { }
+
 public struct BareArray4D<Element>: ~Copyable {
 
   @inlinable
@@ -312,6 +318,8 @@ extension BareArray4D {
   @inlinable
   public var indices: Range<Int> { 0..<size3 }
 }
+
+extension BareArray4D: @unchecked Sendable where Element: Sendable { }
 
 // MARK: -
 

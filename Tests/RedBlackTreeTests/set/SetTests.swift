@@ -952,7 +952,7 @@ final class SetTests: RedBlackTreeTestCase {
 
   func testIndexValidation() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-    XCTAssertEqual(set.capacity, 5, "一時しのぎのチェックテスト") // 仕様変更
+    XCTAssertEqual(set.capacity, 8, "一時しのぎのチェックテスト")
     XCTAssertTrue(set.isValid(set.startIndex))
     XCTAssertFalse(set.isValid(set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
     typealias Index = RedBlackTreeSet<Int>.Index

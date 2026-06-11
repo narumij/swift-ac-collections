@@ -19,6 +19,7 @@ var defines: [String] = [
   //  "USE_FRESH_POOL_PROTOCOL",
   //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし
   //  "ALLOW_CROSS_TREE_INDEX", //木をまたいだインデックスの利用を許可するかどうか
+  //    "USE_INT128",
 ]
 
 var _settings: [SwiftSetting] =
@@ -76,14 +77,8 @@ var _settings: [SwiftSetting] =
 let additionalDepencencies: [Target.Dependency] =
   defines.contains("USE_C_MALLOC") ? ["_malloc_free"] : []
 
-let platforms: [SupportedPlatform]? =
-  defines.contains("USE_INT128")
-  ? [.macOS(.v15), .iOS(.v18), .tvOS(.v18), .watchOS(.v11), .macCatalyst(.v18)]
-  : nil
-
 let package = Package(
   name: "swift-ac-collections",
-  platforms: platforms,
   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   traits: [
     .trait(

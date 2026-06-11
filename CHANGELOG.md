@@ -8,9 +8,113 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- BareArrayModuleを追加
+- OptionalArrayModuleを追加
+- `ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND` traitを追加
+- `USE_INT128` traitを追加
+
 ### Changed
+- Swift tools versionを6.2へ更新
+- RedBlackTreeCollectionsのlower/upper bound探索でレガシー実装を切り替え可能に変更
+- ベンチマーク結果・差分レポートを更新
+
 ### Fixed
+- BareArray / OptionalArrayのテストを追加し、既存テストを修正
+- RedBlackTreeCollectionsの比較・bounds・find周りの実装を修正
+
 ### Removed
+- Rigid系の実験コードを削除
+
+## [0.4.1] - 2026-06-04
+### Added
+- Benchmarksパッケージを追加し、RedBlackTreeDictionary / RedBlackTreeSetのベンチマーク結果を整理
+- Death test / fatal error系のテストを整理・追加
+- RigidArray系の実験コードを追加
+
+### Changed
+- RedBlackTreeModuleからRedBlackTreeCollectionsへの移行後の互換性・deprecated APIを調整
+- テスト・ベンチマーク用ターゲット構成を整理
+- README / LICENSE / Package.swiftを更新
+
+### Fixed
+- 互換性維持のためのdeprecated APIを修正
+- コンパイルエラーとテストを修正
+
+### Removed
+- 旧Tests/Benchmarks・Tests/Executables系の実験ターゲットを整理・削除
+
+## [0.4.0] - 2026-06-01
+### Changed
+- RedBlackTreeModuleをRedBlackTreeCollectionsへリネーム
+- Package.swiftのターゲット構成をRedBlackTreeCollections向けに更新
+
+## [0.3.4] - 2026-06-01
+### Added
+- CollectionBenchmarks / Benchmark7を追加
+- RedBlackTreeSetのreserveCapacityテストを追加
+- `LazyDetach` / `_KeyOnly_FindEqual`など内部実装を追加
+- Benchmark.Chartsを追加
+
+### Changed
+- RedBlackTreeSet / MultiSet / MultiMap / DictionaryのIndex・Sequence・RangeExpression・SetAlgebra周りを更新
+- bounds / find / iterator / copy-on-write周りの内部実装を大きく整理
+- benchmarkとREADMEを更新
+
+### Fixed
+- set algebra、ensureCapacity、find、index、iterator周りの不具合を修正
+- コンパイル警告とテストを修正
+
+### Removed
+- 一部の実験用executable / benchmarkターゲットを削除
+- 不要なコメントアウト・dead codeを削除
+
+## [0.3.3] - 2026-05-13
+### Added
+- SetAlgebra関連の実装とテストを追加・拡充
+- `pop` / `removeFirst` / `removeLast` / min-max / count周りの操作を追加・調整
+- ベンチマークを追加・更新
+
+### Changed
+- UnsafeIndexV3 / RawRange / iterator / tied buffer proxy周りを更新
+- `@inlinable` / `@usableFromInline` / `@inline(__always)`周りの指定を整理
+- 互換性維持用APIとdeprecated APIを整理
+
+### Fixed
+- 互換性、テスト、ベンチマークを修正
+
+## [0.3.2] - 2026-05-10
+### Added
+- LRU / Memoizeのhandle実装を追加
+- UnsafeTreeV2 / RawBuffer / RawRangeのdeprecated互換APIを追加
+- coverage・テストを追加
+
+### Changed
+- UnsafeIteratorのKey / KeyValue / MappedValue / Payload周りを更新
+- RawBuffer、Bucket、FreshPool、TiedRawBuffer周りの内部実装を整理
+- three-way compareとポインタ比較周りを整理
+
+### Fixed
+- 互換性とテストを修正
+- コンパイル警告を削減
+
+## [0.3.1] - 2026-05-06
+### Added
+- RedBlackTreeDictionary / Set / MultiSet / MultiMapを機能別ファイルへ分割
+- Codable / Equatable / Hashable / Comparable / CustomReflectable / Literal / Sendable / Sequence / Subscript / ReserveCapacity系の実装ファイルを追加
+- UnsafeIteratorのTiedIndexingとRawRange関連を追加
+
+### Changed
+- RedBlackTreeModule配下の実装を`Implements`以下へ大きく再配置
+- BoundsExpression / RangeExpression / UnsafeIndexV3 / UnsafeTreeV2 / RawBuffer / __tree周りのファイル構成を整理
+- Package.swiftとGitHub Actionsを更新
+- バッファ確保・capacity growth・deallocation周りを調整
+
+### Fixed
+- tied raw bufferのdeallocation、初期化チェック、iterator周りの不具合を修正
+- 互換性とテストを修正
+
+### Removed
+- 旧配置のファイルと一部deprecatedコードを削除
 
 ## [0.3.0] - 2026-02-23
 ### Added

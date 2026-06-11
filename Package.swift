@@ -20,6 +20,7 @@ var defines: [String] = [
   //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし
   //  "ALLOW_CROSS_TREE_INDEX", //木をまたいだインデックスの利用を許可するかどうか
   //    "USE_INT128",
+  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
 ]
 
 var _settings: [SwiftSetting] =
@@ -69,6 +70,10 @@ var _settings: [SwiftSetting] =
 
     .define("DEATH_TEST", .when(platforms: [.macOS])),
 
+    .define(
+      "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND",
+      .when(traits: ["ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"])),
+
     // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
     .unsafeFlags(["-Ounchecked"], .when(configuration: .release, traits: ["_O_UNCHECKED"])),
   ]
@@ -97,6 +102,9 @@ let package = Package(
     ),
     .trait(
       name: "GRAPHVIZ_DEBUG"
+    ),
+    .trait(
+      name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
     ),
     .trait(
       name: "_O_UNCHECKED"

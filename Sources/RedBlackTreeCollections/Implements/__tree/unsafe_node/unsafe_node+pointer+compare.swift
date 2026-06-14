@@ -83,92 +83,58 @@ internal func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  #if USE_INT128
-    // 128bit幅でかつ、必要なレジスタ数が削減されている
-    /// ルートからノードまでのパスをビットでコード化した値を返す
-    ///
-    /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
-    @inlinable
-    internal func ___ptr_bitmap_128() -> UInt128 {
-      assert(!___is_null, "Node shouldn't be null")
-      assert(!___is_end, "Node shouldn't be end")
-      var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
-      var __p = self
-      while !__p.___is_root {
-        __f &>>= 1
-        __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt128.bitWidth &- 1)
-        __p = __p.__parent_
-      }
-      return __f
+  // 128bit幅でかつ、必要なレジスタ数が削減されている
+  /// ルートからノードまでのパスをビットでコード化した値を返す
+  ///
+  /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
+  @available(macOS 15.0, *)
+  @inlinable
+  internal func ___ptr_bitmap_128() -> UInt128 {
+    assert(!___is_null, "Node shouldn't be null")
+    assert(!___is_end, "Node shouldn't be end")
+    var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
+    var __p = self
+    while !__p.___is_root {
+      __f &>>= 1
+      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt128.bitWidth &- 1)
+      __p = __p.__parent_
     }
-  #else
+    return __f
+  }
 
-    // 64bit幅でかつ、必要なレジスタ数が削減されている
-    /// ルートからノードまでのパスをビットでコード化した値を返す
-    ///
-    /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
-    @inlinable
-    internal func ___ptr_bitmap_64() -> UInt64 {
-      assert(!___is_null, "Node shouldn't be null")
-      assert(!___is_end, "Node shouldn't be end")
-      var __f: UInt64 = 1 &<< (UInt64.bitWidth &- 1)
-      var __p = self
-      while !__p.___is_root {
-        __f &>>= 1
-        __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt.bitWidth &- 1)
-        __p = __p.__parent_
-      }
-      return __f
+  // 64bit幅でかつ、必要なレジスタ数が削減されている
+  /// ルートからノードまでのパスをビットでコード化した値を返す
+  ///
+  /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
+  @inlinable
+  internal func ___ptr_bitmap_64() -> UInt64 {
+    assert(!___is_null, "Node shouldn't be null")
+    assert(!___is_end, "Node shouldn't be end")
+    var __f: UInt64 = 1 &<< (UInt64.bitWidth &- 1)
+    var __p = self
+    while !__p.___is_root {
+      __f &>>= 1
+      __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt.bitWidth &- 1)
+      __p = __p.__parent_
     }
-  #endif
-
-  #if USE_INT128
-    /// ルートからノードまでのパスをビットでコード化した値を返す
-    ///
-    /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
-    @inlinable
-    internal func ___ptr_bitmap() -> UInt128 {
-      ___ptr_bitmap_128()
-    }
-  #else
-    /// ルートからノードまでのパスをビットでコード化した値を返す
-    ///
-    /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
-    @inlinable
-    internal func ___ptr_bitmap() -> UInt64 {
-      ___ptr_bitmap_64()
-    }
-  #endif
+    return __f
+  }
 }
 
-#if USE_INT128
-  // 128bit版では速度が負けていて、64bit版では未定義が心配なので、お役御免
-  @inlinable
-  func ___ptr_comp_bitmap(
-    _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
-  ) -> Bool {
-    assert(!__l.___is_null, "Left node shouldn't be null")
-    assert(!__r.___is_null, "Right node shouldn't be null")
-    assert(!__l.___is_end, "Left node shouldn't be end")
-    assert(!__r.___is_end, "Right node shouldn't be end")
+@inlinable
+func ___ptr_comp_bitmap(
+  _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
+) -> Bool {
+  assert(!__l.___is_null, "Left node shouldn't be null")
+  assert(!__r.___is_null, "Right node shouldn't be null")
 
-    assert(___ptr_comp_multi(__l, __r) == (__l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()))
+  #if USE_INT128
+    if #available(macOS 15.0, *) {
+      return (__l.___is_end ? .max : __l.___ptr_bitmap_128())
+        < (__r.___is_end ? .max : __r.___ptr_bitmap_128())
+    }
+  #endif
 
-    // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
-    return __l.___ptr_bitmap_128() < __r.___ptr_bitmap_128()
-    //  return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
-    //  return __l.___ptr_bitmap_org() < __r.___ptr_bitmap_org()
-  }
-#else
-  @inlinable
-  func ___ptr_comp_bitmap(
-    _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
-  ) -> Bool {
-    #if false
-      return __l.___ptr_bitmap_64() < __r.___ptr_bitmap_64()
-    #else
-      return (__l.___is_end ? .max : __l.___ptr_bitmap_64())
-        < (__r.___is_end ? .max : __r.___ptr_bitmap_64())
-    #endif
-  }
-#endif
+  return (__l.___is_end ? .max : __l.___ptr_bitmap_64())
+    < (__r.___is_end ? .max : __r.___ptr_bitmap_64())
+}

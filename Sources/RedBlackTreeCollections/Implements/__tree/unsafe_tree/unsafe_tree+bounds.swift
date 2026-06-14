@@ -27,18 +27,35 @@ protocol BoundBothProtocol:
     & _Tree_IsMultiTraitInterface
 {}
 
-extension BoundBothProtocol {
+#if !ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND
+  extension BoundBothProtocol {
 
-  @inlinable
-  internal func lower_bound(_ __v: _Key) -> _NodePtr {
-    isMulti ? __lower_bound_multi(__v) : __lower_bound_unique(__v)
-  }
+    @inlinable
+    internal func lower_bound(_ __v: _Key) -> _NodePtr {
+      isMulti ? __lower_bound_multi(__v) : __lower_bound_unique(__v)
+    }
 
-  @inlinable
-  internal func upper_bound(_ __v: _Key) -> _NodePtr {
-    isMulti ? __upper_bound_multi(__v) : __upper_bound_unique(__v)
+    @inlinable
+    internal func upper_bound(_ __v: _Key) -> _NodePtr {
+      isMulti ? __upper_bound_multi(__v) : __upper_bound_unique(__v)
+    }
   }
-}
+#endif
+
+#if ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND
+  extension BoundBothProtocol {
+
+    @inlinable
+    internal func lower_bound(_ __v: _Key) -> _NodePtr {
+      __lower_bound_multi(__v)
+    }
+
+    @inlinable
+    internal func upper_bound(_ __v: _Key) -> _NodePtr {
+      __upper_bound_multi(__v)
+    }
+  }
+#endif
 
 @usableFromInline
 protocol BoundAlgorithmProtocol_ptr:
@@ -141,11 +158,10 @@ extension BoundAlgorithmProtocol_common_ptr {
   }
 }
 
-#if false
 @usableFromInline
-protocol BoundAlgorithmProtocol_old_ptr: BoundAlgorithmProtocol_common_ptr {}
+protocol BoundAlgorithmProtocol_legacy_ptr: BoundAlgorithmProtocol_common_ptr {}
 
-extension BoundAlgorithmProtocol_old_ptr {
+extension BoundAlgorithmProtocol_legacy_ptr {
 
   @inlinable
   internal func __lower_bound_unique(_ __v: _Key) -> _NodePtr {
@@ -167,4 +183,3 @@ extension BoundAlgorithmProtocol_old_ptr {
     __upper_bound_multi(__v, __root, __end_node)
   }
 }
-#endif

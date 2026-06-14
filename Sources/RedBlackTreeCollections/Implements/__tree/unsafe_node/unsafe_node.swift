@@ -237,32 +237,6 @@ public struct UnsafeNode {
     package static var nullptr: UnsafeMutablePointer<UnsafeNode>
   { _singletonNull.nullptr }
 
-  #if false
-    // DONE: (不可能）即値のnullptrを利用したケースの性能調査
-    //
-    // 今頃nullptrの作り方が判明した
-    // nullptrに実態がある現在の設計は未定義動作を踏みにくくある。これを失うデメリットは大きく、変更の工数も多い
-    // swift_onceで性能低下するのはイテレータのみで、他にバケットヘッダのサイズが少し減る程度のベネフィットとなる
-    // あまり現実的ではない
-    //
-    // __tree_is_left_childや__tree_prev_iterがとっても危険になる
-    // nullptrに実態がある今の設計でたまたま助けられていた模様
-    // __begin_nodeに対するprev操作がセグフォってつらい
-    //
-    // それ以外にも、フレームワーク的なチェックがまだある様子で、落ちる
-    //
-    @inlinable
-    nonisolated(unsafe)
-      package static var nullptr: UnsafeMutablePointer<UnsafeNode>
-    {
-      #if true
-        unsafeBitCast(UInt(bitPattern: 0x0), to: UnsafeMutablePointer<UnsafeNode>.self)
-      #else
-        UnsafeMutablePointer<UnsafeNode>(bitPattern: 1)!  // 0だとクラッシュする
-      #endif
-    }
-  #endif
-
   @usableFromInline nonisolated(unsafe)
     package static var template: UnsafeMutablePointer<UnsafeNode>
   { _singletonTemplate.template }

@@ -99,14 +99,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   var ___has_payload_content: Bool {
     pointee.___has_payload_content
   }
-
-  #if false
-    // 将来用
-    @inlinable
-    var pointer: UnsafeMutablePointer<UnsafeNode> {
-      fatalError()
-    }
-  #endif
 }
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {

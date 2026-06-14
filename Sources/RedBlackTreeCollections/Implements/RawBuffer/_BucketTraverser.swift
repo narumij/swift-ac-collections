@@ -81,12 +81,14 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
       count: pointee.count)
   }
 
-  @inlinable
-  func _capacities(storage: UnsafeMutableRawPointer, payload: _MemoryLayout) -> _BucketTraverser {
-    .init(
-      pointer: self,
-      start: start(storage: storage, valueAlignment: payload.alignment),
-      stride: MemoryLayout<UnsafeNode>.stride + payload.stride,
-      count: pointee.capacity)
-  }
+  #if DEBUG
+    @inlinable
+    func _capacities(storage: UnsafeMutableRawPointer, payload: _MemoryLayout) -> _BucketTraverser {
+      .init(
+        pointer: self,
+        start: start(storage: storage, valueAlignment: payload.alignment),
+        stride: MemoryLayout<UnsafeNode>.stride + payload.stride,
+        count: pointee.capacity)
+    }
+  #endif
 }

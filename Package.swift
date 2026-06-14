@@ -19,6 +19,8 @@ var defines: [String] = [
   //  "USE_FRESH_POOL_PROTOCOL",
   //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし
   //  "ALLOW_CROSS_TREE_INDEX", //木をまたいだインデックスの利用を許可するかどうか
+  //    "USE_INT128",
+  //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
 ]
 
 var _settings: [SwiftSetting] =
@@ -27,7 +29,7 @@ var _settings: [SwiftSetting] =
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
     // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
     // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
-    // .define("COMPATIBLE_ATCODER_2025"),
+    //    .define("COMPATIBLE_ATCODER_2025"),
 
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
@@ -68,6 +70,10 @@ var _settings: [SwiftSetting] =
 
     .define("DEATH_TEST", .when(platforms: [.macOS])),
 
+    .define(
+      "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND",
+      .when(traits: ["ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"])),
+
     // 一応用意してあるが、あまり効果が無いどころか逆効果かもしれない
     .unsafeFlags(["-Ounchecked"], .when(configuration: .release, traits: ["_O_UNCHECKED"])),
   ]
@@ -76,14 +82,8 @@ var _settings: [SwiftSetting] =
 let additionalDepencencies: [Target.Dependency] =
   defines.contains("USE_C_MALLOC") ? ["_malloc_free"] : []
 
-let platforms: [SupportedPlatform]? =
-  defines.contains("USE_INT128")
-  ? [.macOS(.v15), .iOS(.v18), .tvOS(.v18), .watchOS(.v11), .macCatalyst(.v18)]
-  : nil
-
 let package = Package(
   name: "swift-ac-collections",
-  platforms: platforms,
   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   traits: [
     .trait(
@@ -104,6 +104,9 @@ let package = Package(
       name: "GRAPHVIZ_DEBUG"
     ),
     .trait(
+      name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
+    ),
+    .trait(
       name: "_O_UNCHECKED"
     ),
   ],
@@ -122,7 +125,10 @@ let package = Package(
       dependencies: [
         "RedBlackTreeCollections",
         "RedBlackTreeModule",
-        "PermutationModule"],
+        "PermutationModule",
+        "OptionalArrayModule",
+        "BareArrayModule",
+      ],
       swiftSettings: _settings
     ),
 
@@ -156,6 +162,26 @@ let package = Package(
         "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
+    ),
+
+    .target(
+      name: "OptionalArrayModule",
+    ),
+    .testTarget(
+      name: "OptionalArrayModuleTests",
+      dependencies: [
+        "OptionalArrayModule"
+      ]
+    ),
+
+    .target(
+      name: "BareArrayModule",
+    ),
+    .testTarget(
+      name: "BareArrayModuleTests",
+      dependencies: [
+        "BareArrayModule"
+      ]
     ),
 
     .target(

@@ -175,14 +175,3 @@
   extension RedBlackTreeKeyOnlyRangeView: BalancedView {}
   extension RedBlackTreeKeyValueRangeView: BalancedView {}
 #endif
-
-// MARK: -
-
-#if false
-  public protocol BalancedMisc {
-    associatedtype Index
-    // ABC458Dをやっていて、役には立たないが無駄に欲しくなった
-    var _rootIndex: Index { get }
-    // Indexを廃止したくてもやもやしていたが、やはり必要だなと実感したので、温存にする
-  }
-#endif

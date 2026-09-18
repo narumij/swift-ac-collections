@@ -89,6 +89,7 @@ extension RedBlackTreeDictionaryProtocolConformanceTests {
 }
 
 // MARK: - Comparable
+#if USE_COMPARABLE
 extension RedBlackTreeDictionaryProtocolConformanceTests {
 
   func test_comparable_ordersByElements() {
@@ -99,6 +100,7 @@ extension RedBlackTreeDictionaryProtocolConformanceTests {
     XCTAssertFalse(b < a)
   }
 }
+#endif
 
 // MARK: - Hashable
 extension RedBlackTreeDictionaryProtocolConformanceTests {

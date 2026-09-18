@@ -63,6 +63,7 @@ extension UnsafeTreeV2: Equatable where _PayloadValue: Equatable {
   }
 }
 
+#if USE_COMPARABLE
 extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
 
   @inlinable
@@ -75,6 +76,7 @@ extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
         by: <)
   }
 }
+#endif
 
 extension UnsafeTreeV2 {
 

@@ -1045,6 +1045,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     }
   }
 
+#if USE_COMPARABLE
   func testCompare1() throws {
     do {
       let a: RedBlackTreeDictionary<Int, Int> = []
@@ -1089,6 +1090,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
       XCTAssertFalse(b < a)
     }
   }
+  #endif
 
   func testInsert() throws {
     do {

@@ -1214,6 +1214,7 @@ final class MultisetTests: RedBlackTreeTestCase {
     }
   }
 
+#if USE_COMPARABLE
   func testCompare1() throws {
     do {
       let a = RedBlackTreeMultiSet<Int>()
@@ -1258,6 +1259,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertFalse(b < a)
     }
   }
+  #endif
 
   func testCompare2() throws {
     let aa = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5])

@@ -83,6 +83,7 @@ extension RedBlackTreeMultiSetProtocolConformanceTests {
 }
 
 // MARK: - Comparable
+#if USE_COMPARABLE
 extension RedBlackTreeMultiSetProtocolConformanceTests {
 
   func test_comparable_ordersByElements() {
@@ -93,6 +94,7 @@ extension RedBlackTreeMultiSetProtocolConformanceTests {
     XCTAssertFalse(b < a)
   }
 }
+#endif
 
 // MARK: - Hashable
 extension RedBlackTreeMultiSetProtocolConformanceTests {

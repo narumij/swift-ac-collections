@@ -1103,7 +1103,6 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   }
 
-  #if USE_COMPARABLE
   func testCompare1() throws {
     do {
       let a: Target<Int, Int> = []
@@ -1148,7 +1147,6 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertFalse(b < a)
     }
   }
-  #endif
 
   func testMeld() throws {
     do {

@@ -1089,7 +1089,6 @@ final class SetTests: RedBlackTreeTestCase {
     }
   }
 
-#if USE_COMPARABLE
   func testCompare1() throws {
     do {
       let a = RedBlackTreeSet<Int>()
@@ -1134,7 +1133,6 @@ final class SetTests: RedBlackTreeTestCase {
       XCTAssertFalse(b < a)
     }
   }
-  #endif
 
   func testCompare2() throws {
     let aa = RedBlackTreeSet<Int>([0, 1, 2, 3, 4, 5])

@@ -22,7 +22,6 @@
 
 // MARK: - Comparable
 
-#if USE_COMPARABLE
 extension RedBlackTreeSet: Comparable {
 
   /// Returns a Boolean value indicating whether the value of the first
@@ -38,4 +37,3 @@ extension RedBlackTreeSet: Comparable {
     lhs.__tree_ < rhs.__tree_
   }
 }
-#endif

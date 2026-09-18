@@ -38,7 +38,6 @@ extension RedBlackTreeSetProtocolConformanceMoreTests {
 }
 
 // MARK: - Comparable
-#if USE_COMPARABLE
 extension RedBlackTreeSetProtocolConformanceMoreTests {
 
   func test_comparable_ordersByElements() {
@@ -57,7 +56,6 @@ extension RedBlackTreeSetProtocolConformanceMoreTests {
     XCTAssertFalse(b < a)
   }
 }
-#endif
 
 // MARK: - Hashable
 extension RedBlackTreeSetProtocolConformanceMoreTests {

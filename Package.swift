@@ -31,9 +31,6 @@ var _settings: [SwiftSetting] =
     // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
     .define("COMPATIBLE_ATCODER_2025"),
 
-    // コンパイラクラッシュに遭遇したため、設定として分離し、利用を停止している。
-    // .define("USE_COMPARABLE"),
-
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
     .define("AC_COLLECTIONS_INTERNAL_CHECKS", .when(configuration: .debug)),

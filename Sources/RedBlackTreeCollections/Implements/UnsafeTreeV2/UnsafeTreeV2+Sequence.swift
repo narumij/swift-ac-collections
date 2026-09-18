@@ -63,20 +63,24 @@ extension UnsafeTreeV2: Equatable where _PayloadValue: Equatable {
   }
 }
 
-#if USE_COMPARABLE
 extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
 
   @inlinable
   public static func < (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
-    !lhs.isIdentical(to: rhs)
-      && lhs.lexicographicallyPrecedes(
+    
+    // なぜかワンライナー気味にするとコンパイルエラーとなる。めんどくさいのでバグレポはしない
+    
+    if lhs.isIdentical(to: rhs) {
+      return false
+    }
+
+    return lhs.lexicographicallyPrecedes(
         lhs.__begin_node_,
         lhs.__end_node,
         rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
         by: <)
   }
 }
-#endif
 
 extension UnsafeTreeV2 {
 

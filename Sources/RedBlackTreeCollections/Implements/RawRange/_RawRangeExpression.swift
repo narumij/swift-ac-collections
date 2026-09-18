@@ -55,6 +55,11 @@ extension _RawRangeExpression: Equatable where Bound: Equatable {
       false
     }
   }
+
+  @inlinable
+  public static func != (lhs: Self, rhs: Self) -> Bool {
+    !(lhs == rhs)
+  }
 }
 
 // TODO: 方針ぶれがひどいので、整理すること

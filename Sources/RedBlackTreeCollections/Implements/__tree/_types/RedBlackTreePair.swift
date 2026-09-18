@@ -50,7 +50,13 @@ extension RedBlackTreePair: Hashable where Key: Hashable, Value: Hashable {
 extension RedBlackTreePair: Equatable where Key: Equatable, Value: Equatable {
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.tuple == rhs.tuple
+    lhs.tuple.key == rhs.tuple.key
+      && lhs.tuple.value == rhs.tuple.value
+  }
+
+  @inlinable
+  public static func != (lhs: Self, rhs: Self) -> Bool {
+    !(lhs == rhs)
   }
 }
 

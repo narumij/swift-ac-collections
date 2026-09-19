@@ -179,8 +179,10 @@ extension Benchmark {
     ) { input, removals in
       return { timer in
         var set = RedBlackTreeSet(input)
-        for i in removals {
-          set.remove(i)
+        timer.measure {
+          for i in removals {
+            set.remove(i)
+          }
         }
         precondition(set.isEmpty)
         blackHole(set)

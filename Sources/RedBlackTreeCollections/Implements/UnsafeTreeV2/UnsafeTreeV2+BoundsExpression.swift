@@ -46,6 +46,18 @@ extension UnsafeTreeV2 {
     {
       return upper_bound(key).unchecked
     }
+    
+    if expression.count == 1,
+       case .start = expression[0]
+    {
+      return __begin_node_.unchecked
+    }
+
+    if expression.count == 1,
+       case .end = expression[0]
+    {
+      return __end_node.unchecked
+    }
 
     return evaluateSlow(expression)
   }

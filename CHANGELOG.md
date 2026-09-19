@@ -15,12 +15,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Swift tools versionを6.2へ更新
-- RedBlackTreeCollectionsのlower/upper bound探索でレガシー実装を切り替え可能に変更
-- ベンチマーク結果・差分レポートを更新
+- RedBlackTreeCollectionsのlower/upper bound探索でレガシー実装を切り替え可能にし、デフォルトを新実装へ変更
+- 単一のbounds expression評価とRedBlackTreeDictionaryのdefault subscriptを最適化
+- READMEとベンチマーク結果・差分レポートを更新
 
 ### Fixed
 - BareArray / OptionalArrayのテストを追加し、既存テストを修正
 - RedBlackTreeCollectionsの比較・bounds・find周りの実装を修正
+- Swift 6.2でのComparable / Equatable適合に関するコンパイル互換性を修正
+- deprecatedなSet / MultiSetの`remove(at:)`でendIndexを不正なインデックスとして扱うよう修正
 
 ### Removed
 - Rigid系の実験コードを削除

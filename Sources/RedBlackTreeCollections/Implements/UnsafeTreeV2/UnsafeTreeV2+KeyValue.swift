@@ -38,10 +38,10 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
       // これはダミー実装らしい。つかっちゃだめっぽい
       return lookup(key)
     }
-    
+
     _modify {
       ensureUnique()
-      
+
       let (__parent, __child) = __find_equal(key)
 
       let found = __child.pointee != nullptr
@@ -70,6 +70,56 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
       yield &value
     }
+  }
+
+  @inlinable
+  public subscript(
+    key: Base._Key, default defaultValue: () -> Base._MappedValue
+  ) -> Base._MappedValue {
+
+    @inline(__always)
+    get {
+      lookup(key) ?? defaultValue()
+    }
+
+    _modify {
+
+      ensureUnique()
+
+      let (__parent, __child) = __find_equal(key)
+
+      if __child.pointee == nullptr {
+        unsafeEnsureCapacity()
+        assert(capacity > count)
+        update {
+          let __h = $0.__construct_node(Base.__payload_((key, defaultValue())))
+          $0.__insert_node_at(__parent, __child, __h)
+        }
+      }
+
+      yield &Base.__mapped_value_ptr(__child.pointee).pointee
+    }
+  }
+
+  @inlinable
+  mutating func mappedValuePtr(for key: Base._Key, default defaultValue: () -> Base._MappedValue)
+    -> Base._MappedValuePtr
+  {
+
+    ensureUnique()
+
+    let (__parent, __child) = __find_equal(key)
+
+    if __child.pointee == nullptr {
+      unsafeEnsureCapacity()
+      assert(capacity > count)
+      update {
+        let __h = $0.__construct_node(Base.__payload_((key, defaultValue())))
+        $0.__insert_node_at(__parent, __child, __h)
+      }
+    }
+
+    return Base.__mapped_value_ptr(__child.pointee)
   }
 }
 

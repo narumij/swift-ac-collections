@@ -1,9 +1,9 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 class RedBlackTreeTestCase: XCTestCase {
@@ -18,7 +18,7 @@ class RedBlackTreeTestCase: XCTestCase {
       XCTAssertEqual(nodeDeinitializedCount, 0)
       XCTAssertEqual(payloadDeinitializedCount, 0)
       // シングルトンはテストケース期間に開放されず、数があわなくなるので、その調整
-      let dummy = RedBlackTreeSet<Int>()
+      _ = RedBlackTreeSet<Int>()
       allocatedCount = 0
       // アサート(a)時はdeallocatedCount = 0をコメントアウト
       deallocatedCount = 0
@@ -36,7 +36,9 @@ class RedBlackTreeTestCase: XCTestCase {
       fatalError("singleton bufffer broken")
     }
     #if DEBUG
-      XCTAssertNil(_emptyTreeStorage.header._tied)
+      // XCTAssertNil(_emptyTreeStorage.header._tied)
+      // ホットパス改善のため最初から結束バンド済みにした
+      XCTAssertNotNil(_emptyTreeStorage.header._tied)
       XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
       XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)
 
@@ -46,13 +48,22 @@ class RedBlackTreeTestCase: XCTestCase {
       XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
       assert(nodeInitializedCount == nodeDeinitializedCount)
       XCTAssertEqual(
-        payloadInitializedCount, payloadDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
+        payloadInitializedCount, payloadDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある (\(nodeInitializedCount))")
+//    assert(payloadInitializedCount == payloadDeinitializedCount)
       allocatedCount = 0
       deallocatedCount = 0
       nodeInitializedCount = 0
       nodeDeinitializedCount = 0
       payloadInitializedCount = 0
       payloadDeinitializedCount = 0
+    
+    assert(UnsafeNode.nullptr.pointee.__left_ == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__right_ == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__parent_ == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__is_black_ == false)
+    assert(UnsafeNode.nullptr.pointee.___has_payload_content == false)
+    assert(UnsafeNode.nullptr.pointee.___recycle_count == 0)
+    assert(UnsafeNode.nullptr.pointee.___tracking_tag == .nullptr)
     #endif
   }
 }

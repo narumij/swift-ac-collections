@@ -7,7 +7,7 @@
 
 #if DEBUG && !COMPATIBLE_ATCODER_2025
   import XCTest
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 
   final class MultiMapBoundsExpressionTests: RedBlackTreeTestCase {
 

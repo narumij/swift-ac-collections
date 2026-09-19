@@ -1,0 +1,25 @@
+{
+  "kind": "group",
+  "title": "RedBlackTreeSet Benchmarks",
+  "directory": "RedBlackTreeSet Adhoc2",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "Operations",
+      "directory": "operations",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "operations",
+          "tasks": [
+            "RedBlackTreeSet<Int> symmetricDifference with Self (0% overlap)",
+            "RedBlackTreeSet<Int> symmetricDifference with Self (25% overlap)",
+            "RedBlackTreeSet<Int> symmetricDifference with Self (50% overlap)",
+            "RedBlackTreeSet<Int> symmetricDifference with Self (75% overlap)",
+            "RedBlackTreeSet<Int> symmetricDifference with Self (100% overlap)",
+          ]
+        },
+      ]
+    }
+  ]
+}

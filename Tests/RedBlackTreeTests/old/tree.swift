@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
 import Foundation
 
@@ -71,7 +71,7 @@ extension BeginProtocol {
 @usableFromInline
 protocol EndNodeProtocol: EndNodeInterface {}
 
-extension EndNodeProtocol where _NodePtr == Int {
+extension EndNodeProtocol where _NodePtr == _TrackingTag {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)
@@ -81,7 +81,7 @@ extension EndNodeProtocol where _NodePtr == Int {
 @usableFromInline
 protocol EndProtocol: EndInterface {}
 
-extension EndProtocol where _NodePtr == Int {
+extension EndProtocol where _NodePtr == _TrackingTag {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable
   @inline(__always)

@@ -8,9 +8,9 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 #if DEBUG
@@ -22,17 +22,17 @@ import XCTest
   extension RedBlackTreeDebugFixture {
 
     func __left_(_ p: _NodePtr) -> _NodePtr {
-      __tree_.__left_(p)
+      p.__left_
     }
     func __right_(_ p: _NodePtr) -> _NodePtr {
-      __tree_.__right_(p)
+      p.__right_
     }
     var __root: _NodePtr {
       get { __tree_.__root }
-      set { __tree_.__root = newValue }
+//      set { __tree_.__root = newValue }
     }
     mutating func __root(_ p: _NodePtr) {
-      __tree_.__left_(__tree_.end, p)
+      __tree_.__end_node.pointee.__left_ = p
     }
     func
       __tree_min(_ __x: _NodePtr) -> _NodePtr
@@ -83,11 +83,11 @@ extension RedBlackTreeFixture {
 }
 
 extension RedBlackTreeFixture {
-  func left(_ p: _Key) -> Int {
-    distance(from: startIndex, to: lowerBound(p))
+  func left(_ p: _Key) -> _TrackingTag {
+    _TrackingTag(distance(from: startIndex, to: lowerBound(p)))
   }
-  func right(_ p: _Key) -> Int {
-    distance(from: startIndex, to: upperBound(p))
+  func right(_ p: _Key) -> _TrackingTag {
+    _TrackingTag(distance(from: startIndex, to: upperBound(p)))
   }
 }
 

@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 import Foundation
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 public struct ___Node {
 

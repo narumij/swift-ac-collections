@@ -1,0 +1,137 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+#if COMPATIBLE_ATCODER_2025
+  public typealias CompareTrait = _Base_IsMultiInterface
+#endif
+
+public typealias ___TreeBase = _UnsafeNodePtrType & ComparableKeyTrait & _Base_IsMultiInterface
+
+public typealias ___TreeIndex = _BasePaylodValue_ElementInterface
+  & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
+
+public protocol _BaseBridge {
+  /// 基本情報
+  associatedtype Base: ___TreeBase
+}
+
+// コレクション実装の基点
+public protocol ___Root: _BaseBridge {
+  /// 木
+  associatedtype Tree
+}
+
+/// 木にどれを使うのかしっている
+public protocol UnsafeTreeBindingV2: ___Root & _UnsafeNodePtrType
+where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase {}
+
+/// 共通生木メンバー
+@usableFromInline
+protocol UnsafeTreeHostV2: UnsafeTreeBindingV2 {
+  var __tree_: Tree { get }
+}
+
+/// 変更可能共通生木メンバー
+@usableFromInline
+protocol UnsafeMutableTreeHostV2: UnsafeTreeHostV2 & _PayloadValueBride {
+  var __tree_: Tree { get set }
+}
+
+/// 区間指定メンバー
+@usableFromInline
+protocol UnsafeTreeRangeBaseInterfaceV2: UnsafeTreeHostV2 {
+  var _start: _NodePtr { get }
+  var _end: _NodePtr { get }
+}
+
+/// 区間指定メンバー
+@usableFromInline
+protocol UnsafeTreeSealedRangeBaseInterfaceV2: UnsafeTreeHostV2 {
+  var _sealed_start: _SealedPtr { get }
+  var _sealed_end: _SealedPtr { get }
+}
+
+/// 変更可能区間指定メンバー
+@usableFromInline
+protocol UnsafeMutableTreeRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
+  var _start: _NodePtr { get }
+  var _end: _NodePtr { get }
+}
+
+/// 変更可能区間指定メンバー
+@usableFromInline
+protocol UnsafeMutableTreeSealedRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
+  var _sealed_start: _SealedPtr { get }
+  var _sealed_end: _SealedPtr { get }
+}
+
+@usableFromInline
+typealias _SetBridge = _PayloadValueBride & _KeyBride & _ElementBride
+
+@usableFromInline
+typealias _MapBridge = _PayloadValueBride & _KeyBride & _MappedValueBride
+  & _ElementBride
+
+// MARK: -
+
+@usableFromInline
+protocol _RedBlackTreeKeyOnlyV2:
+  UnsafeTreeRangeBaseInterfaceV2
+    & _SetBridge
+    & _SequenceV2
+{}
+
+@usableFromInline
+protocol _RedBlackTreeKeyValuesV2:
+  UnsafeTreeRangeBaseInterfaceV2
+    & _MapBridge
+    & _SequenceV2
+    & _PaylodValueBridge_Element
+{}
+
+// MARK: -
+
+@usableFromInline
+protocol _ScalarBasePayload_KeyProtocol_ptr:
+  _ScalarBaseType
+    & _ScalarBase_ElementProtocol
+    & _ScalarBasePayloadValue_KeyProtocol
+{}
+
+extension _ScalarBasePayload_KeyProtocol_ptr {
+
+  @inlinable
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
+    p.__value_(as: _PayloadValue.self).pointee
+  }
+}
+
+@usableFromInline
+protocol _PairBasePayload_KeyProtocol_ptr: _PairBaseType & _PairBase_ElementProtocol {}
+
+extension _PairBasePayload_KeyProtocol_ptr {
+
+  @inlinable
+  public static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
+    p.__value_(as: _PayloadValue.self).pointee.tuple.key
+  }
+}

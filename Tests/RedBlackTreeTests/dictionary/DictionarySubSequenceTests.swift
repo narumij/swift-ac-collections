@@ -8,7 +8,7 @@
 // * index(_:offsetBy:) / limitedBy: の境界判定
 // * CoW 後の index 無効化 (base・slice とも false になる)
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class RedBlackTreeDictionarySubSequenceTests: RedBlackTreeTestCase {

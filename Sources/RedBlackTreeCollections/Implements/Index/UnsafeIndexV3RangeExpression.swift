@@ -1,0 +1,68 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+@frozen
+public struct UnsafeIndexV3RangeExpression {
+
+  @usableFromInline
+  internal var rangeExpression: _RawRangeExpression<UnsafeIndexV3>
+
+  @inlinable
+  internal init(_ rangeExpression: _RawRangeExpression<UnsafeIndexV3>) {
+    self.rangeExpression = rangeExpression
+  }
+}
+
+// 削除の悩みがつきまとうので、Sequence適合せず、ループはできないようにする
+
+// MARK: - Range Expression
+
+@inlinable
+public func ..< (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
+  -> UnsafeIndexV3RangeExpression
+{
+  guard lhs.lazyDetach === rhs.lazyDetach else { fatalError(.treeMissmatch) }
+  return .init(.range(from: lhs, to: rhs))
+}
+
+@inlinable
+public func ... (lhs: UnsafeIndexV3, rhs: UnsafeIndexV3)
+  -> UnsafeIndexV3RangeExpression
+{
+  guard lhs.lazyDetach === rhs.lazyDetach else { fatalError(.treeMissmatch) }
+  return .init(.closedRange(from: lhs, through: rhs))
+}
+
+@inlinable
+public prefix func ..< (rhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
+  return .init(.partialRangeTo(rhs))
+}
+
+@inlinable
+public prefix func ... (rhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
+  return .init(.partialRangeThrough(rhs))
+}
+
+@inlinable
+public postfix func ... (lhs: UnsafeIndexV3) -> UnsafeIndexV3RangeExpression {
+  return .init(.partialRangeFrom(lhs))
+}

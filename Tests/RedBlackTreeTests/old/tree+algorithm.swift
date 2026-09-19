@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
 @usableFromInline
 protocol TreeAlgorithmBaseProtocol_std: TreeAlgorithmInterface & TreeAlgorithmBaseInterface & TreeNodeAccessInterface {}

@@ -2,9 +2,9 @@ import Algorithms
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 #if DEBUG
@@ -31,7 +31,9 @@ import XCTest
 
     func testNodeFlag() {
       XCTAssertEqual(___ptr_bitmap(__root), 1 << (UInt.bitWidth - 1))
-      for (a, b) in (0...2).permutations(ofCount: 2).map({ ($0[0], $0[1]) }) {
+      for (a, b) in (0...2).permutations(ofCount: 2).map({
+        (_TrackingTag($0[0]), _TrackingTag($0[1]))
+      }) {
         XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_bitmap(a) < ___ptr_bitmap(b))
         XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_bitmap(b) < ___ptr_bitmap(a))
         XCTAssertEqual(
@@ -45,6 +47,7 @@ import XCTest
       }
     }
 
+    @available(macOS 15.0, *)
     func testNodeFlag128() {
       XCTAssertEqual(___ptr_bitmap_128(__root), 1 << (UInt128.bitWidth - 1))
       for (a, b) in (0...2).permutations(ofCount: 2).map({ ($0[0], $0[1]) }) {
@@ -58,7 +61,9 @@ import XCTest
 
     func testNodeFlag() {
       XCTAssertEqual(___ptr_bitmap(__root), 1 << (UInt.bitWidth - 1))
-      for (a, b) in (0...6).permutations(ofCount: 2).map({ ($0[0], $0[1]) }) {
+      for (a, b) in (0...6).permutations(ofCount: 2).map({
+        (_TrackingTag($0[0]), _TrackingTag($0[1]))
+      }) {
         XCTAssertEqual(___ptr_comp_multi(a, b), ___ptr_bitmap(a) < ___ptr_bitmap(b))
         XCTAssertEqual(___ptr_comp_multi(b, a), ___ptr_bitmap(b) < ___ptr_bitmap(a))
         XCTAssertEqual(
@@ -72,6 +77,7 @@ import XCTest
       }
     }
 
+    @available(macOS 15.0, *)
     func testNodeFlag128() {
       XCTAssertEqual(___ptr_bitmap_128(__root), 1 << (UInt128.bitWidth - 1))
       for (a, b) in (0...6).permutations(ofCount: 2).map({ ($0[0], $0[1]) }) {

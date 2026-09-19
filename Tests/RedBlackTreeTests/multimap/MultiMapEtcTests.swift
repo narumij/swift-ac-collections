@@ -1,9 +1,9 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 final class MultiMapEtcTests: RedBlackTreeTestCase {
@@ -40,7 +40,7 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if DEBUG
+  #if DEBUG && COMPATIBLE_ATCODER_2025
     func testExample___0() throws {
       for i in target1.___node_positions() {
         target1.__tree_._unchecked_remove(at: i)

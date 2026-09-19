@@ -1,5 +1,5 @@
 import Foundation
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 extension _TrackingTag {
   var offset: Int! {
@@ -9,11 +9,11 @@ extension _TrackingTag {
     case .nullptr:
       return nil
     default:
-      return self
+      return Int(self)
     }
   }
 }
 
 extension _TrackingTag {
-  var index: Int! { self }
+  var index: _TrackingTag! { self }
 }

@@ -4,7 +4,7 @@
 // Tests target に追加して `swift test` で実行
 // モジュール名を合わせて下さい → YourPackageName
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class SetSubSequenceTests: RedBlackTreeTestCase {
@@ -115,7 +115,6 @@ final class SetSubSequenceTests: RedBlackTreeTestCase {
 
   #if COMPATIBLE_ATCODER_2025
     func testIndexInvalidationAfterBaseMutation() throws {
-      // TODO: 再度確認
       var base: RedBlackTreeSet = [0, 1, 2, 3]
       let slice = base.elements(in: 1..<3)  // [1,2]
 

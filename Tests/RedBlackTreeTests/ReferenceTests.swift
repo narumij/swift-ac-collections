@@ -5,7 +5,7 @@
 //  Created by narumij on 2025/12/28.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class ReferenceTests: RedBlackTreeTestCase {

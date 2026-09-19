@@ -1,0 +1,115 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  internal mutating func isUnique() -> Bool {
+    _buffer.isUniqueReference()
+  }
+
+  @inlinable
+  internal mutating func ensureUnique() {
+    let isUnique = isUnique()
+    guard !isUnique else { return }
+    self = copy()
+  }
+
+  // View用
+
+  @inlinable
+  internal mutating func __ensureUnique() -> Bool {
+    let isUnique = isUnique()
+    guard !isUnique else { return false }
+    self = copy()
+    return true
+  }
+
+  #if !COMPATIBLE_ATCODER_2025
+    @inlinable
+    internal mutating func _strongEnsureUnique() {
+      return ensureUnique()
+    }
+  #endif
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  internal mutating func ensureUniqueAndCapacity(to minimumCapacity: Int) {
+
+    if !isUnique() {
+      self = withMutableHeader { $0._ensureUniqueSlow(to: minimumCapacity) }
+    } else {
+      withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
+    }
+  }
+
+  @inlinable
+  internal mutating func ensureUniqueAndCapacity() {
+
+    if !isUnique() {
+      self = withMutableHeader { $0._ensureUniqueSlow() }
+    } else {
+      withMutableHeader { $0._ensureCapacitySlow() }
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  internal mutating func ensureCapacity() {
+
+    if isReadOnly {
+      self = withMutableHeader { $0._ensureUniqueSlow() }
+    } else {
+      withMutableHeader { $0._ensureCapacitySlow() }
+    }
+  }
+
+  @inlinable
+  internal mutating func unsafeEnsureCapacity() {
+    assert(isReadOnly == false, "変更禁止シングルトンではないこと")
+    withMutableHeader { $0._ensureCapacitySlow() }
+  }
+
+  @inlinable
+  internal mutating func unsafeEnsureCapacity(to minimumCapacity: Int) {
+    assert(isReadOnly == false, "変更禁止シングルトンではないこと")
+    withMutableHeader { $0._ensureCapacitySlow(to: minimumCapacity) }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  // LRUキャッシュ用
+
+  @inlinable
+  internal mutating func ensureCapacity(limit: Int) {
+
+    // 無条件で更新するとサイズが安定せず、増加してしまう恐れがある
+    guard capacity < limit else { return }
+    assert(!isReadOnly)
+    withMutableHeader { $0._ensureCapacitySlow(limit: limit) }
+  }
+}

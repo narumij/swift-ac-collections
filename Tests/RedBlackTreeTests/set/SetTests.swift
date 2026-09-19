@@ -950,6 +950,10 @@ final class SetTests: RedBlackTreeTestCase {
     }
   #endif
 
+  // NOTE:
+  // `rawTag` からインデックスを生成する経路は、現在は主にDEBUG用のテスト補助として残している。
+  // 通常のインデックス操作ではほぼ利用しないため、範囲外rawTagの検証は低優先度とする。
+  // rawTag関連コードを整理・廃止するときに、以下のテストの必要性もまとめて再検討する。
   func testIndexValidation() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     #if COMPATIBLE_ATCODER_2025
@@ -973,7 +977,7 @@ final class SetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 3)))
       XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 4)))
     // TODO: メモリ安全に不安があるので、再度調査すること。
-    //      XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: 5))) // TODO: テスト可能性について再度検討すること
+    //      XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: 5))) // TODO: rawTag関連コードの整理時に、このテストの必要性を再検討する
     // 何のチェックをすり抜けたのかよく分からない
     // __retrieve_に暫定処置はした
     #endif
@@ -998,7 +1002,7 @@ final class SetTests: RedBlackTreeTestCase {
         XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
         XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5)))
         XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 6)))
-      //        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 7))) // TODO: テスト可能性について再度検討すること
+      //        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 7))) // TODO: rawTag関連コードの整理時に、このテストの必要性を再検討する
       #endif
     }
   #endif

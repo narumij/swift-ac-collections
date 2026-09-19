@@ -194,7 +194,7 @@ extension FindEqualProtocol_ptr_old {
 }
 
 @usableFromInline
-protocol FindProtocol_ptr:
+protocol FindProtocol_find_equal_ptr:
   _UnsafeNodePtrType
     & FindInteface
     & FindEqualInterface
@@ -202,48 +202,68 @@ protocol FindProtocol_ptr:
     & NullPtrInterface
 {}
 
-extension FindProtocol_ptr {
+extension FindProtocol_find_equal_ptr {
 
   @inlinable
   internal func find(_ __v: _Key) -> _NodePtr {
-    #if USE_OLD_FIND
-      let __p = lower_bound(__v)
-      if __p != end, !value_comp(__v, __get_value(__p)) {
-        return __p
-      }
+    // llvmの__treeに寄せたが、multimapの挙動が変わってしまうので保留
+
+    // chat gptが言うには、multimapでfindが何を返すかは未規定だから仕様違反ではないそう
+    // でもますます使えないことになる
+
+    // https://en.cppreference.com/w/cpp/container/multimap/find.html
+
+    // 1,2) Finds an element with key equivalent to key.If there are several elements with the requested key in the container, any of them may be returned.
+    // 確かにどれか返せばいいことになってる
+
+    // https://learn.microsoft.com/en-us/cpp/standard-library/multimap-class?view=msvc-170&utm_source=chatgpt.com
+
+    // Returns an iterator addressing the first location of an element in a multimap that has a key equivalent to a specified key.
+    // MSは、先頭になっている
+
+    // 戻すのもありではあるけど、先頭を消す操作はViewで可能なので、注意だけ書く方向にしそう。でもモヤる
+
+    // https://en.cppreference.com/w/cpp/container/multimap.html?utm_source=chatgpt.com
+
+    // The order of the key-value pairs whose keys compare equivalent is the order of insertion and does not change.
+
+    // 同値キーの場合は挿入順となることが保証されている
+
+    let (_, __match) = __find_equal(__v)
+    if __match.pointee == nullptr {
       return end
-    #else
-      // llvmの__treeに寄せたが、multimapの挙動が変わってしまうので保留
-
-      // chat gptが言うには、multimapでfindが何を返すかは未規定だから仕様違反ではないそう
-      // でもますます使えないことになる
-
-      // https://en.cppreference.com/w/cpp/container/multimap/find.html
-
-      // 1,2) Finds an element with key equivalent to key.If there are several elements with the requested key in the container, any of them may be returned.
-      // 確かにどれか返せばいいことになってる
-
-      // https://learn.microsoft.com/en-us/cpp/standard-library/multimap-class?view=msvc-170&utm_source=chatgpt.com
-
-      // Returns an iterator addressing the first location of an element in a multimap that has a key equivalent to a specified key.
-      // MSは、先頭になっている
-
-      // 戻すのもありではあるけど、先頭を消す操作はViewで可能なので、注意だけ書く方向にしそう。でもモヤる
-
-      // https://en.cppreference.com/w/cpp/container/multimap.html?utm_source=chatgpt.com
-
-      // The order of the key-value pairs whose keys compare equivalent is the order of insertion and does not change.
-
-      // 同値キーの場合は挿入順となることが保証されている
-
-      let (_, __match) = __find_equal(__v)
-      if __match.pointee == nullptr {
-        return end
-      }
-      return __match.pointee
-    #endif
+    }
+    return __match.pointee
   }
 }
+
+@usableFromInline
+protocol FindProtocol_lower_bound_ptr:
+  _UnsafeNodePtrType
+    & FindInteface
+    & BoundInteface
+    & EndInterface
+    & _TreeNode_KeyInterface
+    & _TreeKey_CompInterface
+{}
+
+extension FindProtocol_lower_bound_ptr {
+
+  @inlinable
+  internal func find(_ __v: _Key) -> _NodePtr {
+    let __p = lower_bound(__v)
+    if __p != end, !value_comp(__v, __get_value(__p)) {
+      return __p
+    }
+    return end
+  }
+}
+
+#if ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND
+  typealias FindProtocol_ptr = FindProtocol_lower_bound_ptr
+#else
+  typealias FindProtocol_ptr = FindProtocol_find_equal_ptr
+#endif
 
 // よくよく考えてmulti系のfirstIndexの挙動が変わってしまっているので、修正が必要だった
 @usableFromInline

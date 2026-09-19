@@ -67,8 +67,14 @@ extension UnsafeTreeV2: Comparable where _PayloadValue: Comparable {
 
   @inlinable
   public static func < (lhs: UnsafeTreeV2<Base>, rhs: UnsafeTreeV2<Base>) -> Bool {
-    !lhs.isIdentical(to: rhs)
-      && lhs.lexicographicallyPrecedes(
+    
+    // なぜかワンライナー気味にするとコンパイルエラーとなる。めんどくさいのでバグレポはしない
+    
+    if lhs.isIdentical(to: rhs) {
+      return false
+    }
+
+    return lhs.lexicographicallyPrecedes(
         lhs.__begin_node_,
         lhs.__end_node,
         rhs.unsafeValues(rhs.__begin_node_, rhs.__end_node),
@@ -195,27 +201,7 @@ extension UnsafeTreeV2 {
   }
 }
 
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeTreeV2 {
-
-    @usableFromInline
-    internal func
-      unsafeSequence(_ __first: _NodePtr, _ __last: _NodePtr)
-      -> UnsafeIterator._Obverse1
-    {
-      .init(_start: __first, _end: __last)
-    }
-
-    @usableFromInline
-    internal func
-      unsafeValues(_ __first: _NodePtr, _ __last: _NodePtr)
-      -> UnsafeIterator._Payload<Base, UnsafeIterator._Obverse1>
-    {
-      .init(source: .init(_start: __first, _end: __last))
-    }
-  }
-
-#else
+#if !COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 {
 
     @usableFromInline

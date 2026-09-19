@@ -20,25 +20,27 @@ final class SetPointerTests: RedBlackTreeTestCase {
   #if COMPATIBLE_ATCODER_2025
     func testPointer() throws {
       // 邪魔くさく感じたので廃止した
-//      XCTAssertTrue(members.startIndex.isStart)
-//      XCTAssertFalse(members.endIndex.isStart)
+      //      XCTAssertTrue(members.startIndex.isStart)
+      //      XCTAssertFalse(members.endIndex.isStart)
       XCTAssertFalse(members.startIndex.isEnd)
       XCTAssertTrue(members.endIndex.isEnd)
     }
 
-    func testPointer2() throws {
-      if let it = members.startIndex.next {
-        XCTAssertFalse(members.___is_garbaged(it))
-        XCTAssertEqual(it.pointee, 1)
-        XCTAssertNotNil(it.previous)
-        XCTAssertNotNil(it.next)
-        members.remove(at: it)  // itが分離するようになった
-        XCTAssertTrue(members.___is_garbaged(it))  // membersにとっては無効
-        XCTAssertNil(it.pointee)  // it自体は過去の木に結びついていて有効
-        XCTAssertNil(it.previous)
-        XCTAssertNil(it.next)
+    #if DEBUG
+      func testPointer2() throws {
+        if let it = members.startIndex.next {
+          XCTAssertFalse(members.___is_garbaged(it))
+          XCTAssertEqual(it.pointee, 1)
+          XCTAssertNotNil(it.previous)
+          XCTAssertNotNil(it.next)
+          members.remove(at: it)  // itが分離するようになった
+          XCTAssertTrue(members.___is_garbaged(it))  // membersにとっては無効
+          XCTAssertNil(it.pointee)  // it自体は過去の木に結びついていて有効
+          XCTAssertNil(it.previous)
+          XCTAssertNil(it.next)
+        }
       }
-    }
+    #endif
 
     func testPointerNext() throws {
       XCTAssertEqual(members.startIndex.pointee, 0)
@@ -87,31 +89,34 @@ final class SetPointerTests: RedBlackTreeTestCase {
       XCTAssertNil(members.startIndex.advanced(by: -6).pointee)
     }
 
-    func testValidBehavior1() throws {
-      let indices = members.indices + []
-      for i in indices.indices {
-        members.remove(at: indices[i])
-        for j in indices.startIndex..<i {
-          XCTAssertTrue(members.___is_garbaged(indices[j]))
-        }
-        for j in i.advanced(by: 1)..<indices.endIndex {
-          XCTAssertFalse(members.___is_garbaged(indices[j]))
+    #if DEBUG
+      func testValidBehavior1() throws {
+        let indices = members.indices + []
+        for i in indices.indices {
+          members.remove(at: indices[i])
+          for j in indices.startIndex..<i {
+            XCTAssertTrue(members.___is_garbaged(indices[j]))
+          }
+          for j in i.advanced(by: 1)..<indices.endIndex {
+            XCTAssertFalse(members.___is_garbaged(indices[j]))
+          }
         }
       }
-    }
 
-    func testValidBehavior2() throws {
-      let indices = members.indices + []
-      for i in indices.indices.reversed() {
-        members.remove(at: indices[i])
-        for j in indices.startIndex..<i {
-          XCTAssertFalse(members.___is_garbaged(indices[j]))
-        }
-        for j in i.advanced(by: 1)..<indices.endIndex {
-          XCTAssertTrue(members.___is_garbaged(indices[j]))
+      func testValidBehavior2() throws {
+        let indices = members.indices + []
+        for i in indices.indices.reversed() {
+          members.remove(at: indices[i])
+          for j in indices.startIndex..<i {
+            XCTAssertFalse(members.___is_garbaged(indices[j]))
+          }
+          for j in i.advanced(by: 1)..<indices.endIndex {
+            XCTAssertTrue(members.___is_garbaged(indices[j]))
+          }
         }
       }
-    }
+    #endif
+  
   #endif
 
   func testPerformanceExample() throws {

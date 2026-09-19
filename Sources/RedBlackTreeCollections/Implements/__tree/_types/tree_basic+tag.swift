@@ -44,9 +44,9 @@
 /// - `-999` : デバッグ用途のダミー値
 ///
 #if USE_COMPACT_NODE_METADATA
-public typealias _TrackingTag = Int32
+  public typealias _TrackingTag = Int32
 #else
-public typealias _TrackingTag = Int
+  public typealias _TrackingTag = Int
 #endif
 
 extension _TrackingTag {
@@ -69,14 +69,3 @@ extension _TrackingTag {
     -999
   }
 }
-
-#if false
-/// 追跡タグが nullptr または end を表すかを判定する
-///
-/// `_TrackingTag` は負数を特殊ノード識別に使用しているため、
-/// `0` 以上は通常ノード、`0` 未満は sentinel として扱われる。
-@usableFromInline
-package func ___is_null_or_end(_ ptr: _TrackingTag) -> Bool {
-  ptr < 0
-}
-#endif

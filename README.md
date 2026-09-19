@@ -1,6 +1,6 @@
 # swift-ac-collections
 
-English | [日本語](README.ja.md)
+## Concept
 
 `swift-ac-collections` is an open-source package that provides data structures and related utilities intended for use on [AtCoder][atcoder].
 
@@ -35,7 +35,7 @@ Import it in your source code:
 import AcCollections
 ```
 
-## AtCoder 2025
+## Branch Strategy
 
 If you want to use the same version as the AtCoder 2025 judge environment, use the following:
 

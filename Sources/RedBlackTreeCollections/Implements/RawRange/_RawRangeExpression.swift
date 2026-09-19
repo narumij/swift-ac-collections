@@ -35,7 +35,32 @@ public enum _RawRangeExpression<Bound> {
   case unboundedRange
 }
 
-extension _RawRangeExpression: Equatable where Bound: Equatable {}
+extension _RawRangeExpression: Equatable where Bound: Equatable {
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    switch (lhs, rhs) {
+    case let (.range(lhsFrom, lhsTo), .range(rhsFrom, rhsTo)):
+      lhsFrom == rhsFrom && lhsTo == rhsTo
+    case let (.closedRange(lhsFrom, lhsThrough), .closedRange(rhsFrom, rhsThrough)):
+      lhsFrom == rhsFrom && lhsThrough == rhsThrough
+    case let (.partialRangeTo(lhs), .partialRangeTo(rhs)):
+      lhs == rhs
+    case let (.partialRangeThrough(lhs), .partialRangeThrough(rhs)):
+      lhs == rhs
+    case let (.partialRangeFrom(lhs), .partialRangeFrom(rhs)):
+      lhs == rhs
+    case (.unboundedRange, .unboundedRange):
+      true
+    default:
+      false
+    }
+  }
+
+  @inlinable
+  public static func != (lhs: Self, rhs: Self) -> Bool {
+    !(lhs == rhs)
+  }
+}
 
 // TODO: 方針ぶれがひどいので、整理すること
 

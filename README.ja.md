@@ -33,7 +33,7 @@ dependencies: [
 import AcCollections
 ```
 
-## AtCoder 2025
+## Branch Strategy
 
 AtCoder2025ジャッジと同一のものをご要望の場合は以下をご利用ください。
 
@@ -353,6 +353,18 @@ ABC328Eという問題がありまして、C++で書かれた解説コードを�
 将来のリリースで内容が変更されたり、削除される可能性があるため、必要な部分をコピーして独自に管理することを推奨します。
 
 さらに、コードベース全般についても同様に、互換性が保証されることは期待しないでください。これらの宣言は必要に応じて変更される可能性があり、非互換な修正が加えられる場合があります。
+
+## AtCoder 2025
+
+AtCoder 2025 ジャッジと同一のものをご希望の場合は、以下を指定してください。
+
+```swift
+dependencies: [
+  .package(
+    url: "https://github.com/narumij/swift-ac-collections",
+    branch: "release/AtCoder/2025"),
+]
+```
 
 ## ライセンス
 

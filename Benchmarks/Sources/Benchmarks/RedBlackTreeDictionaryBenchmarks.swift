@@ -35,7 +35,8 @@ extension Benchmark {
       let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
       return { timer in
         for item in d {
-          blackHole(item)
+          blackHole(item.key)
+          blackHole(item.value)
         }
       }
     }
@@ -47,7 +48,8 @@ extension Benchmark {
       let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.map { ($0, 2 * $0) })
       return { timer in
         for item in d {
-          blackHole(item)
+          blackHole(item.key)
+          blackHole(item.value)
         }
       }
     }

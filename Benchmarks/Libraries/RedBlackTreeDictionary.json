@@ -130,8 +130,10 @@
           "title": "defaulted subscript, existing key",
           "tasks": [
             "std::map<intptr_t, intptr_t> subscript, existing key",
-            "Dictionary<Int, Int> defaulted subscript, _modify existing",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, successful lookups",
+            "Dictionary<Int, Int> subscript, successful lookups",
             "RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify existing",
+            "Dictionary<Int, Int> defaulted subscript, _modify existing",
           ]
         },
         {
@@ -139,8 +141,10 @@
           "title": "defaulted subscript, new key",
           "tasks": [
             "std::map<intptr_t, intptr_t> subscript, new key",
-            "Dictionary<Int, Int> defaulted subscript, _modify missing",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, unsuccessful lookups",
+            "Dictionary<Int, Int> subscript, unsuccessful lookups",
             "RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify missing",
+            "Dictionary<Int, Int> defaulted subscript, _modify missing",
           ]
         },
         {

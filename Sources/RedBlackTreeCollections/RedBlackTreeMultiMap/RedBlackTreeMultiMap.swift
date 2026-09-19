@@ -104,7 +104,7 @@ public struct RedBlackTreeMultiMap<Key: Comparable, Value> {
     typealias Element = (key: Key, value: Value)
 
   @usableFromInline
-  var __tree_: Tree
+  package var __tree_: Tree
 
   @inlinable
   internal init(__tree_: Tree) {

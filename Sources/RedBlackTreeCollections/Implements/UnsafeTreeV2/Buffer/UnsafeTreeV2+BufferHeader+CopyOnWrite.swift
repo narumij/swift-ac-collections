@@ -57,16 +57,6 @@ func growth(from count: Int, to minimum: Int) -> Int {
 // 黄金比の4項近似
 // return Swift.max(minimum, count &+ (count &>> 1) &+ (count &>> 4) &+ (count &>> 5) &+ (count &>> 8))
 
-#if false
-  extension UnsafeTreeV2BufferHeader {
-
-    @inlinable
-    internal func _growthCapacity(to minimumCapacity: Int) -> Int {
-      growth(from: count, to: minimumCapacity)
-    }
-  }
-#endif
-
 // MARK: -
 
 extension UnsafeTreeV2BufferHeader {

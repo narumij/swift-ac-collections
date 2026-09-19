@@ -1082,6 +1082,10 @@ final class MultisetTests: RedBlackTreeTestCase {
     }
   #endif
 
+  // NOTE:
+  // `rawTag` からインデックスを生成する経路は、現在は主にDEBUG用のテスト補助として残している。
+  // 通常のインデックス操作ではほぼ利用しないため、範囲外rawTagの検証は低優先度とする。
+  // rawTag関連コードを整理・廃止するときに、以下のテストの必要性もまとめて再検討する。
   func testIndexValidation() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     #if COMPATIBLE_ATCODER_2025
@@ -1091,14 +1095,14 @@ final class MultisetTests: RedBlackTreeTestCase {
       #if DEBUG
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
         // UnsafeTreeでは、範囲外のインデックスを作成できない
-//        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr) // TODO: テスト可能性について再度検討すること
+//        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr) // TODO: rawTag関連コードの整理時に、このテストの必要性を再検討する
         XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
         XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
         XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
         XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
         XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
         XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
-//        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5))) // TODO: テスト可能性について再度検討すること
+//        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5))) // TODO: rawTag関連コードの整理時に、このテストの必要性を再検討する
       #endif
     #else
       XCTAssertTrue(set.isValid(set.startIndex))
@@ -1137,7 +1141,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 6)))
-//      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 7))) // TODO: テスト可能性について再度検討すること
+//      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 7))) // TODO: rawTag関連コードの整理時に、このテストの必要性を再検討する
     #endif
   }
 

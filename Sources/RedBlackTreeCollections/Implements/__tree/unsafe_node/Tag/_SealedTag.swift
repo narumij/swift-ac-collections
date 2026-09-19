@@ -44,8 +44,7 @@ extension _TrackingTagSealing {
       return .tag(raw: raw, seal: seal)
     default:
       // raw値が負のケース
-      // TODO: fix message
-      fatalError("Attempting to access RedBlackTree elements using an invalid index")
+      fatalError(.invalidIndex)
     }
   }
 }

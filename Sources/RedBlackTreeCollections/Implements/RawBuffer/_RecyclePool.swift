@@ -55,6 +55,12 @@
       recycleHead = p
     }
 
+    /// recycle poolの先頭ノードを取り出す。
+    ///
+    /// ノード生成側がfresh poolとの選択を済ませるため、
+    /// 二重チェックを避けてここでは空判定を行わない。
+    ///
+    /// - Precondition: `recycleHead != nullptr`
     @usableFromInline
     mutating func ___popRecycle() -> _NodePtr {
       let p = recycleHead

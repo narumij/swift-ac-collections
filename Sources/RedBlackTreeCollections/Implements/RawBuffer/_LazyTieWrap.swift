@@ -86,6 +86,26 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
 public typealias _LazyTieWrappedPtr = Result<_LazyTieWrap<_NodePtrSealing>, SealError>
 
 extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
+  
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    switch (lhs, rhs) {
+    case (.success(let lhs), .success(let rhs)):
+      return lhs == rhs
+    case (.failure(let lhs), .failure(let rhs)):
+      return lhs == rhs
+    default:
+      return false
+    }
+  }
+  
+  @inlinable
+  public static func != (lhs: Self, rhs: Self) -> Bool {
+    !(lhs == rhs)
+  }
+}
+
+extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
   @inlinable
   @inline(__always)
@@ -111,13 +131,6 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
   }
 }
 
-extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
-
-  @inlinable
-  package var value: _TrackingTag {
-    (try? map(\.rawValue.pointer.trackingTag).get()) ?? .nullptr
-  }
-}
 
 #if DEBUG
   extension _NodePtrSealing {

@@ -183,23 +183,22 @@
       return __f
     }
 
-    #if USE_INT128
-      // 128bit幅でかつ、必要なレジスタ数が削減されている
-      @inlinable
-      @inline(__always)
-      internal func ___ptr_bitmap_128(_ __p: _NodePtr) -> UInt128 {
-        assert(__p != nullptr, "Node shouldn't be null")
-        assert(__p != end, "Node shouldn't be end")
-        var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
-        var __p = __p
-        while __p != __root, __p != end {
-          __f &>>= 1
-          __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt128.bitWidth &- 1)
-          __p = __parent_(__p)
-        }
-        return __f
+    // 128bit幅でかつ、必要なレジスタ数が削減されている
+    @available(macOS 15.0, *)
+    @inlinable
+    @inline(__always)
+    internal func ___ptr_bitmap_128(_ __p: _NodePtr) -> UInt128 {
+      assert(__p != nullptr, "Node shouldn't be null")
+      assert(__p != end, "Node shouldn't be end")
+      var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
+      var __p = __p
+      while __p != __root, __p != end {
+        __f &>>= 1
+        __f |= (__tree_is_left_child(__p) ? 0 : 1) &<< (UInt128.bitWidth &- 1)
+        __p = __parent_(__p)
       }
-    #endif
+      return __f
+    }
 
     // 64bit幅でかつ、必要なレジスタ数が削減されている
     @inlinable
@@ -217,19 +216,17 @@
       return __f
     }
 
-    #if USE_INT128
-      @inlinable
-      @inline(__always)
-      internal func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
-        // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
-        ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
-      }
-    #else
-      @inlinable
-      @inline(__always)
-      internal func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
-        ___ptr_bitmap_64(__l) < ___ptr_bitmap_64(__r)
-      }
-    #endif
+    @inlinable
+    @inline(__always)
+    internal func ___ptr_comp_bitmap(_ __l: _NodePtr, _ __r: _NodePtr) -> Bool {
+      #if USE_INT128
+        if #available(macOS 15.0, *) {
+          // サイズの64bit幅で絶対に使い切れない128bit幅が安心なのでこれを採用
+          return ___ptr_bitmap_128(__l) < ___ptr_bitmap_128(__r)
+        }
+      #endif
+      
+      return ___ptr_bitmap_64(__l) < ___ptr_bitmap_64(__r)
+    }
   }
 #endif

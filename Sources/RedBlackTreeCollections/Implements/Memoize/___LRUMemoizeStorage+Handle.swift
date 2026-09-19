@@ -132,7 +132,7 @@ extension ___LRUHandle {
   }
 }
 
-extension ___LRUHandle: FindInteface, FindProtocol_ptr {}
+extension ___LRUHandle: FindInteface, FindProtocol_find_equal_ptr {}
 // これに関して古いfind_equalがどうも速いので、そちらを使う
 // (これに関してとは、KeyValueアクセスのケース)
 extension ___LRUHandle: FindEqualInterface, FindEqualProtocol_ptr_old {}

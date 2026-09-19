@@ -83,6 +83,26 @@
 /// エラー補足付きポインタ
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 
+extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
+  
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    switch (lhs, rhs) {
+    case (.success(let lhs), .success(let rhs)):
+      return lhs == rhs
+    case (.failure(let lhs), .failure(let rhs)):
+      return lhs == rhs
+    default:
+      return false
+    }
+  }
+  
+  @inlinable
+  public static func != (lhs: Self, rhs: Self) -> Bool {
+    !(lhs == rhs)
+  }
+}
+
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   // 木側は無効な生ポインタを返さないようにできているので、これで足りる
@@ -99,14 +119,6 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   var ___has_payload_content: Bool {
     pointee.___has_payload_content
   }
-
-  #if false
-    // 将来用
-    @inlinable
-    var pointer: UnsafeMutablePointer<UnsafeNode> {
-      fatalError()
-    }
-  #endif
 }
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
@@ -156,6 +168,26 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
 /// 外部的には、これをさらに寿命管理付きでラップして用いる
 /// 内部的にはこれを用いる理由は特にない、はず
 public typealias _SealedPtr = Result<_NodePtrSealing, SealError>
+
+extension Result where Success == _NodePtrSealing, Failure == SealError {
+  
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    switch (lhs, rhs) {
+    case (.success(let lhs), .success(let rhs)):
+      return lhs == rhs
+    case (.failure(let lhs), .failure(let rhs)):
+      return lhs == rhs
+    default:
+      return false
+    }
+  }
+  
+  @inlinable
+  public static func != (lhs: Self, rhs: Self) -> Bool {
+    !(lhs == rhs)
+  }
+}
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 

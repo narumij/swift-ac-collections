@@ -317,6 +317,12 @@ extension UnsafeTreeV2BufferHeader {
       recycleHead = p
     }
 
+    /// recycle poolの先頭ノードを取り出す。
+    ///
+    /// ノード生成のホットパスでは `__construct_raw_node()` と `__construct_node(_:)` が
+    /// fresh poolとの選択を済ませているため、二重チェックを避けてここでは空判定を行わない。
+    ///
+    /// - Precondition: `recycleHead != nullptr`
     @usableFromInline
     mutating func ___popRecycle() -> _NodePtr {
       let p = recycleHead

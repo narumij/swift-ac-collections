@@ -22,9 +22,12 @@ extension Benchmark {
       title: "RedBlackTreeDictionary<Int, Int> init(uniqueKeysWithValues:)",
       input: [Int].self
     ) { input in
-      let keysAndValues = input.map { ($0, 2 * $0) }
       return { timer in
-        blackHole(RedBlackTreeDictionary(uniqueKeysWithValues: keysAndValues))
+        blackHole(
+          RedBlackTreeDictionary(
+            uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) }
+          )
+        )
       }
     }
 

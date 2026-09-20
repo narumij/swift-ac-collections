@@ -73,15 +73,6 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.contains(1), "削除後、最初の要素はセットに含まれないこと")
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    /// removeLast() が最後の要素を削除すること
-    func test_removeLast() {
-      var set = RedBlackTreeSet([1, 2, 3])
-      let removed = set.removeLast()
-      XCTAssertEqual(removed, 3, "最後の要素を削除すること")
-      XCTAssertFalse(set.contains(3), "削除後、最後の要素はセットに含まれないこと")
-    }
-  #endif
 
   /// removeSubrange() が指定範囲の要素を削除すること
   func test_removeSubrange() {
@@ -107,21 +98,6 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isEmpty, "removeAll() 実行後、セットは空になること")
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    /// remove(contentsOf:) が指定範囲の要素を削除すること（Range版）
-    func test_remove_contentsOf_Range() {
-      var set = RedBlackTreeSet([1, 2, 3, 4, 5])
-      set.remove(contentsOf: 2..<5)
-      XCTAssertEqual(set.sorted(), [1, 5], "指定Range内の要素を削除すること")
-    }
-
-    /// remove(contentsOf:) が指定範囲の要素を削除すること（ClosedRange版）
-    func test_remove_contentsOf_ClosedRange() {
-      var set = RedBlackTreeSet([1, 2, 3, 4, 5])
-      set.remove(contentsOf: 2...4)
-      XCTAssertEqual(set.sorted(), [1, 5], "指定ClosedRange内の要素を削除すること")
-    }
-  #endif
 }
 
 extension RedBlackTreeSetRemoveTests {

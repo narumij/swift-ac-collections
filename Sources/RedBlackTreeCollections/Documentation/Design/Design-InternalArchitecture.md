@@ -231,6 +231,7 @@ Rangeの計算量と反復方針は `Design-Range.md` に分離して記録す�
 
 ## 関連文書
 
+- [ノードストレージの設計](Design-NodeStorage.md)
 - [Copy on Writeの設計](Design-CopyOnWrite.md)
 - [メモリ安全性の設計](Design-MemorySafety.md)
 - [RangeとIndex反復の設計](Design-Range.md)

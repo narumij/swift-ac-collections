@@ -175,6 +175,8 @@ tracking tagは内部対応付けのため維持されるが、コピー元Index
 
 ## 関連文書
 
+- [設計Overview](Design-Overview.md)
+
 - [ノードストレージの設計](Design-NodeStorage.md)
 - [Copy on Writeの設計](Design-CopyOnWrite.md)
 - [RangeとIndex反復の設計](Design-Range.md)

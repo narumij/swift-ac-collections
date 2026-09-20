@@ -151,6 +151,8 @@ CoW関連の変更では、少なくとも次を確認する。
 
 ## 関連文書
 
+- [設計Overview](Design-Overview.md)
+
 - [ノードストレージの設計](Design-NodeStorage.md)
 - [RangeとIndex反復の設計](Design-Range.md)
 - [メモリ安全性の設計](Design-MemorySafety.md)

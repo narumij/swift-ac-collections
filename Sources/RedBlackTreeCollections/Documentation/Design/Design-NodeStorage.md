@@ -383,6 +383,8 @@ Indexが木より長生きする場合をそれぞれ検証する。
 
 ## 関連文書
 
+- [設計Overview](Design-Overview.md)
+
 - [内部アーキテクチャ](Design-InternalArchitecture.md)
 - [Copy on Writeの設計](Design-CopyOnWrite.md)
 - [メモリ安全性の設計](Design-MemorySafety.md)

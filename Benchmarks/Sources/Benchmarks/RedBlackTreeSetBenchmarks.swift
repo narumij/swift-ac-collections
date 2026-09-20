@@ -56,6 +56,27 @@ extension Benchmark {
       }
     }
 
+    self.add(
+      title: "RedBlackTreeSet<Int> sequential iteration, alternating extremes insertion",
+      input: Int.self
+    ) { size in
+      var set: RedBlackTreeSet<Int> = []
+      for lowerBound in 0..<((size + 1) / 2) {
+        set.insert(lowerBound)
+
+        let upperBound = size - lowerBound - 1
+        if upperBound != lowerBound {
+          set.insert(upperBound)
+        }
+      }
+
+      return { timer in
+        for element in set {
+          blackHole(element)
+        }
+      }
+    }
+
     #if false
       self.add(
         title: "RedBlackTreeSet<Int> sequential iteration, indices",

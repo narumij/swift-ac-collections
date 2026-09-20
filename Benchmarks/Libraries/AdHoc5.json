@@ -32,6 +32,7 @@
           "tasks": [
             "std::set<intptr_t> sequential iteration",
             "RedBlackTreeSet<Int> sequential iteration",
+            "RedBlackTreeSet<Int> sequential iteration, alternating extremes insertion",
             "SortedSet<Int> sequential iteration"
           ]
         },

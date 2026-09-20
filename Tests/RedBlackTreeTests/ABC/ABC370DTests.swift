@@ -33,12 +33,12 @@ final class ABC370DTests: RedBlackTreeTestCase {
         
         // 合ってるかどうかわからない。雰囲気で書いて動いている程度
         
-        g2[C][lt(R)...gt(R)].erase {
+        g2[C][.lessThan(R) ... .greaterThan(R)].erase {
           g1[$0].remove(C)
           return true
         }
 
-        g1[R][lt(C)...gt(C)].erase {
+        g1[R][.lessThan(C) ... .greaterThan(C)].erase {
           g2[$0].remove(R)
           return true
         }

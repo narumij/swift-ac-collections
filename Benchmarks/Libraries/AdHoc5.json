@@ -1,0 +1,87 @@
+{
+  "kind": "group",
+  "title": "RedBlackTreeSet Benchmarks",
+  "directory": "RedBlackTreeSet Adhoc5",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "RedBlackTreeSet vs SortedSet",
+      "directory": "versus SortedSet",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "init from integer range",
+          "tasks": [
+            "std::set<intptr_t> insert from integer range",
+            "RedBlackTreeSet<Int> init from range",
+            "SortedSet<Int> init from range"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "init from buffer of integers",
+          "tasks": [
+            "std::set<intptr_t> constructor from buffer",
+            "RedBlackTreeSet<Int> init from unsafe buffer",
+            "SortedSet<Int> init from unsafe buffer"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "sequential iteration",
+          "tasks": [
+            "std::set<intptr_t> sequential iteration",
+            "RedBlackTreeSet<Int> sequential iteration",
+            "RedBlackTreeSet<Int> sequential iteration, alternating extremes insertion",
+            "SortedSet<Int> sequential iteration"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "successful lookups",
+          "tasks": [
+            "std::set<intptr_t> successful find",
+            "RedBlackTreeSet<Int> successful find",
+            "SortedSet<Int> successful find"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "unsuccessful lookups",
+          "tasks": [
+            "std::set<intptr_t> unsuccessful find",
+            "RedBlackTreeSet<Int> unsuccessful find",
+            "SortedSet<Int> unsuccessful find"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "random removals",
+          "tasks": [
+            "std::set<intptr_t> erase",
+            "RedBlackTreeSet<Int> remove",
+            "SortedSet<Int> remove"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "successful contains",
+          "tasks": [
+            "std::set<intptr_t> successful count",
+            "RedBlackTreeSet<Int> successful contains",
+            "SortedSet<Int> successful contains"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "unsuccessful contains",
+          "tasks": [
+            "std::set<intptr_t> unsuccessful count",
+            "RedBlackTreeSet<Int> unsuccessful contains",
+            "SortedSet<Int> unsuccessful contains"
+          ]
+        }
+      ]
+    }
+  ]
+}

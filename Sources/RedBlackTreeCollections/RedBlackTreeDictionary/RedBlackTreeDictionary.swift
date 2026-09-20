@@ -171,6 +171,8 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {
+    // TODO: 冬休み頃にハンドルを使った特殊化実装を試し、生成された探索ループに
+    // witness dispatch が残っているか確認する。
     __tree_.update { $0.__count_unique(key) != 0 }
   }
 }

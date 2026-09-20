@@ -6,13 +6,33 @@
 //
 
 #if DEATH_TEST
-import Testing
+  import RedBlackTreeCollections
+  import Testing
 
-struct DeathTest {
+  struct DeathTest {
 
-  @Test func `TODO: 夏休みはIndexやポインタ挙動について取り組む`() async throws {
-    // fatalError関連挙動は、夏休みまたは夏休みまでのんびりやるつもりで焦らない
-    // GW延長戦しすぎなうえ、電池が切れました
+    @Test func `endIndex cannot be subscripted`() async {
+      await #expect(processExitsWith: .failure) {
+        let set: RedBlackTreeSet<Int> = [1, 2, 3]
+        _ = set[set.endIndex]
+      }
+    }
+
+    @Test func `removed index cannot be subscripted`() async {
+      await #expect(processExitsWith: .failure) {
+        var set: RedBlackTreeSet<Int> = [1, 2, 3]
+        let index = set.firstIndex(of: 2)!
+        set.remove(at: index)
+        _ = set[index]
+      }
+    }
+
+    @Test func `index from another tree cannot be subscripted`() async {
+      await #expect(processExitsWith: .failure) {
+        let set: RedBlackTreeSet<Int> = [1, 2, 3]
+        let other: RedBlackTreeSet<Int> = [4, 5, 6]
+        _ = set[other.startIndex]
+      }
+    }
   }
-}
 #endif

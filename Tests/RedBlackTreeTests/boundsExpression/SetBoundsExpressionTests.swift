@@ -290,8 +290,8 @@
       ]
 
       for (key, expected) in cases {
-        XCTAssertEqual(a[lt(key)], expected, "key=\(key)")
-        XCTAssertEqual(a.isValid(lt(key)), expected != nil, "key=\(key)")
+        XCTAssertEqual(a[.lessThan(key)], expected, "key=\(key)")
+        XCTAssertEqual(a.isValid(.lessThan(key)), expected != nil, "key=\(key)")
       }
     }
 
@@ -305,16 +305,16 @@
       ]
 
       for (key, expected) in cases {
-        XCTAssertEqual(a[le(key)], expected, "key=\(key)")
-        XCTAssertEqual(a.isValid(le(key)), expected != nil, "key=\(key)")
+        XCTAssertEqual(a[.lessThanOrEqual(key)], expected, "key=\(key)")
+        XCTAssertEqual(a.isValid(.lessThanOrEqual(key)), expected != nil, "key=\(key)")
       }
     }
 
     func testLessGreaterHelpers() throws {
-      XCTAssertEqual(a[lt(1)], 0)
-      XCTAssertEqual(a[gt(1)], 2)
-      XCTAssertEqual(a[le(1)], 1)
-      XCTAssertEqual(a[ge(1)], 1)
+      XCTAssertEqual(a[.lessThan(1)], 0)
+      XCTAssertEqual(a[.greaterThan(1)], 2)
+      XCTAssertEqual(a[.lessThanOrEqual(1)], 1)
+      XCTAssertEqual(a[.greaterThanOrEqual(1)], 1)
     }
 
     func testBoundRangeOperators() throws {

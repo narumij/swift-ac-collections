@@ -17,6 +17,10 @@ let package = Package(
     .package(
       name: "swift-ac-collections", path: "..",
       traits: ["BENCHMARK"]),
+    .package(
+      url: "https://github.com/apple/swift-collections",
+      from: "1.5.1",
+      traits: ["UnstableSortedCollections"]),
 
     //      .package(
     //        url: "https://github.com/narumij/swift-ac-collections",
@@ -30,6 +34,7 @@ let package = Package(
       name: "Benchmarks",
       dependencies: [
         .product(name: "AcCollections", package: "swift-ac-collections"),
+        .product(name: "SortedCollections", package: "swift-collections"),
         .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
         "CppBenchmarks",
       ],

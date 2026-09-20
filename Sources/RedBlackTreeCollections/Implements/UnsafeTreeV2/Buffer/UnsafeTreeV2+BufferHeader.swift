@@ -122,6 +122,12 @@ extension UnsafeTreeV2BufferHeader {
     guard let _ = _lazyDetach else { return true }
     return isKnownUniquelyReferenced(&_lazyDetach!)
   }
+  // TODO: `tiedRawBuffer`と`lazyDetach`の一度だけの初期化を、並行アクセス時にも保証するか検討する。
+  // 候補は`Synchronization.AtomicLazyReference`だが、値型ヘッダへの直接格納は
+  // メモリレイアウトやコピー方法へ影響し、専用の参照型へまとめる方式は常時1アロケーション増える。
+  // また、このヘッダ全体はスレッドセーフではないため、この2参照だけをatomic化する意義も要検討。
+  // 所有構造の再設計と、通常利用時の生成コスト・アクセス性能を測定できる段階で再検討すること。
+
   /// IndexやIteratorを結ぶ共有メモリ
   ///
   /// ヘッダーにとっては解放責任のデタッチ先
@@ -130,7 +136,6 @@ extension UnsafeTreeV2BufferHeader {
   @usableFromInline
   var tiedRawBuffer: _TiedRawBuffer {
     mutating get {
-      // TODO: 一度の保証付きの実装にすること
       if _tied == nil {
         _tied = .create(
           bucket: freshBucketHead,
@@ -143,7 +148,6 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   var lazyDetach: _LazyTie {
     mutating get {
-      // TODO: 一度の保証付きの実装にすること
       if _lazyDetach == nil {
         _lazyDetach = .create()
       }
@@ -317,6 +321,12 @@ extension UnsafeTreeV2BufferHeader {
       recycleHead = p
     }
 
+    /// recycle poolの先頭ノードを取り出す。
+    ///
+    /// ノード生成のホットパスでは `__construct_raw_node()` と `__construct_node(_:)` が
+    /// fresh poolとの選択を済ませているため、二重チェックを避けてここでは空判定を行わない。
+    ///
+    /// - Precondition: `recycleHead != nullptr`
     @usableFromInline
     mutating func ___popRecycle() -> _NodePtr {
       let p = recycleHead

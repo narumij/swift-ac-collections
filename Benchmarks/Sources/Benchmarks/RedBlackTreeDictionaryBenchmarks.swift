@@ -22,9 +22,12 @@ extension Benchmark {
       title: "RedBlackTreeDictionary<Int, Int> init(uniqueKeysWithValues:)",
       input: [Int].self
     ) { input in
-      let keysAndValues = input.map { ($0, 2 * $0) }
       return { timer in
-        blackHole(RedBlackTreeDictionary(uniqueKeysWithValues: keysAndValues))
+        blackHole(
+          RedBlackTreeDictionary(
+            uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) }
+          )
+        )
       }
     }
 
@@ -355,9 +358,10 @@ extension Benchmark {
       input: ([Int], [Int]).self
     ) { input, lookups in
       let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
+      let missingLookups = lookups.map { $0 + input.count }
       return { timer in
-        for i in lookups {
-          precondition(d.index(forKey: lookups.count + i) == nil)
+        for i in missingLookups {
+          precondition(d.index(forKey: i) == nil)
         }
       }
     }
@@ -472,9 +476,10 @@ extension Benchmark {
       input: ([Int], [Int]).self
     ) { input, lookups in
       let d = RedBlackTreeDictionary(uniqueKeysWithValues: input.lazy.map { ($0, 2 * $0) })
+      let missingLookups = lookups.map { $0 + input.count }
       return { timer in
-        for i in lookups {
-          precondition(!d.contains(key: lookups.count + i))
+        for i in missingLookups {
+          precondition(!d.contains(key: i))
         }
       }
     }

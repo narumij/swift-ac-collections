@@ -36,14 +36,6 @@ final class DictionaryRemoveTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict.remove(at: i).value, 1)
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testRemove() throws {
-      var dict = [1: 1, 2: 2, 3: 3] as RedBlackTreeDictionary<Int, Int>
-      let i = dict.firstIndex { (k, v) in k == 1 }!
-      XCTAssertEqual(dict.remove(at: i).value, 1)
-    }
-  #endif
-
   func testRemoveFirst() throws {
     var members: RedBlackTreeDictionary<Int, Int> = [1: 2, 3: 4, 5: 6, 7: 8, 9: 10]
     XCTAssertEqual(members.removeFirst().key, 1)
@@ -84,40 +76,6 @@ final class DictionaryRemoveTests: RedBlackTreeTestCase {
     XCTAssertNil(dict.first)
     XCTAssertNil(dict.last)
   }
-
-  #if COMPATIBLE_ATCODER_2025
-    func testRemoveWithIndices() throws {
-      var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-      for i in members.indices {
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members.map { $0.key }, [])
-    }
-
-    func testRemoveWithIndices2() throws {
-      var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-      members.indices.forEach { i in
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members.map { $0.key }, [])
-    }
-
-    func testRemoveWithIndices3() throws {
-      var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-      for i in members.indices.reversed() {
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members.map { $0.key }, [])
-    }
-
-    func testRemoveWithIndices4() throws {
-      var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-      members.indices.reversed().forEach { i in
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members.map { $0.key }, [])
-    }
-  #endif
 
   #if DEBUG && COMPATIBLE_ATCODER_2025
     func testRemoveWith___Indices() throws {

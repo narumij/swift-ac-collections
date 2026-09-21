@@ -81,7 +81,6 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(numbers.distance(from: numbers.startIndex, to: numbers.endIndex), 0)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testUsage1() throws {
     // 意外と普通のユースケースでバグがあることが判明
     var map = Target<Int, Int>()
@@ -117,9 +116,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(map.map(\.key), [])
     XCTAssertEqual(map.map(\.value), [])
   }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
   func testUsage2() throws {
     var map = Target<Int, Int>()
     XCTAssertEqual(map[0].map(\.value), [])
@@ -147,7 +144,6 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(map[0].map(\.value), [])
     XCTAssertEqual(map[1].map(\.value), [3])
   }
-  #endif
 
   func testUsage3() throws {
     var map = Target<Int, Int>()
@@ -578,7 +574,6 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertNotEqual([2: 2, 3: 3] as Target<Int, Int>, [1: 1, 2: 2])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testFirstLast() throws {
     let dict = [1: 11, 2: 22, 3: 33] as Target<Int, Int>
     XCTAssertEqual(dict.first?.key, 1)
@@ -596,7 +591,6 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertTrue(dict.allSatisfy({ $0.value / $0.key == 11 }))
     XCTAssertFalse(dict.allSatisfy({ $0.value / $0.key == 22 }))
   }
-  #endif
 
   func testForEach() throws {
     let dict = [1: 11, 2: 22, 3: 33] as Target<Int, Int>
@@ -691,7 +685,6 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testIndex00() throws {
     let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
     do {
@@ -744,9 +737,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
       }
     #endif
   }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
   func testIndex000() throws {
     let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
     do {
@@ -799,7 +790,6 @@ final class MultiMapTests: RedBlackTreeTestCase {
       }
     #endif
   }
-  #endif
 
 
   func testRangeSubscript() throws {

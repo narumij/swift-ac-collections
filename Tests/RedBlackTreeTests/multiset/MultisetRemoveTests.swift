@@ -8,7 +8,6 @@ import XCTest
 
 final class MultisetRemoveTests: RedBlackTreeTestCase {
 
-  #if !COMPATIBLE_ATCODER_2025
   func testRemove1() throws {
     var set = RedBlackTreeMultiSet<Int>([0, 0, 1, 1, 2])
     #if COMPATIBLE_ATCODER_2025
@@ -56,9 +55,7 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.sorted().isEmpty)
     #endif
   }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
   func testRemoveAll() throws {
     var set = RedBlackTreeMultiSet<Int>([0, 0, 1, 1, 2])
     #if COMPATIBLE_ATCODER_2025
@@ -85,7 +82,6 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.sorted().isEmpty)
     #endif
   }
-  #endif
 
   #if false
     func testRemoveAt() throws {
@@ -137,7 +133,6 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
     //      s.removeFirst()
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testRemoveLimit() throws {
     var members: RedBlackTreeMultiSet = [Int.min, Int.min, Int.max, Int.max]
     #if COMPATIBLE_ATCODER_2025
@@ -154,7 +149,6 @@ final class MultisetRemoveTests: RedBlackTreeTestCase {
       XCTAssertEqual(members.count, 0)
     #endif
   }
-  #endif
 
   func testRemoveFirst() throws {
     var members: RedBlackTreeMultiSet = [1, 3, 5, 7, 9]

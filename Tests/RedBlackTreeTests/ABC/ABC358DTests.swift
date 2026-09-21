@@ -64,6 +64,7 @@ final class ABC358DTests: RedBlackTreeTestCase {
       B: [3, 5, 7])
   }
 
+  #if ENABLE_PERFORMANCE_TESTING
   func testPerformanceExample2() throws {
     // This is an example of a performance test case.
     _ = 3
@@ -73,4 +74,5 @@ final class ABC358DTests: RedBlackTreeTestCase {
       try! testExample2()
     }
   }
+  #endif
 }

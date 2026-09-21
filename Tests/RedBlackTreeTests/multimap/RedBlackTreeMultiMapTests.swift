@@ -68,7 +68,6 @@ final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {
   }
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025
   func testRemoveValuesForKey() throws {
     var map: RedBlackTreeMultiMap = [("k1", 1), ("k1", 2), ("k2", 3)]
 #if COMPATIBLE_ATCODER_2025
@@ -79,7 +78,6 @@ final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(removedCount, 2)
     XCTAssertFalse(map.contains(key: "k1"))
   }
-  #endif
 
   func testRemoveFirstAndLast() throws {
     var map: RedBlackTreeMultiMap = [("x", 10), ("y", 20)]

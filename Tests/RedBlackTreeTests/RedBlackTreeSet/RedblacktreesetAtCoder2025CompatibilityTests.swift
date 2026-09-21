@@ -46,12 +46,6 @@ import XCTest
 
   extension RedBlackTreeSetRemoveTests {
     /// removeLast() が最後の要素を削除すること
-    func test_removeLast() {
-      var set = RedBlackTreeSet([1, 2, 3])
-      let removed = set.removeLast()
-      XCTAssertEqual(removed, 3, "最後の要素を削除すること")
-      XCTAssertFalse(set.contains(3), "削除後、最後の要素はセットに含まれないこと")
-    }
   }
 
   extension RedBlackTreeSetRemoveTests {
@@ -98,14 +92,5 @@ import XCTest
   }
 
   extension RedBlackTreeSetRemoveTests {
-  func test_removeAll() {
-    var set = RedBlackTreeSet([1, 2, 3])
-    #if COMPATIBLE_ATCODER_2025
-      set.removeAll()
-    #else
-      set.removeAll()
-    #endif
-    XCTAssertTrue(set.isEmpty, "removeAll() 実行後、セットは空になること")
-  }
   }
 #endif

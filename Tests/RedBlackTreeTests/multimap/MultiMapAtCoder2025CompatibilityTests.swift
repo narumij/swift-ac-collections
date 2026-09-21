@@ -1,5 +1,10 @@
-import RedBlackTreeCollections
 import XCTest
+
+#if DEBUG
+  @testable import RedBlackTreeCollections
+#else
+  import RedBlackTreeCollections
+#endif
 
 #if COMPATIBLE_ATCODER_2025
   final class MultiMapAtCoder2025CompatibilityTests: RedBlackTreeTestCase {
@@ -485,71 +490,9 @@ import XCTest
     }
   }
   extension MultiMapTests {
-  func testUsage1() throws {
-    // 意外と普通のユースケースでバグがあることが判明
-    var map = Target<Int, Int>()
-    XCTAssertEqual(map[0].map(\.value), [])
-    map.insert((0, 1))
-    //    map.updateValue(1, forKey: 0)
-    XCTAssertEqual(map[0].map(\.value), [1])
-    XCTAssertEqual(map[1].map(\.value), [])
-    XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, [(0, 1)]).allSatisfy(==))
-    #if COMPATIBLE_ATCODER_2025
-      map.removeAll(forKey: 0)
-    #else
-      map.eraseMulti(0)
-    #endif
-    //    map.removeValue(forKey: 0)
-    XCTAssertEqual(map[0].map(\.value), [])
-    XCTAssertEqual(map[1].map(\.value), [])
-    XCTAssertTrue(zip(map.map { (__key($0), __value($0)) }, []).allSatisfy(==))
-    map.insert((1, 2))
-    //    map.updateValue(20, forKey: 10)
-    XCTAssertEqual(map[0].map(\.value), [])
-    XCTAssertEqual(map[1].map(\.value), [2])
-    XCTAssertEqual(map.map(\.key), [1])
-    XCTAssertEqual(map.map(\.value), [2])
-    #if COMPATIBLE_ATCODER_2025
-      map.removeAll(forKey: 1)
-    #else
-      map.eraseMulti(1)
-    #endif
-    //    map.removeValue(forKey: 10)
-    XCTAssertEqual(map[0].map(\.value), [])
-    XCTAssertEqual(map[1].map(\.value), [])
-    XCTAssertEqual(map.map(\.key), [])
-    XCTAssertEqual(map.map(\.value), [])
-  }
   }
 
   extension MultiMapTests {
-  func testUsage2() throws {
-    var map = Target<Int, Int>()
-    XCTAssertEqual(map[0].map(\.value), [])
-    map.insert((0, 0))
-    XCTAssertEqual(map[0].map(\.value), [0])
-    XCTAssertEqual(map[1].map(\.value), [])
-    map.insert((1, 2))
-    XCTAssertEqual(map[0].map(\.value), [0])
-    XCTAssertEqual(map[1].map(\.value), [2])
-    #if COMPATIBLE_ATCODER_2025
-      map.removeAll(forKey: 0)
-    #else
-      map.eraseMulti(0)
-    #endif
-    XCTAssertEqual(map[0].map(\.value), [])
-    XCTAssertEqual(map[1].map(\.value), [2])
-    #if COMPATIBLE_ATCODER_2025
-      map.removeAll(forKey: 1)
-    #else
-      map.eraseMulti(1)
-    #endif
-    XCTAssertEqual(map[0].map(\.value), [])
-    XCTAssertEqual(map[1].map(\.value), [])
-    map.insert((1, 3))
-    XCTAssertEqual(map[0].map(\.value), [])
-    XCTAssertEqual(map[1].map(\.value), [3])
-  }
   }
 
   extension MultiMapTests {
@@ -771,133 +714,12 @@ import XCTest
   }
 
   extension MultiMapTests {
-  func testFirstLast() throws {
-    let dict = [1: 11, 2: 22, 3: 33] as Target<Int, Int>
-    XCTAssertEqual(dict.first?.key, 1)
-    XCTAssertEqual(dict.first?.value, 11)
-    XCTAssertEqual(dict.last?.key, 3)
-    XCTAssertEqual(dict.last?.value, 33)
-    XCTAssertEqual(dict.first(where: { $0.value == 22 })?.key, 2)
-    XCTAssertEqual(dict.first(where: { $0.value == 44 })?.key, nil)
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(dict.firstIndex(where: { $0.value == 22 }), dict.index(after: dict.startIndex))
-      XCTAssertEqual(dict.firstIndex(where: { $0.value == 44 }), nil)
-    #endif
-    XCTAssertTrue(dict.contains(where: { $0.value / $0.key == 11 }))
-    XCTAssertFalse(dict.contains(where: { $0.value / $0.key == 22 }))
-    XCTAssertTrue(dict.allSatisfy({ $0.value / $0.key == 11 }))
-    XCTAssertFalse(dict.allSatisfy({ $0.value / $0.key == 22 }))
-  }
   }
 
   extension MultiMapTests {
-  func testIndex00() throws {
-    let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
-    do {
-      var i = set.startIndex
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.startIndex, to: i), j)
-        i = set.index(after: i)
-      }
-      XCTAssertEqual(i, set.endIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.endIndex, to: i), -j)
-        i = set.index(before: i)
-      }
-      XCTAssertEqual(i, set.startIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.startIndex), -j)
-        set.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, set.endIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.endIndex), j)
-        set.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, set.startIndex)
-    }
-    let sub = set.elements(in: 2..<5)
-    #if COMPATIBLE_ATCODER_2025
-      do {
-        var i = sub.startIndex
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
-          i = sub.index(after: i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: sub.endIndex, to: i), -j)
-          i = sub.index(before: i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
-          sub.formIndex(after: &i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
-          sub.formIndex(before: &i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-      }
-    #endif
-  }
   }
 
   extension MultiMapTests {
-  func testIndex000() throws {
-    let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
-    do {
-      var i = set.startIndex
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.startIndex, to: i), j)
-        set.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, set.endIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.endIndex, to: i), -j)
-        set.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, set.startIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.startIndex), -j)
-        set.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, set.endIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.endIndex), j)
-        set.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, set.startIndex)
-    }
-    let sub = set.elements(in: 2..<5)
-    #if COMPATIBLE_ATCODER_2025
-      do {
-        var i = sub.startIndex
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
-          sub.formIndex(after: &i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(set.distance(from: sub.endIndex, to: i), -j)
-          set.formIndex(before: &i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
-          set.formIndex(after: &i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
-          set.formIndex(before: &i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-      }
-    #endif
-  }
   }
 
   extension MultiMapTests {
@@ -1040,116 +862,12 @@ import XCTest
   }
 
   extension MultiMapEtcTests {
-  func testRemoveAll() throws {
-    do {
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(target1.removeAll(forKey: 3), 0)
-      #else
-        XCTAssertEqual(target1.eraseMulti(3), 0)
-      #endif
-      let expected = [(0, 0), (0, 1), (0, 2), (1, 5), (1, 4), (1, 3), (2, 6), (2, 7), (2, 8)]
-      XCTAssertEqual(
-        target1.map { __key($0) },
-        expected.map { $0.0 })
-      XCTAssertEqual(
-        target1.map { __value($0) },
-        expected.map { $0.1 })
-    }
-    do {
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(target1.removeAll(forKey: 1), 3)
-      #else
-        XCTAssertEqual(target1.eraseMulti(1), 3)
-      #endif
-      let expected = [(0, 0), (0, 1), (0, 2), (2, 6), (2, 7), (2, 8)]
-      XCTAssertEqual(
-        target1.map { __key($0) },
-        expected.map { $0.0 })
-      XCTAssertEqual(
-        target1.map { __value($0) },
-        expected.map { $0.1 })
-    }
-    do {
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(target1.removeAll(forKey: 2), 3)
-      #else
-        XCTAssertEqual(target1.eraseMulti(2), 3)
-      #endif
-      let expected = [(0, 0), (0, 1), (0, 2)]
-      XCTAssertEqual(
-        target1.map { __key($0) },
-        expected.map { $0.0 })
-      XCTAssertEqual(
-        target1.map { __value($0) },
-        expected.map { $0.1 })
-    }
-    do {
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(target1.removeAll(forKey: 0), 3)
-      #else
-        XCTAssertEqual(target1.eraseMulti(0), 3)
-      #endif
-      let expected: [(Int, Int)] = []
-      XCTAssertEqual(
-        target1.map { __key($0) },
-        expected.map { $0.0 })
-      XCTAssertEqual(
-        target1.map { __value($0) },
-        expected.map { $0.1 })
-    }
-  }
   }
 
   extension MultiMapEtcTests {
-  func testComment() throws {
-    /// `RedBlackTreeMultiMap` を使用する例
-    var multimap = RedBlackTreeMultiMap<String, Int>()
-    multimap.insert(key: "apple", value: 5)
-    multimap.insert(key: "banana", value: 3)
-    multimap.insert(key: "cherry", value: 7)
-
-    // キーを使用して値にアクセス
-    let values = multimap.values(forKey: "banana")
-
-    values.forEach { value in
-      print("banana の値は \(value) です。")  // 出力例: banana の値は 3 です。
-    }
-
-    // キーと値のペアを削除
-    #if COMPATIBLE_ATCODER_2025
-      multimap.removeFirst(forKey: "apple")
-    #else
-      multimap.eraseUnique("apple")
-    #endif
-  }
   }
 
   extension MultiMapCopyOnWriteTests {
-    func testSet2() throws {
-      var set = RedBlackTreeMultiMap<Int, Int>(minimumCapacity: 1)
-      XCTAssertEqual(set._copyCount, 0)
-      set.insert(key: 0, value: 0)
-      XCTAssertEqual(set._copyCount, 0)
-      #if COMPATIBLE_ATCODER_2025
-        set.removeAll(forKey: 0)
-      #else
-        set.eraseMulti(0)
-      #endif
-      XCTAssertEqual(set._copyCount, 0)
-      _ = set.lowerBound(0)
-      _ = set.upperBound(0)
-      for s in set {
-        print(s)
-      }
-      set.forEach {
-        print($0)
-      }
-      print(set.map { $0 })
-      print(set.filter { $0 != keyValue(0, 0) })
-      //    print(set.reduce(0, +))
-      print(set.reduce(into: []) { $0.append($1) })
-      XCTAssertEqual(set._copyCount, 0)
-    }
   }
 
   extension MultiMapCopyOnWriteTests {
@@ -1208,93 +926,21 @@ import XCTest
   }
 
   extension MultiMapCopyOnWriteTests {
-    func testSet6() throws {
-      tree._copyCount = 0
-      for v in tree.filter({ _ in true }) {
-        #if COMPATIBLE_ATCODER_2025
-          tree.removeAll(forKey: v.key)
-        #else
-          tree.eraseMulti(v.key)
-        #endif
-      }
-      XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 0)
-    }
   }
 
   extension MultiMapCopyOnWriteTests {
-    func testSet7() throws {
-      tree._copyCount = 0
-      for v in tree {
-        #if COMPATIBLE_ATCODER_2025
-          tree.removeAll(forKey: v.key)
-        #else
-          tree.eraseMulti(v.key)
-        #endif
-      }
-      XCTAssertEqual(tree.count, 0)
-        XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
-    }
   }
 
   extension MultiMapCopyOnWriteTests {
-    func testSet8() throws {
-      tree._copyCount = 0
-      for v in tree + [] {
-        #if COMPATIBLE_ATCODER_2025
-          tree.removeAll(forKey: v.key)
-        #else
-          tree.eraseMulti(v.key)
-        #endif
-      }
-      XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
-    }
   }
 
   extension MultiMapCopyOnWriteTests {
-    func testSet9() throws {
-      tree._copyCount = 0
-      tree.forEach { v in
-        #if COMPATIBLE_ATCODER_2025
-          tree.removeAll(forKey: v.key)
-        #else
-          tree.eraseMulti(v.key)
-        #endif
-      }
-      XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 1)
-    }
   }
 
   extension MultiMapCopyOnWriteTests {
-    func testSet10() throws {
-      tree._copyCount = 0
-      for v in tree + [] {
-        #if COMPATIBLE_ATCODER_2025
-          tree.removeAll(forKey: v.key)
-        #else
-          tree.eraseMulti(v.key)
-        #endif
-      }
-      XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 0)
-    }
   }
 
   extension MultiMapCopyOnWriteTests {
-    func testSet11() throws {
-      tree._copyCount = 0
-      for v in tree.filter({ _ in true }) {
-        #if COMPATIBLE_ATCODER_2025
-          tree.removeAll(forKey: v.key)
-        #else
-          tree.eraseMulti(v.key)
-        #endif
-      }
-      XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 0)
-    }
   }
 
   extension MultiMapCopyOnWriteTests {
@@ -1325,61 +971,12 @@ import XCTest
   }
 
   extension MultiMapRemoveTests {
-  func testRemoveKey() throws {
-    var dict = [1: 1, 2: 2, 3: 3] as RedBlackTreeMultiMap<Int, Int>
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(dict.removeAll(forKey: 0), 0)
-      XCTAssertEqual(dict.removeAll(forKey: 1), 1)
-    #else
-      XCTAssertEqual(dict.eraseMulti(0), 0)
-      XCTAssertEqual(dict.eraseMulti(1), 1)
-    #endif
-    XCTAssertEqual(dict, [2: 2, 3: 3])
-    XCTAssertEqual(dict.first?.key, 2)
-    XCTAssertEqual(dict.last?.key, 3)
-  }
   }
 
   extension MultiMapBasicTest {
-  func testRemovalOperations() {
-    var multiMap = RedBlackTreeMultiMap<String, Int>(keysWithValues: [
-      ("apple", 1), ("banana", 2), ("apple", 3),
-    ])
-
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(multiMap.removeAll(forKey: "apple"), 2)
-    #else
-      XCTAssertEqual(multiMap.eraseMulti("apple"), 2)
-    #endif
-    XCTAssertFalse(multiMap.contains(key: "apple"))
-    XCTAssertEqual(multiMap.count(forKey: "apple"), 0)
-
-    if !multiMap.isEmpty {
-      let removed = multiMap.removeFirst()
-      XCTAssertEqual(removed.key, "banana")
-      XCTAssertEqual(removed.value, 2)
-    }
-
-    multiMap.removeAll()
-    XCTAssertTrue(multiMap.isEmpty)
-  }
   }
 
   extension MultiMapBasicTest {
-  func testBoundsAndIndexing() {
-    let elements = [("a", 1), ("a", 2), ("b", 3), ("c", 4)]
-    let multiMap = RedBlackTreeMultiMap(keysWithValues: elements)
-
-    let lb = multiMap.lowerBound("a")
-    let ub = multiMap.upperBound("a")
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertLessThan(lb, ub)
-    #endif
-    XCTAssertEqual(multiMap.distance(from: lb, to: ub), 2)
-
-    let lb2 = multiMap.lowerBound("z")
-    XCTAssertEqual(lb2, multiMap.endIndex)
-  }
   }
 
   extension MultiMapBasicTest {
@@ -1420,18 +1017,6 @@ import XCTest
   }
 
   extension MultiMapAdvancedTest {
-  func testRemoveValuesForKey() {
-    var map: RedBlackTreeMultiMap = [("x", 1), ("x", 2), ("y", 3)]
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(map.removeAll(forKey: "x"), 2)
-      XCTAssertFalse(map.contains(key: "x"))
-      XCTAssertEqual(map.removeAll(forKey: "z"), 0)
-    #else
-      XCTAssertEqual(map.eraseMulti("x"), 2)
-      XCTAssertFalse(map.contains(key: "x"))
-      XCTAssertEqual(map.eraseMulti("z"), 0)
-    #endif
-  }
   }
 
   extension RedBlackTreeMultiMapTests {
@@ -1455,16 +1040,6 @@ import XCTest
   }
 
   extension RedBlackTreeMultiMapTests {
-  func testRemoveValuesForKey() throws {
-    var map: RedBlackTreeMultiMap = [("k1", 1), ("k1", 2), ("k2", 3)]
-#if COMPATIBLE_ATCODER_2025
-    let removedCount = map.removeAll(forKey: "k1")
-#else
-    let removedCount = map.eraseMulti("k1")
-#endif
-    XCTAssertEqual(removedCount, 2)
-    XCTAssertFalse(map.contains(key: "k1"))
-  }
   }
 
   extension RedBlackTreeMultiMapTests {

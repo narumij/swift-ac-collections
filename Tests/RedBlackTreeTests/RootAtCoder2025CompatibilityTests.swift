@@ -8,6 +8,7 @@ import XCTest
 
 #if COMPATIBLE_ATCODER_2025
   extension Performaces {
+      #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceExample4() throws {
         self.measure {
           var set = RedBlackTreeSet<Int>(0..<10_000_000)
@@ -17,15 +18,18 @@ import XCTest
             }
         }
       }
+      #endif
   }
 
   extension Performaces {
+      #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceExample7() throws {
         let set = RedBlackTreeSet<Int>(0..<10_000_000)
         self.measure {
           _ = set.firstIndex { $0 > 10_000_000 }
         }
       }
+      #endif
   }
 
   extension NaiveIteratorTests {
@@ -546,6 +550,7 @@ import XCTest
   }
   #endif
   extension Performaces {
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceExample3() throws {
       self.measure {
         var set = RedBlackTreeSet<Int>(0..<10_000_000)
@@ -556,6 +561,7 @@ import XCTest
         #endif
       }
     }
+    #endif
   }
 
   extension EtcTests {

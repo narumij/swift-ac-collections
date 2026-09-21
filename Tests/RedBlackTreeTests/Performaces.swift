@@ -122,6 +122,7 @@ final class Performaces: RedBlackTreeTestCase {
   #endif
 
   #if false
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceCopy1() throws {
       let set = RedBlackTreeSet<Int>(0..<1)
       var a = set._storage
@@ -132,7 +133,9 @@ final class Performaces: RedBlackTreeTestCase {
       //    }
       print("a.capacity", a.capacity)
     }
+    #endif
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceCopy32() throws {
       let set = RedBlackTreeSet<Int>(0..<24)
       var a = set._storage
@@ -143,7 +146,9 @@ final class Performaces: RedBlackTreeTestCase {
       //    }
       print("a.capacity", a.capacity)
     }
+    #endif
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceCopy64() throws {
       let set = RedBlackTreeSet<Int>(0..<64)
       var a = set._storage
@@ -154,7 +159,9 @@ final class Performaces: RedBlackTreeTestCase {
       //    }
       print("a.capacity", a.capacity)
     }
+    #endif
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceCopy128() throws {
       let set = RedBlackTreeSet<Int>(0..<128)
       var a = set._storage
@@ -165,7 +172,9 @@ final class Performaces: RedBlackTreeTestCase {
       //    }
       print("a.capacity", a.capacity)
     }
+    #endif
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceCopy256() throws {
       let set = RedBlackTreeSet<Int>(0..<256)
       var a = set._storage
@@ -175,5 +184,6 @@ final class Performaces: RedBlackTreeTestCase {
         }
       }
     }
+    #endif
   #endif
 }

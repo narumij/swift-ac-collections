@@ -9,7 +9,6 @@ import XCTest
 
 final class SetSubSequenceTests: RedBlackTreeTestCase {
 
-  #if !COMPATIBLE_ATCODER_2025
   func testEmptySlice() {
 
     // 軽く心配になったが、release/AtCoder/2025でも同じ動作結果が得られた
@@ -55,7 +54,6 @@ final class SetSubSequenceTests: RedBlackTreeTestCase {
       }
     #endif
   }
-  #endif
 
   // MARK: 基本プロパティ -------------------------------------------------
 

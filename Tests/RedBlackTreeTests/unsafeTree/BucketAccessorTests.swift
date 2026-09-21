@@ -19,6 +19,7 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
   }
 
   #if !DEBUG
+  #if ENABLE_PERFORMANCE_TESTING
   func testPerformanceExample() throws {
     
     typealias _PayloadValue = Int
@@ -49,5 +50,6 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
     
     storage.deallocate()
   }
+  #endif
   #endif
 }

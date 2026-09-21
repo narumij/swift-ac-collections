@@ -511,7 +511,6 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertNotEqual([2: 2, 3: 3] as RedBlackTreeDictionary<Int, Int>, [1: 1, 2: 2])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testFirstLast() throws {
     let dict = [1: 11, 2: 22, 3: 33] as RedBlackTreeDictionary<Int, Int>
     XCTAssertEqual(dict.first?.key, 1)
@@ -529,7 +528,6 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertTrue(dict.allSatisfy({ $0.value / $0.key == 11 }))
     XCTAssertFalse(dict.allSatisfy({ $0.value / $0.key == 22 }))
   }
-  #endif
 
   func testForEach() throws {
     let dict = [1: 11, 2: 22, 3: 33] as RedBlackTreeDictionary<Int, Int>
@@ -610,7 +608,6 @@ final class DictionaryTests: RedBlackTreeTestCase {
     }
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testIndex00() throws {
     let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
     do {
@@ -663,9 +660,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
       }
     #endif
   }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
   func testIndex000() throws {
     let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
     do {
@@ -718,7 +713,6 @@ final class DictionaryTests: RedBlackTreeTestCase {
       }
     #endif
   }
-  #endif
 
 
   #if !COMPATIBLE_ATCODER_2025

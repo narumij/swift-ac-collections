@@ -134,7 +134,6 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
   }
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025
   func testPopFirstAndSubtracting() {
     var s: RedBlackTreeSet = [3, 1, 2]
     #if COMPATIBLE_ATCODER_2025
@@ -150,7 +149,6 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
     s.subtract([2, 3])
     XCTAssertTrue(s.isEmpty)
   }
-  #endif
 
   func testSequenceUnionEquivalence() {
     let base: RedBlackTreeSet = [1, 4]

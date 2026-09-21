@@ -57,7 +57,6 @@ final class ConvenienceTests: RedBlackTreeTestCase {
     XCTAssertEqual(set, [1, 3, 4])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testSetIndexRange0() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
     #if COMPATIBLE_ATCODER_2025
@@ -75,7 +74,6 @@ final class ConvenienceTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.lowerBound(2) == set.upperBound(4))
     _ = set.lowerBound(2)..<set.upperBound(4)
   }
-  #endif
 
   func testSetIndexRange() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]

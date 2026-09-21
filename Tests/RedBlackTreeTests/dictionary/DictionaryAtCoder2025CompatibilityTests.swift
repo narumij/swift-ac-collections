@@ -318,25 +318,7 @@ import XCTest
   }
 
   extension DictionaryTests {
-    func testSubsequence6() throws {
-      let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-      let sub = set[set.startIndex..<set.endIndex]
-      XCTAssertEqual(sub.map { $0.key }, [1, 2, 3, 4, 5])
-    }
 
-    func testSubsequence7() throws {
-      var set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-      let sub = set[set.startIndex..<set.endIndex]
-      var a: [String] = []
-      for (_, value) in sub {
-        a.append(value)
-      }
-      XCTAssertEqual(a, ["a", "b", "c", "d", "e"])
-      sub.forEach { key, value in
-        set[key] = "?"
-      }
-      XCTAssertEqual(set.map { $0.value }, ["?", "?", "?", "?", "?"])
-    }
   }
 
   extension DictionaryTests {
@@ -404,27 +386,6 @@ import XCTest
       XCTAssertEqual(i, sub.startIndex)
     }
 
-    func testRangeSubscript() throws {
-      let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
-      let l2 = set.lowerBound(2)
-      let u2 = set.upperBound(4)
-      XCTAssertEqual(
-        set[l2..<u2].map { RedBlackTreePair($0) }, [2, 3, 4].map { .init(key: $0, value: $0 * 10) })
-      XCTAssertEqual(
-        set[l2...].map { RedBlackTreePair($0) },
-        [2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
-      XCTAssertEqual(
-        set[u2...].map { RedBlackTreePair($0) }, [6, 7].map { .init(key: $0, value: $0 * 10) })
-      XCTAssertEqual(
-        set[..<u2].map { RedBlackTreePair($0) },
-        [1, 2, 3, 4].map { .init(key: $0, value: $0 * 10) })
-      XCTAssertEqual(
-        set[...u2].map { RedBlackTreePair($0) },
-        [1, 2, 3, 4, 6].map { .init(key: $0, value: $0 * 10) })
-      XCTAssertEqual(
-        set[..<set.endIndex].map { RedBlackTreePair($0) },
-        [1, 2, 3, 4, 6, 7].map { .init(key: $0, value: $0 * 10) })
-    }
   }
 
   extension DictionaryTests {
@@ -581,133 +542,12 @@ import XCTest
   }
 
   extension DictionaryTests {
-  func testFirstLast() throws {
-    let dict = [1: 11, 2: 22, 3: 33] as RedBlackTreeDictionary<Int, Int>
-    XCTAssertEqual(dict.first?.key, 1)
-    XCTAssertEqual(dict.first?.value, 11)
-    XCTAssertEqual(dict.last?.key, 3)
-    XCTAssertEqual(dict.last?.value, 33)
-    XCTAssertEqual(dict.first(where: { $0.value == 22 })?.key, 2)
-    XCTAssertEqual(dict.first(where: { $0.value == 44 })?.key, nil)
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(dict.firstIndex(where: { $0.value == 22 }), dict.index(after: dict.startIndex))
-      XCTAssertEqual(dict.firstIndex(where: { $0.value == 44 }), nil)
-    #endif
-    XCTAssertTrue(dict.contains(where: { $0.value / $0.key == 11 }))
-    XCTAssertFalse(dict.contains(where: { $0.value / $0.key == 22 }))
-    XCTAssertTrue(dict.allSatisfy({ $0.value / $0.key == 11 }))
-    XCTAssertFalse(dict.allSatisfy({ $0.value / $0.key == 22 }))
-  }
   }
 
   extension DictionaryTests {
-  func testIndex00() throws {
-    let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
-    do {
-      var i = set.startIndex
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.startIndex, to: i), j)
-        i = set.index(after: i)
-      }
-      XCTAssertEqual(i, set.endIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.endIndex, to: i), -j)
-        i = set.index(before: i)
-      }
-      XCTAssertEqual(i, set.startIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.startIndex), -j)
-        set.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, set.endIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.endIndex), j)
-        set.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, set.startIndex)
-    }
-    let sub = set[2..<5]
-    #if COMPATIBLE_ATCODER_2025
-      do {
-        var i = sub.startIndex
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
-          i = sub.index(after: i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: sub.endIndex, to: i), -j)
-          i = sub.index(before: i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
-          sub.formIndex(after: &i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
-          sub.formIndex(before: &i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-      }
-    #endif
-  }
   }
 
   extension DictionaryTests {
-  func testIndex000() throws {
-    let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
-    do {
-      var i = set.startIndex
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.startIndex, to: i), j)
-        set.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, set.endIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.endIndex, to: i), -j)
-        set.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, set.startIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.startIndex), -j)
-        set.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, set.endIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.endIndex), j)
-        set.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, set.startIndex)
-    }
-    let sub = set[2..<5]
-    #if COMPATIBLE_ATCODER_2025
-      do {
-        var i = sub.startIndex
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
-          sub.formIndex(after: &i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(set.distance(from: sub.endIndex, to: i), -j)
-          set.formIndex(before: &i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
-          set.formIndex(after: &i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
-          set.formIndex(before: &i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-      }
-    #endif
-  }
   }
 
   extension DictionaryTests {

@@ -52,7 +52,6 @@ final class MultiMapAdvancedTest: RedBlackTreeTestCase {
     XCTAssertEqual(map.values(forKey: "z") + [], [])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testRemoveValuesForKey() {
     var map: RedBlackTreeMultiMap = [("x", 1), ("x", 2), ("y", 3)]
     #if COMPATIBLE_ATCODER_2025
@@ -65,7 +64,6 @@ final class MultiMapAdvancedTest: RedBlackTreeTestCase {
       XCTAssertEqual(map.eraseMulti("z"), 0)
     #endif
   }
-  #endif
 
   func testMinAndMax() {
     let map: RedBlackTreeMultiMap = [("b", 2), ("a", 1), ("c", 3)]

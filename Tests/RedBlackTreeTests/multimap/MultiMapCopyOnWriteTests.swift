@@ -40,7 +40,6 @@ import XCTest
       XCTAssertGreaterThanOrEqual(multiset._copyCount, 0)  // 挿入に備え、かつ消費
     }
 
-    #if !COMPATIBLE_ATCODER_2025
     func testSet2() throws {
       var set = RedBlackTreeMultiMap<Int, Int>(minimumCapacity: 1)
       XCTAssertEqual(set._copyCount, 0)
@@ -66,7 +65,6 @@ import XCTest
       print(set.reduce(into: []) { $0.append($1) })
       XCTAssertEqual(set._copyCount, 0)
     }
-    #endif
 
     #if !COMPATIBLE_ATCODER_2025
     func testSet3() throws {
@@ -127,7 +125,6 @@ import XCTest
     }
     #endif
 
-    #if !COMPATIBLE_ATCODER_2025
     func testSet6() throws {
       tree._copyCount = 0
       for v in tree.filter({ _ in true }) {
@@ -140,9 +137,7 @@ import XCTest
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
     }
-    #endif
 
-    #if !COMPATIBLE_ATCODER_2025
     func testSet7() throws {
       tree._copyCount = 0
       for v in tree {
@@ -155,9 +150,7 @@ import XCTest
       XCTAssertEqual(tree.count, 0)
         XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
     }
-    #endif
 
-    #if !COMPATIBLE_ATCODER_2025
     func testSet8() throws {
       tree._copyCount = 0
       for v in tree + [] {
@@ -170,9 +163,7 @@ import XCTest
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
     }
-    #endif
 
-    #if !COMPATIBLE_ATCODER_2025
     func testSet9() throws {
       tree._copyCount = 0
       tree.forEach { v in
@@ -185,9 +176,7 @@ import XCTest
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 1)
     }
-    #endif
 
-    #if !COMPATIBLE_ATCODER_2025
     func testSet10() throws {
       tree._copyCount = 0
       for v in tree + [] {
@@ -200,9 +189,7 @@ import XCTest
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
     }
-    #endif
 
-    #if !COMPATIBLE_ATCODER_2025
     func testSet11() throws {
       tree._copyCount = 0
       for v in tree.filter({ _ in true }) {
@@ -215,7 +202,6 @@ import XCTest
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
     }
-    #endif
 
     #if !COMPATIBLE_ATCODER_2025
     func testSet3000() throws {

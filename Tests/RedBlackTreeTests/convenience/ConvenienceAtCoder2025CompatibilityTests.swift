@@ -346,23 +346,6 @@ import XCTest
     }
   }
   extension ConvenienceTests {
-  func testSetIndexRange0() throws {
-    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertTrue(set.startIndex < set.endIndex)
-      XCTAssertFalse(set.startIndex > set.endIndex)
-    #endif
-    XCTAssertFalse(set.startIndex == set.endIndex)
-    _ = set.startIndex..<set.endIndex
-    XCTAssertNotEqual(set[set.startIndex..<set.endIndex] + [], [])
-
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertTrue(set.lowerBound(2) < set.upperBound(4))
-      XCTAssertFalse(set.lowerBound(2) > set.upperBound(4))
-    #endif
-    XCTAssertFalse(set.lowerBound(2) == set.upperBound(4))
-    _ = set.lowerBound(2)..<set.upperBound(4)
-  }
   }
 
   extension ConvenienceTests {

@@ -599,29 +599,36 @@ import XCTest
   }
 
   extension SetPerformanceTests {
+      #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceFirstIndex4() throws {
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         self.measure {
           XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 - 1 }), s.index(before: s.endIndex))
         }
       }
+      #endif
 
+      #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceFirstIndex5() throws {
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         self.measure {
           XCTAssertEqual(s.firstIndex(where: { $0 >= 0 }), s.startIndex)
         }
       }
+      #endif
 
+      #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceFirstIndex6() throws {
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         self.measure {
           XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
         }
       }
+      #endif
   }
 
   extension SetPerformanceTests {
+      #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare0() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         XCTAssertTrue(set.startIndex < set.endIndex)
@@ -631,7 +638,9 @@ import XCTest
           let _ = set.startIndex < set.endIndex
         }
       }
+      #endif
 
+      #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare1() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.index(before: set.endIndex)
@@ -643,7 +652,9 @@ import XCTest
           let _ = l < r
         }
       }
+      #endif
 
+      #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare2() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.endIndex
@@ -655,7 +666,9 @@ import XCTest
           let _ = l < r
         }
       }
+      #endif
 
+      #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare3() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.index(before: set.endIndex)
@@ -667,7 +680,9 @@ import XCTest
           let _ = l < r
         }
       }
+      #endif
 
+      #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare4() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.endIndex
@@ -679,7 +694,9 @@ import XCTest
           let _ = l < r
         }
       }
+      #endif
 
+      #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare5() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let r = set.index(before: set.endIndex)
@@ -693,6 +710,7 @@ import XCTest
           let _ = l < r
         }
       }
+      #endif
   }
   extension SetRemoveTests {
   func testRemoveSubrange() throws {
@@ -711,241 +729,33 @@ import XCTest
   }
 
   extension SetTests {
-  func testInitEmtpy() throws {
-    let set = RedBlackTreeSet<Int>()
-    XCTAssertEqual(set.elements, [])
-    XCTAssertEqual(set.count, 0)
-    XCTAssertTrue(set.isEmpty)
-    XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
-    XCTAssertEqual(set.count(of: 0), 0)
-  }
   }
 
   extension SetTests {
-  func testInitRange() throws {
-    let set = RedBlackTreeSet<Int>(0..<10000)
-    XCTAssertEqual(set.elements, (0..<10000) + [])
-    XCTAssertEqual(set.count, 10000)
-    XCTAssertFalse(set.isEmpty)
-    XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
-  }
   }
 
   extension SetTests {
-  func testInitCollection1() throws {
-    let set = RedBlackTreeSet<Int>(0..<10000)
-    XCTAssertEqual(set.elements, (0..<10000) + [])
-    XCTAssertEqual(set.count, 10000)
-    XCTAssertFalse(set.isEmpty)
-    XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
-  }
   }
 
   extension SetTests {
-  func testInitCollection2() throws {
-    let set = RedBlackTreeSet<Int>([2, 3, 3, 0, 0, 1, 1, 1])
-    XCTAssertEqual(set.elements, [0, 1, 2, 3])
-    XCTAssertEqual(set.count, 4)
-    XCTAssertFalse(set.isEmpty)
-    XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
-  }
   }
 
   extension SetTests {
-  func testExample3() throws {
-    let b: RedBlackTreeSet<Int> = [1, 2, 3]
-    XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), b.count)
-  }
   }
 
   extension SetTests {
-    func testFirstIndex() throws {
-      var members: RedBlackTreeSet = [1, 3, 5, 7, 9]
-      XCTAssertEqual(members.firstIndex(of: 3)?.value, .init(1))
-      XCTAssertEqual(members.firstIndex(of: 2), nil)
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(members.firstIndex(where: { $0 > 3 })?.value, .init(2))
-        XCTAssertEqual(members.firstIndex(where: { $0 > 9 }), nil)
-      #endif
-      XCTAssertEqual(members.sorted(), [1, 3, 5, 7, 9])
-      XCTAssertEqual(members.removeFirst(), 1)
-      XCTAssertEqual(members.removeFirst(), 3)
-      XCTAssertEqual(members.removeFirst(), 5)
-      XCTAssertEqual(members.removeFirst(), 7)
-      XCTAssertEqual(members.removeFirst(), 9)
-    }
   }
 
   extension SetTests {
-  func testContainsAllSatisfy() throws {
-    let dict = [1, 2, 2, 2, 3, 3, 4, 5] as RedBlackTreeSet<Int>
-    XCTAssertEqual(dict.first, 1)
-    XCTAssertEqual(dict.last, 5)
-    XCTAssertEqual(dict.first(where: { $0 > 4 }), 5)
-    XCTAssertEqual(dict.first(where: { $0 > 5 }), nil)
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(dict.firstIndex(where: { $0 > 4 }), dict.index(before: dict.endIndex))
-      XCTAssertEqual(dict.firstIndex(where: { $0 > 5 }), nil)
-    #endif
-    XCTAssertTrue(dict.contains(where: { $0 > 3 }))
-    XCTAssertFalse(dict.contains(where: { $0 > 5 }))
-    XCTAssertTrue(dict.allSatisfy({ $0 > 0 }))
-    XCTAssertFalse(dict.allSatisfy({ $0 > 1 }))
-  }
   }
 
   extension SetTests {
-  func testIndex00() throws {
-    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-    do {
-      var i = set.startIndex
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.startIndex, to: i), j)
-        i = set.index(after: i)
-      }
-      XCTAssertEqual(i, set.endIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.endIndex, to: i), -j)
-        i = set.index(before: i)
-      }
-      XCTAssertEqual(i, set.startIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.startIndex), -j)
-        set.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, set.endIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.endIndex), j)
-        set.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, set.startIndex)
-    }
-    #if !true && DEBUG
-      do {
-        var i = RedBlackTreeBoundExpression<Int>.start
-        for j in 0..<set.count {
-          XCTAssertEqual(set.distance(from: .start, to: i), j)
-          i = set.bound(after: i)
-        }
-        for j in 0..<set.count {
-          XCTAssertEqual(set.distance(from: .end, to: i), -j)
-          i = set.bound(before: i)
-        }
-      }
-    #endif
-    let sub = set.elements(in: 2..<5)
-    #if COMPATIBLE_ATCODER_2025
-      do {
-        var i = sub.startIndex
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
-          i = sub.index(after: i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: sub.endIndex, to: i), -j)
-          i = sub.index(before: i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
-          sub.formIndex(after: &i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
-          sub.formIndex(before: &i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-      }
-    #endif
-  }
   }
 
   extension SetTests {
-  func testIndex000() throws {
-    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-    do {
-      var i = set.startIndex
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.startIndex, to: i), j)
-        set.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, set.endIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: set.endIndex, to: i), -j)
-        set.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, set.startIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.startIndex), -j)
-        set.formIndex(after: &i)
-      }
-      XCTAssertEqual(i, set.endIndex)
-      for j in 0..<set.count {
-        XCTAssertEqual(set.distance(from: i, to: set.endIndex), j)
-        set.formIndex(before: &i)
-      }
-      XCTAssertEqual(i, set.startIndex)
-    }
-    let sub = set.elements(in: 2..<5)
-    #if COMPATIBLE_ATCODER_2025
-      do {
-        var i = sub.startIndex
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: sub.startIndex, to: i), j)
-          sub.formIndex(after: &i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(set.distance(from: sub.endIndex, to: i), -j)
-          set.formIndex(before: &i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.startIndex), -j)
-          set.formIndex(after: &i)
-        }
-        XCTAssertEqual(i, sub.endIndex)
-        for j in 0..<sub.count {
-          XCTAssertEqual(sub.distance(from: i, to: sub.endIndex), j)
-          set.formIndex(before: &i)
-        }
-        XCTAssertEqual(i, sub.startIndex)
-      }
-    #endif
-  }
   }
 
   extension SetTests {
-  func testIndexValidation() throws {
-    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(set.capacity, 5, "一時しのぎのチェックテスト")
-    #else
-      XCTAssertEqual(set.capacity, 8, "一時しのぎのチェックテスト")
-    #endif
-    XCTAssertTrue(set.isValid(set.startIndex))
-    XCTAssertFalse(set.isValid(set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
-    typealias Index = RedBlackTreeSet<Int>.Index
-    #if DEBUG
-      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-      // UnsafeTreeでは、範囲外のインデックスを作成できない
-      // その後できるようになった
-      // 挙動が変わった
-      //    XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5)._rawTag, 5)
-      XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
-      XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
-      XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
-      XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
-      XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 3)))
-      XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 4)))
-    // TODO: メモリ安全に不安があるので、再度調査すること。
-    //      XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: 5))) // TODO: rawTag関連コードの整理時に、このテストの必要性を再検討する
-    // 何のチェックをすり抜けたのかよく分からない
-    // __retrieve_に暫定処置はした
-    #endif
-  }
   }
 
   extension SetCopyOnWriteTests {
@@ -1081,68 +891,8 @@ import XCTest
   }
 
   extension RedBlackTreeSetCornerCaseTests {
-  func testPopFirstAndSubtracting() {
-    var s: RedBlackTreeSet = [3, 1, 2]
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(s.popFirst(), 1)
-    #else
-      XCTAssertEqual(s.popFirst(), 1)
-    #endif
-    XCTAssertEqual(s.sorted(), [2, 3])
-
-    let sub = s.subtracting([2])
-    XCTAssertEqual(sub.sorted(), [3])
-
-    s.subtract([2, 3])
-    XCTAssertTrue(s.isEmpty)
-  }
   }
 
   extension SetSubSequenceTests {
-  func testEmptySlice() {
-
-    // 軽く心配になったが、release/AtCoder/2025でも同じ動作結果が得られた
-
-    let base = RedBlackTreeSet(0..<10)  // [0‥9]
-
-    #if COMPATIBLE_ATCODER_2025
-      do {
-        let slice = base[base.startIndex..<base.startIndex]  // []
-
-        XCTAssertEqual(slice.count, 0)
-        XCTAssertEqual(slice.first, nil)
-        XCTAssertEqual(slice.last, nil)
-        XCTAssertEqual(
-          slice.distance(
-            from: slice.startIndex,
-            to: slice.endIndex), 0)
-      }
-
-      do {
-        let mid = base.startIndex.advanced(by: 5)
-        let slice = base[mid..<mid]  // []
-
-        XCTAssertEqual(slice.count, 0)
-        XCTAssertEqual(slice.first, nil)
-        XCTAssertEqual(slice.last, nil)
-        XCTAssertEqual(
-          slice.distance(
-            from: slice.startIndex,
-            to: slice.endIndex), 0)
-      }
-
-      do {
-        let slice = base[base.endIndex..<base.endIndex]  // []
-
-        XCTAssertEqual(slice.count, 0)
-        XCTAssertEqual(slice.first, nil)
-        XCTAssertEqual(slice.last, nil)
-        XCTAssertEqual(
-          slice.distance(
-            from: slice.startIndex,
-            to: slice.endIndex), 0)
-      }
-    #endif
-  }
   }
 #endif

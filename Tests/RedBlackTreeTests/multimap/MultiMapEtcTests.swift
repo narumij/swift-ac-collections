@@ -228,7 +228,6 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
   }
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025
   func testRemoveAll() throws {
     do {
       #if COMPATIBLE_ATCODER_2025
@@ -287,7 +286,6 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
         expected.map { $0.1 })
     }
   }
-  #endif
 
   func testSome() throws {
 
@@ -305,7 +303,6 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
       (0..<100_000).map { $0 })
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testComment() throws {
     /// `RedBlackTreeMultiMap` を使用する例
     var multimap = RedBlackTreeMultiMap<String, Int>()
@@ -327,13 +324,14 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
       multimap.eraseUnique("apple")
     #endif
   }
-  #endif
 
+  #if ENABLE_PERFORMANCE_TESTING
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
     self.measure {
       // Put the code you want to measure the time of here.
     }
   }
+  #endif
 
 }

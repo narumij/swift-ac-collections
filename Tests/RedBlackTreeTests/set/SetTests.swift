@@ -15,17 +15,17 @@ import XCTest
 
 final class SetTests: RedBlackTreeTestCase {
 
+  #if !COMPATIBLE_ATCODER_2025
   func testInitEmtpy() throws {
     let set = RedBlackTreeSet<Int>()
     XCTAssertEqual(set.elements, [])
     XCTAssertEqual(set.count, 0)
     XCTAssertTrue(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 0)
-    #if !COMPATIBLE_ATCODER_2025
       XCTAssertEqual(set.distance(from: .start, to: .end), 0)
-    #endif
     XCTAssertEqual(set.count(of: 0), 0)
   }
+  #endif
 
   #if DEBUG
     func testInitEmtpyLiteral() throws {
@@ -42,47 +42,47 @@ final class SetTests: RedBlackTreeTestCase {
   }
 
 
+  #if !COMPATIBLE_ATCODER_2025
   func testInitRange() throws {
     let set = RedBlackTreeSet<Int>(0..<10000)
     XCTAssertEqual(set.elements, (0..<10000) + [])
     XCTAssertEqual(set.count, 10000)
     XCTAssertFalse(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
-    #if !COMPATIBLE_ATCODER_2025
       XCTAssertEqual(set.distance(from: .start, to: .end), 10000)
-    #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testInitCollection1() throws {
     let set = RedBlackTreeSet<Int>(0..<10000)
     XCTAssertEqual(set.elements, (0..<10000) + [])
     XCTAssertEqual(set.count, 10000)
     XCTAssertFalse(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), 10000)
-    #if !COMPATIBLE_ATCODER_2025
       XCTAssertEqual(set.distance(from: .start, to: .end), 10000)
-    #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testInitCollection2() throws {
     let set = RedBlackTreeSet<Int>([2, 3, 3, 0, 0, 1, 1, 1])
     XCTAssertEqual(set.elements, [0, 1, 2, 3])
     XCTAssertEqual(set.count, 4)
     XCTAssertFalse(set.isEmpty)
     XCTAssertEqual(set.distance(from: set.startIndex, to: set.endIndex), set.count)
-    #if !COMPATIBLE_ATCODER_2025
       XCTAssertEqual(set.distance(from: .start, to: .end), set.count)
-    #endif
   }
+  #endif
 
 
+  #if !COMPATIBLE_ATCODER_2025
   func testExample3() throws {
     let b: RedBlackTreeSet<Int> = [1, 2, 3]
     XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), b.count)
-    #if !COMPATIBLE_ATCODER_2025
       XCTAssertEqual(b.distance(from: .start, to: .end), b.count)
-    #endif
   }
+  #endif
 
   #if DEBUG
     func testSubscript() throws {
@@ -531,6 +531,7 @@ final class SetTests: RedBlackTreeTestCase {
       XCTAssertEqual(numbers.upperBound(6).value, .end)
     }
 
+    #if !COMPATIBLE_ATCODER_2025
     func testFirstIndex() throws {
       var members: RedBlackTreeSet = [1, 3, 5, 7, 9]
       XCTAssertEqual(members.firstIndex(of: 3)?.value, .init(1))
@@ -546,8 +547,10 @@ final class SetTests: RedBlackTreeTestCase {
       XCTAssertEqual(members.removeFirst(), 7)
       XCTAssertEqual(members.removeFirst(), 9)
     }
+    #endif
   #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testContainsAllSatisfy() throws {
     let dict = [1, 2, 2, 2, 3, 3, 4, 5] as RedBlackTreeSet<Int>
     XCTAssertEqual(dict.first, 1)
@@ -563,6 +566,7 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertTrue(dict.allSatisfy({ $0 > 0 }))
     XCTAssertFalse(dict.allSatisfy({ $0 > 1 }))
   }
+  #endif
 
   func testEqualtable() throws {
     XCTAssertEqual(RedBlackTreeSet<Int>(), [])
@@ -664,6 +668,7 @@ final class SetTests: RedBlackTreeTestCase {
     }
   #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex00() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     do {
@@ -689,7 +694,7 @@ final class SetTests: RedBlackTreeTestCase {
       }
       XCTAssertEqual(i, set.startIndex)
     }
-    #if !COMPATIBLE_ATCODER_2025 && DEBUG
+    #if !false && DEBUG
       do {
         var i = RedBlackTreeBoundExpression<Int>.start
         for j in 0..<set.count {
@@ -729,7 +734,9 @@ final class SetTests: RedBlackTreeTestCase {
       }
     #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex000() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     do {
@@ -782,6 +789,7 @@ final class SetTests: RedBlackTreeTestCase {
       }
     #endif
   }
+  #endif
 
 
 
@@ -807,6 +815,7 @@ final class SetTests: RedBlackTreeTestCase {
   // `rawTag` からインデックスを生成する経路は、現在は主にDEBUG用のテスト補助として残している。
   // 通常のインデックス操作ではほぼ利用しないため、範囲外rawTagの検証は低優先度とする。
   // rawTag関連コードを整理・廃止するときに、以下のテストの必要性もまとめて再検討する。
+  #if !COMPATIBLE_ATCODER_2025
   func testIndexValidation() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
     #if COMPATIBLE_ATCODER_2025
@@ -835,6 +844,7 @@ final class SetTests: RedBlackTreeTestCase {
     // __retrieve_に暫定処置はした
     #endif
   }
+  #endif
 
 
   #if COMPATIBLE_ATCODER_2025

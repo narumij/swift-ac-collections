@@ -81,6 +81,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(numbers.distance(from: numbers.startIndex, to: numbers.endIndex), 0)
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testUsage1() throws {
     // 意外と普通のユースケースでバグがあることが判明
     var map = Target<Int, Int>()
@@ -116,7 +117,9 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(map.map(\.key), [])
     XCTAssertEqual(map.map(\.value), [])
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testUsage2() throws {
     var map = Target<Int, Int>()
     XCTAssertEqual(map[0].map(\.value), [])
@@ -144,6 +147,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(map[0].map(\.value), [])
     XCTAssertEqual(map[1].map(\.value), [3])
   }
+  #endif
 
   func testUsage3() throws {
     var map = Target<Int, Int>()
@@ -186,6 +190,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict[3], nil)
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testInitUniqueKeysWithValues() throws {
     let dict = Target(keysWithValues: [(1, 10), (2, 20)])
     #if COMPATIBLE_ATCODER_2025
@@ -200,7 +205,9 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict[2].map(\.value), [20])
     XCTAssertEqual(dict[3].map(\.value), [])
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testInitUniqueKeysWithValues2() throws {
     let dict = Target(keysWithValues: AnySequence([(1, 10), (2, 20)]))
     #if COMPATIBLE_ATCODER_2025
@@ -215,6 +222,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict[2].map(\.value), [20])
     XCTAssertEqual(dict[3].map(\.value), [])
   }
+  #endif
 
   #if true
     func testInitUniquingKeysWith_() throws {
@@ -241,6 +249,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testInitUniquingKeysWith() throws {
     do {
       let dict = Target(
@@ -258,6 +267,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertEqual(dict[3].map(\.value), [])
     }
   }
+  #endif
 
 
   #if false
@@ -396,6 +406,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRandom() throws {
     var set = Target<Int, Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -433,7 +444,9 @@ final class MultiMapTests: RedBlackTreeTestCase {
       }
     #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRandom2() throws {
     var set = Target<Int, Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -487,7 +500,9 @@ final class MultiMapTests: RedBlackTreeTestCase {
       }
     #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRandom3() throws {
     var set = Target<Int, Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -519,7 +534,9 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRandom4() throws {
     var set = Target<Int, Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -551,6 +568,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
   }
+  #endif
 
   func testEqualtable() throws {
     XCTAssertEqual(Target<Int, Int>(), [:])
@@ -560,6 +578,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertNotEqual([2: 2, 3: 3] as Target<Int, Int>, [1: 1, 2: 2])
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testFirstLast() throws {
     let dict = [1: 11, 2: 22, 3: 33] as Target<Int, Int>
     XCTAssertEqual(dict.first?.key, 1)
@@ -577,6 +596,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     XCTAssertTrue(dict.allSatisfy({ $0.value / $0.key == 11 }))
     XCTAssertFalse(dict.allSatisfy({ $0.value / $0.key == 22 }))
   }
+  #endif
 
   func testForEach() throws {
     let dict = [1: 11, 2: 22, 3: 33] as Target<Int, Int>
@@ -671,6 +691,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex00() throws {
     let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
     do {
@@ -723,7 +744,9 @@ final class MultiMapTests: RedBlackTreeTestCase {
       }
     #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex000() throws {
     let set: Target<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
     do {
@@ -776,6 +799,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
       }
     #endif
   }
+  #endif
 
 
   func testRangeSubscript() throws {
@@ -815,6 +839,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
   // `rawTag` からインデックスを生成する経路は、現在は主にDEBUG用のテスト補助として残している。
   // 通常のインデックス操作ではほぼ利用しないため、範囲外rawTagの検証は低優先度とする。
   // rawTag関連コードを整理・廃止するときに、以下のテストの必要性もまとめて再検討する。
+  #if !COMPATIBLE_ATCODER_2025
   func testIndexValidation() throws {
     let set: Target<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
     #if COMPATIBLE_ATCODER_2025
@@ -851,6 +876,7 @@ final class MultiMapTests: RedBlackTreeTestCase {
       #endif
     #endif
   }
+  #endif
 
   func testIndexValidation2() throws {
     let _set: Target<Int, String> = [

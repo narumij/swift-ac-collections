@@ -21,36 +21,12 @@ extension RedBlackTreeDictionary {
 }
 #endif
 
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeDictionary {
-
-    @inlinable
-    package func ___is_garbaged(_ index: Index) -> Bool {
-      switch __tree_.__purified_(index).purified {
-      case .failure:
-        return true
-      default:
-        return false
-      }
-    }
-  }
-#endif
-
 #if AC_COLLECTIONS_INTERNAL_CHECKS
   extension RedBlackTreeDictionary {
 
     package var _copyCount: UInt {
       get { __tree_.copyCount }
       set { __tree_.copyCount = newValue }
-    }
-  }
-#endif
-
-#if DEBUG && COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeDictionary {
-
-    package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
-      .init(_start: _sealed_start, _end: _sealed_end)
     }
   }
 #endif

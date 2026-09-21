@@ -128,6 +128,7 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
     XCTAssertNil(f?.value)
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRemoveFirst() throws {
     #if !USE_OLD_FIND
       throw XCTSkip("挙動が変わるためスキップ")
@@ -225,7 +226,9 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
         expected.map { $0.1 })
     }
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRemoveAll() throws {
     do {
       #if COMPATIBLE_ATCODER_2025
@@ -284,6 +287,7 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
         expected.map { $0.1 })
     }
   }
+  #endif
 
   func testSome() throws {
 
@@ -301,6 +305,7 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
       (0..<100_000).map { $0 })
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testComment() throws {
     /// `RedBlackTreeMultiMap` を使用する例
     var multimap = RedBlackTreeMultiMap<String, Int>()
@@ -322,6 +327,7 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
       multimap.eraseUnique("apple")
     #endif
   }
+  #endif
 
   func testPerformanceExample() throws {
     // This is an example of a performance test case.

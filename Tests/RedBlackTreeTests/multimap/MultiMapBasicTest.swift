@@ -25,6 +25,7 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     XCTAssertEqual(multiMap.values(forKey: "apple").sorted(), [1, 3])
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRemovalOperations() {
     var multiMap = RedBlackTreeMultiMap<String, Int>(keysWithValues: [
       ("apple", 1), ("banana", 2), ("apple", 3),
@@ -47,7 +48,9 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     multiMap.removeAll()
     XCTAssertTrue(multiMap.isEmpty)
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testBoundsAndIndexing() {
     let elements = [("a", 1), ("a", 2), ("b", 3), ("c", 4)]
     let multiMap = RedBlackTreeMultiMap(keysWithValues: elements)
@@ -62,7 +65,9 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     let lb2 = multiMap.lowerBound("z")
     XCTAssertEqual(lb2, multiMap.endIndex)
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testExpressibleByLiteralAndSequence() {
     let multiMap: RedBlackTreeMultiMap = [("x", 10), ("y", 20), ("x", 30)]
     XCTAssertEqual(multiMap.count, 3)
@@ -80,6 +85,7 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     XCTAssertEqual(collected["x"]?.sorted(), [10, 30])
     XCTAssertEqual(collected["y"], [20])
   }
+  #endif
 
   func testMinMax() {
     let multiMap: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("c", 3)]

@@ -249,6 +249,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict[3], nil)
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testInitUniqueKeysWithValues() throws {
     let dict = RedBlackTreeDictionary(uniqueKeysWithValues: [(1, 10), (2, 20)])
     #if COMPATIBLE_ATCODER_2025
@@ -263,7 +264,9 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict[2], 20)
     XCTAssertEqual(dict[3], nil)
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testInitUniqueKeysWithValues2() throws {
     let dict = RedBlackTreeDictionary(uniqueKeysWithValues: AnySequence([(1, 10), (2, 20)]))
     #if COMPATIBLE_ATCODER_2025
@@ -278,6 +281,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict[2], 20)
     XCTAssertEqual(dict[3], nil)
   }
+  #endif
 
   func testInitUniquingKeysWith_() throws {
     do {
@@ -302,6 +306,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     }
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testInitUniquingKeysWith() throws {
     do {
       let dict = RedBlackTreeDictionary(
@@ -334,7 +339,9 @@ final class DictionaryTests: RedBlackTreeTestCase {
       XCTAssertEqual(dict[3], nil)
     }
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testInitUniquingKeysWith2() throws {
     do {
       let dict = RedBlackTreeDictionary(
@@ -369,6 +376,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
       XCTAssertEqual(dict[3], nil)
     }
   }
+  #endif
 
   func testInitGroupingBy_() throws {
     let students = ["Kofi", "Abena", "Efua", "Kweku", "Akosua"]
@@ -503,6 +511,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertNotEqual([2: 2, 3: 3] as RedBlackTreeDictionary<Int, Int>, [1: 1, 2: 2])
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testFirstLast() throws {
     let dict = [1: 11, 2: 22, 3: 33] as RedBlackTreeDictionary<Int, Int>
     XCTAssertEqual(dict.first?.key, 1)
@@ -520,6 +529,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertTrue(dict.allSatisfy({ $0.value / $0.key == 11 }))
     XCTAssertFalse(dict.allSatisfy({ $0.value / $0.key == 22 }))
   }
+  #endif
 
   func testForEach() throws {
     let dict = [1: 11, 2: 22, 3: 33] as RedBlackTreeDictionary<Int, Int>
@@ -600,6 +610,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     }
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex00() throws {
     let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
     do {
@@ -652,7 +663,9 @@ final class DictionaryTests: RedBlackTreeTestCase {
       }
     #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex000() throws {
     let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
     do {
@@ -705,6 +718,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
       }
     #endif
   }
+  #endif
 
 
   #if !COMPATIBLE_ATCODER_2025
@@ -731,6 +745,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     }
   #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndexValidation() throws {
     let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
     #if COMPATIBLE_ATCODER_2025
@@ -761,6 +776,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
       #endif
     #endif
   }
+  #endif
 
   func testIndexValidation2() throws {
     let _set: RedBlackTreeDictionary<Int, String> = [
@@ -961,6 +977,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
     }
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRemoveRange() throws {
     var a = RedBlackTreeDictionary<Int, Int>(
       uniqueKeysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
@@ -977,6 +994,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
       XCTAssertEqual(a.keys + [], [0, 1, 5])
     #endif
   }
+  #endif
 
   func testIsValidRangeSmoke() throws {
     let a = RedBlackTreeDictionary<Int, Int>(

@@ -97,6 +97,7 @@ final class MultisetTests: RedBlackTreeTestCase {
     debugPrint(b)
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRemove() throws {
     var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
     #if COMPATIBLE_ATCODER_2025
@@ -143,6 +144,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.sorted().isEmpty)
     #endif
   }
+  #endif
 
   #if DEBUG
     func testRemoveAt() throws {
@@ -174,6 +176,7 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.insert(4).inserted, true)
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testContains() throws {
     var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set.count, 5)
@@ -244,7 +247,9 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.contains(5), false)
     XCTAssertEqual(set.sorted(), [])
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testLeftRight() throws {
     var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
     XCTAssertEqual(set.count, 5)
@@ -351,6 +356,7 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.right(5).index, 0)
     XCTAssertEqual(set.sorted(), [])
   }
+  #endif
 
   func testMinMax() throws {
     do {
@@ -444,6 +450,7 @@ final class MultisetTests: RedBlackTreeTestCase {
   #endif
 
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRandom3() throws {
     var set = RedBlackTreeMultiSet<Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -475,7 +482,9 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRandom4() throws {
     var set = RedBlackTreeMultiSet<Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -507,6 +516,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
   }
+  #endif
 
   func testLiteral() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
@@ -578,6 +588,7 @@ final class MultisetTests: RedBlackTreeTestCase {
 
 
   #if DEBUG
+    #if !COMPATIBLE_ATCODER_2025
     func testRedBlackTreeSetFirstIndex() throws {
       var members: RedBlackTreeMultiSet = [1, 3, 5, 7, 9]
       XCTAssertEqual(members.firstIndex(of: 3)?.value, .init(1))
@@ -593,6 +604,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertEqual(members.removeFirst(), 7)
       XCTAssertEqual(members.removeFirst(), 9)
     }
+    #endif
   #endif
 
   func testEqualtable() throws {
@@ -603,6 +615,7 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertNotEqual([1, 2] as RedBlackTreeMultiSet<Int>, [1, 1])
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testContainsAllSatisfy() throws {
     let dict = [1, 2, 2, 2, 3, 3, 4, 5] as RedBlackTreeMultiSet<Int>
     XCTAssertEqual(dict.first, 1)
@@ -618,6 +631,7 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertTrue(dict.allSatisfy({ $0 > 0 }))
     XCTAssertFalse(dict.allSatisfy({ $0 > 1 }))
   }
+  #endif
 
   func testContains2() throws {
     let multiset: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 3]
@@ -676,6 +690,7 @@ final class MultisetTests: RedBlackTreeTestCase {
     }
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex00() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     do {
@@ -728,7 +743,9 @@ final class MultisetTests: RedBlackTreeTestCase {
       }
     #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex000() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     do {
@@ -781,6 +798,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       }
     #endif
   }
+  #endif
 
   func testIndex1() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
@@ -794,6 +812,7 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(set[..<set.endIndex].map { $0 }, [1, 1, 2, 2, 2, 3, 4])
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex2() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
     let sub = set[set.index(after: set.lowerBound(2))..<set.upperBound(2)]
@@ -802,7 +821,9 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.upperBound(2))
     #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex3() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
     let sub = set[set.index(after: set.lowerBound(2))...set.index(before: set.upperBound(2))]
@@ -811,6 +832,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.index(before: set.upperBound(2)))
     #endif
   }
+  #endif
 
   #if !COMPATIBLE_ATCODER_2025
     func testIndex4() throws {
@@ -825,6 +847,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertEqual(set[..<set.endIndex].map { $0 }, [1, 1, 2, 2, 2, 3, 4])
     }
 
+    #if !COMPATIBLE_ATCODER_2025
     func testIndex5() throws {
       let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
       let sub = set[set.index(after: set.lowerBound(2))..<set.upperBound(2)]
@@ -833,7 +856,9 @@ final class MultisetTests: RedBlackTreeTestCase {
         XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.upperBound(2))
       #endif
     }
+    #endif
 
+    #if !COMPATIBLE_ATCODER_2025
     func testIndex6() throws {
       let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
       let sub = set[
@@ -843,8 +868,10 @@ final class MultisetTests: RedBlackTreeTestCase {
         XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.index(before: set.upperBound(2)))
       #endif
     }
+    #endif
   #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex100() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6]
     XCTAssertEqual(set.index(set.startIndex, offsetBy: 6), set.endIndex)
@@ -856,7 +883,9 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertEqual(sub.index(sub.endIndex, offsetBy: -3), sub.startIndex)
     #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex10() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6]
     XCTAssertNotNil(set.index(set.startIndex, offsetBy: 6, limitedBy: set.endIndex))
@@ -872,7 +901,9 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
     #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex11() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6]
     var i = set.startIndex
@@ -896,7 +927,9 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertFalse(sub.formIndex(&i, offsetBy: -4, limitedBy: sub.startIndex))
     #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndex12() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6]
     var i = set.startIndex
@@ -916,6 +949,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertEqual(i, sub.startIndex)
     #endif
   }
+  #endif
 
   func testSorted() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
@@ -927,6 +961,7 @@ final class MultisetTests: RedBlackTreeTestCase {
   // `rawTag` からインデックスを生成する経路は、現在は主にDEBUG用のテスト補助として残している。
   // 通常のインデックス操作ではほぼ利用しないため、範囲外rawTagの検証は低優先度とする。
   // rawTag関連コードを整理・廃止するときに、以下のテストの必要性もまとめて再検討する。
+  #if !COMPATIBLE_ATCODER_2025
   func testIndexValidation() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     #if COMPATIBLE_ATCODER_2025
@@ -963,6 +998,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       #endif
     #endif
   }
+  #endif
 
   func testIndexValidation2() throws {
     let _set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6, 7]

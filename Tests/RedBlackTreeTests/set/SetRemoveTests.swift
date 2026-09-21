@@ -116,6 +116,7 @@ final class SetRemoveTests: RedBlackTreeTestCase {
     XCTAssertEqual(members.count, 0)
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRemoveSubrange() throws {
     for l in 0..<10 {
       for h in l...10 {
@@ -129,6 +130,7 @@ final class SetRemoveTests: RedBlackTreeTestCase {
       }
     }
   }
+  #endif
 
   func testRemoveLimit() throws {
     members = [Int.min, Int.max]

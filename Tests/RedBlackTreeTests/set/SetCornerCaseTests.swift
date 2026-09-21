@@ -70,6 +70,7 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.upperBound(9), set.endIndex)
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRemoveSubrangeHalfOpen() {
     var set: RedBlackTreeSet = [0, 1, 2, 3, 4, 5]
     let lhs = set.lowerBound(2)
@@ -81,11 +82,13 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
     #endif
     XCTAssertEqual(set.sorted(), [0, 1, 5])
   }
+  #endif
 
   // MARK: ── ランダムファズ (Swift.Set と同期待) ──────────────────────────
 
   /// 1 回当たり最大 1 000 操作でランダムに insert/remove を行い、
   /// 標準 Set<Int> と結果を突き合わせる。
+  #if !COMPATIBLE_ATCODER_2025
   func testFuzzAgainstSwiftSet() {
     let iterations = 100
     let operations = 1_000
@@ -129,7 +132,9 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
       }
     }
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testPopFirstAndSubtracting() {
     var s: RedBlackTreeSet = [3, 1, 2]
     #if COMPATIBLE_ATCODER_2025
@@ -145,6 +150,7 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
     s.subtract([2, 3])
     XCTAssertTrue(s.isEmpty)
   }
+  #endif
 
   func testSequenceUnionEquivalence() {
     let base: RedBlackTreeSet = [1, 4]

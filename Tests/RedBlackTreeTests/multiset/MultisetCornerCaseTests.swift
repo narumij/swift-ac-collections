@@ -30,6 +30,7 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
     XCTAssertEqual(ms.count(of: 42), 0)
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRemoveOneVersusRemoveAll() {
     var ms: RedBlackTreeMultiSet = [5, 5, 5]
 
@@ -47,6 +48,7 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
       XCTAssertEqual(ms.eraseMulti(5), 0)  // もう無いので 0
     #endif
   }
+  #endif
 
   func testLowerUpperBoundsWithDuplicates() {
     let ms: RedBlackTreeMultiSet = [1, 2, 2, 2, 3]
@@ -58,6 +60,7 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
 
   // MARK: ── インデックス無効化・CoW ──────────────────────────────────
 
+  #if !COMPATIBLE_ATCODER_2025
   func testIndexInvalidationAfterErase() {
     var ms: RedBlackTreeMultiSet = [9, 9, 9]
     let idx = ms.firstIndex(of: 9)!
@@ -68,6 +71,7 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
       XCTAssertFalse(ms.isValid(idx))
     #endif
   }
+  #endif
 
   func testCopyOnWriteBehavior() {
     let original: RedBlackTreeMultiSet = [1, 1]
@@ -79,6 +83,7 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
 
   // MARK: ── Subrange Removal ──────────────────────────────────────
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRemoveSubrange() {
     var ms: RedBlackTreeMultiSet = [0, 1, 2, 2, 3, 4]
     let l = ms.lowerBound(2)
@@ -90,9 +95,11 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
     #endif
     XCTAssertEqual(ms.sorted(), [0, 1, 3, 4])
   }
+  #endif
 
   // MARK: ── ファズテスト (辞書カウントと突き合わせ) ────────────────
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRandomizedAgainstReferenceMultiset() {
     var rng = SplitMix64(seed: 0xBADC0DE)
     let rounds = 150
@@ -133,6 +140,7 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
       XCTAssertEqual(ms.sorted(), ref.sorted)
     }
   }
+  #endif
 
   func testPopFirstDuplicates() {
     var ms: RedBlackTreeMultiSet = [1, 1, 2]

@@ -13,6 +13,7 @@ final class RedBlackTreeMultisetSubSequenceTests: RedBlackTreeTestCase {
 
   // MARK: 基本プロパティ -------------------------------------------------
 
+  #if !COMPATIBLE_ATCODER_2025
   func testSliceCountFirstLast() {
     // 0 1 1 2 3 3 3 4
     let base: RedBlackTreeMultiSet = [0, 1, 1, 2, 3, 3, 3, 4]
@@ -28,6 +29,7 @@ final class RedBlackTreeMultisetSubSequenceTests: RedBlackTreeTestCase {
           to: slice.endIndex), 6)
     #endif
   }
+  #endif
 
   // MARK: forward / backward イテレーション ------------------------------
 

@@ -345,4 +345,49 @@ import XCTest
       XCTAssertEqual(set, [])
     }
   }
+  extension ConvenienceTests {
+  func testSetIndexRange0() throws {
+    let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertTrue(set.startIndex < set.endIndex)
+      XCTAssertFalse(set.startIndex > set.endIndex)
+    #endif
+    XCTAssertFalse(set.startIndex == set.endIndex)
+    _ = set.startIndex..<set.endIndex
+    XCTAssertNotEqual(set[set.startIndex..<set.endIndex] + [], [])
+
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertTrue(set.lowerBound(2) < set.upperBound(4))
+      XCTAssertFalse(set.lowerBound(2) > set.upperBound(4))
+    #endif
+    XCTAssertFalse(set.lowerBound(2) == set.upperBound(4))
+    _ = set.lowerBound(2)..<set.upperBound(4)
+  }
+  }
+
+  extension ConvenienceTests {
+  func testSubSeq2() throws {
+    let count = 10_000
+    let set: RedBlackTreeSet<Int> = .init((0..<count).reversed())
+    for _ in 0..<1 {
+      var (a, b) = ((0..<count).randomElement()!, (0..<count).randomElement()!)
+      if a > b { swap(&a, &b) }
+      let lo = set.lowerBound(a)
+      let hi = set.upperBound(b)
+      #if COMPATIBLE_ATCODER_2025
+        guard lo > hi, a < b else { continue }
+      #endif
+      // 数値比較で大小が逆転している場合、標準のdistance実装では迷子になってクラッシュする
+      // distanceを実装することで、クラッシュせずに動く
+      //      let seq: RedBlackTreeSet<Int>.___SubSequence = set[a ..< b]
+      let seq = set.elements(in: a..<b)
+      #if COMPATIBLE_ATCODER_2025
+        XCTAssertNotEqual(seq + [], [])
+      #endif
+      XCTAssertEqual(seq + [], seq.sorted())
+      XCTAssertEqual((seq + []).reversed(), seq.reversed())
+      XCTAssertTrue(seq.allSatisfy { $0 >= a })
+    }
+  }
+  }
 #endif

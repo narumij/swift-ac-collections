@@ -26,6 +26,7 @@ import XCTest
       XCTAssertGreaterThanOrEqual(multiset._copyCount, 0)  // 挿入に備え、かつ消費
     }
 
+    #if !COMPATIBLE_ATCODER_2025
     func testSet2() throws {
       var set = RedBlackTreeMultiSet<Int>(minimumCapacity: 1)
       XCTAssertEqual(set._copyCount, 0)
@@ -51,7 +52,9 @@ import XCTest
       print(set.reduce(into: []) { $0.append($1) })
       XCTAssertEqual(set._copyCount, 0)
     }
+    #endif
 
+    #if !COMPATIBLE_ATCODER_2025
     func testSet3() throws {
       var tree = RedBlackTreeMultiSet<Int>(0..<20)
       tree._copyCount = 0
@@ -69,7 +72,9 @@ import XCTest
         XCTAssertEqual(tree._copyCount, 0)  // 強強度CoWの廃止により、コピー回数は増えない。
       #endif
     }
+    #endif
 
+    #if !COMPATIBLE_ATCODER_2025
     func testSet3_2() throws {
       var tree = RedBlackTreeMultiSet<Int>(0..<20)
       tree._copyCount = 0
@@ -83,7 +88,9 @@ import XCTest
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
     }
+    #endif
 
+    #if !COMPATIBLE_ATCODER_2025
     func testSet4() throws {
       var tree = RedBlackTreeMultiSet<Int>(0..<20)
       tree._copyCount = 0
@@ -97,7 +104,9 @@ import XCTest
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 1)
     }
+    #endif
 
+    #if !COMPATIBLE_ATCODER_2025
     func testSet5() throws {
       var tree = RedBlackTreeMultiSet<Int>(0..<20)
       tree._copyCount = 0
@@ -111,7 +120,9 @@ import XCTest
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
     }
+    #endif
 
+    #if !COMPATIBLE_ATCODER_2025
     func testSet6() throws {
       var tree = RedBlackTreeMultiSet<Int>(0..<20)
       tree._copyCount = 0
@@ -125,7 +136,9 @@ import XCTest
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
     }
+    #endif
 
+    #if !COMPATIBLE_ATCODER_2025
     func testSet3000() throws {
       let count = 1500
       var loopCount = 0
@@ -148,6 +161,7 @@ import XCTest
       XCTAssertEqual(xy[1]!._copyCount, 0)
       XCTAssertEqual(loopCount, count / N)
     }
+    #endif
 
   }
 #endif

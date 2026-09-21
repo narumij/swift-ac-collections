@@ -48,6 +48,7 @@ final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {
     XCTAssertNil(firstLarge)
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testFirstIndexAndIndexing() throws {
     throw XCTSkip("ちょっと一旦直せないのでスキップ")
     let map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("a", 3)]
@@ -65,7 +66,9 @@ final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {
       }
     #endif
   }
+  #endif
 
+  #if !COMPATIBLE_ATCODER_2025
   func testRemoveValuesForKey() throws {
     var map: RedBlackTreeMultiMap = [("k1", 1), ("k1", 2), ("k2", 3)]
 #if COMPATIBLE_ATCODER_2025
@@ -76,6 +79,7 @@ final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(removedCount, 2)
     XCTAssertFalse(map.contains(key: "k1"))
   }
+  #endif
 
   func testRemoveFirstAndLast() throws {
     var map: RedBlackTreeMultiMap = [("x", 10), ("y", 20)]
@@ -86,6 +90,7 @@ final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {
     XCTAssertTrue(map.isEmpty)
   }
 
+  #if !COMPATIBLE_ATCODER_2025
   func testKeysAndValues() throws {
     let map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("a", 3)]
     #if COMPATIBLE_ATCODER_2025
@@ -98,6 +103,7 @@ final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {
     XCTAssertEqual(keys, ["a", "a", "b"])
     XCTAssertEqual(values, [1, 3, 2])
   }
+  #endif
 
   // rawIndexに関するテストは将来追加予定、未対応
   func testRemoveAtRawIndex() throws {

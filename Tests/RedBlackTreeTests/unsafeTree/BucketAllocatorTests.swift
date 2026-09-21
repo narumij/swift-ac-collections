@@ -138,9 +138,6 @@ import XCTest
     }
 
     func testPayloadAlignmentIsPreservedAcrossElements() throws {
-      
-      throw XCTSkip("一旦CIの確認がしたいので後回し")
-      
       typealias Payload = SIMD4<Float>
 
       let allocator = _BucketAllocator(valueType: Payload.self) { _ in }

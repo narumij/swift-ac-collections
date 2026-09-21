@@ -41,9 +41,7 @@ final class UnsafeNodeMemoryLayoutTests: XCTestCase {
         let nodeAlignment = MemoryLayout<UnsafeNode>.alignment
         let nodeStride = MemoryLayout<UnsafeNode>.stride
         let payloadAlignment = MemoryLayout<Payload>.alignment
-        let pairAlignment = max(nodeAlignment, payloadAlignment)
-        let pairSize = nodeStride + MemoryLayout<Payload>.stride
-        let pairStride = (pairSize + pairAlignment - 1) & -pairAlignment
+        let allocator = _BucketAllocator(valueType: Payload.self) { _ in }
 
         // node / payload の両方が正しく alignment できる領域を確保する
         let storage = UnsafeMutableRawPointer.allocate(
@@ -68,11 +66,19 @@ final class UnsafeNodeMemoryLayoutTests: XCTestCase {
         let secondNode =
             firstNode._advanced(with: Payload.self, count: 1)
 
-        // _advanced は次の pair の先頭へ、過不足なく移動する
+        // アロケータの pair stride は、リファレンス実装の移動距離と一致する
         XCTAssertEqual(
             UnsafeMutableRawPointer(secondNode),
-            UnsafeMutableRawPointer(firstNode).advanced(by: pairStride),
-            "\(Payload.self): node advance is wrong",
+            UnsafeMutableRawPointer(firstNode).advanced(by: allocator._pair.stride),
+            "\(Payload.self): allocator pair stride is inconsistent with UnsafeNode",
+            file: file,
+            line: line
+        )
+
+        XCTAssertEqual(
+            allocator._pair.alignment,
+            max(nodeAlignment, payloadAlignment),
+            "\(Payload.self): allocator pair alignment is wrong",
             file: file,
             line: line
         )

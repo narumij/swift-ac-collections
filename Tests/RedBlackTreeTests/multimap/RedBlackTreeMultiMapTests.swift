@@ -49,7 +49,6 @@ final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {
   }
 
   func testFirstIndexAndIndexing() throws {
-    throw XCTSkip("ちょっと一旦直せないのでスキップ")
     let map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("a", 3)]
     if let idx = map.firstIndex(of: "a") {
       XCTAssertEqual(map[idx].key, "a")

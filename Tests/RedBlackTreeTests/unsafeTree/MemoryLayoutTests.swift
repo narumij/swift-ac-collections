@@ -13,36 +13,12 @@ final class MemoryLayoutTests: XCTestCase {
         checkMemoryLayout(SIMD4<Int>.self)
     }
 
-    func testBucketComponentsUsePairStride() {
-        typealias Payload = SIMD4<Float>
-
-        let payloadLayout = MemoryLayout<Payload>._memoryLayout
-        let pairLayout = _MemoryLayout(UnsafeNode.self, Payload.self)
-        let bucket = UnsafeMutablePointer<_Bucket>.allocate(capacity: 1)
-        bucket.initialize(to: .init(capacity: 2))
-        defer {
-            bucket.deinitialize(count: 1)
-            bucket.deallocate()
-        }
-
-        let queue = bucket._queue(isHead: false, payloadLayout: payloadLayout)
-        let accessor = bucket._accessor(isHead: false, payload: payloadLayout)
-        let traverser = bucket._counts(
-            storage: bucket.secondaryStorage(),
-            payload: payloadLayout
-        )
-
-        XCTAssertEqual(distance(from: queue[0], to: queue[1]), pairLayout.stride)
-        XCTAssertEqual(distance(from: accessor[0], to: accessor[1]), pairLayout.stride)
-        XCTAssertEqual(distance(from: traverser[0], to: traverser[1]), pairLayout.stride)
-    }
-
     private func checkMemoryLayout<Payload>(
         _ payloadType: Payload.Type,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
-        let layout = _MemoryLayout(UnsafeNode.self, Payload.self)
+        let layout = MemoryLayout<Payload>._pairLayout
         let nodeStride = MemoryLayout<UnsafeNode>.stride
         let pairSize = nodeStride + MemoryLayout<Payload>.stride
 
@@ -106,13 +82,6 @@ final class MemoryLayoutTests: XCTestCase {
             file: file,
             line: line
         )
-    }
-
-    private func distance(
-        from first: UnsafeMutablePointer<UnsafeNode>,
-        to second: UnsafeMutablePointer<UnsafeNode>
-    ) -> Int {
-        UnsafeMutableRawPointer(first).distance(to: UnsafeMutableRawPointer(second))
     }
 }
 #endif

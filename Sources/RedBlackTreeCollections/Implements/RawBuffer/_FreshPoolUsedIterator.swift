@@ -35,7 +35,7 @@ struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _Unsaf
       $0._counts(
         storage: $0.primaryStorage(),
         payload:
-          MemoryLayout<_PayloadValue>._memoryLayout)
+          MemoryLayout<_PayloadValue>._pairLayout)
     }
   }
 
@@ -47,7 +47,7 @@ struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _Unsaf
     if let p = helper?.pop() {
       return p
     }
-    helper = helper?.nextCounts(payload: MemoryLayout<_PayloadValue>._memoryLayout)
+    helper = helper?.nextCounts(payload: MemoryLayout<_PayloadValue>._pairLayout)
     return helper?.pop()
   }
 }

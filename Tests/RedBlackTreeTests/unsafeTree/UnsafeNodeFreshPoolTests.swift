@@ -14,6 +14,7 @@ import XCTest
     var freshBucketCurrent: RedBlackTreeCollections._BucketQueue?
 
     var payloadLayout: _MemoryLayout
+    var pairLayout: _MemoryLayout { freshBucketAllocator._pair }
 
     func didUpdateFreshBucketHead() {
 

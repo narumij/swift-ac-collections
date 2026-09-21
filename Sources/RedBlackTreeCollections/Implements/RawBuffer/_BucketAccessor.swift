@@ -70,7 +70,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
     .init(
       pointer: self,
       start: start(storage: storage(isHead: isHead), valueAlignment: payload.alignment),
-      stride: MemoryLayout<UnsafeNode>.stride + payload.stride)
+      stride: payload.stride)
   }
 
   @inlinable

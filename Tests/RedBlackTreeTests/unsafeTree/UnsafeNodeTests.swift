@@ -37,6 +37,31 @@ import XCTest
     override func tearDownWithError() throws {
     }
 
+    func testAdvancedKeepsPayloadAlignment() throws {
+      typealias Payload = SIMD4<Float>
+
+      let pairSize = MemoryLayout<UnsafeNode>.stride + MemoryLayout<Payload>.stride
+      let storage = UnsafeMutableRawPointer.allocate(
+        byteCount: pairSize * 2 + MemoryLayout<Payload>.alignment,
+        alignment: MemoryLayout<Payload>.alignment)
+      defer { storage.deallocate() }
+
+      let firstPayload = storage
+        .advanced(by: MemoryLayout<UnsafeNode>.stride)
+        .alignedUp(toMultipleOf: MemoryLayout<Payload>.alignment)
+      let first = firstPayload
+        .advanced(by: -MemoryLayout<UnsafeNode>.stride)
+        .assumingMemoryBound(to: UnsafeNode.self)
+      let second = first._advanced(with: Payload.self, count: 1)
+
+      XCTAssertEqual(
+        Int(bitPattern: first.__value_(as: Payload.self)) % MemoryLayout<Payload>.alignment,
+        0)
+      XCTAssertEqual(
+        Int(bitPattern: second.__value_(as: Payload.self)) % MemoryLayout<Payload>.alignment,
+        0)
+    }
+
     func testTreeBeginToNext() throws {
 
       nodes.withUnsafeMutableBufferPointer { nodes in

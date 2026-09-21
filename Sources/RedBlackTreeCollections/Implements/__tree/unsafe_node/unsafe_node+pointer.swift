@@ -192,7 +192,12 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   /// ```
   @inlinable
   func _advanced<_PayloadValue>(with t: _PayloadValue.Type, count: Int) -> UnsafeMutablePointer {
-    _advanced(raw: (MemoryLayout<UnsafeNode>.stride + MemoryLayout<_PayloadValue>.stride) * count)
+    let alignment = max(
+      MemoryLayout<UnsafeNode>.alignment,
+      MemoryLayout<_PayloadValue>.alignment)
+    let size = MemoryLayout<UnsafeNode>.stride + MemoryLayout<_PayloadValue>.stride
+    let stride = (size + alignment - 1) & -alignment
+    return _advanced(raw: stride * count)
   }
 }
 

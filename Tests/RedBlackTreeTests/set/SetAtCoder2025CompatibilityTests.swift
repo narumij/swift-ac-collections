@@ -713,19 +713,6 @@ import XCTest
       #endif
   }
   extension SetRemoveTests {
-  func testRemoveSubrange() throws {
-    for l in 0..<10 {
-      for h in l...10 {
-        members = [1, 3, 5, 7, 9]
-#if COMPATIBLE_ATCODER_2025
-        members.removeSubrange(members.lowerBound(l)..<members.upperBound(h))
-#else
-        members.erase(members.lowerBound(l)..<members.upperBound(h))
-#endif
-        XCTAssertEqual(members + [], [1, 3, 5, 7, 9].filter { !(l...h).contains($0) })
-      }
-    }
-  }
   }
 
   extension SetTests {
@@ -759,135 +746,15 @@ import XCTest
   }
 
   extension SetCopyOnWriteTests {
-    func testSet3000() throws {
-      let count = 1500
-      var loopCount = 0
-      var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0..<count)]
-      xy[1]?._copyCount = 0
-      let N = 100
-      for i in 0..<count / N {
-        loopCount += 1
-        if let lo = xy[1]?.lowerBound(i * N),
-          let hi = xy[1]?.upperBound(i * N + N)
-        {
-          #if COMPATIBLE_ATCODER_2025
-            xy[1]?.removeSubrange(lo..<hi)
-          #else
-            xy[1]?.erase(lo..<hi)
-          #endif
-        }
-      }
-      XCTAssertEqual(xy[1]!.count, 0)
-      XCTAssertEqual(xy[1]!._copyCount, 0)
-      XCTAssertEqual(loopCount, count / N)
-    }
   }
 
   extension SetCopyOnWriteTests {
-    func testABC385DBehavior() throws {
-      let x = 0
-      let new_y = 8
-      let y = 0
-      var xy: [Int: RedBlackTreeSet<Int>] = .init(uniqueKeysWithValues: [(0, .init(0..<10))])
-      var yx: [Int: RedBlackTreeSet<Int>] = .init(
-        uniqueKeysWithValues: (0..<10).map { ($0, .init([0])) })
-
-      for v in xy.values {
-        XCTAssertEqual(v.count, 10)
-        XCTAssertEqual(v._copyCount, 0)
-      }
-      for v in yx.values {
-        XCTAssertEqual(v.count, 1)
-        #if COMPATIBLE_ATCODER_2025
-          XCTAssertEqual(v._copyCount, 0)
-        #else
-          XCTAssertEqual(v._copyCount, 1)
-        #endif
-      }
-
-      var ans = 0
-      var it = xy[x, default: []].lowerBound(y)
-      while it != xy[x, default: []].endIndex, xy[x, default: []][it] <= new_y {
-        ans += 1
-        yx[xy[x]![it]]?.remove(x)
-        #if COMPATIBLE_ATCODER_2025
-          it = xy[x]!.___erase(it)
-        #else
-          it = xy[x]!.erase(it)
-        #endif
-      }
-
-      for v in xy.values {
-        XCTAssertEqual(v._copyCount, 0, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
-      }
-      for v in yx.values {
-        #if COMPATIBLE_ATCODER_2025
-          XCTAssertEqual(v._copyCount, 0, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
-        #else
-          XCTAssertEqual(v._copyCount, 1, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
-        #endif
-      }
-    }
   }
 
   extension RedBlackTreeSetCornerCaseTests {
-  func testRemoveSubrangeHalfOpen() {
-    var set: RedBlackTreeSet = [0, 1, 2, 3, 4, 5]
-    let lhs = set.lowerBound(2)
-    let rhs = set.lowerBound(5)
-    #if COMPATIBLE_ATCODER_2025
-      set.removeSubrange(lhs..<rhs)  // 2,3,4 を削除
-    #else
-      set.erase(lhs..<rhs)  // 2,3,4 を削除
-    #endif
-    XCTAssertEqual(set.sorted(), [0, 1, 5])
-  }
   }
 
   extension RedBlackTreeSetCornerCaseTests {
-  func testFuzzAgainstSwiftSet() {
-    let iterations = 100
-    let operations = 1_000
-    var rng = SplitMix64(seed: 0xDEAD_BEEF)
-
-    for _ in 0..<iterations {
-      var rbTree = RedBlackTreeSet<Int>()
-      var stdSet = Set<Int>()
-
-      for _ in 0..<operations {
-        let value = Int(rng.next() & 0xFF) - 128  // −128…127
-        let action = rng.next() & 3
-
-        switch action {
-        case 0:  // insert
-          let rb = rbTree.insert(value)
-          let st = stdSet.insert(value).inserted
-          XCTAssertEqual(
-            rb.inserted, st,
-            "insert mismatch on value \(value)")
-        case 1:  // remove
-          let rb = rbTree.remove(value)
-          let st = stdSet.remove(value)
-          XCTAssertEqual(
-            rb, st,
-            "remove mismatch on value \(value)")
-        case 2 where !rbTree.isEmpty:  // removeFirst
-          XCTAssertEqual(rbTree.removeFirst(), stdSet.min()!)
-          stdSet.remove(stdSet.min()!)
-        case 3 where !rbTree.isEmpty:  // removeLast
-          #if COMPATIBLE_ATCODER_2025
-            XCTAssertEqual(rbTree.removeLast(), stdSet.max()!)
-            stdSet.remove(stdSet.max()!)
-          #endif
-        default:
-          continue
-        }
-        XCTAssertEqual(
-          rbTree.sorted(), stdSet.sorted(),
-          "state diverged after operation")
-      }
-    }
-  }
   }
 
   extension RedBlackTreeSetCornerCaseTests {

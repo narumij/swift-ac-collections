@@ -401,144 +401,9 @@ import XCTest
     }
   }
   extension RedBlackTreeDictionaryExtendedTests {
-  func testPopFirstReturnsMinKey() {
-    var d: RedBlackTreeDictionary = [("b", 2), ("a", 1), ("c", 3)]
-    let first = d.popFirst()
-    XCTAssertEqual(first?.key, "a")
-#if COMPATIBLE_ATCODER_2025
-    XCTAssertEqual(Set(d.keys()), ["b", "c"])
-#else
-    XCTAssertEqual(Set(d.keys), ["b", "c"])
-#endif
-    XCTAssertEqual(d.popFirst()?.key, "b")
-    _ = d.popFirst()
-    XCTAssertTrue(d.isEmpty)
-    XCTAssertNil(d.popFirst())
-  }
   }
 
   extension RedBlackTreeDictionaryExtendedTests {
-  func testBasicCrudAndIndexInvalidation() {
-    var dict: RedBlackTreeDictionary = ["p": 9, "q": 8]
-    let idx = dict.firstIndex(of: "p")!
-    dict.remove(at: idx)
-#if COMPATIBLE_ATCODER_2025
-    XCTAssertFalse(dict.isValid(index: idx))
-#else
-    XCTAssertFalse(dict.isValid(idx))
-#endif
-
-    var copy = dict
-    copy["q"] = 100
-    XCTAssertEqual(dict["q"], 8)
-    XCTAssertEqual(copy["q"], 100)
-  }
-  }
-
-  extension DictionaryTests {
-  func testInitUniqueKeysWithValues() throws {
-    let dict = RedBlackTreeDictionary(uniqueKeysWithValues: [(1, 10), (2, 20)])
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(dict.keys() + [], [1, 2])
-      XCTAssertEqual(dict.values() + [], [10, 20])
-    #else
-      XCTAssertEqual(dict.keys + [], [1, 2])
-      XCTAssertEqual(dict.values + [], [10, 20])
-    #endif
-    XCTAssertEqual(dict[0], nil)
-    XCTAssertEqual(dict[1], 10)
-    XCTAssertEqual(dict[2], 20)
-    XCTAssertEqual(dict[3], nil)
-  }
-  }
-
-  extension DictionaryTests {
-  func testInitUniqueKeysWithValues2() throws {
-    let dict = RedBlackTreeDictionary(uniqueKeysWithValues: AnySequence([(1, 10), (2, 20)]))
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(dict.keys() + [], [1, 2])
-      XCTAssertEqual(dict.values() + [], [10, 20])
-    #else
-      XCTAssertEqual(dict.keys + [], [1, 2])
-      XCTAssertEqual(dict.values + [], [10, 20])
-    #endif
-    XCTAssertEqual(dict[0], nil)
-    XCTAssertEqual(dict[1], 10)
-    XCTAssertEqual(dict[2], 20)
-    XCTAssertEqual(dict[3], nil)
-  }
-  }
-
-  extension DictionaryTests {
-  func testInitUniquingKeysWith() throws {
-    do {
-      let dict = RedBlackTreeDictionary(
-        [(1, 10), (1, 11), (2, 20), (2, 22)], uniquingKeysWith: { _, b in b })
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(dict.keys() + [], [1, 2])
-        XCTAssertEqual(dict.values() + [], [11, 22])
-      #else
-        XCTAssertEqual(dict.keys + [], [1, 2])
-        XCTAssertEqual(dict.values + [], [11, 22])
-      #endif
-      XCTAssertEqual(dict[0], nil)
-      XCTAssertEqual(dict[1], 11)
-      XCTAssertEqual(dict[2], 22)
-      XCTAssertEqual(dict[3], nil)
-    }
-    do {
-      let dict = RedBlackTreeDictionary(
-        [(1, 10), (1, 11), (2, 20), (2, 22)], uniquingKeysWith: { a, _ in a })
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(dict.keys() + [], [1, 2])
-        XCTAssertEqual(dict.values() + [], [10, 20])
-      #else
-        XCTAssertEqual(dict.keys + [], [1, 2])
-        XCTAssertEqual(dict.values + [], [10, 20])
-      #endif
-      XCTAssertEqual(dict[0], nil)
-      XCTAssertEqual(dict[1], 10)
-      XCTAssertEqual(dict[2], 20)
-      XCTAssertEqual(dict[3], nil)
-    }
-  }
-  }
-
-  extension DictionaryTests {
-  func testInitUniquingKeysWith2() throws {
-    do {
-      let dict = RedBlackTreeDictionary(
-        AnySequence([(1, 10), (1, 11), (2, 20), (2, 22)]),
-        uniquingKeysWith: { _, b in b })
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(dict.keys() + [], [1, 2])
-        XCTAssertEqual(dict.values() + [], [11, 22])
-      #else
-        XCTAssertEqual(dict.keys + [], [1, 2])
-        XCTAssertEqual(dict.values + [], [11, 22])
-      #endif
-      XCTAssertEqual(dict[0], nil)
-      XCTAssertEqual(dict[1], 11)
-      XCTAssertEqual(dict[2], 22)
-      XCTAssertEqual(dict[3], nil)
-    }
-    do {
-      let dict = RedBlackTreeDictionary(
-        AnySequence([(1, 10), (1, 11), (2, 20), (2, 22)]),
-        uniquingKeysWith: { a, _ in a })
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(dict.keys() + [], [1, 2])
-        XCTAssertEqual(dict.values() + [], [10, 20])
-      #else
-        XCTAssertEqual(dict.keys + [], [1, 2])
-        XCTAssertEqual(dict.values + [], [10, 20])
-      #endif
-      XCTAssertEqual(dict[0], nil)
-      XCTAssertEqual(dict[1], 10)
-      XCTAssertEqual(dict[2], 20)
-      XCTAssertEqual(dict[3], nil)
-    }
-  }
   }
 
   extension DictionaryTests {
@@ -551,54 +416,20 @@ import XCTest
   }
 
   extension DictionaryTests {
-  func testIndexValidation() throws {
-    let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertTrue(set.isValid(index: set.startIndex))
-      XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
-      typealias Index = RedBlackTreeDictionary<Int, String>.Index
-      #if DEBUG
-        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
-      #endif
-    #else
-      XCTAssertTrue(set.isValid(set.startIndex))
-      XCTAssertFalse(set.isValid(set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
-      typealias Index = RedBlackTreeDictionary<Int, String>.Index
-      #if DEBUG
-        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 3)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 4)))
-      #endif
-    #endif
-  }
   }
 
   extension DictionaryTests {
-  func testRemoveRange() throws {
-    var a = RedBlackTreeDictionary<Int, Int>(
-      uniqueKeysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
-
-    #if COMPATIBLE_ATCODER_2025
-      a.removeSubrange(a.lowerBound(2)..<a.upperBound(4))
-    #else
-      _ = a.erase(a.lowerBound(2)..<a.upperBound(4))
-    #endif
-
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(a.keys() + [], [0, 1, 5])
-    #else
-      XCTAssertEqual(a.keys + [], [0, 1, 5])
-    #endif
   }
+
+  extension DictionaryTests {
+  }
+
+  extension DictionaryTests {
+  }
+
+  extension DictionaryTests {
+  }
+
+  extension DictionaryTests {
   }
 #endif

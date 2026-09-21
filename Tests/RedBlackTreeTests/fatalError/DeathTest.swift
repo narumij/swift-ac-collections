@@ -27,12 +27,14 @@
       }
     }
 
-    @Test func `index from another tree cannot be subscripted`() async {
-      await #expect(processExitsWith: .failure) {
-        let set: RedBlackTreeSet<Int> = [1, 2, 3]
-        let other: RedBlackTreeSet<Int> = [4, 5, 6]
-        _ = set[other.startIndex]
+    #if !COMPATIBLE_ATCODER_2025
+      @Test func `index from another tree cannot be subscripted`() async {
+        await #expect(processExitsWith: .failure) {
+          let set: RedBlackTreeSet<Int> = [1, 2, 3]
+          let other: RedBlackTreeSet<Int> = [4, 5, 6]
+          _ = set[other.startIndex]
+        }
       }
-    }
+    #endif
   }
 #endif

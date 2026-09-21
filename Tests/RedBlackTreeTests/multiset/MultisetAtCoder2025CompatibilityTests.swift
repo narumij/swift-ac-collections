@@ -641,71 +641,6 @@ import XCTest
   }
 
   extension MultisetTests {
-  func testRandom3() throws {
-    var set = RedBlackTreeMultiSet<Int>()
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      #if COMPATIBLE_ATCODER_2025
-        set.removeAll(i)
-      #else
-        set.eraseMulti(i)
-      #endif
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      #if COMPATIBLE_ATCODER_2025
-        set.removeAll(i)
-      #else
-        set.eraseMulti(i)
-      #endif
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-  }
-  }
-
-  extension MultisetTests {
-  func testRandom4() throws {
-    var set = RedBlackTreeMultiSet<Int>()
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      #if COMPATIBLE_ATCODER_2025
-        set.removeAll(i)
-      #else
-        set.eraseMulti(i)
-      #endif
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      #if COMPATIBLE_ATCODER_2025
-        set.removeAll(i)
-      #else
-        set.eraseMulti(i)
-      #endif
-      XCTAssertTrue(set.___tree_invariant())
-    }
-    for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
-      set.insert(i)
-      XCTAssertTrue(set.___tree_invariant())
-    }
-  }
   }
 
   extension MultisetTests {
@@ -745,42 +680,9 @@ import XCTest
   }
 
   extension MultisetTests {
-  func testIndexValidation() throws {
-    let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertTrue(set.isValid(index: set.startIndex))
-      XCTAssertFalse(set.isValid(index: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
-      typealias Index = RedBlackTreeMultiSet<Int>.Index
-      #if DEBUG
-        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-        // UnsafeTreeでは、範囲外のインデックスを作成できない
-//        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr) // TODO: rawTag関連コードの整理時に、このテストの必要性を再検討する
-        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
-//        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5))) // TODO: rawTag関連コードの整理時に、このテストの必要性を再検討する
-      #endif
-    #else
-      XCTAssertTrue(set.isValid(set.startIndex))
-      XCTAssertFalse(set.isValid(set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
-      typealias Index = RedBlackTreeMultiSet<Int>.Index
-      #if DEBUG
-        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-        // UnsafeTreeでは、範囲外のインデックスを作成できない
-        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, .nullptr)
-        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 3)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 4)))
-        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: 5)))
-      #endif
-    #endif
   }
+
+  extension MultisetTests {
   }
 
   extension MultisetCopyOnWriteTests {
@@ -802,28 +704,6 @@ import XCTest
   }
 
   extension MultisetCopyOnWriteTests {
-    func testSet3000() throws {
-      let count = 1500
-      var loopCount = 0
-      var xy: [Int: RedBlackTreeMultiSet<Int>] = [1: .init(0..<count)]
-      xy[1]?._copyCount = 0
-      let N = 100
-      for i in 0..<count / N {
-        loopCount += 1
-        if let lo = xy[1]?.lowerBound(i * N),
-          let hi = xy[1]?.upperBound(i * N + N)
-        {
-          #if COMPATIBLE_ATCODER_2025
-            xy[1]?.removeSubrange(lo..<hi)
-          #else
-          _ = xy[1]?.erase(lo..<hi)
-          #endif
-        }
-      }
-      XCTAssertEqual(xy[1]!.count, 0)
-      XCTAssertEqual(xy[1]!._copyCount, 0)
-      XCTAssertEqual(loopCount, count / N)
-    }
   }
 
   extension MultisetRemoveTests {
@@ -839,72 +719,11 @@ import XCTest
   }
 
   extension RedBlackTreeMultisetCornerCaseTests {
-  func testIndexInvalidationAfterErase() {
-    var ms: RedBlackTreeMultiSet = [9, 9, 9]
-    let idx = ms.firstIndex(of: 9)!
-    ms.remove(at: idx)
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertFalse(ms.isValid(index: idx))
-    #else
-      XCTAssertFalse(ms.isValid(idx))
-    #endif
-  }
   }
 
   extension RedBlackTreeMultisetCornerCaseTests {
-  func testRemoveSubrange() {
-    var ms: RedBlackTreeMultiSet = [0, 1, 2, 2, 3, 4]
-    let l = ms.lowerBound(2)
-    let r = ms.upperBound(2)  // 半開なので 2 のみ消す
-    #if COMPATIBLE_ATCODER_2025
-      ms.removeSubrange(l..<r)
-    #else
-    _ = ms.erase(l..<r)
-    #endif
-    XCTAssertEqual(ms.sorted(), [0, 1, 3, 4])
-  }
   }
 
   extension RedBlackTreeMultisetCornerCaseTests {
-  func testRandomizedAgainstReferenceMultiset() {
-    var rng = SplitMix64(seed: 0xBADC0DE)
-    let rounds = 150
-    let opsPerRound = 400
-
-    for _ in 0..<rounds {
-      var ms = RedBlackTreeMultiSet<Int>()
-      var ref = ReferenceMultiset()
-
-      for _ in 0..<opsPerRound {
-        let v = Int(rng.next() & 0x3F)  // 0…63
-        switch rng.next() & 3 {
-        case 0:  // insert
-          ms.insert(v)
-          ref.insert(v)
-        case 1:  // remove one
-          #if COMPATIBLE_ATCODER_2025
-            _ = ms.remove(v)
-            ref.removeOne(v)
-          #else
-            _ = ms.eraseUnique(v)
-            ref.removeOne(v)
-          #endif
-        case 2:  // removeAll
-          #if COMPATIBLE_ATCODER_2025
-            _ = ms.removeAll(v)
-            ref.removeAll(v)
-          #else
-            _ = ms.eraseMulti(v)
-            ref.removeAll(v)
-          #endif
-        default:  // count check only
-          break
-        }
-        // 同期検証
-        XCTAssertEqual(ms.count(of: v), ref.count(of: v))
-      }
-      XCTAssertEqual(ms.sorted(), ref.sorted)
-    }
-  }
   }
 #endif

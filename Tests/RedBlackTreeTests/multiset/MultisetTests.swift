@@ -444,7 +444,6 @@ final class MultisetTests: RedBlackTreeTestCase {
   #endif
 
 
-  #if !COMPATIBLE_ATCODER_2025
   func testRandom3() throws {
     var set = RedBlackTreeMultiSet<Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -476,9 +475,7 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
   }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
   func testRandom4() throws {
     var set = RedBlackTreeMultiSet<Int>()
     for i in ((0..<1000).compactMap { _ in (0..<500).randomElement() }) {
@@ -510,7 +507,6 @@ final class MultisetTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.___tree_invariant())
     }
   }
-  #endif
 
   func testLiteral() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
@@ -816,7 +812,6 @@ final class MultisetTests: RedBlackTreeTestCase {
     #endif
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func testIndex4() throws {
       let set: RedBlackTreeMultiSet<Int> = [1, 1, 2, 2, 2, 3, 4]
       let l2 = set.lowerBound(2)
@@ -847,7 +842,6 @@ final class MultisetTests: RedBlackTreeTestCase {
         XCTAssertTrue(set.index(after: set.lowerBound(2)) < set.index(before: set.upperBound(2)))
       #endif
     }
-  #endif
 
   func testIndex100() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6]
@@ -931,7 +925,6 @@ final class MultisetTests: RedBlackTreeTestCase {
   // `rawTag` からインデックスを生成する経路は、現在は主にDEBUG用のテスト補助として残している。
   // 通常のインデックス操作ではほぼ利用しないため、範囲外rawTagの検証は低優先度とする。
   // rawTag関連コードを整理・廃止するときに、以下のテストの必要性もまとめて再検討する。
-  #if !COMPATIBLE_ATCODER_2025
   func testIndexValidation() throws {
     let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
     #if COMPATIBLE_ATCODER_2025
@@ -968,7 +961,6 @@ final class MultisetTests: RedBlackTreeTestCase {
       #endif
     #endif
   }
-  #endif
 
   func testIndexValidation2() throws {
     let _set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5, 6, 7]

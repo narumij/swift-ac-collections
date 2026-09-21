@@ -75,7 +75,6 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
 
 
   /// removeSubrange() が指定範囲の要素を削除すること
-  #if !COMPATIBLE_ATCODER_2025
   func test_removeSubrange() {
     var set = RedBlackTreeSet([1, 2, 3, 4, 5])
     let start = set.index(after: set.startIndex)
@@ -87,7 +86,6 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     #endif
     XCTAssertEqual(set.sorted(), [1, 5], "指定範囲の要素を削除すること")
   }
-  #endif
 
   /// removeAll() がセットを空にすること
   func test_removeAll() {

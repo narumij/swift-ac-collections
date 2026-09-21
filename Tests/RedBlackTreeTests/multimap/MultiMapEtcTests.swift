@@ -128,7 +128,6 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
     XCTAssertNil(f?.value)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testRemoveFirst() throws {
     #if !USE_OLD_FIND
       throw XCTSkip("挙動が変わるためスキップ")
@@ -226,7 +225,6 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
         expected.map { $0.1 })
     }
   }
-  #endif
 
   func testRemoveAll() throws {
     do {

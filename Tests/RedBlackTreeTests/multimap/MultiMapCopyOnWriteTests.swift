@@ -203,7 +203,6 @@ import XCTest
       XCTAssertEqual(tree._copyCount, 0)
     }
 
-    #if !COMPATIBLE_ATCODER_2025
     func testSet3000() throws {
       let count = 1500
       var loopCount = 0
@@ -228,7 +227,6 @@ import XCTest
       XCTAssertEqual(xy[1]!._copyCount, 0)
       XCTAssertEqual(loopCount, count / N)
     }
-    #endif
 
   }
 #endif

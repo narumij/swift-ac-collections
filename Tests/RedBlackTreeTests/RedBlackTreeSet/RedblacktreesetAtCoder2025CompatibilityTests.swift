@@ -78,17 +78,6 @@ import XCTest
     }
   }
   extension RedBlackTreeSetRemoveTests {
-  func test_removeSubrange() {
-    var set = RedBlackTreeSet([1, 2, 3, 4, 5])
-    let start = set.index(after: set.startIndex)
-    let end = set.index(start, offsetBy: 3)
-    #if COMPATIBLE_ATCODER_2025
-      set.removeSubrange(start..<end)
-    #else
-      set.erase(start..<end)
-    #endif
-    XCTAssertEqual(set.sorted(), [1, 5], "指定範囲の要素を削除すること")
-  }
   }
 
   extension RedBlackTreeSetRemoveTests {

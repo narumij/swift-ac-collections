@@ -63,7 +63,6 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     XCTAssertEqual(lb2, multiMap.endIndex)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testExpressibleByLiteralAndSequence() {
     let multiMap: RedBlackTreeMultiMap = [("x", 10), ("y", 20), ("x", 30)]
     XCTAssertEqual(multiMap.count, 3)
@@ -81,7 +80,6 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     XCTAssertEqual(collected["x"]?.sorted(), [10, 30])
     XCTAssertEqual(collected["y"], [20])
   }
-  #endif
 
   func testMinMax() {
     let multiMap: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("c", 3)]

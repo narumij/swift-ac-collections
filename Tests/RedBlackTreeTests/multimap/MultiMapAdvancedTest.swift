@@ -20,7 +20,6 @@ final class MultiMapAdvancedTest: RedBlackTreeTestCase {
     XCTAssertEqual(map.values(forKey: "x").sorted(), [1, 2])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testRemoveSubrange() {
     var map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("c", 3), ("d", 4)]
     let lower = map.lowerBound("b")
@@ -35,7 +34,6 @@ final class MultiMapAdvancedTest: RedBlackTreeTestCase {
     XCTAssertTrue(map.contains(key: "a"))
     XCTAssertTrue(map.contains(key: "d"))
   }
-  #endif
 
   //    func testRemoveAtRawIndex() {
   //        var map: RedBlackTreeMultiMap = [("x", 10), ("y", 20)]

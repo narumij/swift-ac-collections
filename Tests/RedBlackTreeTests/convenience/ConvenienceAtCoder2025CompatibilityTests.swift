@@ -349,28 +349,5 @@ import XCTest
   }
 
   extension ConvenienceTests {
-  func testSubSeq2() throws {
-    let count = 10_000
-    let set: RedBlackTreeSet<Int> = .init((0..<count).reversed())
-    for _ in 0..<1 {
-      var (a, b) = ((0..<count).randomElement()!, (0..<count).randomElement()!)
-      if a > b { swap(&a, &b) }
-      let lo = set.lowerBound(a)
-      let hi = set.upperBound(b)
-      #if COMPATIBLE_ATCODER_2025
-        guard lo > hi, a < b else { continue }
-      #endif
-      // 数値比較で大小が逆転している場合、標準のdistance実装では迷子になってクラッシュする
-      // distanceを実装することで、クラッシュせずに動く
-      //      let seq: RedBlackTreeSet<Int>.___SubSequence = set[a ..< b]
-      let seq = set.elements(in: a..<b)
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertNotEqual(seq + [], [])
-      #endif
-      XCTAssertEqual(seq + [], seq.sorted())
-      XCTAssertEqual((seq + []).reversed(), seq.reversed())
-      XCTAssertTrue(seq.allSatisfy { $0 >= a })
-    }
-  }
   }
 #endif

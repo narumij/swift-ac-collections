@@ -40,7 +40,6 @@ final class Performaces: RedBlackTreeTestCase {
       }
     }
 
-    #if !COMPATIBLE_ATCODER_2025
     func testPerformanceExample3() throws {
       self.measure {
         var set = RedBlackTreeSet<Int>(0..<10_000_000)
@@ -51,7 +50,6 @@ final class Performaces: RedBlackTreeTestCase {
         #endif
       }
     }
-    #endif
 
 
     func testPerformanceExample5() throws {

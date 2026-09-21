@@ -107,7 +107,6 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(a.index(before: a.startIndex), -1)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testRemoving() throws {
 
     do {
@@ -163,7 +162,6 @@ final class EtcTests: RedBlackTreeTestCase {
       print("end")
     }
   }
-  #endif
 
   func testSome() throws {
     let set = RedBlackTreeSet<Int>((0..<50).shuffled())

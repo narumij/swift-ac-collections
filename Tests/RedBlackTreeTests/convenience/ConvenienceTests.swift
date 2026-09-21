@@ -118,7 +118,6 @@ final class ConvenienceTests: RedBlackTreeTestCase {
     //    XCTAssertEqual(seq.map{ $0 }, [1, 2, 3, 4, 5, 6])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
   func testSubSeq2() throws {
     let count = 10_000
     let set: RedBlackTreeSet<Int> = .init((0..<count).reversed())
@@ -142,7 +141,6 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       XCTAssertTrue(seq.allSatisfy { $0 >= a })
     }
   }
-  #endif
 
   func testRemoveSubrange1() throws {
     var set: RedBlackTreeSet<Int> = [2, 4, 6, 8, 10]

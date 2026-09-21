@@ -85,7 +85,6 @@ final class RedBlackTreeDictionaryExtendedTests: RedBlackTreeTestCase {
 
   // MARK: ── popFirst ────────────────────────────────────────────
 
-  #if !COMPATIBLE_ATCODER_2025
   func testPopFirstReturnsMinKey() {
     var d: RedBlackTreeDictionary = [("b", 2), ("a", 1), ("c", 3)]
     let first = d.popFirst()
@@ -100,7 +99,6 @@ final class RedBlackTreeDictionaryExtendedTests: RedBlackTreeTestCase {
     XCTAssertTrue(d.isEmpty)
     XCTAssertNil(d.popFirst())
   }
-  #endif
 
   // MARK: ── mapValues / compactMapValues / filter ───────────────
 
@@ -123,7 +121,6 @@ final class RedBlackTreeDictionaryExtendedTests: RedBlackTreeTestCase {
 
   // MARK: ── 基本 CRUD & CoW・インデックス無効化 ─────────────────
 
-  #if !COMPATIBLE_ATCODER_2025
   func testBasicCrudAndIndexInvalidation() {
     var dict: RedBlackTreeDictionary = ["p": 9, "q": 8]
     let idx = dict.firstIndex(of: "p")!
@@ -139,7 +136,6 @@ final class RedBlackTreeDictionaryExtendedTests: RedBlackTreeTestCase {
     XCTAssertEqual(dict["q"], 8)
     XCTAssertEqual(copy["q"], 100)
   }
-  #endif
 
   // MARK: ── ランダムファズ (Swift.Dictionary 同値性) ─────────────
 

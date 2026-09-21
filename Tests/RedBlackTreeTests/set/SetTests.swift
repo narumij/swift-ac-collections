@@ -1009,3 +1009,39 @@ final class SetTests: RedBlackTreeTestCase {
     #endif
   }
 }
+
+extension SetTests {
+  #if DEBUG
+    func testSubSeqSubscript() throws {
+      let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+      XCTAssertEqual(set.elements(in: 2..<4)[set.startIndex + 2], 3)
+      var a = 0
+      set.elements(in: 2...4).forEach {
+        a += $0
+      }
+      XCTAssertEqual(a, 2 + 3 + 4)
+    }
+  #endif
+
+  func testIndexValidation2() throws {
+    let _set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6, 7]
+    let set = _set.elements(in: 2..<6)
+    XCTAssertTrue(set.isValid(index: set.startIndex))
+    XCTAssertTrue(set.isValid(index: set.endIndex))
+    typealias Index = RedBlackTreeSet<Int>.Index
+    #if DEBUG
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
+      XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, 5)
+
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
+      XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5)))
+      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 6)))
+    //        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 7))) // TODO: rawTag関連コードの整理時に、このテストの必要性を再検討する
+    #endif
+  }
+}

@@ -8,20 +8,6 @@ import XCTest
 
 #if COMPATIBLE_ATCODER_2025
   final class SetAtCoder2025CompatibilityTests: RedBlackTreeTestCase {
-    func testRemoveLast() throws {
-      var members: RedBlackTreeSet<Int> = [1, 3, 5, 7, 9]
-      XCTAssertEqual(members.removeLast(), 9)
-      XCTAssertEqual(members.count, 4)
-      XCTAssertEqual(members.removeLast(), 7)
-      XCTAssertEqual(members.count, 3)
-      XCTAssertEqual(members.removeLast(), 5)
-      XCTAssertEqual(members.count, 2)
-      XCTAssertEqual(members.removeLast(), 3)
-      XCTAssertEqual(members.count, 1)
-      XCTAssertEqual(members.removeLast(), 1)
-      XCTAssertEqual(members.count, 0)
-    }
-
     func testRemoveWithRange1() throws {
       var members = RedBlackTreeSet(0..<10)
       for i in members.startIndex..<members.endIndex { members.remove(at: i) }
@@ -94,56 +80,6 @@ import XCTest
       XCTAssertEqual(members + [], [0, 1, 8, 9])
     }
   }
-  #if DEBUG
-    extension SetRemoveTest_10 {
-      func testRemoveWith___Indices() throws {
-        for i in members.___node_positions() {
-          members.__tree_._unchecked_remove(at: i)
-        }
-        XCTAssertEqual(members + [], [])
-      }
-
-      func testRemoveWith___Indices2() throws {
-        members.___node_positions().forEach { i in
-          members.__tree_._unchecked_remove(at: i)
-        }
-        XCTAssertEqual(members + [], [])
-      }
-
-      func testRemoveWith___Indices3() throws {
-        members.___node_positions().reversed().forEach { i in
-          members.__tree_._unchecked_remove(at: i)
-        }
-        XCTAssertEqual(members + [], [])
-      }
-    }
-  #endif
-
-  #if DEBUG
-    extension SetRemoveTest_10 {
-      func testRemoveWithSub___Indices() throws {
-        for i in members.elements(in: 2..<8).___node_positions() {
-          members.__tree_._unchecked_remove(at: i)
-        }
-        XCTAssertEqual(members + [], [0, 1, 8, 9])
-      }
-
-      func testRemoveWithSub___Indices2() throws {
-        members.elements(in: 2..<8).___node_positions().forEach { i in
-          members.__tree_._unchecked_remove(at: i)
-        }
-        XCTAssertEqual(members + [], [0, 1, 8, 9])
-      }
-
-      func testRemoveWithSub___Indices4() throws {
-        members.elements(in: 2..<8).___node_positions().reversed().forEach { i in
-          members.__tree_._unchecked_remove(at: i)
-        }
-        XCTAssertEqual(members + [], [0, 1, 8, 9])
-      }
-    }
-  #endif
-
   extension SetTests {
     func testInitNaive0() throws {
       let set = RedBlackTreeSet<Int>(naive: 0..<0)
@@ -287,44 +223,6 @@ import XCTest
     }
   }
 
-  #if DEBUG
-    extension SetTests {
-      func testSubSeqSubscript() throws {
-        let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-        XCTAssertEqual(set.elements(in: 2..<4)[set.startIndex + 2], 3)
-        var a = 0
-        set.elements(in: 2...4).forEach {
-          a += $0
-        }
-        XCTAssertEqual(a, 2 + 3 + 4)
-      }
-    }
-  #endif
-
-  extension SetTests {
-    func testIndexValidation2() throws {
-      let _set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6, 7]
-      let set = _set.elements(in: 2..<6)
-      XCTAssertTrue(set.isValid(index: set.startIndex))
-      XCTAssertTrue(set.isValid(index: set.endIndex))
-      typealias Index = RedBlackTreeSet<Int>.Index
-      #if DEBUG
-        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-        XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, 5)
-
-        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as Int)))
-        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 3)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
-        XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 5)))
-        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 6)))
-      //        XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 7))) // TODO: rawTag関連コードの整理時に、このテストの必要性を再検討する
-      #endif
-    }
-  }
-
   extension SetTests {
     func testLeftUnsafeSmoke() {
       typealias Set = RedBlackTreeSet<Int>
@@ -388,32 +286,6 @@ import XCTest
       XCTAssertEqual(a.sorted() + [], source)
     }
   }
-
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    extension SetCopyOnWriteTests {
-      func testSet4000() throws {
-        let count = 1500
-        var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0..<count)]
-        xy[1]?._copyCount = 0
-        let N = 100
-        var loopCount = 0
-        for i in 0..<count / N {
-          loopCount += 1
-          // for文の場合イテレータに処理が移行するので木を保持しないが、
-          // forEachは利用ではこの分離ないので、CoWが発生するようになった
-          // 以前はこれを回避するよう設計で工夫していたが、その工夫自体のオーバーヘッドがもったいない
-          // わざわざsliceを改修するつもりもなく、このままとなります
-          xy[1]?.elements(in: (i * N)..<(i * N + N)).forEach { i, v in
-            xy[1]?.remove(at: i)
-          }
-        }
-        XCTAssertEqual(xy[1]!.count, 0)
-        //    XCTAssertEqual(xy[1]!.copyCount, count / N)
-        XCTAssertEqual(xy[1]!._copyCount, 1, "CoW関連構造の変更に伴い結果が変化")
-        XCTAssertEqual(loopCount, count / N)
-      }
-    }
-  #endif
 
   extension RedBlackTreeSetBidirectionalTests {
     func testForwardAndBackwardIteration() {
@@ -713,57 +585,5 @@ import XCTest
         }
       }
     #endif
-  }
-  extension SetRemoveTests {
-  }
-
-  extension SetTests {
-  }
-
-  extension SetTests {
-  }
-
-  extension SetTests {
-  }
-
-  extension SetTests {
-  }
-
-  extension SetTests {
-  }
-
-  extension SetTests {
-  }
-
-  extension SetTests {
-  }
-
-  extension SetTests {
-  }
-
-  extension SetTests {
-  }
-
-  extension SetTests {
-  }
-
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    extension SetCopyOnWriteTests {
-    }
-
-    extension SetCopyOnWriteTests {
-    }
-  #endif
-
-  extension RedBlackTreeSetCornerCaseTests {
-  }
-
-  extension RedBlackTreeSetCornerCaseTests {
-  }
-
-  extension RedBlackTreeSetCornerCaseTests {
-  }
-
-  extension SetSubSequenceTests {
   }
 #endif

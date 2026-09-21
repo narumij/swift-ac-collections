@@ -32,9 +32,11 @@ import XCTest
     override func setUpWithError() throws {
       end = .create(tag: .end, nullptr: UnsafeNode.nullptr)
       nodes = .init(repeating: .create(tag: .debug, nullptr: UnsafeNode.nullptr), count: count)
+      try super.setUpWithError()
     }
 
     override func tearDownWithError() throws {
+      try super.tearDownWithError()
     }
 
     func testAdvancedKeepsPayloadAlignment() throws {

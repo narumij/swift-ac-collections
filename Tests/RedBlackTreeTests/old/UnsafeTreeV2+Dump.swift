@@ -35,7 +35,7 @@
       print(" count     :", count)
       print(" capacity  :", capacity)
 
-      let layout = MemoryLayout<_PayloadValue>._memoryLayout
+      let layout = MemoryLayout<_PayloadValue>._pairLayout
 
       _buffer.header.dumpHeader(label: "Header")
       _buffer.header.dumpFreshPool(label: "FreshPool", payload: layout)
@@ -119,7 +119,7 @@
     ) {
       dumpFreshPool(
         label: label,
-        payload: MemoryLayout<_PayloadValue>._memoryLayout
+        payload: MemoryLayout<_PayloadValue>._pairLayout
       )
     }
 
@@ -163,7 +163,7 @@
           storage: bucket.storage(isHead: isHead),
           valueAlignment: payload.alignment
         )
-        let stride = MemoryLayout<UnsafeNode>.stride + payload.stride
+        let stride = payload.stride
 
         print("  start ptr:", start)
         print("  stride   :", stride)
@@ -224,7 +224,7 @@
     ) {
       dump(
         label: label,
-        payload: MemoryLayout<_PayloadValue>._memoryLayout,
+        payload: MemoryLayout<_PayloadValue>._pairLayout,
         isHead: isHead
       )
     }
@@ -242,7 +242,7 @@
       print(" valueStride:", payload.stride)
 
       let start = start(storage: storage(isHead: isHead), valueAlignment: payload.alignment)
-      let stride = MemoryLayout<UnsafeNode>.stride + payload.stride
+      let stride = payload.stride
 
       print(" header ptr :", self)
       print(" start ptr  :", start)

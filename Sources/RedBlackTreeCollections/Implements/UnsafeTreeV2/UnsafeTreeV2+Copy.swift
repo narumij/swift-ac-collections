@@ -156,7 +156,7 @@ extension UnsafeTreeV2BufferHeader {
 
     // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
     let bucket = other.freshBucketHead!.accessor(
-      payload: MemoryLayout<_PayloadValue>._memoryLayout)!
+      payload: MemoryLayout<_PayloadValue>._pairLayout)!
 
     /// 同一番号の新ノードを取得するメソッド内ユーティリティ
     @inline(__always)

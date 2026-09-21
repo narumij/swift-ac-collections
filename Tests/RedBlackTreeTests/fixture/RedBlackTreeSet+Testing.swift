@@ -64,15 +64,6 @@ extension RedBlackTreeSet {
   }
 #endif
 
-#if DEBUG && COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet {
-
-    package func ___node_positions() -> UnsafeIterator._RemoveAwarePointers {
-      .init(_start: _sealed_start, _end: _sealed_end)
-    }
-  }
-#endif
-
 #if DEBUG && !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 

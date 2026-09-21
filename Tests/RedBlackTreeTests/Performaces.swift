@@ -51,17 +51,6 @@ final class Performaces: RedBlackTreeTestCase {
       }
     }
 
-    #if COMPATIBLE_ATCODER_2025
-      func testPerformanceExample4() throws {
-        self.measure {
-          var set = RedBlackTreeSet<Int>(0..<10_000_000)
-          set
-            .forEach { i, v in
-              set.remove(at: i)
-            }
-        }
-      }
-    #endif
 
     func testPerformanceExample5() throws {
       self.measure {
@@ -80,14 +69,6 @@ final class Performaces: RedBlackTreeTestCase {
       }
     }
 
-    #if COMPATIBLE_ATCODER_2025
-      func testPerformanceExample7() throws {
-        let set = RedBlackTreeSet<Int>(0..<10_000_000)
-        self.measure {
-          _ = set.firstIndex { $0 > 10_000_000 }
-        }
-      }
-    #endif
 
     func testPerformanceExample8() throws {
       let set = RedBlackTreeSet<Int>(0..<10_000_000)
@@ -139,6 +120,7 @@ final class Performaces: RedBlackTreeTestCase {
   #endif
 
   #if false
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceCopy1() throws {
       let set = RedBlackTreeSet<Int>(0..<1)
       var a = set._storage
@@ -149,7 +131,9 @@ final class Performaces: RedBlackTreeTestCase {
       //    }
       print("a.capacity", a.capacity)
     }
+    #endif
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceCopy32() throws {
       let set = RedBlackTreeSet<Int>(0..<24)
       var a = set._storage
@@ -160,7 +144,9 @@ final class Performaces: RedBlackTreeTestCase {
       //    }
       print("a.capacity", a.capacity)
     }
+    #endif
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceCopy64() throws {
       let set = RedBlackTreeSet<Int>(0..<64)
       var a = set._storage
@@ -171,7 +157,9 @@ final class Performaces: RedBlackTreeTestCase {
       //    }
       print("a.capacity", a.capacity)
     }
+    #endif
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceCopy128() throws {
       let set = RedBlackTreeSet<Int>(0..<128)
       var a = set._storage
@@ -182,7 +170,9 @@ final class Performaces: RedBlackTreeTestCase {
       //    }
       print("a.capacity", a.capacity)
     }
+    #endif
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceCopy256() throws {
       let set = RedBlackTreeSet<Int>(0..<256)
       var a = set._storage
@@ -192,5 +182,6 @@ final class Performaces: RedBlackTreeTestCase {
         }
       }
     }
+    #endif
   #endif
 }

@@ -5,7 +5,7 @@ import RedBlackTreeCollections
 import XCTest
 
 /// シンプル Count ディクショナリを Swift 標準 Multiset 代わりに利用
-private struct ReferenceMultiset {
+struct ReferenceMultiset {
   private var dict: [Int: Int] = [:]
   mutating func insert(_ x: Int) { dict[x, default: 0] += 1 }
   mutating func removeOne(_ x: Int) {

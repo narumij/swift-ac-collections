@@ -14,6 +14,7 @@ import XCTest
     var freshBucketCurrent: RedBlackTreeCollections._BucketQueue?
 
     var payloadLayout: _MemoryLayout
+    var pairLayout: _MemoryLayout { freshBucketAllocator._pair }
 
     func didUpdateFreshBucketHead() {
 
@@ -79,12 +80,14 @@ import XCTest
       }
     }
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceExample() throws {
       // This is an example of a performance test case.
       self.measure {
         // Put the code you want to measure the time of here.
       }
     }
+    #endif
 
   }
 #endif

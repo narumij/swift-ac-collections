@@ -87,6 +87,11 @@ extension UnsafeTreeV2BufferHeader {
   }
 
   @inlinable
+  var pairLayout: _MemoryLayout {
+    freshBucketAllocator._pair
+  }
+
+  @inlinable
   var end_ptr: _NodePtr {
     @inline(__always)
     _read {
@@ -201,7 +206,7 @@ extension UnsafeTreeV2BufferHeader {
     @inlinable
     mutating func pushFreshBucket(head: _BucketPointer) {
       freshBucketHead = head
-      freshBucketCurrent = head.queue(payloadLayout: payloadLayout)
+      freshBucketCurrent = head.queue(payloadLayout: pairLayout)
       freshBucketLast = head
       freshPoolCapacity += head.pointee.capacity
       #if DEBUG
@@ -226,7 +231,7 @@ extension UnsafeTreeV2BufferHeader {
       if let p = freshBucketCurrent?.pop() {
         return p
       }
-      freshBucketCurrent = freshBucketCurrent?.next(payload: payloadLayout)
+      freshBucketCurrent = freshBucketCurrent?.next(payload: pairLayout)
       return freshBucketCurrent?.pop()
     }
   }
@@ -250,14 +255,14 @@ extension UnsafeTreeV2BufferHeader {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
       assert(___tracking_tag < freshPoolUsedCount)
       var remaining = Int(truncatingIfNeeded: ___tracking_tag)
-      var p = freshBucketHead?.accessor(payload: payloadLayout)
+      var p = freshBucketHead?.accessor(payload: pairLayout)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
           return h[remaining]
         }
         remaining -= cap
-        p = h.next(payload: payloadLayout)
+        p = h.next(payload: pairLayout)
       }
       return nullptr
     }
@@ -269,7 +274,7 @@ extension UnsafeTreeV2BufferHeader {
     mutating func ___flushFreshPool() {
       freshBucketAllocator.deinitialize(bucket: freshBucketHead)
       freshPoolUsedCount = 0
-      freshBucketCurrent = freshBucketHead?.queue(payloadLayout: payloadLayout)
+      freshBucketCurrent = freshBucketHead?.queue(payloadLayout: pairLayout)
     }
 
     @usableFromInline
@@ -285,7 +290,7 @@ extension UnsafeTreeV2BufferHeader {
 
     @inlinable
     func makeUsedNodeIterator<T>() -> _FreshPoolUsedIterator<T> {
-      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead)
+      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead, pairLayout: pairLayout)
     }
   }
 

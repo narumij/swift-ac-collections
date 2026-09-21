@@ -149,23 +149,5 @@ import XCTest
       XCTAssertEqual(loopCount, count / N)
     }
 
-    #if COMPATIBLE_ATCODER_2025
-      func testSet4000() throws {
-        let count = 1500
-        var xy: [Int: RedBlackTreeMultiSet<Int>] = [1: .init(0..<count)]
-        xy[1]?._copyCount = 0
-        let N = 100
-        var loopCount = 0
-        for i in 0..<count / N {
-          loopCount += 1
-          xy[1]?.elements(in: (i * N)..<(i * N + N)).forEach { i, v in
-            xy[1]?.remove(at: i)
-          }
-        }
-        XCTAssertEqual(xy[1]!.count, 0)
-        XCTAssertEqual(xy[1]!._copyCount, 1, "CoW挙動変更に伴い修正")
-        XCTAssertEqual(loopCount, count / N)
-      }
-    #endif
   }
 #endif

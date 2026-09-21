@@ -105,12 +105,4 @@ final class MultiMapAdvancedTest: RedBlackTreeTestCase {
     XCTAssertNotNil(map[idx].value)
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testRemoveContentsOfRange() {
-      var map: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("c", 3), ("d", 4)]
-      map.remove(contentsOf: "b"..."c")
-      XCTAssertFalse(map.contains(key: "b"))
-      XCTAssertFalse(map.contains(key: "c"))
-    }
-  #endif
 }

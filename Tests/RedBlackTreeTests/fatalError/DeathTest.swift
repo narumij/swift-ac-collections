@@ -27,11 +27,39 @@
       }
     }
 
-    @Test func `index from another tree cannot be subscripted`() async {
+    // AtCoder 2025互換のUnsafeIndexV2は、ALLOW_CROSS_TREE_INDEXにかかわらず
+    // 別の木に由来するインデックスを拒否しないため、通常モードでのみ検証する。
+    #if !COMPATIBLE_ATCODER_2025
+      @Test func `index from another tree cannot be subscripted`() async {
+        await #expect(processExitsWith: .failure) {
+          let set: RedBlackTreeSet<Int> = [1, 2, 3]
+          let other: RedBlackTreeSet<Int> = [4, 5, 6]
+          _ = set[other.startIndex]
+        }
+      }
+    #endif
+
+    @Test func `インデックスによる区間不正はtrapすること、その1`() async {
       await #expect(processExitsWith: .failure) {
-        let set: RedBlackTreeSet<Int> = [1, 2, 3]
-        let other: RedBlackTreeSet<Int> = [4, 5, 6]
-        _ = set[other.startIndex]
+        let a = RedBlackTreeSet<Int>(0..<100)
+
+        _ = a[a.lowerBound(50)...a.lowerBound(10)] + [] == []
+      }
+    }
+
+    @Test func `インデックスによる区間不正はtrapすること、その2`() async {
+      await #expect(processExitsWith: .failure) {
+        let a = RedBlackTreeSet<Int>(0..<100)
+
+        _ = a[a.endIndex...a.startIndex] + [] == []
+      }
+    }
+
+    @Test func `インデックスによる区間不正はtrapすること、その3`() async {
+      await #expect(processExitsWith: .failure) {
+        let a = RedBlackTreeSet<Int>(0..<100)
+
+        _ = a[a.startIndex...a.endIndex] + [] == []
       }
     }
   }

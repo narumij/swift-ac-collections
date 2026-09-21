@@ -25,6 +25,9 @@
 // C++のbidirectional_iterator相当と対応するコンテナ機能を定義している
 //
 // 平衡木の部分についても適応可能なことが望ましい
+//
+// Sequenceではなく将来の他の何かに適合するのが妥当
+//
 #if DEBUG
   public protocol BalancedSequence: Sequence {
 
@@ -116,7 +119,8 @@
     func isValid(_: Bound) -> Bool
     func isValid(_: BoundRangeExpression) -> Bool
 
-    func distance(from: Bound, to: Bound) -> Int
+// 必須では無くなった
+//    func distance(from: Bound, to: Bound) -> Int
 
     subscript(range: IndexRange) -> View { get }
     subscript(range: IndexRangeExpression) -> View { get }

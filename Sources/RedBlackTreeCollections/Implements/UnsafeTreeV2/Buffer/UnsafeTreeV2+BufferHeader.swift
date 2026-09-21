@@ -290,7 +290,7 @@ extension UnsafeTreeV2BufferHeader {
 
     @inlinable
     func makeUsedNodeIterator<T>() -> _FreshPoolUsedIterator<T> {
-      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead)
+      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead, pairLayout: pairLayout)
     }
   }
 

@@ -30,8 +30,7 @@ struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _Unsaf
   typealias BucketPointer = UnsafeMutablePointer<_Bucket>
 
   @inlinable
-  internal init(bucket: BucketPointer?) {
-    let pairLayout = MemoryLayout<_PayloadValue>._pairLayout
+  internal init(bucket: BucketPointer?, pairLayout: _MemoryLayout) {
     self.pairLayout = pairLayout
     self.helper = bucket.flatMap {
       $0._counts(

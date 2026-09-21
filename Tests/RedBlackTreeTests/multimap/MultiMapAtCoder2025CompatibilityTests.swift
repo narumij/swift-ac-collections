@@ -238,24 +238,25 @@ import XCTest
   }
 
   #if DEBUG
-  extension MultiMapEtcTests {
-    func testExample___0() throws {
-      for i in target1.___node_positions() {
-        target1.__tree_._unchecked_remove(at: i)
+    extension MultiMapEtcTests {
+      func testExample___0() throws {
+        for i in target1.___node_positions() {
+          target1.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertTrue(target1.isEmpty)
       }
-      XCTAssertTrue(target1.isEmpty)
-    }
 
-    func testExample___1() throws {
-      target1.___node_positions().forEach { i in
-        target1.__tree_._unchecked_remove(at: i)
+      func testExample___1() throws {
+        target1.___node_positions().forEach { i in
+          target1.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertTrue(target1.isEmpty)
       }
-      XCTAssertTrue(target1.isEmpty)
     }
-  }
   #endif
 
-  extension MultiMapCopyOnWriteTests {
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    extension MultiMapCopyOnWriteTests {
       func testSet4000() throws {
         let count = 1500
         var xy: [Int: RedBlackTreeMultiMap<Int, Int>] = [
@@ -274,7 +275,8 @@ import XCTest
         XCTAssertEqual(xy[1]!._copyCount, 1)
         XCTAssertEqual(loopCount, count / N)
       }
-  }
+    }
+  #endif
 
   extension MultiMapRemoveTests {
     func testRemove() throws {
@@ -311,31 +313,31 @@ import XCTest
   }
 
   #if DEBUG
-  extension MultiMapRemoveTests {
-    func testRemoveWith___Indices() throws {
-      var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-      for i in members.___node_positions() {
-        members.__tree_._unchecked_remove(at: i)
+    extension MultiMapRemoveTests {
+      func testRemoveWith___Indices() throws {
+        var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
+        for i in members.___node_positions() {
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members.map { $0.key }, [])
       }
-      XCTAssertEqual(members.map { $0.key }, [])
-    }
 
-    func testRemoveWith___Indices2() throws {
-      var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-      members.___node_positions().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
+      func testRemoveWith___Indices2() throws {
+        var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
+        members.___node_positions().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members.map { $0.key }, [])
       }
-      XCTAssertEqual(members.map { $0.key }, [])
-    }
 
-    func testRemoveWith___Indices3() throws {
-      var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-      members.___node_positions().reversed().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
+      func testRemoveWith___Indices3() throws {
+        var members = RedBlackTreeMultiMap(multiKeysWithValues: (0..<10).map { ($0, $0 * 10) })
+        members.___node_positions().reversed().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members.map { $0.key }, [])
       }
-      XCTAssertEqual(members.map { $0.key }, [])
     }
-  }
   #endif
 
   extension MultiMapRemoveTests {
@@ -537,84 +539,86 @@ import XCTest
   extension MultiMapEtcTests {
   }
 
-  extension MultiMapCopyOnWriteTests {
-  }
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    extension MultiMapCopyOnWriteTests {
+    }
 
-  extension MultiMapCopyOnWriteTests {
-    func testSet3() throws {
-      tree._copyCount = 0
+    extension MultiMapCopyOnWriteTests {
+      func testSet3() throws {
+        tree._copyCount = 0
         for v in tree {
           tree.removeFirst(forKey: v.key)  // strong ensure unique
         }
         XCTAssertEqual(tree.count, 0)
         XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
+      }
     }
-  }
 
-  extension MultiMapCopyOnWriteTests {
-    func testSet3_2() throws {
-      tree._copyCount = 0
+    extension MultiMapCopyOnWriteTests {
+      func testSet3_2() throws {
+        tree._copyCount = 0
         for v in tree + [] {
           tree.removeFirst(forKey: v.key)  // strong ensure unique
         }
-      XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
+        XCTAssertEqual(tree.count, 0)
+        XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
+      }
     }
-  }
 
-  extension MultiMapCopyOnWriteTests {
-    func testSet3_3() throws {
-      tree._copyCount = 0
+    extension MultiMapCopyOnWriteTests {
+      func testSet3_3() throws {
+        tree._copyCount = 0
         for v in tree + [] {
           tree.removeFirst(_unsafeForKey: v.key)  // strong ensure unique
         }
-      XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
+        XCTAssertEqual(tree.count, 0)
+        XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
+      }
     }
-  }
 
-  extension MultiMapCopyOnWriteTests {
-    func testSet4() throws {
-      tree._copyCount = 0
+    extension MultiMapCopyOnWriteTests {
+      func testSet4() throws {
+        tree._copyCount = 0
         tree.forEach { v in
           tree.removeFirst(forKey: v.key)
         }
-      XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 1)
+        XCTAssertEqual(tree.count, 0)
+        XCTAssertEqual(tree._copyCount, 1)
+      }
     }
-  }
 
-  extension MultiMapCopyOnWriteTests {
-    func testSet5() throws {
-      tree._copyCount = 0
+    extension MultiMapCopyOnWriteTests {
+      func testSet5() throws {
+        tree._copyCount = 0
         for v in tree + [] {
           tree.removeFirst(forKey: v.key)
         }
-      XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 0)
+        XCTAssertEqual(tree.count, 0)
+        XCTAssertEqual(tree._copyCount, 0)
+      }
     }
-  }
 
-  extension MultiMapCopyOnWriteTests {
-  }
+    extension MultiMapCopyOnWriteTests {
+    }
 
-  extension MultiMapCopyOnWriteTests {
-  }
+    extension MultiMapCopyOnWriteTests {
+    }
 
-  extension MultiMapCopyOnWriteTests {
-  }
+    extension MultiMapCopyOnWriteTests {
+    }
 
-  extension MultiMapCopyOnWriteTests {
-  }
+    extension MultiMapCopyOnWriteTests {
+    }
 
-  extension MultiMapCopyOnWriteTests {
-  }
+    extension MultiMapCopyOnWriteTests {
+    }
 
-  extension MultiMapCopyOnWriteTests {
-  }
+    extension MultiMapCopyOnWriteTests {
+    }
 
-  extension MultiMapCopyOnWriteTests {
-  }
+    extension MultiMapCopyOnWriteTests {
+    }
+  #endif
 
   extension MultiMapRemoveTests {
   }

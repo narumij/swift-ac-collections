@@ -95,53 +95,53 @@ import XCTest
     }
   }
   #if DEBUG
-  extension SetRemoveTest_10 {
-    func testRemoveWith___Indices() throws {
-      for i in members.___node_positions() {
-        members.__tree_._unchecked_remove(at: i)
+    extension SetRemoveTest_10 {
+      func testRemoveWith___Indices() throws {
+        for i in members.___node_positions() {
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [])
       }
-      XCTAssertEqual(members + [], [])
-    }
 
-    func testRemoveWith___Indices2() throws {
-      members.___node_positions().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
+      func testRemoveWith___Indices2() throws {
+        members.___node_positions().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [])
       }
-      XCTAssertEqual(members + [], [])
-    }
 
-    func testRemoveWith___Indices3() throws {
-      members.___node_positions().reversed().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
+      func testRemoveWith___Indices3() throws {
+        members.___node_positions().reversed().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [])
       }
-      XCTAssertEqual(members + [], [])
     }
-  }
   #endif
 
   #if DEBUG
-  extension SetRemoveTest_10 {
-    func testRemoveWithSub___Indices() throws {
-      for i in members.elements(in: 2..<8).___node_positions() {
-        members.__tree_._unchecked_remove(at: i)
+    extension SetRemoveTest_10 {
+      func testRemoveWithSub___Indices() throws {
+        for i in members.elements(in: 2..<8).___node_positions() {
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [0, 1, 8, 9])
       }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
 
-    func testRemoveWithSub___Indices2() throws {
-      members.elements(in: 2..<8).___node_positions().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
+      func testRemoveWithSub___Indices2() throws {
+        members.elements(in: 2..<8).___node_positions().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [0, 1, 8, 9])
       }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
 
-    func testRemoveWithSub___Indices4() throws {
-      members.elements(in: 2..<8).___node_positions().reversed().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
+      func testRemoveWithSub___Indices4() throws {
+        members.elements(in: 2..<8).___node_positions().reversed().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [0, 1, 8, 9])
       }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
     }
-  }
   #endif
 
   extension SetTests {
@@ -288,17 +288,17 @@ import XCTest
   }
 
   #if DEBUG
-  extension SetTests {
-    func testSubSeqSubscript() throws {
-      let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-      XCTAssertEqual(set.elements(in: 2..<4)[set.startIndex + 2], 3)
-      var a = 0
-      set.elements(in: 2...4).forEach {
-        a += $0
+    extension SetTests {
+      func testSubSeqSubscript() throws {
+        let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+        XCTAssertEqual(set.elements(in: 2..<4)[set.startIndex + 2], 3)
+        var a = 0
+        set.elements(in: 2...4).forEach {
+          a += $0
+        }
+        XCTAssertEqual(a, 2 + 3 + 4)
       }
-      XCTAssertEqual(a, 2 + 3 + 4)
     }
-  }
   #endif
 
   extension SetTests {
@@ -389,7 +389,8 @@ import XCTest
     }
   }
 
-  extension SetCopyOnWriteTests {
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    extension SetCopyOnWriteTests {
       func testSet4000() throws {
         let count = 1500
         var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0..<count)]
@@ -411,7 +412,8 @@ import XCTest
         XCTAssertEqual(xy[1]!._copyCount, 1, "CoW関連構造の変更に伴い結果が変化")
         XCTAssertEqual(loopCount, count / N)
       }
-  }
+    }
+  #endif
 
   extension RedBlackTreeSetBidirectionalTests {
     func testForwardAndBackwardIteration() {
@@ -472,15 +474,15 @@ import XCTest
 
       let b_idx = base.firstIndex(of: 1)!
       let idx = slice.firstIndex(of: 1)!
-      XCTAssertTrue(base.isValid(index: b_idx)) // これは従来と同じ挙動
-      XCTAssertTrue(base.isValid(index: idx)) // これは従来と同じ挙動
-      XCTAssertTrue(slice.isValid(index: idx)) // これは従来と同じ挙動
-      
+      XCTAssertTrue(base.isValid(index: b_idx))  // これは従来と同じ挙動
+      XCTAssertTrue(base.isValid(index: idx))  // これは従来と同じ挙動
+      XCTAssertTrue(slice.isValid(index: idx))  // これは従来と同じ挙動
+
       base.remove(1)  // 基集合を変化させる
 
-      XCTAssertFalse(base.isValid(index: b_idx)) // これは従来と同じ挙動
-      XCTAssertFalse(base.isValid(index: idx)) // これは従来と同じ挙動
-//      XCTAssertFalse(slice.isValid(index: idx)) // なぜ連動してfalseになる想定だったのか思い出せない
+      XCTAssertFalse(base.isValid(index: b_idx))  // これは従来と同じ挙動
+      XCTAssertFalse(base.isValid(index: idx))  // これは従来と同じ挙動
+      //      XCTAssertFalse(slice.isValid(index: idx)) // なぜ連動してfalseになる想定だったのか思い出せない
       XCTAssertTrue(slice.isValid(index: idx), " 内部挙動の変更でCoW後のsliceに強く紐付いている")
 
       base.insert(1)
@@ -490,8 +492,8 @@ import XCTest
       #endif
 
       XCTAssertFalse(base.isValid(index: b_idx), "内部挙動変更でfalseとなった")
-      XCTAssertFalse(base.isValid(index: idx)) // これは従来と同じ挙動
-//      XCTAssertFalse(slice.isValid(index: idx)) // なぜ連動してfalseになる想定だったのか思い出せない
+      XCTAssertFalse(base.isValid(index: idx))  // これは従来と同じ挙動
+      //      XCTAssertFalse(slice.isValid(index: idx)) // なぜ連動してfalseになる想定だったのか思い出せない
       XCTAssertTrue(slice.isValid(index: idx), " 内部挙動の変更でCoW後のslideに強く紐付いている")
     }
   }
@@ -595,40 +597,40 @@ import XCTest
         }
       }
     #endif
-  
+
   }
 
   extension SetPerformanceTests {
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceFirstIndex4() throws {
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         self.measure {
           XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 - 1 }), s.index(before: s.endIndex))
         }
       }
-      #endif
+    #endif
 
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceFirstIndex5() throws {
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         self.measure {
           XCTAssertEqual(s.firstIndex(where: { $0 >= 0 }), s.startIndex)
         }
       }
-      #endif
+    #endif
 
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceFirstIndex6() throws {
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         self.measure {
           XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
         }
       }
-      #endif
+    #endif
   }
 
   extension SetPerformanceTests {
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare0() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         XCTAssertTrue(set.startIndex < set.endIndex)
@@ -638,9 +640,9 @@ import XCTest
           let _ = set.startIndex < set.endIndex
         }
       }
-      #endif
+    #endif
 
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare1() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.index(before: set.endIndex)
@@ -652,9 +654,9 @@ import XCTest
           let _ = l < r
         }
       }
-      #endif
+    #endif
 
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare2() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.endIndex
@@ -666,9 +668,9 @@ import XCTest
           let _ = l < r
         }
       }
-      #endif
+    #endif
 
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare3() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.index(before: set.endIndex)
@@ -680,9 +682,9 @@ import XCTest
           let _ = l < r
         }
       }
-      #endif
+    #endif
 
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare4() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let l = set.endIndex
@@ -694,9 +696,9 @@ import XCTest
           let _ = l < r
         }
       }
-      #endif
+    #endif
 
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare5() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
         let r = set.index(before: set.endIndex)
@@ -710,7 +712,7 @@ import XCTest
           let _ = l < r
         }
       }
-      #endif
+    #endif
   }
   extension SetRemoveTests {
   }
@@ -745,11 +747,13 @@ import XCTest
   extension SetTests {
   }
 
-  extension SetCopyOnWriteTests {
-  }
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    extension SetCopyOnWriteTests {
+    }
 
-  extension SetCopyOnWriteTests {
-  }
+    extension SetCopyOnWriteTests {
+    }
+  #endif
 
   extension RedBlackTreeSetCornerCaseTests {
   }

@@ -277,17 +277,17 @@ import XCTest
   }
 
   #if DEBUG
-  extension MultisetTests {
-    func testSubSeqSubscript() throws {
-      let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
-      XCTAssertEqual(set.elements(in: 2..<4)[set.startIndex + 2], 3)
-      var a = 0
-      set.elements(in: 2...4).forEach {
-        a += $0
+    extension MultisetTests {
+      func testSubSeqSubscript() throws {
+        let set: RedBlackTreeMultiSet<Int> = [1, 2, 3, 4, 5]
+        XCTAssertEqual(set.elements(in: 2..<4)[set.startIndex + 2], 3)
+        var a = 0
+        set.elements(in: 2...4).forEach {
+          a += $0
+        }
+        XCTAssertEqual(a, 2 + 3 + 4)
       }
-      XCTAssertEqual(a, 2 + 3 + 4)
     }
-  }
   #endif
 
   extension MultisetTests {
@@ -416,7 +416,8 @@ import XCTest
     }
   }
 
-  extension MultisetCopyOnWriteTests {
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    extension MultisetCopyOnWriteTests {
       func testSet4000() throws {
         let count = 1500
         var xy: [Int: RedBlackTreeMultiSet<Int>] = [1: .init(0..<count)]
@@ -433,7 +434,8 @@ import XCTest
         XCTAssertEqual(xy[1]!._copyCount, 1, "CoW挙動変更に伴い修正")
         XCTAssertEqual(loopCount, count / N)
       }
-  }
+    }
+  #endif
 
   extension MultisetRemoveTests {
     func testSmokeRemove0() throws {
@@ -511,31 +513,31 @@ import XCTest
   }
 
   #if DEBUG
-  extension MultisetRemoveTests {
-    func testRemoveWith___Indices() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      for i in members.___node_positions() {
-        members.__tree_._unchecked_remove(at: i)
+    extension MultisetRemoveTests {
+      func testRemoveWith___Indices() throws {
+        var members = RedBlackTreeMultiSet<Int>(0..<10)
+        for i in members.___node_positions() {
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [])
       }
-      XCTAssertEqual(members + [], [])
-    }
 
-    func testRemoveWith___Indices2() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      members.___node_positions().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
+      func testRemoveWith___Indices2() throws {
+        var members = RedBlackTreeMultiSet<Int>(0..<10)
+        members.___node_positions().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [])
       }
-      XCTAssertEqual(members + [], [])
-    }
 
-    func testRemoveWith___Indices3() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      members.___node_positions().reversed().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
+      func testRemoveWith___Indices3() throws {
+        var members = RedBlackTreeMultiSet<Int>(0..<10)
+        members.___node_positions().reversed().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [])
       }
-      XCTAssertEqual(members + [], [])
     }
-  }
   #endif
 
   extension MultisetRemoveTests {
@@ -573,60 +575,60 @@ import XCTest
   }
 
   #if DEBUG
-  extension MultisetRemoveTests {
-    func testRemoveWithSub___Indices() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      for i in members.elements(in: 2..<8).___node_positions() {
-        members.__tree_._unchecked_remove(at: i)
+    extension MultisetRemoveTests {
+      func testRemoveWithSub___Indices() throws {
+        var members = RedBlackTreeMultiSet<Int>(0..<10)
+        for i in members.elements(in: 2..<8).___node_positions() {
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [0, 1, 8, 9])
       }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
 
-    func testRemoveWithSub___Indices2() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      members.elements(in: 2..<8).___node_positions().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
+      func testRemoveWithSub___Indices2() throws {
+        var members = RedBlackTreeMultiSet<Int>(0..<10)
+        members.elements(in: 2..<8).___node_positions().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [0, 1, 8, 9])
       }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
 
-    func testRemoveWithSub___Indices4() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      members.elements(in: 2..<8).___node_positions().reversed().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
+      func testRemoveWithSub___Indices4() throws {
+        var members = RedBlackTreeMultiSet<Int>(0..<10)
+        members.elements(in: 2..<8).___node_positions().reversed().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [0, 1, 8, 9])
       }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
     }
-  }
   #endif
 
   extension MultisetPerfomarnceTests {
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceFirstIndex4() throws {
         let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
         self.measure {
           XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 - 1 }), s.index(before: s.endIndex))
         }
       }
-      #endif
+    #endif
 
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceFirstIndex5() throws {
         let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
         self.measure {
           XCTAssertEqual(s.firstIndex(where: { $0 >= 0 }), s.startIndex)
         }
       }
-      #endif
+    #endif
 
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceFirstIndex6() throws {
         let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
         self.measure {
           XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
         }
       }
-      #endif
+    #endif
   }
   extension RedBlackTreeMultisetSubSequenceTests {
   }
@@ -685,26 +687,28 @@ import XCTest
   extension MultisetTests {
   }
 
-  extension MultisetCopyOnWriteTests {
-  }
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    extension MultisetCopyOnWriteTests {
+    }
 
-  extension MultisetCopyOnWriteTests {
-  }
+    extension MultisetCopyOnWriteTests {
+    }
 
-  extension MultisetCopyOnWriteTests {
-  }
+    extension MultisetCopyOnWriteTests {
+    }
 
-  extension MultisetCopyOnWriteTests {
-  }
+    extension MultisetCopyOnWriteTests {
+    }
 
-  extension MultisetCopyOnWriteTests {
-  }
+    extension MultisetCopyOnWriteTests {
+    }
 
-  extension MultisetCopyOnWriteTests {
-  }
+    extension MultisetCopyOnWriteTests {
+    }
 
-  extension MultisetCopyOnWriteTests {
-  }
+    extension MultisetCopyOnWriteTests {
+    }
+  #endif
 
   extension MultisetRemoveTests {
   }

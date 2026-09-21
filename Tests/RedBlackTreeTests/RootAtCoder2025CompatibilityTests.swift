@@ -8,7 +8,7 @@ import XCTest
 
 #if COMPATIBLE_ATCODER_2025
   extension Performaces {
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceExample4() throws {
         self.measure {
           var set = RedBlackTreeSet<Int>(0..<10_000_000)
@@ -18,21 +18,22 @@ import XCTest
             }
         }
       }
-      #endif
+    #endif
   }
 
   extension Performaces {
-      #if ENABLE_PERFORMANCE_TESTING
+    #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceExample7() throws {
         let set = RedBlackTreeSet<Int>(0..<10_000_000)
         self.measure {
           _ = set.firstIndex { $0 > 10_000_000 }
         }
       }
-      #endif
+    #endif
   }
 
-  extension NaiveIteratorTests {
+  #if DEBUG
+    extension NaiveIteratorTests {
       func testWrappedForward() throws {
         let a = RedBlackTreeSet<Int>(0..<5)
         let wrapped = UnsafeIterator._RemoveAware(
@@ -50,7 +51,8 @@ import XCTest
             _end: a.__tree_.__end_node))
         XCTAssertEqual(wrapped.map { a.__tree_[_unsafe_raw: $0] }, [Int](0..<5).reversed())
       }
-  }
+    }
+  #endif
 
   extension ReferenceTests {
     func testExample() throws {
@@ -187,16 +189,16 @@ import XCTest
   }
 
   #if DEBUG
-  extension EtcTests {
-    func testRev() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      var result = [Int]()
-      a.__tree_.___rev_for_each_(__p: a.startIndex.sealed, __l: a.endIndex.sealed) { p in
-        result.append(p.index)
+    extension EtcTests {
+      func testRev() throws {
+        let a = RedBlackTreeSet<Int>([0, 1, 2])
+        var result = [Int]()
+        a.__tree_.___rev_for_each_(__p: a.startIndex.sealed, __l: a.endIndex.sealed) { p in
+          result.append(p.index)
+        }
+        XCTAssertEqual(result, [2, 1, 0])
       }
-      XCTAssertEqual(result, [2, 1, 0])
     }
-  }
   #endif
 
   extension EtcTests {
@@ -525,29 +527,29 @@ import XCTest
   }
 
   #if DEBUG
-  extension EtcTests {
-    func testMapBehavior() throws {
-      let a = RedBlackTreeSet<Int>(0..<10)
-      do {
-        let n = a.count
-        XCTAssertEqual(n, 10)
+    extension EtcTests {
+      func testMapBehavior() throws {
+        let a = RedBlackTreeSet<Int>(0..<10)
+        do {
+          let n = a.count
+          XCTAssertEqual(n, 10)
 
-        var result = ContiguousArray<Int>()
-        result.reserveCapacity(n)
+          var result = ContiguousArray<Int>()
+          result.reserveCapacity(n)
 
-        var i = a.startIndex
+          var i = a.startIndex
 
-        for _ in 0..<n {
-          result.append(a[i])
-          a.formIndex(after: &i)
+          for _ in 0..<n {
+            result.append(a[i])
+            a.formIndex(after: &i)
+            XCTAssertNotEqual(i.rawValue, a.nullptr)
+          }
+
           XCTAssertNotEqual(i.rawValue, a.nullptr)
+          XCTAssertEqual(a.endIndex, i)
         }
-
-        XCTAssertNotEqual(i.rawValue, a.nullptr)
-        XCTAssertEqual(a.endIndex, i)
       }
     }
-  }
   #endif
   extension Performaces {
     #if ENABLE_PERFORMANCE_TESTING

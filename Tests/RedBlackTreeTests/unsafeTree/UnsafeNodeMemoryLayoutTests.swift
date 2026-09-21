@@ -65,6 +65,17 @@ final class UnsafeNodeMemoryLayoutTests: XCTestCase {
         let secondNode =
             firstNode._advanced(with: Payload.self, count: 1)
 
+        let nodeAdvance = UnsafeMutableRawPointer(firstNode).distance(
+            to: UnsafeMutableRawPointer(secondNode)
+        )
+        let pairSize = nodeStride + MemoryLayout<Payload>.stride
+        let pairAlignment = max(nodeAlignment, payloadAlignment)
+
+        // 必要なサイズ以上で、末尾の padding は alignment 未満である
+        XCTAssertGreaterThanOrEqual(nodeAdvance, pairSize, file: file, line: line)
+        XCTAssertLessThan(nodeAdvance - pairSize, pairAlignment, file: file, line: line)
+        XCTAssertEqual(nodeAdvance % pairAlignment, 0, file: file, line: line)
+
         // 負方向にも同じ stride で移動する
         XCTAssertEqual(
             secondNode._advanced(with: Payload.self, count: -1),

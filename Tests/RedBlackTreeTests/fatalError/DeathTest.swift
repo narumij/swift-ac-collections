@@ -38,5 +38,29 @@
         }
       }
     #endif
+
+    @Test func `インデックスによる区間不正はtrapすること、その1`() async {
+      await #expect(processExitsWith: .failure) {
+        let a = RedBlackTreeSet<Int>(0..<100)
+
+        _ = a[a.lowerBound(50)...a.lowerBound(10)] + [] == []
+      }
+    }
+
+    @Test func `インデックスによる区間不正はtrapすること、その2`() async {
+      await #expect(processExitsWith: .failure) {
+        let a = RedBlackTreeSet<Int>(0..<100)
+
+        _ = a[a.endIndex...a.startIndex] + [] == []
+      }
+    }
+
+    @Test func `インデックスによる区間不正はtrapすること、その3`() async {
+      await #expect(processExitsWith: .failure) {
+        let a = RedBlackTreeSet<Int>(0..<100)
+
+        _ = a[a.startIndex...a.endIndex] + [] == []
+      }
+    }
   }
 #endif

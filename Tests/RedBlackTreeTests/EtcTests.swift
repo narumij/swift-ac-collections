@@ -57,7 +57,6 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), 3)
   }
 
-
   class A: Hashable, Comparable {
     static func < (lhs: A, rhs: A) -> Bool {
       lhs.x < rhs.x
@@ -228,8 +227,6 @@ final class EtcTests: RedBlackTreeTestCase {
     _ = [String: String]()
   }
 
-
-
   #if false
     func testCapacity() throws {
 
@@ -316,7 +313,6 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(formIndexFail, limit)  // limitまで進んでいる。いつから？？？？
   }
 
-
   func testSubArrayIndex() throws {
     let set: [Int] = [1, 2, 3, 4, 5, 6]
     let sub = set[2..<5]
@@ -330,7 +326,6 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
   }
 
-
   func testCompare() throws {
     XCTAssertTrue([0] < [0, 1])
     XCTAssertTrue((0, 0) < (0, 1))
@@ -339,11 +334,6 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertTrue(AnySequence([0]).lexicographicallyPrecedes([0, 1]))
     XCTAssertFalse(AnySequence([0, 0]).lexicographicallyPrecedes([0, 1], by: >))
   }
-
-
-
-
-
 
   #if false
     func testSubRev6() throws {
@@ -400,7 +390,6 @@ final class EtcTests: RedBlackTreeTestCase {
       }
     }
   #endif
-
 
   static func allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
     typealias _PayloadValue = Int
@@ -569,7 +558,6 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(TypeFixture<Int64>().isInt, false)
   }
 
-
   #if !COMPATIBLE_ATCODER_2025
     func testBoundsSmoke() throws {
       var a = RedBlackTreeSet<Int>()
@@ -659,30 +647,32 @@ final class EtcTests: RedBlackTreeTestCase {
       #endif
     }
 
-    #if false
-      func testUnchecked() throws {
-        let a = RedBlackTreeSet<Int>(0..<100)
+    func testChecked() throws {
+      let a = RedBlackTreeSet<Int>(0..<100)
+      XCTAssertEqual(
+        a[lowerBound(50)...upperBound(10)].reversed() + [],
+        [],
+        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
+      XCTAssertEqual(
+        a[end()...start()] + [],
+        [],
+        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
+
+      #if false
+        // Indexによる区間不正はtrapするので、デステストに移管
         XCTAssertEqual(
-          a[unchecked: lowerBound(50)...upperBound(10)].reversed() + [],
-          (50..<100) + [],
-          "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-        XCTAssertEqual(
-          a[unchecked: end()...start()] + [],
+          a[a.lowerBound(50)...a.lowerBound(10)] + [],
           [],
           "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
         XCTAssertEqual(
-          a[unchecked: a.lowerBound(50)...a.lowerBound(10)] + [],
-          (50..<100) + [],
-          "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-        XCTAssertEqual(
-          a[unchecked: a.endIndex...a.startIndex] + [],
+          a[a.endIndex...a.startIndex] + [],
           [],
           "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
 
-        XCTAssertEqual(a[unchecked: a.startIndex...a.endIndex] + [], [])
+        XCTAssertEqual(a[a.startIndex...a.endIndex] + [], [])
         XCTAssertEqual((0..<100)[0...100] + [], [])
-      }
-    #endif
+      #endif
+    }
 
     func testBound() throws {
       let a = RedBlackTreeSet<Int>((0..<100).filter { $0 % 5 == 0 })
@@ -783,9 +773,9 @@ final class EtcTests: RedBlackTreeTestCase {
     }
     XCTAssertEqual(b, (0..<10).map { $0 })
   }
-  
+
   func testDictDefault() throws {
-    let a = [Int:Int]()
+    let a = [Int: Int]()
     XCTAssertEqual(a[3, default: 0], 0)
     XCTAssertNil(a[3])
   }

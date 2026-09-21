@@ -31,23 +31,27 @@ struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _Unsaf
 
   @inlinable
   internal init(bucket: BucketPointer?) {
+    let pairLayout = MemoryLayout<_PayloadValue>._pairLayout
+    self.pairLayout = pairLayout
     self.helper = bucket.flatMap {
       $0._counts(
         storage: $0.primaryStorage(),
-        payload:
-          MemoryLayout<_PayloadValue>._pairLayout)
+        payload: pairLayout)
     }
   }
 
   @usableFromInline
   var helper: _BucketTraverser?
+  
+  @usableFromInline
+  let pairLayout: _MemoryLayout
 
   @inlinable
   mutating func next() -> _NodePtr? {
     if let p = helper?.pop() {
       return p
     }
-    helper = helper?.nextCounts(payload: MemoryLayout<_PayloadValue>._pairLayout)
+    helper = helper?.nextCounts(payload: pairLayout)
     return helper?.pop()
   }
 }

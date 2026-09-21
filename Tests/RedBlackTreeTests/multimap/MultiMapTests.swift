@@ -1028,14 +1028,16 @@ final class MultiMapTests: RedBlackTreeTestCase {
 
 
 
-  #if !COMPATIBLE_ATCODER_2025
-    func testSortedReversed() throws {
-      let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
-      let a = RedBlackTreeMultiMap<Int, Int>(keysWithValues: source)
+  func testSortedReversed() throws {
+    let source = [0, 1, 2, 3, 4, 5].map { keyValue($0, $0 * 10) }
+    let a = RedBlackTreeMultiMap<Int, Int>(keysWithValues: source)
+    #if COMPATIBLE_ATCODER_2025
+      AssertEquenceEqual(a.sorted { $0.key < $1.key }, source)
+    #else
       AssertEquenceEqual(a.sorted() + [], source)
-      AssertEquenceEqual(a.reversed() + [], source.reversed())
-    }
-  #endif
+    #endif
+    AssertEquenceEqual(a.reversed() + [], source.reversed())
+  }
 
 
 

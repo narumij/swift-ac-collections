@@ -1224,10 +1224,12 @@ final class MultisetTests: RedBlackTreeTestCase {
     XCTAssertEqual(a.sorted() + [], source)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    func testFilter() throws {
-      let s = RedBlackTreeMultiSet<Int>(0..<5)
+  func testFilter() throws {
+    let s = RedBlackTreeMultiSet<Int>(0..<5)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(s.filter { _ in true }, Array(s))
+    #else
       XCTAssertEqual(s.filter { _ in true }, s)
-    }
-  #endif
+    #endif
+  }
 }

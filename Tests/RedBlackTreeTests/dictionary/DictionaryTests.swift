@@ -984,13 +984,15 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    func testSortedReversed() throws {
-      let source = [0, 1, 2, 3, 4, 5].map { RedBlackTreePair(key: $0, value: $0 * 10) }
-      let a = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: source.map(\.tuple))
+  func testSortedReversed() throws {
+    let source = [0, 1, 2, 3, 4, 5].map { RedBlackTreePair(key: $0, value: $0 * 10) }
+    let a = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: source.map(\.tuple))
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(a.sorted { $0.key < $1.key }.map { RedBlackTreePair($0) }, source)
+    #else
       XCTAssertEqual(a.sorted().map { RedBlackTreePair($0) }, source)
-      XCTAssertEqual(a.reversed().map { RedBlackTreePair($0) }, source.reversed())
-    }
-  #endif
+    #endif
+    XCTAssertEqual(a.reversed().map { RedBlackTreePair($0) }, source.reversed())
+  }
 
 }

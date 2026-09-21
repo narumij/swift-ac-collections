@@ -27,17 +27,21 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
       let popped = set.popLast()
       XCTAssertNil(popped, "空セットの場合、popLast() は nil を返すこと")
     }
-
-    /// popLast() が要素を正しく取り出し、セットが更新されること
-    func test_popLast_nonEmpty() {
-      var set = RedBlackTreeSet([1, 2, 3])
-      let popped = set.popLast()
-      XCTAssertNotNil(popped, "空でないセットでは popMin() が要素を返すこと")
-      XCTAssertTrue([1, 2, 3].contains(popped!), "取り出した要素が元のセット内の要素であること")
-      XCTAssertEqual(set.count, 2, "popFirst() 実行後、要素数が 1 減少すること")
-      XCTAssertFalse(set.contains(popped!), "取り出した要素はセットから削除されていること")
-    }
   #endif
+
+  /// popLast() / removeLast() が要素を正しく取り出し、セットが更新されること
+  func test_popLast_nonEmpty() {
+    var set = RedBlackTreeSet([1, 2, 3])
+    #if COMPATIBLE_ATCODER_2025
+      let popped = Optional(set.removeLast())
+    #else
+      let popped = set.popLast()
+    #endif
+    XCTAssertNotNil(popped, "空でないセットでは末尾の要素を返すこと")
+    XCTAssertTrue([1, 2, 3].contains(popped!), "取り出した要素が元のセット内の要素であること")
+    XCTAssertEqual(set.count, 2, "実行後、要素数が 1 減少すること")
+    XCTAssertFalse(set.contains(popped!), "取り出した要素はセットから削除されていること")
+  }
 
   /// remove(_:) が指定要素を削除し、要素数が減ること
   func test_remove_element() {

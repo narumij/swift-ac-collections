@@ -1000,10 +1000,12 @@ final class SetTests: RedBlackTreeTestCase {
     XCTAssertTrue(a.isEmpty)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    func testFilter() throws {
-      let s = RedBlackTreeSet<Int>(0..<5)
+  func testFilter() throws {
+    let s = RedBlackTreeSet<Int>(0..<5)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(s.filter { _ in true }, Array(s))
+    #else
       XCTAssertEqual(s.filter { _ in true }, s)
-    }
-  #endif
+    #endif
+  }
 }

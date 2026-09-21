@@ -7,6 +7,78 @@ import XCTest
 #endif
 
 #if COMPATIBLE_ATCODER_2025
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    extension SetCopyOnWriteTests {
+      func testSet4000() throws {
+        let count = 1500
+        var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0..<count)]
+        xy[1]?._copyCount = 0
+        let N = 100
+        var loopCount = 0
+        for i in 0..<count / N {
+          loopCount += 1
+          // for文の場合イテレータに処理が移行するので木を保持しないが、
+          // forEachは利用ではこの分離ないので、CoWが発生するようになった
+          // 以前はこれを回避するよう設計で工夫していたが、その工夫自体のオーバーヘッドがもったいない
+          // わざわざsliceを改修するつもりもなく、このままとなります
+          xy[1]?.elements(in: (i * N)..<(i * N + N)).forEach { i, v in
+            xy[1]?.remove(at: i)
+          }
+        }
+        XCTAssertEqual(xy[1]!.count, 0)
+        //    XCTAssertEqual(xy[1]!.copyCount, count / N)
+        XCTAssertEqual(xy[1]!._copyCount, 1, "CoW関連構造の変更に伴い結果が変化")
+        XCTAssertEqual(loopCount, count / N)
+      }
+    }
+  #endif
+
+  #if DEBUG
+    extension SetRemoveTest_10 {
+      func testRemoveWith___Indices() throws {
+        for i in members.___node_positions() {
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [])
+      }
+
+      func testRemoveWith___Indices2() throws {
+        members.___node_positions().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [])
+      }
+
+      func testRemoveWith___Indices3() throws {
+        members.___node_positions().reversed().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [])
+      }
+
+      func testRemoveWithSub___Indices() throws {
+        for i in members.elements(in: 2..<8).___node_positions() {
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [0, 1, 8, 9])
+      }
+
+      func testRemoveWithSub___Indices2() throws {
+        members.elements(in: 2..<8).___node_positions().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [0, 1, 8, 9])
+      }
+
+      func testRemoveWithSub___Indices4() throws {
+        members.elements(in: 2..<8).___node_positions().reversed().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members + [], [0, 1, 8, 9])
+      }
+    }
+  #endif
+
   final class SetAtCoder2025CompatibilityTests: RedBlackTreeTestCase {
     func testRemoveWithRange1() throws {
       var members = RedBlackTreeSet(0..<10)

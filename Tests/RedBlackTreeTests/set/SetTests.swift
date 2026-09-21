@@ -1011,7 +1011,7 @@ final class SetTests: RedBlackTreeTestCase {
 }
 
 extension SetTests {
-  #if DEBUG
+  #if DEBUG && COMPATIBLE_ATCODER_2025
     func testSubSeqSubscript() throws {
       let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
       XCTAssertEqual(set.elements(in: 2..<4)[set.startIndex + 2], 3)

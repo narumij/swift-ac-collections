@@ -27,6 +27,8 @@
       }
     }
 
+    // AtCoder 2025互換のUnsafeIndexV2は、ALLOW_CROSS_TREE_INDEXにかかわらず
+    // 別の木に由来するインデックスを拒否しないため、通常モードでのみ検証する。
     #if !COMPATIBLE_ATCODER_2025
       @Test func `index from another tree cannot be subscripted`() async {
         await #expect(processExitsWith: .failure) {

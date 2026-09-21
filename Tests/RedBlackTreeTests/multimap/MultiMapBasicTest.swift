@@ -114,23 +114,25 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     XCTAssertEqual(values, ["a", "b", "c"])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    func testMultiMapKeepsInsertionOrderAfterEraseAndReinsert() {
-      var tree = RedBlackTreeMultiMap<Int, String>()
+  func testMultiMapKeepsInsertionOrderAfterEraseAndReinsert() {
+    var tree = RedBlackTreeMultiMap<Int, String>()
 
-      tree.insert((1, "a"))
-      tree.insert((1, "b"))
-      tree.insert((1, "c"))
+    tree.insert((1, "a"))
+    tree.insert((1, "b"))
+    tree.insert((1, "c"))
 
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertTrue(tree.removeFirst(forKey: 1))
+    #else
       tree[1].removeFirst()
+    #endif
 
-      tree.insert((1, "d"))
+    tree.insert((1, "d"))
 
-      let values = tree[1].map { $0.value }
+    let values = tree[1].map { $0.value }
 
-      XCTAssertEqual(values, ["b", "c", "d"])
-    }
-  #endif
+    XCTAssertEqual(values, ["b", "c", "d"])
+  }
 
   func testMultiMapKeepsInsertionOrderMixedWithOtherKeys() {
     var tree = RedBlackTreeMultiMap<Int, String>()

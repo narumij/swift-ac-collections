@@ -22,7 +22,7 @@
 
 public typealias RedBlackTreeBoundExpression = RedBlackTreeBoundExpressionV2
 
-// TODO: 以下を公開にするかどうかは要再検討
+// The following top-level functions provide type-inferred endpoints for range expressions.
 
 /// Represents the first element.
 ///
@@ -82,20 +82,3 @@ public func find<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
   .find(k)
 }
 
-// 一時的にオマージュ
-
-public func lt<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .lessThan(k)
-}
-
-public func gt<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .greaterThan(k)
-}
-
-public func le<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .lessThanOrEqual(k)
-}
-
-public func ge<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .greaterThanOrEqual(k)
-}

@@ -56,6 +56,27 @@ extension Benchmark {
       }
     }
 
+    self.add(
+      title: "RedBlackTreeSet<Int> sequential iteration, alternating extremes insertion",
+      input: Int.self
+    ) { size in
+      var set: RedBlackTreeSet<Int> = []
+      for lowerBound in 0..<((size + 1) / 2) {
+        set.insert(lowerBound)
+
+        let upperBound = size - lowerBound - 1
+        if upperBound != lowerBound {
+          set.insert(upperBound)
+        }
+      }
+
+      return { timer in
+        for element in set {
+          blackHole(element)
+        }
+      }
+    }
+
     #if false
       self.add(
         title: "RedBlackTreeSet<Int> sequential iteration, indices",
@@ -179,8 +200,10 @@ extension Benchmark {
     ) { input, removals in
       return { timer in
         var set = RedBlackTreeSet(input)
-        for i in removals {
-          set.remove(i)
+        timer.measure {
+          for i in removals {
+            set.remove(i)
+          }
         }
         precondition(set.isEmpty)
         blackHole(set)
@@ -193,10 +216,12 @@ extension Benchmark {
     ) { input, removals in
       return { timer in
         var set = RedBlackTreeSet(input)
-        for i in removals {
-          let copy = set
-          set.remove(i)
-          blackHole(copy)
+        timer.measure {
+          for i in removals {
+            let copy = set
+            set.remove(i)
+            blackHole(copy)
+          }
         }
         precondition(set.isEmpty)
         blackHole(set)

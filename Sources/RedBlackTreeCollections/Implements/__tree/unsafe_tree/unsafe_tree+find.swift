@@ -259,7 +259,7 @@ extension FindProtocol_lower_bound_ptr {
   }
 }
 
-#if ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND
+#if COMPATIBLE_ATCODER_2025 || ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND
   typealias FindProtocol_ptr = FindProtocol_lower_bound_ptr
 #else
   typealias FindProtocol_ptr = FindProtocol_find_equal_ptr

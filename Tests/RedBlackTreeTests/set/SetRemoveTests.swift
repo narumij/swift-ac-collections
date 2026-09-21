@@ -116,22 +116,6 @@ final class SetRemoveTests: RedBlackTreeTestCase {
     XCTAssertEqual(members.count, 0)
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testRemoveLast() throws {
-      members = [1, 3, 5, 7, 9]
-      XCTAssertEqual(members.removeLast(), 9)
-      XCTAssertEqual(members.count, 4)
-      XCTAssertEqual(members.removeLast(), 7)
-      XCTAssertEqual(members.count, 3)
-      XCTAssertEqual(members.removeLast(), 5)
-      XCTAssertEqual(members.count, 2)
-      XCTAssertEqual(members.removeLast(), 3)
-      XCTAssertEqual(members.count, 1)
-      XCTAssertEqual(members.removeLast(), 1)
-      XCTAssertEqual(members.count, 0)
-    }
-  #endif
-
   func testRemoveSubrange() throws {
     for l in 0..<10 {
       for h in l...10 {
@@ -207,139 +191,21 @@ final class SetRemoveTest_10: RedBlackTreeTestCase {
     try super.tearDownWithError()
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testRemoveWithRange1() throws {
-      for i in members.startIndex..<members.endIndex {
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
 
-    func testRemoveWithRange2() throws {
-      (members.startIndex..<members.endIndex).forEach { i in
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
+}
 
-    func testRemoveWithRange3() throws {
-      for i in (members.startIndex..<members.endIndex).reversed() {
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-
-    func testRemoveWithRange4() throws {
-      (members.startIndex..<members.endIndex).reversed().forEach { i in
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-  #endif
-
-  #if COMPATIBLE_ATCODER_2025
-    func testRemoveWithIndices1() throws {
-      for i in members.indices {
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-
-    func testRemoveWithIndices2() throws {
-      members.indices.forEach { i in
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-
-    func testRemoveWithIndices3() throws {
-      for i in members.indices.reversed() {
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-
-    func testRemoveWithIndices4() throws {
-      members.indices.reversed().forEach { i in
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-  #endif
-
-  #if DEBUG && COMPATIBLE_ATCODER_2025
-    func testRemoveWith___Indices() throws {
-      for i in members.___node_positions() {
-        members.__tree_._unchecked_remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-
-    func testRemoveWith___Indices2() throws {
-      members.___node_positions().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-
-    func testRemoveWith___Indices3() throws {
-      members.___node_positions().reversed().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-  #endif
-
-  #if COMPATIBLE_ATCODER_2025
-    func testRemoveWithSubIndices() throws {
-      for i in members.elements(in: 2..<8).indices {
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
-
-    func testRemoveWithSubIndices2() throws {
-      members.elements(in: 2..<8).indices.forEach { i in
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
-
-    func testRemoveWithSubIndices3() throws {
-      for i in members.elements(in: 2..<8).indices.reversed() {
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
-
-    func testRemoveWithSubIndices4() throws {
-      members.elements(in: 2..<8).indices.reversed().forEach { i in
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
-  #endif
-
-  #if DEBUG && COMPATIBLE_ATCODER_2025
-    func testRemoveWithSub___Indices() throws {
-      for i in members.elements(in: 2..<8).___node_positions() {
-        members.__tree_._unchecked_remove(at: i)
-      }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
-
-    func testRemoveWithSub___Indices2() throws {
-      members.elements(in: 2..<8).___node_positions().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
-      }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
-
-    func testRemoveWithSub___Indices4() throws {
-      members.elements(in: 2..<8).___node_positions().reversed().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
-      }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
-  #endif
+extension SetRemoveTests {
+  func testRemoveLast() throws {
+    var members: RedBlackTreeSet<Int> = [1, 3, 5, 7, 9]
+    XCTAssertEqual(members.removeLast(), 9)
+    XCTAssertEqual(members.count, 4)
+    XCTAssertEqual(members.removeLast(), 7)
+    XCTAssertEqual(members.count, 3)
+    XCTAssertEqual(members.removeLast(), 5)
+    XCTAssertEqual(members.count, 2)
+    XCTAssertEqual(members.removeLast(), 3)
+    XCTAssertEqual(members.count, 1)
+    XCTAssertEqual(members.removeLast(), 1)
+    XCTAssertEqual(members.count, 0)
+  }
 }

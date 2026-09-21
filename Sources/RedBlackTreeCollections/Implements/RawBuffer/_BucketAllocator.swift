@@ -80,7 +80,7 @@ package struct _BucketAllocator {
     deinitialize: @escaping (UnsafeMutableRawPointer) -> Void
   ) {
     self.payload = MemoryLayout<_PayloadValue>._memoryLayout
-    self._pair = .init(UnsafeNode.self, _PayloadValue.self)
+    self._pair = MemoryLayout<_PayloadValue>._pairLayout
     self.deinitialize = deinitialize
     self.startOffset = max(0, payload.alignment - MemoryLayout<UnsafeNode>.alignment)
   }
@@ -142,7 +142,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(storage: header.primaryStorage(), payload: payload)
+        var it = header._capacities(storage: header.primaryStorage(), payload: _pair)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -170,7 +170,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(storage: header.secondaryStorage(), payload: payload)
+        var it = header._capacities(storage: header.secondaryStorage(), payload: _pair)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -274,7 +274,7 @@ extension _BucketAllocator {
 
   @inlinable
   func _deinitializeNodeAndValues(storage: UnsafeMutableRawPointer, _ b: _BucketPointer) {
-    var it = b._counts(storage: storage, payload: payload)
+    var it = b._counts(storage: storage, payload: _pair)
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1))
@@ -289,7 +289,7 @@ extension _BucketAllocator {
     }
     #if DEBUG
       do {
-        var it = b._capacities(storage: storage, payload: payload)
+        var it = b._capacities(storage: storage, payload: _pair)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }

@@ -7,6 +7,7 @@ benchmark.addSetBenchmarks()
 benchmark.addDictionaryBenchmarks()
 benchmark.addCppBenchmarks()
 benchmark.addRedBlackTreeSetBenchmarks()
+benchmark.addSortedSetBenchmarks()
 benchmark.addRedBlackTreeDictionaryBenchmarks()
 benchmark.main()
 

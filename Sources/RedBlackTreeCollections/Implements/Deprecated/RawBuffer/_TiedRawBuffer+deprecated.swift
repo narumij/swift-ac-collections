@@ -20,14 +20,14 @@
     subscript(___tracking_tag: _TrackingTag) -> _NodePtr? {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
       var remaining = Int(truncatingIfNeeded: ___tracking_tag)
-      var p = bucketHead?.accessor(payload: deallocator.payload)
+      var p = bucketHead?.accessor(payload: deallocator._pair)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
           return h[remaining]
         }
         remaining -= cap
-        p = h.next(payload: deallocator.payload)
+        p = h.next(payload: deallocator._pair)
       }
       assert(false, "ここには到達しないこと")
       return nil

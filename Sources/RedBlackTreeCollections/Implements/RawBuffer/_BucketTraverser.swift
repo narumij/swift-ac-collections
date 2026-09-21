@@ -77,7 +77,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
     .init(
       pointer: self,
       start: start(storage: storage, valueAlignment: payload.alignment),
-      stride: MemoryLayout<UnsafeNode>.stride + payload.stride,
+      stride: payload.stride,
       count: pointee.count)
   }
 
@@ -87,7 +87,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
       .init(
         pointer: self,
         start: start(storage: storage, valueAlignment: payload.alignment),
-        stride: MemoryLayout<UnsafeNode>.stride + payload.stride,
+        stride: payload.stride,
         count: pointee.capacity)
     }
   #endif

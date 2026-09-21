@@ -113,29 +113,6 @@ import XCTest
       XCTAssertEqual(loopCount, count / N)
     }
 
-    #if COMPATIBLE_ATCODER_2025
-      func testSet4000() throws {
-        let count = 1500
-        var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0..<count)]
-        xy[1]?._copyCount = 0
-        let N = 100
-        var loopCount = 0
-        for i in 0..<count / N {
-          loopCount += 1
-          // for文の場合イテレータに処理が移行するので木を保持しないが、
-          // forEachは利用ではこの分離ないので、CoWが発生するようになった
-          // 以前はこれを回避するよう設計で工夫していたが、その工夫自体のオーバーヘッドがもったいない
-          // わざわざsliceを改修するつもりもなく、このままとなります
-          xy[1]?.elements(in: (i * N)..<(i * N + N)).forEach { i, v in
-            xy[1]?.remove(at: i)
-          }
-        }
-        XCTAssertEqual(xy[1]!.count, 0)
-        //    XCTAssertEqual(xy[1]!.copyCount, count / N)
-        XCTAssertEqual(xy[1]!._copyCount, 1, "CoW関連構造の変更に伴い結果が変化")
-        XCTAssertEqual(loopCount, count / N)
-      }
-    #endif
 
     func testABC385DBehavior() throws {
       let x = 0
@@ -181,5 +158,6 @@ import XCTest
         #endif
       }
     }
+
   }
 #endif

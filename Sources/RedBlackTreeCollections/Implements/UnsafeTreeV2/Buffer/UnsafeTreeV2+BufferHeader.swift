@@ -87,6 +87,11 @@ extension UnsafeTreeV2BufferHeader {
   }
 
   @inlinable
+  var pairLayout: _MemoryLayout {
+    freshBucketAllocator._pair
+  }
+
+  @inlinable
   var end_ptr: _NodePtr {
     @inline(__always)
     _read {
@@ -122,6 +127,12 @@ extension UnsafeTreeV2BufferHeader {
     guard let _ = _lazyDetach else { return true }
     return isKnownUniquelyReferenced(&_lazyDetach!)
   }
+  // TODO: `tiedRawBuffer`と`lazyDetach`の一度だけの初期化を、並行アクセス時にも保証するか検討する。
+  // 候補は`Synchronization.AtomicLazyReference`だが、値型ヘッダへの直接格納は
+  // メモリレイアウトやコピー方法へ影響し、専用の参照型へまとめる方式は常時1アロケーション増える。
+  // また、このヘッダ全体はスレッドセーフではないため、この2参照だけをatomic化する意義も要検討。
+  // 所有構造の再設計と、通常利用時の生成コスト・アクセス性能を測定できる段階で再検討すること。
+
   /// IndexやIteratorを結ぶ共有メモリ
   ///
   /// ヘッダーにとっては解放責任のデタッチ先
@@ -130,7 +141,6 @@ extension UnsafeTreeV2BufferHeader {
   @usableFromInline
   var tiedRawBuffer: _TiedRawBuffer {
     mutating get {
-      // TODO: 一度の保証付きの実装にすること
       if _tied == nil {
         _tied = .create(
           bucket: freshBucketHead,
@@ -143,7 +153,6 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   var lazyDetach: _LazyTie {
     mutating get {
-      // TODO: 一度の保証付きの実装にすること
       if _lazyDetach == nil {
         _lazyDetach = .create()
       }
@@ -197,7 +206,7 @@ extension UnsafeTreeV2BufferHeader {
     @inlinable
     mutating func pushFreshBucket(head: _BucketPointer) {
       freshBucketHead = head
-      freshBucketCurrent = head.queue(payloadLayout: payloadLayout)
+      freshBucketCurrent = head.queue(payloadLayout: pairLayout)
       freshBucketLast = head
       freshPoolCapacity += head.pointee.capacity
       #if DEBUG
@@ -222,7 +231,7 @@ extension UnsafeTreeV2BufferHeader {
       if let p = freshBucketCurrent?.pop() {
         return p
       }
-      freshBucketCurrent = freshBucketCurrent?.next(payload: payloadLayout)
+      freshBucketCurrent = freshBucketCurrent?.next(payload: pairLayout)
       return freshBucketCurrent?.pop()
     }
   }
@@ -246,14 +255,14 @@ extension UnsafeTreeV2BufferHeader {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
       assert(___tracking_tag < freshPoolUsedCount)
       var remaining = Int(truncatingIfNeeded: ___tracking_tag)
-      var p = freshBucketHead?.accessor(payload: payloadLayout)
+      var p = freshBucketHead?.accessor(payload: pairLayout)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
           return h[remaining]
         }
         remaining -= cap
-        p = h.next(payload: payloadLayout)
+        p = h.next(payload: pairLayout)
       }
       return nullptr
     }
@@ -265,7 +274,7 @@ extension UnsafeTreeV2BufferHeader {
     mutating func ___flushFreshPool() {
       freshBucketAllocator.deinitialize(bucket: freshBucketHead)
       freshPoolUsedCount = 0
-      freshBucketCurrent = freshBucketHead?.queue(payloadLayout: payloadLayout)
+      freshBucketCurrent = freshBucketHead?.queue(payloadLayout: pairLayout)
     }
 
     @usableFromInline
@@ -281,7 +290,7 @@ extension UnsafeTreeV2BufferHeader {
 
     @inlinable
     func makeUsedNodeIterator<T>() -> _FreshPoolUsedIterator<T> {
-      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead)
+      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead, pairLayout: pairLayout)
     }
   }
 
@@ -317,6 +326,12 @@ extension UnsafeTreeV2BufferHeader {
       recycleHead = p
     }
 
+    /// recycle poolの先頭ノードを取り出す。
+    ///
+    /// ノード生成のホットパスでは `__construct_raw_node()` と `__construct_node(_:)` が
+    /// fresh poolとの選択を済ませているため、二重チェックを避けてここでは空判定を行わない。
+    ///
+    /// - Precondition: `recycleHead != nullptr`
     @usableFromInline
     mutating func ___popRecycle() -> _NodePtr {
       let p = recycleHead

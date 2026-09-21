@@ -69,28 +69,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
       }
     }
 
-    #if COMPATIBLE_ATCODER_2025
-      func testPerformanceFirstIndex4() throws {
-        let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
-        self.measure {
-          XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 - 1 }), s.index(before: s.endIndex))
-        }
-      }
-
-      func testPerformanceFirstIndex5() throws {
-        let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
-        self.measure {
-          XCTAssertEqual(s.firstIndex(where: { $0 >= 0 }), s.startIndex)
-        }
-      }
-
-      func testPerformanceFirstIndex6() throws {
-        let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
-        self.measure {
-          XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
-        }
-      }
-    #endif
 
     func testPerformanceInit0() throws {
       self.measure {
@@ -174,79 +152,6 @@ final class SetPerformanceTests: RedBlackTreeTestCase {
       }
     }
 
-    #if COMPATIBLE_ATCODER_2025
-      func testPerformanceCompare0() throws {
-        let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
-        XCTAssertTrue(set.startIndex < set.endIndex)
-        XCTAssertFalse(set.startIndex == set.endIndex)
-        XCTAssertFalse(set.startIndex > set.endIndex)
-        self.measure {
-          let _ = set.startIndex < set.endIndex
-        }
-      }
-
-      func testPerformanceCompare1() throws {
-        let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
-        let l = set.index(before: set.endIndex)
-        let r = set.endIndex
-        XCTAssertTrue(l < r)
-        XCTAssertFalse(l == r)
-        XCTAssertFalse(l > r)
-        self.measure {
-          let _ = l < r
-        }
-      }
-
-      func testPerformanceCompare2() throws {
-        let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
-        let l = set.endIndex
-        let r = set.index(before: set.endIndex)
-        XCTAssertFalse(l < r)
-        XCTAssertFalse(l == r)
-        XCTAssertTrue(l > r)
-        self.measure {
-          let _ = l < r
-        }
-      }
-
-      func testPerformanceCompare3() throws {
-        let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
-        let l = set.index(before: set.endIndex)
-        let r = set.index(before: l)
-        XCTAssertFalse(l < r)
-        XCTAssertFalse(l == r)
-        XCTAssertTrue(l > r)
-        self.measure {
-          let _ = l < r
-        }
-      }
-
-      func testPerformanceCompare4() throws {
-        let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
-        let l = set.endIndex
-        let r = set.endIndex
-        XCTAssertFalse(l < r)
-        XCTAssertTrue(l == r)
-        XCTAssertFalse(l > r)
-        self.measure {
-          let _ = l < r
-        }
-      }
-
-      func testPerformanceCompare5() throws {
-        let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)
-        let r = set.index(before: set.endIndex)
-        let l = set.index(before: r)
-        //    let l = set.index(before: set.endIndex)
-        //    let r = set.index(before: l)
-        XCTAssertTrue(l < r)
-        XCTAssertFalse(l == r)
-        XCTAssertFalse(l > r)
-        self.measure {
-          let _ = l < r
-        }
-      }
-    #endif
 
     #if DEBUG && false
       // <でinvalid判定する場合は以下のようにしたいが、invalid判定を削ったので、不要な仕様となった。

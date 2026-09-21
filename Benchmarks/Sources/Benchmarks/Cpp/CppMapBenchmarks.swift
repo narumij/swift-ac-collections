@@ -106,12 +106,15 @@ extension Benchmark {
       title: "std::map<intptr_t, intptr_t> subscript, new key",
       input: ([Int], [Int]).self
     ) { input, lookups in
-      let map = CppMap(input)
       let lookups = lookups.map { $0 + input.count }
       return { timer in
-        lookups.withUnsafeBufferPointer { buffer in
-          cpp_map_subscript(map.ptr, buffer.baseAddress, buffer.count)
+        let map = CppMap(input)
+        timer.measure {
+          lookups.withUnsafeBufferPointer { buffer in
+            cpp_map_subscript(map.ptr, buffer.baseAddress, buffer.count)
+          }
         }
+        map.destroy()
       }
     }
 

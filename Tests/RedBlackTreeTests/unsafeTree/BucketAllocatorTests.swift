@@ -137,6 +137,35 @@ import XCTest
       }
     }
 
+    func testPayloadAlignmentIsPreservedAcrossElements() throws {
+      typealias Payload = SIMD4<Float>
+
+      let allocator = _BucketAllocator(valueType: Payload.self) { _ in }
+      let capacity = 4
+      let byteSize = allocator._allocationSizeNonzero(capacity: capacity)
+      let storage = UnsafeMutableRawPointer.allocate(
+        byteCount: byteSize,
+        alignment: allocator._pair.alignment)
+      defer { storage.deallocate() }
+
+      let header = storage.assumingMemoryBound(to: _Bucket.self)
+      let start = header.start(
+        storage: header.secondaryStorage(),
+        valueAlignment: MemoryLayout<Payload>.alignment)
+      let accessor = _BucketAccessor(
+        pointer: header,
+        start: start,
+        stride: allocator._pair.stride)
+
+      for index in 0..<capacity {
+        let payload = UnsafeMutableRawPointer(accessor[index].__value_(as: Payload.self))
+        XCTAssertEqual(
+          Int(bitPattern: payload) % MemoryLayout<Payload>.alignment,
+          0,
+          "payload at index \(index) is misaligned")
+      }
+    }
+
     func checkOtherAllocationSize<_PayloadValue>(_ t: _PayloadValue.Type, capacity: Int) throws {
       let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _ in }
       let (byteSize, alignment) = (

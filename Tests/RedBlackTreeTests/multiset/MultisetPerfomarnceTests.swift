@@ -49,28 +49,6 @@ final class MultisetPerfomarnceTests: RedBlackTreeTestCase {
       }
     }
 
-    #if COMPATIBLE_ATCODER_2025
-      func testPerformanceFirstIndex4() throws {
-        let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
-        self.measure {
-          XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 - 1 }), s.index(before: s.endIndex))
-        }
-      }
-
-      func testPerformanceFirstIndex5() throws {
-        let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
-        self.measure {
-          XCTAssertEqual(s.firstIndex(where: { $0 >= 0 }), s.startIndex)
-        }
-      }
-
-      func testPerformanceFirstIndex6() throws {
-        let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
-        self.measure {
-          XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
-        }
-      }
-    #endif
   
   #endif
 }

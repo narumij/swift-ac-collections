@@ -63,34 +63,35 @@ final class ABC358DTests: RedBlackTreeTestCase {
       _A: [2, 6, 8, 9, 5, 1, 11],
       B: [3, 5, 7])
   }
-  
-//  func testCrash() throws {
-//      for n in 0..<100 {
-//          print("iteration", n)
-//          try testExample2()
-//      }
-//  }
-//  
-//  func testCrash2() throws {
-//      for n in 0..<100 {
-//          print("iteration", n)
-//
-//          try testABC358D(
-//              N: 7, M: 3,
-//              _A: [2, 6, 8, 9, 5, 1, 11],
-//              B: [3, 5, 7])
-//      }
-//  }
-  
-  #if ENABLE_PERFORMANCE_TESTING
-  func testPerformanceExample2() throws {
-    // This is an example of a performance test case.
-    _ = 3
 
-    self.measure {
-      // Put the code you want to measure the time of here.
-      try! testExample2()
+  func testCrash() throws {
+    for n in 0..<100 {
+      print("iteration", n)
+      try testExample2()
     }
   }
+
+  func testCrash2() throws {
+    for n in 0..<100 {
+      print("iteration", n)
+
+      try testABC358D(
+        N: 7, M: 3,
+        _A: [2, 6, 8, 9, 5, 1, 11],
+        B: [3, 5, 7])
+    }
+  }
+
+  #if ENABLE_PERFORMANCE_TESTING && !COMPATIBLE_ATCODER_2025
+    // GitHub Actionsで謎のクラッシュが発生する
+    func testPerformanceExample2() throws {
+      // This is an example of a performance test case.
+      _ = 3
+
+      self.measure {
+        // Put the code you want to measure the time of here.
+        try! testExample2()
+      }
+    }
   #endif
 }

@@ -4,13 +4,11 @@
 
 ## Concept
 
-swift-ac-collections is designed to
+swift-ac-collections is a Swift library that provides a variety of data structures, centered on
+**sorted sets and dictionaries with performance comparable to C++ `std::set` / `std::multiset`**.
 
+These sorted sets and dictionaries are designed to
 **make it practical to solve [AtCoder][atcoder] problems that assume C++ `std::set` / `std::multiset`, with usable performance in Swift.**
-
-It provides ordered sets and dictionaries frequently used in competitive programming,
-based on Red-Black Trees.
-The package focuses on keeping the performance gap from the C++ standard library as small as possible.
 
 [![Swift](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml/badge.svg?branch=main)](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml)  
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)

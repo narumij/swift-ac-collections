@@ -48,7 +48,7 @@ import AcCollections
 ```
 
 <!-- 英訳: Branch Strategy -->
-## Branch Strategy
+## ブランチ運用方針
 
 | Branch | Recommended | Description |
 |----------|----------|----------|

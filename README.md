@@ -1,14 +1,16 @@
+<!-- README.ja.md is the canonical source. This README.md is its English translation. -->
+
 # swift-ac-collections
+
+English | [日本語](README.ja.md)
 
 ## Concept
 
-swift-ac-collections is designed to
+swift-ac-collections is a Swift library that provides a variety of data structures, centered on
+**sorted sets and dictionaries with performance comparable to C++ `std::set` / `std::multiset`**.
 
+These sorted sets and dictionaries are designed to
 **make it practical to solve [AtCoder][atcoder] problems that assume C++ `std::set` / `std::multiset`, with usable performance in Swift.**
-
-It provides ordered sets and dictionaries frequently used in competitive programming,
-based on Red-Black Trees.
-The package focuses on keeping the performance gap from the C++ standard library as small as possible.
 
 [![Swift](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml/badge.svg?branch=main)](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml)  
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -45,19 +47,19 @@ import AcCollections
 
 | Branch | Recommended | Description |
 |----------|----------|----------|
-| `compatible/AtCoder/2025` | ⭐ | Recommended AtCoder 2025-compatible version |
+| `main` | ⭐ | Development version for general use, targeting the latest stable Swift |
+| `compatible/AtCoder/2025` | | AtCoder 2025-compatible version |
 | `release/AtCoder/2025` | | Version deployed in the AtCoder 2025 judge environment |
-| `main` | | Development version |
 
 ### Which branch should I use?
 
-In general, `compatible/AtCoder/2025` is recommended.
+In general, `main` is recommended.
 
-The `compatible/AtCoder/2025` branch keeps compatibility with AtCoder 2025 while receiving maintenance such as documentation improvements, deprecation annotations, and additional warnings.
+Use `compatible/AtCoder/2025` when compatibility with the AtCoder 2025 judge environment is required. This branch keeps compatibility with AtCoder 2025 while receiving maintenance such as documentation improvements, deprecation annotations, and additional warnings.
 
 The `release/AtCoder/2025` branch preserves the exact state deployed on AtCoder.
 
-The `main` branch is under active development. APIs and implementations may change.
+The `main` branch targets the latest stable Swift and is under active development. Its core functionality and verification are taking shape, and the package is available for evaluation today. However, stable API compatibility is not yet guaranteed, and APIs and implementations may change.
 
 ---
 

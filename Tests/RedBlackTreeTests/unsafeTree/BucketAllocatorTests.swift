@@ -12,6 +12,9 @@ import XCTest
 
   final class BucketAllocatorTests: RedBlackTreeTestCase {
 
+    private let guardByteCount = 64
+    private let guardByte: UInt8 = 0xA5
+
     override func setUpWithError() throws {
       // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -44,9 +47,13 @@ import XCTest
       let (byteSize, alignment) = (
         allocator._headAllocationSize(capacity: capacity), allocator._pair.alignment
       )
-      let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
+      let storage = UnsafeMutableRawPointer.allocate(
+        byteCount: byteSize + guardByteCount,
+        alignment: alignment)
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
       storage.initializeMemory(as: UInt8.self, repeating: 0xE8, count: byteSize)
+      storage.advanced(by: byteSize)
+        .initializeMemory(as: UInt8.self, repeating: guardByte, count: guardByteCount)
       let header = storage.assumingMemoryBound(to: _Bucket.self)
       let start = header.start(
         storage: header.primaryStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment)
@@ -134,6 +141,8 @@ import XCTest
             + MemoryLayout<UnsafeNode>.stride,
           "\(_PayloadValue.self)")
       }
+
+      assertTrailingGuardIsIntact(storage: storage, allocationSize: byteSize)
 
       storage.deallocate()
     }
@@ -279,9 +288,13 @@ import XCTest
       let (byteSize, alignment) = (
         allocator._allocationSize(capacity: capacity), allocator._pair.alignment
       )
-      let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
+      let storage = UnsafeMutableRawPointer.allocate(
+        byteCount: byteSize + guardByteCount,
+        alignment: alignment)
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
       storage.initializeMemory(as: UInt8.self, repeating: 0xE8, count: byteSize)
+      storage.advanced(by: byteSize)
+        .initializeMemory(as: UInt8.self, repeating: guardByte, count: guardByteCount)
       let header = storage.assumingMemoryBound(to: _Bucket.self)
       let start =
         storage
@@ -339,7 +352,26 @@ import XCTest
 
       // 追加分に関して容量0は許容しない仕様なので、テストしていない
 
+      assertTrailingGuardIsIntact(storage: storage, allocationSize: byteSize)
+
       storage.deallocate()
+    }
+
+    private func assertTrailingGuardIsIntact(
+      storage: UnsafeMutableRawPointer,
+      allocationSize: Int,
+      file: StaticString = #filePath,
+      line: UInt = #line
+    ) {
+      let guardStart = storage.advanced(by: allocationSize).assumingMemoryBound(to: UInt8.self)
+      for offset in 0..<guardByteCount {
+        XCTAssertEqual(
+          guardStart.advanced(by: offset).pointee,
+          guardByte,
+          "write exceeded the logical allocation by \(offset + 1) byte(s)",
+          file: file,
+          line: line)
+      }
     }
 
     func testEmptyDeinitializerDoNothingSmoke() throws {

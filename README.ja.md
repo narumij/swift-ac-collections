@@ -9,7 +9,7 @@
 
 swift-ac-collections は、
 
-**C++ の `std::set` / `std::multiset` に匹敵する性能を誇るソート済み集合・辞書**
+**C++ の `std::set` / `std::map` に匹敵する性能を誇るソート済み集合・辞書**
 を中心に、さまざまなデータ構造を提供する Swift ライブラリです。
 
 このソート済み集合・辞書は、**「C++ の `std::set` / `std::multiset` を前提とした

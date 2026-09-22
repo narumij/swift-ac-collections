@@ -53,6 +53,27 @@ import XCTest
       let start = header.start(
         storage: header.primaryStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment)
       XCTAssertNotEqual(start, storage)
+      XCTAssertEqual(
+        Int(bitPattern: header) % MemoryLayout<_Bucket>.alignment, 0,
+        "\(_PayloadValue.self): primary bucket header is misaligned")
+      XCTAssertEqual(
+        Int(bitPattern: header.begin_ptr)
+          % MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.alignment,
+        0,
+        "\(_PayloadValue.self): begin pointer is misaligned")
+      XCTAssertEqual(
+        Int(bitPattern: header.end_ptr) % MemoryLayout<UnsafeNode>.alignment, 0,
+        "\(_PayloadValue.self): end node is misaligned")
+      if capacity != 0 {
+        XCTAssertEqual(
+          Int(bitPattern: start) % MemoryLayout<UnsafeNode>.alignment, 0,
+          "\(_PayloadValue.self): first node is misaligned")
+        XCTAssertEqual(
+          Int(bitPattern: start.__value_(as: _PayloadValue.self))
+            % MemoryLayout<_PayloadValue>.alignment,
+          0,
+          "\(_PayloadValue.self): first payload is misaligned")
+      }
       for i in 0..<MemoryLayout<_Bucket>.stride {
         UnsafeMutableRawPointer(header)
           .assumingMemoryBound(to: UInt8.self)
@@ -181,6 +202,17 @@ import XCTest
         .start(
           storage: header.secondaryStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment)
       XCTAssertNotEqual(start, storage)
+      XCTAssertEqual(
+        Int(bitPattern: header) % MemoryLayout<_Bucket>.alignment, 0,
+        "\(_PayloadValue.self): secondary bucket header is misaligned")
+      XCTAssertEqual(
+        Int(bitPattern: start) % MemoryLayout<UnsafeNode>.alignment, 0,
+        "\(_PayloadValue.self): first node is misaligned")
+      XCTAssertEqual(
+        Int(bitPattern: start.__value_(as: _PayloadValue.self))
+          % MemoryLayout<_PayloadValue>.alignment,
+        0,
+        "\(_PayloadValue.self): first payload is misaligned")
       for i in 0..<MemoryLayout<_Bucket>.stride {
         storage
           .assumingMemoryBound(to: UInt8.self)

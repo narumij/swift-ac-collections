@@ -45,6 +45,20 @@ final class MemoryLayoutTests: XCTestCase {
             file: file,
             line: line
         )
+        XCTAssertGreaterThanOrEqual(
+            layout.alignment,
+            MemoryLayout<_Bucket>.alignment,
+            "\(Payload.self): layout alignment does not satisfy _Bucket alignment",
+            file: file,
+            line: line
+        )
+        XCTAssertGreaterThanOrEqual(
+            layout.alignment,
+            MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.alignment,
+            "\(Payload.self): layout alignment does not satisfy begin pointer alignment",
+            file: file,
+            line: line
+        )
         XCTAssertGreaterThanOrEqual(layout.stride, pairSize, file: file, line: line)
         XCTAssertLessThan(
             layout.stride - pairSize,

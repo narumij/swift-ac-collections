@@ -64,7 +64,8 @@
 //
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
-//
+// (人間による人間向けのメモ）
+
 // TODO: 型消去後のレイアウト参照には改善余地がある。
 //
 // UnsafeTreeV2BufferHeaderはpayload型を保持しないため、ここで使うMemoryLayout参照は
@@ -94,6 +95,9 @@
 // - bucket作成だけでなく、reserve/grow、CoW、破棄を含むシナリオを測る。
 // - メモリレイアウト計算には通常の + / - / * ではなくoverflow演算を使う。
 // - 末尾payloadと確保末尾の一致、alignment、末尾canaryのテストを維持する。
+//
+// (チャッピーに指示したチャッピー向けのメモ）
+
 @frozen
 @usableFromInline
 package struct _BucketAllocator {

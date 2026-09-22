@@ -187,6 +187,96 @@ import XCTest
       }
     }
 
+    func testHeadAllocationEndsAtLastPayload() throws {
+      for capacity in [1, 2, 3, 16] {
+        checkHeadAllocationEndsAtLastPayload(Int8.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(Int16.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(Int32.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(Int64.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(SIMD4<Float>.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(SIMD4<Int>.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(SIMD8<Int>.self, capacity: capacity)
+      }
+    }
+
+    func testOtherAllocationEndsAtLastPayload() throws {
+      for capacity in [1, 2, 3, 16] {
+        checkOtherAllocationEndsAtLastPayload(Int8.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(Int16.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(Int32.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(Int64.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(SIMD4<Float>.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(SIMD4<Int>.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(SIMD8<Int>.self, capacity: capacity)
+      }
+    }
+
+    private func checkHeadAllocationEndsAtLastPayload<Payload>(
+      _ payloadType: Payload.Type,
+      capacity: Int,
+      file: StaticString = #filePath,
+      line: UInt = #line
+    ) {
+      let allocator = _BucketAllocator(valueType: Payload.self) { _ in }
+      let byteSize = allocator._allocationSize(capacity: capacity)
+        + MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
+        + MemoryLayout<UnsafeNode>.stride
+      let storage = UnsafeMutableRawPointer.allocate(
+        byteCount: byteSize,
+        alignment: allocator._pair.alignment)
+      defer { storage.deallocate() }
+
+      let header = storage.assumingMemoryBound(to: _Bucket.self)
+      let start = header.start(
+        storage: header.primaryStorage(),
+        valueAlignment: MemoryLayout<Payload>.alignment)
+      let lastNode = UnsafeMutableRawPointer(start)
+        .advanced(by: allocator._pair.stride * (capacity - 1))
+        .assumingMemoryBound(to: UnsafeNode.self)
+      let lastPayloadEnd = UnsafeMutableRawPointer(lastNode.__value_(as: Payload.self))
+        .advanced(by: MemoryLayout<Payload>.stride)
+      let allocationEnd = storage.advanced(by: byteSize)
+
+      XCTAssertEqual(
+        lastPayloadEnd,
+        allocationEnd,
+        "primary bucket has trailing unused bytes for \(Payload.self), capacity \(capacity)",
+        file: file,
+        line: line)
+    }
+
+    private func checkOtherAllocationEndsAtLastPayload<Payload>(
+      _ payloadType: Payload.Type,
+      capacity: Int,
+      file: StaticString = #filePath,
+      line: UInt = #line
+    ) {
+      let allocator = _BucketAllocator(valueType: Payload.self) { _ in }
+      let byteSize = allocator._allocationSizeNonzero(capacity: capacity)
+      let storage = UnsafeMutableRawPointer.allocate(
+        byteCount: byteSize,
+        alignment: allocator._pair.alignment)
+      defer { storage.deallocate() }
+
+      let header = storage.assumingMemoryBound(to: _Bucket.self)
+      let start = header.start(
+        storage: header.secondaryStorage(),
+        valueAlignment: MemoryLayout<Payload>.alignment)
+      let lastNode = UnsafeMutableRawPointer(start)
+        .advanced(by: allocator._pair.stride * (capacity - 1))
+        .assumingMemoryBound(to: UnsafeNode.self)
+      let lastPayloadEnd = UnsafeMutableRawPointer(lastNode.__value_(as: Payload.self))
+        .advanced(by: MemoryLayout<Payload>.stride)
+      let allocationEnd = storage.advanced(by: byteSize)
+
+      XCTAssertEqual(
+        lastPayloadEnd,
+        allocationEnd,
+        "secondary bucket has trailing unused bytes for \(Payload.self), capacity \(capacity)",
+        file: file,
+        line: line)
+    }
+
     func checkOtherAllocationSize<_PayloadValue>(_ t: _PayloadValue.Type, capacity: Int) throws {
       let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _ in }
       let (byteSize, alignment) = (

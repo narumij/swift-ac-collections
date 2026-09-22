@@ -172,8 +172,8 @@ final class MultiMapTests: RedBlackTreeTestCase {
 
   func testSmoke() throws {
     let b: Target<Int, [Int]> = [1: [1, 2], 2: [2, 3], 3: [3, 4]]
-    print(b)
-    debugPrint(b)
+    blackHole(String(describing: b))
+    blackHole(String(reflecting: b))
   }
 
   func testInitUniqueKeysWithValues_() throws {
@@ -474,9 +474,9 @@ final class MultiMapTests: RedBlackTreeTestCase {
     }
     XCTAssertEqual(set.map { $0.key }, set[set.startIndex..<set.endIndex].map { $0.key })
     XCTAssertEqual(set.map { $0.value }, set[set.startIndex..<set.endIndex].map { $0.value })
-    print("set.count", set.count)
+    blackHole(set.count)
     #if AC_COLLECTIONS_INTERNAL_CHECKS
-      print("set._copyCount", set._copyCount)
+      blackHole(set._copyCount)
     #endif
 
     #if COMPATIBLE_ATCODER_2025

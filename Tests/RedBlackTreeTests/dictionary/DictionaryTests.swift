@@ -235,8 +235,8 @@ final class DictionaryTests: RedBlackTreeTestCase {
 
   func testSmoke() throws {
     let b: RedBlackTreeDictionary<Int, [Int]> = [1: [1, 2], 2: [2, 3], 3: [3, 4]]
-    print(b)
-    debugPrint(b)
+    blackHole(String(describing: b))
+    blackHole(String(reflecting: b))
   }
 
   func testInitUniqueKeysWithValues_() throws {

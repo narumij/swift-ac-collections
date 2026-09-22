@@ -129,7 +129,7 @@ final class Performaces: RedBlackTreeTestCase {
         a = a.copy()
       }
       //    }
-      print("a.capacity", a.capacity)
+      blackHole(a.capacity)
     }
     #endif
 
@@ -142,7 +142,7 @@ final class Performaces: RedBlackTreeTestCase {
         a = a.copy()
       }
       //    }
-      print("a.capacity", a.capacity)
+      blackHole(a.capacity)
     }
     #endif
 
@@ -155,7 +155,7 @@ final class Performaces: RedBlackTreeTestCase {
         a = a.copy()
       }
       //    }
-      print("a.capacity", a.capacity)
+      blackHole(a.capacity)
     }
     #endif
 
@@ -168,7 +168,7 @@ final class Performaces: RedBlackTreeTestCase {
         a = a.copy()
       }
       //    }
-      print("a.capacity", a.capacity)
+      blackHole(a.capacity)
     }
     #endif
 

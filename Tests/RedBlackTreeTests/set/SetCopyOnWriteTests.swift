@@ -35,15 +35,15 @@ import XCTest
       _ = set.lowerBound(0)
       _ = set.upperBound(0)
       for s in set {
-        print(s)
+        blackHole(s)
       }
       set.forEach {
-        print($0)
+        blackHole($0)
       }
-      print(set.map { $0 })
-      print(set.filter { $0 != 0 })
-      print(set.reduce(0, +))
-      print(set.reduce(into: []) { $0.append($1) })
+      blackHole(set.map { $0 })
+      blackHole(set.filter { $0 != 0 })
+      blackHole(set.reduce(0, +))
+      blackHole(set.reduce(into: []) { $0.append($1) })
       XCTAssertEqual(set._copyCount, 0)
     }
 

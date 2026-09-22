@@ -66,6 +66,8 @@
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
 // (人間による人間向けのメモ）
 
+// キャッシュラインやキャッシュヒットを意識したチューニングが、残る課題
+
 @frozen
 @usableFromInline
 package struct _BucketAllocator {

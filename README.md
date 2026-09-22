@@ -59,7 +59,7 @@ Use `compatible/AtCoder/2025` when compatibility with the AtCoder 2025 judge env
 
 The `release/AtCoder/2025` branch preserves the exact state deployed on AtCoder.
 
-The `main` branch targets the latest stable Swift and is under active development. APIs and implementations may change.
+The `main` branch targets the latest stable Swift and is under active development. Its core functionality and verification are taking shape, and the package is available for evaluation today. However, stable API compatibility is not yet guaranteed, and APIs and implementations may change.
 
 ---
 

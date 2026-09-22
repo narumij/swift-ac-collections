@@ -160,6 +160,11 @@ primary/secondary bucket、UnsafeNode + Payloadのレイアウト、
 Fresh Pool、Recycle Pool、特殊ノード、容量拡張、CoW時の再配置を説明する。
 この実装の物理的な土台を扱う。
 
+### [メモリレイアウトの設計](Design-MemoryLayout.md)
+
+NodeとPayloadからslotのstrideを求める方法、alignmentを満たす開始位置、
+primary/secondary bucketの確保量、初期化状態との境界を説明する。
+
 ### [Copy on Writeの設計](Design-CopyOnWrite.md)
 
 ストレージ共有、一意性確認、木全体の再構築、tracking tagによるリンク変換、
@@ -179,10 +184,11 @@ Fresh Pool、Recycle Pool、特殊ノード、容量拡張、CoW時の再配置�
 
 1. このOverviewで設計上の問題と仕組みのつながりを把握する。
 2. Design-NodeStorage.mdで物理レイアウトとノードのライフサイクルを確認する。
-3. Design-CopyOnWrite.mdで値型としての分離方法を確認する。
-4. Design-MemorySafety.mdでIndexへ追加される保証を確認する。
-5. Design-InternalArchitecture.mdでコード上の各層へ対応付ける。
-6. Rangeなど実験中の領域は、必要に応じて個別文書を読む。
+3. Design-MemoryLayout.mdでアドレス計算とalignmentの契約を確認する。
+4. Design-CopyOnWrite.mdで値型としての分離方法を確認する。
+5. Design-MemorySafety.mdでIndexへ追加される保証を確認する。
+6. Design-InternalArchitecture.mdでコード上の各層へ対応付ける。
+7. Rangeなど実験中の領域は、必要に応じて個別文書を読む。
 
 ## この設計の性格
 

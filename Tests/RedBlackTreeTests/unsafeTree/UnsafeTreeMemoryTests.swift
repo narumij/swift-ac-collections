@@ -29,6 +29,15 @@ final class UnsafeTreeMemoryTests: RedBlackTreeTestCase {
   func testSizes() throws {
     XCTAssertLessThanOrEqual(MemoryLayout<UnsafeNode>.size, 64)
     XCTAssertLessThanOrEqual(MemoryLayout<_Bucket>.size, 64)
+
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, Int32>>.size, 8)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, Int>>.size, 16)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, Int32>>.size, 12)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, Int>>.size, 16)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, SIMD4<Float>>>.size, 32)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<SIMD4<Float>, Int32>>.size, 20)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, SIMD4<Int>>>.size, 48)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<SIMD4<Int>, Int>>.size, 40)
   }
 
   func testStride() throws {
@@ -50,6 +59,32 @@ final class UnsafeTreeMemoryTests: RedBlackTreeTestCase {
     XCTAssertEqual(
       MemoryLayout<UnsafeNode>.alignment,
       MemoryLayout<UnsafeTreeV2BufferHeader>.alignment)
+  }
+
+  func testPairAlignmentsAndStrides() throws {
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, Int32>>.alignment, 4)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, Int32>>.stride, 8)
+
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, Int>>.alignment, 8)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, Int>>.stride, 16)
+
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, Int32>>.alignment, 8)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, Int32>>.stride, 16)
+
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, Int>>.alignment, 8)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, Int>>.stride, 16)
+
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, SIMD4<Float>>>.alignment, 16)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, SIMD4<Float>>>.stride, 32)
+
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<SIMD4<Float>, Int32>>.alignment, 16)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<SIMD4<Float>, Int32>>.stride, 32)
+
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, SIMD4<Int>>>.alignment, 16)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int, SIMD4<Int>>>.stride, 48)
+
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<SIMD4<Int>, Int>>.alignment, 16)
+    XCTAssertEqual(MemoryLayout<RedBlackTreePair<SIMD4<Int>, Int>>.stride, 48)
   }
 
   #if ENABLE_PERFORMANCE_TESTING

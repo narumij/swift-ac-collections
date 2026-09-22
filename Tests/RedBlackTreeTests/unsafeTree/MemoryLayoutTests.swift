@@ -11,6 +11,14 @@ final class MemoryLayoutTests: XCTestCase {
         checkMemoryLayout(Int64.self)
         checkMemoryLayout(SIMD4<Float>.self)
         checkMemoryLayout(SIMD4<Int>.self)
+        checkMemoryLayout(RedBlackTreePair<Int32, Int32>.self)
+        checkMemoryLayout(RedBlackTreePair<Int32, Int>.self)
+        checkMemoryLayout(RedBlackTreePair<Int, Int32>.self)
+        checkMemoryLayout(RedBlackTreePair<Int, Int>.self)
+        checkMemoryLayout(RedBlackTreePair<Int32, SIMD4<Float>>.self)
+        checkMemoryLayout(RedBlackTreePair<SIMD4<Float>, Int32>.self)
+        checkMemoryLayout(RedBlackTreePair<Int, SIMD4<Int>>.self)
+        checkMemoryLayout(RedBlackTreePair<SIMD4<Int>, Int>.self)
     }
 
     private func checkMemoryLayout<Payload>(
@@ -42,6 +50,20 @@ final class MemoryLayoutTests: XCTestCase {
             layout.alignment,
             max(MemoryLayout<UnsafeNode>.alignment, MemoryLayout<Payload>.alignment),
             "\(Payload.self): layout alignment is wrong",
+            file: file,
+            line: line
+        )
+        XCTAssertGreaterThanOrEqual(
+            layout.alignment,
+            MemoryLayout<_Bucket>.alignment,
+            "\(Payload.self): layout alignment does not satisfy _Bucket alignment",
+            file: file,
+            line: line
+        )
+        XCTAssertGreaterThanOrEqual(
+            layout.alignment,
+            MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.alignment,
+            "\(Payload.self): layout alignment does not satisfy begin pointer alignment",
             file: file,
             line: line
         )

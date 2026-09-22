@@ -1,4 +1,5 @@
 <!-- このREADME.ja.mdを正本とします。README.mdは、この文書の英訳コピーです。 -->
+<!-- 1.0になるまで多少のジョークを許容すること -->
 
 # swift-ac-collections
 
@@ -50,7 +51,7 @@ import AcCollections
 
 | Branch | Recommended | Description |
 |----------|----------|----------|
-| `main` | ⭐ | 通常利用。最新の安定版 Swift を対象とする開発版 |
+| `main` | ⭐ | 通常利用。最新の**やや**安定版 Swift を対象とする開発版 |
 | `compatible/AtCoder/2025` | | AtCoder 2025 互換版 |
 | `release/AtCoder/2025` | | AtCoder 2025 搭載版 |
 

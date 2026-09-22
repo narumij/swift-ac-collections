@@ -39,6 +39,14 @@ import XCTest
         try checkHeadAllocationSize(SIMD8<Int>.self, capacity: n)
         try checkHeadAllocationSize(SIMD16<Int>.self, capacity: n)
         try checkHeadAllocationSize(SIMD32<Int>.self, capacity: n)
+        try checkHeadAllocationSize(RedBlackTreePair<Int32, Int32>.self, capacity: n)
+        try checkHeadAllocationSize(RedBlackTreePair<Int32, Int>.self, capacity: n)
+        try checkHeadAllocationSize(RedBlackTreePair<Int, Int32>.self, capacity: n)
+        try checkHeadAllocationSize(RedBlackTreePair<Int, Int>.self, capacity: n)
+        try checkHeadAllocationSize(RedBlackTreePair<Int32, SIMD4<Float>>.self, capacity: n)
+        try checkHeadAllocationSize(RedBlackTreePair<SIMD4<Float>, Int32>.self, capacity: n)
+        try checkHeadAllocationSize(RedBlackTreePair<Int, SIMD4<Int>>.self, capacity: n)
+        try checkHeadAllocationSize(RedBlackTreePair<SIMD4<Int>, Int>.self, capacity: n)
       }
     }
 
@@ -163,6 +171,14 @@ import XCTest
         try checkOtherAllocationSize(SIMD8<Int>.self, capacity: n)
         try checkOtherAllocationSize(SIMD16<Int>.self, capacity: n)
         try checkOtherAllocationSize(SIMD32<Int>.self, capacity: n)
+        try checkOtherAllocationSize(RedBlackTreePair<Int32, Int32>.self, capacity: n)
+        try checkOtherAllocationSize(RedBlackTreePair<Int32, Int>.self, capacity: n)
+        try checkOtherAllocationSize(RedBlackTreePair<Int, Int32>.self, capacity: n)
+        try checkOtherAllocationSize(RedBlackTreePair<Int, Int>.self, capacity: n)
+        try checkOtherAllocationSize(RedBlackTreePair<Int32, SIMD4<Float>>.self, capacity: n)
+        try checkOtherAllocationSize(RedBlackTreePair<SIMD4<Float>, Int32>.self, capacity: n)
+        try checkOtherAllocationSize(RedBlackTreePair<Int, SIMD4<Int>>.self, capacity: n)
+        try checkOtherAllocationSize(RedBlackTreePair<SIMD4<Int>, Int>.self, capacity: n)
       }
     }
 
@@ -204,6 +220,22 @@ import XCTest
         checkHeadAllocationEndsAtLastPayload(SIMD4<Float>.self, capacity: capacity)
         checkHeadAllocationEndsAtLastPayload(SIMD4<Int>.self, capacity: capacity)
         checkHeadAllocationEndsAtLastPayload(SIMD8<Int>.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(
+          RedBlackTreePair<Int32, Int32>.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(
+          RedBlackTreePair<Int32, Int>.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(
+          RedBlackTreePair<Int, Int32>.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(
+          RedBlackTreePair<Int, Int>.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(
+          RedBlackTreePair<Int32, SIMD4<Float>>.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(
+          RedBlackTreePair<SIMD4<Float>, Int32>.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(
+          RedBlackTreePair<Int, SIMD4<Int>>.self, capacity: capacity)
+        checkHeadAllocationEndsAtLastPayload(
+          RedBlackTreePair<SIMD4<Int>, Int>.self, capacity: capacity)
       }
     }
 
@@ -216,6 +248,22 @@ import XCTest
         checkOtherAllocationEndsAtLastPayload(SIMD4<Float>.self, capacity: capacity)
         checkOtherAllocationEndsAtLastPayload(SIMD4<Int>.self, capacity: capacity)
         checkOtherAllocationEndsAtLastPayload(SIMD8<Int>.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(
+          RedBlackTreePair<Int32, Int32>.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(
+          RedBlackTreePair<Int32, Int>.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(
+          RedBlackTreePair<Int, Int32>.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(
+          RedBlackTreePair<Int, Int>.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(
+          RedBlackTreePair<Int32, SIMD4<Float>>.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(
+          RedBlackTreePair<SIMD4<Float>, Int32>.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(
+          RedBlackTreePair<Int, SIMD4<Int>>.self, capacity: capacity)
+        checkOtherAllocationEndsAtLastPayload(
+          RedBlackTreePair<SIMD4<Int>, Int>.self, capacity: capacity)
       }
     }
 

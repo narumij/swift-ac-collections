@@ -54,7 +54,8 @@ import AcCollections
 | `compatible/AtCoder/2025` | | AtCoder 2025 互換版 |
 | `release/AtCoder/2025` | | AtCoder 2025 搭載版 |
 
-### Which branch should I use?
+<!-- 英訳: Which branch should I use? -->
+### どのブランチを使えばよいですか？
 
 通常は `main` の利用をおすすめします。
 

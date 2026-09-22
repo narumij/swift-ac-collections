@@ -47,6 +47,7 @@ dependencies: [
 import AcCollections
 ```
 
+<!-- 英訳: Branch Strategy -->
 ## Branch Strategy
 
 | Branch | Recommended | Description |

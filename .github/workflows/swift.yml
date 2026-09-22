@@ -15,18 +15,33 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-24.04
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Swift
       uses: SwiftyLab/setup-swift@latest
-    
+
     - name: Build
-      run: swift build -v -c release
+      run: swift build -c release
+
     - name: Run tests (debug)
-      run: swift test -v -c debug
+      run: swift test -c debug
+
     - name: Run tests (release)
-      run: swift test -v -c release
+      run: swift test -c release
+
+  address-sanitizer:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Swift
+      uses: SwiftyLab/setup-swift@latest
+
+    - name: Run tests with Address Sanitizer
+      env:
+        ASAN_OPTIONS: detect_leaks=0
+      run: swift test -c debug --sanitize address

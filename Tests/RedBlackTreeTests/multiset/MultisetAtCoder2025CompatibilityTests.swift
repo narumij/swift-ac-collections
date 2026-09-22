@@ -182,9 +182,9 @@ import XCTest
         XCTAssertTrue(set.___tree_invariant())
       }
       XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
-      print("set.count", set.count)
+      blackHole(set.count)
       #if AC_COLLECTIONS_INTERNAL_CHECKS
-        print("set._copyCount", set._copyCount)
+        blackHole(set._copyCount)
       #endif
       #if COMPATIBLE_ATCODER_2025
         for i in set[set.startIndex..<set.endIndex] {

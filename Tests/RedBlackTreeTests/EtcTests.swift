@@ -158,13 +158,13 @@ final class EtcTests: RedBlackTreeTestCase {
         b.remove($0)
       }
 
-      print("end")
+      blackHole("end")
     }
   }
 
   func testSome() throws {
     let set = RedBlackTreeSet<Int>((0..<50).shuffled())
-    print("!")
+    blackHole("!")
     _fixLifetime(set)
   }
 

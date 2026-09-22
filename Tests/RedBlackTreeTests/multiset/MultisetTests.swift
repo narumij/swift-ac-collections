@@ -93,8 +93,8 @@ final class MultisetTests: RedBlackTreeTestCase {
 
   func testSmoke() throws {
     let b: RedBlackTreeMultiSet<Int> = [1, 2, 3]
-    print(b)
-    debugPrint(b)
+    blackHole(String(describing: b))
+    blackHole(String(reflecting: b))
   }
 
   func testRemove() throws {

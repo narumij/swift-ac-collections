@@ -11,6 +11,14 @@ final class MemoryLayoutTests: XCTestCase {
         checkMemoryLayout(Int64.self)
         checkMemoryLayout(SIMD4<Float>.self)
         checkMemoryLayout(SIMD4<Int>.self)
+        checkMemoryLayout(RedBlackTreePair<Int32, Int32>.self)
+        checkMemoryLayout(RedBlackTreePair<Int32, Int>.self)
+        checkMemoryLayout(RedBlackTreePair<Int, Int32>.self)
+        checkMemoryLayout(RedBlackTreePair<Int, Int>.self)
+        checkMemoryLayout(RedBlackTreePair<Int32, SIMD4<Float>>.self)
+        checkMemoryLayout(RedBlackTreePair<SIMD4<Float>, Int32>.self)
+        checkMemoryLayout(RedBlackTreePair<Int, SIMD4<Int>>.self)
+        checkMemoryLayout(RedBlackTreePair<SIMD4<Int>, Int>.self)
     }
 
     private func checkMemoryLayout<Payload>(

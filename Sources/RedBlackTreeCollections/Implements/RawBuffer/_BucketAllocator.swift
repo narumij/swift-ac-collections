@@ -64,6 +64,32 @@
 //
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
+//
+// TODO: 型消去後のレイアウト参照には改善余地がある。
+//
+// UnsafeTreeV2BufferHeaderはpayload型を保持しないため、ここで使うMemoryLayout参照は
+// genericな呼び出し連鎖が切れた後に実行される。具体型のMemoryLayoutであっても、
+// 最適化後に必ず定数化されるとは仮定しないこと。
+//
+// 実験した方向性:
+// - genericなinit内でUnsafeNode、_Bucket、node pointer、payloadのstride/alignmentを取得する。
+// - allocatorへ必要な整数値をpropertyとして保持する。
+// - 型消去後の確保量計算を、保存済み整数と &+ / &- / &* だけで完結させる。
+// - module-level/static letへ共通値を逃がす案も試したが、global accessorや初期化経路の
+//   コストが読みづらく、この用途では採用判断に至らなかった。
+//
+// 観測結果:
+// - property保持案はベンチマーク上うっすら速い傾向があった。
+// - ただし差が小さく、測定回数、build条件、compiler差を含めて判断できるほど
+//   計測し切れていないため、現時点では採用していない。
+// - allocatorは太くなっても構わない。再検討時はサイズ最小化より、型消去後に
+//   MemoryLayout/global accessorへ戻らないことと、性能の再現性を優先してよい。
+//
+// 再検討時の条件:
+// - 現行実装、property保持案、必要ならmodule-level定数案を同じRelease条件で比較する。
+// - bucket作成だけでなく、reserve/grow、CoW、破棄を含むシナリオを測る。
+// - メモリレイアウト計算には通常の + / - / * ではなくoverflow演算を使う。
+// - 末尾payloadと確保末尾の一致、alignment、末尾canaryのテストを維持する。
 @frozen
 @usableFromInline
 package struct _BucketAllocator {

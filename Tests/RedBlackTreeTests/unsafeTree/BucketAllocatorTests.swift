@@ -41,11 +41,9 @@ import XCTest
 
     func checkHeadAllocationSize<_PayloadValue>(_ t: _PayloadValue.Type, capacity: Int) throws {
       let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _ in }
-      var (byteSize, alignment) = (
-        allocator._allocationSize(capacity: capacity), allocator._pair.alignment
+      let (byteSize, alignment) = (
+        allocator._headAllocationSize(capacity: capacity), allocator._pair.alignment
       )
-      byteSize += MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
-      byteSize += MemoryLayout<UnsafeNode>.stride
       let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
       //      let bytes = storage.bindMemory(to: UInt8.self, capacity: byteSize)
       storage.initializeMemory(as: UInt8.self, repeating: 0xE8, count: byteSize)
@@ -118,13 +116,14 @@ import XCTest
       XCTAssertEqual(counts[4], MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride)
       XCTAssertEqual(counts[2], MemoryLayout<UnsafeNode>.stride * (capacity + 1))
       XCTAssertEqual(counts[3] ?? 0, MemoryLayout<_PayloadValue>.stride * capacity)
-      // capacity番目の開始アドレスとは、確保メモリの末尾の次
-      // 数が多い場合、確保範囲を越えて書いている可能性がある
-      // アライメント調整は確保アドレスに応じて変動する
+      // 最後のpayloadの末尾が確保範囲を越えないこと
       if capacity != 0 {
         XCTAssertLessThanOrEqual(storage.distance(to: start), byteSize, "\(_PayloadValue.self)")
+        let lastPayloadEnd = UnsafeMutableRawPointer(
+          accessor[capacity - 1].__value_(as: _PayloadValue.self)
+        ).advanced(by: MemoryLayout<_PayloadValue>.stride)
         XCTAssertLessThanOrEqual(
-          storage.distance(to: accessor[capacity]), byteSize, "\(_PayloadValue.self)")
+          storage.distance(to: lastPayloadEnd), byteSize, "\(_PayloadValue.self)")
       } else {
         // capacityが0の場合、確保サイズにアライメント調整分が含まれないため、startは範囲外を示す
         // capacity == 0の場合、ヘッダとbegin ptrとend nodeピッタリのサイズとなる
@@ -218,9 +217,7 @@ import XCTest
       line: UInt = #line
     ) {
       let allocator = _BucketAllocator(valueType: Payload.self) { _ in }
-      let byteSize = allocator._allocationSize(capacity: capacity)
-        + MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
-        + MemoryLayout<UnsafeNode>.stride
+      let byteSize = allocator._headAllocationSize(capacity: capacity)
       let storage = UnsafeMutableRawPointer.allocate(
         byteCount: byteSize,
         alignment: allocator._pair.alignment)
@@ -334,11 +331,11 @@ import XCTest
       XCTAssertEqual(counts[1], MemoryLayout<_Bucket>.stride)
       XCTAssertEqual(counts[2], MemoryLayout<UnsafeNode>.stride * capacity)
       XCTAssertEqual(counts[3], MemoryLayout<_PayloadValue>.stride * capacity)
-      // capacity番目の開始アドレスとは、確保メモリの末尾の次
-      // 数が多い場合、確保範囲を越えて書いている可能性がある
-      // アライメント調整は確保アドレスに応じて変動する？
-      // 最大アライメントに合わせたメモリ確保をしているので、ぴったりに出来そうなきもする
-      XCTAssertLessThanOrEqual(storage.distance(to: accessor[capacity]), byteSize)
+      // 最後のpayloadの末尾が確保範囲を越えないこと
+      let lastPayloadEnd = UnsafeMutableRawPointer(
+        accessor[capacity - 1].__value_(as: _PayloadValue.self)
+      ).advanced(by: MemoryLayout<_PayloadValue>.stride)
+      XCTAssertLessThanOrEqual(storage.distance(to: lastPayloadEnd), byteSize)
 
       // 追加分に関して容量0は許容しない仕様なので、テストしていない
 

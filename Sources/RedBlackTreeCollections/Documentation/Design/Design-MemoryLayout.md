@@ -96,14 +96,15 @@ storage
                  start
 ```
 
-allocatorはこのleading gapの上限として次を余分に確保する。
+raw allocationの先頭はpair alignmentへ揃っているため、`storage` のallocation先頭からの
+offsetが分かれば、実際のleading gapは確保前に計算できる。
 
 ```text
-startOffset = max(0, Payload.alignment - UnsafeNode.alignment)
+G(prefix) = alignUp(prefix + N, to: Payload.alignment) - (prefix + N)
 ```
 
-`startOffset` は常に実際のgapと等しい値ではなく、開始位置を安全に切り上げるための
-確保余裕である。
+ここで `prefix` はallocation先頭から `storage` までのbyte数である。allocatorは
+alignmentの最大余裕ではなく、この実際のgapだけを確保量へ加える。
 
 ## Primary bucket
 
@@ -128,11 +129,14 @@ start          = aligned slot start derived from primaryStorage
 capacityを `C` とすると、確保に必要なbyte数は概念上次のとおりである。
 
 ```text
-primaryBytes = _Bucket.stride
-             + pointer.stride
-             + N
-             + S * C
-             + (C == 0 ? 0 : startOffset)
+primaryPrefix = _Bucket.stride + pointer.stride + N
+
+primaryBytes = C == 0
+             ? primaryPrefix
+             : primaryPrefix
+               + G(primaryPrefix)
+               + S * (C - 1)
+               + N + P
 ```
 
 capacityが0なら通常slotとそのalignment余裕は不要だが、`_Bucket`、begin pointer、
@@ -151,11 +155,17 @@ secondary bucketは特殊ノードを持たず、bucket headerと通常slot列�
 
 ```text
 secondaryStorage = head + MemoryLayout<_Bucket>.stride
-secondaryBytes   = _Bucket.stride + S * C + startOffset
+secondaryPrefix  = _Bucket.stride
+secondaryBytes   = secondaryPrefix
+                 + G(secondaryPrefix)
+                 + S * (C - 1)
+                 + N + P
 ```
 
 secondary bucketのcapacityは必ず1以上である。primary bucketと同じslot算式を使うため、
 通常ノードを扱う側は所属bucketの種類に関係なく `start + S * i` で走査できる。
+最後のslotでは後続nodeをalignするためのtail paddingが不要なので、確保量には含めない。
+このため、最後のpayloadの末尾とallocationの末尾は一致する。
 
 ## alignmentの成立条件
 
@@ -254,10 +264,11 @@ tracking tag順に単一primary bucketへ再配置されるため、再び `star
 
 1. alignmentが `UnsafeNode` より小さい、等しい、大きいpayloadでstartが正しい。
 2. capacity 0、1、複数の確保量が領域末尾を越えない。
-3. `node(i)` と `payload(i)` が各型のalignmentを満たす。
-4. queue、accessor、traverser、iterator、deinitializerが同じslotを指す。
-5. Fresh、live、Recycleの各状態で初期化と破棄が一度ずつ対応する。
-6. build configurationごとの `UnsafeNode` レイアウト差を前提にしても算式が成立する。
+3. capacityが1以上なら、最後のpayloadの末尾とallocationの末尾が一致する。
+4. `node(i)` と `payload(i)` が各型のalignmentを満たす。
+5. queue、accessor、traverser、iterator、deinitializerが同じslotを指す。
+6. Fresh、live、Recycleの各状態で初期化と破棄が一度ずつ対応する。
+7. build configurationごとの `UnsafeNode` レイアウト差を前提にしても算式が成立する。
 
 ## 関連文書
 

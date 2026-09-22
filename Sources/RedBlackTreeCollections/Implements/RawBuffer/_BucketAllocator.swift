@@ -82,7 +82,6 @@ package struct _BucketAllocator {
     self.payload = MemoryLayout<_PayloadValue>._memoryLayout
     self._pair = MemoryLayout<_PayloadValue>._pairLayout
     self.deinitialize = deinitialize
-    self.startOffset = max(0, payload.alignment - MemoryLayout<UnsafeNode>.alignment)
   }
 
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
@@ -95,14 +94,6 @@ package struct _BucketAllocator {
   /// `Node|Value` のペア形式でのstrideとalignment
   @usableFromInline
   package let _pair: _MemoryLayout
-
-  /// ```
-  /// |Bucket| |Node|Value|Node|Value|...
-  ///        ^ ^
-  ///       この部分のサイズ
-  /// ```
-  @usableFromInline
-  package let startOffset: Int
 
   /// 型を消去した `_Payload` のdeinitializer
   ///
@@ -119,12 +110,10 @@ extension _BucketAllocator {
   @usableFromInline  // レジスタ圧を下げることにした
   package func createHeadBucket(capacity: Int, nullptr: _NodePtr) -> _BucketPointer {
 
-    let (bytes, alignment) = (_allocationSize(capacity: capacity), _pair.alignment)
+    let (bytes, alignment) = (_headAllocationSize(capacity: capacity), _pair.alignment)
 
     let header_storage = UnsafeMutableRawPointer._allocate(
-      byteCount: bytes
-        + MemoryLayout<UnsafeNode>.stride
-        + MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride,
+      byteCount: bytes,
       alignment: alignment)
 
     let header = UnsafeMutableRawPointer(header_storage)
@@ -186,20 +175,39 @@ extension _BucketAllocator {
   @inlinable
   @inline(__always)
   package func _allocationSize(capacity: Int) -> Int {
-    let s2 = MemoryLayout<_Bucket>.stride
-    let s01 = _pair.stride
-    let size = s2 &+ s01 &* capacity &+ (capacity == 0 ? 0 : startOffset)
-    return size
+    guard capacity != 0 else { return MemoryLayout<_Bucket>.stride }
+    return _allocationSizeNonzero(capacity: capacity)
   }
-  
+
+  @inlinable
+  @inline(__always)
+  package func _headAllocationSize(capacity: Int) -> Int {
+    let prefix = MemoryLayout<_Bucket>.stride
+      &+ MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
+      &+ MemoryLayout<UnsafeNode>.stride
+    guard capacity != 0 else { return prefix }
+    return _allocationSize(prefix: prefix, capacity: capacity)
+  }
+
   @inlinable
   @inline(__always)
   package func _allocationSizeNonzero(capacity: Int) -> Int {
     assert(capacity > 0)
-    let s2 = MemoryLayout<_Bucket>.stride
-    let s01 = _pair.stride
-    let size = s2 &+ s01 &* capacity &+ startOffset
-    return size
+    return _allocationSize(prefix: MemoryLayout<_Bucket>.stride, capacity: capacity)
+  }
+
+  @inlinable
+  @inline(__always)
+  func _allocationSize(prefix: Int, capacity: Int) -> Int {
+    let nodeStride = MemoryLayout<UnsafeNode>.stride
+    let payloadAlignment = payload.alignment
+    let payloadOffset = prefix &+ nodeStride
+    let leadingGap = (0 &- payloadOffset) & (payloadAlignment &- 1)
+    return prefix
+      &+ leadingGap
+      &+ _pair.stride &* (capacity &- 1)
+      &+ nodeStride
+      &+ payload.stride
   }
 }
 

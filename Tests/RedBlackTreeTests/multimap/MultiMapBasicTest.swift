@@ -99,7 +99,7 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     multiMap.insert(key: "apple", value: 5)
     multiMap.insert(key: "apple", value: 2)
     multiMap.insert(key: "banana", value: 3)
-    print(multiMap)  // 例: [apple: 5, apple: 2, banana: 3]
+    blackHole(String(describing: multiMap))
   }
 
   func testMultiMapKeepsInsertionOrderForEquivalentKeys() {

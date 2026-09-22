@@ -203,7 +203,7 @@ import XCTest
       XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root), tree.___header.__begin_node)
       for i in 0..<2 {
         XCTAssertTrue(tree.__tree_.___erase_unique(i), "i = \(i)")
-        print("__root():", tree.__root())
+        blackHole(tree.__root())
         XCTAssertTrue(tree.___tree_invariant())
         XCTAssertEqual(
           tree.__root() == .nullptr ? .end : tree.__tree_.__tree_min(tree.__tree_.__root),
@@ -222,7 +222,7 @@ import XCTest
       XCTAssertEqual(tree.__tree_.__tree_min(tree.__tree_.__root), tree.___header.__begin_node)
       for i in 0..<7 {
         XCTAssertTrue(tree.__tree_.___erase_unique(i), "i = \(i)")
-        print("__root():", tree.__root())
+        blackHole(tree.__root())
         XCTAssertTrue(tree.___tree_invariant())
         XCTAssertEqual(
           tree.__root == .nullptr ? .end : tree.__tree_.__tree_min(tree.__tree_.__root),

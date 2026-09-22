@@ -6,6 +6,11 @@ import XCTest
   import RedBlackTreeCollections
 #endif
 
+@inline(never)
+func blackHole<T>(_ value: T) {
+  withExtendedLifetime(value) {}
+}
+
 class RedBlackTreeTestCase: XCTestCase {
 
   override func setUpWithError() throws {

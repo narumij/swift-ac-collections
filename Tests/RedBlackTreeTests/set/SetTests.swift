@@ -78,8 +78,8 @@ final class SetTests: RedBlackTreeTestCase {
 
   func testSmoke() throws {
     let b: RedBlackTreeSet<Int> = [1, 2, 3]
-    print(b)
-    debugPrint(b)
+    blackHole(String(describing: b))
+    blackHole(String(reflecting: b))
   }
 
   func testInsert() throws {

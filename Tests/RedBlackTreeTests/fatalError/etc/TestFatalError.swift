@@ -129,9 +129,9 @@
             #expect(set.___tree_invariant() == true)
           }
           //      XCTAssertEqual(set + [], set[set.startIndex..<set.endIndex] + [])
-          print("set.count", set.count)
+          blackHole(set.count)
           #if AC_COLLECTIONS_INTERNAL_CHECKS
-            print("set._copyCount", set._copyCount)
+            blackHole(set._copyCount)
           #endif
           for i in set[set.startIndex..<set.endIndex] {
             // erase multiなので、CoWなしだと、ポインタが破壊される

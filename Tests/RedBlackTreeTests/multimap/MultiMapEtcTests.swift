@@ -312,7 +312,7 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
     let values = multimap.values(forKey: "banana")
 
     values.forEach { value in
-      print("banana の値は \(value) です。")  // 出力例: banana の値は 3 です。
+      blackHole("banana の値は \(value) です。")
     }
 
     // キーと値のペアを削除

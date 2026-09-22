@@ -144,7 +144,7 @@ let package = Package(
       name: "RedBlackTreeCollections",
       dependencies: [] + additionalDepencencies,
       path: "Sources/RedBlackTreeCollections",
-      exclude: ["MEMO.md"],
+      exclude: ["Documentation"],
       swiftSettings: _settings + [
         // .strictMemorySafety()
       ]),

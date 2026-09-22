@@ -42,4 +42,4 @@ jobs:
       uses: SwiftyLab/setup-swift@latest
 
     - name: Run tests with Address Sanitizer
-      run: swift test -v -c debug --sanitize address
+      run: swift test -c debug --sanitize address

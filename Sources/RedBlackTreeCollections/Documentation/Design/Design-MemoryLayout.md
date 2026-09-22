@@ -23,7 +23,9 @@ fieldの順序やバイト幅を表すABI図ではない。コード上の契約
 - `MemoryLayout<Payload>.stride`
 - `MemoryLayout<Payload>.alignment`
 - `MemoryLayout<_Bucket>.stride`
+- `MemoryLayout<_Bucket>.alignment`
 - `MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride`
+- `MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.alignment`
 
 実測値を性能比較へ使う場合は、対象のtoolchain、architecture、コンパイル条件とともに記録する。
 
@@ -158,8 +160,19 @@ secondary bucketのcapacityは必ず1以上である。primary bucketと同じsl
 ## alignmentの成立条件
 
 raw allocation自体はpair layoutの `A` をalignmentとして確保する。これにより
-bucket先頭はNodeとPayloadのうち厳しい方のalignmentを満たす。加えて、slot列の
-開始位置を調整することで次を同時に成立させる。
+bucket先頭はNodeとPayloadのうち厳しい方のalignmentを満たす。同じraw allocationには
+`_Bucket` とbegin pointerも置かれるため、現行レイアウトは次の関係にも依存する。
+
+```text
+MemoryLayout<_Bucket>.alignment <= A
+MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.alignment <= A
+```
+
+つまりallocationへ渡すalignmentは、実際には同じ領域へ配置する全型のalignmentを
+満たさなければならない。現行実装では `UnsafeNode.alignment` が `_Bucket` とpointerの
+alignment以上であることを前提として、pair layoutの `A` をそのまま使用している。
+
+加えて、slot列の開始位置を調整することで次を同時に成立させる。
 
 - `node(i)` は `UnsafeNode.alignment` を満たす。
 - `payload(i)` は `Payload.alignment` を満たす。
@@ -219,7 +232,8 @@ tracking tag順に単一primary bucketへ再配置されるため、再び `star
 - primary bucketだけがbegin pointerとend nodeを持つ。
 - capacity 0のprimary bucketにもbegin pointerとend nodeが存在する。
 - secondary bucketのcapacityは1以上である。
-- raw allocationのalignmentはpair alignment以上である。
+- raw allocationのalignmentは、`_Bucket`、begin pointer、`UnsafeNode`、payloadの
+  すべてのalignmentを満たす。
 - 初期化されていないslotをtyped valueとして読み書きまたは破棄しない。
 - payloadは `___has_payload_content` がtrueの場合だけ読み出し・破棄する。
 - bucket内の全利用者が同じstartとpair strideを使う。
@@ -229,6 +243,7 @@ tracking tag順に単一primary bucketへ再配置されるため、再び `star
 次の変更はメモリレイアウト全体の再検証を必要とする。
 
 - `UnsafeNode` または `_Bucket` のfield、型、コンパイル条件を変える。
+- `_Bucket`、pointer、`UnsafeNode`のalignmentの大小関係を変える。
 - payload位置を `p.advanced(by: 1)` 以外へ変える。
 - pair strideまたはstart alignmentの算式を変える。
 - primary bucketのbegin pointer、end nodeの順序を変える。

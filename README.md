@@ -1,3 +1,5 @@
+<!-- README.ja.md is the canonical source. This README.md is its English translation. -->
+
 # swift-ac-collections
 
 ## Concept

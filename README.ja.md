@@ -1,3 +1,5 @@
+<!-- このREADME.ja.mdを正本とします。README.mdは、この文書の英訳コピーです。 -->
+
 # swift-ac-collections
 
 ## コンセプト

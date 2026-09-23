@@ -22,7 +22,7 @@
         @inline(__always) _read {
           yield
           UnsafeMutableRawPointer(start)
-            .advanced(by: stride &* index)
+            .advanced(by: pairStride &* index)
             .assumingMemoryBound(to: UnsafeNode.self)
         }
       }
@@ -62,7 +62,7 @@
       let accessor = bucket._accessor(isHead: false, payload: pairLayout)
       let traverser = bucket._counts(
         storage: bucket.secondaryStorage(),
-        payload: pairLayout
+        pairLayout: pairLayout
       )
 
       XCTAssertEqual(distance(from: queue[0], to: queue[1]), pairLayout.stride)

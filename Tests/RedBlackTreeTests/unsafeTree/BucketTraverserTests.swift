@@ -117,7 +117,7 @@ import XCTest
 
       var counts = header._counts(
         storage: bucketStorage,
-        payload: MemoryLayout<Payload>._pairLayout)
+        pairLayout: MemoryLayout<Payload>._pairLayout)
 
       for index in 0..<capacity {
         let node = try XCTUnwrap(

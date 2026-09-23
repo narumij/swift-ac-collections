@@ -289,7 +289,7 @@ extension _BucketAllocator {
 
   @inlinable
   func _deinitializeNodeAndValues(storage: UnsafeMutableRawPointer, _ b: _BucketPointer) {
-    var it = b._counts(storage: storage, payload: _pair)
+    var it = b._counts(storage: storage, pairLayout: _pair)
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1))

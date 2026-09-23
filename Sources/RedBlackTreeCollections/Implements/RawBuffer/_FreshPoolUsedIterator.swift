@@ -35,7 +35,7 @@ struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _Unsaf
     self.helper = bucket.flatMap {
       $0._counts(
         storage: $0.primaryStorage(),
-        payload: pairLayout)
+        pairLayout: pairLayout)
     }
   }
 

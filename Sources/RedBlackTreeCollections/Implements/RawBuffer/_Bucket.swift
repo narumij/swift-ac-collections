@@ -153,7 +153,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   ///   - payloadAlignment: Payload型に要求されるalignment。
   ///
   /// - Returns: `node(0)`、すなわち最初の通常ノードの開始アドレス。
-  /// 
+  ///
   /// - WARNING: 確保数0の場合利用してはならない
   ///
   @inlinable
@@ -171,6 +171,24 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
       .advanced(by: MemoryLayout<UnsafeNode>.stride)
       .alignedUp(toMultipleOf: payloadAlignment)
       .advanced(by: -MemoryLayout<UnsafeNode>.stride)
+      .assumingMemoryBound(to: UnsafeNode.self)
+  }
+  
+  @inlinable
+  package func start(storage: UnsafeMutableRawPointer, nodeLayout: _MemoryLayout, payloadAlignment: Int) -> UnsafeMutablePointer<
+    UnsafeNode
+  > {
+    let nodeAlignment = nodeLayout.alignment
+    if payloadAlignment <= nodeAlignment {
+      return
+        storage
+        .assumingMemoryBound(to: UnsafeNode.self)
+    }
+    return
+      storage
+      .advanced(by: nodeLayout.stride)
+      .alignedUp(toMultipleOf: payloadAlignment)
+      .advanced(by: -nodeLayout.stride)
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 }

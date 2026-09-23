@@ -31,12 +31,12 @@ struct _BucketTraverser: _UnsafeNodePtrType {
   internal init(
     pointer: UnsafeMutablePointer<_Bucket>,
     start: UnsafeMutablePointer<UnsafeNode>,
-    stride: Int,
+    pairStride: Int,
     count: Int
   ) {
     self.pointer = pointer
     self.start = start
-    self.stride = stride
+    self.pairStride = pairStride
     self.count = count
   }
 
@@ -44,7 +44,7 @@ struct _BucketTraverser: _UnsafeNodePtrType {
   @usableFromInline var it: Int = 0
   @usableFromInline let pointer: UnsafeMutablePointer<_Bucket>
   @usableFromInline let start: _NodePtr
-  @usableFromInline let stride: Int
+  @usableFromInline let pairStride: Int
 
   @inlinable
   mutating func pop() -> _NodePtr? {
@@ -52,25 +52,25 @@ struct _BucketTraverser: _UnsafeNodePtrType {
     defer { it &+= 1 }
 
     return UnsafeMutableRawPointer(start)
-      .advanced(by: stride &* it)
+      .advanced(by: pairStride &* it)
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
   @inlinable
   func nextCounts(payload: _MemoryLayout) -> _BucketTraverser? {
     guard let next = pointer.next else { return nil }
-    return next._counts(storage: next.secondaryStorage(), payload: payload)
+    return next._counts(storage: next.secondaryStorage(), pairLayout: payload)
   }
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
-  func _counts(storage: UnsafeMutableRawPointer, payload: _MemoryLayout) -> _BucketTraverser {
+  func _counts(storage: UnsafeMutableRawPointer, pairLayout: _MemoryLayout) -> _BucketTraverser {
     .init(
       pointer: self,
-      start: start(storage: storage, payloadAlignment: payload.alignment),
-      stride: payload.stride,
+      start: start(storage: storage, payloadAlignment: pairLayout.alignment),
+      pairStride: pairLayout.stride,
       count: pointee.count)
   }
 
@@ -80,7 +80,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
       .init(
         pointer: self,
         start: start(storage: storage, payloadAlignment: payload.alignment),
-        stride: payload.stride,
+        pairStride: payload.stride,
         count: pointee.capacity)
     }
   #endif

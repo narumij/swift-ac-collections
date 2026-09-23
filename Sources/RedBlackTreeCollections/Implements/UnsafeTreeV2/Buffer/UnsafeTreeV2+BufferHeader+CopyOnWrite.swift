@@ -64,6 +64,9 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   internal mutating func grow(_ newCapacity: Int) {
     assert(freshPoolCapacity < newCapacity, "増加要求であること")
+    #if ENABLE_OFFSET_OVERFLOW_GUARD
+      pairLayout._preconditionOffsetDoesNotOverflow(forCount: newCapacity)
+    #endif
     pushFreshBucket(additionalCapacity: newCapacity &- freshPoolCapacity)
   }
 
@@ -93,7 +96,8 @@ extension UnsafeTreeV2BufferHeader {
     //    grow(growth(from: freshPoolCapacity, to: minimumCapacity))
   }
 
-  @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
+  //  @usableFromInline  // 呼び出し元の命令キャッシュ圧低下を狙っている
+  @inlinable  // 6.4でこっちの方が速い
   internal mutating func _ensureCapacitySlow() {
     let cap = _requestCapacity()
     guard freshPoolCapacity < cap.require else {

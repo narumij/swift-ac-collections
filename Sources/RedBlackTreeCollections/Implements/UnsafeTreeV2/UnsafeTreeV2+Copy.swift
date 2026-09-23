@@ -98,6 +98,11 @@ extension UnsafeTreeV2BufferHeader {
     // その部分までコピーする必要があり、初期化済み数でのコピーとなる
     let newCapacity = max(minimumCapacity ?? 0, freshPoolUsedCount)
 
+    #if ENABLE_OFFSET_OVERFLOW_GUARD
+      pairLayout._preconditionOffsetDoesNotOverflow(
+        forCount: newCapacity)
+    #endif
+
     // 予定サイズの木を作成する
     let _newBuffer =
       UnsafeTreeV2Buffer

@@ -27,8 +27,8 @@ package struct _MemoryLayout {
   @inlinable
   internal init<T0: ~Copyable, T1: ~Copyable>(_ t0: T0.Type, _ t1: T1.Type) {
     let alignment = max(MemoryLayout<T0>.alignment, MemoryLayout<T1>.alignment)
-    let size = MemoryLayout<T0>.stride + MemoryLayout<T1>.stride
-    self.stride = (size + alignment - 1) & -alignment
+    let size = MemoryLayout<T0>.stride &+ MemoryLayout<T1>.stride
+    self.stride = (size &+ alignment &- 1) & -alignment
     self.alignment = alignment
   }
 
@@ -40,6 +40,21 @@ package struct _MemoryLayout {
 
   @usableFromInline package var stride: Int
   @usableFromInline package var alignment: Int
+}
+
+extension _MemoryLayout {
+  
+  /// オーバーフローによるメモリ破壊を予防するための限度
+  @inlinable
+  var maximumCount: Int {
+    Int.max / stride
+  }
+
+  /// オーバーフローによるメモリ破壊を予防するための限度のチェック
+  @inlinable
+  func _preconditionOffsetDoesNotOverflow(forCount count: Int) {
+    precondition(count <= maximumCount)
+  }
 }
 
 #if DEBUG

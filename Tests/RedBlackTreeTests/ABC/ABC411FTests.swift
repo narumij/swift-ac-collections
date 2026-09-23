@@ -68,7 +68,6 @@ final class ABC411DTests: RedBlackTreeTestCase {
   }
 
   func testExample4() throws {
-    throw XCTSkip()
     
     try ABC411F(
       N: 7, M: 7,

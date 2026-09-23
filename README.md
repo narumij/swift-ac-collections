@@ -1,3 +1,6 @@
+<!-- README.ja.md is the canonical source. README.md is its English translation. -->
+<!-- Some jokes are allowed until 1.0. -->
+
 # swift-ac-collections
 
 English | [日本語](README.ja.md)

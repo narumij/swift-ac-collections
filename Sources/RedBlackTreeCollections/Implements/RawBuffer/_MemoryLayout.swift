@@ -42,6 +42,21 @@ package struct _MemoryLayout {
   @usableFromInline package var alignment: Int
 }
 
+extension _MemoryLayout {
+  
+  /// オーバーフローによるメモリ破壊を予防するための限度
+  @inlinable
+  var maximumCount: Int {
+    Int.max / stride
+  }
+
+  /// オーバーフローによるメモリ破壊を予防するための限度のチェック
+  @inlinable
+  func _preconditionOffsetDoesNotOverflow(forCount count: Int) {
+    precondition(count <= maximumCount)
+  }
+}
+
 #if DEBUG
   extension _MemoryLayout {
     internal init<T: ~Copyable>(_ t: T.Type) {

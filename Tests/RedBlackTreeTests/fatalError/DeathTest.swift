@@ -62,5 +62,28 @@
         _ = a[a.startIndex...a.endIndex] + [] == []
       }
     }
+
+    #if ENABLE_OFFSET_OVERFLOW_GUARD
+      @Test func `オフセット計算のオーバーフロー限界を超えたサイズはトラップすること、その1`() async {
+        await #expect(processExitsWith: .failure) {
+          _ = RedBlackTreeSet<Int>(minimumCapacity: Int.max)
+        }
+      }
+
+      @Test func `オフセット計算のオーバーフロー限界を超えたサイズはトラップすること、その2`() async {
+        await #expect(processExitsWith: .failure) {
+          var a = RedBlackTreeSet<Int>()
+          a.reserveCapacity(Int.max)
+        }
+      }
+
+      @Test func `オフセット計算のオーバーフロー限界を超えたサイズはトラップすること、その3`() async {
+        await #expect(processExitsWith: .failure) {
+          var a = RedBlackTreeSet<Int>()
+          var b = a
+          a.reserveCapacity(Int.max)
+        }
+      }
+    #endif
   }
 #endif

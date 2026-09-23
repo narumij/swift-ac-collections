@@ -21,6 +21,7 @@ var defines: [String] = [
   //  "ALLOW_CROSS_TREE_INDEX", //木をまたいだインデックスの利用を許可するかどうか
   //    "USE_INT128",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
+  //  "ENABLE_OFFSET_OVERFLOW_GUARD",
 ]
 
 var _settings: [SwiftSetting] =
@@ -29,7 +30,7 @@ var _settings: [SwiftSetting] =
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
     // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
     // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
-//    .define("COMPATIBLE_ATCODER_2025"),
+    //    .define("COMPATIBLE_ATCODER_2025"),
 
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
@@ -54,6 +55,11 @@ var _settings: [SwiftSetting] =
     // 念のために用意してある
     // メモリ計算の都合、Int.max / pair.strideが上限となる
     .define("USE_INT128", .when(traits: ["USE_INT128"])),
+
+    // オフセット計算がオーバーフロー演算になっているので、Int.max / pair.stride以上のサイズでは内部計算が不正になる
+    // そこまでのメモリを積んだマシンは現実的には無いとは思うが、もしも限界付近まで利用する場合には以下が必要になる
+    // チェックコードは除算を利用していて、あくまで間に合わせ実装になっている
+    .define("ENABLE_OFFSET_OVERFLOW_GUARD", .when(traits: ["ENABLE_OFFSET_OVERFLOW_GUARD"])),
 
     // ノードの付帯情報のビット幅を半分にするマクロ定義
     // 特定の条件の操作でパフォーマンスが改善するが、取り扱えるノード数の上限がInt32.maxとなる
@@ -106,6 +112,9 @@ let package = Package(
     ),
     .trait(
       name: "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
+    ),
+    .trait(
+      name: "ENABLE_OFFSET_OVERFLOW_GUARD"
     ),
     .trait(
       name: "_O_UNCHECKED"

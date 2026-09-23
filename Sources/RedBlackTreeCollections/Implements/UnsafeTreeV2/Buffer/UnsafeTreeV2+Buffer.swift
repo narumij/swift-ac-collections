@@ -70,6 +70,11 @@ extension UnsafeTreeV2Buffer {
     minimumCapacity nodeCapacity: Int,
     nullptr: UnsafeMutablePointer<UnsafeNode>
   ) -> UnsafeTreeV2Buffer {
+
+    #if ENABLE_OFFSET_OVERFLOW_GUARD
+      allocator._pair._preconditionOffsetDoesNotOverflow(forCount: nodeCapacity)
+    #endif
+
     // 要素数は常に0
     let storage = UnsafeTreeV2Buffer.create(minimumCapacity: 0) { managedBuffer in
       return .init(allocator: allocator, nullptr: nullptr, capacity: nodeCapacity)
@@ -89,7 +94,7 @@ extension UnsafeTreeV2Buffer {
       var header = UnsafeTreeV2BufferHeader(allocator: .create(), nullptr: .nullptr, capacity: 0)
 
       _ = header.tiedRawBuffer
-      
+
       header._lazyDetach = _emptyLazyDetach
 
       return header

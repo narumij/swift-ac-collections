@@ -29,12 +29,12 @@ struct _BucketTraverser: _UnsafeNodePtrType {
 
   @inlinable
   internal init(
-    pointer: UnsafeMutablePointer<_Bucket>,
+    header: UnsafeMutablePointer<_Bucket>,
     startNode: UnsafeMutablePointer<UnsafeNode>,
     pairStride: Int,
     count: Int
   ) {
-    self.pointer = pointer
+    self.header = header
     self.startNode = startNode
     self.pairStride = pairStride
     self.count = count
@@ -42,7 +42,7 @@ struct _BucketTraverser: _UnsafeNodePtrType {
 
   @usableFromInline var count: Int
   @usableFromInline var it: Int = 0
-  @usableFromInline let pointer: UnsafeMutablePointer<_Bucket>
+  @usableFromInline let header: UnsafeMutablePointer<_Bucket>
   @usableFromInline let startNode: _NodePtr
   @usableFromInline let pairStride: Int
 
@@ -56,44 +56,50 @@ struct _BucketTraverser: _UnsafeNodePtrType {
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
-//  @inlinable
-//  func nextCounts(pairLayout: _MemoryLayout) -> _BucketTraverser? {
-//    guard let next = pointer.next else { return nil }
-//    return next._counts(storage: next.secondaryStorage(), pairLayout: pairLayout)
-//  }
-  
+  //  @inlinable
+  //  func nextCounts(pairLayout: _MemoryLayout) -> _BucketTraverser? {
+  //    guard let next = pointer.next else { return nil }
+  //    return next._counts(storage: next.secondaryStorage(), pairLayout: pairLayout)
+  //  }
+
   @inlinable
   func nextCounts(nodeLayout: _MemoryLayout, pairLayout: _MemoryLayout) -> _BucketTraverser? {
-    guard let next = pointer.next else { return nil }
-    return next._counts(storage: next.secondaryStorage(), nodeLayout: nodeLayout, pairLayout: pairLayout)
+    guard let next = header.next else { return nil }
+    return next._counts(
+      storage: next.secondaryStorage(), nodeLayout: nodeLayout, pairLayout: pairLayout)
   }
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
-//  @inlinable
-//  func _counts(storage: UnsafeMutableRawPointer, pairLayout: _MemoryLayout) -> _BucketTraverser {
-//    .init(
-//      pointer: self,
-//      start: start(storage: storage, payloadOrPairAlignment: pairLayout.alignment),
-//      pairStride: pairLayout.stride,
-//      count: pointee.count)
-//  }
-  
+  //  @inlinable
+  //  func _counts(storage: UnsafeMutableRawPointer, pairLayout: _MemoryLayout) -> _BucketTraverser {
+  //    .init(
+  //      pointer: self,
+  //      start: start(storage: storage, payloadOrPairAlignment: pairLayout.alignment),
+  //      pairStride: pairLayout.stride,
+  //      count: pointee.count)
+  //  }
+
   @inlinable
-  func _counts(storage: UnsafeMutableRawPointer, nodeLayout: _MemoryLayout, pairLayout: _MemoryLayout) -> _BucketTraverser {
+  func _counts(
+    storage: UnsafeMutableRawPointer, nodeLayout: _MemoryLayout, pairLayout: _MemoryLayout
+  ) -> _BucketTraverser {
     .init(
-      pointer: self,
-      startNode: start(storage: storage, nodeLayout: nodeLayout, payloadOrPairAlignment: pairLayout.alignment),
+      header: self,
+      startNode: start(
+        storage: storage, nodeLayout: nodeLayout, payloadOrPairAlignment: pairLayout.alignment),
       pairStride: pairLayout.stride,
       count: pointee.count)
   }
 
   #if DEBUG
     @inlinable
-    func _capacities(storage: UnsafeMutableRawPointer, pairLayout: _MemoryLayout) -> _BucketTraverser {
+    func _capacities(storage: UnsafeMutableRawPointer, pairLayout: _MemoryLayout)
+      -> _BucketTraverser
+    {
       .init(
-        pointer: self,
+        header: self,
         startNode: start(storage: storage, payloadOrPairAlignment: pairLayout.alignment),
         pairStride: pairLayout.stride,
         count: pointee.capacity)

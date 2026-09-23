@@ -42,29 +42,12 @@ struct _BucketQueue {
   @usableFromInline let start: UnsafeMutablePointer<UnsafeNode>
   @usableFromInline let stride: Int
 
-  #if true
-    @inlinable
-    subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
-      UnsafeMutableRawPointer(start)
-        .advanced(by: stride * index)
-        .assumingMemoryBound(to: UnsafeNode.self)
-    }
-  #else
-    // なぜか逆に遅い
-    @inlinable
-    subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
-      @inline(__always)
-      unsafeAddress {
-        withUnsafePointer(
-          to: UnsafeMutableRawPointer(start)
-            .advanced(by: stride * index)
-            .assumingMemoryBound(to: UnsafeNode.self)
-        ) {
-          $0
-        }
-      }
-    }
-  #endif
+  @inlinable
+  subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
+    UnsafeMutableRawPointer(start)
+      .advanced(by: stride * index)
+      .assumingMemoryBound(to: UnsafeNode.self)
+  }
 
   @inlinable
   mutating func pop() -> UnsafeMutablePointer<UnsafeNode>? {

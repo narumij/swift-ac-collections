@@ -69,7 +69,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   func _counts(storage: UnsafeMutableRawPointer, payload: _MemoryLayout) -> _BucketTraverser {
     .init(
       pointer: self,
-      start: start(storage: storage, valueAlignment: payload.alignment),
+      start: start(storage: storage, payloadAlignment: payload.alignment),
       stride: payload.stride,
       count: pointee.count)
   }
@@ -79,7 +79,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
     func _capacities(storage: UnsafeMutableRawPointer, payload: _MemoryLayout) -> _BucketTraverser {
       .init(
         pointer: self,
-        start: start(storage: storage, valueAlignment: payload.alignment),
+        start: start(storage: storage, payloadAlignment: payload.alignment),
         stride: payload.stride,
         count: pointee.capacity)
     }

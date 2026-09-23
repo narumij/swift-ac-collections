@@ -53,7 +53,43 @@ public struct RedBlackTreeBoundExpressionV2<_Key> {
 extension RedBlackTreeBoundExpressionV2 {
 
   @usableFromInline
-  typealias Internal = [Op]
+  struct Internal {
+
+    @usableFromInline
+    var first: Op
+
+    // 2個目以降だけを保持する。
+    // 1要素式では空Arrayなのでヒープ確保なし。
+    @usableFromInline
+    var rest: [Op]
+
+    @inlinable
+    init(_ first: Op) {
+      self.first = first
+      self.rest = []
+    }
+
+    @inlinable
+    var count: Int {
+      1 + rest.count
+    }
+
+    @inlinable
+    subscript(_ index: Int) -> Op {
+      _read {
+        if index == 0 {
+          yield first
+        } else {
+          yield rest[index - 1]
+        }
+      }
+    }
+
+    @inlinable
+    mutating func append(_ op: Op) {
+      rest.append(op)
+    }
+  }
 
   @usableFromInline
   enum Op {
@@ -64,7 +100,7 @@ extension RedBlackTreeBoundExpressionV2 {
     case lowerBound(_Key)
     case upperBound(_Key)
     case find(_Key)
-    case advanced(offset: Int, limit: Internal? = nil)
+    indirect case advanced(offset: Int, limit: Internal? = nil)
     case before
     case after
     case lessThan(_Key)
@@ -76,7 +112,6 @@ extension RedBlackTreeBoundExpressionV2 {
     #endif
   }
 }
-
 extension RedBlackTreeBoundExpressionV2 {
 
   /// Represents the first element.
@@ -87,7 +122,7 @@ extension RedBlackTreeBoundExpressionV2 {
   ///   (when evaluated)
   @inlinable
   public static var start: Self {
-    .init(_internal: [.start])
+    .init(_internal: .init(.start))
   }
 
   /// Represents the last element.
@@ -98,7 +133,7 @@ extension RedBlackTreeBoundExpressionV2 {
   ///   (when evaluated)
   @inlinable
   public static var last: Self {
-    .init(_internal: [.last])
+    .init(_internal: .init(.last))
   }
 
   /// Represents the past-the-end element.
@@ -107,7 +142,7 @@ extension RedBlackTreeBoundExpressionV2 {
   ///   (when evaluated)
   @inlinable
   public static var end: Self {
-    .init(_internal: [.end])
+    .init(_internal: .init(.end))
   }
 
   /// Represents the first element that is not less than the given value.
@@ -118,7 +153,7 @@ extension RedBlackTreeBoundExpressionV2 {
   ///   (when evaluated)
   @inlinable
   public static func lowerBound(_ k: _Key) -> Self {
-    .init(_internal: [.lowerBound(k)])
+    .init(_internal: .init(.lowerBound(k)))
   }
 
   /// Represents the first element that is greater than the given value.
@@ -129,7 +164,7 @@ extension RedBlackTreeBoundExpressionV2 {
   ///   (when evaluated)
   @inlinable
   public static func upperBound(_ k: _Key) -> Self {
-    .init(_internal: [.upperBound(k)])
+    .init(_internal: .init(.upperBound(k)))
   }
 
   /// Represents the element equal to the given value.
@@ -140,42 +175,42 @@ extension RedBlackTreeBoundExpressionV2 {
   ///   (when evaluated)
   @inlinable
   public static func find(_ k: _Key) -> Self {
-    .init(_internal: [.find(k)])
+    .init(_internal: .init(.find(k)))
   }
 
   /// Represents the greatest element that is less than the given value.
   @inlinable
   public static func lessThan(_ k: _Key) -> Self {
-    .init(_internal: [.lessThan(k)])
+    .init(_internal: .init(.lessThan(k)))
   }
 
   /// Represents the smallest element that is greater than the given value.
   @inlinable
   public static func greaterThan(_ k: _Key) -> Self {
-    .init(_internal: [.greaterThan(k)])
+    .init(_internal: .init(.greaterThan(k)))
   }
 
   /// Represents the greatest element that is less than or equal to the given value.
   @inlinable
   public static func lessThanOrEqual(_ k: _Key) -> Self {
-    .init(_internal: [.lessThanOrEqual(k)])
+    .init(_internal: .init(.lessThanOrEqual(k)))
   }
 
   /// Represents the smallest element that is greater than or equal to the given value.
   @inlinable
   public static func greaterThanOrEqual(_ k: _Key) -> Self {
-    .init(_internal: [.greaterThanOrEqual(k)])
+    .init(_internal: .init(.greaterThanOrEqual(k)))
   }
 
   @inlinable
   public static func index(_ p: UnsafeIndexV3) -> Self {
-    .init(_internal: [.index(p)])
+    .init(_internal: .init(.index(p)))
   }
 
   #if DEBUG
     @inlinable
     public static func debug(_ e: SealError) -> Self {
-      .init(_internal: [.debug(e)])
+      .init(_internal: .init(.debug(e)))
     }
   #endif
 }

@@ -107,8 +107,8 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   ///
   /// 確保数0の場合、確保領域の末尾の次のアドレスとなる
   @inlinable
-  func storage(isHead: Bool) -> UnsafeMutableRawPointer {
-    isHead ? primaryStorage() : secondaryStorage()
+  func storage(isPrimary: Bool) -> UnsafeMutableRawPointer {
+    isPrimary ? primaryStorage() : secondaryStorage()
   }
 
   @inlinable

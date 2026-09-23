@@ -54,24 +54,24 @@ struct _BucketQueue {
   @inlinable
   func next(pairLayout: _MemoryLayout) -> _BucketQueue? {
     guard let next = pointer.next else { return nil }
-    return next._queue(isHead: false, pairLayout: pairLayout)
+    return next._queue(isPrimary: false, pairLayout: pairLayout)
   }
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
-  func _queue(isHead: Bool, pairLayout: _MemoryLayout) -> _BucketQueue {
+  func _queue(isPrimary: Bool, pairLayout: _MemoryLayout) -> _BucketQueue {
     .init(
       pointer: self,
       startNode: start(
-        storage: storage(isHead: isHead), payloadOrPairAlignment: pairLayout.alignment),
+        storage: storage(isPrimary: isPrimary), payloadOrPairAlignment: pairLayout.alignment),
       pairStride: pairLayout.stride)
   }
 
   @inlinable
   func queue(pairLayout: _MemoryLayout) -> _BucketQueue? {
-    return _queue(isHead: true, pairLayout: pairLayout)
+    return _queue(isPrimary: true, pairLayout: pairLayout)
   }
 }
 

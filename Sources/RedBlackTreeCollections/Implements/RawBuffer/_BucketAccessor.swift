@@ -59,23 +59,23 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
   @inlinable
   func next(payload: _MemoryLayout) -> _BucketAccessor? {
     assert(pointer.next != nil)  // 利用側でカウント管理している様子
-    return pointer.next!._accessor(isHead: false, pairLayout: payload)
+    return pointer.next!._accessor(isPrimary: false, pairLayout: payload)
   }
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
-  func _accessor(isHead: Bool, pairLayout: _MemoryLayout) -> _BucketAccessor {
+  func _accessor(isPrimary: Bool, pairLayout: _MemoryLayout) -> _BucketAccessor {
     .init(
       pointer: self,
       startNode: start(
-        storage: storage(isHead: isHead), payloadOrPairAlignment: pairLayout.alignment),
+        storage: storage(isPrimary: isPrimary), payloadOrPairAlignment: pairLayout.alignment),
       pairStride: pairLayout.stride)
   }
 
   @inlinable
   func accessor(pairLayout: _MemoryLayout) -> _BucketAccessor? {
-    _accessor(isHead: true, pairLayout: pairLayout)
+    _accessor(isPrimary: true, pairLayout: pairLayout)
   }
 }

@@ -56,11 +56,11 @@ internal func ___ptr_comp_multi(
     // 片方ずつ更新に一見みえるが、同じ高さの場合、両方更新となる
     if __lh <= __rh {
       __r = __r.__parent_
-      __rh -= 1
+      __rh &-= 1
     }
     if __lh > __rh {
       __l = __l.__parent_
-      __lh -= 1
+      __lh &-= 1
     }
   }
   // 共通祖先が__lと__r以外だった場合
@@ -76,7 +76,7 @@ internal func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
   var __p = __p
   while !__p.___is_root {
     __p = __p.__parent_
-    __h += 1
+    __h &+= 1
   }
   return __h
 }

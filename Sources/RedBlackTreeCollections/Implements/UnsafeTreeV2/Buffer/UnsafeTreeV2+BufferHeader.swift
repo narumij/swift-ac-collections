@@ -208,7 +208,7 @@ extension UnsafeTreeV2BufferHeader {
       freshBucketHead = head
       freshBucketCurrent = head.queue(payloadLayout: pairLayout)
       freshBucketLast = head
-      freshPoolCapacity += head.pointee.capacity
+      freshPoolCapacity &+= head.pointee.capacity
       #if DEBUG
         freshBucketCount += 1
       #endif
@@ -261,7 +261,7 @@ extension UnsafeTreeV2BufferHeader {
         if remaining < cap {
           return h[remaining]
         }
-        remaining -= cap
+        remaining &-= cap
         p = h.next(payload: pairLayout)
       }
       return nullptr
@@ -337,7 +337,7 @@ extension UnsafeTreeV2BufferHeader {
     mutating func ___popRecycle() -> _NodePtr {
       let p = recycleHead
       recycleHead = p.pointee.__left_
-      count += 1
+      count &+= 1
       p.pointee.___has_payload_content = true
       return p
     }

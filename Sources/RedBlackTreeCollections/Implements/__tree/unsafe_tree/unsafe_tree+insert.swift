@@ -55,7 +55,7 @@ extension InsertNodeAtProtocol_ptr {
     }
     //    _std__tree_balance_after_insert(__end_node.__left_, __child.pointee)
     _ptr__tree_balance_after_insert(__root, __child.pointee)
-    __size_ += 1
+    __size_ &+= 1
   }
 }
 

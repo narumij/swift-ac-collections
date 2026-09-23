@@ -90,7 +90,7 @@ extension EraseMultiProtocol {
     var __p = __equal_range_multi(__k)
     var __r = 0
     while __p.0 != __p.1 {
-      defer { __r += 1 }
+      defer { __r &+= 1 }
       __p.0 = erase(__p.0)
     }
     return __r

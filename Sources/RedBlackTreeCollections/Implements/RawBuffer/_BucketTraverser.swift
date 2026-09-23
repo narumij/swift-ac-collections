@@ -61,6 +61,12 @@ struct _BucketTraverser: _UnsafeNodePtrType {
     guard let next = pointer.next else { return nil }
     return next._counts(storage: next.secondaryStorage(), pairLayout: pairLayout)
   }
+  
+  @inlinable
+  func nextCounts(nodeLayout: _MemoryLayout, pairLayout: _MemoryLayout) -> _BucketTraverser? {
+    guard let next = pointer.next else { return nil }
+    return next._counts(storage: next.secondaryStorage(), nodeLayout: nodeLayout, pairLayout: pairLayout)
+  }
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
@@ -70,6 +76,15 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
     .init(
       pointer: self,
       start: start(storage: storage, payloadOrPairAlignment: pairLayout.alignment),
+      pairStride: pairLayout.stride,
+      count: pointee.count)
+  }
+  
+  @inlinable
+  func _counts(storage: UnsafeMutableRawPointer, nodeLayout: _MemoryLayout, pairLayout: _MemoryLayout) -> _BucketTraverser {
+    .init(
+      pointer: self,
+      start: start(storage: storage, nodeLayout: nodeLayout, payloadOrPairAlignment: pairLayout.alignment),
       pairStride: pairLayout.stride,
       count: pointee.count)
   }

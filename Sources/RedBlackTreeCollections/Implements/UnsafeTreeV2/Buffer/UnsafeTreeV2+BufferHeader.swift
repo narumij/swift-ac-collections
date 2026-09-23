@@ -83,12 +83,12 @@ extension UnsafeTreeV2BufferHeader {
   /// `_Payload`のstrideとalignement
   @inlinable
   var payloadLayout: _MemoryLayout {
-    freshBucketAllocator.payload
+    freshBucketAllocator.payloadLayout
   }
 
   @inlinable
   var pairLayout: _MemoryLayout {
-    freshBucketAllocator._pair
+    freshBucketAllocator.pairLayout
   }
 
   @inlinable

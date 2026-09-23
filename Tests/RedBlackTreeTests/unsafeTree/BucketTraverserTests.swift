@@ -98,7 +98,7 @@ import XCTest
 
       let storage = UnsafeMutableRawPointer.allocate(
         byteCount: byteSize,
-        alignment: allocator._pair.alignment)
+        alignment: allocator.pairLayout.alignment)
 
       let header = storage.assumingMemoryBound(to: _Bucket.self)
       header.initialize(to: _Bucket(capacity: capacity))

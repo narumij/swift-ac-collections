@@ -53,7 +53,7 @@ import XCTest
     func checkHeadAllocationSize<_PayloadValue>(_ t: _PayloadValue.Type, capacity: Int) throws {
       let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _ in }
       let (byteSize, alignment) = (
-        allocator._headAllocationSize(capacity: capacity), allocator._pair.alignment
+        allocator._headAllocationSize(capacity: capacity), allocator.pairLayout.alignment
       )
       let storage = UnsafeMutableRawPointer.allocate(
         byteCount: byteSize + guardByteCount,
@@ -105,7 +105,7 @@ import XCTest
           .advanced(by: i)
           .pointee = 2
       }
-      let accessor = _BucketAccessor(pointer: header, start: start, pairStride: allocator._pair.stride)
+      let accessor = _BucketAccessor(pointer: header, start: start, pairStride: allocator.pairLayout.stride)
       for i in 0..<capacity {
         XCTAssertNotEqual(UnsafeMutableRawPointer(accessor[0]), storage)
         for j in 0..<MemoryLayout<UnsafeNode>.stride {
@@ -190,7 +190,7 @@ import XCTest
       let byteSize = allocator._allocationSizeNonzero(capacity: capacity)
       let storage = UnsafeMutableRawPointer.allocate(
         byteCount: byteSize,
-        alignment: allocator._pair.alignment)
+        alignment: allocator.pairLayout.alignment)
       defer { storage.deallocate() }
 
       let header = storage.assumingMemoryBound(to: _Bucket.self)
@@ -200,7 +200,7 @@ import XCTest
       let accessor = _BucketAccessor(
         pointer: header,
         start: start,
-        pairStride: allocator._pair.stride)
+        pairStride: allocator.pairLayout.stride)
 
       for index in 0..<capacity {
         let payload = UnsafeMutableRawPointer(accessor[index].__value_(as: Payload.self))
@@ -277,7 +277,7 @@ import XCTest
       let byteSize = allocator._headAllocationSize(capacity: capacity)
       let storage = UnsafeMutableRawPointer.allocate(
         byteCount: byteSize,
-        alignment: allocator._pair.alignment)
+        alignment: allocator.pairLayout.alignment)
       defer { storage.deallocate() }
 
       let header = storage.assumingMemoryBound(to: _Bucket.self)
@@ -285,7 +285,7 @@ import XCTest
         storage: header.primaryStorage(),
         payloadOrPairAlignment: MemoryLayout<Payload>.alignment)
       let lastNode = UnsafeMutableRawPointer(start)
-        .advanced(by: allocator._pair.stride * (capacity - 1))
+        .advanced(by: allocator.pairLayout.stride * (capacity - 1))
         .assumingMemoryBound(to: UnsafeNode.self)
       let lastPayloadEnd = UnsafeMutableRawPointer(lastNode.__value_(as: Payload.self))
         .advanced(by: MemoryLayout<Payload>.stride)
@@ -309,7 +309,7 @@ import XCTest
       let byteSize = allocator._allocationSizeNonzero(capacity: capacity)
       let storage = UnsafeMutableRawPointer.allocate(
         byteCount: byteSize,
-        alignment: allocator._pair.alignment)
+        alignment: allocator.pairLayout.alignment)
       defer { storage.deallocate() }
 
       let header = storage.assumingMemoryBound(to: _Bucket.self)
@@ -317,7 +317,7 @@ import XCTest
         storage: header.secondaryStorage(),
         payloadOrPairAlignment: MemoryLayout<Payload>.alignment)
       let lastNode = UnsafeMutableRawPointer(start)
-        .advanced(by: allocator._pair.stride * (capacity - 1))
+        .advanced(by: allocator.pairLayout.stride * (capacity - 1))
         .assumingMemoryBound(to: UnsafeNode.self)
       let lastPayloadEnd = UnsafeMutableRawPointer(lastNode.__value_(as: Payload.self))
         .advanced(by: MemoryLayout<Payload>.stride)
@@ -334,7 +334,7 @@ import XCTest
     func checkOtherAllocationSize<_PayloadValue>(_ t: _PayloadValue.Type, capacity: Int) throws {
       let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _ in }
       let (byteSize, alignment) = (
-        allocator._allocationSize(capacity: capacity), allocator._pair.alignment
+        allocator._allocationSize(capacity: capacity), allocator.pairLayout.alignment
       )
       let storage = UnsafeMutableRawPointer.allocate(
         byteCount: byteSize + guardByteCount,
@@ -367,7 +367,7 @@ import XCTest
           .advanced(by: i)
           .pointee = 1
       }
-      let accessor = _BucketAccessor(pointer: header, start: start, pairStride: allocator._pair.stride)
+      let accessor = _BucketAccessor(pointer: header, start: start, pairStride: allocator.pairLayout.stride)
       for i in 0..<capacity {
         XCTAssertNotEqual(UnsafeMutableRawPointer(accessor[0]), storage)
         for j in 0..<MemoryLayout<UnsafeNode>.stride {

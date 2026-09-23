@@ -98,7 +98,7 @@ import XCTest
 
       let storage = UnsafeMutableRawPointer.allocate(
         byteCount: byteSize,
-        alignment: allocator._pair.alignment)
+        alignment: allocator.pairLayout.alignment)
       defer { storage.deallocate() }
 
       let header = storage.assumingMemoryBound(to: _Bucket.self)
@@ -109,7 +109,7 @@ import XCTest
 
       XCTAssertEqual(
         queue.pairStride,
-        allocator._pair.stride,
+        allocator.pairLayout.stride,
         "\(Payload.self): queue stride is wrong",
         file: file,
         line: line)

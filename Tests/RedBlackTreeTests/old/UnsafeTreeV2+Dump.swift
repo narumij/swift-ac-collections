@@ -359,8 +359,8 @@
 
         print(" bucketHead            :", h.bucketHead == nil ? "nullptr" : "\(h.bucketHead!)")
         print(" valueAccessAllowed    :", h.isValueAccessAllowed)
-        print(" valueStride           :", h.deallocator.payload.stride)
-        print(" valueAlignment        :", h.deallocator.payload.alignment)
+        print(" valueStride           :", h.deallocator.payloadLayout.stride)
+        print(" valueAlignment        :", h.deallocator.payloadLayout.alignment)
 
         var bucketCount = 0
         var totalCapacity = 0

@@ -160,7 +160,7 @@
         print("  next     :", nextDesc)
 
         let start = bucket.start(
-          storage: bucket.storage(isHead: isHead),
+          storage: bucket.storage(isPrimary: isHead),
           payloadOrPairAlignment: payload.alignment
         )
         let stride = payload.stride
@@ -176,7 +176,7 @@
         print("  ---- entries ----")
 
         var it = bucket._capacities(
-          storage: bucket.storage(isHead: isHead),
+          storage: bucket.storage(isPrimary: isHead),
           pairLayout: payload
         )
 
@@ -241,7 +241,7 @@
       print(" alignment  :", payload.alignment)
       print(" valueStride:", payload.stride)
 
-      let start = start(storage: storage(isHead: isHead), payloadOrPairAlignment: payload.alignment)
+      let start = start(storage: storage(isPrimary: isHead), payloadOrPairAlignment: payload.alignment)
       let stride = payload.stride
 
       print(" header ptr :", self)
@@ -255,7 +255,7 @@
 
       print(" ---- entries ----")
 
-      var it = _capacities(storage: storage(isHead: isHead), pairLayout: payload)
+      var it = _capacities(storage: storage(isPrimary: isHead), pairLayout: payload)
       var i = 0
 
       while let node = it.pop() {

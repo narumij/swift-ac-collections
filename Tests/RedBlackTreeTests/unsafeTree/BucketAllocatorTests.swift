@@ -105,7 +105,7 @@ import XCTest
           .advanced(by: i)
           .pointee = 2
       }
-      let accessor = _BucketAccessor(pointer: header, start: start, pairStride: allocator.pairLayout.stride)
+      let accessor = _BucketAccessor(header: header, startNode: start, pairStride: allocator.pairLayout.stride)
       for i in 0..<capacity {
         XCTAssertNotEqual(UnsafeMutableRawPointer(accessor[0]), storage)
         for j in 0..<MemoryLayout<UnsafeNode>.stride {
@@ -198,8 +198,8 @@ import XCTest
         storage: header.secondaryStorage(),
         payloadOrPairAlignment: MemoryLayout<Payload>.alignment)
       let accessor = _BucketAccessor(
-        pointer: header,
-        start: start,
+        header: header,
+        startNode: start,
         pairStride: allocator.pairLayout.stride)
 
       for index in 0..<capacity {
@@ -367,7 +367,7 @@ import XCTest
           .advanced(by: i)
           .pointee = 1
       }
-      let accessor = _BucketAccessor(pointer: header, start: start, pairStride: allocator.pairLayout.stride)
+      let accessor = _BucketAccessor(header: header, startNode: start, pairStride: allocator.pairLayout.stride)
       for i in 0..<capacity {
         XCTAssertNotEqual(UnsafeMutableRawPointer(accessor[0]), storage)
         for j in 0..<MemoryLayout<UnsafeNode>.stride {

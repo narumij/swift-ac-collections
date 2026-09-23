@@ -104,7 +104,7 @@ import XCTest
       let header = storage.assumingMemoryBound(to: _Bucket.self)
 
       let queue = header._queue(
-        isHead: isHead,
+        isPrimary: isHead,
         pairLayout: MemoryLayout<Payload>._pairLayout)
 
       XCTAssertEqual(
@@ -115,14 +115,14 @@ import XCTest
         line: line)
 
       XCTAssertEqual(
-        Int(bitPattern: queue.start) % MemoryLayout<UnsafeNode>.alignment,
+        Int(bitPattern: queue.startNode) % MemoryLayout<UnsafeNode>.alignment,
         0,
         "\(Payload.self): queue start node is misaligned",
         file: file,
         line: line)
 
       XCTAssertEqual(
-        Int(bitPattern: queue.start.__value_(as: Payload.self))
+        Int(bitPattern: queue.startNode.__value_(as: Payload.self))
           % MemoryLayout<Payload>.alignment,
         0,
         "\(Payload.self): queue start payload is misaligned",
@@ -130,7 +130,7 @@ import XCTest
         line: line)
 
       for index in 0..<capacity {
-        let node = UnsafeMutableRawPointer(queue.start)
+        let node = UnsafeMutableRawPointer(queue.startNode)
           .advanced(by: queue.pairStride * index)
           .assumingMemoryBound(to: UnsafeNode.self)
 
@@ -157,8 +157,8 @@ import XCTest
           line: line)
 
         XCTAssertEqual(
-          headQueue.start,
-          queue.start,
+          headQueue.startNode,
+          queue.startNode,
           "\(Payload.self): head queue start is wrong",
           file: file,
           line: line)

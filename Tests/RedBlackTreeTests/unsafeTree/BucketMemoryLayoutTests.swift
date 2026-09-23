@@ -7,7 +7,7 @@
     // テストで使っている
     @inlinable
     subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
-      UnsafeMutableRawPointer(start)
+      UnsafeMutableRawPointer(startNode)
         .advanced(by: pairStride &* index)
         .assumingMemoryBound(to: UnsafeNode.self)
     }
@@ -21,7 +21,7 @@
       subscript(index: Int) -> _NodePtr {
         @inline(__always) _read {
           yield
-          UnsafeMutableRawPointer(start)
+          UnsafeMutableRawPointer(startNode)
             .advanced(by: pairStride &* index)
             .assumingMemoryBound(to: UnsafeNode.self)
         }
@@ -58,8 +58,8 @@
         bucket.deallocate()
       }
 
-      let queue = bucket._queue(isHead: false, pairLayout: pairLayout)
-      let accessor = bucket._accessor(isHead: false, pairLayout: pairLayout)
+      let queue = bucket._queue(isPrimary: false, pairLayout: pairLayout)
+      let accessor = bucket._accessor(isPrimary: false, pairLayout: pairLayout)
       let traverser = bucket._counts(
         storage: bucket.secondaryStorage(),
         nodeLayout: MemoryLayout<UnsafeNode>._memoryLayout,

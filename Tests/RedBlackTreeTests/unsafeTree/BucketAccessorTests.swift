@@ -26,13 +26,13 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
     
     let capacity = 1_000_000
     let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _ in }
-    let (byteSize, alignment) = (allocator._allocationSize(capacity: capacity), allocator._pair.alignment)
+    let (byteSize, alignment) = (allocator._allocationSize(capacity: capacity), allocator.pairLayout.alignment)
     let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
     let header = storage.assumingMemoryBound(to: _Bucket.self)
     let accessor = _BucketAccessor(
-      pointer: header,
-      start: header.start(storage: header.secondaryStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment),
-      stride: allocator._pair.stride)
+      header: header,
+      startNode: header.start(storage: header.secondaryStorage(), payloadOrPairAlignment: MemoryLayout<_PayloadValue>.alignment),
+      pairStride: allocator.pairLayout.stride)
     for i in 0..<capacity {
       accessor[i].initialize(to: .create(tag: .zero, nullptr: UnsafeNode.nullptr))
       accessor[i].__value_(as: _PayloadValue.self).initialize(to: .zero)

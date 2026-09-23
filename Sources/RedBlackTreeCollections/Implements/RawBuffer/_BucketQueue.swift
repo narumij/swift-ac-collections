@@ -29,48 +29,49 @@ struct _BucketQueue {
 
   @inlinable
   internal init(
-    pointer: UnsafeMutablePointer<_Bucket>,
-    start: UnsafeMutablePointer<UnsafeNode>,
-    stride: Int
+    header: UnsafeMutablePointer<_Bucket>,
+    startNode: UnsafeMutablePointer<UnsafeNode>,
+    pairStride: Int
   ) {
-    self.pointer = pointer
-    self.start = start
-    self.stride = stride
+    self.header = header
+    self.startNode = startNode
+    self.pairStride = pairStride
   }
 
-  @usableFromInline let pointer: UnsafeMutablePointer<_Bucket>
-  @usableFromInline let start: UnsafeMutablePointer<UnsafeNode>
-  @usableFromInline let stride: Int
+  @usableFromInline let header: UnsafeMutablePointer<_Bucket>
+  @usableFromInline let startNode: UnsafeMutablePointer<UnsafeNode>
+  @usableFromInline let pairStride: Int
 
   @inlinable
   mutating func pop() -> UnsafeMutablePointer<UnsafeNode>? {
-    guard pointer.count < pointer.capacity else { return nil }
-    defer { pointer.pointee.count &+= 1 }
-    return UnsafeMutableRawPointer(start)
-      .advanced(by: stride &* pointer.count)
+    guard header.count < header.capacity else { return nil }
+    defer { header.pointee.count &+= 1 }
+    return UnsafeMutableRawPointer(startNode)
+      .advanced(by: pairStride &* header.count)
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
   @inlinable
-  func next(payload: _MemoryLayout) -> _BucketQueue? {
-    guard let next = pointer.next else { return nil }
-    return next._queue(isHead: false, payloadLayout: payload)
+  func next(pairLayout: _MemoryLayout) -> _BucketQueue? {
+    guard let next = header.next else { return nil }
+    return next._queue(isPrimary: false, pairLayout: pairLayout)
   }
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
-  func _queue(isHead: Bool, payloadLayout: _MemoryLayout) -> _BucketQueue {
+  func _queue(isPrimary: Bool, pairLayout: _MemoryLayout) -> _BucketQueue {
     .init(
-      pointer: self,
-      start: start(storage: storage(isHead: isHead), valueAlignment: payloadLayout.alignment),
-      stride: payloadLayout.stride)
+      header: self,
+      startNode: start(
+        storage: storage(isPrimary: isPrimary), payloadOrPairAlignment: pairLayout.alignment),
+      pairStride: pairLayout.stride)
   }
 
   @inlinable
-  func queue(payloadLayout: _MemoryLayout) -> _BucketQueue? {
-    return _queue(isHead: true, payloadLayout: payloadLayout)
+  func queue(pairLayout: _MemoryLayout) -> _BucketQueue? {
+    return _queue(isPrimary: true, pairLayout: pairLayout)
   }
 }
 

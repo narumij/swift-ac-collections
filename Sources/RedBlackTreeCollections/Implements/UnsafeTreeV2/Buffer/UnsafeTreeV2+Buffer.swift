@@ -60,7 +60,8 @@ extension UnsafeTreeV2Buffer {
         $0.assumingMemoryBound(to: _PayloadValue.self)
           .deinitialize(count: 1)
       },
-      minimumCapacity: nodeCapacity, nullptr: nullptr)
+      minimumCapacity: nodeCapacity,
+      nullptr: nullptr)
   }
 
   @nonobjc

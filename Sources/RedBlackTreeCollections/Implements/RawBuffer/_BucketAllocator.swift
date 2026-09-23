@@ -86,21 +86,25 @@ package struct _BucketAllocator {
     valueType: _PayloadValue.Type,
     deinitialize: @escaping (UnsafeMutableRawPointer) -> Void
   ) {
-    self.payload = MemoryLayout<_PayloadValue>._memoryLayout
-    self._pair = MemoryLayout<_PayloadValue>._pairLayout
+    self.nodeLayout = MemoryLayout<UnsafeNode>._memoryLayout
+    self.payloadLayout = MemoryLayout<_PayloadValue>._memoryLayout
+    self.pairLayout = MemoryLayout<_PayloadValue>._pairLayout
     self.deinitialize = deinitialize
   }
 
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
+  @usableFromInline
+  let nodeLayout: _MemoryLayout
+
   /// `_Payload` のstrideとalignement
   @usableFromInline
-  let payload: _MemoryLayout
+  let payloadLayout: _MemoryLayout
 
   /// `Node|Value` のペア形式でのstrideとalignment
   @usableFromInline
-  package let _pair: _MemoryLayout
+  package let pairLayout: _MemoryLayout
 
   /// 型を消去した `_Payload` のdeinitializer
   ///
@@ -117,7 +121,7 @@ extension _BucketAllocator {
   @usableFromInline  // レジスタ圧を下げることにした
   package func createHeadBucket(capacity: Int, nullptr: _NodePtr) -> _BucketPointer {
 
-    let (bytes, alignment) = (_headAllocationSize(capacity: capacity), _pair.alignment)
+    let (bytes, alignment) = (_headAllocationSize(capacity: capacity), pairLayout.alignment)
 
     let header_storage = UnsafeMutableRawPointer._allocate(
       byteCount: bytes,
@@ -138,7 +142,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(storage: header.primaryStorage(), payload: _pair)
+        var it = header._capacities(storage: header.primaryStorage(), pairLayout: pairLayout)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -153,7 +157,7 @@ extension _BucketAllocator {
 
     assert(bucketCapacity != 0, "先頭以外のバケットは容量0ではないこと")
 
-    let (bytes, alignment) = (_allocationSizeNonzero(capacity: bucketCapacity), _pair.alignment)
+    let (bytes, alignment) = (_allocationSizeNonzero(capacity: bucketCapacity), pairLayout.alignment)
 
     let header_storage = UnsafeMutableRawPointer._allocate(
       byteCount: bytes,
@@ -166,7 +170,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(storage: header.secondaryStorage(), payload: _pair)
+        var it = header._capacities(storage: header.secondaryStorage(), pairLayout: pairLayout)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -191,7 +195,7 @@ extension _BucketAllocator {
   package func _headAllocationSize(capacity: Int) -> Int {
     let prefix = MemoryLayout<_Bucket>.stride
       &+ MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
-      &+ MemoryLayout<UnsafeNode>.stride
+      &+ nodeLayout.stride
     guard capacity != 0 else { return prefix }
     return _allocationSize(prefix: prefix, capacity: capacity)
   }
@@ -206,15 +210,15 @@ extension _BucketAllocator {
   @inlinable
   @inline(__always)
   func _allocationSize(prefix: Int, capacity: Int) -> Int {
-    let nodeStride = MemoryLayout<UnsafeNode>.stride
-    let payloadAlignment = payload.alignment
+    let nodeStride = nodeLayout.stride
+    let payloadAlignment = payloadLayout.alignment
     let payloadOffset = prefix &+ nodeStride
     let leadingGap = (0 &- payloadOffset) & (payloadAlignment &- 1)
     return prefix
       &+ leadingGap
-      &+ _pair.stride &* (capacity &- 1)
+      &+ pairLayout.stride &* (capacity &- 1)
       &+ nodeStride
-      &+ payload.stride
+      &+ payloadLayout.stride
   }
 }
 
@@ -289,7 +293,7 @@ extension _BucketAllocator {
 
   @inlinable
   func _deinitializeNodeAndValues(storage: UnsafeMutableRawPointer, _ b: _BucketPointer) {
-    var it = b._counts(storage: storage, payload: _pair)
+    var it = b._counts(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout)
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1))
@@ -304,7 +308,7 @@ extension _BucketAllocator {
     }
     #if DEBUG
       do {
-        var it = b._capacities(storage: storage, payload: _pair)
+        var it = b._capacities(storage: storage, pairLayout: pairLayout)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }

@@ -107,8 +107,8 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   ///
   /// 確保数0の場合、確保領域の末尾の次のアドレスとなる
   @inlinable
-  func storage(isHead: Bool) -> UnsafeMutableRawPointer {
-    isHead ? primaryStorage() : secondaryStorage()
+  func storage(isPrimary: Bool) -> UnsafeMutableRawPointer {
+    isPrimary ? primaryStorage() : secondaryStorage()
   }
 
   @inlinable
@@ -123,28 +123,45 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
 
   /// ノードの開始アドレスを返す
   ///
-  /// `Node|Value` と隣接させるために必要なアライメント調整後のアドレスとなる
+  /// `Node|Payload` と隣接させるために必要なアライメント調整後のアドレスとなる
   ///
   /// __Primary Bucket__
   ///
   /// ```
-  /// |Bucket|ptr|Node| |Node|Value|Node|Value|...
-  ///                   ^--start
+  /// |Bucket|begin ptr|end Node| |Node|Payload|Node|Payload|...
+  ///                           ^- storage
+  ///                             ^-------start
+  ///                             ^-------node(0)
+  ///                             ^-------(node alignment)
+  ///                                  ^-payload
+  ///                                  ^-(payload alignment)
   /// ```
   ///
   /// __Secondary and other Buckets__
   /// ```
-  /// |Bucket| |Node|Value|Node|Value|...
-  ///          ^--start
+  /// |Bucket| |Node|Payload|Node|Payload|...
+  ///        ^- storage
+  ///          ^-------start
+  ///          ^-------node(0)
+  ///          ^-------(node alignment)
+  ///               ^-payload(0)
+  ///               ^-(payload alignment)
   /// ```
+  ///
+  /// - Parameters:
+  ///   - storage: Bucket固有のメタデータ直後にある、alignment調整前のslot領域先頭アドレス。
+  ///   - payloadAlignment: Payload型に要求されるalignment。max(node, payload)で構わない。
+  ///
+  /// - Returns: `node(0)`、すなわち最初の通常ノードの開始アドレス。
+  ///
   /// - WARNING: 確保数0の場合利用してはならない
   ///
   @inlinable
-  package func start(storage: UnsafeMutableRawPointer, valueAlignment: Int) -> UnsafeMutablePointer<
+  package func start(storage: UnsafeMutableRawPointer, payloadOrPairAlignment payloadAlignment: Int) -> UnsafeMutablePointer<
     UnsafeNode
   > {
-    let headerAlignment = MemoryLayout<UnsafeNode>.alignment
-    if valueAlignment <= headerAlignment {
+    let nodeAlignment = MemoryLayout<UnsafeNode>.alignment
+    if payloadAlignment <= nodeAlignment {
       return
         storage
         .assumingMemoryBound(to: UnsafeNode.self)
@@ -152,8 +169,26 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
     return
       storage
       .advanced(by: MemoryLayout<UnsafeNode>.stride)
-      .alignedUp(toMultipleOf: valueAlignment)
+      .alignedUp(toMultipleOf: payloadAlignment)
       .advanced(by: -MemoryLayout<UnsafeNode>.stride)
+      .assumingMemoryBound(to: UnsafeNode.self)
+  }
+  
+  @inlinable
+  package func start(storage: UnsafeMutableRawPointer, nodeLayout: _MemoryLayout, payloadOrPairAlignment payloadAlignment: Int) -> UnsafeMutablePointer<
+    UnsafeNode
+  > {
+    let nodeAlignment = nodeLayout.alignment
+    if payloadAlignment <= nodeAlignment {
+      return
+        storage
+        .assumingMemoryBound(to: UnsafeNode.self)
+    }
+    return
+      storage
+      .advanced(by: nodeLayout.stride)
+      .alignedUp(toMultipleOf: payloadAlignment)
+      .advanced(by: -nodeLayout.stride)
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 }

@@ -255,7 +255,7 @@ extension UnsafeTreeV2BufferHeader {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
       assert(___tracking_tag < freshPoolUsedCount)
       var remaining = Int(truncatingIfNeeded: ___tracking_tag)
-      var p = freshBucketHead?.accessor(payload: pairLayout)
+      var p = freshBucketHead?.accessor(pairLayout: pairLayout)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {

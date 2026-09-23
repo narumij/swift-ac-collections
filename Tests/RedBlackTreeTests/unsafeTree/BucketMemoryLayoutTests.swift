@@ -59,7 +59,7 @@
       }
 
       let queue = bucket._queue(isHead: false, pairLayout: pairLayout)
-      let accessor = bucket._accessor(isHead: false, payload: pairLayout)
+      let accessor = bucket._accessor(isHead: false, pairLayout: pairLayout)
       let traverser = bucket._counts(
         storage: bucket.secondaryStorage(),
         pairLayout: pairLayout

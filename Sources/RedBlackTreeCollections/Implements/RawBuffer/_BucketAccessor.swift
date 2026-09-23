@@ -69,7 +69,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   func _accessor(isHead: Bool, pairLayout: _MemoryLayout) -> _BucketAccessor {
     .init(
       pointer: self,
-      start: start(storage: storage(isHead: isHead), payloadAlignment: pairLayout.alignment),
+      start: start(storage: storage(isHead: isHead), payloadOrPairAlignment: pairLayout.alignment),
       pairStride: pairLayout.stride)
   }
 

@@ -64,7 +64,7 @@ import XCTest
         .initializeMemory(as: UInt8.self, repeating: guardByte, count: guardByteCount)
       let header = storage.assumingMemoryBound(to: _Bucket.self)
       let start = header.start(
-        storage: header.primaryStorage(), payloadAlignment: MemoryLayout<_PayloadValue>.alignment)
+        storage: header.primaryStorage(), payloadOrPairAlignment: MemoryLayout<_PayloadValue>.alignment)
       XCTAssertNotEqual(start, storage)
       XCTAssertEqual(
         Int(bitPattern: header) % MemoryLayout<_Bucket>.alignment, 0,
@@ -196,7 +196,7 @@ import XCTest
       let header = storage.assumingMemoryBound(to: _Bucket.self)
       let start = header.start(
         storage: header.secondaryStorage(),
-        payloadAlignment: MemoryLayout<Payload>.alignment)
+        payloadOrPairAlignment: MemoryLayout<Payload>.alignment)
       let accessor = _BucketAccessor(
         pointer: header,
         start: start,
@@ -283,7 +283,7 @@ import XCTest
       let header = storage.assumingMemoryBound(to: _Bucket.self)
       let start = header.start(
         storage: header.primaryStorage(),
-        payloadAlignment: MemoryLayout<Payload>.alignment)
+        payloadOrPairAlignment: MemoryLayout<Payload>.alignment)
       let lastNode = UnsafeMutableRawPointer(start)
         .advanced(by: allocator._pair.stride * (capacity - 1))
         .assumingMemoryBound(to: UnsafeNode.self)
@@ -315,7 +315,7 @@ import XCTest
       let header = storage.assumingMemoryBound(to: _Bucket.self)
       let start = header.start(
         storage: header.secondaryStorage(),
-        payloadAlignment: MemoryLayout<Payload>.alignment)
+        payloadOrPairAlignment: MemoryLayout<Payload>.alignment)
       let lastNode = UnsafeMutableRawPointer(start)
         .advanced(by: allocator._pair.stride * (capacity - 1))
         .assumingMemoryBound(to: UnsafeNode.self)
@@ -348,7 +348,7 @@ import XCTest
         storage
         .assumingMemoryBound(to: _Bucket.self)
         .start(
-          storage: header.secondaryStorage(), payloadAlignment: MemoryLayout<_PayloadValue>.alignment)
+          storage: header.secondaryStorage(), payloadOrPairAlignment: MemoryLayout<_PayloadValue>.alignment)
       XCTAssertNotEqual(start, storage)
       XCTAssertEqual(
         Int(bitPattern: header) % MemoryLayout<_Bucket>.alignment, 0,

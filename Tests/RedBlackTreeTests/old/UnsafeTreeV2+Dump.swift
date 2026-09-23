@@ -161,7 +161,7 @@
 
         let start = bucket.start(
           storage: bucket.storage(isHead: isHead),
-          payloadAlignment: payload.alignment
+          payloadOrPairAlignment: payload.alignment
         )
         let stride = payload.stride
 
@@ -241,7 +241,7 @@
       print(" alignment  :", payload.alignment)
       print(" valueStride:", payload.stride)
 
-      let start = start(storage: storage(isHead: isHead), payloadAlignment: payload.alignment)
+      let start = start(storage: storage(isHead: isHead), payloadOrPairAlignment: payload.alignment)
       let stride = payload.stride
 
       print(" header ptr :", self)

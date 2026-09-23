@@ -206,7 +206,7 @@ extension UnsafeTreeV2BufferHeader {
     @inlinable
     mutating func pushFreshBucket(head: _BucketPointer) {
       freshBucketHead = head
-      freshBucketCurrent = head.queue(payloadLayout: pairLayout)
+      freshBucketCurrent = head.queue(pairLayout: pairLayout)
       freshBucketLast = head
       freshPoolCapacity &+= head.pointee.capacity
       #if DEBUG
@@ -231,7 +231,7 @@ extension UnsafeTreeV2BufferHeader {
       if let p = freshBucketCurrent?.pop() {
         return p
       }
-      freshBucketCurrent = freshBucketCurrent?.next(payload: pairLayout)
+      freshBucketCurrent = freshBucketCurrent?.next(pairLayout: pairLayout)
       return freshBucketCurrent?.pop()
     }
   }
@@ -274,7 +274,7 @@ extension UnsafeTreeV2BufferHeader {
     mutating func ___flushFreshPool() {
       freshBucketAllocator.deinitialize(bucket: freshBucketHead)
       freshPoolUsedCount = 0
-      freshBucketCurrent = freshBucketHead?.queue(payloadLayout: pairLayout)
+      freshBucketCurrent = freshBucketHead?.queue(pairLayout: pairLayout)
     }
 
     @usableFromInline

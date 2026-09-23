@@ -31,46 +31,46 @@ struct _BucketQueue {
   internal init(
     pointer: UnsafeMutablePointer<_Bucket>,
     start: UnsafeMutablePointer<UnsafeNode>,
-    stride: Int
+    pairStride: Int
   ) {
     self.pointer = pointer
     self.start = start
-    self.stride = stride
+    self.pairStride = pairStride
   }
 
   @usableFromInline let pointer: UnsafeMutablePointer<_Bucket>
   @usableFromInline let start: UnsafeMutablePointer<UnsafeNode>
-  @usableFromInline let stride: Int
+  @usableFromInline let pairStride: Int
 
   @inlinable
   mutating func pop() -> UnsafeMutablePointer<UnsafeNode>? {
     guard pointer.count < pointer.capacity else { return nil }
     defer { pointer.pointee.count &+= 1 }
     return UnsafeMutableRawPointer(start)
-      .advanced(by: stride &* pointer.count)
+      .advanced(by: pairStride &* pointer.count)
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
   @inlinable
-  func next(payload: _MemoryLayout) -> _BucketQueue? {
+  func next(pairLayout: _MemoryLayout) -> _BucketQueue? {
     guard let next = pointer.next else { return nil }
-    return next._queue(isHead: false, payloadLayout: payload)
+    return next._queue(isHead: false, pairLayout: pairLayout)
   }
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
-  func _queue(isHead: Bool, payloadLayout: _MemoryLayout) -> _BucketQueue {
+  func _queue(isHead: Bool, pairLayout: _MemoryLayout) -> _BucketQueue {
     .init(
       pointer: self,
-      start: start(storage: storage(isHead: isHead), payloadAlignment: payloadLayout.alignment),
-      stride: payloadLayout.stride)
+      start: start(storage: storage(isHead: isHead), payloadAlignment: pairLayout.alignment),
+      pairStride: pairLayout.stride)
   }
 
   @inlinable
-  func queue(payloadLayout: _MemoryLayout) -> _BucketQueue? {
-    return _queue(isHead: true, payloadLayout: payloadLayout)
+  func queue(pairLayout: _MemoryLayout) -> _BucketQueue? {
+    return _queue(isHead: true, pairLayout: pairLayout)
   }
 }
 

@@ -105,10 +105,10 @@ import XCTest
 
       let queue = header._queue(
         isHead: isHead,
-        payloadLayout: MemoryLayout<Payload>._pairLayout)
+        pairLayout: MemoryLayout<Payload>._pairLayout)
 
       XCTAssertEqual(
-        queue.stride,
+        queue.pairStride,
         allocator._pair.stride,
         "\(Payload.self): queue stride is wrong",
         file: file,
@@ -131,7 +131,7 @@ import XCTest
 
       for index in 0..<capacity {
         let node = UnsafeMutableRawPointer(queue.start)
-          .advanced(by: queue.stride * index)
+          .advanced(by: queue.pairStride * index)
           .assumingMemoryBound(to: UnsafeNode.self)
 
         XCTAssertEqual(
@@ -152,7 +152,7 @@ import XCTest
 
       if isHead {
         let headQueue = try XCTUnwrap(
-          header.queue(payloadLayout: MemoryLayout<Payload>._pairLayout),
+          header.queue(pairLayout: MemoryLayout<Payload>._pairLayout),
           file: file,
           line: line)
 
@@ -164,8 +164,8 @@ import XCTest
           line: line)
 
         XCTAssertEqual(
-          headQueue.stride,
-          queue.stride,
+          headQueue.pairStride,
+          queue.pairStride,
           "\(Payload.self): head queue stride is wrong",
           file: file,
           line: line)

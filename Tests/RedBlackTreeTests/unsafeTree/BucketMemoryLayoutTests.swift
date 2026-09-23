@@ -8,7 +8,7 @@
     @inlinable
     subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
       UnsafeMutableRawPointer(start)
-        .advanced(by: stride &* index)
+        .advanced(by: pairStride &* index)
         .assumingMemoryBound(to: UnsafeNode.self)
     }
   }
@@ -58,7 +58,7 @@
         bucket.deallocate()
       }
 
-      let queue = bucket._queue(isHead: false, payloadLayout: pairLayout)
+      let queue = bucket._queue(isHead: false, pairLayout: pairLayout)
       let accessor = bucket._accessor(isHead: false, payload: pairLayout)
       let traverser = bucket._counts(
         storage: bucket.secondaryStorage(),

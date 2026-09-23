@@ -181,7 +181,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   /// ```
   @inlinable
   func _advanced(with stride: Int, count: Int) -> UnsafeMutablePointer {
-    _advanced(raw: (MemoryLayout<UnsafeNode>.stride + stride) * count)
+    _advanced(raw: (MemoryLayout<UnsafeNode>.stride &+ stride) &* count)
   }
 
   /// 型と移動量を指定して、他のノードアドレスを取得する
@@ -195,9 +195,9 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     let alignment = max(
       MemoryLayout<UnsafeNode>.alignment,
       MemoryLayout<_PayloadValue>.alignment)
-    let size = MemoryLayout<UnsafeNode>.stride + MemoryLayout<_PayloadValue>.stride
-    let stride = (size + alignment - 1) & -alignment
-    return _advanced(raw: stride * count)
+    let size = MemoryLayout<UnsafeNode>.stride &+ MemoryLayout<_PayloadValue>.stride
+    let stride = (size &+ alignment &- 1) & -alignment
+    return _advanced(raw: stride &* count)
   }
 }
 

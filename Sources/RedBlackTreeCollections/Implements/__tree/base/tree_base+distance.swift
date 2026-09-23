@@ -50,6 +50,6 @@ extension _BaseNode_SignedDistanceProtocol {
       swap(&__first, &__last)
       sign = -1
     }
-    return sign * __distance(__first, __last)
+    return sign &* __distance(__first, __last)
   }
 }

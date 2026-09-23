@@ -32,7 +32,7 @@ internal func
   var __r = 0
   while __first != __last {
     __first = __tree_next(__first)
-    __r += 1
+    __r &+= 1
   }
   return __r
 }
@@ -49,7 +49,7 @@ internal func
   var __r = 0
   while case .success(let ___f) = __first, ___f != __last {
     __first = ___tree_next_iter(___f)
-    __r += 1
+    __r &+= 1
   }
   return __first.map { _ in __r }
 }

@@ -208,7 +208,7 @@ extension UnsafeTreeV2BufferHeader {
       freshBucketHead = head
       freshBucketCurrent = head.queue(payloadLayout: pairLayout)
       freshBucketLast = head
-      freshPoolCapacity += head.pointee.capacity
+      freshPoolCapacity &+= head.pointee.capacity
       #if DEBUG
         freshBucketCount += 1
       #endif
@@ -261,7 +261,7 @@ extension UnsafeTreeV2BufferHeader {
         if remaining < cap {
           return h[remaining]
         }
-        remaining -= cap
+        remaining &-= cap
         p = h.next(payload: pairLayout)
       }
       return nullptr
@@ -310,7 +310,8 @@ extension UnsafeTreeV2BufferHeader {
       assert(p.__parent_.___is_null || p.__slow_end() == end_ptr, "木が異なるのは不可")
       assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
       assert(recycleHead != p, "過剰リサイクル不可")
-      count -= 1
+      count &-= 1
+      assert(count >= 0)
       // 解放時に世代変更することで、解放チェックと世代チェックの双方を世代チェックで満たせる
       p.pointee.___recycle_count &+= 1
       freshBucketAllocator.deinitialize(p.advanced(by: 1))
@@ -336,7 +337,7 @@ extension UnsafeTreeV2BufferHeader {
     mutating func ___popRecycle() -> _NodePtr {
       let p = recycleHead
       recycleHead = p.pointee.__left_
-      count += 1
+      count &+= 1
       p.pointee.___has_payload_content = true
       return p
     }
@@ -380,8 +381,8 @@ extension UnsafeTreeV2BufferHeader {
     #if DEBUG
       nodeInitializedCount += 1
     #endif
-    freshPoolUsedCount += 1
-    count += 1
+    freshPoolUsedCount &+= 1
+    count &+= 1
     return p
   }
 }

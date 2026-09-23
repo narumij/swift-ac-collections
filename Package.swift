@@ -52,6 +52,7 @@ var _settings: [SwiftSetting] =
     // 一部のポインタ比較で128bit幅のパス表現を用いる
     // Int.maxサイズのノード数を用いる場合に必要となるが、現実的には不要
     // 念のために用意してある
+    // メモリ計算の都合、Int.max / pair.strideが上限となる
     .define("USE_INT128", .when(traits: ["USE_INT128"])),
 
     // ノードの付帯情報のビット幅を半分にするマクロ定義

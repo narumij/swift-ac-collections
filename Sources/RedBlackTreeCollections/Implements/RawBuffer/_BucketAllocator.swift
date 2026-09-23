@@ -195,7 +195,7 @@ extension _BucketAllocator {
   package func _headAllocationSize(capacity: Int) -> Int {
     let prefix = MemoryLayout<_Bucket>.stride
       &+ MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
-      &+ MemoryLayout<UnsafeNode>.stride
+      &+ nodeLayout.stride
     guard capacity != 0 else { return prefix }
     return _allocationSize(prefix: prefix, capacity: capacity)
   }
@@ -210,7 +210,7 @@ extension _BucketAllocator {
   @inlinable
   @inline(__always)
   func _allocationSize(prefix: Int, capacity: Int) -> Int {
-    let nodeStride = MemoryLayout<UnsafeNode>.stride
+    let nodeStride = nodeLayout.stride
     let payloadAlignment = payloadLayout.alignment
     let payloadOffset = prefix &+ nodeStride
     let leadingGap = (0 &- payloadOffset) & (payloadAlignment &- 1)
@@ -293,7 +293,7 @@ extension _BucketAllocator {
 
   @inlinable
   func _deinitializeNodeAndValues(storage: UnsafeMutableRawPointer, _ b: _BucketPointer) {
-    var it = b._counts(storage: storage, pairLayout: pairLayout)
+    var it = b._counts(storage: storage, nodeLayout: nodeLayout, pairLayout: pairLayout)
     while let p = it.pop() {
       if p.pointee.___has_payload_content {
         deinitialize(p.advanced(by: 1))

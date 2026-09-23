@@ -80,6 +80,11 @@ package struct UnsafeTreeV2BufferHeader {
 
 extension UnsafeTreeV2BufferHeader {
 
+  @inlinable
+  var nodeLayout: _MemoryLayout {
+    freshBucketAllocator.nodeLayout
+  }
+
   /// `_Payload`のstrideとalignement
   @inlinable
   var payloadLayout: _MemoryLayout {
@@ -290,7 +295,7 @@ extension UnsafeTreeV2BufferHeader {
 
     @inlinable
     func makeUsedNodeIterator<T>() -> _FreshPoolUsedIterator<T> {
-      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead, pairLayout: pairLayout)
+      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead, nodeLayout: nodeLayout, pairLayout: pairLayout)
     }
   }
 

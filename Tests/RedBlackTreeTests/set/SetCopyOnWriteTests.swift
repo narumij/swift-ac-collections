@@ -54,7 +54,11 @@ import XCTest
         tree.remove(v)
       }
       XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 1)
+      #if !COMPATIBLE_ATCODER_2025
+        XCTAssertEqual(tree._copyCount, 1)
+      #else
+        XCTAssertEqual(tree._copyCount, 0)
+      #endif
     }
 
     func testSet4() throws {

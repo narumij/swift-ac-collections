@@ -45,6 +45,14 @@ package final class _LazyTie: ManagedBuffer<_TiedRawBuffer?, Void> {
 }
 
 extension _LazyTie {
+  
+  @inlinable
+  package static func < (lhs: _LazyTie, rhs: _LazyTie) -> Bool {
+    ObjectIdentifier(lhs) < ObjectIdentifier(rhs)
+  }
+}
+
+extension _LazyTie {
 
   @nonobjc
   @usableFromInline
@@ -59,3 +67,23 @@ extension _LazyTie {
 /// The type-punned empty singleton storage instance.
 @usableFromInline
 nonisolated(unsafe) package let _emptyLazyDetach = _LazyTie.create()
+
+// MARK: -
+
+extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
+
+  @inlinable
+  package var lazyDetach: _LazyTie? {
+    try? map(\.lazyDetach).get()
+  }
+
+  @inlinable
+  func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool {
+    switch self {
+    case .success(let handle):
+      handle.lazyDetach === rhs
+    case .failure:
+      false
+    }
+  }
+}

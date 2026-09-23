@@ -62,6 +62,7 @@
       let accessor = bucket._accessor(isHead: false, pairLayout: pairLayout)
       let traverser = bucket._counts(
         storage: bucket.secondaryStorage(),
+        nodeLayout: MemoryLayout<UnsafeNode>._memoryLayout,
         pairLayout: pairLayout
       )
 

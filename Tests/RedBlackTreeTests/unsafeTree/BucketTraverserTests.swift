@@ -117,6 +117,7 @@ import XCTest
 
       var counts = header._counts(
         storage: bucketStorage,
+        nodeLayout: MemoryLayout<UnsafeNode>._memoryLayout,
         pairLayout: MemoryLayout<Payload>._pairLayout)
 
       for index in 0..<capacity {

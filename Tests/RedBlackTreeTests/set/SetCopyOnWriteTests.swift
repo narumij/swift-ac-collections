@@ -47,18 +47,15 @@ import XCTest
       XCTAssertEqual(set._copyCount, 0)
     }
 
-    #if false
-      func testSet3() throws {
-        var tree = RedBlackTreeSet<Int>(0..<20)
-        tree._copyCount = 0
-        for v in tree {
-          tree.remove(v)
-        }
-        XCTAssertEqual(tree.count, 0)
-        // TODO: FIXME
-        XCTAssertEqual(tree._copyCount, 0)  // これが0になる挙動にするか、1になる挙動にするか、悩み
+    func testSet3() throws {
+      var tree = RedBlackTreeSet<Int>(0..<20)
+      tree._copyCount = 0
+      for v in tree {
+        tree.remove(v)
       }
-    #endif
+      XCTAssertEqual(tree.count, 0)
+      XCTAssertEqual(tree._copyCount, 1)
+    }
 
     func testSet4() throws {
       var tree = RedBlackTreeSet<Int>(0..<20)
@@ -112,7 +109,6 @@ import XCTest
       XCTAssertEqual(xy[1]!._copyCount, 0)
       XCTAssertEqual(loopCount, count / N)
     }
-
 
     func testABC385DBehavior() throws {
       let x = 0

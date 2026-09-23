@@ -29,16 +29,16 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
   @inlinable
   package init(
     pointer: UnsafeMutablePointer<_Bucket>,
-    start: UnsafeMutablePointer<UnsafeNode>,
+    startNode: UnsafeMutablePointer<UnsafeNode>,
     pairStride: Int
   ) {
     self.pointer = pointer
-    self.start = start
+    self.startNode = startNode
     self.pairStride = pairStride
   }
 
   @usableFromInline let pointer: UnsafeMutablePointer<_Bucket>
-  @usableFromInline let start: _NodePtr
+  @usableFromInline let startNode: _NodePtr
   @usableFromInline let pairStride: Int
 
   @inlinable
@@ -50,7 +50,7 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
   package subscript(index: Int) -> _NodePtr {
     _read {
       yield
-      UnsafeMutableRawPointer(start)
+      UnsafeMutableRawPointer(startNode)
         .advanced(by: pairStride &* index)
         .assumingMemoryBound(to: UnsafeNode.self)
     }
@@ -58,7 +58,7 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
 
   @inlinable
   func next(payload: _MemoryLayout) -> _BucketAccessor? {
-    assert(pointer.next != nil) // 利用側でカウント管理している様子
+    assert(pointer.next != nil)  // 利用側でカウント管理している様子
     return pointer.next!._accessor(isHead: false, pairLayout: payload)
   }
 }
@@ -69,7 +69,8 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   func _accessor(isHead: Bool, pairLayout: _MemoryLayout) -> _BucketAccessor {
     .init(
       pointer: self,
-      start: start(storage: storage(isHead: isHead), payloadOrPairAlignment: pairLayout.alignment),
+      startNode: start(
+        storage: storage(isHead: isHead), payloadOrPairAlignment: pairLayout.alignment),
       pairStride: pairLayout.stride)
   }
 

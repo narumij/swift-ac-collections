@@ -30,12 +30,12 @@ struct _BucketTraverser: _UnsafeNodePtrType {
   @inlinable
   internal init(
     pointer: UnsafeMutablePointer<_Bucket>,
-    start: UnsafeMutablePointer<UnsafeNode>,
+    startNode: UnsafeMutablePointer<UnsafeNode>,
     pairStride: Int,
     count: Int
   ) {
     self.pointer = pointer
-    self.start = start
+    self.startNode = startNode
     self.pairStride = pairStride
     self.count = count
   }
@@ -43,7 +43,7 @@ struct _BucketTraverser: _UnsafeNodePtrType {
   @usableFromInline var count: Int
   @usableFromInline var it: Int = 0
   @usableFromInline let pointer: UnsafeMutablePointer<_Bucket>
-  @usableFromInline let start: _NodePtr
+  @usableFromInline let startNode: _NodePtr
   @usableFromInline let pairStride: Int
 
   @inlinable
@@ -51,7 +51,7 @@ struct _BucketTraverser: _UnsafeNodePtrType {
     guard it < count else { return nil }
     defer { it &+= 1 }
 
-    return UnsafeMutableRawPointer(start)
+    return UnsafeMutableRawPointer(startNode)
       .advanced(by: pairStride &* it)
       .assumingMemoryBound(to: UnsafeNode.self)
   }
@@ -84,7 +84,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
   func _counts(storage: UnsafeMutableRawPointer, nodeLayout: _MemoryLayout, pairLayout: _MemoryLayout) -> _BucketTraverser {
     .init(
       pointer: self,
-      start: start(storage: storage, nodeLayout: nodeLayout, payloadOrPairAlignment: pairLayout.alignment),
+      startNode: start(storage: storage, nodeLayout: nodeLayout, payloadOrPairAlignment: pairLayout.alignment),
       pairStride: pairLayout.stride,
       count: pointee.count)
   }
@@ -94,7 +94,7 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
     func _capacities(storage: UnsafeMutableRawPointer, pairLayout: _MemoryLayout) -> _BucketTraverser {
       .init(
         pointer: self,
-        start: start(storage: storage, payloadOrPairAlignment: pairLayout.alignment),
+        startNode: start(storage: storage, payloadOrPairAlignment: pairLayout.alignment),
         pairStride: pairLayout.stride,
         count: pointee.capacity)
     }

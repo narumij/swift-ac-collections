@@ -86,25 +86,26 @@ package struct _BucketAllocator {
     valueType: _PayloadValue.Type,
     deinitialize: @escaping (UnsafeMutableRawPointer) -> Void
   ) {
+    self.pairLayout = MemoryLayout<_PayloadValue>._pairLayout
     self.nodeLayout = MemoryLayout<UnsafeNode>._memoryLayout
     self.payloadLayout = MemoryLayout<_PayloadValue>._memoryLayout
-    self.pairLayout = MemoryLayout<_PayloadValue>._pairLayout
     self.deinitialize = deinitialize
   }
 
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
+  /// `Node|Payload` のペア形式でのstrideとalignment
+  @usableFromInline
+  package let pairLayout: _MemoryLayout
+  
+  /// UnsafeNode のstrideとalignement
   @usableFromInline
   let nodeLayout: _MemoryLayout
 
   /// `_Payload` のstrideとalignement
   @usableFromInline
   let payloadLayout: _MemoryLayout
-
-  /// `Node|Value` のペア形式でのstrideとalignment
-  @usableFromInline
-  package let pairLayout: _MemoryLayout
 
   /// 型を消去した `_Payload` のdeinitializer
   ///

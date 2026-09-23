@@ -66,7 +66,7 @@ struct _BucketTraverser: _UnsafeNodePtrType {
       unsafeAddress {
         withUnsafePointer(
           to: UnsafeMutableRawPointer(start)
-            .advanced(by: stride * index)
+            .advanced(by: stride &* index)
             .assumingMemoryBound(to: UnsafeNode.self)
         ) {
           $0

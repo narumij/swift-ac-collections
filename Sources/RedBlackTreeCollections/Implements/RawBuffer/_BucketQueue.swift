@@ -42,6 +42,14 @@ struct _BucketQueue {
   @usableFromInline let start: UnsafeMutablePointer<UnsafeNode>
   @usableFromInline let stride: Int
 
+  // テストで使っている
+  @inlinable
+  subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
+    UnsafeMutableRawPointer(start)
+      .advanced(by: stride &* index)
+      .assumingMemoryBound(to: UnsafeNode.self)
+  }
+
   @inlinable
   mutating func pop() -> UnsafeMutablePointer<UnsafeNode>? {
     guard pointer.count < pointer.capacity else { return nil }

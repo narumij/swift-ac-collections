@@ -1,4 +1,5 @@
 <!-- このREADME.ja.mdを正本とします。README.mdは、この文書の英訳コピーです。 -->
+<!-- 1.0になるまで多少のジョークを許容すること -->
 
 # swift-ac-collections
 
@@ -8,7 +9,7 @@
 
 swift-ac-collections は、
 
-**C++ の `std::set` / `std::multiset` に匹敵する性能を持つソート済み集合・辞書**
+**C++ の `std::set` / `std::map` に匹敵する性能を誇るソート済み集合・辞書**
 を中心に、さまざまなデータ構造を提供する Swift ライブラリです。
 
 このソート済み集合・辞書は、**「C++ の `std::set` / `std::multiset` を前提とした
@@ -46,11 +47,12 @@ dependencies: [
 import AcCollections
 ```
 
-## Branch Strategy
+<!-- 英訳: Branch Strategy -->
+## ブランチ運用方針
 
 | Branch | Recommended | Description |
 |----------|----------|----------|
-| `main` | ⭐ | 通常利用。最新の安定版 Swift を対象とする開発版 |
+| `main` | ⭐ | 通常利用。最新の**やや**安定版 Swift を対象とする開発版 |
 | `compatible/AtCoder/2025` | | AtCoder 2025 互換版 |
 | `release/AtCoder/2025` | | AtCoder 2025 搭載版 |
 

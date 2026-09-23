@@ -181,7 +181,6 @@ extension UnsafeTreeV2KeyOnlyHandle: FindInteface, FindProtocol_ptr {}
 #if compiler(<6.3)
   extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface, FindEqualProtocol_ptr {}
 #else
-  // ベンチマークだと速いが、場面による
   extension UnsafeTreeV2KeyOnlyHandle: FindEqualInterface {
     @inlinable
     func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef) {

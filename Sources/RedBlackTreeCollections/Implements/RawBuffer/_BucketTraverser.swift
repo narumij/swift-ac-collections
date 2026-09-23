@@ -46,20 +46,50 @@ struct _BucketTraverser: _UnsafeNodePtrType {
   @usableFromInline let start: _NodePtr
   @usableFromInline let stride: Int
 
-  @inlinable
-  subscript(index: Int) -> _NodePtr {
-    @inline(__always) _read {
-      yield
+  #if false
+    @inlinable
+    subscript(index: Int) -> _NodePtr {
+      @inline(__always) _read {
+        yield
+        UnsafeMutableRawPointer(start)
+          .advanced(by: stride * index)
+          .assumingMemoryBound(to: UnsafeNode.self)
+      }
+    }
+  #else
+    // なんちゃってABC411Fのベンチが2.2倍も速くなって、嬉しいけど逆に不安
+    @inlinable
+    subscript(index: Int) -> _NodePtr {
+      @inline(__always)
+      unsafeAddress {
+        withUnsafePointer(
+          to: UnsafeMutableRawPointer(start)
+            .advanced(by: stride * index)
+            .assumingMemoryBound(to: UnsafeNode.self)
+        ) {
+          $0
+        }
+      }
+    }
+  #endif
+
+  #if DEBUG
+    @inlinable
+    @inline(__always)
+    func address(at index: Int) -> _NodePtr {
       UnsafeMutableRawPointer(start)
         .advanced(by: stride * index)
         .assumingMemoryBound(to: UnsafeNode.self)
     }
-  }
+  #endif
 
   @inlinable
   mutating func pop() -> _NodePtr? {
     guard it < count else { return nil }
     defer { it += 1 }
+    #if DEBUG
+      assert(self[it] == address(at: it))
+    #endif
     return self[it]
   }
 

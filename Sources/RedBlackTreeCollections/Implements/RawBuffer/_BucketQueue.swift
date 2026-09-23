@@ -42,12 +42,29 @@ struct _BucketQueue {
   @usableFromInline let start: UnsafeMutablePointer<UnsafeNode>
   @usableFromInline let stride: Int
 
-  @inlinable
-  subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
-    UnsafeMutableRawPointer(start)
-      .advanced(by: stride * index)
-      .assumingMemoryBound(to: UnsafeNode.self)
-  }
+  #if true
+    @inlinable
+    subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
+      UnsafeMutableRawPointer(start)
+        .advanced(by: stride * index)
+        .assumingMemoryBound(to: UnsafeNode.self)
+    }
+  #else
+    // なぜか逆に遅い
+    @inlinable
+    subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
+      @inline(__always)
+      unsafeAddress {
+        withUnsafePointer(
+          to: UnsafeMutableRawPointer(start)
+            .advanced(by: stride * index)
+            .assumingMemoryBound(to: UnsafeNode.self)
+        ) {
+          $0
+        }
+      }
+    }
+  #endif
 
   @inlinable
   mutating func pop() -> UnsafeMutablePointer<UnsafeNode>? {
@@ -83,7 +100,7 @@ extension MemoryLayout where T: ~Copyable {
 
   @inlinable
   static var _memoryLayout: _MemoryLayout { .init(stride: stride, alignment: alignment) }
-  
+
   @inlinable
   static var _pairLayout: _MemoryLayout { .init(UnsafeNode.self, T.self) }
 }

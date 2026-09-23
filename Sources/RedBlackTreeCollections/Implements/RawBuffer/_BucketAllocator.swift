@@ -138,7 +138,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(storage: header.primaryStorage(), payload: _pair)
+        var it = header._capacities(storage: header.primaryStorage(), pairLayout: _pair)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -166,7 +166,7 @@ extension _BucketAllocator {
 
     #if DEBUG
       do {
-        var it = header._capacities(storage: header.secondaryStorage(), payload: _pair)
+        var it = header._capacities(storage: header.secondaryStorage(), pairLayout: _pair)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }
@@ -304,7 +304,7 @@ extension _BucketAllocator {
     }
     #if DEBUG
       do {
-        var it = b._capacities(storage: storage, payload: _pair)
+        var it = b._capacities(storage: storage, pairLayout: _pair)
         while let p = it.pop() {
           p.pointee.___tracking_tag = .debug
         }

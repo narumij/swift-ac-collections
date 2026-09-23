@@ -177,7 +177,7 @@
 
         var it = bucket._capacities(
           storage: bucket.storage(isHead: isHead),
-          payload: payload
+          pairLayout: payload
         )
 
         var i = 0
@@ -255,7 +255,7 @@
 
       print(" ---- entries ----")
 
-      var it = _capacities(storage: storage(isHead: isHead), payload: payload)
+      var it = _capacities(storage: storage(isHead: isHead), pairLayout: payload)
       var i = 0
 
       while let node = it.pop() {

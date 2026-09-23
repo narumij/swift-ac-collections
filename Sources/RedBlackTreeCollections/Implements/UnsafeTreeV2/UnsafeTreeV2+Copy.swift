@@ -104,27 +104,14 @@ extension UnsafeTreeV2BufferHeader {
     #endif
 
     // 予定サイズの木を作成する
-    #if false
-      let _newBuffer =
-        UnsafeTreeV2Buffer
-        .create(
-          _PayloadValue.self,
-          minimumCapacity: newCapacity,
-          nullptr: nullptr)
-    #else
-      let _newBuffer =
-        freshPoolCapacity == 0
-        ? UnsafeTreeV2Buffer
-          .create(
-            _PayloadValue.self,
-            minimumCapacity: newCapacity,
-            nullptr: nullptr)
-        : UnsafeTreeV2Buffer
-          .create(
-            allocator: freshBucketAllocator,
-            minimumCapacity: newCapacity,
-            nullptr: nullptr)
-    #endif
+    //
+    // アロケータを再利用する案を試したがそもそも最初がemptyBufferの場合に残念な結果
+    let _newBuffer =
+      UnsafeTreeV2Buffer
+      .create(
+        _PayloadValue.self,
+        minimumCapacity: newCapacity,
+        nullptr: nullptr)
 
     // freshPool内のfreshBucketは0〜1個となる
     // CoW後の性能維持の為、freshBucket数は1を越えないこと

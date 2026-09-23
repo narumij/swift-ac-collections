@@ -51,7 +51,7 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
     _read {
       yield
       UnsafeMutableRawPointer(start)
-        .advanced(by: stride * index)
+        .advanced(by: stride &* index)
         .assumingMemoryBound(to: UnsafeNode.self)
     }
   }

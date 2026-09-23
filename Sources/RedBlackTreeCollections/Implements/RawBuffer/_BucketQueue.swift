@@ -42,21 +42,12 @@ struct _BucketQueue {
   @usableFromInline let start: UnsafeMutablePointer<UnsafeNode>
   @usableFromInline let stride: Int
 
-  // デッドコードだが、消すと最適化に影響するので残している
-  @inlinable
-  subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
-    UnsafeMutableRawPointer(start)
-      .advanced(by: stride * index)
-      .assumingMemoryBound(to: UnsafeNode.self)
-  }
-
   @inlinable
   mutating func pop() -> UnsafeMutablePointer<UnsafeNode>? {
     guard pointer.count < pointer.capacity else { return nil }
-    defer { pointer.pointee.count += 1 }
-//    return self[pointer.count]
+    defer { pointer.pointee.count &+= 1 }
     return UnsafeMutableRawPointer(start)
-      .advanced(by: stride * pointer.count)
+      .advanced(by: stride &* pointer.count)
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 

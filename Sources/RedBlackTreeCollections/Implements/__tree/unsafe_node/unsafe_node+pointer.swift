@@ -196,8 +196,8 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       MemoryLayout<UnsafeNode>.alignment,
       MemoryLayout<_PayloadValue>.alignment)
     let size = MemoryLayout<UnsafeNode>.stride + MemoryLayout<_PayloadValue>.stride
-    let stride = (size + alignment - 1) & -alignment
-    return _advanced(raw: stride * count)
+    let stride = (size &+ alignment &- 1) & -alignment
+    return _advanced(raw: stride &* count)
   }
 }
 

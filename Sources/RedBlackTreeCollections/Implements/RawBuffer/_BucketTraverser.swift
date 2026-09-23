@@ -47,6 +47,7 @@ struct _BucketTraverser: _UnsafeNodePtrType {
   @usableFromInline let stride: Int
 
   #if true
+    // デッドコードだが、消すと最適化に影響するので残している
     @inlinable
     subscript(index: Int) -> _NodePtr {
       @inline(__always) _read {
@@ -78,7 +79,10 @@ struct _BucketTraverser: _UnsafeNodePtrType {
   mutating func pop() -> _NodePtr? {
     guard it < count else { return nil }
     defer { it += 1 }
-    return self[it]
+
+    return UnsafeMutableRawPointer(start)
+      .advanced(by: stride * it)
+      .assumingMemoryBound(to: UnsafeNode.self)
   }
 
   @inlinable

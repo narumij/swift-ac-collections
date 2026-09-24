@@ -26,44 +26,30 @@ extension UnsafeTreeV2 {
   func evaluate(
     _ expression: RedBlackTreeBoundExpressionV2<_Key>.Internal
   ) -> _SafePtr {
-    
+
     // ベンチマーク的にずるをしている
-    
-    if expression.count == 1,
-       case .find(let key) = expression[0]
-    {
-      return find(key).unchecked
-    }
-    
-    if expression.count == 1,
-       case .lowerBound(let key) = expression[0]
-    {
-      return lower_bound(key).unchecked
-    }
 
-    if expression.count == 1,
-       case .upperBound(let key) = expression[0]
-    {
-      return upper_bound(key).unchecked
-    }
-    
-    if expression.count == 1,
-       case .start = expression[0]
-    {
-      return __begin_node_.unchecked
-    }
-
-    if expression.count == 1,
-       case .end = expression[0]
-    {
-      return __end_node.unchecked
+    if expression.count == 1 {
+      switch expression[0] {
+      case .find(let key):
+        return find(key).unchecked
+      case .lowerBound(let key):
+        return lower_bound(key).unchecked
+      case .upperBound(let key):
+        return upper_bound(key).unchecked
+      case .start:
+        return __begin_node_.unchecked
+      case .end:
+        return __end_node.unchecked
+      default:
+        break
+      }
     }
 
     return evaluateSlow(expression)
   }
 
   @inlinable
-  @inline(never)
   func evaluateSlow(
     _ expression: RedBlackTreeBoundExpressionV2<_Key>.Internal
   ) -> _SafePtr {

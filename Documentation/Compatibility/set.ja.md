@@ -53,6 +53,7 @@ Swift 標準ライブラリの `Set` と `RedBlackTreeSet` は、
 | 順序に基づく検索 | ❌ | ✅ |
 | 昇順走査 | 別途ソートが必要 | そのまま走査可能 |
 | mutation をまたぐ index の保持 | 前提にできない | 他要素の変更では維持される |
+| `SetAlgebra` | ✅ | ✅ |
 
 単純な membership test が中心で、
 要素の順序を必要としない場合には
@@ -371,28 +372,64 @@ lower-bound、upper-bound、昇順走査などの
 
 ## 集合演算
 
+`RedBlackTreeSet` は Swift の `SetAlgebra` に準拠しており、
+標準的な集合演算を利用できます。
+
 | C++ | Swift / `RedBlackTreeSet` | 対応 | 備考 |
 | --- | --- | :---: | --- |
-| `std::set_union` | union 操作 | △ | API が異なる |
-| `std::set_intersection` | intersection 操作 | △ | API が異なる |
-| `std::set_difference` | subtracting 操作 | △ | API が異なる |
-| `std::set_symmetric_difference` | symmetric difference | △ | API が異なる |
+| `std::set_union` | `union(_:)` / `formUnion(_:)` | ✅ | 和集合 |
+| `std::set_intersection` | `intersection(_:)` / `formIntersection(_:)` | ✅ | 積集合 |
+| `std::set_difference` | `subtracting(_:)` / `subtract(_:)` | ✅ | 差集合 |
+| `std::set_symmetric_difference` | `symmetricDifference(_:)` / `formSymmetricDifference(_:)` | ✅ | 対称差 |
 
-集合演算自体は Swift 側でも表現できますが、
-C++ の `<algorithm>` にある
-iterator-pair ベースの関数とは API が異なります。
+C++ では `<algorithm>` の iterator-pair ベースの関数として提供されますが、
+`RedBlackTreeSet` では Swift の `SetAlgebra` API として利用します。
 
-Swift 標準 `Set` にも集合演算があります。
+たとえば、
 
-そのため、
-C++ の解説で集合演算だけが使われており、
-要素のソート順や lower-bound などを利用していない場合には、
-Swift 標準 `Set` でも自然に表現できることがあります。
+```cpp
+std::set_union(
+    a.begin(), a.end(),
+    b.begin(), b.end(),
+    std::back_inserter(result)
+);
+```
 
-一方、
-順序付き集合としての性質をその後も利用する場合には、
-`RedBlackTreeSet` を使うことで
-ソート済み状態を維持したまま処理できます。
+に対応する処理は、Swift では、
+
+```swift
+let result = a.union(b)
+```
+
+のように表現できます。
+
+`SetAlgebra` への準拠により、集合演算だけでなく、
+
+- `isSubset(of:)`
+- `isSuperset(of:)`
+- `isStrictSubset(of:)`
+- `isStrictSuperset(of:)`
+- `isDisjoint(with:)`
+
+などの集合関係を表す API も利用できます。
+
+### Swift `Set` との共通点
+
+Swift 標準 `Set` と `RedBlackTreeSet` は、
+どちらも `SetAlgebra` に準拠しているため、
+集合演算については同じ API を利用できます。
+
+```swift
+a.union(b)
+a.intersection(b)
+a.subtracting(b)
+a.symmetricDifference(b)
+```
+
+一方、`RedBlackTreeSet` は集合演算の結果についても
+要素のソート順を維持し、
+lower-bound / upper-bound などの
+順序付き集合としての操作を引き続き利用できます。
 
 ## Sequence
 

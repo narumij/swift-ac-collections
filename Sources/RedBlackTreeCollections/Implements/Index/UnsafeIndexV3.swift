@@ -56,3 +56,5 @@ public typealias UnsafeIndexV3 = _LazyTiedPtr
 // Index は Equatable / Comparable / Hashable を要求し、それらの比較・hash は O(1) としている。
 // ×
 
+
+// _LazyTieWrappedPtrを選択した理由として、nullptrを外に晒したくないという事情があった点は今後も再考が必要。

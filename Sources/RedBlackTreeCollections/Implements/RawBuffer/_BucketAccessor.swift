@@ -28,53 +28,54 @@ package struct _BucketAccessor: _UnsafeNodePtrType {
 
   @inlinable
   package init(
-    pointer: UnsafeMutablePointer<_Bucket>,
-    start: UnsafeMutablePointer<UnsafeNode>,
-    stride: Int
+    header: UnsafeMutablePointer<_Bucket>,
+    startNode: UnsafeMutablePointer<UnsafeNode>,
+    pairStride: Int
   ) {
-    self.pointer = pointer
-    self.start = start
-    self.stride = stride
+    self.header = header
+    self.startNode = startNode
+    self.pairStride = pairStride
   }
 
-  @usableFromInline let pointer: UnsafeMutablePointer<_Bucket>
-  @usableFromInline let start: _NodePtr
-  @usableFromInline let stride: Int
+  @usableFromInline let header: UnsafeMutablePointer<_Bucket>
+  @usableFromInline let startNode: _NodePtr
+  @usableFromInline let pairStride: Int
 
   @inlinable
   var capacity: Int {
-    _read { yield pointer.pointee.capacity }
+    _read { yield header.pointee.capacity }
   }
 
   @inlinable
   package subscript(index: Int) -> _NodePtr {
     _read {
       yield
-      UnsafeMutableRawPointer(start)
-        .advanced(by: stride &* index)
+      UnsafeMutableRawPointer(startNode)
+        .advanced(by: pairStride &* index)
         .assumingMemoryBound(to: UnsafeNode.self)
     }
   }
 
   @inlinable
   func next(payload: _MemoryLayout) -> _BucketAccessor? {
-    assert(pointer.next != nil) // 利用側でカウント管理している様子
-    return pointer.next!._accessor(isHead: false, payload: payload)
+    assert(header.next != nil)  // 利用側でカウント管理している様子
+    return header.next!._accessor(isPrimary: false, pairLayout: payload)
   }
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
   @inlinable
-  func _accessor(isHead: Bool, payload: _MemoryLayout) -> _BucketAccessor {
+  func _accessor(isPrimary: Bool, pairLayout: _MemoryLayout) -> _BucketAccessor {
     .init(
-      pointer: self,
-      start: start(storage: storage(isHead: isHead), valueAlignment: payload.alignment),
-      stride: payload.stride)
+      header: self,
+      startNode: start(
+        storage: storage(isPrimary: isPrimary), payloadOrPairAlignment: pairLayout.alignment),
+      pairStride: pairLayout.stride)
   }
 
   @inlinable
-  func accessor(payload: _MemoryLayout) -> _BucketAccessor? {
-    _accessor(isHead: true, payload: payload)
+  func accessor(pairLayout: _MemoryLayout) -> _BucketAccessor? {
+    _accessor(isPrimary: true, pairLayout: pairLayout)
   }
 }

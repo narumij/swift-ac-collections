@@ -30,12 +30,14 @@ struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _Unsaf
   typealias BucketPointer = UnsafeMutablePointer<_Bucket>
 
   @inlinable
-  internal init(bucket: BucketPointer?, pairLayout: _MemoryLayout) {
+  internal init(bucket: BucketPointer?, nodeLayout: _MemoryLayout, pairLayout: _MemoryLayout) {
+    self.nodeLayout = nodeLayout
     self.pairLayout = pairLayout
     self.helper = bucket.flatMap {
       $0._counts(
         storage: $0.primaryStorage(),
-        payload: pairLayout)
+        nodeLayout: nodeLayout,
+        pairLayout: pairLayout)
     }
   }
 
@@ -45,12 +47,15 @@ struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _Unsaf
   @usableFromInline
   let pairLayout: _MemoryLayout
 
+  @usableFromInline
+  let nodeLayout: _MemoryLayout
+
   @inlinable
   mutating func next() -> _NodePtr? {
     if let p = helper?.pop() {
       return p
     }
-    helper = helper?.nextCounts(payload: pairLayout)
+    helper = helper?.nextCounts(nodeLayout: nodeLayout, pairLayout: pairLayout)
     return helper?.pop()
   }
 }

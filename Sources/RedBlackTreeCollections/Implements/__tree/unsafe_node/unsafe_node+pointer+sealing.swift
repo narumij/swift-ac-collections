@@ -27,7 +27,7 @@
 /// 封が剥がされ、封印が解かれた場合、現世のノードではないことを表す
 ///
 @frozen
-public struct _NodePtrSealing: Equatable {
+public struct _NodePtrSealing {
   /// ご神体の御名
   ///
   /// 八百万な方々
@@ -122,6 +122,29 @@ public struct _NodePtrSealing: Equatable {
   @inlinable
   var tag: _SealedTag {
     .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
+  }
+}
+
+extension _NodePtrSealing: Equatable {}
+
+#if DEBUG
+  extension _NodePtrSealing: Comparable {
+
+    // swift-collections 1.7.0でContainerのIndexにComparable要求がある
+    // 平衡木だから比較がO(log n)で済むけれど、雑な木や普通のリンクリストだと無理なんじゃないかと
+    @inlinable
+    public static func < (lhs: _NodePtrSealing, rhs: _NodePtrSealing) -> Bool {
+      ___ptr_comp_bitmap(lhs.pointer, rhs.pointer)
+    }
+  }
+#endif
+
+extension _NodePtrSealing: Hashable {
+
+  @inlinable
+  public func hash(into hasher: inout Hasher) {
+    pointer.hash(into: &hasher)
+    seal.hash(into: &hasher)
   }
 }
 

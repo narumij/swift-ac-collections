@@ -80,15 +80,20 @@ package struct UnsafeTreeV2BufferHeader {
 
 extension UnsafeTreeV2BufferHeader {
 
+  @inlinable
+  var nodeLayout: _MemoryLayout {
+    freshBucketAllocator.nodeLayout
+  }
+
   /// `_Payload`のstrideとalignement
   @inlinable
   var payloadLayout: _MemoryLayout {
-    freshBucketAllocator.payload
+    freshBucketAllocator.payloadLayout
   }
 
   @inlinable
   var pairLayout: _MemoryLayout {
-    freshBucketAllocator._pair
+    freshBucketAllocator.pairLayout
   }
 
   @inlinable
@@ -206,7 +211,7 @@ extension UnsafeTreeV2BufferHeader {
     @inlinable
     mutating func pushFreshBucket(head: _BucketPointer) {
       freshBucketHead = head
-      freshBucketCurrent = head.queue(payloadLayout: pairLayout)
+      freshBucketCurrent = head.queue(pairLayout: pairLayout)
       freshBucketLast = head
       freshPoolCapacity &+= head.pointee.capacity
       #if DEBUG
@@ -231,7 +236,7 @@ extension UnsafeTreeV2BufferHeader {
       if let p = freshBucketCurrent?.pop() {
         return p
       }
-      freshBucketCurrent = freshBucketCurrent?.next(payload: pairLayout)
+      freshBucketCurrent = freshBucketCurrent?.next(pairLayout: pairLayout)
       return freshBucketCurrent?.pop()
     }
   }
@@ -255,7 +260,7 @@ extension UnsafeTreeV2BufferHeader {
       assert(___tracking_tag >= 0, "特殊ノードの取得要求をされないこと")
       assert(___tracking_tag < freshPoolUsedCount)
       var remaining = Int(truncatingIfNeeded: ___tracking_tag)
-      var p = freshBucketHead?.accessor(payload: pairLayout)
+      var p = freshBucketHead?.accessor(pairLayout: pairLayout)
       while let h = p {
         let cap = h.capacity
         if remaining < cap {
@@ -274,7 +279,7 @@ extension UnsafeTreeV2BufferHeader {
     mutating func ___flushFreshPool() {
       freshBucketAllocator.deinitialize(bucket: freshBucketHead)
       freshPoolUsedCount = 0
-      freshBucketCurrent = freshBucketHead?.queue(payloadLayout: pairLayout)
+      freshBucketCurrent = freshBucketHead?.queue(pairLayout: pairLayout)
     }
 
     @usableFromInline
@@ -290,7 +295,7 @@ extension UnsafeTreeV2BufferHeader {
 
     @inlinable
     func makeUsedNodeIterator<T>() -> _FreshPoolUsedIterator<T> {
-      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead, pairLayout: pairLayout)
+      return _FreshPoolUsedIterator<T>(bucket: freshBucketHead, nodeLayout: nodeLayout, pairLayout: pairLayout)
     }
   }
 

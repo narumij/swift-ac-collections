@@ -160,8 +160,8 @@
         print("  next     :", nextDesc)
 
         let start = bucket.start(
-          storage: bucket.storage(isHead: isHead),
-          valueAlignment: payload.alignment
+          storage: bucket.storage(isPrimary: isHead),
+          payloadOrPairAlignment: payload.alignment
         )
         let stride = payload.stride
 
@@ -176,8 +176,8 @@
         print("  ---- entries ----")
 
         var it = bucket._capacities(
-          storage: bucket.storage(isHead: isHead),
-          payload: payload
+          storage: bucket.storage(isPrimary: isHead),
+          pairLayout: payload
         )
 
         var i = 0
@@ -241,7 +241,7 @@
       print(" alignment  :", payload.alignment)
       print(" valueStride:", payload.stride)
 
-      let start = start(storage: storage(isHead: isHead), valueAlignment: payload.alignment)
+      let start = start(storage: storage(isPrimary: isHead), payloadOrPairAlignment: payload.alignment)
       let stride = payload.stride
 
       print(" header ptr :", self)
@@ -255,7 +255,7 @@
 
       print(" ---- entries ----")
 
-      var it = _capacities(storage: storage(isHead: isHead), payload: payload)
+      var it = _capacities(storage: storage(isPrimary: isHead), pairLayout: payload)
       var i = 0
 
       while let node = it.pop() {
@@ -359,8 +359,8 @@
 
         print(" bucketHead            :", h.bucketHead == nil ? "nullptr" : "\(h.bucketHead!)")
         print(" valueAccessAllowed    :", h.isValueAccessAllowed)
-        print(" valueStride           :", h.deallocator.payload.stride)
-        print(" valueAlignment        :", h.deallocator.payload.alignment)
+        print(" valueStride           :", h.deallocator.payloadLayout.stride)
+        print(" valueAlignment        :", h.deallocator.payloadLayout.alignment)
 
         var bucketCount = 0
         var totalCapacity = 0

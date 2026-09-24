@@ -104,6 +104,8 @@ extension UnsafeTreeV2BufferHeader {
     #endif
 
     // 予定サイズの木を作成する
+    //
+    // アロケータを再利用する案を試したがそもそも最初がemptyBufferの場合に残念な結果
     let _newBuffer =
       UnsafeTreeV2Buffer
       .create(
@@ -161,7 +163,7 @@ extension UnsafeTreeV2BufferHeader {
 
     // プール経由だとループがあるので、それをキャンセルするために先頭のバケットを直接取り出す
     let bucket = other.freshBucketHead!.accessor(
-      payload: MemoryLayout<_PayloadValue>._pairLayout)!
+      pairLayout: MemoryLayout<_PayloadValue>._pairLayout)!
 
     /// 同一番号の新ノードを取得するメソッド内ユーティリティ
     @inline(__always)

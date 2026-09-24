@@ -259,6 +259,10 @@ public enum SealError: Error {
   case crossTree
 }
 
+extension SealError: Equatable { }
+extension SealError: Comparable { }
+extension SealError: Hashable { }
+
 @usableFromInline
 func errorMessage<E: Error>(_ e: E) -> String {
   switch e as? SealError {

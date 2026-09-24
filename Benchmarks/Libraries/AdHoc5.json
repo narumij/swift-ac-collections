@@ -42,7 +42,8 @@
           "tasks": [
             "std::set<intptr_t> successful find",
             "RedBlackTreeSet<Int> successful find",
-            "SortedSet<Int> successful find"
+            "SortedSet<Int> successful find",
+            "RedBlackTreeSet<Int> successful [.find(:)]",
           ]
         },
         {
@@ -51,7 +52,8 @@
           "tasks": [
             "std::set<intptr_t> unsuccessful find",
             "RedBlackTreeSet<Int> unsuccessful find",
-            "SortedSet<Int> unsuccessful find"
+            "SortedSet<Int> unsuccessful find",
+            "RedBlackTreeSet<Int> unsuccessful [.find(:)]",
           ]
         },
         {

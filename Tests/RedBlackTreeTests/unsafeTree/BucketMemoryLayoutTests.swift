@@ -7,8 +7,8 @@
     // テストで使っている
     @inlinable
     subscript(index: Int) -> UnsafeMutablePointer<UnsafeNode> {
-      UnsafeMutableRawPointer(start)
-        .advanced(by: stride &* index)
+      UnsafeMutableRawPointer(startNode)
+        .advanced(by: pairStride &* index)
         .assumingMemoryBound(to: UnsafeNode.self)
     }
   }
@@ -21,8 +21,8 @@
       subscript(index: Int) -> _NodePtr {
         @inline(__always) _read {
           yield
-          UnsafeMutableRawPointer(start)
-            .advanced(by: stride &* index)
+          UnsafeMutableRawPointer(startNode)
+            .advanced(by: pairStride &* index)
             .assumingMemoryBound(to: UnsafeNode.self)
         }
       }
@@ -58,11 +58,12 @@
         bucket.deallocate()
       }
 
-      let queue = bucket._queue(isHead: false, payloadLayout: pairLayout)
-      let accessor = bucket._accessor(isHead: false, payload: pairLayout)
+      let queue = bucket._queue(isPrimary: false, pairLayout: pairLayout)
+      let accessor = bucket._accessor(isPrimary: false, pairLayout: pairLayout)
       let traverser = bucket._counts(
         storage: bucket.secondaryStorage(),
-        payload: pairLayout
+        nodeLayout: MemoryLayout<UnsafeNode>._memoryLayout,
+        pairLayout: pairLayout
       )
 
       XCTAssertEqual(distance(from: queue[0], to: queue[1]), pairLayout.stride)

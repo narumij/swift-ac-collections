@@ -779,4 +779,26 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(a[3, default: 0], 0)
     XCTAssertNil(a[3])
   }
+
+  func testIndexEquatable() throws {
+    let a = RedBlackTreeSet<Int>(0..<10)
+    XCTAssertEqual(a.startIndex, a.startIndex)
+    XCTAssertNotEqual(a.startIndex, a.endIndex)
+  }
+
+  #if DEBUG
+    func testIndexComparable() throws {
+      let a = RedBlackTreeSet<Int>(0..<10)
+      XCTAssertLessThan(a.startIndex, a.endIndex)
+    }
+  #endif
+
+  func testIndexHashable() throws {
+    let a = RedBlackTreeSet<Int>(0..<10)
+
+    var hasher = Hasher()
+    a.startIndex.hash(into: &hasher)
+
+    _ = hasher.finalize()
+  }
 }

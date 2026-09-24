@@ -99,3 +99,39 @@ extension _LazyTieWrap where RawValue == _NodePtrSealing {
     }
   }
 #endif
+
+extension _LazyTieWrap where RawValue == _NodePtrSealing {
+
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+
+  @inlinable
+  @inline(__always)
+  static func unchecked(_ _p: _NodePtr, end_ptr: _NodePtr, lazyDetach: _LazyTie) -> Self {
+    .init(rawValue: .init(_p: _p), lazyDetach: lazyDetach)
+  }
+
+  @inlinable
+  package var sealed: _SealedPtr {
+    rawValue.purified
+  }
+
+  @inlinable
+  func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool {
+    lazyDetach === rhs
+  }
+
+  @usableFromInline
+  package var isValid: Bool {
+    switch purified {
+    case .success: true
+    default: false
+    }
+  }
+
+  #if DEBUG
+    @usableFromInline
+    static var nullptr: Self {
+      .init(rawValue: .init(unsafe: .nullptr), lazyDetach: _emptyLazyDetach)
+    }
+  #endif
+}

@@ -193,6 +193,21 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
+  
+  @inlinable
+  package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
+    withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+      ? index.sealed.purified
+      : .failure(.crossTree)
+  }
+  
+  @inlinable
+  internal func __purified_safe_(_ index: _LazyTiedPtr) -> _SafePtr {
+    __purified_(index).map(\.pointer)
+  }
+}
+
+extension UnsafeTreeV2 {
 
   @inlinable
   internal func __purified_safe_(_raw_range: _RawRange<UnsafeIndexV3>)

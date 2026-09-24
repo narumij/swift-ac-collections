@@ -93,6 +93,23 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
         .flatMap { $0.band(tree) }
     }
   }
+
+  extension _LazyTieWrap where RawValue == _NodePtrSealing {
+    
+    package static func unsafe<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag)
+      -> Self
+    {
+      if rawTag == .nullptr {
+        return .nullptr
+      }
+
+      return (try? tree.__retrieve_(rawTag)
+        .flatMap(\.uncheckedSeal)
+        .flatMap { $0.band(tree) }
+        .get())
+      ?? .nullptr
+    }
+  }
 #endif
 
 #if DEBUG

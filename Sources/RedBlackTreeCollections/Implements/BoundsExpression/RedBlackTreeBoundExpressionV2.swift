@@ -209,6 +209,11 @@ extension RedBlackTreeBoundExpressionV2 {
 
   #if DEBUG
     @inlinable
+    public static func index(_ p: _LazyTieWrappedPtr) -> Self {
+      .init(_internal: .init(.index((try? p.get()) ?? .nullptr)))
+    }
+
+    @inlinable
     public static func debug(_ e: SealError) -> Self {
       .init(_internal: .init(.debug(e)))
     }

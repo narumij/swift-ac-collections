@@ -48,6 +48,14 @@ public struct _NodePtrSealing {
     seal = _p.pointee.___recycle_count
   }
 
+  #if DEBUG
+  @inlinable
+  init(unsafe _p: _NodePtr) {
+    pointer = _p
+    seal = _p.pointee.___recycle_count
+  }
+  #endif
+
   /// 過去の状態で封印する
   @inlinable
   init(_p: _NodePtr, _seal: UnsafeNode.Seal) {

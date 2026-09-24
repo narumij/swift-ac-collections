@@ -50,6 +50,19 @@ extension UnsafeTreeV2 {
   }
 }
 
+extension UnsafeTreeV2 {
+
+  @inlinable
+  func index(_ p: _NodePtr) -> _LazyTiedPtr {
+    return withMutableHeader { $0.index(p) }
+  }
+
+  @inlinable
+  func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
+    return withMutableHeader { $0.index_or_nil(p) }
+  }
+}
+
 extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
   @inlinable
@@ -207,6 +220,81 @@ extension UnsafeTreeV2 {
     switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
     case .success:
       i = advanced
+      return true
+    case .failure(.limit):
+      i = limit
+      return false
+    default:
+      return false
+    }
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  func prev_iter(_ i: _LazyTiedPtr) -> _LazyTiedPtr {
+    try! __purified_(i)
+      .flatMap { ___tree_prev_iter($0.pointer) }
+      .flatMap { index($0) }
+      .get()
+  }
+
+  @inlinable
+  func next_iter(_ i: _LazyTiedPtr) -> _LazyTiedPtr {
+    try! __purified_(i)
+      .flatMap { ___tree_next_iter($0.pointer) }
+      .flatMap { index($0) }
+      .get()
+  }
+
+  @inlinable
+  func adv_iter(_ i: _LazyTiedPtr, offsetBy distance: Int) -> _LazyTiedPtr {
+    try! __purified_(i)
+      .flatMap { ___tree_adv_iter($0.pointer, distance) }
+      .flatMap { index($0) }
+      .get()
+  }
+
+  @inlinable
+  func adv_iter(
+    _ i: _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
+  )
+    -> _LazyTieWrappedPtr
+  {
+    let __l = __purified_(limit).map(\.pointer)
+    return __purified_(i)
+      .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
+      .flatMap { index($0) }
+  }
+
+  @inlinable
+  func index_or_nil(
+    _ i: _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
+  )
+    -> _LazyTiedPtr?
+  {
+    let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
+    switch advanced {
+    case .success:
+      return try? advanced.get()
+    case .failure:
+      return nil
+    }
+  }
+
+  @inlinable
+  func form_index(
+    _ i: inout _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
+  )
+    -> Bool
+  {
+    let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
+    switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
+    case .success:
+      if let a = try? advanced.get() {
+        i = a
+      }
       return true
     case .failure(.limit):
       i = limit

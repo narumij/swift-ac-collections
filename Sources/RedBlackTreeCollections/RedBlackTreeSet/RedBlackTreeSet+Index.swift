@@ -237,4 +237,17 @@
       __tree_.withMutableHeader { $0.index_or_nil(p) }
     }
   }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
+      __tree_.withMutableHeader { $0.index(p) }
+    }
+    
+    @inlinable
+    func ___index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
+      __tree_.withMutableHeader { $0.index_or_nil(p) }
+    }
+  }
 #endif

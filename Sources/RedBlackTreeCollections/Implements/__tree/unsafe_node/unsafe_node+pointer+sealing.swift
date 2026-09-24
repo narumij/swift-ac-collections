@@ -132,6 +132,7 @@ extension _NodePtrSealing: Equatable {}
 
     // swift-collections 1.7.0でContainerのIndexにComparable要求がある
     // 平衡木だから比較がO(log n)で済むけれど、雑な木や普通のリンクリストだと無理なんじゃないかと
+    // O(1)期待があるので、値比較を主とし、このポインタ比較実装はフォールバックとしての利用が望ましい
     @inlinable
     public static func < (lhs: _NodePtrSealing, rhs: _NodePtrSealing) -> Bool {
       ___ptr_comp_bitmap(lhs.pointer, rhs.pointer)

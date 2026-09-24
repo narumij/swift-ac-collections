@@ -808,4 +808,10 @@ final class EtcTests: RedBlackTreeTestCase {
     let numbers = RedBlackTreeSet<Int>(0..<10)
     print(numbers)
   }
+  
+  func testString() throws {
+    let a = "abcd"
+    let b = "efg"
+    XCTAssertEqual(b[a.startIndex], "e")
+  }
 }

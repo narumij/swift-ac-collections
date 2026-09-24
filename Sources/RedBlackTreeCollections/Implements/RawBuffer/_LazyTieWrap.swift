@@ -42,6 +42,7 @@ public typealias _LazyTiedPtr = _LazyTieWrap<_NodePtrSealing>
 
 extension _LazyTieWrap: Equatable where RawValue: Equatable {
 
+  /// O(1) ready
   @inlinable
   public static func == (lhs: _LazyTieWrap<RawValue>, rhs: _LazyTieWrap<RawValue>) -> Bool {
     lhs.rawValue == rhs.rawValue && lhs.lazyDetach === rhs.lazyDetach
@@ -68,6 +69,7 @@ extension _LazyTieWrap: Equatable where RawValue: Equatable {
 
 extension _LazyTieWrap: Hashable where RawValue: Hashable {
 
+  /// O(1) ready
   @inlinable
   public func hash(into hasher: inout Hasher) {
     rawValue.hash(into: &hasher)

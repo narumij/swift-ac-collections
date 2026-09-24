@@ -134,6 +134,7 @@ public struct _NodePtrSealing {
 }
 
 extension _NodePtrSealing: Equatable {}
+extension _NodePtrSealing: Hashable {}
 
 #if DEBUG
   extension _NodePtrSealing: Comparable {
@@ -148,14 +149,6 @@ extension _NodePtrSealing: Equatable {}
   }
 #endif
 
-extension _NodePtrSealing: Hashable {
-
-  @inlinable
-  public func hash(into hasher: inout Hasher) {
-    pointer.hash(into: &hasher)
-    seal.hash(into: &hasher)
-  }
-}
 
 // ふざけてるのが半分。残り半分は通常使わない言葉や概念から意外と大切な部分であることを察してもらうため。
 // というか用語群として混ざらないようにするため

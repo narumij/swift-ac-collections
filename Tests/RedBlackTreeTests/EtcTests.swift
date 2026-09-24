@@ -793,12 +793,14 @@ final class EtcTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testIndexHashable() throws {
-    let a = RedBlackTreeSet<Int>(0..<10)
+  #if !COMPATIBLE_ATCODER_2025
+    func testIndexHashable() throws {
+      let a = RedBlackTreeSet<Int>(0..<10)
 
-    var hasher = Hasher()
-    a.startIndex.hash(into: &hasher)
+      var hasher = Hasher()
+      a.startIndex.hash(into: &hasher)
 
-    _ = hasher.finalize()
-  }
+      _ = hasher.finalize()
+    }
+  #endif
 }

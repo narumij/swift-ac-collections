@@ -34,7 +34,7 @@ public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
 // - Sealed     : 時間差で無効化し得る操作に対する安全柵。
 // - Tied       : 外部に渡す識別子（メモリ寿命の紐付け）。
 
-// ~EscapableなIndexにしたいと考えていたが、以下でIndexはCopyableでEscapableと縛られてしまったので、断念
+// ~EscapableなIndexにしたいと考えていたが、以下でIndexはCopyable & Escapableと縛られてしまったので、断念
 // ただ、~Escapableが欲しかったのはバッファ寿命管理コストを下げたかったことが理由だが、
 // 今はその点に関して気にならないコストとなっているので、Copyable & Escapableで問題が無い
 // https://github.com/apple/swift-collections/blob/main/Documentation/Container-design.md

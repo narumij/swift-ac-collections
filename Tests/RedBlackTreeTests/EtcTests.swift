@@ -803,4 +803,9 @@ final class EtcTests: RedBlackTreeTestCase {
       _ = hasher.finalize()
     }
   #endif
+  
+  func testPrint() throws {
+    let numbers = RedBlackTreeSet<Int>(0..<10)
+    print(numbers)
+  }
 }

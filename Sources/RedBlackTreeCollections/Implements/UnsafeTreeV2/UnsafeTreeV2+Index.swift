@@ -167,6 +167,7 @@ extension UnsafeTreeV2 {
     __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
       .flatMap { index($0) }
+      .mapError { _ in fatalError() }
   }
 
   @inlinable
@@ -174,6 +175,7 @@ extension UnsafeTreeV2 {
     __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
       .flatMap { index($0) }
+      .mapError { _ in fatalError() }
   }
 
   @inlinable
@@ -181,6 +183,7 @@ extension UnsafeTreeV2 {
     __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .flatMap { index($0) }
+      .mapError { _ in fatalError() }
   }
 
   @inlinable
@@ -205,8 +208,10 @@ extension UnsafeTreeV2 {
     switch advanced {
     case .success:
       return advanced
-    case .failure:
+    case .failure(.limit):
       return nil
+    case .failure:
+      fatalError()
     }
   }
 
@@ -225,7 +230,7 @@ extension UnsafeTreeV2 {
       i = limit
       return false
     default:
-      return false
+      fatalError()
     }
   }
 }

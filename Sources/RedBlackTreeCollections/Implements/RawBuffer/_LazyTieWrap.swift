@@ -127,11 +127,13 @@ extension _LazyTieWrap where RawValue == _NodePtrSealing {
     default: false
     }
   }
+}
 
-  #if DEBUG
+#if DEBUG
+  extension _LazyTieWrap where RawValue == _NodePtrSealing {
     @usableFromInline
     static var nullptr: Self {
       .init(rawValue: .init(unsafe: .nullptr), lazyDetach: _emptyLazyDetach)
     }
-  #endif
-}
+  }
+#endif

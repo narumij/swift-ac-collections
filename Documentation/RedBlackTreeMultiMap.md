@@ -17,7 +17,7 @@ struct RedBlackTreeMultiMap<Key: Comparable, Value>
 ## Overview
 
 `RedBlackTreeMultiMap` is a collection that can associate multiple values with a single key,
-while always maintaining all elements in ascending key order.
+while maintaining all elements in ascending key order.
 
 Conceptually, it can store elements such as:
 
@@ -37,10 +37,13 @@ it can store multiple elements with the same key at the same time.
 This allows it to search for, insert, and remove elements by key in logarithmic time,
 while traversing all elements in sorted key order.
 
+In addition, subscripting by key returns a range view representing
+all key-value elements with that key, rather than a single value.
+
 `RedBlackTreeMultiMap` is particularly useful when you need to:
 
 - associate multiple values with a single key
-- efficiently find all elements with the same key
+- work with all elements having the same key as a group
 - dynamically insert and remove elements while maintaining key order
 - efficiently find the first element whose key is greater than or equal to a specified key, or strictly greater than it
 - process elements whose keys fall within a specified range
@@ -53,7 +56,7 @@ use `RedBlackTreeDictionary` instead.
 
 `RedBlackTreeMultiMap` can store multiple elements whose keys are considered equivalent by their ordering comparison.
 
-For example, a single collection can conceptually store:
+For example, a single collection can store data such as:
 
 ```text
 1 → "red"
@@ -74,12 +77,74 @@ and the placement of elements in the red-black tree is determined by key order.
 If each key only needs to store a single value,
 use `RedBlackTreeDictionary` instead.
 
+## Accessing Elements by Key
+
+In `RedBlackTreeMultiMap`, subscripting by key does not return a single value.
+Instead, it returns a `RedBlackTreeKeyValueRangeView` representing all key-value elements with that key.
+
+Conceptually, given:
+
+```text
+(1, "red")
+(1, "green")
+(1, "blue")
+(2, "orange")
+```
+
+the expression:
+
+```swift
+map[1]
+```
+
+returns a range view corresponding to:
+
+```text
+(1, "red")
+(1, "green")
+(1, "blue")
+```
+
+This view is not a separate array containing copies of elements.
+It represents a portion of the original multimap using start and end positions in the underlying red-black tree.
+
+The elements of the view are key-value pairs,
+and the view uses the same index type as the original multimap.
+
+This allows elements with the same key to be traversed directly,
+without first copying them into a new array.
+
+The view also provides access to views over just the keys or just the values.
+
+```swift
+let elements = map[key]
+
+for key in elements.keys {
+  // ...
+}
+
+for value in elements.values {
+  // ...
+}
+```
+
+The `keys` and `values` properties also return views that traverse the corresponding range,
+rather than copying elements into arrays.
+
+The range view is not read-only.
+
+When held as a mutable value, it can remove elements from the beginning or end of the range,
+erase the entire range, or erase elements that match a predicate.
+
+This allows the group of elements associated with a key to be used not only as a search result,
+but also as a directly manipulable subcollection.
+
 ## Sorted Iteration
 
 When iterating over a `RedBlackTreeMultiMap` in its normal order,
 elements appear in ascending key order.
 
-Conceptually, if the collection contains elements such as:
+Conceptually, if the collection contains:
 
 ```text
 (3, "C")
@@ -88,7 +153,7 @@ Conceptually, if the collection contains elements such as:
 (1, "D")
 ```
 
-iteration visits them in key order:
+iteration visits the elements in key order:
 
 ```text
 (1, "A")
@@ -121,7 +186,7 @@ For example, you can query:
 - the element immediately before or after a specified position
 
 In particular, when working with multiple elements that share the same key,
-combining lower-bound and upper-bound searches allows you to efficiently find
+lower-bound and upper-bound searches can efficiently identify
 the range containing all elements for that key.
 
 Conceptually, for key `2`:
@@ -133,6 +198,8 @@ lowerBound(2)
                 ↑
            upperBound(2)
 ```
+
+Subscripting by key exposes this same-key element range directly as a range view.
 
 These searches do not need to linearly scan elements from the beginning.
 
@@ -170,6 +237,9 @@ Even when multiple elements have the same key,
 each element occupies a distinct position.
 
 Using indices, you can move from one element to the next or previous element.
+
+The range view returned by key subscripting uses the same index type as the original multimap,
+allowing both the view and the original collection to use the same representation for positions.
 
 Because elements in a red-black tree are not necessarily stored in a contiguous array,
 indices are not integer offsets.
@@ -213,6 +283,9 @@ results in:
 
 Adding elements automatically preserves key order.
 
+The range view returned for a key can also be used
+to traverse or remove the group of elements associated with that key.
+
 ## Performance
 
 `RedBlackTreeMultiMap` uses a red-black tree,
@@ -240,6 +313,9 @@ to the number of elements associated with that key.
 For example, if a key is associated with `m` values,
 finding its range and processing all of its elements takes
 O(log `count` + `m`) time.
+
+A range view itself does not copy the selected elements into a new array;
+it directly represents a range in the underlying red-black tree.
 
 Actual execution time also depends on factors such as the comparison cost of `Key`
 and memory-access characteristics.
@@ -270,6 +346,16 @@ Elements with the same key are also stored as independent nodes.
 Because ordering in the red-black tree is determined by keys,
 all elements with the same key form a contiguous range in sorted order.
 
+The `RedBlackTreeKeyValueRangeView` returned by key subscripting
+stores the start and end positions of this logical range together with the underlying tree.
+
+This allows it to directly traverse elements in the original red-black tree
+without copying them into a separate array.
+
+When the view needs to be mutated, copy-on-write is applied.
+If necessary, the storage is first made uniquely owned,
+and the view's start and end positions are transferred to the copied tree.
+
 Rather than performing an independent heap allocation for every node,
 multiple nodes are stored together in shared storage.
 
@@ -295,9 +381,9 @@ and fast key lookup is the primary concern.
 `RedBlackTreeDictionary` is suitable when each key is associated with a single value
 while key ordering needs to be maintained and ordered searches are required.
 
-`RedBlackTreeMultiMap` is suitable when multiple values need to be associated with the same key
-while maintaining key order and supporting key-range searches.
+`RedBlackTreeMultiMap` is suitable when multiple values need to be associated with the same key,
+while maintaining key order and directly working with the group of elements for a key as a range view.
 
 If you only need to group multiple values by key,
-and do not need each key-value pair to behave as an independent sorted element,
+and do not need each key-value element to behave as an independent sorted element,
 a representation such as `Dictionary<Key, [Value]>` may be more appropriate.

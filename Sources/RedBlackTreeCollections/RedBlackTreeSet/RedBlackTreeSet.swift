@@ -250,27 +250,6 @@ extension RedBlackTreeSet {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeSet {
-
-    // SetAlgebra都合でinsertの戻りが変えられない。
-    // Linuxのスケジューラの様な使い方をするには欠かせないので、追加
-    // TODO: 名前の検討
-    /// Inserts the given element in the set if it is not already present.
-    ///
-    /// - Complexity: O(log *n*), where *n* is the number of elements.
-    @inlinable
-    @discardableResult
-    public mutating func _insert(_ newMember: Element) -> (
-      inserted: Bool, index: Index?
-    ) {
-      __tree_.ensureUniqueAndCapacity()
-      let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
-      return (__inserted, __inserted ? __tree_.index(__r) : nil)
-    }
-  }
-#endif
-
 // MARK: - Removal
 
 #if !COMPATIBLE_ATCODER_2025

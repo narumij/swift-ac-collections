@@ -227,6 +227,31 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    // SetAlgebra都合でinsertの戻りが変えられない。
+    // Linuxのスケジューラの様な使い方をするには欠かせないので、追加
+
+    /// Returns the index of the given element, inserting it if necessary.
+    ///
+    /// If the element is inserted, `inserted` is `true` and `index` refers to
+    /// the newly inserted element. If an equivalent element is already present,
+    /// `inserted` is `false` and `index` refers to the existing element.
+    ///
+    /// - Complexity: O(log **n**), where **n** is the number of elements.
+    @inlinable
+    @discardableResult
+    public mutating func index(inserting newMember: Element) -> (
+      inserted: Bool, index: Index
+    ) {
+      __tree_.ensureUniqueAndCapacity()
+      let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
+      return (__inserted, ___index(__r))
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
     @inlinable
     func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
       __tree_.withMutableHeader { $0.index(p) }

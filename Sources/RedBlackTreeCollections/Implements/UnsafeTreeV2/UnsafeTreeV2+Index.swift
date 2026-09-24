@@ -283,8 +283,10 @@ extension UnsafeTreeV2 {
     switch advanced {
     case .success:
       return try? advanced.get()
-    case .failure:
+    case .failure(.limit):
       return nil
+    case .failure:
+      fatalError()
     }
   }
 
@@ -304,8 +306,8 @@ extension UnsafeTreeV2 {
     case .failure(.limit):
       i = limit
       return false
-    default:
-      return false
+    case .failure:
+      fatalError()
     }
   }
 }

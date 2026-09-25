@@ -167,16 +167,23 @@ extension UnsafeTreeV2 {
     /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
     @inlinable
     package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
-      withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
-        // 木が同一のケース
-        // 中身を取り出し、生存確認を行って返している
-        ? index.sealed.purified
-        // 木が異なるケース
-        // 中身を取り出し、元の木に対して生存確認を行ってからタグを取得
-        // タグで該当ポインタを取得
-        // 該当ポインタの生存確認を行う（解放確認で十分なところ、実装サボりで生存確認になっていそう）
-        // 要は、元の木と現在の木のどちらかで失効している場合、失効ポインタを返す動作
-        : __retrieve_(index.sealed.purified.tag).deepPurified
+      #if USE_LAZY_DETACH
+        withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+          // 木が同一のケース
+          // 中身を取り出し、生存確認を行って返している
+          ? index.sealed.purified
+          // 木が異なるケース
+          // 中身を取り出し、元の木に対して生存確認を行ってからタグを取得
+          // タグで該当ポインタを取得
+          // 該当ポインタの生存確認を行う（解放確認で十分なところ、実装サボりで生存確認になっていそう）
+          // 要は、元の木と現在の木のどちらかで失効している場合、失効ポインタを返す動作
+          : __retrieve_(index.sealed.purified.tag).deepPurified
+      #else
+        withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+          ? index.sealed.purified
+          // ソース側の生木がないので、ソース側の世代チェックを省いている
+          : __retrieve_(index.sealed.tag).deepPurified
+      #endif
     }
   #else
     @inlinable

@@ -37,6 +37,8 @@ public struct _NodePtrSealing {
   /// 封印
   @usableFromInline var seal: UnsafeNode.Seal
 
+  @usableFromInline var trackingTag: _TrackingTag
+
   // UnsafeNode.SealはUInt32となっていて、オーバーフローして一周すると、
   // かたわれどきが生じて同一判定となるが、これは仕様
 
@@ -46,6 +48,7 @@ public struct _NodePtrSealing {
     assert(!_p.___is_null)
     pointer = _p
     seal = _p.pointee.___recycle_count
+    trackingTag = _p.trackingTag
   }
 
   /// 過去の状態で封印する
@@ -54,6 +57,7 @@ public struct _NodePtrSealing {
     assert(!_p.___is_null)
     pointer = _p
     seal = _seal
+    trackingTag = _p.trackingTag
   }
 
   // 特段の意味は無い。利用箇所での可読性向上のためのフック
@@ -121,7 +125,11 @@ public struct _NodePtrSealing {
   /// 引換券
   @inlinable
   var tag: _SealedTag {
-    .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
+    #if false
+      .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
+    #else
+      .success(.seal(raw: trackingTag, seal: seal))
+    #endif
   }
 }
 
@@ -129,7 +137,7 @@ extension _NodePtrSealing: Equatable {}
 
 #if DEBUG
   extension _NodePtrSealing {
-    
+
     // 思い浮かんだので予備的に書いてみた
     // slowとはいえ、計算量はO(log n)で大差ない
     @inlinable

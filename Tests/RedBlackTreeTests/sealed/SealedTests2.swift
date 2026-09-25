@@ -10,7 +10,7 @@
   import XCTest
 
   final class SealedTests2: RedBlackTreeTestCase {
-    
+
     typealias SUT = RedBlackTreeSet<Int>
 
     var a = SUT()
@@ -53,7 +53,11 @@
       b.removeFirst()  // CoWが発生しない
       XCTAssertFalse(b0.isValid)
       XCTAssertFalse(b.isValid(b0))
-      XCTAssertFalse(a.isValid(b0))
+      #if USE_LAZY_DETACH
+        XCTAssertFalse(a.isValid(b0))
+      #else
+        XCTAssertTrue(a.isValid(b0), "ソース側世代チェックが省略されているため")
+      #endif
       XCTAssertEqual(b.sorted(), Array(1..<19))
     }
 

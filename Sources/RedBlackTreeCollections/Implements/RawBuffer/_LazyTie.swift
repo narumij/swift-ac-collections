@@ -57,6 +57,11 @@
         withUnsafeMutablePointerToHeader { $0 }
       }
     }
+    
+    @inlinable
+    var isDetached: Bool {
+      buffer != nil
+    }
   }
 #else
   @usableFromInline

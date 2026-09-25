@@ -49,7 +49,11 @@
       XCTAssertEqual(i0.__recycle_count, 2)
       XCTAssertEqual(i1.__recycle_count, 0, "CoW発生後、リサイクル数は0からリセットになる模様。把握してなかった")
       #if ALLOW_CROSS_TREE_INDEX
-        XCTAssertEqual(b.__tree_.__purified_(i0).error, .unsealed)
+        #if USE_LAZY_DETACH
+          XCTAssertEqual(b.__tree_.__purified_(i0).error, .unsealed)
+        #else
+          XCTAssertNil(b.__tree_.__purified_(i0).error, "ソース側世代チェックが省略されているため")
+        #endif
       #else
         XCTAssertEqual(b.__tree_.__purified_(i0).error, .crossTree)
       #endif

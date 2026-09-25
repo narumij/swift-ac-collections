@@ -28,24 +28,42 @@
 // これを生成コストが軽量な代理オブジェクトを挟み、寿命保証を本体解放まで遅延することで、生成コストを抑制する方式
 // 行儀悪く使う場合のコストは増すが、そういう使い方は主たるユースケースではないので、気にしないことにした
 
-@usableFromInline
-package final class _LazyTie: ManagedBuffer<_TiedRawBuffer?, Void> {
+#if USE_LAZY_DETACH
+  @usableFromInline
+  package final class _LazyTie: ManagedBuffer<_TiedRawBuffer?, Void> {
 
-  @inlinable
-  var buffer: _TiedRawBuffer? {
-    @inline(__always)
-    unsafeAddress {
-      UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
-    }
-    @inline(__always)
-    unsafeMutableAddress {
-      withUnsafeMutablePointerToHeader { $0 }
+    @inlinable
+    var buffer: _TiedRawBuffer? {
+      @inline(__always)
+      unsafeAddress {
+        UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
+      }
+      @inline(__always)
+      unsafeMutableAddress {
+        withUnsafeMutablePointerToHeader { $0 }
+      }
     }
   }
-}
+#else
+  @usableFromInline
+  package final class _LazyTie: ManagedBuffer<Bool, Void> {
+
+    @inlinable
+    var isDetached: Bool {
+      @inline(__always)
+      unsafeAddress {
+        UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
+      }
+      @inline(__always)
+      unsafeMutableAddress {
+        withUnsafeMutablePointerToHeader { $0 }
+      }
+    }
+  }
+#endif
 
 extension _LazyTie {
-  
+
   @inlinable
   package static func < (lhs: _LazyTie, rhs: _LazyTie) -> Bool {
     ObjectIdentifier(lhs) < ObjectIdentifier(rhs)
@@ -57,9 +75,15 @@ extension _LazyTie {
   @nonobjc
   @usableFromInline
   internal static func create() -> _LazyTie {
-    let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
-      return nil
-    }
+    #if USE_LAZY_DETACH
+      let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
+        return nil
+      }
+    #else
+      let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
+        return false
+      }
+    #endif
     return unsafeDowncast(storage, to: _LazyTie.self)
   }
 }

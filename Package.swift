@@ -22,6 +22,7 @@ var defines: [String] = [
   //    "USE_INT128",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
   //  "ENABLE_OFFSET_OVERFLOW_GUARD",
+  "USE_LAZY_DETACH",
 ]
 
 var _settings: [SwiftSetting] =

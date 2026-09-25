@@ -30,8 +30,12 @@ package final class UnsafeTreeV2Buffer:
     withUnsafeMutablePointers { header, _ in
 
       if !header.pointee.isLazyDetachUniquelyOwned() {
-        // ポインタを直接さわるほうが、境界内での最適化よりもいい場合がある
-        header.pointee._lazyDetach!.buffer = header.pointee.tiedRawBuffer
+        #if USE_LAZY_DETACH
+          // ポインタを直接さわるほうが、境界内での最適化よりもいい場合がある
+          header.pointee._lazyDetach!.buffer = header.pointee.tiedRawBuffer
+        #else
+          header.pointee._lazyDetach?.isDetached = true
+        #endif
       }
 
       if !header.pointee.isRawBufferUniquelyOwned {

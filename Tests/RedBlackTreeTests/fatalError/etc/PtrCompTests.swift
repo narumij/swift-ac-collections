@@ -5,10 +5,10 @@
 //  Created by narumij on 2026/05/08.
 //
 
+#if DEBUG && DEATH_TEST
 import Testing
 import Foundation
 
-#if DEBUG && DEATH_TEST
 @testable import RedBlackTreeCollections
 
 nonisolated(unsafe)

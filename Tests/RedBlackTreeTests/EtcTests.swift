@@ -803,15 +803,26 @@ final class EtcTests: RedBlackTreeTestCase {
       _ = hasher.finalize()
     }
   #endif
-  
+
   func testPrint() throws {
     let numbers = RedBlackTreeSet<Int>(0..<10)
     print(numbers)
   }
-  
+
   func testString() throws {
     let a = "abcd"
     let b = "efg"
     XCTAssertEqual(b[a.startIndex], "e")
   }
+
+  #if false
+    func testIndexAgain() throws {
+      var a = RedBlackTreeSet<Int>(0..<10)
+      let b = a
+      let i = a.startIndex
+      a.insert(10)  // CoW発生
+      _ = a[i] // cross tree indexの場合には通る必要がある
+      // TODO: cross tree indexの実現にリファクタリング過渡期で生木が必要だったが、不要にする
+    }
+  #endif
 }

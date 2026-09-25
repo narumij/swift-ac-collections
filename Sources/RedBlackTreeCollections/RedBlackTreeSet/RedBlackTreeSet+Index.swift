@@ -253,6 +253,8 @@
   extension RedBlackTreeSet {
 
     // index(inserting:)で取得したIndexでもりもり消したい場合に過剰にチェックしなくて済むように追加
+    // remove(at:)では世代違いをトラップするので、isValidチェックを2回行うことになるので。
+    // ただ、オーバーフローで一周した場合への対策はなにもない
 
     /// Removes the element at the given index of the set.
     ///

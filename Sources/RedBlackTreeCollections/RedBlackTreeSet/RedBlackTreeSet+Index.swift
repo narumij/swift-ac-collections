@@ -227,6 +227,8 @@
 #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
   extension RedBlackTreeSet {
 
+    // TODO: 名前の再検討
+    
     // SetAlgebra都合でinsertの戻りが変えられない。
     // Linuxのスケジューラの様な使い方をするには欠かせないので、追加
     // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要
@@ -252,6 +254,8 @@
 
   extension RedBlackTreeSet {
 
+    // TODO: 名前の再検討
+    
     // index(inserting:)で取得したIndexでもりもり消したい場合に過剰にチェックしなくて済むように追加
     // remove(at:)では世代違いをトラップするので、isValidチェックを2回行うことになるので。
     // ただ、オーバーフローで一周した場合への対策はなにもない
@@ -261,13 +265,13 @@
     /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult
-    public mutating func index(removing index: Index) -> Index? {
+    public mutating func removeSafe(at index: Index) -> Bool {
       __tree_.ensureUnique()
       guard let __p = __tree_.__purified_(index).accessible.pointer else {
-        return nil
+        return false
       }
       _ = __tree_._unchecked_remove(at: __p).payload
-      return index
+      return true
     }
   }
 #endif

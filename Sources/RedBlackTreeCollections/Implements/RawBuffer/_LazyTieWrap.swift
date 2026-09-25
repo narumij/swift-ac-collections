@@ -20,22 +20,36 @@
 //
 //===----------------------------------------------------------------------===//
 
-
 // TODO: lazyDetachの挙動フラグ次第でポインタ検査するように設計変更
 
 /// （遅延）結束バンド
 @frozen
 public struct _LazyTieWrap<RawValue> {
 
-  @usableFromInline
-  package let rawValue: RawValue
+  #if USE_LAZY_DETACH
+    @usableFromInline
+    package let rawValue: RawValue
+  #else
+    @usableFromInline
+    package let _rawValue: RawValue
+
+    @inlinable
+    package var rawValue: RawValue {
+      assert(!lazyDetach.isDetached, "寿命延長されていないrawValueを触っている")
+      return _rawValue
+    }
+  #endif
 
   @usableFromInline
   package let lazyDetach: _LazyTie
 
   @inlinable
   package init(rawValue: RawValue, lazyDetach: _LazyTie) {
-    self.rawValue = rawValue
+    #if USE_LAZY_DETACH
+      self.rawValue = rawValue
+    #else
+      self._rawValue = rawValue
+    #endif
     self.lazyDetach = lazyDetach
   }
 }

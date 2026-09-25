@@ -86,100 +86,102 @@
       }
     #endif
 
-    @Test func `文字列のインデックス範囲外の挙動と同様にする、その1`() async {
-      await #expect(processExitsWith: .failure) {
-        let str = "abcdef"
-        var i = str.startIndex
-        i = str.index(before: i)
+    #if !COMPATIBLE_ATCODER_2025
+      @Test func `文字列のインデックス範囲外の挙動と同様にする、その1`() async {
+        await #expect(processExitsWith: .failure) {
+          let str = "abcdef"
+          var i = str.startIndex
+          i = str.index(before: i)
+        }
+        await #expect(processExitsWith: .failure) {
+          let a = RedBlackTreeSet<Int>(0..<10)
+          var i = a.startIndex
+          i = a.index(before: i)
+        }
       }
-      await #expect(processExitsWith: .failure) {
-        let a = RedBlackTreeSet<Int>(0..<10)
-        var i = a.startIndex
-        i = a.index(before: i)
-      }
-    }
 
-    @Test func `文字列のインデックス範囲外の挙動と同様にする、その2`() async {
-      await #expect(processExitsWith: .failure) {
-        let str = "abcdef"
-        var i = str.endIndex
-        i = str.index(after: i)
+      @Test func `文字列のインデックス範囲外の挙動と同様にする、その2`() async {
+        await #expect(processExitsWith: .failure) {
+          let str = "abcdef"
+          var i = str.endIndex
+          i = str.index(after: i)
+        }
+        await #expect(processExitsWith: .failure) {
+          let a = RedBlackTreeSet<Int>(0..<10)
+          var i = a.endIndex
+          i = a.index(after: i)
+        }
       }
-      await #expect(processExitsWith: .failure) {
-        let a = RedBlackTreeSet<Int>(0..<10)
-        var i = a.endIndex
-        i = a.index(after: i)
-      }
-    }
 
-    @Test func `文字列のインデックス範囲外の挙動と同様にする、その3`() async {
-      await #expect(processExitsWith: .failure) {
-        let str = "abcdef"
-        var i = str.startIndex
-        i = str.index(i, offsetBy: -1)
+      @Test func `文字列のインデックス範囲外の挙動と同様にする、その3`() async {
+        await #expect(processExitsWith: .failure) {
+          let str = "abcdef"
+          var i = str.startIndex
+          i = str.index(i, offsetBy: -1)
+        }
+        await #expect(processExitsWith: .failure) {
+          let str = "abcdef"
+          var i = str.endIndex
+          i = str.index(i, offsetBy: 1)
+        }
+        await #expect(processExitsWith: .failure) {
+          let a = RedBlackTreeSet<Int>(0..<10)
+          var i = a.startIndex
+          i = a.index(i, offsetBy: -1)
+        }
+        await #expect(processExitsWith: .failure) {
+          let a = RedBlackTreeSet<Int>(0..<10)
+          var i = a.endIndex
+          i = a.index(i, offsetBy: 1)
+        }
       }
-      await #expect(processExitsWith: .failure) {
-        let str = "abcdef"
-        var i = str.endIndex
-        i = str.index(i, offsetBy: 1)
-      }
-      await #expect(processExitsWith: .failure) {
-        let a = RedBlackTreeSet<Int>(0..<10)
-        var i = a.startIndex
-        i = a.index(i, offsetBy: -1)
-      }
-      await #expect(processExitsWith: .failure) {
-        let a = RedBlackTreeSet<Int>(0..<10)
-        var i = a.endIndex
-        i = a.index(i, offsetBy: 1)
-      }
-    }
 
-    @Test func `文字列のインデックス範囲外の挙動と同様にする、その4`() async {
-      await #expect(processExitsWith: .failure) {
-        let str = "abcdef"
-        var i = str.startIndex
-        _ = str.index(i, offsetBy: -1, limitedBy: str.endIndex)
+      @Test func `文字列のインデックス範囲外の挙動と同様にする、その4`() async {
+        await #expect(processExitsWith: .failure) {
+          let str = "abcdef"
+          var i = str.startIndex
+          _ = str.index(i, offsetBy: -1, limitedBy: str.endIndex)
+        }
+        await #expect(processExitsWith: .failure) {
+          let str = "abcdef"
+          var i = str.endIndex
+          _ = str.index(i, offsetBy: 1, limitedBy: str.startIndex)
+        }
+        await #expect(processExitsWith: .failure) {
+          let a = RedBlackTreeSet<Int>(0..<10)
+          var i = a.startIndex
+          _ = a.index(i, offsetBy: -1, limitedBy: a.endIndex)
+        }
+        await #expect(processExitsWith: .failure) {
+          let a = RedBlackTreeSet<Int>(0..<10)
+          var i = a.endIndex
+          _ = a.index(i, offsetBy: 1, limitedBy: a.startIndex)
+        }
       }
-      await #expect(processExitsWith: .failure) {
-        let str = "abcdef"
-        var i = str.endIndex
-        _ = str.index(i, offsetBy: 1, limitedBy: str.startIndex)
+
+      @Test func `文字列のインデックス範囲外の挙動と同様にする、その5`() async {
+        await #expect(processExitsWith: .failure) {
+          let str = "abcdef"
+          var i = str.startIndex
+          _ = str.formIndex(&i, offsetBy: -1, limitedBy: str.endIndex)
+        }
+        await #expect(processExitsWith: .failure) {
+          let str = "abcdef"
+          var i = str.endIndex
+          _ = str.formIndex(&i, offsetBy: 1, limitedBy: str.startIndex)
+        }
+        await #expect(processExitsWith: .failure) {
+          let a = RedBlackTreeSet<Int>(0..<10)
+          var i = a.startIndex
+          _ = a.formIndex(&i, offsetBy: -1, limitedBy: a.endIndex)
+        }
+        await #expect(processExitsWith: .failure) {
+          let a = RedBlackTreeSet<Int>(0..<10)
+          var i = a.endIndex
+          _ = a.formIndex(&i, offsetBy: 1, limitedBy: a.startIndex)
+        }
       }
-      await #expect(processExitsWith: .failure) {
-        let a = RedBlackTreeSet<Int>(0..<10)
-        var i = a.startIndex
-        _ = a.index(i, offsetBy: -1, limitedBy: a.endIndex)
-      }
-      await #expect(processExitsWith: .failure) {
-        let a = RedBlackTreeSet<Int>(0..<10)
-        var i = a.endIndex
-        _ = a.index(i, offsetBy: 1, limitedBy: a.startIndex)
-      }
-    }
-    
-    @Test func `文字列のインデックス範囲外の挙動と同様にする、その5`() async {
-      await #expect(processExitsWith: .failure) {
-        let str = "abcdef"
-        var i = str.startIndex
-        _ = str.formIndex(&i, offsetBy: -1, limitedBy: str.endIndex)
-      }
-      await #expect(processExitsWith: .failure) {
-        let str = "abcdef"
-        var i = str.endIndex
-        _ = str.formIndex(&i, offsetBy: 1, limitedBy: str.startIndex)
-      }
-      await #expect(processExitsWith: .failure) {
-        let a = RedBlackTreeSet<Int>(0..<10)
-        var i = a.startIndex
-        _ = a.formIndex(&i, offsetBy: -1, limitedBy: a.endIndex)
-      }
-      await #expect(processExitsWith: .failure) {
-        let a = RedBlackTreeSet<Int>(0..<10)
-        var i = a.endIndex
-        _ = a.formIndex(&i, offsetBy: 1, limitedBy: a.startIndex)
-      }
-    }
+    #endif
 
   }
 #endif

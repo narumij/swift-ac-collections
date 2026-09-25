@@ -61,8 +61,15 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
   }
 
   /// ポインタを利用する際に用いる
-  @inlinable
-  package var purified: Result { flatMap { $0.purified } }
+  #if USE_LAZY_DETACH
+    @inlinable
+    package var purified: Result { flatMap { $0.purified } }
+  #else
+    @inlinable
+    package var purified: Result {
+      flatMap { $0.lazyDetach.isDetached ? .failure(.notAllowed) : $0.purified }
+    }
+  #endif
 
   @usableFromInline
   package var isValid: Bool {

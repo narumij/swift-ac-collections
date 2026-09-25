@@ -67,7 +67,7 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
   #else
     @inlinable
     package var purified: Result {
-      flatMap { $0.lazyDetach.isDetached ? .failure(.notAllowed) : $0.purified }
+      flatMap { $0.lazyDetach.isDetached ? .failure(.detached) : $0.purified }
     }
   #endif
 

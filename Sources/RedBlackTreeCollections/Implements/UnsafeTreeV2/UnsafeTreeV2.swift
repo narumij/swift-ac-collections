@@ -160,6 +160,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   #if ALLOW_CROSS_TREE_INDEX
+    // TODO: メンテ仕手なさ過ぎなのでたまに挙動確認すること
     /// インデックスをポインタに解決する
     ///
     /// 木が同一の場合、インデックスが保持するポインタを返す。

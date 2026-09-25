@@ -88,5 +88,16 @@
       XCTAssertEqual(a.__tree_.__purified_(a.startIndex).accessible.error, .garbaged)
       XCTAssertEqual(a.__tree_.__purified_(a.endIndex).accessible.error, .garbaged)
     }
+
+    func testExample3() throws {
+      var i: RedBlackTreeSet<Int>.Index?
+      do {
+        let a = RedBlackTreeSet<Int>(0..<10)
+        i = a.startIndex
+      }
+      let b = RedBlackTreeSet<Int>()
+      // cross treeを許可してないため、そもそも木判定で弾かれる
+      XCTAssertEqual(b.__tree_.__purified_(i!).error, .crossTree)
+    }
   }
 #endif

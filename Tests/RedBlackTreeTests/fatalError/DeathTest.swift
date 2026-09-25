@@ -181,6 +181,17 @@
           _ = a.formIndex(&i, offsetBy: 1, limitedBy: a.startIndex)
         }
       }
+    
+    @Test func `インデックス挙動の確認`() async {
+      await #expect(processExitsWith: .failure) {
+        var a = RedBlackTreeSet<Int>(0..<10)
+        let b = a
+        let i = a.startIndex
+        a.insert(10) // CoW発生
+        _ = a[i] // mutation後のstaleはContainer-Designで許容されている。トラップさえしてればいい
+        // aからとったインデックスだから有効であって欲しい気はするが、そうしなくても構わない
+      }
+    }
     #endif
 
   }

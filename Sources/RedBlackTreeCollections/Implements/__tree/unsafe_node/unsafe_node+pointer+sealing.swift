@@ -128,6 +128,21 @@ public struct _NodePtrSealing {
 extension _NodePtrSealing: Equatable {}
 
 #if DEBUG
+  extension _NodePtrSealing {
+    
+    // 思い浮かんだので予備的に書いてみた
+    // slowとはいえ、計算量はO(log n)で大差ない
+    @inlinable
+    func lessThanSlow(_ rhs: Self) -> Bool {
+      let end = pointer.__slow_end()
+      let rhs_end = rhs.pointer.__slow_end()
+      if end != rhs_end {
+        return Int(bitPattern: end) < Int(bitPattern: rhs_end)
+      }
+      return ___ptr_comp_bitmap(pointer, rhs.pointer)
+    }
+  }
+
   extension _NodePtrSealing: Comparable {
 
     // swift-collections 1.7.0でContainerのIndexにComparable要求がある

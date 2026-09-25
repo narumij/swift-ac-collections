@@ -224,11 +224,12 @@
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025
+#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX
   extension RedBlackTreeSet {
 
     // SetAlgebra都合でinsertの戻りが変えられない。
     // Linuxのスケジューラの様な使い方をするには欠かせないので、追加
+    // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要
 
     /// Returns the index of the given element, inserting it if necessary.
     ///

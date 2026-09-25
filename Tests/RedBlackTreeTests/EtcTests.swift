@@ -842,8 +842,8 @@ final class EtcTests: RedBlackTreeTestCase {
       let b = RedBlackTreeSet<Int>(0..<10)
       for i in 0..<10 {
 
-        let ia = RedBlackTreeBoundExpressionV2<Int>.index(a.index(a.startIndex, offsetBy: i))
-        let ib = RedBlackTreeBoundExpressionV2<Int>.index(b.index(b.startIndex, offsetBy: i))
+        let ia = RedBlackTreeBoundExpression<Int>.index(a.index(a.startIndex, offsetBy: i))
+        let ib = RedBlackTreeBoundExpression<Int>.index(b.index(b.startIndex, offsetBy: i))
 
         if case .index(let p) = ia._internal.first {
           XCTAssertNil(p.error)
@@ -865,17 +865,17 @@ final class EtcTests: RedBlackTreeTestCase {
 
     func testFindAgain() throws {
       var i: RedBlackTreeSet<Int>.Index?
-      var i_e: RedBlackTreeBoundExpressionV2<Int>?
+      var i_e: RedBlackTreeBoundExpression<Int>?
 
       do {
         let a = RedBlackTreeSet<Int>(0..<10)
         i = a.startIndex
-        i_e = RedBlackTreeBoundExpressionV2<Int>.index(a.startIndex)
+        i_e = RedBlackTreeBoundExpression<Int>.index(a.startIndex)
       }
 
       let b = RedBlackTreeSet<Int>(0..<10)
 
-      let index = RedBlackTreeBoundExpressionV2<Int>.index(i!)
+      let index = RedBlackTreeBoundExpression<Int>.index(i!)
 
       if case .index(let p) = i_e?._internal.first {
         // aが生きてるときに生成したため

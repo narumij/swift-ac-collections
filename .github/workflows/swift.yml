@@ -1,42 +1,50 @@
-address-sanitizer:
-  runs-on: ubuntu-24.04
+name: Swift
 
-  steps:
-    - uses: actions/checkout@v4
+on:
+  push:
+    branches:
+      - main
+      - compatible/AtCoder/2025
+  pull_request:
+    branches:
+      - main
+      - compatible/AtCoder/2025
 
-    - name: Set up Swift
-      uses: SwiftyLab/setup-swift@latest
+jobs:
+  debug:
+    runs-on: ubuntu-24.04
 
-    - name: Run tests with Address Sanitizer
-      env:
-        ASAN_OPTIONS: detect_leaks=0:abort_on_error=1:symbolize=1:log_path=/tmp/asan
-        SWIFT_BACKTRACE: enable=yes,interactive=no
-      run: |
-        set -o pipefail
+    steps:
+      - uses: actions/checkout@v4
 
-        swift test -c debug --sanitize address -v 2>&1 \
-          | tee /tmp/swift-test.log
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
 
-    - name: Dump diagnostic logs
-      if: always()
-      run: |
-        echo "===== Swift test log tail ====="
-        tail -n 500 /tmp/swift-test.log || true
+      - name: Run tests
+        run: swift test -c debug
 
-        echo
-        echo "===== ASan log files ====="
-        ls -la /tmp/asan* || true
+  release:
+    runs-on: ubuntu-24.04
 
-        echo
-        echo "===== ASan logs ====="
-        cat /tmp/asan* || true
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Upload diagnostic logs
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: address-sanitizer-logs
-        path: |
-          /tmp/swift-test.log
-          /tmp/asan*
-        if-no-files-found: ignore
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run tests
+        run: swift test -c release
+
+  address-sanitizer:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run tests with Address Sanitizer
+        env:
+          ASAN_OPTIONS: detect_leaks=0
+        run: swift test -c debug --sanitize address

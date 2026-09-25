@@ -24,7 +24,7 @@ var defines: [String] = [
 
   //  "ALLOW_CROSS_TREE_INDEX"  //木をまたいだインデックスの利用を許可するかどうか
 
-  // "USE_LAZY_DETACH", // IntなIndexをできる限り模倣する為に必要だったが、staleをかなり受け入れる現行版では不要になっている
+  "USE_LAZY_DETACH", // IntなIndexをできる限り模倣する為に必要だったが、staleをかなり受け入れる現行版では不要になっている
 ]
 
 var _settings: [SwiftSetting] =

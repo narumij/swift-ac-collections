@@ -831,23 +831,68 @@ final class EtcTests: RedBlackTreeTestCase {
       let a = RedBlackTreeSet<Int>(0..<10)
       let b = RedBlackTreeSet<Int>(0..<10)
       for i in 0..<10 {
-        blackHole(a[b.index(b.startIndex, offsetBy: i)])
-        blackHole(b[a.index(a.startIndex, offsetBy: i)])
+        XCTAssertNotNil(a[b.index(b.startIndex, offsetBy: i)])
+        XCTAssertNotNil(b[a.index(a.startIndex, offsetBy: i)])
       }
     }
   #endif
-  
-  func testFindAgain() throws {
-    var i: RedBlackTreeSet<Int>.Index?
-    
-    do {
+
+  #if DEBUG
+    func testBoundCrossIndexing() throws {
       let a = RedBlackTreeSet<Int>(0..<10)
-      i = a.startIndex
+      let b = RedBlackTreeSet<Int>(0..<10)
+      for i in 0..<10 {
+
+        let ia = RedBlackTreeBoundExpressionV2<Int>.index(a.index(a.startIndex, offsetBy: i))
+        let ib = RedBlackTreeBoundExpressionV2<Int>.index(b.index(b.startIndex, offsetBy: i))
+
+        if case .index(let p) = ia._internal.first {
+          XCTAssertNil(p.error)
+        }
+
+        if case .index(let p) = ib._internal.first {
+          XCTAssertNil(p.error)
+        }
+
+        #if ALLOW_CROSS_TREE_INDEX
+          XCTAssertNotNil(a[ib])
+          XCTAssertNotNil(b[ia])
+        #else
+          XCTAssertNil(a[ib])
+          XCTAssertNil(b[ia])
+        #endif
+      }
     }
-    
-    let b = RedBlackTreeSet<Int>(0..<10)
-    
-    // cross tree indexing挙動になってない
-    XCTAssertNil(b[.index(i!)])
-  }
+
+    func testFindAgain() throws {
+      var i: RedBlackTreeSet<Int>.Index?
+      var i_e: RedBlackTreeBoundExpressionV2<Int>?
+
+      do {
+        let a = RedBlackTreeSet<Int>(0..<10)
+        i = a.startIndex
+        i_e = RedBlackTreeBoundExpressionV2<Int>.index(a.startIndex)
+      }
+
+      let b = RedBlackTreeSet<Int>(0..<10)
+
+      let index = RedBlackTreeBoundExpressionV2<Int>.index(i!)
+
+      if case .index(let p) = i_e?._internal.first {
+        // aが生きてるときに生成したため
+        XCTAssertNil(p.error)
+      }
+
+      if case .index(let p) = index._internal.first {
+        // aが解放済みで生成しているため
+        XCTAssertEqual(p.error, .detached)
+      }
+
+      // 解放済みなのでnil
+      XCTAssertNil(b[index])
+
+      // 解放済みなのでnil
+      XCTAssertNil(b[i_e!])
+    }
+  #endif
 }

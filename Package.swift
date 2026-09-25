@@ -22,7 +22,7 @@ var defines: [String] = [
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
   //  "ENABLE_OFFSET_OVERFLOW_GUARD",
   
-//  "ALLOW_CROSS_TREE_INDEX", //木をまたいだインデックスの利用を許可するかどうか
+  "ALLOW_CROSS_TREE_INDEX", //木をまたいだインデックスの利用を許可するかどうか
 //    "USE_LAZY_DETACH", // cross tree indexingを利用しない場合、寿命延長が要らなさそうなので、追加した
 ]
 

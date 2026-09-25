@@ -57,31 +57,17 @@
   @usableFromInline
   package final class _LazyTie: ManagedBuffer<Bool, Void> {
 
-    #if true
-      @inlinable
-      var isDetached: Bool {
-        @inline(__always)
-        unsafeAddress {
-          UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
-        }
-        @inline(__always)
-        unsafeMutableAddress {
-          withUnsafeMutablePointerToHeader { $0 }
-        }
+    @inlinable
+    var isDetached: Bool {
+      @inline(__always)
+      unsafeAddress {
+        UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
       }
-    #else
-      @inlinable
-      var isDetached: Bool {
-        @inline(__always)
-        get {
-          withUnsafeMutablePointerToHeader { $0.pointee }
-        }
-        @inline(__always)
-        set {
-          withUnsafeMutablePointerToHeader { $0.pointee = newValue }
-        }
+      @inline(__always)
+      unsafeMutableAddress {
+        withUnsafeMutablePointerToHeader { $0 }
       }
-    #endif
+    }
   }
 #endif
 

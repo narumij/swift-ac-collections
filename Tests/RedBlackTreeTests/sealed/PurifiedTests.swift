@@ -64,7 +64,11 @@
       XCTAssertEqual(i0.__recycle_count, 2)
       XCTAssertEqual(i1.__recycle_count, 0, "CoW発生後、リサイクル数は0からリセットになる模様。把握してなかった")
       #if ALLOW_CROSS_TREE_INDEX
-        XCTAssertEqual(b.__tree_.__purified_(i0).error, .unsealed)
+        #if USE_LAZY_DETACH
+          XCTAssertEqual(b.__tree_.__purified_(i0).error, .unsealed)
+        #else
+          XCTAssertNil(b.__tree_.__purified_(i0).error, "ソース側世代チェックが省略されているため")
+        #endif
       #else
         XCTAssertEqual(b.__tree_.__purified_(i0).error, .crossTree)
       #endif
@@ -103,5 +107,18 @@
       XCTAssertEqual(a.__tree_.__purified_(a.startIndex).accessible.error, .garbaged)
       XCTAssertEqual(a.__tree_.__purified_(a.endIndex).accessible.error, .garbaged)
     }
+
+    #if !ALLOW_CROSS_TREE_INDEX
+      func testExample3() throws {
+        var i: RedBlackTreeSet<Int>.Index?
+        do {
+          let a = RedBlackTreeSet<Int>(0..<10)
+          i = a.startIndex
+        }
+        let b = RedBlackTreeSet<Int>()
+        // cross treeを許可してないため、そもそも木判定で弾かれる
+        XCTAssertEqual(b.__tree_.__purified_(i!).error, .crossTree)
+      }
+    #endif
   }
 #endif

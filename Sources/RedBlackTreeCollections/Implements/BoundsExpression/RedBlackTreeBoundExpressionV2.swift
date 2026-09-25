@@ -93,7 +93,6 @@ extension RedBlackTreeBoundExpressionV2 {
 
   @usableFromInline
   enum Op {
-    case index(UnsafeIndexV3)
     case start
     case last
     case end
@@ -108,10 +107,13 @@ extension RedBlackTreeBoundExpressionV2 {
     case lessThanOrEqual(_Key)
     case greaterThanOrEqual(_Key)
     #if DEBUG
+      // 性能問題が発生したので、デバッグ便利ケース落ち
+      case index(UnsafeIndexV3)
       case debug(SealError)
     #endif
   }
 }
+
 extension RedBlackTreeBoundExpressionV2 {
 
   /// Represents the first element.
@@ -202,15 +204,21 @@ extension RedBlackTreeBoundExpressionV2 {
     .init(_internal: .init(.greaterThanOrEqual(k)))
   }
 
-  @inlinable
-  public static func index(_ p: UnsafeIndexV3) -> Self {
-    .init(_internal: .init(.index(p)))
-  }
-
   #if DEBUG
     @inlinable
     public static func index(_ p: _LazyTieWrappedPtr) -> Self {
-      .init(_internal: .init(.index((try? p.get()) ?? .nullptr)))
+      // TODO: dirtyなインデックスで挙動を考察すること
+      // 特にUSE_LAZY_DETACHのケースでうごくが、納得がいかない
+      // cross indexing挙動になってなさそう
+      .init(_internal: .init(.index((try? p.purified.get()) ?? .nullptr)))
+    }
+
+    @inlinable
+    public static func index(_ p: _LazyTiedPtr) -> Self {
+      // TODO: dirtyなインデックスで挙動を考察すること
+      // 特にUSE_LAZY_DETACHのケースでうごくが、納得がいかない
+      // cross indexing挙動になってなさそう
+      .init(_internal: .init(.index((try? p.purified.get()) ?? .nullptr)))
     }
 
     @inlinable

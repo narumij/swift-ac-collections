@@ -224,6 +224,58 @@
   }
 #endif
 
+#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  extension RedBlackTreeSet {
+
+    // TODO: 名前の再検討
+    
+    // SetAlgebra都合でinsertの戻りが変えられない。
+    // Linuxのスケジューラの様な使い方をするには欠かせないので、追加
+    // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要
+    // CoW分の生木をずっともってしまうと重いので、!USE_LAZY_DETACH専用にする
+
+    /// Returns the index of the given element, inserting it if necessary.
+    ///
+    /// If the element is inserted, `inserted` is `true` and `index` refers to
+    /// the newly inserted element. If an equivalent element is already present,
+    /// `inserted` is `false` and `index` refers to the existing element.
+    ///
+    /// - Complexity: O(log **n**), where **n** is the number of elements.
+    @inlinable
+    @discardableResult
+    public mutating func index(inserting newMember: Element) -> (
+      inserted: Bool, index: Index
+    ) {
+      __tree_.ensureUniqueAndCapacity()
+      let (__r, __inserted) = __tree_.update { $0.__insert_unique(newMember) }
+      return (__inserted, ___index(__r))
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    // TODO: 名前の再検討
+    
+    // index(inserting:)で取得したIndexでもりもり消したい場合に過剰にチェックしなくて済むように追加
+    // remove(at:)では世代違いをトラップするので、isValidチェックを2回行うことになるので。
+    // ただ、オーバーフローで一周した場合への対策はなにもない
+
+    /// Removes the element at the given index of the set.
+    ///
+    /// - Complexity: Amortized O(1)
+    @inlinable
+    @discardableResult
+    public mutating func removeSafe(at index: Index) -> Bool {
+      __tree_.ensureUnique()
+      guard let __p = __tree_.__purified_(index).accessible.pointer else {
+        return false
+      }
+      _ = __tree_._unchecked_remove(at: __p).payload
+      return true
+    }
+  }
+#endif
+
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 

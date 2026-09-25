@@ -35,7 +35,8 @@
 // インデックスで生バッファを触る必要がある互換版とことなり、現行版では生バッファのバインドは不要になっている
 // ポインタの有効性を検証する必要は引き続き残っていて、その判定に用いる事もできる
 // 実際には、_LazyTie同士の同値比較で本体木の判定が可能で、その時点でcross tree判定となり、
-// そこまでの判定は必要なかった
+// そこまでの判定は必要なかったので、ManagedBuffer<Bool, Void>ではなく、ManagedBuffer<Void, Void>でも足りる
+// allow cross treeの場合、生バッファ寿命延長は必須なので、軽量_LazyTieは使えない
 
 #if USE_LAZY_DETACH
   @usableFromInline

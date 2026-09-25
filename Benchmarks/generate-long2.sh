@@ -7,7 +7,7 @@ mkdir -p ./Results/16M/Long
 swift run -c release benchmark library run \
   --library ./Libraries/Long2.json \
   ./Results/16M/Long/results-${ID}.json \
-  --max-size 16k \
+  --max-size 16M \
   --cycles 1 \
   --mode replace-all
 

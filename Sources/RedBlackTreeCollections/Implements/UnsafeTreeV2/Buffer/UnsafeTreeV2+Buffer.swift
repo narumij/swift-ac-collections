@@ -39,8 +39,10 @@ package final class UnsafeTreeV2Buffer:
       }
 
       if !header.pointee.isRawBufferUniquelyOwned {
+        // 内部バッファがぼっちじゃないので、続行
         header.pointee._tied!.isValueAccessAllowed = false
       } else {
+        // 内部バッファがぼっちになるので、解散
         header.pointee.___deallocFreshPool()
       }
     }

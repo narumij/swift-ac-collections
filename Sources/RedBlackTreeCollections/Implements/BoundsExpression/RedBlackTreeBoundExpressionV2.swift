@@ -204,7 +204,9 @@ extension RedBlackTreeBoundExpressionV2 {
 
   @inlinable
   public static func index(_ p: UnsafeIndexV3) -> Self {
-    .init(_internal: .init(.index(p.purified.map { $0.rawValue })))
+    // TODO: dirtyなインデックスでのテストを追加すること
+    // 特にUSE_LAZY_DETACHのケースが未検査気味
+    .init(_internal: .init(.index(p.purified.sealed)))
   }
 
   #if DEBUG

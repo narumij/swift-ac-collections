@@ -168,6 +168,7 @@ extension UnsafeTreeV2 {
     @inlinable
     package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
       #if USE_LAZY_DETACH
+        // 同一木判定
         withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
           // 木が同一のケース
           // 中身を取り出し、生存確認を行って返している
@@ -179,8 +180,11 @@ extension UnsafeTreeV2 {
           // 要は、元の木と現在の木のどちらかで失効している場合、失効ポインタを返す動作
           : __retrieve_(index.sealed.purified.tag).deepPurified
       #else
+        // 同一木判定
         withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+          // 木が同一のケース
           ? index.sealed.purified
+          // 木が異なるケース
           // ソース側の生木がないので、ソース側の世代チェックを省いている
           : __retrieve_(index.sealed.tag).deepPurified
       #endif
@@ -188,8 +192,11 @@ extension UnsafeTreeV2 {
   #else
     @inlinable
     package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
+      // 同一木判定
       withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+        // 木が同一のケース
         ? index.sealed.purified
+        // 木が異なるケース
         : .failure(.crossTree)
     }
   #endif

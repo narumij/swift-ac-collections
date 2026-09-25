@@ -257,6 +257,9 @@ public enum SealError: Error {
 
   /// 木が不一致
   case crossTree
+  
+  /// 木と分離済み
+  case detached
 }
 
 extension SealError: Equatable { }

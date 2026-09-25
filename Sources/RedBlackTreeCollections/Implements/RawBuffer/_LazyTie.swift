@@ -28,24 +28,61 @@
 // これを生成コストが軽量な代理オブジェクトを挟み、寿命保証を本体解放まで遅延することで、生成コストを抑制する方式
 // 行儀悪く使う場合のコストは増すが、そういう使い方は主たるユースケースではないので、気にしないことにした
 
-@usableFromInline
-package final class _LazyTie: ManagedBuffer<_TiedRawBuffer?, Void> {
+// ↑ 直前の1行が何を書いてるのかよくわからない
 
-  @inlinable
-  var buffer: _TiedRawBuffer? {
-    @inline(__always)
-    unsafeAddress {
-      UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
+// _LazyTieはもともとIndexの生成を軽くする工夫の一つとして生まれた
+// コンテナ本体の解放時まで生バッファのバインドを遅延し、その後バッファの寿命を保証する
+// インデックスで生バッファを触る必要がある互換版とことなり、現行版では生バッファのバインドは不要になっている
+// ポインタの有効性を検証する必要は引き続き残っていて、その判定に用いる事もできる
+// 実際には、_LazyTie同士の同値比較で本体木の判定が可能で、その時点でcross tree判定となり、
+// そこまでの判定は必要なかったので、ManagedBuffer<Bool, Void>ではなく、ManagedBuffer<Void, Void>でも足りる
+// allow cross treeの場合、生バッファ寿命延長は必須なので、軽量_LazyTieは使えない
+
+// 異なる木同士のインデックスは非互換
+// コピーされた場合のインデックスは非互換
+// CoW発生時のインデックス互換はなるべく保証したい
+
+#if USE_LAZY_DETACH
+  @usableFromInline
+  package final class _LazyTie: ManagedBuffer<_TiedRawBuffer?, Void> {
+
+    @inlinable
+    var buffer: _TiedRawBuffer? {
+      @inline(__always)
+      unsafeAddress {
+        UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
+      }
+      @inline(__always)
+      unsafeMutableAddress {
+        withUnsafeMutablePointerToHeader { $0 }
+      }
     }
-    @inline(__always)
-    unsafeMutableAddress {
-      withUnsafeMutablePointerToHeader { $0 }
+    
+    @inlinable
+    var isDetached: Bool {
+      buffer != nil
     }
   }
-}
+#else
+  @usableFromInline
+  package final class _LazyTie: ManagedBuffer<Bool, Void> {
+
+    @inlinable
+    var isDetached: Bool {
+      @inline(__always)
+      unsafeAddress {
+        UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
+      }
+      @inline(__always)
+      unsafeMutableAddress {
+        withUnsafeMutablePointerToHeader { $0 }
+      }
+    }
+  }
+#endif
 
 extension _LazyTie {
-  
+
   @inlinable
   package static func < (lhs: _LazyTie, rhs: _LazyTie) -> Bool {
     ObjectIdentifier(lhs) < ObjectIdentifier(rhs)
@@ -57,9 +94,15 @@ extension _LazyTie {
   @nonobjc
   @usableFromInline
   internal static func create() -> _LazyTie {
-    let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
-      return nil
-    }
+    #if USE_LAZY_DETACH
+      let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
+        return nil
+      }
+    #else
+      let storage = _LazyTie.create(minimumCapacity: 0) { managedBuffer in
+        return false
+      }
+    #endif
     return unsafeDowncast(storage, to: _LazyTie.self)
   }
 }

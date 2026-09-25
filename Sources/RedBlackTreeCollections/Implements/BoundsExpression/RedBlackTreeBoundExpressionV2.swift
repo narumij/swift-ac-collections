@@ -207,9 +207,6 @@ extension RedBlackTreeBoundExpressionV2 {
   #if DEBUG
     @inlinable
     public static func index(_ p: UnsafeIndexV3) -> Self {
-      // TODO: dirtyなインデックスで挙動を考察すること
-      // 特にUSE_LAZY_DETACHのケースでうごくが、納得がいかない
-      // cross indexing挙動になってなさそう
       .init(_internal: .init(.index(p.purified)))
     }
 

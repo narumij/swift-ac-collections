@@ -37,6 +37,10 @@ public struct _NodePtrSealing {
   /// 封印
   @usableFromInline var seal: UnsafeNode.Seal
 
+  #if !USE_LAZY_DETACH
+    @usableFromInline var trackingTag: _TrackingTag
+  #endif
+
   // UnsafeNode.SealはUInt32となっていて、オーバーフローして一周すると、
   // かたわれどきが生じて同一判定となるが、これは仕様
 
@@ -46,6 +50,9 @@ public struct _NodePtrSealing {
     assert(!_p.___is_null)
     pointer = _p
     seal = _p.pointee.___recycle_count
+    #if !USE_LAZY_DETACH
+      trackingTag = _p.trackingTag
+    #endif
   }
 
   /// 過去の状態で封印する
@@ -54,6 +61,9 @@ public struct _NodePtrSealing {
     assert(!_p.___is_null)
     pointer = _p
     seal = _seal
+    #if !USE_LAZY_DETACH
+      trackingTag = _p.trackingTag
+    #endif
   }
 
   // 特段の意味は無い。利用箇所での可読性向上のためのフック
@@ -121,17 +131,37 @@ public struct _NodePtrSealing {
   /// 引換券
   @inlinable
   var tag: _SealedTag {
-    .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
+    #if USE_LAZY_DETACH
+      .success(.seal(raw: pointer.pointee.___tracking_tag, seal: seal))
+    #else
+      .success(.seal(raw: trackingTag, seal: seal))
+    #endif
   }
 }
 
 extension _NodePtrSealing: Equatable {}
 
 #if DEBUG
+  extension _NodePtrSealing {
+
+    // 思い浮かんだので予備的に書いてみた
+    // slowとはいえ、計算量はO(log n)で大差ない
+    @inlinable
+    func lessThanSlow(_ rhs: Self) -> Bool {
+      let end = pointer.__slow_end()
+      let rhs_end = rhs.pointer.__slow_end()
+      if end != rhs_end {
+        return Int(bitPattern: end) < Int(bitPattern: rhs_end)
+      }
+      return ___ptr_comp_bitmap(pointer, rhs.pointer)
+    }
+  }
+
   extension _NodePtrSealing: Comparable {
 
     // swift-collections 1.7.0でContainerのIndexにComparable要求がある
     // 平衡木だから比較がO(log n)で済むけれど、雑な木や普通のリンクリストだと無理なんじゃないかと
+    // O(1)期待があるので、値比較を主とし、このポインタ比較実装はフォールバックとしての利用が望ましい
     @inlinable
     public static func < (lhs: _NodePtrSealing, rhs: _NodePtrSealing) -> Bool {
       ___ptr_comp_bitmap(lhs.pointer, rhs.pointer)

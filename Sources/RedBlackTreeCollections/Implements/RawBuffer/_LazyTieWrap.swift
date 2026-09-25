@@ -20,6 +20,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// TODO: lazyDetachの挙動フラグ次第でポインタ検査するように設計変更
+
 /// （遅延）結束バンド
 @frozen
 public struct _LazyTieWrap<RawValue> {
@@ -53,6 +55,9 @@ extension _LazyTieWrap: Equatable where RawValue: Equatable {
 
     // swift-collections 1.7.0でContainerのIndexにComparable要求がある
     // 平衡木だから比較がO(log n)で済むけれど、雑な木や普通のリンクリストだと無理なんじゃないかと
+    //
+    // 値の利用まで考慮すると、unique系ではO(1)比較が可能。mult系では最悪O(log n)となる。
+    //
     @inlinable
     public static func < (lhs: _LazyTieWrap<RawValue>, rhs: _LazyTieWrap<RawValue>) -> Bool {
       if lhs.lazyDetach !== rhs.lazyDetach {

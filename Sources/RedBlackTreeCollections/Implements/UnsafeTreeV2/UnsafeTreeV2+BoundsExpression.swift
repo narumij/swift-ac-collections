@@ -58,14 +58,6 @@ extension UnsafeTreeV2 {
     for i in 0..<expression.count {
       switch expression[i] {
 
-      case .index(let i):
-        switch __purified_(i) {
-        case .success(let s):
-          ptr = s.pointer.unchecked
-        case .failure:
-          ptr = .failure(.null)
-        }
-
       case .start:
         ptr = __begin_node_.unchecked
 
@@ -134,6 +126,15 @@ extension UnsafeTreeV2 {
           : upper_bound(__v).unchecked
 
       #if DEBUG
+        case .index(let i):
+          // TODO: デタッチ判定が分裂してることについてリファクタリング検討
+          switch __purified_(i) {
+          case .success(let s):
+            ptr = s.pointer.unchecked
+          case .failure:
+            ptr = .failure(.null)
+          }
+
         case .debug(let e):
           return .failure(e)
       #endif

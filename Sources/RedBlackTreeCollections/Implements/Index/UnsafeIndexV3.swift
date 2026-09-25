@@ -33,3 +33,22 @@ public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
 // - 生ポインタ: 内部で即完結する処理専用（最速、寿命保証なし）。
 // - Sealed     : 時間差で無効化し得る操作に対する安全柵。
 // - Tied       : 外部に渡す識別子（メモリ寿命の紐付け）。
+
+// ~EscapableなIndexにしたいと考えていたが、以下でIndexはCopyable & Escapableと縛られてしまったので、断念
+// ただ、~Escapableが欲しかったのはバッファ寿命管理コストを下げたかったことが理由だが、
+// 今はその点に関して気にならないコストとなっているので、Copyable & Escapableで問題が無い
+// https://github.com/apple/swift-collections/blob/main/Documentation/Container-design.md
+
+
+// Index は container 内の論理的位置を表す。endIndex も有効な Index で、最後の要素の直後の空位置を表す。
+// ○
+
+// Index は Copyable / Escapable な soft reference。container の mutation によって stale になってよい。つまり mutation 後も Index 自体の値は存在できる。
+// ○
+
+// その代わり、Index を dereference するときには、その Index がその container の有効な位置を表していることを安全かつ高速に検証できなければならない。さらに、検証後は Index 内の情報から正しい storage element を効率よく特定できる必要がある。
+// ○
+
+// Index は Equatable / Comparable / Hashable を要求し、それらの比較・hash は O(1) としている。
+// ×
+

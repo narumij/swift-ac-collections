@@ -119,8 +119,8 @@
     func isValid(_: Bound) -> Bool
     func isValid(_: BoundRangeExpression) -> Bool
 
-// 必須では無くなった
-//    func distance(from: Bound, to: Bound) -> Int
+    // 必須では無くなった
+    //    func distance(from: Bound, to: Bound) -> Int
 
     subscript(range: IndexRange) -> View { get }
     subscript(range: IndexRangeExpression) -> View { get }
@@ -164,6 +164,13 @@
     mutating func erase() -> Index
     mutating func erase(where: (Element) throws -> Bool) rethrows
   }
+
+  public protocol BalancedDynamic {
+    init()
+    init(minimumCapacity: Int)
+    mutating func reserveCapacity(_ minimumCapacity: Int)
+    var freeCapacity: Int { get }
+  }
 #endif
 
 // MARK: -
@@ -171,6 +178,10 @@
 #if DEBUG && !COMPATIBLE_ATCODER_2025
   // TODO: プロトコル適合を外したいが、なぜか性能に影響するので、外せずにいる
   extension RedBlackTreeSet: BalancedCollection {}
+  extension RedBlackTreeSet: BalancedDynamic {
+    public var freeCapacity: Int { __tree_.freeCapacity }
+  }
+
   extension RedBlackTreeDictionary: BalancedCollection {}
 
   extension RedBlackTreeMultiSet: BalancedMultiCollection {}

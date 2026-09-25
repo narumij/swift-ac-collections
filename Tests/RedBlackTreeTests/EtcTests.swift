@@ -821,13 +821,19 @@ final class EtcTests: RedBlackTreeTestCase {
       let b = a
       let i = a.startIndex
       a.insert(10)  // CoW発生
-      _ = a[i] // cross tree indexの場合には通る必要がある
+      _ = a[i]  // cross tree indexの場合には通る必要がある
       // TODO: cross tree indexの実現にリファクタリング過渡期で生木が必要だったが、不要にする
     }
   #endif
-  
-  func testFind() throws {
-    var a = RedBlackTreeSet<Int>(0..<10)
-    XCTAssertEqual(a[.find(9)], 9)
-  }
+
+  #if ALLOW_CROSS_TREE_INDEX
+    func testAllowCrossTreeIndexing() throws {
+      let a = RedBlackTreeSet<Int>(0..<10)
+      let b = RedBlackTreeSet<Int>(0..<10)
+      for i in 0..<10 {
+        blackHole(a[b.index(b.startIndex, offsetBy: i)])
+        blackHole(b[a.index(a.startIndex, offsetBy: i)])
+      }
+    }
+  #endif
 }

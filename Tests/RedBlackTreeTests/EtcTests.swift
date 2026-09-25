@@ -822,7 +822,6 @@ final class EtcTests: RedBlackTreeTestCase {
       let i = a.startIndex
       a.insert(10)  // CoW発生
       _ = a[i]  // cross tree indexの場合には通る必要がある
-      // TODO: cross tree indexの実現にリファクタリング過渡期で生木が必要だったが、不要にする
     }
   #endif
 

@@ -837,7 +837,7 @@ final class EtcTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if DEBUG
+  #if DEBUG && !COMPATIBLE_ATCODER_2025
     func testBoundCrossIndexing() throws {
       let a = RedBlackTreeSet<Int>(0..<10)
       let b = RedBlackTreeSet<Int>(0..<10)
@@ -882,7 +882,7 @@ final class EtcTests: RedBlackTreeTestCase {
         // aが生きてるときに生成したため
         XCTAssertNil(p.error)
       }
-      
+
       throw XCTSkip("設定の組み合わせ分確認するのが面倒なため")
 
       if case .index(let p) = index._internal.first {
@@ -898,87 +898,89 @@ final class EtcTests: RedBlackTreeTestCase {
     }
   #endif
 
-  func testIndexStale() throws {
-    var a = RedBlackTreeSet<Int>(0..<10)
-    var b = RedBlackTreeSet<Int>(0..<10)
-    var c = RedBlackTreeSet<Int>(0..<10)
+  #if !COMPATIBLE_ATCODER_2025
+    func testIndexStale() throws {
+      var a = RedBlackTreeSet<Int>(0..<10)
+      var b = RedBlackTreeSet<Int>(0..<10)
+      var c = RedBlackTreeSet<Int>(0..<10)
 
-    // (1) 健全
-    let a1 = a.startIndex  // 0 の Index
+      // (1) 健全
+      let a1 = a.startIndex  // 0 の Index
 
-    // (2) 世代違い
-    let a2 = a.index(after: a.startIndex)  // 1 の古い Index
-    a.remove(1)
-    a.insert(1)
+      // (2) 世代違い
+      let a2 = a.index(after: a.startIndex)  // 1 の古い Index
+      a.remove(1)
+      a.insert(1)
 
-    // 1 の現在世代
-    let a3 = a.index(after: a.startIndex)
+      // 1 の現在世代
+      let a3 = a.index(after: a.startIndex)
 
-    // (3) デタッチ済み
-    let b1 = b.startIndex
-    b = .init()
+      // (3) デタッチ済み
+      let b1 = b.startIndex
+      b = .init()
 
-    #if !ALLOW_CROSS_TREE_INDEX
-      #if !USE_LAZY_DETACH
-        XCTAssertTrue(a.isValid(a1))
-        XCTAssertFalse(a.isValid(a2))
-        XCTAssertFalse(a.isValid(b1))
+      #if !ALLOW_CROSS_TREE_INDEX
+        #if !USE_LAZY_DETACH
+          XCTAssertTrue(a.isValid(a1))
+          XCTAssertFalse(a.isValid(a2))
+          XCTAssertFalse(a.isValid(b1))
 
-        XCTAssertFalse(c.isValid(a1))
-        XCTAssertFalse(c.isValid(a2))
-        XCTAssertFalse(c.isValid(a3))
-        XCTAssertFalse(c.isValid(b1))
+          XCTAssertFalse(c.isValid(a1))
+          XCTAssertFalse(c.isValid(a2))
+          XCTAssertFalse(c.isValid(a3))
+          XCTAssertFalse(c.isValid(b1))
+        #else
+          XCTAssertTrue(a.isValid(a1))
+          XCTAssertFalse(a.isValid(a2))
+          XCTAssertFalse(a.isValid(b1))
+
+          XCTAssertFalse(c.isValid(a1))
+          XCTAssertFalse(c.isValid(a2))
+          XCTAssertFalse(c.isValid(a3))
+          XCTAssertFalse(c.isValid(b1))
+        #endif
       #else
-        XCTAssertTrue(a.isValid(a1))
-        XCTAssertFalse(a.isValid(a2))
-        XCTAssertFalse(a.isValid(b1))
+        #if !USE_LAZY_DETACH
+          XCTAssertTrue(a.isValid(a1))
+          XCTAssertFalse(a.isValid(a2))
+          XCTAssertTrue(a.isValid(b1))
 
-        XCTAssertFalse(c.isValid(a1))
-        XCTAssertFalse(c.isValid(a2))
-        XCTAssertFalse(c.isValid(a3))
-        XCTAssertFalse(c.isValid(b1))
+          XCTAssertTrue(c.isValid(a1))
+          XCTAssertTrue(c.isValid(a2))
+          XCTAssertFalse(c.isValid(a3))
+          XCTAssertTrue(c.isValid(b1))
+        #else
+          XCTAssertTrue(a.isValid(a1))
+          XCTAssertFalse(a.isValid(a2))
+          XCTAssertTrue(a.isValid(b1))
+
+          XCTAssertTrue(c.isValid(a1))
+          XCTAssertFalse(c.isValid(a2))
+          XCTAssertFalse(c.isValid(a3))
+          XCTAssertTrue(c.isValid(b1))
+        #endif
       #endif
-    #else
-      #if !USE_LAZY_DETACH
-        XCTAssertTrue(a.isValid(a1))
-        XCTAssertFalse(a.isValid(a2))
-        XCTAssertTrue(a.isValid(b1))
 
-        XCTAssertTrue(c.isValid(a1))
-        XCTAssertTrue(c.isValid(a2))
-        XCTAssertFalse(c.isValid(a3))
-        XCTAssertTrue(c.isValid(b1))
+      // (4) デタッチ済み + 世代違い
+      //
+      // b1 は node 0 の旧世代を指している。
+      // c 側の対応ノードを recycle して世代をずらす。
+      c.remove(0)
+      c.insert(0)
+
+      #if !ALLOW_CROSS_TREE_INDEX
+        #if !USE_LAZY_DETACH
+          XCTAssertFalse(c.isValid(b1))
+        #else
+          XCTAssertFalse(c.isValid(b1))
+        #endif
       #else
-        XCTAssertTrue(a.isValid(a1))
-        XCTAssertFalse(a.isValid(a2))
-        XCTAssertTrue(a.isValid(b1))
-
-        XCTAssertTrue(c.isValid(a1))
-        XCTAssertFalse(c.isValid(a2))
-        XCTAssertFalse(c.isValid(a3))
-        XCTAssertTrue(c.isValid(b1))
+        #if !USE_LAZY_DETACH
+          XCTAssertFalse(c.isValid(b1))
+        #else
+          XCTAssertFalse(c.isValid(b1))
+        #endif
       #endif
-    #endif
-
-    // (4) デタッチ済み + 世代違い
-    //
-    // b1 は node 0 の旧世代を指している。
-    // c 側の対応ノードを recycle して世代をずらす。
-    c.remove(0)
-    c.insert(0)
-
-    #if !ALLOW_CROSS_TREE_INDEX
-      #if !USE_LAZY_DETACH
-        XCTAssertFalse(c.isValid(b1))
-      #else
-        XCTAssertFalse(c.isValid(b1))
-      #endif
-    #else
-      #if !USE_LAZY_DETACH
-        XCTAssertFalse(c.isValid(b1))
-      #else
-        XCTAssertFalse(c.isValid(b1))
-      #endif
-    #endif
-  }
+    }
+  #endif
 }

@@ -204,8 +204,9 @@ extension RedBlackTreeBoundExpressionV2 {
 
   @inlinable
   public static func index(_ p: UnsafeIndexV3) -> Self {
-    // TODO: dirtyなインデックスでのテストを追加すること
-    // 特にUSE_LAZY_DETACHのケースが未検査気味
+    // TODO: dirtyなインデックスで挙動を考察すること
+    // 特にUSE_LAZY_DETACHのケースでうごくが、納得がいかない
+    // cross indexing挙動になってなさそう
     .init(_internal: .init(.index(p.purified.sealed)))
   }
 

@@ -836,4 +836,18 @@ final class EtcTests: RedBlackTreeTestCase {
       }
     }
   #endif
+  
+  func testFindAgain() throws {
+    var i: RedBlackTreeSet<Int>.Index?
+    
+    do {
+      let a = RedBlackTreeSet<Int>(0..<10)
+      i = a.startIndex
+    }
+    
+    let b = RedBlackTreeSet<Int>(0..<10)
+    
+    // cross tree indexing挙動になってない
+    XCTAssertNil(b[.index(i!)])
+  }
 }

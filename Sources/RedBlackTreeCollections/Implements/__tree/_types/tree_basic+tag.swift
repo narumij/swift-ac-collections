@@ -62,6 +62,14 @@ extension _TrackingTag {
   package static var end: Self {
     -1
   }
+  
+  // 世代管理の終端を欠番にすることで循環を防ぐというアイデアがある。
+  // 一度実装してみたが、flushが成立しにくくなるので、却下している
+  // TODO: 時間が出来たら再考すること
+  @inlinable
+  package static var retire: Self {
+    Int.min
+  }
 
   /// メモリデバッグのための`_TrackingTag`のダミー値
   @inlinable

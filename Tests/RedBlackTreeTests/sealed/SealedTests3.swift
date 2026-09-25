@@ -65,7 +65,7 @@
         b.removeFirst()  // CoWが発生しない
         XCTAssertFalse(b0.isValid, "bでは削除しているので不適格となる")
         XCTAssertFalse(b.isValid(index: b0), "すでに解放されているインデックスなので不適格")
-        #if USE_LAZY_DETACH
+        #if USE_LAZY_DETACH || !ALLOW_CROSS_TREE_INDEX
           XCTAssertFalse(a.isValid(index: b0), "すでに解放されているインデックスなので不適格")
         #else
           XCTAssertTrue(a.isValid(index: b0), "ソース側世代チェックが省略されているため")

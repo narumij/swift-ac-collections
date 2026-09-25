@@ -53,7 +53,7 @@
       b.removeFirst()  // CoWが発生しない
       XCTAssertFalse(b0.isValid)
       XCTAssertFalse(b.isValid(b0))
-      #if USE_LAZY_DETACH
+      #if USE_LAZY_DETACH || !ALLOW_CROSS_TREE_INDEX
         XCTAssertFalse(a.isValid(b0))
       #else
         XCTAssertTrue(a.isValid(b0), "ソース側世代チェックが省略されているため")

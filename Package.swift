@@ -18,10 +18,11 @@ var defines: [String] = [
   //  "USE_RECYCLE_POOL_PROTOCOL",
   //  "USE_FRESH_POOL_PROTOCOL",
   //  "USE_COMPACT_NODE_METADATA", // これは廃止でいいかも。むしろ遅くなるし
-    "ALLOW_CROSS_TREE_INDEX", //木をまたいだインデックスの利用を許可するかどうか
   //    "USE_INT128",
   //  "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND"
   //  "ENABLE_OFFSET_OVERFLOW_GUARD",
+  
+//  "ALLOW_CROSS_TREE_INDEX", //木をまたいだインデックスの利用を許可するかどうか
 //    "USE_LAZY_DETACH", // cross tree indexingを利用しない場合、寿命延長が要らなさそうなので、追加した
 ]
 

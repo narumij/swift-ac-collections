@@ -128,7 +128,7 @@ extension UnsafeTreeV2 {
       #if DEBUG
         case .index(let i):
           // TODO: デタッチ判定が分裂してることについてリファクタリング検討
-          switch __purified_(i.purified) {
+          switch __purified_(i) {
           case .success(let s):
             ptr = s.pointer.unchecked
           case .failure:

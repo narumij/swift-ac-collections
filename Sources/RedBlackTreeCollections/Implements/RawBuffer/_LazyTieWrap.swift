@@ -99,25 +99,12 @@ extension _LazyTieWrap where RawValue == _NodePtrSealing {
   }
 }
 
-extension _LazyTieWrap where RawValue == _NodePtrTracking {
-
-  @inlinable
-  package var purified: Result<Self, SealError> {
-    rawValue.isUnsealed ? .failure(.unsealed) : .success(self)
-  }
-}
-
 #if DEBUG
   extension _NodePtrSealing {
 
     @inlinable
-    package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> Result<_LazyTieWrap<_NodePtrSealing>, SealError> {
+    package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtr {
       .success(.init(rawValue: self, lazyDetach: __tree_.lazyDetach))
-    }
-    
-    @inlinable
-    package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> Result<_LazyTieWrap<_NodePtrTracking>, SealError> {
-      .success(.init(rawValue: .init(sealing: self), lazyDetach: __tree_.lazyDetach))
     }
   }
 

@@ -203,13 +203,8 @@ extension RedBlackTreeBoundExpressionV2 {
   }
 
   @inlinable
-  public static func index(_ p: Result<_LazyTieWrap<_NodePtrSealing>, SealError>) -> Self {
+  public static func index(_ p: UnsafeIndexV3) -> Self {
     .init(_internal: .init(.index(p.purified.map { $0.rawValue })))
-  }
-  
-  @inlinable
-  public static func index(_ p: Result<_LazyTieWrap<_NodePtrTracking>, SealError>) -> Self {
-    .init(_internal: .init(.index(p.purified.map { $0.rawValue.pointer })))
   }
 
   #if DEBUG

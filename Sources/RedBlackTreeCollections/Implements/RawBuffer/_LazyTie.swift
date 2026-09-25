@@ -108,7 +108,7 @@ nonisolated(unsafe) package let _emptyLazyDetach = _LazyTie.create()
 
 // MARK: -
 
-extension Result where Success == _LazyTieWrap<HogeBody>, Failure == SealError {
+extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
   @inlinable
   package var lazyDetach: _LazyTie? {

@@ -24,21 +24,6 @@
     }
   }
 
-  extension Result where Success == _LazyTieWrap<_NodePtrTracking>, Failure == SealError {
-
-    var __recycle_count: UnsafeNode.Seal? {
-      try? map { $0.rawValue.pointer.pointer.pointee.___recycle_count }.get()
-    }
-
-    var seal: UnsafeNode.Seal? {
-      try? map { $0.rawValue.pointer.seal }.get()
-    }
-
-    var ___tracking_tag: _TrackingTag? {
-      try? map { $0.rawValue.pointer.pointer.pointee.___tracking_tag }.get()
-    }
-  }
-
   final class PurifiedTests: RedBlackTreeTestCase {
 
     func testExample0() throws {

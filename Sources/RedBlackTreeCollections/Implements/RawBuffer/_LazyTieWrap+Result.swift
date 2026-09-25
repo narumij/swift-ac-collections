@@ -30,12 +30,9 @@
 ///
 /// `_SealedPtr`は外部での変更リスクがある場合に使う
 ///
-public typealias _LazyTieWrappedPtr = Result<_LazyTieWrap<HogeBody>, SealError>
+public typealias _LazyTieWrappedPtr = Result<_LazyTieWrap<_NodePtrSealing>, SealError>
 
-//public typealias HogeBody = _NodePtrSealing
-public typealias HogeBody = _NodePtrTracking
-
-extension Result where Success == _LazyTieWrap<HogeBody>, Failure == SealError {
+extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -55,13 +52,24 @@ extension Result where Success == _LazyTieWrap<HogeBody>, Failure == SealError {
   }
 }
 
-extension Result where Success == _LazyTieWrap<HogeBody>, Failure == SealError {
+extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
   @inlinable
   @inline(__always)
   static func unchecked(_ _p: _NodePtr, end_ptr: _NodePtr, lazyDetach: _LazyTie) -> Self {
     .success(.init(rawValue: .init(_p: _p), lazyDetach: lazyDetach))
   }
+
+  /// ポインタを利用する際に用いる
+  #if USE_LAZY_DETACH
+    @inlinable
+    package var purified: Result { flatMap { $0.purified } }
+  #else
+    @inlinable
+    package var purified: Result {
+      flatMap { $0.lazyDetach.isDetached ? .failure(.detached) : $0.purified }
+    }
+  #endif
 
   @usableFromInline
   package var isValid: Bool {
@@ -70,20 +78,6 @@ extension Result where Success == _LazyTieWrap<HogeBody>, Failure == SealError {
     default: false
     }
   }
-}
-
-extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
-  
-  /// ポインタを利用する際に用いる
-  #if USE_LAZY_DETACH
-    @inlinable
-    package var purified: Result { flatMap { $0.purified } }
-  #else
-    @inlinable
-    package var purified: Result {
-      flatMap { $0.lazyDetach.isDetached ? .failure(.detached) : $0.purified }
-    }
-  #endif
 
   @inlinable
   package var sealed: _SealedPtr {
@@ -91,27 +85,8 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
   }
 }
 
-extension Result where Success == _LazyTieWrap<_NodePtrTracking>, Failure == SealError {
-  
-  /// ポインタを利用する際に用いる
-  #if USE_LAZY_DETACH
-    @inlinable
-    package var purified: Result { flatMap { $0.purified } }
-  #else
-    @inlinable
-    package var purified: Result {
-      flatMap { $0.lazyDetach.isDetached ? .failure(.detached) : $0.purified }
-    }
-  #endif
-
-  @inlinable
-  package var sealed: _SealedPtr {
-    map(\.rawValue.pointer)
-  }
-}
-
 #if DEBUG
-  extension Result where Success == _LazyTieWrap<HogeBody>, Failure == SealError {
+  extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
 
     package static func unsafe<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag)
       -> Self

@@ -8,8 +8,8 @@ Click to expand individual items below.
     <summary><strong>RedBlackTreeSet vs std::set</strong></summary>
     <ul>
     <details>
-      <summary>01: successful lookups</summary>
-      <img src="RedBlackTreeSet%20Long/versus%20STL%20set/01%20successful%20lookups.png">
+      <summary>01: random removals</summary>
+      <img src="RedBlackTreeSet%20Long2/versus%20STL%20set/01%20random%20removals.png">
     </details>
     </ul>
   </details>

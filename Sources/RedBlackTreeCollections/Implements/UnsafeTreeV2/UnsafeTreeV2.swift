@@ -160,6 +160,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   #if ALLOW_CROSS_TREE_INDEX
+    // TODO: デタッチ判定が分裂してることについてリファクタリング検討
     // TODO: メンテ仕手なさ過ぎなのでたまに挙動確認すること
     /// インデックスをポインタに解決する
     ///

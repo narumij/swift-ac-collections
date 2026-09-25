@@ -38,6 +38,10 @@
 // そこまでの判定は必要なかったので、ManagedBuffer<Bool, Void>ではなく、ManagedBuffer<Void, Void>でも足りる
 // allow cross treeの場合、生バッファ寿命延長は必須なので、軽量_LazyTieは使えない
 
+// 異なる木同士のインデックスは非互換
+// コピーされた場合のインデックスは非互換
+// CoW発生時のインデックス互換はなるべく保証したい
+
 #if USE_LAZY_DETACH
   @usableFromInline
   package final class _LazyTie: ManagedBuffer<_TiedRawBuffer?, Void> {

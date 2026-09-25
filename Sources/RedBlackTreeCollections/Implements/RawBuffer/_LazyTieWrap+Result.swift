@@ -63,6 +63,17 @@ extension Result where Success == _LazyTieWrap<HogeBody>, Failure == SealError {
     .success(.init(rawValue: .init(_p: _p), lazyDetach: lazyDetach))
   }
 
+  @usableFromInline
+  package var isValid: Bool {
+    switch purified {
+    case .success: true
+    default: false
+    }
+  }
+}
+
+extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
+  
   /// ポインタを利用する際に用いる
   #if USE_LAZY_DETACH
     @inlinable
@@ -74,16 +85,6 @@ extension Result where Success == _LazyTieWrap<HogeBody>, Failure == SealError {
     }
   #endif
 
-  @usableFromInline
-  package var isValid: Bool {
-    switch purified {
-    case .success: true
-    default: false
-    }
-  }
-}
-
-extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
   @inlinable
   package var sealed: _SealedPtr {
     map(\.rawValue)
@@ -91,6 +92,18 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
 }
 
 extension Result where Success == _LazyTieWrap<_NodePtrTracking>, Failure == SealError {
+  
+  /// ポインタを利用する際に用いる
+  #if USE_LAZY_DETACH
+    @inlinable
+    package var purified: Result { flatMap { $0.purified } }
+  #else
+    @inlinable
+    package var purified: Result {
+      flatMap { $0.lazyDetach.isDetached ? .failure(.detached) : $0.purified }
+    }
+  #endif
+
   @inlinable
   package var sealed: _SealedPtr {
     map(\.rawValue.pointer)

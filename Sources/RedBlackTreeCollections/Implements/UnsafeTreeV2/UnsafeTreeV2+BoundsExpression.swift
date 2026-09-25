@@ -59,7 +59,7 @@ extension UnsafeTreeV2 {
       switch expression[i] {
 
       case .index(let i):
-        switch __purified_(i) {
+        switch i.purified {
         case .success(let s):
           ptr = s.pointer.unchecked
         case .failure:

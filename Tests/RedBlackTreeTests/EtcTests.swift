@@ -825,4 +825,9 @@ final class EtcTests: RedBlackTreeTestCase {
       // TODO: cross tree indexの実現にリファクタリング過渡期で生木が必要だったが、不要にする
     }
   #endif
+  
+  func testFind() throws {
+    var a = RedBlackTreeSet<Int>(0..<10)
+    XCTAssertEqual(a[.find(9)], 9)
+  }
 }

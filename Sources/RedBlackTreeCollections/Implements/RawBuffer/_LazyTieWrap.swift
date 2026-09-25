@@ -91,7 +91,15 @@ extension _LazyTieWrap: Hashable where RawValue: Hashable {
   }
 }
 
-extension _LazyTieWrap where RawValue == HogeBody {
+extension _LazyTieWrap where RawValue == _NodePtrSealing {
+
+  @inlinable
+  package var purified: Result<Self, SealError> {
+    rawValue.isUnsealed ? .failure(.unsealed) : .success(self)
+  }
+}
+
+extension _LazyTieWrap where RawValue == _NodePtrTracking {
 
   @inlinable
   package var purified: Result<Self, SealError> {

@@ -13,7 +13,7 @@
           "title": "successful lookups",
           "tasks": [
             "std::set<intptr_t> successful find",
-            "RedBlackTreeSet<Int> successful [.find(:)]",
+            "RedBlackTreeSet<Int> successful find",
           ]
         },
       ]

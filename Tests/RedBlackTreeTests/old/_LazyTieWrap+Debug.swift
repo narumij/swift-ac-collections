@@ -15,4 +15,12 @@
       (try? map(\.rawValue.pointer.trackingTag).get()) ?? .nullptr
     }
   }
+
+  extension Result where Success == _LazyTieWrap<_NodePtrTracking>, Failure == SealError {
+
+    @inlinable
+    package var value: _TrackingTag {
+      (try? map(\.rawValue.pointer.pointer.trackingTag).get()) ?? .nullptr
+    }
+  }
 #endif

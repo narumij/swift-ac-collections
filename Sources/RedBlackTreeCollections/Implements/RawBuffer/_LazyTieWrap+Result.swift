@@ -30,9 +30,12 @@
 ///
 /// `_SealedPtr`は外部での変更リスクがある場合に使う
 ///
-public typealias _LazyTieWrappedPtr = Result<_LazyTieWrap<_NodePtrSealing>, SealError>
+public typealias _LazyTieWrappedPtr = Result<_LazyTieWrap<HogeBody>, SealError>
 
-extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
+//public typealias HogeBody = _NodePtrSealing
+public typealias HogeBody = _NodePtrTracking
+
+extension Result where Success == _LazyTieWrap<HogeBody>, Failure == SealError {
 
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -52,7 +55,7 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
   }
 }
 
-extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
+extension Result where Success == _LazyTieWrap<HogeBody>, Failure == SealError {
 
   @inlinable
   @inline(__always)
@@ -78,15 +81,24 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
     default: false
     }
   }
+}
 
+extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
   @inlinable
   package var sealed: _SealedPtr {
     map(\.rawValue)
   }
 }
 
+extension Result where Success == _LazyTieWrap<_NodePtrTracking>, Failure == SealError {
+  @inlinable
+  package var sealed: _SealedPtr {
+    map(\.rawValue.pointer)
+  }
+}
+
 #if DEBUG
-  extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
+  extension Result where Success == _LazyTieWrap<HogeBody>, Failure == SealError {
 
     package static func unsafe<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag)
       -> Self

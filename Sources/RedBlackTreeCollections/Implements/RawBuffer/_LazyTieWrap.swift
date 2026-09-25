@@ -91,7 +91,7 @@ extension _LazyTieWrap: Hashable where RawValue: Hashable {
   }
 }
 
-extension _LazyTieWrap where RawValue == _NodePtrSealing {
+extension _LazyTieWrap where RawValue == HogeBody {
 
   @inlinable
   package var purified: Result<Self, SealError> {
@@ -103,8 +103,13 @@ extension _LazyTieWrap where RawValue == _NodePtrSealing {
   extension _NodePtrSealing {
 
     @inlinable
-    package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTieWrappedPtr {
+    package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> Result<_LazyTieWrap<_NodePtrSealing>, SealError> {
       .success(.init(rawValue: self, lazyDetach: __tree_.lazyDetach))
+    }
+    
+    @inlinable
+    package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> Result<_LazyTieWrap<_NodePtrTracking>, SealError> {
+      .success(.init(rawValue: .init(sealing: self), lazyDetach: __tree_.lazyDetach))
     }
   }
 

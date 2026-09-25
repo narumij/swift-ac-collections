@@ -29,7 +29,7 @@
 
     // AtCoder 2025互換のUnsafeIndexV2は、ALLOW_CROSS_TREE_INDEXにかかわらず
     // 別の木に由来するインデックスを拒否しないため、通常モードでのみ検証する。
-    #if !COMPATIBLE_ATCODER_2025
+    #if !COMPATIBLE_ATCODER_2025 && !ALLOW_CROSS_TREE_INDEX
       @Test func `index from another tree cannot be subscripted`() async {
         await #expect(processExitsWith: .failure) {
           let set: RedBlackTreeSet<Int> = [1, 2, 3]
@@ -181,17 +181,19 @@
           _ = a.formIndex(&i, offsetBy: 1, limitedBy: a.startIndex)
         }
       }
-    
-    @Test func `インデックス挙動の確認`() async {
-      await #expect(processExitsWith: .failure) {
-        var a = RedBlackTreeSet<Int>(0..<10)
-        let b = a
-        let i = a.startIndex
-        a.insert(10) // CoW発生
-        _ = a[i] // mutation後のstaleはContainer-Designで許容されている。トラップさえしてればいい
-        // aからとったインデックスだから有効であって欲しい気はするが、そうしなくても構わない
-      }
-    }
+
+      #if !ALLOW_CROSS_TREE_INDEX
+        @Test func `インデックス挙動の確認`() async {
+          await #expect(processExitsWith: .failure) {
+            var a = RedBlackTreeSet<Int>(0..<10)
+            let b = a
+            let i = a.startIndex
+            a.insert(10)  // CoW発生
+            _ = a[i]  // mutation後のstaleはContainer-Designで許容されている。トラップさえしてればいい
+            // aからとったインデックスだから有効であって欲しい気はするが、そうしなくても構わない
+          }
+        }
+      #endif
     #endif
 
   }

@@ -24,6 +24,21 @@
     }
   }
 
+  extension Result where Success == _LazyTieWrap<_NodePtrTracking>, Failure == SealError {
+
+    var __recycle_count: UnsafeNode.Seal? {
+      try? map { $0.rawValue.pointer.pointer.pointee.___recycle_count }.get()
+    }
+
+    var seal: UnsafeNode.Seal? {
+      try? map { $0.rawValue.pointer.seal }.get()
+    }
+
+    var ___tracking_tag: _TrackingTag? {
+      try? map { $0.rawValue.pointer.pointer.pointee.___tracking_tag }.get()
+    }
+  }
+
   final class PurifiedTests: RedBlackTreeTestCase {
 
     func testExample0() throws {
@@ -89,15 +104,17 @@
       XCTAssertEqual(a.__tree_.__purified_(a.endIndex).accessible.error, .garbaged)
     }
 
-    func testExample3() throws {
-      var i: RedBlackTreeSet<Int>.Index?
-      do {
-        let a = RedBlackTreeSet<Int>(0..<10)
-        i = a.startIndex
+    #if !ALLOW_CROSS_TREE_INDEX
+      func testExample3() throws {
+        var i: RedBlackTreeSet<Int>.Index?
+        do {
+          let a = RedBlackTreeSet<Int>(0..<10)
+          i = a.startIndex
+        }
+        let b = RedBlackTreeSet<Int>()
+        // cross treeを許可してないため、そもそも木判定で弾かれる
+        XCTAssertEqual(b.__tree_.__purified_(i!).error, .crossTree)
       }
-      let b = RedBlackTreeSet<Int>()
-      // cross treeを許可してないため、そもそも木判定で弾かれる
-      XCTAssertEqual(b.__tree_.__purified_(i!).error, .crossTree)
-    }
+    #endif
   }
 #endif

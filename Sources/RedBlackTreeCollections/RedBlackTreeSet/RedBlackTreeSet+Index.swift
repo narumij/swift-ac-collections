@@ -249,6 +249,25 @@
       return (__inserted, ___index(__r))
     }
   }
+
+  extension RedBlackTreeSet {
+
+    // index(inserting:)で取得したIndexでもりもり消したい場合に過剰にチェックしなくて済むように追加
+
+    /// Removes the element at the given index of the set.
+    ///
+    /// - Complexity: Amortized O(1)
+    @inlinable
+    @discardableResult
+    public mutating func index(removing index: Index) -> Index? {
+      __tree_.ensureUnique()
+      guard let __p = __tree_.__purified_(index).accessible.pointer else {
+        return nil
+      }
+      _ = __tree_._unchecked_remove(at: __p).payload
+      return index
+    }
+  }
 #endif
 
 #if !COMPATIBLE_ATCODER_2025

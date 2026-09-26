@@ -125,7 +125,6 @@
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
 
-    @available(*, deprecated)
     @inlinable
     public mutating func erase(
       _ bounds: IndexRangeExpression, where shouldBeRemoved: (Element) throws -> Bool

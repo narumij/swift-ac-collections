@@ -38,7 +38,7 @@
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      return __tree_.isValid(safeRange: ___safe_range)
+      return __tree_.isValid(range: ___safe_range2)
     }
 
     @inlinable
@@ -97,23 +97,23 @@
     @discardableResult
     public mutating func erase(_ bounds: UnboundedRange) -> Index {
       __tree_.ensureUnique()
-      return erase(_safeRange: ___safe_range)
+      return erase(_range: ___safe_range2)
     }
 
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: IndexRange) -> Index {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe_(bounds)
-      return erase(_safeRange: range)
+      let range = __tree_.__purified_safe2_(bounds)
+      return erase(_range: range)
     }
 
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      return erase(_safeRange: range)
+      let range = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
+      return erase(_range: range)
     }
   }
 
@@ -146,6 +146,18 @@
 
     @inlinable
     @discardableResult
+    mutating func erase(_range range: _SafeRange) -> Index {
+      assert(__tree_.isUnique())
+
+      do {
+        return try __tree_.___erase_range(range).get()
+      } catch {
+        fatalError("\(error)")
+      }
+    }
+
+    @inlinable
+    @discardableResult
     mutating func erase(_safeRange range: _RawRange<_SafePtr>) -> Index {
       assert(__tree_.isUnique())
       guard __tree_.isValid(safeRange: range),
@@ -170,6 +182,9 @@
       }
       try __tree_.___erase_range_if(range.lowerBound, range.upperBound, shouldBeRemoved)
     }
+  }
+
+  extension RedBlackTreeSet {
 
     @inlinable
     func makeView(range: _NodeRange) -> View {
@@ -202,12 +217,13 @@
         else {
           fatalError(.invalidIndex)
         }
-        self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
-        defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
+        self = Self()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = Self(__tree_: view.__tree_) }
         yield &view
       }
     }
 
+    @available(*, deprecated)
     @inlinable
     subscript(_safeRange range: _RawRange<_SafePtr>) -> View {
 

@@ -33,7 +33,7 @@
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      return __tree_.isValid(safeRange: ___safe_range)
+      return __tree_.isValid(range: ___safe_range2)
     }
 
     @inlinable
@@ -54,21 +54,21 @@
     @inlinable
     public subscript(bounds: UnboundedRange) -> View {
       @inline(__always) get {
-        self[_safeRange: ___safe_range]
+        self[_safeRange: ___safe_range2]
       }
       @inline(__always) _modify {
-        yield &self[_safeRange: ___safe_range]
+        yield &self[_safeRange: ___safe_range2]
       }
     }
 
     @inlinable
     public subscript(bounds: IndexRange) -> View {
       @inline(__always) get {
-        let range = __tree_.__purified_safe_(bounds)
+        let range = __tree_.__purified_safe2_(bounds)
         return self[_safeRange: range]
       }
       @inline(__always) _modify {
-        let range = __tree_.__purified_safe_(bounds)
+        let range = __tree_.__purified_safe2_(bounds)
         yield &self[_safeRange: range]
       }
     }
@@ -76,11 +76,11 @@
     @inlinable
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
-        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+        let range = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
         return self[_safeRange: range]
       }
       @inline(__always) _modify {
-        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+        let range = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
         yield &self[_safeRange: range]
       }
     }
@@ -92,7 +92,7 @@
     @discardableResult
     public mutating func erase(_ bounds: UnboundedRange) -> Index {
       __tree_.ensureUnique()
-      return erase(_safeRange: ___safe_range)
+      return erase(_range: ___safe_range2)
     }
 
     @inlinable
@@ -141,6 +141,18 @@
 
     @inlinable
     @discardableResult
+    mutating func erase(_range range: _SafeRange) -> Index {
+      assert(__tree_.isUnique())
+
+      do {
+        return try __tree_.___erase_range(range).get()
+      } catch {
+        fatalError("\(error)")
+      }
+    }
+
+    @inlinable
+    @discardableResult
     mutating func erase(_safeRange range: _RawRange<_SafePtr>) -> Index {
       assert(__tree_.isUnique())
       guard __tree_.isValid(safeRange: range),
@@ -167,31 +179,57 @@
         try shouldBeRemoved(Base.__element_($0))
       }
     }
+  }
 
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    func makeView(range: _NodeRange) -> View {
+      View(
+        __tree_: __tree_,
+        _start: range.lowerBound.uncheckedSeal,
+        _end: range.upperBound.uncheckedSeal)
+    }
+
+    @inlinable
+    func makeView(range: _SafeRange) -> Result<View, SealError> {
+      range.map { makeView(range: $0) }
+    }
+
+    @inlinable
+    subscript(_safeRange range: _SafeRange) -> View {
+
+      @inline(__always) get {
+        guard __tree_.isValid(range: range),
+          let view = try? makeView(range: range).get()
+        else {
+          fatalError(.invalidIndex)
+        }
+        return view
+      }
+
+      @inline(__always) _modify {
+        guard __tree_.isValid(range: range),
+          var view = try? makeView(range: range).get()
+        else {
+          fatalError(.invalidIndex)
+        }
+        self = Self()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = Self(__tree_: view.__tree_) }
+        yield &view
+      }
+    }
+
+    @available(*, deprecated)
     @inlinable
     subscript(_safeRange range: _RawRange<_SafePtr>) -> View {
 
       @inline(__always) get {
-        guard __tree_.isValid(safeRange: range) else {
-          fatalError(.invalidIndex)
-        }
-        return View(
-          __tree_: __tree_,
-          _start: range.lowerBound.uncheckedSeal,
-          _end: range.upperBound.uncheckedSeal)
+        self[_safeRange: range.safeRange]
       }
 
       @inline(__always) _modify {
-        guard __tree_.isValid(safeRange: range) else {
-          fatalError(.invalidIndex)
-        }
-        var view = View(
-          __tree_: __tree_,
-          _start: range.lowerBound.uncheckedSeal,
-          _end: range.upperBound.uncheckedSeal)
-        self = RedBlackTreeDictionary()  // yield中のCoWキャンセル。考えた人賢い
-        defer { self = RedBlackTreeDictionary(__tree_: view.__tree_) }
-        yield &view
+        yield &self[_safeRange: range.safeRange]
       }
     }
   }

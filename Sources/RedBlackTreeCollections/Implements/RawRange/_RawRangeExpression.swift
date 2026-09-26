@@ -36,6 +36,7 @@ public enum _RawRangeExpression<Bound> {
 }
 
 extension _RawRangeExpression: Equatable where Bound: Equatable {
+  
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     switch (lhs, rhs) {
@@ -80,6 +81,7 @@ extension _RawRangeExpression {
 
 extension _RawRangeExpression where Bound == _SafePtr {
 
+  @available(*, deprecated)
   @usableFromInline
   func relative<Base>(to tree: UnsafeTreeV2<Base>)
     -> _RawRange<_SafePtr>

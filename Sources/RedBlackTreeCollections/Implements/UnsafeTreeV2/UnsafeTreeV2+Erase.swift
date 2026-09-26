@@ -39,6 +39,20 @@ extension UnsafeTreeV2 {
     return __last
   }
 
+  @inlinable
+  @discardableResult
+  func ___erase_range2(_ __first: _NodePtr, _ __last: _NodePtr) -> _SafePtr {
+
+    var __first = __first
+    while __first != __last {
+      guard __first.___has_payload_content else {
+        return .failure(.other)
+      }
+      __first = erase(__first)
+    }
+    return .success(__last)
+  }
+
   /// 末尾チェック付きの削除ループ
   ///
   /// `_SealedPtr`を使ってきたが、対象となる木が固定の場合、過剰なので、`_SafePtr`にした。
@@ -74,6 +88,12 @@ extension UnsafeTreeV2 {
 
   @inlinable
   @discardableResult
+  func ___erase_range2(_ range: _NodeRange) -> _SafePtr {
+    ___erase_range2(range.lowerBound, range.upperBound)
+  }
+
+  @inlinable
+  @discardableResult
   func ___erase_range_if(
     _ __first: _NodePtr,
     _ __last: _NodePtr,
@@ -89,5 +109,19 @@ extension UnsafeTreeV2 {
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool
   ) rethrows -> _SafePtr {
     try ___erase_range_if(range.lowerBound, range.upperBound, shouldBeRemoved)
+  }
+}
+
+extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
+
+  @inlinable
+  @discardableResult
+  func ___erase_range(_ range: _SafeRange) -> Result<UnsafeIndexV3, SealError> {
+    range
+      .flatMap(validated(range:))
+      .flatMap {
+        $0.fold(___erase_range2)
+      }
+      .map(index)
   }
 }

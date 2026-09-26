@@ -262,6 +262,9 @@ public enum SealError: Error {
 
   /// 木と分離済み
   case detached
+  
+  /// あとでエラーの扱いを変える予定のもの
+  case other
 }
 
 extension SealError: Equatable {}

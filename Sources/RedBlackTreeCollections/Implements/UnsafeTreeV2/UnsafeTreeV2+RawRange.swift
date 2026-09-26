@@ -23,6 +23,13 @@
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
   @inlinable
+  func validated(range: _NodeRange) -> Result<_NodeRange, SealError> {
+    isValid(range: range)
+      ? .success(range)
+      : .failure(.other)
+  }
+
+  @inlinable
   func isValid(range: _NodeRange) -> Bool {
     range.lowerBound == range.upperBound
       || Base.___ptr_comp(range.lowerBound, range.upperBound)

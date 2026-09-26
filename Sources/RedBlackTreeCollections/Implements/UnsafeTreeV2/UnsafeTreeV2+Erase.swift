@@ -71,4 +71,23 @@ extension UnsafeTreeV2 {
   func ___erase_range(_ range: _NodeRange) -> _NodePtr {
     ___erase_range(range.lowerBound, range.upperBound)
   }
+
+  @inlinable
+  @discardableResult
+  func ___erase_range_if(
+    _ __first: _NodePtr,
+    _ __last: _NodePtr,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+    try ___erase_range_if(__first.unchecked, __last.unchecked, shouldBeRemoved)
+  }
+
+  @inlinable
+  @discardableResult
+  func ___erase_range_if(
+    _ range: _NodeRange,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+    try ___erase_range_if(range.lowerBound, range.upperBound, shouldBeRemoved)
+  }
 }

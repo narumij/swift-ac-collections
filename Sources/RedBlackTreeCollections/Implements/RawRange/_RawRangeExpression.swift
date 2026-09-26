@@ -65,7 +65,7 @@ extension _RawRangeExpression: Equatable where Bound: Equatable {
 // 各Range表現はここで半開区間の`_RawRange<_SafePtr>`へ正規化する。
 // closed rangeの上端だけ次のノードへ進め、exclusive upper boundへ変換する。
 
-extension _RawRangeExpression where Bound == _SafePtr {
+extension _RawRangeExpression {
 
   @inlinable
   func _start<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _SafePtr {
@@ -106,6 +106,43 @@ extension _RawRangeExpression where Bound == _SafePtr {
     case .partialRangeFrom(let lhs):
       return .init(
         lowerBound: lhs,
+        upperBound: _end(__tree_))
+    case .unboundedRange:
+      return .init(
+        lowerBound: _start(__tree_),
+        upperBound: _end(__tree_))
+    }
+  }
+}
+
+extension _RawRangeExpression where Bound == UnsafeMutablePointer<UnsafeNode> {
+
+  @usableFromInline
+  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+    -> _RawRange<_SafePtr>
+  where
+    Base: ___TreeBase
+  {
+    switch self {
+    case .range(let lhs, let rhs):
+      return .init(
+        lowerBound: lhs.unchecked,
+        upperBound: rhs.unchecked)
+    case .closedRange(let lhs, let rhs):
+      return .init(
+        lowerBound: lhs.unchecked,
+        upperBound: ___tree_next_iter(rhs))
+    case .partialRangeTo(let rhs):
+      return .init(
+        lowerBound: _start(__tree_),
+        upperBound: rhs.unchecked)
+    case .partialRangeThrough(let rhs):
+      return .init(
+        lowerBound: _start(__tree_),
+        upperBound: ___tree_next_iter(rhs))
+    case .partialRangeFrom(let lhs):
+      return .init(
+        lowerBound: lhs.unchecked,
         upperBound: _end(__tree_))
     case .unboundedRange:
       return .init(

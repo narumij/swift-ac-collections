@@ -24,7 +24,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func evaluate(
-    _ expression: RedBlackTreeBoundExpressionV2<_Key>.Internal
+    _ expression: RedBlackTreeBoundExpression<_Key>.Internal
   ) -> _SafePtr {
 
     // ベンチマーク的にずるをしている
@@ -51,7 +51,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func evaluateSlow(
-    _ expression: RedBlackTreeBoundExpressionV2<_Key>.Internal
+    _ expression: RedBlackTreeBoundExpression<_Key>.Internal
   ) -> _SafePtr {
     var ptr = _SafePtr.failure(.null)
 
@@ -127,7 +127,6 @@ extension UnsafeTreeV2 {
 
       #if DEBUG
         case .index(let i):
-          // TODO: デタッチ判定が分裂してることについてリファクタリング検討
           switch __purified_(i) {
           case .success(let s):
             ptr = s.pointer.unchecked
@@ -145,7 +144,7 @@ extension UnsafeTreeV2 {
   }
 }
 
-extension RedBlackTreeBoundExpressionV2 {
+extension RedBlackTreeBoundExpression {
 
   @inlinable
   func evaluate<Base>(_ __tree_: UnsafeTreeV2<Base>)

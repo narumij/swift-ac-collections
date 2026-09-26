@@ -140,10 +140,8 @@
   extension RedBlackTreeDictionary {
 
     @inlinable
-    @discardableResult
     mutating func erase(_range range: _SafeRange) -> Index {
       assert(__tree_.isUnique())
-
       do {
         return try __tree_.___erase_range(range).get()
       } catch {
@@ -159,11 +157,13 @@
       rethrows
     {
       assert(__tree_.isUnique())
-      guard __tree_.isValid(range: range) else {
-        fatalError(.invalidIndex)
-      }
-      try __tree_.___erase_range_if(range) {
-        try shouldBeRemoved(Base.__element_($0))
+      do {
+        _ = try __tree_.___erase_range_if(range) {
+          try shouldBeRemoved(Base.__element_($0))
+        }
+        .get()
+      } catch {
+        fatalError("\(error)")
       }
     }
   }
@@ -180,30 +180,31 @@
 
     @inlinable
     func makeView(range: _SafeRange) -> Result<View, SealError> {
-      range.map { makeView(range: $0) }
+      range
+        .flatMap(__tree_.validated(range:))
+        .map(makeView(range:))
     }
 
     @inlinable
     subscript(_safeRange range: _SafeRange) -> View {
 
       @inline(__always) get {
-        guard __tree_.isValid(range: range),
-          let view = try? makeView(range: range).get()
-        else {
-          fatalError(.invalidIndex)
+        do {
+          return try makeView(range: range).get()
+        } catch {
+          fatalError("\(error)")
         }
-        return view
       }
 
       @inline(__always) _modify {
-        guard __tree_.isValid(range: range),
-          var view = try? makeView(range: range).get()
-        else {
-          fatalError(.invalidIndex)
+        do {
+          var view = try makeView(range: range).get()
+          self = Self()  // yield中のCoWキャンセル。考えた人賢い
+          defer { self = Self(__tree_: view.__tree_) }
+          yield &view
+        } catch {
+          fatalError("\(error)")
         }
-        self = Self()  // yield中のCoWキャンセル。考えた人賢い
-        defer { self = Self(__tree_: view.__tree_) }
-        yield &view
       }
     }
   }

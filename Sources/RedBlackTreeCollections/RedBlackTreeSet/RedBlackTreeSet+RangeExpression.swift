@@ -145,7 +145,6 @@
   extension RedBlackTreeSet {
 
     @inlinable
-    @discardableResult
     mutating func erase(_range range: _SafeRange) -> Index {
       assert(__tree_.isUnique())
       do {
@@ -200,14 +199,14 @@
       }
 
       @inline(__always) _modify {
-        guard __tree_.isValid(range: range),
-          var view = try? makeView(range: range).get()
-        else {
-          fatalError(.invalidIndex)
+        do {
+          var view = try makeView(range: range).get()
+          self = Self()  // yield中のCoWキャンセル。考えた人賢い
+          defer { self = Self(__tree_: view.__tree_) }
+          yield &view
+        } catch {
+          fatalError("\(error)")
         }
-        self = Self()  // yield中のCoWキャンセル。考えた人賢い
-        defer { self = Self(__tree_: view.__tree_) }
-        yield &view
       }
     }
   }

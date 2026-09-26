@@ -106,7 +106,7 @@
 
       @inline(__always) get {
 
-        let range = __tree_.sanitize2(
+        let range = __tree_.sanitize(
           safeRange: bounds.evaluate2(__tree_).relative(to: __tree_))
 
         return self[_safeRange: range]
@@ -114,7 +114,7 @@
 
       @inline(__always) _modify {
 
-        let range = __tree_.sanitize2(
+        let range = __tree_.sanitize(
           safeRange: bounds.evaluate2(__tree_).relative(to: __tree_))
 
         yield &self[_safeRange: range]
@@ -128,7 +128,7 @@
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitize2(
+      let range = __tree_.sanitize(
         safeRange: bounds.evaluate2(__tree_).relative(to: __tree_))
       __tree_.___erase_range(range)
     }
@@ -139,7 +139,7 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitize2(
+      let range = __tree_.sanitize(
         safeRange: bounds.evaluate2(__tree_).relative(to: __tree_))
       try __tree_.___erase_range_if(range) {
         try shouldBeRemoved($0.tuple)

@@ -204,18 +204,5 @@
         yield &view
       }
     }
-
-    @available(*, deprecated)
-    @inlinable
-    subscript(_safeRange range: _RawRange<_SafePtr>) -> View {
-
-      @inline(__always) get {
-        self[_safeRange: range.safeRange]
-      }
-
-      @inline(__always) _modify {
-        yield &self[_safeRange: range.safeRange]
-      }
-    }
   }
 #endif

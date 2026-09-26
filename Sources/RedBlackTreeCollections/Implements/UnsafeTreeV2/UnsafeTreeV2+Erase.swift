@@ -20,6 +20,27 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeTreeV2 {
+
+    @inlinable
+    @discardableResult
+    func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _NodePtr {
+
+      var __first = __first
+      while __first != __last {
+        guard __first.___has_payload_content else {
+          fatalError(.outOfBounds)  // エラー種別がしっくりこない
+        }
+        __first = erase(__first)
+      }
+      return __last
+    }
+  }
+#endif
+
+// MARK: -
+
 extension UnsafeTreeV2 {
 
   /// 末尾チェック付きの削除ループ
@@ -27,25 +48,22 @@ extension UnsafeTreeV2 {
   /// 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
   @inlinable
   @discardableResult
-  func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _NodePtr {
+  func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _SafePtr {
 
     var __first = __first
     while __first != __last {
       guard __first.___has_payload_content else {
-        fatalError(.outOfBounds) // エラー種別がしっくりこない
+        return .failure(.other)
       }
       __first = erase(__first)
     }
-    return __last
+    return .success(__last)
   }
 
   /// 末尾チェック付きの削除ループ
-  ///
-  /// `_SealedPtr`を使ってきたが、対象となる木が固定の場合、過剰なので、`_SafePtr`にした。
-  /// 世代や木が変わるような事態は外部側で起きるのであって、こちらで起きるわけではないので。
   @inlinable
   @discardableResult
-  func ___erase_ragen_if(
+  func ___erase_range_if(
     _ __first: _SafePtr,
     _ __last: _SafePtr,
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool
@@ -53,7 +71,9 @@ extension UnsafeTreeV2 {
 
     var __first = __first
     while __first != __last {
-      assert(__first.___has_payload_content)
+      guard __first.___has_payload_content else {
+        return .failure(.other)
+      }
       if try shouldBeRemoved(__value_(__first.pointer!)) {
         __first = erase(__first.accessible.pointer!).unchecked
       } else {
@@ -61,5 +81,40 @@ extension UnsafeTreeV2 {
       }
     }
     return __last
+  }
+}
+
+extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
+
+  @inlinable
+  @discardableResult
+  func ___erase_range(_ range: _SafeRange) -> Result<UnsafeIndexV3, SealError> {
+    range
+      .flatMap(validated(range:))
+      .flatMap {
+        $0.fold(___erase_range)
+      }
+      .map(index)
+  }
+
+  @inlinable
+  @discardableResult
+  func ___erase_range_if(
+    _ range: _SafeRange,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> Result<UnsafeIndexV3, SealError> {
+
+    switch range.flatMap(validated(range:)) {
+    case .failure(let error):
+      return .failure(error)
+
+    case .success(let range):
+      return try ___erase_range_if(
+        range.lowerBound.unchecked,
+        range.upperBound.unchecked,
+        shouldBeRemoved
+      )
+      .map(index)
+    }
   }
 }

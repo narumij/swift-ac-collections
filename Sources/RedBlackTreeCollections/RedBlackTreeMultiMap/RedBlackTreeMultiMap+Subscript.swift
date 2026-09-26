@@ -28,11 +28,11 @@
     public subscript(key: Key) -> View {
       @inline(__always) get {
         let (lower, upper) = __tree_.__equal_range_multi(key)
-        return self[_safeRange: _RawRange<_NodePtr>(lowerBound: lower, upperBound: upper).unchecked]
+        return self[_safeRange: .success(.init(lowerBound: lower, upperBound: upper))]
       }
       @inline(__always) _modify {
         let (lower, upper) = __tree_.__equal_range_multi(key)
-        yield &self[_safeRange: _RawRange<_NodePtr>(lowerBound: lower, upperBound: upper).unchecked]
+        yield &self[_safeRange: .success(.init(lowerBound: lower, upperBound: upper))]
       }
     }
   }

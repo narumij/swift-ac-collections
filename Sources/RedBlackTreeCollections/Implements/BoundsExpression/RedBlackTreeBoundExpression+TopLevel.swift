@@ -36,7 +36,7 @@ public func start<K>() -> RedBlackTreeBoundExpression<K> {
 ///
 /// If no such element exists, it is substituted with the past-the-end element.
 ///
-/// - Complexity: O(1)
+/// - Complexity: O(log `count`)
 ///   (when evaluated)
 public func last<K>() -> RedBlackTreeBoundExpression<K> {
   .last

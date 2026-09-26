@@ -41,11 +41,13 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
   }
 
 
+  @available(*, deprecated)
   @inlinable
   func isValid(safeRange range: _RawRange<_SafePtr>) -> Bool {
     return isValid(range: traverse(range) { $0.map { $0 } })
   }
 
+  @available(*, deprecated)
   @inlinable
   func sanitize(safeRange range: _RawRange<_SafePtr>) -> _RawRange<_SafePtr> {
     isValid(safeRange: range) ? range : ___safe_empty_range
@@ -65,6 +67,7 @@ extension UnsafeTreeV2 {
     return .init(lowerBound: e, upperBound: e)
   }
   
+  @available(*, deprecated)
   @inlinable
   var ___safe_empty_range: _RawRange<_SafePtr> {
     let e = __end_node.unchecked

@@ -244,7 +244,7 @@ extension RedBlackTreeKeyOnlyRangeView {
     _ensureUnique()
     let (_start, _end) = _raw_range
     // ややチェックが甘いので末端チェック付き削除が必要
-    return ___index(try! __tree_.___erase_range2(_start, _end).get())
+    return ___index(try! __tree_.___erase_range(_start, _end).get())
   }
 
   @inlinable

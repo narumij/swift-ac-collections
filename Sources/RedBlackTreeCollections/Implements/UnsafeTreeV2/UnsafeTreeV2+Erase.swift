@@ -21,22 +21,22 @@
 //===----------------------------------------------------------------------===//
 
 #if COMPATIBLE_ATCODER_2025
-extension UnsafeTreeV2 {
-  
-  @inlinable
-  @discardableResult
-  func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _NodePtr {
+  extension UnsafeTreeV2 {
 
-    var __first = __first
-    while __first != __last {
-      guard __first.___has_payload_content else {
-        fatalError(.outOfBounds)  // エラー種別がしっくりこない
+    @inlinable
+    @discardableResult
+    func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _NodePtr {
+
+      var __first = __first
+      while __first != __last {
+        guard __first.___has_payload_content else {
+          fatalError(.outOfBounds)  // エラー種別がしっくりこない
+        }
+        __first = erase(__first)
       }
-      __first = erase(__first)
+      return __last
     }
-    return __last
   }
-}
 #endif
 
 // MARK: -
@@ -48,7 +48,7 @@ extension UnsafeTreeV2 {
   /// 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
   @inlinable
   @discardableResult
-  func ___erase_range2(_ __first: _NodePtr, _ __last: _NodePtr) -> _SafePtr {
+  func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _SafePtr {
 
     var __first = __first
     while __first != __last {
@@ -74,7 +74,9 @@ extension UnsafeTreeV2 {
 
     var __first = __first
     while __first != __last {
-      assert(__first.___has_payload_content)
+      guard __first.___has_payload_content else {
+        return .failure(.other)
+      }
       if try shouldBeRemoved(__value_(__first.pointer!)) {
         __first = erase(__first.accessible.pointer!).unchecked
       } else {
@@ -82,34 +84,6 @@ extension UnsafeTreeV2 {
       }
     }
     return __last
-  }
-}
-
-extension UnsafeTreeV2 {
-
-  @inlinable
-  @discardableResult
-  func ___erase_range2(_ range: _NodeRange) -> _SafePtr {
-    ___erase_range2(range.lowerBound, range.upperBound)
-  }
-
-  @inlinable
-  @discardableResult
-  func ___erase_range_if(
-    _ __first: _NodePtr,
-    _ __last: _NodePtr,
-    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
-  ) rethrows -> _SafePtr {
-    try ___erase_range_if(__first.unchecked, __last.unchecked, shouldBeRemoved)
-  }
-
-  @inlinable
-  @discardableResult
-  func ___erase_range_if(
-    _ range: _NodeRange,
-    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
-  ) rethrows -> _SafePtr {
-    try ___erase_range_if(range.lowerBound, range.upperBound, shouldBeRemoved)
   }
 }
 
@@ -121,7 +95,7 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
     range
       .flatMap(validated(range:))
       .flatMap {
-        $0.fold(___erase_range2)
+        $0.fold(___erase_range)
       }
       .map(index)
   }
@@ -139,8 +113,8 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
     case .success(let range):
       return try ___erase_range_if(
-        range.lowerBound,
-        range.upperBound,
+        range.lowerBound.unchecked,
+        range.upperBound.unchecked,
         shouldBeRemoved
       )
       .map(index)

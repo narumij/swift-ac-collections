@@ -79,23 +79,6 @@ extension _RawRangeExpression {
   }
 }
 
-extension _RawRangeExpression where Bound == _SafePtr {
-
-  @available(*, deprecated)
-  @usableFromInline
-  func relative<Base>(to tree: UnsafeTreeV2<Base>)
-    -> _RawRange<_SafePtr>
-  where Base: ___TreeBase {
-    relative(
-      start: _start(tree),
-      end: _end(tree),
-      bound: { $0 },
-      through: {
-        $0.flatMap { ___tree_next_iter($0) }
-      })
-  }
-}
-
 // つまり_SafeRangeExpressionに対する拡張
 extension Result where Success == _NodeRangeExpression, Failure == SealError {
 
@@ -103,23 +86,13 @@ extension Result where Success == _NodeRangeExpression, Failure == SealError {
   func relative<Base>(to tree: UnsafeTreeV2<Base>) -> _SafeRange
   where Base: ___TreeBase {
     flatMap {
-      sequence($0.relative(to: tree))
+      sequence($0.relative(
+        start: tree.__begin_node_.unchecked,
+        end: tree.__end_node.unchecked,
+        bound: \.unchecked,
+        through: ___tree_next_iter)
+)
     }
-  }
-}
-
-extension _RawRangeExpression
-where Bound == UnsafeMutablePointer<UnsafeNode> {
-
-  @usableFromInline
-  func relative<Base>(to tree: UnsafeTreeV2<Base>)
-    -> _RawRange<_SafePtr>
-  where Base: ___TreeBase {
-    relative(
-      start: _start(tree),
-      end: _end(tree),
-      bound: \.unchecked,
-      through: ___tree_next_iter)
   }
 }
 

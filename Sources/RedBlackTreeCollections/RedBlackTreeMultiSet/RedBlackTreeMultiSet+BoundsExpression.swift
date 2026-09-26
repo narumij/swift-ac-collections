@@ -123,7 +123,7 @@
     /// Even if this returns `false`, BoundRange-related APIs will not crash.
     @inlinable
     public func isValid(_ bounds: BoundRangeExpression) -> Bool {
-      let range = bounds.evaluate2(__tree_).relative(to: __tree_)
+      let range = bounds.evaluate(__tree_).relative(to: __tree_)
       return __tree_.isValid(range: range)
     }
   }
@@ -136,7 +136,7 @@
       @inline(__always) get {
 
         let range = __tree_.sanitize(
-          safeRange: bounds.evaluate2(__tree_).relative(to: __tree_))
+          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
 
         return self[_safeRange: range]
       }
@@ -144,7 +144,7 @@
       @inline(__always) _modify {
 
         let range = __tree_.sanitize(
-          safeRange: bounds.evaluate2(__tree_).relative(to: __tree_))
+          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
 
         yield &self[_safeRange: range]
       }
@@ -158,7 +158,7 @@
 
       __tree_.ensureUnique()
       let range = __tree_.sanitize(
-        safeRange: bounds.evaluate2(__tree_).relative(to: __tree_))
+        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
       __tree_.___erase_range(range)
     }
 
@@ -169,7 +169,7 @@
 
       __tree_.ensureUnique()
       let range = __tree_.sanitize(
-        safeRange: bounds.evaluate2(__tree_).relative(to: __tree_))
+        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
       try __tree_.___erase_range_if(range, shouldBeRemoved)
     }
   }

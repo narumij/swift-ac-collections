@@ -12,23 +12,5 @@
 
   struct BoundsExpressionInvalidIndexMultiSetTests {
 
-    #if false
-      // BoundRangeの区間不正はfatalにしなくなった
-      @Test
-      func `MultiSetでBoundRangeが不正な場合、eraseがSIGSEGV以外で停止すること`() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
-          var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
-          set.erase(lowerBound(3)..<lowerBound(1))
-        }
-      }
-
-      @Test
-      func `MultiSetでBoundRangeが不正な場合、erase whereがSIGSEGV以外で停止すること`() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
-          var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
-          set.erase(lowerBound(3)..<lowerBound(1)) { _ in false }
-        }
-      }
-    #endif
   }
 #endif

@@ -55,6 +55,17 @@ public struct _NodePtrSealing {
     #endif
   }
 
+  #if DEBUG
+    @inlinable
+    init(unsafe _p: _NodePtr) {
+      pointer = _p
+      seal = _p.pointee.___recycle_count
+      #if !USE_LAZY_DETACH
+        trackingTag = _p.trackingTag
+      #endif
+    }
+  #endif
+
   /// 過去の状態で封印する
   @inlinable
   init(_p: _NodePtr, _seal: UnsafeNode.Seal) {
@@ -140,6 +151,7 @@ public struct _NodePtrSealing {
 }
 
 extension _NodePtrSealing: Equatable {}
+extension _NodePtrSealing: Hashable {}
 
 #if DEBUG
   extension _NodePtrSealing {
@@ -168,15 +180,6 @@ extension _NodePtrSealing: Equatable {}
     }
   }
 #endif
-
-extension _NodePtrSealing: Hashable {
-
-  @inlinable
-  public func hash(into hasher: inout Hasher) {
-    pointer.hash(into: &hasher)
-    seal.hash(into: &hasher)
-  }
-}
 
 // ふざけてるのが半分。残り半分は通常使わない言葉や概念から意外と大切な部分であることを察してもらうため。
 // というか用語群として混ざらないようにするため

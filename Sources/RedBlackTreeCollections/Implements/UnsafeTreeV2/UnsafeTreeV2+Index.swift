@@ -50,6 +50,19 @@ extension UnsafeTreeV2 {
   }
 }
 
+extension UnsafeTreeV2 {
+
+  @inlinable
+  func index(_ p: _NodePtr) -> _LazyTiedPtr {
+    return withMutableHeader { $0.index(p) }
+  }
+
+  @inlinable
+  func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
+    return withMutableHeader { $0.index_or_nil(p) }
+  }
+}
+
 extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistanceInterface {
 
   @inlinable
@@ -78,74 +91,6 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
     .get()
   }
 }
-
-#if false
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    func prev_iter(_ i: _TieWrappedPtr) -> _TieWrappedPtr {
-      __purified_(i)
-        .flatMap { ___tree_prev_iter($0.pointer) }
-        .flatMap { $0.sealed.band(tied) }
-    }
-
-    @inlinable
-    func next_iter(_ i: _TieWrappedPtr) -> _TieWrappedPtr {
-      __purified_(i)
-        .flatMap { ___tree_next_iter($0.pointer) }
-        .flatMap { $0.sealed.band(tied) }
-    }
-
-    @inlinable
-    func adv_iter(_ i: _TieWrappedPtr, offsetBy distance: Int) -> _TieWrappedPtr {
-      __purified_(i)
-        .flatMap { ___tree_adv_iter($0.pointer, distance) }
-        .flatMap { $0.sealed.band(tied) }
-    }
-
-    @inlinable
-    func adv_iter(_ i: _TieWrappedPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedPtr)
-      -> _TieWrappedPtr
-    {
-      let __l = __purified_(limit).map(\.pointer)
-      return __purified_(i)
-        .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-        .flatMap { $0.sealed.band(tied) }
-    }
-
-    @inlinable
-    func index_or_nil(_ i: _TieWrappedPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedPtr)
-      -> _TieWrappedPtr?
-    {
-      let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
-      switch advanced {
-      case .success:
-        return advanced
-      case .failure:
-        return nil
-      }
-    }
-
-    @inlinable
-    func form_index(
-      _ i: inout _TieWrappedPtr, offsetBy distance: Int, limitedBy limit: _TieWrappedPtr
-    )
-      -> Bool
-    {
-      let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
-      switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
-      case .success:
-        i = advanced
-        return true
-      case .failure(.limit):
-        i = limit
-        return false
-      default:
-        return false
-      }
-    }
-  }
-#endif
 
 extension UnsafeTreeV2 {
 
@@ -222,24 +167,79 @@ extension UnsafeTreeV2 {
   }
 }
 
-#if false
-  extension UnsafeTreeV2 {
+extension UnsafeTreeV2 {
 
-    // Span対応準備のための実験コード
-    func nextBuffer(_ index: inout _TieWrappedPtr) -> UnsafeMutableBufferPointer<_PayloadValue>? {
-      defer { index = next_iter(index) }
-      return try? __purified_(index).map { Base.__payload_buffer($0.pointer) }.get()
+  @inlinable
+  func prev_iter(_ i: _LazyTiedPtr) -> _LazyTiedPtr {
+    try! __purified_(i)
+      .flatMap { ___tree_prev_iter($0.pointer) }
+      .flatMap { index($0) }
+      .get()
+  }
+
+  @inlinable
+  func next_iter(_ i: _LazyTiedPtr) -> _LazyTiedPtr {
+    try! __purified_(i)
+      .flatMap { ___tree_next_iter($0.pointer) }
+      .flatMap { index($0) }
+      .get()
+  }
+
+  @inlinable
+  func adv_iter(_ i: _LazyTiedPtr, offsetBy distance: Int) -> _LazyTiedPtr {
+    try! __purified_(i)
+      .flatMap { ___tree_adv_iter($0.pointer, distance) }
+      .flatMap { index($0) }
+      .get()
+  }
+
+  @inlinable
+  func adv_iter(
+    _ i: _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
+  )
+    -> _LazyTieWrappedPtr
+  {
+    let __l = __purified_(limit).map(\.pointer)
+    return __purified_(i)
+      .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
+      .flatMap { index($0) }
+  }
+
+  @inlinable
+  func index_or_nil(
+    _ i: _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
+  )
+    -> _LazyTiedPtr?
+  {
+    let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
+    switch advanced {
+    case .success:
+      return try? advanced.get()
+    case .failure(.limit):
+      return nil
+    case .failure:
+      fatalError()
     }
   }
 
-  extension RedBlackTreeSet {
-
-    // Spanは初期化が解放されてないようなので、OutputSpanで実験
-    // いまいちうまくいかない。そもそも~Copyableな本体じゃ無いとだめかも？
-    // それ以外にも、辞書の場合どうなるんだろう？という疑問がある
-    @_lifetime(borrow self)
-    func nextSpan(after index: inout Index, maximumCount: Int) -> OutputSpan<Element> {
-      .init(buffer: __tree_.nextBuffer(&index)!, initializedCount: 1)
+  @inlinable
+  func form_index(
+    _ i: inout _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
+  )
+    -> Bool
+  {
+    let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
+    switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
+    case .success:
+      if let a = try? advanced.get() {
+        i = a
+      }
+      return true
+    case .failure(.limit):
+      i = limit
+      return false
+    case .failure:
+      fatalError()
     }
   }
-#endif
+}

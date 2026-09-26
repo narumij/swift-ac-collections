@@ -104,6 +104,14 @@ extension RedBlackTreeKeyOnlyRangeView {
   }
 }
 
+extension RedBlackTreeKeyOnlyRangeView {
+
+  @inlinable
+  func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
+    __tree_.index(p)
+  }
+}
+
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeKeyOnlyRangeView: Sequence {}
 
@@ -257,45 +265,45 @@ extension RedBlackTreeKeyOnlyRangeView {
 }
 
 #if !COMPATIBLE_ATCODER_2025
-extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Equatable {
+  extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Equatable {
 
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    elementsEqual(other, by: ==)
+    /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+    ///   sequence and the length of `other`.
+    @inlinable
+    public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
+    where OtherSequence: Sequence, Element == OtherSequence.Element {
+      elementsEqual(other, by: ==)
+    }
   }
-}
 
-extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Comparable {
+  extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Comparable {
 
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-  ///   sequence and the length of `other`.
-  @inlinable
-  public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-  where OtherSequence: Sequence, Element == OtherSequence.Element {
-    lexicographicallyPrecedes(other, by: <)
+    /// - Complexity: O(*m*), where *m* is the lesser of the length of the
+    ///   sequence and the length of `other`.
+    @inlinable
+    public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
+    where OtherSequence: Sequence, Element == OtherSequence.Element {
+      lexicographicallyPrecedes(other, by: <)
+    }
   }
-}
 
-extension RedBlackTreeKeyOnlyRangeView: Equatable where _PayloadValue: Equatable {
+  extension RedBlackTreeKeyOnlyRangeView: Equatable where _PayloadValue: Equatable {
 
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs._isIdentical(to: rhs) || lhs.elementsEqual(rhs)
+    /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+    @inlinable
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+      lhs._isIdentical(to: rhs) || lhs.elementsEqual(rhs)
+    }
   }
-}
 
-extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparable {
+  extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparable {
 
-  /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-  @inlinable
-  public static func < (lhs: Self, rhs: Self) -> Bool {
-    !lhs._isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
+    @inlinable
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+      !lhs._isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+    }
   }
-}
 #endif
 
 #if swift(>=5.5)

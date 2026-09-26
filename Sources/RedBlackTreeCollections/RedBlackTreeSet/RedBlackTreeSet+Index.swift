@@ -226,6 +226,8 @@
 
 #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
   extension RedBlackTreeSet {
+    
+    // TODO: 他のコンテナへの展開
 
     // TODO: 名前の再検討
     
@@ -286,6 +288,19 @@
 
     @inlinable
     func ___index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
+      __tree_.withMutableHeader { $0.index_or_nil(p) }
+    }
+  }
+
+  extension RedBlackTreeSet {
+
+    @inlinable
+    func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
+      __tree_.withMutableHeader { $0.index(p) }
+    }
+    
+    @inlinable
+    func ___index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
       __tree_.withMutableHeader { $0.index_or_nil(p) }
     }
   }

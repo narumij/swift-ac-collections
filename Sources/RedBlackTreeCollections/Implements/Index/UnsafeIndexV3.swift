@@ -23,7 +23,11 @@
 /// 木のノード識別子
 ///
 /// - Important: 生成元以外の木での使用は未定義。
-public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
+//public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
+
+// 実質V4だが、V3からV4への確定はエイリアスのリネームでまかないそう。
+// 変更箇所が多くて面倒くさい
+public typealias UnsafeIndexV3 = _LazyTiedPtr
 
 // 内部実装では CoW 由来の差異を救済することがある。
 // その結果として異なる木でも使えてしまう可能性があるが、仕様上は未定義。
@@ -36,7 +40,7 @@ public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
 
 // ~EscapableなIndexにしたいと考えていたが、以下でIndexはCopyable & Escapableと縛られてしまったので、断念
 // ただ、~Escapableが欲しかったのはバッファ寿命管理コストを下げたかったことが理由だが、
-// 今はその点に関して気にならないコストとなっているので、Copyable & Escapableで問題が無い
+// 今はその点に関して気にならないコストとなっているので、Copyable & Escapableで問題が無い（わけでもない）
 // https://github.com/apple/swift-collections/blob/main/Documentation/Container-design.md
 
 
@@ -52,3 +56,5 @@ public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
 // Index は Equatable / Comparable / Hashable を要求し、それらの比較・hash は O(1) としている。
 // ×
 
+
+// _LazyTieWrappedPtrを選択した理由として、nullptrを外に晒したくないという事情があった点は今後も再考が必要。

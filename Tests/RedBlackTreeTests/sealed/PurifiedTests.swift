@@ -24,6 +24,21 @@
     }
   }
 
+  extension _LazyTieWrap where RawValue == _NodePtrSealing {
+    
+    var __recycle_count: UnsafeNode.Seal? {
+      rawValue.pointer.pointee.___recycle_count
+    }
+
+    var seal: UnsafeNode.Seal? {
+      rawValue.seal
+    }
+
+    var ___tracking_tag: _TrackingTag? {
+      rawValue.pointer.pointee.___tracking_tag
+    }
+  }
+
   final class PurifiedTests: RedBlackTreeTestCase {
 
     func testExample0() throws {

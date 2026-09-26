@@ -63,7 +63,6 @@
       try? map { $0.pointer.__value_() }.get()
     }
 
-    // TODO: 名前を変える
     @inlinable
     public var exists: Bool {
       // TODO: 利用側でpurified十分か繰り返し確認すること

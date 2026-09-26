@@ -160,8 +160,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   #if ALLOW_CROSS_TREE_INDEX
-    // TODO: デタッチ判定が分裂してることについてリファクタリング検討
-    // TODO: メンテ仕手なさ過ぎなのでたまに挙動確認すること
+    // TODO: デタッチ判定が分裂してることについて確認すること
     /// インデックスをポインタに解決する
     ///
     /// 木が同一の場合、インデックスが保持するポインタを返す。
@@ -204,6 +203,21 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal func __purified_safe_(_ index: _LazyTieWrappedPtr) -> _SafePtr {
+    __purified_(index).map(\.pointer)
+  }
+}
+
+extension UnsafeTreeV2 {
+  
+  @inlinable
+  package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
+    withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+      ? index.sealed.purified
+      : .failure(.crossTree)
+  }
+  
+  @inlinable
+  internal func __purified_safe_(_ index: _LazyTiedPtr) -> _SafePtr {
     __purified_(index).map(\.pointer)
   }
 }

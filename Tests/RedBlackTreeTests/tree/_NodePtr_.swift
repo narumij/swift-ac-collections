@@ -1,6 +1,7 @@
 import Foundation
 import RedBlackTreeCollections
 
+#if false
 extension _TrackingTag {
   var offset: Int! {
     switch self {
@@ -13,6 +14,7 @@ extension _TrackingTag {
     }
   }
 }
+#endif
 
 extension _TrackingTag {
   var index: _TrackingTag! { self }

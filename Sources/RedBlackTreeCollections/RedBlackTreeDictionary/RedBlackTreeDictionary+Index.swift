@@ -35,9 +35,21 @@
     func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
       __tree_.index(p)
     }
-    
+
     @inlinable
     func ___index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
+      __tree_.index_or_nil(p)
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+    @inlinable
+    func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
+      __tree_.index(p)
+    }
+
+    @inlinable
+    func ___index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
       __tree_.index_or_nil(p)
     }
   }

@@ -207,7 +207,7 @@ extension RedBlackTreeBoundExpression {
   #if DEBUG
     @inlinable
     public static func index(_ p: UnsafeIndexV3) -> Self {
-      .init(_internal: .init(.index(p.purified)))
+      .init(_internal: .init(.index(p)))
     }
 
     @inlinable

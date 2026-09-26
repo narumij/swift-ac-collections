@@ -210,15 +210,19 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  internal func __purified_safe_(_raw_range: _RawRange<UnsafeIndexV3>) -> _SafeRange {
-    traverse(_raw_range) {
+  internal func __purified_safe_(
+    _ range: _RawRange<UnsafeIndexV3>
+  ) -> _SafeRange {
+    traverse(range) {
       __purified_safe_($0)
     }
   }
 
   @inlinable
-  internal func __purified_safe_(_ range: UnsafeIndexV3Range) -> _SafeRange {
-    __purified_safe_(_raw_range: range.range)
+  internal func __purified_safe_(
+    _ range: UnsafeIndexV3Range
+  ) -> _SafeRange {
+    __purified_safe_(range.range)
   }
 }
 
@@ -226,7 +230,7 @@ extension UnsafeTreeV2 {
 
   @inlinable
   internal func __purified_safe_(
-    _raw_range_expression range: _RawRangeExpression<UnsafeIndexV3>
+    _ range: _RawRangeExpression<UnsafeIndexV3>
   ) -> _SafeRangeExpression {
     traverse(range) { __purified_safe_($0) }
   }
@@ -235,6 +239,6 @@ extension UnsafeTreeV2 {
   internal func __purified_safe_(
     _ range: UnsafeIndexV3RangeExpression
   ) -> _SafeRangeExpression {
-    __purified_safe_(_raw_range_expression: range.rangeExpression)
+    __purified_safe_(range.rangeExpression)
   }
 }

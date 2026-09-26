@@ -199,3 +199,15 @@ extension RedBlackTreeBoundRangeExpression {
     }
   }
 }
+
+extension RedBlackTreeBoundRangeExpression {
+  
+  @inlinable
+  func evaluate2<Base>(_ tree: UnsafeTreeV2<Base>) -> _SafeRangeExpression
+  where
+  Base: ___TreeBase,
+  Base._Key == _Key
+  {
+    sequence(evaluate(tree))
+  }
+}

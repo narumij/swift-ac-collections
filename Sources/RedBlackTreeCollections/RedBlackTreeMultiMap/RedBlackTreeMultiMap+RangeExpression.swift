@@ -99,16 +99,16 @@
     @discardableResult
     public mutating func erase(_ bounds: IndexRange) -> Index {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe_(bounds)
-      return erase(_safeRange: range)
+      let range = __tree_.__purified_safe2_(bounds)
+      return erase(_range: range)
     }
 
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      return erase(_safeRange: range)
+      let range = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
+      return erase(_range: range)
     }
   }
 

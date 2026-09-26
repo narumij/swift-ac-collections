@@ -227,41 +227,6 @@ final class EtcTests: RedBlackTreeTestCase {
     _ = [String: String]()
   }
 
-  #if false
-    func testCapacity() throws {
-
-      for i in 0..<10 {
-        let s = Set<Int>(minimumCapacity: i)
-        let r = RedBlackTreeSet<Int>(minimumCapacity: i)
-        XCTAssertEqual(
-          s.capacity,
-          r.capacity,
-          "minimumCapacity=\(i)"
-        )
-        if s.capacity != r.capacity {
-          break
-        }
-      }
-    }
-
-    func testCapacity2() throws {
-
-      for i in 2..<4 {
-        let s = Set<Int>(minimumCapacity: i)
-        //      let r = StorageCapacity._growCapacity(tree: (0,0), to: i, linearly: false)
-        let r = StorageCapacity.growthFormula(count: i)
-        XCTAssertEqual(
-          s.capacity,
-          r,
-          "minimumCapacity=\(i)"
-        )
-        //      if s.capacity != r {
-        //        break
-        //      }
-      }
-    }
-  #endif
-
   #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceSuffix1() throws {
       throw XCTSkip()
@@ -335,8 +300,11 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertFalse(AnySequence([0, 0]).lexicographicallyPrecedes([0, 1], by: >))
   }
 
-  #if false
+  #if COMPATIBLE_ATCODER_2025
     func testSubRev6() throws {
+      
+      typealias _NodePtr = _TrackingTag
+
       let a = RedBlackTreeSet<Int>([0, 1, 2])
       do {
         var result = [_NodePtr]()
@@ -355,6 +323,9 @@ final class EtcTests: RedBlackTreeTestCase {
     }
 
     func testSubRev7() throws {
+      
+      typealias _NodePtr = _TrackingTag
+
       let a = RedBlackTreeSet<Int>([0, 1, 2])
       do {
         var result = [_NodePtr]()
@@ -373,6 +344,9 @@ final class EtcTests: RedBlackTreeTestCase {
     }
 
     func testSubRev8() throws {
+      
+      typealias _NodePtr = _TrackingTag
+
       let a = RedBlackTreeSet<Int>([0, 1, 2])
       do {
         var result = [_NodePtr]()
@@ -562,12 +536,6 @@ final class EtcTests: RedBlackTreeTestCase {
     func testBoundsSmoke() throws {
       var a = RedBlackTreeSet<Int>()
       typealias Index = RedBlackTreeSet<Int>.Index
-      //      throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
-      #if false
-        // indexを廃止しようとしている
-        let _ = a.indices(bounds: .start ..< .end)
-        let _ = a.indices(bounds: .lower(3) ..< .lower(4))
-      #endif
       let _ = a.erase(.lowerBound(10) ..< .lowerBound(100)) { n in
         n % 2 == 1
       }
@@ -657,21 +625,6 @@ final class EtcTests: RedBlackTreeTestCase {
         a[end()...start()] + [],
         [],
         "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-
-      #if false
-        // Indexによる区間不正はtrapするので、デステストに移管
-        XCTAssertEqual(
-          a[a.lowerBound(50)...a.lowerBound(10)] + [],
-          [],
-          "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-        XCTAssertEqual(
-          a[a.endIndex...a.startIndex] + [],
-          [],
-          "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-
-        XCTAssertEqual(a[a.startIndex...a.endIndex] + [], [])
-        XCTAssertEqual((0..<100)[0...100] + [], [])
-      #endif
     }
 
     func testBound() throws {
@@ -694,6 +647,7 @@ final class EtcTests: RedBlackTreeTestCase {
     //    }
 
     #if false
+      // TODO: Iteratorの意味論について考えた方がいいのかも
       func testItertor() throws {
         var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
         //      var it = a[a.lowerBound(5)..<a.firstIndex(of: 45)].makeIterator()
@@ -814,16 +768,6 @@ final class EtcTests: RedBlackTreeTestCase {
     let b = "efg"
     XCTAssertEqual(b[a.startIndex], "e")
   }
-
-  #if false
-    func testIndexAgain() throws {
-      var a = RedBlackTreeSet<Int>(0..<10)
-      let b = a
-      let i = a.startIndex
-      a.insert(10)  // CoW発生
-      _ = a[i]  // cross tree indexの場合には通る必要がある
-    }
-  #endif
 
   #if ALLOW_CROSS_TREE_INDEX
     func testAllowCrossTreeIndexing() throws {

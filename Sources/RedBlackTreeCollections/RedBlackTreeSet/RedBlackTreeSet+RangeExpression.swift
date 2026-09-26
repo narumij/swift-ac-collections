@@ -186,6 +186,13 @@
         .flatMap(__tree_.validated(range:))
         .map(makeView(range:))
     }
+    
+    @inlinable
+    func makeView2(range: _SafeRange) -> Result<View, SealError> {
+      range
+        .map(__tree_.sanitize(safeRange:))
+        .map(makeView(range:))
+    }
 
     @inlinable
     subscript(_safeRange range: _SafeRange) -> View {
@@ -201,6 +208,29 @@
       @inline(__always) _modify {
         do {
           var view = try makeView(range: range).get()
+          self = Self()  // yield中のCoWキャンセル。考えた人賢い
+          defer { self = Self(__tree_: view.__tree_) }
+          yield &view
+        } catch {
+          fatalError("\(error)")
+        }
+      }
+    }
+    
+    @inlinable
+    subscript(_safeRange2 range: _SafeRange) -> View {
+
+      @inline(__always) get {
+        do {
+          return try makeView2(range: range).get()
+        } catch {
+          fatalError("\(error)")
+        }
+      }
+
+      @inline(__always) _modify {
+        do {
+          var view = try makeView2(range: range).get()
           self = Self()  // yield中のCoWキャンセル。考えた人賢い
           defer { self = Self(__tree_: view.__tree_) }
           yield &view

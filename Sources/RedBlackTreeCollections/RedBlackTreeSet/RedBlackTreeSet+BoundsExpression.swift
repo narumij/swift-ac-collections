@@ -138,19 +138,12 @@
     public subscript(bounds: BoundRangeExpression) -> View {
 
       @inline(__always) get {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        return self[_safeRange: range]
+        self[_safeRange2: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
 
       @inline(__always) _modify {
 
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        yield &self[_safeRange: range]
+        yield &self[_safeRange2: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
     }
   }
@@ -161,9 +154,7 @@
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitize(
-        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      __tree_.___erase_range(range)
+      _ = __tree_.___erase_range2(bounds.evaluate(__tree_).relative(to: __tree_))
     }
 
     @inlinable
@@ -172,9 +163,8 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitize(
-        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      try __tree_.___erase_range_if(range, shouldBeRemoved)
+      _ = try __tree_.___erase_range_if2(
+        bounds.evaluate(__tree_).relative(to: __tree_), shouldBeRemoved)
     }
   }
 #endif

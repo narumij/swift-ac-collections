@@ -199,7 +199,7 @@
       @inline(__always) _modify {
         do {
           var view = try makeView(range: range).get()
-          self = Self()  // yield中のCoWキャンセル。考えた人賢い
+          self = Self() // yield中のCoWキャンセル。考えた人賢い
           defer { self = Self(__tree_: view.__tree_) }
           yield &view
         } catch {

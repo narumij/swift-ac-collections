@@ -87,7 +87,6 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
   @inlinable
-  @discardableResult
   func ___erase_range(_ range: _SafeRange) -> Result<UnsafeIndexV3, SealError> {
     range
       .flatMap(validated(range:))
@@ -96,9 +95,18 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
       }
       .map(index)
   }
+  
+  @inlinable
+  func ___erase_range2(_ range: _SafeRange) -> Result<UnsafeIndexV3, SealError> {
+    range
+      .map(sanitize)
+      .flatMap {
+        $0.fold(___erase_range)
+      }
+      .map(index)
+  }
 
   @inlinable
-  @discardableResult
   func ___erase_range_if(
     _ range: _SafeRange,
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool
@@ -106,6 +114,22 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
     try range
       .flatMap(validated(range:))
+      .flatMapThrowing { range in
+        try range.fold { first, last in
+          try ___erase_range_if(first.unchecked, last.unchecked, shouldBeRemoved)
+        }
+      }
+      .map(index)
+  }
+  
+  @inlinable
+  func ___erase_range_if2(
+    _ range: _SafeRange,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> Result<UnsafeIndexV3, SealError> {
+
+    try range
+      .map(sanitize)
       .flatMapThrowing { range in
         try range.fold { first, last in
           try ___erase_range_if(first.unchecked, last.unchecked, shouldBeRemoved)

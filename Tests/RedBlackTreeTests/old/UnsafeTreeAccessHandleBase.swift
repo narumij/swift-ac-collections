@@ -21,7 +21,7 @@
 // This Swift implementation includes modifications and adaptations made by narumij.
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   /// 配列ベースのコードベースにポインタを載せるためのもの
   ///
@@ -123,7 +123,10 @@
     @inline(__always)
     package func __construct_node(_ k: _PayloadValue) -> _NodePtr {
       let p = header.pointee.__construct_raw_node()
-      defer { p.__value_().initialize(to: k) }
+      defer {
+        p.__value_().initialize(to: k)
+        p.pointee.___has_payload_content = true
+      }
       return p
     }
 

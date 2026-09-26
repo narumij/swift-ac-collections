@@ -1,11 +1,11 @@
 // RedBlackTreeMultisetCornerCaseTests.swift
 // swift-tools-version:5.10
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 /// シンプル Count ディクショナリを Swift 標準 Multiset 代わりに利用
-private struct ReferenceMultiset {
+struct ReferenceMultiset {
   private var dict: [Int: Int] = [:]
   mutating func insert(_ x: Int) { dict[x, default: 0] += 1 }
   mutating func removeOne(_ x: Int) {
@@ -86,7 +86,7 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
     #if COMPATIBLE_ATCODER_2025
       ms.removeSubrange(l..<r)
     #else
-      ms.erase(l..<r)
+    _ = ms.erase(l..<r)
     #endif
     XCTAssertEqual(ms.sorted(), [0, 1, 3, 4])
   }

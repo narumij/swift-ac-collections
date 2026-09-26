@@ -6,7 +6,7 @@
 //
 
 #if !COMPATIBLE_ATCODER_2025
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
   import XCTest
 
   final class DictionaryRangeExpressionTests: RedBlackTreeTestCase {
@@ -125,7 +125,7 @@
       let lower = dict.index(dict.startIndex, offsetBy: 1)
       let upper = dict.index(dict.startIndex, offsetBy: 3)
 
-      dict.erase(lower..<upper)
+      _ = dict.erase(lower..<upper)
       XCTAssertEqual(Array(dict).map { $0.key }, [1, 4])
     }
 

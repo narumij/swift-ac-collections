@@ -6,7 +6,7 @@
 //
 
 #if !COMPATIBLE_ATCODER_2025
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
   import XCTest
 
   final class SealedTests3: RedBlackTreeTestCase {
@@ -52,11 +52,16 @@
       XCTAssertEqual(a.startIndex, b.startIndex)
       b.removeLast()  // この時点でCoWが発生する
       let b0 = b.startIndex
+      XCTAssertNotEqual(a.startIndex, b.startIndex, "CoW発生時にインデックスも変わっている")
       b.removeFirst()  // CoWが発生しない
-      XCTAssertTrue(b0.isValid)  // bそのものは有効
-      XCTAssertFalse(b.isValid(index: b0))
-      XCTAssertTrue(a.isValid(index: b0))  // aにとっては有効なまま
-      XCTAssertEqual(b.sorted(), Array(1..<19))
+      XCTAssertFalse(b0.isValid, "bでは削除しているので不適格となる")
+      XCTAssertFalse(b.isValid(index: b0), "すでに解放されているインデックスなので不適格")
+      #if USE_LAZY_DETACH || !ALLOW_CROSS_TREE_INDEX
+        XCTAssertFalse(a.isValid(index: b0), "すでに解放されているインデックスなので不適格")
+      #else
+        XCTAssertTrue(a.isValid(index: b0), "ソース側世代チェックが省略されているため")
+      #endif
+      XCTAssertEqual(b.sorted(), Array(1..<19), "先頭と末尾が削除された残りとなる")
     }
 
     func testSomething2() throws {

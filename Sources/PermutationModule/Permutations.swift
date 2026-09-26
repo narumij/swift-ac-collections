@@ -1,4 +1,4 @@
-import Foundation
+// TODO: 模索の痕跡がのこっていて散らかっているので、要点に沿って整理しなおすか、廃止するか、いずれかを次回ジャッジ更新までに行うこと
 
 extension Collection where Index == Int {
 
@@ -11,7 +11,7 @@ extension Collection where Index == Int {
   where Element: Comparable {
     .init(safe: self)
   }
-  
+
   /// 単に辞書順の操作をするだけのもの
   ///
   /// C++のnext_permutationの挙動をfor文で使う場合はこちらも利用できます。
@@ -21,7 +21,7 @@ extension Collection where Index == Int {
   where Element: Comparable {
     .init(unsafe: self)
   }
-  
+
   /// 全通りをしっかりpermutationsするが、CoWをさっぱりしないもの
   @inlinable
   @inline(__always)

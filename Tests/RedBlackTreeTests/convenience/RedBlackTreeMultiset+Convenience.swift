@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 // 以下を参考にした便利メソッド群
 // https://github.com/tatyam-prime/SortedSet
@@ -45,12 +45,12 @@ extension RedBlackTreeMultiSet {
 
   @inlinable
   public mutating func removeSubrange(_ range: Range<Element>) {
-    erase(lowerBound(range.lowerBound) ..< lowerBound(range.upperBound))
+    _ = erase(lowerBound(range.lowerBound) ..< lowerBound(range.upperBound))
   }
   
   @inlinable
   public mutating func removeSubrange(_ range: ClosedRange<Element>) {
-    erase(lowerBound(range.lowerBound) ..< upperBound(range.upperBound))
+    _ = erase(lowerBound(range.lowerBound) ..< upperBound(range.upperBound))
   }
 }
 #endif

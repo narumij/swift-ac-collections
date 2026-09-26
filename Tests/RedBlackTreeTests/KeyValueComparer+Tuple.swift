@@ -5,7 +5,7 @@
 //  Created by narumij on 2025/12/23.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 // KeyValueの内部実装はPairに移行済み
 // 以下はテストでのみ使っている

@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/21.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class BucketAccessorTests: RedBlackTreeTestCase {
@@ -19,19 +19,20 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
   }
 
   #if !DEBUG
+  #if ENABLE_PERFORMANCE_TESTING
   func testPerformanceExample() throws {
     
     typealias _PayloadValue = Int
     
     let capacity = 1_000_000
     let allocator = _BucketAllocator(valueType: _PayloadValue.self) { _ in }
-    let (byteSize, alignment) = (allocator._allocationSize(capacity: capacity), allocator._pair.alignment)
+    let (byteSize, alignment) = (allocator._allocationSize(capacity: capacity), allocator.pairLayout.alignment)
     let storage = UnsafeMutableRawPointer.allocate(byteCount: byteSize, alignment: alignment)
     let header = storage.assumingMemoryBound(to: _Bucket.self)
     let accessor = _BucketAccessor(
-      pointer: header,
-      start: header.start(storage: header.secondaryStorage(), valueAlignment: MemoryLayout<_PayloadValue>.alignment),
-      stride: allocator._pair.stride)
+      header: header,
+      startNode: header.start(storage: header.secondaryStorage(), payloadOrPairAlignment: MemoryLayout<_PayloadValue>.alignment),
+      pairStride: allocator.pairLayout.stride)
     for i in 0..<capacity {
       accessor[i].initialize(to: .create(tag: .zero, nullptr: UnsafeNode.nullptr))
       accessor[i].__value_(as: _PayloadValue.self).initialize(to: .zero)
@@ -39,7 +40,7 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
     // This is an example of a performance test case.
     self.measure {
       // Put the code you want to measure the time of here.
-      var sum = 0
+      var sum = 0 as _TrackingTag
       for _ in 0..<1_000_000 {
         for j in 0..<capacity {
           sum += accessor[j].pointee.___tracking_tag
@@ -49,5 +50,6 @@ final class BucketAccessorTests: RedBlackTreeTestCase {
     
     storage.deallocate()
   }
+  #endif
   #endif
 }

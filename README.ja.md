@@ -1,3 +1,6 @@
+<!-- このREADME.ja.mdを正本とします。README.mdは、この文書の英訳コピーです。 -->
+<!-- 1.0になるまで多少のジョークを許容すること -->
+
 # swift-ac-collections
 
 `swift-ac-collections` は、[AtCoder][atcoder]での利用を想定したデータ構造等のオープソース・パッケージです。

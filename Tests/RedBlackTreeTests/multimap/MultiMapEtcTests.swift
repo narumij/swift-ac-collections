@@ -1,9 +1,9 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
 final class MultiMapEtcTests: RedBlackTreeTestCase {
@@ -24,37 +24,7 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
     try super.tearDownWithError()
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testExample0() throws {
-      for i in target1.indices {
-        target1.remove(at: i)
-      }
-      XCTAssertTrue(target1.isEmpty)
-    }
 
-    func testExample1() throws {
-      target1.indices.forEach { i in
-        target1.remove(at: i)
-      }
-      XCTAssertTrue(target1.isEmpty)
-    }
-  #endif
-
-  #if DEBUG
-    func testExample___0() throws {
-      for i in target1.___node_positions() {
-        target1.__tree_._unchecked_remove(at: i)
-      }
-      XCTAssertTrue(target1.isEmpty)
-    }
-
-    func testExample___1() throws {
-      target1.___node_positions().forEach { i in
-        target1.__tree_._unchecked_remove(at: i)
-      }
-      XCTAssertTrue(target1.isEmpty)
-    }
-  #endif
 
   #if false
     func testExample2() throws {
@@ -342,7 +312,7 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
     let values = multimap.values(forKey: "banana")
 
     values.forEach { value in
-      print("banana の値は \(value) です。")  // 出力例: banana の値は 3 です。
+      blackHole("banana の値は \(value) です。")
     }
 
     // キーと値のペアを削除
@@ -353,11 +323,13 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
     #endif
   }
 
+  #if ENABLE_PERFORMANCE_TESTING
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
     self.measure {
       // Put the code you want to measure the time of here.
     }
   }
+  #endif
 
 }

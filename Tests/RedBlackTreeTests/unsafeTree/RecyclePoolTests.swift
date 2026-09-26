@@ -7,12 +7,12 @@
 
 import XCTest
 
-#if DEBUG
-  @testable import RedBlackTreeModule
+#if DEBUG && USE_RECYCLE_POOL_PROTOCOL
+  @testable import RedBlackTreeCollections
 
   final class RecyclePoolTests: RedBlackTreeTestCase {
 
-    struct Fixture: _UnsafeNodePtrType, _RecyclePool {
+    struct Fixture: _UnsafeNodePtrType, _RecyclePool, _RecyclePoolDebug {
       var recycleHead: _NodePtr = .nullptr
       var count: Int = 0
       var freshPoolUsedCount: Int = 0
@@ -79,7 +79,7 @@ import XCTest
       for i in 0..<nodeCount {
         XCTAssertEqual(fixture.recycleCount, nodeCount - i)
         XCTAssertNotEqual(fixture.recycleHead, .nullptr)
-        let p = fixture.___popRecycle()
+        _ = fixture.___popRecycle()
         XCTAssertEqual(fixture.recycleCount, nodeCount - i - 1)
       }
     }
@@ -96,11 +96,13 @@ import XCTest
       XCTAssertEqual(fixture.recycleHead, .nullptr)
     }
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceExample() throws {
       // This is an example of a performance test case.
       self.measure {
         // Put the code you want to measure the time of here.
       }
     }
+    #endif
   }
 #endif

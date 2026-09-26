@@ -8,7 +8,7 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   final class UnsafeNodeTests: PointerRedBlackTreeTestCase {
 
@@ -32,9 +32,36 @@ import XCTest
     override func setUpWithError() throws {
       end = .create(tag: .end, nullptr: UnsafeNode.nullptr)
       nodes = .init(repeating: .create(tag: .debug, nullptr: UnsafeNode.nullptr), count: count)
+      try super.setUpWithError()
     }
 
     override func tearDownWithError() throws {
+      try super.tearDownWithError()
+    }
+
+    func testAdvancedKeepsPayloadAlignment() throws {
+      typealias Payload = SIMD4<Float>
+
+      let pairSize = MemoryLayout<UnsafeNode>.stride + MemoryLayout<Payload>.stride
+      let storage = UnsafeMutableRawPointer.allocate(
+        byteCount: pairSize * 2 + MemoryLayout<Payload>.alignment,
+        alignment: MemoryLayout<Payload>.alignment)
+      defer { storage.deallocate() }
+
+      let firstPayload = storage
+        .advanced(by: MemoryLayout<UnsafeNode>.stride)
+        .alignedUp(toMultipleOf: MemoryLayout<Payload>.alignment)
+      let first = firstPayload
+        .advanced(by: -MemoryLayout<UnsafeNode>.stride)
+        .assumingMemoryBound(to: UnsafeNode.self)
+      let second = first._advanced(with: Payload.self, count: 1)
+
+      XCTAssertEqual(
+        Int(bitPattern: first.__value_(as: Payload.self)) % MemoryLayout<Payload>.alignment,
+        0)
+      XCTAssertEqual(
+        Int(bitPattern: second.__value_(as: Payload.self)) % MemoryLayout<Payload>.alignment,
+        0)
     }
 
     func testTreeBeginToNext() throws {
@@ -118,11 +145,13 @@ import XCTest
       }
     }
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceExample() throws {
       // This is an example of a performance test case.
       self.measure {
         // Put the code you want to measure the time of here.
       }
     }
+    #endif
   }
 #endif

@@ -1,7 +1,7 @@
 import XCTest
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   final class MultiMapCopyOnWriteTests: RedBlackTreeTestCase {
 
@@ -12,7 +12,7 @@ import XCTest
 
     override func setUpWithError() throws {
       try super.setUpWithError()
-      tree = .init(multiKeysWithValues: (0..<20).map { ($0, $0) })
+      tree = .init(keysWithValues: (0..<20).map { ($0, $0) })
     }
 
     override func tearDownWithError() throws {
@@ -54,94 +54,76 @@ import XCTest
       _ = set.lowerBound(0)
       _ = set.upperBound(0)
       for s in set {
-        print(s)
+        blackHole(s)
       }
       set.forEach {
-        print($0)
+        blackHole($0)
       }
-      print(set.map { $0 })
-      print(set.filter { $0 != keyValue(0, 0) })
+      blackHole(set.map { $0 })
+      blackHole(set.filter { $0 != keyValue(0, 0) })
       //    print(set.reduce(0, +))
-      print(set.reduce(into: []) { $0.append($1) })
+      blackHole(set.reduce(into: []) { $0.append($1) })
       XCTAssertEqual(set._copyCount, 0)
     }
 
+    #if !COMPATIBLE_ATCODER_2025
     func testSet3() throws {
       tree._copyCount = 0
-      #if !COMPATIBLE_ATCODER_2025
         for v in tree {
           tree.eraseUnique(v.key)  // strong ensure unique
         }
         XCTAssertEqual(tree.count, 0)
-        XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
-      #else
-        for v in tree {
-          tree.removeFirst(forKey: v.key)  // strong ensure unique
-        }
-        XCTAssertEqual(tree.count, 0)
-        XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
-      #endif
+        #if true
+          XCTAssertEqual(tree._copyCount, 1)
+        #else
+          XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
+        #endif
     }
+    #endif
 
+    #if !COMPATIBLE_ATCODER_2025
     func testSet3_2() throws {
       tree._copyCount = 0
-      #if !COMPATIBLE_ATCODER_2025
         for v in tree + [] {
           tree.eraseUnique(v.key)  // strong ensure unique
         }
-      #else
-        for v in tree + [] {
-          tree.removeFirst(forKey: v.key)  // strong ensure unique
-        }
-      #endif
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
     }
+    #endif
 
+    #if !COMPATIBLE_ATCODER_2025
     func testSet3_3() throws {
       tree._copyCount = 0
-      #if !COMPATIBLE_ATCODER_2025
         for v in tree + [] {
           tree.eraseUnique(v.key)  // strong ensure unique
         }
-      #else
-        for v in tree + [] {
-          tree.removeFirst(_unsafeForKey: v.key)  // strong ensure unique
-        }
-      #endif
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
     }
+    #endif
 
+    #if !COMPATIBLE_ATCODER_2025
     func testSet4() throws {
       tree._copyCount = 0
-      #if !COMPATIBLE_ATCODER_2025
         tree.forEach { v in
           tree.eraseUnique(v.key)
         }
-      #else
-        tree.forEach { v in
-          tree.removeFirst(forKey: v.key)
-        }
-      #endif
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 1)
     }
+    #endif
 
+    #if !COMPATIBLE_ATCODER_2025
     func testSet5() throws {
       tree._copyCount = 0
-      #if !COMPATIBLE_ATCODER_2025
         for v in tree + [] {
           tree.eraseUnique(v.key)
         }
-      #else
-        for v in tree + [] {
-          tree.removeFirst(forKey: v.key)
-        }
-      #endif
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
     }
+    #endif
 
     func testSet6() throws {
       tree._copyCount = 0
@@ -166,11 +148,7 @@ import XCTest
         #endif
       }
       XCTAssertEqual(tree.count, 0)
-      #if !COMPATIBLE_ATCODER_2025
-        XCTAssertEqual(tree._copyCount, 0)  // CoW抑制方針のため
-      #else
         XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
-      #endif
     }
 
     func testSet8() throws {
@@ -229,7 +207,7 @@ import XCTest
       let count = 1500
       var loopCount = 0
       var xy: [Int: RedBlackTreeMultiMap<Int, Int>] = [
-        1: .init(multiKeysWithValues: (0..<count).map { ($0, $0) })
+        1: .init(keysWithValues: (0..<count).map { ($0, $0) })
       ]
       xy[1]?._copyCount = 0
       let N = 100
@@ -241,7 +219,7 @@ import XCTest
           #if COMPATIBLE_ATCODER_2025
             xy[1]?.removeSubrange(lo..<hi)
           #else
-            xy[1]?.erase(lo..<hi)
+            _ = xy[1]?.erase(lo..<hi)
           #endif
         }
       }
@@ -250,25 +228,5 @@ import XCTest
       XCTAssertEqual(loopCount, count / N)
     }
 
-    #if COMPATIBLE_ATCODER_2025
-      func testSet4000() throws {
-        let count = 1500
-        var xy: [Int: RedBlackTreeMultiMap<Int, Int>] = [
-          1: .init(multiKeysWithValues: (0..<count).map { ($0, $0) })
-        ]
-        xy[1]?._copyCount = 0
-        let N = 100
-        var loopCount = 0
-        for i in 0..<count / N {
-          loopCount += 1
-          xy[1]?[(i * N)..<(i * N + N)].forEach { i, v in
-            xy[1]?.remove(at: i)
-          }
-        }
-        XCTAssertEqual(xy[1]!.count, 0)
-        XCTAssertEqual(xy[1]!._copyCount, 1)
-        XCTAssertEqual(loopCount, count / N)
-      }
-    #endif
   }
 #endif

@@ -33,7 +33,7 @@
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      return __tree_.isValid(range: ___safe_range2)
+      return __tree_.isValid(range: ___safe_range)
     }
 
     @inlinable
@@ -54,10 +54,10 @@
     @inlinable
     public subscript(bounds: UnboundedRange) -> View {
       @inline(__always) get {
-        self[_safeRange: ___safe_range2]
+        self[_safeRange: ___safe_range]
       }
       @inline(__always) _modify {
-        yield &self[_safeRange: ___safe_range2]
+        yield &self[_safeRange: ___safe_range]
       }
     }
 
@@ -92,7 +92,7 @@
     @discardableResult
     public mutating func erase(_ bounds: UnboundedRange) -> Index {
       __tree_.ensureUnique()
-      return erase(_range: ___safe_range2)
+      return erase(_range: ___safe_range)
     }
 
     @inlinable

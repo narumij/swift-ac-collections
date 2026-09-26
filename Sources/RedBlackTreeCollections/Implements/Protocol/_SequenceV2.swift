@@ -36,23 +36,7 @@ extension _SequenceV2 {
   }
 
   @inlinable
-  package var _safe_start: _SafePtr {
-    .success(__tree_.__begin_node_)
-  }
-
-  @inlinable
-  package var _safe_end: _SafePtr {
-    .success(__tree_.__end_node)
-  }
-
-//  @inlinable
-//  var ___safe_range: _RawRange<_SafePtr> {
-//    .init(lowerBound: _safe_start, upperBound: _safe_end)
-//  }
-
-  
-  @inlinable
-  var ___safe_range2: _SafeRange {
+  var ___safe_range: _SafeRange {
     .success(.init(lowerBound: __tree_.__begin_node_, upperBound: __tree_.__end_node))
   }
 }

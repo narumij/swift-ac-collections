@@ -183,6 +183,13 @@
     }
 
     @inlinable
+    func makeViewWithSanitize(range: _SafeRange) -> Result<View, SealError> {
+      __tree_.sanitize(range)
+        .map(makeView(range:))
+    }
+
+    // TODO: Setに合わせてリネームする
+    @inlinable
     subscript(_safeRange range: _SafeRange) -> View {
 
       @inline(__always) get {
@@ -204,5 +211,29 @@
         }
       }
     }
+    
+    @inlinable
+    subscript(_sanitize range: _SafeRange) -> View {
+
+      @inline(__always) get {
+        do {
+          return try makeViewWithSanitize(range: range).get()
+        } catch {
+          fatalError("\(error)")
+        }
+      }
+
+      @inline(__always) _modify {
+        do {
+          var view = try makeViewWithSanitize(range: range).get()
+          self = Self()  // yield中のCoWキャンセル。考えた人賢い
+          defer { self = Self(__tree_: view.__tree_) }
+          yield &view
+        } catch {
+          fatalError("\(error)")
+        }
+      }
+    }
+
   }
 #endif

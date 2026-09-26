@@ -105,19 +105,11 @@
     public subscript(bounds: BoundRangeExpression) -> View {
 
       @inline(__always) get {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        return self[_safeRange: range]
+        self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
 
       @inline(__always) _modify {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        yield &self[_safeRange: range]
+        yield &self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
     }
   }

@@ -102,20 +102,12 @@
     @inlinable
     public subscript(bounds: BoundRangeExpression) -> View {
 
-      get {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        return self[_safeRange: range]
+      @inline(__always) get {
+        self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
 
       @inline(__always) _modify {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        yield &self[_safeRange: range]
+        yield &self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
     }
   }

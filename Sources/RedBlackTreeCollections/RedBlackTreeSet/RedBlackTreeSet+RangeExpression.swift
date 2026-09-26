@@ -189,7 +189,7 @@
     
     @inlinable
     func makeViewWithSanitize(range: _SafeRange) -> Result<View, SealError> {
-      __tree_.sanitize(safeRange: range)
+      __tree_.sanitize(range)
         .map(makeView(range:))
     }
 

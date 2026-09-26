@@ -41,13 +41,13 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
   }
   
   @inlinable
-  func sanitize(safeRange range: _NodeRange) -> _NodeRange {
+  func sanitize(_ range: _NodeRange) -> _NodeRange {
     isValid(range: range) ? range : ___empty_range
   }
   
   @inlinable
-  func sanitize(safeRange range: _SafeRange) -> _SafeRange {
-    range.map(sanitize(safeRange:)).flatMapError { _ in .success(___empty_range) }
+  func sanitize(_ range: _SafeRange) -> _SafeRange {
+    range.map(sanitize(_:)).flatMapError { _ in .success(___empty_range) }
   }
 }
 

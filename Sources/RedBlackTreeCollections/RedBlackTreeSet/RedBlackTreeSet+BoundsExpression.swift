@@ -142,7 +142,6 @@
       }
 
       @inline(__always) _modify {
-
         yield &self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
     }

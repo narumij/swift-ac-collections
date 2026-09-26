@@ -33,19 +33,19 @@
 
     @inlinable
     public func isValid(_ bounds: UnboundedRange) -> Bool {
-      return __tree_.isValid(safeRange: ___safe_range)
+      return __tree_.isValid(range: ___safe_range)
     }
 
     @inlinable
     public func isValid(_ bounds: IndexRange) -> Bool {
       let range = __tree_.__purified_safe_(bounds)
-      return __tree_.isValid(safeRange: range)
+      return __tree_.isValid(range: range)
     }
 
     @inlinable
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      return __tree_.isValid(safeRange: range)
+      return __tree_.isValid(range: range)
     }
   }
 
@@ -92,7 +92,7 @@
     @discardableResult
     public mutating func erase(_ bounds: UnboundedRange) -> Index {
       __tree_.ensureUnique()
-      return erase(_safeRange: ___safe_range)
+      return erase(_range: ___safe_range)
     }
 
     @inlinable
@@ -100,7 +100,7 @@
     public mutating func erase(_ bounds: IndexRange) -> Index {
       __tree_.ensureUnique()
       let range = __tree_.__purified_safe_(bounds)
-      return erase(_safeRange: range)
+      return erase(_range: range)
     }
 
     @inlinable
@@ -108,7 +108,7 @@
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
       __tree_.ensureUnique()
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      return erase(_safeRange: range)
+      return erase(_range: range)
     }
   }
 
@@ -141,56 +141,68 @@
 
     @inlinable
     @discardableResult
-    mutating func erase(_safeRange range: _RawRange<_SafePtr>) -> Index {
+    mutating func erase(_range range: _SafeRange) -> Index {
       assert(__tree_.isUnique())
-      guard __tree_.isValid(safeRange: range),
-        let __l = range.lowerBound.pointer,
-        let __u = range.upperBound.pointer
-      else {
-        fatalError(.invalidIndex)
+
+      do {
+        return try __tree_.___erase_range(range).get()
+      } catch {
+        fatalError("\(error)")
       }
-      return ___index(__tree_.erase(__l, __u))
     }
 
     @inlinable
     mutating func erase(
-      _safeRange range: _RawRange<_SafePtr>,
+      _safeRange range: _SafeRange,
       where shouldBeRemoved: (Element) throws -> Bool
     )
       rethrows
     {
       assert(__tree_.isUnique())
-      guard __tree_.isValid(safeRange: range) else {
+      guard __tree_.isValid(range: range) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound) {
+      try __tree_.___erase_range_if(range) {
         try shouldBeRemoved(Base.__element_($0))
       }
     }
+  }
+
+  extension RedBlackTreeDictionary {
 
     @inlinable
-    subscript(_safeRange range: _RawRange<_SafePtr>) -> View {
+    func makeView(range: _NodeRange) -> View {
+      View(
+        __tree_: __tree_,
+        _start: range.lowerBound.uncheckedSeal,
+        _end: range.upperBound.uncheckedSeal)
+    }
+
+    @inlinable
+    func makeView(range: _SafeRange) -> Result<View, SealError> {
+      range.map { makeView(range: $0) }
+    }
+
+    @inlinable
+    subscript(_safeRange range: _SafeRange) -> View {
 
       @inline(__always) get {
-        guard __tree_.isValid(safeRange: range) else {
+        guard __tree_.isValid(range: range),
+          let view = try? makeView(range: range).get()
+        else {
           fatalError(.invalidIndex)
         }
-        return View(
-          __tree_: __tree_,
-          _start: range.lowerBound.uncheckedSeal,
-          _end: range.upperBound.uncheckedSeal)
+        return view
       }
 
       @inline(__always) _modify {
-        guard __tree_.isValid(safeRange: range) else {
+        guard __tree_.isValid(range: range),
+          var view = try? makeView(range: range).get()
+        else {
           fatalError(.invalidIndex)
         }
-        var view = View(
-          __tree_: __tree_,
-          _start: range.lowerBound.uncheckedSeal,
-          _end: range.upperBound.uncheckedSeal)
-        self = RedBlackTreeDictionary()  // yield中のCoWキャンセル。考えた人賢い
-        defer { self = RedBlackTreeDictionary(__tree_: view.__tree_) }
+        self = Self()  // yield中のCoWキャンセル。考えた人賢い
+        defer { self = Self(__tree_: view.__tree_) }
         yield &view
       }
     }

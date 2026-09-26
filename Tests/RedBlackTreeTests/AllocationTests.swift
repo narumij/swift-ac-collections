@@ -60,10 +60,10 @@ final class AllocationTests: RedBlackTreeTestCase {
           XCTAssertEqual(set.__tree_._buffer.header.recycleCount, 5)
           set.__tree_.ensureUniqueAndCapacity(to: 1)
           // リファレンスが2なので、CoWが発火する
-          #if false
-            // LV1が本体保持になっているので、結果が異なる
-            XCTAssertFalse(storage.isTriviallyIdentical(to: set.__tree_))
-          #endif
+
+          // LV1が本体保持になっているので、結果が異なる
+          XCTAssertFalse(storage.isIdentical(to: set.__tree_))
+
           // ノードの配置はバラバラになりうるので、初期化されたサイズを下回ると、壊れる
           XCTAssertGreaterThanOrEqual(set.__tree_.capacity, initializedCount)
           XCTAssertGreaterThanOrEqual(set.__tree_.capacity, 1)
@@ -80,10 +80,10 @@ final class AllocationTests: RedBlackTreeTestCase {
           XCTAssertEqual(set.__tree_._buffer.header.recycleCount, 5)
           set.__tree_.ensureUniqueAndCapacity(to: 15)
           // リファレンスが2なので、CoWが発火する
-          #if false
-            // LV1が本体保持になっているので、結果が異なる
-            XCTAssertFalse(storage.isTriviallyIdentical(to: set.__tree_))
-          #endif
+
+          // LV1が本体保持になっているので、結果が異なる
+          XCTAssertFalse(storage.isIdentical(to: set.__tree_))
+
           // ノードの配置はバラバラになりうるので、初期化されたサイズを下回ると、壊れる
           XCTAssertGreaterThanOrEqual(set.__tree_.capacity, initializedCount)
           XCTAssertGreaterThanOrEqual(set.__tree_.capacity, 15)
@@ -138,12 +138,12 @@ final class AllocationTests: RedBlackTreeTestCase {
       a.__tree_._buffer.header.pushFreshBucket(additionalCapacity: 512)
       XCTAssertGreaterThanOrEqual(a.capacity, 512)
     }
-  
-  func testEmptyIsNonUnique() throws {
-    var a = RedBlackTreeSet<Int>()
-    XCTAssertFalse(a.__tree_.isUnique())
-    XCTAssertTrue(a.__tree_.isReadOnly)
-  }
+
+    func testEmptyIsNonUnique() throws {
+      var a = RedBlackTreeSet<Int>()
+      XCTAssertFalse(a.__tree_.isUnique())
+      XCTAssertTrue(a.__tree_.isReadOnly)
+    }
 
   #endif  // DEBUG
 }

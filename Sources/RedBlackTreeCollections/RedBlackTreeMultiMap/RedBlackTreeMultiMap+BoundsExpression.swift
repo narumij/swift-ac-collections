@@ -95,7 +95,7 @@
     @inlinable
     public func isValid(_ bounds: BoundRangeExpression) -> Bool {
       let range = bounds.evaluate(__tree_).relative(to: __tree_)
-      return __tree_.isValid(safeRange: range)
+      return __tree_.isValid(range: range)
     }
   }
 
@@ -130,7 +130,7 @@
       __tree_.ensureUnique()
       let range = __tree_.sanitize(
         safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      __tree_.___erase_range(range.lowerBound.pointer!, range.upperBound.pointer!)
+      __tree_.___erase_range(range)
     }
 
     @inlinable
@@ -141,7 +141,7 @@
       __tree_.ensureUnique()
       let range = __tree_.sanitize(
         safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound) {
+      try __tree_.___erase_range_if(range) {
         try shouldBeRemoved($0.tuple)
       }
     }

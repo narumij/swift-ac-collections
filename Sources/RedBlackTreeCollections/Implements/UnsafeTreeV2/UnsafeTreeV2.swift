@@ -160,8 +160,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   #if ALLOW_CROSS_TREE_INDEX
-    // TODO: デタッチ判定が分裂してることについてリファクタリング検討
-    // TODO: メンテ仕手なさ過ぎなのでたまに挙動確認すること
+    // TODO: デタッチ判定が分裂してることについて確認すること
     /// インデックスをポインタに解決する
     ///
     /// 木が同一の場合、インデックスが保持するポインタを返す。
@@ -211,48 +210,35 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   @inlinable
-  internal func __purified_safe_(_raw_range: _RawRange<UnsafeIndexV3>)
-    -> _RawRange<_SafePtr>
-  {
-    .init(
-      lowerBound: __purified_safe_(_raw_range.lowerBound),
-      upperBound: __purified_safe_(_raw_range.upperBound))
+  internal func __purified_safe_(
+    _ range: _RawRange<UnsafeIndexV3>
+  ) -> _SafeRange {
+    traverse(range) {
+      __purified_safe_($0)
+    }
   }
 
   @inlinable
-  internal func __purified_safe_(_ range: UnsafeIndexV3Range)
-    -> _RawRange<_SafePtr>
-  {
-    __purified_safe_(_raw_range: range.range)
+  internal func __purified_safe_(
+    _ range: UnsafeIndexV3Range
+  ) -> _SafeRange {
+    __purified_safe_(range.range)
   }
 }
 
 extension UnsafeTreeV2 {
 
   @inlinable
-  internal func __purified_safe_(_raw_range_expression range: _RawRangeExpression<UnsafeIndexV3>)
-    -> _RawRangeExpression<_SafePtr>
-  {
-    switch range {
-    case .range(let from, let to):
-      .range(from: __purified_safe_(from), to: __purified_safe_(to))
-    case .closedRange(let from, let through):
-      .closedRange(from: __purified_safe_(from), through: __purified_safe_(through))
-    case .partialRangeTo(let bound):
-      .partialRangeTo(__purified_safe_(bound))
-    case .partialRangeThrough(let bound):
-      .partialRangeThrough(__purified_safe_(bound))
-    case .partialRangeFrom(let bound):
-      .partialRangeFrom(__purified_safe_(bound))
-    case .unboundedRange:
-      .unboundedRange
-    }
+  internal func __purified_safe_(
+    _ range: _RawRangeExpression<UnsafeIndexV3>
+  ) -> _SafeRangeExpression {
+    traverse(range) { __purified_safe_($0) }
   }
 
   @inlinable
-  internal func __purified_safe_(_ range: UnsafeIndexV3RangeExpression)
-    -> _RawRangeExpression<_SafePtr>
-  {
-    __purified_safe_(_raw_range_expression: range.rangeExpression)
+  internal func __purified_safe_(
+    _ range: UnsafeIndexV3RangeExpression
+  ) -> _SafeRangeExpression {
+    __purified_safe_(range.rangeExpression)
   }
 }

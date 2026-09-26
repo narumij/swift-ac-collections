@@ -77,6 +77,8 @@ public enum RedBlackTreeBoundRangeExpression<_Key> {
   case equalRange(_Key)
 }
 
+// Sequence適合は不可能
+
 @inlinable
 public func ..< <_Key>(
   lhs: RedBlackTreeBoundExpression<_Key>, rhs: RedBlackTreeBoundExpression<_Key>

@@ -20,6 +20,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+import Foundation
+
 // # Memory Layout
 //
 // ## Primary Bucket
@@ -98,7 +100,7 @@ package struct _BucketAllocator {
   /// `Node|Payload` のペア形式でのstrideとalignment
   @usableFromInline
   package let pairLayout: _MemoryLayout
-  
+
   /// UnsafeNode のstrideとalignement
   @usableFromInline
   let nodeLayout: _MemoryLayout
@@ -158,7 +160,9 @@ extension _BucketAllocator {
 
     assert(bucketCapacity != 0, "先頭以外のバケットは容量0ではないこと")
 
-    let (bytes, alignment) = (_allocationSizeNonzero(capacity: bucketCapacity), pairLayout.alignment)
+    let (bytes, alignment) = (
+      _allocationSizeNonzero(capacity: bucketCapacity), pairLayout.alignment
+    )
 
     let header_storage = UnsafeMutableRawPointer._allocate(
       byteCount: bytes,
@@ -194,7 +198,8 @@ extension _BucketAllocator {
   @inlinable
   @inline(__always)
   package func _headAllocationSize(capacity: Int) -> Int {
-    let prefix = MemoryLayout<_Bucket>.stride
+    let prefix =
+      MemoryLayout<_Bucket>.stride
       &+ MemoryLayout<UnsafeMutablePointer<UnsafeNode>>.stride
       &+ nodeLayout.stride
     guard capacity != 0 else { return prefix }
@@ -259,21 +264,51 @@ extension _BucketAllocator {
 
 extension _BucketAllocator {
 
-  @inlinable
-  func _deallocHeadBucket(_ b: _BucketPointer) {
-    _deinitializeNodeAndValues(storage: b.primaryStorage(), b)
-    _deinitializeEndNode(b)
-    _deinitializeBeginNode(b)
-    b.deinitialize(count: 1)
-    UnsafeMutableRawPointer(b)._deallocate()
-  }
+  #if DEBUG
+    @inlinable
+    func _deallocHeadBucket(_ b: _BucketPointer) {
+      let bytes = _headAllocationSize(capacity: b.pointee.capacity)
 
-  @inlinable
-  func _deallocOtherBucket(_ b: _BucketPointer) {
-    _deinitializeNodeAndValues(storage: b.secondaryStorage(), b)
-    b.deinitialize(count: 1)
-    UnsafeMutableRawPointer(b)._deallocate()
-  }
+      _deinitializeNodeAndValues(storage: b.primaryStorage(), b)
+      _deinitializeEndNode(b)
+      _deinitializeBeginNode(b)
+      b.deinitialize(count: 1)
+
+      let raw = UnsafeMutableRawPointer(b)
+      _debugPoison(raw, byteCount: bytes)
+      raw._deallocate()
+    }
+  #else
+    @inlinable
+    func _deallocHeadBucket(_ b: _BucketPointer) {
+      _deinitializeNodeAndValues(storage: b.primaryStorage(), b)
+      _deinitializeEndNode(b)
+      _deinitializeBeginNode(b)
+      b.deinitialize(count: 1)
+      UnsafeMutableRawPointer(b)._deallocate()
+    }
+  #endif
+
+  #if DEBUG
+    @inlinable
+    func _deallocOtherBucket(_ b: _BucketPointer) {
+      let bytes = _allocationSizeNonzero(capacity: b.pointee.capacity)
+
+      _deinitializeNodeAndValues(storage: b.secondaryStorage(), b)
+      b.deinitialize(count: 1)
+
+      let raw = UnsafeMutableRawPointer(b)
+      _debugPoison(raw, byteCount: bytes)
+      raw._deallocate()
+    }
+  #else
+    @inlinable
+    func _deallocOtherBucket(_ b: _BucketPointer) {
+      _deinitializeNodeAndValues(storage: b.secondaryStorage(), b)
+      b.deinitialize(count: 1)
+      UnsafeMutableRawPointer(b)._deallocate()
+    }
+  #endif
 
   @inlinable
   func _deinitializeBeginNode(_ b: _BucketPointer) {
@@ -316,4 +351,15 @@ extension _BucketAllocator {
       }
     #endif
   }
+
+  #if DEBUG
+    @usableFromInline
+    @inline(__always)
+    func _debugPoison(
+      _ pointer: UnsafeMutableRawPointer,
+      byteCount: Int
+    ) {
+      memset(pointer, 0xDD, byteCount)
+    }
+  #endif
 }

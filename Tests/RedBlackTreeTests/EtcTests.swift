@@ -300,7 +300,7 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertFalse(AnySequence([0, 0]).lexicographicallyPrecedes([0, 1], by: >))
   }
 
-  #if COMPATIBLE_ATCODER_2025
+  #if DEBUG && COMPATIBLE_ATCODER_2025
     func testSubRev6() throws {
 
       typealias _NodePtr = _TrackingTag

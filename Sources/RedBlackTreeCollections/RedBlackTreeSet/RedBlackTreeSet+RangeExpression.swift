@@ -43,13 +43,13 @@
 
     @inlinable
     public func isValid(_ bounds: IndexRange) -> Bool {
-      let range = __tree_.__purified_safe2_(bounds)
+      let range = __tree_.__purified_safe_(bounds)
       return __tree_.isValid(range: range)
     }
 
     @inlinable
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
-      let range: _SafeRange = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
+      let range: _SafeRange = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       return __tree_.isValid(range: range)
     }
   }
@@ -69,11 +69,11 @@
     @inlinable
     public subscript(bounds: IndexRange) -> View {
       @inline(__always) get {
-        let range = __tree_.__purified_safe2_(bounds)
+        let range = __tree_.__purified_safe_(bounds)
         return self[_safeRange: range]
       }
       @inline(__always) _modify {
-        let range = __tree_.__purified_safe2_(bounds)
+        let range = __tree_.__purified_safe_(bounds)
         yield &self[_safeRange: range]
       }
     }
@@ -81,11 +81,11 @@
     @inlinable
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
-        let range = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
+        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
         return self[_safeRange: range]
       }
       @inline(__always) _modify {
-        let range = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
+        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
         yield &self[_safeRange: range]
       }
     }
@@ -104,7 +104,7 @@
     @discardableResult
     public mutating func erase(_ bounds: IndexRange) -> Index {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe2_(bounds)
+      let range = __tree_.__purified_safe_(bounds)
       return erase(_range: range)
     }
 
@@ -112,7 +112,7 @@
     @discardableResult
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       return erase(_range: range)
     }
   }
@@ -126,7 +126,7 @@
       rethrows
     {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe2_(bounds)
+      let range = __tree_.__purified_safe_(bounds)
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
 
@@ -137,7 +137,7 @@
       rethrows
     {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
+      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
   }

@@ -63,7 +63,7 @@ extension _RawRangeExpression: Equatable where Bound: Equatable {
   }
 }
 
-// 各Range表現はここで半開区間の`_RawRange<_SafePtr>`へ正規化する。
+// 各Range表現はここで半開区間の`_SafeRange`へ正規化する。
 // closed rangeの上端だけ次のノードへ進め、exclusive upper boundへ変換する。
 
 extension _RawRangeExpression {

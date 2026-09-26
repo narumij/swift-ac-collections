@@ -13,3 +13,5 @@ CoWは別の木という判定になる
 LAZY=ONはdeprecated
 
 TODO: CROSSのONとOFFのどちらを標準動作とするかを検討する
+
+- COW時の保証とStringのインデックス挙動を考えると、CROSS=ONが良さそう。

@@ -157,7 +157,7 @@
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
       __tree_.ensureUnique()
-      _ = __tree_.___erase_range2(bounds.evaluate(__tree_).relative(to: __tree_))
+      _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
     }
 
     @inlinable
@@ -166,7 +166,7 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      _ = try __tree_.___erase_range_if2(
+      _ = try __tree_.___erase_sanitize_range_if(
         bounds.evaluate(__tree_).relative(to: __tree_), shouldBeRemoved)
     }
   }

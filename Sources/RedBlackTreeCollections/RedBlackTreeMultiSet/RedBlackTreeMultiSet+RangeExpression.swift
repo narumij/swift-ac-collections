@@ -143,7 +143,7 @@
     mutating func erase(_range range: _SafeRange) -> Index {
       assert(__tree_.isUnique())
       do {
-        return try __tree_.___erase_range(range).get()
+        return try __tree_.___erase_validate_range(range).get()
       } catch {
         fatalError("\(error)")
       }
@@ -158,7 +158,7 @@
     {
       assert(__tree_.isUnique())
       do {
-        _ = try __tree_.___erase_range_if(range, shouldBeRemoved).get()
+        _ = try __tree_.___erase_validate_range_if(range, shouldBeRemoved).get()
       } catch {
         fatalError("\(error)")
       }

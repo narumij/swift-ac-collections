@@ -255,6 +255,8 @@ public enum SealError: Error {
   /// 平衡木の上限を超えた操作を行ったことを表す
   case upperOutOfBounds
 
+  case outOfBounds
+
   /// 木が不一致
   case crossTree
 

@@ -118,6 +118,12 @@ extension _RawRangeExpression where Bound == _SafePtr {
 extension _RawRangeExpression where Bound == UnsafeMutablePointer<UnsafeNode> {
 
   @usableFromInline
+  func relative<Base>(to tree: UnsafeTreeV2<Base>) -> _SafeRange
+  where Base: ___TreeBase {
+    sequence(relative(to: tree))
+  }
+
+  @usableFromInline
   func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
     -> _RawRange<_SafePtr>
   where

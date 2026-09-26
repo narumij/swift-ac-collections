@@ -49,4 +49,9 @@ extension _SequenceV2 {
   var ___safe_range: _RawRange<_SafePtr> {
     .init(lowerBound: _safe_start, upperBound: _safe_end)
   }
+
+  @inlinable
+  var ___safe_range2: _SafeRange {
+    .success(.init(lowerBound: __tree_.__begin_node_, upperBound: __tree_.__end_node))
+  }
 }

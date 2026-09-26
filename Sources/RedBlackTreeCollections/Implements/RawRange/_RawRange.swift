@@ -113,3 +113,8 @@ public typealias _NodeRange = _RawRange<UnsafeMutablePointer<UnsafeNode>>
 // _SafeNodeRangeがいいという説がある
 public typealias _SafeRange = Result<_NodeRange, SealError>
 
+extension _RawRange where Bound == _SafePtr {
+  
+  @inlinable
+  var safeRange: _SafeRange { sequence(self) }
+}

@@ -43,10 +43,21 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
   func sanitize(safeRange range: _RawRange<_SafePtr>) -> _RawRange<_SafePtr> {
     isValid(safeRange: range) ? range : ___safe_empty_range
   }
+  
+  @inlinable
+  func sanitize2(safeRange range: _SafeRange) -> _SafeRange {
+    isValid(range: range) ? range : .success(___empty_range)
+  }
 }
 
 extension UnsafeTreeV2 {
 
+  @inlinable
+  var ___empty_range: _NodeRange {
+    let e = __end_node
+    return .init(lowerBound: e, upperBound: e)
+  }
+  
   @inlinable
   var ___safe_empty_range: _RawRange<_SafePtr> {
     let e = __end_node.unchecked

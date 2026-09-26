@@ -49,8 +49,8 @@
 
     @inlinable
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
-      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      return __tree_.isValid(safeRange: range)
+      let range: _SafeRange = __tree_.__purified_safe2_(bounds).flatMap { $0.relative(to: __tree_) }
+      return __tree_.isValid(range: range)
     }
   }
 
@@ -59,21 +59,21 @@
     @inlinable
     public subscript(bounds: UnboundedRange) -> View {
       @inline(__always) get {
-        self[_safeRange: ___safe_range]
+        self[_safeRange: ___safe_range2]
       }
       @inline(__always) _modify {
-        yield &self[_safeRange: ___safe_range]
+        yield &self[_safeRange: ___safe_range2]
       }
     }
 
     @inlinable
     public subscript(bounds: IndexRange) -> View {
       @inline(__always) get {
-        let range = __tree_.__purified_safe_(bounds)
+        let range = __tree_.__purified_safe2_(bounds)
         return self[_safeRange: range]
       }
       @inline(__always) _modify {
-        let range = __tree_.__purified_safe_(bounds)
+        let range = __tree_.__purified_safe2_(bounds)
         yield &self[_safeRange: range]
       }
     }
@@ -81,11 +81,11 @@
     @inlinable
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
-        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+        let range = __tree_.__purified_safe2_(bounds).flatMap { $0.relative(to: __tree_) }
         return self[_safeRange: range]
       }
       @inline(__always) _modify {
-        let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+        let range = __tree_.__purified_safe2_(bounds).flatMap { $0.relative(to: __tree_) }
         yield &self[_safeRange: range]
       }
     }
@@ -172,29 +172,51 @@
     }
 
     @inlinable
-    subscript(_safeRange range: _RawRange<_SafePtr>) -> View {
+    func makeView(range: _NodeRange) -> View {
+      View(
+        __tree_: __tree_,
+        _start: range.lowerBound.uncheckedSeal,
+        _end: range.upperBound.uncheckedSeal)
+    }
+
+    @inlinable
+    func makeView(range: _SafeRange) -> Result<View, SealError> {
+      range.map { makeView(range: $0) }
+    }
+
+    @inlinable
+    subscript(_safeRange range: _SafeRange) -> View {
 
       @inline(__always) get {
-        guard __tree_.isValid(safeRange: range) else {
+        guard __tree_.isValid(range: range),
+          let view = try? makeView(range: range).get()
+        else {
           fatalError(.invalidIndex)
         }
-        return View(
-          __tree_: __tree_,
-          _start: range.lowerBound.uncheckedSeal,
-          _end: range.upperBound.uncheckedSeal)
+        return view
       }
 
       @inline(__always) _modify {
-        guard __tree_.isValid(safeRange: range) else {
+        guard __tree_.isValid(range: range),
+          var view = try? makeView(range: range).get()
+        else {
           fatalError(.invalidIndex)
         }
-        var view = View(
-          __tree_: __tree_,
-          _start: range.lowerBound.uncheckedSeal,
-          _end: range.upperBound.uncheckedSeal)
         self = RedBlackTreeSet()  // yield中のCoWキャンセル。考えた人賢い
         defer { self = RedBlackTreeSet(__tree_: view.__tree_) }
         yield &view
+      }
+    }
+
+    @inlinable
+    subscript(_safeRange range: _RawRange<_SafePtr>) -> View {
+
+      @inline(__always) get {
+        self[_safeRange: range.safeRange]
+      }
+
+      @inline(__always) _modify {
+        yield &self[_safeRange: range.safeRange]
       }
     }
   }

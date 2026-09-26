@@ -126,7 +126,7 @@
       rethrows
     {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe_(bounds)
+      let range = __tree_.__purified_safe2_(bounds)
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
 
@@ -137,7 +137,7 @@
       rethrows
     {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+      let range = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
   }
@@ -156,6 +156,7 @@
       }
     }
 
+    @available(*, deprecated)
     @inlinable
     @discardableResult
     mutating func erase(_safeRange range: _RawRange<_SafePtr>) -> Index {
@@ -169,6 +170,21 @@
       return ___index(__tree_.erase(__l, __u))
     }
 
+    @inlinable
+    mutating func erase(
+      _safeRange range: _SafeRange,
+      where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+      assert(__tree_.isUnique())
+      guard __tree_.isValid(range: range) else {
+        fatalError(.invalidIndex)
+      }
+      try __tree_.___erase_range_if(range, shouldBeRemoved)
+    }
+
+    @available(*, deprecated)
     @inlinable
     mutating func erase(
       _safeRange range: _RawRange<_SafePtr>,

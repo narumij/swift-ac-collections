@@ -172,10 +172,9 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitize(
-        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      try __tree_.___erase_range_if(
-        range.lowerBound, range.upperBound, shouldBeRemoved)
+      let range = __tree_.sanitize2(
+        safeRange: bounds.evaluate2(__tree_).relative(to: __tree_))
+      try __tree_.___erase_range_if(range, shouldBeRemoved)
     }
   }
 #endif

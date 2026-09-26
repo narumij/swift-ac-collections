@@ -124,4 +124,25 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
       }
       .map(index)
   }
+
+  @inlinable
+  @discardableResult
+  func ___erase_range_if(
+    _ range: _SafeRange,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> Result<UnsafeIndexV3, SealError> {
+
+    switch range.flatMap(validated(range:)) {
+    case .failure(let error):
+      return .failure(error)
+
+    case .success(let range):
+      return try ___erase_range_if(
+        range.lowerBound,
+        range.upperBound,
+        shouldBeRemoved
+      )
+      .map(index)
+    }
+  }
 }

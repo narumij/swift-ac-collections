@@ -41,17 +41,17 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
   }
 
 
-  @available(*, deprecated)
-  @inlinable
-  func isValid(safeRange range: _RawRange<_SafePtr>) -> Bool {
-    return isValid(range: traverse(range) { $0.map { $0 } })
-  }
+//  @available(*, deprecated)
+//  @inlinable
+//  func isValid(safeRange range: _RawRange<_SafePtr>) -> Bool {
+//    return isValid(range: traverse(range) { $0.map { $0 } })
+//  }
 
-  @available(*, deprecated)
-  @inlinable
-  func sanitize(safeRange range: _RawRange<_SafePtr>) -> _RawRange<_SafePtr> {
-    isValid(safeRange: range) ? range : ___safe_empty_range
-  }
+//  @available(*, deprecated)
+//  @inlinable
+//  func sanitize(safeRange range: _RawRange<_SafePtr>) -> _RawRange<_SafePtr> {
+//    isValid(safeRange: range) ? range : ___safe_empty_range
+//  }
   
   @inlinable
   func sanitize2(safeRange range: _SafeRange) -> _SafeRange {

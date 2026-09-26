@@ -114,7 +114,6 @@
 
   extension RedBlackTreeDictionary {
 
-    @available(*, deprecated)
     @inlinable
     public mutating func erase(
       _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
@@ -122,7 +121,7 @@
       rethrows
     {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe_(bounds)
+      let range = __tree_.__purified_safe2_(bounds)
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
 
@@ -153,19 +152,19 @@
       }
     }
 
-    @available(*, deprecated)
-    @inlinable
-    @discardableResult
-    mutating func erase(_safeRange range: _RawRange<_SafePtr>) -> Index {
-      assert(__tree_.isUnique())
-      guard __tree_.isValid(safeRange: range),
-        let __l = range.lowerBound.pointer,
-        let __u = range.upperBound.pointer
-      else {
-        fatalError(.invalidIndex)
-      }
-      return ___index(__tree_.erase(__l, __u))
-    }
+//    @available(*, deprecated)
+//    @inlinable
+//    @discardableResult
+//    mutating func erase(_safeRange range: _RawRange<_SafePtr>) -> Index {
+//      assert(__tree_.isUnique())
+//      guard __tree_.isValid(safeRange: range),
+//        let __l = range.lowerBound.pointer,
+//        let __u = range.upperBound.pointer
+//      else {
+//        fatalError(.invalidIndex)
+//      }
+//      return ___index(__tree_.erase(__l, __u))
+//    }
 
     @inlinable
     mutating func erase(
@@ -183,22 +182,22 @@
       }
     }
 
-    @available(*, deprecated)
-    @inlinable
-    mutating func erase(
-      _safeRange range: _RawRange<_SafePtr>,
-      where shouldBeRemoved: (Element) throws -> Bool
-    )
-      rethrows
-    {
-      assert(__tree_.isUnique())
-      guard __tree_.isValid(safeRange: range) else {
-        fatalError(.invalidIndex)
-      }
-      try __tree_.___erase_range_if(range.lowerBound, range.upperBound) {
-        try shouldBeRemoved(Base.__element_($0))
-      }
-    }
+//    @available(*, deprecated)
+//    @inlinable
+//    mutating func erase(
+//      _safeRange range: _RawRange<_SafePtr>,
+//      where shouldBeRemoved: (Element) throws -> Bool
+//    )
+//      rethrows
+//    {
+//      assert(__tree_.isUnique())
+//      guard __tree_.isValid(safeRange: range) else {
+//        fatalError(.invalidIndex)
+//      }
+//      try __tree_.___erase_range_if(range.lowerBound, range.upperBound) {
+//        try shouldBeRemoved(Base.__element_($0))
+//      }
+//    }
   }
 
   extension RedBlackTreeDictionary {

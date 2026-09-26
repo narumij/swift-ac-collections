@@ -129,6 +129,11 @@ extension _LazyTieWrap where RawValue == _NodePtrSealing {
     default: false
     }
   }
+
+  @inlinable
+  package var tag: _SealedTag {
+    rawValue.trackingTag == .nullptr ? .failure(.null) : rawValue.tag
+  }
 }
 
 #if DEBUG

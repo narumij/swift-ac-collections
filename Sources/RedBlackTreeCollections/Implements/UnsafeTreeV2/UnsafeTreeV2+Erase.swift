@@ -20,11 +20,9 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if COMPATIBLE_ATCODER_2025
 extension UnsafeTreeV2 {
-
-  /// 末尾チェック付きの削除ループ
-  ///
-  /// 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
+  
   @inlinable
   @discardableResult
   func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _NodePtr {
@@ -38,7 +36,16 @@ extension UnsafeTreeV2 {
     }
     return __last
   }
+}
+#endif
 
+// MARK: -
+
+extension UnsafeTreeV2 {
+
+  /// 末尾チェック付きの削除ループ
+  ///
+  /// 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
   @inlinable
   @discardableResult
   func ___erase_range2(_ __first: _NodePtr, _ __last: _NodePtr) -> _SafePtr {
@@ -79,12 +86,6 @@ extension UnsafeTreeV2 {
 }
 
 extension UnsafeTreeV2 {
-
-  @inlinable
-  @discardableResult
-  func ___erase_range(_ range: _NodeRange) -> _NodePtr {
-    ___erase_range(range.lowerBound, range.upperBound)
-  }
 
   @inlinable
   @discardableResult

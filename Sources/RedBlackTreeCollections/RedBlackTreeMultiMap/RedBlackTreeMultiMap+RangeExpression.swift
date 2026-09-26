@@ -151,20 +151,6 @@
       }
     }
 
-//    @available(*, deprecated)
-//    @inlinable
-//    @discardableResult
-//    mutating func erase(_safeRange range: _RawRange<_SafePtr>) -> Index {
-//      assert(__tree_.isUnique())
-//      guard __tree_.isValid(safeRange: range),
-//        let __l = range.lowerBound.pointer,
-//        let __u = range.upperBound.pointer
-//      else {
-//        fatalError(.invalidIndex)
-//      }
-//      return ___index(__tree_.erase(__l, __u))
-//    }
-
     @inlinable
     mutating func erase(
       _safeRange range: _SafeRange,
@@ -180,23 +166,6 @@
         try shouldBeRemoved(Base.__element_($0))
       }
     }
-
-//    @available(*, deprecated)
-//    @inlinable
-//    mutating func erase(
-//      _safeRange range: _RawRange<_SafePtr>,
-//      where shouldBeRemoved: (Element) throws -> Bool
-//    )
-//      rethrows
-//    {
-//      assert(__tree_.isUnique())
-//      guard __tree_.isValid(safeRange: range) else {
-//        fatalError(.invalidIndex)
-//      }
-//      try __tree_.___erase_range_if(range.lowerBound, range.upperBound) {
-//        try shouldBeRemoved(Base.__element_($0))
-//      }
-//    }
   }
 
   extension RedBlackTreeMultiMap {

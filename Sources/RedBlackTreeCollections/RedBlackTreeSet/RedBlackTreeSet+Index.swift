@@ -226,6 +226,8 @@
 
 #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
   extension RedBlackTreeSet {
+    
+    // TODO: 他のコンテナへの展開
 
     // TODO: 名前の再検討
     

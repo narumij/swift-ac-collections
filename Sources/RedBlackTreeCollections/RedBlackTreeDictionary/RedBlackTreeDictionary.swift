@@ -171,8 +171,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {
-    // TODO: 冬休み頃にハンドルを使った特殊化実装を試し、生成された探索ループに
-    // witness dispatch が残っているか確認する。
+    // TODO: 冬休み頃にハンドルを使った特殊化実装を試し、生成された探索ループにwitness dispatch が残ってないことを確認する。
     __tree_.update { $0.__count_unique(key) != 0 }
   }
 }
@@ -400,7 +399,7 @@ extension RedBlackTreeDictionary {
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()
-      let result = try __tree_.___erase_ragen_if(
+      let result = try __tree_.___erase_range_if(
         __tree_.__begin_node_.unchecked,
         __tree_.__end_node.unchecked,
         { try shouldBeRemoved(Base.__element_($0)) })

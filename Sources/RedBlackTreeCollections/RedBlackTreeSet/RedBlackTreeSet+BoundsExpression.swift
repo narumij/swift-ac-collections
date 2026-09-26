@@ -68,7 +68,7 @@
 
     /// Returns whether the corresponding element can be accessed.
     @inlinable
-    public func isValid(_ bound: RedBlackTreeBoundExpressionV2<Element>) -> Bool {
+    public func isValid(_ bound: RedBlackTreeBoundExpression<Element>) -> Bool {
       let _safe_ptr_ = bound.evaluate(__tree_)
       return _safe_ptr_.___has_payload_content
     }
@@ -81,8 +81,8 @@
     /// - Complexity: O(log *n* + *k*)
     @inlinable
     public func distance(
-      from start: RedBlackTreeBoundExpressionV2<Element>,
-      to end: RedBlackTreeBoundExpressionV2<Element>
+      from start: RedBlackTreeBoundExpression<Element>,
+      to end: RedBlackTreeBoundExpression<Element>
     )
       -> Int
     {
@@ -102,7 +102,7 @@
     ///
     @inlinable
     @inline(__always)
-    public subscript(bound: RedBlackTreeBoundExpressionV2<Element>) -> Element? {
+    public subscript(bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
       return p.__value_(as: Element.self).pointee
@@ -112,7 +112,7 @@
   extension RedBlackTreeSet {
 
     @inlinable
-    public mutating func erase(_ bound: RedBlackTreeBoundExpressionV2<Element>) -> Element? {
+    public mutating func erase(_ bound: RedBlackTreeBoundExpression<Element>) -> Element? {
       __tree_.ensureUnique()
       let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
@@ -174,7 +174,7 @@
       __tree_.ensureUnique()
       let range = __tree_.sanitize(
         safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      try __tree_.___erase_ragen_if(
+      try __tree_.___erase_range_if(
         range.lowerBound, range.upperBound, shouldBeRemoved)
     }
   }

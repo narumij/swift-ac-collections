@@ -1,0 +1,22 @@
+{
+  "kind": "group",
+  "title": "RedBlackTreeSet Benchmarks",
+  "directory": "RedBlackTreeSet Long",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "RedBlackTreeSet vs std::set",
+      "directory": "versus STL set",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "successful lookups",
+          "tasks": [
+            "std::set<intptr_t> successful find",
+            "RedBlackTreeSet<Int> successful find",
+          ]
+        },
+      ]
+    }
+  ]
+}

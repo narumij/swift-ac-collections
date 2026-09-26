@@ -1,0 +1,22 @@
+{
+  "kind": "group",
+  "title": "RedBlackTreeSet Benchmarks",
+  "directory": "RedBlackTreeSet Long2",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "RedBlackTreeSet vs std::set",
+      "directory": "versus STL set",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "random removals",
+          "tasks": [
+            "std::set<intptr_t> erase",
+            "RedBlackTreeSet<Int> remove",
+          ]
+        },
+      ]
+    }
+  ]
+}

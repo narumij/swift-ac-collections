@@ -23,18 +23,48 @@
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
   @inlinable
+  func validated(range: _NodeRange) -> Result<_NodeRange, SealError> {
+    isValid(range: range)
+      ? .success(range)
+      : .failure(.other)
+  }
+
+  @inlinable
+  func isValid(range: _NodeRange) -> Bool {
+    range.lowerBound == range.upperBound
+      || Base.___ptr_comp(range.lowerBound, range.upperBound)
+  }
+  
+  @inlinable
+  func isValid(range: _SafeRange) -> Bool {
+    return (try? range.map(isValid(range:)).get()) == true
+  }
+
+
+  @inlinable
   func isValid(safeRange range: _RawRange<_SafePtr>) -> Bool {
-    (try? range.map2 { l, r in l == r || Base.___ptr_comp(l, r) }.get()) == true
+    return isValid(range: traverse(range) { $0.map { $0 } })
   }
 
   @inlinable
   func sanitize(safeRange range: _RawRange<_SafePtr>) -> _RawRange<_SafePtr> {
     isValid(safeRange: range) ? range : ___safe_empty_range
   }
+  
+  @inlinable
+  func sanitize2(safeRange range: _SafeRange) -> _SafeRange {
+    isValid(range: range) ? range : .success(___empty_range)
+  }
 }
 
 extension UnsafeTreeV2 {
 
+  @inlinable
+  var ___empty_range: _NodeRange {
+    let e = __end_node
+    return .init(lowerBound: e, upperBound: e)
+  }
+  
   @inlinable
   var ___safe_empty_range: _RawRange<_SafePtr> {
     let e = __end_node.unchecked

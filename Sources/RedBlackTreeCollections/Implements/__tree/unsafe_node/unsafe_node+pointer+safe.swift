@@ -84,7 +84,7 @@
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
-  
+
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     switch (lhs, rhs) {
@@ -96,7 +96,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
       return false
     }
   }
-  
+
   @inlinable
   public static func != (lhs: Self, rhs: Self) -> Bool {
     !(lhs == rhs)
@@ -170,7 +170,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
 public typealias _SealedPtr = Result<_NodePtrSealing, SealError>
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
-  
+
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     switch (lhs, rhs) {
@@ -182,7 +182,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
       return false
     }
   }
-  
+
   @inlinable
   public static func != (lhs: Self, rhs: Self) -> Bool {
     !(lhs == rhs)
@@ -255,16 +255,21 @@ public enum SealError: Error {
   /// 平衡木の上限を超えた操作を行ったことを表す
   case upperOutOfBounds
 
+  case outOfBounds
+
   /// 木が不一致
   case crossTree
-  
+
   /// 木と分離済み
   case detached
+  
+  /// あとでエラーの扱いを変える予定のもの
+  case other
 }
 
-extension SealError: Equatable { }
-extension SealError: Comparable { }
-extension SealError: Hashable { }
+extension SealError: Equatable {}
+extension SealError: Comparable {}
+extension SealError: Hashable {}
 
 @usableFromInline
 func errorMessage<E: Error>(_ e: E) -> String {
@@ -329,31 +334,3 @@ extension Result where Failure == SealError {
     }
   }
 }
-
-@inlinable
-func liftA2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> S) -> Result<S, E> {
-  switch (a, b) {
-  case (.success(let a), .success(let b)):
-    return .success(f(a, b))
-  case (.failure(let e), _):
-    return .failure(e)
-  case (_, .failure(let e)):
-    return .failure(e)
-  }
-}
-
-#if false
-  @inlinable
-  func liftM2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> Result<S, E>) -> Result<
-    S, E
-  > {
-    switch (a, b) {
-    case (.success(let a), .success(let b)):
-      return f(a, b)
-    case (.failure(let e), _):
-      return .failure(e)
-    case (_, .failure(let e)):
-      return .failure(e)
-    }
-  }
-#endif

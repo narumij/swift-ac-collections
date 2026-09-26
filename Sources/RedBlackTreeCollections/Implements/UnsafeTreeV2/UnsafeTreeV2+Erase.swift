@@ -32,11 +32,25 @@ extension UnsafeTreeV2 {
     var __first = __first
     while __first != __last {
       guard __first.___has_payload_content else {
-        fatalError(.outOfBounds) // エラー種別がしっくりこない
+        fatalError(.outOfBounds)  // エラー種別がしっくりこない
       }
       __first = erase(__first)
     }
     return __last
+  }
+
+  @inlinable
+  @discardableResult
+  func ___erase_range2(_ __first: _NodePtr, _ __last: _NodePtr) -> _SafePtr {
+
+    var __first = __first
+    while __first != __last {
+      guard __first.___has_payload_content else {
+        return .failure(.other)
+      }
+      __first = erase(__first)
+    }
+    return .success(__last)
   }
 
   /// 末尾チェック付きの削除ループ
@@ -45,7 +59,7 @@ extension UnsafeTreeV2 {
   /// 世代や木が変わるような事態は外部側で起きるのであって、こちらで起きるわけではないので。
   @inlinable
   @discardableResult
-  func ___erase_ragen_if(
+  func ___erase_range_if(
     _ __first: _SafePtr,
     _ __last: _SafePtr,
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool
@@ -61,5 +75,53 @@ extension UnsafeTreeV2 {
       }
     }
     return __last
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @discardableResult
+  func ___erase_range(_ range: _NodeRange) -> _NodePtr {
+    ___erase_range(range.lowerBound, range.upperBound)
+  }
+
+  @inlinable
+  @discardableResult
+  func ___erase_range2(_ range: _NodeRange) -> _SafePtr {
+    ___erase_range2(range.lowerBound, range.upperBound)
+  }
+
+  @inlinable
+  @discardableResult
+  func ___erase_range_if(
+    _ __first: _NodePtr,
+    _ __last: _NodePtr,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+    try ___erase_range_if(__first.unchecked, __last.unchecked, shouldBeRemoved)
+  }
+
+  @inlinable
+  @discardableResult
+  func ___erase_range_if(
+    _ range: _NodeRange,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> _SafePtr {
+    try ___erase_range_if(range.lowerBound, range.upperBound, shouldBeRemoved)
+  }
+}
+
+extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
+
+  @inlinable
+  @discardableResult
+  func ___erase_range(_ range: _SafeRange) -> Result<UnsafeIndexV3, SealError> {
+    range
+      .flatMap(validated(range:))
+      .flatMap {
+        $0.fold(___erase_range2)
+      }
+      .map(index)
   }
 }

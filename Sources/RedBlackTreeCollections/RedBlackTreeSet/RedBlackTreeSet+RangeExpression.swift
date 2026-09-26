@@ -168,7 +168,7 @@
       guard __tree_.isValid(safeRange: range) else {
         fatalError(.invalidIndex)
       }
-      try __tree_.___erase_ragen_if(range.lowerBound, range.upperBound, shouldBeRemoved)
+      try __tree_.___erase_range_if(range.lowerBound, range.upperBound, shouldBeRemoved)
     }
 
     @inlinable

@@ -399,7 +399,7 @@ extension RedBlackTreeDictionary {
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       __tree_.ensureUnique()
-      let result = try __tree_.___erase_ragen_if(
+      let result = try __tree_.___erase_range_if(
         __tree_.__begin_node_.unchecked,
         __tree_.__end_node.unchecked,
         { try shouldBeRemoved(Base.__element_($0)) })

@@ -32,7 +32,7 @@ extension UnsafeTreeV2 {
     var __first = __first
     while __first != __last {
       guard __first.___has_payload_content else {
-        fatalError(.outOfBounds) // エラー種別がしっくりこない
+        fatalError(.outOfBounds)  // エラー種別がしっくりこない
       }
       __first = erase(__first)
     }
@@ -45,7 +45,7 @@ extension UnsafeTreeV2 {
   /// 世代や木が変わるような事態は外部側で起きるのであって、こちらで起きるわけではないので。
   @inlinable
   @discardableResult
-  func ___erase_ragen_if(
+  func ___erase_range_if(
     _ __first: _SafePtr,
     _ __last: _SafePtr,
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool
@@ -61,5 +61,14 @@ extension UnsafeTreeV2 {
       }
     }
     return __last
+  }
+}
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  @discardableResult
+  func ___erase_range(_ range: _NodeRange) -> _NodePtr {
+    ___erase_range(range.lowerBound, range.upperBound)
   }
 }

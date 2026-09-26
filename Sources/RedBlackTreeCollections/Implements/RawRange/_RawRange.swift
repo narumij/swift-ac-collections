@@ -108,3 +108,8 @@ func liftM2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> Result
     return .failure(e)
   }
 }
+
+public typealias _NodeRange = _RawRange<UnsafeMutablePointer<UnsafeNode>>
+// _SafeNodeRangeがいいという説がある
+public typealias _SafeRange = Result<_NodeRange, SealError>
+

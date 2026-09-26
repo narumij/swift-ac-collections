@@ -61,9 +61,6 @@ extension UnsafeTreeV2 {
   }
 
   /// 末尾チェック付きの削除ループ
-  ///
-  /// `_SealedPtr`を使ってきたが、対象となる木が固定の場合、過剰なので、`_SafePtr`にした。
-  /// 世代や木が変わるような事態は外部側で起きるのであって、こちらで起きるわけではないので。
   @inlinable
   @discardableResult
   func ___erase_range_if(

@@ -141,18 +141,18 @@ extension _RawRangeExpression {
 extension _RawRangeExpression {
 
   @inlinable
-  func map<T>(_ f: (Bound) -> T) -> _RawRangeExpression<T> {
+  func map<T>(_ f: (Bound) throws -> T) rethrows -> _RawRangeExpression<T> {
     switch self {
     case .range(let from, let to):
-      .range(from: f(from), to: f(to))
+      .range(from: try f(from), to: try f(to))
     case .closedRange(let from, let through):
-      .closedRange(from: f(from), through: f(through))
+      .closedRange(from: try f(from), through: try f(through))
     case .partialRangeTo(let bound):
-      .partialRangeTo(f(bound))
+      .partialRangeTo(try f(bound))
     case .partialRangeThrough(let bound):
-      .partialRangeThrough(f(bound))
+      .partialRangeThrough(try f(bound))
     case .partialRangeFrom(let bound):
-      .partialRangeFrom(f(bound))
+      .partialRangeFrom(try f(bound))
     case .unboundedRange:
       .unboundedRange
     }

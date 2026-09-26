@@ -104,17 +104,29 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool
   ) rethrows -> Result<UnsafeIndexV3, SealError> {
 
-    switch range.flatMap(validated(range:)) {
+    try range
+      .flatMap(validated(range:))
+      .flatMapThrowing { range in
+        try range.fold { first, last in
+          try ___erase_range_if(first.unchecked, last.unchecked, shouldBeRemoved)
+        }
+      }
+      .map(index)
+  }
+}
+
+// TODO: 以下を別ファイルに切り出す
+extension Result {
+
+  @inlinable
+  func flatMapThrowing<T>(
+    _ transform: (Success) throws -> Result<T, Failure>
+  ) rethrows -> Result<T, Failure> {
+    switch self {
+    case .success(let value):
+      return try transform(value)
     case .failure(let error):
       return .failure(error)
-
-    case .success(let range):
-      return try ___erase_range_if(
-        range.lowerBound.unchecked,
-        range.upperBound.unchecked,
-        shouldBeRemoved
-      )
-      .map(index)
     }
   }
 }

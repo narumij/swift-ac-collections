@@ -302,7 +302,7 @@ final class EtcTests: RedBlackTreeTestCase {
 
   #if COMPATIBLE_ATCODER_2025
     func testSubRev6() throws {
-      
+
       typealias _NodePtr = _TrackingTag
 
       let a = RedBlackTreeSet<Int>([0, 1, 2])
@@ -323,7 +323,7 @@ final class EtcTests: RedBlackTreeTestCase {
     }
 
     func testSubRev7() throws {
-      
+
       typealias _NodePtr = _TrackingTag
 
       let a = RedBlackTreeSet<Int>([0, 1, 2])
@@ -344,7 +344,7 @@ final class EtcTests: RedBlackTreeTestCase {
     }
 
     func testSubRev8() throws {
-      
+
       typealias _NodePtr = _TrackingTag
 
       let a = RedBlackTreeSet<Int>([0, 1, 2])
@@ -646,24 +646,21 @@ final class EtcTests: RedBlackTreeTestCase {
     //      XCTAssertEqual(it + [], [5,10]) // ここで落ちる
     //    }
 
-    #if false
-      // TODO: Iteratorの意味論について考えた方がいいのかも
-      func testItertor() throws {
-        var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
-        //      var it = a[a.lowerBound(5)..<a.firstIndex(of: 45)].makeIterator()
-        var it = a[lowerBound(5)..<find(45)].makeIterator()
-        a.remove(15)  // 二つ先以降を消しても影響がない
-        a.remove(35)  // 二つ先以降を消しても影響がない
-        //      a.remove(45)  // 二つ先以降を消しても影響がない
-        XCTAssertEqual(it.next(), 5)
-        XCTAssertEqual(it.next(), 10)
-        XCTAssertEqual(it.next(), 20)
-        XCTAssertEqual(it.next(), 25)
-        XCTAssertEqual(it.next(), 30)
-        XCTAssertEqual(it.next(), 40)
-        //      XCTAssertEqual(it.next(), 45)
-      }
-    #endif
+    func testItertor() throws {
+      var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
+      var it = a[lowerBound(5)..<find(45)].makeIterator()
+      a.remove(15)
+      a.remove(35)
+      XCTAssertEqual(it.next(), 5)
+      XCTAssertEqual(it.next(), 10)
+      XCTAssertEqual(it.next(), 15)  // CoW挙動に変更したので、イテレータのスナップショットはそのまま
+      XCTAssertEqual(it.next(), 20)
+      XCTAssertEqual(it.next(), 25)
+      XCTAssertEqual(it.next(), 30)
+      XCTAssertEqual(it.next(), 35)  // CoW挙動に変更したので、イテレータのスナップショットはそのまま
+      XCTAssertEqual(it.next(), 40)
+      XCTAssertNil(it.next())  // 45は含まない
+    }
 
     func testRangeView() throws {
       let a = RedBlackTreeSet(0..<20)

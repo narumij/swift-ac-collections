@@ -824,7 +824,7 @@ final class EtcTests: RedBlackTreeTestCase {
         // TODO: サニタイザの問題について、修正を検討する
         // 9/27 try/index/1ブランチのサニタイザはここで反応してる様子
         // a.startIndexがとれてるから、aが予想外に早く解放されてる予想
-        XCTAssertNil(p.lazyDetach.isDetached ? nil : p.purified.error)
+        XCTAssertNil(p.lazyDetach?.isDetached == true ? nil : p.purified.error)
       }
 
       throw XCTSkip("設定の組み合わせ分確認するのが面倒なため")

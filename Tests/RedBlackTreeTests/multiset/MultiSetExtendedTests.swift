@@ -4,7 +4,7 @@
 // YourPackageNameTests target に追加して `swift test` で実行
 
 import XCTest
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 final class MultiSetExtendedTests: RedBlackTreeTestCase {
 

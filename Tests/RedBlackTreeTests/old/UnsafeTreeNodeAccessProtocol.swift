@@ -6,7 +6,7 @@
 //
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
 /// 配列ベースのコードベースにポインタを載せるためのもの
 ///

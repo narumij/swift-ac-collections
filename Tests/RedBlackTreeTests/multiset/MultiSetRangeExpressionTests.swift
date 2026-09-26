@@ -6,7 +6,7 @@
 //
 
 #if !COMPATIBLE_ATCODER_2025
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
   import XCTest
 
   final class MultiSetRangeExpressionTests: RedBlackTreeTestCase {
@@ -130,7 +130,7 @@
       let lower = set.index(set.startIndex, offsetBy: 1)
       let upper = set.index(set.startIndex, offsetBy: 5)
 
-      set.erase(lower..<upper)
+      _ = set.erase(lower..<upper)
       XCTAssertEqual(Array(set), [0, 4])
     }
 

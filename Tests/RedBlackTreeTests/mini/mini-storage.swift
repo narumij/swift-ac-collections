@@ -4,7 +4,7 @@ import Foundation
 // アルゴリムのメリットが消えてしまうので、
 // 保留に
 #if false
-@testable import RedBlackTreeModule
+@testable import RedBlackTreeCollections
 
 @usableFromInline
 struct RedBlackTree4<Element>

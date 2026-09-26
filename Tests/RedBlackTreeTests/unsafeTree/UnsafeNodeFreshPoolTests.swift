@@ -7,13 +7,14 @@
 
 import XCTest
 
-#if DEBUG
-  @testable import RedBlackTreeModule
+#if DEBUG && USE_FRESH_POOL_PROTOCOL
+  @testable import RedBlackTreeCollections
 
   struct FreshPoolFixture<_PayloadValue>: _FreshPool {
-    var freshBucketCurrent: RedBlackTreeModule._BucketQueue?
+    var freshBucketCurrent: RedBlackTreeCollections._BucketQueue?
 
-    var payload: _MemoryLayout
+    var payloadLayout: _MemoryLayout
+    var pairLayout: _MemoryLayout { freshBucketAllocator._pair }
 
     func didUpdateFreshBucketHead() {
 
@@ -28,7 +29,7 @@ import XCTest
     var count: Int = 0
     var freshBucketCount: Int = 0
     var nullptr: _NodePtr { UnsafeNode.nullptr }
-    var freshBucketAllocator: RedBlackTreeModule._BucketAllocator
+    var freshBucketAllocator: RedBlackTreeCollections._BucketAllocator
   }
 
   final class UnsafeNodeFreshPoolTests: RedBlackTreeTestCase {
@@ -79,12 +80,14 @@ import XCTest
       }
     }
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceExample() throws {
       // This is an example of a performance test case.
       self.measure {
         // Put the code you want to measure the time of here.
       }
     }
+    #endif
 
   }
 #endif

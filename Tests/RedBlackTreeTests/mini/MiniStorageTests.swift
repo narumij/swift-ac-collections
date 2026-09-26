@@ -37,12 +37,14 @@ final class MiniStorageTests: RedBlackTreeTestCase {
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
     }
 
+    #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
         self.measure {
             // Put the code you want to measure the time of here.
         }
     }
+    #endif
 
 }
 #endif

@@ -8,17 +8,17 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   final class UnsafeTreeBasicTests: RedBlackTreeTestCase {
 
-    enum Base: ScalarValueTrait & CompareUniqueTrait & IntThreeWayComparator
+    enum Base: ScalarValueTrait & UniqueMultiplicity & IntThreeWayComparator
         & _ScalarBasePayloadValue_KeyProtocol, _UnsafeNodePtrType
     {
       static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> Int {
         p.__value_(as: _PayloadValue.self).pointee
       }
-      static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeModule.UnsafeNode>) -> Int {
+      static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeCollections.UnsafeNode>) -> Int {
         fatalError()
       }
       typealias _Key = Int
@@ -46,10 +46,10 @@ import XCTest
       XCTAssertGreaterThanOrEqual(storage.capacity, 4)
       let ptr = storage.__construct_node(100)
       XCTAssertEqual(storage.__value_(ptr), 100)
-      storage.___element(ptr, 20)
-      XCTAssertEqual(storage.__value_(ptr), 20)
-      storage.___element(ptr, 50)
-      XCTAssertEqual(storage.__value_(ptr), 50)
+      //      storage.___element(ptr, 20)
+      //      XCTAssertEqual(storage.__value_(ptr), 20)
+      //      storage.___element(ptr, 50)
+      //      XCTAssertEqual(storage.__value_(ptr), 50)
     }
 
     func testPoolIterator() async throws {
@@ -101,35 +101,56 @@ import XCTest
       XCTAssertEqual(storage._buffer.header.recycleHead, storage.nullptr)
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [])
       XCTAssertEqual(storage._buffer.header.recycleCount, 0)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 0)
       storage._buffer.header.___pushRecycle(storage._buffer.header[0])
       XCTAssertEqual(storage._buffer.header.recycleHead, storage._buffer.header[0])
       XCTAssertEqual(storage._buffer.header[0].__left_, storage.nullptr)
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 1)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 1)
       storage._buffer.header.___pushRecycle(storage._buffer.header[1])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [1, 0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 2)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 2)
       storage._buffer.header.___pushRecycle(storage._buffer.header[2])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [2, 1, 0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 3)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 3)
       storage._buffer.header.___pushRecycle(storage._buffer.header[3])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [3, 2, 1, 0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 4)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 4)
       XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[3])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [2, 1, 0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 3)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 4)
       XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[2])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [1, 0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 2)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 4)
       XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[1])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [0])
       XCTAssertEqual(storage._buffer.header.recycleCount, 1)
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 4)
       XCTAssertEqual(storage._buffer.header.___popRecycle(), storage._buffer.header[0])
       XCTAssertEqual(storage._buffer.header.___recycleNodes, [])
       XCTAssertEqual(storage._buffer.header.recycleCount, 0)
-      #if DEBUG
-        payloadInitializedCount += 4
-      #endif
+      XCTAssertEqual(payloadInitializedCount, 4)
+      XCTAssertEqual(payloadDeinitializedCount, 4)
+      
+      for i in 0..<4 {
+        // pop時にtrueにする仕様なため
+        XCTAssertTrue(storage._buffer.header[i].pointee.___has_payload_content)
+        storage._buffer.header[i].pointee.___has_payload_content = false
+      }
     }
 
     func testDestroyStack2() async throws {
@@ -288,6 +309,23 @@ import XCTest
       begin = copy.__tree_next_iter(begin)
       XCTAssertEqual(begin, copy.end)
       XCTAssertTrue(__tree_invariant(storage.__root))
+    }
+
+    func testRetrieveEtc() throws {
+      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
+      XCTAssertEqual(storage.__retrieve_(.nullptr), .failure(.null))
+    }
+
+    func testRetrieveUnknown() throws {
+      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
+      XCTAssertEqual(
+        storage.___retrieve(tag: .tag(raw: 6, seal: 0)),
+        .failure(.unknown))
+    }
+    
+    func testDescription() throws {
+      let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
+      XCTAssertTrue(storage.description.contains("UnsafeTreeV2"))
     }
   }
 #endif

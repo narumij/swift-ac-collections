@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -35,15 +35,15 @@ import XCTest
       _ = set.lowerBound(0)
       _ = set.upperBound(0)
       for s in set {
-        print(s)
+        blackHole(s)
       }
       set.forEach {
-        print($0)
+        blackHole($0)
       }
-      print(set.map { $0 })
-      print(set.filter { $0 != 0 })
-      print(set.reduce(0, +))
-      print(set.reduce(into: []) { $0.append($1) })
+      blackHole(set.map { $0 })
+      blackHole(set.filter { $0 != 0 })
+      blackHole(set.reduce(0, +))
+      blackHole(set.reduce(into: []) { $0.append($1) })
       XCTAssertEqual(set._copyCount, 0)
     }
 
@@ -54,7 +54,11 @@ import XCTest
         tree.remove(v)
       }
       XCTAssertEqual(tree.count, 0)
-      XCTAssertEqual(tree._copyCount, 0)  // これが0になる挙動にするか、1になる挙動にするか、悩み
+      #if !COMPATIBLE_ATCODER_2025
+        XCTAssertEqual(tree._copyCount, 1)
+      #else
+        XCTAssertEqual(tree._copyCount, 0)
+      #endif
     }
 
     func testSet4() throws {
@@ -110,28 +114,50 @@ import XCTest
       XCTAssertEqual(loopCount, count / N)
     }
 
-    #if COMPATIBLE_ATCODER_2025
-      func testSet4000() throws {
-        let count = 1500
-        var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0..<count)]
-        xy[1]?._copyCount = 0
-        let N = 100
-        var loopCount = 0
-        for i in 0..<count / N {
-          loopCount += 1
-          // for文の場合イテレータに処理が移行するので木を保持しないが、
-          // forEachは利用ではこの分離ないので、CoWが発生するようになった
-          // 以前はこれを回避するよう設計で工夫していたが、その工夫自体のオーバーヘッドがもったいない
-          // わざわざsliceを改修するつもりもなく、このままとなります
-          xy[1]?.elements(in: (i * N)..<(i * N + N)).forEach { i, v in
-            xy[1]?.remove(at: i)
-          }
-        }
-        XCTAssertEqual(xy[1]!.count, 0)
-        //    XCTAssertEqual(xy[1]!.copyCount, count / N)
-        XCTAssertEqual(xy[1]!._copyCount, 1, "CoW関連構造の変更に伴い結果が変化")
-        XCTAssertEqual(loopCount, count / N)
+    func testABC385DBehavior() throws {
+      let x = 0
+      let new_y = 8
+      let y = 0
+      var xy: [Int: RedBlackTreeSet<Int>] = .init(uniqueKeysWithValues: [(0, .init(0..<10))])
+      var yx: [Int: RedBlackTreeSet<Int>] = .init(
+        uniqueKeysWithValues: (0..<10).map { ($0, .init([0])) })
+
+      for v in xy.values {
+        XCTAssertEqual(v.count, 10)
+        XCTAssertEqual(v._copyCount, 0)
       }
-    #endif
+      for v in yx.values {
+        XCTAssertEqual(v.count, 1)
+        #if COMPATIBLE_ATCODER_2025
+          XCTAssertEqual(v._copyCount, 0)
+        #else
+          XCTAssertEqual(v._copyCount, 1)
+        #endif
+      }
+
+      var ans = 0
+      var it = xy[x, default: []].lowerBound(y)
+      while it != xy[x, default: []].endIndex, xy[x, default: []][it] <= new_y {
+        ans += 1
+        yx[xy[x]![it]]?.remove(x)
+        #if COMPATIBLE_ATCODER_2025
+          it = xy[x]!.___erase(it)
+        #else
+          it = xy[x]!.erase(it)
+        #endif
+      }
+
+      for v in xy.values {
+        XCTAssertEqual(v._copyCount, 0, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
+      }
+      for v in yx.values {
+        #if COMPATIBLE_ATCODER_2025
+          XCTAssertEqual(v._copyCount, 0, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
+        #else
+          XCTAssertEqual(v._copyCount, 1, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
+        #endif
+      }
+    }
+
   }
 #endif

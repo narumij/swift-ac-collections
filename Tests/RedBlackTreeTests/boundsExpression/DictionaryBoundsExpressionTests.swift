@@ -7,7 +7,7 @@
 
 #if DEBUG && !COMPATIBLE_ATCODER_2025
   import XCTest
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 
   final class DictionaryBoundsExpressionTests: RedBlackTreeTestCase {
 
@@ -97,16 +97,16 @@
       ]
 
       for (key, expected) in cases {
-        XCTAssertEqual(a[lt(key)]?.key, expected, "key=\(key)")
-        XCTAssertEqual(a.isValid(lt(key)), expected != nil, "key=\(key)")
+        XCTAssertEqual(a[.lessThan(key)]?.key, expected, "key=\(key)")
+        XCTAssertEqual(a.isValid(.lessThan(key)), expected != nil, "key=\(key)")
       }
     }
 
     func testLessGreaterHelpers() throws {
-      XCTAssertEqual(a[lt(1)]?.key, 0)
-      XCTAssertEqual(a[gt(1)]?.key, 2)
-      XCTAssertEqual(a[le(1)]?.key, 1)
-      XCTAssertEqual(a[ge(1)]?.key, 1)
+      XCTAssertEqual(a[.lessThan(1)]?.key, 0)
+      XCTAssertEqual(a[.greaterThan(1)]?.key, 2)
+      XCTAssertEqual(a[.lessThanOrEqual(1)]?.key, 1)
+      XCTAssertEqual(a[.greaterThanOrEqual(1)]?.key, 1)
     }
 
     func testBoundRangeOperators() throws {

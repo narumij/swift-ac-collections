@@ -7,7 +7,7 @@
 
 #if DEBUG && !COMPATIBLE_ATCODER_2025
   import XCTest
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 
   final class MultiSetBoundsExpressionTests: RedBlackTreeTestCase {
 
@@ -98,24 +98,24 @@
     func testLessThanAndOrEqualMulti() throws {
       let b = RedBlackTreeMultiSet<Int>([0, 1, 1, 2])
 
-      XCTAssertEqual(b[lt(-1)], nil)
-      XCTAssertEqual(b[lt(0)], nil)
-      XCTAssertEqual(b[lt(1)], 0)
-      XCTAssertEqual(b[lt(2)], 1)
-      XCTAssertEqual(b[lt(3)], 2)
+      XCTAssertEqual(b[.lessThan(-1)], nil)
+      XCTAssertEqual(b[.lessThan(0)], nil)
+      XCTAssertEqual(b[.lessThan(1)], 0)
+      XCTAssertEqual(b[.lessThan(2)], 1)
+      XCTAssertEqual(b[.lessThan(3)], 2)
 
-      XCTAssertEqual(b[le(-1)], nil)
-      XCTAssertEqual(b[le(0)], 0)
-      XCTAssertEqual(b[le(1)], 1)
-      XCTAssertEqual(b[le(2)], 2)
-      XCTAssertEqual(b[le(3)], 2)
+      XCTAssertEqual(b[.lessThanOrEqual(-1)], nil)
+      XCTAssertEqual(b[.lessThanOrEqual(0)], 0)
+      XCTAssertEqual(b[.lessThanOrEqual(1)], 1)
+      XCTAssertEqual(b[.lessThanOrEqual(2)], 2)
+      XCTAssertEqual(b[.lessThanOrEqual(3)], 2)
     }
 
     func testLessGreaterHelpers() throws {
-      XCTAssertEqual(a[lt(1)], 0)
-      XCTAssertEqual(a[gt(1)], 2)
-      XCTAssertEqual(a[le(1)], 1)
-      XCTAssertEqual(a[ge(1)], 1)
+      XCTAssertEqual(a[.lessThan(1)], 0)
+      XCTAssertEqual(a[.greaterThan(1)], 2)
+      XCTAssertEqual(a[.lessThanOrEqual(1)], 1)
+      XCTAssertEqual(a[.greaterThanOrEqual(1)], 1)
     }
 
     func testBoundRangeOperators() throws {

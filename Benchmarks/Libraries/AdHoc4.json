@@ -1,0 +1,36 @@
+{
+  "kind": "group",
+  "title": "RedBlackTreeDictionary Benchmarks",
+  "directory": "RedBlackTreeDictionary Adhoc4",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "RedBlackTreeSet vs std::map",
+      "directory": "versus STL map",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "defaulted subscript, existing key",
+          "tasks": [
+            "std::map<intptr_t, intptr_t> subscript, existing key",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, successful lookups",
+            "Dictionary<Int, Int> subscript, successful lookups",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify existing",
+            "Dictionary<Int, Int> defaulted subscript, _modify existing",
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "defaulted subscript, new key",
+          "tasks": [
+            "std::map<intptr_t, intptr_t> subscript, new key",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, unsuccessful lookups",
+            "Dictionary<Int, Int> subscript, unsuccessful lookups",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify missing",
+            "Dictionary<Int, Int> defaulted subscript, _modify missing",
+          ]
+        },
+      ]
+    }
+  ]
+}

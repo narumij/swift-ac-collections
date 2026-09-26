@@ -1,0 +1,56 @@
+//
+//  UnsafeTreeSealedRangeProtocol.swift
+//  swift-ac-collections
+//
+//  Created by narumij on 2026/02/05.
+//
+
+#if COMPATIBLE_ATCODER_2025
+  @usableFromInline
+  protocol UnsafeTreeSealedRangeProtocol: UnsafeTreeSealedRangeBaseInterfaceV2, _PayloadValueBride {
+  }
+
+  extension UnsafeTreeSealedRangeProtocol {
+
+    @inlinable
+    internal func ___first(where predicate: (_PayloadValue) throws -> Bool) rethrows
+      -> _PayloadValue?
+    {
+      var result: _PayloadValue?
+      try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
+        if try predicate(__tree_[_unsafe_raw: __p]) {
+          result = __tree_[_unsafe_raw: __p]
+          cont = false
+        }
+      }
+      return result
+    }
+  }
+
+  extension UnsafeTreeSealedRangeProtocol {
+
+    @inlinable
+    internal func ___first_(where predicate: (_PayloadValue) throws -> Bool) rethrows
+      -> _SealedPtr?
+    {
+      var __r = UnsafeNode.nullptr
+      try __tree_.___for_each(__p: _sealed_start, __l: _sealed_end) { __p, cont in
+        if try predicate(__tree_[_unsafe_raw: __p]) {
+          __r = __p
+          cont = false
+        }
+      }
+      return __r.sealed
+    }
+  }
+
+  extension UnsafeTreeSealedRangeProtocol {
+
+    @inlinable
+    internal func _isIdentical(to other: Self) -> Bool {
+      __tree_.isIdentical(to: other.__tree_)
+        && _sealed_start == other._sealed_start
+        && _sealed_end == other._sealed_end
+    }
+  }
+#endif

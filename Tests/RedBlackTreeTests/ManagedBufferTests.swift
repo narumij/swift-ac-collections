@@ -1,7 +1,7 @@
 import XCTest
 
 #if DEBUG && false
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 
   final class ManagedBufferTests: RedBlackTreeTestCase {
 

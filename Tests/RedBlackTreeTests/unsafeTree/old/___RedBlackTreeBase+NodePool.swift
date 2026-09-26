@@ -24,7 +24,7 @@
   // 多分試作コード
   // 消して大丈夫そう(2026/01/03)
   #if DEBUG
-    @testable import RedBlackTreeModule
+    @testable import RedBlackTreeCollections
 
     // 性能面で不利なはずのもの。
     // 性能過敏な部分なので、しばらく保留

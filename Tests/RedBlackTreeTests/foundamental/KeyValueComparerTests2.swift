@@ -5,16 +5,16 @@
 //  Created by narumij on 2025/09/29.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
-final class KeyValueComparerTests2: RedBlackTreeTestCase, KeyValueTrait, CompareUniqueTrait, _UnsafeNodePtrType {
+final class KeyValueComparerTests2: RedBlackTreeTestCase, KeyValueTrait, UniqueMultiplicity, _UnsafeNodePtrType {
   
   static func __get_value(_ p: UnsafeMutablePointer<UnsafeNode>) -> _Key {
     p.__value_(as: _PayloadValue.self).pointee.key
   }
 
-  static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeModule.UnsafeNode>) -> (key: _Key, value: _MappedValue) {
+  static func __value_(_ p: UnsafeMutablePointer<RedBlackTreeCollections.UnsafeNode>) -> (key: _Key, value: _MappedValue) {
     fatalError()
   }
 

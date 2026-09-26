@@ -1,0 +1,66 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+@frozen
+@usableFromInline
+package struct _MemoryLayout {
+
+  @inlinable
+  internal init<T0: ~Copyable, T1: ~Copyable>(_ t0: T0.Type, _ t1: T1.Type) {
+    let alignment = max(MemoryLayout<T0>.alignment, MemoryLayout<T1>.alignment)
+    let size = MemoryLayout<T0>.stride &+ MemoryLayout<T1>.stride
+    self.stride = (size &+ alignment &- 1) & -alignment
+    self.alignment = alignment
+  }
+
+  @inlinable
+  internal init(stride: Int, alignment: Int) {
+    self.stride = stride
+    self.alignment = alignment
+  }
+
+  @usableFromInline package var stride: Int
+  @usableFromInline package var alignment: Int
+}
+
+extension _MemoryLayout {
+  
+  /// オーバーフローによるメモリ破壊を予防するための限度
+  @inlinable
+  var maximumCount: Int {
+    Int.max / stride
+  }
+
+  /// オーバーフローによるメモリ破壊を予防するための限度のチェック
+  @inlinable
+  func _preconditionOffsetDoesNotOverflow(forCount count: Int) {
+    precondition(count <= maximumCount)
+  }
+}
+
+#if DEBUG
+  extension _MemoryLayout {
+    internal init<T: ~Copyable>(_ t: T.Type) {
+      self = MemoryLayout<T>._memoryLayout
+    }
+  }
+#endif

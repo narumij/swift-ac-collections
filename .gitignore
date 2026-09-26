@@ -10,3 +10,5 @@ Package.resolved
 .swiftpm/
 Tests/Executables/MarriedSource/RedBlackTree.swift_
 Tests/Executables/MarriedSource/main.swift
+.swift-version
+Benchmarks/.build/

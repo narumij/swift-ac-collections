@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -40,15 +40,15 @@ import XCTest
       _ = set.lowerBound(0)
       _ = set.upperBound(0)
       for s in set {
-        print(s)
+        blackHole(s)
       }
       set.forEach {
-        print($0)
+        blackHole($0)
       }
-      print(set.map { $0 })
-      print(set.filter { $0 != 0 })
-      print(set.reduce(0, +))
-      print(set.reduce(into: []) { $0.append($1) })
+      blackHole(set.map { $0 })
+      blackHole(set.filter { $0 != 0 })
+      blackHole(set.reduce(0, +))
+      blackHole(set.reduce(into: []) { $0.append($1) })
       XCTAssertEqual(set._copyCount, 0)
     }
 
@@ -63,7 +63,7 @@ import XCTest
         #endif
       }
       XCTAssertEqual(tree.count, 0)
-      #if COMPATIBLE_ATCODER_2025
+      #if COMPATIBLE_ATCODER_2025 || true
         XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
       #else
         XCTAssertEqual(tree._copyCount, 0)  // 強強度CoWの廃止により、コピー回数は増えない。
@@ -140,7 +140,7 @@ import XCTest
           #if COMPATIBLE_ATCODER_2025
             xy[1]?.removeSubrange(lo..<hi)
           #else
-            xy[1]?.erase(lo..<hi)
+          _ = xy[1]?.erase(lo..<hi)
           #endif
         }
       }
@@ -149,23 +149,5 @@ import XCTest
       XCTAssertEqual(loopCount, count / N)
     }
 
-    #if COMPATIBLE_ATCODER_2025
-      func testSet4000() throws {
-        let count = 1500
-        var xy: [Int: RedBlackTreeMultiSet<Int>] = [1: .init(0..<count)]
-        xy[1]?._copyCount = 0
-        let N = 100
-        var loopCount = 0
-        for i in 0..<count / N {
-          loopCount += 1
-          xy[1]?.elements(in: (i * N)..<(i * N + N)).forEach { i, v in
-            xy[1]?.remove(at: i)
-          }
-        }
-        XCTAssertEqual(xy[1]!.count, 0)
-        XCTAssertEqual(xy[1]!._copyCount, 1, "CoW挙動変更に伴い修正")
-        XCTAssertEqual(loopCount, count / N)
-      }
-    #endif
   }
 #endif

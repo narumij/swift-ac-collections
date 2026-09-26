@@ -1,10 +1,17 @@
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
+
+extension Array {
+  public subscript(int32: Int32) -> Element {
+    get { self[Int(int32)] }
+    set { self[Int(int32)] = newValue }
+  }
+}
 
 #if DEBUG
   class TreeFixtureBase<Element>:
@@ -13,8 +20,8 @@ import XCTest
     TreeNodeAccessInterface, RootInterface, EndNodeProtocol,
     ___RedBlackTreeNodePoolProtocol
   {
-    var nullptr: Int { .nullptr }
-    var end: Int { .end }
+    var nullptr: _TrackingTag { .nullptr }
+    var end: _TrackingTag { .end }
 
     typealias _NodePtr = _TrackingTag
     typealias _NodeRef = _PointerIndexRef
@@ -47,7 +54,7 @@ import XCTest
     //    func __root() -> _NodePtr { __left_ }
 
     func ___initialize(_ e: Element) -> _NodePtr {
-      let n = __nodes.count
+      let n = _TrackingTag(__nodes.count)
       __nodes.append(.node)
       __values.append(e)
       return n
@@ -102,7 +109,11 @@ import XCTest
     BoundAlgorithmProtocol,
     RemoveProtocol_std,
     IntThreeWayComparator
-  {
+{
+    func __root_ptr() -> _PointerIndexRef {
+      .__left_(.end)
+    }
+    
     typealias _PayloadValue = Element
     typealias __value_type = Element
 

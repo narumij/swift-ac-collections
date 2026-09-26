@@ -5,7 +5,7 @@
 //  Created by narumij on 2025/06/01.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class ABC370DTests: RedBlackTreeTestCase {
@@ -33,12 +33,12 @@ final class ABC370DTests: RedBlackTreeTestCase {
         
         // 合ってるかどうかわからない。雰囲気で書いて動いている程度
         
-        g2[C][lt(R)...gt(R)].erase {
+        g2[C][.lessThan(R) ... .greaterThan(R)].erase {
           g1[$0].remove(C)
           return true
         }
 
-        g1[R][lt(C)...gt(C)].erase {
+        g1[R][.lessThan(C) ... .greaterThan(C)].erase {
           g2[$0].remove(R)
           return true
         }
@@ -197,6 +197,7 @@ final class ABC370DTests: RedBlackTreeTestCase {
       ].map { ($0 - 1, $1 - 1) })
   }
 
+  #if ENABLE_PERFORMANCE_TESTING
   func testPerformanceExample3() throws {
     // This is an example of a performance test case.
     _ = 3
@@ -206,4 +207,5 @@ final class ABC370DTests: RedBlackTreeTestCase {
       try! testExample3()
     }
   }
+  #endif
 }

@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class RedBlackTreeSetProtocolConformanceMoreTests: RedBlackTreeTestCase {}

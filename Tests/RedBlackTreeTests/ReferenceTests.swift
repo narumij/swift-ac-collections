@@ -5,7 +5,7 @@
 //  Created by narumij on 2025/12/28.
 //
 
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class ReferenceTests: RedBlackTreeTestCase {
@@ -45,16 +45,6 @@ final class ReferenceTests: RedBlackTreeTestCase {
     Self.count = 0
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    func testExample() throws {
-      var a = RedBlackTreeSet<DeinitializeCounter>((0..<3).map { DeinitializeCounter(num: $0) })
-      XCTAssertEqual(Self.count, 3)
-      for i in a.indices {
-        a.remove(at: i)
-      }
-      XCTAssertEqual(Self.count, 0)
-    }
-  #endif
 
   func testExample2() throws {
     var a = RedBlackTreeSet<DeinitializeCounter>((0..<3).map { DeinitializeCounter(num: $0) })

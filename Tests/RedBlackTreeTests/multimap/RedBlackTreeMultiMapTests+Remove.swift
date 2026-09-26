@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 extension RedBlackTreeMultiMapTests {
@@ -35,7 +35,7 @@ extension RedBlackTreeMultiMapTests {
       map.removeSubrange(start..<end)  // remove b and c
       XCTAssertEqual(map.keys() + [], ["a", "d"])
     #else
-      map.erase(start..<end)  // remove b and c
+    _ = map.erase(start..<end)  // remove b and c
       XCTAssertEqual(map.keys + [], ["a", "d"])
     #endif
   }

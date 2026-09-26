@@ -144,25 +144,6 @@
 
     #if !COMPATIBLE_ATCODER_2025
 
-      #if false
-        // BoundExpressionは結果に不確定要素がまじるので、握りつぶす方向になった
-        @Test
-        func `区間不正の場合、SIGSEGV以外の方法で停止すること (1)`() async {
-          await #expect(processExitsWith: .signal(SIGTRAP)) {
-            let a = RedBlackTreeSet<Int>(0..<100)
-            _ = a[lowerBound(50)...upperBound(10)] + []
-          }
-        }
-
-        @Test
-        func `区間不正の場合、SIGSEGV以外の方法で停止すること (2)`() async {
-          await #expect(processExitsWith: .signal(SIGTRAP)) {
-            let a = RedBlackTreeSet<Int>(0..<100)
-            _ = a[end()...start()] + []
-          }
-        }
-      #endif
-
       @Test
       func `区間不正の場合、SIGSEGV以外の方法で停止すること (3)`() async {
         await #expect(processExitsWith: .signal(SIGTRAP)) {
@@ -178,25 +159,6 @@
           _ = a[a.endIndex...a.startIndex] + []
         }
       }
-
-      #if false
-        // BoundExpressionは結果に不確定要素がまじるので、握りつぶす方向になった
-        @Test
-        func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (1)`() async {
-          await #expect(processExitsWith: .signal(SIGTRAP)) {
-            let a = RedBlackTreeSet<Int>(0..<100)
-            _ = a[lowerBound(50)...upperBound(10)].reversed() + []
-          }
-        }
-
-        @Test
-        func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (2)`() async {
-          await #expect(processExitsWith: .signal(SIGTRAP)) {
-            let a = RedBlackTreeSet<Int>(0..<100)
-            _ = a[end()...start()].reversed() + []
-          }
-        }
-      #endif
 
       @Test
       func `区間不正の場合、SIGSEGV以外の方法で停止すること Rev (3)`() async {

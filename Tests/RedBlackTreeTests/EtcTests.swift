@@ -227,41 +227,6 @@ final class EtcTests: RedBlackTreeTestCase {
     _ = [String: String]()
   }
 
-  #if false
-    func testCapacity() throws {
-
-      for i in 0..<10 {
-        let s = Set<Int>(minimumCapacity: i)
-        let r = RedBlackTreeSet<Int>(minimumCapacity: i)
-        XCTAssertEqual(
-          s.capacity,
-          r.capacity,
-          "minimumCapacity=\(i)"
-        )
-        if s.capacity != r.capacity {
-          break
-        }
-      }
-    }
-
-    func testCapacity2() throws {
-
-      for i in 2..<4 {
-        let s = Set<Int>(minimumCapacity: i)
-        //      let r = StorageCapacity._growCapacity(tree: (0,0), to: i, linearly: false)
-        let r = StorageCapacity.growthFormula(count: i)
-        XCTAssertEqual(
-          s.capacity,
-          r,
-          "minimumCapacity=\(i)"
-        )
-        //      if s.capacity != r {
-        //        break
-        //      }
-      }
-    }
-  #endif
-
   #if ENABLE_PERFORMANCE_TESTING
     func testPerformanceSuffix1() throws {
       throw XCTSkip()
@@ -335,8 +300,11 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertFalse(AnySequence([0, 0]).lexicographicallyPrecedes([0, 1], by: >))
   }
 
-  #if false
+  #if COMPATIBLE_ATCODER_2025
     func testSubRev6() throws {
+
+      typealias _NodePtr = _TrackingTag
+
       let a = RedBlackTreeSet<Int>([0, 1, 2])
       do {
         var result = [_NodePtr]()
@@ -355,6 +323,9 @@ final class EtcTests: RedBlackTreeTestCase {
     }
 
     func testSubRev7() throws {
+
+      typealias _NodePtr = _TrackingTag
+
       let a = RedBlackTreeSet<Int>([0, 1, 2])
       do {
         var result = [_NodePtr]()
@@ -373,6 +344,9 @@ final class EtcTests: RedBlackTreeTestCase {
     }
 
     func testSubRev8() throws {
+
+      typealias _NodePtr = _TrackingTag
+
       let a = RedBlackTreeSet<Int>([0, 1, 2])
       do {
         var result = [_NodePtr]()
@@ -562,12 +536,6 @@ final class EtcTests: RedBlackTreeTestCase {
     func testBoundsSmoke() throws {
       var a = RedBlackTreeSet<Int>()
       typealias Index = RedBlackTreeSet<Int>.Index
-      //      throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
-      #if false
-        // indexを廃止しようとしている
-        let _ = a.indices(bounds: .start ..< .end)
-        let _ = a.indices(bounds: .lower(3) ..< .lower(4))
-      #endif
       let _ = a.erase(.lowerBound(10) ..< .lowerBound(100)) { n in
         n % 2 == 1
       }
@@ -657,21 +625,6 @@ final class EtcTests: RedBlackTreeTestCase {
         a[end()...start()] + [],
         [],
         "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-
-      #if false
-        // Indexによる区間不正はtrapするので、デステストに移管
-        XCTAssertEqual(
-          a[a.lowerBound(50)...a.lowerBound(10)] + [],
-          [],
-          "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-        XCTAssertEqual(
-          a[a.endIndex...a.startIndex] + [],
-          [],
-          "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-
-        XCTAssertEqual(a[a.startIndex...a.endIndex] + [], [])
-        XCTAssertEqual((0..<100)[0...100] + [], [])
-      #endif
     }
 
     func testBound() throws {
@@ -693,23 +646,21 @@ final class EtcTests: RedBlackTreeTestCase {
     //      XCTAssertEqual(it + [], [5,10]) // ここで落ちる
     //    }
 
-    #if false
-      func testItertor() throws {
-        var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
-        //      var it = a[a.lowerBound(5)..<a.firstIndex(of: 45)].makeIterator()
-        var it = a[lowerBound(5)..<find(45)].makeIterator()
-        a.remove(15)  // 二つ先以降を消しても影響がない
-        a.remove(35)  // 二つ先以降を消しても影響がない
-        //      a.remove(45)  // 二つ先以降を消しても影響がない
-        XCTAssertEqual(it.next(), 5)
-        XCTAssertEqual(it.next(), 10)
-        XCTAssertEqual(it.next(), 20)
-        XCTAssertEqual(it.next(), 25)
-        XCTAssertEqual(it.next(), 30)
-        XCTAssertEqual(it.next(), 40)
-        //      XCTAssertEqual(it.next(), 45)
-      }
-    #endif
+    func testItertor() throws {
+      var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
+      var it = a[lowerBound(5)..<find(45)].makeIterator()
+      a.remove(15)
+      a.remove(35)
+      XCTAssertEqual(it.next(), 5)
+      XCTAssertEqual(it.next(), 10)
+      XCTAssertEqual(it.next(), 15)  // CoW挙動に変更したので、イテレータのスナップショットはそのまま
+      XCTAssertEqual(it.next(), 20)
+      XCTAssertEqual(it.next(), 25)
+      XCTAssertEqual(it.next(), 30)
+      XCTAssertEqual(it.next(), 35)  // CoW挙動に変更したので、イテレータのスナップショットはそのまま
+      XCTAssertEqual(it.next(), 40)
+      XCTAssertNil(it.next())  // 45は含まない
+    }
 
     func testRangeView() throws {
       let a = RedBlackTreeSet(0..<20)
@@ -815,16 +766,6 @@ final class EtcTests: RedBlackTreeTestCase {
     XCTAssertEqual(b[a.startIndex], "e")
   }
 
-  #if false
-    func testIndexAgain() throws {
-      var a = RedBlackTreeSet<Int>(0..<10)
-      let b = a
-      let i = a.startIndex
-      a.insert(10)  // CoW発生
-      _ = a[i]  // cross tree indexの場合には通る必要がある
-    }
-  #endif
-
   #if ALLOW_CROSS_TREE_INDEX
     func testAllowCrossTreeIndexing() throws {
       let a = RedBlackTreeSet<Int>(0..<10)
@@ -842,8 +783,8 @@ final class EtcTests: RedBlackTreeTestCase {
       let b = RedBlackTreeSet<Int>(0..<10)
       for i in 0..<10 {
 
-        let ia = RedBlackTreeBoundExpressionV2<Int>.index(a.index(a.startIndex, offsetBy: i))
-        let ib = RedBlackTreeBoundExpressionV2<Int>.index(b.index(b.startIndex, offsetBy: i))
+        let ia = RedBlackTreeBoundExpression<Int>.index(a.index(a.startIndex, offsetBy: i))
+        let ib = RedBlackTreeBoundExpression<Int>.index(b.index(b.startIndex, offsetBy: i))
 
         if case .index(let p) = ia._internal.first {
           XCTAssertNil(p.error)
@@ -865,17 +806,17 @@ final class EtcTests: RedBlackTreeTestCase {
 
     func testFindAgain() throws {
       var i: RedBlackTreeSet<Int>.Index?
-      var i_e: RedBlackTreeBoundExpressionV2<Int>?
+      var i_e: RedBlackTreeBoundExpression<Int>?
 
       do {
         let a = RedBlackTreeSet<Int>(0..<10)
         i = a.startIndex
-        i_e = RedBlackTreeBoundExpressionV2<Int>.index(a.startIndex)
+        i_e = RedBlackTreeBoundExpression<Int>.index(a.startIndex)
       }
 
       let b = RedBlackTreeSet<Int>(0..<10)
 
-      let index = RedBlackTreeBoundExpressionV2<Int>.index(i!)
+      let index = RedBlackTreeBoundExpression<Int>.index(i!)
 
       if case .index(let p) = i_e?._internal.first {
         // aが生きてるときに生成したため

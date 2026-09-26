@@ -36,7 +36,7 @@ public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
 
 // ~EscapableなIndexにしたいと考えていたが、以下でIndexはCopyable & Escapableと縛られてしまったので、断念
 // ただ、~Escapableが欲しかったのはバッファ寿命管理コストを下げたかったことが理由だが、
-// 今はその点に関して気にならないコストとなっているので、Copyable & Escapableで問題が無い
+// 今はその点に関して気にならないコストとなっているので、Copyable & Escapableで問題が無い（わけでもない）
 // https://github.com/apple/swift-collections/blob/main/Documentation/Container-design.md
 
 

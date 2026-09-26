@@ -44,8 +44,8 @@
 
     @inlinable
     public func isValid(_ bounds: IndexRangeExpression) -> Bool {
-      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      return __tree_.isValid(safeRange: range)
+      let range = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
+      return __tree_.isValid(range: range)
     }
   }
 
@@ -107,13 +107,30 @@
     @discardableResult
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
-      return erase(_safeRange: range)
+      let range = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
+      return erase(_range: range)
     }
   }
 
   extension RedBlackTreeDictionary {
 
+    @inlinable
+    mutating func erase(
+      _safeRange range: _SafeRange,
+      where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+      assert(__tree_.isUnique())
+      guard __tree_.isValid(range: range) else {
+        fatalError(.invalidIndex)
+      }
+      try __tree_.___erase_range_if(range) {
+        try shouldBeRemoved(Base.__element_($0))
+      }
+    }
+
+    @available(*, deprecated)
     @inlinable
     public mutating func erase(
       _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
@@ -125,6 +142,7 @@
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
 
+    @available(*, deprecated)
     @inlinable
     public mutating func erase(
       _ bounds: IndexRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
@@ -132,7 +150,7 @@
       rethrows
     {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
+      let range = __tree_.__purified_safe2_(bounds).relative(to: __tree_)
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
   }

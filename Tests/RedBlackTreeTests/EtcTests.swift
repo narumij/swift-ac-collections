@@ -811,6 +811,9 @@ final class EtcTests: RedBlackTreeTestCase {
       do {
         let a = RedBlackTreeSet<Int>(0..<10)
         i = a.startIndex
+        // TODO: サニタイザの問題について、修正を検討する
+        // 9/27 try/index/1ブランチのサニタイザはここで反応してる様子
+        // a.startIndexがとれてるから、aが予想外に早く解放されてる予想
         i_e = RedBlackTreeBoundExpression<Int>.index(a.startIndex)
       }
 

@@ -85,11 +85,6 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
   package var sealed: _SealedPtr {
     map(\.rawValue)
   }
-
-  @inlinable
-  package var safe: _SafePtr {
-    map(\.rawValue.pointer)
-  }
 }
 
 #if DEBUG

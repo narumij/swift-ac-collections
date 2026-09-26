@@ -23,17 +23,20 @@
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
   @inlinable
+  func isValid(range: _NodeRange) -> Bool {
+    range.lowerBound == range.upperBound
+      || Base.___ptr_comp(range.lowerBound, range.upperBound)
+  }
+  
+  @inlinable
+  func isValid(range: _SafeRange) -> Bool {
+    return (try? range.map(isValid(range:)).get()) == true
+  }
+
+
+  @inlinable
   func isValid(safeRange range: _RawRange<_SafePtr>) -> Bool {
-
-    let result = traverse(range) {
-      $0.map { $0 }
-    }
-    .map {
-      $0.lowerBound == $0.upperBound
-        || Base.___ptr_comp($0.lowerBound, $0.upperBound)
-    }
-
-    return (try? result.get()) == true
+    return isValid(range: traverse(range) { $0.map { $0 } })
   }
 
   @inlinable

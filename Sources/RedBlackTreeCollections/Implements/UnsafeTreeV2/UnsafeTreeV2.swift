@@ -270,3 +270,20 @@ extension UnsafeTreeV2 {
     __purified_safe_(_raw_range_expression: range.rangeExpression)
   }
 }
+
+extension UnsafeTreeV2 {
+
+  @inlinable
+  internal func __purified_safe2_(
+    _raw_range_expression range: _RawRangeExpression<UnsafeIndexV3>
+  ) -> _SafeRangeExpression {
+    traverse(range) { __purified_safe_($0) }
+  }
+
+  @inlinable
+  internal func __purified_safe2_(
+    _ range: UnsafeIndexV3RangeExpression
+  ) -> _SafeRangeExpression {
+    __purified_safe2_(_raw_range_expression: range.rangeExpression)
+  }
+}

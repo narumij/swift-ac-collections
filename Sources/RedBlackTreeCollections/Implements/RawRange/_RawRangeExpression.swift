@@ -114,3 +114,72 @@ extension _RawRangeExpression where Bound == _SafePtr {
     }
   }
 }
+
+extension _RawRangeExpression {
+
+  @inlinable
+  func map<T>(_ f: (Bound) -> T) -> _RawRangeExpression<T> {
+    switch self {
+    case .range(let from, let to):
+      .range(from: f(from), to: f(to))
+    case .closedRange(let from, let through):
+      .closedRange(from: f(from), through: f(through))
+    case .partialRangeTo(let bound):
+      .partialRangeTo(f(bound))
+    case .partialRangeThrough(let bound):
+      .partialRangeThrough(f(bound))
+    case .partialRangeFrom(let bound):
+      .partialRangeFrom(f(bound))
+    case .unboundedRange:
+      .unboundedRange
+    }
+  }
+}
+
+@inlinable
+func sequence<T, E>(
+  _ range: _RawRangeExpression<Result<T, E>>
+) -> Result<_RawRangeExpression<T>, E> {
+  switch range {
+  case .range(let from, let to):
+    liftA2(from, to) {
+      .range(from: $0, to: $1)
+    }
+
+  case .closedRange(let from, let through):
+    liftA2(from, through) {
+      .closedRange(from: $0, through: $1)
+    }
+
+  case .partialRangeTo(let bound):
+    bound.map {
+      .partialRangeTo($0)
+    }
+
+  case .partialRangeThrough(let bound):
+    bound.map {
+      .partialRangeThrough($0)
+    }
+
+  case .partialRangeFrom(let bound):
+    bound.map {
+      .partialRangeFrom($0)
+    }
+
+  case .unboundedRange:
+    .success(.unboundedRange)
+  }
+}
+
+@inlinable
+func traverse<T, S, E>(
+  _ range: _RawRangeExpression<T>,
+  _ f: (T) -> Result<S, E>
+) -> Result<_RawRangeExpression<S>, E> {
+  sequence(range.map(f))
+}
+
+
+public typealias _NodeRangeExpression = _RawRangeExpression<UnsafeMutablePointer<UnsafeNode>>
+// _SafeNodeRangeがいいという説がある
+public typealias _SafeRangeExpression = Result<_NodeRangeExpression, SealError>

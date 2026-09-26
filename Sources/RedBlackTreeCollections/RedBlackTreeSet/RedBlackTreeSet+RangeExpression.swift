@@ -43,8 +43,8 @@
 
     @inlinable
     public func isValid(_ bounds: IndexRange) -> Bool {
-      let range = __tree_.__purified_safe_(bounds)
-      return __tree_.isValid(safeRange: range)
+      let range = __tree_.__purified_safe2_(bounds)
+      return __tree_.isValid(range: range)
     }
 
     @inlinable

@@ -151,6 +151,7 @@
       }
     }
 
+    @available(*, deprecated)
     @inlinable
     @discardableResult
     mutating func erase(_safeRange range: _RawRange<_SafePtr>) -> Index {

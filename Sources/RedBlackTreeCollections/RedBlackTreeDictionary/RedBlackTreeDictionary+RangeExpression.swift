@@ -99,8 +99,8 @@
     @discardableResult
     public mutating func erase(_ bounds: IndexRange) -> Index {
       __tree_.ensureUnique()
-      let range = __tree_.__purified_safe_(bounds)
-      return erase(_safeRange: range)
+      let range = __tree_.__purified_safe2_(bounds)
+      return erase(_range: range)
     }
 
     @inlinable
@@ -113,22 +113,6 @@
   }
 
   extension RedBlackTreeDictionary {
-
-    @inlinable
-    mutating func erase(
-      _safeRange range: _SafeRange,
-      where shouldBeRemoved: (Element) throws -> Bool
-    )
-      rethrows
-    {
-      assert(__tree_.isUnique())
-      guard __tree_.isValid(range: range) else {
-        fatalError(.invalidIndex)
-      }
-      try __tree_.___erase_range_if(range) {
-        try shouldBeRemoved(Base.__element_($0))
-      }
-    }
 
     @available(*, deprecated)
     @inlinable
@@ -169,6 +153,7 @@
       }
     }
 
+    @available(*, deprecated)
     @inlinable
     @discardableResult
     mutating func erase(_safeRange range: _RawRange<_SafePtr>) -> Index {
@@ -182,6 +167,23 @@
       return ___index(__tree_.erase(__l, __u))
     }
 
+    @inlinable
+    mutating func erase(
+      _safeRange range: _SafeRange,
+      where shouldBeRemoved: (Element) throws -> Bool
+    )
+      rethrows
+    {
+      assert(__tree_.isUnique())
+      guard __tree_.isValid(range: range) else {
+        fatalError(.invalidIndex)
+      }
+      try __tree_.___erase_range_if(range) {
+        try shouldBeRemoved(Base.__element_($0))
+      }
+    }
+
+    @available(*, deprecated)
     @inlinable
     mutating func erase(
       _safeRange range: _RawRange<_SafePtr>,

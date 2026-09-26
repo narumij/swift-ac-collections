@@ -73,16 +73,6 @@ func traverse<T, S, E>(
     }
 }
 
-extension _RawRange where Bound == UnsafeMutablePointer<UnsafeNode> {
-
-  @inlinable
-  var unchecked: _RawRange<_SafePtr> {
-    .init(
-      lowerBound: lowerBound.unchecked,
-      upperBound: upperBound.unchecked)
-  }
-}
-
 @inlinable
 func liftA2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> S) -> Result<S, E> {
   switch (a, b) {
@@ -112,9 +102,3 @@ func liftM2<T, S, E>(_ a: Result<T, E>, _ b: Result<T, E>, _ f: (T, T) -> Result
 public typealias _NodeRange = _RawRange<UnsafeMutablePointer<UnsafeNode>>
 // _SafeNodeRangeがいいという説がある
 public typealias _SafeRange = Result<_NodeRange, SealError>
-
-extension _RawRange where Bound == _SafePtr {
-  
-  @inlinable
-  var safeRange: _SafeRange { sequence(self) }
-}

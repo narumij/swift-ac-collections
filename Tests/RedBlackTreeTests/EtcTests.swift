@@ -823,7 +823,7 @@ final class EtcTests: RedBlackTreeTestCase {
         
         // TODO: サニタイザの問題について、修正を検討する
         // 9/27 try/index/1ブランチのサニタイザはここで反応してる様子
-        // a.startIndexがとれてるから、aが予想外に早く解放されてる予想
+        // 単に解放済みのメモリをインターナルメソッドでなんのためらいもなく触っていたことが原因
         XCTAssertNil(p.lazyDetach?.isDetached == true ? nil : p.purified.error)
       }
 

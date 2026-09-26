@@ -39,15 +39,15 @@ extension _RawRangeExpression: Equatable where Bound: Equatable {
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     switch (lhs, rhs) {
-    case let (.range(lhsFrom, lhsTo), .range(rhsFrom, rhsTo)):
+    case (.range(let lhsFrom, let lhsTo), .range(let rhsFrom, let rhsTo)):
       lhsFrom == rhsFrom && lhsTo == rhsTo
-    case let (.closedRange(lhsFrom, lhsThrough), .closedRange(rhsFrom, rhsThrough)):
+    case (.closedRange(let lhsFrom, let lhsThrough), .closedRange(let rhsFrom, let rhsThrough)):
       lhsFrom == rhsFrom && lhsThrough == rhsThrough
-    case let (.partialRangeTo(lhs), .partialRangeTo(rhs)):
+    case (.partialRangeTo(let lhs), .partialRangeTo(let rhs)):
       lhs == rhs
-    case let (.partialRangeThrough(lhs), .partialRangeThrough(rhs)):
+    case (.partialRangeThrough(let lhs), .partialRangeThrough(let rhs)):
       lhs == rhs
-    case let (.partialRangeFrom(lhs), .partialRangeFrom(rhs)):
+    case (.partialRangeFrom(let lhs), .partialRangeFrom(let rhs)):
       lhs == rhs
     case (.unboundedRange, .unboundedRange):
       true
@@ -81,83 +81,88 @@ extension _RawRangeExpression {
 extension _RawRangeExpression where Bound == _SafePtr {
 
   @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
+  func relative<Base>(to tree: UnsafeTreeV2<Base>)
     -> _RawRange<_SafePtr>
-  where
-    Base: ___TreeBase
-  {
-    switch self {
-    case .range(let lhs, let rhs):
-      return .init(
-        lowerBound: lhs,
-        upperBound: rhs)
-    case .closedRange(let lhs, let rhs):
-      return .init(
-        lowerBound: lhs,
-        upperBound: rhs.flatMap { ___tree_next_iter($0) })
-    case .partialRangeTo(let rhs):
-      return .init(
-        lowerBound: _start(__tree_),
-        upperBound: rhs)
-    case .partialRangeThrough(let rhs):
-      return .init(
-        lowerBound: _start(__tree_),
-        upperBound: rhs.flatMap { ___tree_next_iter($0) })
-    case .partialRangeFrom(let lhs):
-      return .init(
-        lowerBound: lhs,
-        upperBound: _end(__tree_))
-    case .unboundedRange:
-      return .init(
-        lowerBound: _start(__tree_),
-        upperBound: _end(__tree_))
-    }
+  where Base: ___TreeBase {
+    relative(
+      start: _start(tree),
+      end: _end(tree),
+      bound: { $0 },
+      through: {
+        $0.flatMap { ___tree_next_iter($0) }
+      })
   }
 }
 
-extension _RawRangeExpression where Bound == UnsafeMutablePointer<UnsafeNode> {
+// つまり_SafeRangeExpressionに対する拡張
+extension Result where Success == _NodeRangeExpression, Failure == SealError {
 
   @usableFromInline
   func relative<Base>(to tree: UnsafeTreeV2<Base>) -> _SafeRange
   where Base: ___TreeBase {
-    sequence(relative(to: tree))
-  }
-
-  @usableFromInline
-  func relative<Base>(to __tree_: UnsafeTreeV2<Base>)
-    -> _RawRange<_SafePtr>
-  where
-    Base: ___TreeBase
-  {
-    switch self {
-    case .range(let lhs, let rhs):
-      return .init(
-        lowerBound: lhs.unchecked,
-        upperBound: rhs.unchecked)
-    case .closedRange(let lhs, let rhs):
-      return .init(
-        lowerBound: lhs.unchecked,
-        upperBound: ___tree_next_iter(rhs))
-    case .partialRangeTo(let rhs):
-      return .init(
-        lowerBound: _start(__tree_),
-        upperBound: rhs.unchecked)
-    case .partialRangeThrough(let rhs):
-      return .init(
-        lowerBound: _start(__tree_),
-        upperBound: ___tree_next_iter(rhs))
-    case .partialRangeFrom(let lhs):
-      return .init(
-        lowerBound: lhs.unchecked,
-        upperBound: _end(__tree_))
-    case .unboundedRange:
-      return .init(
-        lowerBound: _start(__tree_),
-        upperBound: _end(__tree_))
+    flatMap {
+      sequence($0.relative(to: tree))
     }
   }
 }
 
+extension _RawRangeExpression
+where Bound == UnsafeMutablePointer<UnsafeNode> {
+
+  @usableFromInline
+  func relative<Base>(to tree: UnsafeTreeV2<Base>)
+    -> _RawRange<_SafePtr>
+  where Base: ___TreeBase {
+    relative(
+      start: _start(tree),
+      end: _end(tree),
+      bound: \.unchecked,
+      through: ___tree_next_iter)
+  }
+}
+
+extension _RawRangeExpression {
+
+  @usableFromInline
+  func relative<T>(
+    start: T,
+    end: T,
+    bound: (Bound) -> T,
+    through: (Bound) -> T
+  ) -> _RawRange<T> {
+    switch self {
+    case .range(let lhs, let rhs):
+      .init(
+        lowerBound: bound(lhs),
+        upperBound: bound(rhs))
+
+    case .closedRange(let lhs, let rhs):
+      .init(
+        lowerBound: bound(lhs),
+        upperBound: through(rhs))
+
+    case .partialRangeTo(let rhs):
+      .init(
+        lowerBound: start,
+        upperBound: bound(rhs))
+
+    case .partialRangeThrough(let rhs):
+      .init(
+        lowerBound: start,
+        upperBound: through(rhs))
+
+    case .partialRangeFrom(let lhs):
+      .init(
+        lowerBound: bound(lhs),
+        upperBound: end)
+
+    case .unboundedRange:
+      .init(
+        lowerBound: start,
+        upperBound: end)
+    }
+  }
+}
 extension _RawRangeExpression {
 
   @inlinable
@@ -222,7 +227,6 @@ func traverse<T, S, E>(
   sequence(range.map(f))
 }
 
-
 public typealias _NodeRangeExpression = _RawRangeExpression<UnsafeMutablePointer<UnsafeNode>>
-// _SafeNodeRangeがいいという説がある
+
 public typealias _SafeRangeExpression = Result<_NodeRangeExpression, SealError>

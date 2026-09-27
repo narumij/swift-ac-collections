@@ -123,13 +123,16 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `removeFirst()` / `removeLast()` | ✅ | ✅ | ✅ | ✅ | 端の要素を取り出す。空の場合は失敗する |
 | `remove(_:)` | ✅ | — | — | — | Setから指定要素を削除する |
 | `remove(at:)` | ✅ | ✅ | ✅ | ✅ | Index位置の要素を削除して返す |
-| `removeSafe(at:)` | ✅ | — | — | — | Indexが現在利用可能ならSetから要素を削除する |
 | `removeValue(forKey:)` | — | — | — | ✅ | キーに対応する値を削除する |
 | `removeAll(keepingCapacity:)` | ✅ | ✅ | ✅ | ✅ | 全要素を削除する |
 | `erase(_ index:)` | ✅ | ✅ | ✅ | ✅ | Index位置を削除し、後続Indexを返す |
 | `erase(where:)` | ✅ | ✅ | ✅ | ✅ | 条件を満たす全要素を削除する |
 | `eraseUnique(_:)` | — | ✅ | ✅ | — | 値またはキーに対応する1要素を削除する |
 | `eraseMulti(_:)` | — | ✅ | ✅ | — | 値またはキーに対応する全要素を削除し、件数を返す |
+| `eraseSafely(at:)` | ✅ | — | — | — | Indexが現在利用可能ならSetから要素を削除する |
+
+remove 系は Swift 標準APIとの整合を優先する。
+erase 系は本ライブラリ固有のIndex・Range・複数要素削除を扱う。
 
 ## 走査、変換、比較
 

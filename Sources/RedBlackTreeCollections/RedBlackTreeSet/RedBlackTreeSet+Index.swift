@@ -280,7 +280,7 @@
     /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult
-    public mutating func removeSafe(at index: Index) -> Bool {
+    public mutating func eraseSafely(at index: Index) -> Bool {
       __tree_.ensureUnique()
       guard let __p = __tree_.__purified_(index).accessible.pointer else {
         return false

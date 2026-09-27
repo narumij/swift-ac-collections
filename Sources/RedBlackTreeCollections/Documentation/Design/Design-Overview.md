@@ -182,6 +182,11 @@ IteratorのCoWスナップショット、失敗の表現を説明する。
 標準Rangeの比較コスト、代替Range、反復方法の検討を扱う。
 この領域は実験中の設計を含むため、確定したストレージ設計とは区別して読む。
 
+### [現行APIマトリクス](../API-Matrix.md)
+
+通常構成で利用できる現行APIを、Set、MultiSet、MultiMap、Dictionaryで横断して
+確認するための一覧。DeprecatedおよびAtCoder 2025互換APIは含まない。
+
 ## 推奨する読み順
 
 1. このOverviewで設計上の問題と仕組みのつながりを把握する。

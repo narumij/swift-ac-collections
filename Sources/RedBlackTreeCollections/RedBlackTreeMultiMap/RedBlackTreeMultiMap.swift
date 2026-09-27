@@ -283,7 +283,7 @@ extension RedBlackTreeMultiMap {
         let i = __i.pointer,
         let j = __j.pointer
       else {
-        fatalError()
+        fatalError(.invalidIndex)
       }
 
       __tree_.swap_mapped_value(i, j)

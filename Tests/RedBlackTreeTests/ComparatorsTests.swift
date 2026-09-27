@@ -9,6 +9,24 @@ import XCTest
 final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
 
   #if DEBUG
+    func testNodePathBitmapEndSortsAfterEveryPath() {
+      XCTAssertLessThan(NodePathBitmap.path(.min), .end)
+      XCTAssertLessThan(NodePathBitmap.path(0), .end)
+      XCTAssertLessThan(NodePathBitmap.path(.max), .end)
+    }
+
+    func testNodePathBitmapPathsUseBitmapValueOrder() {
+      let lower: NodePathBitmap.NodePathBitmap = 1
+      let middle: NodePathBitmap.NodePathBitmap = 2
+      let upper: NodePathBitmap.NodePathBitmap = .max
+
+      XCTAssertLessThan(NodePathBitmap.path(lower), .path(middle))
+      XCTAssertLessThan(NodePathBitmap.path(middle), .path(upper))
+      XCTAssertFalse(NodePathBitmap.path(middle) < .path(lower))
+    }
+  #endif
+
+  #if DEBUG
     func testSetKeyAndValueComp() {
       let set: RedBlackTreeSet = [3, 1, 4, 5]
       typealias SUT = RedBlackTreeSet<Int>.Base

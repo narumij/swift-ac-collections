@@ -8,8 +8,9 @@
 
 | 判定対象 | 現在の意味 |
 |---|---|
-| `Index` / `Bound` | 対応する要素へアクセスできるか |
-| 範囲式 | 両端を解決でき、下端が上端を越えていないか |
+| `Index` | 対応する要素へアクセスできるか |
+| Index範囲式 | 両端を解決でき、下端が上端を越えていないか |
+| `Bound` / Bound範囲式 | 安全に評価できるため、事前の妥当性判定は不要 |
 | Range View 内の `Index` | 要素へアクセスでき、かつ View の範囲内にあるか |
 
 特に `isValid(_ index: Index)` は、Swift の Collection における広い意味での「有効な位置」を判定するものではない。`endIndex` は Collection の境界としては有効だが、要素へアクセスできないため、このメソッドは `false` を返す。したがって、実態は「その位置に要素があるか」に近い。
@@ -29,15 +30,15 @@
 |---|---|---|---|
 | `isElement(at: Index)` | 各型の `+Index.swift` | Indexを対象の木で解決でき、世代が一致し、実体のある要素へアクセスできること | `endIndex` は `false` |
 | `isEnd(_ index: Index)` | 各型の `+Index.swift` | Indexを対象の木で解決でき、有効な終端を指すこと | `endIndex` は `true` |
-| `isValid(_ bound: Bound)` | 各型の `+BoundsExpression.swift` | DSLの位置式を評価した結果が、実体のある要素を指すこと | `.end` 相当は `false` |
+| `isValid(_ bound: Bound)`（deprecated） | 各型の `+BoundsExpression.swift` | DSLの位置式を評価した結果が、実体のある要素を指すこと | `.end` 相当は `false` |
 | `containsSubrange(_ bounds: IndexRange)` | 各型の `+RangeExpression.swift` | 両端のIndexを安全な内部範囲へ変換でき、下端が上端以下であること | 正しい空範囲は `true` |
 | `containsSubrange(_ bounds: IndexRangeExpression)` | 各型の `+RangeExpression.swift` | 相対範囲を解決でき、解決後の下端が上端以下であること | 正しい空範囲は `true` |
 | `containsSubrange(_ bounds: UnboundedRange)` | 各型の `+RangeExpression.swift` | 木全体を表す内部範囲の順序が正しいこと | 通常は `true` |
-| `isValid(_ bounds: BoundRangeExpression)` | 各型の `+BoundsExpression.swift` | DSLの両端を評価でき、評価後の下端が上端以下であること | 正しい空範囲は `true` |
+| `isValid(_ bounds: BoundRangeExpression)`（deprecated） | 各型の `+BoundsExpression.swift` | DSLの両端を評価でき、評価後の下端が上端以下であること | 正しい空範囲は `true` |
 
 ### 単一位置の判定
 
-`Index` と `Bound` に対する判定は、「境界として使用可能か」ではなく「要素へアクセス可能か」である。
+`Index` と `Bound` に対する旧判定は、「境界として使用可能か」ではなく「要素へアクセス可能か」である。ただし、`Bound` のsubscriptは解決不能時に `nil` を返すため、事前判定は不要である。
 
 | 状態 | `isValid(Index)` | `isValid(Bound)` |
 |---|---:|---:|
@@ -51,12 +52,14 @@
 
 ### 範囲の判定
 
-範囲に対する `containsSubrange` は、範囲内に要素が存在するかを判定しない。判定の中心は次の2点である。
+Index範囲に対する `containsSubrange` は、範囲内に要素が存在するかを判定しない。判定の中心は次の2点である。
 
 1. 安全な端点を内部ノード範囲へ解決できること。
 2. 下端と上端が同じか、木の順序で下端が上端より前にあること。
 
-そのため、`lowerBound == upperBound` の空範囲は有効である。一方、下端が上端より後ろにある逆転範囲は無効である。無効な `BoundRangeExpression` を View APIへ渡した場合は、現在の実装では空範囲へサニタイズされ、クラッシュしない。
+そのため、`lowerBound == upperBound` の空範囲は有効である。一方、下端が上端より後ろにある逆転したIndex範囲は無効である。
+
+`BoundRangeExpression` は異なる意味論を持つ。逆転した式をView APIへ渡しても空範囲へサニタイズされ、クラッシュしない。したがって事前の妥当性判定は不要であり、結果を確認したい場合は `collection[bounds].isEmpty` を使用する。
 
 ## package / internal の `isValid`
 
@@ -87,7 +90,9 @@ Range View の判定は、木全体に対する `Index` 判定より条件が一
 
 4種類すべてのコレクションで、旧 `isValid(_ index: Index)` の実際の意味を `isElement(at:)` として公開し、`isEnd(_:)` と分離している。共通テストの移行用に限り、テストターゲット内の `isValid(_:)` を `isElement(at:)` へのエイリアスとして残している。
 
-Index Range判定はreceiverとの包含関係を表すため、4種類すべてのコレクションで `containsSubrange` を使用する。従来のIndex Range版 `isValid` はソース互換性のためdeprecated forwarding APIとして残す。BoundRangeExpressionの意味論は別途検討するため、現時点では `isValid` のままとする。
+Index Range判定はreceiverとの包含関係を表すため、4種類すべてのコレクションで `containsSubrange` を使用する。従来のIndex Range版 `isValid` はソース互換性のためdeprecated forwarding APIとして残す。
+
+Bounds系は失敗を値として表現する。単数のsubscriptは解決不能時に `nil`、範囲subscriptは成立しない式に対して空Viewを返す。このため単数・範囲とも `isValid` をdeprecatedとし、評価結果を直接確認する。
 
 ## 推奨方針
 
@@ -98,12 +103,13 @@ Index Range判定はreceiverとの包含関係を表すため、4種類すべて
 | Indexが有効な位置か | `isValid(_ index: Index)` | 対象の木で要素または `endIndex` として利用できる |
 | 単一のIndexが要素を指すか | `isElement(at: Index)` | subscriptや削除の対象になる要素が現在存在する |
 | Indexが終端を指すか | `isEnd(_ index: Index)` | 対象の木の有効な `endIndex` である |
-| Boundが要素へ解決されるか | `isElement(at: Bound)` | 評価結果が `endIndex` ではなく、要素へアクセスできる |
+| Boundが要素へ解決されるか | `collection[bound] != nil` | subscriptが要素を返す |
+| Bound範囲の評価結果が空か | `collection[bounds].isEmpty` | subscriptが空Viewを返す |
 | Rangeがreceiver内で利用可能か | `containsSubrange(_:)` | 両端を解決でき、順序が正しく、receiverの範囲内に収まる |
 
 ### 単一位置
 
-現行の `isValid(_ index: Index)` は実質的に要素アクセス可能性を判定しているため、その役割を `isElement(at:)` へ移すのが望ましい。`isValid(_ bound: Bound)` も同様に `isElement(at:)` へ置き換える。
+旧 `isValid(_ index: Index)` は実質的に要素アクセス可能性を判定していたため、その役割を `isElement(at:)` へ移した。一方、`Bound` はsubscriptがOptionalを返すため、別の事前判定APIへ置き換えず、評価結果を直接確認する。
 
 この名前なら、`endIndex` がCollectionの位置としては有効であっても、要素ではないため `false` になることを自然に表現できる。Indexの世代不一致、削除済みノード、対象の木で解決できないIndexも同様に `false` とする。
 

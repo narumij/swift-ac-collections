@@ -19,13 +19,12 @@
 | `init()` | ✅ | ✅ | ✅ | ✅ | 空のコンテナを生成する |
 | `init(minimumCapacity:)` | ✅ | ✅ | ✅ | ✅ | 最低容量を指定して生成する |
 | `init(_ sequence:)` | ✅ | ✅ | △ | △ | 要素列から生成する。Map系はkeys-with-values形式を使う |
-| `init(naive:)` | ✅ | ✅ | ✅ | 検討 | 単純挿入によって要素列から生成する |
 | `init(_ range:)` | ✅ | ✅ | — | — | Rangeの要素から生成する |
 | `init(keysWithValues:)` | — | — | ✅ | — | `(Key, Value)` の列からMultiMapを生成する |
 | `init(multiKeysWithValues:)` | — | — | ✅ | — | 重複キーを許すことを明示してMultiMapを生成する |
 | `init(uniqueKeysWithValues:)` | — | — | — | ✅ | 一意なキーと値の列からDictionaryを生成する |
 | `init(_:uniquingKeysWith:)` | — | — | — | ✅ | 重複キーをクロージャで統合してDictionaryを生成する |
-| `init(arrayLiteral:)` | ✅ | ✅ | ✅ | 検討 | 配列リテラルから生成する |
+| `init(arrayLiteral:)` | ✅ | ✅ | ✅ | ✅ | 配列リテラルから生成する |
 | `init(dictionaryLiteral:)` | — | — | ✅ | ✅ | Dictionaryリテラルから生成する |
 | `reserveCapacity(_:)` | ✅ | ✅ | ✅ | ✅ | 最低容量を予約する |
 | `capacity` | ✅ | ✅ | ✅ | ✅ | 現在の格納容量を返す |
@@ -61,7 +60,6 @@
 | `isEnd(_:)` | ✅ | ✅ | ✅ | ✅ | Indexがこのコンテナの有効な終端か判定する |
 | `firstIndex(of:)` | ✅ | ✅ | ✅ | ✅ | 要素またはキーに対応する最初のIndexを返す |
 | `index(forKey:)` | — | — | — | ✅ | キーに対応するIndexを返す |
-| `firstIndex(where:)` | ✅ | ✅ | ✅ | ✅ | 条件を満たす最初のIndexを返す |
 | `find(_:)` | ✅ | ✅ | ✅ | ✅ | 要素またはキーの検索位置を返す |
 | `lowerBound(_:)` | ✅ | ✅ | ✅ | ✅ | 要素またはキー以上となる最初のIndexを返す |
 | `upperBound(_:)` | ✅ | ✅ | ✅ | ✅ | 要素またはキーより大きい最初のIndexを返す |
@@ -95,10 +93,6 @@
 | `erase(BoundRangeExpression)` | ✅ | ✅ | ✅ | ✅ | Bound範囲を評価して削除する |
 | `erase(BoundRangeExpression, where:)` | ✅ | ✅ | ✅ | ✅ | Bound範囲内で条件を満たす要素を削除する |
 | `distance(from: Bound, to: Bound)` | ✅ | ✅ | ✅ | ✅ | 2つのBound間の距離を返す |
-| `subscript(Range<Element/Key>)` | ✅ | ✅ | ✅ | ✅ | 値またはキーの半開範囲に対応する部分列を返す |
-| `subscript(ClosedRange<Element/Key>)` | ✅ | ✅ | ✅ | ✅ | 値またはキーの閉範囲に対応する部分列を返す |
-| `elements(in:)` | ✅ | ✅ | ✅ | ✅ | 値またはキーの範囲に含まれる部分列を返す |
-| `remove(contentsOf:)` | ✅ | ✅ | ✅ | ✅ | 値またはキーの範囲に含まれる要素を削除する |
 
 Index Rangeの不正は安全な操作では拒否される。一方、Boundは失敗を値で表現し、
 単一Boundは `nil`、Bound範囲は空Viewになる。
@@ -119,7 +113,6 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `merging(_:)` | ✅ | — | — | ✅ | 統合した新しい値を返す |
 | `meld(_:)` | — | ✅ | ✅ | — | 重複を保持したまま同種コンテナを結合する |
 | `melding(_:)` | — | ✅ | ✅ | — | 結合した新しい値を返す |
-| `+` / `+=` | — | ✅ | ✅ | — | 重複を保持して内容を連結する |
 
 ## 削除
 
@@ -131,7 +124,6 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `remove(at:)` | ✅ | ✅ | ✅ | ✅ | Index位置の要素を削除して返す |
 | `removeValue(forKey:)` | — | — | — | ✅ | キーに対応する値を削除する |
 | `removeAll(keepingCapacity:)` | ✅ | ✅ | ✅ | ✅ | 全要素を削除する |
-| `removeSubrange(_:)` | ✅ | ✅ | ✅ | ✅ | RangeExpressionで指定した範囲を削除する |
 | `erase(_ index:)` | ✅ | ✅ | ✅ | ✅ | Index位置を削除し、後続Indexを返す |
 | `erase(where:)` | ✅ | ✅ | ✅ | ✅ | 条件を満たす全要素を削除する |
 | `eraseUnique(_:)` | — | ✅ | ✅ | — | 値またはキーに対応する1要素を削除する |
@@ -142,7 +134,7 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | API名 | Set | MultiSet | MultiMap | Dictionary | おおよその機能 |
 | --- | :---: | :---: | :---: | :---: | --- |
 | `makeIterator()` | ✅ | ✅ | ✅ | ✅ | 昇順Iteratorを生成する |
-| `forEach(_:)` | ✅ | ✅ | ✅ | ✅ | 各要素を昇順に処理する。Index付き形式もある |
+| `forEach(_:)` | ✅ | ✅ | ✅ | ✅ | 各要素を昇順に処理する |
 | `filter(_:)` | ✅ | ✅ | ✅ | ✅ | 条件を満たす要素から同種コンテナを生成する |
 | `sorted()` | ✅ | ✅ | ✅ | ✅ | 昇順配列を返す |
 | `reversed()` | ✅ | ✅ | ✅ | ✅ | 逆順の列または配列を返す |

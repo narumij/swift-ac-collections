@@ -270,6 +270,27 @@ extension RedBlackTreeMultiMap {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiMap {
+    @inlinable
+    public mutating func swapValueAt(_ i: Index, _ j: Index) {
+      __tree_.ensureUnique()
+      let __i = __tree_.__purified_(i)
+      let __j = __tree_.__purified_(j)
+      guard
+        __i.accessible.error == nil,
+        __j.accessible.error == nil,
+        let i = __i.pointer,
+        let j = __j.pointer
+      else {
+        fatalError()
+      }
+
+      __tree_.swap_mapped_value(i, j)
+    }
+  }
+#endif
+
 // MARK: - Remove（削除）
 
 extension RedBlackTreeMultiMap {

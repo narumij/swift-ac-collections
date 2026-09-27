@@ -1,3 +1,4 @@
+<!-- API名をSwift Coreチーム相当の品質にすることは不可能なので、なるべく引用する方針 -->
 # 現行APIマトリクス
 
 この文書は、通常構成の `RedBlackTreeCollections` が提供する現行APIを、4種類の

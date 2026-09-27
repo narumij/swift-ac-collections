@@ -108,8 +108,8 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `insert(key:value:)` | — | — | ✅ | ✅ | キーと値を挿入する |
 | `update(with:)` | ✅ | — | — | — | Set要素を置換し、旧要素を返す |
 | `updateValue(_:forKey:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
-| `updateValue(_:at:)` | — | — | TODO | — | Index位置の値を更新し、旧値を返す |
-| `update(_:at:)` | — | TODO | — | — | Index位置の要素を更新する。キー一致を前提とする |
+| `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す |
+| `update(_:at:)` | — | ✅ | — | — | Index位置の要素を更新する。キー一致を前提とする |
 | `swapAt(_:_:)` | — | ✅ | — | — | 同一キーの2要素を入れ替える。キー一致を前提とする |
 | `swapValuesAt(_:_:)` | — | — | ✅ | — | 2つのIndex位置の値を入れ替える |
 | `index(inserting:)` | ✅ | — | — | — | 挿入し、挿入位置のIndexを返す |

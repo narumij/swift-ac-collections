@@ -32,6 +32,11 @@
       let view = dict[lower..<upper]
       XCTAssertEqual(view.count, 2)
       XCTAssertEqual(Array(view).map { $0.key }, [2, 3])
+      XCTAssertTrue(view.isElement(at: lower))
+      XCTAssertTrue(view.isElement(at: dict.index(before: upper)))
+      XCTAssertFalse(view.isElement(at: dict.startIndex))
+      XCTAssertFalse(view.isElement(at: upper))
+      XCTAssertFalse(view.isElement(at: dict.endIndex))
       XCTAssertFalse(view.isEnd(view.startIndex))
       XCTAssertTrue(view.isEnd(view.endIndex))
       XCTAssertFalse(view.isEnd(dict.endIndex))
@@ -42,6 +47,7 @@
       let index = dict.index(dict.startIndex, offsetBy: 2)
       let view = dict[index..<index]
 
+      XCTAssertFalse(view.isElement(at: index))
       XCTAssertTrue(view.isEnd(view.startIndex))
       XCTAssertTrue(view.isEnd(view.endIndex))
     }

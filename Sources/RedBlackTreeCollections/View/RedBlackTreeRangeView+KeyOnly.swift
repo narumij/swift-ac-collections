@@ -79,7 +79,7 @@ extension RedBlackTreeKeyOnlyRangeView {
       // コピー木であることがわかっているので千本引きが確実に行える（ハズレ無し）
       _sealed_start = __tree_.__retrieve_(_sealed_start.purified.tag)
       _sealed_end = __tree_.__retrieve_(_sealed_end.purified.tag)
-      
+
       // pathのクリアを行う
       _path_bitmap_start = nil
       _path_bitmap_end = nil
@@ -332,7 +332,36 @@ extension RedBlackTreeKeyOnlyRangeView {
 
 // MARK: -
 
-extension RedBlackTreeKeyOnlyRangeView where Base: _BaseNode_PtrRangeCompInterface {
+extension RedBlackTreeKeyOnlyRangeView
+where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
+
+  /// Returns whether the given index refers to an element in this view.
+  ///
+  /// The view's end position is not an element. An index outside the view,
+  /// or an invalid or stale index, returns `false`.
+  ///
+  /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
+  ///   elements in the base collection.
+  @inlinable
+  public func isElement(at index: Index) -> Bool {
+    guard
+      let index = __tree_.__purified_(index).accessible.pointer,
+      let start = _sealed_start.purified.pointer,
+      let end = _sealed_end.purified.pointer
+    else {
+      return false
+    }
+
+    let result = _NodeKey<Base>.isInHalfOpenRange(
+      first: (start, nil),
+      position: (index, nil),
+      last: (end, nil)
+    )
+    return result.result
+  }
+}
+
+extension RedBlackTreeKeyOnlyRangeView {
 
   /// Returns whether the given index is this view's valid end position.
   ///
@@ -350,6 +379,9 @@ extension RedBlackTreeKeyOnlyRangeView where Base: _BaseNode_PtrRangeCompInterfa
     }
     return index == end
   }
+}
+
+extension RedBlackTreeKeyOnlyRangeView where Base: _BaseNode_PtrRangeCompInterface {
 
   @inlinable
   package func isValid(index: Index) -> Bool {

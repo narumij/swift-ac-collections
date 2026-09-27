@@ -32,6 +32,11 @@
       let view = map[lower..<upper]
       XCTAssertEqual(view.count, 2)
       XCTAssertEqual(Array(view).map { $0.key }, [2, 3])
+      XCTAssertTrue(view.isElement(at: lower))
+      XCTAssertTrue(view.isElement(at: map.index(before: upper)))
+      XCTAssertFalse(view.isElement(at: map.startIndex))
+      XCTAssertFalse(view.isElement(at: upper))
+      XCTAssertFalse(view.isElement(at: map.endIndex))
       XCTAssertFalse(view.isEnd(view.startIndex))
       XCTAssertTrue(view.isEnd(view.endIndex))
       XCTAssertFalse(view.isEnd(map.endIndex))
@@ -42,8 +47,25 @@
       let index = map.index(map.startIndex, offsetBy: 2)
       let view = map[index..<index]
 
+      XCTAssertFalse(view.isElement(at: index))
       XCTAssertTrue(view.isEnd(view.startIndex))
       XCTAssertTrue(view.isEnd(view.endIndex))
+    }
+
+    func testIsElementDistinguishesEqualKeysByPosition() {
+      let map: RedBlackTreeMultiMap = [
+        (0, "z"), (1, "a"), (1, "b"), (1, "c"), (2, "x")
+      ]
+      let before = map.index(map.startIndex, offsetBy: 1)
+      let lower = map.index(after: before)
+      let inside = map.index(after: lower)
+      let upper = map.index(after: inside)
+      let view = map[lower..<upper]
+
+      XCTAssertFalse(view.isElement(at: before))
+      XCTAssertTrue(view.isElement(at: lower))
+      XCTAssertTrue(view.isElement(at: inside))
+      XCTAssertFalse(view.isElement(at: upper))
     }
 
     func testClosedRangeView() {

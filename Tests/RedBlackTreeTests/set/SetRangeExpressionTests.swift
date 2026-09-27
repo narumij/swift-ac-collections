@@ -35,6 +35,11 @@
       XCTAssertEqual(view.first, 2)
       XCTAssertEqual(view.last, 5)
       XCTAssertEqual(Array(view), [2, 3, 4, 5])
+      XCTAssertTrue(view.isElement(at: lower))
+      XCTAssertTrue(view.isElement(at: set.index(before: upper)))
+      XCTAssertFalse(view.isElement(at: set.startIndex))
+      XCTAssertFalse(view.isElement(at: upper))
+      XCTAssertFalse(view.isElement(at: set.endIndex))
       XCTAssertFalse(view.isEnd(view.startIndex))
       XCTAssertTrue(view.isEnd(view.endIndex))
       XCTAssertFalse(view.isEnd(set.endIndex))
@@ -45,6 +50,7 @@
       let index = set.index(set.startIndex, offsetBy: 2)
       let view = set[index..<index]
 
+      XCTAssertFalse(view.isElement(at: index))
       XCTAssertTrue(view.isEnd(view.startIndex))
       XCTAssertTrue(view.isEnd(view.endIndex))
     }

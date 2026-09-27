@@ -15,8 +15,8 @@ RedBlackTreeCollectionsは、生ポインタと独自アロケータを使って
 - 生ポインタは、木の所有下で即時に完結する内部処理に限定する。
 - 外部へ渡るIndexには、ノードの世代とストレージの同一性を付加する。
 - 削除されたノードと、同じアドレスへ再配置された新しいノードを区別する。
-- 木が解放されてもIndexが残る場合、必要なメモリ寿命を遅延して確保する。
-- 異なる木のIndexは、通常構成では拒否する。
+- 木が解放された後のIndexは、raw pointerへ触れる前にdetachedとして拒否する。
+- CoWで分岐した木では、tracking tagを使って対応するノードを解決できる。
 - 安全性のためであっても、ホットループへ不要な O(log N) 検査を追加しない。
 - この型群はスレッドセーフではない。並行変更を許可する仕組みではない。
 
@@ -29,7 +29,7 @@ RedBlackTreeCollectionsは、生ポインタと独自アロケータを使って
 | raw | `UnsafeMutablePointer<UnsafeNode>` | 所有中の内部処理で使う最速経路 |
 | safe result | `_SafePtr` | 生ポインタまたは `SealError` を伝える |
 | sealed | `_NodePtrSealing` / `_SealedPtr` | アドレスとノード世代を組にする |
-| lazy tied | `_LazyTieWrap<_NodePtrSealing>` | sealed pointerへ木の同一性と遅延寿命管理を加える |
+| lazy tied | `_LazyTieWrap<_NodePtrSealing>` | sealed pointerへ木の同一性と解放検出を加える |
 | public index | `UnsafeIndexV3` | lazy tied pointerの公開別名 |
 
 raw pointerは、呼び出し中に所有木が存続し、対象ノードが無効化されないことが
@@ -61,38 +61,38 @@ Indexを木へ解決するとき、木の `_lazyDetach` とIndexの `lazyDetach`
 参照同一性で比較する。
 
 - 一致する場合はsealed pointerの世代を検査する。
-- 一致しない場合、通常構成では `.crossTree` とする。
-- `ALLOW_CROSS_TREE_INDEX` 有効時にはtracking tagから対応ノードを探す経路がある。
+- 一致せず `ALLOW_CROSS_TREE_INDEX` が無効なら `.crossTree` とする。
+- 一致せず `ALLOW_CROSS_TREE_INDEX` が有効なら、保存されたtracking tagとsealから
+  対象木の対応ノードを探す。
 
-異なる木で同じ値や同じtracking tagが存在しても、通常の公開契約では
-同じIndexとは扱わない。
+`Package.swift` の現行構成では `ALLOW_CROSS_TREE_INDEX` が有効であり、これは
+CoWで分岐したコレクション間でIndexを利用するための経路である。無関係な
+コレクションから取得したIndexの利用は事前条件違反であり、tracking tag等が
+偶然一致した場合を含めて検出を保証しない。
 
-## 遅延寿命管理
+## IndexとIteratorの寿命
 
-Indexを作るたびに完全なメモリ所有オブジェクトを生成すると、通常利用にも
-参照管理と確保のコストが発生する。現行実装は `_LazyTie` を代理オブジェクトとして
-使い、実際のバケット所有権移行を木の解放時まで遅延する。
+現行構成のIndexはsealed pointerと `_LazyTie` を保持するが、bucketの所有権は
+保持しない。木のバッファが解放されると `_LazyTie.isDetached` が設定され、
+以後のIndex解決はraw pointerを検査する前に `.detached` として失敗する。
+これにより、Indexのためだけに解放済みノード領域へアクセスすることを避ける。
 
-通常経路は次のとおりである。
-
-1. 木が必要になった時点で軽量な `_LazyTie` を生成する。
-2. Indexはsealed pointerと `_LazyTie` を保持する。
-3. 木のバッファが先に解放される場合、外部に `_LazyTie` が残っているか確認する。
-4. 残っていれば `_TiedRawBuffer` を生成し、`_LazyTie.buffer` へ設定する。
-5. バケットの解放責任を `_TiedRawBuffer` へ移す。
-6. 最後のIndex等が解放され、`_TiedRawBuffer` が破棄された時点でバケットを解放する。
-
-Indexが残っていなければ、木のバッファがfresh poolを直接解放する。
-この分岐により、通常利用での寿命延長コストを抑える。
+現行のIteratorは `UnsafeTreeV2` の値をスナップショットとして保持する。
+コレクションとIteratorは最初は同じストレージを共有し、その後コレクションを
+変更するとCoWが発生するため、Iteratorは作成時の木を走査し続けられる。
 
 ## `_TiedRawBuffer` とアクセス禁止
 
 `_TiedRawBuffer` はバケット先頭とdeallocatorを保持し、deinitでバケットを解放する。
 また `isValueAccessAllowed` を持つ。
 
-木本体の寿命が終了してバケット所有権が移った場合、メモリ自体はIndexのために
-残り得るが、元の木としての値アクセスが引き続き正しいとは限らない。
-そのため、共有済みのtied bufferにはアクセス禁止状態を設定できる。
+これは `COMPATIBLE_ATCODER_2025` のIteratorなど、互換・旧実装の寿命管理で使う。
+現行のIndexは `_LazyTie` によるdetached検出、現行のIteratorは木のCoW共有を使うため、
+通常経路でIndexのためにbucket所有権を `_TiedRawBuffer` へ移すものではない。
+
+互換経路で木本体の寿命終了後もメモリを残す場合、元の木としての値アクセスが
+引き続き正しいとは限らない。そのため、共有済みのtied bufferにはアクセス禁止状態を
+設定できる。
 
 メモリが生存していることと、その内容を有効な木の値として利用できることは
 別の保証である。
@@ -106,9 +106,12 @@ Indexが残っていなければ、木のバッファがfresh poolを直接解�
 - `.unknown`: tracking tagなどから解決できない状態
 - `.limit`: 指定された移動限界を越えた
 - `.notAllowed`: 元の木の解放などによりアクセスできない
+- `.detached`: Indexの由来するストレージがすでに解放された
 - `.unsealed`: 保存した世代と現在のノード世代が一致しない
 - `.lowerOutOfBounds` / `.upperOutOfBounds`: 木の範囲外
+- `.outOfBounds`: 範囲外の方向を区別しない失敗
 - `.crossTree`: 別の木に由来するIndex
+- `.other`: 上記へ分類しない内部失敗
 
 公開APIでは、操作の契約に応じてoptional、`Result`、precondition failure、
 fatal errorへ変換される。内部で失敗理由を保持することにより、不正ポインタを
@@ -128,12 +131,16 @@ fatal errorへ変換される。内部で失敗理由を保持することによ
 ## CoWとの関係
 
 CoWで新しい木を作ると、ノードアドレスと `_LazyTie` は新しくなる。
-tracking tagは内部対応付けのため維持されるが、コピー元Indexのコピー先での
-利用を通常契約にはしない。
+tracking tagを維持し、`ALLOW_CROSS_TREE_INDEX` の経路でコピー元Indexを
+コピー先の対応ノードへ解決する。
 
-古いIndexは元ストレージへ結び付いたままであり、そのストレージが解放される場合は
-遅延寿命管理が確保外アクセスを防ぐ。新しい木で誤って使われた場合は
-木同一性検査で拒否する。
+ただし現行のコピーは `___recycle_count` をコピーしておらず、別の `_LazyTie` を
+解決する経路ではコピー元ノードの現在世代を再検査しない。このため、削除済みIndexと
+コピー先ノードのtracking tag・sealが一致すると、古いIndexが有効に見える可能性がある。
+これは現行実装の既知の制限であり、CoWをまたぐすべてのstale Index検出は保証しない。
+
+元ストレージ自体が解放された場合は `_LazyTie.isDetached` により、元のraw pointerを
+dereferenceする前に拒否する。
 
 ## 並行アクセス
 
@@ -152,21 +159,22 @@ tracking tagは内部対応付けのため維持されるが、コピー元Index
 - 外部へ渡すIndexは世代情報と `_LazyTie` を保持する。
 - recycle poolへ送る前後で世代を進める。
 - payload破棄後は `___has_payload_content == false` とする。
-- 別の木のIndexを通常経路で解決しない。
-- バケットの解放責任を木と `_TiedRawBuffer` の双方に持たせない。
-- `_TiedRawBuffer` へ所有権を移した場合、木側から直接解放しない。
+- cross-tree解決はCoW由来の木を前提とし、無関係な木での成功を契約にしない。
+- 現行Indexはbucketを所有せず、detached確認後にのみpointerを検証する。
+- 互換経路で `_TiedRawBuffer` へ所有権を移した場合、木側から直接解放しない。
 - 失敗した検証結果からpointerを強制的に取り出さない。
 - Indexの安全性を理由に、確保外メモリへ検査アクセスしない。
 
 ## 検証
 
 - 削除済みIndexが `.garbaged` または `.unsealed` として拒否されること
-- recycleされた同一アドレスを古いIndexが指せないこと
-- 別の木のIndexが `.crossTree` になること
-- 木よりIndexが長生きしても確保外アクセスが起こらないこと
-- Indexが残らない通常経路ではバケットが直接解放されること
-- 所有権移行時にバケットが二重解放されないこと
-- CoW前後でIndexの所属が混同されないこと
+- 同じストレージ内でrecycleされた同一アドレスを古いIndexが指せないこと
+- cross-tree無効時は別の木のIndexが `.crossTree` になること
+- 木よりIndexが長生きした場合は `.detached` となり、確保外アクセスが起こらないこと
+- Iteratorが作成時の木を保持し、元コレクションの変更時にCoWされること
+- 互換経路の所有権移行でbucketが二重解放されないこと
+- CoW由来の有効なIndexをtracking tagから対応付けられること
+- CoWをまたぐstale Index検出の既知の制限を再現するテストを維持すること
 - DebugとReleaseの両方で検証経路が成立すること
 - sanitizerおよび削除・再利用を繰り返すテストで問題がないこと
 

@@ -13,7 +13,7 @@
 
     func testUnboundedRangeView() {
       let set = RedBlackTreeMultiSet([0, 1, 1, 2, 3, 4])
-      XCTAssertTrue(set.isValid(...))
+      XCTAssertTrue(set.containsSubrange(...))
 
       let view = set[...]
       XCTAssertEqual(view.count, 6)
@@ -28,7 +28,7 @@
       let lower = set.index(set.startIndex, offsetBy: 1)
       let upper = set.index(set.startIndex, offsetBy: 5)
 
-      XCTAssertTrue(set.isValid(lower..<upper))
+      XCTAssertTrue(set.containsSubrange(lower..<upper))
 
       let view = set[lower..<upper]
       XCTAssertEqual(view.count, 4)
@@ -146,7 +146,7 @@
     func testIndexRangeIsValid() {
       let set = RedBlackTreeMultiSet([0, 1, 1, 2, 3, 4, 5])
       let range = set.equalRange(1)
-      XCTAssertTrue(set.isValid(range))
+      XCTAssertTrue(set.containsSubrange(range))
       XCTAssertEqual(Array(set[range]), [1, 1])
     }
 

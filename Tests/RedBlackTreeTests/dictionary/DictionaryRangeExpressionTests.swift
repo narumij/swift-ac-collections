@@ -13,7 +13,7 @@
 
     func testUnboundedRangeView() {
       let dict: RedBlackTreeDictionary = [3: "c", 1: "a", 2: "b", 4: "d"]
-      XCTAssertTrue(dict.isValid(...))
+      XCTAssertTrue(dict.containsSubrange(...))
 
       let view = dict[...]
       XCTAssertEqual(view.count, 4)
@@ -27,7 +27,7 @@
       let lower = dict.index(dict.startIndex, offsetBy: 1)
       let upper = dict.index(dict.startIndex, offsetBy: 3)
 
-      XCTAssertTrue(dict.isValid(lower..<upper))
+      XCTAssertTrue(dict.containsSubrange(lower..<upper))
 
       let view = dict[lower..<upper]
       XCTAssertEqual(view.count, 2)
@@ -141,7 +141,7 @@
     func testIndexRangeIsValid() {
       let dict: RedBlackTreeDictionary = [3: "c", 1: "a", 2: "b", 4: "d"]
       let range = dict.equalRange(2)
-      XCTAssertTrue(dict.isValid(range))
+      XCTAssertTrue(dict.containsSubrange(range))
       XCTAssertEqual(Array(dict[range]).map { $0.key }, [2])
     }
 

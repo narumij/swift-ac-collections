@@ -37,20 +37,38 @@
   extension RedBlackTreeSet {
 
     @inlinable
-    public func isValid(_ bounds: UnboundedRange) -> Bool {
+    public func containsSubrange(_ bounds: UnboundedRange) -> Bool {
       return __tree_.isValid(range: ___safe_range)
     }
 
     @inlinable
-    public func isValid(_ bounds: IndexRange) -> Bool {
+    public func containsSubrange(_ bounds: IndexRange) -> Bool {
       let range = __tree_.__purified_safe_(bounds)
       return __tree_.isValid(range: range)
     }
 
     @inlinable
-    public func isValid(_ bounds: IndexRangeExpression) -> Bool {
+    public func containsSubrange(_ bounds: IndexRangeExpression) -> Bool {
       let range: _SafeRange = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       return __tree_.isValid(range: range)
+    }
+
+    @available(*, deprecated, renamed: "containsSubrange(_:)")
+    @inlinable
+    public func isValid(_ bounds: UnboundedRange) -> Bool {
+      containsSubrange(bounds)
+    }
+
+    @available(*, deprecated, renamed: "containsSubrange(_:)")
+    @inlinable
+    public func isValid(_ bounds: IndexRange) -> Bool {
+      containsSubrange(bounds)
+    }
+
+    @available(*, deprecated, renamed: "containsSubrange(_:)")
+    @inlinable
+    public func isValid(_ bounds: IndexRangeExpression) -> Bool {
+      containsSubrange(bounds)
     }
   }
 

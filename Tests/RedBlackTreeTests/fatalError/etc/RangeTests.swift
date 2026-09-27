@@ -17,7 +17,7 @@
         var a = RedBlackTreeSet(0..<8)
         let range = a.equalRange(3)
         a.remove(3)
-        #expect(a.isValid(range) == false)
+        #expect(a.containsSubrange(range) == false)
         _ = Array(a[range])
       }
     }
@@ -27,7 +27,7 @@
         var a = RedBlackTreeMultiSet(0..<8)
         let range = a.equalRange(3)
         _ = a.erase(.find(3))
-        #expect(a.isValid(range) == false)
+        #expect(a.containsSubrange(range) == false)
         _ = Array(a[range])
       }
     }
@@ -37,7 +37,7 @@
         var a = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (0..<8).map { ($0, $0 + 3) })
         let range = a.equalRange(3)
         _ = a.erase(.find(3))
-        #expect(a.isValid(range) == false)
+        #expect(a.containsSubrange(range) == false)
         _ = Array(a[range])
       }
     }
@@ -47,7 +47,7 @@
         var a = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: (0..<8).map { ($0, $0 + 3) })
         let range = a.equalRange(3)
         _ = a.erase(.find(3))
-        #expect(a.isValid(range) == false)
+        #expect(a.containsSubrange(range) == false)
         _ = Array(a[range])
       }
     }

@@ -30,9 +30,9 @@
 | `isElement(at: Index)` | 各型の `+Index.swift` | Indexを対象の木で解決でき、世代が一致し、実体のある要素へアクセスできること | `endIndex` は `false` |
 | `isEnd(_ index: Index)` | 各型の `+Index.swift` | Indexを対象の木で解決でき、有効な終端を指すこと | `endIndex` は `true` |
 | `isValid(_ bound: Bound)` | 各型の `+BoundsExpression.swift` | DSLの位置式を評価した結果が、実体のある要素を指すこと | `.end` 相当は `false` |
-| `isValid(_ bounds: IndexRange)` | 各型の `+RangeExpression.swift` | 両端のIndexを安全な内部範囲へ変換でき、下端が上端以下であること | 正しい空範囲は `true` |
-| `isValid(_ bounds: IndexRangeExpression)` | 各型の `+RangeExpression.swift` | 相対範囲を解決でき、解決後の下端が上端以下であること | 正しい空範囲は `true` |
-| `isValid(_ bounds: UnboundedRange)` | 各型の `+RangeExpression.swift` | 木全体を表す内部範囲の順序が正しいこと | 通常は `true` |
+| `containsSubrange(_ bounds: IndexRange)` | 各型の `+RangeExpression.swift` | 両端のIndexを安全な内部範囲へ変換でき、下端が上端以下であること | 正しい空範囲は `true` |
+| `containsSubrange(_ bounds: IndexRangeExpression)` | 各型の `+RangeExpression.swift` | 相対範囲を解決でき、解決後の下端が上端以下であること | 正しい空範囲は `true` |
+| `containsSubrange(_ bounds: UnboundedRange)` | 各型の `+RangeExpression.swift` | 木全体を表す内部範囲の順序が正しいこと | 通常は `true` |
 | `isValid(_ bounds: BoundRangeExpression)` | 各型の `+BoundsExpression.swift` | DSLの両端を評価でき、評価後の下端が上端以下であること | 正しい空範囲は `true` |
 
 ### 単一位置の判定
@@ -51,7 +51,7 @@
 
 ### 範囲の判定
 
-範囲に対する `isValid` は、範囲内に要素が存在するかを判定しない。判定の中心は次の2点である。
+範囲に対する `containsSubrange` は、範囲内に要素が存在するかを判定しない。判定の中心は次の2点である。
 
 1. 安全な端点を内部ノード範囲へ解決できること。
 2. 下端と上端が同じか、木の順序で下端が上端より前にあること。
@@ -87,7 +87,7 @@ Range View の判定は、木全体に対する `Index` 判定より条件が一
 
 4種類すべてのコレクションで、旧 `isValid(_ index: Index)` の実際の意味を `isElement(at:)` として公開し、`isEnd(_:)` と分離している。共通テストの移行用に限り、テストターゲット内の `isValid(_:)` を `isElement(at:)` へのエイリアスとして残している。
 
-一方、範囲版の `isValid` は要素の有無ではなく端点と順序を検証しているため、単一Index版だけを改名する場合でも範囲版とは分けて扱う必要がある。
+Index Range判定はreceiverとの包含関係を表すため、4種類すべてのコレクションで `containsSubrange` を使用する。従来のIndex Range版 `isValid` はソース互換性のためdeprecated forwarding APIとして残す。BoundRangeExpressionの意味論は別途検討するため、現時点では `isValid` のままとする。
 
 ## 推奨方針
 
@@ -99,7 +99,7 @@ Range View の判定は、木全体に対する `Index` 判定より条件が一
 | 単一のIndexが要素を指すか | `isElement(at: Index)` | subscriptや削除の対象になる要素が現在存在する |
 | Indexが終端を指すか | `isEnd(_ index: Index)` | 対象の木の有効な `endIndex` である |
 | Boundが要素へ解決されるか | `isElement(at: Bound)` | 評価結果が `endIndex` ではなく、要素へアクセスできる |
-| Rangeがreceiver内で利用可能か | `isValidSubrange(_:)` | 両端を解決でき、順序が正しく、receiverの範囲内に収まる |
+| Rangeがreceiver内で利用可能か | `containsSubrange(_:)` | 両端を解決でき、順序が正しく、receiverの範囲内に収まる |
 
 ### 単一位置
 
@@ -171,13 +171,13 @@ Range View の判定は、木全体に対する `Index` 判定より条件が一
 
 ### Range
 
-Rangeについては、単なる端点順序だけでなく、「そのreceiverに対するsubrangeとして使用できるか」を公開APIの意味にすることを推奨する。
+Rangeについては、単なる端点順序だけでなく、「そのreceiverがそのsubrangeを包含するか」を公開APIの意味とする。
 
 ```swift
 outerFirst <= innerFirst <= innerLast <= outerLast
 ```
 
-木全体では `outerFirst...outerLast` が全範囲となり、Range ViewではView自身の範囲となる。これにより、同じ `isValidSubrange(_:)` で次を一貫して判定できる。
+木全体では `outerFirst...outerLast` が全範囲となり、Range ViewではView自身の範囲となる。これにより、同じ `containsSubrange(_:)` で次を一貫して判定できる。
 
 | Rangeの状態 | 結果 |
 |---|---:|
@@ -194,7 +194,7 @@ outerFirst <= innerFirst <= innerLast <= outerLast
 
 通常構成では、次の順序で段階的に移行するのが安全である。
 
-1. `isElement(at:)`、`isEnd(_:)`、`isValidSubrange(_:)` を追加し、期待する意味をテストで固定する。
+1. `isElement(at:)`、`isEnd(_:)`、`containsSubrange(_:)` を追加し、期待する意味をテストで固定する。
 2. 内部およびドキュメントの利用箇所を新APIへ移す。
 3. 現行の要素判定としての `isValid` を、`isElement(at:)` へのdeprecated aliasにする。
 4. API互換性を破壊できる時点で、`isValid(_ index:)` を要素または `endIndex` を表す有効位置の判定へ変更する。名前を再利用しない方針なら削除する。

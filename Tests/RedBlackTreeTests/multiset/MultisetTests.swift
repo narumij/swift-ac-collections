@@ -1207,7 +1207,7 @@ final class MultisetTests: RedBlackTreeTestCase {
 
   func testIsValidRangeSmoke() throws {
     let a = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5])
-    XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+    XCTAssertTrue(a.containsSubrange(a.lowerBound(2)..<a.upperBound(4)))
   }
 
   func testSortedReversed() throws {

@@ -981,7 +981,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
   func testIsValidRangeSmoke() throws {
     let a = RedBlackTreeDictionary<Int, Int>(
       uniqueKeysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
-    XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+    XCTAssertTrue(a.containsSubrange(a.lowerBound(2)..<a.upperBound(4)))
   }
 
   func testSortedReversed() throws {

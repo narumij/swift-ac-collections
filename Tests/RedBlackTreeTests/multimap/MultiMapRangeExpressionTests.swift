@@ -13,7 +13,7 @@
 
     func testUnboundedRangeView() {
       let map: RedBlackTreeMultiMap = [3: "c", 1: "a", 2: "b", 4: "d"]
-      XCTAssertTrue(map.isValid(...))
+      XCTAssertTrue(map.containsSubrange(...))
 
       let view = map[...]
       XCTAssertEqual(view.count, 4)
@@ -27,7 +27,7 @@
       let lower = map.index(map.startIndex, offsetBy: 1)
       let upper = map.index(map.startIndex, offsetBy: 3)
 
-      XCTAssertTrue(map.isValid(lower..<upper))
+      XCTAssertTrue(map.containsSubrange(lower..<upper))
 
       let view = map[lower..<upper]
       XCTAssertEqual(view.count, 2)
@@ -141,7 +141,7 @@
     func testIndexRangeIsValid() {
       let map: RedBlackTreeMultiMap = [3: "c", 1: "a", 1: "d", 2: "b", 4: "d", 5: "e"]
       let range = map.equalRange(1)
-      XCTAssertTrue(map.isValid(range))
+      XCTAssertTrue(map.containsSubrange(range))
       XCTAssertEqual(Array(map[range]).map { $0.value }, ["a", "d"])
     }
 

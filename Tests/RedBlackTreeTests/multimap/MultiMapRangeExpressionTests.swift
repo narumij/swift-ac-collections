@@ -32,6 +32,18 @@
       let view = map[lower..<upper]
       XCTAssertEqual(view.count, 2)
       XCTAssertEqual(Array(view).map { $0.key }, [2, 3])
+      XCTAssertFalse(view.isEnd(view.startIndex))
+      XCTAssertTrue(view.isEnd(view.endIndex))
+      XCTAssertFalse(view.isEnd(map.endIndex))
+    }
+
+    func testEmptyViewRecognizesItsEndIndex() {
+      let map: RedBlackTreeMultiMap = [3: "c", 1: "a", 2: "b", 4: "d"]
+      let index = map.index(map.startIndex, offsetBy: 2)
+      let view = map[index..<index]
+
+      XCTAssertTrue(view.isEnd(view.startIndex))
+      XCTAssertTrue(view.isEnd(view.endIndex))
     }
 
     func testClosedRangeView() {

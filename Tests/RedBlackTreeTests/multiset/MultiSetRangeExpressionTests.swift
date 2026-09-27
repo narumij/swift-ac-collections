@@ -35,6 +35,18 @@
       XCTAssertEqual(view.first, 1)
       XCTAssertEqual(view.last, 3)
       XCTAssertEqual(Array(view), [1, 1, 2, 3])
+      XCTAssertFalse(view.isEnd(view.startIndex))
+      XCTAssertTrue(view.isEnd(view.endIndex))
+      XCTAssertFalse(view.isEnd(set.endIndex))
+    }
+
+    func testEmptyViewRecognizesItsEndIndex() {
+      let set = RedBlackTreeMultiSet([0, 1, 1, 2, 3, 4])
+      let index = set.index(set.startIndex, offsetBy: 2)
+      let view = set[index..<index]
+
+      XCTAssertTrue(view.isEnd(view.startIndex))
+      XCTAssertTrue(view.isEnd(view.endIndex))
     }
 
     func testClosedRangeView() {

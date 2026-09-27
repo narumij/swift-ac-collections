@@ -65,12 +65,13 @@ Index範囲に対する `containsSubrange` は、範囲内に要素が存在す�
 |---|---|---|---|
 | `RedBlackTreeKeyOnlyRangeView.isValid(index:)` | `View/RedBlackTreeRangeView+KeyOnly.swift` | `package` | Indexが要素へアクセス可能で、Viewの内部範囲に含まれること |
 | `RedBlackTreeKeyValueRangeView.isValid(index:)` | `View/RedBlackTreeRangeView+KeyValue.swift` | `package` | Indexが要素へアクセス可能で、Viewの内部範囲に含まれること |
+| Range Viewの `isEnd(_:)` | `View/RedBlackTreeRangeView+KeyOnly.swift` / `KeyValue.swift` | `public` | Indexを安全に解決でき、View固有の `endIndex` と一致すること |
 | `UnsafeTreeV2.isValid(range: _NodeRange)` | `Implements/UnsafeTreeV2/UnsafeTreeV2+RawRange.swift` | internal | 下端と上端が同じか、下端が上端より前であること |
 | `UnsafeTreeV2.isValid(range: _SafeRange)` | 同上 | internal | 端点の検証に成功し、得られた `_NodeRange` の順序が正しいこと |
 | `BalancedSequence.isValid(...)` 要求群 | `Implements/Protocol/BalancedSequence.swift` | package側の抽象化 | 単一Index、Index範囲、Bounds系の旧要求はコメントアウト中 |
 | 公開APIから削除した `isValid(...)` | `Tests/RedBlackTreeTests/fixture` | テストターゲット内 | Index範囲は `containsSubrange` へ転送し、Bounds系はsubscriptの結果を確認する互換ヘルパー |
 
-Range View の判定は、木全体に対する `Index` 判定より条件が一つ多く、「そのViewの範囲に含まれること」まで確認する。`endIndex` は要素へアクセスできないため、ここでも `false` になる。
+Range View の要素判定は、木全体に対する `Index` 判定より条件が一つ多く、「そのViewの範囲に含まれること」まで確認する。`endIndex` は要素へアクセスできないため、ここでも `false` になる。Viewの `isEnd` は基底コンテナの終端ではなくViewの上端を判定するため、その位置が基底コンテナ内の要素を指す場合もある。
 
 ## AtCoder 2025 互換構成
 

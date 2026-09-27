@@ -327,6 +327,23 @@ extension RedBlackTreeKeyOnlyRangeView {
 
 extension RedBlackTreeKeyOnlyRangeView where Base: _BaseNode_PtrRangeCompInterface {
 
+  /// Returns whether the given index is this view's valid end position.
+  ///
+  /// A view's end position may refer to an element in its base collection.
+  /// An invalid or stale index returns `false`.
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  public func isEnd(_ index: Index) -> Bool {
+    guard
+      let index = __tree_.__purified_(index).pointer,
+      let end = _sealed_end.purified.pointer
+    else {
+      return false
+    }
+    return index == end
+  }
+
   @inlinable
   package func isValid(index: Index) -> Bool {
     let i = __tree_.__purified_(index)  // __retrieve_でもテストは通る

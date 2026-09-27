@@ -50,8 +50,9 @@
 | `subscript(key:) -> Value?` | — | — | — | ✅ | キーに対応する値を参照・更新する |
 | `subscript(key:default:) -> Value` | — | — | — | ✅ | キーに対応する値を参照・更新し、存在しない場合は既定値を使う |
 | `subscript(key:) -> View` | — | — | ✅ | — | キーに対応する全要素のViewを返す |
-| `values(forKey:)` | — | — | ✅ | — | キーに対応する値を返す |
-| `keys` / `values` | — | — | ✅ | ✅ | キーまたは値だけを遅延走査するViewを返す |
+| `values(forKey:)` | — | — | 廃止 | — | キーに対応する値を返す |
+| `keys` | — | — | ✅ | ✅ | キーだけを遅延走査するSequenceを返す |
+| `values` | — | — | ✅ | ✅ | 値を参照・更新するValues Viewを返す |
 
 ## Indexと探索
 
@@ -110,7 +111,6 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `update(_:at:)` | — | ✅ | — | — | Index位置の要素を更新する。キー一致を前提とする |
 | `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す |
 | `updateValue(_:forKey:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
-| `swapValuesAt(_:_:)` | — | — | 中止 | 中止 | ValuesをViewにしてそちらでswapAt利用可能にする |
 | `index(inserting:)` | ✅ | — | — | — | 挿入し、挿入位置のIndexを返す |
 | `insert(contentsOf:)` | — | ✅ | ✅ | — | 別コンテナまたはSequenceの内容を追加する |
 | `inserting(contentsOf:)` | — | ✅ | ✅ | — | 内容を追加した新しい値を返す |

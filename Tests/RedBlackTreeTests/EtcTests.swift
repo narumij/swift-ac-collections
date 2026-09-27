@@ -865,43 +865,43 @@ final class EtcTests: RedBlackTreeTestCase {
 
       #if !ALLOW_CROSS_TREE_INDEX
         #if !USE_LAZY_DETACH
-          XCTAssertTrue(a.isValid(a1))
-          XCTAssertFalse(a.isValid(a2))
-          XCTAssertFalse(a.isValid(b1))
+          XCTAssertTrue(a.isElement(at: a1))
+          XCTAssertFalse(a.isElement(at: a2))
+          XCTAssertFalse(a.isElement(at: b1))
 
-          XCTAssertFalse(c.isValid(a1))
-          XCTAssertFalse(c.isValid(a2))
-          XCTAssertFalse(c.isValid(a3))
-          XCTAssertFalse(c.isValid(b1))
+          XCTAssertFalse(c.isElement(at: a1))
+          XCTAssertFalse(c.isElement(at: a2))
+          XCTAssertFalse(c.isElement(at: a3))
+          XCTAssertFalse(c.isElement(at: b1))
         #else
-          XCTAssertTrue(a.isValid(a1))
-          XCTAssertFalse(a.isValid(a2))
-          XCTAssertFalse(a.isValid(b1))
+          XCTAssertTrue(a.isElement(at: a1))
+          XCTAssertFalse(a.isElement(at: a2))
+          XCTAssertFalse(a.isElement(at: b1))
 
-          XCTAssertFalse(c.isValid(a1))
-          XCTAssertFalse(c.isValid(a2))
-          XCTAssertFalse(c.isValid(a3))
-          XCTAssertFalse(c.isValid(b1))
+          XCTAssertFalse(c.isElement(at: a1))
+          XCTAssertFalse(c.isElement(at: a2))
+          XCTAssertFalse(c.isElement(at: a3))
+          XCTAssertFalse(c.isElement(at: b1))
         #endif
       #else
         #if !USE_LAZY_DETACH
-          XCTAssertTrue(a.isValid(a1))
-          XCTAssertFalse(a.isValid(a2))
-          XCTAssertTrue(a.isValid(b1))
+          XCTAssertTrue(a.isElement(at: a1))
+          XCTAssertFalse(a.isElement(at: a2))
+          XCTAssertTrue(a.isElement(at: b1))
 
-          XCTAssertTrue(c.isValid(a1))
-          XCTAssertTrue(c.isValid(a2))
-          XCTAssertFalse(c.isValid(a3))
-          XCTAssertTrue(c.isValid(b1))
+          XCTAssertTrue(c.isElement(at: a1))
+          XCTAssertTrue(c.isElement(at: a2))
+          XCTAssertFalse(c.isElement(at: a3))
+          XCTAssertTrue(c.isElement(at: b1))
         #else
-          XCTAssertTrue(a.isValid(a1))
-          XCTAssertFalse(a.isValid(a2))
-          XCTAssertTrue(a.isValid(b1))
+          XCTAssertTrue(a.isElement(at: a1))
+          XCTAssertFalse(a.isElement(at: a2))
+          XCTAssertTrue(a.isElement(at: b1))
 
-          XCTAssertTrue(c.isValid(a1))
-          XCTAssertFalse(c.isValid(a2))
-          XCTAssertFalse(c.isValid(a3))
-          XCTAssertTrue(c.isValid(b1))
+          XCTAssertTrue(c.isElement(at: a1))
+          XCTAssertFalse(c.isElement(at: a2))
+          XCTAssertFalse(c.isElement(at: a3))
+          XCTAssertTrue(c.isElement(at: b1))
         #endif
       #endif
 
@@ -914,15 +914,15 @@ final class EtcTests: RedBlackTreeTestCase {
 
       #if !ALLOW_CROSS_TREE_INDEX
         #if !USE_LAZY_DETACH
-          XCTAssertFalse(c.isValid(b1))
+          XCTAssertFalse(c.isElement(at: b1))
         #else
-          XCTAssertFalse(c.isValid(b1))
+          XCTAssertFalse(c.isElement(at: b1))
         #endif
       #else
         #if !USE_LAZY_DETACH
-          XCTAssertFalse(c.isValid(b1))
+          XCTAssertFalse(c.isElement(at: b1))
         #else
-          XCTAssertFalse(c.isValid(b1))
+          XCTAssertFalse(c.isElement(at: b1))
         #endif
       #endif
     }

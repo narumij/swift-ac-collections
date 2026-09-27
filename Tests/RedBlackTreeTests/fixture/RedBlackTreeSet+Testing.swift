@@ -16,6 +16,12 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// Alias retained for tests shared with the AtCoder 2025 compatibility build.
+    @inlinable
+    internal func isValid(_ index: Index) -> Bool {
+      isElement(at: index)
+    }
+
     @inlinable
     internal func bound(before i: Bound) -> Bound {
       //      .before(i)

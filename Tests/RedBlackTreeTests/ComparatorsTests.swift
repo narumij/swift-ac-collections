@@ -141,34 +141,36 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
       XCTAssertNil(result.lastBitmap)
     }
 
-    func testNodeKeyRangeContainment() {
-      typealias SUT = _NodeKey<RedBlackTreeSet<Int>.Base>
-      let set: RedBlackTreeSet = [0, 1, 2, 3, 4]
-      let nodes = (0...4).map {
-        set.__tree_.__purified_(set.find($0)).accessible.pointer!
-      }
+    #if !COMPATIBLE_ATCODER_2025
+      func testNodeKeyRangeContainment() {
+        typealias SUT = _NodeKey<RedBlackTreeSet<Int>.Base>
+        let set: RedBlackTreeSet = [0, 1, 2, 3, 4]
+        let nodes = (0...4).map {
+          set.__tree_.__purified_(set.find($0)).accessible.pointer!
+        }
 
-      func contains(
-        outerFirst: Int,
-        outerLast: Int,
-        innerFirst: Int,
-        innerLast: Int
-      ) -> Bool {
-        SUT.containsRange(
-          outerFirst: (nodes[outerFirst], nil),
-          outerLast: (nodes[outerLast], nil),
-          innerFirst: (nodes[innerFirst], nil),
-          innerLast: (nodes[innerLast], nil)
-        ).result
-      }
+        func contains(
+          outerFirst: Int,
+          outerLast: Int,
+          innerFirst: Int,
+          innerLast: Int
+        ) -> Bool {
+          SUT.containsRange(
+            outerFirst: (nodes[outerFirst], nil),
+            outerLast: (nodes[outerLast], nil),
+            innerFirst: (nodes[innerFirst], nil),
+            innerLast: (nodes[innerLast], nil)
+          ).result
+        }
 
-      XCTAssertTrue(contains(outerFirst: 0, outerLast: 4, innerFirst: 1, innerLast: 3))
-      XCTAssertTrue(contains(outerFirst: 0, outerLast: 4, innerFirst: 0, innerLast: 4))
-      XCTAssertTrue(contains(outerFirst: 0, outerLast: 4, innerFirst: 2, innerLast: 2))
-      XCTAssertFalse(contains(outerFirst: 1, outerLast: 4, innerFirst: 0, innerLast: 3))
-      XCTAssertFalse(contains(outerFirst: 0, outerLast: 3, innerFirst: 1, innerLast: 4))
-      XCTAssertFalse(contains(outerFirst: 0, outerLast: 4, innerFirst: 3, innerLast: 2))
-    }
+        XCTAssertTrue(contains(outerFirst: 0, outerLast: 4, innerFirst: 1, innerLast: 3))
+        XCTAssertTrue(contains(outerFirst: 0, outerLast: 4, innerFirst: 0, innerLast: 4))
+        XCTAssertTrue(contains(outerFirst: 0, outerLast: 4, innerFirst: 2, innerLast: 2))
+        XCTAssertFalse(contains(outerFirst: 1, outerLast: 4, innerFirst: 0, innerLast: 3))
+        XCTAssertFalse(contains(outerFirst: 0, outerLast: 3, innerFirst: 1, innerLast: 4))
+        XCTAssertFalse(contains(outerFirst: 0, outerLast: 4, innerFirst: 3, innerLast: 2))
+      }
+    #endif
   #endif
 
   #if DEBUG

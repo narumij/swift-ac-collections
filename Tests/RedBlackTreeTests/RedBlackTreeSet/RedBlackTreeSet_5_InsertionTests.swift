@@ -133,7 +133,7 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
         XCTAssertGreaterThan(set._copyCount, 0)
 
         for (element, index) in saved {
-          XCTAssertTrue(set.isValid(index))
+          XCTAssertTrue(set.isElement(at: index))
           XCTAssertEqual(set[index], element)
         }
 

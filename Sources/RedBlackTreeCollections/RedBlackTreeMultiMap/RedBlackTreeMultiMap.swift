@@ -273,7 +273,7 @@ extension RedBlackTreeMultiMap {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
     @inlinable
-    public mutating func swapValueAt(_ i: Index, _ j: Index) {
+    public mutating func swapValuesAt(_ i: Index, _ j: Index) {
       __tree_.ensureUnique()
       let __i = __tree_.__purified_(i)
       let __j = __tree_.__purified_(j)

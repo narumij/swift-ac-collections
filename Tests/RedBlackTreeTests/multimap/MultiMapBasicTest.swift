@@ -167,4 +167,28 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
 
     XCTAssertEqual(values, ["a", "b", "c"])
   }
+
+  #if !COMPATIBLE_ATCODER_2025
+    func testInsertWithHint() {
+      var map: RedBlackTreeMultiMap<Int, String> = [
+        (1, "a"), (1, "c"), (3, "x"),
+      ]
+
+      let secondOne = map.index(after: map.startIndex)
+      let duplicate = map.insert(secondOne, (1, "b"))
+      XCTAssertEqual(map[duplicate].key, 1)
+      XCTAssertEqual(map[duplicate].value, "b")
+      XCTAssertEqual(map[1] + [], ["a", "b", "c"])
+
+      let goodHint = map.firstIndex(of: 3)!
+      let insertedWithGoodHint = map.insert(goodHint, (2, "good"))
+      XCTAssertEqual(map[insertedWithGoodHint].key, 2)
+      XCTAssertEqual(map[insertedWithGoodHint].value, "good")
+
+      let insertedWithBadHint = map.insert(map.startIndex, (4, "bad"))
+      XCTAssertEqual(map[insertedWithBadHint].key, 4)
+      XCTAssertEqual(map[insertedWithBadHint].value, "bad")
+      XCTAssertEqual(map.map(\.key), [1, 1, 1, 2, 3, 4])
+    }
+  #endif
 }

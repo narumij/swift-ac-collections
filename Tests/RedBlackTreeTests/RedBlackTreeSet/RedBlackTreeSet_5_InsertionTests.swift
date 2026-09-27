@@ -104,6 +104,28 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(set + [], [1, 2, 3])
   }
 
+  #if !COMPATIBLE_ATCODER_2025
+    /// ヒント付きinsertが新規要素と重複要素を正しく扱うこと
+    func test_insert_withHint() {
+      var set = RedBlackTreeSet([10, 30])
+
+      let insertedWithGoodHint = set.insert(set.firstIndex(of: 30)!, 20)
+      XCTAssertTrue(insertedWithGoodHint.inserted)
+      XCTAssertEqual(insertedWithGoodHint.memberAfterInsert, 20)
+      XCTAssertEqual(set + [], [10, 20, 30])
+
+      let insertedWithBadHint = set.insert(set.startIndex, 25)
+      XCTAssertTrue(insertedWithBadHint.inserted)
+      XCTAssertEqual(insertedWithBadHint.memberAfterInsert, 25)
+      XCTAssertEqual(set + [], [10, 20, 25, 30])
+
+      let duplicate = set.insert(set.endIndex, 20)
+      XCTAssertFalse(duplicate.inserted)
+      XCTAssertEqual(duplicate.memberAfterInsert, 20)
+      XCTAssertEqual(set + [], [10, 20, 25, 30])
+    }
+  #endif
+
   #if DEBUG && !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
     /// CoW後もindex(inserting:)で保存したIndexから対象を削除できること
     func test_indexInserting_savedIndicesRemainUsableAfterCopyOnWrite() {

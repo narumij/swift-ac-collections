@@ -266,6 +266,25 @@ extension RedBlackTreeDictionary {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
+extension RedBlackTreeDictionary {
+  
+  @inlinable
+  @discardableResult
+  public mutating func insert(_ hint: Index,_ newMember: Element) -> (
+    inserted: Bool, memberAfterInsert: Element
+  ) {
+    __tree_.ensureUniqueAndCapacity()
+    let p = __tree_.__purified_(hint)
+    guard let __p = p.pointer else {
+      fatalError(.invalidIndex)
+    }
+    let (__r, __inserted) = __tree_.__emplace_hint_unique(__p, extractingKey: Base.__key(Base._PayloadValue(tuple: newMember)), constructingValue: Base._PayloadValue(tuple: newMember))
+    return (__inserted, __inserted ? newMember : Base.__element_(__r))
+  }
+}
+#endif
+
 // MARK: - Remove
 
 extension RedBlackTreeDictionary {

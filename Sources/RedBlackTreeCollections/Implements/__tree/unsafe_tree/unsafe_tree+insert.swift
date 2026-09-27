@@ -36,7 +36,7 @@ protocol InsertNodeAtProtocol_ptr:
 extension InsertNodeAtProtocol_ptr {
 
   @inlinable
-//  @inline(never)
+  //  @inline(never)
   internal func
     __insert_node_at(
       _ __parent: _NodePtr, _ __child: _NodeRef,
@@ -73,7 +73,7 @@ protocol InsertUniqueProtocol_ptr:
 extension InsertUniqueProtocol_ptr {
 
   @inlinable
-//  @inline(never)
+  //  @inline(never)
   internal func
     __insert_unique(_ x: _PayloadValue) -> (__r: _NodePtr, __inserted: Bool)
   {
@@ -81,7 +81,7 @@ extension InsertUniqueProtocol_ptr {
   }
 
   @inlinable
-//  @inline(never)
+  //  @inline(never)
   internal func
     __emplace_unique_key_args(_ __k: _PayloadValue)
     -> (__r: _NodePtr, __inserted: Bool)
@@ -102,7 +102,8 @@ extension InsertUniqueProtocol_ptr {
 }
 
 @usableFromInline
-protocol InsertMultiProtocol: AllocationInterface & _TreePayloadValue_KeyInterface & FindLeafInterface
+protocol InsertMultiProtocol: AllocationInterface & _TreePayloadValue_KeyInterface
+    & FindLeafInterface
     & InsertNodeAtInterface & NullPtrInterface
 {}
 
@@ -138,7 +139,7 @@ protocol InsertLastProtocol_ptr:
 {}
 
 extension InsertLastProtocol_ptr {
-  
+
   @inlinable
   internal func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef) {
     if __root == nullptr {
@@ -147,11 +148,11 @@ extension InsertLastProtocol_ptr {
     let __parent = __tree_max(__root)
     return (__parent, __parent.__right_ref)
   }
-  
+
   @inlinable
   internal func
-  ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue)
-  -> (__parent: _NodePtr, __child: _NodeRef)
+    ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue)
+    -> (__parent: _NodePtr, __child: _NodeRef)
   {
     let __p = __construct_node(__k)
     __insert_node_at(__parent, __child, __p)
@@ -160,27 +161,164 @@ extension InsertLastProtocol_ptr {
 }
 
 #if false
-extension InsertLastProtocol_ptr {
+  extension InsertLastProtocol_ptr {
 
-  // 資料的に残してある
-  //
-  // こちらのほうがAPIとしては収まりがいいが、かすかに上のモノの方が速い
-  // 分岐の有無の差だとおもわれる
-  @inlinable
-  internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
-    let __child = __p == end ? __end_node.__left_ref : __p.__right_ref
-    //                        ^--- これの差
-    let __h = __construct_node(__k)
-    __insert_node_at(__p, __child, __h)
-    return __h
+    // 資料的に残してある
+    //
+    // こちらのほうがAPIとしては収まりがいいが、かすかに上のモノの方が速い
+    // 分岐の有無の差だとおもわれる
+    @inlinable
+    internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
+      let __child = __p == end ? __end_node.__left_ref : __p.__right_ref
+      //                        ^--- これの差
+      let __h = __construct_node(__k)
+      __insert_node_at(__p, __child, __h)
+      return __h
+    }
+
+    @inlinable
+    internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
+      let __child = __p.__left_ref
+      let __h = __construct_node(__k)
+      __insert_node_at(__p, __child, __h)
+      return __h
+    }
   }
+#endif
 
+// MARK: -
+
+@usableFromInline
+protocol EmplaceHintUniqueProtocol_ptr:
+  _UnsafeNodePtrType
+    & _TreePayloadValue_KeyInterface
+    & InsertNodeAtInterface
+    & FindHintEqualInterface
+    & AllocationInterface
+    & NullPtrInterface
+{}
+
+/*
+ _LIBCPP_HIDE_FROM_ABI iterator insert(const_iterator __p, const value_type& __v) {
+   return __tree_.__emplace_hint_unique(__p, __v).first;
+ }
+ */
+
+/*
+ template <class... _Args>
+ _LIBCPP_HIDE_FROM_ABI pair<iterator, bool> __emplace_hint_unique(const_iterator __p, _Args&&... __args) {
+   return std::__try_key_extraction<key_type>(
+       [this, __p](const key_type& __key, _Args&&... __args2) {
+         __node_base_pointer __dummy;
+         auto [__parent, __child] = __find_equal(__p, __dummy, __key);
+         __node_pointer __r       = std::__static_fancy_pointer_cast<__node_pointer>(__child);
+         bool __inserted          = false;
+         if (__child == nullptr) {
+           __node_holder __h = __construct_node(std::forward<_Args>(__args2)...);
+           __insert_node_at(__parent, __child, std::__static_fancy_pointer_cast<__node_base_pointer>(__h.get()));
+           __r        = __h.release();
+           __inserted = true;
+         }
+         return pair<iterator, bool>(iterator(__r), __inserted);
+       },
+       [this, __p](_Args&&... __args2) {
+         __node_holder __h = __construct_node(std::forward<_Args>(__args2)...);
+         __node_base_pointer __dummy;
+         auto [__parent, __child] = __find_equal(__p, __dummy, __h->__get_value());
+         __node_pointer __r       = std::__static_fancy_pointer_cast<__node_pointer>(__child);
+         if (__child == nullptr) {
+           __insert_node_at(__parent, __child, std::__static_fancy_pointer_cast<__node_base_pointer>(__h.get()));
+           __r = __h.release();
+         }
+         return pair<iterator, bool>(iterator(__r), __child == nullptr);
+       },
+       std::forward<_Args>(__args)...);
+ }
+ */
+
+extension EmplaceHintUniqueProtocol_ptr {
+
+  /// ヒント位置を利用し、必要な場合に限って値を構築して挿入する。
+  ///
+  /// extractingKey がキーを返した場合、重複を確認してから
+  /// constructingValue を評価する。キーを事前に取得できない場合は、
+  /// 値を構築し、その値からキーを取得して重複を確認する。
   @inlinable
-  internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
-    let __child = __p.__left_ref
-    let __h = __construct_node(__k)
-    __insert_node_at(__p, __child, __h)
+  internal func __emplace_hint_unique(
+    _ hint: _NodePtr,
+    extractingKey: @autoclosure () -> _Key?,
+    constructingValue: @autoclosure () -> _PayloadValue
+  ) -> (__r: _NodePtr, __inserted: Bool) {
+    if let key = extractingKey() {
+      var dummy = nullptr
+      let (parent, child) = __find_equal(
+        hint: hint,
+        dummy: &dummy,
+        key: key
+      )
+
+      guard child.pointee == nullptr else {
+        return (child.pointee, false)
+      }
+
+      let newNode = __construct_node(constructingValue())
+      __insert_node_at(parent, child, newNode)
+      return (newNode, true)
+    }
+
+    let value = constructingValue()
+    var dummy = nullptr
+    let (parent, child) = __find_equal(
+      hint: hint,
+      dummy: &dummy,
+      key: __key(value)
+    )
+
+    guard child.pointee == nullptr else {
+      return (child.pointee, false)
+    }
+
+    let newNode = __construct_node(value)
+    __insert_node_at(parent, child, newNode)
+    return (newNode, true)
+  }
+}
+
+@usableFromInline
+protocol EmplaceHintMultiProtocol_ptr:
+  _UnsafeNodePtrType
+    & _TreePayloadValue_KeyInterface
+    & InsertNodeAtInterface
+    & FindHintLeafInterface
+    & AllocationInterface
+    & NullPtrInterface
+{}
+
+/*
+ template <class _Tp, class _Compare, class _Allocator>
+ template <class... _Args>
+ typename __tree<_Tp, _Compare, _Allocator>::iterator
+ __tree<_Tp, _Compare, _Allocator>::__emplace_hint_multi(const_iterator __p, _Args&&... __args) {
+   __node_holder __h = __construct_node(std::forward<_Args>(__args)...);
+   __end_node_pointer __parent;
+   __node_base_pointer& __child = __find_leaf(__p, __parent, __h->__get_value());
+   __insert_node_at(__parent, __child, static_cast<__node_base_pointer>(__h.get()));
+   return iterator(static_cast<__node_pointer>(__h.release()));
+ }
+ */
+
+extension EmplaceHintMultiProtocol_ptr {
+
+  /// ヒント位置を利用して、重複を許可したまま値を構築して挿入する。
+  @inlinable
+  internal func __emplace_hint_multi(
+    _ __p: _NodePtr, _ constructingValue: @autoclosure () -> _PayloadValue
+  ) -> _NodePtr {
+    let value = constructingValue()
+    let __h = __construct_node(value)
+    var parent = nullptr
+    let __child = __find_leaf(__p, &parent, __key(value))
+    __insert_node_at(parent, __child, __h)
     return __h
   }
 }
-#endif

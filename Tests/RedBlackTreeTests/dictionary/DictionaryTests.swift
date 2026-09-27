@@ -14,6 +14,32 @@ extension Optional where Wrapped == Int {
 
 final class DictionaryTests: RedBlackTreeTestCase {
 
+  #if !COMPATIBLE_ATCODER_2025
+    func testInsertWithHint() {
+      var dictionary: RedBlackTreeDictionary<Int, String> = [
+        1: "one", 3: "three",
+      ]
+
+      let goodHint = dictionary.firstIndex(of: 3)!
+      let insertedWithGoodHint = dictionary.insert(goodHint, (2, "two"))
+      XCTAssertTrue(insertedWithGoodHint.inserted)
+      XCTAssertEqual(insertedWithGoodHint.memberAfterInsert.key, 2)
+      XCTAssertEqual(insertedWithGoodHint.memberAfterInsert.value, "two")
+
+      let insertedWithBadHint = dictionary.insert(dictionary.startIndex, (4, "four"))
+      XCTAssertTrue(insertedWithBadHint.inserted)
+      XCTAssertEqual(insertedWithBadHint.memberAfterInsert.key, 4)
+      XCTAssertEqual(insertedWithBadHint.memberAfterInsert.value, "four")
+
+      let duplicate = dictionary.insert(dictionary.endIndex, (2, "replacement"))
+      XCTAssertFalse(duplicate.inserted)
+      XCTAssertEqual(duplicate.memberAfterInsert.key, 2)
+      XCTAssertEqual(duplicate.memberAfterInsert.value, "two")
+      XCTAssertEqual(dictionary[2], "two")
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
+    }
+  #endif
+
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
     try super.setUpWithError()

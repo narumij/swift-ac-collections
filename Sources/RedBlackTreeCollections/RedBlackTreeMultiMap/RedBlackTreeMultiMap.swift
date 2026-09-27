@@ -270,6 +270,23 @@ extension RedBlackTreeMultiMap {
   }
 }
 
+// 結局復活してみた。でも少し変えた
+extension RedBlackTreeMultiMap {
+
+  /// - Complexity: O(log *n*)
+  @inlinable
+  @discardableResult
+  public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Value? {
+    __tree_.ensureUnique()
+    let unsealed = __tree_.__purified_(ptr).accessible
+    guard let p = unsealed.pointer
+    else { return nil }
+    let old = Base.__mapped_value_(p)
+    Base.__mapped_value_ptr(p).pointee = newValue
+    return old
+  }
+}
+
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
     @inlinable

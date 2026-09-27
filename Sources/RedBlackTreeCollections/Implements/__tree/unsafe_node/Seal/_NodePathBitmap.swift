@@ -27,6 +27,25 @@ enum _NodePathBitmap {
 
 extension _NodePathBitmap: Comparable {}
 
+extension _NodePathBitmap {
+  
+  @inlinable
+  static func lessThan(
+    lhs: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
+    rhs: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?)
+  )
+    -> (
+      result: Bool,
+      lhsBitmap: _NodePathBitmap?,
+      rhsBitmap: _NodePathBitmap?
+    )
+  {
+    let lhsBitmap = lhs.bitmap ?? _NodePathBitmap(lhs.node)
+    let rhsBitmap = rhs.bitmap ?? _NodePathBitmap(rhs.node)
+    return (lhsBitmap < rhsBitmap, lhsBitmap, rhsBitmap)
+  }
+}
+
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   #if USE_INT128

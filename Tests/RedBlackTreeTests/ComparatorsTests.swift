@@ -47,7 +47,7 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
       let rhsIndex = set.index(after: set.startIndex)
       let rhs = set.__tree_.__purified_(rhsIndex).accessible.pointer!
 
-      let result = lessThan(
+      let result = _NodePathBitmap.lessThan(
         lhs: (node: lhs, bitmap: nil),
         rhs: (node: rhs, bitmap: nil)
       )
@@ -65,7 +65,7 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
       let lhsBitmap = _NodePathBitmap.path(.max)
       let rhsBitmap = _NodePathBitmap.path(.min)
 
-      let result = lessThan(
+      let result = _NodePathBitmap.lessThan(
         lhs: (node: lhs, bitmap: lhsBitmap),
         rhs: (node: rhs, bitmap: rhsBitmap)
       )
@@ -73,6 +73,21 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
       XCTAssertFalse(result.result)
       XCTAssertEqual(result.lhsBitmap, lhsBitmap)
       XCTAssertEqual(result.rhsBitmap, rhsBitmap)
+    }
+
+    func testNodeKeyLessThanTreatsIdenticalPointersAsEqual() {
+      typealias SUT = _NodeKey<RedBlackTreeSet<Int>.Base>
+      let set: RedBlackTreeSet = [0]
+      let node = set.__tree_.__purified_(set.startIndex).accessible.pointer!
+
+      let result = SUT.lessThan(
+        lhs: (node: node, bitmap: nil),
+        rhs: (node: node, bitmap: nil)
+      )
+
+      XCTAssertFalse(result.result)
+      XCTAssertNil(result.lhsBitmap)
+      XCTAssertNil(result.rhsBitmap)
     }
   #endif
 

@@ -186,7 +186,8 @@ extension UnsafeTreeV2BufferHeader {
         __right_: __ptr_(s.__right_),
         __parent_: __ptr_(s.__parent_),
         __is_black_: s.__is_black_,
-        ___has_payload_content: s.___has_payload_content)
+        ___has_payload_content: s.___has_payload_content,
+        ___recycle_count: s.___recycle_count)
     }
 
     // 旧ノードを列挙する準備

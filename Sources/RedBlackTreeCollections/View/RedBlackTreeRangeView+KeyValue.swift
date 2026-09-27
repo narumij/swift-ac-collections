@@ -161,7 +161,7 @@ extension RedBlackTreeKeyValueRangeView {
     extension RedBlackTreeKeyValueRangeView {
 
       public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
-      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+      //      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
       /// - Complexity: O(1)
       @inlinable
@@ -171,10 +171,35 @@ extension RedBlackTreeKeyValueRangeView {
       }
 
       /// - Complexity: O(1)
+      //      @inlinable
+      //      public var values: Values {
+      //        let (_start, _end) = _raw_range
+      //        return .init(start: _start, end: _end, tree: __tree_)
+      //      }
+
+      public typealias Values = RedBlackTreeValueRangeView<Container>
+
+      @inlinable
+      func makeValuesView() -> Values {
+        Values(__tree_: __tree_, _start: _sealed_start, _end: _sealed_end)
+      }
+
+      // TODO: Restrict value-view mutations to indices contained in this key-value range.
       @inlinable
       public var values: Values {
-        let (_start, _end) = _raw_range
-        return .init(start: _start, end: _end, tree: __tree_)
+        @inline(__always) get {
+          makeValuesView()
+        }
+
+        @inline(__always) _modify {
+          var view = makeValuesView()
+          defer {
+            __tree_ = view.__tree_
+            _sealed_start = view._sealed_start
+            _sealed_end = view._sealed_end
+          }
+          yield &view
+        }
       }
     }
   #endif

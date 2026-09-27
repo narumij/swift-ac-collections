@@ -89,6 +89,86 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
       XCTAssertNil(result.lhsBitmap)
       XCTAssertNil(result.rhsBitmap)
     }
+
+    func testNodeKeyHalfOpenRangeIncludesFirstAndExcludesLast() {
+      typealias SUT = _NodeKey<RedBlackTreeSet<Int>.Base>
+      let set: RedBlackTreeSet = [0, 1, 2]
+      let firstIndex = set.startIndex
+      let positionIndex = set.index(after: firstIndex)
+      let lastIndex = set.index(after: positionIndex)
+      let first = set.__tree_.__purified_(firstIndex).accessible.pointer!
+      let position = set.__tree_.__purified_(positionIndex).accessible.pointer!
+      let last = set.__tree_.__purified_(lastIndex).accessible.pointer!
+
+      let atFirst = SUT.isInHalfOpenRange(
+        first: (first, nil),
+        position: (first, nil),
+        last: (last, nil)
+      )
+      let inside = SUT.isInHalfOpenRange(
+        first: (first, atFirst.firstBitmap),
+        position: (position, nil),
+        last: (last, atFirst.lastBitmap)
+      )
+      let atLast = SUT.isInHalfOpenRange(
+        first: (first, inside.firstBitmap),
+        position: (last, inside.lastBitmap),
+        last: (last, inside.lastBitmap)
+      )
+
+      XCTAssertTrue(atFirst.result)
+      XCTAssertTrue(inside.result)
+      XCTAssertFalse(atLast.result)
+    }
+
+    func testNodeKeyHalfOpenRangeRejectsPositionBeforeFirst() {
+      typealias SUT = _NodeKey<RedBlackTreeSet<Int>.Base>
+      let set: RedBlackTreeSet = [0, 1, 2]
+      let positionIndex = set.startIndex
+      let firstIndex = set.index(after: positionIndex)
+      let lastIndex = set.index(after: firstIndex)
+      let position = set.__tree_.__purified_(positionIndex).accessible.pointer!
+      let first = set.__tree_.__purified_(firstIndex).accessible.pointer!
+      let last = set.__tree_.__purified_(lastIndex).accessible.pointer!
+
+      let result = SUT.isInHalfOpenRange(
+        first: (first, nil),
+        position: (position, nil),
+        last: (last, nil)
+      )
+
+      XCTAssertFalse(result.result)
+      XCTAssertNil(result.lastBitmap)
+    }
+
+    func testNodeKeyRangeContainment() {
+      typealias SUT = _NodeKey<RedBlackTreeSet<Int>.Base>
+      let set: RedBlackTreeSet = [0, 1, 2, 3, 4]
+      let nodes = (0...4).map {
+        set.__tree_.__purified_(set.find($0)).accessible.pointer!
+      }
+
+      func contains(
+        outerFirst: Int,
+        outerLast: Int,
+        innerFirst: Int,
+        innerLast: Int
+      ) -> Bool {
+        SUT.containsRange(
+          outerFirst: (nodes[outerFirst], nil),
+          outerLast: (nodes[outerLast], nil),
+          innerFirst: (nodes[innerFirst], nil),
+          innerLast: (nodes[innerLast], nil)
+        ).result
+      }
+
+      XCTAssertTrue(contains(outerFirst: 0, outerLast: 4, innerFirst: 1, innerLast: 3))
+      XCTAssertTrue(contains(outerFirst: 0, outerLast: 4, innerFirst: 0, innerLast: 4))
+      XCTAssertTrue(contains(outerFirst: 0, outerLast: 4, innerFirst: 2, innerLast: 2))
+      XCTAssertFalse(contains(outerFirst: 1, outerLast: 4, innerFirst: 0, innerLast: 3))
+      XCTAssertFalse(contains(outerFirst: 0, outerLast: 3, innerFirst: 1, innerLast: 4))
+      XCTAssertFalse(contains(outerFirst: 0, outerLast: 4, innerFirst: 3, innerLast: 2))
+    }
   #endif
 
   #if DEBUG

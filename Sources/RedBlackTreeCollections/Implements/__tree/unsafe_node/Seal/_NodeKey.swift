@@ -52,4 +52,92 @@ extension _NodeKey {
     
     return _NodePathBitmap.lessThan(lhs: lhs, rhs: rhs)
   }
+
+  @inlinable
+  static func isInHalfOpenRange(
+    first: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
+    position: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
+    last: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?)
+  )
+    -> (
+      result: Bool,
+      firstBitmap: _NodePathBitmap?,
+      positionBitmap: _NodePathBitmap?,
+      lastBitmap: _NodePathBitmap?
+    )
+  where Base._NodePtr == UnsafeMutablePointer<UnsafeNode>, Base._Key: Comparable {
+    let belowFirst = lessThan(lhs: position, rhs: first)
+    guard !belowFirst.result else {
+      return (
+        false,
+        belowFirst.rhsBitmap,
+        belowFirst.lhsBitmap,
+        last.bitmap
+      )
+    }
+
+    let belowLast = lessThan(
+      lhs: (position.node, belowFirst.lhsBitmap),
+      rhs: last
+    )
+    return (
+      belowLast.result,
+      belowFirst.rhsBitmap,
+      belowLast.lhsBitmap,
+      belowLast.rhsBitmap
+    )
+  }
+
+  @inlinable
+  static func containsRange(
+    outerFirst: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
+    outerLast: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
+    innerFirst: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
+    innerLast: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?)
+  )
+    -> (
+      result: Bool,
+      outerFirstBitmap: _NodePathBitmap?,
+      outerLastBitmap: _NodePathBitmap?,
+      innerFirstBitmap: _NodePathBitmap?,
+      innerLastBitmap: _NodePathBitmap?
+    )
+  where Base._NodePtr == UnsafeMutablePointer<UnsafeNode>, Base._Key: Comparable {
+    let innerStartsBeforeOuter = lessThan(lhs: innerFirst, rhs: outerFirst)
+    guard !innerStartsBeforeOuter.result else {
+      return (
+        false,
+        innerStartsBeforeOuter.rhsBitmap,
+        outerLast.bitmap,
+        innerStartsBeforeOuter.lhsBitmap,
+        innerLast.bitmap
+      )
+    }
+
+    let innerIsReversed = lessThan(
+      lhs: innerLast,
+      rhs: (innerFirst.node, innerStartsBeforeOuter.lhsBitmap)
+    )
+    guard !innerIsReversed.result else {
+      return (
+        false,
+        innerStartsBeforeOuter.rhsBitmap,
+        outerLast.bitmap,
+        innerIsReversed.rhsBitmap,
+        innerIsReversed.lhsBitmap
+      )
+    }
+
+    let innerEndsAfterOuter = lessThan(
+      lhs: outerLast,
+      rhs: (innerLast.node, innerIsReversed.lhsBitmap)
+    )
+    return (
+      !innerEndsAfterOuter.result,
+      innerStartsBeforeOuter.rhsBitmap,
+      innerEndsAfterOuter.lhsBitmap,
+      innerIsReversed.rhsBitmap,
+      innerEndsAfterOuter.rhsBitmap
+    )
+  }
 }

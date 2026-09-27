@@ -128,7 +128,8 @@ extension RedBlackTreeValueRangeView {
 
 extension RedBlackTreeValueRangeView {
 
-  func swapAt(_ i: Index, _ j: Index) {
+  public mutating func swapAt(_ i: Index, _ j: Index) {
+    _ensureUnique()
     let __i = __tree_.__purified_(i)
     let __j = __tree_.__purified_(j)
     guard let i = __i.accessible.pointer,

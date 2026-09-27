@@ -27,9 +27,8 @@
 
 | 宣言 | 定義場所 | 判定内容 | `endIndex` / 空範囲 |
 |---|---|---|---|
-| `isElement(at: Index)` | `RedBlackTreeSet` / `RedBlackTreeMultiSet` の `+Index.swift` | Indexを対象の木で解決でき、世代が一致し、実体のある要素へアクセスできること | `endIndex` は `false` |
-| `isEnd(_ index: Index)` | `RedBlackTreeSet` / `RedBlackTreeMultiSet` の `+Index.swift` | Indexを対象の木で解決でき、有効な終端を指すこと | `endIndex` は `true` |
-| `isValid(_ index: Index)` | `RedBlackTreeDictionary` / `RedBlackTreeMultiMap` の `+Index.swift` | Indexを対象の木で解決でき、世代が一致し、実体のある要素へアクセスできること | `endIndex` は `false` |
+| `isElement(at: Index)` | 各型の `+Index.swift` | Indexを対象の木で解決でき、世代が一致し、実体のある要素へアクセスできること | `endIndex` は `false` |
+| `isEnd(_ index: Index)` | 各型の `+Index.swift` | Indexを対象の木で解決でき、有効な終端を指すこと | `endIndex` は `true` |
 | `isValid(_ bound: Bound)` | 各型の `+BoundsExpression.swift` | DSLの位置式を評価した結果が、実体のある要素を指すこと | `.end` 相当は `false` |
 | `isValid(_ bounds: IndexRange)` | 各型の `+RangeExpression.swift` | 両端のIndexを安全な内部範囲へ変換でき、下端が上端以下であること | 正しい空範囲は `true` |
 | `isValid(_ bounds: IndexRangeExpression)` | 各型の `+RangeExpression.swift` | 相対範囲を解決でき、解決後の下端が上端以下であること | 正しい空範囲は `true` |
@@ -86,9 +85,7 @@ Range View の判定は、木全体に対する `Index` 判定より条件が一
 
 ## 命名上の論点
 
-`RedBlackTreeSet` と `RedBlackTreeMultiSet` では、旧 `isValid(_ index: Index)` の実際の意味を `isElement(at:)` として公開し、`isEnd(_:)` と分離している。共通テストの移行用に限り、テストターゲット内の `isValid(_:)` を `isElement(at:)` へのエイリアスとして残している。
-
-`RedBlackTreeDictionary` と `RedBlackTreeMultiMap` の単一Index版はまだ `isValid(_:)` であり、同じ移行は未実施である。
+4種類すべてのコレクションで、旧 `isValid(_ index: Index)` の実際の意味を `isElement(at:)` として公開し、`isEnd(_:)` と分離している。共通テストの移行用に限り、テストターゲット内の `isValid(_:)` を `isElement(at:)` へのエイリアスとして残している。
 
 一方、範囲版の `isValid` は要素の有無ではなく端点と順序を検証しているため、単一Index版だけを改名する場合でも範囲版とは分けて扱う必要がある。
 

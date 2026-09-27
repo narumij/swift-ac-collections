@@ -70,7 +70,7 @@
 | `index(after:)` / `formIndex(after:)` | ✅ | ✅ | ✅ | ✅ | 次のIndexへ進める |
 | `index(before:)` / `formIndex(before:)` | ✅ | ✅ | ✅ | ✅ | 前のIndexへ戻す |
 | `index(_:offsetBy:)` / `formIndex(_:offsetBy:)` | ✅ | ✅ | ✅ | ✅ | 指定距離だけIndexを移動する |
-| `index(_:offsetBy:limitedBy:)` | ✅ | ✅ | ✅ | ✅ | 制限位置を越えない範囲でIndexを移動する |
+| `index(_:offsetBy:limitedBy:)` / `formIndex(_:offsetBy:limitedBy:)` | ✅ | ✅ | ✅ | ✅ | 制限位置を越えない範囲でIndexを移動する |
 | `distance(from:to:)` | ✅ | ✅ | ✅ | ✅ | 2つのIndex間の距離を返す |
 
 `isElement(at:)` は `endIndex` に `false`、`isEnd(_:)` は有効な `endIndex` に

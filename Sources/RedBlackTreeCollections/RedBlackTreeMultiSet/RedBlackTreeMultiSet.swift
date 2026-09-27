@@ -259,23 +259,6 @@ extension RedBlackTreeMultiSet {
       return oldMember
     }
 
-    // TODO: キーの不一致はトラップになることをコメントドックに書く
-    @inlinable
-    public mutating func swapAt(_ i: Index, _ j: Index) -> Bool {
-      __tree_.ensureUnique()
-      let __i = __tree_.__purified_(i)
-      let __j = __tree_.__purified_(j)
-      guard
-        __i.accessible.error == nil,
-        __j.accessible.error == nil,
-        let i = __i.pointer,
-        let j = __j.pointer
-      else {
-        fatalError(.invalidIndex)
-      }
-
-      return __tree_.swap_key(i, j)
-    }
   }
 #endif
 

@@ -136,7 +136,7 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     #if COMPATIBLE_ATCODER_2025
       XCTAssertTrue(tree.removeFirst(forKey: 1))
     #else
-      tree.remove(at: tree.lowerBound(1))
+      tree[1].removeFirst()
     #endif
 
     tree.insert((1, "d"))

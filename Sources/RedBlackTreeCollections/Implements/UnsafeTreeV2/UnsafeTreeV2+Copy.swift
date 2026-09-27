@@ -186,8 +186,7 @@ extension UnsafeTreeV2BufferHeader {
         __right_: __ptr_(s.__right_),
         __parent_: __ptr_(s.__parent_),
         __is_black_: s.__is_black_,
-        ___has_payload_content: s.___has_payload_content,
-        ___recycle_count: s.___recycle_count)
+        ___has_payload_content: s.___has_payload_content)
     }
 
     // 旧ノードを列挙する準備
@@ -197,6 +196,11 @@ extension UnsafeTreeV2BufferHeader {
     while let s = usedNodes.next(), let d = other.popFresh() {
       // ノードを初期化する
       d.initialize(to: node(s.pointee))
+      
+      #if ALLOW_CROSS_TREE_INDEX
+        d.pointee.___recycle_count = s.pointee.___recycle_count
+      #endif
+      
       #if DEBUG
         nodeInitializedCount += 1
       #endif

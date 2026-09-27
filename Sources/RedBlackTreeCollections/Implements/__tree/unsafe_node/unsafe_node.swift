@@ -120,8 +120,7 @@ public struct UnsafeNode {
     __right_: Pointer,
     __parent_: Pointer,
     __is_black_: Bool = false,
-    ___has_payload_content: Bool = true,
-    ___recycle_count: Seal = 0
+    ___has_payload_content: Bool = true
   ) {
     self.___tracking_tag = ___tracking_tag
     self.__left_ = __left_
@@ -129,9 +128,6 @@ public struct UnsafeNode {
     self.__parent_ = __parent_
     self.__is_black_ = __is_black_
     self.___has_payload_content = ___has_payload_content
-    #if ALLOW_CROSS_TREE_INDEX
-    self.___recycle_count = ___recycle_count
-    #endif
   }
 
   // MARK: - Meta data

@@ -17,10 +17,17 @@ final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {
     map.insert(key: "x", value: 10)
     map.insert(key: "x", value: 20)
     map.insert(key: "y", value: 30)
-    let valuesX = map.values(forKey: "x")
-    XCTAssertEqual(valuesX.sorted(), [10, 20])
-    let valuesY = map.values(forKey: "y")
-    XCTAssertEqual(valuesY + [], [30])
+    #if COMPATIBLE_ATCODER_2025
+      let valuesX = map.values(forKey: "x")
+      XCTAssertEqual(valuesX.sorted(), [10, 20])
+      let valuesY = map.values(forKey: "y")
+      XCTAssertEqual(valuesY + [], [30])
+    #else
+      let valuesX = map["x"]
+      XCTAssertEqual(valuesX.sorted(), [10, 20])
+      let valuesY = map["y"]
+      XCTAssertEqual(valuesY + [], [30])
+    #endif
     XCTAssertEqual(map.count(forKey: "x"), 2)
   }
 

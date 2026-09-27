@@ -230,15 +230,15 @@ extension RedBlackTreeMultiMap {
 }
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func values(forKey key: Key) -> [_MappedValue] {
-      let (lo, hi) = __tree_.__equal_range_multi(key)
-      return __tree_.___copy_to_array(lo, hi) { Base.__mapped_value_($0) }
-    }
-  }
+//  extension RedBlackTreeMultiMap {
+//
+//    /// - Complexity: O(log *n*)
+//    @inlinable
+//    public func values(forKey key: Key) -> [_MappedValue] {
+//      let (lo, hi) = __tree_.__equal_range_multi(key)
+//      return __tree_.___copy_to_array(lo, hi) { Base.__mapped_value_($0) }
+//    }
+//  }
 #endif
 
 // MARK: - Insert

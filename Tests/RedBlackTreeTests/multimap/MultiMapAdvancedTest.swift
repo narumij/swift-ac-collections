@@ -17,7 +17,11 @@ final class MultiMapAdvancedTest: RedBlackTreeTestCase {
     map.insert(key: "x", value: 2)
     map.insert(key: "y", value: 3)
     XCTAssertEqual(map.count(forKey: "x"), 2)
-    XCTAssertEqual(map.values(forKey: "x").sorted(), [1, 2])
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(map.values(forKey: "x").sorted(), [1, 2])
+    #else
+      XCTAssertEqual(map["x"].sorted(), [1, 2])
+    #endif
   }
 
   func testRemoveSubrange() {
@@ -45,9 +49,15 @@ final class MultiMapAdvancedTest: RedBlackTreeTestCase {
 
   func testValuesForKey() {
     let map: RedBlackTreeMultiMap = [("a", 1), ("a", 2), ("b", 3)]
-    let valuesA = map.values(forKey: "a")
-    XCTAssertEqual(valuesA.sorted(), [1, 2])
-    XCTAssertEqual(map.values(forKey: "z") + [], [])
+    #if COMPATIBLE_ATCODER_2025
+      let valuesA = map.values(forKey: "a")
+      XCTAssertEqual(valuesA.sorted(), [1, 2])
+      XCTAssertEqual(map.values(forKey: "z") + [], [])
+    #else
+      let valuesA = map["a"]
+      XCTAssertEqual(valuesA.sorted(), [1, 2])
+      XCTAssertEqual(map["z"] + [], [])
+    #endif
   }
 
   func testRemoveValuesForKey() {

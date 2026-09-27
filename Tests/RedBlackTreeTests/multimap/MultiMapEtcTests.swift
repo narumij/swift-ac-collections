@@ -309,7 +309,11 @@ final class MultiMapEtcTests: RedBlackTreeTestCase {
     multimap.insert(key: "cherry", value: 7)
 
     // キーを使用して値にアクセス
-    let values = multimap.values(forKey: "banana")
+    #if COMPATIBLE_ATCODER_2025
+      let values = multimap.values(forKey: "banana")
+    #else
+      let values = multimap["banana"]
+    #endif
 
     values.forEach { value in
       blackHole("banana の値は \(value) です。")

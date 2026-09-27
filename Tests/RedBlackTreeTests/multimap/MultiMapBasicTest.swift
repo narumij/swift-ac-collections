@@ -22,7 +22,11 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     XCTAssertEqual(multiMap.count(forKey: "banana"), 1)
     XCTAssertEqual(multiMap.count(forKey: "cherry"), 0)
 
-    XCTAssertEqual(multiMap.values(forKey: "apple").sorted(), [1, 3])
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(multiMap.values(forKey: "apple").sorted(), [1, 3])
+    #else
+      XCTAssertEqual(multiMap["apple"].sorted(), [1, 3])
+    #endif
   }
 
   func testRemovalOperations() {
@@ -71,7 +75,11 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     #else
       XCTAssertEqual(Set(multiMap.keys), ["x", "y"])
     #endif
-    XCTAssertEqual(multiMap.values(forKey: "x").sorted(), [10, 30])
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(multiMap.values(forKey: "x").sorted(), [10, 30])
+    #else
+      XCTAssertEqual(multiMap["x"].sorted(), [10, 30])
+    #endif
 
     var collected: [String: [Int]] = [:]
     for (key, value) in multiMap.map(tuple) {

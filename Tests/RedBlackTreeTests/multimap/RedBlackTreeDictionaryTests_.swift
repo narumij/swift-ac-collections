@@ -20,8 +20,13 @@ final class RedBlackTreeMultiMapTests_: RedBlackTreeTestCase {
     multiDict.insert(key: "apple", value: 3)
     multiDict.insert(key: "banana", value: 2)
 
-    let appleValues = multiDict.values(forKey: "apple")
-    let bananaValues = multiDict.values(forKey: "banana")
+    #if COMPATIBLE_ATCODER_2025
+      let appleValues = multiDict.values(forKey: "apple")
+      let bananaValues = multiDict.values(forKey: "banana")
+    #else
+      let appleValues = multiDict["apple"]
+      let bananaValues = multiDict["banana"]
+    #endif
 
     XCTAssertEqual(Set(appleValues), Set([1, 3]))
     XCTAssertEqual(bananaValues + [], [2])

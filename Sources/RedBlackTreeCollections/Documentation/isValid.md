@@ -88,4 +88,131 @@ Range View の判定は、木全体に対する `Index` 判定より条件が一
 
 一方、範囲版の `isValid` は要素の有無ではなく端点と順序を検証しているため、単一Index版だけを改名する場合でも範囲版とは分けて扱う必要がある。
 
-この文書は現状記録であり、APIの改名方針を確定するものではない。
+## 推奨方針
+
+`isValid` を一つの概念として統一するのではなく、利用者が確認したい事実ごとにAPIを分けることを推奨する。
+
+| 判定したい事実 | 推奨するAPI | `true` の意味 |
+|---|---|---|
+| Indexが有効な位置か | `isValid(_ index: Index)` | 対象の木で要素または `endIndex` として利用できる |
+| 単一のIndexが要素を指すか | `isElement(at: Index)` | subscriptや削除の対象になる要素が現在存在する |
+| Indexが終端を指すか | `isEnd(_ index: Index)` | 対象の木の有効な `endIndex` である |
+| Boundが要素へ解決されるか | `isElement(at: Bound)` | 評価結果が `endIndex` ではなく、要素へアクセスできる |
+| Rangeがreceiver内で利用可能か | `isValidSubrange(_:)` | 両端を解決でき、順序が正しく、receiverの範囲内に収まる |
+
+### 単一位置
+
+現行の `isValid(_ index: Index)` は実質的に要素アクセス可能性を判定しているため、その役割を `isElement(at:)` へ移すのが望ましい。`isValid(_ bound: Bound)` も同様に `isElement(at:)` へ置き換える。
+
+この名前なら、`endIndex` がCollectionの位置としては有効であっても、要素ではないため `false` になることを自然に表現できる。Indexの世代不一致、削除済みノード、対象の木で解決できないIndexも同様に `false` とする。
+
+一方、Collectionにおける `endIndex` は常に有効な境界である。このため、単一Indexの状態は次の3種類として扱う。
+
+| 状態 | `isValid(_:)` | `isElement(at:)` | `isEnd(_:)` |
+|---|---:|---:|---:|
+| 現在存在する要素 | `true` | `true` | `false` |
+| 対象の木の `endIndex` | `true` | `false` | `true` |
+| staleまたは解決不能 | `false` | `false` | `false` |
+
+現在の `isValid(_ index:)` は `endIndex` に `false` を返すため、Swiftの一般的な「有効なIndex」という意味とは一致しない。将来この名前を残す場合は、要素と `endIndex` の両方を `true` とする意味へ揃える。ただし既存挙動の変更になるため、移行時には互換性へ注意する。
+
+### ノンクロスツリーインデクシングでの `isElement(at:)`
+
+`ALLOW_CROSS_TREE_INDEX` が無効な構成では、Indexは生成元の木のストレージに結び付く。`target.isElement(at: index)` は、Indexが対象の木と同じストレージへ結び付いており、保存されたpointerと世代が現在も要素アクセスに利用できるかを判定する。
+
+判定条件は次のとおりとする。
+
+1. Indexと対象の木が同じストレージに結び付いている。
+2. Indexに保存された世代と、pointerが指すノードの現在世代が一致する。
+3. 対象ノードにPayloadが存在する。
+4. 対象ノードが `endIndex` ではない。
+
+| 状況 | `target.isElement(at: index)` |
+|---|---:|
+| Index生成後も対象の木が同じストレージを使用し、要素が残っている | `true` |
+| 対象要素を削除した | `false` |
+| 削除後、同じスロットが別要素へ再利用された | `false` |
+| 別の独立した木で使用した | `false` |
+| CoWによって対象の木がIndexの結び付くストレージから分離した | `false` |
+| CoW後も古いストレージを保持する側の木で使用した | `true` |
+| 対象の木の `endIndex` | `false` |
+
+ノンクロスツリー構成では、キーやノード番号が一致していても別ストレージのIndexは利用できない。CoW後の新しいストレージへ論理ノードを追跡することも行わない。
+
+`isEnd(_:)` についても同じストレージへの結び付きが必要である。対象の木から現在取得できる `endIndex` は常に有効だが、別の木の終端や、Indexを無効化する変更前に取得した古い終端まで有効とする意味ではない。
+
+### クロスツリーインデクシングでの `isElement(at:)`
+
+`ALLOW_CROSS_TREE_INDEX` 構成におけるIndexは、値を検索する条件ではなく、論理ノードを追跡するハンドルとして扱う。
+
+このとき `target.isElement(at: index)` が判定するのは、Indexの生成元と対象の木が同一インスタンスかではない。Indexが表す論理ノードを対象の木で引き直し、現在も要素アクセスへ利用できるかを判定する。
+
+判定条件は次のとおりとする。
+
+1. Indexのタグに対応するノードを対象の木で解決できる。
+2. Indexに保存された世代と、対象ノードの現在世代が一致する。
+3. 対象ノードにPayloadが存在する。
+4. 対象ノードが `endIndex` ではない。
+
+| 状況 | `target.isElement(at: index)` |
+|---|---:|
+| CoW前から共有していた論理ノードが対象の木に残っている | `true` |
+| 別のCoW分岐だけが無関係な要素を変更した | `true` |
+| 対象の木ではその論理ノードを削除した | `false` |
+| 削除後、同じスロットが別要素へ再利用された | `false` |
+| 同じキーの要素を新しく挿入し直した | `false` |
+| 別のCoW分岐だけで新規挿入された | `false` |
+| 対象の木の `endIndex` | `false` |
+
+したがって、キーが等しいだけでは同じ要素とはみなさない。物理pointerがCoWによって変わっていても、対象の木でタグと世代が一致する論理ノードを解決できれば要素として扱う。
+
+`isEnd(_:)` はこの要素判定と対になり、対象の木で有効な終端として解決できる場合だけ `true` を返す。単に要素ではないIndexを終端とみなしてはならない。
+
+### Range
+
+Rangeについては、単なる端点順序だけでなく、「そのreceiverに対するsubrangeとして使用できるか」を公開APIの意味にすることを推奨する。
+
+```swift
+outerFirst <= innerFirst <= innerLast <= outerLast
+```
+
+木全体では `outerFirst...outerLast` が全範囲となり、Range ViewではView自身の範囲となる。これにより、同じ `isValidSubrange(_:)` で次を一貫して判定できる。
+
+| Rangeの状態 | 結果 |
+|---|---:|
+| receiver全体と同じRange | `true` |
+| receiver内に収まるRange | `true` |
+| 正しい位置にある空Range | `true` |
+| 端点が逆転しているRange | `false` |
+| receiverの外へはみ出すRange | `false` |
+| 解決不能または世代不一致の端点を含むRange | `false` |
+
+内部実装では、`_NodeKey` がキー比較、同一キー時のpath bitmap比較、bitmapの遅延生成と再利用を担当する。公開APIおよびViewは、これらの実装事情を露出せず、Range包含という仕様だけを扱う。
+
+### 移行
+
+通常構成では、次の順序で段階的に移行するのが安全である。
+
+1. `isElement(at:)`、`isEnd(_:)`、`isValidSubrange(_:)` を追加し、期待する意味をテストで固定する。
+2. 内部およびドキュメントの利用箇所を新APIへ移す。
+3. 現行の要素判定としての `isValid` を、`isElement(at:)` へのdeprecated aliasにする。
+4. API互換性を破壊できる時点で、`isValid(_ index:)` を要素または `endIndex` を表す有効位置の判定へ変更する。名前を再利用しない方針なら削除する。
+
+`COMPATIBLE_ATCODER_2025` の旧APIは互換性維持を優先し、この整理の対象外として残す。
+
+### Test as Specification
+
+最低限、次の性質をテスト名とassertionから読み取れる状態にする。
+
+- `isElement(at:)` は存在する要素に対して `true`、`endIndex` に対して `false` を返す。
+- `isEnd(_:)` は対象の木の `endIndex` に対してだけ `true` を返す。
+- `isValid(_:)` を残す場合、存在する要素と `endIndex` の両方を有効なIndexとして扱う。
+- ノンクロスツリー構成では、別ストレージのIndexとCoW分離後のIndexを要素として扱わない。
+- 削除またはノード再利用によって世代が一致しないIndexは要素として扱わない。
+- CoW分岐後も、対象の木で世代が一致するIndexは要素として扱う。
+- 同じキーを再挿入しても、タグまたは世代が異なる論理ノードは元のIndexの要素として扱わない。
+- 空Range、同一Range、内包Rangeを有効なsubrangeとして扱う。
+- 逆転Range、receiver外のRange、staleな端点を含むRangeを無効として扱う。
+- 同一キーを複数持つ木でも、path bitmapによって端点の順序と包含を正しく判定する。
+
+以上を、この文書における推奨案とする。実際の改名および公開API変更は、テストを先に追加したうえで段階的に行う。

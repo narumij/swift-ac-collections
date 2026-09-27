@@ -10,19 +10,19 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
 
   #if DEBUG
     func testNodePathBitmapEndSortsAfterEveryPath() {
-      XCTAssertLessThan(NodePathBitmap.path(.min), .end)
-      XCTAssertLessThan(NodePathBitmap.path(0), .end)
-      XCTAssertLessThan(NodePathBitmap.path(.max), .end)
+      XCTAssertLessThan(_NodePathBitmap.path(.min), .end)
+      XCTAssertLessThan(_NodePathBitmap.path(0), .end)
+      XCTAssertLessThan(_NodePathBitmap.path(.max), .end)
     }
 
     func testNodePathBitmapPathsUseBitmapValueOrder() {
-      let lower: NodePathBitmap.NodePathBitmap = 1
-      let middle: NodePathBitmap.NodePathBitmap = 2
-      let upper: NodePathBitmap.NodePathBitmap = .max
+      let lower: _NodePathBitmap.NodePathBitmap = 1
+      let middle: _NodePathBitmap.NodePathBitmap = 2
+      let upper: _NodePathBitmap.NodePathBitmap = .max
 
-      XCTAssertLessThan(NodePathBitmap.path(lower), .path(middle))
-      XCTAssertLessThan(NodePathBitmap.path(middle), .path(upper))
-      XCTAssertFalse(NodePathBitmap.path(middle) < .path(lower))
+      XCTAssertLessThan(_NodePathBitmap.path(lower), .path(middle))
+      XCTAssertLessThan(_NodePathBitmap.path(middle), .path(upper))
+      XCTAssertFalse(_NodePathBitmap.path(middle) < .path(lower))
     }
   #endif
 

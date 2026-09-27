@@ -1,0 +1,19 @@
+//
+//  _NodeKey.swift
+//  swift-ac-collections
+//
+//  Created by narumij on 2026/09/27.
+//
+
+enum _NodeKey<Base: _BaseNode_KeyProtocol>
+where Base._NodePtr == UnsafeMutablePointer<UnsafeNode>, Base._Key: Comparable {
+
+  case key(Base._Key)
+  case end
+
+  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+
+  init(_ p: _NodePtr) {
+    self = p.___is_end ? .end : .key(Base.__get_value(p))
+  }
+}

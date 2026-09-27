@@ -121,6 +121,7 @@ extension RedBlackTreeValueRangeView {
       __tree_._unsafeAddress(position).pointee.tuple.value
     }
     set {
+      _ensureUnique()
       __tree_._unsafeMutableAddress(position).pointee.tuple.value = newValue
     }
   }
@@ -130,6 +131,9 @@ extension RedBlackTreeValueRangeView {
 
   public mutating func swapAt(_ i: Index, _ j: Index) {
     _ensureUnique()
+    
+    // TODO: そのうち範囲チェックをいれる
+    
     let __i = __tree_.__purified_(i)
     let __j = __tree_.__purified_(j)
     guard let i = __i.accessible.pointer,
@@ -142,29 +146,6 @@ extension RedBlackTreeValueRangeView {
       &Base.__mapped_value_ptr(j).pointee
     )
   }
-}
-
-// MARK: -
-
-public protocol ValueBaseInit: ___Root
-where Base: ___TreeBase & PairValueTrait {
-  static func _create(_ view: RedBlackTreeValueRangeView<Self>) -> Self
-}
-
-extension RedBlackTreeDictionary: ValueBaseInit {
-  public static func _create(_ view: RedBlackTreeValueRangeView<Self>) -> Self {
-    .init(__tree_: view.__tree_)
-  }
-}
-
-extension RedBlackTreeMultiMap: ValueBaseInit {
-  public static func _create(_ view: RedBlackTreeValueRangeView<Self>) -> Self {
-    .init(__tree_: view.__tree_)
-  }
-}
-
-extension RedBlackTreeValueRangeView where Container: ValueBaseInit {
-  public func unranged() -> Container { ._create(self) }
 }
 
 // MARK: -
@@ -203,113 +184,6 @@ extension RedBlackTreeValueRangeView {
     return Base.__mapped_value_(__tree_prev_iter(_end))
   }
 }
-
-extension RedBlackTreeValueRangeView {
-
-  @inlinable
-  @discardableResult
-  public mutating func popFirst() -> Element? {
-    _ensureUnique()
-    let (_start, _end) = _raw_range
-    guard _start != _end else { return nil }
-    let (_p, _r) = __tree_._unchecked_remove(at: _start)
-    _sealed_start = _p.uncheckedSeal
-    return Base.___mapped_value(_r)
-  }
-
-  @inlinable
-  @discardableResult
-  public mutating func popLast() -> Element? {
-    _ensureUnique()
-    let (_start, _end) = _raw_range
-    guard _start != _end else { return nil }
-    return Base.___mapped_value(__tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload)
-  }
-
-  @inlinable
-  @discardableResult
-  public mutating func removeFirst() -> Element {
-    _ensureUnique()
-    guard let element = popFirst() else {
-      preconditionFailure(.emptyFirst)
-    }
-    return element
-  }
-
-  @inlinable
-  @discardableResult
-  public mutating func removeLast() -> Element {
-    _ensureUnique()
-    guard let element = popLast() else {
-      preconditionFailure(.emptyLast)
-    }
-    return element
-  }
-}
-
-extension RedBlackTreeValueRangeView {
-
-  @inlinable
-  @discardableResult
-  public mutating func erase() -> Index {
-    _ensureUnique()
-    let (_start, _end) = _raw_range
-    // ややチェックが甘いので末端チェック付き削除が必要
-    return ___index(try! __tree_.___erase_range(_start, _end).get())
-  }
-
-  @inlinable
-  public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
-    _ensureUnique()
-    let (_start, _end) = _raw_range
-    let result = try __tree_.___erase_range_if(_start.unchecked, _end.unchecked) {
-      try shouldBeRemoved(Base.___mapped_value($0))
-    }
-    assert(result.error == nil)
-  }
-}
-
-#if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeValueRangeView where _PayloadValue: Equatable {
-
-    /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-    ///   sequence and the length of `other`.
-    @inlinable
-    public func elementsEqual<OtherSequence>(_ other: OtherSequence) -> Bool
-    where OtherSequence: Sequence, Element == OtherSequence.Element {
-      elementsEqual(other, by: ==)
-    }
-  }
-
-  extension RedBlackTreeValueRangeView where _PayloadValue: Comparable {
-
-    /// - Complexity: O(*m*), where *m* is the lesser of the length of the
-    ///   sequence and the length of `other`.
-    @inlinable
-    public func lexicographicallyPrecedes<OtherSequence>(_ other: OtherSequence) -> Bool
-    where OtherSequence: Sequence, Element == OtherSequence.Element {
-      lexicographicallyPrecedes(other, by: <)
-    }
-  }
-
-  extension RedBlackTreeValueRangeView: Equatable where _PayloadValue: Equatable {
-
-    /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-    @inlinable
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-      lhs._isdentical(to: rhs) || lhs.elementsEqual(rhs)
-    }
-  }
-
-  extension RedBlackTreeValueRangeView: Comparable where _PayloadValue: Comparable {
-
-    /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
-    @inlinable
-    public static func < (lhs: Self, rhs: Self) -> Bool {
-      !lhs._isdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
-    }
-  }
-#endif
 
 #if swift(>=5.5)
   extension RedBlackTreeValueRangeView: @unchecked Sendable

@@ -380,14 +380,3 @@ extension RedBlackTreeKeyOnlyRangeView {
     return index == end
   }
 }
-
-extension RedBlackTreeKeyOnlyRangeView where Base: _BaseNode_PtrRangeCompInterface {
-
-  @inlinable
-  package func isValid(index: Index) -> Bool {
-    let i = __tree_.__purified_(index)  // __retrieve_でもテストは通る
-    // endが通らない気がする
-    guard let i = i.accessible.pointer else { return false }
-    return __tree_.contains(range: _raw_range_, pointer: i)
-  }
-}

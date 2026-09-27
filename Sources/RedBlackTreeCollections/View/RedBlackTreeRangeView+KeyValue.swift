@@ -422,14 +422,3 @@ extension RedBlackTreeKeyValueRangeView {
     return index == end
   }
 }
-
-extension RedBlackTreeKeyValueRangeView where Base: _BaseNode_PtrRangeCompInterface {
-
-  @inlinable
-  package func isValid(index: Index) -> Bool {
-    let i = __tree_.__purified_(index)  // __retrieve_でもテストは通る
-    guard let i = i.accessible.pointer else { return false }
-    let (_start, _end) = _raw_range
-    return Base.___ptr_range_comp(_start, i, _end)
-  }
-}

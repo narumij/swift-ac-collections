@@ -238,6 +238,29 @@ extension RedBlackTreeMultiSet {
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
+
+    // TODO: キーの不一致はトラップになることをコメントドックに書く
+    @inlinable
+    public mutating func update(_ newMember: Element, at i: Index) -> Element {
+      __tree_.ensureUnique()
+      let __i = __tree_.__purified_(i)
+      guard
+        __i.accessible.error == nil,
+        let i = __i.pointer
+      else {
+        fatalError(.invalidIndex)
+      }
+
+      let oldMember = Base.__key_(i)
+      guard oldMember == newMember else {
+        fatalError(.keyMismatch)
+      }
+
+      Base.__key_ptr(i).pointee = newMember
+      return oldMember
+    }
+
+    // TODO: キーの不一致はトラップになることをコメントドックに書く
     @inlinable
     public mutating func swapAt(_ i: Index, _ j: Index) -> Bool {
       __tree_.ensureUnique()

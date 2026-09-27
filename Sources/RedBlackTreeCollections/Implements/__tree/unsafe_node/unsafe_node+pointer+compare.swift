@@ -140,3 +140,19 @@ func ___ptr_comp_bitmap(
   return (__l.___is_end ? .max : __l.___ptr_bitmap_64())
     < (__r.___is_end ? .max : __r.___ptr_bitmap_64())
 }
+
+@inlinable
+func lessThan(
+  lhs: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
+  rhs: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?)
+)
+  -> (
+    result: Bool,
+    lhsBitmap: _NodePathBitmap?,
+    rhsBitmap: _NodePathBitmap?
+  )
+{
+  let lhsBitmap = lhs.bitmap ?? _NodePathBitmap(lhs.node)
+  let rhsBitmap = rhs.bitmap ?? _NodePathBitmap(rhs.node)
+  return (lhsBitmap < rhsBitmap, lhsBitmap, rhsBitmap)
+}

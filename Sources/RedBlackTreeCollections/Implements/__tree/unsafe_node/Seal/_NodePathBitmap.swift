@@ -5,6 +5,7 @@
 //  Created by narumij on 2026/09/27.
 //
 
+@usableFromInline
 enum _NodePathBitmap {
 
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
@@ -18,6 +19,7 @@ enum _NodePathBitmap {
   case path(NodePathBitmap)
   case end
 
+  @inlinable
   init(_ p: _NodePtr) {
     self = p.___is_end ? .end : .path(p.___ptr_bitmap())
   }

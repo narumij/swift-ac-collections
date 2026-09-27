@@ -40,6 +40,40 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
       XCTAssertLessThan(SUT.key(2), .key(.max))
       XCTAssertFalse(SUT.key(2) < .key(1))
     }
+
+    func testLessThanGeneratesMissingNodePathBitmaps() {
+      let set: RedBlackTreeSet = [0, 1]
+      let lhs = set.__tree_.__purified_(set.startIndex).accessible.pointer!
+      let rhsIndex = set.index(after: set.startIndex)
+      let rhs = set.__tree_.__purified_(rhsIndex).accessible.pointer!
+
+      let result = lessThan(
+        lhs: (node: lhs, bitmap: nil),
+        rhs: (node: rhs, bitmap: nil)
+      )
+
+      XCTAssertEqual(result.result, _NodePathBitmap(lhs) < _NodePathBitmap(rhs))
+      XCTAssertEqual(result.lhsBitmap, _NodePathBitmap(lhs))
+      XCTAssertEqual(result.rhsBitmap, _NodePathBitmap(rhs))
+    }
+
+    func testLessThanReusesProvidedNodePathBitmaps() {
+      let set: RedBlackTreeSet = [0, 1]
+      let lhs = set.__tree_.__purified_(set.startIndex).accessible.pointer!
+      let rhsIndex = set.index(after: set.startIndex)
+      let rhs = set.__tree_.__purified_(rhsIndex).accessible.pointer!
+      let lhsBitmap = _NodePathBitmap.path(.max)
+      let rhsBitmap = _NodePathBitmap.path(.min)
+
+      let result = lessThan(
+        lhs: (node: lhs, bitmap: lhsBitmap),
+        rhs: (node: rhs, bitmap: rhsBitmap)
+      )
+
+      XCTAssertFalse(result.result)
+      XCTAssertEqual(result.lhsBitmap, lhsBitmap)
+      XCTAssertEqual(result.rhsBitmap, rhsBitmap)
+    }
   #endif
 
   #if DEBUG

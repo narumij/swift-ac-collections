@@ -8,10 +8,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- RedBlackTreeSet / MultiSet / Dictionary / MultiMapの利用者向けドキュメントを追加
+- C++標準ライブラリとのAPI対応表を追加
+- RedBlackTreeCollectionsの位置指定DSLと削除APIに関するドキュメントを追加
+- 1,600万要素での検索・削除ベンチマークと結果を追加
+- インデックス検証と遅延シーケンスに関するテストを追加
+
+### Changed
+- BoundsExpression / RangeExpressionと範囲削除APIを整理
+- インデックスの所属先と有効性の検査を強化
+- バケット確保・再利用とCopy-on-Write周辺の内部実装を整理
+- READMEを更新
+
+### Fixed
+- 異なるツリーに属するインデックスや削除後の無効なインデックスを検出するよう修正
+- 範囲式、削除、Copy-on-Write、ノード再利用に関する不具合を修正
+
+### Removed
+- RedBlackTreeBoundExpressionの旧実装を削除
+- 重複・旧式のテストとテスト専用補助実装を整理
+
+## [0.4.4] - 2026-09-24
+
+### Added
+- バケットキューと走査処理のテストを追加
+- ベンチマーク結果と実行設定を追加
+
+### Changed
+- BoundsExpression、インデックス比較、バケット管理周辺の内部実装を整理
+- CIのdebug / releaseテスト構成を整理
+- READMEとベンチマーク結果を更新
+
+### Fixed
+- オフセット計算時のオーバーフロー検査を追加
+- 内部実装のリファクタリングに伴う不整合を修正
+
+## [0.4.3] - 2026-09-23
+
+### Added
+- メモリレイアウトと品質方針に関するドキュメントを追加
+- Int32 / Int128を使用するSet / Dictionaryのテストを追加
+- GitHub ActionsにAddress Sanitizerによる検証を追加
+
+### Changed
+- CIログから不要なverbose出力を削減
+- パフォーマンステストの出力をblack holeへ変更
+- Package.swiftでDocumentationをビルド対象から除外
+
+### Fixed
+- バケット終端、capacity、メモリアラインメント周辺のテストと実装を修正
+
+## [0.4.2] - 2026-09-22
+
+### Added
 - BareArrayModuleを追加
 - OptionalArrayModuleを追加
 - `ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND` traitを追加
 - `USE_INT128` traitを追加
+- AtCoder 2025とのAPI互換性を確認するテストを追加
+- RedBlackTreeCollectionsの内部設計、メモリ安全性、Copy-on-Write、Rangeに関するドキュメントを追加
+- バケットとノードのメモリレイアウトに関するテストを追加
+- ベンチマーク設定と結果を追加
 
 ### Changed
 - Swift tools versionを6.2へ更新

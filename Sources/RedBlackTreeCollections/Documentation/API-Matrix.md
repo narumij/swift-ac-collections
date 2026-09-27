@@ -127,13 +127,9 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | --- | :---: | :---: | :---: | :---: | --- |
 | `popFirst()` / `popLast()` | ✅ | ✅ | ✅ | ✅ | 端の要素をOptionalで取り出す |
 | `removeFirst()` / `removeLast()` | ✅ | ✅ | ✅ | ✅ | 端の要素を取り出す。空の場合は失敗する |
-| `remove(_:)` | ✅ | ✅ | — | — | 指定要素を削除する(TODO: multisetの単数複数どちら動作なのか確認) |
+| `remove(_:)` | ✅ | — | — | — | Setから指定要素を削除する |
 | `remove(at:)` | ✅ | ✅ | ✅ | ✅ | Index位置の要素を削除して返す |
 | `removeValue(forKey:)` | — | — | — | ✅ | キーに対応する値を削除する |
-| `removeFirst(forKey:)` | — | — | ✅ | — | キーに対応する最初の要素を削除する |
-| `removeFirst(_ member:)` | — | TODO | - | — | 指定値と等しい最初の要素を削除する |
-| `removeAll(forKey:)` | — | — | ✅ | — | キーに対応する全要素を削除する |
-| `removeAll(_ member:)` | — | ✅ | — | — | 指定値と等しい全要素を削除する |
 | `removeAll(keepingCapacity:)` | ✅ | ✅ | ✅ | ✅ | 全要素を削除する |
 | `removeSubrange(_:)` | ✅ | ✅ | ✅ | ✅ | RangeExpressionで指定した範囲を削除する |
 | `erase(_ index:)` | ✅ | ✅ | ✅ | ✅ | Index位置を削除し、後続Indexを返す |

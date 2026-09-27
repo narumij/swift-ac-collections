@@ -67,8 +67,8 @@ Index範囲に対する `containsSubrange` は、範囲内に要素が存在す�
 | `RedBlackTreeKeyValueRangeView.isValid(index:)` | `View/RedBlackTreeRangeView+KeyValue.swift` | `package` | Indexが要素へアクセス可能で、Viewの内部範囲に含まれること |
 | `UnsafeTreeV2.isValid(range: _NodeRange)` | `Implements/UnsafeTreeV2/UnsafeTreeV2+RawRange.swift` | internal | 下端と上端が同じか、下端が上端より前であること |
 | `UnsafeTreeV2.isValid(range: _SafeRange)` | 同上 | internal | 端点の検証に成功し、得られた `_NodeRange` の順序が正しいこと |
-| `BalancedSequence.isValid(...)` 要求群 | `Implements/Protocol/BalancedSequence.swift` | package側の抽象化 | 旧Index範囲判定を要求する。単一IndexおよびBounds系の要求はコメントアウト中 |
-| Bounds系 `isValid(...)` | `Tests/RedBlackTreeTests/fixture` | テストターゲット内 | 単数subscriptが非`nil`、または範囲subscriptが非空になることを確認する互換ヘルパー |
+| `BalancedSequence.isValid(...)` 要求群 | `Implements/Protocol/BalancedSequence.swift` | package側の抽象化 | 単一Index、Index範囲、Bounds系の旧要求はコメントアウト中 |
+| 公開APIから削除した `isValid(...)` | `Tests/RedBlackTreeTests/fixture` | テストターゲット内 | Index範囲は `containsSubrange` へ転送し、Bounds系はsubscriptの結果を確認する互換ヘルパー |
 
 Range View の判定は、木全体に対する `Index` 判定より条件が一つ多く、「そのViewの範囲に含まれること」まで確認する。`endIndex` は要素へアクセスできないため、ここでも `false` になる。
 
@@ -89,7 +89,7 @@ Range View の判定は、木全体に対する `Index` 判定より条件が一
 
 4種類すべてのコレクションで、旧 `isValid(_ index: Index)` の実際の意味を `isElement(at:)` として公開し、`isEnd(_:)` と分離している。共通テストの移行用に限り、テストターゲット内の `isValid(_:)` を `isElement(at:)` へのエイリアスとして残している。
 
-Index Range判定はreceiverとの包含関係を表すため、4種類すべてのコレクションで `containsSubrange` を使用する。従来のIndex Range版 `isValid` はソース互換性のためdeprecated forwarding APIとして残す。
+Index Range判定はreceiverとの包含関係を表すため、4種類すべてのコレクションで `containsSubrange` を使用する。従来のIndex Range版 `isValid` は公開APIから削除し、既存テスト向けのforwarding helperだけをテストターゲット内に残す。
 
 Bounds系は失敗を値として表現する。単数のsubscriptは解決不能時に `nil`、範囲subscriptは成立しない式に対して空Viewを返す。このため単数・範囲とも公開 `isValid` を削除した。既存テストについては、subscriptの結果を同じ綴りで確認するテストターゲット内の互換ヘルパーを使用する。
 

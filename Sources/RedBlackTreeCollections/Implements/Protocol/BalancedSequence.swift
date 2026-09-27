@@ -114,8 +114,8 @@
     // MARK: -
 
     // func isValid(_: Index) -> Bool
-    func isValid(_: IndexRange) -> Bool
-    func isValid(_: IndexRangeExpression) -> Bool
+    // func isValid(_: IndexRange) -> Bool
+    // func isValid(_: IndexRangeExpression) -> Bool
     // func isValid(_: Bound) -> Bool
     // func isValid(_: BoundRangeExpression) -> Bool
 

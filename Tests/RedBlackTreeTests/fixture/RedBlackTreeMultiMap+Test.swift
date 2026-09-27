@@ -18,6 +18,22 @@
     internal func isValid(_ bounds: BoundRangeExpression) -> Bool {
       !self[bounds].isEmpty
     }
+
+    /// Compatibility helpers for tests that still use the former Range spelling.
+    @inlinable
+    internal func isValid(_ bounds: UnboundedRange) -> Bool {
+      containsSubrange(bounds)
+    }
+
+    @inlinable
+    internal func isValid(_ bounds: IndexRange) -> Bool {
+      containsSubrange(bounds)
+    }
+
+    @inlinable
+    internal func isValid(_ bounds: IndexRangeExpression) -> Bool {
+      containsSubrange(bounds)
+    }
   }
 #endif
 

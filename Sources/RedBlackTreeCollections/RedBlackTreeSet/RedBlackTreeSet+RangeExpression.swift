@@ -53,23 +53,6 @@
       return __tree_.isValid(range: range)
     }
 
-    @available(*, deprecated, renamed: "containsSubrange(_:)")
-    @inlinable
-    public func isValid(_ bounds: UnboundedRange) -> Bool {
-      containsSubrange(bounds)
-    }
-
-    @available(*, deprecated, renamed: "containsSubrange(_:)")
-    @inlinable
-    public func isValid(_ bounds: IndexRange) -> Bool {
-      containsSubrange(bounds)
-    }
-
-    @available(*, deprecated, renamed: "containsSubrange(_:)")
-    @inlinable
-    public func isValid(_ bounds: IndexRangeExpression) -> Bool {
-      containsSubrange(bounds)
-    }
   }
 
   extension RedBlackTreeSet {

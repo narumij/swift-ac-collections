@@ -104,7 +104,7 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(set + [], [1, 2, 3])
   }
 
-  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if DEBUG && !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
     /// CoW後もindex(inserting:)で保存したIndexから対象を削除できること
     func test_indexInserting_savedIndicesRemainUsableAfterCopyOnWrite() {
       var set = RedBlackTreeSet(0..<8)

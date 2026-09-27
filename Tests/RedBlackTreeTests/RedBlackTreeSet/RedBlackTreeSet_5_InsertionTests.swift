@@ -105,39 +105,47 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
   }
 
   #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
-    /// 再利用されたnodeのIndexが、CoW後も同じ世代のnodeを指すこと
-    func test_indexInserting_preservesGenerationAcrossCopyOnWrite() {
-      var set = RedBlackTreeSet<Int>()
+    /// CoW後もindex(inserting:)で保存したIndexから対象を削除できること
+    func test_indexInserting_savedIndicesRemainUsableAfterCopyOnWrite() {
+      var set = RedBlackTreeSet(0..<8)
 
-      let staleIndex = set.index(inserting: 1).index
-      XCTAssertTrue(set.removeSafe(at: staleIndex))
+      // recycle countが進んだnodeもCoWで正しく引き継がれることを確認する。
+      let removedIndex = set.firstIndex(of: 4)!
+      XCTAssertTrue(set.removeSafe(at: removedIndex))
+      let recycled = set.index(inserting: 8)
+      XCTAssertTrue(recycled.inserted)
 
-      let currentIndex = set.index(inserting: 1).index
-      XCTAssertFalse(set.isValid(staleIndex))
-      XCTAssertTrue(set.isValid(currentIndex))
+      set._copyCount = 0
+      let shared = set
 
-      var copy = set
+      withExtendedLifetime(shared) {
+        var saved: [(element: Int, index: RedBlackTreeSet<Int>.Index)] = [
+          (8, recycled.index)
+        ]
 
-      XCTAssertFalse(copy.isValid(staleIndex))
-      XCTAssertTrue(copy.removeSafe(at: currentIndex))
-      XCTAssertFalse(copy.contains(1))
-      XCTAssertTrue(set.contains(1))
-    }
+        // 最初の挿入でCoWし、その後もしばらく挿入とIndex保存を続ける。
+        for element in 9..<64 {
+          let result = set.index(inserting: element)
+          XCTAssertTrue(result.inserted)
+          saved.append((element, result.index))
+        }
 
-    /// CoWで分岐した一方の世代変更が、他方の同世代Indexを無効にしないこと
-    func test_indexInserting_tracksGenerationInTheTargetTree() {
-      var source = RedBlackTreeSet<Int>()
-      let index = source.index(inserting: 1).index
+        XCTAssertGreaterThan(set._copyCount, 0)
 
-      var copy = source
-      copy.insert(2)
+        for (element, index) in saved {
+          XCTAssertTrue(set.isValid(index))
+          XCTAssertEqual(set[index], element)
+        }
 
-      XCTAssertTrue(source.removeSafe(at: index))
-      _ = source.index(inserting: 1)
+        for (element, index) in saved {
+          XCTAssertTrue(set.removeSafe(at: index))
+          XCTAssertFalse(set.contains(element))
+        }
 
-      XCTAssertTrue(copy.isValid(index))
-      XCTAssertTrue(copy.removeSafe(at: index))
-      XCTAssertFalse(copy.contains(1))
+        XCTAssertGreaterThan(set._copyCount, 0)
+        XCTAssertEqual(set + [], [0, 1, 2, 3, 5, 6, 7])
+        XCTAssertEqual(shared + [], [0, 1, 2, 3, 5, 6, 7, 8])
+      }
     }
   #endif
 }

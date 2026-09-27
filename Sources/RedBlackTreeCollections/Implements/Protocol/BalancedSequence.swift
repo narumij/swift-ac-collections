@@ -171,6 +171,12 @@
     mutating func reserveCapacity(_ minimumCapacity: Int)
     var freeCapacity: Int { get }
   }
+
+  public protocol BalancedSomething {
+    associatedtype Index
+    func isElement(at: Index) -> Bool
+    func isEnd(_: Index) -> Bool
+  }
 #endif
 
 // MARK: -
@@ -178,14 +184,19 @@
 #if DEBUG && !COMPATIBLE_ATCODER_2025
   // TODO: プロトコル適合を外したいが、なぜか性能に影響するので、外せずにいる
   extension RedBlackTreeSet: BalancedCollection {}
+  extension RedBlackTreeSet: BalancedSomething {}
   extension RedBlackTreeSet: BalancedDynamic {
     public var freeCapacity: Int { __tree_.freeCapacity }
   }
 
   extension RedBlackTreeDictionary: BalancedCollection {}
+  extension RedBlackTreeDictionary: BalancedSomething {}
 
   extension RedBlackTreeMultiSet: BalancedMultiCollection {}
+  extension RedBlackTreeMultiSet: BalancedSomething {}
+
   extension RedBlackTreeMultiMap: BalancedMultiCollection {}
+  extension RedBlackTreeMultiMap: BalancedSomething {}
 
   extension RedBlackTreeKeyOnlyRangeView: BalancedView {}
   extension RedBlackTreeKeyValueRangeView: BalancedView {}

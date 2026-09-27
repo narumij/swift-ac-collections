@@ -77,8 +77,9 @@ tracking tag順に再構築する。
 削除済みノードがrecycle poolに存在するとtracking tagに抜けが生じるため、
 有効要素数ではなく `freshPoolUsedCount` までをコピー対象とする。
 
-ただし `count == 0` の場合、現行の `copyBuffer` は容量を確保した後に早期returnする。
-そのため、空になる前の使用済みslot、recycle pool、世代履歴はコピー先へ再構築されない。
+`count == 0` の場合、`copyBuffer` は必要容量を確保した後に早期returnする。
+空の木には引き継ぐ論理要素がないため、CoWコストを抑える目的で、空になる前の
+使用済みslot、recycle pool、世代履歴はコピー先へ再構築しない。
 
 新しい木のポインタは古い木と異なる。リンクはtracking tagから新しいポインタへ
 写像して再構築する。
@@ -112,16 +113,16 @@ CoWで作られた木は値として等価でも、別のストレージであ�
 取得したIndexを使用することは事前条件違反であり、その検出は保証しない。
 tracking tagが偶然一致して要素を解決できた場合も、保証された動作には含めない。
 
-### 世代のコピーと空の木の制限
+### 世代のコピーと空の木
 
 `ALLOW_CROSS_TREE_INDEX` 有効時は、CoWコピーで各ノードの
 `___recycle_count` も引き継ぐ。異なる `_LazyTie` 間では、Indexに保存された
 tracking tagとsealをコピー先ノードのtracking tagとrecycle countへ照合する。
 このため、再利用前のstale Indexはコピー先でも `.unsealed` となる。
 
-ただし `count == 0` のコピーは前述の早期return経路を通り、使用済みslotと
-recycle countの履歴を再構築しない。空になった木をCoWした後の世代継承は、
-現時点の保証に含めない。
+`count == 0` のコピーは前述の早期return経路を通る。空の木には対応付ける
+有効要素がないため、使用済みslotとrecycle countの履歴を再構築せず、
+余分なCoW処理を避ける。
 
 ## CoWを減らすAPI方針
 
@@ -161,7 +162,7 @@ CoW関連の変更では、少なくとも次を確認する。
 - コピー先が元の `_tied` と `_lazyDetach` を継承しないこと
 - CoW由来の有効なIndexがコピー先の対応要素へ解決されること
 - 再利用前のstale IndexがCoW後の木でも `.unsealed` になること
-- 空の木では世代履歴を継承しない制限を維持または変更時に明示すること
+- 空の木では不要なslotと世代履歴をコピーしないこと
 - `AC_COLLECTIONS_INTERNAL_CHECKS` の `copyCount` で発火回数を確認できること
 - Releaseビルドでコピー低速経路の分離とホットパスのコード生成を確認すること
 

@@ -173,7 +173,8 @@ Set系のpayloadはキーそのものであり、Dictionary系は
 古いsealed pointerを無効化してからpoolへ戻す。
 
 `ALLOW_CROSS_TREE_INDEX` 有効時のCoWコピーではrecycle countも新しいノードへ
-引き継ぎ、コピー先での世代照合に用いる。空の木のコピーはpool履歴を再構築しない。
+引き継ぎ、コピー先での世代照合に用いる。空の木ではCoWコストを抑えるため、
+不要なpool履歴を再構築しない。
 
 ### Bucket
 

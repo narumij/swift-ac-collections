@@ -138,8 +138,8 @@ tracking tagを維持し、`ALLOW_CROSS_TREE_INDEX` の経路でコピー元Inde
 コピー先では、Indexが保存したsealと対応ノードのrecycle countを比較するため、
 再利用前のstale Indexは `.unsealed` として拒否される。
 
-ただし `count == 0` のコピーは使用済みslotと世代履歴を再構築しない。
-空になった木をCoWした後の世代継承は、現時点の保証に含めない。
+`count == 0` のコピーでは対応付ける有効要素がないため、CoWコストを抑える目的で
+使用済みslotと世代履歴を再構築しない。
 
 元ストレージ自体が解放された場合は `_LazyTie.isDetached` により、元のraw pointerを
 dereferenceする前に拒否する。
@@ -178,7 +178,7 @@ dereferenceする前に拒否する。
 - 互換経路の所有権移行でbucketが二重解放されないこと
 - CoW由来の有効なIndexをtracking tagから対応付けられること
 - 再利用前のstale IndexがCoW後の木でも `.unsealed` になること
-- 空の木では世代履歴を継承しない制限を確認すること
+- 空の木では不要なslotと世代履歴をコピーしないこと
 - DebugとReleaseの両方で検証経路が成立すること
 - sanitizerおよび削除・再利用を繰り返すテストで問題がないこと
 

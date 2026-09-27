@@ -76,23 +76,23 @@
 #endif
 
 #if COMPATIBLE_ATCODER_2025
-//  // 申し訳程度に用意したAPIだけど、これではどうも不十分なのでdeprecatedにする
-//  // 結局復活する可能性もあるにはある
-//  extension RedBlackTreeMultiMap {
-//
-//    /// - Complexity: O(log *n*)
-//    @inlinable
-//    @discardableResult
-//    public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
-//      __tree_.ensureUnique()
-//      let unsealed = __tree_.__purified_(ptr).accessible
-//      guard let p = unsealed.pointer
-//      else { return nil }
-//      let old = __tree_[_unsafe_raw: p]
-//      __tree_[_unsafe_raw: p].tuple.value = newValue
-//      return Base.__element_(old)
-//    }
-//  }
+  // 申し訳程度に用意したAPIだけど、これではどうも不十分なのでdeprecatedにする
+  // 結局復活する可能性もあるにはある
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Element? {
+      __tree_.ensureUnique()
+      let unsealed = __tree_.__purified_(ptr).accessible
+      guard let p = unsealed.pointer
+      else { return nil }
+      let old = __tree_[_unsafe_raw: p]
+      __tree_[_unsafe_raw: p].tuple.value = newValue
+      return Base.__element_(old)
+    }
+  }
 #endif
 
 #if COMPATIBLE_ATCODER_2025

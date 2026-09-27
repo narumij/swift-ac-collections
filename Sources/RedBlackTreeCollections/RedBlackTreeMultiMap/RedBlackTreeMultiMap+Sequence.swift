@@ -140,7 +140,7 @@ extension RedBlackTreeMultiMap {
     #else
       // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
       public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
-      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+      //      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
       /// A collection containing just the keys of the dictionary.
       ///
@@ -150,13 +150,37 @@ extension RedBlackTreeMultiMap {
         .init(start: _start, end: _end, tree: __tree_)
       }
 
-    // TODO: valuesはViewにして、swapAt可能にすること
+      // TODO: valuesはViewにして、swapAt可能にすること
       /// A collection containing just the values of the dictionary.
       ///
       /// - Complexity: O(`count`)
+      //      @inlinable
+      //      public var values: UnsafeIterator.MappedValueObverse<Base> {
+      //        .init(start: _start, end: _end, tree: __tree_)
+      //      }
+
+      public typealias Values = RedBlackTreeValueRangeView<Self>
+
       @inlinable
-      public var values: UnsafeIterator.MappedValueObverse<Base> {
-        .init(start: _start, end: _end, tree: __tree_)
+      func makeValuesView(range: _NodeRange) -> Values {
+        Values(
+          __tree_: __tree_,
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
+      }
+
+      @inlinable
+      public var values: Values {
+        @inline(__always) get {
+          return makeValuesView(range: ___node_range)
+        }
+
+        @inline(__always) _modify {
+          var view = makeValuesView(range: ___node_range)
+          self = Self()  // yield中のCoWキャンセル。考えた人賢い
+          defer { self = Self(__tree_: view.__tree_) }
+          yield &view
+        }
       }
     #endif
   }

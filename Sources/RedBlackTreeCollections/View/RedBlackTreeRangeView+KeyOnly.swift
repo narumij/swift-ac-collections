@@ -51,9 +51,6 @@ where
 
   @usableFromInline var _sealed_start: _SealedPtr
   @usableFromInline var _sealed_end: _SealedPtr
-  
-  @usableFromInline var _path_bitmap_start: _NodePathBitmap.NodePathBitmap?
-  @usableFromInline var _path_bitmap_end: _NodePathBitmap.NodePathBitmap?
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
@@ -79,10 +76,6 @@ extension RedBlackTreeKeyOnlyRangeView {
       // コピー木であることがわかっているので千本引きが確実に行える（ハズレ無し）
       _sealed_start = __tree_.__retrieve_(_sealed_start.purified.tag)
       _sealed_end = __tree_.__retrieve_(_sealed_end.purified.tag)
-
-      // pathのクリアを行う
-      _path_bitmap_start = nil
-      _path_bitmap_end = nil
     }
   }
 }

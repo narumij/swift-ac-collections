@@ -1,5 +1,5 @@
 //
-//  RedBlackTreeRangeView+Values.swift
+//  RedBlackTreeRangeView+Keys.swift
 //  swift-ac-collections
 //
 //  Created by narumij on 2026/09/28.
@@ -9,4 +9,5 @@
 
 // swapAt可能にする
 
-// multimap, dictionary用のView, SubView
+// multset用のSubView
+

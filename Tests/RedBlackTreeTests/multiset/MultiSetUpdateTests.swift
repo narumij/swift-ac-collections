@@ -17,6 +17,7 @@ import XCTest
 
       let replacedMember = set.update(newMember, at: index)
 
+      XCTAssertNotNil(replacedMember)
       XCTAssertTrue(replacedMember === oldMember)
       XCTAssertTrue(set[index] === newMember)
     }
@@ -36,10 +37,34 @@ import XCTest
       let replacedMember = set.update(newMember, at: index)
       let after = Array(set)
 
+      XCTAssertNotNil(replacedMember)
       XCTAssertTrue(replacedMember === oldMember)
       XCTAssertTrue(after[0] === before[0])
       XCTAssertTrue(after[1] === newMember)
       XCTAssertTrue(after[2] === before[2])
+    }
+
+    func testUpdateAtEndIndexReturnsNilWithoutChangingSet() {
+      let member = A(x: 1, label: "member")
+      let newMember = A(x: 1, label: "new")
+      var set = RedBlackTreeMultiSet([member])
+
+      let replacedMember = set.update(newMember, at: set.endIndex)
+
+      XCTAssertNil(replacedMember)
+      XCTAssertTrue(set[set.startIndex] === member)
+    }
+
+    func testUpdateWithDifferentMemberReturnsNilWithoutChangingSet() {
+      let member = A(x: 1, label: "member")
+      let differentMember = A(x: 2, label: "different")
+      var set = RedBlackTreeMultiSet([member])
+      let index = set.startIndex
+
+      let replacedMember = set.update(differentMember, at: index)
+
+      XCTAssertNil(replacedMember)
+      XCTAssertTrue(set[index] === member)
     }
 
     func testUpdatePreservesValueSemanticsAfterCopy() {
@@ -51,6 +76,7 @@ import XCTest
 
       let replacedMember = set.update(newMember, at: index)
 
+      XCTAssertNotNil(replacedMember)
       XCTAssertTrue(replacedMember === oldMember)
       XCTAssertTrue(set[index] === newMember)
       XCTAssertTrue(copy[copy.startIndex] === oldMember)

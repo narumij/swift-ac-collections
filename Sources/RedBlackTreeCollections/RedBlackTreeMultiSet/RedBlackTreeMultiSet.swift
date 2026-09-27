@@ -252,7 +252,7 @@ extension RedBlackTreeMultiSet {
 
       let oldMember = Base.__key_(i)
       guard oldMember == newMember else {
-        fatalError(.keyMismatch)
+        return nil
       }
 
       Base.__key_ptr(i).pointee = newMember

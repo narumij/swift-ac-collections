@@ -173,7 +173,7 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   public var isEmpty: Bool {
     let (l, u) = _raw_range
-    return l != u
+    return l == u
   }
 
   /// - Complexity: O(`count`)

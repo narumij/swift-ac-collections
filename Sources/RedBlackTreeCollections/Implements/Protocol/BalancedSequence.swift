@@ -116,8 +116,8 @@
     // func isValid(_: Index) -> Bool
     func isValid(_: IndexRange) -> Bool
     func isValid(_: IndexRangeExpression) -> Bool
-    func isValid(_: Bound) -> Bool
-    func isValid(_: BoundRangeExpression) -> Bool
+    // func isValid(_: Bound) -> Bool
+    // func isValid(_: BoundRangeExpression) -> Bool
 
     // 必須では無くなった
     //    func distance(from: Bound, to: Bound) -> Int

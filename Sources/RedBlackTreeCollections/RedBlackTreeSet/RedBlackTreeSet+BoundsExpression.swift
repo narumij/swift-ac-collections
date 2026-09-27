@@ -66,19 +66,6 @@
 
   extension RedBlackTreeSet {
 
-    /// Returns whether the corresponding element can be accessed.
-    ///
-    /// - Deprecated: Use the Bound subscript and inspect its optional result.
-    @available(*, deprecated, message: "Use the Bound subscript and inspect its optional result.")
-    @inlinable
-    public func isValid(_ bound: RedBlackTreeBoundExpression<Element>) -> Bool {
-      let _safe_ptr_ = bound.evaluate(__tree_)
-      return _safe_ptr_.___has_payload_content
-    }
-  }
-
-  extension RedBlackTreeSet {
-
     /// Returns the distance between two evaluated position.
     ///
     /// - Complexity: O(log *n* + *k*)
@@ -120,21 +107,6 @@
       let p = bound.evaluate(__tree_)
       guard let p = p.pointer, !p.___is_end else { return nil }
       return __tree_._unchecked_remove(at: p).payload
-    }
-  }
-
-  extension RedBlackTreeSet {
-
-    /// Returns whether the corresponding element can be accessed.
-    ///
-    /// Even if this returns `false`, BoundRange-related APIs will not crash.
-    ///
-    /// - Deprecated: Use the BoundRangeExpression subscript and inspect the returned view.
-    @available(*, deprecated, message: "Use the BoundRangeExpression subscript and inspect the returned view.")
-    @inlinable
-    public func isValid(_ bounds: BoundRangeExpression) -> Bool {
-      let range = bounds.evaluate(__tree_).relative(to: __tree_)
-      return __tree_.isValid(range: range)
     }
   }
 

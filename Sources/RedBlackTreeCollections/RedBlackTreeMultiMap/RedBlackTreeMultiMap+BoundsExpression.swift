@@ -38,19 +38,6 @@
 
   extension RedBlackTreeMultiMap {
 
-    /// Returns whether the corresponding element can be accessed.
-    ///
-    /// - Deprecated: Use the Bound subscript and inspect its optional result.
-    @available(*, deprecated, message: "Use the Bound subscript and inspect its optional result.")
-    @inlinable
-    public func isValid(_ bound: Bound) -> Bool {
-
-      bound.evaluate(__tree_).accessible.error == nil
-    }
-  }
-
-  extension RedBlackTreeMultiMap {
-
     @inlinable
     public func distance(from start: Bound, to end: Bound)
       -> Int
@@ -85,23 +72,6 @@
       let p = bound.evaluate(__tree_)
       guard let p = p.accessible.pointer else { return nil }
       return Base.__element_(__tree_._unchecked_remove(at: p).payload)
-    }
-  }
-
-  // MARK: -
-
-  extension RedBlackTreeMultiMap {
-
-    /// Returns whether the corresponding element can be accessed.
-    ///
-    /// Even if this returns `false`, BoundRange-related APIs will not crash.
-    ///
-    /// - Deprecated: Use the BoundRangeExpression subscript and inspect the returned view.
-    @available(*, deprecated, message: "Use the BoundRangeExpression subscript and inspect the returned view.")
-    @inlinable
-    public func isValid(_ bounds: BoundRangeExpression) -> Bool {
-      let range = bounds.evaluate(__tree_).relative(to: __tree_)
-      return __tree_.isValid(range: range)
     }
   }
 

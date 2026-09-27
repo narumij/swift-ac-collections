@@ -30,11 +30,9 @@
 |---|---|---|---|
 | `isElement(at: Index)` | 各型の `+Index.swift` | Indexを対象の木で解決でき、世代が一致し、実体のある要素へアクセスできること | `endIndex` は `false` |
 | `isEnd(_ index: Index)` | 各型の `+Index.swift` | Indexを対象の木で解決でき、有効な終端を指すこと | `endIndex` は `true` |
-| `isValid(_ bound: Bound)`（deprecated） | 各型の `+BoundsExpression.swift` | DSLの位置式を評価した結果が、実体のある要素を指すこと | `.end` 相当は `false` |
 | `containsSubrange(_ bounds: IndexRange)` | 各型の `+RangeExpression.swift` | 両端のIndexを安全な内部範囲へ変換でき、下端が上端以下であること | 正しい空範囲は `true` |
 | `containsSubrange(_ bounds: IndexRangeExpression)` | 各型の `+RangeExpression.swift` | 相対範囲を解決でき、解決後の下端が上端以下であること | 正しい空範囲は `true` |
 | `containsSubrange(_ bounds: UnboundedRange)` | 各型の `+RangeExpression.swift` | 木全体を表す内部範囲の順序が正しいこと | 通常は `true` |
-| `isValid(_ bounds: BoundRangeExpression)`（deprecated） | 各型の `+BoundsExpression.swift` | DSLの両端を評価でき、評価後の下端が上端以下であること | 正しい空範囲は `true` |
 
 ### 単一位置の判定
 
@@ -69,7 +67,8 @@ Index範囲に対する `containsSubrange` は、範囲内に要素が存在す�
 | `RedBlackTreeKeyValueRangeView.isValid(index:)` | `View/RedBlackTreeRangeView+KeyValue.swift` | `package` | Indexが要素へアクセス可能で、Viewの内部範囲に含まれること |
 | `UnsafeTreeV2.isValid(range: _NodeRange)` | `Implements/UnsafeTreeV2/UnsafeTreeV2+RawRange.swift` | internal | 下端と上端が同じか、下端が上端より前であること |
 | `UnsafeTreeV2.isValid(range: _SafeRange)` | 同上 | internal | 端点の検証に成功し、得られた `_NodeRange` の順序が正しいこと |
-| `BalancedSequence.isValid(...)` 要求群 | `Implements/Protocol/BalancedSequence.swift` | package側の抽象化 | 範囲・Bound判定を共通インターフェースとして要求する。単一Indexの要求は移行中のためコメントアウト中 |
+| `BalancedSequence.isValid(...)` 要求群 | `Implements/Protocol/BalancedSequence.swift` | package側の抽象化 | 旧Index範囲判定を要求する。単一IndexおよびBounds系の要求はコメントアウト中 |
+| Bounds系 `isValid(...)` | `Tests/RedBlackTreeTests/fixture` | テストターゲット内 | 単数subscriptが非`nil`、または範囲subscriptが非空になることを確認する互換ヘルパー |
 
 Range View の判定は、木全体に対する `Index` 判定より条件が一つ多く、「そのViewの範囲に含まれること」まで確認する。`endIndex` は要素へアクセスできないため、ここでも `false` になる。
 
@@ -92,7 +91,7 @@ Range View の判定は、木全体に対する `Index` 判定より条件が一
 
 Index Range判定はreceiverとの包含関係を表すため、4種類すべてのコレクションで `containsSubrange` を使用する。従来のIndex Range版 `isValid` はソース互換性のためdeprecated forwarding APIとして残す。
 
-Bounds系は失敗を値として表現する。単数のsubscriptは解決不能時に `nil`、範囲subscriptは成立しない式に対して空Viewを返す。このため単数・範囲とも `isValid` をdeprecatedとし、評価結果を直接確認する。
+Bounds系は失敗を値として表現する。単数のsubscriptは解決不能時に `nil`、範囲subscriptは成立しない式に対して空Viewを返す。このため単数・範囲とも公開 `isValid` を削除した。既存テストについては、subscriptの結果を同じ綴りで確認するテストターゲット内の互換ヘルパーを使用する。
 
 ## 推奨方針
 

@@ -4,6 +4,23 @@
   import RedBlackTreeCollections
 #endif
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Compatibility helper for tests that still exercise Bound lookup behavior.
+    @inlinable
+    internal func isValid(_ bound: Bound) -> Bool {
+      self[bound] != nil
+    }
+
+    /// Compatibility helper for tests that exercise Bound range lookup behavior.
+    @inlinable
+    internal func isValid(_ bounds: BoundRangeExpression) -> Bool {
+      !self[bounds].isEmpty
+    }
+  }
+#endif
+
 #if DEBUG
 extension RedBlackTreeDictionary {
 

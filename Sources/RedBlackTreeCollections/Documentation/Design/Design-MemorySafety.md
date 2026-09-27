@@ -138,6 +138,11 @@ tracking tagを維持し、`ALLOW_CROSS_TREE_INDEX` の経路でコピー元Inde
 コピー先では、Indexが保存したsealと対応ノードのrecycle countを比較するため、
 再利用前のstale Indexは `.unsealed` として拒否される。
 
+世代はIndexを利用する対象木に対して検証する。CoWで分岐した一方の木で同じnodeが
+削除・再利用されても、もう一方の木でtracking tagと世代が一致しているIndexは
+引き続き有効である。これは `index(inserting:)` で取得した位置handleを、CoW後の
+対象木でも利用できるようにするための契約である。
+
 `count == 0` のコピーでは対応付ける有効要素がないため、CoWコストを抑える目的で
 使用済みslotと世代履歴を再構築しない。
 
@@ -178,6 +183,7 @@ dereferenceする前に拒否する。
 - 互換経路の所有権移行でbucketが二重解放されないこと
 - CoW由来の有効なIndexをtracking tagから対応付けられること
 - 再利用前のstale IndexがCoW後の木でも `.unsealed` になること
+- CoWで分岐した別の木の世代変更が、対象木で有効なIndexを無効にしないこと
 - 空の木では不要なslotと世代履歴をコピーしないこと
 - DebugとReleaseの両方で検証経路が成立すること
 - sanitizerおよび削除・再利用を繰り返すテストで問題がないこと

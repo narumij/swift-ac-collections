@@ -185,7 +185,8 @@ extension UnsafeTreeV2 {
           // 木が同一のケース
           ? index.sealed.purified
           // 木が異なるケース
-          // ソース側の生木がないので、ソース側の世代チェックを省いている
+          // Indexに保存した世代を、利用対象の木にある対応ノードへ照合する
+          // CoWで分岐した別の木の変更は、このIndexの有効性へ影響させない
           : __retrieve_(index.sealed.tag).deepPurified
       #endif
     }

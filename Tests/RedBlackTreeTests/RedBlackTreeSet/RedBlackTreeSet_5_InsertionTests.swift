@@ -103,4 +103,41 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.count, 3)
     XCTAssertEqual(set + [], [1, 2, 3])
   }
+
+  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+    /// 再利用されたnodeのIndexが、CoW後も同じ世代のnodeを指すこと
+    func test_indexInserting_preservesGenerationAcrossCopyOnWrite() {
+      var set = RedBlackTreeSet<Int>()
+
+      let staleIndex = set.index(inserting: 1).index
+      XCTAssertTrue(set.removeSafe(at: staleIndex))
+
+      let currentIndex = set.index(inserting: 1).index
+      XCTAssertFalse(set.isValid(staleIndex))
+      XCTAssertTrue(set.isValid(currentIndex))
+
+      var copy = set
+
+      XCTAssertFalse(copy.isValid(staleIndex))
+      XCTAssertTrue(copy.removeSafe(at: currentIndex))
+      XCTAssertFalse(copy.contains(1))
+      XCTAssertTrue(set.contains(1))
+    }
+
+    /// CoWで分岐した一方の世代変更が、他方の同世代Indexを無効にしないこと
+    func test_indexInserting_tracksGenerationInTheTargetTree() {
+      var source = RedBlackTreeSet<Int>()
+      let index = source.index(inserting: 1).index
+
+      var copy = source
+      copy.insert(2)
+
+      XCTAssertTrue(source.removeSafe(at: index))
+      _ = source.index(inserting: 1)
+
+      XCTAssertTrue(copy.isValid(index))
+      XCTAssertTrue(copy.removeSafe(at: index))
+      XCTAssertFalse(copy.contains(1))
+    }
+  #endif
 }

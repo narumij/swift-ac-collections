@@ -24,6 +24,22 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
       XCTAssertLessThan(_NodePathBitmap.path(middle), .path(upper))
       XCTAssertFalse(_NodePathBitmap.path(middle) < .path(lower))
     }
+
+    func testNodeKeyEndSortsAfterEveryKey() {
+      typealias SUT = _NodeKey<RedBlackTreeSet<Int>.Base>
+
+      XCTAssertLessThan(SUT.key(.min), .end)
+      XCTAssertLessThan(SUT.key(0), .end)
+      XCTAssertLessThan(SUT.key(.max), .end)
+    }
+
+    func testNodeKeysUseKeyValueOrder() {
+      typealias SUT = _NodeKey<RedBlackTreeSet<Int>.Base>
+
+      XCTAssertLessThan(SUT.key(1), .key(2))
+      XCTAssertLessThan(SUT.key(2), .key(.max))
+      XCTAssertFalse(SUT.key(2) < .key(1))
+    }
   #endif
 
   #if DEBUG

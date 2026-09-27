@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/09/27.
 //
 
-enum _NodeKey<Base: _BaseNode_KeyProtocol>
+enum _NodeKey<Base: _BaseNode_KeyInterface>
 where Base._NodePtr == UnsafeMutablePointer<UnsafeNode>, Base._Key: Comparable {
 
   case key(Base._Key)
@@ -17,3 +17,5 @@ where Base._NodePtr == UnsafeMutablePointer<UnsafeNode>, Base._Key: Comparable {
     self = p.___is_end ? .end : .key(Base.__get_value(p))
   }
 }
+
+extension _NodeKey: Comparable {}

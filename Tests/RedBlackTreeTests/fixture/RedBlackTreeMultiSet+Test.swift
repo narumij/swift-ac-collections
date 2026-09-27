@@ -33,6 +33,17 @@ extension RedBlackTreeMultiSet {
   }
 #endif
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    /// Alias retained for tests shared with the AtCoder 2025 compatibility build.
+    @inlinable
+    internal func isValid(_ index: Index) -> Bool {
+      isElement(at: index)
+    }
+  }
+#endif
+
 #if DEBUG && !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 

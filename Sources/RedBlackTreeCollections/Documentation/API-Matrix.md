@@ -7,7 +7,8 @@
 - ✅: 利用できる
 - —: 利用できない
 - △: 同じ目的の型固有APIを利用する
-- TODO: 製品化に向けた追加候補
+- TODO: 採用済みで未実装
+- 検討: 採用するか未決定
 
 `COMPATIBLE_ATCODER_2025`、Deprecated API、旧Slice APIは対象外とする。
 同じ意味を持つジェネリック版やRange種別ごとのオーバーロードは、原則として
@@ -107,10 +108,10 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `insert(key:value:)` | — | — | ✅ | ✅ | キーと値を挿入する |
 | `update(with:)` | ✅ | — | — | — | Set要素を置換し、旧要素を返す |
 | `updateValue(_:forKey:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
-| `updateValue(_:at:)` | — | — | TODO | — | Index位置の要素を更新し、旧値を返す |
+| `updateValue(_:at:)` | — | — | TODO | — | Index位置の値を更新し、旧値を返す |
 | `update(_:at:)` | — | TODO | — | — | Index位置の要素を更新する。キー不一致時は失敗する |
 | `swapAt(_:_:)` | — | TODO | TODO | — | 同一キーの2要素を入れ替える。キー不一致時は失敗する |
-| `swapValueAt(_:_:)` | — | — | TODO | — | 値2要素を入れ替える。キー不一致時は失敗する |
+| `swapValueAt(_:_:)` | — | — | TODO | — | 2つのIndex位置の値を入れ替える |
 | `index(inserting:)` | ✅ | — | — | — | 挿入し、挿入位置のIndexを返す |
 | `insert(contentsOf:)` | — | ✅ | ✅ | — | 別コンテナまたはSequenceの内容を追加する |
 | `inserting(contentsOf:)` | — | ✅ | ✅ | — | 内容を追加した新しい値を返す |

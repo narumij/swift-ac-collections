@@ -21,9 +21,9 @@
 | `init(_ sequence:)` | ✅ | ✅ | △ | △ | 要素列から生成する。Map系はkeys-with-values形式を使う |
 | `init(_ range:)` | ✅ | ✅ | — | — | Rangeの要素から生成する |
 | `init(keysWithValues:)` | — | — | ✅ | — | `(Key, Value)` の列からMultiMapを生成する |
-| `init(multiKeysWithValues:)` | — | — | ✅ | — | 重複キーを許すことを明示してMultiMapを生成する |
 | `init(uniqueKeysWithValues:)` | — | — | — | ✅ | 一意なキーと値の列からDictionaryを生成する |
 | `init(_:uniquingKeysWith:)` | — | — | — | ✅ | 重複キーをクロージャで統合してDictionaryを生成する |
+| `init(grouping:by:)` | — | — | ✅ | ✅ | 要素列をキーでグループ化して生成する |
 | `init(arrayLiteral:)` | ✅ | ✅ | ✅ | ✅ | 配列リテラルから生成する |
 | `init(dictionaryLiteral:)` | — | — | ✅ | ✅ | Dictionaryリテラルから生成する |
 | `reserveCapacity(_:)` | ✅ | ✅ | ✅ | ✅ | 最低容量を予約する |
@@ -46,6 +46,7 @@
 | `first(where:)` | ✅ | ✅ | ✅ | ✅ | 条件を満たす最初の要素を返す |
 | `subscript(index:)` | ✅ | ✅ | ✅ | ✅ | Index位置の要素を参照する |
 | `subscript(key:) -> Value?` | — | — | — | ✅ | キーに対応する値を参照・更新する |
+| `subscript(key:default:) -> Value` | — | — | — | ✅ | キーに対応する値を参照・更新し、存在しない場合は既定値を使う |
 | `subscript(key:) -> View` | — | — | ✅ | — | キーに対応する全要素のViewを返す |
 | `values(forKey:)` | — | — | ✅ | — | キーに対応する値を返す |
 | `keys` / `values` | — | — | ✅ | ✅ | キーまたは値だけを遅延走査するViewを返す |
@@ -105,7 +106,7 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `insert(key:value:)` | — | — | ✅ | ✅ | キーと値を挿入する |
 | `update(with:)` | ✅ | — | — | — | Set要素を置換し、旧要素を返す |
 | `updateValue(_:forKey:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
-| `updateValue(_:at:)` | — | TODO | ✅ | — | Index位置の値を更新し、旧要素を返す |
+| `update(_:at:)` | — | TODO | TODO | — | Index位置の要素を更新する。キー不一致時は削除・再挿入する |
 | `index(inserting:)` | ✅ | — | — | — | 挿入し、挿入位置のIndexを返す |
 | `insert(contentsOf:)` | — | ✅ | ✅ | — | 別コンテナまたはSequenceの内容を追加する |
 | `inserting(contentsOf:)` | — | ✅ | ✅ | — | 内容を追加した新しい値を返す |
@@ -122,6 +123,7 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `removeFirst()` / `removeLast()` | ✅ | ✅ | ✅ | ✅ | 端の要素を取り出す。空の場合は失敗する |
 | `remove(_:)` | ✅ | — | — | — | Setから指定要素を削除する |
 | `remove(at:)` | ✅ | ✅ | ✅ | ✅ | Index位置の要素を削除して返す |
+| `removeSafe(at:)` | ✅ | — | — | — | Indexが現在利用可能ならSetから要素を削除する |
 | `removeValue(forKey:)` | — | — | — | ✅ | キーに対応する値を削除する |
 | `removeAll(keepingCapacity:)` | ✅ | ✅ | ✅ | ✅ | 全要素を削除する |
 | `erase(_ index:)` | ✅ | ✅ | ✅ | ✅ | Index位置を削除し、後続Indexを返す |

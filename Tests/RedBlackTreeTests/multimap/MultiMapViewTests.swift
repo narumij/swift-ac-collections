@@ -31,19 +31,34 @@ import XCTest
       try super.tearDownWithError()
     }
 
-    func testExample() throws {
-      XCTAssertEqual(sut[0].map { $0.key }, [0, 0, 0, 0])
-      XCTAssertEqual(sut[0].map { $0.value }, [0, 1, 2, 3])
+    #if COMPATIBLE_ATCODER_2025
+      func testExample() throws {
+        XCTAssertEqual(sut[0].map { $0.key }, [0, 0, 0, 0])
+        XCTAssertEqual(sut[0].map { $0.value }, [0, 1, 2, 3])
 
-      XCTAssertEqual(sut[1].map { $0.key }, [1, 1, 1, 1])
-      XCTAssertEqual(sut[1].map { $0.value }, [4, 5, 6, 7])
-      sut[1].popFirst()
-      XCTAssertEqual(sut[1].map { $0.key }, [1, 1, 1])
-      XCTAssertEqual(sut[1].map { $0.value }, [5, 6, 7])
-      sut[1].popLast()
-      XCTAssertEqual(sut[1].map { $0.key }, [1, 1])
-      XCTAssertEqual(sut[1].map { $0.value }, [5, 6])
-    }
+        XCTAssertEqual(sut[1].map { $0.key }, [1, 1, 1, 1])
+        XCTAssertEqual(sut[1].map { $0.value }, [4, 5, 6, 7])
+        sut[1].popFirst()
+        XCTAssertEqual(sut[1].map { $0.key }, [1, 1, 1])
+        XCTAssertEqual(sut[1].map { $0.value }, [5, 6, 7])
+        sut[1].popLast()
+        XCTAssertEqual(sut[1].map { $0.key }, [1, 1])
+        XCTAssertEqual(sut[1].map { $0.value }, [5, 6])
+      }
+    #else
+      func testExample() throws {
+        XCTAssertEqual(sut[0] + [], [0, 1, 2, 3])
+        XCTAssertEqual(sut[1] + [], [4, 5, 6, 7])
+        var map = sut
+        map.remove(at: map.lowerBound(1))
+        sut = map
+        XCTAssertEqual(sut[1] + [], [5, 6, 7])
+        map = sut
+        map.remove(at: map.index(before: map.upperBound(1)))
+        sut = map
+        XCTAssertEqual(sut[1] + [], [5, 6])
+      }
+    #endif
 
     func testExample2() throws {
       XCTAssertEqual(sut.count, 20)

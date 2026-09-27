@@ -109,7 +109,11 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     tree.insert((1, "b"))
     tree.insert((1, "c"))
 
-    let values = tree[1].map { $0.value }
+    #if COMPATIBLE_ATCODER_2025
+      let values = tree[1].map { $0.value }
+    #else
+      let values = tree[1] + []
+    #endif
 
     XCTAssertEqual(values, ["a", "b", "c"])
   }
@@ -124,12 +128,16 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     #if COMPATIBLE_ATCODER_2025
       XCTAssertTrue(tree.removeFirst(forKey: 1))
     #else
-      tree[1].removeFirst()
+      tree.remove(at: tree.lowerBound(1))
     #endif
 
     tree.insert((1, "d"))
 
-    let values = tree[1].map { $0.value }
+    #if COMPATIBLE_ATCODER_2025
+      let values = tree[1].map { $0.value }
+    #else
+      let values = tree[1] + []
+    #endif
 
     XCTAssertEqual(values, ["b", "c", "d"])
   }
@@ -143,7 +151,11 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
     tree.insert((0, "z"))
     tree.insert((1, "c"))
 
-    let values = tree[1].map { $0.value }
+    #if COMPATIBLE_ATCODER_2025
+      let values = tree[1].map { $0.value }
+    #else
+      let values = tree[1] + []
+    #endif
 
     XCTAssertEqual(values, ["a", "b", "c"])
   }

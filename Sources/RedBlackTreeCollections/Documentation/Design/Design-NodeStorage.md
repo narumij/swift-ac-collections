@@ -320,9 +320,12 @@ CoWは値を分離するだけでなく、それまでの段階的な容量拡�
 単一bucketレイアウトがもたらす性質である。
 
 コピーではtracking tag、リンク、色、payloadの有無、Recycle Poolの連結を
-新しいポインタで再構築する。現行コードはrecycle countをコピーしていない。
-このためCoWをまたぐstale Indexの世代検出には既知の制限があり、固定された
-設計契約として扱わない。
+新しいポインタで再構築する。`ALLOW_CROSS_TREE_INDEX` 有効時はrecycle countも
+コピーし、コピー先でもノード世代を維持する。これにより、再利用前のstale Indexを
+CoW後の木で有効なIndexとして扱わない。
+
+ただし空の木は早期return経路を通るため、使用済みslotとrecycle countの履歴を
+コピーしない。
 
 CoWの値セマンティクス、一意性確認、コピー先へ持ち越さない寿命管理状態については
 `Design-CopyOnWrite.md` を参照する。
@@ -366,6 +369,7 @@ payloadへのアクセス許可は別に管理される。詳細は `Design-Memo
 - tracking tagはキー比較や木の順序へ使用しない。
 - 通常の容量拡張で既存ノードを移動しない。
 - 要素を持つ木のCoWコピー先は、使用歴のあるslotを少なくとも収容する。
+- `ALLOW_CROSS_TREE_INDEX` 有効時は、コピーしたslotのrecycle countを維持する。
 - CoW直後のコピー先bucketは単一である。
 - `count <= freshPoolUsedCount <= freshPoolCapacity` を維持する。
 - 互換経路ではbucketの解放責任をheaderと `_TiedRawBuffer` の双方に持たせない。

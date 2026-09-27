@@ -134,10 +134,12 @@ CoWで新しい木を作ると、ノードアドレスと `_LazyTie` は新し�
 tracking tagを維持し、`ALLOW_CROSS_TREE_INDEX` の経路でコピー元Indexを
 コピー先の対応ノードへ解決する。
 
-ただし現行のコピーは `___recycle_count` をコピーしておらず、別の `_LazyTie` を
-解決する経路ではコピー元ノードの現在世代を再検査しない。このため、削除済みIndexと
-コピー先ノードのtracking tag・sealが一致すると、古いIndexが有効に見える可能性がある。
-これは現行実装の既知の制限であり、CoWをまたぐすべてのstale Index検出は保証しない。
+`ALLOW_CROSS_TREE_INDEX` 有効時のコピーは `___recycle_count` も引き継ぐ。
+コピー先では、Indexが保存したsealと対応ノードのrecycle countを比較するため、
+再利用前のstale Indexは `.unsealed` として拒否される。
+
+ただし `count == 0` のコピーは使用済みslotと世代履歴を再構築しない。
+空になった木をCoWした後の世代継承は、現時点の保証に含めない。
 
 元ストレージ自体が解放された場合は `_LazyTie.isDetached` により、元のraw pointerを
 dereferenceする前に拒否する。
@@ -158,6 +160,7 @@ dereferenceする前に拒否する。
 - raw pointerを所有バッファの寿命外へ持ち出さない。
 - 外部へ渡すIndexは世代情報と `_LazyTie` を保持する。
 - recycle poolへ送る前後で世代を進める。
+- `ALLOW_CROSS_TREE_INDEX` 有効時のCoWでは、要素を持つ木のrecycle countを引き継ぐ。
 - payload破棄後は `___has_payload_content == false` とする。
 - cross-tree解決はCoW由来の木を前提とし、無関係な木での成功を契約にしない。
 - 現行Indexはbucketを所有せず、detached確認後にのみpointerを検証する。
@@ -174,7 +177,8 @@ dereferenceする前に拒否する。
 - Iteratorが作成時の木を保持し、元コレクションの変更時にCoWされること
 - 互換経路の所有権移行でbucketが二重解放されないこと
 - CoW由来の有効なIndexをtracking tagから対応付けられること
-- CoWをまたぐstale Index検出の既知の制限を再現するテストを維持すること
+- 再利用前のstale IndexがCoW後の木でも `.unsealed` になること
+- 空の木では世代履歴を継承しない制限を確認すること
 - DebugとReleaseの両方で検証経路が成立すること
 - sanitizerおよび削除・再利用を繰り返すテストで問題がないこと
 

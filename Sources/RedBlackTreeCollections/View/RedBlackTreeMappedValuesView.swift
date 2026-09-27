@@ -97,6 +97,7 @@ extension RedBlackTreeMappedValuesView {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
 extension RedBlackTreeMappedValuesView: Sequence {}
 
 extension RedBlackTreeMappedValuesView {
@@ -108,6 +109,7 @@ extension RedBlackTreeMappedValuesView {
     return .init(start: _start, end: _end, tree: __tree_)
   }
 }
+#endif
 
 extension RedBlackTreeMappedValuesView {
 

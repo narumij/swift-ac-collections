@@ -530,13 +530,10 @@ final class DictionaryTests: RedBlackTreeTestCase {
     XCTAssertEqual(d, [1: 11, 2: 22, 3: 33])
   }
 
-
   func testSubsequence3() throws {
     let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
     XCTAssertEqual(set[1...5].map { $0.key }, [1, 2, 3, 4, 5])
   }
-
-
 
   #if DEBUG && false
     func testEnumeratedSequence1() throws {
@@ -706,7 +703,6 @@ final class DictionaryTests: RedBlackTreeTestCase {
     #endif
   }
 
-
   #if !COMPATIBLE_ATCODER_2025
     func testRangeSubscriptUnchecked() throws {
       let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 6: 60, 7: 70]
@@ -752,7 +748,8 @@ final class DictionaryTests: RedBlackTreeTestCase {
       typealias Index = RedBlackTreeDictionary<Int, String>.Index
       #if DEBUG
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-        XCTAssertFalse(set.isElement(at: .unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
+        XCTAssertFalse(
+          set.isElement(at: .unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
         XCTAssertTrue(set.isElement(at: .unsafe(tree: set.__tree_, rawTag: 0)))
         XCTAssertTrue(set.isElement(at: .unsafe(tree: set.__tree_, rawTag: 1)))
         XCTAssertTrue(set.isElement(at: .unsafe(tree: set.__tree_, rawTag: 2)))
@@ -774,7 +771,8 @@ final class DictionaryTests: RedBlackTreeTestCase {
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
       XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: 5).value, 5)
 
-      XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
+      XCTAssertFalse(
+        set.isValid(index: .unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
       XCTAssertFalse(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 0)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 1)))
       XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 2)))
@@ -978,11 +976,13 @@ final class DictionaryTests: RedBlackTreeTestCase {
     #endif
   }
 
-  func testIsValidRangeSmoke() throws {
-    let a = RedBlackTreeDictionary<Int, Int>(
-      uniqueKeysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
-    XCTAssertTrue(a.containsSubrange(a.lowerBound(2)..<a.upperBound(4)))
-  }
+  #if !COMPATIBLE_ATCODER_2025
+    func testIsValidRangeSmoke() throws {
+      let a = RedBlackTreeDictionary<Int, Int>(
+        uniqueKeysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
+      XCTAssertTrue(a.containsSubrange(a.lowerBound(2)..<a.upperBound(4)))
+    }
+  #endif
 
   func testSortedReversed() throws {
     let source = [0, 1, 2, 3, 4, 5].map { RedBlackTreePair(key: $0, value: $0 * 10) }

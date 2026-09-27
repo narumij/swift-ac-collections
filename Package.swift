@@ -57,6 +57,7 @@ var _settings: [SwiftSetting] =
     // Int.maxサイズのノード数を用いる場合に必要となるが、現実的には不要
     // 念のために用意してある
     // メモリ計算の都合、Int.max / pair.strideが上限となる
+    // TODO: USE_UINT128_NODE_PATH_BITMAPにリネームする
     .define("USE_INT128", .when(traits: ["USE_INT128"])),
 
     // オフセット計算がオーバーフロー演算になっているので、Int.max / pair.stride以上のサイズでは内部計算が不正になる

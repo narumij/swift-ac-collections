@@ -211,7 +211,7 @@ extension RedBlackTreeKeyValueRangeView {
   @inlinable
   public var isEmpty: Bool {
     let (l, u) = _raw_range
-    return l != u
+    return l == u
   }
 
   /// - Complexity: O(`count`)
@@ -367,13 +367,51 @@ extension RedBlackTreeKeyValueRangeView {
 
 // MARK: -
 
-extension RedBlackTreeKeyValueRangeView where Base: _BaseNode_PtrRangeCompInterface {
+extension RedBlackTreeKeyValueRangeView
+where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
 
+  /// Returns whether the given index refers to an element in this view.
+  ///
+  /// The view's end position is not an element. An index outside the view,
+  /// or an invalid or stale index, returns `false`.
+  ///
+  /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
+  ///   elements in the base collection.
   @inlinable
-  package func isValid(index: Index) -> Bool {
-    let i = __tree_.__purified_(index)  // __retrieve_でもテストは通る
-    guard let i = i.accessible.pointer else { return false }
-    let (_start, _end) = _raw_range
-    return Base.___ptr_range_comp(_start, i, _end)
+  public func isElement(at index: Index) -> Bool {
+    guard
+      let index = __tree_.__purified_(index).accessible.pointer,
+      let start = _sealed_start.purified.pointer,
+      let end = _sealed_end.purified.pointer
+    else {
+      return false
+    }
+
+    let result = _NodeKey<Base>.isInHalfOpenRange(
+      first: (start, nil),
+      position: (index, nil),
+      last: (end, nil)
+    )
+    return result.result
+  }
+}
+
+extension RedBlackTreeKeyValueRangeView {
+
+  /// Returns whether the given index is this view's valid end position.
+  ///
+  /// A view's end position may refer to an element in its base collection.
+  /// An invalid or stale index returns `false`.
+  ///
+  /// - Complexity: O(1)
+  @inlinable
+  public func isEnd(_ index: Index) -> Bool {
+    guard
+      let index = __tree_.__purified_(index).pointer,
+      let end = _sealed_end.purified.pointer
+    else {
+      return false
+    }
+    return index == end
   }
 }

@@ -38,16 +38,6 @@
 
   extension RedBlackTreeMultiMap {
 
-    /// Returns whether the corresponding element can be accessed.
-    @inlinable
-    public func isValid(_ bound: Bound) -> Bool {
-
-      bound.evaluate(__tree_).accessible.error == nil
-    }
-  }
-
-  extension RedBlackTreeMultiMap {
-
     @inlinable
     public func distance(from start: Bound, to end: Bound)
       -> Int
@@ -85,39 +75,17 @@
     }
   }
 
-  // MARK: -
-
-  extension RedBlackTreeMultiMap {
-
-    /// Returns whether the corresponding element can be accessed.
-    ///
-    /// Even if this returns `false`, BoundRange-related APIs will not crash.
-    @inlinable
-    public func isValid(_ bounds: BoundRangeExpression) -> Bool {
-      let range = bounds.evaluate(__tree_).relative(to: __tree_)
-      return __tree_.isValid(range: range)
-    }
-  }
-
   extension RedBlackTreeMultiMap {
 
     @inlinable
     public subscript(bounds: BoundRangeExpression) -> View {
 
       @inline(__always) get {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        return self[_safeRange: range]
+        self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
 
       @inline(__always) _modify {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        yield &self[_safeRange: range]
+        yield &self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
     }
   }
@@ -128,9 +96,7 @@
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitize(
-        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      __tree_.___erase_range(range)
+      _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
     }
 
     @inlinable
@@ -139,9 +105,9 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitize(
-        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      try __tree_.___erase_range_if(range) {
+      _ = try __tree_.___erase_sanitize_range_if(
+        bounds.evaluate(__tree_).relative(to: __tree_)
+      ) {
         try shouldBeRemoved($0.tuple)
       }
     }

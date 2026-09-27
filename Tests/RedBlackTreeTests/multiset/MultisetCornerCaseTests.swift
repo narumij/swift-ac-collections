@@ -65,7 +65,7 @@ final class RedBlackTreeMultisetCornerCaseTests: RedBlackTreeTestCase {
     #if COMPATIBLE_ATCODER_2025
       XCTAssertFalse(ms.isValid(index: idx))
     #else
-      XCTAssertFalse(ms.isValid(idx))
+      XCTAssertFalse(ms.isElement(at: idx))
     #endif
   }
 

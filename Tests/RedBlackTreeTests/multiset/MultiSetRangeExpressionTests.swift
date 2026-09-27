@@ -13,7 +13,7 @@
 
     func testUnboundedRangeView() {
       let set = RedBlackTreeMultiSet([0, 1, 1, 2, 3, 4])
-      XCTAssertTrue(set.isValid(...))
+      XCTAssertTrue(set.containsSubrange(...))
 
       let view = set[...]
       XCTAssertEqual(view.count, 6)
@@ -28,13 +28,46 @@
       let lower = set.index(set.startIndex, offsetBy: 1)
       let upper = set.index(set.startIndex, offsetBy: 5)
 
-      XCTAssertTrue(set.isValid(lower..<upper))
+      XCTAssertTrue(set.containsSubrange(lower..<upper))
 
       let view = set[lower..<upper]
       XCTAssertEqual(view.count, 4)
       XCTAssertEqual(view.first, 1)
       XCTAssertEqual(view.last, 3)
       XCTAssertEqual(Array(view), [1, 1, 2, 3])
+      XCTAssertTrue(view.isElement(at: lower))
+      XCTAssertTrue(view.isElement(at: set.index(after: lower)))
+      XCTAssertTrue(view.isElement(at: set.index(before: upper)))
+      XCTAssertFalse(view.isElement(at: set.startIndex))
+      XCTAssertFalse(view.isElement(at: upper))
+      XCTAssertFalse(view.isElement(at: set.endIndex))
+      XCTAssertFalse(view.isEnd(view.startIndex))
+      XCTAssertTrue(view.isEnd(view.endIndex))
+      XCTAssertFalse(view.isEnd(set.endIndex))
+    }
+
+    func testEmptyViewRecognizesItsEndIndex() {
+      let set = RedBlackTreeMultiSet([0, 1, 1, 2, 3, 4])
+      let index = set.index(set.startIndex, offsetBy: 2)
+      let view = set[index..<index]
+
+      XCTAssertFalse(view.isElement(at: index))
+      XCTAssertTrue(view.isEnd(view.startIndex))
+      XCTAssertTrue(view.isEnd(view.endIndex))
+    }
+
+    func testIsElementDistinguishesEqualElementsByPosition() {
+      let set = RedBlackTreeMultiSet([0, 1, 1, 1, 2])
+      let before = set.index(set.startIndex, offsetBy: 1)
+      let lower = set.index(after: before)
+      let inside = set.index(after: lower)
+      let upper = set.index(after: inside)
+      let view = set[lower..<upper]
+
+      XCTAssertFalse(view.isElement(at: before))
+      XCTAssertTrue(view.isElement(at: lower))
+      XCTAssertTrue(view.isElement(at: inside))
+      XCTAssertFalse(view.isElement(at: upper))
     }
 
     func testClosedRangeView() {
@@ -146,7 +179,7 @@
     func testIndexRangeIsValid() {
       let set = RedBlackTreeMultiSet([0, 1, 1, 2, 3, 4, 5])
       let range = set.equalRange(1)
-      XCTAssertTrue(set.isValid(range))
+      XCTAssertTrue(set.containsSubrange(range))
       XCTAssertEqual(Array(set[range]), [1, 1])
     }
 

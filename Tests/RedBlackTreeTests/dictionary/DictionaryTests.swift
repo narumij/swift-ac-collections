@@ -747,17 +747,17 @@ final class DictionaryTests: RedBlackTreeTestCase {
         XCTAssertTrue(set.isValid(index: .unsafe(tree: set.__tree_, rawTag: 4)))
       #endif
     #else
-      XCTAssertTrue(set.isValid(set.startIndex))
-      XCTAssertFalse(set.isValid(set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
+      XCTAssertTrue(set.isElement(at: set.startIndex))
+      XCTAssertFalse(set.isElement(at: set.endIndex))  // 仕様変更。subscriptやremoveにつかえないので
       typealias Index = RedBlackTreeDictionary<Int, String>.Index
       #if DEBUG
         XCTAssertEqual(Index.unsafe(tree: set.__tree_, rawTag: .end).value, .end)
-        XCTAssertFalse(set.isValid(.unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 0)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 1)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 2)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 3)))
-        XCTAssertTrue(set.isValid(.unsafe(tree: set.__tree_, rawTag: 4)))
+        XCTAssertFalse(set.isElement(at: .unsafe(tree: set.__tree_, rawTag: .nullptr as _TrackingTag)))
+        XCTAssertTrue(set.isElement(at: .unsafe(tree: set.__tree_, rawTag: 0)))
+        XCTAssertTrue(set.isElement(at: .unsafe(tree: set.__tree_, rawTag: 1)))
+        XCTAssertTrue(set.isElement(at: .unsafe(tree: set.__tree_, rawTag: 2)))
+        XCTAssertTrue(set.isElement(at: .unsafe(tree: set.__tree_, rawTag: 3)))
+        XCTAssertTrue(set.isElement(at: .unsafe(tree: set.__tree_, rawTag: 4)))
       #endif
     #endif
   }
@@ -981,7 +981,7 @@ final class DictionaryTests: RedBlackTreeTestCase {
   func testIsValidRangeSmoke() throws {
     let a = RedBlackTreeDictionary<Int, Int>(
       uniqueKeysWithValues: [0, 1, 2, 3, 4, 5].map { ($0, $0) })
-    XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))
+    XCTAssertTrue(a.containsSubrange(a.lowerBound(2)..<a.upperBound(4)))
   }
 
   func testSortedReversed() throws {

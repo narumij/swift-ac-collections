@@ -196,6 +196,11 @@ extension UnsafeTreeV2BufferHeader {
     while let s = usedNodes.next(), let d = other.popFresh() {
       // ノードを初期化する
       d.initialize(to: node(s.pointee))
+      
+      #if ALLOW_CROSS_TREE_INDEX
+        d.pointee.___recycle_count = s.pointee.___recycle_count
+      #endif
+      
       #if DEBUG
         nodeInitializedCount += 1
       #endif

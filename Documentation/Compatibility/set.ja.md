@@ -195,7 +195,7 @@ C++ と同じ `emplace` API は提供しません。
 | `erase(iterator)` | index による削除 | ✅ | 既知の位置にある要素を削除 |
 | `erase(first, last)` | 範囲削除 | △ | C++ の iterator pair とは API が異なる |
 | `clear()` | 全要素削除 | ✅ | |
-| `node_handle` | node handle 相当 | ✅ | node を表す handle |
+| `node_handle` | `Index` | △ | CoWで分岐した木でも対応するnodeを追跡する位置handle。nodeのownershipは持たない |
 | `extract()` | — | ❌ | 直接対応する公開 API はない |
 
 ### `node_handle` / `extract()`
@@ -211,12 +211,13 @@ auto node = set.extract(value);
 `extract()` で取り出した node は、
 値を保持したまま別のコンテナへ再挿入するなどの用途に利用できます。
 
-`RedBlackTreeSet` にも、
-node を表現する handle に相当する仕組みがあります。
+`RedBlackTreeSet` では、`Index` がnodeの位置を識別するhandleに相当します。
+cross-tree indexingが有効な通常構成では、CoWで分岐した木でも、対応するnodeが
+存在し世代が一致する限り、その位置を追跡できます。
 
-一方、
-C++ の `std::set::extract()` と直接対応する
-公開 API は提供していません。
+ただし、`Index` はnodeのownershipを保持しません。nodeをコンテナから切り離して
+別のコンテナへ移送するC++の `node_handle` とは意味論が異なり、
+`std::set::extract()` と直接対応する公開APIも提供していません。
 
 `node_handle` や `extract()` の対応状況は、
 公開 API とその semantics に基づいて比較します。
@@ -289,6 +290,10 @@ index(after:) で次の位置へ移動
 
 この性質により、
 mutation をまたいで特定の要素位置を保持するアルゴリズムも構築できます。
+
+CoWで分岐したコレクションでも、対応する要素が存在し世代が一致する限り、
+Indexからその位置を特定できます。無関係なコレクションから取得したIndexを
+使用することは事前条件違反であり、その検出は保証しません。
 
 C++ の `std::set` iterator を保持しながら
 集合を更新するアルゴリズムを Swift へ読み替える場合にも、
@@ -540,7 +545,7 @@ Swift 標準ライブラリの公開 lazy adapter を利用できます。
 | copy construction | copy-on-write | △ | コピーを実現する仕組みが異なる |
 | move construction | Swift の ownership semantics | △ | object model が異なる |
 | allocator customization | — | ❌ | C++ allocator API の直接対応はない |
-| `node_handle` | node handle 相当 | ✅ | |
+| `node_handle` | `Index` | △ | 位置handleとしての役割は近いが、nodeのownershipは持たない |
 | `swap()` | Swift `swap` | ✅ | |
 | RAII | Swift の自動 lifetime 管理 | △ | lifetime / ownership model が異なる |
 
@@ -630,8 +635,9 @@ iterator model などと強く結びついており、
 - hint 付き `insert`
 - container ごとに保持する comparator object
 
-一方、
-`node_handle` に相当する仕組みは提供されています。
+一方、`Index` はCoWで分岐した木でも対応するnodeを追跡する位置handleとして
+利用できます。ただし、nodeのownershipや移送を担うC++の `node_handle` と
+同一の機能ではありません。
 
 C++ と直接同じ API がない場合でも、
 その操作が目的としている処理を

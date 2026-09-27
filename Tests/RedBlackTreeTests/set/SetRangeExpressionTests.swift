@@ -13,7 +13,7 @@
 
     func testUnboundedRangeView() {
       let set = RedBlackTreeSet(0..<5)
-      XCTAssertTrue(set.isValid(...))
+      XCTAssertTrue(set.containsSubrange(...))
 
       let view = set[...]
       XCTAssertEqual(view.count, 5)
@@ -28,13 +28,31 @@
       let lower = set.index(set.startIndex, offsetBy: 2)
       let upper = set.index(set.startIndex, offsetBy: 6)
 
-      XCTAssertTrue(set.isValid(lower..<upper))
+      XCTAssertTrue(set.containsSubrange(lower..<upper))
 
       let view = set[lower..<upper]
       XCTAssertEqual(view.count, 4)
       XCTAssertEqual(view.first, 2)
       XCTAssertEqual(view.last, 5)
       XCTAssertEqual(Array(view), [2, 3, 4, 5])
+      XCTAssertTrue(view.isElement(at: lower))
+      XCTAssertTrue(view.isElement(at: set.index(before: upper)))
+      XCTAssertFalse(view.isElement(at: set.startIndex))
+      XCTAssertFalse(view.isElement(at: upper))
+      XCTAssertFalse(view.isElement(at: set.endIndex))
+      XCTAssertFalse(view.isEnd(view.startIndex))
+      XCTAssertTrue(view.isEnd(view.endIndex))
+      XCTAssertFalse(view.isEnd(set.endIndex))
+    }
+
+    func testEmptyViewRecognizesItsEndIndex() {
+      let set = RedBlackTreeSet(0..<5)
+      let index = set.index(set.startIndex, offsetBy: 2)
+      let view = set[index..<index]
+
+      XCTAssertFalse(view.isElement(at: index))
+      XCTAssertTrue(view.isEnd(view.startIndex))
+      XCTAssertTrue(view.isEnd(view.endIndex))
     }
 
     func testClosedRangeView() {
@@ -179,7 +197,7 @@
     func testIndexRangeIsValid() {
       let set = RedBlackTreeSet(0..<8)
       let range = set.equalRange(3)
-      XCTAssertTrue(set.isValid(range))
+      XCTAssertTrue(set.containsSubrange(range))
       XCTAssertEqual(Array(set[range]), [3])
     }
 

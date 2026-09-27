@@ -159,7 +159,7 @@ Set系のpayloadはキーそのものであり、Dictionary系は
 - fresh poolの容量と利用済み数
 - recycle poolの先頭
 - bucket allocator
-- Index寿命管理用の `_tied` と `_lazyDetach`
+- 互換経路の寿命管理用 `_tied` と、Indexの同一性・解放検出用 `_lazyDetach`
 - Debug時の検査・計測値
 
 ### FreshPool
@@ -172,6 +172,10 @@ Set系のpayloadはキーそのものであり、Dictionary系は
 削除したノード領域を再利用する。削除時にpayloadを破棄し、recycle countを進め、
 古いsealed pointerを無効化してからpoolへ戻す。
 
+`ALLOW_CROSS_TREE_INDEX` 有効時のCoWコピーではrecycle countも新しいノードへ
+引き継ぎ、コピー先での世代照合に用いる。空の木ではCoWコストを抑えるため、
+不要なpool履歴を再構築しない。
+
 ### Bucket
 
 ノードとpayloadの連続領域を確保する単位である。通常の容量拡張ではbucketを追加できる。
@@ -179,8 +183,8 @@ CoWによるコピー直後はtracking tagから O(1) で解決できるよう�
 
 ## Index、Iterator、Range
 
-- `UnsafeIndexV3`: 世代管理されたノードと遅延寿命管理を組み合わせたIndex
-- `UnsafeIterator`: key、value、payload、Indexなどの走査実装の名前空間
+- `UnsafeIndexV3`: sealed pointerに `_LazyTie` の同一性・解放検出とtracking tagを加えたIndex
+- `UnsafeIterator`: 現行経路では木のスナップショットを保持してCoW共有する走査実装の名前空間。互換経路ではtied bufferを使う
 - `_RawRange`: 解決済みの内部半開範囲
 - `_RawRangeExpression`: 半開・閉・部分・非有界の内部表現
 - `UnsafeIndexV3Range`: 公開側の解決済みIndex範囲

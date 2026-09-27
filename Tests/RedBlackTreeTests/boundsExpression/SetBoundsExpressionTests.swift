@@ -276,6 +276,7 @@
 
     func testIsValidBoundsInvalidDoesNotCrash() throws {
       XCTAssertFalse(a.isValid(upperBound(10)..<lowerBound(-10)))
+      XCTAssertTrue(a[upperBound(10)..<lowerBound(-10)].isEmpty)
       XCTAssertEqual(Array(a[upperBound(10)..<lowerBound(-10)]), [])
     }
 

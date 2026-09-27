@@ -9,7 +9,7 @@
 ## Declaration
 
 ```swift
-import RedBlackTreeCollections
+import AcCollections
 
 struct RedBlackTreeMultiSet<Element: Comparable>
 ```
@@ -125,11 +125,13 @@ index は整数オフセットではありません。
 
 この点は `Array` とは異なります。
 
-また、集合を変更する操作によって既存の index が無効になる場合があります。
-無効になった index を後から再利用してはいけません。
+別の要素を挿入または削除しても、指している要素が存在する限り、
+その index は有効なままです。指している要素自体を削除すると無効になり、
+同じslotが再利用されても、そのindexを後から再利用することはできません。
 
-特に、要素を削除した後は、その削除された要素を指していた index を
-使用することはできません。
+CoWで分岐したコレクションでも、対応する要素が存在し世代が一致する限り、
+indexからその位置を特定できます。無関係なコレクションから取得したindexを
+使用することは事前条件違反であり、その検出は保証しません。
 
 ## Multiset Operations
 
@@ -168,9 +170,13 @@ numbers.insert(4)
 | lower-bound 検索 | O(log `count`) |
 | upper-bound 検索 | O(log `count`) |
 | 要素の挿入 | O(log `count`) |
-| 要素の削除 | O(log `count`) |
+| 値を検索して1要素を削除 | O(log `count`) |
+| 値を検索して一致するK要素を削除 | O(log `count` + K) |
+| 既知のindexから削除 | 償却 O(1) |
 
 これらは赤黒木そのものの構造に基づく計算量です。
+storageが共有されていて変更時にcopy-on-writeが発生する場合は、
+木のコピーに O(`count`) の追加コストがかかります。
 
 実際の実行時間は、`Element` の比較コストやメモリアクセスの特性によっても変化します。
 

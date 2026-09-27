@@ -128,7 +128,7 @@ final class RedBlackTreeDictionaryExtendedTests: RedBlackTreeTestCase {
 #if COMPATIBLE_ATCODER_2025
     XCTAssertFalse(dict.isValid(index: idx))
 #else
-    XCTAssertFalse(dict.isValid(idx))
+    XCTAssertFalse(dict.isElement(at: idx))
 #endif
 
     var copy = dict

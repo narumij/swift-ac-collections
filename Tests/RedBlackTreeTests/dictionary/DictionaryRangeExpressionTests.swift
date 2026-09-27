@@ -13,7 +13,7 @@
 
     func testUnboundedRangeView() {
       let dict: RedBlackTreeDictionary = [3: "c", 1: "a", 2: "b", 4: "d"]
-      XCTAssertTrue(dict.isValid(...))
+      XCTAssertTrue(dict.containsSubrange(...))
 
       let view = dict[...]
       XCTAssertEqual(view.count, 4)
@@ -27,11 +27,29 @@
       let lower = dict.index(dict.startIndex, offsetBy: 1)
       let upper = dict.index(dict.startIndex, offsetBy: 3)
 
-      XCTAssertTrue(dict.isValid(lower..<upper))
+      XCTAssertTrue(dict.containsSubrange(lower..<upper))
 
       let view = dict[lower..<upper]
       XCTAssertEqual(view.count, 2)
       XCTAssertEqual(Array(view).map { $0.key }, [2, 3])
+      XCTAssertTrue(view.isElement(at: lower))
+      XCTAssertTrue(view.isElement(at: dict.index(before: upper)))
+      XCTAssertFalse(view.isElement(at: dict.startIndex))
+      XCTAssertFalse(view.isElement(at: upper))
+      XCTAssertFalse(view.isElement(at: dict.endIndex))
+      XCTAssertFalse(view.isEnd(view.startIndex))
+      XCTAssertTrue(view.isEnd(view.endIndex))
+      XCTAssertFalse(view.isEnd(dict.endIndex))
+    }
+
+    func testEmptyViewRecognizesItsEndIndex() {
+      let dict: RedBlackTreeDictionary = [3: "c", 1: "a", 2: "b", 4: "d"]
+      let index = dict.index(dict.startIndex, offsetBy: 2)
+      let view = dict[index..<index]
+
+      XCTAssertFalse(view.isElement(at: index))
+      XCTAssertTrue(view.isEnd(view.startIndex))
+      XCTAssertTrue(view.isEnd(view.endIndex))
     }
 
     func testClosedRangeView() {
@@ -141,7 +159,7 @@
     func testIndexRangeIsValid() {
       let dict: RedBlackTreeDictionary = [3: "c", 1: "a", 2: "b", 4: "d"]
       let range = dict.equalRange(2)
-      XCTAssertTrue(dict.isValid(range))
+      XCTAssertTrue(dict.containsSubrange(range))
       XCTAssertEqual(Array(dict[range]).map { $0.key }, [2])
     }
 

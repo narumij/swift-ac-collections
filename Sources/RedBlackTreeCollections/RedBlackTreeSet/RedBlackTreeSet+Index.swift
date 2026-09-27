@@ -35,12 +35,25 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// Returns whether the given index is valid for use with subscript or remove operations.
+    /// Returns whether the given index refers to an accessible element.
+    ///
+    /// `endIndex` is a valid collection boundary, but it is not an element,
+    /// so this method returns `false` for `endIndex`.
     ///
     /// - Complexity: O(1)
     @inlinable
-    public func isValid(_ index: Index) -> Bool {
+    public func isElement(at index: Index) -> Bool {
       __tree_.__purified_(index).accessible.error == nil
+    }
+
+    /// Returns whether the given index is this set's valid end position.
+    ///
+    /// An invalid or stale index returns `false`.
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    public func isEnd(_ index: Index) -> Bool {
+      __tree_.__purified_(index).pointer?.___is_end == true
     }
   }
 #endif

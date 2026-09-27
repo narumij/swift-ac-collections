@@ -4,6 +4,39 @@
   import RedBlackTreeCollections
 #endif
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Compatibility helper for tests that still exercise Bound lookup behavior.
+    @inlinable
+    internal func isValid(_ bound: Bound) -> Bool {
+      self[bound] != nil
+    }
+
+    /// Compatibility helper for tests that exercise Bound range lookup behavior.
+    @inlinable
+    internal func isValid(_ bounds: BoundRangeExpression) -> Bool {
+      !self[bounds].isEmpty
+    }
+
+    /// Compatibility helpers for tests that still use the former Range spelling.
+    @inlinable
+    internal func isValid(_ bounds: UnboundedRange) -> Bool {
+      containsSubrange(bounds)
+    }
+
+    @inlinable
+    internal func isValid(_ bounds: IndexRange) -> Bool {
+      containsSubrange(bounds)
+    }
+
+    @inlinable
+    internal func isValid(_ bounds: IndexRangeExpression) -> Bool {
+      containsSubrange(bounds)
+    }
+  }
+#endif
+
 #if DEBUG
 extension RedBlackTreeDictionary {
 
@@ -27,6 +60,17 @@ extension RedBlackTreeDictionary {
     package var _copyCount: UInt {
       get { __tree_.copyCount }
       set { __tree_.copyCount = newValue }
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Alias retained for tests shared with the AtCoder 2025 compatibility build.
+    @inlinable
+    internal func isValid(_ index: Index) -> Bool {
+      isElement(at: index)
     }
   }
 #endif

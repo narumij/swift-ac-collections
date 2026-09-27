@@ -103,4 +103,49 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(set.count, 3)
     XCTAssertEqual(set + [], [1, 2, 3])
   }
+
+  #if DEBUG && !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+    /// CoW後もindex(inserting:)で保存したIndexから対象を削除できること
+    func test_indexInserting_savedIndicesRemainUsableAfterCopyOnWrite() {
+      var set = RedBlackTreeSet(0..<8)
+
+      // recycle countが進んだnodeもCoWで正しく引き継がれることを確認する。
+      let removedIndex = set.firstIndex(of: 4)!
+      XCTAssertTrue(set.removeSafe(at: removedIndex))
+      let recycled = set.index(inserting: 8)
+      XCTAssertTrue(recycled.inserted)
+
+      set._copyCount = 0
+      let shared = set
+
+      withExtendedLifetime(shared) {
+        var saved: [(element: Int, index: RedBlackTreeSet<Int>.Index)] = [
+          (8, recycled.index)
+        ]
+
+        // 最初の挿入でCoWし、その後もしばらく挿入とIndex保存を続ける。
+        for element in 9..<64 {
+          let result = set.index(inserting: element)
+          XCTAssertTrue(result.inserted)
+          saved.append((element, result.index))
+        }
+
+        XCTAssertGreaterThan(set._copyCount, 0)
+
+        for (element, index) in saved {
+          XCTAssertTrue(set.isElement(at: index))
+          XCTAssertEqual(set[index], element)
+        }
+
+        for (element, index) in saved {
+          XCTAssertTrue(set.removeSafe(at: index))
+          XCTAssertFalse(set.contains(element))
+        }
+
+        XCTAssertGreaterThan(set._copyCount, 0)
+        XCTAssertEqual(set + [], [0, 1, 2, 3, 5, 6, 7])
+        XCTAssertEqual(shared + [], [0, 1, 2, 3, 5, 6, 7, 8])
+      }
+    }
+  #endif
 }

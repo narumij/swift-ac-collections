@@ -32,21 +32,22 @@
   extension RedBlackTreeMultiSet {
 
     @inlinable
-    public func isValid(_ bounds: UnboundedRange) -> Bool {
+    public func containsSubrange(_ bounds: UnboundedRange) -> Bool {
       return __tree_.isValid(range: ___safe_range)
     }
 
     @inlinable
-    public func isValid(_ bounds: IndexRange) -> Bool {
+    public func containsSubrange(_ bounds: IndexRange) -> Bool {
       let range = __tree_.__purified_safe_(bounds)
       return __tree_.isValid(range: range)
     }
 
     @inlinable
-    public func isValid(_ bounds: IndexRangeExpression) -> Bool {
+    public func containsSubrange(_ bounds: IndexRangeExpression) -> Bool {
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
       return __tree_.isValid(range: range)
     }
+
   }
 
   extension RedBlackTreeMultiSet {
@@ -140,17 +141,15 @@
   extension RedBlackTreeMultiSet {
 
     @inlinable
-    @discardableResult
     mutating func erase(_range range: _SafeRange) -> Index {
       assert(__tree_.isUnique())
-
       do {
-        return try __tree_.___erase_range(range).get()
+        return try __tree_.___erase_validate_range(range).get()
       } catch {
         fatalError("\(error)")
       }
     }
-    
+
     @inlinable
     mutating func erase(
       _safeRange range: _SafeRange,
@@ -159,10 +158,11 @@
       rethrows
     {
       assert(__tree_.isUnique())
-      guard __tree_.isValid(range: range) else {
-        fatalError(.invalidIndex)
+      do {
+        _ = try __tree_.___erase_validate_range_if(range, shouldBeRemoved).get()
+      } catch {
+        fatalError("\(error)")
       }
-      try __tree_.___erase_range_if(range, shouldBeRemoved)
     }
   }
 
@@ -178,31 +178,63 @@
 
     @inlinable
     func makeView(range: _SafeRange) -> Result<View, SealError> {
-      range.map { makeView(range: $0) }
+      range
+        .flatMap(__tree_.validated(range:))
+        .map(makeView(range:))
     }
 
+    @inlinable
+    func makeViewWithSanitize(range: _SafeRange) -> Result<View, SealError> {
+      __tree_.sanitize(range)
+        .map(makeView(range:))
+    }
+
+    // TODO: Setに合わせてリネームする
     @inlinable
     subscript(_safeRange range: _SafeRange) -> View {
 
       @inline(__always) get {
-        guard __tree_.isValid(range: range),
-          let view = try? makeView(range: range).get()
-        else {
-          fatalError(.invalidIndex)
+        do {
+          return try makeView(range: range).get()
+        } catch {
+          fatalError("\(error)")
         }
-        return view
       }
 
       @inline(__always) _modify {
-        guard __tree_.isValid(range: range),
-          var view = try? makeView(range: range).get()
-        else {
-          fatalError(.invalidIndex)
+        do {
+          var view = try makeView(range: range).get()
+          self = Self()  // yield中のCoWキャンセル。考えた人賢い
+          defer { self = Self(__tree_: view.__tree_) }
+          yield &view
+        } catch {
+          fatalError("\(error)")
         }
-        self = Self()  // yield中のCoWキャンセル。考えた人賢い
-        defer { self = Self(__tree_: view.__tree_) }
-        yield &view
       }
     }
+    
+    @inlinable
+    subscript(_sanitize range: _SafeRange) -> View {
+
+      @inline(__always) get {
+        do {
+          return try makeViewWithSanitize(range: range).get()
+        } catch {
+          fatalError("\(error)")
+        }
+      }
+
+      @inline(__always) _modify {
+        do {
+          var view = try makeViewWithSanitize(range: range).get()
+          self = Self()  // yield中のCoWキャンセル。考えた人賢い
+          defer { self = Self(__tree_: view.__tree_) }
+          yield &view
+        } catch {
+          fatalError("\(error)")
+        }
+      }
+    }
+
   }
 #endif

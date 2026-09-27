@@ -56,22 +56,12 @@
     ///
     /// - Note:
     ///   - Endpoints are evaluated in the tree's sort order.
-    ///   - Invalid ranges may trap at runtime.
+    ///   - Reversed or otherwise unusable ranges produce an empty view.
     ///
     /// - SeeAlso:
     ///   - `RedBlackTreeBoundRangeExpression`
     ///   - `RedBlackTreeBoundExpression`
     public typealias BoundRangeExpression = RedBlackTreeBoundRangeExpression<Element>
-  }
-
-  extension RedBlackTreeSet {
-
-    /// Returns whether the corresponding element can be accessed.
-    @inlinable
-    public func isValid(_ bound: RedBlackTreeBoundExpression<Element>) -> Bool {
-      let _safe_ptr_ = bound.evaluate(__tree_)
-      return _safe_ptr_.___has_payload_content
-    }
   }
 
   extension RedBlackTreeSet {
@@ -122,35 +112,15 @@
 
   extension RedBlackTreeSet {
 
-    /// Returns whether the corresponding element can be accessed.
-    ///
-    /// Even if this returns `false`, BoundRange-related APIs will not crash.
-    @inlinable
-    public func isValid(_ bounds: BoundRangeExpression) -> Bool {
-      let range = bounds.evaluate(__tree_).relative(to: __tree_)
-      return __tree_.isValid(range: range)
-    }
-  }
-
-  extension RedBlackTreeSet {
-
     @inlinable
     public subscript(bounds: BoundRangeExpression) -> View {
 
       @inline(__always) get {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        return self[_safeRange: range]
+        self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
 
       @inline(__always) _modify {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        yield &self[_safeRange: range]
+        yield &self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
     }
   }
@@ -161,9 +131,7 @@
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitize(
-        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      __tree_.___erase_range(range)
+      _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
     }
 
     @inlinable
@@ -172,9 +140,8 @@
     ) rethrows {
 
       __tree_.ensureUnique()
-      let range = __tree_.sanitize(
-        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      try __tree_.___erase_range_if(range, shouldBeRemoved)
+      _ = try __tree_.___erase_sanitize_range_if(
+        bounds.evaluate(__tree_).relative(to: __tree_), shouldBeRemoved)
     }
   }
 #endif

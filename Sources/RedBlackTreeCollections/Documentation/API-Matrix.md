@@ -111,7 +111,7 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す |
 | `updateValue(_:forKey:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
 | `swapAt(_:_:)` | — | ✅ | — | — | 同一キーの2要素を入れ替える。キー一致を前提とする |
-| `swapValuesAt(_:_:)` | — | — | ✅ | — | 2つのIndex位置の値を入れ替える |
+| `swapValuesAt(_:_:)` | — | — | ✅ | 検討 | 2つのIndex位置の値を入れ替える |
 | `index(inserting:)` | ✅ | — | — | — | 挿入し、挿入位置のIndexを返す |
 | `insert(contentsOf:)` | — | ✅ | ✅ | — | 別コンテナまたはSequenceの内容を追加する |
 | `inserting(contentsOf:)` | — | ✅ | ✅ | — | 内容を追加した新しい値を返す |

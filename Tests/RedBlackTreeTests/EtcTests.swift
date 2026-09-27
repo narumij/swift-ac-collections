@@ -927,4 +927,17 @@ final class EtcTests: RedBlackTreeTestCase {
       #endif
     }
   #endif
+  
+  func testHogehoge() throws {
+    
+    var d = ["a": 1, "b": 2]
+
+    let i = d.index(forKey: "a")!
+    let j = d.index(forKey: "b")!
+
+    d.values.swapAt(i, j)
+    
+    XCTAssertEqual(d["a"], 2)
+    XCTAssertEqual(d["b"], 1)
+  }
 }

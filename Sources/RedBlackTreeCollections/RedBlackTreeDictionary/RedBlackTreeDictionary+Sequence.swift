@@ -154,7 +154,7 @@ extension RedBlackTreeDictionary {
       //        .init(start: _start, end: _end, tree: __tree_)
       //      }
 
-      public typealias Values = RedBlackTreeValueRangeView<Self>
+      public typealias Values = RedBlackTreeMappedValuesView<Self>
 
       @inlinable
       func makeValuesView(range: _NodeRange) -> Values {

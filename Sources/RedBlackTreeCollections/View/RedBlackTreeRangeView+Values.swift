@@ -12,7 +12,7 @@
 // multimap, dictionary用のView, SubView
 
 @frozen
-public struct RedBlackTreeValueRangeView<Container>: UnsafeMutableTreeHostV2
+public struct RedBlackTreeMappedValuesView<Container>: UnsafeMutableTreeHostV2
 where
   Container: ___Root,
   Container.Base: ___TreeBase & PairValueTrait
@@ -47,14 +47,14 @@ where
 }
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-  extension RedBlackTreeValueRangeView {
+  extension RedBlackTreeMappedValuesView {
     package var _copyCount: UInt {
       __tree_.copyCount
     }
   }
 #endif
 
-extension RedBlackTreeValueRangeView {
+extension RedBlackTreeMappedValuesView {
 
   @inlinable
   internal mutating func _ensureUnique() {
@@ -73,7 +73,7 @@ extension RedBlackTreeValueRangeView {
   }
 }
 
-extension RedBlackTreeValueRangeView {
+extension RedBlackTreeMappedValuesView {
 
   @inlinable
   var _raw_range: (_NodePtr, _NodePtr) {
@@ -89,7 +89,7 @@ extension RedBlackTreeValueRangeView {
   }
 }
 
-extension RedBlackTreeValueRangeView {
+extension RedBlackTreeMappedValuesView {
 
   @inlinable
   func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
@@ -97,9 +97,9 @@ extension RedBlackTreeValueRangeView {
   }
 }
 
-extension RedBlackTreeValueRangeView: Sequence {}
+extension RedBlackTreeMappedValuesView: Sequence {}
 
-extension RedBlackTreeValueRangeView {
+extension RedBlackTreeMappedValuesView {
 
   /// - Complexity: O(1)
   @inlinable
@@ -109,7 +109,7 @@ extension RedBlackTreeValueRangeView {
   }
 }
 
-extension RedBlackTreeValueRangeView {
+extension RedBlackTreeMappedValuesView {
 
   /// Accesses the element at the specified position.
   ///
@@ -128,7 +128,7 @@ extension RedBlackTreeValueRangeView {
   }
 }
 
-extension RedBlackTreeValueRangeView {
+extension RedBlackTreeMappedValuesView {
 
   public mutating func swapAt(_ i: Index, _ j: Index) {
     _ensureUnique()
@@ -151,7 +151,7 @@ extension RedBlackTreeValueRangeView {
 
 // MARK: -
 
-extension RedBlackTreeValueRangeView {
+extension RedBlackTreeMappedValuesView {
 
   /// - Complexity: O(1)
   @inlinable
@@ -168,7 +168,7 @@ extension RedBlackTreeValueRangeView {
   }
 }
 
-extension RedBlackTreeValueRangeView {
+extension RedBlackTreeMappedValuesView {
 
   /// - Complexity: O(1)
   @inlinable
@@ -187,13 +187,13 @@ extension RedBlackTreeValueRangeView {
 }
 
 #if swift(>=5.5)
-  extension RedBlackTreeValueRangeView: @unchecked Sendable
+  extension RedBlackTreeMappedValuesView: @unchecked Sendable
   where Element: Sendable {}
 #endif
 
 // MARK: - Is Identical To
 
-extension RedBlackTreeValueRangeView {
+extension RedBlackTreeMappedValuesView {
 
   @inlinable
   public func _isdentical(to other: Self) -> Bool {
@@ -206,7 +206,7 @@ extension RedBlackTreeValueRangeView {
 
 // MARK: -
 
-extension RedBlackTreeValueRangeView
+extension RedBlackTreeMappedValuesView
 where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
 
   /// Returns whether the given index refers to an element in this view.
@@ -235,7 +235,7 @@ where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
   }
 }
 
-extension RedBlackTreeValueRangeView {
+extension RedBlackTreeMappedValuesView {
 
   /// Returns whether the given index is this view's valid end position.
   ///

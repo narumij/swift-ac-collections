@@ -177,7 +177,7 @@ extension RedBlackTreeKeyValueRangeView {
       //        return .init(start: _start, end: _end, tree: __tree_)
       //      }
 
-      public typealias Values = RedBlackTreeValueRangeView<Container>
+      public typealias Values = RedBlackTreeMappedValuesView<Container>
 
       @inlinable
       func makeValuesView() -> Values {

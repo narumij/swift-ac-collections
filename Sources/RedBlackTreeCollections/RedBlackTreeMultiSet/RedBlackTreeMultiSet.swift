@@ -263,20 +263,20 @@ extension RedBlackTreeMultiSet {
 #endif
 
 #if !COMPATIBLE_ATCODER_2025
-extension RedBlackTreeMultiSet {
-  
-  @inlinable
-  @discardableResult
-  public mutating func insert(_ newMember: Element, hint: Index) -> Index {
-    __tree_.ensureUniqueAndCapacity()
-    let p = __tree_.__purified_(hint)
-    guard let __p = p.pointer else {
-      fatalError(.invalidIndex)
+  extension RedBlackTreeMultiSet {
+
+    @inlinable
+    @discardableResult
+    public mutating func insert(_ newMember: Element, hint: Index) -> Index {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let __r = __tree_.__emplace_hint_multi(__p, newMember)
+      return __tree_.index(__r)
     }
-    let __r = __tree_.__emplace_hint_multi(__p, newMember)
-    return __tree_.index(__r)
   }
-}
 #endif
 
 // MARK: - Remove

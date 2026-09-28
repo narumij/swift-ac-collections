@@ -1,0 +1,36 @@
+import Foundation
+import RedBlackTreeCollections
+import XCTest
+
+class CodableFixture: RedBlackTreeTestCase {
+
+  let encoder: JSONEncoder = {
+    let encoder = JSONEncoder()
+    encoder.keyEncodingStrategy = .convertToSnakeCase
+    encoder.dateEncodingStrategy = .iso8601
+    return encoder
+  }()
+
+  let decoder: JSONDecoder = {
+    let decoder = JSONDecoder()
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
+    decoder.dateDecodingStrategy = .iso8601
+    return decoder
+  }()
+}
+
+#if !COMPATIBLE_ATCODER_2025
+  final class RedBlackTreeSetCodableTests: RedBlackTreeTestCase {
+
+    func test_codable_roundTripsElementsInOrder() throws {
+      let original = RedBlackTreeSet(0..<10)
+      let data = try JSONEncoder().encode(original)
+
+      let decoded = try JSONDecoder().decode(RedBlackTreeSet<Int>.self, from: data)
+
+      XCTAssertEqual(decoded, original)
+      XCTAssertEqual(Array(decoded), Array(0..<10))
+    }
+
+  }
+#endif

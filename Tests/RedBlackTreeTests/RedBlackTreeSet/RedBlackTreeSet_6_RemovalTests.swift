@@ -77,6 +77,14 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.contains(1), "削除後、最初の要素はセットに含まれないこと")
   }
 
+  /// removeLast() が最後の要素を削除すること
+  func test_removeLast() {
+    var set = RedBlackTreeSet([1, 2, 3])
+    let removed = set.removeLast()
+
+    XCTAssertEqual(removed, 3, "最後の要素を削除すること")
+    XCTAssertEqual(set + [], [1, 2], "削除後、最後の要素はセットに含まれないこと")
+  }
 
   /// removeSubrange() が指定範囲の要素を削除すること
   func test_removeSubrange() {

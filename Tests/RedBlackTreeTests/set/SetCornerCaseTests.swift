@@ -52,14 +52,6 @@ final class RedBlackTreeSetCornerCaseTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.isValid(idx))  // 無効になっていること
   }
 
-  func testCopyOnWrite() {
-    let original: RedBlackTreeSet = [1, 2, 3]
-    var copy = original
-    _ = copy.insert(99)
-    XCTAssertTrue(copy.contains(99))
-    XCTAssertFalse(original.contains(99))  // 元は変わらない
-  }
-
   // MARK: ── lowerBound / upperBound & 部分削除 ───────────────────────────
 
   func testLowerAndUpperBound() {

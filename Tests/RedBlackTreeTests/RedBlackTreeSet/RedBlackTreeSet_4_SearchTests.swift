@@ -62,7 +62,6 @@ final class RedBlackTreeSetSearchTests: RedBlackTreeTestCase {
     XCTAssertNil(notFoundIndex)
   }
 
-
   /// first(where:) が条件を満たす最初の要素を返すこと
   func test_first_where_shouldReturnCorrectElement() {
     let set = RedBlackTreeSet([1, 2, 3, 4, 5])

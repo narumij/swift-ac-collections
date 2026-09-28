@@ -104,12 +104,12 @@ protocol FindHintLeafProtocol_ptr:
 
 extension FindHintLeafProtocol_ptr {
 
-  // Find leaf place to insert closest to __hint
-  // First check prior to __hint.
-  // Next check after __hint.
-  // Next do O(log N) search.
-  // Set __parent to parent of null leaf
-  // Return reference to null leaf
+  /// Find leaf place to insert closest to `__hint`
+  /// First check prior to `__hint`.
+  /// Next check after `__hint`.
+  /// Next do O(log N) search.
+  /// Set `__parent` to parent of null leaf
+  /// Return reference to null leaf
   @inlinable
   internal func __find_leaf(
     _ __hint: _NodePtr, _ __parent: inout _NodePtr, _ __v: _Key
@@ -299,12 +299,12 @@ protocol FindHintEqualProtocol_ptr:
 
 extension FindHintEqualProtocol_ptr {
 
-  // Find __v
-  // First check prior to __hint.
-  // Next check after __hint.
-  // Next do O(log N) search.
-  // If __v exists, return the parent of the node of __v and a reference to the pointer to the node of __v.
-  // If __v doesn't exist, return the parent of the null leaf and a reference to the pointer to the null leaf.
+  /// Find `__v`
+  /// First check prior to `__hint`.
+  /// Next check after `__hint`.
+  /// Next do O(log N) search.
+  /// If `__v` exists, return the parent of the node of `__v` and a /reference to the pointer to the node of `__v`.
+  /// If `__v` doesn't exist, return the parent of the null leaf and a reference to the pointer to the null leaf.
   @inlinable
   internal func __find_equal(_ __hint: _NodePtr, _ __dummy: _NodeRef, _ __v: _Key)
     -> (__parent: _NodePtr, __child: _NodeRef)

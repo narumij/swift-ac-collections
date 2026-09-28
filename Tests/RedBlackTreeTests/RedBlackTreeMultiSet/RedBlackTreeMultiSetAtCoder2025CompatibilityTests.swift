@@ -176,60 +176,6 @@ import XCTest
   extension RedBlackTreeMultisetSubSequenceTests {
   }
 
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
-  extension MultisetTests {
-  }
-
   final class RedBlackTreeMultisetIndexRemovalLegacyTests: RedBlackTreeTestCase {
     func testRemovingAtIndicesForwardAndReversedEmptiesMultiSet() throws {
       var forward = RedBlackTreeMultiSet<Int>(0..<10)

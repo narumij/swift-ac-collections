@@ -255,7 +255,7 @@ extension RedBlackTreeSet {
   
   @inlinable
   @discardableResult
-  public mutating func insert(_ hint: Index,_ newMember: Element) -> (
+  public mutating func insert(hint: Index,_ newMember: Element) -> (
     inserted: Bool, memberAfterInsert: Element
   ) {
     __tree_.ensureUniqueAndCapacity()

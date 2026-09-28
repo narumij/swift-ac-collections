@@ -175,17 +175,17 @@ final class MultiMapBasicTest: RedBlackTreeTestCase {
       ]
 
       let secondOne = map.index(after: map.startIndex)
-      let duplicate = map.insert(secondOne, (1, "b"))
+      let duplicate = map.insert(hint: secondOne, (1, "b"))
       XCTAssertEqual(map[duplicate].key, 1)
       XCTAssertEqual(map[duplicate].value, "b")
       XCTAssertEqual(map[1] + [], ["a", "b", "c"])
 
       let goodHint = map.firstIndex(of: 3)!
-      let insertedWithGoodHint = map.insert(goodHint, (2, "good"))
+      let insertedWithGoodHint = map.insert(hint: goodHint, (2, "good"))
       XCTAssertEqual(map[insertedWithGoodHint].key, 2)
       XCTAssertEqual(map[insertedWithGoodHint].value, "good")
 
-      let insertedWithBadHint = map.insert(map.startIndex, (4, "bad"))
+      let insertedWithBadHint = map.insert(hint: map.startIndex, (4, "bad"))
       XCTAssertEqual(map[insertedWithBadHint].key, 4)
       XCTAssertEqual(map[insertedWithBadHint].value, "bad")
       XCTAssertEqual(map.map(\.key), [1, 1, 1, 2, 3, 4])

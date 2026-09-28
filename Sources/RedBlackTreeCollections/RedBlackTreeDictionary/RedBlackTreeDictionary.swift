@@ -246,6 +246,42 @@ extension RedBlackTreeDictionary {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    @inlinable
+    @discardableResult
+    public mutating func insert(_ newMember: Element, hint: Index)
+      -> (inserted: Bool, indexAfterInsert: Index)
+    {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let (__r, __inserted) = __tree_.__emplace_hint_unique(
+        __p, newMember.key, Base.__payload_(newMember))
+      return (__inserted, ___index(__r))
+    }
+
+    @inlinable
+    @discardableResult
+    public mutating func update(_ newMember: Element, hint: Index) -> Element? {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      // endIndex is a valid insertion hint; do not require element accessibility here.
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember.key, Base.__payload_(newMember))
+      guard !__inserted else { return nil }
+      let oldMember = Base.__payload_(__r)
+      Base.__payload_ptr(__r).pointee = Base.__payload_(newMember)
+      return Base.__element_(oldMember)
+    }
+  }
+#endif
+
 extension RedBlackTreeDictionary {
 
   /// Updates the value stored in the dictionary for the given key, or adds a new key-value pair if the key does not exist.
@@ -271,17 +307,22 @@ extension RedBlackTreeDictionary {
 
     @inlinable
     @discardableResult
-    public mutating func insert(_ newMember: Element, hint: Index)
-      -> (inserted: Bool, indexAfterInsert: Index)
-    {
+    public mutating func updateValue(
+      _ value: Value,
+      forKey key: Key,
+      hint: Index
+    ) -> Value? {
       __tree_.ensureUniqueAndCapacity()
       let p = __tree_.__purified_(hint)
+      // endIndex is a valid insertion hint; do not require element accessibility here.
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
-      let (__r, __inserted) = __tree_.__emplace_hint_unique(
-        __p, newMember.key, Base.__payload_(newMember))
-      return (__inserted, ___index(__r))
+      let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, key, Base.__payload_((key, value)))
+      guard !__inserted else { return nil }
+      let oldMember = Base.__mapped_value_(__r)
+      Base.__mapped_value_ptr(__r).pointee = value
+      return oldMember
     }
   }
 #endif

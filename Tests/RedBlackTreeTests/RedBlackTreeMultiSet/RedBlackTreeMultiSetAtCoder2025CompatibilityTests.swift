@@ -432,7 +432,7 @@ import XCTest
   }
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
-    extension MultisetCopyOnWriteTests {
+    extension RedBlackTreeMultiSetCopyOnWriteTests {
       func testSet4000() throws {
         let count = 1500
         var xy: [Int: RedBlackTreeMultiSet<Int>] = [1: .init(0..<count)]
@@ -448,171 +448,6 @@ import XCTest
         XCTAssertEqual(xy[1]!.count, 0)
         XCTAssertEqual(xy[1]!._copyCount, 1, "CoW挙動変更に伴い修正")
         XCTAssertEqual(loopCount, count / N)
-      }
-    }
-  #endif
-
-  extension MultisetRemoveTests {
-    func testSmokeRemove0() throws {
-      var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
-      XCTAssertEqual(s + [], (0..<2_000).flatMap { [$0, $0] })
-      for i in s {
-        s.removeAll(i)
-      }
-    }
-
-    func testSmokeRemove1() throws {
-      var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
-      let b = s.lowerBound(0)
-      let e = s.lowerBound(10_000)
-      XCTAssertEqual(s[b..<e] + [], (0..<2_000).flatMap { [$0, $0] })
-      XCTAssertEqual(s.elements(in: 0..<10_000) + [], (0..<2_000).flatMap { [$0, $0] })
-      for i in s.elements(in: 0..<10_000) {
-        s.removeAll(i)
-      }
-    }
-  }
-
-  extension MultisetRemoveTests {
-    func testSmokeRemove2() throws {
-      var s: RedBlackTreeMultiSet<Int> = .init((0..<2_000).flatMap { [$0, $0] })
-      for i in s.elements(in: 0..<10_000) + [] {
-        s.removeAll(i)
-      }
-    }
-  }
-
-  extension MultisetRemoveTests {
-    func testRemoveSubrange() throws {
-      for l in 0..<10 {
-        for h in l...10 {
-          var members: RedBlackTreeMultiSet = [1, 1, 3, 3, 5, 7, 9, 9]
-          members.removeSubrange(members.lowerBound(l)..<members.upperBound(h))
-          XCTAssertEqual(
-            members.map { $0 }, [1, 1, 3, 3, 5, 7, 9, 9].filter { !(l...h).contains($0) })
-        }
-      }
-    }
-
-    func testRemoveWithIndices() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      for i in members.indices {
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-
-    func testRemoveWithIndices2() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      members.indices.forEach { i in
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-
-    func testRemoveWithIndices3() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      for i in members.indices.reversed() {
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-
-    func testRemoveWithIndices4() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      members.indices.reversed().forEach { i in
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [])
-    }
-  }
-
-  #if DEBUG
-    extension MultisetRemoveTests {
-      func testRemoveWith___Indices() throws {
-        var members = RedBlackTreeMultiSet<Int>(0..<10)
-        for i in members.___node_positions() {
-          members.__tree_._unchecked_remove(at: i)
-        }
-        XCTAssertEqual(members + [], [])
-      }
-
-      func testRemoveWith___Indices2() throws {
-        var members = RedBlackTreeMultiSet<Int>(0..<10)
-        members.___node_positions().forEach { i in
-          members.__tree_._unchecked_remove(at: i)
-        }
-        XCTAssertEqual(members + [], [])
-      }
-
-      func testRemoveWith___Indices3() throws {
-        var members = RedBlackTreeMultiSet<Int>(0..<10)
-        members.___node_positions().reversed().forEach { i in
-          members.__tree_._unchecked_remove(at: i)
-        }
-        XCTAssertEqual(members + [], [])
-      }
-    }
-  #endif
-
-  extension MultisetRemoveTests {
-    func testRemoveWithSubIndices() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      for i in members.elements(in: 2..<8).indices {
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
-
-    func testRemoveWithSubIndices2() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      members.elements(in: 2..<8).indices.forEach { i in
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
-
-    func testRemoveWithSubIndices3() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      for i in members.elements(in: 2..<8).indices.reversed() {
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
-
-    func testRemoveWithSubIndices4() throws {
-      var members = RedBlackTreeMultiSet<Int>(0..<10)
-      members.elements(in: 2..<8).indices.reversed().forEach { i in
-        members.remove(at: i)
-      }
-      XCTAssertEqual(members + [], [0, 1, 8, 9])
-    }
-  }
-
-  #if DEBUG
-    extension MultisetRemoveTests {
-      func testRemoveWithSub___Indices() throws {
-        var members = RedBlackTreeMultiSet<Int>(0..<10)
-        for i in members.elements(in: 2..<8).___node_positions() {
-          members.__tree_._unchecked_remove(at: i)
-        }
-        XCTAssertEqual(members + [], [0, 1, 8, 9])
-      }
-
-      func testRemoveWithSub___Indices2() throws {
-        var members = RedBlackTreeMultiSet<Int>(0..<10)
-        members.elements(in: 2..<8).___node_positions().forEach { i in
-          members.__tree_._unchecked_remove(at: i)
-        }
-        XCTAssertEqual(members + [], [0, 1, 8, 9])
-      }
-
-      func testRemoveWithSub___Indices4() throws {
-        var members = RedBlackTreeMultiSet<Int>(0..<10)
-        members.elements(in: 2..<8).___node_positions().reversed().forEach { i in
-          members.__tree_._unchecked_remove(at: i)
-        }
-        XCTAssertEqual(members + [], [0, 1, 8, 9])
       }
     }
   #endif
@@ -674,47 +509,64 @@ import XCTest
   extension MultisetTests {
   }
 
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    extension MultisetCopyOnWriteTests {
+  final class RedBlackTreeMultisetIndexRemovalLegacyTests: RedBlackTreeTestCase {
+    func testRemovingAtIndicesForwardAndReversedEmptiesMultiSet() throws {
+      var forward = RedBlackTreeMultiSet<Int>(0..<10)
+      for i in forward.indices {
+        forward.remove(at: i)
+      }
+      XCTAssertEqual(forward + [], [])
+
+      var reversed = RedBlackTreeMultiSet<Int>(0..<10)
+      for i in reversed.indices.reversed() {
+        reversed.remove(at: i)
+      }
+      XCTAssertEqual(reversed + [], [])
     }
 
-    extension MultisetCopyOnWriteTests {
+    func testRemovingAtSubrangeIndicesRemovesOnlyThatPortion() throws {
+      var forward = RedBlackTreeMultiSet<Int>(0..<10)
+      for i in forward.elements(in: 2..<8).indices {
+        forward.remove(at: i)
+      }
+      XCTAssertEqual(forward + [], [0, 1, 8, 9])
+
+      var reversed = RedBlackTreeMultiSet<Int>(0..<10)
+      for i in reversed.elements(in: 2..<8).indices.reversed() {
+        reversed.remove(at: i)
+      }
+      XCTAssertEqual(reversed + [], [0, 1, 8, 9])
     }
 
-    extension MultisetCopyOnWriteTests {
-    }
+    #if DEBUG
+      func testUncheckedRemovalViaNodePositionsEmptiesMultiSet() throws {
+        var forward = RedBlackTreeMultiSet<Int>(0..<10)
+        for i in forward.___node_positions() {
+          forward.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(forward + [], [])
 
-    extension MultisetCopyOnWriteTests {
-    }
+        var reversed = RedBlackTreeMultiSet<Int>(0..<10)
+        for i in reversed.___node_positions().reversed() {
+          reversed.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(reversed + [], [])
+      }
 
-    extension MultisetCopyOnWriteTests {
-    }
+      func testUncheckedRemovalViaNodePositionsInSubrangeRemovesOnlyThatPortion() throws {
+        var forward = RedBlackTreeMultiSet<Int>(0..<10)
+        for i in forward.elements(in: 2..<8).___node_positions() {
+          forward.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(forward + [], [0, 1, 8, 9])
 
-    extension MultisetCopyOnWriteTests {
-    }
-
-    extension MultisetCopyOnWriteTests {
-    }
-  #endif
-
-  extension MultisetRemoveTests {
+        var reversed = RedBlackTreeMultiSet<Int>(0..<10)
+        for i in reversed.elements(in: 2..<8).___node_positions().reversed() {
+          reversed.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(reversed + [], [0, 1, 8, 9])
+      }
+    #endif
   }
 
-  extension MultisetRemoveTests {
-  }
-
-  extension MultisetRemoveTests {
-  }
-
-  extension RedBlackTreeMultisetCornerCaseTests {
-  }
-
-  extension RedBlackTreeMultisetCornerCaseTests {
-  }
-
-  extension RedBlackTreeMultisetCornerCaseTests {
-  }
-
-  extension RedBlackTreeMultisetCornerCaseTests {
-  }
 #endif

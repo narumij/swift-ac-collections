@@ -68,6 +68,26 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
 
       XCTAssertEqual(Array(multiset), [1, 3])
     }
+
+    func test_eraseMulti_handlesFullWidthIntValues() {
+      var members: RedBlackTreeMultiSet = [Int.min, Int.min, Int.max, Int.max]
+
+      XCTAssertEqual(members.count, 4)
+      XCTAssertEqual(members.eraseMulti(Int.min), 2)
+      XCTAssertEqual(members.count, 2)
+      XCTAssertEqual(members.eraseMulti(Int.max), 2)
+      XCTAssertEqual(members.count, 0)
+    }
+
+    func test_eraseUsingLowerAndUpperBound_removesOnlyThatDuplicateValue() {
+      var multiset = RedBlackTreeMultiSet([0, 1, 2, 2, 3, 4])
+      let lower = multiset.lowerBound(2)
+      let upper = multiset.upperBound(2)
+
+      _ = multiset.erase(lower..<upper)
+
+      XCTAssertEqual(Array(multiset), [0, 1, 3, 4])
+    }
   #endif
 
   func test_removeAll_clearsElementsAndHonorsCapacityChoice() {

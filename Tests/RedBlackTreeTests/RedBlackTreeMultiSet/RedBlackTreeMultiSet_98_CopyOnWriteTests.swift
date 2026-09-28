@@ -2,7 +2,7 @@ import RedBlackTreeCollections
 import XCTest
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
-  final class MultisetCopyOnWriteTests: RedBlackTreeTestCase {
+  final class RedBlackTreeMultiSetCopyOnWriteTests: RedBlackTreeTestCase {
 
     let count = 2_000_000
 

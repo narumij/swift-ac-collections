@@ -151,3 +151,11 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   - 互換ファイル側の空`extension MultiMapTests {}`・`extension MultiMapEtcTests {}`(16箇所)も削除。本体は`XcodeRM`で削除。
   - ビルド成功、関連テスト21件成功、全体テスト625成功・0失敗・2既知スキップを確認。
 - (2026-09-29 05:24) **`multimap/`フォルダはこれで完全に空になった。`dictionary`・`multiset`・`multimap`の3フォルダの棚卸しが全て完了。** 残る旧フォルダはルート直下の`MergeTests.swift`・`DocumentCheckTests.swift`・`EtcTests.swift`(Set公開仕様が混在)など。次はそちらの監査。
+- (2026-09-29 05:35) `DocumentCheckTests.swift`(46行)を確認。これは旧テスト債務ではなく、`Sources/RedBlackTreeCollections/Documentation/Remove.md`(testExample1/2)と`DSL.md`(testExample3/4)のコード例を直接検証する現役のドキュメント検証ファイルだった。**このファイルはそのまま残す**(整理対象外)。
+- (2026-09-29 05:35) `MergeTests.swift`(187行)を監査。Set/MultiSet/Dictionaryをまたぐ`.merge(_:)`/`.insert(contentsOf:)`のクロス型結合テスト。多くはSetの`_5_InsertionTests.swift`で`insert(contentsOf:)`相当が既にカバーされていたが、以下は連番側に無い発見だったため追加:
+  - Setの`merge(_:)`に標準ライブラリ`Set`を渡すケース → `RedBlackTreeSet_5_InsertionTests.swift`に`test_merge_fromSwiftSet`追加
+  - MultiSetの`insert(contentsOf:)`にSet/MultiSetを渡すケース(既存は配列のみ) → `RedBlackTreeMultiSet_5_InsertionTests.swift`に1件追加
+  - Dictionaryの`merge(_:uniquingKeysWith:)`にRedBlackTreeDictionaryを直接渡すケース(既存はSequence/配列のみ) → `RedBlackTreeDictionary_5_InsertionTests.swift`に1件追加
+  - 残り(空/空の境界値ケース、標準Sequence・ClosedRangeなどSequenceオーバーロード経由で実質同一コードパスのケース)は重複と判断し移管せず。旧ファイル削除(他ファイルからの参照なしを確認済み)。
+  - ビルド成功、関連テスト31件成功、全体テスト606成功・0失敗・2既知スキップを確認。
+- (2026-09-29 05:35) ユーザー指示により`EtcTests.swift`(1162行)は**ファイル自体を残す**方針(「なんかあるとつい触るやつ」)。内容の重複整理をする場合も、ファイルを完全に空にして削除するのではなく、ファイルは存在させたまま内容を整理する。

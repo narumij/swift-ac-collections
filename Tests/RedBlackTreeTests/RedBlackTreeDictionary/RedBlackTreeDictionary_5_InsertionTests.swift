@@ -94,6 +94,18 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary["c"], 3)
   }
 
+  func test_merge_fromAnotherDictionary_combinesDuplicateKeysAndInsertsNewKeys() {
+    var dictionary: RedBlackTreeDictionary<String, Int> = ["a": 1, "b": 2]
+    let other: RedBlackTreeDictionary<String, Int> = ["b": 10, "c": 3]
+
+    dictionary.merge(other) { old, new in old + new }
+
+    XCTAssertEqual(dictionary["a"], 1)
+    XCTAssertEqual(dictionary["b"], 12)
+    XCTAssertEqual(dictionary["c"], 3)
+    XCTAssertEqual(other["b"], 10)
+  }
+
   func test_merging_returnsChangedCopyAndPreservesOriginal() {
     let original: RedBlackTreeDictionary<String, Int> = ["a": 1, "b": 2]
 

@@ -48,6 +48,16 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertTrue(secondResult.memberAfterInsert === second)
   }
 
+  func test_insertContentsOf_fromSetAndMultiSet_preservesEachSourcesMultiplicity() {
+    var fromSet = RedBlackTreeMultiSet<Int>([1, 2, 3, 4, 5, 6])
+    fromSet.insert(contentsOf: RedBlackTreeSet([4, 5, 6]))
+    XCTAssertEqual(Array(fromSet), [1, 2, 3, 4, 4, 5, 5, 6, 6])
+
+    var fromMultiSet = RedBlackTreeMultiSet<Int>([1, 2, 3])
+    fromMultiSet.insert(contentsOf: RedBlackTreeMultiSet([2, 2, 3, 3]))
+    XCTAssertEqual(Array(fromMultiSet), [1, 2, 2, 2, 3, 3, 3])
+  }
+
   func test_insertContentsOf_preservesMultiplicity() {
     var multiset = RedBlackTreeMultiSet([1, 2])
 

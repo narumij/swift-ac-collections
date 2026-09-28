@@ -102,6 +102,16 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(set + [], [1, 2, 3, 4])
   }
 
+  /// 標準ライブラリのSetをmerge(_:)で追加できること
+  func test_merge_fromSwiftSet() {
+    var set: RedBlackTreeSet<Int> = [1, 2, 3]
+    let swiftSet: Set<Int> = [4, 5, 6]
+
+    set.merge(swiftSet)
+
+    XCTAssertEqual(set + [], [1, 2, 3, 4, 5, 6])
+  }
+
   /// merging(_:) が別のSetを統合した新しい集合を返し、元の集合を変更しないこと
   func test_mergingSetReturnsNewSetWithoutMutatingSource() {
     let set: RedBlackTreeSet = [1, 2]

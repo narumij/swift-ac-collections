@@ -204,7 +204,7 @@ import XCTest
     #endif
   }
 
-  extension RedBlackTreeDictionarySubSequenceTests {
+  final class RedBlackTreeDictionarySubSequenceAtCoder2025LegacyTests: RedBlackTreeTestCase {
     func testSliceIndexOffsetting() {
       let dict: RedBlackTreeDictionary = [
         10: 0, 11: 1, 12: 2, 13: 3, 14: 4,

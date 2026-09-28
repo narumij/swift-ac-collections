@@ -48,6 +48,13 @@
 - 2026-09-28: `SetSubSequenceTests.swift` を現行仕様と互換仕様へ分離し、現行の要素範囲ビューを `_18_ElementRangeTests.swift` へ移管した。
 - 2026-09-28: 最後に作業したモデルは Codex（GPT-5、詳細なマイナーバージョンは実行環境から確認不可）。
 
+### Claude向け運用メモ
+
+Codex が週末（日曜）まで週間利用上限でロングスリープに入ったため、2026-09-29 から Claude が代打として本ファイルの作業に参加する。上の「連絡事項」「停止条件」に書かれている週間利用上限・停止しきい値は Codex のプラン前提であり、Claude にそのまま適用しない。Claude 側の停止条件・利用上限は必要になった時点でここに追記する。
+
+- 2026-09-29: 最後に作業したモデルは Claude（Sonnet 5、モデルID `claude-sonnet-5`）。
+- 2026-09-29: `dictionary/DictionarySubSequenceTests.swift`(`elements(in:)` の count/first/last・双方向走査、46行)を現行仕様として棚卸し。実仕様検証のあった2ケースを `RedBlackTreeDictionary_11_ElementRangeTests.swift` へ移管し、旧ファイルは削除した。旧ファイルのクラスを互換ファイル側で `extension` していた3ケース(index offsetting、distance対称性、CoW後のindex無効化)は `RedBlackTreeDictionaryAtCoder2025CompatibilityTests.swift` 内で自己完結クラス `RedBlackTreeDictionarySubSequenceAtCoder2025LegacyTests` に付け替えた。通常モード・互換モード(`COMPATIBLE_ATCODER_2025` を一時的に有効化して確認、確認後 `Package.swift` は元に戻した)の両方で `swift test` が失敗0件であることを確認済み(互換モードは913件成功・6件既知スキップ・0失敗)。
+
 <!-- ユーザー記入欄ここまで -->
 
 ## Test as Spec

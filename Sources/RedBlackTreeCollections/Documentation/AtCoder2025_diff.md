@@ -6,7 +6,7 @@
 | 値による範囲 | `elements(in:)`、値Range subscript | `Bound` / `BoundRangeExpression` |
 | 部分ビュー | nested `SubSequence` | 専用 `RangeView` |
 | `equalRange` | `(lower, upper)` タプル | 解決済み `IndexRange` |
-| 削除 | `removeSubrange`、`remove(contentsOf:)`、unsafe系 | `erase` 系に統一、Index / Range / Bound / `where` を網羅 |
+| 削除 | `removeSubrange`、`remove(contentsOf:)`、unsafe系 | `erase` 系を充実、Index / Range / Bound / `where` を網羅 |
 | Multi削除 | `removeAll(member)` 等 | `eraseUnique` / `eraseMulti` |
 | hint | ほぼ無し | 4型 `insert(_:hint:)`、Set update、Dictionary `updateValue` hint |
 | 更新 | 少なめ | `update(_:at:)`、`updateValue(_:at:)` などを型ごとに整理 |

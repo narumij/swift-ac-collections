@@ -43,6 +43,46 @@
   struct RedBlackTreeMultiMapDeathTests {
 
     @Test
+    func emptyStartIndexSubscript_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        let map = RedBlackTreeMultiMap<Int, Int>()
+        _ = map[map.startIndex]
+      }
+    }
+
+    @Test
+    func removingEmptyStartIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var map = RedBlackTreeMultiMap<Int, Int>()
+        map.remove(at: map.startIndex)
+      }
+    }
+
+    @Test
+    func removingEndIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var map = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (0..<100).map { ($0, $0) })
+        map.remove(at: map.endIndex)
+      }
+    }
+
+    @Test
+    func removingFirstFromEmptyMultiMap_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var map = RedBlackTreeMultiMap<Int, Int>()
+        map.removeFirst()
+      }
+    }
+
+    @Test
+    func removingLastFromEmptyMultiMap_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var map = RedBlackTreeMultiMap<Int, Int>()
+        map.removeLast()
+      }
+    }
+
+    @Test
     func `MultiMapでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること`() async {
       let result = await #expect(
         processExitsWith: .failure,

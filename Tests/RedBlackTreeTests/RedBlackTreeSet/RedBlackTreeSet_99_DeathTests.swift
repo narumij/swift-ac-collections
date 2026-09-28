@@ -49,6 +49,69 @@
   struct RedBlackTreeSetDeathTests {
 
     @Test
+    func emptyStartIndexSubscript_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        let set = RedBlackTreeSet<Int>()
+        _ = set[set.startIndex]
+      }
+    }
+
+    @Test
+    func removingEmptyStartIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var set = RedBlackTreeSet<Int>()
+        set.remove(at: set.startIndex)
+      }
+    }
+
+    @Test
+    func removingEndIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var set = RedBlackTreeSet<Int>(0..<100)
+        set.remove(at: set.endIndex)
+      }
+    }
+
+    @Test
+    func removingAnAlreadyRemovedIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var set = RedBlackTreeSet<Int>(0..<100)
+        let removed = set.startIndex
+        set.remove(at: removed)
+        set.remove(at: removed)
+      }
+    }
+
+    @Test
+    func removingFirstFromEmptySet_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var set = RedBlackTreeSet<Int>()
+        set.removeFirst()
+      }
+    }
+
+    @Test
+    func removingLastFromEmptySet_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var set = RedBlackTreeSet<Int>()
+        set.removeLast()
+      }
+    }
+
+    #if !ALLOW_CROSS_TREE_INDEX
+      @Test
+      func erasingRangeFromAnotherSet_terminatesProcess() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let source = RedBlackTreeSet(0..<8)
+          var target = RedBlackTreeSet(100..<108)
+          let lower = source.index(source.startIndex, offsetBy: 2)
+          let upper = source.index(source.startIndex, offsetBy: 6)
+          target.erase(lower..<upper)
+        }
+      }
+    #endif
+
+    @Test
     func `RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること`() async {
       let result = await #expect(
         processExitsWith: .failure,

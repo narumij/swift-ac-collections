@@ -12,7 +12,49 @@
       }
     }
 
+    @Test
+    func removingFirstFromEmptyDictionary_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var dictionary = RedBlackTreeDictionary<Int, Int>()
+        dictionary.removeFirst()
+      }
+    }
+
+    @Test
+    func removingLastFromEmptyDictionary_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var dictionary = RedBlackTreeDictionary<Int, Int>()
+        dictionary.removeLast()
+      }
+    }
+
     #if !COMPATIBLE_ATCODER_2025
+      @Test
+      func emptyStartIndexSubscript_terminatesProcess() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let dictionary = RedBlackTreeDictionary<Int, Int>()
+          _ = dictionary[dictionary.startIndex]
+        }
+      }
+
+      @Test
+      func removingEmptyStartIndex_terminatesProcess() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          var dictionary = RedBlackTreeDictionary<Int, Int>()
+          dictionary.remove(at: dictionary.startIndex)
+        }
+      }
+
+      @Test
+      func removingEndIndex_terminatesProcess() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          var dictionary = RedBlackTreeDictionary<Int, Int>(
+            uniqueKeysWithValues: (0..<100).map { ($0, $0) }
+          )
+          dictionary.remove(at: dictionary.endIndex)
+        }
+      }
+
       @Test
       func reversedIndexRange_terminatesWithoutInvalidMemoryAccess() async {
         let result = await #expect(

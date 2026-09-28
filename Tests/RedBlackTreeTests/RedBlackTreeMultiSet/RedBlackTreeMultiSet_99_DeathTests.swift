@@ -43,6 +43,46 @@
   struct RedBlackTreeMultiSetDeathTests {
 
     @Test
+    func emptyStartIndexSubscript_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        let set = RedBlackTreeMultiSet<Int>()
+        _ = set[set.startIndex]
+      }
+    }
+
+    @Test
+    func removingEmptyStartIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var set = RedBlackTreeMultiSet<Int>()
+        set.remove(at: set.startIndex)
+      }
+    }
+
+    @Test
+    func removingEndIndex_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var set = RedBlackTreeMultiSet<Int>(0..<100)
+        set.remove(at: set.endIndex)
+      }
+    }
+
+    @Test
+    func removingFirstFromEmptyMultiSet_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var set = RedBlackTreeMultiSet<Int>()
+        set.removeFirst()
+      }
+    }
+
+    @Test
+    func removingLastFromEmptyMultiSet_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        var set = RedBlackTreeMultiSet<Int>()
+        set.removeLast()
+      }
+    }
+
+    @Test
     func `MultiSetでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること`() async {
       let result = await #expect(
         processExitsWith: .failure,

@@ -53,5 +53,8 @@
 - `multimap` 以下の広範な旧テスト (`MultiMapBasicTest.swift`、`MultiMapAdvancedTest.swift`、`RedBlackTreeMultiMapTests.swift` とその removal extension、`RedBlackTreeMultiMapTests_.swift`、`MultiMapEtcTests.swift`、`MultiMapRemoveTests.swift`、`MultiMapViewTests.swift`) は、連番側への不足仕様の移植後に整理済み。互換 extension が必要とする test class と fixture は compatibility file 内へ閉じ込め、互換専用の range-index removal も同ファイルへ移した。
 - 次回は `MultiMapTests.swift` を少量ずつ監査する。残る `MultiMapCopyOnWriteTests.swift` と `MultiMapPointerTests.swift` は内部実装テストとして用途を保つ。compatibility、内部実装、性能、負荷、ファズは連番へ無理に移さない。
 - Set、MultiSet、Dictionary、MultiMap の既存 Death Test は各型の `_99_DeathTests.swift` に移管済み。
+- `fatalError/Index` に残っていた空の `startIndex` と `endIndex` の Death Test、および `fatalError/etc` の空 collection に対する `removeFirst` / `removeLast`、Set の cross-tree range、削除済み index の再削除は各型の `_99_DeathTests.swift` へ移管済み。重複していた旧 range / fatal テストも整理済み。
+- 互換専用 iterator Death Test は `RedblacktreesetAtCoder2025CompatibilityTests.swift` へ移管済み。
+- `fatalError/etc` には、通常の成功系である `DistanceTests.swift`、`EraseTests.swift`、`EraseWhereTests.swift`、内部 coverage の `BoundExpressionCoverage.swift`、`PtrCompTests.swift`、`__tree_coverage_tests.swift` が残る。次回は公開 Death Test と誤認せず、通常連番と内部テストの適切な場所へ分ける。`PtrCompTests.swift` と `__tree_coverage_tests.swift` の一部だけは内部 precondition の Death Test であり、4型の `_99` には混ぜない。
 - `multiset` 以下には compatibility、内部実装、性能、負荷、ファズ、および未仕分けの旧テストが残っている。削除前に公開仕様の取りこぼしがないか確認すること。
 - `MultisetAtCoder2025CompatibilityTests.swift` は互換モード廃止時の一括削除対象。

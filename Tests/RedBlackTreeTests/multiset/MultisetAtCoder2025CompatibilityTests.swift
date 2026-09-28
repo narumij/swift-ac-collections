@@ -7,6 +7,8 @@ import XCTest
 #endif
 
 #if COMPATIBLE_ATCODER_2025
+  // Compatibility-only coverage is intentionally collected in this file so it can be
+  // deleted together when COMPATIBLE_ATCODER_2025 support is removed.
   extension RedBlackTreeMultisetSubSequenceTests {
     func testSliceIndexOffsetting() {
       let m: RedBlackTreeMultiSet = [5, 5, 6, 7, 7, 8]

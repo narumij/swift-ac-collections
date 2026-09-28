@@ -73,4 +73,26 @@ class RedBlackTreeTestCase: XCTestCase {
   }
 }
 
+extension RedBlackTreeTestCase {
+  
+  func keyValue<K, V>(_ k: K, _ v: V) -> (key: K, value: V) { (k, v) }
+  func keyValue<K, V>(_ kv: (K, V)) -> (key: K, value: V) {
+    (kv.0, kv.1)
+  }
+  func _value<K, V>(_ k: K, _ v: V) -> RedBlackTreePair<K, V> { RedBlackTreePair(key: k, value: v) }
+  func _value<K, V>(_ kv: (K, V)) -> RedBlackTreePair<K, V> {
+    RedBlackTreePair(key: kv.0, value: kv.1)
+  }
+
+  func tuple<K, V>(_ kv: (key: K, value: V)) -> (K, V) {
+    (kv.key, kv.value)
+  }
+  func __key<K, V>(_ kv: (key: K, value: V)) -> K {
+    kv.key
+  }
+  func __value<K, V>(_ kv: (key: K, value: V)) -> V {
+    kv.value
+  }
+}
+
 class PointerRedBlackTreeTestCase: RedBlackTreeTestCase, _UnsafeNodePtrType {}

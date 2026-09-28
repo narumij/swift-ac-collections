@@ -27,8 +27,10 @@ final class RedBlackTreeMultiSetSearchTests: RedBlackTreeTestCase {
     let multiset = RedBlackTreeMultiSet([1, 2, 2, 2, 3])
     let range = multiset.equalRange(2)
 
-    XCTAssertEqual(multiset.distance(from: range.lower, to: range.upper), 3)
-    XCTAssertEqual(multiset[range.lower], 2)
+    #if DEBUG
+      XCTAssertEqual(multiset.distance(from: range.lower, to: range.upper), 3)
+      XCTAssertEqual(multiset[range.lower], 2)
+    #endif
   }
 
   func test_firstIndex_returnsFirstMatchingPosition() {

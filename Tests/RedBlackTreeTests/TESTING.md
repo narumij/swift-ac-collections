@@ -42,11 +42,14 @@
 
 テスト数は、重複ケースの統合や旧ファイル削除で減ることがある。件数ではなく、公開仕様の欠落がないことと全テスト失敗 0 を基準にする。
 
+長時間のセッションでは、残量 10% 付近で新しいカテゴリへの着手を止める。最後の 5% は、全体テスト、`Current handoff` の更新、次回の開始地点の明記、コミット可能な状態の確認に使う。作業量を増やすためにこの振り返り時間を使い切らないこと。
+
 ## Current handoff
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。
 - `RedBlackTreeMultiSet` は initialization、sequence、bidirectional collection、index、search、insertion、removal、utility、range view、protocol conformance、set algebra、element range を連番化済み。
-- `RedBlackTreeDictionary` は initialization、sequence、index、search、insertion、removal、utility、range view、protocol conformance を連番化済み。
+- `RedBlackTreeDictionary` は initialization、sequence、index、search、insertion、removal、utility、range view、protocol conformance、Codable を連番化済み。
+- `RedBlackTreeMultiMap` は initialization、sequence、index、search、protocol conformance を連番化済み。次回は insertion、removal、utility、range view の順で、旧テストから現行公開仕様を移すところから再開する。
 - Set、MultiSet、Dictionary、MultiMap の既存 Death Test は各型の `_99_DeathTests.swift` に移管済み。
 - `multiset` 以下には compatibility、内部実装、性能、負荷、ファズ、および未仕分けの旧テストが残っている。削除前に公開仕様の取りこぼしがないか確認すること。
 - `MultisetAtCoder2025CompatibilityTests.swift` は互換モード廃止時の一括削除対象。

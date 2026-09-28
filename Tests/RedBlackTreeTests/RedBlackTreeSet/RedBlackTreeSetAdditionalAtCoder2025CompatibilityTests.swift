@@ -380,7 +380,24 @@ import XCTest
     }
   }
 
-  extension SetSubSequenceTests {
+  final class RedBlackTreeSetAdditionalAtCoder2025SubSequenceTests: RedBlackTreeTestCase {
+    func testEmptyIndexRangesProduceEmptySlices() {
+      let set = RedBlackTreeSet(0..<10)
+      let middle = set.index(set.startIndex, offsetBy: 5)
+
+      for range in [
+        set.startIndex..<set.startIndex,
+        middle..<middle,
+        set.endIndex..<set.endIndex,
+      ] {
+        let slice = set[range]
+        XCTAssertEqual(slice.count, 0)
+        XCTAssertNil(slice.first)
+        XCTAssertNil(slice.last)
+        XCTAssertEqual(slice.distance(from: slice.startIndex, to: slice.endIndex), 0)
+      }
+    }
+
     func testSliceStartEndCount() {
       let base = RedBlackTreeSet(0..<10)  // [0‥9]
       let slice = base.elements(in: 2..<6)  // [2,3,4,5]
@@ -397,7 +414,7 @@ import XCTest
     }
   }
 
-  extension SetSubSequenceTests {
+  extension RedBlackTreeSetAdditionalAtCoder2025SubSequenceTests {
     func testSliceIndexOffsetting() {
       let set: RedBlackTreeSet = [0, 1, 2, 3, 4, 5, 6]
       let slice = set.elements(in: 1...4)  // [1,2,3,4]
@@ -413,7 +430,7 @@ import XCTest
     }
   }
 
-  extension SetSubSequenceTests {
+  extension RedBlackTreeSetAdditionalAtCoder2025SubSequenceTests {
     func testIndexInvalidationAfterBaseMutation() throws {
       var base: RedBlackTreeSet = [0, 1, 2, 3]
       let slice = base.elements(in: 1..<3)  // [1,2]

@@ -17,8 +17,8 @@
 
 ### 優先事項
 
-- 次回は `Current handoff` に記載した `SetSubSequenceTests.swift` の監査から再開する。
-- Package.swiftの直接編集Xcode runで構わないので、互換モードのコンパイル確認を一度はして判断を仰いで欲しい
+- 次回は `Current handoff` に記載した `SetSubSequenceTests.swift` の監査から再開する。（2026-09-28 完了）
+- Package.swiftの直接編集Xcode runで構わないので、互換モードのコンパイル確認を一度はして判断を仰いで欲しい。（2026-09-28 完了。ビルド成功、全テスト 1026 成功・0 失敗・7 スキップ）
 
 ### 連絡事項
 
@@ -45,6 +45,8 @@
 ### 完了済みの要望
 
 - 2026-09-28: 記入欄を優先事項と連絡事項などのカテゴリに分けた。(確認済)
+- 2026-09-28: `SetSubSequenceTests.swift` を現行仕様と互換仕様へ分離し、現行の要素範囲ビューを `_18_ElementRangeTests.swift` へ移管した。
+- 2026-09-28: 最後に作業したモデルは Codex（GPT-5、詳細なマイナーバージョンは実行環境から確認不可）。
 
 <!-- ユーザー記入欄ここまで -->
 
@@ -110,7 +112,8 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 ## Current handoff
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。
-- 旧 `set` フォルダは、重複していた SetAlgebra、reserve-capacity、corner-case、bidirectional の公開ケースを整理し、SetAlgebra stress、COW、pointer、performance、fuzz を型別 `_98`、compatibility を型別 compatibility file へ移管済み。index-based range view は `_17_RangeViewTests.swift` へ昇格済み。残りは `SetExtendedTests.swift`、`SetRemoveTests.swift`、`SetSubSequenceTests.swift`、`SetTests.swift`。次回は `SetSubSequenceTests.swift` を独立仕様として昇格できるか確認し、その後 removal、extended、最後に巨大な `SetTests.swift` を処理する。
+- 旧 `set` フォルダは、重複していた SetAlgebra、reserve-capacity、corner-case、bidirectional の公開ケースを整理し、SetAlgebra stress、COW、pointer、performance、fuzz を型別 `_98`、compatibility を型別 compatibility file へ移管済み。index-based range view は `_17_RangeViewTests.swift`、`elements(in:)` の現行要素範囲ビュー仕様は `_18_ElementRangeTests.swift` へ昇格済み。残りは `SetExtendedTests.swift`、`SetRemoveTests.swift`、`SetTests.swift`。次回は removal、extended、最後に巨大な `SetTests.swift` を処理する。
+- `COMPATIBLE_ATCODER_2025` を一時的に有効化した Debug ビルドと全体テストは 2026-09-28 に成功（1026 成功・0 失敗・7 スキップ）。確認後、`Package.swift` は通常モードへ戻した。互換モードで懸念されていた `MultiMapEtcTests` に失敗は出なかった。
 - ルート直下では `MergeTests.swift`、`DocumentCheckTests.swift`、`EtcTests.swift` などに Set 公開仕様が混在する。単純移動せず、他型のケースを残しながら Set ケースだけ連番側へ移植・整理する。
 - `BoundExpression` は公開 DSL として4型それぞれの `_16_BoundExpressionTests.swift` へ移管済み。旧 `boundsExpression` フォルダの Swift テストは残っていない。位置式、相対移動、limit、range expression、subscript、erase の既存仕様を型別 Test as Spec として維持する。DEBUG 専用の内部 validity を追加するときは `_98_InternalTests.swift` に置く。
 - `RedBlackTreeMultiSet` は initialization、sequence、bidirectional collection、index、search、insertion、removal、utility、range view、protocol conformance、set algebra、element range を連番化済み。

@@ -9,7 +9,7 @@
   import XCTest
   import RedBlackTreeCollections
 
-  final class SetBoundsExpressionTests: RedBlackTreeTestCase {
+  final class RedBlackTreeSetBoundExpressionTests: RedBlackTreeTestCase {
 
     let a = RedBlackTreeSet<Int>(0..<3)
 

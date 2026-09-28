@@ -9,7 +9,7 @@
   import XCTest
   import RedBlackTreeCollections
 
-  final class MultiSetBoundsExpressionTests: RedBlackTreeTestCase {
+  final class RedBlackTreeMultiSetBoundExpressionTests: RedBlackTreeTestCase {
 
     let a = RedBlackTreeMultiSet<Int>([0, 1, 2])
 

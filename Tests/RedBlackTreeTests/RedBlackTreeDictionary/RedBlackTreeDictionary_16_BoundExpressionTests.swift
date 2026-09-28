@@ -1,5 +1,5 @@
 //
-//  MultiMapBoundsExpressionTests.swift
+//  DictionaryBoundsExpressionTests.swift
 //  swift-ac-collections
 //
 //  Created by narumij on 2026/02/14.
@@ -9,9 +9,9 @@
   import XCTest
   import RedBlackTreeCollections
 
-  final class MultiMapBoundsExpressionTests: RedBlackTreeTestCase {
+  final class RedBlackTreeDictionaryBoundExpressionTests: RedBlackTreeTestCase {
 
-    let a: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c"]
+    let a: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
 
     func testAfter() throws {
       XCTAssertTrue(a.isValid(start()))
@@ -56,10 +56,16 @@
     }
 
     func testEraseBound() throws {
-      var b: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c"]
+      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
       let removed = b.erase(find(1))
       XCTAssertEqual(removed?.key, 1)
       XCTAssertEqual(Array(b).map { $0.key }, [0, 2])
+    }
+
+    func testEraseBounds() throws {
+      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+      b.erase(lowerBound(1)..<upperBound(3))
+      XCTAssertEqual(Array(b).map { $0.key }, [0, 4])
     }
 
     func testSubscriptBoundsView() throws {
@@ -68,38 +74,32 @@
     }
 
     func testSubscriptBoundsModifyPopFirst() throws {
-      var b: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d"]
-      let removed = b[lowerBound(0)..<upperBound(1)].popFirst()
+      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d"]
+      let removed = b[lowerBound(0)..<upperBound(2)].popFirst()
       XCTAssertEqual(removed?.key, 0)
       XCTAssertEqual(Array(b).map { $0.key }, [1, 2, 3])
     }
 
-    func testEraseBounds() throws {
-      var b: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
-      b.erase(lowerBound(1)..<upperBound(3))
-      XCTAssertEqual(Array(b).map { $0.key }, [0, 4])
-    }
-
     func testRemoveBoundsWhere() throws {
-      var b: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
       b.erase(lowerBound(0)..<upperBound(4)) { $0.key % 2 == 0 }
       XCTAssertEqual(Array(b).map { $0.key }, [1, 3])
     }
 
-    func testLessThanAndOrEqualMulti() throws {
-      let b: RedBlackTreeMultiMap = [0: "a", 1: "b", 1: "c", 2: "d"]
+    func testLessThanAllKeys() throws {
+      let cases: [(key: Int, expected: Int?)] = [
+        (-1, nil),
+        (0, nil),
+        (1, 0),
+        (2, 1),
+        (3, 2),
+        (4, 2),
+      ]
 
-      XCTAssertEqual(b[.lessThan(-1)]?.key, nil)
-      XCTAssertEqual(b[.lessThan(0)]?.key, nil)
-      XCTAssertEqual(b[.lessThan(1)]?.key, 0)
-      XCTAssertEqual(b[.lessThan(2)]?.key, 1)
-      XCTAssertEqual(b[.lessThan(3)]?.key, 2)
-
-      XCTAssertEqual(b[.lessThanOrEqual(-1)]?.key, nil)
-      XCTAssertEqual(b[.lessThanOrEqual(0)]?.key, 0)
-      XCTAssertEqual(b[.lessThanOrEqual(1)]?.key, 1)
-      XCTAssertEqual(b[.lessThanOrEqual(2)]?.key, 2)
-      XCTAssertEqual(b[.lessThanOrEqual(3)]?.key, 2)
+      for (key, expected) in cases {
+        XCTAssertEqual(a[.lessThan(key)]?.key, expected, "key=\(key)")
+        XCTAssertEqual(a.isValid(.lessThan(key)), expected != nil, "key=\(key)")
+      }
     }
 
     func testLessGreaterHelpers() throws {

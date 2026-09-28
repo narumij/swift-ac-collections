@@ -255,16 +255,14 @@ extension RedBlackTreeSet {
 
     @inlinable
     @discardableResult
-    public mutating func insert(_ newMember: Element, hint: Index) -> (
-      inserted: Bool, memberAfterInsert: Element
-    ) {
+    public mutating func insert(_ newMember: Element, hint: Index) -> Index {
       __tree_.ensureUniqueAndCapacity()
       let p = __tree_.__purified_(hint)
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
-      let (__r, __inserted) = __tree_.__emplace_hint_unique(__p, Base.__key(newMember), newMember)
-      return (__inserted, __inserted ? newMember : Base.__payload_(__r))
+      let (__r, _) = __tree_.__emplace_hint_unique(__p, Base.__key(newMember), newMember)
+      return ___index(__r)
     }
   }
 #endif

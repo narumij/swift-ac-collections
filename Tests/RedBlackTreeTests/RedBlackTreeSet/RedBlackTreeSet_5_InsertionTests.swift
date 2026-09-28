@@ -109,19 +109,16 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     func test_insert_withHint() {
       var set = RedBlackTreeSet([10, 30])
 
-      let insertedWithGoodHint = set.insert(hint: set.firstIndex(of: 30)!, 20)
-      XCTAssertTrue(insertedWithGoodHint.inserted)
-      XCTAssertEqual(insertedWithGoodHint.memberAfterInsert, 20)
+      let insertedWithGoodHint = set.insert(20, hint: set.firstIndex(of: 30)!)
+      XCTAssertEqual(set[insertedWithGoodHint], 20)
       XCTAssertEqual(set + [], [10, 20, 30])
 
-      let insertedWithBadHint = set.insert(hint: set.startIndex, 25)
-      XCTAssertTrue(insertedWithBadHint.inserted)
-      XCTAssertEqual(insertedWithBadHint.memberAfterInsert, 25)
+      let insertedWithBadHint = set.insert(25, hint: set.startIndex)
+      XCTAssertEqual(set[insertedWithBadHint], 25)
       XCTAssertEqual(set + [], [10, 20, 25, 30])
 
-      let duplicate = set.insert(hint: set.endIndex, 20)
-      XCTAssertFalse(duplicate.inserted)
-      XCTAssertEqual(duplicate.memberAfterInsert, 20)
+      let duplicate = set.insert(20, hint: set.endIndex)
+      XCTAssertEqual(set[duplicate], 20)
       XCTAssertEqual(set + [], [10, 20, 25, 30])
     }
   #endif

@@ -200,51 +200,8 @@ protocol EmplaceHintUniqueProtocol_ptr:
     & NullPtrInterface
 {}
 
-/*
- _LIBCPP_HIDE_FROM_ABI iterator insert(const_iterator __p, const value_type& __v) {
-   return __tree_.__emplace_hint_unique(__p, __v).first;
- }
- */
-
-/*
- template <class... _Args>
- _LIBCPP_HIDE_FROM_ABI pair<iterator, bool> __emplace_hint_unique(const_iterator __p, _Args&&... __args) {
-   return std::__try_key_extraction<key_type>(
-       [this, __p](const key_type& __key, _Args&&... __args2) {
-         __node_base_pointer __dummy;
-         auto [__parent, __child] = __find_equal(__p, __dummy, __key);
-         __node_pointer __r       = std::__static_fancy_pointer_cast<__node_pointer>(__child);
-         bool __inserted          = false;
-         if (__child == nullptr) {
-           __node_holder __h = __construct_node(std::forward<_Args>(__args2)...);
-           __insert_node_at(__parent, __child, std::__static_fancy_pointer_cast<__node_base_pointer>(__h.get()));
-           __r        = __h.release();
-           __inserted = true;
-         }
-         return pair<iterator, bool>(iterator(__r), __inserted);
-       },
-       [this, __p](_Args&&... __args2) {
-         __node_holder __h = __construct_node(std::forward<_Args>(__args2)...);
-         __node_base_pointer __dummy;
-         auto [__parent, __child] = __find_equal(__p, __dummy, __h->__get_value());
-         __node_pointer __r       = std::__static_fancy_pointer_cast<__node_pointer>(__child);
-         if (__child == nullptr) {
-           __insert_node_at(__parent, __child, std::__static_fancy_pointer_cast<__node_base_pointer>(__h.get()));
-           __r = __h.release();
-         }
-         return pair<iterator, bool>(iterator(__r), __child == nullptr);
-       },
-       std::forward<_Args>(__args)...);
- }
- */
-
 extension EmplaceHintUniqueProtocol_ptr {
 
-  /// ヒント位置を利用し、必要な場合に限って値を構築して挿入する。
-  ///
-  /// extractingKey がキーを返した場合、重複を確認してから
-  /// constructingValue を評価する。キーを事前に取得できない場合は、
-  /// 値を構築し、その値からキーを取得して重複を確認する。
   @inlinable
   internal func __emplace_hint_unique(
     _ __p: _NodePtr,
@@ -263,7 +220,7 @@ extension EmplaceHintUniqueProtocol_ptr {
         __inserted = true
       }
       return (__r, __inserted)
-    } else {
+    } else { // 多分updateのケース
       let __h = __construct_node(__v())
       var __dummy = nullptr
       let (parent, __child) = __find_equal(__p, &__dummy, __get_value(__h))
@@ -293,22 +250,8 @@ protocol EmplaceHintMultiProtocol_ptr:
     & NullPtrInterface
 {}
 
-/*
- template <class _Tp, class _Compare, class _Allocator>
- template <class... _Args>
- typename __tree<_Tp, _Compare, _Allocator>::iterator
- __tree<_Tp, _Compare, _Allocator>::__emplace_hint_multi(const_iterator __p, _Args&&... __args) {
-   __node_holder __h = __construct_node(std::forward<_Args>(__args)...);
-   __end_node_pointer __parent;
-   __node_base_pointer& __child = __find_leaf(__p, __parent, __h->__get_value());
-   __insert_node_at(__parent, __child, static_cast<__node_base_pointer>(__h.get()));
-   return iterator(static_cast<__node_pointer>(__h.release()));
- }
- */
-
 extension EmplaceHintMultiProtocol_ptr {
 
-  /// ヒント位置を利用して、重複を許可したまま値を構築して挿入する。
   @inlinable
   internal func __emplace_hint_multi(_ __p: _NodePtr, _ value: @autoclosure () -> _PayloadValue)
     -> _NodePtr

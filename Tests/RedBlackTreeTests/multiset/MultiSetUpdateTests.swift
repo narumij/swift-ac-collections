@@ -13,15 +13,15 @@ import XCTest
       var set = RedBlackTreeMultiSet([1, 1, 3])
 
       let secondOne = set.index(after: set.startIndex)
-      let duplicate = set.insert(hint: secondOne, 1)
+      let duplicate = set.insert(1, hint: secondOne)
       XCTAssertEqual(set[duplicate], 1)
       XCTAssertEqual(Array(set), [1, 1, 1, 3])
 
       let goodHint = set.firstIndex(of: 3)!
-      let insertedWithGoodHint = set.insert(hint: goodHint, 2)
+      let insertedWithGoodHint = set.insert(2, hint: goodHint)
       XCTAssertEqual(set[insertedWithGoodHint], 2)
 
-      let insertedWithBadHint = set.insert(hint: set.startIndex, 4)
+      let insertedWithBadHint = set.insert(4, hint: set.startIndex)
       XCTAssertEqual(set[insertedWithBadHint], 4)
       XCTAssertEqual(Array(set), [1, 1, 1, 2, 3, 4])
     }

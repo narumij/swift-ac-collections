@@ -21,20 +21,17 @@ final class DictionaryTests: RedBlackTreeTestCase {
       ]
 
       let goodHint = dictionary.firstIndex(of: 3)!
-      let insertedWithGoodHint = dictionary.insert(hint: goodHint, (2, "two"))
-      XCTAssertTrue(insertedWithGoodHint.inserted)
-      XCTAssertEqual(insertedWithGoodHint.memberAfterInsert.key, 2)
-      XCTAssertEqual(insertedWithGoodHint.memberAfterInsert.value, "two")
+      let insertedWithGoodHint = dictionary.insert((2, "two"), hint: goodHint)
+      XCTAssertEqual(dictionary[insertedWithGoodHint].key, 2)
+      XCTAssertEqual(dictionary[insertedWithGoodHint].value, "two")
 
-      let insertedWithBadHint = dictionary.insert(hint: dictionary.startIndex, (4, "four"))
-      XCTAssertTrue(insertedWithBadHint.inserted)
-      XCTAssertEqual(insertedWithBadHint.memberAfterInsert.key, 4)
-      XCTAssertEqual(insertedWithBadHint.memberAfterInsert.value, "four")
+      let insertedWithBadHint = dictionary.insert((4, "four"), hint: dictionary.startIndex)
+      XCTAssertEqual(dictionary[insertedWithBadHint].key, 4)
+      XCTAssertEqual(dictionary[insertedWithBadHint].value, "four")
 
-      let duplicate = dictionary.insert(hint: dictionary.endIndex, (2, "replacement"))
-      XCTAssertFalse(duplicate.inserted)
-      XCTAssertEqual(duplicate.memberAfterInsert.key, 2)
-      XCTAssertEqual(duplicate.memberAfterInsert.value, "two")
+      let duplicate = dictionary.insert((2, "replacement"), hint: dictionary.endIndex)
+      XCTAssertEqual(dictionary[duplicate].key, 2)
+      XCTAssertEqual(dictionary[duplicate].value, "two")
       XCTAssertEqual(dictionary[2], "two")
       XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
     }

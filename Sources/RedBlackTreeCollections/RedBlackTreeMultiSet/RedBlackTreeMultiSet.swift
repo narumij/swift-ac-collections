@@ -267,7 +267,7 @@ extension RedBlackTreeMultiSet {
   
   @inlinable
   @discardableResult
-  public mutating func insert(hint: Index,_ newMember: Element) -> Index {
+  public mutating func insert(_ newMember: Element, hint: Index) -> Index {
     __tree_.ensureUniqueAndCapacity()
     let p = __tree_.__purified_(hint)
     guard let __p = p.pointer else {

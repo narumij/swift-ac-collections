@@ -231,7 +231,7 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
 
       // recycle countが進んだnodeもCoWで正しく引き継がれることを確認する。
       let removedIndex = set.firstIndex(of: 4)!
-      XCTAssertTrue(set.eraseSafely(at: removedIndex))
+      XCTAssertTrue(set.erase(exactly: removedIndex))
       let recycled = set.index(inserting: 8)
       XCTAssertTrue(recycled.inserted)
 
@@ -258,7 +258,7 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
         }
 
         for (element, index) in saved {
-          XCTAssertTrue(set.eraseSafely(at: index))
+          XCTAssertTrue(set.erase(exactly: index))
           XCTAssertFalse(set.contains(element))
         }
 

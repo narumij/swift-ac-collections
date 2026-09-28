@@ -97,43 +97,10 @@ protocol FindHintLeafProtocol_ptr:
     & _TreeNode_KeyInterface
     & _TreeKey_CompInterface
     & FindLeafInterface
-    & FindHintLeafInterface
     & EndInterface
     & BeginNodeInterface
     & NullPtrInterface
 {}
-
-/*
- // Find leaf place to insert closest to __hint
- // First check prior to __hint.
- // Next check after __hint.
- // Next do O(log N) search.
- // Set __parent to parent of null leaf
- // Return reference to null leaf
- template <class _Tp, class _Compare, class _Allocator>
- typename __tree<_Tp, _Compare, _Allocator>::__node_base_pointer& __tree<_Tp, _Compare, _Allocator>::__find_leaf(
-     const_iterator __hint, __end_node_pointer& __parent, const value_type& __v) {
-   if (__hint == end() || !value_comp()(*__hint, __v)) // check before
-   {
-     // __v <= *__hint
-     const_iterator __prior = __hint;
-     if (__prior == begin() || !value_comp()(__v, *--__prior)) {
-       // *prev(__hint) <= __v <= *__hint
-       if (__hint.__ptr_->__left_ == nullptr) {
-         __parent = std::__static_fancy_pointer_cast<__end_node_pointer>(__hint.__ptr_);
-         return __parent->__left_;
-       } else {
-         __parent = std::__static_fancy_pointer_cast<__end_node_pointer>(__prior.__ptr_);
-         return std::__static_fancy_pointer_cast<__node_base_pointer>(__prior.__ptr_)->__right_;
-       }
-     }
-     // __v < *prev(__hint)
-     return __find_leaf_high(__parent, __v);
-   }
-   // else __v > *__hint
-   return __find_leaf_low(__parent, __v);
- }
- */
 
 extension FindHintLeafProtocol_ptr {
 
@@ -141,26 +108,23 @@ extension FindHintLeafProtocol_ptr {
   internal func __find_leaf(
     _ __hint: _NodePtr, _ __parent: inout _NodePtr, _ __v: _Key
   ) -> _NodeRef {
-    if __hint == end || !value_comp(__get_value(__hint), __v) {
-      if __hint == __begin_node_ {
-        __parent = __hint
-        return __hint.__left_ref
+    var __prior = __hint
+    if __hint == end || !value_comp(__hint.__value_().pointee, __v) {
+      let prefixDecrement = {
+        __prior = __tree_prev_iter(__prior)
+        return __prior
       }
-
-      let __prior = __tree_prev_iter(__hint)
-      if !value_comp(__v, __get_value(__prior)) {
+      if __hint == end || !value_comp(__v, prefixDecrement().__value_().pointee) {
         if __hint.__left_ == nullptr {
           __parent = __hint
           return __hint.__left_ref
+        } else {
+          __parent = __prior
+          return __hint.__right_ref
         }
-
-        __parent = __prior
-        return __prior.__right_ref
       }
-
       return __find_leaf_high(&__parent, __v)
     }
-
     return __find_leaf_low(&__parent, __v)
   }
 }
@@ -322,55 +286,7 @@ protocol FindHintEqualProtocol_ptr:
     & FindEqualInterface
 {}
 
-/*
- // Find __v
- // First check prior to __hint.
- // Next check after __hint.
- // Next do O(log N) search.
- // If __v exists, return the parent of the node of __v and a reference to the pointer to the node of __v.
- // If __v doesn't exist, return the parent of the null leaf and a reference to the pointer to the null leaf.
- template <class _Tp, class _Compare, class _Allocator>
- template <class _Key>
- _LIBCPP_HIDE_FROM_ABI pair<typename __tree<_Tp, _Compare, _Allocator>::__end_node_pointer,
-                            typename __tree<_Tp, _Compare, _Allocator>::__node_base_pointer&>
- __tree<_Tp, _Compare, _Allocator>::__find_equal(const_iterator __hint, __node_base_pointer& __dummy, const _Key& __v) {
-   using _Pair = pair<__end_node_pointer, __node_base_pointer&>;
-
-   if (__hint == end() || value_comp()(__v, *__hint)) { // check before
-     // __v < *__hint
-     const_iterator __prior = __hint;
-     if (__prior == begin() || value_comp()(*--__prior, __v)) {
-       // *prev(__hint) < __v < *__hint
-       if (__hint.__ptr_->__left_ == nullptr)
-         return _Pair(__hint.__ptr_, __hint.__ptr_->__left_);
-       return _Pair(__prior.__ptr_, std::__static_fancy_pointer_cast<__node_pointer>(__prior.__ptr_)->__right_);
-     }
-     // __v <= *prev(__hint)
-     return __find_equal(__v);
-   }
-
-   if (value_comp()(*__hint, __v)) { // check after
-     // *__hint < __v
-     const_iterator __next = std::next(__hint);
-     if (__next == end() || value_comp()(__v, *__next)) {
-       // *__hint < __v < *std::next(__hint)
-       if (__hint.__get_np()->__right_ == nullptr)
-         return _Pair(__hint.__ptr_, std::__static_fancy_pointer_cast<__node_pointer>(__hint.__ptr_)->__right_);
-       return _Pair(__next.__ptr_, __next.__ptr_->__left_);
-     }
-     // *next(__hint) <= __v
-     return __find_equal(__v);
-   }
-
-   // else __v == *__hint
-   __dummy = static_cast<__node_base_pointer>(__hint.__ptr_);
-   return _Pair(__hint.__ptr_, __dummy);
- }
- */
-
 extension FindHintEqualProtocol_ptr {
-
-  // ちゃっぴー移植
 
   @inlinable
   internal func __find_equal(_ __hint: _NodePtr, _ __dummy: _NodeRef, _ __v: _Key)
@@ -378,11 +294,11 @@ extension FindHintEqualProtocol_ptr {
   {
     if __hint == end || value_comp(__v, __get_value(__hint)) {
       var __prior = __hint
-      let prev = {
+      let prefixDecrement = {
         __prior = __tree_prev_iter(__prior)
         return __prior
       }
-      if __prior == __begin_node_ || value_comp(__get_value(prev()), __v) {
+      if __prior == __begin_node_ || value_comp(prefixDecrement().__value_().pointee, __v) {
         if __hint.__left_ == nullptr {
           return (__hint, __hint.__left_ref)
         }

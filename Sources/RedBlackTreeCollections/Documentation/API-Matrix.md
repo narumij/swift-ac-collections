@@ -50,6 +50,7 @@
 | `subscript(key:) -> Value?` | — | — | — | ✅ | キーに対応する値を参照・更新する |
 | `subscript(key:default:) -> Value` | — | — | — | ✅ | キーに対応する値を参照・更新し、存在しない場合は既定値を使う |
 | `subscript(key:) -> Values` | — | — | ✅ | — | キーに対応する全要素のViewを返す |
+| `subscript(mappedValueAt:)` | — | — | 検討 | — | Index位置の要素を返す |
 | `values(forKey:)` | — | — | 廃止 | — | キーに対応する値を返す |
 | `keys` | — | — | ✅ | ✅ | キーだけを遅延走査するSequenceを返す |
 | `values` | — | — | ✅ | ✅ | 値を参照・更新するValues Viewを返す |

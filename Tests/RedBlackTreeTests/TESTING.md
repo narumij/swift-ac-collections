@@ -49,7 +49,8 @@
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。
 - `RedBlackTreeMultiSet` は initialization、sequence、bidirectional collection、index、search、insertion、removal、utility、range view、protocol conformance、set algebra、element range を連番化済み。
 - `RedBlackTreeDictionary` は initialization、sequence、index、search、insertion、removal、utility、range view、protocol conformance、Codable を連番化済み。
-- `RedBlackTreeMultiMap` は initialization、sequence、index、search、protocol conformance を連番化済み。次回は insertion、removal、utility、range view の順で、旧テストから現行公開仕様を移すところから再開する。
+- `RedBlackTreeMultiMap` は initialization、sequence、index、search、insertion、removal、utility、range view、protocol conformance、Codable を連番化済み。
+- 次回は `multimap` 以下の旧テストを監査し、連番側に無い現行公開仕様だけを追加する。compatibility、内部実装、性能、負荷、ファズは用途を保ち、連番と重複する旧ケースだけを整理する。
 - Set、MultiSet、Dictionary、MultiMap の既存 Death Test は各型の `_99_DeathTests.swift` に移管済み。
 - `multiset` 以下には compatibility、内部実装、性能、負荷、ファズ、および未仕分けの旧テストが残っている。削除前に公開仕様の取りこぼしがないか確認すること。
 - `MultisetAtCoder2025CompatibilityTests.swift` は互換モード廃止時の一括削除対象。

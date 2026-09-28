@@ -15,7 +15,7 @@
 
 <!-- ユーザー記入欄: この下へ追記 -->
 
-- 現在の追加要望なし。
+- 記入欄の、優先事項と連絡事項をカテゴリ分けして欲しい
 
 <!-- ユーザー記入欄ここまで -->
 
@@ -81,7 +81,7 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 ## Current handoff
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。
-- 旧 `set` フォルダは、重複していた SetAlgebra、reserve-capacity、corner-case の公開ケースを整理し、SetAlgebra stress、COW、pointer、performance、fuzz を型別 `_98`、compatibility を型別 compatibility file へ移管済み。残りは `SetBidirectionalTests.swift`、`SetExtendedTests.swift`、`SetRangeExpressionTests.swift`、`SetRemoveTests.swift`、`SetSubSequenceTests.swift`、`SetTests.swift`。次回は `SetBidirectionalTests.swift` と `SetRangeExpressionTests.swift` を連番側と比較する。
+- 旧 `set` フォルダは、重複していた SetAlgebra、reserve-capacity、corner-case、bidirectional の公開ケースを整理し、SetAlgebra stress、COW、pointer、performance、fuzz を型別 `_98`、compatibility を型別 compatibility file へ移管済み。index-based range view は `_17_RangeViewTests.swift` へ昇格済み。残りは `SetExtendedTests.swift`、`SetRemoveTests.swift`、`SetSubSequenceTests.swift`、`SetTests.swift`。次回は `SetSubSequenceTests.swift` を独立仕様として昇格できるか確認し、その後 removal、extended、最後に巨大な `SetTests.swift` を処理する。
 - ルート直下では `MergeTests.swift`、`DocumentCheckTests.swift`、`EtcTests.swift` などに Set 公開仕様が混在する。単純移動せず、他型のケースを残しながら Set ケースだけ連番側へ移植・整理する。
 - `BoundExpression` は公開 DSL として4型それぞれの `_16_BoundExpressionTests.swift` へ移管済み。旧 `boundsExpression` フォルダの Swift テストは残っていない。位置式、相対移動、limit、range expression、subscript、erase の既存仕様を型別 Test as Spec として維持する。DEBUG 専用の内部 validity を追加するときは `_98_InternalTests.swift` に置く。
 - `RedBlackTreeMultiSet` は initialization、sequence、bidirectional collection、index、search、insertion、removal、utility、range view、protocol conformance、set algebra、element range を連番化済み。

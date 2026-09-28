@@ -361,7 +361,7 @@ import XCTest
     }
   }
 
-  extension RedBlackTreeSetBidirectionalTests {
+  extension RedBlackTreeSetBidirectionalCollectionTests {
     func testForwardAndBackwardIteration() {
       let s: RedBlackTreeSet = [1, 3, 5, 7, 9]
       // forward

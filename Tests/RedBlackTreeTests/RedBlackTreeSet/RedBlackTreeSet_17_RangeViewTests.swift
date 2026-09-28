@@ -9,7 +9,7 @@
   import RedBlackTreeCollections
   import XCTest
 
-  final class SetRangeExpressionTests: RedBlackTreeTestCase {
+  final class RedBlackTreeSetRangeViewTests: RedBlackTreeTestCase {
 
     func testUnboundedRangeView() {
       let set = RedBlackTreeSet(0..<5)

@@ -42,11 +42,8 @@ protocol FindEqualInterface: _NodePtrType & _KeyType {
 
 @usableFromInline
 protocol FindHintEqualInterface: _NodePtrType & _KeyType {
-  @inlinable func __find_equal(
-    hint __hint: _NodePtr,
-    dummy __dummy: _NodeRef,
-    key __v: _Key
-  ) -> (__parent: _NodePtr, __child: _NodeRef)
+  @inlinable func __find_equal(_ __hint: _NodePtr, _ __dummy: _NodeRef, _ __v: _Key)
+    -> (__parent: _NodePtr, __child: _NodeRef)
 }
 
 @usableFromInline

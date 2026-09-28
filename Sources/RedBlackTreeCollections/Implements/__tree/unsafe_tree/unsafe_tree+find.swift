@@ -314,7 +314,7 @@ extension FindProtocol_find_equal_ptr {
 @usableFromInline
 protocol FindHintEqualProtocol_ptr:
   _UnsafeNodePtrType
-    & _TreeKey_ThreeWayCompInterface
+    & _TreeKey_CompInterface
     & _TreeNode_KeyInterface
     & EndInterface
     & BeginNodeInterface
@@ -373,14 +373,16 @@ extension FindHintEqualProtocol_ptr {
   // ちゃっぴー移植
 
   @inlinable
-  internal func __find_equal(
-    hint __hint: _NodePtr,
-    dummy __dummy: _NodeRef,
-    key __v: _Key
-  ) -> (__parent: _NodePtr, __child: _NodeRef) {
-    if __hint == end || __comp(__v, __get_value(__hint)).__less() {
-      let __prior = __hint == __begin_node_ ? __hint : __tree_prev_iter(__hint)
-      if __prior == __begin_node_ || __comp(__get_value(__prior), __v).__less() {
+  internal func __find_equal(_ __hint: _NodePtr, _ __dummy: _NodeRef, _ __v: _Key)
+    -> (__parent: _NodePtr, __child: _NodeRef)
+  {
+    if __hint == end || value_comp(__v, __get_value(__hint)) {
+      var __prior = __hint
+      let prev = {
+        __prior = __tree_prev_iter(__prior)
+        return __prior
+      }
+      if __prior == __begin_node_ || value_comp(__get_value(prev()), __v) {
         if __hint.__left_ == nullptr {
           return (__hint, __hint.__left_ref)
         }
@@ -389,9 +391,9 @@ extension FindHintEqualProtocol_ptr {
       return __find_equal(__v)
     }
 
-    if __comp(__get_value(__hint), __v).__less() {
+    if value_comp(__hint.__value_().pointee, __v) {
       let __next = __tree_next_iter(__hint)
-      if __next == end || __comp(__v, __get_value(__next)).__less() {
+      if __next == end || value_comp(__v, __next.__value_().pointee) {
         if __hint.__right_ == nullptr {
           return (__hint, __hint.__right_ref)
         }

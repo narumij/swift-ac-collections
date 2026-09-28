@@ -192,9 +192,11 @@ extension InsertLastProtocol_ptr {
 protocol EmplaceHintUniqueProtocol_ptr:
   _UnsafeNodePtrType
     & _TreePayloadValue_KeyInterface
+    & _TreeNode_KeyInterface
     & InsertNodeAtInterface
     & FindHintEqualInterface
     & AllocationInterface
+    & DellocationInterface
     & NullPtrInterface
 {}
 
@@ -245,42 +247,38 @@ extension EmplaceHintUniqueProtocol_ptr {
   /// 値を構築し、その値からキーを取得して重複を確認する。
   @inlinable
   internal func __emplace_hint_unique(
-    _ hint: _NodePtr,
-    extractingKey: @autoclosure () -> _Key?,
-    constructingValue: @autoclosure () -> _PayloadValue
+    _ __p: _NodePtr,
+    _ __k: @autoclosure () -> _Key?,
+    _ __v: @autoclosure () -> _PayloadValue
   ) -> (__r: _NodePtr, __inserted: Bool) {
-    if let key = extractingKey() {
-      var dummy = nullptr
-      let (parent, child) = __find_equal(
-        hint: hint,
-        dummy: &dummy,
-        key: key
-      )
-
-      guard child.pointee == nullptr else {
-        return (child.pointee, false)
+    if let __key = __k() {
+      var __dummy = nullptr
+      let (__parent, __child) = __find_equal(__p, &__dummy, __key)
+      var __r = __child.pointee
+      var __inserted = false
+      if __child.pointee == nullptr {
+        let __h = __construct_node(__v())
+        __insert_node_at(__parent, __child, __h)
+        __r = __h
+        __inserted = true
       }
-
-      let newNode = __construct_node(constructingValue())
-      __insert_node_at(parent, child, newNode)
-      return (newNode, true)
+      return (__r, __inserted)
+    } else {
+      let __h = __construct_node(__v())
+      var __dummy = nullptr
+      let (parent, __child) = __find_equal(__p, &__dummy, __get_value(__h))
+      var __r = __child.pointee
+      guard __child.pointee == nullptr else {
+        return (__child.pointee, false)
+      }
+      if __child.pointee == nullptr {
+        __insert_node_at(parent, __child, __h)
+        __r = __h
+      } else {
+        destroy(__h)
+      }
+      return (__r, __child.pointee == nullptr)
     }
-
-    let value = constructingValue()
-    var dummy = nullptr
-    let (parent, child) = __find_equal(
-      hint: hint,
-      dummy: &dummy,
-      key: __key(value)
-    )
-
-    guard child.pointee == nullptr else {
-      return (child.pointee, false)
-    }
-
-    let newNode = __construct_node(value)
-    __insert_node_at(parent, child, newNode)
-    return (newNode, true)
   }
 }
 
@@ -288,6 +286,7 @@ extension EmplaceHintUniqueProtocol_ptr {
 protocol EmplaceHintMultiProtocol_ptr:
   _UnsafeNodePtrType
     & _TreePayloadValue_KeyInterface
+    & _TreeNode_KeyInterface
     & InsertNodeAtInterface
     & FindHintLeafInterface
     & AllocationInterface
@@ -311,13 +310,12 @@ extension EmplaceHintMultiProtocol_ptr {
 
   /// ヒント位置を利用して、重複を許可したまま値を構築して挿入する。
   @inlinable
-  internal func __emplace_hint_multi(
-    _ __p: _NodePtr, _ constructingValue: @autoclosure () -> _PayloadValue
-  ) -> _NodePtr {
-    let value = constructingValue()
-    let __h = __construct_node(value)
+  internal func __emplace_hint_multi(_ __p: _NodePtr, _ value: @autoclosure () -> _PayloadValue)
+    -> _NodePtr
+  {
+    let __h = __construct_node(value())
     var parent = nullptr
-    let __child = __find_leaf(__p, &parent, __key(value))
+    let __child = __find_leaf(__p, &parent, __get_value(__h))
     __insert_node_at(parent, __child, __h)
     return __h
   }

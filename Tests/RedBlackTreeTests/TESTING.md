@@ -1,6 +1,24 @@
 <!-- CodexによるCodexのためのメモ -->
 # RedBlackTreeTests maintenance notes
 
+## User requests for the next session
+
+リセット待ち・休憩中に、次回の作業で優先してほしい内容をユーザーが書く欄。この欄に記載がある場合、Codex は `Current handoff` より先に読み、最新のユーザー要望として優先する。完了した項目を Codex が勝手に削除せず、完了したことを追記するか、ユーザー確認後に整理する。
+
+記入例:
+
+- 最優先で扱うフォルダまたはファイル
+- 残してほしいテスト、削除してよい重複
+- Swift Testing / XCTest / compatibility の配置に関する希望
+- テストが通った時点で止める、残量何%で休憩する、といった停止条件
+- 次回まで保留した判断や気になっている破損
+
+<!-- ユーザー記入欄: この下へ追記 -->
+
+- 現在の追加要望なし。
+
+<!-- ユーザー記入欄ここまで -->
+
 ## Test as Spec
 
 型名のディレクトリにある連番付きテストを、公開 API の現行仕様を示す正本（Test as Spec）とする。
@@ -63,7 +81,7 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 ## Current handoff
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。
-- 旧 `set` フォルダは、重複していた `SetAlgebraTests.swift` を削除し、SetAlgebra stress、COW、pointer、performance を型別 `_98`、compatibility を型別 compatibility file へ移管済み。残りは `SetBidirectionalTests.swift`、`SetCornerCaseTests.swift`、`SetExtendedTests.swift`、`SetRangeExpressionTests.swift`、`SetRemoveTests.swift`、`SetReserveCapacityTests.swift`、`SetSubSequenceTests.swift`、`SetTests.swift`。次回は小さい `SetReserveCapacityTests.swift` と `SetCornerCaseTests.swift` から連番側との重複を監査する。
+- 旧 `set` フォルダは、重複していた SetAlgebra、reserve-capacity、corner-case の公開ケースを整理し、SetAlgebra stress、COW、pointer、performance、fuzz を型別 `_98`、compatibility を型別 compatibility file へ移管済み。残りは `SetBidirectionalTests.swift`、`SetExtendedTests.swift`、`SetRangeExpressionTests.swift`、`SetRemoveTests.swift`、`SetSubSequenceTests.swift`、`SetTests.swift`。次回は `SetBidirectionalTests.swift` と `SetRangeExpressionTests.swift` を連番側と比較する。
 - ルート直下では `MergeTests.swift`、`DocumentCheckTests.swift`、`EtcTests.swift` などに Set 公開仕様が混在する。単純移動せず、他型のケースを残しながら Set ケースだけ連番側へ移植・整理する。
 - `BoundExpression` は公開 DSL として4型それぞれの `_16_BoundExpressionTests.swift` へ移管済み。旧 `boundsExpression` フォルダの Swift テストは残っていない。位置式、相対移動、limit、range expression、subscript、erase の既存仕様を型別 Test as Spec として維持する。DEBUG 専用の内部 validity を追加するときは `_98_InternalTests.swift` に置く。
 - `RedBlackTreeMultiSet` は initialization、sequence、bidirectional collection、index、search、insertion、removal、utility、range view、protocol conformance、set algebra、element range を連番化済み。

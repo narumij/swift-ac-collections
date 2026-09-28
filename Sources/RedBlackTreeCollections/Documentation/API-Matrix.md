@@ -106,7 +106,9 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | API名 | Set | MultiSet | MultiMap | Dictionary | おおよその機能 |
 | --- | :---: | :---: | :---: | :---: | --- |
 | `insert(_:)` | ✅ | ✅ | ✅ | ✅ | 要素を挿入する |
+| `insert(_:hint:)` | ✅ | ✅ | ✅ | ✅ | ヒントを用いて要素を挿入する |
 | `insert(key:value:)` | — | — | ✅ | ✅ | キーと値を挿入する |
+| `update(_:hint:)` | TODO | TODO | TODO | TODO | ヒントを用いて要素を更新する |
 | `update(with:)` | ✅ | — | — | — | Set要素を置換し、旧要素を返す |
 | `update(_:at:)` | — | ✅ | — | — | Index位置の要素を更新する。キー一致を前提とする |
 | `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す |

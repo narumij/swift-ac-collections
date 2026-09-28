@@ -1,29 +1,9 @@
 import RedBlackTreeCollections
 import XCTest
 
-#if DEATH_TEST && COMPATIBLE_ATCODER_2025
-  import Foundation
-  import Testing
-#endif
-
 // COMPATIBLE_ATCODER_2025 専用APIのテストを集約するファイル。
 // 互換モードを廃止するときは、このファイルを一括削除する。
 #if COMPATIBLE_ATCODER_2025
-  #if DEATH_TEST
-    struct RedBlackTreeSetAtCoder2025CompatibilityDeathTests {
-
-      @Test
-      func iteratorWhoseSourceWasMutated_terminatesProcess() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
-          var set = RedBlackTreeSet((0..<5).map { $0 * 5 })
-          var iterator = set[set.firstIndex(of: 5)!..<set.lowerBound(20)].makeIterator()
-          set.remove(10)
-          #expect(iterator.next() == 5)
-        }
-      }
-    }
-  #endif
-
   extension RedBlackTreeSetIndexRangeTests {
 
     /// indices がすべてのインデックスを列挙すること

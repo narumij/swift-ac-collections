@@ -7,6 +7,22 @@ import XCTest
 #endif
 
 #if COMPATIBLE_ATCODER_2025
+  // Compatibility-only extensions below intentionally use these local test cases so
+  // their coverage can be deleted with this file when the compatibility mode is removed.
+  final class MultiMapBasicTest: RedBlackTreeTestCase {}
+  final class MultiMapAdvancedTest: RedBlackTreeTestCase {}
+  final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {}
+  final class MultiMapRemoveTests: RedBlackTreeTestCase {}
+  final class MultiMapEtcTests: RedBlackTreeTestCase {
+    typealias Target1 = RedBlackTreeMultiMap<Int, Int>
+
+    var target1: Target1 = [
+      (0, 0), (0, 1), (0, 2),
+      (1, 5), (1, 4), (1, 3),
+      (2, 6), (2, 7), (2, 8),
+    ]
+  }
+
   final class MultiMapAtCoder2025CompatibilityTests: RedBlackTreeTestCase {
     func testRemoveContentsOfRange() {
       var multiMap: RedBlackTreeMultiMap = [("a", 1), ("b", 2), ("c", 3), ("d", 4)]
@@ -309,6 +325,30 @@ import XCTest
         members.remove(at: i)
       }
       XCTAssertEqual(members.map { $0.key }, [])
+    }
+
+    func testRemoveWithSubIndices() throws {
+      var members = RedBlackTreeMultiMap(keysWithValues: (0..<10).map { ($0, $0 * 10) })
+      for i in members[2..<8].indices {
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members.map { $0.key }, [0, 1, 8, 9])
+    }
+
+    func testRemoveWithSubIndices2() throws {
+      var members = RedBlackTreeMultiMap(keysWithValues: (0..<10).map { ($0, $0 * 10) })
+      members[2..<8].indices.forEach { i in
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members.map { $0.key }, [0, 1, 8, 9])
+    }
+
+    func testRemoveWithSubIndices4() throws {
+      var members = RedBlackTreeMultiMap(keysWithValues: (0..<10).map { ($0, $0 * 10) })
+      members[2..<8].indices.reversed().forEach { i in
+        members.remove(at: i)
+      }
+      XCTAssertEqual(members.map { $0.key }, [0, 1, 8, 9])
     }
   }
 

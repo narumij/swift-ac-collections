@@ -65,6 +65,30 @@ import XCTest
       XCTAssertEqual(map.map(\.value), ["a", "c", "d"])
     }
 
+    func test_rangeViewPopFirstAndPopLast_removeAtMostTheRequestedCountInsideTheView() {
+      var firstMap: RedBlackTreeMultiMap = [
+        (0, "before"), (1, "a"), (1, "b"), (1, "c"), (2, "after"),
+      ]
+      XCTAssertEqual(firstMap[firstMap.equalRange(1)].popFirst(2), 2)
+      XCTAssertEqual(firstMap.map(\.value), ["before", "c", "after"])
+
+      var lastMap: RedBlackTreeMultiMap = [
+        (0, "before"), (1, "a"), (1, "b"), (1, "c"), (2, "after"),
+      ]
+      XCTAssertEqual(lastMap[lastMap.equalRange(1)].popLast(10), 3)
+      XCTAssertEqual(lastMap.map(\.value), ["before", "after"])
+    }
+
+    func test_unranged_returnsTheCollectionAfterMutatingTheView() {
+      let map: RedBlackTreeMultiMap = [(1, "a"), (1, "b"), (2, "c")]
+      var view = map[...]
+
+      while view.popFirst() != nil {}
+      let result = view.unranged()
+
+      XCTAssertTrue(result.isEmpty)
+    }
+
     func test_eraseRangeAndPredicate_modifyOnlySelectedEntries() {
       var map: RedBlackTreeMultiMap = [(1, "a"), (1, "b"), (2, "c"), (3, "d")]
       let range = map.equalRange(1)
@@ -74,6 +98,37 @@ import XCTest
 
       map[map.equalRange(1)].erase()
       XCTAssertEqual(map.map(\.value), ["c", "d"])
+    }
+
+    func test_rangeValuesSwapAt_changesOnlyValuesInsideRange() {
+      var map: RedBlackTreeMultiMap = [
+        (0, "outside-before"), (1, "first"), (1, "middle"), (1, "last"),
+        (2, "outside-after"),
+      ]
+      let range = map[1]
+      let first = range.startIndex
+      let last = map.index(before: range.endIndex)
+
+      map[1].swapAt(first, last)
+
+      XCTAssertEqual(map.map(\.key), [0, 1, 1, 1, 2])
+      XCTAssertEqual(
+        map.map(\.value),
+        ["outside-before", "last", "middle", "first", "outside-after"]
+      )
+    }
+
+    func test_rangeValuesSwapAt_preservesValueSemanticsAfterCopy() {
+      var map: RedBlackTreeMultiMap = [(1, "first"), (1, "middle"), (1, "last")]
+      let range = map[1]
+      let first = range.startIndex
+      let last = map.index(before: range.endIndex)
+      let copy = map
+
+      map[1].swapAt(first, last)
+
+      XCTAssertEqual(map.map(\.value), ["last", "middle", "first"])
+      XCTAssertEqual(copy.map(\.value), ["first", "middle", "last"])
     }
   }
 #endif

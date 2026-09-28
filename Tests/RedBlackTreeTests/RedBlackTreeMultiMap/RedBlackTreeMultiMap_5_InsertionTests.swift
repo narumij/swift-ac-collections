@@ -24,6 +24,15 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(map.map(\.value), ["a", "b", "c", "d"])
   }
 
+  func test_reinsertingEquivalentKey_appendsAfterRemainingEquivalentEntries() {
+    var map: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "b"), (1, "c")]
+
+    _ = map.remove(at: map.startIndex)
+    map.insert((1, "d"))
+
+    XCTAssertEqual(map.map(\.value), ["b", "c", "d"])
+  }
+
   #if !COMPATIBLE_ATCODER_2025
     func test_insertWithHint_handlesEquivalentGoodAndBadHints() {
       var map: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "c"), (3, "x")]

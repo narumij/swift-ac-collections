@@ -1,4 +1,4 @@
-<!-- CodexによるCodexのためのメモ -->
+<!-- CodexとClaudeによるCodexとClaudeのためのメモ -->
 # RedBlackTreeTests maintenance notes
 
 ## User requests for the next session
@@ -33,6 +33,7 @@
 - 最後に作業したモデルはモデル名とバージョンをどこかに記載すること
 - 各種条件はCodex想定なので、Claudeが参加した場合、Codex向けとClaude向けで条件を分けること
 - ふりかえりはしたい
+- 小さな変更を積み重ねてるときは互換チェックをさぼっていいよ
 
 ### 停止条件
 

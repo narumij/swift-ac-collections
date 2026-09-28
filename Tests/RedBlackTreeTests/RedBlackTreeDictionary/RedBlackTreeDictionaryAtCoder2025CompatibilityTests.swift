@@ -38,7 +38,20 @@ import XCTest
       XCTAssertEqual(members.map { $0.key }, [])
     }
   }
-  extension DictionaryPointerTests {
+  final class RedBlackTreeDictionaryPointerAtCoder2025LegacyTests: RedBlackTreeTestCase {
+
+    var members: RedBlackTreeDictionary<Int, String> = [:]
+
+    override func setUpWithError() throws {
+      try super.setUpWithError()
+      members = [0: "0", 1: "1", 2: "2", 3: "3", 4: "4"]
+    }
+
+    override func tearDownWithError() throws {
+      members = [:]
+      try super.tearDownWithError()
+    }
+
     func testPointer2() throws {
       if let it = members.startIndex.next {
         XCTAssertFalse(members.___is_garbaged(it))

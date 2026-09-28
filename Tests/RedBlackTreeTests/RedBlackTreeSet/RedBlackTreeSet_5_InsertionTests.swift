@@ -124,6 +124,29 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(set[duplicate.indexAfterInsert], 20)
       XCTAssertEqual(set + [], [10, 20, 25, 30])
     }
+
+    /// ヒント付きupdateが新規要素のIndexを返し、重複要素ではnilを返すこと
+    func test_update_withHint() {
+      var set = RedBlackTreeSet([10, 30])
+
+      let insertedWithGoodHint = set.update(20, hint: set.firstIndex(of: 30)!)
+      XCTAssertNotNil(insertedWithGoodHint)
+      if let insertedWithGoodHint {
+        XCTAssertEqual(set[insertedWithGoodHint], 20)
+      }
+      XCTAssertEqual(set + [], [10, 20, 30])
+
+      let insertedWithBadHint = set.update(25, hint: set.startIndex)
+      XCTAssertNotNil(insertedWithBadHint)
+      if let insertedWithBadHint {
+        XCTAssertEqual(set[insertedWithBadHint], 25)
+      }
+      XCTAssertEqual(set + [], [10, 20, 25, 30])
+
+      let duplicate = set.update(20, hint: set.endIndex)
+      XCTAssertNil(duplicate)
+      XCTAssertEqual(set + [], [10, 20, 25, 30])
+    }
   #endif
 
   #if DEBUG && !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH

@@ -67,11 +67,17 @@ Codex が週末（日曜）まで週間利用上限でロングスリープに�
 - 2026-09-29: `multiset/MultisetCornerCaseTests.swift`(146行)を監査。`_4_SearchTests.swift`・`_6_RemovalTests.swift`・`_3_IndexSequenceTests.swift`と重複するケース(count(of:)、lowerBound/upperBound、eraseUnique/eraseMulti、popFirst、isElementAt stale index)は削除。新規性のあった`testRemoveSubrange`(境界値網羅)は`_98_RemovalStressTests.swift`へ、fuzzテスト`testRandomizedAgainstReferenceMultiset`(固定seed)は新設の`RedBlackTreeMultiSet_98_FuzzTests.swift`へ移管。互換ファイル側の空`extension RedBlackTreeMultisetCornerCaseTests{}`4つは削除。旧ファイル削除。
 - 2026-09-29: `multiset/MultisetCopyOnWriteTests.swift`(153行、`AC_COLLECTIONS_INTERNAL_CHECKS`専用)を、Setの`_98_CopyOnWriteTests.swift`と同じ配置パターンで`RedBlackTreeMultiSet_98_CopyOnWriteTests.swift`へ移動(クラス名`MultisetCopyOnWriteTests`→`RedBlackTreeMultiSetCopyOnWriteTests`)。互換ファイル側にあった実体入りextension`testSet4000`は新クラス名に追従、空extension7つは削除。旧ファイル削除。
 - 2026-09-29: `multiset/MultisetRemoveTests.swift`(184行)を監査。重複ケース(eraseUnique/eraseMulti/removeFirst/removeLast/removeAt+capacityの基本形、無関係なプレーンSwift `Set`のテスト、`#if false`で死んでいた`testRemoveAt`)は削除。境界値ケース(`Int.min`/`Int.max`)は`_6_RemovalTests.swift`へ追加。**重要な発見**: MultiSetでは`.indices`と`___node_positions()`がSetと違い`COMPATIBLE_ATCODER_2025`専用API(ソース側`+Deprecated.swift`内で`#if COMPATIBLE_ATCODER_2025`ガード)であり、通常モードの`_98_*`ファイルには置けない。これらを使うテスト(indices/subrange-indices/内部___node_positions、forward・reversedの計6ケースをforward/reversed各1に統合)は、互換ファイル内に新設した自己完結クラス`RedBlackTreeMultisetIndexRemovalLegacyTests`へ集約。互換ファイル側の実体・空extensionはすべて削除。旧ファイル削除。
-- 2026-09-29: `multiset/`フォルダは0ファイル(空)になった。互換ファイル(`RedBlackTreeMultiSetAtCoder2025CompatibilityTests.swift`)にまだ`extension MultisetTests {}`(空、20箇所以上)と多数の`extension MultisetTests { ... }`(実体入り)が残っており、本体`multiset/MultisetTests.swift`(1231行)は未着手。次回はそこから。
+- 2026-09-29: `multiset/`フォルダは0ファイル(空)になった。
 - 2026-09-29: ファイル削除は`rm`ではなくXcodeの`XcodeRM`(ゴミ箱へ移動)を使う方針に変更。正常に動作することを確認済み。
 - 2026-09-29: 通常モード・互換モード(`COMPATIBLE_ATCODER_2025`を一時的に有効化→確認→復元)の両方でXcodeの`RunAllTests`を実行し、失敗0件を確認(通常: 1025成功・1既知スキップ、互換: 934成功・6既知スキップ)。
+- 2026-09-29: 互換ファイル(`RedBlackTreeMultiSetAtCoder2025CompatibilityTests.swift`)に残っていた`extension MultisetTests { ... }`(実体入り、testRandom/testRandom2/testRedBlackTreeConveniences/testSubsequence群/testSubSeqSubscript/testAdd/testAddEqual/testLeftUnsafeSmoke/testForEach_enumeration)と空extension20箇所以上を監査。ほぼ全てが既存連番(`_1`〜`_10`、`convenience/`フォルダ)と重複と判断し削除。新規性のあった3点を移管:
+  - 参照型要素のinsert identity(update済みだがinsertは未検証) → `_5_InsertionTests.swift`に`test_insert_preservesReferenceIdentityOfDuplicateMembers`追加
+  - RangeView同士(別ツリー由来)のEquatable/Comparable → `_9_ProtocolConformanceTests.swift`に2件追加
+  - ツリー不変条件`___tree_invariant()`を伴うランダムinsert/erase(testRandom〜4を1本に統合) → `RedBlackTreeMultiSet_98_FuzzTests.swift`に`test_randomInsertAndEraseMaintainsTreeInvariant`追加
+  - `testForEach_enumeration`(forEachのIndex+Value版、MultiSetでは`COMPATIBLE_ATCODER_2025`専用API)は互換ファイル内の自己完結クラス`RedBlackTreeMultisetEtcLegacyTests`に集約
+- 2026-09-29: **本体`multiset/MultisetTests.swift`(1231行)はまだ削除していない**。空になった`extension MultisetTests {}`の依存先として残しているだけで、内容は全て連番側と重複判定済み(未削除の理由は安全マージンの確保、実害なし)。通常モードの全テストは1029成功・0失敗・1既知スキップ(`EtcTests/testFindAgain`)を確認済み。次回は本体ファイルを削除するだけで`multiset`の整理は完了する見込み。
 - 2026-09-29: 現時点で`git log`は開始時の5コミット先から増えている(Claudeはcommitを実行していない。ユーザー側の仕組みと思われる)。Claude側はこれまで一度もgit commit/addを実行していない。
-- 2026-09-29: ユーザーの指示でここで一度停止。ユーザーがコミットする。
+- 2026-09-29: 利用量88%に達したためユーザーの指示でここで停止。互換モードの最終確認はユーザーが実施する。ユーザーがコミットする。
 
 <!-- ユーザー記入欄ここまで -->
 

@@ -34,6 +34,20 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(multiset.count(of: 2), 3)
   }
 
+  func test_insert_preservesReferenceIdentityOfDuplicateMembers() {
+    let first = Member(key: 3, label: "a")
+    let second = Member(key: 3, label: "b")
+    var multiset = RedBlackTreeMultiSet<Member>([])
+
+    let firstResult = multiset.insert(first)
+    let secondResult = multiset.insert(second)
+
+    XCTAssertTrue(firstResult.inserted)
+    XCTAssertTrue(firstResult.memberAfterInsert === first)
+    XCTAssertTrue(secondResult.inserted)
+    XCTAssertTrue(secondResult.memberAfterInsert === second)
+  }
+
   func test_insertContentsOf_preservesMultiplicity() {
     var multiset = RedBlackTreeMultiSet([1, 2])
 

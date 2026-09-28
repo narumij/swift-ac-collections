@@ -236,4 +236,30 @@ import XCTest
     #endif
   }
 
+  #if ENABLE_PERFORMANCE_TESTING
+    // firstIndex(where:) はMultiSetでは COMPATIBLE_ATCODER_2025 専用API(+Deprecated.swift参照)
+    extension RedBlackTreeMultiSetPerformanceTests {
+      func testPerformanceFirstIndex4() throws {
+        let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
+        self.measure {
+          XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 - 1 }), s.index(before: s.endIndex))
+        }
+      }
+
+      func testPerformanceFirstIndex5() throws {
+        let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
+        self.measure {
+          XCTAssertEqual(s.firstIndex(where: { $0 >= 0 }), s.startIndex)
+        }
+      }
+
+      func testPerformanceFirstIndex6() throws {
+        let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
+        self.measure {
+          XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
+        }
+      }
+    }
+  #endif
+
 #endif

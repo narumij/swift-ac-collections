@@ -73,6 +73,7 @@ Codex が週末（日曜）まで週間利用上限でロングスリープに�
   - `testForEach_enumeration`(forEachのIndex+Value版、MultiSetでは`COMPATIBLE_ATCODER_2025`専用API)は互換ファイル内の自己完結クラス`RedBlackTreeMultisetEtcLegacyTests`に集約
 - 2026-09-29: `multiset`フォルダの棚卸しはこれで完了。`dictionary`は本体`DictionaryTests.swift`(1024行)と`DictionaryExtendedTests.swift`・`DictionaryRecoveredTests.swift`が次の対象として残っている。
 - 2026-09-29: 利用量93%に達したためユーザーの指示でここで停止(小さなステップ1件のみ実施)。互換モードの最終確認はユーザーが実施する。ユーザーがコミットする。
+- 2026-09-29: ユーザーが互換モードの確認中に、`RedBlackTreeMultiSet_98_PerformanceTests.swift`の`testPerformanceFirstIndex4/5/6`(`firstIndex(where:)`版)がコンパイルエラーになることを発見(`#if false`で切って報告してくれた)。原因はClaudeの見落としで、`firstIndex(where:)`もMultiSetでは`.indices`/`___node_positions()`と同じく`COMPATIBLE_ATCODER_2025`専用API(`RedBlackTreeMultiSet+Deprecated.swift`内で`#if COMPATIBLE_ATCODER_2025`ガード)だった。`_98_PerformanceTests.swift`から`#if false`ブロックを削除し、互換ファイル内に`#if ENABLE_PERFORMANCE_TESTING`ガード付きの`extension RedBlackTreeMultiSetPerformanceTests`として正しく戻した。通常モード・互換モード両方でビルド成功、互換モードで対象9テスト成功を確認済み(確認後Package.swiftは通常モードへ復元)。**教訓**: MultiSetは`+Deprecated.swift`内に複数のAPI(`.indices`、`___node_positions()`、`firstIndex(where:)`など)が`#if COMPATIBLE_ATCODER_2025`ガード下にあり、Setには同ガードがない場合がある。Set用ファイルを型を変えてコピーするときは、使用する全APIを毎回sourceでgrepしてから書くべきだった。
 
 <!-- ユーザー記入欄ここまで -->
 

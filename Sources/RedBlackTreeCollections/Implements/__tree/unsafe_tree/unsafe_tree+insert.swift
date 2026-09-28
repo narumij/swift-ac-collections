@@ -268,34 +268,36 @@ extension EmplaceHintUniqueProtocol_ptr {
     return (__r, __inserted)
   }
 
-  // __get_valueでしかキーが取れないケースに使う分割後半バージョン
-  @inlinable
-  internal func ___emplace_hint_unique_(
-    _ __p: _NodePtr,
-    _ __v: @autoclosure () -> _PayloadValue
-  ) -> (__r: _NodePtr, __inserted: Bool) {
-    let __h = __construct_node(__v())
+  #if false
+    // __get_valueでしかキーが取れないケースに使う分割後半バージョン
+    @inlinable
+    internal func ___emplace_hint_unique_(
+      _ __p: _NodePtr,
+      _ __v: @autoclosure () -> _PayloadValue
+    ) -> (__r: _NodePtr, __inserted: Bool) {
+      let __h = __construct_node(__v())
 
-    var __dummy = nullptr
-    
-    // 簡略記法もあるが、ここが若干あぶないことに気づけるよう、with記法を採用
-    let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
-      __find_equal(__p, __dummy, __get_value(__h))
+      var __dummy = nullptr
+
+      // 簡略記法もあるが、ここが若干あぶないことに気づけるよう、with記法を採用
+      let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
+        __find_equal(__p, __dummy, __get_value(__h))
+      }
+
+      var __r = __child.pointee
+      var __inserted = false
+
+      if __child.pointee == nullptr {
+        __insert_node_at(__parent, __child, __h)
+        __r = __h
+        __inserted = true
+      } else {
+        destroy(__h)
+      }
+
+      return (__r, __inserted)
     }
-
-    var __r = __child.pointee
-    var __inserted = false
-
-    if __child.pointee == nullptr {
-      __insert_node_at(__parent, __child, __h)
-      __r = __h
-      __inserted = true
-    } else {
-      destroy(__h)
-    }
-
-    return (__r, __inserted)
-  }
+  #endif
 }
 
 @usableFromInline

@@ -279,7 +279,7 @@ extension RedBlackTreeDictionary {
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
-      let (__r, __inserted) = __tree_.___emplace_hint_unique_(
+      let (__r, __inserted) = __tree_.__emplace_hint_unique(
         __p, newMember.key, Base.__payload_(newMember))
       return (__inserted, ___index(__r))
     }

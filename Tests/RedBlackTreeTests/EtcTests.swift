@@ -6,7 +6,7 @@ import XCTest
   import RedBlackTreeCollections
 #endif
 
-final class EtcTests: RedBlackTreeTestCase {
+final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -820,7 +820,7 @@ final class EtcTests: RedBlackTreeTestCase {
 
       if case .index(let p) = i_e?._internal.first {
         // aが生きてるときに生成したため
-        
+
         // TODO: サニタイザの問題について、修正を検討する
         // 9/27 try/index/1ブランチのサニタイザはここで反応してる様子
         // 単に解放済みのメモリをインターナルメソッドでなんのためらいもなく触っていたことが原因
@@ -927,17 +927,217 @@ final class EtcTests: RedBlackTreeTestCase {
       #endif
     }
   #endif
-  
+
   func testHogehoge() throws {
-    
+
     var d = ["a": 1, "b": 2]
 
     let i = d.index(forKey: "a")!
     let j = d.index(forKey: "b")!
 
     d.values.swapAt(i, j)
-    
+
     XCTAssertEqual(d["a"], 2)
     XCTAssertEqual(d["b"], 1)
   }
+
+  #if DEBUG
+    func testNoKeyEmplaceHintUnique() throws {
+      var a = RedBlackTreeSet<Int>(0..<10)
+      a.__tree_.ensureCapacity()
+
+      var hint = a._start
+
+      // key unknown: 新規挿入
+      do {
+        let (hint, __inserted) =
+          a.__tree_.__emplace_hint_unique(hint, -1)
+
+        XCTAssertTrue(__inserted)
+        XCTAssertEqual(a.__tree_.__get_value(hint), -1)
+        XCTAssertEqual(a.count, 11)
+        XCTAssertTrue(a.contains(-1))
+      }
+
+      // key unknown: 重複
+      do {
+        let (hint, __inserted) =
+          a.__tree_.__emplace_hint_unique(hint, -1)
+
+        XCTAssertFalse(__inserted)
+        XCTAssertEqual(a.__tree_.__get_value(hint), -1)
+        XCTAssertEqual(a.count, 11)
+        XCTAssertTrue(a.contains(-1))
+      }
+
+      // key unknown: 追加
+      do {
+        let (hint, __inserted) =
+          a.__tree_.__emplace_hint_unique(hint, -2)
+
+        XCTAssertTrue(__inserted)
+        XCTAssertEqual(a.__tree_.__get_value(hint), -2)
+        XCTAssertEqual(a.count, 12)
+        XCTAssertTrue(a.contains(-2))
+      }
+    }
+  #endif
+
+  #if DEBUG
+    func testFindHintEqualCoverage() throws {
+
+      let nullnode = _NodePtr.nullptr.pointee
+
+      var a = RedBlackTreeSet<Int>(
+        stride(from: 0, through: 90, by: 10)
+      )
+      a.__tree_.ensureCapacity()
+
+      let tree = a.__tree_
+
+      func node(_ key: Int) -> _NodePtr {
+        let (_, child) = tree.__find_equal(key)
+        XCTAssertNotEqual(child.pointee, tree.nullptr)
+        return child.pointee
+      }
+
+      var dummy = tree.nullptr
+      
+      func find(
+        _ hint: _NodePtr,
+        _ value: Int
+      ) -> (_NodePtr, _NodeRef, _NodePtr) {
+        dummy = .nullptr
+        let (parent, child) =
+          tree.__find_equal(hint, &dummy, value)
+        XCTAssertEqual(tree.nullptr.pointee, nullnode)
+        return (parent, child, dummy)
+      }
+
+      // ------------------------------------------------------------
+      // v == *hint
+      // ------------------------------------------------------------
+
+      do {
+        let hint = node(40)
+        let (parent, child, dummy) = find(hint, 40)
+
+        XCTAssertEqual(parent, hint)
+        XCTAssertEqual(child.pointee, hint)
+        XCTAssertEqual(dummy, hint)
+      }
+
+      // ------------------------------------------------------------
+      // before:
+      // hint == begin
+      // → prior == begin
+      // → hint.left == nullptr
+      // ------------------------------------------------------------
+
+      do {
+        let hint = node(0)
+        let (_, child, _) = find(hint, -5)
+
+        XCTAssertEqual(child.pointee, tree.nullptr)
+      }
+
+      // ------------------------------------------------------------
+      // before:
+      // prev < v < hint
+      // hint.left != nullptr
+      // → return (prior, prior.right)
+      // ------------------------------------------------------------
+
+      do {
+        let hint = stride(from: 0, through: 90, by: 10)
+          .map(node)
+          .first { $0.__left_ != tree.nullptr }!
+
+        let prior = tree.__tree_prev_iter(hint)
+
+        let lhs = tree.__get_value(prior)
+        let rhs = tree.__get_value(hint)
+        let value = (lhs + rhs) / 2
+
+        let (parent, child, _) = find(hint, value)
+
+        XCTAssertEqual(parent, prior)
+        XCTAssertEqual(child.pointee, tree.nullptr)
+      }
+
+      // ------------------------------------------------------------
+      // before:
+      // v <= prev(hint)
+      // → fallback __find_equal(v)
+      // ------------------------------------------------------------
+
+      do {
+        let hint = node(50)
+        let (_, child, _) = find(hint, 5)
+
+        XCTAssertEqual(child.pointee, tree.nullptr)
+      }
+
+      // ------------------------------------------------------------
+      // after:
+      // hint == maximum
+      // → next == end
+      // → hint.right == nullptr
+      // ------------------------------------------------------------
+
+      do {
+        let hint = node(90)
+        let (_, child, _) = find(hint, 95)
+
+        XCTAssertEqual(child.pointee, tree.nullptr)
+      }
+
+      // ------------------------------------------------------------
+      // after:
+      // hint < v < next
+      // hint.right != nullptr
+      // → return (next, next.left)
+      // ------------------------------------------------------------
+
+      do {
+        let hint = stride(from: 0, through: 90, by: 10)
+          .map(node)
+          .first { $0.__right_ != tree.nullptr }!
+
+        let next = tree.__tree_next_iter(hint)
+
+        let lhs = tree.__get_value(hint)
+        let rhs = tree.__get_value(next)
+        let value = (lhs + rhs) / 2
+
+        let (parent, child, _) = find(hint, value)
+
+        XCTAssertEqual(parent, next)
+        XCTAssertEqual(child.pointee, tree.nullptr)
+      }
+
+      // ------------------------------------------------------------
+      // after:
+      // next <= v
+      // → fallback __find_equal(v)
+      // ------------------------------------------------------------
+
+      do {
+        let hint = node(40)
+        let (_, child, _) = find(hint, 85)
+
+        XCTAssertEqual(child.pointee, tree.nullptr)
+      }
+
+      // ------------------------------------------------------------
+      // hint == end
+      // ------------------------------------------------------------
+
+      do {
+        let (_, child, _) = find(tree.end, 95)
+
+        XCTAssertEqual(child.pointee, tree.nullptr)
+      }
+    }
+  #endif
 }

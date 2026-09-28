@@ -204,13 +204,17 @@ extension EmplaceHintUniqueProtocol_ptr {
 
   @inlinable
   internal func __emplace_hint_unique(
-    _ __p: _NodePtr,
-    _ __k: @autoclosure () -> _Key?,
-    _ __v: @autoclosure () -> _PayloadValue
-  ) -> (__r: _NodePtr, __inserted: Bool) {
-    if let __key = __k() {
+    _ __p: _NodePtr, __k: _Key? = nil, _ __v: @autoclosure () -> _PayloadValue
+  )
+    -> (__r: _NodePtr, __inserted: Bool)
+  {
+
+    if let __key = __k {
       var __dummy = nullptr
-      let (__parent, __child) = __find_equal(__p, &__dummy, __key)
+      // 簡略記法もあるが、ここが若干あぶないことに気づけるよう、with記法を採用
+      let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
+        __find_equal(__p, __dummy, __key)
+      }
       var __r = __child.pointee
       var __inserted = false
       if __child.pointee == nullptr {
@@ -220,21 +224,22 @@ extension EmplaceHintUniqueProtocol_ptr {
         __inserted = true
       }
       return (__r, __inserted)
-    } else { // 多分updateのケース
+    } else {
       let __h = __construct_node(__v())
       var __dummy = nullptr
-      let (parent, __child) = __find_equal(__p, &__dummy, __get_value(__h))
-      var __r = __child.pointee
-      guard __child.pointee == nullptr else {
-        return (__child.pointee, false)
+      let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
+        __find_equal(__p, __dummy, __get_value(__h))
       }
+      var __r = __child.pointee
+      var __inserted = false
       if __child.pointee == nullptr {
-        __insert_node_at(parent, __child, __h)
+        __insert_node_at(__parent, __child, __h)
         __r = __h
+        __inserted = true
       } else {
         destroy(__h)
       }
-      return (__r, __child.pointee == nullptr)
+      return (__r, __inserted)
     }
   }
 }

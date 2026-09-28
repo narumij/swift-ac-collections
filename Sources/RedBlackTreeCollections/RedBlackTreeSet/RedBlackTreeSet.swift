@@ -263,7 +263,7 @@ extension RedBlackTreeSet {
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
-      let (__r, __inserted) = __tree_.__emplace_hint_unique(__p, newMember, newMember)
+      let (__r, __inserted) = __tree_.__emplace_hint_unique(__p, __k: newMember, newMember)
       return (__inserted, ___index(__r))
     }
 
@@ -275,7 +275,7 @@ extension RedBlackTreeSet {
       guard let __p = p.pointer else {
         fatalError(.invalidIndex)
       }
-      let (__r, __inserted) = __tree_.__emplace_hint_unique(__p, newMember, newMember)
+      let (__r, __inserted) = __tree_.__emplace_hint_unique(__p, __k: newMember, newMember)
       return !__inserted ? nil : ___index(__r)
     }
   }

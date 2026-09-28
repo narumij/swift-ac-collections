@@ -280,7 +280,7 @@ extension RedBlackTreeDictionary {
         fatalError(.invalidIndex)
       }
       let (__r, __inserted) = __tree_.__emplace_hint_unique(
-        __p, newMember.key, Base.__payload_(newMember))
+        __p, __k: newMember.key, Base.__payload_(newMember))
       return (__inserted, ___index(__r))
     }
   }

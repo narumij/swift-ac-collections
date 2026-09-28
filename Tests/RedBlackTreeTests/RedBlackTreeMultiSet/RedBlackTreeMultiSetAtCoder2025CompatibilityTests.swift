@@ -63,7 +63,20 @@ import XCTest
     }
   }
 
-  extension MultisetPointerTests {
+  final class RedBlackTreeMultisetPointerAtCoder2025LegacyTests: RedBlackTreeTestCase {
+
+    var members: RedBlackTreeMultiSet<Int> = []
+
+    override func setUpWithError() throws {
+      try super.setUpWithError()
+      members = [0, 0, 1, 2, 2]
+    }
+
+    override func tearDownWithError() throws {
+      members = .init()
+      try super.tearDownWithError()
+    }
+
     func testPointerNext() throws {
       XCTAssertEqual(members.startIndex.pointee, 0)
       XCTAssertEqual(members.startIndex.next?.pointee, 0)
@@ -604,34 +617,6 @@ import XCTest
     }
   #endif
 
-  extension MultisetPerfomarnceTests {
-    #if ENABLE_PERFORMANCE_TESTING
-      func testPerformanceFirstIndex4() throws {
-        let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
-        self.measure {
-          XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 - 1 }), s.index(before: s.endIndex))
-        }
-      }
-    #endif
-
-    #if ENABLE_PERFORMANCE_TESTING
-      func testPerformanceFirstIndex5() throws {
-        let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
-        self.measure {
-          XCTAssertEqual(s.firstIndex(where: { $0 >= 0 }), s.startIndex)
-        }
-      }
-    #endif
-
-    #if ENABLE_PERFORMANCE_TESTING
-      func testPerformanceFirstIndex6() throws {
-        let s: RedBlackTreeMultiSet<Int> = .init(0..<1_000_000)
-        self.measure {
-          XCTAssertEqual(s.firstIndex(where: { $0 >= 1_000_000 }), nil)
-        }
-      }
-    #endif
-  }
   extension RedBlackTreeMultisetSubSequenceTests {
   }
 

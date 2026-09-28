@@ -278,7 +278,7 @@ import XCTest
     }
   }
 
-  extension DictionaryTests {
+  final class RedBlackTreeDictionaryEtcAtCoder2025LegacyTests: RedBlackTreeTestCase {
     func testSubsequence() throws {
       var set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
       let sub = set[2..<4]
@@ -312,16 +312,6 @@ import XCTest
         XCTAssertEqual(set.map { $0.value }, ["a", "e"])
       #endif
     }
-  }
-
-  extension DictionaryTests {
-    func testSubsequence4() throws {
-      let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
-      let sub = set[1..<3]
-      throw XCTSkip("Fatal error: RedBlackTree index is out of range.")
-      // スキップを直そうとしたが、テストの意図がよく分からない。当時のたまたまの仕様になっているような
-      XCTAssertNotEqual(sub[set.startIndex..<set.endIndex].map { $0.key }, [1, 2, 3, 4, 5])
-    }
 
     func testSubsequence5() throws {
       let set: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c", 4: "d", 5: "e"]
@@ -330,13 +320,7 @@ import XCTest
       XCTAssertEqual(sub[sub.startIndex..<sub.endIndex].map { $0.key }, [1, 2])
       XCTAssertEqual(sub[sub.startIndex..<sub.index(before: sub.endIndex)].map { $0.key }, [1])
     }
-  }
 
-  extension DictionaryTests {
-
-  }
-
-  extension DictionaryTests {
     func testIndex100() throws {
       let set: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60]
       XCTAssertEqual(set.index(set.startIndex, offsetBy: 6), set.endIndex)
@@ -401,9 +385,6 @@ import XCTest
       XCTAssertEqual(i, sub.startIndex)
     }
 
-  }
-
-  extension DictionaryTests {
     func testForEach_enumeration() throws {
       let source = [0, 1, 2, 3, 4, 5].map { ($0, $0 * 10) }
       let a = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: source)
@@ -414,37 +395,5 @@ import XCTest
         p = p?.next
       }
     }
-  }
-  extension RedBlackTreeDictionaryExtendedTests {
-  }
-
-  extension RedBlackTreeDictionaryExtendedTests {
-  }
-
-  extension DictionaryTests {
-  }
-
-  extension DictionaryTests {
-  }
-
-  extension DictionaryTests {
-  }
-
-  extension DictionaryTests {
-  }
-
-  extension DictionaryTests {
-  }
-
-  extension DictionaryTests {
-  }
-
-  extension DictionaryTests {
-  }
-
-  extension DictionaryTests {
-  }
-
-  extension DictionaryTests {
   }
 #endif

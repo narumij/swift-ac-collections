@@ -26,6 +26,54 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary[1], ["one", "another"])
   }
 
+  func test_insert_returnsInsertedFlagAndExistingMemberOnDuplicate() {
+    var dictionary = RedBlackTreeDictionary<Int, Int>()
+
+    let first = dictionary.insert((3, 10))
+    XCTAssertTrue(first.inserted)
+    XCTAssertEqual(first.memberAfterInsert.key, 3)
+    XCTAssertEqual(first.memberAfterInsert.value, 10)
+    XCTAssertEqual(dictionary[3], 10)
+
+    let duplicate = dictionary.insert((3, 20))
+    XCTAssertFalse(duplicate.inserted)
+    XCTAssertEqual(duplicate.memberAfterInsert.value, 10)
+    XCTAssertEqual(dictionary[3], 10)
+  }
+
+  func test_insertKeyValue_returnsInsertedFlagAndExistingMemberOnDuplicate() {
+    var dictionary = RedBlackTreeDictionary<Int, Int>()
+
+    let first = dictionary.insert(key: 3, value: 10)
+    XCTAssertTrue(first.inserted)
+    XCTAssertEqual(first.memberAfterInsert.value, 10)
+
+    let duplicate = dictionary.insert(key: 3, value: 20)
+    XCTAssertFalse(duplicate.inserted)
+    XCTAssertEqual(duplicate.memberAfterInsert.value, 10)
+    XCTAssertEqual(dictionary[3], 10)
+  }
+
+  #if !COMPATIBLE_ATCODER_2025
+    func test_insertWithHint_insertsRegardlessOfHintAccuracyAndRejectsDuplicateKey() {
+      var dictionary: RedBlackTreeDictionary<Int, String> = [1: "one", 3: "three"]
+
+      let goodHint = dictionary.firstIndex(of: 3)!
+      let insertedWithGoodHint = dictionary.insert((2, "two"), hint: goodHint)
+      XCTAssertTrue(insertedWithGoodHint.inserted)
+      XCTAssertEqual(dictionary[insertedWithGoodHint.indexAfterInsert].key, 2)
+
+      let insertedWithBadHint = dictionary.insert((4, "four"), hint: dictionary.startIndex)
+      XCTAssertTrue(insertedWithBadHint.inserted)
+      XCTAssertEqual(dictionary[insertedWithBadHint.indexAfterInsert].key, 4)
+
+      let duplicate = dictionary.insert((2, "replacement"), hint: dictionary.endIndex)
+      XCTAssertFalse(duplicate.inserted)
+      XCTAssertEqual(dictionary[2], "two")
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
+    }
+  #endif
+
   func test_updateValue_returnsTheReplacedValue() {
     var dictionary: RedBlackTreeDictionary<Int, String> = [1: "old"]
 

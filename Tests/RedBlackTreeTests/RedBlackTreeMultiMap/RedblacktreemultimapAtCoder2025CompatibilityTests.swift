@@ -13,6 +13,9 @@ import XCTest
   final class MultiMapAdvancedTest: RedBlackTreeTestCase {}
   final class RedBlackTreeMultiMapTests: RedBlackTreeTestCase {}
   final class MultiMapRemoveTests: RedBlackTreeTestCase {}
+  final class MultiMapTests: RedBlackTreeTestCase {
+    typealias Target = RedBlackTreeMultiMap
+  }
   final class MultiMapEtcTests: RedBlackTreeTestCase {
     typealias Target1 = RedBlackTreeMultiMap<Int, Int>
 
@@ -276,7 +279,7 @@ import XCTest
   #endif
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
-    extension MultiMapCopyOnWriteTests {
+    extension RedBlackTreeMultiMapCopyOnWriteTests {
       func testSet4000() throws {
         let count = 1500
         var xy: [Int: RedBlackTreeMultiMap<Int, Int>] = [
@@ -480,7 +483,20 @@ import XCTest
     }
   }
 
-  extension MultiMapPointerTests {
+  final class RedBlackTreeMultiMapPointerAtCoder2025LegacyTests: RedBlackTreeTestCase {
+
+    var members: RedBlackTreeMultiMap<Int, String> = [:]
+
+    override func setUpWithError() throws {
+      try super.setUpWithError()
+      members = [0: "0", 1: "1", 2: "2", 3: "3", 4: "4"]
+    }
+
+    override func tearDownWithError() throws {
+      members = .init()
+      try super.tearDownWithError()
+    }
+
     func testPointer2() throws {
       if let it = members.startIndex.next {
         XCTAssertFalse(members.___is_garbaged(it))
@@ -543,59 +559,8 @@ import XCTest
       XCTAssertNil(members.startIndex.advanced(by: -6).pointee)
     }
   }
-  extension MultiMapTests {
-  }
-
-  extension MultiMapTests {
-  }
-
-  extension MultiMapTests {
-  }
-
-  extension MultiMapTests {
-  }
-
-  extension MultiMapTests {
-  }
-
-  extension MultiMapTests {
-  }
-
-  extension MultiMapTests {
-  }
-
-  extension MultiMapTests {
-  }
-
-  extension MultiMapTests {
-  }
-
-  extension MultiMapTests {
-  }
-
-  extension MultiMapTests {
-  }
-
-  extension MultiMapTests {
-  }
-
-  extension MultiMapTests {
-  }
-
-  extension MultiMapEtcTests {
-  }
-
-  extension MultiMapEtcTests {
-  }
-
-  extension MultiMapEtcTests {
-  }
-
   #if AC_COLLECTIONS_INTERNAL_CHECKS
-    extension MultiMapCopyOnWriteTests {
-    }
-
-    extension MultiMapCopyOnWriteTests {
+    extension RedBlackTreeMultiMapCopyOnWriteTests {
       func testSet3() throws {
         tree._copyCount = 0
         for v in tree {
@@ -606,7 +571,7 @@ import XCTest
       }
     }
 
-    extension MultiMapCopyOnWriteTests {
+    extension RedBlackTreeMultiMapCopyOnWriteTests {
       func testSet3_2() throws {
         tree._copyCount = 0
         for v in tree + [] {
@@ -617,7 +582,7 @@ import XCTest
       }
     }
 
-    extension MultiMapCopyOnWriteTests {
+    extension RedBlackTreeMultiMapCopyOnWriteTests {
       func testSet3_3() throws {
         tree._copyCount = 0
         for v in tree + [] {
@@ -628,7 +593,7 @@ import XCTest
       }
     }
 
-    extension MultiMapCopyOnWriteTests {
+    extension RedBlackTreeMultiMapCopyOnWriteTests {
       func testSet4() throws {
         tree._copyCount = 0
         tree.forEach { v in
@@ -639,7 +604,7 @@ import XCTest
       }
     }
 
-    extension MultiMapCopyOnWriteTests {
+    extension RedBlackTreeMultiMapCopyOnWriteTests {
       func testSet5() throws {
         tree._copyCount = 0
         for v in tree + [] {
@@ -650,25 +615,7 @@ import XCTest
       }
     }
 
-    extension MultiMapCopyOnWriteTests {
-    }
-
-    extension MultiMapCopyOnWriteTests {
-    }
-
-    extension MultiMapCopyOnWriteTests {
-    }
-
-    extension MultiMapCopyOnWriteTests {
-    }
-
-    extension MultiMapCopyOnWriteTests {
-    }
-
-    extension MultiMapCopyOnWriteTests {
-    }
-
-    extension MultiMapCopyOnWriteTests {
+    extension RedBlackTreeMultiMapCopyOnWriteTests {
     }
   #endif
 

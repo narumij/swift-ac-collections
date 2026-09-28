@@ -17,6 +17,33 @@ final class RedBlackTreeDictionaryIndexRangeTests: RedBlackTreeTestCase {
       )
     }
 
+    func test_indexAndFormIndex_moveForwardAndBackwardSymmetrically() {
+      let dictionary: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
+
+      var i = dictionary.startIndex
+      for _ in 0..<dictionary.count {
+        XCTAssertEqual(dictionary.distance(from: i, to: dictionary.index(after: i)), 1)
+        i = dictionary.index(after: i)
+      }
+      XCTAssertEqual(i, dictionary.endIndex)
+
+      for _ in 0..<dictionary.count {
+        XCTAssertEqual(dictionary.distance(from: i, to: dictionary.index(before: i)), -1)
+        i = dictionary.index(before: i)
+      }
+      XCTAssertEqual(i, dictionary.startIndex)
+
+      for _ in 0..<dictionary.count {
+        dictionary.formIndex(after: &i)
+      }
+      XCTAssertEqual(i, dictionary.endIndex)
+
+      for _ in 0..<dictionary.count {
+        dictionary.formIndex(before: &i)
+      }
+      XCTAssertEqual(i, dictionary.startIndex)
+    }
+
     func testIsElementAndIsEndDistinguishElementFromEnd() {
       let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
 

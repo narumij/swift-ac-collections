@@ -84,6 +84,15 @@ extension RedBlackTreeMultiMapProtocolConformanceTests {
     let b: RedBlackTreeMultiMap<Int, String> = [(1, "b")]
     XCTAssertNotEqual(a, b)
   }
+
+  func test_equatable_rangeViewsFromDifferentTreesCompareByElements() {
+    let aa = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (0...5).map { ($0, $0) })
+    let bb = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (3...8).map { ($0, $0) })
+
+    XCTAssertEqual(aa[aa.lowerBound(3)..<aa.lowerBound(6)], bb[bb.lowerBound(3)..<bb.lowerBound(6)])
+    XCTAssertNotEqual(
+      aa[aa.lowerBound(2)..<aa.lowerBound(6)], bb[bb.lowerBound(3)..<bb.lowerBound(6)])
+  }
 }
 
 // MARK: - Comparable
@@ -95,6 +104,14 @@ extension RedBlackTreeMultiMapProtocolConformanceTests {
 
     XCTAssertTrue(a < b)
     XCTAssertFalse(b < a)
+  }
+
+  func test_comparable_rangeViewsFromDifferentTreesOrderByElements() {
+    let aa = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (0...5).map { ($0, $0) })
+    let bb = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (3...8).map { ($0, $0) })
+
+    XCTAssertTrue(aa[aa.lowerBound(2)..<aa.lowerBound(6)] < bb[bb.lowerBound(3)..<bb.lowerBound(6)])
+    XCTAssertFalse(bb[bb.lowerBound(3)..<bb.lowerBound(6)] < aa[aa.lowerBound(2)..<aa.lowerBound(6)])
   }
 }
 

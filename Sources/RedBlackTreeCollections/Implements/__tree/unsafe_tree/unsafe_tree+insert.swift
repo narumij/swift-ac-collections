@@ -202,14 +202,16 @@ protocol EmplaceHintUniqueProtocol_ptr:
 
 extension EmplaceHintUniqueProtocol_ptr {
 
+  // キー無しのケースはC++の事情によるもので、Comparable割り切りのSwift版では不要
+  // 以下は資料として残して、分割版を使うこととする
   @inlinable
   internal func __emplace_hint_unique(
-    _ __p: _NodePtr, __k: _Key? = nil, _ __v: @autoclosure () -> _PayloadValue
+    _ __p: _NodePtr, _ __k: @autoclosure () -> _Key?, _ __v: @autoclosure () -> _PayloadValue
   )
     -> (__r: _NodePtr, __inserted: Bool)
   {
 
-    if let __key = __k {
+    if let __key = __k() {
       var __dummy = nullptr
       // 簡略記法もあるが、ここが若干あぶないことに気づけるよう、with記法を採用
       let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
@@ -241,6 +243,58 @@ extension EmplaceHintUniqueProtocol_ptr {
       }
       return (__r, __inserted)
     }
+  }
+
+  // 実際に使う分割前半バージョン
+  @inlinable
+  internal func ___emplace_hint_unique_(
+    _ __p: _NodePtr, _ __key: @autoclosure () -> _Key, _ __v: @autoclosure () -> _PayloadValue
+  )
+    -> (__r: _NodePtr, __inserted: Bool)
+  {
+    var __dummy = nullptr
+    // 簡略記法もあるが、ここが若干あぶないことに気づけるよう、with記法を採用
+    let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
+      __find_equal(__p, __dummy, __key())
+    }
+    var __r = __child.pointee
+    var __inserted = false
+    if __child.pointee == nullptr {
+      let __h = __construct_node(__v())
+      __insert_node_at(__parent, __child, __h)
+      __r = __h
+      __inserted = true
+    }
+    return (__r, __inserted)
+  }
+
+  // __get_valueでしかキーが取れないケースに使う分割後半バージョン
+  @inlinable
+  internal func ___emplace_hint_unique_(
+    _ __p: _NodePtr,
+    _ __v: @autoclosure () -> _PayloadValue
+  ) -> (__r: _NodePtr, __inserted: Bool) {
+    let __h = __construct_node(__v())
+
+    var __dummy = nullptr
+    
+    // 簡略記法もあるが、ここが若干あぶないことに気づけるよう、with記法を採用
+    let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
+      __find_equal(__p, __dummy, __get_value(__h))
+    }
+
+    var __r = __child.pointee
+    var __inserted = false
+
+    if __child.pointee == nullptr {
+      __insert_node_at(__parent, __child, __h)
+      __r = __h
+      __inserted = true
+    } else {
+      destroy(__h)
+    }
+
+    return (__r, __inserted)
   }
 }
 

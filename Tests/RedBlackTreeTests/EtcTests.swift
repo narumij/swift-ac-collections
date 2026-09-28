@@ -951,7 +951,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       // key unknown: 新規挿入
       do {
         let (hint, __inserted) =
-          a.__tree_.__emplace_hint_unique(hint, -1)
+          a.__tree_.__emplace_hint_unique(hint, nil, -1)
 
         XCTAssertTrue(__inserted)
         XCTAssertEqual(a.__tree_.__get_value(hint), -1)
@@ -962,7 +962,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       // key unknown: 重複
       do {
         let (hint, __inserted) =
-          a.__tree_.__emplace_hint_unique(hint, -1)
+          a.__tree_.__emplace_hint_unique(hint, nil, -1)
 
         XCTAssertFalse(__inserted)
         XCTAssertEqual(a.__tree_.__get_value(hint), -1)
@@ -973,7 +973,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       // key unknown: 追加
       do {
         let (hint, __inserted) =
-          a.__tree_.__emplace_hint_unique(hint, -2)
+          a.__tree_.__emplace_hint_unique(hint, nil, -2)
 
         XCTAssertTrue(__inserted)
         XCTAssertEqual(a.__tree_.__get_value(hint), -2)
@@ -1141,3 +1141,22 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     }
   #endif
 }
+
+#if DEBUG
+extension RedBlackTreeDictionary {
+  
+  public mutating func emplace(
+    hint: Index,
+    _ element: @autoclosure () -> Element
+  ) -> (inserted: Bool, indexAfterInsert: Index) {
+    __tree_.ensureUniqueAndCapacity()
+    let p = __tree_.__purified_(hint)
+    guard let __p = p.pointer else {
+      fatalError(.invalidIndex)
+    }
+    let (__r, __inserted) = __tree_.___emplace_hint_unique_(
+      __p, Base.__payload_(element()))
+    return (__inserted, ___index(__r))
+  }
+}
+#endif

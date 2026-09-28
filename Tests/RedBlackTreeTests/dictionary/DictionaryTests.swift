@@ -22,16 +22,19 @@ final class DictionaryTests: RedBlackTreeTestCase {
 
       let goodHint = dictionary.firstIndex(of: 3)!
       let insertedWithGoodHint = dictionary.insert((2, "two"), hint: goodHint)
-      XCTAssertEqual(dictionary[insertedWithGoodHint].key, 2)
-      XCTAssertEqual(dictionary[insertedWithGoodHint].value, "two")
+      XCTAssertTrue(insertedWithGoodHint.inserted)
+      XCTAssertEqual(dictionary[insertedWithGoodHint.indexAfterInsert].key, 2)
+      XCTAssertEqual(dictionary[insertedWithGoodHint.indexAfterInsert].value, "two")
 
       let insertedWithBadHint = dictionary.insert((4, "four"), hint: dictionary.startIndex)
-      XCTAssertEqual(dictionary[insertedWithBadHint].key, 4)
-      XCTAssertEqual(dictionary[insertedWithBadHint].value, "four")
+      XCTAssertTrue(insertedWithBadHint.inserted)
+      XCTAssertEqual(dictionary[insertedWithBadHint.indexAfterInsert].key, 4)
+      XCTAssertEqual(dictionary[insertedWithBadHint.indexAfterInsert].value, "four")
 
       let duplicate = dictionary.insert((2, "replacement"), hint: dictionary.endIndex)
-      XCTAssertEqual(dictionary[duplicate].key, 2)
-      XCTAssertEqual(dictionary[duplicate].value, "two")
+      XCTAssertFalse(duplicate.inserted)
+      XCTAssertEqual(dictionary[duplicate.indexAfterInsert].key, 2)
+      XCTAssertEqual(dictionary[duplicate.indexAfterInsert].value, "two")
       XCTAssertEqual(dictionary[2], "two")
       XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
     }

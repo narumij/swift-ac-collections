@@ -63,6 +63,8 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 ## Current handoff
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。
+- 旧 `set` フォルダは、重複していた `SetAlgebraTests.swift` を削除し、SetAlgebra stress、COW、pointer、performance を型別 `_98`、compatibility を型別 compatibility file へ移管済み。残りは `SetBidirectionalTests.swift`、`SetCornerCaseTests.swift`、`SetExtendedTests.swift`、`SetRangeExpressionTests.swift`、`SetRemoveTests.swift`、`SetReserveCapacityTests.swift`、`SetSubSequenceTests.swift`、`SetTests.swift`。次回は小さい `SetReserveCapacityTests.swift` と `SetCornerCaseTests.swift` から連番側との重複を監査する。
+- ルート直下では `MergeTests.swift`、`DocumentCheckTests.swift`、`EtcTests.swift` などに Set 公開仕様が混在する。単純移動せず、他型のケースを残しながら Set ケースだけ連番側へ移植・整理する。
 - `BoundExpression` は公開 DSL として4型それぞれの `_16_BoundExpressionTests.swift` へ移管済み。旧 `boundsExpression` フォルダの Swift テストは残っていない。位置式、相対移動、limit、range expression、subscript、erase の既存仕様を型別 Test as Spec として維持する。DEBUG 専用の内部 validity を追加するときは `_98_InternalTests.swift` に置く。
 - `RedBlackTreeMultiSet` は initialization、sequence、bidirectional collection、index、search、insertion、removal、utility、range view、protocol conformance、set algebra、element range を連番化済み。
 - `RedBlackTreeDictionary` は initialization、sequence、index、search、insertion、removal、utility、range view、protocol conformance、Codable を連番化済み。

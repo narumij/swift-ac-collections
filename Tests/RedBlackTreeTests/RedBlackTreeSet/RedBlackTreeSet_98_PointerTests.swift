@@ -1,7 +1,7 @@
 import RedBlackTreeCollections
 import XCTest
 
-final class SetPointerTests: RedBlackTreeTestCase {
+final class RedBlackTreeSetPointerTests: RedBlackTreeTestCase {
 
   var members: RedBlackTreeSet<Int> = []
 

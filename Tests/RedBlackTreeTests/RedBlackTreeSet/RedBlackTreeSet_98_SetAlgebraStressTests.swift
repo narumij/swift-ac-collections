@@ -7,7 +7,7 @@
 import RedBlackTreeCollections
 import XCTest
 
-final class RedBlackTreeSetAlgebraFullTests: RedBlackTreeTestCase {
+final class RedBlackTreeSetAlgebraStressTests: RedBlackTreeTestCase {
 
   // MARK: ── 汎用比較ヘルパ ───────────────────────────────────────────────
 

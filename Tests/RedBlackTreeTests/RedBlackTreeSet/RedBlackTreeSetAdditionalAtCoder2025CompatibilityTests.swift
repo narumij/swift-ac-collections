@@ -10,7 +10,7 @@ import XCTest
 // 互換モードを廃止するときは、このファイルを一括削除する。
 #if COMPATIBLE_ATCODER_2025
   #if AC_COLLECTIONS_INTERNAL_CHECKS
-    extension SetCopyOnWriteTests {
+    extension RedBlackTreeSetCopyOnWriteTests {
       func testSet4000() throws {
         let count = 1500
         var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0..<count)]
@@ -444,7 +444,7 @@ import XCTest
     }
   }
 
-  extension SetPointerTests {
+  extension RedBlackTreeSetPointerTests {
     func testPointer() throws {
       // 邪魔くさく感じたので廃止した
       //      XCTAssertTrue(members.startIndex.isStart)
@@ -546,7 +546,7 @@ import XCTest
 
   }
 
-  extension SetPerformanceTests {
+  extension RedBlackTreeSetPerformanceTests {
     #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceFirstIndex4() throws {
         let s: RedBlackTreeSet<Int> = .init(0..<1_000_000)
@@ -575,7 +575,7 @@ import XCTest
     #endif
   }
 
-  extension SetPerformanceTests {
+  extension RedBlackTreeSetPerformanceTests {
     #if ENABLE_PERFORMANCE_TESTING
       func testPerformanceCompare0() throws {
         let set: RedBlackTreeSet<Int> = .init(0..<1_000_000)

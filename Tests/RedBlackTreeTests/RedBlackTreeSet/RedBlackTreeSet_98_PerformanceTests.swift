@@ -6,7 +6,7 @@ import XCTest
   import RedBlackTreeCollections
 #endif
 
-final class SetPerformanceTests: RedBlackTreeTestCase {
+final class RedBlackTreeSetPerformanceTests: RedBlackTreeTestCase {
 
   var random: [Int] = []
   var sequence: [Int] = []

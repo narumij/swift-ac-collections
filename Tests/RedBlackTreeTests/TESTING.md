@@ -18,6 +18,7 @@
 ### 優先事項
 
 - 次回は `Current handoff` に記載した `SetSubSequenceTests.swift` の監査から再開する。
+- Package.swiftの直接編集Xcode runで構わないので、互換モードのコンパイル確認を一度はして判断を仰いで欲しい
 
 ### 連絡事項
 

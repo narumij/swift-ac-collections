@@ -110,6 +110,42 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isEmpty, "removeAll() 実行後、セットは空になること")
   }
 
+  #if !COMPATIBLE_ATCODER_2025
+    /// erase(_:) が空範囲と集合の境界を含むすべての半開範囲を正しく削除すること
+    func test_erase_eachBoundedRange() {
+      let source = [1, 3, 5, 7, 9]
+
+      for lowerBound in 0..<10 {
+        for upperBound in lowerBound...10 {
+          var set = RedBlackTreeSet(source)
+          set.erase(set.lowerBound(lowerBound)..<set.upperBound(upperBound))
+
+          XCTAssertEqual(set + [], source.filter { !(lowerBound...upperBound).contains($0) })
+        }
+      }
+    }
+
+    /// removeAll(keepingCapacity:) が要素を消しつつ、指定時には確保容量を維持すること
+    func test_removeAllKeepingCapacity() {
+      var set = RedBlackTreeSet(0..<8)
+      let capacity = set.capacity
+
+      set.removeAll(keepingCapacity: true)
+
+      XCTAssertTrue(set.isEmpty)
+      XCTAssertEqual(set.capacity, capacity)
+    }
+  #endif
+
+  /// remove(_:) が整数型の最小値と最大値も削除できること
+  func test_removeIntegerLimits() {
+    var set: RedBlackTreeSet = [Int.min, Int.max]
+
+    XCTAssertEqual(set.remove(Int.min), Int.min)
+    XCTAssertEqual(set.remove(Int.max), Int.max)
+    XCTAssertTrue(set.isEmpty)
+  }
+
 }
 
 extension RedBlackTreeSetRemoveTests {

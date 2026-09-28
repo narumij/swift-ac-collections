@@ -84,6 +84,33 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(set + [], [1, 2, 3, 4])
   }
 
+  /// merging(_:) が別のSetを統合した新しい集合を返し、元の集合を変更しないこと
+  func test_mergingSetReturnsNewSetWithoutMutatingSource() {
+    let set: RedBlackTreeSet = [1, 2]
+    let merged = set.merging(RedBlackTreeSet([2, 3, 100]))
+
+    XCTAssertEqual(merged + [], [1, 2, 3, 100])
+    XCTAssertEqual(set + [], [1, 2])
+  }
+
+  /// merging(_:) がMultiSetの重複を除いて統合すること
+  func test_mergingMultiSetRemovesDuplicates() {
+    let set: RedBlackTreeSet = [1, 2]
+    let merged = set.merging(RedBlackTreeMultiSet([2, 3, 3, 100]))
+
+    XCTAssertEqual(merged + [], [1, 2, 3, 100])
+    XCTAssertEqual(set + [], [1, 2])
+  }
+
+  /// merging(_:) が任意のSequenceを統合できること
+  func test_mergingSequenceReturnsSortedUniqueElements() {
+    let set: RedBlackTreeSet = [1, 2]
+    let merged = set.merging([100, 3, 3])
+
+    XCTAssertEqual(merged + [], [1, 2, 3, 100])
+    XCTAssertEqual(set + [], [1, 2])
+  }
+
   /// update(with:)で既存要素が更新されず、新規要素は追加されること
   func test_update_withElement() {
     // 事前条件: 集合に[1,3]を用意

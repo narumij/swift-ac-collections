@@ -36,7 +36,19 @@ import XCTest
   #endif
 
   #if DEBUG
-    extension SetRemoveTest_10 {
+    final class RedBlackTreeSetAdditionalAtCoder2025RemovalInternalTests: RedBlackTreeTestCase {
+      var members: RedBlackTreeSet<Int> = []
+
+      override func setUpWithError() throws {
+        try super.setUpWithError()
+        members = RedBlackTreeSet(0..<10)
+      }
+
+      override func tearDownWithError() throws {
+        members = .init()
+        try super.tearDownWithError()
+      }
+
       func testRemoveWith___Indices() throws {
         for i in members.___node_positions() {
           members.__tree_._unchecked_remove(at: i)

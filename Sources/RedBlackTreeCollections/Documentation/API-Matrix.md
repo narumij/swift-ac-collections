@@ -20,7 +20,7 @@
 | --- | :---: | :---: | :---: | :---: | --- |
 | `init()` | ✅ | ✅ | ✅ | ✅ | 空のコンテナを生成する |
 | `init(minimumCapacity:)` | ✅ | ✅ | ✅ | ✅ | 最低容量を指定して生成する |
-| `init(_ sequence:)` | ✅ | ✅ | △ | △ | 要素列から生成する。Map系はkeys-with-values形式を使う |
+| `init(_ sequence:)` | ✅ | ✅ | — | — | 要素列から生成する |
 | `init(_ range:)` | ✅ | ✅ | — | — | Rangeの要素から生成する |
 | `init(keysWithValues:)` | — | — | ✅ | — | `(Key, Value)` の列からMultiMapを生成する |
 | `init(uniqueKeysWithValues:)` | — | — | — | ✅ | 一意なキーと値の列からDictionaryを生成する |
@@ -115,7 +115,7 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す |
 | `updateValue(_:forKey:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
 | `updateValue(_:forKey:hint:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
-| `index(inserting:)` | ✅ | — | — | — | 挿入し、挿入位置のIndexを返す |
+| `index(inserting:)` | ✅ | TODO | TODO | TODO | 挿入し、挿入位置のIndexを返す |
 | `insert(contentsOf:)` | — | ✅ | ✅ | — | 別コンテナまたはSequenceの内容を追加する |
 | `inserting(contentsOf:)` | — | ✅ | ✅ | — | 内容を追加した新しい値を返す |
 | `merge(_:)` | ✅ | — | — | ✅ | 他の集合またはキー値列を統合する |
@@ -137,7 +137,7 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `erase(where:)` | ✅ | ✅ | ✅ | ✅ | 条件を満たす全要素を削除する |
 | `eraseUnique(_:)` | — | ✅ | ✅ | — | 値またはキーに対応する1要素を削除する |
 | `eraseMulti(_:)` | — | ✅ | ✅ | — | 値またはキーに対応する全要素を削除し、件数を返す |
-| `eraseSafely(at:)` | ✅ | — | — | — | Indexが現在利用可能ならSetから要素を削除する |
+| `erase(exactly:)` | ✅ | TODO | TODO | TODO | Indexが現在利用可能なら要素を削除し、後続Indexを返す |
 
 remove 系は Swift 標準APIとの整合を優先する。
 erase 系は本ライブラリ固有のIndex・Range・複数要素削除を扱う。

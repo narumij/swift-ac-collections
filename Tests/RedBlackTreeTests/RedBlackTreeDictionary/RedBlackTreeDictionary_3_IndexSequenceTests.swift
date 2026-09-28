@@ -4,6 +4,19 @@ import XCTest
 final class RedBlackTreeDictionaryIndexRangeTests: RedBlackTreeTestCase {
 
   #if !COMPATIBLE_ATCODER_2025
+    func test_distance_isPositiveForwardAndNegativeBackward() {
+      let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
+
+      XCTAssertEqual(
+        dictionary.distance(from: dictionary.startIndex, to: dictionary.endIndex),
+        dictionary.count
+      )
+      XCTAssertEqual(
+        dictionary.distance(from: dictionary.endIndex, to: dictionary.startIndex),
+        -dictionary.count
+      )
+    }
+
     func testIsElementAndIsEndDistinguishElementFromEnd() {
       let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
 

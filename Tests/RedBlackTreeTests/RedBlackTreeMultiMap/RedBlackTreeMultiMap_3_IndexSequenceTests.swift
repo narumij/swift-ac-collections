@@ -4,6 +4,19 @@ import XCTest
 final class RedBlackTreeMultiMapIndexRangeTests: RedBlackTreeTestCase {
 
   #if !COMPATIBLE_ATCODER_2025
+    func test_distanceCountsDuplicatePositionsInBothDirections() {
+      let multimap: RedBlackTreeMultiMap = [(0, "a"), (1, "b"), (1, "c"), (2, "d")]
+
+      XCTAssertEqual(
+        multimap.distance(from: multimap.startIndex, to: multimap.endIndex),
+        multimap.count
+      )
+      XCTAssertEqual(
+        multimap.distance(from: multimap.endIndex, to: multimap.startIndex),
+        -multimap.count
+      )
+    }
+
     func testIsElementAndIsEndDistinguishElementFromEnd() {
       let multimap: RedBlackTreeMultiMap = [(0, "a"), (1, "b"), (1, "c"), (2, "d")]
 

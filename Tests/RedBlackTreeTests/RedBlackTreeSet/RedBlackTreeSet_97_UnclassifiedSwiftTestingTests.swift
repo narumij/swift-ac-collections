@@ -15,7 +15,7 @@
     import Glibc
   #endif
 
-  struct DeathTest {
+  struct RedBlackTreeSetUnclassifiedSwiftTestingTests {
 
     /// 異常終了した理由が、不正なメモリアクセスではないことを確認する。
     ///

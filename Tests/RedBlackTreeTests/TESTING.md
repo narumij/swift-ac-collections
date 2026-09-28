@@ -22,6 +22,8 @@
 
 公開 API の precondition や不正 index を専用プロセスで検証する Death Test は、各型の連番 `_99_DeathTests.swift` に配置する。`DEATH_TEST` 条件は維持し、通常仕様と同じ場所から発見できるようにする。
 
+内部実装・coverage テストは `_98_*.swift` に分ける。まだ公開仕様・内部仕様・互換仕様の分類が済んでいない Swift Testing ベースのテストは、一時的に `_97_*.swift` へ置く。分類済みの公開 Death Test は `_99_DeathTests.swift` とする。通常の XCTest による Test as Spec と同じファイルへ混ぜず、GitHub Actions で問題が起きたときに Swift Testing 使用箇所をファイル名から絞り込めるようにする。
+
 ## AtCoder 2025 compatibility tests
 
 `COMPATIBLE_ATCODER_2025` 専用テストは、`*AtCoder2025CompatibilityTests.swift` に集約する。これらは互換モードを廃止するとき、検索して一括削除できることを目的としている。
@@ -55,6 +57,6 @@
 - Set、MultiSet、Dictionary、MultiMap の既存 Death Test は各型の `_99_DeathTests.swift` に移管済み。
 - `fatalError/Index` に残っていた空の `startIndex` と `endIndex` の Death Test、および `fatalError/etc` の空 collection に対する `removeFirst` / `removeLast`、Set の cross-tree range、削除済み index の再削除は各型の `_99_DeathTests.swift` へ移管済み。重複していた旧 range / fatal テストも整理済み。
 - 互換専用 iterator Death Test は `RedblacktreesetAtCoder2025CompatibilityTests.swift` へ移管済み。
-- `fatalError/etc` には、通常の成功系である `DistanceTests.swift`、`EraseTests.swift`、`EraseWhereTests.swift`、内部 coverage の `BoundExpressionCoverage.swift`、`PtrCompTests.swift`、`__tree_coverage_tests.swift` が残る。次回は公開 Death Test と誤認せず、通常連番と内部テストの適切な場所へ分ける。`PtrCompTests.swift` と `__tree_coverage_tests.swift` の一部だけは内部 precondition の Death Test であり、4型の `_99` には混ぜない。
+- `fatalError/etc` に残っていた通常成功系は XCTest の各型連番へ、内部 coverage / pointer precondition は各型または共有内部の `_98_*.swift` へ移管済み。旧 root `DeathTest.swift` は Set の `_97_UnclassifiedSwiftTestingTests.swift` へ移し、今後 `_99` または compatibility へ仕分ける。
 - `multiset` 以下には compatibility、内部実装、性能、負荷、ファズ、および未仕分けの旧テストが残っている。削除前に公開仕様の取りこぼしがないか確認すること。
 - `MultisetAtCoder2025CompatibilityTests.swift` は互換モード廃止時の一括削除対象。

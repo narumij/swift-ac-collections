@@ -22,6 +22,31 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary.map(\.key), [1, 3])
   }
 
+  #if !COMPATIBLE_ATCODER_2025
+    func test_erase_returnsTheFollowingIndex() {
+      var dictionary: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
+      let removed = dictionary.firstIndex(of: 2)!
+
+      let next = dictionary.erase(removed)
+
+      XCTAssertEqual(dictionary[next].key, 3)
+      XCTAssertEqual(dictionary.map(\.key), [1, 3])
+    }
+
+    func test_eraseWhere_removesEveryMatchingEntry() {
+      var dictionary: RedBlackTreeDictionary<Int, String> = [
+        1: "keep",
+        2: "remove",
+        3: "keep",
+        4: "remove",
+      ]
+
+      dictionary.erase { $0.key.isMultiple(of: 2) }
+
+      XCTAssertEqual(dictionary.map(\.key), [1, 3])
+    }
+  #endif
+
   func test_popFirst_returnsNilOrRemovesLowestKey() {
     var empty = RedBlackTreeDictionary<Int, String>()
     var dictionary: RedBlackTreeDictionary<Int, String> = [3: "c", 1: "a", 2: "b"]

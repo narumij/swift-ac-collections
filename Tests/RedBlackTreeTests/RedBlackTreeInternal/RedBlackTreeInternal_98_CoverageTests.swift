@@ -10,7 +10,7 @@
   @testable import RedBlackTreeCollections
   import Testing
 
-  struct __tree_coverage_tests {
+  struct RedBlackTreeInternalCoverageTests {
 
     @Test func `_TrackingTagSealing.sealのカバレッジ確保`() async throws {
       await #expect(processExitsWith: .signal(SIGTRAP)) {

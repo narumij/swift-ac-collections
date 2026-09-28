@@ -18,8 +18,9 @@
 
 - `@testable` や `___`、内部 pointer などに依存する実装テスト
 - 性能、負荷、ファズ、回帰専用テスト
-- fatal error や不正 index を専用プロセスで検証するテスト
 - 互換モードだけに存在する API のテスト
+
+公開 API の precondition や不正 index を専用プロセスで検証する Death Test は、各型の連番 `_99_DeathTests.swift` に配置する。`DEATH_TEST` 条件は維持し、通常仕様と同じ場所から発見できるようにする。
 
 ## AtCoder 2025 compatibility tests
 
@@ -45,6 +46,7 @@
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。
 - `RedBlackTreeMultiSet` は initialization、sequence、bidirectional collection、index、search、insertion、removal、utility、range view、protocol conformance、set algebra、element range を連番化済み。
+- `RedBlackTreeDictionary` は initialization、sequence、index、search、insertion、removal、utility、range view、protocol conformance を連番化済み。
+- Set、MultiSet、Dictionary、MultiMap の既存 Death Test は各型の `_99_DeathTests.swift` に移管済み。
 - `multiset` 以下には compatibility、内部実装、性能、負荷、ファズ、および未仕分けの旧テストが残っている。削除前に公開仕様の取りこぼしがないか確認すること。
 - `MultisetAtCoder2025CompatibilityTests.swift` は互換モード廃止時の一括削除対象。
-

@@ -46,7 +46,7 @@
     )
   }
 
-  struct RangeExpressionInvalidIndexSetTests {
+  struct RedBlackTreeSetDeathTests {
 
     @Test
     func `RangeExpressionでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること`() async {

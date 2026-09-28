@@ -1,5 +1,5 @@
 //
-//  RangeExpressionInvalidIndexMultiSetTests.swift
+//  RangeExpressionInvalidIndexMultiMapTests.swift
 //  swift-ac-collections
 //
 //  Created by narumij on 2026/02/14.
@@ -40,92 +40,92 @@
     )
   }
 
-  struct RangeExpressionInvalidIndexMultiSetTests {
+  struct RedBlackTreeMultiMapDeathTests {
 
     @Test
-    func `MultiSetでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること`() async {
+    func `MultiMapでlowerがupperより大きい場合、SIGSEGV以外の方法で停止すること`() async {
       let result = await #expect(
         processExitsWith: .failure,
         observing: [\.standardErrorContent]
       ) {
-        let set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-        let lower = set.index(set.startIndex, offsetBy: 6)
-        let upper = set.index(set.startIndex, offsetBy: 2)
-        _ = set[lower..<upper]
+        let map: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+        let lower = map.index(map.startIndex, offsetBy: 3)
+        let upper = map.index(map.startIndex, offsetBy: 1)
+        _ = map[lower..<upper]
       }
 
       expectNoInvalidMemoryAccess(result)
     }
 
     @Test
-    func `MultiSetで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること`() async {
+    func `MultiMapで削除済みインデックスを使った場合、SIGSEGV以外の方法で停止すること`() async {
       let result = await #expect(
         processExitsWith: .failure,
         observing: [\.standardErrorContent]
       ) {
-        var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-        let lower = set.index(set.startIndex, offsetBy: 3)
-        set.remove(at: lower)
-        _ = set[lower...]
+        var map: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+        let lower = map.index(map.startIndex, offsetBy: 2)
+        map.remove(at: lower)
+        _ = map[lower...]
       }
 
       expectNoInvalidMemoryAccess(result)
     }
 
     @Test
-    func `MultiSetでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること`() async {
+    func `MultiMapでlowerがupperより大きい場合、subscript erase(where:)がSIGSEGV以外で停止すること`() async {
       let result = await #expect(
         processExitsWith: .failure,
         observing: [\.standardErrorContent]
       ) {
-        var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-        let lower = set.index(set.startIndex, offsetBy: 6)
-        let upper = set.index(set.startIndex, offsetBy: 2)
-        set[lower..<upper].erase(where: { _ in false })
+        var map: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+        let lower = map.index(map.startIndex, offsetBy: 3)
+        let upper = map.index(map.startIndex, offsetBy: 1)
+        map[lower..<upper].erase(where: { _ in false })
       }
 
       expectNoInvalidMemoryAccess(result)
     }
 
     @Test
-    func `MultiSetでlowerがupperより大きい場合、set.erase(where:)がSIGSEGV以外で停止すること`() async {
+    func `MultiMapでlowerがupperより大きい場合、map.erase(where:)がSIGSEGV以外で停止すること`() async {
       let result = await #expect(
         processExitsWith: .failure,
         observing: [\.standardErrorContent]
       ) {
-        var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-        let lower = set.index(set.startIndex, offsetBy: 6)
-        let upper = set.index(set.startIndex, offsetBy: 2)
-        set.erase(lower..<upper) { _ in false }
+        var map: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+        let lower = map.index(map.startIndex, offsetBy: 3)
+        let upper = map.index(map.startIndex, offsetBy: 1)
+        map.erase(lower..<upper) { _ in false }
       }
 
       expectNoInvalidMemoryAccess(result)
     }
 
     @Test
-    func `MultiSetでlowerがupperより大きい場合、set.eraseがSIGSEGV以外で停止すること`() async {
+    func `MultiMapでlowerがupperより大きい場合、map.eraseがSIGSEGV以外で停止すること`() async {
       let result = await #expect(
         processExitsWith: .failure,
         observing: [\.standardErrorContent]
       ) {
-        var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-        let lower = set.index(set.startIndex, offsetBy: 6)
-        let upper = set.index(set.startIndex, offsetBy: 2)
-        _ = set.erase(lower..<upper)
+        var map: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+        let lower = map.index(map.startIndex, offsetBy: 3)
+        let upper = map.index(map.startIndex, offsetBy: 1)
+        _ = map.erase(lower..<upper)
       }
 
       expectNoInvalidMemoryAccess(result)
     }
 
     @Test
-    func `MultiSetでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること`() async {
+    func `MultiMapでIndexRangeを別の木に対して使った場合、subscript getがSIGSEGV以外で停止すること`() async {
       let result = await #expect(
         processExitsWith: .failure,
         observing: [\.standardErrorContent]
       ) {
-        let source = RedBlackTreeMultiSet<Int>([0, 1, 1, 2, 3])
+        let source: RedBlackTreeMultiMap = [0: "a", 1: "b", 1: "c", 2: "d"]
         let range = source.equalRange(1)
-        let target = RedBlackTreeMultiSet<Int>([10, 11, 12])
+        let target: RedBlackTreeMultiMap = [10: "x", 11: "y", 12: "z"]
         _ = target[range]
       }
 
@@ -133,14 +133,14 @@
     }
 
     @Test
-    func `MultiSetでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること`() async {
+    func `MultiMapでIndexRangeを別の木に対して使った場合、subscript _modifyがSIGSEGV以外で停止すること`() async {
       let result = await #expect(
         processExitsWith: .failure,
         observing: [\.standardErrorContent]
       ) {
-        let source = RedBlackTreeMultiSet<Int>([0, 1, 1, 2, 3])
+        let source: RedBlackTreeMultiMap = [0: "a", 1: "b", 1: "c", 2: "d"]
         let range = source.equalRange(1)
-        var target = RedBlackTreeMultiSet<Int>([10, 11, 12])
+        var target: RedBlackTreeMultiMap = [10: "x", 11: "y", 12: "z"]
         target[range].erase(where: { _ in false })
       }
 
@@ -148,14 +148,14 @@
     }
 
     @Test
-    func `MultiSetでIndexRangeを別の木に対して使った場合、set.eraseがSIGSEGV以外で停止すること`() async {
+    func `MultiMapでIndexRangeを別の木に対して使った場合、map.eraseがSIGSEGV以外で停止すること`() async {
       let result = await #expect(
         processExitsWith: .failure,
         observing: [\.standardErrorContent]
       ) {
-        let source = RedBlackTreeMultiSet<Int>([0, 1, 1, 2, 3])
+        let source: RedBlackTreeMultiMap = [0: "a", 1: "b", 1: "c", 2: "d"]
         let range = source.equalRange(1)
-        var target = RedBlackTreeMultiSet<Int>([10, 11, 12])
+        var target: RedBlackTreeMultiMap = [10: "x", 11: "y", 12: "z"]
         target.erase(range)
       }
 
@@ -163,14 +163,14 @@
     }
 
     @Test
-    func `MultiSetでIndexRangeを別の木に対して使った場合、set.erase(where:)がSIGSEGV以外で停止すること`() async {
+    func `MultiMapでIndexRangeを別の木に対して使った場合、map.erase(where:)がSIGSEGV以外で停止すること`() async {
       let result = await #expect(
         processExitsWith: .failure,
         observing: [\.standardErrorContent]
       ) {
-        let source = RedBlackTreeMultiSet<Int>([0, 1, 1, 2, 3])
+        let source: RedBlackTreeMultiMap = [0: "a", 1: "b", 1: "c", 2: "d"]
         let range = source.equalRange(1)
-        var target = RedBlackTreeMultiSet<Int>([10, 11, 12])
+        var target: RedBlackTreeMultiMap = [10: "x", 11: "y", 12: "z"]
         target.erase(range) { _ in false }
       }
 

@@ -166,7 +166,7 @@ import XCTest
       XCTAssertEqual(members + [], [0, 1, 8, 9])
     }
   }
-  extension SetTests {
+  final class RedBlackTreeSetAdditionalAtCoder2025LegacyTests: RedBlackTreeTestCase {
     func testInitNaive0() throws {
       let set = RedBlackTreeSet<Int>(naive: 0..<0)
       XCTAssertEqual(set.elements, (0..<0) + [])
@@ -176,7 +176,7 @@ import XCTest
     }
   }
 
-  extension SetTests {
+  extension RedBlackTreeSetAdditionalAtCoder2025LegacyTests {
     func testInitCollection3() throws {
       let set = RedBlackTreeSet<Int>(naive: [2, 3, 3, 0, 0, 1, 1, 1])
       XCTAssertEqual(set.elements, [0, 1, 2, 3])
@@ -186,7 +186,7 @@ import XCTest
     }
   }
 
-  extension SetTests {
+  extension RedBlackTreeSetAdditionalAtCoder2025LegacyTests {
     func testSubsequence() throws {
       var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
       XCTAssertEqual(set[set.startIndex..<set.endIndex].map { $0 }, [1, 2, 3, 4, 5])
@@ -220,7 +220,7 @@ import XCTest
     }
   }
 
-  extension SetTests {
+  extension RedBlackTreeSetAdditionalAtCoder2025LegacyTests {
     func testSubsequence4() throws {
       let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
       let sub = set.elements(in: 1..<3)
@@ -229,7 +229,7 @@ import XCTest
     }
   }
 
-  extension SetTests {
+  extension RedBlackTreeSetAdditionalAtCoder2025LegacyTests {
     func testSubsequence5() throws {
       let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
       let sub = set.elements(in: 1..<3)
@@ -241,7 +241,7 @@ import XCTest
     }
   }
 
-  extension SetTests {
+  extension RedBlackTreeSetAdditionalAtCoder2025LegacyTests {
     func testIndex100() throws {
       let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
       XCTAssertEqual(set.index(set.startIndex, offsetBy: 6), set.endIndex)
@@ -289,7 +289,7 @@ import XCTest
     }
   }
 
-  extension SetTests {
+  extension RedBlackTreeSetAdditionalAtCoder2025LegacyTests {
     func testIndex12() throws {
       let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
       var i = set.startIndex
@@ -309,7 +309,7 @@ import XCTest
     }
   }
 
-  extension SetTests {
+  extension RedBlackTreeSetAdditionalAtCoder2025LegacyTests {
     func testLeftUnsafeSmoke() {
       typealias Set = RedBlackTreeSet<Int>
       #if DEBUG
@@ -342,7 +342,7 @@ import XCTest
     }
   }
 
-  extension SetTests {
+  extension RedBlackTreeSetAdditionalAtCoder2025LegacyTests {
     func testIsValidRangeSmoke() throws {
       let a = RedBlackTreeSet<Int>(naive: [0, 1, 2, 3, 4, 5])
       XCTAssertTrue(a.isValid(a.lowerBound(2)..<a.upperBound(4)))

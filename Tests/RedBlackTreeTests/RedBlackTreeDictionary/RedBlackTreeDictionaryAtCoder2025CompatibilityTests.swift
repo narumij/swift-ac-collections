@@ -103,32 +103,34 @@ import XCTest
   }
 
   #if DEBUG
-  extension DictionaryRemoveTests {
-    func testRemoveWith___Indices() throws {
-      var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-      for i in members.___node_positions() {
-        members.__tree_._unchecked_remove(at: i)
+    extension DictionaryRemoveTests {
+      func testRemoveWith___Indices() throws {
+        var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
+        for i in members.___node_positions() {
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members.map { $0.key }, [])
       }
-      XCTAssertEqual(members.map { $0.key }, [])
-    }
 
-    func testRemoveWith___Indices2() throws {
-      var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-      members.___node_positions().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
+      func testRemoveWith___Indices2() throws {
+        var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
+        members.___node_positions().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members.map { $0.key }, [])
       }
-      XCTAssertEqual(members.map { $0.key }, [])
-    }
 
-    func testRemoveWith___Indices3() throws {
-      var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
-      members.___node_positions().reversed().forEach { i in
-        members.__tree_._unchecked_remove(at: i)
+      func testRemoveWith___Indices3() throws {
+        var members = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0 * 10) })
+        members.___node_positions().reversed().forEach { i in
+          members.__tree_._unchecked_remove(at: i)
+        }
+        XCTAssertEqual(members.map { $0.key }, [])
       }
-      XCTAssertEqual(members.map { $0.key }, [])
     }
-  }
   #endif
+
+  final class DictionaryRemoveTests: RedBlackTreeTestCase {}
 
   extension DictionaryRemoveTests {
     func testRemoveWithSubIndices() throws {
@@ -203,64 +205,64 @@ import XCTest
   }
 
   extension RedBlackTreeDictionarySubSequenceTests {
-  func testSliceIndexOffsetting() {
-    let dict: RedBlackTreeDictionary = [
-      10: 0, 11: 1, 12: 2, 13: 3, 14: 4,
-    ]
-    let slice = dict.elements(in: 11...13)  // 11,12,13
+    func testSliceIndexOffsetting() {
+      let dict: RedBlackTreeDictionary = [
+        10: 0, 11: 1, 12: 2, 13: 3, 14: 4,
+      ]
+      let slice = dict.elements(in: 11...13)  // 11,12,13
 
-    let idx = slice.index(slice.startIndex, offsetBy: 2)
-    XCTAssertEqual(slice[idx].key, 13)
+      let idx = slice.index(slice.startIndex, offsetBy: 2)
+      XCTAssertEqual(slice[idx].key, 13)
 
-    let nilIdx = slice.index(
-      slice.startIndex,
-      offsetBy: 10,
-      limitedBy: slice.endIndex)
-    XCTAssertNil(nilIdx)
-  }
+      let nilIdx = slice.index(
+        slice.startIndex,
+        offsetBy: 10,
+        limitedBy: slice.endIndex)
+      XCTAssertNil(nilIdx)
+    }
 
-  // MARK: 距離の対称性 ---------------------------------------------------
+    // MARK: 距離の対称性 ---------------------------------------------------
 
-  func testDistanceSymmetry() {
-    let dict: RedBlackTreeDictionary = [
-      0: "zero", 1: "one", 2: "two",
-      3: "three", 4: "four", 5: "five",
-    ]
-    let slice = dict.elements(in: 1...4)  // 1,2,3,4
+    func testDistanceSymmetry() {
+      let dict: RedBlackTreeDictionary = [
+        0: "zero", 1: "one", 2: "two",
+        3: "three", 4: "four", 5: "five",
+      ]
+      let slice = dict.elements(in: 1...4)  // 1,2,3,4
 
-    let i = slice.index(slice.startIndex, offsetBy: 1)  // 2
-    let j = slice.index(slice.startIndex, offsetBy: 3)  // 4
+      let i = slice.index(slice.startIndex, offsetBy: 1)  // 2
+      let j = slice.index(slice.startIndex, offsetBy: 3)  // 4
 
-    XCTAssertEqual(slice.distance(from: i, to: j), 2)
-    XCTAssertEqual(slice.distance(from: j, to: i), -2)
-  }
+      XCTAssertEqual(slice.distance(from: i, to: j), 2)
+      XCTAssertEqual(slice.distance(from: j, to: i), -2)
+    }
 
-  // MARK: CoW 後の index 無効化 -----------------------------------------
+    // MARK: CoW 後の index 無効化 -----------------------------------------
 
-  func testIndexInvalidationAfterCoWMutation() throws {
-    var base: RedBlackTreeDictionary = [
-      "x": 1, "y": 2, "z": 3,
-    ]
-    let slice = base.elements(in: "x"..."y")  // x,y
+    func testIndexInvalidationAfterCoWMutation() throws {
+      var base: RedBlackTreeDictionary = [
+        "x": 1, "y": 2, "z": 3,
+      ]
+      let slice = base.elements(in: "x"..."y")  // x,y
 
-    let idx = slice.firstIndex(where: { $0.key == "x" })!
-    XCTAssertTrue(base.isValid(index: idx))
-    XCTAssertTrue(slice.isValid(index: idx))
+      let idx = slice.firstIndex(where: { $0.key == "x" })!
+      XCTAssertTrue(base.isValid(index: idx))
+      XCTAssertTrue(slice.isValid(index: idx))
 
-    // CoW 発動する
-    let v = base.removeValue(forKey: "x")  // 消せてないやないかーい
+      // CoW 発動する
+      let v = base.removeValue(forKey: "x")  // 消せてないやないかーい
 
-    XCTAssertEqual(v, 1)
-    XCTAssertNil(base["x"])
+      XCTAssertEqual(v, 1)
+      XCTAssertNil(base["x"])
 
-    // 共有ストレージの木が差し替わらないので、双方Valid
-    XCTAssertFalse(base.isValid(index: idx))  // 期待と逆
-    XCTAssertTrue(slice.isValid(index: idx))  // 期待と逆
-    #if DEBUG
-      XCTAssertEqual(base._copyCount, 1)
-      XCTAssertEqual(slice._copyCount, 0)
-    #endif
-  }
+      // 共有ストレージの木が差し替わらないので、双方Valid
+      XCTAssertFalse(base.isValid(index: idx))  // 期待と逆
+      XCTAssertTrue(slice.isValid(index: idx))  // 期待と逆
+      #if DEBUG
+        XCTAssertEqual(base._copyCount, 1)
+        XCTAssertEqual(slice._copyCount, 0)
+      #endif
+    }
   }
 
   extension DictionaryTests {

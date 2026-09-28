@@ -7,12 +7,16 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
     var map: RedBlackTreeMultiMap = [(1, "a"), (1, "b"), (2, "c"), (3, "d")]
 
     XCTAssertEqual(map.popFirst()?.value, "a")
-    XCTAssertEqual(map.popLast()?.value, "d")
-    XCTAssertEqual(map.map(\.value), ["b", "c"])
+    #if !COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(map.popLast()?.value, "d")
+      XCTAssertEqual(map.map(\.value), ["b", "c"])
+    #endif
 
     var empty = RedBlackTreeMultiMap<Int, String>()
     XCTAssertNil(empty.popFirst())
-    XCTAssertNil(empty.popLast())
+    #if !COMPATIBLE_ATCODER_2025
+      XCTAssertNil(empty.popLast())
+    #endif
   }
 
   func test_removeFirstAndRemoveLast_followKeyOrder() {

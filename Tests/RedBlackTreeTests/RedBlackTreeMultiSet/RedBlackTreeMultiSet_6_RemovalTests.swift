@@ -7,12 +7,16 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
     var multiset = RedBlackTreeMultiSet([1, 1, 2, 3, 3])
 
     XCTAssertEqual(multiset.popFirst(), 1)
-    XCTAssertEqual(multiset.popLast(), 3)
-    XCTAssertEqual(Array(multiset), [1, 2, 3])
+    #if !COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(multiset.popLast(), 3)
+      XCTAssertEqual(Array(multiset), [1, 2, 3])
+    #endif
 
     var empty = RedBlackTreeMultiSet<Int>()
     XCTAssertNil(empty.popFirst())
-    XCTAssertNil(empty.popLast())
+    #if !COMPATIBLE_ATCODER_2025
+      XCTAssertNil(empty.popLast())
+    #endif
   }
 
   func test_removeFirstAndRemoveLast_removeOneExtremeMember() {

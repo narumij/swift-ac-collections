@@ -1002,7 +1002,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       }
 
       var dummy = tree.nullptr
-      
+
       func find(
         _ hint: _NodePtr,
         _ value: Int
@@ -1142,21 +1142,21 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   #endif
 }
 
-#if DEBUG
-extension RedBlackTreeDictionary {
-  
-  public mutating func emplace(
-    hint: Index,
-    _ element: @autoclosure () -> Element
-  ) -> (inserted: Bool, indexAfterInsert: Index) {
-    __tree_.ensureUniqueAndCapacity()
-    let p = __tree_.__purified_(hint)
-    guard let __p = p.pointer else {
-      fatalError(.invalidIndex)
+#if DEBUG && !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    public mutating func emplace(
+      hint: Index,
+      _ element: @autoclosure () -> Element
+    ) -> (inserted: Bool, indexAfterInsert: Index) {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let (__r, __inserted) = __tree_.__emplace_hint_unique(
+        __p, nil, Base.__payload_(element()))
+      return (__inserted, ___index(__r))
     }
-    let (__r, __inserted) = __tree_.__emplace_hint_unique(
-      __p, nil, Base.__payload_(element()))
-    return (__inserted, ___index(__r))
   }
-}
 #endif

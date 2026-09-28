@@ -19,7 +19,9 @@ final class RedBlackTreeMultiMapSearchTests: RedBlackTreeTestCase {
 
     XCTAssertEqual(map.distance(from: lower, to: upper), 2)
     XCTAssertEqual(map[lower..<upper].map(\.value).sorted(), ["b", "c"])
-    XCTAssertEqual(map[map.equalRange(2)].map(\.value).sorted(), ["b", "c"])
+    #if !COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(map[map.equalRange(2)].map(\.value).sorted(), ["b", "c"])
+    #endif
   }
 
   func test_firstIndex_findsFirstEntryForKey() {

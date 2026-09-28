@@ -54,7 +54,7 @@ class RedBlackTreeTestCase: XCTestCase {
       assert(nodeInitializedCount == nodeDeinitializedCount)
       XCTAssertEqual(
         payloadInitializedCount, payloadDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある (\(nodeInitializedCount))")
-//    assert(payloadInitializedCount == payloadDeinitializedCount)
+    assert(payloadInitializedCount == payloadDeinitializedCount)
       allocatedCount = 0
       deallocatedCount = 0
       nodeInitializedCount = 0

@@ -191,6 +191,16 @@ final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
     XCTAssertEqual(elements, [2, 4], "偶数のみであること")
   }
 
+  #if !COMPATIBLE_ATCODER_2025
+    /// filter(_:) が型推論時にRedBlackTreeSetを返し、順序と一意性を維持すること
+    func test_filterReturnsRedBlackTreeSet() {
+      let set: RedBlackTreeSet = [1, 2, 3, 4, 5]
+      let filtered = set.filter { $0 % 2 == 1 }
+
+      XCTAssertEqual(filtered, RedBlackTreeSet([1, 3, 5]))
+    }
+  #endif
+
   /// reduceでRedBlackTreeSetの要素を正しくたたみこめること
   func test_empty_set_reduce() {
     // 事前条件: 集合に[]を用意すること

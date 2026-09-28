@@ -111,17 +111,17 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 
 ## Current handoff
 
-- `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。
-- 旧 `set` フォルダは、重複していた SetAlgebra、reserve-capacity、corner-case、bidirectional、removal、extended の公開ケースを整理し、SetAlgebra stress、COW、pointer、performance、fuzz、removal stress、removal internal を型別 `_98`、compatibility を型別 compatibility file へ移管済み。index-based range view は `_17_RangeViewTests.swift`、`elements(in:)` の現行要素範囲ビュー仕様は `_18_ElementRangeTests.swift` へ昇格済み。removal の範囲境界、容量維持、整数端値は `_6_RemovalTests.swift`、非破壊的 `merging(_:)` のSet・MultiSet・任意Sequence仕様は `_5_InsertionTests.swift` へ補完済み。旧 `set` フォルダに残るのは巨大な `SetTests.swift` のみ。
-- `COMPATIBLE_ATCODER_2025` を一時的に有効化した Debug ビルドと全体テストは 2026-09-28 に成功。removal 整理後の最新結果は 1016 成功・0 失敗・7 スキップ。確認後、`Package.swift` は通常モードへ戻した。互換モードで懸念されていた `MultiMapEtcTests` に失敗は出なかった。
-- 旧 `SetTests` を土台にしていた9個の互換 extension は、`RedBlackTreeSetAdditionalAtCoder2025LegacyTests` へ閉じ込め済み。互換モード全体 1016 成功・0 失敗・7 スキップで確認したため、旧 `SetTests.swift` は互換テストを壊さず整理できる。
+- `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。旧 `set` フォルダの Swift テストは残っていない。
+- 旧 `set` フォルダにあった SetAlgebra、reserve-capacity、corner-case、bidirectional、removal、extended と巨大な `SetTests.swift` は監査・整理済み。公開仕様は連番へ、SetAlgebra stress、COW、pointer、performance、固定 seed の fuzz、removal stress、removal internal、raw index validity は型別 `_98`、互換仕様は型別 compatibility file へ移管した。再現不能なランダムテストは固定 seed fuzz で置換した。index-based range view は `_17_RangeViewTests.swift`、`elements(in:)` の現行要素範囲ビュー仕様は `_18_ElementRangeTests.swift`、参照型要素の `insert` / `update` identity は `_5_InsertionTests.swift`、現行 `filter` の戻り型は `_1_SequenceTests.swift` で仕様化している。
+- `COMPATIBLE_ATCODER_2025` を一時的に有効化した Debug 全体テストは 2026-09-28 に成功。`SetTests.swift` 整理後の最新結果は 968 成功・0 失敗・6 スキップ。通常モードも 1036 成功・0 失敗・1 スキップ。確認後、`Package.swift` は通常モードへ戻した。互換モードで懸念されていた `MultiMapEtcTests` に失敗は出なかった。
+- 旧 `SetTests` を土台にしていた9個の互換 extension と互換専用の element-range subscript/iteration は、`RedBlackTreeSetAdditionalAtCoder2025LegacyTests` へ閉じ込め済み。旧 `SetTests.swift` は削除済み。
 - ルート直下では `MergeTests.swift`、`DocumentCheckTests.swift`、`EtcTests.swift` などに Set 公開仕様が混在する。単純移動せず、他型のケースを残しながら Set ケースだけ連番側へ移植・整理する。
 - `BoundExpression` は公開 DSL として4型それぞれの `_16_BoundExpressionTests.swift` へ移管済み。旧 `boundsExpression` フォルダの Swift テストは残っていない。位置式、相対移動、limit、range expression、subscript、erase の既存仕様を型別 Test as Spec として維持する。DEBUG 専用の内部 validity を追加するときは `_98_InternalTests.swift` に置く。
 - `RedBlackTreeMultiSet` は initialization、sequence、bidirectional collection、index、search、insertion、removal、utility、range view、protocol conformance、set algebra、element range を連番化済み。
 - `RedBlackTreeDictionary` は initialization、sequence、index、search、insertion、removal、utility、range view、protocol conformance、Codable を連番化済み。
 - `RedBlackTreeMultiMap` は initialization、sequence（predicate、sorted、reversed を含む）、index、search、insertion、removal、utility、range view、protocol conformance、Codable、transforming and combining、element range を連番化済み。
 - `multimap` 以下の広範な旧テスト (`MultiMapBasicTest.swift`、`MultiMapAdvancedTest.swift`、`RedBlackTreeMultiMapTests.swift` とその removal extension、`RedBlackTreeMultiMapTests_.swift`、`MultiMapEtcTests.swift`、`MultiMapRemoveTests.swift`、`MultiMapViewTests.swift`) は、連番側への不足仕様の移植後に整理済み。互換 extension が必要とする test class と fixture は compatibility file 内へ閉じ込め、互換専用の range-index removal も同ファイルへ移した。
-- 次回は `MultiMapTests.swift` を少量ずつ監査する。残る `MultiMapCopyOnWriteTests.swift` と `MultiMapPointerTests.swift` は内部実装テストとして用途を保つ。compatibility、内部実装、性能、負荷、ファズは連番へ無理に移さない。
+- 次回はルート直下の `MergeTests.swift`、`DocumentCheckTests.swift`、`EtcTests.swift` に混在する Set 公開仕様を優先して監査する。その後 `MultiMapTests.swift` を少量ずつ監査する。残る `MultiMapCopyOnWriteTests.swift` と `MultiMapPointerTests.swift` は内部実装テストとして用途を保つ。compatibility、内部実装、性能、負荷、ファズは連番へ無理に移さない。
 - Set、MultiSet、Dictionary、MultiMap の既存 Death Test は各型の `_99_DeathTests.swift` に移管済み。
 - `fatalError/Index` に残っていた空の `startIndex` と `endIndex` の Death Test、および `fatalError/etc` の空 collection に対する `removeFirst` / `removeLast`、Set の cross-tree range、削除済み index の再削除は各型の `_99_DeathTests.swift` へ移管済み。重複していた旧 range / fatal テストも整理済み。
 - 互換専用 iterator Death Test は `RedBlackTreeSetAtCoder2025CompatibilitySwiftTests.swift` へ移管済み。

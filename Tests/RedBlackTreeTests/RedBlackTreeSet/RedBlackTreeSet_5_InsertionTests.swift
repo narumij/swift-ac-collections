@@ -3,6 +3,24 @@ import XCTest
 
 final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
 
+  private final class ComparableReference: Comparable {
+    let key: Int
+    let label: String
+
+    init(key: Int, label: String) {
+      self.key = key
+      self.label = label
+    }
+
+    static func == (lhs: ComparableReference, rhs: ComparableReference) -> Bool {
+      lhs.key == rhs.key
+    }
+
+    static func < (lhs: ComparableReference, rhs: ComparableReference) -> Bool {
+      lhs.key < rhs.key
+    }
+  }
+
   /// 要素を挿入した場合、集合に含まれること
   func test_insert_singleElement() {
     // 事前条件: 空集合を用意
@@ -129,6 +147,32 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(updateExisting, 3)
     XCTAssertEqual(set.count, 3)
     XCTAssertEqual(set + [], [1, 2, 3])
+  }
+
+  /// update(with:) が同順序の参照を置換して、以前格納されていた参照を返すこと
+  func test_updateReplacesEquivalentReferenceAndReturnsPreviousMember() {
+    let original = ComparableReference(key: 3, label: "original")
+    let replacement = ComparableReference(key: 3, label: "replacement")
+    var set: RedBlackTreeSet = [original]
+
+    XCTAssertTrue(set.update(with: replacement) === original)
+    XCTAssertTrue(set.first === replacement)
+    XCTAssertNil(set.update(with: ComparableReference(key: 10, label: "new")))
+  }
+
+  /// insert(_:) が同順序の参照を置換せず、既存の参照を返すこと
+  func test_insertEquivalentReferencePreservesExistingMember() {
+    let original = ComparableReference(key: 3, label: "original")
+    let duplicate = ComparableReference(key: 3, label: "duplicate")
+    var set = RedBlackTreeSet<ComparableReference>()
+
+    let inserted = set.insert(original)
+    let rejected = set.insert(duplicate)
+
+    XCTAssertTrue(inserted.inserted)
+    XCTAssertTrue(inserted.memberAfterInsert === original)
+    XCTAssertFalse(rejected.inserted)
+    XCTAssertTrue(rejected.memberAfterInsert === original)
   }
 
   #if !COMPATIBLE_ATCODER_2025

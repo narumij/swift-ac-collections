@@ -230,5 +230,15 @@
       XCTAssertEqual(Array(set[set.equalRange(1)]), [1])
     }
 
+    func testElementRangeViewsCompareByTheirElements() {
+      let lhs = RedBlackTreeSet(0..<6)
+      let rhs = RedBlackTreeSet(3..<9)
+
+      XCTAssertEqual(lhs[3..<6], rhs[3..<6])
+      XCTAssertNotEqual(lhs[2..<6], rhs[3..<6])
+      XCTAssertTrue(lhs[2..<6] < rhs[3..<6])
+      XCTAssertTrue(lhs[3..<6] < rhs[3..<7])
+    }
+
   }
 #endif

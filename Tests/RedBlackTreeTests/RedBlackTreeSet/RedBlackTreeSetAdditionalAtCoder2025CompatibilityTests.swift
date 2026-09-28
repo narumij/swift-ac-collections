@@ -239,6 +239,13 @@ import XCTest
       XCTAssertEqual(sub.map { $0 }, [1, 2])
       XCTAssertEqual(set.elements(in: 1..<3).map { $0 }, [1, 2])
     }
+
+    func testElementRangeSupportsBaseIndexSubscriptAndIteration() {
+      let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
+
+      XCTAssertEqual(set.elements(in: 2..<4)[set.startIndex + 2], 3)
+      XCTAssertEqual(set.elements(in: 2...4).reduce(0, +), 2 + 3 + 4)
+    }
   }
 
   extension RedBlackTreeSetAdditionalAtCoder2025LegacyTests {

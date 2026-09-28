@@ -1,3 +1,4 @@
+<!-- CodexによるCodexのためのメモ -->
 # RedBlackTreeTests maintenance notes
 
 ## Test as Spec

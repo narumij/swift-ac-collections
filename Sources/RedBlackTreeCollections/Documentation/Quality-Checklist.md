@@ -60,8 +60,13 @@
 - payloadの構築と破棄が一度ずつ対応する。
 - node、payload、およびbucketのalignmentとstrideを守る。
 - 同じ領域を二重に解放しない。
+- 解放済みのnode、payload、またはbucketへアクセスしない。
 
-通常のテストに加えて、利用可能なSanitizerでメモリ違反がないことを定期的に確認する。
+通常のテストに加えて、GitHub Actions上でSanitizerを用いた検証を行う。
+
+対象とするSanitizer、toolchain、build configuration、および実行頻度はGitHub Actionsの設定を正とする。少なくともraw memory操作に関する違反を検出できるSanitizerを、定期的またはリリース前の品質ゲートとして実行する。
+
+Sanitizerで検出された問題は、通常テストが成功していてもメモリとリソースの安全性に対する品質違反として扱う。
 
 ### 2.2 Indexの有効性と所属
 

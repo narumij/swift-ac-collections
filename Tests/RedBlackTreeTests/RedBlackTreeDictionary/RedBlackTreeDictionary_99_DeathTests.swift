@@ -130,6 +130,137 @@
         expectNoInvalidMemoryAccess(result)
       }
 
+      @Test
+      func endIndexSubscript_terminatesProcess() async {
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
+          _ = dictionary[dictionary.endIndex]
+        }
+      }
+
+      @Test
+      func closedRangeEndIndexThenStartIndex_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
+          _ = dictionary[dictionary.endIndex...dictionary.startIndex]
+        }
+
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func closedRangeStartIndexThenEndIndex_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
+          _ = dictionary[dictionary.startIndex...dictionary.endIndex]
+        }
+
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          let dictionary: RedBlackTreeDictionary = (0..<10).reduce(into: RedBlackTreeDictionary<Int, Int>()) { $0[$1] = $1 }
+          var i = dictionary.startIndex
+          i = dictionary.index(before: i)
+        }
+
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          let dictionary: RedBlackTreeDictionary = (0..<10).reduce(into: RedBlackTreeDictionary<Int, Int>()) { $0[$1] = $1 }
+          var i = dictionary.endIndex
+          i = dictionary.index(after: i)
+        }
+
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() async {
+        let result1 = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          let dictionary: RedBlackTreeDictionary = (0..<10).reduce(into: RedBlackTreeDictionary<Int, Int>()) { $0[$1] = $1 }
+          var i = dictionary.startIndex
+          i = dictionary.index(i, offsetBy: -1)
+        }
+        expectNoInvalidMemoryAccess(result1)
+
+        let result2 = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          let dictionary: RedBlackTreeDictionary = (0..<10).reduce(into: RedBlackTreeDictionary<Int, Int>()) { $0[$1] = $1 }
+          var i = dictionary.endIndex
+          i = dictionary.index(i, offsetBy: 1)
+        }
+        expectNoInvalidMemoryAccess(result2)
+      }
+
+      @Test
+      func indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() async {
+        let result1 = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          let dictionary: RedBlackTreeDictionary = (0..<10).reduce(into: RedBlackTreeDictionary<Int, Int>()) { $0[$1] = $1 }
+          let i = dictionary.startIndex
+          _ = dictionary.index(i, offsetBy: -1, limitedBy: dictionary.endIndex)
+        }
+        expectNoInvalidMemoryAccess(result1)
+
+        let result2 = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          let dictionary: RedBlackTreeDictionary = (0..<10).reduce(into: RedBlackTreeDictionary<Int, Int>()) { $0[$1] = $1 }
+          let i = dictionary.endIndex
+          _ = dictionary.index(i, offsetBy: 1, limitedBy: dictionary.startIndex)
+        }
+        expectNoInvalidMemoryAccess(result2)
+      }
+
+      @Test
+      func formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() async {
+        let result1 = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          let dictionary: RedBlackTreeDictionary = (0..<10).reduce(into: RedBlackTreeDictionary<Int, Int>()) { $0[$1] = $1 }
+          var i = dictionary.startIndex
+          _ = dictionary.formIndex(&i, offsetBy: -1, limitedBy: dictionary.endIndex)
+        }
+        expectNoInvalidMemoryAccess(result1)
+
+        let result2 = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          let dictionary: RedBlackTreeDictionary = (0..<10).reduce(into: RedBlackTreeDictionary<Int, Int>()) { $0[$1] = $1 }
+          var i = dictionary.endIndex
+          _ = dictionary.formIndex(&i, offsetBy: 1, limitedBy: dictionary.startIndex)
+        }
+        expectNoInvalidMemoryAccess(result2)
+      }
+
       private func expectNoInvalidMemoryAccess(_ result: ExitTest.Result?) {
         guard let result else { return }
 

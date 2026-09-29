@@ -216,5 +216,136 @@
 
       expectNoInvalidMemoryAccess(result)
     }
+
+    @Test
+    func endIndexSubscript_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        let set = RedBlackTreeMultiSet<Int>([0, 1, 2])
+        _ = set[set.endIndex]
+      }
+    }
+
+    @Test
+    func `MultiSetでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること`() async {
+      let result = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let set = RedBlackTreeMultiSet<Int>([0, 1, 2])
+        _ = set[set.endIndex...set.startIndex]
+      }
+
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func `MultiSetでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること`() async {
+      let result = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let set = RedBlackTreeMultiSet<Int>([0, 1, 2])
+        _ = set[set.startIndex...set.endIndex]
+      }
+
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let set = RedBlackTreeMultiSet<Int>(0..<10)
+        var i = set.startIndex
+        i = set.index(before: i)
+      }
+
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let set = RedBlackTreeMultiSet<Int>(0..<10)
+        var i = set.endIndex
+        i = set.index(after: i)
+      }
+
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() async {
+      let result1 = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let set = RedBlackTreeMultiSet<Int>(0..<10)
+        var i = set.startIndex
+        i = set.index(i, offsetBy: -1)
+      }
+      expectNoInvalidMemoryAccess(result1)
+
+      let result2 = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let set = RedBlackTreeMultiSet<Int>(0..<10)
+        var i = set.endIndex
+        i = set.index(i, offsetBy: 1)
+      }
+      expectNoInvalidMemoryAccess(result2)
+    }
+
+    @Test
+    func indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() async {
+      let result1 = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let set = RedBlackTreeMultiSet<Int>(0..<10)
+        let i = set.startIndex
+        _ = set.index(i, offsetBy: -1, limitedBy: set.endIndex)
+      }
+      expectNoInvalidMemoryAccess(result1)
+
+      let result2 = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let set = RedBlackTreeMultiSet<Int>(0..<10)
+        let i = set.endIndex
+        _ = set.index(i, offsetBy: 1, limitedBy: set.startIndex)
+      }
+      expectNoInvalidMemoryAccess(result2)
+    }
+
+    @Test
+    func formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() async {
+      let result1 = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let set = RedBlackTreeMultiSet<Int>(0..<10)
+        var i = set.startIndex
+        _ = set.formIndex(&i, offsetBy: -1, limitedBy: set.endIndex)
+      }
+      expectNoInvalidMemoryAccess(result1)
+
+      let result2 = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let set = RedBlackTreeMultiSet<Int>(0..<10)
+        var i = set.endIndex
+        _ = set.formIndex(&i, offsetBy: 1, limitedBy: set.startIndex)
+      }
+      expectNoInvalidMemoryAccess(result2)
+    }
   }
 #endif  // DEATH_TEST && !COMPATIBLE_ATCODER_2025

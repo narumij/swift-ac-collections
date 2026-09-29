@@ -23,10 +23,14 @@
 
 ### 優先事項
 
-- この文書の規定自体が一部古くなってきているので、Claudeさんの作業成果を加味して更新すること
-- ABC, convenience, memoize, unsafeTreeは温存(unsafeTree/oldは除く)
-- 次の棚卸しはold, unsafeTree/oldあたりから
-- 今回の始業時の会話は省略可
+- この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味して都度更新すること
+- ABC, convenience, memoizeは温存
+
+### 相談事項
+
+- RedBlackTreeInternalというのは大分類として、中分類はFixture種別で分けた方がいいのでは無いか？
+- 内部テストはFixtureで中分類とする。小分類はまかせる
+- Fixtureは全てが揃ってるわけではないので、内部テストの分類に関して手戻りが発生することは許容する
 
 ### 連絡事項
 
@@ -343,3 +347,53 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   - **残る欠落(次回以降)**:
     - `_98`層: MultiSetの`IndexValidityXCTests`は今回埋めたが、Set固有の`PointerTests`/`RemovalInternalXCTests`(内部hint系API)は他3型に無い(Set固有の内容かどうか要検討)。
     - 公開API層(_0〜_18相当): `BidirectionalCollectionTests`がDictionary/MultiMapに無い、`ValueSemanticsTests`がSet以外に無い、`LazySequenceTests`がSet以外に無い、`IntegerElement/KeyTests`がSet/Dictionary以外に無い、`ProtocolConformanceMoreTests`がSet以外に無い。これらは着手前に「本当に4型で意味のある仕様か」の判断が必要(例えばSetAlgebraはDictionary/MultiMapに元々適用外)。
+- (2026-09-29 17:40) 上記のうち`BidirectionalCollectionTests`の欠落を一部解消。Dictionary/MultiMapの`_3_IndexSequenceTests.swift`は`distance`/`index(after:/before:)`/`formIndex(after:/before:)`の基本部分は既にあったが、Setの`_2_BidirectionalCollectionTests.swift`にある`index(_:offsetBy:)`/`index(_:offsetBy:limitedBy:)`/`formIndex(_:offsetBy:)`/`formIndex(_:offsetBy:limitedBy:)`の4種が両方に無かった(互換ファイル側にしか無かった)ため、両ファイルに追加。互換ガード外(常時コンパイル)のため通常・互換モード両方で単体20件成功(新規8件含む)を確認。全体テスト1124件844成功・0失敗。
+  - Setの`_2_BidirectionalCollectionTests.swift`にはさらに`test_subscript_rangeAccess`と10種のSubSequence特化ナビゲーション(`test_subSequence_*`)があり、Dictionary/MultiMapには未移植。次回はここから続ける。
+  - `ValueSemanticsTests`/`LazySequenceTests`/`ProtocolConformanceMoreTests`(SetのみExist)は未着手。
+- (2026-09-29 22:14) ユーザーからユーザー記入欄に新規相談: `RedBlackTreeInternal/`を大分類として維持しつつ、中分類を「実際に使っているFixtureの種類」で切るのはどうか、小分類はClaudeに一任、との提案。9ファイルの実装を確認し3系統に分類できることを確認・提案・合意:
+  - `Synthetic/`(実コレクション型と無関係な、テスト専用のプロトコル準拠ダミー構造体を使うもの): `_98_CoverageTests`・`_98_PointerDeathTests`・`KeyValueComparerTests`
+  - `Base/`(`RedBlackTreeXXX<T>.Base`/`.Tree`等、trait準拠の静的メソッド層を直接使うもの): `AllocationTests`・`ComparatorsTests`・`SetBaseTests`・`MultiSetBaseTests`
+  - `Instance/`(実際の`RedBlackTreeXXX<T>`インスタンスを使うもの): `NaiveIteratorTests`・`PurifiedTests`
+  - まだ未確定の`__tree`基本層/応用層/生ポ層等のタクソノミー(TBD)とは別軸のため、それらの名前は借りず独立させた。9ファイルとも`XcodeMV`で該当サブフォルダへ移動(中身は無改変)。
+  - 検証: 通常モードのみ(内容変更なし、互換コード不関与のため省略)。ビルド成功、全体テスト1124件844成功・0失敗(移設前と完全一致)を確認。
+  - この後の方針はユーザーから「unsafeTreeでも4型横展開でもまかせる、困ったら相談して」とhands-off裁量を得たため、4型横展開(公開API層の`BidirectionalCollectionTests`のSubSequenceナビゲーション部分)を継続する。
+- (2026-09-29 22:22) 前回エントリの「10種のSubSequence特化ナビゲーションが未移植」は過大評価だったため訂正: Setの`_2_BidirectionalCollectionTests.swift`を全文確認したところ、`test_subSequence_forEach`/`test_subSequence_makeIterator`の2件のみ無条件(常時コンパイル)で、残り8件(`test_subSequence_index_count`等)は全て`#if COMPATIBLE_ATCODER_2025`限定だった。さらにDictionaryの`RedBlackTreeDictionaryAtCoder2025CompatibilityTests.swift`には既に`testSubsequence`/`testSubsequence2`/`testSubsequence5`/`testIndex100`/`testIndex10`/`testIndex11`/`testIndex12`という互換専用の自己完結クラスが存在し、この8件相当は実質カバー済みと判断。したがって本当に移植が必要なのは`test_subscript_rangeAccess`/`test_subSequence_forEach`/`test_subSequence_makeIterator`の3件のみで、後者2件はDictionary/MultiMapの`_8_RangeViewTests.swift`と重複する可能性が高い(未確定、次回以降に精査)。
+- (2026-09-29 22:22) `ValueSemanticsTests`(SetのみExistだった欠落)を解消。MultiSet/Dictionary/MultiMapに`_13_ValueSemanticsTests.swift`を新設(Setは`_15_`だが、番号は型ごとに独立でよい前例に従い、3型とも`_13_`が空き番号だったためこちらを採用)。Setの`RedBlackTreeSet_15_ValueSemanticsTests.swift`の`test_copyOnWrite_mutatingCopyPreservesOriginal`を土台に型ごとのAPIで移植:
+  - MultiSet版: `copy.insert(99)` + 削除は`eraseMulti(2)`(`#if !COMPATIBLE_ATCODER_2025`限定と判明したため`#if COMPATIBLE_ATCODER_2025`側で`copy.removeAll(2)`に分岐)。
+  - Dictionary版: `copy[99] = "z"` + `copy.removeValue(forKey: 2)`(いずれも無条件API、ガード不要)。
+  - MultiMap版: `copy.insert(key: 99, value: "z")`(無条件) + 削除は`eraseMulti(2)`(`#if !COMPATIBLE_ATCODER_2025`限定と判明、compat側は`removeAll(forKey:)`(`RedBlackTreeMultiMap+Deprecated.swift`)に分岐)。
+  - 検証: 通常モードでビルド成功・3クラス単体3件成功 → `COMPATIBLE_ATCODER_2025`有効化でビルド成功・同3件成功(MultiSet/MultiMapの互換分岐を確認) → 通常モードへ復帰しビルド成功。全体テスト1127件847成功・0失敗(移設前844成功+新設3件、残りは環境既知の"No result")を確認。
+  - **残る欠落(次回以降)**: `LazySequenceTests`/`ProtocolConformanceMoreTests`(SetのみExist)、`IntegerElement/KeyTests`(Set/Dictionaryのみ、MultiSet/MultiMapに無い)、Set固有`_98_PointerTests`/`_98_RemovalInternalXCTests`が他3型に無い件(Set固有かどうか要検討)、`BidirectionalCollectionTests`の残り3件(`test_subscript_rangeAccess`/`test_subSequence_forEach`/`test_subSequence_makeIterator`、Dictionary/MultiMapの`_8_RangeViewTests.swift`との重複要精査)。
+- (2026-09-29 22:35) ユーザーから「セッションを使い切るまで横展開を続けてよい、終わったら相談」と継続のhands-off許可を得たため続行。`ProtocolConformanceMoreTests`(SetのみExist)を精査したところ、内容(`CustomReflectable`/`isTriviallyIdentical`/`Comparable`/`Hashable`/`Sendable`)は他3型では`_9_ProtocolConformanceTests.swift`に統合済みで実質カバー済みと判明(Setだけが`_9`と`_11`に分割している組織上の違いに過ぎない)。**真の欠落ではないため、この項目は保留リストから削除**。
+  - `LazySequenceTests`(`.lazy`のmap/filter/chain/prefix/dropFirst/CoW非影響、いずれもSequence標準ライブラリの薄い皮なので型に依存しない)は本当の欠落と判断し、MultiSet(`_12_LazySequenceTests.swift`)・Dictionary(`_14_LazySequenceTests.swift`、`_12`はIntegerKeyTests既存のため空き番号を使用)・MultiMap(`_15_LazySequenceTests.swift`)に新設。Setの7テストをそのまま型ごとのAPIで移植(Dictionary/MultiMapは`.key`射影、MultiSetは重複要素を含む配列で検証)。
+  - `IntegerElement/KeyTests`(`Int32`のフルレンジ・`Int128`(macOS 15+)がCoW経由でも壊れないことの検証、内部ノードキー比較器のFixedWidthInteger特化パスに関わる非自明な観点)をMultiSet(`_14_IntegerElementTests.swift`)・MultiMap(`_14_IntegerKeyTests.swift`)に新設。Setの`insert`/`remove`ベースをMultiSetの`insert`/`eraseMulti`(`#if !COMPATIBLE_ATCODER_2025`限定、互換側`removeAll(_:)`に分岐)に、Dictionaryの`checkReadAndWrite`ヘルパーをMultiMapの`insert(key:value:)`/`firstIndex(of:)`/`eraseMulti(key)`(同様に互換側`removeAll(forKey:)`に分岐)に適応。
+  - 検証: 通常モードでビルド成功・新設5ファイル26件成功 → `COMPATIBLE_ATCODER_2025`有効化でビルド成功・同26件成功(MultiSet/MultiMapの互換分岐を確認) → 通常モードへ復帰しビルド成功。全体テスト1153件873成功・0失敗(直前の847成功+新設26件、残りは環境既知の"No result")を確認。
+  - **残る欠落(次回以降)**: Set固有`_98_PointerTests`/`_98_RemovalInternalXCTests`(内部hint系API)が他3型に無い件(Set固有かどうか要検討)、`BidirectionalCollectionTests`の残り3件(`test_subscript_rangeAccess`/`test_subSequence_forEach`/`test_subSequence_makeIterator`、Dictionary/MultiMapの`_8_RangeViewTests.swift`との重複要精査)、Set固有`_8_EnumeratedSequenceTests`/`_98_SetAlgebraStressTests`/`_99_AdditionalDeathTests`が他3型に無い件(前2つはMultiSetにSetAlgebra(`_10`)があるため対象になり得る、後者は旧root DeathTest.swift由来でSet固有の可能性が高い)。
+- (2026-09-29 22:40) ユーザーから「セッションを使い切るまで続けてよい」との継続許可のもとhands-offで前回の残り4項目を精査、それぞれ結論が出たので記録:
+  - **`_8_EnumeratedSequenceTests.swift`は横展開対象ではなく死んだコードと判明** → 内容全体(`test_enumeratedSequence_forEach`等4件)が`#if DEBUG && false`で完全に無効化されており、依存API`rawIndexedElements`をSources全体で`grep`しても現行コードに存在しないことを確認(旧世代の遺物)。他ファイルからの参照も無し。`old/`の教訓に従いクロス参照確認の上、削除。
+  - **`_98_PointerTests.swift`は横展開対象ではない** → 内容を確認したところ`setUpWithError`/`tearDownWithError`と`ENABLE_PERFORMANCE_TESTING`限定の空スタブのみで実質的なテストが無いボイラープレート。他3型に無くて当然のため対象外。
+  - **`_98_RemovalInternalXCTests.swift`(`__emplace_hint_unique`/`__find_equal(hint:)`/freshBucket系)は他3型への移植を見送り** → 検証対象の`__find_equal`/`_unchecked_remove`等は`Implements/__tree/interfaces/`にある共有ジェネリック実装で、Set/MultiSet/Dictionary/MultiMapすべてが同じコードパスを通る(traitで特化されるのは`__emplace_hint_unique`/`__emplace_hint_multi`の呼び分けのみ)。Setでの検証がこの共有ロジックを実質的にカバーしているため、3型分の複製は投資対効果が低いと判断。将来「`__tree`基本層のテスト再構築」を議論する際に、型別ではなく共有実装として一本化する方が筋が良い。
+  - **`_98_SetAlgebraStressTests.swift`はMultiSetへの直接移植不可と判明** → MultiSetの`union`/`intersection`/`difference`/`symmetricDifference`(`RedBlackTreeMultiSet+SetAlgebra.swift`)はマルチセットの多重度(multiplicity)を保持・演算する独自セマンティクスで、Setの`SetAlgebra`プロトコル(冪等な集合演算、`isSubset`/`isSuperset`/`isDisjoint`等も含む)とは異なる。MultiSetにはそれらの関係演算メソッド自体が存在しない。Swift標準`Set`と比較するSetのfuzzをそのまま流用できず、多重度を数える参照モデル(`[Element: Int]`ヒストグラム)との比較という別設計が必要。既存`_10_SetAlgebraTests.swift`が各操作の単体テストを既に持っているため、優先度は低いと判断し今回は見送り。
+  - **`_99_AdditionalDeathTests.swift`は他3型との重複検証が必要で今回は見送り** → 内容(`endIndex`添字・削除済みIndex添字・cross-tree Index・不正区間3種・オフセットオーバーフロー・`index(before:/after:)`/`offsetBy`/`limitedBy`/`formIndex`の境界trap・CoW後のstale Index)は概念的にはIndex/Collection層の共有機能だが、他3型は既にそれぞれ独自の`_99_DeathTests.swift`(220/146/220行)を持ち、シナリオの重複有無の確認には各ファイルの全文精査が必要。死活テストは`DEATH_TEST`フラグでのプロセス終了観測という重いテスト形態のため、精査・移植・検証のコストが他項目より高い。次回以降、`_99_DeathTests.swift`同士の突き合わせから着手するのが良い。
+  - 検証: 削除後、通常モードでビルド成功、全体テスト1149件873成功・0失敗(削除前と完全一致、`EnumeratedSequenceTests`の「No result」4件が消えた分だけtotal減)を確認。互換モード確認は内容変更なし(削除のみ)のため省略。
+  - **ここまでで「4型の横展開」のうち低コスト・高確度な項目(ValueSemantics/LazySequence/IntegerElement・KeyTests、および過大評価の訂正2件)は全て完了。残る4項目は死活テストの重複精査や共有実装への一本化などの設計判断を要するため、ユーザーに相談。**
+- (2026-09-29 22:45) ユーザーから「まかせるといった」との継続指示を受け、相談した4項目のうち`_99_AdditionalDeathTests.swift`の重複精査を実施(残り3項目は前回の結論どおり見送りで確定)。
+  - **前提の訂正**: `DEATH_TEST`は`Package.swift`で`.define("DEATH_TEST", .when(platforms: [.macOS]))`により無条件で有効化されており、`COMPATIBLE_ATCODER_2025`のようなフラグ切り替えの手間は不要で通常の`RunSomeTests`で直接ビルド・実行・検証できると判明。前回「死活テストは重いテスト形態なのでコストが高い」と評価したのは過大評価だった。
+  - Dictionary(146行)・MultiSet/MultiMap(各220行)の既存`_99_DeathTests.swift`を全文精査し、SetのAdditionalDeathTestsと突き合わせ。既存はcross-tree ElementRangeでのsubscript/erase系(MultiSet/MultiMapのみ)や逆順Range(半開)のsubscript/erase系(3型共通)を手厚くカバーしていたが、以下がどの型にも欠けていたため追加:
+    - `endIndex`への素の`subscript get`トラップ(`remove(at: endIndex)`はあったが`dictionary[endIndex]`のような読み取り単体は無かった)
+    - `ClosedRange(endIndex...startIndex)`・`ClosedRange(startIndex...endIndex)`の2種(既存は`Range`の逆順のみで`ClosedRange`の端点誤用は未カバー)
+    - `index(before:)`/`index(after:)`の境界超過トラップ、`index(_:offsetBy:)`/`index(_:offsetBy:limitedBy:)`/`formIndex(_:offsetBy:limitedBy:)`の境界超過トラップ(5シナリオ、Setの`_99_AdditionalDeathTests.swift`にあった`String`との比較部分は型に依存しない共通知識のため省き、ツリー型側の検証のみ移植)
+  - Dictionary/MultiSet/MultiMapの既存`_99_DeathTests.swift`にそれぞれ8件(計24件)追加。Set側にあった`index from another tree`・オフセットオーバーフロー・CoW後stale Indexの3系統は、`ALLOW_CROSS_TREE_INDEX`(無条件有効)/`ENABLE_OFFSET_OVERFLOW_GUARD`(trait無効時off)により現在の既定設定では全型で等しく無効化されるため、移植対象から除外(Set側でも実行時は"No result"になる)。
+  - 検証: 通常モードでビルド成功・3型の新設8件×3=24件が対象クラス単体実行(63件、既存36件+新規24件+3件の既存無関係分)で全件成功 → `COMPATIBLE_ATCODER_2025`有効化でビルド成功(該当箇所は元々`!COMPATIBLE_ATCODER_2025`または全ファイルガードのため無効化されるだけで問題なし) → 通常モードへ復帰しビルド成功。全体テスト1173件897成功・0失敗(直前の873成功+新設24件、残りは環境既知の"No result")を確認。
+  - **これで「4型の横展開」の低〜中コスト項目は全て完了。残るのは`_98_RemovalInternalXCTests`(共有実装のため見送り確定)と`_98_SetAlgebraStressTests`(マルチセット多重度セマンティクス用の別設計が必要、見送り確定)の2項目のみで、いずれも意図的な見送り。**
+- (2026-09-29 22:48) ユーザーから「Fixture分類の観点ができているので`unsafeTree/`の作戦会議は不要」との指示。保留していた`unsafeTree/`(現役14ファイル)を、`RedBlackTreeInternal/`と同じ「実際に使っているFixture種別」の軸で棚卸し。14ファイル全文を確認し、同じ3分類(Synthetic/Base/Instance)がそのまま当てはまることを確認(ただし`RedBlackTreeInternal/`より1層下の生プリミティブ層なので、各分類の実体はレベルが異なる):
+  - `Synthetic/`(ソースコード自身が`Fixture`と命名した独自ダミー型で代用しているもの): `RecyclePoolTests.swift`(`struct Fixture: _UnsafeNodePtrType, _RecyclePool, _RecyclePoolDebug`)・`UnsafeNodeFreshPoolTests.swift`(`struct FreshPoolFixture<_PayloadValue>: _FreshPool`)・`UnsafeNodeTests.swift`(`class Fixture: InsertNodeAtProtocol_ptr`)
+  - `Base/`(trait準拠の独自Base型を定義して`UnsafeTreeV2<Base>`を直接使うもの、`RedBlackTreeInternal/`のBaseと同じ軸だが1層下の生木層): `UnsafeTreeBasicTests.swift`(独自`enum Base: ScalarValueTrait & ... & _UnsafeNodePtrType`を定義)
+  - `Instance/`(ダミーFixtureを介さず`_Bucket`/`_BucketAllocator`/`UnsafeNode`/`UnsafeTreeV2BufferHeader`等の実プリミティブを直接使うもの、10ファイル): `BucketAccessorTests`・`BucketAllocatorTests`・`BucketMemoryLayoutTests`・`BucketQueueTests`・`BucketTraverserTests`・`BufferHeaderTests`・`MemoryLayoutTests`・`UnsafeNodeMemoryLayoutTests`・`UnsafePointerPointerTests`・`UnsafeTreeMemoryTests`
+  - 副産物: `RecyclePoolTests.swift`は`#if DEBUG && USE_RECYCLE_POOL_PROTOCOL`、`UnsafeNodeFreshPoolTests.swift`は`#if DEBUG && USE_FRESH_POOL_PROTOCOL`でガードされており、両フラグとも`Package.swift`でコメントアウト済み(現状無効)。死んだコード(`&& false`)ではなく`ENABLE_PERFORMANCE_TESTING`と同種の「切替可能だが現状オフの代替実装」のため、削除せずそのままSynthetic/へ移設。
+  - 検証: 通常モードのみ(内容変更なし、互換コード不関与のため互換モード確認は省略)。14ファイル全て`XcodeMV`で該当サブフォルダへ移動(中身は無改変)。ビルド成功、全体テスト1173件897成功・0失敗(移設前と完全一致)を確認。
+  - **`unsafeTree/`のFixture種別サブフォルダ分けはこれで完了。`Legacy/unsafeTree-old/`は対象外(既存方針どおり保留継続)。** 次のテーマはユーザー指示待ち。
+- (2026-09-29 22:55) ユーザーから次回への引き継ぎ指示。今回セッションはここで終了。
+  - `Legacy/`(`old/`+`unsafeTree-old/`)の「`__tree`基本層のテスト再構築」は、ユーザー自身が「それは会議かな」と明言した議題。着手前に方針合意が必要。ユーザーの制約: 「内部で分類はしてほしいが、外に出してほしくない」――`Legacy/`配下の再構築や分類は歓迎だが、公開API境界に染み出す形は避けること。単純なFixture種別移動(`RedBlackTreeInternal/`・`unsafeTree/`で採用した手法)とは異なり、境界線の設計判断が先に必要。
+  - **今セッションで完了した「4型の横展開」の全体像**: ValueSemantics(MultiSet/Dictionary/MultiMapに新設)・LazySequenceTests(同3型に新設)・IntegerElement/KeyTests(MultiSet/MultiMapに新設)・`_99_DeathTests.swift`の境界trap24件(Dictionary/MultiSet/MultiMapに追加)・`RedBlackTreeInternal/`と`unsafeTree/`のFixture種別(Synthetic/Base/Instance)サブフォルダ分け・過大評価だった2件の訂正(SubSequenceナビゲーション、ProtocolConformanceMore)・死んだコード1件削除(`RedBlackTreeSet_8_EnumeratedSequenceTests.swift`)。意図的に見送った項目: `_98_PointerTests`(空ボイラープレート)・`_98_RemovalInternalXCTests`(4型共有の生実装なので複製の投資対効果が低い)・`_98_SetAlgebraStressTests`(マルチセット多重度セマンティクス用の別設計が必要)。
+  - 次回の入口: ユーザーから新規テーマの指示待ち。候補は`Legacy/`の会議、またはユーザーの気づき次第。

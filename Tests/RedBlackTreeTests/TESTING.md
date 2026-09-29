@@ -325,3 +325,8 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   - 検証: 通常モード→互換モード→通常モードの3段階。両モードビルド成功。互換モードで`ConvenienceTests`単体を実行し18件全成功(統合した5件が正しく互換版APIで動作することを確認)。全体テストも互換モード1067件686成功・0失敗・5スキップ(既知)を確認。フラグは通常モードへ復帰済み。
   - `Elements.swift`・`RedBlackTreeSet+Convenience.swift`・`RedBlackTreeMultiset+Convenience.swift`(いずれもテストではなく`lessThan`/`greaterThan`/`elements(in:)`等の便利APIをテストターゲット内で試験的に生やしているソース、コメントに「盆栽対象」とあり)は今回のスコープ外のため無変更。
   - **`convenience/`フォルダの二重化修正はこれで完了。**
+- (2026-09-29 17:16) ユーザー相談: `base/`(`SetBaseTests.swift`/`MultiSetBaseTests.swift`、`@testable`で`Base`型の内部API`___ptr_range_comp`/`__element_`を直接検証)をどうするか。他フォルダからの参照なしを確認済み。Set/MultiSetの2つのみでDictionary/MultiMap版が無い(4型横展開の欠落)ことを踏まえ、「今回は現状の2ファイルを`RedBlackTreeInternal/`へ移設するに留め、Dictionary/MultiMap版の新規拡張は余裕がある時に別途行う」で合意。
+  - `SetBaseTests.swift`→`RedBlackTreeInternal_SetBaseTests.swift`、`MultiSetBaseTests.swift`→`RedBlackTreeInternal_MultiSetBaseTests.swift`として`RedBlackTreeInternal/`へ移設(内容無改変)。`base/`フォルダは空になり削除。
+  - **保留事項に追加**: `Base.___ptr_range_comp`/`__element_`の内部検証がDictionary/MultiMapに存在しない(4型横展開の欠落の一例)。着手時は`RedBlackTreeInternal_SetBaseTests.swift`を土台に、Dictionary/MultiMap版の`___ptr_range_comp`/`__element_`検証を追加する。
+  - 検証: 通常モードのみ(内容変更なし、互換コード不関与のため省略)。ビルド成功、全体テスト1067件817成功・0失敗を確認。
+  - **`base/`フォルダの棚卸しはこれで完了。**

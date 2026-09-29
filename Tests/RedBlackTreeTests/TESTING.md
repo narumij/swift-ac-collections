@@ -347,3 +347,20 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   - **残る欠落(次回以降)**:
     - `_98`層: MultiSetの`IndexValidityXCTests`は今回埋めたが、Set固有の`PointerTests`/`RemovalInternalXCTests`(内部hint系API)は他3型に無い(Set固有の内容かどうか要検討)。
     - 公開API層(_0〜_18相当): `BidirectionalCollectionTests`がDictionary/MultiMapに無い、`ValueSemanticsTests`がSet以外に無い、`LazySequenceTests`がSet以外に無い、`IntegerElement/KeyTests`がSet/Dictionary以外に無い、`ProtocolConformanceMoreTests`がSet以外に無い。これらは着手前に「本当に4型で意味のある仕様か」の判断が必要(例えばSetAlgebraはDictionary/MultiMapに元々適用外)。
+- (2026-09-29 17:40) 上記のうち`BidirectionalCollectionTests`の欠落を一部解消。Dictionary/MultiMapの`_3_IndexSequenceTests.swift`は`distance`/`index(after:/before:)`/`formIndex(after:/before:)`の基本部分は既にあったが、Setの`_2_BidirectionalCollectionTests.swift`にある`index(_:offsetBy:)`/`index(_:offsetBy:limitedBy:)`/`formIndex(_:offsetBy:)`/`formIndex(_:offsetBy:limitedBy:)`の4種が両方に無かった(互換ファイル側にしか無かった)ため、両ファイルに追加。互換ガード外(常時コンパイル)のため通常・互換モード両方で単体20件成功(新規8件含む)を確認。全体テスト1124件844成功・0失敗。
+  - Setの`_2_BidirectionalCollectionTests.swift`にはさらに`test_subscript_rangeAccess`と10種のSubSequence特化ナビゲーション(`test_subSequence_*`)があり、Dictionary/MultiMapには未移植。次回はここから続ける。
+  - `ValueSemanticsTests`/`LazySequenceTests`/`ProtocolConformanceMoreTests`(SetのみExist)は未着手。
+- (2026-09-29 22:14) ユーザーからユーザー記入欄に新規相談: `RedBlackTreeInternal/`を大分類として維持しつつ、中分類を「実際に使っているFixtureの種類」で切るのはどうか、小分類はClaudeに一任、との提案。9ファイルの実装を確認し3系統に分類できることを確認・提案・合意:
+  - `Synthetic/`(実コレクション型と無関係な、テスト専用のプロトコル準拠ダミー構造体を使うもの): `_98_CoverageTests`・`_98_PointerDeathTests`・`KeyValueComparerTests`
+  - `Base/`(`RedBlackTreeXXX<T>.Base`/`.Tree`等、trait準拠の静的メソッド層を直接使うもの): `AllocationTests`・`ComparatorsTests`・`SetBaseTests`・`MultiSetBaseTests`
+  - `Instance/`(実際の`RedBlackTreeXXX<T>`インスタンスを使うもの): `NaiveIteratorTests`・`PurifiedTests`
+  - まだ未確定の`__tree`基本層/応用層/生ポ層等のタクソノミー(TBD)とは別軸のため、それらの名前は借りず独立させた。9ファイルとも`XcodeMV`で該当サブフォルダへ移動(中身は無改変)。
+  - 検証: 通常モードのみ(内容変更なし、互換コード不関与のため省略)。ビルド成功、全体テスト1124件844成功・0失敗(移設前と完全一致)を確認。
+  - この後の方針はユーザーから「unsafeTreeでも4型横展開でもまかせる、困ったら相談して」とhands-off裁量を得たため、4型横展開(公開API層の`BidirectionalCollectionTests`のSubSequenceナビゲーション部分)を継続する。
+- (2026-09-29 22:22) 前回エントリの「10種のSubSequence特化ナビゲーションが未移植」は過大評価だったため訂正: Setの`_2_BidirectionalCollectionTests.swift`を全文確認したところ、`test_subSequence_forEach`/`test_subSequence_makeIterator`の2件のみ無条件(常時コンパイル)で、残り8件(`test_subSequence_index_count`等)は全て`#if COMPATIBLE_ATCODER_2025`限定だった。さらにDictionaryの`RedBlackTreeDictionaryAtCoder2025CompatibilityTests.swift`には既に`testSubsequence`/`testSubsequence2`/`testSubsequence5`/`testIndex100`/`testIndex10`/`testIndex11`/`testIndex12`という互換専用の自己完結クラスが存在し、この8件相当は実質カバー済みと判断。したがって本当に移植が必要なのは`test_subscript_rangeAccess`/`test_subSequence_forEach`/`test_subSequence_makeIterator`の3件のみで、後者2件はDictionary/MultiMapの`_8_RangeViewTests.swift`と重複する可能性が高い(未確定、次回以降に精査)。
+- (2026-09-29 22:22) `ValueSemanticsTests`(SetのみExistだった欠落)を解消。MultiSet/Dictionary/MultiMapに`_13_ValueSemanticsTests.swift`を新設(Setは`_15_`だが、番号は型ごとに独立でよい前例に従い、3型とも`_13_`が空き番号だったためこちらを採用)。Setの`RedBlackTreeSet_15_ValueSemanticsTests.swift`の`test_copyOnWrite_mutatingCopyPreservesOriginal`を土台に型ごとのAPIで移植:
+  - MultiSet版: `copy.insert(99)` + 削除は`eraseMulti(2)`(`#if !COMPATIBLE_ATCODER_2025`限定と判明したため`#if COMPATIBLE_ATCODER_2025`側で`copy.removeAll(2)`に分岐)。
+  - Dictionary版: `copy[99] = "z"` + `copy.removeValue(forKey: 2)`(いずれも無条件API、ガード不要)。
+  - MultiMap版: `copy.insert(key: 99, value: "z")`(無条件) + 削除は`eraseMulti(2)`(`#if !COMPATIBLE_ATCODER_2025`限定と判明、compat側は`removeAll(forKey:)`(`RedBlackTreeMultiMap+Deprecated.swift`)に分岐)。
+  - 検証: 通常モードでビルド成功・3クラス単体3件成功 → `COMPATIBLE_ATCODER_2025`有効化でビルド成功・同3件成功(MultiSet/MultiMapの互換分岐を確認) → 通常モードへ復帰しビルド成功。全体テスト1127件847成功・0失敗(移設前844成功+新設3件、残りは環境既知の"No result")を確認。
+  - **残る欠落(次回以降)**: `LazySequenceTests`/`ProtocolConformanceMoreTests`(SetのみExist)、`IntegerElement/KeyTests`(Set/Dictionaryのみ、MultiSet/MultiMapに無い)、Set固有`_98_PointerTests`/`_98_RemovalInternalXCTests`が他3型に無い件(Set固有かどうか要検討)、`BidirectionalCollectionTests`の残り3件(`test_subscript_rangeAccess`/`test_subSequence_forEach`/`test_subSequence_makeIterator`、Dictionary/MultiMapの`_8_RangeViewTests.swift`との重複要精査)。

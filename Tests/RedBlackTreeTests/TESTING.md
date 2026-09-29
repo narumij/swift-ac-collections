@@ -28,6 +28,8 @@
 - 実験的なテストコード書く場合、人もAIもまずEtcTests.swiftまたはDeathTest.swiftに書くこと
 - RedBlackTreeTestSupportとDebugAdditionalsは役割がかぶってるので、再度整理が必要
 - Tests/RedBlackTreeTestのTODOを消化すること
+- 横展開の過不足についてはSources/RedBlackTreeCollections/Documentation/API-Matrix.mdと照らし合わせること
+- Test as SpecについてはSources/RedBlackTreeCollections/Documentation/Quality-Checklist.mdと照らし合わせること
 
 ### 相談事項
 

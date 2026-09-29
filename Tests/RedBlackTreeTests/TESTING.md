@@ -312,3 +312,9 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   - `old/`(26ファイル、`_TrackingTag`ベースの安全な参照実装で、ユーザー新設タクソノミーの「`__tree`基本層」にほぼ一致)と`unsafeTree/old/`(7ファイル、その実装を使う現役内部テスト+フィクスチャ)は密結合と判明したため、ユーザー指示で新設`Legacy/`フォルダへ両方をサブフォルダごと移設して集約: `Legacy/old/`・`Legacy/unsafeTree-old/`(`XcodeMV`でディレクトリごと移動、中身は無改変)。`unsafeTree/`本体(`old`抜き)は温存方針どおり無傷。
   - 検証: 通常モードのみ(内容変更なし・互換コード不関与のため互換モード確認は省略)。ビルド成功、全体テスト1073件818成功・0失敗(残りは環境既知の"No result")を確認。
   - **`Tests/RedBlackTreeTests/old/`は消滅し`Legacy/old/`へ、`unsafeTree/old/`は消滅し`Legacy/unsafeTree-old/`へ移設。** 中身の棚卸し(重複排除・`__tree`基本層としての活用可否検討)はユーザーの指示で保留、将来「`__tree`基本層のテスト再構築」を議論する際にまとめて着手する。
+- (2026-09-29 17:06) ユーザー指示で`foundamental/`フォルダを棚卸し。`KeyValueComparerTests.swift`/`KeyValueComparerTests2.swift`(いずれも`@testable`不使用、`KeyValueTrait`/`UniqueMultiplicity`/`_UnsafeNodePtrType`に独自フィクスチャで直接準拠し、`value_comp`のデフォルト実装が`_Key: Comparable`に正しく委譲することを検証)を精査。`old/`の教訓を踏まえ、他フォルダからの参照有無を`grep`で確認済み(参照なし、密結合ではない)。
+  - 2ファイルはほぼ同一のテスト(`testExample`)で、`_Key`を独自struct(`internalKey: Int`をラップ)にするか`Int`そのものにするかの違いのみ。より一般的な検証(`_Key`が`Comparable`準拠の任意型であっても`value_comp`が委譲経由で動くこと)ができている前者を残し、後者は劣化版の重複と判断し削除。
+  - RedBlackTreeSet等4型の公開APIを検証する連番テストとは異なり、4型共通の基盤である`KeyValueTrait`のデフォルト実装そのものを検証する内容のため、型別連番ではなく`RedBlackTreeInternal/RedBlackTreeInternal_KeyValueComparerTests.swift`へ移設。
+  - `foundamental/`フォルダは完全に空になったため削除。
+  - 検証: 通常モードのみ(互換コード不関与のため省略)。ビルド成功、全体テスト1072件817成功・0失敗を確認。
+  - **`foundamental/`フォルダの棚卸しはこれで完了。**

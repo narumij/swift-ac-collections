@@ -63,28 +63,33 @@
 
 - `__tree`基本層
 
+`__tree`移植層のうち、
 Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドが不要なもの、
 かつUnsafeMutablePointerが不要なもの
 
 - `__tree`応用層
 
-`Sources/RedBlackTreeCollections/Implements/__tree`のうち、
+`__tree`移植層のうち、
 Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドがが必要となるもの
 かつUnsafeMutablePointerが不要なもの
 
-- `__tree`実装層
+- 生ポ層(仮名)
 
 `Sources/RedBlackTreeCollections/Implements/__tree`のうち、
 実際の挙動を実現しているもの。
 現在はUnsafeMutablePointerをベースにしている
 
+- 生メモリ層(仮名)
+
+生メモリ操作を伴うもののうち、`__tree`移植層に含まれないもの
+
 - 生バッファ層(仮名)
 
-木の生メモリを管理するもの
+生メモリ層のうち、木の生メモリを管理するもの
 
 - 生木層(仮名)
 
-木を形成しているFacade及びその内部のもの
+生メモリ層のうち、木を形成しているFacade及びその内部のもの
 
 - (なんかいい名前ください)層(仮名)
 

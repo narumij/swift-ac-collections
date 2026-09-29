@@ -58,9 +58,11 @@
 
 (テスト用区分であり、ソースのフォルダレイアウトを規定するものではない）
 
+- `__tree`移植層
+`Sources/RedBlackTreeCollections/Implements/__tree`に配置されているもの
+
 - `__tree`基本層
 
-`Sources/RedBlackTreeCollections/Implements/__tree`のうち、
 Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドが不要なもの、
 かつUnsafeMutablePointerが不要なもの
 

@@ -38,7 +38,7 @@
 - 互換チェック時、現行>互換>現行ではなく、現行>互換で十分です
 - 棚卸し済みテストについて、4型の横展開の必要がある
 - カバレッジが落ちてきてるので横展開と合わせてカバレッジ改善（90%目安)
-- llvm移植層のテスト再構築が欲しい。バランシングの試験ができるFixtureの用意と実施程度の初期段階で構わない
+- `__tree`基本層のテスト再構築が欲しい。バランシングの試験ができるFixtureの用意と実施程度の初期段階で構わない
 - RedBlackTreeViewが必要そう
 
 ### 停止条件
@@ -58,13 +58,15 @@
 
 - `__tree`基本層
 
-Sources/RedBlackTreeCollections/Implementsのうち、
-Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドが不要なもの
+`Sources/RedBlackTreeCollections/Implements/__tree`のうち、
+Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドが不要なもの、
+かつUnsafeMutablePointerが不要なもの
 
 - `__tree`応用層
 
-Sources/RedBlackTreeCollections/Implementsのうち、
+`Sources/RedBlackTreeCollections/Implements/__tree`のうち、
 Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドがが必要となるもの
+かつUnsafeMutablePointerが不要なもの
 
 
 ### 用語

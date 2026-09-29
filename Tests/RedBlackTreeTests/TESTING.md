@@ -286,3 +286,9 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
     - 旧3ファイルは削除、`PurifiedTests.swift`は`sealed/`にそのまま残置。
   - 検証: 通常モード → `COMPATIBLE_ATCODER_2025`有効化 → 通常モードの3段階、両モードともビルド成功。通常モード1075件中817成功・0失敗、互換モード1075件中687成功・0失敗・5スキップ(既知)を確認。フラグは通常モードへ復帰済み。
   - **`fixture/`フォルダは完全に空になり削除。`sealed/`は`PurifiedTests.swift`(内部向け、後回し)のみ残る。** `base/`・`foundamental/`・`mini/`は内部向け/死んだコードのため今回は不問。次はユーザー指示待ち。
+- (2026-09-29 13:15) ユーザー指示で`tree/`フォルダを棚卸し(5ファイル、509行)。
+  - `_NodeRef.swift`(`_PointerIndexRef.index`)・`_NodePtr_.swift`(`_TrackingTag.index`)・`RedBlackTreePair+Testiing.swift`(`RedBlackTreePair`のテスト用便宜イニシャライザ)は、いずれも実テストを持たない共有サポートコードと確認したため`RedBlackTreeTestSupport/`へ移設(最後のファイルは`Testiing`という綴りミスも`Testing`に修正)。
+  - `RedBlackTreeSet+ArrayTreeDebug.swift`(`#if DEBUG && false`で全体無効化、`__nodes`/`___elements`/`__root(_:)`等のデバッグ用アクセサ)と`___RedBlackTreeContainerTests.swift`(同じく`#if DEBUG && false`、337行)を精査。前者が使う`___Node`/`Tree.Header._header`は現行`Sources`に存在せず復活不可能と判明。さらに後者は、クラス名・メソッド名(`testRootInvaliant`/`testFixtures`/`testMin`/`testMax`/`testRotate`/`testBalancing0`/`testRemove3`/`testRemove2`/`testRemove7`/`testFindEqual0`/`testFindEqual1`/`testInsert0`)が完全に一致する`unsafeTree/old/___RedBlackTreeContainerTests_unsafe.swift`(`#if DEBUG`で現役、同じ「結構ディープな内容なので温存する必要がある」というコメント付き)へ、UnsafeTreeV2世代へ移植済みで現役稼働していることを確認。つまり`tree/`側は移植前の遺物であり、内容は既に後継ファイルで生きているため、削除しても実質的な損失がないと判断し削除。
+  - `tree/`フォルダは完全に空になったため削除。
+  - 検証: 通常モード → `COMPATIBLE_ATCODER_2025`有効化 → 通常モードの3段階、両モードともビルド成功。通常モード/互換モードとも1075件中0失敗(通常817成功、互換687成功・5スキップ既知)を確認。フラグは通常モードへ復帰済み。
+  - **`tree/`フォルダは完全に棚卸し完了・削除。** 現役の後継(`unsafeTree/old/___RedBlackTreeContainerTests_unsafe.swift`)は内部向けテストのため今回は不問(後回し)。次はユーザー指示待ち。

@@ -1,3 +1,4 @@
+// このファイル自体は整理整頓時に消さないこと
 import XCTest
 
 #if DEBUG
@@ -7,7 +8,6 @@ import XCTest
 #endif
 
 /// 棚卸し用の雑多な検証置き場。
-/// 意味のある内容は連番のSpecファイルへ移設済み。
 final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
   override func setUpWithError() throws {
@@ -20,6 +20,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 }
 
 #if COMPATIBLE_ATCODER_2025 && DEBUG
+  // これ、整理整頓対象でいいかも
   extension EtcTests {
     /// 内部の逆順走査ヘルパー___rev_for_each_が正しい順序でノードを列挙すること
     func testRev() throws {

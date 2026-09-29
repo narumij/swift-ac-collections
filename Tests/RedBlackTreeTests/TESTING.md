@@ -23,10 +23,12 @@
 
 ### 優先事項
 
-- この文書の規定自体が一部古くなってきているので、Claudeさんの作業成果を加味して更新すること
-- ABC, convenience, memoize, unsafeTreeは温存(unsafeTree/oldは除く)
-- 次の棚卸しはold, unsafeTree/oldあたりから
-- 今回の始業時の会話は省略可
+- この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味して都度更新すること
+- ABC, convenience, memoizeは温存
+
+### 相談事項
+
+- RedBlackTreeInternalというのは大分類として、中分類はFixture種別で分けた方がいいのでは無いか？
 
 ### 連絡事項
 

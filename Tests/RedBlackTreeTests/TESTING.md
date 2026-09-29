@@ -56,6 +56,8 @@
 
 ### 内部区分
 
+(テスト用区分であり、ソースのフォルダレイアウトを規定するものではない）
+
 - `__tree`基本層
 
 `Sources/RedBlackTreeCollections/Implements/__tree`のうち、
@@ -68,6 +70,11 @@ Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドが不�
 Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドがが必要となるもの
 かつUnsafeMutablePointerが不要なもの
 
+- `__tree`実装層
+
+`Sources/RedBlackTreeCollections/Implements/__tree`のうち、
+実際の挙動を実現しているもの。
+現在はUnsafeMutablePointerをベースにしている
 
 ### 用語
 

@@ -54,6 +54,19 @@
 
 ### 完了済みの要望
 
+### 内部区分
+
+- `__tree`基本層
+
+Sources/RedBlackTreeCollections/Implementsのうち、
+Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドが不要なもの
+
+- `__tree`応用層
+
+Sources/RedBlackTreeCollections/Implementsのうち、
+Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドがが必要となるもの
+
+
 ### 用語
 
 生木 -> UnsafeTreeV2

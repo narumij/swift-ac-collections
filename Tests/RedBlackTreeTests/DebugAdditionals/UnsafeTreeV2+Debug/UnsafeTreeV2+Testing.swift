@@ -15,6 +15,16 @@
       p.pointee.___tracking_tag
     }
 
+    /// `.nullptr`/`.end`はどのノードにも紐付かない特殊タグなので、`__retrieve_`を経由せず直接解決する。
+    @usableFromInline
+    package func ___resolve_(_ tag: _TrackingTag) -> _NodePtr {
+      switch tag {
+      case .nullptr: return nullptr
+      case .end: return end
+      default: return try! __retrieve_(tag).get()
+      }
+    }
+
     @usableFromInline
     package func __left_(_ p: _TrackingTag) -> _TrackingTag {
       try! __retrieve_(p).get().pointee.__left_.trackingTag
@@ -22,7 +32,7 @@
 
     @usableFromInline
     package func __left_(_ p: _TrackingTag, _ l: _TrackingTag) {
-      try! __retrieve_(p).get().pointee.__left_ = try! __retrieve_(l).get()
+      try! __retrieve_(p).get().pointee.__left_ = ___resolve_(l)
     }
 
     @usableFromInline
@@ -32,7 +42,7 @@
 
     @usableFromInline
     package func __right_(_ p: _TrackingTag, _ l: _TrackingTag) {
-      try! __retrieve_(p).get().pointee.__right_ = try! __retrieve_(l).get()
+      try! __retrieve_(p).get().pointee.__right_ = ___resolve_(l)
     }
 
     @usableFromInline
@@ -42,7 +52,7 @@
 
     @usableFromInline
     package func __parent_(_ p: _TrackingTag, _ l: _TrackingTag) {
-      try! __retrieve_(p).get().pointee.__parent_ = try! __retrieve_(l).get()
+      try! __retrieve_(p).get().pointee.__parent_ = ___resolve_(l)
     }
 
     @usableFromInline

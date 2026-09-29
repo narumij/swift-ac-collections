@@ -25,12 +25,10 @@
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味して都度更新すること
 - ABC, convenience, memoizeは温存
+- 実験的なテストコード書く場合、人もAIもまずEtcTests.swiftまたはDeathTest.swiftに書くこと
+- RedBlackTreeTestSupportとDebugAdditionalsは役割がかぶってるので、再度整理が必要
 
 ### 相談事項
-
-- RedBlackTreeInternalというのは大分類として、中分類はFixture種別で分けた方がいいのでは無いか？
-- 内部テストはFixtureで中分類とする。小分類はまかせる
-- Fixtureは全てが揃ってるわけではないので、内部テストの分類に関して手戻りが発生することは許容する
 
 ### 連絡事項
 
@@ -39,18 +37,12 @@
 - Codexさんはふりかえりの時間を確保すること
 - Claudeさんは始業時に会話の時間を確保すること
 - 小さな変更を積み重ねてるときは互換チェックをさぼっていい
-- テストコードのTODOで調査となっているものの対応
-- テスト修正が面倒くさいために互換維持している機能があり、テストの棚卸しのあとにこれの整理する
 - 内部構造をどのように区分するのか、勝手に判断しないこと
 - ユーザー記載欄に記入する場合、こちらが消す都合上、古さが分からないと困るので、日付に加えて時間も記載すること
 - 現行APIかどうか判断に迷った場合API-Matrix.mdに照らすこと
-- 互換チェック時、現行>互換>現行ではなく、現行>互換で十分です
-- 棚卸し済みテストについて、4型の横展開の必要がある
 - カバレッジが落ちてきてるので横展開と合わせてカバレッジ改善（90%目安)
-- `__tree`基本層のテスト再構築が欲しい。バランシングの試験ができるFixtureの用意と実施程度の初期段階で構わない
-- RedBlackTreeViewが必要そう
+- RedBlackTreeViewのテストが必要そう（これは未着手？要確認）
 - Test as Specで一応の品質は保てるが、言語や環境の挙動変更による影響やマジックナンバー等の取り扱いミスを検出できるようにする必要もある
-- 将来的に、連番等の整理整頓済みテストコードからは日本語の記述をなくしていき、AI負担を減らす。代わりに日本語訳のテストメソッド一覧を用意する
 
 ### 停止条件
 
@@ -60,7 +52,7 @@
 
 - こちらでヒント系APIとAPI一覧を触ってるので、Test as Spec観点でチェックしてほしい
 - 内部構造をテスト観点でどのように区分するのか、まだ結論がでていない
-- insert(:hint:)やupdate(:hint:)等のヒント系APIのテストが不十分なまま
+- insert(:hint:)やupdate(:hint:)等のヒント系APIのテストが不十分なまま（解決済みであれば完了済み要望に記載願い）
 - 生木へのテストを増やすと変更コストがかさむので、バランスに悩んでいる
 
 ### 完了済みの要望
@@ -397,3 +389,44 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   - `Legacy/`(`old/`+`unsafeTree-old/`)の「`__tree`基本層のテスト再構築」は、ユーザー自身が「それは会議かな」と明言した議題。着手前に方針合意が必要。ユーザーの制約: 「内部で分類はしてほしいが、外に出してほしくない」――`Legacy/`配下の再構築や分類は歓迎だが、公開API境界に染み出す形は避けること。単純なFixture種別移動(`RedBlackTreeInternal/`・`unsafeTree/`で採用した手法)とは異なり、境界線の設計判断が先に必要。
   - **今セッションで完了した「4型の横展開」の全体像**: ValueSemantics(MultiSet/Dictionary/MultiMapに新設)・LazySequenceTests(同3型に新設)・IntegerElement/KeyTests(MultiSet/MultiMapに新設)・`_99_DeathTests.swift`の境界trap24件(Dictionary/MultiSet/MultiMapに追加)・`RedBlackTreeInternal/`と`unsafeTree/`のFixture種別(Synthetic/Base/Instance)サブフォルダ分け・過大評価だった2件の訂正(SubSequenceナビゲーション、ProtocolConformanceMore)・死んだコード1件削除(`RedBlackTreeSet_8_EnumeratedSequenceTests.swift`)。意図的に見送った項目: `_98_PointerTests`(空ボイラープレート)・`_98_RemovalInternalXCTests`(4型共有の生実装なので複製の投資対効果が低い)・`_98_SetAlgebraStressTests`(マルチセット多重度セマンティクス用の別設計が必要)。
   - 次回の入口: ユーザーから新規テーマの指示待ち。候補は`Legacy/`の会議、またはユーザーの気づき次第。
+- (2026-09-30 06:15) `Legacy/`の「`__tree`基本層のテスト再構築」に着手。ユーザーからの事前確認(会議)を経て方針決定:
+  - `Legacy/old/`(27ファイル、テストメソッド0件のスカフォールディング)を精査したところ、単一の役割ではなく2つの異質な役割が混在していると判明。
+    - **役割A(19ファイル)**: 現行`Sources/Implements/__tree/interfaces/`と**同じ契約プロトコル**(`FindInteface`・`InsertUniqueInterface`・`TreeAlgorithmInterface`等、Sources側で定義)に対する、独立実装。多くは`_NodePtr`等の抽象associatedtypeのみで書かれ、具体型に依存しない完全ジェネリックな木アルゴリズム本体(`tree+algorithm.swift`・`tree+bounds.swift`・`tree+compare.swift`・`tree+count.swift`・`tree+distance.swift`・`tree+equal.swift`・`tree+find.swift`・`tree+insert.swift`・`tree+remove.swift`・`three_way_comparator.swift`・`three_way_compare_result.swift`・`unsafe_tree+compare.swift`・`unsafe_tree+three_way.swift`・`UnsafeTreeAccessHandleBase.swift`・`UnsafeTreeNodeAccessProtocol.swift`・`UnsafeTreeNodeRefAccessProtocol.swift`)と、`_TrackingTag`/`_PointerIndexRef`(配列インデックスをノードIDとして使う安全な参照実装)への具体的な結線(`tree.swift`・`tree+ref.swift`・`unsafe_node+debug.swift`)。`unsafeTree-old/TreeFixtures.swift`の`TreeFixture`(`__nodes: [___Node]`という配列だけでノードストレージを表現)がこれを土台にしており、**「配列だけで(生ポインタなしで)赤黒木アルゴリズムが正しく動く」ことの一目瞭然な証拠**になっている。ユーザー確認により、この役割をユーザーは「V0」(現行`UnsafeTreeV2`より前の初期型)と位置づけ、`Legacy/old/`を**`Legacy/ArrayBased/`へ改名**。
+    - **役割B(8ファイル)**: `UnsafeTreeV2+Dump.swift`・`UnsafeTreeV2+GraphvizDebug.swift`・`UnsafeTreeV2+Testing.swift`・`_LazyTieWrap+Debug.swift`・`unsafe_node+dump.swift`・`unsafe_node+pointer+compare.swift`・`unsafe_node+pointer+distance.swift`・`unsafe_node+pointer+partial algorithm.swift`は、`@testable`で**現行・現役の`UnsafeTreeV2`/`UnsafeNode`本体を直接拡張**するデバッグ支援コード(dump/Graphviz可視化/`_TrackingTag`⇄実ポインタ変換アダプタ)と、実ポインタ上で動く素朴な代替アルゴリズム(例: `___dual_distance`、コメントに「遅い」とあるO(n)両方向カウントによる`distance`のクロスチェック用実装)。「Legacy」という名前は本来この役割には合わない(現行実装のための現役コード)。ユーザー確認により、`Legacy/ArrayBased/`から分離し、新設`Legacy/Debug/`へ移動(**フォルダ名は暫定、整理が完了してからユーザーと最終命名する**)。
+    - `Legacy/unsafeTree-old/`(V0=`ArrayBased`を使うFixture+現役テスト39件)は今回未着手、名前も暫定のまま(ユーザー方針: 整理が済んでから命名)。
+  - 検証: 通常モードのみ(内容変更なし、ファイル移動のみ)。ビルド成功、全体テスト1173件897成功・0失敗(移設前と完全一致)を確認。
+  - **残作業**: `Legacy/Debug/`と`Legacy/unsafeTree-old/`の最終命名(ユーザー確認待ち)。役割Bの8ファイル内にも「デバッグツール(dump/graphviz)」と「実ポインタ上の素朴な別アルゴリズム(cross-validation)」というさらに細かい役割の違いがある可能性があり、命名時に検討の余地あり。
+- (2026-09-30 06:27) ユーザー指示: `ArrayBased/`内の`three_way_comparator.swift`・`three_way_compare_result.swift`・`unsafe_tree+three_way.swift`(いずれも2026-06-01作成、比較的新しい)は依存が無さそうなので`ThreeWay/`へ分離してほしいとのこと。実際に依存関係を確認: 3ファイルが宣言する型/プロトコル(`___default_three_way_comparator`・`___enum_compare_result`・`__lazy_compare_result`・`__comparable_compare_result`・`LazySynthThreeWayComparator`・`ComparableThreeWayComparator`)は`Legacy/`内の他ファイルから一件も参照されておらず、逆に3ファイル自身もSources側の共有インターフェース(`ThreeWayCompareResult`・`_TreeKey_LazyThreeWayCompInterface`・`_BaseKey_LessThanInterface`)以外には依存していないことを`grep`で確認(双方向とも依存ゼロ)。`Legacy/ArrayBased/ThreeWay/`を新設し3ファイルを移動。ビルド成功、全体テスト1173件897成功・0失敗(移設前と完全一致)を確認。
+- (2026-09-30 06:31) ユーザー指示: 「`UnsafeMutablePointer`をポインタとして使っているもの」を`Legacy/Unsafe/`へ格納。これで暫定名だった`Legacy/Debug/`の最終命名が確定(`Legacy/Unsafe/`にリネーム)。さらに`grep`で全`Legacy/`配下を再確認したところ、`ArrayBased/`直下に見落としが2件あった: `unsafe_node+debug.swift`(`extension UnsafeMutablePointer where Pointee == UnsafeNode`で実ノードポインタから`_TrackingTag`を算出するブリッジ)と`UnsafeTreeAccessHandleBase.swift`(`var header: UnsafeMutablePointer<UnsafeTreeV2BufferHeader> { get }`という実ポインタ型のプロトコル要件、他ファイルからの参照・準拠は現状ゼロで孤立プロトコルと判明)。両ファイルを`ArrayBased/`から`Legacy/Unsafe/`へ移動。`ArrayBased/`(`ThreeWay/`含む)には`UnsafeMutablePointer`参照が無いことを`grep`で確認済み。
+  - 検証: ビルド成功、全体テスト1173件897成功・0失敗(移設前と完全一致)を確認。
+  - **現在の`Legacy/`構成**: `ArrayBased/`(16ファイル、純粋にジェネリックな`_NodePtr`アルゴリズム本体+`_TrackingTag`結線)・`ArrayBased/ThreeWay/`(3ファイル、依存ゼロの三方比較)・`Unsafe/`(10ファイル、実`UnsafeMutablePointer<UnsafeNode>`/`UnsafeTreeV2`を直接使うデバッグ拡張・素朴な別実装・孤立プロトコル)・`unsafeTree-old/`(V0=ArrayBasedを使う現役Fixture+テスト39件、命名未着手)。
+- (2026-09-30 06:34) ユーザー指示: `Legacy/unsafeTree-old/`(V0=`ArrayBased`を使う現役Fixture+テスト39件)を`Legacy/ArrayBasedFixture/`へリネーム。これで`Legacy/`配下の全フォルダ命名が完了。
+  - 検証: ビルド成功、全体テスト1173件897成功・0失敗(移設前と完全一致)を確認。
+  - **`Legacy/`の最終構成**: `ArrayBased/`(16ファイル、V0の純粋ジェネリック実装+`_TrackingTag`結線)・`ArrayBased/ThreeWay/`(3ファイル)・`ArrayBasedFixture/`(7ファイル、V0を使う現役Fixture+テスト39件)・`Unsafe/`(10ファイル、実ポインタ向けデバッグ拡張・別実装)。「配列だけで赤黒木が動く証拠」(V0)と「現行UnsafeTreeV2向けデバッグ支援」の2軸が名前で一目瞭然になった。**`Legacy/`再構築(命名フェーズ)はこれで完了**。次は`ArrayBasedFixture/`内部の精査(旧セッションで確認済みの39テストの現状把握)、または新規テーマへ。
+- (2026-09-30 06:35-06:50) ユーザーがXcode側で手動再配置を並行して実施(`Legacy/Debug/`→`Legacy/Unsafe/`の内容を全て`Legacy/`の外の新設`DebugAdditionals/`(トップレベル、Legacyの兄弟)へ移動し、`RedBlackTreeSet+UnsafeTreeDebug.swift`・`___RedBlackTreeContainerTests_unsafe.swift`・`___RedBlackTreeBase+NodePool.swift`も同じ理由で`DebugAdditionals/`へ、その後さらに`___RedBlackTreeContainerTests_unsafe.swift`と`___RedBlackTreeBase+NodePool.swift`は再考の末`Legacy/ArrayBasedFixture/`・`Legacy/ArrayBasedTests/`へ戻す、等)。**「現行`UnsafeTreeV2`/`RedBlackTreeSet`向けデバッグ支援」は`Legacy`ではなくトップレベルの`DebugAdditionals/`が最終的な置き場所という結論**(Claudeが提案した「Legacyの中にUnsafeサブフォルダ」よりユーザーの意図に近い)。
+  - ユーザー依頼: `___RedBlackTreeContainerTests`(実ポインタ版`RedBlackTreeSet`をテスト)を「ArrayBasedで動くようにする」か「過去にArrayBasedで動いていた似たテストで差し替える」で、「多分過渡期に喪失してる」との予想。
+  - 調査した結果、**喪失していないと判明**: `git log --all -S "class ___RedBlackTreeContainerTests"`で履歴を追ったところ、このテストは2024年の最初期(`RedBlackTreeModule`時代)から常に実ポインタ版`RedBlackTreeSet`を対象にしており、ArrayBased版は元々別物として存在していた。実際、`Legacy/ArrayBasedFixture/TreeTests.swift`(21メソッド)には`___RedBlackTreeContainerTests`とほぼ同名のテストが既に揃っている: `testRootInvaliant`/`testRotate`/`testBalancing0`(`TreeBaseTests_EmptyNode`)、`testRemove2`/`testRemove3`/`testRemove7`/`testFindEqual0`/`testInsert0`(`TreeTests_EmptyNode`)、`testMin`/`testMax`/`testFindEqual1`(`TreeTests0_10_20`等)。つまり「実ポインタ版でも同じシナリオを検証する」ためのポート版(`___RedBlackTreeContainerTests`)と「ArrayBasedのオリジナル版」(`TreeTests.swift`)が最初から並行して存在しており、統合や移植は不要だった。
+  - ユーザー指示: 「このまま(2ファイルを両方維持)で進めて、統合するかどうかは後で決める」。**今回は何も変更せず、この調査結果と方針をTESTING.mdに記録するのみ**。
+  - 検証: ビルド成功、全体テスト1173件897成功・0失敗(移設前と完全一致)を確認。
+- (2026-09-30 07:00-07:20) ユーザー指示で`___RedBlackTreeContainerTests_unsafe.swift`(現在`DebugAdditionals/TransitionFromLegacy/`)の「現在の環境(現行`UnsafeTreeV2`/`RedBlackTreeSet`)で動くよう復帰」に着手。ユーザーコメント: 「木の開発のブートストラップに該当する部分で、結構大事」。
+  - ファイル冒頭のコメント`// TODO: ポインタベースで動くようにする`が示すとおり、`testRootInvaliant`/`testFixtures`/`testMin`/`testMax`/`testRotate`/`testBalancing0`/`testFindEqual0`/`testFindEqual1`が`#if false`で無効化されていた。原因は、旧デバッグAPIが`tree.__nodes = [...]`という**配列の直接代入**で任意の木構造(色・左右・親)を組み立てる方式だったが、現行の`RedBlackTreeSet+UnsafeTreeDebug.swift`の`__nodes`はGET-ONLYの計算プロパティ(実ポインタから毎回導出)で、直接代入できなくなっていたため。
+  - 現行の生ポインタ木にも`_TrackingTag`単位のsetter(`__is_black_(_:_:)`・`__left_(_:_:)`・`__right_(_:_:)`・`__parent_(_:_:)`・`___element(_:_:)`、いずれも`Sources/.../UnsafeTreeV2/Debug/UnsafeTreeV2+Testing.swift`に現役で存在)があることを発見。これを使い、`RedBlackTreeSet+UnsafeTreeDebug.swift`に以下を新設:
+    - `___NodePtr(_ tag: _TrackingTag) -> _NodePtr`(`__retrieve_(tag).get()`で実ポインタへ変換。`_TrackingTag`引数のため`.end`/`.nullptr`静的メンバも整数リテラルもそのまま渡せる)
+    - `___applyFixture(nodes: [___Node], elements: [Element])`(`Element == Int`限定): 不足分は`Int.min`起点の番兵値で`__insert_unique`して枠を確保し(実際の目的値を先に挿れると、複数Fixtureを同一インスタンスに連続適用する際に値の重複で無限ループする不具合があったため番兵方式に変更)、その後`_TrackingTag`単位のsetterで色・左右・親・実際の値を上書きして目的の形状を作る。
+  - `#if false`ブロックを全て解除し、`tree.__nodes = [...]`を`tree.___applyFixture(nodes:elements:)`呼び出しに書き換え。また`tree.__tree_.__left_ref(tree.___NodePtr(...))`という旧APIの呼び出し方も、現行では`__left_ref`/`__right_ref`が「ポインタ自身のプロパティ」(`Implements/__tree/unsafe_node/unsafe_node+pointer.swift`で`_ref(to: &pointee.__left_)`として定義)であると判明したため、`tree.___NodePtr(...).__left_ref`という書き方に修正。
+  - **結果**: コンパイルは通り、既存の5件(`testRemove2`/`testRemove3`/`testRemove7`/`testFindEqual0`/`testInsert0`、いずれも`___applyFixture`を使わない/空Fixtureのみ)は成功。しかし新たに解除した7件(`testRootInvaliant`/`testFixtures`/`testMin`/`testMax`/`testRotate`/`testBalancing0`/`testFindEqual1`、いずれも1件以上のノードを持つ`___applyFixture`呼び出しを含む)は**実行時にクラッシュ**(アサーション失敗ではなくプロセスクラッシュ)。単一ノードの`testRootInvaliant`ですら失敗するため、複数ノード特有の問題ではなく`___applyFixture`自体か直後の`___tree_invariant()`呼び出し付近に根本原因がある可能性が高い。`print`+`fflush(stdout)`による診断を試みたが、クラッシュ位置の特定には至らず、診断コードは元に戻した(現在は素の実装のみ)。
+  - ユーザー判断: 「コンパイルが通る時点まで進めて。さすがにわからん」→ **クラッシュの原因調査はここで中断**。全体テストで確認したところ、この7件の失敗は他のテストに影響を与えていない(全体1173件898成功・7失敗〈全て`___RedBlackTreeContainerTests`内〉・0スキップ、他の既存テストは無傷)。
+  - **残作業(次回以降)**: `___applyFixture`のクラッシュ原因調査。疑わしい点として、(a) 番兵値`Int.min + i`での`__insert_unique`が何らかの内部境界値と衝突している可能性、(b) `_TrackingTag`経由の直接フィールド上書きが、`__insert_unique`の内部ブックキーピング(赤黒木以外の不変条件、例えば`_buffer.header`のキャッシュ値等)を壊している可能性、(c) `___tree_invariant()`自体が想定外の入力でクラッシュする経路を持つ可能性、の3点を次回調査の起点として記録する。
+  - **原因判明・修正完了**: ユーザーがXcodeのlldbで実機デバッグし、バックトレースを提供。`Fatal error: 'try!' expression unexpectedly raised an error: SealError.null`、発生箇所は`UnsafeTreeV2+Testing.swift`の`__left_(p:l:)`内。原因は`_TrackingTag`の特殊値`.nullptr`(`-2`)/`.end`(`-1`)が実際には**どのノードにも対応しない純粋なセンチネル値**(`Sources/.../__tree/_types/tree_basic+tag.swift`のコメントに明記)であるにもかかわらず、setter(`__left_(_:_:)`/`__right_(_:_:)`/`__parent_(_:_:)`)が代入先の値`l`を無条件に`__retrieve_(l).get()`していたため。フィクスチャの木構造は葉ノードの`__left_`/`__right_`に`.nullptr`、根の`__parent_`に`.end`を指定するのが当然の使い方であり、`___applyFixture`が最初の1ノードから確実にこの経路を通っていた(単純ミスではなく、テスト用APIの見落とし)。
+  - 修正: `UnsafeTreeV2+Testing.swift`に`___resolve_(_ tag: _TrackingTag) -> _NodePtr`(`.nullptr`→`nullptr`、`.end`→`end`、それ以外は`__retrieve_`経由)を新設し、3つのsetterから`try! __retrieve_(l).get()`をこれに置き換え。
+  - 検証: ビルド成功、`___RedBlackTreeContainerTests`単体13件中12件成功(残り1件`testPerformanceExample`は`ENABLE_PERFORMANCE_TESTING`ガードで通常モード非実行、既知)。全体テスト1173件905成功・0失敗(直前の898成功から復帰した7件分ちょうど増加)を確認。
+  - **`___RedBlackTreeContainerTests_unsafe.swift`の「現在の環境で動くよう復帰」はこれで完全に完了。** 全13メソッド(1件を除き)が現行`UnsafeTreeV2`/`RedBlackTreeSet`上で稼働。ユーザーコメント通り「木の開発のブートストラップに該当する部分」が復旧した。
+- (2026-09-30 07:28) ユーザー指摘: 「テスト復帰したから配置場所おかしいかもな」。`___RedBlackTreeContainerTests_unsafe.swift`は復帰前は「過渡期の残骸」の一部として`DebugAdditionals/TransitionFromLegacy/`に置いていたが、現行`RedBlackTreeSet`/`UnsafeTreeV2`のブートストラップを検証する現役テストになった以上、その名前は合わなくなった。依存関係を確認したところ、直接依存するのは同じ`DebugAdditionals/`内の`RedBlackTreeSet+UnsafeTreeDebug.swift`・`UnsafeTreeV2+Testing.swift`(いずれも旧`UnsafeTree/`サブフォルダ)のみで、`TransitionFromLegacy/`に残る3つの孤立プロトコル(`UnsafeTreeAccessHandleBase`等、参照ゼロ)とは無関係と判明。
+  - ユーザー指示で`DebugAdditionals/UnsafeTree/`を`DebugAdditionals/UnsafeTreeV2/`へ改名(型名`UnsafeTreeV2`と正確に一致させる)し、`___RedBlackTreeContainerTests_unsafe.swift`をそこへ移動。`TransitionFromLegacy/`には孤立3プロトコルのみが残る。
+  - 検証: ビルド成功、全体テスト1173件905成功・0失敗(移設前と完全一致)を確認。
+- (2026-09-30 07:33) ユーザー指摘: 「同じ名前のフォルダが二つあって混乱するな」。トップレベルの`Tests/RedBlackTreeTests/UnsafeTreeV2/`(以前の`unsafeTree/`をユーザーが改名、Base/Instance/Synthetic)と、今回改名した`DebugAdditionals/UnsafeTreeV2/`が同名で並立していた。ユーザーが先に`___RedBlackTreeContainerTests_unsafe.swift`をトップレベル`UnsafeTreeV2/`直下へ自ら移動済み(「めんどいから目的のフォルダに移動した」)。「中分類はまかせる。DebugAdditionalsってFixtureの一部あるいはゴミ置き場だから」との指示を受け、以下を実施:
+    - `DebugAdditionals/UnsafeTreeV2/`(dump/Graphviz/Testing拡張)→`DebugAdditionals/UnsafeTreeV2Debug/`に改名(同階層の`UnsafeNode`/`ThreeWay`と命名を揃えつつ、本体テストスイートの`UnsafeTreeV2/`と重複しない名前に)。
+    - トップレベル`UnsafeTreeV2/`直下に浮いていた`___RedBlackTreeContainerTests_unsafe.swift`を、既存のFixture種別分類(実`RedBlackTreeSet`インスタンスを使用=`Instance`)に合わせて`UnsafeTreeV2/Instance/`へ格納。
+  - 検証: ビルド成功、全体テスト1173件905成功・0失敗(移設前と完全一致)を確認。**同名フォルダの混乱はこれで解消。**
+- (2026-09-30 07:38) ユーザー指示: `___RedBlackTreeContainerTests`(クラス名)とファイル名(`___RedBlackTreeContainerTests_unsafe.swift`)を「いいかんじ」に改名。ユーザー自身が使った「木の開発のブートストラップに該当する部分」という言葉から`UnsafeTreeV2BootstrapTests`に改名(クラス名・ファイル名とも)。コード内から旧クラス名への参照はゼロ(`grep`で確認、TESTING.mdの過去ログのみ)だったため安全に改名。
+  - 検証: ビルド成功、`UnsafeTreeV2BootstrapTests`単体13件中12件成功(残り1件`testPerformanceExample`は既知の`ENABLE_PERFORMANCE_TESTING`ガードで非実行)を確認。

@@ -216,5 +216,136 @@
 
       expectNoInvalidMemoryAccess(result)
     }
+
+    @Test
+    func endIndexSubscript_terminatesProcess() async {
+      await #expect(processExitsWith: .signal(SIGTRAP)) {
+        let map: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c"]
+        _ = map[map.endIndex]
+      }
+    }
+
+    @Test
+    func `MultiMapでClosedRange(endIndex...startIndex)がSIGSEGV以外で停止すること`() async {
+      let result = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let map: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c"]
+        _ = map[map.endIndex...map.startIndex]
+      }
+
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func `MultiMapでClosedRange(startIndex...endIndex)がSIGSEGV以外で停止すること`() async {
+      let result = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let map: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c"]
+        _ = map[map.startIndex...map.endIndex]
+      }
+
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func indexBeforeStartIndex_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let map: RedBlackTreeMultiMap = (0..<10).map { ($0, $0) }.reduce(into: RedBlackTreeMultiMap<Int, Int>()) { $0.insert(key: $1.0, value: $1.1) }
+        var i = map.startIndex
+        i = map.index(before: i)
+      }
+
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func indexAfterEndIndex_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let map: RedBlackTreeMultiMap = (0..<10).map { ($0, $0) }.reduce(into: RedBlackTreeMultiMap<Int, Int>()) { $0.insert(key: $1.0, value: $1.1) }
+        var i = map.endIndex
+        i = map.index(after: i)
+      }
+
+      expectNoInvalidMemoryAccess(result)
+    }
+
+    @Test
+    func indexOffsetByBeyondBounds_terminatesWithoutInvalidMemoryAccess() async {
+      let result1 = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let map: RedBlackTreeMultiMap = (0..<10).map { ($0, $0) }.reduce(into: RedBlackTreeMultiMap<Int, Int>()) { $0.insert(key: $1.0, value: $1.1) }
+        var i = map.startIndex
+        i = map.index(i, offsetBy: -1)
+      }
+      expectNoInvalidMemoryAccess(result1)
+
+      let result2 = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let map: RedBlackTreeMultiMap = (0..<10).map { ($0, $0) }.reduce(into: RedBlackTreeMultiMap<Int, Int>()) { $0.insert(key: $1.0, value: $1.1) }
+        var i = map.endIndex
+        i = map.index(i, offsetBy: 1)
+      }
+      expectNoInvalidMemoryAccess(result2)
+    }
+
+    @Test
+    func indexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() async {
+      let result1 = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let map: RedBlackTreeMultiMap = (0..<10).map { ($0, $0) }.reduce(into: RedBlackTreeMultiMap<Int, Int>()) { $0.insert(key: $1.0, value: $1.1) }
+        let i = map.startIndex
+        _ = map.index(i, offsetBy: -1, limitedBy: map.endIndex)
+      }
+      expectNoInvalidMemoryAccess(result1)
+
+      let result2 = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let map: RedBlackTreeMultiMap = (0..<10).map { ($0, $0) }.reduce(into: RedBlackTreeMultiMap<Int, Int>()) { $0.insert(key: $1.0, value: $1.1) }
+        let i = map.endIndex
+        _ = map.index(i, offsetBy: 1, limitedBy: map.startIndex)
+      }
+      expectNoInvalidMemoryAccess(result2)
+    }
+
+    @Test
+    func formIndexOffsetByLimitedByBeyondBounds_terminatesWithoutInvalidMemoryAccess() async {
+      let result1 = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let map: RedBlackTreeMultiMap = (0..<10).map { ($0, $0) }.reduce(into: RedBlackTreeMultiMap<Int, Int>()) { $0.insert(key: $1.0, value: $1.1) }
+        var i = map.startIndex
+        _ = map.formIndex(&i, offsetBy: -1, limitedBy: map.endIndex)
+      }
+      expectNoInvalidMemoryAccess(result1)
+
+      let result2 = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        let map: RedBlackTreeMultiMap = (0..<10).map { ($0, $0) }.reduce(into: RedBlackTreeMultiMap<Int, Int>()) { $0.insert(key: $1.0, value: $1.1) }
+        var i = map.endIndex
+        _ = map.formIndex(&i, offsetBy: 1, limitedBy: map.startIndex)
+      }
+      expectNoInvalidMemoryAccess(result2)
+    }
   }
 #endif  // DEATH_TEST && !COMPATIBLE_ATCODER_2025

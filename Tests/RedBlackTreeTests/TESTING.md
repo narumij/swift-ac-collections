@@ -142,6 +142,16 @@ Set,MultiSet,MultiMap,Dictionary
 
 内部実装・coverage テストは `_98_*.swift` に分ける。まだ公開仕様・内部仕様・互換仕様の分類が済んでいない Swift Testing ベースのテストは、一時的に `_97_*.swift` へ置く。分類済みの公開 Death Test は `_99_DeathTests.swift` とする。通常の XCTest による Test as Spec と同じファイルへ混ぜず、GitHub Actions で問題が起きたときに Swift Testing 使用箇所をファイル名から絞り込めるようにする。
 
+### 旧フォルダ監査時の内部/外部トリアージ
+
+旧フォルダのファイルを1つずつ判定するときは、まず次の3種類に分ける。
+
+- **外部テスト**: `@testable import` を使わず公開 API のみで検証しているテスト。他フォルダと同じ厳密さで連番側/型別 `_98_*` と重複確認し、新規性があれば移植する。
+- **テストサポート**: `func test...` を1件も持たず、`isValid`/`_copyCount`/`___tree_invariant` のようなテスト専用 extension、フィクスチャ、アサーションヘルパーだけのファイル。`RedBlackTreeTestSupport/` へ内容そのまま移設する（型別に分ける必要はない）。紛らわしい `...Tests.swift` という名前がついている場合は `...Support.swift` などへ改称してよい。
+- **内部向けテスト**: `@testable import` を使い `___` 接頭辞の内部 API や生ポインタを直接検証しているテスト。ユーザーから明示的な指示がない限り後回しにする。複数型にまたがる internal 実装テストを整理する場合は `RedBlackTreeInternal/` へ集約してよいが、型別連番と同じ厳密な重複排除までは求められていない（「おおざっぱ」で足りる）。
+
+`#if DEBUG && false` や `#if false` で無効化されたコードは、削除前に依存する型・API が現行 `Sources` に残っているか `grep` で確認する。残っていなければ「復活不可能」と判断してよいが、削除前にどんな観点を検証していたかを `Current handoff` へ要約してから削除する（残っていれば別ファイルへ移設のうえ復活を検討する）。似た名前のテストが `unsafeTree/`・`old/` 配下に現役で存在する場合は、旧版が既に移植済みの遺物である可能性を確認してから削除する。
+
 ## Swift Testing isolation
 
 Swift Testing は GitHub Actions 上で test discovery や exit test に問題が起きることがあるため、通常の XCTest ベースの Test as Spec から隔離し続ける。
@@ -175,6 +185,8 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 5. コミット可能な状態になってから次のカテゴリへ進む。
 
 テスト数は、重複ケースの統合や旧ファイル削除で減ることがある。件数ではなく、公開仕様の欠落がないことと全テスト失敗 0 を基準にする。
+
+互換ファイル(`*AtCoder2025CompatibilityTests.swift`)側の内容に変更が及ぶ場合は、`Package.swift` の `COMPATIBLE_ATCODER_2025` を一時的に有効化してビルド・テストを確認する。確認順は 通常モード → 互換モード有効化 → 通常モードへ復帰 の3段階で十分（互換確認後に再度全テストを流す必要はない）。小さな変更を積み重ねているだけのときはこの互換確認を省略してよい。
 
 長時間のセッションでは、残量 10% 付近で新しいカテゴリへの着手を止める。最後の 5% は、全体テスト、`Current handoff` の更新、次回の開始地点の明記、コミット可能な状態の確認に使う。作業量を増やすためにこの振り返り時間を使い切らないこと。
 
@@ -292,3 +304,7 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   - `tree/`フォルダは完全に空になったため削除。
   - 検証: 通常モード → `COMPATIBLE_ATCODER_2025`有効化 → 通常モードの3段階、両モードともビルド成功。通常モード/互換モードとも1075件中0失敗(通常817成功、互換687成功・5スキップ既知)を確認。フラグは通常モードへ復帰済み。
   - **`tree/`フォルダは完全に棚卸し完了・削除。** 現役の後継(`unsafeTree/old/___RedBlackTreeContainerTests_unsafe.swift`)は内部向けテストのため今回は不問(後回し)。次はユーザー指示待ち。
+- (2026-09-29 17:00) ユーザー指示(優先事項)により、この文書自体の規定(`## Test as Specification`以降)をここまでの作業成果に合わせて更新:
+  - `## Test as Specification` に「旧フォルダ監査時の内部/外部トリアージ」節を新設。外部テスト(`@testable`不使用、公開APIのみ)/テストサポート(実テストを持たない共有extension・フィクスチャ)/内部向けテスト(`@testable`+`___`内部API直叩き)の3分類と、それぞれの行き先(型別連番、`RedBlackTreeTestSupport/`、`RedBlackTreeInternal/`または後回し)を明文化。`#if DEBUG && false`等の死んだコードは削除前に依存APIの現存確認と`Current handoff`への要約を必須とする運用も追記(ManagedBufferTests.swift・mini-storage.swift・ArrayTreeDebug.swiftの3件で実際に踏んだ手順)。
+  - `## Safe migration workflow` に互換モード確認の手順(通常→互換→通常の3段階、互換後の再確認は不要、小変更の積み重ね時は省略可)を追記。ユーザーの連絡事項に既にあった内容をルール本文にも反映し、ユーザー記入欄が将来整理されても手順が失われないようにした。
+  - ユーザー記入欄(`内部区分`等の新設タクソノミー)はユーザー専用領域のため今回は変更していない。

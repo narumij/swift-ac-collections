@@ -330,3 +330,6 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   - **保留事項に追加**: `Base.___ptr_range_comp`/`__element_`の内部検証がDictionary/MultiMapに存在しない(4型横展開の欠落の一例)。着手時は`RedBlackTreeInternal_SetBaseTests.swift`を土台に、Dictionary/MultiMap版の`___ptr_range_comp`/`__element_`検証を追加する。
   - 検証: 通常モードのみ(内容変更なし、互換コード不関与のため省略)。ビルド成功、全体テスト1067件817成功・0失敗を確認。
   - **`base/`フォルダの棚卸しはこれで完了。**
+- (2026-09-29 17:20) `sealed/`フォルダの最後の残置ファイル`PurifiedTests.swift`(内部向け、`@testable`で`__purified_`/sealing機構を検証)を再監査。`old/`の教訓を踏まえ、他ファイルからの参照有無(`grep`で無し)と依存型`_LazyTieWrap`/`_NodePtrSealing`/`SealError`が現行Sourcesに健在であることを再確認した上で、`RedBlackTreeInternal_PurifiedTests.swift`として`RedBlackTreeInternal/`へ移設(内容無改変)。`sealed/`フォルダは完全に空になり削除。
+  - 検証: 通常モードのみ(内容変更なし、互換コード不関与のため省略)。ビルド成功、全体テスト1067件817成功・0失敗を確認。
+  - **`sealed/`フォルダの棚卸しはこれで完全に完了。** 次は`unsafeTree/`(`Legacy/unsafeTree-old/`を除く現役14ファイル)の作戦会議。

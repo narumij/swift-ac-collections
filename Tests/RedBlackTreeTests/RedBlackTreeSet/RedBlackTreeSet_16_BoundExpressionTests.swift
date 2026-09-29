@@ -339,5 +339,34 @@
       let view = a[equalRange(1)]
       XCTAssertEqual(Array(view), [1])
     }
+
+    /// 単一のBoundExpressionによる添字アクセスが対応する要素(またはendではnil)を返すこと
+    func testSingleBoundSubscriptReturnsElementOrNilAtEnd() throws {
+      let multiplesOfFive = RedBlackTreeSet<Int>((0..<100).filter { $0 % 5 == 0 })
+
+      XCTAssertEqual(multiplesOfFive[.start], 0)
+      XCTAssertEqual(multiplesOfFive[.lowerBound(0)], 0)
+      XCTAssertEqual(multiplesOfFive[.lowerBound(3)], 5)
+      XCTAssertEqual(multiplesOfFive[.upperBound(5)], 10)
+      XCTAssertNil(multiplesOfFive[.end])
+    }
+
+    #if DEBUG
+      /// 別の木由来のindexを内包したBoundExpressionが、ALLOW_CROSS_TREE_INDEXの設定通りに解決されること
+      func testBoundExpressionFromAnotherTreeResolvesAccordingToCrossTreeIndexTrait() throws {
+        let other = RedBlackTreeSet<Int>(0..<3)
+
+        for i in 0..<3 {
+          let otherBound = RedBlackTreeBoundExpression<Int>.index(
+            other.index(other.startIndex, offsetBy: i))
+
+          #if ALLOW_CROSS_TREE_INDEX
+            XCTAssertNotNil(a[otherBound])
+          #else
+            XCTAssertNil(a[otherBound])
+          #endif
+        }
+      }
+    #endif
   }
 #endif

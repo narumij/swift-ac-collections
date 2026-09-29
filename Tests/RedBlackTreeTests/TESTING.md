@@ -168,3 +168,18 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   - 残り(空/空の境界値ケース、標準Sequence・ClosedRangeなどSequenceオーバーロード経由で実質同一コードパスのケース)は重複と判断し移管せず。旧ファイル削除(他ファイルからの参照なしを確認済み)。
   - ビルド成功、関連テスト31件成功、全体テスト606成功・0失敗・2既知スキップを確認。
 - (2026-09-29 05:35) ユーザー指示により`EtcTests.swift`(1162行)は**ファイル自体を残す**方針(「なんかあるとつい触るやつ」)。内容の重複整理をする場合も、ファイルを完全に空にして削除するのではなく、ファイルは存在させたまま内容を整理する。
+- (2026-09-29 12:15) `EtcTests.swift`(1162行、約60メソッド)の棚卸しが完了。他フォルダと同じ基準で重複・死んだコード・プレーンSwift標準型のノイズ(stdlib `Set`/`Array`/`Dictionary`単体の検証、`#if false`相当や`throw XCTSkip()`直後で無効化されていたコード、意味の薄い自明な内部不変条件チェックなど)を削除。新規性のあった8点を連番側/型別`_98`へ移管:
+  - イテレータが作成後の base 変更に対してスナップショットを保持し続けるCoW挙動(`testItertor`) → `_1_SequenceTests.swift`に`test_iterator_retainsSnapshotAfterBaseCollectionIsMutated`として追加
+  - RangeView上の`erase(where:)`がコピーを起こさないこと・別変数化したRangeViewは1回だけコピーしてbaseに影響しないこと(`testRemoveBounds`/`testRemoveBounds2`) → `_98_CopyOnWriteTests.swift`に2件追加
+  - スロット再利用後の世代違いIndexが`isElement(at:)`で正しく拒否されること(`testIndexStale`を単純化) → `_98_IndexValidityXCTests.swift`に追加
+  - 内部`__emplace_hint_unique`のヒント付き新規/重複挿入(`testNoKeyEmplaceHintUnique`) → `_98_RemovalInternalXCTests.swift`に追加(ファイル名はRemoval由来だが`@testable`内部API検証の既存の置き場所のため踏襲)
+  - 内部`__find_equal(hint:)`の全分岐カバレッジ(`testFindHintEqualCoverage`) → 同上ファイルに追加
+  - 削除済みスロットがバケット追加なしに再利用され続けること、`removeAll(keepingCapacity:)`の有無でfreshBucket/capacityの挙動が変わること(`testRoundTrip`/`testRoundTrip2`/`testRoundTrip3`) → 同上ファイルに3件追加(`freshBucketHead`/`freshPoolActualCapacity`の検証は連番側に元々皆無だった)
+  - 単一BoundExpression(`.start`/`.lowerBound`/`.upperBound`/`.end`)による添字アクセスが要素またはnilを返すこと(`testBound`) → `_16_BoundExpressionTests.swift`に追加
+  - 別ツリー由来のIndexを含むBoundExpressionがALLOW_CROSS_TREE_INDEXの設定通りに解決されること(`testBoundCrossIndexing`を単純化) → 同上ファイルに追加
+  - 不正な逆順区間の`reversed()`が無限ループを起こさず空を返すこと(`testChecked`)、`popFirst()`で消費し尽くした後の`unranged()`が正しい残り範囲を返すこと(`testRangeView`/`testRangeView2`) → `_17_RangeViewTests.swift`に2件追加
+  - Index自体のEquatable/Comparable/Hashable準拠(`testIndexEquatable`/`testIndexComparable`/`testIndexHashable`、連番側に一件もカバレッジが無かった) → `_9_ProtocolConformanceTests.swift`に3件追加
+  - ファイル末尾にあった未使用の`extension RedBlackTreeDictionary { emplace(hint:_:) }`は他箇所からの参照なしを確認の上削除。
+  - **ユーザー指示によりファイル自体は削除せず**、クラス定義と`setUpWithError`/`tearDownWithError`のみを残した空シェルとして保持。
+  - ビルド成功、全体テスト1124件(824成功・0失敗、残りは環境既知の"No result")を確認。
+- (2026-09-29 12:15) **ルート直下の`MergeTests.swift`・`DocumentCheckTests.swift`・`EtcTests.swift`の監査が全て完了。** 次のフォルダ着手はユーザー指示待ち。

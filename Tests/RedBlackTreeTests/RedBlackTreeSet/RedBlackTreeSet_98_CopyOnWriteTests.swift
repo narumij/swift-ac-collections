@@ -159,5 +159,30 @@ import XCTest
       }
     }
 
+    func testEraseWhereOnRangeViewOfSharedTreeDoesNotCopy() throws {
+      var set = RedBlackTreeSet<Int>(0..<20)
+
+      set[lowerBound(10).advanced(by: 2)..<end()].erase {
+        $0 % 2 == 0
+      }
+
+      XCTAssertEqual(set + [], (0..<20).filter { $0 < 12 || $0 % 2 != 0 })
+      XCTAssertEqual(set._copyCount, 0)
+    }
+
+    func testEraseWhereOnStandaloneRangeViewCopiesOnceButLeavesBaseUntouched() throws {
+      let set = RedBlackTreeSet<Int>(0..<20)
+      var range = set[lowerBound(10).advanced(by: 2)..<end()]
+
+      range.erase {
+        $0 % 2 == 0
+      }
+
+      // rangeが別変数として保持されているため、消去はrange側のみに反映され、setは変化しない
+      XCTAssertEqual(set + [], (0..<20) + [])
+      XCTAssertEqual(set._copyCount, 0)
+      XCTAssertEqual(range._copyCount, 1)
+    }
+
   }
 #endif

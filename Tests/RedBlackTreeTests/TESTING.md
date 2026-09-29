@@ -78,6 +78,28 @@ Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドがが�
 実際の挙動を実現しているもの。
 現在はUnsafeMutablePointerをベースにしている
 
+- 生バッファ層(仮名)
+
+木の生メモリを管理するもの
+
+- 生木層(仮名)
+
+木を形成しているFacade及びその内部のもの
+
+- (なんかいい名前ください)層(仮名)
+
+IndexやRangeやIteratorの内部に該当するもの
+
+- View層（外部）(仮名)
+
+MutableSubrangeを実現しているもの
+
+- 4型層（外部）(仮名)
+
+Set,MultiSet,MultiMap,Dictionary
+
+<!-- TBD -->
+
 ### 用語
 
 生木 -> UnsafeTreeV2

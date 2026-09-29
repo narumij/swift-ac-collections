@@ -58,7 +58,7 @@
 
 <!-- ユーザー記入欄ここまで -->
 
-## Test as Spec
+## Test as Specification
 
 型名のディレクトリにある連番付きテストを、公開 API の現行仕様を示す正本（Test as Spec）とする。
 

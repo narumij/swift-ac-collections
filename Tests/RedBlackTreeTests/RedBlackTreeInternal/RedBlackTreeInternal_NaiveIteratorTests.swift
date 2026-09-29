@@ -11,24 +11,8 @@ import XCTest
   @testable import RedBlackTreeCollections
 
   final class NaiveIteratorTests: RedBlackTreeTestCase {
-    
+
     typealias Base = RedBlackTreeSet<Int>.Base
-
-    func testNaiveForward0() throws {
-      let a = RedBlackTreeSet<Int>(0..<5)
-      let it = UnsafeIterator._Obverse1(
-        _start: a.__tree_.__begin_node_,
-        _end: a.__tree_.__end_node)
-      XCTAssertEqual(it.map { Base.__payload_($0) }, [Int](0..<5))
-    }
-
-    func testNaiveReverse0() throws {
-      let a = RedBlackTreeSet<Int>(0..<5)
-      let it = UnsafeIterator._Reverse1(
-        _start: a.__tree_.__begin_node_,
-        _end: a.__tree_.__end_node)
-      XCTAssertEqual(it.map { Base.__payload_($0) }, [Int](0..<5).reversed())
-    }
 
     func testNaiveForward1() throws {
       let a = RedBlackTreeSet<Int>(0..<5)

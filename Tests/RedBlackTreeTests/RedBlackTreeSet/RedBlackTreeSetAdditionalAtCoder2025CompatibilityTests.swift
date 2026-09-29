@@ -373,6 +373,33 @@ import XCTest
       }
     }
 
+    /// forEach { i, v in } の逆順版が、集合全体・RangeView・空範囲のいずれでも正しい順序で列挙すること
+    func testReversedForEach_enumeration() throws {
+      let a = RedBlackTreeSet<Int>([0, 1, 2])
+
+      var whole = [Int]()
+      a.reversed().forEach { i, v in whole.append(v) }
+      XCTAssertEqual(whole, [2, 1, 0])
+
+      var range = [Int]()
+      a[a.startIndex..<a.endIndex].reversed().forEach { i, v in range.append(v) }
+      XCTAssertEqual(range, [2, 1, 0])
+
+      var empty = [Int]()
+      a[a.endIndex..<a.endIndex].reversed().forEach { i, v in empty.append(v) }
+      XCTAssertEqual(empty, [])
+    }
+
+    /// Index同士の差分(-)・オフセット加算(+)・distance(to:)が一貫した距離を返すこと(互換専用の演算子)
+    func testIndexArithmeticOperatorsAndDistanceTo() throws {
+      let b: RedBlackTreeSet<Int> = [1, 2, 3, 4]
+
+      XCTAssertEqual(b.endIndex.distance(to: b.startIndex), -4)
+      XCTAssertEqual(b.endIndex - b.startIndex, 4)
+      XCTAssertEqual(b.startIndex + 4, b.endIndex)
+      XCTAssertEqual(b.endIndex - 4, b.startIndex)
+    }
+
     func testInitNaive_with_Sequence() throws {
       let source = [0, 1, 2, 3, 4, 5]
       let a = RedBlackTreeSet<Int>(naive: AnySequence(source))

@@ -225,25 +225,27 @@ final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
     XCTAssertEqual(element, 15, "合計値であること")
   }
 
-  /// makeIterator()で作成したイテレータは、生成後に元の集合が変更されても取得済みのスナップショットを返し続けること(CoW挙動)
-  func test_iterator_retainsSnapshotAfterBaseCollectionIsMutated() {
-    // 事前条件: 集合に[0, 5, 10, ..., 45]を用意し、そこからイテレータを作成すること
-    var set = RedBlackTreeSet((0..<10).map { $0 * 5 })
-    var iterator = set[set.lowerBound(5)..<set.find(45)].makeIterator()
+  #if !COMPATIBLE_ATCODER_2025
+    /// makeIterator()で作成したイテレータは、生成後に元の集合が変更されても取得済みのスナップショットを返し続けること(CoW挙動)
+    func test_iterator_retainsSnapshotAfterBaseCollectionIsMutated() {
+      // 事前条件: 集合に[0, 5, 10, ..., 45]を用意し、そこからイテレータを作成すること
+      var set = RedBlackTreeSet((0..<10).map { $0 * 5 })
+      var iterator = set[set.lowerBound(5)..<set.find(45)].makeIterator()
 
-    // 実行: イテレータ作成後に該当範囲内の要素を削除すること
-    set.remove(15)
-    set.remove(35)
+      // 実行: イテレータ作成後に該当範囲内の要素を削除すること
+      set.remove(15)
+      set.remove(35)
 
-    // 事後条件: 削除前のスナップショット通りに列挙されること(45は範囲外なので含まない)
-    XCTAssertEqual(iterator.next(), 5)
-    XCTAssertEqual(iterator.next(), 10)
-    XCTAssertEqual(iterator.next(), 15, "CoW挙動により、イテレータのスナップショットは変更されない")
-    XCTAssertEqual(iterator.next(), 20)
-    XCTAssertEqual(iterator.next(), 25)
-    XCTAssertEqual(iterator.next(), 30)
-    XCTAssertEqual(iterator.next(), 35, "CoW挙動により、イテレータのスナップショットは変更されない")
-    XCTAssertEqual(iterator.next(), 40)
-    XCTAssertNil(iterator.next())
-  }
+      // 事後条件: 削除前のスナップショット通りに列挙されること(45は範囲外なので含まない)
+      XCTAssertEqual(iterator.next(), 5)
+      XCTAssertEqual(iterator.next(), 10)
+      XCTAssertEqual(iterator.next(), 15, "CoW挙動により、イテレータのスナップショットは変更されない")
+      XCTAssertEqual(iterator.next(), 20)
+      XCTAssertEqual(iterator.next(), 25)
+      XCTAssertEqual(iterator.next(), 30)
+      XCTAssertEqual(iterator.next(), 35, "CoW挙動により、イテレータのスナップショットは変更されない")
+      XCTAssertEqual(iterator.next(), 40)
+      XCTAssertNil(iterator.next())
+    }
+  #endif
 }

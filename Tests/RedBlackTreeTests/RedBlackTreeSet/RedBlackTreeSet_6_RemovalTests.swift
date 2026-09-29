@@ -137,6 +137,32 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     }
   #endif
 
+  /// removeAll(keepingCapacity:) が保持していた参照型要素を正しく解放すること(二重解放やリークがないこと)
+  func test_removeAllKeepingCapacity_releasesRetainedReferenceElements() {
+    final class DeinitializeCounter: Comparable {
+      static func < (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num < rhs.num
+      }
+      static func == (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num == rhs.num
+      }
+      nonisolated(unsafe) static var count = 0
+      let num: Int
+      init(num: Int) {
+        self.num = num
+        Self.count += 1
+      }
+      deinit { Self.count -= 1 }
+    }
+
+    var set = RedBlackTreeSet<DeinitializeCounter>((0..<3).map { DeinitializeCounter(num: $0) })
+    XCTAssertEqual(DeinitializeCounter.count, 3)
+
+    set.removeAll(keepingCapacity: true)
+
+    XCTAssertEqual(DeinitializeCounter.count, 0)
+  }
+
   /// remove(_:) が整数型の最小値と最大値も削除できること
   func test_removeIntegerLimits() {
     var set: RedBlackTreeSet = [Int.min, Int.max]

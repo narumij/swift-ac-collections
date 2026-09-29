@@ -76,6 +76,32 @@ final class RedBlackTreeSetPerformanceTests: RedBlackTreeTestCase {
       }
     }
 
+    func testPerformanceEraseFullRange() throws {
+      self.measure {
+        var set = RedBlackTreeSet<Int>(0..<10_000_000)
+        #if COMPATIBLE_ATCODER_2025
+          set.removeSubrange(set.startIndex..<set.endIndex)
+        #else
+          set.erase(set.startIndex..<set.endIndex)
+        #endif
+      }
+    }
+
+    func testPerformanceEquatable() throws {
+      let set1 = RedBlackTreeSet<Int>(0..<10_000_000)
+      let set2 = RedBlackTreeSet<Int>(0..<10_000_000)
+      self.measure {
+        _ = set1 == set2
+      }
+    }
+
+    func testPerformanceFirstWhere() throws {
+      let set = RedBlackTreeSet<Int>(0..<10_000_000)
+      self.measure {
+        _ = set.first { $0 > 10_000_000 }
+      }
+    }
+
     #if PERFOMANCE_CHECK
       func testPerformanceInit1() throws {
         self.measure {

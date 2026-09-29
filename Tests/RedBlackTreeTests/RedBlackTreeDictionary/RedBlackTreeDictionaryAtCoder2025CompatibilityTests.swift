@@ -395,5 +395,25 @@ import XCTest
         p = p?.next
       }
     }
+
+    /// keys()/values()(互換専用の関数呼び出し形式)の reversed() が、外側適用・内側適用のどちらでも同じ結果になること
+    func testKeysAndValuesFunctionStyleReversed() throws {
+      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
+        ("a", 0), ("b", 1), ("c", 2),
+      ])
+
+      XCTAssertEqual(
+        a[a.startIndex..<a.endIndex].reversed().keys().map { $0 },
+        a[a.startIndex..<a.endIndex].keys().reversed().map { $0 })
+      XCTAssertEqual(a[a.startIndex..<a.endIndex].reversed().keys().map { $0 }, ["c", "b", "a"])
+
+      XCTAssertEqual(
+        a[a.startIndex..<a.endIndex].reversed().values().map { $0 },
+        a[a.startIndex..<a.endIndex].values().reversed().map { $0 })
+      XCTAssertEqual(a[a.startIndex..<a.endIndex].reversed().values().map { $0 }, [2, 1, 0])
+
+      XCTAssertEqual(a[a.endIndex..<a.endIndex].reversed().keys().map { $0 }, [])
+      XCTAssertEqual(a[a.endIndex..<a.endIndex].values().reversed().map { $0 }, [])
+    }
   }
 #endif

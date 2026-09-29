@@ -77,6 +77,14 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.contains(1), "削除後、最初の要素はセットに含まれないこと")
   }
 
+  /// removeLast() が最後の要素を削除すること
+  func test_removeLast() {
+    var set = RedBlackTreeSet([1, 2, 3])
+    let removed = set.removeLast()
+
+    XCTAssertEqual(removed, 3, "最後の要素を削除すること")
+    XCTAssertEqual(set + [], [1, 2], "削除後、最後の要素はセットに含まれないこと")
+  }
 
   /// removeSubrange() が指定範囲の要素を削除すること
   func test_removeSubrange() {
@@ -100,6 +108,68 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
       set.removeAll()
     #endif
     XCTAssertTrue(set.isEmpty, "removeAll() 実行後、セットは空になること")
+  }
+
+  #if !COMPATIBLE_ATCODER_2025
+    /// erase(_:) が空範囲と集合の境界を含むすべての半開範囲を正しく削除すること
+    func test_erase_eachBoundedRange() {
+      let source = [1, 3, 5, 7, 9]
+
+      for lowerBound in 0..<10 {
+        for upperBound in lowerBound...10 {
+          var set = RedBlackTreeSet(source)
+          set.erase(set.lowerBound(lowerBound)..<set.upperBound(upperBound))
+
+          XCTAssertEqual(set + [], source.filter { !(lowerBound...upperBound).contains($0) })
+        }
+      }
+    }
+
+    /// removeAll(keepingCapacity:) が要素を消しつつ、指定時には確保容量を維持すること
+    func test_removeAllKeepingCapacity() {
+      var set = RedBlackTreeSet(0..<8)
+      let capacity = set.capacity
+
+      set.removeAll(keepingCapacity: true)
+
+      XCTAssertTrue(set.isEmpty)
+      XCTAssertEqual(set.capacity, capacity)
+    }
+  #endif
+
+  /// removeAll(keepingCapacity:) が保持していた参照型要素を正しく解放すること(二重解放やリークがないこと)
+  func test_removeAllKeepingCapacity_releasesRetainedReferenceElements() {
+    final class DeinitializeCounter: Comparable {
+      static func < (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num < rhs.num
+      }
+      static func == (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num == rhs.num
+      }
+      nonisolated(unsafe) static var count = 0
+      let num: Int
+      init(num: Int) {
+        self.num = num
+        Self.count += 1
+      }
+      deinit { Self.count -= 1 }
+    }
+
+    var set = RedBlackTreeSet<DeinitializeCounter>((0..<3).map { DeinitializeCounter(num: $0) })
+    XCTAssertEqual(DeinitializeCounter.count, 3)
+
+    set.removeAll(keepingCapacity: true)
+
+    XCTAssertEqual(DeinitializeCounter.count, 0)
+  }
+
+  /// remove(_:) が整数型の最小値と最大値も削除できること
+  func test_removeIntegerLimits() {
+    var set: RedBlackTreeSet = [Int.min, Int.max]
+
+    XCTAssertEqual(set.remove(Int.min), Int.min)
+    XCTAssertEqual(set.remove(Int.max), Int.max)
+    XCTAssertTrue(set.isEmpty)
   }
 
 }

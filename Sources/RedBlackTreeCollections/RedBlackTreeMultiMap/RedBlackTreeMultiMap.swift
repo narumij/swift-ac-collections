@@ -230,15 +230,15 @@ extension RedBlackTreeMultiMap {
 }
 
 #if !COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiMap {
-
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public func values(forKey key: Key) -> [_MappedValue] {
-      let (lo, hi) = __tree_.__equal_range_multi(key)
-      return __tree_.___copy_to_array(lo, hi) { Base.__mapped_value_($0) }
-    }
-  }
+//  extension RedBlackTreeMultiMap {
+//
+//    /// - Complexity: O(log *n*)
+//    @inlinable
+//    public func values(forKey key: Key) -> [_MappedValue] {
+//      let (lo, hi) = __tree_.__equal_range_multi(key)
+//      return __tree_.___copy_to_array(lo, hi) { Base.__mapped_value_($0) }
+//    }
+//  }
 #endif
 
 // MARK: - Insert
@@ -269,6 +269,42 @@ extension RedBlackTreeMultiMap {
     return (true, newMember)
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  // 結局復活してみた。でも少し変えた
+  extension RedBlackTreeMultiMap {
+
+    /// - Complexity: O(log *n*)
+    @inlinable
+    @discardableResult
+    public mutating func updateValue(_ newValue: Value, at ptr: Index) -> Value? {
+      __tree_.ensureUnique()
+      let unsealed = __tree_.__purified_(ptr).accessible
+      guard let p = unsealed.pointer
+      else { return nil }
+      let old = Base.__mapped_value_(p)
+      Base.__mapped_value_ptr(p).pointee = newValue
+      return old
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+extension RedBlackTreeMultiMap {
+  
+  @inlinable
+  @discardableResult
+  public mutating func insert(_ newMember: Element, hint: Index) -> Index {
+    __tree_.ensureUniqueAndCapacity()
+    let p = __tree_.__purified_(hint)
+    guard let __p = p.pointer else {
+      fatalError(.invalidIndex)
+    }
+    let __r = __tree_.__emplace_hint_multi(__p, Base.__payload_(newMember))
+    return __tree_.index(__r)
+  }
+}
+#endif
 
 // MARK: - Remove（削除）
 

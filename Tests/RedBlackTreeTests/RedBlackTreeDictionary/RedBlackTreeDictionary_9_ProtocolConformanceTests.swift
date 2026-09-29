@@ -86,6 +86,15 @@ extension RedBlackTreeDictionaryProtocolConformanceTests {
     let b: RedBlackTreeDictionary<Int, String> = [1: "b"]
     XCTAssertNotEqual(a, b)
   }
+
+  func test_equatable_rangeViewsFromDifferentTreesCompareByElements() {
+    let aa = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: (0...5).map { ($0, $0) })
+    let bb = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: (3...8).map { ($0, $0) })
+
+    XCTAssertEqual(aa[aa.lowerBound(3)..<aa.lowerBound(6)], bb[bb.lowerBound(3)..<bb.lowerBound(6)])
+    XCTAssertNotEqual(
+      aa[aa.lowerBound(2)..<aa.lowerBound(6)], bb[bb.lowerBound(3)..<bb.lowerBound(6)])
+  }
 }
 
 // MARK: - Comparable

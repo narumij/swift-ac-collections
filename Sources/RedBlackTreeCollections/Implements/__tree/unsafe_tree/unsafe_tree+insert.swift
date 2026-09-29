@@ -36,7 +36,7 @@ protocol InsertNodeAtProtocol_ptr:
 extension InsertNodeAtProtocol_ptr {
 
   @inlinable
-//  @inline(never)
+  //  @inline(never)
   internal func
     __insert_node_at(
       _ __parent: _NodePtr, _ __child: _NodeRef,
@@ -73,7 +73,7 @@ protocol InsertUniqueProtocol_ptr:
 extension InsertUniqueProtocol_ptr {
 
   @inlinable
-//  @inline(never)
+  //  @inline(never)
   internal func
     __insert_unique(_ x: _PayloadValue) -> (__r: _NodePtr, __inserted: Bool)
   {
@@ -81,7 +81,7 @@ extension InsertUniqueProtocol_ptr {
   }
 
   @inlinable
-//  @inline(never)
+  //  @inline(never)
   internal func
     __emplace_unique_key_args(_ __k: _PayloadValue)
     -> (__r: _NodePtr, __inserted: Bool)
@@ -102,7 +102,8 @@ extension InsertUniqueProtocol_ptr {
 }
 
 @usableFromInline
-protocol InsertMultiProtocol: AllocationInterface & _TreePayloadValue_KeyInterface & FindLeafInterface
+protocol InsertMultiProtocol: AllocationInterface & _TreePayloadValue_KeyInterface
+    & FindLeafInterface
     & InsertNodeAtInterface & NullPtrInterface
 {}
 
@@ -138,7 +139,7 @@ protocol InsertLastProtocol_ptr:
 {}
 
 extension InsertLastProtocol_ptr {
-  
+
   @inlinable
   internal func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef) {
     if __root == nullptr {
@@ -147,11 +148,11 @@ extension InsertLastProtocol_ptr {
     let __parent = __tree_max(__root)
     return (__parent, __parent.__right_ref)
   }
-  
+
   @inlinable
   internal func
-  ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue)
-  -> (__parent: _NodePtr, __child: _NodeRef)
+    ___emplace_hint_right(_ __parent: _NodePtr, _ __child: _NodeRef, _ __k: _PayloadValue)
+    -> (__parent: _NodePtr, __child: _NodeRef)
   {
     let __p = __construct_node(__k)
     __insert_node_at(__parent, __child, __p)
@@ -160,27 +161,166 @@ extension InsertLastProtocol_ptr {
 }
 
 #if false
-extension InsertLastProtocol_ptr {
+  extension InsertLastProtocol_ptr {
 
-  // 資料的に残してある
-  //
-  // こちらのほうがAPIとしては収まりがいいが、かすかに上のモノの方が速い
-  // 分岐の有無の差だとおもわれる
+    // 資料的に残してある
+    //
+    // こちらのほうがAPIとしては収まりがいいが、かすかに上のモノの方が速い
+    // 分岐の有無の差だとおもわれる
+    @inlinable
+    internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
+      let __child = __p == end ? __end_node.__left_ref : __p.__right_ref
+      //                        ^--- これの差
+      let __h = __construct_node(__k)
+      __insert_node_at(__p, __child, __h)
+      return __h
+    }
+
+    @inlinable
+    internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
+      let __child = __p.__left_ref
+      let __h = __construct_node(__k)
+      __insert_node_at(__p, __child, __h)
+      return __h
+    }
+  }
+#endif
+
+// MARK: -
+
+@usableFromInline
+protocol EmplaceHintUniqueProtocol_ptr:
+  _UnsafeNodePtrType
+    & _TreePayloadValue_KeyInterface
+    & _TreeNode_KeyInterface
+    & InsertNodeAtInterface
+    & FindHintEqualInterface
+    & AllocationInterface
+    & DellocationInterface
+    & NullPtrInterface
+{}
+
+extension EmplaceHintUniqueProtocol_ptr {
+
+  // キー無しのケースはC++の事情によるもので、Comparable割り切りのSwift版では不要
+  // 以下は資料として残して、分割版を使うこととする
   @inlinable
-  internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
-    let __child = __p == end ? __end_node.__left_ref : __p.__right_ref
-    //                        ^--- これの差
-    let __h = __construct_node(__k)
-    __insert_node_at(__p, __child, __h)
-    return __h
+  internal func __emplace_hint_unique(
+    _ __p: _NodePtr, _ __k: @autoclosure () -> _Key?, _ __v: @autoclosure () -> _PayloadValue
+  )
+    -> (__r: _NodePtr, __inserted: Bool)
+  {
+
+    if let __key = __k() {
+      var __dummy = nullptr
+      // 簡略記法もあるが、ここが若干あぶないことに気づけるよう、with記法を採用
+      let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
+        __find_equal(__p, __dummy, __key)
+      }
+      var __r = __child.pointee
+      var __inserted = false
+      if __child.pointee == nullptr {
+        let __h = __construct_node(__v())
+        __insert_node_at(__parent, __child, __h)
+        __r = __h
+        __inserted = true
+      }
+      return (__r, __inserted)
+    } else {
+      let __h = __construct_node(__v())
+      var __dummy = nullptr
+      let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
+        __find_equal(__p, __dummy, __get_value(__h))
+      }
+      var __r = __child.pointee
+      var __inserted = false
+      if __child.pointee == nullptr {
+        __insert_node_at(__parent, __child, __h)
+        __r = __h
+        __inserted = true
+      } else {
+        destroy(__h)
+      }
+      return (__r, __inserted)
+    }
   }
 
+  // 実際に使う分割前半バージョン
   @inlinable
-  internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
-    let __child = __p.__left_ref
-    let __h = __construct_node(__k)
-    __insert_node_at(__p, __child, __h)
+  internal func ___emplace_hint_unique_(
+    _ __p: _NodePtr, _ __key: @autoclosure () -> _Key, _ __v: @autoclosure () -> _PayloadValue
+  )
+    -> (__r: _NodePtr, __inserted: Bool)
+  {
+    var __dummy = nullptr
+    // 簡略記法もあるが、ここが若干あぶないことに気づけるよう、with記法を採用
+    let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
+      __find_equal(__p, __dummy, __key())
+    }
+    var __r = __child.pointee
+    var __inserted = false
+    if __child.pointee == nullptr {
+      let __h = __construct_node(__v())
+      __insert_node_at(__parent, __child, __h)
+      __r = __h
+      __inserted = true
+    }
+    return (__r, __inserted)
+  }
+
+  #if false
+    // __get_valueでしかキーが取れないケースに使う分割後半バージョン
+    @inlinable
+    internal func ___emplace_hint_unique_(
+      _ __p: _NodePtr,
+      _ __v: @autoclosure () -> _PayloadValue
+    ) -> (__r: _NodePtr, __inserted: Bool) {
+      let __h = __construct_node(__v())
+
+      var __dummy = nullptr
+
+      // 簡略記法もあるが、ここが若干あぶないことに気づけるよう、with記法を採用
+      let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
+        __find_equal(__p, __dummy, __get_value(__h))
+      }
+
+      var __r = __child.pointee
+      var __inserted = false
+
+      if __child.pointee == nullptr {
+        __insert_node_at(__parent, __child, __h)
+        __r = __h
+        __inserted = true
+      } else {
+        destroy(__h)
+      }
+
+      return (__r, __inserted)
+    }
+  #endif
+}
+
+@usableFromInline
+protocol EmplaceHintMultiProtocol_ptr:
+  _UnsafeNodePtrType
+    & _TreePayloadValue_KeyInterface
+    & _TreeNode_KeyInterface
+    & InsertNodeAtInterface
+    & FindHintLeafInterface
+    & AllocationInterface
+    & NullPtrInterface
+{}
+
+extension EmplaceHintMultiProtocol_ptr {
+
+  @inlinable
+  internal func __emplace_hint_multi(_ __p: _NodePtr, _ value: @autoclosure () -> _PayloadValue)
+    -> _NodePtr
+  {
+    let __h = __construct_node(value())
+    var parent = nullptr
+    let __child = __find_leaf(__p, &parent, __get_value(__h))
+    __insert_node_at(parent, __child, __h)
     return __h
   }
 }
-#endif

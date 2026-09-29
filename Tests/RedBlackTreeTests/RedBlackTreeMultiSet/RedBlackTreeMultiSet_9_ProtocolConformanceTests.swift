@@ -80,6 +80,15 @@ extension RedBlackTreeMultiSetProtocolConformanceTests {
     let b: RedBlackTreeMultiSet = [1, 2, 3]
     XCTAssertNotEqual(a, b)
   }
+
+  func test_equatable_rangeViewsFromDifferentTreesCompareByElements() {
+    let aa = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5])
+    let bb = RedBlackTreeMultiSet<Int>([3, 4, 5, 6, 7, 8])
+
+    XCTAssertEqual(aa[aa.lowerBound(3)..<aa.lowerBound(6)], bb[bb.lowerBound(3)..<bb.lowerBound(6)])
+    XCTAssertNotEqual(
+      aa[aa.lowerBound(2)..<aa.lowerBound(6)], bb[bb.lowerBound(3)..<bb.lowerBound(6)])
+  }
 }
 
 // MARK: - Comparable
@@ -91,6 +100,14 @@ extension RedBlackTreeMultiSetProtocolConformanceTests {
 
     XCTAssertTrue(a < b)
     XCTAssertFalse(b < a)
+  }
+
+  func test_comparable_rangeViewsFromDifferentTreesOrderByElements() {
+    let aa = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4, 5])
+    let bb = RedBlackTreeMultiSet<Int>([3, 4, 5, 6, 7, 8])
+
+    XCTAssertTrue(aa[aa.lowerBound(2)..<aa.lowerBound(6)] < bb[bb.lowerBound(3)..<bb.lowerBound(6)])
+    XCTAssertFalse(bb[bb.lowerBound(3)..<bb.lowerBound(6)] < aa[aa.lowerBound(2)..<aa.lowerBound(6)])
   }
 }
 

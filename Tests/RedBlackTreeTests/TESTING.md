@@ -1,0 +1,345 @@
+<!-- CodexとClaudeによるCodexとClaudeのためのメモ -->
+
+# RedBlackTreeTests maintenance notes
+
+## User requests for the next session
+
+リセット待ち・休憩中に、次回の作業で優先してほしい内容をユーザーが書く欄。この欄に記載がある場合、Codex及びClaude は `Current handoff` より先に読み、最新のユーザー要望として優先する。完了した項目を CodexやClaude が勝手に削除せず、完了したことを追記するか、ユーザー確認後に整理する。
+
+記入例:
+
+- 最優先で扱うフォルダまたはファイル
+- 残してほしいテスト、削除してよい重複
+- Swift Testing / XCTest / compatibility の配置に関する希望
+- テストが通った時点で止める、残量何%で休憩する、といった停止条件
+- 次回まで保留した判断や気になっている破損
+
+<!-- ユーザー記入欄: この下へ追記 -->
+
+### ビジョン
+
+- 作業都合で書き散らかしたテストコードをAI達に整理整頓してもらう日常にしたい
+- AI達が追加したテストコードで仕様不備やバグが発見できるとなおよい
+
+### 優先事項
+
+- この文書の規定自体が一部古くなってきているので、Claudeさんの作業成果を加味して更新すること
+- ABC, convenience, memoize, unsafeTreeは温存(unsafeTree/oldは除く)
+- 次の棚卸しはold, unsafeTree/oldあたりから
+- 今回の始業時の会話は省略可
+
+### 連絡事項
+
+- 5時間上限または週間利用上限で止まるとき、それまでの作業の感想も教えて欲しい
+- 最後に作業したモデルはモデル名とバージョンをどこかに記載すること
+- Codexさんはふりかえりの時間を確保すること
+- Claudeさんは始業時に会話の時間を確保すること
+- 小さな変更を積み重ねてるときは互換チェックをさぼっていい
+- テストコードのTODOで調査となっているものの対応
+- テスト修正が面倒くさいために互換維持している機能があり、テストの棚卸しのあとにこれの整理する
+- 内部構造をどのように区分するのか、勝手に判断しないこと
+- ユーザー記載欄に記入する場合、こちらが消す都合上、古さが分からないと困るので、日付に加えて時間も記載すること
+- 現行APIかどうか判断に迷った場合API-Matrix.mdに照らすこと
+- 互換チェック時、現行>互換>現行ではなく、現行>互換で十分です
+- 棚卸し済みテストについて、4型の横展開の必要がある
+- カバレッジが落ちてきてるので横展開と合わせてカバレッジ改善（90%目安)
+- `__tree`基本層のテスト再構築が欲しい。バランシングの試験ができるFixtureの用意と実施程度の初期段階で構わない
+- RedBlackTreeViewが必要そう
+- Test as Specで一応の品質は保てるが、言語や環境の挙動変更による影響やマジックナンバー等の取り扱いミスを検出できるようにする必要もある
+- 将来的に、連番等の整理整頓済みテストコードからは日本語の記述をなくしていき、AI負担を減らす。代わりに日本語訳のテストメソッド一覧を用意する
+
+### 停止条件
+
+- Codexの場合、利用上限が少ないセッションでは、新しい大きなカテゴリへ着手する前に、全体テスト・文書更新・振り返りに必要な余裕を確保する。
+
+### 保留中の判断・懸念
+
+- こちらでヒント系APIとAPI一覧を触ってるので、Test as Spec観点でチェックしてほしい
+- 内部構造をテスト観点でどのように区分するのか、まだ結論がでていない
+- insert(:hint:)やupdate(:hint:)等のヒント系APIのテストが不十分なまま
+- 生木へのテストを増やすと変更コストがかさむので、バランスに悩んでいる
+
+### 完了済みの要望
+
+### 内部区分
+
+(テスト用区分であり、ソースのフォルダレイアウトを規定するものではない）
+
+- `__tree`移植層
+`Sources/RedBlackTreeCollections/Implements/__tree`に配置されているもの
+
+- `__tree`基本層
+
+`__tree`移植層のうち、
+Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドが不要なもの、
+かつUnsafeMutablePointerが不要なもの
+
+- `__tree`応用層
+
+`__tree`移植層のうち、
+Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドがが必要となるもの
+かつUnsafeMutablePointerが不要なもの
+
+- 生ポ層(仮名)
+
+`Sources/RedBlackTreeCollections/Implements/__tree`のうち、
+実際の挙動を実現しているもの。
+現在はUnsafeMutablePointerをベースにしている
+
+- 生メモリ層(仮名)
+
+生メモリ操作を伴うもののうち、`__tree`移植層に含まれないもの
+
+- 生バッファ層(仮名)
+
+生メモリ層のうち、木の生メモリを管理するもの
+
+- 生木層(仮名)
+
+生メモリ層のうち、木を形成しているFacade及びその内部のもの
+
+- (なんかいい名前ください)層(仮名)
+
+IndexやRangeやIteratorの内部に該当するもの
+
+- View層（外部）(仮名)
+
+MutableSubrangeを実現しているもの
+
+- 4型層（外部）(仮名)
+
+Set,MultiSet,MultiMap,Dictionary
+
+<!-- TBD -->
+
+### 用語
+
+生木 -> UnsafeTreeV2
+生バッファ -> RawBufferのソースファイル群
+
+<!-- ユーザー記入欄ここまで -->
+
+## Test as Specification
+
+型名のディレクトリにある連番付きテストを、公開 API の現行仕様を示す正本（Test as Spec）とする。
+
+例:
+
+- `RedBlackTreeSet/RedBlackTreeSet_0_InitializationTests.swift`
+- `RedBlackTreeMultiSet/RedBlackTreeMultiSet_6_RemovalTests.swift`
+
+連番テストには、利用者が観測できる振る舞いを API の役割ごとに配置する。テスト名は、入力だけでなく保証される結果が読める名前にする。現行実装に存在しない API のために連番を埋める必要はない。
+
+旧フォルダのテストを整理するときは、単純に削除しない。現行の公開 API を検証しているケースが連番側に無ければ、現在の API と期待値に合わせて修正コピーしてから旧ケースを削除する。
+
+次のテストは連番へ無理に混ぜなくてよい。
+
+- `@testable` や `___`、内部 pointer などに依存する実装テスト
+- 性能、負荷、ファズ、回帰専用テスト
+- 互換モードだけに存在する API のテスト
+
+公開 API の precondition や不正 index を専用プロセスで検証する Death Test は、各型の連番 `_99_DeathTests.swift` に配置する。`DEATH_TEST` 条件は維持し、通常仕様と同じ場所から発見できるようにする。
+
+内部実装・coverage テストは `_98_*.swift` に分ける。まだ公開仕様・内部仕様・互換仕様の分類が済んでいない Swift Testing ベースのテストは、一時的に `_97_*.swift` へ置く。分類済みの公開 Death Test は `_99_DeathTests.swift` とする。通常の XCTest による Test as Spec と同じファイルへ混ぜず、GitHub Actions で問題が起きたときに Swift Testing 使用箇所をファイル名から絞り込めるようにする。
+
+### 旧フォルダ監査時の内部/外部トリアージ
+
+旧フォルダのファイルを1つずつ判定するときは、まず次の3種類に分ける。
+
+- **外部テスト**: `@testable import` を使わず公開 API のみで検証しているテスト。他フォルダと同じ厳密さで連番側/型別 `_98_*` と重複確認し、新規性があれば移植する。
+- **テストサポート**: `func test...` を1件も持たず、`isValid`/`_copyCount`/`___tree_invariant` のようなテスト専用 extension、フィクスチャ、アサーションヘルパーだけのファイル。`RedBlackTreeTestSupport/` へ内容そのまま移設する（型別に分ける必要はない）。紛らわしい `...Tests.swift` という名前がついている場合は `...Support.swift` などへ改称してよい。
+- **内部向けテスト**: `@testable import` を使い `___` 接頭辞の内部 API や生ポインタを直接検証しているテスト。ユーザーから明示的な指示がない限り後回しにする。複数型にまたがる internal 実装テストを整理する場合は `RedBlackTreeInternal/` へ集約してよいが、型別連番と同じ厳密な重複排除までは求められていない（「おおざっぱ」で足りる）。
+
+`#if DEBUG && false` や `#if false` で無効化されたコードは、削除前に依存する型・API が現行 `Sources` に残っているか `grep` で確認する。残っていなければ「復活不可能」と判断してよいが、削除前にどんな観点を検証していたかを `Current handoff` へ要約してから削除する（残っていれば別ファイルへ移設のうえ復活を検討する）。似た名前のテストが `unsafeTree/`・`old/` 配下に現役で存在する場合は、旧版が既に移植済みの遺物である可能性を確認してから削除する。
+
+## Swift Testing isolation
+
+Swift Testing は GitHub Actions 上で test discovery や exit test に問題が起きることがあるため、通常の XCTest ベースの Test as Spec から隔離し続ける。
+
+- `_97_*.swift`: 未分類の Swift Testing。内容を確認後、`_98`、`_99`、または compatibility file へ移す一時置き場。
+- `_98_*.swift`: 内部実装・coverage。Swift Testing を使う場合も公開仕様の連番テストへ混ぜない。
+- `_99_DeathTests.swift`: 公開 API の exit test。Swift Testing の `#expect(processExitsWith:)` が必要な範囲に限定する。
+- `*AtCoder2025CompatibilityTests.swift`: 互換モード専用の XCTest。`import Testing` や `@Test` を同居させない。
+- `*AtCoder2025CompatibilitySwiftTests.swift`: 互換モード専用の Swift Testing。exit test など Swift Testing が必要なケースだけを配置する。
+
+通常の成功系テストは XCTest で書く。Swift Testing を新たに通常連番へ追加しない。GitHub Actions で問題が起きた場合に `_97`、`_98`、`_99`、compatibility を個別に特定・除外できる配置を維持する。
+
+互換テストでも XCTest と Swift Testing を同じソースへ混在させない。ファイル名の `CompatibilityTests` と `CompatibilitySwiftTests` で test framework を判別できる状態を保つ。
+
+## AtCoder 2025 compatibility tests
+
+`COMPATIBLE_ATCODER_2025` 専用テストは、`*AtCoder2025CompatibilityTests.swift` に集約する。これらは互換モードを廃止するとき、検索して一括削除できることを目的としている。
+
+互換モードだけに存在する API を連番テストへ戻さない。現行と互換モードの両方にある API でも期待する挙動が異なる場合は、現行仕様を連番側、旧仕様を compatibility file 側に分ける。
+
+互換テストから連番側の test class を extension している場合がある。連番ファイルの移動や改名時は、`*AtCoder2025CompatibilityTests.swift` 内の extension 参照も確認する。
+
+## Safe migration workflow
+
+長時間の整理を壊れた状態で残さないため、次の単位を守る。
+
+1. 旧テストと現行 API を比較する。
+2. API の一カテゴリだけ連番側へ移す。
+3. Xcode のファイル診断でコンパイルエラーを確認する。
+4. 全テストを実行し、失敗が 0 であることを確認する。
+5. コミット可能な状態になってから次のカテゴリへ進む。
+
+テスト数は、重複ケースの統合や旧ファイル削除で減ることがある。件数ではなく、公開仕様の欠落がないことと全テスト失敗 0 を基準にする。
+
+互換ファイル(`*AtCoder2025CompatibilityTests.swift`)側の内容に変更が及ぶ場合は、`Package.swift` の `COMPATIBLE_ATCODER_2025` を一時的に有効化してビルド・テストを確認する。確認順は 通常モード → 互換モード有効化 → 通常モードへ復帰 の3段階で十分（互換確認後に再度全テストを流す必要はない）。小さな変更を積み重ねているだけのときはこの互換確認を省略してよい。
+
+長時間のセッションでは、残量 10% 付近で新しいカテゴリへの着手を止める。最後の 5% は、全体テスト、`Current handoff` の更新、次回の開始地点の明記、コミット可能な状態の確認に使う。作業量を増やすためにこの振り返り時間を使い切らないこと。
+
+## Current handoff
+
+- `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。旧 `set` フォルダの Swift テストは残っていない。
+- 旧 `set` フォルダにあった SetAlgebra、reserve-capacity、corner-case、bidirectional、removal、extended と巨大な `SetTests.swift` は監査・整理済み。公開仕様は連番へ、SetAlgebra stress、COW、pointer、performance、固定 seed の fuzz、removal stress、removal internal、raw index validity は型別 `_98`、互換仕様は型別 compatibility file へ移管した。再現不能なランダムテストは固定 seed fuzz で置換した。index-based range view は `_17_RangeViewTests.swift`、`elements(in:)` の現行要素範囲ビュー仕様は `_18_ElementRangeTests.swift`、参照型要素の `insert` / `update` identity は `_5_InsertionTests.swift`、現行 `filter` の戻り型は `_1_SequenceTests.swift` で仕様化している。
+- `COMPATIBLE_ATCODER_2025` を一時的に有効化した Debug 全体テストは 2026-09-28 に成功。`SetTests.swift` 整理後の最新結果は 968 成功・0 失敗・6 スキップ。通常モードも 1036 成功・0 失敗・1 スキップ。確認後、`Package.swift` は通常モードへ戻した。互換モードで懸念されていた `MultiMapEtcTests` に失敗は出なかった。
+- 旧 `SetTests` を土台にしていた9個の互換 extension と互換専用の element-range subscript/iteration は、`RedBlackTreeSetAdditionalAtCoder2025LegacyTests` へ閉じ込め済み。旧 `SetTests.swift` は削除済み。
+- ルート直下では `MergeTests.swift`、`DocumentCheckTests.swift`、`EtcTests.swift` などに Set 公開仕様が混在する。単純移動せず、他型のケースを残しながら Set ケースだけ連番側へ移植・整理する。
+- `BoundExpression` は公開 DSL として4型それぞれの `_16_BoundExpressionTests.swift` へ移管済み。旧 `boundsExpression` フォルダの Swift テストは残っていない。位置式、相対移動、limit、range expression、subscript、erase の既存仕様を型別 Test as Spec として維持する。DEBUG 専用の内部 validity を追加するときは `_98_InternalTests.swift` に置く。
+- `RedBlackTreeMultiSet` は initialization、sequence、bidirectional collection、index、search、insertion、removal、utility、range view、protocol conformance、set algebra、element range を連番化済み。`_98_*` に performance、fuzz(参照モデル比較+ツリー不変条件)、copy-on-write、removal stress/internal を型別に整備済み。
+- `RedBlackTreeDictionary` は initialization、sequence、index、search、insertion、removal、utility、range view、protocol conformance、Codable を連番化済み。
+- `RedBlackTreeMultiMap` は initialization、sequence（predicate、sorted、reversed を含む）、index、search、insertion、removal、utility、range view、protocol conformance、Codable、transforming and combining、element range を連番化済み。
+- `multimap` 以下の広範な旧テスト (`MultiMapBasicTest.swift`、`MultiMapAdvancedTest.swift`、`RedBlackTreeMultiMapTests.swift` とその removal extension、`RedBlackTreeMultiMapTests_.swift`、`MultiMapEtcTests.swift`、`MultiMapRemoveTests.swift`、`MultiMapViewTests.swift`) は、連番側への不足仕様の移植後に整理済み。互換 extension が必要とする test class と fixture は compatibility file 内へ閉じ込め、互換専用の range-index removal も同ファイルへ移した。
+- `multimap/` フォルダは2026-09-29に完全に棚卸し完了(下記参照)。次回はルート直下の `MergeTests.swift`、`DocumentCheckTests.swift`、`EtcTests.swift` に混在する Set 公開仕様の監査に進む。
+- Set、MultiSet、Dictionary、MultiMap の既存 Death Test は各型の `_99_DeathTests.swift` に移管済み。
+- `fatalError/Index` に残っていた空の `startIndex` と `endIndex` の Death Test、および `fatalError/etc` の空 collection に対する `removeFirst` / `removeLast`、Set の cross-tree range、削除済み index の再削除は各型の `_99_DeathTests.swift` へ移管済み。重複していた旧 range / fatal テストも整理済み。
+- 互換専用 iterator Death Test は `RedBlackTreeSetAtCoder2025CompatibilitySwiftTests.swift` へ移管済み。
+- Dictionary、MultiMap、MultiSet の `*AtCoder2025CompatibilityTests.swift` は、各型の Test as Spec フォルダへ移動済み。
+- `fatalError/etc` に残っていた通常成功系は XCTest の各型連番へ、内部 coverage / pointer precondition は各型または共有内部の `_98_*.swift` へ移管済み。旧 root `DeathTest.swift` の内容は Set の公開 precondition と確認できたため、`RedBlackTreeSet_99_AdditionalDeathTests.swift` へ分類済み。今後、既存 `_99_DeathTests.swift` との重複を小さい単位で統合する。
+- (2026-09-29 04:45) `multiset/` フォルダは棚卸し完了。旧ファイル(`MultisetPointerTests.swift`、`MultisetPerfomarnceTests.swift`、`MultisetCornerCaseTests.swift`、`MultisetCopyOnWriteTests.swift`、`MultisetRemoveTests.swift`、`MultisetTests.swift`)は全て削除し、`multiset/` フォルダ自体は0ファイル(空)。現行仕様は連番へ、内部実装・性能・fuzzは型別 `_98_*.swift` へ、互換専用コードは `RedBlackTreeMultiSetAtCoder2025CompatibilityTests.swift` 内の自己完結クラス(`RedBlackTreeMultisetPointerAtCoder2025LegacyTests`、`RedBlackTreeMultisetIndexRemovalLegacyTests`、`RedBlackTreeMultisetEtcLegacyTests` など)へ集約済み。
+- (2026-09-29 04:45) `dictionary/` フォルダは8ファイル中6ファイルを整理済み(残るは `DictionaryExtendedTests.swift`・`DictionaryRecoveredTests.swift`と本体 `DictionaryTests.swift`(1024行未着手)のみ)。`DictionaryRecoveredTests.swift` は `DictionaryTests.swift` 本体への `extension` で内容も既存 `_8_RangeViewTests.swift` と重複していたため、本体の監査と合わせて扱うのがよい。
+- (2026-09-29 04:45) **教訓**: `RedBlackTreeMultiSet+Deprecated.swift` は `.indices`、`___node_positions()`、`firstIndex(where:)` など複数のAPIが `#if COMPATIBLE_ATCODER_2025` ガード下にあり、`RedBlackTreeSet+Deprecated.swift` には同ガードがない場合がある(型ごとにガード範囲が異なる)。Set用の `_98_*.swift` を型を変えて流用するときは、使用する全APIを毎回 source で `grep` してから書くこと。現行APIかどうか迷ったら `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` に照らす。
+- (2026-09-29 04:45) 最後に作業したモデル: Claude(Sonnet 5、モデルID `claude-sonnet-5`)。dictionary・multiset フォルダの棚卸しを担当。ファイル削除は `rm` ではなく Xcode の `XcodeRM`(ゴミ箱へ移動)を使用。ビルド確認は Xcode の `BuildProject`/`RunSomeTests`/`RunAllTests` を使用(`swift build`/`swift test` の直接実行は使わない方針)。
+- (2026-09-29 04:58) `dictionary/DictionaryExtendedTests.swift`(merge/merging、literal初期化、popFirst、mapValues/compactMapValues/filter、CRUD+index無効化)を監査。全て既存連番(`_0`、`_5`、`_6`、`_7`、`_9`)と重複と判断し削除。唯一新規性のあった`testFuzzEquivalence`(Swift標準`Dictionary`との比較fuzz、固定seed)は、Dictionaryにまだ`_98_FuzzTests.swift`が無かったため新設して移管。互換ファイル側の空extension2つも削除。
+- (2026-09-29 04:58) `dictionary/DictionaryRecoveredTests.swift`(`extension DictionaryTests`、testSubsequence6/7・testRangeSubscript)を監査。全て既存`_8_RangeViewTests.swift`と重複と判断し削除(`DictionaryTests`本体は無傷)。
+- (2026-09-29 05:10) `dictionary/DictionaryTests.swift`本体(1024行、約60メソッド)を棚卸し。ほぼ全て既存連番(`_0`,`_1`,`_3`,`_4`,`_5`,`_6`,`_8`,`_9`)と重複、または無関係なプレーンSwift `Dictionary`のノイズ、または`#if DEBUG && false`で死んでいたコード(`testEnumeratedSequence1-4`)と判断し削除。新規性のあった5点を移管:
+  - `insert(_:hint:)`(TESTING.mdの保留中の判断に載っていた既知ギャップ)と`.insert(_:)`/`.insert(key:value:)` → `_5_InsertionTests.swift`
+  - `formIndex(after:)/(before:)`(連番側に一件もカバレッジが無かった) → `_3_IndexSequenceTests.swift`に`index(after:/before:)`との統合テストとして追加
+  - 生インデックスの妥当性検証(`.unsafe(tree:rawTag:)`、readOnly storage確認) → Setの`_98_IndexValidityXCTests.swift`と同じ構造で`RedBlackTreeDictionary_98_IndexValidityXCTests.swift`を新設
+  - RangeView同士(別ツリー由来)のEquatable → `_9_ProtocolConformanceTests.swift`
+  - 互換ファイル側の`extension DictionaryTests`(testSubsequence/2/5、testIndex100/10/11/12、testForEach_enumeration)は自己完結クラス`RedBlackTreeDictionaryEtcAtCoder2025LegacyTests`に集約(死んでいた`testSubsequence4`は削除)。空extension9つも削除。
+  - 本体ファイルは`XcodeRM`で削除。ビルド成功、関連テスト27件成功(新設の`_98_IndexValidityXCTests`4件は既存Setの同種ファイルと同様に本環境で「No result」——テスト検出の既知の環境挙動と判断、Set側も同じ状態のため新規ファイルの欠陥ではない)。
+- (2026-09-29 05:10) **`dictionary/`フォルダはこれで完全に空になった。Dictionaryの棚卸しは完了。** 次はユーザー指示により`multimap`フォルダに着手する。
+- (2026-09-29 05:24) `multimap/MultiMapPointerTests.swift`(30行、実質空のボイラープレート)を、他型と同じパターンで互換ファイル内の自己完結クラス`RedBlackTreeMultiMapPointerAtCoder2025LegacyTests`に変換。旧ファイル削除。
+- (2026-09-29 05:24) `multimap/MultiMapCopyOnWriteTests.swift`(232行、`AC_COLLECTIONS_INTERNAL_CHECKS`専用)を`RedBlackTreeMultiMap_98_CopyOnWriteTests.swift`へ移動(クラス名`MultiMapCopyOnWriteTests`→`RedBlackTreeMultiMapCopyOnWriteTests`)。互換ファイル側にあった実体入りextension(`testSet4000`、および`removeFirst(forKey:)`系の`testSet3/3_2/3_3/4/5`の互換版、メソッド名は本体の`!COMPATIBLE_ATCODER_2025`版と同名だが相互排他ガードなので衝突しない)は新クラス名に追従。空extension7つは削除。旧ファイル削除。
+- (2026-09-29 05:24) `multimap/MultiMapTests.swift`本体(1128行、約57メソッド)を棚卸し。**重要な発見**: 互換ファイルは既に`MultiMapBasicTest`・`MultiMapAdvancedTest`・`RedBlackTreeMultiMapTests`・`MultiMapRemoveTests`・`MultiMapEtcTests`を自己完結スタブクラスとして宣言する規約になっていたが、`MultiMapTests`だけがその対象から漏れており本体ファイルの`final class MultiMapTests`に依存していた。また本体ファイルのトップレベルにあったヘルパー関数`keyValue`/`__key`/`AssertEquenceEqual`に、既に移設済みの`_98_CopyOnWriteTests.swift`と互換ファイル自身が依存していた(削除すると壊れるところだった)。
+  - ヘルパー関数は`RedBlackTreeMultiMap_TestHelpers.swift`(新設、無条件コンパイル)へ退避。未使用と判明した`_value`/`tuple`/`__value`/`Optional.hoge()`は削除。
+  - `MultiMapTests`は既存の空スタブクラス群と同じ場所に`final class MultiMapTests: RedBlackTreeTestCase { typealias Target = RedBlackTreeMultiMap }`として追加し、互換ファイル内で自己完結化。
+  - 本体の内容はMultiMapが既に`_0`〜`_11`まで非常に手厚く連番化済みだったため、ほぼ全て重複と判断。新規性のあった3点のみ移管:
+    - `formIndex(after:)/(before:)`(連番側に一件もカバレッジが無かった、Dictionaryと同じ穴) → `_3_IndexSequenceTests.swift`
+    - 生インデックスの妥当性検証 → `RedBlackTreeMultiMap_98_IndexValidityXCTests.swift`新設
+    - ツリー不変条件`___tree_invariant()`を伴うランダムinsert/erase(`testRandom`〜`4`を1本に統合) → `RedBlackTreeMultiMap_98_FuzzTests.swift`新設
+    - RangeView同士のEquatable/Comparable → `_9_ProtocolConformanceTests.swift`に2件追加
+  - 互換ファイル側の空`extension MultiMapTests {}`・`extension MultiMapEtcTests {}`(16箇所)も削除。本体は`XcodeRM`で削除。
+  - ビルド成功、関連テスト21件成功、全体テスト625成功・0失敗・2既知スキップを確認。
+- (2026-09-29 05:24) **`multimap/`フォルダはこれで完全に空になった。`dictionary`・`multiset`・`multimap`の3フォルダの棚卸しが全て完了。** 残る旧フォルダはルート直下の`MergeTests.swift`・`DocumentCheckTests.swift`・`EtcTests.swift`(Set公開仕様が混在)など。次はそちらの監査。
+- (2026-09-29 05:35) `DocumentCheckTests.swift`(46行)を確認。これは旧テスト債務ではなく、`Sources/RedBlackTreeCollections/Documentation/Remove.md`(testExample1/2)と`DSL.md`(testExample3/4)のコード例を直接検証する現役のドキュメント検証ファイルだった。**このファイルはそのまま残す**(整理対象外)。
+- (2026-09-29 05:35) `MergeTests.swift`(187行)を監査。Set/MultiSet/Dictionaryをまたぐ`.merge(_:)`/`.insert(contentsOf:)`のクロス型結合テスト。多くはSetの`_5_InsertionTests.swift`で`insert(contentsOf:)`相当が既にカバーされていたが、以下は連番側に無い発見だったため追加:
+  - Setの`merge(_:)`に標準ライブラリ`Set`を渡すケース → `RedBlackTreeSet_5_InsertionTests.swift`に`test_merge_fromSwiftSet`追加
+  - MultiSetの`insert(contentsOf:)`にSet/MultiSetを渡すケース(既存は配列のみ) → `RedBlackTreeMultiSet_5_InsertionTests.swift`に1件追加
+  - Dictionaryの`merge(_:uniquingKeysWith:)`にRedBlackTreeDictionaryを直接渡すケース(既存はSequence/配列のみ) → `RedBlackTreeDictionary_5_InsertionTests.swift`に1件追加
+  - 残り(空/空の境界値ケース、標準Sequence・ClosedRangeなどSequenceオーバーロード経由で実質同一コードパスのケース)は重複と判断し移管せず。旧ファイル削除(他ファイルからの参照なしを確認済み)。
+  - ビルド成功、関連テスト31件成功、全体テスト606成功・0失敗・2既知スキップを確認。
+- (2026-09-29 05:35) ユーザー指示により`EtcTests.swift`(1162行)は**ファイル自体を残す**方針(「なんかあるとつい触るやつ」)。内容の重複整理をする場合も、ファイルを完全に空にして削除するのではなく、ファイルは存在させたまま内容を整理する。
+- (2026-09-29 12:15) `EtcTests.swift`(1162行、約60メソッド)の棚卸しが完了。他フォルダと同じ基準で重複・死んだコード・プレーンSwift標準型のノイズ(stdlib `Set`/`Array`/`Dictionary`単体の検証、`#if false`相当や`throw XCTSkip()`直後で無効化されていたコード、意味の薄い自明な内部不変条件チェックなど)を削除。新規性のあった8点を連番側/型別`_98`へ移管:
+  - イテレータが作成後の base 変更に対してスナップショットを保持し続けるCoW挙動(`testItertor`) → `_1_SequenceTests.swift`に`test_iterator_retainsSnapshotAfterBaseCollectionIsMutated`として追加
+  - RangeView上の`erase(where:)`がコピーを起こさないこと・別変数化したRangeViewは1回だけコピーしてbaseに影響しないこと(`testRemoveBounds`/`testRemoveBounds2`) → `_98_CopyOnWriteTests.swift`に2件追加
+  - スロット再利用後の世代違いIndexが`isElement(at:)`で正しく拒否されること(`testIndexStale`を単純化) → `_98_IndexValidityXCTests.swift`に追加
+  - 内部`__emplace_hint_unique`のヒント付き新規/重複挿入(`testNoKeyEmplaceHintUnique`) → `_98_RemovalInternalXCTests.swift`に追加(ファイル名はRemoval由来だが`@testable`内部API検証の既存の置き場所のため踏襲)
+  - 内部`__find_equal(hint:)`の全分岐カバレッジ(`testFindHintEqualCoverage`) → 同上ファイルに追加
+  - 削除済みスロットがバケット追加なしに再利用され続けること、`removeAll(keepingCapacity:)`の有無でfreshBucket/capacityの挙動が変わること(`testRoundTrip`/`testRoundTrip2`/`testRoundTrip3`) → 同上ファイルに3件追加(`freshBucketHead`/`freshPoolActualCapacity`の検証は連番側に元々皆無だった)
+  - 単一BoundExpression(`.start`/`.lowerBound`/`.upperBound`/`.end`)による添字アクセスが要素またはnilを返すこと(`testBound`) → `_16_BoundExpressionTests.swift`に追加
+  - 別ツリー由来のIndexを含むBoundExpressionがALLOW_CROSS_TREE_INDEXの設定通りに解決されること(`testBoundCrossIndexing`を単純化) → 同上ファイルに追加
+  - 不正な逆順区間の`reversed()`が無限ループを起こさず空を返すこと(`testChecked`)、`popFirst()`で消費し尽くした後の`unranged()`が正しい残り範囲を返すこと(`testRangeView`/`testRangeView2`) → `_17_RangeViewTests.swift`に2件追加
+  - Index自体のEquatable/Comparable/Hashable準拠(`testIndexEquatable`/`testIndexComparable`/`testIndexHashable`、連番側に一件もカバレッジが無かった) → `_9_ProtocolConformanceTests.swift`に3件追加
+  - ファイル末尾にあった未使用の`extension RedBlackTreeDictionary { emplace(hint:_:) }`は他箇所からの参照なしを確認の上削除。
+  - **ユーザー指示によりファイル自体は削除せず**、クラス定義と`setUpWithError`/`tearDownWithError`のみを残した空シェルとして保持。
+  - ビルド成功、全体テスト1124件(824成功・0失敗、残りは環境既知の"No result")を確認。
+- (2026-09-29 12:15) **ルート直下の`MergeTests.swift`・`DocumentCheckTests.swift`・`EtcTests.swift`の監査が全て完了。** 次のフォルダ着手はユーザー指示待ち。
+- (2026-09-29 12:50) ルート直下の残り(`AllocationTests.swift`・`ComparatorsTests.swift`・`ManagedBufferTests.swift`・`NaiveIteratorTests.swift`・`Performaces.swift`・`ReferenceTests.swift`・`RootAtCoder2025CompatibilityTests.swift`)を棚卸し。ユーザー方針: 内部実装寄りの4ファイルは`RedBlackTreeInternal/`へ「おおざっぱ」に集約(型別連番への厳密な重複排除は不要)。`Performaces.swift`/`ReferenceTests.swift`と、`RootAtCoder2025CompatibilityTests.swift`内の`extension EtcTests`群は、他フォルダと同じ厳密な基準で棚卸し。
+  - `AllocationTests.swift`(149行、Tree/Storage作成・CoW発火・容量拡張の内部検証)・`ComparatorsTests.swift`(267行、`_NodePathBitmap`/`_NodeKey`比較器・4型のvalue_comp/equalRange)・`NaiveIteratorTests.swift`(100行、Obverse0-3/Reverse0-3イテレータ試作、Forward0/Reverse0はForward1/Reverse1と完全重複だったため削除)は、内容ほぼそのまま`RedBlackTreeInternal/RedBlackTreeInternal_{Allocation,Comparators,NaiveIterator}Tests.swift`へ移設(クラス名は維持、同一ターゲット内なので互換ファイルの`extension NaiveIteratorTests`は無改修で通る)。
+  - `ManagedBufferTests.swift`(154行)は全体が`#if DEBUG && false`で無効化済みだったが、ユーザー指示で「復活可能性」を確認: `___Tree`/`CompareUniqueTrait`/`HasDefaultThreeWayComparator`をSources全体でgrepしたところ現行コードに存在せず(V1世代の遺物、UnsafeTreeV2移行で置き換え済み)、ガードを外しても復活不可能と判明。テストしていた観点は次の通り: (a) `create()`/`create(minimumCapacity:)`直後の capacity/count/root/begin_node、(b) `__construct_node`後の値設定・`___element`での書き換え、(c) `destroy`後に値が0クリアされること、(d) `___pushDestroy`/`___popDetroy`によるLIFO destroy-stack(`header.destroyNode`/`destroyCount`)の push/pop 整合性、(e) ネストしたconstruct/destroyでのdestroy-stack蓄積順序。`destroyNode`/`destroyCount`/`pushDestroy`という概念は現行`Sources`・`Tests`のどこにも存在せず(`old/`配下の遺物のみ)、UnsafeTreeV2側で同等のfreshPool/recycle機構によるテストがあるかどうかは未確認 — 将来の調査の足がかりとしてここに記録。ファイルは削除。
+  - `Performaces.swift`(187行、Setのベンチマーク集)を監査。`#if false`ブロック(testPerformanceCopy1-256)は完全に死んでいたため削除。標準ライブラリ`Set`/`Dictionary`単体のベンチマーク(testPerformanceExample00/05/10/11)はスコープ外として削除。残り(distance/index/firstIndex/init系)は既存`_98_PerformanceTests.swift`と重複と判断し削除。新規性のあった3点(erase(全範囲)・大規模Set同士のEquatable・`first(where:)`の線形走査)を`RedBlackTreeSet_98_PerformanceTests.swift`に追加。本体ファイルは削除。互換ファイル側の`extension Performaces`(testPerformanceExample4/7)は、本体削除に伴い自己完結クラス`PerformacesAtCoder2025LegacyTests`に変換。
+  - `ReferenceTests.swift`(55行)を監査。`removeAll(keepingCapacity:)`後に参照型要素が正しくdeinitされること(二重解放・リーク検知)を検証する`testExample2`は、連番側に同等のテストが皆無だったため`RedBlackTreeSet_6_RemovalTests.swift`に`test_removeAllKeepingCapacity_releasesRetainedReferenceElements`として追加(ローカル`DeinitializeCounter`で自己完結化)。本体ファイルは削除。互換ファイル側の`extension ReferenceTests`(`.indices`経由の1件ずつremoveでも同様にdeinitされることを確認するtestExample)は、自己完結クラス`ReferenceAtCoder2025LegacyTests`に変換して保持。
+  - `RootAtCoder2025CompatibilityTests.swift`内の`extension EtcTests`群(testExample4、testIndices、testRange、test_subSequence...2、testBackwordIterator1/2、testRev、testObv/testSubObv/testRev2/testSubRev2-5、testSubRev9-17、testMapBehavior)を監査。`RedBlackTreeSetAdditionalAtCoder2025CompatibilityTests.swift`に`.indices`・二引数forEach・Index算術(`.pointee`/`.advanced(by:)`/`startIndex + N`)の広範な既存カバレッジがあることを確認したため、大半を重複と判断し削除。新規性のあった4点を移管:
+    - Index同士の`-`/`+`演算子と`.distance(to:)`(互換専用のIndex算術、連番側に皆無) → `RedBlackTreeSetAdditionalAtCoder2025CompatibilityTests.swift`に`testIndexArithmeticOperatorsAndDistanceTo`として追加
+    - 逆順の二引数`forEach { i, v in }`(全体・RangeView・空範囲) → 同ファイルに`testReversedForEach_enumeration`として1本に統合
+    - Dictionaryの`keys()`/`values()`(互換専用の関数呼び出し形式)のreversed()外側/内側適用の一致 → `RedBlackTreeDictionaryAtCoder2025CompatibilityTests.swift`に`testKeysAndValuesFunctionStyleReversed`として1本に統合(空範囲の多数の順列は削除)
+    - Setに`formIndex(after:)/(before:)`のテストが連番側に一件も無かった(Dictionary/MultiMapと同じ穴) → `RedBlackTreeSet_3_IndexSequenceTests.swift`に`testFormIndexAfterAndBeforeMatchIndexAfterAndBeforeTraversal`として追加
+    - 内部逆順走査`___rev_for_each_`(testRev)は他に置き場が無く、他との重複も無いため、互換ファイル内の`extension EtcTests`として現状維持。
+  - 検証: 通常モード → `COMPATIBLE_ATCODER_2025`有効化 → 通常モードの3段階で確認。有効化時に2件のコンパイルエラー(新規追加した`.find`と`BoundExpression`ベースの`.erase`系テストが`#if !COMPATIBLE_ATCODER_2025`ガード漏れ)を検出・修正。最終的に通常モード1082件中823成功・0失敗、互換モード1082件中687成功・0失敗・5スキップ(既知)を確認。フラグは通常モードへ復帰済み。
+  - この時点では`DocumentCheckTests.swift`・`KeyValueComparer+Tuple.swift`/`RedBlackTreeTestCase.swift`/`SplitMix64.swift`・`RootAtCoder2025CompatibilityTests.swift`は対象外としていたが、直後のユーザー指示で全て棚卸し対象に変更された(下記エントリ参照)。
+- (2026-09-29 13:00) ユーザー指示: `DocumentCheckTests.swift`は削除まで棚卸し可、`RootAtCoder2025CompatibilityTests.swift`もファイルが消えるまで棚卸し、テストと呼べない共有インフラ(基底クラス・ヘルパー)は新設する`RedBlackTreeTestSupport/`フォルダへ集約。これに従いルート直下を最終整理:
+  - `RedBlackTreeTestCase.swift`(基底`XCTestCase`・`blackHole`・`_value`/`keyValue`等のテストヘルパー・`PointerRedBlackTreeTestCase`)、`KeyValueComparer+Tuple.swift`(`KeyValueTrait`のテスト専用extension)、`SplitMix64.swift`(PRNG)は、いずれも「テストそのものではない共有インフラ」と判断し、新設`RedBlackTreeTestSupport/`フォルダへ内容そのまま移設。
+  - `DocumentCheckTests.swift`(46行、`Remove.md`/`DSL.md`のコード例検証)を監査。4件全てを連番側と突き合わせ: `.start.after`/`.end.before`チェーンは`_16_BoundExpressionTests.swift`に、RangeViewの述語なし`erase()`は`_17_RangeViewTests.swift`に、`erase(at:) -> Index`の逐次ループはSpec上`_6_RemovalTests.swift`の`test_erase_index_returnsNext`等に、それぞれ既に同等以上のカバレッジがあることを確認。新規性なしのため丸ごと削除。
+  - `RootAtCoder2025CompatibilityTests.swift`(108行、最終形)を解体:
+    - `PerformacesAtCoder2025LegacyTests`・`ReferenceAtCoder2025LegacyTests`(いずれも`Performaces.swift`/`ReferenceTests.swift`削除時に自己完結化済みだった互換専用クラス) → `RedBlackTreeSetAdditionalAtCoder2025CompatibilityTests.swift`へ統合(Set関連の互換専用内部・性能テストの既存の置き場所)。
+    - `extension NaiveIteratorTests`(`UnsafeIterator._RemoveAware`のラップ検証) → 本体が既に移設済みの`RedBlackTreeInternal/RedBlackTreeInternal_NaiveIteratorTests.swift`内へ`#if COMPATIBLE_ATCODER_2025`ガード付きで同居させた(同一ターゲット内なのでファイル分割に技術的制約はないが、本体と対になる内容なので同一ファイルに統合)。
+    - `extension EtcTests { testRev }`(内部逆順走査`___rev_for_each_`の検証) → 他に重複が無くEtcTests本体と対になる内容のため、`EtcTests.swift`自体に`#if COMPATIBLE_ATCODER_2025 && DEBUG`ガード付きのextensionとして統合。
+    - 全ての依存先が確保できたため、本体ファイルは削除。
+  - 検証: 通常モード → `COMPATIBLE_ATCODER_2025`有効化 → 通常モードの3段階。両モードともビルド成功、通常モード1078件中819成功・0失敗、互換モード1078件中687成功・0失敗・5スキップ(既知)を確認。フラグは通常モードへ復帰済み。
+  - **ルート直下(`Tests/RedBlackTreeTests/`)には現在、テストファイルは`EtcTests.swift`(ユーザー指示により意図的に空シェルとして維持)のみが残る。** 共有インフラは`RedBlackTreeTestSupport/`、内部実装検証は`RedBlackTreeInternal/`、型別テストは各型フォルダに整理済み。ルート直下の棚卸しはこれで完全に完了。
+- (2026-09-29 13:01) `RedBlackTreeTestUtil/`は英語として据わりが悪いとのユーザー相談を受け、`RedBlackTreeTestSupport/`へ改名(`XcodeMV`でリネーム、中身は変更なし)。TESTING.md内の参照も追従。
+- (2026-09-29 13:10) ユーザー指示: ABC/convenience/memoizeフォルダは当面ノータッチ。`base/`を糸口に、内部向けテスト(`@testable`依存の低レベル実装テスト)は後回しにしつつ、「外部テストっぽいやつ」(公開APIを検証している実テスト)と「テストサポートっぽいやつ」(テスト本体を持たない共有ヘルパー/フィクスチャ)を棚卸し・再配置。
+  - `base/`(`SetBaseTests.swift`・`MultiSetBaseTests.swift`)を確認したところ、`SUT.___ptr_range_comp`等の内部API直叩きのみで公開仕様もサポートコードも無い純粋な内部向けテストだったため、今回は不問(後回し)。
+  - `fixture/`(7ファイル、641行)を確認したところ、実質的に実テスト(`func test...`)を1件も持たない共有サポートコード群だったため、`RedBlackTreeTestSupport/`へ内容そのまま全量移設し、`fixture/`フォルダ自体を削除:
+    - `RedBlackTreeFixture.swift`(`RedBlackTreeDebugFixture`/`RedBlackTreeFixture`プロトコルと`assertEquiv`等のアサーションヘルパー)
+    - `RedBlackTreeSet+Testing.swift`・`RedBlackTreeDictionary+Test.swift`・`RedBlackTreeMultiMap+Test.swift`・`RedBlackTreeMultiSet+Test.swift`(各型の`isValid`/`_copyCount`/`___tree_invariant`/`_withSealed`等、連番テストが多用するテスト専用extension群)
+    - `UnsafeIndexV3Range+Testing.swift`(互換維持用の内部extension)
+    - `FixtureAtCoder2025CompatibilityTests.swift`は名前に反して実テストが無くpackage内部extension(`___is_garbaged`/`___node_positions()`)のみだったため、紛らわしい`Tests`という名前を外して`FixtureAtCoder2025Support.swift`に改称の上で移設。
+  - `foundamental/`(`KeyValueComparerTests.swift`/`KeyValueComparerTests2.swift`)を確認したところ、`KeyValueTrait`の`value_comp`デフォルト実装を独自フィクスチャ型で検証する内部向けテストだったため、今回は不問(後回し)。
+  - `mini/`(`MiniStorageTests.swift`/`mini-storage.swift`)を確認したところ、SIMDベースの試作`RedBlackTree4`ごと`#if false`で無効化された完全な死んだ実験コードで、型自体も現行`Sources`に存在しない遺物と判明。外部テストにもサポートにも該当しないため今回は対象外とし、現状のまま保持(将来判断のためコメントのみ残す)。
+  - `sealed/`(4ファイル、343行)を確認: `PurifiedTests.swift`(`@testable`・`_NodePtrSealing`/`SealError`直叩き)は内部向けテストのため不問(後回し)。残り3ファイルは`@testable`を使わず公開API(`isElement(at:)`・`isValid`・deprecated `isValid(index:)`)のみで検証する外部テストだったため棚卸し:
+    - `SealedTests2.swift`(Set本体、コピー後の片方をCoW変異させた際のIndex有効性)の新規性のある2件を`RedBlackTreeSet_3_IndexSequenceTests.swift`に`testIndexValidityAgainstOriginIsUnaffectedByCopyThenMutateCoW`/`testIndexValidityAfterConsecutiveMutationsWithOnlyFirstTriggeringCoW`として追加(3件目の`testSomething2`は既存の`testIsElementAndIsEndRejectStaleIndex`と同義のため削除)。
+    - `SealedTests3.swift`(RangeView版の同内容)の新規性のある2件を`RedBlackTreeSet_98_IndexValidityXCTests.swift`に追加(3件目も同様に重複のため削除)。
+    - `SealedAtCoder2025CompatibilityTests.swift`(互換専用、deprecated `isValid(index:)`と`===`によるIndex同一性比較・`.pointee`を使う版)は自己完結クラス`RedBlackTreeSetSealedAtCoder2025LegacyTests`として`RedBlackTreeSetAdditionalAtCoder2025CompatibilityTests.swift`へ統合。末尾の空`testPerformanceExample`スタブは削除。
+    - 旧3ファイルは削除、`PurifiedTests.swift`は`sealed/`にそのまま残置。
+  - 検証: 通常モード → `COMPATIBLE_ATCODER_2025`有効化 → 通常モードの3段階、両モードともビルド成功。通常モード1075件中817成功・0失敗、互換モード1075件中687成功・0失敗・5スキップ(既知)を確認。フラグは通常モードへ復帰済み。
+  - **`fixture/`フォルダは完全に空になり削除。`sealed/`は`PurifiedTests.swift`(内部向け、後回し)のみ残る。** `base/`・`foundamental/`・`mini/`は内部向け/死んだコードのため今回は不問。次はユーザー指示待ち。
+- (2026-09-29 13:15) ユーザー指示で`tree/`フォルダを棚卸し(5ファイル、509行)。
+  - `_NodeRef.swift`(`_PointerIndexRef.index`)・`_NodePtr_.swift`(`_TrackingTag.index`)・`RedBlackTreePair+Testiing.swift`(`RedBlackTreePair`のテスト用便宜イニシャライザ)は、いずれも実テストを持たない共有サポートコードと確認したため`RedBlackTreeTestSupport/`へ移設(最後のファイルは`Testiing`という綴りミスも`Testing`に修正)。
+  - `RedBlackTreeSet+ArrayTreeDebug.swift`(`#if DEBUG && false`で全体無効化、`__nodes`/`___elements`/`__root(_:)`等のデバッグ用アクセサ)と`___RedBlackTreeContainerTests.swift`(同じく`#if DEBUG && false`、337行)を精査。前者が使う`___Node`/`Tree.Header._header`は現行`Sources`に存在せず復活不可能と判明。さらに後者は、クラス名・メソッド名(`testRootInvaliant`/`testFixtures`/`testMin`/`testMax`/`testRotate`/`testBalancing0`/`testRemove3`/`testRemove2`/`testRemove7`/`testFindEqual0`/`testFindEqual1`/`testInsert0`)が完全に一致する`unsafeTree/old/___RedBlackTreeContainerTests_unsafe.swift`(`#if DEBUG`で現役、同じ「結構ディープな内容なので温存する必要がある」というコメント付き)へ、UnsafeTreeV2世代へ移植済みで現役稼働していることを確認。つまり`tree/`側は移植前の遺物であり、内容は既に後継ファイルで生きているため、削除しても実質的な損失がないと判断し削除。
+  - `tree/`フォルダは完全に空になったため削除。
+  - 検証: 通常モード → `COMPATIBLE_ATCODER_2025`有効化 → 通常モードの3段階、両モードともビルド成功。通常モード/互換モードとも1075件中0失敗(通常817成功、互換687成功・5スキップ既知)を確認。フラグは通常モードへ復帰済み。
+  - **`tree/`フォルダは完全に棚卸し完了・削除。** 現役の後継(`unsafeTree/old/___RedBlackTreeContainerTests_unsafe.swift`)は内部向けテストのため今回は不問(後回し)。次はユーザー指示待ち。
+- (2026-09-29 17:00) ユーザー指示(優先事項)により、この文書自体の規定(`## Test as Specification`以降)をここまでの作業成果に合わせて更新:
+  - `## Test as Specification` に「旧フォルダ監査時の内部/外部トリアージ」節を新設。外部テスト(`@testable`不使用、公開APIのみ)/テストサポート(実テストを持たない共有extension・フィクスチャ)/内部向けテスト(`@testable`+`___`内部API直叩き)の3分類と、それぞれの行き先(型別連番、`RedBlackTreeTestSupport/`、`RedBlackTreeInternal/`または後回し)を明文化。`#if DEBUG && false`等の死んだコードは削除前に依存APIの現存確認と`Current handoff`への要約を必須とする運用も追記(ManagedBufferTests.swift・mini-storage.swift・ArrayTreeDebug.swiftの3件で実際に踏んだ手順)。
+  - `## Safe migration workflow` に互換モード確認の手順(通常→互換→通常の3段階、互換後の再確認は不要、小変更の積み重ね時は省略可)を追記。ユーザーの連絡事項に既にあった内容をルール本文にも反映し、ユーザー記入欄が将来整理されても手順が失われないようにした。
+  - ユーザー記入欄(`内部区分`等の新設タクソノミー)はユーザー専用領域のため今回は変更していない。
+- (2026-09-29 17:05) ユーザー指示によりルート直下`old/`の棚卸しに着手。当初「テストメソッドが1つも無い死んだ足場コード」と誤判定して報告したが、`grep`で`unsafeTree/old/TreeFixtures.swift`が`old/`の各プロトコル(`TreeAlgorithmBaseProtocol_std`・`FindEqualProtocol_std`・`InsertUniqueProtocol_std`等)を実際に採用しており、その`TreeFixture`/`TreeFixtureBase`を土台に`unsafeTree/old/TreeTests.swift`(7クラス)・`NodeFlagTests.swift`・`___RedBlackTreeContainerTests_unsafe.swift`が現役稼働していることが判明し、ユーザーへ訂正済み。**教訓**: `#if DEBUG && false`と違い、単に`#if DEBUG`なだけのファイルは「そのフォルダ内にテストメソッドがあるか」だけでは死活判定できない。他フォルダからの`grep`によるクロス参照確認が必須。
+  - `old/`(26ファイル、`_TrackingTag`ベースの安全な参照実装で、ユーザー新設タクソノミーの「`__tree`基本層」にほぼ一致)と`unsafeTree/old/`(7ファイル、その実装を使う現役内部テスト+フィクスチャ)は密結合と判明したため、ユーザー指示で新設`Legacy/`フォルダへ両方をサブフォルダごと移設して集約: `Legacy/old/`・`Legacy/unsafeTree-old/`(`XcodeMV`でディレクトリごと移動、中身は無改変)。`unsafeTree/`本体(`old`抜き)は温存方針どおり無傷。
+  - 検証: 通常モードのみ(内容変更なし・互換コード不関与のため互換モード確認は省略)。ビルド成功、全体テスト1073件818成功・0失敗(残りは環境既知の"No result")を確認。
+  - **`Tests/RedBlackTreeTests/old/`は消滅し`Legacy/old/`へ、`unsafeTree/old/`は消滅し`Legacy/unsafeTree-old/`へ移設。** 中身の棚卸し(重複排除・`__tree`基本層としての活用可否検討)はユーザーの指示で保留、将来「`__tree`基本層のテスト再構築」を議論する際にまとめて着手する。
+- (2026-09-29 17:06) ユーザー指示で`foundamental/`フォルダを棚卸し。`KeyValueComparerTests.swift`/`KeyValueComparerTests2.swift`(いずれも`@testable`不使用、`KeyValueTrait`/`UniqueMultiplicity`/`_UnsafeNodePtrType`に独自フィクスチャで直接準拠し、`value_comp`のデフォルト実装が`_Key: Comparable`に正しく委譲することを検証)を精査。`old/`の教訓を踏まえ、他フォルダからの参照有無を`grep`で確認済み(参照なし、密結合ではない)。
+  - 2ファイルはほぼ同一のテスト(`testExample`)で、`_Key`を独自struct(`internalKey: Int`をラップ)にするか`Int`そのものにするかの違いのみ。より一般的な検証(`_Key`が`Comparable`準拠の任意型であっても`value_comp`が委譲経由で動くこと)ができている前者を残し、後者は劣化版の重複と判断し削除。
+  - RedBlackTreeSet等4型の公開APIを検証する連番テストとは異なり、4型共通の基盤である`KeyValueTrait`のデフォルト実装そのものを検証する内容のため、型別連番ではなく`RedBlackTreeInternal/RedBlackTreeInternal_KeyValueComparerTests.swift`へ移設。
+  - `foundamental/`フォルダは完全に空になったため削除。
+  - 検証: 通常モードのみ(互換コード不関与のため省略)。ビルド成功、全体テスト1072件817成功・0失敗を確認。
+  - **`foundamental/`フォルダの棚卸しはこれで完了。**
+- (2026-09-29 17:13) ユーザー指示: `convenience/`フォルダは整理(重複排除)ではなく、通常/互換モードの二重化が壊れている箇所の修正を希望。調査したところ、`ConvenienceTests2.swift`(`#if !COMPATIBLE_ATCODER_2025`限定、`set[.lessThan(x)]`等のsubscript版API)と`ConvenienceAtCoder2025CompatibilityTests.swift`内の`extension ConvenienceTests`(`#if COMPATIBLE_ATCODER_2025`限定、`set.lessThan(x)`等のメソッド呼び出し版API)が、本来同一シナリオの通常/互換ペアであるにもかかわらず**別クラス**(`ConvenienceTests2` vs `ConvenienceTests`)に分裂していたため、他型のファイルと同じ「同一クラス名を互換ファイル側からextension」規約に反していた。
+  - `ConvenienceTests2`の5メソッド(`test_set_LT_GT`/`test_set_LE_GE`/`test_Multiset_LT_GT`/`test_Multiset_LE_GE`/`testRedBlackTreeConveniences`、いずれも`#if !COMPATIBLE_ATCODER_2025`)を`ConvenienceTests.swift`本体の`ConvenienceTests`クラスへ統合。`ConvenienceTests2.swift`は削除。
+  - これにより`ConvenienceTests`は、通常モードでは統合した5メソッド(subscript版API)、互換モードでは互換ファイル側の同名5メソッド+`testEnumerate`(メソッド呼び出し版API)が有効になる、正しい二重化構造になった(相互排他ガードのため名前衝突なし)。
+  - ついでに互換ファイル末尾にあった完全に空の`extension ConvenienceTests {}`を2つ削除(中身の無い残骸)。
+  - 検証: 通常モード→互換モード→通常モードの3段階。両モードビルド成功。互換モードで`ConvenienceTests`単体を実行し18件全成功(統合した5件が正しく互換版APIで動作することを確認)。全体テストも互換モード1067件686成功・0失敗・5スキップ(既知)を確認。フラグは通常モードへ復帰済み。
+  - `Elements.swift`・`RedBlackTreeSet+Convenience.swift`・`RedBlackTreeMultiset+Convenience.swift`(いずれもテストではなく`lessThan`/`greaterThan`/`elements(in:)`等の便利APIをテストターゲット内で試験的に生やしているソース、コメントに「盆栽対象」とあり)は今回のスコープ外のため無変更。
+  - **`convenience/`フォルダの二重化修正はこれで完了。**
+- (2026-09-29 17:16) ユーザー相談: `base/`(`SetBaseTests.swift`/`MultiSetBaseTests.swift`、`@testable`で`Base`型の内部API`___ptr_range_comp`/`__element_`を直接検証)をどうするか。他フォルダからの参照なしを確認済み。Set/MultiSetの2つのみでDictionary/MultiMap版が無い(4型横展開の欠落)ことを踏まえ、「今回は現状の2ファイルを`RedBlackTreeInternal/`へ移設するに留め、Dictionary/MultiMap版の新規拡張は余裕がある時に別途行う」で合意。
+  - `SetBaseTests.swift`→`RedBlackTreeInternal_SetBaseTests.swift`、`MultiSetBaseTests.swift`→`RedBlackTreeInternal_MultiSetBaseTests.swift`として`RedBlackTreeInternal/`へ移設(内容無改変)。`base/`フォルダは空になり削除。
+  - **保留事項に追加**: `Base.___ptr_range_comp`/`__element_`の内部検証がDictionary/MultiMapに存在しない(4型横展開の欠落の一例)。着手時は`RedBlackTreeInternal_SetBaseTests.swift`を土台に、Dictionary/MultiMap版の`___ptr_range_comp`/`__element_`検証を追加する。
+  - 検証: 通常モードのみ(内容変更なし、互換コード不関与のため省略)。ビルド成功、全体テスト1067件817成功・0失敗を確認。
+  - **`base/`フォルダの棚卸しはこれで完了。**
+- (2026-09-29 17:20) `sealed/`フォルダの最後の残置ファイル`PurifiedTests.swift`(内部向け、`@testable`で`__purified_`/sealing機構を検証)を再監査。`old/`の教訓を踏まえ、他ファイルからの参照有無(`grep`で無し)と依存型`_LazyTieWrap`/`_NodePtrSealing`/`SealError`が現行Sourcesに健在であることを再確認した上で、`RedBlackTreeInternal_PurifiedTests.swift`として`RedBlackTreeInternal/`へ移設(内容無改変)。`sealed/`フォルダは完全に空になり削除。
+  - 検証: 通常モードのみ(内容変更なし、互換コード不関与のため省略)。ビルド成功、全体テスト1067件817成功・0失敗を確認。
+  - **`sealed/`フォルダの棚卸しはこれで完全に完了。** 次は`unsafeTree/`(`Legacy/unsafeTree-old/`を除く現役14ファイル)の作戦会議。
+- (2026-09-29 17:20) `unsafeTree/`(現役14ファイル、`@testable`で生バッファ/生ポインタ/メモリレイアウトを検証)の作戦会議。ユーザー新設タクソノミーはまだ「認識合わせ」段階で具体案は無いとのことで、提案した「現状維持しつつ対応表だけ作る」案も含め保留に決定。ユーザー指示で代わりに「4型の横展開」(Set/MultiSet/Dictionary/MultiMapの連番ファイル群を横断し、片方の型にだけあるテストケースを洗い出す)に着手。規模が大きいため複数セッションに跨る前提で、**hands-off・厚めの裁量で継続**することで合意。
+  - 4型の連番ファイル一覧を突き合わせ、`_98`内部/性能系の欠落を優先して着手(公開API層の欠落は後回し):
+    - **Dictionaryに`_98_CopyOnWriteTests`が丸ごと欠落** → `RedBlackTreeDictionary_98_CopyOnWriteTests.swift`新設。MultiMap版を土台に、`dict[key]=value`/`removeValue(forKey:)`ベースのtestDict1〜6・testDict3000を追加。通常・互換モード双方で単体7件成功を確認。
+    - **Dictionary/MultiMapに`_98_PerformanceTests`が丸ごと欠落** → 両方新設。Setの`_98_PerformanceTests.swift`(distance/index/firstIndex/init/erase全範囲/Equatable/first(where:)の12種)を土台に、Dictionary版は`firstIndex(of:)`、MultiMap版は同じく`firstIndex(of:)`+`keysWithValues:`で移植。**教訓**: `ENABLE_PERFORMANCE_TESTING`は`.when(configuration: .release)`でしか有効化されずCIでも通常exerciseされないため、コンパイル確認には`Package.swift`冒頭の`defines`配列にある同名フラグのコメントアウトを一時的に外してビルドする必要がある(`COMPATIBLE_ATCODER_2025`と同じ「一時有効化→確認→復帰」の手順)。この過程で`Legacy/unsafeTree-old/___RedBlackTreeContainerTests_unsafe.swift`に`ENABLE_PERFORMANCE_TESTING`有効時のみ顕在化する既存バグ(`fixtureEmpty`が見つからない、340行目付近)を発見したが、`Legacy/`は今回のスコープ外のため修正はせず記録のみ。新設2ファイル自体は`XcodeRefreshCodeIssuesInFile`で問題無しを確認。
+    - **Dictionary/MultiMapに`_98_RemovalStressTests`が丸ごと欠落** → 両方新設。MultiSetの`_98_RemovalStressTests.swift`(全要素反復削除・ElementRange反復削除・実体化ElementRange反復削除・境界値網羅の4種)を土台に、Dictionary版は`removeValue(forKey:)`、MultiMap版は`eraseMulti(key)`で移植。MultiMapの初期化イニシャライザは`multiKeysWithValues:`ではなく`keysWithValues:`が正しいラベルだったため、コンパイルエラーから発覚し修正(`multiKeysWithValues:`は`FixtureAtCoder2025Support.swift`にある互換用の別名イニシャライザ経由でのみ通る名称で、直接は使えない)。両ファイルとも単体4件成功を確認(`#if !COMPATIBLE_ATCODER_2025`で全体ガードのため互換モード確認は不要)。
+    - **MultiSetに`_98_IndexValidityXCTests`が欠落** → 新設。Set/Dictionary版を土台に、`testEmptyArrayLiteralUsesReadOnlyStorage`/`testUnsafeRawIndicesAreValidOnlyForLiveNodes`/`testElementRangeRejectsRawIndicesOutsideItsBounds`/`testStaleIndexAfterSlotRecycledWithNewGenerationIsRejected`の4件を移植(`eraseMulti`使用)。単体4件成功を確認(`#if DEBUG && !COMPATIBLE_ATCODER_2025`で全体ガードのため互換モード確認は不要)。
+  - 検証: 全体テスト1116件836成功・0失敗(残りは環境既知の"No result"、新設の`ENABLE_PERFORMANCE_TESTING`配下テストも同様に非実行)を確認。フラグは通常モードへ復帰済み。
+  - **残る欠落(次回以降)**:
+    - `_98`層: MultiSetの`IndexValidityXCTests`は今回埋めたが、Set固有の`PointerTests`/`RemovalInternalXCTests`(内部hint系API)は他3型に無い(Set固有の内容かどうか要検討)。
+    - 公開API層(_0〜_18相当): `BidirectionalCollectionTests`がDictionary/MultiMapに無い、`ValueSemanticsTests`がSet以外に無い、`LazySequenceTests`がSet以外に無い、`IntegerElement/KeyTests`がSet/Dictionary以外に無い、`ProtocolConformanceMoreTests`がSet以外に無い。これらは着手前に「本当に4型で意味のある仕様か」の判断が必要(例えばSetAlgebraはDictionary/MultiMapに元々適用外)。

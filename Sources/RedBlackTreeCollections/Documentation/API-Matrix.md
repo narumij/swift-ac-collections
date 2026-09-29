@@ -1,3 +1,4 @@
+<!-- API名をSwift Coreチーム相当の品質にすることは不可能なので、なるべく引用する方針 -->
 # 現行APIマトリクス
 
 この文書は、通常構成の `RedBlackTreeCollections` が提供する現行APIを、4種類の
@@ -6,7 +7,8 @@
 - ✅: 利用できる
 - —: 利用できない
 - △: 同じ目的の型固有APIを利用する
-- TODO: 製品化に向けた追加候補
+- TODO: 採用済みで未実装
+- 検討: 採用するか未決定
 
 `COMPATIBLE_ATCODER_2025`、Deprecated API、旧Slice APIは対象外とする。
 同じ意味を持つジェネリック版やRange種別ごとのオーバーロードは、原則として
@@ -18,12 +20,12 @@
 | --- | :---: | :---: | :---: | :---: | --- |
 | `init()` | ✅ | ✅ | ✅ | ✅ | 空のコンテナを生成する |
 | `init(minimumCapacity:)` | ✅ | ✅ | ✅ | ✅ | 最低容量を指定して生成する |
-| `init(_ sequence:)` | ✅ | ✅ | △ | △ | 要素列から生成する。Map系はkeys-with-values形式を使う |
+| `init(_ sequence:)` | ✅ | ✅ | — | — | 要素列から生成する |
 | `init(_ range:)` | ✅ | ✅ | — | — | Rangeの要素から生成する |
 | `init(keysWithValues:)` | — | — | ✅ | — | `(Key, Value)` の列からMultiMapを生成する |
-| `init(multiKeysWithValues:)` | — | — | ✅ | — | 重複キーを許すことを明示してMultiMapを生成する |
 | `init(uniqueKeysWithValues:)` | — | — | — | ✅ | 一意なキーと値の列からDictionaryを生成する |
 | `init(_:uniquingKeysWith:)` | — | — | — | ✅ | 重複キーをクロージャで統合してDictionaryを生成する |
+| `init(grouping:by:)` | — | — | ✅ | ✅ | 要素列をキーでグループ化して生成する |
 | `init(arrayLiteral:)` | ✅ | ✅ | ✅ | ✅ | 配列リテラルから生成する |
 | `init(dictionaryLiteral:)` | — | — | ✅ | ✅ | Dictionaryリテラルから生成する |
 | `reserveCapacity(_:)` | ✅ | ✅ | ✅ | ✅ | 最低容量を予約する |
@@ -46,9 +48,12 @@
 | `first(where:)` | ✅ | ✅ | ✅ | ✅ | 条件を満たす最初の要素を返す |
 | `subscript(index:)` | ✅ | ✅ | ✅ | ✅ | Index位置の要素を参照する |
 | `subscript(key:) -> Value?` | — | — | — | ✅ | キーに対応する値を参照・更新する |
-| `subscript(key:) -> View` | — | — | ✅ | — | キーに対応する全要素のViewを返す |
-| `values(forKey:)` | — | — | ✅ | — | キーに対応する値を返す |
-| `keys` / `values` | — | — | ✅ | ✅ | キーまたは値だけを遅延走査するViewを返す |
+| `subscript(key:default:) -> Value` | — | — | — | ✅ | キーに対応する値を参照・更新し、存在しない場合は既定値を使う |
+| `subscript(key:) -> Values` | — | — | ✅ | — | キーに対応する全要素のViewを返す |
+| `subscript(mappedValueAt:)` | — | — | 検討 | — | Index位置の要素を返す |
+| `values(forKey:)` | — | — | 廃止 | — | キーに対応する値を返す |
+| `keys` | — | — | ✅ | ✅ | キーだけを遅延走査するSequenceを返す |
+| `values` | — | — | ✅ | ✅ | 値を参照・更新するValues Viewを返す |
 
 ## Indexと探索
 
@@ -67,7 +72,7 @@
 | `index(after:)` / `formIndex(after:)` | ✅ | ✅ | ✅ | ✅ | 次のIndexへ進める |
 | `index(before:)` / `formIndex(before:)` | ✅ | ✅ | ✅ | ✅ | 前のIndexへ戻す |
 | `index(_:offsetBy:)` / `formIndex(_:offsetBy:)` | ✅ | ✅ | ✅ | ✅ | 指定距離だけIndexを移動する |
-| `index(_:offsetBy:limitedBy:)` | ✅ | ✅ | ✅ | ✅ | 制限位置を越えない範囲でIndexを移動する |
+| `index(_:offsetBy:limitedBy:)` / `formIndex(_:offsetBy:limitedBy:)` | ✅ | ✅ | ✅ | ✅ | 制限位置を越えない範囲でIndexを移動する |
 | `distance(from:to:)` | ✅ | ✅ | ✅ | ✅ | 2つのIndex間の距離を返す |
 
 `isElement(at:)` は `endIndex` に `false`、`isEnd(_:)` は有効な `endIndex` に
@@ -102,17 +107,22 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | API名 | Set | MultiSet | MultiMap | Dictionary | おおよその機能 |
 | --- | :---: | :---: | :---: | :---: | --- |
 | `insert(_:)` | ✅ | ✅ | ✅ | ✅ | 要素を挿入する |
+| `insert(_:hint:)` | ✅ | ✅ | ✅ | ✅ | ヒントを用いて要素を挿入する |
 | `insert(key:value:)` | — | — | ✅ | ✅ | キーと値を挿入する |
+| `insert(key:value:hint:)` | — | — | 検討 | 検討 | キーと値を挿入する |
+| `update(_:hint:)` | ✅ | — | — | — | ヒントを用いて要素を更新する |
 | `update(with:)` | ✅ | — | — | — | Set要素を置換し、旧要素を返す |
+| `update(_:at:)` | — | ✅ | — | — | Index位置の要素を更新する。キー一致を前提とする |
+| `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す |
 | `updateValue(_:forKey:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
-| `updateValue(_:at:)` | — | TODO | ✅ | — | Index位置の値を更新し、旧要素を返す |
-| `index(inserting:)` | ✅ | — | — | — | 挿入し、挿入位置のIndexを返す |
+| `updateValue(_:forKey:hint:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
+| `index(inserting:)` | ✅ | TODO | TODO | TODO | 挿入し、挿入位置のIndexを返す |
 | `insert(contentsOf:)` | — | ✅ | ✅ | — | 別コンテナまたはSequenceの内容を追加する |
 | `inserting(contentsOf:)` | — | ✅ | ✅ | — | 内容を追加した新しい値を返す |
 | `merge(_:)` | ✅ | — | — | ✅ | 他の集合またはキー値列を統合する |
 | `merging(_:)` | ✅ | — | — | ✅ | 統合した新しい値を返す |
-| `meld(_:)` | — | ✅ | ✅ | — | 重複を保持したまま同種コンテナを結合する |
-| `melding(_:)` | — | ✅ | ✅ | — | 結合した新しい値を返す |
+| `meld(_:)` | — | ✅ | ✅ | — | 同種コンテナを構造的に結合する。Multi系では重複を保持する |
+| `melding(_:)` | — | ✅ | ✅ | — | 結合した新しい値を返す。Multi系では重複を保持する |
 
 ## 削除
 
@@ -128,6 +138,10 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `erase(where:)` | ✅ | ✅ | ✅ | ✅ | 条件を満たす全要素を削除する |
 | `eraseUnique(_:)` | — | ✅ | ✅ | — | 値またはキーに対応する1要素を削除する |
 | `eraseMulti(_:)` | — | ✅ | ✅ | — | 値またはキーに対応する全要素を削除し、件数を返す |
+| `erase(exactly:)` | ✅ | TODO | TODO | TODO | Indexが現在利用可能なら要素を削除し、後続Indexを返す |
+
+remove 系は Swift 標準APIとの整合を優先する。
+erase 系は本ライブラリ固有のIndex・Range・複数要素削除を扱う。
 
 ## 走査、変換、比較
 

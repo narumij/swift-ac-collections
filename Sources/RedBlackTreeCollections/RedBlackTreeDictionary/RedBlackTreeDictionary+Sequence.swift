@@ -136,7 +136,7 @@ extension RedBlackTreeDictionary {
     #else
       // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
       public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
-      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+      //      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
       /// A collection containing just the keys of the dictionary.
       ///
@@ -149,9 +149,33 @@ extension RedBlackTreeDictionary {
       /// A collection containing just the values of the dictionary.
       ///
       /// - Complexity: O(`count`)
+      //      @inlinable
+      //      public var values: Values {
+      //        .init(start: _start, end: _end, tree: __tree_)
+      //      }
+
+      public typealias Values = RedBlackTreeMappedValuesView<Self>
+
+      @inlinable
+      func makeValuesView(range: _NodeRange) -> Values {
+        Values(
+          __tree_: __tree_,
+          _start: range.lowerBound.uncheckedSeal,
+          _end: range.upperBound.uncheckedSeal)
+      }
+
       @inlinable
       public var values: Values {
-        .init(start: _start, end: _end, tree: __tree_)
+        @inline(__always) get {
+          return makeValuesView(range: ___node_range)
+        }
+
+        @inline(__always) _modify {
+          var view = makeValuesView(range: ___node_range)
+          self = Self()
+          defer { self = Self(__tree_: view.__tree_) }
+          yield &view
+        }
       }
     #endif
   }

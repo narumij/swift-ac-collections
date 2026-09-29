@@ -280,13 +280,13 @@
     /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult
-    public mutating func removeSafe(at index: Index) -> Bool {
+    public mutating func erase(exactly index: Index) -> Index? {
       __tree_.ensureUnique()
       guard let __p = __tree_.__purified_(index).accessible.pointer else {
-        return false
+        return nil
       }
-      _ = __tree_._unchecked_remove(at: __p).payload
-      return true
+      let __r = __tree_._unchecked_remove(at: __p).__r
+      return ___index(__r)
     }
   }
 #endif

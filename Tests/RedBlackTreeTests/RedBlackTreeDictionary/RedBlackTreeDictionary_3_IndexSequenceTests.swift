@@ -4,6 +4,46 @@ import XCTest
 final class RedBlackTreeDictionaryIndexRangeTests: RedBlackTreeTestCase {
 
   #if !COMPATIBLE_ATCODER_2025
+    func test_distance_isPositiveForwardAndNegativeBackward() {
+      let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
+
+      XCTAssertEqual(
+        dictionary.distance(from: dictionary.startIndex, to: dictionary.endIndex),
+        dictionary.count
+      )
+      XCTAssertEqual(
+        dictionary.distance(from: dictionary.endIndex, to: dictionary.startIndex),
+        -dictionary.count
+      )
+    }
+
+    func test_indexAndFormIndex_moveForwardAndBackwardSymmetrically() {
+      let dictionary: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20, 3: 30, 4: 40, 5: 50]
+
+      var i = dictionary.startIndex
+      for _ in 0..<dictionary.count {
+        XCTAssertEqual(dictionary.distance(from: i, to: dictionary.index(after: i)), 1)
+        i = dictionary.index(after: i)
+      }
+      XCTAssertEqual(i, dictionary.endIndex)
+
+      for _ in 0..<dictionary.count {
+        XCTAssertEqual(dictionary.distance(from: i, to: dictionary.index(before: i)), -1)
+        i = dictionary.index(before: i)
+      }
+      XCTAssertEqual(i, dictionary.startIndex)
+
+      for _ in 0..<dictionary.count {
+        dictionary.formIndex(after: &i)
+      }
+      XCTAssertEqual(i, dictionary.endIndex)
+
+      for _ in 0..<dictionary.count {
+        dictionary.formIndex(before: &i)
+      }
+      XCTAssertEqual(i, dictionary.startIndex)
+    }
+
     func testIsElementAndIsEndDistinguishElementFromEnd() {
       let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
 
@@ -39,4 +79,47 @@ final class RedBlackTreeDictionaryIndexRangeTests: RedBlackTreeTestCase {
       }
     #endif
   #endif
+
+  /// index(_:offsetBy:) が指定距離のエントリを指すこと
+  func test_index_offsetBy() {
+    let dictionary: RedBlackTreeDictionary = [10: "a", 20: "b", 30: "c", 40: "d", 50: "e"]
+    let start = dictionary.startIndex
+
+    let idx = dictionary.index(start, offsetBy: 2)
+
+    XCTAssertEqual(dictionary[idx].key, 30)
+  }
+
+  /// index(_:offsetBy:limitedBy:) が制限範囲内では移動し、超過した場合はnilを返すこと
+  func test_index_offsetBy_limitedBy() {
+    let dictionary: RedBlackTreeDictionary = [1: "a", 2: "b", 3: "c"]
+    let start = dictionary.startIndex
+    let limit = dictionary.index(after: start)
+
+    let limitedIndex = dictionary.index(start, offsetBy: 2, limitedBy: limit)
+
+    XCTAssertNil(limitedIndex)
+  }
+
+  /// formIndex(_:offsetBy:) が正しく指定距離のエントリ位置に移動できること
+  func test_formIndex_offsetBy() {
+    let dictionary: RedBlackTreeDictionary = [10: "a", 20: "b", 30: "c", 40: "d", 50: "e"]
+    var idx = dictionary.startIndex
+
+    dictionary.formIndex(&idx, offsetBy: 3)
+
+    XCTAssertEqual(dictionary[idx].key, 40)
+  }
+
+  /// formIndex(_:offsetBy:limitedBy:) が制限範囲内では移動し、超過した場合は失敗すること
+  func test_formIndex_offsetBy_limitedBy() {
+    let dictionary: RedBlackTreeDictionary = [1: "a", 2: "b", 3: "c"]
+    let start = dictionary.startIndex
+    let limit = dictionary.index(after: start)
+
+    var idx = start
+    let success = dictionary.formIndex(&idx, offsetBy: 2, limitedBy: limit)
+
+    XCTAssertFalse(success)
+  }
 }

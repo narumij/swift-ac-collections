@@ -46,6 +46,8 @@
 
   extension BalancedSequence {
 
+    // そもそも間違ってる
+    // TODO: Elementを返すようにすること
     @discardableResult
     public mutating func popFirst(_ k: Int) -> Int {
       var i = 0
@@ -58,6 +60,8 @@
       return i
     }
 
+    // そもそも間違ってる
+    // TODO: Elementを返すようにすること
     @discardableResult
     public mutating func popLast(_ k: Int) -> Int {
       var i = 0

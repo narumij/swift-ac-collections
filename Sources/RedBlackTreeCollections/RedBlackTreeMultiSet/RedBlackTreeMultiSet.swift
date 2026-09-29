@@ -236,6 +236,49 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    @inlinable
+    public mutating func update(_ newMember: Element, at i: Index) -> Element? {
+      __tree_.ensureUnique()
+      let __i = __tree_.__purified_(i)
+      guard
+        __i.accessible.error == nil,
+        let i = __i.pointer
+      else {
+        return nil
+      }
+
+      let oldMember = Base.__key_(i)
+      guard oldMember == newMember else {
+        return nil
+      }
+
+      Base.__key_ptr(i).pointee = newMember
+      return oldMember
+    }
+
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    @inlinable
+    @discardableResult
+    public mutating func insert(_ newMember: Element, hint: Index) -> Index {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let __r = __tree_.__emplace_hint_multi(__p, newMember)
+      return __tree_.index(__r)
+    }
+  }
+#endif
+
 // MARK: - Remove
 
 extension RedBlackTreeMultiSet {

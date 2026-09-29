@@ -23,16 +23,32 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
+//    /// - Complexity: O(log *n*)
+//    @inlinable
+//    public subscript(key: Key) -> View {
+//      @inline(__always) get {
+//        let (lower, upper) = __tree_.__equal_range_multi(key)
+//        return self[_safeRange: .success(.init(lowerBound: lower, upperBound: upper))]
+//      }
+//      @inline(__always) _modify {
+//        let (lower, upper) = __tree_.__equal_range_multi(key)
+//        yield &self[_safeRange: .success(.init(lowerBound: lower, upperBound: upper))]
+//      }
+//    }
+
     /// - Complexity: O(log *n*)
     @inlinable
-    public subscript(key: Key) -> View {
+    public subscript(key: Key) -> Values {
       @inline(__always) get {
         let (lower, upper) = __tree_.__equal_range_multi(key)
-        return self[_safeRange: .success(.init(lowerBound: lower, upperBound: upper))]
+        return makeValuesView(range: .init(lowerBound: lower, upperBound: upper))
       }
       @inline(__always) _modify {
         let (lower, upper) = __tree_.__equal_range_multi(key)
-        yield &self[_safeRange: .success(.init(lowerBound: lower, upperBound: upper))]
+        var view = makeValuesView(range: .init(lowerBound: lower, upperBound: upper))
+        self = Self()
+        defer { self = Self(__tree_: view.__tree_) }
+        yield &view
       }
     }
   }

@@ -250,6 +250,42 @@ extension RedBlackTreeSet {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    @inlinable
+    @discardableResult
+    public mutating func insert(_ newMember: Element, hint: Index)
+      -> (inserted: Bool, indexAfterInsert: Index)
+    {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      // endIndex is a valid insertion hint; do not require element accessibility here.
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember, newMember)
+      return (__inserted, ___index(__r))
+    }
+
+    @inlinable
+    @discardableResult
+    public mutating func update(_ newMember: Element, hint: Index) -> Element? {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      // endIndex is a valid insertion hint; do not require element accessibility here.
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember, newMember)
+      guard !__inserted else { return nil }
+      let oldMember = Base.__payload_(__r)
+      Base.__payload_ptr(__r).pointee = newMember
+      return oldMember
+    }
+  }
+#endif
+
 // MARK: - Removal
 
 #if !COMPATIBLE_ATCODER_2025

@@ -26,6 +26,7 @@
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味して都度更新すること
 - ABC, convenience, memoizeは温存
 - 実験的なテストコード書く場合、人もAIもまずEtcTests.swiftまたはDeathTest.swiftに書くこと
+- RedBlackTreeTestSupportとDebugAdditionalsは役割がかぶってるので、再度整理が必要
 
 ### 相談事項
 

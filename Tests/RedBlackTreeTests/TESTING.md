@@ -206,3 +206,20 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
     - 全ての依存先が確保できたため、本体ファイルは削除。
   - 検証: 通常モード → `COMPATIBLE_ATCODER_2025`有効化 → 通常モードの3段階。両モードともビルド成功、通常モード1078件中819成功・0失敗、互換モード1078件中687成功・0失敗・5スキップ(既知)を確認。フラグは通常モードへ復帰済み。
   - **ルート直下(`Tests/RedBlackTreeTests/`)には現在、テストファイルは`EtcTests.swift`(ユーザー指示により意図的に空シェルとして維持)のみが残る。** 共有インフラは`RedBlackTreeTestSupport/`、内部実装検証は`RedBlackTreeInternal/`、型別テストは各型フォルダに整理済み。ルート直下の棚卸しはこれで完全に完了。
+- (2026-09-29 13:01) `RedBlackTreeTestUtil/`は英語として据わりが悪いとのユーザー相談を受け、`RedBlackTreeTestSupport/`へ改名(`XcodeMV`でリネーム、中身は変更なし)。TESTING.md内の参照も追従。
+- (2026-09-29 13:10) ユーザー指示: ABC/convenience/memoizeフォルダは当面ノータッチ。`base/`を糸口に、内部向けテスト(`@testable`依存の低レベル実装テスト)は後回しにしつつ、「外部テストっぽいやつ」(公開APIを検証している実テスト)と「テストサポートっぽいやつ」(テスト本体を持たない共有ヘルパー/フィクスチャ)を棚卸し・再配置。
+  - `base/`(`SetBaseTests.swift`・`MultiSetBaseTests.swift`)を確認したところ、`SUT.___ptr_range_comp`等の内部API直叩きのみで公開仕様もサポートコードも無い純粋な内部向けテストだったため、今回は不問(後回し)。
+  - `fixture/`(7ファイル、641行)を確認したところ、実質的に実テスト(`func test...`)を1件も持たない共有サポートコード群だったため、`RedBlackTreeTestSupport/`へ内容そのまま全量移設し、`fixture/`フォルダ自体を削除:
+    - `RedBlackTreeFixture.swift`(`RedBlackTreeDebugFixture`/`RedBlackTreeFixture`プロトコルと`assertEquiv`等のアサーションヘルパー)
+    - `RedBlackTreeSet+Testing.swift`・`RedBlackTreeDictionary+Test.swift`・`RedBlackTreeMultiMap+Test.swift`・`RedBlackTreeMultiSet+Test.swift`(各型の`isValid`/`_copyCount`/`___tree_invariant`/`_withSealed`等、連番テストが多用するテスト専用extension群)
+    - `UnsafeIndexV3Range+Testing.swift`(互換維持用の内部extension)
+    - `FixtureAtCoder2025CompatibilityTests.swift`は名前に反して実テストが無くpackage内部extension(`___is_garbaged`/`___node_positions()`)のみだったため、紛らわしい`Tests`という名前を外して`FixtureAtCoder2025Support.swift`に改称の上で移設。
+  - `foundamental/`(`KeyValueComparerTests.swift`/`KeyValueComparerTests2.swift`)を確認したところ、`KeyValueTrait`の`value_comp`デフォルト実装を独自フィクスチャ型で検証する内部向けテストだったため、今回は不問(後回し)。
+  - `mini/`(`MiniStorageTests.swift`/`mini-storage.swift`)を確認したところ、SIMDベースの試作`RedBlackTree4`ごと`#if false`で無効化された完全な死んだ実験コードで、型自体も現行`Sources`に存在しない遺物と判明。外部テストにもサポートにも該当しないため今回は対象外とし、現状のまま保持(将来判断のためコメントのみ残す)。
+  - `sealed/`(4ファイル、343行)を確認: `PurifiedTests.swift`(`@testable`・`_NodePtrSealing`/`SealError`直叩き)は内部向けテストのため不問(後回し)。残り3ファイルは`@testable`を使わず公開API(`isElement(at:)`・`isValid`・deprecated `isValid(index:)`)のみで検証する外部テストだったため棚卸し:
+    - `SealedTests2.swift`(Set本体、コピー後の片方をCoW変異させた際のIndex有効性)の新規性のある2件を`RedBlackTreeSet_3_IndexSequenceTests.swift`に`testIndexValidityAgainstOriginIsUnaffectedByCopyThenMutateCoW`/`testIndexValidityAfterConsecutiveMutationsWithOnlyFirstTriggeringCoW`として追加(3件目の`testSomething2`は既存の`testIsElementAndIsEndRejectStaleIndex`と同義のため削除)。
+    - `SealedTests3.swift`(RangeView版の同内容)の新規性のある2件を`RedBlackTreeSet_98_IndexValidityXCTests.swift`に追加(3件目も同様に重複のため削除)。
+    - `SealedAtCoder2025CompatibilityTests.swift`(互換専用、deprecated `isValid(index:)`と`===`によるIndex同一性比較・`.pointee`を使う版)は自己完結クラス`RedBlackTreeSetSealedAtCoder2025LegacyTests`として`RedBlackTreeSetAdditionalAtCoder2025CompatibilityTests.swift`へ統合。末尾の空`testPerformanceExample`スタブは削除。
+    - 旧3ファイルは削除、`PurifiedTests.swift`は`sealed/`にそのまま残置。
+  - 検証: 通常モード → `COMPATIBLE_ATCODER_2025`有効化 → 通常モードの3段階、両モードともビルド成功。通常モード1075件中817成功・0失敗、互換モード1075件中687成功・0失敗・5スキップ(既知)を確認。フラグは通常モードへ復帰済み。
+  - **`fixture/`フォルダは完全に空になり削除。`sealed/`は`PurifiedTests.swift`(内部向け、後回し)のみ残る。** `base/`・`foundamental/`・`mini/`は内部向け/死んだコードのため今回は不問。次はユーザー指示待ち。

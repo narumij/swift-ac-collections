@@ -20,7 +20,7 @@
 //
 // This Swift implementation includes modifications and adaptations made by narumij.
 
-#if DEBUG
+#if DEBUG && false
   @testable import RedBlackTreeCollections
 
   /// 配列ベースのコードベースにポインタを載せるためのもの

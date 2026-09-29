@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/01/12.
 //
 
-#if DEBUG
+#if DEBUG && false
   @testable import RedBlackTreeCollections
 
 /// 配列ベースのコードベースにポインタを載せるためのもの

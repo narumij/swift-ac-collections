@@ -407,6 +407,69 @@ import XCTest
     }
   }
 
+  final class PerformacesAtCoder2025LegacyTests: RedBlackTreeTestCase {
+    #if ENABLE_PERFORMANCE_TESTING
+      func testPerformanceExample4() throws {
+        self.measure {
+          var set = RedBlackTreeSet<Int>(0..<10_000_000)
+          set
+            .forEach { i, v in
+              set.remove(at: i)
+            }
+        }
+      }
+
+      func testPerformanceExample7() throws {
+        let set = RedBlackTreeSet<Int>(0..<10_000_000)
+        self.measure {
+          _ = set.firstIndex { $0 > 10_000_000 }
+        }
+      }
+    #endif
+  }
+
+  final class ReferenceAtCoder2025LegacyTests: RedBlackTreeTestCase {
+
+    nonisolated(unsafe) static var count: Int = 0
+
+    class DeinitializeCounter: Comparable {
+      static func < (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num < rhs.num
+      }
+      static func == (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num == rhs.num
+      }
+      internal init(num: Int) {
+        self.num = num
+        ReferenceAtCoder2025LegacyTests.count += 1
+      }
+      deinit {
+        ReferenceAtCoder2025LegacyTests.count -= 1
+      }
+      var num: Int
+    }
+
+    override func setUpWithError() throws {
+      try super.setUpWithError()
+      Self.count = 0
+    }
+
+    override func tearDownWithError() throws {
+      try super.tearDownWithError()
+      Self.count = 0
+    }
+
+    /// 互換モードの.indicesを経由した1件ずつのremove(at:)でも参照が正しく解放されること
+    func testExample() throws {
+      var a = RedBlackTreeSet<DeinitializeCounter>((0..<3).map { DeinitializeCounter(num: $0) })
+      XCTAssertEqual(Self.count, 3)
+      for i in a.indices {
+        a.remove(at: i)
+      }
+      XCTAssertEqual(Self.count, 0)
+    }
+  }
+
   extension RedBlackTreeSetBidirectionalCollectionTests {
     func testForwardAndBackwardIteration() {
       let s: RedBlackTreeSet = [1, 3, 5, 7, 9]

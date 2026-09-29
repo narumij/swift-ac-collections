@@ -61,7 +61,7 @@ class RedBlackTreeTestCase: XCTestCase {
       nodeDeinitializedCount = 0
       payloadInitializedCount = 0
       payloadDeinitializedCount = 0
-    
+
     assert(UnsafeNode.nullptr.pointee.__left_ == .nullptr)
     assert(UnsafeNode.nullptr.pointee.__right_ == .nullptr)
     assert(UnsafeNode.nullptr.pointee.__parent_ == .nullptr)
@@ -74,7 +74,7 @@ class RedBlackTreeTestCase: XCTestCase {
 }
 
 extension RedBlackTreeTestCase {
-  
+
   func keyValue<K, V>(_ k: K, _ v: V) -> (key: K, value: V) { (k, v) }
   func keyValue<K, V>(_ kv: (K, V)) -> (key: K, value: V) {
     (kv.0, kv.1)

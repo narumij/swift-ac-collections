@@ -318,3 +318,10 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   - `foundamental/`フォルダは完全に空になったため削除。
   - 検証: 通常モードのみ(互換コード不関与のため省略)。ビルド成功、全体テスト1072件817成功・0失敗を確認。
   - **`foundamental/`フォルダの棚卸しはこれで完了。**
+- (2026-09-29 17:13) ユーザー指示: `convenience/`フォルダは整理(重複排除)ではなく、通常/互換モードの二重化が壊れている箇所の修正を希望。調査したところ、`ConvenienceTests2.swift`(`#if !COMPATIBLE_ATCODER_2025`限定、`set[.lessThan(x)]`等のsubscript版API)と`ConvenienceAtCoder2025CompatibilityTests.swift`内の`extension ConvenienceTests`(`#if COMPATIBLE_ATCODER_2025`限定、`set.lessThan(x)`等のメソッド呼び出し版API)が、本来同一シナリオの通常/互換ペアであるにもかかわらず**別クラス**(`ConvenienceTests2` vs `ConvenienceTests`)に分裂していたため、他型のファイルと同じ「同一クラス名を互換ファイル側からextension」規約に反していた。
+  - `ConvenienceTests2`の5メソッド(`test_set_LT_GT`/`test_set_LE_GE`/`test_Multiset_LT_GT`/`test_Multiset_LE_GE`/`testRedBlackTreeConveniences`、いずれも`#if !COMPATIBLE_ATCODER_2025`)を`ConvenienceTests.swift`本体の`ConvenienceTests`クラスへ統合。`ConvenienceTests2.swift`は削除。
+  - これにより`ConvenienceTests`は、通常モードでは統合した5メソッド(subscript版API)、互換モードでは互換ファイル側の同名5メソッド+`testEnumerate`(メソッド呼び出し版API)が有効になる、正しい二重化構造になった(相互排他ガードのため名前衝突なし)。
+  - ついでに互換ファイル末尾にあった完全に空の`extension ConvenienceTests {}`を2つ削除(中身の無い残骸)。
+  - 検証: 通常モード→互換モード→通常モードの3段階。両モードビルド成功。互換モードで`ConvenienceTests`単体を実行し18件全成功(統合した5件が正しく互換版APIで動作することを確認)。全体テストも互換モード1067件686成功・0失敗・5スキップ(既知)を確認。フラグは通常モードへ復帰済み。
+  - `Elements.swift`・`RedBlackTreeSet+Convenience.swift`・`RedBlackTreeMultiset+Convenience.swift`(いずれもテストではなく`lessThan`/`greaterThan`/`elements(in:)`等の便利APIをテストターゲット内で試験的に生やしているソース、コメントに「盆栽対象」とあり)は今回のスコープ外のため無変更。
+  - **`convenience/`フォルダの二重化修正はこれで完了。**

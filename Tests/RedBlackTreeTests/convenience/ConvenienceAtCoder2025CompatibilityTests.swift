@@ -345,9 +345,4 @@ import XCTest
       XCTAssertEqual(set, [])
     }
   }
-  extension ConvenienceTests {
-  }
-
-  extension ConvenienceTests {
-  }
 #endif

@@ -21,6 +21,7 @@
 - この文書の規定自体が一部古くなってきているので、Claudeさんの作業成果を加味して更新すること
 - ABC, convenience, memoize, unsafeTreeは温存(unsafeTree/oldは除く)
 - 次の棚卸しはold, unsafeTree/oldあたりから
+- 始業時の会話は省略可能
 
 ### 連絡事項
 

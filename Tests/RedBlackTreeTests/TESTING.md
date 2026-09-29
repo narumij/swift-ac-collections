@@ -432,3 +432,5 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
     - `DebugAdditionals/UnsafeTreeV2/`(dump/Graphviz/Testing拡張)→`DebugAdditionals/UnsafeTreeV2Debug/`に改名(同階層の`UnsafeNode`/`ThreeWay`と命名を揃えつつ、本体テストスイートの`UnsafeTreeV2/`と重複しない名前に)。
     - トップレベル`UnsafeTreeV2/`直下に浮いていた`___RedBlackTreeContainerTests_unsafe.swift`を、既存のFixture種別分類(実`RedBlackTreeSet`インスタンスを使用=`Instance`)に合わせて`UnsafeTreeV2/Instance/`へ格納。
   - 検証: ビルド成功、全体テスト1173件905成功・0失敗(移設前と完全一致)を確認。**同名フォルダの混乱はこれで解消。**
+- (2026-09-30 07:38) ユーザー指示: `___RedBlackTreeContainerTests`(クラス名)とファイル名(`___RedBlackTreeContainerTests_unsafe.swift`)を「いいかんじ」に改名。ユーザー自身が使った「木の開発のブートストラップに該当する部分」という言葉から`UnsafeTreeV2BootstrapTests`に改名(クラス名・ファイル名とも)。コード内から旧クラス名への参照はゼロ(`grep`で確認、TESTING.mdの過去ログのみ)だったため安全に改名。
+  - 検証: ビルド成功、`UnsafeTreeV2BootstrapTests`単体13件中12件成功(残り1件`testPerformanceExample`は既知の`ENABLE_PERFORMANCE_TESTING`ガードで非実行)を確認。

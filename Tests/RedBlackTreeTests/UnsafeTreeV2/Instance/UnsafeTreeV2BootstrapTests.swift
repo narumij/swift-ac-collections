@@ -1,5 +1,5 @@
 //
-//  BaseNodeContainerTests.swift
+//  UnsafeTreeV2BootstrapTests.swift
 //  swift-ac-collections
 //
 //  Created by narumij on 2024/09/17.
@@ -7,13 +7,13 @@
 
 import XCTest
 
-// 結構ディープな内容なので温存する必要がある
+// 木の開発のブートストラップに該当する部分。結構ディープな内容なので温存する必要がある
 // テストのセットアップがマニアックでしんどい
 
 #if DEBUG
   @testable import RedBlackTreeCollections
 
-  final class ___RedBlackTreeContainerTests: RedBlackTreeTestCase {
+  final class UnsafeTreeV2BootstrapTests: RedBlackTreeTestCase {
 
     let capacity = 32
 

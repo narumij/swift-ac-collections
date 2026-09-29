@@ -27,6 +27,7 @@
 - ABC, convenience, memoizeは温存
 - 実験的なテストコード書く場合、人もAIもまずEtcTests.swiftまたはDeathTest.swiftに書くこと
 - RedBlackTreeTestSupportとDebugAdditionalsは役割がかぶってるので、再度整理が必要
+- Tests/RedBlackTreeTestのTODOを消化すること
 
 ### 相談事項
 

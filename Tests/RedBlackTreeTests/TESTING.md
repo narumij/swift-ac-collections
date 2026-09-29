@@ -196,8 +196,8 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
     - 内部逆順走査`___rev_for_each_`(testRev)は他に置き場が無く、他との重複も無いため、互換ファイル内の`extension EtcTests`として現状維持。
   - 検証: 通常モード → `COMPATIBLE_ATCODER_2025`有効化 → 通常モードの3段階で確認。有効化時に2件のコンパイルエラー(新規追加した`.find`と`BoundExpression`ベースの`.erase`系テストが`#if !COMPATIBLE_ATCODER_2025`ガード漏れ)を検出・修正。最終的に通常モード1082件中823成功・0失敗、互換モード1082件中687成功・0失敗・5スキップ(既知)を確認。フラグは通常モードへ復帰済み。
   - この時点では`DocumentCheckTests.swift`・`KeyValueComparer+Tuple.swift`/`RedBlackTreeTestCase.swift`/`SplitMix64.swift`・`RootAtCoder2025CompatibilityTests.swift`は対象外としていたが、直後のユーザー指示で全て棚卸し対象に変更された(下記エントリ参照)。
-- (2026-09-29 13:00) ユーザー指示: `DocumentCheckTests.swift`は削除まで棚卸し可、`RootAtCoder2025CompatibilityTests.swift`もファイルが消えるまで棚卸し、テストと呼べない共有インフラ(基底クラス・ヘルパー)は新設する`RedBlackTreeTestUtil/`フォルダへ集約。これに従いルート直下を最終整理:
-  - `RedBlackTreeTestCase.swift`(基底`XCTestCase`・`blackHole`・`_value`/`keyValue`等のテストヘルパー・`PointerRedBlackTreeTestCase`)、`KeyValueComparer+Tuple.swift`(`KeyValueTrait`のテスト専用extension)、`SplitMix64.swift`(PRNG)は、いずれも「テストそのものではない共有インフラ」と判断し、新設`RedBlackTreeTestUtil/`フォルダへ内容そのまま移設。
+- (2026-09-29 13:00) ユーザー指示: `DocumentCheckTests.swift`は削除まで棚卸し可、`RootAtCoder2025CompatibilityTests.swift`もファイルが消えるまで棚卸し、テストと呼べない共有インフラ(基底クラス・ヘルパー)は新設する`RedBlackTreeTestSupport/`フォルダへ集約。これに従いルート直下を最終整理:
+  - `RedBlackTreeTestCase.swift`(基底`XCTestCase`・`blackHole`・`_value`/`keyValue`等のテストヘルパー・`PointerRedBlackTreeTestCase`)、`KeyValueComparer+Tuple.swift`(`KeyValueTrait`のテスト専用extension)、`SplitMix64.swift`(PRNG)は、いずれも「テストそのものではない共有インフラ」と判断し、新設`RedBlackTreeTestSupport/`フォルダへ内容そのまま移設。
   - `DocumentCheckTests.swift`(46行、`Remove.md`/`DSL.md`のコード例検証)を監査。4件全てを連番側と突き合わせ: `.start.after`/`.end.before`チェーンは`_16_BoundExpressionTests.swift`に、RangeViewの述語なし`erase()`は`_17_RangeViewTests.swift`に、`erase(at:) -> Index`の逐次ループはSpec上`_6_RemovalTests.swift`の`test_erase_index_returnsNext`等に、それぞれ既に同等以上のカバレッジがあることを確認。新規性なしのため丸ごと削除。
   - `RootAtCoder2025CompatibilityTests.swift`(108行、最終形)を解体:
     - `PerformacesAtCoder2025LegacyTests`・`ReferenceAtCoder2025LegacyTests`(いずれも`Performaces.swift`/`ReferenceTests.swift`削除時に自己完結化済みだった互換専用クラス) → `RedBlackTreeSetAdditionalAtCoder2025CompatibilityTests.swift`へ統合(Set関連の互換専用内部・性能テストの既存の置き場所)。
@@ -205,4 +205,4 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
     - `extension EtcTests { testRev }`(内部逆順走査`___rev_for_each_`の検証) → 他に重複が無くEtcTests本体と対になる内容のため、`EtcTests.swift`自体に`#if COMPATIBLE_ATCODER_2025 && DEBUG`ガード付きのextensionとして統合。
     - 全ての依存先が確保できたため、本体ファイルは削除。
   - 検証: 通常モード → `COMPATIBLE_ATCODER_2025`有効化 → 通常モードの3段階。両モードともビルド成功、通常モード1078件中819成功・0失敗、互換モード1078件中687成功・0失敗・5スキップ(既知)を確認。フラグは通常モードへ復帰済み。
-  - **ルート直下(`Tests/RedBlackTreeTests/`)には現在、テストファイルは`EtcTests.swift`(ユーザー指示により意図的に空シェルとして維持)のみが残る。** 共有インフラは`RedBlackTreeTestUtil/`、内部実装検証は`RedBlackTreeInternal/`、型別テストは各型フォルダに整理済み。ルート直下の棚卸しはこれで完全に完了。
+  - **ルート直下(`Tests/RedBlackTreeTests/`)には現在、テストファイルは`EtcTests.swift`(ユーザー指示により意図的に空シェルとして維持)のみが残る。** 共有インフラは`RedBlackTreeTestSupport/`、内部実装検証は`RedBlackTreeInternal/`、型別テストは各型フォルダに整理済み。ルート直下の棚卸しはこれで完全に完了。

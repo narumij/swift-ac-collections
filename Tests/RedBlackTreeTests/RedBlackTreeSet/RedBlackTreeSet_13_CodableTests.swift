@@ -2,6 +2,8 @@ import Foundation
 import RedBlackTreeCollections
 import XCTest
 
+// ちゃっぴーしてきでデッドコードらしい。
+// TODO: 要不要を検討し、不要ならば削除
 class CodableFixture: RedBlackTreeTestCase {
 
   let encoder: JSONEncoder = {

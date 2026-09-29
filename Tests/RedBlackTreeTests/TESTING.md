@@ -18,7 +18,8 @@
 
 ### 優先事項
 
-- Claudeさん、ここまで棚卸ししてて、このテスト群はTest as Specificationを意識してると感じましたか？
+- ABC, convenience, memoize, unsafeTreeは温存(unsafeTree/oldは除く)
+- 次の棚卸しはold, unsafeTree/oldあたりから
 
 ### 連絡事項
 

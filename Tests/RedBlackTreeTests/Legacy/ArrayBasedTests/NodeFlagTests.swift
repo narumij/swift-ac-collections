@@ -21,6 +21,7 @@ import XCTest
     return UInt(bitPattern: i) ^ signBit
   }
 
+  // 今の用語だとpath bitmap testsになる
   final class NodeFlagTests0_10_20: TreeFixture0_10_20 {
 
     func testTo() {

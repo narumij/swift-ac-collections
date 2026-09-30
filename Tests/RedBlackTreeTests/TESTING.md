@@ -42,6 +42,7 @@
 - Codexさんはふりかえりの時間を確保すること
 - Claudeさんは始業時に会話の時間を確保すること
 - 小さな変更を積み重ねてるときは互換チェックをさぼっていい
+- 2026-10-01: XcodeのMCP `RunAllTests`が、実際には数百件のテスト(例: `BufferHeaderTests`等)を実行せず"No result"のまま"0 failed"と返す不具合を確認。全体テストの合否判定は`swift test`(CLIコマンド)を正とすること。カバレッジの精査も`swift test --enable-code-coverage`+`xcrun llvm-cov show/report`の方が信頼できる
 - 内部構造をどのように区分するのか、勝手に判断しないこと
 - ユーザー記載欄に記入する場合、こちらが消す都合上、古さが分からないと困るので、日付に加えて時間も記載すること
 - 現行APIかどうか判断に迷った場合API-Matrix.md及びAPI-Matrix-View.mdに照らすこと
@@ -71,6 +72,7 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-01 07:20 Claude: `UnsafeTreeV2+BufferHeader.swift`(92%)を`swift test --enable-code-coverage`+`llvm-cov`で厳密に調査(Xcodeの`RunAllTests`はこの日のセッションで507件が実際に未実行なのに"0 failed"と表示される不具合を確認したため、以後のカバレッジ精査は`llvm-cov`を使う)。未カバー行は`payloadLayout`(90-92行目、呼び出しゼロ)・`__root_ptr()`(122行目、`UnsafeTreeV2.__root_ptr()`は同名メソッドを呼ばず`$0.root_ptr`に直接アクセスしているため実質デッド)・`___tracking_tag`添字の「どのバケツにも見つからない」防御的フォールバック(272行目、「CoW後はバケツ1個」という不変条件下では到達不能)の3箇所のみで、いずれもテスト対象外と判断。`payloadLayout`/`__root_ptr()`の削除是非はユーザー判断待ちとして保留に追加。コード変更なし。
 - 2026-10-01 07:05 Claude: ユーザーフィードバック「テストを先に書いて」に従い、4型の`removeAll(keepingCapacity: true)`向けに先に`_copyCount`実測テストを追加し、失敗することを確認(全4型で0→1)。その後`__tree_.count > 0`ガードを追加して修正(非空時の挙動は変更なし、空時は`ensureUnique()`/`deinitialize()`を完全にスキップ)。`swift test`873 tests / 0 failures、`swift build -c release`も健全。これで発見済みの削除系CoW問題は全て解消。
 - 2026-10-01 06:50 Claude: 同じ「空チェック前のensureUnique()」問題を`RedBlackTreeRangeView+KeyValue.swift`(Dictionary/MultiMapの`dictionary[...]`等が返すView)と`+KeyOnly.swift`(Set/MultiSetの同種View)の`popFirst`/`popLast`/`erase()`/`erase(where:)`にも発見・修正。`RedBlackTreeView_1_KeyValueRangeViewTests.swift`/`_2_KeyOnlyRangeViewTests.swift`に`_copyCount`実測テストを追加(ユーザーから「テストを先に書いて」とフィードバックあり、以後はテストファーストで進める)。`swift test`全体で873 tests / 0 failures、`swift build -c release`も健全。これで発見済みの削除系CoW問題(`erase(exactly:)`・4型`popFirst`/`popLast`等・両View系列)は全て修正済み。残りは`removeAll(keepingCapacity:)`等のVoid返却系のみ(保留継続)。
 - 2026-10-01 06:35 Claude: ユーザー許可の上、「空チェック前のensureUnique()が無駄なCoWを起こす」問題を4型の`popFirst`/`popLast`(Set/MultiSet/Dictionary/MultiMap)・`Set.remove(_:)`・`Dictionary.removeValue(forKey:)`の合計9箇所に一括適用(`remove(at:)`は無効インデックスでトラップするため対象外、既に安全)。各型の`_6_RemovalTests.swift`に`_copyCount`実測テストを追加。`AC_COLLECTIONS_INTERNAL_CHECKS`はPackage.swiftで`.when(configuration: .debug)`指定済みのため、テスト側の`#if AC_COLLECTIONS_INTERNAL_CHECKS`だけで十分(別途`#if DEBUG`は不要、ユーザー確認済み)。ユーザー指示で`swift build -c release`・`swift test -c release`も実行、673 tests / 0 failuresでReleaseビルドも健全と確認。`swift test`(Debug)全体で871 tests / 0 failures。

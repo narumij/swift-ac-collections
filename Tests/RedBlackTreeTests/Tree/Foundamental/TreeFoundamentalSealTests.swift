@@ -155,7 +155,7 @@ final class TreeFoundamentalSealTests: RedBlackTreeTestCase, _UnsafeNodePtrType 
     }
 
     switch _NodeKey<_SealTestBase>(root) {
-    case .key(let k): XCTAssertEqual(k, root.pointee.___recycle_count)
+    case .key(let k): XCTAssertEqual(k, _SealTestBase.__get_value(root))
     case .end: XCTFail("実ノードは.keyになるはず")
     }
 

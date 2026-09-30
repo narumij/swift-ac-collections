@@ -25,6 +25,8 @@
 (完了したらClaudeやCodexが完了済みの要望に移動してください）
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
+- 前回からリファクタリングしました。確認してください
+- あとはおまかせします
 
 ### 相談事項
 
@@ -67,37 +69,6 @@
 
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
-
-- 2026-09-30 16:58 Claude: 新規テストファイル`Tests/RedBlackTreeTests/Tree/Foundamental/TreeFoundamentalSealTests.swift`を追加し、`Implements/__tree/unsafe_node/Seal/_NodePathBitmap.swift`と`_NodeKey.swift`をカバー。両方とも100%達成(`_NodePathBitmap.swift` 13/13、`_NodeKey.swift` 81/81)。
-  - `_NodeKey<Base>`はジェネリックで`Base._NodePtr == UnsafeMutablePointer<UnsafeNode>`かつ`Base._Key: Comparable`を要求する。`UnsafeNode`にpayloadが無いため、挿入時に設定した`___tracking_tag`をそのままキーとして返す最小の`_SealTestBase: _BaseNode_KeyInterface`を用意して対応(既存の`_BaseNode_KeyProtocol_Fixture`は`_NodePtr = Int`で型が合わず使えなかった)。
-  - `_NodePathBitmap`: `.end`/`.path`ケースの判別、実ノードは常にendより「小さい」こと、15要素の中間順位置(ground truth)とbitmap比較の一致、`lessThan`ヘルパーのbitmap省略/明示指定の両方を検証。
-  - `_NodeKey`: `.end`/`.key`ケースの判別、キー順序、同一ノード比較、キーが同値の場合に木構造上の位置(bitmap)へフォールバックするケース(意図的に2ノードのtagを同値にして再現)、`isInHalfOpenRange`(下端含む・上端含まない半開区間)、`containsRange`(完全包含・一致・前後にずれる・inner逆転の各パターン)を検証。
-  - full suite 960 passed / 0 failed。
-
-- 2026-09-30 16:51 Claude: `unsafe_node+pointer+advance/compare/distance/validation.swift`に同様のカバレッジ拡充を実施。
-  - 前提として、既存の`insert()`ヘルパーがノードの`___tracking_tag`を`.nullptr`初期値のまま放置していたことに気づいた(これまでの`_ptr`系アルゴリズムはポインタの同一性比較のみでtagを見ないため実害はなかったが、`___is_null`/`___is_end`/`___is_root`(タグ判定)を使う今回のテストには必須)。`insert()`で`___tracking_tag = _TrackingTag(nodeIndex)`を設定するよう修正。
-  - `unsafe_node+pointer+validation.swift`: `___is_null`/`___is_end`/`___is_root`を直接検証 → 100% (9/9)。
-  - `unsafe_node+pointer+distance.swift`: `__distance`/`___safe_distance`(成功・失敗双方)を検証 → 100% (19/19)。
-  - `unsafe_node+pointer+advance.swift`: `___tree_next_iter`/`___tree_prev_iter`の成功系・境界失敗(`.upperOutOfBounds`/`.lowerOutOfBounds`)、`___tree_adv_iter`の正負両方向、limit付きオーバーロードの即時limit・途中limit(正負双方)・limit未到達成功を検証 → 100% (57/57)。
-  - `unsafe_node+pointer+compare.swift`: `___ptr_height`/`___ptr_comp_multi`/`___ptr_comp_bitmap`を、関数同士を比較するのではなく実際の中間順走査で得たground truthと比較する方式で検証(15要素の全ペア総当たり) → 77.45% (79/102)。残りは`___ptr_bitmap_128()`(`USE_INT128`無効時は到達不能な既定外コード)とassertメッセージクロージャで、今回の範囲外。
-  - 副次的な発見: `DebugAdditionals/UnsafeNode+Debug/`に`unsafe_node+pointer+compare.swift`/`unsafe_node+pointer+distance.swift`という同名の重複ファイルがあり、内容は`___ptr_comp_multi_org`/`___ptr_bitmap_org`/`___dual_distance`という無参照の旧版スクラッチコードだった(前回削除した`unsafe_node+pointer+partial algorithm.swift`と同じ「多重化作業時の不採用コード」パターン)。依存皆無を確認して削除。
-  - full suite 953 passed / 0 failed。
-
-- 2026-09-30 16:41 Claude: `_ptr__tree_balance_after_insert`/`_ptr__tree_remove`を100%カバレッジに、"細かいやつ"(ref/slow walk/プロトコル版next・prev・leaf)も追加でカバー。
-  - `unsafe_node+pointer.swift`の`__left_ref`/`__right_ref`(`_NodeRef`経由の読み書き)、`__slow_end()`/`__slow_begin()`(親を辿る経路)を検証するテストを追加(29.23%→53.85%)。
-  - `unsafe_tree+algorithm.swift`のプロトコル版`__tree_next_iter`/`__tree_prev_iter`/`__tree_leaf`/`__tree_next`(多段の親上りを含む15要素の走査)を追加(それまでフリー関数版だけ呼んでいて、プロトコル版は別の呼び出し経路のため未到達だった)。
-  - `_ptr__tree_balance_after_insert`/`_ptr__tree_remove`の全分岐網羅のため、6要素の挿入順を全順列(6!=720通り)×削除順4パターン(昇順/降順/挿入順/挿入順の逆)で回す総当たりテストを追加。個々の分岐を手で導出せず、あらゆる木の形を総当たりする方式(このセッションで繰り返し確認した「手動導出はミスりやすい」という反省を踏まえた設計)。
-  - 結果: `_ptr__tree_balance_after_insert` 100% (50/50)、`_ptr__tree_remove` 100% (173/173)。`unsafe_tree+algorithm.swift`全体は77.52%→93.68%。
-  - ファイル全体としての100%は未達(ユーザーも「無理だった」と確認)。残りはassertメッセージのクロージャ(失敗時にしか実行されない、デステストでないと踏めないとユーザーも言及)と、`__tree_invariant`/`__tree_sub_invariant`の「壊れた木を検出する」分岐(意図的に不正な木を作らないと踏めない、今回の依頼範囲外)。
-  - full suite 948 passed / 0 failed。
-- 2026-09-30 16:34 Claude: `TreeFoundamentalFixture`での`unsafe_tree+algorithm.swift`/`unsafe_node+pointer+algorithm.swift`のカバレッジ拡充、および`invariant()`の設計修正が完了。
-  - カバレッジ(このテストクラス単独実行時): `unsafe_node+pointer+algorithm.swift` 0%→85.12% (103/121)、`unsafe_tree+algorithm.swift` 22.72%→77.52% (331/427)。フリー関数版アルゴリズム(`__tree_min`/`__tree_max`/`__tree_next`/`__tree_next_iter`/`__tree_prev_iter`)の直接呼び出し走査テスト、明示的な左右回転の可逆性テスト、「叔父が赤」の再配色ケース、31要素×3パターン(昇順/降順/ジグザグ)の挿入・削除ストレステスト(`_ptr__tree_remove`を0%から起動)を追加。
-  - `invariant()`の設計を一緒に見直した。最初、`root`を独立フィールドのまま保ち空/非空を分岐する案を書いたが、ユーザーから提示されたlibc++由来の`__tree`レイアウト解説(end_nodeの`__left_`が常にrootの実体で、別キャッシュを持たない設計)により、`root`は`end_node.__left_`を返す計算プロパティにするのが正しいと判明。これにより`invariant()`は`__tree_invariant(root) ? 1 : 0`一行で空・非空どちらも正しく検証できる(空の木は`__tree_invariant`の定義上true)。あわせて`end_node`のタグを`0`から正しい`.end`に修正。
-  - `~Copyable`のmove後のアドレス不変性についてはユーザーから「Swiftが保証する」と明言があった(自己参照ポインタをフィールドとして持つ設計を将来的に採用する場合の判断材料として記録)。
-  - full suite 945 passed / 0 failed。
-
-- 2026-09-30 16:13 Claude: 優先事項「テストコードのTODOを消化してください」完了。残っていたTODO1件(`DebugAdditionals/UnsafeNode+Debug/unsafe_node+pointer+partial algorithm.swift`の`__tree_leaf`/`__tree_left_rotate`/`__tree_right_rotate`/`_std__tree_balance_after_insert`/`_std__tree_remove`)を精査し、テストターゲット内で他に参照が一件もないことを確認して削除。ビルド成功・full suite 940 passed / 0 failedで変化なし(依存が本当に無かったことを確認)。
-- 2026-09-30 16:13 Claude: 連絡事項「TreeFoundamentalFixtureを基本層試験に使ってみてください」に対応。指摘通り、前回セッションで私が`Legacy/ArrayBasedTests`に追加した`testBalancing1`はLegacy側の`_std`系プロトコル(独立した配列実装)を検証していただけで、Sourcesが実際に使う`_ptr`系プロトコル(`TreeAlgorithmBaseProtocol_ptr`/`TreeAlgorithmProtocol_ptr`、`UnsafeNode`の実ポインタを直接操作)とは別物だったと判明。新設された`TreeFoundamentalFixture`(`~Copyable`構造体、`InlineArray<128, UnsafeNode>`でアロケータ無しに実ノードを保持)を使い、`Tests/RedBlackTreeTests/Tree/Foundamental/TreeFoundamentalTests.swift`を新規作成。空の不変条件、単一ノード挿入で黒根になること、3要素挿入で(挿入順に依らず)理論的に一意なRBT形状になることの3テストを`_ptr`系の実アルゴリズムに対して直接検証(全件pass)。`node(_:)`/`endPtr()`ヘルパーはユーザーの指示で`TreeFoundamentalFixture`本体のメソッドとして配置(テストクラス側のfileprivateヘルパーとして書いたのを移設)。`anyAppleOS 26.0`限定のAPI(`InlineArray`/`~Copyable`)を使うため、対応OS未満では実行されない。
 
 ### 内部区分
 

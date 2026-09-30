@@ -72,21 +72,13 @@ extension TreeNodeOnlyFixture: TreeAlgorithmBaseProtocol_ptr {}
 @available(anyAppleOS 26.0, *)
 extension TreeNodeOnlyFixture: TreeAlgorithmProtocol_ptr {}
 
-// キーやバリューを_NodePtrとした場合、このFixtureでさらにいろいろなテストが可能になりそう
-
 @available(anyAppleOS 26.0, *)
 extension TreeNodeOnlyFixture {
-
-  /// `_NodeKey<Base>`用の最小の`Base`。ノードにpayloadが無いため、
-  /// テスト内で挿入時に設定した`___recycle_count`をキーとして使う。
-  ///
-  /// `___tracking_tag`は使わない: `.end`以外は先頭から0始まりの連番(=保管スロット番号)
-  /// であることが不変条件のため、重複キーの再現などテストの都合で自由に書き換えてはならない。
-  /// `___recycle_count`にはそのような制約が無いため、こちらをキー代わりに使う。
-  enum SealKey: _UnsafeNodePtrType & _BaseNode_KeyInterface {
-    typealias _Key = UnsafeNode.Seal
-    static func __get_value(_ p: _NodePtr) -> UnsafeNode.Seal {
-      p.pointee.___recycle_count
+  
+  enum PointerKey: _UnsafeNodePtrType & _BaseNode_KeyInterface {
+    typealias _Key = _NodePtr
+    static func __get_value(_ p: _NodePtr) -> _NodePtr {
+      p
     }
   }
   
@@ -94,6 +86,13 @@ extension TreeNodeOnlyFixture {
     typealias _Key = _TrackingTag
     static func __get_value(_ p: _NodePtr) -> _TrackingTag {
       p.pointee.___tracking_tag
+    }
+  }
+  
+  enum SealKey: _UnsafeNodePtrType & _BaseNode_KeyInterface {
+    typealias _Key = UnsafeNode.Seal
+    static func __get_value(_ p: _NodePtr) -> UnsafeNode.Seal {
+      p.pointee.___recycle_count
     }
   }
 }

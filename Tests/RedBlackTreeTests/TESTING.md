@@ -25,6 +25,9 @@
 (完了したらClaudeやCodexが完了済みの要望に移動してください）
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
+- 途中で止まっているCI問題の続き(Codex)
+- Codex反映の把握(Claude)
+- Codex指摘の対応(Claude)
 
 ### 相談事項
 

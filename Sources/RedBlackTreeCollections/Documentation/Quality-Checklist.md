@@ -159,6 +159,21 @@ Copy on Writeによって分岐したコレクションは、Indexの所属判�
 - 主な自動検証環境は、GitHub Actionsで使用するUbuntu環境とする。すべてのplatformおよびSwiftPM traitの組み合わせは保証しない。
 - `-Ounchecked`など安全性を弱める構成は、通常の品質保証と区別する。
 
+## 関連する正本
+
+品質やテストに関する判断では、次をそれぞれの正本として扱う。
+
+| 対象 | 正本 |
+| --- | --- |
+| 公開APIの存在と4型への展開 | `API-Matrix.md` |
+| 優先して守る品質 | この文書 |
+| 外部または内部から観察可能な仕様 | Test as Specification |
+| テストで使用するFixture | `Tests/RedBlackTreeTests/Fixtures.md` |
+| 設計理由、所有権、計算量、および内部構造 | `Design/*` |
+| CIで実際に検証するtoolchain、Sanitizer、および構成 | GitHub Actions |
+
+複数の文書に同じ情報を重複して正本化しない。
+
 ## 関連文書
 
 - [設計Overview](Design/Design-Overview.md)

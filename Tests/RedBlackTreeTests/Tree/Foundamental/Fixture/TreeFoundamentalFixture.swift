@@ -44,5 +44,6 @@ extension TreeFoundamentalFixture: _UnsafeNodePtrType & NullPtrInterface {
   var nullptr: _NodePtr { .nullptr }
 }
 
+// 以下の二つと類似関数を基本層とする定義で構わない気がしてきた
 extension TreeFoundamentalFixture: TreeAlgorithmBaseProtocol_ptr {}
 extension TreeFoundamentalFixture: TreeAlgorithmProtocol_ptr {}

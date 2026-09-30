@@ -516,3 +516,9 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   1. **4型のランダム試験を「参照モデル比較＋操作ごとの赤黒木不変条件確認」の組にする**。現状はSet/Dictionaryが参照モデル比較のみ、MultiMapが不変条件確認のみ、MultiSetだけが両方を持つ。各型の意味に合う参照モデルを用い、固定seedで再現可能な操作列の各段階に`___tree_invariant()`相当の確認を結び付ける。4型すべてで両側を満たした時点を完了条件とする。
   2. **Index世代・Range ViewのCoW寿命検証をKeyValue系まで横展開する**。まずDictionary/MultiMapへ「slot削除・再利用後も古いIndexを拒否する」テストを追加する。加えて、コピーしたKeyValue Range Viewの片方をCoW変異した場合の発行元側Index、CoW後の変更対象側Index、連続変異で削除されたIndexの扱いを明示する。共有実装のため両型への機械的複製は必須とせず、DictionaryまたはMultiMapの代表テストでKeyValue Viewの仕様を固定し、必要に応じてもう一方へ展開する。KeyOnly側のMultiSetについても、重複要素固有の差がないかを確認して追加要否を判断する。
 - 最後に作業したモデル: Codex (GPT-5)。Test as Specificationの4型・View横展開漏れレビューと、その結果の記録を担当。
+- (2026-10-01 07:13 JST) 日英ペアの公開ドキュメントを照合。Set/MultiSetは見出し構成が同期済みだったが、`Documentation/RedBlackTreeMultiMap.ja.md`の`### Swapping Values`節が英語版に未反映と判明。`Documentation/RedBlackTreeMultiMap.md`へ、KeyValue Range Viewの`values`から得る変更可能な`RedBlackTreeMappedValuesView`、`swapAt(_:_:)`の使用例、値だけが交換されキー順・木上の位置は変わらないという説明を英訳して追加した。コード変更なしのためテストは実行していない。
+- 最後に作業したモデル: Codex (GPT-5)。日英ドキュメント差分の確認とMultiMap英語版の同期を担当。
+- (2026-10-01 07:16 JST) `CHANGELOG.md`を更新。当初0.4.4タグを起点に全差分を再要約したが、ユーザー指摘により基準が広すぎたと訂正。`CHANGELOG.md`の最終更新コミット`fe770ba8`(2026-09-30 11:28 JST)を特定し、そこからHEADまでの差分だけを再調査した。既存Unreleased項目は保持し、以後に追加された原木層fixture/tests・RawRangeExpression/KeyOnly Range Viewテスト、内部protocolの`~Copyable`対応、raw tree直接検証構造、MultiMapの`index(inserting:)`重複キー修正、空削除時の不要CoW修正、fixture sentinelクラッシュ修正、置換済みUnsafeNodeデバッグ重複実装の削除、およびMultiMap日英ドキュメント同期を追記した。文書変更のみのためテストは実行していない。
+- 最後に作業したモデル: Codex (GPT-5)。CHANGELOG最終更新コミット以降の履歴監査とUnreleased追記を担当。
+- (2026-10-01 07:17 JST) ユーザー再判断により、`CHANGELOG.md`のUnreleasedは最終更新コミット以降だけに限定した版ではなく、リリースタグ`0.4.4`以降の全体差分をまとめた広い版を採用。公開API・View・Bounds/Index・内部実装・Test as Specification再編・内部テスト・不具合修正・削除整理をAdded/Changed/Fixed/Removedへ再反映した。
+- 最後に作業したモデル: Codex (GPT-5)。CHANGELOGの集計基準を0.4.4以降へ戻す修正を担当。

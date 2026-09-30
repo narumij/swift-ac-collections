@@ -8,33 +8,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- RedBlackTreeSet / MultiSet / Dictionary / MultiMapの利用者向けドキュメントを追加
-- C++標準ライブラリとのAPI対応表を追加
-- RedBlackTreeCollectionsの位置指定DSLと削除APIに関するドキュメントを追加
-- 1,600万要素での検索・削除ベンチマークと結果を追加
-- インデックス検証と遅延シーケンスに関するテストを追加
-- 4型すべてに`isEnd(_:)`(終端位置の判定)を追加
-- 4型すべてに`insert(_:hint:)`等のヒント付き挿入APIを横展開
-- Set / Dictionaryに`update(_:hint:)`を追加
-- RedBlackTreeMultiMapに`index(inserting:)`/`erase(exactly:)`を追加(Setと同様の横展開、`ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH`限定)
-- View APIのAPI対応表(API-Matrix-View.md)、`isValid`系APIの整理方針(isValid.md)を追加
+- RedBlackTreeSet / MultiSet / MultiMapの利用者向け日英ドキュメントと、4型のAtCoder 2025互換APIドキュメントを追加
+- 現行API、View API、C++標準ライブラリとの対応、位置指定DSL、削除API、Index validity、品質方針、テストfixtureに関する開発者向けドキュメントを追加
+- `RedBlackTreeMappedValuesView`を追加し、Dictionary / MultiMap本体およびKeyValue Range Viewのmapped valueを参照・更新・交換できるようにした
+- 4型すべてに`isEnd(_:)`、`isElement(at:)`、`containsSubrange(_:)`を追加
+- 4型すべてに`insert(_:hint:)`等のヒント付き挿入APIを横展開し、Set / Dictionaryに`update(_:hint:)`を追加
+- RedBlackTreeMultiMapに`index(inserting:)` / `erase(exactly:)`を追加(Setと同様の横展開、`ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH`限定)
+- Bound / BoundRangeExpressionのtop-level構築APIと、4型共通の位置・範囲評価、subscript、距離、条件付き削除APIを追加
+- 1,600万要素での検索・削除ベンチマーク、実行設定、Swift / C++比較結果を追加
+- 4型のTest as Specificationを初期化、走査、Index、検索、挿入、削除、Range View、プロトコル適合、Codable、値セマンティクス、遅延Sequence、整数幅境界へ拡充
+- 4型のCopy-on-Write、固定seed fuzz、Index validity、性能、削除stress、death testを追加・横展開
+- MappedValues / KeyValue Range / KeyOnly Range View専用の仕様テストを追加
+- raw range expression、node sealing、pointer比較、木の基本操作、赤黒木fixture、raw memory / allocationを直接検証する内部テストを追加
 
 ### Changed
-- BoundsExpression / RangeExpressionと範囲削除APIを整理
-- インデックスの所属先と有効性の検査を強化
-- バケット確保・再利用とCopy-on-Write周辺の内部実装を整理
-- READMEを更新
+- BoundsExpression / RangeExpressionを現行のBound / Index Rangeモデルへ整理し、4型の範囲subscriptと範囲削除実装を共通化
+- Indexの所属、node世代、slot再利用、Copy-on-Write後の解決規則を整理し、有効性検査を強化
+- node path bitmap / sealing、pointer比較、find / insert / erase、raw range、bucket確保・再利用、Copy-on-Write周辺の内部実装を整理
+- KeyOnly / KeyValue Range Viewを`RedBlackTreeView`配下へ整理し、mutable Viewとしての削除・走査・比較APIを拡充
+- 通常APIと`COMPATIBLE_ATCODER_2025`互換APIのテスト配置と条件コンパイルを整理
+- テスト群を4型別の連番Test as Specification、共有View、内部実装、Legacy、TestSupportへ再編
+- RedBlackTreeMultiMapの利用者向け日英ドキュメントに、mapped valuesの`swapAt(_:_:)`とキー順を維持した値交換の説明を追加
+- README、設計文書、APIマトリクス、ベンチマーク結果を現行実装へ更新
 - `isValid(_ index:)`を`isElement(at:)`へ改名し、要素へアクセス可能かの判定に意味を明確化(4型共通)
 - `isValid(_ bounds: UnboundedRange/IndexRange/IndexRangeExpression)`を`containsSubrange(_:)`へ改名(4型共通)
 - Set / MultiMapの`removeSafe(at:)`を`erase(exactly:)`へ改名し、戻り値を`Bool`から削除後の`Index?`へ変更
 
 ### Fixed
-- 異なるツリーに属するインデックスや削除後の無効なインデックスを検出するよう修正
-- 範囲式、削除、Copy-on-Write、ノード再利用に関する不具合を修正
+- 異なるツリー、削除済みnode、世代の異なる再利用slotに属するIndexを誤って有効と扱う問題を修正
+- Copy-on-Writeで分岐した木におけるIndex解決、node世代の継承、stale Index判定を修正
+- Bounds / Index Rangeの解決、距離、比較、条件付き削除、逆順・空範囲の処理を修正
+- RedBlackTreeMultiMapの`index(inserting:)`が重複キーを一意挿入として扱っていた問題を修正
+- 空の4型コンテナおよびMappedValues / KeyValue / KeyOnly Viewに対する削除系APIが、要素を削除しない場合にも不要なCopy-on-Writeを発生させる問題を修正
+- UnsafeTreeV2のテスト用fixture setterが`.nullptr` / `.end` sentinelを通常nodeとして解決しクラッシュする問題を修正
+- bucket終端、fresh / recycle pool、payload layout、pointer advance / distance / comparison周辺の不整合を修正
 
 ### Removed
-- RedBlackTreeBoundExpressionの旧実装を削除
-- 重複・旧式のテストとテスト専用補助実装を整理
+- RedBlackTreeBoundExpression V2の旧実装を削除
+- 旧Array-based treeの重複実装をLegacyへ隔離し、復旧不能または現行テストと重複するテスト・補助実装を削除
+- 型別Test as Specificationへ移管済みの旧dictionary / multiset / multimap / fatalError / root直下テストを削除
 - `Bound`/`BoundRangeExpression`を引数に取る`isValid(_:)`を削除(評価が常に安全なため事前判定が不要。空判定は`collection[bounds].isEmpty`で代替)
 
 ## [0.4.4] - 2026-09-24

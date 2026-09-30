@@ -9,6 +9,7 @@ import RedBlackTreeCollections
 import TrailingElementsModule
 
 struct TreeFoundamentalFixture: ~Copyable {
+  var end_node: UnsafeNode
   var storage: TrailingArray<Header>
 }
 

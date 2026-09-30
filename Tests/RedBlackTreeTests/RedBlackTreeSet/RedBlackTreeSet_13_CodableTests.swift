@@ -2,25 +2,6 @@ import Foundation
 import RedBlackTreeCollections
 import XCTest
 
-// ちゃっぴーしてきでデッドコードらしい。
-// TODO: 要不要を検討し、不要ならば削除
-class CodableFixture: RedBlackTreeTestCase {
-
-  let encoder: JSONEncoder = {
-    let encoder = JSONEncoder()
-    encoder.keyEncodingStrategy = .convertToSnakeCase
-    encoder.dateEncodingStrategy = .iso8601
-    return encoder
-  }()
-
-  let decoder: JSONDecoder = {
-    let decoder = JSONDecoder()
-    decoder.keyDecodingStrategy = .convertFromSnakeCase
-    decoder.dateDecodingStrategy = .iso8601
-    return decoder
-  }()
-}
-
 #if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeSetCodableTests: RedBlackTreeTestCase {
 

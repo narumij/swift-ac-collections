@@ -24,8 +24,6 @@
 ### 優先事項
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
-- Tests/RedBlackTreeTestのTODOを消化すること
-- RedBlackTreeViewのテストを追加する
 
 ### 相談事項
 
@@ -63,6 +61,9 @@
 
 ### 完了済みの要望
 
+- 2026-09-30 11:48 Claude: 連絡事項「カバレッジが落ちてきてるので横展開と合わせてカバレッジ改善（90%目安)」に着手し、目安の90%に到達(88.11%→89.47%→89.64%→**90.16%** (7714/8556 Sources行)、`RunAllTests`のxcresultを`xcrun xccov`で計測)。関数単位のカバレッジ詳細から、`isValid`→`containsSubrange`改名に伴い実は誰も呼んでいなかった具体的な未テストオーバーロードを特定して埋めた: Dictionary/MultiMap/MultiSetそれぞれで`containsSubrange(_:)`・`subscript(bounds:)`・`erase(_:)`系の`UnboundedRange`/`IndexRange`(`equalRange`が返す型)/`IndexRangeExpression`のうち1〜2種の組み合わせが未使用だった(型ごとに異なる組み合わせ)。`RedBlackTreeDictionary_8_RangeViewTests.swift`/`RedBlackTreeMultiMap_8_RangeViewTests.swift`/`RedBlackTreeMultiSet_8_RangeViewTests.swift`に計10件追加(全件pass、full suite 936 passed / 0 failed)。ダミーの行カバレッジ稼ぎではなく、実際に「このオーバーロードは呼ばれた実績がなかった」という具体的な穴を塞いだもの。残りの大きな未カバー領域(`unsafe_tree+algorithm.swift`ほか`__tree`層の内部実装)は横展開/カバレッジとは別の「`__tree`基本層のテスト再構築」の範疇と判断し、次の作業として保留。
+- 2026-09-30 11:41 Claude: 優先事項「Tests/RedBlackTreeTestのTODOを消化すること」完了。Tests/RedBlackTreeTests配下のTODOコメント5件を精査。①Dictionary_7_UtilityTests.swiftの「keys/valuesの順序が変」は実行して問題なしを確認し単純に除去、②RedBlackTreeInternal_PurifiedTests.swiftの`.garbaged`挙動は新設のDesign-MemorySafety.mdの定義通りの意図した挙動と確認しコメントを説明に置換、③RedblacktreemultimapAtCoder2025CompatibilityTests.swiftの`#if false`区画2件(「本当にバグがありそう」)は、削除で失効した`indices`/`___node_positions()`のstale index再利用が原因という推測を説明として書き残し、COMPATIBLE_ATCODER_2025専用の廃止予定ファイルのため深追いせず保留、④RedBlackTreeSet_13_CodableTests.swiftの未使用`CodableFixture`はFixtures.mdの記載通り無参照を確認して削除(Fixtures.mdの該当ノートも「削除済み」に更新)。全体テストは926 passed / 0 failed(260 not run はcompat/perf/他ターゲット分で想定通り)。
+- 2026-09-30 11:41 Claude: 優先事項「RedBlackTreeViewのテストを追加する」完了。前回セッションで追加したMappedValuesView/KeyValueRangeViewに続き、Set/MultiSetが返す`RedBlackTreeKeyOnlyRangeView`用に`RedBlackTreeView_2_KeyOnlyRangeViewTests.swift`を新設(sorted/reversed/removeFirst・removeLast/erase(where:)/isElement・isEnd、5件)。これでAPI-Matrix-View.mdに載っているView種別を一通りカバー。
 - 2026-09-30 11:27 Claude: CHANGELOG.md `[Unreleased]`反映完了。最後にCHANGELOG.mdが更新されたコミット(`1e9c97bd`)からHEADまでの差分を`main`基準ではなく直接比較し、`isValid(_ index:)`→`isElement(at:)`、`isValid(bounds:)`→`containsSubrange(_:)`、`removeSafe(at:)`→`erase(exactly:)`(Set/MultiMap)の改名、`isValid(Bound/BoundRangeExpression)`の削除、`isEnd(_:)`/`insert(_:hint:)`の4型横展開、`update(_:hint:)`(Set/Dictionary)、`RedBlackTreeMultiMap.index(inserting:)`/`erase(exactly:)`、API-Matrix-View.md・isValid.mdの追加をAdded/Changed/Removedへ反映した。
 
 ### 内部区分

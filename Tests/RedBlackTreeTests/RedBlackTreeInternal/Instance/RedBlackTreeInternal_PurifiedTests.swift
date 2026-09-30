@@ -71,7 +71,9 @@
       b.remove(5)
       XCTAssertEqual(i0.__recycle_count, 0)
       #if ALLOW_CROSS_TREE_INDEX
-        XCTAssertEqual(b.__tree_.__purified_(i0).error, .garbaged)  // TODO: この挙動について再検討
+        // 同じtracking tagのノードがCoW先で削除済み(payload破棄済み)のため、
+        // Design-MemorySafety.mdの定義通り.garbagedになる。意図した挙動。
+        XCTAssertEqual(b.__tree_.__purified_(i0).error, .garbaged)
       #else
         XCTAssertEqual(b.__tree_.__purified_(i0).error, .crossTree)
       #endif

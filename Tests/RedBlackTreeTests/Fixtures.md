@@ -400,6 +400,4 @@ Fixtureそのものではなく、現行 production type にテスト・デバ�
 
 ## Notes
 
-`RedBlackTreeSet_13_CodableTests.swift` に `CodableFixture` というクラスが存在するが、現在コードベース内で継承・参照されていない。
-
-これは Fixture inventory 上は現役 Fixture とみなさず、削除または用途明確化の候補とする。
+`RedBlackTreeSet_13_CodableTests.swift` にあった未使用の `CodableFixture` は、どこからも継承・参照されていなかったため2026-09-30に削除した。

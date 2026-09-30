@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol FindLeafProtocol_ptr:
+protocol FindLeafProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & _TreeNode_KeyInterface
     & _TreeKey_CompInterface
@@ -32,7 +32,7 @@ protocol FindLeafProtocol_ptr:
     & NullPtrInterface
 {}
 
-extension FindLeafProtocol_ptr {
+extension FindLeafProtocol_ptr where Self: ~Copyable {
 
   @inlinable
   internal func
@@ -92,7 +92,7 @@ extension FindLeafProtocol_ptr {
 }
 
 @usableFromInline
-protocol FindHintLeafProtocol_ptr:
+protocol FindHintLeafProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & _TreeNode_KeyInterface
     & _TreeKey_CompInterface
@@ -102,7 +102,7 @@ protocol FindHintLeafProtocol_ptr:
     & NullPtrInterface
 {}
 
-extension FindHintLeafProtocol_ptr {
+extension FindHintLeafProtocol_ptr where Self: ~Copyable {
 
   /// Find leaf place to insert closest to `__hint`
   /// First check prior to `__hint`.
@@ -141,7 +141,7 @@ extension FindHintLeafProtocol_ptr {
 }
 
 @usableFromInline
-protocol FindEqualProtocol_ptr:
+protocol FindEqualProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & _TreeKey_ThreeWayCompInterface
     & _TreeNode_KeyInterface
@@ -152,7 +152,7 @@ protocol FindEqualProtocol_ptr:
     & NullPtrInterface
 {}
 
-extension FindEqualProtocol_ptr {
+extension FindEqualProtocol_ptr where Self: ~Copyable {
 
   @inlinable
   // @inline(never)
@@ -193,7 +193,7 @@ extension FindEqualProtocol_ptr {
 }
 
 @usableFromInline
-protocol FindEqualProtocol_ptr_old:
+protocol FindEqualProtocol_ptr_old: ~Copyable,
   _UnsafeNodePtrType
     & _TreeKey_CompInterface
     & _TreeNode_KeyInterface
@@ -204,7 +204,7 @@ protocol FindEqualProtocol_ptr_old:
     & NullPtrInterface
 {}
 
-extension FindEqualProtocol_ptr_old {
+extension FindEqualProtocol_ptr_old where Self: ~Copyable {
 
   @inlinable
   func
@@ -243,7 +243,7 @@ extension FindEqualProtocol_ptr_old {
 }
 
 @usableFromInline
-protocol FindProtocol_find_equal_ptr:
+protocol FindProtocol_find_equal_ptr: ~Copyable,
   _UnsafeNodePtrType
     & FindInteface
     & FindEqualInterface
@@ -251,7 +251,7 @@ protocol FindProtocol_find_equal_ptr:
     & NullPtrInterface
 {}
 
-extension FindProtocol_find_equal_ptr {
+extension FindProtocol_find_equal_ptr where Self: ~Copyable {
 
   @inlinable
   internal func find(_ __v: _Key) -> _NodePtr {
@@ -287,7 +287,7 @@ extension FindProtocol_find_equal_ptr {
 }
 
 @usableFromInline
-protocol FindHintEqualProtocol_ptr:
+protocol FindHintEqualProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & _TreeKey_CompInterface
     & _TreeNode_KeyInterface
@@ -297,7 +297,7 @@ protocol FindHintEqualProtocol_ptr:
     & FindEqualInterface
 {}
 
-extension FindHintEqualProtocol_ptr {
+extension FindHintEqualProtocol_ptr where Self: ~Copyable {
 
   /// Find `__v`
   /// First check prior to `__hint`.
@@ -348,7 +348,7 @@ extension FindHintEqualProtocol_ptr {
 }
 
 @usableFromInline
-protocol FindProtocol_lower_bound_ptr:
+protocol FindProtocol_lower_bound_ptr: ~Copyable,
   _UnsafeNodePtrType
     & FindInteface
     & BoundInteface
@@ -357,7 +357,7 @@ protocol FindProtocol_lower_bound_ptr:
     & _TreeKey_CompInterface
 {}
 
-extension FindProtocol_lower_bound_ptr {
+extension FindProtocol_lower_bound_ptr where Self: ~Copyable {
 
   @inlinable
   internal func find(_ __v: _Key) -> _NodePtr {
@@ -377,7 +377,7 @@ extension FindProtocol_lower_bound_ptr {
 
 // よくよく考えてmulti系のfirstIndexの挙動が変わってしまっているので、修正が必要だった
 @usableFromInline
-protocol FindFirstProtocol_ptr:
+protocol FindFirstProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & BoundInteface
     & EndInterface
@@ -385,7 +385,7 @@ protocol FindFirstProtocol_ptr:
     & _TreeNode_KeyInterface
 {}
 
-extension FindFirstProtocol_ptr {
+extension FindFirstProtocol_ptr where Self: ~Copyable {
 
   /// 旧型のfindと同じ挙動
   @inlinable

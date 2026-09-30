@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _BaseNode_NodeCompareProtocol:
+public protocol _BaseNode_NodeCompareProtocol: ~Copyable,
   _BaseNode_PtrCompInterface
     & _BaseNode_PtrRangeCompInterface
     & _Base_MultiplicityHelperInterface
@@ -41,7 +41,7 @@ extension _BaseNode_NodeCompareProtocol {
 
 // MARK: -
 
-public struct __UniqueHelper<Base>: MultiplicityHelper, _UnsafeNodePtrType
+public struct __UniqueHelper<Base: ~Copyable>: MultiplicityHelper, _UnsafeNodePtrType
 where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
 
   @inlinable
@@ -92,7 +92,7 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
   }
 }
 
-public struct __MultiHelper<Base>: MultiplicityHelper, _UnsafeNodePtrType
+public struct __MultiHelper<Base: ~Copyable>: MultiplicityHelper, _UnsafeNodePtrType
 where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
 
   @inlinable

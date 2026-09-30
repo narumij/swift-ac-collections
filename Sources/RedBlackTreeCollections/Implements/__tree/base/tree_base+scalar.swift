@@ -20,9 +20,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _ScalarBasePayloadValue_KeyProtocol: _ScalarBaseType & _BasePayloadValue_KeyInterface {}
+public protocol _ScalarBasePayloadValue_KeyProtocol: ~Copyable, _ScalarBaseType & _BasePayloadValue_KeyInterface {}
 
-extension _ScalarBasePayloadValue_KeyProtocol {
+extension _ScalarBasePayloadValue_KeyProtocol where Self: ~Copyable {
 
   @inlinable
   public static func __key(_ __v: _PayloadValue) -> _Key { __v }

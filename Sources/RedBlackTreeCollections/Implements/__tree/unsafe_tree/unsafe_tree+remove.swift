@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol RemoveProtocol_ptr:
+protocol RemoveProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & BeginNodeInterface
     & EndNodeInterface
@@ -31,7 +31,7 @@ protocol RemoveProtocol_ptr:
     & TreeAlgorithmProtocol_ptr
 {}
 
-extension RemoveProtocol_ptr {
+extension RemoveProtocol_ptr where Self: ~Copyable {
 
   @inlinable
   internal func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr {

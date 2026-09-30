@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol InsertNodeAtProtocol_ptr:
+protocol InsertNodeAtProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & InsertNodeAtInterface
     & BeginNodeInterface
@@ -33,7 +33,7 @@ protocol InsertNodeAtProtocol_ptr:
     & TreeAlgorithmBaseProtocol_ptr
 {}
 
-extension InsertNodeAtProtocol_ptr {
+extension InsertNodeAtProtocol_ptr where Self: ~Copyable {
 
   @inlinable
   //  @inline(never)
@@ -60,7 +60,7 @@ extension InsertNodeAtProtocol_ptr {
 }
 
 @usableFromInline
-protocol InsertUniqueProtocol_ptr:
+protocol InsertUniqueProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & _TreePayloadValue_KeyInterface
     & InsertNodeAtInterface
@@ -70,7 +70,7 @@ protocol InsertUniqueProtocol_ptr:
     & NullPtrInterface
 {}
 
-extension InsertUniqueProtocol_ptr {
+extension InsertUniqueProtocol_ptr where Self: ~Copyable {
 
   @inlinable
   //  @inline(never)
@@ -102,12 +102,12 @@ extension InsertUniqueProtocol_ptr {
 }
 
 @usableFromInline
-protocol InsertMultiProtocol: AllocationInterface & _TreePayloadValue_KeyInterface
+protocol InsertMultiProtocol: ~Copyable, AllocationInterface & _TreePayloadValue_KeyInterface
     & FindLeafInterface
     & InsertNodeAtInterface & NullPtrInterface
 {}
 
-extension InsertMultiProtocol {
+extension InsertMultiProtocol where Self: ~Copyable {
 
   @inlinable
   internal func __insert_multi(_ x: _PayloadValue) -> _NodePtr {
@@ -127,7 +127,7 @@ extension InsertMultiProtocol {
 }
 
 @usableFromInline
-protocol InsertLastProtocol_ptr:
+protocol InsertLastProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & InsertLastInterface
     & InsertNodeAtInterface
@@ -138,7 +138,7 @@ protocol InsertLastProtocol_ptr:
     & NullPtrInterface
 {}
 
-extension InsertLastProtocol_ptr {
+extension InsertLastProtocol_ptr where Self: ~Copyable {
 
   @inlinable
   internal func ___max_ref() -> (__parent: _NodePtr, __child: _NodeRef) {
@@ -161,7 +161,7 @@ extension InsertLastProtocol_ptr {
 }
 
 #if false
-  extension InsertLastProtocol_ptr {
+extension InsertLastProtocol_ptr where Self: ~Copyable {
 
     // 資料的に残してある
     //
@@ -189,7 +189,7 @@ extension InsertLastProtocol_ptr {
 // MARK: -
 
 @usableFromInline
-protocol EmplaceHintUniqueProtocol_ptr:
+protocol EmplaceHintUniqueProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & _TreePayloadValue_KeyInterface
     & _TreeNode_KeyInterface
@@ -200,7 +200,7 @@ protocol EmplaceHintUniqueProtocol_ptr:
     & NullPtrInterface
 {}
 
-extension EmplaceHintUniqueProtocol_ptr {
+extension EmplaceHintUniqueProtocol_ptr where Self: ~Copyable {
 
   // キー無しのケースはC++の事情によるもので、Comparable割り切りのSwift版では不要
   // 以下は資料として残して、分割版を使うこととする
@@ -301,7 +301,7 @@ extension EmplaceHintUniqueProtocol_ptr {
 }
 
 @usableFromInline
-protocol EmplaceHintMultiProtocol_ptr:
+protocol EmplaceHintMultiProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & _TreePayloadValue_KeyInterface
     & _TreeNode_KeyInterface
@@ -311,7 +311,7 @@ protocol EmplaceHintMultiProtocol_ptr:
     & NullPtrInterface
 {}
 
-extension EmplaceHintMultiProtocol_ptr {
+extension EmplaceHintMultiProtocol_ptr where Self: ~Copyable {
 
   @inlinable
   internal func __emplace_hint_multi(_ __p: _NodePtr, _ value: @autoclosure () -> _PayloadValue)

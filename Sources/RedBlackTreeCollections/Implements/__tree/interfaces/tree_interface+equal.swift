@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol EqualInterface: _NodePtrType & _KeyType {
+protocol EqualInterface: ~Copyable, _NodePtrType & _KeyType {
   @inlinable func __equal_range_unique(_ __k: _Key) -> (_NodePtr, _NodePtr)
   @inlinable func __equal_range_multi(_ __k: _Key) -> (_NodePtr, _NodePtr)
 }

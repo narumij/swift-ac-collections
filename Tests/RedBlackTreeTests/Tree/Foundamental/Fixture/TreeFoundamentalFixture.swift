@@ -30,13 +30,8 @@ extension TreeFoundamentalFixture {
 extension TreeFoundamentalFixture {
 
   struct Header: TrailingElements {
-    typealias Element = Slot
+    typealias Element = UnsafeNode
     let trailingCount: Int
-  }
-
-  struct Slot {
-    var node: UnsafeNode
-    var value: Int
   }
 }
 

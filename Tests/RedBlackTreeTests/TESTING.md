@@ -23,6 +23,7 @@
 
 ### 優先事項
 
+- 今回は一旦テストメンテに先立ってCHANGELOG.md反映をやってもらいたいです。
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味して都度更新すること
 - Tests/RedBlackTreeTestのTODOを消化すること
 - RedBlackTreeViewのテストを追加する
@@ -48,6 +49,7 @@
 - 横展開の過不足についてはSources/RedBlackTreeCollections/Documentation/API-Matrix.mdと照らし合わせること
 - Test as SpecについてはSources/RedBlackTreeCollections/Documentation/Quality-Checklist.mdと照らし合わせること
 - テストコード生成時はTests/RedBlackTreeTests/Fixtures.mdを参照し、フィードバックすること
+- 内部テストをどのように整理するかについては引き続き検討中
 
 ### 停止条件
 

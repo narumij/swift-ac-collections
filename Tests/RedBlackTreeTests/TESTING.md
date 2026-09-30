@@ -68,6 +68,12 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-09-30 16:58 Claude: 新規テストファイル`Tests/RedBlackTreeTests/Tree/Foundamental/TreeFoundamentalSealTests.swift`を追加し、`Implements/__tree/unsafe_node/Seal/_NodePathBitmap.swift`と`_NodeKey.swift`をカバー。両方とも100%達成(`_NodePathBitmap.swift` 13/13、`_NodeKey.swift` 81/81)。
+  - `_NodeKey<Base>`はジェネリックで`Base._NodePtr == UnsafeMutablePointer<UnsafeNode>`かつ`Base._Key: Comparable`を要求する。`UnsafeNode`にpayloadが無いため、挿入時に設定した`___tracking_tag`をそのままキーとして返す最小の`_SealTestBase: _BaseNode_KeyInterface`を用意して対応(既存の`_BaseNode_KeyProtocol_Fixture`は`_NodePtr = Int`で型が合わず使えなかった)。
+  - `_NodePathBitmap`: `.end`/`.path`ケースの判別、実ノードは常にendより「小さい」こと、15要素の中間順位置(ground truth)とbitmap比較の一致、`lessThan`ヘルパーのbitmap省略/明示指定の両方を検証。
+  - `_NodeKey`: `.end`/`.key`ケースの判別、キー順序、同一ノード比較、キーが同値の場合に木構造上の位置(bitmap)へフォールバックするケース(意図的に2ノードのtagを同値にして再現)、`isInHalfOpenRange`(下端含む・上端含まない半開区間)、`containsRange`(完全包含・一致・前後にずれる・inner逆転の各パターン)を検証。
+  - full suite 960 passed / 0 failed。
+
 - 2026-09-30 16:51 Claude: `unsafe_node+pointer+advance/compare/distance/validation.swift`に同様のカバレッジ拡充を実施。
   - 前提として、既存の`insert()`ヘルパーがノードの`___tracking_tag`を`.nullptr`初期値のまま放置していたことに気づいた(これまでの`_ptr`系アルゴリズムはポインタの同一性比較のみでtagを見ないため実害はなかったが、`___is_null`/`___is_end`/`___is_root`(タグ判定)を使う今回のテストには必須)。`insert()`で`___tracking_tag = _TrackingTag(nodeIndex)`を設定するよう修正。
   - `unsafe_node+pointer+validation.swift`: `___is_null`/`___is_end`/`___is_root`を直接検証 → 100% (9/9)。

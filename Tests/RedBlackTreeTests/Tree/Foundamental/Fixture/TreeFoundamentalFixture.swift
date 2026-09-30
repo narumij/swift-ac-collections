@@ -25,12 +25,7 @@ extension TreeFoundamentalFixture {
   }
 }
 
-extension TreeFoundamentalFixture: _NodePtrType {
-  typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-  typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
-}
-
-extension TreeFoundamentalFixture: NullPtrInterface {
+extension TreeFoundamentalFixture: _UnsafeNodePtrType & NullPtrInterface {
   var nullptr: _NodePtr { .nullptr }
 }
 

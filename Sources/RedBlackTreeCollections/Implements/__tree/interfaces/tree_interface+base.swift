@@ -29,7 +29,7 @@
 ///
 /// nullptrへはグローバルアクセスもあるが、性能観点でインスタンスアクセスを利用している
 @usableFromInline
-package protocol NullPtrInterface: ~Copyable & _PointerType {
+package protocol NullPtrInterface: ~Copyable, _PointerType {
   @inlinable var nullptr: _Pointer { get }
 }
 

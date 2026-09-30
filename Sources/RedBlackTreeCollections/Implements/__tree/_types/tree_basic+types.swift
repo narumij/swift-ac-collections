@@ -207,7 +207,7 @@ extension _PairBase_ElementProtocol {
 /// ノードポインタの別名の定義
 ///
 /// 移植用
-public protocol _PointerType: ~Copyable & _NodePtrType
+public protocol _PointerType: ~Copyable, _NodePtrType
 where _NodePtr == _Pointer {
   associatedtype _Pointer
 }

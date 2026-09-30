@@ -272,6 +272,9 @@
     @inlinable
     @discardableResult
     public mutating func erase(exactly index: Index) -> Index? {
+      // 空の場合はアクセス可能な要素が存在し得ないため、ensureUnique()による
+      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       guard let __p = __tree_.__purified_(index).accessible.pointer else {
         return nil

@@ -296,6 +296,7 @@ extension RedBlackTreeSet {
     /// - Complexity: Amortized O(1)
     @inlinable
     public mutating func popFirst() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return __tree_.___unchecked_remove_first()
     }
@@ -305,6 +306,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return __tree_.___unchecked_remove_last()
     }
@@ -351,6 +353,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
+    guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.update { $0.___erase_unique(member) } ? member : nil
   }

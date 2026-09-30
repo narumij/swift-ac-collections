@@ -19,6 +19,23 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
     #endif
   }
 
+  /// 空集合への削除操作はトラップしない以上、無駄なCoW(共有される空シングルトン
+  /// バッファからの退避)も発生させないこと。
+  func test_popFirstAndPopLast_onEmptyMultiSet_doNotTriggerCopyOnWrite() {
+    #if AC_COLLECTIONS_INTERNAL_CHECKS
+      var empty = RedBlackTreeMultiSet<Int>()
+      XCTAssertEqual(empty._copyCount, 0)
+
+      XCTAssertNil(empty.popFirst())
+      XCTAssertEqual(empty._copyCount, 0)
+
+      #if !COMPATIBLE_ATCODER_2025
+        XCTAssertNil(empty.popLast())
+        XCTAssertEqual(empty._copyCount, 0)
+      #endif
+    #endif
+  }
+
   func test_removeFirstAndRemoveLast_removeOneExtremeMember() {
     var multiset = RedBlackTreeMultiSet([1, 1, 2, 3, 3])
 

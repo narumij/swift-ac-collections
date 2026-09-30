@@ -348,6 +348,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: Amortized O(1)
   @inlinable
   public mutating func popFirst() -> Element? {
+    guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.___unchecked_remove_first().map { Base.__element_($0) }
   }
@@ -361,6 +362,7 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return __tree_.___unchecked_remove_last().map { Base.__element_($0) }
     }
@@ -422,6 +424,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
+    guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.update {
       let __i = $0.find(__k)

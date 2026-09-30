@@ -76,4 +76,41 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(copy.first?.value, "old")
     }
   #endif
+
+  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+    /// MultiMapはキー重複を許容するため、既存キーへの`index(inserting:)`も
+    /// (Setのような一意挿入ではなく)常に新しいエントリとして挿入されること。
+    func test_indexInserting_allowsDuplicateKeysAndErasesByIndex() {
+      var map = RedBlackTreeMultiMap<Int, String>()
+
+      let first = map.index(inserting: (1, "a"))
+      XCTAssertTrue(first.inserted)
+
+      let second = map.index(inserting: (1, "b"))
+      XCTAssertTrue(second.inserted, "MultiMapなので同じキーでも挿入されるはず")
+      XCTAssertNotEqual(first.index, second.index)
+
+      XCTAssertEqual(map.map(\.key), [1, 1])
+      XCTAssertEqual(map.map(\.value), ["a", "b"])
+
+      XCTAssertNotNil(map.erase(exactly: first.index))
+      XCTAssertEqual(map.map(\.value), ["b"])
+    }
+
+    /// 空のMultiMapに対して`erase(exactly:)`を呼んでもトラップせず、`nil`を返すこと。
+    /// トラップしない以上、無駄なCoW(共有される空シングルトンバッファからの退避)も
+    /// 発生しないこと。
+    func test_eraseExactly_onEmptyMapReturnsNilWithoutTrapping() {
+      var map = RedBlackTreeMultiMap<Int, String>()
+
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        XCTAssertEqual(map._copyCount, 0)
+      #endif
+      XCTAssertNil(map.erase(exactly: map.startIndex))
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        XCTAssertEqual(map._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
+      #endif
+      XCTAssertNil(map.erase(exactly: map.endIndex))
+    }
+  #endif
 }

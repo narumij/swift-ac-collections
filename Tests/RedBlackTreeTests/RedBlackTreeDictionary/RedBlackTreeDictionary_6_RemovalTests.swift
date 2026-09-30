@@ -56,6 +56,26 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary.map(\.key), [2, 3])
   }
 
+  /// 空の辞書への削除操作はトラップしない以上、無駄なCoW(共有される空シングルトン
+  /// バッファからの退避)も発生させないこと。
+  func test_removalMethods_onEmptyDictionary_doNotTriggerCopyOnWrite() {
+    #if AC_COLLECTIONS_INTERNAL_CHECKS
+      var empty = RedBlackTreeDictionary<Int, String>()
+      XCTAssertEqual(empty._copyCount, 0)
+
+      XCTAssertNil(empty.popFirst())
+      XCTAssertEqual(empty._copyCount, 0)
+
+      #if !COMPATIBLE_ATCODER_2025
+        XCTAssertNil(empty.popLast())
+        XCTAssertEqual(empty._copyCount, 0)
+      #endif
+
+      XCTAssertNil(empty.removeValue(forKey: 1))
+      XCTAssertEqual(empty._copyCount, 0)
+    #endif
+  }
+
   func test_removeFirstAndRemoveLast_followKeyOrder() {
     var dictionary: RedBlackTreeDictionary<Int, String> = [3: "c", 1: "a", 2: "b"]
 

@@ -135,6 +135,27 @@ import XCTest
       XCTAssertNil(empty.values.popLast())
     }
 
+    /// 空のビューに対する削除系操作は、トラップしない以上、無駄なCoW
+    /// (共有される空シングルトンバッファからの退避)も発生させないこと。
+    func test_valuesRemovalMethods_onEmptyView_doNotTriggerCopyOnWrite() {
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        var empty = RedBlackTreeDictionary<Int, String>()
+        XCTAssertEqual(empty._copyCount, 0)
+
+        XCTAssertNil(empty.values.popFirst())
+        XCTAssertEqual(empty._copyCount, 0)
+
+        XCTAssertNil(empty.values.popLast())
+        XCTAssertEqual(empty._copyCount, 0)
+
+        empty.values.erase()
+        XCTAssertEqual(empty._copyCount, 0)
+
+        empty.values.erase(where: { _ in true })
+        XCTAssertEqual(empty._copyCount, 0)
+      #endif
+    }
+
     func test_valuesRemoveFirstAndRemoveLast_removeEndpointsAndReturnRemovedValue() {
       var dictionary: RedBlackTreeDictionary = [1: "a", 2: "b", 3: "c"]
 

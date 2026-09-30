@@ -522,3 +522,5 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 - 最後に作業したモデル: Codex (GPT-5)。CHANGELOG最終更新コミット以降の履歴監査とUnreleased追記を担当。
 - (2026-10-01 07:17 JST) ユーザー再判断により、`CHANGELOG.md`のUnreleasedは最終更新コミット以降だけに限定した版ではなく、リリースタグ`0.4.4`以降の全体差分をまとめた広い版を採用。公開API・View・Bounds/Index・内部実装・Test as Specification再編・内部テスト・不具合修正・削除整理をAdded/Changed/Fixed/Removedへ再反映した。
 - 最後に作業したモデル: Codex (GPT-5)。CHANGELOGの集計基準を0.4.4以降へ戻す修正を担当。
+- (2026-10-01 07:19 JST) Codexレビューで指摘したAPI正本の同期漏れを修正。`API-Matrix.md`の`erase(exactly:)`について、実装・テスト済みのMultiMap欄を`TODO`から`✅`へ変更した。MultiSet/Dictionaryは未実装のため`TODO`を維持。文書のみの変更なのでテストは実行していない。
+- 最後に作業したモデル: Codex (GPT-5)。`erase(exactly:)`のAPIマトリクス同期を担当。

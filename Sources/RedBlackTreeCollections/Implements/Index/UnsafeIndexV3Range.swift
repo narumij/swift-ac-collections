@@ -20,8 +20,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// equalRangeの結果オブジェクト
-///
+// equalRangeの結果オブジェクト
+//
 // 本当は作りたくなかったが、lowerBoundやupperBoundがオプショナルになるのもいまいちなので、しかたなく。
 @frozen
 public struct UnsafeIndexV3Range {

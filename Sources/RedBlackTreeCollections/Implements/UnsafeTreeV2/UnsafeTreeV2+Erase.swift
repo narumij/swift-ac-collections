@@ -43,9 +43,9 @@
 
 extension UnsafeTreeV2 {
 
-  /// 末尾チェック付きの削除ループ
-  ///
-  /// 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
+  // 末尾チェック付きの削除ループ
+  //
+  // 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
   @inlinable
   @discardableResult
   func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _SafePtr {
@@ -60,7 +60,7 @@ extension UnsafeTreeV2 {
     return .success(__last)
   }
 
-  /// 末尾チェック付きの削除ループ
+  // 末尾チェック付きの削除ループ
   @inlinable
   @discardableResult
   func ___erase_range_if(

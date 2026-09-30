@@ -24,7 +24,7 @@
 
 /// # RedBlackTreeDictionary
 ///
-/// `RedBlackTreeDictionary` is an **ordered dictionary (unique keys)**
+/// `RedBlackTreeDictionary` is a **sorted dictionary (unique keys)**
 /// implemented using a red-black tree.
 /// Keys are always kept in sorted order.
 ///

@@ -24,7 +24,7 @@
 
 /// # RedBlackTreeSet
 ///
-/// `RedBlackTreeSet` is an **ordered unique set** implemented using a red-black tree.
+/// `RedBlackTreeSet` is a **sorted unique set** implemented using a red-black tree.
 /// Elements are always kept in sorted order.
 ///
 /// ```swift

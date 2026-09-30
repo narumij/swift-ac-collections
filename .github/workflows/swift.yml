@@ -11,6 +11,32 @@ on:
       - compatible/AtCoder/2025
 
 jobs:
+  documentation:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Build documentation
+        run: >-
+          swift package --allow-writing-to-directory .build/documentation
+          generate-documentation
+          --target RedBlackTreeCollections
+          --output-path .build/documentation
+          --transform-for-static-hosting
+          --hosting-base-path swift-ac-collections
+          --warnings-as-errors
+
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: RedBlackTreeCollections-documentation
+          path: .build/documentation
+          if-no-files-found: error
+
   debug:
     runs-on: ubuntu-24.04
 

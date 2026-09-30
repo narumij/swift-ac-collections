@@ -22,7 +22,7 @@
 
 // MARK: - RedBlackTreeSet
 
-/// A range expression for ordered red-black trees.
+/// A range expression for sorted red-black trees.
 ///
 /// This type represents half-open, closed, partial, and equal ranges
 /// using `RedBlackTreeBoundExpression` as endpoints.

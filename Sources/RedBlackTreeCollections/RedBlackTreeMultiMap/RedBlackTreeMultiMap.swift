@@ -24,7 +24,7 @@
 
 /// # RedBlackTreeMultiMap
 ///
-/// `RedBlackTreeMultiMap` is an **ordered multimap (allowing duplicate keys)**
+/// `RedBlackTreeMultiMap` is a **sorted multimap (allowing duplicate keys)**
 /// implemented using a red-black tree.
 /// Keys are always kept in sorted order.
 /// The order of elements with the same key is the insertion order.
@@ -437,7 +437,7 @@ extension RedBlackTreeMultiMap {
     ///
     /// If multiple elements with an equivalent key exist, an arbitrary one is removed.
     ///
-    /// - Parameter member: The key of the element to remove.
+    /// - Parameter key: The key of the element to remove.
     /// - Returns: `true` if an element was removed; otherwise `false`.
     /// - Complexity: O(log *n*)
     @inlinable
@@ -452,7 +452,7 @@ extension RedBlackTreeMultiMap {
 
     /// Removes all elements equivalent to the given key.
     ///
-    /// - Parameter member: The key of the elements to remove.
+    /// - Parameter key: The key of the elements to remove.
     /// - Returns: The number of elements removed.
     /// - Complexity: O(log `count` + `distance`), where `distance` is the number of removed elements.
     @inlinable

@@ -65,7 +65,7 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
     return ___ptr_comp_unique(l, r)
   }
 
-  /// ptrのrange判定
+  // ptrのrange判定
   @inlinable
   public static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool {
 
@@ -121,7 +121,7 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
     #endif
   }
 
-  /// ptrのrange判定
+  // ptrのrange判定
   @inlinable
   public static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr) -> Bool {
 

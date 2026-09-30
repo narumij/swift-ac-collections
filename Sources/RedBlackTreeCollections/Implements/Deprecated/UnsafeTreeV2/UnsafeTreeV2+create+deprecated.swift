@@ -8,11 +8,11 @@
 #if COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 where Base: ScalarValueTrait {
 
-    /// ソート済みの配列から木を生成する
-    ///
-    /// ソート済み前提では、常に末尾への追加となり探索が不要になる
-    ///
-    /// - Complexity: O(*n*)
+    // ソート済みの配列から木を生成する
+    //
+    // ソート済み前提では、常に末尾への追加となり探索が不要になる
+    //
+    // - Complexity: O(*n*)
     @inlinable
     internal static func
       create_unique(sorted elements: __owned [Base._PayloadValue]) -> UnsafeTreeV2
@@ -35,11 +35,11 @@
 
   extension UnsafeTreeV2 where Base: PairValueTrait {
 
-    /// ソート済みの配列から木を生成する
-    ///
-    /// ソート済み前提では、常に末尾への追加となり探索が不要になる
-    ///
-    /// - Complexity: O(*n*)
+    // ソート済みの配列から木を生成する
+    //
+    // ソート済み前提では、常に末尾への追加となり探索が不要になる
+    //
+    // - Complexity: O(*n*)
     @inlinable
     internal static func create_unique<Element>(
       sorted elements: __owned [Element],
@@ -67,11 +67,11 @@
 
   extension UnsafeTreeV2 {
 
-    /// ソート済みの配列から木を生成する
-    ///
-    /// ソート済み前提では、常に末尾への追加となり探索が不要になる
-    ///
-    /// - Complexity: O(*n*)
+    // ソート済みの配列から木を生成する
+    //
+    // ソート済み前提では、常に末尾への追加となり探索が不要になる
+    //
+    // - Complexity: O(*n*)
     @inlinable
     internal static func
       create_multi(sorted elements: __owned [Base._PayloadValue]) -> UnsafeTreeV2
@@ -80,11 +80,11 @@
       create_multi(sorted: elements) { $0 }
     }
 
-    /// ソート済みの配列から木を生成する
-    ///
-    /// ソート済み前提では、常に末尾への追加となり探索が不要になる
-    ///
-    /// - Complexity: O(*n*)
+    // ソート済みの配列から木を生成する
+    //
+    // ソート済み前提では、常に末尾への追加となり探索が不要になる
+    //
+    // - Complexity: O(*n*)
     @inlinable
     internal static func create_multi<Element>(
       sorted elements: __owned [Element],

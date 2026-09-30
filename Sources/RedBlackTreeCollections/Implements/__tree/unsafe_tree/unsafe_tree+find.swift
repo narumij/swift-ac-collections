@@ -387,7 +387,7 @@ protocol FindFirstProtocol_ptr: ~Copyable,
 
 extension FindFirstProtocol_ptr where Self: ~Copyable {
 
-  /// 旧型のfindと同じ挙動
+  // 旧型のfindと同じ挙動
   @inlinable
   internal func find_first(_ __v: _Key) -> _NodePtr {
     let __p = lower_bound(__v)

@@ -86,9 +86,9 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   // TODO: bitmapをpath_bitmapにリネームする
 
   // 128bit幅でかつ、必要なレジスタ数が削減されている
-  /// ルートからノードまでのパスをビットでコード化した値を返す
-  ///
-  /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
+  // ルートからノードまでのパスをビットでコード化した値を返す
+  //
+  // leftを0、rightを1、末端を1とし、ルートから左詰めした数値
   @available(macOS 15.0, *)
   @inlinable
   internal func ___ptr_bitmap_128() -> UInt128 {
@@ -105,9 +105,9 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 
   // 64bit幅でかつ、必要なレジスタ数が削減されている
-  /// ルートからノードまでのパスをビットでコード化した値を返す
-  ///
-  /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
+  // ルートからノードまでのパスをビットでコード化した値を返す
+  //
+  // leftを0、rightを1、末端を1とし、ルートから左詰めした数値
   @inlinable
   internal func ___ptr_bitmap_64() -> UInt64 {
     assert(!___is_null, "Node shouldn't be null")

@@ -20,10 +20,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// 平衡木のキーの最低限の性質に関する定義
-///
-///  llvmのソース由来の名前となっている
-///
+// 平衡木のキーの最低限の性質に関する定義
+//
+//  llvmのソース由来の名前となっている
+//
 public protocol ValueComparer: ~Copyable,
   _BaseKey_LessThanInterface
     & _BasePayloadValue_KeyInterface
@@ -32,10 +32,10 @@ public protocol ValueComparer: ~Copyable,
 
 // MARK: -
 
-/// キーのComparable制限と比較の標準実装
-///
-/// 比較実装を実際に使うかは、各実行形態側で決まり、ここで決めるわけではない
-///
+// キーのComparable制限と比較の標準実装
+//
+// 比較実装を実際に使うかは、各実行形態側で決まり、ここで決めるわけではない
+//
 public protocol ComparableKeyTrait: ~Copyable,
   ValueComparer
     & _BaseComparableKey_LessThanProtocol
@@ -43,7 +43,7 @@ where
   _Key: Comparable
 {}
 
-/// 要素とキーが一致する場合のひな形
+// 要素とキーが一致する場合のひな形
 public protocol ScalarValueTrait: ~Copyable,
   ComparableKeyTrait
     & _ScalarBaseType
@@ -51,7 +51,7 @@ public protocol ScalarValueTrait: ~Copyable,
     & _ScalarBase_ElementProtocol
 {}
 
-/// 要素がキーバリューの場合のひな形
+// 要素がキーバリューの場合のひな形
 public protocol KeyValueTrait: ~Copyable,
   ComparableKeyTrait
     & _KeyValueBaseType
@@ -59,7 +59,7 @@ public protocol KeyValueTrait: ~Copyable,
     & _BasePayloadValue_MappedValueInterface
 {}
 
-/// 要素がキーバリューでペイロードがペアの場合のひな形
+// 要素がキーバリューでペイロードがペアの場合のひな形
 public protocol PairValueTrait: ~Copyable,
   KeyValueTrait
     & _PairBasePayloadValue_KeyProtocol

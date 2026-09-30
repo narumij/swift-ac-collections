@@ -80,11 +80,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  /// ゆっくりendを返す
-  ///
-  /// どのくらいゆっくりかというとO(log N)ぐらい
-  ///
-  /// ルートのペアレントまたはペアレントがヌルなのがend
+  // ゆっくりendを返す
+  //
+  // どのくらいゆっくりかというとO(log N)ぐらい
+  //
+  // ルートのペアレントまたはペアレントがヌルなのがend
   @usableFromInline
   package func __slow_end() -> _NodePtr {
     var __r = self
@@ -94,11 +94,11 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     return __r
   }
 
-  /// ゆっくりbeginを返す
-  ///
-  /// どのくらいゆっくりかというとO(log N)ぐらい
-  ///
-  /// ルートからたどれる最小値ノードがbegin
+  // ゆっくりbeginを返す
+  //
+  // どのくらいゆっくりかというとO(log N)ぐらい
+  //
+  // ルートからたどれる最小値ノードがbegin
   package func __slow_begin() -> _NodePtr {
     __tree_min(__slow_end().__left_)
   }
@@ -106,46 +106,46 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-  /// ペイロードの生ポインタ
-  ///
-  /// ```
-  /// ...|Node|Payload|Node...
-  ///    |    ^--__payload_
-  ///    ^self
-  /// ```
+  // ペイロードの生ポインタ
+  //
+  // ```
+  // ...|Node|Payload|Node...
+  //    |    ^--__payload_
+  //    ^self
+  // ```
   @inlinable
   var __raw_payload_: UnsafeMutableRawPointer {
     UnsafeMutableRawPointer(advanced(by: 1))
   }
 
-  /// ペイロードを値とみなしたポインタ
-  ///
-  /// ```
-  /// ...|Node|PayloadValue|Node...
-  ///    |    ^--__value_
-  ///    ^self
-  /// ```
-  ///
-  /// 型推論で型が決定する
-  ///
-  /// インスタンス名は既存踏襲で`__value_`。型としてはより明確な`_PayloadValue`となる。
+  // ペイロードを値とみなしたポインタ
+  //
+  // ```
+  // ...|Node|PayloadValue|Node...
+  //    |    ^--__value_
+  //    ^self
+  // ```
+  //
+  // 型推論で型が決定する
+  //
+  // インスタンス名は既存踏襲で`__value_`。型としてはより明確な`_PayloadValue`となる。
   @inlinable
   func __value_<_PayloadValue>() -> UnsafeMutablePointer<_PayloadValue> {
     UnsafeMutableRawPointer(advanced(by: 1))
       .assumingMemoryBound(to: _PayloadValue.self)
   }
 
-  /// ペイロードを値とみなしたポインタ
-  ///
-  /// ```
-  /// ...|Node|PayloadValue|Node...
-  ///    |    ^--__value_
-  ///    ^self
-  /// ```
-  ///
-  /// 引数で型が決定する
-  ///
-  /// インスタンス名は既存踏襲で`__value_`。型としてはより明確な`_PayloadValue`となる。
+  // ペイロードを値とみなしたポインタ
+  //
+  // ```
+  // ...|Node|PayloadValue|Node...
+  //    |    ^--__value_
+  //    ^self
+  // ```
+  //
+  // 引数で型が決定する
+  //
+  // インスタンス名は既存踏襲で`__value_`。型としてはより明確な`_PayloadValue`となる。
   @inlinable
   package func __value_<_PayloadValue>(as t: _PayloadValue.Type) -> UnsafeMutablePointer<
     _PayloadValue
@@ -172,24 +172,24 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
-  /// 単位移動量と移動量を指定して、他のノードアドレスを取得する
-  ///
-  /// ```
-  /// ...|Node|stride|Node|stride|...
-  ///    |           ^self       |
-  ///    ^--_advanced -1         ^--_advanced +1
-  /// ```
+  // 単位移動量と移動量を指定して、他のノードアドレスを取得する
+  //
+  // ```
+  // ...|Node|stride|Node|stride|...
+  //    |           ^self       |
+  //    ^--_advanced -1         ^--_advanced +1
+  // ```
   @inlinable
   func _advanced(with stride: Int, count: Int) -> UnsafeMutablePointer {
     _advanced(raw: (MemoryLayout<UnsafeNode>.stride &+ stride) &* count)
   }
 
-  /// 型と移動量を指定して、他のノードアドレスを取得する
-  ///
-  /// ```
-  /// ...|Node|PayloadValue|Node|PayloadValue|...
-  ///    ^--_advanced -1   ^--self           ^--_advanced +1
-  /// ```
+  // 型と移動量を指定して、他のノードアドレスを取得する
+  //
+  // ```
+  // ...|Node|PayloadValue|Node|PayloadValue|...
+  //    ^--_advanced -1   ^--self           ^--_advanced +1
+  // ```
   @inlinable
   func _advanced<_PayloadValue>(with t: _PayloadValue.Type, count: Int) -> UnsafeMutablePointer {
     let alignment = max(

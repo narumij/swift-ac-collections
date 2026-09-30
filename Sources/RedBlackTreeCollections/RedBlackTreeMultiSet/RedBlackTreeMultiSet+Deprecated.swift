@@ -41,9 +41,9 @@
 
   extension RedBlackTreeMultiSet {
 
-    /// - Complexity: O(*n* log *n*)
-    ///
-    /// 省メモリでの初期化
+    // - Complexity: O(*n* log *n*)
+    //
+    // 省メモリでの初期化
     @inlinable
     public init<Source>(naive sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
@@ -107,8 +107,8 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n*)
+    // - Important: 削除したメンバーを指すインデックスが無効になります。
+    // - Complexity: O(log *n*)
     @inlinable
     @discardableResult
     public mutating func remove(_ member: Element) -> Element? {
@@ -145,9 +145,9 @@
 
   extension RedBlackTreeMultiSet {
 
-    /// - Important:
-    ///  要素及びノードが削除された場合、インデックスは無効になります。
-    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    // - Important:
+    //  要素及びノードが削除された場合、インデックスは無効になります。
+    // 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
     public
       typealias Index = Tree.Index
   }
@@ -289,8 +289,8 @@
 
   extension RedBlackTreeMultiSet {
 
-    /// - Important: 削除後は、インデックスが無効になります。
-    /// - Complexity: O(1)
+    // - Important: 削除後は、インデックスが無効になります。
+    // - Complexity: O(1)
     @inlinable
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
@@ -307,9 +307,9 @@
 
   extension RedBlackTreeMultiSet {
 
-    /// Indexがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity: O(1)
+    // Indexがsubscriptやremoveで利用可能か判別します
+    //
+    // - Complexity: O(1)
     @inlinable
     public func isValid(index: Index) -> Bool {
       _isValid(index: index)
@@ -317,9 +317,9 @@
   }
 
   extension RedBlackTreeMultiSet {
-    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity: O(1)
+    // RangeExpressionがsubscriptやremoveで利用可能か判別します
+    //
+    // - Complexity: O(1)
     @inlinable
     public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
     where R.Bound == Index {
@@ -361,7 +361,7 @@
   }
 
   extension RedBlackTreeMultiSet {
-    /// 特殊なforEach
+    // 特殊なforEach
     @inlinable
     public func forEach(_ body: (Index, _PayloadValue) throws -> Void) rethrows {
       try _forEach(body)
@@ -384,37 +384,37 @@
   // Rangeの使い方としておかしいので、便利だが将来的に削除することにした
   extension RedBlackTreeMultiSet {
 
-    /// 範囲 `[lower, upper)` に含まれる要素を返します。
-    ///
-    /// index範囲ではないことに留意
-    ///
-    /// **Deprecated – 以下の代替コードをご利用ください。**
-    ///
-    /// ```swift
-    /// extension RedBlackTreeMultiSet {
-    ///   public func sequence(from start: Element, to end: Element) -> SubSequence {
-    ///     self[lowerBound(start)..<lowerBound(end)]
-    ///   }
-    /// }
-    /// ```
+    // 範囲 `[lower, upper)` に含まれる要素を返します。
+    //
+    // index範囲ではないことに留意
+    //
+    // **Deprecated – 以下の代替コードをご利用ください。**
+    //
+    // ```swift
+    // extension RedBlackTreeMultiSet {
+    //   public func sequence(from start: Element, to end: Element) -> SubSequence {
+    //     self[lowerBound(start)..<lowerBound(end)]
+    //   }
+    // }
+    // ```
     @available(*, deprecated)
     public subscript(bounds: Range<Element>) -> SubSequence {
       elements(in: bounds)
     }
 
-    /// 範囲 `[lower, upper]` に含まれる要素を返します。
-    ///
-    /// index範囲ではないことに留意
-    ///
-    /// **Deprecated – 以下の代替コードをご利用ください。**
-    ///
-    /// ```swift
-    /// extension RedBlackTreeMultiSet {
-    ///   public func sequence(from start: Element, through end: Element) -> SubSequence {
-    ///     self[lowerBound(start)..<upperBound(end)]
-    ///   }
-    /// }
-    /// ```
+    // 範囲 `[lower, upper]` に含まれる要素を返します。
+    //
+    // index範囲ではないことに留意
+    //
+    // **Deprecated – 以下の代替コードをご利用ください。**
+    //
+    // ```swift
+    // extension RedBlackTreeMultiSet {
+    //   public func sequence(from start: Element, through end: Element) -> SubSequence {
+    //     self[lowerBound(start)..<upperBound(end)]
+    //   }
+    // }
+    // ```
     @available(*, deprecated)
     public subscript(bounds: ClosedRange<Element>) -> SubSequence {
       elements(in: bounds)
@@ -422,18 +422,18 @@
   }
 
   extension RedBlackTreeMultiSet {
-    /// 値レンジ `[lower, upper)` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    ///
-    /// **Deprecated – 以下の代替コードをご利用ください。**
-    ///
-    /// ```swift
-    /// extension RedBlackTreeMultiSet {
-    ///   public func sequence(from start: Element, to end: Element) -> SubSequence {
-    ///     self[lowerBound(start)..<lowerBound(end)]
-    ///   }
-    /// }
-    /// ```
+    // 値レンジ `[lower, upper)` に含まれる要素のスライス
+    // - Complexity: O(log *n*)
+    //
+    // **Deprecated – 以下の代替コードをご利用ください。**
+    //
+    // ```swift
+    // extension RedBlackTreeMultiSet {
+    //   public func sequence(from start: Element, to end: Element) -> SubSequence {
+    //     self[lowerBound(start)..<lowerBound(end)]
+    //   }
+    // }
+    // ```
     @available(*, deprecated)
     public func elements(in range: Range<Element>) -> SubSequence {
       .init(
@@ -442,18 +442,18 @@
         end: __tree_.lower_bound(range.upperBound).sealed)
     }
 
-    /// 値レンジ `[lower, upper]` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    ///
-    /// **Deprecated – 以下の代替コードをご利用ください。**
-    ///
-    /// ```swift
-    /// extension RedBlackTreeMultiSet {
-    ///   public func sequence(from start: Element, through end: Element) -> SubSequence {
-    ///     self[lowerBound(start)..<upperBound(end)]
-    ///   }
-    /// }
-    /// ```
+    // 値レンジ `[lower, upper]` に含まれる要素のスライス
+    // - Complexity: O(log *n*)
+    //
+    // **Deprecated – 以下の代替コードをご利用ください。**
+    //
+    // ```swift
+    // extension RedBlackTreeMultiSet {
+    //   public func sequence(from start: Element, through end: Element) -> SubSequence {
+    //     self[lowerBound(start)..<upperBound(end)]
+    //   }
+    // }
+    // ```
     @available(*, deprecated)
     public func elements(in range: ClosedRange<Element>) -> SubSequence {
       .init(
@@ -487,12 +487,12 @@
 
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
-    /// Removes the specified subrange of elements from the collection.
-    ///
-    /// - Important: 削除後は、subrangeのインデックスが無効になります。
-    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
-    ///     range must be valid indices of the collection.
-    /// - Complexity: O(*m*), where *m* is the size of `bounds`.
+    // Removes the specified subrange of elements from the collection.
+    //
+    // - Important: 削除後は、subrangeのインデックスが無効になります。
+    // - Parameter bounds: The subrange of the collection to remove. The bounds of the
+    //     range must be valid indices of the collection.
+    // - Complexity: O(*m*), where *m* is the size of `bounds`.
     @inlinable
     public mutating func removeSubrange<R: RangeExpression>(
       _ bounds: R
@@ -511,8 +511,8 @@
 
   extension RedBlackTreeMultiSet {
 
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n* : *k*)
+    // - Important: 削除したメンバーを指すインデックスが無効になります。
+    // - Complexity: O(log *n* : *k*)
     @inlinable
     @discardableResult
     public mutating func removeAll(_ member: Element) -> Element? {

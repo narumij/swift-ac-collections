@@ -90,11 +90,20 @@ var _settings: [SwiftSetting] =
   ]
   + defines.map { .define($0) }
 
-let additionalDepencencies: [Target.Dependency] =
-  defines.contains("USE_C_MALLOC") ? ["_malloc_free"] : []
+let additionalDependencies: [Target.Dependency] =
+  defines.contains("USE_C_MALLOC")
+  ? ["_malloc_free"]
+  : [
+    .target(
+      name: "_malloc_free",
+      condition: .when(traits: ["USE_C_MALLOC"]))
+  ]
 
 let package = Package(
   name: "swift-ac-collections",
+  platforms: [
+    .macOS(.v15)
+  ],
   products: [.library(name: "AcCollections", targets: ["AcCollections"])],
   traits: [
     .trait(
@@ -125,6 +134,10 @@ let package = Package(
     ),
   ],
   dependencies: [
+
+    .package(
+      url: "https://github.com/swiftlang/swift-docc-plugin.git",
+      from: "1.4.1"),
 
 //    .package(
 //      url: "https://github.com/apple/swift-collections",
@@ -160,9 +173,12 @@ let package = Package(
 
     .target(
       name: "RedBlackTreeCollections",
-      dependencies: [] + additionalDepencencies,
+      dependencies: additionalDependencies,
       path: "Sources/RedBlackTreeCollections",
-      exclude: ["Documentation"],
+      exclude: [
+        "Documentation",
+        "Implements/Index/index_stale_check.md",
+      ],
       swiftSettings: _settings + [
         // .strictMemorySafety()
       ]),
@@ -179,6 +195,10 @@ let package = Package(
         .product(name: "Algorithms", package: "swift-algorithms"),
 //        .product(name: "TrailingElementsModule", package: "swift-collections"),
         "RedBlackTreeCollections",
+      ],
+      exclude: [
+        "Fixtures.md",
+        "TESTING.md",
       ],
       swiftSettings: _settings
     ),

@@ -11,7 +11,7 @@
     associatedtype Indices
   }
 
-  /// Indexが何であるかをしり、その生成には何が必要で、どう生成するのかを知っている
+  // Indexが何であるかをしり、その生成には何が必要で、どう生成するのかを知っている
   @usableFromInline
   protocol UnsafeIndexProtocol_tie: _UnsafeNodePtrType
   where Index == UnsafeIndexV2<Base> {

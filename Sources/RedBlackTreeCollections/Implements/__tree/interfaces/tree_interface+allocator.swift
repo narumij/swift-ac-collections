@@ -22,12 +22,12 @@
 
 @usableFromInline
 protocol AllocationInterface:  ~Copyable, _NodePtrType & _PayloadValueType {
-  /// ノードを構築する
+  // ノードを構築する
   @inlinable func __construct_node(_ k: _PayloadValue) -> _NodePtr
 }
 
 @usableFromInline
 protocol DellocationInterface:  ~Copyable, _NodePtrType {
-  /// ノードを破壊する
+  // ノードを破壊する
   @inlinable func destroy(_ p: _NodePtr)
 }

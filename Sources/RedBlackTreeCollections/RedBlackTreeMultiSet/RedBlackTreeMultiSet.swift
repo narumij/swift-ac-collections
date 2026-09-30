@@ -24,7 +24,7 @@
 
 /// # RedBlackTreeMultiSet
 ///
-/// `RedBlackTreeMultiSet` is an **ordered multiset (allowing duplicates)**
+/// `RedBlackTreeMultiSet` is a **sorted multiset (allowing duplicates)**
 /// implemented using a red-black tree.
 /// Elements are always kept in sorted order.
 ///
@@ -414,7 +414,7 @@ extension RedBlackTreeMultiSet {
     ///
     /// If multiple elements with an equivalent key exist, an arbitrary one is removed.
     ///
-    /// - Parameter member: The key of the element to remove.
+    /// - Parameter member: The element to remove.
     /// - Returns: `true` if an element was removed; otherwise `false`.
     /// - Complexity: O(log *n*)
     @inlinable
@@ -429,7 +429,7 @@ extension RedBlackTreeMultiSet {
 
     /// Removes all elements equivalent to the given key.
     ///
-    /// - Parameter member: The key of the elements to remove.
+    /// - Parameter member: The element whose equivalent occurrences are removed.
     /// - Returns: The number of elements removed.
     /// - Complexity: O(log `count` + `distance`), where `distance` is the number of removed elements.
     @inlinable

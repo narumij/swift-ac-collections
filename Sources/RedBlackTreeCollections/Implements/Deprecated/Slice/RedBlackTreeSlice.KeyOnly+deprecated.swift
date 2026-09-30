@@ -35,13 +35,13 @@
 
   extension RedBlackTreeSliceV2.KeyOnly {
 
-    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity:
-    ///
-    ///   ベースがset, map, dictionaryの場合、O(1)
-    ///
-    ///   ベースがmultiset, multimapの場合 O(log *n*)
+    // RangeExpressionがsubscriptやremoveで利用可能か判別します
+    //
+    // - Complexity:
+    //
+    //   ベースがset, map, dictionaryの場合、O(1)
+    //
+    //   ベースがmultiset, multimapの場合 O(log *n*)
     @inlinable
     public func isValid<R: RangeExpression>(
       _ bounds: R

@@ -77,6 +77,24 @@ The `main` branch targets the latest stable Swift and is under active developmen
 Indices become invalid after removal and must not be reused.  
 Use range-based removal APIs for consecutive deletions.
 
+## Documentation
+
+Build the API documentation, including validation of documentation comments,
+with Swift-DocC:
+
+```console
+swift package generate-documentation \
+  --target RedBlackTreeCollections \
+  --warnings-as-errors
+```
+
+To preview it locally in a browser, run:
+
+```console
+swift package --disable-sandbox preview-documentation \
+  --target RedBlackTreeCollections
+```
+
 ## Underscored Declarations
 
 An "underscored declaration" refers to any declaration whose fully qualified name contains a component that begins with an underscore (`_`). For example, the following names may technically be declared as `public`, but are not considered part of the public API:

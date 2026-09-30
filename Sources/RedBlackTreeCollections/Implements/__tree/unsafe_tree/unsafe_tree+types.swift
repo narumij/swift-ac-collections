@@ -30,24 +30,24 @@ where
 // MARK: -
 // 以下はヘルパー類
 
-extension _KeyType where Self: _UnsafeNodePtrType {
+extension _KeyType where Self: ~Copyable,  Self: _UnsafeNodePtrType {
   public typealias _KeyPtr = UnsafeMutablePointer<_Key>
 }
 
-extension _PayloadValueType where Self: _UnsafeNodePtrType {
+extension _PayloadValueType where Self: ~Copyable, Self: _UnsafeNodePtrType {
   public typealias _PayloadPtr = UnsafeMutablePointer<_PayloadValue>
   public typealias _PayloadBuffer = UnsafeMutableBufferPointer<_PayloadValue>
 }
 
-extension _MappedValueType where Self: _UnsafeNodePtrType {
+extension _MappedValueType where Self: ~Copyable, Self: _UnsafeNodePtrType {
   public typealias _MappedValuePtr = UnsafeMutablePointer<_MappedValue>
 }
 
-extension _ElementType where Self: _UnsafeNodePtrType {
+extension _ElementType where Self: ~Copyable, Self: _UnsafeNodePtrType {
   public typealias _ElementValuePtr = UnsafeMutablePointer<Element>
 }
 
-extension _UnsafeNodePtrType where Self: _PayloadValueType {
+extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType {
 
   /// ペイロードのポインタ
   ///
@@ -86,7 +86,7 @@ extension _UnsafeNodePtrType where Self: _PayloadValueType {
   }
 }
 
-extension _UnsafeNodePtrType where Self: _ScalarBaseType {
+extension _UnsafeNodePtrType where Self: ~Copyable, Self: _ScalarBaseType {
 
   /// `_PayloadValue`と`_Key`が一致する場合に、 ペイロードをキーとみなしたポインタ
   ///
@@ -114,7 +114,7 @@ extension _UnsafeNodePtrType where Self: _ScalarBaseType {
   }
 }
 
-extension _UnsafeNodePtrType where Self: _PairBaseType {
+extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType {
   
   /// `_PayloadValue`が`Pair`の場合のキーへのポインタ
   ///
@@ -167,7 +167,7 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
   }
 }
 
-extension _UnsafeNodePtrType where Self: _PairBaseType & _KeyValueElementType {
+extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType & _KeyValueElementType {
   
   @inlinable
   static func __element__ptr(_ p: _NodePtr) -> _ElementValuePtr {

@@ -24,6 +24,7 @@
 ///
 /// 実際には特殊化されたものをつかっている
 public protocol _BaseNode_KeyProtocol:
+  ~Copyable,
   _BaseNode_KeyInterface
     & _BasePayloadValue_KeyInterface
     & _BaseNode_PayloadValueInterface
@@ -31,7 +32,7 @@ public protocol _BaseNode_KeyProtocol:
   static func __get_value(_: _NodePtr) -> _Key
 }
 
-extension _BaseNode_KeyProtocol {
+extension _BaseNode_KeyProtocol where Self: ~Copyable {
 
   /// 資料的に残されている
   ///
@@ -44,10 +45,10 @@ extension _BaseNode_KeyProtocol {
   }
 }
 
-public protocol _BaseComparableKey_LessThanProtocol: _BaseKey_LessThanInterface
+public protocol _BaseComparableKey_LessThanProtocol: ~Copyable, _BaseKey_LessThanInterface
 where _Key: Comparable {}
 
-extension _BaseComparableKey_LessThanProtocol {
+extension _BaseComparableKey_LessThanProtocol where Self: ~Copyable {
   /// Comparableプロトコルの場合の標準実装
   @inlinable
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {

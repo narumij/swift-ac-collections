@@ -16,7 +16,7 @@ extension Array {
 #if DEBUG
   class TreeFixtureBase<Element>:
     RedBlackTreeTestCase,
-    TreeAlgorithmBaseProtocol_std,
+    TreeAlgorithmBaseProtocol_legacy,
     TreeNodeAccessInterface, RootInterface, EndNodeProtocol,
     ___RedBlackTreeNodePoolProtocol
   {
@@ -99,15 +99,15 @@ extension Array {
 
   class TreeFixture<Element: Comparable>:
     TreeFixtureBase<Element>,
-    FindProtocol_std,
-    FindEqualInterface, FindEqualProtocol_std,
-    InsertNodeAtInterface, InsertNodeAtProtocol_std,
-    InsertUniqueInterface, InsertUniqueProtocol_std,
+    FindProtocol_legacy,
+    FindEqualInterface, FindEqualProtocol_legacy,
+    InsertNodeAtInterface, InsertNodeAtProtocol_legacy,
+    InsertUniqueInterface, InsertUniqueProtocol_legacy,
     RemoveInteface, EraseProtocol, EraseUniqueProtocol,
-    CompareProtocol, CompareMultiProtocol_std,
-    BoundBothProtocol, NodeBitmapProtocol_std,
+    CompareProtocol, CompareMultiProtocol_legacy,
+    BoundBothProtocol, NodeBitmapProtocol_legacy,
     BoundAlgorithmProtocol,
-    RemoveProtocol_std,
+    RemoveProtocol_legacy,
     IntThreeWayComparator
 {
     func __root_ptr() -> _PointerIndexRef {

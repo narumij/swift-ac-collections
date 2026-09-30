@@ -70,5 +70,26 @@ import XCTest
       multiset[multiset.equalRange(1)].erase()
       XCTAssertEqual(Array(multiset), [0, 3, 5])
     }
+
+    func test_containsSubrange_acceptsEqualRangeIndexRangeValue() {
+      let multiset = RedBlackTreeMultiSet([0, 1, 1, 2])
+
+      XCTAssertTrue(multiset.containsSubrange(multiset.equalRange(1)))
+    }
+
+    func test_unboundedRangeViewModify_mutatesThroughTheSubscript() {
+      var multiset = RedBlackTreeMultiSet([0, 1, 2])
+
+      XCTAssertEqual(multiset[...].popFirst(), 0)
+      XCTAssertEqual(Array(multiset), [1, 2])
+    }
+
+    func test_eraseUnboundedRange_removesEveryMember() {
+      var multiset = RedBlackTreeMultiSet([0, 1, 1, 2])
+
+      multiset.erase(...)
+
+      XCTAssertTrue(multiset.isEmpty)
+    }
   }
 #endif

@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol CountProtocol_ptr:
+protocol CountProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & _TreeKey_ThreeWayCompInterface
     & _TreeNode_KeyInterface
@@ -32,7 +32,7 @@ protocol CountProtocol_ptr:
     & BoundAlgorithmProtocol_common_ptr
 {}
 
-extension CountProtocol_ptr {
+extension CountProtocol_ptr where Self: ~Copyable {
 
   @usableFromInline
   typealias size_type = Int

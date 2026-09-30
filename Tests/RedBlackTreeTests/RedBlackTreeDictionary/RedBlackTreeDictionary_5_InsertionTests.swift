@@ -15,6 +15,16 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertTrue(dictionary.isEmpty)
   }
 
+  func test_keySubscript_assigningNilToMissingKeyIsANoOp() {
+    var dictionary: RedBlackTreeDictionary<Int, String> = [1: "one"]
+
+    dictionary[999] = nil
+
+    XCTAssertNil(dictionary[999])
+    XCTAssertEqual(dictionary.count, 1)
+    XCTAssertEqual(dictionary[1], "one")
+  }
+
   func test_defaultSubscript_doesNotInsertUntilMutated() {
     var dictionary = RedBlackTreeDictionary<Int, [String]>()
 
@@ -70,6 +80,25 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
       let duplicate = dictionary.insert((2, "replacement"), hint: dictionary.endIndex)
       XCTAssertFalse(duplicate.inserted)
       XCTAssertEqual(dictionary[2], "two")
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
+    }
+
+    /// ヒント付きupdateが新規キーではnilを返し、既存キーでは旧エントリを返して値を置き換えること
+    func test_updateWithHint_returnsNilForNewKeyAndOldEntryForExistingKey() {
+      var dictionary: RedBlackTreeDictionary<Int, String> = [1: "one", 3: "three"]
+
+      let insertedWithGoodHint = dictionary.update((2, "two"), hint: dictionary.firstIndex(of: 3)!)
+      XCTAssertNil(insertedWithGoodHint)
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3])
+
+      let insertedWithBadHint = dictionary.update((4, "four"), hint: dictionary.startIndex)
+      XCTAssertNil(insertedWithBadHint)
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
+
+      let replaced = dictionary.update((2, "replacement"), hint: dictionary.endIndex)
+      XCTAssertEqual(replaced?.key, 2)
+      XCTAssertEqual(replaced?.value, "two")
+      XCTAssertEqual(dictionary[2], "replacement")
       XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
     }
   #endif

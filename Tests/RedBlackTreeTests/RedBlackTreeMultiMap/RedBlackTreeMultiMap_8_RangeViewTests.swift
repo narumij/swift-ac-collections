@@ -120,6 +120,29 @@ import XCTest
       )
     }
 
+    func test_containsSubrange_acceptsIndexRangeExpressionValue() {
+      let map: RedBlackTreeMultiMap = [(1, "a"), (1, "b"), (2, "c")]
+      let lower = map.index(after: map.startIndex)
+      let upper = map.index(before: map.endIndex)
+
+      XCTAssertTrue(map.containsSubrange(lower..<upper))
+    }
+
+    func test_unboundedRangeViewModify_mutatesThroughTheSubscript() {
+      var map: RedBlackTreeMultiMap = [(1, "a"), (1, "b"), (2, "c")]
+
+      XCTAssertEqual(map[...].popFirst()?.value, "a")
+      XCTAssertEqual(map.map(\.value), ["b", "c"])
+    }
+
+    func test_eraseUnboundedRange_removesEveryEntry() {
+      var map: RedBlackTreeMultiMap = [(1, "a"), (1, "b"), (2, "c")]
+
+      map.erase(...)
+
+      XCTAssertTrue(map.isEmpty)
+    }
+
     func test_rangeValuesSwapAt_preservesValueSemanticsAfterCopy() {
       var map: RedBlackTreeMultiMap = [(1, "first"), (1, "middle"), (1, "last")]
       let range = map[1]

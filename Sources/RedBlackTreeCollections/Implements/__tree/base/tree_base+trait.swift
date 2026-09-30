@@ -24,7 +24,7 @@
 ///
 ///  llvmのソース由来の名前となっている
 ///
-public protocol ValueComparer:
+public protocol ValueComparer: ~Copyable,
   _BaseKey_LessThanInterface
     & _BasePayloadValue_KeyInterface
     & _BaseNode_KeyInterface
@@ -36,7 +36,7 @@ public protocol ValueComparer:
 ///
 /// 比較実装を実際に使うかは、各実行形態側で決まり、ここで決めるわけではない
 ///
-public protocol ComparableKeyTrait:
+public protocol ComparableKeyTrait: ~Copyable,
   ValueComparer
     & _BaseComparableKey_LessThanProtocol
 where
@@ -44,7 +44,7 @@ where
 {}
 
 /// 要素とキーが一致する場合のひな形
-public protocol ScalarValueTrait:
+public protocol ScalarValueTrait: ~Copyable,
   ComparableKeyTrait
     & _ScalarBaseType
     & _BasePayloadValue_KeyInterface
@@ -52,7 +52,7 @@ public protocol ScalarValueTrait:
 {}
 
 /// 要素がキーバリューの場合のひな形
-public protocol KeyValueTrait:
+public protocol KeyValueTrait: ~Copyable,
   ComparableKeyTrait
     & _KeyValueBaseType
     & _BasePayloadValue_KeyInterface
@@ -60,7 +60,7 @@ public protocol KeyValueTrait:
 {}
 
 /// 要素がキーバリューでペイロードがペアの場合のひな形
-public protocol PairValueTrait:
+public protocol PairValueTrait: ~Copyable,
   KeyValueTrait
     & _PairBasePayloadValue_KeyProtocol
     & _PairBasePayloadValue_MappedValueProtocol
@@ -69,7 +69,7 @@ public protocol PairValueTrait:
 
 // 分岐を減らしたい気持ちはあるが、ホットパスというわけでもないので、無理にはやらない
 
-public protocol UniqueMultiplicity: _Base_MultiplicityHelperInterface
+public protocol UniqueMultiplicity: ~Copyable, _Base_MultiplicityHelperInterface
 where _MultiplicityHelper == __UniqueHelper<Self> {}
 extension UniqueMultiplicity {
 
@@ -77,7 +77,7 @@ extension UniqueMultiplicity {
   public static var isMulti: Bool { false }
 }
 
-public protocol MultiMultiplicity: _Base_MultiplicityHelperInterface
+public protocol MultiMultiplicity: ~Copyable, _Base_MultiplicityHelperInterface
 where _MultiplicityHelper == __MultiHelper<Self> {}
 extension MultiMultiplicity {
 

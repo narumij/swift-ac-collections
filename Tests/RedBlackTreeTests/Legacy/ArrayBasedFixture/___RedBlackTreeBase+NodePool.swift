@@ -30,7 +30,7 @@
     // 性能過敏な部分なので、しばらく保留
     // テストでの利用を想定して切り出した
     @usableFromInline
-    protocol ___RedBlackTreeNodePoolProtocol: TreeAlgorithmProtocol_std {
+    protocol ___RedBlackTreeNodePoolProtocol: TreeAlgorithmProtocol_legacy {
       associatedtype Element
       var ___destroy_node: _NodePtr { get nonmutating set }
       var ___destroy_count: Int { get nonmutating set }

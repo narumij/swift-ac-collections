@@ -24,7 +24,7 @@
 
 // ルートノードの親相当の機能
 @usableFromInline
-package protocol TreeEndNodeAccessInterface: NullPtrInterface, _pointer_type {
+package protocol TreeEndNodeAccessInterface: ~Copyable, NullPtrInterface, _pointer_type {
   /// 左ノードを返す
   ///
   /// 木を遡るケースではこちらが必ず必要
@@ -39,7 +39,7 @@ package protocol TreeEndNodeAccessInterface: NullPtrInterface, _pointer_type {
 
 // 一般ノード相当の機能
 @usableFromInline
-package protocol TreeNodeAccessInterface: TreeEndNodeAccessInterface, _parent_pointer_type, TreeAlgorithmBaseInterface {
+package protocol TreeNodeAccessInterface: ~Copyable, TreeEndNodeAccessInterface, _parent_pointer_type, TreeAlgorithmBaseInterface {
   /// 右ノードを返す
   @inlinable func __right_(_: pointer) -> pointer
   /// 右ノードを更新する
@@ -59,9 +59,9 @@ package protocol TreeNodeAccessInterface: TreeEndNodeAccessInterface, _parent_po
   @inlinable func __parent_unsafe(_: pointer) -> __parent_pointer
 }
 
-// 同名実装はない。TreeAlgorithmBaseProtocol_stdあたりに実装が付随している
+// 同名実装はない。TreeAlgorithmBaseProtocol_ptrあたりに実装が付随している
 @usableFromInline
-package protocol TreeNodeRefAccessInterface: NullPtrInterface {
+package protocol TreeNodeRefAccessInterface: ~Copyable, NullPtrInterface {
   /// 左ノードへの参照を返す
   @inlinable func __left_ref(_: _NodePtr) -> _NodeRef
   /// 右ノードへの参照を返す

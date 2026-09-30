@@ -47,50 +47,9 @@
       get { _end.pointee.__left_ }
       set { _end.pointee.__left_ = newValue }
     }
-    @inlinable func __left_(_ p: _NodePtr) -> _NodePtr {
-      p.__left_
-    }
-    @inlinable func __right_(_ p: _NodePtr) -> _NodePtr {
-      p.__right_
-    }
-    @inlinable
-    var __root: _NodePtr {
-      __tree_.end.pointee.__left_
-    }
-    @inlinable
-    mutating func __root(_ p: _NodePtr) {
-      __tree_.end.pointee.__left_ = p
-    }
-    @inlinable
-    func
-      __tree_min(_ __x: _NodePtr) -> _NodePtr
-    {
-      __tree_.__tree_min(__x)
-    }
-    @inlinable
-    func
-      __tree_max(_ __x: _NodePtr) -> _NodePtr
-    {
-      __tree_.__tree_max(__x)
-    }
-    @inlinable
-    mutating func
-      __tree_left_rotate(_ __x: _NodePtr)
-    {
-      __tree_.__tree_left_rotate(__x)
-    }
-    @inlinable
-    mutating func
-      __tree_right_rotate(_ __x: _NodePtr)
-    {
-      __tree_.__tree_right_rotate(__x)
-    }
-    @inlinable
-    mutating func
-      __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)
-    {
-      __tree_._ptr__tree_balance_after_insert(__root, __x)
-    }
+    // __left_(_:)/__right_(_:)/__root/__root(_:)/__tree_min/__tree_max/
+    // __tree_left_rotate/__tree_right_rotate/__tree_balance_after_insertは
+    // RedBlackTreeDebugFixture(4型共通)側の実装を利用する。
     @inlinable
     var nullptr: _NodePtr { __tree_.nullptr }
 //    @inlinable

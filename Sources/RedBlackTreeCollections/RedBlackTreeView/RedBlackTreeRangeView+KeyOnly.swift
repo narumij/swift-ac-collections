@@ -162,6 +162,7 @@ extension RedBlackTreeMultiSet: ScalarBaseInit {
 }
 
 extension RedBlackTreeKeyOnlyRangeView where Container: ScalarBaseInit {
+  @available(*, deprecated)
   public func unranged() -> Container { ._create(self) }
 }
 

@@ -20,11 +20,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-public protocol _BaseNode_SignedDistanceInterface: _NodePtrType {
+public protocol _BaseNode_SignedDistanceInterface: ~Copyable, _NodePtrType {
   static func ___signed_distance(_: _NodePtr, _: _NodePtr) -> Int
 }
 
-public protocol _BaseNode_SignedDistanceProtocol:
+public protocol _BaseNode_SignedDistanceProtocol: ~Copyable,
   _UnsafeNodePtrType
     & _BaseNode_SignedDistanceInterface
     & _BaseNode_PtrCompInterface
@@ -36,7 +36,7 @@ where
   associatedtype _InputIter
 }
 
-extension _BaseNode_SignedDistanceProtocol {
+extension _BaseNode_SignedDistanceProtocol where Self: ~Copyable {
 
   @inlinable
   public static func

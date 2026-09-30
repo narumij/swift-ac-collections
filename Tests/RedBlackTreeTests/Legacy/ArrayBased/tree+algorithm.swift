@@ -24,9 +24,9 @@
   @testable import RedBlackTreeCollections
 
 @usableFromInline
-protocol TreeAlgorithmBaseProtocol_std: TreeAlgorithmInterface & TreeAlgorithmBaseInterface & TreeNodeAccessInterface {}
+protocol TreeAlgorithmBaseProtocol_legacy: TreeAlgorithmInterface & TreeAlgorithmBaseInterface & TreeNodeAccessInterface {}
 
-extension TreeAlgorithmBaseProtocol_std {
+extension TreeAlgorithmBaseProtocol_legacy {
 
   /// Returns:  true if `__x` is a left child of its parent, else false
   /// Precondition:  `__x` != nullptr.
@@ -225,9 +225,9 @@ extension TreeAlgorithmBaseProtocol_std {
 
 // 一般ノード相当の機能
 @usableFromInline
-package protocol TreeAlgorithmProtocol_std: TreeNodeAccessInterface {}
+package protocol TreeAlgorithmProtocol_legacy: TreeNodeAccessInterface {}
 
-extension TreeAlgorithmProtocol_std {
+extension TreeAlgorithmProtocol_legacy {
 
   /// Effects:  Makes `__x`->`__right_` the subtree root with `__x` as its left child
   ///           while preserving in-order order.

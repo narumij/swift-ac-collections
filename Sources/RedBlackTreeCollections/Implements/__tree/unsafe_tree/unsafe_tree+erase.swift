@@ -21,13 +21,13 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol EraseProtocol:
+protocol EraseProtocol: ~Copyable,
   EraseInterface
     & RemoveInteface
     & DellocationInterface
 {}
 
-extension EraseProtocol {
+extension EraseProtocol where Self: ~Copyable {
 
   /// - WARNING: メモリ破壊の可能性がある。
   @inlinable
@@ -53,14 +53,14 @@ extension EraseProtocol {
 }
 
 @usableFromInline
-protocol EraseUniqueProtocol:
+protocol EraseUniqueProtocol: ~Copyable,
   EraseUniqueInteface
     & FindInteface
     & EndInterface
     & EraseInterface
 {}
 
-extension EraseUniqueProtocol {
+extension EraseUniqueProtocol where Self: ~Copyable {
 
   /// メモリ破壊できない
   @inlinable
@@ -76,13 +76,13 @@ extension EraseUniqueProtocol {
 }
 
 @usableFromInline
-protocol EraseMultiProtocol:
+protocol EraseMultiProtocol: ~Copyable,
   EraseMultiInteface
     & EqualInterface
     & EraseInterface
 {}
 
-extension EraseMultiProtocol {
+extension EraseMultiProtocol where Self: ~Copyable {
 
   /// メモリ破壊できない
   @inlinable

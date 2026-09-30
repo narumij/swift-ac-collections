@@ -139,7 +139,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   }
 
   @inlinable
-  var ___is_end: Bool {
+  package var ___is_end: Bool {
     switch self {
     case .success(let success):
       success.___is_end
@@ -272,7 +272,7 @@ extension SealError: Comparable {}
 extension SealError: Hashable {}
 
 @usableFromInline
-func errorMessage<E: Error>(_ e: E) -> String {
+package func errorMessage<E: Error>(_ e: E) -> String {
   switch e as? SealError {
   case .null:
     "Unexpected null pointer"

@@ -92,11 +92,11 @@ extension FindLeafProtocol {
 extension FindEqualInterface {}
 
 @usableFromInline
-protocol FindEqualProtocol_std: ValueInterface, TreeNodeRefAccessInterface, RootInterface, RootPtrProtocol,
+protocol FindEqualProtocol_legacy: ValueInterface, TreeNodeRefAccessInterface, RootInterface, RootPtrProtocol,
   _TreeKey_LazyThreeWayCompInterface
 {}
 
-extension FindEqualProtocol_std {
+extension FindEqualProtocol_legacy {
 
   @inlinable
   //  @inline(__always)
@@ -178,9 +178,9 @@ extension FindEqualProtocol_old {
 }
 
 @usableFromInline
-protocol FindProtocol_std: FindInteface & BoundBothInterface & EndProtocol & FindEqualInterface & TreeNodeRefAccessInterface {}
+protocol FindProtocol_legacy: FindInteface & BoundBothInterface & EndProtocol & FindEqualInterface & TreeNodeRefAccessInterface {}
 
-extension FindProtocol_std {
+extension FindProtocol_legacy {
 
   @inlinable
   @inline(__always)

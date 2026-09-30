@@ -21,14 +21,14 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol BoundBothProtocol:
+protocol BoundBothProtocol: ~Copyable,
   BoundInteface
     & BoundBothInterface
     & _Tree_IsMultiTraitInterface
 {}
 
 #if !ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND
-  extension BoundBothProtocol {
+  extension BoundBothProtocol where Self: ~Copyable {
 
     @inlinable
     internal func lower_bound(_ __v: _Key) -> _NodePtr {
@@ -43,7 +43,7 @@ protocol BoundBothProtocol:
 #endif
 
 #if ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND
-  extension BoundBothProtocol {
+  extension BoundBothProtocol where Self: ~Copyable {
 
     @inlinable
     internal func lower_bound(_ __v: _Key) -> _NodePtr {
@@ -58,14 +58,14 @@ protocol BoundBothProtocol:
 #endif
 
 @usableFromInline
-protocol BoundAlgorithmProtocol_ptr:
+protocol BoundAlgorithmProtocol_ptr: ~Copyable,
   BoundAlgorithmProtocol_common_ptr
     & _TreeKey_ThreeWayCompInterface
     & NullPtrInterface
     & TreeAlgorithmBaseInterface
 {}
 
-extension BoundAlgorithmProtocol_ptr {
+extension BoundAlgorithmProtocol_ptr where Self: ~Copyable {
 
   @inlinable
   internal func
@@ -112,7 +112,7 @@ extension BoundAlgorithmProtocol_ptr {
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol_common_ptr:
+protocol BoundAlgorithmProtocol_common_ptr: ~Copyable,
   _UnsafeNodePtrType
     & EndNodeInterface
     & RootInterface
@@ -121,7 +121,7 @@ protocol BoundAlgorithmProtocol_common_ptr:
     & NullPtrInterface
 {}
 
-extension BoundAlgorithmProtocol_common_ptr {
+extension BoundAlgorithmProtocol_common_ptr where Self: ~Copyable {
 
   @inlinable
   internal func
@@ -159,9 +159,9 @@ extension BoundAlgorithmProtocol_common_ptr {
 }
 
 @usableFromInline
-protocol BoundAlgorithmProtocol_legacy_ptr: BoundAlgorithmProtocol_common_ptr {}
+protocol BoundAlgorithmProtocol_legacy_ptr:  ~Copyable,BoundAlgorithmProtocol_common_ptr {}
 
-extension BoundAlgorithmProtocol_legacy_ptr {
+extension BoundAlgorithmProtocol_legacy_ptr where Self: ~Copyable {
 
   @inlinable
   internal func __lower_bound_unique(_ __v: _Key) -> _NodePtr {

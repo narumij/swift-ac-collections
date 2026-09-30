@@ -21,6 +21,6 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol RemoveInteface: _NodePtrType {
+protocol RemoveInteface: ~Copyable, _NodePtrType {
   @inlinable func __remove_node_pointer(_ __ptr: _NodePtr) -> _NodePtr
 }

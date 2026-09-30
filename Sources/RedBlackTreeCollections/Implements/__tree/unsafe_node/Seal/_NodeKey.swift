@@ -8,7 +8,7 @@
 // 同一木のノードの比較であることが不変条件
 // ノードさえ生きてれば比較自体は可能だが未定義動作
 @usableFromInline
-enum _NodeKey<Base: _BaseNode_KeyInterface>
+package enum _NodeKey<Base: ~Copyable & _BaseNode_KeyInterface>
 where Base._NodePtr == UnsafeMutablePointer<UnsafeNode>, Base._Key: Comparable {
 
   case key(Base._Key)
@@ -17,7 +17,7 @@ where Base._NodePtr == UnsafeMutablePointer<UnsafeNode>, Base._Key: Comparable {
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable
-  init(_ p: _NodePtr) {
+  package init(_ p: _NodePtr) {
     self = p.___is_end ? .end : .key(Base.__get_value(p))
   }
 }
@@ -27,7 +27,7 @@ extension _NodeKey: Comparable {}
 extension _NodeKey {
   
   @inlinable
-  static func lessThan(
+  package static func lessThan(
     lhs: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
     rhs: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?)
   )
@@ -56,7 +56,7 @@ extension _NodeKey {
   }
 
   @inlinable
-  static func isInHalfOpenRange(
+  package static func isInHalfOpenRange(
     first: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
     position: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
     last: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?)
@@ -91,7 +91,7 @@ extension _NodeKey {
   }
 
   @inlinable
-  static func containsRange(
+  package static func containsRange(
     outerFirst: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
     outerLast: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
     innerFirst: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),

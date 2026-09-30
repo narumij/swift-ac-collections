@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-package protocol TreeAlgorithmBaseInterface: _NodePtrType {
+package protocol TreeAlgorithmBaseInterface: ~Copyable, _NodePtrType {
   @inlinable func __tree_is_left_child(_ __x: _NodePtr) -> Bool
 //  func __tree_sub_invariant(_ __x: _NodePtr) -> UInt
   @inlinable func __tree_invariant(_ __root: _NodePtr) -> Bool
@@ -34,7 +34,7 @@ package protocol TreeAlgorithmBaseInterface: _NodePtrType {
 }
 
 @usableFromInline
-protocol TreeAlgorithmInterface: _NodePtrType {
+protocol TreeAlgorithmInterface: ~Copyable, _NodePtrType {
   @inlinable func __tree_left_rotate(_ __x: _NodePtr)
   @inlinable func __tree_right_rotate(_ __x: _NodePtr)
   @inlinable func __tree_balance_after_insert(_ __root: _NodePtr, _ __x: _NodePtr)

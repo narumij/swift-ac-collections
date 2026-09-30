@@ -68,5 +68,39 @@ import XCTest
       dictionary[dictionary.equalRange(3)].erase()
       XCTAssertEqual(dictionary.map(\.key), [1, 5])
     }
+
+    func test_containsSubrangeAndSubscript_acceptEqualRangeIndexRangeValue() {
+      let dictionary: RedBlackTreeDictionary = [1: "a", 2: "b", 3: "c"]
+      let range = dictionary.equalRange(2)
+
+      XCTAssertTrue(dictionary.containsSubrange(range))
+      XCTAssertEqual(dictionary[range].map(\.key), [2])
+    }
+
+    func test_eraseUnboundedRange_removesEveryEntry() {
+      var dictionary: RedBlackTreeDictionary = [1: "a", 2: "b", 3: "c"]
+
+      dictionary.erase(...)
+
+      XCTAssertTrue(dictionary.isEmpty)
+    }
+
+    func test_eraseEqualRangeIndexRange_removesOnlyThatEntry() {
+      var dictionary: RedBlackTreeDictionary = [1: "a", 2: "b", 3: "c"]
+
+      dictionary.erase(dictionary.equalRange(2))
+
+      XCTAssertEqual(dictionary.map(\.key), [1, 3])
+    }
+
+    func test_eraseEqualRangeIndexRangeWithPredicate_removesOnlyWhenPredicateMatches() {
+      var dictionary: RedBlackTreeDictionary = [1: "a", 2: "b", 3: "c"]
+
+      dictionary.erase(dictionary.equalRange(2)) { $0.key.isMultiple(of: 2) == false }
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3], "predicateが偽なので削除されない")
+
+      dictionary.erase(dictionary.equalRange(2)) { $0.key.isMultiple(of: 2) }
+      XCTAssertEqual(dictionary.map(\.key), [1, 3])
+    }
   }
 #endif

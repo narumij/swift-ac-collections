@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @inlinable
-internal func
+package func
   __distance(
     _ __first: UnsafeMutablePointer<UnsafeNode>,
     _ __last: UnsafeMutablePointer<UnsafeNode>
@@ -38,7 +38,7 @@ internal func
 }
 
 @inlinable
-internal func
+package func
   ___safe_distance(
     _ __first: UnsafeMutablePointer<UnsafeNode>,
     _ __last: UnsafeMutablePointer<UnsafeNode>

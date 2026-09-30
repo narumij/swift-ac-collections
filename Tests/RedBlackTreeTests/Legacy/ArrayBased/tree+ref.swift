@@ -8,7 +8,7 @@
 #if DEBUG
   @testable import RedBlackTreeCollections
 
-extension TreeAlgorithmProtocol_std where _NodePtr == _TrackingTag, _NodeRef == _PointerIndexRef {
+extension TreeAlgorithmProtocol_legacy where _NodePtr == _TrackingTag, _NodeRef == _PointerIndexRef {
 
   @inlinable
   @inline(__always)
@@ -36,7 +36,7 @@ extension TreeAlgorithmProtocol_std where _NodePtr == _TrackingTag, _NodeRef == 
   }
 }
 
-extension TreeAlgorithmProtocol_std where _NodePtr == _TrackingTag, _NodeRef == _PointerIndexRef {
+extension TreeAlgorithmProtocol_legacy where _NodePtr == _TrackingTag, _NodeRef == _PointerIndexRef {
 
   @inlinable
   @inline(__always)

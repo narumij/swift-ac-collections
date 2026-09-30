@@ -242,7 +242,12 @@ import XCTest
 
   extension MultiMapEtcTests {
     #if false
-      // TODO: これは本当にバグがありそう
+      // 削除でインデックスが失効した後も`target1.indices`が最初に捕捉した
+      // (失効前の)Indexを返し続けるため、2周目以降の`remove(at:)`が
+      // stale indexへの操作になる。Design-MemorySafety.mdのSeal機構により
+      // 現行実装では.unsealed/.garbagedとして安全にトラップされる想定だが、
+      // `indices`はCOMPATIBLE_ATCODER_2025専用の互換APIであり、
+      // 互換モード廃止時にこのファイルごと削除されるため、深追いはしない。
       func testExample0() throws {
         for i in target1.indices {
           target1.remove(at: i)
@@ -260,7 +265,9 @@ import XCTest
   }
 
   #if DEBUG && false
-    // TODO: これも本当にバグがありそう
+    // 上のtestExample0/1と同種。`___node_positions()`も同じく
+    // 削除前に一括取得したノード位置の配列であり、削除が進むほど
+    // 残りの位置がstaleになる。内部API直叩きの検証用で、同じ理由で深追いしない。
     extension MultiMapEtcTests {
       func testExample___0() throws {
         for i in target1.___node_positions() {

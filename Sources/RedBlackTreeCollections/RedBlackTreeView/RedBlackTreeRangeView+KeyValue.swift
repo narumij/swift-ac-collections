@@ -225,6 +225,7 @@ extension RedBlackTreeMultiMap: KeyValueBaseInit {
 }
 
 extension RedBlackTreeKeyValueRangeView where Container: KeyValueBaseInit {
+  @available(*, deprecated)
   public func unranged() -> Container { ._create(self) }
 }
 

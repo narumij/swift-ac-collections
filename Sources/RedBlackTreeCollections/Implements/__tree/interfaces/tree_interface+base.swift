@@ -29,7 +29,7 @@
 ///
 /// nullptrへはグローバルアクセスもあるが、性能観点でインスタンスアクセスを利用している
 @usableFromInline
-package protocol NullPtrInterface: _PointerType {
+package protocol NullPtrInterface: ~Copyable, _PointerType {
   @inlinable var nullptr: _Pointer { get }
 }
 
@@ -37,33 +37,33 @@ package protocol NullPtrInterface: _PointerType {
 ///
 /// end->leftが木の根
 @usableFromInline
-package protocol _end_interface: _NodePtrType {
+package protocol _end_interface: ~Copyable, _NodePtrType {
   @inlinable var end: _NodePtr { get }
 }
 
 @usableFromInline
-protocol BeginNodeInterface: _NodePtrType {
+protocol BeginNodeInterface: ~Copyable, _NodePtrType {
   /// 木の左端のノードを返す
   @inlinable var __begin_node_: _NodePtr { get nonmutating set }
 }
 
 @usableFromInline
-protocol EndNodeInterface: _NodePtrType {
+protocol EndNodeInterface: ~Copyable, _NodePtrType {
   /// 終端ノード（木の右端の次の仮想ノード）を返す
   @inlinable var __end_node: _NodePtr { get }
 }
 
 @usableFromInline
-protocol EndInterface: _end_interface {}
+protocol EndInterface: ~Copyable, _end_interface {}
 
 @usableFromInline
-protocol RootInterface: _NodePtrType {
+protocol RootInterface: ~Copyable, _NodePtrType {
   /// 木の根ノードを返す
   @inlinable var __root: _NodePtr { get }
 }
 
 @usableFromInline
-protocol RootPtrInterface: _NodePtrType {
+protocol RootPtrInterface: ~Copyable, _NodePtrType {
   /// 木の根ノードへの参照を返す
   @inlinable func __root_ptr() -> _NodeRef
 }
@@ -74,7 +74,7 @@ protocol RootPtrInterface: _NodePtrType {
   // 非常に重要なポイントなので元ソース尊重よりもわかりやすさを優先しつつ、
   // エクスキューズ的に#ifで元の名前をリスペクトする感じ？
   @usableFromInline
-  protocol _TreeNode_KeyInterface: _NodePtrType & _KeyType {
+  protocol _TreeNode_KeyInterface: ~Copyable, _NodePtrType & _KeyType {
     /// ノードから比較用の値を取り出す。
     /// SetやMultisetではElementに該当する
     /// DictionaryやMultiMapではKeyに該当する
@@ -83,7 +83,7 @@ protocol RootPtrInterface: _NodePtrType {
 #else
   // 型の名前にねじれがあるので注意
   @usableFromInline
-  protocol _TreeNode_KeyInterface: _NodePtrType & _KeyType & __node_value_type {
+  protocol _TreeNode_KeyInterface: ~Copyable, _NodePtrType & _KeyType & __node_value_type {
     /// ノードから比較用の値を取り出す。
     /// SetやMultisetではElementに該当する
     /// DictionaryやMultiMapではKeyに該当する
@@ -93,26 +93,26 @@ protocol RootPtrInterface: _NodePtrType {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol _TreeNode_PayloadValueInterface: NullPtrInterface & _PayloadValueType & __value_type {
+protocol _TreeNode_PayloadValueInterface: ~Copyable, NullPtrInterface & _PayloadValueType & __value_type {
   /// ノードの値要素を取得する
   @inlinable func __value_(_ p: _NodePtr) -> __value_type
 }
 
 @usableFromInline
-protocol _TreePayloadValue_KeyInterface: _KeyType, _PayloadValueType {
+protocol _TreePayloadValue_KeyInterface: ~Copyable, _KeyType, _PayloadValueType {
   /// 要素から比較用のキー値を取り出す。
   @inlinable func __key(_ e: _PayloadValue) -> _Key
 }
 
 @usableFromInline
-protocol _TreeRawValue_MappedValueInteface: _KeyValueBaseType {
+protocol _TreeRawValue_MappedValueInteface: ~Copyable, _KeyValueBaseType {
 
   @inlinable func ___mapped_value(_ element: _PayloadValue) -> _MappedValue
 }
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol _TreeKey_CompInterface: __node_value_type {
+protocol _TreeKey_CompInterface: ~Copyable, __node_value_type {
   /// キー同士を比較する。通常`<`と同じ
   @inlinable func value_comp(_: __node_value_type, _: __node_value_type) -> Bool
 }
@@ -120,7 +120,7 @@ protocol _TreeKey_CompInterface: __node_value_type {
 // MARK: -
 
 @usableFromInline
-protocol SizeInterface {
+protocol SizeInterface: ~Copyable {
   /// 木のノードの数を返す
   ///
   /// 終端ノードは含まないはず
@@ -131,13 +131,13 @@ protocol SizeInterface {
 
 // 型の名前にねじれがあるので注意
 @usableFromInline
-protocol ValueInterface:
+protocol ValueInterface: ~Copyable,
   TreeNodeAccessInterface
     & _TreeNode_KeyInterface
     & _TreeKey_CompInterface
     & _end_interface
 {}
 
-public protocol _Tree_IsMultiTraitInterface {
+public protocol _Tree_IsMultiTraitInterface:  ~Copyable {
   @inlinable var isMulti: Bool { get }
 }

@@ -26,7 +26,7 @@
 import Foundation
 
 @usableFromInline
-protocol InsertNodeAtProtocol_std:
+protocol InsertNodeAtProtocol_legacy:
   InsertNodeAtInterface
     & TreeNodeAccessInterface
     & TreeNodeRefAccessInterface
@@ -37,7 +37,7 @@ protocol InsertNodeAtProtocol_std:
     & _end_interface
 {}
 
-extension InsertNodeAtProtocol_std {
+extension InsertNodeAtProtocol_legacy {
 
   @inlinable
   @inline(__always)
@@ -62,7 +62,7 @@ extension InsertNodeAtProtocol_std {
 }
 
 @usableFromInline
-protocol InsertUniqueProtocol_std:
+protocol InsertUniqueProtocol_legacy:
   InsertUniqueInterface
     & TreeNodeRefAccessInterface
     & _TreePayloadValue_KeyInterface
@@ -76,7 +76,7 @@ protocol InsertUniqueProtocol_std:
       _ __new_node: _NodePtr)
 }
 
-extension InsertUniqueProtocol_std {
+extension InsertUniqueProtocol_legacy {
 
   @inlinable
   //  @inline(__always)

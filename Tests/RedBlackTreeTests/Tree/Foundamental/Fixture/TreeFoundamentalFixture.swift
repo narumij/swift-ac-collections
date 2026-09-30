@@ -9,8 +9,22 @@ import RedBlackTreeCollections
 import TrailingElementsModule
 
 struct TreeFoundamentalFixture: ~Copyable {
+  var root: _NodePtr
   var end_node: UnsafeNode
   var storage: TrailingArray<Header>
+}
+
+extension TreeFoundamentalFixture {
+  
+  mutating func invariant() -> Int {
+    if end_node.__left_ != .nullptr {
+      return 0
+    }
+    if withUnsafePointer(to: &end_node, { root != $0 }) {
+      return 0
+    }
+    return 1
+  }
 }
 
 extension TreeFoundamentalFixture {

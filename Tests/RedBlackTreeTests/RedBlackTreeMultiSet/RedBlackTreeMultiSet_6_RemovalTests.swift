@@ -33,6 +33,9 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
         XCTAssertNil(empty.popLast())
         XCTAssertEqual(empty._copyCount, 0)
       #endif
+
+      empty.removeAll(keepingCapacity: true)
+      XCTAssertEqual(empty._copyCount, 0, "空集合へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
     #endif
   }
 

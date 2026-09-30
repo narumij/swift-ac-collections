@@ -445,10 +445,10 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    if keepCapacity {
+    if keepCapacity && __tree_.count > 0 {
       __tree_.ensureUnique()
       __tree_.deinitialize()
-    } else {
+    } else if !keepCapacity {
       __tree_ = .create()
     }
   }

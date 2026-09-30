@@ -180,6 +180,9 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
 
       XCTAssertNil(set.remove(1))
       XCTAssertEqual(set._copyCount, 0)
+
+      set.removeAll(keepingCapacity: true)
+      XCTAssertEqual(set._copyCount, 0, "空集合へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
     #endif
   }
 

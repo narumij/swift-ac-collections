@@ -73,6 +73,9 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
 
       XCTAssertNil(empty.removeValue(forKey: 1))
       XCTAssertEqual(empty._copyCount, 0)
+
+      empty.removeAll(keepingCapacity: true)
+      XCTAssertEqual(empty._copyCount, 0, "空の辞書へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
     #endif
   }
 

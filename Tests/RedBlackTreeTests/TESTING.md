@@ -31,6 +31,7 @@
 - 横展開の過不足についてはSources/RedBlackTreeCollections/Documentation/API-Matrix.mdと照らし合わせること
 - Test as SpecについてはSources/RedBlackTreeCollections/Documentation/Quality-Checklist.mdと照らし合わせること
 - テストコード生成時はTests/RedBlackTreeTests/Fixtures.mdを参照し、フィードバックすること
+- API-Matrix-View.mdも追加されました
 
 ### 相談事項
 

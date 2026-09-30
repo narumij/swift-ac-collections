@@ -24,19 +24,16 @@
 ### 優先事項
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味して都度更新すること
-- ABC, convenience, memoizeは温存
-- 実験的なテストコード書く場合、人もAIもまずEtcTests.swiftまたはDeathTest.swiftに書くこと
-- RedBlackTreeTestSupportとDebugAdditionalsは役割がかぶってるので、再度整理が必要
 - Tests/RedBlackTreeTestのTODOを消化すること
-- 横展開の過不足についてはSources/RedBlackTreeCollections/Documentation/API-Matrix.mdと照らし合わせること
-- Test as SpecについてはSources/RedBlackTreeCollections/Documentation/Quality-Checklist.mdと照らし合わせること
-- テストコード生成時はTests/RedBlackTreeTests/Fixtures.mdを参照し、フィードバックすること
-- API-Matrix-View.mdも追加されました
+- RedBlackTreeViewのテストを追加する
 
 ### 相談事項
 
 ### 連絡事項
 
+- API-Matrix-View.mdも追加されました
+- ABC, convenience, memoizeは温存
+- 実験的なテストコード書く場合、人もAIもまずEtcTests.swiftまたはDeathTest.swiftに書くこと
 - 5時間上限または週間利用上限で止まるとき、それまでの作業の感想も教えて欲しい
 - 最後に作業したモデルはモデル名とバージョンをどこかに記載すること
 - Codexさんはふりかえりの時間を確保すること
@@ -44,10 +41,13 @@
 - 小さな変更を積み重ねてるときは互換チェックをさぼっていい
 - 内部構造をどのように区分するのか、勝手に判断しないこと
 - ユーザー記載欄に記入する場合、こちらが消す都合上、古さが分からないと困るので、日付に加えて時間も記載すること
-- 現行APIかどうか判断に迷った場合API-Matrix.mdに照らすこと
+- 現行APIかどうか判断に迷った場合API-Matrix.md及びAPI-Matrix-View.mdに照らすこと
 - カバレッジが落ちてきてるので横展開と合わせてカバレッジ改善（90%目安)
-- RedBlackTreeViewのテストが必要そう（これは未着手？要確認）
 - Test as Specで一応の品質は保てるが、言語や環境の挙動変更による影響やマジックナンバー等の取り扱いミスを検出できるようにする必要もある
+- RedBlackTreeTestSupportとDebugAdditionalsは役割がかぶってるので、再度整理が必要
+- 横展開の過不足についてはSources/RedBlackTreeCollections/Documentation/API-Matrix.mdと照らし合わせること
+- Test as SpecについてはSources/RedBlackTreeCollections/Documentation/Quality-Checklist.mdと照らし合わせること
+- テストコード生成時はTests/RedBlackTreeTests/Fixtures.mdを参照し、フィードバックすること
 
 ### 停止条件
 

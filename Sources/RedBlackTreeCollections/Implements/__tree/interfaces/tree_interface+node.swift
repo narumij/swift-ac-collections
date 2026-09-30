@@ -59,7 +59,7 @@ package protocol TreeNodeAccessInterface: TreeEndNodeAccessInterface, _parent_po
   @inlinable func __parent_unsafe(_: pointer) -> __parent_pointer
 }
 
-// 同名実装はない。TreeAlgorithmBaseProtocol_legacyあたりに実装が付随している
+// 同名実装はない。TreeAlgorithmBaseProtocol_ptrあたりに実装が付随している
 @usableFromInline
 package protocol TreeNodeRefAccessInterface: NullPtrInterface {
   /// 左ノードへの参照を返す

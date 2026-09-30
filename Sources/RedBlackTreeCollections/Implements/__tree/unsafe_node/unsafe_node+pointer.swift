@@ -27,7 +27,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
   nonisolated(unsafe)
-    static var nullptr: _NodePtr
+    package static var nullptr: _NodePtr
   {
     UnsafeNode.nullptr
   }

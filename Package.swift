@@ -127,6 +127,10 @@ let package = Package(
   dependencies: [
 
     .package(
+      url: "https://github.com/apple/swift-collections",
+      from: "1.6.0",
+      traits: []),
+    .package(
       url: "https://github.com/apple/swift-algorithms.git",
       from: "1.2.1")
   ],
@@ -173,6 +177,8 @@ let package = Package(
       name: "RedBlackTreeTests",
       dependencies: [
         .product(name: "Algorithms", package: "swift-algorithms"),
+//        .product(name: "ContainersPreview", package: "swift-collections"),
+        .product(name: "TrailingElementsModule", package: "swift-collections"),
         "RedBlackTreeCollections",
       ],
       swiftSettings: _settings

@@ -24,6 +24,7 @@
 ///
 /// 実際には特殊化されたものをつかっている
 public protocol _BaseNode_KeyProtocol:
+  ~Copyable,
   _BaseNode_KeyInterface
     & _BasePayloadValue_KeyInterface
     & _BaseNode_PayloadValueInterface

@@ -53,7 +53,7 @@ extension InsertNodeAtProtocol_ptr {
     if __begin_node_.__left_ != nullptr {
       __begin_node_ = __begin_node_.__left_
     }
-    //    _legacy__tree_balance_after_insert(__end_node.__left_, __child.pointee)
+    // _std__tree_balance_after_insert(__end_node.__left_, __child.pointee)
     _ptr__tree_balance_after_insert(__root, __child.pointee)
     __size_ &+= 1
   }

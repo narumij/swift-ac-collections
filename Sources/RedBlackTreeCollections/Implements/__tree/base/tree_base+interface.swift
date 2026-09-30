@@ -23,7 +23,7 @@
 #if true
   // 非常に重要なポイントなので元ソース尊重よりもわかりやすさを優先しつつ、
   // エクスキューズ的に#ifで元の名前をリスペクトする感じ？
-  public protocol _BaseNode_KeyInterface: _NodePtrType, _KeyType {
+  public protocol _BaseNode_KeyInterface: ~Copyable, _NodePtrType, _KeyType {
     /// ノードから比較用の値を取り出す。
     /// SetやMultisetではElementに該当する
     /// DictionaryやMultiMapではKeyに該当する
@@ -41,11 +41,11 @@
 #endif
 
 // 配列インデックス方式ではこれを経由する必要があるが、ポインタ方式では縛りがない
-public protocol _BaseNode_PayloadValueInterface: _NodePtrType & _PayloadValueType {
+public protocol _BaseNode_PayloadValueInterface: ~Copyable, _NodePtrType & _PayloadValueType {
   @inlinable static func __value_(_ p: _NodePtr) -> _PayloadValue
 }
 
-public protocol _BasePayloadValue_KeyInterface: _KeyType & _PayloadValueType {
+public protocol _BasePayloadValue_KeyInterface: ~Copyable, _KeyType & _PayloadValueType {
   /// 要素から比較キー値がとれること
   //  @available(*, deprecated, renamed: "__key_")
   @inlinable static func __key(_: _PayloadValue) -> _Key

@@ -22,12 +22,12 @@
 
 @usableFromInline
 package protocol TreeAlgorithmBaseProtocol_ptr:
+  ~Copyable,
   _UnsafeNodePtrType
     & NullPtrInterface
-    & TreeAlgorithmBaseInterface
 {}
 
-extension TreeAlgorithmBaseProtocol_ptr {
+extension TreeAlgorithmBaseProtocol_ptr where Self: ~Copyable {
 
   /*
 
@@ -234,12 +234,13 @@ extension TreeAlgorithmBaseProtocol_ptr {
 
 @usableFromInline
 package protocol TreeAlgorithmProtocol_ptr:
+  ~Copyable,
   _UnsafeNodePtrType
     & NullPtrInterface
     & TreeAlgorithmBaseInterface
 {}
 
-extension TreeAlgorithmProtocol_ptr {
+extension TreeAlgorithmProtocol_ptr where Self: ~Copyable {
 
   /// Effects:  Makes `__x`->`__right_` the subtree root with `__x` as its left child
   ///           while preserving in-order order.

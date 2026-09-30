@@ -116,7 +116,7 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す |
 | `updateValue(_:forKey:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
 | `updateValue(_:forKey:hint:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
-| `index(inserting:)` | ✅ | TODO | TODO | TODO | 挿入し、挿入位置のIndexを返す |
+| `index(inserting:)` | ✅ | TODO | ✅ | TODO | 挿入し、挿入位置のIndexを返す |
 | `insert(contentsOf:)` | — | ✅ | ✅ | — | 別コンテナまたはSequenceの内容を追加する |
 | `inserting(contentsOf:)` | — | ✅ | ✅ | — | 内容を追加した新しい値を返す |
 | `merge(_:)` | ✅ | — | — | ✅ | 他の集合またはキー値列を統合する |

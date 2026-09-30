@@ -8,7 +8,7 @@
 // 同一木のノードの比較であることが不変条件
 // ノードさえ生きてれば比較自体は可能だが未定義動作
 @usableFromInline
-enum _NodePathBitmap {
+package enum _NodePathBitmap {
 
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
@@ -22,7 +22,7 @@ enum _NodePathBitmap {
   case end
 
   @inlinable
-  init(_ p: _NodePtr) {
+  package init(_ p: _NodePtr) {
     self = p.___is_end ? .end : .path(p.___ptr_bitmap())
   }
 }
@@ -32,7 +32,7 @@ extension _NodePathBitmap: Comparable {}
 extension _NodePathBitmap {
   
   @inlinable
-  static func lessThan(
+  package static func lessThan(
     lhs: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
     rhs: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?)
   )

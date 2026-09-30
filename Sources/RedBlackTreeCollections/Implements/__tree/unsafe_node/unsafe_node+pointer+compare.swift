@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @inlinable
-internal func ___ptr_comp_multi(
+package func ___ptr_comp_multi(
   _ __l: UnsafeMutablePointer<UnsafeNode>,
   _ __r: UnsafeMutablePointer<UnsafeNode>
 )
@@ -70,7 +70,7 @@ internal func ___ptr_comp_multi(
 
 // ノードの高さを数える
 @inlinable
-internal func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
+package func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
   assert(!__p.___is_null, "Node shouldn't be null")
   var __h = 0
   var __p = __p
@@ -124,7 +124,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 }
 
 @inlinable
-func ___ptr_comp_bitmap(
+package func ___ptr_comp_bitmap(
   _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
 ) -> Bool {
   assert(!__l.___is_null, "Left node shouldn't be null")

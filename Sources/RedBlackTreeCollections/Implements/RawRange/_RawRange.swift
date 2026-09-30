@@ -23,10 +23,10 @@
 public struct _RawRange<Bound> {
 
   @usableFromInline
-  internal var lowerBound: Bound
+  package var lowerBound: Bound
 
   @usableFromInline
-  internal var upperBound: Bound
+  package var upperBound: Bound
 
   @inlinable
   internal init(lowerBound: Bound, upperBound: Bound) {

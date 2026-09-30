@@ -99,7 +99,7 @@ extension Result where Success == _NodeRangeExpression, Failure == SealError {
 extension _RawRangeExpression {
 
   @usableFromInline
-  func relative<T>(
+  package func relative<T>(
     start: T,
     end: T,
     bound: (Bound) -> T,
@@ -141,7 +141,7 @@ extension _RawRangeExpression {
 extension _RawRangeExpression {
 
   @inlinable
-  func map<T>(_ f: (Bound) throws -> T) rethrows -> _RawRangeExpression<T> {
+  package func map<T>(_ f: (Bound) throws -> T) rethrows -> _RawRangeExpression<T> {
     switch self {
     case .range(let from, let to):
       .range(from: try f(from), to: try f(to))
@@ -160,7 +160,7 @@ extension _RawRangeExpression {
 }
 
 @inlinable
-func sequence<T, E>(
+package func sequence<T, E>(
   _ range: _RawRangeExpression<Result<T, E>>
 ) -> Result<_RawRangeExpression<T>, E> {
   switch range {
@@ -195,7 +195,7 @@ func sequence<T, E>(
 }
 
 @inlinable
-func traverse<T, S, E>(
+package func traverse<T, S, E>(
   _ range: _RawRangeExpression<T>,
   _ f: (T) -> Result<S, E>
 ) -> Result<_RawRangeExpression<S>, E> {

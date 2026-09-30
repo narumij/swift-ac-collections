@@ -8,7 +8,7 @@
 // 同一木のノードの比較であることが不変条件
 // ノードさえ生きてれば比較自体は可能だが未定義動作
 @usableFromInline
-enum _NodeKey<Base: _BaseNode_KeyInterface>
+enum _NodeKey<Base: ~Copyable & _BaseNode_KeyInterface>
 where Base._NodePtr == UnsafeMutablePointer<UnsafeNode>, Base._Key: Comparable {
 
   case key(Base._Key)

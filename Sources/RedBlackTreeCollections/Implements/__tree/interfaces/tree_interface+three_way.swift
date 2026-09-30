@@ -46,7 +46,7 @@ package
   protocol _TreeKey_LazyThreeWayCompInterface: ~Copyable, _KeyType & _ThreeWayResultType
 {
   @inlinable
-  borrowing func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
+  borrowing func __lazy_synth_three_way_comparator(_ __lhs: borrowing _Key, _ __rhs: borrowing _Key)
     -> __compare_result
 }
 
@@ -54,5 +54,5 @@ package
 package
   protocol _TreeKey_ThreeWayCompInterface: ~Copyable, _KeyType & _ThreeWayResultType
 {
-  @inlinable borrowing func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
+  @inlinable borrowing func __comp(_ __lhs: borrowing _Key, _ __rhs: borrowing _Key) -> __compare_result
 }

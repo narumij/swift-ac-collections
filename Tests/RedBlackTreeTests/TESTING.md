@@ -73,6 +73,9 @@ _ `_NodeKey`のカバレッジとるのに、MultiSealKeyをつかってみて�
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-09-30 21:19 Claude: 新規テストファイル`TreeFoundamentalSafePtrTests.swift`を追加し、`unsafe_node+pointer+safe.swift`(`_SafePtr`/`_SealedPtr`/`SealError`/`errorMessage`)を100% (113/113)に。全体Sourcesカバレッジは90.43%→90.73%。
+  - `_SafePtr.___is_end`の`.failure`分岐(常にfalse)、`_SealedPtr`の`!=`(前回`==`しか踏んでいなかった)、`errorMessage`(ドキュメント化された8ケース・未ドキュメントの4ケースのdefaultフォールバック・`SealError`以外の`Error`型を渡した場合のフォールバック)を追加。`TreeNodeOnlyFixture`を薦めて使ったが、ほとんどはFixture無しでも書けるくらい単純なテストだった。
+  - full suite 967 passed / 0 failed。
 - 2026-09-30 21:12 Claude: ユーザーによる`TreeFoundamentalFixture`→`TreeNodeOnlyFixture`へのリネーム(`Tests/RedBlackTreeTests/Tree/Fixture/`へ移設)と、`PointerKey`/`TrackingTagKey`/`UniqueSealKey`/`MultiSealKey`という`_NodeKey<Base>`用キー戦略型の追加を確認。`TreeFoundamentalTests.swift`/`TreeFoundamentalSealTests.swift`は既に追従済みだったため、コメント中に残っていた旧名2箇所のみ`TreeNodeOnlyFixture`に修正。ビルド成功、23テストとも変化なくpass(full suite 960 passed / 0 failed)。`PointerKey`/`TrackingTagKey`/`MultiSealKey`は現時点で未使用のヘルパーで、ユーザーからは「必要になったら使えばいい」との方針を確認。
 
 ### 内部区分

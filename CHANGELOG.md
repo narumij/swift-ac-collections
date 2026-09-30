@@ -13,12 +13,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RedBlackTreeCollectionsの位置指定DSLと削除APIに関するドキュメントを追加
 - 1,600万要素での検索・削除ベンチマークと結果を追加
 - インデックス検証と遅延シーケンスに関するテストを追加
+- 4型すべてに`isEnd(_:)`(終端位置の判定)を追加
+- 4型すべてに`insert(_:hint:)`等のヒント付き挿入APIを横展開
+- Set / Dictionaryに`update(_:hint:)`を追加
+- RedBlackTreeMultiMapに`index(inserting:)`/`erase(exactly:)`を追加(Setと同様の横展開、`ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH`限定)
+- View APIのAPI対応表(API-Matrix-View.md)、`isValid`系APIの整理方針(isValid.md)を追加
 
 ### Changed
 - BoundsExpression / RangeExpressionと範囲削除APIを整理
 - インデックスの所属先と有効性の検査を強化
 - バケット確保・再利用とCopy-on-Write周辺の内部実装を整理
 - READMEを更新
+- `isValid(_ index:)`を`isElement(at:)`へ改名し、要素へアクセス可能かの判定に意味を明確化(4型共通)
+- `isValid(_ bounds: UnboundedRange/IndexRange/IndexRangeExpression)`を`containsSubrange(_:)`へ改名(4型共通)
+- Set / MultiMapの`removeSafe(at:)`を`erase(exactly:)`へ改名し、戻り値を`Bool`から削除後の`Index?`へ変更
 
 ### Fixed
 - 異なるツリーに属するインデックスや削除後の無効なインデックスを検出するよう修正
@@ -27,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - RedBlackTreeBoundExpressionの旧実装を削除
 - 重複・旧式のテストとテスト専用補助実装を整理
+- `Bound`/`BoundRangeExpression`を引数に取る`isValid(_:)`を削除(評価が常に安全なため事前判定が不要。空判定は`collection[bounds].isEmpty`で代替)
 
 ## [0.4.4] - 2026-09-24
 

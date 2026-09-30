@@ -72,6 +72,25 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(dictionary[2], "two")
       XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
     }
+
+    /// ヒント付きupdateが新規キーではnilを返し、既存キーでは旧エントリを返して値を置き換えること
+    func test_updateWithHint_returnsNilForNewKeyAndOldEntryForExistingKey() {
+      var dictionary: RedBlackTreeDictionary<Int, String> = [1: "one", 3: "three"]
+
+      let insertedWithGoodHint = dictionary.update((2, "two"), hint: dictionary.firstIndex(of: 3)!)
+      XCTAssertNil(insertedWithGoodHint)
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3])
+
+      let insertedWithBadHint = dictionary.update((4, "four"), hint: dictionary.startIndex)
+      XCTAssertNil(insertedWithBadHint)
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
+
+      let replaced = dictionary.update((2, "replacement"), hint: dictionary.endIndex)
+      XCTAssertEqual(replaced?.key, 2)
+      XCTAssertEqual(replaced?.value, "two")
+      XCTAssertEqual(dictionary[2], "replacement")
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
+    }
   #endif
 
   func test_updateValue_returnsTheReplacedValue() {

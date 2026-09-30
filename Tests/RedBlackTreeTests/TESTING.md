@@ -108,48 +108,49 @@
 
 (テスト用区分であり、ソースのフォルダレイアウトを規定するものではない）
 
-- `__tree`移植層
+#### `__tree`移植層
+
 `Sources/RedBlackTreeCollections/Implements/__tree`に配置されているもの
 
-- `__tree`基本層
+#### `__tree`基本層
 
 `__tree`移植層のうち、
 Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドが不要なもの、
 かつUnsafeMutablePointerが不要なもの
 
-- `__tree`応用層
+#### `__tree`応用層
 
 `__tree`移植層のうち、
 Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドがが必要となるもの
 かつUnsafeMutablePointerが不要なもの
 
-- 生ポ層(仮名)
+#### 生ポ層(仮名)
 
 `Sources/RedBlackTreeCollections/Implements/__tree`のうち、
 実際の挙動を実現しているもの。
 現在はUnsafeMutablePointerをベースにしている
 
-- 生メモリ層(仮名)
+#### 生メモリ層(仮名)
 
 生メモリ操作を伴うもののうち、`__tree`移植層に含まれないもの
 
-- 生バッファ層(仮名)
+#### 生バッファ層(仮名)
 
 生メモリ層のうち、木の生メモリを管理するもの
 
-- 生木層(仮名)
+#### 生木層(仮名)
 
 生メモリ層のうち、木を形成しているFacade及びその内部のもの
 
-- (なんかいい名前ください)層(仮名)
+#### (なんかいい名前ください)層(仮名)
 
 IndexやRangeやIteratorの内部に該当するもの
 
-- View層（外部）(仮名)
+#### View層（外部）(仮名)
 
 MutableSubrangeを実現しているもの
 
-- 4型層（外部）(仮名)
+#### 4型層（外部）(仮名)
 
 Set,MultiSet,MultiMap,Dictionary
 

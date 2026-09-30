@@ -11,6 +11,15 @@ final class RedBlackTreeDictionarySearchTests: RedBlackTreeTestCase {
     XCTAssertFalse(dictionary.contains(key: "c"))
   }
 
+  /// キーはユニークなので、`count(forKey:)`は存在すれば1、存在しなければ0を返す。
+  func test_countForKey_isOneWhenPresentAndZeroWhenMissing() {
+    let dictionary: RedBlackTreeDictionary<String, Int> = ["a": 1, "b": 2]
+
+    XCTAssertEqual(dictionary.count(forKey: "a"), 1)
+    XCTAssertEqual(dictionary.count(forKey: "b"), 1)
+    XCTAssertEqual(dictionary.count(forKey: "c"), 0)
+  }
+
   func test_lowerAndUpperBound_findInsertionPositionsByKey() {
     let dictionary: RedBlackTreeDictionary<Int, String> = [1: "a", 3: "c", 5: "e"]
 

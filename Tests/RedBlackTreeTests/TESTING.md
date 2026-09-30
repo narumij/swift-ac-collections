@@ -25,13 +25,8 @@
 (完了したらClaudeやCodexが完了済みの要望に移動してください）
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
-- `__tree`関連のこと生木といってましたが、正しくは原木です
-- 4型あたりは材木ですね。Viewは角材かも。
-- 前回からリファクタリングしました。確認してください
-- `_NodeKey`のカバレッジとれたら、`_NodePtrSealing`のカバレッジもお願いします
-_ `_NodeKey`のカバレッジとるのに、MultiSealKeyをつかってみてください
-- 原木のカバレッジ他にも今回のFixtureでとれそうであれば、とっておいてください
-- あとはおまかせします
+- しょぼい系（凡ミス）みつけてくれてありがとう
+- リミットだったのでこちらでテスト回しました
 
 ### 相談事項
 
@@ -73,6 +68,9 @@ _ `_NodeKey`のカバレッジとるのに、MultiSealKeyをつかってみて�
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-09-30 22:30 Claude: `RedBlackTreeDictionary.swift`(84%)を調査。`count(forKey:)`が全テストファイルを通して一度も呼ばれていなかったため、`_4_SearchTests.swift`に`test_countForKey_isOneWhenPresentAndZeroWhenMissing()`を追加(ユニークキーなので存在時1・不在時0を検証)。`erase(where:)`は`grep`で見つけにくかった(`dictionary.erase { ... }`のtrailing closure形で`_6_RemovalTests.swift`に既存)ため誤検出、実際は既にテスト済みと判明。full suite 1005 passed / 0 failed。
+- 2026-09-30 22:20 Claude: `Implements/UnsafeTreeV2/UnsafeTreeV2+KeyValue.swift`(75%)を調査。`subscript(key:)`(35-73行目)には「ダミー実装らしい、つかっちゃだめっぽい」というコメントがあるが、実際は`RedBlackTreeDictionary.subscript(key:)._modify`が`yield &__tree_[key]`経由で常時使っているため、このコメントは古い/誤りと判明(コメント自体は今回変更せず、要望欄で報告のみ)。既存テストで唯一踏んでいなかったのは`dictionary[存在しないkey] = nil`の無害な空振り分岐(`subscript(key:)._modify`のfound=false&&value=nil、NOP)だったため、`RedBlackTreeDictionary_5_InsertionTests.swift`に`test_keySubscript_assigningNilToMissingKeyIsANoOp()`を1件追加。`lookup`/`mappedValuePtr(for:default:)`/`___mapValues`/`___compactMapValues`は既存の`_7_UtilityTests.swift`等で生きている経路が確認済みのため追加テストは不要と判断。full suite 1004 passed / 0 failed。
+- 2026-09-30 22:10 Claude: `Implements/RawRange/_RawRangeExpression.swift`(77%)向けに新規テストファイル`RedBlackTreeInternal_RawRangeExpressionTests.swift`を追加。`Bound=Int`の純粋なロジック(`==`/`!=`全ケース総当たり・`map`・`relative(start:end:bound:through:)`の6ケース・`sequence`/`traverse`のResultリフト成功失敗分岐)を実木なしで検証、21テスト全てpass。`_start`/`_end<Base>(_:)`は実木の`__begin_node_`/`__end_node`を返すだけの一行実装で、4型のrange系APIから常時経由済みのため対象外とした。full suite 1003 passed / 0 failed。
 - 2026-09-30 22:00 Claude: `Implements/__tree/base/tree_base+compare.swift`(`__UniqueHelper`/`__MultiHelper`)向けに新規テストファイル`TreeFoundamentalMultiplicityTests.swift`を追加。既存の`SetBaseTests`/`MultiSetBaseTests`は`___ptr_range_comp`の成功ケースしか踏んでおらず、`___ptr_comp`本体・失敗分岐・重複キー時の`___ptr_comp_multi`タイブレークが未検証だったのを補った。`TreeNodeOnlyFixture.UniqueSealKey`/`.MultiSealKey`(以前ユーザーが追加した未使用ヘルパー)に`_BaseNode_NodeCompareProtocol`適合を追加して直接叩けるようにした。同一ノード同値判定・end境界・キー順序・半開/閉区間の上下端・多重コンテナの同値キー時の木構造タイブレーク(bitmap経由)まで15テスト追加、全てpass。full suite 982 passed / 0 failed(他はNo result、失敗なし)。`USE_INT128`分岐は既定で無効のため対象外。
 - 2026-09-30 21:42 Claude: `Implements/Misc/Message.swift`(30%)を調査。10個のメッセージ定数のうち8個(`garbagedIndex`/`invalidIndex`/`outOfBounds`/`emptyFirst`/`emptyLast`/`duplicateValue`/`alignnment`/`treeMissmatch`)は`fatalError`/`preconditionFailure`経由で生きているが、実行するには対応するpreconditionを踏んでクラッシュさせる必要があり、既に確認済みの「assert/precondition部分はデステストするしかない」方針の対象。残り2個(`outOfRange`/`keyMismatch`)はSources内呼び出しゼロで、`keyMismatch`は本体が`"TODO"`のダミー実装。この30%は現状のテスト方針(通常テストの範囲)での実質上限と判断し、通常テストは追加しない。`outOfRange`/`keyMismatch`の削除是非はユーザー判断待ちとして保留に追加。
 - 2026-09-30 21:35 Claude: `unsafe_tree+types.swift`(55.00%, 33/60)を調査。`grep`でSources全体の呼び出し元を洗った結果、この不変条件が判明: 生コードは常に`_NodeRef`を`.pointee`で`_NodePtr`に変換してから各アクセサを呼んでおり、`_NodeRef`版オーバーロード(`__payload_ptr`/`__payload_`/`__key_ptr`/`__key_`/`__mapped_value_ptr`/`__mapped_value_`の全`_NodeRef`版)は一つも直接呼ばれていない。加えて`__payload_buffer`(両オーバーロード)と`__element__ptr`も呼び出しゼロ。`_NodePtr`版オーバーロード(スカラー`__key_ptr`/`__key_`は`RedBlackTreeMultiSet.update(at:)`経由、他は各4型経由)は既存の`_5_InsertionTests.swift`等で実動作確認済みのため、生きているコードはこれ以上テストで踏めない。ペア版`__key_ptr`(`_NodePtr`)の唯一の呼び出し元は`UnsafeTreeV2+Update.swift`の`swap_key`で、これは行461の未着手機能疑いと同一の保留事項に接続する。以上より、この55%は生きているコードの実質上限と判断し、`TreeNodeOnlyFixture`用の追加テストは書かず現状のまま次の候補へ進む。full suite再実行は不要(コード変更なし)。

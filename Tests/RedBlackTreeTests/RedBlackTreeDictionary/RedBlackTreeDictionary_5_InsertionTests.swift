@@ -15,6 +15,16 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertTrue(dictionary.isEmpty)
   }
 
+  func test_keySubscript_assigningNilToMissingKeyIsANoOp() {
+    var dictionary: RedBlackTreeDictionary<Int, String> = [1: "one"]
+
+    dictionary[999] = nil
+
+    XCTAssertNil(dictionary[999])
+    XCTAssertEqual(dictionary.count, 1)
+    XCTAssertEqual(dictionary[1], "one")
+  }
+
   func test_defaultSubscript_doesNotInsertUntilMutated() {
     var dictionary = RedBlackTreeDictionary<Int, [String]>()
 

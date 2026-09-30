@@ -25,7 +25,6 @@
 (完了したらClaudeやCodexが完了済みの要望に移動してください）
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
-- この文書にテストプロジェクトの整理状況に関するサマリー項を追加して記載してほしい
 
 ### 相談事項
 
@@ -70,6 +69,7 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-01 08:00 Claude: 優先事項「テストプロジェクトの整理状況に関するサマリー項を追加してほしい」に対応。`## Current handoff`の先頭に「整理状況サマリー」サブセクションを新設し、年代順ログとは分離した上書き式のスナップショット(Test as Spec整理状況・原木層の状況・カバレッジ概況・未結線コード一覧・直近の主要修正・ツール注記)を記載。以後のセッションはこのサマリーを都度更新すること。
 - 2026-10-01 07:45 Claude: `llvm-cov`で全体の未カバー行を再集計し直したところ、旧punch-listの数字は前回セッション以降の作業を反映していないものが多いと判明。`unsafe_node+pointer+compare.swift`(旧77%表示)は実際には`___ptr_bitmap_128()`(USE_INT128無効時は呼び出し不能)以外100%済み。`UnsafeTreeV2+RawRange.swift`(旧70%)も`contains(range:pointer:)`3オーバーロード(呼び出しゼロ)以外100%済み。いずれもコード変更なし、テスト追加不要と判断。`UnsafeIterator+CopyOnWrite.swift`/`+KeyValue.swift`の`reversed()`・`keys()`/`values()`・`init(_source:tree:)`は、既知の未結線`_Reverse4`系機能と同じ系列で、Views/4型は`makeIterator()`を直接使っており、この合成レイヤーの`reversed()`/`keys()`/`values()`を経由していないため未カバー(同じ保留事項に合流)。`_MemoryLayout.swift`の`_preconditionOffsetDoesNotOverflow`/`maximumCount`は生成/copy/growの3箇所から実際に呼ばれているにもかかわらず0%表示だったため、`@inlinable`なジェネリック関数の特殊化によるllvm-cov側の計測限界(呼ばれているのに0と出る既知の類のズレ)と判断、これ以上は追わない。
 - 2026-10-01 07:20 Claude: `UnsafeTreeV2+BufferHeader.swift`(92%)を`swift test --enable-code-coverage`+`llvm-cov`で厳密に調査(Xcodeの`RunAllTests`はこの日のセッションで507件が実際に未実行なのに"0 failed"と表示される不具合を確認したため、以後のカバレッジ精査は`llvm-cov`を使う)。未カバー行は`payloadLayout`(90-92行目、呼び出しゼロ)・`__root_ptr()`(122行目、`UnsafeTreeV2.__root_ptr()`は同名メソッドを呼ばず`$0.root_ptr`に直接アクセスしているため実質デッド)・`___tracking_tag`添字の「どのバケツにも見つからない」防御的フォールバック(272行目、「CoW後はバケツ1個」という不変条件下では到達不能)の3箇所のみで、いずれもテスト対象外と判断。`payloadLayout`/`__root_ptr()`の削除是非はユーザー判断待ちとして保留に追加。コード変更なし。
 - 2026-10-01 07:05 Claude: ユーザーフィードバック「テストを先に書いて」に従い、4型の`removeAll(keepingCapacity: true)`向けに先に`_copyCount`実測テストを追加し、失敗することを確認(全4型で0→1)。その後`__tree_.count > 0`ガードを追加して修正(非空時の挙動は変更なし、空時は`ensureUnique()`/`deinitialize()`を完全にスキップ)。`swift test`873 tests / 0 failures、`swift build -c release`も健全。これで発見済みの削除系CoW問題は全て解消。
@@ -223,6 +223,25 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 長時間のセッションでは、残量 10% 付近で新しいカテゴリへの着手を止める。最後の 5% は、全体テスト、`Current handoff` の更新、次回の開始地点の明記、コミット可能な状態の確認に使う。作業量を増やすためにこの振り返り時間を使い切らないこと。
 
 ## Current handoff
+
+### 整理状況サマリー
+(このサブセクションはスナップショットとして毎回上書きしてよい。詳細な経緯は下の年代順ログを参照)
+
+- **Test as Spec 整理**: Set・MultiSet・Dictionary・MultiMap は型別フォルダで連番 Test as Spec 化が完了。`RedBlackTreeView/`(`RedBlackTreeMappedValuesView`・`RedBlackTreeKeyValueRangeView`・`RedBlackTreeKeyOnlyRangeView`)も同様に連番整理済み。`BoundExpression` も4型とも `_16_BoundExpressionTests.swift` へ移管済み。
+- **原木層**: `Tree/Fixture/TreeNodeOnlyFixture.swift`(実ポインタ`_ptr`系プロトコルに直接適合するFixture)で`unsafe_tree+algorithm`・`unsafe_node+pointer+*`・`tree_base+compare`(`__UniqueHelper`/`__MultiHelper`)等を直接テスト中。バランス・削除の核心アルゴリズムは実質的に高カバレッジ。
+- **カバレッジ**: 2026-10-01時点で`Sources/RedBlackTreeCollections`全体は`swift test --enable-code-coverage`+`llvm-cov`基準で約90%。残る未カバー行の大半は「未結線/削除判断待ちコード」に集約されている(次項)。
+- **未結線・削除判断待ちコード一覧**(いずれもSources内で呼び出しゼロと確認済み。削除するかテストを書くかはユーザー判断待ち):
+  - `Implements/Iterator/UnsafeIterator/UnsafeIterator+Reverse4.swift`(`_Reverse4`)、および同系列の`UnsafeIterator+CopyOnWrite.swift`の`reversed()`/`init(_source:tree:)`・`+KeyValue.swift`の`keys()`/`values()`
+  - `Implements/UnsafeTreeV2/UnsafeTreeV2+Update.swift`(`swap_key`/`swap_mapped_value`)
+  - `Implements/Misc/Message.swift`の`outOfRange`/`keyMismatch`
+  - `UnsafeTreeV2+BufferHeader.swift`の`payloadLayout`/`__root_ptr()`
+  - `RawRange/UnsafeTreeV2+RawRange.swift`の`contains(range:pointer:)`(3オーバーロード)
+  - `tree_basic+tag.swift`の`_TrackingTag.retire`
+  - `RedBlackTreeMappedValuesView._isdentical(to:)`
+- **直近の主要な修正**(2026-10-01): `RedBlackTreeMultiMap.index(inserting:)`が`__insert_unique`を誤って呼んでいた実バグを修正。「削除系メソッドは空/未発見でもトラップせずに無駄なCoWを起こしてはいけない」という原則の横展開で、`erase(exactly:)`・両View系列・4型`popFirst`/`popLast`等・`removeAll(keepingCapacity:)`の計10箇所超を修正。
+- **ツール注記**: XcodeのMCP `RunAllTests`が実行漏れを"0 failed"と誤表示する不具合を確認済み。全体テストの合否は`swift test`(CLI)、カバレッジは`swift test --enable-code-coverage`+`xcrun llvm-cov`を正とする。
+
+### 年代順ログ
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。旧 `set` フォルダの Swift テストは残っていない。
 - 旧 `set` フォルダにあった SetAlgebra、reserve-capacity、corner-case、bidirectional、removal、extended と巨大な `SetTests.swift` は監査・整理済み。公開仕様は連番へ、SetAlgebra stress、COW、pointer、performance、固定 seed の fuzz、removal stress、removal internal、raw index validity は型別 `_98`、互換仕様は型別 compatibility file へ移管した。再現不能なランダムテストは固定 seed fuzz で置換した。index-based range view は `_17_RangeViewTests.swift`、`elements(in:)` の現行要素範囲ビュー仕様は `_18_ElementRangeTests.swift`、参照型要素の `insert` / `update` identity は `_5_InsertionTests.swift`、現行 `filter` の戻り型は `_1_SequenceTests.swift` で仕様化している。

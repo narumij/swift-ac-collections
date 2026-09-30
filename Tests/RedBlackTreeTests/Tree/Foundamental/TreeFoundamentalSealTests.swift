@@ -11,7 +11,7 @@ import XCTest
 @available(anyAppleOS 26.0, *)
 final class TreeFoundamentalSealTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   
-  typealias _SealTestBase = TreeNodeOnlyFixture.SealKey
+  typealias _SealTestBase = TreeNodeOnlyFixture.UniqueSealKey
 
   func makeFixture() -> TreeNodeOnlyFixture {
     .makeEmpty()

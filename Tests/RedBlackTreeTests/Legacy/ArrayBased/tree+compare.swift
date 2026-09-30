@@ -48,14 +48,14 @@
   }
 
   @usableFromInline
-  protocol CompareBothProtocol_std: _TreeNode_PtrCompInterface, _TreeNode_PtrCompUniqueInterface,
-    _TreeNode_PtrCompMultiInterface, NodeBitmapProtocol_std
+  protocol CompareBothProtocol_legacy: _TreeNode_PtrCompInterface, _TreeNode_PtrCompUniqueInterface,
+    _TreeNode_PtrCompMultiInterface, NodeBitmapProtocol_legacy
   {
     var isMulti: Bool { get }
     func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
   }
 
-  extension CompareBothProtocol_std {
+  extension CompareBothProtocol_legacy {
     @inlinable
     @inline(__always)
     internal func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool {
@@ -91,9 +91,9 @@
   }
 
   @usableFromInline
-  protocol CompareMultiProtocol_std: TreeNodeAccessInterface & RootInterface & EndInterface {}
+  protocol CompareMultiProtocol_legacy: TreeNodeAccessInterface & RootInterface & EndInterface {}
 
-  extension CompareMultiProtocol_std {
+  extension CompareMultiProtocol_legacy {
 
     // ノードの高さを数える
     @inlinable
@@ -153,11 +153,11 @@
   }
 
   @usableFromInline
-  protocol NodeBitmapProtocol_std: _TreeNode_PtrCompBitmapInterface & TreeNodeAccessInterface
+  protocol NodeBitmapProtocol_legacy: _TreeNode_PtrCompBitmapInterface & TreeNodeAccessInterface
       & RootInterface & EndInterface
   {}
 
-  extension NodeBitmapProtocol_std {
+  extension NodeBitmapProtocol_legacy {
 
     /// leftを0、rightを1、末端を1とし、ルートから左詰めした結果を返す
     ///

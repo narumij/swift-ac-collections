@@ -41,7 +41,7 @@ extension RemoveProtocol_ptr {
       __begin_node_ = __r
     }
     __size_ &-= 1
-    // _std__tree_remove(__end_node.__left_, __ptr)
+    // _legacy__tree_remove(__end_node.__left_, __ptr)
     _ptr__tree_remove(__root, __ptr)
     return __r
   }

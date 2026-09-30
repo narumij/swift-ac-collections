@@ -26,7 +26,7 @@
 import Foundation
 
 @usableFromInline
-protocol RemoveProtocol_std:
+protocol RemoveProtocol_legacy:
   TreeNodeAccessInterface
     & TreeAlgorithmInterface
     & BeginNodeInterface
@@ -34,7 +34,7 @@ protocol RemoveProtocol_std:
     & SizeInterface
 {}
 
-extension RemoveProtocol_std {
+extension RemoveProtocol_legacy {
 
   @inlinable
   @inline(__always)

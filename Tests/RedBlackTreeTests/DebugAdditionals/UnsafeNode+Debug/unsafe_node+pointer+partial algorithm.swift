@@ -6,6 +6,8 @@
 //
 
 #if DEBUG
+  // 多分、該当関数の多重化作業のときの不採用コードだとおもう
+  // TODO: 依存確認して、可能なら削除する
   @testable import RedBlackTreeCollections
 
   /// Returns:  pointer to a node which has no children

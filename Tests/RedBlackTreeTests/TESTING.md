@@ -53,6 +53,8 @@
 - Test as SpecについてはSources/RedBlackTreeCollections/Documentation/Quality-Checklist.mdと照らし合わせること
 - テストコード生成時はTests/RedBlackTreeTests/Fixtures.mdを参照し、フィードバックすること
 - 内部テストをどのように整理するかについては引き続き検討中
+- Legacyの使い方に関して、使用してるプロトコル自体がLegacyなので、Sourcesに配置されている基本層のテストには使えないと思う
+- 基本層のテストには専用のFixture新設が望ましい
 
 ### 停止条件
 

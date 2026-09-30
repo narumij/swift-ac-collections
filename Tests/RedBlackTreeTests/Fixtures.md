@@ -298,7 +298,7 @@ Legacy は unused を意味しない。現在も `Legacy/ArrayBasedTests` から
 
 主な実装:
 
-- `TreeAlgorithmBaseProtocol_std`
+- `TreeAlgorithmBaseProtocol_legacy`
 - `TreeNodeAccessInterface`
 - `RootInterface`
 - `EndNodeProtocol`

@@ -88,7 +88,7 @@
 /// print(set[.find(2)]) // -> nil (not found)
 /// ```
 ///
-/// - Important: `RedBlackTreeDictionary` is not thread-safe.
+/// - Important: `RedBlackTreeSet` is not thread-safe.
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {
 
@@ -235,7 +235,7 @@ extension RedBlackTreeSet {
     return (__inserted, __inserted ? newMember : Base.__payload_(__r))
   }
 
-  /// Inserts the given element into the set unconditionally.
+  /// Inserts the given element, replacing an existing equivalent element if one is already present.
   ///
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
@@ -381,7 +381,7 @@ extension RedBlackTreeSet {
 
   /// Removes all members from the set.
   ///
-  /// - Complexity: O(1)
+  /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity && __tree_.count > 0 {

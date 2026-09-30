@@ -24,10 +24,10 @@
 
 extension RedBlackTreeMultiMap {
 
-  /// Returns a boolean value indicating whether this set is identical to
+  /// Returns a Boolean value indicating whether this multimap is identical to
   /// `other`.
   ///
-  /// Two set values are identical if there is no way to distinguish between
+  /// Two multimap values are identical if there is no way to distinguish between
   /// them.
   ///
   /// For any values `a`, `b`, and `c`:
@@ -48,10 +48,10 @@ extension RedBlackTreeMultiMap {
   /// // Prints true
   /// ```
   ///
-  /// Comparing sets this way includes comparing (normally) hidden
-  /// implementation details such as the memory location of any underlying set
-  /// storage object. Therefore, identical sets are guaranteed to compare equal
-  /// with `==`, but not all equal sets are considered identical.
+  /// Comparing multimaps this way includes comparing (normally) hidden
+  /// implementation details such as the memory location of any underlying multimap
+  /// storage object. Therefore, identical multimaps are guaranteed to compare equal
+  /// with `==`, but not all equal multimaps are considered identical.
   ///
   /// - Performance: O(1)
   @inlinable

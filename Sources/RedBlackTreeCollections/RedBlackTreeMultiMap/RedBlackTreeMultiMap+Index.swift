@@ -266,7 +266,7 @@
     // remove(at:)では世代違いをトラップするので、isValidチェックを2回行うことになるので。
     // ただ、オーバーフローで一周した場合への対策はなにもない
 
-    /// Removes the element at the given index of the set.
+    /// Removes the key-value pair at the given index of the multimap.
     ///
     /// - Complexity: Amortized O(1)
     @inlinable

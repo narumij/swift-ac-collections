@@ -222,7 +222,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// Inserts the given element in the set if it is not already present.
+  /// Inserts the given element into the multiset, including when an equivalent element is already present.
   ///
   /// - Complexity: O(log *n*)
   @inlinable
@@ -361,9 +361,9 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// Removes all members from the set.
+  /// Removes all elements from the multiset.
   ///
-  /// - Complexity: O(1)
+  /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
     if keepCapacity && __tree_.count > 0 {

@@ -24,10 +24,10 @@
 
 extension RedBlackTreeDictionary {
 
-  /// Returns a boolean value indicating whether this set is identical to
+  /// Returns a Boolean value indicating whether this dictionary is identical to
   /// `other`.
   ///
-  /// Two set values are identical if there is no way to distinguish between
+  /// Two dictionary values are identical if there is no way to distinguish between
   /// them.
   ///
   /// For any values `a`, `b`, and `c`:
@@ -48,10 +48,10 @@ extension RedBlackTreeDictionary {
   /// // Prints true
   /// ```
   ///
-  /// Comparing sets this way includes comparing (normally) hidden
-  /// implementation details such as the memory location of any underlying set
-  /// storage object. Therefore, identical sets are guaranteed to compare equal
-  /// with `==`, but not all equal sets are considered identical.
+  /// Comparing dictionaries this way includes comparing (normally) hidden
+  /// implementation details such as the memory location of any underlying dictionary
+  /// storage object. Therefore, identical dictionaries are guaranteed to compare equal
+  /// with `==`, but not all equal dictionaries are considered identical.
   ///
   /// - Performance: O(1)
   @inlinable

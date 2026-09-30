@@ -22,7 +22,7 @@
 
 extension RedBlackTreeMultiMap {
 
-  /// Creates an empty set with preallocated space for at least the specified number of elements.
+  /// Creates an empty multimap with preallocated space for at least the specified number of key-value pairs.
   @inlinable
   public init(minimumCapacity: Int) {
     self.init(__tree_: .create(minimumCapacity: minimumCapacity))

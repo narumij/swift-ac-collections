@@ -108,8 +108,7 @@
     /// - Important: 削除後は、subrangeのインデックスが無効になります。
     /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
     ///     range must be valid indices of the collection.
-    /// - Returns: The key-value pair that correspond to `index`.
-    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
+    /// - Complexity: O(*m*), where *m* is the size of `bounds`.
     @inlinable
     public mutating func removeSubrange<R: RangeExpression>(
       _ bounds: R

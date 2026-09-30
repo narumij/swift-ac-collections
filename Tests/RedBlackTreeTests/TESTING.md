@@ -25,8 +25,10 @@
 (完了したらClaudeやCodexが完了済みの要望に移動してください）
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
+- `_NodeKey`のカバレッジとれたら、`_NodePtrSealing`のカバレッジもお願いします
 - 前回からリファクタリングしました。確認してください
 - あとはおまかせします
+- `__tree`関連のこと生木といってましたが、正しくは原木です
 
 ### 相談事項
 
@@ -123,6 +125,7 @@ Set,MultiSet,MultiMap,Dictionary
 
 ### 用語
 
+原木 -> `__tree`
 生木 -> UnsafeTreeV2
 生バッファ -> RawBufferのソースファイル群
 

@@ -6,29 +6,14 @@ import XCTest
   import RedBlackTreeCollections
 #endif
 
-private typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-
-/// `_NodeKey<Base>`用の最小の`Base`。ノードにpayloadが無いため、
-/// テスト内で挿入時に設定した`___recycle_count`をキーとして使う。
-///
-/// `___tracking_tag`は使わない: `.end`以外は先頭から0始まりの連番(=保管スロット番号)
-/// であることが不変条件のため、重複キーの再現などテストの都合で自由に書き換えてはならない。
-/// `___recycle_count`にはそのような制約が無いため、こちらをキー代わりに使う。
-private struct _SealTestBase: _BaseNode_KeyInterface {
-  typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-  typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
-  typealias _Key = Int
-  static func __get_value(_ p: _NodePtr) -> Int {
-    Int(p.pointee.___recycle_count)
-  }
-}
-
 /// `Implements/__tree/unsafe_node/Seal/_NodePathBitmap.swift`と`_NodeKey.swift`のテスト。
 /// `TreeFoundamentalFixture`で実ポインタの木を作り、`___recycle_count`をキー代わりに使う。
 @available(anyAppleOS 26.0, *)
-final class TreeFoundamentalSealTests: RedBlackTreeTestCase {
+final class TreeFoundamentalSealTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
+  
+  typealias _SealTestBase = TreeNodeOnlyFixture.SealKey
 
-  func makeFixture() -> TreeFoundamentalFixture {
+  func makeFixture() -> TreeNodeOnlyFixture {
     .makeEmpty()
   }
 
@@ -36,7 +21,7 @@ final class TreeFoundamentalSealTests: RedBlackTreeTestCase {
   /// BST位置に挿入する。`insertOrder`で挿入順を、`keyOf`でキー値の割り当てを制御できる。
   /// 既定ではキー値もスロット番号と同じ(0..<count)になる。
   fileprivate func buildTree(
-    _ fixture: inout TreeFoundamentalFixture, end: _NodePtr, count: Int,
+    _ fixture: inout TreeNodeOnlyFixture, end: _NodePtr, count: Int,
     insertOrder: [Int]? = nil,
     keyOf: (Int) -> Int = { $0 }
   ) {
@@ -78,7 +63,7 @@ final class TreeFoundamentalSealTests: RedBlackTreeTestCase {
     }
   }
 
-  fileprivate func find(_ fixture: inout TreeFoundamentalFixture, end: _NodePtr, key: Int) -> _NodePtr
+  fileprivate func find(_ fixture: inout TreeNodeOnlyFixture, end: _NodePtr, key: Int) -> _NodePtr
   {
     var cur = end.__left_
     while cur != .nullptr {
@@ -170,7 +155,7 @@ final class TreeFoundamentalSealTests: RedBlackTreeTestCase {
     }
 
     switch _NodeKey<_SealTestBase>(root) {
-    case .key(let k): XCTAssertEqual(k, Int(root.pointee.___recycle_count))
+    case .key(let k): XCTAssertEqual(k, root.pointee.___recycle_count)
     case .end: XCTFail("実ノードは.keyになるはず")
     }
 

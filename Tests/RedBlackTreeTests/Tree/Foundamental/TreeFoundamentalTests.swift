@@ -13,7 +13,7 @@ import XCTest
 @available(anyAppleOS 26.0, *)
 final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
-  func makeFixture() -> TreeFoundamentalFixture {
+  func makeFixture() -> TreeNodeOnlyFixture {
     .makeEmpty()
   }
 
@@ -97,7 +97,7 @@ final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   /// BST比較挿入(+リバランス)を行う。値の対応は`values`辞書で管理する
   /// (`UnsafeNode`自体にはpayloadが無いため)。
   fileprivate func insert(
-    _ fixture: inout TreeFoundamentalFixture,
+    _ fixture: inout TreeNodeOnlyFixture,
     values: inout [_NodePtr: Int],
     end: _NodePtr,
     nodeIndex: Int,

@@ -209,6 +209,34 @@ import XCTest
         XCTAssertTrue(__tree_invariant(__root))
       }
     }
+
+    /// 3要素の正しいRBTは挿入順に関わらず一意の形(黒の根=中央値、赤の葉2つ=最小値・最大値)になる。
+    /// この形になっていることは、単純な追加(回転なし)では作れないため、
+    /// balance_after_insertが実際に回転を行ったことの間接的な証拠になる。
+    func testBalancing1_rotationProducesTheUniqueThreeNodeShape() throws {
+      for order in [[1, 2, 3], [3, 2, 1], [2, 1, 3], [2, 3, 1]] {
+        clear()
+        __values = []  // clear()は__nodesのみリセットするため、__valuesは明示的に揃える
+        for v in order {
+          XCTAssertTrue(__insert_unique(v).__inserted)
+          XCTAssertTrue(__tree_invariant(__root))
+        }
+
+        XCTAssertEqual(__value_(__root), 2, "order=\(order)")
+        XCTAssertTrue(__is_black_(__root), "order=\(order)")
+
+        let left = __left_(__root)
+        let right = __right_(__root)
+        XCTAssertEqual(__value_(left), 1, "order=\(order)")
+        XCTAssertEqual(__value_(right), 3, "order=\(order)")
+        XCTAssertFalse(__is_black_(left), "order=\(order)")
+        XCTAssertFalse(__is_black_(right), "order=\(order)")
+        XCTAssertEqual(__left_(left), .nullptr, "order=\(order)")
+        XCTAssertEqual(__right_(left), .nullptr, "order=\(order)")
+        XCTAssertEqual(__left_(right), .nullptr, "order=\(order)")
+        XCTAssertEqual(__right_(right), .nullptr, "order=\(order)")
+      }
+    }
   }
 
   final class TreeTests0_10_20: TreeFixture0_10_20 {

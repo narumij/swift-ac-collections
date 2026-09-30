@@ -361,11 +361,14 @@ Array-based な完全な tree algorithm fixture。
 
 pointer-based test の共通 harness。
 
-### `DebugAdditionals`
+### `RedBlackTreeTestSupport` と `DebugAdditionals` の境界
 
-Fixtureそのものではなく、現行 production type にテスト・デバッグ用能力を追加する support layer。
+両方とも「Fixtureそのものではなく、既存 production type へテスト用の能力を追加する extension 群」という点で似ているため、役割が近く見える。境界は「どちらの木の実装を対象にしているか」で分ける。
 
-主な例:
+- `RedBlackTreeTestSupport`: 型の公開API(`Bound`/`Index`/`containsSubrange`等)、一部の`package`公開された内部API(`___tree_invariant()`等)、または Legacy Array-based 層(`_TrackingTag`/`_PointerIndexRef`、実ポインタを持たない安全な参照実装)向けの小さなアクセサを土台にした、連番Test as Spec本体やLegacyテストが広く再利用するヘルパー。命名・粒度に一定の規律を持たせる。
+- `DebugAdditionals`: 現行の生木(`UnsafeTreeV2`/`UnsafeMutablePointer`ベースの実実装)を`@testable`前提で直接操作するブートストラップ・デバッグ用ヘルパー。`_TrackingTag`を使う場合もあるが、それは`__retrieve_`等で実ポインタへ変換するための橋渡しとしてであり、対象は常に生木側。厳密な重複排除は求めず、Fixtureの一部またはゴミ置き場的な位置づけで良い。
+
+主な例(`DebugAdditionals`側):
 
 - `UnsafeTreeV2` testing helpers
 - node dump
@@ -373,7 +376,7 @@ Fixtureそのものではなく、現行 production type にテスト・デバ�
 - pointer compare / distance
 - `RedBlackTreeSet.___applyFixture`
 
-`RedBlackTreeTestSupport` と一部役割が近いため、今後境界を再整理する余地がある。
+新規ヘルパーを追加するときは、対象が現行の生木(`UnsafeTreeV2`)かLegacy Array-based層かで配置先を判断する。
 
 ## Fixture selection guideline
 

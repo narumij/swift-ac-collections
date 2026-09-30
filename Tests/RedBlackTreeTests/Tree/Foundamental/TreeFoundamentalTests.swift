@@ -7,7 +7,7 @@ import XCTest
   import RedBlackTreeCollections
 #endif
 
-/// `TreeFoundamentalFixture`を使った、現行の生木アルゴリズム(`_ptr`系プロトコル)への直接テスト。
+/// `TreeNodeOnlyFixture`を使った、現行の生木アルゴリズム(`_ptr`系プロトコル)への直接テスト。
 /// `Legacy/ArrayBased`は`_std`系(独立した配列実装)であり、Sourcesが実際に使う`_ptr`系
 /// プロトコルとは別物なので、この基本層の検証には使えない。
 @available(anyAppleOS 26.0, *)

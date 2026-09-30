@@ -73,6 +73,8 @@ _ `_NodeKey`のカバレッジとるのに、MultiSealKeyをつかってみて�
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-09-30 21:12 Claude: ユーザーによる`TreeFoundamentalFixture`→`TreeNodeOnlyFixture`へのリネーム(`Tests/RedBlackTreeTests/Tree/Fixture/`へ移設)と、`PointerKey`/`TrackingTagKey`/`UniqueSealKey`/`MultiSealKey`という`_NodeKey<Base>`用キー戦略型の追加を確認。`TreeFoundamentalTests.swift`/`TreeFoundamentalSealTests.swift`は既に追従済みだったため、コメント中に残っていた旧名2箇所のみ`TreeNodeOnlyFixture`に修正。ビルド成功、23テストとも変化なくpass(full suite 960 passed / 0 failed)。`PointerKey`/`TrackingTagKey`/`MultiSealKey`は現時点で未使用のヘルパーで、ユーザーからは「必要になったら使えばいい」との方針を確認。
+
 ### 内部区分
 
 (テスト用区分であり、ソースのフォルダレイアウトを規定するものではない）

@@ -89,14 +89,18 @@ extension TreeNodeOnlyFixture {
     }
   }
   
-  enum UniqueSealKey: _UnsafeNodePtrType & _BaseNode_KeyInterface & UniqueMultiplicity {
+  enum UniqueSealKey: _UnsafeNodePtrType & _BaseNode_KeyInterface & UniqueMultiplicity
+    & _BaseNode_NodeCompareProtocol
+  {
     typealias _Key = UnsafeNode.Seal
     static func __get_value(_ p: _NodePtr) -> UnsafeNode.Seal {
       p.pointee.___recycle_count
     }
   }
-  
-  enum MultiSealKey: _UnsafeNodePtrType & _BaseNode_KeyInterface & MultiMultiplicity {
+
+  enum MultiSealKey: _UnsafeNodePtrType & _BaseNode_KeyInterface & MultiMultiplicity
+    & _BaseNode_NodeCompareProtocol
+  {
     typealias _Key = UnsafeNode.Seal
     static func __get_value(_ p: _NodePtr) -> UnsafeNode.Seal {
       p.pointee.___recycle_count

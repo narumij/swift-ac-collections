@@ -39,7 +39,6 @@ _ `_NodeKey`のカバレッジとるのに、MultiSealKeyをつかってみて�
 
 ### 連絡事項
 
-- API-Matrix-View.mdも追加されました
 - ABC, convenience, memoizeは温存
 - 実験的なテストコード書く場合、人もAIもまずEtcTests.swiftまたはDeathTest.swiftに書くこと
 - 5時間上限または週間利用上限で止まるとき、それまでの作業の感想も教えて欲しい
@@ -57,11 +56,8 @@ _ `_NodeKey`のカバレッジとるのに、MultiSealKeyをつかってみて�
 - Test as SpecについてはSources/RedBlackTreeCollections/Documentation/Quality-Checklist.mdと照らし合わせること
 - テストコード生成時はTests/RedBlackTreeTests/Fixtures.mdを参照し、フィードバックすること
 - 内部テストをどのように整理するかについては引き続き検討中
-- Legacyの使い方に関して、使用してるプロトコル自体がLegacyなので、Sourcesに配置されている基本層のテストには使えないと思う
-- 基本層のテストには専用のFixture新設が望ましい
-- 基本層は実は多重化されていて、mixinで使うものとポインタに対して単独でつかえるものとがある
-- 基本層という定義自体がまだ曖昧なので、.mdを新設して整備して認識合わせするのもあり
-- TreeFoundamentalFixtureを基本層試験に使ってみてください
+- 原木のテストはやれるだけやって構わない
+- 生バッファのテストもやれるだけやって構わない
 
 ### 停止条件
 
@@ -133,6 +129,7 @@ Set,MultiSet,MultiMap,Dictionary
 原木 -> `__tree`
 生木 -> UnsafeTreeV2
 生バッファ -> RawBufferのソースファイル群
+材木 -> 4型
 
 <!-- ユーザー記入欄ここまで -->
 

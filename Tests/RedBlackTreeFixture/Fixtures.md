@@ -16,9 +16,15 @@ Fixture は SUT (System Under Test) とは別の概念として扱う。
 
 ### `RedBlackTreeFixture`
 
+> **注記(2026-10-03)**: `RedBlackTreeFixture`という名前は現在2つの別物を指す。
+> - 本項が説明する protocol(`RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeFixture.swift`)
+> - 新設の独立ターゲット`RedBlackTreeFixture`(`Tests/RedBlackTreeFixture/`、将来ターゲット横断で共有するFixtureの置き場。現時点ではプレースホルダーのみ)
+>
+> 同名だが別スコープ(別SwiftPMターゲット)のため衝突はしない。新規追加時は混同しないこと。
+
 場所:
 
-`RedBlackTreeTestSupport/RedBlackTreeFixture.swift`
+`RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeFixture.swift`
 
 4つの公開コレクション型を共通に扱うための軽量な Fixture protocol。
 
@@ -47,7 +53,7 @@ Fixture は SUT (System Under Test) とは別の概念として扱う。
 
 場所:
 
-`RedBlackTreeTestSupport/RedBlackTreeFixture.swift`
+`RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeFixture.swift`
 
 DEBUG ビルドで、4つの公開コレクションを現行の `UnsafeTreeV2` 実装へ接続する内部向け Fixture protocol。
 

@@ -30,8 +30,8 @@
 (完了したらClaudeやCodexが完了済みの要望に移動してください）
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
-- 途中で止まっているCI問題の続き(Codex)
-- 原木カバレッジはCodexが手放すまでCodexの担当。Claudeは原木カバレッジ以外をやること
+- Fixtureの変化を把握し、Fixture.mdに反映すること(Claude)
+- 原木はテストターゲット分離すること(Codex)
 
 ### 相談事項
 

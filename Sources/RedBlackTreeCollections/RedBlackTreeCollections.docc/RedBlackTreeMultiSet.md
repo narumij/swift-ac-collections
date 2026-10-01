@@ -12,3 +12,6 @@
 - ``RedBlackTreeMultiSet/init(arrayLiteral:)``
 - ``RedBlackTreeMultiSet/init(from:)``
 
+### Related Guides
+
+- <doc:CommonOperations>

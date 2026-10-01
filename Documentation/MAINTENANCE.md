@@ -20,11 +20,11 @@
 
 ### 優先事項
 
-- `RedBlackTreeMultiSet`、`RedBlackTreeDictionary`、`RedBlackTreeMultiMap`へ追加したイニシャライザTopicsのCI検証結果を確認する
+- 追加したイニシャライザ、共通操作ガイド、View TopicsのCI検証結果を確認する
 
 ### 相談事項
 
-- DocCの手動Topicsをイニシャライザだけに限定するか、検索・挿入・削除・範囲操作などにも広げるか
+- DocCの手動Topicsは`API-Matrix.md`と`API-Matrix-View.md`を基準に、検索・挿入・削除・範囲操作などへ広げる。4型の具象型ページだけでなく、共通protocolのDefault ImplementationsやViewへの導線をどこへ置くかは引き続き検討する
 
 ### 連絡事項
 
@@ -39,12 +39,13 @@
 
 ### 保留中の判断・懸念
 
-- Set以外の3型について、イニシャライザ以外のDocC自動分類も手動Topicsへ広げる必要があるか確認する
+- API Matrix上の多くの共通APIが、各型のDocCでは`Default Implementations`配下に入る。今回追加した共通操作ガイドから各操作の個別シンボルへ、さらに細かいリンクを追加する必要があるかは公開結果を見て判断する
 
 ### 完了済みの要望
 
 (ユーザーが確認したら各項目を整理します)
 
+- 2026-10-01 12:43 JST Codex (GPT-5): `API-Matrix.md`と`API-Matrix-View.md`を基準にDocCの導線を整備。4型に共通する検索、挿入・更新、削除、Range/Boundの意味を説明する`CommonOperations.md`を追加し、モジュールページと4型ページからリンクした。KeyOnly Range View、KeyValue Range View、MappedValues Viewには、基本状態、Index検証、参照・更新、削除、走査・比較をMatrixの区分に沿って手動Topics化した。
 - 2026-10-01 12:36 JST Codex (GPT-5): `main`のCIによるGitHub Pages初回公開が成功し、常設URLから閲覧できることをユーザーが確認した。
 - 2026-10-01 12:27 JST Codex (GPT-5): ドキュメントメンテナンス専用の作業連絡文書として、この`Documentation/MAINTENANCE.md`を作成した。
 
@@ -133,4 +134,4 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
-- 2026-10-01 12:36 JST Codex (GPT-5): 公開済みのRelease版DocC JSONとソース宣言を照合し、MultiSet 7件、Dictionary 9件、MultiMap 8件の明示的な公開イニシャライザを手動Topicsへ追加した。Sequence、Collection、RangeExpressionのオーバーロードは公開済みJSONからDocCの識別子を確認した。全24リンクが公開済みDocC上でHTTP 200になることを確認。ローカルのSwiftPM実行は環境の`sandbox-exec: sandbox_apply: Operation not permitted`で開始できないため、最終的な`--warnings-as-errors`検証はCI結果を確認する。
+- 2026-10-01 12:43 JST Codex (GPT-5): 公開済みRelease版DocC JSON、`API-Matrix.md`、`API-Matrix-View.md`を照合し、3型のイニシャライザTopicsに加えて共通操作ガイドと3種類のView Topicsを追加した。照合中にDictionaryの`insert(key:value:hint:)`と`update(_:hint:)`のMatrix同期漏れを修正。Viewのリンク識別子は具象ページおよびDefault Implementationsの公開JSONで確認した。ローカルのSwiftPM実行は環境のsandboxエラーで開始できないため、最終的な`--warnings-as-errors`検証はCI結果を確認する。

@@ -73,6 +73,8 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-01 12:43 JST Codex (GPT-5): API Matrix照合を踏まえたDocCナビゲーション整備として、4型共通の検索・挿入更新・削除・Range/Boundを説明する`CommonOperations.md`と、KeyOnly Range View・KeyValue Range View・MappedValues Viewの手動Topicsを追加。モジュールページと4型ページから共通ガイドへリンクし、View Topicsは`API-Matrix-View.md`の基本状態・Index・更新・削除・走査比較の区分に合わせた。公開済みRelease版DocCの具象ページおよびDefault Implementations JSONからシンボルリンクを確認。詳細は`Documentation/MAINTENANCE.md`へ記録した。
+- 2026-10-01 Codex (GPT-5): DocC Topics整備に先立ち、公開済みRelease版DocCの4型ページを`API-Matrix.md`および`API-Matrix-View.md`と照合。通常構成で公開されているDictionaryの`insert(key:value:hint:)`がMatrixでは「検討」、`update(_:hint:)`がDictionary非対応となっていた同期漏れを発見し、実装の条件コンパイル範囲も確認した上で両方をDictionaryの✅へ修正。共通APIの多くがDocC上では各型の`Default Implementations`配下に分類されるため、具象型へ全件列挙するか共通protocol/View側のTopicsを整備するかは`Documentation/MAINTENANCE.md`へ継続判断として記録した。
 - 2026-10-01 12:36 JST Codex (GPT-5): Setで行ったDocCイニシャライザTopics整備をMultiSet、Dictionary、MultiMapへ横展開。公開済みRelease版DocC JSONとソース宣言を照合し、明示的な公開イニシャライザをそれぞれ7件、9件、8件掲載するsymbol extension Markdownを追加した。オーバーロード識別子を含む全24リンクが公開済みDocC上でHTTP 200になることを確認。ローカルDocC生成は実行環境のSwiftPM sandboxエラーで開始できず、最終検証はCI待ち。ドキュメント作業の詳細は`Documentation/MAINTENANCE.md`へ記録した。
 - 2026-10-01 12:27 JST Codex (GPT-5): ドキュメントメンテナンス用の作業連絡・判断基準として`Documentation/MAINTENANCE.md`を新設。日英同期、コメントドック、API Matrix、CHANGELOG、Release構成でのDocC生成、CI/Pages、検証チェックリスト、短く保つCurrent handoffを整理した。
 - 2026-10-01 Codex (GPT-5): DocC生成時のSwiftPMビルド構成を確認。`generate-documentation`/`preview-documentation`は構成未指定ではDebugとなるため、CIと日英READMEのローカル生成・プレビュー例へSwiftPMグローバルオプション`-c release`を追加し、公開ドキュメントのシンボル抽出をRelease構成へ統一した。

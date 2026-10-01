@@ -13,3 +13,6 @@
 - ``RedBlackTreeMultiMap/init(dictionaryLiteral:)``
 - ``RedBlackTreeMultiMap/init(from:)``
 
+### Related Guides
+
+- <doc:CommonOperations>

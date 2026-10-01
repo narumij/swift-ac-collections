@@ -46,8 +46,8 @@ extension RedBlackTreeDictionary {
     }
 
     @inline(__always) _modify {
-      //      yield &__tree_[key, default: defaultValue]
-      yield &__tree_.mappedValuePtr(for: key, default: defaultValue).pointee
+      yield &__tree_[key, default: defaultValue]
+      //      yield &__tree_.mappedValuePtr(for: key, default: defaultValue).pointee
     }
 
     //    @inline(__always)

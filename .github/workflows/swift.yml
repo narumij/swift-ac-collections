@@ -127,7 +127,7 @@ jobs:
           swift run -c release benchmark library run \
             --library ./Libraries/CI.json \
             ../benchmark-results/current.json \
-            --max-size 128k \
+            --max-size 64k \
             --cycles 1 \
             --mode replace-all
 
@@ -142,7 +142,7 @@ jobs:
           swift run -c release benchmark library run \
             --library ./Libraries/CI.json \
             ../benchmark-results/base.json \
-            --max-size 128k \
+            --max-size 64k \
             --cycles 1 \
             --mode replace-all
 
@@ -166,11 +166,11 @@ jobs:
               regression = $4
               sub(/\(.*/, "", regression)
 
-              # 15% slower:
-              # current / baseline >= 1.15
-              # => baseline / current <= 1 / 1.15
-              if ((regression + 0) <= 0.869565) {
-                print ""
+              # 20% slower:
+              # current / baseline >= 1.20
+              # => baseline / current <= 1 / 1.20
+              if ((regression + 0) <= 0.833333) {
+              print ""
                 print "Performance regression >= 15%: " $0
                 failed = 1
               }

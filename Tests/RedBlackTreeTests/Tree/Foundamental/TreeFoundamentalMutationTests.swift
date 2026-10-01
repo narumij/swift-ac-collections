@@ -33,7 +33,7 @@ import XCTest
       FindEqualInterface, FindEqualProtocol_ptr_old, InsertUniqueProtocol_ptr,
       InsertMultiProtocol, RemoveProtocol_ptr, EraseProtocol, FindProtocol_find_equal_ptr,
       EraseUniqueProtocol, InsertLastProtocol_ptr, FindHintEqualProtocol_ptr,
-      EmplaceHintUniqueProtocol_ptr
+      EmplaceHintUniqueProtocol_ptr, FindHintLeafProtocol_ptr, EmplaceHintMultiProtocol_ptr
     {
       typealias _PayloadValue = Int
       typealias _Key = Int
@@ -76,6 +76,50 @@ import XCTest
 
       func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {
         lhs < rhs
+      }
+    }
+
+    /// `EqualProtocol_ptr`がまだ`~Copyable`ではない現行制約のため、multi eraseだけを
+    /// 同じStateへ接続するCopyableアダプター。
+    private struct CopyableMultiEraseTree: _UnsafeNodePtrType, TreeAlgorithmBaseProtocol_ptr,
+      TreeAlgorithmProtocol_ptr, BoundAlgorithmProtocol_legacy_ptr, EqualProtocol_ptr,
+      RemoveProtocol_ptr, EraseProtocol, EraseMultiProtocol
+    {
+      typealias _Key = Int
+      typealias __node_value_type = Int
+      typealias __compare_result = __int_compare_result
+
+      let state: State
+
+      var nullptr: _NodePtr { .nullptr }
+      var __end_node: _NodePtr { state.endNode }
+      var __root: _NodePtr { state.endNode.__left_ }
+      var __begin_node_: _NodePtr {
+        get { state.beginNode }
+        nonmutating set { state.beginNode = newValue }
+      }
+      var __size_: Int {
+        get { state.size }
+        nonmutating set { state.size = newValue }
+      }
+
+      func __get_value(_ node: _NodePtr) -> Int {
+        node.__value_(as: Int.self).pointee
+      }
+
+      func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {
+        lhs < rhs
+      }
+
+      func __lazy_synth_three_way_comparator(
+        _ lhs: borrowing Int,
+        _ rhs: borrowing Int
+      ) -> __int_compare_result {
+        __default_three_way_comparator(lhs, rhs)
+      }
+
+      func destroy(_ node: _NodePtr) {
+        state.owned.destroy(node)
       }
     }
 
@@ -207,9 +251,32 @@ import XCTest
       let splitDuplicate = tree.___emplace_hint_unique_(split.__r, 27, 1_000)
       XCTAssertFalse(splitDuplicate.__inserted)
 
-      XCTAssertEqual(values(tree), [10, 20, 25, 27, 30])
+      let multi = tree.__emplace_hint_multi(split.__r, 25)
+      XCTAssertEqual(tree.__get_value(multi), 25)
+
+      XCTAssertEqual(values(tree), [10, 20, 25, 25, 27, 30])
       XCTAssertTrue(tree.__tree_invariant(tree.__root))
       _ = tree.erase(tree.__begin_node_, tree.end)
+      XCTAssertEqual(state.owned.allocationCount, 0)
+    }
+
+    /// multi key削除が同値範囲だけを破棄し、削除数と残存順序を保つこと。
+    func testEraseMulti_removesEntireEquivalentRange() {
+      let state = State()
+      let mutation = MutationTree(state: state)
+      for value in [20, 10, 20, 30, 20, 25] {
+        _ = mutation.__insert_multi(value)
+      }
+      let eraser = CopyableMultiEraseTree(state: state)
+
+      XCTAssertEqual(eraser.___erase_multi(99), 0)
+      XCTAssertEqual(eraser.___erase_multi(20), 3)
+      XCTAssertEqual(values(mutation), [10, 25, 30])
+      XCTAssertEqual(mutation.__size_, 3)
+      XCTAssertEqual(state.owned.allocationCount, 3)
+      XCTAssertTrue(mutation.__tree_invariant(mutation.__root))
+
+      _ = mutation.erase(mutation.__begin_node_, mutation.end)
       XCTAssertEqual(state.owned.allocationCount, 0)
     }
 

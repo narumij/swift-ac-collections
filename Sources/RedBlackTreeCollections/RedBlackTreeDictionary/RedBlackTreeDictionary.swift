@@ -423,11 +423,11 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
-  public mutating func removeValue(forKey __k: Key) -> Value? {
+  public mutating func removeValue(forKey key: Key) -> Value? {
     guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.update {
-      let __i = $0.find(__k)
+      let __i = $0.find(key)
       if __i == $0.end {
         return nil
       }

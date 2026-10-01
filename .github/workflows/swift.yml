@@ -26,7 +26,7 @@ jobs:
 
       - name: Build documentation
         run: >-
-          swift package --allow-writing-to-directory .build/documentation
+          swift package -c release --allow-writing-to-directory .build/documentation
           generate-documentation
           --target RedBlackTreeCollections
           --output-path .build/documentation

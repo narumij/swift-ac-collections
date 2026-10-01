@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- RedBlackTreeCollectionsのSwift-DocCカタログを追加し、4つのコレクション型、3つのRange/MappedValues View、共通操作ガイドを公開APIドキュメントとして整備
+- Release構成でDocCを警告込みで検証し、artifact保存と`main`からGitHub Pagesへの自動公開を行うCIを追加
 - RedBlackTreeSet / MultiSet / MultiMapの利用者向け日英ドキュメントと、4型のAtCoder 2025互換APIドキュメントを追加
 - 現行API、View API、C++標準ライブラリとの対応、位置指定DSL、削除API、Index validity、品質方針、テストfixtureに関する開発者向けドキュメントを追加
 - `RedBlackTreeMappedValuesView`を追加し、Dictionary / MultiMap本体およびKeyValue Range Viewのmapped valueを参照・更新・交換できるようにした
@@ -22,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - raw range expression、node sealing、pointer比較、木の基本操作、赤黒木fixture、raw memory / allocationを直接検証する内部テストを追加
 
 ### Changed
+- DocCの公開メンバーをSwift標準`Set`/`Dictionary`に近い利用目的別Topicsへ分類し、独自のIndex・Range・Bound APIと全オーバーロードへ具象型ページから辿れるように変更
+- Swift-DocCおよび`UInt128`を使用する通常構成に合わせ、パッケージのmacOS最小バージョンを15へ変更
 - BoundsExpression / RangeExpressionを現行のBound / Index Rangeモデルへ整理し、4型の範囲subscriptと範囲削除実装を共通化
 - Indexの所属、node世代、slot再利用、Copy-on-Write後の解決規則を整理し、有効性検査を強化
 - node path bitmap / sealing、pointer比較、find / insert / erase、raw range、bucket確保・再利用、Copy-on-Write周辺の内部実装を整理

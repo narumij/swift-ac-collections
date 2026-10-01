@@ -86,7 +86,7 @@ Build the API documentation, including validation of documentation comments,
 with Swift-DocC:
 
 ```console
-swift package generate-documentation \
+swift package -c release generate-documentation \
   --target RedBlackTreeCollections \
   --warnings-as-errors
 ```
@@ -94,7 +94,7 @@ swift package generate-documentation \
 To preview it locally in a browser, run:
 
 ```console
-swift package --disable-sandbox preview-documentation \
+swift package -c release --disable-sandbox preview-documentation \
   --target RedBlackTreeCollections
 ```
 

@@ -31,7 +31,6 @@
 ### 相談事項
 
 - Current handoffが膨大になってきました。直近の作業と、現在の状況ぐらいでいいのではないでしょうか？
-- ドキュメントメンテナンスについてこのmdと同様の文書をどこかに作成したい(Codex)
 - テストを軸としたコードメンテはそのうち他のターゲットも対象になるので、この文書の配置場所をTests直下に切り替えたい(Claude優先)
 
 ### 連絡事項
@@ -74,6 +73,14 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-01 13:04 JST Codex (GPT-5): `Documentation/MAINTENANCE.md`へCHANGELOG更新手順を追加。ユーザー指定範囲の確認、mergeを含む実質的な最終更新コミットとblob IDの確認、コミット済み＋未コミット差分の収集、既存Unreleasedとの重複排除、Keep a Changelog分類、掲載候補、過去リリース欄の扱い、最終照合と`git diff --check`までを明文化した。
+- 2026-10-01 Codex (GPT-5): `CHANGELOG.md`へ前回確定本文以降の差分を反映。既存Unreleasedと重複するテスト・実装修正は再掲せず、DocCカタログと手動Topics、Release DocC CI/artifact/GitHub Pages公開、標準ライブラリ準拠の分類、macOS 15最小バージョンを追記した。詳細は`Documentation/MAINTENANCE.md`へ記録。
+- 2026-10-01 12:56 JST Codex (GPT-5): 4つの具象コレクション型のDocCメンバーを手動分類。初案のAPI Matrix準拠から、ユーザー指示によりSwift標準`Set`/`Dictionary`の利用目的別Topicsへ改訂した。API Matrixは掲載漏れの照合にのみ使用し、独自のIndex・Range/Bound分類を追加する方針。自動`Instance Methods`に残っていた`erase`、`formIndex`、`merge`/`merging`、Multi系の`insert(contentsOf:)`等も4型へ横展開して手動Topicsへ収容した。標準`Sequence`由来の汎用メソッドはDefault Implementationsに残した。詳細は`Documentation/MAINTENANCE.md`へ記録。
+- 2026-10-01 12:43 JST Codex (GPT-5): API Matrix照合を踏まえたDocCナビゲーション整備として、4型共通の検索・挿入更新・削除・Range/Boundを説明する`CommonOperations.md`と、KeyOnly Range View・KeyValue Range View・MappedValues Viewの手動Topicsを追加。モジュールページと4型ページから共通ガイドへリンクし、View Topicsは`API-Matrix-View.md`の基本状態・Index・更新・削除・走査比較の区分に合わせた。公開済みRelease版DocCの具象ページおよびDefault Implementations JSONからシンボルリンクを確認。詳細は`Documentation/MAINTENANCE.md`へ記録した。
+- 2026-10-01 Codex (GPT-5): DocC Topics整備に先立ち、公開済みRelease版DocCの4型ページを`API-Matrix.md`および`API-Matrix-View.md`と照合。通常構成で公開されているDictionaryの`insert(key:value:hint:)`がMatrixでは「検討」、`update(_:hint:)`がDictionary非対応となっていた同期漏れを発見し、実装の条件コンパイル範囲も確認した上で両方をDictionaryの✅へ修正。共通APIの多くがDocC上では各型の`Default Implementations`配下に分類されるため、具象型へ全件列挙するか共通protocol/View側のTopicsを整備するかは`Documentation/MAINTENANCE.md`へ継続判断として記録した。
+- 2026-10-01 12:36 JST Codex (GPT-5): Setで行ったDocCイニシャライザTopics整備をMultiSet、Dictionary、MultiMapへ横展開。公開済みRelease版DocC JSONとソース宣言を照合し、明示的な公開イニシャライザをそれぞれ7件、9件、8件掲載するsymbol extension Markdownを追加した。オーバーロード識別子を含む全24リンクが公開済みDocC上でHTTP 200になることを確認。ローカルDocC生成は実行環境のSwiftPM sandboxエラーで開始できず、最終検証はCI待ち。ドキュメント作業の詳細は`Documentation/MAINTENANCE.md`へ記録した。
+- 2026-10-01 12:27 JST Codex (GPT-5): ドキュメントメンテナンス用の作業連絡・判断基準として`Documentation/MAINTENANCE.md`を新設。日英同期、コメントドック、API Matrix、CHANGELOG、Release構成でのDocC生成、CI/Pages、検証チェックリスト、短く保つCurrent handoffを整理した。
+- 2026-10-01 Codex (GPT-5): DocC生成時のSwiftPMビルド構成を確認。`generate-documentation`/`preview-documentation`は構成未指定ではDebugとなるため、CIと日英READMEのローカル生成・プレビュー例へSwiftPMグローバルオプション`-c release`を追加し、公開ドキュメントのシンボル抽出をRelease構成へ統一した。
 - 2026-10-01 12:12 Codex (GPT-5): GitHub PagesへのDocC自動公開を追加。既存のDocC検証・通常tar.gz artifactは維持し、`main`へのpush時だけ`actions/configure-pages@v5`と`actions/upload-pages-artifact@v4`でPages artifactを作成、依存する専用`deploy-documentation`ジョブが`github-pages` environmentへ`actions/deploy-pages@v4`で公開する。PRおよびAtCoder互換ブランチではデプロイせず検証のみ。必要な`contents: read`/`pages: write`/`id-token: write`権限とデプロイconcurrencyを設定。日英READMEに予定常設URLを追記。workflow YAML構文・ジョブ存在確認、`git diff --check`成功。GitHubリポジトリのSettings > PagesでSourceをGitHub Actionsにする外部設定はユーザー作業待ち。
 - 2026-10-01 12:04 Codex (GPT-5): DocC CIのartifact upload失敗を修正。DocCが演算子シンボル用に生成する`'...(_:)-1pmkc.json`等のファイル名には`:`が含まれ、`actions/upload-artifact@v4`がNTFS互換制約で拒否するため、生成ディレクトリを`tar.gz`へ固めて単一ファイルをアップロードする構成へ変更。実際のDocC archiveを用いて禁止文字を含むファイルがtar内に保持されることを確認し、workflow YAML構文確認・`git diff --check`成功。Nodeの`punycode`非推奨表示はAction内部の警告であり失敗原因ではない。
 

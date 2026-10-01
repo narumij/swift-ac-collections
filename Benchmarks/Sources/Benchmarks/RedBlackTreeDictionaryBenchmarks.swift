@@ -334,7 +334,7 @@ extension Benchmark {
         timer.measure {
           for i in lookups {
             // TODO: CIで落ちる件の調査
-            // d[c + i, default: -1] *= 2
+             d[c + i, default: -1] *= 2
 
             //            Running 18 tasks on 60 sizes from 1 to 64k:
             //              RedBlackTreeSet<Int> init from range
@@ -426,7 +426,7 @@ extension Benchmark {
             //            /home/runner/work/_temp/51512716-cefb-41fc-b034-9f1145aff423.sh: line 8:  2879 Illegal instruction     (core dumped) swift run -c release benchmark library run --library ./Libraries/CI.json ../benchmark-results/current.json --max-size 64k --cycles 1 --mode replace-all
             //              1.2.4...8.
 
-            d[c &+ i, default: -1] &*= 2
+//            d[c &+ i, default: -1] &*= 2
           }
         }
         precondition(d.count == 2 * input.count)

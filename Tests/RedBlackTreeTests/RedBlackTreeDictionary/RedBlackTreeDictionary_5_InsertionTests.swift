@@ -175,6 +175,50 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(dictionary[2], "replacement")
       XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
     }
+
+    /// `insert(key:value:hint:)`が、`insert(_:hint:)`(タプル版)と同じ結果
+    /// (新規キーでの挿入成功・重複キーでの拒否)になること
+    func test_insertWithKeyValueHint_matchesTupleHintBehavior() {
+      var dictionary: RedBlackTreeDictionary<Int, String> = [1: "one", 3: "three"]
+
+      let insertedWithGoodHint = dictionary.insert(
+        key: 2, value: "two", hint: dictionary.firstIndex(of: 3)!)
+      XCTAssertTrue(insertedWithGoodHint.inserted)
+      XCTAssertEqual(dictionary[insertedWithGoodHint.indexAfterInsert].key, 2)
+
+      let insertedWithBadHint = dictionary.insert(
+        key: 4, value: "four", hint: dictionary.startIndex)
+      XCTAssertTrue(insertedWithBadHint.inserted)
+      XCTAssertEqual(dictionary[insertedWithBadHint.indexAfterInsert].key, 4)
+
+      let duplicate = dictionary.insert(
+        key: 2, value: "replacement", hint: dictionary.endIndex)
+      XCTAssertFalse(duplicate.inserted)
+      XCTAssertEqual(dictionary[2], "two")
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
+    }
+
+    /// `updateValue(_:forKey:hint:)`が、新規キーでは`nil`を返し、既存キーでは
+    /// 旧値を返して値を置き換えること
+    func test_updateValueWithHint_returnsNilForNewKeyAndOldValueForExistingKey() {
+      var dictionary: RedBlackTreeDictionary<Int, String> = [1: "one", 3: "three"]
+
+      let insertedWithGoodHint = dictionary.updateValue(
+        "two", forKey: 2, hint: dictionary.firstIndex(of: 3)!)
+      XCTAssertNil(insertedWithGoodHint)
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3])
+
+      let insertedWithBadHint = dictionary.updateValue(
+        "four", forKey: 4, hint: dictionary.startIndex)
+      XCTAssertNil(insertedWithBadHint)
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
+
+      let replaced = dictionary.updateValue(
+        "replacement", forKey: 2, hint: dictionary.endIndex)
+      XCTAssertEqual(replaced, "two")
+      XCTAssertEqual(dictionary[2], "replacement")
+      XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
+    }
   #endif
 
   func test_updateValue_returnsTheReplacedValue() {

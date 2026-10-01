@@ -89,7 +89,7 @@ AtCoder 2025 ジャッジ環境との互換性が必要な場合は、`compatibl
 Swift-DocCでAPIドキュメントを生成し、ドキュメントコメントを検証できます。
 
 ```console
-swift package generate-documentation \
+swift package -c release generate-documentation \
   --target RedBlackTreeCollections \
   --warnings-as-errors
 ```
@@ -97,7 +97,7 @@ swift package generate-documentation \
 ブラウザでローカルプレビューするには、次を実行します。
 
 ```console
-swift package --disable-sandbox preview-documentation \
+swift package -c release --disable-sandbox preview-documentation \
   --target RedBlackTreeCollections
 ```
 

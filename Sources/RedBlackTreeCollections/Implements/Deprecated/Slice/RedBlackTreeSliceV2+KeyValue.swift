@@ -244,8 +244,8 @@
 
   extension RedBlackTreeSliceV2.KeyValue {
 
-    public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
-    public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+    public typealias Keys = UnsafeIterator.Keys<Base>
+    public typealias Values = UnsafeIterator.MappedValues<Base>
 
     #if !COMPATIBLE_ATCODER_2025
       /// - Complexity: O(1)

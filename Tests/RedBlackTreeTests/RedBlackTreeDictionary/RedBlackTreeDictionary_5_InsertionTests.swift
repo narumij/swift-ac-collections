@@ -36,6 +36,46 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary[1], ["one", "another"])
   }
 
+  /// デフォルト値付きsubscriptの`_modify`が、挿入に伴う二重ローテーション後も
+  /// 新しく挿入したノードの値をyieldすることを確認する。
+  ///
+  /// キー3、1の順で作った木へキー2を挿入すると、挿入直前の形は次のようになる。
+  ///
+  /// ```
+  ///     3
+  ///    /
+  ///   1
+  ///    \
+  ///     2  <- 挿入ノード
+  /// ```
+  ///
+  /// キー2を探索した`__find_equal`が返す`__child`は、ノード1が所有する右子の
+  /// ポインタを指している。挿入直後にはその`pointee`がノード2になるものの、
+  /// 赤黒木を修復するためにノード1で左回転、続いてノード3で右回転が行われる。
+  /// 修復後の木は次の形になる。
+  ///
+  /// ```
+  ///     2
+  ///    / \
+  ///   1   3
+  /// ```
+  ///
+  /// このとき、探索時に保存した`__child`自体は引き続き「ノード1の右子」を指すが、
+  /// ローテーションによってそのスロットの`pointee`はnullへ書き換えられている。
+  /// したがって挿入後に`__child.pointee`からmapped valueを取得すると、ノード2では
+  /// ない場所をyieldしてしまい、`+= 1`が挿入済みの値へ反映されない。
+  ///
+  /// 挿入ノードのポインタはローテーション前に退避し、修復後もそのポインタを使って
+  /// mapped valueをyieldする必要がある。
+  func test_defaultSubscript_returnsInsertedValueAfterDoubleRotation() {
+    var dictionary: RedBlackTreeDictionary<Int, Int> = [3: 30, 1: 10]
+
+    dictionary[2, default: 0] += 1
+
+    XCTAssertEqual(dictionary[2], 1)
+    XCTAssertEqual(dictionary.map(\.key), [1, 2, 3])
+  }
+
   func test_insert_returnsInsertedFlagAndExistingMemberOnDuplicate() {
     var dictionary = RedBlackTreeDictionary<Int, Int>()
 

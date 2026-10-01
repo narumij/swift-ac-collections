@@ -109,6 +109,7 @@
 //      `UnsafeNode` のサイズやフィールド順序を変更してはならない。
 //
 @frozen
+@_documentation(visibility: internal)
 public struct UnsafeNode {
 
   public typealias Pointer = UnsafeMutablePointer<UnsafeNode>

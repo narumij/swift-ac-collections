@@ -39,6 +39,8 @@ import XCTest
       try super.tearDownWithError()
     }
 
+    /// `_advanced(with:count:)`で1個進めた先でも、payloadのアライメントが
+    /// 保たれること。
     func testAdvancedKeepsPayloadAlignment() throws {
       typealias Payload = SIMD4<Float>
 
@@ -64,6 +66,9 @@ import XCTest
         0)
     }
 
+    /// `__insert_node_at`で右の子へ繋ぎ続けて作った一直線の木(昇順の鎖)に対して、
+    /// `__begin_node_`/`__tree_min`/`__tree_max`が正しく、`__tree_next`で
+    /// 先頭からendまで漏れなく昇順に辿れること。
     func testTreeBeginToNext() throws {
 
       nodes.withUnsafeMutableBufferPointer { nodes in
@@ -106,6 +111,9 @@ import XCTest
     }
     
     
+    /// (testTreeBeginToNextの逆方向) 左の子へ繋ぎ続けて作った一直線の木(降順の鎖)に
+    /// 対して、`__tree_min`/`__tree_max`が正しく、`__tree_prev_iter`でendから
+    /// `__begin_node_`まで漏れなく辿れること。
     func testTreeEndToPrev() throws {
       
       nodes.withUnsafeMutableBufferPointer { nodes in

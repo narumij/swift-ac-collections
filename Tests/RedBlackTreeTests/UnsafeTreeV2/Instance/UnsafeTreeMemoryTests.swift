@@ -18,6 +18,7 @@ final class UnsafeTreeMemoryTests: RedBlackTreeTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
 
+  /// XCTestのテンプレート由来の空のプレースホルダー(何も検証していない)。
   func testExample() throws {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
@@ -26,6 +27,8 @@ final class UnsafeTreeMemoryTests: RedBlackTreeTestCase {
     // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
   }
 
+  /// `UnsafeNode`/`_Bucket`のサイズが64バイト以内であり、各`RedBlackTreePair`の
+  /// 組み合わせが期待通りのサイズになること。
   func testSizes() throws {
     XCTAssertLessThanOrEqual(MemoryLayout<UnsafeNode>.size, 64)
     XCTAssertLessThanOrEqual(MemoryLayout<_Bucket>.size, 64)
@@ -40,6 +43,8 @@ final class UnsafeTreeMemoryTests: RedBlackTreeTestCase {
     XCTAssertEqual(MemoryLayout<RedBlackTreePair<SIMD4<Int>, Int>>.size, 40)
   }
 
+  /// Releaseビルドでの`_Bucket`/`UnsafeNode`のサイズ・歩幅が、
+  /// `USE_COMPACT_NODE_METADATA`の有無それぞれで期待値と一致すること。
   func testStride() throws {
 
     #if !DEBUG
@@ -55,12 +60,14 @@ final class UnsafeTreeMemoryTests: RedBlackTreeTestCase {
     #endif
   }
 
+  /// `UnsafeNode`と`UnsafeTreeV2BufferHeader`のアライメントが一致すること。
   func testAligments0() throws {
     XCTAssertEqual(
       MemoryLayout<UnsafeNode>.alignment,
       MemoryLayout<UnsafeTreeV2BufferHeader>.alignment)
   }
 
+  /// 各`RedBlackTreePair`の組み合わせのアライメント・歩幅が期待値と一致すること。
   func testPairAlignmentsAndStrides() throws {
     XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, Int32>>.alignment, 4)
     XCTAssertEqual(MemoryLayout<RedBlackTreePair<Int32, Int32>>.stride, 8)

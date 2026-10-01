@@ -26,6 +26,9 @@ final class UnsafeNodeMemoryLayoutTests: XCTestCase {
                 to node.alignment         to payload.alignment    to node.alignment
     */
 
+    /// `_advanced(with:count:)`による1個先/前への移動が、上図のレイアウト通り
+    /// (Node直後にPayload、両方アライメント済み、歩幅`nodeAdvance`は往復で可逆)
+    /// になること。
     func testNodeAndPayloadMemoryLayout() throws {
         checkMemoryLayout(Int16.self)
         checkMemoryLayout(Int32.self)

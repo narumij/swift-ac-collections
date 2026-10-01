@@ -61,6 +61,8 @@ import XCTest
       _ref(to: &nodes.advanced(by: i).pointee.node)
     }
 
+    /// `___pushRecycle`/`___popRecycle`が、LIFO順で`recycleCount`を正しく増減させ、
+    /// pushした全ノードのpayloadが(deinitializeにより)無効化される(`false`)こと。
     func testPush() throws {
       XCTAssertEqual(fixture.recycleHead, .nullptr)
       for i in 0..<nodeCount {
@@ -84,6 +86,8 @@ import XCTest
       }
     }
 
+    /// `___flushRecyclePool`が、recycle pool内の全ノードを空にする
+    /// (`recycleHead`が`nullptr`に戻る)こと。
     func testFlushSmoke() throws {
       for i in 0..<nodeCount {
         #if DEBUG

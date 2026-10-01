@@ -24,6 +24,7 @@
 //
 // 本当は作りたくなかったが、lowerBoundやupperBoundがオプショナルになるのもいまいちなので、しかたなく。
 @frozen
+@_documentation(visibility: internal)
 public struct UnsafeIndexV3Range {
 
   @usableFromInline
@@ -34,6 +35,11 @@ public struct UnsafeIndexV3Range {
     self.range = range
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  /// A pair of indices delimiting a range in a red-black-tree collection.
+  public typealias RedBlackTreeIndexRange = UnsafeIndexV3Range
+#endif
 
 // 削除の悩みがつきまとうので、Sequence適合せず、ループはできないようにする
 // 当然RangeExpressionなんかには適合しない

@@ -23,7 +23,7 @@
 #if !COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 where Base: ___TreeIndex {
 
-    public typealias Index = UnsafeIndexV3
+    public typealias Index = RedBlackTreeIndex
   }
 #endif
 

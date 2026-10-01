@@ -21,6 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @frozen
+@_documentation(visibility: internal)
 public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @inlinable

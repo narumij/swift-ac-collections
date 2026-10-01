@@ -26,7 +26,6 @@
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
 - 途中で止まっているCI問題の続き(Codex)
-- UnsafeTreeV2配下も実装からの逆算で仕様を把握したくなりはじめたので、Test as Spec調に整えて欲しい
 
 ### 相談事項
 
@@ -63,16 +62,20 @@
 
 ### 保留中の判断・懸念
 
+- 2026-10-01 18:36 JST: 原木アルゴリズムについて、(1) `Base`のstatic/class methodを`_ValueCompBridge`等で注入する現行経路と、(2) `Base`を使わず木インスタンスが比較器・状態を保持してインスタンスメソッドとして供給する経路の双方を動作可能にし、テストで維持したい。将来的な`__tree`のポータブル化・noncopyable要素対応を検討する材料でもある。ただし設計意図を思い出しながらレビューする時間が必要なため、一度に移行・整理せず、複数回に分けて慎重に進める。現時点では`_ValueCompBridge`を削除・置換せず、static注入用アダプターとして温存する。インスタンス注入型は`_ValueCompBridge`へ適合させず、`value_comp`/`__comp`/`__key`/`__get_value`を直接供給する方向を検証する。今回の`TreeFoundamentalComparisonInjectionTests`は比較の二経路が同じ原木探索へ到達する最初の確認であり、設計確定を意味しない。`_BaseBridge`自体が現状`~Copyable`未対応である点も、変更せず継続検討とする。
 - こちらでヒント系APIとAPI一覧を触ってるので、Test as Spec観点でチェックしてほしい
 - 内部構造をテスト観点でどのように区分するのか、まだ結論がでていない
 - insert(:hint:)やupdate(:hint:)等のヒント系APIのテストが不十分なまま（解決済みであれば完了済み要望に記載願い）
 - 生木へのテストを増やすと変更コストがかさむので、バランスに悩んでいる
 - 「空チェック前のensureUnique()が無駄なCoWを起こす」問題は、`RedBlackTreeMultiMap.erase(exactly:)`・両View系列(`RedBlackTreeMappedValuesView`/`RedBlackTreeRangeView+KeyValue`/`+KeyOnly`)の`popFirst`/`popLast`/`erase()`/`erase(where:)`・4型の`popFirst`/`popLast`/`Set.remove(_:)`/`Dictionary.removeValue(forKey:)`/`removeAll(keepingCapacity:)`、さらに互換モード専用`+Deprecated.swift`側の`RedBlackTreeSet.popFirst()`/`RedBlackTreeMultiSet.remove(_:)`/`removeAll(_:)`/`RedBlackTreeMultiMap.removeFirst(forKey:)`/`removeFirst(_unsafeForKey:)`/`removeAll(forKey:)`まで2026-10-01に全て修正済み。`+Deprecated.swift`全体を同パターンで網羅的に再調査したわけではないため、他に見落としが残っている可能性はゼロではない
 - `RedBlackTreeMappedValuesView._isdentical(to:)`はSources内で呼び出しゼロ(`Equatable`適合なし)。削除するかテストを書くかはユーザー判断待ち
+- `Tree/Fixture/UnsafeNodeReferenceFixture.swift`・`UnsafeTreeV2/Instance/RawBufferHeadFixture.swift`・`UnsafeNodeRawBufferCrossCheckTests.swift`(2026-10-01新設)は、`MemoryLayoutTests`/`UnsafeNodeMemoryLayoutTests`/`BucketAllocatorTests`の既存`checkXxx`ヘルパー・payload型リストと意図的に重複している。ユーザー方針「一旦多重化して、あとで整理しましょう」により統合はまだ行っていない
 
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-01 17:30 Claude (Sonnet 5): 「UnsafeNodeは原木の一部で一応リファレンス実装、RawBufferは性能都合の直書き。ここをテストして新しいFixtureの土台にしたい」という要望に対応。`UnsafeNode._advanced(with:count:)`は生メモリ直接アロケートで、`_BucketAllocator`/`_Bucket`は生木(`UnsafeTreeV2`/`RedBlackTreeSet`)を経由せず直接操作する、という指定の手法で`UnsafeNodeReferenceFixture`/`RawBufferHeadFixture`を新設し、両者のpairStride・各要素のノード/payloadオフセットが一致することを検証する`UnsafeNodeRawBufferCrossCheckTests.swift`を追加(2テスト、各種payload型・capacity 1/2/3/16で網羅)。スコープはユーザー選択により「既存ファイルは一切変更せず追加のみ」。ユーザー追加指示「原木テストだから一部はTreeがいいかな」を受け、`UnsafeNodeReferenceFixture`は`Tree/Fixture/`へ、`RawBufferHeadFixture`は`UnsafeTreeV2/Instance/`へ分離配置(`_advanced(with:count:)`がinternalアクセスのため`Tree/Fixture/TreeNodeOnlyFixture.swift`と異なり`#if DEBUG`で囲み`@testable import`)。既存`checkMemoryLayout`等との重複整理は「一旦多重化して、あとで整理しましょう」とのことで保留。`swift test`全体0 failures、`swift build -c release`も成功。
+- 2026-10-01 17:10 Claude: 優先事項「UnsafeTreeV2配下も実装からの逆算で仕様を把握したくなりはじめたので、Test as Spec調に整えて欲しい」に対応。`Tests/RedBlackTreeTests/UnsafeTreeV2/`配下14ファイル(`Base/`1・`Instance/`10・`Synthetic/`3)を走査し、コメントが無かった約45件のテストメソッドに「何を検査しているか」の日本語docを追加(`BufferHeaderTests.swift`は既にコメント済みで変更不要だった)。副産物として、`Synthetic/RecyclePoolTests.swift`(`USE_RECYCLE_POOL_PROTOCOL`限定)と`Synthetic/UnsafeNodeFreshPoolTests.swift`(`USE_FRESH_POOL_PROTOCOL`限定)が、両フラグとも既定で無効のため丸ごとコンパイルされていない(=既定ビルドでは実行されない)ことを確認。これは既知の「`_FreshPool`/`_RecyclePool`プロトコル版 vs インライン版」という設計上の二重実装(`BufferHeader.swift`のコメント「以下の二つと類似関数を基本層とする定義で構わない気がしてきた」に対応)によるもので、新規の問題ではない。コメントのみの変更のためロジックは無変更、`swift test`878 tests / 0 failures。
 - 2026-10-01 13:04 JST Codex (GPT-5): `Documentation/MAINTENANCE.md`へCHANGELOG更新手順を追加。ユーザー指定範囲の確認、mergeを含む実質的な最終更新コミットとblob IDの確認、コミット済み＋未コミット差分の収集、既存Unreleasedとの重複排除、Keep a Changelog分類、掲載候補、過去リリース欄の扱い、最終照合と`git diff --check`までを明文化した。
 - 2026-10-01 Codex (GPT-5): `CHANGELOG.md`へ前回確定本文以降の差分を反映。既存Unreleasedと重複するテスト・実装修正は再掲せず、DocCカタログと手動Topics、Release DocC CI/artifact/GitHub Pages公開、標準ライブラリ準拠の分類、macOS 15最小バージョンを追記した。詳細は`Documentation/MAINTENANCE.md`へ記録。
 - 2026-10-01 12:56 JST Codex (GPT-5): 4つの具象コレクション型のDocCメンバーを手動分類。初案のAPI Matrix準拠から、ユーザー指示によりSwift標準`Set`/`Dictionary`の利用目的別Topicsへ改訂した。API Matrixは掲載漏れの照合にのみ使用し、独自のIndex・Range/Bound分類を追加する方針。自動`Instance Methods`に残っていた`erase`、`formIndex`、`merge`/`merging`、Multi系の`insert(contentsOf:)`等も4型へ横展開して手動Topicsへ収容した。標準`Sequence`由来の汎用メソッドはDefault Implementationsに残した。詳細は`Documentation/MAINTENANCE.md`へ記録。
@@ -200,6 +203,63 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 
 互換テストから連番側の test class を extension している場合がある。連番ファイルの移動や改名時は、`*AtCoder2025CompatibilityTests.swift` 内の extension 参照も確認する。
 
+## 原木カバレッジの測定
+
+原木カバレッジは、`Tests/RedBlackTreeTests/Tree/`のテストだけを実行し、集計対象を
+`Sources/RedBlackTreeCollections/Implements/__tree`だけに限定した値とする。現状のTree配下の
+テストクラスはすべて`TreeFoundamental`を名前に含むため、リポジトリルートで次を実行する。
+
+```sh
+swift test --disable-sandbox --enable-code-coverage --filter TreeFoundamental
+```
+
+実行ログ末尾の件数を確認し、Tree配下のテストが漏れていないことを確認する。Tree配下へ別の命名規則の
+テストクラスを追加した場合は、フィルタ式も更新する。Xcode MCPの`RunAllTests`には実行漏れを成功扱いする
+既知の問題があるため、この測定ではCLIの`swift test`を正とする。この環境ではSwiftPMの入れ子sandboxを
+避けるため`--disable-sandbox`も必要。
+
+テスト成功後、次のコマンドで原木だけのファイル別・合計カバレッジを表示する。
+
+```sh
+xcrun llvm-cov report \
+  .build/out/Products/Debug/RedBlackTreeTests.xctest/Contents/MacOS/RedBlackTreeTests \
+  -instr-profile=.build/out/Products/Debug/codecov/default.profdata \
+  -ignore-filename-regex='Tests/' \
+  Sources/RedBlackTreeCollections/Implements/__tree
+```
+
+未到達行を調べる場合は`report`を`show`へ替え、末尾へ対象ファイルを指定する。
+
+```sh
+xcrun llvm-cov show \
+  .build/out/Products/Debug/RedBlackTreeTests.xctest/Contents/MacOS/RedBlackTreeTests \
+  -instr-profile=.build/out/Products/Debug/codecov/default.profdata \
+  Sources/RedBlackTreeCollections/Implements/__tree/unsafe_tree/unsafe_tree+find.swift
+```
+
+`.build`の構成やSwiftPMの出力先が変わった場合は、`default.profdata`と
+`RedBlackTreeTests.xctest/Contents/MacOS/RedBlackTreeTests`の実在パスを確認して読み替える。
+
+## 原木fixtureとnoncopyable対応
+
+原木fixtureは、将来`__tree`でnoncopyable要素を扱う可能性を妨げない形で保守する。Claude・Codexを
+含む作業者は、コンパイルを通す目的でfixtureやpayloadへ安易に`Copyable`制約を追加しない。
+
+- fixture自身の`~Copyable`適合を維持する。コピーが必要に見える場合は、先に所有権と借用範囲を見直す。
+- payloadを読み出してコピーすることを前提にせず、生メモリ上でのinitialize・borrow・deinitializeを基本とする。
+- `~Copyable`な値をtuple、配列、escaping closureなど、暗黙のコピーや寿命延長を要求する場所へ退避しない。
+- 生メモリの所有権はfixtureへ集約し、初期化済みのNodeとpayloadだけを各一回deinitializeしてから解放する。
+- Node/payloadのalignment、stride、先頭Node、必要byte数は`UnsafeNode`の参照レイアウトAPIを使い、
+  fixture側へ同じ計算式を複製しない。
+- テスト専用protocol適合を追加するときも、値返却によるpayloadコピーが本質でない場合は、ポインタまたは
+  借用アクセスで検証できないかを先に検討する。
+- 現在のpayload型が`Copyable`であることだけを理由に、将来noncopyable payloadでは成立しないAPIを
+  fixtureの標準操作として固定しない。
+
+一時的に`Copyable`が必要なテストを追加する場合は、その制約がテスト対象の仕様なのか、テスト実装上の
+都合なのかをコメントで区別する。後者の場合はfixture全体へ制約を波及させず、対象テストまたは補助型へ
+局所化する。
+
 ## Safe migration workflow
 
 長時間の整理を壊れた状態で残さないため、次の単位を守る。
@@ -222,7 +282,7 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 (このサブセクションはスナップショットとして毎回上書きしてよい。詳細な経緯は下の年代順ログを参照)
 
 - **Test as Spec 整理**: Set・MultiSet・Dictionary・MultiMap は型別フォルダで連番 Test as Spec 化が完了。`RedBlackTreeView/`(`RedBlackTreeMappedValuesView`・`RedBlackTreeKeyValueRangeView`・`RedBlackTreeKeyOnlyRangeView`)も同様に連番整理済み。`BoundExpression` も4型とも `_16_BoundExpressionTests.swift` へ移管済み。
-- **原木層**: `Tree/Fixture/TreeNodeOnlyFixture.swift`(実ポインタ`_ptr`系プロトコルに直接適合するFixture)で`unsafe_tree+algorithm`・`unsafe_node+pointer+*`・`tree_base+compare`(`__UniqueHelper`/`__MultiHelper`)等を直接テスト中。バランス・削除の核心アルゴリズムは実質的に高カバレッジ。
+- **原木層**: `Tree/Fixture/TreeNodeOnlyFixture.swift`(実ポインタ`_ptr`系プロトコルに直接適合するFixture)で`unsafe_tree+algorithm`・`unsafe_node+pointer+*`・`tree_base+compare`(`__UniqueHelper`/`__MultiHelper`)等を直接テスト中。バランス・削除の核心アルゴリズムは実質的に高カバレッジ。2026-10-01 18:00 JST以降は、原木テストを`Tests/RedBlackTreeTests/Tree/`内だけで完結させる方針で継続中。`TreeOwnedNodeFixture`を追加し、生木・RawBufferを経由せず`AllocationInterface`/`DellocationInterface`を実装、payloadを先に整列して直前へ`UnsafeNode`を置く実レイアウトと明示的なinitialize/deinitializeを仕様化した。Fixtureは`~Copyable`を維持し、将来の`__tree`ポータブル化・noncopyable要素対応を見据える。
 - **カバレッジ**: 2026-10-01時点で`Sources/RedBlackTreeCollections`全体は`swift test --enable-code-coverage`+`llvm-cov`基準で約90%。残る未カバー行の大半は「未結線/削除判断待ちコード」に集約されている(次項)。
 - **未結線・削除判断待ちコード一覧**(いずれもSources内で呼び出しゼロと確認済み。削除するかテストを書くかはユーザー判断待ち):
   - `Implements/Iterator/UnsafeIterator/UnsafeIterator+Reverse4.swift`(`_Reverse4`)、および同系列の`UnsafeIterator+CopyOnWrite.swift`の`reversed()`/`init(_source:tree:)`・`+KeyValue.swift`の`keys()`/`values()`
@@ -233,7 +293,9 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   - `tree_basic+tag.swift`の`_TrackingTag.retire`
   - `RedBlackTreeMappedValuesView._isdentical(to:)`
 - **直近の主要な修正**(2026-10-01): `RedBlackTreeMultiMap.index(inserting:)`が`__insert_unique`を誤って呼んでいた実バグを修正。「削除系メソッドは空/未発見でもトラップせずに無駄なCoWを起こしてはいけない」という原則の横展開で、`erase(exactly:)`・両View系列・4型`popFirst`/`popLast`等・`removeAll(keepingCapacity:)`の計10箇所超を修正。
+- **UnsafeNode(原木) vs RawBuffer クロスチェック**(2026-10-01): `UnsafeNode._advanced(with:count:)`(生メモリ直接アロケートによる参照計算)と`_BucketAllocator`/`_Bucket`(生木を経由しない直接操作、手で最適化された実装)が同じメモリ配置を導くことを検証。原木側の`UnsafeNodeReferenceFixture`は`Tree/Fixture/UnsafeNodeReferenceFixture.swift`に(ユーザー指示「原木テストだから一部はTreeがいいかな」により`Tree/Fixture/`配置)、RawBuffer側の`RawBufferHeadFixture`は`UnsafeTreeV2/Instance/RawBufferHeadFixture.swift`に分離して新設し、両者を使うクロスチェックテスト`UnsafeNodeRawBufferCrossCheckTests.swift`を`UnsafeTreeV2/Instance/`に新設。既存の`MemoryLayoutTests`/`UnsafeNodeMemoryLayoutTests`/`BucketAllocatorTests`のヘルパーとは意図的に重複させており(ユーザー指示: 「一旦多重化して、あとで整理しましょう」)、整理は別途ユーザー判断で行う。
 - **ツール注記**: XcodeのMCP `RunAllTests`が実行漏れを"0 failed"と誤表示する不具合を確認済み。全体テストの合否は`swift test`(CLI)、カバレッジは`swift test --enable-code-coverage`+`xcrun llvm-cov`を正とする。
+- **直近の原木テスト追加**(2026-10-01 18:48 JST、Codex GPT-5): `TreeFoundamentalValueTests`でtracking tag、scalar/pair変換、multiplicity、`RedBlackTreePair`の値 semantics/Codable、three-way比較に加え、隣接payloadからkeyを得る`_BaseNode_KeyProtocol`既定実装を追加。`TreeFoundamentalAllocationTests`でノード構築、非trivial payloadの一度だけの破棄、強いpayload alignmentを追加し、さらに所有payloadに対するscalar/pairのNodePtr・NodeRef helperを2件で網羅した。これにより`unsafe_tree+types.swift`は0%から100%。`unsafe_node+pointer.swift`へは、Node/payloadのalignment・stride・必要byte数・payloadを先に整列して直前のNode位置を得るpackage-levelリファレンス計算を追加し、両Fixtureを新API利用へ切り替えた。RawBuffer計算との一致およびpoison塗り分けも検証済み。`_BaseNode_SignedDistanceProtocol`は100%。さらに`TreeFoundamentalComparisonInjectionTests`を追加し、同じ`__find_leaf_low/high`へ、`_ValueCompBridge`から`Base.value_comp`へ委譲するstatic注入経路と、状態・call countを持つ`~Copyable`なインスタンス比較経路の双方を接続した。4種類のkeyで同じ探索結果になることに加え、空木では比較を呼ばずendのroot参照を返すこと、インスタンス側が保持する降順設定で探索分岐が実際に変わることも固定した。ここで`_BaseBridge`が`~Copyable`未対応のためstatic注入ラッパーはCopyable必須、インスタンス注入ラッパーは`~Copyable`のまま成立することも判明。Tree配下全101件成功。最後にカバレッジを再計測した時点では、Treeテストだけを実行した`__tree`の行カバレッジは作業開始時の67.98%から73.52%(1527/2077行)へ改善し、`unsafe_tree+find.swift`は0%から18.26%。その後に追加した空木・降順の2件は成功確認済みだがカバレッジ値は再計測していない。次は同じ二経路でfind equal・bounds・countへ横展開する。
 
 ### 年代順ログ
 

@@ -78,6 +78,141 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 }
 
+// MARK: - Reference memory layout
+
+extension UnsafeNode {
+
+  /// `UnsafeNode`と`Payload`を隣接配置するときに領域全体へ要求するalignmentを返す。
+  ///
+  /// メモリ上では次の組を連続して配置する。
+  ///
+  /// ```
+  /// |<-- pair(0) -->|<-- pair(1) -->|
+  /// | Node | Payload | Node | Payload | ...
+  /// ```
+  ///
+  /// NodeとPayloadのどちらの型付きアクセスも有効にするため、要求値は両者の
+  /// alignmentの大きい方になる。この式はRawBufferの`_MemoryLayout.init(_:_:)`が
+  /// `pairLayout.alignment`を求める式と同じである。
+  ///
+  /// - Parameter payload: Nodeへ積載する型。
+  /// - Returns: Node/Payloadペア領域に必要なalignment。
+  @inlinable
+  package static func _referenceAlignment<Payload>(with payload: Payload.Type) -> Int {
+    max(MemoryLayout<Self>.alignment, MemoryLayout<Payload>.alignment)
+  }
+
+  /// `UnsafeNode`と`Payload`一組から次の組までのbyte strideを返す。
+  ///
+  /// 単純な`Node.stride + Payload.stride`を、両型に必要なalignmentの倍数へ
+  /// 切り上げる。これにより先頭のNodeと直後のPayloadが整列していれば、後続する
+  /// すべてのNode/Payloadも同じ整列条件を保つ。
+  ///
+  /// ```
+  /// |<------- one pair stride ------->|
+  /// | Node | Payload | pair padding   | Node | Payload | ...
+  /// ```
+  ///
+  /// この式はRawBufferの`MemoryLayout<Payload>._pairLayout.stride`と同じである。
+  /// `_advanced(with:count:)`も同じ式を用いる。
+  ///
+  /// - Parameter payload: Nodeへ積載する型。
+  /// - Returns: 連続配置されたNode/Payload一組のstride。
+  @inlinable
+  package static func _referenceStride<Payload>(with payload: Payload.Type) -> Int {
+    let alignment = _referenceAlignment(with: payload)
+    let size = MemoryLayout<Self>.stride + MemoryLayout<Payload>.stride
+    return (size + alignment - 1) / alignment * alignment
+  }
+
+  /// alignment調整前のslot領域から、最初の`UnsafeNode`の位置を求める。
+  ///
+  /// `__value_`はNode直後をPayloadとして扱う。このためNodeだけを先に整列すると、
+  /// PayloadのalignmentがNodeより強い場合にPayloadが未整列になる。ここではPayloadの
+  /// 開始位置を先に切り上げ、そこからNodeのstrideだけ戻る。
+  ///
+  /// ```
+  /// | prefix | alignment gap | Node | Payload | Node | Payload | ...
+  ///
+  /// storage         = prefixとalignment gapの境界
+  /// result: node(0) = alignment gapとNodeの境界
+  /// aligned payload = NodeとPayloadの境界
+  /// ```
+  ///
+  /// この処理はRawBufferの`_Bucket.start(storage:payloadOrPairAlignment:)`と同じである。
+  /// `storage`自体は確保領域の先頭とは限らず、Bucket metadataなどのprefix直後でもよい。
+  ///
+  /// - Parameters:
+  ///   - storage: metadata/prefix直後にある、alignment調整前のslot領域先頭。
+  ///   - payload: Nodeへ積載する型。
+  /// - Returns: `node(0)`の開始アドレス。
+  ///
+  /// - Important: `storage`は少なくとも`UnsafeNode`のalignmentを満たす必要がある。
+  ///   また呼び出し側は戻り値以降に、要求capacity分の領域が確保済みであることを
+  ///   保証しなければならない。
+  @inlinable
+  package static func _referenceFirstNode<Payload>(
+    in storage: UnsafeMutableRawPointer,
+    with payload: Payload.Type
+  ) -> UnsafeMutablePointer<Self> {
+    let nodeStride = MemoryLayout<Self>.stride
+    let payloadAlignment = MemoryLayout<Payload>.alignment
+    let candidate = Int(bitPattern: storage) + nodeStride
+    let alignedPayload =
+      (candidate + payloadAlignment - 1) / payloadAlignment * payloadAlignment
+    return UnsafeMutableRawPointer(bitPattern: alignedPayload)!
+      .advanced(by: -nodeStride)
+      .assumingMemoryBound(to: Self.self)
+  }
+
+  /// prefixを含む連続Node/Payload領域に必要な正確なbyte数を返す。
+  ///
+  /// `prefix`直後をalignment調整前の`storage`とし、最初のPayloadを整列するためのgap、
+  /// `capacity - 1`組分のpair stride、最後のNodeとPayloadの実体サイズを加算する。
+  /// RawBufferの`_BucketAllocator._allocationSize(prefix:capacity:)`と同じ式である。
+  ///
+  /// ```
+  /// |< prefix >| gap | Node | Payload | ... | Node | Payload |
+  /// |<------------- returned byte count -------------------->|
+  /// ```
+  ///
+  /// - Parameters:
+  ///   - prefix: 確保領域先頭からslot領域までのbyte数。
+  ///   - payload: Nodeへ積載する型。
+  ///   - capacity: 配置するNode/Payload組の数。0の場合はprefixだけを返す。
+  /// - Returns: prefixを含む確保領域全体のbyte数。
+  @inlinable
+  package static func _referenceAllocationByteCount<Payload>(
+    prefix: Int,
+    with payload: Payload.Type,
+    capacity: Int
+  ) -> Int {
+    precondition(prefix >= 0)
+    precondition(capacity >= 0)
+    guard capacity > 0 else { return prefix }
+    let nodeStride = MemoryLayout<Self>.stride
+    let payloadAlignment = MemoryLayout<Payload>.alignment
+    let payloadOffset = prefix + nodeStride
+    let leadingGap = (payloadAlignment - payloadOffset % payloadAlignment) % payloadAlignment
+    return prefix
+      + leadingGap
+      + _referenceStride(with: payload) * (capacity - 1)
+      + nodeStride
+      + MemoryLayout<Payload>.stride
+  }
+
+  /// prefixを持たない単独のNode/Payload領域に必要な正確なbyte数を返す。
+  ///
+  /// `_referenceAllocationByteCount(prefix:with:capacity:)`へ`prefix: 0`を渡す便宜API。
+  @inlinable
+  package static func _referenceAllocationByteCount<Payload>(
+    with payload: Payload.Type,
+    capacity: Int
+  ) -> Int {
+    _referenceAllocationByteCount(prefix: 0, with: payload, capacity: capacity)
+  }
+}
+
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   // ゆっくりendを返す

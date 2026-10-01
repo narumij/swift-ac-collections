@@ -686,4 +686,24 @@ final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     case .failure(let e): XCTAssertEqual(e, .upperOutOfBounds)
     }
   }
+
+  /// `_BaseNode_SignedDistanceProtocol`の既定実装が、同一点・昇順・降順で
+  /// それぞれ0・正・負の距離を返すこと。
+  func testSignedDistance_defaultImplementation() {
+    var fixture = makeFixture()
+    let end = fixture.endPtr()
+    var values: [_NodePtr: Int] = [:]
+    for value in 0..<6 {
+      insert(&fixture, values: &values, end: end, nodeIndex: value, value: value)
+    }
+
+    let minNode = fixture.__tree_min(end.__left_)
+    let maxNode = fixture.__tree_max(end.__left_)
+
+    XCTAssertEqual(TreeNodeOnlyFixture.SignedTrackingTagKey.___signed_distance(minNode, minNode), 0)
+    XCTAssertEqual(TreeNodeOnlyFixture.SignedTrackingTagKey.___signed_distance(minNode, maxNode), 5)
+    XCTAssertEqual(TreeNodeOnlyFixture.SignedTrackingTagKey.___signed_distance(maxNode, minNode), -5)
+    XCTAssertEqual(TreeNodeOnlyFixture.SignedTrackingTagKey.___signed_distance(minNode, end), 6)
+    XCTAssertEqual(TreeNodeOnlyFixture.SignedTrackingTagKey.___signed_distance(end, minNode), -6)
+  }
 }

@@ -25,6 +25,7 @@
 // <=>演算子に対応するものらしい
 //
 // <=>はspaceship operatorというらしい
+@_documentation(visibility: internal)
 public
   protocol ThreeWayCompareResult
 {

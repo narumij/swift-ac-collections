@@ -33,9 +33,9 @@ public struct _NodePtrSealing {
   // 八百万な方々
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
   // ご神体
-  @usableFromInline var pointer: _NodePtr
+  @usableFromInline package var pointer: _NodePtr
   // 封印
-  @usableFromInline var seal: UnsafeNode.Seal
+  @usableFromInline package var seal: UnsafeNode.Seal
 
   #if !USE_LAZY_DETACH
     @usableFromInline var trackingTag: _TrackingTag

@@ -42,6 +42,7 @@ import XCTest
       // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+    /// XCTestのテンプレート由来の空のプレースホルダー(何も検証していない)。
     func testExample() throws {
       // This is an example of a functional test case.
       // Use XCTAssert and related functions to verify your tests produce the correct results.
@@ -50,6 +51,8 @@ import XCTest
       // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
     }
 
+    /// strideから2の累乗のページ容量へ変換するビット演算(leading zero bit count利用)が、
+    /// strideが2の累乗の倍数のケース(32)と非倍数のケース(33)の両方で正しく動くこと。
     func testPaged0() throws {
       do {
         let stride = 33

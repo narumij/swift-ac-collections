@@ -12,6 +12,9 @@ import XCTest
 
   final class BucketQueueTests: RedBlackTreeTestCase {
 
+    /// headバケツの`_BucketQueue`が、各種payload型・容量に対して開始ノード/各要素の
+    /// アライメントと歩幅(`pairStride`)を正しく保ち、`header.queue(pairLayout:)`経由で
+    /// 取得したキューとも一致すること。
     func testHeadQueueAlignment() throws {
       for n in (0..<12).map({ 1 << $0 }) {
         try checkQueueAlignment(Int8.self, capacity: n, isHead: true)
@@ -47,6 +50,8 @@ import XCTest
       }
     }
 
+    /// otherバケツでも同様に、各種payload型・容量に対して開始ノード/各要素の
+    /// アライメントと歩幅を正しく保つこと。
     func testOtherQueueAlignment() throws {
       for n in (0..<12).map({ 1 << $0 }) {
         try checkQueueAlignment(Int8.self, capacity: n, isHead: false)

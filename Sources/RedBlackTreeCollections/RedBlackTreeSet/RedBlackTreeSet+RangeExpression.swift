@@ -30,8 +30,8 @@
 
   extension RedBlackTreeSet {
 
-    public typealias IndexRange = UnsafeIndexV3Range
-    public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
+    public typealias IndexRange = RedBlackTreeIndexRange
+    public typealias IndexRangeExpression = RedBlackTreeIndexRangeExpression
   }
 
   extension RedBlackTreeSet {
@@ -245,7 +245,7 @@
 
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
-    public func equalRange(_ element: Element) -> UnsafeIndexV3Range {
+    public func equalRange(_ element: Element) -> RedBlackTreeIndexRange {
       let (lower, upper) = __tree_.__equal_range_unique(element)
       return .init(.init(lowerBound: ___index(lower), upperBound: ___index(upper)))
     }

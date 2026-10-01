@@ -39,6 +39,105 @@ final class TreeFoundamentalSafePtrTests: RedBlackTreeTestCase, _UnsafeNodePtrTy
     XCTAssertFalse(successReal.___is_end)
   }
 
+  /// `_SafePtr`の`==`/`!=`が、`.success`同士は実ポインタの一致、`.failure`同士は
+  /// エラーの一致で判定し、`.success`と`.failure`は常に不一致と判定すること。
+  func testSafePtr_equatable_successFailureAndMixedCases() {
+    var fixture = makeFixture()
+    let a = fixture.node(0)
+    let b = fixture.node(1)
+
+    let successA: _SafePtr = .success(a)
+    let successA2: _SafePtr = .success(a)
+    let successB: _SafePtr = .success(b)
+    let failureNull: _SafePtr = .failure(.null)
+    let failureNull2: _SafePtr = .failure(.null)
+    let failureLimit: _SafePtr = .failure(.limit)
+
+    XCTAssertTrue(successA == successA2)
+    XCTAssertFalse(successA == successB)
+    XCTAssertTrue(failureNull == failureNull2)
+    XCTAssertFalse(failureNull == failureLimit)
+    XCTAssertFalse(successA == failureNull)
+    XCTAssertTrue(successA != failureNull)
+  }
+
+  /// `UnsafeMutablePointer<UnsafeNode>.unchecked`が常に`.success(self)`を返すこと。
+  func testPointer_unchecked_alwaysSucceeds() {
+    var fixture = makeFixture()
+    let node = fixture.node(0)
+    node.pointee.___tracking_tag = 0
+    let safe: _SafePtr = node.unchecked
+    XCTAssertTrue(safe == .success(node))
+  }
+
+  /// `_SafePtr.pointer`が、`.success`ならそのポインタを、`.failure`なら`nil`を返すこと。
+  func testSafePtr_pointer_unwrapsSuccessOrNilOnFailure() {
+    var fixture = makeFixture()
+    let node = fixture.node(0)
+    let success: _SafePtr = .success(node)
+    let failure: _SafePtr = .failure(.garbaged)
+
+    XCTAssertEqual(success.pointer, node)
+    XCTAssertNil(failure.pointer)
+  }
+
+  /// `_SafePtr.___has_payload_content`が、`.success`なら実ポインタのpayload有無を
+  /// 反映し、`.failure`なら常に`false`になること。
+  func testSafePtr_hasPayloadContent_reflectsUnderlyingNodeOrFalseOnFailure() {
+    var fixture = makeFixture()
+    let withPayload = fixture.node(0)
+    withPayload.pointee.___has_payload_content = true
+    let withoutPayload = fixture.node(1)
+    withoutPayload.pointee.___has_payload_content = false
+
+    XCTAssertTrue((_SafePtr.success(withPayload)).___has_payload_content)
+    XCTAssertFalse((_SafePtr.success(withoutPayload)).___has_payload_content)
+    XCTAssertFalse((_SafePtr.failure(.garbaged)).___has_payload_content)
+  }
+
+  /// `_SafePtr.accessible`が、payloadを持つ`.success`はそのまま通し、payloadを
+  /// 持たない`.success`は`.failure(.garbaged)`に変換すること。`___has_payload_content`は
+  /// `.failure`では常に`false`になるため、`.failure`も(元のエラー種別に関わらず)
+  /// `.failure(.garbaged)`へ正規化される。
+  func testSafePtr_accessible_convertsMissingPayloadOrAnyFailureToGarbaged() {
+    var fixture = makeFixture()
+    let withPayload = fixture.node(0)
+    withPayload.pointee.___has_payload_content = true
+    let withoutPayload = fixture.node(1)
+    withoutPayload.pointee.___has_payload_content = false
+
+    let a: _SafePtr = .success(withPayload)
+    let b: _SafePtr = .success(withoutPayload)
+    let c: _SafePtr = .failure(.null)
+
+    XCTAssertTrue(a.accessible == a)
+    XCTAssertTrue(b.accessible == .failure(.garbaged))
+    XCTAssertTrue(c.accessible == .failure(.garbaged))
+  }
+
+  /// `_SafePtr.uncheckedSeal`が、`.success`は`_SealedPtr.success`へ変換し、
+  /// `.failure`はエラーをそのまま伝播すること。
+  func testSafePtr_uncheckedSeal_wrapsSuccessOrPropagatesFailure() {
+    var fixture = makeFixture()
+    let node = fixture.node(0)
+    node.pointee.___tracking_tag = 0
+
+    let success: _SafePtr = .success(node)
+    let failure: _SafePtr = .failure(.null)
+
+    guard case .success(let sealing) = success.uncheckedSeal else {
+      XCTFail("successはuncheckedSealで.successになるはず")
+      return
+    }
+    XCTAssertEqual(sealing.pointer, node)
+
+    guard case .failure(let error) = failure.uncheckedSeal else {
+      XCTFail("failureはuncheckedSealでもfailureのまま")
+      return
+    }
+    XCTAssertEqual(error, .null)
+  }
+
   // MARK: - _SealedPtr(Result<_NodePtrSealing, SealError>)
 
   /// `_SealedPtr`の`==`/`!=`が、同一ポインタのシールなら等しく、
@@ -72,6 +171,55 @@ final class TreeFoundamentalSafePtrTests: RedBlackTreeTestCase, _UnsafeNodePtrTy
     XCTAssertFalse(success == failure)
     XCTAssertTrue(success != failure)
   }
+
+  /// `_SealedPtr.purified`/`.tag`/`.pointer`/`.accessible`/`.error`が、`.failure`の
+  /// 場合はクロージャを呼ばずエラーをそのまま伝播すること。
+  func testSealedPtr_derivedProperties_propagateFailureWithoutInvokingClosure() {
+    let failure: _SealedPtr = .failure(.notAllowed)
+
+    guard case .failure(let purifiedError) = failure.purified else { XCTFail(); return }
+    XCTAssertEqual(purifiedError, .notAllowed)
+
+    guard case .failure(let tagError) = failure.tag else { XCTFail(); return }
+    XCTAssertEqual(tagError, .notAllowed)
+
+    XCTAssertNil(failure.pointer)
+
+    guard case .failure(let accessibleError) = failure.accessible else { XCTFail(); return }
+    XCTAssertEqual(accessibleError, .notAllowed)
+
+    XCTAssertEqual(failure.error, .notAllowed)
+  }
+
+  /// `_SealedPtr.purified`/`.tag`/`.pointer`/`.accessible`/`.error`が、`.success`の
+  /// 場合は内部の`_NodePtrSealing`へ処理を委譲すること。
+  func testSealedPtr_derivedProperties_delegateToNodePtrSealingOnSuccess() {
+    var fixture = makeFixture()
+    let node = fixture.node(0)
+    node.pointee.___tracking_tag = 0
+    node.pointee.___has_payload_content = true
+
+    let sealed: _SealedPtr = node.uncheckedSeal
+
+    XCTAssertTrue(sealed.purified == sealed)
+    XCTAssertNil(sealed.tag.error)
+    XCTAssertEqual(sealed.pointer, node)
+    XCTAssertTrue(sealed.accessible == sealed)
+    XCTAssertNil(sealed.error)
+  }
+
+  /// `_SealedPtr.deepPurified`(`ALLOW_CROSS_TREE_INDEX`)が、`.success`の場合は
+  /// 内部の`_NodePtrSealing.deepPurified`へ処理を委譲すること。
+  #if ALLOW_CROSS_TREE_INDEX
+    func testSealedPtr_deepPurified_delegatesToNodePtrSealingOnSuccess() {
+      var fixture = makeFixture()
+      let node = fixture.node(0)
+      node.pointee.___tracking_tag = 0
+      node.pointee.___has_payload_content = true
+      let sealed: _SealedPtr = node.uncheckedSeal
+      XCTAssertTrue(sealed.deepPurified == sealed)
+    }
+  #endif
 
   // MARK: - errorMessage
 

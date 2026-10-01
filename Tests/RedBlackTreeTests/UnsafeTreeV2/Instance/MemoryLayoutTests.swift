@@ -4,6 +4,9 @@ import XCTest
 
 final class MemoryLayoutTests: XCTestCase {
 
+    /// `MemoryLayout<Payload>._pairLayout`(Node+Payloadの組のレイアウト)が、
+    /// 各種payload型に対して正しいアライメント・歩幅(余分なpaddingなし)を持ち、
+    /// 連続する2要素目のノード/payloadも正しい位置・アライメントになること。
     func testNodeAndPayloadMemoryLayout() {
         checkMemoryLayout(Int8.self)
         checkMemoryLayout(Int16.self)

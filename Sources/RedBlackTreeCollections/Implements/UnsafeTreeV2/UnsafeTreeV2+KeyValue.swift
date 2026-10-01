@@ -88,18 +88,20 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
       let (__parent, __child) = __find_equal(key)
 
-      if __child.pointee == nullptr {
+      var __node = __child.pointee
+
+      if __node == nullptr {
         unsafeEnsureCapacity()
         assert(capacity > count)
         update {
-          let __h = $0.__construct_node(Base.__payload_((key, defaultValue())))
-          $0.__insert_node_at(__parent, __child, __h)
+          __node = $0.__construct_node(Base.__payload_((key, defaultValue())))
+          $0.__insert_node_at(__parent, __child, __node)
         }
       }
 
       defer { _fixLifetime(self) }
-      
-      yield &Base.__mapped_value_ptr(__child.pointee).pointee
+
+      yield &Base.__mapped_value_ptr(__node).pointee
     }
   }
 
@@ -111,18 +113,20 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
     let (__parent, __child) = __find_equal(key)
 
-    if __child.pointee == nullptr {
+    var __node = __child.pointee
+
+    if __node == nullptr {
       unsafeEnsureCapacity()
       assert(capacity > count)
       update {
-        let __h = $0.__construct_node(Base.__payload_((key, defaultValue())))
-        $0.__insert_node_at(__parent, __child, __h)
+        __node = $0.__construct_node(Base.__payload_((key, defaultValue())))
+        $0.__insert_node_at(__parent, __child, __node)
       }
     }
 
 //    defer { _fixLifetime(self) }
-    
-    return Base.__mapped_value_ptr(__child.pointee)
+
+    return Base.__mapped_value_ptr(__node)
   }
 }
 

@@ -149,7 +149,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   }
 
   @inlinable
-  var accessible: _SafePtr {
+  package var accessible: _SafePtr {
     ___has_payload_content ? self : .failure(.garbaged)
   }
 }

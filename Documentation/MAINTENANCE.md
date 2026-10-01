@@ -20,8 +20,7 @@
 
 ### 優先事項
 
-- `RedBlackTreeMultiSet`、`RedBlackTreeDictionary`、`RedBlackTreeMultiMap`について、`RedBlackTreeSet`と同様にDocCのTopicsとイニシャライザ表示を確認する
-- `main`のCIでGitHub PagesへのDocC公開が完了し、常設URLから閲覧できることを確認する
+- `RedBlackTreeMultiSet`、`RedBlackTreeDictionary`、`RedBlackTreeMultiMap`へ追加したイニシャライザTopicsのCI検証結果を確認する
 
 ### 相談事項
 
@@ -40,13 +39,13 @@
 
 ### 保留中の判断・懸念
 
-- GitHub Pagesの初回公開結果とURLを確認する
-- Set以外の3型について、DocCの自動分類だけで十分か確認する
+- Set以外の3型について、イニシャライザ以外のDocC自動分類も手動Topicsへ広げる必要があるか確認する
 
 ### 完了済みの要望
 
 (ユーザーが確認したら各項目を整理します)
 
+- 2026-10-01 12:36 JST Codex (GPT-5): `main`のCIによるGitHub Pages初回公開が成功し、常設URLから閲覧できることをユーザーが確認した。
 - 2026-10-01 12:27 JST Codex (GPT-5): ドキュメントメンテナンス専用の作業連絡文書として、この`Documentation/MAINTENANCE.md`を作成した。
 
 ## 文書の役割と正本
@@ -134,5 +133,4 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
-- 2026-10-01 12:27 JST Codex (GPT-5): DocC生成をDebugからReleaseへ統一した。CI、`README.md`、`README.ja.md`のコマンドへSwiftPMグローバルオプション`-c release`を追加済み。次の候補は、Set以外の3型に対するDocC Topicsの確認と整備。
-
+- 2026-10-01 12:36 JST Codex (GPT-5): 公開済みのRelease版DocC JSONとソース宣言を照合し、MultiSet 7件、Dictionary 9件、MultiMap 8件の明示的な公開イニシャライザを手動Topicsへ追加した。Sequence、Collection、RangeExpressionのオーバーロードは公開済みJSONからDocCの識別子を確認した。全24リンクが公開済みDocC上でHTTP 200になることを確認。ローカルのSwiftPM実行は環境の`sandbox-exec: sandbox_apply: Operation not permitted`で開始できないため、最終的な`--warnings-as-errors`検証はCI結果を確認する。

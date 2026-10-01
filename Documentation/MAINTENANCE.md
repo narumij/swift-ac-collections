@@ -45,6 +45,7 @@
 
 (ユーザーが確認したら各項目を整理します)
 
+- 2026-10-01 12:56 JST Codex (GPT-5): 4型のDocC分類をAPI Matrix準拠からSwift標準`Set`/`Dictionary`準拠へ改訂。`Testing for Membership`、`Finding Elements/Keys`、`Adding and Updating Elements/Keys and Values`、`Removing Elements/Keys and Values`、`Combining Sets/MultiSets/MultiMaps`、`Merging Dictionaries`、`Transforming`、`Comparing`、`Reserving Storage`へ整理した。独自のIndexおよびRange/Bound分類は維持し、自動分類に残っていた`erase`、`formIndex`、`merge`/`merging`等の全オーバーロードも手動Topicsへ収容した。
 - 2026-10-01 12:43 JST Codex (GPT-5): `API-Matrix.md`と`API-Matrix-View.md`を基準にDocCの導線を整備。4型に共通する検索、挿入・更新、削除、Range/Boundの意味を説明する`CommonOperations.md`を追加し、モジュールページと4型ページからリンクした。KeyOnly Range View、KeyValue Range View、MappedValues Viewには、基本状態、Index検証、参照・更新、削除、走査・比較をMatrixの区分に沿って手動Topics化した。
 - 2026-10-01 12:36 JST Codex (GPT-5): `main`のCIによるGitHub Pages初回公開が成功し、常設URLから閲覧できることをユーザーが確認した。
 - 2026-10-01 12:27 JST Codex (GPT-5): ドキュメントメンテナンス専用の作業連絡文書として、この`Documentation/MAINTENANCE.md`を作成した。
@@ -66,6 +67,15 @@
 APIの有無は実装とAPI Matrix、挙動は実装とテストを照合して判断する。説明文書だけを根拠に別の説明文書を更新しない。
 
 ## メンテナンス規則
+
+### DocC Topics
+
+- Topicsの分類名と構成は、利用者がSwift標準ライブラリから類推できるよう、原則として標準`Set`と`Dictionary`に合わせる
+- Set系では`Testing for Membership`、`Adding and Updating Elements`、`Removing Elements`、`Combining Sets`など、Dictionary系では`Accessing Keys and Values`、`Adding and Updating Keys and Values`、`Removing Keys and Values`、`Merging Dictionaries`などの利用目的別分類を優先する
+- MultiSetとMultiMapも、対応するSetまたはDictionaryの分類を基礎とし、重複要素・重複キー固有の操作を同じ文脈へ配置する
+- `API-Matrix.md`と`API-Matrix-View.md`はTopicsの分類体系として使わない。公開メンバーの掲載漏れ、4型間の差異、View間の差異を確認するチェックリストとして使う
+- Index、Range、Boundなど標準コレクションより強く表面化している独自APIは、本ライブラリ固有のTopicsとして追加する
+- 標準`Sequence`由来の汎用メソッドを具象型ページへ無制限に重複掲載せず、主要操作以外は`Default Implementations`に残す
 
 ### 日英文書
 
@@ -134,4 +144,4 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
-- 2026-10-01 12:43 JST Codex (GPT-5): 公開済みRelease版DocC JSON、`API-Matrix.md`、`API-Matrix-View.md`を照合し、3型のイニシャライザTopicsに加えて共通操作ガイドと3種類のView Topicsを追加した。照合中にDictionaryの`insert(key:value:hint:)`と`update(_:hint:)`のMatrix同期漏れを修正。Viewのリンク識別子は具象ページおよびDefault Implementationsの公開JSONで確認した。ローカルのSwiftPM実行は環境のsandboxエラーで開始できないため、最終的な`--warnings-as-errors`検証はCI結果を確認する。
+- 2026-10-01 12:56 JST Codex (GPT-5): 公開済みRelease版DocC JSON、`API-Matrix.md`、`API-Matrix-View.md`を照合し、4型の主要メンバー、3型のイニシャライザ、共通操作ガイド、3種類のViewを手動Topics化した。分類はSwift標準`Set`/`Dictionary`へ寄せ、API Matrixは掲載漏れの照合に使用する方針へ変更。オーバーロード識別子は具象ページおよびDefault Implementationsの公開JSONから取得した。ローカルのSwiftPM実行は環境のsandboxエラーで開始できないため、最終的な`--warnings-as-errors`検証はCI結果を確認する。

@@ -74,6 +74,8 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-01 12:04 Codex (GPT-5): DocC CIのartifact upload失敗を修正。DocCが演算子シンボル用に生成する`'...(_:)-1pmkc.json`等のファイル名には`:`が含まれ、`actions/upload-artifact@v4`がNTFS互換制約で拒否するため、生成ディレクトリを`tar.gz`へ固めて単一ファイルをアップロードする構成へ変更。実際のDocC archiveを用いて禁止文字を含むファイルがtar内に保持されることを確認し、workflow YAML構文確認・`git diff --check`成功。Nodeの`punycode`非推奨表示はAction内部の警告であり失敗原因ではない。
+
 ### 内部区分
 
 (テスト用区分であり、ソースのフォルダレイアウトを規定するものではない）

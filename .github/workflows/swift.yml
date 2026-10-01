@@ -30,11 +30,16 @@ jobs:
           --hosting-base-path swift-ac-collections
           --warnings-as-errors
 
+      - name: Archive documentation
+        run: >-
+          tar -czf .build/RedBlackTreeCollections-documentation.tar.gz
+          -C .build/documentation .
+
       - name: Upload documentation
         uses: actions/upload-artifact@v4
         with:
           name: RedBlackTreeCollections-documentation
-          path: .build/documentation
+          path: .build/RedBlackTreeCollections-documentation.tar.gz
           if-no-files-found: error
 
   debug:

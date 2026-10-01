@@ -35,7 +35,7 @@ where
   }
 
   public typealias Base = Container.Base
-  public typealias Index = UnsafeIndexV3
+  public typealias Index = RedBlackTreeIndex
   public typealias Element = Container.Base.Element
   public typealias Key = Container.Base._Key
   public typealias Value = Container.Base._MappedValue
@@ -207,6 +207,7 @@ extension RedBlackTreeKeyValueRangeView {
 
 // MARK: -
 
+@_documentation(visibility: internal)
 public protocol KeyValueBaseInit: ___Root
 where Base: ___TreeBase & PairValueTrait {
   static func _create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self
@@ -226,6 +227,7 @@ extension RedBlackTreeMultiMap: KeyValueBaseInit {
 
 extension RedBlackTreeKeyValueRangeView where Container: KeyValueBaseInit {
   @available(*, deprecated)
+  @_documentation(visibility: internal)
   public func unranged() -> Container { ._create(self) }
 }
 

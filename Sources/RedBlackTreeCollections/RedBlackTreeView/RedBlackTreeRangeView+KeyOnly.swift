@@ -35,7 +35,7 @@ where
   }
 
   public typealias Base = Container.Base
-  public typealias Index = UnsafeIndexV3
+  public typealias Index = RedBlackTreeIndex
   public typealias Element = Container.Base._PayloadValue
 
   @usableFromInline
@@ -144,6 +144,7 @@ extension RedBlackTreeKeyOnlyRangeView {
 
 // MARK: -
 
+@_documentation(visibility: internal)
 public protocol ScalarBaseInit: ___Root
 where Self.Base: ___TreeBase & ScalarValueTrait {
   static func _create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self
@@ -163,6 +164,7 @@ extension RedBlackTreeMultiSet: ScalarBaseInit {
 
 extension RedBlackTreeKeyOnlyRangeView where Container: ScalarBaseInit {
   @available(*, deprecated)
+  @_documentation(visibility: internal)
   public func unranged() -> Container { ._create(self) }
 }
 

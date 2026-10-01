@@ -23,7 +23,13 @@
 // 木のノード識別子
 //
 // - Important: 生成元以外の木での使用は未定義。
+@_documentation(visibility: internal)
 public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
+
+#if !COMPATIBLE_ATCODER_2025
+  /// An index into a red-black-tree collection.
+  public typealias RedBlackTreeIndex = UnsafeIndexV3
+#endif
 
 // 内部実装では CoW 由来の差異を救済することがある。
 // その結果として異なる木でも使えてしまう可能性があるが、仕様上は未定義。
@@ -51,4 +57,3 @@ public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
 
 // Index は Equatable / Comparable / Hashable を要求し、それらの比較・hash は O(1) としている。
 // ×
-

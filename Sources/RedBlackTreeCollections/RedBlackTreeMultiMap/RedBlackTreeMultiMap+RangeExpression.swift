@@ -25,8 +25,8 @@
   extension RedBlackTreeMultiMap {
 
     public typealias View = RedBlackTreeKeyValueRangeView<Self>
-    public typealias IndexRange = UnsafeIndexV3Range
-    public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
+    public typealias IndexRange = RedBlackTreeIndexRange
+    public typealias IndexRangeExpression = RedBlackTreeIndexRangeExpression
   }
 
   extension RedBlackTreeMultiMap {

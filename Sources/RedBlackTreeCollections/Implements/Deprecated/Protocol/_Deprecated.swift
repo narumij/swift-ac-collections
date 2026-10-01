@@ -12,7 +12,6 @@
       & UnsafeIndexProviderProtocolV2
   {}
 
-  public typealias RedBlackTreeIndex = UnsafeIndexV2
   public typealias RedBlackTreeIndices = UnsafeIndexV2Collection
   public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
 

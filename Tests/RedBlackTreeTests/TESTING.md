@@ -301,6 +301,8 @@ xcrun llvm-cov show \
 
 - **比較注入のbounds/count横展開**(2026-10-01 23:17 JST、Codex GPT-5): 同じstatic/Base注入とBaseなし・状態保持インスタンス注入の二経路で、`lower_bound`/`upper_bound`およびunique/multiの`count`を固定した。境界の外側を含む7キーで両経路のbound結果を比較し、重複するin-order列`10, 20, 20`ではmulti countが2、unique countが1となることも確認した。`swift test --disable-sandbox --enable-code-coverage --filter TreeFoundamental`でTree配下全105件成功。原木全体の行カバレッジは80.07%(1663/2077行)、`unsafe_tree+count.swift`は100%(34/34行)、`unsafe_tree+bounds.swift`は50.67%(38/75行)、`unsafe_tree+find.swift`は46.09%(106/230行)。設計意図の記録段階であり、`_ValueCompBridge`の除去や公開設計の確定は行っていない。
 
+- **三方比較・hint探索への比較注入横展開**(2026-10-01 23:23 JST、Codex GPT-5): 三方比較版`__find_equal`・unique lower/upper bound・lower-bound版`find`にも、static/Base経路とBaseなし`~Copyable`インスタンス経路を接続した。さらにhint付きleaf/equal探索で、hint直前・直後、通常探索へのfallback、一致時のdummy参照書き込みを両経路で比較した。`_ValueCompBridge`はstatic経路のアダプターとして残し、除去判断はしていない。Tree配下全107件成功。原木全体の行カバレッジは86.42%(1795/2077行)、`unsafe_tree+find.swift`は92.61%(213/230行)、`unsafe_tree+bounds.swift`は84.00%(63/75行)、`unsafe_tree+count.swift`は100%(34/34行)。
+
 ### 年代順ログ
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。旧 `set` フォルダの Swift テストは残っていない。

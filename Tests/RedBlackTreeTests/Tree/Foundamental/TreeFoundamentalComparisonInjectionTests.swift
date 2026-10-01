@@ -26,7 +26,106 @@ import XCTest
     /// `_ValueCompBridge`を経由し、インスタンス要件を`Base.value_comp`へ委譲する経路。
     private struct StaticInjectedTree: _UnsafeNodePtrType, _BaseBridge, _KeyBride,
       _ValueCompBridge, FindLeafProtocol_ptr, FindEqualInterface, FindEqualProtocol_ptr_old,
-      FindProtocol_find_equal_ptr, BoundAlgorithmProtocol_legacy_ptr, CountProtocol_ptr
+      FindProtocol_find_equal_ptr, BoundAlgorithmProtocol_legacy_ptr, CountProtocol_ptr,
+      TreeAlgorithmBaseProtocol_ptr, FindHintLeafProtocol_ptr, FindHintEqualProtocol_ptr
+    {
+      typealias Base = StaticBase
+      typealias _Key = Int
+      typealias __node_value_type = Int
+      typealias __compare_result = __int_compare_result
+
+      let endNode: _NodePtr
+
+      var nullptr: _NodePtr { .nullptr }
+      var end: _NodePtr { endNode }
+      var __end_node: _NodePtr { endNode }
+      var __root: _NodePtr { endNode.__left_ }
+      var __begin_node_: _NodePtr {
+        get { __root == nullptr ? end : __tree_min(__root) }
+        nonmutating set {}
+      }
+
+      func __root_ptr() -> _NodeRef {
+        endNode.__left_ref
+      }
+
+      func __get_value(_ p: _NodePtr) -> Int {
+        Base.__get_value(p)
+      }
+
+      func __comp(_ lhs: Int, _ rhs: Int) -> __int_compare_result {
+        Base.compare(lhs, rhs)
+      }
+
+      func lower_bound(_ value: Int) -> _NodePtr {
+        __lower_bound_unique(value)
+      }
+
+      func upper_bound(_ value: Int) -> _NodePtr {
+        __upper_bound_unique(value)
+      }
+    }
+
+    private final class ComparisonProbe {
+      var callCount = 0
+    }
+
+    /// `Base`を持たず、fixtureの状態を使うインスタンス比較経路。
+    private struct InstanceInjectedTree: ~Copyable, _UnsafeNodePtrType, FindLeafProtocol_ptr,
+      FindEqualInterface, FindEqualProtocol_ptr_old, FindProtocol_find_equal_ptr,
+      BoundAlgorithmProtocol_legacy_ptr, CountProtocol_ptr, TreeAlgorithmBaseProtocol_ptr,
+      FindHintLeafProtocol_ptr, FindHintEqualProtocol_ptr
+    {
+      typealias _Key = Int
+      typealias __node_value_type = Int
+      typealias __compare_result = __int_compare_result
+
+      let endNode: _NodePtr
+      let probe: ComparisonProbe
+      let descending: Bool
+
+      var nullptr: _NodePtr { .nullptr }
+      var end: _NodePtr { endNode }
+      var __end_node: _NodePtr { endNode }
+      var __root: _NodePtr { endNode.__left_ }
+      var __begin_node_: _NodePtr {
+        get { __root == nullptr ? end : __tree_min(__root) }
+        nonmutating set {}
+      }
+
+      func __root_ptr() -> _NodeRef {
+        endNode.__left_ref
+      }
+
+      func __get_value(_ p: _NodePtr) -> Int {
+        p.pointee.___tracking_tag
+      }
+
+      func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {
+        probe.callCount += 1
+        return descending ? lhs > rhs : lhs < rhs
+      }
+
+      func __comp(_ lhs: Int, _ rhs: Int) -> __int_compare_result {
+        probe.callCount += 1
+        return descending
+          ? __default_three_way_comparator(rhs, lhs)
+          : __default_three_way_comparator(lhs, rhs)
+      }
+
+      func lower_bound(_ value: Int) -> _NodePtr {
+        __lower_bound_unique(value)
+      }
+
+      func upper_bound(_ value: Int) -> _NodePtr {
+        __upper_bound_unique(value)
+      }
+    }
+
+    /// 三方比較で実装された現行のequal/boundアルゴリズムへstatic比較を注入する経路。
+    private struct StaticThreeWayInjectedTree: _UnsafeNodePtrType, _BaseBridge, _KeyBride,
+      _ValueCompBridge, TreeAlgorithmBaseProtocol_ptr, FindEqualProtocol_ptr,
+      BoundAlgorithmProtocol_ptr, FindProtocol_lower_bound_ptr
     {
       typealias Base = StaticBase
       typealias _Key = Int
@@ -61,14 +160,10 @@ import XCTest
       }
     }
 
-    private final class ComparisonProbe {
-      var callCount = 0
-    }
-
-    /// `Base`を持たず、fixtureの状態を使うインスタンス比較経路。
-    private struct InstanceInjectedTree: ~Copyable, _UnsafeNodePtrType, FindLeafProtocol_ptr,
-      FindEqualInterface, FindEqualProtocol_ptr_old, FindProtocol_find_equal_ptr,
-      BoundAlgorithmProtocol_legacy_ptr, CountProtocol_ptr
+    /// `Base`なしの三方比較を、noncopyableなインスタンスから直接注入する経路。
+    private struct InstanceThreeWayInjectedTree: ~Copyable, _UnsafeNodePtrType,
+      TreeAlgorithmBaseProtocol_ptr, FindEqualProtocol_ptr, BoundAlgorithmProtocol_ptr,
+      FindProtocol_lower_bound_ptr
     {
       typealias _Key = Int
       typealias __node_value_type = Int
@@ -329,6 +424,106 @@ import XCTest
       XCTAssertEqual(instanceTree.__count_multi(20), 2)
       XCTAssertEqual(staticTree.__count_unique(20), 1)
       XCTAssertEqual(instanceTree.__count_unique(20), 1)
+    }
+
+    /// 三方比較版のequal・unique bound・lower-bound版findも、static/Base経路と
+    /// Baseなしインスタンス経路で同じ結果を返すこと。
+    func testThreeWayAlgorithms_supportStaticBaseAndInstanceComparisonInjection() {
+      var fixture = TreeNodeOnlyFixture.makeEmpty()
+      let end = makeThreeNodeTree(&fixture)
+      let staticTree = StaticThreeWayInjectedTree(endNode: end)
+      let probe = ComparisonProbe()
+      let instanceTree = InstanceThreeWayInjectedTree(
+        endNode: end,
+        probe: probe,
+        descending: false)
+
+      let cases: [(key: Int, lower: Int?, upper: Int?)] = [
+        (5, 10, 10),
+        (10, 10, 20),
+        (15, 20, 20),
+        (20, 20, 30),
+        (25, 30, 30),
+        (30, 30, nil),
+        (35, nil, nil),
+      ]
+
+      for item in cases {
+        let staticEqual = staticTree.__find_equal(item.key)
+        let instanceEqual = instanceTree.__find_equal(item.key)
+        XCTAssertEqual(staticEqual.__parent, instanceEqual.__parent)
+        XCTAssertEqual(staticEqual.__child, instanceEqual.__child)
+
+        let staticLower = staticTree.__lower_bound_unique(item.key)
+        let instanceLower = instanceTree.__lower_bound_unique(item.key)
+        let staticUpper = staticTree.__upper_bound_unique(item.key)
+        let instanceUpper = instanceTree.__upper_bound_unique(item.key)
+        XCTAssertEqual(staticLower, instanceLower)
+        XCTAssertEqual(staticUpper, instanceUpper)
+        XCTAssertEqual(staticLower == end ? nil : staticLower.pointee.___tracking_tag, item.lower)
+        XCTAssertEqual(staticUpper == end ? nil : staticUpper.pointee.___tracking_tag, item.upper)
+
+        let expectedFind = [10, 20, 30].contains(item.key) ? item.key : nil
+        let staticFound = staticTree.find(item.key)
+        let instanceFound = instanceTree.find(item.key)
+        XCTAssertEqual(staticFound, instanceFound)
+        XCTAssertEqual(staticFound == end ? nil : staticFound.pointee.___tracking_tag, expectedFind)
+      }
+      XCTAssertGreaterThan(probe.callCount, 0)
+    }
+
+    /// hint付き探索でも、hint直前・直後・通常探索へのfallback・一致時dummy参照の各経路が、
+    /// static/Base比較とBaseなしインスタンス比較で一致すること。
+    func testHintedSearch_supportsStaticBaseAndInstanceComparisonInjection() {
+      var fixture = TreeNodeOnlyFixture.makeEmpty()
+      let end = makeThreeNodeTree(&fixture)
+      let left = fixture.node(0)
+      let root = fixture.node(1)
+      let right = fixture.node(2)
+      let staticTree = StaticInjectedTree(endNode: end)
+      let probe = ComparisonProbe()
+      let instanceTree = InstanceInjectedTree(endNode: end, probe: probe, descending: false)
+
+      let leafCases: [(hint: UnsafeMutablePointer<UnsafeNode>, key: Int)] = [
+        (end, 35),
+        (left, 5),
+        (root, 15),
+        (root, 25),
+        (right, 5),
+      ]
+      for item in leafCases {
+        var staticParent = UnsafeMutablePointer<UnsafeNode>.nullptr
+        var instanceParent = UnsafeMutablePointer<UnsafeNode>.nullptr
+        let staticLeaf = staticTree.__find_leaf(item.hint, &staticParent, item.key)
+        let instanceLeaf = instanceTree.__find_leaf(item.hint, &instanceParent, item.key)
+        XCTAssertEqual(staticParent, instanceParent)
+        XCTAssertEqual(staticLeaf, instanceLeaf)
+      }
+
+      let equalCases: [(hint: UnsafeMutablePointer<UnsafeNode>, key: Int)] = [
+        (end, 35),
+        (left, 10),
+        (root, 15),
+        (root, 20),
+        (root, 25),
+        (right, 5),
+      ]
+      for item in equalCases {
+        var staticDummy = UnsafeMutablePointer<UnsafeNode>.nullptr
+        var instanceDummy = UnsafeMutablePointer<UnsafeNode>.nullptr
+        withUnsafeMutablePointer(to: &staticDummy) { staticDummyRef in
+          withUnsafeMutablePointer(to: &instanceDummy) { instanceDummyRef in
+            let staticResult = staticTree.__find_equal(item.hint, staticDummyRef, item.key)
+            let instanceResult = instanceTree.__find_equal(item.hint, instanceDummyRef, item.key)
+            XCTAssertEqual(staticResult.__parent, instanceResult.__parent)
+            XCTAssertEqual(staticResult.__child.pointee, instanceResult.__child.pointee)
+            XCTAssertEqual(
+              staticResult.__child == staticDummyRef,
+              instanceResult.__child == instanceDummyRef)
+          }
+        }
+      }
+      XCTAssertGreaterThan(probe.callCount, 0)
     }
   }
 #endif

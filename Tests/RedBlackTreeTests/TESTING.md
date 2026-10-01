@@ -303,6 +303,10 @@ xcrun llvm-cov show \
 
 - **三方比較・hint探索への比較注入横展開**(2026-10-01 23:23 JST、Codex GPT-5): 三方比較版`__find_equal`・unique lower/upper bound・lower-bound版`find`にも、static/Base経路とBaseなし`~Copyable`インスタンス経路を接続した。さらにhint付きleaf/equal探索で、hint直前・直後、通常探索へのfallback、一致時のdummy参照書き込みを両経路で比較した。`_ValueCompBridge`はstatic経路のアダプターとして残し、除去判断はしていない。Tree配下全107件成功。原木全体の行カバレッジは86.42%(1795/2077行)、`unsafe_tree+find.swift`は92.61%(213/230行)、`unsafe_tree+bounds.swift`は84.00%(63/75行)、`unsafe_tree+count.swift`は100%(34/34行)。
 
+- **探索境界とequal-range**(2026-10-01 23:28 JST、Codex GPT-5): 空木のhigh leaf・三方equal、hintの左右直結とfallback、`find_first`、`isMulti`によるbound dispatchを追加し、`unsafe_tree+find.swift`は99.57%(229/230行。残る1行は関数末尾の閉じ括弧)、`unsafe_tree+bounds.swift`は100%となった。さらにunique/multiのequal-rangeをstatic/Base比較と状態を持つインスタンス比較で固定し、重複木も検証、`unsafe_tree+equal.swift`は0%から100%。ただし`EqualProtocol_ptr`自体がまだ`~Copyable`対応されておらずソースにもTODOがあるため、equal-rangeのインスタンス側ラッパーだけはCopyableである。この制約は将来のポータブル化・noncopyable対応時の検討事項。Tree配下全108件成功、原木全体の行カバレッジは90.18%(1873/2077行)。
+
+- **所有fixtureによる原木mutation**(2026-10-01 23:35 JST、Codex GPT-5): `TreeFoundamentalMutationTests`を追加し、`TreeOwnedNodeFixture<Int>`をallocation/deallocation実装として直接合成した`~Copyable`ハーネスで、unique/multi挿入、重複拒否、単体・範囲・key削除、空木/非空木の末尾挿入位置計算を検証した。各mutation後に赤黒木不変条件を確認し、終了時にsize・root・beginと所有allocationがすべて空へ戻ることも固定した。Tree配下全112件成功。`unsafe_tree+remove.swift`は0%から100%、`insert`は20.66%から44.63%、`erase`は0%から68.97%、原木全体の行カバレッジは93.07%(1933/2077行)。追加検討中に`___emplace_hint_right`を汎用hint挿入のように扱って後続の別挿入経路へ接続するとbalance内部assertへ到達したが、これはrange構築専用APIの呼び出し前提を外したテストだった。実装バグとは扱わず、当該ケースも採用していない。
+
 ### 年代順ログ
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。旧 `set` フォルダの Swift テストは残っていない。

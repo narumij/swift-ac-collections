@@ -125,7 +125,8 @@ import XCTest
     /// 三方比較で実装された現行のequal/boundアルゴリズムへstatic比較を注入する経路。
     private struct StaticThreeWayInjectedTree: _UnsafeNodePtrType, _BaseBridge, _KeyBride,
       _ValueCompBridge, TreeAlgorithmBaseProtocol_ptr, FindEqualProtocol_ptr,
-      BoundAlgorithmProtocol_ptr, FindProtocol_lower_bound_ptr
+      BoundAlgorithmProtocol_ptr, BoundBothProtocol, FindProtocol_lower_bound_ptr,
+      FindFirstProtocol_ptr, EqualProtocol_ptr
     {
       typealias Base = StaticBase
       typealias _Key = Int
@@ -133,6 +134,12 @@ import XCTest
       typealias __compare_result = __int_compare_result
 
       let endNode: _NodePtr
+      let isMulti: Bool
+
+      init(endNode: _NodePtr, isMulti: Bool = false) {
+        self.endNode = endNode
+        self.isMulti = isMulti
+      }
 
       var nullptr: _NodePtr { .nullptr }
       var end: _NodePtr { endNode }
@@ -151,19 +158,53 @@ import XCTest
         Base.compare(lhs, rhs)
       }
 
-      func lower_bound(_ value: Int) -> _NodePtr {
-        __lower_bound_unique(value)
+      func __lazy_synth_three_way_comparator(
+        _ lhs: borrowing Int,
+        _ rhs: borrowing Int
+      ) -> __int_compare_result {
+        Base.compare(lhs, rhs)
       }
 
-      func upper_bound(_ value: Int) -> _NodePtr {
-        __upper_bound_unique(value)
+    }
+
+    /// `EqualProtocol_ptr`自体がまだ`~Copyable`化されていないため、比較をインスタンスへ
+    /// 注入しつつCopyableに留めたequal-range専用の確認用ラッパー。
+    private struct InstanceEqualInjectedTree: _UnsafeNodePtrType, TreeAlgorithmBaseProtocol_ptr,
+      BoundAlgorithmProtocol_legacy_ptr, EqualProtocol_ptr
+    {
+      typealias _Key = Int
+      typealias __node_value_type = Int
+      typealias __compare_result = __int_compare_result
+
+      let endNode: _NodePtr
+      let probe: ComparisonProbe
+
+      var nullptr: _NodePtr { .nullptr }
+      var __end_node: _NodePtr { endNode }
+      var __root: _NodePtr { endNode.__left_ }
+
+      func __get_value(_ p: _NodePtr) -> Int {
+        p.pointee.___tracking_tag
+      }
+
+      func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {
+        probe.callCount += 1
+        return lhs < rhs
+      }
+
+      func __lazy_synth_three_way_comparator(
+        _ lhs: borrowing Int,
+        _ rhs: borrowing Int
+      ) -> __int_compare_result {
+        probe.callCount += 1
+        return __default_three_way_comparator(lhs, rhs)
       }
     }
 
     /// `Base`なしの三方比較を、noncopyableなインスタンスから直接注入する経路。
     private struct InstanceThreeWayInjectedTree: ~Copyable, _UnsafeNodePtrType,
       TreeAlgorithmBaseProtocol_ptr, FindEqualProtocol_ptr, BoundAlgorithmProtocol_ptr,
-      FindProtocol_lower_bound_ptr
+      BoundBothProtocol, FindProtocol_lower_bound_ptr, FindFirstProtocol_ptr
     {
       typealias _Key = Int
       typealias __node_value_type = Int
@@ -172,6 +213,19 @@ import XCTest
       let endNode: _NodePtr
       let probe: ComparisonProbe
       let descending: Bool
+      let isMulti: Bool
+
+      init(
+        endNode: _NodePtr,
+        probe: ComparisonProbe,
+        descending: Bool,
+        isMulti: Bool = false
+      ) {
+        self.endNode = endNode
+        self.probe = probe
+        self.descending = descending
+        self.isMulti = isMulti
+      }
 
       var nullptr: _NodePtr { .nullptr }
       var end: _NodePtr { endNode }
@@ -198,13 +252,6 @@ import XCTest
           : __default_three_way_comparator(lhs, rhs)
       }
 
-      func lower_bound(_ value: Int) -> _NodePtr {
-        __lower_bound_unique(value)
-      }
-
-      func upper_bound(_ value: Int) -> _NodePtr {
-        __upper_bound_unique(value)
-      }
     }
 
     private func makeThreeNodeTree(
@@ -269,10 +316,19 @@ import XCTest
       let staticLeaf = staticTree.__find_leaf_low(&staticParent, 20)
       let instanceLeaf = instanceTree.__find_leaf_low(&instanceParent, 20)
 
+      var staticHighParent = UnsafeMutablePointer<UnsafeNode>.nullptr
+      var instanceHighParent = UnsafeMutablePointer<UnsafeNode>.nullptr
+      let staticHighLeaf = staticTree.__find_leaf_high(&staticHighParent, 20)
+      let instanceHighLeaf = instanceTree.__find_leaf_high(&instanceHighParent, 20)
+
       XCTAssertEqual(staticParent, end)
       XCTAssertEqual(instanceParent, end)
       XCTAssertEqual(staticLeaf, end.__left_ref)
       XCTAssertEqual(instanceLeaf, end.__left_ref)
+      XCTAssertEqual(staticHighParent, end)
+      XCTAssertEqual(instanceHighParent, end)
+      XCTAssertEqual(staticHighLeaf, end.__left_ref)
+      XCTAssertEqual(instanceHighLeaf, end.__left_ref)
       XCTAssertEqual(probe.callCount, 0)
     }
 
@@ -468,8 +524,39 @@ import XCTest
         let instanceFound = instanceTree.find(item.key)
         XCTAssertEqual(staticFound, instanceFound)
         XCTAssertEqual(staticFound == end ? nil : staticFound.pointee.___tracking_tag, expectedFind)
+        XCTAssertEqual(staticTree.find_first(item.key), staticFound)
+        XCTAssertEqual(instanceTree.find_first(item.key), instanceFound)
       }
       XCTAssertGreaterThan(probe.callCount, 0)
+
+      let staticMultiTree = StaticThreeWayInjectedTree(endNode: end, isMulti: true)
+      let multiProbe = ComparisonProbe()
+      let instanceMultiTree = InstanceThreeWayInjectedTree(
+        endNode: end,
+        probe: multiProbe,
+        descending: false,
+        isMulti: true)
+      for item in cases {
+        XCTAssertEqual(staticMultiTree.lower_bound(item.key), instanceMultiTree.lower_bound(item.key))
+        XCTAssertEqual(staticMultiTree.upper_bound(item.key), instanceMultiTree.upper_bound(item.key))
+      }
+      XCTAssertGreaterThan(multiProbe.callCount, 0)
+
+      var emptyFixture = TreeNodeOnlyFixture.makeEmpty()
+      let emptyEnd = emptyFixture.endPtr()
+      let emptyStaticTree = StaticThreeWayInjectedTree(endNode: emptyEnd)
+      let emptyProbe = ComparisonProbe()
+      let emptyInstanceTree = InstanceThreeWayInjectedTree(
+        endNode: emptyEnd,
+        probe: emptyProbe,
+        descending: false)
+      let staticEmpty = emptyStaticTree.__find_equal(20)
+      let instanceEmpty = emptyInstanceTree.__find_equal(20)
+      XCTAssertEqual(staticEmpty.__parent, emptyEnd)
+      XCTAssertEqual(instanceEmpty.__parent, emptyEnd)
+      XCTAssertEqual(staticEmpty.__child, emptyEnd.__left_ref)
+      XCTAssertEqual(instanceEmpty.__child, emptyEnd.__left_ref)
+      XCTAssertEqual(emptyProbe.callCount, 0)
     }
 
     /// hint付き探索でも、hint直前・直後・通常探索へのfallback・一致時dummy参照の各経路が、
@@ -503,9 +590,12 @@ import XCTest
       let equalCases: [(hint: UnsafeMutablePointer<UnsafeNode>, key: Int)] = [
         (end, 35),
         (left, 10),
+        (left, 15),
+        (left, 35),
         (root, 15),
         (root, 20),
         (root, 25),
+        (right, 25),
         (right, 5),
       ]
       for item in equalCases {
@@ -523,6 +613,37 @@ import XCTest
           }
         }
       }
+      XCTAssertGreaterThan(probe.callCount, 0)
+    }
+
+    /// equal rangeのunique/multi探索もstatic Baseとインスタンス比較で一致すること。
+    /// 現状は`EqualProtocol_ptr`の制約により、インスタンス側もCopyableなラッパーを使う。
+    func testEqualRange_supportsStaticBaseAndInstanceComparisonInjection() {
+      var fixture = TreeNodeOnlyFixture.makeEmpty()
+      let end = makeThreeNodeTree(&fixture)
+      let staticTree = StaticThreeWayInjectedTree(endNode: end)
+      let probe = ComparisonProbe()
+      let instanceTree = InstanceEqualInjectedTree(endNode: end, probe: probe)
+
+      for key in [5, 10, 20, 25, 30, 35] {
+        let staticUnique = staticTree.__equal_range_unique(key)
+        let instanceUnique = instanceTree.__equal_range_unique(key)
+        XCTAssertEqual(staticUnique.0, instanceUnique.0)
+        XCTAssertEqual(staticUnique.1, instanceUnique.1)
+
+        let staticMulti = staticTree.__equal_range_multi(key)
+        let instanceMulti = instanceTree.__equal_range_multi(key)
+        XCTAssertEqual(staticMulti.0, instanceMulti.0)
+        XCTAssertEqual(staticMulti.1, instanceMulti.1)
+      }
+
+      fixture.node(2).pointee.___tracking_tag = 20
+      let staticDuplicateRange = staticTree.__equal_range_multi(20)
+      let instanceDuplicateRange = instanceTree.__equal_range_multi(20)
+      XCTAssertEqual(staticDuplicateRange.0, fixture.node(1))
+      XCTAssertEqual(staticDuplicateRange.1, end)
+      XCTAssertEqual(staticDuplicateRange.0, instanceDuplicateRange.0)
+      XCTAssertEqual(staticDuplicateRange.1, instanceDuplicateRange.1)
       XCTAssertGreaterThan(probe.callCount, 0)
     }
   }

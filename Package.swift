@@ -198,7 +198,6 @@ let package = Package(
       ],
       exclude: [
         "Fixtures.md",
-        "TESTING.md",
       ],
       swiftSettings: _settings
     ),

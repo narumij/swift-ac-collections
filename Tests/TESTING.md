@@ -1,6 +1,11 @@
 <!-- CodexとClaudeによるCodexとClaudeのためのメモ -->
 
-# RedBlackTreeTests maintenance notes
+# Tests maintenance notes
+
+現在の記載内容は主に `RedBlackTreeTests` を対象にしている。将来的に他のテストターゲット
+(`BareArrayModuleTests`/`OptionalArrayModuleTests`/`PermutationTests`等)も対象に含める
+想定で、2026-10-01に配置場所を `Tests/RedBlackTreeTests/TESTING.md` から `Tests/TESTING.md`
+へ移動した(相談事項「この文書の配置場所をTests直下に切り替えたい」に対応)。
 
 ## User requests for the next session
 
@@ -31,7 +36,7 @@
 ### 相談事項
 
 - Current handoffが膨大になってきました。直近の作業と、現在の状況ぐらいでいいのではないでしょうか？
-- テストを軸としたコードメンテはそのうち他のターゲットも対象になるので、この文書の配置場所をTests直下に切り替えたい(Claude優先)
+- テストを軸としたコードメンテはそのうち他のターゲットも対象になるので、この文書の配置場所をTests直下に切り替えたい(Claude優先) → 2026-10-01 Claudeが`Tests/TESTING.md`へ移動済み。他の参照(CI workflow・README等)は`grep`で確認したが本文書への既存参照は無く、リンク切れは発生していない。内容は未改訂(タイトル直下に移動の経緯のみ追記)。完了済みの要望へ移動してよいか確認願います。
 
 ### 連絡事項
 

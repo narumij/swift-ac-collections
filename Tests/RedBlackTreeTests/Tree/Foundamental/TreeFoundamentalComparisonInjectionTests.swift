@@ -17,19 +17,26 @@ import XCTest
       static func __get_value(_ p: _NodePtr) -> Int {
         p.pointee.___tracking_tag
       }
+
+      static func compare(_ lhs: Int, _ rhs: Int) -> __int_compare_result {
+        __default_three_way_comparator(lhs, rhs)
+      }
     }
 
     /// `_ValueCompBridge`を経由し、インスタンス要件を`Base.value_comp`へ委譲する経路。
     private struct StaticInjectedTree: _UnsafeNodePtrType, _BaseBridge, _KeyBride,
-      _ValueCompBridge, FindLeafProtocol_ptr
+      _ValueCompBridge, FindLeafProtocol_ptr, FindEqualInterface, FindEqualProtocol_ptr_old,
+      FindProtocol_find_equal_ptr, BoundAlgorithmProtocol_legacy_ptr, CountProtocol_ptr
     {
       typealias Base = StaticBase
       typealias _Key = Int
       typealias __node_value_type = Int
+      typealias __compare_result = __int_compare_result
 
       let endNode: _NodePtr
 
       var nullptr: _NodePtr { .nullptr }
+      var end: _NodePtr { endNode }
       var __end_node: _NodePtr { endNode }
       var __root: _NodePtr { endNode.__left_ }
 
@@ -40,6 +47,18 @@ import XCTest
       func __get_value(_ p: _NodePtr) -> Int {
         Base.__get_value(p)
       }
+
+      func __comp(_ lhs: Int, _ rhs: Int) -> __int_compare_result {
+        Base.compare(lhs, rhs)
+      }
+
+      func lower_bound(_ value: Int) -> _NodePtr {
+        __lower_bound_unique(value)
+      }
+
+      func upper_bound(_ value: Int) -> _NodePtr {
+        __upper_bound_unique(value)
+      }
     }
 
     private final class ComparisonProbe {
@@ -47,15 +66,20 @@ import XCTest
     }
 
     /// `Base`を持たず、fixtureの状態を使うインスタンス比較経路。
-    private struct InstanceInjectedTree: ~Copyable, _UnsafeNodePtrType, FindLeafProtocol_ptr {
+    private struct InstanceInjectedTree: ~Copyable, _UnsafeNodePtrType, FindLeafProtocol_ptr,
+      FindEqualInterface, FindEqualProtocol_ptr_old, FindProtocol_find_equal_ptr,
+      BoundAlgorithmProtocol_legacy_ptr, CountProtocol_ptr
+    {
       typealias _Key = Int
       typealias __node_value_type = Int
+      typealias __compare_result = __int_compare_result
 
       let endNode: _NodePtr
       let probe: ComparisonProbe
       let descending: Bool
 
       var nullptr: _NodePtr { .nullptr }
+      var end: _NodePtr { endNode }
       var __end_node: _NodePtr { endNode }
       var __root: _NodePtr { endNode.__left_ }
 
@@ -70,6 +94,21 @@ import XCTest
       func value_comp(_ lhs: Int, _ rhs: Int) -> Bool {
         probe.callCount += 1
         return descending ? lhs > rhs : lhs < rhs
+      }
+
+      func __comp(_ lhs: Int, _ rhs: Int) -> __int_compare_result {
+        probe.callCount += 1
+        return descending
+          ? __default_three_way_comparator(rhs, lhs)
+          : __default_three_way_comparator(lhs, rhs)
+      }
+
+      func lower_bound(_ value: Int) -> _NodePtr {
+        __lower_bound_unique(value)
+      }
+
+      func upper_bound(_ value: Int) -> _NodePtr {
+        __upper_bound_unique(value)
       }
     }
 
@@ -169,6 +208,127 @@ import XCTest
       XCTAssertEqual(parent, higher)
       XCTAssertEqual(leaf, higher.__right_ref)
       XCTAssertGreaterThan(probe.callCount, 0)
+    }
+
+    /// 二値比較版`__find_equal`も、static Base注入とインスタンス注入で、既存ノード・
+    /// 左右の未挿入位置・空木について同じparent/child参照を返すこと。
+    func testFindEqual_supportsStaticBaseAndInstanceComparisonInjection() {
+      var fixture = TreeNodeOnlyFixture.makeEmpty()
+      let end = makeThreeNodeTree(&fixture)
+      let staticTree = StaticInjectedTree(endNode: end)
+      let probe = ComparisonProbe()
+      let instanceTree = InstanceInjectedTree(endNode: end, probe: probe, descending: false)
+
+      for key in [5, 10, 20, 25, 30, 35] {
+        let staticResult = staticTree.__find_equal(key)
+        let instanceResult = instanceTree.__find_equal(key)
+        XCTAssertEqual(staticResult.__parent, instanceResult.__parent)
+        XCTAssertEqual(staticResult.__child, instanceResult.__child)
+      }
+      XCTAssertGreaterThan(probe.callCount, 0)
+
+      var emptyFixture = TreeNodeOnlyFixture.makeEmpty()
+      let emptyEnd = emptyFixture.endPtr()
+      let emptyStaticTree = StaticInjectedTree(endNode: emptyEnd)
+      let emptyProbe = ComparisonProbe()
+      let emptyInstanceTree = InstanceInjectedTree(
+        endNode: emptyEnd,
+        probe: emptyProbe,
+        descending: false)
+
+      let staticEmpty = emptyStaticTree.__find_equal(20)
+      let instanceEmpty = emptyInstanceTree.__find_equal(20)
+      XCTAssertEqual(staticEmpty.__parent, emptyEnd)
+      XCTAssertEqual(instanceEmpty.__parent, emptyEnd)
+      XCTAssertEqual(staticEmpty.__child, emptyEnd.__left_ref)
+      XCTAssertEqual(instanceEmpty.__child, emptyEnd.__left_ref)
+      XCTAssertEqual(emptyProbe.callCount, 0)
+    }
+
+    /// `__find_equal`を利用する`find`も両注入経路で一致し、欠落キーをendへ変換すること。
+    func testFind_supportsStaticBaseAndInstanceComparisonInjection() {
+      var fixture = TreeNodeOnlyFixture.makeEmpty()
+      let end = makeThreeNodeTree(&fixture)
+      let staticTree = StaticInjectedTree(endNode: end)
+      let probe = ComparisonProbe()
+      let instanceTree = InstanceInjectedTree(endNode: end, probe: probe, descending: false)
+
+      for key in [10, 20, 30] {
+        let staticResult = staticTree.find(key)
+        let instanceResult = instanceTree.find(key)
+        XCTAssertEqual(staticResult, instanceResult)
+        XCTAssertEqual(staticResult.pointee.___tracking_tag, key)
+      }
+
+      for key in [5, 25, 35] {
+        XCTAssertEqual(staticTree.find(key), end)
+        XCTAssertEqual(instanceTree.find(key), end)
+      }
+      XCTAssertGreaterThan(probe.callCount, 0)
+    }
+
+    /// 二値比較で実装されたlower/upper boundも、static Base注入とインスタンス注入で一致し、
+    /// 境界外ではendを返すこと。
+    func testBounds_supportStaticBaseAndInstanceComparisonInjection() {
+      var fixture = TreeNodeOnlyFixture.makeEmpty()
+      let end = makeThreeNodeTree(&fixture)
+      let staticTree = StaticInjectedTree(endNode: end)
+      let probe = ComparisonProbe()
+      let instanceTree = InstanceInjectedTree(endNode: end, probe: probe, descending: false)
+
+      let cases: [(key: Int, lower: Int?, upper: Int?)] = [
+        (5, 10, 10),
+        (10, 10, 20),
+        (15, 20, 20),
+        (20, 20, 30),
+        (25, 30, 30),
+        (30, 30, nil),
+        (35, nil, nil),
+      ]
+
+      for item in cases {
+        let staticLower = staticTree.__lower_bound_multi(item.key)
+        let instanceLower = instanceTree.__lower_bound_multi(item.key)
+        let staticUpper = staticTree.__upper_bound_multi(item.key)
+        let instanceUpper = instanceTree.__upper_bound_multi(item.key)
+
+        XCTAssertEqual(staticLower, instanceLower)
+        XCTAssertEqual(staticUpper, instanceUpper)
+        XCTAssertEqual(staticLower == end ? nil : staticLower.pointee.___tracking_tag, item.lower)
+        XCTAssertEqual(staticUpper == end ? nil : staticUpper.pointee.___tracking_tag, item.upper)
+
+        XCTAssertEqual(staticTree.__lower_bound_unique(item.key), staticLower)
+        XCTAssertEqual(instanceTree.__lower_bound_unique(item.key), instanceLower)
+        XCTAssertEqual(staticTree.__upper_bound_unique(item.key), staticUpper)
+        XCTAssertEqual(instanceTree.__upper_bound_unique(item.key), instanceUpper)
+      }
+      XCTAssertGreaterThan(probe.callCount, 0)
+    }
+
+    /// unique/multi countがstatic三方比較と状態付きインスタンス三方比較の双方で一致すること。
+    func testCount_supportsStaticBaseAndInstanceComparisonInjection() {
+      var fixture = TreeNodeOnlyFixture.makeEmpty()
+      let end = makeThreeNodeTree(&fixture)
+      let staticTree = StaticInjectedTree(endNode: end)
+      let probe = ComparisonProbe()
+      let instanceTree = InstanceInjectedTree(endNode: end, probe: probe, descending: false)
+
+      for key in [5, 10, 20, 30, 35] {
+        let expected = [10, 20, 30].contains(key) ? 1 : 0
+        XCTAssertEqual(staticTree.__count_unique(key), expected)
+        XCTAssertEqual(instanceTree.__count_unique(key), expected)
+        XCTAssertEqual(staticTree.__count_multi(key), expected)
+        XCTAssertEqual(instanceTree.__count_multi(key), expected)
+      }
+      XCTAssertGreaterThan(probe.callCount, 0)
+
+      // in-orderが10,20,20となる重複木でmulti countの距離計算も通す。
+      let duplicate = fixture.node(2)
+      duplicate.pointee.___tracking_tag = 20
+      XCTAssertEqual(staticTree.__count_multi(20), 2)
+      XCTAssertEqual(instanceTree.__count_multi(20), 2)
+      XCTAssertEqual(staticTree.__count_unique(20), 1)
+      XCTAssertEqual(instanceTree.__count_unique(20), 1)
     }
   }
 #endif

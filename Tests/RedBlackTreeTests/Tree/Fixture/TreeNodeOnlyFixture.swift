@@ -106,4 +106,19 @@ extension TreeNodeOnlyFixture {
       p.pointee.___recycle_count
     }
   }
+
+  /// ノードの追跡タグを木の順序キーとして使う、符号付き距離の最小ハーネス。
+  /// payloadを持たないfixtureでも`_BaseNode_SignedDistanceProtocol`の既定実装を
+  /// 直接テストできるようにする。
+  enum SignedTrackingTagKey: _UnsafeNodePtrType & _BaseNode_KeyInterface & UniqueMultiplicity
+    & _BaseNode_NodeCompareProtocol & _BaseNode_SignedDistanceProtocol
+  {
+    typealias _Key = _TrackingTag
+    typealias difference_type = Int
+    typealias _InputIter = _NodePtr
+
+    static func __get_value(_ p: _NodePtr) -> _TrackingTag {
+      p.pointee.___tracking_tag
+    }
+  }
 }

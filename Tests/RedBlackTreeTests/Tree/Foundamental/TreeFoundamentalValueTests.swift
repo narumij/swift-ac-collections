@@ -28,6 +28,21 @@ final class TreeFoundamentalValueTests: RedBlackTreeTestCase {
     typealias Element = (key: String, value: Int)
   }
 
+#if DEBUG
+  private enum NodeKeyBase: _UnsafeNodePtrType, _BaseNode_KeyProtocol {
+    typealias _PayloadValue = RedBlackTreePair<String, Int>
+    typealias _Key = String
+
+    static func __value_(_ p: _NodePtr) -> _PayloadValue {
+      p.__value_(as: _PayloadValue.self).pointee
+    }
+
+    static func __key(_ value: _PayloadValue) -> _Key {
+      value.tuple.key
+    }
+  }
+#endif
+
   /// 特殊なtracking tagが通常ノード用の非負値と衝突しないこと。
   func testTrackingTag_specialValuesAreStableAndDistinct() {
     XCTAssertEqual(_TrackingTag.nullptr, -2)
@@ -56,6 +71,21 @@ final class TreeFoundamentalValueTests: RedBlackTreeTestCase {
     XCTAssertEqual(PairBase.__element_(payload).key, element.key)
     XCTAssertEqual(PairBase.__element_(payload).value, element.value)
   }
+
+#if DEBUG
+  /// `_BaseNode_KeyProtocol`の資料用既定実装が、Node→payload→keyの順で値を取り出すこと。
+  func testNodeKeyBase_defaultGetValueReadsAdjacentPayload() {
+    let fixture = UnsafeNodeReferenceFixture<RedBlackTreePair<String, Int>>(capacity: 1)
+    fixture.firstNode.initialize(to: .create(tag: 0, nullptr: .nullptr))
+    fixture.payload(at: 0).initialize(to: .init(tuple: (key: "key", value: 42)))
+    defer {
+      fixture.payload(at: 0).deinitialize(count: 1)
+      fixture.firstNode.deinitialize(count: 1)
+    }
+
+    XCTAssertEqual(NodeKeyBase.__get_value(fixture.firstNode), "key")
+  }
+#endif
 
   /// multiplicity traitがuniqueとmultiを逆に報告しないこと。
   func testMultiplicityTraits_reportTheirStaticKind() {

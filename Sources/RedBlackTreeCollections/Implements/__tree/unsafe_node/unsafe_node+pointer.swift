@@ -87,8 +87,8 @@ extension UnsafeNode {
   /// メモリ上では次の組を連続して配置する。
   ///
   /// ```
-  /// |Node|Payload|Node|Payload|...
-  /// ^ pair(0)    ^ pair(1)
+  /// |<-- pair(0) -->|<-- pair(1) -->|
+  /// | Node | Payload | Node | Payload | ...
   /// ```
   ///
   /// NodeとPayloadのどちらの型付きアクセスも有効にするため、要求値は両者の
@@ -109,9 +109,8 @@ extension UnsafeNode {
   /// すべてのNode/Payloadも同じ整列条件を保つ。
   ///
   /// ```
-  /// |Node|Payload|padding|Node|Payload|padding|...
-  /// ^                  ^
-  /// |<---- stride ---->|
+  /// |<------- one pair stride ------->|
+  /// | Node | Payload | pair padding   | Node | Payload | ...
   /// ```
   ///
   /// この式はRawBufferの`MemoryLayout<Payload>._pairLayout.stride`と同じである。
@@ -133,9 +132,11 @@ extension UnsafeNode {
   /// 開始位置を先に切り上げ、そこからNodeのstrideだけ戻る。
   ///
   /// ```
-  /// |prefix|alignment gap|Node|Payload|Node|Payload|...
-  ///         ^ storage     ^ result
-  ///                        |    ^ aligned payload
+  /// | prefix | alignment gap | Node | Payload | Node | Payload | ...
+  ///
+  /// storage         = prefixとalignment gapの境界
+  /// result: node(0) = alignment gapとNodeの境界
+  /// aligned payload = NodeとPayloadの境界
   /// ```
   ///
   /// この処理はRawBufferの`_Bucket.start(storage:payloadOrPairAlignment:)`と同じである。
@@ -171,8 +172,8 @@ extension UnsafeNode {
   /// RawBufferの`_BucketAllocator._allocationSize(prefix:capacity:)`と同じ式である。
   ///
   /// ```
-  /// |< prefix >|gap|Node|Payload|...|Node|Payload|
-  /// ^ allocation                         ^ byteCount
+  /// |< prefix >| gap | Node | Payload | ... | Node | Payload |
+  /// |<------------- returned byte count -------------------->|
   /// ```
   ///
   /// - Parameters:

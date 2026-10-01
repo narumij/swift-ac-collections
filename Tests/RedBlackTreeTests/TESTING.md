@@ -202,6 +202,63 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 
 互換テストから連番側の test class を extension している場合がある。連番ファイルの移動や改名時は、`*AtCoder2025CompatibilityTests.swift` 内の extension 参照も確認する。
 
+## 原木カバレッジの測定
+
+原木カバレッジは、`Tests/RedBlackTreeTests/Tree/`のテストだけを実行し、集計対象を
+`Sources/RedBlackTreeCollections/Implements/__tree`だけに限定した値とする。現状のTree配下の
+テストクラスはすべて`TreeFoundamental`を名前に含むため、リポジトリルートで次を実行する。
+
+```sh
+swift test --disable-sandbox --enable-code-coverage --filter TreeFoundamental
+```
+
+実行ログ末尾の件数を確認し、Tree配下のテストが漏れていないことを確認する。Tree配下へ別の命名規則の
+テストクラスを追加した場合は、フィルタ式も更新する。Xcode MCPの`RunAllTests`には実行漏れを成功扱いする
+既知の問題があるため、この測定ではCLIの`swift test`を正とする。この環境ではSwiftPMの入れ子sandboxを
+避けるため`--disable-sandbox`も必要。
+
+テスト成功後、次のコマンドで原木だけのファイル別・合計カバレッジを表示する。
+
+```sh
+xcrun llvm-cov report \
+  .build/out/Products/Debug/RedBlackTreeTests.xctest/Contents/MacOS/RedBlackTreeTests \
+  -instr-profile=.build/out/Products/Debug/codecov/default.profdata \
+  -ignore-filename-regex='Tests/' \
+  Sources/RedBlackTreeCollections/Implements/__tree
+```
+
+未到達行を調べる場合は`report`を`show`へ替え、末尾へ対象ファイルを指定する。
+
+```sh
+xcrun llvm-cov show \
+  .build/out/Products/Debug/RedBlackTreeTests.xctest/Contents/MacOS/RedBlackTreeTests \
+  -instr-profile=.build/out/Products/Debug/codecov/default.profdata \
+  Sources/RedBlackTreeCollections/Implements/__tree/unsafe_tree/unsafe_tree+find.swift
+```
+
+`.build`の構成やSwiftPMの出力先が変わった場合は、`default.profdata`と
+`RedBlackTreeTests.xctest/Contents/MacOS/RedBlackTreeTests`の実在パスを確認して読み替える。
+
+## 原木fixtureとnoncopyable対応
+
+原木fixtureは、将来`__tree`でnoncopyable要素を扱う可能性を妨げない形で保守する。Claude・Codexを
+含む作業者は、コンパイルを通す目的でfixtureやpayloadへ安易に`Copyable`制約を追加しない。
+
+- fixture自身の`~Copyable`適合を維持する。コピーが必要に見える場合は、先に所有権と借用範囲を見直す。
+- payloadを読み出してコピーすることを前提にせず、生メモリ上でのinitialize・borrow・deinitializeを基本とする。
+- `~Copyable`な値をtuple、配列、escaping closureなど、暗黙のコピーや寿命延長を要求する場所へ退避しない。
+- 生メモリの所有権はfixtureへ集約し、初期化済みのNodeとpayloadだけを各一回deinitializeしてから解放する。
+- Node/payloadのalignment、stride、先頭Node、必要byte数は`UnsafeNode`の参照レイアウトAPIを使い、
+  fixture側へ同じ計算式を複製しない。
+- テスト専用protocol適合を追加するときも、値返却によるpayloadコピーが本質でない場合は、ポインタまたは
+  借用アクセスで検証できないかを先に検討する。
+- 現在のpayload型が`Copyable`であることだけを理由に、将来noncopyable payloadでは成立しないAPIを
+  fixtureの標準操作として固定しない。
+
+一時的に`Copyable`が必要なテストを追加する場合は、その制約がテスト対象の仕様なのか、テスト実装上の
+都合なのかをコメントで区別する。後者の場合はfixture全体へ制約を波及させず、対象テストまたは補助型へ
+局所化する。
+
 ## Safe migration workflow
 
 長時間の整理を壊れた状態で残さないため、次の単位を守る。

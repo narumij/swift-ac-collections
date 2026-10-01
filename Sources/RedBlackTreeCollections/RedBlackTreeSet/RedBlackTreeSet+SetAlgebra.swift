@@ -95,7 +95,10 @@ extension RedBlackTreeSet: SetAlgebra {
 #if !COMPATIBLE_ATCODER_2025 && DEBUG
   // 実験実装
   @usableFromInline
-  package protocol SortedSequence: Sequence {}
+  package protocol SortedSequence: Sequence {
+    // 標準にこういうの有れば楽なのに
+  }
+
   // 実験実装
   extension Range: SortedSequence where Self: Sequence {}
   // 実験実装

@@ -75,6 +75,7 @@
 - 「空チェック前のensureUnique()が無駄なCoWを起こす」問題は、`RedBlackTreeMultiMap.erase(exactly:)`・両View系列(`RedBlackTreeMappedValuesView`/`RedBlackTreeRangeView+KeyValue`/`+KeyOnly`)の`popFirst`/`popLast`/`erase()`/`erase(where:)`・4型の`popFirst`/`popLast`/`Set.remove(_:)`/`Dictionary.removeValue(forKey:)`/`removeAll(keepingCapacity:)`、さらに互換モード専用`+Deprecated.swift`側の`RedBlackTreeSet.popFirst()`/`RedBlackTreeMultiSet.remove(_:)`/`removeAll(_:)`/`RedBlackTreeMultiMap.removeFirst(forKey:)`/`removeFirst(_unsafeForKey:)`/`removeAll(forKey:)`まで2026-10-01に全て修正済み。`+Deprecated.swift`全体を同パターンで網羅的に再調査したわけではないため、他に見落としが残っている可能性はゼロではない
 - `RedBlackTreeMappedValuesView._isdentical(to:)`はSources内で呼び出しゼロ(`Equatable`適合なし)。削除するかテストを書くかはユーザー判断待ち
 - `Tree/Fixture/UnsafeNodeReferenceFixture.swift`・`UnsafeTreeV2/Instance/RawBufferHeadFixture.swift`・`UnsafeNodeRawBufferCrossCheckTests.swift`(2026-10-01新設)は、`MemoryLayoutTests`/`UnsafeNodeMemoryLayoutTests`/`BucketAllocatorTests`の既存`checkXxx`ヘルパー・payload型リストと意図的に重複している。ユーザー方針「一旦多重化して、あとで整理しましょう」により統合はまだ行っていない
+- 2026-10-02 00:15 JST: `unranged()`はユーザーより「廃止検討中」と判明(`API-Matrix.md`の該当行へ「廃止検討中」を追記済み)。今回MultiSet/Dictionaryの`_8_RangeViewTests.swift`へ追加した`test_unranged_returnsRemainingBaseRangeAfterDrainingPartially`(Set/MultiMap側の既存テストと同種)は、現行APIである間は妥当なTest as Specとして残すが、`unranged()`自体が廃止される場合は4型分(Set/MultiSet/MultiMap/Dictionary)のテストもまとめて削除対象になる
 
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)

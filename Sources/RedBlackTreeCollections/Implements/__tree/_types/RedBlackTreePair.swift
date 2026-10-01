@@ -27,14 +27,16 @@
 @frozen
 @_documentation(visibility: internal)
 public struct RedBlackTreePair<Key, Value> {
+  
+  public typealias Element = (key: Key, value: Value)
 
   @inlinable
-  package init(tuple: (key: Key, value: Value)) {
+  package init(tuple: Element) {
     self.tuple = tuple
   }
 
   // elementにリネームしたい衝動がある
-  public var tuple: (key: Key, value: Value)
+  public var tuple: Element
 }
 
 extension RedBlackTreePair {}

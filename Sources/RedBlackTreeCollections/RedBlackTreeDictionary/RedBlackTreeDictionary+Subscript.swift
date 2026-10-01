@@ -95,7 +95,24 @@ extension RedBlackTreeDictionary {
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025
+#if !COMPATIBLE_ATCODER_2025 && false
+  extension RedBlackTreeDictionary {
+
+    /// Accesses the element at the specified position.
+    ///
+    /// - Complexity: O(1)
+    @inlinable
+    public subscript(position: Index) -> Element {
+      @inline(__always)
+      @_transparent
+      unsafeAddress {
+        withUnsafePointer(to: __tree_._unsafeAddress(position).pointee.tuple) { $0 }
+      }
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025 && true
   extension RedBlackTreeDictionary {
 
     /// Accesses the element at the specified position.
@@ -105,7 +122,7 @@ extension RedBlackTreeDictionary {
     public subscript(position: Index) -> Element {
       @inline(__always)
       get {
-        // unsafeAddress, _read、双方バグるので、基本のget。しくしく
+        // unsafeAddress, _read、双方バグるので、基本のget
         __tree_._unsafeAddress(position).pointee.tuple
       }
     }

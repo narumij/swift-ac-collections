@@ -17,6 +17,7 @@ final class TreeFoundamentalSafePtrTests: RedBlackTreeTestCase, _UnsafeNodePtrTy
 
   // MARK: - _SafePtr(Result<_NodePtr, SealError>)
 
+  /// `_SafePtr`が`.failure`の場合、`___is_end`は常にfalseになること。
   func testSafePtr_isEnd_isFalseForAnyFailure() {
     let failure: _SafePtr = .failure(.null)
     XCTAssertFalse(failure.___is_end)
@@ -25,6 +26,7 @@ final class TreeFoundamentalSafePtrTests: RedBlackTreeTestCase, _UnsafeNodePtrTy
     XCTAssertFalse(failure2.___is_end)
   }
 
+  /// `_SafePtr`が`.success`の場合、`___is_end`は実際のポインタがendかどうかと一致すること。
   func testSafePtr_isEnd_matchesTheUnderlyingPointerWhenSuccess() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -39,6 +41,8 @@ final class TreeFoundamentalSafePtrTests: RedBlackTreeTestCase, _UnsafeNodePtrTy
 
   // MARK: - _SealedPtr(Result<_NodePtrSealing, SealError>)
 
+  /// `_SealedPtr`の`==`/`!=`が、同一ポインタのシールなら等しく、
+  /// 異なるポインタのシールなら等しくないと判定すること。
   func testSealedPtr_equatable_sameAndDifferentPointers() {
     var fixture = makeFixture()
     let a = fixture.node(0)
@@ -57,6 +61,7 @@ final class TreeFoundamentalSafePtrTests: RedBlackTreeTestCase, _UnsafeNodePtrTy
     XCTAssertFalse(sealedA1 == sealedB)
   }
 
+  /// `_SealedPtr`の`==`/`!=`が、`.success`と`.failure`を常に等しくないと判定すること。
   func testSealedPtr_equatable_successNeverEqualsFailure() {
     var fixture = makeFixture()
     let a = fixture.node(0)
@@ -74,6 +79,8 @@ final class TreeFoundamentalSafePtrTests: RedBlackTreeTestCase, _UnsafeNodePtrTy
     case oops
   }
 
+  /// `errorMessage`が、ドキュメント化された8種類の`SealError`それぞれに対して
+  /// 期待される人間向けメッセージを返すこと。
   func testErrorMessage_coversEachDocumentedSealErrorCase() {
     let cases: [(SealError, String)] = [
       (.null, "Unexpected null pointer"),

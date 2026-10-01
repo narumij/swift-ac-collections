@@ -26,9 +26,6 @@
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
 - 途中で止まっているCI問題の続き(Codex)
-- Codex反映の把握(Claude)
-- Codex指摘の対応(Claude)
-- 原木テストが何を検査してるのか楽に把握したいので、連番と同様に日本語でコメントドック書いて欲しい
 - UnsafeTreeV2配下も実装からの逆算で仕様を把握したくなりはじめたので、Test as Spec調に整えて欲しい
 
 ### 相談事項
@@ -77,6 +74,7 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-01 11:25 Claude: 優先事項「原木テストが何を検査してるのか楽に把握したいので、連番と同様に日本語でコメントドック書いて欲しい」に対応。`Tests/RedBlackTreeTests/Tree/Foundamental/`の4ファイル(`TreeFoundamentalTests.swift`・`TreeFoundamentalMultiplicityTests.swift`・`TreeFoundamentalSealTests.swift`・`TreeFoundamentalSafePtrTests.swift`)を全テストメソッド走査し、コメントが無かった25件に「何を検査しているか」を一言で示す日本語docを追加(既にあった約20件は変更なし)。コメントのみの変更のためロジックは無変更、`swift test`878 tests / 0 failures。
 - 2026-10-01 11:10 Claude: 優先事項「Codex反映の把握/Codex指摘の対応」に対応。(1) `RedBlackTreeMultiset+Convenience.swift`のTODO「コンテナ分類ではなく現行/互換でファイルを分けたい」に対応し、Set/MultiSetそれぞれ`+Convenience.swift`(現行)/`+ConvenienceCompatibility.swift`(互換)の4ファイルへ分割(コンテナ別構成は維持、軸を1つ追加)。(2) `TreeFoundamentalSafePtrTests.swift`のTODO「冗長」指摘に対応し、8行の個別`XCTAssertEqual`をテーブル駆動ループへ整理。(3) **重要な発見**: 互換モード(`COMPATIBLE_ATCODER_2025`)を一時的に有効化してフルテストを回したところ、以前修正した「空チェック前のensureUnique()が無駄なCoWを起こす」問題が、互換モード専用の`+Deprecated.swift`側の重複実装に3件(計6メソッド)残っていたと判明: `RedBlackTreeSet+Deprecated.swift`の`popFirst()`、`RedBlackTreeMultiSet+Deprecated.swift`の`remove(_:)`/`removeAll(_:)`、`RedBlackTreeMultiMap+Deprecated.swift`の`removeFirst(forKey:)`/`removeFirst(_unsafeForKey:)`/`removeAll(forKey:)`。通常モードのテストだけでは検出できない(互換モード専用コードのため)。テストを先に書いて失敗を確認した上で、同じ`guard __tree_.count > 0 else { return ... }`パターンで修正。互換モード全体テスト762件/0失敗、通常モード878件/0失敗、`swift build -c release`も健全。**次回への教訓**: CoW系の横展開調査は、今後`COMPATIBLE_ATCODER_2025`を有効化した状態でも必ず確認すること(`+Deprecated.swift`に同種の重複実装が他にも残っていないか、全面的な再調査はしていない)。
 - 2026-10-01 08:15 Codex (GPT-5): ユーザー指示によりSetのDocC initializer表示を修正・実生成で検証。生成済みsymbol graphには明示initializer 6件が存在する一方、DocC自動キュレーションのSetページ`Initializers`にはRange版1件だけが入ることを生成JSONで確認。DocC symbol extension `RedBlackTreeSet.md`を追加し、`init()`、Sequence/Range版`init(_:)`、`init(minimumCapacity:)`、`init(arrayLiteral:)`、`init(from:)`を`Creating a Set`へ手動キュレーション。`xcrun docc convert --warnings-as-errors`成功。生成JSONで`Creating a Set`が6件を含むことを確認。`git diff --check`成功。
 - 2026-10-01 08:10 Codex (GPT-5): ユーザー指摘「DocCでSetのinitが1個しか見えない」を生成済みsymbol graphで調査。`RedBlackTreeSet`には明示initializer 6件 (`init()`, Sequence/Rangeの`init(_:)`各1、`init(minimumCapacity:)`, `init(arrayLiteral:)`, `init(from:)`) が収録され、全6件にdocCommentあり。加えてSetAlgebra/ExpressibleByArrayLiteral由来の合成initializer 2件も収録。ソース／symbol graph欠落ではなく、DocC previewがまだビルドエラーでconvert完了していないことによる古い表示、またはナビゲータのoverload groupingと判断。コード変更なし、`git diff --check`成功。

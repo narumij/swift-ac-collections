@@ -76,6 +76,8 @@ final class TreeFoundamentalSealTests: RedBlackTreeTestCase, _UnsafeNodePtrType 
 
   // MARK: - _NodePathBitmap
 
+  /// `_NodePathBitmap`がendは`.end`、実ノードは`.path`になり、実ノードは常にendより
+  /// 「小さい」こと。また、全ノード間の大小関係が中間順走査(ground truth)と一致すること。
   func testNodePathBitmap_endCaseAndOrdering() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -114,6 +116,8 @@ final class TreeFoundamentalSealTests: RedBlackTreeTestCase, _UnsafeNodePtrType 
     }
   }
 
+  /// `_NodePathBitmap.lessThan`が、bitmapを渡さない場合は内部で計算して返し、
+  /// 既に計算済みのbitmapを渡した場合はそれをそのまま返すこと。
   func testNodePathBitmap_lessThanHelperReturnsConsistentBitmaps() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -143,6 +147,8 @@ final class TreeFoundamentalSealTests: RedBlackTreeTestCase, _UnsafeNodePtrType 
 
   // MARK: - _NodeKey<Base>
 
+  /// `_NodeKey`がendは`.end`、実ノードは`.key`になり、キーの大小がそのまま
+  /// `Comparable`の大小になること。また、実ノードは常にendより小さいこと。
   func testNodeKey_endCaseAndKeyOrdering() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -169,6 +175,8 @@ final class TreeFoundamentalSealTests: RedBlackTreeTestCase, _UnsafeNodePtrType 
     XCTAssertTrue(_NodeKey<_SealTestBase>(root) < _NodeKey<_SealTestBase>(end))
   }
 
+  /// `_NodeKey.lessThan`が、同一ノードでは常にfalseを返し、キーが異なる場合は
+  /// bitmapの計算に踏み込まず(nilのまま)キーだけで大小が決まること。
   func testNodeKey_lessThan_sameNodeAndDifferentKeys() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -210,6 +218,8 @@ final class TreeFoundamentalSealTests: RedBlackTreeTestCase, _UnsafeNodePtrType 
     XCTAssertFalse(reversed.result)
   }
 
+  /// `_NodeKey.isInHalfOpenRange`が半開区間(下端を含み上端を含まない)として
+  /// 正しく範囲内外を判定すること。
   func testNodeKey_isInHalfOpenRange() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -246,6 +256,8 @@ final class TreeFoundamentalSealTests: RedBlackTreeTestCase, _UnsafeNodePtrType 
       ).result, "範囲より後ろ")
   }
 
+  /// `_NodeKey.containsRange`が、内側区間が外側区間に完全に含まれるか
+  /// (完全一致・手前から開始・後ろまで続く・逆転した区間を含む)を正しく判定すること。
   func testNodeKey_containsRange() {
     var fixture = makeFixture()
     let end = fixture.endPtr()

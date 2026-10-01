@@ -1,4 +1,3 @@
-```yaml
 name: Swift
 
 on:
@@ -195,4 +194,3 @@ jobs:
         env:
           ASAN_OPTIONS: detect_leaks=0
         run: swift test -c debug --sanitize address
-```

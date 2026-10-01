@@ -468,7 +468,6 @@ extension Benchmark {
 //      }
 //    }
 
-
       self.add(
         title: "RedBlackTreeSet<Int> successful __raw_find",
         input: ([Int], [Int]).self

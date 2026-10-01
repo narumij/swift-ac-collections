@@ -129,7 +129,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   }
 
   @inlinable
-  var ___has_payload_content: Bool {
+  package var ___has_payload_content: Bool {
     switch self {
     case .success(let success):
       success.pointee.___has_payload_content

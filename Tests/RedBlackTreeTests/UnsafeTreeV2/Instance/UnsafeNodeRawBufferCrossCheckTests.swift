@@ -36,9 +36,9 @@ import XCTest
       line: UInt = #line
     ) throws {
       let reference = UnsafeNodeReferenceFixture<Payload>(capacity: capacity)
-      defer { reference.deallocate() }
+//      defer { reference.deallocate() }
       let rawBuffer = RawBufferHeadFixture<Payload>(capacity: capacity)
-      defer { rawBuffer.deallocate() }
+//      defer { rawBuffer.deallocate() }
 
       XCTAssertEqual(
         reference.pairStride,
@@ -72,9 +72,9 @@ import XCTest
       line: UInt = #line
     ) throws {
       let reference = UnsafeNodeReferenceFixture<Payload>(capacity: capacity)
-      defer { reference.deallocate() }
+//      defer { reference.deallocate() }
       let rawBuffer = RawBufferHeadFixture<Payload>(capacity: capacity)
-      defer { rawBuffer.deallocate() }
+//      defer { rawBuffer.deallocate() }
 
       for i in 0..<capacity {
         let referenceNodeOffset = UnsafeMutableRawPointer(reference.node(at: 0))

@@ -10,7 +10,7 @@
   /// 歩幅の式)を、生メモリへ直接アロケートした領域に対して呼び出し、実際の並び
   /// (先頭ノードからのオフセット)を測定するFixture。生木(`UnsafeTreeV2`)や
   /// `RawBuffer`(`_BucketAllocator`/`_Bucket`)を経由しない。
-  struct UnsafeNodeReferenceFixture<Payload> {
+  struct UnsafeNodeReferenceFixture<Payload>: ~Copyable {
 
     let storage: UnsafeMutableRawPointer
     let firstNode: UnsafeMutablePointer<UnsafeNode>
@@ -29,7 +29,8 @@
         storage
         .advanced(by: nodeStride)
         .alignedUp(toMultipleOf: MemoryLayout<Payload>.alignment)
-      firstNode = firstPayload
+      firstNode =
+        firstPayload
         .advanced(by: -nodeStride)
         .assumingMemoryBound(to: UnsafeNode.self)
     }
@@ -48,7 +49,7 @@
         .distance(to: UnsafeMutableRawPointer(node(at: 1)))
     }
 
-    func deallocate() {
+    deinit {
       storage.deallocate()
     }
   }

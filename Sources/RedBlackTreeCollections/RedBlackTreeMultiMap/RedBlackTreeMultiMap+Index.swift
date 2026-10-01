@@ -26,7 +26,7 @@
     /// - Important:
     ///   When an element or its corresponding node is removed, any related index becomes invalid.
     ///   Using an invalid index may result in a runtime error or undefined behavior.
-    public typealias Index = UnsafeIndexV3
+    public typealias Index = RedBlackTreeIndex
   }
 
   extension RedBlackTreeMultiMap {
@@ -134,7 +134,7 @@
 
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
-    public func equalRange(_ key: Key) -> UnsafeIndexV3Range {
+    public func equalRange(_ key: Key) -> RedBlackTreeIndexRange {
       let (lower, upper) = __tree_.__equal_range_multi(key)
       return .init(.init(lowerBound: ___index(lower), upperBound: ___index(upper)))
     }

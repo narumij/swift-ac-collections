@@ -41,7 +41,7 @@ where
   }
 
   public typealias Base = Container.Base
-  public typealias Index = UnsafeIndexV3
+  public typealias Index = RedBlackTreeIndex
   public typealias Element = Container.Base._MappedValue
   public typealias Key = Container.Base._Key
   public typealias Value = Container.Base._MappedValue

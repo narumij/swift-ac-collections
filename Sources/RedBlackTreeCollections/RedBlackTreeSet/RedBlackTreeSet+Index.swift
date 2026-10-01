@@ -26,7 +26,7 @@
     /// - Important:
     ///   When an element or its corresponding node is removed, any related index becomes invalid.
     ///   Using an invalid index may result in a runtime error or undefined behavior.
-    public typealias Index = UnsafeIndexV3
+    public typealias Index = RedBlackTreeIndex
   }
 #endif
 

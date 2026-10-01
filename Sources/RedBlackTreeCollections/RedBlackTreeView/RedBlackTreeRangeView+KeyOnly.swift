@@ -35,7 +35,7 @@ where
   }
 
   public typealias Base = Container.Base
-  public typealias Index = UnsafeIndexV3
+  public typealias Index = RedBlackTreeIndex
   public typealias Element = Container.Base._PayloadValue
 
   @usableFromInline

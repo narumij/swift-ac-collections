@@ -25,8 +25,8 @@
   extension RedBlackTreeMultiSet {
 
     public typealias View = RedBlackTreeKeyOnlyRangeView<Self>
-    public typealias IndexRange = UnsafeIndexV3Range
-    public typealias IndexRangeExpression = UnsafeIndexV3RangeExpression
+    public typealias IndexRange = RedBlackTreeIndexRange
+    public typealias IndexRangeExpression = RedBlackTreeIndexRangeExpression
   }
 
   extension RedBlackTreeMultiSet {

@@ -97,6 +97,8 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         }
       }
 
+      defer { _fixLifetime(self) }
+      
       yield &Base.__mapped_value_ptr(__child.pointee).pointee
     }
   }
@@ -105,7 +107,6 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   mutating func mappedValuePtr(for key: Base._Key, default defaultValue: () -> Base._MappedValue)
     -> Base._MappedValuePtr
   {
-
     ensureUnique()
 
     let (__parent, __child) = __find_equal(key)

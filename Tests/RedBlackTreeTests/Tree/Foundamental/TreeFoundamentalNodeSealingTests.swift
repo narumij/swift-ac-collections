@@ -133,6 +133,34 @@ import XCTest
       XCTAssertFalse(sb.lessThanSlow(sa))
     }
 
+    /// 異なる木のseal同士では、各end nodeのアドレス順で全順序が決まること。
+    func testLessThanSlow_ordersNodesFromDifferentTreesByEndAddress() {
+      var lhsFixture = makeFixture()
+      var rhsFixture = makeFixture()
+      let lhsEnd = lhsFixture.endPtr()
+      let rhsEnd = rhsFixture.endPtr()
+      let lhs = lhsFixture.node(0)
+      let rhs = rhsFixture.node(0)
+
+      lhs.pointee.___tracking_tag = 0
+      rhs.pointee.___tracking_tag = 0
+      lhs.__parent_ = lhsEnd
+      rhs.__parent_ = rhsEnd
+      lhsEnd.__left_ = lhs
+      rhsEnd.__left_ = rhs
+
+      guard case .success(let lhsSeal) = lhs.uncheckedSeal,
+        case .success(let rhsSeal) = rhs.uncheckedSeal
+      else {
+        XCTFail()
+        return
+      }
+
+      let expected = Int(bitPattern: lhsEnd) < Int(bitPattern: rhsEnd)
+      XCTAssertEqual(lhsSeal.lessThanSlow(rhsSeal), expected)
+      XCTAssertEqual(rhsSeal.lessThanSlow(lhsSeal), !expected)
+    }
+
     /// `Hashable`適合により、同一ノード・同一sealの`_NodePtrSealing`が同じhash値を
     /// 持つこと。
     func testHashable_sameNodeAndSealProduceSameHash() {

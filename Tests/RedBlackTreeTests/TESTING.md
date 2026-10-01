@@ -309,6 +309,8 @@ xcrun llvm-cov show \
 
 - **終盤の安全なhelper回収**(2026-10-01 23:41 JST、Codex GPT-5): `IntThreeWayComparator`の既定lazy comparatorと、root/左子/右子に対するUInt128 path bitmapを直接仕様化した。Tree配下全114件成功。`unsafe_tree+three_way.swift`は0%から100%、`unsafe_node+pointer+compare.swift`は77.45%から91.18%、原木全体の行カバレッジは93.89%(1950/2077行)となった。
 
+- **cross-tree seal順序**(2026-10-01 23:43 JST、Codex GPT-5): 異なる木に属する`_NodePtrSealing.lessThanSlow`が各end nodeのアドレスで全順序を決める分岐を追加した。Tree配下全115件成功、`_NodePtrSealing.swift`は100%、原木全体の行カバレッジは93.93%(1951/2077行)。
+
 ### 年代順ログ
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。旧 `set` フォルダの Swift テストは残っていない。

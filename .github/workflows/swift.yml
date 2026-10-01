@@ -193,4 +193,4 @@ jobs:
       - name: Run tests with Address Sanitizer
         env:
           ASAN_OPTIONS: detect_leaks=0
-        run: swift test -c debug --sanitize address
+        run: swift test -c debug --sanitize address --build-system native

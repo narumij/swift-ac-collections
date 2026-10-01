@@ -171,7 +171,7 @@ jobs:
               # => baseline / current <= 1 / 1.20
               if ((regression + 0) <= 0.833333) {
               print ""
-                print "Performance regression >= 15%: " $0
+                print "Performance regression >= 20%: " $0
                 failed = 1
               }
             }

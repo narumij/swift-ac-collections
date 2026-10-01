@@ -137,6 +137,7 @@
     @inlinable
     @discardableResult
     public mutating func removeFirst(forKey key: Key) -> Bool {
+      guard __tree_.count > 0 else { return false }
       __tree_._strongEnsureUnique()
       return __tree_.___erase_unique(key)
     }
@@ -146,6 +147,7 @@
     @inlinable
     @discardableResult
     public mutating func removeFirst(_unsafeForKey key: Key) -> Bool {
+      guard __tree_.count > 0 else { return false }
       __tree_.ensureUnique()
       return __tree_.___erase_unique(key)
     }
@@ -562,6 +564,7 @@
     @inlinable
     @discardableResult
     public mutating func removeAll(forKey key: Key) -> Int {
+      guard __tree_.count > 0 else { return 0 }
       __tree_._strongEnsureUnique()
       return __tree_.___erase_multi(key)
     }

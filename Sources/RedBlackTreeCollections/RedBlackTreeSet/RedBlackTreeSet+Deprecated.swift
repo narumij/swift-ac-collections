@@ -258,6 +258,7 @@
     // @available(*, deprecated, renamed: "popMin")
     @inlinable
     public mutating func popFirst() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return ___unchecked_remove_first()?.payload
     }

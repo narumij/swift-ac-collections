@@ -112,6 +112,7 @@
     @inlinable
     @discardableResult
     public mutating func remove(_ member: Element) -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_._strongEnsureUnique()
       return __tree_.___erase_unique(member) ? member : nil
     }
@@ -516,6 +517,7 @@
     @inlinable
     @discardableResult
     public mutating func removeAll(_ member: Element) -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_._strongEnsureUnique()
       return __tree_.___erase_multi(member) != 0 ? member : nil
     }

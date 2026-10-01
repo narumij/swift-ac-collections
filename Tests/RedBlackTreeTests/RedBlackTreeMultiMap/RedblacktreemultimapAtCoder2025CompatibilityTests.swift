@@ -627,6 +627,24 @@ import XCTest
   #endif
 
   extension MultiMapRemoveTests {
+
+    /// 互換モード専用のremoveFirst(forKey:)/removeFirst(_unsafeForKey:)/removeAll(forKey:)も、
+    /// 見つからない場合はトラップしない以上、無駄なCoWを発生させないこと。
+    func test_removeByKeyVariants_notFound_doNotTriggerCopyOnWrite() {
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        var map = RedBlackTreeMultiMap<Int, Int>()
+        XCTAssertEqual(map._copyCount, 0)
+
+        XCTAssertFalse(map.removeFirst(forKey: 1))
+        XCTAssertEqual(map._copyCount, 0)
+
+        XCTAssertFalse(map.removeFirst(_unsafeForKey: 1))
+        XCTAssertEqual(map._copyCount, 0)
+
+        XCTAssertEqual(map.removeAll(forKey: 1), 0)
+        XCTAssertEqual(map._copyCount, 0)
+      #endif
+    }
   }
 
   extension MultiMapBasicTest {

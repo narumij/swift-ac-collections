@@ -74,6 +74,7 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-01 12:12 Codex (GPT-5): GitHub PagesへのDocC自動公開を追加。既存のDocC検証・通常tar.gz artifactは維持し、`main`へのpush時だけ`actions/configure-pages@v5`と`actions/upload-pages-artifact@v4`でPages artifactを作成、依存する専用`deploy-documentation`ジョブが`github-pages` environmentへ`actions/deploy-pages@v4`で公開する。PRおよびAtCoder互換ブランチではデプロイせず検証のみ。必要な`contents: read`/`pages: write`/`id-token: write`権限とデプロイconcurrencyを設定。日英READMEに予定常設URLを追記。workflow YAML構文・ジョブ存在確認、`git diff --check`成功。GitHubリポジトリのSettings > PagesでSourceをGitHub Actionsにする外部設定はユーザー作業待ち。
 - 2026-10-01 12:04 Codex (GPT-5): DocC CIのartifact upload失敗を修正。DocCが演算子シンボル用に生成する`'...(_:)-1pmkc.json`等のファイル名には`:`が含まれ、`actions/upload-artifact@v4`がNTFS互換制約で拒否するため、生成ディレクトリを`tar.gz`へ固めて単一ファイルをアップロードする構成へ変更。実際のDocC archiveを用いて禁止文字を含むファイルがtar内に保持されることを確認し、workflow YAML構文確認・`git diff --check`成功。Nodeの`punycode`非推奨表示はAction内部の警告であり失敗原因ではない。
 
 ### 内部区分

@@ -83,6 +83,9 @@ AtCoder 2025 ジャッジ環境との互換性が必要な場合は、`compatibl
 
 ## ドキュメント
 
+生成済みのAPIドキュメントは
+[GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)で閲覧できます。
+
 Swift-DocCでAPIドキュメントを生成し、ドキュメントコメントを検証できます。
 
 ```console

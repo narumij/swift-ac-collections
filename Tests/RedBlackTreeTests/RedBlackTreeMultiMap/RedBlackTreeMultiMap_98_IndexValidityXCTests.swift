@@ -47,5 +47,15 @@
       }
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 6)))
     }
+
+    func testStaleIndexAfterSlotRecycledWithNewGenerationIsRejected() {
+      var multiMap = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (0..<10).map { ($0, $0) })
+      let stale = multiMap.index(after: multiMap.startIndex)  // 1を指す
+
+      multiMap.eraseMulti(1)
+      multiMap.insert(key: 1, value: 1)  // 同じスロットが新しい世代で再利用される可能性がある
+
+      XCTAssertFalse(multiMap.isElement(at: stale))
+    }
   }
 #endif

@@ -74,20 +74,20 @@ final class TreeFoundamentalSafePtrTests: RedBlackTreeTestCase, _UnsafeNodePtrTy
     case oops
   }
 
-  // TODO: これはさすがに冗長。修正の手間が増えるだけ
   func testErrorMessage_coversEachDocumentedSealErrorCase() {
-    XCTAssertEqual(errorMessage(SealError.null), "Unexpected null pointer")
-    XCTAssertEqual(errorMessage(SealError.garbaged), "Unexpected pointer to deallocated memory")
-    XCTAssertEqual(errorMessage(SealError.unknown), "Unknown error")
-    XCTAssertEqual(errorMessage(SealError.limit), "Reached the specified limit")
-    XCTAssertEqual(errorMessage(SealError.notAllowed), "The pointer is no longer valid")
-    XCTAssertEqual(errorMessage(SealError.unsealed), "The pointer is being used as a different node")
-    XCTAssertEqual(
-      errorMessage(SealError.lowerOutOfBounds),
-      "Operation exceeded the lower bound of the balanced tree")
-    XCTAssertEqual(
-      errorMessage(SealError.upperOutOfBounds),
-      "Operation exceeded the upper bound of the balanced tree")
+    let cases: [(SealError, String)] = [
+      (.null, "Unexpected null pointer"),
+      (.garbaged, "Unexpected pointer to deallocated memory"),
+      (.unknown, "Unknown error"),
+      (.limit, "Reached the specified limit"),
+      (.notAllowed, "The pointer is no longer valid"),
+      (.unsealed, "The pointer is being used as a different node"),
+      (.lowerOutOfBounds, "Operation exceeded the lower bound of the balanced tree"),
+      (.upperOutOfBounds, "Operation exceeded the upper bound of the balanced tree"),
+    ]
+    for (error, expected) in cases {
+      XCTAssertEqual(errorMessage(error), expected, "\(error)")
+    }
   }
 
   /// ドキュメント化されていないケース(`outOfBounds`/`crossTree`/`detached`/`other`)は

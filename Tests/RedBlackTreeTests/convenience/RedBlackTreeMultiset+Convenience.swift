@@ -1,5 +1,7 @@
 import RedBlackTreeCollections
 
+// TODO: コンテナでの分類ではなく、現行版と互換版とでファイルが分かれてる方がいい
+
 // 以下を参考にした便利メソッド群
 // https://github.com/tatyam-prime/SortedSet
 //

@@ -25,6 +25,7 @@
 // Swift6.2でタプルの速度低下がみられたので、構造体を採用している
 //
 @frozen
+@_documentation(visibility: internal)
 public struct RedBlackTreePair<Key, Value> {
 
   @inlinable

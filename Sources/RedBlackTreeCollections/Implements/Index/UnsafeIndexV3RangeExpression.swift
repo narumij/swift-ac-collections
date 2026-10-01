@@ -36,39 +36,39 @@ public struct UnsafeIndexV3RangeExpression {
 #if !COMPATIBLE_ATCODER_2025
   /// A range expression formed from red-black-tree collection indices.
   public typealias RedBlackTreeIndexRangeExpression = UnsafeIndexV3RangeExpression
+
+  // 削除の悩みがつきまとうので、Sequence適合せず、ループはできないようにする
+
+  // MARK: - Range Expression
+
+  @inlinable
+  public func ..< (lhs: RedBlackTreeIndex, rhs: RedBlackTreeIndex)
+    -> RedBlackTreeIndexRangeExpression
+  {
+    guard lhs.lazyDetach === rhs.lazyDetach else { fatalError(.treeMissmatch) }
+    return .init(.range(from: lhs, to: rhs))
+  }
+
+  @inlinable
+  public func ... (lhs: RedBlackTreeIndex, rhs: RedBlackTreeIndex)
+    -> RedBlackTreeIndexRangeExpression
+  {
+    guard lhs.lazyDetach === rhs.lazyDetach else { fatalError(.treeMissmatch) }
+    return .init(.closedRange(from: lhs, through: rhs))
+  }
+
+  @inlinable
+  public prefix func ..< (rhs: RedBlackTreeIndex) -> RedBlackTreeIndexRangeExpression {
+    return .init(.partialRangeTo(rhs))
+  }
+
+  @inlinable
+  public prefix func ... (rhs: RedBlackTreeIndex) -> RedBlackTreeIndexRangeExpression {
+    return .init(.partialRangeThrough(rhs))
+  }
+
+  @inlinable
+  public postfix func ... (lhs: RedBlackTreeIndex) -> RedBlackTreeIndexRangeExpression {
+    return .init(.partialRangeFrom(lhs))
+  }
 #endif
-
-// 削除の悩みがつきまとうので、Sequence適合せず、ループはできないようにする
-
-// MARK: - Range Expression
-
-@inlinable
-public func ..< (lhs: RedBlackTreeIndex, rhs: RedBlackTreeIndex)
-  -> RedBlackTreeIndexRangeExpression
-{
-  guard lhs.lazyDetach === rhs.lazyDetach else { fatalError(.treeMissmatch) }
-  return .init(.range(from: lhs, to: rhs))
-}
-
-@inlinable
-public func ... (lhs: RedBlackTreeIndex, rhs: RedBlackTreeIndex)
-  -> RedBlackTreeIndexRangeExpression
-{
-  guard lhs.lazyDetach === rhs.lazyDetach else { fatalError(.treeMissmatch) }
-  return .init(.closedRange(from: lhs, through: rhs))
-}
-
-@inlinable
-public prefix func ..< (rhs: RedBlackTreeIndex) -> RedBlackTreeIndexRangeExpression {
-  return .init(.partialRangeTo(rhs))
-}
-
-@inlinable
-public prefix func ... (rhs: RedBlackTreeIndex) -> RedBlackTreeIndexRangeExpression {
-  return .init(.partialRangeThrough(rhs))
-}
-
-@inlinable
-public postfix func ... (lhs: RedBlackTreeIndex) -> RedBlackTreeIndexRangeExpression {
-  return .init(.partialRangeFrom(lhs))
-}

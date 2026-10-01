@@ -87,6 +87,7 @@ public protocol _BaseNode_PtrRangeCompInterface: ~Copyable, _NodePtrType {
     -> Bool
 }
 
+@_documentation(visibility: internal)
 public protocol MultiplicityHelper: ~Copyable, _UnsafeNodePtrType {
   @inlinable static func ___ptr_comp(_ l: _NodePtr, _ r: _NodePtr) -> Bool
   @inlinable static func ___ptr_range_comp(_ __f: _NodePtr, _ __p: _NodePtr, _ __l: _NodePtr)

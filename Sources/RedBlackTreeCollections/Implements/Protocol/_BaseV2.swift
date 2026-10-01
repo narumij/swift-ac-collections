@@ -41,6 +41,7 @@ public protocol ___Root: _BaseBridge {
 }
 
 // 木にどれを使うのかしっている
+@_documentation(visibility: internal)
 public protocol UnsafeTreeBindingV2: ___Root & _UnsafeNodePtrType
 where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase {}
 

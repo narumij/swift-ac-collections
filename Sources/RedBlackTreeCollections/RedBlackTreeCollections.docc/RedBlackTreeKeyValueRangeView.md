@@ -36,8 +36,3 @@
 - ``RedBlackTreeKeyValueRangeView/reversed()``
 - ``RedBlackTreeKeyValueRangeView/elementsEqual(_:)``
 - ``RedBlackTreeKeyValueRangeView/lexicographicallyPrecedes(_:)``
-
-### Accessing the Underlying Collection
-
-- ``RedBlackTreeKeyValueRangeView/unranged()``
-

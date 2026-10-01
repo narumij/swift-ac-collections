@@ -207,6 +207,7 @@ extension RedBlackTreeKeyValueRangeView {
 
 // MARK: -
 
+@_documentation(visibility: internal)
 public protocol KeyValueBaseInit: ___Root
 where Base: ___TreeBase & PairValueTrait {
   static func _create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self
@@ -226,6 +227,7 @@ extension RedBlackTreeMultiMap: KeyValueBaseInit {
 
 extension RedBlackTreeKeyValueRangeView where Container: KeyValueBaseInit {
   @available(*, deprecated)
+  @_documentation(visibility: internal)
   public func unranged() -> Container { ._create(self) }
 }
 

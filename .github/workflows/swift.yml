@@ -1,3 +1,4 @@
+```yaml
 name: Swift
 
 on:
@@ -99,6 +100,88 @@ jobs:
       - name: Run tests
         run: swift test -c release
 
+  performance:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout base
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+
+      - name: Checkout HEAD
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: head
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run baseline benchmarks
+        working-directory: base/Benchmarks
+        run: |
+          mkdir -p ../benchmark-results
+
+          # CI.json は PR 側の定義を両方の測定に使用する
+          cp ../../head/Benchmarks/Libraries/CI.json ./Libraries/CI.json
+
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI.json \
+            ../benchmark-results/base.json \
+            --max-size 256k \
+            --cycles 1 \
+            --mode replace-all
+
+      - name: Run current benchmarks
+        working-directory: head/Benchmarks
+        run: |
+          mkdir -p ../benchmark-results
+
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI.json \
+            ../benchmark-results/current.json \
+            --max-size 256k \
+            --cycles 1 \
+            --mode replace-all
+
+      - name: Check performance regression
+        working-directory: head/Benchmarks
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          OUTPUT="$(
+            swift run -c release benchmark results compare \
+              ../../base/benchmark-results/base.json \
+              ../benchmark-results/current.json
+          )"
+
+          echo "$OUTPUT"
+
+          echo "$OUTPUT" |
+          awk '
+            /^[[:space:]]*[0-9]/ {
+              regression = $4
+              sub(/\(.*/, "", regression)
+
+              # 15% slower:
+              # current / baseline >= 1.15
+              # => baseline / current <= 1 / 1.15
+              if ((regression + 0) <= 0.869565) {
+                print ""
+                print "Performance regression >= 15%: " $0
+                failed = 1
+              }
+            }
+
+            END {
+              exit failed ? 1 : 0
+            }
+          '
+
   address-sanitizer:
     runs-on: ubuntu-24.04
 
@@ -112,3 +195,4 @@ jobs:
         env:
           ASAN_OPTIONS: detect_leaks=0
         run: swift test -c debug --sanitize address
+```

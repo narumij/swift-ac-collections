@@ -77,6 +77,87 @@ import XCTest
       }
     }
 
+    /// poison済み領域へNodeとpayloadを別色で実際に塗り、各領域が重ならず、
+    /// alignment gap/pair paddingと末尾guardを侵食しないこと。
+    func testReferenceLayout_coloringHasNoOverlapOrOutOfBoundsWrite() {
+      checkReferenceLayoutColoring(Int8.self)
+      checkReferenceLayoutColoring(Int.self)
+      checkReferenceLayoutColoring(SIMD16<Double>.self)
+      checkReferenceLayoutColoring(RedBlackTreePair<Int32, SIMD4<Float>>.self)
+    }
+
+    private func checkReferenceLayoutColoring<Payload>(_ payload: Payload.Type) {
+      let poison: UInt8 = 0xE8
+      let prefixColor: UInt8 = 0xA1
+      let nodeColor: UInt8 = 0xB2
+      let payloadColor: UInt8 = 0xC3
+      let guardColor: UInt8 = 0xD4
+      let guardByteCount = 32
+
+      for prefix in [0, MemoryLayout<_Bucket>.stride, 3 * MemoryLayout<_Bucket>.stride] {
+        for capacity in [1, 2, 3, 16] {
+          let byteCount = UnsafeNode._referenceAllocationByteCount(
+            prefix: prefix,
+            with: payload,
+            capacity: capacity)
+          let alignment = UnsafeNode._referenceAlignment(with: payload)
+          let stride = UnsafeNode._referenceStride(with: payload)
+          let raw = UnsafeMutableRawPointer.allocate(
+            byteCount: byteCount + guardByteCount,
+            alignment: alignment)
+          defer { raw.deallocate() }
+
+          raw.initializeMemory(as: UInt8.self, repeating: poison, count: byteCount)
+          raw.advanced(by: byteCount)
+            .initializeMemory(as: UInt8.self, repeating: guardColor, count: guardByteCount)
+          raw.initializeMemory(as: UInt8.self, repeating: prefixColor, count: prefix)
+
+          let first = UnsafeNode._referenceFirstNode(
+            in: raw.advanced(by: prefix),
+            with: payload)
+          for index in 0..<capacity {
+            let node = UnsafeMutableRawPointer(first).advanced(by: stride * index)
+            node.initializeMemory(
+              as: UInt8.self,
+              repeating: nodeColor,
+              count: MemoryLayout<UnsafeNode>.stride)
+            node.advanced(by: MemoryLayout<UnsafeNode>.stride)
+              .initializeMemory(
+                as: UInt8.self,
+                repeating: payloadColor,
+                count: MemoryLayout<Payload>.stride)
+          }
+
+          var counts: [UInt8: Int] = [:]
+          for offset in 0..<byteCount {
+            counts[raw.load(fromByteOffset: offset, as: UInt8.self), default: 0] += 1
+          }
+          XCTAssertEqual(counts[prefixColor] ?? 0, prefix, "\(Payload.self), prefix \(prefix)")
+          XCTAssertEqual(
+            counts[nodeColor] ?? 0,
+            MemoryLayout<UnsafeNode>.stride * capacity,
+            "\(Payload.self), prefix \(prefix)")
+          XCTAssertEqual(
+            counts[payloadColor] ?? 0,
+            MemoryLayout<Payload>.stride * capacity,
+            "\(Payload.self), prefix \(prefix)")
+          XCTAssertEqual(
+            counts[poison] ?? 0,
+            byteCount - prefix
+              - MemoryLayout<UnsafeNode>.stride * capacity
+              - MemoryLayout<Payload>.stride * capacity,
+            "\(Payload.self), prefix \(prefix)")
+
+          for offset in 0..<guardByteCount {
+            XCTAssertEqual(
+              raw.load(fromByteOffset: byteCount + offset, as: UInt8.self),
+              guardColor,
+              "\(Payload.self), prefix \(prefix), guard offset \(offset)")
+          }
+        }
+      }
+    }
+
     /// `_advanced(with: Payload.self, count:)`で1個先に進めた場合、Node直後に
     /// Payloadが続くレイアウトが保たれ、`count: -1`で元の位置に戻ること。
     func testAdvancedWithPayloadType_roundTripsAndKeepsAlignment() {

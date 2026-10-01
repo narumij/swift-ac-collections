@@ -146,7 +146,8 @@ extension UnsafeNode {
   ///   - payload: Nodeへ積載する型。
   /// - Returns: `node(0)`の開始アドレス。
   ///
-  /// - Important: 呼び出し側は戻り値以降に、要求capacity分の領域が確保済みであることを
+  /// - Important: `storage`は少なくとも`UnsafeNode`のalignmentを満たす必要がある。
+  ///   また呼び出し側は戻り値以降に、要求capacity分の領域が確保済みであることを
   ///   保証しなければならない。
   @inlinable
   package static func _referenceFirstNode<Payload>(

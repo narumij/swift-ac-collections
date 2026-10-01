@@ -177,15 +177,24 @@ final class TreeFoundamentalSafePtrTests: RedBlackTreeTestCase, _UnsafeNodePtrTy
   func testSealedPtr_derivedProperties_propagateFailureWithoutInvokingClosure() {
     let failure: _SealedPtr = .failure(.notAllowed)
 
-    guard case .failure(let purifiedError) = failure.purified else { XCTFail(); return }
+    guard case .failure(let purifiedError) = failure.purified else {
+      XCTFail()
+      return
+    }
     XCTAssertEqual(purifiedError, .notAllowed)
 
-    guard case .failure(let tagError) = failure.tag else { XCTFail(); return }
+    guard case .failure(let tagError) = failure.tag else {
+      XCTFail()
+      return
+    }
     XCTAssertEqual(tagError, .notAllowed)
 
     XCTAssertNil(failure.pointer)
 
-    guard case .failure(let accessibleError) = failure.accessible else { XCTFail(); return }
+    guard case .failure(let accessibleError) = failure.accessible else {
+      XCTFail()
+      return
+    }
     XCTAssertEqual(accessibleError, .notAllowed)
 
     XCTAssertEqual(failure.error, .notAllowed)
@@ -249,7 +258,9 @@ final class TreeFoundamentalSafePtrTests: RedBlackTreeTestCase, _UnsafeNodePtrTy
   /// `default: "\(e)"`にフォールバックする。
   func testErrorMessage_undocumentedCasesFallBackToDescription() {
     XCTAssertEqual(errorMessage(SealError.outOfBounds), "\(SealError.outOfBounds)")
-    XCTAssertEqual(errorMessage(SealError.crossTree), "\(SealError.crossTree)")
+    #if !ALLOW_CROSS_TREE_INDEX
+      XCTAssertEqual(errorMessage(SealError.crossTree), "\(SealError.crossTree)")
+    #endif
     XCTAssertEqual(errorMessage(SealError.detached), "\(SealError.detached)")
     XCTAssertEqual(errorMessage(SealError.other), "\(SealError.other)")
   }

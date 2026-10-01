@@ -12,6 +12,8 @@ import XCTest
 
   final class BucketTraverserTests: RedBlackTreeTestCase {
 
+    /// headバケツの`_BucketTraverser`(`_counts`/`_capacities`の2経路)が、容量分の
+    /// 要素を正しくアライメント済みのまま走査でき、容量を超えたら`nil`で終わること。
     func testHeadAlignment() throws {
       for n in (0..<12).map({ 1 << $0 }) {
         try checkAlignment(Int8.self, capacity: n, isHead: true)
@@ -47,6 +49,7 @@ import XCTest
       }
     }
 
+    /// otherバケツでも同様に、`_BucketTraverser`が容量分を正しく走査できること。
     func testOtherAlignment() throws {
       for n in (0..<12).map({ 1 << $0 }) {
         try checkAlignment(Int8.self, capacity: n, isHead: false)

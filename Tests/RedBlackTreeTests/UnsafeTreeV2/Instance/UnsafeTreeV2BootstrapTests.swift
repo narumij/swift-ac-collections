@@ -66,6 +66,9 @@ import XCTest
       XCTAssertTrue(tree.___tree_invariant())
     }
 
+    /// `__tree_invariant`が、正しい木(黒root・rootの親がend)ではtrueを返し、
+    /// 不正な構成(rootをnullptrに差し替える/rootを赤にする/親をend以外にする)では
+    /// falseを返すこと。
     func testRootInvaliant() throws {
 
       var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
@@ -102,6 +105,8 @@ import XCTest
       #endif
     }
 
+    /// 3つのヘルパーFixture(空・3要素・7要素)が、それぞれ適用後に`___tree_invariant`を
+    /// 満たす正しい木を作れること(以降のテストが使うFixtureヘルパー自体の健全性確認)。
     func testFixtures() {
 
       var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
@@ -110,6 +115,7 @@ import XCTest
       fixture0_1_2_3_4_5_6(&tree)
     }
 
+    /// `__tree_min`が、固定したFixtureに対して正しい最小値ノードのindexを返すこと。
     func testMin() {
       var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       fixture0_10_20(&tree)
@@ -118,6 +124,7 @@ import XCTest
       XCTAssertEqual(tree.__tree_min(tree.__root).index, 2)
     }
 
+    /// `__tree_max`が、固定したFixtureに対して正しい最大値ノードのindexを返すこと。
     func testMax() {
       var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       fixture0_10_20(&tree)
@@ -126,6 +133,8 @@ import XCTest
       XCTAssertEqual(tree.__tree_max(tree.__root).index, 6)
     }
 
+    /// `__tree_left_rotate`/`__tree_right_rotate`が、固定した5ノード構成に対して
+    /// 期待通りの構造変化をし、左回転の後に右回転すると元の形に戻ること(可逆性)。
     func testRotate() throws {
       var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
 
@@ -165,6 +174,8 @@ import XCTest
       XCTAssertEqual(tree.__nodes, initial)
     }
 
+    /// 単一の赤いrootに対して`__tree_balance_after_insert`を呼ぶと、
+    /// 不変条件を満たす形(黒root)に補正されること。
     func testBalancing0() throws {
       var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       fixtureEmpty(&tree)
@@ -186,6 +197,8 @@ import XCTest
       #endif
     }
 
+    /// 3要素を挿入した後、`___erase_unique`で1つずつ削除していく過程で、
+    /// `__begin_node_`(最小値ノード)が常に正しく更新され続けること。
     func testRemove3() throws {
 
       let tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
@@ -203,6 +216,8 @@ import XCTest
       }
     }
 
+    /// (testRemove3と同じ観点、2要素版) 削除していく過程で`__begin_node_`と
+    /// `___tree_invariant`・`count`が常に正しいこと。
     func testRemove2() throws {
 
       let tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
@@ -222,6 +237,8 @@ import XCTest
       }
     }
 
+    /// (testRemove3と同じ観点、7要素版) より大きい木でも削除過程で`__begin_node_`と
+    /// `___tree_invariant`・`count`が常に正しいこと。
     func testRemove7() throws {
 
       let tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
@@ -241,6 +258,8 @@ import XCTest
       }
     }
 
+    /// 空の木に対して`__find_equal`を呼ぶと、親がend・挿入先の参照がendの左子を
+    /// 指す状態(どこにも要素が無いので、endの左へ挿入すべき)になること。
     func testFindEqual0() throws {
       var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       fixtureEmpty(&tree)
@@ -259,6 +278,8 @@ import XCTest
       }
     }
 
+    /// 3要素(0,10,20)の木に対し、木に無い値も含む様々なキーで`__find_equal`を呼んだ際の
+    /// 挿入位置(親ノードと挿入先参照)が、BSTの探索ルールどおりになること。
     func testFindEqual1() throws {
       var tree = RedBlackTreeSet<Int>(minimumCapacity: capacity)
       fixture0_10_20(&tree)
@@ -313,6 +334,8 @@ import XCTest
       }
     }
 
+    /// 10000要素を`__insert_unique`で挿入していくと、全て新規挿入
+    /// (`__inserted == true`)となり、最終的に`___tree_invariant`を満たすこと。
     func testInsert0() throws {
 
       let tree = RedBlackTreeSet<Int>(minimumCapacity: 10000)

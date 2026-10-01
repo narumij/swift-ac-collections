@@ -5,6 +5,8 @@ import XCTest
 
   final class UnsafePointerPointerTests: RedBlackTreeTestCase {
 
+    /// ポインタの配列(ポインタのポインタ、`_NodeRef`相当)経由で辿った先が、
+    /// 元の`UnsafeNode`そのものを指すこと(間接参照が正しく機能する)。
     func testPointerOfPointerPointsToOriginalNodes() {
 
       // 1. UnsafeNode を10個分確保・初期化

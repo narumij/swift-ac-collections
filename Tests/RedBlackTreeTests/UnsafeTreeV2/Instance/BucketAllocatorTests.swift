@@ -23,6 +23,10 @@ import XCTest
       // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+    /// 先頭バケツ(headバケツ)の確保サイズで、各種payload型(整数・SIMD・
+    /// `RedBlackTreePair`の組み合わせ)に対し、ヘッダ/begin_ptr/end_node/先頭ノード/
+    /// 先頭payloadの全てが正しくアライメントされ、書き込んだバイトパターンが
+    /// 重複・越境なく一致すること。
     func testHeadAllocationSize() throws {
       for n in [0] + (0..<12).map({ 1 << $0 }) {
         try checkHeadAllocationSize(Int8.self, capacity: n)
@@ -155,6 +159,8 @@ import XCTest
       storage.deallocate()
     }
 
+    /// 追加バケツ(otherバケツ)の確保サイズでも、headバケツと同様にアライメントと
+    /// バイトパターンの整合性を確認すること。
     func testOtherAllocationSize() throws {
       for n in (0..<12).map({ 1 << $0 }) {
         try checkOtherAllocationSize(Int8.self, capacity: n)
@@ -182,6 +188,8 @@ import XCTest
       }
     }
 
+    /// 複数要素(capacity=4)を確保した場合、各要素のpayloadが個別に
+    /// アライメント要件を満たすこと。
     func testPayloadAlignmentIsPreservedAcrossElements() throws {
       typealias Payload = SIMD4<Float>
 
@@ -211,6 +219,8 @@ import XCTest
       }
     }
 
+    /// headバケツの確保サイズが、最後のpayloadの終端ぴったりで終わり、
+    /// 余分な末尾バイトを持たないこと(無駄な確保がない)。
     func testHeadAllocationEndsAtLastPayload() throws {
       for capacity in [1, 2, 3, 16] {
         checkHeadAllocationEndsAtLastPayload(Int8.self, capacity: capacity)
@@ -239,6 +249,7 @@ import XCTest
       }
     }
 
+    /// otherバケツでも同様に、確保サイズが最後のpayloadの終端ぴったりで終わること。
     func testOtherAllocationEndsAtLastPayload() throws {
       for capacity in [1, 2, 3, 16] {
         checkOtherAllocationEndsAtLastPayload(Int8.self, capacity: capacity)
@@ -422,6 +433,8 @@ import XCTest
       }
     }
 
+    /// 要素を持たない空の`_BucketAllocator`の`deinitialize`が、渡されたメモリに対して
+    /// 何もしない(安全に無視される)こと。
     func testEmptyDeinitializerDoNothingSmoke() throws {
       let emptyAllocator = _BucketAllocator.create()
       let memory = UnsafeMutableRawPointer.allocate(

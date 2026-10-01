@@ -47,6 +47,8 @@
 
   final class BucketMemoryLayoutTests: XCTestCase {
 
+    /// バケツ内の要素間隔(queue/accessor/traverserそれぞれの隣接要素間の距離)が、
+    /// 全て`pairLayout.stride`と一致すること(3つのアクセス経路が同じレイアウトを指す)。
     func testBucketComponentsUsePairStride() {
       typealias Payload = SIMD4<Float>
 

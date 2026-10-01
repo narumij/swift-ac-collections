@@ -26,7 +26,6 @@
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
 - 途中で止まっているCI問題の続き(Codex)
-- UnsafeTreeV2配下も実装からの逆算で仕様を把握したくなりはじめたので、Test as Spec調に整えて欲しい
 
 ### 相談事項
 
@@ -69,10 +68,13 @@
 - 生木へのテストを増やすと変更コストがかさむので、バランスに悩んでいる
 - 「空チェック前のensureUnique()が無駄なCoWを起こす」問題は、`RedBlackTreeMultiMap.erase(exactly:)`・両View系列(`RedBlackTreeMappedValuesView`/`RedBlackTreeRangeView+KeyValue`/`+KeyOnly`)の`popFirst`/`popLast`/`erase()`/`erase(where:)`・4型の`popFirst`/`popLast`/`Set.remove(_:)`/`Dictionary.removeValue(forKey:)`/`removeAll(keepingCapacity:)`、さらに互換モード専用`+Deprecated.swift`側の`RedBlackTreeSet.popFirst()`/`RedBlackTreeMultiSet.remove(_:)`/`removeAll(_:)`/`RedBlackTreeMultiMap.removeFirst(forKey:)`/`removeFirst(_unsafeForKey:)`/`removeAll(forKey:)`まで2026-10-01に全て修正済み。`+Deprecated.swift`全体を同パターンで網羅的に再調査したわけではないため、他に見落としが残っている可能性はゼロではない
 - `RedBlackTreeMappedValuesView._isdentical(to:)`はSources内で呼び出しゼロ(`Equatable`適合なし)。削除するかテストを書くかはユーザー判断待ち
+- `Tree/Fixture/UnsafeNodeReferenceFixture.swift`・`UnsafeTreeV2/Instance/RawBufferHeadFixture.swift`・`UnsafeNodeRawBufferCrossCheckTests.swift`(2026-10-01新設)は、`MemoryLayoutTests`/`UnsafeNodeMemoryLayoutTests`/`BucketAllocatorTests`の既存`checkXxx`ヘルパー・payload型リストと意図的に重複している。ユーザー方針「一旦多重化して、あとで整理しましょう」により統合はまだ行っていない
 
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-01 17:30 Claude (Sonnet 5): 「UnsafeNodeは原木の一部で一応リファレンス実装、RawBufferは性能都合の直書き。ここをテストして新しいFixtureの土台にしたい」という要望に対応。`UnsafeNode._advanced(with:count:)`は生メモリ直接アロケートで、`_BucketAllocator`/`_Bucket`は生木(`UnsafeTreeV2`/`RedBlackTreeSet`)を経由せず直接操作する、という指定の手法で`UnsafeNodeReferenceFixture`/`RawBufferHeadFixture`を新設し、両者のpairStride・各要素のノード/payloadオフセットが一致することを検証する`UnsafeNodeRawBufferCrossCheckTests.swift`を追加(2テスト、各種payload型・capacity 1/2/3/16で網羅)。スコープはユーザー選択により「既存ファイルは一切変更せず追加のみ」。ユーザー追加指示「原木テストだから一部はTreeがいいかな」を受け、`UnsafeNodeReferenceFixture`は`Tree/Fixture/`へ、`RawBufferHeadFixture`は`UnsafeTreeV2/Instance/`へ分離配置(`_advanced(with:count:)`がinternalアクセスのため`Tree/Fixture/TreeNodeOnlyFixture.swift`と異なり`#if DEBUG`で囲み`@testable import`)。既存`checkMemoryLayout`等との重複整理は「一旦多重化して、あとで整理しましょう」とのことで保留。`swift test`全体0 failures、`swift build -c release`も成功。
+- 2026-10-01 17:10 Claude: 優先事項「UnsafeTreeV2配下も実装からの逆算で仕様を把握したくなりはじめたので、Test as Spec調に整えて欲しい」に対応。`Tests/RedBlackTreeTests/UnsafeTreeV2/`配下14ファイル(`Base/`1・`Instance/`10・`Synthetic/`3)を走査し、コメントが無かった約45件のテストメソッドに「何を検査しているか」の日本語docを追加(`BufferHeaderTests.swift`は既にコメント済みで変更不要だった)。副産物として、`Synthetic/RecyclePoolTests.swift`(`USE_RECYCLE_POOL_PROTOCOL`限定)と`Synthetic/UnsafeNodeFreshPoolTests.swift`(`USE_FRESH_POOL_PROTOCOL`限定)が、両フラグとも既定で無効のため丸ごとコンパイルされていない(=既定ビルドでは実行されない)ことを確認。これは既知の「`_FreshPool`/`_RecyclePool`プロトコル版 vs インライン版」という設計上の二重実装(`BufferHeader.swift`のコメント「以下の二つと類似関数を基本層とする定義で構わない気がしてきた」に対応)によるもので、新規の問題ではない。コメントのみの変更のためロジックは無変更、`swift test`878 tests / 0 failures。
 - 2026-10-01 13:04 JST Codex (GPT-5): `Documentation/MAINTENANCE.md`へCHANGELOG更新手順を追加。ユーザー指定範囲の確認、mergeを含む実質的な最終更新コミットとblob IDの確認、コミット済み＋未コミット差分の収集、既存Unreleasedとの重複排除、Keep a Changelog分類、掲載候補、過去リリース欄の扱い、最終照合と`git diff --check`までを明文化した。
 - 2026-10-01 Codex (GPT-5): `CHANGELOG.md`へ前回確定本文以降の差分を反映。既存Unreleasedと重複するテスト・実装修正は再掲せず、DocCカタログと手動Topics、Release DocC CI/artifact/GitHub Pages公開、標準ライブラリ準拠の分類、macOS 15最小バージョンを追記した。詳細は`Documentation/MAINTENANCE.md`へ記録。
 - 2026-10-01 12:56 JST Codex (GPT-5): 4つの具象コレクション型のDocCメンバーを手動分類。初案のAPI Matrix準拠から、ユーザー指示によりSwift標準`Set`/`Dictionary`の利用目的別Topicsへ改訂した。API Matrixは掲載漏れの照合にのみ使用し、独自のIndex・Range/Bound分類を追加する方針。自動`Instance Methods`に残っていた`erase`、`formIndex`、`merge`/`merging`、Multi系の`insert(contentsOf:)`等も4型へ横展開して手動Topicsへ収容した。標準`Sequence`由来の汎用メソッドはDefault Implementationsに残した。詳細は`Documentation/MAINTENANCE.md`へ記録。
@@ -233,6 +235,7 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
   - `tree_basic+tag.swift`の`_TrackingTag.retire`
   - `RedBlackTreeMappedValuesView._isdentical(to:)`
 - **直近の主要な修正**(2026-10-01): `RedBlackTreeMultiMap.index(inserting:)`が`__insert_unique`を誤って呼んでいた実バグを修正。「削除系メソッドは空/未発見でもトラップせずに無駄なCoWを起こしてはいけない」という原則の横展開で、`erase(exactly:)`・両View系列・4型`popFirst`/`popLast`等・`removeAll(keepingCapacity:)`の計10箇所超を修正。
+- **UnsafeNode(原木) vs RawBuffer クロスチェック**(2026-10-01): `UnsafeNode._advanced(with:count:)`(生メモリ直接アロケートによる参照計算)と`_BucketAllocator`/`_Bucket`(生木を経由しない直接操作、手で最適化された実装)が同じメモリ配置を導くことを検証。原木側の`UnsafeNodeReferenceFixture`は`Tree/Fixture/UnsafeNodeReferenceFixture.swift`に(ユーザー指示「原木テストだから一部はTreeがいいかな」により`Tree/Fixture/`配置)、RawBuffer側の`RawBufferHeadFixture`は`UnsafeTreeV2/Instance/RawBufferHeadFixture.swift`に分離して新設し、両者を使うクロスチェックテスト`UnsafeNodeRawBufferCrossCheckTests.swift`を`UnsafeTreeV2/Instance/`に新設。既存の`MemoryLayoutTests`/`UnsafeNodeMemoryLayoutTests`/`BucketAllocatorTests`のヘルパーとは意図的に重複させており(ユーザー指示: 「一旦多重化して、あとで整理しましょう」)、整理は別途ユーザー判断で行う。
 - **ツール注記**: XcodeのMCP `RunAllTests`が実行漏れを"0 failed"と誤表示する不具合を確認済み。全体テストの合否は`swift test`(CLI)、カバレッジは`swift test --enable-code-coverage`+`xcrun llvm-cov`を正とする。
 
 ### 年代順ログ

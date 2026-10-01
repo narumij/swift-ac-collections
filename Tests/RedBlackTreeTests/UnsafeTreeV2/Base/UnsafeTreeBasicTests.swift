@@ -25,6 +25,7 @@ import XCTest
       typealias Element = Int
     }
 
+    /// `.create()`(容量0)が、空の木として正しい初期状態(capacity/count/root/begin_node)になること。
     func testCreateZero() async throws {
       let storage = UnsafeTreeV2<Base>.create()
       XCTAssertEqual(storage.capacity, 0)
@@ -33,6 +34,7 @@ import XCTest
       XCTAssertEqual(storage.__begin_node_, storage.end)
     }
 
+    /// `.create(minimumCapacity:)`が指定容量以上を確保し、空の木として正しい初期状態になること。
     func testCreate() async throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       XCTAssertGreaterThanOrEqual(storage.capacity, 4)
@@ -41,6 +43,7 @@ import XCTest
       XCTAssertEqual(storage.__begin_node_, storage.end)
     }
 
+    /// `__construct_node(_:)`で生成したノードから、`__value_`で元の値を読み出せること。
     func testConstruct() async throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       XCTAssertGreaterThanOrEqual(storage.capacity, 4)
@@ -52,6 +55,8 @@ import XCTest
       //      XCTAssertEqual(storage.__value_(ptr), 50)
     }
 
+    /// `makeUsedNodeIterator()`が、構築済みノードを`___tracking_tag`の昇順(=挿入順)で
+    /// 列挙し、未使用分に到達したら`nil`を返すこと。
     func testPoolIterator() async throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       XCTAssertGreaterThanOrEqual(storage.capacity, 4)
@@ -79,6 +84,8 @@ import XCTest
         [100, 200, 300, 400])
     }
 
+    /// `destroy(_:)`で破棄した直後も、メモリ上の値自体はまだ読めること
+    /// (破棄は即座にゼロクリアするのではなく、recycle pool管理上の状態を変えるだけ)。
     func testDestroy0() async throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       let ptr = storage.__construct_node(100)
@@ -87,6 +94,8 @@ import XCTest
       XCTAssertEqual(storage.__value_(ptr), 100)
     }
 
+    /// `___pushRecycle`/`___popRecycle`が、破棄したノードをLIFO(スタック)順に
+    /// 積み下ろしし、その都度`recycleCount`とpayloadの初期化/破棄カウントが整合すること。
     func testDestroyStack() async throws {
       var storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       //    storage.initializedCount = 4
@@ -153,6 +162,8 @@ import XCTest
       }
     }
 
+    /// recycle pool(破棄済みノードの連結リスト)の構造が、`.copy()`後も
+    /// 元の木と同じ形(連結順・左右の子のindex)を保つこと。
     func testDestroyStack2() async throws {
       var storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
       _ = storage.__construct_node(0)
@@ -178,6 +189,8 @@ import XCTest
       }
     }
 
+    /// 入れ子の`do`ブロックで構築→破棄を繰り返した場合でも、recycle poolが
+    /// 正しいLIFO順でノードを積み重ねること(ネストしたスコープでも整合する)。
     func testConstructDestroy() async throws {
       #if AC_COLLECTIONS_INTERNAL_CHECKS
         let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 4)
@@ -248,6 +261,8 @@ import XCTest
       #endif
     }
 
+    /// `__insert_unique`で0..<5を挿入した木が`__tree_invariant`を満たし、
+    /// `lower_bound`と前進走査(`__tree_next_iter`)で昇順に正しく値を返すこと。
     func testInsert() async throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
       for i in 0..<5 {
@@ -269,6 +284,8 @@ import XCTest
       XCTAssertEqual(begin, storage.end)
     }
 
+    /// `.copy()`した木が、元の木と同じ構造(root/begin_nodeのindexと左右の子)を持ち、
+    /// 走査結果も一致すること(CoWコピーの構造的忠実性)。
     func testInsert2() async throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
       for i in 0..<5 {
@@ -311,11 +328,13 @@ import XCTest
       XCTAssertTrue(__tree_invariant(storage.__root))
     }
 
+    /// `__retrieve_(.nullptr)`が`.failure(.null)`になること。
     func testRetrieveEtc() throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
       XCTAssertEqual(storage.__retrieve_(.nullptr), .failure(.null))
     }
 
+    /// 未知の(存在しない)タグを`___retrieve(tag:)`に渡すと`.failure(.unknown)`になること。
     func testRetrieveUnknown() throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
       XCTAssertEqual(
@@ -323,6 +342,7 @@ import XCTest
         .failure(.unknown))
     }
     
+    /// `description`に型名`"UnsafeTreeV2"`が含まれること。
     func testDescription() throws {
       let storage = UnsafeTreeV2<Base>.create(minimumCapacity: 5)
       XCTAssertTrue(storage.description.contains("UnsafeTreeV2"))

@@ -313,6 +313,8 @@ xcrun llvm-cov show \
 
 - **invariant検証器の否定経路**(2026-10-01 23:46 JST、Codex GPT-5): 意図的に壊した原木を組み、rootの親欠落・endからの参照不整合・赤root、左右childの親不整合、左右同一child、赤赤、子部分木の不整合伝播、黒高さ不一致をそれぞれ拒否することを固定した。右childだけを持つ木の`__tree_leaf`経路も追加。Tree配下全116件成功、`unsafe_tree+algorithm.swift`は96.49%(412/427行)、原木全体の行カバレッジは94.51%(1963/2077行)。
 
+- **正規のunique hint挿入経路**(2026-10-01 23:48 JST、Codex GPT-5): 通常挿入で構築済みの木から、key明示・payload由来key・両経路の重複・分割版hint uniqueを検証した。重複時は一時allocationが破棄され、最終的なin-order、不変条件、全解放も確認。range専用`___emplace_hint_right`は使用していない。Tree配下全117件成功、`unsafe_tree+insert.swift`は94.21%(114/121行)、原木全体の行カバレッジは97.40%(2023/2077行)。未達は9ファイル・54行となり、目標だった100行未満へ到達した。
+
 ### 年代順ログ
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。旧 `set` フォルダの Swift テストは残っていない。

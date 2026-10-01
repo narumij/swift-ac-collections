@@ -32,7 +32,8 @@ import XCTest
       TreeAlgorithmProtocol_ptr, InsertNodeAtProtocol_ptr, FindLeafProtocol_ptr,
       FindEqualInterface, FindEqualProtocol_ptr_old, InsertUniqueProtocol_ptr,
       InsertMultiProtocol, RemoveProtocol_ptr, EraseProtocol, FindProtocol_find_equal_ptr,
-      EraseUniqueProtocol, InsertLastProtocol_ptr
+      EraseUniqueProtocol, InsertLastProtocol_ptr, FindHintEqualProtocol_ptr,
+      EmplaceHintUniqueProtocol_ptr
     {
       typealias _PayloadValue = Int
       typealias _Key = Int
@@ -175,6 +176,39 @@ import XCTest
       XCTAssertEqual(tree.__get_value(maximum.__parent), 30)
       XCTAssertEqual(maximum.__child, maximum.__parent.__right_ref)
 
+      _ = tree.erase(tree.__begin_node_, tree.end)
+      XCTAssertEqual(state.owned.allocationCount, 0)
+    }
+
+    /// 通常挿入で構築済みの木に対するunique hint挿入が、key指定・payload由来key・
+    /// 重複時の一時allocation破棄を正しく扱うこと。
+    func testHintedUniqueInsertion_handlesKeyedDerivedAndDuplicatePaths() {
+      let state = State()
+      let tree = MutationTree(state: state)
+      _ = tree.__insert_unique(10)
+      _ = tree.__insert_unique(30)
+
+      let keyed = tree.__emplace_hint_unique(tree.end, Optional(20), 20)
+      XCTAssertTrue(keyed.__inserted)
+      XCTAssertEqual(tree.__get_value(keyed.__r), 20)
+
+      let keyedDuplicate = tree.__emplace_hint_unique(keyed.__r, Optional(20), 999)
+      XCTAssertFalse(keyedDuplicate.__inserted)
+      XCTAssertEqual(tree.__get_value(keyedDuplicate.__r), 20)
+
+      let derived = tree.__emplace_hint_unique(tree.end, Optional<Int>.none, 25)
+      XCTAssertTrue(derived.__inserted)
+      let derivedDuplicate = tree.__emplace_hint_unique(derived.__r, Optional<Int>.none, 25)
+      XCTAssertFalse(derivedDuplicate.__inserted)
+      XCTAssertEqual(state.owned.allocationCount, 4)
+
+      let split = tree.___emplace_hint_unique_(tree.end, 27, 27)
+      XCTAssertTrue(split.__inserted)
+      let splitDuplicate = tree.___emplace_hint_unique_(split.__r, 27, 1_000)
+      XCTAssertFalse(splitDuplicate.__inserted)
+
+      XCTAssertEqual(values(tree), [10, 20, 25, 27, 30])
+      XCTAssertTrue(tree.__tree_invariant(tree.__root))
       _ = tree.erase(tree.__begin_node_, tree.end)
       XCTAssertEqual(state.owned.allocationCount, 0)
     }

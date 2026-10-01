@@ -224,7 +224,7 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 (このサブセクションはスナップショットとして毎回上書きしてよい。詳細な経緯は下の年代順ログを参照)
 
 - **Test as Spec 整理**: Set・MultiSet・Dictionary・MultiMap は型別フォルダで連番 Test as Spec 化が完了。`RedBlackTreeView/`(`RedBlackTreeMappedValuesView`・`RedBlackTreeKeyValueRangeView`・`RedBlackTreeKeyOnlyRangeView`)も同様に連番整理済み。`BoundExpression` も4型とも `_16_BoundExpressionTests.swift` へ移管済み。
-- **原木層**: `Tree/Fixture/TreeNodeOnlyFixture.swift`(実ポインタ`_ptr`系プロトコルに直接適合するFixture)で`unsafe_tree+algorithm`・`unsafe_node+pointer+*`・`tree_base+compare`(`__UniqueHelper`/`__MultiHelper`)等を直接テスト中。バランス・削除の核心アルゴリズムは実質的に高カバレッジ。
+- **原木層**: `Tree/Fixture/TreeNodeOnlyFixture.swift`(実ポインタ`_ptr`系プロトコルに直接適合するFixture)で`unsafe_tree+algorithm`・`unsafe_node+pointer+*`・`tree_base+compare`(`__UniqueHelper`/`__MultiHelper`)等を直接テスト中。バランス・削除の核心アルゴリズムは実質的に高カバレッジ。2026-10-01 18:00 JST以降は、原木テストを`Tests/RedBlackTreeTests/Tree/`内だけで完結させる方針で継続中。`TreeOwnedNodeFixture`を追加し、生木・RawBufferを経由せず`AllocationInterface`/`DellocationInterface`を実装、payloadを先に整列して直前へ`UnsafeNode`を置く実レイアウトと明示的なinitialize/deinitializeを仕様化した。Fixtureは`~Copyable`を維持し、将来の`__tree`ポータブル化・noncopyable要素対応を見据える。
 - **カバレッジ**: 2026-10-01時点で`Sources/RedBlackTreeCollections`全体は`swift test --enable-code-coverage`+`llvm-cov`基準で約90%。残る未カバー行の大半は「未結線/削除判断待ちコード」に集約されている(次項)。
 - **未結線・削除判断待ちコード一覧**(いずれもSources内で呼び出しゼロと確認済み。削除するかテストを書くかはユーザー判断待ち):
   - `Implements/Iterator/UnsafeIterator/UnsafeIterator+Reverse4.swift`(`_Reverse4`)、および同系列の`UnsafeIterator+CopyOnWrite.swift`の`reversed()`/`init(_source:tree:)`・`+KeyValue.swift`の`keys()`/`values()`
@@ -237,6 +237,7 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 - **直近の主要な修正**(2026-10-01): `RedBlackTreeMultiMap.index(inserting:)`が`__insert_unique`を誤って呼んでいた実バグを修正。「削除系メソッドは空/未発見でもトラップせずに無駄なCoWを起こしてはいけない」という原則の横展開で、`erase(exactly:)`・両View系列・4型`popFirst`/`popLast`等・`removeAll(keepingCapacity:)`の計10箇所超を修正。
 - **UnsafeNode(原木) vs RawBuffer クロスチェック**(2026-10-01): `UnsafeNode._advanced(with:count:)`(生メモリ直接アロケートによる参照計算)と`_BucketAllocator`/`_Bucket`(生木を経由しない直接操作、手で最適化された実装)が同じメモリ配置を導くことを検証。原木側の`UnsafeNodeReferenceFixture`は`Tree/Fixture/UnsafeNodeReferenceFixture.swift`に(ユーザー指示「原木テストだから一部はTreeがいいかな」により`Tree/Fixture/`配置)、RawBuffer側の`RawBufferHeadFixture`は`UnsafeTreeV2/Instance/RawBufferHeadFixture.swift`に分離して新設し、両者を使うクロスチェックテスト`UnsafeNodeRawBufferCrossCheckTests.swift`を`UnsafeTreeV2/Instance/`に新設。既存の`MemoryLayoutTests`/`UnsafeNodeMemoryLayoutTests`/`BucketAllocatorTests`のヘルパーとは意図的に重複させており(ユーザー指示: 「一旦多重化して、あとで整理しましょう」)、整理は別途ユーザー判断で行う。
 - **ツール注記**: XcodeのMCP `RunAllTests`が実行漏れを"0 failed"と誤表示する不具合を確認済み。全体テストの合否は`swift test`(CLI)、カバレッジは`swift test --enable-code-coverage`+`xcrun llvm-cov`を正とする。
+- **直近の原木テスト追加**(2026-10-01 18:00 JST、Codex GPT-5): `TreeFoundamentalValueTests`でtracking tag、scalar/pair変換、multiplicity、`RedBlackTreePair`の値 semantics/Codable、three-way比較を9件追加。`TreeFoundamentalAllocationTests`でノード構築、非trivial payloadの一度だけの破棄、強いpayload alignmentを3件追加。新規12件は全件成功、Tree配下全体の再確認と全体CLIテストは最終確認時に実施する。
 
 ### 年代順ログ
 

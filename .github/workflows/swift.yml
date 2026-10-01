@@ -119,6 +119,18 @@ jobs:
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest
 
+      - name: Run current benchmarks
+        working-directory: head/Benchmarks
+        run: |
+          mkdir -p ../benchmark-results
+
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI.json \
+            ../benchmark-results/current.json \
+            --max-size 256k \
+            --cycles 1 \
+            --mode replace-all
+
       - name: Run baseline benchmarks
         working-directory: base/Benchmarks
         run: |
@@ -130,18 +142,6 @@ jobs:
           swift run -c release benchmark library run \
             --library ./Libraries/CI.json \
             ../benchmark-results/base.json \
-            --max-size 256k \
-            --cycles 1 \
-            --mode replace-all
-
-      - name: Run current benchmarks
-        working-directory: head/Benchmarks
-        run: |
-          mkdir -p ../benchmark-results
-
-          swift run -c release benchmark library run \
-            --library ./Libraries/CI.json \
-            ../benchmark-results/current.json \
             --max-size 256k \
             --cycles 1 \
             --mode replace-all

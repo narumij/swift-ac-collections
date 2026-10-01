@@ -127,7 +127,7 @@ jobs:
           swift run -c release benchmark library run \
             --library ./Libraries/CI.json \
             ../benchmark-results/current.json \
-            --max-size 256k \
+            --max-size 128k \
             --cycles 1 \
             --mode replace-all
 
@@ -142,7 +142,7 @@ jobs:
           swift run -c release benchmark library run \
             --library ./Libraries/CI.json \
             ../benchmark-results/base.json \
-            --max-size 256k \
+            --max-size 128k \
             --cycles 1 \
             --mode replace-all
 

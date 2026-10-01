@@ -189,12 +189,15 @@ let package = Package(
       path: "Sources/_RedBlackTreeModule"
     ),
 
-//    .target(
-//      name: "RedBlackTreeTestSupport",
-//      dependencies: ["RedBlackTreeCollections"],
-//      path: "Tests/RedBlackTreeTestSupport",
-//      swiftSettings: _settings
-//    ),
+    .target(
+      name: "RedBlackTreeFixture",
+      dependencies: ["RedBlackTreeCollections"],
+      path: "Tests/RedBlackTreeFixture",
+      exclude: [
+        "Fixtures.md"
+      ],
+      swiftSettings: _settings
+    ),
 
     .testTarget(
       name: "RedBlackTreeTests",
@@ -202,9 +205,7 @@ let package = Package(
         .product(name: "Algorithms", package: "swift-algorithms"),
         //        .product(name: "TrailingElementsModule", package: "swift-collections"),
         "RedBlackTreeCollections",
-      ],
-      exclude: [
-        "Fixtures.md"
+        "RedBlackTreeFixture",
       ],
       swiftSettings: _settings
     ),

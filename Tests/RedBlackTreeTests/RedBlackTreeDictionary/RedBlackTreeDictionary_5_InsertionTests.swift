@@ -76,6 +76,40 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary.map(\.key), [1, 2, 3])
   }
 
+  /// 上の再現ケースを左右反転したケース。キー2の探索で得た`__child`はノード3の
+  /// 左子スロットを指すが、ノード3での右回転とノード1での左回転によって、その
+  /// スロットもnullへ書き換えられる。片側の回転だけを考慮した修正を検出する。
+  func test_defaultSubscript_noHitModify_yieldsInsertedValueAfterRightLeftDoubleRotation() {
+    var dictionary: RedBlackTreeDictionary<Int, Int> = [1: 10, 3: 30]
+
+    dictionary[2, default: 0] += 1
+
+    XCTAssertEqual(dictionary[2], 1)
+    XCTAssertEqual(dictionary.map(\.key), [1, 2, 3])
+  }
+
+  /// 未登録キーを左外側へ挿入して右単回転が発生するケース。二重回転だけに特化せず、
+  /// no-hitから構築したノードを`_modify`が一貫してyieldすることを確認する。
+  func test_defaultSubscript_noHitModify_yieldsInsertedValueAfterRightRotation() {
+    var dictionary: RedBlackTreeDictionary<Int, Int> = [3: 30, 2: 20]
+
+    dictionary[1, default: 0] += 1
+
+    XCTAssertEqual(dictionary[1], 1)
+    XCTAssertEqual(dictionary.map(\.key), [1, 2, 3])
+  }
+
+  /// 右単回転の左右対称となる左単回転のケース。左右どちらの挿入経路でも、探索時の
+  /// childスロットではなく、実際に構築したノードを更新していることを保証する。
+  func test_defaultSubscript_noHitModify_yieldsInsertedValueAfterLeftRotation() {
+    var dictionary: RedBlackTreeDictionary<Int, Int> = [1: 10, 2: 20]
+
+    dictionary[3, default: 0] += 1
+
+    XCTAssertEqual(dictionary[3], 1)
+    XCTAssertEqual(dictionary.map(\.key), [1, 2, 3])
+  }
+
   func test_insert_returnsInsertedFlagAndExistingMemberOnDuplicate() {
     var dictionary = RedBlackTreeDictionary<Int, Int>()
 

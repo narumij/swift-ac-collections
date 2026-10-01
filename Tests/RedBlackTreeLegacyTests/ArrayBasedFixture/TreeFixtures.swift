@@ -15,7 +15,7 @@ extension Array {
 
 #if DEBUG
   class TreeFixtureBase<Element>:
-    RedBlackTreeTestCase,
+    XCTestCase,
     TreeAlgorithmBaseProtocol_legacy,
     TreeNodeAccessInterface, RootInterface, EndNodeProtocol,
     ___RedBlackTreeNodePoolProtocol

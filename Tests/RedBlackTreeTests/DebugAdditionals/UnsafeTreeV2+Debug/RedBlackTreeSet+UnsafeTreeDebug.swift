@@ -1,4 +1,5 @@
-#if DEBUG
+#if DEBUG && false
+  // これはつかわないこと
   @testable import RedBlackTreeCollections
 
   extension RedBlackTreeSet {

@@ -33,7 +33,7 @@ public struct ___Node {
   public var __is_black_: Bool
 
   @inlinable
-  init(
+  public init(
     __is_black_: Bool = false,
     __left_: _NodePtr = .nullptr,
     __right_: _NodePtr = .nullptr,
@@ -56,7 +56,7 @@ extension ___Node: Equatable {}
 #endif
 
 extension ___Node {
-  static var node: Self {
+  public static var node: Self {
     .init(__is_black_: false, __left_: .nullptr, __right_: .nullptr, __parent_: .nullptr)
   }
 }

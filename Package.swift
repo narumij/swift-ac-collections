@@ -189,6 +189,13 @@ let package = Package(
       path: "Sources/_RedBlackTreeModule"
     ),
 
+//    .target(
+//      name: "RedBlackTreeTestSupport",
+//      dependencies: ["RedBlackTreeCollections"],
+//      path: "Tests/RedBlackTreeTestSupport",
+//      swiftSettings: _settings
+//    ),
+
     .testTarget(
       name: "RedBlackTreeTests",
       dependencies: [
@@ -198,6 +205,15 @@ let package = Package(
       ],
       exclude: [
         "Fixtures.md"
+      ],
+      swiftSettings: _settings
+    ),
+
+    .testTarget(
+      name: "RedBlackTreeLegacyTests",
+      dependencies: [
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
     ),

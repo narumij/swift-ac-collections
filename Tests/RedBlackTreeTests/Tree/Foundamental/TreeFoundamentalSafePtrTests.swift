@@ -74,6 +74,7 @@ final class TreeFoundamentalSafePtrTests: RedBlackTreeTestCase, _UnsafeNodePtrTy
     case oops
   }
 
+  // TODO: これはさすがに冗長。修正の手間が増えるだけ
   func testErrorMessage_coversEachDocumentedSealErrorCase() {
     XCTAssertEqual(errorMessage(SealError.null), "Unexpected null pointer")
     XCTAssertEqual(errorMessage(SealError.garbaged), "Unexpected pointer to deallocated memory")

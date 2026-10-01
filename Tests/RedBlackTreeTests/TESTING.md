@@ -31,7 +31,6 @@
 ### 相談事項
 
 - Current handoffが膨大になってきました。直近の作業と、現在の状況ぐらいでいいのではないでしょうか？
-- ドキュメントメンテナンスについてこのmdと同様の文書をどこかに作成したい(Codex)
 - テストを軸としたコードメンテはそのうち他のターゲットも対象になるので、この文書の配置場所をTests直下に切り替えたい(Claude優先)
 
 ### 連絡事項
@@ -74,6 +73,7 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-01 12:27 JST Codex (GPT-5): ドキュメントメンテナンス用の作業連絡・判断基準として`Documentation/MAINTENANCE.md`を新設。日英同期、コメントドック、API Matrix、CHANGELOG、Release構成でのDocC生成、CI/Pages、検証チェックリスト、短く保つCurrent handoffを整理した。
 - 2026-10-01 Codex (GPT-5): DocC生成時のSwiftPMビルド構成を確認。`generate-documentation`/`preview-documentation`は構成未指定ではDebugとなるため、CIと日英READMEのローカル生成・プレビュー例へSwiftPMグローバルオプション`-c release`を追加し、公開ドキュメントのシンボル抽出をRelease構成へ統一した。
 - 2026-10-01 12:12 Codex (GPT-5): GitHub PagesへのDocC自動公開を追加。既存のDocC検証・通常tar.gz artifactは維持し、`main`へのpush時だけ`actions/configure-pages@v5`と`actions/upload-pages-artifact@v4`でPages artifactを作成、依存する専用`deploy-documentation`ジョブが`github-pages` environmentへ`actions/deploy-pages@v4`で公開する。PRおよびAtCoder互換ブランチではデプロイせず検証のみ。必要な`contents: read`/`pages: write`/`id-token: write`権限とデプロイconcurrencyを設定。日英READMEに予定常設URLを追記。workflow YAML構文・ジョブ存在確認、`git diff --check`成功。GitHubリポジトリのSettings > PagesでSourceをGitHub Actionsにする外部設定はユーザー作業待ち。
 - 2026-10-01 12:04 Codex (GPT-5): DocC CIのartifact upload失敗を修正。DocCが演算子シンボル用に生成する`'...(_:)-1pmkc.json`等のファイル名には`:`が含まれ、`actions/upload-artifact@v4`がNTFS互換制約で拒否するため、生成ディレクトリを`tar.gz`へ固めて単一ファイルをアップロードする構成へ変更。実際のDocC archiveを用いて禁止文字を含むファイルがtar内に保持されることを確認し、workflow YAML構文確認・`git diff --check`成功。Nodeの`punycode`非推奨表示はAction内部の警告であり失敗原因ではない。

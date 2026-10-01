@@ -1,7 +1,7 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSliceV2.KeyOnly: Collection & BidirectionalCollection {}
 
-  extension RedBlackTreeSlice.KeyOnly {
+  extension RedBlackTreeSliceV2.KeyOnly {
 
     @available(*, deprecated)
     public subscript(_unsafe bounds: Range<Index>) -> SubSequence {

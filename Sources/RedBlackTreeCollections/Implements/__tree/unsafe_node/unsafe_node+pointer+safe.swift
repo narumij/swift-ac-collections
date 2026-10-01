@@ -257,12 +257,14 @@ public enum SealError: Error {
 
   case outOfBounds
 
-  // 木が不一致
-  case crossTree
+  #if !ALLOW_CROSS_TREE_INDEX
+    // 木が不一致
+    case crossTree
+  #endif
 
   // 木と分離済み
   case detached
-  
+
   // あとでエラーの扱いを変える予定のもの
   case other
 }

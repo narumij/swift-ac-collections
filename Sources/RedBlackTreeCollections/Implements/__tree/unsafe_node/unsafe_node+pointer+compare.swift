@@ -91,7 +91,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   // leftを0、rightを1、末端を1とし、ルートから左詰めした数値
   @available(macOS 15.0, *)
   @inlinable
-  internal func ___ptr_bitmap_128() -> UInt128 {
+  package func ___ptr_bitmap_128() -> UInt128 {
     assert(!___is_null, "Node shouldn't be null")
     assert(!___is_end, "Node shouldn't be end")
     var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)

@@ -139,7 +139,7 @@ extension RedBlackTreeMultiMap {
       }
     #else
       // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
-      public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
+      public typealias Keys = RedBlackTreeIterator.Keys<Base>
       //      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
       /// A collection containing just the keys of the multimap.

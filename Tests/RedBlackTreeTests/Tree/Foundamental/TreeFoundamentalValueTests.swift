@@ -10,6 +10,11 @@ import XCTest
 @available(anyAppleOS 26.0, *)
 final class TreeFoundamentalValueTests: RedBlackTreeTestCase {
 
+  private struct LazyIntComparator: IntThreeWayComparator {
+    typealias _Key = Int
+    typealias __compare_result = __int_compare_result
+  }
+
   private enum ScalarBase: _ScalarBase_ElementProtocol,
     _ScalarBasePayloadValue_KeyProtocol
   {
@@ -121,6 +126,14 @@ final class TreeFoundamentalValueTests: RedBlackTreeTestCase {
     XCTAssertEqual(__default_three_way_comparator(1, 2), -1)
     XCTAssertEqual(__default_three_way_comparator(2, 2), 0)
     XCTAssertEqual(__default_three_way_comparator(3, 2), 1)
+  }
+
+  /// 原木用lazy three-way comparatorの既定実装が全ての大小関係を正規化すること。
+  func testLazyIntThreeWayComparator_normalizesAllRelations() {
+    let comparator = LazyIntComparator()
+    XCTAssertTrue(comparator.__lazy_synth_three_way_comparator(1, 2).__less())
+    XCTAssertEqual(comparator.__lazy_synth_three_way_comparator(2, 2), 0)
+    XCTAssertTrue(comparator.__lazy_synth_three_way_comparator(3, 2).__greater())
   }
 
   /// Int compare resultの符号判定が0をless/greaterのどちらにも含めないこと。

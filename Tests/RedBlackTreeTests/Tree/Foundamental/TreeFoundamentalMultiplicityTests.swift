@@ -257,4 +257,19 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
     XCTAssertFalse(MultiSUT.___ptr_range_comp(first, before, last))
     XCTAssertFalse(MultiSUT.___ptr_range_comp(first, after, last))
   }
+
+  /// UInt128版のpath bitmapもroot・左子・右子を異なる辞書順bit列へ符号化すること。
+  func testPointerBitmap128_encodesRootAndChildDirections() {
+    var fixture = makeFixture()
+    let end = fixture.endPtr()
+    buildTree(&fixture, end: end, count: 3)
+    let root = end.__left_
+    let left = root.__left_
+    let right = root.__right_
+    let topBit = UInt128(1) << (UInt128.bitWidth - 1)
+
+    XCTAssertEqual(root.___ptr_bitmap_128(), topBit)
+    XCTAssertEqual(left.___ptr_bitmap_128(), topBit >> 1)
+    XCTAssertEqual(right.___ptr_bitmap_128(), topBit | (topBit >> 1))
+  }
 }

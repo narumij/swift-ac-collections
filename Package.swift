@@ -33,7 +33,7 @@ var _settings: [SwiftSetting] =
     // できましたが、引き続き開発をつづけており、APIの修正も含めて様々な改善をしています。
     // 過去版が単純なコード補完に反応しにくい設計だったこともあり、サポートプロジェクトでこちらを採用しています。
     // サポートプロジェクトで不都合を最小限にとどめるための定義モードです。
-    // .define("COMPATIBLE_ATCODER_2025"),
+//         .define("COMPATIBLE_ATCODER_2025"),
 
     // CoWの挙動チェックを可能にするマクロ定義
     // アロケーション関連のテストを走らせるために必要
@@ -139,13 +139,13 @@ let package = Package(
       url: "https://github.com/swiftlang/swift-docc-plugin.git",
       from: "1.4.1"),
 
-//    .package(
-//      url: "https://github.com/apple/swift-collections",
-//      from: "1.6.0",
-//      traits: []),
+    //    .package(
+    //      url: "https://github.com/apple/swift-collections",
+    //      from: "1.6.0",
+    //      traits: []),
     .package(
       url: "https://github.com/apple/swift-algorithms.git",
-      from: "1.2.1")
+      from: "1.2.1"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -193,12 +193,11 @@ let package = Package(
       name: "RedBlackTreeTests",
       dependencies: [
         .product(name: "Algorithms", package: "swift-algorithms"),
-//        .product(name: "TrailingElementsModule", package: "swift-collections"),
+        //        .product(name: "TrailingElementsModule", package: "swift-collections"),
         "RedBlackTreeCollections",
       ],
       exclude: [
-        "Fixtures.md",
-        "TESTING.md",
+        "Fixtures.md"
       ],
       swiftSettings: _settings
     ),

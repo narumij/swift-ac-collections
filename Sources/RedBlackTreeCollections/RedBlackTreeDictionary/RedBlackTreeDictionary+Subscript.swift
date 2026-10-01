@@ -45,16 +45,15 @@ extension RedBlackTreeDictionary {
       __tree_.lookup(key) ?? defaultValue()
     }
 
-    @inline(__always) _modify {
-      yield &__tree_[key, default: defaultValue]
-      //      yield &__tree_.mappedValuePtr(for: key, default: defaultValue).pointee
-    }
-
-    //    @inline(__always)
-    //    @_transparent
-    //    unsafeMutableAddress {
-    //      __tree_.mappedValuePtr(for: key, default: defaultValue)
+    //    @inline(__always) _modify {
+    //      yield &__tree_[key, default: defaultValue]
     //    }
+
+    @inline(__always)
+    @_transparent
+    unsafeMutableAddress {
+      __tree_.mappedValuePtr(for: key, default: defaultValue)
+    }
   }
 }
 

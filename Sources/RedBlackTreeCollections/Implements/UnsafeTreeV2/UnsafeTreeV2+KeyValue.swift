@@ -120,6 +120,8 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
       }
     }
 
+    defer { _fixLifetime(self) }
+    
     return Base.__mapped_value_ptr(__child.pointee)
   }
 }

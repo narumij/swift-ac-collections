@@ -36,10 +36,8 @@ public struct UnsafeIndexV3Range {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
-  /// A pair of indices delimiting a range in a red-black-tree collection.
-  public typealias RedBlackTreeIndexRange = UnsafeIndexV3Range
-#endif
+/// A pair of indices delimiting a range in a red-black-tree collection.
+public typealias RedBlackTreeIndexRange = UnsafeIndexV3Range
 
 // 削除の悩みがつきまとうので、Sequence適合せず、ループはできないようにする
 // 当然RangeExpressionなんかには適合しない

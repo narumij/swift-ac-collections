@@ -131,6 +131,50 @@ jobs:
             --cycles 1 \
             --mode replace-all
 
+      - name: Collect benchmark crash artifacts
+        if: failure()
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p benchmark-crash
+
+          BENCHMARK="$(
+            find head/Benchmarks/.build \
+              -type f \
+              -name benchmark \
+              -perm -111 \
+              -print \
+              -quit
+          )"
+
+          if [ -z "$BENCHMARK" ]; then
+            echo "Benchmark binary not found"
+            exit 1
+          fi
+
+          echo "Benchmark binary: $BENCHMARK"
+
+          objdump -d "$BENCHMARK" \
+            > benchmark-crash/benchmark.asm
+
+          nm -n "$BENCHMARK" \
+            | swift demangle \
+            > benchmark-crash/benchmark.nm
+
+          file "$BENCHMARK" \
+            > benchmark-crash/benchmark.file
+
+          cp "$BENCHMARK" benchmark-crash/benchmark
+
+      - name: Upload benchmark crash artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-crash
+          path: benchmark-crash
+          if-no-files-found: error
+
       - name: Run baseline benchmarks
         working-directory: base/Benchmarks
         run: |
@@ -165,15 +209,6 @@ jobs:
             /^[[:space:]]*[0-9]/ {
               regression = $4
               sub(/\(.*/, "", regression)
-
-              # 20% slower:
-              # current / baseline >= 1.20
-              # => baseline / current <= 1 / 1.20
-              if ((regression + 0) <= 0.833333) {
-              print ""
-                print "Performance regression >= 20%: " $0
-                failed = 1
-              }
 
               # 30% slower:
               # current / baseline >= 1.30

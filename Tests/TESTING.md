@@ -256,6 +256,33 @@ SIGTRAPで停止する子プロセスの当該行は`default.profdata`へ加算�
 そのためCLIの原木行カバレッジではDeath Testの成功を別の指標として扱う。Xcodeのcoverage表示で
 assert行が実行済みになる場合は、それを停止経路の到達確認として併用してよい。
 
+### Claudeによる原木完了確認手順
+
+Codexが原木カバレッジ作業を完了扱いにした後、Claudeは次を独立に確認する。過去ログの数値を
+転記するだけでなく、現在のworktreeで再実行すること。
+
+1. `git diff --check`が成功することを確認する。
+2. `swift test --disable-sandbox --enable-code-coverage --filter TreeFoundamental`を実行する。
+   通常XCTest 119件と`TreeFoundamentalDeathTests`が失敗0であることを確認する。Swift Testingの
+   parameterized testはトップレベル件数とは別に18 casesを持つため、詳細ログも確認する。
+3. 上記の`xcrun llvm-cov report`で原木だけを集計する。2026-10-02 04:53 JST時点の基準値は
+   98.22%(2040/2077行、未達37行、6ファイル)。値が変わった場合は改善・退行のどちらかを
+   ファイル別に説明する。
+4. Xcodeで`TreeFoundamentalDeathTests`の9 test declarationsを実行し、parameterized case込みで
+   26件成功すること、および対象assert/fatal行がcoverage画面で塗られることを確認する。
+5. CLI未達37行の内訳を`llvm-cov show`と`llvm-cov export`で再確認する。現時点では33行が
+   Death Test対象(`unsafe_node+pointer+compare` 9、free pointer algorithm 5、protocol algorithm 15、
+   `_SealedTag` 4)、残り4行がDebug assert後の到達不能な`return false` 3行と
+   `unsafe_tree+find.swift`の閉じ括弧1行である。通常実行可能な未テスト経路が新たに見つかった場合は
+   完了とせずテストを追加する。
+6. Sourcesをcoverage表示だけのために変更していないこと、Death Testが通常テストと別ファイルに
+   保たれていること、range専用`___emplace_hint_right`を汎用経路で使っていないこと、主fixtureの
+   `~Copyable`およびstatic/Base・Baseなしinstance比較注入の両経路が維持されていることを確認する。
+
+完了判定は「CLI表示100%」だけを条件にしない。通常到達可能な行がCLIで実行済み、停止経路が
+Death Test成功かつXcodeで到達確認済み、残りが上記4行の構造的非到達／source mappingだけなら、
+原木テストは実質100%として完了確認してよい。
+
 ```sh
 xcrun llvm-cov show \
   .build/out/Products/Debug/RedBlackTreeTests.xctest/Contents/MacOS/RedBlackTreeTests \
@@ -349,6 +376,8 @@ xcrun llvm-cov show \
 - **原木Death Testの分離追加**(2026-10-02 04:38 JST、Codex GPT-5): 通常のmutationテストへ混ぜず、Swift Testing専用の`Tree/Foundamental/TreeFoundamentalDeathTests.swift`を追加した。負のtracking tag、multi/bitmap比較のnull左右、nullの高さ・bitmap生成の計7件がSIGTRAPになる契約をTree配下だけで検証し、SwiftPM CLIとXcode連携の双方で全件成功。通常XCTest 118件も全件成功。SwiftPM CLIでは残存`*.profraw`の手動merge後も原木カバレッジは98.17%(2039/2077行)のまま。Xcode連携が返した`.xcresult`は未完成で`xccov`からcoverageを読めなかったため、Xcode上でassert行が塗られるかはIDE表示での確認を残す。
 
 - **原木assert経路のDeath Test横展開**(2026-10-02 04:50 JST、Codex GPT-5): CLI上の残り38行を関数単位で調べ、大半が`assert`メッセージ用autoclosureと判明。free function版とprotocol版のmin/max/next/next-iter/prev-iter、leaf、左右rotate、insert balanceのnull root/null node、removeのnull root/null node/不正tree、UInt128 bitmapのnullを専用Death Testへ追加した。parameterized caseを含む停止経路26件がSwiftPM CLI・Xcode連携の双方で全成功。通常ロジックへ不正入力を混ぜず、Xcode coverage画面でassert経路を塗るための仕様テストとして分離を維持する。
+
+- **通常到達可能行の最終回収**(2026-10-02 04:53 JST、Codex GPT-5): Legacyテスト側の同名protocolとの衝突を原木module完全修飾で避け、deprecated `BeginProtocol.begin()`が`__begin_node_`へ委譲する1行を追加検証し、CLI・Xcode双方で成功した。Tree通常XCTest 119件、Death Test 26 casesが全成功。CLI原木行カバレッジは98.22%(2040/2077行)、未達37行・6ファイル。内訳はDeath Testで到達させる停止経路33行、Debug assert後の到達不能return 3行、閉じ括弧のsource mapping 1行となり、通常到達可能な未テスト行は0と判断した。Claude向け独立完了確認手順を測定節へ追加した。
 
 - 最後に作業したモデル: Codex (GPT-5)。原木Death Testの分離追加と、exit testのcoverage反映可否の実測を担当。
 

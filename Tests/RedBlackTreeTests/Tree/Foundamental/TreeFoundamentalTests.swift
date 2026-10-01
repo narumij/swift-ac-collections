@@ -7,6 +7,19 @@ import XCTest
   import RedBlackTreeCollections
 #endif
 
+#if DEBUG
+  /// Legacyテスト側にも同名protocolがあるため、原木側を完全修飾して既定実装を検証するfixture。
+  private final class TreeFoundamentalBeginFixture: RedBlackTreeCollections.BeginProtocol {
+    typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+    typealias _NodeRef = UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
+    var __begin_node_: _NodePtr
+
+    init(__begin_node_: _NodePtr) {
+      self.__begin_node_ = __begin_node_
+    }
+  }
+#endif
+
 /// `TreeNodeOnlyFixture`を使った、現行の生木アルゴリズム(`_ptr`系プロトコル)への直接テスト。
 /// `Legacy/ArrayBased`は`_std`系(独立した配列実装)であり、Sourcesが実際に使う`_ptr`系
 /// プロトコルとは別物なので、この基本層の検証には使えない。
@@ -15,6 +28,15 @@ final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
   func makeFixture() -> TreeNodeOnlyFixture {
     .makeEmpty()
+  }
+
+  /// 廃止予定の`begin()`も、現存する間は`__begin_node_`をそのまま返すこと。
+  @available(*, deprecated)
+  func testDeprecatedBegin_delegatesToBeginNode() {
+    #if DEBUG
+      let fixture = TreeFoundamentalBeginFixture(__begin_node_: UnsafeNode.template)
+      XCTAssertEqual(fixture.begin(), UnsafeNode.template)
+    #endif
   }
 
   /// 空のFixtureでも`invariant()`が不変条件を満たすこと

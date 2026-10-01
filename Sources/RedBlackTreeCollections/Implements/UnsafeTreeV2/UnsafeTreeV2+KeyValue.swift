@@ -97,7 +97,7 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
         }
       }
 
-      defer { extendLifetime(self) }
+      defer { _fixLifetime(self) }
       
       yield &Base.__mapped_value_ptr(__child.pointee).pointee
     }

@@ -26,19 +26,15 @@
     private let storage = Storage()
 
     func __construct_node(_ value: Payload) -> _NodePtr {
-      let nodeStride = MemoryLayout<UnsafeNode>.stride
-      let payloadAlignment = MemoryLayout<Payload>.alignment
-      let alignment = max(MemoryLayout<UnsafeNode>.alignment, MemoryLayout<Payload>.alignment)
-      let byteCount = nodeStride + MemoryLayout<Payload>.stride + alignment - 1
+      let alignment = UnsafeNode._referenceAlignment(with: Payload.self)
+      let byteCount = UnsafeNode._referenceAllocationByteCount(
+        with: Payload.self,
+        capacity: 1)
       let raw = UnsafeMutableRawPointer.allocate(byteCount: byteCount, alignment: alignment)
-      let payloadAddress = Int(bitPattern: raw) + nodeStride
-      let alignedPayloadAddress =
-        (payloadAddress + payloadAlignment - 1) / payloadAlignment * payloadAlignment
-      let payload = UnsafeMutableRawPointer(bitPattern: alignedPayloadAddress)!
-      let node = payload.advanced(by: -nodeStride).assumingMemoryBound(to: UnsafeNode.self)
+      let node = UnsafeNode._referenceFirstNode(in: raw, with: Payload.self)
 
       node.initialize(to: .create(tag: storage.nextTag, nullptr: .nullptr))
-      payload.assumingMemoryBound(to: Payload.self).initialize(to: value)
+      node.__value_(as: Payload.self).initialize(to: value)
       node.pointee.___has_payload_content = true
 
       storage.nextTag += 1

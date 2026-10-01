@@ -8,6 +8,75 @@ import XCTest
   /// (生メモリ直接アロケート、生木/`RawBuffer`を経由しない)経由で検証する。
   final class TreeFoundamentalMemoryLayoutTests: XCTestCase {
 
+    /// 参照計算がNodeより強いpayload alignmentも満たすこと。
+    func testReferenceLayout_accountsForStrongPayloadAlignment() {
+      typealias Payload = SIMD16<Double>
+      let alignment = UnsafeNode._referenceAlignment(with: Payload.self)
+      let stride = UnsafeNode._referenceStride(with: Payload.self)
+      let byteCount = UnsafeNode._referenceAllocationByteCount(with: Payload.self, capacity: 3)
+
+      XCTAssertEqual(
+        alignment,
+        max(MemoryLayout<UnsafeNode>.alignment, MemoryLayout<Payload>.alignment))
+      XCTAssertEqual(stride % alignment, 0)
+      XCTAssertLessThanOrEqual(byteCount, stride * 3 + alignment - 1)
+
+      let raw = UnsafeMutableRawPointer.allocate(byteCount: byteCount, alignment: alignment)
+      defer { raw.deallocate() }
+      let first = UnsafeNode._referenceFirstNode(in: raw, with: Payload.self)
+
+      XCTAssertEqual(Int(bitPattern: first) % MemoryLayout<UnsafeNode>.alignment, 0)
+      XCTAssertEqual(
+        Int(bitPattern: first.__value_(as: Payload.self)) % MemoryLayout<Payload>.alignment,
+        0)
+    }
+
+    /// 参照計算がRawBufferのpair layout・開始位置・確保byte数と一致すること。
+    func testReferenceLayout_matchesRawBufferCalculations() {
+      checkReferenceLayoutMatchesRawBuffer(Int8.self)
+      checkReferenceLayoutMatchesRawBuffer(Int.self)
+      checkReferenceLayoutMatchesRawBuffer(SIMD16<Double>.self)
+      checkReferenceLayoutMatchesRawBuffer(RedBlackTreePair<Int32, SIMD4<Float>>.self)
+    }
+
+    private func checkReferenceLayoutMatchesRawBuffer<Payload>(_ payload: Payload.Type) {
+      let allocator = _BucketAllocator(valueType: payload) { _ in }
+      XCTAssertEqual(
+        UnsafeNode._referenceAlignment(with: payload),
+        allocator.pairLayout.alignment)
+      XCTAssertEqual(
+        UnsafeNode._referenceStride(with: payload),
+        allocator.pairLayout.stride)
+
+      for prefix in [0, MemoryLayout<_Bucket>.stride, 3 * MemoryLayout<_Bucket>.stride] {
+        for capacity in [1, 2, 3, 16] {
+          XCTAssertEqual(
+            UnsafeNode._referenceAllocationByteCount(
+              prefix: prefix,
+              with: payload,
+              capacity: capacity),
+            allocator._allocationSize(prefix: prefix, capacity: capacity))
+
+          let byteCount = UnsafeNode._referenceAllocationByteCount(
+            prefix: prefix,
+            with: payload,
+            capacity: capacity)
+          let raw = UnsafeMutableRawPointer.allocate(
+            byteCount: byteCount,
+            alignment: allocator.pairLayout.alignment)
+          defer { raw.deallocate() }
+          let storage = raw.advanced(by: prefix)
+          let reference = UnsafeNode._referenceFirstNode(in: storage, with: payload)
+
+          let header = raw.assumingMemoryBound(to: _Bucket.self)
+          let rawBuffer = header.start(
+            storage: storage,
+            payloadOrPairAlignment: allocator.pairLayout.alignment)
+          XCTAssertEqual(reference, rawBuffer)
+        }
+      }
+    }
+
     /// `_advanced(with: Payload.self, count:)`で1個先に進めた場合、Node直後に
     /// Payloadが続くレイアウトが保たれ、`count: -1`で元の位置に戻ること。
     func testAdvancedWithPayloadType_roundTripsAndKeepsAlignment() {

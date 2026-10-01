@@ -307,6 +307,8 @@ xcrun llvm-cov show \
 
 - **所有fixtureによる原木mutation**(2026-10-01 23:35 JST、Codex GPT-5): `TreeFoundamentalMutationTests`を追加し、`TreeOwnedNodeFixture<Int>`をallocation/deallocation実装として直接合成した`~Copyable`ハーネスで、unique/multi挿入、重複拒否、単体・範囲・key削除、空木/非空木の末尾挿入位置計算を検証した。各mutation後に赤黒木不変条件を確認し、終了時にsize・root・beginと所有allocationがすべて空へ戻ることも固定した。Tree配下全112件成功。`unsafe_tree+remove.swift`は0%から100%、`insert`は20.66%から44.63%、`erase`は0%から68.97%、原木全体の行カバレッジは93.07%(1933/2077行)。追加検討中に`___emplace_hint_right`を汎用hint挿入のように扱って後続の別挿入経路へ接続するとbalance内部assertへ到達したが、これはrange構築専用APIの呼び出し前提を外したテストだった。実装バグとは扱わず、当該ケースも採用していない。
 
+- **終盤の安全なhelper回収**(2026-10-01 23:41 JST、Codex GPT-5): `IntThreeWayComparator`の既定lazy comparatorと、root/左子/右子に対するUInt128 path bitmapを直接仕様化した。Tree配下全114件成功。`unsafe_tree+three_way.swift`は0%から100%、`unsafe_node+pointer+compare.swift`は77.45%から91.18%、原木全体の行カバレッジは93.89%(1950/2077行)となった。
+
 ### 年代順ログ
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。旧 `set` フォルダの Swift テストは残っていない。

@@ -45,4 +45,22 @@ final class RedBlackTreeDictionaryFuzzTests: RedBlackTreeTestCase {
       }
     }
   }
+
+  func test_randomInsertAndEraseMaintainsTreeInvariant() {
+    var rng = SplitMix64(seed: 0xDEADBEEF)
+    var dictionary = RedBlackTreeDictionary<Int, Int>()
+
+    for _ in 0..<3 {
+      for _ in 0..<1000 {
+        let v = Int(rng.next() % 500)
+        dictionary[v] = v
+        XCTAssertTrue(dictionary.___tree_invariant_for_fuzz())
+      }
+      for _ in 0..<1000 {
+        let v = Int(rng.next() % 500)
+        dictionary.removeValue(forKey: v)
+        XCTAssertTrue(dictionary.___tree_invariant_for_fuzz())
+      }
+    }
+  }
 }

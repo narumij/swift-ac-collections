@@ -35,4 +35,22 @@ final class RedBlackTreeSetFuzzTests: RedBlackTreeTestCase {
       }
     }
   }
+
+  func test_randomInsertAndEraseMaintainsTreeInvariant() {
+    var rng = SplitMix64(seed: 0xDEADBEEF)
+    var set = RedBlackTreeSet<Int>()
+
+    for _ in 0..<3 {
+      for _ in 0..<1000 {
+        let v = Int(rng.next() % 500)
+        set.insert(v)
+        XCTAssertTrue(set.___tree_invariant_for_fuzz())
+      }
+      for _ in 0..<1000 {
+        let v = Int(rng.next() % 500)
+        set.remove(v)
+        XCTAssertTrue(set.___tree_invariant_for_fuzz())
+      }
+    }
+  }
 }

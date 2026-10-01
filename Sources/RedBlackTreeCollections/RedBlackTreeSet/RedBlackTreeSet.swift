@@ -96,7 +96,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
     typealias Element = Element
 
   @usableFromInline
-  var __tree_: Tree
+  package var __tree_: Tree
 
   @inlinable
   package init(__tree_: Tree) {

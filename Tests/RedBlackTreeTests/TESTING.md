@@ -311,6 +311,8 @@ xcrun llvm-cov show \
 
 - **cross-tree seal順序**(2026-10-01 23:43 JST、Codex GPT-5): 異なる木に属する`_NodePtrSealing.lessThanSlow`が各end nodeのアドレスで全順序を決める分岐を追加した。Tree配下全115件成功、`_NodePtrSealing.swift`は100%、原木全体の行カバレッジは93.93%(1951/2077行)。
 
+- **invariant検証器の否定経路**(2026-10-01 23:46 JST、Codex GPT-5): 意図的に壊した原木を組み、rootの親欠落・endからの参照不整合・赤root、左右childの親不整合、左右同一child、赤赤、子部分木の不整合伝播、黒高さ不一致をそれぞれ拒否することを固定した。右childだけを持つ木の`__tree_leaf`経路も追加。Tree配下全116件成功、`unsafe_tree+algorithm.swift`は96.49%(412/427行)、原木全体の行カバレッジは94.51%(1963/2077行)。
+
 ### 年代順ログ
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。旧 `set` フォルダの Swift テストは残っていない。

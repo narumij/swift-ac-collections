@@ -523,6 +523,89 @@ final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     XCTAssertFalse(root.__left_.___is_root, "rootの子はrootではない")
   }
 
+  /// 赤黒木invariantが、壊れた親子関係・色・黒高さをそれぞれ拒否すること。
+  func testInvariant_rejectsEachMalformedTreeCondition() {
+    var fixture = TreeNodeOnlyFixture.makeEmpty()
+    let end = fixture.endPtr()
+    let root = fixture.node(0)
+    let left = fixture.node(1)
+    let right = fixture.node(2)
+    let grandchild = fixture.node(3)
+
+    func reset() {
+      end.pointee = .create(tag: .end, nullptr: .nullptr)
+      root.pointee = .create(tag: 0, nullptr: .nullptr)
+      left.pointee = .create(tag: 1, nullptr: .nullptr)
+      right.pointee = .create(tag: 2, nullptr: .nullptr)
+      grandchild.pointee = .create(tag: 3, nullptr: .nullptr)
+      root.__is_black_ = true
+      left.__is_black_ = true
+      right.__is_black_ = true
+      grandchild.__is_black_ = true
+      root.__parent_ = end
+      end.__left_ = root
+    }
+
+    reset()
+    root.__parent_ = .nullptr
+    XCTAssertFalse(fixture.__tree_invariant(root))
+
+    reset()
+    end.__left_ = left
+    XCTAssertFalse(fixture.__tree_invariant(root))
+
+    reset()
+    root.__is_black_ = false
+    XCTAssertFalse(fixture.__tree_invariant(root))
+
+    reset()
+    root.__left_ = left
+    left.__parent_ = end
+    XCTAssertEqual(fixture.__tree_sub_invariant(root), 0)
+
+    reset()
+    root.__right_ = right
+    right.__parent_ = end
+    XCTAssertEqual(fixture.__tree_sub_invariant(root), 0)
+
+    reset()
+    root.__left_ = left
+    root.__right_ = left
+    left.__parent_ = root
+    XCTAssertEqual(fixture.__tree_sub_invariant(root), 0)
+
+    reset()
+    root.__is_black_ = false
+    root.__left_ = left
+    left.__parent_ = root
+    left.__is_black_ = false
+    XCTAssertEqual(fixture.__tree_sub_invariant(root), 0)
+
+    reset()
+    root.__is_black_ = false
+    root.__right_ = right
+    right.__parent_ = root
+    right.__is_black_ = false
+    XCTAssertEqual(fixture.__tree_sub_invariant(root), 0)
+
+    reset()
+    root.__left_ = left
+    left.__parent_ = root
+    left.__left_ = grandchild
+    grandchild.__parent_ = right
+    XCTAssertEqual(fixture.__tree_sub_invariant(root), 0)
+
+    reset()
+    root.__left_ = left
+    left.__parent_ = root
+    XCTAssertEqual(fixture.__tree_sub_invariant(root), 0)
+
+    reset()
+    root.__right_ = right
+    right.__parent_ = root
+    XCTAssertEqual(fixture.__tree_leaf(root), right)
+  }
+
   // MARK: - unsafe_node+pointer+compare.swift
 
   /// `___ptr_height`/`___ptr_comp_multi`/`___ptr_comp_bitmap`を、実際の中間順走査での

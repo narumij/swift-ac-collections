@@ -25,13 +25,14 @@
 (完了したらClaudeやCodexが完了済みの要望に移動してください）
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
-- しょぼい系（凡ミス）みつけてくれてありがとう
-- リミットだったのでこちらでテスト回しました
-- Releaseビルドで400近いコンパイルエラーがでてて、Claudeを呪いました
+- 途中で止まっているCI問題の続き(Codex)
+- UnsafeTreeV2配下も実装からの逆算で仕様を把握したくなりはじめたので、Test as Spec調に整えて欲しい
 
 ### 相談事項
 
-- Hands offが膨大になってきました。直近の作業と、現在の状況ぐらいでいいのではないでしょうか？
+- Current handoffが膨大になってきました。直近の作業と、現在の状況ぐらいでいいのではないでしょうか？
+- ドキュメントメンテナンスについてこのmdと同様の文書をどこかに作成したい(Codex)
+- テストを軸としたコードメンテはそのうち他のターゲットも対象になるので、この文書の配置場所をTests直下に切り替えたい(Claude優先)
 
 ### 連絡事項
 
@@ -42,6 +43,7 @@
 - Codexさんはふりかえりの時間を確保すること
 - Claudeさんは始業時に会話の時間を確保すること
 - 小さな変更を積み重ねてるときは互換チェックをさぼっていい
+- 2026-10-01: XcodeのMCP `RunAllTests`が、実際には数百件のテスト(例: `BufferHeaderTests`等)を実行せず"No result"のまま"0 failed"と返す不具合を確認。全体テストの合否判定は`swift test`(CLIコマンド)を正とすること。カバレッジの精査も`swift test --enable-code-coverage`+`xcrun llvm-cov show/report`の方が信頼できる
 - 内部構造をどのように区分するのか、勝手に判断しないこと
 - ユーザー記載欄に記入する場合、こちらが消す都合上、古さが分からないと困るので、日付に加えて時間も記載すること
 - 現行APIかどうか判断に迷った場合API-Matrix.md及びAPI-Matrix-View.mdに照らすこと
@@ -54,6 +56,7 @@
 - 内部テストをどのように整理するかについては引き続き検討中
 - 原木のテストはやれるだけやって構わない
 - 生バッファのテストもやれるだけやって構わない
+- Current handoffの年代順ログが膨大になってきたのでそのうち手動で消します。消されてもこまらないよう準備してください
 
 ### 停止条件
 
@@ -65,67 +68,62 @@
 - 内部構造をテスト観点でどのように区分するのか、まだ結論がでていない
 - insert(:hint:)やupdate(:hint:)等のヒント系APIのテストが不十分なまま（解決済みであれば完了済み要望に記載願い）
 - 生木へのテストを増やすと変更コストがかさむので、バランスに悩んでいる
+- 「空チェック前のensureUnique()が無駄なCoWを起こす」問題は、`RedBlackTreeMultiMap.erase(exactly:)`・両View系列(`RedBlackTreeMappedValuesView`/`RedBlackTreeRangeView+KeyValue`/`+KeyOnly`)の`popFirst`/`popLast`/`erase()`/`erase(where:)`・4型の`popFirst`/`popLast`/`Set.remove(_:)`/`Dictionary.removeValue(forKey:)`/`removeAll(keepingCapacity:)`、さらに互換モード専用`+Deprecated.swift`側の`RedBlackTreeSet.popFirst()`/`RedBlackTreeMultiSet.remove(_:)`/`removeAll(_:)`/`RedBlackTreeMultiMap.removeFirst(forKey:)`/`removeFirst(_unsafeForKey:)`/`removeAll(forKey:)`まで2026-10-01に全て修正済み。`+Deprecated.swift`全体を同パターンで網羅的に再調査したわけではないため、他に見落としが残っている可能性はゼロではない
+- `RedBlackTreeMappedValuesView._isdentical(to:)`はSources内で呼び出しゼロ(`Equatable`適合なし)。削除するかテストを書くかはユーザー判断待ち
 
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
-- 2026-09-30 22:30 Claude: `RedBlackTreeDictionary.swift`(84%)を調査。`count(forKey:)`が全テストファイルを通して一度も呼ばれていなかったため、`_4_SearchTests.swift`に`test_countForKey_isOneWhenPresentAndZeroWhenMissing()`を追加(ユニークキーなので存在時1・不在時0を検証)。`erase(where:)`は`grep`で見つけにくかった(`dictionary.erase { ... }`のtrailing closure形で`_6_RemovalTests.swift`に既存)ため誤検出、実際は既にテスト済みと判明。full suite 1005 passed / 0 failed。
-- 2026-09-30 22:20 Claude: `Implements/UnsafeTreeV2/UnsafeTreeV2+KeyValue.swift`(75%)を調査。`subscript(key:)`(35-73行目)には「ダミー実装らしい、つかっちゃだめっぽい」というコメントがあるが、実際は`RedBlackTreeDictionary.subscript(key:)._modify`が`yield &__tree_[key]`経由で常時使っているため、このコメントは古い/誤りと判明(コメント自体は今回変更せず、要望欄で報告のみ)。既存テストで唯一踏んでいなかったのは`dictionary[存在しないkey] = nil`の無害な空振り分岐(`subscript(key:)._modify`のfound=false&&value=nil、NOP)だったため、`RedBlackTreeDictionary_5_InsertionTests.swift`に`test_keySubscript_assigningNilToMissingKeyIsANoOp()`を1件追加。`lookup`/`mappedValuePtr(for:default:)`/`___mapValues`/`___compactMapValues`は既存の`_7_UtilityTests.swift`等で生きている経路が確認済みのため追加テストは不要と判断。full suite 1004 passed / 0 failed。
-- 2026-09-30 22:10 Claude: `Implements/RawRange/_RawRangeExpression.swift`(77%)向けに新規テストファイル`RedBlackTreeInternal_RawRangeExpressionTests.swift`を追加。`Bound=Int`の純粋なロジック(`==`/`!=`全ケース総当たり・`map`・`relative(start:end:bound:through:)`の6ケース・`sequence`/`traverse`のResultリフト成功失敗分岐)を実木なしで検証、21テスト全てpass。`_start`/`_end<Base>(_:)`は実木の`__begin_node_`/`__end_node`を返すだけの一行実装で、4型のrange系APIから常時経由済みのため対象外とした。full suite 1003 passed / 0 failed。
-- 2026-09-30 22:00 Claude: `Implements/__tree/base/tree_base+compare.swift`(`__UniqueHelper`/`__MultiHelper`)向けに新規テストファイル`TreeFoundamentalMultiplicityTests.swift`を追加。既存の`SetBaseTests`/`MultiSetBaseTests`は`___ptr_range_comp`の成功ケースしか踏んでおらず、`___ptr_comp`本体・失敗分岐・重複キー時の`___ptr_comp_multi`タイブレークが未検証だったのを補った。`TreeNodeOnlyFixture.UniqueSealKey`/`.MultiSealKey`(以前ユーザーが追加した未使用ヘルパー)に`_BaseNode_NodeCompareProtocol`適合を追加して直接叩けるようにした。同一ノード同値判定・end境界・キー順序・半開/閉区間の上下端・多重コンテナの同値キー時の木構造タイブレーク(bitmap経由)まで15テスト追加、全てpass。full suite 982 passed / 0 failed(他はNo result、失敗なし)。`USE_INT128`分岐は既定で無効のため対象外。
-- 2026-09-30 21:42 Claude: `Implements/Misc/Message.swift`(30%)を調査。10個のメッセージ定数のうち8個(`garbagedIndex`/`invalidIndex`/`outOfBounds`/`emptyFirst`/`emptyLast`/`duplicateValue`/`alignnment`/`treeMissmatch`)は`fatalError`/`preconditionFailure`経由で生きているが、実行するには対応するpreconditionを踏んでクラッシュさせる必要があり、既に確認済みの「assert/precondition部分はデステストするしかない」方針の対象。残り2個(`outOfRange`/`keyMismatch`)はSources内呼び出しゼロで、`keyMismatch`は本体が`"TODO"`のダミー実装。この30%は現状のテスト方針(通常テストの範囲)での実質上限と判断し、通常テストは追加しない。`outOfRange`/`keyMismatch`の削除是非はユーザー判断待ちとして保留に追加。
-- 2026-09-30 21:35 Claude: `unsafe_tree+types.swift`(55.00%, 33/60)を調査。`grep`でSources全体の呼び出し元を洗った結果、この不変条件が判明: 生コードは常に`_NodeRef`を`.pointee`で`_NodePtr`に変換してから各アクセサを呼んでおり、`_NodeRef`版オーバーロード(`__payload_ptr`/`__payload_`/`__key_ptr`/`__key_`/`__mapped_value_ptr`/`__mapped_value_`の全`_NodeRef`版)は一つも直接呼ばれていない。加えて`__payload_buffer`(両オーバーロード)と`__element__ptr`も呼び出しゼロ。`_NodePtr`版オーバーロード(スカラー`__key_ptr`/`__key_`は`RedBlackTreeMultiSet.update(at:)`経由、他は各4型経由)は既存の`_5_InsertionTests.swift`等で実動作確認済みのため、生きているコードはこれ以上テストで踏めない。ペア版`__key_ptr`(`_NodePtr`)の唯一の呼び出し元は`UnsafeTreeV2+Update.swift`の`swap_key`で、これは行461の未着手機能疑いと同一の保留事項に接続する。以上より、この55%は生きているコードの実質上限と判断し、`TreeNodeOnlyFixture`用の追加テストは書かず現状のまま次の候補へ進む。full suite再実行は不要(コード変更なし)。
-- 2026-09-30 21:19 Claude: 新規テストファイル`TreeFoundamentalSafePtrTests.swift`を追加し、`unsafe_node+pointer+safe.swift`(`_SafePtr`/`_SealedPtr`/`SealError`/`errorMessage`)を100% (113/113)に。全体Sourcesカバレッジは90.43%→90.73%。
-  - `_SafePtr.___is_end`の`.failure`分岐(常にfalse)、`_SealedPtr`の`!=`(前回`==`しか踏んでいなかった)、`errorMessage`(ドキュメント化された8ケース・未ドキュメントの4ケースのdefaultフォールバック・`SealError`以外の`Error`型を渡した場合のフォールバック)を追加。`TreeNodeOnlyFixture`を薦めて使ったが、ほとんどはFixture無しでも書けるくらい単純なテストだった。
-  - full suite 967 passed / 0 failed。
-- 2026-09-30 21:12 Claude: ユーザーによる`TreeFoundamentalFixture`→`TreeNodeOnlyFixture`へのリネーム(`Tests/RedBlackTreeTests/Tree/Fixture/`へ移設)と、`PointerKey`/`TrackingTagKey`/`UniqueSealKey`/`MultiSealKey`という`_NodeKey<Base>`用キー戦略型の追加を確認。`TreeFoundamentalTests.swift`/`TreeFoundamentalSealTests.swift`は既に追従済みだったため、コメント中に残っていた旧名2箇所のみ`TreeNodeOnlyFixture`に修正。ビルド成功、23テストとも変化なくpass(full suite 960 passed / 0 failed)。`PointerKey`/`TrackingTagKey`/`MultiSealKey`は現時点で未使用のヘルパーで、ユーザーからは「必要になったら使えばいい」との方針を確認。
+- 2026-10-01 12:12 Codex (GPT-5): GitHub PagesへのDocC自動公開を追加。既存のDocC検証・通常tar.gz artifactは維持し、`main`へのpush時だけ`actions/configure-pages@v5`と`actions/upload-pages-artifact@v4`でPages artifactを作成、依存する専用`deploy-documentation`ジョブが`github-pages` environmentへ`actions/deploy-pages@v4`で公開する。PRおよびAtCoder互換ブランチではデプロイせず検証のみ。必要な`contents: read`/`pages: write`/`id-token: write`権限とデプロイconcurrencyを設定。日英READMEに予定常設URLを追記。workflow YAML構文・ジョブ存在確認、`git diff --check`成功。GitHubリポジトリのSettings > PagesでSourceをGitHub Actionsにする外部設定はユーザー作業待ち。
+- 2026-10-01 12:04 Codex (GPT-5): DocC CIのartifact upload失敗を修正。DocCが演算子シンボル用に生成する`'...(_:)-1pmkc.json`等のファイル名には`:`が含まれ、`actions/upload-artifact@v4`がNTFS互換制約で拒否するため、生成ディレクトリを`tar.gz`へ固めて単一ファイルをアップロードする構成へ変更。実際のDocC archiveを用いて禁止文字を含むファイルがtar内に保持されることを確認し、workflow YAML構文確認・`git diff --check`成功。Nodeの`punycode`非推奨表示はAction内部の警告であり失敗原因ではない。
 
 ### 内部区分
 
 (テスト用区分であり、ソースのフォルダレイアウトを規定するものではない）
 
-- `__tree`移植層
+#### `__tree`移植層
+
 `Sources/RedBlackTreeCollections/Implements/__tree`に配置されているもの
 
-- `__tree`基本層
+#### `__tree`基本層
 
 `__tree`移植層のうち、
 Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドが不要なもの、
 かつUnsafeMutablePointerが不要なもの
 
-- `__tree`応用層
+#### `__tree`応用層
 
 `__tree`移植層のうち、
 Fixture構成にAllocationInterfaceとDellocationInterfaceのメソッドがが必要となるもの
 かつUnsafeMutablePointerが不要なもの
 
-- 生ポ層(仮名)
+#### 生ポ層(仮名)
 
 `Sources/RedBlackTreeCollections/Implements/__tree`のうち、
 実際の挙動を実現しているもの。
 現在はUnsafeMutablePointerをベースにしている
 
-- 生メモリ層(仮名)
+#### 生メモリ層(仮名)
 
 生メモリ操作を伴うもののうち、`__tree`移植層に含まれないもの
 
-- 生バッファ層(仮名)
+#### 生バッファ層(仮名)
 
 生メモリ層のうち、木の生メモリを管理するもの
 
-- 生木層(仮名)
+#### 生木層(仮名)
 
 生メモリ層のうち、木を形成しているFacade及びその内部のもの
 
-- (なんかいい名前ください)層(仮名)
+#### (なんかいい名前ください)層(仮名)
 
 IndexやRangeやIteratorの内部に該当するもの
 
-- View層（外部）(仮名)
+#### View層（外部）(仮名)
 
 MutableSubrangeを実現しているもの
 
-- 4型層（外部）(仮名)
+#### 4型層（外部）(仮名)
 
 Set,MultiSet,MultiMap,Dictionary
 
@@ -212,6 +210,25 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 長時間のセッションでは、残量 10% 付近で新しいカテゴリへの着手を止める。最後の 5% は、全体テスト、`Current handoff` の更新、次回の開始地点の明記、コミット可能な状態の確認に使う。作業量を増やすためにこの振り返り時間を使い切らないこと。
 
 ## Current handoff
+
+### 整理状況サマリー
+(このサブセクションはスナップショットとして毎回上書きしてよい。詳細な経緯は下の年代順ログを参照)
+
+- **Test as Spec 整理**: Set・MultiSet・Dictionary・MultiMap は型別フォルダで連番 Test as Spec 化が完了。`RedBlackTreeView/`(`RedBlackTreeMappedValuesView`・`RedBlackTreeKeyValueRangeView`・`RedBlackTreeKeyOnlyRangeView`)も同様に連番整理済み。`BoundExpression` も4型とも `_16_BoundExpressionTests.swift` へ移管済み。
+- **原木層**: `Tree/Fixture/TreeNodeOnlyFixture.swift`(実ポインタ`_ptr`系プロトコルに直接適合するFixture)で`unsafe_tree+algorithm`・`unsafe_node+pointer+*`・`tree_base+compare`(`__UniqueHelper`/`__MultiHelper`)等を直接テスト中。バランス・削除の核心アルゴリズムは実質的に高カバレッジ。
+- **カバレッジ**: 2026-10-01時点で`Sources/RedBlackTreeCollections`全体は`swift test --enable-code-coverage`+`llvm-cov`基準で約90%。残る未カバー行の大半は「未結線/削除判断待ちコード」に集約されている(次項)。
+- **未結線・削除判断待ちコード一覧**(いずれもSources内で呼び出しゼロと確認済み。削除するかテストを書くかはユーザー判断待ち):
+  - `Implements/Iterator/UnsafeIterator/UnsafeIterator+Reverse4.swift`(`_Reverse4`)、および同系列の`UnsafeIterator+CopyOnWrite.swift`の`reversed()`/`init(_source:tree:)`・`+KeyValue.swift`の`keys()`/`values()`
+  - `Implements/UnsafeTreeV2/UnsafeTreeV2+Update.swift`(`swap_key`/`swap_mapped_value`)
+  - `Implements/Misc/Message.swift`の`outOfRange`/`keyMismatch`
+  - `UnsafeTreeV2+BufferHeader.swift`の`payloadLayout`/`__root_ptr()`
+  - `RawRange/UnsafeTreeV2+RawRange.swift`の`contains(range:pointer:)`(3オーバーロード)
+  - `tree_basic+tag.swift`の`_TrackingTag.retire`
+  - `RedBlackTreeMappedValuesView._isdentical(to:)`
+- **直近の主要な修正**(2026-10-01): `RedBlackTreeMultiMap.index(inserting:)`が`__insert_unique`を誤って呼んでいた実バグを修正。「削除系メソッドは空/未発見でもトラップせずに無駄なCoWを起こしてはいけない」という原則の横展開で、`erase(exactly:)`・両View系列・4型`popFirst`/`popLast`等・`removeAll(keepingCapacity:)`の計10箇所超を修正。
+- **ツール注記**: XcodeのMCP `RunAllTests`が実行漏れを"0 failed"と誤表示する不具合を確認済み。全体テストの合否は`swift test`(CLI)、カバレッジは`swift test --enable-code-coverage`+`xcrun llvm-cov`を正とする。
+
+### 年代順ログ
 
 - `RedBlackTreeSet` の連番テストは Test as Spec として整理済み。旧 `set` フォルダの Swift テストは残っていない。
 - 旧 `set` フォルダにあった SetAlgebra、reserve-capacity、corner-case、bidirectional、removal、extended と巨大な `SetTests.swift` は監査・整理済み。公開仕様は連番へ、SetAlgebra stress、COW、pointer、performance、固定 seed の fuzz、removal stress、removal internal、raw index validity は型別 `_98`、互換仕様は型別 compatibility file へ移管した。再現不能なランダムテストは固定 seed fuzz で置換した。index-based range view は `_17_RangeViewTests.swift`、`elements(in:)` の現行要素範囲ビュー仕様は `_18_ElementRangeTests.swift`、参照型要素の `insert` / `update` identity は `_5_InsertionTests.swift`、現行 `filter` の戻り型は `_1_SequenceTests.swift` で仕様化している。
@@ -467,3 +484,30 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
     - 次に`RedBlackTreeRangeView+KeyValue.swift`(共有RangeView、`RedBlackTreeKeyValueRangeView`)の未カバー関数(`sorted()`・`keys`・`values`・`removeFirst()`・`removeLast()`・単体`erase(where:)`)を新設`RedBlackTreeView/RedBlackTreeView_1_KeyValueRangeViewTests.swift`に追加。`unranged()`(および内部`_create`)は`@available(*, deprecated)`だったため、現行APIのみを検証するTest as Specの原則により対象から除外した。
   - 検証: 通常モードでビルド成功、新設2ファイル計25件(既存5件+新規20件)成功。全体テスト1180件920成功・0失敗を確認。`Sources/RedBlackTreeCollections`集計カバレッジは**88.11%→89.47%**(90%目安まで残り約40行相当)。
   - **残作業(次回以降)**: 90%まで詰めるなら次点候補は`RedBlackTreeDictionary.swift`(43行未カバー)・`Implements/__tree/unsafe_tree/unsafe_tree+algorithm.swift`(43行未カバー、赤黒木コア算法)・`RawRange/_RawRangeExpression.swift`(34行未カバー)。0%だった`UnsafeIterator+Reverse4.swift`/`UnsafeTreeV2+Update.swift`は未結線コードの疑いが濃く、削除するかテストを書くかはユーザー判断が必要(保留継続)。
+
+- (2026-10-01、使用量77%で区切り) 長いセッションでの作業まとめ。`TreeNodeOnlyFixture`(旧`TreeFoundamentalFixture`)を使った原木層の直接テストを継続し、`tree_base+compare.swift`(`__UniqueHelper`/`__MultiHelper`)向けに`TreeFoundamentalMultiplicityTests.swift`を新設。その後`RedBlackTreeMultiMap+Index.swift`のカバレッジ調査で**実バグ**を発見: `index(inserting:)`が`__insert_unique`を呼んでおり、MultiMapなのに既存キーへの挿入を拒否していた(ユーザー確認の上`__insert_multi`へ修正)。
+  - この過程で「削除系メソッドは、空/未発見でもトラップせずに無駄なCoWを起こしてはいけない(トラップするかCoWしないかのどちらか)」という設計原則をユーザーと確認し、同種の実バグを横展開で発見・修正: `RedBlackTreeMultiMap.erase(exactly:)`、両View系列(`RedBlackTreeMappedValuesView`/`RedBlackTreeRangeView+KeyValue`/`+KeyOnly`)の`popFirst`/`popLast`/`erase()`/`erase(where:)`、4型(Set/MultiSet/Dictionary/MultiMap)の`popFirst`/`popLast`/`Set.remove(_:)`/`Dictionary.removeValue(forKey:)`/`removeAll(keepingCapacity: true)`。全て`_copyCount`(`AC_COLLECTIONS_INTERNAL_CHECKS`、Package.swiftで`.when(configuration: .debug)`済み)で実測してから修正(ユーザー指示でテストファースト)。`swift build/test -c release`でも健全性を確認済み。
+  - 副産物として2つの重要な発見: (1) **XcodeのMCP `RunAllTests`が数百件のテストを実際には実行せず"0 failed"と誤表示する不具合**を確認(`BufferHeaderTests`等の該当クラスがコンソールログに一切出現しないことで確定)。以後、全体の合否は`swift test`(CLI)を正とすること。(2) `llvm-cov`で厳密に再集計した結果、旧punch-listの`unsafe_node+pointer+compare.swift`/`UnsafeTreeV2+RawRange.swift`/`UnsafeTreeV2+BufferHeader.swift`は実際には(USE_INT128無効時の`___ptr_bitmap_128()`、呼び出しゼロの`contains(range:pointer:)`・`payloadLayout`・`__root_ptr()`などの死んでいるコードを除き)既に100%近い。イテレータ合成レイヤー(`UnsafeIterator+CopyOnWrite.swift`の`reversed()`/`init(_source:tree:)`、`+KeyValue.swift`の`keys()`/`values()`)も同様に、既知の未結線`_Reverse4`系機能と同じ系列の未使用コードと判明。
+  - **次回への引き継ぎ**: (a) `payloadLayout`/`__root_ptr()`(BufferHeader)・`contains(range:pointer:)`(RawRange)・イテレータ合成レイヤーの`reversed()`/`keys()`/`values()`は、いずれも`_Reverse4`/`UnsafeTreeV2+Update.swift`と同じ「未結線コードを削除するかどうか」の保留事項に合流させてよい。(b) `_TrackingTag.retire`(却下済み設計のなごり、呼び出しゼロ)も同様。(c) カバレッジの精査は今後`xcrun llvm-cov report/show`(`swift test --enable-code-coverage`が必要)を使うこと、Xcodeの`RunAllTests`の数字は信用しないこと。(d) `removeAll(keepingCapacity:)`以外のVoid返却系(`erase(where:)`等)にも同種のCoW問題が残っていないかは4型本体では確認済みだが、他のView系列では未確認。
+  - **方針変更の注記**: 2026-09-29時点の連絡事項は「ビルド確認はXcodeの`BuildProject`/`RunSomeTests`/`RunAllTests`を使用し`swift build`/`swift test`の直接実行は使わない」だったが、今回`RunAllTests`の"0 failed"誤表示(上記(1))を発見したため、本セッションでは全体テストの合否判定とカバレッジ精査に限り`swift test`/`swift build -c release`をCLIで直接実行した。個別ファイルのビルド確認・特定テストクラスの実行は引き続きXcode側(`BuildProject`/`RunSomeTests`)を使用。次回以降もこの併用方針(全体の合否は`swift test`、個別の反復作業はXcode MCP)で良いか、ユーザー確認を推奨。
+- 最後に作業したモデル: Claude(Sonnet 5、モデルID `claude-sonnet-5`)。原木層テスト拡充・CoW-on-empty系バグの横展開修正・カバレッジ精査方法の見直しを担当。
+- (2026-10-01 07:07 JST) CodexによるTest as Specification横展開レビュー。`API-Matrix.md`・`API-Matrix-View.md`・`Quality-Checklist.md`と、Set/MultiSet/Dictionary/MultiMapおよび共有Viewの現行テストを照合した。今回はレビューのみで、コード・テスト・文書正本の修正およびテスト実行はしていない。
+  - **優先度高: Index世代検証の横展開漏れ**。slot削除・再利用後に古いIndexを拒否する`testStaleIndexAfterSlotRecycledWithNewGenerationIsRejected`はSet/MultiSetにあるが、Dictionary/MultiMapには無い。`Quality-Checklist.md`が保証対象とする「recycleされた同一slotを古い世代のIndexが新しい要素として指さない」に直接対応するため、KeyValue系2型にも追加候補。
+  - **Range ViewのCoW後Index寿命の横展開漏れ**。コピーしたRange Viewの片方をCoW変異しても発行元側のIndex判定へ影響しないこと、および最初の変更だけCoWが発生する連続変異で削除Indexを拒否することは、SetのKeyOnly Range Viewにのみ明示的テストがある。共有実装を考慮して4型へ機械的に複製する必要はないが、少なくとも重複要素を持つKeyOnly側(MultiSet)とKeyValue Range View側(DictionaryまたはMultiMap)を各1系列ずつ追加する候補。
+  - **現行APIだが明示的な仕様テストが見つからないもの**。`elementsEqual(_:)`と`lexicographicallyPrecedes(_:)`は`API-Matrix.md`上で4型およびRange Viewの現行APIだが、型別Test as Specから直接呼ぶテストが見つからない。MultiMapのテストヘルパーが標準Sequenceの`elementsEqual(_:by:)`を利用するだけで、当該APIの仕様テストにはなっていない。KeyOnly/KeyValueの各コンテナと各Range Viewについて、等値・辞書式大小・共通prefix後の長さ違いを代表検証する候補。
+  - **API正本との同期漏れ候補**。`erase(exactly:)`はSetとMultiMapのテストで現に使用されている一方、`API-Matrix.md`ではMultiMapがまだ`TODO`表記。まず実装状況を確認してマトリクスを同期し、MultiSet/Dictionaryへの採用・実装・テスト横展開はその結果に従う。これは直ちに4型へテストを複製する案件ではない。
+  - 既に概ね横展開済みと確認した領域: `insert(_:hint:)`、値セマンティクス、Lazy Sequence、整数幅境界、Codable、`CustomReflectable`、`Comparable`、`Hashable`、`Sendable`、`isTriviallyIdentical(to:)`、Index offset/limitedBy/formIndex、`containsSubrange`、Bound Expression、CoW、fuzz、性能、削除stress。Setだけに残る旧SubSequence系は、現行APIマトリクスで4型とも`Collection`非適合のため横展開対象外。
+  - 推奨着手順: (1) Dictionary/MultiMapのslot再利用後Index拒否、(2) KeyValue Range ViewのCoW・Index寿命、(3) MultiSet Range ViewのCoW・Index寿命、(4) `elementsEqual`/`lexicographicallyPrecedes`、(5) `erase(exactly:)`とAPIマトリクスの同期。
+  - ユーザー確認: 「全体テストの合否判定はXcode MCPではなく`swift test`を正とする」はClaudeが2026-10-01に確認したMCP挙動を受けて採った暫定運用であり、ユーザーの恒久方針とは確定していない。以後はClaudeの判断として区別し、必要ならユーザーと検証手段を相談する。
+- (2026-10-01 07:11 JST) ユーザー指示により、QA実現度レビューから次の2点を明示的な未完了課題として登録する。
+  1. **4型のランダム試験を「参照モデル比較＋操作ごとの赤黒木不変条件確認」の組にする**。現状はSet/Dictionaryが参照モデル比較のみ、MultiMapが不変条件確認のみ、MultiSetだけが両方を持つ。各型の意味に合う参照モデルを用い、固定seedで再現可能な操作列の各段階に`___tree_invariant()`相当の確認を結び付ける。4型すべてで両側を満たした時点を完了条件とする。
+  2. **Index世代・Range ViewのCoW寿命検証をKeyValue系まで横展開する**。まずDictionary/MultiMapへ「slot削除・再利用後も古いIndexを拒否する」テストを追加する。加えて、コピーしたKeyValue Range Viewの片方をCoW変異した場合の発行元側Index、CoW後の変更対象側Index、連続変異で削除されたIndexの扱いを明示する。共有実装のため両型への機械的複製は必須とせず、DictionaryまたはMultiMapの代表テストでKeyValue Viewの仕様を固定し、必要に応じてもう一方へ展開する。KeyOnly側のMultiSetについても、重複要素固有の差がないかを確認して追加要否を判断する。
+- 最後に作業したモデル: Codex (GPT-5)。Test as Specificationの4型・View横展開漏れレビューと、その結果の記録を担当。
+- (2026-10-01 07:13 JST) 日英ペアの公開ドキュメントを照合。Set/MultiSetは見出し構成が同期済みだったが、`Documentation/RedBlackTreeMultiMap.ja.md`の`### Swapping Values`節が英語版に未反映と判明。`Documentation/RedBlackTreeMultiMap.md`へ、KeyValue Range Viewの`values`から得る変更可能な`RedBlackTreeMappedValuesView`、`swapAt(_:_:)`の使用例、値だけが交換されキー順・木上の位置は変わらないという説明を英訳して追加した。コード変更なしのためテストは実行していない。
+- 最後に作業したモデル: Codex (GPT-5)。日英ドキュメント差分の確認とMultiMap英語版の同期を担当。
+- (2026-10-01 07:16 JST) `CHANGELOG.md`を更新。当初0.4.4タグを起点に全差分を再要約したが、ユーザー指摘により基準が広すぎたと訂正。`CHANGELOG.md`の最終更新コミット`fe770ba8`(2026-09-30 11:28 JST)を特定し、そこからHEADまでの差分だけを再調査した。既存Unreleased項目は保持し、以後に追加された原木層fixture/tests・RawRangeExpression/KeyOnly Range Viewテスト、内部protocolの`~Copyable`対応、raw tree直接検証構造、MultiMapの`index(inserting:)`重複キー修正、空削除時の不要CoW修正、fixture sentinelクラッシュ修正、置換済みUnsafeNodeデバッグ重複実装の削除、およびMultiMap日英ドキュメント同期を追記した。文書変更のみのためテストは実行していない。
+- 最後に作業したモデル: Codex (GPT-5)。CHANGELOG最終更新コミット以降の履歴監査とUnreleased追記を担当。
+- (2026-10-01 07:17 JST) ユーザー再判断により、`CHANGELOG.md`のUnreleasedは最終更新コミット以降だけに限定した版ではなく、リリースタグ`0.4.4`以降の全体差分をまとめた広い版を採用。公開API・View・Bounds/Index・内部実装・Test as Specification再編・内部テスト・不具合修正・削除整理をAdded/Changed/Fixed/Removedへ再反映した。
+- 最後に作業したモデル: Codex (GPT-5)。CHANGELOGの集計基準を0.4.4以降へ戻す修正を担当。
+- (2026-10-01 07:19 JST) Codexレビューで指摘したAPI正本の同期漏れを修正。`API-Matrix.md`の`erase(exactly:)`について、実装・テスト済みのMultiMap欄を`TODO`から`✅`へ変更した。MultiSet/Dictionaryは未実装のため`TODO`を維持。文書のみの変更なのでテストは実行していない。
+- 最後に作業したモデル: Codex (GPT-5)。`erase(exactly:)`のAPIマトリクス同期を担当。

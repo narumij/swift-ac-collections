@@ -29,7 +29,7 @@ protocol EraseProtocol: ~Copyable,
 
 extension EraseProtocol where Self: ~Copyable {
 
-  /// - WARNING: メモリ破壊の可能性がある。
+  // - WARNING: メモリ破壊の可能性がある。
   @inlinable
   internal func
     erase(_ __p: _NodePtr) -> _NodePtr
@@ -39,7 +39,7 @@ extension EraseProtocol where Self: ~Copyable {
     return __r
   }
 
-  /// - WARNING: メモリ破壊の可能性がある。範囲検査済みの場合にのみ用いること
+  // - WARNING: メモリ破壊の可能性がある。範囲検査済みの場合にのみ用いること
   @inlinable
   internal func
     erase(_ __f: _NodePtr, _ __l: _NodePtr) -> _NodePtr
@@ -62,7 +62,7 @@ protocol EraseUniqueProtocol: ~Copyable,
 
 extension EraseUniqueProtocol where Self: ~Copyable {
 
-  /// メモリ破壊できない
+  // メモリ破壊できない
   @inlinable
 //  @inline(never)
   internal func ___erase_unique(_ __k: _Key) -> Bool {
@@ -84,7 +84,7 @@ protocol EraseMultiProtocol: ~Copyable,
 
 extension EraseMultiProtocol where Self: ~Copyable {
 
-  /// メモリ破壊できない
+  // メモリ破壊できない
   @inlinable
   internal func ___erase_multi(_ __k: _Key) -> Int {
     var __p = __equal_range_multi(__k)

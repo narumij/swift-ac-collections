@@ -21,10 +21,10 @@
 //===----------------------------------------------------------------------===//
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
-/// SetやMultiset用に特殊化されたハンドル
-///
-/// `_Key`の取得に関して特殊化済みとなっている。
-///
+// SetやMultiset用に特殊化されたハンドル
+//
+// `_Key`の取得に関して特殊化済みとなっている。
+//
 @frozen
 @usableFromInline
 struct UnsafeTreeV2KeyOnlyHandle<_Key: Comparable>: _UnsafeNodePtrType {

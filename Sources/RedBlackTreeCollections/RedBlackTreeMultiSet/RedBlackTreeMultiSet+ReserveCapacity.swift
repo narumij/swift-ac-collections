@@ -22,7 +22,7 @@
 
 extension RedBlackTreeMultiSet {
 
-  /// Creates an empty set with preallocated space for at least the specified number of elements.
+  /// Creates an empty multiset with preallocated space for at least the specified number of elements.
   @inlinable
   public init(minimumCapacity: Int) {
     self.init(__tree_: .create(minimumCapacity: minimumCapacity))

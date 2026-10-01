@@ -21,17 +21,17 @@
 //===----------------------------------------------------------------------===//
 
 public enum _RawRangeExpression<Bound> {
-  /// `a..<b` のこと
+  // `a..<b` のこと
   case range(from: Bound, to: Bound)
-  /// `a...b` のこと
+  // `a...b` のこと
   case closedRange(from: Bound, through: Bound)
-  /// `..<b` のこと
+  // `..<b` のこと
   case partialRangeTo(Bound)
-  /// `...b` のこと
+  // `...b` のこと
   case partialRangeThrough(Bound)
-  /// `a...` のこと
+  // `a...` のこと
   case partialRangeFrom(Bound)
-  /// `...` のこと
+  // `...` のこと
   case unboundedRange
 }
 

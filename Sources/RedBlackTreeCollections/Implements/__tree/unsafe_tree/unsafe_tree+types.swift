@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// ポインタベースの木の基本型定義
+// ポインタベースの木の基本型定義
 public protocol _UnsafeNodePtrType: ~Copyable, _NodePtrType
 where
   _NodePtr == UnsafeMutablePointer<UnsafeNode>,
@@ -49,13 +49,13 @@ extension _ElementType where Self: ~Copyable, Self: _UnsafeNodePtrType {
 
 extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType {
 
-  /// ペイロードのポインタ
-  ///
-  /// ```
-  /// ...|Node|Payload|Node...
-  ///    |    ^--__payload_
-  ///    ^-- UnsafeMutablePointer<UnsafeNode>
-  /// ```
+  // ペイロードのポインタ
+  //
+  // ```
+  // ...|Node|Payload|Node...
+  //    |    ^--__payload_
+  //    ^-- UnsafeMutablePointer<UnsafeNode>
+  // ```
   @inlinable
   static func __payload_ptr(_ p: _NodePtr) -> _PayloadPtr {
     p.__value_()
@@ -88,13 +88,13 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType {
 
 extension _UnsafeNodePtrType where Self: ~Copyable, Self: _ScalarBaseType {
 
-  /// `_PayloadValue`と`_Key`が一致する場合に、 ペイロードをキーとみなしたポインタ
-  ///
-  /// ```
-  /// ...|Node|Key|Node...
-  ///    |    ^--__key_ptr
-  ///    ^-- UnsafeMutablePointer<UnsafeNode>
-  /// ```
+  // `_PayloadValue`と`_Key`が一致する場合に、 ペイロードをキーとみなしたポインタ
+  //
+  // ```
+  // ...|Node|Key|Node...
+  //    |    ^--__key_ptr
+  //    ^-- UnsafeMutablePointer<UnsafeNode>
+  // ```
   @inlinable
   static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
     __payload_ptr(p)
@@ -116,13 +116,13 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _ScalarBaseType {
 
 extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType {
   
-  /// `_PayloadValue`が`Pair`の場合のキーへのポインタ
-  ///
-  /// ```
-  /// ...|Node|Key|MappedValue|Node...
-  ///    |    ^--__key_ptr
-  ///    ^-- UnsafeMutablePointer<UnsafeNode>
-  /// ```
+  // `_PayloadValue`が`Pair`の場合のキーへのポインタ
+  //
+  // ```
+  // ...|Node|Key|MappedValue|Node...
+  //    |    ^--__key_ptr
+  //    ^-- UnsafeMutablePointer<UnsafeNode>
+  // ```
   @inlinable
   static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
     _ref(to: &__payload_ptr(p).pointee.tuple.key)
@@ -141,13 +141,13 @@ extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType {
     __payload_(p).tuple.key
   }
   
-  /// `_PayloadValue`が`Pair`の場合のバリューへのポインタ
-  ///
-  /// ```
-  /// ...|Node|Key|MappedValue|Node...
-  ///    |        ^--__mapped_value_ptr
-  ///    ^-- UnsafeMutablePointer<UnsafeNode>
-  /// ```
+  // `_PayloadValue`が`Pair`の場合のバリューへのポインタ
+  //
+  // ```
+  // ...|Node|Key|MappedValue|Node...
+  //    |        ^--__mapped_value_ptr
+  //    ^-- UnsafeMutablePointer<UnsafeNode>
+  // ```
   @inlinable
   static func __mapped_value_ptr(_ p: _NodePtr) -> _MappedValuePtr {
     _ref(to: &__payload_ptr(p).pointee.tuple.value)

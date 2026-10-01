@@ -20,11 +20,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// 三方比較結果
-///
-/// <=>演算子に対応するものらしい
-///
-/// <=>はspaceship operatorというらしい
+// 三方比較結果
+//
+// <=>演算子に対応するものらしい
+//
+// <=>はspaceship operatorというらしい
 public
   protocol ThreeWayCompareResult
 {
@@ -32,10 +32,10 @@ public
   @inlinable func __greater() -> Bool
 }
 
-/// 三方比較結果型の定義
+// 三方比較結果型の定義
 @usableFromInline
 package protocol _ThreeWayResultType: ~Copyable {
-  /// 三方比較結果型
+  // 三方比較結果型
   associatedtype __compare_result: ThreeWayCompareResult
 }
 

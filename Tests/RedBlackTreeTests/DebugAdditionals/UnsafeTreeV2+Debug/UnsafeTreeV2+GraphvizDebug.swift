@@ -31,43 +31,41 @@
     }
   }
 
-  #if true
-    extension UnsafeTreeHostV2 {
+  extension UnsafeTreeHostV2 {
 
-      /// グラフビズオブジェクトを生成します
-      ///
-      /// デバッガで、以下のようにすると、Graphvizのソースをコンソールに出力できます。
-      ///
-      /// ```
-      /// p print(set.___graphviz())
-      /// ```
-      ///
-      /// ```
-      /// digraph {
-      /// node [shape = circle style = filled fillcolor = red]; 1 4
-      /// node [shape = circle style = filled fillcolor = blue fontcolor = white]; begin stack
-      /// node [shape = circle style = filled fillcolor = black fontcolor = white];
-      /// end -> 2 [label = "left"]
-      /// begin -> 0 [label = "left"]
-      /// stack -> 1 [label = "left"]
-      /// 2 -> 0 [label = "left"]
-      /// 1 -> 1 [label = "right"]
-      /// 2 -> 3 [label = "right"]
-      /// 3 -> 4 [label = "right"]
-      /// }
-      /// ```
-      ///
-      /// 上のソースは、以下のような操作をした直後のものです。
-      /// ```
-      /// var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
-      /// set.remove(1)
-      /// ```
-      ///
-      public func ___graphviz() -> Graphviz.Digraph {
-        __tree_.___graphviz()
-      }
+    /// グラフビズオブジェクトを生成します
+    ///
+    /// デバッガで、以下のようにすると、Graphvizのソースをコンソールに出力できます。
+    ///
+    /// ```
+    /// p print(set.___graphviz())
+    /// ```
+    ///
+    /// ```
+    /// digraph {
+    /// node [shape = circle style = filled fillcolor = red]; 1 4
+    /// node [shape = circle style = filled fillcolor = blue fontcolor = white]; begin stack
+    /// node [shape = circle style = filled fillcolor = black fontcolor = white];
+    /// end -> 2 [label = "left"]
+    /// begin -> 0 [label = "left"]
+    /// stack -> 1 [label = "left"]
+    /// 2 -> 0 [label = "left"]
+    /// 1 -> 1 [label = "right"]
+    /// 2 -> 3 [label = "right"]
+    /// 3 -> 4 [label = "right"]
+    /// }
+    /// ```
+    ///
+    /// 上のソースは、以下のような操作をした直後のものです。
+    /// ```
+    /// var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
+    /// set.remove(1)
+    /// ```
+    ///
+    public func ___graphviz() -> Graphviz.Digraph {
+      __tree_.___graphviz()
     }
-  #endif
+  }
 
   public enum Graphviz {}
 

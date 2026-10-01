@@ -11,6 +11,70 @@ on:
       - compatible/AtCoder/2025
 
 jobs:
+  documentation:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Build documentation
+        run: >-
+          swift package --allow-writing-to-directory .build/documentation
+          generate-documentation
+          --target RedBlackTreeCollections
+          --output-path .build/documentation
+          --transform-for-static-hosting
+          --hosting-base-path swift-ac-collections
+          --warnings-as-errors
+
+      - name: Archive documentation
+        run: >-
+          tar -czf .build/RedBlackTreeCollections-documentation.tar.gz
+          -C .build/documentation .
+
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: RedBlackTreeCollections-documentation
+          path: .build/RedBlackTreeCollections-documentation.tar.gz
+          if-no-files-found: error
+
+      - name: Configure GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .build/documentation
+
+  deploy-documentation:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: documentation
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
   debug:
     runs-on: ubuntu-24.04
 

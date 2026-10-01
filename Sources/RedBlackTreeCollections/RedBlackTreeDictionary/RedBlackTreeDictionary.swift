@@ -24,7 +24,7 @@
 
 /// # RedBlackTreeDictionary
 ///
-/// `RedBlackTreeDictionary` is an **ordered dictionary (unique keys)**
+/// `RedBlackTreeDictionary` is a **sorted dictionary (unique keys)**
 /// implemented using a red-black tree.
 /// Keys are always kept in sorted order.
 ///
@@ -123,7 +123,7 @@ extension RedBlackTreeDictionary.Base: _BaseNode_SignedDistanceProtocol {}
 
 extension RedBlackTreeDictionary {
 
-  /// The total number of elements that the set can contain without allocating new storage.
+  /// The total number of key-value pairs that the dictionary can contain without allocating new storage.
   ///
   /// - Complexity: O(1)
   @inlinable
@@ -134,7 +134,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// A Boolean value that indicates whether the set is empty.
+  /// A Boolean value that indicates whether the dictionary is empty.
   ///
   /// - Complexity: O(1)
   @inlinable
@@ -142,7 +142,7 @@ extension RedBlackTreeDictionary {
     count == 0
   }
 
-  /// The number of elements in the set.
+  /// The number of key-value pairs in the dictionary.
   ///
   /// - Complexity: O(1)
   @inlinable
@@ -166,7 +166,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// Returns a Boolean value that indicates whether the given element exists in the set.
+  /// Returns a Boolean value that indicates whether the given key exists in the dictionary.
   ///
   /// - Complexity: O(log `count`)
   @inlinable
@@ -221,7 +221,7 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
   // multi mapとの統一感のために復活
 
-  /// Inserts the given key-value pair in the set if it is not already present.
+  /// Inserts the given key-value pair into the dictionary if its key is not already present.
   ///
   /// - Complexity: O(log *n*)
   @inlinable
@@ -232,7 +232,7 @@ extension RedBlackTreeDictionary {
     insert((key, value))
   }
 
-  /// Inserts the given element in the set if it is not already present.
+  /// Inserts the given key-value pair into the dictionary if its key is not already present.
   ///
   /// - Complexity: O(log *n*)
   @inlinable
@@ -348,6 +348,7 @@ extension RedBlackTreeDictionary {
   /// - Complexity: Amortized O(1)
   @inlinable
   public mutating func popFirst() -> Element? {
+    guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.___unchecked_remove_first().map { Base.__element_($0) }
   }
@@ -361,6 +362,7 @@ extension RedBlackTreeDictionary {
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return __tree_.___unchecked_remove_last().map { Base.__element_($0) }
     }
@@ -401,7 +403,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// Removes the element at the given index of the set.
+  /// Removes the key-value pair at the given index of the dictionary.
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
@@ -422,6 +424,7 @@ extension RedBlackTreeDictionary {
   @inlinable
   @discardableResult
   public mutating func removeValue(forKey __k: Key) -> Value? {
+    guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.update {
       let __i = $0.find(__k)
@@ -437,15 +440,15 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// Removes all members from the set.
+  /// Removes all key-value pairs from the dictionary.
   ///
-  /// - Complexity: O(1)
+  /// - Complexity: O(*n*), where *n* is the number of key-value pairs.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    if keepCapacity {
+    if keepCapacity && __tree_.count > 0 {
       __tree_.ensureUnique()
       __tree_.deinitialize()
-    } else {
+    } else if !keepCapacity {
       __tree_ = .create()
     }
   }
@@ -454,7 +457,7 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// Removes the element at the given position from the set and returns the index of the next element.
+    /// Removes the key-value pair at the given position from the dictionary and returns the index of the next element.
     ///
     /// - Complexity: Amortized O(1)
     @discardableResult

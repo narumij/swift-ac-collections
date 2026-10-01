@@ -17,11 +17,15 @@ final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     .makeEmpty()
   }
 
+  /// 空のFixtureでも`invariant()`が不変条件を満たすこと
+  /// (空の木は`__tree_invariant`の定義上、自明にtrueになる)。
   func testEmptyInvariant() {
     var fixture = makeFixture()
     XCTAssertEqual(fixture.invariant(), 1)
   }
 
+  /// 単一要素を挿入した直後、rootは黒に補正されること
+  /// (RBTの不変条件: rootは常に黒)。
   func testSingleInsertBecomesBlackRoot() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -318,6 +322,8 @@ final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
   // MARK: - Bulk stress coverage for rotate / balance / remove
 
+  /// 昇順・降順・ジグザグの3通りの挿入順で31要素を挿入し、挿入のたびに
+  /// `__tree_invariant`を満たし続けること(分岐を手で導出せず、多様な形を機械的に確認する)。
   func testBulkInsertVariousOrdersMaintainInvariant() {
     let orders: [[Int]] = [
       Array(0..<31),
@@ -340,6 +346,8 @@ final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     }
   }
 
+  /// 31要素を固定順(昇順)で挿入した後、昇順・降順・ジグザグの3通りの削除順で全削除し、
+  /// 削除のたびに`__tree_invariant`を満たし続けること。
   func testBulkRemoveVariousOrdersMaintainInvariant() {
     let removalOrders: [[Int]] = [
       Array(0..<31),
@@ -489,6 +497,8 @@ final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
   // MARK: - unsafe_node+pointer+validation.swift
 
+  /// `___is_null`/`___is_end`/`___is_root`が、nullptr・end・root・通常ノードそれぞれで
+  /// 正しい真偽値を返すこと。
   func testValidation_isNullIsEndIsRoot() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -558,6 +568,8 @@ final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
   // MARK: - unsafe_node+pointer+advance.swift
 
+  /// `___tree_next_iter`/`___tree_prev_iter`が、通常の1歩進む/戻るでは成功し、
+  /// 木の下限/上限を超える操作では`.lowerOutOfBounds`/`.upperOutOfBounds`で失敗すること。
   func testAdvanceIter_successAndBoundaryFailures() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -590,6 +602,9 @@ final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     }
   }
 
+  /// `___tree_adv_iter`が、正負両方向のN歩移動・0歩移動・limit到達時の`.limit`失敗
+  /// (開始位置が既にlimit/移動中に正方向でlimitへ到達/移動中に負方向でlimitへ到達)・
+  /// limitに到達せず完了する通常ケースを網羅すること。
   func testAdvIter_positiveNegativeAndLimit() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -641,6 +656,8 @@ final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
   // MARK: - unsafe_node+pointer+distance.swift
 
+  /// `__distance`(素朴な前方カウント)と`___safe_distance`(Result版)が、
+  /// 通常の前方距離・距離0・後ろ向き距離(失敗)を正しく処理すること。
   func testDistance_plainAndSafe() {
     var fixture = makeFixture()
     let end = fixture.endPtr()

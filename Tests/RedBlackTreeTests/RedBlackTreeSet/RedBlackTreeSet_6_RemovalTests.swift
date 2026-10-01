@@ -163,6 +163,29 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     XCTAssertEqual(DeinitializeCounter.count, 0)
   }
 
+  /// 空集合への削除操作はトラップしない以上、無駄なCoW(共有される空シングルトン
+  /// バッファからの退避)も発生させないこと。
+  func test_removalMethods_onEmptySet_doNotTriggerCopyOnWrite() {
+    #if AC_COLLECTIONS_INTERNAL_CHECKS
+      var set = RedBlackTreeSet<Int>()
+      XCTAssertEqual(set._copyCount, 0)
+
+      XCTAssertNil(set.popFirst())
+      XCTAssertEqual(set._copyCount, 0)
+
+      #if !COMPATIBLE_ATCODER_2025
+        XCTAssertNil(set.popLast())
+        XCTAssertEqual(set._copyCount, 0)
+      #endif
+
+      XCTAssertNil(set.remove(1))
+      XCTAssertEqual(set._copyCount, 0)
+
+      set.removeAll(keepingCapacity: true)
+      XCTAssertEqual(set._copyCount, 0, "空集合へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
+    #endif
+  }
+
   /// remove(_:) が整数型の最小値と最大値も削除できること
   func test_removeIntegerLimits() {
     var set: RedBlackTreeSet = [Int.min, Int.max]

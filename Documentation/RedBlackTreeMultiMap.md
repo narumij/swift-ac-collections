@@ -236,6 +236,28 @@ This is an important distinction from a simple
 `RedBlackTreeSet<(Key, Value)>`,
 where both the key and value could participate in ordering.
 
+### Swapping Values
+
+`RedBlackTreeMultiMap` lets you exchange the values of different elements
+without changing their keys.
+
+The `RedBlackTreeMappedValuesView` obtained from the `values` property of a
+key-value range view is mutable. Use `swapAt(_:_:)` to exchange the mapped
+values at two indices.
+
+```swift
+map[key].values.swapAt(i, j)
+```
+
+This operation exchanges only the values.
+
+Because the keys do not change, the elements retain their positions in the
+red-black tree and their key-sorted order.
+
+This operation relies on a defining property of `RedBlackTreeMultiMap`: keys
+determine the tree's ordering, while mapped values do not participate in that
+ordering.
+
 ## Indices
 
 A `RedBlackTreeMultiMap` index represents a logical position

@@ -31,7 +31,7 @@
 
 extension RedBlackTreeMultiMap {
 
-  /// Returns a new multi map containing the key-value pairs of the dictionary that satisfy the given predicate.
+  /// Returns a new multimap containing the key-value pairs of this multimap that satisfy the given predicate.
   ///
   /// - Complexity: O(*n*)
   @inlinable
@@ -48,7 +48,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// Returns a new multi map containing the keys of this dictionary with the values transformed by the given closure.
+  /// Returns a new multimap containing the keys of this multimap with the values transformed by the given closure.
   ///
   /// - Complexity: O(*n*)
   @inlinable
@@ -75,7 +75,7 @@ extension RedBlackTreeMultiMap: Sequence {}
 
 extension RedBlackTreeMultiMap {
 
-  /// Returns an iterator over the dictionary’s key-value pairs.
+  /// Returns an iterator over the multimap’s key-value pairs.
   ///
   /// - Complexity: O(1)
   @inlinable
@@ -122,7 +122,7 @@ extension RedBlackTreeMultiMap {
       public typealias Keys = [Key]
       public typealias Values = [Value]
 
-      /// A collection containing just the keys of the dictionary.
+      /// A collection containing just the keys of the multimap.
       ///
       /// - Complexity: O(`count`)
       @inlinable
@@ -130,7 +130,7 @@ extension RedBlackTreeMultiMap {
         __tree_.___copy_all_to_array(Base.__key_)
       }
 
-      /// A collection containing just the values of the dictionary.
+      /// A collection containing just the values of the multimap.
       ///
       /// - Complexity: O(`count`)
       @inlinable
@@ -142,7 +142,7 @@ extension RedBlackTreeMultiMap {
       public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
       //      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
 
-      /// A collection containing just the keys of the dictionary.
+      /// A collection containing just the keys of the multimap.
       ///
       /// - Complexity: O(`count`)
       @inlinable
@@ -151,7 +151,7 @@ extension RedBlackTreeMultiMap {
       }
 
       // TODO: valuesはViewにして、swapAt可能にすること
-      /// A collection containing just the values of the dictionary.
+      /// A collection containing just the values of the multimap.
       ///
       /// - Complexity: O(`count`)
       //      @inlinable

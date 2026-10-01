@@ -24,18 +24,18 @@
   // 非常に重要なポイントなので元ソース尊重よりもわかりやすさを優先しつつ、
   // エクスキューズ的に#ifで元の名前をリスペクトする感じ？
   public protocol _BaseNode_KeyInterface: ~Copyable, _NodePtrType, _KeyType {
-    /// ノードから比較用の値を取り出す。
-    /// SetやMultisetではElementに該当する
-    /// DictionaryやMultiMapではKeyに該当する
+    // ノードから比較用の値を取り出す。
+    // SetやMultisetではElementに該当する
+    // DictionaryやMultiMapではKeyに該当する
     @inlinable static func __get_value(_: _NodePtr) -> _Key
   }
 #else
   // 型の名前にねじれがあるので注意
   @usableFromInline
   protocol _BaseNode_KeyInterface: ~Copyable, _NodePtrType & _KeyType & __node_value_type {
-    /// ノードから比較用の値を取り出す。
-    /// SetやMultisetではElementに該当する
-    /// DictionaryやMultiMapではKeyに該当する
+    // ノードから比較用の値を取り出す。
+    // SetやMultisetではElementに該当する
+    // DictionaryやMultiMapではKeyに該当する
     @inlinable static func __get_value(_: _NodePtr) -> __node_value_type
   }
 #endif
@@ -46,7 +46,7 @@ public protocol _BaseNode_PayloadValueInterface: ~Copyable, _NodePtrType & _Payl
 }
 
 public protocol _BasePayloadValue_KeyInterface: ~Copyable, _KeyType & _PayloadValueType {
-  /// 要素から比較キー値がとれること
+  // 要素から比較キー値がとれること
   //  @available(*, deprecated, renamed: "__key_")
   @inlinable static func __key(_: _PayloadValue) -> _Key
 }
@@ -59,12 +59,12 @@ public protocol _BasePayloadValue_MappedValueInterface: ~Copyable, _PayloadValue
 }
 
 public protocol _BaseKey_LessThanInterface: ~Copyable, _KeyType {
-  /// 比較関数が実装されていること
+  // 比較関数が実装されていること
   @inlinable static func value_comp(_: _Key, _: _Key) -> Bool
 }
 
 public protocol _BaseKey_EquivInterface: ~Copyable, _KeyType {
-  /// 等価比較関数は割とオプション扱い
+  // 等価比較関数は割とオプション扱い
   @inlinable static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
 }
 

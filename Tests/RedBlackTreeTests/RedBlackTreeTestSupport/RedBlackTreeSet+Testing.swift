@@ -86,6 +86,11 @@ extension RedBlackTreeSet {
       true
     #endif
   }
+
+  @inlinable
+  package func ___tree_invariant_for_fuzz() -> Bool {
+    __tree_.__tree_invariant(__tree_.__root)
+  }
 }
 
 #if DEBUG

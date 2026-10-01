@@ -73,6 +73,7 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
 
   // MARK: - __UniqueHelper.___ptr_comp
 
+  /// 同一ノード同士の比較は、実ノードでもendでも常にfalseになること。
   func testUniqueHelper_ptrComp_sameNodeIsAlwaysFalse() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -82,6 +83,7 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
     XCTAssertFalse(UniqueSUT.___ptr_comp(end, end))
   }
 
+  /// endは常に実ノードより「大きい」(実ノード<end、end<実ノードはfalse)こと。
   func testUniqueHelper_ptrComp_endIsGreaterThanAnyRealNode() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -91,6 +93,7 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
     XCTAssertFalse(UniqueSUT.___ptr_comp(end, real), "endは実ノードより大きいはず")
   }
 
+  /// 異なるキーを持つ実ノード同士の比較が、キーの大小関係と一致すること。
   func testUniqueHelper_ptrComp_matchesKeyOrdering() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -103,6 +106,8 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
 
   // MARK: - __UniqueHelper.___ptr_range_comp
 
+  /// 下端・現在位置・上端の全てがendの場合、「空区間だがendで閉じている」として
+  /// 有効(true)と判定されること。
   func testUniqueHelper_ptrRangeComp_allEndIsValid() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -110,6 +115,8 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
     XCTAssertTrue(UniqueSUT.___ptr_range_comp(end, end, end))
   }
 
+  /// 下端だけがendで、現在位置や上端が実ノードの場合は、
+  /// 区間として矛盾しているため無効(false)と判定されること。
   func testUniqueHelper_ptrRangeComp_firstIsEndButOthersAreNot_isInvalid() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -119,6 +126,8 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
     XCTAssertFalse(UniqueSUT.___ptr_range_comp(end, end, real))
   }
 
+  /// 上端がendの場合(上限なしの半開区間)、下端との大小関係だけで
+  /// 判定され、下端自体は含むこと。
   func testUniqueHelper_ptrRangeComp_lastIsEnd_checksLowerBoundOnly() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -133,6 +142,7 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
     XCTAssertTrue(UniqueSUT.___ptr_range_comp(first, end, end), "pがendなら常に含む(上限なし)")
   }
 
+  /// 上下端とも実ノードの閉区間で、下端・上端自体を含み、範囲外は含まないこと。
   func testUniqueHelper_ptrRangeComp_closedRange() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -152,6 +162,7 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
 
   // MARK: - __MultiHelper.___ptr_comp
 
+  /// (Multi版) 同一ノード同士の比較は常にfalseになること。
   func testMultiHelper_ptrComp_sameNodeIsAlwaysFalse() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -160,6 +171,7 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
     XCTAssertFalse(MultiSUT.___ptr_comp(a, a))
   }
 
+  /// (Multi版) endは常に実ノードより「大きい」こと。
   func testMultiHelper_ptrComp_endIsGreaterThanAnyRealNode() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -169,6 +181,7 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
     XCTAssertFalse(MultiSUT.___ptr_comp(end, real))
   }
 
+  /// (Multi版) 異なるキーを持つ実ノード同士の比較が、キーの大小関係と一致すること。
   func testMultiHelper_ptrComp_matchesKeyOrdering() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -195,6 +208,7 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
 
   // MARK: - __MultiHelper.___ptr_range_comp
 
+  /// (Multi版) 下端・現在位置・上端の全てがendの場合、有効(true)と判定されること。
   func testMultiHelper_ptrRangeComp_allEndIsValid() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -202,6 +216,7 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
     XCTAssertTrue(MultiSUT.___ptr_range_comp(end, end, end))
   }
 
+  /// (Multi版) 下端だけがendで他が実ノードの場合は、無効(false)と判定されること。
   func testMultiHelper_ptrRangeComp_firstIsEndButOthersAreNot_isInvalid() {
     var fixture = makeFixture()
     let end = fixture.endPtr()
@@ -211,6 +226,7 @@ final class TreeFoundamentalMultiplicityTests: RedBlackTreeTestCase, _UnsafeNode
     XCTAssertFalse(MultiSUT.___ptr_range_comp(end, end, real))
   }
 
+  /// (Multi版) 上端がendの場合、下端との大小関係だけで判定され、下端自体は含むこと。
   func testMultiHelper_ptrRangeComp_lastIsEnd_checksLowerBoundOnly() {
     var fixture = makeFixture()
     let end = fixture.endPtr()

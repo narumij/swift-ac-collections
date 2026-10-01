@@ -44,5 +44,15 @@
       }
       XCTAssertFalse(range.isValid(index: .unsafe(tree: range.__tree_, rawTag: 6)))
     }
+
+    func testStaleIndexAfterSlotRecycledWithNewGenerationIsRejected() {
+      var dictionary = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: (0..<10).map { ($0, $0) })
+      let stale = dictionary.index(after: dictionary.startIndex)  // 1を指す
+
+      dictionary.removeValue(forKey: 1)
+      dictionary[1] = 1  // 同じスロットが新しい世代で再利用される可能性がある
+
+      XCTAssertFalse(dictionary.isElement(at: stale))
+    }
   }
 #endif

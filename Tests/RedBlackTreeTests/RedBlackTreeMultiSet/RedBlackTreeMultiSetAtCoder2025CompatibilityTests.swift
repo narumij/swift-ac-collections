@@ -176,6 +176,24 @@ import XCTest
   extension RedBlackTreeMultisetSubSequenceTests {
   }
 
+  extension RedBlackTreeMultiSetRemovalTests {
+
+    /// 互換モード専用のremove(_:)/removeAll(_:)も、見つからない場合はトラップしない以上、
+    /// 無駄なCoWを発生させないこと。
+    func test_removeAndRemoveAll_notFound_doNotTriggerCopyOnWrite() {
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        var multiset = RedBlackTreeMultiSet<Int>()
+        XCTAssertEqual(multiset._copyCount, 0)
+
+        XCTAssertNil(multiset.remove(1))
+        XCTAssertEqual(multiset._copyCount, 0)
+
+        XCTAssertNil(multiset.removeAll(1))
+        XCTAssertEqual(multiset._copyCount, 0)
+      #endif
+    }
+  }
+
   final class RedBlackTreeMultisetIndexRemovalLegacyTests: RedBlackTreeTestCase {
     func testRemovingAtIndicesForwardAndReversedEmptiesMultiSet() throws {
       var forward = RedBlackTreeMultiSet<Int>(0..<10)

@@ -27,10 +27,10 @@ extension UnsafeTreeV2 {
     _createWithEmptySingleton()
   }
 
-  /// 木の生成を行う
-  ///
-  /// サイズが0の場合に共有バッファを用いたインスタンスを返す。
-  /// ensureUniqueが利用できない場面では他の生成メソッドを利用すること。
+  // 木の生成を行う
+  //
+  // サイズが0の場合に共有バッファを用いたインスタンスを返す。
+  // ensureUniqueが利用できない場面では他の生成メソッドを利用すること。
   @inlinable
   internal static func create(
     minimumCapacity nodeCapacity: Int
@@ -40,9 +40,9 @@ extension UnsafeTreeV2 {
       : _createWithNewBuffer(minimumCapacity: nodeCapacity, nullptr: UnsafeNode.nullptr)
   }
 
-  /// シングルトンバッファを用いて高速に生成する
-  ///
-  /// 直接呼ぶ必要はほとんど無い
+  // シングルトンバッファを用いて高速に生成する
+  //
+  // 直接呼ぶ必要はほとんど無い
   @inlinable
   internal static func _createWithEmptySingleton() -> UnsafeTreeV2 {
     assert(_emptyTreeStorage.header.freshPoolCapacity == 0)
@@ -52,9 +52,9 @@ extension UnsafeTreeV2 {
           unsafeBufferObject: _emptyTreeStorage))
   }
 
-  /// 通常の生成
-  ///
-  /// ensureUniqueが利用できない場面に限って直接呼ぶようにすること
+  // 通常の生成
+  //
+  // ensureUniqueが利用できない場面に限って直接呼ぶようにすること
   @inlinable
   internal static func _createWithNewBuffer(
     minimumCapacity nodeCapacity: Int,
@@ -84,11 +84,11 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
-  /// Rangeから木を生成する
-  ///
-  /// Rangeは重複も無いため、さらに簡略化したコードで足りる
-  ///
-  /// - Complexity: O(*n*)
+  // Rangeから木を生成する
+  //
+  // Rangeは重複も無いため、さらに簡略化したコードで足りる
+  //
+  // - Complexity: O(*n*)
   @inlinable
   internal static func create<R>(range: __owned R) -> UnsafeTreeV2
   where R: RangeExpression, R: Collection, R.Element == Base._PayloadValue {

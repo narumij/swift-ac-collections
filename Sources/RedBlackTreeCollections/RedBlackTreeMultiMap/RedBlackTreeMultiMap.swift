@@ -24,7 +24,7 @@
 
 /// # RedBlackTreeMultiMap
 ///
-/// `RedBlackTreeMultiMap` is an **ordered multimap (allowing duplicate keys)**
+/// `RedBlackTreeMultiMap` is a **sorted multimap (allowing duplicate keys)**
 /// implemented using a red-black tree.
 /// Keys are always kept in sorted order.
 /// The order of elements with the same key is the insertion order.
@@ -45,7 +45,7 @@
 /// ```swift
 /// var map: RedBlackTreeMultiMap<Int, String> =
 ///   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
-/// map.remove(3) // -> [1: "b", 1: "d", 4: "c", 5: "e"]
+/// map.eraseUnique(3) // -> [1: "b", 1: "d", 4: "c", 5: "e"]
 /// ```
 ///
 /// Avoid performing repeated removals via indices in a `for` loop.
@@ -167,7 +167,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// Returns the number of elements equal to the given value.
+  /// Returns the number of key-value pairs with the given key.
   ///
   /// - Complexity: O(log `count` + `distance`), where `distance` is the number of matching elements.
   @inlinable
@@ -180,7 +180,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// Returns a Boolean value that indicates whether the given element exists in the set.
+  /// Returns a Boolean value that indicates whether the given key exists in the multimap.
   ///
   /// - Complexity: O(log `count`)
   @inlinable
@@ -245,7 +245,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// Inserts the given element in the set if it is not already present.
+  /// Inserts the given key-value pair into the multimap.
   ///
   /// - Complexity: O(log *n*)
   @inlinable
@@ -256,7 +256,7 @@ extension RedBlackTreeMultiMap {
     insert((key, value))
   }
 
-  /// Inserts the given element into the set unconditionally.
+  /// Inserts the given key-value pair into the multimap.
   ///
   /// - Complexity: O(log *n*)
   @inlinable
@@ -315,6 +315,7 @@ extension RedBlackTreeMultiMap {
   /// - Complexity: Amortized O(1)
   @inlinable
   public mutating func popFirst() -> Element? {
+    guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.___unchecked_remove_first().map { Base.__element_($0) }
   }
@@ -328,6 +329,7 @@ extension RedBlackTreeMultiMap {
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return __tree_.___unchecked_remove_last().map { Base.__element_($0) }
     }
@@ -368,7 +370,7 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// Removes the element at the given index of the set.
+  /// Removes the key-value pair at the given index of the multimap.
   ///
   /// - Complexity: Amortized O(1)
   @inlinable
@@ -384,15 +386,15 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// Removes all members from the set.
+  /// Removes all key-value pairs from the multimap.
   ///
-  /// - Complexity: O(1)
+  /// - Complexity: O(*n*), where *n* is the number of key-value pairs.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    if keepCapacity {
+    if keepCapacity && __tree_.count > 0 {
       __tree_.ensureUnique()
       __tree_.deinitialize()
-    } else {
+    } else if !keepCapacity {
       __tree_ = .create()
     }
   }
@@ -401,7 +403,7 @@ extension RedBlackTreeMultiMap {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
-    /// Removes the element at the given position from the set and returns the index of the next element.
+    /// Removes the key-value pair at the given position from the multimap and returns the index of the next element.
     ///
     /// - Complexity: Amortized O(1)
     @discardableResult
@@ -435,7 +437,7 @@ extension RedBlackTreeMultiMap {
     ///
     /// If multiple elements with an equivalent key exist, an arbitrary one is removed.
     ///
-    /// - Parameter member: The key of the element to remove.
+    /// - Parameter key: The key of the element to remove.
     /// - Returns: `true` if an element was removed; otherwise `false`.
     /// - Complexity: O(log *n*)
     @inlinable
@@ -450,7 +452,7 @@ extension RedBlackTreeMultiMap {
 
     /// Removes all elements equivalent to the given key.
     ///
-    /// - Parameter member: The key of the elements to remove.
+    /// - Parameter key: The key of the elements to remove.
     /// - Returns: The number of elements removed.
     /// - Complexity: O(log `count` + `distance`), where `distance` is the number of removed elements.
     @inlinable

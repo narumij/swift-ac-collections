@@ -24,7 +24,7 @@
 
 /// # RedBlackTreeMultiSet
 ///
-/// `RedBlackTreeMultiSet` is an **ordered multiset (allowing duplicates)**
+/// `RedBlackTreeMultiSet` is a **sorted multiset (allowing duplicates)**
 /// implemented using a red-black tree.
 /// Elements are always kept in sorted order.
 ///
@@ -222,7 +222,7 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// Inserts the given element in the set if it is not already present.
+  /// Inserts the given element into the multiset, including when an equivalent element is already present.
   ///
   /// - Complexity: O(log *n*)
   @inlinable
@@ -288,6 +288,7 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: Amortized O(1)
   @inlinable
   public mutating func popFirst() -> Element? {
+    guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.___unchecked_remove_first()
   }
@@ -301,6 +302,7 @@ extension RedBlackTreeMultiSet {
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return __tree_.___unchecked_remove_last()
     }
@@ -359,15 +361,15 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// Removes all members from the set.
+  /// Removes all elements from the multiset.
   ///
-  /// - Complexity: O(1)
+  /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    if keepCapacity {
+    if keepCapacity && __tree_.count > 0 {
       __tree_.ensureUnique()
       __tree_.deinitialize()
-    } else {
+    } else if !keepCapacity {
       __tree_ = .create()
     }
   }
@@ -412,7 +414,7 @@ extension RedBlackTreeMultiSet {
     ///
     /// If multiple elements with an equivalent key exist, an arbitrary one is removed.
     ///
-    /// - Parameter member: The key of the element to remove.
+    /// - Parameter member: The element to remove.
     /// - Returns: `true` if an element was removed; otherwise `false`.
     /// - Complexity: O(log *n*)
     @inlinable
@@ -427,7 +429,7 @@ extension RedBlackTreeMultiSet {
 
     /// Removes all elements equivalent to the given key.
     ///
-    /// - Parameter member: The key of the elements to remove.
+    /// - Parameter member: The element whose equivalent occurrences are removed.
     /// - Returns: The number of elements removed.
     /// - Complexity: O(log `count` + `distance`), where `distance` is the number of removed elements.
     @inlinable

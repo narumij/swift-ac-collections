@@ -138,7 +138,7 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | `erase(where:)` | ✅ | ✅ | ✅ | ✅ | 条件を満たす全要素を削除する |
 | `eraseUnique(_:)` | — | ✅ | ✅ | — | 値またはキーに対応する1要素を削除する |
 | `eraseMulti(_:)` | — | ✅ | ✅ | — | 値またはキーに対応する全要素を削除し、件数を返す |
-| `erase(exactly:)` | ✅ | TODO | TODO | TODO | Indexが現在利用可能なら要素を削除し、後続Indexを返す |
+| `erase(exactly:)` | ✅ | TODO | ✅ | TODO | Indexが現在利用可能なら要素を削除し、後続Indexを返す |
 
 remove 系は Swift 標準APIとの整合を優先する。
 erase 系は本ライブラリ固有のIndex・Range・複数要素削除を扱う。

@@ -79,7 +79,7 @@ extension UnsafeTreeV2Buffer {
   ) -> UnsafeTreeV2Buffer {
 
     #if ENABLE_OFFSET_OVERFLOW_GUARD
-      allocator._pair._preconditionOffsetDoesNotOverflow(forCount: nodeCapacity)
+      allocator.pairLayout._preconditionOffsetDoesNotOverflow(forCount: nodeCapacity)
     #endif
 
     // 要素数は常に0

@@ -208,9 +208,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @discardableResult
   public mutating func popFirst() -> Element? {
+    guard _raw_range.0 != _raw_range.1 else { return nil }
     _ensureUnique()
-    let (_start, _end) = _raw_range
-    guard _start != _end else { return nil }
+    let (_start, _) = _raw_range
     let (_p, _r) = __tree_._unchecked_remove(at: _start)
     _sealed_start = _p.uncheckedSeal
     return _r
@@ -219,9 +219,9 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @discardableResult
   public mutating func popLast() -> Element? {
+    guard _raw_range.0 != _raw_range.1 else { return nil }
     _ensureUnique()
-    let (_start, _end) = _raw_range
-    guard _start != _end else { return nil }
+    let (_, _end) = _raw_range
     return __tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
   }
 
@@ -249,6 +249,8 @@ extension RedBlackTreeKeyOnlyRangeView {
   @inlinable
   @discardableResult
   public mutating func erase() -> Index {
+    // 空の場合はensureUnique()による無駄なコピーを避ける。
+    guard _raw_range.0 != _raw_range.1 else { return ___index(_raw_range.1) }
     _ensureUnique()
     let (_start, _end) = _raw_range
     // ややチェックが甘いので末端チェック付き削除が必要
@@ -257,6 +259,7 @@ extension RedBlackTreeKeyOnlyRangeView {
 
   @inlinable
   public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+    guard _raw_range.0 != _raw_range.1 else { return }
     _ensureUnique()
     let (_start, _end) = _raw_range
     let result = try __tree_.___erase_range_if(_start.unchecked, _end.unchecked, shouldBeRemoved)

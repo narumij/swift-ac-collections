@@ -20,9 +20,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// 資料的に残されている
-///
-/// 実際には特殊化されたものをつかっている
+// 資料的に残されている
+//
+// 実際には特殊化されたものをつかっている
 public protocol _BaseNode_KeyProtocol:
   ~Copyable,
   _BaseNode_KeyInterface
@@ -34,11 +34,11 @@ public protocol _BaseNode_KeyProtocol:
 
 extension _BaseNode_KeyProtocol where Self: ~Copyable {
 
-  /// 資料的に残されている
-  ///
-  /// 実際には特殊化されたものをつかっている
-  ///
-  /// `__key(_:)`が定義されてる場合に`__get_value(_:)`を定義する
+  // 資料的に残されている
+  //
+  // 実際には特殊化されたものをつかっている
+  //
+  // `__key(_:)`が定義されてる場合に`__get_value(_:)`を定義する
   @inlinable
   public static func __get_value(_ p: _NodePtr) -> _Key {
     __key(__value_(p))
@@ -49,7 +49,7 @@ public protocol _BaseComparableKey_LessThanProtocol: ~Copyable, _BaseKey_LessTha
 where _Key: Comparable {}
 
 extension _BaseComparableKey_LessThanProtocol where Self: ~Copyable {
-  /// Comparableプロトコルの場合の標準実装
+  // Comparableプロトコルの場合の標準実装
   @inlinable
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     a < b

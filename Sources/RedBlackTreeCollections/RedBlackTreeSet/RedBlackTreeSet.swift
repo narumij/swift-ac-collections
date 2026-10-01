@@ -24,7 +24,7 @@
 
 /// # RedBlackTreeSet
 ///
-/// `RedBlackTreeSet` is an **ordered unique set** implemented using a red-black tree.
+/// `RedBlackTreeSet` is a **sorted unique set** implemented using a red-black tree.
 /// Elements are always kept in sorted order.
 ///
 /// ```swift
@@ -88,7 +88,7 @@
 /// print(set[.find(2)]) // -> nil (not found)
 /// ```
 ///
-/// - Important: `RedBlackTreeDictionary` is not thread-safe.
+/// - Important: `RedBlackTreeSet` is not thread-safe.
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {
 
@@ -96,7 +96,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
     typealias Element = Element
 
   @usableFromInline
-  var __tree_: Tree
+  package var __tree_: Tree
 
   @inlinable
   package init(__tree_: Tree) {
@@ -235,7 +235,7 @@ extension RedBlackTreeSet {
     return (__inserted, __inserted ? newMember : Base.__payload_(__r))
   }
 
-  /// Inserts the given element into the set unconditionally.
+  /// Inserts the given element, replacing an existing equivalent element if one is already present.
   ///
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
@@ -296,6 +296,7 @@ extension RedBlackTreeSet {
     /// - Complexity: Amortized O(1)
     @inlinable
     public mutating func popFirst() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return __tree_.___unchecked_remove_first()
     }
@@ -305,6 +306,7 @@ extension RedBlackTreeSet {
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return __tree_.___unchecked_remove_last()
     }
@@ -351,6 +353,7 @@ extension RedBlackTreeSet {
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
+    guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.update { $0.___erase_unique(member) } ? member : nil
   }
@@ -378,13 +381,13 @@ extension RedBlackTreeSet {
 
   /// Removes all members from the set.
   ///
-  /// - Complexity: O(1)
+  /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    if keepCapacity {
+    if keepCapacity && __tree_.count > 0 {
       __tree_.ensureUnique()
       __tree_.deinitialize()
-    } else {
+    } else if !keepCapacity {
       __tree_ = .create()
     }
   }

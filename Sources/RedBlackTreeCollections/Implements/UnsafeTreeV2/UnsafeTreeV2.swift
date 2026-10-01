@@ -61,9 +61,9 @@ extension UnsafeTreeV2 {
   }
 
   #if COMPATIBLE_ATCODER_2025
-    /// 木に紐付いている生バッファ
-    ///
-    /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
+    // 木に紐付いている生バッファ
+    //
+    // - WARNING: 触ると生成されてしまうため不用意に触らないこと
     @usableFromInline
     var tied: _TiedRawBuffer {
       withMutableHeader { $0.tiedRawBuffer }
@@ -148,9 +148,9 @@ extension UnsafeTreeV2 {
     }
   }
 
-  /// つながりをたぐりよせる
-  ///
-  /// 日本人的にはお祭りなどによくある千本引きのイメージ
+  // つながりをたぐりよせる
+  //
+  // 日本人的にはお祭りなどによくある千本引きのイメージ
   @inlinable
   package func __retrieve_(_ tag: _SealedTag) -> _SealedPtr {
     tag.flatMap { ___retrieve(tag: $0) }
@@ -161,10 +161,10 @@ extension UnsafeTreeV2 {
 
   #if ALLOW_CROSS_TREE_INDEX
     // TODO: デタッチ判定が分裂してることについて確認すること
-    /// インデックスをポインタに解決する
-    ///
-    /// 木が同一の場合、インデックスが保持するポインタを返す。
-    /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
+    // インデックスをポインタに解決する
+    //
+    // 木が同一の場合、インデックスが保持するポインタを返す。
+    // 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
     @inlinable
     package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
       #if USE_LAZY_DETACH

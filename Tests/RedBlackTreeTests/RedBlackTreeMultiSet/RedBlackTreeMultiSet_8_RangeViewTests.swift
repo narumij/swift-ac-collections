@@ -91,5 +91,17 @@ import XCTest
 
       XCTAssertTrue(multiset.isEmpty)
     }
+
+    /// popFirst()で部分範囲を消費しつくした後も、unranged()が残りの範囲
+    /// (元の多重集合における後続範囲)を返すこと
+    func test_unranged_returnsRemainingBaseRangeAfterDrainingPartially() {
+      let multiset = RedBlackTreeMultiSet(0..<20)
+      let upper = multiset.index(multiset.startIndex, offsetBy: 10)
+      var view = multiset[multiset.startIndex..<upper]
+
+      while view.popFirst() != nil {}
+
+      XCTAssertEqual(Array(view.unranged()), Array(10..<20))
+    }
   }
 #endif

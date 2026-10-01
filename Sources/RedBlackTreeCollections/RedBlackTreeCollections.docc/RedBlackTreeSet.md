@@ -60,6 +60,7 @@
 - ``RedBlackTreeSet/containsSubrange(_:)-9eg9f``
 - ``RedBlackTreeSet/distance(from:to:)-5lep8``
 - ``RedBlackTreeSet/distance(from:to:)-9y0yy``
+- ``RedBlackTreeSet/subscript(_:)-91gxs``
 - ``RedBlackTreeSet/erase(_:)-zwzk``
 - ``RedBlackTreeSet/erase(_:)-1chhq``
 - ``RedBlackTreeSet/erase(_:)-3oq3k``
@@ -122,6 +123,11 @@
 ### Reserving Storage
 
 - ``RedBlackTreeSet/reserveCapacity(_:)``
+
+### Supporting Types
+
+- ``RedBlackTreeSet/Element``
+- ``RedBlackTreeSet/SubSequence``
 
 ### Related Guides
 

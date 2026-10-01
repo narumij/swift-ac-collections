@@ -45,6 +45,7 @@
 
 (ユーザーが確認したら各項目を整理します)
 
+- 2026-10-01 Codex (GPT-5): `CHANGELOG.md`の現行本文を最後に確定したmerge以降の差分を反映。既存Unreleasedとの重複を避け、Swift-DocCカタログと型/View/共通操作Topics、Release DocC検証・artifact・GitHub Pages公開CI、標準ライブラリ準拠のメンバー分類、macOS 15への最小バージョン変更を追記した。
 - 2026-10-01 12:56 JST Codex (GPT-5): 4型のDocC分類をAPI Matrix準拠からSwift標準`Set`/`Dictionary`準拠へ改訂。`Testing for Membership`、`Finding Elements/Keys`、`Adding and Updating Elements/Keys and Values`、`Removing Elements/Keys and Values`、`Combining Sets/MultiSets/MultiMaps`、`Merging Dictionaries`、`Transforming`、`Comparing`、`Reserving Storage`へ整理した。独自のIndexおよびRange/Bound分類は維持し、自動分類に残っていた`erase`、`formIndex`、`merge`/`merging`等の全オーバーロードも手動Topicsへ収容した。
 - 2026-10-01 12:43 JST Codex (GPT-5): `API-Matrix.md`と`API-Matrix-View.md`を基準にDocCの導線を整備。4型に共通する検索、挿入・更新、削除、Range/Boundの意味を説明する`CommonOperations.md`を追加し、モジュールページと4型ページからリンクした。KeyOnly Range View、KeyValue Range View、MappedValues Viewには、基本状態、Index検証、参照・更新、削除、走査・比較をMatrixの区分に沿って手動Topics化した。
 - 2026-10-01 12:36 JST Codex (GPT-5): `main`のCIによるGitHub Pages初回公開が成功し、常設URLから閲覧できることをユーザーが確認した。
@@ -99,6 +100,20 @@ APIの有無は実装とAPI Matrix、挙動は実装とテストを照合して�
 - CHANGELOG更新時は、対象とする開始コミットまたはリリースタグを明確にする
 - 内部整理だけの変更と、利用者から見えるAPI・挙動変更を区別する
 - 既存リリース欄を遡って書き換える場合は、ユーザーの明示的な意図を確認する
+
+### CHANGELOG更新手順
+
+1. ユーザーが指定した更新範囲を確認する。`前回更新以降`、特定のリリースタグ以降、特定コミット以降を混同しない
+2. `前回更新以降`の場合は、`CHANGELOG.md`の内容が実質的に最後に変わったコミットを起点にする。通常の`git log -- CHANGELOG.md`だけで決めず、mergeを含む場合は`git log --full-history -m -- CHANGELOG.md`と各コミットのblob IDも確認する
+3. 起点から`HEAD`までのコミット済み差分に加え、作業ツリーの未コミット差分も対象に含める
+4. コミットメッセージだけで要約せず、変更ファイル、公開宣言、テスト、利用者向け文書を照合する
+5. 現在の`Unreleased`を先に読み、既に意味として含まれている変更を重複掲載しない
+6. Keep a Changelogの`Added`、`Changed`、`Deprecated`、`Removed`、`Fixed`、`Security`へ利用者視点で分類する。内部リファクタリングは、公開挙動、対応環境、信頼性、保守上の重要事項へ影響する場合だけ掲載する
+7. API追加・削除・改名、対応プラットフォーム変更、互換性変更、公開ドキュメントの新設、CIによる配布方法の変更は掲載候補として必ず確認する
+8. 過去のリリース欄は原則変更せず、未リリースの変更は`Unreleased`へ追記する。過去欄を修正する必要がある場合はユーザーへ確認する
+9. 更新後は対象範囲の差分とCHANGELOGの各項目を再照合し、`git diff --check`を実行する
+
+更新結果を作業連絡へ記録するときは、採用した起点と、重複を避けるために既存記載へ包含した変更があることも残す。
 
 ## Swift-DocC運用
 

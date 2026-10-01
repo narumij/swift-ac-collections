@@ -28,6 +28,7 @@
 
 - ``RedBlackTreeMultiMap/keys``
 - ``RedBlackTreeMultiMap/values``
+- ``RedBlackTreeMultiMap/subscript(_:)-4080a``
 
 ### Finding Keys
 
@@ -64,6 +65,7 @@
 - ``RedBlackTreeMultiMap/containsSubrange(_:)-8a6je``
 - ``RedBlackTreeMultiMap/distance(from:to:)-20v5u``
 - ``RedBlackTreeMultiMap/distance(from:to:)-6mvs2``
+- ``RedBlackTreeMultiMap/subscript(_:)-4lurb``
 - ``RedBlackTreeMultiMap/erase(_:)-42awa``
 - ``RedBlackTreeMultiMap/erase(_:)-1at5``
 - ``RedBlackTreeMultiMap/erase(_:)-4mzti``
@@ -119,6 +121,13 @@
 ### Reserving Storage
 
 - ``RedBlackTreeMultiMap/reserveCapacity(_:)``
+
+### Supporting Types
+
+- ``RedBlackTreeMultiMap/Element``
+- ``RedBlackTreeMultiMap/Keys-swift.typealias``
+- ``RedBlackTreeMultiMap/Values-swift.typealias``
+- ``RedBlackTreeMultiMap/SubSequence``
 
 ### Related Guides
 

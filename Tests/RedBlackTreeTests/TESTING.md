@@ -73,6 +73,8 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-01 13:04 JST Codex (GPT-5): `Documentation/MAINTENANCE.md`へCHANGELOG更新手順を追加。ユーザー指定範囲の確認、mergeを含む実質的な最終更新コミットとblob IDの確認、コミット済み＋未コミット差分の収集、既存Unreleasedとの重複排除、Keep a Changelog分類、掲載候補、過去リリース欄の扱い、最終照合と`git diff --check`までを明文化した。
+- 2026-10-01 Codex (GPT-5): `CHANGELOG.md`へ前回確定本文以降の差分を反映。既存Unreleasedと重複するテスト・実装修正は再掲せず、DocCカタログと手動Topics、Release DocC CI/artifact/GitHub Pages公開、標準ライブラリ準拠の分類、macOS 15最小バージョンを追記した。詳細は`Documentation/MAINTENANCE.md`へ記録。
 - 2026-10-01 12:56 JST Codex (GPT-5): 4つの具象コレクション型のDocCメンバーを手動分類。初案のAPI Matrix準拠から、ユーザー指示によりSwift標準`Set`/`Dictionary`の利用目的別Topicsへ改訂した。API Matrixは掲載漏れの照合にのみ使用し、独自のIndex・Range/Bound分類を追加する方針。自動`Instance Methods`に残っていた`erase`、`formIndex`、`merge`/`merging`、Multi系の`insert(contentsOf:)`等も4型へ横展開して手動Topicsへ収容した。標準`Sequence`由来の汎用メソッドはDefault Implementationsに残した。詳細は`Documentation/MAINTENANCE.md`へ記録。
 - 2026-10-01 12:43 JST Codex (GPT-5): API Matrix照合を踏まえたDocCナビゲーション整備として、4型共通の検索・挿入更新・削除・Range/Boundを説明する`CommonOperations.md`と、KeyOnly Range View・KeyValue Range View・MappedValues Viewの手動Topicsを追加。モジュールページと4型ページから共通ガイドへリンクし、View Topicsは`API-Matrix-View.md`の基本状態・Index・更新・削除・走査比較の区分に合わせた。公開済みRelease版DocCの具象ページおよびDefault Implementations JSONからシンボルリンクを確認。詳細は`Documentation/MAINTENANCE.md`へ記録した。
 - 2026-10-01 Codex (GPT-5): DocC Topics整備に先立ち、公開済みRelease版DocCの4型ページを`API-Matrix.md`および`API-Matrix-View.md`と照合。通常構成で公開されているDictionaryの`insert(key:value:hint:)`がMatrixでは「検討」、`update(_:hint:)`がDictionary非対応となっていた同期漏れを発見し、実装の条件コンパイル範囲も確認した上で両方をDictionaryの✅へ修正。共通APIの多くがDocC上では各型の`Default Implementations`配下に分類されるため、具象型へ全件列挙するか共通protocol/View側のTopicsを整備するかは`Documentation/MAINTENANCE.md`へ継続判断として記録した。

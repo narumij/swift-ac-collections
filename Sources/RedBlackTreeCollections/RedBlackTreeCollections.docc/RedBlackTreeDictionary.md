@@ -29,6 +29,8 @@
 
 - ``RedBlackTreeDictionary/keys``
 - ``RedBlackTreeDictionary/values``
+- ``RedBlackTreeDictionary/subscript(_:)-15alb``
+- ``RedBlackTreeDictionary/subscript(_:default:)``
 
 ### Finding Keys
 
@@ -66,6 +68,7 @@
 - ``RedBlackTreeDictionary/containsSubrange(_:)-ecvx``
 - ``RedBlackTreeDictionary/distance(from:to:)-1agrj``
 - ``RedBlackTreeDictionary/distance(from:to:)-1nyff``
+- ``RedBlackTreeDictionary/subscript(_:)-7ie0l``
 - ``RedBlackTreeDictionary/erase(_:)-88doh``
 - ``RedBlackTreeDictionary/erase(_:)-12h1o``
 - ``RedBlackTreeDictionary/erase(_:)-2quii``
@@ -119,6 +122,13 @@
 ### Reserving Storage
 
 - ``RedBlackTreeDictionary/reserveCapacity(_:)``
+
+### Supporting Types
+
+- ``RedBlackTreeDictionary/Element``
+- ``RedBlackTreeDictionary/Keys-swift.typealias``
+- ``RedBlackTreeDictionary/Values-swift.typealias``
+- ``RedBlackTreeDictionary/SubSequence``
 
 ### Related Guides
 

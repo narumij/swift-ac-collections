@@ -61,6 +61,7 @@
 - ``RedBlackTreeMultiSet/containsSubrange(_:)-4sw2l``
 - ``RedBlackTreeMultiSet/distance(from:to:)-74m7h``
 - ``RedBlackTreeMultiSet/distance(from:to:)-7t789``
+- ``RedBlackTreeMultiSet/subscript(_:)-2vp1w``
 - ``RedBlackTreeMultiSet/erase(_:)-8u5n5``
 - ``RedBlackTreeMultiSet/erase(_:)-2t2ok``
 - ``RedBlackTreeMultiSet/erase(_:)-5st1y``
@@ -123,6 +124,11 @@
 ### Reserving Storage
 
 - ``RedBlackTreeMultiSet/reserveCapacity(_:)``
+
+### Supporting Types
+
+- ``RedBlackTreeMultiSet/Element``
+- ``RedBlackTreeMultiSet/SubSequence``
 
 ### Related Guides
 

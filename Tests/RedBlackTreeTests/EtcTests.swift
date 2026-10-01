@@ -17,6 +17,19 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   override func tearDownWithError() throws {
     try super.tearDownWithError()
   }
+  
+  func testAPICheck() throws {
+    
+    do {
+      let result = RedBlackTreeSet([1,2]).union(0..<10)
+      XCTAssertTrue(result.elementsEqual(0..<10), "\(result)")
+    }
+    
+    do {
+      let result = RedBlackTreeSet([1,2]).union(0...10)
+      XCTAssertTrue(result.elementsEqual(0...10), "\(result)")
+    }
+  }
 }
 
 #if COMPATIBLE_ATCODER_2025 && DEBUG

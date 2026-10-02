@@ -40,6 +40,8 @@
 
 ## 直近の引き継ぎ
 
+- MappedValuesのsubscriptと`swapAt`は、View範囲外Indexを最悪O(log n)で検出する。
+  正常系16件と範囲外IndexのDeath Test 3件が成功。
 - MultiMap/MultiSetのhint付きinsertが同値群の順序へ影響することを、テストと公開DocCの
   両方へ反映済み。
 - BareArrayの公開テストをReleaseでも実行する構成にし、境界Death Testと多次元配列の

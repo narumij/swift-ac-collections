@@ -55,7 +55,6 @@
 ### 保留中の判断・懸念
 
 - 2026-10-02 16:36 JST: Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としているが、容量条件と推奨APIの対応根拠がTest as Specificationから確定できない。設計意図は、逐次挿入を素直に回すO(*n* log(*m + n*))経路と、TimSort等で入力をソート済みにしてからO(*n + m*)でマージする経路の選択。ただし総コストは入力の既ソート性、ソート費用、一時メモリ、CoW、要素数に依存するため、単純な「十分な空き容量」だけでは推奨条件を表現しきれない可能性がある。意味・重複規則・計算量の文書化は行ったが、性能推奨の書き換えは代表的な入力分布でのベンチマークと実装経路の再確認後に行う。
-- 2026-10-02 16:18 JST: `RedBlackTreeKeyValueRangeView.values`が返す`RedBlackTreeMappedValuesView`について、要素subscriptと`swapAt`の公開契約はView内の有効Indexを要求するが、現行実装は同じ木のView外Indexを明示的に範囲拒否していない。ソースにも範囲制限のTODOがある。公開仕様の変更ではなく事前条件検査の実装・Death Test課題として、別フェーズで対応要否を判断する。
 - API Matrix上の多くの共通APIが、各型のDocCでは`Default Implementations`配下に入る。今回追加した共通操作ガイドから各操作の個別シンボルへ、さらに細かいリンクを追加する必要があるかは公開結果を見て判断する
 
 ### 完了済みの要望
@@ -189,6 +188,7 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
+- 2026-10-03 Codex (GPT-5): `RedBlackTreeMappedValuesView`のsubscriptと`swapAt`へ、既存`isElement(at:)`を使ったView範囲検査を追加。同じ木でもView外のIndexは事前条件違反として停止する。検査にキー順序比較を使うため、対象extensionへ既存の`_BaseNode_KeyInterface` / `Comparable`制約を明示し、計算量をO(1)から最悪O(log n)へ更新。MappedValues正常系16件と追加Death Test 3件が成功した。
 - 2026-10-03 Codex (GPT-5): ユーザー編集用の4型先頭コメントドック原稿を`Sources/RedBlackTreeCollections/Documentation/Head`へ集約。既存のSet日本語原稿は保持し、残る日英7ファイルを用意した。Set / MultiSet / MultiMapは利用者向け`Documentation`と現行Swiftソース先頭コメントを併置し、単独の利用者向け文書が存在しないDictionaryは現行ソースコメントを編集素材として収録した。ソース本体への反映はユーザー編集後に行う。
 - 2026-10-03 00:44 JST Codex (GPT-5): 公開コメント・DocC監査のCodex側最終照合を完了。CustomReflectableはClaudeの独立レビューと追加済みTest as Specificationを確認し、ユーザー了承によりMultiSetの`.set` / MultiMapの`.dictionary`を維持、重複する各出現をラベルなしの子として提供し、子の順序は公開保証しない契約で確定した。API Matrixとの照合で4型の`description` / `debugDescription` / `customMirror`が手動Topicsから漏れていることを発見し、各型ページへ`Inspecting`節として追加。Release DocCを`--warnings-as-errors`で生成し、全12シンボルリンクを含め警告・エラーなく成功した。Codex側の公開API監査は一区切りだが、最上位停止条件に従い、ドキュメント全体の最終完了はClaudeによる公開API・Test as Specification・実装・API Matrix・DocC生成結果の独立した全体確認と、その結果へのユーザー納得まで保留する。
 - 2026-10-02 21:18 JST Codex (GPT-5): 公開APIコメントの最終棚卸しを継続。Set / MultiSetの集合演算へ重複数の規則、4型のBound範囲subscriptへView・空範囲・multi型の重複保持、MappedValues Viewの`_isIdentical(to:)`へ同一storageかつ同一境界という契約を補った。公開プロパティには新たなコメント漏れがなく、現行構成の`SubSequence`型aliasへ範囲Viewの順序と重複保持を追記した。SetAlgebra / Protocol関連96テスト、Range View関連34テストが成功し、Release DocCの`--warnings-as-errors`生成も成功。CustomReflectableは標準Set / Dictionaryとの構造比較を終えたが、MultiSet / MultiMapの表示形式と順序契約はClaudeの独立レビューおよびユーザー確認待ち。残る公開宣言候補の大半はDocC非表示の内部hook、互換モード、deprecated経路であり、利用者向けに昇格させずAPI監査対象として扱う。

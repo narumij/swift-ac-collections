@@ -140,22 +140,29 @@
     }
   #endif
 
-  extension RedBlackTreeMappedValuesView {
+  extension RedBlackTreeMappedValuesView
+  where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
 
     /// Accesses the element at the specified position.
     ///
     /// - Parameter position: A valid element index within this view.
     /// - Precondition: `position` identifies an element inside the view.
-    /// A Boolean value indicating whether the view contains no mapped values.
     ///
-    /// - Complexity: O(1)
+    /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
+    ///   elements in the base collection.
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always)
       get {
-        __tree_._unsafeAddress(position).pointee.tuple.value
+        guard isElement(at: position) else {
+          fatalError(.invalidIndex)
+        }
+        return __tree_._unsafeAddress(position).pointee.tuple.value
       }
       set {
+        guard isElement(at: position) else {
+          fatalError(.invalidIndex)
+        }
         _ensureUnique()
         // TODO: unsafeMutableAddressにしたい
         __tree_._unsafeMutableAddress(position).pointee.tuple.value = newValue
@@ -163,7 +170,8 @@
     }
   }
 
-  extension RedBlackTreeMappedValuesView {
+  extension RedBlackTreeMappedValuesView
+  where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
 
     /// Exchanges the mapped values at two positions without changing their keys.
     ///
@@ -171,10 +179,14 @@
     ///   - i: A valid element index within this view.
     ///   - j: Another valid element index within this view.
     /// - Precondition: Both indices identify elements inside the view.
+    /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
+    ///   elements in the base collection.
     public mutating func swapAt(_ i: Index, _ j: Index) {
-      _ensureUnique()
+      guard isElement(at: i), isElement(at: j) else {
+        fatalError(.invalidIndex)
+      }
 
-      // TODO: そのうち範囲チェックをいれる
+      _ensureUnique()
 
       let __i = __tree_.__purified_(i)
       let __j = __tree_.__purified_(j)

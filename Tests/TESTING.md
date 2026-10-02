@@ -80,6 +80,9 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-03 Claude (Sonnet 5): 2026-10-02 16:24 JST保留事項・2026-10-01 07:11 JST登録課題2点目(MultiMapのhint付きinsertが同値キー群内の順序に与える影響が未確定)に対応。ユーザー指示「C++にならう」を受けて実機調査した結果、`__emplace_hint_multi`/`__find_leaf`は元々LLVM libc++の`std::multimap`/`std::multiset`のhint挿入アルゴリズムを直接移植したもので、**hintが有効(隣接)な場合はhintが示す位置そのものへ挿入する**ことを確認した(`EtcTests.swift`での実験: `[(1,a),(1,b),(1,c)]`に"b"を指すhintで(1,"X")を挿入すると`[(1,a),(1,X),(1,b),(1,c)]`になり、末尾ではなく途中に入る)。これはC++の`std::multimap::insert(hint, value)`と同じ挙動で、通常の`insert(_:)`(常に同値キー群の末尾へ追加)とは異なる。MultiMap・MultiSetそれぞれの`_5_InsertionTests.swift`へ`test_insertWithHint_placesNewPairAtHintPositionWithinEquivalentKeyGroup`/`test_insertWithHint_placesNewMemberAtHintPositionWithinEquivalentGroup`を追加し、この挙動をTest as Specとして固定した。全体テスト0失敗。
+  - **Codexへの引き継ぎ**: `RedBlackTreeMultiMap.insert(_:hint:)`と`RedBlackTreeMultiSet.insert(_:hint:)`の現行`///`コメントには「An incorrect hint doesn't change the result; it can only affect performance.」とあるが、これは同値キー/要素群内の順序に関しては**事実と異なる**(上記テストの通り、hintは順序に影響する)。コメントの表現修正はDocC領域のためClaudeからは行わず、今回追加したテストを根拠にCodex側で修正願います。
+
 - 2026-10-03 Claude (Sonnet 5): 優先事項(Claude優先)「赤黒木が手空きのときはOptionalArray/BareArray/PermutationModule/AcCollectionsのテストレビューを進める」に対応し、`OptionalArrayModuleTests`を「Test as Specとして十分か(=Codexがこれを基にコメントドックを書けるか)」の観点でレビューした。発見した問題と対応:
   - **テストファイル全体が`#if DEBUG`+`@testable import`で囲われており、Releaseビルドでは実質0件テストだった**。使用APIは全て`public`で`@testable`が元々不要だったため、`import OptionalArrayModule`に変更して`#if DEBUG`も撤去。これにより副次的に**`OptionalArray1DView`/`2DView`/`3DView`の`indices`プロパティに`public`が付いていない**実バグが露出(コンパイルエラーとして発覚)。`BareArrayModule`側は同じ`indices`が全部`public`済みだったため、こちらだけの漏れと判明。両方修正し、`swift build`/`swift test`をDebug/Release両方で確認した。
   - `Package.swift`の`OptionalArrayModuleTests`に`swiftSettings: _settings`を追加し`DEATH_TEST`を配線(`BareArrayModuleTests`と同じ対応)。`OptionalArrayDeathTests.swift`を新設し、`OptionalArray1D`本体と`2D`/`3D`/`4D`経由の各Viewで、負インデックス・上限超過の読み書きが正しくトラップすることを検証(7件、Debug/Release両方で成功)。

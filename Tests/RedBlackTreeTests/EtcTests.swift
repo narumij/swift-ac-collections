@@ -81,6 +81,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       XCTAssertTrue(emptyMultiMap.__tree_.isReadOnly)
     }
   #endif
+
 }
 
 #if COMPATIBLE_ATCODER_2025 && DEBUG

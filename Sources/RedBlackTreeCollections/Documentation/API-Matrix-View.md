@@ -31,9 +31,6 @@
 | `subscript(index:)` setter | — | — | ✅ | Index位置のmapped valueを更新する |
 | `keys` | — | ✅ | — | KeyValue Viewのキーを遅延走査する |
 | `values` | — | ✅ | — | mapped valueを扱うMappedValues Viewを返す |
-| `unranged()` | ✅ | ✅ | — | Viewが保持するtreeから基底コンテナ値を取得する(削除検討中) |
-
-`unranged()` は実験的APIとする。
 
 ## Index
 

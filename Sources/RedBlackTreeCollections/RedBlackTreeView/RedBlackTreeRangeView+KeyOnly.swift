@@ -157,32 +157,6 @@
 
   // MARK: -
 
-  @_documentation(visibility: internal)
-  public protocol ScalarBaseInit: ___Root
-  where Self.Base: ___TreeBase & ScalarValueTrait {
-    static func _create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self
-  }
-
-  extension RedBlackTreeSet: ScalarBaseInit {
-    public static func _create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self {
-      .init(__tree_: view.__tree_)
-    }
-  }
-
-  extension RedBlackTreeMultiSet: ScalarBaseInit {
-    public static func _create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self {
-      .init(__tree_: view.__tree_)
-    }
-  }
-
-  extension RedBlackTreeKeyOnlyRangeView where Container: ScalarBaseInit {
-    @available(*, deprecated)
-    @_documentation(visibility: internal)
-    public func unranged() -> Container { ._create(self) }
-  }
-
-  // MARK: -
-
   extension RedBlackTreeKeyOnlyRangeView {
 
     /// A Boolean value indicating whether the view contains no elements.

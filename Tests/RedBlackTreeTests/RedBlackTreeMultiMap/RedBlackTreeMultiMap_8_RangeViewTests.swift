@@ -81,16 +81,6 @@ import XCTest
       }
     #endif
 
-    func test_unranged_returnsTheCollectionAfterMutatingTheView() {
-      let map: RedBlackTreeMultiMap = [(1, "a"), (1, "b"), (2, "c")]
-      var view = map[...]
-
-      while view.popFirst() != nil {}
-      let result = view.unranged()
-
-      XCTAssertTrue(result.isEmpty)
-    }
-
     func test_eraseRangeAndPredicate_modifyOnlySelectedEntries() {
       var map: RedBlackTreeMultiMap = [(1, "a"), (1, "b"), (2, "c"), (3, "d")]
       let range = map.equalRange(1)

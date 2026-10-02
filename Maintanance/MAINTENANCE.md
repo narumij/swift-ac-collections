@@ -64,8 +64,6 @@
   
 - 内部バッファが空のシングルトンであることを確認するフローと、その条件の整理とClaudeへの発注をしてほしい
 
-- unranged()とその関連プロトコルの削除
-
 ```
 # Session Startup
 
@@ -103,6 +101,10 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 ### 完了済みの要望
 
 (ユーザーが確認したら各項目を整理します)
+
+- 2026-10-03 JST ユーザー要望: `unranged()`とその関連プロトコル(`ScalarBaseInit`/
+  `KeyValueBaseInit`)の削除。`CLAUDE_TASK.md`のTask 3として実施し、公開API・
+  専用テスト・ドキュメント参照を削除済み。
 
 
 ## 文書の役割と正本

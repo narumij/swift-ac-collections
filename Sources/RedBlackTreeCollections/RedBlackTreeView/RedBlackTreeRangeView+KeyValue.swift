@@ -226,32 +226,6 @@
 
   // MARK: -
 
-  @_documentation(visibility: internal)
-  public protocol KeyValueBaseInit: ___Root
-  where Base: ___TreeBase & PairValueTrait {
-    static func _create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self
-  }
-
-  extension RedBlackTreeDictionary: KeyValueBaseInit {
-    public static func _create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self {
-      .init(__tree_: view.__tree_)
-    }
-  }
-
-  extension RedBlackTreeMultiMap: KeyValueBaseInit {
-    public static func _create(_ view: RedBlackTreeKeyValueRangeView<Self>) -> Self {
-      .init(__tree_: view.__tree_)
-    }
-  }
-
-  extension RedBlackTreeKeyValueRangeView where Container: KeyValueBaseInit {
-    @available(*, deprecated)
-    @_documentation(visibility: internal)
-    public func unranged() -> Container { ._create(self) }
-  }
-
-  // MARK: -
-
   extension RedBlackTreeKeyValueRangeView {
 
     /// A Boolean value indicating whether the view contains no key-value pairs.

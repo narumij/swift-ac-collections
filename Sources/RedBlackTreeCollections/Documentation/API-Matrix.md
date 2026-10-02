@@ -218,7 +218,6 @@ SetとMultiSetは `RedBlackTreeKeyOnlyRangeView`、MultiMapとDictionaryは
 | `removeFirst()` / `removeLast()` | ✅ | ✅ | ✅ | ✅ | View端の要素を削除する |
 | `erase()` | ✅ | ✅ | ✅ | ✅ | View全体を削除する |
 | `erase(where:)` | ✅ | ✅ | ✅ | ✅ | View内で条件を満たす要素を削除する |
-| `unranged()` | ✅ | ✅ | ✅ | ✅ | Viewの基底コンテナ値を取得する(廃止検討中) |
 | `elementsEqual(_:)` | ✅ | ✅ | ✅ | ✅ | Viewと別Sequenceの要素を比較する |
 | `lexicographicallyPrecedes(_:)` | ✅ | ✅ | ✅ | ✅ | Viewを辞書式比較する |
 | `==` / `<` | ✅ | ✅ | ✅ | ✅ | View同士を比較する |

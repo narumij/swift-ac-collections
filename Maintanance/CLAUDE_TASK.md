@@ -4,7 +4,7 @@ Status: Completed
 
 ## Active Correction Assignment
 
-The previous result below is not accepted as complete. Complete these two
+The previous result below is not accepted as complete. Complete these three
 tasks in order. Communicate with the user in Japanese. Do not edit
 `Sources/RedBlackTreeCollections/Documentation/Head/Outlines/RedBlackTreeSet.outline.md`;
 the user has explicitly paused that document.
@@ -136,6 +136,11 @@ filling gaps with inference.
 After Tasks 1 and 2 are complete, implement the user's existing removal request
 for the deprecated Range View `unranged()` API.
 
+User authorization is explicit and final. Do not ask whether to defer this
+task, do not merely correct the status, and do not leave it under pending
+decisions. Start Task 3 now. The assignment is not complete until Task 3 and
+its validation are complete.
+
 Required work:
 
 1. Remove `unranged()` from both `RedBlackTreeKeyOnlyRangeView` and
@@ -170,6 +175,59 @@ add a new corrected result summary above the previous result summary. Do not
 delete the previous record; label it as superseded where necessary.
 
 ## Result Summary (this pass)
+
+Completed Task 3 (unranged() removal). Tasks 1 and 2 were already complete
+from the previous pass (see "Partial Result Summary" below, now superseded by
+this heading rename).
+
+**Task 3 (`unranged()` and single-purpose protocol removal):**
+
+- Removed `public func unranged()` from both
+  `RedBlackTreeKeyOnlyRangeView` (`RedBlackTreeRangeView+KeyOnly.swift`) and
+  `RedBlackTreeKeyValueRangeView` (`RedBlackTreeRangeView+KeyValue.swift`).
+- Repository-wide search confirmed `ScalarBaseInit`/`KeyValueBaseInit`, their
+  `_create(_:)` requirements, and the four container conformances
+  (`RedBlackTreeSet`, `RedBlackTreeMultiSet`, `RedBlackTreeDictionary`,
+  `RedBlackTreeMultiMap`) existed only to support `unranged()`; no other call
+  site referenced `_create(_:)` or these protocols. Removed both protocols,
+  their conformances, and the `_create(_:)` requirement entirely.
+- Removed the four public-type tests dedicated only to `unranged()`:
+  `testUnrangedReturnsRemainingBaseRangeAfterDrainingWithPopFirst` (Set),
+  `test_unranged_returnsRemainingBaseRangeAfterDrainingPartially` (MultiSet and
+  Dictionary), `test_unranged_returnsTheCollectionAfterMutatingTheView`
+  (MultiMap). The surrounding Range View test suites were preserved and still
+  pass (56/56 in the four affected suites).
+- Updated `API-Matrix.md` and `API-Matrix-View.md` (removed the `unranged()`
+  row and its now-dangling "実験的API" note), `Tests/TESTING.md` (removed the
+  `unranged()` pending-decision entry), and `Maintanance/MAINTENANCE.md`
+  (moved the user's removal request from "User requests for the next session"
+  to "完了済みの要望"). `Tests/TESTING_REFERENCE.md`'s dated historical log
+  entry was left as-is per the historical-note allowance.
+- Repository-wide grep for `unranged`, `ScalarBaseInit`, `KeyValueBaseInit`
+  after editing found no remaining source, test, or current-doc reference;
+  only this task file (describing the removal) and the two historical notes
+  above remain.
+
+**Task 3 validation:**
+
+- `swift test --filter 'RedBlackTreeSetRangeViewTests|RedBlackTreeMultiSetRangeViewTests|RedBlackTreeDictionaryRangeViewTests|RedBlackTreeMultiMapRangeViewTests'`
+  — 56/56 passed.
+- `swift test` from the repository root (normal mode) — full suite passed, no
+  failures (`grep -c "Test run with" ` all `0 failures`/`passed`).
+- Temporarily uncommented `.define("COMPATIBLE_ATCODER_2025")`, ran `swift
+  build` and `swift test` — both succeeded (the removed declarations live
+  entirely inside `#if !COMPATIBLE_ATCODER_2025` in both source files, so they
+  never compiled in compat mode; this run confirms no regression elsewhere),
+  then restored `Package.swift` (`git diff Package.swift` empty).
+- `git diff --check` — clean.
+
+Note: during this pass, this file's `Status` and Task 3 instructions were
+externally edited (by Codex) to explicitly authorize immediate implementation
+while validation of Tasks 1/2 was still running in this session. That edit's
+content matched what the user had just separately confirmed when asked
+directly, so Task 3 proceeded as authorized by the user.
+
+## Partial Result Summary (Tasks 1 and 2 only; Task 3 remains active)
 
 Completed both Task 1 and Task 2 as specified above.
 

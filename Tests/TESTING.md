@@ -49,6 +49,11 @@
 - Index世代、KeyOnly/KeyValue Range ViewのCoW後Index寿命、および4型とRange Viewの
   `elementsEqual(_:)` / `lexicographicallyPrecedes(_:)` は横展開済み。
 - `__tree`: 専用ターゲット化、独立レビュー、通常到達可能行のcoverage確認済み。
+- `unranged()`およびその専用プロトコル(`ScalarBaseInit`/`KeyValueBaseInit`、
+  `_create(_:)`、4型への適合)を削除済み。4型の専用テスト4件も削除し、
+  `API-Matrix.md`/`API-Matrix-View.md`/`MAINTENANCE.md`のユーザー要望欄も
+  更新済み。通常/`COMPATIBLE_ATCODER_2025`両方で`swift test`成功
+  (削除対象は元々`#if !COMPATIBLE_ATCODER_2025`配下のみ)。
 
 ## 判断待ち
 
@@ -68,7 +73,6 @@
 - 内部テスト層の区分、および生木テストと変更コストの均衡。
 - UnsafeNode/RawBufferクロスチェックと既存単層テストの統合方法。前者には独立した
   計算経路間の一致確認という固有の役割がある。
-- `unranged()`の廃止可否。廃止時は4型の関連テストも対象となる。
 - RedBlackTreeTestSupportとDebugAdditionalsの役割整理。
 - 未結線コードを削除するかテストするか: `_Reverse4`関連、`swap_key`/
   `swap_mapped_value`、`outOfRange`/`keyMismatch`、`payloadLayout`/`__root_ptr()`、
@@ -76,22 +80,20 @@
 
 ## 直近の引き継ぎ
 
-- `CLAUDE_TASK.md`のActive修正依頼(Task 1: PermutationModule実装削除、Task 2:
-  REFACTORING_FROM_ATCODER_2025.md訂正)を完了。`CLAUDE_TASK.md`はCompletedへ
-  更新済み、結果サマリーを追記済み。
-- PermutationModule: Phase 1A(swift-algorithms等価性PoC、7ケース完全一致)で
-  削除ゲートを通過させてから、`unsafePermutations()`/`Permutations.All`/
-  `IteratorA`/`SubSequenceA`/`unsafeNextPermutations()`/`Nexts`の公開
-  `init(safe:)`/`init(unsafe:)`を削除。公開APIは`nextPermutations()`のみ。
-  関連3文書を実装済みAPIへ書き直し。
-- REFACTORING_FROM_ATCODER_2025.md: 既存の訂正内容(8項目)を`git`で全件再検証し、
-  全コミットハッシュ・日付・diff行数・`merge-base`が正確であることを確認。
-  文書自体への追加修正は不要だった。
-- 検証: `swift test`(通常モード、全868+27+103+…件、0 failures)、
-  `COMPATIBLE_ATCODER_2025`有効化時の`AcCollectionsTests`/`PermutationTests`、
-  `git diff --check`すべて成功・クリーン。`Package.swift`は元の状態へ復元済み。
+- `CLAUDE_TASK.md`のTask 3(`unranged()`と`ScalarBaseInit`/`KeyValueBaseInit`
+  削除)を完了。`CLAUDE_TASK.md`はCompletedへ更新済み、結果サマリーを追記済み。
+- 削除内容: 2ソースファイルから`unranged()`・両プロトコル・`_create(_:)`・
+  4型の適合を削除。4型の専用テスト4件を削除し、周辺のRange Viewテストは保持。
+  `API-Matrix.md`/`API-Matrix-View.md`/`MAINTENANCE.md`/本ファイルの参照を更新。
+- 検証: 対象4スイート(`swift test --filter`)56/56件、通常モード`swift test`
+  全件、`COMPATIBLE_ATCODER_2025`有効化時の`swift build`/`swift test`
+  (削除対象は元々このモードで未コンパイル)、`git diff --check`すべて成功・
+  クリーン。`Package.swift`は元の状態へ復元済み。
+- 作業中、`CLAUDE_TASK.md`のStatus/Task 3指示がCodexにより外部から更新され
+  (「ユーザー承認済み、即実施」の明記)、本セッション内でユーザーへ直接確認した
+  内容と一致したためそのまま実施した。詳細は`CLAUDE_TASK.md`の該当ノート参照。
 
-最終更新: 2026-10-03 09:50 JST / Claude Sonnet 5
+最終更新: 2026-10-03 JST / Claude Sonnet 5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

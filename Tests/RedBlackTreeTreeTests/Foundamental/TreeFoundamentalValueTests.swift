@@ -47,6 +47,21 @@ final class TreeFoundamentalValueTests: TreeTestCase {
       value.tuple.key
     }
   }
+
+  private struct TreeNodeKeyFixture: _UnsafeNodePtrType, _TreeNode_KeyProtocol {
+    typealias _PayloadValue = RedBlackTreePair<String, Int>
+    typealias _Key = String
+
+    var nullptr: _NodePtr { .nullptr }
+
+    func __value_(_ p: _NodePtr) -> _PayloadValue {
+      p.__value_(as: _PayloadValue.self).pointee
+    }
+
+    func __key(_ value: _PayloadValue) -> _Key {
+      value.tuple.key
+    }
+  }
 #endif
 
   /// 特殊なtracking tagが通常ノード用の非負値と衝突しないこと。
@@ -79,7 +94,8 @@ final class TreeFoundamentalValueTests: TreeTestCase {
   }
 
 #if DEBUG
-  /// `_BaseNode_KeyProtocol`の資料用既定実装が、Node→payload→keyの順で値を取り出すこと。
+  /// staticな`_BaseNode_KeyProtocol`とinstanceの`_TreeNode_KeyProtocol`の既定実装が、
+  /// ともにNode→payload→keyの順で値を取り出すこと。
   func testNodeKeyBase_defaultGetValueReadsAdjacentPayload() {
     let fixture = UnsafeNodeReferenceFixture<RedBlackTreePair<String, Int>>(capacity: 1)
     fixture.firstNode.initialize(to: .create(tag: 0, nullptr: .nullptr))
@@ -90,6 +106,7 @@ final class TreeFoundamentalValueTests: TreeTestCase {
     }
 
     XCTAssertEqual(NodeKeyBase.__get_value(fixture.firstNode), "key")
+    XCTAssertEqual(TreeNodeKeyFixture().__get_value(fixture.firstNode), "key")
   }
 #endif
 

@@ -302,9 +302,12 @@ jobs:
         env:
           ASAN_OPTIONS: detect_leaks=0:symbolize=1:abort_on_error=1:log_path=asan-logs/full
           SWIFT_BACKTRACE: enable=yes
-        run: >-
-          swift test -c debug --sanitize address --build-system native
-          --xunit-output asan-logs/full.xml
+        shell: bash
+        run: |
+          set -o pipefail
+          swift test -c debug --sanitize address --build-system native \
+            --xunit-output asan-logs/full.xml 2>&1 \
+            | tee asan-logs/full-console.log
 
       - name: Upload Address Sanitizer diagnostics
         if: always()

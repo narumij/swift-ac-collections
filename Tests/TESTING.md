@@ -80,6 +80,11 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-03 Claude (Sonnet 5): 優先事項(Claude優先)「赤黒木が手空きのときはOptionalArray/BareArray/PermutationModule/AcCollectionsのテストレビューを進める」に対応し、`OptionalArrayModuleTests`を「Test as Specとして十分か(=Codexがこれを基にコメントドックを書けるか)」の観点でレビューした。発見した問題と対応:
+  - **テストファイル全体が`#if DEBUG`+`@testable import`で囲われており、Releaseビルドでは実質0件テストだった**。使用APIは全て`public`で`@testable`が元々不要だったため、`import OptionalArrayModule`に変更して`#if DEBUG`も撤去。これにより副次的に**`OptionalArray1DView`/`2DView`/`3DView`の`indices`プロパティに`public`が付いていない**実バグが露出(コンパイルエラーとして発覚)。`BareArrayModule`側は同じ`indices`が全部`public`済みだったため、こちらだけの漏れと判明。両方修正し、`swift build`/`swift test`をDebug/Release両方で確認した。
+  - `Package.swift`の`OptionalArrayModuleTests`に`swiftSettings: _settings`を追加し`DEATH_TEST`を配線(`BareArrayModuleTests`と同じ対応)。`OptionalArrayDeathTests.swift`を新設し、`OptionalArray1D`本体と`2D`/`3D`/`4D`経由の各Viewで、負インデックス・上限超過の読み書きが正しくトラップすることを検証(7件、Debug/Release両方で成功)。
+  - 参照型要素のライフタイムは従来`OptionalArray1D`の直接subscriptしか検証されていなかった。`OptionalArray1DView`(別実装の`.move()`パターン)経由の上書き・nil代入・親配列`removeAll()`、および`OptionalArray2D`/`3D`自身の`removeAll()`・スコープ外deinitを`DeinitializeCounter`類似パターンで追加検証(新規バグなし)。
+  - 全体テスト0失敗(`swift test`/`swift test -c release`)。`PermutationModule`はユーザー方針で対象外(構造判断が先のため)、`AcCollections`facadeのレビューは未着手。
 - 2026-10-03 00:40 JST Codex (GPT-5): 4型の`customMirror`についてCodex・Claudeの独立レビューとユーザー確認が完了。追加済みTest as Specificationにより、display style、ラベルなしの子、Set系の要素型、Dictionary系の`(key:value:)`tuple、multi型の重複する各出現、空時の子0件を固定した。MultiSetの`.set`、MultiMapの`.dictionary`は最も近い既存display styleとして維持し、子の順序は公開仕様に含めない。
 
 ### 内部区分

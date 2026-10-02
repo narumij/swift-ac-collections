@@ -24,6 +24,9 @@
 
 extension RedBlackTreeSet {
 
+  /// Inserts the elements of `other`, ignoring values equivalent to existing elements.
+  ///
+  /// - Parameter other: A set whose elements to insert.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   ///
@@ -38,6 +41,9 @@ extension RedBlackTreeSet {
       other.__tree_.__end_node)
   }
 
+  /// Inserts the elements of `other`, discarding duplicate occurrences.
+  ///
+  /// - Parameter other: A multiset whose distinct elements to insert.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -49,6 +55,9 @@ extension RedBlackTreeSet {
       other.__tree_.__end_node)
   }
 
+  /// Inserts the elements of `other`, ignoring values equivalent to existing elements.
+  ///
+  /// - Parameter other: A sequence whose elements to insert.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -57,6 +66,12 @@ extension RedBlackTreeSet {
     __tree_.___insert_range_unique(other)
   }
 
+  /// Returns a set containing the elements of this set and `other`.
+  ///
+  /// Duplicate elements are represented once. Neither input is modified.
+  ///
+  /// - Parameter other: A set whose elements to merge.
+  /// - Returns: The merged set.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   ///
@@ -69,6 +84,10 @@ extension RedBlackTreeSet {
     return result
   }
 
+  /// Returns a set containing this set's elements and the distinct elements of `other`.
+  ///
+  /// - Parameter other: A multiset whose elements to merge.
+  /// - Returns: The merged set, with duplicate occurrences represented once.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -78,6 +97,10 @@ extension RedBlackTreeSet {
     return result
   }
 
+  /// Returns a set containing this set's elements and the elements of `other`.
+  ///
+  /// - Parameter other: A sequence whose elements to merge.
+  /// - Returns: The merged set, with equivalent elements represented once.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable

@@ -229,6 +229,10 @@ extension RedBlackTreeDictionary {
 
   /// Inserts the given key-value pair into the dictionary if its key is not already present.
   ///
+  /// - Parameters:
+  ///   - key: The key to insert.
+  ///   - value: The value to associate with `key` when insertion succeeds.
+  /// - Returns: Whether insertion occurred and the inserted or existing key-value pair.
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -240,6 +244,8 @@ extension RedBlackTreeDictionary {
 
   /// Inserts the given key-value pair into the dictionary if its key is not already present.
   ///
+  /// - Parameter newMember: A key-value pair to insert.
+  /// - Returns: Whether insertion occurred and the inserted or existing key-value pair.
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -255,6 +261,17 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
+    /// Inserts a key-value pair, using `hint` as a suggested insertion position.
+    ///
+    /// An incorrect hint doesn't change the result; it can only affect performance.
+    /// `endIndex` is a valid hint.
+    ///
+    /// - Parameters:
+    ///   - key: The key to insert.
+    ///   - value: The value to associate with `key` when insertion succeeds.
+    ///   - hint: A valid index of this dictionary to use as an insertion hint.
+    /// - Returns: Whether insertion occurred and the index of the inserted or existing pair.
+    /// - Precondition: `hint` is valid for this dictionary.
     @inlinable
     @discardableResult
     public mutating func insert(key: Key, value: Value, hint: Index)
@@ -263,6 +280,13 @@ extension RedBlackTreeDictionary {
       insert((key, value), hint: hint)
     }
 
+    /// Inserts a key-value pair, using `hint` as a suggested insertion position.
+    ///
+    /// - Parameters:
+    ///   - newMember: A key-value pair to insert.
+    ///   - hint: A valid index of this dictionary to use as an insertion hint.
+    /// - Returns: Whether insertion occurred and the index of the inserted or existing pair.
+    /// - Precondition: `hint` is valid for this dictionary.
     @inlinable
     @discardableResult
     public mutating func insert(_ newMember: Element, hint: Index)
@@ -278,6 +302,13 @@ extension RedBlackTreeDictionary {
       return (__inserted, ___index(__r))
     }
 
+    /// Inserts or replaces a key-value pair, using `hint` as a suggested insertion position.
+    ///
+    /// - Parameters:
+    ///   - newMember: The pair to insert or use as a replacement.
+    ///   - hint: A valid index of this dictionary to use as an insertion hint.
+    /// - Returns: The replaced pair, or `nil` if `newMember` was newly inserted.
+    /// - Precondition: `hint` is valid for this dictionary.
     @inlinable
     @discardableResult
     public mutating func update(_ newMember: Element, hint: Index)
@@ -303,6 +334,10 @@ extension RedBlackTreeDictionary {
 
   /// Updates the value stored in the dictionary for the given key, or adds a new key-value pair if the key does not exist.
   ///
+  /// - Parameters:
+  ///   - value: The value to store.
+  ///   - key: The key whose value to update.
+  /// - Returns: The previous value, or `nil` if a new key-value pair was inserted.
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -322,6 +357,14 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
+    /// Updates or inserts a value, using `hint` as a suggested insertion position.
+    ///
+    /// - Parameters:
+    ///   - value: The value to store.
+    ///   - key: The key whose value to update.
+    ///   - hint: A valid index of this dictionary to use as an insertion hint.
+    /// - Returns: The previous value, or `nil` if a new key-value pair was inserted.
+    /// - Precondition: `hint` is valid for this dictionary.
     @inlinable
     @discardableResult
     public mutating func updateValue(
@@ -349,8 +392,11 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// Removes and returns the first element of the collection.
+  /// Removes and returns the key-value pair with the least key.
   ///
+  /// Returns `nil` if the dictionary is empty.
+  ///
+  /// - Returns: The removed key-value pair, or `nil` if the dictionary was empty.
   /// - Complexity: Amortized O(1)
   @inlinable
   public mutating func popFirst() -> Element? {
@@ -363,8 +409,11 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// Removes and returns the last element of the collection.
+    /// Removes and returns the key-value pair with the greatest key.
     ///
+    /// Returns `nil` if the dictionary is empty.
+    ///
+    /// - Returns: The removed key-value pair, or `nil` if the dictionary was empty.
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
@@ -377,8 +426,10 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// Removes the first element of the collection.
+  /// Removes and returns the key-value pair with the least key.
   ///
+  /// - Returns: The removed key-value pair.
+  /// - Precondition: The dictionary isn't empty.
   /// - Complexity: Amortized O(1)
   @inlinable
   @discardableResult
@@ -393,8 +444,10 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// Removes the last element of the collection.
+    /// Removes and returns the key-value pair with the greatest key.
     ///
+    /// - Returns: The removed key-value pair.
+    /// - Precondition: The dictionary isn't empty.
     /// - Complexity: O(log *n*)
     @inlinable
     @discardableResult
@@ -411,6 +464,10 @@ extension RedBlackTreeDictionary {
 
   /// Removes the key-value pair at the given index of the dictionary.
   ///
+  /// - Parameter index: A valid index of the dictionary. The index must refer
+  ///   to an element, not the dictionary's `endIndex`.
+  /// - Returns: The removed key-value pair.
+  /// - Precondition: `index` is valid for this dictionary and isn't `endIndex`.
   /// - Complexity: Amortized O(1)
   @inlinable
   @discardableResult
@@ -425,6 +482,10 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+  /// Removes the key-value pair for the specified key.
+  ///
+  /// - Parameter key: The key to remove along with its value.
+  /// - Returns: The removed value, or `nil` if the key wasn't present.
   /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(log *n*)
   @inlinable
@@ -448,6 +509,8 @@ extension RedBlackTreeDictionary {
 
   /// Removes all key-value pairs from the dictionary.
   ///
+  /// - Parameter keepCapacity: Pass `true` to retain the dictionary's
+  ///   allocated storage for later use.
   /// - Complexity: O(*n*), where *n* is the number of key-value pairs.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -465,6 +528,11 @@ extension RedBlackTreeDictionary {
 
     /// Removes the key-value pair at the given position from the dictionary and returns the index of the next element.
     ///
+    /// - Parameter ptr: A valid index of the dictionary. The index must refer
+    ///   to an element, not the dictionary's `endIndex`.
+    /// - Returns: The index that followed `ptr` before removal, or `endIndex`
+    ///   if the removed key-value pair was last.
+    /// - Precondition: `ptr` is valid for this dictionary and isn't `endIndex`.
     /// - Complexity: Amortized O(1)
     @discardableResult
     @inlinable
@@ -477,6 +545,8 @@ extension RedBlackTreeDictionary {
 
     /// Removes all elements that satisfy the given predicate.
     ///
+    /// - Parameter shouldBeRemoved: A closure that returns `true` for a
+    ///   key-value pair that should be removed.
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {

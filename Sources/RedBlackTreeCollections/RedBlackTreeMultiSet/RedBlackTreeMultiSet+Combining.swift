@@ -24,6 +24,9 @@
 
 extension RedBlackTreeMultiSet {
 
+  /// Inserts every element of `other`, preserving this multiset's existing multiplicities.
+  ///
+  /// - Parameter other: A set whose elements to insert once each.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   ///
@@ -38,6 +41,9 @@ extension RedBlackTreeMultiSet {
       other.__tree_.__end_node)
   }
 
+  /// Inserts every occurrence from `other` into this multiset.
+  ///
+  /// - Parameter other: A multiset whose occurrences to insert.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -49,6 +55,9 @@ extension RedBlackTreeMultiSet {
       other.__tree_.__end_node)
   }
 
+  /// Inserts every element produced by `other`, including duplicate occurrences.
+  ///
+  /// - Parameter other: A sequence whose elements to insert.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -57,6 +66,10 @@ extension RedBlackTreeMultiSet {
     __tree_.___insert_range_multi(other) { $0 }
   }
 
+  /// Returns a multiset containing this multiset plus each element of `other` once.
+  ///
+  /// - Parameter other: A set whose elements to insert into the result.
+  /// - Returns: The combined multiset without modifying either input.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -66,6 +79,10 @@ extension RedBlackTreeMultiSet {
     return result
   }
 
+  /// Returns a multiset containing every occurrence from both multisets.
+  ///
+  /// - Parameter other: A multiset whose occurrences to insert into the result.
+  /// - Returns: The combined multiset without modifying either input.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   ///
@@ -78,6 +95,10 @@ extension RedBlackTreeMultiSet {
     return result
   }
 
+  /// Returns a multiset containing this multiset and every element produced by `other`.
+  ///
+  /// - Parameter other: A sequence whose elements to insert into the result.
+  /// - Returns: The combined multiset without modifying this multiset.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -91,12 +112,21 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
+  /// Combines two multisets while preserving every occurrence.
+  ///
+  /// This operation consumes `other` and replaces this multiset with the result.
+  ///
+  /// - Parameter other: The multiset to consume and combine.
   /// - Complexity: O(*n* + *m*)
   @inlinable
   public mutating func meld(_ other: __owned RedBlackTreeMultiSet<Element>) {
     __tree_ = __tree_.___meld_multi(other.__tree_)
   }
 
+  /// Returns a multiset containing every occurrence from both multisets.
+  ///
+  /// - Parameter other: The multiset to consume and combine.
+  /// - Returns: The combined multiset.
   /// - Complexity: O(*n* + *m*)
   @inlinable
   public func melding(_ other: __owned RedBlackTreeMultiSet<Element>)

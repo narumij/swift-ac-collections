@@ -118,6 +118,8 @@
 
     extension RedBlackTreeKeyValueRangeView {
 
+      /// Returns an iterator over key-value pairs in ascending key order.
+      ///
       /// - Complexity: O(1)
       @inlinable
       public __consuming func makeIterator() -> UnsafeIterator.KeyValueObverse<Base> {
@@ -129,6 +131,8 @@
 
   extension RedBlackTreeKeyValueRangeView {
 
+    /// Returns the view's key-value pairs in ascending key order.
+    ///
     /// - Complexity: O(`count`)
     @inlinable
     public __consuming func sorted() -> [Element] {
@@ -136,6 +140,8 @@
       return __tree_.___copy_to_array(_start, _end, transform: Base.__element_)
     }
 
+    /// Returns the view's key-value pairs in descending key order.
+    ///
     /// - Complexity: O(`count`)
     @inlinable
     public __consuming func reversed() -> [Element] {
@@ -149,7 +155,9 @@
       // 標準に倣うと、Collections適合が必要なのでこちらになる
       extension RedBlackTreeKeyValueRangeView {
 
-        /// - Complexity: O(1)
+        /// A sequence containing the keys in this view, in ascending order.
+        ///
+        /// - Complexity: O(1) to create the sequence.
         @inlinable
         public var keys: [Key] {
           let (_start, _end) = _raw_range
@@ -192,6 +200,10 @@
         }
 
         // TODO: Restrict value-view mutations to indices contained in this key-value range.
+        /// A mutable view of the mapped values inside this key-value range.
+        ///
+        /// Assigning a value doesn't change its key or the collection's key order.
+        /// Structural removal through this view removes the corresponding key-value pair.
         @inlinable
         public var values: Values {
           @inline(__always) get {
@@ -242,6 +254,8 @@
 
   extension RedBlackTreeKeyValueRangeView {
 
+    /// A Boolean value indicating whether the view contains no key-value pairs.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public var isEmpty: Bool {
@@ -249,6 +263,8 @@
       return l == u
     }
 
+    /// The number of key-value pairs in the view.
+    ///
     /// - Complexity: O(`count`)
     @inlinable
     public var count: Int {
@@ -259,6 +275,8 @@
 
   extension RedBlackTreeKeyValueRangeView {
 
+    /// The first key-value pair, or `nil` if the view is empty.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public var first: Element? {
@@ -267,6 +285,9 @@
       return Base.__element_(_start)
     }
 
+    /// The last key-value pair, or `nil` if the view is empty.
+    ///
+    /// - Complexity: O(1)
     @inlinable
     public var last: Element? {
       let (_start, _end) = _raw_range
@@ -277,6 +298,7 @@
 
   extension RedBlackTreeKeyValueRangeView {
 
+    /// Removes and returns the first key-value pair, or returns `nil` if the view is empty.
     @inlinable
     @discardableResult
     public mutating func popFirst() -> Element? {
@@ -288,6 +310,7 @@
       return Base.__element_(_r)
     }
 
+    /// Removes and returns the last key-value pair, or returns `nil` if the view is empty.
     @inlinable
     @discardableResult
     public mutating func popLast() -> Element? {
@@ -297,6 +320,9 @@
       return Base.__element_(__tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload)
     }
 
+    /// Removes and returns the first key-value pair.
+    ///
+    /// - Precondition: The view isn't empty.
     @inlinable
     @discardableResult
     public mutating func removeFirst() -> Element {
@@ -306,6 +332,9 @@
       return element
     }
 
+    /// Removes and returns the last key-value pair.
+    ///
+    /// - Precondition: The view isn't empty.
     @inlinable
     @discardableResult
     public mutating func removeLast() -> Element {
@@ -318,6 +347,9 @@
 
   extension RedBlackTreeKeyValueRangeView {
 
+    /// Removes every key-value pair in the view.
+    ///
+    /// - Returns: The index immediately following the removed range.
     @inlinable
     @discardableResult
     public mutating func erase() -> Index {
@@ -329,6 +361,9 @@
       return ___index(try! __tree_.___erase_range(_start, _end).get())
     }
 
+    /// Removes the key-value pairs in the view that satisfy `shouldBeRemoved`.
+    ///
+    /// - Parameter shouldBeRemoved: A predicate that returns `true` for each pair to remove.
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       guard _raw_range.0 != _raw_range.1 else { return }
@@ -344,6 +379,10 @@
   #if !COMPATIBLE_ATCODER_2025
     extension RedBlackTreeKeyValueRangeView where _PayloadValue: Equatable {
 
+      /// Returns whether this view and `other` contain equal key-value pairs in the same order.
+      ///
+      /// - Parameter other: A sequence to compare with this view.
+      /// - Returns: `true` if both sequences contain the same pairs in the same order.
       /// - Complexity: O(*m*), where *m* is the lesser of the length of the
       ///   sequence and the length of `other`.
       @inlinable
@@ -355,6 +394,10 @@
 
     extension RedBlackTreeKeyValueRangeView where _PayloadValue: Comparable {
 
+      /// Returns whether this view precedes `other` in lexicographical order.
+      ///
+      /// - Parameter other: A sequence to compare with this view.
+      /// - Returns: `true` if this view lexicographically precedes `other`.
       /// - Complexity: O(*m*), where *m* is the lesser of the length of the
       ///   sequence and the length of `other`.
       @inlinable
@@ -366,6 +409,7 @@
 
     extension RedBlackTreeKeyValueRangeView: Equatable where _PayloadValue: Equatable {
 
+      /// Returns whether both views contain equal key-value pairs in the same order.
       /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
       @inlinable
       public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -375,6 +419,7 @@
 
     extension RedBlackTreeKeyValueRangeView: Comparable where _PayloadValue: Comparable {
 
+      /// Returns whether `lhs` lexicographically precedes `rhs`.
       /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
       @inlinable
       public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -392,6 +437,13 @@
 
   extension RedBlackTreeKeyValueRangeView {
 
+    /// Returns whether two views reference the same tree and the same range boundaries.
+    ///
+    /// Identity is stronger than element equality and can be checked without traversing the range.
+    ///
+    /// - Parameter other: Another view to compare by identity.
+    /// - Returns: `true` if both views have identical storage and bounds; otherwise, `false`.
+    /// - Complexity: O(1)
     @inlinable
     public func _isdentical(to other: Self) -> Bool {
       let (_start, _end) = _raw_range
@@ -411,6 +463,8 @@
     /// The view's end position is not an element. An index outside the view,
     /// or an invalid or stale index, returns `false`.
     ///
+    /// - Parameter index: The index to validate.
+    /// - Returns: `true` if `index` identifies an accessible element inside this view; otherwise, `false`.
     /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
     ///   elements in the base collection.
     @inlinable
@@ -439,6 +493,8 @@
     /// A view's end position may refer to an element in its base collection.
     /// An invalid or stale index returns `false`.
     ///
+    /// - Parameter index: The index to validate.
+    /// - Returns: `true` if `index` is this view's `endIndex`; otherwise, `false`.
     /// - Complexity: O(1)
     @inlinable
     public func isEnd(_ index: Index) -> Bool {

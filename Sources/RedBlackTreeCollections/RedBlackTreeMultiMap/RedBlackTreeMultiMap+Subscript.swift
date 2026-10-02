@@ -36,6 +36,12 @@
 //      }
 //    }
 
+    /// Accesses a mutable view of all mapped values associated with `key`.
+    ///
+    /// Values appear in their order within the equivalent-key group. Removing
+    /// values through the view removes their corresponding key-value pairs.
+    ///
+    /// - Parameter key: The key whose mapped values to access.
     /// - Complexity: O(log *n*)
     @inlinable
     public subscript(key: Key) -> Values {
@@ -59,6 +65,8 @@
 
     /// Accesses the element at the specified position.
     ///
+    /// - Parameter position: A valid element index of this multimap.
+    /// - Precondition: `position` identifies an element in this multimap and isn't `endIndex`.
     /// - Complexity: O(1)
     @inlinable
     public subscript(position: Index) -> Element {

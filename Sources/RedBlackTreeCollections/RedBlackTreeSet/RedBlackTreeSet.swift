@@ -230,6 +230,9 @@ extension RedBlackTreeSet {
 
   /// Inserts the given element in the set if it is not already present.
   ///
+  /// - Parameter newMember: An element to insert.
+  /// - Returns: A tuple indicating whether insertion occurred and containing
+  ///   either `newMember` or the existing equivalent element.
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   @discardableResult
@@ -243,6 +246,8 @@ extension RedBlackTreeSet {
 
   /// Inserts the given element, replacing an existing equivalent element if one is already present.
   ///
+  /// - Parameter newMember: The element to insert or use as a replacement.
+  /// - Returns: The replaced element, or `nil` if `newMember` was newly inserted.
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   @discardableResult
@@ -259,6 +264,16 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// Inserts an element, using `hint` as a suggested insertion position.
+    ///
+    /// An incorrect hint doesn't change the result; it can only affect performance.
+    /// `endIndex` is a valid hint.
+    ///
+    /// - Parameters:
+    ///   - newMember: An element to insert.
+    ///   - hint: A valid index of this set to use as an insertion hint.
+    /// - Returns: Whether insertion occurred and the index of the inserted or existing element.
+    /// - Precondition: `hint` is valid for this set.
     @inlinable
     @discardableResult
     public mutating func insert(_ newMember: Element, hint: Index)
@@ -274,6 +289,16 @@ extension RedBlackTreeSet {
       return (__inserted, ___index(__r))
     }
 
+    /// Inserts or replaces an element, using `hint` as a suggested insertion position.
+    ///
+    /// An incorrect hint doesn't change the result; it can only affect performance.
+    /// `endIndex` is a valid hint.
+    ///
+    /// - Parameters:
+    ///   - newMember: The element to insert or use as a replacement.
+    ///   - hint: A valid index of this set to use as an insertion hint.
+    /// - Returns: The replaced element, or `nil` if `newMember` was newly inserted.
+    /// - Precondition: `hint` is valid for this set.
     @inlinable
     @discardableResult
     public mutating func update(_ newMember: Element, hint: Index) -> Element? {
@@ -297,8 +322,11 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// Removes and returns the first element of the collection.
+    /// Removes and returns the least element of the set.
     ///
+    /// Returns `nil` if the set is empty.
+    ///
+    /// - Returns: The removed element, or `nil` if the set was empty.
     /// - Complexity: Amortized O(1)
     @inlinable
     public mutating func popFirst() -> Element? {
@@ -307,8 +335,11 @@ extension RedBlackTreeSet {
       return __tree_.___unchecked_remove_first()
     }
 
-    /// Removes and returns the last element of the collection.
+    /// Removes and returns the greatest element of the set.
     ///
+    /// Returns `nil` if the set is empty.
+    ///
+    /// - Returns: The removed element, or `nil` if the set was empty.
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
@@ -321,8 +352,10 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// Removes the first element of the collection.
+  /// Removes and returns the least element of the set.
   ///
+  /// - Returns: The removed element.
+  /// - Precondition: The set isn't empty.
   /// - Complexity: Amortized O(1)
   @inlinable
   @discardableResult
@@ -337,8 +370,10 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// Removes the last element of the collection.
+    /// Removes and returns the greatest element of the set.
     ///
+    /// - Returns: The removed element.
+    /// - Precondition: The set isn't empty.
     /// - Complexity: O(log *n*)
     @inlinable
     @discardableResult
@@ -355,6 +390,9 @@ extension RedBlackTreeSet {
 
   /// Removes the specified element from the set.
   ///
+  /// - Parameter member: The element to remove.
+  /// - Returns: The removed element, or `nil` if the set didn't contain an
+  ///   equivalent element.
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   @discardableResult
@@ -370,6 +408,10 @@ extension RedBlackTreeSet {
 
     /// Removes the element at the given index of the set.
     ///
+    /// - Parameter index: A valid index of the set. The index must refer to an
+    ///   element, not the set's `endIndex`.
+    /// - Returns: The removed element.
+    /// - Precondition: `index` is valid for this set and isn't `endIndex`.
     /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult
@@ -387,6 +429,8 @@ extension RedBlackTreeSet {
 
   /// Removes all members from the set.
   ///
+  /// - Parameter keepCapacity: Pass `true` to retain the set's allocated
+  ///   storage for later use.
   /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -404,6 +448,11 @@ extension RedBlackTreeSet {
 
     /// Removes the element at the given position from the set and returns the index of the next element.
     ///
+    /// - Parameter ptr: A valid index of the set. The index must refer to an
+    ///   element, not the set's `endIndex`.
+    /// - Returns: The index that followed `ptr` before removal, or `endIndex`
+    ///   if the removed element was last.
+    /// - Precondition: `ptr` is valid for this set and isn't `endIndex`.
     /// - Complexity: Amortized O(1)
     @discardableResult
     @inlinable
@@ -416,6 +465,8 @@ extension RedBlackTreeSet {
 
     /// Removes all elements that satisfy the given predicate.
     ///
+    /// - Parameter shouldBeRemoved: A closure that returns `true` for an
+    ///   element that should be removed.
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {

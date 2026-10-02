@@ -228,6 +228,8 @@ extension RedBlackTreeMultiSet {
 
   /// Inserts the given element into the multiset, including when an equivalent element is already present.
   ///
+  /// - Parameter newMember: An element to insert.
+  /// - Returns: `(true, newMember)`; a multiset always inserts another occurrence.
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -243,6 +245,14 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
+    /// Replaces the element at `i` when it is equivalent to `newMember`.
+    ///
+    /// Requiring equivalence preserves the multiset's sorted order.
+    ///
+    /// - Parameters:
+    ///   - newMember: The replacement element.
+    ///   - i: The index of the element to replace.
+    /// - Returns: The replaced element, or `nil` if the index is invalid or the elements aren't equivalent.
     @inlinable
     public mutating func update(_ newMember: Element, at i: Index) -> Element? {
       __tree_.ensureUnique()
@@ -269,6 +279,16 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
+    /// Inserts another occurrence, using `hint` as a suggested insertion position.
+    ///
+    /// An incorrect hint doesn't change the result; it can only affect performance.
+    /// `endIndex` is a valid hint.
+    ///
+    /// - Parameters:
+    ///   - newMember: An element to insert.
+    ///   - hint: A valid index of this multiset to use as an insertion hint.
+    /// - Returns: The index of the newly inserted occurrence.
+    /// - Precondition: `hint` is valid for this multiset.
     @inlinable
     @discardableResult
     public mutating func insert(_ newMember: Element, hint: Index) -> Index {
@@ -287,8 +307,11 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// Removes and returns the first element of the collection.
+  /// Removes and returns one least element of the multiset.
   ///
+  /// Returns `nil` if the multiset is empty.
+  ///
+  /// - Returns: The removed element, or `nil` if the multiset was empty.
   /// - Complexity: Amortized O(1)
   @inlinable
   public mutating func popFirst() -> Element? {
@@ -301,8 +324,11 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Removes and returns the last element of the collection.
+    /// Removes and returns one greatest element of the multiset.
     ///
+    /// Returns `nil` if the multiset is empty.
+    ///
+    /// - Returns: The removed element, or `nil` if the multiset was empty.
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
@@ -315,8 +341,10 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// Removes the first element of the collection.
+  /// Removes and returns one least element of the multiset.
   ///
+  /// - Returns: The removed element.
+  /// - Precondition: The multiset isn't empty.
   /// - Complexity: Amortized O(1)
   @inlinable
   @discardableResult
@@ -331,8 +359,10 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Removes the last element of the collection.
+    /// Removes and returns one greatest element of the multiset.
     ///
+    /// - Returns: The removed element.
+    /// - Precondition: The multiset isn't empty.
     /// - Complexity: O(log *n*)
     @inlinable
     @discardableResult
@@ -350,6 +380,10 @@ extension RedBlackTreeMultiSet {
 
     /// Removes the element at the given index of the set.
     ///
+    /// - Parameter index: A valid index of the multiset. The index must refer
+    ///   to an element, not the multiset's `endIndex`.
+    /// - Returns: The removed element.
+    /// - Precondition: `index` is valid for this multiset and isn't `endIndex`.
     /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult
@@ -367,6 +401,8 @@ extension RedBlackTreeMultiSet {
 
   /// Removes all elements from the multiset.
   ///
+  /// - Parameter keepCapacity: Pass `true` to retain the multiset's allocated
+  ///   storage for later use.
   /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -386,6 +422,11 @@ extension RedBlackTreeMultiSet {
 
     /// Removes the element at the given position from the set and returns the index of the next element.
     ///
+    /// - Parameter ptr: A valid index of the multiset. The index must refer to
+    ///   an element, not the multiset's `endIndex`.
+    /// - Returns: The index that followed `ptr` before removal, or `endIndex`
+    ///   if the removed element was last.
+    /// - Precondition: `ptr` is valid for this multiset and isn't `endIndex`.
     /// - Complexity: Amortized O(1)
     @discardableResult
     @inlinable
@@ -398,6 +439,8 @@ extension RedBlackTreeMultiSet {
 
     /// Removes all elements that satisfy the given predicate.
     ///
+    /// - Parameter shouldBeRemoved: A closure that returns `true` for an
+    ///   element that should be removed.
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {

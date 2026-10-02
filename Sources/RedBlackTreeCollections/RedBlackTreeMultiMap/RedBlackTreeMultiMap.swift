@@ -251,6 +251,13 @@ extension RedBlackTreeMultiMap {
 
   /// Inserts the given key-value pair into the multimap.
   ///
+  /// New pairs are placed after existing pairs with an equivalent key, preserving
+  /// insertion order within each group of equivalent keys.
+  ///
+  /// - Parameters:
+  ///   - key: The key to insert.
+  ///   - value: The value to associate with this occurrence of `key`.
+  /// - Returns: `(true, (key, value))`; a multimap always inserts another pair.
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -262,6 +269,11 @@ extension RedBlackTreeMultiMap {
 
   /// Inserts the given key-value pair into the multimap.
   ///
+  /// New pairs are placed after existing pairs with an equivalent key, preserving
+  /// insertion order within each group of equivalent keys.
+  ///
+  /// - Parameter newMember: A key-value pair to insert.
+  /// - Returns: `(true, newMember)`; a multimap always inserts another pair.
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -278,6 +290,12 @@ extension RedBlackTreeMultiMap {
   // 結局復活してみた。でも少し変えた
   extension RedBlackTreeMultiMap {
 
+    /// Replaces the mapped value at `ptr` without changing its key.
+    ///
+    /// - Parameters:
+    ///   - newValue: The replacement mapped value.
+    ///   - ptr: The index of the pair to update.
+    /// - Returns: The previous mapped value, or `nil` if `ptr` is invalid.
     /// - Complexity: O(log *n*)
     @inlinable
     @discardableResult
@@ -295,7 +313,17 @@ extension RedBlackTreeMultiMap {
 
 #if !COMPATIBLE_ATCODER_2025
 extension RedBlackTreeMultiMap {
-  
+
+  /// Inserts another key-value pair, using `hint` as a suggested insertion position.
+  ///
+  /// An incorrect hint doesn't change the result; it can only affect performance.
+  /// `endIndex` is a valid hint.
+  ///
+  /// - Parameters:
+  ///   - newMember: A key-value pair to insert.
+  ///   - hint: A valid index of this multimap to use as an insertion hint.
+  /// - Returns: The index of the newly inserted pair.
+  /// - Precondition: `hint` is valid for this multimap.
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element, hint: Index) -> Index {
@@ -314,8 +342,11 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// Removes and returns the first element of the collection.
+  /// Removes and returns one key-value pair with the least key.
   ///
+  /// Returns `nil` if the multimap is empty.
+  ///
+  /// - Returns: The removed key-value pair, or `nil` if the multimap was empty.
   /// - Complexity: Amortized O(1)
   @inlinable
   public mutating func popFirst() -> Element? {
@@ -328,8 +359,11 @@ extension RedBlackTreeMultiMap {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
-    /// Removes and returns the last element of the collection.
+    /// Removes and returns one key-value pair with the greatest key.
     ///
+    /// Returns `nil` if the multimap is empty.
+    ///
+    /// - Returns: The removed key-value pair, or `nil` if the multimap was empty.
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
@@ -342,8 +376,10 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
-  /// Removes the first element of the collection.
+  /// Removes and returns one key-value pair with the least key.
   ///
+  /// - Returns: The removed key-value pair.
+  /// - Precondition: The multimap isn't empty.
   /// - Complexity: Amortized O(1)
   @inlinable
   @discardableResult
@@ -358,8 +394,10 @@ extension RedBlackTreeMultiMap {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
-    /// Removes the last element of the collection.
+    /// Removes and returns one key-value pair with the greatest key.
     ///
+    /// - Returns: The removed key-value pair.
+    /// - Precondition: The multimap isn't empty.
     /// - Complexity: O(log *n*)
     @inlinable
     @discardableResult
@@ -376,6 +414,10 @@ extension RedBlackTreeMultiMap {
 
   /// Removes the key-value pair at the given index of the multimap.
   ///
+  /// - Parameter index: A valid index of the multimap. The index must refer to
+  ///   an element, not the multimap's `endIndex`.
+  /// - Returns: The removed key-value pair.
+  /// - Precondition: `index` is valid for this multimap and isn't `endIndex`.
   /// - Complexity: Amortized O(1)
   @inlinable
   @discardableResult
@@ -392,6 +434,8 @@ extension RedBlackTreeMultiMap {
 
   /// Removes all key-value pairs from the multimap.
   ///
+  /// - Parameter keepCapacity: Pass `true` to retain the multimap's allocated
+  ///   storage for later use.
   /// - Complexity: O(*n*), where *n* is the number of key-value pairs.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
@@ -409,6 +453,11 @@ extension RedBlackTreeMultiMap {
 
     /// Removes the key-value pair at the given position from the multimap and returns the index of the next element.
     ///
+    /// - Parameter ptr: A valid index of the multimap. The index must refer to
+    ///   an element, not the multimap's `endIndex`.
+    /// - Returns: The index that followed `ptr` before removal, or `endIndex`
+    ///   if the removed key-value pair was last.
+    /// - Precondition: `ptr` is valid for this multimap and isn't `endIndex`.
     /// - Complexity: Amortized O(1)
     @discardableResult
     @inlinable
@@ -421,6 +470,8 @@ extension RedBlackTreeMultiMap {
 
     /// Removes all elements that satisfy the given predicate.
     ///
+    /// - Parameter shouldBeRemoved: A closure that returns `true` for a
+    ///   key-value pair that should be removed.
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {

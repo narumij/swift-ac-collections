@@ -78,6 +78,11 @@
 
   extension RedBlackTreeMappedValuesView {
 
+    /// Returns whether two views reference the same tree and the same range boundaries.
+    ///
+    /// - Parameter other: Another view to compare by identity.
+    /// - Returns: `true` if both views have identical storage and bounds; otherwise, `false`.
+    /// - Complexity: O(1)
     @inlinable
     internal mutating func _ensureUnique() {
       // 異なる木のインデックスを無効扱いにするための準備措置
@@ -124,6 +129,8 @@
 
     extension RedBlackTreeMappedValuesView {
 
+      /// Returns an iterator over mapped values in ascending key order.
+      ///
       /// - Complexity: O(1)
       @inlinable
       public __consuming func makeIterator() -> UnsafeIterator.MappedValueObverse<Base> {
@@ -139,6 +146,8 @@
     ///
     /// - Parameter position: A valid element index within this view.
     /// - Precondition: `position` identifies an element inside the view.
+    /// A Boolean value indicating whether the view contains no mapped values.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public subscript(position: Index) -> Element {
@@ -192,6 +201,8 @@
       return l == u
     }
 
+    /// The number of mapped values in the view.
+    ///
     /// - Complexity: O(`count`)
     @inlinable
     public var count: Int {
@@ -202,6 +213,8 @@
 
   extension RedBlackTreeMappedValuesView {
 
+    /// The first mapped value, or `nil` if the view is empty.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public var first: Element? {
@@ -210,6 +223,9 @@
       return Base.__mapped_value_(_start)
     }
 
+    /// The last mapped value, or `nil` if the view is empty.
+    ///
+    /// - Complexity: O(1)
     @inlinable
     public var last: Element? {
       let (_start, _end) = _raw_range
@@ -220,6 +236,7 @@
 
   extension RedBlackTreeMappedValuesView {
 
+    /// Removes the first pair and returns its mapped value, or returns `nil` if the view is empty.
     @inlinable
     @discardableResult
     public mutating func popFirst() -> Element? {
@@ -233,6 +250,7 @@
       return Base.___mapped_value(_r)
     }
 
+    /// Removes the last pair and returns its mapped value, or returns `nil` if the view is empty.
     @inlinable
     @discardableResult
     public mutating func popLast() -> Element? {
@@ -243,6 +261,9 @@
         __tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload)
     }
 
+    /// Removes the first pair and returns its mapped value.
+    ///
+    /// - Precondition: The view isn't empty.
     @inlinable
     @discardableResult
     public mutating func removeFirst() -> Element {
@@ -252,6 +273,9 @@
       return element
     }
 
+    /// Removes the last pair and returns its mapped value.
+    ///
+    /// - Precondition: The view isn't empty.
     @inlinable
     @discardableResult
     public mutating func removeLast() -> Element {
@@ -264,6 +288,9 @@
 
   extension RedBlackTreeMappedValuesView {
 
+    /// Removes every key-value pair represented by this mapped-values view.
+    ///
+    /// - Returns: The index immediately following the removed range.
     @inlinable
     @discardableResult
     public mutating func erase() -> Index {
@@ -275,6 +302,9 @@
       return ___index(try! __tree_.___erase_range(_start, _end).get())
     }
 
+    /// Removes pairs whose mapped values satisfy `shouldBeRemoved`.
+    ///
+    /// - Parameter shouldBeRemoved: A predicate that returns `true` for each mapped value to remove.
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       guard _raw_range.0 != _raw_range.1 else { return }
@@ -315,6 +345,8 @@
     /// The view's end position is not an element. An index outside the view,
     /// or an invalid or stale index, returns `false`.
     ///
+    /// - Parameter index: The index to validate.
+    /// - Returns: `true` if `index` identifies an accessible element inside this view; otherwise, `false`.
     /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
     ///   elements in the base collection.
     @inlinable
@@ -343,6 +375,8 @@
     /// A view's end position may refer to an element in its base collection.
     /// An invalid or stale index returns `false`.
     ///
+    /// - Parameter index: The index to validate.
+    /// - Returns: `true` if `index` is this view's `endIndex`; otherwise, `false`.
     /// - Complexity: O(1)
     @inlinable
     public func isEnd(_ index: Index) -> Bool {

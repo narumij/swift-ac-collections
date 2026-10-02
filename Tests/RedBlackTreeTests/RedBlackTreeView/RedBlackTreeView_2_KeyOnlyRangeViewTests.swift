@@ -84,5 +84,40 @@ import XCTest
       XCTAssertTrue(shorter.lexicographicallyPrecedes(longer))
       XCTAssertFalse(longer.lexicographicallyPrecedes(shorter))
     }
+
+    /// popFirst/popLast/erase()/erase(where:)が、保持していた参照型要素を
+    /// 正しく解放すること(二重解放やリークがないこと)
+    func test_variousRemovalMethods_releaseRetainedReferenceElementsExactlyOnce() {
+      final class DeinitializeCounter: Comparable {
+        static func < (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+          lhs.num < rhs.num
+        }
+        static func == (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+          lhs.num == rhs.num
+        }
+        nonisolated(unsafe) static var count = 0
+        let num: Int
+        init(num: Int) {
+          self.num = num
+          Self.count += 1
+        }
+        deinit { Self.count -= 1 }
+      }
+
+      var set = RedBlackTreeSet<DeinitializeCounter>((0..<4).map { DeinitializeCounter(num: $0) })
+      XCTAssertEqual(DeinitializeCounter.count, 4)
+
+      _ = set[...].popFirst()
+      XCTAssertEqual(DeinitializeCounter.count, 3)
+
+      _ = set[...].popLast()
+      XCTAssertEqual(DeinitializeCounter.count, 2)
+
+      set[...].erase(where: { $0.num == 1 })
+      XCTAssertEqual(DeinitializeCounter.count, 1)
+
+      _ = set[...].erase()
+      XCTAssertEqual(DeinitializeCounter.count, 0)
+    }
   }
 #endif

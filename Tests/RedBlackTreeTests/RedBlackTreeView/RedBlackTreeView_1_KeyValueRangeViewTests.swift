@@ -80,5 +80,31 @@ import XCTest
       XCTAssertTrue(shorter[...].lexicographicallyPrecedes(longer[...], by: <))
       XCTAssertFalse(longer[...].lexicographicallyPrecedes(shorter[...], by: <))
     }
+
+    /// popFirst/popLast/erase()/erase(where:)が、保持していた参照型の値を
+    /// 正しく解放すること(二重解放やリークがないこと)
+    func test_variousRemovalMethods_releaseRetainedReferenceValuesExactlyOnce() {
+      final class DeinitializeCounter {
+        nonisolated(unsafe) static var count = 0
+        init() { Self.count += 1 }
+        deinit { Self.count -= 1 }
+      }
+
+      var dictionary = RedBlackTreeDictionary<Int, DeinitializeCounter>(
+        uniqueKeysWithValues: (0..<4).map { ($0, DeinitializeCounter()) })
+      XCTAssertEqual(DeinitializeCounter.count, 4)
+
+      _ = dictionary[...].popFirst()
+      XCTAssertEqual(DeinitializeCounter.count, 3)
+
+      _ = dictionary[...].popLast()
+      XCTAssertEqual(DeinitializeCounter.count, 2)
+
+      dictionary[...].erase(where: { $0.key == 1 })
+      XCTAssertEqual(DeinitializeCounter.count, 1)
+
+      _ = dictionary[...].erase()
+      XCTAssertEqual(DeinitializeCounter.count, 0)
+    }
   }
 #endif

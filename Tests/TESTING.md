@@ -69,11 +69,8 @@
 
 ### 保留中の判断・懸念
 
-- 2026-10-01 18:36 JST: 原木アルゴリズムについて、(1) `Base`のstatic/class methodを`_ValueCompBridge`等で注入する現行経路と、(2) `Base`を使わず木インスタンスが比較器・状態を保持してインスタンスメソッドとして供給する経路の双方を動作可能にし、テストで維持したい。将来的な`__tree`のポータブル化・noncopyable要素対応を検討する材料でもある。ただし設計意図を思い出しながらレビューする時間が必要なため、一度に移行・整理せず、複数回に分けて慎重に進める。現時点では`_ValueCompBridge`を削除・置換せず、static注入用アダプターとして温存する。インスタンス注入型は`_ValueCompBridge`へ適合させず、`value_comp`/`__comp`/`__key`/`__get_value`を直接供給する方向を検証する。今回の`TreeFoundamentalComparisonInjectionTests`は比較の二経路が同じ原木探索へ到達する最初の確認であり、設計確定を意味しない。`_BaseBridge`自体が現状`~Copyable`未対応である点も、変更せず継続検討とする。
-- こちらでヒント系APIとAPI一覧を触ってるので、Test as Spec観点でチェックしてほしい
 - 内部構造をテスト観点でどのように区分するのか、まだ結論がでていない
 - 生木へのテストを増やすと変更コストがかさむので、バランスに悩んでいる
-- 「空チェック前のensureUnique()が無駄なCoWを起こす」問題は、`RedBlackTreeMultiMap.erase(exactly:)`・両View系列(`RedBlackTreeMappedValuesView`/`RedBlackTreeRangeView+KeyValue`/`+KeyOnly`)の`popFirst`/`popLast`/`erase()`/`erase(where:)`・4型の`popFirst`/`popLast`/`Set.remove(_:)`/`Dictionary.removeValue(forKey:)`/`removeAll(keepingCapacity:)`、さらに互換モード専用`+Deprecated.swift`側の`RedBlackTreeSet.popFirst()`/`RedBlackTreeMultiSet.remove(_:)`/`removeAll(_:)`/`RedBlackTreeMultiMap.removeFirst(forKey:)`/`removeFirst(_unsafeForKey:)`/`removeAll(forKey:)`まで2026-10-01に全て修正済み。`+Deprecated.swift`全体を同パターンで網羅的に再調査したわけではないため、他に見落としが残っている可能性はゼロではない
 - `RedBlackTreeMappedValuesView._isdentical(to:)`はSources内で呼び出しゼロ(`Equatable`適合なし)。削除するかテストを書くかはユーザー判断待ち
 - `Tree/Fixture/UnsafeNodeReferenceFixture.swift`・`UnsafeTreeV2/Instance/RawBufferHeadFixture.swift`・`UnsafeNodeRawBufferCrossCheckTests.swift`(2026-10-01新設)は、`MemoryLayoutTests`/`UnsafeNodeMemoryLayoutTests`/`BucketAllocatorTests`の既存`checkXxx`ヘルパー・payload型リストと意図的に重複している。ユーザー方針「一旦多重化して、あとで整理しましょう」により統合はまだ行っていない
 - 2026-10-02 00:15 JST: `unranged()`はユーザーより「廃止検討中」と判明(`API-Matrix.md`の該当行へ「廃止検討中」を追記済み)。今回MultiSet/Dictionaryの`_8_RangeViewTests.swift`へ追加した`test_unranged_returnsRemainingBaseRangeAfterDrainingPartially`(Set/MultiMap側の既存テストと同種)は、現行APIである間は妥当なTest as Specとして残すが、`unranged()`自体が廃止される場合は4型分(Set/MultiSet/MultiMap/Dictionary)のテストもまとめて削除対象になる
@@ -81,7 +78,7 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
-- 2026-10-03 Claude (Sonnet 5): 上記OptionalArrayModuleバグの発見を受け、赤黒木コア(Set/MultiSet/Dictionary/MultiMap)側で同系統の参照型要素リーク・二重解放が無いかを確認。`removeAllKeepingCapacity`以外の削除系(popFirst/popLast/remove(_:)/removeFirst/eraseMulti/removeValue(forKey:))には参照型要素のdeinit検証が1件もなかった(4型中Setの1メソッドのみ既存)ため、`DeinitializeCounter`パターンで4型の`_6_RemovalTests.swift`に`test_variousRemovalMethods_releaseRetainedReferenceElementsExactlyOnce`相当を追加。検索用一時要素(`remove(_:)`/`eraseMulti(_:Element)`の引数)自体も解放対象になる分を含め、解放回数を事前計算してから実測し、全て一致を確認(新バグなし)。配列インデックスからポインタ型へ移行した本来の動機が参照型の正しい取り扱いだったため、この検証はカバレッジ上は小さいが設計意図への適合確認として重要。全体テスト0失敗。
+- 2026-10-03 Claude (Sonnet 5): 上記OptionalArrayModuleバグの発見を受け、赤黒木コア(Set/MultiSet/Dictionary/MultiMap)側で同系統の参照型要素リーク・二重解放が無いかを確認。`removeAllKeepingCapacity`以外の削除系(popFirst/popLast/remove(_:)/removeFirst/eraseMulti/removeValue(forKey:))には参照型要素のdeinit検証が1件もなかった(4型中Setの1メソッドのみ既存)ため、`DeinitializeCounter`パターンで4型の`_6_RemovalTests.swift`に`test_variousRemovalMethods_releaseRetainedReferenceElementsExactlyOnce`相当を追加。検索用一時要素(`remove(_:)`/`eraseMulti(_:Element)`の引数)自体も解放対象になる分を含め、解放回数を事前計算してから実測し、全て一致を確認(新バグなし)。配列インデックスからポインタ型へ移行した本来の動機が参照型の正しい取り扱いだったため、この検証はカバレッジ上は小さいが設計意図への適合確認として重要。続けて共有View側(`RedBlackTreeKeyOnlyRangeView`/`RedBlackTreeKeyValueRangeView`、代表としてSet/Dictionaryで検証)の`popFirst`/`popLast`/`erase()`/`erase(where:)`にも同様のテストを追加し、同じく新規バグなしを確認。全体テスト0失敗。
 - 2026-10-03 Claude (Sonnet 5): 優先事項「BareArrayModule/OptionalArrayModuleのテストを追加」に対応。両モジュールにSendable適合テスト・参照型要素でのライフタイム検証テストを追加した過程で、**`OptionalArray1D`/`OptionalArray1DView`の`subscript` `_modify`に実バグ**を発見: `array[i] = nil`で既存値を消す際、`.move()`で既に所有権を移動済みのスロットに対して、else節がさらに`(payload + position).deinitialize(count: 1)`を呼んでおり、参照型(class)要素で二重解放によるクラッシュ(SIGSEGV)を起こしていた。値型要素では症状が出ないため既存テスト(`Int`のみ)では発覚していなかった(ユーザー確認: 「値型だけを想定してた」)。`deinitialize`呼び出しを削除して修正。全体テスト0失敗を確認。
 - 2026-10-03 Claude (Sonnet 5): 横展開候補(4)`elementsEqual(_:)`/`lexicographicallyPrecedes(_:)`の仕様テストを追加。Set/MultiSet/Dictionary/MultiMapの`_9_ProtocolConformanceTests.swift`と、共有View代表2本(`RedBlackTreeView_1_KeyValueRangeViewTests.swift`・`_2_KeyOnlyRangeViewTests.swift`)に計6ファイル分追加(等値・大小・共通prefix後の長さ違いを検証)。Dictionary/MultiMapのElementは素のタプルで`Equatable`/`Comparable`に適合できないため`elementsEqual(_:by: ==)`/`lexicographicallyPrecedes(_:by: <)`を使用。全体テスト0失敗を確認。これでCodexレビュー(2026-10-01 07:07 JST)の横展開候補(1)〜(5)は全て対応済み。
 - 2026-10-03 Claude (Sonnet 5): 「連番の落ち穂拾い」要望に対応し、2026-10-01 07:07 JST Codexレビューの横展開漏れ(2)(3)に着手。Setの`RedBlackTreeSet_98_IndexValidityXCTests.swift`にのみ存在していた`testRangeViewIndexValidityAgainstOriginIsUnaffectedByCopyThenMutateCoW`/`testRangeViewIndexValidityAfterConsecutiveMutationsWithOnlyFirstTriggeringCoW`(RangeViewコピー後のCoW変異に対するIndex有効性検証)を、KeyValue Range View側の代表として`RedBlackTreeDictionary_98_IndexValidityXCTests.swift`へ、重複要素を持つKeyOnly側として`RedBlackTreeMultiSet_98_IndexValidityXCTests.swift`へ、それぞれAPIを型に合わせて移植した(Dictionaryは`uniqueKeysWithValues`/`.sorted().map(\.key)`、MultiSetは`RedBlackTreeMultiSet<Int>(0..<20)`でSet版とほぼ同じAPI形)。追加時点では`UnsafeTreeV2BootstrapTests.swift`(当時`RedBlackTreeTests`直下、`___NodePtr`未解決)のビルドエラーで`swift test`が実行できず、Xcodeの型チェック(0件)のみで確認していたが、翌日の原木分離(本ログ直後のCodexエントリ)でBootstrapが`#if false`化されたことにより`swift test`が再び通るようになり、追加した4テストとも実行・成功を確認した(`RedBlackTreeTests`809件・0失敗に含まれる)。残る横展開候補(4)`elementsEqual`/`lexicographicallyPrecedes`、(5)は2026-10-01 07:19 JST Codexにより完了済み。
@@ -169,6 +166,12 @@ Set,MultiSet,MultiMap,Dictionary
 公開 API の precondition や不正 index を専用プロセスで検証する Death Test は、各型の連番 `_99_DeathTests.swift` に配置する。`DEATH_TEST` 条件は維持し、通常仕様と同じ場所から発見できるようにする。
 
 内部実装・coverage テストは `_98_*.swift` に分ける。まだ公開仕様・内部仕様・互換仕様の分類が済んでいない Swift Testing ベースのテストは、一時的に `_97_*.swift` へ置く。分類済みの公開 Death Test は `_99_DeathTests.swift` とする。通常の XCTest による Test as Spec と同じファイルへ混ぜず、GitHub Actions で問題が起きたときに Swift Testing 使用箇所をファイル名から絞り込めるようにする。
+
+### テストの観点チェックリスト
+
+テストを書く/レビューするときに意識する「観点」を、見つかった都度一行で追記する。
+
+- 参照型要素のライフタイム(二重解放・リーク): `DeinitializeCounter`パターン(class+static count)で検証
 
 ### 旧フォルダ監査時の内部/外部トリアージ
 

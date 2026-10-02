@@ -56,6 +56,19 @@
     - ドキュメントメンテ中に同時にレビューとなり、適切なところにフィードバックする
     - 以上の流れをなるべくClaudeにやらせてほしい
 
+- Tests/CLAUDE.md について
+  - ちゃっぴーが以下をすすめるので検討して
+  
+```
+# Session Startup
+
+For work involving `Tests/`, read `Tests/CLAUDE.md` before making changes and follow its instructions.
+
+# Communication
+
+Communicate with the user in Japanese. Internal instructions and Codex-to-Claude work requests may be written in English, but explanations, questions, progress updates, and final reports addressed to the user must be in Japanese.
+```
+
 ### 相談事項
 
 - DocCの手動Topicsは`API-Matrix.md`と`API-Matrix-View.md`を基準に、検索・挿入・削除・範囲操作などへ広げる。4型の具象型ページだけでなく、共通protocolのDefault ImplementationsやViewへの導線をどこへ置くかは引き続き検討する

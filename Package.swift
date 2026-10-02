@@ -162,6 +162,13 @@ let package = Package(
       ],
       swiftSettings: _settings
     ),
+    .testTarget(
+      name: "AcCollectionsTests",
+      dependencies: [
+        "AcCollections"
+      ],
+      swiftSettings: _settings
+    ),
 
     .target(
       name: "_malloc_free",

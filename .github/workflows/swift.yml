@@ -234,7 +234,40 @@ jobs:
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest
 
+      - name: Diagnose TreeFoundamentalAllocationTests with Address Sanitizer
+        continue-on-error: true
+        env:
+          ASAN_OPTIONS: detect_leaks=0:symbolize=1:abort_on_error=1
+          SWIFT_BACKTRACE: enable=yes
+        shell: bash
+        run: |
+          set +e
+
+          tests=(
+            testConstructNode_initializesMetadataPayloadAndUniqueTags
+            testDestroy_deinitializesPayloadAndReleasesOwnership
+            testConstructNode_honorsPayloadAlignment
+            testScalarPointerHelpers_referenceTheOwnedPayload
+            testPairPointerHelpers_referenceFieldsInsideOwnedPayload
+          )
+
+          status=0
+          for test_name in "${tests[@]}"; do
+            echo "::group::TreeFoundamentalAllocationTests/$test_name"
+            swift test -c debug --sanitize address --build-system native \
+              --filter "TreeFoundamentalAllocationTests/$test_name"
+            result=$?
+            echo "exit status: $result"
+            echo "::endgroup::"
+            if [ "$result" -ne 0 ]; then
+              status=1
+            fi
+          done
+
+          exit "$status"
+
       - name: Run tests with Address Sanitizer
         env:
-          ASAN_OPTIONS: detect_leaks=0
+          ASAN_OPTIONS: detect_leaks=0:symbolize=1:abort_on_error=1
+          SWIFT_BACKTRACE: enable=yes
         run: swift test -c debug --sanitize address --build-system native

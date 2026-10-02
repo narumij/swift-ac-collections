@@ -1,6 +1,6 @@
 import XCTest
 
-#if DEBUG && os(macOS)
+#if DEBUG
   @testable import RedBlackTreeCollections
 
   @available(anyAppleOS 26.0, *)

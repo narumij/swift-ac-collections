@@ -94,11 +94,8 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 
 ### 完了済みの要望
 
-- 2026-10-03 Claude (Sonnet 5): 上記2026-10-02 16:24 JST保留事項(MultiMapのhint付きinsertが同値キー群内の順序に与える影響が未確定)について、ユーザー指示「C++にならう」を受けて実機調査した。`__emplace_hint_multi`はLLVM libc++の`std::multimap`/`std::multiset`のhint挿入アルゴリズムの直接移植で、hintが有効(隣接)な場合はhintが示す位置そのものへ挿入する(同値キー群の末尾に固定されない)ことを確認。MultiMap・MultiSetの`_5_InsertionTests.swift`へこの挙動を固定するテストを追加した(詳細は`Tests/TESTING.md`の完了済み要望を正とする)。**現行`///`コメント「An incorrect hint doesn't change the result; it can only affect performance.」は同値キー/要素群内の順序に関して事実と異なるため、Codex側での文言修正が必要**(Claudeからはコメント文言を変更していない)。
-
 (ユーザーが確認したら各項目を整理します)
 
-- 2026-10-03 00:40 JST Codex (GPT-5): 4型の`CustomReflectable.customMirror`についてCodexとClaudeの独立レビュー、Test as Specification追加、ユーザー確認が完了。Set / MultiSetは`.set`、Dictionary / MultiMapは`.dictionary`を最も近い既存のdisplay styleとして維持する。子はラベルなしで、Set系は各要素、Dictionary系は`(key:value:)`tupleを表し、MultiSet / MultiMapでは重複する各出現も個別の子として提供する。空時は子0件。木の現在の走査結果として昇順に見えることは公開順序契約に含めず、Mirrorの子の順序には依存させない。
 
 ## 文書の役割と正本
 

@@ -262,7 +262,11 @@ TestCase 自身が
 
 ## Tree-shape fixtures
 
-型ではなく、決められた木構造を生成する Fixture。
+> **退役(2026-10-03)**: このセクションが指す`UnsafeTreeV2BootstrapTests.swift`は、`_TrackingTag`ベースAPIの
+> 変更に追随できず`#if false`で無効化され、「証拠として保存」する方針で削除せず残置している。
+> `___applyFixture(nodes:elements:)`を含め、現在はいずれも非活性(コンパイル対象外)。新規テストでは使用しないこと。
+
+型ではなく、決められた木構造を生成する Fixture(現在は退役、下記参照)。
 
 ### `fixtureEmpty(_:)`
 

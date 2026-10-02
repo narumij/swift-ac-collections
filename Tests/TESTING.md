@@ -71,7 +71,8 @@
 
 ### 保留中の判断・懸念
 
-- 2026-10-02 21:24 JST Codex (GPT-5)レビュー: 4型の現行`customMirror`テストはdisplay styleと子数または値の一部だけを確認しており、優先事項で要求された仕様を十分に固定していない。特にMultiSetは重複を含む入力を使っておらず、MultiMapは同値キーの全pair、4型共通では子ラベルが`nil`であること、Dictionary系では各childが`(key:value:)`tupleとしてcastでき内容が一致すること、空コレクションの子数0が未検証。Mirrorの走査順はユーザー判断前なので期待値へ含めず、順序非依存でこれらを追加する余地がある。display style自体の妥当性はClaudeの独立レビューとユーザー判断待ち
+- 2026-10-03 JST Claude (Sonnet 5)独立レビュー: 上記Codexレビューで挙げられた不足点を`EtcTests.swift`で実機確認した結果、**実装はすべて正しく、未検証だっただけ**と判明(新規バグなし)。確認した事実: (1) Set/Dictionaryの子は全て`label == nil`、(2) MultiSetへ重複要素`[1,1,2]`を渡すと`customMirror.children.count`は3(countと一致)でき、重複が個別の子として反映される、(3) MultiMapへ同一キー`[(1,"a"),(1,"b")]`を渡すと同様に2件の子になり、各childは`(key: Int, value: String)`タプルとしてcastでき両方の値("a"/"b")が個別に反映される、(4) 空コレクション(Set/Dictionary/MultiSet/MultiMap)はいずれも`children.count == 0`。これらを4型の連番テスト(`_9_ProtocolConformanceTests.swift`等)へTest as Specとして追加(重複要素/重複キーを使うテスト、ラベルnilチェック、タプルcastチェック、空コレクションチェック)。`EtcTests.swift`の調査用コードは整理(削除)済み。全体テスト0失敗。
+  - display style(`.set`/`.dictionary`)の妥当性についての所見: SwiftのMirror.DisplayStyleにはmultiset/multimap専用の値が存在しないため、厳密に一致する選択肢は無い。MultiSet/MultiMapは重複を許す点で数学的な集合・辞書ではないが、(a)既存の`///`コメントで「重複も個別の子として反映される」ことは明記済み、(b)LLDB/Playgroundでの表示上の効果は主に視覚的なグルーピング(波括弧的表現等)であり厳密な一意性保証を意味しない、という理由から、現状の`.set`/`.dictionary`は「最も近い既存の選択肢」として妥当と判断する。ただし`.collection`(重複を許す意味合いがより近い)という代替案も考えられるため、最終判断はユーザーに委ねる。
 - 内部構造をテスト観点でどのように区分するのか、まだ結論がでていない
 - 生木へのテストを増やすと変更コストがかさむので、バランスに悩んでいる
 - `Tree/Fixture/UnsafeNodeReferenceFixture.swift`・`UnsafeTreeV2/Instance/RawBufferHeadFixture.swift`・`UnsafeNodeRawBufferCrossCheckTests.swift`(2026-10-01新設)は、`MemoryLayoutTests`/`UnsafeNodeMemoryLayoutTests`/`BucketAllocatorTests`の既存`checkXxx`ヘルパー・payload型リストと意図的に重複している。ユーザー方針「一旦多重化して、あとで整理しましょう」により統合はまだ行っていない

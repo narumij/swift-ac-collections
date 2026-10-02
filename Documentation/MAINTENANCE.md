@@ -20,7 +20,7 @@
 
 ### 優先事項
 
-- 現在、未完了の優先事項なし
+- 原木のTest as Specificationを精査し、確定した内部契約をDesign文書と品質方針へ反映する
 
 ### 相談事項
 
@@ -160,4 +160,5 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
+- 2026-10-02 Codex (GPT-5): 原木テストの設計反映に着手。`Foundamental`配下を精査し、公開APIのTest as Specificationとは別に、`__tree`移植層の内部契約を`Quality-Checklist.md`へ追加した。比較器のstatic `Base`注入と状態付きインスタンス注入、赤黒木不変条件、unique/multi、node/payloadの所有権とレイアウト、sealの世代、Death Testの位置付けを記録。Fixtureは製品実装ではなく参照実装として扱い、`UnsafeNode`参照計算と`RawBuffer`実計算の独立照合、poison塗り分けの意味も明文化した。次は各契約を既存のDesign文書へ重複なく配置する。
 - 2026-10-02 14:12 JST Codex (GPT-5): 前回保留だったDocC検証を完了した。ローカルではSwiftPMのsandbox制約を回避するため`--disable-sandbox`が必要だったが、Release構成と`--warnings-as-errors`を含むCI相当の生成は成功した。生成先は`.build/plugins/Swift-DocC/outputs/RedBlackTreeCollections.doccarchive`。追加イニシャライザ、共通操作ガイド、4型および3種類のViewのTopicsとリンクに未解決事項はない。GitHub Actions上の実行結果そのものは、この環境から取得できていない。

@@ -266,8 +266,50 @@ jobs:
 
           exit "$status"
 
+      - name: Isolate Address Sanitizer test interaction scope
+        continue-on-error: true
+        env:
+          SWIFT_BACKTRACE: enable=yes
+        shell: bash
+        run: |
+          set +e
+          mkdir -p asan-logs
+
+          scopes=(
+            TreeFoundamentalAllocationTests
+            TreeFoundamental
+            RedBlackTreeTreeTests
+          )
+
+          status=0
+          for scope in "${scopes[@]}"; do
+            echo "::group::ASan scope: $scope"
+            ASAN_OPTIONS="detect_leaks=0:symbolize=1:abort_on_error=1:log_path=asan-logs/$scope" \
+              swift test -c debug --sanitize address --build-system native \
+              --filter "$scope" \
+              --xunit-output "asan-logs/$scope.xml"
+            result=$?
+            echo "exit status: $result"
+            echo "::endgroup::"
+            if [ "$result" -ne 0 ]; then
+              status=1
+            fi
+          done
+
+          exit "$status"
+
       - name: Run tests with Address Sanitizer
         env:
-          ASAN_OPTIONS: detect_leaks=0:symbolize=1:abort_on_error=1
+          ASAN_OPTIONS: detect_leaks=0:symbolize=1:abort_on_error=1:log_path=asan-logs/full
           SWIFT_BACKTRACE: enable=yes
-        run: swift test -c debug --sanitize address --build-system native
+        run: >-
+          swift test -c debug --sanitize address --build-system native
+          --xunit-output asan-logs/full.xml
+
+      - name: Upload Address Sanitizer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: address-sanitizer-diagnostics
+          path: asan-logs
+          if-no-files-found: warn

@@ -69,6 +69,9 @@
 
 ### 保留中の判断・懸念
 
+- **2026-10-03 JST 未修正の実バグ(重要・引き継ぎ)**: `Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2+KeyValue.swift`の`subscript(key:)`の`_modify`で、`dictionary[existingKey] = nil`(キー削除)がValueが参照型(class)の場合に二重解放でクラッシュする(再現済み、一時テストで確認・削除済み)。原因: `Base.__mapped_value_ptr(__child).move()`で既にValueの所有権を取り出した後、nil分岐で`erase(__child.pointee)`を呼んでおり、`erase`→`destroy`→`___pushRecycle`(`UnsafeTreeV2+BufferHeader.swift`)内の`freshBucketAllocator.deinitialize(...)`がpayload全体(Key+Value)を丸ごと再度deinitializeしてしまう。`erase(_:)`自体には元から「メモリ破壊の可能性がある」という警告コメントが付いていた(`unsafe_tree+erase.swift`)。`RedBlackTreeMultiMap`に同種のsubscript実装があるかは未確認。
+  - **方針検討中**: ユーザーは「ガードは性能影響があるので最悪の手にしたい」として、実行時ガード(例: `___pushRecycle`側で「既にmove済みか」を判定してdeinitializeをスキップ)よりも先に、**`.move()`をそもそも使わない設計に変える場合の影響を確認したい**との意向。`.move()`を使わない=`erase`に任せて丸ごとdeinitializeさせ、`_modify`側は値を読み出すだけ(コピーまたは別の手段)にする方向性だが、具体的な代替実装は未検討。影響範囲(`subscript(key:default:)`等、同じ`_modify`構造を持つ他の箇所)の洗い出しも未着手。
+  - 次回これを引き継ぐ場合は、まず(a)`RedBlackTreeMultiMap`の同種subscriptの有無、(b)`.move()`を使わない代替実装案、(c)影響範囲の洗い出し、の順で進めるとよい。
 - 内部構造をテスト観点でどのように区分するのか、まだ結論がでていない
 - 生木へのテストを増やすと変更コストがかさむので、バランスに悩んでいる
 - `RedBlackTreeMappedValuesView._isdentical(to:)`はSources内で呼び出しゼロ(`Equatable`適合なし)。削除するかテストを書くかはユーザー判断待ち

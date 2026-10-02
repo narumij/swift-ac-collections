@@ -158,6 +158,8 @@ extension RedBlackTreeMultiSet {
 
   /// Returns the number of elements equal to the given value.
   ///
+  /// - Parameter element: The element to count.
+  /// - Returns: The number of occurrences of `element` in the multiset.
   /// - Complexity: O(log `count` + `distance`), where `distance` is the number of matching elements.
   @inlinable
   public func count(of element: Element) -> Int {
@@ -169,8 +171,10 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// Returns a Boolean value that indicates whether the given element exists in the set.
+  /// Returns a Boolean value that indicates whether the given element exists in the multiset.
   ///
+  /// - Parameter element: The element to look for.
+  /// - Returns: `true` if the multiset contains at least one occurrence of `element`; otherwise, `false`.
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(_ element: Element) -> Bool {

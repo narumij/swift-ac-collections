@@ -25,28 +25,43 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
+    /// A mutable view over a contiguous range of this set.
     public typealias View = RedBlackTreeKeyOnlyRangeView<Self>
   }
 
   extension RedBlackTreeSet {
 
+    /// A concrete half-open range of red-black-tree indices.
     public typealias IndexRange = RedBlackTreeIndexRange
+    /// A range expression whose bounds are resolved against a red-black tree.
     public typealias IndexRangeExpression = RedBlackTreeIndexRangeExpression
   }
 
   extension RedBlackTreeSet {
 
+    /// Returns whether the whole collection forms a valid subrange.
+    ///
+    /// - Parameter bounds: The unbounded range expression (`...`).
+    /// - Returns: `true` when this set's complete index range is valid.
     @inlinable
     public func containsSubrange(_ bounds: UnboundedRange) -> Bool {
       return __tree_.isValid(range: ___safe_range)
     }
 
+    /// Returns whether `bounds` identifies a valid subrange of this set.
+    ///
+    /// - Parameter bounds: The concrete index range to validate.
+    /// - Returns: `true` if both bounds belong to this set and are in ascending order; otherwise, `false`.
     @inlinable
     public func containsSubrange(_ bounds: IndexRange) -> Bool {
       let range = __tree_.__purified_safe_(bounds)
       return __tree_.isValid(range: range)
     }
 
+    /// Returns whether `bounds` resolves to a valid subrange of this set.
+    ///
+    /// - Parameter bounds: The range expression to resolve and validate.
+    /// - Returns: `true` if the resolved bounds belong to this set and are in ascending order; otherwise, `false`.
     @inlinable
     public func containsSubrange(_ bounds: IndexRangeExpression) -> Bool {
       let range: _SafeRange = __tree_.__purified_safe_(bounds).relative(to: __tree_)
@@ -57,6 +72,9 @@
 
   extension RedBlackTreeSet {
 
+    /// Accesses a view spanning the whole set.
+    ///
+    /// - Parameter bounds: The unbounded range expression (`...`).
     @inlinable
     public subscript(bounds: UnboundedRange) -> View {
       @inline(__always) get {
@@ -67,6 +85,11 @@
       }
     }
 
+    /// Accesses a view over the specified concrete index range.
+    ///
+    /// An invalid or reversed range produces an empty view.
+    ///
+    /// - Parameter bounds: The concrete index range to access.
     @inlinable
     public subscript(bounds: IndexRange) -> View {
       @inline(__always) get {
@@ -79,6 +102,11 @@
       }
     }
 
+    /// Accesses a view over the specified range expression.
+    ///
+    /// An expression that resolves to an invalid or reversed range produces an empty view.
+    ///
+    /// - Parameter bounds: The range expression to resolve and access.
     @inlinable
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
@@ -94,6 +122,10 @@
 
   extension RedBlackTreeSet {
 
+    /// Removes every element from the set.
+    ///
+    /// - Parameter bounds: The unbounded range expression (`...`).
+    /// - Returns: The resulting `endIndex`.
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: UnboundedRange) -> Index {
@@ -101,6 +133,11 @@
       return erase(_range: ___safe_range)
     }
 
+    /// Removes the elements in the specified concrete index range.
+    ///
+    /// - Parameter bounds: A valid range of this set.
+    /// - Returns: The index immediately following the removed elements.
+    /// - Precondition: `bounds` is a valid, ascending subrange of this set.
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: IndexRange) -> Index {
@@ -109,6 +146,11 @@
       return erase(_range: range)
     }
 
+    /// Removes the elements selected by the specified range expression.
+    ///
+    /// - Parameter bounds: A range expression that resolves to a valid subrange of this set.
+    /// - Returns: The index immediately following the removed elements.
+    /// - Precondition: The resolved range is a valid, ascending subrange of this set.
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
@@ -120,6 +162,12 @@
 
   extension RedBlackTreeSet {
 
+    /// Removes elements in `bounds` that satisfy `shouldBeRemoved`.
+    ///
+    /// - Parameters:
+    ///   - bounds: A valid range of this set.
+    ///   - shouldBeRemoved: A predicate that returns `true` for each element to remove.
+    /// - Precondition: `bounds` is a valid, ascending subrange of this set.
     @inlinable
     public mutating func erase(
       _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
@@ -131,6 +179,12 @@
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
 
+    /// Removes elements in the resolved range that satisfy `shouldBeRemoved`.
+    ///
+    /// - Parameters:
+    ///   - bounds: A range expression that resolves to a valid subrange of this set.
+    ///   - shouldBeRemoved: A predicate that returns `true` for each element to remove.
+    /// - Precondition: The resolved range is a valid, ascending subrange of this set.
     @inlinable
     public mutating func erase(
       _ bounds: IndexRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
@@ -243,6 +297,13 @@
 
   extension RedBlackTreeSet {
 
+    /// Returns the range of indices containing `element`.
+    ///
+    /// A set contains at most one matching element. If `element` isn't present,
+    /// the returned range is empty at the position where it could be inserted.
+    ///
+    /// - Parameter element: The element whose range to find.
+    /// - Returns: A half-open range from `lowerBound(element)` to `upperBound(element)`.
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func equalRange(_ element: Element) -> RedBlackTreeIndexRange {

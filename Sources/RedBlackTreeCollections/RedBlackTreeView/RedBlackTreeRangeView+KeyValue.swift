@@ -22,6 +22,10 @@
 
 #if !COMPATIBLE_ATCODER_2025
   @frozen
+  /// A mutable view over a contiguous range of a red-black-tree dictionary or multimap.
+  ///
+  /// The view preserves ascending key order. Mutating it applies copy-on-write
+  /// and affects only elements inside the view's bounds.
   public struct RedBlackTreeKeyValueRangeView<Container>: UnsafeMutableTreeHostV2
   where
     Container: ___Root,
@@ -44,10 +48,12 @@
     @usableFromInline
     internal var __tree_: Tree
 
+    /// The position of the first key-value pair in a nonempty view.
     public var startIndex: Index {
       ___index(_sealed_start.pointer!)
     }
 
+    /// The view's “past the end” position.
     public var endIndex: Index {
       ___index(_sealed_end.pointer!)
     }

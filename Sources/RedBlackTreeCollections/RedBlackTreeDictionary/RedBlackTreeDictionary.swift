@@ -153,8 +153,12 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// Returns the number of elements equal to the given key.
+  /// Returns the number of elements with the given key.
   ///
+  /// Because a dictionary stores unique keys, the result is either `0` or `1`.
+  ///
+  /// - Parameter key: The key to count.
+  /// - Returns: `1` if the dictionary contains `key`; otherwise, `0`.
   /// - Complexity: O(log `count`)
   @inlinable
   public func count(forKey key: Key) -> Int {
@@ -168,6 +172,8 @@ extension RedBlackTreeDictionary {
 
   /// Returns a Boolean value that indicates whether the given key exists in the dictionary.
   ///
+  /// - Parameter key: The key to look for.
+  /// - Returns: `true` if the dictionary contains `key`; otherwise, `false`.
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {

@@ -28,6 +28,10 @@
 
 #if !COMPATIBLE_ATCODER_2025
   @frozen
+  /// A mutable view of mapped values in a contiguous dictionary or multimap range.
+  ///
+  /// Assigning through this view changes mapped values without changing their
+  /// keys or the collection's key order.
   public struct RedBlackTreeMappedValuesView<Container>: UnsafeMutableTreeHostV2
   where
     Container: ___Root,
@@ -50,10 +54,12 @@
     @usableFromInline
     internal var __tree_: Tree
 
+    /// The position of the first mapped value in a nonempty view.
     public var startIndex: Index {
       ___index(_sealed_start.pointer!)
     }
 
+    /// The view's “past the end” position.
     public var endIndex: Index {
       ___index(_sealed_end.pointer!)
     }
@@ -131,6 +137,8 @@
 
     /// Accesses the element at the specified position.
     ///
+    /// - Parameter position: A valid element index within this view.
+    /// - Precondition: `position` identifies an element inside the view.
     /// - Complexity: O(1)
     @inlinable
     public subscript(position: Index) -> Element {
@@ -148,6 +156,12 @@
 
   extension RedBlackTreeMappedValuesView {
 
+    /// Exchanges the mapped values at two positions without changing their keys.
+    ///
+    /// - Parameters:
+    ///   - i: A valid element index within this view.
+    ///   - j: Another valid element index within this view.
+    /// - Precondition: Both indices identify elements inside the view.
     public mutating func swapAt(_ i: Index, _ j: Index) {
       _ensureUnique()
 

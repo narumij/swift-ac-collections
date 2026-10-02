@@ -18,6 +18,34 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     try super.tearDownWithError()
   }
 
+  #if !COMPATIBLE_ATCODER_2025
+    /// `formIndex(_:offsetBy:limitedBy:)`が、現在の基準である`String`と同じく、
+    /// limit到達時は成功し、超過時はlimitまで移動して失敗を返すこと。
+    func testFormIndexLimitedByMatchesString() {
+      let string = "abcd"
+      let stringLimit = string.index(after: string.startIndex)
+
+      var stringExact = string.startIndex
+      XCTAssertTrue(string.formIndex(&stringExact, offsetBy: 1, limitedBy: stringLimit))
+      XCTAssertEqual(stringExact, stringLimit)
+
+      var stringOver = string.startIndex
+      XCTAssertFalse(string.formIndex(&stringOver, offsetBy: 2, limitedBy: stringLimit))
+      XCTAssertEqual(stringOver, stringLimit)
+
+      let set = RedBlackTreeSet([0, 1, 2, 3])
+      let setLimit = set.index(after: set.startIndex)
+
+      var setExact = set.startIndex
+      XCTAssertTrue(set.formIndex(&setExact, offsetBy: 1, limitedBy: setLimit))
+      XCTAssertEqual(setExact, setLimit)
+
+      var setOver = set.startIndex
+      XCTAssertFalse(set.formIndex(&setOver, offsetBy: 2, limitedBy: setLimit))
+      XCTAssertEqual(setOver, setLimit)
+    }
+  #endif
+
   #if !COMPATIBLE_ATCODER_2025 && DEBUG
     func testAPICheck() throws {
 

@@ -35,6 +35,7 @@
 ### 連絡事項
 
 - この文書のユーザー記入欄を更新する場合は、日付に加えて時刻も記載する
+- 2026-10-02 16:02 JST ユーザー要望: Test as Specificationとの照合中に公開仕様として疑問が残った点は、推測で確定せず、この文書の`保留中の判断・懸念`へ連絡事項として記録する
 - 最後に作業したモデル名とバージョンを記録する
 - 完了済みログを無制限に蓄積しない。恒久的な知見は規則へ移し、`Current handoff`は直近の状況を中心に保つ
 
@@ -45,6 +46,7 @@
 
 ### 保留中の判断・懸念
 
+- 2026-10-02 16:02 JST: `RedBlackTreeMultiMap.lowerBound(_:)`の既存コメントは、同値キーが複数ある場合に「最初（最も早く挿入された）」要素を返すとしている。先頭の同値要素を返すことは探索仕様から確認できるが、同値キー間の挿入順保持を公開契約に含めるかは、検索テストが値を`sorted()`して比較しており確定できない。順序保証をTest as Specificationで明示するか、「最も早く挿入された」をコメントから外すか判断が必要。
 - API Matrix上の多くの共通APIが、各型のDocCでは`Default Implementations`配下に入る。今回追加した共通操作ガイドから各操作の個別シンボルへ、さらに細かいリンクを追加する必要があるかは公開結果を見て判断する
 - 2026-10-02 15:34 JST: `Design-NodeStorage.md`へ記録した「move済みstorageを通常削除で再度deinitializeしない」という所有権契約に、現行実装の既知の未適合がある。`UnsafeTreeV2+KeyValue.swift`のoptional key subscript `_modify`は、既存mapped valueを`.move()`した後、nil代入時に通常の`erase`へ渡すため、参照型Valueで二重破棄になる。詳細と再現経緯は`Tests/TESTING.md`の保留事項を正とする。設計契約は確定しているが、実装修正と回帰テストが完了するまで「全経路で所有権契約を満たす」とは記述しない。
 
@@ -98,6 +100,7 @@ APIの有無は実装とAPI Matrix、挙動は実装とテストを照合して�
 
 - DocCへ公開する説明だけを`///`で記述する
 - 日本語の実装メモ、設計途中の覚え書き、保留事項は`//`を使用する
+- Index操作の公開挙動は、ライブラリ固有の仕様がTest as Specificationで明示されていない限り、現行Swift標準ライブラリの`String`を比較基準とする。判断に迷う場合は`Tests/RedBlackTreeTests/EtcTests.swift`へ同じ入力による比較テストを置いて確認する
 - 宣言の実際の引数名と`- Parameter`の名前を一致させる
 - 戻り値、重複要素の扱い、Indexの無効化条件、計算量を実装と照合する
 - コレクションの順序性は`sorted`と表現する
@@ -183,6 +186,11 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
+- 2026-10-02 16:15 JST Codex (GPT-5): 公開Range View監査を開始。KeyOnly / KeyValue / MappedValuesの3 Viewについて、型の役割、範囲境界の`startIndex` / `endIndex`を文書化し、MappedValuesの要素subscriptと`swapAt`へ引数、事前条件、キー順を変更しない契約を追記した。Release DocCの`--warnings-as-errors`生成は成功。このView監査は未完了で、次は基本状態、走査、先頭末尾、削除、Index有効性を3型横断で照合する。
+- 2026-10-02 16:12 JST Codex (GPT-5): 公開コメントドック監査の第4区切りとして、4型のRange/Bound式と範囲eraseを型別`_16_BoundExpressionTests.swift`、Range Viewテスト、Death Test、現行実装へ照合した。公開View/IndexRange/IndexRangeExpression alias、`containsSubrange`、3種の範囲subscript、5種の範囲eraseへ説明、引数、戻り値、範囲の有効性と事前条件を横展開した。逆順・無効範囲は`containsSubrange`で`false`、subscriptでは空Viewへ正規化される一方、eraseは有効な昇順範囲を要求する経路差を明文化した。Bound ExpressionおよびRange View関連147テストが成功し、Release DocCの`--warnings-as-errors`生成も成功。次は3種類の公開Range View自身のコメントドックをTest as Specificationへ照合する。
+- 2026-10-02 16:08 JST Codex (GPT-5): 公開コメントドック監査の第3区切りとして、4型のIndex基本操作を型別`_2_BidirectionalCollectionTests.swift`、`_3_IndexSequenceTests.swift`、Death Test、現行実装へ照合した。`startIndex` / `endIndex`、距離、前後・offset移動、limit付き移動、`isElement` / `isEnd`の説明を横展開し、Setに残っていたarray表記と`index(after:)`の説明誤りを修正。さらに4型のoptionalな`firstIndex`が不在時に`endIndex`ではなく`nil`を返すようコメントを訂正した。Index挙動は現行`String`を基準とする方針を規則化し、`EtcTests.testFormIndexLimitedByMatchesString`で、limit到達は`true`、超過時はlimitまで移動して`false`となる一致を確認した。対象テストは成功。Release DocCの`--warnings-as-errors`生成も成功。次はRange/Bound式とViewの公開Index操作を監査する。
+- 2026-10-02 16:02 JST Codex (GPT-5): 公開コメントドック監査の第2区切りとして、4型の検索APIを型別`_4_SearchTests.swift`、`_16_BoundExpressionTests.swift`、API Matrix、現行実装へ照合した。`find`、`equalRange`、`contains`、`count(of:)` / `count(forKey:)`へ説明、引数、戻り値、不在時の挙動、unique/multiの差、計算量を追記した。`equalRange`はlower/upper boundによる半開範囲で、不在時は挿入位置の空範囲、multi型では全一致要素を含むことを明文化した。MultiMapの同値キー間の挿入順保証はTest as Specificationから確定できないため、保留事項へ記録した。Release DocCの`--warnings-as-errors`生成は成功。次は公開Index移動・距離・有効性判定とRange/Bound式を監査する。
+- 2026-10-02 15:51 JST Codex (GPT-5): 公開コメントドック監査の第1区切りとして、4型の初期化APIを型別`_0_InitializationTests.swift`、API Matrix、現行実装へ照合した。Sequence/Collection/Range、unique keys、重複統合、grouping、array/dictionary literal、minimum capacityの説明、引数、事前条件、重複保持規則、計算量を修正。Setは重複を破棄しMultiSetは保持すること、Dictionaryの`uniqueKeysWithValues`は重複キーを許可しないこと、MultiMapのgroupingは配列へ統合せず全要素を保持すること、Range専用initializerと降順Sequenceのオーバーロード差を明文化した。`swift package --disable-sandbox -c release generate-documentation --target RedBlackTreeCollections --warnings-as-errors`は成功。次は検索・Bounds系の公開コメントドックを監査する。
 - 2026-10-02 15:34 JST Codex (GPT-5): ドキュメント横断監査まで完了。Design文書の相対リンクに欠落はなく、利用者向け文書にも現行のCollection/Stridable方針との矛盾は見つからなかった。Overviewから品質方針への導線を追加し、Memory Layoutの関連文書リンクを統一。Test as SpecificationをDesignへ反映する恒久手順も本書へ追加した。CHANGELOGには前回更新後の差分から`OptionalArray1D` / Viewの参照型要素nil代入時の二重解放修正だけを追記し、重複するテスト再編は既存項目へ包含した。OptionalArrayの公開コメントへnil代入の破棄契約と非所有Viewの寿命を追記し、`swift build --disable-sandbox --target OptionalArrayModule`の成功を確認した。通常のsandbox付きbuildは環境のmanifest sandbox制約で開始前に失敗する。
 - 2026-10-02 15:34 JST Codex (GPT-5): 原木`Foundamental`テストから確定できる内部契約のDesign反映を完了した。実装への逆照合では、limit付きN歩移動が「ちょうど最終歩でlimitへ着く場合は成功」である点と、Dictionary/MultiMapのCodableが`RedBlackTreePair`を直接encode/decodeする点まで確認した。Fixture固有のkey代用や個別allocationを製品仕様へ混入させず、`TreeNodeOnlyFixture`と`TreeOwnedNodeFixture`の責務・非責務を`Tests/RedBlackTreeFixture/Fixtures.md`へ記録した。今後は実装または原木テストの変更時に、対応するDesign契約も同じ作業で更新する。
 - 2026-10-02 14:12 JST Codex (GPT-5): 前回保留だったDocC検証を完了した。ローカルではSwiftPMのsandbox制約を回避するため`--disable-sandbox`が必要だったが、Release構成と`--warnings-as-errors`を含むCI相当の生成は成功した。生成先は`.build/plugins/Swift-DocC/outputs/RedBlackTreeCollections.doccarchive`。追加イニシャライザ、共通操作ガイド、4型および3種類のViewのTopicsとリンクに未解決事項はない。GitHub Actions上の実行結果そのものは、この環境から取得できていない。

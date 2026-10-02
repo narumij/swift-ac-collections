@@ -158,6 +158,10 @@ extension RedBlackTreeSet {
 
   /// Returns the number of elements equal to the given value.
   ///
+  /// Because a set stores unique elements, the result is either `0` or `1`.
+  ///
+  /// - Parameter element: The element to count.
+  /// - Returns: `1` if the set contains `element`; otherwise, `0`.
   /// - Complexity: O(log `count`)
   @inlinable
   public func count(of element: Element) -> Int {
@@ -171,6 +175,8 @@ extension RedBlackTreeSet {
 
   /// Returns a Boolean value that indicates whether the given element exists in the set.
   ///
+  /// - Parameter element: The element to look for.
+  /// - Returns: `true` if the set contains `element`; otherwise, `false`.
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func contains(_ element: Element) -> Bool {

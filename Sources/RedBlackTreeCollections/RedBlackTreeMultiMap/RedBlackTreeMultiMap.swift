@@ -169,6 +169,8 @@ extension RedBlackTreeMultiMap {
 
   /// Returns the number of key-value pairs with the given key.
   ///
+  /// - Parameter key: The key to count.
+  /// - Returns: The number of key-value pairs whose key is equal to `key`.
   /// - Complexity: O(log `count` + `distance`), where `distance` is the number of matching elements.
   @inlinable
   public func count(forKey key: Key) -> Int {
@@ -182,6 +184,8 @@ extension RedBlackTreeMultiMap {
 
   /// Returns a Boolean value that indicates whether the given key exists in the multimap.
   ///
+  /// - Parameter key: The key to look for.
+  /// - Returns: `true` if the multimap contains at least one element with `key`; otherwise, `false`.
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {

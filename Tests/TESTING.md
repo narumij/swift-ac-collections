@@ -32,9 +32,6 @@
 - メイン担当は定期的にこの文書確認する癖をつけること
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
 - Fixtureの変化を把握し、Fixture.mdに反映すること(Claude)(毎回)
-- BareArrayModuleのテストを追加
-- OptionalArrayModuleのテストを追加
-- 参照型は過剰開放だけではなく、メモリリークも同時に検査できるようにすること
 
 ### 相談事項
 
@@ -79,6 +76,9 @@
 
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
+
+- 2026-10-03 Claude (Sonnet 5): 年代順ログ(2026-10-01 07:11 JST)でユーザーが明示的な未完了課題として登録した2点のうち、1点目「4型のランダム試験を『参照モデル比較＋操作ごとの赤黒木不変条件確認』の組にする」が既に解消済みと判明したため記録する。4型それぞれの`_98_FuzzTests.swift`を確認したところ、Set/MultiSet/Dictionary/MultiMapの全てが`test_random...Matches...`(参照モデル比較、各操作後に比較)と`test_randomInsertAndEraseMaintainsTreeInvariant`(各操作後に`___tree_invariant_for_fuzz()`)の両方を既に持っていた。`git log`で確認したところ、登録時点(07:11 JST)の約3.5時間後のコミット`c80590b8`(2026-10-01 10:46 JST、作者narumij=ユーザー本人)で4型分のFuzzTestsへ不足していた側のテストが追加されており、ユーザー自身の作業で登録後すぐに解消済みだったことが分かった(AIの横展開ではない)。2点目(Index世代・Range ViewのCoW寿命検証のKeyValue系への横展開)は既に別エントリ(「連番の落ち穂拾い」対応分)で完了記録済みのため、これで2点とも完了。コード変更は無し(確認のみ)。
+- 2026-10-03 Claude (Sonnet 5): 優先事項「BareArrayModule/OptionalArrayModuleのテストを追加」「参照型は過剰開放だけではなくメモリリークも同時に検査できるようにすること」に対応。両モジュールへのSendableテスト・参照型ライフタイムテスト追加は別エントリで記録済み。後者について補足: 本セッションで使っている`DeinitializeCounter`パターン(class+static count、init/deinitで+1/-1)は、構造上すでに過剰解放とリークの両方を同時に検知できる。`XCTAssertEqual(count, 期待値)`という完全一致での検証のため、期待値より少なければ過剰解放(または二重解放でクラッシュ)、期待値より多ければリークとして、どちらに転んでも必ず検出される(片方だけ見て片方を見落とす、という設計にはなっていない)。既存テスト(削除系・View・CoW・subscript上書き)は全てこの形式で書かれているため、追加対応は不要と判断。
 
 - 2026-10-03 Claude (Sonnet 5): 参照型ライフタイム横展開の続きとして、CoW(コピー後の片方変異)での参照型要素の扱いを検証。`RedBlackTreeSet_15_ValueSemanticsTests.swift`に`test_copyOnWrite_sharedReferenceElementsReleaseExactlyOnceAfterBothCopiesDeinit`を追加。当初「originalから削除した直後に解放されるはず」という誤った期待値でテストを書き1回失敗したが、`_copyCount`と実際の中身を出力して調査した結果、CoW分岐後の`copy`が同じインスタンスを引き続き参照しているため意図的に解放されないのが正しい挙動と判明(バグではなく期待値の誤り)。期待値を修正して成功を確認し、観点チェックリストに「CoW分岐後は片方から削除してもインスタンスは解放されない」を追記した。全体テスト0失敗。
 

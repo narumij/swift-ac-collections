@@ -33,16 +33,18 @@
   3D cloneのcapacity不足による参照解放漏れを修正済み。
 - AcCollections: 通常時の4型と互換時のPermutationModule再公開テストを追加済み。
   別テストターゲットでもRedBlackTreeのDebug寿命カウンタを各テスト後に検査・初期化する。
-- PermutationModule: `CLAUDE_TASK.md`の修正依頼を受け、方向性を「バリアント削減」へ
-  書き直し済み。`nextPermutations()`を維持する核とし、`Permutations.All`/`IteratorA`/
-  `SubSequenceA`/`unsafePermutations()`を`swift-algorithms`の`permutations()`と重複する
-  削除候補として扱う段階的削除計画(`Maintanance/PermutationModule/ImplementationPlan.md`)
-  と仕様ドラフト(`Sources/PermutationModule/Documentation/Specification.md`)、所見
-  (`ProductReadinessAssessment.md`)を改訂済み(コード・テスト変更なし)。
-- REFACTORING_FROM_ATCODER_2025.md: keystoneテストの由来を再調査し、「release原本の単純な
-  改名」ではなく「2026-01-03に分岐したコピーが並行運用の後、原本削除(2026-09-29)の翌日に
-  大幅書き換えされた派生版」であることを`git`証跡付きで訂正済み。ソース側/テスト側の時系列を
-  分離し、`[事実]`/`[証言]`/`[解釈]`のラベルを導入(コード・テスト変更なし)。
+- PermutationModule: `swift-algorithms`の`permutations()`と重複する全順列列挙系
+  (`unsafePermutations()`/`Permutations.All`/`IteratorA`/`SubSequenceA`)と、
+  `unsafe`系の公開初期化経路(`unsafeNextPermutations()`、`Nexts.init(safe:)`/
+  `init(unsafe:)`)を削除済み(Phase 1A: swift-algorithmsとの等価性PoCで7ケース
+  完全一致を確認し削除ゲート通過→Phase 1B: `nextPermutations()`の保持契約テストを
+  先に追加してから削除)。公開APIは`nextPermutations()`のみに収束。関連3文書
+  (`Specification.md`/`ImplementationPlan.md`/`ProductReadinessAssessment.md`)を
+  実装済みAPIへ合わせて書き直し済み。通常/`COMPATIBLE_ATCODER_2025`両方で
+  `swift test`成功、`Package.swift`は元の状態へ復元済み。
+- REFACTORING_FROM_ATCODER_2025.md: `CLAUDE_TASK.md`の8項目の訂正要件を`git`で
+  再検証(全コミットのハッシュ・日付・`-M`判定・`diff`行数・`merge-base`を再確認)し、
+  いずれも既に正確であることを確認済み(今回の文書自体への追加修正なし)。
 - RedBlackTree: 4型、共有View、BoundExpressionの連番Test as Specification整理済み。
 - Index世代、KeyOnly/KeyValue Range ViewのCoW後Index寿命、および4型とRange Viewの
   `elementsEqual(_:)` / `lexicographicallyPrecedes(_:)` は横展開済み。
@@ -50,11 +52,11 @@
 
 ## 判断待ち
 
-- PermutationModule: `Permutations.All`系(`unsafePermutations()`/`IteratorA`/
-  `SubSequenceA`等、`swift-algorithms`の`permutations()`と重複)を削除するか
-  deprecationに留めるか、`unsafeNextPermutations()`系を公開のまま残すか内部実装専用に
-  するか、`Tests/PermutationTests/NextPermutation.swift`の旧世代実装を削除するか参考実装
-  として残すかがユーザー判断待ち(段階的削除計画は`ImplementationPlan.md`参照)。
+- PermutationModule: `Tests/PermutationTests/NextPermutation.swift`の旧世代実装
+  (本体から未参照)を削除するか参考実装として残すか、`Sendable`適合の要否、公開APIへの
+  `///`コメントドック整備、ABC328E実提出による性能検証(外部AtCoder提出、ユーザー実施)が
+  判断待ち(詳細は`Maintanance/PermutationModule/ImplementationPlan.md`の
+  「保留中の判断」参照)。`All`系・`unsafe`系の削除自体は完了済み。
 - `erase(where:)`がRedBlackTreeSet/MultiSet/Dictionary/MultiMapの4型すべてで
   無条件に`ensureUnique()`を呼ぶため、空コレクションに対しても無駄にシングルトン
   からdetachする(要素が無い/削除されなくてもCoW発生)。`remove(_:)`/
@@ -74,25 +76,22 @@
 
 ## 直近の引き継ぎ
 
-- RedBlackTree 4型のFuzzテストを参照モデル比較+不変条件チェックの組に統合
-  (`CLAUDE_TASK.md`はCompletedへ更新済み)。
-- RedBlackTree 4型の空コレクション用シングルトンの生存・detach・復帰条件を確認し
-  `RedBlackTreeInternal_EmptySingletonTests.swift`へ記録。`erase(where:)`の
-  無駄なdetachを未解決事項として判断待ちへ記録(`CLAUDE_TASK.md`はCompletedへ
-  更新済み)。
-- `CLAUDE_TASK.md` Task 1(PermutationModule再設計フェーズ1: 仕様ドラフト+実装計画)と
-  Task 2(REFACTORING_FROM_ATCODER_2025拡充)を完了(その後、Codexの修正依頼により
-  下記の訂正パスを実施)。
-- PermutationModule関連3文書(`Specification.md`/`ImplementationPlan.md`/
-  `ProductReadinessAssessment.md`)を、ユーザーの意図(バリアント削減)に沿って
-  `All`系削除候補・段階的削除計画へ書き直し。ABC328Eの制約(`N<=8`,`M<=28`)と
-  自己完結ファイルでの提出検証も明記。
-- `REFACTORING_FROM_ATCODER_2025.md`のkeystoneテスト由来を`git`証跡で再調査し、
-  「単純な改名」ではなく「分岐コピーの並行運用→原本削除→大幅書き換え」という
-  実態へ訂正。ソース/テストの時系列分離と`[事実]`/`[証言]`/`[解釈]`ラベルを導入
-  (`CLAUDE_TASK.md`はCompletedへ更新済み、コード・テスト変更なし)。
+- `CLAUDE_TASK.md`のActive修正依頼(Task 1: PermutationModule実装削除、Task 2:
+  REFACTORING_FROM_ATCODER_2025.md訂正)を完了。`CLAUDE_TASK.md`はCompletedへ
+  更新済み、結果サマリーを追記済み。
+- PermutationModule: Phase 1A(swift-algorithms等価性PoC、7ケース完全一致)で
+  削除ゲートを通過させてから、`unsafePermutations()`/`Permutations.All`/
+  `IteratorA`/`SubSequenceA`/`unsafeNextPermutations()`/`Nexts`の公開
+  `init(safe:)`/`init(unsafe:)`を削除。公開APIは`nextPermutations()`のみ。
+  関連3文書を実装済みAPIへ書き直し。
+- REFACTORING_FROM_ATCODER_2025.md: 既存の訂正内容(8項目)を`git`で全件再検証し、
+  全コミットハッシュ・日付・diff行数・`merge-base`が正確であることを確認。
+  文書自体への追加修正は不要だった。
+- 検証: `swift test`(通常モード、全868+27+103+…件、0 failures)、
+  `COMPATIBLE_ATCODER_2025`有効化時の`AcCollectionsTests`/`PermutationTests`、
+  `git diff --check`すべて成功・クリーン。`Package.swift`は元の状態へ復元済み。
 
-最終更新: 2026-10-03 09:30 JST / Claude Sonnet 5
+最終更新: 2026-10-03 09:50 JST / Claude Sonnet 5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

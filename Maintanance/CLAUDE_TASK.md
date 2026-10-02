@@ -1,6 +1,6 @@
 # Codex-to-Claude Work Request
 
-Status: Active — implementation removal required
+Status: Completed
 
 ## Active Correction Assignment
 
@@ -134,6 +134,106 @@ filling gaps with inference.
 When both correction tasks are complete, change this status to `Completed` and
 add a new corrected result summary above the previous result summary. Do not
 delete the previous record; label it as superseded where necessary.
+
+## Result Summary (this pass)
+
+Completed both Task 1 and Task 2 as specified above.
+
+**Task 1 (PermutationModule removal):**
+
+- Phase 1A (deletion gate): Temporarily enabled the `swift-algorithms` test
+  dependency (`Algorithms` product + `USING_ALGORITHMS` define) for the
+  `PermutationTests` target and added
+  `testPhase1A_unsafePermutationsEquivalentToAlgorithmsPermutations`, comparing
+  immediately-materialized `unsafePermutations()` output against
+  `Algorithms.permutations()` for empty, single-element, distinct sorted,
+  distinct unsorted, descending, duplicate-value inputs, and a non-`Array`
+  `Collection` with `Index == Int` (`Range<Int>`). All seven cases matched
+  exactly (`swift test --filter PermutationTests`), confirming the deletion
+  rationale. Recorded the PoC and result in
+  `Maintanance/PermutationModule/ImplementationPlan.md`.
+- Phase 1B: Added retained-contract tests for `nextPermutations()` first
+  (empty, single-element, non-ascending-start continuation, and CoW stability
+  of previously-yielded `SubSequenceN` results via
+  `testNextPermutationsRetainedResultsRemainStable`), then removed from
+  `Sources/PermutationModule/Permutations.swift`: `unsafePermutations()`,
+  `Permutations.All`/`IteratorA`/`SubSequenceA` (and the now-dead
+  `Buffer.prepare(count:)`), `unsafeNextPermutations()`, and the public
+  `Nexts.init(safe:)`/`init(unsafe:)` (the `_unsafe` aliasing flag was removed
+  entirely; `Nexts` now always CoWs via a single internal, non-public `init`
+  reachable only through `nextPermutations()`). Removed the now-API-less
+  `testUnsafePermutations`, `testUnsafeNextPermutations`, the Phase 1A PoC
+  test, and `testPerformance1` from `Tests/PermutationTests/PermutationTests.swift`.
+  Reverted the temporary `Package.swift` dependency/define change (`git diff
+  Package.swift` is empty after the pass).
+- Rewrote `Sources/PermutationModule/Documentation/Specification.md`,
+  `Maintanance/PermutationModule/ImplementationPlan.md`, and
+  `ProductReadinessAssessment.md` to describe the implemented narrow API
+  (`nextPermutations()` only) and record the removed variants as history, not
+  open options. No source/test reference to any removed declaration remains
+  outside these historical documents and `CLAUDE_TASK.md` itself (repo-wide
+  grep checked, including `AcCollections`/`AcCollectionsTests` and
+  `Documentation/Compatibility`; no production dependency on
+  `swift-algorithms` was added).
+- Did not add a swift-algorithms product dependency. Did not touch
+  `Sources/RedBlackTreeCollections/Documentation/Head/Outlines/RedBlackTreeSet.outline.md`.
+
+**Task 1 validation:**
+
+- `swift test --filter PermutationTests` — 2/2 passed (post-removal).
+- `swift build` and `swift test` from the repository root (normal mode) — all
+  existing suites passed, no regressions.
+- Temporarily uncommented `.define("COMPATIBLE_ATCODER_2025")`, ran
+  `swift test --filter 'AcCollectionsTests|PermutationTests'` (includes
+  `AcCollections`'s compat-mode re-export of `PermutationModule`) — passed,
+  then restored `Package.swift` (`git diff Package.swift` empty).
+- `git diff --check` — clean.
+
+**Task 2 (REFACTORING_FROM_ATCODER_2025.md correction):** Re-verified the
+existing corrected document (already reflecting the prior correction pass
+below) against the 8 required corrections and against `git` directly in this
+pass; made no further edits since every check passed.
+
+- Confirmed every cited commit hash resolves with the exact recorded date and
+  subject (`b2580703`, `cc0ca3ad`, `1357bd3c`, `ecb3085d`, `438af006`,
+  `0483012f`, `28a1a5fb`, `29f43bb3`, `60604ff6`, `f4e9f69e`, `63b5699a`,
+  `0ada7b35`, `e91c01ff`, `76328122`, `64118cd6`).
+- Confirmed `b2580703` is both the tip of `remotes/origin/release/AtCoder/2025`
+  and the commit tag `0.1.44` points to, and is a linear ancestor of `HEAD`
+  (`git merge-base b2580703 HEAD` == `b2580703`) — matches the document's
+  "branch tip, not tag" framing.
+- Re-ran `git show -M --name-status ecb3085d` and confirmed the exact D/A path
+  pair the document cites, and recomputed the content diff with plain `diff`
+  (not `git diff`, which inflates the count with patch-header lines): 446
+  changed lines between the 350-line original and 347-line result, matching
+  the document exactly.
+- Confirmed via `git log --follow` that rename tracking naturally stops at
+  `ecb3085d`'s `A` line (i.e., git itself does not treat it as a traceable
+  rename past that point), corroborating the document's reasoning for why
+  `ecb3085d` is documented as delete+rewrite rather than a simple rename.
+  Traced the remaining rename chain (`438af006` → `UnsafeTreeV2BootstrapTests.swift`,
+  `64118cd6`/`aefc6ab6` content-only edits, `0483012f` renamed back) and found
+  it matches T5 exactly.
+  - Confirmed via `git ls-tree` that `28a1a5fb`'s parent commit has 13
+    top-level directories under `Sources/RedBlackTreeModule` (no `Implements/`)
+    and that `28a1a5fb` itself introduces the single `Implements/` directory
+    alongside the 4 public-type directories — matches S2's aggregation claim.
+- No unsupported claims, broken links, or incorrect commit/path references
+  were found. No changes were made to
+  `Maintanance/REFACTORING_FROM_ATCODER_2025.md` in this pass.
+
+**Task 2 validation:**
+
+- All cited commits verified with `git show -s`/`git log --follow`/`git
+  merge-base`/`git ls-tree` as above.
+- `git diff --check` — clean.
+- No `swift test` run was needed; this task made no source or test changes.
+
+Reported to the user in Japanese. Open items remaining for the user (recorded
+in `Maintanance/PermutationModule/ImplementationPlan.md`'s pending-decisions
+list): whether to delete or keep `Tests/PermutationTests/NextPermutation.swift`,
+`Sendable` conformance, doc-comment coverage, and the ABC328E live-submission
+performance check (external AtCoder submission, to be run by the user).
 
 ## Previous Correction Result (superseded by the removal decision above)
 

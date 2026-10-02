@@ -14,11 +14,21 @@ Fixture は SUT (System Under Test) とは別の概念として扱う。
 
 ## Current shared fixtures
 
+### `UnsafeNodeReferenceFixture<Payload>`
+
+場所:
+
+`Tests/RedBlackTreeFixture/UnsafeNodeReferenceFixture.swift`
+
+`UnsafeNode`のpackage-level参照レイアウト計算だけで生メモリ領域を構成する、`~Copyable`な共有Fixture。
+原木専用`RedBlackTreeTreeTests`のメモリレイアウト検証と、`RedBlackTreeTests`のRawBufferクロスチェックが
+同じ参照実装を利用する。生木や`RawBuffer`の計算には依存しない。
+
 ### `RedBlackTreeFixture`
 
 > **注記(2026-10-03)**: `RedBlackTreeFixture`という名前は現在2つの別物を指す。
 > - 本項が説明する protocol(`RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeFixture.swift`)
-> - 新設の独立ターゲット`RedBlackTreeFixture`(`Tests/RedBlackTreeFixture/`、将来ターゲット横断で共有するFixtureの置き場。現時点ではプレースホルダーのみ)
+> - 新設の独立ターゲット`RedBlackTreeFixture`(`Tests/RedBlackTreeFixture/`、ターゲット横断で共有するFixtureの置き場)
 >
 > 同名だが別スコープ(別SwiftPMターゲット)のため衝突はしない。新規追加時は混同しないこと。
 
@@ -294,11 +304,11 @@ balancing、min/max、rotation 等の内部アルゴリズム検証に利用す�
 
 場所:
 
-`Legacy/ArrayBasedFixture/`
+`Tests/RedBlackTreeLegacyTests/ArrayBasedFixture/`
 
 現行の `UnsafeMutablePointer` ベース実装以前の、`_TrackingTag` と Array を使う Fixture。
 
-Legacy は unused を意味しない。現在も `Legacy/ArrayBasedTests` から利用されている。
+Legacy は unused を意味しない。現在も`RedBlackTreeLegacyTests/ArrayBasedTests`から利用されている。
 
 ### `TreeFixtureBase<Element>`
 

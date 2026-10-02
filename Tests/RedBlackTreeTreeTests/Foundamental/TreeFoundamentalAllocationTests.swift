@@ -4,7 +4,7 @@ import XCTest
   @testable import RedBlackTreeCollections
 
   @available(anyAppleOS 26.0, *)
-  final class TreeFoundamentalAllocationTests: RedBlackTreeTestCase {
+  final class TreeFoundamentalAllocationTests: TreeTestCase {
 
     private enum ScalarLayout: _UnsafeNodePtrType, _ScalarBaseType {
       typealias _PayloadValue = Int

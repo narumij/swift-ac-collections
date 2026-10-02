@@ -4,7 +4,7 @@ import XCTest
   @testable import RedBlackTreeCollections
 
   @available(anyAppleOS 26.0, *)
-  final class TreeFoundamentalMutationTests: RedBlackTreeTestCase {
+  final class TreeFoundamentalMutationTests: TreeTestCase {
 
     private final class State {
       let owned = TreeOwnedNodeFixture<Int>()

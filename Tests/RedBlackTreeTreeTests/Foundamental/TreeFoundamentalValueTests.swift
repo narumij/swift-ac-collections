@@ -1,4 +1,5 @@
 import Foundation
+import RedBlackTreeFixture
 import XCTest
 
 #if DEBUG
@@ -8,7 +9,7 @@ import XCTest
 #endif
 
 @available(anyAppleOS 26.0, *)
-final class TreeFoundamentalValueTests: RedBlackTreeTestCase {
+final class TreeFoundamentalValueTests: TreeTestCase {
 
   private struct LazyIntComparator: IntThreeWayComparator {
     typealias _Key = Int

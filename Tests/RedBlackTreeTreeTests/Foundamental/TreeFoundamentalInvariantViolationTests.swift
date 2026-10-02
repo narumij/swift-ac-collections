@@ -11,7 +11,7 @@ import XCTest
   /// 併せて`unsafe_node+debug.swift`の`equiv`/`nullCheck`/`endCheck`
   /// (DEBUG限定の内部整合性チェッカー)も検証する。
   @available(anyAppleOS 26.0, *)
-  final class TreeFoundamentalInvariantViolationTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
+  final class TreeFoundamentalInvariantViolationTests: TreeTestCase, _UnsafeNodePtrType {
 
     func makeFixture() -> TreeNodeOnlyFixture {
       .makeEmpty()

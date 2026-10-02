@@ -24,7 +24,7 @@ import XCTest
 /// `Legacy/ArrayBased`は`_std`系(独立した配列実装)であり、Sourcesが実際に使う`_ptr`系
 /// プロトコルとは別物なので、この基本層の検証には使えない。
 @available(anyAppleOS 26.0, *)
-final class TreeFoundamentalTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
+final class TreeFoundamentalTests: TreeTestCase, _UnsafeNodePtrType {
 
   func makeFixture() -> TreeNodeOnlyFixture {
     .makeEmpty()

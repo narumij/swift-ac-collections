@@ -1,4 +1,5 @@
 import XCTest
+import RedBlackTreeFixture
 
 #if DEBUG
   @testable import RedBlackTreeCollections

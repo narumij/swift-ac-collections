@@ -219,6 +219,16 @@ let package = Package(
       swiftSettings: _settings
     ),
 
+    .testTarget(
+      name: "RedBlackTreeTreeTests",
+      dependencies: [
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        "RedBlackTreeCollections",
+        "RedBlackTreeFixture",
+      ],
+      swiftSettings: _settings
+    ),
+
     .target(
       name: "OptionalArrayModule",
     ),

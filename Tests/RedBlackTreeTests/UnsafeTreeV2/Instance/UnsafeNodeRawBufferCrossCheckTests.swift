@@ -4,11 +4,12 @@
 //
 
 import XCTest
+import RedBlackTreeFixture
 
 #if DEBUG
   @testable import RedBlackTreeCollections
 
-  /// `UnsafeNode`(原木の参照計算、`Tree/Fixture/UnsafeNodeReferenceFixture.swift`)と
+  /// `UnsafeNode`(原木の参照計算、`RedBlackTreeFixture/UnsafeNodeReferenceFixture.swift`)と
   /// `RawBuffer`(`_BucketAllocator`の手で最適化された実装、`RawBufferHeadFixture.swift`)が、
   /// 同じpayload型・容量に対して同じメモリ配置を導くことを確認する。
   final class UnsafeNodeRawBufferCrossCheckTests: XCTestCase {

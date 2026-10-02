@@ -9,7 +9,7 @@ import XCTest
 /// `Implements/__tree/unsafe_node/unsafe_node+pointer+safe.swift`のテスト。
 /// `_SafePtr`/`_SealedPtr`(`Result<..., SealError>`)のヘルパーと、`errorMessage`を検証する。
 @available(anyAppleOS 26.0, *)
-final class TreeFoundamentalSafePtrTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
+final class TreeFoundamentalSafePtrTests: TreeTestCase, _UnsafeNodePtrType {
 
   func makeFixture() -> TreeNodeOnlyFixture {
     .makeEmpty()

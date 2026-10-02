@@ -29,6 +29,7 @@
 ### 優先事項
 (完了したらClaudeやCodexが完了済みの要望に移動してください）
 
+- メイン担当は定期的にこの文書確認する癖をつけること
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
 - Fixtureの変化を把握し、Fixture.mdに反映すること(Claude)(毎回)
 - BareArrayModuleのテストを追加

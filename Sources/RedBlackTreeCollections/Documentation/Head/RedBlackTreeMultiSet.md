@@ -1,78 +1,73 @@
 <!-- 編集用原稿: English user guideと現行Swiftソース先頭コメントの和集合。 -->
-<!-- 重複を整理してから RedBlackTreeSet.swift のコメントドックへ反映する。 -->
+<!-- 重複を整理してから RedBlackTreeMultiSet.swift のコメントドックへ反映する。 -->
 
-<!-- RedBlackTreeSet.ja.md is the canonical source. RedBlackTreeSet.md is its English translation. -->
+<!-- RedBlackTreeMultiSet.ja.md is the canonical source. RedBlackTreeMultiSet.md is its English translation. -->
 
-# RedBlackTreeSet
+# RedBlackTreeMultiSet
 
-English | [日本語](RedBlackTreeSet.ja.md)
+English | [日本語](RedBlackTreeMultiSet.ja.md)
 
-A red-black-tree-based set that keeps its elements in ascending order.
+A red-black-tree-based set that keeps its elements in ascending order and allows duplicate values.
 
 ## Declaration
 
 ```swift
 import AcCollections
 
-struct RedBlackTreeSet<Element: Comparable>
+struct RedBlackTreeMultiSet<Element: Comparable>
 ```
 
 ## Overview
 
-`RedBlackTreeSet` is a set that stores at most one instance of each element and always maintains its elements in ascending order.
+`RedBlackTreeMultiSet` is a set that can store duplicate elements while always maintaining them in ascending order.
 
 ```swift
-let numbers: RedBlackTreeSet = [5, 2, 4, 1, 3]
+let numbers: RedBlackTreeMultiSet = [5, 2, 4, 2, 1, 3, 3]
 
 print(numbers)
-// [1, 2, 3, 4, 5]
+// [1, 2, 2, 3, 3, 4, 5]
 ```
 
-Like the standard library's `Set`, it does not store duplicate values.
+Unlike `RedBlackTreeSet`, it can store multiple elements with the same value.
 
-However, while `Set` manages its elements using a hash table,
-`RedBlackTreeSet` uses a red-black tree, a type of balanced binary search tree.
+`RedBlackTreeMultiSet` uses a red-black tree, a type of balanced binary search tree.
 
 This allows it to search for, insert, and remove elements in logarithmic time,
 while always traversing all elements in sorted order.
 
-`RedBlackTreeSet` is particularly useful when you need to:
+`RedBlackTreeMultiSet` is particularly useful when you need to:
 
-- dynamically insert and remove elements while keeping them sorted
-- find not only whether a value exists, but also the elements immediately before or after it
+- maintain duplicate values while keeping all elements sorted
+- dynamically insert and remove elements while preserving their multiplicities
 - efficiently find the first element greater than or equal to a specified value, or strictly greater than it
+- efficiently find the range of elements with a particular value
 - traverse elements in ascending or descending order
-- work with an ordered set while repeatedly inserting and removing elements
+- work with an ordered multiset while repeatedly inserting and removing elements
 
-If you only need membership tests and do not make use of element ordering,
-the standard library's `Set` may be a better choice.
+If you do not need to store duplicate elements, use `RedBlackTreeSet` instead.
 
-Hash-table lookups take constant time on average,
-while red-black-tree lookups take logarithmic time.
+## Duplicate Elements
 
-In exchange, `RedBlackTreeSet` efficiently supports ordered searches and sorted traversal,
-which hash tables do not directly provide.
-
-## Unique Elements
-
-`RedBlackTreeSet` does not store multiple elements that are considered equivalent by their ordering comparison.
+`RedBlackTreeMultiSet` can store multiple elements that are considered equivalent by their ordering comparison.
 
 ```swift
-let numbers: RedBlackTreeSet = [3, 1, 2, 3, 2, 1]
+let numbers: RedBlackTreeMultiSet = [3, 1, 2, 3, 2, 1]
 
 print(numbers)
-// [1, 2, 3]
+// [1, 1, 2, 2, 3, 3]
 ```
 
-If you need to retain duplicate elements, use `RedBlackTreeMultiSet` instead.
+When the same value is inserted multiple times, each occurrence is stored as an independent element.
+
+If you do not need to store duplicate elements, use `RedBlackTreeSet` instead.
 
 ## Sorted Iteration
 
-When iterating over a `RedBlackTreeSet` in its normal order,
+When iterating over a `RedBlackTreeMultiSet` in its normal order,
 elements always appear in ascending order.
 
 ```swift
-let numbers: RedBlackTreeSet = [7, 2, 9, 1, 5]
+let numbers: RedBlackTreeMultiSet = [7, 2, 9, 2, 1, 5]
 
 for number in numbers {
   print(number)
@@ -84,6 +79,7 @@ Output:
 ```text
 1
 2
+2
 5
 7
 9
@@ -91,6 +87,8 @@ Output:
 
 There is no need to first extract the elements into an array and sort them.
 The collection's structure always maintains the elements in sorted order.
+
+Elements with the same value appear consecutively in the sorted order.
 
 This is particularly useful when elements are repeatedly inserted and removed
 while they need to be processed in sorted order each time.
@@ -105,16 +103,24 @@ For example, you can query:
 - whether a specified value exists
 - the first element greater than or equal to a specified value
 - the first element strictly greater than a specified value
+- the range containing all elements equal to a specified value
 - the element immediately before or after a specified position
+
+In particular, when working with duplicate elements,
+combining lower-bound and upper-bound searches allows you to efficiently find
+the range of elements with the same value.
 
 These operations do not need to linearly scan elements from the beginning.
 
-Because the height of a red-black tree is bounded logarithmically with respect to the number of elements,
-value-based searches run in O(log `count`) time.
+Because the height of a red-black tree is logarithmically bounded with respect to the number of elements,
+value-based searches have a worst-case complexity of O(log `count`).
 
 ## Indices
 
-A `RedBlackTreeSet` index represents a logical position within the sorted sequence of elements.
+A `RedBlackTreeMultiSet` index represents a logical position within the sorted sequence of elements.
+
+Even when multiple elements have the same value,
+each element occupies a distinct position.
 
 Using indices, you can move from one element to the next or previous element.
 
@@ -132,28 +138,28 @@ copy-on-write, as long as the corresponding element still exists and its generat
 Using an index with an unrelated collection is a precondition violation, and detection of
 that misuse is not guaranteed.
 
-## Set Operations
+## Multiset Operations
 
-As a set of unique elements, `RedBlackTreeSet` provides basic set operations
+As a set that allows duplicate elements, `RedBlackTreeMultiSet` provides basic operations
 such as value lookup, insertion, and removal.
 
 ```swift
-var numbers: RedBlackTreeSet = [1, 3, 5]
+var numbers: RedBlackTreeMultiSet = [1, 3, 3, 5]
+
+numbers.insert(3)
+// [1, 3, 3, 3, 5]
 
 numbers.insert(4)
-// [1, 3, 4, 5]
-
-numbers.remove(3)
-// [1, 4, 5]
+// [1, 3, 3, 3, 4, 5]
 ```
 
 Adding an element automatically preserves the collection's sorted order.
 
-Inserting a value that is already present does not add another copy of that value.
+Inserting a value that is already present adds another element with the same value.
 
 ## Performance
 
-`RedBlackTreeSet` uses a red-black tree,
+`RedBlackTreeMultiSet` uses a red-black tree,
 whose height is logarithmically bounded with respect to the number of elements.
 
 The complexities of representative operations are as follows:
@@ -168,7 +174,8 @@ The complexities of representative operations are as follows:
 | Lower-bound lookup | O(log `count`) |
 | Upper-bound lookup | O(log `count`) |
 | Element insertion | O(log `count`) |
-| Search for a value and remove it | O(log `count`) |
+| Search for a value and remove one element | O(log `count`) |
+| Search for a value and remove K matching elements | O(log `count` + K) |
 | Removal at a known index | Amortized O(1) |
 
 These complexities follow from the structure of the red-black tree itself.
@@ -197,7 +204,9 @@ This distinguishes red-black trees from ordinary binary search trees that do not
 
 ## Implementation Details
 
-`RedBlackTreeSet` manages each element as a node in a red-black tree.
+`RedBlackTreeMultiSet` manages each element as a node in a red-black tree.
+
+Elements with the same value are also stored as independent nodes.
 
 Rather than performing an independent heap allocation for every node,
 multiple nodes are stored together in shared storage.
@@ -212,41 +221,42 @@ while retaining the node-based structure required by the red-black tree.
 
 However, unlike `Array`, the elements are not all stored in a single contiguous buffer.
 
-As a result, `RedBlackTreeSet` has different performance characteristics from contiguous arrays.
+As a result, `RedBlackTreeMultiSet` has different performance characteristics from contiguous arrays.
 
 ## Choosing a Collection
 
 Different collection types are suited to different use cases.
 
-`Set` is suitable when element ordering is not required
+`Set` is suitable when element ordering and duplicate values are not required
 and fast membership testing is the primary concern.
 
 `Array` is suitable when you need contiguous storage and fast random access through integer indices.
 
-`RedBlackTreeSet` is suitable when you need to repeatedly insert and remove elements
-while maintaining sorted order and performing searches based on value ordering.
+`RedBlackTreeSet` is suitable when duplicate values are not allowed
+and you need to repeatedly insert and remove elements while maintaining sorted order.
 
-If you need to keep duplicate values in sorted order,
-use `RedBlackTreeMultiSet` instead.
+`RedBlackTreeMultiSet` is suitable when you need to retain duplicate elements
+while maintaining sorted order and performing searches based on value ordering.
 
 ---
 
 ## Current Source Type Documentation
 
-<!-- 以下は現行 RedBlackTreeSet.swift の型コメント。上記にない内容を取りこぼさないための編集素材。 -->
+<!-- 以下は現行 RedBlackTreeMultiSet.swift の型コメント。上記にない内容を取りこぼさないための編集素材。 -->
 
-# RedBlackTreeSet
+# RedBlackTreeMultiSet
 
-`RedBlackTreeSet` is a **sorted unique set** implemented using a red-black tree.
+`RedBlackTreeMultiSet` is a **sorted multiset (allowing duplicates)**
+implemented using a red-black tree.
 Elements are always kept in sorted order.
 
 ```swift
-var set: RedBlackTreeSet<Int> = []
+var set: RedBlackTreeMultiSet<Int> = []
 set.insert(3) // -> [3]
 set.insert(1) // -> [1, 3]
 set.insert(4) // -> [1, 3, 4]
-set.insert(1) // -> [1, 3, 4]
-set.insert(5) // -> [1, 3, 4, 5]
+set.insert(1) // -> [1, 1, 3, 4]
+set.insert(5) // -> [1, 1, 3, 4, 5]
 ```
 
 ## Removal
@@ -254,8 +264,8 @@ set.insert(5) // -> [1, 3, 4, 5]
 Both single-element removal and range removal are supported.
 
 ```swift
-var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-set.remove(3) // -> [1, 4, 5]
+var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+set.remove(3) // -> [1, 1, 4, 5]
 ```
 
 Avoid performing repeated removals via indices in a `for` loop.
@@ -264,20 +274,20 @@ invalidates the operation that retrieves the next index.
 Use the range-removal APIs for consecutive deletions instead.
 
 ```swift
-var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-set[.lowerBound(4) ..< .endIndex].erase() // -> [1, 3]
+var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+set[set.lowerBound(4)..<set.endIndex].erase() // -> [1, 1, 3]
 ```
 
 ```swift
-var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-set.erase(.lowerBound(4) ..< .endIndex) // -> [1, 3]
+var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+set.erase(set.lowerBound(4)..<set.endIndex) // -> [1, 1, 3]
 ```
 
 As in C++, sequential removal using `erase(_:) -> Index` is also supported.
 You can remove elements while receiving the next index.
 
 ```swift
-var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
 var i = set.startIndex
 while i != set.endIndex {
   i = set.erase(i)
@@ -290,16 +300,16 @@ while i != set.endIndex {
 It allows specifying elements or boundaries without handling indices directly.
 
 ```swift
-var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-print(set[.start.advance(by: 1)]) // -> 3
+var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
+print(set[.start.advance(by: 1)]) // -> 1
 ```
 
 ```swift
-var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
+var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
 print(set[.lowerBound(5)]) // -> 5
 print(set[.upperBound(5)]) // -> nil (equivalent to end)
 print(set[.find(2)]) // -> nil (not found)
 ```
 
-- Important: `RedBlackTreeSet` is not thread-safe.
+- Important: `RedBlackTreeMultiSet` is not thread-safe.
 

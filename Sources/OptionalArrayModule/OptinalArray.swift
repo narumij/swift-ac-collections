@@ -16,6 +16,8 @@
 ///
 /// 配列ベースのメモ化に用いる配列です。
 /// 未初期化値の番兵を用意することなく利用できます。
+/// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
+/// subscriptへ`nil`を代入すると、設定済みの要素を破棄して未設定状態へ戻します。
 public struct OptionalArray1D<Element>: ~Copyable {
 
   @usableFromInline let count: Int
@@ -41,6 +43,7 @@ public struct OptionalArray1D<Element>: ~Copyable {
     hasPayload.deallocate()
   }
 
+  /// すべての要素を破棄し、各slotを未設定状態へ戻します。
   @inlinable
   public func removeAll() {
     for i in 0..<count {
@@ -51,6 +54,12 @@ public struct OptionalArray1D<Element>: ~Copyable {
     hasPayload.update(repeating: false, count: count)
   }
 
+  /// 指定位置の要素を取得または更新します。
+  ///
+  /// 未設定の位置からは`nil`を返します。非`nil`の値を代入するとその位置へ要素を構築し、
+  /// `nil`を代入すると既存要素をちょうど一度破棄します。
+  ///
+  /// - Precondition: `position`が`indices`に含まれること。
   @inlinable
   public subscript(position: Int) -> Element? {
 
@@ -322,7 +331,9 @@ extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
 
 /// 要素アクセスの為の一時データ構造
 ///
-/// 参照型の挙動をする
+/// 親の多次元配列が所有する一部分を参照します。View自身はstorageを所有しません。
+/// 親配列の生存中だけ使用でき、Viewを親配列より長く保持してはいけません。
+/// Viewを通じた変更は親配列の同じ要素へ反映されます。
 public struct OptionalArray1DView<Element> {
 
   @inlinable
@@ -339,6 +350,11 @@ public struct OptionalArray1DView<Element> {
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
 
+  /// 指定位置の要素を取得または更新します。
+  ///
+  /// `nil`を代入すると親配列が所有する既存要素を破棄し、そのslotを未設定状態へ戻します。
+  ///
+  /// - Precondition: `position`がこのViewの有効範囲に含まれること。
   @inlinable
   public subscript(position: Int) -> Element? {
 
@@ -376,7 +392,8 @@ extension OptionalArray1DView {
 
 /// 要素アクセスの為の一時データ構造
 ///
-/// 参照型の挙動をする
+/// 親配列のstorageを所有せずに参照する2次元Viewです。
+/// 親配列の生存中だけ使用でき、Viewを通じた変更は親配列へ反映されます。
 public struct OptionalArray2DView<Element> {
 
   @inlinable
@@ -420,7 +437,8 @@ extension OptionalArray2DView {
 
 /// 要素アクセスの為の一時データ構造
 ///
-/// 参照型の挙動をする
+/// 親配列のstorageを所有せずに参照する3次元Viewです。
+/// 親配列の生存中だけ使用でき、Viewを通じた変更は親配列へ反映されます。
 public struct OptionalArray3DView<Element> {
 
   @inlinable

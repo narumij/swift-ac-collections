@@ -40,11 +40,13 @@
 ### 保留中の判断・懸念
 
 - API Matrix上の多くの共通APIが、各型のDocCでは`Default Implementations`配下に入る。今回追加した共通操作ガイドから各操作の個別シンボルへ、さらに細かいリンクを追加する必要があるかは公開結果を見て判断する
+- 2026-10-02 15:34 JST: `Design-NodeStorage.md`へ記録した「move済みstorageを通常削除で再度deinitializeしない」という所有権契約に、現行実装の既知の未適合がある。`UnsafeTreeV2+KeyValue.swift`のoptional key subscript `_modify`は、既存mapped valueを`.move()`した後、nil代入時に通常の`erase`へ渡すため、参照型Valueで二重破棄になる。詳細と再現経緯は`Tests/TESTING.md`の保留事項を正とする。設計契約は確定しているが、実装修正と回帰テストが完了するまで「全経路で所有権契約を満たす」とは記述しない。
 
 ### 完了済みの要望
 
 (ユーザーが確認したら各項目を整理します)
 
+- 2026-10-02 Codex (GPT-5): 前回のCHANGELOG更新以降を再監査。原木・fixture・Legacyのテストターゲット分離とテスト拡充は既存のテスト再編・内部テスト追加の記載へ包含し、重複追記しなかった。利用者影響のある`OptionalArray1D` / `OptionalArray1DView`の参照型要素nil代入時の二重解放修正だけを`Unreleased / Fixed`へ追加した。
 - 2026-10-02 15:34 JST Codex (GPT-5): 原木`Foundamental`テストをTest as Specificationとして精査し、公開仕様とは別の内部契約を品質方針へ定義した。比較注入、LLVM移植監査、赤黒木不変条件、番兵、unique/multi、範囲・距離、tracking tag、seal、Death Test、node/payloadレイアウト、poison塗り分け、所有権と破棄責任を既存Design文書へ反映。`RedBlackTreePair`とthree-way比較の内部値契約も実装へ再照合した。原木専用Fixture二種の責務と非責務を`Fixtures.md`へ追記し、Fixture固有の実装を製品仕様として扱わない境界を記録した。
 - 2026-10-02 14:12 JST Codex (GPT-5): 追加したイニシャライザ、共通操作ガイド、View TopicsをCI相当のローカルRelease生成で検証した。`--disable-sandbox`を付けた`swift package -c release generate-documentation --target RedBlackTreeCollections --warnings-as-errors`が警告・エラーなく成功。生成JSON上で4型の全イニシャライザが各`Creating` Topicsへ収容され、3種類のViewの手動Topicsと、4型・3 Viewから`Common Operations`へのリンクが解決されていることを確認した。
 - 2026-10-01 Codex (GPT-5): `CHANGELOG.md`の現行本文を最後に確定したmerge以降の差分を反映。既存Unreleasedとの重複を避け、Swift-DocCカタログと型/View/共通操作Topics、Release DocC検証・artifact・GitHub Pages公開CI、標準ライブラリ準拠のメンバー分類、macOS 15への最小バージョン変更を追記した。
@@ -95,6 +97,20 @@ APIの有無は実装とAPI Matrix、挙動は実装とテストを照合して�
 - コレクションの順序性は`sorted`と表現する
 - MultiSetとMultiMapについて、要素またはキーが一意であると誤解させる説明を避ける
 - 1型で誤りを見つけた場合は、Set、MultiSet、Dictionary、MultiMapおよび共有Viewへ横展開して確認する
+
+### Test as SpecificationからDesignへの反映
+
+1. テスト名と期待値だけでなく、Fixture、呼び出す実装、失敗条件を読む
+2. 公開APIの契約、内部実装の契約、Fixture固有の便宜、coverage専用ケースへ分類する
+3. 内部契約は現行実装へ逆照合し、テストと実装が同じ誤りを共有していないか確認する
+4. Fixtureの代用キー、個別allocation、固定容量などを製品仕様として文書化しない
+5. 所有権、計算量、移植元との一致、到達不能性など、テストだけで表現できない理由をDesign文書へ記録する
+6. 設計契約と現行実装が一致しない場合、設計へ実装を合わせたことにせず、`保留中の判断・懸念`へ既知差分として記録する
+7. 同じ事実を複数文書へ複製せず、物理配置はMemory Layout、所有権はNode Storage、安全化はMemory Safety、層と注入はInternal Architecture、端点と反復はRangeへ配置する
+8. Overviewと関連文書から導線を張り、相対リンクが実在することを確認する
+
+原木については、実行可能な内部契約とLLVM libc++との構造比較を別の証拠として扱う。
+到達不能な移植由来コードをカバレッジ率だけのために書き換えない。
 
 ### API MatrixとCHANGELOG
 
@@ -161,5 +177,6 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
+- 2026-10-02 15:34 JST Codex (GPT-5): ドキュメント横断監査まで完了。Design文書の相対リンクに欠落はなく、利用者向け文書にも現行のCollection/Stridable方針との矛盾は見つからなかった。Overviewから品質方針への導線を追加し、Memory Layoutの関連文書リンクを統一。Test as SpecificationをDesignへ反映する恒久手順も本書へ追加した。CHANGELOGには前回更新後の差分から`OptionalArray1D` / Viewの参照型要素nil代入時の二重解放修正だけを追記し、重複するテスト再編は既存項目へ包含した。OptionalArrayの公開コメントへnil代入の破棄契約と非所有Viewの寿命を追記し、`swift build --disable-sandbox --target OptionalArrayModule`の成功を確認した。通常のsandbox付きbuildは環境のmanifest sandbox制約で開始前に失敗する。
 - 2026-10-02 15:34 JST Codex (GPT-5): 原木`Foundamental`テストから確定できる内部契約のDesign反映を完了した。実装への逆照合では、limit付きN歩移動が「ちょうど最終歩でlimitへ着く場合は成功」である点と、Dictionary/MultiMapのCodableが`RedBlackTreePair`を直接encode/decodeする点まで確認した。Fixture固有のkey代用や個別allocationを製品仕様へ混入させず、`TreeNodeOnlyFixture`と`TreeOwnedNodeFixture`の責務・非責務を`Tests/RedBlackTreeFixture/Fixtures.md`へ記録した。今後は実装または原木テストの変更時に、対応するDesign契約も同じ作業で更新する。
 - 2026-10-02 14:12 JST Codex (GPT-5): 前回保留だったDocC検証を完了した。ローカルではSwiftPMのsandbox制約を回避するため`--disable-sandbox`が必要だったが、Release構成と`--warnings-as-errors`を含むCI相当の生成は成功した。生成先は`.build/plugins/Swift-DocC/outputs/RedBlackTreeCollections.doccarchive`。追加イニシャライザ、共通操作ガイド、4型および3種類のViewのTopicsとリンクに未解決事項はない。GitHub Actions上の実行結果そのものは、この環境から取得できていない。

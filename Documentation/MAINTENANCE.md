@@ -20,7 +20,7 @@
 
 ### 優先事項
 
-- 原木のTest as Specificationを精査し、確定した内部契約をDesign文書と品質方針へ反映する
+- 現在、未完了の優先事項なし
 
 ### 相談事項
 
@@ -45,6 +45,7 @@
 
 (ユーザーが確認したら各項目を整理します)
 
+- 2026-10-02 15:34 JST Codex (GPT-5): 原木`Foundamental`テストをTest as Specificationとして精査し、公開仕様とは別の内部契約を品質方針へ定義した。比較注入、LLVM移植監査、赤黒木不変条件、番兵、unique/multi、範囲・距離、tracking tag、seal、Death Test、node/payloadレイアウト、poison塗り分け、所有権と破棄責任を既存Design文書へ反映。`RedBlackTreePair`とthree-way比較の内部値契約も実装へ再照合した。原木専用Fixture二種の責務と非責務を`Fixtures.md`へ追記し、Fixture固有の実装を製品仕様として扱わない境界を記録した。
 - 2026-10-02 14:12 JST Codex (GPT-5): 追加したイニシャライザ、共通操作ガイド、View TopicsをCI相当のローカルRelease生成で検証した。`--disable-sandbox`を付けた`swift package -c release generate-documentation --target RedBlackTreeCollections --warnings-as-errors`が警告・エラーなく成功。生成JSON上で4型の全イニシャライザが各`Creating` Topicsへ収容され、3種類のViewの手動Topicsと、4型・3 Viewから`Common Operations`へのリンクが解決されていることを確認した。
 - 2026-10-01 Codex (GPT-5): `CHANGELOG.md`の現行本文を最後に確定したmerge以降の差分を反映。既存Unreleasedとの重複を避け、Swift-DocCカタログと型/View/共通操作Topics、Release DocC検証・artifact・GitHub Pages公開CI、標準ライブラリ準拠のメンバー分類、macOS 15への最小バージョン変更を追記した。
 - 2026-10-01 12:56 JST Codex (GPT-5): 4型のDocC分類をAPI Matrix準拠からSwift標準`Set`/`Dictionary`準拠へ改訂。`Testing for Membership`、`Finding Elements/Keys`、`Adding and Updating Elements/Keys and Values`、`Removing Elements/Keys and Values`、`Combining Sets/MultiSets/MultiMaps`、`Merging Dictionaries`、`Transforming`、`Comparing`、`Reserving Storage`へ整理した。独自のIndexおよびRange/Bound分類は維持し、自動分類に残っていた`erase`、`formIndex`、`merge`/`merging`等の全オーバーロードも手動Topicsへ収容した。
@@ -160,5 +161,5 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
-- 2026-10-02 Codex (GPT-5): 原木`Foundamental`テストの設計反映を継続。内部Test as Specification、比較注入、メモリレイアウト、seal/Death Test、payload所有権、番兵、multiの同値順序、範囲と距離の契約を各Design文書へ反映した。LLVM移植元との構造的一致、実行可能なテスト契約、設計文書は異なる証拠として併用し、到達不能な末尾をカバレッジ目的で改変しない方針も`Design-InternalArchitecture.md`とOverviewへ記録した。次は記述と現行実装の精密な再照合を行い、不一致がなければこの優先事項を完了扱いにする。
+- 2026-10-02 15:34 JST Codex (GPT-5): 原木`Foundamental`テストから確定できる内部契約のDesign反映を完了した。実装への逆照合では、limit付きN歩移動が「ちょうど最終歩でlimitへ着く場合は成功」である点と、Dictionary/MultiMapのCodableが`RedBlackTreePair`を直接encode/decodeする点まで確認した。Fixture固有のkey代用や個別allocationを製品仕様へ混入させず、`TreeNodeOnlyFixture`と`TreeOwnedNodeFixture`の責務・非責務を`Tests/RedBlackTreeFixture/Fixtures.md`へ記録した。今後は実装または原木テストの変更時に、対応するDesign契約も同じ作業で更新する。
 - 2026-10-02 14:12 JST Codex (GPT-5): 前回保留だったDocC検証を完了した。ローカルではSwiftPMのsandbox制約を回避するため`--disable-sandbox`が必要だったが、Release構成と`--warnings-as-errors`を含むCI相当の生成は成功した。生成先は`.build/plugins/Swift-DocC/outputs/RedBlackTreeCollections.doccarchive`。追加イニシャライザ、共通操作ガイド、4型および3種類のViewのTopicsとリンクに未解決事項はない。GitHub Actions上の実行結果そのものは、この環境から取得できていない。

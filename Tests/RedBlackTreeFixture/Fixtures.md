@@ -24,6 +24,46 @@ Fixture は SUT (System Under Test) とは別の概念として扱う。
 原木専用`RedBlackTreeTreeTests`のメモリレイアウト検証と、`RedBlackTreeTests`のRawBufferクロスチェックが
 同じ参照実装を利用する。生木や`RawBuffer`の計算には依存しない。
 
+### `TreeNodeOnlyFixture`
+
+場所:
+
+`Tests/RedBlackTreeTreeTests/Fixture/TreeNodeOnlyFixture.swift`
+
+payloadとallocationを持たず、固定長の`UnsafeNode`領域、end node、nullptrだけで原木の
+ポインタアルゴリズムを検査する`~Copyable`なFixture。rootを別フィールドへcacheせず、
+製品実装およびLLVM libc++の契約と同じく`end_node.__left_`から取得する。
+
+主な用途:
+
+- 挿入、削除、回転後の赤黒木不変条件
+- successor、predecessor、distance、範囲境界
+- unique/multiのnode位置比較
+- tracking tag、seal、path bitmap
+- 壊れた親子リンク、色、黒高さを拒否する診断経路
+
+テスト都合でkeyが必要な場合はtracking tagまたはrecycle countを使うが、それらを製品上の
+論理キーとみなさない。Fixture内のkey adapterは原木protocolを最小構成で駆動するためのもの
+であり、公開コレクションのpayload変換仕様を表さない。
+
+### `TreeOwnedNodeFixture<Payload>`
+
+場所:
+
+`Tests/RedBlackTreeTreeTests/Fixture/TreeOwnedNodeFixture.swift`
+
+原木の`AllocationInterface`と`DellocationInterface`を、生木や`RawBuffer`を経由せず検査する
+`~Copyable`なFixture。`UnsafeNode`の参照レイアウト計算でnodeとpayloadを一つのraw allocationへ
+構築し、Fixtureがallocationの一覧とtracking tagの採番を所有する。
+
+`__construct_node`はnode metadataとpayloadを初期化して所有数を増やし、`destroy`はFixtureが
+所有するnodeだけを受け入れてpayloadを一度破棄し、nodeとraw allocationを解放する。Fixtureの
+破棄時にallocationが残っていればprecondition failureとするため、原木の挿入拒否・単体削除・
+範囲削除が一時nodeやpayloadを残さないことも検査できる。
+
+このFixtureは製品のRecycle Poolを再現しない。個別allocationによる所有権oracleであり、
+pool再利用、bucket chain、capacityの仕様は`UnsafeTreeV2`またはRawBufferのFixtureで検査する。
+
 ### `RedBlackTreeFixture`
 
 > **注記(2026-10-03)**: `RedBlackTreeFixture`という名前は現在2つの別物を指す。

@@ -68,6 +68,12 @@ Set系では `_Key == _PayloadValue` である。
 Dictionary系ではpayloadに `RedBlackTreePair<Key, Value>` を使い、
 公開要素との間を変換する。
 
+`RedBlackTreePair`はDictionary/MultiMapの内部保持型であり、Swift 6.2で観測されたtupleの
+性能低下を避けながら、公開要素の`(key:value:)` tupleとの往復を担う。keyとmapped valueの
+順序を保持し、`Equatable`、`Hashable`、`Comparable`は両成分のtuple semanticsに従う。
+Codable表現はkey、valueの順のunkeyed containerである。この表現は内部型であっても、
+コレクションのencode/decode経路へ影響するため、field追加時に無断でkeyed形式へ変えない。
+
 公開コレクションは木アルゴリズムを重複実装せず、`UnsafeTreeV2` へ委譲する。
 変更APIは委譲前にCoWの一意性と容量を確保する。
 
@@ -147,6 +153,25 @@ static `Base`経路とインスタンス注入経路の双方で同じ探索契�
 プロトコル分割には、依存関係の明確化に加えて、コンパイル負荷とwitness tableの
 削減を狙う意図がある。ただし、適合の追加・削除が最適化結果へ影響する場合があるため、
 機械的な統合は行わない。
+
+## 比較結果の契約
+
+標準の三方比較器は小・等・大をそれぞれ`-1`、`0`、`1`へ正規化する。
+アルゴリズム側は具体的な正負値ではなく、`ThreeWayCompareResult`の`__less()`と
+`__greater()`で符号を読む。0はlessにもgreaterにも含めない。`Int`版とeager wrapperは
+この符号契約を共有し、比較表現を差し替えても探索分岐の意味を変えない。
+
+## 構造不変条件と診断
+
+`__tree_invariant`は空木を有効とし、非空木ではrootが非nullの親を持つこと、親の左リンクから
+rootへ戻れること、rootが黒であることを検査する。`__tree_sub_invariant`は各部分木について、
+親子リンクの往復、左右の非null childが同一でないこと、赤nodeのchildが赤でないこと、
+左右の黒高さが一致することを検査する。不正な部分木は0、正常な部分木は黒高さを返す。
+
+これらは正常系だけを通すassertの代替ではなく、壊れたfixtureをfalseまたは0として診断する
+能力も契約に含む。DEBUG用の`equiv`、`nullCheck`、`endCheck`も同様に、不一致を必ずtrapする
+のではなく診断結果を返せるように保つ。挿入・削除・回転のテストでは操作後のinvariantを確認し、
+不変条件検査そのもののテストでは各破損を意図的に独立して作る。
 
 ## ノードとpayload
 

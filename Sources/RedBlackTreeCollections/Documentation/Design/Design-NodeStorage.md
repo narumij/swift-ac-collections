@@ -129,6 +129,13 @@ paddingはNodeとPayloadの間ではなく、slot列の開始位置に置かれ�
 tracking tagはキーや並び順の一部ではない。Fresh Poolから初めて取り出した順に
 0から割り当てられ、CoW時のポインタ再構築、診断、構造検証に使われる。
 
+通常nodeのtracking tagには0以上を使い、特殊nodeと診断状態には負の予約値を使う。
+現行値はnullptrが`-2`、endが`-1`、debug用dummyが`-999`、retire候補が整数型の
+最小値であり、互いにも通常tagにも衝突しない。`USE_COMPACT_NODE_METADATA`によって
+整数幅が変わっても、この区分を維持する。これらは永続化形式ではないが、raw storage上の
+node種別判定と診断が依存する内部表現なので、値を変更する場合は生成、コピー、seal、debug
+検査をまとめて確認する。
+
 recycle countは同じslotが削除・再利用された世代を区別する。これを使った
 Indexの検証については `Design-MemorySafety.md` で扱う。
 
@@ -401,6 +408,7 @@ payloadへのアクセス許可は別に管理される。詳細は `Design-Memo
 - Recycle Poolへ送る前にpayloadを破棄し、世代を進める。
 - Recycle Poolにslotがある間はFresh Poolより再利用を優先する。
 - tracking tagはキー比較や木の順序へ使用しない。
+- 通常tracking tagの非負領域と特殊tagの負領域を衝突させない。
 - 通常の容量拡張で既存ノードを移動しない。
 - 要素を持つ木のCoWコピー先は、使用歴のあるslotを少なくとも収容する。
 - `ALLOW_CROSS_TREE_INDEX` 有効時は、コピーしたslotのrecycle countを維持する。

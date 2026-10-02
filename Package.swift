@@ -253,6 +253,9 @@ let package = Package(
     .target(
       name: "PermutationModule",
       dependencies: [],
+      exclude: [
+        "Documentation"
+      ],
       swiftSettings: _settings
     ),
     .testTarget(

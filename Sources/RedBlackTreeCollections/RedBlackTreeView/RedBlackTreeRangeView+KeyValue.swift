@@ -413,7 +413,7 @@
       /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
       @inlinable
       public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs._isdentical(to: rhs) || lhs.elementsEqual(rhs)
+        lhs._isIdentical(to: rhs) || lhs.elementsEqual(rhs)
       }
     }
 
@@ -423,7 +423,7 @@
       /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
       @inlinable
       public static func < (lhs: Self, rhs: Self) -> Bool {
-        !lhs._isdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
+        !lhs._isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
       }
     }
   #endif
@@ -445,7 +445,7 @@
     /// - Returns: `true` if both views have identical storage and bounds; otherwise, `false`.
     /// - Complexity: O(1)
     @inlinable
-    public func _isdentical(to other: Self) -> Bool {
+    public func _isIdentical(to other: Self) -> Bool {
       let (_start, _end) = _raw_range
       let (_other_start, _other_end) = other._raw_range
       return __tree_.isIdentical(to: other.__tree_) && _start == _other_start

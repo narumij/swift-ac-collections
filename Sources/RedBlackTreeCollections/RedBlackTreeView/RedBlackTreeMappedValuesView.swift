@@ -327,7 +327,7 @@
   extension RedBlackTreeMappedValuesView {
 
     @inlinable
-    public func _isdentical(to other: Self) -> Bool {
+    public func _isIdentical(to other: Self) -> Bool {
       let (_start, _end) = _raw_range
       let (_other_start, _other_end) = other._raw_range
       return __tree_.isIdentical(to: other.__tree_) && _start == _other_start

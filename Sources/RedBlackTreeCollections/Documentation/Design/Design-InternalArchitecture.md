@@ -127,6 +127,17 @@ insert、eraseなどを低レベル実装へ公開する。
 `___TreeBase` は比較可能なキー、multiplicity、ノードポインタ能力などを合成した
 制約である。
 
+比較アルゴリズムは、比較器を必ず`Base`から取得するものとして固定しない。
+現行の公開コレクションはstaticな`Base`を主経路として使う一方、`__tree`の細粒度protocolは、
+適合インスタンスが`value_comp`や三方比較を直接実装する構成でも動作する。
+これにより、fixture、別のストレージFacade、実行時状態を持つ比較器、noncopyableな適合型を、
+公開コレクションの`Base`構造へ依存させずに接続できる。
+
+`_ValueCompBridge`はstaticな`Base.value_comp`をインスタンス要件へ橋渡しする一つのadapterであり、
+`__tree`アルゴリズム自体の必須構成要素ではない。find、bound、count、hint付き探索、equal rangeは、
+static `Base`経路とインスタンス注入経路の双方で同じ探索契約を満たす。インスタンス経路では、
+降順などの状態が実際の探索分岐へ反映されなければならない。
+
 プロトコル分割には、依存関係の明確化に加えて、コンパイル負荷とwitness tableの
 削減を狙う意図がある。ただし、適合の追加・削除が最適化結果へ影響する場合があるため、
 機械的な統合は行わない。
@@ -227,6 +238,8 @@ Rangeの計算量と反復方針は `Design-Range.md` に分離して記録す�
 - `UnsafeTreeV2` を高低レベル間の橋渡しとして維持する。
 - raw pointerを公開コレクション層へ露出させない。
 - Baseの型関係とmultiplicityを壊さない。
+- 比較protocolを変更するときは、static `Base`注入と状態付きインスタンス注入の双方を維持する。
+- `_ValueCompBridge`を、`Base`を持たない適合型にまで要求する依存へしない。
 - 移植元との対応が必要なコードは、命名を一括でSwift風に変更しない。
 - protocol整理ではRelease性能とコンパイル負荷を確認する。
 - Deprecated経路と現行経路を混同しない。

@@ -251,6 +251,29 @@ bucket全体を破棄するとき、allocatorは使用歴のあるノードを�
 `_BucketAllocator` はpayload型のstride、alignment、deinitializerを生成時に保持する。
 これにより、型消去されたbuffer headerからでも正しいレイアウトと破棄処理を利用できる。
 
+### payload所有権の移動
+
+payload全体またはそのfieldの所有権を`move()`でslot外へ取り出した時点で、move対象の
+value storageは未初期化になる。その後に通常の削除経路がpayload全体をdeinitializeすると、
+そのfieldを二重に破棄する。反対に、値を読み出しただけで削除経路にも破棄させなければ、
+参照型payloadをリークする。
+
+したがって、payloadを取り出してからnodeを削除する操作では、次のいずれか一方だけが破棄責任を
+持たなければならない。
+
+1. payloadをslot内に残し、通常の`destroy`またはRecycle Poolへの移動に破棄を任せる。
+2. `move()`で所有権を取り出し、以後の削除経路がmove済みのstorageを再び破棄しない状態へ遷移させる。
+
+この選択は値型payloadだけでは検証できない。参照型payloadのdeinit回数を使い、単体削除、
+範囲削除、重複挿入の破棄、subscriptの`_modify`など、所有権を移し得る経路ごとに構築数と
+破棄数が一致することを確認する。
+
+原木の所有fixtureでは、`__construct_node`がnode metadataとpayloadの所有を一つ増やし、
+`destroy`がそのpayloadをちょうど一度破棄して所有を一つ減らす。unique挿入が同値キーを
+拒否した場合、挿入用に一時構築したnodeがある経路では、そのnodeとpayloadを同じ呼び出し内で
+破棄し、木のsizeと未解放allocationを増やさない。multi挿入は同値payloadをそれぞれ独立した
+要素として所有し、単体・範囲・同値範囲の削除で対象数だけ破棄する。
+
 ## 容量拡張とアドレス安定性
 
 一意に所有された木の容量が不足した場合、既存bucketを再確保せず、
@@ -365,6 +388,8 @@ payloadへのアクセス許可は別に管理される。詳細は `Design-Memo
 - 空の木ではbeginがendを指し、rootがnullptrである。
 - 通常payloadは対応する `UnsafeNode` の直後にあり、正しくalignされている。
 - payloadを持つノードだけをdeinitializeする。
+- payload全体またはfieldの所有権を`move()`したstorageを、通常の削除経路で再度deinitializeしない。
+- unique挿入で拒否した一時nodeを残さず、multi挿入した同値payloadは個別に所有する。
 - Recycle Poolへ送る前にpayloadを破棄し、世代を進める。
 - Recycle Poolにslotがある間はFresh Poolより再利用を優先する。
 - tracking tagはキー比較や木の順序へ使用しない。

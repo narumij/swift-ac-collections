@@ -516,6 +516,8 @@ import XCTest
         let instanceUpper = instanceTree.__upper_bound_unique(item.key)
         XCTAssertEqual(staticLower, instanceLower)
         XCTAssertEqual(staticUpper, instanceUpper)
+        XCTAssertEqual(staticTree.upper_bound(item.key), staticUpper)
+        XCTAssertEqual(instanceTree.upper_bound(item.key), instanceUpper)
         XCTAssertEqual(staticLower == end ? nil : staticLower.pointee.___tracking_tag, item.lower)
         XCTAssertEqual(staticUpper == end ? nil : staticUpper.pointee.___tracking_tag, item.upper)
 

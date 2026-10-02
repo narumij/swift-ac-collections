@@ -217,6 +217,17 @@ final class TreeFoundamentalSafePtrTests: TreeTestCase, _UnsafeNodePtrType {
     XCTAssertNil(sealed.error)
   }
 
+  /// `_SealedPtr.accessible`が、seal自体は有効でもpayloadを持たないノードを
+  /// `.failure(.garbaged)`へ変換すること。
+  func testSealedPtr_accessible_rejectsNodeWithoutPayload() {
+    var fixture = makeFixture()
+    let node = fixture.node(0)
+    node.pointee.___tracking_tag = 0
+    node.pointee.___has_payload_content = false
+
+    XCTAssertTrue(node.uncheckedSeal.accessible == .failure(.garbaged))
+  }
+
   /// `_SealedPtr.deepPurified`(`ALLOW_CROSS_TREE_INDEX`)が、`.success`の場合は
   /// 内部の`_NodePtrSealing.deepPurified`へ処理を委譲すること。
   #if ALLOW_CROSS_TREE_INDEX

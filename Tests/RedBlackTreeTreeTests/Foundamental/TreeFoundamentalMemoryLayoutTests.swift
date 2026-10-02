@@ -50,6 +50,15 @@ import RedBlackTreeFixture
         allocator.pairLayout.stride)
 
       for prefix in [0, MemoryLayout<_Bucket>.stride, 3 * MemoryLayout<_Bucket>.stride] {
+        XCTAssertEqual(
+          UnsafeNode._referenceAllocationByteCount(
+            prefix: prefix,
+            with: payload,
+            capacity: 0),
+          prefix)
+      }
+
+      for prefix in [0, MemoryLayout<_Bucket>.stride, 3 * MemoryLayout<_Bucket>.stride] {
         for capacity in [1, 2, 3, 16] {
           XCTAssertEqual(
             UnsafeNode._referenceAllocationByteCount(

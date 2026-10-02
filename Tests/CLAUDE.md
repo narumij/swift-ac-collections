@@ -51,6 +51,16 @@ removal of existing coverage is unclear.
   on RedBlackTree public APIs or views.
 - Consult `Tests/RedBlackTreeTests/Fixtures.md` before adding or changing
   RedBlackTree fixtures, and update it when fixture behavior changes.
+- Debug builds track RedBlackTree allocation, node, and payload lifetimes in
+  process-global counters. An XCTest that creates RedBlackTree collections must
+  inherit from `RedBlackTreeTestCase` when it belongs to `RedBlackTreeTests`.
+  In another test target, where that test-only base class is unavailable, copy
+  its counter setup/teardown discipline into the local XCTest case and add an
+  explicit test dependency on `RedBlackTreeCollections` for `@testable import`.
+  Always reset the counters after the local balance assertions: XCTest targets
+  can run in the same process, so leaked counter state makes the next suite fail
+  depending on test order. Do not work around this by weakening the next
+  suite's setup assertions.
 - Use `EtcTests.swift` or `DeathTest.swift` for exploratory tests. Preserve
   `ABC`, `convenience`, `memoize`, and `EtcTests.swift` unless the user
   explicitly says otherwise.

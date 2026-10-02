@@ -165,7 +165,8 @@ let package = Package(
     .testTarget(
       name: "AcCollectionsTests",
       dependencies: [
-        "AcCollections"
+        "AcCollections",
+        "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
     ),

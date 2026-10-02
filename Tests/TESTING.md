@@ -32,6 +32,7 @@
 - BareArrayModule: Debug/Release、境界Death Test、参照型寿命をレビュー済み。
   3D cloneのcapacity不足による参照解放漏れを修正済み。
 - AcCollections: 通常時の4型と互換時のPermutationModule再公開テストを追加済み。
+  別テストターゲットでもRedBlackTreeのDebug寿命カウンタを各テスト後に検査・初期化する。
 - PermutationModule: 構造判断が先に必要なため自発作業の対象外。
 - RedBlackTree: 4型、共有View、BoundExpressionの連番Test as Specification整理済み。
 - Index世代、KeyOnly/KeyValue Range ViewのCoW後Index寿命、および4型とRange Viewの

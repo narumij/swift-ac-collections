@@ -1,10 +1,43 @@
 import AcCollections
 import XCTest
 
+#if DEBUG
+  @testable import RedBlackTreeCollections
+#endif
+
 /// `AcCollections`は`@_exported import`だけで構成されるfacadeで、専用ターゲットから
 /// 一度も`import AcCollections`されていなかった(2026-10-03発見)。再公開が壊れても
 /// 他のテストでは検出できないため、最小限の到達確認をここで行う。
 final class AcCollectionsTests: XCTestCase {
+
+  override func setUpWithError() throws {
+    #if DEBUG
+      XCTAssertEqual(deallocatedCount, 0)
+      XCTAssertEqual(nodeDeinitializedCount, 0)
+      XCTAssertEqual(payloadDeinitializedCount, 0)
+      _ = RedBlackTreeSet<Int>()
+      allocatedCount = 0
+      deallocatedCount = 0
+      nodeInitializedCount = 0
+      nodeDeinitializedCount = 0
+      payloadInitializedCount = 0
+      payloadDeinitializedCount = 0
+    #endif
+  }
+
+  override func tearDownWithError() throws {
+    #if DEBUG
+      XCTAssertEqual(allocatedCount, deallocatedCount)
+      XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount)
+      XCTAssertEqual(payloadInitializedCount, payloadDeinitializedCount)
+      allocatedCount = 0
+      deallocatedCount = 0
+      nodeInitializedCount = 0
+      nodeDeinitializedCount = 0
+      payloadInitializedCount = 0
+      payloadDeinitializedCount = 0
+    #endif
+  }
 
   func test_importAcCollections_exposesRedBlackTreeSet() {
     var set = RedBlackTreeSet<Int>()

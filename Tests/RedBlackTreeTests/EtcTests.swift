@@ -61,24 +61,26 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     }
   #endif
 
-  /// 空配列をdecodeした場合、生木が共有の読み取り専用シングルトンになっていること
-  /// (無駄なバッファ確保をしない。2026-10-03、Decodable非ソート・重複入力バグ修正の副次確認)
-  func testDecodeEmptyArrayUsesReadOnlySingleton() throws {
-    let decoder = JSONDecoder()
-    let emptyJSON = "[]".data(using: .utf8)!
+  #if DEBUG && !COMPATIBLE_ATCODER_2025
+    /// 空配列をdecodeした場合、生木が共有の読み取り専用シングルトンになっていること
+    /// (無駄なバッファ確保をしない。2026-10-03、Decodable非ソート・重複入力バグ修正の副次確認)
+    func testDecodeEmptyArrayUsesReadOnlySingleton() throws {
+      let decoder = JSONDecoder()
+      let emptyJSON = "[]".data(using: .utf8)!
 
-    let emptySet = try decoder.decode(RedBlackTreeSet<Int>.self, from: emptyJSON)
-    XCTAssertTrue(emptySet.__tree_.isReadOnly)
+      let emptySet = try decoder.decode(RedBlackTreeSet<Int>.self, from: emptyJSON)
+      XCTAssertTrue(emptySet.__tree_.isReadOnly)
 
-    let emptyDict = try decoder.decode(RedBlackTreeDictionary<Int, String>.self, from: emptyJSON)
-    XCTAssertTrue(emptyDict.__tree_.isReadOnly)
+      let emptyDict = try decoder.decode(RedBlackTreeDictionary<Int, String>.self, from: emptyJSON)
+      XCTAssertTrue(emptyDict.__tree_.isReadOnly)
 
-    let emptyMultiSet = try decoder.decode(RedBlackTreeMultiSet<Int>.self, from: emptyJSON)
-    XCTAssertTrue(emptyMultiSet.__tree_.isReadOnly)
+      let emptyMultiSet = try decoder.decode(RedBlackTreeMultiSet<Int>.self, from: emptyJSON)
+      XCTAssertTrue(emptyMultiSet.__tree_.isReadOnly)
 
-    let emptyMultiMap = try decoder.decode(RedBlackTreeMultiMap<Int, String>.self, from: emptyJSON)
-    XCTAssertTrue(emptyMultiMap.__tree_.isReadOnly)
-  }
+      let emptyMultiMap = try decoder.decode(RedBlackTreeMultiMap<Int, String>.self, from: emptyJSON)
+      XCTAssertTrue(emptyMultiMap.__tree_.isReadOnly)
+    }
+  #endif
 }
 
 #if COMPATIBLE_ATCODER_2025 && DEBUG

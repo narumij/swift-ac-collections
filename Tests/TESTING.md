@@ -382,6 +382,8 @@ xcrun llvm-cov show \
 
 ## Current handoff
 
+- 2026-10-03 00:32 JST Codex (GPT-5): Claude作業後の4マトリクス（現行/AtCoder 2025互換 × Debug/Release）について、各セルで`swift build --disable-sandbox`と`swift test --disable-sandbox`を実行した。初回は、追加された`EtcTests.testDecodeEmptyArrayUsesReadOnlySingleton`がReleaseではinternal `isReadOnly`へアクセスできず、互換Debugでは4型が`Decodable`非適合でテストターゲットのコンパイルに失敗した。内部実装の副次確認というテスト目的に合わせて`#if DEBUG && !COMPATIBLE_ATCODER_2025`へ限定し、再確認後は4セルすべてビルド・全テスト成功。互換フラグは確認後に元の無効状態へ戻した。既存のdeprecated API使用等の警告は残るが、新規エラーはない。
+
 ### 整理状況サマリー
 (このサブセクションはスナップショットとして毎回上書きしてよい。詳細な経緯は下の年代順ログを参照)
 

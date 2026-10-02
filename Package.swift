@@ -246,7 +246,8 @@ let package = Package(
       name: "BareArrayModuleTests",
       dependencies: [
         "BareArrayModule"
-      ]
+      ],
+      swiftSettings: _settings
     ),
 
     .target(

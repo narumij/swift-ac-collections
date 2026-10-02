@@ -56,7 +56,7 @@ public struct BareArray<Element>: ~Copyable {
     }
     @inline(__always)
     unsafeMutableAddress {
-      precondition(position < count)
+      precondition(0 <= position && position < count)
       return payload + position
     }
   }
@@ -341,12 +341,12 @@ public struct BareArray1DView<Element> {
   public subscript(position: Int) -> Element {
     @inline(__always)
     unsafeAddress {
-      precondition(position < count)
+      precondition(0 <= position && position < count)
       return UnsafePointer(payload + position)
     }
     @inline(__always)
     unsafeMutableAddress {
-      precondition(position < count)
+      precondition(0 <= position && position < count)
       return payload + position
     }
   }
@@ -381,7 +381,7 @@ public struct BareArray2DView<Element> {
 
     @inline(__always)
     get {
-      precondition(position < height)
+      precondition(0 <= position && position < height)
       return .init(payload: payload + width * position, count: width)
     }
 
@@ -423,7 +423,7 @@ public struct BareArray3DView<Element> {
 
     @inline(__always)
     get {
-      precondition(position < depth)
+      precondition(0 <= position && position < depth)
       return .init(payload: payload + width * height * position, width: width, height: height)
     }
 

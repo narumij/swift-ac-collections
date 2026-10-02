@@ -81,6 +81,7 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-03 Claude (Sonnet 5): 横展開候補(4)`elementsEqual(_:)`/`lexicographicallyPrecedes(_:)`の仕様テストを追加。Set/MultiSet/Dictionary/MultiMapの`_9_ProtocolConformanceTests.swift`と、共有View代表2本(`RedBlackTreeView_1_KeyValueRangeViewTests.swift`・`_2_KeyOnlyRangeViewTests.swift`)に計6ファイル分追加(等値・大小・共通prefix後の長さ違いを検証)。Dictionary/MultiMapのElementは素のタプルで`Equatable`/`Comparable`に適合できないため`elementsEqual(_:by: ==)`/`lexicographicallyPrecedes(_:by: <)`を使用。全体テスト0失敗を確認。これでCodexレビュー(2026-10-01 07:07 JST)の横展開候補(1)〜(5)は全て対応済み。
 - 2026-10-03 Claude (Sonnet 5): 「連番の落ち穂拾い」要望に対応し、2026-10-01 07:07 JST Codexレビューの横展開漏れ(2)(3)に着手。Setの`RedBlackTreeSet_98_IndexValidityXCTests.swift`にのみ存在していた`testRangeViewIndexValidityAgainstOriginIsUnaffectedByCopyThenMutateCoW`/`testRangeViewIndexValidityAfterConsecutiveMutationsWithOnlyFirstTriggeringCoW`(RangeViewコピー後のCoW変異に対するIndex有効性検証)を、KeyValue Range View側の代表として`RedBlackTreeDictionary_98_IndexValidityXCTests.swift`へ、重複要素を持つKeyOnly側として`RedBlackTreeMultiSet_98_IndexValidityXCTests.swift`へ、それぞれAPIを型に合わせて移植した(Dictionaryは`uniqueKeysWithValues`/`.sorted().map(\.key)`、MultiSetは`RedBlackTreeMultiSet<Int>(0..<20)`でSet版とほぼ同じAPI形)。追加時点では`UnsafeTreeV2BootstrapTests.swift`(当時`RedBlackTreeTests`直下、`___NodePtr`未解決)のビルドエラーで`swift test`が実行できず、Xcodeの型チェック(0件)のみで確認していたが、翌日の原木分離(本ログ直後のCodexエントリ)でBootstrapが`#if false`化されたことにより`swift test`が再び通るようになり、追加した4テストとも実行・成功を確認した(`RedBlackTreeTests`809件・0失敗に含まれる)。残る横展開候補(4)`elementsEqual`/`lexicographicallyPrecedes`、(5)は2026-10-01 07:19 JST Codexにより完了済み。
 
 ### 内部区分

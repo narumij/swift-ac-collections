@@ -69,5 +69,20 @@ import XCTest
       XCTAssertTrue(view.isEnd(view.endIndex))
       XCTAssertFalse(view.isEnd(middle))
     }
+
+    func test_elementsEqual_trueForSameElementsInOrder() {
+      let set: RedBlackTreeSet = [1, 2, 3]
+      let view = set[...]
+
+      XCTAssertTrue(view.elementsEqual([1, 2, 3]))
+    }
+
+    func test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix() {
+      let shorter = (RedBlackTreeSet([1, 2]))[...]
+      let longer = (RedBlackTreeSet([1, 2, 3]))[...]
+
+      XCTAssertTrue(shorter.lexicographicallyPrecedes(longer))
+      XCTAssertFalse(longer.lexicographicallyPrecedes(shorter))
+    }
   }
 #endif

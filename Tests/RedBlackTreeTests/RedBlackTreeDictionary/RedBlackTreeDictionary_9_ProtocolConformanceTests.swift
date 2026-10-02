@@ -136,3 +136,32 @@ extension RedBlackTreeDictionaryProtocolConformanceTests {
   }
 }
 #endif
+
+// MARK: - elementsEqual / lexicographicallyPrecedes
+extension RedBlackTreeDictionaryProtocolConformanceTests {
+
+  func test_elementsEqual_trueForSameKeyValuePairsInKeyOrder() {
+    let a: RedBlackTreeDictionary = [1: "a", 2: "b"]
+    let b: RedBlackTreeDictionary = [2: "b", 1: "a"]
+    XCTAssertTrue(a.elementsEqual(b, by: ==))
+  }
+
+  func test_elementsEqual_falseWhenValuesDiffer() {
+    let a: RedBlackTreeDictionary = [1: "a", 2: "b"]
+    let b: RedBlackTreeDictionary = [1: "a", 2: "z"]
+    XCTAssertFalse(a.elementsEqual(b, by: ==))
+  }
+
+  func test_lexicographicallyPrecedes_trueWhenSmallerAtFirstDifference() {
+    let a: RedBlackTreeDictionary = [1: "a", 2: "b"]
+    let b: RedBlackTreeDictionary = [1: "a", 2: "c"]
+    XCTAssertTrue(a.lexicographicallyPrecedes(b, by: <))
+  }
+
+  func test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix() {
+    let shorter: RedBlackTreeDictionary = [1: "a"]
+    let longer: RedBlackTreeDictionary = [1: "a", 2: "b"]
+    XCTAssertTrue(shorter.lexicographicallyPrecedes(longer, by: <))
+    XCTAssertFalse(longer.lexicographicallyPrecedes(shorter, by: <))
+  }
+}

@@ -142,3 +142,32 @@ extension RedBlackTreeMultiMapProtocolConformanceTests {
   }
 }
 #endif
+
+// MARK: - elementsEqual / lexicographicallyPrecedes
+extension RedBlackTreeMultiMapProtocolConformanceTests {
+
+  func test_elementsEqual_trueForSameKeyValuePairsInKeyOrderIncludingDuplicateKeys() {
+    let a: RedBlackTreeMultiMap = [(1, "a"), (1, "b"), (2, "c")]
+    let b: RedBlackTreeMultiMap = [(2, "c"), (1, "a"), (1, "b")]
+    XCTAssertTrue(a.elementsEqual(b, by: ==))
+  }
+
+  func test_elementsEqual_falseWhenValuesDiffer() {
+    let a: RedBlackTreeMultiMap = [(1, "a"), (1, "b")]
+    let b: RedBlackTreeMultiMap = [(1, "a"), (1, "z")]
+    XCTAssertFalse(a.elementsEqual(b, by: ==))
+  }
+
+  func test_lexicographicallyPrecedes_trueWhenSmallerAtFirstDifference() {
+    let a: RedBlackTreeMultiMap = [(1, "a"), (1, "b")]
+    let b: RedBlackTreeMultiMap = [(1, "a"), (1, "c")]
+    XCTAssertTrue(a.lexicographicallyPrecedes(b, by: <))
+  }
+
+  func test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix() {
+    let shorter: RedBlackTreeMultiMap = [(1, "a")]
+    let longer: RedBlackTreeMultiMap = [(1, "a"), (1, "b")]
+    XCTAssertTrue(shorter.lexicographicallyPrecedes(longer, by: <))
+    XCTAssertFalse(longer.lexicographicallyPrecedes(shorter, by: <))
+  }
+}

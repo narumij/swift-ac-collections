@@ -14,6 +14,32 @@ extension RedBlackTreeMultiSetProtocolConformanceTests {
   }
 }
 
+// MARK: - elementsEqual / lexicographicallyPrecedes
+extension RedBlackTreeMultiSetProtocolConformanceTests {
+
+  func test_elementsEqual_trueForSameElementsInOrderIncludingDuplicates() {
+    let multiset: RedBlackTreeMultiSet = [1, 1, 2]
+    XCTAssertTrue(multiset.elementsEqual([1, 1, 2]))
+  }
+
+  func test_elementsEqual_falseWhenMultiplicityDiffers() {
+    let multiset: RedBlackTreeMultiSet = [1, 1, 2]
+    XCTAssertFalse(multiset.elementsEqual([1, 2, 2]))
+  }
+
+  func test_lexicographicallyPrecedes_trueWhenSmallerAtFirstDifference() {
+    let multiset: RedBlackTreeMultiSet = [1, 1, 2]
+    XCTAssertTrue(multiset.lexicographicallyPrecedes([1, 2, 2]))
+  }
+
+  func test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix() {
+    let shorter: RedBlackTreeMultiSet = [1, 1]
+    let longer: RedBlackTreeMultiSet = [1, 1, 2]
+    XCTAssertTrue(shorter.lexicographicallyPrecedes(longer))
+    XCTAssertFalse(longer.lexicographicallyPrecedes(shorter))
+  }
+}
+
 // MARK: - CustomStringConvertible
 extension RedBlackTreeMultiSetProtocolConformanceTests {
 

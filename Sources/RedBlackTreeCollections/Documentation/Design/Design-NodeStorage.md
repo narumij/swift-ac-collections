@@ -144,6 +144,9 @@ tracking tagには特殊値 `.nullptr` が設定される。
 
 end nodeはprimary bucket内にあり、tracking tagには `.end` が設定される。
 payloadを持たず、その左リンクをroot格納場所として兼用する。
+通常nodeのrootはend nodeを親に持ち、rootはend nodeの左の子でなければならない。
+end node自身は通常要素ではなく、木の終端、空木のbegin、およびroot格納場所という三つの役割を
+持つ。このため、endを通常nodeと同じ色・payload・親子関係として扱わない。
 
 ### begin pointer
 
@@ -160,6 +163,9 @@ rootから左端を探索し直さないため、変更操作でこの値を維�
          /
 begin_ptr ──► minimum node
 ```
+
+挿入で新しい最小nodeが生じた場合と、現在の最小nodeを削除した場合はbegin pointerを更新する。
+最後のnodeを削除した後は、rootがnullptr、beginがend、countが0へ同時に戻らなければならない。
 
 ## 二つのpool
 
@@ -386,6 +392,8 @@ payloadへのアクセス許可は別に管理される。詳細は `Design-Memo
 - secondary bucketはbegin pointerとend nodeを持たない。
 - rootはend nodeの左リンクに格納する。
 - 空の木ではbeginがendを指し、rootがnullptrである。
+- 非空木のrootはend nodeを親に持ち、end nodeの左リンクから参照される。
+- begin pointerは非空木の最小nodeを指す。
 - 通常payloadは対応する `UnsafeNode` の直後にあり、正しくalignされている。
 - payloadを持つノードだけをdeinitializeする。
 - payload全体またはfieldの所有権を`move()`したstorageを、通常の削除経路で再度deinitializeしない。

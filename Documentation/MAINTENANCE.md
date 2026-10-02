@@ -160,5 +160,5 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
-- 2026-10-02 Codex (GPT-5): 原木`Foundamental`テストの第一段階の設計反映を完了。公開APIとは別の内部Test as Specificationを`Quality-Checklist.md`へ定義した。比較器のstatic `Base`注入、状態付きインスタンス注入、`_ValueCompBridge`の位置付けは`Design-InternalArchitecture.md`、`UnsafeNode`参照計算と`RawBuffer`実計算の独立照合およびpoison塗り分けは`Design-MemoryLayout.md`、seal世代と別プロセスDeath Testは`Design-MemorySafety.md`へ反映した。`Design-NodeStorage.md`にはpayload所有権の`move()`と通常削除の排他的な破棄責任、参照型によるdeinit検証、uniqueの拒否時破棄とmultiの個別所有を記録した。次は記述と実装・テストの再照合、および原木テストのうち設計ではなく移植互換性に属する事項の切り分けを行う。
+- 2026-10-02 Codex (GPT-5): 原木`Foundamental`テストの設計反映を継続。内部Test as Specification、比較注入、メモリレイアウト、seal/Death Test、payload所有権、番兵、multiの同値順序、範囲と距離の契約を各Design文書へ反映した。LLVM移植元との構造的一致、実行可能なテスト契約、設計文書は異なる証拠として併用し、到達不能な末尾をカバレッジ目的で改変しない方針も`Design-InternalArchitecture.md`とOverviewへ記録した。次は記述と現行実装の精密な再照合を行い、不一致がなければこの優先事項を完了扱いにする。
 - 2026-10-02 14:12 JST Codex (GPT-5): 前回保留だったDocC検証を完了した。ローカルではSwiftPMのsandbox制約を回避するため`--disable-sandbox`が必要だったが、Release構成と`--warnings-as-errors`を含むCI相当の生成は成功した。生成先は`.build/plugins/Swift-DocC/outputs/RedBlackTreeCollections.doccarchive`。追加イニシャライザ、共通操作ガイド、4型および3種類のViewのTopicsとリンクに未解決事項はない。GitHub Actions上の実行結果そのものは、この環境から取得できていない。

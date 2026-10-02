@@ -1,11 +1,76 @@
 # Codex-to-Claude Work Request
 
-Status: Completed
+Status: Active — follow-up cleanup and release documentation
 
-## Active Correction Assignment
+## Active Follow-up Assignment
 
-The previous result below is not accepted as complete. Complete these three
-tasks in order. Communicate with the user in Japanese. Do not edit
+Complete these three bounded tasks in order. Communicate with the user in
+Japanese. Do not edit the paused RedBlackTreeSet outline and do not broaden
+this work into new PermutationModule features.
+
+### Task 1 — Remove the remaining test-only permutation implementation
+
+The production module now has one implementation path, but
+`Tests/PermutationTests/NextPermutation.swift` still contains a separate older
+`NextPermutation` protocol, `Array` conformance, unsafe-buffer handle, and
+algorithm implementation. The user wants implementation variants reduced.
+
+1. Confirm with a repository-wide search that this file is used only by
+   `testPerformance00` in `PermutationTests.swift` and is not a required oracle
+   for another test.
+2. Remove `Tests/PermutationTests/NextPermutation.swift` and remove
+   `testPerformance00` or rewrite no test to depend on a second implementation.
+   Do not move the duplicate algorithm elsewhere.
+3. Update the Permutation maintenance documents and `Tests/TESTING.md` so this
+   is no longer listed as a pending user decision or surviving implementation.
+4. Verify no references to `NextPermutationUnsafeHandle`, the test-only
+   `NextPermutation` protocol, `forEach_nextPermutation`, or
+   `testPerformance00` remain.
+
+### Task 2 — Finish public documentation for the retained API
+
+Update the English documentation comment for `nextPermutations()` and only the
+public return types where needed. Document the current tested contract:
+
+- the current ordering is yielded first;
+- only lexicographic successors are then yielded;
+- equal elements do not create duplicate value orderings;
+- descending, all-equal, single-element, and empty inputs each yield the
+  current ordering once;
+- previously yielded results remain stable as iteration advances;
+- one permutation step is worst-case O(n).
+
+Keep implementation details such as `ManagedBuffer` out of the public
+contract. Ensure comments are English, match
+`Sources/PermutationModule/Documentation/Specification.md`, and do not mention
+removed unsafe/full-permutation APIs as current alternatives.
+
+### Task 3 — Record the breaking removals in CHANGELOG
+
+Update only the current `[Unreleased]` section of `CHANGELOG.md`. Under
+`Removed`, concisely record:
+
+- removal of the full-permutation and unsafe PermutationModule public APIs,
+  leaving `nextPermutations()` as the supported entry point;
+- removal of Range View `unranged()` and its single-purpose support protocols.
+
+Describe these as source-breaking public API removals. Do not rewrite prior
+release sections and do not turn the maintenance history into changelog prose.
+
+Validation for this assignment:
+
+- Run the narrow Permutation tests and confirm the intended tests ran.
+- Run repository-root `swift test`.
+- Run compatibility-mode validation for the affected Permutation facade path.
+- Search for all removed declarations and stale pending-decision text.
+- Run `git diff --check`.
+- Change this status to `Completed` only after all three tasks and validations
+  complete, then add a concise result summary above the historical material.
+
+## Completed Assignment (Tasks 1–3)
+
+The assignment below is retained as the completed historical request. Its
+three tasks have been implemented and validated. Do not edit
 `Sources/RedBlackTreeCollections/Documentation/Head/Outlines/RedBlackTreeSet.outline.md`;
 the user has explicitly paused that document.
 

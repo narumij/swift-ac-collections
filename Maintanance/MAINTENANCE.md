@@ -42,6 +42,10 @@
  - Documentations の.mdと現在のソースとの和集合を街頭フォルダに配置してほしい
  - その後ユーザーが主導して編集する
 
+- REFACTORING_FROM_ATCODER_2025 について
+  - 既存のテスト群をゼロ構築するのではなく、そのまま活用する判断があったことを記述して欲しい
+  - ソース本体の遷移も大事だが、テストの遷移もあらっぽいけど大事
+
 ### 相談事項
 
 - DocCの手動Topicsは`API-Matrix.md`と`API-Matrix-View.md`を基準に、検索・挿入・削除・範囲操作などへ広げる。4型の具象型ページだけでなく、共通protocolのDefault ImplementationsやViewへの導線をどこへ置くかは引き続き検討する

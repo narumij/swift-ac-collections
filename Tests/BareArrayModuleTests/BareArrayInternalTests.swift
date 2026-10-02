@@ -1,4 +1,4 @@
-#if DEBUG
+#if DEBUG && os(macOS)
   @testable import BareArrayModule
   import XCTest
 

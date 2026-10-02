@@ -28,6 +28,8 @@
     /// Encodes the elements of this set into the given encoder in an unkeyed
     /// container.
     ///
+    /// Elements are encoded in the set's sorted order.
+    ///
     /// This function throws an error if any values are invalid for the given
     /// encoder's format.
     ///

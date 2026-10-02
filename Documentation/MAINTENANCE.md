@@ -54,7 +54,6 @@
 
 - 2026-10-02 21:13 JST: Codexの一次確認では、現行MirrorはSwift標準型と構造上一致している。Set系は`.set`でラベルなしのElement、Dictionary系は`.dictionary`でラベルなしの`(key:value:)`tupleを子とし、子の数は`count`と一致する。ただし標準型は重複を許さないため、MultiSet / MultiMapで同じdisplay styleを使うことの意味、およびMirrorの子の順序をライブラリが保証すべきかはClaudeの独立レビュとユーザー判断待ち
 - 2026-10-02 20:57 JST: Set / Dictionaryの`Decodable.init(from:)`は、非ソート入力や重複要素・重複キーを検証せず、range専用の`___emplace_hint_right`で末尾追加している。現行Codable Testsは自身がencodeした正常値のround-tripだけで、外部から与えられた非ソート・重複入力を覆っていない。unique型の不変条件を保つため、デコード時に拒否、ソート＋重複処理、またはunique挿入を行うかの仕様決定とTest as Specification追加が必要。MultiSet / MultiMapは重複保持が仕様だが、非ソート入力を末尾hint経路で受ける点は同様に別途確認が必要
-- 2026-10-02 20:48 JST: `Tests/TESTING.md`の`Current handoff`に、改名済みの`RedBlackTreeMappedValuesView._isdentical(to:)`が「未結線・削除判断待ち」として残っており、完了済みログと矛盾する。テスト側の次回メンテナンスでスナップショットから削除し、実在する未結線APIだけに同期する必要がある
 - 2026-10-02 16:36 JST: Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としているが、容量条件と推奨APIの対応根拠がTest as Specificationから確定できない。設計意図は、逐次挿入を素直に回すO(*n* log(*m + n*))経路と、TimSort等で入力をソート済みにしてからO(*n + m*)でマージする経路の選択。ただし総コストは入力の既ソート性、ソート費用、一時メモリ、CoW、要素数に依存するため、単純な「十分な空き容量」だけでは推奨条件を表現しきれない可能性がある。意味・重複規則・計算量の文書化は行ったが、性能推奨の書き換えは代表的な入力分布でのベンチマークと実装経路の再確認後に行う。
 - 2026-10-02 16:18 JST: `RedBlackTreeKeyValueRangeView.values`が返す`RedBlackTreeMappedValuesView`について、要素subscriptと`swapAt`の公開契約はView内の有効Indexを要求するが、現行実装は同じ木のView外Indexを明示的に範囲拒否していない。ソースにも範囲制限のTODOがある。公開仕様の変更ではなく事前条件検査の実装・Death Test課題として、別フェーズで対応要否を判断する。
 - 2026-10-02 16:24 JST: MultiMapの通常`insert`が同値キー群の末尾へ追加して挿入順を保持することはInsertion Testsで確定した。一方、hint付き`insert`が同値キー群内の順序へ与える影響はテストが戻りIndexだけを検証しており、公開契約として未確定。hintは検索結果や挿入可否を変えないが、multi型の同値要素間順序も変えないと保証するかは、専用Test as Specificationを追加してから文書化する。
@@ -63,6 +62,7 @@
 
 (ユーザーが確認したら各項目を整理します)
 
+- 2026-10-02 21:24 JST Codex (GPT-5): `Tests/TESTING.md`の未結線一覧から改名済みの`RedBlackTreeMappedValuesView._isdentical(to:)`を削除し、現行`_isIdentical(to:)`および完了ログと同期した。同時に4型のMirror Test as Specificationを再レビューし、重複、子ラベル・型・内容、空時の不足を同文書のユーザー記入欄へ記録した。
 - 2026-10-03 Claude (Sonnet 5): 上記2026-10-02 16:22 JST保留事項(Viewの公開同一性判定名`_isIdentical(to:)`/`_isdentical(to:)`の綴り不一致)について、ユーザーから「凡ミスなのでリネームでよい」と判断が出たため対応。`RedBlackTreeMappedValuesView`に加え、同じ綴りミスを持つ`RedBlackTreeKeyValueRangeView._isdentical(to:)`(`==`/`<`内部実装から呼ばれていた)も発見し、両方`_isIdentical(to:)`へ統一。Sources/Tests内の旧綴り参照が無いことを確認し、全体テスト0失敗。`API-Matrix.md`の該当行(`_isIdentical(to:)` / `_isdentical(to:)`という旧綴り併記)はClaudeの編集範囲外のため未更新、同期が必要。保留事項から本項目を削除した。
 - 2026-10-03 Claude (Sonnet 5): 上記2026-10-02 15:34 JST保留事項(`UnsafeTreeV2+KeyValue.swift`のoptional key subscriptが`.move()`後のnil代入で二重解放を起こす件)を修正した。`.move()`を`.pointee`読み取り(コピー)に変更し、既存キー上書き分岐も`.initialize(to:)`から`.pointee =`代入に変更。`_MappedValue`は常にCopyableのためコピーへの変更は型制約上問題ない。回帰防止テスト2件を`RedBlackTreeDictionary_6_RemovalTests.swift`に追加、全体テスト0失敗を確認。詳細は`Tests/TESTING.md`の完了済み要望を正とする。これにより「move済みstorageを通常削除で再度deinitializeしない」という所有権契約への既知の未適合は解消された。保留事項から本項目を削除した。
 - 2026-10-02 Codex (GPT-5): 前回のCHANGELOG更新以降を再監査。原木・fixture・Legacyのテストターゲット分離とテスト拡充は既存のテスト再編・内部テスト追加の記載へ包含し、重複追記しなかった。利用者影響のある`OptionalArray1D` / `OptionalArray1DView`の参照型要素nil代入時の二重解放修正だけを`Unreleased / Fixed`へ追加した。

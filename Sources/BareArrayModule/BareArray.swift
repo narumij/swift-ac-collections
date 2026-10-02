@@ -191,7 +191,7 @@ public struct BareArray3D<Element>: ~Copyable {
 
   @inlinable
   internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int) {
-    self.capacity = height * width
+    self.capacity = width * height * depth
     self.payload = payload
     self.width = width
     self.height = height

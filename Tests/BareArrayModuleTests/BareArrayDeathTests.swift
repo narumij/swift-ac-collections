@@ -17,6 +17,27 @@
       }
     }
 
+    @Test func negativeIndexRead_traps() async throws {
+      await #expect(processExitsWith: .failure) {
+        let array = BareArray<Int>(repeating: 0, count: 3)
+        _ = array[-1]
+      }
+    }
+
+    @Test func upperBoundIndexRead_traps() async throws {
+      await #expect(processExitsWith: .failure) {
+        let array = BareArray<Int>(repeating: 0, count: 3)
+        _ = array[3]
+      }
+    }
+
+    @Test func upperBoundIndexWrite_traps() async throws {
+      await #expect(processExitsWith: .failure) {
+        var array = BareArray<Int>(repeating: 0, count: 3)
+        array[3] = 1
+      }
+    }
+
     @Test func negativeIndexRead_traps_view1D() async throws {
       await #expect(processExitsWith: .failure) {
         let array = BareArray2D<Int>(repeating: 0, width: 3, height: 2)
@@ -31,6 +52,13 @@
       }
     }
 
+    @Test func upperBoundIndexWrite_traps_view1D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var array = BareArray2D<Int>(repeating: 0, width: 3, height: 2)
+        array[0][3] = 1
+      }
+    }
+
     @Test func negativeIndexGet_traps_view2D() async throws {
       await #expect(processExitsWith: .failure) {
         var array = BareArray3D<Int>(repeating: 0, width: 2, height: 2, depth: 2)
@@ -38,10 +66,24 @@
       }
     }
 
+    @Test func upperBoundIndexGet_traps_view2D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var array = BareArray3D<Int>(repeating: 0, width: 2, height: 2, depth: 2)
+        array[0][2][0] = 1
+      }
+    }
+
     @Test func negativeIndexGet_traps_view3D() async throws {
       await #expect(processExitsWith: .failure) {
         var array = BareArray4D<Int>(repeating: 0, size0: 2, size1: 2, size2: 2, size3: 2)
         array[0][-1][0][0] = 1
+      }
+    }
+
+    @Test func upperBoundIndexGet_traps_view3D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var array = BareArray4D<Int>(repeating: 0, size0: 2, size1: 2, size2: 2, size3: 2)
+        array[0][2][0][0] = 1
       }
     }
   }

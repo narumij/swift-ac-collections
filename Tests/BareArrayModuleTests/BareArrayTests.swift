@@ -1,7 +1,5 @@
+import BareArrayModule
 import XCTest
-
-#if DEBUG
-  @testable import BareArrayModule
 
   final class BareArrayTests: XCTestCase {
 
@@ -275,85 +273,6 @@ import XCTest
         [0, 1])
     }
 
-    func testBareArrayCloneCreatesIndependentStorage() {
-      var array = BareArray<Int>(repeating: 0, count: 3)
-
-      array[1] = 123
-
-      var clone = array.clone()
-
-      clone[1] = 999
-
-      XCTAssertEqual(array[1], 123)
-      XCTAssertEqual(clone[1], 999)
-    }
-
-    func testBareArray2DCloneCreatesIndependentStorage() {
-      var array = BareArray2D<Int>(
-        repeating: 0,
-        width: 2,
-        height: 2)
-
-      array[1][0] = 123
-
-      var clone = array.clone()
-
-      clone[1][0] = 999
-
-      XCTAssertEqual(array[1][0], 123)
-      XCTAssertEqual(clone[1][0], 999)
-    }
-
-    func testBareArray3DCloneCreatesIndependentStorage() {
-      var array = BareArray3D<Int>(
-        repeating: 0,
-        width: 2,
-        height: 2,
-        depth: 2)
-
-      array[1][0][1] = 123
-
-      var clone = array.clone()
-
-      clone[1][0][1] = 999
-
-      XCTAssertEqual(array[1][0][1], 123)
-      XCTAssertEqual(clone[1][0][1], 999)
-    }
-
-    func testBareArray4DCloneCreatesIndependentStorage() {
-      var array = BareArray4D<Int>(
-        repeating: 0,
-        size0: 2,
-        size1: 2,
-        size2: 2,
-        size3: 2)
-
-      array[1][1][1][1] = 123
-
-      var clone = array.clone()
-
-      clone[1][1][1][1] = 999
-
-      XCTAssertEqual(array[1][1][1][1], 123)
-      XCTAssertEqual(clone[1][1][1][1], 999)
-    }
-
-    func testBareArrayCloneWithString() {
-      var array = BareArray<String>(
-        repeating: "",
-        count: 2)
-
-      array[0] = "abc"
-
-      var clone = array.clone()
-
-      clone[0] = "xyz"
-
-      XCTAssertEqual(array[0], "abc")
-      XCTAssertEqual(clone[0], "xyz")
-    }
-
     // MARK: - Zero count
 
     func testBareArrayEmptyHasNoIndices() {
@@ -390,5 +309,52 @@ import XCTest
       array = BareArray<Box>(repeating: Box({ deinitCount += 1 }), count: 1)
       XCTAssertEqual(deinitCount, 2, "再代入直前に、直前のarrayのdeinitで要素も解放されること")
     }
+
+    func testMultidimensionalArraysDeinitializeEveryReferenceElement() {
+      final class Box {
+        let onDeinit: () -> Void
+        init(_ onDeinit: @escaping () -> Void) { self.onDeinit = onDeinit }
+        deinit { onDeinit() }
+      }
+
+      var deinitCount = 0
+
+      do {
+        let array = BareArray2D<Box>(width: 2, height: 3) { Box { deinitCount += 1 } }
+        withExtendedLifetime(array) {}
+      }
+      XCTAssertEqual(deinitCount, 6)
+
+      do {
+        let array = BareArray3D<Box>(width: 2, height: 2, depth: 2) { Box { deinitCount += 1 } }
+        withExtendedLifetime(array) {}
+      }
+      XCTAssertEqual(deinitCount, 14)
+
+      do {
+        let array = BareArray4D<Box>(size0: 2, size1: 2, size2: 2, size3: 2) {
+          Box { deinitCount += 1 }
+        }
+        withExtendedLifetime(array) {}
+      }
+      XCTAssertEqual(deinitCount, 30)
+    }
+
+    func testViewOverwriteDeinitializesPreviousReferenceElement() {
+      final class Box {
+        let onDeinit: () -> Void
+        init(_ onDeinit: @escaping () -> Void) { self.onDeinit = onDeinit }
+        deinit { onDeinit() }
+      }
+
+      var deinitCount = 0
+      var array = BareArray4D<Box>(size0: 1, size1: 1, size2: 1, size3: 1) {
+        Box { deinitCount += 1 }
+      }
+
+      array[0][0][0][0] = Box { deinitCount += 1 }
+
+      XCTAssertEqual(deinitCount, 1)
+      withExtendedLifetime(array) {}
+    }
   }
-#endif

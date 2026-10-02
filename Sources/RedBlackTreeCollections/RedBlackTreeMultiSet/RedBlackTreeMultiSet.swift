@@ -281,7 +281,9 @@ extension RedBlackTreeMultiSet {
 
     /// Inserts another occurrence, using `hint` as a suggested insertion position.
     ///
-    /// An incorrect hint doesn't change the result; it can only affect performance.
+    /// When `hint` is usable, the new occurrence is inserted at that position,
+    /// including within a group of equivalent elements. Otherwise, the hint affects
+    /// only performance.
     /// `endIndex` is a valid hint.
     ///
     /// - Parameters:

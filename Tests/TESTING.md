@@ -231,7 +231,7 @@ Swift Testing は GitHub Actions 上で test discovery や exit test に問題�
 swift test --disable-sandbox --enable-code-coverage --filter RedBlackTreeTreeTests
 ```
 
-実行ログ末尾で、通常XCTest 120件とSwift TestingのDeath Test 28 casesが成功したことを確認する。
+実行ログ末尾で、通常XCTest 122件とSwift TestingのDeath Test 28 casesが成功したことを確認する。
 Xcode MCPの`RunAllTests`には実行漏れを成功扱いする
 既知の問題があるため、この測定ではCLIの`swift test`を正とする。この環境ではSwiftPMの入れ子sandboxを
 避けるため`--disable-sandbox`も必要。
@@ -272,24 +272,24 @@ Codexが原木カバレッジ作業を完了扱いにした後、Claudeは次を
 
 1. `git diff --check`が成功することを確認する。
 2. `swift test --disable-sandbox --enable-code-coverage --filter RedBlackTreeTreeTests`を実行する。
-   通常XCTest 120件と`TreeFoundamentalDeathTests`が失敗0であることを確認する。Swift Testingの
+   通常XCTest 122件と`TreeFoundamentalDeathTests`が失敗0であることを確認する。Swift Testingの
    parameterized testはトップレベル件数とは別に20 casesを持つため、詳細ログも確認する。
-3. 上記の`xcrun llvm-cov report`で原木だけを集計する。2026-10-02 04:53 JST時点の基準値は
-   98.22%(2040/2077行、未達37行、6ファイル)。値が変わった場合は改善・退行のどちらかを
+3. 上記の`xcrun llvm-cov report`で原木だけを集計する。2026-10-02 14:00 JST時点の基準値は
+   98.34%(2009/2043行、未達34行、5ファイル)。値が変わった場合は改善・退行のどちらかを
    ファイル別に説明する。
 4. Xcodeで`TreeFoundamentalDeathTests`の9 test declarationsを実行し、parameterized case込みで
    28件成功すること、および対象assert/fatal行がcoverage画面で塗られることを確認する。
-5. CLI未達37行の内訳を`llvm-cov show`と`llvm-cov export`で再確認する。現時点では33行が
+5. CLI未達34行の内訳を`llvm-cov show`と`llvm-cov export`で再確認する。現時点では33行が
    Death Test対象(`unsafe_node+pointer+compare` 9、free pointer algorithm 5、protocol algorithm 15、
-   `_SealedTag` 4)、残り4行がDebug assert後の到達不能な`return false` 3行と
-   `unsafe_tree+find.swift`の閉じ括弧1行である。通常実行可能な未テスト経路が新たに見つかった場合は
+   `_SealedTag` 4)、残り1行が`unsafe_tree+find.swift`の閉じ括弧である。通常実行可能な
+   未テスト経路が新たに見つかった場合は
    完了とせずテストを追加する。
 6. Sourcesをcoverage表示だけのために変更していないこと、Death Testが通常テストと別ファイルに
    保たれていること、range専用`___emplace_hint_right`を汎用経路で使っていないこと、主fixtureの
    `~Copyable`およびstatic/Base・Baseなしinstance比較注入の両経路が維持されていることを確認する。
 
 完了判定は「CLI表示100%」だけを条件にしない。通常到達可能な行がCLIで実行済み、停止経路が
-Death Test成功かつXcodeで到達確認済み、残りが上記4行の構造的非到達／source mappingだけなら、
+Death Test成功かつXcodeで到達確認済み、残りが上記1行のsource mappingだけなら、
 原木テストは実質100%として完了確認してよい。
 
 ```sh
@@ -347,7 +347,10 @@ xcrun llvm-cov show \
 - **原木層**: 2026-10-02に専用`RedBlackTreeTreeTests`ターゲットへ分離済み。`Fixture/TreeNodeOnlyFixture.swift`(実ポインタ`_ptr`系プロトコルに直接適合するFixture)で`unsafe_tree+algorithm`・`unsafe_node+pointer+*`・`tree_base+compare`(`__UniqueHelper`/`__MultiHelper`)等を直接テストする。`TreeOwnedNodeFixture`は生木・RawBufferを経由せず`AllocationInterface`/`DellocationInterface`を実装し、`~Copyable`を維持する。共有可能な`UnsafeNodeReferenceFixture`は`RedBlackTreeFixture`ターゲットへ移した。
 - **Xcodeのregion表示追補**(2026-10-02 13:35-13:44 JST、Codex GPT-5): 行カバレッジ100%でもXcode上で未到達表示だったlimit付き`___tree_adv_iter`の負方向正常完了経路を追加。従来は負方向がlimit到達による途中returnだけで、ループを正常に抜けるregionが未到達だった。追加後の`unsafe_node+pointer+advance.swift`はregions 37/37・functions 8/8・lines 57/57の全て100%。さらにinstance版`_TreeNode_KeyProtocol.__get_value`を専用Fixtureから直接呼び、Node→payload→keyの既定実装をstatic版と並べて固定。`unsafe_tree.swift`もregions 2/2・functions 2/2・lines 4/4の全て100%を確認した。
 - **rotateのDeath Test追補**(2026-10-02 13:47 JST、Codex GPT-5): `__tree_left_rotate`/`__tree_right_rotate`はnode自身のnullだけがDeath Test済みで、左回転時のright child欠落・右回転時のleft child欠落に対する第2assertが漏れていた。2 casesを追加し、`TreeFoundamentalDeathTests`は9 declarations・28 cases全成功。
-- **原木region全件監査**(2026-10-02 13:52 JST、Codex GPT-5): `llvm-cov export`のsegmentsを使い、Xcodeで未到達表示になるcount 0 regionを原木全体から抽出。通常到達可能だった`_SealedPtr.accessible`のpayload欠落側、`_referenceAllocationByteCount`のcapacity 0、`BoundBothProtocol.upper_bound`のunique dispatchを追加検証した。追加後に残る40 regionsは、Death Test対象33 regions(`_SealedTag` 4・free pointer algorithm 5・pointer compare 9・protocol algorithm 15)と、全分岐が先にreturnするため到達不能なdebug guard末尾3 regions・find loop末尾4 regionsだけ。通常到達可能なregionの塗り漏れは0と判断した。通常XCTestは120件、Death Testは28 cases。
+- **原木region全件監査**(2026-10-02 13:52 JST、13:57更新、Codex GPT-5): `llvm-cov export`のsegmentsを使い、Xcodeで未到達表示になるcount 0 regionを原木全体から抽出。通常到達可能だった`_SealedPtr.accessible`のpayload欠落側、`_referenceAllocationByteCount`のcapacity 0、`BoundBothProtocol.upper_bound`のunique dispatchを追加検証した。当初残ったdebug guard末尾3 regionsも先行assertの`#if false`化に合わせて回収済み。現在残る37 regionsは、Death Test対象33 regions(`_SealedTag` 4・free pointer algorithm 5・pointer compare 9・protocol algorithm 15)と、全分岐が先にreturnするため到達不能なfind loop末尾4 regionsだけ。通常到達可能なregionの塗り漏れは0と判断した。通常XCTestは122件、Death Testは28 cases。
+- **range専用右端挿入の直接仕様化**(2026-10-02 13:53 JST、Codex GPT-5): `___emplace_hint_right`はcoverage上は既に実行済みだったが、原木ターゲットから名前付きで直接検証されていなかった。空木の`___max_ref()`から開始し、各呼び出しが返す「挿入node・そのright参照」を次の挿入位置として0..<8を昇順構築。毎回の赤黒木不変条件、最終in-order、size、allocation、全解放を確認した。汎用hintとしては扱わずrange構築専用という前提を固定。通常XCTestは121件。
+- **debug checkのfalse経路復帰**(2026-10-02 13:57 JST): ユーザーが`equiv`/`nullCheck`/`endCheck`の先行assert群を`#if false`化。これらは厳密な停止契約ではなく、問題探索の手間を省くための暫定形だった。既存テストの「assertが先に停止するためfalse経路は到達不能」という注記を更新し、metadata不一致がトラップせず`false`になる3経路を追加。`unsafe_node+debug.swift`はregions 9/9・functions 3/3・lines 38/38の全て100%。通常XCTestは122件。
+- **原木coverage基準値更新**(2026-10-02 14:00 JST): debug assert群の`#if false`化でコンパイル対象行が2077行から2043行へ減り、false経路3行を回収。原木全体は98.34%(2009/2043行、未達34行・5ファイル)へ更新。未達はDeath Test対象33行と`unsafe_tree+find.swift`のsource mapping上の閉じ括弧1行。
 - **原木作業の担当**: 当面はCodexが継続担当する。Claudeへ無理に引き渡さず、別担当が触れる場合も本節と直近の原木ログを読んでから作業する。特にrange専用APIの前提、`~Copyable` fixture、static/Base比較注入とBaseなしインスタンス比較注入の二経路を維持する。
 - **カバレッジ**: 2026-10-01時点で`Sources/RedBlackTreeCollections`全体は`swift test --enable-code-coverage`+`llvm-cov`基準で約90%。残る未カバー行の大半は「未結線/削除判断待ちコード」に集約されている(次項)。
 - **未結線・削除判断待ちコード一覧**(いずれもSources内で呼び出しゼロと確認済み。削除するかテストを書くかはユーザー判断待ち):

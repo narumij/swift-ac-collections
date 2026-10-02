@@ -224,6 +224,28 @@ import XCTest
       XCTAssertEqual(state.owned.allocationCount, 0)
     }
 
+    /// `___emplace_hint_right`が、昇順range構築の専用経路として、直前に挿入した
+    /// nodeとそのright参照を次の挿入位置へ返し続けること。
+    func testEmplaceHintRight_buildsAscendingRangeFromReturnedInsertionPosition() {
+      let state = State()
+      let tree = MutationTree(state: state)
+      var position = tree.___max_ref()
+
+      for value in 0..<8 {
+        position = tree.___emplace_hint_right(position.__parent, position.__child, value)
+        XCTAssertEqual(tree.__get_value(position.__parent), value)
+        XCTAssertEqual(position.__child, position.__parent.__right_ref)
+        XCTAssertTrue(tree.__tree_invariant(tree.__root))
+      }
+
+      XCTAssertEqual(values(tree), Array(0..<8))
+      XCTAssertEqual(tree.__size_, 8)
+      XCTAssertEqual(state.owned.allocationCount, 8)
+
+      _ = tree.erase(tree.__begin_node_, tree.end)
+      XCTAssertEqual(state.owned.allocationCount, 0)
+    }
+
     /// 通常挿入で構築済みの木に対するunique hint挿入が、key指定・payload由来key・
     /// 重複時の一時allocation破棄を正しく扱うこと。
     func testHintedUniqueInsertion_handlesKeyedDerivedAndDuplicatePaths() {

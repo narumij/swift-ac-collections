@@ -226,12 +226,8 @@ import XCTest
 
     // MARK: - unsafe_node+debug.swift
 
-    // NOTE: `equiv`/`nullCheck`/`endCheck`は、各フィールドについて`assert`と同一条件の
-    // `guard ... else { return false }`が対になっている。DEBUG(assertion有効)下では
-    // 不一致があった瞬間に`assert`が先にトラップするため、`return false`側は
-    // アサーション無効時だけ到達するデッドコードであり、通常のXCTest実行では
-    // 意図的に再現できない(トラップしてプロセスが落ちる)。ここでは一致するケース
-    // (`true`を返す経路)のみを検証する。
+    // NOTE: 以前は各guardと同じ条件をassertでも先に検査していたが、falseを返す診断用途と
+    // 両立せず、assert側は`#if false`で無効化された。true/falseの双方を通常テストで固定する。
 
     /// `equiv(with:)`が、追跡対象の全フィールド(tag・左右親の子のtag・色・payload有無)が
     /// 一致する場合に`true`を返すこと。
@@ -267,6 +263,24 @@ import XCTest
       let end = fixture.endPtr()
       end.pointee.___has_payload_content = false
       XCTAssertTrue(end.pointee.endCheck())
+    }
+
+    /// 診断用checkが不一致をトラップせず、それぞれ`false`として報告すること。
+    func testDebugChecks_falseForMismatchedMetadata() {
+      var fixture = makeFixture()
+      let node = fixture.node(0)
+
+      let lhs = UnsafeNode.create(tag: 0, nullptr: .nullptr)
+      let rhs = UnsafeNode.create(tag: 1, nullptr: .nullptr)
+      XCTAssertFalse(lhs.equiv(with: rhs))
+
+      var invalidNull = UnsafeNode.nullptr.pointee
+      invalidNull.___tracking_tag = .end
+      XCTAssertFalse(invalidNull.nullCheck())
+
+      var invalidEnd = node.pointee
+      invalidEnd.___tracking_tag = .nullptr
+      XCTAssertFalse(invalidEnd.endCheck())
     }
   }
 #endif

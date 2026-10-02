@@ -163,6 +163,46 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     XCTAssertEqual(DeinitializeCounter.count, 0)
   }
 
+  /// popFirst/popLast/remove(_:)/remove(at:)/removeFirst/removeLastが、保持していた
+  /// 参照型要素を正しく解放すること(二重解放やリークがないこと)
+  func test_variousRemovalMethods_releaseRetainedReferenceElementsExactlyOnce() {
+    final class DeinitializeCounter: Comparable {
+      static func < (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num < rhs.num
+      }
+      static func == (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num == rhs.num
+      }
+      nonisolated(unsafe) static var count = 0
+      let num: Int
+      init(num: Int) {
+        self.num = num
+        Self.count += 1
+      }
+      deinit { Self.count -= 1 }
+    }
+
+    var set = RedBlackTreeSet<DeinitializeCounter>((0..<6).map { DeinitializeCounter(num: $0) })
+    XCTAssertEqual(DeinitializeCounter.count, 6)
+
+    _ = set.popFirst()
+    XCTAssertEqual(DeinitializeCounter.count, 5)
+
+    #if !COMPATIBLE_ATCODER_2025
+      _ = set.popLast()
+      XCTAssertEqual(DeinitializeCounter.count, 4)
+    #endif
+
+    _ = set.remove(DeinitializeCounter(num: 2))
+    XCTAssertEqual(DeinitializeCounter.count, 3, "removeで検索用に新たに作った一時要素も、実際に削除された既存要素も両方解放されること")
+
+    _ = set.removeFirst()
+    XCTAssertEqual(DeinitializeCounter.count, 2)
+
+    set.removeAll()
+    XCTAssertEqual(DeinitializeCounter.count, 0)
+  }
+
   /// 空集合への削除操作はトラップしない以上、無駄なCoW(共有される空シングルトン
   /// バッファからの退避)も発生させないこと。
   func test_removalMethods_onEmptySet_doNotTriggerCopyOnWrite() {

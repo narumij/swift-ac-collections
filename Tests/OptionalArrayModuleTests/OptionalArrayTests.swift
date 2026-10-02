@@ -246,5 +246,41 @@ final class OptionalArrayTests: XCTestCase {
       Array(array4d[0][0][0].indices),
       [0, 1])
   }
+
+  // MARK: - Sendable
+
+  #if swift(>=5.5)
+    func testSendable_compiles() {
+      func requiresSendable<T: Sendable & ~Copyable>(_ value: borrowing T) {}
+      let array = OptionalArray1D<Int>(capacity: 1)
+      requiresSendable(array)
+    }
+  #endif
+
+  // MARK: - Reference element lifetime
+
+  func testOptionalArray1DOverwriteDeinitializesPreviousReferenceElement() {
+    final class Box {
+      let onDeinit: () -> Void
+      init(_ onDeinit: @escaping () -> Void) { self.onDeinit = onDeinit }
+      deinit { onDeinit() }
+    }
+
+    var deinitCount = 0
+    var array = OptionalArray1D<Box>(capacity: 1)
+
+    array[0] = Box({ deinitCount += 1 })
+    XCTAssertEqual(deinitCount, 0)
+
+    array[0] = Box({ deinitCount += 1 })
+    XCTAssertEqual(deinitCount, 1, "nilを経由せず上書きしても古い要素がdeinitされること")
+
+    array[0] = nil
+    XCTAssertEqual(deinitCount, 2, "nil代入でも要素がdeinitされること")
+
+    array[0] = Box({ deinitCount += 1 })
+    array.removeAll()
+    XCTAssertEqual(deinitCount, 3, "removeAllで保持中の要素がdeinitされること")
+  }
 }
 #endif

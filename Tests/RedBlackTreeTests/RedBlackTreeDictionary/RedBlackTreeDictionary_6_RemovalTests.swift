@@ -100,4 +100,32 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
     releasingCapacity.removeAll()
     XCTAssertTrue(releasingCapacity.isEmpty)
   }
+
+  /// popFirst/popLast/removeValue(forKey:)/removeAllが、保持していた参照型の値を
+  /// 正しく解放すること(二重解放やリークがないこと)
+  func test_variousRemovalMethods_releaseRetainedReferenceValuesExactlyOnce() {
+    final class DeinitializeCounter {
+      nonisolated(unsafe) static var count = 0
+      init() { Self.count += 1 }
+      deinit { Self.count -= 1 }
+    }
+
+    var dictionary = RedBlackTreeDictionary<Int, DeinitializeCounter>(
+      uniqueKeysWithValues: (0..<4).map { ($0, DeinitializeCounter()) })
+    XCTAssertEqual(DeinitializeCounter.count, 4)
+
+    _ = dictionary.popFirst()
+    XCTAssertEqual(DeinitializeCounter.count, 3)
+
+    #if !COMPATIBLE_ATCODER_2025
+      _ = dictionary.popLast()
+      XCTAssertEqual(DeinitializeCounter.count, 2)
+    #endif
+
+    _ = dictionary.removeValue(forKey: 1)
+    XCTAssertEqual(DeinitializeCounter.count, 1)
+
+    dictionary.removeAll()
+    XCTAssertEqual(DeinitializeCounter.count, 0)
+  }
 }

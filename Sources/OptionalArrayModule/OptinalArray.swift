@@ -72,8 +72,9 @@ public struct OptionalArray1D<Element>: ~Copyable {
           hasPayload[position] = true
           (payload + position).initialize(to: value)
         } else {
+          // `.move()`済み(または元々未初期化)のスロットはすでに未初期化状態なので、
+          // ここであらためて`deinitialize`してはいけない(二重解放になる)。
           hasPayload[position] = false
-          (payload + position).deinitialize(count: 1)
         }
       }
       yield &value
@@ -359,8 +360,9 @@ public struct OptionalArray1DView<Element> {
           hasPayload[position] = true
           (payload + position).initialize(to: value)
         } else {
+          // `.move()`済み(または元々未初期化)のスロットはすでに未初期化状態なので、
+          // ここであらためて`deinitialize`してはいけない(二重解放になる)。
           hasPayload[position] = false
-          (payload + position).deinitialize(count: 1)
         }
       }
       yield &value

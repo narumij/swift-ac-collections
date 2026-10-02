@@ -96,4 +96,33 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
     releasingCapacity.removeAll()
     XCTAssertTrue(releasingCapacity.isEmpty)
   }
+
+  /// popFirst/popLast/eraseMulti/removeAllが、保持していた参照型の値(重複キーを含む)を
+  /// 正しく解放すること(二重解放やリークがないこと)
+  func test_variousRemovalMethods_releaseRetainedReferenceValuesExactlyOnce() {
+    final class DeinitializeCounter {
+      nonisolated(unsafe) static var count = 0
+      init() { Self.count += 1 }
+      deinit { Self.count -= 1 }
+    }
+
+    var map = RedBlackTreeMultiMap<Int, DeinitializeCounter>(
+      keysWithValues: [1, 1, 2, 3, 3].map { ($0, DeinitializeCounter()) })
+    XCTAssertEqual(DeinitializeCounter.count, 5)
+
+    _ = map.popFirst()
+    XCTAssertEqual(DeinitializeCounter.count, 4)
+
+    #if !COMPATIBLE_ATCODER_2025
+      _ = map.popLast()
+      XCTAssertEqual(DeinitializeCounter.count, 3)
+    #endif
+
+    let erasedCount = map.eraseMulti(3)
+    XCTAssertEqual(erasedCount, 1)
+    XCTAssertEqual(DeinitializeCounter.count, 2, "キー検索に値の一時生成は不要なので、削除された分だけ減ること")
+
+    map.removeAll()
+    XCTAssertEqual(DeinitializeCounter.count, 0)
+  }
 }

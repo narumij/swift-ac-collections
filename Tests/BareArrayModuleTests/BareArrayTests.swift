@@ -353,5 +353,42 @@ import XCTest
       XCTAssertEqual(array[0], "abc")
       XCTAssertEqual(clone[0], "xyz")
     }
+
+    // MARK: - Zero count
+
+    func testBareArrayEmptyHasNoIndices() {
+      let array = BareArray<Int>(repeating: 0, count: 0)
+      XCTAssertEqual(Array(array.indices), [])
+    }
+
+    // MARK: - Sendable
+
+    #if swift(>=5.5)
+      func testSendable_compiles() {
+        func requiresSendable<T: Sendable & ~Copyable>(_ value: borrowing T) {}
+        let array = BareArray<Int>(repeating: 0, count: 1)
+        requiresSendable(array)
+      }
+    #endif
+
+    // MARK: - Reference element lifetime
+
+    func testBareArrayOverwriteDeinitializesPreviousReferenceElement() {
+      final class Box {
+        let onDeinit: () -> Void
+        init(_ onDeinit: @escaping () -> Void) { self.onDeinit = onDeinit }
+        deinit { onDeinit() }
+      }
+
+      var deinitCount = 0
+      var array = BareArray<Box>(repeating: Box({ deinitCount += 1 }), count: 1)
+      XCTAssertEqual(deinitCount, 0)
+
+      array[0] = Box({ deinitCount += 1 })
+      XCTAssertEqual(deinitCount, 1, "上書き時に古い要素がdeinitされること")
+
+      array = BareArray<Box>(repeating: Box({ deinitCount += 1 }), count: 1)
+      XCTAssertEqual(deinitCount, 2, "再代入直前に、直前のarrayのdeinitで要素も解放されること")
+    }
   }
 #endif

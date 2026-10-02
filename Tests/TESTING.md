@@ -71,9 +71,6 @@
 
 ### 保留中の判断・懸念
 
-- **2026-10-03 JST 未修正の実バグ(重要・引き継ぎ)**: `Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2+KeyValue.swift`の`subscript(key:)`の`_modify`で、`dictionary[existingKey] = nil`(キー削除)がValueが参照型(class)の場合に二重解放でクラッシュする(再現済み、一時テストで確認・削除済み)。原因: `Base.__mapped_value_ptr(__child).move()`で既にValueの所有権を取り出した後、nil分岐で`erase(__child.pointee)`を呼んでおり、`erase`→`destroy`→`___pushRecycle`(`UnsafeTreeV2+BufferHeader.swift`)内の`freshBucketAllocator.deinitialize(...)`がpayload全体(Key+Value)を丸ごと再度deinitializeしてしまう。`erase(_:)`自体には元から「メモリ破壊の可能性がある」という警告コメントが付いていた(`unsafe_tree+erase.swift`)。`RedBlackTreeMultiMap`に同種のsubscript実装があるかは未確認。
-  - **方針検討中**: ユーザーは「ガードは性能影響があるので最悪の手にしたい」として、実行時ガード(例: `___pushRecycle`側で「既にmove済みか」を判定してdeinitializeをスキップ)よりも先に、**`.move()`をそもそも使わない設計に変える場合の影響を確認したい**との意向。`.move()`を使わない=`erase`に任せて丸ごとdeinitializeさせ、`_modify`側は値を読み出すだけ(コピーまたは別の手段)にする方向性だが、具体的な代替実装は未検討。影響範囲(`subscript(key:default:)`等、同じ`_modify`構造を持つ他の箇所)の洗い出しも未着手。
-  - 次回これを引き継ぐ場合は、まず(a)`RedBlackTreeMultiMap`の同種subscriptの有無、(b)`.move()`を使わない代替実装案、(c)影響範囲の洗い出し、の順で進めるとよい。
 - 内部構造をテスト観点でどのように区分するのか、まだ結論がでていない
 - 生木へのテストを増やすと変更コストがかさむので、バランスに悩んでいる
 - `RedBlackTreeMappedValuesView._isdentical(to:)`はSources内で呼び出しゼロ(`Equatable`適合なし)。削除するかテストを書くかはユーザー判断待ち
@@ -82,6 +79,10 @@
 
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
+
+- 2026-10-03 Claude (Sonnet 5): 参照型ライフタイム横展開の続きとして、CoW(コピー後の片方変異)での参照型要素の扱いを検証。`RedBlackTreeSet_15_ValueSemanticsTests.swift`に`test_copyOnWrite_sharedReferenceElementsReleaseExactlyOnceAfterBothCopiesDeinit`を追加。当初「originalから削除した直後に解放されるはず」という誤った期待値でテストを書き1回失敗したが、`_copyCount`と実際の中身を出力して調査した結果、CoW分岐後の`copy`が同じインスタンスを引き続き参照しているため意図的に解放されないのが正しい挙動と判明(バグではなく期待値の誤り)。期待値を修正して成功を確認し、観点チェックリストに「CoW分岐後は片方から削除してもインスタンスは解放されない」を追記した。全体テスト0失敗。
+
+- 2026-10-03 Claude (Sonnet 5): 前項(保留中だった)`UnsafeTreeV2+KeyValue.swift`の`subscript(key:)`二重解放バグを修正。原因は`.move()`で取り出したValueの所有権を、nil代入(キー削除)分岐の`erase(__child.pointee)`が内部で`___pushRecycle`→`freshBucketAllocator.deinitialize(...)`によりpayload全体を再度解放していたこと。ユーザー判断「ガードは最悪の手」「リークが無ければ`.move()`廃止でよい」を受け、`.move()`を`.pointee`読み取り(コピー)に変更し、既存キー上書き分岐も`.initialize(to:)`から`.pointee =`代入(deinit old→init new)に変更。`_MappedValue`は常にCopyable(`~Copyable`指定なし)のため、コピーへの変更は型制約上問題なし。`RedBlackTreeMultiMap`は同じ内部subscriptを使用しておらず(影響なし、確認済み)。回帰防止テスト2件(`test_subscriptAssignNil_releasesRetainedReferenceValueExactlyOnce`・`test_subscriptOverwriteExistingKey_releasesOldReferenceValueExactlyOnce`)を`RedBlackTreeDictionary_6_RemovalTests.swift`に追加、全体テスト0失敗。
 
 - 2026-10-03 Claude (Sonnet 5): 上記OptionalArrayModuleバグの発見を受け、赤黒木コア(Set/MultiSet/Dictionary/MultiMap)側で同系統の参照型要素リーク・二重解放が無いかを確認。`removeAllKeepingCapacity`以外の削除系(popFirst/popLast/remove(_:)/removeFirst/eraseMulti/removeValue(forKey:))には参照型要素のdeinit検証が1件もなかった(4型中Setの1メソッドのみ既存)ため、`DeinitializeCounter`パターンで4型の`_6_RemovalTests.swift`に`test_variousRemovalMethods_releaseRetainedReferenceElementsExactlyOnce`相当を追加。検索用一時要素(`remove(_:)`/`eraseMulti(_:Element)`の引数)自体も解放対象になる分を含め、解放回数を事前計算してから実測し、全て一致を確認(新バグなし)。配列インデックスからポインタ型へ移行した本来の動機が参照型の正しい取り扱いだったため、この検証はカバレッジ上は小さいが設計意図への適合確認として重要。続けて共有View側(`RedBlackTreeKeyOnlyRangeView`/`RedBlackTreeKeyValueRangeView`、代表としてSet/Dictionaryで検証)の`popFirst`/`popLast`/`erase()`/`erase(where:)`にも同様のテストを追加し、同じく新規バグなしを確認。全体テスト0失敗。
 - 2026-10-03 Claude (Sonnet 5): 優先事項「BareArrayModule/OptionalArrayModuleのテストを追加」に対応。両モジュールにSendable適合テスト・参照型要素でのライフタイム検証テストを追加した過程で、**`OptionalArray1D`/`OptionalArray1DView`の`subscript` `_modify`に実バグ**を発見: `array[i] = nil`で既存値を消す際、`.move()`で既に所有権を移動済みのスロットに対して、else節がさらに`(payload + position).deinitialize(count: 1)`を呼んでおり、参照型(class)要素で二重解放によるクラッシュ(SIGSEGV)を起こしていた。値型要素では症状が出ないため既存テスト(`Int`のみ)では発覚していなかった(ユーザー確認: 「値型だけを想定してた」)。`deinitialize`呼び出しを削除して修正。全体テスト0失敗を確認。
@@ -177,6 +178,7 @@ Set,MultiSet,MultiMap,Dictionary
 テストを書く/レビューするときに意識する「観点」を、見つかった都度一行で追記する。
 
 - 参照型要素のライフタイム(二重解放・リーク): `DeinitializeCounter`パターン(class+static count)で検証
+- CoW分岐後は片方から削除してもインスタンスは解放されない(もう片方がまだ参照): 期待値を間違えやすい
 
 ### 旧フォルダ監査時の内部/外部トリアージ
 

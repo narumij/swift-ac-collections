@@ -133,26 +133,41 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
     XCTAssertEqual(DeinitializeCounter.count, 0)
   }
 
-  #if false
-    // これはつかわないこと。
-    // 既知の未修正バグの再現テスト(TESTING.mdの「保留中の判断・懸念」2026-10-03 JST参照)。
-    // subscript(key:)への nil 代入は、Valueが参照型の場合に二重解放でクラッシュする
-    // (.move()済みのValueを、erase側のpushRecycleが再度deinitializeしてしまうため)。
-    // 修正されるまで有効化しないこと。有効化するとプロセスがSIGTRAPで落ち、テストスイート全体が完走しない。
-    func test_subscriptAssignNil_releasesRetainedReferenceValue_knownBug() {
-      final class DeinitializeCounter {
-        nonisolated(unsafe) static var count = 0
-        init() { Self.count += 1 }
-        deinit { Self.count -= 1 }
-      }
-
-      var dictionary = RedBlackTreeDictionary<Int, DeinitializeCounter>(
-        uniqueKeysWithValues: (0..<3).map { ($0, DeinitializeCounter()) })
-      XCTAssertEqual(DeinitializeCounter.count, 3)
-
-      dictionary[1] = nil
-
-      XCTAssertEqual(DeinitializeCounter.count, 2)
+  /// `subscript(key:)`へのnil代入(キー削除)が、参照型Valueを二重解放せずに
+  /// ちょうど1回だけ解放すること(2026-10-03発見・修正済みの回帰防止テスト)
+  func test_subscriptAssignNil_releasesRetainedReferenceValueExactlyOnce() {
+    final class DeinitializeCounter {
+      nonisolated(unsafe) static var count = 0
+      init() { Self.count += 1 }
+      deinit { Self.count -= 1 }
     }
-  #endif
+
+    var dictionary = RedBlackTreeDictionary<Int, DeinitializeCounter>(
+      uniqueKeysWithValues: (0..<3).map { ($0, DeinitializeCounter()) })
+    XCTAssertEqual(DeinitializeCounter.count, 3)
+
+    dictionary[1] = nil
+
+    XCTAssertEqual(DeinitializeCounter.count, 2)
+  }
+
+  /// `subscript(key:)`へ既存キーの新しい値を代入したとき、古い参照型Valueが
+  /// リークせずちょうど1回だけ解放されること(`.move()`廃止に伴う回帰防止テスト)
+  func test_subscriptOverwriteExistingKey_releasesOldReferenceValueExactlyOnce() {
+    final class DeinitializeCounter {
+      nonisolated(unsafe) static var count = 0
+      init() { Self.count += 1 }
+      deinit { Self.count -= 1 }
+    }
+
+    var dictionary = RedBlackTreeDictionary<Int, DeinitializeCounter>(
+      uniqueKeysWithValues: (0..<3).map { ($0, DeinitializeCounter()) })
+    XCTAssertEqual(DeinitializeCounter.count, 3)
+
+    dictionary[1] = DeinitializeCounter()
+    XCTAssertEqual(DeinitializeCounter.count, 3, "古い値が解放され、新しい値が1つ増えるので差し引き変化なし")
+
+    dictionary.removeAll()
+    XCTAssertEqual(DeinitializeCounter.count, 0)
+  }
 }

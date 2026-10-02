@@ -38,6 +38,7 @@
 ### 連絡事項
 
 - この文書のユーザー記入欄を更新する場合は、日付に加えて時刻も記載する
+- 2026-10-02 20:48 JST ユーザー要望: 公開ドキュメントメンテナンスと同様に`Tests/TESTING.md`も定期的にレビューする。ドキュメント監査中にテスト仕様の不足、陳腐化、実装との不一致、判断待ちを見つけた場合は、本ユーザー記入欄の`保留中の判断・懸念`へ連絡事項として追記する
 - 2026-10-02 16:02 JST ユーザー要望: Test as Specificationとの照合中に公開仕様として疑問が残った点は、推測で確定せず、この文書の`保留中の判断・懸念`へ連絡事項として記録する
 - 最後に作業したモデル名とバージョンを記録する
 - 完了済みログを無制限に蓄積しない。恒久的な知見は規則へ移し、`Current handoff`は直近の状況を中心に保つ
@@ -49,6 +50,7 @@
 
 ### 保留中の判断・懸念
 
+- 2026-10-02 20:48 JST: `Tests/TESTING.md`の`Current handoff`に、改名済みの`RedBlackTreeMappedValuesView._isdentical(to:)`が「未結線・削除判断待ち」として残っており、完了済みログと矛盾する。テスト側の次回メンテナンスでスナップショットから削除し、実在する未結線APIだけに同期する必要がある
 - 2026-10-02 16:36 JST: Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としているが、容量条件と推奨APIの対応根拠がTest as Specificationから確定できない。設計意図は、逐次挿入を素直に回すO(*n* log(*m + n*))経路と、TimSort等で入力をソート済みにしてからO(*n + m*)でマージする経路の選択。ただし総コストは入力の既ソート性、ソート費用、一時メモリ、CoW、要素数に依存するため、単純な「十分な空き容量」だけでは推奨条件を表現しきれない可能性がある。意味・重複規則・計算量の文書化は行ったが、性能推奨の書き換えは代表的な入力分布でのベンチマークと実装経路の再確認後に行う。
 - 2026-10-02 16:18 JST: `RedBlackTreeKeyValueRangeView.values`が返す`RedBlackTreeMappedValuesView`について、要素subscriptと`swapAt`の公開契約はView内の有効Indexを要求するが、現行実装は同じ木のView外Indexを明示的に範囲拒否していない。ソースにも範囲制限のTODOがある。公開仕様の変更ではなく事前条件検査の実装・Death Test課題として、別フェーズで対応要否を判断する。
 - 2026-10-02 16:24 JST: MultiMapの通常`insert`が同値キー群の末尾へ追加して挿入順を保持することはInsertion Testsで確定した。一方、hint付き`insert`が同値キー群内の順序へ与える影響はテストが戻りIndexだけを検証しており、公開契約として未確定。hintは検索結果や挿入可否を変えないが、multi型の同値要素間順序も変えないと保証するかは、専用Test as Specificationを追加してから文書化する。
@@ -191,6 +193,7 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
+- 2026-10-02 20:52 JST Codex (GPT-5): 公開削除系APIの基本区切りを完了。4型の`popFirst` / `popLast`、`removeFirst` / `removeLast`、`remove(at:)`、`removeAll(keepingCapacity:)`、`erase(_:)`、`erase(where:)`、Setの`remove(_:)`、Dictionaryの`removeValue(forKey:)`、MultiSet / MultiMapの`eraseUnique` / `eraseMulti`をRemoval Testsと実装へ照合し、空時の戻り値、最小・最大要素、Indexの事前条件、次Indexの返却を文書化した。Bound expressionによる単一・範囲・条件付き削除と、Set / MultiMapの`erase(exactly:)`の失敗時`nil`も追記。Claudeが完了した`_isIdentical(to:)`改名に合わせてAPI Matrixの旧綴り併記を削除した。Bound / Insertion関連118テストが成功し、Release DocCの`--warnings-as-errors`生成も成功。`TESTING.md`の陳腐化した未結線一覧はユーザー記入欄の保留事項へ記録済み。次はAPI Matrixの残りからutility / protocol conformance / transformation系の公開コメントを監査する。
 - 2026-10-02 16:36 JST Codex (GPT-5): 公開一括挿入・結合系の監査を完了。Setのmerge / merging、MultiSetとMultiMapのinsert(contentsOf:) / inserting(contentsOf:) / meld / melding、Dictionaryのmerge / mergingを型別Insertion・SetAlgebra・TransformingAndCombining Testsと実装へ照合した。unique型の重複破棄、multi型の全出現保持、Dictionary combineの引数順（現在値、otherの値）、mutating / nonmutating差、入力非変更、消費される`other`を文書化した。関連84テストが成功し、Release DocCの`--warnings-as-errors`生成も成功。既存の容量条件付き推奨文は根拠未確定として保留事項へ記録。次は削除系公開APIを監査する。
 - 2026-10-02 16:25 JST Codex (GPT-5): 公開挿入・更新系の基本区切りを完了。4型の単一insert、Set update、MultiSetのIndex指定update、Dictionaryのinsert / updateValue、MultiMapのIndex指定updateValue、hint付き操作、要素・キー・default・MultiMap値群subscriptを型別Insertion Testsと現行実装へ照合した。unique型は既存要素を返して重複挿入しないこと、multi型は必ず新しい出現を追加すること、Dictionary default subscriptはreadだけでは挿入せずmutation時に挿入することを明文化した。MultiMapの通常insertが同値キー群内の挿入順を保持することもTest as Specificationで確定し、以前の検索系保留を解消した。hint付きmulti挿入の同値要素間順序だけは未確定として保留事項へ残した。Insertion Tests 49件が成功し、Release DocCの`--warnings-as-errors`生成も成功。次は一括挿入・merge / union / meld系を監査する。
 - 2026-10-02 16:23 JST Codex (GPT-5): 公開Range View監査の比較・同一性区切りを完了。KeyOnly / KeyValueの`elementsEqual`、`lexicographicallyPrecedes`、`==`、`<`へ比較対象・順序・戻り値を追記し、3 Viewの同一性判定を「同一storageかつ同一境界」として要素等価性から区別した。KeyValue / MappedValuesの公開メソッド名`_isdentical(to:)`の綴り不一致は互換性判断が必要なため保留事項へ記録した。Release DocCの`--warnings-as-errors`生成は成功。次はAPI Matrixを基準に、4型の挿入・更新系公開APIを監査する。

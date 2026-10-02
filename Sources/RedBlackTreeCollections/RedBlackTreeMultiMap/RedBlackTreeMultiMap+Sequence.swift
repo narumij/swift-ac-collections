@@ -33,6 +33,10 @@ extension RedBlackTreeMultiMap {
 
   /// Returns a new multimap containing the key-value pairs of this multimap that satisfy the given predicate.
   ///
+  /// Every included pair is retained, including pairs with equivalent keys.
+  ///
+  /// - Parameter isIncluded: A closure that returns `true` for a key-value pair to include.
+  /// - Returns: A new multimap containing only the included key-value pairs.
   /// - Complexity: O(*n*)
   @inlinable
   public func filter(
@@ -50,6 +54,10 @@ extension RedBlackTreeMultiMap {
 
   /// Returns a new multimap containing the keys of this multimap with the values transformed by the given closure.
   ///
+  /// Duplicate keys and their multiplicities are preserved.
+  ///
+  /// - Parameter transform: A closure that transforms a value.
+  /// - Returns: A new multimap with the same keys and transformed values.
   /// - Complexity: O(*n*)
   @inlinable
   public func mapValues<T>(_ transform: (Value) throws -> T) rethrows
@@ -58,8 +66,15 @@ extension RedBlackTreeMultiMap {
     .init(__tree_: try __tree_.___mapValues(_start, _end, transform))
   }
 
-  /// Returns a new multi map containing only the key-value pairs that have non-nil values as the result of transformation by the given closure.
+  /// Returns a new multimap containing only pairs whose transformed value isn't `nil`.
   ///
+  /// This operation doesn't collapse duplicate keys: each input pair is transformed
+  /// independently, and every non-`nil` result is retained.
+  ///
+  /// - Parameter transform: A closure that transforms a value or returns `nil`
+  ///   to omit its key-value pair.
+  /// - Returns: A new multimap containing the non-`nil` transformed values under
+  ///   their original keys.
   /// - Complexity: O(*n*)
   @inlinable
   public func compactMapValues<T>(_ transform: (Value) throws -> T?)
@@ -77,6 +92,9 @@ extension RedBlackTreeMultiMap {
 
   /// Returns an iterator over the multimap’s key-value pairs.
   ///
+  /// The iterator visits every pair in sorted key order.
+  ///
+  /// - Returns: An iterator over the multimap's key-value pairs.
   /// - Complexity: O(1)
   @inlinable
   public func makeIterator() -> Tree._KeyValues {
@@ -92,6 +110,9 @@ extension RedBlackTreeMultiMap {
 
   /// Returns the elements of the sequence, sorted.
   ///
+  /// Pairs with equivalent keys occur in the result with their full multiplicity.
+  ///
+  /// - Returns: An array containing every pair in sorted key order.
   /// - Complexity: O(`count`)
   @inlinable
   public func sorted() -> [Element] {
@@ -104,6 +125,9 @@ extension RedBlackTreeMultiMap {
 
     /// Returns an array containing the elements of this sequence in reverse order.
     ///
+    /// Pairs with equivalent keys occur in the result with their full multiplicity.
+    ///
+    /// - Returns: An array containing every pair in descending key order.
     /// - Complexity: O(`count`)
     @inlinable
     public func reversed() -> [Element] {

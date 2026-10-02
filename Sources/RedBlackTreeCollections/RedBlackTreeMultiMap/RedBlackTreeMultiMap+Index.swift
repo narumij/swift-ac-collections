@@ -321,8 +321,11 @@
     // remove(at:)では世代違いをトラップするので、isValidチェックを2回行うことになるので。
     // ただ、オーバーフローで一周した場合への対策はなにもない
 
-    /// Removes the key-value pair at the given index of the multimap.
+    /// Removes the key-value pair at the given index if the index is still valid.
     ///
+    /// - Parameter index: An index that was created for this multimap.
+    /// - Returns: The index that followed `index` before removal, or `nil` if
+    ///   `index` doesn't refer to an accessible key-value pair of the multimap.
     /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult

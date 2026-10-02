@@ -236,7 +236,7 @@ Viewの `endIndex` は基底コンテナ内の要素を指す場合がある。�
 | --- | --- |
 | `_Key`, `_MappedValue`, `_PayloadValue` | 内部ジェネリック制約とpayload表現 |
 | `_create(_:)` | Range Viewから基底コンテナを構築する内部フック |
-| `_isIdentical(to:)` / `_isdentical(to:)` | Range Viewのストレージ・境界同一性判定 |
+| `_isIdentical(to:)` | Range Viewのストレージ・境界同一性判定 |
 | `__raw_find(_:)`, `__raw_end` | raw pointerを扱う内部フック |
 | `___erase(_:)` | 旧実装・互換層から使われる削除フック |
 | `_unsafe` / `_checked` ラベルのsubscript | 安全性契約を呼び出し側へ委ねる低レベルAPI |

@@ -31,6 +31,10 @@
 
     /// Returns a new set containing the elements of the set that satisfy the given predicate.
     ///
+    /// The returned set preserves the set's sorted order and contains no duplicates.
+    ///
+    /// - Parameter isIncluded: A closure that returns `true` for an element to include.
+    /// - Returns: A new set containing only the included elements.
     /// - Complexity: O(*n*)
     @inlinable
     public func filter(
@@ -49,6 +53,9 @@ extension RedBlackTreeSet {
 
   /// Returns an iterator over the members of the set.
   ///
+  /// The iterator visits the elements in sorted order.
+  ///
+  /// - Returns: An iterator over the set's elements.
   /// - Complexity: O(1)
   @inlinable
   public func makeIterator() -> Tree._PayloadValues {
@@ -65,6 +72,7 @@ extension RedBlackTreeSet {
 
     /// Returns the elements of the sequence, sorted.
     ///
+    /// - Returns: An array containing every element in sorted order.
     /// - Complexity: O(*n*)
     @inlinable
     public func sorted() -> [Element] {
@@ -73,6 +81,7 @@ extension RedBlackTreeSet {
 
     /// Returns an array containing the elements of this sequence in reverse order.
     ///
+    /// - Returns: An array containing every element in descending order.
     /// - Complexity: O(`count`)
     @inlinable
     public func reversed() -> [Element] {

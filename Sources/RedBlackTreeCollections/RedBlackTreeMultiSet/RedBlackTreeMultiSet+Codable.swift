@@ -55,7 +55,7 @@
     /// - Parameter decoder: The decoder to read data from.
     @inlinable
     public init(from decoder: Decoder) throws {
-      self.init(__tree_: try .create(from: decoder))
+      self.init(__tree_: try .createMulti(from: decoder))
     }
   }
 #endif

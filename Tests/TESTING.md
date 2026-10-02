@@ -281,7 +281,8 @@ Codexが原木カバレッジ作業を完了扱いにした後、Claudeは次を
    28件成功すること、および対象assert/fatal行がcoverage画面で塗られることを確認する。
 5. CLI未達34行の内訳を`llvm-cov show`と`llvm-cov export`で再確認する。現時点では33行が
    Death Test対象(`unsafe_node+pointer+compare` 9、free pointer algorithm 5、protocol algorithm 15、
-   `_SealedTag` 4)、残り1行が`unsafe_tree+find.swift`の閉じ括弧である。通常実行可能な
+   `_SealedTag` 4)、残りは`unsafe_tree+find.swift`にある同名2メソッドの末尾で、CLIでは
+   source mapping上1行として集計される。通常実行可能な
    未テスト経路が新たに見つかった場合は
    完了とせずテストを追加する。
 6. Sourcesをcoverage表示だけのために変更していないこと、Death Testが通常テストと別ファイルに
@@ -289,7 +290,7 @@ Codexが原木カバレッジ作業を完了扱いにした後、Claudeは次を
    `~Copyable`およびstatic/Base・Baseなしinstance比較注入の両経路が維持されていることを確認する。
 
 完了判定は「CLI表示100%」だけを条件にしない。通常到達可能な行がCLIで実行済み、停止経路が
-Death Test成功かつXcodeで到達確認済み、残りが上記1行のsource mappingだけなら、
+Death Test成功かつXcodeで到達確認済み、残りが上記同名2メソッド末尾のsource mappingだけなら、
 原木テストは実質100%として完了確認してよい。
 
 ```sh
@@ -350,7 +351,7 @@ xcrun llvm-cov show \
 - **原木region全件監査**(2026-10-02 13:52 JST、13:57更新、Codex GPT-5): `llvm-cov export`のsegmentsを使い、Xcodeで未到達表示になるcount 0 regionを原木全体から抽出。通常到達可能だった`_SealedPtr.accessible`のpayload欠落側、`_referenceAllocationByteCount`のcapacity 0、`BoundBothProtocol.upper_bound`のunique dispatchを追加検証した。当初残ったdebug guard末尾3 regionsも先行assertの`#if false`化に合わせて回収済み。現在残る37 regionsは、Death Test対象33 regions(`_SealedTag` 4・free pointer algorithm 5・pointer compare 9・protocol algorithm 15)と、全分岐が先にreturnするため到達不能なfind loop末尾4 regionsだけ。通常到達可能なregionの塗り漏れは0と判断した。通常XCTestは122件、Death Testは28 cases。
 - **range専用右端挿入の直接仕様化**(2026-10-02 13:53 JST、Codex GPT-5): `___emplace_hint_right`はcoverage上は既に実行済みだったが、原木ターゲットから名前付きで直接検証されていなかった。空木の`___max_ref()`から開始し、各呼び出しが返す「挿入node・そのright参照」を次の挿入位置として0..<8を昇順構築。毎回の赤黒木不変条件、最終in-order、size、allocation、全解放を確認した。汎用hintとしては扱わずrange構築専用という前提を固定。通常XCTestは121件。
 - **debug checkのfalse経路復帰**(2026-10-02 13:57 JST): ユーザーが`equiv`/`nullCheck`/`endCheck`の先行assert群を`#if false`化。これらは厳密な停止契約ではなく、問題探索の手間を省くための暫定形だった。既存テストの「assertが先に停止するためfalse経路は到達不能」という注記を更新し、metadata不一致がトラップせず`false`になる3経路を追加。`unsafe_node+debug.swift`はregions 9/9・functions 3/3・lines 38/38の全て100%。通常XCTestは122件。
-- **原木coverage基準値更新**(2026-10-02 14:00 JST): debug assert群の`#if false`化でコンパイル対象行が2077行から2043行へ減り、false経路3行を回収。原木全体は98.34%(2009/2043行、未達34行・5ファイル)へ更新。未達はDeath Test対象33行と`unsafe_tree+find.swift`のsource mapping上の閉じ括弧1行。
+- **原木coverage基準値更新**(2026-10-02 14:00 JST): debug assert群の`#if false`化でコンパイル対象行が2077行から2043行へ減り、false経路3行を回収。原木全体は98.34%(2009/2043行、未達34行・5ファイル)へ更新。未達はDeath Test対象33行と`unsafe_tree+find.swift`にある同名2メソッド末尾のsource mapping(CLIでは1行集計)。この末尾表示を通すには実装の書き換えが必要だが、coverage表示よりLLVM/libc++由来コードとの一致を優先するため書き換えない。ここは目視確認をもって100%相当と判定する。
 - **原木作業の担当**: 当面はCodexが継続担当する。Claudeへ無理に引き渡さず、別担当が触れる場合も本節と直近の原木ログを読んでから作業する。特にrange専用APIの前提、`~Copyable` fixture、static/Base比較注入とBaseなしインスタンス比較注入の二経路を維持する。
 - **カバレッジ**: 2026-10-01時点で`Sources/RedBlackTreeCollections`全体は`swift test --enable-code-coverage`+`llvm-cov`基準で約90%。残る未カバー行の大半は「未結線/削除判断待ちコード」に集約されている(次項)。
 - **未結線・削除判断待ちコード一覧**(いずれもSources内で呼び出しゼロと確認済み。削除するかテストを書くかはユーザー判断待ち):

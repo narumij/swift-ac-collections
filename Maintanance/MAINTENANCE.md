@@ -20,6 +20,8 @@
 
 ### 優先事項
 
+- TreeFoundamentalAllocationTestsがCIのサニタイザで引っかかるので調査
+
 - 2026-10-03 02:50 JST ユーザー要望: 今後、C++標準ライブラリとの挙動照合を継続的に行える専用ターゲットを追加する
   - 現時点では実装を開始せず、`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`を作業依頼の正本とする
   - 既存の`CppBenchmarks`は性能測定専用として維持し、照合用C++参照実装とSwiftテストは別ターゲットにする

@@ -1,8 +1,96 @@
 # Codex-to-Claude Work Request
 
-Status: Completed
+Status: Active — complete Task 1 before Task 2
 
-## Result Summary
+## Active Assignment
+
+Work on the following two bounded documentation and planning tasks in order.
+Read the repository-level instructions, `Tests/CLAUDE.md`, `Tests/TESTING.md`,
+and the relevant user priorities in `Maintanance/MAINTENANCE.md` before
+editing. Communicate with the user in Japanese.
+
+### Task 1 — PermutationModule specification, phase 1
+
+Prepare the specification foundation for a future `PermutationModule`
+redesign. This phase is investigation and documentation only.
+
+1. Audit the current public API, implementation variants, existing tests,
+   package configuration, user-facing documentation, and the historical
+   AtCoder-compatible behavior of `PermutationModule`.
+2. Recreate `Sources/PermutationModule/Documentation/` if it is absent and
+   write a concise specification draft there. Separate observable public
+   behavior from implementation strategy. The intended end state should
+   expose differences in behavior caused by implementation choice without
+   presenting an "unsafe" variant as the user-facing distinction.
+3. Produce a test-first implementation plan: identify which existing tests can
+   be retained, which Test as Specification cases are missing, and which
+   performance checks are needed. Include a practical plan for copy-paste
+   submission to AtCoder ABC328E as the performance validation requested by
+   the user.
+4. Record unclear semantics, API-shape choices, compatibility questions, or
+   removal candidates as decisions for the user. Do not guess.
+
+Constraints for Task 1:
+
+- Do not change production Swift code or public API in this phase.
+- Do not delete or rewrite existing tests merely to fit the proposed design.
+- Do not start implementation until the user has reviewed the specification
+  and unresolved decisions.
+- Keep new documentation focused; do not copy large source listings.
+
+Validation and handoff for Task 1:
+
+- Verify every named file, API, and test against the current repository.
+- Run only documentation/link or existing narrow tests needed to validate
+  factual claims; no broad implementation work is authorized.
+- Update the relevant current-state maintenance document concisely.
+- Report the proposed specification and user decisions needed in Japanese.
+
+### Task 2 — Expand the AtCoder 2025 refactoring record
+
+After Task 1 is complete, extend
+`Maintanance/REFACTORING_FROM_ATCODER_2025.md` using repository history as
+evidence.
+
+1. Trace the main stages from `release/AtCoder/2025` to the current
+   RedBlackTree architecture. For each confirmed stage, record the commit,
+   old path, new path, contract moved, and replacement or surviving tests.
+2. Give the test migration equal attention to the source migration. Preserve
+   the user's important design fact that the existing tests were deliberately
+   reused as a bootstrap rather than rebuilt from zero.
+3. Cover the progression from container-coupled code through internal-layer
+   separation, fixture splitting, raw-tree tests, and the four public
+   collection Test as Specification suites.
+4. Treat
+   `Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/___RedBlackTreeContainerTests_unsafe.swift`
+   as the keystone historical artifact. Do not modernize, rename, enable, or
+   delete it as part of this task.
+5. Clearly distinguish facts proven by commits and diffs from interpretations.
+   Label uncertain intent and ask the user instead of presenting it as fact.
+
+Constraints for Task 2:
+
+- Documentation changes only. Do not change source, tests, package settings,
+  workflows, or public API.
+- Prefer a readable account of methods and stages over an exhaustive file-move
+  log.
+- Preserve the existing confirmed content unless repository evidence proves it
+  wrong.
+
+Validation and handoff for Task 2:
+
+- Check cited commits and paths with Git history.
+- Check all current links and paths mentioned in the document.
+- Run `git diff --check`.
+- Report additions, uncertain points, and evidence used in Japanese.
+
+When both tasks are complete, change this status to `Completed`, add a concise
+result summary and validation record above the previous completed assignment,
+and do not delete the historical completion record below.
+
+## Previous Completed Assignment
+
+### Result Summary
 
 Confirmed the singleton lifecycle for all four types (Set/MultiSet/Dictionary/
 MultiMap) and added

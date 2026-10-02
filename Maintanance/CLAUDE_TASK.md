@@ -2,7 +2,185 @@
 
 Status: Completed
 
-## Result Summary
+## Active Correction Assignment (completed, see Result Summary below)
+
+The previous result below is not accepted as complete. Complete these two
+tasks in order. Communicate with the user in Japanese. Do not edit
+`Sources/RedBlackTreeCollections/Documentation/Head/Outlines/RedBlackTreeSet.outline.md`;
+the user has explicitly paused that document.
+
+### Task 1 — Redesign the PermutationModule plan around fewer variants
+
+The previous specification misunderstood the user's goal. The goal is not to
+present safe and no-CoW implementations as equally supported public strategies,
+and it is not to add another convenience API for the existing `All` path.
+The user wants fewer implementation and API variants.
+
+Use this product direction:
+
+1. The module's distinct value is the operation that enumerates only the
+   lexicographic successors of the current element order (`nextPermutations`).
+2. Full positional permutation enumeration (`Permutations.All`, `IteratorA`,
+   `SubSequenceA`, and `unsafePermutations()`) overlaps with
+   swift-algorithms' `permutations()` behavior and is a removal candidate, not
+   a feature to expand.
+3. The intended public surface should converge on `nextPermutations()` rather
+   than exposing implementation strategy through safe/unsafe API pairs.
+   Treat `unsafeNextPermutations()` and public safe/unsafe initializers as
+   compatibility and removal questions. Investigate how the low-overhead
+   implementation can remain internal without exposing retained-subsequence
+   aliasing as a second user-facing contract.
+4. Reduce duplicated iterator, buffer, and legacy-test implementations where
+   evidence shows they serve only the removed variants. Do not implement the
+   deletion in this phase; produce the exact removal/migration inventory and
+   tests that must be established first.
+
+Required corrections:
+
+- Rewrite `Sources/PermutationModule/Documentation/Specification.md`,
+  `Maintanance/PermutationModule/ImplementationPlan.md`, and
+  `Maintanance/PermutationModule/ProductReadinessAssessment.md` to reflect the
+  narrowing goal above.
+- Preserve factual distinctions: `All` permutes positions and emits `n!`
+  positional results; `Nexts` follows value-based lexicographic successors.
+- Do not say that the three current convenience APIs have the same ordering,
+  duplicate, or termination contract.
+- Account for all currently public nested types and initializers when planning
+  source compatibility; do not call the three extension methods the complete
+  public API.
+- Add a staged removal plan with deprecation/compatibility choices, affected
+  tests, and a narrow final target API. Bring any irreversible public API
+  decision back to the user.
+- Correct the ABC328E plan: constraints are `N <= 8`, `M <= 28`; AtCoder
+  validation needs a self-contained pasted Swift file and cannot rely on
+  `import AcCollections` being available on the judge.
+- Keep this phase limited to documentation and planning. Do not change
+  production source, tests, Package.swift, or workflows.
+
+### Task 2 — Correct and complete the AtCoder 2025 refactoring history
+
+The previous expansion of
+`Maintanance/REFACTORING_FROM_ATCODER_2025.md` contains unsupported claims and
+does not yet satisfy the requested history audit.
+
+Required corrections and investigation:
+
+1. Do not describe `ecb3085d` as a simple rename of the release-era keystone
+   test. Git records deletion/addition with substantial edits, and the
+   release-path file was deleted earlier in `1357bd3c`. Trace the intervening
+   lineage and describe the current file as a derived/reworked successor unless
+   stronger evidence supports another claim.
+2. Put stages in chronological order, or explicitly split source and test
+   timelines. The current September → May → June order is misleading.
+3. Refer to `b2580703` as the tip/commit of the remote
+   `release/AtCoder/2025` branch, not as a tag.
+4. Do not infer unchanged contracts or author intent from Git similarity
+   scores. Separate verified diff facts, user testimony, and interpretation.
+5. For each major stage, record the commit, old path, new path, contract moved,
+   and surviving or replacement tests. Cover internal-layer separation,
+   fixture splitting, raw-tree/Foundamental test extraction, and the expansion
+   of Test as Specification across all four public collection types.
+6. Clarify `28a1a5fb`: distinguish pre-existing conceptual layers from the
+   commit that aggregated/moved them under `Implements/`.
+7. Fully describe `29f43bb3` and `60604ff6`, including the actual fixture and
+   Foundamental test paths moved into `RedBlackTreeFixture` and
+   `RedBlackTreeTreeTests`.
+8. Preserve the keystone file unchanged and keep the user's confirmed design
+   fact that existing tests were deliberately reused as a bootstrap rather
+   than rebuilt from zero.
+
+Task 2 remains documentation-only. Verify every cited commit and path with Git,
+run `git diff --check`, and report any lineage that cannot be proven instead of
+filling gaps with inference.
+
+When both correction tasks are complete, change this status to `Completed` and
+add a new corrected result summary above the previous result summary. Do not
+delete the previous record; label it as superseded where necessary.
+
+## Result Summary (correction pass)
+
+Completed both corrected tasks. No production code, tests, or package settings were
+changed; documentation and planning only.
+
+**Task 1 (PermutationModule, narrowed to fewer variants):**
+- Rewrote `Sources/PermutationModule/Documentation/Specification.md`,
+  `Maintanance/PermutationModule/ImplementationPlan.md`, and
+  `Maintanance/PermutationModule/ProductReadinessAssessment.md` around the product
+  direction: `nextPermutations()` is the module's distinct value; `Permutations.All` /
+  `IteratorA` / `SubSequenceA` / `unsafePermutations()` are treated as removal candidates
+  that overlap `swift-algorithms`' `permutations()`, not as a feature to complete with a
+  new `safe` convenience method.
+- Enumerated the complete current public surface (not just the three extension methods):
+  `Permutations<C>`, `All`/`Nexts` each with public `init(safe:)`/`init(unsafe:)`,
+  `IteratorA`/`IteratorN`, `SubSequenceA`/`SubSequenceN`. This full list is what a staged
+  removal must account for.
+- Preserved the factual distinction that `All` permutes positions (`n!` positional
+  results, duplicates possible) and `Nexts` follows value-based lexicographic successors
+  (no duplicate value-orderings, stops early on descending/equal input); the two are not
+  described as sharing an ordering, duplicate, or termination contract.
+- Added a staged plan in `ImplementationPlan.md`: Stage 0 (regression-locking tests,
+  including an equivalence test against `swift-algorithms` as the removal justification)
+  → Stage 1 (deprecate the `All` family) → Stage 2 (delete the `All` family and the
+  now-dead `Buffer.prepare(count:)` path) → Stage 3 (decide whether
+  `unsafeNextPermutations()` / `Nexts.init(safe:)`/`init(unsafe:)` stay public or become
+  an internal fast path with the aliasing behavior no longer exposed as a second public
+  contract). Each stage requires user sign-off before implementation; nothing was
+  implemented.
+- Corrected the ABC328E plan: constraints are `N <= 8`, `M <= 28`; the practical
+  validation plan explicitly requires a self-contained pasted Swift file for AtCoder
+  submission (judge cannot `import AcCollections`), separate from the in-package
+  re-export test.
+
+**Task 2 (REFACTORING_FROM_ATCODER_2025.md correction):**
+- Re-investigated the keystone test's lineage with `git log --follow`, `git show -M
+  --name-status`, and targeted `diff`. Found that the current file is **not** a simple
+  rename of the release-era original: `cc0ca3ad` (2026-01-03) forked a copy of
+  `tree/___RedBlackTreeContainerTests.swift` into `unsafeTree/old/...`; the two files
+  then existed in parallel for ~9 months; the release-era original was deleted in
+  `1357bd3c` (2026-09-29); the next day `ecb3085d` (2026-09-30) relocated the forked copy
+  to its current directory while also rewriting most of its content (446 diff lines
+  against ~350/347 total — git's similarity detector recorded this as delete+add, not a
+  rename). Documented this as a derived/reworked successor, not a rename of the original.
+- Reorganized the document into an explicit source-timeline section and a separate
+  test-timeline section (the prior September → May → June single sequence mixed two
+  independent timelines). Within the test timeline, fully traced T1–T6 including the
+  `438af006` Bootstrap rename and its reversion back to the current filename in
+  `0483012f` (2026-10-03), which the previous version asserted without a traced commit.
+- Changed every reference to `b2580703` from "tag-affixed commit" to "the tip commit of
+  `release/AtCoder/2025`" (confirmed via `git merge-base` and `git log -1` on the remote
+  ref); noted that tag `0.1.44` happens to point to the same commit without using the tag
+  as the reference point.
+- Added an evidence-labeling convention (`[事実]` / `[証言]` / `[解釈]`) throughout the
+  document and reclassified statements that previously presented rename-similarity
+  percentages as proof of unchanged intent; those are now scoped to "git's rename
+  detector recognized this as the same file," not "the contract didn't change."
+- Clarified `28a1a5fb`: confirmed via `git ls-tree` on its parent that `Implements/` did
+  not exist before this commit, and via `git show -M --name-status` that it aggregates 14
+  pre-existing top-level directories (`__tree`, `UnsafeTreeV2`, `BoundsExpression`,
+  `Deprecated`, etc.) under the new `Implements/` parent in one commit. The layers
+  pre-existed as top-level directories; the `Implements/` aggregation itself did not
+  predate this commit.
+- Fully described `29f43bb3` and `60604ff6` with exact `git show -M --name-status` output:
+  the `RedBlackTreeFixture` target (`Fixtures.md`, `RedBlackTreeFixture.swift`, removal of
+  `RedBlackTreeTestSupport/___Node.swift`) and the `RedBlackTreeTreeTests` ("genboku")
+  target (`Tree/Fixture/*` and 10 `Tree/Foundamental/*` files moved, `RedBlackTreeFixture`
+  dependency wiring in `Package.swift`).
+- Preserved the user's confirmed design fact that tests were reused as a bootstrap rather
+  than rebuilt from zero, now backed by the corrected T1–T6 lineage (the fork-and-parallel
+  pattern in T1/T3 is itself evidence of this policy, not just an assertion).
+
+**Validation:**
+- All cited commit hashes verified to resolve and all cited paths verified against
+  current `git show`/`git ls-tree` output during this pass.
+- `git diff --check` — clean.
+- No `swift test` run was needed; this assignment made no source or test changes.
+
+Reported to the user in Japanese. The PermutationModule removal decisions (deprecate vs.
+delete `All` family, fate of `unsafeNextPermutations()`, and `NextPermutation.swift`'s
+legacy test) remain open and are recorded in `ImplementationPlan.md`'s pending-decisions
+list, awaiting the user's judgment before any implementation proceeds.
+
+## Previous Result Summary (superseded pending correction)
 
 Completed both Task 1 and Task 2 of the PermutationModule/REFACTORING assignment below.
 No production code, tests, or package settings were changed; this was a documentation and

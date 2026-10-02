@@ -33,9 +33,16 @@
   3D cloneのcapacity不足による参照解放漏れを修正済み。
 - AcCollections: 通常時の4型と互換時のPermutationModule再公開テストを追加済み。
   別テストターゲットでもRedBlackTreeのDebug寿命カウンタを各テスト後に検査・初期化する。
-- PermutationModule: `CLAUDE_TASK.md` Task 1(Codex依頼)でフェーズ1の仕様ドラフト
-  `Sources/PermutationModule/Documentation/Specification.md`とテストファースト実装計画
-  `Maintanance/PermutationModule/ImplementationPlan.md`を作成済み(コード・テスト変更なし)。
+- PermutationModule: `CLAUDE_TASK.md`の修正依頼を受け、方向性を「バリアント削減」へ
+  書き直し済み。`nextPermutations()`を維持する核とし、`Permutations.All`/`IteratorA`/
+  `SubSequenceA`/`unsafePermutations()`を`swift-algorithms`の`permutations()`と重複する
+  削除候補として扱う段階的削除計画(`Maintanance/PermutationModule/ImplementationPlan.md`)
+  と仕様ドラフト(`Sources/PermutationModule/Documentation/Specification.md`)、所見
+  (`ProductReadinessAssessment.md`)を改訂済み(コード・テスト変更なし)。
+- REFACTORING_FROM_ATCODER_2025.md: keystoneテストの由来を再調査し、「release原本の単純な
+  改名」ではなく「2026-01-03に分岐したコピーが並行運用の後、原本削除(2026-09-29)の翌日に
+  大幅書き換えされた派生版」であることを`git`証跡付きで訂正済み。ソース側/テスト側の時系列を
+  分離し、`[事実]`/`[証言]`/`[解釈]`のラベルを導入(コード・テスト変更なし)。
 - RedBlackTree: 4型、共有View、BoundExpressionの連番Test as Specification整理済み。
 - Index世代、KeyOnly/KeyValue Range ViewのCoW後Index寿命、および4型とRange Viewの
   `elementsEqual(_:)` / `lexicographicallyPrecedes(_:)` は横展開済み。
@@ -43,10 +50,11 @@
 
 ## 判断待ち
 
-- PermutationModule: `unsafe`接頭辞のままとするか命名を見直すか、
-  `Permutations.All.init(safe:)`(安全な全列挙の対になるAPI)を結線するか、
-  `Tests/PermutationTests/NextPermutation.swift`の旧世代実装を削除するか参考実装として
-  残すかがユーザー判断待ち(`ImplementationPlan.md`参照)。
+- PermutationModule: `Permutations.All`系(`unsafePermutations()`/`IteratorA`/
+  `SubSequenceA`等、`swift-algorithms`の`permutations()`と重複)を削除するか
+  deprecationに留めるか、`unsafeNextPermutations()`系を公開のまま残すか内部実装専用に
+  するか、`Tests/PermutationTests/NextPermutation.swift`の旧世代実装を削除するか参考実装
+  として残すかがユーザー判断待ち(段階的削除計画は`ImplementationPlan.md`参照)。
 - `erase(where:)`がRedBlackTreeSet/MultiSet/Dictionary/MultiMapの4型すべてで
   無条件に`ensureUnique()`を呼ぶため、空コレクションに対しても無駄にシングルトン
   からdetachする(要素が無い/削除されなくてもCoW発生)。`remove(_:)`/
@@ -66,9 +74,6 @@
 
 ## 直近の引き継ぎ
 
-- BareArrayの公開テストをReleaseでも実行する構成にし、境界Death Testと多次元配列の
-  参照型寿命を追加。3D cloneの参照解放漏れを再現テスト付きで修正した。
-- 4型の`customMirror`はCodex/Claudeの独立レビューとユーザー確認が完了。
 - RedBlackTree 4型のFuzzテストを参照モデル比較+不変条件チェックの組に統合
   (`CLAUDE_TASK.md`はCompletedへ更新済み)。
 - RedBlackTree 4型の空コレクション用シングルトンの生存・detach・復帰条件を確認し
@@ -76,11 +81,18 @@
   無駄なdetachを未解決事項として判断待ちへ記録(`CLAUDE_TASK.md`はCompletedへ
   更新済み)。
 - `CLAUDE_TASK.md` Task 1(PermutationModule再設計フェーズ1: 仕様ドラフト+実装計画)と
-  Task 2(REFACTORING_FROM_ATCODER_2025拡充、モジュール改名・内部層分離・Fixture/原木
-  ターゲット化の3段階を追加し、Test as Specificationが移行の産物ではない点を補記)を完了
+  Task 2(REFACTORING_FROM_ATCODER_2025拡充)を完了(その後、Codexの修正依頼により
+  下記の訂正パスを実施)。
+- PermutationModule関連3文書(`Specification.md`/`ImplementationPlan.md`/
+  `ProductReadinessAssessment.md`)を、ユーザーの意図(バリアント削減)に沿って
+  `All`系削除候補・段階的削除計画へ書き直し。ABC328Eの制約(`N<=8`,`M<=28`)と
+  自己完結ファイルでの提出検証も明記。
+- `REFACTORING_FROM_ATCODER_2025.md`のkeystoneテスト由来を`git`証跡で再調査し、
+  「単純な改名」ではなく「分岐コピーの並行運用→原本削除→大幅書き換え」という
+  実態へ訂正。ソース/テストの時系列分離と`[事実]`/`[証言]`/`[解釈]`ラベルを導入
   (`CLAUDE_TASK.md`はCompletedへ更新済み、コード・テスト変更なし)。
 
-最終更新: 2026-10-03 08:10 JST / Claude (Sonnet 5)
+最終更新: 2026-10-03 09:30 JST / Claude Sonnet 5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

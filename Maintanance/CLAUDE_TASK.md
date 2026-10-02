@@ -4,100 +4,162 @@ Status: Completed
 
 ## Result Summary
 
-Updated the four `_98_FuzzTests.swift` files so each randomized test asserts
-both the reference-model comparison and `___tree_invariant_for_fuzz()` on the
-same mutation sequence:
+Confirmed the singleton lifecycle for all four types (Set/MultiSet/Dictionary/
+MultiMap) and added
+`Tests/RedBlackTreeTests/RedBlackTreeInternal/Base/RedBlackTreeInternal_EmptySingletonTests.swift`
+(DEBUG-only, `@testable import`). One shared helper pair
+(`assertIsSingleton`/`assertNotSingleton`, generic over `UnsafeTreeV2<Base>`)
+plus one test function per type drives: `init()`, `init(minimumCapacity:)` at
+0 and >0, `reserveCapacity(0)`, first `insert`, `remove(at:)` on the last
+element, and both `removeAll(keepingCapacity:)` modes.
 
-- `RedBlackTreeSet_98_FuzzTests.swift`: added invariant check to
-  `test_randomMutationsMatchSwiftSet`; added a `Set<Int>` reference and
-  per-operation comparison to the renamed
-  `test_randomInsertAndEraseMatchesReferenceAndMaintainsTreeInvariant`.
-- `RedBlackTreeMultiSet_98_FuzzTests.swift`: changed
-  `test_randomizedInsertAndEraseMatchesReferenceMultiset...` to compare the
-  full sorted multiset (not just the count of the selected key) and added the
-  invariant check after every operation; added a `ReferenceMultiset` and
-  per-operation comparison to the renamed invariant-only test.
-- `RedBlackTreeDictionary_98_FuzzTests.swift`: added invariant check after the
-  existing full key/value `assertEqual`; added a `[Int: Int]` reference and
-  per-operation comparison to the renamed invariant-only test.
-- `RedBlackTreeMultiMap_98_FuzzTests.swift`: changed the reference test to
-  compare full key multiplicity plus a `value == key` sanity check (values are
-  always set equal to the key in this test, so this fully captures observable
-  pairs) and added the invariant check after every operation; added the same
-  full comparison to the renamed invariant-only test.
+Findings (internal allocation/CoW contract, not public API):
 
-No production code was changed; no bug was found.
+1. Ordinary `init()` and `init(minimumCapacity: 0)` return the exact same
+   type-erased global singleton (`_emptyTreeStorage`, capacity 0) for all four
+   types, and in fact across every generic instantiation (e.g.
+   `RedBlackTreeSet<Int>` and `RedBlackTreeDictionary<String, Int>` share the
+   identical object), since the singleton never stores payload.
+2. Struct-copying an empty collection preserves that identity (confirmed via
+   `isIdentical(to:)`).
+3. Detachment happens on: `init(minimumCapacity:)` with a positive value;
+   `reserveCapacity(_:)` for any value including 0 (it goes through
+   `ensureUniqueAndCapacity`, which treats the singleton as never-unique); and
+   the first insertion (needs capacity regardless). Decoding an empty JSON
+   array already had prior regression coverage
+   (`EtcTests.testDecodeEmptyArrayUsesReadOnlySingleton`) confirming the same
+   singleton path.
+4. After removing the last element via `remove(at:)`, the collection keeps its
+   already-allocated buffer; it does not revert to the singleton (matches the
+   "held for now" note already in `AllocationTests.test1`).
+5. `removeAll(keepingCapacity: true)` keeps the current buffer (singleton or
+   allocated) and is a no-op when already empty; `removeAll(keepingCapacity:
+   false)` always reassigns to the singleton via `.create()`.
+6. All four types are intentionally identical on points 1-5; the
+   implementations are structurally parallel across Set/MultiSet/Dictionary/
+   MultiMap.
+7. Not configuration-dependent: the singleton/`isReadOnly`/`ensureUnique`
+   mechanics in `UnsafeTreeV2+Create.swift`, `+CopyOnWrite.swift`, and
+   `UnsafeTreeV2.swift` have no `#if DEBUG` or `#if COMPATIBLE_ATCODER_2025`
+   branches; only the `@testable`/`AC_COLLECTIONS_INTERNAL_CHECKS`
+   introspection used by tests is DEBUG-only. Verified by running the new
+   tests under a temporary `COMPATIBLE_ATCODER_2025` build (then reverted) in
+   addition to the normal build.
 
-Validation: ran each Fuzz*Tests suite individually, then
-`swift test --filter RedBlackTreeTests` (863 tests, 0 failures), then
-`swift test` from the repository root (all suites passed, 0 failures).
+Unresolved/reported to the user (not fixed; out of scope for this task):
+`erase(where:)` on all four types calls bare `ensureUnique()` unconditionally
+(no `count > 0` guard), so it detaches an already-empty collection from the
+singleton for no reason — the same "wasteful CoW on no-op removal" pattern
+that was already fixed for `remove(_:)`, `removeValue(forKey:)`,
+`removeAll(keepingCapacity: true)`, and `popFirst`/`popLast` elsewhere. Added
+`testEraseWhereOnEmptyCollectionDetachesFromSingleton` as a minimal
+reproducer documenting the current (unfixed) behavior; no production code was
+changed.
+
+Validation:
+- `swift test --filter RedBlackTreeInternal_EmptySingletonTests` — 5/5 passed
+  (normal build).
+- `swift test` from the repository root — full suite passed (normal build).
+- Temporarily uncommented `.define("COMPATIBLE_ATCODER_2025")` in
+  `Package.swift`, ran `swift test --filter
+  RedBlackTreeInternal_EmptySingletonTests` (4/4 ran; the
+  `erase(where:)`-only test correctly skipped, since that API doesn't exist in
+  compat mode) and then the full `swift test` (no new failures; one
+  pre-existing unrelated skip in
+  `RedBlackTreeSetAdditionalAtCoder2025LegacyTests.testSubsequence4`), then
+  restored `Package.swift` (`git diff Package.swift` is empty).
+- `git diff --check` — clean.
 
 ## Objective
 
-Strengthen the randomized tests for all four RedBlackTree public collection
-types so that each randomized operation sequence checks both:
+Audit the empty-storage behavior of the four public RedBlackTree collection
+types and determine exactly when an empty collection uses a shared singleton
+buffer. Turn the confirmed behavior into focused tests and concise maintenance
+documentation without changing the public API.
 
-1. observable behavior against an independent reference model; and
-2. the red-black tree invariant after each mutation.
+The four types are:
 
-The two checks must exercise the same collection state and the same operation
-sequence. Separate reference-only and invariant-only random tests do not by
-themselves satisfy this task.
+- `RedBlackTreeSet`
+- `RedBlackTreeMultiSet`
+- `RedBlackTreeDictionary`
+- `RedBlackTreeMultiMap`
 
 ## Start With
 
-- `Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_98_FuzzTests.swift`
-- `Tests/RedBlackTreeTests/RedBlackTreeMultiSet/RedBlackTreeMultiSet_98_FuzzTests.swift`
-- `Tests/RedBlackTreeTests/RedBlackTreeDictionary/RedBlackTreeDictionary_98_FuzzTests.swift`
-- `Tests/RedBlackTreeTests/RedBlackTreeMultiMap/RedBlackTreeMultiMap_98_FuzzTests.swift`
-- The `___tree_invariant_for_fuzz()` helpers in
-  `Tests/RedBlackTreeTests/RedBlackTreeTestSupport/`
+1. Read `Tests/CLAUDE.md` and `Tests/TESTING.md` completely.
+2. Inspect the empty initializer paths, minimum-capacity initializer paths,
+   buffer creation code, copy-on-write code, and `removeAll(keepingCapacity:)`.
+3. Search for existing empty-buffer identity tests and internal inspection
+   helpers before adding anything.
+4. Read only the relevant sections of `Tests/TESTING_REFERENCE.md` if historical
+   context is required.
+
+## Questions to Resolve
+
+Establish evidence-backed answers for each public collection type:
+
+1. Does ordinary empty initialization use the same shared storage instance?
+2. Does copying an empty collection preserve that shared storage?
+3. Which operations detach from the singleton: reserve, first insertion,
+   minimum-capacity initialization, or another operation?
+4. After removing the final element, does the collection retain its allocated
+   buffer or return to the singleton?
+5. What are the distinct outcomes of `removeAll(keepingCapacity: false)` and
+   `removeAll(keepingCapacity: true)`?
+6. Are the answers intentionally identical across all four types?
+7. Are any behaviors configuration-dependent, including Debug/Release,
+   compatibility mode, or package traits?
+
+Do not treat pointer identity as public API. Classify findings as internal
+allocation and copy-on-write contracts unless an observable public guarantee
+already exists.
 
 ## Required Work
 
-1. Audit the four existing fuzz-test files before editing them.
-2. For each collection type, make the reference-model randomized test assert
-   `___tree_invariant_for_fuzz()` after every mutation.
-3. Ensure that the observable state is compared with the reference model after
-   every operation, not only at the end of a round or only for the most recently
-   selected key. The comparison must reflect each type's semantics, including
-   duplicate multiplicity for MultiSet and key-value pairs for MultiMap.
-4. Keep the tests deterministic by using fixed seeds. Preserve useful operation
-   coverage already present in the tests.
-5. Remove or consolidate an invariant-only randomized test only when the merged
-   test covers all of its operations and assertions. Do not reduce coverage just
-   to shorten the files.
+1. Audit implementation and existing tests before editing.
+2. Create or reuse the smallest test-only inspection helper needed to observe
+   storage identity and capacity. Do not expose new public API.
+3. Add focused tests for the confirmed singleton lifecycle. Place them in the
+   appropriate internal or value-semantics test layer according to
+   `Tests/CLAUDE.md`; do not add them to numbered Test as Specification files if
+   they only assert internal storage identity.
+4. Cover all four public collection types without duplicating large test bodies
+   when a clear shared helper is appropriate.
+5. Record the confirmed conditions in the appropriate test/fixture documentation
+   and update `Tests/TESTING.md` concisely.
+6. If current behavior is inconsistent, unsafe, or unclear, do not normalize it
+   speculatively. Preserve a minimal reproducer and report the evidence to the
+   user in Japanese.
 
 ## Scope and Constraints
 
-- The intended scope is the four `_98_FuzzTests.swift` files and test-support
-  code only if a genuinely shared helper is needed.
-- Do not modify production code merely to make the tests pass. If a test exposes
-  a production bug or an unclear semantic requirement, stop that part, record
-  the smallest reproducible case, and ask the user in Japanese.
-- Do not change public API or reorganize unrelated tests.
-- Follow `Tests/CLAUDE.md`. Consult `Tests/TESTING_REFERENCE.md` only for a
-  specific missing detail; do not read it end to end.
+- Keep changes limited to tests, test-support code, and test documentation.
+- Do not change production code as part of this assignment.
+- Do not change public API or promise storage identity as public behavior.
+- Preserve unrelated user and Codex changes, including the staged Linux ASan
+  diagnostics for `TreeFoundamentalAllocationTests`.
+- Do not edit `.github/workflows/swift.yml`,
+  `TreeFoundamentalAllocationTests.swift`, or `TreeOwnedNodeFixture.swift`.
+- Communicate progress, questions, and results to the user in Japanese.
 
 ## Validation
 
-1. Run the narrowest relevant fuzz tests while iterating.
-2. Run the complete `RedBlackTreeTests` target after the edits.
-3. Run `swift test` from the repository root and confirm that the intended fuzz
-   tests actually executed.
-4. Perform additional configuration checks only if the changed conditional
-   compilation or behavior requires them.
+1. Run the narrowest new or affected tests first.
+2. Run the complete affected RedBlackTree test target.
+3. Run `swift test` from the repository root and confirm the intended tests ran.
+4. Add Release or compatibility-mode validation only when the behavior or
+   conditional compilation being tested requires it.
+5. Run `git diff --check`.
 
 ## Completion Criteria
 
-- Set, MultiSet, Dictionary, and MultiMap each perform reference-model and tree
-  invariant checks on the same deterministic randomized mutation sequence.
-- Every operation checks the complete observable reference state appropriate to
-  that collection type.
-- Relevant tests and the authoritative full suite pass, or any failure is
-  reported with a minimal reproduction and no speculative production fix.
-- Update `Tests/TESTING.md` concisely: remove or revise the completed priority,
-  update the current state, and add at most one short handoff item.
-- Change this file's status to `Completed` and append a short result summary.
-- Report the result to the user in Japanese, including changed files and test
-  commands/results.
+- The singleton lifecycle is explicitly established for all four collection
+  types, including initialization, copying, detachment, last-element removal,
+  and both `removeAll` capacity modes.
+- Internal tests fail if these confirmed storage-sharing conditions regress.
+- No production code or public contract is changed.
+- `Tests/TESTING.md` records the current result and any unresolved concern.
+- This file is changed to `Status: Completed` and receives a concise result
+  summary listing changed files and validation commands/results.
+- The user receives a Japanese report, and Codex can independently review the
+  resulting diff.

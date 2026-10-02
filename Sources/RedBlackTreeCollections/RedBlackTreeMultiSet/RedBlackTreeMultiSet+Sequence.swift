@@ -22,6 +22,9 @@
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
+    /// A view over a contiguous range of this multiset in ascending order.
+    ///
+    /// The view preserves every occurrence in the selected range.
     public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Self>
   }
 #endif

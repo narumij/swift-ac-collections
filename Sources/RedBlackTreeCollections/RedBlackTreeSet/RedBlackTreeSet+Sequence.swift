@@ -22,6 +22,7 @@
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
+    /// A view over a contiguous range of this set in ascending order.
     public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Self>
   }
 #endif

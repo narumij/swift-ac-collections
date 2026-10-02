@@ -326,6 +326,15 @@
 
   extension RedBlackTreeMappedValuesView {
 
+    /// Returns whether two views reference the same tree and the same range boundaries.
+    ///
+    /// Identity is stronger than element equality and can be checked without
+    /// traversing the range.
+    ///
+    /// - Parameter other: Another view to compare by identity.
+    /// - Returns: `true` if both views have identical storage and bounds;
+    ///   otherwise, `false`.
+    /// - Complexity: O(1)
     @inlinable
     public func _isIdentical(to other: Self) -> Bool {
       let (_start, _end) = _raw_range

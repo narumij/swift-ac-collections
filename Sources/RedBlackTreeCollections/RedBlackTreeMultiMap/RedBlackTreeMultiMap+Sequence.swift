@@ -23,6 +23,10 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
+    /// A view over a contiguous key-value range in ascending key order.
+    ///
+    /// The view preserves every key-value pair in the selected range, including
+    /// pairs whose keys compare equal.
     public typealias SubSequence = RedBlackTreeKeyValueRangeView<Self>
   }
 #endif

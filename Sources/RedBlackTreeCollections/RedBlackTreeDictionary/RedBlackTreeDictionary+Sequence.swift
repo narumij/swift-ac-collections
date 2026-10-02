@@ -22,6 +22,7 @@
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
+    /// A view over a contiguous key-value range in ascending key order.
     public typealias SubSequence = RedBlackTreeKeyValueRangeView<Self>
   }
 #endif

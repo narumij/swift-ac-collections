@@ -757,6 +757,12 @@ final class TreeFoundamentalTests: TreeTestCase, _UnsafeNodePtrType {
     case .success(let n): XCTAssertEqual(values[n], 2)
     case .failure: XCTFail("limitに到達する前に完了するはず")
     }
+
+    // limit版の負方向も、limitに到達せず正常にループを抜けること
+    switch ___tree_adv_iter(maxNode, -2, .success(minNode)) {
+    case .success(let n): XCTAssertEqual(values[n], 4)
+    case .failure: XCTFail("負方向でもlimitに到達する前に完了するはず")
+    }
   }
 
   // MARK: - unsafe_node+pointer+distance.swift

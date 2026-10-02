@@ -236,7 +236,8 @@ let package = Package(
       name: "OptionalArrayModuleTests",
       dependencies: [
         "OptionalArrayModule"
-      ]
+      ],
+      swiftSettings: _settings
     ),
 
     .target(

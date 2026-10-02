@@ -1,7 +1,5 @@
 import XCTest
-
-#if DEBUG
-@testable import OptionalArrayModule
+import OptionalArrayModule
 
 final class OptionalArrayTests: XCTestCase {
 
@@ -283,4 +281,3 @@ final class OptionalArrayTests: XCTestCase {
     XCTAssertEqual(deinitCount, 3, "removeAllで保持中の要素がdeinitされること")
   }
 }
-#endif

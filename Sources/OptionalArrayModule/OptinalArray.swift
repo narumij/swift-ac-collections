@@ -387,7 +387,7 @@ public struct OptionalArray1DView<Element> {
 }
 
 extension OptionalArray1DView {
-  var indices: Range<Int> { 0..<count }
+  public var indices: Range<Int> { 0..<count }
 }
 
 /// 要素アクセスの為の一時データ構造
@@ -432,7 +432,7 @@ public struct OptionalArray2DView<Element> {
 }
 
 extension OptionalArray2DView {
-  var indices: Range<Int> { 0..<height }
+  public var indices: Range<Int> { 0..<height }
 }
 
 /// 要素アクセスの為の一時データ構造
@@ -480,7 +480,7 @@ public struct OptionalArray3DView<Element> {
 }
 
 extension OptionalArray3DView {
-  var indices: Range<Int> { 0..<depth }
+  public var indices: Range<Int> { 0..<depth }
 }
 
 // Bare Naked Ladies オマージュかもしれない

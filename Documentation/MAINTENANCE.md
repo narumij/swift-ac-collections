@@ -54,12 +54,11 @@
 - 2026-10-02 16:18 JST: `RedBlackTreeKeyValueRangeView.values`が返す`RedBlackTreeMappedValuesView`について、要素subscriptと`swapAt`の公開契約はView内の有効Indexを要求するが、現行実装は同じ木のView外Indexを明示的に範囲拒否していない。ソースにも範囲制限のTODOがある。公開仕様の変更ではなく事前条件検査の実装・Death Test課題として、別フェーズで対応要否を判断する。
 - 2026-10-02 16:24 JST: MultiMapの通常`insert`が同値キー群の末尾へ追加して挿入順を保持することはInsertion Testsで確定した。一方、hint付き`insert`が同値キー群内の順序へ与える影響はテストが戻りIndexだけを検証しており、公開契約として未確定。hintは検索結果や挿入可否を変えないが、multi型の同値要素間順序も変えないと保証するかは、専用Test as Specificationを追加してから文書化する。
 - API Matrix上の多くの共通APIが、各型のDocCでは`Default Implementations`配下に入る。今回追加した共通操作ガイドから各操作の個別シンボルへ、さらに細かいリンクを追加する必要があるかは公開結果を見て判断する
-- 2026-10-02 15:34 JST: `Design-NodeStorage.md`へ記録した「move済みstorageを通常削除で再度deinitializeしない」という所有権契約に、現行実装の既知の未適合がある。`UnsafeTreeV2+KeyValue.swift`のoptional key subscript `_modify`は、既存mapped valueを`.move()`した後、nil代入時に通常の`erase`へ渡すため、参照型Valueで二重破棄になる。詳細と再現経緯は`Tests/TESTING.md`の保留事項を正とする。設計契約は確定しているが、実装修正と回帰テストが完了するまで「全経路で所有権契約を満たす」とは記述しない。
-
 ### 完了済みの要望
 
 (ユーザーが確認したら各項目を整理します)
 
+- 2026-10-03 Claude (Sonnet 5): 上記2026-10-02 15:34 JST保留事項(`UnsafeTreeV2+KeyValue.swift`のoptional key subscriptが`.move()`後のnil代入で二重解放を起こす件)を修正した。`.move()`を`.pointee`読み取り(コピー)に変更し、既存キー上書き分岐も`.initialize(to:)`から`.pointee =`代入に変更。`_MappedValue`は常にCopyableのためコピーへの変更は型制約上問題ない。回帰防止テスト2件を`RedBlackTreeDictionary_6_RemovalTests.swift`に追加、全体テスト0失敗を確認。詳細は`Tests/TESTING.md`の完了済み要望を正とする。これにより「move済みstorageを通常削除で再度deinitializeしない」という所有権契約への既知の未適合は解消された。保留事項から本項目を削除した。
 - 2026-10-02 Codex (GPT-5): 前回のCHANGELOG更新以降を再監査。原木・fixture・Legacyのテストターゲット分離とテスト拡充は既存のテスト再編・内部テスト追加の記載へ包含し、重複追記しなかった。利用者影響のある`OptionalArray1D` / `OptionalArray1DView`の参照型要素nil代入時の二重解放修正だけを`Unreleased / Fixed`へ追加した。
 - 2026-10-02 15:34 JST Codex (GPT-5): 原木`Foundamental`テストをTest as Specificationとして精査し、公開仕様とは別の内部契約を品質方針へ定義した。比較注入、LLVM移植監査、赤黒木不変条件、番兵、unique/multi、範囲・距離、tracking tag、seal、Death Test、node/payloadレイアウト、poison塗り分け、所有権と破棄責任を既存Design文書へ反映。`RedBlackTreePair`とthree-way比較の内部値契約も実装へ再照合した。原木専用Fixture二種の責務と非責務を`Fixtures.md`へ追記し、Fixture固有の実装を製品仕様として扱わない境界を記録した。
 - 2026-10-02 14:12 JST Codex (GPT-5): 追加したイニシャライザ、共通操作ガイド、View TopicsをCI相当のローカルRelease生成で検証した。`--disable-sandbox`を付けた`swift package -c release generate-documentation --target RedBlackTreeCollections --warnings-as-errors`が警告・エラーなく成功。生成JSON上で4型の全イニシャライザが各`Creating` Topicsへ収容され、3種類のViewの手動Topicsと、4型・3 Viewから`Common Operations`へのリンクが解決されていることを確認した。

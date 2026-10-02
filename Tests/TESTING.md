@@ -180,6 +180,46 @@ Set,MultiSet,MultiMap,Dictionary
 - 参照型要素のライフタイム(二重解放・リーク): `DeinitializeCounter`パターン(class+static count)で検証
 - CoW分岐後は片方から削除してもインスタンスは解放されない(もう片方がまだ参照): 期待値を間違えやすい
 
+### メモリリーク・二重解放の確認方法
+
+参照型要素(`class`)を保持させたときの過剰解放(二重解放)・リークは、`swift test`実行だけでは
+検出されない(値型要素だけのテストでは症状が出ない)。`DeinitializeCounter`パターンで明示的に
+検証する。
+
+```swift
+final class DeinitializeCounter {
+  nonisolated(unsafe) static var count = 0
+  init() { Self.count += 1 }
+  deinit { Self.count -= 1 }
+}
+
+var container = RedBlackTreeDictionary<Int, DeinitializeCounter>(
+  uniqueKeysWithValues: (0..<4).map { ($0, DeinitializeCounter()) })
+XCTAssertEqual(DeinitializeCounter.count, 4)
+
+// 検証したい操作(削除・上書き・CoW分岐・subscript代入など)
+_ = container.popFirst()
+
+XCTAssertEqual(DeinitializeCounter.count, 3)
+```
+
+- `XCTAssertEqual(count, 期待値)`を完全一致で書く。期待値より少なければ過剰解放(または
+  二重解放でクラッシュ)、多ければリークとして、どちら方向に崩れても検出できる。
+  「片方だけ見て片方を見落とす」設計にはしない。
+- CoW分岐がある操作では、分岐後も両コピーが同じインスタンスを参照し続ける間は解放され
+  ないので、期待値は「両コピーが破棄された後」まで含めて計算する([[テストの観点チェック
+  リスト]]のCoW項目も参照)。
+- 比較・ソート用に値が必要な場合は`Comparable`適合させた`DeinitializeCounter`を使う
+  (`num`プロパティ等で比較、`init`/`deinit`でのcount操作は共通)。
+- 参考実装: `RedBlackTreeSet_6_RemovalTests.swift`・`RedBlackTreeDictionary_6_RemovalTests.swift`・
+  `RedBlackTreeMultiSet_6_RemovalTests.swift`・`RedBlackTreeMultiMap_6_RemovalTests.swift`・
+  `RedBlackTreeSet_15_ValueSemanticsTests.swift`(CoW版)・`BareArrayTests.swift`/
+  `OptionalArrayTests.swift`(配列モジュール版)。
+- CIの`address-sanitizer`ジョブ(`.github/workflows/swift.yml`)は`ASAN_OPTIONS: detect_leaks=0`
+  でリーク検出を無効化している(Swiftランタイム側のグローバルキャッシュ等での誤検出を避ける
+  ため)。つまりASanは二重解放・use-after-freeは検出できるが、リークの検出手段としては
+  機能していない。リークの検出は実質的にこの`DeinitializeCounter`パターンに依存している。
+
 ### 旧フォルダ監査時の内部/外部トリアージ
 
 旧フォルダのファイルを1つずつ判定するときは、まず次の3種類に分ける。

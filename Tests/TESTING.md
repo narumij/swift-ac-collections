@@ -33,6 +33,7 @@
 - Fixtureの変化を把握し、Fixture.mdに反映すること(Claude)(毎回)
 - BareArrayModuleのテストを追加
 - OptionalArrayModuleのテストを追加
+- 参照型は過剰開放だけではなく、メモリリークも同時に検査できるようにすること
 
 ### 相談事項
 

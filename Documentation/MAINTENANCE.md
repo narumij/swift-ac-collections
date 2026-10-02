@@ -28,6 +28,8 @@
   - テストだけでは意味を確定できない場合は実装とDesign文書を確認し、推測でコメントドックを変更しない
   - 修正後はRelease DocCを`--warnings-as-errors`で生成し、生成ページのTopicsとリンクも確認する
 
+- startIndexとendIndexの記述は標準に倣って欲しい
+
 ### 相談事項
 
 - DocCの手動Topicsは`API-Matrix.md`と`API-Matrix-View.md`を基準に、検索・挿入・削除・範囲操作などへ広げる。4型の具象型ページだけでなく、共通protocolのDefault ImplementationsやViewへの導線をどこへ置くかは引き続き検討する

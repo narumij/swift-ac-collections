@@ -1,61 +1,99 @@
 # Codex-to-Claude Work Request
 
-Status: Completed
+Status: Active — implementation removal required
 
-## Active Correction Assignment (completed, see Result Summary below)
+## Active Correction Assignment
 
 The previous result below is not accepted as complete. Complete these two
 tasks in order. Communicate with the user in Japanese. Do not edit
 `Sources/RedBlackTreeCollections/Documentation/Head/Outlines/RedBlackTreeSet.outline.md`;
 the user has explicitly paused that document.
 
-### Task 1 — Redesign the PermutationModule plan around fewer variants
+### Task 1 — Remove redundant and unsafe PermutationModule variants
 
-The previous specification misunderstood the user's goal. The goal is not to
-present safe and no-CoW implementations as equally supported public strategies,
-and it is not to add another convenience API for the existing `All` path.
-The user wants fewer implementation and API variants.
+The previous specification misunderstood the user's goal. The user has now
+made the final product decision: do not provide APIs whose behavior duplicates
+swift-algorithms' full `permutations()` operation, and do not provide any
+`unsafe` permutation API. These APIs and their dedicated implementation paths
+are to be removed, not preserved as alternatives or left as open decisions.
 
 Use this product direction:
 
 1. The module's distinct value is the operation that enumerates only the
    lexicographic successors of the current element order (`nextPermutations`).
-2. Full positional permutation enumeration (`Permutations.All`, `IteratorA`,
-   `SubSequenceA`, and `unsafePermutations()`) overlaps with
-   swift-algorithms' `permutations()` behavior and is a removal candidate, not
-   a feature to expand.
-3. The intended public surface should converge on `nextPermutations()` rather
-   than exposing implementation strategy through safe/unsafe API pairs.
-   Treat `unsafeNextPermutations()` and public safe/unsafe initializers as
-   compatibility and removal questions. Investigate how the low-overhead
-   implementation can remain internal without exposing retained-subsequence
-   aliasing as a second user-facing contract.
-4. Reduce duplicated iterator, buffer, and legacy-test implementations where
-   evidence shows they serve only the removed variants. Do not implement the
-   deletion in this phase; produce the exact removal/migration inventory and
-   tests that must be established first.
+2. Remove full positional permutation enumeration: `Permutations.All`,
+   `IteratorA`, `SubSequenceA`, `unsafePermutations()`, their dedicated support
+   code, and tests that exist only for that removed API. Do not replace them
+   with a safe `permutations()` convenience API; users who need full
+   permutations should use swift-algorithms.
+3. Remove `unsafeNextPermutations()` and the public unsafe initialization path.
+   Retained-subsequence aliasing must not remain as a user-facing contract.
+4. The final public entry point is `nextPermutations()`. Keep only the types and
+   implementation required to support that API, and reduce visibility of
+   implementation types/initializers when they no longer need to be public.
+5. Preserve the observable value semantics of `nextPermutations()`: previously
+   yielded results remain stable when the iterator advances.
 
 Required corrections:
 
+#### Phase 1A — swift-algorithms equivalence PoC (deletion gate)
+
+Before deleting the full-permutation path, prove the claimed overlap with
+swift-algorithms rather than assuming it.
+
+- Temporarily enable the existing swift-algorithms test dependency only as
+  needed for the PoC. Do not add it as a production dependency.
+- Compare the immediately materialized values from the current
+  `unsafePermutations()` path with `Algorithms.permutations()` for at least:
+  empty input, one element, distinct sorted elements, distinct unsorted and
+  descending elements, and duplicate values.
+- Compare result count, order, and visible duplicate multiplicity. Include at
+  least one non-Array `Collection` with `Index == Int` that the current API
+  supports.
+- Keep the comparison scoped to the public full-permutation behavior that a
+  caller can safely consume by materializing each yielded result immediately.
+  The unsafe retained-subsequence aliasing is an implementation hazard to be
+  removed, not a capability that swift-algorithms must reproduce.
+- Record the PoC command, cases, and observed result in the maintenance
+  documentation. Temporary PoC code may be removed after it has served as the
+  deletion gate, but the evidence must remain reviewable in the document and
+  diff/history.
+- If ordering, multiplicity, empty-input behavior, or another observable
+  result differs, stop before deletion and report the exact counterexample to
+  the user in Japanese. Do not redefine the difference away.
+
+#### Phase 1B — Retained API tests and removal
+
+- After Phase 1A passes, first add or identify focused tests for the retained
+  `nextPermutations()` contract, including empty, single-element,
+  duplicate-value, unsorted, and descending inputs plus stability of retained
+  yielded results.
+- Implement the removals above in `Sources/PermutationModule` and update or
+  remove tests that reference the deleted APIs. Do not retain deprecated
+  wrappers unless compilation evidence shows an in-repository migration need;
+  the user has explicitly authorized deletion of these public variants.
 - Rewrite `Sources/PermutationModule/Documentation/Specification.md`,
   `Maintanance/PermutationModule/ImplementationPlan.md`, and
   `Maintanance/PermutationModule/ProductReadinessAssessment.md` to reflect the
-  narrowing goal above.
-- Preserve factual distinctions: `All` permutes positions and emits `n!`
-  positional results; `Nexts` follows value-based lexicographic successors.
-- Do not say that the three current convenience APIs have the same ordering,
-  duplicate, or termination contract.
-- Account for all currently public nested types and initializers when planning
-  source compatibility; do not call the three extension methods the complete
-  public API.
-- Add a staged removal plan with deprecation/compatibility choices, affected
-  tests, and a narrow final target API. Bring any irreversible public API
-  decision back to the user.
+  implemented narrow API. Historical discussion may record what was removed,
+  but must not present removed variants as supported strategies.
+- Search the entire repository for references to every removed declaration,
+  including compatibility documentation and `AcCollections` facade tests.
 - Correct the ABC328E plan: constraints are `N <= 8`, `M <= 28`; AtCoder
   validation needs a self-contained pasted Swift file and cannot rely on
   `import AcCollections` being available on the judge.
-- Keep this phase limited to documentation and planning. Do not change
-  production source, tests, Package.swift, or workflows.
+- Do not add a swift-algorithms product dependency merely to replace the
+  deleted API. This task removes redundant functionality; it does not wrap it.
+- Do not change unrelated modules, RedBlackTree code, Package.swift, or
+  workflows.
+
+Validation for Task 1:
+
+- Run the narrow Permutation tests and confirm the retained cases actually run.
+- Run the repository-root `swift test` after the removal.
+- Run compatibility-mode validation because `AcCollections` conditionally
+  re-exports PermutationModule there.
+- Run `git diff --check`.
 
 ### Task 2 — Correct and complete the AtCoder 2025 refactoring history
 
@@ -97,7 +135,7 @@ When both correction tasks are complete, change this status to `Completed` and
 add a new corrected result summary above the previous result summary. Do not
 delete the previous record; label it as superseded where necessary.
 
-## Result Summary (correction pass)
+## Previous Correction Result (superseded by the removal decision above)
 
 Completed both corrected tasks. No production code, tests, or package settings were
 changed; documentation and planning only.

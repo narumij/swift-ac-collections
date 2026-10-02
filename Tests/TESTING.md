@@ -31,7 +31,8 @@
 
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
 - Fixtureの変化を把握し、Fixture.mdに反映すること(Claude)(毎回)
-- 原木はテストターゲット分離すること(Codex) → 2026-10-02 13:29 JST完了。`RedBlackTreeTreeTests`へ分離済み
+- BareArrayModuleのテストを追加
+- OptionalArrayModuleのテストを追加
 
 ### 相談事項
 

@@ -20,7 +20,7 @@
 
 ### 優先事項
 
-- 追加したイニシャライザ、共通操作ガイド、View TopicsのCI検証結果を確認する
+- 現在、未完了の優先事項なし
 
 ### 相談事項
 
@@ -45,6 +45,7 @@
 
 (ユーザーが確認したら各項目を整理します)
 
+- 2026-10-02 14:12 JST Codex (GPT-5): 追加したイニシャライザ、共通操作ガイド、View TopicsをCI相当のローカルRelease生成で検証した。`--disable-sandbox`を付けた`swift package -c release generate-documentation --target RedBlackTreeCollections --warnings-as-errors`が警告・エラーなく成功。生成JSON上で4型の全イニシャライザが各`Creating` Topicsへ収容され、3種類のViewの手動Topicsと、4型・3 Viewから`Common Operations`へのリンクが解決されていることを確認した。
 - 2026-10-01 Codex (GPT-5): `CHANGELOG.md`の現行本文を最後に確定したmerge以降の差分を反映。既存Unreleasedとの重複を避け、Swift-DocCカタログと型/View/共通操作Topics、Release DocC検証・artifact・GitHub Pages公開CI、標準ライブラリ準拠のメンバー分類、macOS 15への最小バージョン変更を追記した。
 - 2026-10-01 12:56 JST Codex (GPT-5): 4型のDocC分類をAPI Matrix準拠からSwift標準`Set`/`Dictionary`準拠へ改訂。`Testing for Membership`、`Finding Elements/Keys`、`Adding and Updating Elements/Keys and Values`、`Removing Elements/Keys and Values`、`Combining Sets/MultiSets/MultiMaps`、`Merging Dictionaries`、`Transforming`、`Comparing`、`Reserving Storage`へ整理した。独自のIndexおよびRange/Bound分類は維持し、自動分類に残っていた`erase`、`formIndex`、`merge`/`merging`等の全オーバーロードも手動Topicsへ収容した。
 - 2026-10-01 12:43 JST Codex (GPT-5): `API-Matrix.md`と`API-Matrix-View.md`を基準にDocCの導線を整備。4型に共通する検索、挿入・更新、削除、Range/Boundの意味を説明する`CommonOperations.md`を追加し、モジュールページと4型ページからリンクした。KeyOnly Range View、KeyValue Range View、MappedValues Viewには、基本状態、Index検証、参照・更新、削除、走査・比較をMatrixの区分に沿って手動Topics化した。
@@ -159,4 +160,4 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
-- 2026-10-01 12:56 JST Codex (GPT-5): 公開済みRelease版DocC JSON、`API-Matrix.md`、`API-Matrix-View.md`を照合し、4型の主要メンバー、3型のイニシャライザ、共通操作ガイド、3種類のViewを手動Topics化した。分類はSwift標準`Set`/`Dictionary`へ寄せ、API Matrixは掲載漏れの照合に使用する方針へ変更。オーバーロード識別子は具象ページおよびDefault Implementationsの公開JSONから取得した。ローカルのSwiftPM実行は環境のsandboxエラーで開始できないため、最終的な`--warnings-as-errors`検証はCI結果を確認する。
+- 2026-10-02 14:12 JST Codex (GPT-5): 前回保留だったDocC検証を完了した。ローカルではSwiftPMのsandbox制約を回避するため`--disable-sandbox`が必要だったが、Release構成と`--warnings-as-errors`を含むCI相当の生成は成功した。生成先は`.build/plugins/Swift-DocC/outputs/RedBlackTreeCollections.doccarchive`。追加イニシャライザ、共通操作ガイド、4型および3種類のViewのTopicsとリンクに未解決事項はない。GitHub Actions上の実行結果そのものは、この環境から取得できていない。

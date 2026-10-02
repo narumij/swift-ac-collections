@@ -30,6 +30,9 @@
 
 - メイン担当は定期的にこの文書確認する癖をつけること
 - startIndexとendIndexの記述は標準に倣って欲しい
+- Sources/RedBlackTreeCollections/Documentation/Head に4型先頭のコメントドックの原稿を用意する
+ - Documentations の.mdと現在のソースとの和集合を街頭フォルダに配置してほしい
+ - その後ユーザーが主導して編集する
 
 ### 相談事項
 

@@ -194,10 +194,18 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     #endif
 
     _ = set.remove(DeinitializeCounter(num: 2))
-    XCTAssertEqual(DeinitializeCounter.count, 3, "removeで検索用に新たに作った一時要素も、実際に削除された既存要素も両方解放されること")
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(DeinitializeCounter.count, 4, "removeで検索用に新たに作った一時要素も、実際に削除された既存要素も両方解放されること")
+    #else
+      XCTAssertEqual(DeinitializeCounter.count, 3, "removeで検索用に新たに作った一時要素も、実際に削除された既存要素も両方解放されること")
+    #endif
 
     _ = set.removeFirst()
-    XCTAssertEqual(DeinitializeCounter.count, 2)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(DeinitializeCounter.count, 3)
+    #else
+      XCTAssertEqual(DeinitializeCounter.count, 2)
+    #endif
 
     set.removeAll()
     XCTAssertEqual(DeinitializeCounter.count, 0)

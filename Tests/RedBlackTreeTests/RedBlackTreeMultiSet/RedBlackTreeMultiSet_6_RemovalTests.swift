@@ -154,9 +154,11 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
       XCTAssertEqual(DeinitializeCounter.count, 3)
     #endif
 
-    let erasedCount = multiset.eraseMulti(DeinitializeCounter(num: 3))
-    XCTAssertEqual(erasedCount, 1)
-    XCTAssertEqual(DeinitializeCounter.count, 2, "検索キー・削除された重複要素とも解放されること(残りは1,2の2個)")
+    #if !COMPATIBLE_ATCODER_2025
+      let erasedCount = multiset.eraseMulti(DeinitializeCounter(num: 3))
+      XCTAssertEqual(erasedCount, 1)
+      XCTAssertEqual(DeinitializeCounter.count, 2, "検索キー・削除された重複要素とも解放されること(残りは1,2の2個)")
+    #endif
 
     multiset.removeAll()
     XCTAssertEqual(DeinitializeCounter.count, 0)

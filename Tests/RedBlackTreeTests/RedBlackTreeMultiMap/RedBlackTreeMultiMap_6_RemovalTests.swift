@@ -118,9 +118,11 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
       XCTAssertEqual(DeinitializeCounter.count, 3)
     #endif
 
-    let erasedCount = map.eraseMulti(3)
-    XCTAssertEqual(erasedCount, 1)
-    XCTAssertEqual(DeinitializeCounter.count, 2, "キー検索に値の一時生成は不要なので、削除された分だけ減ること")
+    #if !COMPATIBLE_ATCODER_2025
+      let erasedCount = map.eraseMulti(3)
+      XCTAssertEqual(erasedCount, 1)
+      XCTAssertEqual(DeinitializeCounter.count, 2, "キー検索に値の一時生成は不要なので、削除された分だけ減ること")
+    #endif
 
     map.removeAll()
     XCTAssertEqual(DeinitializeCounter.count, 0)

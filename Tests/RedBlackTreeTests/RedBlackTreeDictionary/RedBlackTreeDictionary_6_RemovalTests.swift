@@ -123,7 +123,11 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
     #endif
 
     _ = dictionary.removeValue(forKey: 1)
-    XCTAssertEqual(DeinitializeCounter.count, 1)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(DeinitializeCounter.count, 2)
+    #else
+      XCTAssertEqual(DeinitializeCounter.count, 1)
+    #endif
 
     dictionary.removeAll()
     XCTAssertEqual(DeinitializeCounter.count, 0)

@@ -73,6 +73,7 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 ### 相談事項
 
 - DocCの手動Topicsは`API-Matrix.md`と`API-Matrix-View.md`を基準に、検索・挿入・削除・範囲操作などへ広げる。4型の具象型ページだけでなく、共通protocolのDefault ImplementationsやViewへの導線をどこへ置くかは引き続き検討する
+- .strictMemorySafety() にしていきたい
 
 ### 連絡事項
 

@@ -131,7 +131,41 @@ Task 2 remains documentation-only. Verify every cited commit and path with Git,
 run `git diff --check`, and report any lineage that cannot be proven instead of
 filling gaps with inference.
 
-When both correction tasks are complete, change this status to `Completed` and
+### Task 3 — Remove `unranged()` and its single-purpose protocols
+
+After Tasks 1 and 2 are complete, implement the user's existing removal request
+for the deprecated Range View `unranged()` API.
+
+Required work:
+
+1. Remove `unranged()` from both `RedBlackTreeKeyOnlyRangeView` and
+   `RedBlackTreeKeyValueRangeView`.
+2. Confirm that `ScalarBaseInit`, `KeyValueBaseInit`, their `_create(_:)`
+   requirements, and the four container conformances exist only to support
+   `unranged()`. If the repository-wide search confirms that, remove them too.
+   If another real use exists, stop and report it instead of deleting the
+   protocol blindly.
+3. Remove the four public-type tests dedicated only to `unranged()` while
+   preserving the surrounding Range View tests.
+4. Update `API-Matrix.md`, `API-Matrix-View.md`, `Tests/TESTING.md`, and any
+   other current documentation that still presents `unranged()` or these
+   protocols as available or pending removal.
+5. Search the entire repository after editing. No source, test, or current-doc
+   reference to the removed API should remain; historical reference material
+   may retain an explicitly historical note.
+
+Validation for Task 3:
+
+- Run the four affected Range View test suites or the narrowest equivalent
+  filters and confirm the intended tests ran.
+- Run repository-root `swift test`.
+- Run compatibility-mode validation if the removed declarations are compiled
+  there.
+- Run `git diff --check`.
+
+Do not broaden Task 3 into unrelated Range View redesign or cleanup.
+
+When all three tasks are complete, change this status to `Completed` and
 add a new corrected result summary above the previous result summary. Do not
 delete the previous record; label it as superseded where necessary.
 

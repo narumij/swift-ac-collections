@@ -27,7 +27,9 @@
       case protocolPreviousIterator
       case protocolLeaf
       case leftRotateNode
+      case leftRotateMissingRightChild
       case rightRotateNode
+      case rightRotateMissingLeftChild
       case balanceRoot
       case balanceInsertedNode
       case removeRoot
@@ -149,10 +151,24 @@
           let harness = AlgorithmHarness()
           harness.__tree_left_rotate(.nullptr)
         }
+      case .leftRotateMissingRightChild:
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let harness = AlgorithmHarness()
+          let node = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+          node.initialize(to: .create(tag: 0, nullptr: .nullptr))
+          harness.__tree_left_rotate(node)
+        }
       case .rightRotateNode:
         await #expect(processExitsWith: .signal(SIGTRAP)) {
           let harness = AlgorithmHarness()
           harness.__tree_right_rotate(.nullptr)
+        }
+      case .rightRotateMissingLeftChild:
+        await #expect(processExitsWith: .signal(SIGTRAP)) {
+          let harness = AlgorithmHarness()
+          let node = UnsafeMutablePointer<UnsafeNode>.allocate(capacity: 1)
+          node.initialize(to: .create(tag: 0, nullptr: .nullptr))
+          harness.__tree_right_rotate(node)
         }
       case .balanceRoot:
         await #expect(processExitsWith: .signal(SIGTRAP)) {

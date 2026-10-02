@@ -20,7 +20,6 @@
 
 ### 優先事項
 
-- 2026-10-02 21:13 JST ユーザー要望: 4型の`CustomReflectable.customMirror`は設計確信が十分でないため、CodexとClaudeの双方が独立にレビューする。Swift標準`Set` / `Dictionary`とのdisplay style、子要素の型・ラベル・個数、ソート順を公開契約とするか、MultiSetの`.set` / MultiMapの`.dictionary`表現が重複許容型に妥当かを確認し、双方の結果をユーザーが確認するまで最終完了としない
 - 2026-10-02 15:45 JST ユーザー要望: Test as Specificationと現行実装を根拠に、公開メソッド・公開関数のコメントドックに不備がないか確認し、必要な修正を行う
   - 公開APIは型別の連番テスト、共有Viewテスト、API Matrixと照合する
   - 説明、引数名、戻り値、事前条件、失敗条件、重複要素の扱い、Indexの有効性、計算量、所有権と破棄責任を確認する
@@ -52,8 +51,7 @@
 
 ### 保留中の判断・懸念
 
-- 2026-10-02 21:13 JST: Codexの一次確認では、現行MirrorはSwift標準型と構造上一致している。Set系は`.set`でラベルなしのElement、Dictionary系は`.dictionary`でラベルなしの`(key:value:)`tupleを子とし、子の数は`count`と一致する。ただし標準型は重複を許さないため、MultiSet / MultiMapで同じdisplay styleを使うことの意味、およびMirrorの子の順序をライブラリが保証すべきかはClaudeの独立レビュとユーザー判断待ち
- 2026-10-02 16:36 JST: Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としているが、容量条件と推奨APIの対応根拠がTest as Specificationから確定できない。設計意図は、逐次挿入を素直に回すO(*n* log(*m + n*))経路と、TimSort等で入力をソート済みにしてからO(*n + m*)でマージする経路の選択。ただし総コストは入力の既ソート性、ソート費用、一時メモリ、CoW、要素数に依存するため、単純な「十分な空き容量」だけでは推奨条件を表現しきれない可能性がある。意味・重複規則・計算量の文書化は行ったが、性能推奨の書き換えは代表的な入力分布でのベンチマークと実装経路の再確認後に行う。
+- 2026-10-02 16:36 JST: Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としているが、容量条件と推奨APIの対応根拠がTest as Specificationから確定できない。設計意図は、逐次挿入を素直に回すO(*n* log(*m + n*))経路と、TimSort等で入力をソート済みにしてからO(*n + m*)でマージする経路の選択。ただし総コストは入力の既ソート性、ソート費用、一時メモリ、CoW、要素数に依存するため、単純な「十分な空き容量」だけでは推奨条件を表現しきれない可能性がある。意味・重複規則・計算量の文書化は行ったが、性能推奨の書き換えは代表的な入力分布でのベンチマークと実装経路の再確認後に行う。
 - 2026-10-02 16:18 JST: `RedBlackTreeKeyValueRangeView.values`が返す`RedBlackTreeMappedValuesView`について、要素subscriptと`swapAt`の公開契約はView内の有効Indexを要求するが、現行実装は同じ木のView外Indexを明示的に範囲拒否していない。ソースにも範囲制限のTODOがある。公開仕様の変更ではなく事前条件検査の実装・Death Test課題として、別フェーズで対応要否を判断する。
 - 2026-10-02 16:24 JST: MultiMapの通常`insert`が同値キー群の末尾へ追加して挿入順を保持することはInsertion Testsで確定した。一方、hint付き`insert`が同値キー群内の順序へ与える影響はテストが戻りIndexだけを検証しており、公開契約として未確定。hintは検索結果や挿入可否を変えないが、multi型の同値要素間順序も変えないと保証するかは、専用Test as Specificationを追加してから文書化する。
 - API Matrix上の多くの共通APIが、各型のDocCでは`Default Implementations`配下に入る。今回追加した共通操作ガイドから各操作の個別シンボルへ、さらに細かいリンクを追加する必要があるかは公開結果を見て判断する
@@ -61,6 +59,7 @@
 
 (ユーザーが確認したら各項目を整理します)
 
+- 2026-10-03 00:40 JST Codex (GPT-5): 4型の`CustomReflectable.customMirror`についてCodexとClaudeの独立レビュー、Test as Specification追加、ユーザー確認が完了。Set / MultiSetは`.set`、Dictionary / MultiMapは`.dictionary`を最も近い既存のdisplay styleとして維持する。子はラベルなしで、Set系は各要素、Dictionary系は`(key:value:)`tupleを表し、MultiSet / MultiMapでは重複する各出現も個別の子として提供する。空時は子0件。木の現在の走査結果として昇順に見えることは公開順序契約に含めず、Mirrorの子の順序には依存させない。
 - 2026-10-02 21:24 JST Codex (GPT-5): `Tests/TESTING.md`の未結線一覧から改名済みの`RedBlackTreeMappedValuesView._isdentical(to:)`を削除し、現行`_isIdentical(to:)`および完了ログと同期した。同時に4型のMirror Test as Specificationを再レビューし、重複、子ラベル・型・内容、空時の不足を同文書のユーザー記入欄へ記録した。
 - 2026-10-03 Claude (Sonnet 5): 上記2026-10-02 16:22 JST保留事項(Viewの公開同一性判定名`_isIdentical(to:)`/`_isdentical(to:)`の綴り不一致)について、ユーザーから「凡ミスなのでリネームでよい」と判断が出たため対応。`RedBlackTreeMappedValuesView`に加え、同じ綴りミスを持つ`RedBlackTreeKeyValueRangeView._isdentical(to:)`(`==`/`<`内部実装から呼ばれていた)も発見し、両方`_isIdentical(to:)`へ統一。Sources/Tests内の旧綴り参照が無いことを確認し、全体テスト0失敗。`API-Matrix.md`の該当行(`_isIdentical(to:)` / `_isdentical(to:)`という旧綴り併記)はClaudeの編集範囲外のため未更新、同期が必要。保留事項から本項目を削除した。
 - 2026-10-03 Claude (Sonnet 5): 上記2026-10-02 15:34 JST保留事項(`UnsafeTreeV2+KeyValue.swift`のoptional key subscriptが`.move()`後のnil代入で二重解放を起こす件)を修正した。`.move()`を`.pointee`読み取り(コピー)に変更し、既存キー上書き分岐も`.initialize(to:)`から`.pointee =`代入に変更。`_MappedValue`は常にCopyableのためコピーへの変更は型制約上問題ない。回帰防止テスト2件を`RedBlackTreeDictionary_6_RemovalTests.swift`に追加、全体テスト0失敗を確認。詳細は`Tests/TESTING.md`の完了済み要望を正とする。これにより「move済みstorageを通常削除で再度deinitializeしない」という所有権契約への既知の未適合は解消された。保留事項から本項目を削除した。
@@ -196,6 +195,7 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
+- 2026-10-03 00:44 JST Codex (GPT-5): 公開コメント・DocC監査のCodex側最終照合を完了。CustomReflectableはClaudeの独立レビューと追加済みTest as Specificationを確認し、ユーザー了承によりMultiSetの`.set` / MultiMapの`.dictionary`を維持、重複する各出現をラベルなしの子として提供し、子の順序は公開保証しない契約で確定した。API Matrixとの照合で4型の`description` / `debugDescription` / `customMirror`が手動Topicsから漏れていることを発見し、各型ページへ`Inspecting`節として追加。Release DocCを`--warnings-as-errors`で生成し、全12シンボルリンクを含め警告・エラーなく成功した。Codex側の公開API監査は一区切りだが、最上位停止条件に従い、ドキュメント全体の最終完了はClaudeによる公開API・Test as Specification・実装・API Matrix・DocC生成結果の独立した全体確認と、その結果へのユーザー納得まで保留する。
 - 2026-10-02 21:18 JST Codex (GPT-5): 公開APIコメントの最終棚卸しを継続。Set / MultiSetの集合演算へ重複数の規則、4型のBound範囲subscriptへView・空範囲・multi型の重複保持、MappedValues Viewの`_isIdentical(to:)`へ同一storageかつ同一境界という契約を補った。公開プロパティには新たなコメント漏れがなく、現行構成の`SubSequence`型aliasへ範囲Viewの順序と重複保持を追記した。SetAlgebra / Protocol関連96テスト、Range View関連34テストが成功し、Release DocCの`--warnings-as-errors`生成も成功。CustomReflectableは標準Set / Dictionaryとの構造比較を終えたが、MultiSet / MultiMapの表示形式と順序契約はClaudeの独立レビューおよびユーザー確認待ち。残る公開宣言候補の大半はDocC非表示の内部hook、互換モード、deprecated経路であり、利用者向けに昇格させずAPI監査対象として扱う。
 - 2026-10-02 21:01 JST Codex (GPT-5): Sequence / transformation / protocol conformanceの公開コメント監査を完了。4型の`filter`、`makeIterator`、`sorted`、`reversed`、Dictionary / MultiMapの`mapValues` / `compactMapValues`に引数・戻り値・ソート順・multi型の重複保持を追記。`isTriviallyIdentical(to:)`の誤った呼び出し表記とMultiSetのSet表現流用を修正し、`Equatable` / `Comparable` / `Hashable`の比較単位、辞書式順序、重複数の扱いを明文化。Codableの正常round-tripとmulti型の重複保持を文書化した。一方、外部の非ソート・重複decode入力を検証しない実装とテス不足を発見し、ユーザー記入欄の保留事項へ記録。Sequence / Utility / Transform関連98テスト、Protocol / Value Semantics関連71テスト、Protocol / Codable関連69テストが成功し、Release DocCの`--warnings-as-errors`生成も成功。次はCustomReflectable / descriptionの詳細と、API Matrixから公開宣言の最終掲載漏れを監査する。
 - 2026-10-02 20:52 JST Codex (GPT-5): 公開削除系APIの基本区切りを完了。4型の`popFirst` / `popLast`、`removeFirst` / `removeLast`、`remove(at:)`、`removeAll(keepingCapacity:)`、`erase(_:)`、`erase(where:)`、Setの`remove(_:)`、Dictionaryの`removeValue(forKey:)`、MultiSet / MultiMapの`eraseUnique` / `eraseMulti`をRemoval Testsと実装へ照合し、空時の戻り値、最小・最大要素、Indexの事前条件、次Indexの返却を文書化した。Bound expressionによる単一・範囲・条件付き削除と、Set / MultiMapの`erase(exactly:)`の失敗時`nil`も追記。Claudeが完了した`_isIdentical(to:)`改名に合わせてAPI Matrixの旧綴り併記を削除した。Bound / Insertion関連118テストが成功し、Release DocCの`--warnings-as-errors`生成も成功。`TESTING.md`の陳腐化した未結線一覧はユーザー記入欄の保留事項へ記録済み。次はAPI Matrixの残りからutility / protocol conformance / transformation系の公開コメントを監査する。

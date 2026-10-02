@@ -29,7 +29,6 @@
 ### 優先事項
 (完了したらClaudeやCodexが完了済みの要望に移動してください）
 
-- 2026-10-02 21:13 JST ユーザー要望: RedBlackTree 4型の`CustomReflectable.customMirror`をCodexとClaudeが独立にレビューする。標準`Set` / `Dictionary`との構造比較に加え、MultiSet / MultiMapの重複要素・重複キーをMirrorが全て個別の子として提供すること、display styleの妥当性、子のラベルと型、空時を検証する。Mirrorの順序を公開仕様に含めるかは推測で決めず、レビュ結果をユーザーへ報告する
 - 2026-10-02 21:04 JST ユーザー要望（Claude優先）: 赤黒木の整理待ちや手空きのときは、赤黒木以外の`OptionalArrayModule`、`BareArrayModule`、`PermutationModule`、および`AcCollections`公開facadeのテストレビューを自発的に進める。「既存テストが成功する」だけで完了とせず、公開API一覧と実装を基準に、正常系・空・下限/上限・不正Index・参照型の寿命とCoW・Sendable/Codable・Debug/Release差・Death Testの不足を棚卸しする。見つけた仕様疑問や実装懸念は推測で修正せず本ユーザー記入欄の`保留中の判断・懸念`へ追記し、仕様が確定できる不足はTest as Specificationとして補う。そのターンでコード修正まで依頼されていない場合は、先にレビュー結果と優先順位を残す
 - メイン担当は定期的にこの文書確認する癖をつけること
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）
@@ -71,8 +70,6 @@
 
 ### 保留中の判断・懸念
 
-- 2026-10-03 JST Claude (Sonnet 5)独立レビュー: 上記Codexレビューで挙げられた不足点を`EtcTests.swift`で実機確認した結果、**実装はすべて正しく、未検証だっただけ**と判明(新規バグなし)。確認した事実: (1) Set/Dictionaryの子は全て`label == nil`、(2) MultiSetへ重複要素`[1,1,2]`を渡すと`customMirror.children.count`は3(countと一致)でき、重複が個別の子として反映される、(3) MultiMapへ同一キー`[(1,"a"),(1,"b")]`を渡すと同様に2件の子になり、各childは`(key: Int, value: String)`タプルとしてcastでき両方の値("a"/"b")が個別に反映される、(4) 空コレクション(Set/Dictionary/MultiSet/MultiMap)はいずれも`children.count == 0`。これらを4型の連番テスト(`_9_ProtocolConformanceTests.swift`等)へTest as Specとして追加(重複要素/重複キーを使うテスト、ラベルnilチェック、タプルcastチェック、空コレクションチェック)。`EtcTests.swift`の調査用コードは整理(削除)済み。全体テスト0失敗。
-  - display style(`.set`/`.dictionary`)の妥当性についての所見: SwiftのMirror.DisplayStyleにはmultiset/multimap専用の値が存在しないため、厳密に一致する選択肢は無い。MultiSet/MultiMapは重複を許す点で数学的な集合・辞書ではないが、(a)既存の`///`コメントで「重複も個別の子として反映される」ことは明記済み、(b)LLDB/Playgroundでの表示上の効果は主に視覚的なグルーピング(波括弧的表現等)であり厳密な一意性保証を意味しない、という理由から、現状の`.set`/`.dictionary`は「最も近い既存の選択肢」として妥当と判断する。ただし`.collection`(重複を許す意味合いがより近い)という代替案も考えられるため、最終判断はユーザーに委ねる。
 - 内部構造をテスト観点でどのように区分するのか、まだ結論がでていない
 - 生木へのテストを増やすと変更コストがかさむので、バランスに悩んでいる
 - `Tree/Fixture/UnsafeNodeReferenceFixture.swift`・`UnsafeTreeV2/Instance/RawBufferHeadFixture.swift`・`UnsafeNodeRawBufferCrossCheckTests.swift`(2026-10-01新設)は、`MemoryLayoutTests`/`UnsafeNodeMemoryLayoutTests`/`BucketAllocatorTests`の既存`checkXxx`ヘルパー・payload型リストと意図的に重複している。ユーザー方針「一旦多重化して、あとで整理しましょう」により統合はまだ行っていない
@@ -82,6 +79,7 @@
 ### 完了済みの要望
 (ユーザーが確認したら各項目を削除します)
 
+- 2026-10-03 00:40 JST Codex (GPT-5): 4型の`customMirror`についてCodex・Claudeの独立レビューとユーザー確認が完了。追加済みTest as Specificationにより、display style、ラベルなしの子、Set系の要素型、Dictionary系の`(key:value:)`tuple、multi型の重複する各出現、空時の子0件を固定した。MultiSetの`.set`、MultiMapの`.dictionary`は最も近い既存display styleとして維持し、子の順序は公開仕様に含めない。
 - 2026-10-03 Claude (Sonnet 5): 上記MAINTENANCE.md保留事項「Set/Dictionaryの`Decodable.init(from:)`が非ソート・重複入力を検証しない」をユーザー指示「再調査」で実機確認した結果、**想定より深刻な確定バグ**と判明: `RedBlackTreeSet<Int>`へ`[3,1,2]`をdecodeすると`Array(set) == [3,1,2]`(ソートされない)、`[1,1,2]`をdecodeすると`count == 3`(重複が残る)。`RedBlackTreeDictionary`も同様にキー順が壊れ、重複キーが2件とも残る(`count == 2`)。原因は`UnsafeTreeV2+Create.swift`の`create(from decoder:)`が使う`___emplace_hint_right`で、比較を一切せず常に最右へ無条件追加するだけの実装だった。唯一の検査`assert(tree.__tree_invariant(...))`はDEBUG限定でReleaseでは無検出。ユーザー指示「実装を切り替えるしかない。単調増加なら速く、そうでなくても正しい既存の経路に切り替え」を受け、`init<Source: Sequence>(_:)`が既に使っている`___insert_range_unique`/`___insert_range_multi`(直前の要素以上なら高速な最右挿入、そうでなければ`__find_equal`等で正しい位置を探す安全な経路)へ切り替えた。`create(from decoder:)`(unique型用、重複は先着優先で破棄)と新設`createMulti(from decoder:)`(multi型用、全出現を保持)に分離し、MultiSet/MultiMapの`init(from decoder:)`を`createMulti`呼び出しへ変更。また、デコード元のバッファ確保を`._createWithNewBuffer`から`Tree.create()`起点に変更したことで、空配列decode時に共有読み取り専用シングルトンを使う(無駄な確保をしない)という別の要望も同時に満たせた(`EtcTests.swift`に`testDecodeEmptyArrayUsesReadOnlySingleton`で確認)。テストファーストで4型の`_10_/_13_CodableTests.swift`(MultiSetは新設`_15_CodableTests.swift`)へ非ソート入力・重複入力・空配列の回帰防止テストを追加し、修正前に全て失敗することを確認してから実装を切り替え、修正後に成功したことを確認した。`swift test`/`swift test -c release`とも全体テスト0失敗。
 
 - 2026-10-03 Claude (Sonnet 5): ユーザー確認により「`_isdentical(to:)`は凡ミス、リネームで良い」と判断が出たため対応。`RedBlackTreeMappedValuesView._isdentical(to:)`に加え、同じ綴りミスを持つ`RedBlackTreeKeyValueRangeView._isdentical(to:)`(こちらは`==`/`<`から内部的に呼ばれており呼び出しゼロではなかった)も発見し、両方を`_isIdentical(to:)`へリネーム(KeyOnly側の`RedBlackTreeKeyOnlyRangeView._isIdentical(to:)`と綴りを統一)。Sources/Tests内に旧綴りの参照が残っていないことを確認し、全体テスト0失敗。`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md`と`Documentation/MAINTENANCE.md`にはまだ旧綴りの記載が残っているが、どちらもClaudeの編集範囲外のため現状のまま(MAINTENANCE.mdのみレビュー結果として別途反映)。また、別作業で`Sources/PermutationModule/`へ置いた調査専用文書`ProductReadinessAssessment.md`がSwiftPMの未処理ファイル警告を出したため、`Documentation`サブフォルダへ移動し`Package.swift`の`PermutationModule`ターゲットへ`exclude: ["Documentation"]`を追加(`RedBlackTreeCollections`と同じパターン)して解消。

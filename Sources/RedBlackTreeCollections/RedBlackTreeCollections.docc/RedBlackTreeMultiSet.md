@@ -22,6 +22,9 @@
 - ``RedBlackTreeMultiSet/last``
 - ``RedBlackTreeMultiSet/min()``
 - ``RedBlackTreeMultiSet/max()``
+- ``RedBlackTreeMultiSet/description``
+- ``RedBlackTreeMultiSet/debugDescription``
+- ``RedBlackTreeMultiSet/customMirror``
 
 ### Testing for Membership
 

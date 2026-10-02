@@ -23,6 +23,9 @@
 - ``RedBlackTreeMultiMap/last``
 - ``RedBlackTreeMultiMap/min()``
 - ``RedBlackTreeMultiMap/max()``
+- ``RedBlackTreeMultiMap/description``
+- ``RedBlackTreeMultiMap/debugDescription``
+- ``RedBlackTreeMultiMap/customMirror``
 
 ### Accessing Keys and Values
 

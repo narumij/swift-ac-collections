@@ -24,6 +24,9 @@
 - ``RedBlackTreeDictionary/last``
 - ``RedBlackTreeDictionary/min()``
 - ``RedBlackTreeDictionary/max()``
+- ``RedBlackTreeDictionary/description``
+- ``RedBlackTreeDictionary/debugDescription``
+- ``RedBlackTreeDictionary/customMirror``
 
 ### Accessing Keys and Values
 

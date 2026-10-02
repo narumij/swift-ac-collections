@@ -407,7 +407,7 @@ xcrun llvm-cov show \
 - `EtcTests.swift`はユーザー方針で削除せず残置(「なんかあるとつい触るやつ」)。内容整理する場合もファイル自体は残すこと。
 - **教訓**: 型別`_98_*.swift`を流用する際、`#if COMPATIBLE_ATCODER_2025`等のAPIガード範囲は型ごとに異なる場合があるので、使用する全APIを毎回sourceでgrepしてから書くこと。
 - **教訓**: `_TrackingTag`の`.nullptr`/`.end`は実ノードに対応しないセンチネル値なので、`__retrieve_`等で無条件に実ポインタへ解決してはいけない(Bootstrap復旧時に`try!`クラッシュとして発覚、`___resolve_`で解決済み)。
-- ArrayBased版(`Legacy/ArrayBasedFixture/TreeTests.swift`)とBootstrap版(`UnsafeTreeV2BootstrapTests`)は最初から別物として並行開発されており、統合は不要と判明(git historyで確認済み)。
+- ArrayBased版(`Legacy/ArrayBasedFixture/TreeTests.swift`)とBootstrap版(現`___RedBlackTreeContainerTests_unsafe.swift`)は最初から別物として並行開発されており、統合は不要と判明(git historyで確認済み)。
 - `ManagedBufferTests.swift`(destroy-stack機構のテスト)は依存する`___Tree`/`CompareUniqueTrait`等がSourcesに現存せず復活不可能と判明、削除済み。UnsafeTreeV2側の同等機構(freshPool/recycle)のテスト充足度は未確認のまま。
 
 - (2026-10-01、使用量77%で区切り) 長いセッションでの作業まとめ。`TreeNodeOnlyFixture`(旧`TreeFoundamentalFixture`)を使った原木層の直接テストを継続し、`tree_base+compare.swift`(`__UniqueHelper`/`__MultiHelper`)向けに`TreeFoundamentalMultiplicityTests.swift`を新設。その後`RedBlackTreeMultiMap+Index.swift`のカバレッジ調査で**実バグ**を発見: `index(inserting:)`が`__insert_unique`を呼んでおり、MultiMapなのに既存キーへの挿入を拒否していた(ユーザー確認の上`__insert_multi`へ修正)。

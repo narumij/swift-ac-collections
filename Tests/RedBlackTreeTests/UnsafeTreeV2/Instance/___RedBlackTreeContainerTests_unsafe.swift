@@ -1,5 +1,5 @@
 //
-//  UnsafeTreeV2BootstrapTests.swift
+//  ___RedBlackTreeContainerTests_unsafe.swift
 //  swift-ac-collections
 //
 //  Created by narumij on 2024/09/17.
@@ -13,7 +13,7 @@ import XCTest
 #if DEBUG
   @testable import RedBlackTreeCollections
 
-  final class UnsafeTreeV2BootstrapTests: RedBlackTreeTestCase {
+  final class ___RedBlackTreeContainerTests: RedBlackTreeTestCase {
 
     let capacity = 32
 

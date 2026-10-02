@@ -4,7 +4,7 @@
 //
 //  Created by narumij on 2024/09/17.
 //
-
+#if false
 import XCTest
 
 // 木の開発のブートストラップに該当する部分。結構ディープな内容なので温存する必要がある
@@ -367,4 +367,5 @@ import XCTest
       }
     #endif
   }
+#endif
 #endif

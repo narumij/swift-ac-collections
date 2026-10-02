@@ -80,6 +80,14 @@
 
   extension RedBlackTreeDictionary {
 
+    /// Accesses a view of the key-value pairs selected by a bound range expression.
+    ///
+    /// Mutating the returned view modifies this dictionary. A range that evaluates
+    /// to no ordered positions produces an empty view.
+    ///
+    /// - Parameter bounds: A bound range expression evaluated against the
+    ///   dictionary's keys.
+    /// - Returns: A view over the selected key-value pairs.
     @inlinable
     public subscript(bounds: BoundRangeExpression) -> View {
 

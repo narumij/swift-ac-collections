@@ -20,6 +20,7 @@
 
 ### 優先事項
 
+- 2026-10-02 21:13 JST ユーザー要望: 4型の`CustomReflectable.customMirror`は設計確信が十分でないため、CodexとClaudeの双方が独立にレビューする。Swift標準`Set` / `Dictionary`とのdisplay style、子要素の型・ラベル・個数、ソート順を公開契約とするか、MultiSetの`.set` / MultiMapの`.dictionary`表現が重複許容型に妥当かを確認し、双方の結果をユーザーが確認するまで最終完了としない
 - 2026-10-02 15:45 JST ユーザー要望: Test as Specificationと現行実装を根拠に、公開メソッド・公開関数のコメントドックに不備がないか確認し、必要な修正を行う
   - 公開APIは型別の連番テスト、共有Viewテスト、API Matrixと照合する
   - 説明、引数名、戻り値、事前条件、失敗条件、重複要素の扱い、Indexの有効性、計算量、所有権と破棄責任を確認する
@@ -51,6 +52,7 @@
 
 ### 保留中の判断・懸念
 
+- 2026-10-02 21:13 JST: Codexの一次確認では、現行MirrorはSwift標準型と構造上一致している。Set系は`.set`でラベルなしのElement、Dictionary系は`.dictionary`でラベルなしの`(key:value:)`tupleを子とし、子の数は`count`と一致する。ただし標準型は重複を許さないため、MultiSet / MultiMapで同じdisplay styleを使うことの意味、およびMirrorの子の順序をライブラリが保証すべきかはClaudeの独立レビュとユーザー判断待ち
 - 2026-10-02 20:57 JST: Set / Dictionaryの`Decodable.init(from:)`は、非ソート入力や重複要素・重複キーを検証せず、range専用の`___emplace_hint_right`で末尾追加している。現行Codable Testsは自身がencodeした正常値のround-tripだけで、外部から与えられた非ソート・重複入力を覆っていない。unique型の不変条件を保つため、デコード時に拒否、ソート＋重複処理、またはunique挿入を行うかの仕様決定とTest as Specification追加が必要。MultiSet / MultiMapは重複保持が仕様だが、非ソート入力を末尾hint経路で受ける点は同様に別途確認が必要
 - 2026-10-02 20:48 JST: `Tests/TESTING.md`の`Current handoff`に、改名済みの`RedBlackTreeMappedValuesView._isdentical(to:)`が「未結線・削除判断待ち」として残っており、完了済みログと矛盾する。テスト側の次回メンテナンスでスナップショットから削除し、実在する未結線APIだけに同期する必要がある
 - 2026-10-02 16:36 JST: Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としているが、容量条件と推奨APIの対応根拠がTest as Specificationから確定できない。設計意図は、逐次挿入を素直に回すO(*n* log(*m + n*))経路と、TimSort等で入力をソート済みにしてからO(*n + m*)でマージする経路の選択。ただし総コストは入力の既ソート性、ソート費用、一時メモリ、CoW、要素数に依存するため、単純な「十分な空き容量」だけでは推奨条件を表現しきれない可能性がある。意味・重複規則・計算量の文書化は行ったが、性能推奨の書き換えは代表的な入力分布でのベンチマークと実装経路の再確認後に行う。

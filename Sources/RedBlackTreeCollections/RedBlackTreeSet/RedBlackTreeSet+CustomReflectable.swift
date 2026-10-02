@@ -24,7 +24,10 @@
 
 extension RedBlackTreeSet: CustomReflectable {
   
-  /// The custom mirror for this instance.
+  /// A mirror that presents the set's elements as unlabeled children.
+  ///
+  /// The mirror uses the `.set` display style and contains one child for each
+  /// element.
   public var customMirror: Mirror {
     Mirror(self, unlabeledChildren: self + [], displayStyle: .set)
   }

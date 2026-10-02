@@ -84,6 +84,15 @@
 
   extension RedBlackTreeMultiMap {
 
+    /// Accesses a view of the key-value pairs selected by a bound range expression.
+    ///
+    /// Mutating the returned view modifies this multimap. The view retains every
+    /// selected pair, including pairs with equivalent keys. A range that evaluates
+    /// to no ordered positions produces an empty view.
+    ///
+    /// - Parameter bounds: A bound range expression evaluated against the
+    ///   multimap's keys.
+    /// - Returns: A view over the selected key-value pairs.
     @inlinable
     public subscript(bounds: BoundRangeExpression) -> View {
 

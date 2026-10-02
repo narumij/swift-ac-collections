@@ -29,6 +29,7 @@
 ### 優先事項
 (完了したらClaudeやCodexが完了済みの要望に移動してください）
 
+- 2026-10-02 21:13 JST ユーザー要望: RedBlackTree 4型の`CustomReflectable.customMirror`をCodexとClaudeが独立にレビューする。標準`Set` / `Dictionary`との構造比較に加え、MultiSet / MultiMapの重複要素・重複キーをMirrorが全て個別の子として提供すること、display styleの妥当性、子のラベルと型、空時を検証する。Mirrorの順序を公開仕様に含めるかは推測で決めず、レビュ結果をユーザーへ報告する
 - 2026-10-02 21:04 JST ユーザー要望（Claude優先）: 赤黒木の整理待ちや手空きのときは、赤黒木以外の`OptionalArrayModule`、`BareArrayModule`、`PermutationModule`、および`AcCollections`公開facadeのテストレビューを自発的に進める。「既存テストが成功する」だけで完了とせず、公開API一覧と実装を基準に、正常系・空・下限/上限・不正Index・参照型の寿命とCoW・Sendable/Codable・Debug/Release差・Death Testの不足を棚卸しする。見つけた仕様疑問や実装懸念は推測で修正せず本ユーザー記入欄の`保留中の判断・懸念`へ追記し、仕様が確定できる不足はTest as Specificationとして補う。そのターンでコード修正まで依頼されていない場合は、先にレビュー結果と優先順位を残す
 - メイン担当は定期的にこの文書確認する癖をつけること
 - この文書を正しく保つため、ClaudeさんやCodexの作業成果を加味してClaudeさんやCodexさんが都度更新すること（毎回）

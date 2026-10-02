@@ -1,6 +1,36 @@
 # Codex-to-Claude Work Request
 
-Status: Ready
+Status: Completed
+
+## Result Summary
+
+Updated the four `_98_FuzzTests.swift` files so each randomized test asserts
+both the reference-model comparison and `___tree_invariant_for_fuzz()` on the
+same mutation sequence:
+
+- `RedBlackTreeSet_98_FuzzTests.swift`: added invariant check to
+  `test_randomMutationsMatchSwiftSet`; added a `Set<Int>` reference and
+  per-operation comparison to the renamed
+  `test_randomInsertAndEraseMatchesReferenceAndMaintainsTreeInvariant`.
+- `RedBlackTreeMultiSet_98_FuzzTests.swift`: changed
+  `test_randomizedInsertAndEraseMatchesReferenceMultiset...` to compare the
+  full sorted multiset (not just the count of the selected key) and added the
+  invariant check after every operation; added a `ReferenceMultiset` and
+  per-operation comparison to the renamed invariant-only test.
+- `RedBlackTreeDictionary_98_FuzzTests.swift`: added invariant check after the
+  existing full key/value `assertEqual`; added a `[Int: Int]` reference and
+  per-operation comparison to the renamed invariant-only test.
+- `RedBlackTreeMultiMap_98_FuzzTests.swift`: changed the reference test to
+  compare full key multiplicity plus a `value == key` sanity check (values are
+  always set equal to the key in this test, so this fully captures observable
+  pairs) and added the invariant check after every operation; added the same
+  full comparison to the renamed invariant-only test.
+
+No production code was changed; no bug was found.
+
+Validation: ran each Fuzz*Tests suite individually, then
+`swift test --filter RedBlackTreeTests` (863 tests, 0 failures), then
+`swift test` from the repository root (all suites passed, 0 failures).
 
 ## Objective
 

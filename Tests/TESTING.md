@@ -11,11 +11,14 @@
 
 ## 優先事項
 
-現在のユーザー依頼と `CLAUDE_TASK.md` が最優先。その指定がない場合は次の順とする。
-
-1. 4型のランダム試験を、参照モデル比較と操作ごとの赤黒木不変条件確認の組にする。
+現在のユーザー依頼と `CLAUDE_TASK.md` が最優先。現在、追加の優先事項はない。
 
 ## 現在地
+
+- RedBlackTree 4型の `_98_FuzzTests.swift`: 参照モデル比較と操作ごとの
+  `___tree_invariant_for_fuzz()` チェックを同一の操作列・状態に対して行うよう
+  統合済み。MultiSet/MultiMapは「選択キーのみ」の部分比較だった箇所を全要素
+  比較に強化した。production codeの変更なし、不具合は未検出。
 
 - OptionalArrayModule: Release実行、Death Test、参照型寿命、公開API化漏れを対応済み。
 - BareArrayModule: Debug/Release、境界Death Test、参照型寿命をレビュー済み。
@@ -47,8 +50,10 @@
 - BareArrayの公開テストをReleaseでも実行する構成にし、境界Death Testと多次元配列の
   参照型寿命を追加。3D cloneの参照解放漏れを再現テスト付きで修正した。
 - 4型の`customMirror`はCodex/Claudeの独立レビューとユーザー確認が完了。
+- RedBlackTree 4型のFuzzテストを参照モデル比較+不変条件チェックの組に統合
+  (`CLAUDE_TASK.md`はCompletedへ更新済み)。
 
-最終更新: 2026-10-03 02:17 JST / Codex (GPT-5)
+最終更新: 2026-10-03 06:21 JST / Claude (Sonnet 5)
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

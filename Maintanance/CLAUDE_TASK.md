@@ -1,8 +1,68 @@
 # Codex-to-Claude Work Request
 
-Status: Active — complete Task 1 before Task 2
+Status: Completed
 
-## Active Assignment
+## Result Summary
+
+Completed both Task 1 and Task 2 of the PermutationModule/REFACTORING assignment below.
+No production code, tests, or package settings were changed; this was a documentation and
+planning assignment only.
+
+**Task 1 (PermutationModule phase 1):**
+- Added `Sources/PermutationModule/Documentation/Specification.md`: draft specification
+  separating observable public contract (enumeration order, termination, duplicate
+  handling, CoW-vs-no-CoW behavior) from implementation strategy. Frames `unsafe`-prefixed
+  APIs as a deliberate no-CoW strategy, not an inferior/unsafe variant.
+- Added `Maintanance/PermutationModule/ImplementationPlan.md`: which existing tests to
+  retain (`PermutationTests.swift`) vs. undecided (`NextPermutation.swift`, a dead
+  alternate-generation implementation unreferenced by the main module), missing Test as
+  Specification cases (cross-API ordering consistency, empty/single-element boundaries,
+  `unsafePermutations()` CoW-cancel behavior, `Permutations.All.init(safe:)` coverage),
+  a performance-check plan, and a practical plan for ABC328E copy-paste-submission
+  validation (baseline before/after comparison, to be executed by the user since it
+  requires an external AtCoder submission).
+- Updated `Tests/TESTING.md` (current-state + pending-decisions) to reflect this.
+- Open decisions for the user (recorded in both new docs): `unsafe` naming, whether to
+  wire up `Permutations.All.init(safe:)` as a public "safe full enumeration" API, and
+  whether to delete or keep `Tests/PermutationTests/NextPermutation.swift` as reference.
+
+**Task 2 (REFACTORING_FROM_ATCODER_2025.md expansion):**
+- Verified `release/AtCoder/2025` is a linear ancestor of the current history
+  (`git merge-base` == branch tip, 3416 commits ahead) and traced/confirmed via
+  `git show --name-status -M` and `Package.swift` diffs:
+  - A fact correcting a possible assumption: the numbered Test as Specification style
+    for `RedBlackTreeSet` (11 files) already existed at the 2025-09-03 release point
+    (introduced 2025-05-25, commit `f4e9f69e`), and the keystone test predates even that
+    (file header dated 2024/09/17). The technique was carried forward, not introduced by
+    the migration. `RedBlackTreeMultiSet`/`Dictionary`/`MultiMap` had only 2 files each at
+    release time vs. 22-24 now; the commit-by-commit path of that later expansion was not
+    traced (documented as a confirmed count-only fact, not a narrated sequence).
+  - New stage: internal-layer separation into `Implements/__tree`, `Implements/UnsafeTreeV2`,
+    `Implements/Deprecated` already existed by commit `28a1a5fb` (2026-05-04), i.e. before
+    the module rename below — recorded as a confirmed lower bound, not a traced origin.
+  - New stage: the `RedBlackTreeModule` → `RedBlackTreeCollections` target/directory rename
+    happened in three dated commits (`0ada7b35` directory-only rename, `e91c01ff` target
+    rename + new thin `@_exported import` compat shim, `76328122` moving that shim's folder
+    to `Sources/_RedBlackTreeModule`), confirmed against the current file contents.
+  - New stage: `RedBlackTreeFixture` (`29f43bb3`) and `RedBlackTreeTreeTests`/"genboku"
+    (`60604ff6`) target extraction, both 2026-10-02, matching the existing `Tests/TESTING.md`
+    note.
+  - Added a "Test migration" section giving the test-side migration equal weight to the
+    source migration, preserving the user's point that existing tests were reused as a
+    bootstrap rather than rebuilt from zero.
+- Preserved all previously confirmed content; only added new stages and one corrective/
+  contextual section. Did not modernize, rename, or alter the keystone test file.
+
+**Validation:**
+- All cited commit hashes verified to resolve (`git cat-file -e`) and all cited paths
+  verified to exist in the current working tree.
+- `git diff --check` — clean.
+- No `swift test` run was needed; this assignment made no source or test changes.
+
+Reported to the user in Japanese; the PermutationModule open decisions above are awaiting
+the user's judgment before any implementation proceeds.
+
+## Previous Active Assignment (now completed, see Result Summary above)
 
 Work on the following two bounded documentation and planning tasks in order.
 Read the repository-level instructions, `Tests/CLAUDE.md`, `Tests/TESTING.md`,

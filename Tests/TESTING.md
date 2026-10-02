@@ -33,7 +33,9 @@
   3D cloneのcapacity不足による参照解放漏れを修正済み。
 - AcCollections: 通常時の4型と互換時のPermutationModule再公開テストを追加済み。
   別テストターゲットでもRedBlackTreeのDebug寿命カウンタを各テスト後に検査・初期化する。
-- PermutationModule: 構造判断が先に必要なため自発作業の対象外。
+- PermutationModule: `CLAUDE_TASK.md` Task 1(Codex依頼)でフェーズ1の仕様ドラフト
+  `Sources/PermutationModule/Documentation/Specification.md`とテストファースト実装計画
+  `Maintanance/PermutationModule/ImplementationPlan.md`を作成済み(コード・テスト変更なし)。
 - RedBlackTree: 4型、共有View、BoundExpressionの連番Test as Specification整理済み。
 - Index世代、KeyOnly/KeyValue Range ViewのCoW後Index寿命、および4型とRange Viewの
   `elementsEqual(_:)` / `lexicographicallyPrecedes(_:)` は横展開済み。
@@ -41,6 +43,10 @@
 
 ## 判断待ち
 
+- PermutationModule: `unsafe`接頭辞のままとするか命名を見直すか、
+  `Permutations.All.init(safe:)`(安全な全列挙の対になるAPI)を結線するか、
+  `Tests/PermutationTests/NextPermutation.swift`の旧世代実装を削除するか参考実装として
+  残すかがユーザー判断待ち(`ImplementationPlan.md`参照)。
 - `erase(where:)`がRedBlackTreeSet/MultiSet/Dictionary/MultiMapの4型すべてで
   無条件に`ensureUnique()`を呼ぶため、空コレクションに対しても無駄にシングルトン
   からdetachする(要素が無い/削除されなくてもCoW発生)。`remove(_:)`/
@@ -60,8 +66,6 @@
 
 ## 直近の引き継ぎ
 
-- MultiMap/MultiSetのhint付きinsertが同値群の順序へ影響することを、テストと公開DocCの
-  両方へ反映済み。
 - BareArrayの公開テストをReleaseでも実行する構成にし、境界Death Testと多次元配列の
   参照型寿命を追加。3D cloneの参照解放漏れを再現テスト付きで修正した。
 - 4型の`customMirror`はCodex/Claudeの独立レビューとユーザー確認が完了。
@@ -71,8 +75,12 @@
   `RedBlackTreeInternal_EmptySingletonTests.swift`へ記録。`erase(where:)`の
   無駄なdetachを未解決事項として判断待ちへ記録(`CLAUDE_TASK.md`はCompletedへ
   更新済み)。
+- `CLAUDE_TASK.md` Task 1(PermutationModule再設計フェーズ1: 仕様ドラフト+実装計画)と
+  Task 2(REFACTORING_FROM_ATCODER_2025拡充、モジュール改名・内部層分離・Fixture/原木
+  ターゲット化の3段階を追加し、Test as Specificationが移行の産物ではない点を補記)を完了
+  (`CLAUDE_TASK.md`はCompletedへ更新済み、コード・テスト変更なし)。
 
-最終更新: 2026-10-03 07:10 JST / Claude (Sonnet 5)
+最終更新: 2026-10-03 08:10 JST / Claude (Sonnet 5)
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

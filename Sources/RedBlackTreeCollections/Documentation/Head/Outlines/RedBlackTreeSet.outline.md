@@ -32,13 +32,33 @@
 - 主な用途
 - コード例必須
 
-## Set Operations
+## Searching and Accessing Elements
+- `contains(_:)`
+- `count(of:)`
+- `first` / `last`
+- `min()` / `max()`
+- `firstIndex(of:)`
+- `lowerBound(_:)`
+- `upperBound(_:)`
+- `equalRange(_:)`
+- 検索結果のindexから前後の要素へ移動
+- コード例必須
+
+## Insertion and Removal
 - 挿入
 - 重複挿入時の挙動
 - 単一要素削除
 - 範囲削除
 - index を使った削除時の注意
 - `erase(Index) -> Index` による逐次削除
+- コード例必須
+
+## Set Algebra
+- `union` / `formUnion`
+- `intersection` / `formIntersection`
+- `difference` / `formDifference`
+- `symmetricDifference` / `formSymmetricDifference`
+- 非破壊操作と自身を更新する操作の違い
 - コード例必須
 
 ## Indices and Bound Expressions
@@ -49,12 +69,20 @@
 - slot 再利用後も古い index は再利用不可
 - CoW 分岐後の index の扱い
 - 無関係なコレクション由来の index は事前条件違反
-- `BoundExpression`
+- `RedBlackTreeSet.Bound`
   - index を直接扱わない代替記法
   - `.start`
+  - `.last`
+  - `.end`
   - `.lowerBound`
   - `.upperBound`
   - `.find`
+  - `.lessThan` / `.lessThanOrEqual`
+  - `.greaterThan` / `.greaterThanOrEqual`
+  - `.before` / `.after`
+  - `.advanced(by:limit:)`
+- 単一Boundが終端または解決不能の場合はsubscriptが`nil`を返す
+- 不成立または逆順のBound範囲は空Viewになる
 - コード例必須
 
 ## Performance

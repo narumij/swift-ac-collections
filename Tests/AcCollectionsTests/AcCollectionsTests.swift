@@ -12,9 +12,13 @@ final class AcCollectionsTests: XCTestCase {
 
   override func setUpWithError() throws {
     #if DEBUG
-      XCTAssertEqual(deallocatedCount, 0)
-      XCTAssertEqual(nodeDeinitializedCount, 0)
-      XCTAssertEqual(payloadDeinitializedCount, 0)
+      // SKIP_DEBUG_LIFETIME_BALANCE_CHECKS(テスト専用trait)は釣り合い検査だけを省略する。
+      // counterのresetは常に行う。
+      #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS && !SKIP_DEBUG_LIFETIME_SETUP_CHECKS
+        XCTAssertEqual(deallocatedCount, 0)
+        XCTAssertEqual(nodeDeinitializedCount, 0)
+        XCTAssertEqual(payloadDeinitializedCount, 0)
+      #endif
       _ = RedBlackTreeSet<Int>()
       allocatedCount = 0
       deallocatedCount = 0
@@ -27,9 +31,11 @@ final class AcCollectionsTests: XCTestCase {
 
   override func tearDownWithError() throws {
     #if DEBUG
-      XCTAssertEqual(allocatedCount, deallocatedCount)
-      XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount)
-      XCTAssertEqual(payloadInitializedCount, payloadDeinitializedCount)
+      #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS
+        XCTAssertEqual(allocatedCount, deallocatedCount)
+        XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount)
+        XCTAssertEqual(payloadInitializedCount, payloadDeinitializedCount)
+      #endif
       allocatedCount = 0
       deallocatedCount = 0
       nodeInitializedCount = 0

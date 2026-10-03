@@ -16,9 +16,13 @@ class CppBehaviorReferenceTestCase: XCTestCase {
 
     override func setUpWithError() throws {
         #if DEBUG
-            XCTAssertEqual(deallocatedCount, 0)
-            XCTAssertEqual(nodeDeinitializedCount, 0)
-            XCTAssertEqual(payloadDeinitializedCount, 0)
+            // The test-only SKIP_DEBUG_LIFETIME_BALANCE_CHECKS trait skips only the
+            // balance assertions; counter resets and structural checks always run.
+            #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS && !SKIP_DEBUG_LIFETIME_SETUP_CHECKS
+                XCTAssertEqual(deallocatedCount, 0)
+                XCTAssertEqual(nodeDeinitializedCount, 0)
+                XCTAssertEqual(payloadDeinitializedCount, 0)
+            #endif
             // The empty-tree singleton is never released during a case; initialize it
             // before resetting so it does not unbalance the counters.
             _ = RedBlackTreeSet<Int>()
@@ -41,14 +45,16 @@ class CppBehaviorReferenceTestCase: XCTestCase {
             XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
             XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)
 
-            XCTAssertEqual(allocatedCount, deallocatedCount, "possible memory leak")
-            assert(allocatedCount == deallocatedCount)
-            XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount, "possible memory leak")
-            assert(nodeInitializedCount == nodeDeinitializedCount)
-            XCTAssertEqual(
-                payloadInitializedCount, payloadDeinitializedCount,
-                "possible memory leak (\(nodeInitializedCount))")
-            assert(payloadInitializedCount == payloadDeinitializedCount)
+            #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS
+                XCTAssertEqual(allocatedCount, deallocatedCount, "possible memory leak")
+                assert(allocatedCount == deallocatedCount)
+                XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount, "possible memory leak")
+                assert(nodeInitializedCount == nodeDeinitializedCount)
+                XCTAssertEqual(
+                    payloadInitializedCount, payloadDeinitializedCount,
+                    "possible memory leak (\(nodeInitializedCount))")
+                assert(payloadInitializedCount == payloadDeinitializedCount)
+            #endif
             allocatedCount = 0
             deallocatedCount = 0
             nodeInitializedCount = 0

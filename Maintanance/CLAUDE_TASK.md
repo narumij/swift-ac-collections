@@ -1,6 +1,6 @@
 # Codex-to-Claude Work Request
 
-Status: Active — controllable Debug allocation/lifetime checks
+Status: Completed — controllable Debug allocation/lifetime checks (Linux CI evidence still required)
 
 ## Active assignment
 
@@ -10,6 +10,14 @@ do not silently weaken Linux. Provide one explicit, consistently named SwiftPM b
 switch (prefer a package trait/conditional define unless the existing structure makes
 another mechanism materially safer) that CI or a developer can select for hostile
 test scheduling and subprocess/Death Test runs.
+
+Add a narrower switch as well: `SKIP_DEBUG_LIFETIME_SETUP_CHECKS`. This switch skips
+only the incoming-zero assertions in `setUp`, then unconditionally resets all counters;
+the same test case's outgoing balance assertions in `tearDown` must remain enabled.
+Keep `SKIP_DEBUG_LIFETIME_BALANCE_CHECKS` as the broader emergency switch that skips
+both incoming and outgoing counter equality assertions. If both are selected, the
+broader switch subsumes the setup-only switch. Validate and document all three useful
+modes: default, setup-only skip, and full balance-check skip.
 
 Apply the policy consistently to every XCTest base that currently owns these global
 counters: inventory at least `RedBlackTreeTestCase`, `TreeTestCase`,
@@ -37,6 +45,90 @@ exact CI validation still required. Run `git diff --check`, record files, comman
 results, and remaining Linux evidence in this md, then set the status to Completed.
 Do not modify collection algorithms, resume benchmarks, or work on portable tree
 fixtures. Report only `完了` to the user.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+Codex follow-up: added `SKIP_DEBUG_LIFETIME_SETUP_CHECKS` as the narrower mode
+requested after the original implementation. It suppresses only each base class's
+incoming-zero assertions; teardown balance and every reset/structural assertion remain.
+The broader `SKIP_DEBUG_LIFETIME_BALANCE_CHECKS` continues to suppress both equality
+check phases and therefore subsumes it when both traits are supplied. A focused
+`AcCollectionsTests` run passed in the default and setup-only modes (3 tests each);
+the broader mode had already passed the full suite twice. `git diff --check` is clean.
+
+- **Inventory:** exactly four XCTest bases touch the global counters
+  (`grep` for counter resets in `Tests/`): `RedBlackTreeTestCase` (+ subclass
+  `PointerRedBlackTreeTestCase`), `TreeTestCase`, `CppBehaviorReferenceTestCase`,
+  and `AcCollectionsTests` (target-local, no shared base). No other test resets them.
+- **Switch:** package trait `SKIP_DEBUG_LIFETIME_BALANCE_CHECKS` plus
+  `.define(…, .when(traits:))` in `_settings`, following the existing trait idiom.
+  Not enabled by default on any platform. Select with
+  `swift test --traits SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`.
+  Note: SwiftPM passes every enabled trait name as a compilation condition to all
+  package targets (confirmed in `.build/manifest.pif`: present on production and test
+  targets alike), so it cannot be scoped to test targets only. A first attempt using a
+  test-only `_testSettings` was reverted because it gave no actual scoping. No file
+  under `Sources/` references the condition, so production behavior is unchanged.
+- **Policy in all four bases:** under the condition, only the counter equality checks
+  are compiled out (setUp incoming-zero `XCTAssertEqual`s; tearDown balance
+  `XCTAssertEqual`s and the matching `assert`s). Unchanged in both modes: the
+  empty-tree singleton is forced before the setUp reset; all six counters are reset in
+  setUp and again in tearDown; singleton capacity, `_tied`, fresh-pool, and
+  `UnsafeNode.nullptr` structural checks remain.
+- **Documentation:** comments in `Package.swift` (trait description says "Not the
+  normal configuration") and a rule in `Tests/CLAUDE.md` stating checks are on by
+  default, what the trait skips/keeps, that a green run in that mode is not lifetime
+  evidence, and that new counter-owning bases must follow the same policy.
+- **Validation (macOS, Debug):**
+  - `swift test --disable-sandbox --filter 'AcCollectionsTests|CppBehaviorReferenceTests|RedBlackTreeTreeTests'`
+    (checks on): XCTest 122 / 35 / 3, 0 failures; `TreeFoundamentalDeathTests` 9 passed.
+  - `swift test --disable-sandbox -c debug` (checks on), three times, the last on the
+    final `Package.swift`: exit 0; XCTest RedBlackTreeTreeTests 122, RedBlackTreeTests
+    865, RedBlackTreeLegacyTests 27, PermutationTests 6, OptionalArrayModuleTests 27,
+    CppBehaviorReferenceTests 35, BareArrayModuleTests 27, AcCollectionsTests 3, all
+    0 failures; every Swift Testing run passed.
+  - `swift test --disable-sandbox -c debug --traits SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`
+    (checks off), twice: exit 0, identical per-bundle XCTest counts, 0 failures; all
+    Swift Testing runs passed.
+  - `git diff --check`: clean.
+- **Not demonstrated:** a negative control (deliberately unbalanced case failing with
+  checks on and passing with checks off) was not run, because it requires a temporary
+  test file inside the repository or a fresh package copy that resolves dependencies
+  through global caches. Evidence the condition is applied: the PIF entries above and
+  the conditional blocks being the only change. Codex may request the control as a
+  reviewed, retained test if wanted.
+- **Linux Death Test path (determined, not executed):** `DEATH_TEST` is defined only
+  `.when(platforms: [.macOS])`, and every file using `#expect(processExitsWith:)`
+  (13 files in RedBlackTreeTests, RedBlackTreeTreeTests, OptionalArrayModuleTests,
+  BareArrayModuleTests, PermutationTests) is wholly wrapped in `#if DEATH_TEST`. So on
+  Linux CI (`swift test -c debug`, `-c release`, and the ASan job in
+  `.github/workflows/swift.yml`, ubuntu-24.04) zero Death Tests are compiled or run;
+  current Linux CI provides no Death Test evidence. `DEATH_TEST` was not broadened.
+  Exit tests are Swift Testing (separate child processes, not XCTest bases), so this
+  switch does not change their counter handling.
+
+Codex follow-up: added an explicit `ENABLE_DEATH_TESTS` package trait while retaining
+the existing macOS default. The normal blocking Ubuntu 24.04 Debug job now runs the
+full suite with
+`ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_SETUP_CHECKS`, so Linux must actually compile
+and execute the subprocess tests; failures are not converted into a green result.
+- **Linux validation still required (CI or Ubuntu 24.04 with the CI toolchain):**
+  1. `swift test -c debug` (checks on) and
+     `swift test -c debug --traits SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`; confirm both
+     exit 0 with the per-bundle XCTest counts above.
+  2. To obtain Linux Death Test evidence, a separately reviewed change must define
+     `DEATH_TEST` for Linux (e.g. `.when(platforms: [.macOS, .linux])` or a dedicated
+     trait), then verify the exit-test cases are discovered and executed as child
+     processes with the expected signals/exit statuses and the parent continues — not
+     inferred from a green aggregate.
+- **Changed files:** `Package.swift`, `Tests/RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeTestCase.swift`,
+  `Tests/RedBlackTreeTreeTests/Fixture/TreeTestCase.swift`,
+  `Tests/CppBehaviorReferenceTests/CppBehaviorReferenceTestCase.swift`,
+  `Tests/AcCollectionsTests/AcCollectionsTests.swift`, `Tests/CLAUDE.md`, this file.
+  No collection algorithm, production API, benchmark, or fixture change.
+- **Housekeeping:** a stray verbose-build redirect briefly created `/tmp/.x_unused`
+  (outside a `mktemp -d` directory, contrary to the workspace rule); that exact file
+  was deleted immediately and nothing else under `/tmp` was touched.
 
 ## Completed assignment: WorldClass framing withdrawal
 

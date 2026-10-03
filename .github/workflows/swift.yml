@@ -85,7 +85,9 @@ jobs:
         uses: SwiftyLab/setup-swift@latest
 
       - name: Run tests
-        run: swift test -c debug
+        run: >-
+          swift test -c debug
+          --traits ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_SETUP_CHECKS
 
   release:
     runs-on: ubuntu-24.04

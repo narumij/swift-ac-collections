@@ -19,9 +19,13 @@ class RedBlackTreeTestCase: XCTestCase {
       // 直前にこのクラスを継承してないテストが走り、事後処理がないためだった。
       // assert(deallocatedCount == 0) // アサート(a)
       // assert(payloadDeinitializedCount == 0)
-      XCTAssertEqual(deallocatedCount, 0)
-      XCTAssertEqual(nodeDeinitializedCount, 0)
-      XCTAssertEqual(payloadDeinitializedCount, 0)
+      // SKIP_DEBUG_LIFETIME_BALANCE_CHECKS(テスト専用trait)は釣り合い検査だけを省略する。
+      // counterのresetと構造検査は常に行う。
+      #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS && !SKIP_DEBUG_LIFETIME_SETUP_CHECKS
+        XCTAssertEqual(deallocatedCount, 0)
+        XCTAssertEqual(nodeDeinitializedCount, 0)
+        XCTAssertEqual(payloadDeinitializedCount, 0)
+      #endif
       // シングルトンはテストケース期間に開放されず、数があわなくなるので、その調整
       _ = RedBlackTreeSet<Int>()
       allocatedCount = 0
@@ -47,14 +51,16 @@ class RedBlackTreeTestCase: XCTestCase {
       XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
       XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)
 
-      XCTAssertEqual(allocatedCount, deallocatedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
-      // これで止まるケースは、スコープ外での初期化の影響のケースがあった
-      assert(allocatedCount == deallocatedCount)
-      XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
-      assert(nodeInitializedCount == nodeDeinitializedCount)
-      XCTAssertEqual(
-        payloadInitializedCount, payloadDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある (\(nodeInitializedCount))")
-    assert(payloadInitializedCount == payloadDeinitializedCount)
+      #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS
+        XCTAssertEqual(allocatedCount, deallocatedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
+        // これで止まるケースは、スコープ外での初期化の影響のケースがあった
+        assert(allocatedCount == deallocatedCount)
+        XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
+        assert(nodeInitializedCount == nodeDeinitializedCount)
+        XCTAssertEqual(
+          payloadInitializedCount, payloadDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある (\(nodeInitializedCount))")
+        assert(payloadInitializedCount == payloadDeinitializedCount)
+      #endif
       allocatedCount = 0
       deallocatedCount = 0
       nodeInitializedCount = 0

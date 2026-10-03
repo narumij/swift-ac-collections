@@ -61,6 +61,18 @@ removal of existing coverage is unclear.
   can run in the same process, so leaked counter state makes the next suite fail
   depending on test order. Do not work around this by weakening the next
   suite's setup assertions.
+- The balance assertions are on by default and are the normal configuration.
+  `SKIP_DEBUG_LIFETIME_SETUP_CHECKS` skips only the incoming-zero assertions,
+  immediately resets the counters, and retains the same case's teardown balance
+  assertions. Prefer this narrower mode when only prior test-runner contamination
+  is expected.
+  The test-only package trait `SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`
+  (`swift test --traits SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`) skips only the
+  counter equality assertions in the XCTest bases, for diagnosing hostile test
+  scheduling or subprocess/Death Test runs. Counters are still reset at the start
+  and end of every case, and singleton/fresh-pool/nullptr structural checks
+  still run. A green run in this mode is not evidence of lifetime balance; any
+  new XCTest base that owns the counters must follow the same policy.
 - Use `EtcTests.swift` or `DeathTest.swift` for exploratory tests. Preserve
   `ABC`, `convenience`, `memoize`, and `EtcTests.swift` unless the user
   explicitly says otherwise.
@@ -85,6 +97,11 @@ coverage when the changed behavior depends on them. If `Package.swift` is
 temporarily modified to exercise a configuration, restore its original
 configuration before finishing. Never infer success from a test count alone;
 confirm that the intended tests actually ran.
+
+Death Tests remain enabled by default on macOS. On Linux, use
+`swift test -c debug --traits ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_SETUP_CHECKS`.
+The normal GitHub Actions Debug job is authoritative for Linux signal/exit behavior;
+do not infer it from a macOS run or from an aggregate run that discovered no exit tests.
 
 ## Finish and Handoff
 

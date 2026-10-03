@@ -5,6 +5,20 @@ Completed assignments and result summaries moved verbatim from
 order (newest first). Headings such as "Active" or "above" refer to their
 position in the original file at the time they were written.
 
+## Previous Completed Result (Permutation benchmark validation / end-to-end / erase(where:) empty CoW)
+
+- Corrected the initial Permutation subscript benchmark methodology and ran
+  interleaved unchecked/checked comparisons.
+- Found no practical end-to-end overhead attributable to the conventional
+  two-comparison bounds check; retained it for clarity. Added Int.min/Int.max
+  exit coverage.
+- Added a bounded end-to-end permutation benchmark and retained raw evidence.
+- Avoided empty-collection CoW in the four owning `erase(where:)`
+  implementations and added focused tests.
+- Focused normal/Release/compatibility tests, full `swift test`, normal build,
+  and `git diff --check` succeeded. Temporary production and manifest edits were
+  restored; no commit or push was performed.
+
 ## Previous Completed Result (Permutation subscript benchmark / boundary fix / strict re-audit)
 
 - Added deterministic sequential and shuffled public-subscript benchmarks with

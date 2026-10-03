@@ -1,6 +1,6 @@
 # Codex-to-Claude Work Request
 
-Status: Active — Small cleanup and Sendable handoff only
+Status: Completed — Small cleanup and Sendable handoff only
 
 ## Active Follow-up Assignment
 
@@ -54,19 +54,18 @@ Validation and handoff:
 - Mark the assignment completed and summarize the Sendable batches and scratch
   cleanup in Japanese. Do not commit or push.
 
-## Previous Completed Result (archive before completing this assignment)
+## Completed Result (2026-10-03, Claude Opus 5.5)
 
-- Corrected the initial Permutation subscript benchmark methodology and ran
-  interleaved unchecked/checked comparisons.
-- Found no practical end-to-end overhead attributable to the conventional
-  two-comparison bounds check; retained it for clarity. Added Int.min/Int.max
-  exit coverage.
-- Added a bounded end-to-end permutation benchmark and retained raw evidence.
-- Avoided empty-collection CoW in the four owning `erase(where:)`
-  implementations and added focused tests.
-- Focused normal/Release/compatibility tests, full `swift test`, normal build,
-  and `git diff --check` succeeded. Temporary production and manifest edits were
-  restored; no commit or push was performed.
+- Task 1: `git status` was clean; no disposable files remained and nothing was
+  removed. No temporary directory was created.
+- Task 2: Added a read-only Sendable handoff as §9 of
+  `StrictMemorySafetyReadiness.md`. `Nexts` (and the uninhabited
+  `Permutations`) are mechanical; `IteratorN`/`SubSequenceN` share a mutable
+  `Buffer` via CoW and need an ownership decision before
+  `@unchecked Sendable where C.Element: Sendable`. Proposed batches: Nexts →
+  `final Buffer` → iterator/subsequence with a cross-task test.
+- Only `git diff --check` was run. Previous result archived in
+  `CLAUDE_TASK_HISTORY.md`. No commit or push.
 
 ## History
 

@@ -238,6 +238,35 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
 - G5の`newCapacity < count`の未検査(現状は到達経路なし)。
 - G4の非`final`クラスに対する`unsafeDowncast`(現状はサブクラスなし)。
 
+## 9. `PermutationModule` の `Sendable` 対応 引き継ぎ(2026-10-03、読み取りのみ)
+
+ユーザー決定: Swift 6+ の `Sendable` 対応は必須。以下は
+`Sources/PermutationModule/Permutations.swift` の読み取りのみに基づく(診断未実行)。
+
+| 公開型 | 保持するもの | 区分 |
+| --- | --- | --- |
+| `Permutations<C>` (caseなしenum) | なし | 機械的(値が存在しない) |
+| `Nexts` | `source: C` | 機械的: `Sendable where C: Sendable` |
+| `IteratorN` | `Buffer<C.Element>`(参照)+ `Bool` 2個 | 判断要 |
+| `SubSequenceN` | `Buffer<C.Element>`(参照、`let`) | 判断要 |
+
+判断要の理由: `Buffer` は可変の `ManagedBuffer` サブクラス(非`final`、§8 G4)で、
+最初の `next()` が返す `SubSequenceN` と `IteratorN` は同じバッファを共有する。変更前に
+`isKnownUniquelyReferenced` でコピーするCoWなので、`Array` と同じ理屈で安全と言える見込みだが、
+コンパイラは証明できず `@unchecked` が必要になる。CoWが唯一の変更経路であることを
+文書化したうえで採否を決める(診断を消すためだけには付けない)。`C` 自体は保持しないので、
+条件は `C.Element: Sendable` で足りる。`Header` は内部用で `Int` のみ。
+
+実装バッチ案(各バッチ後に通常/`COMPATIBLE_ATCODER_2025` で対象テスト):
+
+1. `Nexts`(と必要なら `Permutations`)へ条件付き `Sendable`。テスト: ジェネリックな
+   `requireSendable<T: Sendable>` に渡すコンパイル時チェック。
+2. `Buffer` を `final` にする(§8 G4 と同じ論点、先に判断)。
+3. `IteratorN`/`SubSequenceN` へ CoW を根拠とした
+   `@unchecked Sendable where C.Element: Sendable` を付け、根拠をコメントに残す。テスト:
+   取得済みの `SubSequenceN` を `Task` へ送って読む間に、イテレータを進めても値が変わらない
+   ことを確認(可能ならThread Sanitizerも)。
+
 ## 保留事項
 
 - `RedBlackTreeCollections`本体への実際の注釈付け作業は本タスクの範囲外。

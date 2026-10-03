@@ -23,6 +23,9 @@
 extension RedBlackTreeDictionary {
 
   /// Creates an empty dictionary with preallocated space for at least the specified number of key-value pairs.
+  ///
+  /// - Parameter minimumCapacity: The minimum number of key-value pairs for which to allocate storage.
+  /// - Complexity: O(1).
   @inlinable
   public init(minimumCapacity: Int) {
     self.init(__tree_: .create(minimumCapacity: minimumCapacity))

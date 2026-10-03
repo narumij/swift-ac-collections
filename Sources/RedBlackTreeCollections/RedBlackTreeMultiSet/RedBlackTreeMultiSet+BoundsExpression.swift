@@ -94,6 +94,14 @@
 
   extension RedBlackTreeMultiSet {
 
+    /// Removes and returns the element at the position selected by a bound expression.
+    ///
+    /// When equivalent elements exist, the expression determines which position
+    /// is removed.
+    ///
+    /// - Parameter bound: A bound expression that selects a position in the multiset.
+    /// - Returns: The removed element, or `nil` if the expression selects
+    ///   `endIndex` or can't be evaluated.
     @inlinable
     public mutating func erase(_ bound: Bound) -> Element? {
 
@@ -108,6 +116,14 @@
 
   extension RedBlackTreeMultiSet {
 
+    /// Accesses a view of the elements selected by a bound range expression.
+    ///
+    /// Mutating the returned view modifies this multiset. The view retains every
+    /// selected occurrence, including equivalent elements. A range that evaluates
+    /// to no ordered positions produces an empty view.
+    ///
+    /// - Parameter bounds: A bound range expression evaluated in this multiset.
+    /// - Returns: A view over the selected occurrences.
     @inlinable
     public subscript(bounds: BoundRangeExpression) -> View {
 
@@ -123,6 +139,10 @@
 
   extension RedBlackTreeMultiSet {
 
+    /// Removes the elements in the range selected by a bound range expression.
+    ///
+    /// - Parameter bounds: A bound range expression that selects the elements
+    ///   to remove.
     @inlinable
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
@@ -130,6 +150,12 @@
       _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
     }
 
+    /// Removes the elements in the selected range that satisfy a predicate.
+    ///
+    /// - Parameters:
+    ///   - bounds: A bound range expression that selects the elements to examine.
+    ///   - shouldBeRemoved: A closure that returns `true` for an element that
+    ///     should be removed.
     @inlinable
     public mutating func erase(
       _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool

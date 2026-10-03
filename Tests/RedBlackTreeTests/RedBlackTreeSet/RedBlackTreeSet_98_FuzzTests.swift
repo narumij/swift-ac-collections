@@ -32,23 +32,29 @@ final class RedBlackTreeSetFuzzTests: RedBlackTreeTestCase {
         }
 
         XCTAssertEqual(Array(redBlackTreeSet), swiftSet.sorted())
+        XCTAssertTrue(redBlackTreeSet.___tree_invariant_for_fuzz())
       }
     }
   }
 
-  func test_randomInsertAndEraseMaintainsTreeInvariant() {
+  func test_randomInsertAndEraseMatchesReferenceAndMaintainsTreeInvariant() {
     var rng = SplitMix64(seed: 0xDEADBEEF)
     var set = RedBlackTreeSet<Int>()
+    var reference = Set<Int>()
 
     for _ in 0..<3 {
       for _ in 0..<1000 {
         let v = Int(rng.next() % 500)
         set.insert(v)
+        reference.insert(v)
+        XCTAssertEqual(Array(set), reference.sorted())
         XCTAssertTrue(set.___tree_invariant_for_fuzz())
       }
       for _ in 0..<1000 {
         let v = Int(rng.next() % 500)
         set.remove(v)
+        reference.remove(v)
+        XCTAssertEqual(Array(set), reference.sorted())
         XCTAssertTrue(set.___tree_invariant_for_fuzz())
       }
     }

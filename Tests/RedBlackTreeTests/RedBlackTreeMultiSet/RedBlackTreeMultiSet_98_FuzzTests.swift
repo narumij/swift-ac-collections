@@ -16,7 +16,7 @@ private struct ReferenceMultiset {
 #if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeMultiSetFuzzTests: RedBlackTreeTestCase {
 
-    func test_randomizedInsertAndEraseMatchesReferenceMultiset() {
+    func test_randomizedInsertAndEraseMatchesReferenceMultisetAndMaintainsTreeInvariant() {
       var rng = SplitMix64(seed: 0xBADC0DE)
       let rounds = 150
       let opsPerRound = 400
@@ -40,26 +40,31 @@ private struct ReferenceMultiset {
           default:  // count check only
             break
           }
-          // 同期検証
-          XCTAssertEqual(ms.count(of: v), ref.count(of: v))
+          // 全要素(多重度込み)の同期検証
+          XCTAssertEqual(ms.sorted(), ref.sorted)
+          XCTAssertTrue(ms.___tree_invariant_for_fuzz())
         }
-        XCTAssertEqual(ms.sorted(), ref.sorted)
       }
     }
 
-    func test_randomInsertAndEraseMaintainsTreeInvariant() {
+    func test_randomInsertAndEraseMatchesReferenceAndMaintainsTreeInvariant() {
       var rng = SplitMix64(seed: 0xDEADBEEF)
       var multiset = RedBlackTreeMultiSet<Int>()
+      var reference = ReferenceMultiset()
 
       for _ in 0..<3 {
         for _ in 0..<1000 {
           let v = Int(rng.next() % 500)
           multiset.insert(v)
+          reference.insert(v)
+          XCTAssertEqual(multiset.sorted(), reference.sorted)
           XCTAssertTrue(multiset.___tree_invariant_for_fuzz())
         }
         for _ in 0..<1000 {
           let v = Int(rng.next() % 500)
           multiset.eraseMulti(v)
+          reference.removeAll(v)
+          XCTAssertEqual(multiset.sorted(), reference.sorted)
           XCTAssertTrue(multiset.___tree_invariant_for_fuzz())
         }
       }

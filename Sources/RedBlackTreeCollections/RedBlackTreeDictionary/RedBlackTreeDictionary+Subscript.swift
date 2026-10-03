@@ -22,6 +22,12 @@
 
 extension RedBlackTreeDictionary {
 
+  /// Accesses the value associated with `key`.
+  ///
+  /// Assigning a non-`nil` value inserts or updates the key. Assigning `nil`
+  /// removes the key if it exists and does nothing when the key is absent.
+  ///
+  /// - Parameter key: The key to find, insert, update, or remove.
   /// - Complexity: O(log *n*)
   @inlinable
   public subscript(key: Key) -> Value? {
@@ -35,6 +41,14 @@ extension RedBlackTreeDictionary {
     }
   }
 
+  /// Accesses the value associated with `key`, returning a default when absent.
+  ///
+  /// Reading an absent key evaluates and returns `defaultValue` without inserting
+  /// it. Mutating through the subscript inserts the default value before mutation.
+  ///
+  /// - Parameters:
+  ///   - key: The key to find or insert.
+  ///   - defaultValue: A value to use when `key` is absent.
   /// - Complexity: O(log *n*)
   @inlinable
   public subscript(
@@ -63,6 +77,8 @@ extension RedBlackTreeDictionary {
 
     /// Accesses the element at the specified position.
     ///
+    /// - Parameter position: A valid element index of this dictionary.
+    /// - Precondition: `position` identifies an element in this dictionary and isn't `endIndex`.
     /// - Complexity: O(1)
     @inlinable
     @inline(__always)

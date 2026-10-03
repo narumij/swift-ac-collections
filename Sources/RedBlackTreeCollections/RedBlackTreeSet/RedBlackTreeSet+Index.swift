@@ -40,6 +40,8 @@
     /// `endIndex` is a valid collection boundary, but it is not an element,
     /// so this method returns `false` for `endIndex`.
     ///
+    /// - Parameter index: The index to validate.
+    /// - Returns: `true` if `index` identifies an accessible element of this set; otherwise, `false`.
     /// - Complexity: O(1)
     @inlinable
     public func isElement(at index: Index) -> Bool {
@@ -50,6 +52,8 @@
     ///
     /// An invalid or stale index returns `false`.
     ///
+    /// - Parameter index: The index to validate.
+    /// - Returns: `true` if `index` is this set's `endIndex`; otherwise, `false`.
     /// - Complexity: O(1)
     @inlinable
     public func isEnd(_ index: Index) -> Bool {
@@ -63,6 +67,13 @@
 
     /// Returns the distance between two indices.
     ///
+    /// The result is negative when `end` precedes `start`.
+    ///
+    /// - Parameters:
+    ///   - start: A valid index of this set.
+    ///   - end: Another valid index of this set.
+    /// - Returns: The number of index steps from `start` to `end`.
+    /// - Precondition: Both indices are valid for this set.
     /// - Complexity: O(log *n* + *k*)
     @inlinable
     public func distance(from start: Index, to end: Index)
@@ -78,9 +89,11 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// Returns the first index where the specified value appears in the collection.
+    /// Returns the index of `member` in the set.
     ///
-    /// - Complexity: O( log `count` )
+    /// - Parameter member: The element to find.
+    /// - Returns: The index of `member`, or `nil` if the set doesn't contain it.
+    /// - Complexity: O(log `count`)
     @inlinable
     public func firstIndex(of member: Element) -> Index? {
       ___index_or_nil(__tree_.find(member))
@@ -89,13 +102,13 @@
 
   extension RedBlackTreeSet {
 
-    /// The position of the first element in a nonempty array.
+    /// The position of the first element in a nonempty set.
     ///
     /// - Complexity: O(1)
     @inlinable
     public var startIndex: Index { ___index(_start) }
 
-    /// The array’s “past the end” position—that is, the position one greater than the last valid subscript argument.
+    /// The set's “past the end” position.
     ///
     /// - Complexity: O(1)
     @inlinable
@@ -114,7 +127,7 @@
       __tree_.prev_iter(i)
     }
 
-    /// Replaces the given index with its successor.
+    /// Returns the position immediately after the given index.
     ///
     /// - Complexity: O(1)
     @inlinable
@@ -130,7 +143,10 @@
       __tree_.adv_iter(i, offsetBy: distance)
     }
 
-    /// Returns an index that is the specified distance from the given index, unless that distance is beyond a given limiting index.
+    /// Returns an index at the specified distance, unless movement would pass `limit`.
+    ///
+    /// Reaching `limit` exactly succeeds. The method returns `nil` only when the
+    /// requested movement would pass the limit in the direction of travel.
     ///
     /// - Complexity: O(`distance`)
     @inlinable
@@ -169,7 +185,10 @@
       i = __tree_.adv_iter(i, offsetBy: distance)
     }
 
-    /// Offsets the given index by the specified distance, or so that it equals the given limiting index.
+    /// Offsets the given index unless movement would pass `limit`.
+    ///
+    /// Reaching `limit` exactly succeeds and returns `true`. If movement would
+    /// pass the limit, the index is moved to `limit` and the method returns `false`.
     ///
     /// - Complexity: O(*d*)
     @inlinable
@@ -229,7 +248,11 @@
 
   extension RedBlackTreeSet {
 
-    /// - Complexity: O( log `count` )
+    /// Returns the index of `member` in the set.
+    ///
+    /// - Parameter member: The element to find.
+    /// - Returns: The index of `member`, or `endIndex` if the set doesn't contain it.
+    /// - Complexity: O(log `count`)
     @inlinable
     public func find(_ member: Element) -> Index {
       ___index(__tree_.update { $0.find(member) })
@@ -275,8 +298,11 @@
     // remove(at:)では世代違いをトラップするので、isValidチェックを2回行うことになるので。
     // ただ、オーバーフローで一周した場合への対策はなにもない
 
-    /// Removes the element at the given index of the set.
+    /// Removes the element at the given index if the index is still valid.
     ///
+    /// - Parameter index: An index that was created for this set.
+    /// - Returns: The index that followed `index` before removal, or `nil` if
+    ///   `index` doesn't refer to an accessible element of the set.
     /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult

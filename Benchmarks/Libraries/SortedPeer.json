@@ -1,0 +1,260 @@
+{
+  "kind": "group",
+  "title": "RedBlackTreeCollections and SortedCollections peer matrix",
+  "directory": "SortedPeer",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "Set, matched workloads",
+      "directory": "Set matched",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "S01 build sorted, specialized",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S01 build sorted, specialized",
+            "SortedSet<Int> peer S01 build sorted, specialized"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S03 build shuffled, general init",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S03 build shuffled, general init",
+            "SortedSet<Int> peer S03 build shuffled, general init"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S04 insert shuffled",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S04 insert shuffled",
+            "SortedSet<Int> peer S04 insert shuffled"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S05 contains, hit",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S05 contains, hit",
+            "SortedSet<Int> peer S05 contains, hit"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S06 contains, miss",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S06 contains, miss",
+            "SortedSet<Int> peer S06 contains, miss"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S07a index lookup, hit",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S07a index lookup, hit",
+            "SortedSet<Int> peer S07a index lookup, hit"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S07b index lookup, miss",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S07b index lookup, miss",
+            "SortedSet<Int> peer S07b index lookup, miss"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S08a upper bound, at keys",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S08a upper bound, at keys",
+            "SortedSet<Int> peer S08a upper bound, at keys"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S08b upper bound, between keys",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S08b upper bound, between keys",
+            "SortedSet<Int> peer S08b upper bound, between keys"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S09 iteration, sorted build",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S09 iteration, sorted build",
+            "SortedSet<Int> peer S09 iteration, sorted build"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S10 iteration, shuffled insertion",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S10 iteration, shuffled insertion",
+            "SortedSet<Int> peer S10 iteration, shuffled insertion"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S11 remove all, shuffled",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S11 remove all, shuffled",
+            "SortedSet<Int> peer S11 remove all, shuffled"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S12 insert after copy",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S12 insert after copy",
+            "SortedSet<Int> peer S12 insert after copy"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "S13 remove after copy",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S13 remove after copy",
+            "SortedSet<Int> peer S13 remove after copy"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "group",
+      "title": "Dictionary, matched workloads",
+      "directory": "Dictionary matched",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "D02 build shuffled pairs, general init",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D02 build shuffled pairs, general init",
+            "SortedDictionary<Int, Int> peer D02 build shuffled pairs, general init"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D03 insert new keys",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D03 insert new keys",
+            "SortedDictionary<Int, Int> peer D03 insert new keys"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D04 update existing keys",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D04 update existing keys",
+            "SortedDictionary<Int, Int> peer D04 update existing keys"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D05a subscript, hit",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D05a subscript, hit",
+            "SortedDictionary<Int, Int> peer D05a subscript, hit"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D05b subscript, miss",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D05b subscript, miss",
+            "SortedDictionary<Int, Int> peer D05b subscript, miss"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D06a index lookup, hit",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D06a index lookup, hit",
+            "SortedDictionary<Int, Int> peer D06a index lookup, hit"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D06b index lookup, miss",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D06b index lookup, miss",
+            "SortedDictionary<Int, Int> peer D06b index lookup, miss"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D07 defaulted subscript increment",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D07 defaulted subscript increment",
+            "SortedDictionary<Int, Int> peer D07 defaulted subscript increment"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D08 remove all, shuffled",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D08 remove all, shuffled",
+            "SortedDictionary<Int, Int> peer D08 remove all, shuffled"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D09a iteration, sorted build",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D09a iteration, sorted build",
+            "SortedDictionary<Int, Int> peer D09a iteration, sorted build"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D09b iteration, shuffled insertion",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D09b iteration, shuffled insertion",
+            "SortedDictionary<Int, Int> peer D09b iteration, shuffled insertion"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D10a insert after copy",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D10a insert after copy",
+            "SortedDictionary<Int, Int> peer D10a insert after copy"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D10b remove after copy",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D10b remove after copy",
+            "SortedDictionary<Int, Int> peer D10b remove after copy"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "group",
+      "title": "Capability differences (not matched algorithms)",
+      "directory": "Capability differences",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "S02 build sorted, general init",
+          "tasks": [
+            "RedBlackTreeSet<Int> peer S02 build sorted, general init",
+            "SortedSet<Int> peer S02 build sorted, general init"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "D01 build sorted pairs",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> peer D01 build sorted pairs",
+            "SortedDictionary<Int, Int> peer D01 build sorted pairs"
+          ]
+        }
+      ]
+    }
+  ]
+}

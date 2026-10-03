@@ -24,24 +24,39 @@
 
   extension RedBlackTreeMultiSet {
 
+    /// A mutable view over a contiguous range of this multiset.
     public typealias View = RedBlackTreeKeyOnlyRangeView<Self>
+    /// A concrete half-open range of red-black-tree indices.
     public typealias IndexRange = RedBlackTreeIndexRange
+    /// A range expression whose bounds are resolved against a red-black tree.
     public typealias IndexRangeExpression = RedBlackTreeIndexRangeExpression
   }
 
   extension RedBlackTreeMultiSet {
 
+    /// Returns whether the whole collection forms a valid subrange.
+    ///
+    /// - Parameter bounds: The unbounded range expression (`...`).
+    /// - Returns: `true` when this multiset's complete index range is valid.
     @inlinable
     public func containsSubrange(_ bounds: UnboundedRange) -> Bool {
       return __tree_.isValid(range: ___safe_range)
     }
 
+    /// Returns whether `bounds` identifies a valid subrange of this multiset.
+    ///
+    /// - Parameter bounds: The concrete index range to validate.
+    /// - Returns: `true` if both bounds belong to this multiset and are in ascending order; otherwise, `false`.
     @inlinable
     public func containsSubrange(_ bounds: IndexRange) -> Bool {
       let range = __tree_.__purified_safe_(bounds)
       return __tree_.isValid(range: range)
     }
 
+    /// Returns whether `bounds` resolves to a valid subrange of this multiset.
+    ///
+    /// - Parameter bounds: The range expression to resolve and validate.
+    /// - Returns: `true` if the resolved bounds belong to this multiset and are in ascending order; otherwise, `false`.
     @inlinable
     public func containsSubrange(_ bounds: IndexRangeExpression) -> Bool {
       let range = __tree_.__purified_safe_(bounds).relative(to: __tree_)
@@ -52,6 +67,9 @@
 
   extension RedBlackTreeMultiSet {
 
+    /// Accesses a view spanning the whole multiset.
+    ///
+    /// - Parameter bounds: The unbounded range expression (`...`).
     @inlinable
     public subscript(bounds: UnboundedRange) -> View {
       @inline(__always) get {
@@ -62,6 +80,11 @@
       }
     }
 
+    /// Accesses a view over the specified concrete index range.
+    ///
+    /// An invalid or reversed range produces an empty view.
+    ///
+    /// - Parameter bounds: The concrete index range to access.
     @inlinable
     public subscript(bounds: IndexRange) -> View {
       @inline(__always) get {
@@ -74,6 +97,11 @@
       }
     }
 
+    /// Accesses a view over the specified range expression.
+    ///
+    /// An expression that resolves to an invalid or reversed range produces an empty view.
+    ///
+    /// - Parameter bounds: The range expression to resolve and access.
     @inlinable
     public subscript(bounds: IndexRangeExpression) -> View {
       @inline(__always) get {
@@ -89,6 +117,10 @@
 
   extension RedBlackTreeMultiSet {
 
+    /// Removes every element from the multiset.
+    ///
+    /// - Parameter bounds: The unbounded range expression (`...`).
+    /// - Returns: The resulting `endIndex`.
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: UnboundedRange) -> Index {
@@ -96,6 +128,11 @@
       return erase(_range: ___safe_range)
     }
 
+    /// Removes the elements in the specified concrete index range.
+    ///
+    /// - Parameter bounds: A valid range of this multiset.
+    /// - Returns: The index immediately following the removed elements.
+    /// - Precondition: `bounds` is a valid, ascending subrange of this multiset.
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: IndexRange) -> Index {
@@ -104,6 +141,11 @@
       return erase(_range: range)
     }
 
+    /// Removes the elements selected by the specified range expression.
+    ///
+    /// - Parameter bounds: A range expression that resolves to a valid subrange of this multiset.
+    /// - Returns: The index immediately following the removed elements.
+    /// - Precondition: The resolved range is a valid, ascending subrange of this multiset.
     @inlinable
     @discardableResult
     public mutating func erase(_ bounds: IndexRangeExpression) -> Index {
@@ -115,6 +157,12 @@
 
   extension RedBlackTreeMultiSet {
 
+    /// Removes elements in `bounds` that satisfy `shouldBeRemoved`.
+    ///
+    /// - Parameters:
+    ///   - bounds: A valid range of this multiset.
+    ///   - shouldBeRemoved: A predicate that returns `true` for each element to remove.
+    /// - Precondition: `bounds` is a valid, ascending subrange of this multiset.
     @inlinable
     public mutating func erase(
       _ bounds: IndexRange, where shouldBeRemoved: (Element) throws -> Bool
@@ -126,6 +174,12 @@
       return try erase(_safeRange: range, where: shouldBeRemoved)
     }
 
+    /// Removes elements in the resolved range that satisfy `shouldBeRemoved`.
+    ///
+    /// - Parameters:
+    ///   - bounds: A range expression that resolves to a valid subrange of this multiset.
+    ///   - shouldBeRemoved: A predicate that returns `true` for each element to remove.
+    /// - Precondition: The resolved range is a valid, ascending subrange of this multiset.
     @inlinable
     public mutating func erase(
       _ bounds: IndexRangeExpression, where shouldBeRemoved: (Element) throws -> Bool

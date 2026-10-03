@@ -28,6 +28,10 @@
 
 #if !COMPATIBLE_ATCODER_2025
   @frozen
+  /// A mutable view of mapped values in a contiguous dictionary or multimap range.
+  ///
+  /// Assigning through this view changes mapped values without changing their
+  /// keys or the collection's key order.
   public struct RedBlackTreeMappedValuesView<Container>: UnsafeMutableTreeHostV2
   where
     Container: ___Root,
@@ -50,10 +54,12 @@
     @usableFromInline
     internal var __tree_: Tree
 
+    /// The position of the first mapped value in a nonempty view.
     public var startIndex: Index {
       ___index(_sealed_start.pointer!)
     }
 
+    /// The view's “past the end” position.
     public var endIndex: Index {
       ___index(_sealed_end.pointer!)
     }
@@ -72,6 +78,11 @@
 
   extension RedBlackTreeMappedValuesView {
 
+    /// Returns whether two views reference the same tree and the same range boundaries.
+    ///
+    /// - Parameter other: Another view to compare by identity.
+    /// - Returns: `true` if both views have identical storage and bounds; otherwise, `false`.
+    /// - Complexity: O(1)
     @inlinable
     internal mutating func _ensureUnique() {
       // 異なる木のインデックスを無効扱いにするための準備措置
@@ -118,6 +129,8 @@
 
     extension RedBlackTreeMappedValuesView {
 
+      /// Returns an iterator over mapped values in ascending key order.
+      ///
       /// - Complexity: O(1)
       @inlinable
       public __consuming func makeIterator() -> UnsafeIterator.MappedValueObverse<Base> {
@@ -127,18 +140,29 @@
     }
   #endif
 
-  extension RedBlackTreeMappedValuesView {
+  extension RedBlackTreeMappedValuesView
+  where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
 
     /// Accesses the element at the specified position.
     ///
-    /// - Complexity: O(1)
+    /// - Parameter position: A valid element index within this view.
+    /// - Precondition: `position` identifies an element inside the view.
+    ///
+    /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
+    ///   elements in the base collection.
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always)
       get {
-        __tree_._unsafeAddress(position).pointee.tuple.value
+        guard isElement(at: position) else {
+          fatalError(.invalidIndex)
+        }
+        return __tree_._unsafeAddress(position).pointee.tuple.value
       }
       set {
+        guard isElement(at: position) else {
+          fatalError(.invalidIndex)
+        }
         _ensureUnique()
         // TODO: unsafeMutableAddressにしたい
         __tree_._unsafeMutableAddress(position).pointee.tuple.value = newValue
@@ -146,12 +170,23 @@
     }
   }
 
-  extension RedBlackTreeMappedValuesView {
+  extension RedBlackTreeMappedValuesView
+  where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
 
+    /// Exchanges the mapped values at two positions without changing their keys.
+    ///
+    /// - Parameters:
+    ///   - i: A valid element index within this view.
+    ///   - j: Another valid element index within this view.
+    /// - Precondition: Both indices identify elements inside the view.
+    /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
+    ///   elements in the base collection.
     public mutating func swapAt(_ i: Index, _ j: Index) {
-      _ensureUnique()
+      guard isElement(at: i), isElement(at: j) else {
+        fatalError(.invalidIndex)
+      }
 
-      // TODO: そのうち範囲チェックをいれる
+      _ensureUnique()
 
       let __i = __tree_.__purified_(i)
       let __j = __tree_.__purified_(j)
@@ -178,6 +213,8 @@
       return l == u
     }
 
+    /// The number of mapped values in the view.
+    ///
     /// - Complexity: O(`count`)
     @inlinable
     public var count: Int {
@@ -188,6 +225,8 @@
 
   extension RedBlackTreeMappedValuesView {
 
+    /// The first mapped value, or `nil` if the view is empty.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public var first: Element? {
@@ -196,6 +235,9 @@
       return Base.__mapped_value_(_start)
     }
 
+    /// The last mapped value, or `nil` if the view is empty.
+    ///
+    /// - Complexity: O(1)
     @inlinable
     public var last: Element? {
       let (_start, _end) = _raw_range
@@ -206,6 +248,7 @@
 
   extension RedBlackTreeMappedValuesView {
 
+    /// Removes the first pair and returns its mapped value, or returns `nil` if the view is empty.
     @inlinable
     @discardableResult
     public mutating func popFirst() -> Element? {
@@ -219,6 +262,7 @@
       return Base.___mapped_value(_r)
     }
 
+    /// Removes the last pair and returns its mapped value, or returns `nil` if the view is empty.
     @inlinable
     @discardableResult
     public mutating func popLast() -> Element? {
@@ -229,6 +273,9 @@
         __tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload)
     }
 
+    /// Removes the first pair and returns its mapped value.
+    ///
+    /// - Precondition: The view isn't empty.
     @inlinable
     @discardableResult
     public mutating func removeFirst() -> Element {
@@ -238,6 +285,9 @@
       return element
     }
 
+    /// Removes the last pair and returns its mapped value.
+    ///
+    /// - Precondition: The view isn't empty.
     @inlinable
     @discardableResult
     public mutating func removeLast() -> Element {
@@ -250,6 +300,9 @@
 
   extension RedBlackTreeMappedValuesView {
 
+    /// Removes every key-value pair represented by this mapped-values view.
+    ///
+    /// - Returns: The index immediately following the removed range.
     @inlinable
     @discardableResult
     public mutating func erase() -> Index {
@@ -261,6 +314,9 @@
       return ___index(try! __tree_.___erase_range(_start, _end).get())
     }
 
+    /// Removes pairs whose mapped values satisfy `shouldBeRemoved`.
+    ///
+    /// - Parameter shouldBeRemoved: A predicate that returns `true` for each mapped value to remove.
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       guard _raw_range.0 != _raw_range.1 else { return }
@@ -282,8 +338,17 @@
 
   extension RedBlackTreeMappedValuesView {
 
+    /// Returns whether two views reference the same tree and the same range boundaries.
+    ///
+    /// Identity is stronger than element equality and can be checked without
+    /// traversing the range.
+    ///
+    /// - Parameter other: Another view to compare by identity.
+    /// - Returns: `true` if both views have identical storage and bounds;
+    ///   otherwise, `false`.
+    /// - Complexity: O(1)
     @inlinable
-    public func _isdentical(to other: Self) -> Bool {
+    public func _isIdentical(to other: Self) -> Bool {
       let (_start, _end) = _raw_range
       let (_other_start, _other_end) = other._raw_range
       return __tree_.isIdentical(to: other.__tree_) && _start == _other_start
@@ -301,6 +366,8 @@
     /// The view's end position is not an element. An index outside the view,
     /// or an invalid or stale index, returns `false`.
     ///
+    /// - Parameter index: The index to validate.
+    /// - Returns: `true` if `index` identifies an accessible element inside this view; otherwise, `false`.
     /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
     ///   elements in the base collection.
     @inlinable
@@ -329,6 +396,8 @@
     /// A view's end position may refer to an element in its base collection.
     /// An invalid or stale index returns `false`.
     ///
+    /// - Parameter index: The index to validate.
+    /// - Returns: `true` if `index` is this view's `endIndex`; otherwise, `false`.
     /// - Complexity: O(1)
     @inlinable
     public func isEnd(_ index: Index) -> Bool {

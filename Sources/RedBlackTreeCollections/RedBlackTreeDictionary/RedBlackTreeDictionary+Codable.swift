@@ -28,6 +28,8 @@
     /// Encodes the elements of this dictionary into the given encoder in an unkeyed
     /// container.
     ///
+    /// Key-value pairs are encoded in sorted key order.
+    ///
     /// This function throws an error if any values are invalid for the given
     /// encoder's format.
     ///
@@ -44,6 +46,8 @@
   extension RedBlackTreeDictionary: Decodable where Key: Decodable, Value: Decodable {
 
     /// Creates a new dictionary by decoding from the given decoder.
+    ///
+    /// Each entry in the unkeyed representation contains one key-value pair.
     ///
     /// This initializer throws an error if reading from the decoder fails, or
     /// if the data read is corrupted or otherwise invalid.

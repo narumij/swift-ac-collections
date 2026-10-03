@@ -63,6 +63,11 @@
 
   extension RedBlackTreeDictionary {
 
+    /// Removes and returns the key-value pair at the position selected by a bound expression.
+    ///
+    /// - Parameter bound: A bound expression that selects a position in the dictionary.
+    /// - Returns: The removed key-value pair, or `nil` if the expression selects
+    ///   `endIndex` or can't be evaluated.
     @inlinable
     public mutating func erase(_ bound: Bound) -> Element? {
 
@@ -75,6 +80,14 @@
 
   extension RedBlackTreeDictionary {
 
+    /// Accesses a view of the key-value pairs selected by a bound range expression.
+    ///
+    /// Mutating the returned view modifies this dictionary. A range that evaluates
+    /// to no ordered positions produces an empty view.
+    ///
+    /// - Parameter bounds: A bound range expression evaluated against the
+    ///   dictionary's keys.
+    /// - Returns: A view over the selected key-value pairs.
     @inlinable
     public subscript(bounds: BoundRangeExpression) -> View {
 
@@ -90,6 +103,10 @@
 
   extension RedBlackTreeDictionary {
 
+    /// Removes the key-value pairs in the range selected by a bound range expression.
+    ///
+    /// - Parameter bounds: A bound range expression that selects the key-value
+    ///   pairs to remove.
     @inlinable
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
@@ -97,6 +114,12 @@
       _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
     }
 
+    /// Removes the key-value pairs in the selected range that satisfy a predicate.
+    ///
+    /// - Parameters:
+    ///   - bounds: A bound range expression that selects the key-value pairs to examine.
+    ///   - shouldBeRemoved: A closure that returns `true` for a key-value pair
+    ///     that should be removed.
     @inlinable
     public mutating func erase(
       _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool

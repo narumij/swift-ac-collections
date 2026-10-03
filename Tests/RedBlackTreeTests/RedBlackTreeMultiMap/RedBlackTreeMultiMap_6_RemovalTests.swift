@@ -36,6 +36,16 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
 
       empty.removeAll(keepingCapacity: true)
       XCTAssertEqual(empty._copyCount, 0, "空のMultiMapへのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
+
+      #if !COMPATIBLE_ATCODER_2025
+        var predicateCalled = false
+        empty.erase(where: { _ in
+          predicateCalled = true
+          return true
+        })
+        XCTAssertFalse(predicateCalled, "空のMultiMapへのerase(where:)は述語を呼ばないはず")
+        XCTAssertEqual(empty._copyCount, 0, "空のMultiMapへのerase(where:)は退避コピーを発生させないはず")
+      #endif
     #endif
   }
 
@@ -95,5 +105,36 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
     var releasingCapacity = RedBlackTreeMultiMap(keysWithValues: (0..<10).map { ($0, $0) })
     releasingCapacity.removeAll()
     XCTAssertTrue(releasingCapacity.isEmpty)
+  }
+
+  /// popFirst/popLast/eraseMulti/removeAllが、保持していた参照型の値(重複キーを含む)を
+  /// 正しく解放すること(二重解放やリークがないこと)
+  func test_variousRemovalMethods_releaseRetainedReferenceValuesExactlyOnce() {
+    final class DeinitializeCounter {
+      nonisolated(unsafe) static var count = 0
+      init() { Self.count += 1 }
+      deinit { Self.count -= 1 }
+    }
+
+    var map = RedBlackTreeMultiMap<Int, DeinitializeCounter>(
+      keysWithValues: [1, 1, 2, 3, 3].map { ($0, DeinitializeCounter()) })
+    XCTAssertEqual(DeinitializeCounter.count, 5)
+
+    _ = map.popFirst()
+    XCTAssertEqual(DeinitializeCounter.count, 4)
+
+    #if !COMPATIBLE_ATCODER_2025
+      _ = map.popLast()
+      XCTAssertEqual(DeinitializeCounter.count, 3)
+    #endif
+
+    #if !COMPATIBLE_ATCODER_2025
+      let erasedCount = map.eraseMulti(3)
+      XCTAssertEqual(erasedCount, 1)
+      XCTAssertEqual(DeinitializeCounter.count, 2, "キー検索に値の一時生成は不要なので、削除された分だけ減ること")
+    #endif
+
+    map.removeAll()
+    XCTAssertEqual(DeinitializeCounter.count, 0)
   }
 }

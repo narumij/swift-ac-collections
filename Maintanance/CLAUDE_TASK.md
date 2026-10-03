@@ -1,0 +1,245 @@
+# Codex-to-Claude Work Request
+
+Status: Paused — XCTest migration completed and validated; preserve working tree for Codex review
+
+## Active assignment
+
+Do not start further work in this session. Preserve the current uncommitted XCTest
+migration exactly for Codex review. The tracking-session PoC below is superseded while
+this pause is in effect; do not implement it, expand MultiMap, edit CI, commit, or push.
+
+## Deferred alternative (do not start)
+
+Immediately perform the tracking-session PoC authorized in
+`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`. Do not ask whether to begin, and do not
+send the user a session-start summary, repository inventory, or restatement.
+
+Do not migrate the C++ comparison tests yet. Add the smallest Debug-only tracking
+session state needed for `RedBlackTreeTestCase`: when `setUpWithError` begins while
+tracking is off, unconditionally discard stale allocation/node/payload counter values,
+establish the singleton baseline, and turn tracking on. At `tearDownWithError`, perform
+the existing balance and singleton assertions for that managed interval, reset the
+counters, and turn tracking off.
+
+Define the semantics for an unexpected nested/overlapping begin explicitly and fail
+rather than silently resetting an active managed interval. Keep the existing balance
+assertions inside an active interval. Do not guard away allocation/deallocation events
+or weaken teardown checks. The purpose is to distinguish unmanaged prior activity from
+the XCTest interval, not to hide a leak occurring inside it.
+
+First reproduce or characterize the current full-suite/order-dependent failure if
+possible. Then run the focused C++ comparison target and the authoritative full root
+Debug suite at least twice, plus the normal Release suite, to detect order pollution.
+Record exact commands and results. Do not edit GitHub Actions, expand MultiMap seeded
+coverage, skip Linux, or perform the broad XCTest migration in this PoC. Stop if a
+late destruction from unmanaged activity can enter an active interval and invalidate
+the design; preserve the smallest reproduction.
+
+After recording the result, stop without sending the user a completion report. Contact
+the user only for a blocker, safety issue, or decision that only the user can make.
+
+### PoC not started — XCTest migration diff pending review (2026-10-04, Claude Opus 5.5)
+
+This file was replaced while the previous XCTest-migration assignment was already
+complete in the working tree. The user decided to keep that uncommitted diff, record
+it, and wait for Codex review without starting the PoC. Result, changed files, and
+commands are in `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` under "XCTest migration
+result — uncommitted, awaiting review". 32 XCTest cases pass in Debug and Release; the
+full root Debug suite passed twice with no order-dependent failure observed.
+
+### Dictionary result (2026-10-04, Claude Opus 5.5)
+
+Status: Completed with no Swift/C++ difference or crash: 32 `CppBehaviorReferenceTests`
+passed in Debug and Release, `git diff --check` clean. Same seeds/count; no C ABI or
+executor change. Coverage policy, compared facts, changed files, and remaining gaps are
+in `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` under "Dictionary seeded-randomized
+result".
+
+### MultiSet result (2026-10-04, Claude Opus 5.5)
+
+Completed with no Swift/C++ difference or crash: 29 `CppBehaviorReferenceTests` passed
+in Debug and Release, `git diff --check` clean. Same seeds/count as Set; PRNG and
+diagnostic extracted to `SeededTraceSupport.swift` without changing Set behavior;
+`CPP_MULTISET_OPERATION_FIND` added. Coverage policy, compared facts, changed files,
+and remaining gaps are in `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` under
+"MultiSet seeded-randomized result".
+
+### Set PoC result (2026-10-04, Claude Opus 5.5)
+
+Completed with no Swift/C++ difference or crash: 26 `CppBehaviorReferenceTests` passed in
+Debug and Release, `git diff --check` clean. Details, PRNG/seeds/count, coverage policy,
+changed files, and remaining gaps (Set positional erase not in the contract, so not
+generated) are in `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` under
+"Set seeded-randomized PoC result".
+
+## Previous assignment objective (completed)
+
+Complete the four-container curated C++ comparison by adding one final pair:
+`RedBlackTreeMultiMap<Int64, Int64>` and `std::multimap<int64_t, int64_t>`.
+
+The primary question is the observable placement of distinct mapped values inside an
+equivalent-key group, especially under hinted insertion. Communicate with the user in
+Japanese. Do not commit or push.
+
+## Baseline
+
+Read all committed Set/MultiSet/Dictionary comparison code, the MultiMap public
+implementation and Test as Specification, and
+`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` before editing.
+
+Run:
+
+```sh
+swift test --disable-sandbox --filter CppBehaviorReferenceTests
+```
+
+Exactly 13 tests must pass. Stop if the baseline differs.
+
+## Authorized Scope
+
+You may edit only:
+
+- `Sources/CppBehaviorReference/`
+- `Tests/CppBehaviorReferenceTests/`
+- this file for final status/result
+- `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` for verified MultiMap results
+
+Do not edit production Swift, `Package.swift`, `Benchmarks/`, existing Set/MultiSet/
+Dictionary tests, randomized tests, workflows, dashboard documents, either
+`WorldClassAssessment` file, or the queued benchmark task.
+
+## Required MultiMap Comparison
+
+Use `Int64` keys and identity-bearing `Int64` mapped values. Keep a separate
+`std::multimap<int64_t, int64_t>` executor/observation path while reusing the existing
+trace architecture.
+
+Cover at least:
+
+1. insertion of distinct keys and duplicate keys with distinct mapped values;
+2. `lowerBound`, `upperBound`, and `equalRange` at before/at/between/after keys;
+3. complete ordered key/value contents after every operation;
+4. erase by key, including the number removed;
+5. erase by a rank selected from current ordered contents, comparing the erased entry
+   and the resulting next position only where both APIs expose equivalent facts;
+6. update of the mapped value at a selected rank, if it maps directly to assigning
+   through a valid `std::multimap` iterator;
+7. hinted insertion with:
+   - an empty container (`startIndex == endIndex`);
+   - exact hints before and after an equivalent-key group;
+   - a hint inside an equivalent-key group;
+   - deliberately poor but valid hints before and after the group;
+   - `startIndex` and `endIndex`;
+   - reinsertion after erasure.
+
+For every hinted insert, compare the returned rank and full ordered key/value contents.
+The mapped value is the occurrence identity: use distinct values so placement within
+an equal-key group is observable. Do not collapse observations to keys only.
+
+Transport positions only as current zero-based ranks and independently resolve them
+to Swift indices and C++ iterators immediately before use.
+
+Add a deliberate mismatch test proving the diagnostic includes the container pair,
+operation number, input, and both complete observations.
+
+## Semantic discipline
+
+- Determine the Swift API contract from implementation/tests before selecting a C++
+  operation. Do not equate APIs by name alone.
+- C++ hint validity and Swift hint validity must both be checked for every trace.
+- If equivalent-key placement intentionally differs, preserve the smallest trace and
+  report the difference; do not sort mapped values or otherwise normalize it away.
+- Do not change production Swift to force agreement in this assignment.
+
+## Stop Conditions
+
+- On any semantic difference or crash, minimize and preserve the trace safely, set
+  `Status: Blocked`, and stop before a production fix.
+- Stop if a public API or Package change is needed.
+- Do not expand into random/fuzz traces, performance work, or benchmark conclusions.
+
+## Validation
+
+1. Run narrow new MultiMap comparison tests during development.
+2. Run all `CppBehaviorReferenceTests`.
+3. Run `git diff --check`.
+4. Confirm the changed-file list stays within the authorized scope.
+
+Do not run the full package suite unless the focused build reveals a wider issue.
+
+## Completion Report
+
+Set `Status: Completed` only if the focused suite and `git diff --check` pass. Write
+the exact behaviors compared, final test count/result, changed files, and real
+limitations/differences into this file for Codex to review. Do not add an
+accountability diary or unrelated findings.
+
+Do not send the user a completion report or detailed handoff. Record it in the assigned
+Markdown for Codex and stop. Only surface details directly when work is blocked, a
+safety issue was found, or an explicit user decision is required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+- **Compared** (`RedBlackTreeMultiMap<Int64, Int64>` / `std::multimap<int64_t, int64_t>`,
+  distinct mapped values as occurrence identity, full ordered key/value contents
+  after every operation):
+  - `insert(key:value:)` ↔ `insert({k, v})`: placement after the equivalent group,
+    observed through contents (neither result exposes a rank directly).
+  - `insert(_:hint:)` ↔ `insert(hint, {k, v})`: returned entry and rank for an empty
+    container, exact hints before/after the group, inside the group, poor hints
+    before/after, `startIndex`, `endIndex`, poor hints for existing least/greatest
+    keys, reinsertion at a vacated position, and reinsertion after erasing the group.
+  - `find(_:)` + `count(forKey:)` ↔ `find` + `count`.
+  - `lowerBound`/`upperBound` ↔ `lower_bound`/`upper_bound`: entry and rank at
+    before/at/between/after keys.
+  - `multimap[equalRange(k)]` ↔ `equal_range(k)`: lower/upper rank and entries in order.
+  - `eraseMulti(_:)` ↔ `erase(k)`: removed count.
+  - `erase(_:)` ↔ `erase(it)`: rank of the returned next position.
+  - `remove(at:)` ↔ copy `*it`, then `erase(it)`: erased entry.
+  - `updateValue(_:at:)` ↔ copy `it->second`, then `it->second = v`: previous value.
+  - Hint/positional ranks are validated on both sides: C++ by range, Swift by range
+    plus `isElement(at:)`/`isEnd(_:)` on the resolved index.
+- **Result:** 4 new MultiMap tests passed; all `CppBehaviorReferenceTests` 17
+  passed (baseline 13). `git diff --check` clean.
+- **Changed files:** `Sources/CppBehaviorReference/include/CppBehaviorReference.h`,
+  `Sources/CppBehaviorReference/CppBehaviorReference.cpp`,
+  `Tests/CppBehaviorReferenceTests/MultiMapBehaviorComparisonTests.swift` (new),
+  this file, `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`.
+- **Differences/limitations:** No Swift/C++ difference or crash was found, including
+  within-group placement. `remove(at:)` and `erase(_:)` each expose only one of the
+  erased entry / next position, so each is compared against its C++ counterpart
+  for that fact alone.
+
+## Next assignment — credibility-first peer comparison
+
+The next task is `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md`. The project is
+now prioritizing evidence that helps a user or an AI make a defensible adoption
+decision over broad feature expansion.
+
+Start with Phase 1 only: audit the existing benchmark, confirm the resolved upstream
+version/trait, run the small harness smoke check, and propose a genuinely matched
+Set/Dictionary workload matrix. Stop for review before the large measurement run.
+
+Task decisions in this phase follow this order:
+
+1. preserve or improve reproducibility and semantic comparability;
+2. seek evidence capable of disproving a favorable claim;
+3. record disadvantages, limitations, instability, and unmeasured axes as first-class results;
+4. prefer external baselines and independently reviewable artifacts over self-rating;
+5. add implementation or benchmark breadth only when it strengthens one of the above.
+
+Do not change production code to improve a result, silently substitute a merely
+similar operation, or update either WorldClassAssessment conclusion from preliminary
+measurements. Treat Swift Collections as a respected upstream reference within the
+same ecosystem; describe tradeoffs and suitable use cases in neutral language. Frame
+this package as a provisional bridge or complement for currently unmet needs, not as
+a replacement. Note evidence that would justify narrowing that role in the future.
+
+For this and later assignments, place the detailed completion report in the assigned
+Markdown file for Codex and do not send a user-facing completion message. Only a
+blocker, safety concern, or decision requiring the user may be surfaced directly.
+
+## History
+
+Earlier assignments and result summaries:
+[`CLAUDE_TASK_HISTORY.md`](CLAUDE_TASK_HISTORY.md).

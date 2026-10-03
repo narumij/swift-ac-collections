@@ -129,6 +129,13 @@ paddingはNodeとPayloadの間ではなく、slot列の開始位置に置かれ�
 tracking tagはキーや並び順の一部ではない。Fresh Poolから初めて取り出した順に
 0から割り当てられ、CoW時のポインタ再構築、診断、構造検証に使われる。
 
+通常nodeのtracking tagには0以上を使い、特殊nodeと診断状態には負の予約値を使う。
+現行値はnullptrが`-2`、endが`-1`、debug用dummyが`-999`、retire候補が整数型の
+最小値であり、互いにも通常tagにも衝突しない。`USE_COMPACT_NODE_METADATA`によって
+整数幅が変わっても、この区分を維持する。これらは永続化形式ではないが、raw storage上の
+node種別判定と診断が依存する内部表現なので、値を変更する場合は生成、コピー、seal、debug
+検査をまとめて確認する。
+
 recycle countは同じslotが削除・再利用された世代を区別する。これを使った
 Indexの検証については `Design-MemorySafety.md` で扱う。
 
@@ -144,6 +151,9 @@ tracking tagには特殊値 `.nullptr` が設定される。
 
 end nodeはprimary bucket内にあり、tracking tagには `.end` が設定される。
 payloadを持たず、その左リンクをroot格納場所として兼用する。
+通常nodeのrootはend nodeを親に持ち、rootはend nodeの左の子でなければならない。
+end node自身は通常要素ではなく、木の終端、空木のbegin、およびroot格納場所という三つの役割を
+持つ。このため、endを通常nodeと同じ色・payload・親子関係として扱わない。
 
 ### begin pointer
 
@@ -160,6 +170,9 @@ rootから左端を探索し直さないため、変更操作でこの値を維�
          /
 begin_ptr ──► minimum node
 ```
+
+挿入で新しい最小nodeが生じた場合と、現在の最小nodeを削除した場合はbegin pointerを更新する。
+最後のnodeを削除した後は、rootがnullptr、beginがend、countが0へ同時に戻らなければならない。
 
 ## 二つのpool
 
@@ -250,6 +263,29 @@ bucket全体を破棄するとき、allocatorは使用歴のあるノードを�
 
 `_BucketAllocator` はpayload型のstride、alignment、deinitializerを生成時に保持する。
 これにより、型消去されたbuffer headerからでも正しいレイアウトと破棄処理を利用できる。
+
+### payload所有権の移動
+
+payload全体またはそのfieldの所有権を`move()`でslot外へ取り出した時点で、move対象の
+value storageは未初期化になる。その後に通常の削除経路がpayload全体をdeinitializeすると、
+そのfieldを二重に破棄する。反対に、値を読み出しただけで削除経路にも破棄させなければ、
+参照型payloadをリークする。
+
+したがって、payloadを取り出してからnodeを削除する操作では、次のいずれか一方だけが破棄責任を
+持たなければならない。
+
+1. payloadをslot内に残し、通常の`destroy`またはRecycle Poolへの移動に破棄を任せる。
+2. `move()`で所有権を取り出し、以後の削除経路がmove済みのstorageを再び破棄しない状態へ遷移させる。
+
+この選択は値型payloadだけでは検証できない。参照型payloadのdeinit回数を使い、単体削除、
+範囲削除、重複挿入の破棄、subscriptの`_modify`など、所有権を移し得る経路ごとに構築数と
+破棄数が一致することを確認する。
+
+原木の所有fixtureでは、`__construct_node`がnode metadataとpayloadの所有を一つ増やし、
+`destroy`がそのpayloadをちょうど一度破棄して所有を一つ減らす。unique挿入が同値キーを
+拒否した場合、挿入用に一時構築したnodeがある経路では、そのnodeとpayloadを同じ呼び出し内で
+破棄し、木のsizeと未解放allocationを増やさない。multi挿入は同値payloadをそれぞれ独立した
+要素として所有し、単体・範囲・同値範囲の削除で対象数だけ破棄する。
 
 ## 容量拡張とアドレス安定性
 
@@ -363,11 +399,16 @@ payloadへのアクセス許可は別に管理される。詳細は `Design-Memo
 - secondary bucketはbegin pointerとend nodeを持たない。
 - rootはend nodeの左リンクに格納する。
 - 空の木ではbeginがendを指し、rootがnullptrである。
+- 非空木のrootはend nodeを親に持ち、end nodeの左リンクから参照される。
+- begin pointerは非空木の最小nodeを指す。
 - 通常payloadは対応する `UnsafeNode` の直後にあり、正しくalignされている。
 - payloadを持つノードだけをdeinitializeする。
+- payload全体またはfieldの所有権を`move()`したstorageを、通常の削除経路で再度deinitializeしない。
+- unique挿入で拒否した一時nodeを残さず、multi挿入した同値payloadは個別に所有する。
 - Recycle Poolへ送る前にpayloadを破棄し、世代を進める。
 - Recycle Poolにslotがある間はFresh Poolより再利用を優先する。
 - tracking tagはキー比較や木の順序へ使用しない。
+- 通常tracking tagの非負領域と特殊tagの負領域を衝突させない。
 - 通常の容量拡張で既存ノードを移動しない。
 - 要素を持つ木のCoWコピー先は、使用歴のあるslotを少なくとも収容する。
 - `ALLOW_CROSS_TREE_INDEX` 有効時は、コピーしたslotのrecycle countを維持する。

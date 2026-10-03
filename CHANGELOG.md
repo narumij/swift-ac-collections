@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set / MultiMapの`removeSafe(at:)`を`erase(exactly:)`へ改名し、戻り値を`Bool`から削除後の`Index?`へ変更
 
 ### Fixed
+- `OptionalArray1D` / `OptionalArray1DView`で、subscriptを通じて参照型要素を`nil`へ変更した際、`move()`済みのstorageを再度deinitializeして二重解放する問題を修正
 - 異なるツリー、削除済みnode、世代の異なる再利用slotに属するIndexを誤って有効と扱う問題を修正
 - Copy-on-Writeで分岐した木におけるIndex解決、node世代の継承、stale Index判定を修正
 - Bounds / Index Rangeの解決、距離、比較、条件付き削除、逆順・空範囲の処理を修正
@@ -52,6 +53,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 旧Array-based treeの重複実装をLegacyへ隔離し、復旧不能または現行テストと重複するテスト・補助実装を削除
 - 型別Test as Specificationへ移管済みの旧dictionary / multiset / multimap / fatalError / root直下テストを削除
 - `Bound`/`BoundRangeExpression`を引数に取る`isValid(_:)`を削除(評価が常に安全なため事前判定が不要。空判定は`collection[bounds].isEmpty`で代替)
+- PermutationModuleの全順列列挙系(`unsafePermutations()`、`Permutations.All`、`IteratorA`、`SubSequenceA`)および`unsafe`系の公開初期化経路(`unsafeNextPermutations()`、`Permutations.Nexts.init(safe:)`/`init(unsafe:)`)を削除し、`nextPermutations()`のみを公開APIとして残した(ソース破壊的変更)
+- Range Viewの`unranged()`と、それ専用のプロトコル(`ScalarBaseInit`/`KeyValueBaseInit`)および`_create(_:)`要件を削除(ソース破壊的変更)
 
 ## [0.4.4] - 2026-09-24
 

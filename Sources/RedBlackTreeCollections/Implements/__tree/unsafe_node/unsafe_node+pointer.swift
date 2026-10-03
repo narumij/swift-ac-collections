@@ -301,7 +301,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
-  func _advanced(raw bytes: Int) -> UnsafeMutablePointer {
+  package func _advanced(raw bytes: Int) -> UnsafeMutablePointer {
     UnsafeMutableRawPointer(self)
       .advanced(by: bytes)
       .assumingMemoryBound(to: UnsafeNode.self)
@@ -315,7 +315,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   //    ^--_advanced -1         ^--_advanced +1
   // ```
   @inlinable
-  func _advanced(with stride: Int, count: Int) -> UnsafeMutablePointer {
+  package func _advanced(with stride: Int, count: Int) -> UnsafeMutablePointer {
     _advanced(raw: (MemoryLayout<UnsafeNode>.stride &+ stride) &* count)
   }
 
@@ -326,7 +326,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   //    ^--_advanced -1   ^--self           ^--_advanced +1
   // ```
   @inlinable
-  func _advanced<_PayloadValue>(with t: _PayloadValue.Type, count: Int) -> UnsafeMutablePointer {
+  package func _advanced<_PayloadValue>(with t: _PayloadValue.Type, count: Int) -> UnsafeMutablePointer {
     let alignment = max(
       MemoryLayout<UnsafeNode>.alignment,
       MemoryLayout<_PayloadValue>.alignment)

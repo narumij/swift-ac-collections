@@ -261,6 +261,36 @@
         expectNoInvalidMemoryAccess(result2)
       }
 
+      @Test
+      func mappedValuesSubscriptOutsideView_terminatesProcess() async {
+        await #expect(processExitsWith: .failure) {
+          let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d"]
+          let lower = dictionary.index(after: dictionary.startIndex)
+          let values = dictionary[lower..<dictionary.endIndex].values
+          _ = values[dictionary.startIndex]
+        }
+      }
+
+      @Test
+      func mappedValuesAssignmentAtViewEnd_terminatesProcess() async {
+        await #expect(processExitsWith: .failure) {
+          let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d"]
+          let upper = dictionary.index(before: dictionary.endIndex)
+          var values = dictionary[dictionary.startIndex..<upper].values
+          values[upper] = "outside"
+        }
+      }
+
+      @Test
+      func mappedValuesSwapWithIndexOutsideView_terminatesProcess() async {
+        await #expect(processExitsWith: .failure) {
+          let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d"]
+          let lower = dictionary.index(after: dictionary.startIndex)
+          var values = dictionary[lower..<dictionary.endIndex].values
+          values.swapAt(lower, dictionary.startIndex)
+        }
+      }
+
       private func expectNoInvalidMemoryAccess(_ result: ExitTest.Result?) {
         guard let result else { return }
 

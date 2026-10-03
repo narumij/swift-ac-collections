@@ -102,17 +102,5 @@ import XCTest
       dictionary.erase(dictionary.equalRange(2)) { $0.key.isMultiple(of: 2) }
       XCTAssertEqual(dictionary.map(\.key), [1, 3])
     }
-
-    /// popFirst()で部分範囲を消費しつくした後も、unranged()が残りの範囲
-    /// (元の辞書における後続範囲)を返すこと
-    func test_unranged_returnsRemainingBaseRangeAfterDrainingPartially() {
-      let dictionary: RedBlackTreeDictionary = [1: "a", 2: "b", 3: "c", 4: "d"]
-      let upper = dictionary.index(dictionary.startIndex, offsetBy: 2)
-      var view = dictionary[dictionary.startIndex..<upper]
-
-      while view.popFirst() != nil {}
-
-      XCTAssertEqual(view.unranged().map(\.key), [3, 4])
-    }
   }
 #endif

@@ -76,6 +76,16 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
 
       empty.removeAll(keepingCapacity: true)
       XCTAssertEqual(empty._copyCount, 0, "空の辞書へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
+
+      #if !COMPATIBLE_ATCODER_2025
+        var predicateCalled = false
+        empty.erase(where: { _ in
+          predicateCalled = true
+          return true
+        })
+        XCTAssertFalse(predicateCalled, "空の辞書へのerase(where:)は述語を呼ばないはず")
+        XCTAssertEqual(empty._copyCount, 0, "空の辞書へのerase(where:)は退避コピーを発生させないはず")
+      #endif
     #endif
   }
 
@@ -99,5 +109,75 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
     var releasingCapacity = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<10).map { ($0, $0) })
     releasingCapacity.removeAll()
     XCTAssertTrue(releasingCapacity.isEmpty)
+  }
+
+  /// popFirst/popLast/removeValue(forKey:)/removeAllが、保持していた参照型の値を
+  /// 正しく解放すること(二重解放やリークがないこと)
+  func test_variousRemovalMethods_releaseRetainedReferenceValuesExactlyOnce() {
+    final class DeinitializeCounter {
+      nonisolated(unsafe) static var count = 0
+      init() { Self.count += 1 }
+      deinit { Self.count -= 1 }
+    }
+
+    var dictionary = RedBlackTreeDictionary<Int, DeinitializeCounter>(
+      uniqueKeysWithValues: (0..<4).map { ($0, DeinitializeCounter()) })
+    XCTAssertEqual(DeinitializeCounter.count, 4)
+
+    _ = dictionary.popFirst()
+    XCTAssertEqual(DeinitializeCounter.count, 3)
+
+    #if !COMPATIBLE_ATCODER_2025
+      _ = dictionary.popLast()
+      XCTAssertEqual(DeinitializeCounter.count, 2)
+    #endif
+
+    _ = dictionary.removeValue(forKey: 1)
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(DeinitializeCounter.count, 2)
+    #else
+      XCTAssertEqual(DeinitializeCounter.count, 1)
+    #endif
+
+    dictionary.removeAll()
+    XCTAssertEqual(DeinitializeCounter.count, 0)
+  }
+
+  /// `subscript(key:)`へのnil代入(キー削除)が、参照型Valueを二重解放せずに
+  /// ちょうど1回だけ解放すること(2026-10-03発見・修正済みの回帰防止テスト)
+  func test_subscriptAssignNil_releasesRetainedReferenceValueExactlyOnce() {
+    final class DeinitializeCounter {
+      nonisolated(unsafe) static var count = 0
+      init() { Self.count += 1 }
+      deinit { Self.count -= 1 }
+    }
+
+    var dictionary = RedBlackTreeDictionary<Int, DeinitializeCounter>(
+      uniqueKeysWithValues: (0..<3).map { ($0, DeinitializeCounter()) })
+    XCTAssertEqual(DeinitializeCounter.count, 3)
+
+    dictionary[1] = nil
+
+    XCTAssertEqual(DeinitializeCounter.count, 2)
+  }
+
+  /// `subscript(key:)`へ既存キーの新しい値を代入したとき、古い参照型Valueが
+  /// リークせずちょうど1回だけ解放されること(`.move()`廃止に伴う回帰防止テスト)
+  func test_subscriptOverwriteExistingKey_releasesOldReferenceValueExactlyOnce() {
+    final class DeinitializeCounter {
+      nonisolated(unsafe) static var count = 0
+      init() { Self.count += 1 }
+      deinit { Self.count -= 1 }
+    }
+
+    var dictionary = RedBlackTreeDictionary<Int, DeinitializeCounter>(
+      uniqueKeysWithValues: (0..<3).map { ($0, DeinitializeCounter()) })
+    XCTAssertEqual(DeinitializeCounter.count, 3)
+
+    dictionary[1] = DeinitializeCounter()
+    XCTAssertEqual(DeinitializeCounter.count, 3, "古い値が解放され、新しい値が1つ増えるので差し引き変化なし")
+
+    dictionary.removeAll()
+    XCTAssertEqual(DeinitializeCounter.count, 0)
   }
 }

@@ -160,6 +160,16 @@ let package = Package(
         "OptionalArrayModule",
         "BareArrayModule",
       ],
+      swiftSettings: _settings + [
+        .strictMemorySafety()
+      ]
+    ),
+    .testTarget(
+      name: "AcCollectionsTests",
+      dependencies: [
+        "AcCollections",
+        "RedBlackTreeCollections",
+      ],
       swiftSettings: _settings
     ),
 
@@ -186,7 +196,20 @@ let package = Package(
     .target(
       name: "RedBlackTreeModule",
       dependencies: ["RedBlackTreeCollections"],
-      path: "Sources/_RedBlackTreeModule"
+      path: "Sources/_RedBlackTreeModule",
+      swiftSettings: [
+        .strictMemorySafety()
+      ]
+    ),
+
+    .target(
+      name: "RedBlackTreeFixture",
+      dependencies: ["RedBlackTreeCollections"],
+      path: "Tests/RedBlackTreeFixture",
+      exclude: [
+        "Fixtures.md"
+      ],
+      swiftSettings: _settings
     ),
 
     .testTarget(
@@ -195,9 +218,40 @@ let package = Package(
         .product(name: "Algorithms", package: "swift-algorithms"),
         //        .product(name: "TrailingElementsModule", package: "swift-collections"),
         "RedBlackTreeCollections",
+        "RedBlackTreeFixture",
       ],
-      exclude: [
-        "Fixtures.md"
+      swiftSettings: _settings
+    ),
+
+    .testTarget(
+      name: "RedBlackTreeLegacyTests",
+      dependencies: [
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        "RedBlackTreeCollections",
+      ],
+      swiftSettings: _settings
+    ),
+
+    .testTarget(
+      name: "RedBlackTreeTreeTests",
+      dependencies: [
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        "RedBlackTreeCollections",
+        "RedBlackTreeFixture",
+      ],
+      swiftSettings: _settings
+    ),
+
+    .target(
+      name: "CppBehaviorReference",
+      publicHeadersPath: "include"
+    ),
+    .testTarget(
+      name: "CppBehaviorReferenceTests",
+      dependencies: [
+        "CppBehaviorReference",
+        "AcCollections",
+        "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
     ),
@@ -209,7 +263,8 @@ let package = Package(
       name: "OptionalArrayModuleTests",
       dependencies: [
         "OptionalArrayModule"
-      ]
+      ],
+      swiftSettings: _settings
     ),
 
     .target(
@@ -219,13 +274,19 @@ let package = Package(
       name: "BareArrayModuleTests",
       dependencies: [
         "BareArrayModule"
-      ]
+      ],
+      swiftSettings: _settings
     ),
 
     .target(
       name: "PermutationModule",
       dependencies: [],
-      swiftSettings: _settings
+      exclude: [
+        "Documentation"
+      ],
+      swiftSettings: _settings + [
+        .strictMemorySafety()
+      ]
     ),
     .testTarget(
       name: "PermutationTests",

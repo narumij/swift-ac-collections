@@ -46,12 +46,19 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
       let found = __child.pointee != nullptr
 
-      var value: Base._MappedValue? = found ? Base.__mapped_value_ptr(__child).move() : nil
+      // NOTE: ここで`.move()`すると、`value`がnilのまま(=キー削除)の分岐で
+      // `erase(_:)`がpayload全体を正しくdeinitializeする際に、既に所有権を失っている
+      // はずの値を再度destroyしてしまい、参照型Valueで二重解放になる(2026-10-03発見)。
+      // `_MappedValue`は常にCopyableなので、移動ではなく読み取り(コピー)で済ませる。
+      var value: Base._MappedValue? = found ? Base.__mapped_value_ptr(__child).pointee : nil
 
       defer {
         if let value {
           if found {
-            Base.__mapped_value_ptr(__child).initialize(to: value)
+            // 既存の値を保持したままの代入(`.initialize`ではない)。
+            // ポインタの`.pointee`代入はdeinit-old→init-newを自動で行うため、
+            // 上の読み取りで複製されたぶんの解放漏れ(リーク)が起きない。
+            Base.__mapped_value_ptr(__child).pointee = value
           } else {
             unsafeEnsureCapacity()
             update {

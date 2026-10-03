@@ -1,0 +1,19 @@
+import Foundation
+import RedBlackTreeCollections
+
+extension _TrackingTag {
+  var index: _TrackingTag! { self }
+}
+
+#if DEBUG
+extension _PointerIndexRef {
+  var index: _TrackingTag! {
+    switch self {
+    case .__right_(let p):
+      return p
+    case .__left_(let p):
+      return p
+    }
+  }
+}
+#endif

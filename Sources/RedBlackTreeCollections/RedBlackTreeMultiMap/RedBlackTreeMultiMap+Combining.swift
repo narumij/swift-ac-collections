@@ -24,11 +24,11 @@
 
 extension RedBlackTreeMultiMap {
 
+  /// Inserts every key-value pair from `other`, including duplicate keys.
+  ///
+  /// - Parameter other: A multimap whose pairs to insert.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
-  ///
-  /// - Important: If sufficient space is available,
-  ///   using `meld` is recommended.
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
     __tree_.ensureUnique()
@@ -38,6 +38,9 @@ extension RedBlackTreeMultiMap {
       other.__tree_.__end_node)
   }
 
+  /// Inserts every key-value pair produced by `other`, including duplicate keys.
+  ///
+  /// - Parameter other: A sequence of key-value pairs to insert.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -46,11 +49,12 @@ extension RedBlackTreeMultiMap {
     __tree_.___insert_range_multi(other) { Base.__payload_($0) }
   }
 
+  /// Returns a multimap containing every pair from this multimap and `other`.
+  ///
+  /// - Parameter other: A multimap whose pairs to insert into the result.
+  /// - Returns: The combined multimap without modifying either input.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
-  ///
-  /// - Important: If sufficient space is available,
-  ///   using `melding` is recommended.
   @inlinable
   public func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
     var result = self
@@ -58,6 +62,10 @@ extension RedBlackTreeMultiMap {
     return result
   }
 
+  /// Returns a multimap containing this multimap and every pair produced by `other`.
+  ///
+  /// - Parameter other: A sequence of key-value pairs to insert into the result.
+  /// - Returns: The combined multimap without modifying this multimap.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -71,12 +79,21 @@ extension RedBlackTreeMultiMap {
 
 extension RedBlackTreeMultiMap {
 
+  /// Combines two multimaps while preserving every key-value pair.
+  ///
+  /// This operation consumes `other` and replaces this multimap with the result.
+  ///
+  /// - Parameter other: The multimap to consume and combine.
   /// - Complexity: O(*n* + *m*)
   @inlinable
   public mutating func meld(_ other: __owned RedBlackTreeMultiMap<Key, Value>) {
     __tree_ = __tree_.___meld_multi(other.__tree_)
   }
 
+  /// Returns a multimap containing every pair from both multimaps.
+  ///
+  /// - Parameter other: The multimap to consume and combine.
+  /// - Returns: The combined multimap.
   /// - Complexity: O(*n* + *m*)
   @inlinable
   public func melding(_ other: __owned RedBlackTreeMultiMap<Key, Value>)

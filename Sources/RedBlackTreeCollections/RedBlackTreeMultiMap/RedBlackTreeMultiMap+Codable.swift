@@ -25,8 +25,11 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap: Encodable where Key: Encodable, Value: Encodable {
 
-    /// Encodes the elements of this multi map into the given encoder in an unkeyed
+    /// Encodes the elements of this multimap into the given encoder in an unkeyed
     /// container.
+    ///
+    /// Every key-value pair is encoded in sorted key order, including pairs with
+    /// equivalent keys.
     ///
     /// This function throws an error if any values are invalid for the given
     /// encoder's format.
@@ -43,7 +46,9 @@
 
   extension RedBlackTreeMultiMap: Decodable where Key: Decodable, Value: Decodable {
 
-    /// Creates a new multi map by decoding from the given decoder.
+    /// Creates a new multimap by decoding from the given decoder.
+    ///
+    /// Every decoded pair is retained, including pairs with equivalent keys.
     ///
     /// This initializer throws an error if reading from the decoder fails, or
     /// if the data read is corrupted or otherwise invalid.
@@ -51,7 +56,7 @@
     /// - Parameter decoder: The decoder to read data from.
     @inlinable
     public init(from decoder: Decoder) throws {
-      self.init(__tree_: try .create(from: decoder))
+      self.init(__tree_: try .createMulti(from: decoder))
     }
   }
 #endif

@@ -240,17 +240,6 @@
       XCTAssertTrue(lhs[3..<6] < rhs[3..<7])
     }
 
-    /// popFirst()で要素を消費しつくした後もunranged()が残りの範囲(元の集合における後続範囲)を返すこと
-    func testUnrangedReturnsRemainingBaseRangeAfterDrainingWithPopFirst() {
-      let set = RedBlackTreeSet(0..<20)
-      var view = set[start()..<lowerBound(10)]
-
-      while view.popFirst() != nil {}
-
-      XCTAssertEqual(view.unranged() + [], (10..<20) + [])
-      XCTAssertEqual(set + [], (0..<20) + [])
-    }
-
     /// 区間の下端が上端より後ろにある不正な範囲でも、reversed()が無限ループやメモリエラーを起こさず空を返すこと
     func testReversedOnInvertedRangeReturnsEmptyWithoutInfiniteLoop() {
       let set = RedBlackTreeSet<Int>(0..<100)

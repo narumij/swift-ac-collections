@@ -25,6 +25,8 @@
 extension RedBlackTreeSet {
 
   /// Creates a new, empty set.
+  ///
+  /// - Complexity: O(1).
   @inlinable
   public init() {
     self.init(__tree_: .create())
@@ -34,9 +36,12 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// Creates a new set from a finite sequence of items.
+    /// Creates a new set containing the unique elements of the given sequence.
     ///
-    /// - Complexity: O(*n* log *n*)
+    /// The set discards duplicate elements and stores the remaining elements in sorted order.
+    ///
+    /// - Parameter sequence: A finite sequence of elements for the new set.
+    /// - Complexity: O(*n* log *n*), where *n* is the length of `sequence`.
     ///   When inserting elements sequentially from an already sorted sequence,
     ///   no search is required, and rebalancing is amortized O(1),
     ///   so the overall construction cost becomes O(*n*).
@@ -52,11 +57,14 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// Creates a new set from a finite sequence of items.
+  /// Creates a new set from an ascending range of elements.
   ///
-  /// - Important: This implementation assumes ascending order and omits certain checks.
-  ///   Using it with descending order results in undefined behavior.
-  /// - Complexity: Amortized O(*n*).
+  /// This overload is a specialized linear-time path for `Range` and `ClosedRange` values.
+  /// Other finite sequences, including descending strides, use the sequence initializer.
+  ///
+  /// - Parameter range: An ascending `Range` or `ClosedRange` containing the elements.
+  /// - Precondition: `range` is a `Range<Element>` or `ClosedRange<Element>`.
+  /// - Complexity: O(*n*), where *n* is the number of elements in `range`.
   @inlinable
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {

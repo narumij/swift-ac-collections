@@ -36,6 +36,16 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
 
       empty.removeAll(keepingCapacity: true)
       XCTAssertEqual(empty._copyCount, 0, "空集合へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
+
+      #if !COMPATIBLE_ATCODER_2025
+        var predicateCalled = false
+        empty.erase(where: { _ in
+          predicateCalled = true
+          return true
+        })
+        XCTAssertFalse(predicateCalled, "空のMultiSetへのerase(where:)は述語を呼ばないはず")
+        XCTAssertEqual(empty._copyCount, 0, "空のMultiSetへのerase(where:)は退避コピーを発生させないはず")
+      #endif
     #endif
   }
 
@@ -121,5 +131,46 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
     var releasingCapacity = RedBlackTreeMultiSet(0..<10)
     releasingCapacity.removeAll()
     XCTAssertTrue(releasingCapacity.isEmpty)
+  }
+
+  /// popFirst/popLast/eraseMulti/removeAllが、保持していた参照型要素(重複を含む)を
+  /// 正しく解放すること(二重解放やリークがないこと)
+  func test_variousRemovalMethods_releaseRetainedReferenceElementsExactlyOnce() {
+    final class DeinitializeCounter: Comparable {
+      static func < (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num < rhs.num
+      }
+      static func == (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num == rhs.num
+      }
+      nonisolated(unsafe) static var count = 0
+      let num: Int
+      init(num: Int) {
+        self.num = num
+        Self.count += 1
+      }
+      deinit { Self.count -= 1 }
+    }
+
+    var multiset = RedBlackTreeMultiSet<DeinitializeCounter>(
+      [1, 1, 2, 3, 3].map { DeinitializeCounter(num: $0) })
+    XCTAssertEqual(DeinitializeCounter.count, 5)
+
+    _ = multiset.popFirst()
+    XCTAssertEqual(DeinitializeCounter.count, 4)
+
+    #if !COMPATIBLE_ATCODER_2025
+      _ = multiset.popLast()
+      XCTAssertEqual(DeinitializeCounter.count, 3)
+    #endif
+
+    #if !COMPATIBLE_ATCODER_2025
+      let erasedCount = multiset.eraseMulti(DeinitializeCounter(num: 3))
+      XCTAssertEqual(erasedCount, 1)
+      XCTAssertEqual(DeinitializeCounter.count, 2, "検索キー・削除された重複要素とも解放されること(残りは1,2の2個)")
+    #endif
+
+    multiset.removeAll()
+    XCTAssertEqual(DeinitializeCounter.count, 0)
   }
 }

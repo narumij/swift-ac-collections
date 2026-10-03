@@ -92,6 +92,7 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 - 完了済みログを無制限に蓄積しない。恒久的な知見は規則へ移し、`Current handoff`は直近の状況を中心に保つ
 - リファクタリングドキュメントは、unsafe等がprefixに付与されている部品がいつ登場してどういう推移をへたのか書いて欲しい
 - unsafe!!!以後の切り替えは、#if falseでテストを限定しながら徐々に解除して全体を通す作業をしてたはずで、この点も書いて欲しい
+- cpp comparisonは、API-Matrixの様式で挙動互換一覧が必要そう（全部一致だとしても）
 
 ### 停止条件
 

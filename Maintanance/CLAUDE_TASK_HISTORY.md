@@ -1275,3 +1275,16 @@ Status: Completed (2026-10-03, Claude Opus 5.5)
 - Proposed small future batches: sequence surface, final buffer, then
   iterator/subsequence plus a cross-task test.
 - Ran `git diff --check`; no commit or push was performed.
+# Archived Result — MultiSet C++ Comparison Expansion
+
+Status: Blocked (2026-10-04, Claude Opus 5.5)
+
+- Added deterministic `RedBlackTreeMultiSet`/`std::multiset` comparison for
+  insertion, duplicates, bounds, equal ranges, erasure counts, and non-end hints.
+- Found a minimal production failure: `insert(10)`, then
+  `insert(20, hint: endIndex)` crashes in `__tree_left_rotate` in Debug, while
+  `std::multiset` inserts normally.
+- Preserved the minimal trace and full end-hint trace as disabled tests; 6 focused
+  comparison tests passed and 2 were skipped. Production code was not changed.
+- Suspected `__find_leaf` boundary-check divergence from the corresponding libc++
+  control flow; handed off for a separate test-first repair.

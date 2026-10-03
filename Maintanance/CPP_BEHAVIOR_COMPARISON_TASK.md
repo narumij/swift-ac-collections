@@ -113,14 +113,16 @@ hinted insertion, or randomized traces. Also stop if the PoC would require chang
   `equalRange` contents, erasure by key with removed count, and hinted insertion
   at, inside, after, and (poorly) before an equivalent-key group. Within-group
   placement is observed through the rank of the returned index/iterator.
-- **Semantic difference:** `RedBlackTreeMultiSet.insert(_:hint:)` with `endIndex`
-  on a non-empty multiset crashes in Debug (`__tree_left_rotate`, "node shouldn't
-  be null"); `std::multiset` inserts normally. Minimal trace: `insert(10)`,
-  `insertHint(20, at: 1)`. Preserved as the disabled test
-  `multiSetEndIndexHintMinimalTrace`. Suspected cause: `__find_leaf(_:_:_:)`
-  checks `__hint == end` where libc++ checks `__prior == begin()`.
+- **Repaired (2026-10-04):** `insert(_:hint:)` with `endIndex` on a non-empty
+  multiset crashed in Debug (`__tree_left_rotate`, "node shouldn't be null");
+  `std::multiset` inserts normally (minimal trace `insert(10)`,
+  `insertHint(20, at: 1)`). Cause: the multi hinted `__find_leaf(_:_:_:)` checked
+  `__hint == end` where libc++ (and the unique hinted `__find_equal`) checks
+  `__prior == begin()`, so an `endIndex` hint returned `end.__right_` as the leaf.
+  The condition now reads `__prior == __begin_node_`. The fix also covers
+  `RedBlackTreeMultiMap.insert(_:hint:)`, which shares the path.
 - Command: `swift test --disable-sandbox --filter CppBehaviorReferenceTests`
-  (8 tests: 6 passed, 2 skipped).
+  (9 tests passed, none skipped).
 
 ## Test strategy
 

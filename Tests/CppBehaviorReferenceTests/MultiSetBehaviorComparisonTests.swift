@@ -220,10 +220,7 @@ func multiSetNonEndIndexHintedInsertionMatchesCpp() throws {
     #expect(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp) == nil)
 }
 
-@Test(
-    "RedBlackTreeMultiSet hinted insertion matches std::multiset around an equivalent-key group",
-    .disabled("Blocked: contains endIndex hints; see multiSetEndIndexHintMinimalTrace")
-)
+@Test("RedBlackTreeMultiSet hinted insertion matches std::multiset around an equivalent-key group")
 func multiSetHintedInsertionMatchesCpp() throws {
     let operations: [MultiSetOperation] = [
         .insert(10),
@@ -269,13 +266,21 @@ func multiSetMismatchReportContainsRequiredContext() {
     #expect(message?.contains("rank: Optional(2)") == true)
 }
 
-/// Smallest deterministic trace for the `endIndex` hint failure. The Swift side
-/// stops at `__tree_left_rotate`'s "node shouldn't be null" assertion in Debug,
-/// so the test is disabled until a fix is authorized.
-@Test(
-    "RedBlackTreeMultiSet endIndex hint into a non-empty multiset matches std::multiset",
-    .disabled("Blocked: Swift crashes on insert(_:hint: endIndex) when non-empty; see Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md")
-)
+/// Confirms that the C++ reference itself accepts the minimal `endIndex` hint trace,
+/// so the Swift-side failure is not an imitation of undefined behavior.
+@Test("std::multiset inserts normally for the minimal endIndex hint trace")
+func multiSetEndIndexHintMinimalTraceCppReference() throws {
+    let cpp = try executeCppTrace([.insert(10), .insertHint(20, at: 1)])
+    #expect(cpp.last?.value == 20)
+    #expect(cpp.last?.rank == 1)
+    #expect(cpp.last?.contents == [10, 20])
+}
+
+/// Smallest deterministic trace for the former `endIndex` hint failure. Before the
+/// fix, the multi `__find_leaf` tested `__hint == end` instead of
+/// `__prior == __begin_node_`, returned `end.__right_` as the leaf, and Debug stopped
+/// at `__tree_left_rotate`'s "node shouldn't be null" assertion.
+@Test("RedBlackTreeMultiSet endIndex hint into a non-empty multiset matches std::multiset")
 func multiSetEndIndexHintMinimalTrace() throws {
     let operations: [MultiSetOperation] = [
         .insert(10),

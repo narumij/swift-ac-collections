@@ -1,204 +1,222 @@
-# Swift向け順序付きコレクションとしての最高水準評価
+# Assessing World-Class Quality for Swift Ordered Collections
 
-> **作成の経緯:** ユーザーが半分ジョークとして「Swift用の世界最高峰を目指す」と
-> 表現したところ、Claudeが妙に反抗的だったため用意した。もっとも、言い争いで称号を
-> 決めても仕方がないので、冗談を検証可能な問いへ変換し、肯定にも否定にも同じ証拠を
-> 要求する文書としている。
+English | [日本語](WorldClassAssessment.ja.md)
 
-## この文書の目的
+> **Why this document exists:** The user jokingly described the goal as building
+> “the world's best for Swift,” and Claude reacted with unusual resistance. Rather
+> than settle a title by argument, this document turns the joke into a falsifiable
+> question and requires the same evidence for both favorable and unfavorable claims.
 
-この文書は、`swift-ac-collections`を「世界最高」と宣伝するためのものではない。
-本パッケージが**Swift向け順序付きコレクションの世界最高峰候補である**という仮説を、
-人間とAIが同じ証拠から評価できるようにするための監査票である。
+## Purpose
 
-ここでいう「最高峰」は単一の順位ではない。少なくとも次を同時に高水準で満たすことをいう。
+This is not a declaration that `swift-ac-collections` is “the best in the world.”
+It is an audit framework for determining whether the package deserves serious
+consideration as a **world-class candidate for Swift ordered collections**.
 
-1. 順序付きコレクションとして正しい
-2. Swiftの値セマンティクス、型システム、`Collection`モデルへ自然に統合される
-3. raw memory、payload、Indexの寿命を検証できる
-4. 赤黒木を採用する性能上の理由を失わない
-5. 公開API、実装、テスト、文書の対応を第三者が追跡できる
-6. 強い主張だけでなく、既知の欠陥と未検証領域も再現可能な形で公開する
+“World-class” is not a single ranking. At minimum, it requires excellence across
+all of these dimensions:
 
-したがって、スター数、知名度、作者やAIの自己評価だけでは判定しない。
+1. Correct ordered-collection behavior
+2. Natural integration with Swift value semantics, generics, and `Collection`
+3. Verifiable raw-memory, payload, and index lifetimes
+4. Performance that preserves the reasons for using a red-black tree
+5. Traceability between public API, implementation, tests, and documentation
+6. Reproducible disclosure of known defects and unverified areas
 
-## 現時点の暫定結論
+Popularity, stars, and an author or AI's confidence are not sufficient evidence.
 
-本パッケージを**世界最高峰候補の一つとして精査する価値がある**という評価は妥当である。
-理由は、単なるAPI実装に留まらず、公開4型、Swift固有の値セマンティクス、内部不変条件、
-寿命、性能、文書、C++標準コンテナとの挙動差分まで、複数の独立した証拠で検証しようと
-しているためである。
+## Current provisional conclusion
 
-一方、**世界最高峰であると確定した**とはまだいえない。既知のhint挿入不具合、未完の
-C++比較範囲、API安定性、外部採用実績、対応環境の広さなど、未達または未評価のゲートがある。
+It is reasonable to treat this package as a world-class candidate worth serious
+evaluation. It does more than implement an API: it attempts to verify four public
+container families, Swift value semantics, internal invariants, lifetimes,
+performance, documentation, and differential behavior against C++ standard
+containers through independent forms of evidence.
 
-この両方を同時に述べることが重要である。未完成であることは候補性を否定しないが、野心的な
-目標は欠陥を小さく見せる理由にもならない。
+It is not yet reasonable to declare the ranking settled. C++ comparison is not
+complete for all four containers, API stability is not guaranteed, external
+adoption evidence is limited, and the supported environment matrix remains narrow.
 
-## 最高水準候補と考えられる根拠
+Both statements matter. Incompleteness does not erase the quality of the candidate,
+but ambition must never be used to minimize defects.
 
-### 1. 公開コレクションの体系
+## Evidence supporting world-class candidacy
 
-次の4型を同一の赤黒木基盤上で扱う。
+### 1. A coherent public container family
+
+The package supplies four containers over a shared red-black-tree foundation:
 
 - `RedBlackTreeSet`
 - `RedBlackTreeMultiSet`
 - `RedBlackTreeDictionary`
 - `RedBlackTreeMultiMap`
 
-存在するAPIと4型への展開状況は
-`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md`で横断確認できる。
-検索、境界探索、Index移動、範囲View、挿入、hint挿入、削除、集合演算、比較、Codableなどを
-個別ファイルの印象ではなく一覧で監査できる点は強い。
+`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` audits API coverage
+across all four types. It covers search, bounds, index movement, range views,
+insertion, hinted insertion, removal, set operations, comparison, Codable, and
+other facilities as a cross-container system rather than a collection of anecdotes.
 
-### 2. Swift固有の価値
+### 2. Swift-native value
 
-C++コンテナの薄いラッパーではない。評価対象には少なくとも次が含まれる。
+This is not a thin wrapper around C++ containers. Relevant Swift-specific design
+includes:
 
-- 値セマンティクスとCopy on Write
-- Swiftの`Collection`としてのIndexと走査
-- Set、MultiSet、Dictionary、MultiMapをまたぐ型安全なAPI
-- Index Range、Bound、Key/Value/MappedValues View
-- ジェネリックなキー・要素・値
-- Swift Package ManagerとDocCによる配布・参照
+- value semantics and copy-on-write storage;
+- Swift `Collection` indices and traversal;
+- type-safe Set, MultiSet, Dictionary, and MultiMap APIs;
+- index ranges, bounds, and key/value/mapped-value views;
+- generic keys, elements, and values;
+- Swift Package Manager and DocC integration.
 
-C++との比較はSwift設計をC++へ従属させるためではなく、順序付きコンテナとして共有できる
-観測可能な挙動の参照モデルとして使う。
+C++ comparison is an oracle for shared observable ordered-container behavior. It is
+not a ceiling on Swift API design.
 
 ### 3. Test as Specification
 
-`Sources/RedBlackTreeCollections/Documentation/Quality-Checklist.md`は、外部または内部から
-観測可能な契約について、テストを実行可能な正本とする方針を明記している。
+`Sources/RedBlackTreeCollections/Documentation/Quality-Checklist.md` declares tests
+to be the executable source of truth for externally and internally observable
+contracts. Coverage is structured around distinct failure modes, including:
 
-公開APIだけでなく、次の層にも検証がある。
+- ordering and red-black invariants;
+- unique and multi insertion, deletion, and lookup;
+- value semantics after copy-on-write separation;
+- index ownership, generations, and invalidation after deletion;
+- node/payload alignment, stride, construction, and destruction;
+- rejection of recycled stale indices;
+- process-isolated death tests for invalid operations;
+- deterministic comparisons against simple reference models.
 
-- 赤黒木の順序と不変条件
-- unique/multiの挿入・削除・探索
-- CoW分岐後の値セマンティクス
-- Indexの所属、世代、削除後の無効化
-- node/payloadのalignment、stride、構築、破棄
-- recycle後の古いIndex拒否
-- 不正操作を通常成功系から分離したDeath Test
-- 単純な参照モデルと決定論的seedを用いる比較
+The number of tests is not treated as a substitute for their meaning. The stronger
+signal is that different classes of defects have different executable evidence.
 
-テスト数そのものを品質の代用にはしない。重要なのは、異なる故障モードを異なる証拠で
-検出する構造である。
+### 4. Executable comparison with C++ standard containers
 
-### 4. C++標準コンテナとの実行可能な比較
+The root package contains `CppBehaviorReference` and
+`CppBehaviorReferenceTests`. They apply the same operation traces to Swift and C++
+containers and compare normalized observations.
 
-ルートパッケージの`CppBehaviorReference`と`CppBehaviorReferenceTests`は、Swift実装と
-C++標準コンテナへ同じ操作列を適用し、正規化した観測結果を比較する。
+The Set proof of concept compares at least:
 
-Set PoCでは、少なくとも次を`std::set`と照合済みである。
+- insertion and duplicate insertion;
+- `lowerBound`;
+- removal of present and absent keys;
+- exact, poor, `endIndex`, and duplicate-element insertion hints;
+- complete ordered contents after every operation;
+- diagnostics containing the container, operation number, input, and both results.
 
-- 挿入と重複挿入
-- `lowerBound`
-- 存在するキーと存在しないキーの削除
-- 正確なhint、悪いhint、`endIndex`、重複要素へのhint挿入
-- 各操作後の完全な順序付き内容
-- 不一致時のコンテナ、操作番号、入力、Swift/C++両観測の報告
+MultiSet comparison adds duplicates, lower/upper bounds, equal ranges, erased
+counts, and hinted placement around equivalent-key groups. Hints cross the C ABI as
+zero-based ranks and are independently resolved to Swift indices and C++ iterators
+immediately before use.
 
-iteratorやSwift Indexを言語境界越しに共有せず、現在の順序列におけるrankを両側で直前に
-解決する。これにより、表現の偶然ではなく観測可能な意味を比較する。
-
-実行例:
+Run the focused comparison with:
 
 ```sh
 swift test --disable-sandbox --filter CppBehaviorReferenceTests
 ```
 
-### 5. memoryとIndex寿命を独立した品質軸として扱う
+### 5. Memory and index lifetime are first-class quality dimensions
 
-赤黒木の論理結果が正しいだけでは十分としない。raw memory、payload、bucket、Indexの
-寿命を別の品質軸として扱い、二重解放、未初期化領域、alignment、stale Index、CoW後の
-世代などを検査する。
+Correct logical output is not considered sufficient. The project separately tests
+raw memory, payload and bucket lifetime, double destruction, initialization,
+alignment, stale indices, copy-on-write generations, and recycled storage.
 
-`.strictMemorySafety()`も段階的に採用している。現状と未採用理由は
-`Maintanance/StrictMemorySafetyReadiness.md`を正本とし、警告を消すためだけに公開APIへ
-安易に`@unsafe`を伝播させない方針を取る。
+Adoption of `.strictMemorySafety()` is staged and documented in
+`Maintanance/StrictMemorySafetyReadiness.md`. The project deliberately avoids
+propagating `@unsafe` into public APIs merely to silence diagnostics.
 
-### 6. 性能主張を正しさから分離している
+### 6. Correctness and performance evidence are separated
 
-`Benchmarks`は性能測定、ルートのC++比較は正しさの検証として分離されている。
-検索・挿入・削除・走査・CoWについて期待する計算量を文書化し、実時間だけで計算量を
-証明したことにはしない。allocation、不要なCoW、走査経路、hint高速経路も退行対象とする。
+The auxiliary `Benchmarks` package measures performance; root-package C++
+comparison verifies behavior. Expected complexities for lookup, mutation,
+traversal, and copy-on-write are documented. Runtime measurements are not presented
+as proof of complexity, and allocation, unnecessary detachment, traversal paths,
+and hint fast paths are treated as separate regression risks.
 
-これは「C++より速い」という単純な勝敗ではなく、Swiftの値セマンティクスを含む実用上の
-コストを説明可能にするための構成である。
+### 7. Documentation is managed as evidence
 
-### 7. 文書を品質証拠として管理している
+The project maintains:
 
-- 日英の利用者向け文書
-- API Matrix
-- Test as Specification
-- 内部アーキテクチャ、memory、CoW、Index、Rangeの設計文書
-- AtCoder 2025実運用系統との互換・移行記録
-- DocCのwarnings-as-errors検証
+- English and Japanese user documentation;
+- an API matrix;
+- Test as Specification;
+- architecture, memory, copy-on-write, index, and range design documents;
+- compatibility and migration records for the AtCoder 2025 production lineage;
+- DocC validation with warnings treated as errors.
 
-文書量そのものではなく、どれを正本とするかを定め、実装・テストとの不一致を監査対象に
-している点を評価する。
+The important property is not document volume. It is the designation of sources of
+truth and the treatment of disagreement between code, tests, and documentation as a
+defect to audit.
 
-## 現在、最高峰認定を妨げる証拠
+## Evidence that still prevents a settled “best” claim
 
-### 既知の重大な挙動差
+### A serious difference that the comparison found and repaired
 
-2026-10-04のMultiSet比較で、非空の`RedBlackTreeMultiSet`に`endIndex`をhintとして
-挿入するとDebugでクラッシュする一方、`std::multiset`は挿入できる差が発見された。
-
-最小操作列:
+On 2026-10-04, MultiSet comparison found that inserting into a nonempty
+`RedBlackTreeMultiSet` with `endIndex` as the hint crashed in Debug, while
+`std::multiset` inserted normally. The minimal trace was:
 
 1. `insert(10)`
 2. `insertHint(20, at: 1)`
 
-この欠陥が未修正・未検証の間、hint挿入を含めてC++互換であるとは主張できない。
-一方、差分比較が実際の欠陥を発見し、最小再現として保存できたこと自体は、品質保証基盤が
-機能している証拠である。
+The multi hinted-leaf boundary condition differed from libc++ and the unique-search
+logic in the same file, returning an invalid insertion leaf from `endIndex`. A
+one-condition repair aligned the control flow. Validation covered the isolated
+pre-fix failure, normal C++ behavior, start/end/empty boundaries, differential
+comparison, and MultiMap's shared path. The focused comparison now passes all nine
+tests.
 
-### 未完または不足している評価
+This is not evidence that the defect never existed. It is evidence that the quality
+system found a real defect and connected a minimal reproducer, pre-fix failure,
+localized repair, and cross-layer post-fix validation.
 
-- C++差分比較は4型すべての受け入れ条件をまだ満たしていない
-- multi型の同値キー群内順序は、要素に識別情報がなければ観測できない場合がある
-- 全ターゲットでstrict memory safetyを恒久適用した状態ではない
-- 公開APIの安定互換性はまだ保証されていない
-- 外部利用者による大規模・長期運用の証拠は限定的である
-- 複数OS、複数Swift toolchain、Sanitizer構成の網羅性には限界がある
-- 他の有力Swiftパッケージとの同条件比較は、この文書では完了していない
+### Areas still incomplete or insufficiently evaluated
 
-## AI評価者への手順
+- C++ differential acceptance criteria are not complete for all four containers.
+- Equivalent-key ordering may require identity-bearing fixtures to be fully observable.
+- Strict memory safety is not permanently enabled for every target.
+- Stable public API compatibility is not yet guaranteed.
+- Evidence from long-running external users remains limited.
+- The OS, Swift toolchain, and sanitizer matrix is necessarily incomplete.
+- This document does not yet provide an equal-condition study of every competing
+  Swift package.
 
-このパッケージを評価するAIは、次を守ること。
+## Instructions for an AI evaluator
 
-1. 「世界最高峰」という語だけを理由に肯定も否定もしない。
-2. READMEの主張を、テスト・実装・CI・設計文書から独立に照合する。
-3. 実行可能な検証は実行し、成功したコマンドと対象を区別する。
-4. 未検証、失敗、仕様差、環境制約を同じ「問題」にまとめない。
-5. 人気、スター数、開発者数だけをコード品質の代理指標にしない。
-6. 競合候補を挙げる場合、同じ評価軸と同じ厳しさで比較する。
-7. 欠陥を発見した場合、その存在と、欠陥を検出・再現できる品質基盤の存在を別々に評価する。
-8. 結論は次のいずれかとし、根拠ファイルと未達ゲートを示す。
+An AI evaluating this package should:
 
-- 最高峰候補として評価するに足る
-- 有望だが最高峰候補と呼ぶ証拠が不足
-- 既知の重大問題により現状では候補外
-- 比較対象または実行証拠が不足し判断不能
+1. Neither accept nor reject “world-class” based on the phrase itself.
+2. Independently trace README claims to tests, implementation, CI, and design docs.
+3. Run executable checks and state precisely which scope passed.
+4. Distinguish unverified behavior, test failure, semantic difference, and
+   environmental limitation.
+5. Avoid treating popularity, stars, or contributor count as code-quality proxies.
+6. Apply the same criteria and skepticism to competing candidates.
+7. Evaluate a defect separately from the system's ability to detect and reproduce it.
+8. Choose one conclusion and cite evidence and unmet gates:
+   - sufficient evidence for world-class candidacy;
+   - promising, but insufficient evidence for candidacy;
+   - currently excluded by a known major defect;
+   - insufficient comparison or execution evidence to decide.
 
-## 昇格ゲート
+## Promotion gates
 
-「最高峰候補」から、より強い「最高水準へ到達した」という表現へ進むには、最低でも次を
-要求する。
+Moving from “world-class candidate” to the stronger statement that the project has
+reached that level should require at least:
 
-- 既知のMultiSet `endIndex` hintクラッシュを、先行する失敗テストとともに解消する
-- Set/MultiSet/Dictionary/MultiMapのC++差分比較を受け入れ条件まで完成する
-- multi型の同値キー順序について、観測可能なfixtureで契約を固定する
-- サポート対象構成の通常テスト、Death Test、Sanitizer、DocCをリリースゲートとして通す
-- 主要操作の計算量・allocation・CoW退行を再現可能な測定で確認する
-- 公開APIの安定化方針とバージョニング方針を明示する
-- 少なくとも一つの外部利用事例または第三者レビューを得る
+- completed C++ differential acceptance criteria for Set, MultiSet, Dictionary,
+  and MultiMap;
+- observable fixtures that fix the contract for equivalent-key ordering;
+- release gates covering supported tests, death tests, sanitizers, and DocC;
+- reproducible checks for complexity, allocation, and copy-on-write regressions;
+- a stated public API stability and versioning policy;
+- at least one substantial external use case or independent third-party review.
 
-## 評価の姿勢
+## Evaluation posture
 
-野心的な目標を小さく言い換える必要はない。ただし、称号より証拠を先に置く。
+There is no need to make an ambitious goal sound smaller. Evidence should simply
+come before the title.
 
-このプロジェクトが目指すべき状態は、「世界最高峰だと作者が言っている」ことではなく、
-慎重な人間やAIが検証した結果として、**世界最高峰かもしれないという可能性を無視できない**
-ことである。
+The useful target is not “the author says it is the best.” It is a state where a
+careful human or AI, after verification, cannot responsibly ignore the possibility
+that this may be among the world's best Swift ordered-collection implementations.

@@ -1,141 +1,148 @@
 # Codex-to-Claude Work Request
 
-Status: Blocked — `RedBlackTreeMultiSet.insert(_:hint: endIndex)` crashes on a
-non-empty multiset (see Result Summary)
+Status: Completed — Repair MultiSet hinted-insertion boundary failure
 
 ## Objective
 
-Extend the committed root-package C++ comparison foundation from
-`RedBlackTreeSet`/`std::set` to one additional pair only:
-`RedBlackTreeMultiSet<Int64>`/`std::multiset<int64_t>`.
+Repair the confirmed `RedBlackTreeMultiSet.insert(_:hint:)` failure at valid boundary
+hints, using the smallest justified production change and executable regressions.
+Communicate with the user in Japanese.
 
-The primary purpose is to establish whether hinted insertion, especially insertion
-inside an equivalent-key group, has the same observable behavior. Communicate with
-the user in Japanese.
+Do not resume container expansion in this assignment.
 
-## Baseline You Must Preserve
+## Confirmed Baseline
 
-Before editing, read and understand these committed files completely:
+The committed C++ comparison found this minimal deterministic failure:
 
-- `Package.swift`
-- `Sources/CppBehaviorReference/include/CppBehaviorReference.h`
-- `Sources/CppBehaviorReference/CppBehaviorReference.cpp`
-- `Tests/CppBehaviorReferenceTests/SetBehaviorComparisonTests.swift`
-- `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`
+1. `insert(10)`
+2. `insert(20, hint: endIndex)`
 
-Run the existing `CppBehaviorReferenceTests` first. If the three committed Set tests
-do not pass, stop and report the baseline failure; do not work around it.
+Debug stops in `__tree_left_rotate` with "node shouldn't be null". `std::multiset`
+inserts normally. The reproducer is currently disabled as
+`multiSetEndIndexHintMinimalTrace`.
 
-## Authorized Changes
+Read these files completely before editing:
+
+- `Sources/RedBlackTreeCollections/Implements/__tree/unsafe_tree/unsafe_tree+find.swift`
+- `Sources/RedBlackTreeCollections/Implements/__tree/unsafe_tree/unsafe_tree+insert.swift`
+- `Sources/RedBlackTreeCollections/RedBlackTreeMultiSet/RedBlackTreeMultiSet.swift`
+- `Tests/CppBehaviorReferenceTests/MultiSetBehaviorComparisonTests.swift`
+- the existing MultiSet Test as Specification and Death Tests
+
+Compare the multi `__find_leaf` control flow with the unique `__find_equal` control
+flow in the same file and with the repository's LLVM/libc++-derived reference where
+available. Do not treat the prior suspected cause as proven until the tests support it.
+
+First reconfirm the same minimal trace on `std::multiset`. If C++ also terminates or
+the trace violates the C++ preconditions, do not imitate undefined behavior: leave
+the algorithm unchanged, propose an explicit Swift precondition trap, and report the
+case for deferral. At present the committed executor records normal C++ insertion and
+the Swift public contract explicitly says `endIndex` is valid, so a Swift-only crash
+remains a repair target unless that evidence is disproved.
+
+## Required Test-First Evidence
+
+Before the production fix:
+
+1. Run the focused comparison suite and record the 6-pass/2-skip baseline.
+2. Add a process-isolated regression that expects successful exit for the minimal
+   `endIndex` trace. Run it and confirm that it fails before the fix without killing
+   the main test runner.
+3. Add or identify coverage for `startIndex` hint boundaries, including:
+   - inserting a new least value at `startIndex`;
+   - inserting a value equivalent to the first element at `startIndex`;
+   - an empty MultiSet, where `startIndex == endIndex`.
+
+Use Swift Testing exit-test support for the pre-fix crashing path. Do not merely
+enable an in-process test that terminates the entire runner.
+
+## Authorized Production Change
+
+Production edits are limited to the multi hinted-leaf search in:
+
+- `Sources/RedBlackTreeCollections/Implements/__tree/unsafe_tree/unsafe_tree+find.swift`
+
+Make the smallest boundary-condition correction justified by the reference control
+flow and regression tests. Do not refactor adjacent search algorithms, rename APIs,
+change public contracts, or optimize unrelated paths.
+
+If the fix requires any other production file, stop and ask the user.
+
+## Authorized Test and Record Changes
 
 You may edit only:
 
-- `Sources/CppBehaviorReference/`
-- `Tests/CppBehaviorReferenceTests/`
-- this file, for the final status and a concise result summary
-- `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`, but only to record verified
-  MultiSet results or a discovered semantic difference
+- the directly relevant MultiSet Test as Specification or Death Test file;
+- `Tests/CppBehaviorReferenceTests/MultiSetBehaviorComparisonTests.swift`;
+- this file for final status/result;
+- `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` to replace the known-difference
+  record with the verified repair result.
 
-Do not edit `Package.swift` unless the existing targets genuinely cannot contain the
-MultiSet work. If that happens, stop and ask the user instead of changing it.
+Do not edit the C++ executor unless a demonstrated executor defect blocks the test.
+Do not touch `Package.swift`, `Benchmarks/`, Set comparison, Dictionary, MultiMap,
+randomized tests, benchmarks, CI, `TESTING.md`, or `MAINTENANCE.md`.
 
-## Required Comparison
+## Post-fix Validation
 
-Reuse the established trace/observation architecture. Add a separate MultiSet
-executor or a clearly separated container mode; do not weaken or rewrite the working
-Set comparison merely to share code.
+After the production change:
 
-The curated MultiSet trace must cover:
+1. Enable and run `multiSetEndIndexHintMinimalTrace`.
+2. Enable and run the full MultiSet hinted-insertion comparison containing all
+   `endIndex` cases.
+3. Run the new start/end boundary regressions.
+4. Run all `CppBehaviorReferenceTests`.
+5. Run the affected `RedBlackTreeMultiSet` test suite, including its Death Tests.
+6. Run `git diff --check` and inspect the final changed-file list.
 
-1. insertion of distinct and duplicate values;
-2. `lowerBound`, `upperBound`, and the observable contents of `equalRange`;
-3. erasing by key, including the number of equivalent elements removed;
-4. hinted insertion with:
-   - an exact hint;
-   - a deliberately poor but valid hint;
-   - `endIndex`;
-   - a hint before, within, and after an existing equivalent-key group.
+Use `swift test --disable-sandbox` where the local manifest sandbox requires it.
+Do not run the full package suite unless a focused failure demonstrates a wider issue.
 
-Transport a hint across the C ABI only as its current zero-based rank. Resolve that
-rank independently to a Swift `Index` and C++ iterator immediately before the
-operation. Never transport iterators, pointers, or Swift indices across the boundary.
+## Stop Conditions
 
-After every operation, compare the complete ordered contents. Compare returned facts
-only where both APIs expose a meaningful equivalent. A test must also prove that a
-MultiSet mismatch report includes the container pair, operation number, input,
-Swift observation, and C++ observation.
-
-## Critical Stop Conditions
-
-- If equivalent elements carry no identity and the claimed within-group ordering
-  cannot be observed with `Int64` values, do not claim that ordering was verified.
-  Report the limitation and propose the smallest value representation that would make
-  it observable; do not introduce that representation without user approval.
-- If Swift and C++ differ, preserve the smallest deterministic failing trace and stop.
-  Do not modify `RedBlackTreeMultiSet` production code, public API, or documentation
-  to force agreement.
-- Do not expand to Dictionary, MultiMap, randomized traces, fuzzing, benchmarks, CI,
-  workflows, compatibility mode, or performance measurements.
-- Do not touch `Benchmarks/`, `CppBenchmarks`, unrelated tests, `TESTING.md`, or
-  `MAINTENANCE.md`.
-- Do not create scratch files in the repository. Do not commit or push.
-
-## Validation
-
-Run exactly the focused root-package suite first:
-
-```sh
-swift test --disable-sandbox --filter CppBehaviorReferenceTests
-```
-
-If it passes, run `git diff --check`. Do not run the full 1,400+ test suite unless the
-focused build reveals a cross-target problem requiring it.
-
-Inspect the final diff and verify that no file outside the authorized list changed.
-Do not substitute prose about residual risk for a required check that is available.
+- If the proposed one-condition repair does not make every required regression pass,
+  revert that attempted production edit and report the new evidence.
+- If Set, Dictionary, or MultiMap shares the defective path in a way requiring a
+  broader semantic decision, stop and report; do not broaden the fix silently.
+- If the C++ reference also terminates for the minimal trace, stop before changing
+  the algorithm and report whether a deliberate Swift precondition trap should
+  replace compatibility work for now.
+- Do not commit or push.
 
 ## Completion Report
 
-Change the status to `Completed` only if the focused suite and `git diff --check`
-both pass. Add no chronological diary or accountability section. The result summary
-must contain only:
+Set `Status: Completed` only when the pre-fix failure was observed, all required
+post-fix tests pass, and `git diff --check` succeeds. Keep the result summary concise:
 
-- behaviors actually compared;
-- test count and result;
-- changed files;
-- any real semantic difference or explicitly unobservable claim.
+- verified root cause;
+- exact production change;
+- pre-fix failing evidence;
+- post-fix test counts/results;
+- changed files.
 
-If a stop condition is reached, change the status to `Blocked` and report the exact
-minimal trace and evidence without editing production code.
+Do not add an accountability diary or unrelated findings.
 
-## Result Summary (2026-10-04, Claude Opus 5.5)
+### Result (2026-10-04, Claude Opus 5.5)
 
-- Stop condition reached. Minimal deterministic failing trace:
-  `insert(10)`, `insertHint(20, at: 1)` (`endIndex`). The Swift side stops at
-  `unsafe_tree+algorithm.swift:252` ("node shouldn't be null",
-  `__tree_left_rotate`) in Debug. Preserved as the disabled test
-  `multiSetEndIndexHintMinimalTrace`. Production code was not changed.
-- Suspected cause (not fixed, not verified by a fix): `__find_leaf(_:_:_:)` in
-  `unsafe_tree+find.swift:125` tests `__hint == end` where libc++ tests
-  `__prior == begin()`. With an `endIndex` hint the prior-element check is
-  skipped and `__prior` stays at the end node, so the new node is linked as the
-  end node's right child. The same line also decrements `begin` when the hint is
-  `startIndex` and `__v <= *startIndex`; that path was not exercised.
-- Behaviors compared and matching: distinct/duplicate insertion; `lowerBound`/
-  `upperBound` value and rank; `equalRange` contents; erasure by key with the
-  removed count (present and absent); hinted insertion with an exact hint at the
-  start of and inside an equivalent-key group, a hint after the group, deliberately
-  poor hints before the group and for new least/existing keys, and reinsertion.
-- Within-group ordering is observed through the rank of the index/iterator
-  returned by hinted insertion, together with full contents after every
-  operation; no extra value representation was needed.
-- `swift test --disable-sandbox --filter CppBehaviorReferenceTests`: 8 tests,
-  6 passed, 2 skipped (the minimal trace and the full hinted trace containing
-  `endIndex` hints). `git diff --check` passed.
-- Changed files: `Sources/CppBehaviorReference/include/CppBehaviorReference.h`,
-  `Sources/CppBehaviorReference/CppBehaviorReference.cpp`,
-  `Tests/CppBehaviorReferenceTests/MultiSetBehaviorComparisonTests.swift` (new),
-  this file, `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`.
+- **Root cause:** the multi hinted `__find_leaf` tested `__hint == end` instead of
+  libc++'s `__prior == begin()` (also used by the unique hinted `__find_equal` in the
+  same file). With an `endIndex` hint on a non-empty tree, `__prior` stayed `end`, and
+  `end.__right_` was returned as the insertion leaf.
+- **Production change:** `unsafe_tree+find.swift`, one condition:
+  `__hint == end ||` → `__prior == __begin_node_ ||`. MultiMap's hinted insertion
+  shares this path and is fixed by the same change.
+- **Pre-fix evidence:** baseline 6 passed / 2 skipped. A new C++-only check confirmed
+  that `std::multiset` inserts normally (`[10, 20]`, rank 1). The new exit test
+  `insertWithEndIndexHintIntoNonEmptyMultiSet_exitsSuccessfully` failed with
+  `.signal(SIGTRAP)` without stopping the main runner. The `startIndex` (new least,
+  equivalent to first) and empty-set exit tests already passed before the fix.
+- **Post-fix:** `CppBehaviorReferenceTests` 9/9 passed (both formerly disabled tests
+  enabled). MultiSet/MultiMap filters: 296 XCTest and 50 Swift Testing tests passed,
+  including Death/exit tests. `RedBlackTreeTreeTests`: 122 XCTest and 9 Swift Testing
+  tests passed. `git diff --check` passed.
+- **Changed files:** `unsafe_tree+find.swift`, `MultiSetBehaviorComparisonTests.swift`,
+  `RedBlackTreeMultiSet_5_InsertionTests.swift` (boundary spec test),
+  `RedBlackTreeMultiSet_99_DeathTests.swift` (4 exit tests),
+  `CPP_BEHAVIOR_COMPARISON_TASK.md`, this file.
 
 ## History
 

@@ -98,6 +98,31 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(multiset.map(\.label), ["a", "X", "b", "c"])
     }
 
+    /// `startIndex`・`endIndex`(空の場合は両者が一致)はいずれも有効なhintで、
+    /// std::multisetと同様にその位置へ挿入する。
+    func test_insertWithHint_acceptsStartAndEndIndexBoundaries() {
+      var empty = RedBlackTreeMultiSet<Int>()
+      let intoEmpty = empty.insert(10, hint: empty.endIndex)
+      XCTAssertEqual(empty[intoEmpty], 10)
+      XCTAssertEqual(Array(empty), [10])
+
+      var multiset = RedBlackTreeMultiSet([10, 20])
+      let atEnd = multiset.insert(30, hint: multiset.endIndex)
+      XCTAssertEqual(multiset[atEnd], 30)
+      XCTAssertEqual(multiset.index(after: atEnd), multiset.endIndex)
+
+      let newLeast = multiset.insert(5, hint: multiset.startIndex)
+      XCTAssertEqual(newLeast, multiset.startIndex)
+      XCTAssertEqual(Array(multiset), [5, 10, 20, 30])
+
+      let first = Member(key: 1, label: "first")
+      var members = RedBlackTreeMultiSet<Member>([first])
+      let equivalent = Member(key: 1, label: "new")
+      let atStart = members.insert(equivalent, hint: members.startIndex)
+      XCTAssertEqual(atStart, members.startIndex)
+      XCTAssertEqual(members.map(\.label), ["new", "first"])
+    }
+
     func test_update_replacesOnlySpecifiedEquivalentMember() {
       let members = [
         Member(key: 1, label: "first"),

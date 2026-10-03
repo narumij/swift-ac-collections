@@ -124,9 +124,9 @@
 - 本調査はビルド診断の収集のみで、`swift test`は実行していない
   (production codeの変更がないため)。
 
-## 8. `PermutationModule` 実装計画(2026-10-03、計画のみ)
+## 8. `PermutationModule` 実装計画(2026-10-03、バッチ1実施済み)
 
-production codeは変更しておらず、設定も恒久適用していない。
+バッチ1(G1の`deinit`)のみproduction codeへ適用済み。設定は恒久適用していない。
 
 ### 再現手順と結果
 
@@ -174,6 +174,22 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
 4. **バッチ4(恒久適用)**: 警告0件を確認してから`PermutationModule`へ
    `.strictMemorySafety()`を追加する。
 
+### バッチ1 実施結果(2026-10-03)
+
+- 変更: `Permutations.Buffer.deinit`の3式(`withUnsafeMutablePointers`呼び出しと
+  クロージャ内の`deinitialize`2つ)へscoped `unsafe`を付与。外側の`unsafe`は
+  クロージャ本体へ及ばないため、3箇所それぞれに必要だった。
+- 一時適用ビルド(§8の再現手順と同じ): 一意な診断が**17→14件**。消えたのは
+  120:7、121:9、122:9の3件のみで、残り14件はG2〜G6の行と一致。新しい種類の
+  警告・エラー(`unsafe`の不要指摘を含む)は出なかった。`unsafe`式は
+  tools-version 6.2でそのままビルドできた。
+- `Package.swift`は元に戻した(`git diff Package.swift`は空)。
+- 検証: 通常構成で`swift build`成功、`swift test --filter
+  PermutationTests.PermutationTests`で2件成功。`COMPATIBLE_ATCODER_2025`を一時的に
+  有効にして`swift test --filter 'PermutationTests|AcCollectionsTests'`を実行し、
+  PermutationTests 2件・AcCollectionsTests 4件が成功。定義を元に戻したあとも
+  通常ビルドが成功した。
+
 ### 計画で見つけた懸念(ユーザー判断事項、今回は未変更)
 
 - **公開APIの範囲外アクセス**: `SubSequenceN.subscript(position:)`(公開)は
@@ -181,6 +197,29 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
   `position`で範囲外メモリを読む(コード読解による。未定義動作のため実行確認はしていない)。
   `RandomAccessCollection`としては範囲外はtrapが期待される。strict memory safetyの
   警告解消とは独立した論点で、修正するならDeath Testを先に追加する。
+  - **実測(2026-10-03、Task 3)**: Swift Testingのexit test(子プロセス)内だけで
+    `[1, 2, 3].nextPermutations()`の最初の要素へアクセスした。テストランナー本体では
+    範囲外アクセスをしていない。一時テストファイルは記録後に削除した。
+
+    | position | Debug(各10回) | Release(各10回) |
+    | --- | --- | --- |
+    | `endIndex`(3) | 正常終了、値`0` | 正常終了、値`1` |
+    | `-1` | 正常終了、値`0` | 正常終了、値`0` |
+    | `endIndex + 1` | 正常終了、値`0` | 正常終了、値`0` |
+    | `1 << 40`(各3回) | `SIGSEGV` | `SIGSEGV` |
+
+    公開`Index == Int`なので、負値・`endIndex`超過は公開APIだけで作れる。近傍の
+    範囲外はtrapせず、構成によって異なる不定値を返す(`-1`はheader末尾の読み出し)。
+    遠方はSIGSEGV。どちらも契約として固定すべき挙動ではないため、**Death Testは
+    追加していない**。
+  - **最小修正案(ユーザー判断待ち、未実施)**: 公開層の
+    `SubSequenceN.subscript(position:)`だけに
+    `precondition(position >= startIndex && position < endIndex, "Index out of range")`
+    を追加する。内部の`Buffer`添字(`nextPermutation`のホットパス)は変更しない。
+    修正前に、上表の3ケースが`.failure`で終了することを確認するDeath Testを
+    `Tests/PermutationTests`に先に追加し、未修正の状態で失敗することを確認する。
+    要素アクセスごとに比較が2回増えるため、`Benchmarks/`にPermutationのベンチマークが
+    無い点も併せて判断材料とする。
 - G5の`newCapacity < count`の未検査(現状は到達経路なし)。
 - G4の非`final`クラスに対する`unsafeDowncast`(現状はサブクラスなし)。
 

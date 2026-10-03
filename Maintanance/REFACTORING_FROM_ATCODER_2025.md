@@ -23,10 +23,8 @@
 挿入後の平衡化、探索位置、削除時の`begin`更新を個別に確認する。通常の公開APIテストより
 下の層で、コンテナと木アルゴリズムの接続を検証していた。
 
-**[事実]** 下記「テスト側の移行」で詳述する通り、このファイルは`release/AtCoder/2025`時点の
-原本を直接改名し続けたものではなく、2026-01-03に作られた分岐コピーが約9か月かけて
-改名・移動・大幅書き換えを経て現在の姿になった、派生・再構成版である。原本そのものは
-2026-09-29に別途削除されている。
+**[事実]** このファイルは`release/AtCoder/2025`時点の原本そのものではなく、移行中に作った
+分岐コピーを新しい内部構造へ追従させた派生・再構成版である。
 
 現在はファイル全体を`#if false`で囲み、コンパイル対象外の保存資料としている。現行APIへ
 追従させることより、移行当時の構造、命名、テスト手法を残すことを優先する。
@@ -115,110 +113,23 @@ AtCoder2025版よりさらに前に遡る。
 `@_exported import`のみの互換レイヤー」という構造は、実装を書き直したのではなく、
 ターゲット名とディレクトリ名の交換 + 旧名での薄い再公開シムの新設によって成立したと考えられる。
 
-## テスト側の移行(時系列)
+## テスト側の移行
 
-テスト側、特にkeystone testの移行は、上記ソース側の移行とは独立した時系列を持つ。
-また、単純な改名ではなく「分岐→並行運用→原本削除→分岐側の大幅改稿」という経過をたどる。
+テスト側では、旧実装を直接操作する固定Fixtureテストを捨てず、移行用の分岐コピーとして
+利用した。
 
-### T1. 分岐点(`cc0ca3ad`、2026-01-03)
+**[事実]** 2026-01-03の`cc0ca3ad`で、既存の
+`Tests/RedBlackTreeTests/tree/___RedBlackTreeContainerTests.swift`を残したまま、unsafe実装向けの
+派生ファイルを追加した。分岐直後の両者は、条件コンパイルや内部名に差があるものの、全体構成は
+ほぼ同じだった。これにより、旧実装と新しいunsafe実装を並行して検証できる期間を設けている。
 
-**[事実]** コミット`cc0ca3ad`(`test`)は単一コミットで次の2つを同時に行っている。
+**[事実]** その後、移行先のテストは内部構造の変化に合わせて改稿され、現在の
+`Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/___RedBlackTreeContainerTests_unsafe.swift`へ至った。
+旧系列との対応が分かる名前へ戻し、現在はコンパイル対象外の一次資料として保存している。
 
-- `M  Tests/RedBlackTreeTests/tree/___RedBlackTreeContainerTests.swift`(原本を編集)
-- `A  Tests/RedBlackTreeTests/unsafeTree/old/___RedBlackTreeContainerTests_unsafe.swift`(新規追加)
-
-分岐直後の両ファイルを`diff`で比較すると、`#if DEBUG && !USE_UNSAFE_TREE` /
-`#if DEBUG && USE_UNSAFE_TREE`のような条件コンパイルの反転や、`___header.__begin_node` /
-`___header.__begin_node_`といった細部の差はあるが、全体構成はほぼ同一であり、新ファイルは
-原本からの意図的な分岐コピーであると判断できる。この時点から、同じ役割を持つ2つのファイルが
-並行して存在するようになった。
-
-### T2. 分岐先ファイルの改名・移動(2026-01〜2026-09、個別コミット追跡なし)
-
-**[事実]** `git log --follow`で分岐先ファイル(最終的に現行のkeystoneファイルへ繋がる系列)を
-追うと、`cc0ca3ad`から現在までの間に以下のパスを経由している(いずれも内容を伴わない
-リネームのみの移動かどうかは全コミットを個別検証していないため、パスの遷移という
-確認済みの事実のみを記録する)。
-
-`unsafeTree/old/` → (複数回の中間移動) →
-`DebugAdditionals/TransitionFromLegacy/___RedBlackTreeContainerTests_unsafe.swift`
-
-### T3. 原本の削除(`1357bd3c`、2026-09-29)
-
-**[事実]** コミット`1357bd3c`(`sesson half, hand edit`)で、分岐元の原本
-`Tests/RedBlackTreeTests/tree/___RedBlackTreeContainerTests.swift`(337行)が、対応する追加なしに
-削除されている。この時点で、2026-01-03に始まった2系統の並行状態が解消され、T2の系列
-(`DebugAdditionals/TransitionFromLegacy/`配下のファイル)だけが残った。
-
-### T4. 分岐先ファイルの大幅改稿と現行パスへの移動(`ecb3085d`、2026-09-30 07:36)
-
-**[事実]** 原本削除の翌日、コミット`ecb3085d`(`refactoring tests?`)は`git show -M
---name-status`上で次のように記録される。
-
-```
-D  Tests/RedBlackTreeTests/DebugAdditionals/TransitionFromLegacy/___RedBlackTreeContainerTests_unsafe.swift
-A  Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/___RedBlackTreeContainerTests_unsafe.swift
-```
-
-`-M`のリネーム検出が働かず、削除・新規追加として記録されている。削除前(350行)と
-追加後(347行)の内容を直接`diff`すると446行分の差分があり、ほぼ全面的な書き換えに近い
-(同じディレクトリ移動コミットの中の他のファイル群は`R100`/`R098`等、素のリネームとして
-検出されている点と対照的)。したがって、このコミットは「移動」に加えて「内容の大幅な
-書き直し」を同時に行ったものであり、単純なリネームとして記録するのは不正確である。
-現行のkeystoneファイルのパスはこの`ecb3085d`で初めて確定した。
-
-### T5. Bootstrap命名への改名とその後の揺り戻し(`438af006`ほか、2026-09-30〜2026-10-03)
-
-**[事実]** `ecb3085d`の3分後、同日のコミット`438af006`(`refactoring tests?`)で
-`___RedBlackTreeContainerTests_unsafe.swift` → `UnsafeTreeV2BootstrapTests.swift`へ改名された
-(`R099`)。この名前は2026-10-02の`64118cd6`時点まで維持され、翌2026-10-03のコミット
-`0483012f`(`refactoring`)で`UnsafeTreeV2BootstrapTests.swift` → `___RedBlackTreeContainerTests_unsafe.swift`
-(`R099`)へ戻され、現在の名前に至っている。
-
-**[解釈]** この一般名(`Bootstrap`)では旧`RedBlackTreeContainerTests`からの移行資料であることが
-見えにくいため、最終的に第1段階由来の名前へ戻したと考えられる。`Bootstrap`という役割は
-ファイル内コメントと本書で保持する。
-
-### T6. Fixtureと原木(`__tree`)の専用ターゲット化(2026-10-02)
-
-**[事実]** `29f43bb3`(2026-10-02 08:34、`fixture target`)の`git show -M --name-status`:
-
-```
-M  Package.swift
-R100  Tests/RedBlackTreeTests/Fixtures.md -> Tests/RedBlackTreeFixture/Fixtures.md
-A  Tests/RedBlackTreeFixture/RedBlackTreeFixture.swift
-D  Tests/RedBlackTreeTestSupport/___Node.swift
-```
-
-`RedBlackTreeCollections`に依存する独立ターゲット`RedBlackTreeFixture`を`Package.swift`へ
-新設し、`Fixtures.md`をそこへ移し、`RedBlackTreeTestSupport/___Node.swift`を廃止している。
-
-**[事実]** `60604ff6`(2026-10-02 13:32、`genboku test target`)の`git show -M --name-status`:
-
-```
-M  Package.swift
-M  Sources/RedBlackTreeCollections/Implements/__tree/unsafe_node/unsafe_node+pointer.swift
-M  Tests/RedBlackTreeFixture/Fixtures.md
-D  Tests/RedBlackTreeFixture/RedBlackTreeFixture.swift
-R072  .../Tree/Fixture/UnsafeNodeReferenceFixture.swift -> Tests/RedBlackTreeFixture/UnsafeNodeReferenceFixture.swift
-M  Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/RawBufferHeadFixture.swift
-M  Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/UnsafeNodeRawBufferCrossCheckTests.swift
-R100  Tests/RedBlackTreeTests/Tree/Fixture/TreeNodeOnlyFixture.swift -> Tests/RedBlackTreeTreeTests/Fixture/TreeNodeOnlyFixture.swift
-R100  Tests/RedBlackTreeTests/Tree/Fixture/TreeOwnedNodeFixture.swift -> Tests/RedBlackTreeTreeTests/Fixture/TreeOwnedNodeFixture.swift
-A  Tests/RedBlackTreeTreeTests/Fixture/TreeTestCase.swift
-R098/R099  Tests/RedBlackTreeTests/Tree/Foundamental/TreeFoundamental*.swift(10ファイル)
-   -> Tests/RedBlackTreeTreeTests/Foundamental/TreeFoundamental*.swift
-M  Tests/TESTING.md
-```
-
-新ターゲット`RedBlackTreeTreeTests`を`Package.swift`へ追加し、`Tests/RedBlackTreeTests/Tree/`
-配下にあった`Fixture/`(2ファイル)と`Foundamental/`(10ファイル、Allocation・
-ComparisonInjection・DeathTests・InvariantViolation・MemoryLayout・Multiplicity・
-Mutation・NodeSealing・SafePtr・Seal・Tests・Valueの各テスト)を
-`Tests/RedBlackTreeTreeTests/`へ全面移動している。`RedBlackTreeFixture.swift`自体は
-`RedBlackTreeFixture`ターゲットから削除され、`UnsafeNodeReferenceFixture.swift`に
-統合されている(類似度72%のリネームとして検出)。`Tests/TESTING.md`に記録のある
-「`__tree`: 専用ターゲット化」はこの`60604ff6`に対応する。
+**[事実]** 原木(`__tree`)のメモリ配置、ポインタ、比較、mutation、不変条件などのテストは、
+最終的に公開コレクションのテストから`RedBlackTreeTreeTests`へ分離された。Fixtureも専用ターゲットへ
+分けられ、公開APIの仕様検証と内部ノード契約の検証を別々に実行できる構成になった。
 
 ## Test migration(テストの移行について)
 
@@ -227,11 +138,8 @@ Mutation・NodeSealing・SafePtr・Seal・Tests・Valueの各テスト)を
 前提とした(`Maintanance/MAINTENANCE.md`「REFACTORING_FROM_ATCODER_2025 について」の
 ユーザー要望に明記)。これは上記の各段階にも一貫して表れている。
 
-- **[事実]** T1(2026-01-03)でまず分岐コピーを作り、原本とkeystone系列を約9か月間並行して
-  保持した上で、T3(2026-09-29)で原本を削除している。削除を急がず並行運用した点が、
-  「作り直すのではなくそのまま活用する」という方針と整合する。
-- **[事実]** T4(`ecb3085d`)はパスの移動と内容の大幅改稿を同時に行っているが、**削除ではなく
-  新しいパスへの追加という形**を取っており、ファイル自体は一貫して保持され続けている。
+- **[事実]** まず分岐コピーを作り、旧系列とkeystone系列を並行して保持した。新実装側の検証手段を
+  確立してから旧系列を整理しており、「作り直すのではなくそのまま活用する」という方針と整合する。
 - **[事実]** keystoneファイル(`___RedBlackTreeContainerTests_unsafe.swift`)は現在も`#if false`で
   コンパイル対象外のまま削除されずに保存されている。
 - **[事実]** S3のモジュール名変更では、`Tests/RedBlackTreeTests`等の`@testable import`対象の
@@ -244,6 +152,28 @@ Mutation・NodeSealing・SafePtr・Seal・Tests・Valueの各テスト)を
   (個別のファイル分解コミットは多数に及ぶため、現状のファイル数の差分という確認済みの事実のみを
   記録し、経緯の解釈は含めない)。
 
+## 現行ノード格納方式と結合処理の性能観察(2026-10-03)
+
+**[事実]** 現行実装を対象とした`Maintanance/CombiningAPIPerformanceEvidence.md`の計測では、
+1k〜256k要素の範囲で、既存ツリーへ逐次挿入する`merge`/`insert(contentsOf:)`経路が、
+新しい結果ツリーを構築する`formUnion`/`meld`経路より一貫して高速だった。Setのdisjoint入力では
+前者が後者のおよそ2倍速く、MultiSetでも同様の傾向を確認した。
+
+**[事実]** Setの`___meld_unique`について、結果バッファの初期容量を`2`から
+`count + other.count`へ変える可逆的なPoCを行ったが、変化は対照ケースと同程度の計測ノイズ内
+(0.96〜1.04倍)だった。現行のbucket式ノード格納では、容量拡張時に既存ノードを移動せず、
+bucketを末尾へ追加する。そのため、この範囲の遅さを単純な再確保不足だけでは説明できない。
+
+**[解釈]** ポインタ・ノード主体の現行格納方式では、逐次挿入側が既存ツリーと既存ノードを
+活用できる一方、meld側は結果ツリー全体を新しく構築する。この定数コストの差が、理論計算量では
+有利なmeld経路の優位を256k要素まで観測できなかった一因である可能性がある。ただし、
+`release/AtCoder/2025`版と同一条件で比較した記録はまだないため、「ポインタ版への移行が性能差を
+生んだ」と因果関係を確定することはできない。現時点で確定できるのは、**現行ノード格納方式では、
+計測範囲内でmeldの漸近的な利点が実測上現れていない**という点までである。
+
+この仮説を移行史として確定するには、`release/AtCoder/2025`版と現行版で、同じ要素型、入力順、
+重複率、storage共有条件、最適化設定を揃えた比較計測が必要になる。
+
 ## Refactoring method
 
 **[解釈]** 履歴から確認できる基本方針は次のとおり。
@@ -253,15 +183,12 @@ Mutation・NodeSealing・SafePtr・Seal・Tests・Valueの各テスト)を
 3. 分解した各層へ専用Fixtureと単体テストを設ける。
 4. 赤黒木の不変条件を、操作結果とは別の検証軸として維持する。
 5. 公開4型のTest as Specificationと、原木・UnsafeTreeV2の内部契約を分離する。
-6. 移行済みの旧テストは削除せず、コンパイル対象外の一次資料として温存する(ただし
-   T3のように、分岐コピーが確立した後であれば原本自体は削除されることがある)。
+6. 移行済みの旧テストは、必要に応じてコンパイル対象外の一次資料として温存する。
 
 今後、移行段階を追記するときは、コミット、旧パス、新パス、移した契約、代替テストを
 セットで記録する。推測による経緯は確定事実と分けて`[解釈]`として明示する。
 
 ## 未確認・今後の課題
 
-- T2(`unsafeTree/old/` → `DebugAdditionals/TransitionFromLegacy/`)間の中間コミットは
-  本調査でパスの最終到達点のみ確認しており、各中間リネームコミット個別の意図は未調査。
 - release時点の`RedBlackTreeMultiSet`/`Dictionary`/`MultiMap`がいつ・どのコミットで
   現在のファイル数まで分解されたかは未追跡。

@@ -117,9 +117,9 @@ extension Permutations {
 
     @inlinable
     deinit {
-      self.withUnsafeMutablePointers { header, elements in
-        elements.deinitialize(count: header.pointee.count)
-        header.deinitialize(count: 1)
+      unsafe self.withUnsafeMutablePointers { header, elements in
+        unsafe elements.deinitialize(count: header.pointee.count)
+        unsafe header.deinitialize(count: 1)
       }
     }
   }

@@ -25,7 +25,8 @@
 | `init(keysWithValues:)` | — | — | ✅ | — | `(Key, Value)` の列からMultiMapを生成する |
 | `init(uniqueKeysWithValues:)` | — | — | — | ✅ | 一意なキーと値の列からDictionaryを生成する |
 | `init(_:uniquingKeysWith:)` | — | — | — | ✅ | 重複キーをクロージャで統合してDictionaryを生成する |
-| `init(grouping:by:)` | — | — | ✅ | ✅ | 要素列をキーでグループ化して生成する |
+| `init(grouping:by:)` (`Value == [S.Element]`) | — | — | — | ✅ | 要素列をキーでグループ化し、キーごとに要素の配列を値とするDictionaryを生成する |
+| `init(grouping:by:)` (`Value == S.Element`) | — | — | ✅ | — | 各要素にキーを割り当て、要素ごとに1ペアを保持するMultiMapを生成する |
 | `init(arrayLiteral:)` | ✅ | ✅ | ✅ | ✅ | 配列リテラルから生成する |
 | `init(dictionaryLiteral:)` | — | — | ✅ | ✅ | Dictionaryリテラルから生成する |
 | `reserveCapacity(_:)` | ✅ | ✅ | ✅ | ✅ | 最低容量を予約する |
@@ -46,14 +47,14 @@
 | `min()` | ✅ | ✅ | ✅ | ✅ | 最小要素を返す |
 | `max()` | ✅ | ✅ | ✅ | ✅ | 最大要素を返す |
 | `first(where:)` | ✅ | ✅ | ✅ | ✅ | 条件を満たす最初の要素を返す |
-| `subscript(index:)` | ✅ | ✅ | ✅ | ✅ | Index位置の要素を参照する |
-| `subscript(key:) -> Value?` | — | — | — | ✅ | キーに対応する値を参照・更新する |
+| `subscript(position:)` | ✅ | ✅ | ✅ | ✅ | Index位置の要素を参照する(読み取り専用) |
+| `subscript(key:) -> Value?` | — | — | — | ✅ | キーに対応する値を参照・更新する。`nil` 代入で削除する |
 | `subscript(key:default:) -> Value` | — | — | — | ✅ | キーに対応する値を参照・更新し、存在しない場合は既定値を使う |
-| `subscript(key:) -> Values` | — | — | ✅ | — | キーに対応する全要素のViewを返す |
+| `subscript(key:) -> Values` | — | — | ✅ | — | キーに対応する全mapped valueの `RedBlackTreeMappedValuesView` を返す。View経由の削除は対応するペアを削除する |
 | `subscript(mappedValueAt:)` | — | — | 検討 | — | Index位置の要素を返す |
-| `values(forKey:)` | — | — | 廃止 | — | キーに対応する値を返す |
+| `values(forKey:)` | — | — | — | — | 現行APIなし。`subscript(key:)` が返すMappedValues Viewを使う |
 | `keys` | — | — | ✅ | ✅ | キーだけを遅延走査するSequenceを返す |
-| `values` | — | — | ✅ | ✅ | 値を参照・更新するValues Viewを返す |
+| `values` | — | — | ✅ | ✅ | 全mapped valueを参照・更新する `RedBlackTreeMappedValuesView` を返す |
 
 ## Indexと探索
 
@@ -107,20 +108,22 @@ Index Rangeの不正は安全な操作では拒否される。一方、Boundは�
 | API名 | Set | MultiSet | MultiMap | Dictionary | おおよその機能 |
 | --- | :---: | :---: | :---: | :---: | --- |
 | `insert(_:)` | ✅ | ✅ | ✅ | ✅ | 要素を挿入する |
-| `insert(_:hint:)` | ✅ | ✅ | ✅ | ✅ | ヒントを用いて要素を挿入する |
+| `insert(_:hint:)` | ✅ | ✅ | ✅ | ✅ | ヒントを用いて要素を挿入する。Set/Dictionaryは `(inserted:, indexAfterInsert:)`、Multi系は挿入位置のIndexを返す |
 | `insert(key:value:)` | — | — | ✅ | ✅ | キーと値を挿入する |
 | `insert(key:value:hint:)` | — | — | 検討 | ✅ | ヒントを用いてキーと値を挿入する |
-| `update(_:hint:)` | ✅ | — | — | ✅ | ヒントを用いて要素を更新する |
-| `update(with:)` | ✅ | — | — | — | Set要素を置換し、旧要素を返す |
-| `update(_:at:)` | — | ✅ | — | — | Index位置の要素を更新する。キー一致を前提とする |
-| `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す |
-| `updateValue(_:forKey:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
-| `updateValue(_:forKey:hint:)` | — | — | — | ✅ | キーの値を更新し、旧値を返す |
+| `update(_:hint:)` | ✅ | — | — | ✅ | ヒントを用いて挿入、または既存要素を置換し、旧要素を返す。新規挿入時は `nil` |
+| `update(with:)` | ✅ | — | — | — | Set要素を挿入または置換し、旧要素を返す |
+| `update(_:at:)` | — | ✅ | — | — | Index位置の要素を等価な要素で置換し、旧要素を返す。無効Indexまたは非等価時は `nil` |
+| `updateValue(_:at:)` | — | — | ✅ | — | Index位置の値を更新し、旧値を返す。無効Indexでは `nil` |
+| `updateValue(_:forKey:)` | — | — | — | ✅ | キーの値を更新または挿入し、旧値を返す |
+| `updateValue(_:forKey:hint:)` | — | — | — | ✅ | ヒントを用いてキーの値を更新または挿入し、旧値を返す |
 | `index(inserting:)` | ✅ | TODO | ✅ | TODO | 挿入し、挿入位置のIndexを返す |
 | `insert(contentsOf:)` | — | ✅ | ✅ | — | 別コンテナまたはSequenceの内容を追加する |
 | `inserting(contentsOf:)` | — | ✅ | ✅ | — | 内容を追加した新しい値を返す |
-| `merge(_:)` | ✅ | — | — | ✅ | 他の集合またはキー値列を統合する |
-| `merging(_:)` | ✅ | — | — | ✅ | 統合した新しい値を返す |
+| `merge(_:)` | ✅ | — | — | — | Set、MultiSet、またはSequenceの要素を統合する |
+| `merging(_:)` | ✅ | — | — | — | 統合した新しいSetを返す |
+| `merge(_:uniquingKeysWith:)` | — | — | — | ✅ | Dictionaryまたはキー値列を統合し、重複キーをクロージャで解決する |
+| `merging(_:uniquingKeysWith:)` | — | — | — | ✅ | 統合した新しいDictionaryを返す |
 | `meld(_:)` | — | ✅ | ✅ | — | 同種コンテナを構造的に結合する。Multi系では重複を保持する |
 | `melding(_:)` | — | ✅ | ✅ | — | 結合した新しい値を返す。Multi系では重複を保持する |
 
@@ -201,8 +204,12 @@ MultiSetの集合演算は重複数を考慮する。Setの演算と同じ名前
 
 ## Range View
 
-SetとMultiSetは `RedBlackTreeKeyOnlyRangeView`、MultiMapとDictionaryは
-`RedBlackTreeKeyValueRangeView` を返す。
+Range系subscript(`IndexRange`、`IndexRangeExpression`、`UnboundedRange`、
+`BoundRangeExpression`)は、SetとMultiSetでは `RedBlackTreeKeyOnlyRangeView`、
+MultiMapとDictionaryでは `RedBlackTreeKeyValueRangeView` を返す。
+MultiMapの `subscript(key:)` とMap系の `values` が返す
+`RedBlackTreeMappedValuesView` はRange Viewではなく、mapped valueを要素とする
+別のViewである(`API-Matrix-View.md` 参照)。
 
 | API名 | Set | MultiSet | MultiMap | Dictionary | おおよその機能 |
 | --- | :---: | :---: | :---: | :---: | --- |
@@ -234,14 +241,14 @@ Viewの `endIndex` は基底コンテナ内の要素を指す場合がある。�
 | API名 | 現在の用途 |
 | --- | --- |
 | `_Key`, `_MappedValue`, `_PayloadValue` | 内部ジェネリック制約とpayload表現 |
-| `_create(_:)` | Range Viewから基底コンテナを構築する内部フック |
-| `_isIdentical(to:)` | Range Viewのストレージ・境界同一性判定 |
-| `__raw_find(_:)`, `__raw_end` | raw pointerを扱う内部フック |
-| `___erase(_:)` | 旧実装・互換層から使われる削除フック |
-| `_unsafe` / `_checked` ラベルのsubscript | 安全性契約を呼び出し側へ委ねる低レベルAPI |
+| `_isIdentical(to:)` | Range View・MappedValues Viewのストレージ・境界同一性判定 |
+| `__raw_find(_:)`, `__raw_end` | raw pointerを扱う内部フック。Setのみ、`BENCHMARK` trait有効時だけ公開される |
 
 これらを製品APIとしない場合は、`package` または `internal` へ狭められるか、
 `@usableFromInline` で十分かをABI公開前に確認する。
+
+`_create(_:)` は削除済み。`___erase(_:)` と `_unsafe` / `_checked` ラベルの
+subscriptは `COMPATIBLE_ATCODER_2025` 構成でのみ公開され、通常構成には存在しない。
 
 ## 更新ルール
 

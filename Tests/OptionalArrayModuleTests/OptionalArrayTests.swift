@@ -344,4 +344,90 @@ final class OptionalArrayTests: XCTestCase {
     }
     XCTAssertEqual(deinitCount, 2, "スコープを抜けてarrayがdeinitされると、未removeAllの要素も解放されること")
   }
+
+  func testOptionalArray2DDeinitReleasesRemainingReferenceElementsExactlyOnce() {
+    final class Box {
+      let onDeinit: () -> Void
+      init(_ onDeinit: @escaping () -> Void) { self.onDeinit = onDeinit }
+      deinit { onDeinit() }
+    }
+
+    var deinitCount = 0
+    do {
+      var array = OptionalArray2D<Box>(width: 2, height: 2)
+      array[0][0] = Box({ deinitCount += 1 })
+      array[1][1] = Box({ deinitCount += 1 })
+      XCTAssertEqual(deinitCount, 0)
+    }
+    XCTAssertEqual(deinitCount, 2, "スコープを抜けてarrayがdeinitされると、未removeAllの要素も解放されること")
+  }
+
+  func testOptionalArray4DDeinitReleasesRemainingReferenceElementsExactlyOnce() {
+    final class Box {
+      let onDeinit: () -> Void
+      init(_ onDeinit: @escaping () -> Void) { self.onDeinit = onDeinit }
+      deinit { onDeinit() }
+    }
+
+    var deinitCount = 0
+    do {
+      var array = OptionalArray4D<Box>(size0: 2, size1: 2, size2: 2, size3: 2)
+      array[0][0][0][0] = Box({ deinitCount += 1 })
+      array[1][1][1][1] = Box({ deinitCount += 1 })
+      XCTAssertEqual(deinitCount, 0)
+    }
+    XCTAssertEqual(deinitCount, 2, "スコープを抜けてarrayがdeinitされると、未removeAllの要素も解放されること")
+  }
+
+  /// `removeAll()`後のスロットが再利用でき、再設定した要素は所有配列のdeinitで
+  /// 1回だけ解放されること(`removeAll`で解放済みの要素は二重解放されないこと)を検証する。
+  func testOptionalArray3DRemoveAllReleasesReferenceElementsAndSlotsAreReusable() {
+    final class Box {
+      let onDeinit: () -> Void
+      init(_ onDeinit: @escaping () -> Void) { self.onDeinit = onDeinit }
+      deinit { onDeinit() }
+    }
+
+    var deinitCount = 0
+    do {
+      var array = OptionalArray3D<Box>(width: 2, height: 2, depth: 2)
+      array[0][0][0] = Box({ deinitCount += 1 })
+      array[1][1][1] = Box({ deinitCount += 1 })
+      array.removeAll()
+      XCTAssertEqual(deinitCount, 2, "removeAllで設定済みの全要素がdeinitされること")
+      XCTAssertNil(array[0][0][0])
+      XCTAssertNil(array[1][1][1])
+
+      let reused = Box({ deinitCount += 1 })
+      array[1][1][1] = reused
+      XCTAssertTrue(array[1][1][1] === reused, "removeAll後のスロットへ再設定できること")
+      XCTAssertEqual(deinitCount, 2)
+    }
+    XCTAssertEqual(deinitCount, 3, "deinitでは再設定した要素だけが1回解放されること")
+  }
+
+  func testOptionalArray4DRemoveAllReleasesReferenceElementsAndSlotsAreReusable() {
+    final class Box {
+      let onDeinit: () -> Void
+      init(_ onDeinit: @escaping () -> Void) { self.onDeinit = onDeinit }
+      deinit { onDeinit() }
+    }
+
+    var deinitCount = 0
+    do {
+      var array = OptionalArray4D<Box>(size0: 2, size1: 2, size2: 2, size3: 2)
+      array[0][0][0][0] = Box({ deinitCount += 1 })
+      array[1][1][1][1] = Box({ deinitCount += 1 })
+      array.removeAll()
+      XCTAssertEqual(deinitCount, 2, "removeAllで設定済みの全要素がdeinitされること")
+      XCTAssertNil(array[0][0][0][0])
+      XCTAssertNil(array[1][1][1][1])
+
+      let reused = Box({ deinitCount += 1 })
+      array[1][1][1][1] = reused
+      XCTAssertTrue(array[1][1][1][1] === reused, "removeAll後のスロットへ再設定できること")
+      XCTAssertEqual(deinitCount, 2)
+    }
+    XCTAssertEqual(deinitCount, 3, "deinitでは再設定した要素だけが1回解放されること")
+  }
 }

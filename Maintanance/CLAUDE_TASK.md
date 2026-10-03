@@ -1,8 +1,228 @@
 # Codex-to-Claude Work Request
 
-Status: Completed — follow-up cleanup and release documentation
+Status: Active — benchmark validation, first strict-memory-safety adoption, and task-file compaction
 
-## Result Summary (this pass)
+## Active Follow-up Assignment
+
+Complete these three bounded tasks in order. Communicate with the user in
+Japanese. Work only inside the repository, as required by the root `CLAUDE.md`.
+Do not edit the paused `RedBlackTreeSet` or `RedBlackTreeDictionary` outlines,
+do not start the deferred C++ comparison target, and do not optimize production
+meld code or the unrelated `erase(where:)` CoW path. Do not commit or push.
+
+### Task 1 — Validate and harden the new Combining benchmarks
+
+Review the benchmark cases added in
+`Benchmarks/Sources/Benchmarks/CombiningAPIBenchmarks.swift` before treating the
+recorded measurements as durable evidence.
+
+1. Make shuffled inputs deterministic and reproducible. Do not use an
+   unseeded `shuffled()` call in evidence-producing benchmarks.
+2. Confirm from the benchmark harness semantics that every measured sample
+   starts from the intended collection state. In particular, ensure a mutating
+   combining operation is not repeatedly measured against a destination that
+   already contains `other`. If necessary, restructure setup/reset without
+   timing construction that is meant to remain outside the measured operation.
+3. Add lightweight result validation outside the timed region so a benchmark
+   cannot silently measure an incorrect or no-op final state.
+4. Re-run only the same bounded representative measurement set. Replace the raw
+   result files and update `Maintanance/CombiningAPIPerformanceEvidence.md` if
+   corrected methodology changes any conclusion.
+5. Record the exact repository-local commands. Do not access external result or
+   cache directories, and do not expand this into a larger benchmark campaign.
+
+### Task 2 — Enable strict memory safety for the two warning-free facades
+
+Permanently add `.strictMemorySafety()` only to the `AcCollections` and
+`RedBlackTreeModule` targets identified as warning-free by
+`Maintanance/StrictMemorySafetyReadiness.md`.
+
+1. Make the smallest possible `Package.swift` change.
+2. Build each affected target and the complete root package. Run the normal root
+   test suite if the build succeeds.
+3. Confirm these two targets still emit no strict-memory-safety diagnostics.
+4. If either target produces a warning or error, revert that target's setting
+   rather than changing production declarations or adding suppressions.
+5. Update the readiness document and current maintenance status to distinguish
+   this completed first adoption stage from the still-deferred low-level targets.
+
+Do not enable the setting for `PermutationModule`, `BareArrayModule`,
+`OptionalArrayModule`, or `RedBlackTreeCollections` in this task.
+
+### Task 3 — Compact the Claude task handoff
+
+`Maintanance/CLAUDE_TASK.md` has accumulated nearly one thousand lines of
+completed assignments, which makes every session startup unnecessarily costly.
+
+1. Move the completed assignment text and result summaries into
+   `Maintanance/CLAUDE_TASK_HISTORY.md`, preserving their order and factual
+   content.
+2. Keep this file focused on the current status, active assignment, the latest
+   concise result summary, and a link to the history file.
+3. Do not rewrite or reinterpret historical decisions while moving them.
+4. Keep the resulting active handoff short enough to scan at session startup.
+
+Validation for all three tasks:
+
+- Run the narrow benchmark/build/test commands required by the claims above.
+- Run `git diff --check`.
+- Confirm `Package.swift` contains the setting only for the two authorized
+  facade targets.
+- Change this status to `Completed` only when all three tasks are complete and
+  add a concise result summary above the archived-history link.
+
+## Result Summary (three follow-up investigations)
+
+Completed all three tasks in the user-recommended order: Task 3, Task 1, Task 2.
+Did not edit the paused RedBlackTreeSet outline or the RedBlackTreeDictionary
+outline Codex was concurrently editing, and did not start the deferred C++
+comparison target or the unrelated `erase(where:)` CoW issue.
+
+**Task 3 (stale maintenance status reconciliation):** Removed the
+`TreeFoundamentalAllocationTests`のASan調査 and `PermutationModule改修管理`
+entries from `MAINTENANCE.md`'s `優先事項` and recorded them as completed in
+`完了済みの要望`, with a concise cause/result note for the ASan case (root
+cause was test-counter contamination from `AcCollectionsTests` lacking
+`RedBlackTreeCollections`の寿命カウンタ discipline after
+`TreeFoundamentalAllocationTests`'s macOS-only guard was widened to
+`#if DEBUG`, not a real memory-safety bug; fixed in commits `c62a633b`/
+`9add0d5d`/`8bc7c3ba`/`60efef09`). Confirmed locally
+(`swift test --filter TreeFoundamentalAllocationTests` 5/5,
+`AcCollectionsTests` 3/3) since this session has no GitHub Actions access.
+Confirmed all four Codable non-sorted/duplicate-input regression tests exist
+and pass (`RedBlackTreeDictionaryCodableTests`,`RedBlackTreeSetCodableTests`,
+`RedBlackTreeMultiSetCodableTests`,`RedBlackTreeMultiMapCodableTests`; 14
+tests, 0 failures) — no stale pending item referenced this as missing.
+Confirmed `Tests/TESTING.md` already represents the PermutationModule and
+`unranged()` removals as completed.
+
+**Task 1 (strictMemorySafety readiness audit):** Temporarily applied
+`.strictMemorySafety()` to `RedBlackTreeCollections`, `AcCollections`,
+`RedBlackTreeModule`, `PermutationModule`, `OptionalArrayModule`, and
+`BareArrayModule`; collected and classified diagnostics by target/file/category
+in `Maintanance/StrictMemorySafetyReadiness.md`. All targets built with 0
+errors. `AcCollections`と`RedBlackTreeModule`は警告0件で即時適用可能。
+`PermutationModule`(34)/`BareArrayModule`(116)/`OptionalArrayModule`(144)/
+`RedBlackTreeCollections`(4,948)はいずれも意図的な生ポインタ・手動メモリ管理
+コード由来の警告で、機械的に直せる「ふつうの宣言」由来の警告は見つからなかった。
+段階的採用順を提案。Restored `Package.swift` exactly
+(`git diff Package.swift` empty). No annotations, concurrency semantics, or
+diagnostic suppressions were added.
+
+**Task 2 (Combining API evidence gap):** Traced `merge`/`merging`/
+`insert(contentsOf:)`/`inserting(contentsOf:)`(O(*n* log(*m+n*)), via
+`___insert_range_unique`/`___insert_range_multi`) against `union`/`formUnion`/
+`meld`/`melding`(O(*n*+*m*), via `___meld_unique`/`___meld_multi`) for
+Set/MultiSet/MultiMap(Dictionaryにはmeld系の代替が存在しない)。Found that
+`___meld_unique`(Setのmeld経路)はcapacity 2から都度拡張するのに対し
+`___meld_multi`(MultiSet/MultiMap)は`count+other.count`を事前確保する非対称性
+を発見。Added 19 Set + 8 MultiSet benchmark cases to
+`Benchmarks/Sources/Benchmarks/CombiningAPIBenchmarks.swift`(reusing the
+existing `swift-collections-benchmark`harness)and ran a bounded measurement
+(sizes 1k/16k/256k, cycles 1, <4s total)。Raw results saved to
+`Benchmarks/Results/CombiningAPI/`。Found: (a) `reserveCapacity`has no measurable
+effect on either path(meld系は呼び出し元の容量を参照しないため); (b) at
+1k–256k the insertion-loop path was consistently faster than the meld path;
+(c) `other`'s construction order(sorted literal vs shuffled insertion)caused a
+2–6x difference, larger than anything the capacity axis explains; (d) shared
+destination storage costs the insertion-loop path an extra CoW copy but does
+not affect the meld path. Recorded full evidence, conclusions, and a proposed
+conditional-wording direction (not applied to public docs) in
+`Maintanance/CombiningAPIPerformanceEvidence.md`, and flagged the
+`___meld_unique`missing-upfront-capacity asymmetry as a separate suspected
+performance defect for future consideration (not fixed in this task).
+
+**Validation (all three tasks):**
+- `swift test --filter TreeFoundamentalAllocationTests` — 5/5 passed.
+- `swift test --filter 'RedBlackTreeDictionaryCodableTests|RedBlackTreeSetCodableTests|RedBlackTreeMultiSetCodableTests|RedBlackTreeMultiMapCodableTests'` — 14/14 passed.
+- `swift build --target RedBlackTreeCollections` and `swift build`(全ターゲット)with
+  `.strictMemorySafety()`temporarily applied — succeeded, 0 errors.
+- `swift build -c release`(Benchmarks package, with the new benchmark file) — succeeded.
+- `swift run -c release benchmark run`(bounded, sizes 1k/16k/256k, cycles 1) —
+  succeeded for Set and MultiSet combining benchmarks.
+- `swift test`(repository root, normal mode) — full suite passed, no failures.
+- `git diff --check` — clean.
+- `git diff Package.swift` — empty (restored).
+
+Reported to the user in Japanese.
+
+## Previous Active Follow-up Assignment (now completed, see Result Summary above)
+
+Complete these three bounded tasks in order. Communicate with the user in
+Japanese. Do not edit the paused RedBlackTreeSet outline. Do not start the C++
+behavior-comparison target, which the user explicitly deferred.
+
+### Task 1 — Audit readiness for strict memory safety
+
+The user wants to move toward `.strictMemorySafety()`. Perform a readiness
+audit only; do not permanently enable the setting in this task.
+
+1. Confirm the exact SwiftPM setting supported by the repository's current
+   tools version and toolchain using authoritative documentation/tool output.
+2. Temporarily apply it to the smallest relevant target, then to the package
+   targets where practical, and collect every compiler diagnostic by target,
+   file, and category.
+3. Separate diagnostics caused by intentional low-level pointer/storage code
+   from ordinary declarations that can be fixed mechanically.
+4. Propose a staged adoption order with small reviewable batches. Identify any
+   target that can enable the setting immediately without production changes.
+5. Restore `Package.swift` exactly before finishing. Record commands, results,
+   and recommendations in a concise maintenance document and update
+   `Maintanance/MAINTENANCE.md` without claiming adoption is complete.
+
+Do not add annotations, change concurrency semantics, or suppress diagnostics
+as part of this audit.
+
+### Task 2 — Resolve the evidence gap behind Combining API recommendations
+
+Investigate the existing documentation recommendation around incremental
+insertion versus `union` / `formUnion` / `merge` / `merging` / `meld` /
+`melding`. The current "sufficient capacity" wording lacks evidence.
+
+1. Trace the actual implementation paths and documented complexity for the
+   corresponding Set, MultiSet, Dictionary, and MultiMap operations.
+2. Reuse the benchmark package and existing benchmark conventions. Add only
+   focused benchmark cases needed to compare representative input sizes,
+   already-sorted versus shuffled input, unique versus duplicate-heavy input,
+   reserved versus unreserved destination capacity, and unique versus shared
+   storage where applicable.
+3. Run a small, reproducible measurement set sufficient to reveal trends; do
+   not launch an unbounded benchmark campaign.
+4. Record commands, environment, raw result location, and evidence-backed
+   conclusions in a concise maintenance document.
+5. Do not rewrite the public recommendation yet. If results do not support one
+   simple rule, say so and propose accurate conditional wording for user
+   review.
+
+Do not optimize production code during this task. Report any suspected
+performance defect separately.
+
+### Task 3 — Reconcile stale maintenance status
+
+Review only the current-state sections of `Maintanance/MAINTENANCE.md` and
+`Tests/TESTING.md` against the repository and recent completed work.
+
+- Mark the Linux ASan investigation resolved now that CI passes, preserving a
+  concise cause/result record rather than deleting the history.
+- Confirm the four Codable non-sorted/duplicate-input regression tests and the
+  corresponding implementation fix already exist; remove any current pending
+  item that still claims this work is missing.
+- Confirm the PermutationModule and `unranged()` removals are represented as
+  completed, not pending.
+- Preserve user-written future requests, the deferred C++ target, open design
+  questions, and historical reference logs.
+- Keep `Current handoff` within its documented size limit instead of appending
+  another long chronology.
+
+Validation for all three tasks:
+
+- Run the narrow builds/tests needed for factual claims.
+- Restore every temporary manifest/configuration edit.
+- Run `git diff --check`.
+- Change this status to `Completed` only after all three tasks are complete and
+  add a concise result summary above the earlier completed assignments.
+
+## Previous Result Summary (completed follow-up)
 
 Completed all three tasks below.
 
@@ -47,7 +267,7 @@ section: the PermutationModule full-permutation/unsafe API removal (leaving
 
 Reported to the user in Japanese.
 
-## Active Follow-up Assignment
+## Completed Follow-up Assignment
 
 Complete these three bounded tasks in order. Communicate with the user in
 Japanese. Do not edit the paused RedBlackTreeSet outline and do not broaden

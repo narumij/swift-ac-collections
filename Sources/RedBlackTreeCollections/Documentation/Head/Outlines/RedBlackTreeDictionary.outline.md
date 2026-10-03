@@ -33,9 +33,38 @@
 - 主な用途
 - コード例必須
 
-## Dictionary Operations
-- subscript による挿入
-- 既存キーへの代入による mapped value の更新
+## Creating a Dictionary
+- 空のdictionary
+- dictionary literal
+- `init(minimumCapacity:)`
+- `capacity`
+- `reserveCapacity(_:)`
+- `init(uniqueKeysWithValues:)`
+- `init(_:uniquingKeysWith:)`
+- `init(grouping:by:)`
+- 重複キーを含む入力の扱い
+- コード例必須
+
+## Searching and Accessing Elements
+- キーsubscriptによる値の取得
+- default値付きsubscript
+- `contains(key:)`
+- `count(forKey:)`
+- `first` / `last`
+- `min()` / `max()`
+- `firstIndex(of:)` / `index(forKey:)`
+- `find(_:)`
+- `lowerBound(_:)`
+- `upperBound(_:)`
+- `equalRange(_:)`
+- 検索結果のindexから前後の要素へ移動
+- コード例必須
+
+## Insertion, Updating, and Removal
+- キーsubscriptによる挿入
+- 既存キーへの代入によるmapped valueの更新
+- default値付きsubscriptによる挿入・更新
+- `updateValue(_:forKey:)`
 - 単一要素削除
   - `removeValue(forKey:)`
 - 範囲削除
@@ -43,16 +72,52 @@
 - `erase(Index) -> Index` による逐次削除
 - コード例必須
 
+## Transforming and Combining Dictionaries
+- `filter(_:)`
+- `mapValues(_:)`
+- `compactMapValues(_:)`
+- `merge(_:uniquingKeysWith:)`
+- `merging(_:uniquingKeysWith:)`
+- 自身を更新する操作と、新しいdictionaryを返す操作の違い
+- 変換後もキー順を維持すること
+- 重複キーを解決するクロージャの引数順と結果
+- `merge` / `merging`の性能特性はCombining APIの調査結果と照合して確定
+- コード例必須
+
+## Iterating over Keys and Values
+- 要素は`(key: Key, value: Value)`
+- キー順での走査
+- `keys` / `values`
+- `sorted()`による昇順配列化
+- `reversed()`による降順配列化
+- range viewでもキーと値を走査できること
+- コード例必須
+
 ## Indices and Bound Expressions
 - index は整数オフセットではなく、キー順に並んだ要素の論理的位置を表す
-- index の有効性と無効化について説明
+- 前後の要素へ移動可能
+- 他要素の挿入・削除では、指している要素が存在する限り有効
+- 指している要素を削除すると無効
+- slot 再利用後も古い index は再利用不可
 - CoW 分岐後の index の扱いを説明
-- 無関係なコレクション由来の index の扱いを説明
-- `BoundExpression`
+- 無関係なコレクション由来の index は事前条件違反
+- index range subscriptとrange view
+- `containsSubrange(_:)`
+- index間およびBound間の`distance(from:to:)`
+- `RedBlackTreeDictionary.Bound`
   - index を直接扱わない代替記法
+  - `.start`
+  - `.last`
+  - `.end`
   - `.lowerBound`
   - `.upperBound`
   - `.find`
+  - `.lessThan` / `.lessThanOrEqual`
+  - `.greaterThan` / `.greaterThanOrEqual`
+  - `.before` / `.after`
+  - `.advanced(by:limit:)`
+- 単一Boundが終端または解決不能の場合はsubscriptが`nil`を返す
+- 不成立または逆順のBound範囲は空Viewになる
 - コード例必須
 
 ## Performance
@@ -70,6 +135,8 @@
   - キーを検索して削除
   - 既知の index から削除
   - 再平衡化
+- `filter` / `mapValues` / `compactMapValues`
+- `merge` / `merging`はCombining APIの調査結果と照合して確定
 - `Key` の比較コストの影響
 
 ## Red-Black Tree

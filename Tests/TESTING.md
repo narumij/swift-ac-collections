@@ -80,22 +80,26 @@
 
 ## 直近の引き継ぎ
 
-- `CLAUDE_TASK.md`の「follow-up cleanup and release documentation」(Task 1-3)を
-  完了。`CLAUDE_TASK.md`はCompletedへ更新済み、結果サマリーを追記済み。
-- Task 1: `Tests/PermutationTests/NextPermutation.swift`(テスト専用の旧
-  `NextPermutation`実装)と、それを唯一使用していた`testPerformance00`を削除。
-  `ImplementationPlan.md`/`ProductReadinessAssessment.md`/`Specification.md`/
-  本ファイルの該当する判断待ち記述を完了済みへ更新。
-- Task 2: `nextPermutations()`と`Permutations.Nexts`/`IteratorN`/`SubSequenceN`へ
-  英語の`///`コメントを追加(現在順の先頭返却・辞書順後続のみ列挙・重複値の非重複・
-  境界入力の単発終了・既取得結果の不変性・1ステップO(n)の契約を記述、
-  `ManagedBuffer`等の実装詳細は含めず)。
-- Task 3: `CHANGELOG.md`の`[Unreleased]`/`Removed`へ、PermutationModule全順列/
-  unsafe API削除と Range View `unranged()`削除をソース破壊的変更として追記。
-- 検証: `swift test --filter PermutationTests`2/2、通常モード`swift test`
-  全件(0 failures)、`COMPATIBLE_ATCODER_2025`有効化時の`swift build`/
-  `swift test --filter 'AcCollectionsTests|PermutationTests'`成功、
-  `git diff --check`クリーン。`Package.swift`は元の状態へ復元済み。
+- `CLAUDE_TASK.md`の「three follow-up investigations」(Task 1-3)を完了。
+  `CLAUDE_TASK.md`はCompletedへ更新済み、結果サマリーを追記済み。
+- Task 3: ASan調査完了(原因はメモリ安全性バグではなくテストカウンタ汚染)と
+  PermutationModule改修完了を`MAINTENANCE.md`の`完了済みの要望`へ移動。Codable
+  非ソート/重複decode回帰テスト4件(Dictionary/Set/MultiSet/MultiMap)の存在と
+  成功を確認。`unranged()`/PermutationModule削除は本ファイルで既に完了済み
+  反映済みと確認。
+- Task 1: `.strictMemorySafety()`のレディネス調査を実施し
+  `Maintanance/StrictMemorySafetyReadiness.md`へ記録。全ターゲットでエラー0件、
+  `AcCollections`/`RedBlackTreeModule`は警告0件で即時適用可能と判定。
+  `Package.swift`は調査後に復元済み。
+- Task 2: Combining API(`merge`系 vs `union`/`formUnion`/`meld`系)の性能根拠を
+  ベンチマークで検証し`Maintanance/CombiningAPIPerformanceEvidence.md`へ記録。
+  `reserveCapacity`はどちらの経路にも実測上の効果がなく、既存の「十分な空き容量」
+  推奨は根拠不十分と判明。`Benchmarks/Sources/Benchmarks/CombiningAPIBenchmarks.swift`
+  に新規ベンチマークケースを追加(生データは`Benchmarks/Results/CombiningAPI/`)。
+- 検証: `swift test --filter TreeFoundamentalAllocationTests`5/5、Codable4クラス
+  14/14、`swift build`(strictMemorySafety一時適用、全ターゲット)エラー0、
+  `swift build -c release`(Benchmarks)成功、通常モード`swift test`全件
+  (0 failures)、`git diff --check`クリーン。
 
 最終更新: 2026-10-03 JST / Claude Sonnet 5
 

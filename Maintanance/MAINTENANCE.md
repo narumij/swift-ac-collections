@@ -20,8 +20,6 @@
 
 ### 優先事項
 
-- TreeFoundamentalAllocationTestsがCIのサニタイザで引っかかるので調査
-
 - 2026-10-03 02:50 JST ユーザー要望: 今後、C++標準ライブラリとの挙動照合を継続的に行える専用ターゲットを追加する
   - 現時点では実装を開始せず、`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`を作業依頼の正本とする
   - 既存の`CppBenchmarks`は性能測定専用として維持し、照合用C++参照実装とSwiftテストは別ターゲットにする
@@ -48,17 +46,6 @@
   - 既存のテスト群をゼロ構築するのではなく、そのまま活用する判断があったことを記述して欲しい
   - ソース本体の遷移も大事だが、テストの遷移もあらっぽいけど大事
 
-- PermutationModule改修管理について
-  - PermutationModuleは削除するか迷ったが出来れば残したい
-  - unsafeみたいなカタチでは無く、実装方式による挙動の違いだけがのこるようなかたち
-  - 開発についてはClaudeにアサインしたいが、Codexによる管理の手伝いが必要
-    - Sources/PermutationModule直下にDocumentationフォルダを再度作成し、仕様策定する
-    - この仕様が源流となり、テスト先行でTest as Specを整え、実装していく
-    - Test as Specを参考にCodexがドキュメントを整える
-    - ドキュメントメンテ中に同時にレビューとなり、適切なところにフィードバックする
-    - 以上の流れをなるべくClaudeにやらせてほしい
-    - ABC328Eにコピペ提出で性能確認できること
-
 - Tests/CLAUDE.md について
   - ちゃっぴーが以下をすすめるので検討して
   
@@ -78,6 +65,13 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 
 - DocCの手動Topicsは`API-Matrix.md`と`API-Matrix-View.md`を基準に、検索・挿入・削除・範囲操作などへ広げる。4型の具象型ページだけでなく、共通protocolのDefault ImplementationsやViewへの導線をどこへ置くかは引き続き検討する
 - .strictMemorySafety() にしていきたい
+  - 2026-10-03 JST 調査済み(`CLAUDE_TASK.md`Task 1、採用自体は未実施):
+    `Maintanance/StrictMemorySafetyReadiness.md`へレディネス調査を記録。
+    `AcCollections`/`RedBlackTreeModule`は警告0件で即時適用可能。
+    `PermutationModule`(34件)/`BareArrayModule`(116件)/
+    `OptionalArrayModule`(144件)/`RedBlackTreeCollections`(4,948件)は
+    いずれも意図的な生ポインタ・手動メモリ管理コード由来の警告で、エラーは
+    0件。段階的採用順を提案済み。`Package.swift`は調査後に復元済み
 
 ### 連絡事項
 
@@ -95,7 +89,7 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 
 ### 保留中の判断・懸念
 
-- 2026-10-02 16:36 JST: Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としているが、容量条件と推奨APIの対応根拠がTest as Specificationから確定できない。設計意図は、逐次挿入を素直に回すO(*n* log(*m + n*))経路と、TimSort等で入力をソート済みにしてからO(*n + m*)でマージする経路の選択。ただし総コストは入力の既ソート性、ソート費用、一時メモリ、CoW、要素数に依存するため、単純な「十分な空き容量」だけでは推奨条件を表現しきれない可能性がある。意味・重複規則・計算量の文書化は行ったが、性能推奨の書き換えは代表的な入力分布でのベンチマークと実装経路の再確認後に行う。
+- 2026-10-02 16:36 JST(2026-10-03 JST 根拠確認済み): Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としているが、容量条件と推奨APIの対応根拠がTest as Specificationから確定できなかった。`CLAUDE_TASK.md`のTask 2として実装追跡とベンチマークを実施し、`Maintanance/CombiningAPIPerformanceEvidence.md`へ根拠を記録した。結論: meld系(`___meld_unique`/`___meld_multi`)は呼び出し元の`reserveCapacity`状態を一切参照しないため、「十分な空き容量」という条件自体が両経路どちらの実測コストにも対応しない。1k〜256kの計測では挿入ループ経路(`merge`/`insert(contentsOf:)`)がmeld系より一貫して高速だった。公開コメントの書き換えはユーザー判断待ちのため未実施。
 - API Matrix上の多くの共通APIが、各型のDocCでは`Default Implementations`配下に入る。今回追加した共通操作ガイドから各操作の個別シンボルへ、さらに細かいリンクを追加する必要があるかは公開結果を見て判断する
 
 ### 完了済みの要望
@@ -105,6 +99,26 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 - 2026-10-03 JST ユーザー要望: `unranged()`とその関連プロトコル(`ScalarBaseInit`/
   `KeyValueBaseInit`)の削除。`CLAUDE_TASK.md`のTask 3として実施し、公開API・
   専用テスト・ドキュメント参照を削除済み。
+- PermutationModule改修管理: 「`unsafe`という見た目の違いではなく実装方式による挙動差
+  だけを残す」という方針のもと、`Sources/PermutationModule/Documentation`の仕様策定→
+  Test as Spec先行→実装→Codexレビューの流れを`CLAUDE_TASK.md`のTask 1-3(複数パス)で
+  実施済み。`Permutations.All`/`IteratorA`/`SubSequenceA`/`unsafePermutations()`/
+  `unsafeNextPermutations()`等を削除し、公開APIは`nextPermutations()`のみに収束。
+  ABC328Eへのコピペ提出による性能確認(外部AtCoder提出)はユーザー実施待ちで、
+  `Tests/TESTING.md`の`判断待ち`に残る。
+- TreeFoundamentalAllocationTestsのLinux ASan調査: 原因は実装のメモリ安全性バグではなく、
+  `TreeFoundamentalAllocationTests`のmacOS限定ガード(`#if DEBUG && os(macOS)`)を
+  `#if DEBUG`へ広げてLinuxでも実行されるようにした際、同一プロセス内で先に走る
+  `AcCollectionsTests`がRedBlackTreeのDebug寿命カウンタ(`allocatedCount`等)を
+  検査・初期化せずに`AcCollections`経由でノードを確保していたため、後続スイートの
+  カウンタ整合性アサーションが汚染されていたこと(コミット`c62a633b`/`9add0d5d`/
+  `8bc7c3ba`/`60efef09`で診断→修正)。`AcCollectionsTests`に`RedBlackTreeCollections`への
+  `@testable import`付き`setUp`/`tearDown`カウンタ規律を追加し、同じ規律を
+  `Tests/CLAUDE.md`へ規則化した。ローカル(macOS, Address Sanitizerなし)では
+  `swift test --filter TreeFoundamentalAllocationTests`5/5、
+  `AcCollectionsTests`3/3が成功を確認済み。Linux ASanジョブ自体の成功は
+  これらのコミット後にCIで確認されたとユーザー/Codexから報告されている
+  (本セッションではGitHub Actionsへの直接アクセスなし)。
 
 
 ## 文書の役割と正本

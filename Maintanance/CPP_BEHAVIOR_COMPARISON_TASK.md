@@ -2,8 +2,8 @@
 
 ## Status
 
-**Active high priority — Set, MultiSet, and Dictionary seeded traces accepted (32
-tests); Debug tracking-session PoC in progress before MultiMap expansion.**
+**Four-container expansion complete and accepted (2026-10-04) — Set, MultiSet,
+Dictionary, and MultiMap seeded traces pass in Debug and Release.**
 The user raised this work's priority on 2026-10-04 because agreement with the C++
 standard-library containers is important evidence for completing the red-black-tree
 implementation. Set, MultiSet, Dictionary, and MultiMap now have 17 passing comparison
@@ -244,6 +244,32 @@ Do not migrate the comparison tests, edit workflows, skip Linux, weaken teardown
 assertions, expand MultiMap seeded traces, or make unrelated production changes. The
 PoC is accepted only if managed XCTest intervals still detect their own imbalances and
 full-suite order pollution is eliminated without masking late destruction.
+
+### Final MultiMap seeded-randomized expansion authorization (2026-10-04)
+
+The XCTest migration and its CI run are accepted. Complete stage 2 with MultiMap only:
+
+1. Reuse the accepted SplitMix64 seeds `[1, 2, 3, 0x5EED, 0xC0FFEE]`, 300-operation
+   bound, XCTest lifetime base, deterministic regeneration, and full trace diagnostic.
+2. Maintain an independent ordered `(key, mappedValue)` model. Mapped values must be
+   distinct evolving occurrence identities so ordering within equal-key groups remains
+   observable.
+3. Generate ordinary/hinted insertion; find/count; lower/upper/equal range; erase by
+   key and rank; remove by rank; and mapped-value update by rank. Use only valid current
+   ranks, independently resolved on Swift and C++ sides.
+4. Require empty/non-empty states, duplicate-heavy groups, hints before/inside/after a
+   group plus start/end/exact/poor hints, first/last/interior erasure, erase-to-empty,
+   mapped update, and reinsertion.
+5. Compare every common return fact and complete ordered key/value contents after every
+   mutation. Preserve seed-scoped destruction and all allocation/node/payload balance
+   checks.
+6. Run focused Debug and Release suites, the full root Debug suite, and
+   `git diff --check`. Record the GitHub Actions result if available.
+
+Do not add shrinking, additional benchmarks, history-document work, public API,
+production fixes, or unrelated cleanup. A mismatch, crash, or lifetime imbalance is a
+stop condition. When this passes, mark the four-container C++ comparison expansion
+complete and leave further breadth as optional future work.
 
 ## Goal
 
@@ -613,6 +639,62 @@ traces (strategy stage 2) are still not implemented, by design of this audit.
   defaulted-subscript mutation have no returned fact and are compared through contents.
   MultiMap has no seeded trace. A Swift-side crash identifies the seed only through the
   parameterized test argument. No shrinking by design.
+
+### MultiMap seeded-randomized result (2026-10-04, Claude Opus 5.5)
+
+Four-container C++ comparison expansion is complete; further breadth is optional.
+
+- **Seeds/count:** shared `SplitMix64`, seeds `[1, 2, 3, 0x5EED, 0xC0FFEE]`, 300
+  operations, 40-operation growing/shrinking phases; XCTest base
+  `CppBehaviorReferenceTestCase` and per-seed `private func …(seed:)` scopes, as in
+  the other three pairs.
+- **Generator** (`generateMultiMapTrace`, `MultiMapBehaviorComparisonTests.swift`):
+  independent ordered `(key, mappedValue)` model, keys `0...7` plus 1/16
+  `Int64.min`/`Int64.max`; every value-bearing operation uses the distinct mapped value
+  `1_000 + operation number` (occurrence identity). Generates `insert`, `insertHint`,
+  `find`, `lowerBound`, `upperBound`, `equalRange`, `eraseKey`, `eraseAt`, `removeAt`,
+  `assignAt`; positional operations on an empty model become an ordinary insert.
+  Hint and positional rank policies are the MultiSet ones. The model places hinted
+  insertion at `clamp(hint, lower...upper)` ("as close as possible before the hint");
+  it feeds only counts/keys to later generation and is not compared against.
+- **Coverage test** (`test_multiMapRandomizedTraceIsDeterministicAndCovered`) requires,
+  per seed, at least one of each MultiSet event (insert into empty/non-empty,
+  duplicate and ≥2-group insert, hint on empty, at start/end, exact/poor,
+  before/at start of/inside/at end of/after a group, extreme key, present/absent
+  lookup, present/absent/≥2 erase by key, `erase`/`remove` at first/last/interior,
+  positional erase inside a ≥2 group, erase to empty, insert after emptied,
+  reinsertion of an erased key) plus `assignAt` at first/last/interior and inside a ≥2
+  group. All five seeds met it without changing seeds, count, or phase length. It also
+  checks identical regeneration of trace and coverage per seed. Per-seed counts were
+  not printed (no counter is zero).
+- **Compared per operation:** the existing MultiMap adapter's facts — entry and rank
+  for `insertHint`; entry, rank, count for `find`; entry and rank for bounds; lower/
+  upper rank and entries for `equalRange`; removed count for `eraseKey`; next rank for
+  `eraseAt`; erased entry for `removeAt`; previous mapped value for `assignAt` — plus
+  complete ordered key/value contents after every operation. Ranks validated on both
+  sides (range; Swift also `isElement(at:)`/`isEnd(_:)`) and resolved independently.
+- **C ABI / executor change:** none.
+- **Diagnostic:** `test_multiMapRandomizedMismatchReportContainsRequiredContext`
+  tampers with a copied `assignAt` previous value and proves container pair, seed,
+  operation number, input, both observations, `key:value` contents, and the trace
+  through (not beyond) the failure.
+- **Result:** no difference, crash, or lifetime imbalance.
+  - `swift test --disable-sandbox --filter CppBehaviorReferenceTests` — 35 XCTest
+    executed, 0 failures (MultiMap 8, MultiSet 11, Dictionary 8, Set 8).
+  - `swift test --disable-sandbox -c release --filter CppBehaviorReferenceTests` — 35
+    executed, 0 failures.
+  - `swift test --disable-sandbox -c debug` (full root, run twice) — exit 0; every
+    XCTest bundle reported 0 failures (`CppBehaviorReferenceTests.xctest` 35,
+    `RedBlackTreeTests.xctest` 865, …) and every Swift Testing run passed.
+  - `git diff --check` — clean.
+- **CI:** not checked; `gh` is unavailable locally and the change is uncommitted.
+- **Changed files:** `Tests/CppBehaviorReferenceTests/MultiMapBehaviorComparisonTests.swift`,
+  this file, `Maintanance/CLAUDE_TASK.md`. (`Maintanance/MAINTENANCE.md` was already
+  modified by someone else and was not touched.)
+- **Remaining gaps:** `insert(key:value:)` rank has no common return fact (compared via
+  contents); `find` rank is compared although the standard does not fix which
+  occurrence `std::multimap::find` returns (libc++ and Swift agree on the first);
+  Linux not run locally. No shrinking by design.
 
 ## Test strategy
 

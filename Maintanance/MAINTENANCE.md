@@ -20,12 +20,21 @@
 
 ### 優先事項
 
-- 2026-10-04 00:37 JST ユーザー要望: 赤黒木の完成を優先し、C++標準ライブラリとの
-  挙動比較ターゲットの優先度を上げる。次の実装区切りは
-  `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`のSet単一ペアPoCとし、結果を確認してから
-  MultiSet/Dictionary/MultiMapへ広げる。挙動比較に必要なターゲットとテストは
-  ルートの`swift-ac-collections`へ置き、既存の`CppBenchmarks`など性能測定に必要なものは
-  `Benchmarks`パッケージへそのまま残す
+- 2026-10-04 ユーザー要望: 赤黒木の完成を優先し、C++標準ライブラリとの挙動比較を
+  先に完了させる。Set/MultiSet/Dictionaryのcuratedおよびseed付き比較、4型のcurated比較、
+  XCTestへの移行、Debug/Release/全体テストとCI確認まで完了済み。現在の最終実装区切りは
+  `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`のMultiMap seed付き比較であり、これが通ったら
+  4型のC++ compareを完了扱いにして区切る。挙動比較はルートパッケージ、性能測定用の
+  `CppBenchmarks`は`Benchmarks`パッケージという分離を維持する
+- 2026-10-04 ユーザー要望: `REFACTORING_FROM_ATCODER_2025.md`の`unsafe tree !!!!`
+  前後は重要だが、週内はC++ compare完了を優先して履歴調査を後回しにする
+- 2026-10-04 ユーザー決定: `WorldClassAssessment`の「世界最高峰候補」という看板を
+  取り下げる。検証可能な証拠、反証、限界、評価軸は捨てず、AppleやSwift Collectionsと
+  競争する主張ではないAdoption Readiness / Quality Evidence系の内容へ再構成する
+- 2026-10-04 次タスク: 上記文書の再構成後、Debugテストのprocess-globalなallocation /
+  lifetime釣り合い検査を無効化できるフラグを設計する。無効時も各XCTest開始時には全counterを
+  無条件resetし、テスト順序・skip・生成破棄の差を次ケースへ持ち越さない。方針変更後は
+  LinuxのDeath Test経路も検証対象にする
 - 2026-10-03 02:50 JST ユーザー要望: 今後、C++標準ライブラリとの挙動照合を継続的に行える専用ターゲットを追加する
   - 現時点では実装を開始せず、`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`を作業依頼の正本とする
   - 既存の`CppBenchmarks`は性能測定専用として維持し、照合用C++参照実装とSwiftテストは別ターゲットにする
@@ -249,9 +258,12 @@ swift package -c release --disable-sandbox preview-documentation \
 本パッケージはSwift Collectionsの代替を標榜せず、上流のsorted collectionが実験段階にある
 間、C++に近い意味論、hint、multi型などを今必要とする利用者への暫定的な中継ぎ・補完と
 位置付ける。上流が成熟して同じ要求を満たす場合は、この役割を惰性で守らず再評価する。
-予備計測から結論を先取りせず、
-大規模な横展開の前に、小さな見本の意味論と測定対称性をレビューする。現在の次タスクは
-`SORTED_COLLECTIONS_BENCHMARK_TASK.md`のPhase 1であり、大規模計測はそのレビュー後に行う。
+予備計測から結論を先取りせず、大規模な横展開の前に、小さな見本の意味論と測定対称性を
+レビューする。SortedCollections比較はPhase 3 pilotまでで意図的に停止している。現在の
+4型のseed付きC++ compareは完了した。現在の最優先タスクは`WorldClassAssessment`から
+「世界最高峰候補」の看板を取り下げ、証拠中心の採用判断文書へ再構成すること。その次に
+Debugテストのallocation/lifetime検査キャンセルフラグを実装する。C++互換一覧のAPI Matrix化、
+ベンチ再開、unsafe移行史の追加調査は、それらの後の独立タスクとする。
 
 Claudeなどへ委任した作業の詳細な完了報告、検証結果、変更ファイル、制約、懸念は、Codexが
 監査できる指定のタスクmdへ記録し、完了時にユーザーへ直接報告しない。作業がblocked、

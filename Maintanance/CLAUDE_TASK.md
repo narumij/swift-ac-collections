@@ -1,49 +1,68 @@
 # Codex-to-Claude Work Request
 
-Status: Paused — XCTest migration completed and validated; preserve working tree for Codex review
+Status: Active — withdraw the WorldClass framing without discarding evidence
 
 ## Active assignment
 
-Do not start further work in this session. Preserve the current uncommitted XCTest
-migration exactly for Codex review. The tracking-session PoC below is superseded while
-this pause is in effect; do not implement it, expand MultiMap, edit CI, commit, or push.
+Withdraw the `WorldClassAssessment` / 「世界最高峰候補」framing in both language
+versions. Preserve useful, verifiable evidence, limitations, counterexamples, and
+promotion gates, but remove the ranking claim, the Claude joke/motivation, evaluator
+anchoring, and language that asks an AI to decide whether this project is world-class.
 
-Before the XCTest migration can be accepted, the next review must validate Death Tests
-on Linux. A green ordinary `swift test` is insufficient: confirm which death-test cases
-are compiled, discovered, and executed, because the current `DEATH_TEST` Swift setting
-is conditional on macOS. Verify abnormal-termination/precondition isolation and exit-
-status assertions on the actual GitHub Actions Linux environment, or record the exact
-platform limitation and keep the migration unaccepted.
+Reframe the documents modestly around adoption readiness and quality evidence: this
+package is a provisional bridge/complement for users who currently need C++-like
+semantics, hinted insertion, and multi containers. It does not claim to replace or
+compete with Swift Collections. Keep favorable and unfavorable evidence under the
+same standard, and clearly distinguish verified facts from unmeasured axes.
 
-## Deferred alternative (do not start)
+Update references to the old title/name where needed. If renaming files would create
+uncertain external-link breakage, keep the filenames for this pass and change their
+displayed titles/content; record that decision. Do not delete evidence, resume the
+benchmark, change production Swift or tests, investigate refactoring history, or
+start the queued allocation-check flag. Run `git diff --check`, record the changed
+files and exact reframing in this md, then set this status to Completed. Report only
+`完了` to the user.
 
-Immediately perform the tracking-session PoC authorized in
+## Queued next assignment (do not start in this task)
+
+Design and implement a Debug-test-only switch that can disable the process-global
+allocation/lifetime balance assertions. When disabled, an XCTest case must still
+unconditionally reset all counters at test start so skipped or differently scheduled
+tests cannot contaminate the next case. The Linux death-test path must be validated
+after this policy change. Scope and acceptance details will be reviewed separately.
+
+## Completed assignment: MultiMap seeded randomized C++ comparison
+
+Immediately perform the final MultiMap seeded-randomized expansion authorized in
 `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`. Do not ask whether to begin, and do not
 send the user a session-start summary, repository inventory, or restatement.
 
-Do not migrate the C++ comparison tests yet. Add the smallest Debug-only tracking
-session state needed for `RedBlackTreeTestCase`: when `setUpWithError` begins while
-tracking is off, unconditionally discard stale allocation/node/payload counter values,
-establish the singleton baseline, and turn tracking on. At `tearDownWithError`, perform
-the existing balance and singleton assertions for that managed interval, reset the
-counters, and turn tracking off.
+Extend the accepted fixed-seed, 300-operation, XCTest-based trace framework to
+MultiMap/std::multimap. Use distinct evolving mapped values as occurrence identity.
+Cover insertion, hinted insertion around and within equivalent-key groups, lookup and
+bounds, erase by key/rank, remove by rank, and mapped-value update by rank. Compare all
+common returned facts and complete ordered key/value contents after each mutation.
 
-Define the semantics for an unexpected nested/overlapping begin explicitly and fail
-rather than silently resetting an active managed interval. Keep the existing balance
-assertions inside an active interval. Do not guard away allocation/deallocation events
-or weaken teardown checks. The purpose is to distinguish unmanaged prior activity from
-the XCTest interval, not to hide a leak occurring inside it.
+Preserve memory lifetime assertions and seed-scoped destruction. Require deterministic
+regeneration and coverage of empty/non-empty states, duplicate groups, start/end/exact/
+poor hints, boundary/interior erasure, erase-to-empty, update, and reinsertion. Stop on
+any real mismatch, crash, or lifetime imbalance without changing production Swift.
 
-First reproduce or characterize the current full-suite/order-dependent failure if
-possible. Then run the focused C++ comparison target and the authoritative full root
-Debug suite at least twice, plus the normal Release suite, to detect order pollution.
-Record exact commands and results. Do not edit GitHub Actions, expand MultiMap seeded
-coverage, skip Linux, or perform the broad XCTest migration in this PoC. Stop if a
-late destruction from unmanaged activity can enter an active interval and invalidate
-the design; preserve the smallest reproduction.
+Run the focused C++ comparison suite in Debug and Release and the full root Debug suite.
+Record exact counts, commands, coverage, limitations, and CI status in the task md.
+Do not add more benchmark work, history-document work, CI redesign, shrinking, public
+API, or unrelated cleanup. This is the final feature expansion for C++ compare.
 
 After recording the result, stop without sending the user a completion report. Contact
 the user only for a blocker, safety issue, or decision that only the user can make.
+
+### MultiMap seeded result (2026-10-04, Claude Opus 5.5)
+
+Completed with no Swift/C++ difference, crash, or lifetime imbalance: 35
+`CppBehaviorReferenceTests` (XCTest) passed in Debug and Release; full root Debug
+suite exit 0 twice; `git diff --check` clean; no C ABI/executor or production change.
+CI not checked (`gh` unavailable, uncommitted). Details are in
+`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` under "MultiMap seeded-randomized result".
 
 ### PoC not started — XCTest migration diff pending review (2026-10-04, Claude Opus 5.5)
 

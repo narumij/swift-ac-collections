@@ -412,3 +412,369 @@ extension MultiMapBehaviorComparisonTests {
         XCTAssertEqual(message?.contains("[20:201, 20:202]"), true)
     }
 }
+
+// MARK: - Seeded randomized traces
+
+// `SplitMix64` and `firstRandomizedMismatch` are shared in `SeededTraceSupport.swift`;
+// the seeds, operation count, and phase length match the Set, MultiSet, and
+// Dictionary traces.
+
+private let multiMapRandomizedSeeds: [UInt64] = [1, 2, 3, 0x5EED, 0xC0FFEE]
+private let multiMapRandomizedOperationCount = 300
+/// Operations alternate between growing and shrinking phases of this length so each
+/// trace repeatedly passes through dense, sparse, and empty states.
+private let multiMapRandomizedPhaseLength = 40
+/// Eight ordinary keys keep equivalent-key groups frequent and large.
+private let multiMapRandomizedKeyDomain: ClosedRange<Int64> = 0...7
+/// Occasional keys below and above every ordinary key.
+private let multiMapRandomizedExtremeKeys: [Int64] = [.min, .max]
+
+/// Generation-policy events, counted from the model state before each operation.
+///
+/// For a key whose equivalent group occupies ranks `lower..<upper`, every hint in
+/// `lower...upper` is exact; the group-relative counters apply only when the group
+/// is non-empty.
+private struct MultiMapTraceCoverage: Equatable {
+    var insertIntoEmpty = 0
+    var insertIntoNonEmpty = 0
+    var duplicateInsert = 0
+    /// Insertion into a group that already holds at least two occurrences.
+    var largeGroupInsert = 0
+    var hintOnEmpty = 0
+    var hintAtStart = 0
+    var hintAtEnd = 0
+    var exactHint = 0
+    var poorHint = 0
+    var hintBeforeGroup = 0
+    var hintAtGroupStart = 0
+    var hintInsideGroup = 0
+    var hintAtGroupEnd = 0
+    var hintAfterGroup = 0
+    var extremeKey = 0
+    var presentLookup = 0
+    var absentLookup = 0
+    var presentEraseKey = 0
+    /// Erasure by key that removes at least two occurrences.
+    var multiEraseKey = 0
+    var absentEraseKey = 0
+    var eraseAtFirst = 0
+    var eraseAtLast = 0
+    var eraseAtInterior = 0
+    var removeAtFirst = 0
+    var removeAtLast = 0
+    var removeAtInterior = 0
+    var assignAtFirst = 0
+    var assignAtLast = 0
+    var assignAtInterior = 0
+    /// Mapped-value update of an occurrence whose group holds at least two occurrences.
+    var assignInGroup = 0
+    /// Positional erasure of an occurrence whose group holds at least two occurrences.
+    var positionalInGroup = 0
+    var emptiedByErase = 0
+    /// Insertion into a multimap that an erasure had emptied.
+    var reinsertAfterEmptied = 0
+    /// Insertion of an absent key whose group an earlier erasure removed.
+    var reinsertErasedKey = 0
+
+    /// The names of events that never occurred.
+    var missing: [String] { missingCoverage(self) }
+}
+
+/// Generates a valid stateful trace for `seed` from an independent ordered
+/// `(key, mappedValue)` model.
+///
+/// Every value-bearing operation uses the distinct mapped value
+/// `1_000 + operation number`, so each occurrence keeps an identity. Hints are current
+/// zero-based ranks in `0...count`: the start or end of the key's equivalent group,
+/// inside it, `startIndex`, `endIndex`, a poor rank before or after the group, or a
+/// random rank. Positional operations use ranks in `0..<count`: the first, the last, a
+/// random element, or an occurrence inside a present key's group.
+///
+/// The model places a hinted insertion as close as possible before the hint, as the
+/// standard specifies; only counts and keys feed later generation, and Swift and C++
+/// are compared with each other, not with the model.
+private func generateMultiMapTrace(
+    seed: UInt64,
+    count operationCount: Int
+) -> (operations: [MultiMapOperation], coverage: MultiMapTraceCoverage) {
+    var random = SplitMix64(state: seed)
+    var model: [MultiMapEntry] = []
+    var coverage = MultiMapTraceCoverage()
+    var operations: [MultiMapOperation] = []
+    var erasedKeys: Set<Int64> = []
+    var emptiedByErase = false
+
+    func lowerRank(_ key: Int64) -> Int {
+        model.firstIndex { $0.key >= key } ?? model.count
+    }
+
+    func upperRank(_ key: Int64) -> Int {
+        model.firstIndex { $0.key > key } ?? model.count
+    }
+
+    func randomKey() -> Int64 {
+        if random.next(below: 16) == 0 {
+            return multiMapRandomizedExtremeKeys[random.next(below: multiMapRandomizedExtremeKeys.count)]
+        }
+        return multiMapRandomizedKeyDomain.lowerBound
+            + Int64(random.next(below: multiMapRandomizedKeyDomain.count))
+    }
+
+    /// A present key with probability `percent`% when the model is non-empty.
+    func key(presentPercent percent: Int) -> Int64 {
+        if !model.isEmpty && random.next(below: 100) < percent {
+            return model[random.next(below: model.count)].key
+        }
+        return randomKey()
+    }
+
+    func hintRank(for key: Int64) -> Int {
+        let lower = lowerRank(key)
+        let upper = upperRank(key)
+        switch random.next(below: 8) {
+        case 0: return lower
+        case 1: return upper
+        case 2: return upper - lower >= 2 ? lower + 1 + random.next(below: upper - lower - 1) : lower
+        case 3: return 0
+        case 4: return model.count
+        case 5: return lower > 0 ? random.next(below: lower) : 0
+        case 6: return upper < model.count ? upper + 1 + random.next(below: model.count - upper) : model.count
+        default: return random.next(below: model.count + 1)
+        }
+    }
+
+    func elementRank() -> Int {
+        switch random.next(below: 4) {
+        case 0: return 0
+        case 1: return model.count - 1
+        case 2: return random.next(below: model.count)
+        default:
+            let key = model[random.next(below: model.count)].key
+            let lower = lowerRank(key)
+            return lower + random.next(below: upperRank(key) - lower)
+        }
+    }
+
+    for operationIndex in 0..<operationCount {
+        let growing = (operationIndex / multiMapRandomizedPhaseLength) % 2 == 0
+        let value = 1_000 + Int64(operationIndex)
+        // Cumulative weights: insert, insertHint, find, lowerBound, upperBound,
+        // equalRange, eraseKey, eraseAt, removeAt, assignAt.
+        let weights = growing
+            ? [18, 46, 52, 57, 62, 67, 74, 82, 90, 100]
+            : [7, 18, 23, 27, 31, 35, 55, 72, 89, 100]
+        let choice = random.next(below: 100)
+        var operation: MultiMapOperation
+
+        switch weights.firstIndex(where: { choice < $0 })! {
+        case 0:
+            operation = .insert(key(presentPercent: 50), value)
+        case 1:
+            let key = key(presentPercent: 50)
+            operation = .insertHint(key, value, at: hintRank(for: key))
+        case 2:
+            operation = .find(key(presentPercent: 50))
+        case 3:
+            operation = .lowerBound(key(presentPercent: 50))
+        case 4:
+            operation = .upperBound(key(presentPercent: 50))
+        case 5:
+            operation = .equalRange(key(presentPercent: 50))
+        case 6:
+            operation = .eraseKey(key(presentPercent: growing ? 50 : 90))
+        case 7:
+            operation = model.isEmpty ? .insert(randomKey(), value) : .eraseAt(elementRank())
+        case 8:
+            operation = model.isEmpty ? .insert(randomKey(), value) : .removeAt(elementRank())
+        default:
+            operation = model.isEmpty ? .insert(randomKey(), value) : .assignAt(elementRank(), value)
+        }
+
+        let wasNonEmpty = !model.isEmpty
+        switch operation {
+        case .insert(let key, let value), .insertHint(let key, let value, _):
+            let lower = lowerRank(key)
+            let upper = upperRank(key)
+            let groupCount = upper - lower
+            if model.isEmpty {
+                coverage.insertIntoEmpty += 1
+                if emptiedByErase {
+                    coverage.reinsertAfterEmptied += 1
+                    emptiedByErase = false
+                }
+            } else {
+                coverage.insertIntoNonEmpty += 1
+            }
+            if groupCount > 0 { coverage.duplicateInsert += 1 }
+            if groupCount >= 2 { coverage.largeGroupInsert += 1 }
+            if groupCount == 0 && erasedKeys.contains(key) { coverage.reinsertErasedKey += 1 }
+            if multiMapRandomizedExtremeKeys.contains(key) { coverage.extremeKey += 1 }
+
+            var placement = upper
+            if case .insertHint(_, _, let position) = operation {
+                if model.isEmpty {
+                    coverage.hintOnEmpty += 1
+                } else {
+                    if position == 0 { coverage.hintAtStart += 1 }
+                    if position == model.count { coverage.hintAtEnd += 1 }
+                }
+                if (lower...upper).contains(position) {
+                    coverage.exactHint += 1
+                } else {
+                    coverage.poorHint += 1
+                }
+                if groupCount > 0 {
+                    if position < lower { coverage.hintBeforeGroup += 1 }
+                    if position == lower { coverage.hintAtGroupStart += 1 }
+                    if position > lower && position < upper { coverage.hintInsideGroup += 1 }
+                    if position == upper { coverage.hintAtGroupEnd += 1 }
+                    if position > upper { coverage.hintAfterGroup += 1 }
+                }
+                placement = min(max(position, lower), upper)
+            }
+            model.insert(MultiMapEntry(key: key, value: value), at: placement)
+
+        case .find(let key), .lowerBound(let key), .upperBound(let key),
+             .equalRange(let key):
+            if multiMapRandomizedExtremeKeys.contains(key) { coverage.extremeKey += 1 }
+            if lowerRank(key) < upperRank(key) {
+                coverage.presentLookup += 1
+            } else {
+                coverage.absentLookup += 1
+            }
+
+        case .eraseKey(let key):
+            if multiMapRandomizedExtremeKeys.contains(key) { coverage.extremeKey += 1 }
+            let lower = lowerRank(key)
+            let upper = upperRank(key)
+            if lower < upper {
+                coverage.presentEraseKey += 1
+                if upper - lower >= 2 { coverage.multiEraseKey += 1 }
+                model.removeSubrange(lower..<upper)
+                erasedKeys.insert(key)
+            } else {
+                coverage.absentEraseKey += 1
+            }
+
+        case .eraseAt(let position), .removeAt(let position):
+            let key = model[position].key
+            let isErase = if case .eraseAt = operation { true } else { false }
+            let isFirst = position == 0
+            let isLast = position == model.count - 1
+            switch (isErase, isFirst, isLast) {
+            case (true, true, _): coverage.eraseAtFirst += 1
+            case (true, false, false): coverage.eraseAtInterior += 1
+            case (false, true, _): coverage.removeAtFirst += 1
+            case (false, false, false): coverage.removeAtInterior += 1
+            default: break
+            }
+            if isLast {
+                if isErase { coverage.eraseAtLast += 1 } else { coverage.removeAtLast += 1 }
+            }
+            if upperRank(key) - lowerRank(key) >= 2 { coverage.positionalInGroup += 1 }
+            model.remove(at: position)
+            if lowerRank(key) == upperRank(key) { erasedKeys.insert(key) }
+
+        case .assignAt(let position, let value):
+            let key = model[position].key
+            if position == 0 { coverage.assignAtFirst += 1 }
+            if position == model.count - 1 { coverage.assignAtLast += 1 }
+            if position > 0 && position < model.count - 1 { coverage.assignAtInterior += 1 }
+            if upperRank(key) - lowerRank(key) >= 2 { coverage.assignInGroup += 1 }
+            model[position] = MultiMapEntry(key: key, value: value)
+        }
+
+        if wasNonEmpty && model.isEmpty {
+            coverage.emptiedByErase += 1
+            emptiedByErase = true
+        }
+        operations.append(operation)
+    }
+
+    return (operations, coverage)
+}
+
+extension MultiMapBehaviorComparisonTests {
+    /// Seeded MultiMap traces are deterministic and cover the generation policy
+    func test_multiMapRandomizedTraceIsDeterministicAndCovered() {
+        for seed in multiMapRandomizedSeeds {
+            multiMapRandomizedTraceIsDeterministicAndCovered(seed: seed)
+        }
+    }
+
+    /// Runs one seed in its own scope so every collection is released before the next seed.
+    private func multiMapRandomizedTraceIsDeterministicAndCovered(seed: UInt64) {
+        let first = generateMultiMapTrace(seed: seed, count: multiMapRandomizedOperationCount)
+        let second = generateMultiMapTrace(seed: seed, count: multiMapRandomizedOperationCount)
+        XCTAssertEqual(first.operations, second.operations, "seed=\(seed)")
+        XCTAssertEqual(first.coverage, second.coverage, "seed=\(seed)")
+        XCTAssertTrue(first.coverage.missing.isEmpty, "seed=\(seed), missing=\(first.coverage.missing)")
+    }
+}
+
+extension MultiMapBehaviorComparisonTests {
+    /// RedBlackTreeMultiMap matches std::multimap for seeded randomized traces
+    func test_multiMapSeededRandomizedTraceMatchesCpp() {
+        for seed in multiMapRandomizedSeeds {
+            multiMapSeededRandomizedTraceMatchesCpp(seed: seed)
+        }
+    }
+
+    /// Runs one seed in its own scope so every collection is released before the next seed.
+    private func multiMapSeededRandomizedTraceMatchesCpp(seed: UInt64) {
+        let operations = generateMultiMapTrace(seed: seed, count: multiMapRandomizedOperationCount).operations
+        let swift: [MultiMapObservation]
+        let cpp: [MultiMapObservation]
+        do {
+            swift = try executeSwiftTrace(operations)
+            cpp = try executeCppTrace(operations)
+        } catch {
+            XCTFail("container=\(multiMapContainer), seed=\(seed), executor error=\(error)")
+            return
+        }
+
+        let mismatch = firstRandomizedMismatch(
+            container: multiMapContainer, seed: seed, operations: operations, swift: swift, cpp: cpp)
+        if let mismatch { XCTFail(mismatch) }
+    }
+}
+
+extension MultiMapBehaviorComparisonTests {
+    /// A seeded MultiMap mismatch report contains the seed and the trace through failure
+    ///
+    /// Checks the shared seeded diagnostic with the MultiMap observation shape,
+    /// tampering with the previous mapped value returned by a positional update.
+    func test_multiMapRandomizedMismatchReportContainsRequiredContext() throws {
+        let seed = multiMapRandomizedSeeds[0]
+        let operations = generateMultiMapTrace(seed: seed, count: multiMapRandomizedOperationCount).operations
+        let swift = try executeSwiftTrace(operations)
+        // Tamper with one observation instead of relying on a library defect.
+        let failing = try XCTUnwrap(swift.indices.first { $0 >= 17 && swift[$0].previous != nil })
+        var cpp = swift
+        let original = cpp[failing]
+        cpp[failing] = MultiMapObservation(
+            operation: original.operation,
+            entry: original.entry,
+            rank: original.rank,
+            upperRank: original.upperRank,
+            previous: original.previous.map { $0 + 1 },
+            count: original.count,
+            range: original.range,
+            contents: original.contents
+        )
+
+        let message = try XCTUnwrap(firstRandomizedMismatch(
+            container: multiMapContainer, seed: seed, operations: operations, swift: swift, cpp: cpp))
+        XCTAssertTrue(message.contains("container=\(multiMapContainer)"))
+        XCTAssertTrue(message.contains("seed=\(seed)"))
+        XCTAssertTrue(message.contains("operation=\(failing)"))
+        XCTAssertTrue(message.contains("input=\(operations[failing])"))
+        XCTAssertTrue(message.contains("swift=\(swift[failing])"))
+        XCTAssertTrue(message.contains("cpp=\(cpp[failing])"))
+        XCTAssertTrue(message.contains("\(swift[failing].contents)"))
+        for operationIndex in 0...failing {
+            XCTAssertTrue(message.contains("\n  \(operationIndex): \(operations[operationIndex])"))
+        }
+        XCTAssertFalse(message.contains("\n  \(failing + 1): "))
+    }
+}

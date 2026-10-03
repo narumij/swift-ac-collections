@@ -1,6 +1,6 @@
 # RedBlackTreeCollections and Swift Collections SortedCollections
 
-Status: Phase 2 implemented and smoke-checked — awaiting Codex review; no large run authorized
+Status: Phase 3 pilot accepted as procedural evidence — publishable run deferred
 
 ## Why this task exists
 
@@ -331,6 +331,137 @@ temporary directory was deleted; numbers were not inspected or interpreted.
 **Next step (not started).** The publishable run (Release, sizes 1…1M doubling plus an
 optional labeled 4M–16M run, ≥ 5 cycles, p50) and the capability matrix need Codex/user
 authorization after this review.
+
+### Codex Phase 2 review and Phase 3 authorization (2026-10-04)
+
+Phase 2 is accepted. The paired source structure, independent reference checks,
+seeded inputs, chart separation, overload choice, timed-region boundaries, and Release
+smoke result are sufficient to proceed to a bounded measurement pilot. D02's allocator
+preparation difference and S08's implementation-path difference remain mandatory
+disclosures; they are not reasons to discard the observable-operation pairs.
+
+Phase 3 is limited to validating the measurement procedure before a publishable run:
+
+1. Build the existing benchmark product in Release without source changes.
+2. Run `Libraries/SortedPeer.json` at fixed sizes `16`, `256`, `4096`, and `65536`,
+   with exactly five cycles and p50 selected before inspecting results.
+3. Retain the raw result artifact and rendered charts under a clearly named
+   `Benchmarks/Results/SortedPeerPilot/` directory. Record the exact command, commit,
+   OS, CPU, Swift version, dependency resolution, traits, date, and timezone.
+4. Verify mechanically that all 58 tasks produced five samples at every requested
+   size and that matched/capability charts remain separated.
+5. Record per-task cycle spread or another harness-supported variability indicator.
+   Flag noisy or suspicious rows without attributing a data-structure cause.
+
+Do not run sizes above 65536, change source after seeing results, omit unfavorable
+rows, infer cache/allocation causes from wall-clock timing, rank either package, or
+update WorldClassAssessment. Stop for Codex review after the pilot.
+
+### Phase 3 result (2026-10-04 02:09 JST, Claude Opus 5.5) — awaiting review
+
+Pilot only; timings are not interpreted, packages are not ranked, and no source was
+changed before or after the run.
+
+**Artifacts (new, retained, under `Benchmarks/Results/SortedPeerPilot/`).**
+`results-20261004-020908-988aecaf.json` (raw), `charts-p50/` (29 PNG + `Results.md`),
+`README.md` (environment and exact commands, duplicated below).
+
+**Environment.** Commit `988aecaf34b73a223259490f505171fea8caab25` (benchmark sources
+clean; only `Maintanance/` Markdown dirty). Run 02:09:08–02:09:28 JST (+0900), 18.5 s
+collection. Apple M1, 8 cores, 16 GiB, AC power, no thermal/performance warning recorded
+by `pmset -g therm`; macOS 27.0 (26A428); Apple Swift 6.4 (swiftlang-6.4.0.34.1,
+clang-2100.3.34.1), arm64-apple-macosx27.0.0, Release. swift-collections 1.7.0
+`a66de878…` with `UnstableSortedCollections`; swift-collections-benchmark 0.0.4;
+swift-ac-collections local path with `BENCHMARK` only (normal mode, N1). Inputs: SplitMix64
+seed `0x5EED_5047_2026_1004` as in Phase 2.
+
+**Commands (from `Benchmarks/`).**
+
+```sh
+swift build -c release --disable-sandbox --product benchmark   # up to date, no rebuild
+swift run -c release --disable-sandbox --skip-build benchmark library run \
+  --library ./Libraries/SortedPeer.json \
+  ./Results/SortedPeerPilot/results-20261004-020908-988aecaf.json \
+  --sizes 16 --sizes 256 --sizes 4096 --sizes 65536 --cycles 5 --mode replace-all
+swift run -c release --disable-sandbox --skip-build benchmark library render \
+  --library ./Libraries/SortedPeer.json \
+  ./Results/SortedPeerPilot/results-20261004-020908-988aecaf.json \
+  --percentile 50 --format png --output ./Results/SortedPeerPilot/charts-p50
+```
+
+Other options were harness defaults (3 iterations, 0.01 s min duration, 10 µs amortized
+cutoff; default bands min / mean / mean + 2σ).
+
+**Statistic disclosure (must be decided before the publishable run).** In
+swift-collections-benchmark 0.0.4, `--percentile p` is `Sample.discardingPercentile`:
+it keeps the lowest ⌈p/100 · count⌉ sorted samples. With five cycles, "p50" keeps the
+three fastest cycle minima, and the chart center line is their **mean**, not the median
+of five. The raw JSON preserves all five samples, so a true median can be computed
+from it; the rendered charts do not show it. Whether to keep the harness p50 as
+configured or report a separately computed median needs Codex/user decision.
+
+**Mechanical completeness check (Python over the raw JSON and `SortedPeer.json`).**
+
+- 58 distinct task titles; every task has exactly sizes {16, 256, 4096, 65536}, and
+  exactly 5 samples at each size (0 missing/extra). The amortized cutoff did not drop
+  any size.
+- 29 charts, each exactly 2 tasks with the same peer ID, no `std::` task; the 58 chart
+  tasks equal the 58 result titles. Only S02/D01 appear in `Capability differences`,
+  and neither appears in a matched group.
+
+**Variability (spread = (max − min) / median of the five cycle samples).** Flag
+threshold 10%, chosen when writing the check. 62 of 232 cells are flagged.
+
+| Side | 16 | 256 | 4096 | 65536 |
+| --- | --- | --- | --- | --- |
+| RedBlackTree (29 tasks) | 12 | 10 | 8 | 17 |
+| SortedCollections (29 tasks) | 12 | 2 | 0 | 1 |
+
+Mechanical observations, without cause attribution:
+
+- At size 16, 51 of 58 medians are below 1 µs, and many sub-µs values are exact
+  multiples of ~41.7 ns (125, 166, 208, 250 ns). Size-16 spreads therefore reflect
+  timer quantization at least in part, and size-16 cells are resolution-limited on
+  both sides.
+- At 4096/65536, flagged cells are concentrated on the RedBlackTree side (25 vs 1).
+  Largest: D09b @65536 51.0% (685–1054 µs), D05b @65536 34.7%, D10a @65536 33.6%,
+  D06a @65536 32.5%, S05 @4096 27.3%, S07b @65536 26.3%, D05a @65536 25.6%,
+  D06b @65536 24.9%, D07 @65536 21.9%, D08 @65536 21.2%, S08b @65536 20.7%,
+  S06 @65536 18.7%. The single SortedCollections flag above 256 is S13 @65536 15.9%
+  (917–1083 ns). This asymmetry is a measurement-stability finding to be re-checked by
+  repetition (protocol item 8), not evidence of a structural cause.
+- Per-task spreads (all 58 × 4) can be regenerated from the raw JSON; the table was
+  printed to the terminal and not stored separately.
+
+**Open points for Codex.** (1) Harness-p50 vs computed median (above). (2) Whether to
+repeat the pilot (e.g., a second identical run, or interleaved re-runs of the flagged
+RedBlackTree rows) before the publishable run, given the one-sided spread at 4096/65536.
+(3) Whether size 16 should be reported as resolution-limited or measured with more
+iterations per sample. No 1M or multi-million run was made.
+
+### Codex Phase 3 review and pause decision (2026-10-04)
+
+The pilot is accepted as evidence that the matrix, artifact pipeline, completeness
+checks, and chart separation work. It is not accepted as publishable comparative
+performance evidence: 62 of 232 cells exceeded the predeclared 10% spread threshold,
+with a strong one-sided concentration at sizes 4096 and 65536.
+
+Decisions for a future resumption:
+
+1. Compute and report the true median of all five raw cycle samples. Do not call the
+   harness's mean of the fastest three samples a median; rendered harness-p50 charts
+   may be retained only with that statistic stated exactly.
+2. Treat size 16 as resolution-limited rather than drawing comparative conclusions.
+   A future run may increase duration/iterations symmetrically if small-size evidence
+   is important.
+3. Before any 1M or multi-million run, repeat the identical pilot and interleave
+   focused repetitions of the flagged rows. Establish a stability rule before looking
+   at the repeated timings.
+4. Preserve every row and the D02/S08 disclosures. Do not update either
+   WorldClassAssessment from this pilot.
+
+The benchmark line is intentionally paused here so work can return to C++ behavioral
+correctness, which remains the higher completion priority.
 
 ## Fairness rules
 

@@ -2,13 +2,29 @@
 
 ## Status
 
-**High priority — Set PoC complete; review checkpoint before expansion.** The user
-raised this work's priority on 2026-10-04 because agreement with the C++
+**Active high priority — four curated pairs complete; boundary audit in progress.**
+The user raised this work's priority on 2026-10-04 because agreement with the C++
 standard-library containers is important evidence for completing the red-black-tree
-implementation.
+implementation. Set, MultiSet, Dictionary, and MultiMap now have 17 passing comparison
+tests; the next bounded step is to audit and close deterministic boundary gaps before
+any randomized expansion.
 
-Start with the bounded Set PoC below. Do not broaden the first implementation to
-all four container pairs until the PoC result has been reviewed.
+### Curated-boundary audit authorization (2026-10-04)
+
+1. Inventory the existing 17 tests by container pair, operation, and boundary before
+   editing. Distinguish directly observed behavior from facts not exposed by both APIs.
+2. Run all `CppBehaviorReferenceTests` in Debug and Release.
+3. Add only missing deterministic coverage for valid hinted insertion at empty,
+   `startIndex`, `endIndex`, exact and deliberately poor hints; equivalent-key group
+   boundaries for multi containers; and erase followed by reinsertion at boundaries.
+4. For each mutation, compare the meaningful returned facts and the complete ordered
+   contents. Continue transporting positions only as current zero-based ranks.
+5. On any difference or crash, minimize the trace, record build mode and observation,
+   mark the task blocked, and stop before a production fix.
+
+Do not add randomized/fuzz traces, performance measurements, CI changes, public API,
+or production Swift changes in this audit. Record the final coverage matrix, exact
+commands, test counts, and remaining genuine gaps here for Codex review.
 
 ## Goal
 

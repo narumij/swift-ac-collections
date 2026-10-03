@@ -1,25 +1,27 @@
 # Codex-to-Claude Work Request
 
-Status: Completed — SortedCollections benchmark Phase 2 implemented and smoke-checked;
-result in `SORTED_COLLECTIONS_BENCHMARK_TASK.md` ("Phase 2 result"), awaiting review
+Status: Active — C++ comparison curated-boundary audit
 
 ## Active assignment
 
-Immediately perform Phase 2 as authorized in
-`Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md`. Do not ask whether to begin, and
-do not send the user a session-start summary, repository inventory, stale-document
-list, or restatement of the task.
+Immediately perform the curated-boundary audit authorized in
+`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`. Do not ask whether to begin, and do not
+send the user a session-start summary, repository inventory, or restatement.
 
-Implement the reviewed Set/Dictionary matrix and its correctness validation only.
-Use the new benchmark-local seeded inputs only for the new tasks. Keep capability-
-difference rows separate from matched performance charts. Run a small Release smoke
-check proving registration and equivalent observable results, then stop before any
-publishable or large measurement run.
+First inventory the existing 17 C++ comparison tests by container, operation, and
+boundary. Run the full `CppBehaviorReferenceTests` suite in Debug and Release. Add only
+the smallest missing deterministic traces needed to cover valid hinted insertion at
+empty/start/end, exact and poor hints, duplicate/equivalent groups where applicable,
+and erase-then-reinsert boundaries across all four container pairs. Compare returned
+facts and complete ordered contents after every mutation.
 
-Write the detailed result into the benchmark task Markdown for Codex, set the status
-appropriately, and stop without sending the user a completion report. Directly contact
-the user only if work is blocked, a safety issue is found, or a decision that only the
-user can make is genuinely required.
+Do not add randomized/fuzz traces, CI, benchmarks, public API, or production fixes.
+On a mismatch or crash, minimize and preserve the trace, mark the task blocked, and
+stop before changing production Swift. Otherwise record the coverage matrix, exact
+commands, test counts, and remaining gaps in the C++ task Markdown for Codex.
+
+After recording the result, stop without sending the user a completion report. Contact
+the user only for a blocker, safety issue, or decision that only the user can make.
 
 ## Previous assignment objective (completed)
 

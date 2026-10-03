@@ -87,7 +87,7 @@ jobs:
       - name: Run tests
         run: >-
           swift test -c debug
-          --traits ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_SETUP_CHECKS
+          --traits ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_BALANCE_CHECKS
 
   release:
     runs-on: ubuntu-24.04

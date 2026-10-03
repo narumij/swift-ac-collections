@@ -47,28 +47,28 @@
 
     @Test
     func nullLeftPointer_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         _ = SUT._MultiplicityHelper.___ptr_comp_unique(.nullptr, internalStartPointer)
       }
     }
 
     @Test
     func endLeftPointer_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         _ = SUT._MultiplicityHelper.___ptr_comp_unique(internalEndPointer, internalStartPointer)
       }
     }
 
     @Test
     func nullRightPointer_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         _ = SUT._MultiplicityHelper.___ptr_comp_unique(internalStartPointer, .nullptr)
       }
     }
 
     @Test
     func endRightPointer_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         _ = SUT._MultiplicityHelper.___ptr_comp_unique(internalStartPointer, internalEndPointer)
       }
     }

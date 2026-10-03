@@ -44,7 +44,7 @@
 
     @Test
     func emptyStartIndexSubscript_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         let set = RedBlackTreeMultiSet<Int>()
         _ = set[set.startIndex]
       }
@@ -52,7 +52,7 @@
 
     @Test
     func removingEmptyStartIndex_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeMultiSet<Int>()
         set.remove(at: set.startIndex)
       }
@@ -60,7 +60,7 @@
 
     @Test
     func removingEndIndex_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeMultiSet<Int>(0..<100)
         set.remove(at: set.endIndex)
       }
@@ -68,7 +68,7 @@
 
     @Test
     func removingFirstFromEmptyMultiSet_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeMultiSet<Int>()
         set.removeFirst()
       }
@@ -76,7 +76,7 @@
 
     @Test
     func removingLastFromEmptyMultiSet_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeMultiSet<Int>()
         set.removeLast()
       }
@@ -263,7 +263,7 @@
 
     @Test
     func endIndexSubscript_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         let set = RedBlackTreeMultiSet<Int>([0, 1, 2])
         _ = set[set.endIndex]
       }

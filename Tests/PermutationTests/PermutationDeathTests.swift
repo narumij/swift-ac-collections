@@ -16,7 +16,7 @@
   struct PermutationDeathTests {
 
     @Test func endIndexRead_traps() async throws {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var iterator = [1, 2, 3].nextPermutations().makeIterator()
         let p = iterator.next()!
         _ = p[p.endIndex]
@@ -24,7 +24,7 @@
     }
 
     @Test func negativeIndexRead_traps() async throws {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var iterator = [1, 2, 3].nextPermutations().makeIterator()
         let p = iterator.next()!
         _ = p[-1]
@@ -32,7 +32,7 @@
     }
 
     @Test func pastEndIndexRead_traps() async throws {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var iterator = [1, 2, 3].nextPermutations().makeIterator()
         let p = iterator.next()!
         _ = p[p.endIndex + 1]
@@ -40,7 +40,7 @@
     }
 
     @Test func intMinIndexRead_traps() async throws {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var iterator = [1, 2, 3].nextPermutations().makeIterator()
         let p = iterator.next()!
         _ = p[Int.min]
@@ -48,7 +48,7 @@
     }
 
     @Test func intMaxIndexRead_traps() async throws {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var iterator = [1, 2, 3].nextPermutations().makeIterator()
         let p = iterator.next()!
         _ = p[Int.max]

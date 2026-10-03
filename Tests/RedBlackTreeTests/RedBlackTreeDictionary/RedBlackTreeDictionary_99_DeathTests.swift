@@ -7,14 +7,14 @@
 
     @Test
     func duplicateKeysInUniqueKeysInitializer_terminateProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         _ = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: [(1, 1), (1, 2)])
       }
     }
 
     @Test
     func removingFirstFromEmptyDictionary_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var dictionary = RedBlackTreeDictionary<Int, Int>()
         dictionary.removeFirst()
       }
@@ -22,7 +22,7 @@
 
     @Test
     func removingLastFromEmptyDictionary_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var dictionary = RedBlackTreeDictionary<Int, Int>()
         dictionary.removeLast()
       }
@@ -31,7 +31,7 @@
     #if !COMPATIBLE_ATCODER_2025
       @Test
       func emptyStartIndexSubscript_terminatesProcess() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
           let dictionary = RedBlackTreeDictionary<Int, Int>()
           _ = dictionary[dictionary.startIndex]
         }
@@ -39,7 +39,7 @@
 
       @Test
       func removingEmptyStartIndex_terminatesProcess() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
           var dictionary = RedBlackTreeDictionary<Int, Int>()
           dictionary.remove(at: dictionary.startIndex)
         }
@@ -47,7 +47,7 @@
 
       @Test
       func removingEndIndex_terminatesProcess() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
           var dictionary = RedBlackTreeDictionary<Int, Int>(
             uniqueKeysWithValues: (0..<100).map { ($0, $0) }
           )
@@ -132,7 +132,7 @@
 
       @Test
       func endIndexSubscript_terminatesProcess() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
           let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
           _ = dictionary[dictionary.endIndex]
         }

@@ -110,8 +110,17 @@ the broader mode had already passed the full suite twice. `git diff --check` is 
 Codex follow-up: added an explicit `ENABLE_DEATH_TESTS` package trait while retaining
 the existing macOS default. The normal blocking Ubuntu 24.04 Debug job now runs the
 full suite with
-`ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_SETUP_CHECKS`, so Linux must actually compile
+`ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`, so Linux must actually compile
 and execute the subprocess tests; failures are not converted into a green result.
+
+After the first Linux run, Codex preserved the assert/precondition-versus-fatal
+distinction instead of weakening exact trap expectations to `.failure`. Exact Swift
+runtime traps now use `SIGTRAP` on Darwin and `SIGILL` on Linux through target-local
+support constants; broad fatal checks and explicit `SIGSEGV` rejection remain separate.
+The normal Linux Debug job uses the full balance-check skip because the setup-only
+mode still failed the process-global C++ comparison XCTest counters. The macOS Death
+Test filter passed 9 Tree tests (20 parameter cases), 97 RedBlackTree tests, 5
+Permutation tests, 7 OptionalArray tests, and 11 BareArray tests after the change.
 - **Linux validation still required (CI or Ubuntu 24.04 with the CI toolchain):**
   1. `swift test -c debug` (checks on) and
      `swift test -c debug --traits SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`; confirm both

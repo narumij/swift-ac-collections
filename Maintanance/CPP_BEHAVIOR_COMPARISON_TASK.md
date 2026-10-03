@@ -124,6 +124,45 @@ hinted insertion, or randomized traces. Also stop if the PoC would require chang
 - Command: `swift test --disable-sandbox --filter CppBehaviorReferenceTests`
   (9 tests passed, none skipped).
 
+### Dictionary result (2026-10-04)
+
+- Added `cpp_map_execute_trace` for `std::map<int64_t, int64_t>` and
+  `DictionaryBehaviorComparisonTests.swift`; the Set and MultiSet executors are unchanged.
+- Matching: `insert(key:value:)` ↔ `insert` (existing value preserved),
+  `insert(key:value:hint:)` ↔ hinted `insert` (exact, poor, `startIndex`,
+  `endIndex`, empty, and existing-key hints; inserted flag, entry, rank),
+  `updateValue(_:forKey:[hint:])` ↔ the effect of `insert_or_assign` (previous
+  value and replacement), `dictionary[k] = v` ↔ `map[k] = v`,
+  `dictionary[k, default: 0] += v` ↔ `map[k] += v`, lookup/`count(forKey:)` ↔
+  `find`/`count`, `lowerBound`/`upperBound`/`equalRange` entry and rank at
+  before/at/between/after positions, and `removeValue(forKey:)` ↔ `erase(k)` by
+  removed count. Complete ordered key/value contents matched after every operation.
+- Limitations: the package compiles C++ below C++17, so `insert_or_assign` is
+  spelled out as `find`, then assign or (hinted) `insert`. The value returned by
+  `removeValue(forKey:)` has no `erase(k)` equivalent and is compared only through
+  the count and resulting contents.
+- Command: `swift test --disable-sandbox --filter CppBehaviorReferenceTests`
+  (13 tests passed).
+
+### MultiMap result (2026-10-04)
+
+- Added `cpp_multimap_execute_trace` for `std::multimap<int64_t, int64_t>` and
+  `MultiMapBehaviorComparisonTests.swift`; the other executors are unchanged.
+- Mapped values are distinct occurrence identities, so within-group placement is
+  compared through the complete ordered key/value contents, never keys alone.
+- Matching: `insert(key:value:)` (appended after the equivalent group), hinted
+  `insert(_:hint:)` ↔ `insert(hint, …)` returned rank/entry for an empty container,
+  exact hints before/after the group, inside the group, poor hints before/after,
+  `startIndex`, `endIndex`, and reinsertion after erasure; `find`/`count`;
+  `lowerBound`/`upperBound`/`equalRange` entry and rank at before/at/between/after
+  keys; `eraseMulti` ↔ `erase(k)` count; `erase(_:)` ↔ `erase(it)` next rank;
+  `remove(at:)` erased entry; `updateValue(_:at:)` ↔ assigning `it->second`
+  (previous value).
+- No difference or crash was found. This completes one curated trace for each of
+  the four container pairs.
+- Command: `swift test --disable-sandbox --filter CppBehaviorReferenceTests`
+  (17 tests passed).
+
 ## Test strategy
 
 After the PoC is accepted, implement this in stages:

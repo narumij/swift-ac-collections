@@ -1288,3 +1288,25 @@ Status: Blocked (2026-10-04, Claude Opus 5.5)
   comparison tests passed and 2 were skipped. Production code was not changed.
 - Suspected `__find_leaf` boundary-check divergence from the corresponding libc++
   control flow; handed off for a separate test-first repair.
+# Archived Result — MultiSet Hint Boundary Repair
+
+Status: Completed (2026-10-04, Claude Opus 5.5)
+
+- Confirmed `std::multiset` accepts the minimal nonempty `end()` hint trace while
+  Swift previously trapped in `__tree_left_rotate`.
+- Corrected one multi hinted-leaf boundary condition to match libc++ and the unique
+  search path: `__hint == end` became `__prior == __begin_node_`.
+- Added process-isolated start/end/empty regressions and enabled both blocked C++
+  comparison traces. All 9 comparison tests passed; focused MultiSet/MultiMap and
+  raw-tree suites also passed. `git diff --check` passed.
+# Archived Result — Dictionary C++ Comparison Expansion
+
+Status: Completed (2026-10-04, Claude Opus 5.5)
+
+- Added deterministic `RedBlackTreeDictionary<Int64, Int64>`/`std::map` comparison
+  for insert, hinted insert, update/assign, subscripts, lookup, bounds, equal range,
+  erase-by-key, returned facts, ranks, and complete ordered contents.
+- Kept insert-preserves-existing semantics separate from update-replaces-existing
+  semantics. Documented that the current C++ mode spells out `insert_or_assign`'s
+  effect and that `erase(key)` cannot report Swift's removed mapped value.
+- Added 4 tests; all 13 root comparison tests passed. `git diff --check` passed.

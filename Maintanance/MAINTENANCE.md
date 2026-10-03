@@ -230,6 +230,21 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
+### タスク選定の現在方針（2026-10-04〜）
+
+開発は、機能や検証項目を広く増やす段階から、既存の順序付きコレクションを絞って磨き、
+採用判断に耐える信憑性を外部化する段階へ移った。当面のタスクは、次の順で優先する。
+
+1. 再現可能で、比較対象と意味論が揃った正しさ・性能の証拠
+2. 有利な主張を反証できる差分テスト、外部比較、失敗例
+3. 利用者またはAIが追跡できる生データ、実行条件、既知の限界
+4. C++互換性とSwift固有の価値を区別して説明できる検証
+5. 上記の信憑性を高める場合に限った、新規機能・ベンチ項目・文書の追加
+
+負けた結果、差がない結果、未計測の軸も成果物として残す。予備計測から結論を先取りせず、
+大規模な横展開の前に、小さな見本の意味論と測定対称性をレビューする。現在の次タスクは
+`SORTED_COLLECTIONS_BENCHMARK_TASK.md`のPhase 1であり、大規模計測はそのレビュー後に行う。
+
 - 2026-10-03 Codex (GPT-5): `release/AtCoder/2025`からUnsafeTreeV2への移行の要石を保存するため、コンパイル対象外の`UnsafeTreeV2BootstrapTests.swift`を移行途中の旧名`___RedBlackTreeContainerTests_unsafe.swift`へ戻した。確定できた三段階とリファクタリング手法を`Maintanance/REFACTORING_FROM_ATCODER_2025.md`へ記録し、Fixture文書の参照も更新した。
 - 2026-10-03 Codex (GPT-5): `RedBlackTreeMappedValuesView`のsubscriptと`swapAt`へ、既存`isElement(at:)`を使ったView範囲検査を追加。同じ木でもView外のIndexは事前条件違反として停止する。検査にキー順序比較を使うため、対象extensionへ既存の`_BaseNode_KeyInterface` / `Comparable`制約を明示し、計算量をO(1)から最悪O(log n)へ更新。MappedValues正常系16件、追加Death Test 3件、RedBlackTreeTests全体が成功。Release DocCも`--warnings-as-errors`で生成成功した。
 - 2026-10-03 Codex (GPT-5): ユーザー編集用の4型先頭コメントドック原稿を`Sources/RedBlackTreeCollections/Documentation/Head`へ集約。既存のSet日本語原稿は保持し、残る日英7ファイルを用意した。Set / MultiSet / MultiMapは利用者向け`Documentation`と現行Swiftソース先頭コメントを併置し、単独の利用者向け文書が存在しないDictionaryは現行ソースコメントを編集素材として収録した。ソース本体への反映はユーザー編集後に行う。

@@ -1,148 +1,161 @@
 # Codex-to-Claude Work Request
 
-Status: Completed — Repair MultiSet hinted-insertion boundary failure
+Status: Completed — MultiMap C++ behavior-comparison expansion
 
 ## Objective
 
-Repair the confirmed `RedBlackTreeMultiSet.insert(_:hint:)` failure at valid boundary
-hints, using the smallest justified production change and executable regressions.
-Communicate with the user in Japanese.
+Complete the four-container curated C++ comparison by adding one final pair:
+`RedBlackTreeMultiMap<Int64, Int64>` and `std::multimap<int64_t, int64_t>`.
 
-Do not resume container expansion in this assignment.
+The primary question is the observable placement of distinct mapped values inside an
+equivalent-key group, especially under hinted insertion. Communicate with the user in
+Japanese. Do not commit or push.
 
-## Confirmed Baseline
+## Baseline
 
-The committed C++ comparison found this minimal deterministic failure:
+Read all committed Set/MultiSet/Dictionary comparison code, the MultiMap public
+implementation and Test as Specification, and
+`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` before editing.
 
-1. `insert(10)`
-2. `insert(20, hint: endIndex)`
+Run:
 
-Debug stops in `__tree_left_rotate` with "node shouldn't be null". `std::multiset`
-inserts normally. The reproducer is currently disabled as
-`multiSetEndIndexHintMinimalTrace`.
+```sh
+swift test --disable-sandbox --filter CppBehaviorReferenceTests
+```
 
-Read these files completely before editing:
+Exactly 13 tests must pass. Stop if the baseline differs.
 
-- `Sources/RedBlackTreeCollections/Implements/__tree/unsafe_tree/unsafe_tree+find.swift`
-- `Sources/RedBlackTreeCollections/Implements/__tree/unsafe_tree/unsafe_tree+insert.swift`
-- `Sources/RedBlackTreeCollections/RedBlackTreeMultiSet/RedBlackTreeMultiSet.swift`
-- `Tests/CppBehaviorReferenceTests/MultiSetBehaviorComparisonTests.swift`
-- the existing MultiSet Test as Specification and Death Tests
-
-Compare the multi `__find_leaf` control flow with the unique `__find_equal` control
-flow in the same file and with the repository's LLVM/libc++-derived reference where
-available. Do not treat the prior suspected cause as proven until the tests support it.
-
-First reconfirm the same minimal trace on `std::multiset`. If C++ also terminates or
-the trace violates the C++ preconditions, do not imitate undefined behavior: leave
-the algorithm unchanged, propose an explicit Swift precondition trap, and report the
-case for deferral. At present the committed executor records normal C++ insertion and
-the Swift public contract explicitly says `endIndex` is valid, so a Swift-only crash
-remains a repair target unless that evidence is disproved.
-
-## Required Test-First Evidence
-
-Before the production fix:
-
-1. Run the focused comparison suite and record the 6-pass/2-skip baseline.
-2. Add a process-isolated regression that expects successful exit for the minimal
-   `endIndex` trace. Run it and confirm that it fails before the fix without killing
-   the main test runner.
-3. Add or identify coverage for `startIndex` hint boundaries, including:
-   - inserting a new least value at `startIndex`;
-   - inserting a value equivalent to the first element at `startIndex`;
-   - an empty MultiSet, where `startIndex == endIndex`.
-
-Use Swift Testing exit-test support for the pre-fix crashing path. Do not merely
-enable an in-process test that terminates the entire runner.
-
-## Authorized Production Change
-
-Production edits are limited to the multi hinted-leaf search in:
-
-- `Sources/RedBlackTreeCollections/Implements/__tree/unsafe_tree/unsafe_tree+find.swift`
-
-Make the smallest boundary-condition correction justified by the reference control
-flow and regression tests. Do not refactor adjacent search algorithms, rename APIs,
-change public contracts, or optimize unrelated paths.
-
-If the fix requires any other production file, stop and ask the user.
-
-## Authorized Test and Record Changes
+## Authorized Scope
 
 You may edit only:
 
-- the directly relevant MultiSet Test as Specification or Death Test file;
-- `Tests/CppBehaviorReferenceTests/MultiSetBehaviorComparisonTests.swift`;
-- this file for final status/result;
-- `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` to replace the known-difference
-  record with the verified repair result.
+- `Sources/CppBehaviorReference/`
+- `Tests/CppBehaviorReferenceTests/`
+- this file for final status/result
+- `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` for verified MultiMap results
 
-Do not edit the C++ executor unless a demonstrated executor defect blocks the test.
-Do not touch `Package.swift`, `Benchmarks/`, Set comparison, Dictionary, MultiMap,
-randomized tests, benchmarks, CI, `TESTING.md`, or `MAINTENANCE.md`.
+Do not edit production Swift, `Package.swift`, `Benchmarks/`, existing Set/MultiSet/
+Dictionary tests, randomized tests, workflows, dashboard documents, either
+`WorldClassAssessment` file, or the queued benchmark task.
 
-## Post-fix Validation
+## Required MultiMap Comparison
 
-After the production change:
+Use `Int64` keys and identity-bearing `Int64` mapped values. Keep a separate
+`std::multimap<int64_t, int64_t>` executor/observation path while reusing the existing
+trace architecture.
 
-1. Enable and run `multiSetEndIndexHintMinimalTrace`.
-2. Enable and run the full MultiSet hinted-insertion comparison containing all
-   `endIndex` cases.
-3. Run the new start/end boundary regressions.
-4. Run all `CppBehaviorReferenceTests`.
-5. Run the affected `RedBlackTreeMultiSet` test suite, including its Death Tests.
-6. Run `git diff --check` and inspect the final changed-file list.
+Cover at least:
 
-Use `swift test --disable-sandbox` where the local manifest sandbox requires it.
-Do not run the full package suite unless a focused failure demonstrates a wider issue.
+1. insertion of distinct keys and duplicate keys with distinct mapped values;
+2. `lowerBound`, `upperBound`, and `equalRange` at before/at/between/after keys;
+3. complete ordered key/value contents after every operation;
+4. erase by key, including the number removed;
+5. erase by a rank selected from current ordered contents, comparing the erased entry
+   and the resulting next position only where both APIs expose equivalent facts;
+6. update of the mapped value at a selected rank, if it maps directly to assigning
+   through a valid `std::multimap` iterator;
+7. hinted insertion with:
+   - an empty container (`startIndex == endIndex`);
+   - exact hints before and after an equivalent-key group;
+   - a hint inside an equivalent-key group;
+   - deliberately poor but valid hints before and after the group;
+   - `startIndex` and `endIndex`;
+   - reinsertion after erasure.
+
+For every hinted insert, compare the returned rank and full ordered key/value contents.
+The mapped value is the occurrence identity: use distinct values so placement within
+an equal-key group is observable. Do not collapse observations to keys only.
+
+Transport positions only as current zero-based ranks and independently resolve them
+to Swift indices and C++ iterators immediately before use.
+
+Add a deliberate mismatch test proving the diagnostic includes the container pair,
+operation number, input, and both complete observations.
+
+## Semantic discipline
+
+- Determine the Swift API contract from implementation/tests before selecting a C++
+  operation. Do not equate APIs by name alone.
+- C++ hint validity and Swift hint validity must both be checked for every trace.
+- If equivalent-key placement intentionally differs, preserve the smallest trace and
+  report the difference; do not sort mapped values or otherwise normalize it away.
+- Do not change production Swift to force agreement in this assignment.
 
 ## Stop Conditions
 
-- If the proposed one-condition repair does not make every required regression pass,
-  revert that attempted production edit and report the new evidence.
-- If Set, Dictionary, or MultiMap shares the defective path in a way requiring a
-  broader semantic decision, stop and report; do not broaden the fix silently.
-- If the C++ reference also terminates for the minimal trace, stop before changing
-  the algorithm and report whether a deliberate Swift precondition trap should
-  replace compatibility work for now.
-- Do not commit or push.
+- On any semantic difference or crash, minimize and preserve the trace safely, set
+  `Status: Blocked`, and stop before a production fix.
+- Stop if a public API or Package change is needed.
+- Do not expand into random/fuzz traces, performance work, or benchmark conclusions.
+
+## Validation
+
+1. Run narrow new MultiMap comparison tests during development.
+2. Run all `CppBehaviorReferenceTests`.
+3. Run `git diff --check`.
+4. Confirm the changed-file list stays within the authorized scope.
+
+Do not run the full package suite unless the focused build reveals a wider issue.
 
 ## Completion Report
 
-Set `Status: Completed` only when the pre-fix failure was observed, all required
-post-fix tests pass, and `git diff --check` succeeds. Keep the result summary concise:
-
-- verified root cause;
-- exact production change;
-- pre-fix failing evidence;
-- post-fix test counts/results;
-- changed files.
-
-Do not add an accountability diary or unrelated findings.
+Set `Status: Completed` only if the focused suite and `git diff --check` pass. Report
+only the exact behaviors compared, final test count/result, changed files, and real
+limitations/differences. Do not add an accountability diary or unrelated findings.
 
 ### Result (2026-10-04, Claude Opus 5.5)
 
-- **Root cause:** the multi hinted `__find_leaf` tested `__hint == end` instead of
-  libc++'s `__prior == begin()` (also used by the unique hinted `__find_equal` in the
-  same file). With an `endIndex` hint on a non-empty tree, `__prior` stayed `end`, and
-  `end.__right_` was returned as the insertion leaf.
-- **Production change:** `unsafe_tree+find.swift`, one condition:
-  `__hint == end ||` → `__prior == __begin_node_ ||`. MultiMap's hinted insertion
-  shares this path and is fixed by the same change.
-- **Pre-fix evidence:** baseline 6 passed / 2 skipped. A new C++-only check confirmed
-  that `std::multiset` inserts normally (`[10, 20]`, rank 1). The new exit test
-  `insertWithEndIndexHintIntoNonEmptyMultiSet_exitsSuccessfully` failed with
-  `.signal(SIGTRAP)` without stopping the main runner. The `startIndex` (new least,
-  equivalent to first) and empty-set exit tests already passed before the fix.
-- **Post-fix:** `CppBehaviorReferenceTests` 9/9 passed (both formerly disabled tests
-  enabled). MultiSet/MultiMap filters: 296 XCTest and 50 Swift Testing tests passed,
-  including Death/exit tests. `RedBlackTreeTreeTests`: 122 XCTest and 9 Swift Testing
-  tests passed. `git diff --check` passed.
-- **Changed files:** `unsafe_tree+find.swift`, `MultiSetBehaviorComparisonTests.swift`,
-  `RedBlackTreeMultiSet_5_InsertionTests.swift` (boundary spec test),
-  `RedBlackTreeMultiSet_99_DeathTests.swift` (4 exit tests),
-  `CPP_BEHAVIOR_COMPARISON_TASK.md`, this file.
+- **Compared** (`RedBlackTreeMultiMap<Int64, Int64>` / `std::multimap<int64_t, int64_t>`,
+  distinct mapped values as occurrence identity, full ordered key/value contents
+  after every operation):
+  - `insert(key:value:)` ↔ `insert({k, v})`: placement after the equivalent group,
+    observed through contents (neither result exposes a rank directly).
+  - `insert(_:hint:)` ↔ `insert(hint, {k, v})`: returned entry and rank for an empty
+    container, exact hints before/after the group, inside the group, poor hints
+    before/after, `startIndex`, `endIndex`, poor hints for existing least/greatest
+    keys, reinsertion at a vacated position, and reinsertion after erasing the group.
+  - `find(_:)` + `count(forKey:)` ↔ `find` + `count`.
+  - `lowerBound`/`upperBound` ↔ `lower_bound`/`upper_bound`: entry and rank at
+    before/at/between/after keys.
+  - `multimap[equalRange(k)]` ↔ `equal_range(k)`: lower/upper rank and entries in order.
+  - `eraseMulti(_:)` ↔ `erase(k)`: removed count.
+  - `erase(_:)` ↔ `erase(it)`: rank of the returned next position.
+  - `remove(at:)` ↔ copy `*it`, then `erase(it)`: erased entry.
+  - `updateValue(_:at:)` ↔ copy `it->second`, then `it->second = v`: previous value.
+  - Hint/positional ranks are validated on both sides: C++ by range, Swift by range
+    plus `isElement(at:)`/`isEnd(_:)` on the resolved index.
+- **Result:** 4 new MultiMap tests passed; all `CppBehaviorReferenceTests` 17
+  passed (baseline 13). `git diff --check` clean.
+- **Changed files:** `Sources/CppBehaviorReference/include/CppBehaviorReference.h`,
+  `Sources/CppBehaviorReference/CppBehaviorReference.cpp`,
+  `Tests/CppBehaviorReferenceTests/MultiMapBehaviorComparisonTests.swift` (new),
+  this file, `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`.
+- **Differences/limitations:** No Swift/C++ difference or crash was found, including
+  within-group placement. `remove(at:)` and `erase(_:)` each expose only one of the
+  erased entry / next position, so each is compared against its C++ counterpart
+  for that fact alone.
+
+## Next assignment — credibility-first external comparison
+
+The next task is `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md`. The project is
+now prioritizing evidence that helps a user or an AI make a defensible adoption
+decision over broad feature expansion.
+
+Start with Phase 1 only: audit the existing benchmark, confirm the resolved upstream
+version/trait, run the small harness smoke check, and propose a genuinely matched
+Set/Dictionary workload matrix. Stop for review before the large measurement run.
+
+Task decisions in this phase follow this order:
+
+1. preserve or improve reproducibility and semantic comparability;
+2. seek evidence capable of disproving a favorable claim;
+3. record losses, limitations, instability, and unmeasured axes as first-class results;
+4. prefer external baselines and independently reviewable artifacts over self-rating;
+5. add implementation or benchmark breadth only when it strengthens one of the above.
+
+Do not change production code to improve a result, silently substitute a merely
+similar operation, or update either WorldClassAssessment conclusion from preliminary
+measurements.
 
 ## History
 

@@ -1,6 +1,11 @@
 #if DEATH_TEST
-  import Darwin
   import Testing
+
+  #if canImport(Darwin)
+    import Darwin
+  #elseif canImport(Glibc)
+    import Glibc
+  #endif
 
   import PermutationModule
 

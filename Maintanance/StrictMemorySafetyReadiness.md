@@ -331,7 +331,7 @@ strict memory safety設定はunsafe構造を安全化するものではなく、
 寿命・競技プログラミング向け単一ファイル性を再検証する。現構造のままでは22件を既知の
 監査対象として残し、`BareArrayModule`のstrict設定は無効のままとする。
 
-## 11. `OptionalArrayModule` 段階対応(2026-10-03、バッチ1実施済み)
+## 11. `OptionalArrayModule` 段階対応(2026-10-03、バッチ4実施済み)
 
 `.strictMemorySafety()`を一時適用してXcodeで再コンパイルした。従来の144件は重複を
 含むログ行数で、ファイル位置とメッセージで一意化すると82箇所だった。所有型4つの
@@ -350,6 +350,44 @@ strict memory safety設定はunsafe構造を安全化するものではなく、
   対象テスト4件: すべて成功。
 - `OptionalArrayModule`の`.strictMemorySafety()`は調査後に外し、未採用のままとした。
 
-次は所有型の`removeAll`と添字変更を一つのバッチとして扱い、その後に確保・初期化、
-View境界を分けて監査する。公開型のunsafe storage診断は`BareArrayModule`と同様に、
-呼び出し側へunsafe要求を伝播させず隔離できる設計を確認してから恒久適用を判断する。
+公開型のunsafe storage診断は`BareArrayModule`と同様に、呼び出し側へunsafe要求を
+伝播させず隔離できる設計を確認してから恒久適用を判断する。
+
+バッチ2では、所有型4つの`removeAll`と、要素を直接取得・変更する
+`OptionalArray1D.subscript`をscoped `unsafe`で明示した。2D〜4Dのsubscriptは
+非所有Viewを作る境界なので、このバッチには含めていない。
+
+- strict設定下の一意な診断: **62→44箇所**。減少した18件は`removeAll` 12件と
+  1D subscript 6件に一致。
+- 通常構成のビルド: 成功。
+- `OptionalArrayTests` 23件（全次元の設定・取得・`removeAll`・View共有・参照要素寿命）:
+  すべて成功。
+- 一時的なOptionalArray strict設定は再び外し、`Package.swift`を採用前の状態へ戻した。
+
+バッチ3では、所有型4つのinitializerにある初期化フラグ領域の`initialize`をscoped
+`unsafe`で明示した。通常構成でも追加警告は発生しないことを先に確認した。
+
+- strict設定下の一意な診断: **44→40箇所**。
+- 通常構成のビルドと`OptionalArrayTests` 23件: すべて成功。
+- initializerに残る8件は2ポインタ×4型の`allocate`。これはstrict無効時にはunsafe操作
+  として扱われず、先にscoped `unsafe`を付けると不要なunsafe警告になり得るため、
+  strict恒久適用と同じバッチへ保留する。
+- 一時的なOptionalArray strict設定は外し、`Package.swift`を採用前の状態へ戻した。
+
+バッチ4では、所有型2D〜4DからViewを作るpointer arithmetic、非所有View 3型の
+内部pointer initializer、View間のsubscript、1D Viewの要素取得・変更をscoped
+`unsafe`または`@unsafe` initializerとして整理した。あわせて1D所有型の内部
+`description`に残っていた読み取り2件も局所化した。
+
+- strict設定下の一意な診断: **40→23→21箇所**。View境界で17件、`description`で
+  2件減少した。
+- 通常構成のビルド: 成功。
+- `OptionalArrayTests` 23件と`OptionalArrayDeathTests` 7件: 全30件成功。
+- 一時的なOptionalArray strict設定は外し、`Package.swift`を採用前の状態へ戻した。
+
+残る21箇所は、所有型4・View型3の「unsafe型をstorageに持つ」診断7件、Viewの
+pointer initializerでそのstorageへ代入する診断6件、strict有効時だけunsafe扱いになる
+`allocate` 8件である。局所的なポインタ操作はすべて監査境界へ整理できたが、残件を
+消すには公開7型への`@unsafe`伝播、または生ポインタstorageの隔離設計が必要になる。
+`BareArrayModule`と同じ理由で、警告を消すためだけに公開型を`@unsafe`へ変更せず、
+`OptionalArrayModule`のstrict設定は無効のままとする。

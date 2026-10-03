@@ -28,7 +28,7 @@ public struct OptionalArray1D<Element>: ~Copyable {
   public init(capacity: Int) {
     self.count = capacity
     self.hasPayload = .allocate(capacity: capacity)
-    self.hasPayload.initialize(repeating: false, count: capacity)
+    unsafe self.hasPayload.initialize(repeating: false, count: capacity)
     self.payload = .allocate(capacity: capacity)
   }
 
@@ -47,11 +47,11 @@ public struct OptionalArray1D<Element>: ~Copyable {
   @inlinable
   public func removeAll() {
     for i in 0..<count {
-      if hasPayload[i] {
-        (payload + i).deinitialize(count: 1)
+      if unsafe hasPayload[i] {
+        unsafe (payload + i).deinitialize(count: 1)
       }
     }
-    hasPayload.update(repeating: false, count: count)
+    unsafe hasPayload.update(repeating: false, count: count)
   }
 
   /// 指定位置の要素を取得または更新します。
@@ -66,24 +66,24 @@ public struct OptionalArray1D<Element>: ~Copyable {
     @inline(__always)
     get {
       precondition(0 <= position && position < count)
-      guard hasPayload[position] else {
+      guard unsafe hasPayload[position] else {
         return nil
       }
-      return payload[position]
+      return unsafe payload[position]
     }
 
     @inline(__always)
     _modify {
       precondition(0 <= position && position < count)
-      var value = hasPayload[position] ? (payload + position).move() : nil
+      var value = unsafe hasPayload[position] ? (payload + position).move() : nil
       defer {
         if let value {
-          hasPayload[position] = true
-          (payload + position).initialize(to: value)
+          unsafe hasPayload[position] = true
+          unsafe (payload + position).initialize(to: value)
         } else {
           // `.move()`済み(または元々未初期化)のスロットはすでに未初期化状態なので、
           // ここであらためて`deinitialize`してはいけない(二重解放になる)。
-          hasPayload[position] = false
+          unsafe hasPayload[position] = false
         }
       }
       yield &value
@@ -104,8 +104,8 @@ extension OptionalArray1D {
   var description: String {
     var result = [(Int, Element)]()
     for i in 0..<count {
-      if hasPayload[i] {
-        result.append((i, payload[i]))
+      if unsafe hasPayload[i] {
+        result.append((i, unsafe payload[i]))
       }
     }
     return result.description
@@ -129,7 +129,7 @@ public struct OptionalArray2D<Element>: ~Copyable {
   public init(width: Int, height: Int) {
     self.capacity = height * width
     self.hasPayload = .allocate(capacity: capacity)
-    self.hasPayload.initialize(repeating: false, count: capacity)
+    unsafe self.hasPayload.initialize(repeating: false, count: capacity)
     self.payload = .allocate(capacity: capacity)
     self.width = width
     self.height = height
@@ -149,11 +149,11 @@ public struct OptionalArray2D<Element>: ~Copyable {
   @inlinable
   public func removeAll() {
     for i in 0..<capacity {
-      if hasPayload[i] {
-        (payload + i).deinitialize(count: 1)
+      if unsafe hasPayload[i] {
+        unsafe (payload + i).deinitialize(count: 1)
       }
     }
-    hasPayload.update(repeating: false, count: capacity)
+    unsafe hasPayload.update(repeating: false, count: capacity)
   }
 
   @inlinable
@@ -161,7 +161,7 @@ public struct OptionalArray2D<Element>: ~Copyable {
     @inline(__always)
     get {
       precondition(0 <= position && position < height)
-      return .init(
+      return unsafe .init(
         hasPayload: hasPayload + width * position,
         payload: payload + width * position,
         count: width)
@@ -199,7 +199,7 @@ public struct OptionalArray3D<Element>: ~Copyable {
   public init(width: Int, height: Int, depth: Int) {
     self.capacity = height * width * depth
     self.hasPayload = .allocate(capacity: capacity)
-    self.hasPayload.initialize(repeating: false, count: capacity)
+    unsafe self.hasPayload.initialize(repeating: false, count: capacity)
     self.payload = .allocate(capacity: capacity)
     self.width = width
     self.height = height
@@ -220,11 +220,11 @@ public struct OptionalArray3D<Element>: ~Copyable {
   @inlinable
   public func removeAll() {
     for i in 0..<capacity {
-      if hasPayload[i] {
-        (payload + i).deinitialize(count: 1)
+      if unsafe hasPayload[i] {
+        unsafe (payload + i).deinitialize(count: 1)
       }
     }
-    hasPayload.update(repeating: false, count: capacity)
+    unsafe hasPayload.update(repeating: false, count: capacity)
   }
 
   @inlinable
@@ -232,7 +232,7 @@ public struct OptionalArray3D<Element>: ~Copyable {
     @inline(__always)
     get {
       precondition(0 <= position && position < depth)
-      return .init(
+      return unsafe .init(
         hasPayload: hasPayload + width * height * position,
         payload: payload + width * height * position,
         width: width, height: height)
@@ -271,7 +271,7 @@ public struct OptionalArray4D<Element>: ~Copyable {
   public init(size0: Int, size1: Int, size2: Int, size3: Int) {
     self.capacity = size0 * size1 * size2 * size3
     self.hasPayload = .allocate(capacity: capacity)
-    self.hasPayload.initialize(repeating: false, count: capacity)
+    unsafe self.hasPayload.initialize(repeating: false, count: capacity)
     self.payload = .allocate(capacity: capacity)
     self.size0 = size0
     self.size1 = size1
@@ -293,11 +293,11 @@ public struct OptionalArray4D<Element>: ~Copyable {
   @inlinable
   public func removeAll() {
     for i in 0..<capacity {
-      if hasPayload[i] {
-        (payload + i).deinitialize(count: 1)
+      if unsafe hasPayload[i] {
+        unsafe (payload + i).deinitialize(count: 1)
       }
     }
-    hasPayload.update(repeating: false, count: capacity)
+    unsafe hasPayload.update(repeating: false, count: capacity)
   }
 
   @inlinable
@@ -305,7 +305,7 @@ public struct OptionalArray4D<Element>: ~Copyable {
     @inline(__always)
     get {
       precondition(0 <= position && position < size3)
-      return .init(
+      return unsafe .init(
         hasPayload: hasPayload + size0 * size1 * size2 * position,
         payload: payload + size0 * size1 * size2 * position,
         width: size0,
@@ -337,14 +337,14 @@ extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
 public struct OptionalArray1DView<Element> {
 
   @inlinable
-  internal init(
+  @unsafe internal init(
     hasPayload: UnsafeMutablePointer<Bool>,
     payload: UnsafeMutablePointer<Element>,
     count: Int
   ) {
     self.count = count
-    self.hasPayload = hasPayload
-    self.payload = payload
+    self.hasPayload = unsafe hasPayload
+    self.payload = unsafe payload
   }
   @usableFromInline var count: Int
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
@@ -361,24 +361,24 @@ public struct OptionalArray1DView<Element> {
     @inline(__always)
     get {
       precondition(0 <= position && position < count)
-      guard hasPayload[position] else {
+      guard unsafe hasPayload[position] else {
         return nil
       }
-      return payload[position]
+      return unsafe payload[position]
     }
 
     @inline(__always)
     _modify {
       precondition(0 <= position && position < count)
-      var value = hasPayload[position] ? (payload + position).move() : nil
+      var value = unsafe hasPayload[position] ? (payload + position).move() : nil
       defer {
         if let value {
-          hasPayload[position] = true
-          (payload + position).initialize(to: value)
+          unsafe hasPayload[position] = true
+          unsafe (payload + position).initialize(to: value)
         } else {
           // `.move()`済み(または元々未初期化)のスロットはすでに未初期化状態なので、
           // ここであらためて`deinitialize`してはいけない(二重解放になる)。
-          hasPayload[position] = false
+          unsafe hasPayload[position] = false
         }
       }
       yield &value
@@ -397,13 +397,13 @@ extension OptionalArray1DView {
 public struct OptionalArray2DView<Element> {
 
   @inlinable
-  internal init(
+  @unsafe internal init(
     hasPayload: UnsafeMutablePointer<Bool>,
     payload: UnsafeMutablePointer<Element>,
     width: Int, height: Int
   ) {
-    self.hasPayload = hasPayload
-    self.payload = payload
+    self.hasPayload = unsafe hasPayload
+    self.payload = unsafe payload
     self.width = width
     self.height = height
   }
@@ -418,7 +418,7 @@ public struct OptionalArray2DView<Element> {
     @inline(__always)
     get {
       precondition(0 <= position && position < height)
-      return .init(
+      return unsafe .init(
         hasPayload: hasPayload + width * position,
         payload: payload + width * position,
         count: width)
@@ -442,13 +442,13 @@ extension OptionalArray2DView {
 public struct OptionalArray3DView<Element> {
 
   @inlinable
-  internal init(
+  @unsafe internal init(
     hasPayload: UnsafeMutablePointer<Bool>,
     payload: UnsafeMutablePointer<Element>,
     width: Int, height: Int, depth: Int
   ) {
-    self.hasPayload = hasPayload
-    self.payload = payload
+    self.hasPayload = unsafe hasPayload
+    self.payload = unsafe payload
     self.width = width
     self.height = height
     self.depth = depth
@@ -465,7 +465,7 @@ public struct OptionalArray3DView<Element> {
     @inline(__always)
     get {
       precondition(0 <= position && position < height)
-      return .init(
+      return unsafe .init(
         hasPayload: hasPayload + width * position,
         payload: payload + width * position,
         width: width,

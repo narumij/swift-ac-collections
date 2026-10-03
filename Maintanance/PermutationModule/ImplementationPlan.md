@@ -73,6 +73,8 @@
   `IteratorN`/`SubSequenceN`は、共有CoW bufferの`final`化と変更前detachを根拠に
   `@unchecked Sendable where C.Element: Sendable`へ適合した。詳細は
   `Maintanance/StrictMemorySafetyReadiness.md` §9を参照。公開APIのコメントドックも整備済み。
+- `PermutationModule`への`.strictMemorySafety()`も恒久適用済み。内部Bufferのunsafe操作は
+  所有境界ごとのscoped `unsafe`へ整理し、strict設定下で警告0件を確認した。
 - ABC328E実提出による性能検証(ベースライン記録・削除後の再提出比較)は、外部サービス
   への投稿を伴うためユーザー自身が行う前提。制約は`N <= 8`, `M <= 28`で、AtCoderの
   判定環境は`import AcCollections`に依存できないため、自己完結したコピー&ペースト用の

@@ -11,7 +11,8 @@
 | 段階 | ターゲット | 状態 |
 | --- | --- | --- |
 | 第1段階 | `AcCollections`、`RedBlackTreeModule` | **採用済み**(`Package.swift`に恒久適用) |
-| 第2段階 | `PermutationModule`、`BareArrayModule`、`OptionalArrayModule` | 未採用(保留)。`PermutationModule`は実装計画のみ策定済み(§8) |
+| 第2段階 | `PermutationModule` | **採用済み**。全診断を局所unsafe境界へ整理し、警告0件(§8) |
+| 第2段階 | `BareArrayModule`、`OptionalArrayModule` | 未採用(保留) |
 | 第3段階 | `RedBlackTreeCollections` | 未採用(保留) |
 
 第1段階の検証:
@@ -124,9 +125,9 @@
 - 本調査はビルド診断の収集のみで、`swift test`は実行していない
   (production codeの変更がないため)。
 
-## 8. `PermutationModule` 実装計画(2026-10-03、バッチ1実施済み)
+## 8. `PermutationModule` 実装結果(2026-10-03、全バッチ完了)
 
-バッチ1(G1の`deinit`)のみproduction codeへ適用済み。設定は恒久適用していない。
+G1〜G6をproduction codeへ適用し、`Package.swift`へ`.strictMemorySafety()`を恒久適用した。
 
 ### 再現手順と結果
 
@@ -161,19 +162,26 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
 
 ### 実装バッチ案(各バッチ後に通常/`COMPATIBLE_ATCODER_2025`で`swift test`)
 
-1. **バッチ1(方式の検証、最小)**: G1の`deinit`だけにscoped `unsafe`を付け、
+1. **完了 — バッチ1(方式の検証、最小)**: G1の`deinit`だけにscoped `unsafe`を付け、
    一時適用ビルドで警告が17→14件に減ること、`unsafe`式がtools-version 6.2で
    問題なくビルドできることを確認する。`.strictMemorySafety()`はまだ恒久適用しない。
-2. **バッチ2(G2+G3、内部API再設計)**: `__header_ptr`を`header`へ置換して削除し、
+2. **完了 — バッチ2(G2+G3、内部API再設計)**: `__header_ptr`を`header`へ置換して削除し、
    `__storage_ptr`を`@unsafe`化、添字2箇所にscoped `unsafe`。`@inline(__always)`の
    ホットパスを変えるため、Release計測で性能が劣化しないことを確認する
    (公開添字の要素アクセスは`Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`で
    計測できる。`nextPermutation`自体のベンチマークはまだ無い)。
-3. **バッチ3(G4〜G6)**: scoped `unsafe`の付与のみ。G4の`final`化、G5の
-   precondition追加か引数削除、G6の`initialize(fromContentsOf:)`化は、挙動や内部APIが
-   変わるため別々の小さな変更としてユーザーに諮る。
-4. **バッチ4(恒久適用)**: 警告0件を確認してから`PermutationModule`へ
-   `.strictMemorySafety()`を追加する。
+3. **完了 — バッチ3(G4〜G6)**: G4〜G6をscoped `unsafe`で明示。G4はSendable対応時に
+   `Buffer`を`final`化済み。G5は`capacity >= count`のpreconditionを追加してからコピーする。
+4. **完了 — バッチ4(恒久適用)**: 警告0件を確認し、`PermutationModule`へ
+   `.strictMemorySafety()`を追加した。
+
+### 全バッチ完了結果(2026-10-03)
+
+- G2/G3: `__header_ptr`を削除し、安全な`ManagedBuffer.header`へ置換。要素ポインタを返す
+  `__storage_ptr`だけを`@unsafe`とし、get/modifyの利用箇所をscoped `unsafe`に限定した。
+- G4〜G6: downcast、buffer間コピー、sourceからの初期化をそれぞれscoped `unsafe`で明示。
+- strict設定下のXcode Build for Testingで`PermutationModule`の警告・エラー0件。
+- strict設定下でPermutationの通常テスト6件がすべて成功。
 
 ### バッチ1 実施結果(2026-10-03)
 

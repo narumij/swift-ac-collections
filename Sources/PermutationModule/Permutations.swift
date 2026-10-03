@@ -180,14 +180,8 @@ extension Permutations.Buffer {
 
   @inlinable
   @inline(__always)
-  var __header_ptr: UnsafeMutablePointer<Permutations.Header> {
-    withUnsafeMutablePointerToHeader({ $0 })
-  }
-
-  @inlinable
-  @inline(__always)
-  var __storage_ptr: UnsafeMutablePointer<Element> {
-    withUnsafeMutablePointerToElements({ $0 })
+  @unsafe var __storage_ptr: UnsafeMutablePointer<Element> {
+    unsafe withUnsafeMutablePointerToElements({ unsafe $0 })
   }
 
   @usableFromInline
@@ -195,13 +189,13 @@ extension Permutations.Buffer {
 
   @inlinable
   @inline(__always)
-  var isEmpty: Bool { __header_ptr.pointee.count == 0 }
+  var isEmpty: Bool { header.count == 0 }
   @inlinable
   @inline(__always)
   var startIndex: Index { 0 }
   @inlinable
   @inline(__always)
-  var endIndex: Index { __header_ptr.pointee.count }
+  var endIndex: Index { header.count }
 
   @inlinable
   @inline(__always)
@@ -223,9 +217,12 @@ extension Permutations.Buffer {
   @inlinable
   subscript(position: Index) -> Element {
     @inline(__always)
-    get { __storage_ptr[position] }
+    get { unsafe __storage_ptr[position] }
     @inline(__always)
-    _modify { yield &__storage_ptr[position] }
+    _modify {
+      let storage = unsafe __storage_ptr
+      yield unsafe &storage[position]
+    }
   }
 }
 
@@ -239,7 +236,7 @@ extension Permutations.Buffer {
     let storage = Permutations.Buffer<Element>.create(minimumCapacity: capacity) { _ in
       Permutations.Header(capacity: capacity, count: 0)
     }
-    return unsafeDowncast(storage, to: Self.self)
+    return unsafe unsafeDowncast(storage, to: Self.self)
   }
 
   @inlinable
@@ -248,6 +245,7 @@ extension Permutations.Buffer {
 
     let capacity = newCapacity ?? self.header.capacity
     let count = self.header.count
+    precondition(capacity >= count, "Capacity must accommodate initialized elements")
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       let copyCount = self.header.copyCount
     #endif
@@ -260,9 +258,9 @@ extension Permutations.Buffer {
       newStorage.header.copyCount = copyCount &+ 1
     #endif
 
-    self.withUnsafeMutablePointerToElements { oldElements in
-      newStorage.withUnsafeMutablePointerToElements { newElements in
-        newElements.initialize(from: oldElements, count: count)
+    unsafe self.withUnsafeMutablePointerToElements { oldElements in
+      unsafe newStorage.withUnsafeMutablePointerToElements { newElements in
+        unsafe newElements.initialize(from: oldElements, count: count)
       }
     }
 
@@ -287,9 +285,9 @@ extension Permutations.Buffer {
       newStorage.header.copyCount = 0
     #endif
 
-    newStorage.withUnsafeMutablePointerToElements { newElements in
+    unsafe newStorage.withUnsafeMutablePointerToElements { newElements in
       source.enumerated().forEach { i, v in
-        (newElements + i).initialize(to: v)
+        unsafe (newElements + i).initialize(to: v)
       }
     }
     return newStorage

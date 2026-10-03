@@ -270,7 +270,9 @@ let package = Package(
       exclude: [
         "Documentation"
       ],
-      swiftSettings: _settings
+      swiftSettings: _settings + [
+        .strictMemorySafety()
+      ]
     ),
     .testTarget(
       name: "PermutationTests",

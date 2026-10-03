@@ -66,6 +66,7 @@
   ImplementationPlan.md`の「保留中の判断」参照)。`All`系・`unsafe`系の削除、
   `Tests/PermutationTests/NextPermutation.swift`(未参照の旧世代実装)の削除、
   `nextPermutations()`と公開戻り値型への`///`コメントドック整備は完了済み。
+  `.strictMemorySafety()`も恒久適用済みで、対象モジュールの警告0件を確認した。
 - 内部テスト層の区分、および生木テストと変更コストの均衡。
 - UnsafeNode/RawBufferクロスチェックと既存単層テストの統合方法。前者には独立した
   計算経路間の一致確認という固有の役割がある。
@@ -89,7 +90,7 @@
 - 検証: 通常/互換モードの対象スイート、フルの`swift test`、通常ビルド、`git diff --check`が成功。
   `Package.swift`と一時的な本体変更は復元済み。
 
-最終更新: 2026-10-03 19:23 JST / Codex
+最終更新: 2026-10-03 19:33 JST / Codex
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

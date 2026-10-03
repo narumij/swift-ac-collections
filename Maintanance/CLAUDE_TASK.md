@@ -8,6 +8,13 @@ Do not start further work in this session. Preserve the current uncommitted XCTe
 migration exactly for Codex review. The tracking-session PoC below is superseded while
 this pause is in effect; do not implement it, expand MultiMap, edit CI, commit, or push.
 
+Before the XCTest migration can be accepted, the next review must validate Death Tests
+on Linux. A green ordinary `swift test` is insufficient: confirm which death-test cases
+are compiled, discovered, and executed, because the current `DEATH_TEST` Swift setting
+is conditional on macOS. Verify abnormal-termination/precondition isolation and exit-
+status assertions on the actual GitHub Actions Linux environment, or record the exact
+platform limitation and keep the migration unaccepted.
+
 ## Deferred alternative (do not start)
 
 Immediately perform the tracking-session PoC authorized in

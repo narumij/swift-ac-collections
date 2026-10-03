@@ -145,8 +145,27 @@ assertions, add MultiMap seeded traces, or broaden test semantics in this migrat
 If Swift Testing and XCTest cannot be made behaviorally equivalent, record the exact
 missing assertion or lifecycle failure and stop for review.
 
-This broad migration is superseded for now by the smaller tracking-session PoC below.
-Do not perform it unless that PoC fails review.
+The migration was completed in the working tree before the later tracking-session PoC
+instruction was observed. Preserve it for Codex review; the tracking-session approach
+remains an unimplemented alternative. Neither approach is accepted until the Linux
+Death Test gate below is satisfied.
+
+### Linux Death Test gate for any lifecycle-strategy change
+
+Changing the comparison suite from Swift Testing to XCTest changes test-runner and
+process-lifecycle assumptions. Before accepting that migration or connecting it to CI:
+
+1. Run on the same Ubuntu environment used by GitHub Actions.
+2. Determine exactly which Death Test sources/cases are compiled, discovered, and
+   executed; do not infer coverage from a green aggregate `swift test` result.
+3. Account for `Package.swift` currently defining `DEATH_TEST` only on macOS.
+4. Exercise representative precondition/abnormal-termination cases and verify child-
+   process isolation, signals/exit statuses, and that the parent test process continues.
+5. Preserve memory-counter balance checks before and after the Death Test slice.
+
+If Linux cannot provide equivalent Death Test semantics, document and review that
+limitation explicitly. Do not silently skip the cases or call the lifecycle migration
+accepted based only on macOS results.
 
 #### XCTest migration result — uncommitted, awaiting review (2026-10-04, Claude Opus 5.5)
 

@@ -39,9 +39,9 @@ public struct BareArray<Element>: ~Copyable {
   }
 
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, count: Int) {
+  @unsafe internal init(payload: UnsafeMutablePointer<Element>, count: Int) {
     self.count = count
-    self.payload = payload
+    self.payload = unsafe payload
   }
 
   @usableFromInline let count: Int
@@ -52,12 +52,12 @@ public struct BareArray<Element>: ~Copyable {
     @inline(__always)
     unsafeAddress {
       precondition(0 <= position && position < count)
-      return UnsafePointer(payload + position)
+      return unsafe UnsafePointer(payload + position)
     }
     @inline(__always)
     unsafeMutableAddress {
       precondition(0 <= position && position < count)
-      return payload + position
+      return unsafe payload + position
     }
   }
 
@@ -111,9 +111,9 @@ public struct BareArray2D<Element>: ~Copyable {
   }
 
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int) {
+  @unsafe internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int) {
     self.capacity = height * width
-    self.payload = payload
+    self.payload = unsafe payload
     self.width = width
     self.height = height
   }
@@ -129,7 +129,7 @@ public struct BareArray2D<Element>: ~Copyable {
     @inline(__always)
     get {
       precondition(0 <= position && position < height)
-      return .init(payload: payload + width * position, count: width)
+      return unsafe .init(payload: payload + width * position, count: width)
     }
 
     @inline(__always)
@@ -190,9 +190,11 @@ public struct BareArray3D<Element>: ~Copyable {
   }
 
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int) {
+  @unsafe internal init(
+    payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int
+  ) {
     self.capacity = width * height * depth
-    self.payload = payload
+    self.payload = unsafe payload
     self.width = width
     self.height = height
     self.depth = depth
@@ -210,7 +212,8 @@ public struct BareArray3D<Element>: ~Copyable {
     @inline(__always)
     get {
       precondition(0 <= position && position < depth)
-      return .init(payload: payload + width * height * position, width: width, height: height)
+      return unsafe .init(
+        payload: payload + width * height * position, width: width, height: height)
     }
 
     @inline(__always)
@@ -267,9 +270,11 @@ public struct BareArray4D<Element>: ~Copyable {
   }
   
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, size0: Int, size1: Int, size2: Int, size3: Int) {
+  @unsafe internal init(
+    payload: UnsafeMutablePointer<Element>, size0: Int, size1: Int, size2: Int, size3: Int
+  ) {
     self.capacity = size0 * size1 * size2 * size3
-    self.payload = payload
+    self.payload = unsafe payload
     self.size0 = size0
     self.size1 = size1
     self.size2 = size2
@@ -289,7 +294,7 @@ public struct BareArray4D<Element>: ~Copyable {
     @inline(__always)
     get {
       precondition(0 <= position && position < size3)
-      return .init(
+      return unsafe .init(
         payload: payload + size0 * size1 * size2 * position, width: size0, height: size1,
         depth: size2)
     }
@@ -329,9 +334,9 @@ extension BareArray4D: @unchecked Sendable where Element: Sendable { }
 public struct BareArray1DView<Element> {
 
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, count: Int) {
+  @unsafe internal init(payload: UnsafeMutablePointer<Element>, count: Int) {
     self.count = count
-    self.payload = payload
+    self.payload = unsafe payload
   }
 
   @usableFromInline let count: Int
@@ -342,12 +347,12 @@ public struct BareArray1DView<Element> {
     @inline(__always)
     unsafeAddress {
       precondition(0 <= position && position < count)
-      return UnsafePointer(payload + position)
+      return unsafe UnsafePointer(payload + position)
     }
     @inline(__always)
     unsafeMutableAddress {
       precondition(0 <= position && position < count)
-      return payload + position
+      return unsafe payload + position
     }
   }
 }
@@ -364,9 +369,9 @@ extension BareArray1DView {
 public struct BareArray2DView<Element> {
 
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int) {
+  @unsafe internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int) {
     self.capacity = height * width
-    self.payload = payload
+    self.payload = unsafe payload
     self.width = width
     self.height = height
   }
@@ -382,7 +387,7 @@ public struct BareArray2DView<Element> {
     @inline(__always)
     get {
       precondition(0 <= position && position < height)
-      return .init(payload: payload + width * position, count: width)
+      return unsafe .init(payload: payload + width * position, count: width)
     }
 
     @inline(__always)
@@ -404,9 +409,11 @@ extension BareArray2DView {
 public struct BareArray3DView<Element> {
 
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int) {
+  @unsafe internal init(
+    payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int
+  ) {
     self.capacity = height * width
-    self.payload = payload
+    self.payload = unsafe payload
     self.width = width
     self.height = height
     self.depth = depth
@@ -424,7 +431,8 @@ public struct BareArray3DView<Element> {
     @inline(__always)
     get {
       precondition(0 <= position && position < depth)
-      return .init(payload: payload + width * height * position, width: width, height: height)
+      return unsafe .init(
+        payload: payload + width * height * position, width: width, height: height)
     }
 
     @inline(__always)

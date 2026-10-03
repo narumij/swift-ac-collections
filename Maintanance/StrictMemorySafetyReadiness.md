@@ -278,7 +278,7 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
 - 診断メッセージの正確なカウントはビルドログの行パターンマッチングに依存して
   いるため、Swiftコンパイラの出力形式が変わった場合は再集計が必要。
 
-## 10. `BareArrayModule` 段階対応(2026-10-03、バッチ2実施済み)
+## 10. `BareArrayModule` 段階対応(2026-10-03、バッチ4実施済み)
 
 `.strictMemorySafety()`を一時適用してXcodeで再コンパイルした。従来の116件は重複を
 含むログ行数で、ファイル位置とメッセージで一意化すると約64箇所だった。公開所有型4、
@@ -308,3 +308,17 @@ scoped `unsafe`で明示した。公開API、layout、添字経路、Viewには�
 
 次は所有型からViewを作るpointer arithmeticと、非所有Viewの内部initializer・添字を
 一つの境界として整理する。公開型そのものへの`@unsafe`付与とstrict恒久適用は最後に行う。
+
+バッチ3では、所有型から非所有Viewを作るpointer arithmetic、Viewの内部pointer
+initializer、View添字のpointer返却をscoped `unsafe`または`@unsafe` initializerとして
+整理した。strict設定下の一意な診断は38→28箇所。Viewの共有・変更・範囲外停止に関する
+対象テスト10件が成功した。
+
+バッチ4では、所有型4つの内部pointer initializerと1D添字のpointer返却を同様に整理した。
+strict設定下の一意な診断は28→22箇所。clone、1D変更、Death Testの対象7件が成功した。
+
+残る22箇所は、所有型4・View型3の「unsafe型をstorageに持つ」診断とそのstorage代入、
+およびstrict有効時だけunsafe扱いになる8回の`allocate`である。payload propertyだけへ
+`@unsafe`を付けるPoCでは診断は減らず、型全体への`@unsafe`が必要だった。これは公開型の
+利用者へunsafe要求を伝播させるAPI上の判断になるため、恒久適用前にユーザー確認が必要。
+PoCのproperty注釈と一時的なPackage設定は復元済み。

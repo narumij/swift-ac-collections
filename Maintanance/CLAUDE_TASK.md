@@ -1,73 +1,111 @@
 # Codex-to-Claude Work Request
 
-Status: Completed — Two small documentation checks
+Status: Active — MultiSet C++ behavior-comparison expansion
 
-## Result Summary (2026-10-03, Claude Opus 5.5)
+## Objective
 
-- Task 1: Replaced the stale "Sendable 要否" pending item in `Tests/TESTING.md`
-  with the settled Swift 6+ decision, the implemented and validated first batch
-  (`Permutations`, `Nexts where C: Sendable`, compile-time test), and the
-  separate future `IteratorN`/`SubSequenceN` batch. No other dashboard changes.
-- Task 2: No correction needed. Against `remotes/origin/release/AtCoder/2025`
-  (`b2580703`): the old-only public list matches (the `All` inits are covered by
-  `Permutations.All`; the last bullet names `@usableFromInline` internals, not
-  public declarations); `NextPermutationProtocol.swift` has no diff; the define
-  is still a commented-out entry in the shared `_settings`, is not a trait, and
-  is referenced only by `AcCollections`, not `PermutationModule`; no
-  `Compatibility/` directory exists, so nothing listed as not done is done.
-- Validation: `git diff --check` only.
+Extend the committed root-package C++ comparison foundation from
+`RedBlackTreeSet`/`std::set` to one additional pair only:
+`RedBlackTreeMultiSet<Int64>`/`std::multiset<int64_t>`.
 
-## Active Assignment
+The primary purpose is to establish whether hinted insertion, especially insertion
+inside an equivalent-key group, has the same observable behavior. Communicate with
+the user in Japanese.
 
-The remaining session budget is small. Complete only these two bounded tasks in
-order. Communicate with the user in Japanese. Do not modify production Swift,
-tests, `Package.swift`, benchmarks, workflows, or paused documentation outlines.
-Do not run a build or test suite. Do not commit or push.
+## Baseline You Must Preserve
 
-Preserve all unrelated user and Codex changes. Disposable scratch files must use
-a uniquely named task-owned system temporary directory outside the repository;
-prefer not to create any for this assignment.
+Before editing, read and understand these committed files completely:
 
-### Task 1 — Reconcile the Permutation Sendable dashboard status
+- `Package.swift`
+- `Sources/CppBehaviorReference/include/CppBehaviorReference.h`
+- `Sources/CppBehaviorReference/CppBehaviorReference.cpp`
+- `Tests/CppBehaviorReferenceTests/SetBehaviorComparisonTests.swift`
+- `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`
 
-Read the current implementation, focused compile-time test, and these documents:
+Run the existing `CppBehaviorReferenceTests` first. If the three committed Set tests
+do not pass, stop and report the baseline failure; do not work around it.
 
-- `Sources/PermutationModule/Permutations.swift`
-- `Tests/PermutationTests/PermutationTests.swift`
-- `Maintanance/StrictMemorySafetyReadiness.md`
-- `Maintanance/PermutationModule/ImplementationPlan.md`
-- `Tests/TESTING.md`
+## Authorized Changes
 
-Update only stale current-state wording in `Tests/TESTING.md`. The decision to
-support Sendable on Swift 6+ is settled, and the mechanical first batch
-(`Permutations` and `Nexts where C: Sendable`) plus its compile-time test is
-already implemented and validated. `IteratorN` and `SubSequenceN` remain a
-separate ownership-sensitive future batch. Do not claim the entire Sendable
-effort is complete.
+You may edit only:
 
-### Task 2 — Fact-check the AtCoder 2025 compatibility plan
+- `Sources/CppBehaviorReference/`
+- `Tests/CppBehaviorReferenceTests/`
+- this file, for the final status and a concise result summary
+- `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`, but only to record verified
+  MultiSet results or a discovered semantic difference
 
-Perform a read-only review of
-`Maintanance/PermutationModule/AtCoder2025CompatibilityPlan.md` against the
-current tree and the locally available `release/AtCoder/2025` ref. Check only:
+Do not edit `Package.swift` unless the existing targets genuinely cannot contain the
+MultiSet work. If that happens, stop and ask the user instead of changing it.
 
-1. the listed old-only public declarations;
-2. the claim that `NextPermutationProtocol.swift` is shared unchanged;
-3. the proposed same-module, compile-time switch boundary;
-4. whether any statement incorrectly describes already-implemented work.
+## Required Comparison
 
-Correct the plan only when a factual mismatch is directly demonstrated. Do not
-implement compatibility mode, add a package trait, restore old source, or expand
-the plan with new design alternatives. If no correction is needed, leave it
-unchanged and report that result.
+Reuse the established trace/observation architecture. Add a separate MultiSet
+executor or a clearly separated container mode; do not weaken or rewrite the working
+Set comparison merely to share code.
 
-## Validation and Handoff
+The curated MultiSet trace must cover:
 
-- Run `git diff --check` only.
-- Change the status above to `Completed` and add a concise result summary.
-- Report changed files and factual findings in Japanese.
-- Do not rewrite `Tests/TESTING.md` beyond the stale Sendable status identified
-  in Task 1.
+1. insertion of distinct and duplicate values;
+2. `lowerBound`, `upperBound`, and the observable contents of `equalRange`;
+3. erasing by key, including the number of equivalent elements removed;
+4. hinted insertion with:
+   - an exact hint;
+   - a deliberately poor but valid hint;
+   - `endIndex`;
+   - a hint before, within, and after an existing equivalent-key group.
+
+Transport a hint across the C ABI only as its current zero-based rank. Resolve that
+rank independently to a Swift `Index` and C++ iterator immediately before the
+operation. Never transport iterators, pointers, or Swift indices across the boundary.
+
+After every operation, compare the complete ordered contents. Compare returned facts
+only where both APIs expose a meaningful equivalent. A test must also prove that a
+MultiSet mismatch report includes the container pair, operation number, input,
+Swift observation, and C++ observation.
+
+## Critical Stop Conditions
+
+- If equivalent elements carry no identity and the claimed within-group ordering
+  cannot be observed with `Int64` values, do not claim that ordering was verified.
+  Report the limitation and propose the smallest value representation that would make
+  it observable; do not introduce that representation without user approval.
+- If Swift and C++ differ, preserve the smallest deterministic failing trace and stop.
+  Do not modify `RedBlackTreeMultiSet` production code, public API, or documentation
+  to force agreement.
+- Do not expand to Dictionary, MultiMap, randomized traces, fuzzing, benchmarks, CI,
+  workflows, compatibility mode, or performance measurements.
+- Do not touch `Benchmarks/`, `CppBenchmarks`, unrelated tests, `TESTING.md`, or
+  `MAINTENANCE.md`.
+- Do not create scratch files in the repository. Do not commit or push.
+
+## Validation
+
+Run exactly the focused root-package suite first:
+
+```sh
+swift test --disable-sandbox --filter CppBehaviorReferenceTests
+```
+
+If it passes, run `git diff --check`. Do not run the full 1,400+ test suite unless the
+focused build reveals a cross-target problem requiring it.
+
+Inspect the final diff and verify that no file outside the authorized list changed.
+Do not substitute prose about residual risk for a required check that is available.
+
+## Completion Report
+
+Change the status to `Completed` only if the focused suite and `git diff --check`
+both pass. Add no chronological diary or accountability section. The result summary
+must contain only:
+
+- behaviors actually compared;
+- test count and result;
+- changed files;
+- any real semantic difference or explicitly unobservable claim.
+
+If a stop condition is reached, change the status to `Blocked` and report the exact
+minimal trace and evidence without editing production code.
 
 ## History
 

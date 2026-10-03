@@ -1,27 +1,51 @@
 # Codex-to-Claude Work Request
 
-Status: Active — C++ comparison curated-boundary audit
+Status: Active — Dictionary seeded randomized C++ comparison expansion
 
 ## Active assignment
 
-Immediately perform the curated-boundary audit authorized in
+Immediately perform the Dictionary seeded-randomized expansion authorized in
 `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`. Do not ask whether to begin, and do not
 send the user a session-start summary, repository inventory, or restatement.
 
-First inventory the existing 17 C++ comparison tests by container, operation, and
-boundary. Run the full `CppBehaviorReferenceTests` suite in Debug and Release. Add only
-the smallest missing deterministic traces needed to cover valid hinted insertion at
-empty/start/end, exact and poor hints, duplicate/equivalent groups where applicable,
-and erase-then-reinsert boundaries across all four container pairs. Compare returned
-facts and complete ordered contents after every mutation.
+Extend the proven shared seeded-trace method to the Dictionary/std::map pair only.
+Drive it from an independent sorted key/value model. Exercise preserve-existing
+ordinary/hinted insert separately from replacing ordinary/hinted update; also cover
+subscript assignment, defaulted-subscript mutation, lookup/count, lower/upper/equal
+range, and removal by key. Use distinct evolving values so preservation, replacement,
+and returned previous values are observable.
 
-Do not add randomized/fuzz traces, CI, benchmarks, public API, or production fixes.
+Require empty/non-empty, new/existing keys, start/end/exact/poor hints, present/absent
+lookup and removal, boundary keys, erase-to-empty, and reinsertion. Compare all common
+returned facts plus complete ordered key/value contents after every mutation. Preserve
+the fixed seeds, bounded runtime, reproducibility checks, and complete diagnostics.
+
+Do not expand to MultiMap, CI, benchmarks, public API, automated shrinking, unbounded
+fuzzing, or production fixes.
 On a mismatch or crash, minimize and preserve the trace, mark the task blocked, and
-stop before changing production Swift. Otherwise record the coverage matrix, exact
-commands, test counts, and remaining gaps in the C++ task Markdown for Codex.
+stop before changing production Swift. Otherwise run all C++ comparison tests in Debug
+and Release and record exact behavior, commands, counts, and remaining gaps in the C++
+task Markdown for Codex.
 
 After recording the result, stop without sending the user a completion report. Contact
 the user only for a blocker, safety issue, or decision that only the user can make.
+
+### MultiSet result (2026-10-04, Claude Opus 5.5)
+
+Completed with no Swift/C++ difference or crash: 29 `CppBehaviorReferenceTests` passed
+in Debug and Release, `git diff --check` clean. Same seeds/count as Set; PRNG and
+diagnostic extracted to `SeededTraceSupport.swift` without changing Set behavior;
+`CPP_MULTISET_OPERATION_FIND` added. Coverage policy, compared facts, changed files,
+and remaining gaps are in `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` under
+"MultiSet seeded-randomized result".
+
+### Set PoC result (2026-10-04, Claude Opus 5.5)
+
+Completed with no Swift/C++ difference or crash: 26 `CppBehaviorReferenceTests` passed in
+Debug and Release, `git diff --check` clean. Details, PRNG/seeds/count, coverage policy,
+changed files, and remaining gaps (Set positional erase not in the contract, so not
+generated) are in `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` under
+"Set seeded-randomized PoC result".
 
 ## Previous assignment objective (completed)
 

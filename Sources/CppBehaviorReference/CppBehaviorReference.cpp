@@ -25,6 +25,7 @@ int32_t cpp_set_execute_trace(
     CppSetObservation observation = {};
     observation.kind = operation.kind;
     observation.argument = operation.value;
+    observation.count = -1;
 
     switch (operation.kind) {
     case CPP_SET_OPERATION_INSERT: {
@@ -42,6 +43,18 @@ int32_t cpp_set_execute_trace(
       }
       break;
     }
+    case CPP_SET_OPERATION_UPPER_BOUND: {
+      const auto result = set.upper_bound(operation.value);
+      observation.has_value = result != set.end();
+      if (observation.has_value) {
+        observation.value = *result;
+      }
+      break;
+    }
+    case CPP_SET_OPERATION_FIND:
+      observation.boolean_result = set.find(operation.value) != set.end();
+      observation.count = static_cast<int64_t>(set.count(operation.value));
+      break;
     case CPP_SET_OPERATION_ERASE_KEY:
       observation.boolean_result = set.erase(operation.value) != 0;
       break;
@@ -103,6 +116,7 @@ int32_t cpp_multiset_execute_trace(
     observation.argument = operation.value;
     observation.rank = -1;
     observation.erased_count = -1;
+    observation.count = -1;
     observation.range_offset = contents_offset;
 
     switch (operation.kind) {
@@ -149,10 +163,32 @@ int32_t cpp_multiset_execute_trace(
       contents_offset += count;
       break;
     }
+    case CPP_MULTISET_OPERATION_FIND:
+      observation.found = set.find(operation.value) != set.end();
+      observation.count = static_cast<int64_t>(set.count(operation.value));
+      break;
     case CPP_MULTISET_OPERATION_ERASE_KEY:
       observation.erased_count =
           static_cast<int64_t>(set.erase(operation.value));
       break;
+    case CPP_MULTISET_OPERATION_ERASE_AT:
+    case CPP_MULTISET_OPERATION_REMOVE_AT: {
+      // Positional erasure needs an element, not `end()`.
+      if (operation.position < 0 ||
+          static_cast<size_t>(operation.position) >= set.size()) {
+        return CPP_MULTISET_TRACE_INVALID_POSITION;
+      }
+      auto position = set.cbegin();
+      std::advance(position, operation.position);
+      if (operation.kind == CPP_MULTISET_OPERATION_ERASE_AT) {
+        observation.rank = rank_of(set.erase(position));
+      } else {
+        observation.has_value = true;
+        observation.value = *position;
+        set.erase(position);
+      }
+      break;
+    }
     default:
       return CPP_MULTISET_TRACE_UNKNOWN_OPERATION;
     }

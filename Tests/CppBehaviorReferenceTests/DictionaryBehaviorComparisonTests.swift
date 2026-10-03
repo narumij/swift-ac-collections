@@ -344,6 +344,38 @@ func dictionaryHintedInsertionMatchesCpp() throws {
     #expect(firstMismatch(container: dictionaryContainer, swift: swift, cpp: cpp) == nil)
 }
 
+@Test("RedBlackTreeDictionary erase-then-reinsert at boundaries matches std::map")
+func dictionaryBoundaryReinsertionMatchesCpp() throws {
+    let operations: [DictionaryOperation] = [
+        .insert(10, 100),
+        .insert(20, 200),
+        .insert(30, 300),
+        // [10:100, 20:200, 30:300]
+        .eraseKey(10),                // Erase the least key.
+        .insertHint(10, 101, at: 0),  // Reinsert at startIndex.
+        .eraseKey(30),                // Erase the greatest key.
+        .insertHint(30, 301, at: 2),  // Reinsert at endIndex.
+        .eraseKey(10),
+        .insertHint(10, 102, at: 2),  // Reinsert the least key at endIndex; poor.
+        .eraseKey(30),
+        .insertHint(30, 302, at: 0),  // Reinsert the greatest key at startIndex; poor.
+        .eraseKey(10),
+        .updateValueHint(103, forKey: 10, at: 0), // Reinsert by update at startIndex.
+        .eraseKey(30),
+        .updateValueHint(303, forKey: 30, at: 2), // Reinsert by update at endIndex.
+        .eraseKey(10),
+        .eraseKey(20),
+        .eraseKey(30),                // Now empty.
+        .insertHint(40, 400, at: 0),  // Reinsert into the emptied dictionary.
+        .eraseKey(40),
+        .updateValueHint(50, forKey: 50, at: 0), // Update into the emptied dictionary.
+    ]
+
+    let swift = try executeSwiftTrace(operations)
+    let cpp = try executeCppTrace(operations)
+    #expect(firstMismatch(container: dictionaryContainer, swift: swift, cpp: cpp) == nil)
+}
+
 @Test("A Dictionary mismatch report identifies both observations and the operation")
 func dictionaryMismatchReportContainsRequiredContext() {
     let operation = DictionaryOperation.insertHint(20, 999, at: 1)

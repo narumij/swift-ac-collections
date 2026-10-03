@@ -340,6 +340,42 @@ func multiMapHintedInsertionMatchesCpp() throws {
     #expect(firstMismatch(container: multiMapContainer, swift: swift, cpp: cpp) == nil)
 }
 
+@Test("RedBlackTreeMultiMap erase-then-reinsert at boundaries matches std::multimap")
+func multiMapBoundaryReinsertionMatchesCpp() throws {
+    let operations: [MultiMapOperation] = [
+        .insert(10, 101),
+        .insert(10, 102),
+        .insert(20, 201),
+        .insert(30, 301),
+        .insert(30, 302),
+        // [10:101, 10:102, 20:201, 30:301, 30:302]
+        .eraseAt(0),                  // First element (first of the least group).
+        .insertHint(10, 103, at: 0),  // Reinsert at startIndex, before 10:102.
+        .eraseAt(4),                  // Last element (last of the greatest group).
+        .insertHint(30, 303, at: 4),  // Reinsert at endIndex, after 30:301.
+        // [10:103, 10:102, 20:201, 30:301, 30:303]
+        .eraseKey(10),                // Erase the least group.
+        .insertHint(10, 104, at: 0),  // Reinsert at startIndex.
+        .insertHint(10, 105, at: 4),  // endIndex; poor reinsertion into the least group.
+        .eraseKey(30),                // Erase the greatest group.
+        .insertHint(30, 304, at: 3),  // Reinsert at endIndex.
+        .insertHint(30, 305, at: 0),  // startIndex; poor reinsertion into the greatest group.
+        .removeAt(0),
+        .removeAt(0),
+        .removeAt(0),
+        .eraseAt(0),
+        .eraseAt(0),                  // Now empty.
+        .insertHint(20, 202, at: 0),  // Reinsert into the emptied multimap.
+        .insertHint(20, 203, at: 0),  // startIndex, before a one-element group.
+        .insertHint(20, 204, at: 2),  // endIndex, after the same group.
+        .equalRange(20),
+    ]
+
+    let swift = try executeSwiftTrace(operations)
+    let cpp = try executeCppTrace(operations)
+    #expect(firstMismatch(container: multiMapContainer, swift: swift, cpp: cpp) == nil)
+}
+
 @Test("A MultiMap mismatch report identifies both observations and the operation")
 func multiMapMismatchReportContainsRequiredContext() {
     let operation = MultiMapOperation.insertHint(20, 202, at: 1)

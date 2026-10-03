@@ -14,6 +14,9 @@ enum {
   CPP_SET_OPERATION_LOWER_BOUND = 1,
   CPP_SET_OPERATION_ERASE_KEY = 2,
   CPP_SET_OPERATION_INSERT_HINT = 3,
+  CPP_SET_OPERATION_UPPER_BOUND = 4,
+  /// `set.find(value)` and `set.count(value)`.
+  CPP_SET_OPERATION_FIND = 5,
 };
 
 enum {
@@ -36,6 +39,8 @@ typedef struct {
   bool boolean_result;
   bool has_value;
   int64_t value;
+  /// `count(value)`, or -1 when not reported.
+  int64_t count;
   size_t contents_offset;
   size_t contents_count;
 } CppSetObservation;
@@ -60,6 +65,12 @@ enum {
   CPP_MULTISET_OPERATION_UPPER_BOUND = 3,
   CPP_MULTISET_OPERATION_EQUAL_RANGE = 4,
   CPP_MULTISET_OPERATION_ERASE_KEY = 5,
+  /// `multiset.erase(it)` for the element at `position`.
+  CPP_MULTISET_OPERATION_ERASE_AT = 6,
+  /// Copies `*it` for the element at `position`, then `multiset.erase(it)`.
+  CPP_MULTISET_OPERATION_REMOVE_AT = 7,
+  /// `multiset.find(value) != multiset.end()` and `multiset.count(value)`.
+  CPP_MULTISET_OPERATION_FIND = 8,
 };
 
 enum {
@@ -85,6 +96,10 @@ typedef struct {
   int64_t rank;
   /// Number of erased elements, or -1 when not reported.
   int64_t erased_count;
+  /// Whether `find` located an element; meaningful only when `count` >= 0.
+  bool found;
+  /// `count(value)`, or -1 when not reported.
+  int64_t count;
   size_t range_offset;
   size_t range_count;
   size_t contents_offset;

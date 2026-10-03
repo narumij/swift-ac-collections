@@ -76,6 +76,16 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
 
       empty.removeAll(keepingCapacity: true)
       XCTAssertEqual(empty._copyCount, 0, "空の辞書へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
+
+      #if !COMPATIBLE_ATCODER_2025
+        var predicateCalled = false
+        empty.erase(where: { _ in
+          predicateCalled = true
+          return true
+        })
+        XCTAssertFalse(predicateCalled, "空の辞書へのerase(where:)は述語を呼ばないはず")
+        XCTAssertEqual(empty._copyCount, 0, "空の辞書へのerase(where:)は退避コピーを発生させないはず")
+      #endif
     #endif
   }
 

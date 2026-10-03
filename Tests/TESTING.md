@@ -62,14 +62,6 @@
   ImplementationPlan.md`の「保留中の判断」参照)。`All`系・`unsafe`系の削除、
   `Tests/PermutationTests/NextPermutation.swift`(未参照の旧世代実装)の削除、
   `nextPermutations()`と公開戻り値型への`///`コメントドック整備は完了済み。
-- `erase(where:)`がRedBlackTreeSet/MultiSet/Dictionary/MultiMapの4型すべてで
-  無条件に`ensureUnique()`を呼ぶため、空コレクションに対しても無駄にシングルトン
-  からdetachする(要素が無い/削除されなくてもCoW発生)。`remove(_:)`/
-  `removeValue(forKey:)`/`removeAll(keepingCapacity: true)`/`popFirst`/
-  `popLast`等は`count > 0`等で既に手当て済みだが、`erase(where:)`は未対応。
-  production codeの修正は今回のタスク範囲外のため、
-  `testEraseWhereOnEmptyCollectionDetachesFromSingleton`で現状を再現する
-  テストのみ追加した。修正するかどうかユーザー判断待ち。
 - 内部テスト層の区分、および生木テストと変更コストの均衡。
 - UnsafeNode/RawBufferクロスチェックと既存単層テストの統合方法。前者には独立した
   計算経路間の一致確認という固有の役割がある。
@@ -80,19 +72,20 @@
 
 ## 直近の引き継ぎ
 
-- `CLAUDE_TASK.md`の3タスク(Permutation添字ベンチマーク・公開添字の境界修正・
-  strict再監査)を完了しCompletedへ更新。前回分は`CLAUDE_TASK_HISTORY.md`へ移動。
-- 公開`SubSequenceN[position]`へ範囲`precondition`を追加。先に
-  `PermutationDeathTests.swift`(3件、SIGTRAP期待)を追加し、修正前はDebug/Releaseとも
-  `EXIT_SUCCESS`で失敗、修正後は成功することを確認。有効境界テストも追加。
-- `Benchmarks/`へPermutation添字ベンチマークを追加。修正後は約1.2〜1.8倍(1アクセスあたり
-  1ns未満の差、ノイズ10〜15%)。詳細は`ProductReadinessAssessment.md`。
-- strict一時適用で一意な診断は14件のまま(G2〜G6不変)。`Package.swift`は復元済み。
-- 検証: Debug/ReleaseでPermutationTests(XCTest 3件+exit test 3件)成功、互換モードで
-  PermutationTests 3件・AcCollectionsTests 4件成功、通常`swift build`成功、
-  `git diff --check`クリーン。
+- `CLAUDE_TASK.md`の4タスク(Permutation境界チェックの検証・end-to-end計測・単一比較PoC・
+  `erase(where:)`の空CoW回避)を完了しCompletedへ更新。前回分は`CLAUDE_TASK_HISTORY.md`へ移動。
+- Permutation: 初回ベンチマークの手法の問題(キャプチャ変数のbox化、タイマー分解能)を補正した
+  `(batched)`版とend-to-end版を追加。実利用ではチェックが最適化で消え、end-to-endの約20%差は
+  コード配置によるものと特定した。2比較の`precondition`を維持(単一比較は不採用)。
+  詳細は`ProductReadinessAssessment.md`。
+- `PermutationDeathTests.swift`に`Int.min`/`Int.max`を追加(計5件、Debug/Releaseとも成功)。
+- `erase(where:)`: 4型で`ensureUnique()`の前に空チェックを追加。4型の空削除CoWテストを
+  先に拡張して失敗を確認してから修正した。旧既知挙動テストは
+  `testEraseWhereOnEmptyCollectionKeepsSingleton`へ改めた。
+- 検証: 通常/互換モードの対象スイート、フルの`swift test`、通常ビルド、`git diff --check`が成功。
+  `Package.swift`と一時的な本体変更は復元済み。
 
-最終更新: 2026-10-03 15:03 JST / Claude Opus 5.5
+最終更新: 2026-10-03 15:55 JST / Claude Opus 5.5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

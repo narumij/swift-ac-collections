@@ -10,8 +10,24 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 
 Work only inside `/Users/narumij/Documents/GitHub/swift-ac-collections`.
 
-Do not read, search, create, modify, or delete files outside this repository. In particular, do not inspect parent directories, the user's home directory, Xcode caches, DerivedData, global SwiftPM caches, or system temporary directories.
+Do not read, search, create, modify, or delete files outside this repository,
+except for a dedicated disposable directory created by this task under the
+system temporary directory. In particular, do not inspect parent directories,
+the user's home directory, Xcode caches, DerivedData, global SwiftPM caches, or
+unrelated contents of system temporary directories.
 
-If a command requests permission to access a path outside the repository, cancel it and use a repository-local alternative. Ask the user before accessing any external path, even for read-only investigation.
+If a command requests permission to access any other path outside the repository,
+cancel it. Ask the user before accessing any external path other than the
+task-owned temporary directory, even for read-only investigation.
 
-Prefer terminal output over temporary files. If temporary output is unavoidable, use a repository-local directory only after confirming that Git ignores it.
+Prefer terminal output over temporary files. If temporary output is unavoidable,
+create a uniquely named task directory with `mktemp -d` under the system temporary
+directory, use only that resolved path, and remove it before the final report.
+Do not inspect neighboring temporary files or use broad wildcards when cleaning up.
+
+Do not place scratch files, captured compiler output, generated comparison
+sources, assembly, or reversible experiment artifacts anywhere inside the
+repository, including `.build`, the repository root, source directories, test
+directories, and maintenance directories. Files intentionally retained as test
+fixtures, benchmark source, or recorded raw benchmark evidence are not scratch
+files; name and report them explicitly.

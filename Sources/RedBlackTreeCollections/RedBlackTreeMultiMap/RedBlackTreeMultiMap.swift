@@ -476,6 +476,7 @@ extension RedBlackTreeMultiMap {
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      guard __tree_.count > 0 else { return }
       __tree_.ensureUnique()
       let result = try __tree_.___erase_range_if(
         __tree_.__begin_node_.unchecked,

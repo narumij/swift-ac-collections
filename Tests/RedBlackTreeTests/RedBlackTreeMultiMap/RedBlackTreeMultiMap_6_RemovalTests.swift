@@ -36,6 +36,16 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
 
       empty.removeAll(keepingCapacity: true)
       XCTAssertEqual(empty._copyCount, 0, "空のMultiMapへのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
+
+      #if !COMPATIBLE_ATCODER_2025
+        var predicateCalled = false
+        empty.erase(where: { _ in
+          predicateCalled = true
+          return true
+        })
+        XCTAssertFalse(predicateCalled, "空のMultiMapへのerase(where:)は述語を呼ばないはず")
+        XCTAssertEqual(empty._copyCount, 0, "空のMultiMapへのerase(where:)は退避コピーを発生させないはず")
+      #endif
     #endif
   }
 

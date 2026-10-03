@@ -77,6 +77,8 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
     `swift build`/`swift test`成功。`PermutationModule`/`BareArrayModule`/
     `OptionalArrayModule`/`RedBlackTreeCollections`は未採用のまま保留
 
+- PermutationsModuleはrelease/AtCoder/2025版と併存（現行互換切り替え）にどこかでする。方針策定と準備をしておいてほしい
+
 ### 連絡事項
 
 - この文書のユーザー記入欄を更新する場合は、日付に加えて時刻も記載する
@@ -99,30 +101,6 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 ### 完了済みの要望
 
 (ユーザーが確認したら各項目を整理します)
-
-- 2026-10-03 JST ユーザー要望: `unranged()`とその関連プロトコル(`ScalarBaseInit`/
-  `KeyValueBaseInit`)の削除。`CLAUDE_TASK.md`のTask 3として実施し、公開API・
-  専用テスト・ドキュメント参照を削除済み。
-- PermutationModule改修管理: 「`unsafe`という見た目の違いではなく実装方式による挙動差
-  だけを残す」という方針のもと、`Sources/PermutationModule/Documentation`の仕様策定→
-  Test as Spec先行→実装→Codexレビューの流れを`CLAUDE_TASK.md`のTask 1-3(複数パス)で
-  実施済み。`Permutations.All`/`IteratorA`/`SubSequenceA`/`unsafePermutations()`/
-  `unsafeNextPermutations()`等を削除し、公開APIは`nextPermutations()`のみに収束。
-  ABC328Eへのコピペ提出による性能確認(外部AtCoder提出)はユーザー実施待ちで、
-  `Tests/TESTING.md`の`判断待ち`に残る。
-- TreeFoundamentalAllocationTestsのLinux ASan調査: 原因は実装のメモリ安全性バグではなく、
-  `TreeFoundamentalAllocationTests`のmacOS限定ガード(`#if DEBUG && os(macOS)`)を
-  `#if DEBUG`へ広げてLinuxでも実行されるようにした際、同一プロセス内で先に走る
-  `AcCollectionsTests`がRedBlackTreeのDebug寿命カウンタ(`allocatedCount`等)を
-  検査・初期化せずに`AcCollections`経由でノードを確保していたため、後続スイートの
-  カウンタ整合性アサーションが汚染されていたこと(コミット`c62a633b`/`9add0d5d`/
-  `8bc7c3ba`/`60efef09`で診断→修正)。`AcCollectionsTests`に`RedBlackTreeCollections`への
-  `@testable import`付き`setUp`/`tearDown`カウンタ規律を追加し、同じ規律を
-  `Tests/CLAUDE.md`へ規則化した。ローカル(macOS, Address Sanitizerなし)では
-  `swift test --filter TreeFoundamentalAllocationTests`5/5、
-  `AcCollectionsTests`3/3が成功を確認済み。Linux ASanジョブ自体の成功は
-  これらのコミット後にCIで確認されたとユーザー/Codexから報告されている
-  (本セッションではGitHub Actionsへの直接アクセスなし)。
 
 
 ## 文書の役割と正本

@@ -1,87 +1,72 @@
 # Codex-to-Claude Work Request
 
-Status: Active — Validate and reduce Permutation bounds-check overhead
+Status: Active — Small cleanup and Sendable handoff only
 
 ## Active Follow-up Assignment
 
-Complete these three bounded tasks in order. Communicate with the user in
-Japanese. Work only inside the repository. Before completing this assignment,
-archive the previous completed result below in `CLAUDE_TASK_HISTORY.md`.
+The remaining session budget is about 10%. Complete only these two small tasks.
+Communicate with the user in Japanese. Work only inside the repository. Do not
+start another benchmark run, production implementation, broad test run, strict-
+memory-safety batch, or unrelated cleanup. Do not commit or push.
 
-Do not edit the four paused collection outlines,
-`Maintanance/REFACTORING_FROM_ATCODER_2025.md`, red-black-tree production code,
-the deferred C++ comparison target, or unrelated documentation. Do not begin
-strict-memory-safety batch 2. Do not commit or push.
+Before completing, archive the preceding completed result below in
+`CLAUDE_TASK_HISTORY.md`.
 
-### Task 1 — Audit the subscript microbenchmark result
+### Task 1 — Audit scratch-file hygiene
 
-The initial valid-access benchmark reports roughly 25–70% overhead after adding
-the public bounds precondition. Determine whether this is reproducible rather
-than accepting or dismissing it as noise.
+1. Follow the corrected root `CLAUDE.md` rule: disposable scratch files must use
+   a uniquely named, task-owned system temporary directory and must not be placed
+   anywhere inside the repository. Remove the task-owned directory before
+   reporting.
+2. Inspect only the repository's current Git status. Distinguish intentional
+   retained benchmark evidence/source from disposable files created during your
+   experiments.
+3. Remove only disposable scratch files that you created and can identify with
+   certainty. Do not delete or move user files, benchmark evidence, test
+   fixtures, or any ambiguous untracked file.
+4. Report the exact repository paths removed, or state that none remain. Do not
+   inspect unrelated external paths or neighboring system-temporary contents.
 
-1. Review the benchmark for equal work, optimizer resistance, deterministic
-   input, and correct use of the benchmark timer.
-2. Perform a reversible, interleaved A/B/A comparison of the unchecked original
-   subscript and the current checked subscript in Release mode. Use identical
-   commands, sizes, cycle counts, and a freshly rebuilt product for every code
-   state. Restore the checked production implementation afterward.
-3. Keep raw results under `Benchmarks/Results/PermutationSubscript/` with names
-   that distinguish this validation from the first run.
-4. If methodology is flawed, correct the benchmark and repeat both sides. Do not
-   tune the benchmark merely to make the overhead smaller.
+### Task 2 — Prepare the next Permutation `Sendable` task
 
-### Task 2 — Measure practical permutation-workload impact
+The user has decided that Swift 6+ `Sendable` support is required; this is no
+longer a question of whether to support it. Perform a small read-only source
+audit and write a concise implementation handoff in
+`Maintanance/StrictMemorySafetyReadiness.md`.
 
-Add one bounded end-to-end benchmark that generates and consumes permutations
-through the public API, validating the result outside the timed region. Measure
-the same unchecked/checked A/B/A states used in Task 1.
-
-The purpose is to distinguish the isolated per-access cost from its effect on a
-real permutation workload. Do not add another public API, another permutation
-implementation, or an unbounded factorial benchmark. Record exact inputs,
-commands, and limitations.
-
-### Task 3 — Try a single-comparison bounds check as a reversible PoC
-
-Investigate whether the two comparisons can be replaced by an equivalent
-single unsigned-range comparison that rejects negative indices and indices at or
-beyond `endIndex`.
-
-1. First prove the candidate expression handles `Int.min`, `-1`, `0`, the last
-   valid index, `endIndex`, and `Int.max` correctly without conversion traps.
-2. Apply it temporarily, run all existing valid-boundary and exit tests, and
-   repeat the Task 1 and Task 2 benchmarks with identical settings.
-3. Retain the candidate only if it is equally clear, preserves normal
-   precondition failure for every invalid case, and shows a repeatable benefit.
-   Otherwise restore the current two-comparison check.
-4. Do not remove the bounds check. Do not move it into the internal `Buffer`
-   subscript or change permutation-generation algorithms.
+1. List the public Permutation types and conformances that need `Sendable`
+   consideration, including generic constraints and stored reference types.
+2. Separate conformances that appear mechanically safe from those requiring an
+   ownership or mutation decision. Do not add `@unchecked Sendable` merely to
+   silence diagnostics.
+3. Propose the smallest ordered implementation batches and focused tests for a
+   future session. Do not change production Swift code, `Package.swift`, or tests
+   in this assignment.
+4. Keep the addition concise. If existing documentation already answers a point,
+   link to it rather than repeating it.
 
 Validation and handoff:
 
-- Run focused Permutation tests in Debug and Release, compatibility-mode
-  Permutation and AcCollections tests, a normal build, and `git diff --check`.
-- Confirm every temporary production/manifest edit is restored except a
-  single-comparison check that satisfies all Task 3 retention conditions.
-- Update `ProductReadinessAssessment.md` with the reproducible microbenchmark,
-  end-to-end result, and final recommendation. Keep raw machine data out of the
-  public API documentation.
-- Report which bounds-check form remains and why. Do not commit or push.
+- Run `git diff --check` only; no build or test run is required for this
+  documentation-only follow-up.
+- Confirm no disposable files from this assignment remain inside the repository
+  or in its task-owned system temporary directory.
+- Mark the assignment completed and summarize the Sendable batches and scratch
+  cleanup in Japanese. Do not commit or push.
 
 ## Previous Completed Result (archive before completing this assignment)
 
-- Added deterministic sequential and shuffled public-subscript benchmarks with
-  raw before/after data.
-- Added exit tests for `endIndex`, `-1`, and `endIndex + 1`; before the fix they
-  exited successfully with unspecified reads, and after the fix all terminate
-  with SIGTRAP.
-- Added a two-comparison precondition only to public
-  `SubSequenceN.subscript(position:)` and retained a valid-boundary test.
-- Initial microbenchmarks reported material overhead; after-runs varied by
-  10–15%, so the result requires the validation assigned above.
-- Temporary strict checking remained at 14 unique diagnostics in G2–G6 and
-  `Package.swift` was restored. Focused normal, Release, and compatibility tests,
-  normal build, and `git diff --check` succeeded.
+- Corrected the initial Permutation subscript benchmark methodology and ran
+  interleaved unchecked/checked comparisons.
+- Found no practical end-to-end overhead attributable to the conventional
+  two-comparison bounds check; retained it for clarity. Added Int.min/Int.max
+  exit coverage.
+- Added a bounded end-to-end permutation benchmark and retained raw evidence.
+- Avoided empty-collection CoW in the four owning `erase(where:)`
+  implementations and added focused tests.
+- Focused normal/Release/compatibility tests, full `swift test`, normal build,
+  and `git diff --check` succeeded. Temporary production and manifest edits were
+  restored; no commit or push was performed.
 
 ## History
 

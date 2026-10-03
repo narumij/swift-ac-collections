@@ -36,6 +36,16 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
 
       empty.removeAll(keepingCapacity: true)
       XCTAssertEqual(empty._copyCount, 0, "空集合へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
+
+      #if !COMPATIBLE_ATCODER_2025
+        var predicateCalled = false
+        empty.erase(where: { _ in
+          predicateCalled = true
+          return true
+        })
+        XCTAssertFalse(predicateCalled, "空のMultiSetへのerase(where:)は述語を呼ばないはず")
+        XCTAssertEqual(empty._copyCount, 0, "空のMultiSetへのerase(where:)は退避コピーを発生させないはず")
+      #endif
     #endif
   }
 

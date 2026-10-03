@@ -170,30 +170,27 @@ import XCTest
       assertIsSingleton(d.__tree_, "removeAll(keepingCapacity: false)はシングルトンへ戻すはず")
     }
 
-    // MARK: - 既知の未解決挙動
+    // MARK: - erase(where:)
 
     #if !COMPATIBLE_ATCODER_2025
-      /// `removeAll`系は空コレクションでのdetachを避けるよう手当て済みだが、
-      /// `erase(where:)`は4型すべてで無条件に`ensureUnique()`を呼ぶため、要素が1件も無くても
-      /// シングルトンからdetachする。CLAUDE_TASKの調査で判明した既知の未解決点であり、production
-      /// codeの修正はこのタスクの範囲外のため、現状の挙動を再現するだけに留める。
-      /// (`Tests/TESTING.md`の判断待ちへ記録済み)
-      func testEraseWhereOnEmptyCollectionDetachesFromSingleton() throws {
+      /// 空コレクションへの`erase(where:)`は`ensureUnique()`の前に早期returnするため、
+      /// 4型すべてでシングルトンからdetachしない(2026-10-03修正、以前はdetachしていた)。
+      func testEraseWhereOnEmptyCollectionKeepsSingleton() throws {
         var set = RedBlackTreeSet<Int>()
         set.erase(where: { _ in true })
-        assertNotSingleton(set.__tree_, "現状: 空集合へのerase(where:)もdetachする")
+        assertIsSingleton(set.__tree_, "空集合へのerase(where:)はdetachしないはず")
 
         var multiSet = RedBlackTreeMultiSet<Int>()
         multiSet.erase(where: { _ in true })
-        assertNotSingleton(multiSet.__tree_, "現状: 空集合へのerase(where:)もdetachする")
+        assertIsSingleton(multiSet.__tree_, "空集合へのerase(where:)はdetachしないはず")
 
         var dict = RedBlackTreeDictionary<Int, String>()
         dict.erase(where: { _ in true })
-        assertNotSingleton(dict.__tree_, "現状: 空辞書へのerase(where:)もdetachする")
+        assertIsSingleton(dict.__tree_, "空辞書へのerase(where:)はdetachしないはず")
 
         var multiMap = RedBlackTreeMultiMap<Int, String>()
         multiMap.erase(where: { _ in true })
-        assertNotSingleton(multiMap.__tree_, "現状: 空多重連想配列へのerase(where:)もdetachする")
+        assertIsSingleton(multiMap.__tree_, "空多重連想配列へのerase(where:)はdetachしないはず")
       }
     #endif
   }

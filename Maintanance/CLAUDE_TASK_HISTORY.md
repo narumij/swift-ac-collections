@@ -5,6 +5,21 @@ Completed assignments and result summaries moved verbatim from
 order (newest first). Headings such as "Active" or "above" refer to their
 position in the original file at the time they were written.
 
+## Previous Completed Result (Permutation subscript benchmark / boundary fix / strict re-audit)
+
+- Added deterministic sequential and shuffled public-subscript benchmarks with
+  raw before/after data.
+- Added exit tests for `endIndex`, `-1`, and `endIndex + 1`; before the fix they
+  exited successfully with unspecified reads, and after the fix all terminate
+  with SIGTRAP.
+- Added a two-comparison precondition only to public
+  `SubSequenceN.subscript(position:)` and retained a valid-boundary test.
+- Initial microbenchmarks reported material overhead; after-runs varied by
+  10–15%, so the result requires the validation assigned above.
+- Temporary strict checking remained at 14 unique diagnostics in G2–G6 and
+  `Package.swift` was restored. Focused normal, Release, and compatibility tests,
+  normal build, and `git diff --check` succeeded.
+
 ## Previous Completed Result (API matrix / Permutation strict batch 1 / boundary investigation)
 
 - Reconciled `API-Matrix.md` and `API-Matrix-View.md` with current production

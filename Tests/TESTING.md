@@ -57,8 +57,12 @@
 
 ## 判断待ち
 
-- PermutationModule: `Sendable`適合の要否、ABC328E実提出による性能検証(外部AtCoder
-  提出、ユーザー実施)が判断待ち(詳細は`Maintanance/PermutationModule/
+- PermutationModule: `Sendable`はSwift 6以降で対応する方針で確定済み。第1バッチ
+  (`Permutations`と`Nexts where C: Sendable`、コンパイル時テスト)は実装・検証済み。
+  共有CoW bufferを持つ`IteratorN`/`SubSequenceN`も、Bufferの`final`化、変更前detachの
+  根拠コメント、Taskを跨ぐ回帰テストとともに対応済み(`Maintanance/StrictMemorySafetyReadiness.md`
+  §9)。ABC328E実提出による性能検証
+  (外部AtCoder提出、ユーザー実施)が判断待ち(詳細は`Maintanance/PermutationModule/
   ImplementationPlan.md`の「保留中の判断」参照)。`All`系・`unsafe`系の削除、
   `Tests/PermutationTests/NextPermutation.swift`(未参照の旧世代実装)の削除、
   `nextPermutations()`と公開戻り値型への`///`コメントドック整備は完了済み。
@@ -85,7 +89,7 @@
 - 検証: 通常/互換モードの対象スイート、フルの`swift test`、通常ビルド、`git diff --check`が成功。
   `Package.swift`と一時的な本体変更は復元済み。
 
-最終更新: 2026-10-03 15:55 JST / Claude Opus 5.5
+最終更新: 2026-10-03 19:23 JST / Codex
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

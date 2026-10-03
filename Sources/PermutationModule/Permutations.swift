@@ -94,6 +94,10 @@ extension Permutations {
 
 extension Permutations.Nexts: Sendable where C: Sendable {}
 
+// `IteratorN` is the only mutation gateway for its buffer. Before advancing, it
+// detaches whenever another iterator or a yielded `SubSequenceN` shares storage.
+extension Permutations.IteratorN: @unchecked Sendable where C.Element: Sendable {}
+
 extension Permutations {
 
   @usableFromInline
@@ -115,7 +119,7 @@ extension Permutations {
   }
 
   @usableFromInline
-  class Buffer<Element>: ManagedBuffer<Header, Element> {
+  final class Buffer<Element>: ManagedBuffer<Header, Element> {
 
     public typealias Element = Element
 
@@ -145,6 +149,10 @@ extension Permutations {
   }
 
 }
+
+// A yielded subsequence only reads its buffer. Any iterator that still shares
+// that buffer detaches before its next mutation, so an existing value is stable.
+extension Permutations.SubSequenceN: @unchecked Sendable where C.Element: Sendable {}
 
 extension Permutations.SubSequenceN: RandomAccessCollection {
   @inlinable

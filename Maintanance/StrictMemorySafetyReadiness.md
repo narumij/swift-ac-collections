@@ -234,34 +234,33 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
 - G5の`newCapacity < count`の未検査(現状は到達経路なし)。
 - G4の非`final`クラスに対する`unsafeDowncast`(現状はサブクラスなし)。
 
-## 9. `PermutationModule` の `Sendable` 対応 引き継ぎ(2026-10-03、読み取りのみ)
+## 9. `PermutationModule` の `Sendable` 対応(2026-10-03)
 
-ユーザー決定: Swift 6+ の `Sendable` 対応は必須。以下は
-`Sources/PermutationModule/Permutations.swift` の読み取りのみに基づく(診断未実行)。
+ユーザー決定: Swift 6+の`Sendable`対応は必須。所有権監査と段階実装を完了した。
 
 | 公開型 | 保持するもの | 区分 |
 | --- | --- | --- |
 | `Permutations<C>` (caseなしenum) | なし | 対応済み: `Sendable` |
 | `Nexts` | `source: C` | 対応済み: `Sendable where C: Sendable` |
-| `IteratorN` | `Buffer<C.Element>`(参照)+ `Bool` 2個 | 判断要 |
-| `SubSequenceN` | `Buffer<C.Element>`(参照、`let`) | 判断要 |
+| `IteratorN` | `Buffer<C.Element>`(参照)+ `Bool` 2個 | 対応済み: `@unchecked Sendable where C.Element: Sendable` |
+| `SubSequenceN` | `Buffer<C.Element>`(参照、`let`) | 対応済み: `@unchecked Sendable where C.Element: Sendable` |
 
-判断要の理由: `Buffer` は可変の `ManagedBuffer` サブクラス(非`final`、§8 G4)で、
+`@unchecked`の根拠: `Buffer` は可変の`ManagedBuffer`サブクラスで、
 最初の `next()` が返す `SubSequenceN` と `IteratorN` は同じバッファを共有する。変更前に
-`isKnownUniquelyReferenced` でコピーするCoWなので、`Array` と同じ理屈で安全と言える見込みだが、
-コンパイラは証明できず `@unchecked` が必要になる。CoWが唯一の変更経路であることを
-文書化したうえで採否を決める(診断を消すためだけには付けない)。`C` 自体は保持しないので、
-条件は `C.Element: Sendable` で足りる。`Header` は内部用で `Int` のみ。
+`isKnownUniquelyReferenced`でコピーするCoWが唯一の変更経路である。`SubSequenceN`は
+読み取り専用であり、共有中のiteratorは次の変更前にdetachする。`Buffer`を`final`にして
+未知のsubclassによる変更経路も閉じた。コンパイラはこのCoW不変条件を証明できないため
+2型に限って`@unchecked`を用いる。`C`自体は保持しないので、条件は
+`C.Element: Sendable`で足りる。`Header`は内部用で`Int`のみ。
 
 実装バッチ案(各バッチ後に通常/`COMPATIBLE_ATCODER_2025` で対象テスト):
 
 1. **実施済み**: `Permutations`と`Nexts`へ`Sendable`を追加し、ジェネリックな
    `requireSendable<T: Sendable>`によるコンパイル時チェックを追加。
-2. `Buffer` を `final` にする(§8 G4 と同じ論点、先に判断)。
-3. `IteratorN`/`SubSequenceN` へ CoW を根拠とした
-   `@unchecked Sendable where C.Element: Sendable` を付け、根拠をコメントに残す。テスト:
-   取得済みの `SubSequenceN` を `Task` へ送って読む間に、イテレータを進めても値が変わらない
-   ことを確認(可能ならThread Sanitizerも)。
+2. **実施済み**: `Buffer`を`final`にし、未知のsubclassによる変更経路を閉じた。
+3. **実施済み**: `IteratorN`/`SubSequenceN`へCoWを根拠とした
+   `@unchecked Sendable where C.Element: Sendable`を追加。取得済みの`SubSequenceN`を
+   detached taskへ送って読む間にiteratorを進めても値が変わらないことをテストした。
 
 ## 保留事項
 

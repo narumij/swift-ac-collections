@@ -1261,3 +1261,17 @@ already exists.
   summary listing changed files and validation commands/results.
 - The user receives a Japanese report, and Codex can independently review the
   resulting diff.
+
+# Archived Result — Scratch Hygiene and Permutation Sendable Handoff
+
+Status: Completed (2026-10-03, Claude Opus 5.5)
+
+- Inspected Git status and found no disposable scratch files to remove. No
+  task-owned temporary directory was created.
+- Added the Permutation Sendable handoff to
+  `Maintanance/StrictMemorySafetyReadiness.md`: `Permutations` and `Nexts` were
+  classified as mechanical, while `IteratorN` and `SubSequenceN` require an
+  ownership decision because they share a mutable CoW `Buffer`.
+- Proposed small future batches: sequence surface, final buffer, then
+  iterator/subsequence plus a cross-task test.
+- Ran `git diff --check`; no commit or push was performed.

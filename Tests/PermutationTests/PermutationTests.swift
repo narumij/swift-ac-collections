@@ -22,6 +22,21 @@ final class PermutationTests: XCTestCase {
     requireSendable([1, 2, 3].nextPermutations())
   }
 
+  func testSendableIteratorAndYieldedValueRemainIndependentAcrossTask() async throws {
+    var iterator = [1, 2, 3].nextPermutations().makeIterator()
+    let first = try XCTUnwrap(iterator.next())
+
+    requireSendable(iterator)
+    requireSendable(first)
+
+    let reader = Task.detached { Array(first) }
+    let second = try XCTUnwrap(iterator.next())
+    let firstElements = await reader.value
+
+    XCTAssertEqual(firstElements, [1, 2, 3])
+    XCTAssertEqual(Array(second), [1, 3, 2])
+  }
+
   #if USING_ALGORITHMS
   // 挙動比較用
     func testExample0() throws {

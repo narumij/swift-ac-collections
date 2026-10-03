@@ -76,8 +76,9 @@ ABC328Eの解説コードを読んだ際、「全探索で間に合っている�
 ## `Sendable`
 
 Swift 6以降への対応として、値を持たない`Permutations`と、保持する`C`が`Sendable`の
-場合の`Nexts`は`Sendable`へ適合する。共有CoW bufferを持つ`IteratorN`と
-`SubSequenceN`は、所有権と変更経路の監査を終えてから別段階で対応する。
+場合の`Nexts`は`Sendable`へ適合する。`IteratorN`と`SubSequenceN`は、要素が
+`Sendable`の場合に`@unchecked Sendable`へ適合する。両者がbufferを共有していても、
+iteratorは変更前にCoWでdetachし、取得済みのsubsequenceは読み取り専用のまま安定する。
 
 ## ABC328E 性能検証についての注意
 

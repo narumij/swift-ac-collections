@@ -6,6 +6,29 @@
 **production codeの変更はなく、`Package.swift`は調査後に元の状態へ復元済み**
 (`git diff Package.swift`はクリーン)。
 
+## 採用状況(2026-10-03 JST 更新)
+
+| 段階 | ターゲット | 状態 |
+| --- | --- | --- |
+| 第1段階 | `AcCollections`、`RedBlackTreeModule` | **採用済み**(`Package.swift`に恒久適用) |
+| 第2段階 | `PermutationModule`、`BareArrayModule`、`OptionalArrayModule` | 未採用(保留) |
+| 第3段階 | `RedBlackTreeCollections` | 未採用(保留) |
+
+第1段階の検証:
+
+- `Package.swift`の差分は2ターゲットへの`.strictMemorySafety()`追加のみ。
+  `AcCollections`は`_settings + [.strictMemorySafety()]`、`swiftSettings`の
+  無かった`RedBlackTreeModule`には`[.strictMemorySafety()]`を追加した。
+- 両ターゲットのソースのタイムスタンプを更新して再コンパイルし、
+  `swift build --target AcCollections -v`で両モジュールのコンパイルに
+  `-strict-memory-safety`が渡ることを確認。再コンパイル時の警告・エラーは0件。
+- `swift build --target RedBlackTreeModule`、`swift build --target AcCollections`、
+  `swift build`(パッケージ全体): 成功。
+- `swift test`(リポジトリルート、通常モード): 全件成功(XCTest 141サマリ行すべて
+  0 failures、Swift Testingすべてpassed)。
+
+以下の§1〜§7は第1段階採用前の調査記録である。
+
 ## 1. 設定の確認
 
 - `static func strictMemorySafety(_ condition: BuildSettingCondition? = nil) -> SwiftSetting`
@@ -77,7 +100,7 @@
 
 1. **即時適用可能(production code変更なし)**: `AcCollections`、
    `RedBlackTreeModule`。警告0件のため、`Package.swift`への追加だけで
-   採用できる。
+   採用できる。→ 2026-10-03 採用済み(冒頭「採用状況」参照)。
 2. **第2段階(手動メモリ管理の低レベルモジュール)**: `PermutationModule`
    (34件)→`BareArrayModule`(116件)→`OptionalArrayModule`(144件)の順。
    件数が少ない順に、各警告が妥当な`unsafe`マーキングで解消できるか個別に

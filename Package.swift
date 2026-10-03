@@ -160,7 +160,9 @@ let package = Package(
         "OptionalArrayModule",
         "BareArrayModule",
       ],
-      swiftSettings: _settings
+      swiftSettings: _settings + [
+        .strictMemorySafety()
+      ]
     ),
     .testTarget(
       name: "AcCollectionsTests",
@@ -194,7 +196,10 @@ let package = Package(
     .target(
       name: "RedBlackTreeModule",
       dependencies: ["RedBlackTreeCollections"],
-      path: "Sources/_RedBlackTreeModule"
+      path: "Sources/_RedBlackTreeModule",
+      swiftSettings: [
+        .strictMemorySafety()
+      ]
     ),
 
     .target(

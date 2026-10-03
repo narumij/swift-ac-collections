@@ -72,6 +72,10 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
     `OptionalArrayModule`(144件)/`RedBlackTreeCollections`(4,948件)は
     いずれも意図的な生ポインタ・手動メモリ管理コード由来の警告で、エラーは
     0件。段階的採用順を提案済み。`Package.swift`は調査後に復元済み
+  - 2026-10-03 JST 第1段階採用済み(Claude Opus 5.5): `AcCollections`/
+    `RedBlackTreeModule`へ`.strictMemorySafety()`を恒久適用。警告0件、
+    `swift build`/`swift test`成功。`PermutationModule`/`BareArrayModule`/
+    `OptionalArrayModule`/`RedBlackTreeCollections`は未採用のまま保留
 
 ### 連絡事項
 

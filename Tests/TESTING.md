@@ -80,28 +80,20 @@
 
 ## 直近の引き継ぎ
 
-- `CLAUDE_TASK.md`の「three follow-up investigations」(Task 1-3)を完了。
-  `CLAUDE_TASK.md`はCompletedへ更新済み、結果サマリーを追記済み。
-- Task 3: ASan調査完了(原因はメモリ安全性バグではなくテストカウンタ汚染)と
-  PermutationModule改修完了を`MAINTENANCE.md`の`完了済みの要望`へ移動。Codable
-  非ソート/重複decode回帰テスト4件(Dictionary/Set/MultiSet/MultiMap)の存在と
-  成功を確認。`unranged()`/PermutationModule削除は本ファイルで既に完了済み
-  反映済みと確認。
-- Task 1: `.strictMemorySafety()`のレディネス調査を実施し
-  `Maintanance/StrictMemorySafetyReadiness.md`へ記録。全ターゲットでエラー0件、
-  `AcCollections`/`RedBlackTreeModule`は警告0件で即時適用可能と判定。
-  `Package.swift`は調査後に復元済み。
-- Task 2: Combining API(`merge`系 vs `union`/`formUnion`/`meld`系)の性能根拠を
-  ベンチマークで検証し`Maintanance/CombiningAPIPerformanceEvidence.md`へ記録。
-  `reserveCapacity`はどちらの経路にも実測上の効果がなく、既存の「十分な空き容量」
-  推奨は根拠不十分と判明。`Benchmarks/Sources/Benchmarks/CombiningAPIBenchmarks.swift`
-  に新規ベンチマークケースを追加(生データは`Benchmarks/Results/CombiningAPI/`)。
-- 検証: `swift test --filter TreeFoundamentalAllocationTests`5/5、Codable4クラス
-  14/14、`swift build`(strictMemorySafety一時適用、全ターゲット)エラー0、
-  `swift build -c release`(Benchmarks)成功、通常モード`swift test`全件
-  (0 failures)、`git diff --check`クリーン。
+- `CLAUDE_TASK.md`の後続3タスク(ベンチマーク検証・strictMemorySafety第1段階・
+  タスクファイル圧縮)を完了しCompletedへ更新。完了済み履歴は
+  `Maintanance/CLAUDE_TASK_HISTORY.md`へ原文のまま移動。
+- Combiningベンチマーク: 一部ケースが`base`とstorageを共有し計時区間に意図しない
+  CoWが混入していたのを修正。固定シードshuffleと計時後の結果検証を追加し、同範囲で
+  再計測。結論は不変(`Maintanance/CombiningAPIPerformanceEvidence.md`)。16kでは
+  同一コード間で約1.5倍の差が出るため、その程度の差は有意と扱わない。
+- `.strictMemorySafety()`を`AcCollections`/`RedBlackTreeModule`へ恒久適用(警告0件)。
+  他4ターゲットは未採用(`Maintanance/StrictMemorySafetyReadiness.md`)。
+- 検証: Benchmarks `swift build -c release`成功・ベンチ各2回実行で検証通過、
+  facade 2ターゲット再コンパイル警告0、`swift build`成功、ルート`swift test`全件
+  0 failures、`git diff --check`クリーン。
 
-最終更新: 2026-10-03 JST / Claude Sonnet 5
+最終更新: 2026-10-03 13:57 JST / Claude Opus 5.5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

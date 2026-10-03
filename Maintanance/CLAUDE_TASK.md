@@ -1,34 +1,51 @@
 # Codex-to-Claude Work Request
 
-Status: Active — migrate C++ comparison tests from Swift Testing to XCTest lifecycle discipline
+Status: Paused — XCTest migration completed and validated; preserve working tree for Codex review
 
 ## Active assignment
 
-Immediately perform the XCTest lifecycle migration authorized in
+Do not start further work in this session. Preserve the current uncommitted XCTest
+migration exactly for Codex review. The tracking-session PoC below is superseded while
+this pause is in effect; do not implement it, expand MultiMap, edit CI, commit, or push.
+
+## Deferred alternative (do not start)
+
+Immediately perform the tracking-session PoC authorized in
 `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`. Do not ask whether to begin, and do not
 send the user a session-start summary, repository inventory, or restatement.
 
-Migrate every test in `CppBehaviorReferenceTests` from Swift Testing to XCTest before
-adding MultiMap seeded traces. Add a target-local XCTest base class that copies the
-Debug allocation/node/payload counter initialization, balance assertions, singleton
-checks, and counter reset discipline from `RedBlackTreeTestCase`; do not import the
-test-support class from another target. Add the direct test dependency/import needed
-to access those counters under `@testable` in Debug.
+Do not migrate the C++ comparison tests yet. Add the smallest Debug-only tracking
+session state needed for `RedBlackTreeTestCase`: when `setUpWithError` begins while
+tracking is off, unconditionally discard stale allocation/node/payload counter values,
+establish the singleton baseline, and turn tracking on. At `tearDownWithError`, perform
+the existing balance and singleton assertions for that managed interval, reset the
+counters, and turn tracking off.
 
-Preserve every curated, mismatch, PRNG known-answer, coverage-policy, and seeded
-comparison assertion. Replace parameterized `@Test(arguments:)` cases with explicit
-fixed-seed loops whose failure messages retain the seed; give each seed a nested scope
-so every collection is destroyed before the next seed and before `tearDownWithError`.
-Do not weaken or reset counters merely to hide imbalance.
+Define the semantics for an unexpected nested/overlapping begin explicitly and fail
+rather than silently resetting an active managed interval. Keep the existing balance
+assertions inside an active interval. Do not guard away allocation/deallocation events
+or weaken teardown checks. The purpose is to distinguish unmanaged prior activity from
+the XCTest interval, not to hide a leak occurring inside it.
 
-Run the migrated target in Debug and Release, then run the authoritative full root
-`swift test --disable-sandbox -c debug` to detect cross-target counter pollution. Also
-run `git diff --check`. Do not edit GitHub Actions yet, expand MultiMap randomized
-coverage, change production Swift, or skip these tests on Linux. Stop and record the
-smallest failure if lifetime balance cannot be preserved.
+First reproduce or characterize the current full-suite/order-dependent failure if
+possible. Then run the focused C++ comparison target and the authoritative full root
+Debug suite at least twice, plus the normal Release suite, to detect order pollution.
+Record exact commands and results. Do not edit GitHub Actions, expand MultiMap seeded
+coverage, skip Linux, or perform the broad XCTest migration in this PoC. Stop if a
+late destruction from unmanaged activity can enter an active interval and invalidate
+the design; preserve the smallest reproduction.
 
 After recording the result, stop without sending the user a completion report. Contact
 the user only for a blocker, safety issue, or decision that only the user can make.
+
+### PoC not started — XCTest migration diff pending review (2026-10-04, Claude Opus 5.5)
+
+This file was replaced while the previous XCTest-migration assignment was already
+complete in the working tree. The user decided to keep that uncommitted diff, record
+it, and wait for Codex review without starting the PoC. Result, changed files, and
+commands are in `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` under "XCTest migration
+result — uncommitted, awaiting review". 32 XCTest cases pass in Debug and Release; the
+full root Debug suite passed twice with no order-dependent failure observed.
 
 ### Dictionary result (2026-10-04, Claude Opus 5.5)
 

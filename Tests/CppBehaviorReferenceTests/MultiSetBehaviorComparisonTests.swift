@@ -1,6 +1,8 @@
 import AcCollections
 import CppBehaviorReference
-import Testing
+import XCTest
+
+final class MultiSetBehaviorComparisonTests: CppBehaviorReferenceTestCase {}
 
 private enum MultiSetOperation: Equatable {
     case insert(Int64)
@@ -208,204 +210,223 @@ private func firstMismatch(
 
 private let multiSetContainer = "RedBlackTreeMultiSet/std::multiset"
 
-@Test("RedBlackTreeMultiSet matches std::multiset for insertion, bounds, equal ranges, and erasure")
-func multiSetCuratedTraceMatchesCpp() throws {
-    let operations: [MultiSetOperation] = [
-        .insert(20),
-        .insert(10),
-        .insert(20), // Duplicate.
-        .insert(30),
-        .insert(20), // Duplicate.
-        .lowerBound(0),
-        .lowerBound(20),
-        .upperBound(20),
-        .lowerBound(25),
-        .upperBound(30),
-        .equalRange(20),
-        .equalRange(15),
-        .equalRange(10),
-        .eraseKey(20), // Removes every equivalent occurrence.
-        .eraseKey(20), // Absent key.
-        .equalRange(20),
-        .eraseKey(10),
-    ]
+extension MultiSetBehaviorComparisonTests {
+    /// RedBlackTreeMultiSet matches std::multiset for insertion, bounds, equal ranges, and erasure
+    func test_multiSetCuratedTraceMatchesCpp() throws {
+        let operations: [MultiSetOperation] = [
+            .insert(20),
+            .insert(10),
+            .insert(20), // Duplicate.
+            .insert(30),
+            .insert(20), // Duplicate.
+            .lowerBound(0),
+            .lowerBound(20),
+            .upperBound(20),
+            .lowerBound(25),
+            .upperBound(30),
+            .equalRange(20),
+            .equalRange(15),
+            .equalRange(10),
+            .eraseKey(20), // Removes every equivalent occurrence.
+            .eraseKey(20), // Absent key.
+            .equalRange(20),
+            .eraseKey(10),
+        ]
 
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp) == nil)
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp))
+    }
 }
 
-@Test("RedBlackTreeMultiSet non-endIndex hinted insertion matches std::multiset around an equivalent-key group")
-func multiSetNonEndIndexHintedInsertionMatchesCpp() throws {
-    let operations: [MultiSetOperation] = [
-        .insert(10),
-        .insert(20),
-        .insert(20),
-        .insert(30),
-        // [10, 20, 20, 30]
-        .insertHint(20, at: 1), // Exact hint at the start of the group.
-        .insertHint(20, at: 2), // Within the group.
-        .insertHint(20, at: 5), // After the group (hint is 30).
-        .insertHint(20, at: 0), // Before the group (hint is 10); poor but valid.
-        .insertHint(5, at: 7),  // Deliberately poor hint for a new least key.
-        .insertHint(5, at: 1),  // Exact hint after the existing 5.
-        .insertHint(30, at: 0), // Deliberately poor hint before an existing 30.
-        .equalRange(20),
-        .eraseKey(20),
-        .insertHint(20, at: 3), // Reinsertion after erasure (hint is 30).
-    ]
+extension MultiSetBehaviorComparisonTests {
+    /// RedBlackTreeMultiSet non-endIndex hinted insertion matches std::multiset around an equivalent-key group
+    func test_multiSetNonEndIndexHintedInsertionMatchesCpp() throws {
+        let operations: [MultiSetOperation] = [
+            .insert(10),
+            .insert(20),
+            .insert(20),
+            .insert(30),
+            // [10, 20, 20, 30]
+            .insertHint(20, at: 1), // Exact hint at the start of the group.
+            .insertHint(20, at: 2), // Within the group.
+            .insertHint(20, at: 5), // After the group (hint is 30).
+            .insertHint(20, at: 0), // Before the group (hint is 10); poor but valid.
+            .insertHint(5, at: 7),  // Deliberately poor hint for a new least key.
+            .insertHint(5, at: 1),  // Exact hint after the existing 5.
+            .insertHint(30, at: 0), // Deliberately poor hint before an existing 30.
+            .equalRange(20),
+            .eraseKey(20),
+            .insertHint(20, at: 3), // Reinsertion after erasure (hint is 30).
+        ]
 
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp) == nil)
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp))
+    }
 }
 
-@Test("RedBlackTreeMultiSet hinted insertion matches std::multiset around an equivalent-key group")
-func multiSetHintedInsertionMatchesCpp() throws {
-    let operations: [MultiSetOperation] = [
-        .insert(10),
-        .insert(20),
-        .insert(20),
-        .insert(30),
-        // [10, 20, 20, 30]
-        .insertHint(20, at: 1), // Exact hint at the start of the group.
-        .insertHint(20, at: 2), // Within the group.
-        .insertHint(20, at: 5), // After the group (hint is 30).
-        .insertHint(20, at: 7), // endIndex.
-        .insertHint(20, at: 0), // Before the group (hint is 10); poor but valid.
-        .insertHint(5, at: 8),  // Deliberately poor hint for a new least key.
-        .insertHint(5, at: 10), // endIndex, with an existing equivalent least key.
-        .insertHint(5, at: 1),  // Exact hint between the two 5s.
-        .insertHint(30, at: 0), // Deliberately poor hint before an existing 30.
-        .insertHint(40, at: 13), // endIndex for a new greatest key.
-        .equalRange(20),
-        .eraseKey(20),
-        .insertHint(20, at: 4), // Reinsertion after erasure (hint is 30).
-    ]
+extension MultiSetBehaviorComparisonTests {
+    /// RedBlackTreeMultiSet hinted insertion matches std::multiset around an equivalent-key group
+    func test_multiSetHintedInsertionMatchesCpp() throws {
+        let operations: [MultiSetOperation] = [
+            .insert(10),
+            .insert(20),
+            .insert(20),
+            .insert(30),
+            // [10, 20, 20, 30]
+            .insertHint(20, at: 1), // Exact hint at the start of the group.
+            .insertHint(20, at: 2), // Within the group.
+            .insertHint(20, at: 5), // After the group (hint is 30).
+            .insertHint(20, at: 7), // endIndex.
+            .insertHint(20, at: 0), // Before the group (hint is 10); poor but valid.
+            .insertHint(5, at: 8),  // Deliberately poor hint for a new least key.
+            .insertHint(5, at: 10), // endIndex, with an existing equivalent least key.
+            .insertHint(5, at: 1),  // Exact hint between the two 5s.
+            .insertHint(30, at: 0), // Deliberately poor hint before an existing 30.
+            .insertHint(40, at: 13), // endIndex for a new greatest key.
+            .equalRange(20),
+            .eraseKey(20),
+            .insertHint(20, at: 4), // Reinsertion after erasure (hint is 30).
+        ]
 
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp) == nil)
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp))
+    }
 }
 
-@Test("RedBlackTreeMultiSet boundary hints and erase-then-reinsert match std::multiset")
-func multiSetBoundaryHintsAndReinsertionMatchCpp() throws {
-    let operations: [MultiSetOperation] = [
-        .insertHint(20, at: 0), // Empty multiset: startIndex == endIndex.
-        .insertHint(10, at: 0), // startIndex; exact for a new least key.
-        .insertHint(10, at: 0), // startIndex; before the least group.
-        .insertHint(30, at: 3), // endIndex; exact for a new greatest key.
-        .insertHint(30, at: 4), // endIndex; after the greatest group.
-        // [10, 10, 20, 30, 30]
-        .insertHint(10, at: 2), // Exact hint after the least group.
-        .insertHint(30, at: 4), // Exact hint before the greatest group (hint is first 30).
-        .insertHint(10, at: 7), // endIndex; poor for the least group.
-        .insertHint(30, at: 0), // startIndex; poor for the greatest group.
-        // [10, 10, 10, 10, 20, 30, 30, 30, 30]
-        .eraseKey(10),          // Erase the least group.
-        .insertHint(10, at: 0), // Reinsert at startIndex.
-        .insertHint(10, at: 6), // endIndex; poor reinsertion into the new least group.
-        .eraseKey(30),          // Erase the greatest group.
-        .insertHint(30, at: 3), // Reinsert at endIndex.
-        .insertHint(30, at: 0), // startIndex; poor reinsertion into the new greatest group.
-        .eraseKey(10),
-        .eraseKey(20),
-        .eraseKey(30),          // Now empty.
-        .insertHint(20, at: 0), // Reinsert into the emptied multiset.
-        .insertHint(20, at: 0), // startIndex, inside a one-element group.
-        .insertHint(20, at: 2), // endIndex, after the same group.
-        .equalRange(20),
-    ]
+extension MultiSetBehaviorComparisonTests {
+    /// RedBlackTreeMultiSet boundary hints and erase-then-reinsert match std::multiset
+    func test_multiSetBoundaryHintsAndReinsertionMatchCpp() throws {
+        let operations: [MultiSetOperation] = [
+            .insertHint(20, at: 0), // Empty multiset: startIndex == endIndex.
+            .insertHint(10, at: 0), // startIndex; exact for a new least key.
+            .insertHint(10, at: 0), // startIndex; before the least group.
+            .insertHint(30, at: 3), // endIndex; exact for a new greatest key.
+            .insertHint(30, at: 4), // endIndex; after the greatest group.
+            // [10, 10, 20, 30, 30]
+            .insertHint(10, at: 2), // Exact hint after the least group.
+            .insertHint(30, at: 4), // Exact hint before the greatest group (hint is first 30).
+            .insertHint(10, at: 7), // endIndex; poor for the least group.
+            .insertHint(30, at: 0), // startIndex; poor for the greatest group.
+            // [10, 10, 10, 10, 20, 30, 30, 30, 30]
+            .eraseKey(10),          // Erase the least group.
+            .insertHint(10, at: 0), // Reinsert at startIndex.
+            .insertHint(10, at: 6), // endIndex; poor reinsertion into the new least group.
+            .eraseKey(30),          // Erase the greatest group.
+            .insertHint(30, at: 3), // Reinsert at endIndex.
+            .insertHint(30, at: 0), // startIndex; poor reinsertion into the new greatest group.
+            .eraseKey(10),
+            .eraseKey(20),
+            .eraseKey(30),          // Now empty.
+            .insertHint(20, at: 0), // Reinsert into the emptied multiset.
+            .insertHint(20, at: 0), // startIndex, inside a one-element group.
+            .insertHint(20, at: 2), // endIndex, after the same group.
+            .equalRange(20),
+        ]
 
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp) == nil)
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp))
+    }
 }
 
-/// `erase(_:)` exposes only the next position and `remove(at:)` only the erased
-/// element, so each is compared against its C++ counterpart for that fact alone.
-@Test("RedBlackTreeMultiSet positional erase and hinted reinsertion match std::multiset")
-func multiSetPositionalEraseMatchesCpp() throws {
-    let operations: [MultiSetOperation] = [
-        .insertHint(20, at: 0), // Empty multiset.
-        .insert(10),
-        .insert(20),
-        .insert(20),
-        .insert(30),
-        .insert(30),
-        // [10, 20, 20, 20, 30, 30]
-        .eraseAt(2),            // Interior occurrence of the 20 group; next is rank 2.
-        .removeAt(2),           // Last occurrence of the 20 group.
-        .eraseAt(0),            // First element; next is rank 0.
-        .insertHint(10, at: 0), // Reinsert at startIndex.
-        .removeAt(3),           // Last element.
-        .eraseAt(2),            // Last element; next is endIndex.
-        .insertHint(30, at: 2), // Reinsert at endIndex.
-        .insertHint(30, at: 2), // Exact hint before the new last occurrence.
-        .removeAt(0),           // First element.
-        // [20, 30, 30]
-        .insertHint(20, at: 0), // startIndex, before the least group.
-        .eraseAt(0),            // First occurrence of the least group.
-        .eraseAt(1),            // First occurrence of the greatest group.
-        .insertHint(30, at: 1), // Reinsert before the remaining 30.
-        .insertHint(20, at: 1), // Reinsert after the remaining 20.
-        // [20, 20, 30, 30]
-        .removeAt(0),
-        .removeAt(0),
-        .eraseAt(1),
-        .eraseAt(0),            // Now empty; next is endIndex.
-        .insertHint(20, at: 0), // Reinsert into the emptied multiset.
-        .insertHint(20, at: 1), // endIndex, after the same group.
-        .equalRange(20),
-    ]
+extension MultiSetBehaviorComparisonTests {
+    /// RedBlackTreeMultiSet positional erase and hinted reinsertion match std::multiset
+    ///
+    /// `erase(_:)` exposes only the next position and `remove(at:)` only the erased
+    /// element, so each is compared against its C++ counterpart for that fact alone.
+    func test_multiSetPositionalEraseMatchesCpp() throws {
+        let operations: [MultiSetOperation] = [
+            .insertHint(20, at: 0), // Empty multiset.
+            .insert(10),
+            .insert(20),
+            .insert(20),
+            .insert(30),
+            .insert(30),
+            // [10, 20, 20, 20, 30, 30]
+            .eraseAt(2),            // Interior occurrence of the 20 group; next is rank 2.
+            .removeAt(2),           // Last occurrence of the 20 group.
+            .eraseAt(0),            // First element; next is rank 0.
+            .insertHint(10, at: 0), // Reinsert at startIndex.
+            .removeAt(3),           // Last element.
+            .eraseAt(2),            // Last element; next is endIndex.
+            .insertHint(30, at: 2), // Reinsert at endIndex.
+            .insertHint(30, at: 2), // Exact hint before the new last occurrence.
+            .removeAt(0),           // First element.
+            // [20, 30, 30]
+            .insertHint(20, at: 0), // startIndex, before the least group.
+            .eraseAt(0),            // First occurrence of the least group.
+            .eraseAt(1),            // First occurrence of the greatest group.
+            .insertHint(30, at: 1), // Reinsert before the remaining 30.
+            .insertHint(20, at: 1), // Reinsert after the remaining 20.
+            // [20, 20, 30, 30]
+            .removeAt(0),
+            .removeAt(0),
+            .eraseAt(1),
+            .eraseAt(0),            // Now empty; next is endIndex.
+            .insertHint(20, at: 0), // Reinsert into the emptied multiset.
+            .insertHint(20, at: 1), // endIndex, after the same group.
+            .equalRange(20),
+        ]
 
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp) == nil)
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp))
+    }
 }
 
-@Test("A MultiSet mismatch report identifies both observations and the operation")
-func multiSetMismatchReportContainsRequiredContext() {
-    let operation = MultiSetOperation.insertHint(20, at: 1)
-    let swift = [MultiSetObservation(
-        operation: operation, value: 20, rank: 1, erasedCount: nil, range: [], contents: [10, 20, 20])]
-    let cpp = [MultiSetObservation(
-        operation: operation, value: 20, rank: 2, erasedCount: nil, range: [], contents: [10, 20, 20])]
+extension MultiSetBehaviorComparisonTests {
+    /// A MultiSet mismatch report identifies both observations and the operation
+    func test_multiSetMismatchReportContainsRequiredContext() {
+        let operation = MultiSetOperation.insertHint(20, at: 1)
+        let swift = [MultiSetObservation(
+            operation: operation, value: 20, rank: 1, erasedCount: nil, range: [], contents: [10, 20, 20])]
+        let cpp = [MultiSetObservation(
+            operation: operation, value: 20, rank: 2, erasedCount: nil, range: [], contents: [10, 20, 20])]
 
-    let message = firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp)
-    #expect(message?.contains("container=RedBlackTreeMultiSet/std::multiset") == true)
-    #expect(message?.contains("operation=0") == true)
-    #expect(message?.contains("input=insertHint(20, at: 1)") == true)
-    #expect(message?.contains("swift=") == true)
-    #expect(message?.contains("rank: Optional(1)") == true)
-    #expect(message?.contains("cpp=") == true)
-    #expect(message?.contains("rank: Optional(2)") == true)
+        let message = firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp)
+        XCTAssertEqual(message?.contains("container=RedBlackTreeMultiSet/std::multiset"), true)
+        XCTAssertEqual(message?.contains("operation=0"), true)
+        XCTAssertEqual(message?.contains("input=insertHint(20, at: 1)"), true)
+        XCTAssertEqual(message?.contains("swift="), true)
+        XCTAssertEqual(message?.contains("rank: Optional(1)"), true)
+        XCTAssertEqual(message?.contains("cpp="), true)
+        XCTAssertEqual(message?.contains("rank: Optional(2)"), true)
+    }
 }
 
-/// Confirms that the C++ reference itself accepts the minimal `endIndex` hint trace,
-/// so the Swift-side failure is not an imitation of undefined behavior.
-@Test("std::multiset inserts normally for the minimal endIndex hint trace")
-func multiSetEndIndexHintMinimalTraceCppReference() throws {
-    let cpp = try executeCppTrace([.insert(10), .insertHint(20, at: 1)])
-    #expect(cpp.last?.value == 20)
-    #expect(cpp.last?.rank == 1)
-    #expect(cpp.last?.contents == [10, 20])
+extension MultiSetBehaviorComparisonTests {
+    /// std::multiset inserts normally for the minimal endIndex hint trace
+    ///
+    /// Confirms that the C++ reference itself accepts the minimal `endIndex` hint trace,
+    /// so the Swift-side failure is not an imitation of undefined behavior.
+    func test_multiSetEndIndexHintMinimalTraceCppReference() throws {
+        let cpp = try executeCppTrace([.insert(10), .insertHint(20, at: 1)])
+        XCTAssertEqual(cpp.last?.value, 20)
+        XCTAssertEqual(cpp.last?.rank, 1)
+        XCTAssertEqual(cpp.last?.contents, [10, 20])
+    }
 }
 
-/// Smallest deterministic trace for the former `endIndex` hint failure. Before the
-/// fix, the multi `__find_leaf` tested `__hint == end` instead of
-/// `__prior == __begin_node_`, returned `end.__right_` as the leaf, and Debug stopped
-/// at `__tree_left_rotate`'s "node shouldn't be null" assertion.
-@Test("RedBlackTreeMultiSet endIndex hint into a non-empty multiset matches std::multiset")
-func multiSetEndIndexHintMinimalTrace() throws {
-    let operations: [MultiSetOperation] = [
-        .insert(10),
-        .insertHint(20, at: 1), // endIndex.
-    ]
+extension MultiSetBehaviorComparisonTests {
+    /// RedBlackTreeMultiSet endIndex hint into a non-empty multiset matches std::multiset
+    ///
+    /// Smallest deterministic trace for the former `endIndex` hint failure. Before the
+    /// fix, the multi `__find_leaf` tested `__hint == end` instead of
+    /// `__prior == __begin_node_`, returned `end.__right_` as the leaf, and Debug stopped
+    /// at `__tree_left_rotate`'s "node shouldn't be null" assertion.
+    func test_multiSetEndIndexHintMinimalTrace() throws {
+        let operations: [MultiSetOperation] = [
+            .insert(10),
+            .insertHint(20, at: 1), // endIndex.
+        ]
 
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp) == nil)
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: multiSetContainer, swift: swift, cpp: cpp))
+    }
 }
 
 // MARK: - Seeded randomized traces
@@ -663,65 +684,86 @@ private func generateMultiSetTrace(
     return (operations, coverage)
 }
 
-@Test("Seeded MultiSet traces are deterministic and cover the generation policy", arguments: multiSetRandomizedSeeds)
-func multiSetRandomizedTraceIsDeterministicAndCovered(seed: UInt64) {
-    let first = generateMultiSetTrace(seed: seed, count: multiSetRandomizedOperationCount)
-    let second = generateMultiSetTrace(seed: seed, count: multiSetRandomizedOperationCount)
-    #expect(first.operations == second.operations)
-    #expect(first.coverage == second.coverage)
-    #expect(first.coverage.missing.isEmpty, "seed=\(seed), missing=\(first.coverage.missing)")
-}
-
-@Test("RedBlackTreeMultiSet matches std::multiset for seeded randomized traces", arguments: multiSetRandomizedSeeds)
-func multiSetSeededRandomizedTraceMatchesCpp(seed: UInt64) {
-    let operations = generateMultiSetTrace(seed: seed, count: multiSetRandomizedOperationCount).operations
-    let swift: [MultiSetObservation]
-    let cpp: [MultiSetObservation]
-    do {
-        swift = try executeSwiftTrace(operations)
-        cpp = try executeCppTrace(operations)
-    } catch {
-        Issue.record("container=\(multiSetContainer), seed=\(seed), executor error=\(error)")
-        return
+extension MultiSetBehaviorComparisonTests {
+    /// Seeded MultiSet traces are deterministic and cover the generation policy
+    func test_multiSetRandomizedTraceIsDeterministicAndCovered() {
+        for seed in multiSetRandomizedSeeds {
+            multiSetRandomizedTraceIsDeterministicAndCovered(seed: seed)
+        }
     }
 
-    let mismatch = firstRandomizedMismatch(
-        container: multiSetContainer, seed: seed, operations: operations, swift: swift, cpp: cpp)
-    #expect(mismatch == nil, "\(mismatch ?? "")")
+    /// Runs one seed in its own scope so every collection is released before the next seed.
+    private func multiSetRandomizedTraceIsDeterministicAndCovered(seed: UInt64) {
+        let first = generateMultiSetTrace(seed: seed, count: multiSetRandomizedOperationCount)
+        let second = generateMultiSetTrace(seed: seed, count: multiSetRandomizedOperationCount)
+        XCTAssertEqual(first.operations, second.operations, "seed=\(seed)")
+        XCTAssertEqual(first.coverage, second.coverage, "seed=\(seed)")
+        XCTAssertTrue(first.coverage.missing.isEmpty, "seed=\(seed), missing=\(first.coverage.missing)")
+    }
 }
 
-/// The shared seeded diagnostic is otherwise exercised only with Set observations;
-/// this checks it with the MultiSet shape, tampering with a returned rank.
-@Test("A seeded MultiSet mismatch report contains the seed and the trace through failure")
-func multiSetRandomizedMismatchReportContainsRequiredContext() throws {
-    let seed = multiSetRandomizedSeeds[0]
-    let operations = generateMultiSetTrace(seed: seed, count: multiSetRandomizedOperationCount).operations
-    let swift = try executeSwiftTrace(operations)
-    // Tamper with one observation instead of relying on a library defect.
-    let failing = try #require(swift.indices.first { $0 >= 17 && swift[$0].rank != nil })
-    var cpp = swift
-    let original = cpp[failing]
-    cpp[failing] = MultiSetObservation(
-        operation: original.operation,
-        value: original.value,
-        rank: original.rank.map { $0 + 1 },
-        erasedCount: original.erasedCount,
-        found: original.found,
-        count: original.count,
-        range: original.range,
-        contents: original.contents
-    )
-
-    let message = try #require(firstRandomizedMismatch(
-        container: multiSetContainer, seed: seed, operations: operations, swift: swift, cpp: cpp))
-    #expect(message.contains("container=\(multiSetContainer)"))
-    #expect(message.contains("seed=\(seed)"))
-    #expect(message.contains("operation=\(failing)"))
-    #expect(message.contains("input=\(operations[failing])"))
-    #expect(message.contains("swift=\(swift[failing])"))
-    #expect(message.contains("cpp=\(cpp[failing])"))
-    for operationIndex in 0...failing {
-        #expect(message.contains("\n  \(operationIndex): \(operations[operationIndex])"))
+extension MultiSetBehaviorComparisonTests {
+    /// RedBlackTreeMultiSet matches std::multiset for seeded randomized traces
+    func test_multiSetSeededRandomizedTraceMatchesCpp() {
+        for seed in multiSetRandomizedSeeds {
+            multiSetSeededRandomizedTraceMatchesCpp(seed: seed)
+        }
     }
-    #expect(!message.contains("\n  \(failing + 1): "))
+
+    /// Runs one seed in its own scope so every collection is released before the next seed.
+    private func multiSetSeededRandomizedTraceMatchesCpp(seed: UInt64) {
+        let operations = generateMultiSetTrace(seed: seed, count: multiSetRandomizedOperationCount).operations
+        let swift: [MultiSetObservation]
+        let cpp: [MultiSetObservation]
+        do {
+            swift = try executeSwiftTrace(operations)
+            cpp = try executeCppTrace(operations)
+        } catch {
+            XCTFail("container=\(multiSetContainer), seed=\(seed), executor error=\(error)")
+            return
+        }
+
+        let mismatch = firstRandomizedMismatch(
+            container: multiSetContainer, seed: seed, operations: operations, swift: swift, cpp: cpp)
+        if let mismatch { XCTFail(mismatch) }
+    }
+}
+
+extension MultiSetBehaviorComparisonTests {
+    /// A seeded MultiSet mismatch report contains the seed and the trace through failure
+    ///
+    /// The shared seeded diagnostic is otherwise exercised only with Set observations;
+    /// this checks it with the MultiSet shape, tampering with a returned rank.
+    func test_multiSetRandomizedMismatchReportContainsRequiredContext() throws {
+        let seed = multiSetRandomizedSeeds[0]
+        let operations = generateMultiSetTrace(seed: seed, count: multiSetRandomizedOperationCount).operations
+        let swift = try executeSwiftTrace(operations)
+        // Tamper with one observation instead of relying on a library defect.
+        let failing = try XCTUnwrap(swift.indices.first { $0 >= 17 && swift[$0].rank != nil })
+        var cpp = swift
+        let original = cpp[failing]
+        cpp[failing] = MultiSetObservation(
+            operation: original.operation,
+            value: original.value,
+            rank: original.rank.map { $0 + 1 },
+            erasedCount: original.erasedCount,
+            found: original.found,
+            count: original.count,
+            range: original.range,
+            contents: original.contents
+        )
+
+        let message = try XCTUnwrap(firstRandomizedMismatch(
+            container: multiSetContainer, seed: seed, operations: operations, swift: swift, cpp: cpp))
+        XCTAssertTrue(message.contains("container=\(multiSetContainer)"))
+        XCTAssertTrue(message.contains("seed=\(seed)"))
+        XCTAssertTrue(message.contains("operation=\(failing)"))
+        XCTAssertTrue(message.contains("input=\(operations[failing])"))
+        XCTAssertTrue(message.contains("swift=\(swift[failing])"))
+        XCTAssertTrue(message.contains("cpp=\(cpp[failing])"))
+        for operationIndex in 0...failing {
+            XCTAssertTrue(message.contains("\n  \(operationIndex): \(operations[operationIndex])"))
+        }
+        XCTAssertFalse(message.contains("\n  \(failing + 1): "))
+    }
 }

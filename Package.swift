@@ -251,6 +251,7 @@ let package = Package(
       dependencies: [
         "CppBehaviorReference",
         "AcCollections",
+        "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
     ),

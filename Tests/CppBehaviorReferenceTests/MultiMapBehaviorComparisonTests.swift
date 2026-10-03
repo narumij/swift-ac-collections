@@ -1,6 +1,8 @@
 import AcCollections
 import CppBehaviorReference
-import Testing
+import XCTest
+
+final class MultiMapBehaviorComparisonTests: CppBehaviorReferenceTestCase {}
 
 /// Each case pairs one Swift API with the `std::multimap` operation that has the
 /// same observable contract:
@@ -253,150 +255,160 @@ private func firstMismatch(
 
 private let multiMapContainer = "RedBlackTreeMultiMap/std::multimap"
 
-@Test("RedBlackTreeMultiMap matches std::multimap for insertion, bounds, equal ranges, and erasure")
-func multiMapCuratedTraceMatchesCpp() throws {
-    let operations: [MultiMapOperation] = [
-        .insert(20, 201),
-        .insert(10, 101),
-        .insert(20, 202), // Duplicate key; placed after 20:201.
-        .insert(30, 301),
-        .insert(20, 203), // Duplicate key; placed after 20:202.
-        // [10:101, 20:201, 20:202, 20:203, 30:301]
-        .find(20),
-        .find(25),
-        .lowerBound(5),  // Before.
-        .lowerBound(20), // At.
-        .lowerBound(25), // Between.
-        .lowerBound(35), // After.
-        .upperBound(5),
-        .upperBound(20),
-        .upperBound(25),
-        .upperBound(30),
-        .equalRange(5),
-        .equalRange(20),
-        .equalRange(25),
-        .equalRange(35),
-        .eraseKey(20), // Removes every occurrence.
-        .eraseKey(20), // Absent.
-        .equalRange(20),
-        .eraseKey(10),
-    ]
+extension MultiMapBehaviorComparisonTests {
+    /// RedBlackTreeMultiMap matches std::multimap for insertion, bounds, equal ranges, and erasure
+    func test_multiMapCuratedTraceMatchesCpp() throws {
+        let operations: [MultiMapOperation] = [
+            .insert(20, 201),
+            .insert(10, 101),
+            .insert(20, 202), // Duplicate key; placed after 20:201.
+            .insert(30, 301),
+            .insert(20, 203), // Duplicate key; placed after 20:202.
+            // [10:101, 20:201, 20:202, 20:203, 30:301]
+            .find(20),
+            .find(25),
+            .lowerBound(5),  // Before.
+            .lowerBound(20), // At.
+            .lowerBound(25), // Between.
+            .lowerBound(35), // After.
+            .upperBound(5),
+            .upperBound(20),
+            .upperBound(25),
+            .upperBound(30),
+            .equalRange(5),
+            .equalRange(20),
+            .equalRange(25),
+            .equalRange(35),
+            .eraseKey(20), // Removes every occurrence.
+            .eraseKey(20), // Absent.
+            .equalRange(20),
+            .eraseKey(10),
+        ]
 
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: multiMapContainer, swift: swift, cpp: cpp) == nil)
-}
-
-@Test("RedBlackTreeMultiMap positional erase and update match std::multimap")
-func multiMapPositionalOperationsMatchCpp() throws {
-    let operations: [MultiMapOperation] = [
-        .insert(10, 101),
-        .insert(20, 201),
-        .insert(20, 202),
-        .insert(20, 203),
-        .insert(30, 301),
-        // [10:101, 20:201, 20:202, 20:203, 30:301]
-        .assignAt(2, 999), // Middle of the group; previous value 202.
-        .assignAt(0, 100), // First element.
-        .eraseAt(2),       // Middle of the group; next is 20:203.
-        .eraseAt(3),       // Last element; next is endIndex.
-        .removeAt(1),      // First of the group.
-        .removeAt(0),      // First element.
-        .eraseAt(0),       // Only element; next is endIndex of an empty multimap.
-    ]
-
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: multiMapContainer, swift: swift, cpp: cpp) == nil)
-}
-
-@Test("RedBlackTreeMultiMap hinted insertion places occurrences like std::multimap")
-func multiMapHintedInsertionMatchesCpp() throws {
-    let operations: [MultiMapOperation] = [
-        .insertHint(20, 201, at: 0), // Empty multimap: startIndex == endIndex.
-        .insertHint(20, 202, at: 1), // endIndex, after the group.
-        .insertHint(20, 203, at: 0), // startIndex, exact hint before the group.
-        // [20:203, 20:201, 20:202]
-        .insertHint(10, 101, at: 0), // startIndex; exact for a new least key.
-        .insertHint(30, 301, at: 4), // endIndex; exact for a new greatest key.
-        // [10:101, 20:203, 20:201, 20:202, 30:301]
-        .insertHint(20, 204, at: 1), // Exact hint before the group (first 20).
-        .insertHint(20, 205, at: 5), // Exact hint after the group (hint is 30).
-        .insertHint(20, 206, at: 3), // Inside the group.
-        .insertHint(20, 207, at: 0), // Poor hint before the group (hint is 10).
-        .insertHint(20, 208, at: 9), // endIndex; poor hint after the group.
-        .insertHint(10, 102, at: 10), // endIndex; poor for an existing least key.
-        .insertHint(30, 302, at: 0),  // startIndex; poor for an existing greatest key.
-        .equalRange(20),
-        .eraseAt(4),                  // Erase one occurrence inside the group.
-        .insertHint(20, 209, at: 4),  // Reinsert at the vacated position.
-        .eraseKey(20),
-        .insertHint(20, 210, at: 2),  // Reinsertion after erasing the group (hint is 30).
-        .insertHint(20, 211, at: 2),  // Exact hint before the reinserted group.
-    ]
-
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: multiMapContainer, swift: swift, cpp: cpp) == nil)
-}
-
-@Test("RedBlackTreeMultiMap erase-then-reinsert at boundaries matches std::multimap")
-func multiMapBoundaryReinsertionMatchesCpp() throws {
-    let operations: [MultiMapOperation] = [
-        .insert(10, 101),
-        .insert(10, 102),
-        .insert(20, 201),
-        .insert(30, 301),
-        .insert(30, 302),
-        // [10:101, 10:102, 20:201, 30:301, 30:302]
-        .eraseAt(0),                  // First element (first of the least group).
-        .insertHint(10, 103, at: 0),  // Reinsert at startIndex, before 10:102.
-        .eraseAt(4),                  // Last element (last of the greatest group).
-        .insertHint(30, 303, at: 4),  // Reinsert at endIndex, after 30:301.
-        // [10:103, 10:102, 20:201, 30:301, 30:303]
-        .eraseKey(10),                // Erase the least group.
-        .insertHint(10, 104, at: 0),  // Reinsert at startIndex.
-        .insertHint(10, 105, at: 4),  // endIndex; poor reinsertion into the least group.
-        .eraseKey(30),                // Erase the greatest group.
-        .insertHint(30, 304, at: 3),  // Reinsert at endIndex.
-        .insertHint(30, 305, at: 0),  // startIndex; poor reinsertion into the greatest group.
-        .removeAt(0),
-        .removeAt(0),
-        .removeAt(0),
-        .eraseAt(0),
-        .eraseAt(0),                  // Now empty.
-        .insertHint(20, 202, at: 0),  // Reinsert into the emptied multimap.
-        .insertHint(20, 203, at: 0),  // startIndex, before a one-element group.
-        .insertHint(20, 204, at: 2),  // endIndex, after the same group.
-        .equalRange(20),
-    ]
-
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: multiMapContainer, swift: swift, cpp: cpp) == nil)
-}
-
-@Test("A MultiMap mismatch report identifies both observations and the operation")
-func multiMapMismatchReportContainsRequiredContext() {
-    let operation = MultiMapOperation.insertHint(20, 202, at: 1)
-    func observation(rank: Int, contents: [MultiMapEntry]) -> MultiMapObservation {
-        MultiMapObservation(
-            operation: operation, entry: MultiMapEntry(key: 20, value: 202), rank: rank,
-            upperRank: nil, previous: nil, count: nil, range: [], contents: contents)
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: multiMapContainer, swift: swift, cpp: cpp))
     }
-    let swift = [observation(
-        rank: 1, contents: [MultiMapEntry(key: 20, value: 202), MultiMapEntry(key: 20, value: 201)])]
-    let cpp = [observation(
-        rank: 2, contents: [MultiMapEntry(key: 20, value: 201), MultiMapEntry(key: 20, value: 202)])]
+}
 
-    let message = firstMismatch(container: multiMapContainer, swift: swift, cpp: cpp)
-    #expect(message?.contains("container=RedBlackTreeMultiMap/std::multimap") == true)
-    #expect(message?.contains("operation=0") == true)
-    #expect(message?.contains("input=insertHint(20, 202, at: 1)") == true)
-    #expect(message?.contains("swift=") == true)
-    #expect(message?.contains("rank: Optional(1)") == true)
-    #expect(message?.contains("[20:202, 20:201]") == true)
-    #expect(message?.contains("cpp=") == true)
-    #expect(message?.contains("rank: Optional(2)") == true)
-    #expect(message?.contains("[20:201, 20:202]") == true)
+extension MultiMapBehaviorComparisonTests {
+    /// RedBlackTreeMultiMap positional erase and update match std::multimap
+    func test_multiMapPositionalOperationsMatchCpp() throws {
+        let operations: [MultiMapOperation] = [
+            .insert(10, 101),
+            .insert(20, 201),
+            .insert(20, 202),
+            .insert(20, 203),
+            .insert(30, 301),
+            // [10:101, 20:201, 20:202, 20:203, 30:301]
+            .assignAt(2, 999), // Middle of the group; previous value 202.
+            .assignAt(0, 100), // First element.
+            .eraseAt(2),       // Middle of the group; next is 20:203.
+            .eraseAt(3),       // Last element; next is endIndex.
+            .removeAt(1),      // First of the group.
+            .removeAt(0),      // First element.
+            .eraseAt(0),       // Only element; next is endIndex of an empty multimap.
+        ]
+
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: multiMapContainer, swift: swift, cpp: cpp))
+    }
+}
+
+extension MultiMapBehaviorComparisonTests {
+    /// RedBlackTreeMultiMap hinted insertion places occurrences like std::multimap
+    func test_multiMapHintedInsertionMatchesCpp() throws {
+        let operations: [MultiMapOperation] = [
+            .insertHint(20, 201, at: 0), // Empty multimap: startIndex == endIndex.
+            .insertHint(20, 202, at: 1), // endIndex, after the group.
+            .insertHint(20, 203, at: 0), // startIndex, exact hint before the group.
+            // [20:203, 20:201, 20:202]
+            .insertHint(10, 101, at: 0), // startIndex; exact for a new least key.
+            .insertHint(30, 301, at: 4), // endIndex; exact for a new greatest key.
+            // [10:101, 20:203, 20:201, 20:202, 30:301]
+            .insertHint(20, 204, at: 1), // Exact hint before the group (first 20).
+            .insertHint(20, 205, at: 5), // Exact hint after the group (hint is 30).
+            .insertHint(20, 206, at: 3), // Inside the group.
+            .insertHint(20, 207, at: 0), // Poor hint before the group (hint is 10).
+            .insertHint(20, 208, at: 9), // endIndex; poor hint after the group.
+            .insertHint(10, 102, at: 10), // endIndex; poor for an existing least key.
+            .insertHint(30, 302, at: 0),  // startIndex; poor for an existing greatest key.
+            .equalRange(20),
+            .eraseAt(4),                  // Erase one occurrence inside the group.
+            .insertHint(20, 209, at: 4),  // Reinsert at the vacated position.
+            .eraseKey(20),
+            .insertHint(20, 210, at: 2),  // Reinsertion after erasing the group (hint is 30).
+            .insertHint(20, 211, at: 2),  // Exact hint before the reinserted group.
+        ]
+
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: multiMapContainer, swift: swift, cpp: cpp))
+    }
+}
+
+extension MultiMapBehaviorComparisonTests {
+    /// RedBlackTreeMultiMap erase-then-reinsert at boundaries matches std::multimap
+    func test_multiMapBoundaryReinsertionMatchesCpp() throws {
+        let operations: [MultiMapOperation] = [
+            .insert(10, 101),
+            .insert(10, 102),
+            .insert(20, 201),
+            .insert(30, 301),
+            .insert(30, 302),
+            // [10:101, 10:102, 20:201, 30:301, 30:302]
+            .eraseAt(0),                  // First element (first of the least group).
+            .insertHint(10, 103, at: 0),  // Reinsert at startIndex, before 10:102.
+            .eraseAt(4),                  // Last element (last of the greatest group).
+            .insertHint(30, 303, at: 4),  // Reinsert at endIndex, after 30:301.
+            // [10:103, 10:102, 20:201, 30:301, 30:303]
+            .eraseKey(10),                // Erase the least group.
+            .insertHint(10, 104, at: 0),  // Reinsert at startIndex.
+            .insertHint(10, 105, at: 4),  // endIndex; poor reinsertion into the least group.
+            .eraseKey(30),                // Erase the greatest group.
+            .insertHint(30, 304, at: 3),  // Reinsert at endIndex.
+            .insertHint(30, 305, at: 0),  // startIndex; poor reinsertion into the greatest group.
+            .removeAt(0),
+            .removeAt(0),
+            .removeAt(0),
+            .eraseAt(0),
+            .eraseAt(0),                  // Now empty.
+            .insertHint(20, 202, at: 0),  // Reinsert into the emptied multimap.
+            .insertHint(20, 203, at: 0),  // startIndex, before a one-element group.
+            .insertHint(20, 204, at: 2),  // endIndex, after the same group.
+            .equalRange(20),
+        ]
+
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: multiMapContainer, swift: swift, cpp: cpp))
+    }
+}
+
+extension MultiMapBehaviorComparisonTests {
+    /// A MultiMap mismatch report identifies both observations and the operation
+    func test_multiMapMismatchReportContainsRequiredContext() {
+        let operation = MultiMapOperation.insertHint(20, 202, at: 1)
+        func observation(rank: Int, contents: [MultiMapEntry]) -> MultiMapObservation {
+            MultiMapObservation(
+                operation: operation, entry: MultiMapEntry(key: 20, value: 202), rank: rank,
+                upperRank: nil, previous: nil, count: nil, range: [], contents: contents)
+        }
+        let swift = [observation(
+            rank: 1, contents: [MultiMapEntry(key: 20, value: 202), MultiMapEntry(key: 20, value: 201)])]
+        let cpp = [observation(
+            rank: 2, contents: [MultiMapEntry(key: 20, value: 201), MultiMapEntry(key: 20, value: 202)])]
+
+        let message = firstMismatch(container: multiMapContainer, swift: swift, cpp: cpp)
+        XCTAssertEqual(message?.contains("container=RedBlackTreeMultiMap/std::multimap"), true)
+        XCTAssertEqual(message?.contains("operation=0"), true)
+        XCTAssertEqual(message?.contains("input=insertHint(20, 202, at: 1)"), true)
+        XCTAssertEqual(message?.contains("swift="), true)
+        XCTAssertEqual(message?.contains("rank: Optional(1)"), true)
+        XCTAssertEqual(message?.contains("[20:202, 20:201]"), true)
+        XCTAssertEqual(message?.contains("cpp="), true)
+        XCTAssertEqual(message?.contains("rank: Optional(2)"), true)
+        XCTAssertEqual(message?.contains("[20:201, 20:202]"), true)
+    }
 }

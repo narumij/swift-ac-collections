@@ -1,6 +1,8 @@
 import AcCollections
 import CppBehaviorReference
-import Testing
+import XCTest
+
+final class DictionaryBehaviorComparisonTests: CppBehaviorReferenceTestCase {}
 
 /// Each case pairs one Swift API with the `std::map` operation that has the same
 /// observable contract:
@@ -254,148 +256,158 @@ private func firstMismatch(
 
 private let dictionaryContainer = "RedBlackTreeDictionary/std::map"
 
-@Test("RedBlackTreeDictionary matches std::map for insertion, lookup, bounds, equal ranges, and erasure")
-func dictionaryCuratedTraceMatchesCpp() throws {
-    let operations: [DictionaryOperation] = [
-        .insert(20, 200),
-        .insert(10, 100),
-        .insert(30, 300),
-        .insert(20, 999), // Existing key; the mapped value is preserved.
-        // [10:100, 20:200, 30:300]
-        .find(20),
-        .find(25), // Absent.
-        .lowerBound(5),  // Before.
-        .lowerBound(20), // At.
-        .lowerBound(25), // Between.
-        .lowerBound(35), // After.
-        .upperBound(5),
-        .upperBound(20),
-        .upperBound(25),
-        .upperBound(30),
-        .equalRange(5),
-        .equalRange(20),
-        .equalRange(25),
-        .equalRange(35),
-        .eraseKey(20), // Present.
-        .eraseKey(20), // Absent.
-        .find(20),
-        .equalRange(20),
-        .eraseKey(10),
-        .eraseKey(30),
-        .eraseKey(30), // Empty.
-        .find(30),
-    ]
+extension DictionaryBehaviorComparisonTests {
+    /// RedBlackTreeDictionary matches std::map for insertion, lookup, bounds, equal ranges, and erasure
+    func test_dictionaryCuratedTraceMatchesCpp() throws {
+        let operations: [DictionaryOperation] = [
+            .insert(20, 200),
+            .insert(10, 100),
+            .insert(30, 300),
+            .insert(20, 999), // Existing key; the mapped value is preserved.
+            // [10:100, 20:200, 30:300]
+            .find(20),
+            .find(25), // Absent.
+            .lowerBound(5),  // Before.
+            .lowerBound(20), // At.
+            .lowerBound(25), // Between.
+            .lowerBound(35), // After.
+            .upperBound(5),
+            .upperBound(20),
+            .upperBound(25),
+            .upperBound(30),
+            .equalRange(5),
+            .equalRange(20),
+            .equalRange(25),
+            .equalRange(35),
+            .eraseKey(20), // Present.
+            .eraseKey(20), // Absent.
+            .find(20),
+            .equalRange(20),
+            .eraseKey(10),
+            .eraseKey(30),
+            .eraseKey(30), // Empty.
+            .find(30),
+        ]
 
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: dictionaryContainer, swift: swift, cpp: cpp) == nil)
-}
-
-@Test("RedBlackTreeDictionary update operations match their std::map counterparts")
-func dictionaryUpdateSemanticsMatchCpp() throws {
-    let operations: [DictionaryOperation] = [
-        .updateValue(100, forKey: 10), // Absent: inserts, reports no previous value.
-        .updateValue(111, forKey: 10), // Present: replaces, reports 100.
-        .insert(10, 999),              // Present: preserves 111.
-        .subscriptAssign(20, 200),     // Absent: inserts.
-        .subscriptAssign(20, 222),     // Present: replaces.
-        .subscriptDefaultAdd(30, 3),   // Absent: starts from zero.
-        .subscriptDefaultAdd(30, 4),   // Present: accumulates.
-        .subscriptDefaultAdd(10, 1),
-        .find(30),
-        .eraseKey(10),
-        .updateValue(5, forKey: 10),   // Reinsertion after erasure.
-    ]
-
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: dictionaryContainer, swift: swift, cpp: cpp) == nil)
-}
-
-@Test("RedBlackTreeDictionary hinted insertion and update match std::map")
-func dictionaryHintedInsertionMatchesCpp() throws {
-    let operations: [DictionaryOperation] = [
-        .insertHint(20, 200, at: 0), // Empty dictionary: startIndex == endIndex.
-        .insertHint(10, 100, at: 0), // startIndex; exact hint for a new least key.
-        .insertHint(30, 300, at: 2), // endIndex; exact hint for a new greatest key.
-        // [10:100, 20:200, 30:300]
-        .insertHint(25, 250, at: 2), // Exact hint (before 30).
-        .insertHint(15, 150, at: 4), // endIndex; poor but valid.
-        .insertHint(35, 350, at: 0), // startIndex; poor but valid.
-        .insertHint(5, 50, at: 6),   // endIndex; poor for a new least key.
-        // [5:50, 10:100, 15:150, 20:200, 25:250, 30:300, 35:350]
-        .insertHint(20, 999, at: 3), // Existing key at its exact position; preserved.
-        .insertHint(20, 999, at: 0), // Existing key, startIndex; preserved.
-        .insertHint(20, 999, at: 7), // Existing key, endIndex; preserved.
-        .insertHint(5, 999, at: 0),  // Existing least key at startIndex.
-        .insertHint(35, 999, at: 7), // Existing greatest key at endIndex.
-        .updateValueHint(222, forKey: 20, at: 3), // Existing key, exact hint; replaced.
-        .updateValueHint(333, forKey: 30, at: 0), // Existing key, poor hint; replaced.
-        .updateValueHint(400, forKey: 40, at: 7), // New key, endIndex.
-        .updateValueHint(1, forKey: 1, at: 0),    // New key, startIndex.
-        .updateValueHint(17, forKey: 17, at: 9),  // New key, endIndex; poor.
-        .equalRange(17),
-        .eraseKey(17),
-        .insertHint(17, 170, at: 4), // Reinsertion after erasure, exact hint (before 20).
-    ]
-
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: dictionaryContainer, swift: swift, cpp: cpp) == nil)
-}
-
-@Test("RedBlackTreeDictionary erase-then-reinsert at boundaries matches std::map")
-func dictionaryBoundaryReinsertionMatchesCpp() throws {
-    let operations: [DictionaryOperation] = [
-        .insert(10, 100),
-        .insert(20, 200),
-        .insert(30, 300),
-        // [10:100, 20:200, 30:300]
-        .eraseKey(10),                // Erase the least key.
-        .insertHint(10, 101, at: 0),  // Reinsert at startIndex.
-        .eraseKey(30),                // Erase the greatest key.
-        .insertHint(30, 301, at: 2),  // Reinsert at endIndex.
-        .eraseKey(10),
-        .insertHint(10, 102, at: 2),  // Reinsert the least key at endIndex; poor.
-        .eraseKey(30),
-        .insertHint(30, 302, at: 0),  // Reinsert the greatest key at startIndex; poor.
-        .eraseKey(10),
-        .updateValueHint(103, forKey: 10, at: 0), // Reinsert by update at startIndex.
-        .eraseKey(30),
-        .updateValueHint(303, forKey: 30, at: 2), // Reinsert by update at endIndex.
-        .eraseKey(10),
-        .eraseKey(20),
-        .eraseKey(30),                // Now empty.
-        .insertHint(40, 400, at: 0),  // Reinsert into the emptied dictionary.
-        .eraseKey(40),
-        .updateValueHint(50, forKey: 50, at: 0), // Update into the emptied dictionary.
-    ]
-
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: dictionaryContainer, swift: swift, cpp: cpp) == nil)
-}
-
-@Test("A Dictionary mismatch report identifies both observations and the operation")
-func dictionaryMismatchReportContainsRequiredContext() {
-    let operation = DictionaryOperation.insertHint(20, 999, at: 1)
-    func observation(value: Int64) -> DictionaryObservation {
-        DictionaryObservation(
-            operation: operation, inserted: false, entry: DictionaryEntry(key: 20, value: value),
-            rank: 1, upperRank: nil, previous: nil, count: nil, range: [],
-            contents: [DictionaryEntry(key: 10, value: 100), DictionaryEntry(key: 20, value: value)])
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: dictionaryContainer, swift: swift, cpp: cpp))
     }
-    let swift = [observation(value: 200)]
-    let cpp = [observation(value: 999)]
+}
 
-    let message = firstMismatch(container: dictionaryContainer, swift: swift, cpp: cpp)
-    #expect(message?.contains("container=RedBlackTreeDictionary/std::map") == true)
-    #expect(message?.contains("operation=0") == true)
-    #expect(message?.contains("input=insertHint(20, 999, at: 1)") == true)
-    #expect(message?.contains("swift=") == true)
-    #expect(message?.contains("cpp=") == true)
-    #expect(message?.contains("[10:100, 20:200]") == true)
-    #expect(message?.contains("[10:100, 20:999]") == true)
+extension DictionaryBehaviorComparisonTests {
+    /// RedBlackTreeDictionary update operations match their std::map counterparts
+    func test_dictionaryUpdateSemanticsMatchCpp() throws {
+        let operations: [DictionaryOperation] = [
+            .updateValue(100, forKey: 10), // Absent: inserts, reports no previous value.
+            .updateValue(111, forKey: 10), // Present: replaces, reports 100.
+            .insert(10, 999),              // Present: preserves 111.
+            .subscriptAssign(20, 200),     // Absent: inserts.
+            .subscriptAssign(20, 222),     // Present: replaces.
+            .subscriptDefaultAdd(30, 3),   // Absent: starts from zero.
+            .subscriptDefaultAdd(30, 4),   // Present: accumulates.
+            .subscriptDefaultAdd(10, 1),
+            .find(30),
+            .eraseKey(10),
+            .updateValue(5, forKey: 10),   // Reinsertion after erasure.
+        ]
+
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: dictionaryContainer, swift: swift, cpp: cpp))
+    }
+}
+
+extension DictionaryBehaviorComparisonTests {
+    /// RedBlackTreeDictionary hinted insertion and update match std::map
+    func test_dictionaryHintedInsertionMatchesCpp() throws {
+        let operations: [DictionaryOperation] = [
+            .insertHint(20, 200, at: 0), // Empty dictionary: startIndex == endIndex.
+            .insertHint(10, 100, at: 0), // startIndex; exact hint for a new least key.
+            .insertHint(30, 300, at: 2), // endIndex; exact hint for a new greatest key.
+            // [10:100, 20:200, 30:300]
+            .insertHint(25, 250, at: 2), // Exact hint (before 30).
+            .insertHint(15, 150, at: 4), // endIndex; poor but valid.
+            .insertHint(35, 350, at: 0), // startIndex; poor but valid.
+            .insertHint(5, 50, at: 6),   // endIndex; poor for a new least key.
+            // [5:50, 10:100, 15:150, 20:200, 25:250, 30:300, 35:350]
+            .insertHint(20, 999, at: 3), // Existing key at its exact position; preserved.
+            .insertHint(20, 999, at: 0), // Existing key, startIndex; preserved.
+            .insertHint(20, 999, at: 7), // Existing key, endIndex; preserved.
+            .insertHint(5, 999, at: 0),  // Existing least key at startIndex.
+            .insertHint(35, 999, at: 7), // Existing greatest key at endIndex.
+            .updateValueHint(222, forKey: 20, at: 3), // Existing key, exact hint; replaced.
+            .updateValueHint(333, forKey: 30, at: 0), // Existing key, poor hint; replaced.
+            .updateValueHint(400, forKey: 40, at: 7), // New key, endIndex.
+            .updateValueHint(1, forKey: 1, at: 0),    // New key, startIndex.
+            .updateValueHint(17, forKey: 17, at: 9),  // New key, endIndex; poor.
+            .equalRange(17),
+            .eraseKey(17),
+            .insertHint(17, 170, at: 4), // Reinsertion after erasure, exact hint (before 20).
+        ]
+
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: dictionaryContainer, swift: swift, cpp: cpp))
+    }
+}
+
+extension DictionaryBehaviorComparisonTests {
+    /// RedBlackTreeDictionary erase-then-reinsert at boundaries matches std::map
+    func test_dictionaryBoundaryReinsertionMatchesCpp() throws {
+        let operations: [DictionaryOperation] = [
+            .insert(10, 100),
+            .insert(20, 200),
+            .insert(30, 300),
+            // [10:100, 20:200, 30:300]
+            .eraseKey(10),                // Erase the least key.
+            .insertHint(10, 101, at: 0),  // Reinsert at startIndex.
+            .eraseKey(30),                // Erase the greatest key.
+            .insertHint(30, 301, at: 2),  // Reinsert at endIndex.
+            .eraseKey(10),
+            .insertHint(10, 102, at: 2),  // Reinsert the least key at endIndex; poor.
+            .eraseKey(30),
+            .insertHint(30, 302, at: 0),  // Reinsert the greatest key at startIndex; poor.
+            .eraseKey(10),
+            .updateValueHint(103, forKey: 10, at: 0), // Reinsert by update at startIndex.
+            .eraseKey(30),
+            .updateValueHint(303, forKey: 30, at: 2), // Reinsert by update at endIndex.
+            .eraseKey(10),
+            .eraseKey(20),
+            .eraseKey(30),                // Now empty.
+            .insertHint(40, 400, at: 0),  // Reinsert into the emptied dictionary.
+            .eraseKey(40),
+            .updateValueHint(50, forKey: 50, at: 0), // Update into the emptied dictionary.
+        ]
+
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: dictionaryContainer, swift: swift, cpp: cpp))
+    }
+}
+
+extension DictionaryBehaviorComparisonTests {
+    /// A Dictionary mismatch report identifies both observations and the operation
+    func test_dictionaryMismatchReportContainsRequiredContext() {
+        let operation = DictionaryOperation.insertHint(20, 999, at: 1)
+        func observation(value: Int64) -> DictionaryObservation {
+            DictionaryObservation(
+                operation: operation, inserted: false, entry: DictionaryEntry(key: 20, value: value),
+                rank: 1, upperRank: nil, previous: nil, count: nil, range: [],
+                contents: [DictionaryEntry(key: 10, value: 100), DictionaryEntry(key: 20, value: value)])
+        }
+        let swift = [observation(value: 200)]
+        let cpp = [observation(value: 999)]
+
+        let message = firstMismatch(container: dictionaryContainer, swift: swift, cpp: cpp)
+        XCTAssertEqual(message?.contains("container=RedBlackTreeDictionary/std::map"), true)
+        XCTAssertEqual(message?.contains("operation=0"), true)
+        XCTAssertEqual(message?.contains("input=insertHint(20, 999, at: 1)"), true)
+        XCTAssertEqual(message?.contains("swift="), true)
+        XCTAssertEqual(message?.contains("cpp="), true)
+        XCTAssertEqual(message?.contains("[10:100, 20:200]"), true)
+        XCTAssertEqual(message?.contains("[10:100, 20:999]"), true)
+    }
 }
 
 // MARK: - Seeded randomized traces
@@ -653,70 +665,92 @@ private func generateDictionaryTrace(
     return (operations, coverage)
 }
 
-@Test("Seeded Dictionary traces are deterministic and cover the generation policy", arguments: dictionaryRandomizedSeeds)
-func dictionaryRandomizedTraceIsDeterministicAndCovered(seed: UInt64) {
-    let first = generateDictionaryTrace(seed: seed, count: dictionaryRandomizedOperationCount)
-    let second = generateDictionaryTrace(seed: seed, count: dictionaryRandomizedOperationCount)
-    #expect(first.operations == second.operations)
-    #expect(first.coverage == second.coverage)
-    #expect(first.coverage.missing.isEmpty, "seed=\(seed), missing=\(first.coverage.missing)")}
-
-@Test("RedBlackTreeDictionary matches std::map for seeded randomized traces", arguments: dictionaryRandomizedSeeds)
-func dictionarySeededRandomizedTraceMatchesCpp(seed: UInt64) {
-    let operations = generateDictionaryTrace(seed: seed, count: dictionaryRandomizedOperationCount).operations
-    let swift: [DictionaryObservation]
-    let cpp: [DictionaryObservation]
-    do {
-        swift = try executeSwiftTrace(operations)
-        cpp = try executeCppTrace(operations)
-    } catch {
-        Issue.record("container=\(dictionaryContainer), seed=\(seed), executor error=\(error)")
-        return
+extension DictionaryBehaviorComparisonTests {
+    /// Seeded Dictionary traces are deterministic and cover the generation policy
+    func test_dictionaryRandomizedTraceIsDeterministicAndCovered() {
+        for seed in dictionaryRandomizedSeeds {
+            dictionaryRandomizedTraceIsDeterministicAndCovered(seed: seed)
+        }
     }
 
-    let mismatch = firstRandomizedMismatch(
-        container: dictionaryContainer, seed: seed, operations: operations, swift: swift, cpp: cpp)
-    #expect(mismatch == nil, "\(mismatch ?? "")")
+    /// Runs one seed in its own scope so every collection is released before the next seed.
+    private func dictionaryRandomizedTraceIsDeterministicAndCovered(seed: UInt64) {
+        let first = generateDictionaryTrace(seed: seed, count: dictionaryRandomizedOperationCount)
+        let second = generateDictionaryTrace(seed: seed, count: dictionaryRandomizedOperationCount)
+        XCTAssertEqual(first.operations, second.operations, "seed=\(seed)")
+        XCTAssertEqual(first.coverage, second.coverage, "seed=\(seed)")
+        XCTAssertTrue(first.coverage.missing.isEmpty, "seed=\(seed), missing=\(first.coverage.missing)")
+    }
 }
 
-/// The shared seeded diagnostic is otherwise exercised only with Set and MultiSet
-/// observations; this checks it with key/value contents, tampering with a returned
-/// previous value.
-@Test("A seeded Dictionary mismatch report contains the seed and the trace through failure")
-func dictionaryRandomizedMismatchReportContainsRequiredContext() throws {
-    let seed = dictionaryRandomizedSeeds[0]
-    let operations = generateDictionaryTrace(seed: seed, count: dictionaryRandomizedOperationCount).operations
-    let swift = try executeSwiftTrace(operations)
-    // Tamper with one observation instead of relying on a library defect.
-    let failing = try #require(swift.indices.first {
-        $0 >= 17 && swift[$0].previous.flatMap { $0 } != nil
-    })
-    var cpp = swift
-    let original = cpp[failing]
-    cpp[failing] = DictionaryObservation(
-        operation: original.operation,
-        inserted: original.inserted,
-        entry: original.entry,
-        rank: original.rank,
-        upperRank: original.upperRank,
-        previous: original.previous.map { $0.map { $0 + 1 } },
-        count: original.count,
-        range: original.range,
-        contents: original.contents
-    )
-
-    let message = try #require(firstRandomizedMismatch(
-        container: dictionaryContainer, seed: seed, operations: operations, swift: swift, cpp: cpp))
-    #expect(message.contains("container=\(dictionaryContainer)"))
-    #expect(message.contains("seed=\(seed)"))
-    #expect(message.contains("operation=\(failing)"))
-    #expect(message.contains("input=\(operations[failing])"))
-    #expect(message.contains("swift=\(swift[failing])"))
-    #expect(message.contains("cpp=\(cpp[failing])"))
-    // Key/value contents are printed as `key:value` entries.
-    #expect(message.contains("\(swift[failing].contents)"))
-    for operationIndex in 0...failing {
-        #expect(message.contains("\n  \(operationIndex): \(operations[operationIndex])"))
+extension DictionaryBehaviorComparisonTests {
+    /// RedBlackTreeDictionary matches std::map for seeded randomized traces
+    func test_dictionarySeededRandomizedTraceMatchesCpp() {
+        for seed in dictionaryRandomizedSeeds {
+            dictionarySeededRandomizedTraceMatchesCpp(seed: seed)
+        }
     }
-    #expect(!message.contains("\n  \(failing + 1): "))
+
+    /// Runs one seed in its own scope so every collection is released before the next seed.
+    private func dictionarySeededRandomizedTraceMatchesCpp(seed: UInt64) {
+        let operations = generateDictionaryTrace(seed: seed, count: dictionaryRandomizedOperationCount).operations
+        let swift: [DictionaryObservation]
+        let cpp: [DictionaryObservation]
+        do {
+            swift = try executeSwiftTrace(operations)
+            cpp = try executeCppTrace(operations)
+        } catch {
+            XCTFail("container=\(dictionaryContainer), seed=\(seed), executor error=\(error)")
+            return
+        }
+
+        let mismatch = firstRandomizedMismatch(
+            container: dictionaryContainer, seed: seed, operations: operations, swift: swift, cpp: cpp)
+        if let mismatch { XCTFail(mismatch) }
+    }
+}
+
+extension DictionaryBehaviorComparisonTests {
+    /// A seeded Dictionary mismatch report contains the seed and the trace through failure
+    ///
+    /// The shared seeded diagnostic is otherwise exercised only with Set and MultiSet
+    /// observations; this checks it with key/value contents, tampering with a returned
+    /// previous value.
+    func test_dictionaryRandomizedMismatchReportContainsRequiredContext() throws {
+        let seed = dictionaryRandomizedSeeds[0]
+        let operations = generateDictionaryTrace(seed: seed, count: dictionaryRandomizedOperationCount).operations
+        let swift = try executeSwiftTrace(operations)
+        // Tamper with one observation instead of relying on a library defect.
+        let failing = try XCTUnwrap(swift.indices.first {
+            $0 >= 17 && swift[$0].previous.flatMap { $0 } != nil
+        })
+        var cpp = swift
+        let original = cpp[failing]
+        cpp[failing] = DictionaryObservation(
+            operation: original.operation,
+            inserted: original.inserted,
+            entry: original.entry,
+            rank: original.rank,
+            upperRank: original.upperRank,
+            previous: original.previous.map { $0.map { $0 + 1 } },
+            count: original.count,
+            range: original.range,
+            contents: original.contents
+        )
+
+        let message = try XCTUnwrap(firstRandomizedMismatch(
+            container: dictionaryContainer, seed: seed, operations: operations, swift: swift, cpp: cpp))
+        XCTAssertTrue(message.contains("container=\(dictionaryContainer)"))
+        XCTAssertTrue(message.contains("seed=\(seed)"))
+        XCTAssertTrue(message.contains("operation=\(failing)"))
+        XCTAssertTrue(message.contains("input=\(operations[failing])"))
+        XCTAssertTrue(message.contains("swift=\(swift[failing])"))
+        XCTAssertTrue(message.contains("cpp=\(cpp[failing])"))
+        // Key/value contents are printed as `key:value` entries.
+        XCTAssertTrue(message.contains("\(swift[failing].contents)"))
+        for operationIndex in 0...failing {
+            XCTAssertTrue(message.contains("\n  \(operationIndex): \(operations[operationIndex])"))
+        }
+        XCTAssertFalse(message.contains("\n  \(failing + 1): "))
+    }
 }

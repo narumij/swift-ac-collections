@@ -3,7 +3,7 @@
 ## Status
 
 **Active high priority — Set, MultiSet, and Dictionary seeded traces accepted (32
-tests); XCTest lifecycle migration in progress before MultiMap expansion.**
+tests); Debug tracking-session PoC in progress before MultiMap expansion.**
 The user raised this work's priority on 2026-10-04 because agreement with the C++
 standard-library containers is important evidence for completing the red-black-tree
 implementation. Set, MultiSet, Dictionary, and MultiMap now have 17 passing comparison
@@ -144,6 +144,87 @@ Do not change production implementation, skip Linux, edit workflows, weaken coun
 assertions, add MultiMap seeded traces, or broaden test semantics in this migration.
 If Swift Testing and XCTest cannot be made behaviorally equivalent, record the exact
 missing assertion or lifecycle failure and stop for review.
+
+This broad migration is superseded for now by the smaller tracking-session PoC below.
+Do not perform it unless that PoC fails review.
+
+#### XCTest migration result — uncommitted, awaiting review (2026-10-04, Claude Opus 5.5)
+
+The migration was completed in the working tree under the previous assignment before
+the supersession above was noticed. Per the user's decision, the diff is kept
+uncommitted for Codex review and the tracking-session PoC has **not** been started.
+Revert the files listed below if the PoC route is chosen instead.
+
+- **Changed files:** `Package.swift` (adds `RedBlackTreeCollections` to the
+  `CppBehaviorReferenceTests` dependencies only);
+  `Tests/CppBehaviorReferenceTests/CppBehaviorReferenceTestCase.swift` (new, staged by
+  the tooling); the four `*BehaviorComparisonTests.swift` files. No production code,
+  C++ source, workflow, or `SeededTraceSupport.swift` change.
+- **Base class:** `CppBehaviorReferenceTestCase: XCTestCase` copies
+  `RedBlackTreeTestCase`'s setUp (zero `deallocated`/`nodeDeinitialized`/
+  `payloadDeinitialized` assertions, singleton initialization, counter reset) and
+  tearDown (singleton capacity check and `fatalError`, `_tied`/fresh-pool checks,
+  allocation/node/payload balance `XCTAssertEqual` plus `assert`, reset,
+  `UnsafeNode.nullptr` integrity asserts) verbatim in semantics; Debug-only
+  `@testable import`, plain import in Release.
+- **Conversion:** each file declares `final class <File>: CppBehaviorReferenceTestCase {}`
+  and each former `@Test` function becomes `test_<originalName>` in its own extension
+  at its original position; the display name is kept as the first doc line, and
+  existing doc comments are preserved. Assertion mapping: `#expect(x == nil)` →
+  `XCTAssertNil`, `#expect(a == b)` → `XCTAssertEqual`, `#expect(!x)` →
+  `XCTAssertFalse`, `#expect(x)` → `XCTAssertTrue`, `try #require` → `try XCTUnwrap`,
+  `Issue.record` → `XCTFail`, seeded `#expect(mismatch == nil, ...)` →
+  `if let mismatch { XCTFail(mismatch) }` (message already contains the seed and trace).
+- **Seeds:** the six `@Test(arguments:)` cases loop over the unchanged seed lists and
+  call a `private func <originalName>(seed:)` per seed, so each seed's collections
+  are released before the next seed and before teardown. Deterministic-regeneration
+  equality assertions now append `"seed=\(seed)"`; coverage and executor-error
+  messages already contained it.
+- **Inventory:** 32 → 32 test methods (Set 8, MultiSet 11, Dictionary 8, MultiMap 5);
+  curated, mismatch, SplitMix64 known-answer, coverage, and seeded assertions are
+  unchanged in content. One Dictionary line ending in `")}` was split before
+  conversion (formatting only).
+- **Commands/results:**
+  - Baseline `swift test --disable-sandbox --filter CppBehaviorReferenceTests`:
+    Swift Testing, 32 tests passed.
+  - Same filter after migration (Debug): XCTest, 32 executed, 0 failures; 0 Swift
+    Testing tests remain.
+  - `swift test --disable-sandbox -c release --filter CppBehaviorReferenceTests`:
+    32 executed, 0 failures.
+  - `swift test --disable-sandbox -c debug` (full root, run twice): exit 0, no
+    `error:`/failure lines; `CppBehaviorReferenceTests.xctest` 32 passed. No
+    order-dependent counter failure was observed in this environment.
+  - `git diff --check`: clean.
+- **Not done:** Linux execution, compatibility-mode run (behavior is not
+  compatibility-dependent), and a negative check that the base class detects an
+  injected leak (it uses the same assertions as `RedBlackTreeTestCase`).
+
+### Debug lifetime-counter tracking-session PoC authorization (2026-10-04)
+
+The user proposed separating unmanaged test activity from an XCTest-managed lifetime
+interval instead of immediately rewriting all Swift Testing cases:
+
+1. Add one Debug-only tracking-session flag/state alongside the existing global
+   allocation/node/payload counters.
+2. On `RedBlackTreeTestCase.setUpWithError`, if tracking is off, unconditionally reset
+   stale counters, establish the existing empty-singleton baseline, then mark the
+   interval active. Do not require unmanaged prior counter values to be zero.
+3. Treat a begin while already active as a test-harness error; do not silently reset an
+   interval that another test owns.
+4. During `tearDownWithError`, retain every existing singleton and counter-balance
+   assertion. Reset counters and mark tracking inactive only after those checks.
+5. Do not suppress counter increments/decrements merely because tracking is off in this
+   PoC. Explicitly investigate whether an object created while inactive can be destroyed
+   after an active interval begins; if demonstrated, stop because a simple flag is not
+   sufficient.
+6. Characterize the pre-change failure if reproducible, then run the focused C++ tests,
+   the full root Debug suite at least twice, the normal Release suite, and
+   `git diff --check`.
+
+Do not migrate the comparison tests, edit workflows, skip Linux, weaken teardown
+assertions, expand MultiMap seeded traces, or make unrelated production changes. The
+PoC is accepted only if managed XCTest intervals still detect their own imbalances and
+full-suite order pollution is eliminated without masking late destruction.
 
 ## Goal
 

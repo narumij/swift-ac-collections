@@ -1,6 +1,8 @@
 import AcCollections
 import CppBehaviorReference
-import Testing
+import XCTest
+
+final class SetBehaviorComparisonTests: CppBehaviorReferenceTestCase {}
 
 private enum SetOperation: Equatable {
     case insert(Int64)
@@ -156,87 +158,96 @@ private func firstMismatch(
     return nil
 }
 
-@Test("RedBlackTreeSet matches std::set for the first curated trace")
-func setCuratedTraceMatchesCpp() throws {
-    let operations: [SetOperation] = [
-        .insert(4),
-        .insert(1),
-        .insert(4),
-        .insert(7),
-        .lowerBound(0),
-        .lowerBound(4),
-        .lowerBound(5),
-        .lowerBound(8),
-        .eraseKey(4),
-        .eraseKey(4),
-    ]
+extension SetBehaviorComparisonTests {
+    /// RedBlackTreeSet matches std::set for the first curated trace
+    func test_setCuratedTraceMatchesCpp() throws {
+        let operations: [SetOperation] = [
+            .insert(4),
+            .insert(1),
+            .insert(4),
+            .insert(7),
+            .lowerBound(0),
+            .lowerBound(4),
+            .lowerBound(5),
+            .lowerBound(8),
+            .eraseKey(4),
+            .eraseKey(4),
+        ]
 
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: "RedBlackTreeSet/std::set", swift: swift, cpp: cpp) == nil)
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: "RedBlackTreeSet/std::set", swift: swift, cpp: cpp))
+    }
 }
 
-@Test("RedBlackTreeSet hinted insertion matches std::set")
-func setHintedInsertionMatchesCpp() throws {
-    let operations: [SetOperation] = [
-        .insert(10),
-        .insert(20),
-        .insert(30),
-        .insertHint(25, at: 0), // Deliberately poor hint.
-        .insertHint(5, at: 0),  // Exact insertion position.
-        .insertHint(40, at: 5), // endIndex.
-        .insertHint(20, at: 2), // Duplicate element.
-    ]
+extension SetBehaviorComparisonTests {
+    /// RedBlackTreeSet hinted insertion matches std::set
+    func test_setHintedInsertionMatchesCpp() throws {
+        let operations: [SetOperation] = [
+            .insert(10),
+            .insert(20),
+            .insert(30),
+            .insertHint(25, at: 0), // Deliberately poor hint.
+            .insertHint(5, at: 0),  // Exact insertion position.
+            .insertHint(40, at: 5), // endIndex.
+            .insertHint(20, at: 2), // Duplicate element.
+        ]
 
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: "RedBlackTreeSet/std::set", swift: swift, cpp: cpp) == nil)
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: "RedBlackTreeSet/std::set", swift: swift, cpp: cpp))
+    }
 }
 
-/// A unique set's returned index is fully determined by its value and the contents,
-/// so `value` and `contents` together also fix the returned rank.
-@Test("RedBlackTreeSet boundary hints and erase-then-reinsert match std::set")
-func setBoundaryHintsAndReinsertionMatchCpp() throws {
-    let operations: [SetOperation] = [
-        .insertHint(20, at: 0), // Empty set: startIndex == endIndex.
-        .insertHint(10, at: 0), // startIndex; exact for a new least key.
-        .insertHint(30, at: 2), // endIndex; exact for a new greatest key.
-        // [10, 20, 30]
-        .insertHint(10, at: 0), // Existing least key at startIndex.
-        .insertHint(10, at: 3), // Existing least key at endIndex; poor.
-        .insertHint(30, at: 3), // Existing greatest key at endIndex.
-        .insertHint(30, at: 0), // Existing greatest key at startIndex; poor.
-        .eraseKey(10),          // Erase the least key.
-        .insertHint(10, at: 0), // Reinsert at startIndex.
-        .eraseKey(30),          // Erase the greatest key.
-        .insertHint(30, at: 2), // Reinsert at endIndex.
-        .eraseKey(10),
-        .insertHint(10, at: 2), // Reinsert the least key at endIndex; poor.
-        .eraseKey(30),
-        .insertHint(30, at: 0), // Reinsert the greatest key at startIndex; poor.
-        .eraseKey(10),
-        .eraseKey(20),
-        .eraseKey(30),          // Now empty.
-        .insertHint(40, at: 0), // Reinsert into the emptied set.
-    ]
+extension SetBehaviorComparisonTests {
+    /// RedBlackTreeSet boundary hints and erase-then-reinsert match std::set
+    ///
+    /// A unique set's returned index is fully determined by its value and the contents,
+    /// so `value` and `contents` together also fix the returned rank.
+    func test_setBoundaryHintsAndReinsertionMatchCpp() throws {
+        let operations: [SetOperation] = [
+            .insertHint(20, at: 0), // Empty set: startIndex == endIndex.
+            .insertHint(10, at: 0), // startIndex; exact for a new least key.
+            .insertHint(30, at: 2), // endIndex; exact for a new greatest key.
+            // [10, 20, 30]
+            .insertHint(10, at: 0), // Existing least key at startIndex.
+            .insertHint(10, at: 3), // Existing least key at endIndex; poor.
+            .insertHint(30, at: 3), // Existing greatest key at endIndex.
+            .insertHint(30, at: 0), // Existing greatest key at startIndex; poor.
+            .eraseKey(10),          // Erase the least key.
+            .insertHint(10, at: 0), // Reinsert at startIndex.
+            .eraseKey(30),          // Erase the greatest key.
+            .insertHint(30, at: 2), // Reinsert at endIndex.
+            .eraseKey(10),
+            .insertHint(10, at: 2), // Reinsert the least key at endIndex; poor.
+            .eraseKey(30),
+            .insertHint(30, at: 0), // Reinsert the greatest key at startIndex; poor.
+            .eraseKey(10),
+            .eraseKey(20),
+            .eraseKey(30),          // Now empty.
+            .insertHint(40, at: 0), // Reinsert into the emptied set.
+        ]
 
-    let swift = try executeSwiftTrace(operations)
-    let cpp = try executeCppTrace(operations)
-    #expect(firstMismatch(container: "RedBlackTreeSet/std::set", swift: swift, cpp: cpp) == nil)
+        let swift = try executeSwiftTrace(operations)
+        let cpp = try executeCppTrace(operations)
+        XCTAssertNil(firstMismatch(container: "RedBlackTreeSet/std::set", swift: swift, cpp: cpp))
+    }
 }
 
-@Test("A mismatch report identifies both observations and the operation")
-func mismatchReportContainsRequiredContext() {
-    let operation = SetOperation.insert(4)
-    let swift = [SetObservation(operation: operation, booleanResult: true, value: 4, contents: [4])]
-    let cpp = [SetObservation(operation: operation, booleanResult: false, value: 4, contents: [4])]
+extension SetBehaviorComparisonTests {
+    /// A mismatch report identifies both observations and the operation
+    func test_mismatchReportContainsRequiredContext() {
+        let operation = SetOperation.insert(4)
+        let swift = [SetObservation(operation: operation, booleanResult: true, value: 4, contents: [4])]
+        let cpp = [SetObservation(operation: operation, booleanResult: false, value: 4, contents: [4])]
 
-    let message = firstMismatch(container: "RedBlackTreeSet/std::set", swift: swift, cpp: cpp)
-    #expect(message?.contains("container=RedBlackTreeSet/std::set") == true)
-    #expect(message?.contains("operation=0") == true)
-    #expect(message?.contains("input=insert(4)") == true)
-    #expect(message?.contains("swift=") == true)
-    #expect(message?.contains("cpp=") == true)
+        let message = firstMismatch(container: "RedBlackTreeSet/std::set", swift: swift, cpp: cpp)
+        XCTAssertEqual(message?.contains("container=RedBlackTreeSet/std::set"), true)
+        XCTAssertEqual(message?.contains("operation=0"), true)
+        XCTAssertEqual(message?.contains("input=insert(4)"), true)
+        XCTAssertEqual(message?.contains("swift="), true)
+        XCTAssertEqual(message?.contains("cpp="), true)
+    }
 }
 
 // MARK: - Seeded randomized traces
@@ -375,68 +386,90 @@ private func generateSetTrace(
 
 private let setContainer = "RedBlackTreeSet/std::set"
 
-@Test("SplitMix64 reproduces the reference sequence")
-func splitMix64MatchesReferenceSequence() {
-    var random = SplitMix64(state: 0)
-    #expect(random.next() == 0xE220_A839_7B1D_CDAF)
-    #expect(random.next() == 0x6E78_9E6A_A1B9_65F4)
-    #expect(random.next() == 0x06C4_5D18_8009_454F)
+extension SetBehaviorComparisonTests {
+    /// SplitMix64 reproduces the reference sequence
+    func test_splitMix64MatchesReferenceSequence() {
+        var random = SplitMix64(state: 0)
+        XCTAssertEqual(random.next(), 0xE220_A839_7B1D_CDAF)
+        XCTAssertEqual(random.next(), 0x6E78_9E6A_A1B9_65F4)
+        XCTAssertEqual(random.next(), 0x06C4_5D18_8009_454F)
+    }
 }
 
-@Test("Seeded Set traces are deterministic and cover the generation policy", arguments: setRandomizedSeeds)
-func setRandomizedTraceIsDeterministicAndCovered(seed: UInt64) {
-    let first = generateSetTrace(seed: seed, count: setRandomizedOperationCount)
-    let second = generateSetTrace(seed: seed, count: setRandomizedOperationCount)
-    #expect(first.operations == second.operations)
-    #expect(first.coverage == second.coverage)
-    #expect(first.coverage.missing.isEmpty, "seed=\(seed), missing=\(first.coverage.missing)")
-}
-
-@Test("RedBlackTreeSet matches std::set for seeded randomized traces", arguments: setRandomizedSeeds)
-func setSeededRandomizedTraceMatchesCpp(seed: UInt64) {
-    let operations = generateSetTrace(seed: seed, count: setRandomizedOperationCount).operations
-    let swift: [SetObservation]
-    let cpp: [SetObservation]
-    do {
-        swift = try executeSwiftTrace(operations)
-        cpp = try executeCppTrace(operations)
-    } catch {
-        Issue.record("container=\(setContainer), seed=\(seed), executor error=\(error)")
-        return
+extension SetBehaviorComparisonTests {
+    /// Seeded Set traces are deterministic and cover the generation policy
+    func test_setRandomizedTraceIsDeterministicAndCovered() {
+        for seed in setRandomizedSeeds {
+            setRandomizedTraceIsDeterministicAndCovered(seed: seed)
+        }
     }
 
-    let mismatch = firstRandomizedMismatch(
-        container: setContainer, seed: seed, operations: operations, swift: swift, cpp: cpp)
-    #expect(mismatch == nil, "\(mismatch ?? "")")
+    /// Runs one seed in its own scope so every collection is released before the next seed.
+    private func setRandomizedTraceIsDeterministicAndCovered(seed: UInt64) {
+        let first = generateSetTrace(seed: seed, count: setRandomizedOperationCount)
+        let second = generateSetTrace(seed: seed, count: setRandomizedOperationCount)
+        XCTAssertEqual(first.operations, second.operations, "seed=\(seed)")
+        XCTAssertEqual(first.coverage, second.coverage, "seed=\(seed)")
+        XCTAssertTrue(first.coverage.missing.isEmpty, "seed=\(seed), missing=\(first.coverage.missing)")
+    }
 }
 
-@Test("A seeded Set mismatch report contains the seed and the trace through failure")
-func setRandomizedMismatchReportContainsRequiredContext() throws {
-    let seed = setRandomizedSeeds[0]
-    let operations = generateSetTrace(seed: seed, count: setRandomizedOperationCount).operations
-    let swift = try executeSwiftTrace(operations)
-    // Tamper with one observation instead of relying on a library defect.
-    let failing = 17
-    var cpp = swift
-    let original = cpp[failing]
-    cpp[failing] = SetObservation(
-        operation: original.operation,
-        booleanResult: !original.booleanResult,
-        value: original.value,
-        count: original.count,
-        contents: original.contents
-    )
-
-    let message = try #require(firstRandomizedMismatch(
-        container: setContainer, seed: seed, operations: operations, swift: swift, cpp: cpp))
-    #expect(message.contains("container=\(setContainer)"))
-    #expect(message.contains("seed=\(seed)"))
-    #expect(message.contains("operation=\(failing)"))
-    #expect(message.contains("input=\(operations[failing])"))
-    #expect(message.contains("swift=\(swift[failing])"))
-    #expect(message.contains("cpp=\(cpp[failing])"))
-    for operationIndex in 0...failing {
-        #expect(message.contains("\n  \(operationIndex): \(operations[operationIndex])"))
+extension SetBehaviorComparisonTests {
+    /// RedBlackTreeSet matches std::set for seeded randomized traces
+    func test_setSeededRandomizedTraceMatchesCpp() {
+        for seed in setRandomizedSeeds {
+            setSeededRandomizedTraceMatchesCpp(seed: seed)
+        }
     }
-    #expect(!message.contains("\n  \(failing + 1): "))
+
+    /// Runs one seed in its own scope so every collection is released before the next seed.
+    private func setSeededRandomizedTraceMatchesCpp(seed: UInt64) {
+        let operations = generateSetTrace(seed: seed, count: setRandomizedOperationCount).operations
+        let swift: [SetObservation]
+        let cpp: [SetObservation]
+        do {
+            swift = try executeSwiftTrace(operations)
+            cpp = try executeCppTrace(operations)
+        } catch {
+            XCTFail("container=\(setContainer), seed=\(seed), executor error=\(error)")
+            return
+        }
+
+        let mismatch = firstRandomizedMismatch(
+            container: setContainer, seed: seed, operations: operations, swift: swift, cpp: cpp)
+        if let mismatch { XCTFail(mismatch) }
+    }
+}
+
+extension SetBehaviorComparisonTests {
+    /// A seeded Set mismatch report contains the seed and the trace through failure
+    func test_setRandomizedMismatchReportContainsRequiredContext() throws {
+        let seed = setRandomizedSeeds[0]
+        let operations = generateSetTrace(seed: seed, count: setRandomizedOperationCount).operations
+        let swift = try executeSwiftTrace(operations)
+        // Tamper with one observation instead of relying on a library defect.
+        let failing = 17
+        var cpp = swift
+        let original = cpp[failing]
+        cpp[failing] = SetObservation(
+            operation: original.operation,
+            booleanResult: !original.booleanResult,
+            value: original.value,
+            count: original.count,
+            contents: original.contents
+        )
+
+        let message = try XCTUnwrap(firstRandomizedMismatch(
+            container: setContainer, seed: seed, operations: operations, swift: swift, cpp: cpp))
+        XCTAssertTrue(message.contains("container=\(setContainer)"))
+        XCTAssertTrue(message.contains("seed=\(seed)"))
+        XCTAssertTrue(message.contains("operation=\(failing)"))
+        XCTAssertTrue(message.contains("input=\(operations[failing])"))
+        XCTAssertTrue(message.contains("swift=\(swift[failing])"))
+        XCTAssertTrue(message.contains("cpp=\(cpp[failing])"))
+        for operationIndex in 0...failing {
+            XCTAssertTrue(message.contains("\n  \(operationIndex): \(operations[operationIndex])"))
+        }
+        XCTAssertFalse(message.contains("\n  \(failing + 1): "))
+    }
 }

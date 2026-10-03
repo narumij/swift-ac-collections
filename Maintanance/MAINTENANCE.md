@@ -260,10 +260,12 @@ swift package -c release --disable-sandbox preview-documentation \
 位置付ける。上流が成熟して同じ要求を満たす場合は、この役割を惰性で守らず再評価する。
 予備計測から結論を先取りせず、大規模な横展開の前に、小さな見本の意味論と測定対称性を
 レビューする。SortedCollections比較はPhase 3 pilotまでで意図的に停止している。現在の
-4型のseed付きC++ compareは完了した。現在の最優先タスクは`WorldClassAssessment`から
-「世界最高峰候補」の看板を取り下げ、証拠中心の採用判断文書へ再構成すること。その次に
-Debugテストのallocation/lifetime検査キャンセルフラグを実装する。C++互換一覧のAPI Matrix化、
-ベンチ再開、unsafe移行史の追加調査は、それらの後の独立タスクとする。
+4型のseed付きC++ compareと、`WorldClassAssessment`から「世界最高峰候補」の看板を取り下げた
+証拠中心の採用判断文書への再構成は完了した。現在の最優先タスクはDebugテストの
+allocation/lifetime検査キャンセルフラグ。通常は全platformで検査を有効に保ち、明示的に
+無効化した場合もXCTestのsetUp/tearDownでcounterを無条件resetする。Linux Death Testは
+macOS実行から成功を推定せず、実行可能な経路と未検証事項を記録する。C++互換一覧の
+API Matrix化、ベンチ再開、unsafe移行史の追加調査は、その後の独立タスクとする。
 
 Claudeなどへ委任した作業の詳細な完了報告、検証結果、変更ファイル、制約、懸念は、Codexが
 監査できる指定のタスクmdへ記録し、完了時にユーザーへ直接報告しない。作業がblocked、

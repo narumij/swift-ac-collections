@@ -1,8 +1,44 @@
 # Codex-to-Claude Work Request
 
-Status: Active — withdraw the WorldClass framing without discarding evidence
+Status: Active — controllable Debug allocation/lifetime checks
 
 ## Active assignment
+
+Implement a test-only opt-out for the process-global Debug allocation, node, and
+payload lifetime balance checks. The default must remain enabled on every platform;
+do not silently weaken Linux. Provide one explicit, consistently named SwiftPM build
+switch (prefer a package trait/conditional define unless the existing structure makes
+another mechanism materially safer) that CI or a developer can select for hostile
+test scheduling and subprocess/Death Test runs.
+
+Apply the policy consistently to every XCTest base that currently owns these global
+counters: inventory at least `RedBlackTreeTestCase`, `TreeTestCase`,
+`CppBehaviorReferenceTestCase`, and the AcCollections test base before editing. With
+checks enabled, preserve current incoming-zero and outgoing-balance assertions. With
+checks disabled:
+
+- skip only the counter equality assertions;
+- reset all six counters unconditionally at the beginning of every XCTest case,
+  after forcing empty-tree singleton initialization;
+- reset them again at teardown so one case cannot contaminate another;
+- preserve singleton-storage, fresh-pool, nullptr-sentinel, and other structural
+  assertions that are not allocation/lifetime balance checks.
+
+Avoid production API and runtime behavior changes. Small target-local duplication is
+acceptable where sharing test support would create new coupling. Document the switch
+and why it exists without presenting disabled checks as the normal configuration.
+
+Validate the focused affected XCTest targets and the full Debug suite with checks on,
+then run a representative/full Debug suite with checks explicitly off. Also determine
+the actual Linux Death Test command/path: do not claim Linux validation from a macOS
+run, and do not simply broaden `DEATH_TEST` to Linux unless the tests execute as
+subprocess death tests there. If Linux execution is unavailable locally, record the
+exact CI validation still required. Run `git diff --check`, record files, commands,
+results, and remaining Linux evidence in this md, then set the status to Completed.
+Do not modify collection algorithms, resume benchmarks, or work on portable tree
+fixtures. Report only `完了` to the user.
+
+## Completed assignment: WorldClass framing withdrawal
 
 Withdraw the `WorldClassAssessment` / 「世界最高峰候補」framing in both language
 versions. Preserve useful, verifiable evidence, limitations, counterexamples, and
@@ -23,7 +59,44 @@ start the queued allocation-check flag. Run `git diff --check`, record the chang
 files and exact reframing in this md, then set this status to Completed. Report only
 `完了` to the user.
 
-## Queued next assignment (do not start in this task)
+### Result (2026-10-04, Claude Opus 5.5)
+
+- **Filenames kept** (`WorldClassAssessment.md` / `.ja.md`) to avoid uncertain
+  external-link breakage; each now states this in a note under the title.
+- **New titles:** "Adoption Readiness and Quality Evidence" /
+  「採用判断のための品質証拠」.
+- **Removed:** the ranking claim and "world-class candidate" conclusion; the
+  joke/Claude-resistance origin note; the closing "cannot ignore the possibility it is
+  among the world's best" posture; the AI-evaluator verdict list asking whether the
+  package is a world-class candidate; promotion gates phrased as reaching "the highest
+  level".
+- **Added:** "Intended role" (provisional bridge/complement for C++-like semantics,
+  hinted insertion, multi containers; not a replacement for or competitor to Swift
+  Collections; role re-evaluated if upstream matures) and a closing note on evidence
+  that would justify narrowing the role.
+- **Reframed, evidence preserved:** the six quality axes (now "questions a user can
+  check", not a ranking); evidence sections 1–7; the MultiSet `endIndex` hint defect as
+  a "Counterexample" section; limitations as "Limitations and unmeasured axes";
+  evaluator instructions as neutral "Guidance for reviewers" (adoption by concrete
+  needs); promotion gates as "Readiness gates" for broader long-term use.
+- **Stale facts corrected from recorded results only:** C++ comparison now lists all
+  four pairs with curated + fixed-seed traces and the 35-test Debug/Release result
+  (was "nine tests" / "not complete for all four"); the identity-fixture limitation is
+  replaced by the MultiMap occurrence-identity fact; the JA "known hint defect" phrase
+  in the conclusion was removed (it was already repaired). Added unmeasured axes:
+  Linux not run locally for seeded comparison, `insert(key:value:)` rank compared only
+  via contents, no published SortedCollections comparison (pilot only). Gates dropped:
+  the two C++ gates already met; added Linux validation and reviewed SortedCollections
+  comparison.
+- **Reference updates:** `Maintanance/REFACTORING_FROM_ATCODER_2025.md` (description of
+  the document); `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md` (lines 7, 13, 592,
+  626: title note, "world-class" → adoption readiness). `MAINTENANCE.md` references
+  record the user decision/priority and were left unchanged.
+- **Changed files:** the two WorldClassAssessment files, the two references above, this
+  file. No production Swift, tests, or benchmark changed.
+- **Validation:** `git diff --check` clean.
+
+## Original allocation-check request (now active above)
 
 Design and implement a Debug-test-only switch that can disable the process-global
 allocation/lifetime balance assertions. When disabled, an XCTest case must still

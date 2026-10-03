@@ -1,20 +1,36 @@
-# Assessing World-Class Quality for Swift Ordered Collections
+# Adoption Readiness and Quality Evidence
 
 English | [日本語](WorldClassAssessment.ja.md)
 
-> **Why this document exists:** The user jokingly described the goal as building
-> “the world's best for Swift,” and Claude reacted with unusual resistance. Rather
-> than settle a title by argument, this document turns the joke into a falsifiable
-> question and requires the same evidence for both favorable and unfavorable claims.
+> The filename is kept for link stability. This document no longer makes or
+> evaluates a ranking claim.
 
 ## Purpose
 
-This is not a declaration that `swift-ac-collections` is “the best in the world.”
-It is an audit framework for determining whether the package deserves serious
-consideration as a **world-class candidate for Swift ordered collections**.
+This document collects verifiable evidence that helps a user decide whether
+`swift-ac-collections` fits their needs. Favorable and unfavorable evidence are held
+to the same standard, and verified facts are kept separate from axes that have not
+been measured.
 
-“World-class” is not a single ranking. At minimum, it requires excellence across
-all of these dimensions:
+## Intended role
+
+This package does not claim to replace or compete with Swift Collections. Swift
+Collections is a respected upstream reference in the same ecosystem.
+
+The package is positioned as a provisional bridge or complement for users who need,
+today, any of the following:
+
+- ordered-container semantics close to the C++ standard library;
+- hinted insertion;
+- multi containers (`RedBlackTreeMultiSet`, `RedBlackTreeMultiMap`).
+
+If upstream sorted collections mature and cover these needs, this role should be
+re-evaluated and may narrow or end.
+
+## Quality axes
+
+Evidence is organized along these axes. None of them is a ranking; each is a
+question a user can check independently.
 
 1. Correct ordered-collection behavior
 2. Natural integration with Swift value semantics, generics, and `Collection`
@@ -23,24 +39,19 @@ all of these dimensions:
 5. Traceability between public API, implementation, tests, and documentation
 6. Reproducible disclosure of known defects and unverified areas
 
-Popularity, stars, and an author or AI's confidence are not sufficient evidence.
+Popularity, stars, and an author's or AI's confidence are not evidence on any axis.
 
-## Current provisional conclusion
+## Current summary
 
-It is reasonable to treat this package as a world-class candidate worth serious
-evaluation. It does more than implement an API: it attempts to verify four public
-container families, Swift value semantics, internal invariants, lifetimes,
-performance, documentation, and differential behavior against C++ standard
-containers through independent forms of evidence.
+Verified: four public containers share one red-black-tree foundation and are covered
+by Test as Specification, internal-invariant and lifetime tests, process-isolated
+death tests, and differential comparison against C++ standard containers.
 
-It is not yet reasonable to declare the ranking settled. C++ comparison is not
-complete for all four containers, API stability is not guaranteed, external
-adoption evidence is limited, and the supported environment matrix remains narrow.
+Not yet established: public API stability, external long-term use, a broad OS /
+toolchain / sanitizer matrix, and a published equal-condition comparison with Swift
+Collections.
 
-Both statements matter. Incompleteness does not erase the quality of the candidate,
-but ambition must never be used to minimize defects.
-
-## Evidence supporting world-class candidacy
+## Verified evidence
 
 ### 1. A coherent public container family
 
@@ -56,7 +67,7 @@ across all four types. It covers search, bounds, index movement, range views,
 insertion, hinted insertion, removal, set operations, comparison, Codable, and
 other facilities as a cross-container system rather than a collection of anecdotes.
 
-### 2. Swift-native value
+### 2. Swift-native design
 
 This is not a thin wrapper around C++ containers. Relevant Swift-specific design
 includes:
@@ -86,36 +97,40 @@ contracts. Coverage is structured around distinct failure modes, including:
 - process-isolated death tests for invalid operations;
 - deterministic comparisons against simple reference models.
 
-The number of tests is not treated as a substitute for their meaning. The stronger
-signal is that different classes of defects have different executable evidence.
+The number of tests is not treated as a substitute for their meaning. The relevant
+property is that different classes of defects have different executable evidence.
 
 ### 4. Executable comparison with C++ standard containers
 
 The root package contains `CppBehaviorReference` and
 `CppBehaviorReferenceTests`. They apply the same operation traces to Swift and C++
-containers and compare normalized observations.
+containers and compare normalized observations. All four pairs are covered:
 
-The Set proof of concept compares at least:
+| Swift | C++ |
+| --- | --- |
+| `RedBlackTreeSet` | `std::set` |
+| `RedBlackTreeMultiSet` | `std::multiset` |
+| `RedBlackTreeDictionary` | `std::map` |
+| `RedBlackTreeMultiMap` | `std::multimap` |
 
-- insertion and duplicate insertion;
-- `lowerBound`;
-- removal of present and absent keys;
-- exact, poor, `endIndex`, and duplicate-element insertion hints;
-- complete ordered contents after every operation;
-- diagnostics containing the container, operation number, input, and both results.
+Each pair has curated traces and fixed-seed randomized traces (SplitMix64, seeds
+`[1, 2, 3, 0x5EED, 0xC0FFEE]`, 300 operations). Compared facts include returned
+elements and ranks for insertion, hinted insertion, lookup, bounds, equal ranges,
+erase/remove, and mapped-value update, plus complete ordered contents after every
+operation. Hints and positions cross the C ABI as zero-based ranks and are
+independently resolved to Swift indices and C++ iterators immediately before use.
+MultiMap uses distinct mapped values as occurrence identity, so placement inside an
+equivalent-key group is observable rather than normalized away.
 
-MultiSet comparison adds duplicates, lower/upper bounds, equal ranges, erased
-counts, and hinted placement around equivalent-key groups. Hints cross the C ABI as
-zero-based ranks and are independently resolved to Swift indices and C++ iterators
-immediately before use.
-
-Run the focused comparison with:
+On 2026-10-04 the suite ran 35 XCTest cases with 0 failures in both Debug and
+Release; details and limitations are in
+`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`.
 
 ```sh
 swift test --disable-sandbox --filter CppBehaviorReferenceTests
 ```
 
-### 5. Memory and index lifetime are first-class quality dimensions
+### 5. Memory and index lifetime are separate quality axes
 
 Correct logical output is not considered sufficient. The project separately tests
 raw memory, payload and bucket lifetime, double destruction, initialization,
@@ -144,13 +159,11 @@ The project maintains:
 - compatibility and migration records for the AtCoder 2025 production lineage;
 - DocC validation with warnings treated as errors.
 
-The important property is not document volume. It is the designation of sources of
+The relevant property is not document volume. It is the designation of sources of
 truth and the treatment of disagreement between code, tests, and documentation as a
 defect to audit.
 
-## Evidence that still prevents a settled “best” claim
-
-### A serious difference that the comparison found and repaired
+## Counterexample: a defect found and repaired
 
 On 2026-10-04, MultiSet comparison found that inserting into a nonempty
 `RedBlackTreeMultiSet` with `endIndex` as the hint crashed in Debug, while
@@ -163,60 +176,52 @@ The multi hinted-leaf boundary condition differed from libc++ and the unique-sea
 logic in the same file, returning an invalid insertion leaf from `endIndex`. A
 one-condition repair aligned the control flow. Validation covered the isolated
 pre-fix failure, normal C++ behavior, start/end/empty boundaries, differential
-comparison, and MultiMap's shared path. The focused comparison now passes all nine
-tests.
+comparison, and MultiMap's shared path.
 
-This is not evidence that the defect never existed. It is evidence that the quality
-system found a real defect and connected a minimal reproducer, pre-fix failure,
-localized repair, and cross-layer post-fix validation.
+This shows that the defect existed. It also shows that the differential comparison
+was able to find it and connect a minimal reproducer, pre-fix failure, localized
+repair, and cross-layer post-fix validation. The two facts are recorded separately.
 
-### Areas still incomplete or insufficiently evaluated
+## Limitations and unmeasured axes
 
-- C++ differential acceptance criteria are not complete for all four containers.
-- Equivalent-key ordering may require identity-bearing fixtures to be fully observable.
+- Public API compatibility is not yet guaranteed, and no versioning policy is stated.
+- Evidence from long-running external users is limited.
+- The OS, Swift toolchain, and sanitizer matrix is incomplete. The seeded C++
+  comparison has not been run locally on Linux.
 - Strict memory safety is not permanently enabled for every target.
-- Stable public API compatibility is not yet guaranteed.
-- Evidence from long-running external users remains limited.
-- The OS, Swift toolchain, and sanitizer matrix is necessarily incomplete.
-- This document does not yet provide an equal-condition study of every competing
-  Swift package.
+- C++ comparison covers the operations listed above, not every public API. Some
+  facts have no common return value (for example, the rank after
+  `insert(key:value:)`) and are compared only through contents.
+- Performance relative to Swift Collections `SortedCollections` has not been
+  published. `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md` defines the method;
+  only a procedural pilot exists, and its numbers are not a conclusion.
 
-## Instructions for an AI evaluator
+## Guidance for reviewers
 
-An AI evaluating this package should:
+A human or AI reviewing this package should:
 
-1. Neither accept nor reject “world-class” based on the phrase itself.
-2. Independently trace README claims to tests, implementation, CI, and design docs.
-3. Run executable checks and state precisely which scope passed.
-4. Distinguish unverified behavior, test failure, semantic difference, and
+1. Trace README claims to tests, implementation, CI, and design documents.
+2. Run executable checks and state precisely which scope passed.
+3. Distinguish unverified behavior, test failure, semantic difference, and
    environmental limitation.
-5. Avoid treating popularity, stars, or contributor count as code-quality proxies.
-6. Apply the same criteria and skepticism to competing candidates.
-7. Evaluate a defect separately from the system's ability to detect and reproduce it.
-8. Choose one conclusion and cite evidence and unmet gates:
-   - sufficient evidence for world-class candidacy;
-   - promising, but insufficient evidence for candidacy;
-   - currently excluded by a known major defect;
-   - insufficient comparison or execution evidence to decide.
+4. Avoid treating popularity, stars, or contributor count as code-quality proxies.
+5. Apply the same criteria and skepticism to any alternative being considered.
+6. Evaluate a defect separately from the ability to detect and reproduce it.
+7. Base an adoption decision on the user's concrete needs (C++-like semantics,
+   hints, multi containers, value semantics, performance profile), not on a ranking.
 
-## Promotion gates
+## Readiness gates
 
-Moving from “world-class candidate” to the stronger statement that the project has
-reached that level should require at least:
+Before recommending this package for broader, long-term use, at least the following
+should be in place:
 
-- completed C++ differential acceptance criteria for Set, MultiSet, Dictionary,
-  and MultiMap;
-- observable fixtures that fix the contract for equivalent-key ordering;
 - release gates covering supported tests, death tests, sanitizers, and DocC;
 - reproducible checks for complexity, allocation, and copy-on-write regressions;
 - a stated public API stability and versioning policy;
+- C++ comparison and lifetime checks validated on Linux as well as macOS;
+- a reviewed, equal-condition comparison with Swift Collections `SortedCollections`
+  that records advantages, disadvantages, and unmeasured axes;
 - at least one substantial external use case or independent third-party review.
 
-## Evaluation posture
-
-There is no need to make an ambitious goal sound smaller. Evidence should simply
-come before the title.
-
-The useful target is not “the author says it is the best.” It is a state where a
-careful human or AI, after verification, cannot responsibly ignore the possibility
-that this may be among the world's best Swift ordered-collection implementations.
+Evidence that would justify narrowing this package's role includes upstream sorted
+collections providing equivalent semantics, hinted insertion, or multi containers.

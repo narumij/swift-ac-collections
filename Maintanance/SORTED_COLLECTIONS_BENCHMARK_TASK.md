@@ -4,14 +4,15 @@ Status: Phase 3 pilot accepted as procedural evidence — publishable run deferr
 
 ## Why this task exists
 
-`WorldClassAssessment.md` identifies a missing external reference point. A valuable
+`WorldClassAssessment.md` (now titled "Adoption Readiness and Quality Evidence")
+identifies a missing external reference point. A valuable
 Swift peer is Apple's experimental `SortedCollections` module: `SortedSet` and
 `SortedDictionary`, implemented over an in-memory B-tree.
 
 This task should clarify the workloads and capabilities for which each design is a
 natural fit, while learning from the upstream project's design and documentation.
-It is not authorized to manufacture a favorable chart or reduce “world-class” to a
-single timing result.
+It is not authorized to manufacture a favorable chart or reduce adoption readiness to
+a single timing result.
 
 The intended position is modest and provisional. RedBlackTreeCollections is not
 presented as a replacement for Swift Collections. It may serve as a practical bridge
@@ -588,7 +589,7 @@ evidence. Do not infer a structural cause from a timing curve alone.
 An acceptable conclusion may be that SortedCollections provides better broad
 throughput for some workloads while RedBlackTreeCollections offers C++ migration
 semantics, hints, multi containers, or specialized index/view behavior for different
-needs. “World-class candidate” does not require outperforming a peer everywhere; it
+needs. Adoption readiness does not require outperforming a peer everywhere; it
 requires an evidence-backed reason to choose the package for significant real use
 cases during the period in which it fills those gaps. Credit upstream design choices
 and documentation where they inform the method, and state clearly when upstream
@@ -622,4 +623,4 @@ maturity would narrow or end this bridging role.
 - No production collection code changes are mixed into the baseline comparison.
 - The report names the upstream version and unstable trait status.
 - At least one independent review checks task symmetry before conclusions are added
-  to the world-class assessment.
+  to the adoption-readiness evidence document (`WorldClassAssessment.md`).

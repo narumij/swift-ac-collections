@@ -196,8 +196,9 @@ Swift向け順序付きコレクションとしての品質と信憑性を高め
 - MultiSetのC++差分比較は、非空コンテナへの`endIndex` hint挿入でSwift側だけが停止する
   不具合を発見した。最小trace、process-isolatedな修正前失敗、libc++との制御構造差、
   一条件の修正、start/end/空境界、共有経路を使うMultiMapまでを検証へ結び付けた。
-- `Maintanance/WorldClassAssessment.md`と日本語版は、強い自己宣言ではなく、主張と反証へ
-  同じ証拠水準を要求する評価票として、達成済みの証拠と未達ゲートを分けている。
+- `Maintanance/WorldClassAssessment.md`と日本語版(表題「採用判断のための品質証拠」)は、
+  順位付けの主張を行わず、有利・不利な証拠へ同じ水準を要求し、検証済みの証拠、限界・
+  未計測の軸、採用拡大のゲートを分けている。
 - `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md`は、Apple
   `swift-collections`のB-treeベース`SortedSet`/`SortedDictionary`を外部比較対象とし、
   同条件の入力・storage状態・計測区間で勝敗と未計測軸を残す計画を定めている。

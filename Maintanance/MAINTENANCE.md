@@ -260,12 +260,22 @@ swift package -c release --disable-sandbox preview-documentation \
 位置付ける。上流が成熟して同じ要求を満たす場合は、この役割を惰性で守らず再評価する。
 予備計測から結論を先取りせず、大規模な横展開の前に、小さな見本の意味論と測定対称性を
 レビューする。SortedCollections比較はPhase 3 pilotまでで意図的に停止している。現在の
-4型のseed付きC++ compareと、`WorldClassAssessment`から「世界最高峰候補」の看板を取り下げた
-証拠中心の採用判断文書への再構成は完了した。現在の最優先タスクはDebugテストの
-allocation/lifetime検査キャンセルフラグ。通常は全platformで検査を有効に保ち、明示的に
-無効化した場合もXCTestのsetUp/tearDownでcounterを無条件resetする。Linux Death Testは
-macOS実行から成功を推定せず、実行可能な経路と未検証事項を記録する。C++互換一覧の
-API Matrix化、ベンチ再開、unsafe移行史の追加調査は、その後の独立タスクとする。
+4型のseed付きC++ compare、採用判断文書への再構成、Debugテストのallocation/lifetime検査
+フラグ、Linux Death Testの実証は完了した。Linux Death Testは一度通常CIで成功を確認した後、
+ユーザー判断により通常CIから外し、明示traitで再実行可能な状態を保っている。
+Compatibility文書4本の一括監査は、Claudeが既存文書を広範囲に改変し始めたためユーザーが
+強制停止し、割り当てを撤回した。文書差分は残っておらず、再依頼しない。現在Claudeへの
+active assignmentはない。次の作業はユーザーと対象ファイル・変更範囲を合意してから設定する。
+候補として残るベンチ再開、原木Fixtureのポータブル化、unsafe移行史の追加調査も自動開始しない。
+
+2026-10-04 Codex: ユーザー合意によりClaudeではなくCodexが限定的に対応した。4つの
+Compatibility文書はhint挿入を未提供としていた明白な古い記述だけを現行APIへ修正し、
+MultiMap `find`は同値キー群内の個体・rankをC++互換保証に含めない旨を追記した。原木の
+MemoryLayoutテストから`_Bucket` / `_BucketAllocator`依存の横断一致検査をRawBuffer側へ移し、
+原木側のcoloring用prefixは汎用word幅へ変更した。原木6件、RawBuffer横断1件が成功した。
+同じ作業で、公開Compatibility文書とは別に、C++比較テストが実証した範囲だけをまとめる
+`CPP_BEHAVIOR_COMPARISON_MATRIX.md`を新設した。4型×操作、境界、seed条件、比較した返却事実、
+標準上の非保証と未比較項目を一覧化し、今後のC++ compareの正本サマリーとする。
 
 Claudeなどへ委任した作業の詳細な完了報告、検証結果、変更ファイル、制約、懸念は、Codexが
 監査できる指定のタスクmdへ記録し、完了時にユーザーへ直接報告しない。作業がblocked、

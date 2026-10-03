@@ -32,61 +32,6 @@ import RedBlackTreeFixture
         0)
     }
 
-    /// 参照計算がRawBufferのpair layout・開始位置・確保byte数と一致すること。
-    func testReferenceLayout_matchesRawBufferCalculations() {
-      checkReferenceLayoutMatchesRawBuffer(Int8.self)
-      checkReferenceLayoutMatchesRawBuffer(Int.self)
-      checkReferenceLayoutMatchesRawBuffer(SIMD16<Double>.self)
-      checkReferenceLayoutMatchesRawBuffer(RedBlackTreePair<Int32, SIMD4<Float>>.self)
-    }
-
-    private func checkReferenceLayoutMatchesRawBuffer<Payload>(_ payload: Payload.Type) {
-      let allocator = _BucketAllocator(valueType: payload) { _ in }
-      XCTAssertEqual(
-        UnsafeNode._referenceAlignment(with: payload),
-        allocator.pairLayout.alignment)
-      XCTAssertEqual(
-        UnsafeNode._referenceStride(with: payload),
-        allocator.pairLayout.stride)
-
-      for prefix in [0, MemoryLayout<_Bucket>.stride, 3 * MemoryLayout<_Bucket>.stride] {
-        XCTAssertEqual(
-          UnsafeNode._referenceAllocationByteCount(
-            prefix: prefix,
-            with: payload,
-            capacity: 0),
-          prefix)
-      }
-
-      for prefix in [0, MemoryLayout<_Bucket>.stride, 3 * MemoryLayout<_Bucket>.stride] {
-        for capacity in [1, 2, 3, 16] {
-          XCTAssertEqual(
-            UnsafeNode._referenceAllocationByteCount(
-              prefix: prefix,
-              with: payload,
-              capacity: capacity),
-            allocator._allocationSize(prefix: prefix, capacity: capacity))
-
-          let byteCount = UnsafeNode._referenceAllocationByteCount(
-            prefix: prefix,
-            with: payload,
-            capacity: capacity)
-          let raw = UnsafeMutableRawPointer.allocate(
-            byteCount: byteCount,
-            alignment: allocator.pairLayout.alignment)
-          defer { raw.deallocate() }
-          let storage = raw.advanced(by: prefix)
-          let reference = UnsafeNode._referenceFirstNode(in: storage, with: payload)
-
-          let header = raw.assumingMemoryBound(to: _Bucket.self)
-          let rawBuffer = header.start(
-            storage: storage,
-            payloadOrPairAlignment: allocator.pairLayout.alignment)
-          XCTAssertEqual(reference, rawBuffer)
-        }
-      }
-    }
-
     /// poison済み領域へNodeとpayloadを別色で実際に塗り、各領域が重ならず、
     /// alignment gap/pair paddingと末尾guardを侵食しないこと。
     func testReferenceLayout_coloringHasNoOverlapOrOutOfBoundsWrite() {
@@ -104,7 +49,7 @@ import RedBlackTreeFixture
       let guardColor: UInt8 = 0xD4
       let guardByteCount = 32
 
-      for prefix in [0, MemoryLayout<_Bucket>.stride, 3 * MemoryLayout<_Bucket>.stride] {
+      for prefix in [0, MemoryLayout<UInt>.stride, 3 * MemoryLayout<UInt>.stride] {
         for capacity in [1, 2, 3, 16] {
           let byteCount = UnsafeNode._referenceAllocationByteCount(
             prefix: prefix,

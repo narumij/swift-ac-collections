@@ -144,8 +144,8 @@ set.count(of: 2)
 | `insert(value)` | `insert(_:)` | ✅ | 同値な要素が既に存在しても追加される |
 | duplicate insertion | `insert(_:)` | ✅ | 重複を許容する |
 | `emplace(...)` | 値を構築して `insert(_:)` | △ | C++ の in-place construction に直接対応する API はない |
-| `emplace_hint(...)` | — | ❌ | C++ の emplacement / hint API は採用していない |
-| `insert(hint, value)` | — | ❌ | hint 付き挿入は採用していない |
+| `emplace_hint(...)` | `insert(_:hint:)` | △ | hint は利用できるが、C++ の in-place construction semantics はない |
+| `insert(hint, value)` | `insert(_:hint:)` | ✅ | 新しい要素のindexを返す。通常構成のみ |
 | range insertion | `Sequence` ベースの初期化 / 挿入 | △ | Swift では iterator pair より `Sequence` を使う |
 
 `RedBlackTreeSet` と異なり、
@@ -168,8 +168,8 @@ C++ の `std::multiset::insert` には、
 root から挿入位置を探索する処理を省略できるため、
 挿入を高速化できる場合があります。
 
-`RedBlackTreeMultiSet` では、
-C++ と同じ形式の hint 付き挿入 API は提供しません。
+`RedBlackTreeMultiSet`では`insert(_:hint:)`を提供します。`endIndex`も有効で、
+利用可能なhintは同値要素群の内部を含む挿入位置として使われます。
 
 ## Emplacement
 
@@ -564,7 +564,7 @@ Swift 標準ライブラリの lazy adapter を利用できます。
 | node allocation | 一般に node 単位 | shared storage |
 | `node_handle` | ✅ | △ `Index`（位置handle） |
 | `extract()` | ✅ | ❌ |
-| hint insertion | ✅ | ❌ |
+| hint insertion | ✅ | ✅ `insert(_:hint:)` |
 | in-place `emplace` | ✅ | △ |
 
 ## C++ に固有性の強い機能
@@ -579,7 +579,6 @@ iterator model と強く結びついており、
 - `extract()`
 - node transfer を利用した `merge()`
 - `emplace()` / `emplace_hint()` の C++ と同一の構築 semantics
-- hint 付き `insert`
 - container ごとに保持する comparator object
 
 これらに直接対応する API がないことは、

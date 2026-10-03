@@ -322,3 +322,11 @@ strict設定下の一意な診断は28→22箇所。clone、1D変更、Death Tes
 `@unsafe`を付けるPoCでは診断は減らず、型全体への`@unsafe`が必要だった。これは公開型の
 利用者へunsafe要求を伝播させるAPI上の判断になるため、恒久適用前にユーザー確認が必要。
 PoCのproperty注釈と一時的なPackage設定は復元済み。
+
+現時点の推奨は、警告を消すためだけに公開7型を`@unsafe`へ変更しないこと。Appleの
+strict memory safety設定はunsafe構造を安全化するものではなく、`unsafe`/`@unsafe`で
+監査境界を明示する機能である。現在の公開initializerと範囲検査付きsubscriptまでunsafe
+利用として呼び出し側へ伝播させるのは、診断の実態より広すぎる。恒久適用するなら、
+生ポインタを公開値型のstorageから隔離できる所有storage設計を別途検討し、性能・Viewの
+寿命・競技プログラミング向け単一ファイル性を再検証する。現構造のままでは22件を既知の
+監査対象として残し、`BareArrayModule`のstrict設定は無効のままとする。

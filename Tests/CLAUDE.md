@@ -100,8 +100,9 @@ confirm that the intended tests actually ran.
 
 Death Tests remain enabled by default on macOS. On Linux, use
 `swift test -c debug --traits ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`.
-The normal GitHub Actions Debug job is authoritative for Linux signal/exit behavior;
-do not infer it from a macOS run or from an aggregate run that discovered no exit tests.
+Linux Death Tests are currently opt-in and are not part of the normal GitHub Actions
+Debug job. Do not infer Linux signal/exit behavior from a macOS run or from an
+aggregate Linux run that discovered no exit tests.
 Tests that require a Swift runtime trap use the target-local
 `expectedSwiftTrapSignal`: `SIGTRAP` on Darwin and `SIGILL` on Linux. Keep this exact
 signal contract separate from tests that intentionally accept a broader fatal failure,

@@ -108,28 +108,23 @@ the broader mode had already passed the full suite twice. `git diff --check` is 
   switch does not change their counter handling.
 
 Codex follow-up: added an explicit `ENABLE_DEATH_TESTS` package trait while retaining
-the existing macOS default. The normal blocking Ubuntu 24.04 Debug job now runs the
-full suite with
-`ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`, so Linux must actually compile
-and execute the subprocess tests; failures are not converted into a green result.
+the existing macOS default. A blocking Ubuntu 24.04 Debug run executed the full suite
+with `ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`, so the subprocess tests
+were actually compiled and executed on Linux.
 
 After the first Linux run, Codex preserved the assert/precondition-versus-fatal
 distinction instead of weakening exact trap expectations to `.failure`. Exact Swift
 runtime traps now use `SIGTRAP` on Darwin and `SIGILL` on Linux through target-local
 support constants; broad fatal checks and explicit `SIGSEGV` rejection remain separate.
-The normal Linux Debug job uses the full balance-check skip because the setup-only
-mode still failed the process-global C++ comparison XCTest counters. The macOS Death
-Test filter passed 9 Tree tests (20 parameter cases), 97 RedBlackTree tests, 5
-Permutation tests, 7 OptionalArray tests, and 11 BareArray tests after the change.
-- **Linux validation still required (CI or Ubuntu 24.04 with the CI toolchain):**
-  1. `swift test -c debug` (checks on) and
-     `swift test -c debug --traits SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`; confirm both
-     exit 0 with the per-bundle XCTest counts above.
-  2. To obtain Linux Death Test evidence, a separately reviewed change must define
-     `DEATH_TEST` for Linux (e.g. `.when(platforms: [.macOS, .linux])` or a dedicated
-     trait), then verify the exit-test cases are discovered and executed as child
-     processes with the expected signals/exit statuses and the parent continues — not
-     inferred from a green aggregate.
+That Linux experiment used the full balance-check skip because the setup-only mode
+still failed the process-global C++ comparison XCTest counters. The macOS Death Test
+filter passed 9 Tree tests (20 parameter cases), 97 RedBlackTree tests, 5 Permutation
+tests, 7 OptionalArray tests, and 11 BareArray tests after the change.
+
+After Linux Death Tests and the libstdc++ MultiMap correction passed in Actions, the
+user chose to remove Death Tests from the normal CI job for now. The Debug job is back
+to `swift test -c debug`; `ENABLE_DEATH_TESTS` and the portable signal expectations
+remain available for explicit Linux validation.
 - **Changed files:** `Package.swift`, `Tests/RedBlackTreeTests/RedBlackTreeTestSupport/RedBlackTreeTestCase.swift`,
   `Tests/RedBlackTreeTreeTests/Fixture/TreeTestCase.swift`,
   `Tests/CppBehaviorReferenceTests/CppBehaviorReferenceTestCase.swift`,

@@ -46,13 +46,6 @@
 
 ## 現在も残る論点(所見・未着手)
 
-- `Tests/PermutationTests/NextPermutation.swift`に、Sources側の`NextPermutationProtocol`と
-  ほぼ同一のアルゴリズム(`nextPermutation`/`reverse(subrange:)`、コメントの参照元URLも同じ)が、
-  `ManagedBuffer`ではなく`UnsafeMutableBufferPointer`を直接使う別実装として残っている。
-  `Array: NextPermutation`という独自protocol適合経由で`array.nextPermutation()`という
-  直接APIを提供する、Sources側とは別世代の設計の名残と見られる。現在もテストターゲット内に
-  閉じていて、本体の`PermutationModule`からは参照されていない。削除/参考実装として残すかは
-  ユーザー判断待ち。
 - `Sendable`適合の要否。`BareArray`/`OptionalArray`と異なり、`Permutations`関連の型に
   `Sendable`適合の宣言が無い。
 - 公開メソッドに対して、計算量・CoW契約・事前条件(空コレクション等)を説明する

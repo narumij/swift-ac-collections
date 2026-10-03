@@ -116,22 +116,6 @@ final class PermutationTests: XCTestCase {
   }
 
 #if ENABLE_PERFORMANCE_TESTING
-  func testPerformance00() throws {
-    #if DEBUG
-    let s = (0..<9) + []
-    #else
-    let s = (0..<10) + []
-    #endif
-    var ans = 0
-    self.measure {
-      var p = s
-      repeat {
-        ans += p.count
-      } while p.nextPermutation()
-    }
-    print(ans)
-  }
-
   #if USING_ALGORITHMS
     func testPerformance0() throws {
       #if DEBUG

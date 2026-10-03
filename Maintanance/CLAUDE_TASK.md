@@ -1,6 +1,51 @@
 # Codex-to-Claude Work Request
 
-Status: Active — follow-up cleanup and release documentation
+Status: Completed — follow-up cleanup and release documentation
+
+## Result Summary (this pass)
+
+Completed all three tasks below.
+
+**Task 1:** Removed `Tests/PermutationTests/NextPermutation.swift` (test-only
+`NextPermutation` protocol, `Array` conformance, `NextPermutationUnsafeHandle`,
+and its duplicate algorithm) and the `testPerformance00` test that was its only
+caller, from `Tests/PermutationTests/PermutationTests.swift`. Confirmed via
+repository-wide grep that nothing else referenced
+`NextPermutationUnsafeHandle`, the test-only `NextPermutation` protocol, or
+`forEach_nextPermutation`. Updated `Maintanance/PermutationModule/
+ImplementationPlan.md`, `ProductReadinessAssessment.md`,
+`Sources/PermutationModule/Documentation/Specification.md`, and
+`Tests/TESTING.md` to record this as completed rather than a pending decision.
+
+**Task 2:** Added an English doc comment to `nextPermutations()` documenting
+the tested contract (current order first, only lexicographic successors
+afterward, no duplicate value orderings for equal elements, single-pass
+termination for descending/all-equal/single-element/empty input, stability of
+previously yielded results, worst-case O(n) per step), and brief doc comments
+to `Permutations.Nexts`, `Permutations.IteratorN`, and `Permutations.SubSequenceN`.
+No `ManagedBuffer`/implementation detail was added to the public comments.
+
+**Task 3:** Added two `Removed` entries to `CHANGELOG.md`'s `[Unreleased]`
+section: the PermutationModule full-permutation/unsafe API removal (leaving
+`nextPermutations()` as the sole entry point) and the Range View `unranged()` /
+`ScalarBaseInit` / `KeyValueBaseInit` removal. No other section was changed.
+
+**Validation:**
+- `swift test --filter PermutationTests` — 2/2 passed (post-removal).
+- `swift build` — succeeded with the new doc comments.
+- `swift test` from the repository root (normal mode) — full suite passed,
+  0 failures across all suites.
+- Temporarily uncommented `.define("COMPATIBLE_ATCODER_2025")`, ran
+  `swift build` and `swift test --filter 'AcCollectionsTests|PermutationTests'`
+  — both succeeded, then restored `Package.swift` (`git diff Package.swift`
+  empty).
+- Repository-wide grep for `NextPermutationUnsafeHandle`,
+  `forEach_nextPermutation`, `testPerformance00`, and the deleted file path —
+  only this task file's description and the maintenance docs' historical
+  completion notes remain.
+- `git diff --check` — clean.
+
+Reported to the user in Japanese.
 
 ## Active Follow-up Assignment
 

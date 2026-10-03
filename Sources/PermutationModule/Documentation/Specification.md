@@ -70,11 +70,8 @@ ABC328Eの解説コードを読んだ際、「全探索で間に合っている�
 ## この文書がまだ扱っていないもの
 
 - `Sendable` 適合の要否。
-- 計算量・CoW契約・事前条件を説明する `///` コメントドックの文面。
-- `Tests/PermutationTests/NextPermutation.swift` にある別世代の実装(本体から未参照)の
-  扱い。
 
-これらは `Maintanance/PermutationModule/ImplementationPlan.md` の
+これは `Maintanance/PermutationModule/ImplementationPlan.md` の
 「保留中の判断」として引き続きユーザー判断待ちである。
 
 ## ABC328E 性能検証についての注意

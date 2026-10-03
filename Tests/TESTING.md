@@ -57,11 +57,11 @@
 
 ## 判断待ち
 
-- PermutationModule: `Tests/PermutationTests/NextPermutation.swift`の旧世代実装
-  (本体から未参照)を削除するか参考実装として残すか、`Sendable`適合の要否、公開APIへの
-  `///`コメントドック整備、ABC328E実提出による性能検証(外部AtCoder提出、ユーザー実施)が
-  判断待ち(詳細は`Maintanance/PermutationModule/ImplementationPlan.md`の
-  「保留中の判断」参照)。`All`系・`unsafe`系の削除自体は完了済み。
+- PermutationModule: `Sendable`適合の要否、ABC328E実提出による性能検証(外部AtCoder
+  提出、ユーザー実施)が判断待ち(詳細は`Maintanance/PermutationModule/
+  ImplementationPlan.md`の「保留中の判断」参照)。`All`系・`unsafe`系の削除、
+  `Tests/PermutationTests/NextPermutation.swift`(未参照の旧世代実装)の削除、
+  `nextPermutations()`と公開戻り値型への`///`コメントドック整備は完了済み。
 - `erase(where:)`がRedBlackTreeSet/MultiSet/Dictionary/MultiMapの4型すべてで
   無条件に`ensureUnique()`を呼ぶため、空コレクションに対しても無駄にシングルトン
   からdetachする(要素が無い/削除されなくてもCoW発生)。`remove(_:)`/
@@ -80,18 +80,22 @@
 
 ## 直近の引き継ぎ
 
-- `CLAUDE_TASK.md`のTask 3(`unranged()`と`ScalarBaseInit`/`KeyValueBaseInit`
-  削除)を完了。`CLAUDE_TASK.md`はCompletedへ更新済み、結果サマリーを追記済み。
-- 削除内容: 2ソースファイルから`unranged()`・両プロトコル・`_create(_:)`・
-  4型の適合を削除。4型の専用テスト4件を削除し、周辺のRange Viewテストは保持。
-  `API-Matrix.md`/`API-Matrix-View.md`/`MAINTENANCE.md`/本ファイルの参照を更新。
-- 検証: 対象4スイート(`swift test --filter`)56/56件、通常モード`swift test`
-  全件、`COMPATIBLE_ATCODER_2025`有効化時の`swift build`/`swift test`
-  (削除対象は元々このモードで未コンパイル)、`git diff --check`すべて成功・
-  クリーン。`Package.swift`は元の状態へ復元済み。
-- 作業中、`CLAUDE_TASK.md`のStatus/Task 3指示がCodexにより外部から更新され
-  (「ユーザー承認済み、即実施」の明記)、本セッション内でユーザーへ直接確認した
-  内容と一致したためそのまま実施した。詳細は`CLAUDE_TASK.md`の該当ノート参照。
+- `CLAUDE_TASK.md`の「follow-up cleanup and release documentation」(Task 1-3)を
+  完了。`CLAUDE_TASK.md`はCompletedへ更新済み、結果サマリーを追記済み。
+- Task 1: `Tests/PermutationTests/NextPermutation.swift`(テスト専用の旧
+  `NextPermutation`実装)と、それを唯一使用していた`testPerformance00`を削除。
+  `ImplementationPlan.md`/`ProductReadinessAssessment.md`/`Specification.md`/
+  本ファイルの該当する判断待ち記述を完了済みへ更新。
+- Task 2: `nextPermutations()`と`Permutations.Nexts`/`IteratorN`/`SubSequenceN`へ
+  英語の`///`コメントを追加(現在順の先頭返却・辞書順後続のみ列挙・重複値の非重複・
+  境界入力の単発終了・既取得結果の不変性・1ステップO(n)の契約を記述、
+  `ManagedBuffer`等の実装詳細は含めず)。
+- Task 3: `CHANGELOG.md`の`[Unreleased]`/`Removed`へ、PermutationModule全順列/
+  unsafe API削除と Range View `unranged()`削除をソース破壊的変更として追記。
+- 検証: `swift test --filter PermutationTests`2/2、通常モード`swift test`
+  全件(0 failures)、`COMPATIBLE_ATCODER_2025`有効化時の`swift build`/
+  `swift test --filter 'AcCollectionsTests|PermutationTests'`成功、
+  `git diff --check`クリーン。`Package.swift`は元の状態へ復元済み。
 
 最終更新: 2026-10-03 JST / Claude Sonnet 5
 

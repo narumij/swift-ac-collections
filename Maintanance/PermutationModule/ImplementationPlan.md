@@ -58,11 +58,17 @@
   `Package.swift`は元の状態へ復元。
 - `git diff --check` — クリーン。
 
+## 追加の削減(2026-10-03、完了)
+
+`Tests/PermutationTests/NextPermutation.swift`(本体の`PermutationModule`からは未参照の
+別世代実装。`Array: NextPermutation`という独自protocol、`NextPermutationUnsafeHandle`、
+`UnsafeMutableBufferPointer`直接操作のアルゴリズムを含む)を削除し、これを唯一使用していた
+`testPerformance00`(`ENABLE_PERFORMANCE_TESTING`配下)を`PermutationTests.swift`から削除した。
+実装バリアントを1経路(`Sources/PermutationModule/NextPermutationProtocol.swift`経由)へ
+さらに縮小する、というユーザー方針に基づく。
+
 ## 保留中の判断(ユーザー確認が必要)
 
-- `Tests/PermutationTests/NextPermutation.swift`を削除/参考実装として残すかの決定。
-  本体の`PermutationModule`からは未参照の別世代実装(`Array: NextPermutation`という
-  独自protocol経由)。
 - `Sendable`適合の要否。
 - 公開APIへのコメントドック(計算量・CoW契約・事前条件)の整備。
 - ABC328E実提出による性能検証(ベースライン記録・削除後の再提出比較)は、外部サービス

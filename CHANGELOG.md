@@ -53,6 +53,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 旧Array-based treeの重複実装をLegacyへ隔離し、復旧不能または現行テストと重複するテスト・補助実装を削除
 - 型別Test as Specificationへ移管済みの旧dictionary / multiset / multimap / fatalError / root直下テストを削除
 - `Bound`/`BoundRangeExpression`を引数に取る`isValid(_:)`を削除(評価が常に安全なため事前判定が不要。空判定は`collection[bounds].isEmpty`で代替)
+- PermutationModuleの全順列列挙系(`unsafePermutations()`、`Permutations.All`、`IteratorA`、`SubSequenceA`)および`unsafe`系の公開初期化経路(`unsafeNextPermutations()`、`Permutations.Nexts.init(safe:)`/`init(unsafe:)`)を削除し、`nextPermutations()`のみを公開APIとして残した(ソース破壊的変更)
+- Range Viewの`unranged()`と、それ専用のプロトコル(`ScalarBaseInit`/`KeyValueBaseInit`)および`_create(_:)`要件を削除(ソース破壊的変更)
 
 ## [0.4.4] - 2026-09-24
 

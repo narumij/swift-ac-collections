@@ -1,9 +1,21 @@
 extension Collection where Index == Int {
 
-  /// 辞書順で次の並びを1つずつ求める
+  /// Yields the current element order, then its lexicographic successors one at a time.
   ///
-  /// C++の`next_permutation`相当の挙動。全順列が必要な場合は
-  /// `swift-algorithms`の`permutations()`を利用してください。
+  /// This mirrors the behavior of C++'s `next_permutation`:
+  ///
+  /// - The current order is always yielded first.
+  /// - Only the lexicographic successors of that starting order are yielded afterward; this is
+  ///   not a full enumeration of every permutation.
+  /// - Elements that compare equal do not produce duplicate value orderings.
+  /// - A descending order, all-equal elements, a single element, and an empty collection each
+  ///   yield only the current order once.
+  /// - Results already yielded by the iterator remain unchanged as iteration advances.
+  ///
+  /// Advancing by one step is worst-case O(n).
+  ///
+  /// If you need every permutation rather than only the lexicographic successors of the
+  /// current order, use `swift-algorithms`'s `permutations()` instead.
   @inlinable
   @inline(__always)
   public func nextPermutations() -> Permutations<Self>.Nexts
@@ -18,6 +30,7 @@ public
 
 extension Permutations {
 
+  /// The sequence returned by `nextPermutations()`.
   public struct Nexts: Sequence where C.Element: Comparable {
     @usableFromInline
     let source: C
@@ -35,6 +48,7 @@ extension Permutations {
     }
   }
 
+  /// The iterator for `Nexts`.
   public
     struct IteratorN: IteratorProtocol where C.Element: Comparable
   {
@@ -110,6 +124,8 @@ extension Permutations {
     }
   }
 
+  /// One element order yielded by `Nexts`. Remains unchanged once yielded, even as the
+  /// iterator advances further.
   public
     struct SubSequenceN
   {

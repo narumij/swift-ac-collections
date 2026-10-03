@@ -105,6 +105,23 @@ hinted insertion, or randomized traces. Also stop if the PoC would require chang
 - Result: 3 tests passed. `--disable-sandbox` is required in the current local
   environment because manifest compilation otherwise fails at `sandbox-exec`.
 
+### MultiSet result (2026-10-04)
+
+- Added `cpp_multiset_execute_trace` for `std::multiset<int64_t>` and
+  `MultiSetBehaviorComparisonTests.swift`; the Set executor is unchanged.
+- Matching: insertion and duplicates, `lowerBound`/`upperBound` value and rank,
+  `equalRange` contents, erasure by key with removed count, and hinted insertion
+  at, inside, after, and (poorly) before an equivalent-key group. Within-group
+  placement is observed through the rank of the returned index/iterator.
+- **Semantic difference:** `RedBlackTreeMultiSet.insert(_:hint:)` with `endIndex`
+  on a non-empty multiset crashes in Debug (`__tree_left_rotate`, "node shouldn't
+  be null"); `std::multiset` inserts normally. Minimal trace: `insert(10)`,
+  `insertHint(20, at: 1)`. Preserved as the disabled test
+  `multiSetEndIndexHintMinimalTrace`. Suspected cause: `__find_leaf(_:_:_:)`
+  checks `__hint == end` where libc++ checks `__prior == begin()`.
+- Command: `swift test --disable-sandbox --filter CppBehaviorReferenceTests`
+  (8 tests: 6 passed, 2 skipped).
+
 ## Test strategy
 
 After the PoC is accepted, implement this in stages:

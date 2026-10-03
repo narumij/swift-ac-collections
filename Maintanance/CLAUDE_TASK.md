@@ -1,6 +1,7 @@
 # Codex-to-Claude Work Request
 
-Status: Active — MultiSet C++ behavior-comparison expansion
+Status: Blocked — `RedBlackTreeMultiSet.insert(_:hint: endIndex)` crashes on a
+non-empty multiset (see Result Summary)
 
 ## Objective
 
@@ -106,6 +107,35 @@ must contain only:
 
 If a stop condition is reached, change the status to `Blocked` and report the exact
 minimal trace and evidence without editing production code.
+
+## Result Summary (2026-10-04, Claude Opus 5.5)
+
+- Stop condition reached. Minimal deterministic failing trace:
+  `insert(10)`, `insertHint(20, at: 1)` (`endIndex`). The Swift side stops at
+  `unsafe_tree+algorithm.swift:252` ("node shouldn't be null",
+  `__tree_left_rotate`) in Debug. Preserved as the disabled test
+  `multiSetEndIndexHintMinimalTrace`. Production code was not changed.
+- Suspected cause (not fixed, not verified by a fix): `__find_leaf(_:_:_:)` in
+  `unsafe_tree+find.swift:125` tests `__hint == end` where libc++ tests
+  `__prior == begin()`. With an `endIndex` hint the prior-element check is
+  skipped and `__prior` stays at the end node, so the new node is linked as the
+  end node's right child. The same line also decrements `begin` when the hint is
+  `startIndex` and `__v <= *startIndex`; that path was not exercised.
+- Behaviors compared and matching: distinct/duplicate insertion; `lowerBound`/
+  `upperBound` value and rank; `equalRange` contents; erasure by key with the
+  removed count (present and absent); hinted insertion with an exact hint at the
+  start of and inside an equivalent-key group, a hint after the group, deliberately
+  poor hints before the group and for new least/existing keys, and reinsertion.
+- Within-group ordering is observed through the rank of the index/iterator
+  returned by hinted insertion, together with full contents after every
+  operation; no extra value representation was needed.
+- `swift test --disable-sandbox --filter CppBehaviorReferenceTests`: 8 tests,
+  6 passed, 2 skipped (the minimal trace and the full hinted trace containing
+  `endIndex` hints). `git diff --check` passed.
+- Changed files: `Sources/CppBehaviorReference/include/CppBehaviorReference.h`,
+  `Sources/CppBehaviorReference/CppBehaviorReference.cpp`,
+  `Tests/CppBehaviorReferenceTests/MultiSetBehaviorComparisonTests.swift` (new),
+  this file, `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`.
 
 ## History
 

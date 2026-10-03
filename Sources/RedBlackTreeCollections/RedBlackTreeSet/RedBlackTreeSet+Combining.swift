@@ -29,9 +29,6 @@ extension RedBlackTreeSet {
   /// - Parameter other: A set whose elements to insert.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
-  ///
-  /// - Important: If sufficient space is available,
-  ///   using `formUnion` is recommended.
   @inlinable
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
     __tree_.ensureUnique()
@@ -74,9 +71,6 @@ extension RedBlackTreeSet {
   /// - Returns: The merged set.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
-  ///
-  /// - Important: If sufficient space complexity is available,
-  ///   using `union` is recommended.
   @inlinable
   public func merging(_ other: RedBlackTreeSet<Element>) -> Self {
     var result: Self = self

@@ -20,7 +20,8 @@
 - 赤黒木ベース
 - 同じキーに複数の値を関連付けられる
 - 同じキーを持つ要素も、それぞれ独立した要素として保持
-- 同一キー内の要素順は挿入順
+- 通常の挿入では同一キー内の要素順は挿入順
+- hint付き挿入では同一キーのグループ内で挿入位置を指定できる
 - 挿入・削除を行ってもキーのソート順を維持
 - キー順で昇順・降順に走査
 - 順序を利用した検索
@@ -36,9 +37,34 @@
 - 主な用途
 - コード例必須
 
+## Creating a Multimap
+- 空のmultimap
+- array literal / dictionary literal
+- `init(keysWithValues:)`
+- `init(grouping:by:)`
+- 重複キーを保持すること
+- `init(minimumCapacity:)`
+- `capacity`
+- `reserveCapacity(_:)`
+- コード例必須
+
+## Searching and Accessing Elements
+- `contains(key:)`
+- `count(forKey:)`
+- `first` / `last`
+- `min()` / `max()`
+- `firstIndex(of:)`
+- `find(_:)`
+- `lowerBound(_:)`
+- `upperBound(_:)`
+- `equalRange(_:)`
+- `equalRange(_:)`が同一キーの全要素を表すこと
+- 検索結果のindexから前後の要素へ移動
+- コード例必須
+
 ## Key Access and Views
-- キー subscript は単一値ではなく `RedBlackTreeKeyValueRangeView` を返す
-- 同じキーを持つ要素の論理的な範囲を表す
+- キーsubscriptは単一値ではなく`RedBlackTreeMappedValuesView`を返す
+- 同じキーに関連付けられたmapped valueの論理的な範囲を表す
 - 要素を別配列へコピーしない
 - 元の multimap と同じ index 型を使用
 - `keys`
@@ -48,21 +74,53 @@
   - `RedBlackTreeMappedValuesView`
   - mapped value の変更
   - `swapAt(_:_:)`
+- key subscriptのViewから値を削除すると、対応するkey-value pairも削除される
 - キーは木の順序を決定するため変更しない
 - `Value` は `Comparable` を必要としない
 - subscript に直接変更操作を行う場合は元の multimap を変更
-- range view を独立した変数へ取り出した場合の値 semantics
+- mapped values viewを独立した変数へ取り出した場合のvalue semantics
 - コード例必須
 
-## Multimap Operations
+## Insertion, Updating, and Removal
 - 挿入
 - 同一キー挿入時の挙動
+- `insert(key:value:)` / `insert(_:)`
+- `insert(_:hint:)`と、同一キーグループ内の挿入位置
+- `updateValue(_:at:)`
+  - keyを変更せず、指定indexのmapped valueだけを置換する
+  - 成功時は置換前のvalueを返す
+  - indexが無効な場合は置換せず`nil`を返す
 - 単一要素削除
+- `popFirst()` / `popLast()`
+- `removeFirst()` / `removeLast()`
 - 同じキーを持つ複数要素の削除
+- `eraseUnique(_:)` / `eraseMulti(_:)`
+- `erase(where:)`
 - range view を使った削除
 - 範囲削除
+- `removeAll(keepingCapacity:)`
 - index を使った削除時の注意
 - `erase(Index) -> Index` による逐次削除
+- `index(inserting:)` / `erase(exactly:)`の用途とindexの扱い
+- コード例必須
+
+## Combining Multimaps
+- `insert(contentsOf:)` / `inserting(contentsOf:)`
+- multimapまたはkey-value pairのsequenceを入力できること
+- 同一キーの全pairを保持すること
+- `meld(_:)` / `melding(_:)`
+- 自身を更新する操作と、新しいmultimapを返す操作の違い
+- 性能上の使い分けはCombining APIの調査結果と照合して確定
+- コード例必須
+
+## Transforming and Iterating
+- 要素は`(key: Key, value: Value)`
+- `filter(_:)`
+- `mapValues(_:)`
+- `compactMapValues(_:)`
+- 変換後もキー順と重複キーを維持すること
+- `sorted()`による昇順配列化
+- `reversed()`による降順配列化
 - コード例必須
 
 ## Indices and Bound Expressions
@@ -75,12 +133,24 @@
 - slot 再利用後も古い index は再利用不可
 - CoW 分岐後の index の扱い
 - 無関係なコレクション由来の index は事前条件違反
-- `BoundExpression`
+- index range subscriptと`RedBlackTreeKeyValueRangeView`
+- key-value pairの位置範囲を扱い、キーsubscriptのmapped values viewとは異なること
+- `containsSubrange(_:)`
+- index間およびBound間の`distance(from:to:)`
+- `RedBlackTreeMultiMap.Bound`
   - index を直接扱わない代替記法
   - `.start`
+  - `.last`
+  - `.end`
   - `.lowerBound`
   - `.upperBound`
   - `.find`
+  - `.lessThan` / `.lessThanOrEqual`
+  - `.greaterThan` / `.greaterThanOrEqual`
+  - `.before` / `.after`
+  - `.advanced(by:limit:)`
+- 単一Boundが終端または解決不能の場合はsubscriptが`nil`を返す
+- 不成立または逆順のBound範囲は空Viewになる
 - コード例必須
 
 ## Performance
@@ -99,6 +169,8 @@
 - 同一キーの m 要素を検索して処理: O(log `count` + m)
 - range view は対象要素をコピーしない
 - 再平衡化: 償却 O(1)
+- `filter` / `mapValues` / `compactMapValues`
+- `insert(contentsOf:)` / `inserting(contentsOf:)` / `meld` / `melding`はCombining APIの調査結果と照合して確定
 - `Key` の比較コストの影響
 
 ## Red-Black Tree

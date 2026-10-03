@@ -11,7 +11,7 @@
 | 段階 | ターゲット | 状態 |
 | --- | --- | --- |
 | 第1段階 | `AcCollections`、`RedBlackTreeModule` | **採用済み**(`Package.swift`に恒久適用) |
-| 第2段階 | `PermutationModule`、`BareArrayModule`、`OptionalArrayModule` | 未採用(保留) |
+| 第2段階 | `PermutationModule`、`BareArrayModule`、`OptionalArrayModule` | 未採用(保留)。`PermutationModule`は実装計画のみ策定済み(§8) |
 | 第3段階 | `RedBlackTreeCollections` | 未採用(保留) |
 
 第1段階の検証:
@@ -59,7 +59,7 @@
 | --- | --- | --- | --- |
 | `AcCollections`(facade) | **0** | 0 | `@_exported import`のみで構成。即時適用可能 |
 | `RedBlackTreeModule`(`_RedBlackTreeModule`互換shim) | **0** | 0 | 即時適用可能 |
-| `PermutationModule` | 34 | 0 | 全件`Permutations.swift`、`ManagedBuffer`ベースの手動メモリ実装由来 |
+| `PermutationModule` | 34 | 0 | 全件`Permutations.swift`、`ManagedBuffer`ベースの手動メモリ実装由来。2026-10-03の再現では一意な診断は17件(ログ上は各2回出力され34行)、§8参照 |
 | `BareArrayModule` | 116 | 0 | 手動メモリ管理モジュール(名称の通り低レベルポインタ操作が本体) |
 | `OptionalArrayModule` | 144 | 0 | 同上 |
 | `RedBlackTreeCollections` | 4,948 | 0 | 赤黒木の生ポインタ実装本体。最大のターゲット |
@@ -123,6 +123,66 @@
   (復元確認済み)。
 - 本調査はビルド診断の収集のみで、`swift test`は実行していない
   (production codeの変更がないため)。
+
+## 8. `PermutationModule` 実装計画(2026-10-03、計画のみ)
+
+production codeは変更しておらず、設定も恒久適用していない。
+
+### 再現手順と結果
+
+1. `Package.swift`の`PermutationModule`ターゲットを一時的に
+   `swiftSettings: _settings + [.strictMemorySafety()]`へ変更。
+2. `touch Sources/PermutationModule/*.swift` の後
+   `swift build --target PermutationModule` を実行し、ANSI色を除去して集計。
+3. `Package.swift`を元の1行へ戻し、`git diff Package.swift`が空であることを確認
+   (第1段階の採用状態のまま)。
+
+結果: 警告34行、エラー0件。ただし**全17箇所が同一内容で2回ずつ出力されており、
+一意な診断は17件**である(§3の34件も同じ二重計上だった可能性が高い)。
+全件`Permutations.swift`の`expression uses unsafe constructs but is not marked
+with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
+`conformance ... involves unsafe code`や`has storage involving unsafe types`は
+発生しておらず、公開APIシグネチャにunsafe型は現れない。全診断が`@usableFromInline`
+の内部クラス`Permutations.Buffer`(`ManagedBuffer<Header, Element>`)の内側に閉じる。
+
+### 宣言・所有境界ごとの分類
+
+| # | 宣言(行) | 件数 | 所有境界・前提となる不変条件 | 最小と思われる対処 |
+| --- | --- | --- | --- | --- |
+| G1 | `Buffer.deinit`(120–122) | 3 | Bufferが自身のheaderと先頭`header.count`個の初期化済み要素を所有する | scoped `unsafe`。`withUnsafeMutablePointers`のクロージャ内で完結し、ポインタは外へ出ない。破棄は所有者自身の責務で安全な代替APIはない |
+| G2 | `__header_ptr` / `__storage_ptr`(171, 177) | 4 | **`withUnsafe…`のクロージャからポインタを外へ持ち出している**。Bufferが生存している間は記憶域が動かないという`ManagedBuffer`の性質に依存 | `__header_ptr`: 削除して`ManagedBuffer.header`(安全なプロパティ。`copy`/`prepare`では既に使用)へ置換(内部API再設計)。`__storage_ptr`: 安全な代替がない(`_modify`はクロージャ内から`yield`できない)ため`@unsafe`宣言にし、用途を添字へ限定 |
+| G3 | `isEmpty`/`endIndex`(185, 191)、`subscript`のget/`_modify`(213, 215) | 4 | G2の利用側。添字は範囲チェックなしのポインタ添字 | 185/191はG2の`header`置換で警告ごと消える。213/215はG2を`@unsafe`にしたうえでscoped `unsafe`(呼び出し中は`self`が生存することが根拠) |
+| G4 | `create(withCapacity:)`の`unsafeDowncast`(229) | 1 | `Permutations.Buffer<Element>.create`が実際に`Buffer`のインスタンスを返すこと。クラスが`final`でないため、`Self`がサブクラスなら前提が崩れる(現状サブクラスなし) | scoped `unsafe`。安全な代替の`as! Self`は動的検査が入るため性能確認が必要。前提を型で保証したいなら`final class`化(別バッチ) |
+| G5 | `copy(newCapacity:)`の要素コピー(250–252) | 3 | `count <= newCapacity`。**引数`newCapacity`に`count`未満を渡すと範囲外書き込みになるが検査がない**(現呼び出し元は`copy()`の1箇所のみで常に`nil`) | scoped `unsafe`。前提はprecondition追加か、未使用引数`newCapacity`の削除で閉じる(後者は内部API再設計) |
+| G6 | `prepare(source:)`の要素初期化(277, 279) | 2 | `source`を列挙した要素数が`source.count`と一致すること(`Collection`の契約) | scoped `unsafe`。範囲検査付きの代替として`UnsafeMutableBufferPointer.initialize(fromContentsOf:)`があるが、その場合もbuffer pointerの生成自体にscoped `unsafe`が必要 |
+
+`@unsafe`を付ける公開型・conformanceはなく、局所的に安全な修正が存在しない
+グループもない(G2の`__storage_ptr`だけは`@unsafe`宣言が必要)。
+
+### 実装バッチ案(各バッチ後に通常/`COMPATIBLE_ATCODER_2025`で`swift test`)
+
+1. **バッチ1(方式の検証、最小)**: G1の`deinit`だけにscoped `unsafe`を付け、
+   一時適用ビルドで警告が17→14件に減ること、`unsafe`式がtools-version 6.2で
+   問題なくビルドできることを確認する。`.strictMemorySafety()`はまだ恒久適用しない。
+2. **バッチ2(G2+G3、内部API再設計)**: `__header_ptr`を`header`へ置換して削除し、
+   `__storage_ptr`を`@unsafe`化、添字2箇所にscoped `unsafe`。`@inline(__always)`の
+   ホットパスを変えるため、Release計測で性能が劣化しないことを確認する
+   (`Benchmarks/`には現在`PermutationModule`のベンチマークが無いため、追加を相談する)。
+3. **バッチ3(G4〜G6)**: scoped `unsafe`の付与のみ。G4の`final`化、G5の
+   precondition追加か引数削除、G6の`initialize(fromContentsOf:)`化は、挙動や内部APIが
+   変わるため別々の小さな変更としてユーザーに諮る。
+4. **バッチ4(恒久適用)**: 警告0件を確認してから`PermutationModule`へ
+   `.strictMemorySafety()`を追加する。
+
+### 計画で見つけた懸念(ユーザー判断事項、今回は未変更)
+
+- **公開APIの範囲外アクセス**: `SubSequenceN.subscript(position:)`(公開)は
+  `Buffer`の範囲チェックのないポインタ添字(G3、213行)へ直結しており、範囲外の
+  `position`で範囲外メモリを読む(コード読解による。未定義動作のため実行確認はしていない)。
+  `RandomAccessCollection`としては範囲外はtrapが期待される。strict memory safetyの
+  警告解消とは独立した論点で、修正するならDeath Testを先に追加する。
+- G5の`newCapacity < count`の未検査(現状は到達経路なし)。
+- G4の非`final`クラスに対する`unsafeDowncast`(現状はサブクラスなし)。
 
 ## 保留事項
 

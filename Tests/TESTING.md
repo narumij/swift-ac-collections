@@ -70,6 +70,9 @@
   production codeの修正は今回のタスク範囲外のため、
   `testEraseWhereOnEmptyCollectionDetachesFromSingleton`で現状を再現する
   テストのみ追加した。修正するかどうかユーザー判断待ち。
+- PermutationModule: 公開`SubSequenceN[position]`が範囲チェックのないポインタ添字に
+  直結し、範囲外の`position`で範囲外読み出しになる(コード読解、未実行)。修正する場合は
+  Death Testを先に追加する。詳細と関連懸念は`StrictMemorySafetyReadiness.md` §8。
 - 内部テスト層の区分、および生木テストと変更コストの均衡。
 - UnsafeNode/RawBufferクロスチェックと既存単層テストの統合方法。前者には独立した
   計算経路間の一致確認という固有の役割がある。
@@ -80,20 +83,20 @@
 
 ## 直近の引き継ぎ
 
-- `CLAUDE_TASK.md`の後続3タスク(ベンチマーク検証・strictMemorySafety第1段階・
-  タスクファイル圧縮)を完了しCompletedへ更新。完了済み履歴は
-  `Maintanance/CLAUDE_TASK_HISTORY.md`へ原文のまま移動。
-- Combiningベンチマーク: 一部ケースが`base`とstorageを共有し計時区間に意図しない
-  CoWが混入していたのを修正。固定シードshuffleと計時後の結果検証を追加し、同範囲で
-  再計測。結論は不変(`Maintanance/CombiningAPIPerformanceEvidence.md`)。16kでは
-  同一コード間で約1.5倍の差が出るため、その程度の差は有意と扱わない。
-- `.strictMemorySafety()`を`AcCollections`/`RedBlackTreeModule`へ恒久適用(警告0件)。
-  他4ターゲットは未採用(`Maintanance/StrictMemorySafetyReadiness.md`)。
-- 検証: Benchmarks `swift build -c release`成功・ベンチ各2回実行で検証通過、
-  facade 2ターゲット再コンパイル警告0、`swift build`成功、ルート`swift test`全件
-  0 failures、`git diff --check`クリーン。
+- `CLAUDE_TASK.md`の3タスク(推奨文削除・`___meld_unique`容量PoC・
+  PermutationModuleのstrict memory safety計画)を完了しCompletedへ更新。前回分は
+  `CLAUDE_TASK_HISTORY.md`へ原文のまま移動。
+- Set/MultiSet/MultiMapの`*+Combining.swift`から、根拠のない
+  「If sufficient space is available, … is recommended」6箇所を削除(コメントのみ)。
+- `___meld_unique`へ`count + other.count`の事前確保を入れるPoCは効果なし
+  (0.96〜1.04倍、対照`merge`と同等)。性能目的では採用しない。ソースは復元済み
+  (`CombiningAPIPerformanceEvidence.md` §4、生データ`Benchmarks/Results/MeldUniqueCapacityPoC/`)。
+- PermutationModuleの診断は一意17件(ログ上34行)で、6グループ・4バッチの計画を
+  `StrictMemorySafetyReadiness.md` §8に記録。`Package.swift`は復元済み。
+- 検証: `swift build`成功、ベンチ前後各2回で全検証通過、`git diff --check`クリーン。
+  Sourcesの変更がコメント行のみのため`swift test`は未実行。
 
-最終更新: 2026-10-03 13:57 JST / Claude Opus 5.5
+最終更新: 2026-10-03 14:13 JST / Claude Opus 5.5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

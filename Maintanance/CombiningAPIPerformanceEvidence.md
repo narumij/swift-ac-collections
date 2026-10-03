@@ -6,7 +6,8 @@
 O(*n* log(*m + n*)))と、`union`/`formUnion`/`meld`/`melding`(meld経路、O(*n* + *m*))の
 既存コメント`- Important: If sufficient space is available, using 〜 is recommended.`
 の根拠を実装追跡とベンチマークで検証した結果。**本調査は証拠収集のみで、production
-codeも公開コメントも変更していない。**
+codeも公開コメントも変更していない。**(後続タスクでの公開コメント訂正とPoCは
+§3末尾・§4に記録。)
 
 ## 1. 実装経路の追跡
 
@@ -185,6 +186,83 @@ cycles 1 のため実行間のばらつきがある。Set・MultiSetとも同範
   事前確保していない非対称性がある。これはTask 2の範囲(production code非変更)
   では修正しないが、`union`/`formUnion`の実測が相対的に遅い一因と考えられるため、
   別タスクとして最適化を検討する価値がある。
+  → §4のPoCで検証し、**有意な効果なし**と判定した(この推測は否定された)。
+- **公開コメントの訂正(2026-10-03実施)**: Set/MultiSet/MultiMapの
+  `merge`/`merging`/`insert(contentsOf:)`/`inserting(contentsOf:)`にあった
+  `- Important: If sufficient space (complexity) is available, using 〜 is recommended.`
+  計6箇所を削除した。既存の計算量記述と「入力を変更しない」旨の記述が残っており、
+  新たな推奨文は追加していない。Dictionaryには該当文言が無く無変更。
+
+## 4. `___meld_unique` 容量事前確保PoC(2026-10-03)
+
+### パッチ形状(計測後に完全復元済み)
+
+`Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/UnsafeTreeV2+SetAlgebra.swift`
+の`___meld_unique(_ other: UnsafeTreeV2)`で、結果バッファの初期容量を
+`___meld_multi`と同じ式へ一時的に変更した(1行のみ)。
+
+```swift
+// before (production)
+var __result_: UnsafeTreeV2 = ._createWithNewBuffer(minimumCapacity: 2, nullptr: nullptr)
+// PoC
+var __result_: UnsafeTreeV2 = ._createWithNewBuffer(
+  minimumCapacity: count + other.count, nullptr: nullptr)
+```
+
+計測後に元の1行へ戻し、`git diff`が空であることを確認した。PoC版が実際に計測へ
+使われたことは、復元直後の`swift build -c release --product benchmark`が
+再コンパイル(12.6秒、無変更時は0.7秒)を伴ったことで確認した。
+
+### コマンド(`Benchmarks/`で実行、前後とも同一)
+
+```console
+swift run -c release benchmark run \
+  --filter 'RedBlackTreeSet<Int> (merge|formUnion)(,| with (sorted|shuffled|duplicate-heavy))' \
+  --sizes 1k 16k 256k --cycles 10 --mode replace-all \
+  Results/MeldUniqueCapacityPoC/<before|after>-run<1|2>.json
+```
+
+- 対象は§2の決定的なSet 14ケース(`formUnion`7ケース+対照の`merge`7ケース)。
+  ハーネス生成入力を使い結果検証の無い既存`with Self (N% overlap)`系は除外した。
+- §2のcycles 1は約1秒で終わり1サンプルしか得られないため、cycles 10とした。
+  前後各2回実行し、全サンプルで計時後の`precondition`検証が通過した。
+- 環境: macOS 27.0 (26A428) / Swift 6.4 (swiftlang-6.4.0.34.1) / arm64。
+- 生データ: `Benchmarks/Results/MeldUniqueCapacityPoC/before-run{1,2}.json`,
+  `after-run{1,2}.json`(サンプルはアト秒)。
+
+### 結果(2回の最小サンプル値の小さい方、μs、1k / 16k / 256k)
+
+| ケース | before | after | after/before |
+| --- | --- | --- | --- |
+| formUnion with sorted other | 29.1 / 458.5 / 7631.9 | 28.3 / 453.7 / 7715.8 | 0.97 / 0.99 / 1.01 |
+| formUnion with shuffled other | 31.5 / 565.8 / 21578.0 | 31.2 / 572.9 / 22545.6 | 0.99 / 1.01 / 1.04 |
+| formUnion with duplicate-heavy other | 17.8 / 283.2 / 4754.5 | 17.3 / 287.7 / 4691.0 | 0.97 / 1.02 / 0.99 |
+| formUnion, unreserved capacity | 29.0 / 461.6 / 7699.7 | 28.2 / 460.8 / 7729.8 | 0.97 / 1.00 / 1.00 |
+| formUnion, reserving capacity | 28.9 / 474.2 / 7563.4 | 28.5 / 454.9 / 7719.2 | 0.99 / 0.96 / 1.02 |
+| formUnion, unique storage | 29.0 / 456.1 / 7618.6 | 28.4 / 464.2 / 7673.4 | 0.98 / 1.02 / 1.01 |
+| formUnion, shared storage | 27.9 / 440.7 / 7306.9 | 27.4 / 453.9 / 7293.7 | 0.98 / 1.03 / 1.00 |
+| (対照) merge with sorted other | 13.3 / 213.0 / 3432.1 | 13.6 / 217.0 / 3515.5 | 1.02 / 1.02 / 1.02 |
+| (対照) merge with duplicate-heavy other | 36.9 / 909.6 / 24403.2 | 35.8 / 901.2 / 25270.7 | 0.97 / 0.99 / 1.04 |
+| (対照) merge, unreserved capacity | 13.2 / 211.5 / 3517.8 | 13.3 / 216.8 / 3525.3 | 1.00 / 1.03 / 1.00 |
+
+(対照の残り4ケースも0.99〜1.01。全14ケースの値は生データ参照。)
+
+### ノイズの限界
+
+- 同一コードの2回の実行間で約4%以内のばらつき。PoCが通らない対照`merge`系も
+  0.97〜1.04倍の範囲で動いており、`formUnion`系の変化(0.96〜1.04倍)はこの範囲内。
+- 単一マシン・単一セッションの計測で、より大きなサイズや他の要素型は未計測。
+
+### 結論と推奨
+
+- **`___meld_unique`への`count + other.count`事前確保は、Set `union`/`formUnion`の
+  性能を測定可能な程度には変えない。性能目的での採用は推奨しない。**
+- 実装上の整合する説明: 容量拡張は既存ノードを移動せずbucketを末尾へ追加する
+  (`Design-NodeStorage.md`)ため、都度拡張でもコピーコストが生じない。
+  `formUnion`が`merge`より約2倍遅い要因は容量確保以外にある(未特定、本PoCの範囲外)。
+- 加えて、重複が多い入力では`count + other.count`が結果要素数を上回り、
+  過剰確保になる。MultiSet側(`___meld_multi`)と揃えること自体を目的とするなら、
+  性能ではなくコード整合性の判断としてユーザーが決める事項である。
 
 ## 保留事項
 

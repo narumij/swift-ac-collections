@@ -29,9 +29,6 @@ extension RedBlackTreeMultiSet {
   /// - Parameter other: A set whose elements to insert once each.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
-  ///
-  /// - Important: If sufficient space is available,
-  ///   using `meld` is recommended.
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeSet<Element>) {
     __tree_.ensureUnique()
@@ -85,9 +82,6 @@ extension RedBlackTreeMultiSet {
   /// - Returns: The combined multiset without modifying either input.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
-  ///
-  /// - Important: If sufficient space is available,
-  ///   using `melding` is recommended.
   @inlinable
   public func inserting(contentsOf other: RedBlackTreeMultiSet<Element>) -> Self {
     var result = self

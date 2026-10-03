@@ -277,3 +277,34 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
   ユーザーが段階2・3の着手順を承認した後、別タスクとして計画する。
 - 診断メッセージの正確なカウントはビルドログの行パターンマッチングに依存して
   いるため、Swiftコンパイラの出力形式が変わった場合は再集計が必要。
+
+## 10. `BareArrayModule` 段階対応(2026-10-03、バッチ2実施済み)
+
+`.strictMemorySafety()`を一時適用してXcodeで再コンパイルした。従来の116件は重複を
+含むログ行数で、ファイル位置とメッセージで一意化すると約64箇所だった。公開所有型4、
+非所有View型3の生ポインタstorage、確保・初期化・添字・clone・破棄に集中している。
+
+バッチ1では、所有型`BareArray`/`BareArray2D`/`BareArray3D`/`BareArray4D`の`deinit`だけを
+対象にした。各型が自分で確保した初期化済み要素の`deinitialize`とstorageの`deallocate`を
+scoped `unsafe`で明示した。公開API、layout、添字経路、Viewには変更を加えていない。
+
+- strict設定下のBuild for Testing: 成功。
+- 一意な診断: 約64→54箇所。
+- 参照要素の破棄・上書きに関する対象テスト4件: すべて成功。
+- `BareArrayModule`の`.strictMemorySafety()`は調査後に外し、未採用のままとした。
+
+次のバッチは所有型の確保・初期化とcloneを先に扱い、公開型storageに対する`@unsafe`の
+設計判断、および非所有Viewの境界は別バッチに分ける。
+
+バッチ2では、所有型4つの初期化済み要素への書き込みとclone時のbufferコピー、および
+生ポインタを受け取る内部initializerの呼び出しをscoped `unsafe`で明示した。確保操作の
+`allocate`はstrict有効時だけunsafe診断の対象になり、未採用構成で先に注釈すると
+`No unsafe operations occur`警告になるため、恒久適用と同時に扱う項目として残した。
+
+- strict設定下の一意な診断: 54→38箇所。
+- 通常構成のBuild for Testing: 成功、コード診断0件。
+- 所有型4つの初期化・clone・参照要素寿命に関する対象テスト12件: すべて成功。
+- 一時的なBareArray strict設定は再び外し、`Package.swift`を採用前の状態へ戻した。
+
+次は所有型からViewを作るpointer arithmeticと、非所有Viewの内部initializer・添字を
+一つの境界として整理する。公開型そのものへの`@unsafe`付与とstrict恒久適用は最後に行う。

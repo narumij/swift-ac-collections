@@ -30,7 +30,10 @@
 
 - OptionalArrayModule: Release実行、Death Test、参照型寿命、公開API化漏れを対応済み。
 - BareArrayModule: Debug/Release、境界Death Test、参照型寿命をレビュー済み。
-  3D cloneのcapacity不足による参照解放漏れを修正済み。
+  3D cloneのcapacity不足による参照解放漏れを修正済み。strict memory safetyの第1バッチとして
+  4つの所有型の`deinit`、初期化済み要素への書き込み、cloneをscoped `unsafe`化し、
+  一意な診断を約64→54→38へ削減した。
+  strict設定の恒久適用はまだ行っていない。
 - AcCollections: 通常時の4型と互換時のPermutationModule再公開テストを追加済み。
   別テストターゲットでもRedBlackTreeのDebug寿命カウンタを各テスト後に検査・初期化する。
 - PermutationModule: `swift-algorithms`の`permutations()`と重複する全順列列挙系
@@ -90,7 +93,7 @@
 - 検証: 通常/互換モードの対象スイート、フルの`swift test`、通常ビルド、`git diff --check`が成功。
   `Package.swift`と一時的な本体変更は復元済み。
 
-最終更新: 2026-10-03 19:33 JST / Codex
+最終更新: 2026-10-03 19:46 JST / Codex
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

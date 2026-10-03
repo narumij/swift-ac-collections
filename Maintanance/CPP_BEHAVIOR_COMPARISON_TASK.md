@@ -2,7 +2,13 @@
 
 ## Status
 
-Planned only. Do not implement this task until the user explicitly asks to start it.
+**High priority — Set PoC complete; review checkpoint before expansion.** The user
+raised this work's priority on 2026-10-04 because agreement with the C++
+standard-library containers is important evidence for completing the red-black-tree
+implementation.
+
+Start with the bounded Set PoC below. Do not broaden the first implementation to
+all four container pairs until the PoC result has been reviewed.
 
 ## Goal
 
@@ -10,14 +16,18 @@ Add an opt-in differential-testing facility that can run the same ordered-collec
 
 This is a correctness and compatibility tool, not a benchmark. Keep the existing `CppBenchmarks` target focused on performance measurement.
 
-## Proposed location and targets
+## Location and targets
 
-Add the facility to the existing auxiliary package at `Benchmarks/Package.swift`. This package already has a working Swift/C++ boundary and depends on the root package, while keeping C++ out of the root package's normal `swift test` workflow.
+Keep correctness comparison in the root `swift-ac-collections` package. The user
+explicitly selected the root package on 2026-10-04 so the comparison evidence stays
+with the red-black-tree implementation rather than with performance benchmarks.
 
-- `CppBehaviorReference`: a C++ target next to `CppBenchmarks`
+- `CppBehaviorReference`: a C++ reference target in the root package
 - `CppBehaviorReferenceTests`: a Swift test target depending on `CppBehaviorReference` and `AcCollections`
 
-Do not make either target a dependency of the existing `Benchmarks` library or benchmark executable unless a later use case requires it.
+The existing `Benchmarks` library and `CppBenchmarks` target remain unchanged. Move
+only facilities needed by correctness comparison into the root package; do not move
+or duplicate performance-measurement code.
 
 ## Initial scope
 
@@ -47,9 +57,57 @@ Prefer a trace executor that accepts plain operation records and returns plain o
 
 Do not transport iterators across the language boundary. Represent a position by its current zero-based rank in the normalized ordered output, and resolve it independently on each side immediately before the operation.
 
+## Responsibilities
+
+Keep these pieces separate so each can be reviewed and replaced independently:
+
+- **C++ reference executor** (`CppBehaviorReference`): applies a trace to one
+  `std::` container and returns observations through the C ABI. It does not know
+  about Swift types.
+- **Swift adapters** (in `CppBehaviorReferenceTests`): apply the same trace to an
+  `AcCollections` type and produce observations in the normalized form.
+- **Traces and fixtures**: plain operation records plus an optional seed, with no
+  dependency on either implementation.
+- **Mismatch reporting**: compares observation streams and formats the diagnostic;
+  it does not execute operations.
+
+## First proof of concept
+
+Before broad API coverage, validate the wiring with one small end-to-end case:
+
+1. Compare only `RedBlackTreeSet` and `std::set`.
+2. Run one curated trace containing insertion, duplicate insertion, `lower_bound`,
+   and erasure by key; compare complete ordered contents after each mutation.
+3. Add one deliberate-mismatch test to confirm that the diagnostic identifies the
+   container, operation number, operation, and both observations.
+4. Record the exact command used to run it from the root package.
+
+Stop after this PoC and report the result before adding the other container pairs,
+hinted insertion, or randomized traces. Also stop if the PoC would require changing
+`CppBenchmarks` or the public API of `AcCollections`.
+
+### PoC result (2026-10-04)
+
+- Added an independent `CppBehaviorReference` C++ target and
+  `CppBehaviorReferenceTests` Swift test target. They were initially proven in the
+  auxiliary package, then moved to the root package at the user's request.
+- Compared `RedBlackTreeSet<Int64>` with `std::set<int64_t>` for insertion,
+  duplicate insertion, lower bounds before/at/between/after elements, and erasing
+  present and absent keys. Complete ordered contents matched after every operation.
+- Hinted insertion also matched for an exact hint, a deliberately poor hint,
+  `endIndex`, and a duplicate element. Hints cross the C boundary as a zero-based
+  rank and are resolved to an index/iterator independently immediately before use.
+- Confirmed with a deliberate mismatch that the report contains the container,
+  operation number, input operation, and both observations.
+- Changed neither `CppBenchmarks` nor public `AcCollections` API.
+- Exact command:
+  `swift test --disable-sandbox --filter CppBehaviorReferenceTests`
+- Result: 3 tests passed. `--disable-sandbox` is required in the current local
+  environment because manifest compilation otherwise fails at `sandbox-exec`.
+
 ## Test strategy
 
-Implement this in stages:
+After the PoC is accepted, implement this in stages:
 
 1. Curated traces for empty, single-element, duplicate-heavy, boundary, and erase/reinsert cases.
 2. Seeded randomized traces with the seed and complete trace printed on failure.
@@ -69,7 +127,7 @@ The first implementation must be deterministic. Avoid wall-clock measurements an
 ## Acceptance criteria
 
 - `CppBenchmarks` remains behaviorally and structurally independent.
-- The comparison suite can be run explicitly from the `Benchmarks` package.
+- The comparison suite runs from the root package.
 - All four Swift/C++ container pairs have at least one curated end-to-end trace.
 - A mismatch identifies the container, operation number, operation, seed when applicable, Swift observation, and C++ observation.
 - MultiMap and MultiSet include a regression case for hinted insertion within an equivalent-key group.

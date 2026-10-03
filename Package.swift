@@ -243,6 +243,19 @@ let package = Package(
     ),
 
     .target(
+      name: "CppBehaviorReference",
+      publicHeadersPath: "include"
+    ),
+    .testTarget(
+      name: "CppBehaviorReferenceTests",
+      dependencies: [
+        "CppBehaviorReference",
+        "AcCollections",
+      ],
+      swiftSettings: _settings
+    ),
+
+    .target(
       name: "OptionalArrayModule",
     ),
     .testTarget(

@@ -20,10 +20,16 @@
 
 ### 優先事項
 
+- 2026-10-04 00:37 JST ユーザー要望: 赤黒木の完成を優先し、C++標準ライブラリとの
+  挙動比較ターゲットの優先度を上げる。次の実装区切りは
+  `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`のSet単一ペアPoCとし、結果を確認してから
+  MultiSet/Dictionary/MultiMapへ広げる。挙動比較に必要なターゲットとテストは
+  ルートの`swift-ac-collections`へ置き、既存の`CppBenchmarks`など性能測定に必要なものは
+  `Benchmarks`パッケージへそのまま残す
 - 2026-10-03 02:50 JST ユーザー要望: 今後、C++標準ライブラリとの挙動照合を継続的に行える専用ターゲットを追加する
   - 現時点では実装を開始せず、`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`を作業依頼の正本とする
   - 既存の`CppBenchmarks`は性能測定専用として維持し、照合用C++参照実装とSwiftテストは別ターゲットにする
-  - 通常のルートパッケージの`swift test`へC++依存を持ち込まない構成を優先する
+  - 2026-10-04のユーザー判断により、挙動比較はルートパッケージへ置く方針へ更新
 - 2026-10-03 02:47 JST ユーザー要望: 作業に余裕があるとき、`release/AtCoder/2025`から現行構成までの設計変更の推移をまとめる
   - `Maintanance/REFACTORING_FROM_ATCODER_2025.md`を正本として育てる
   - コミット履歴、旧パス、新パス、移した契約、代替テストを根拠にし、推測を確定事項へ混ぜない
@@ -65,17 +71,13 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 
 - DocCの手動Topicsは`API-Matrix.md`と`API-Matrix-View.md`を基準に、検索・挿入・削除・範囲操作などへ広げる。4型の具象型ページだけでなく、共通protocolのDefault ImplementationsやViewへの導線をどこへ置くかは引き続き検討する
 - .strictMemorySafety() にしていきたい
-  - 2026-10-03 JST 調査済み(`CLAUDE_TASK.md`Task 1、採用自体は未実施):
-    `Maintanance/StrictMemorySafetyReadiness.md`へレディネス調査を記録。
-    `AcCollections`/`RedBlackTreeModule`は警告0件で即時適用可能。
-    `PermutationModule`(34件)/`BareArrayModule`(116件)/
-    `OptionalArrayModule`(144件)/`RedBlackTreeCollections`(4,948件)は
-    いずれも意図的な生ポインタ・手動メモリ管理コード由来の警告で、エラーは
-    0件。段階的採用順を提案済み。`Package.swift`は調査後に復元済み
-  - 2026-10-03 JST 第1段階採用済み(Claude Opus 5.5): `AcCollections`/
-    `RedBlackTreeModule`へ`.strictMemorySafety()`を恒久適用。警告0件、
-    `swift build`/`swift test`成功。`PermutationModule`/`BareArrayModule`/
-    `OptionalArrayModule`/`RedBlackTreeCollections`は未採用のまま保留
+  - 詳細な診断分類、対応履歴、検証結果は
+    `Maintanance/StrictMemorySafetyReadiness.md`を正本とする
+  - `AcCollections`/`RedBlackTreeModule`/`PermutationModule`は警告0件で恒久適用済み
+  - `BareArrayModule`は一意な診断を約64→22件、`OptionalArrayModule`は
+    82→21件へ削減済み。残件は公開型のunsafe storageとallocationに集中するため、
+    警告を消す目的だけで公開型を`@unsafe`にせず、storage再設計まで恒久適用を保留する
+  - `RedBlackTreeCollections`は未採用。規模が大きいため別段階で扱う
 
 - PermutationModuleは`release/AtCoder/2025`版と併存し、コンパイル時に現行版と
   互換版を切り替えられるようにする。実装前の方針と段階は

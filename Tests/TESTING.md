@@ -11,7 +11,9 @@
 
 ## 優先事項
 
-現在のユーザー依頼と `CLAUDE_TASK.md` が最優先。現在、追加の優先事項はない。
+赤黒木の完成判断を優先する。C++挙動比較のSet単一ペアPoCは成功済みで、
+MultiSet/Dictionary/MultiMapへ展開する前の確認地点にある。挙動比較ターゲットは
+ルートパッケージへ置き、性能測定用の`CppBenchmarks`は`Benchmarks`へ残す。
 
 ## 現在地
 
@@ -30,11 +32,13 @@
 
 - OptionalArrayModule: Release実行、Death Test、参照型寿命、公開API化漏れを対応済み。
   strict memory safetyの4バッチで所有型の破棄・変更・初期化とView境界を整理し、
-  一意な診断を82→62→44→40→21へ削減。通常テスト・Death Test全30件と通常ビルドが
-  成功している。残りは公開7型のunsafe storage・Viewでのstorage代入・8つの`allocate`。
+  一意な診断を82→62→44→40→21へ削減。参照型寿命は2D〜4Dの破棄と3D/4Dの
+  `removeAll()`後の再利用までテスト済み。残りは公開7型のunsafe storage・Viewでの
+  storage代入・8つの`allocate`。
   公開APIへunsafeを伝播させずstorageを隔離できる設計までstrict恒久適用を保留する。
 - BareArrayModule: Debug/Release、境界Death Test、参照型寿命をレビュー済み。
-  3D cloneのcapacity不足による参照解放漏れを修正済み。strict memory safetyの第1バッチとして
+  3D cloneのcapacity不足による参照解放漏れを修正し、1D〜4D cloneの参照所有を
+  テスト済み。strict memory safetyの第1バッチとして
   4つの所有型の`deinit`、初期化済み要素への書き込み、cloneをscoped `unsafe`化し、
   所有型・View型のpointer initializerと添字境界も整理して、一意な診断を
   約64→54→38→28→22へ削減した。残りは公開7型を`@unsafe`にするAPI判断とallocate。

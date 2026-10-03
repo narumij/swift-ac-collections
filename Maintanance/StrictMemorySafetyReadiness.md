@@ -2,9 +2,10 @@
 
 # `.strictMemorySafety()` 採用レディネス調査 (CLAUDE_TASK.md Task 1)
 
-`.strictMemorySafety()`を各ターゲットへ**一時的に**適用し、診断を収集した調査結果。
-**production codeの変更はなく、`Package.swift`は調査後に元の状態へ復元済み**
-(`git diff Package.swift`はクリーン)。
+`.strictMemorySafety()`を各ターゲットへ一時的に適用して診断を収集した初回調査と、
+その後の段階的な対応結果を記録する。§1〜§7の初回調査ではproduction codeを変更せず、
+`Package.swift`も調査後に復元した。後続の対応ではproduction codeを変更し、下表の
+「採用済み」ターゲットへ`.strictMemorySafety()`を恒久適用している。
 
 ## 採用状況(2026-10-03 JST 更新)
 

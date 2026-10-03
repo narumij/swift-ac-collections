@@ -115,6 +115,18 @@ final class PermutationTests: XCTestCase {
     XCTAssertEqual(third.map { Array($0) }, [2, 1, 3])
   }
 
+  func testSubSequenceSubscriptValidBoundaries() throws {
+    // 有効範囲の両端(startIndex と endIndex - 1)は添字でアクセスできる。
+    // 範囲外の添字は PermutationDeathTests で precondition 失敗を確認する。
+    var iterator = [1, 2, 3].nextPermutations().makeIterator()
+    _ = iterator.next()
+    let p = try XCTUnwrap(iterator.next())
+    XCTAssertEqual(p.startIndex, 0)
+    XCTAssertEqual(p.endIndex, 3)
+    XCTAssertEqual(p[p.startIndex], 1)
+    XCTAssertEqual(p[p.endIndex - 1], 2)
+  }
+
 #if ENABLE_PERFORMANCE_TESTING
   #if USING_ALGORITHMS
     func testPerformance0() throws {

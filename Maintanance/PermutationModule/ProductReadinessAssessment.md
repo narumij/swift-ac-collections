@@ -54,3 +54,44 @@
   (AtCoder)への投稿を伴うためユーザー自身が行う前提。
 
 この文書はコード変更を含まない調査結果の記録。残る論点への対応方針はユーザーの判断を待つ。
+
+## 公開添字の境界チェックと計測(2026-10-03)
+
+公開`SubSequenceN.subscript(position:)`は範囲チェックを持たず、範囲外の添字で不定値を
+返す、またはSIGSEGVになっていた。公開添字だけに
+`precondition(position >= startIndex && position < endIndex)`を追加した(内部`Buffer`の
+添字と順列生成アルゴリズムは変更なし)。範囲外アクセスは事前条件違反であり、従来の
+不定な挙動は契約ではない。
+
+- 先行テスト: `Tests/PermutationTests/PermutationDeathTests.swift`(`endIndex`・`-1`・
+  `endIndex + 1`、`processExitsWith: .signal(SIGTRAP)`)。修正前はDebug/Releaseとも
+  3件が`EXIT_SUCCESS`(不定値を返して正常終了)で失敗し、修正後は3件ともSIGTRAPで
+  停止して成功する。有効範囲の両端は`testSubSequenceSubscriptValidBoundaries`で確認。
+- ベンチマーク: `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`
+  (有効な添字だけを公開APIで読み、合計を計時区間外で検証する。順次アクセスと、
+  固定シードでシャッフルした添字列によるアクセスの2ケース)。`Benchmarks/`で次を
+  修正前後に各2回実行した:
+
+  ```console
+  swift run -c release benchmark run \
+    --filter 'Permutations.SubSequenceN subscript' \
+    --sizes 1k 16k 256k --cycles 10 --mode replace-all \
+    Results/PermutationSubscript/<before|after>-run<1|2>.json
+  ```
+
+- 環境: macOS 27.0 / Swift 6.4 / arm64、Release。生データは
+  `Benchmarks/Results/PermutationSubscript/`。
+
+結果(最小サンプル値、μs、要素数 1,024 / 16,384 / 262,144):
+
+| ケース | 1k | 16k | 256k |
+| --- | --- | --- | --- |
+| 順次 修正前 run1 / run2 | 0.38 / 0.38 | 5.75 / 5.75 | 87.42 / 87.29 |
+| 順次 修正後 run1 / run2 | 0.54 / 0.46 | 8.04 / 7.00 | 127.08 / 110.12 |
+| シャッフル 修正前 run1 / run2 | 0.38 / 0.38 | 7.21 / 7.08 | 184.92 / 184.25 |
+| シャッフル 修正後 run1 / run2 | 0.62 / 0.54 | 12.92 / 11.25 | 261.75 / 242.67 |
+
+修正後は順次で約1.2〜1.5倍、シャッフルで約1.3〜1.8倍になった。修正後の2回の間でも
+10〜15%程度ばらつき、単一マシン・cycles 10の計測であるため、倍率は目安にとどまり
+一般化はしない。添字1回あたりの絶対差は1ナノ秒未満であり、安全性の確保を優先して
+検査を維持する。

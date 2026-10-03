@@ -70,11 +70,6 @@
   production codeの修正は今回のタスク範囲外のため、
   `testEraseWhereOnEmptyCollectionDetachesFromSingleton`で現状を再現する
   テストのみ追加した。修正するかどうかユーザー判断待ち。
-- PermutationModule: 公開`SubSequenceN[position]`に範囲チェックがない。exit testの
-  子プロセス内で実測した結果、`endIndex`/`-1`/`endIndex+1`ではtrapせずに不定値を返し
-  (Debug/Releaseで値が異なる)、`1 << 40`ではSIGSEGVになった。固定すべき挙動ではない
-  ためDeath Testは未追加。公開添字だけに`precondition`を追加する最小修正案
-  (Death Testを先に追加)がユーザー判断待ち。詳細は`StrictMemorySafetyReadiness.md` §8。
 - 内部テスト層の区分、および生木テストと変更コストの均衡。
 - UnsafeNode/RawBufferクロスチェックと既存単層テストの統合方法。前者には独立した
   計算経路間の一致確認という固有の役割がある。
@@ -85,20 +80,19 @@
 
 ## 直近の引き継ぎ
 
-- `CLAUDE_TASK.md`の3タスク(APIマトリクス照合・Permutation strict memory safety
-  バッチ1・公開添字の境界調査)を完了しCompletedへ更新。前回分は
-  `CLAUDE_TASK_HISTORY.md`へ原文のまま移動。
-- `API-Matrix.md`/`API-Matrix-View.md`の古い記述を現行ソースに合わせて修正した。
-  対象はMultiMapのキー添字(MappedValues View)、`values(forKey:)`、`init(grouping:by:)`の
-  分割、`update`系の意味、`subscript(position:)`、Dictionaryの`merge`、監査候補。
-- `Permutations.Buffer.deinit`へscoped `unsafe`を付与。一時適用ビルドで一意な診断が
-  17→14件になり、新種の診断はなかった。`Package.swift`は復元済み。
-- 公開`SubSequenceN[position]`の範囲外アクセスを子プロセス内で実測した(上記判断待ち)。
-  一時テストは削除済み。
-- 検証: 通常`swift build`成功、PermutationTests 2件成功。互換モードでは
-  PermutationTests 2件とAcCollectionsTests 4件が成功。`git diff --check`クリーン。
+- `CLAUDE_TASK.md`の3タスク(Permutation添字ベンチマーク・公開添字の境界修正・
+  strict再監査)を完了しCompletedへ更新。前回分は`CLAUDE_TASK_HISTORY.md`へ移動。
+- 公開`SubSequenceN[position]`へ範囲`precondition`を追加。先に
+  `PermutationDeathTests.swift`(3件、SIGTRAP期待)を追加し、修正前はDebug/Releaseとも
+  `EXIT_SUCCESS`で失敗、修正後は成功することを確認。有効境界テストも追加。
+- `Benchmarks/`へPermutation添字ベンチマークを追加。修正後は約1.2〜1.8倍(1アクセスあたり
+  1ns未満の差、ノイズ10〜15%)。詳細は`ProductReadinessAssessment.md`。
+- strict一時適用で一意な診断は14件のまま(G2〜G6不変)。`Package.swift`は復元済み。
+- 検証: Debug/ReleaseでPermutationTests(XCTest 3件+exit test 3件)成功、互換モードで
+  PermutationTests 3件・AcCollectionsTests 4件成功、通常`swift build`成功、
+  `git diff --check`クリーン。
 
-最終更新: 2026-10-03 14:47 JST / Claude Opus 5.5
+最終更新: 2026-10-03 15:03 JST / Claude Opus 5.5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

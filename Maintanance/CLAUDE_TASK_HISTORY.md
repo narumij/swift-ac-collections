@@ -5,6 +5,19 @@ Completed assignments and result summaries moved verbatim from
 order (newest first). Headings such as "Active" or "above" refer to their
 position in the original file at the time they were written.
 
+## Previous Completed Result (API matrix / Permutation strict batch 1 / boundary investigation)
+
+- Reconciled `API-Matrix.md` and `API-Matrix-View.md` with current production
+  APIs, including MultiMap mapped-values versus key-value range views.
+- Added scoped `unsafe` only to the three expressions in
+  `Permutations.Buffer.deinit`; temporary strict checking reduced unique
+  diagnostics from 17 to 14, with `Package.swift` restored.
+- Characterized public `SubSequenceN` invalid index access in child processes:
+  nearby invalid indices returned configuration-dependent garbage and a distant
+  index caused SIGSEGV. No misleading death test was retained.
+- Normal build, focused normal/compatibility tests, and `git diff --check`
+  succeeded. No commit or push was performed.
+
 ## Latest Follow-up Assignment (completed)
 
 Complete these three bounded tasks in order. Communicate with the user in

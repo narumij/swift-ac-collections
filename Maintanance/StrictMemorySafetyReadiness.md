@@ -167,7 +167,8 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
 2. **バッチ2(G2+G3、内部API再設計)**: `__header_ptr`を`header`へ置換して削除し、
    `__storage_ptr`を`@unsafe`化、添字2箇所にscoped `unsafe`。`@inline(__always)`の
    ホットパスを変えるため、Release計測で性能が劣化しないことを確認する
-   (`Benchmarks/`には現在`PermutationModule`のベンチマークが無いため、追加を相談する)。
+   (公開添字の要素アクセスは`Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`で
+   計測できる。`nextPermutation`自体のベンチマークはまだ無い)。
 3. **バッチ3(G4〜G6)**: scoped `unsafe`の付与のみ。G4の`final`化、G5の
    precondition追加か引数削除、G6の`initialize(fromContentsOf:)`化は、挙動や内部APIが
    変わるため別々の小さな変更としてユーザーに諮る。
@@ -190,9 +191,23 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
   PermutationTests 2件・AcCollectionsTests 4件が成功。定義を元に戻したあとも
   通常ビルドが成功した。
 
+### 境界修正後の再監査(2026-10-03)
+
+- 公開`SubSequenceN.subscript(position:)`へ範囲`precondition`を追加した後、§8の
+  再現手順で一時適用ビルドを再実行した。一意な診断は**14件のまま**で、新しい種類の
+  診断はない。追加した`precondition`の行からは診断が出ていない。
+- 残り14件はG2〜G6のままで、行番号だけが1行ずつ後ろへずれた: G2 172・178(各2件)、
+  G3 186・192・214・216、G4 230、G5 251–253、G6 278・280。
+- `Package.swift`は`git checkout -- Package.swift`で元に戻した(`git diff Package.swift`は空)。
+
 ### 計画で見つけた懸念(ユーザー判断事項、今回は未変更)
 
-- **公開APIの範囲外アクセス**: `SubSequenceN.subscript(position:)`(公開)は
+- **公開APIの範囲外アクセス(2026-10-03 修正済み)**: 公開添字へ範囲`precondition`を
+  追加し、`Tests/PermutationTests/PermutationDeathTests.swift`で`endIndex`・`-1`・
+  `endIndex + 1`がSIGTRAPで停止することを固定した。計測値は
+  `PermutationModule/ProductReadinessAssessment.md`の「公開添字の境界チェックと計測」。
+  以下は修正前の記録。
+  `SubSequenceN.subscript(position:)`(公開)は
   `Buffer`の範囲チェックのないポインタ添字(G3、213行)へ直結しており、範囲外の
   `position`で範囲外メモリを読む(コード読解による。未定義動作のため実行確認はしていない)。
   `RandomAccessCollection`としては範囲外はtrapが期待される。strict memory safetyの

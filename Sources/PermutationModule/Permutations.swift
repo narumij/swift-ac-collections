@@ -154,7 +154,8 @@ extension Permutations.SubSequenceN: RandomAccessCollection {
   @inlinable
   @inline(__always)
   public subscript(position: Int) -> C.Element {
-    elementBuffer[position]
+    precondition(position >= startIndex && position < endIndex, "Index out of range")
+    return elementBuffer[position]
   }
   #if AC_COLLECTIONS_INTERNAL_CHECKS
     public var _copyCount: UInt { elementBuffer.header.copyCount }

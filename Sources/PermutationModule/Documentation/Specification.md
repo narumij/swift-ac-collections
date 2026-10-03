@@ -66,6 +66,11 @@ ABC328Eの解説コードを読んだ際、「全探索で間に合っている�
    保持され、書き換わらない(`Tests/PermutationTests/PermutationTests.swift` の
    `testNextPermutationsRetainedResultsRemainStable` で固定)。
 3. **計算量**: 1ステップは最悪O(n)。
+4. **添字の事前条件**: `SubSequenceN[position]` の `position` は
+   `startIndex..<endIndex` の範囲内でなければならない。範囲外の添字は事前条件違反で
+   あり、`precondition` により実行時に停止する(Debug/Releaseとも。
+   `Tests/PermutationTests/PermutationDeathTests.swift` で `endIndex`・`-1`・
+   `endIndex + 1` を固定)。`-Ounchecked` ビルドではこの検査が省略されうる。
 
 ## この文書がまだ扱っていないもの
 

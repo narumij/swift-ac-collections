@@ -21,7 +21,9 @@ final class MultiMapBehaviorComparisonTests: CppBehaviorReferenceTestCase {}
 ///
 /// Mapped values are occurrence identities: traces use distinct values so the
 /// placement of each occurrence inside an equivalent-key group is observable in
-/// the complete key/value contents.
+/// the complete key/value contents. `find`, however, does not use the mapped value
+/// or rank as a returned fact because C++ does not specify which equivalent
+/// occurrence `std::multimap::find` returns.
 private enum MultiMapOperation: Equatable {
     case insert(Int64, Int64)
     case insertHint(Int64, Int64, at: Int)
@@ -154,8 +156,10 @@ private func executeSwiftTrace(_ operations: [MultiMapOperation]) throws -> [Mul
             rankResult = rank(index)
         case .find(let key):
             let index = multimap.find(key)
-            entryResult = entry(at: index)
-            rankResult = rank(index)
+            // std::multimap::find may return any equivalent occurrence. Preserve
+            // presence and the returned key, but deliberately erase occurrence
+            // identity and rank from the common observable contract.
+            entryResult = entry(at: index).map { MultiMapEntry(key: $0.key, value: 0) }
             count = multimap.count(forKey: key)
         case .lowerBound(let key), .upperBound(let key):
             let index: Index
@@ -225,11 +229,23 @@ private func executeCppTrace(_ operations: [MultiMapOperation]) throws -> [Multi
     }
 
     return zip(operations, observations).map { operation, observation in
-        MultiMapObservation(
+        let entry: MultiMapEntry? = observation.has_entry
+            ? MultiMapEntry(key: observation.entry.key, value: observation.entry.value) : nil
+        let comparableEntry: MultiMapEntry?
+        let comparableRank: Int?
+        if case .find = operation {
+            // libstdc++, MSVC STL, libc++, and Swift need not choose the same
+            // occurrence inside an equivalent-key group.
+            comparableEntry = entry.map { MultiMapEntry(key: $0.key, value: 0) }
+            comparableRank = nil
+        } else {
+            comparableEntry = entry
+            comparableRank = observation.rank < 0 ? nil : Int(observation.rank)
+        }
+        return MultiMapObservation(
             operation: operation,
-            entry: observation.has_entry
-                ? MultiMapEntry(key: observation.entry.key, value: observation.entry.value) : nil,
-            rank: observation.rank < 0 ? nil : Int(observation.rank),
+            entry: comparableEntry,
+            rank: comparableRank,
             upperRank: observation.upper_rank < 0 ? nil : Int(observation.upper_rank),
             previous: observation.has_previous ? observation.previous_value : nil,
             count: observation.count < 0 ? nil : Int(observation.count),

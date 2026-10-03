@@ -692,9 +692,14 @@ Four-container C++ comparison expansion is complete; further breadth is optional
   this file, `Maintanance/CLAUDE_TASK.md`. (`Maintanance/MAINTENANCE.md` was already
   modified by someone else and was not touched.)
 - **Remaining gaps:** `insert(key:value:)` rank has no common return fact (compared via
-  contents); `find` rank is compared although the standard does not fix which
-  occurrence `std::multimap::find` returns (libc++ and Swift agree on the first);
-  Linux not run locally. No shrinking by design.
+  contents); Linux was not run locally. No shrinking by design.
+- **Linux portability correction:** the first libstdc++ run showed that
+  `std::multimap::find` and Swift selected different occurrences from an otherwise
+  identical equivalent-key group. Because the C++ standard does not specify which
+  equivalent occurrence `find` returns, MultiMap `find` now compares only presence,
+  returned key, count, and complete contents; mapped occurrence identity and rank are
+  deliberately excluded. Bounds, equal ranges, hinted insertion, and every ordered
+  content snapshot remain strict comparisons.
 
 ## Test strategy
 

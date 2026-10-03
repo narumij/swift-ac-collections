@@ -397,3 +397,326 @@ func dictionaryMismatchReportContainsRequiredContext() {
     #expect(message?.contains("[10:100, 20:200]") == true)
     #expect(message?.contains("[10:100, 20:999]") == true)
 }
+
+// MARK: - Seeded randomized traces
+
+// `SplitMix64` and `firstRandomizedMismatch` are shared in `SeededTraceSupport.swift`;
+// the seeds, operation count, and phase length match the Set and MultiSet traces.
+
+private let dictionaryRandomizedSeeds: [UInt64] = [1, 2, 3, 0x5EED, 0xC0FFEE]
+private let dictionaryRandomizedOperationCount = 300
+/// Operations alternate between growing and shrinking phases of this length so each
+/// trace repeatedly passes through dense, sparse, and empty states.
+private let dictionaryRandomizedPhaseLength = 40
+private let dictionaryRandomizedKeyDomain: ClosedRange<Int64> = 0...15
+/// Occasional keys below and above every ordinary key.
+private let dictionaryRandomizedExtremeKeys: [Int64] = [.min, .max]
+
+/// Generation-policy events, counted from the model state before each operation.
+///
+/// For a unique key the only exact hint is its lower-bound rank: the existing entry,
+/// or the entry before which an absent key belongs.
+private struct DictionaryTraceCoverage: Equatable {
+    var insertIntoEmpty = 0
+    var insertIntoNonEmpty = 0
+    var insertNewKey = 0
+    var insertExistingKey = 0
+    var insertHintNewKey = 0
+    var insertHintExistingKey = 0
+    var updateNewKey = 0
+    var updateExistingKey = 0
+    var updateHintNewKey = 0
+    var updateHintExistingKey = 0
+    var subscriptAssignNewKey = 0
+    var subscriptAssignExistingKey = 0
+    var subscriptAddNewKey = 0
+    var subscriptAddExistingKey = 0
+    var hintOnEmpty = 0
+    var hintAtStart = 0
+    var hintAtEnd = 0
+    var insertHintExact = 0
+    var insertHintPoor = 0
+    var updateHintExact = 0
+    var updateHintPoor = 0
+    var extremeKey = 0
+    /// A new key below or above every key of a non-empty dictionary.
+    var newLeastKey = 0
+    var newGreatestKey = 0
+    var presentFind = 0
+    var absentFind = 0
+    var presentBoundOrRange = 0
+    var absentBoundOrRange = 0
+    var presentErase = 0
+    var absentErase = 0
+    /// Erasure of the least or greatest key while at least two entries remain.
+    var eraseLeastKey = 0
+    var eraseGreatestKey = 0
+    var emptiedByErase = 0
+    /// Insertion into a dictionary that an erasure had emptied.
+    var reinsertAfterEmptied = 0
+    /// Insertion of an absent key that an earlier erasure removed.
+    var reinsertErasedKey = 0
+
+    /// The names of events that never occurred.
+    var missing: [String] { missingCoverage(self) }
+}
+
+/// Generates a valid stateful trace for `seed` from an independent sorted key/value
+/// model.
+///
+/// Every value-bearing operation uses the distinct value `1_000 + operation number`,
+/// so preservation, replacement, and returned previous values stay observable. Hints
+/// are current zero-based ranks in `0...count`: exact, one past exact, `startIndex`,
+/// `endIndex`, a poor rank before or after exact, or a random rank.
+private func generateDictionaryTrace(
+    seed: UInt64,
+    count operationCount: Int
+) -> (operations: [DictionaryOperation], coverage: DictionaryTraceCoverage) {
+    var random = SplitMix64(state: seed)
+    var model: [(key: Int64, value: Int64)] = []
+    var coverage = DictionaryTraceCoverage()
+    var operations: [DictionaryOperation] = []
+    var erasedKeys: Set<Int64> = []
+    var emptiedByErase = false
+
+    func lowerRank(_ key: Int64) -> Int {
+        model.firstIndex { $0.key >= key } ?? model.count
+    }
+
+    func isPresent(_ key: Int64) -> Bool {
+        let lower = lowerRank(key)
+        return lower < model.count && model[lower].key == key
+    }
+
+    func randomKey() -> Int64 {
+        if random.next(below: 16) == 0 {
+            return dictionaryRandomizedExtremeKeys[random.next(below: dictionaryRandomizedExtremeKeys.count)]
+        }
+        return dictionaryRandomizedKeyDomain.lowerBound
+            + Int64(random.next(below: dictionaryRandomizedKeyDomain.count))
+    }
+
+    /// A present key with probability `percent`% when the model is non-empty.
+    func key(presentPercent percent: Int) -> Int64 {
+        if !model.isEmpty && random.next(below: 100) < percent {
+            return model[random.next(below: model.count)].key
+        }
+        return randomKey()
+    }
+
+    func hintRank(for key: Int64) -> Int {
+        let exact = lowerRank(key)
+        switch random.next(below: 7) {
+        case 0: return exact
+        case 1: return min(exact + 1, model.count)
+        case 2: return 0
+        case 3: return model.count
+        case 4: return exact > 0 ? random.next(below: exact) : 0
+        case 5: return exact < model.count ? exact + 1 + random.next(below: model.count - exact) : model.count
+        default: return random.next(below: model.count + 1)
+        }
+    }
+
+    for operationIndex in 0..<operationCount {
+        let growing = (operationIndex / dictionaryRandomizedPhaseLength) % 2 == 0
+        // Cumulative weights: insert, insertHint, updateValue, updateValueHint,
+        // subscriptAssign, subscriptDefaultAdd, find, lowerBound, upperBound,
+        // equalRange, eraseKey.
+        let weights = growing
+            ? [10, 22, 30, 40, 46, 52, 60, 66, 72, 78, 100]
+            : [4, 10, 14, 20, 23, 26, 32, 36, 40, 44, 100]
+        let presentPercent = growing ? 25 : 50
+        let value = Int64(1_000 + operationIndex)
+        let choice = random.next(below: 100)
+        let operation: DictionaryOperation
+
+        switch weights.firstIndex(where: { choice < $0 })! {
+        case 0:
+            operation = .insert(key(presentPercent: presentPercent), value)
+        case 1:
+            let hintedKey = key(presentPercent: presentPercent)
+            operation = .insertHint(hintedKey, value, at: hintRank(for: hintedKey))
+        case 2:
+            operation = .updateValue(value, forKey: key(presentPercent: presentPercent))
+        case 3:
+            let hintedKey = key(presentPercent: presentPercent)
+            operation = .updateValueHint(value, forKey: hintedKey, at: hintRank(for: hintedKey))
+        case 4:
+            operation = .subscriptAssign(key(presentPercent: presentPercent), value)
+        case 5:
+            operation = .subscriptDefaultAdd(key(presentPercent: presentPercent), value)
+        case 6:
+            operation = .find(key(presentPercent: 50))
+        case 7:
+            operation = .lowerBound(key(presentPercent: 50))
+        case 8:
+            operation = .upperBound(key(presentPercent: 50))
+        case 9:
+            operation = .equalRange(key(presentPercent: 50))
+        default:
+            operation = .eraseKey(key(presentPercent: growing ? 50 : 90))
+        }
+
+        let wasNonEmpty = !model.isEmpty
+        switch operation {
+        case .insert(let key, _), .insertHint(let key, _, _),
+             .updateValue(_, let key), .updateValueHint(_, let key, _),
+             .subscriptAssign(let key, _), .subscriptDefaultAdd(let key, _):
+            let exact = lowerRank(key)
+            let present = isPresent(key)
+            if model.isEmpty {
+                coverage.insertIntoEmpty += 1
+                if emptiedByErase {
+                    coverage.reinsertAfterEmptied += 1
+                    emptiedByErase = false
+                }
+            } else {
+                coverage.insertIntoNonEmpty += 1
+                if !present && exact == 0 { coverage.newLeastKey += 1 }
+                if !present && exact == model.count { coverage.newGreatestKey += 1 }
+            }
+            if !present && erasedKeys.contains(key) { coverage.reinsertErasedKey += 1 }
+            if dictionaryRandomizedExtremeKeys.contains(key) { coverage.extremeKey += 1 }
+
+            switch operation {
+            case .insert:
+                if present { coverage.insertExistingKey += 1 } else { coverage.insertNewKey += 1 }
+            case .insertHint(_, _, let position):
+                if present { coverage.insertHintExistingKey += 1 } else { coverage.insertHintNewKey += 1 }
+                if position == exact { coverage.insertHintExact += 1 } else { coverage.insertHintPoor += 1 }
+            case .updateValue:
+                if present { coverage.updateExistingKey += 1 } else { coverage.updateNewKey += 1 }
+            case .updateValueHint(_, _, let position):
+                if present { coverage.updateHintExistingKey += 1 } else { coverage.updateHintNewKey += 1 }
+                if position == exact { coverage.updateHintExact += 1 } else { coverage.updateHintPoor += 1 }
+            case .subscriptAssign:
+                if present { coverage.subscriptAssignExistingKey += 1 } else { coverage.subscriptAssignNewKey += 1 }
+            default:
+                if present { coverage.subscriptAddExistingKey += 1 } else { coverage.subscriptAddNewKey += 1 }
+            }
+
+            switch operation {
+            case .insertHint(_, _, let position), .updateValueHint(_, _, let position):
+                if model.isEmpty {
+                    coverage.hintOnEmpty += 1
+                } else {
+                    if position == 0 { coverage.hintAtStart += 1 }
+                    if position == model.count { coverage.hintAtEnd += 1 }
+                }
+            default:
+                break
+            }
+
+            // Apply the operation's semantics: `insert` preserves, the others replace
+            // or (for the defaulted subscript) accumulate.
+            switch operation {
+            case .insert(_, let value), .insertHint(_, let value, _):
+                if !present { model.insert((key, value), at: exact) }
+            case .updateValue(let value, _), .updateValueHint(let value, _, _),
+                 .subscriptAssign(_, let value):
+                if present { model[exact].value = value } else { model.insert((key, value), at: exact) }
+            case .subscriptDefaultAdd(_, let value):
+                if present { model[exact].value += value } else { model.insert((key, value), at: exact) }
+            default:
+                break
+            }
+
+        case .find(let key):
+            if dictionaryRandomizedExtremeKeys.contains(key) { coverage.extremeKey += 1 }
+            if isPresent(key) { coverage.presentFind += 1 } else { coverage.absentFind += 1 }
+
+        case .lowerBound(let key), .upperBound(let key), .equalRange(let key):
+            if dictionaryRandomizedExtremeKeys.contains(key) { coverage.extremeKey += 1 }
+            if isPresent(key) { coverage.presentBoundOrRange += 1 } else { coverage.absentBoundOrRange += 1 }
+
+        case .eraseKey(let key):
+            if dictionaryRandomizedExtremeKeys.contains(key) { coverage.extremeKey += 1 }
+            if isPresent(key) {
+                let rank = lowerRank(key)
+                coverage.presentErase += 1
+                if model.count >= 3 && rank == 0 { coverage.eraseLeastKey += 1 }
+                if model.count >= 3 && rank == model.count - 1 { coverage.eraseGreatestKey += 1 }
+                model.remove(at: rank)
+                erasedKeys.insert(key)
+            } else {
+                coverage.absentErase += 1
+            }
+        }
+
+        if wasNonEmpty && model.isEmpty {
+            coverage.emptiedByErase += 1
+            emptiedByErase = true
+        }
+        operations.append(operation)
+    }
+
+    return (operations, coverage)
+}
+
+@Test("Seeded Dictionary traces are deterministic and cover the generation policy", arguments: dictionaryRandomizedSeeds)
+func dictionaryRandomizedTraceIsDeterministicAndCovered(seed: UInt64) {
+    let first = generateDictionaryTrace(seed: seed, count: dictionaryRandomizedOperationCount)
+    let second = generateDictionaryTrace(seed: seed, count: dictionaryRandomizedOperationCount)
+    #expect(first.operations == second.operations)
+    #expect(first.coverage == second.coverage)
+    #expect(first.coverage.missing.isEmpty, "seed=\(seed), missing=\(first.coverage.missing)")}
+
+@Test("RedBlackTreeDictionary matches std::map for seeded randomized traces", arguments: dictionaryRandomizedSeeds)
+func dictionarySeededRandomizedTraceMatchesCpp(seed: UInt64) {
+    let operations = generateDictionaryTrace(seed: seed, count: dictionaryRandomizedOperationCount).operations
+    let swift: [DictionaryObservation]
+    let cpp: [DictionaryObservation]
+    do {
+        swift = try executeSwiftTrace(operations)
+        cpp = try executeCppTrace(operations)
+    } catch {
+        Issue.record("container=\(dictionaryContainer), seed=\(seed), executor error=\(error)")
+        return
+    }
+
+    let mismatch = firstRandomizedMismatch(
+        container: dictionaryContainer, seed: seed, operations: operations, swift: swift, cpp: cpp)
+    #expect(mismatch == nil, "\(mismatch ?? "")")
+}
+
+/// The shared seeded diagnostic is otherwise exercised only with Set and MultiSet
+/// observations; this checks it with key/value contents, tampering with a returned
+/// previous value.
+@Test("A seeded Dictionary mismatch report contains the seed and the trace through failure")
+func dictionaryRandomizedMismatchReportContainsRequiredContext() throws {
+    let seed = dictionaryRandomizedSeeds[0]
+    let operations = generateDictionaryTrace(seed: seed, count: dictionaryRandomizedOperationCount).operations
+    let swift = try executeSwiftTrace(operations)
+    // Tamper with one observation instead of relying on a library defect.
+    let failing = try #require(swift.indices.first {
+        $0 >= 17 && swift[$0].previous.flatMap { $0 } != nil
+    })
+    var cpp = swift
+    let original = cpp[failing]
+    cpp[failing] = DictionaryObservation(
+        operation: original.operation,
+        inserted: original.inserted,
+        entry: original.entry,
+        rank: original.rank,
+        upperRank: original.upperRank,
+        previous: original.previous.map { $0.map { $0 + 1 } },
+        count: original.count,
+        range: original.range,
+        contents: original.contents
+    )
+
+    let message = try #require(firstRandomizedMismatch(
+        container: dictionaryContainer, seed: seed, operations: operations, swift: swift, cpp: cpp))
+    #expect(message.contains("container=\(dictionaryContainer)"))
+    #expect(message.contains("seed=\(seed)"))
+    #expect(message.contains("operation=\(failing)"))
+    #expect(message.contains("input=\(operations[failing])"))
+    #expect(message.contains("swift=\(swift[failing])"))
+    #expect(message.contains("cpp=\(cpp[failing])"))
+    // Key/value contents are printed as `key:value` entries.
+    #expect(message.contains("\(swift[failing].contents)"))
+    for operationIndex in 0...failing {
+        #expect(message.contains("\n  \(operationIndex): \(operations[operationIndex])"))
+    }
+    #expect(!message.contains("\n  \(failing + 1): "))
+}

@@ -2,8 +2,8 @@
 
 ## Status
 
-**Active high priority — Set and MultiSet seeded traces accepted (29 tests);
-Dictionary expansion in progress.**
+**Active high priority — Set, MultiSet, and Dictionary seeded traces accepted (32
+tests); XCTest lifecycle migration in progress before MultiMap expansion.**
 The user raised this work's priority on 2026-10-04 because agreement with the C++
 standard-library containers is important evidence for completing the red-black-tree
 implementation. Set, MultiSet, Dictionary, and MultiMap now have 17 passing comparison
@@ -115,6 +115,35 @@ Dictionary/std::map only:
 
 Do not expand to MultiMap, add unbounded fuzzing/shrinking or CI, or change production
 Swift/public API. Preserve and stop on any real mismatch or crash.
+
+### XCTest lifecycle migration authorization (2026-10-04)
+
+The Dictionary expansion is accepted. Before adding more Swift Testing cases, address
+the Debug lifetime-counter risk in full-suite and Linux CI execution:
+
+1. Convert all `CppBehaviorReferenceTests` declarations from Swift Testing to XCTest.
+   Preserve the semantic inventory, not merely a nominal test count.
+2. Add a target-local `XCTestCase` base that faithfully copies the relevant Debug
+   discipline from `RedBlackTreeTestCase`: pre-test singleton initialization and
+   allocation/node/payload counter reset; post-test singleton integrity checks,
+   initialized/deinitialized and allocated/deallocated balance assertions; final reset.
+   Do not share source from another test target.
+3. Add a direct `RedBlackTreeCollections` test dependency and conditional
+   `@testable import` if required for the internal counters. Do not expose counters in
+   production API.
+4. Convert parameterized seed tests to explicit loops over the unchanged seed list.
+   Each seed must execute in its own nested scope/helper so all tree values are released
+   before the next seed and before teardown. Every assertion/mismatch must retain the
+   seed in its failure message.
+5. Preserve curated traces, deliberate mismatch checks, SplitMix64 known answers,
+   deterministic regeneration, coverage requirements, and Debug/Release comparisons.
+6. Validate the focused target in Debug and Release, then run the full root Debug suite
+   to catch counter contamination of later XCTest cases. Run `git diff --check`.
+
+Do not change production implementation, skip Linux, edit workflows, weaken counter
+assertions, add MultiMap seeded traces, or broaden test semantics in this migration.
+If Swift Testing and XCTest cannot be made behaviorally equivalent, record the exact
+missing assertion or lifecycle failure and stop for review.
 
 ## Goal
 
@@ -436,6 +465,54 @@ traces (strategy stage 2) are still not implemented, by design of this audit.
   its elements, not its bound ranks (bounds are compared separately). Dictionary and
   MultiMap have no seeded traces. A Swift-side crash still identifies the seed only
   through the parameterized test argument. No shrinking by design.
+
+### Dictionary seeded-randomized result (2026-10-04, Claude Opus 5.5)
+
+- **Seeds/count:** shared `SplitMix64`, seeds `[1, 2, 3, 0x5EED, 0xC0FFEE]`, 300
+  operations, 40-operation growing/shrinking phases (unchanged from Set/MultiSet).
+- **Generator** (`generateDictionaryTrace`, `DictionaryBehaviorComparisonTests.swift`):
+  independent sorted key/value model, keys `0...15` plus 1/16 `Int64.min`/`Int64.max`.
+  Every value-bearing operation uses the distinct value `1_000 + operation number`.
+  Generates `insert`, `insertHint`, `updateValue`, `updateValueHint`, `subscriptAssign`,
+  `subscriptDefaultAdd`, `find`, `lowerBound`, `upperBound`, `equalRange`, `eraseKey`
+  as separate cases; the model applies preserve (insert), replace (update/assign), and
+  accumulate (defaulted subscript) semantics separately. Hint ranks in `0...count`:
+  exact (lower-bound rank, the only exact rank for a unique key), one past exact,
+  `startIndex`, `endIndex`, poor before/after exact, or random.
+- **Coverage test** requires, per seed, at least one of each: insert into empty /
+  non-empty; new and existing key for each of the six adding operations; hint on
+  empty, at start/end of a non-empty dictionary; exact/poor hint separately for
+  `insertHint` and `updateValueHint`; extreme key; new least/greatest key; present/
+  absent `find` and bound/range; present/absent erase; erase of the least/greatest key
+  with ≥3 entries; erase to empty; insertion after being emptied; reinsertion of an
+  erased key. Rarest per-seed count was 3 (existing-key subscript assign/add, seeds 1
+  and 0x5EED; exact `updateValueHint`, seed 0x5EED); erase to empty occurred 11–19 times
+  per seed. Also checks that each seed regenerates an identical trace and coverage.
+- **Compared per operation:** the existing Dictionary adapter's facts — inserted flag,
+  returned entry, and rank for `insert`/`insertHint`; previous value (or absent) for
+  `updateValue[Hint]`; entry, rank, count for `find`; entry and rank for bounds; lower/
+  upper rank and entries for `equalRange`; removed count for `eraseKey` — plus complete
+  ordered key/value contents after every operation. Hints validated by range on both
+  sides and resolved independently.
+- **C ABI / executor change:** none; the existing `cpp_map_execute_trace` already
+  supported every operation.
+- **Diagnostic:** `dictionaryRandomizedMismatchReportContainsRequiredContext` tampers
+  with a copied returned previous value and proves container pair, seed, operation
+  number, input, both observations, `key:value` contents, and the trace through (not
+  beyond) the failure. Added because the seeded formatter had not been exercised with
+  key/value contents.
+- **Result:** no difference or crash.
+  - `swift test --disable-sandbox --filter CppBehaviorReferenceTests` — 32 passed (Debug;
+    the six parameterized tests ran 5 cases each).
+  - `swift test --disable-sandbox -c release --filter CppBehaviorReferenceTests` — 32 passed.
+  - `git diff --check` — clean.
+- **Changed files:** `Tests/CppBehaviorReferenceTests/DictionaryBehaviorComparisonTests.swift`,
+  this file, `Maintanance/CLAUDE_TASK.md`.
+- **Remaining gaps:** the value returned by `removeValue(forKey:)` is still compared only
+  through count and contents (`erase(k)` has no equivalent); subscript assignment and
+  defaulted-subscript mutation have no returned fact and are compared through contents.
+  MultiMap has no seeded trace. A Swift-side crash identifies the seed only through the
+  parameterized test argument. No shrinking by design.
 
 ## Test strategy
 

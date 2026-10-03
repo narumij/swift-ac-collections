@@ -1,34 +1,42 @@
 # Codex-to-Claude Work Request
 
-Status: Active — Dictionary seeded randomized C++ comparison expansion
+Status: Active — migrate C++ comparison tests from Swift Testing to XCTest lifecycle discipline
 
 ## Active assignment
 
-Immediately perform the Dictionary seeded-randomized expansion authorized in
+Immediately perform the XCTest lifecycle migration authorized in
 `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`. Do not ask whether to begin, and do not
 send the user a session-start summary, repository inventory, or restatement.
 
-Extend the proven shared seeded-trace method to the Dictionary/std::map pair only.
-Drive it from an independent sorted key/value model. Exercise preserve-existing
-ordinary/hinted insert separately from replacing ordinary/hinted update; also cover
-subscript assignment, defaulted-subscript mutation, lookup/count, lower/upper/equal
-range, and removal by key. Use distinct evolving values so preservation, replacement,
-and returned previous values are observable.
+Migrate every test in `CppBehaviorReferenceTests` from Swift Testing to XCTest before
+adding MultiMap seeded traces. Add a target-local XCTest base class that copies the
+Debug allocation/node/payload counter initialization, balance assertions, singleton
+checks, and counter reset discipline from `RedBlackTreeTestCase`; do not import the
+test-support class from another target. Add the direct test dependency/import needed
+to access those counters under `@testable` in Debug.
 
-Require empty/non-empty, new/existing keys, start/end/exact/poor hints, present/absent
-lookup and removal, boundary keys, erase-to-empty, and reinsertion. Compare all common
-returned facts plus complete ordered key/value contents after every mutation. Preserve
-the fixed seeds, bounded runtime, reproducibility checks, and complete diagnostics.
+Preserve every curated, mismatch, PRNG known-answer, coverage-policy, and seeded
+comparison assertion. Replace parameterized `@Test(arguments:)` cases with explicit
+fixed-seed loops whose failure messages retain the seed; give each seed a nested scope
+so every collection is destroyed before the next seed and before `tearDownWithError`.
+Do not weaken or reset counters merely to hide imbalance.
 
-Do not expand to MultiMap, CI, benchmarks, public API, automated shrinking, unbounded
-fuzzing, or production fixes.
-On a mismatch or crash, minimize and preserve the trace, mark the task blocked, and
-stop before changing production Swift. Otherwise run all C++ comparison tests in Debug
-and Release and record exact behavior, commands, counts, and remaining gaps in the C++
-task Markdown for Codex.
+Run the migrated target in Debug and Release, then run the authoritative full root
+`swift test --disable-sandbox -c debug` to detect cross-target counter pollution. Also
+run `git diff --check`. Do not edit GitHub Actions yet, expand MultiMap randomized
+coverage, change production Swift, or skip these tests on Linux. Stop and record the
+smallest failure if lifetime balance cannot be preserved.
 
 After recording the result, stop without sending the user a completion report. Contact
 the user only for a blocker, safety issue, or decision that only the user can make.
+
+### Dictionary result (2026-10-04, Claude Opus 5.5)
+
+Status: Completed with no Swift/C++ difference or crash: 32 `CppBehaviorReferenceTests`
+passed in Debug and Release, `git diff --check` clean. Same seeds/count; no C ABI or
+executor change. Coverage policy, compared facts, changed files, and remaining gaps are
+in `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md` under "Dictionary seeded-randomized
+result".
 
 ### MultiSet result (2026-10-04, Claude Opus 5.5)
 

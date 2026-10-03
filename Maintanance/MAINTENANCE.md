@@ -236,14 +236,24 @@ swift package -c release --disable-sandbox preview-documentation \
 採用判断に耐える信憑性を外部化する段階へ移った。当面のタスクは、次の順で優先する。
 
 1. 再現可能で、比較対象と意味論が揃った正しさ・性能の証拠
-2. 有利な主張を反証できる差分テスト、外部比較、失敗例
+2. 有利な主張を反証できる差分テスト、外部参照との比較、失敗例
 3. 利用者またはAIが追跡できる生データ、実行条件、既知の限界
 4. C++互換性とSwift固有の価値を区別して説明できる検証
 5. 上記の信憑性を高める場合に限った、新規機能・ベンチ項目・文書の追加
 
-負けた結果、差がない結果、未計測の軸も成果物として残す。予備計測から結論を先取りせず、
+不利な結果、差がない結果、未計測の軸も成果物として残す。外部プロジェクトは競争相手では
+なく、設計判断と適切な用途を明らかにするための参照基準として敬意を持って扱う。
+本パッケージはSwift Collectionsの代替を標榜せず、上流のsorted collectionが実験段階にある
+間、C++に近い意味論、hint、multi型などを今必要とする利用者への暫定的な中継ぎ・補完と
+位置付ける。上流が成熟して同じ要求を満たす場合は、この役割を惰性で守らず再評価する。
+予備計測から結論を先取りせず、
 大規模な横展開の前に、小さな見本の意味論と測定対称性をレビューする。現在の次タスクは
 `SORTED_COLLECTIONS_BENCHMARK_TASK.md`のPhase 1であり、大規模計測はそのレビュー後に行う。
+
+Claudeなどへ委任した作業の詳細な完了報告、検証結果、変更ファイル、制約、懸念は、Codexが
+監査できる指定のタスクmdへ記録し、完了時にユーザーへ直接報告しない。作業がblocked、
+安全上の問題を発見した、またはユーザーにしか決められない明示的判断が必要な場合だけ、
+判断に必要な詳細を直接報告する。
 
 - 2026-10-03 Codex (GPT-5): `release/AtCoder/2025`からUnsafeTreeV2への移行の要石を保存するため、コンパイル対象外の`UnsafeTreeV2BootstrapTests.swift`を移行途中の旧名`___RedBlackTreeContainerTests_unsafe.swift`へ戻した。確定できた三段階とリファクタリング手法を`Maintanance/REFACTORING_FROM_ATCODER_2025.md`へ記録し、Fixture文書の参照も更新した。
 - 2026-10-03 Codex (GPT-5): `RedBlackTreeMappedValuesView`のsubscriptと`swapAt`へ、既存`isElement(at:)`を使ったView範囲検査を追加。同じ木でもView外のIndexは事前条件違反として停止する。検査にキー順序比較を使うため、対象extensionへ既存の`_BaseNode_KeyInterface` / `Comparable`制約を明示し、計算量をO(1)から最悪O(log n)へ更新。MappedValues正常系16件、追加Death Test 3件、RedBlackTreeTests全体が成功。Release DocCも`--warnings-as-errors`で生成成功した。

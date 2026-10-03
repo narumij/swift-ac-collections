@@ -1,19 +1,28 @@
-# RedBlackTreeCollections vs. Swift Collections SortedCollections
+# RedBlackTreeCollections and Swift Collections SortedCollections
 
-Status: Ready — next evidence-priority assignment; begin with Phase 1 only
+Status: Phase 1 reviewed — Phase 2 implementation active; no large run authorized
 
 ## Why this task exists
 
-`WorldClassAssessment.md` identifies a missing external comparison. The most direct
+`WorldClassAssessment.md` identifies a missing external reference point. A valuable
 Swift peer is Apple's experimental `SortedCollections` module: `SortedSet` and
 `SortedDictionary`, implemented over an in-memory B-tree.
 
-This task must discover where each design wins and loses. It is not authorized to
-manufacture a favorable chart or reduce “world-class” to a single timing result.
+This task should clarify the workloads and capabilities for which each design is a
+natural fit, while learning from the upstream project's design and documentation.
+It is not authorized to manufacture a favorable chart or reduce “world-class” to a
+single timing result.
+
+The intended position is modest and provisional. RedBlackTreeCollections is not
+presented as a replacement for Swift Collections. It may serve as a practical bridge
+while upstream sorted collections remain experimental, especially for users who need
+C++-like ordered-container semantics, hinted insertion, or multi containers today.
+If the upstream API matures or covers these needs, this package's role should be
+re-evaluated rather than defended by inertia.
 
 The project has moved from broad feature expansion to focused refinement. The
 priority is therefore credibility for an adoption decision: reproducible evidence,
-explicit limitations, and fair external comparison take precedence over adding more
+explicit limitations, and a respectful peer comparison take precedence over adding more
 benchmark cases or producing a favorable conclusion.
 
 For the first session, complete Phase 1 and propose the matched matrix only. Do not
@@ -63,6 +72,156 @@ The repository already registers `SortedSetBenchmarks.swift` and
 5. report the proposed matched matrix before a large measurement run.
 
 Do not treat the existing charts as fair merely because both type names appear.
+
+### Phase 1 result (2026-10-04 01:46 JST, Claude Opus 5.5) — awaiting matrix review
+
+No benchmark source was changed. No timing below is a result.
+
+**Environment and resolution.** Root commit `f838e3b7`; Apple M1, macOS 27.0
+(26A428), Swift 6.4 (swiftlang-6.4.0.34.1). `Benchmarks/Package.resolved`:
+swift-collections **1.7.0** (`a66de878e87ef5a3d5d390e0f6d9002aa5541a43`) with trait
+`UnstableSortedCollections` (upstream marks it source-unstable, "not ready for use in
+production"); swift-collections-benchmark 0.0.4 (`69cd5b45…`). swift-ac-collections is
+the local path with trait `BENCHMARK`, which only adds `__raw_find`/`__raw_end` and an
+index iterator; it changes no existing code path. The root package declares no default
+traits, so naming `BENCHMARK` disables nothing.
+
+**Harness facts (from swift-collections-benchmark 0.0.4 source).**
+
+- H1. The `[Int]` and `([Int], [Int])` generators use `shuffled()` with
+  `SystemRandomNumberGenerator`. One input per (cycle, size, input type) is cached and
+  shared by every task, so paired tasks see identical values within a cycle, but inputs
+  differ between cycles and runs and cannot be reproduced.
+- H2. Each cycle records the minimum over its iterations; `render --percentile` then
+  aggregates across cycles. The recorded commands use `--cycles 1 --percentile 90`,
+  which makes the percentile meaningless.
+- H3. `AdHoc5.json` ("versus SortedSet") puts `std::set` tasks in the same charts as
+  the Swift pair, against the Scope rule.
+
+**Existing SortedSet pairs (`SortedSetBenchmarks.swift` ↔ `RedBlackTreeSetBenchmarks.swift`).**
+
+| Existing title | Assessment |
+| --- | --- |
+| `init from range` | **Not matched.** RedBlackTreeSet uses its specialized O(n) `init(_: Range)`; `SortedSet(0..<n)` uses the general `init(_:)`, which inserts element by element and ignores sortedness. SortedSet's O(n) counterpart is `init(sortedElements:)`. |
+| `init from unsafe buffer` | Matched (general initializer, same shuffled buffer). Note: RedBlackTreeSet's general initializer also has a sorted-append fast path, which matters only for sorted input. |
+| `sequential iteration` | **Confounded.** Both iterate `0..<n`, but the trees come from different construction paths (bulk vs per-element insertion), so layout differs by construction method rather than by data structure. |
+| `successful contains` / `successful find` | Matched (`contains`; `find(_:) != endIndex` ↔ `index(of:) != nil`). `precondition` sits inside the timed region on both sides. |
+| `unsuccessful contains` / `unsuccessful find` | Symmetric but **biased**: every miss is `key + n`, above the maximum, so every query follows the rightmost path. This differs from the hit distribution. |
+| `remove` | Matched (setup outside `timer.measure` on both sides). |
+| (none) | SortedSet has no insertion, copy-on-write, or bound tasks, and **SortedDictionary has no tasks at all**. |
+
+Existing RedBlackTree-only tasks (`init from sorted` with sorting inside the timed
+region, `alternating extremes`, `insert, reserving capacity`, `insert, shared`,
+`__raw_find`, `[.find(:)]`) have no SortedSet counterpart and stay out of paired charts.
+
+**Smoke check.** `swift build -c release --disable-sandbox --product benchmark`, then
+`swift run -c release --disable-sandbox --skip-build benchmark run <tmp>/smoke.json`
+with the three existing pairs `init from unsafe buffer`, `successful contains`, and
+`remove`, `--sizes 16 --sizes 1k --cycles 1`. All 6 tasks × 2 sizes produced one
+sample each (82 ms). The output went to a temporary directory and was deleted; the
+numbers are deliberately not interpreted.
+
+**Proposed matched matrix (for review; nothing implemented).** All rows use `Int` (and
+`Int` values), new distinctly named tasks in `Benchmarks/`, inputs from a new seeded
+generator type (fixing H1 without replacing the global `[Int]` generator used by
+existing tasks), setup and validation outside the timed region, and `blackHole` on
+results. Charts contain only the Swift pair (fixing H3).
+
+| ID | Workload | RedBlackTreeSet<Int> | SortedSet<Int> | Note |
+| --- | --- | --- | --- | --- |
+| S1 | Build from sorted unique ints, sorted-specialized path | `init(_: Range)` | `init(sortedElements:)` | Both O(n) bulk builds |
+| S2 | Build from sorted buffer, general initializer | `init(_:)` | `init(_:)` | Labeled capability difference: only RedBlackTreeSet's general path exploits sortedness |
+| S3 | Build from shuffled buffer, general initializer | `init(_:)` | `init(_:)` | |
+| S4 | Incremental insert, shuffled, unique storage | `insert(_:)` loop from empty | same | No reservation on either side |
+| S5 | Successful `contains`, shuffled order | `contains` | `contains` | |
+| S6 | Unsuccessful `contains`, interleaved misses | `contains` | `contains` | Store even keys `2i`, query odd `2i+1` |
+| S7 | Exact index lookup, hit / interleaved miss | `find(_:)` vs `endIndex` | `index(of:)` vs `nil` | |
+| S8 | Strict upper bound | `upperBound(_:)` | `firstIndex(after:)` | `endIndex` ↔ `nil`; `lowerBound`/`equalRange` have no direct SortedSet API → capability row |
+| S9 | Ascending iteration after the same sorted bulk build | build via S1 | build via S1 | |
+| S10 | Ascending iteration after the same shuffled insertion history | build via S4 | build via S4 | Exposes layout effects |
+| S11 | Remove every element, shuffled order | `remove(_:)` | `remove(_:)` | |
+| S12 | One insert after O(1) copy | `var c = s; c.insert(x)` | same | Separate from S4 |
+| S13 | One remove after O(1) copy | `var c = s; c.remove(x)` | same | |
+
+| ID | Workload | RedBlackTreeDictionary<Int, Int> | SortedDictionary<Int, Int> | Note |
+| --- | --- | --- | --- | --- |
+| D1 | Build from sorted unique pairs | `init(uniqueKeysWithValues:)` | `init(sortedKeysWithValues:)` | Capability difference: no sorted-only RedBlackTree API; RedBlackTree's Collection overload also reserves capacity |
+| D2 | Build from shuffled unique pairs, general initializer | `init(uniqueKeysWithValues:)` | `init(keysWithValues:)` | Unique input: same result. Duplicates: RedBlackTree traps, SortedDictionary keeps the last value |
+| D3 | Insert new keys, shuffled | `updateValue(_:forKey:)` | `updateValue(_:forKey:)` | Both insert or replace and return the old value |
+| D4 | Update existing keys, shuffled | `updateValue(_:forKey:)` | `updateValue(_:forKey:)` | Both replace |
+| D5 | Lookup hit / interleaved miss | `subscript(key:)` get | same | |
+| D6 | Index lookup hit / interleaved miss | `index(forKey:)` | `index(forKey:)` | |
+| D7 | Defaulted-subscript increment | `d[k, default: 0] += 1` | same | Both have a mutating accessor (RedBlackTree `unsafeMutableAddress`, SortedDictionary `_modify`) |
+| D8 | Remove every key, shuffled order | `removeValue(forKey:)` | `removeValue(forKey:)` | |
+| D9 | Ascending iteration, sorted bulk build / shuffled insertion history | as S9/S10 | same | |
+| D10 | One insert / one remove after O(1) copy | `updateValue` / `removeValue` on a copy | same | |
+
+Not timed (capability or not comparable): RedBlackTree preserve-existing
+`insert(key:value:)` (SortedDictionary has no preserving insert), hinted insertion,
+`lowerBound`/`equalRange`, `reserveCapacity`, MultiSet/MultiMap (RedBlackTree only);
+sorted-only bulk initializers (SortedCollections only). Mixed insert/remove/lookup
+traces are deferred until S/D single-operation pairs are validated.
+
+**Measurement proposal.** Release; harness default doubling sizes 1…1M, plus a
+separately labeled 4M–16M large-size run if total duration allows; ≥ 5 cycles;
+p50 across cycles fixed before measuring (H2). Before timing, each pair gets an
+outside-the-timer check that both sides produce the same observable result.
+
+**Review questions.** (1) Is S2/D1's labeled capability-difference framing
+acceptable, or should those rows be dropped? (2) Should the seeded generator replace
+the existing pairs' inputs, or only feed the new tasks (proposed: new tasks only)?
+(3) Is p50 the agreed statistic?
+
+### Codex matrix review and Phase 2 authorization (2026-10-04)
+
+Phase 1 and constraints N1–N4 are accepted with these decisions:
+
+1. Retain S2 and D1 only as clearly labeled capability-difference rows. Do not place
+   them in headline matched-performance charts or combine their ratios with matched
+   rows. Their value is to explain available construction paths, not to imply equal
+   algorithms.
+2. Add a benchmark-local seeded generator for the new matrix only. Do not mechanically
+   change inputs or historical meaning of existing tasks in this phase. Record the
+   seed and generator algorithm with results.
+3. Use p50 across at least five cycles for the later publishable run. This choice is
+   fixed before seeing results.
+4. S8 remains matched at the observable-operation level, with N3's implementation
+   difference disclosed in the report.
+5. D1/D2 must use the same unlabeled `[(Int, Int)]` input and explicitly pin or verify
+   the intended SortedDictionary overload as required by N2.
+
+Phase 2 is authorized only to implement the reviewed matrix, correctness checks, and
+neutral Swift-only chart definitions under `Benchmarks/`, followed by a small Release
+smoke run. Do not perform the large/publishable measurement run, interpret timings,
+change production collection code, or update WorldClassAssessment in this phase.
+
+**Independent re-verification (2026-10-04 01:55 JST, Claude Opus 5.5, separate
+session).** Re-read both existing Set benchmark files, `AdHoc5.json`,
+`generate-adhoc5.sh`, `Benchmarks/Package.swift`/`Package.resolved`, and the
+SortedCollections 1.7.0 checkout. The resolution, H2/H3, and existing-pair assessment
+above are confirmed. Re-ran the same smoke command into a fresh `mktemp -d` directory:
+6 tasks × sizes {16, 1024}, one sample each (82.9 ms); directory deleted, numbers not
+interpreted. Additional constraints for implementing the matrix:
+
+- N1. RedBlackTreeSet's general `init(_:)` and RedBlackTreeDictionary's
+  `init(uniqueKeysWithValues:)` exist only under `#if !COMPATIBLE_ATCODER_2025`. The
+  matrix applies to normal mode only; `Benchmarks/Package.swift` enables only
+  `BENCHMARK`, so this holds for the current harness. Record the mode with results.
+- N2. SortedDictionary has two overloads each of `init(keysWithValues:)` and
+  `init(sortedKeysWithValues:)`: labeled `(key:value:)` elements call
+  `updateAnyValue(_:forKey:updatingKey: true)`, unlabeled `(Key, Value)` elements do
+  not. RedBlackTree `init(uniqueKeysWithValues:)` takes unlabeled `(Key, Value)`.
+  D1/D2 must feed the same unlabeled `[(Int, Int)]` array to both sides and record
+  which SortedDictionary overload is selected.
+- N3. `SortedSet.firstIndex(after:)` is implemented as `startIndex(forKey:)`, a key
+  equality check, and possibly one `index(after:)`; RedBlackTree `upperBound(_:)` is a
+  direct search. Observable results are equivalent for a unique set (`endIndex` ↔
+  `nil`), so S8 stays a matched row; the extra step is an implementation property to
+  mention, not a semantic difference.
+- N4. `SortedSet.init(_:)` and `init(keysWithValues:)` insert one element at a time
+  with no sortedness check (O(n log n) per upstream docs), confirming the S2/D2
+  capability-difference labels. `init(sortedElements:)`/`init(sortedKeysWithValues:)`
+  `precondition` strict ascending order, so S1/D1 inputs must be strictly increasing.
 
 ## Fairness rules
 
@@ -172,7 +331,8 @@ versions and workloads tested here.
 
 ## Interpretation rules
 
-The report must include wins, losses, crossovers, and inconclusive/noisy results.
+The report must include relative advantages, disadvantages, crossovers, and
+inconclusive/noisy results.
 Separate at least these explanations:
 
 - high-fanout B-tree locality;
@@ -185,11 +345,14 @@ Separate at least these explanations:
 These are hypotheses until supported by an independent measurement or direct code
 evidence. Do not infer a structural cause from a timing curve alone.
 
-The acceptable conclusion may be that SortedCollections wins broad throughput while
-RedBlackTreeCollections offers stronger C++ migration semantics, hints, multi
-containers, or specialized index/view behavior. “World-class candidate” does not
-require winning every workload; it requires an evidence-backed reason to choose the
-package for significant real use cases.
+An acceptable conclusion may be that SortedCollections provides better broad
+throughput for some workloads while RedBlackTreeCollections offers C++ migration
+semantics, hints, multi containers, or specialized index/view behavior for different
+needs. “World-class candidate” does not require outperforming a peer everywhere; it
+requires an evidence-backed reason to choose the package for significant real use
+cases during the period in which it fills those gaps. Credit upstream design choices
+and documentation where they inform the method, and state clearly when upstream
+maturity would narrow or end this bridging role.
 
 ## Stop conditions
 
@@ -206,8 +369,8 @@ package for significant real use cases.
 - benchmark source changes limited to `Benchmarks/`;
 - exact run commands and environment metadata;
 - raw result artifacts and paired charts;
-- a concise methodology and results report containing wins, losses, crossovers, and
-  unmeasured axes;
+- a concise methodology and results report containing relative advantages,
+  disadvantages, crossovers, and unmeasured axes;
 - a proposed evidence-only update to both WorldClassAssessment language versions,
   applied only after user approval.
 

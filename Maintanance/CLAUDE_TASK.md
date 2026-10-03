@@ -1,8 +1,26 @@
 # Codex-to-Claude Work Request
 
-Status: Completed — MultiMap C++ behavior-comparison expansion
+Status: Active — SortedCollections benchmark Phase 2 implementation
 
-## Objective
+## Active assignment
+
+Immediately perform Phase 2 as authorized in
+`Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md`. Do not ask whether to begin, and
+do not send the user a session-start summary, repository inventory, stale-document
+list, or restatement of the task.
+
+Implement the reviewed Set/Dictionary matrix and its correctness validation only.
+Use the new benchmark-local seeded inputs only for the new tasks. Keep capability-
+difference rows separate from matched performance charts. Run a small Release smoke
+check proving registration and equivalent observable results, then stop before any
+publishable or large measurement run.
+
+Write the detailed result into the benchmark task Markdown for Codex, set the status
+appropriately, and stop without sending the user a completion report. Directly contact
+the user only if work is blocked, a safety issue is found, or a decision that only the
+user can make is genuinely required.
+
+## Previous assignment objective (completed)
 
 Complete the four-container curated C++ comparison by adding one final pair:
 `RedBlackTreeMultiMap<Int64, Int64>` and `std::multimap<int64_t, int64_t>`.
@@ -99,9 +117,14 @@ Do not run the full package suite unless the focused build reveals a wider issue
 
 ## Completion Report
 
-Set `Status: Completed` only if the focused suite and `git diff --check` pass. Report
-only the exact behaviors compared, final test count/result, changed files, and real
-limitations/differences. Do not add an accountability diary or unrelated findings.
+Set `Status: Completed` only if the focused suite and `git diff --check` pass. Write
+the exact behaviors compared, final test count/result, changed files, and real
+limitations/differences into this file for Codex to review. Do not add an
+accountability diary or unrelated findings.
+
+Do not send the user a completion report or detailed handoff. Record it in the assigned
+Markdown for Codex and stop. Only surface details directly when work is blocked, a
+safety issue was found, or an explicit user decision is required.
 
 ### Result (2026-10-04, Claude Opus 5.5)
 
@@ -135,7 +158,7 @@ limitations/differences. Do not add an accountability diary or unrelated finding
   erased entry / next position, so each is compared against its C++ counterpart
   for that fact alone.
 
-## Next assignment — credibility-first external comparison
+## Next assignment — credibility-first peer comparison
 
 The next task is `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md`. The project is
 now prioritizing evidence that helps a user or an AI make a defensible adoption
@@ -149,13 +172,20 @@ Task decisions in this phase follow this order:
 
 1. preserve or improve reproducibility and semantic comparability;
 2. seek evidence capable of disproving a favorable claim;
-3. record losses, limitations, instability, and unmeasured axes as first-class results;
+3. record disadvantages, limitations, instability, and unmeasured axes as first-class results;
 4. prefer external baselines and independently reviewable artifacts over self-rating;
 5. add implementation or benchmark breadth only when it strengthens one of the above.
 
 Do not change production code to improve a result, silently substitute a merely
 similar operation, or update either WorldClassAssessment conclusion from preliminary
-measurements.
+measurements. Treat Swift Collections as a respected upstream reference within the
+same ecosystem; describe tradeoffs and suitable use cases in neutral language. Frame
+this package as a provisional bridge or complement for currently unmet needs, not as
+a replacement. Note evidence that would justify narrowing that role in the future.
+
+For this and later assignments, place the detailed completion report in the assigned
+Markdown file for Codex and do not send a user-facing completion message. Only a
+blocker, safety concern, or decision requiring the user may be surfaced directly.
 
 ## History
 

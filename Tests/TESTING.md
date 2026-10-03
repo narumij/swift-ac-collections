@@ -11,9 +11,11 @@
 
 ## 優先事項
 
-赤黒木の完成判断を優先する。C++挙動比較のSet単一ペアPoCは成功済みで、
-MultiSet/Dictionary/MultiMapへ展開する前の確認地点にある。挙動比較ターゲットは
-ルートパッケージへ置き、性能測定用の`CppBenchmarks`は`Benchmarks`へ残す。
+赤黒木の完成判断を優先する。C++挙動比較はSet/MultiSet/Dictionary/MultiMapの
+4組へ展開済みで、`CppBehaviorReferenceTests` 17件の比較が成功している。
+挙動比較ターゲットはルートパッケージへ置き、性能測定用の`CppBenchmarks`は
+`Benchmarks`へ残す。次の確認地点は、Swift CollectionsのSortedCollectionsを
+敬意ある外部参照とするベンチマークのPhase 1（既存監査と比較条件案）である。
 
 ## 現在地
 

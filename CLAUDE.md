@@ -6,6 +6,13 @@ At the beginning of every session, read `Tests/CLAUDE.md` before doing any work 
 
 Communicate with the user in Japanese. Internal instructions and Codex-to-Claude work requests may be written in English, but explanations, questions, progress updates, and final reports addressed to the user must be in Japanese.
 
+For assignments managed through `Maintanance/CLAUDE_TASK.md`, do not send progress
+updates, startup summaries, or completion details to the user. Put all handoff details
+in the assigned Markdown file for Codex. If the chat interface requires a final
+response after successful completion, respond with exactly `完了` and nothing else.
+Only explain details directly when blocked, when a safety issue is found, or when a
+decision that only the user can make is required.
+
 # Workspace Boundary
 
 Work only inside `/Users/narumij/Documents/GitHub/swift-ac-collections`.

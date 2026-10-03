@@ -1,6 +1,6 @@
 # RedBlackTreeCollections and Swift Collections SortedCollections
 
-Status: Phase 1 reviewed — Phase 2 implementation active; no large run authorized
+Status: Phase 2 implemented and smoke-checked — awaiting Codex review; no large run authorized
 
 ## Why this task exists
 
@@ -222,6 +222,115 @@ interpreted. Additional constraints for implementing the matrix:
   with no sortedness check (O(n log n) per upstream docs), confirming the S2/D2
   capability-difference labels. `init(sortedElements:)`/`init(sortedKeysWithValues:)`
   `precondition` strict ascending order, so S1/D1 inputs must be strictly increasing.
+
+### Phase 2 result (2026-10-04, Claude Opus 5.5) — awaiting review
+
+Implemented the reviewed matrix only. No production code, `Package.swift`, existing
+task, generator, or chart was changed. No timing was interpreted; no large run was
+made. Root commit `40d9a115` (uncommitted changes below), Swift 6.4
+(swiftlang-6.4.0.34.1), swift-collections 1.7.0 `a66de878…` with
+`UnstableSortedCollections`, normal mode (`BENCHMARK` trait only; N1).
+
+**Changed files (all under `Benchmarks/`).**
+
+- `Sources/Benchmarks/SortedPeerInput.swift` (new): seeded input type, reference
+  expectations, `addSortedPeerBenchmarks()` registration, `peerCheck`.
+- `Sources/Benchmarks/SortedPeerSetBenchmarks.swift` (new): S01–S13.
+- `Sources/Benchmarks/SortedPeerDictionaryBenchmarks.swift` (new): D01–D10.
+- `Sources/benchmark-tool/main.swift`: one added line, `benchmark.addSortedPeerBenchmarks()`.
+- `Libraries/SortedPeer.json` (new): chart library.
+
+**Seeded input (`SortedPeerInput`, new tasks only; decision 2).** Generator:
+SplitMix64, base seed `0x5EED_5047_2026_1004`; each array uses state
+`seed ^ (size &* 0x100000001B3) ^ (stream &* 0xD6E8FEB86659FD93)`; Fisher–Yates from
+the last index down with `j = high64(next() * (i + 1))` (multiply-high, no rejection).
+Implemented locally so it does not depend on stdlib `shuffle`/`random(in:)`
+algorithms. Contents for size `n`: stored keys `0, 2, …, 2(n−1)`; `insertionOrder`
+(stream 1), `hitQueries` (2), `missQueries` = shuffled odd keys `2i+1` (3),
+`removalOrder` (4); `sortedPairs`/`shuffledPairs` = unlabeled `(k, k + 1)`. Input is
+fully determined by size, so cycles and runs see the same values (fixes H1 for these
+tasks). `newKey = missQueries[0]`, `existingKey = hitQueries[0]`.
+
+**Task naming.** `<Type> peer <ID> <workload>`, e.g.
+`RedBlackTreeSet<Int> peer S05 contains, hit` ↔ `SortedSet<Int> peer S05 contains, hit`.
+Each side is a separate function written as a line-by-line mirror; only the API call
+differs. 58 tasks (Set 15 pairs, Dictionary 14 pairs).
+
+| ID | RedBlackTree side | SortedCollections side | Timed region |
+| --- | --- | --- | --- |
+| S01 | `RedBlackTreeSet(0..<n)` | `SortedSet(sortedElements: 0..<n)` | build only |
+| S02 (capability) | `init(sortedKeys)` | `init(sortedKeys)` | build only |
+| S03 | `init(insertionOrder)` | `init(insertionOrder)` | build only |
+| S04 | `insert` loop from empty | same | loop only |
+| S05 / S06 | `contains` over hits / misses | same | whole query loop |
+| S07a / S07b | `find(k) != endIndex` | `index(of: k) != nil` | whole query loop |
+| S08a / S08b | `upperBound(k)`, then `s[i]` if not end | `firstIndex(after: k)`, then `s[i]` | whole query loop |
+| S09 | iterate after `init(0..<n)` | iterate after `init(sortedElements:)` | iteration |
+| S10 | iterate after S04 history | same | iteration |
+| S11 | `remove` every key, `removalOrder` | same | loop only |
+| S12 / S13 | `var c = base` then one `insert(newKey)` / `remove(existingKey)` | same | the one mutation |
+| D01 (capability) | `init(uniqueKeysWithValues: sortedPairs)` | `init(sortedKeysWithValues: sortedPairs)` | build only |
+| D02 | `init(uniqueKeysWithValues: shuffledPairs)` | `init(keysWithValues: shuffledPairs)` | build only |
+| D03 | `updateValue` loop from empty | same | loop only |
+| D04 | `updateValue(k + 2, forKey:)` over `hitQueries` | same | loop only |
+| D05a / D05b | `d[k]` get, hits / misses | same | whole query loop |
+| D06a / D06b | `index(forKey:)`, hits / misses | same | whole query loop |
+| D07 | `d[k, default: 0] += 1` over existing keys | same | loop only |
+| D08 | `removeValue(forKey:)` every key | same | loop only |
+| D09a / D09b | iterate after D01 build / D03 history | same | iteration |
+| D10a / D10b | copy, then one `updateValue(newKey)` / `removeValue(existingKey)` | same | the one mutation |
+
+All lookup/iteration/copy structures are built outside the timer through the same
+explicit per-element insertion history (`insertionOrder` via `insert`/`updateValue`).
+Mutating tasks use `timer.measure` so construction, the per-run copy assignment, and
+deallocation stay outside the timed region; build tasks also measure only the
+initializer (result deallocated afterwards). Results go to `blackHole`; iteration uses
+`blackHole` per element (per key and value for dictionaries), as in existing tasks.
+
+**Correctness validation (outside the timer).** Every task validates once in its
+prepare step, before returning the timed closure, against a reference computed from
+the input — not against the other library — so both sides are held to the same
+expectation: full ordered contents (and values for dictionaries) for builds and
+mutations; hit count `n` / miss count `0`; value sums; upper-bound
+`(sum of successors, end count)` from the closed form "next even key or end"; copy
+tasks verify the copy changed and the base did not. Mutating tasks additionally check
+the count and the operation-derived accumulator after every timed run.
+
+**Overload pinning (N2).** Both initializers receive `[(Int, Int)]`. The labeled
+SortedDictionary overloads require `(key: Key, value: Value)` elements and cannot
+match, so the unlabeled `init(keysWithValues:)`/`init(sortedKeysWithValues:)` are
+selected statically. RedBlackTree selects its `Collection` overload of
+`init(uniqueKeysWithValues:)`, which reserves `count` capacity first.
+
+**Charts (`Libraries/SortedPeer.json`).** Three groups, each chart contains exactly
+the Swift pair and no `std::` task (fixes H3): `Set matched` (S01, S03–S13),
+`Dictionary matched` (D02–D10), `Capability differences` (S02, D01 only; decision 1).
+
+**Smoke check.** `swift build -c release --disable-sandbox --product benchmark`
+(no warnings in the new files), then
+`swift run -c release --disable-sandbox --skip-build benchmark library run --library ./Libraries/SortedPeer.json <mktemp -d>/smoke.json --max-size 4k --cycles 1 --mode replace-all`:
+58 tasks registered, every task produced a sample at all 44 sizes 1…4096 (12.8 s), and
+no prepare-time or per-run `precondition` fired (Release keeps `precondition`). The
+temporary directory was deleted; numbers were not inspected or interpreted.
+
+**Disclosures for the review.**
+
+- D02 is placed in matched charts per the matrix, but RedBlackTree's `Collection`
+  overload reserves capacity while SortedDictionary's initializer does not; the
+  report must state this allocation difference. (S03 has no such difference:
+  RedBlackTreeSet has only a `Sequence` general initializer.)
+- S01/S09 use `0..<n` (contiguous) because `RedBlackTreeSet.init(_: Range)` requires a
+  range; all other Set tasks use the even keys. D01/D09a use the even `sortedPairs`.
+- S08 includes one element read (`s[i]`) per non-end result on both sides to make the
+  result observable; N3's extra `firstIndex(after:)` step remains a disclosed
+  implementation property.
+- D07 covers existing keys only; a new-key defaulted-subscript variant was not added
+  (it would duplicate D03's insertion and was not in the reviewed row).
+- Mixed insert/remove/lookup traces remain deferred as decided.
+
+**Next step (not started).** The publishable run (Release, sizes 1…1M doubling plus an
+optional labeled 4M–16M run, ≥ 5 cycles, p50) and the capability matrix need Codex/user
+authorization after this review.
 
 ## Fairness rules
 

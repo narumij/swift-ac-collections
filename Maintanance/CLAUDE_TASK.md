@@ -1,6 +1,7 @@
 # Codex-to-Claude Work Request
 
-Status: Active — SortedCollections benchmark Phase 2 implementation
+Status: Completed — SortedCollections benchmark Phase 2 implemented and smoke-checked;
+result in `SORTED_COLLECTIONS_BENCHMARK_TASK.md` ("Phase 2 result"), awaiting review
 
 ## Active assignment
 

@@ -90,7 +90,8 @@ confirm that the intended tests actually ran.
 
 Before ending a work session:
 
-- Summarize changed files, verified behavior, commands run, and their results.
+- Summarize changed files, verified behavior, commands run, and their results in the
+  assigned task Markdown for Codex, not in a user-facing chat response.
 - Record unresolved specification questions or implementation concerns in
   `保留中の判断・懸念` instead of guessing.
 - Update the current handoff and its summary when the repository state changed.
@@ -106,3 +107,8 @@ Before ending a work session:
 - Do not declare the overall test-maintenance effort complete until the
   independent Codex and Claude reviews and the user's confirmation required by
   `Tests/TESTING.md` have all occurred.
+
+For a task managed through `Maintanance/CLAUDE_TASK.md`, do not send the user the
+above handoff, progress narration, or a completion summary. If a final chat response
+is technically required after success, output exactly `完了`. Exceptions are limited
+to a blocker, a safety issue, or a decision that only the user can make.

@@ -330,3 +330,26 @@ strict memory safety設定はunsafe構造を安全化するものではなく、
 生ポインタを公開値型のstorageから隔離できる所有storage設計を別途検討し、性能・Viewの
 寿命・競技プログラミング向け単一ファイル性を再検証する。現構造のままでは22件を既知の
 監査対象として残し、`BareArrayModule`のstrict設定は無効のままとする。
+
+## 11. `OptionalArrayModule` 段階対応(2026-10-03、バッチ1実施済み)
+
+`.strictMemorySafety()`を一時適用してXcodeで再コンパイルした。従来の144件は重複を
+含むログ行数で、ファイル位置とメッセージで一意化すると82箇所だった。所有型4つの
+`hasPayload`／`payload`、確保・初期化・添字・`removeAll`・破棄と、非所有Viewの
+ポインタ操作に集中している。
+
+バッチ1では、所有型`OptionalArray1D`／`OptionalArray2D`／`OptionalArray3D`／
+`OptionalArray4D`の`deinit`だけを対象にした。各型が所有する初期化済みpayloadの判定と
+破棄、payloadおよび初期化フラグ領域の破棄・解放を、20個のscoped `unsafe`式として
+明示した。公開API、layout、添字、Viewには変更を加えていない。
+
+- strict設定下のBuild for Testing: 成功。
+- 一意な診断: **82→62箇所**。減少数は追加したscoped `unsafe` 20個と一致。
+- 通常構成のビルド: 成功。
+- 参照要素の上書き、View経由の上書き、`removeAll`、所有配列の`deinit`に関する
+  対象テスト4件: すべて成功。
+- `OptionalArrayModule`の`.strictMemorySafety()`は調査後に外し、未採用のままとした。
+
+次は所有型の`removeAll`と添字変更を一つのバッチとして扱い、その後に確保・初期化、
+View境界を分けて監査する。公開型のunsafe storage診断は`BareArrayModule`と同様に、
+呼び出し側へunsafe要求を伝播させず隔離できる設計を確認してから恒久適用を判断する。

@@ -34,13 +34,13 @@ public struct OptionalArray1D<Element>: ~Copyable {
 
   deinit {
     for i in 0..<count {
-      if hasPayload[i] {
-        (payload + i).deinitialize(count: 1)
+      if unsafe hasPayload[i] {
+        unsafe (payload + i).deinitialize(count: 1)
       }
     }
-    payload.deallocate()
-    hasPayload.deinitialize(count: count)
-    hasPayload.deallocate()
+    unsafe payload.deallocate()
+    unsafe hasPayload.deinitialize(count: count)
+    unsafe hasPayload.deallocate()
   }
 
   /// すべての要素を破棄し、各slotを未設定状態へ戻します。
@@ -137,13 +137,13 @@ public struct OptionalArray2D<Element>: ~Copyable {
 
   deinit {
     for i in 0..<capacity {
-      if hasPayload[i] {
-        (payload + i).deinitialize(count: 1)
+      if unsafe hasPayload[i] {
+        unsafe (payload + i).deinitialize(count: 1)
       }
     }
-    payload.deallocate()
-    hasPayload.deinitialize(count: capacity)
-    hasPayload.deallocate()
+    unsafe payload.deallocate()
+    unsafe hasPayload.deinitialize(count: capacity)
+    unsafe hasPayload.deallocate()
   }
 
   @inlinable
@@ -208,13 +208,13 @@ public struct OptionalArray3D<Element>: ~Copyable {
 
   deinit {
     for i in 0..<capacity {
-      if hasPayload[i] {
-        (payload + i).deinitialize(count: 1)
+      if unsafe hasPayload[i] {
+        unsafe (payload + i).deinitialize(count: 1)
       }
     }
-    payload.deallocate()
-    hasPayload.deinitialize(count: capacity)
-    hasPayload.deallocate()
+    unsafe payload.deallocate()
+    unsafe hasPayload.deinitialize(count: capacity)
+    unsafe hasPayload.deallocate()
   }
 
   @inlinable
@@ -281,13 +281,13 @@ public struct OptionalArray4D<Element>: ~Copyable {
 
   deinit {
     for i in 0..<capacity {
-      if hasPayload[i] {
-        (payload + i).deinitialize(count: 1)
+      if unsafe hasPayload[i] {
+        unsafe (payload + i).deinitialize(count: 1)
       }
     }
-    payload.deallocate()
-    hasPayload.deinitialize(count: capacity)
-    hasPayload.deallocate()
+    unsafe payload.deallocate()
+    unsafe hasPayload.deinitialize(count: capacity)
+    unsafe hasPayload.deallocate()
   }
 
   @inlinable

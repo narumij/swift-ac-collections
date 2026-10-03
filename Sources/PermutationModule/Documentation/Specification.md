@@ -23,7 +23,7 @@ ABC328Eの解説コードを読んだ際、「全探索で間に合っている�
 | --- | --- | --- | --- |
 | `nextPermutations()` | `Permutations<Self>.Nexts` | あり | C++の`next_permutation`相当。現在の並びから辞書順で後続する並びだけを1つずつ求める |
 
-`Permutations<C>` 列挙体の下のネスト型で公開されているのは次の2つのみ。どちらも
+`Permutations<C>` 列挙体の下のネスト型で公開されているのは次の3つのみ。いずれも
 `nextPermutations()` の戻り値型を構成するために必要であり、利用者が直接初期化する
 入口ではない(初期化子は`internal`)。
 
@@ -70,14 +70,14 @@ ABC328Eの解説コードを読んだ際、「全探索で間に合っている�
    `startIndex..<endIndex` の範囲内でなければならない。範囲外の添字は事前条件違反で
    あり、`precondition` により実行時に停止する(Debug/Releaseとも。
    `Tests/PermutationTests/PermutationDeathTests.swift` で `endIndex`・`-1`・
-   `endIndex + 1` を固定)。`-Ounchecked` ビルドではこの検査が省略されうる。
+   `endIndex + 1`・`Int.min`・`Int.max`を固定)。`-Ounchecked` ビルドではこの検査が
+   省略されうる。
 
-## この文書がまだ扱っていないもの
+## `Sendable`
 
-- `Sendable` 適合の要否。
-
-これは `Maintanance/PermutationModule/ImplementationPlan.md` の
-「保留中の判断」として引き続きユーザー判断待ちである。
+Swift 6以降への対応として、値を持たない`Permutations`と、保持する`C`が`Sendable`の
+場合の`Nexts`は`Sendable`へ適合する。共有CoW bufferを持つ`IteratorN`と
+`SubSequenceN`は、所有権と変更経路の監査を終えてから別段階で対応する。
 
 ## ABC328E 性能検証についての注意
 

@@ -223,18 +223,14 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
     | `endIndex + 1` | 正常終了、値`0` | 正常終了、値`0` |
     | `1 << 40`(各3回) | `SIGSEGV` | `SIGSEGV` |
 
-    公開`Index == Int`なので、負値・`endIndex`超過は公開APIだけで作れる。近傍の
-    範囲外はtrapせず、構成によって異なる不定値を返す(`-1`はheader末尾の読み出し)。
-    遠方はSIGSEGV。どちらも契約として固定すべき挙動ではないため、**Death Testは
-    追加していない**。
-  - **最小修正案(ユーザー判断待ち、未実施)**: 公開層の
-    `SubSequenceN.subscript(position:)`だけに
+    公開`Index == Int`なので、負値・`endIndex`超過は公開APIだけで作れる。調査時点では
+    近傍の範囲外が構成依存の不定値を返し、遠方はSIGSEGVになっていた。
+  - **修正済み(2026-10-03)**: 公開層の`SubSequenceN.subscript(position:)`へ
     `precondition(position >= startIndex && position < endIndex, "Index out of range")`
-    を追加する。内部の`Buffer`添字(`nextPermutation`のホットパス)は変更しない。
-    修正前に、上表の3ケースが`.failure`で終了することを確認するDeath Testを
-    `Tests/PermutationTests`に先に追加し、未修正の状態で失敗することを確認する。
-    要素アクセスごとに比較が2回増えるため、`Benchmarks/`にPermutationのベンチマークが
-    無い点も併せて判断材料とする。
+    を追加した。内部の`Buffer`添字と順列生成アルゴリズムは変更していない。
+    `endIndex`、`-1`、`endIndex + 1`、`Int.min`、`Int.max`が通常のprecondition失敗に
+    なることをexit testで固定した。性能再検証では実用的なend-to-end overheadは
+    観測されず、明瞭な2比較の実装を維持している。
 - G5の`newCapacity < count`の未検査(現状は到達経路なし)。
 - G4の非`final`クラスに対する`unsafeDowncast`(現状はサブクラスなし)。
 
@@ -245,8 +241,8 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
 
 | 公開型 | 保持するもの | 区分 |
 | --- | --- | --- |
-| `Permutations<C>` (caseなしenum) | なし | 機械的(値が存在しない) |
-| `Nexts` | `source: C` | 機械的: `Sendable where C: Sendable` |
+| `Permutations<C>` (caseなしenum) | なし | 対応済み: `Sendable` |
+| `Nexts` | `source: C` | 対応済み: `Sendable where C: Sendable` |
 | `IteratorN` | `Buffer<C.Element>`(参照)+ `Bool` 2個 | 判断要 |
 | `SubSequenceN` | `Buffer<C.Element>`(参照、`let`) | 判断要 |
 
@@ -259,8 +255,8 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
 
 実装バッチ案(各バッチ後に通常/`COMPATIBLE_ATCODER_2025` で対象テスト):
 
-1. `Nexts`(と必要なら `Permutations`)へ条件付き `Sendable`。テスト: ジェネリックな
-   `requireSendable<T: Sendable>` に渡すコンパイル時チェック。
+1. **実施済み**: `Permutations`と`Nexts`へ`Sendable`を追加し、ジェネリックな
+   `requireSendable<T: Sendable>`によるコンパイル時チェックを追加。
 2. `Buffer` を `final` にする(§8 G4 と同じ論点、先に判断)。
 3. `IteratorN`/`SubSequenceN` へ CoW を根拠とした
    `@unchecked Sendable where C.Element: Sendable` を付け、根拠をコメントに残す。テスト:

@@ -28,6 +28,8 @@ public
   enum Permutations<C> where C: Collection, C.Index == Int
 {}
 
+extension Permutations: Sendable {}
+
 extension Permutations {
 
   /// The sequence returned by `nextPermutations()`.
@@ -89,6 +91,8 @@ extension Permutations {
     }
   }
 }
+
+extension Permutations.Nexts: Sendable where C: Sendable {}
 
 extension Permutations {
 

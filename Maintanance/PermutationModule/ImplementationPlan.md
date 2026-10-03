@@ -69,7 +69,9 @@
 
 ## 保留中の判断(ユーザー確認が必要)
 
-- `Sendable`適合の要否。
+- `Sendable`対応はSwift 6以降に必要とする方針で確定。`Permutations`と`Nexts`の
+  機械的な第1バッチは実施済み。共有CoW bufferを持つ`IteratorN`/`SubSequenceN`は
+  `Maintanance/StrictMemorySafetyReadiness.md`の段階案に従って別途対応する。
 - 公開APIへのコメントドック(計算量・CoW契約・事前条件)の整備。
 - ABC328E実提出による性能検証(ベースライン記録・削除後の再提出比較)は、外部サービス
   への投稿を伴うためユーザー自身が行う前提。制約は`N <= 8`, `M <= 28`で、AtCoderの

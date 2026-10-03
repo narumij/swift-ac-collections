@@ -14,6 +14,14 @@ import XCTest
 
 final class PermutationTests: XCTestCase {
 
+  private func requireSendable<T: Sendable>(_: T) {}
+  private func requireSendableType<T: Sendable>(_: T.Type) {}
+
+  func testSendableSequenceSurface() {
+    requireSendableType(Permutations<[Int]>.self)
+    requireSendable([1, 2, 3].nextPermutations())
+  }
+
   #if USING_ALGORITHMS
   // 挙動比較用
     func testExample0() throws {

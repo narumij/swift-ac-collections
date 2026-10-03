@@ -77,7 +77,9 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
     `swift build`/`swift test`成功。`PermutationModule`/`BareArrayModule`/
     `OptionalArrayModule`/`RedBlackTreeCollections`は未採用のまま保留
 
-- PermutationsModuleはrelease/AtCoder/2025版と併存（現行互換切り替え）にどこかでする。方針策定と準備をしておいてほしい
+- PermutationModuleは`release/AtCoder/2025`版と併存し、コンパイル時に現行版と
+  互換版を切り替えられるようにする。実装前の方針と段階は
+  `Maintanance/PermutationModule/AtCoder2025CompatibilityPlan.md`を正本とする。
 
 ### 連絡事項
 

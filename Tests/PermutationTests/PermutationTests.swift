@@ -37,6 +37,37 @@ final class PermutationTests: XCTestCase {
     XCTAssertEqual(Array(second), [1, 3, 2])
   }
 
+  func testSendableIteratorCopiesAdvanceIndependentlyAcrossTasks() async {
+    let iterator = [1, 2, 3].nextPermutations().makeIterator()
+
+    let firstTask = Task.detached { () -> [[Int]] in
+      var copy = iterator
+      var results: [[Int]] = []
+      while let value = copy.next() {
+        results.append(Array(value))
+      }
+      return results
+    }
+    let secondTask = Task.detached { () -> [[Int]] in
+      var copy = iterator
+      var results: [[Int]] = []
+      while let value = copy.next() {
+        results.append(Array(value))
+      }
+      return results
+    }
+
+    let firstResults = await firstTask.value
+    let secondResults = await secondTask.value
+    let expected = [
+      [1, 2, 3], [1, 3, 2], [2, 1, 3],
+      [2, 3, 1], [3, 1, 2], [3, 2, 1],
+    ]
+
+    XCTAssertEqual(firstResults, expected)
+    XCTAssertEqual(secondResults, expected)
+  }
+
   #if USING_ALGORITHMS
   // 挙動比較用
     func testExample0() throws {

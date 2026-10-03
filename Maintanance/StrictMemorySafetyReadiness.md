@@ -260,7 +260,8 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
 2. **実施済み**: `Buffer`を`final`にし、未知のsubclassによる変更経路を閉じた。
 3. **実施済み**: `IteratorN`/`SubSequenceN`へCoWを根拠とした
    `@unchecked Sendable where C.Element: Sendable`を追加。取得済みの`SubSequenceN`を
-   detached taskへ送って読む間にiteratorを進めても値が変わらないことをテストした。
+   detached taskへ送って読む間にiteratorを進めても値が変わらないこと、および同じ
+   iteratorから作った2つのcopyを別taskで同時に最後まで進めても独立することをテストした。
 
 ## 保留事項
 

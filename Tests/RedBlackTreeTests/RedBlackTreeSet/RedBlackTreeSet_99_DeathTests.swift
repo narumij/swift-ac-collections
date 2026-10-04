@@ -83,6 +83,44 @@
     }
 
     @Test
+    func staleIndexSubscript_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        var set = RedBlackTreeSet<Int>(0..<8)
+        let stale = set.index(set.startIndex, offsetBy: 3)
+        set.remove(at: stale)
+        _ = set[stale]
+      }
+
+      expectNoInvalidMemoryAccess(result)
+
+      guard let result else { return }
+      let stderr = String(decoding: result.standardErrorContent, as: UTF8.self)
+      #expect(stderr.contains("The pointer is being used as a different node"))
+    }
+
+    @Test
+    func advancingStaleIndex_reportsReasonWithoutInvalidMemoryAccess() async {
+      let result = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        var set = RedBlackTreeSet<Int>(0..<8)
+        let stale = set.index(set.startIndex, offsetBy: 3)
+        set.remove(at: stale)
+        _ = set.index(after: stale)
+      }
+
+      expectNoInvalidMemoryAccess(result)
+
+      guard let result else { return }
+      let stderr = String(decoding: result.standardErrorContent, as: UTF8.self)
+      #expect(stderr.contains("The pointer is being used as a different node"))
+    }
+
+    @Test
     func removingFirstFromEmptySet_terminatesProcess() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeSet<Int>()

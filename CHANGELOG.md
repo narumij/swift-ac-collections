@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - raw range expression、node sealing、pointer比較、木の基本操作、赤黒木fixture、raw memory / allocationを直接検証する内部テストを追加
 
 ### Changed
+- staleな赤黒木Indexのsubscript・移動を`-Ounchecked`でも検査し、確保外メモリアクセス前に具体的な`SealError`診断で停止するよう変更
 - 赤黒木内部の三方比較機構 (`ThreeWayCompareResult`、`Int.__less()` / `__greater()`、関連alias / eager wrapper) をpublic APIからpackage内部境界へ縮小
 - Debug限定の`SortedSequence`とsorted range union実験実装をproduction targetからテストコードへ移動
 - DocCの公開メンバーをSwift標準`Set`/`Dictionary`に近い利用目的別Topicsへ分類し、独自のIndex・Range・Bound APIと全オーバーロードへ具象型ページから辿れるように変更

@@ -153,12 +153,17 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 
 ### 2. RedBlackTree Indexの公開契約
 
-- [ ] 既存の安全性・CoW・通常走査O(N)契約を確認
-- [ ] `Index`を`Comparable`にする必要があるか判断
-- [ ] 比較の意味、異なる木の扱い、計算量を決定
-- [ ] 利用者へ失敗状態を格納したIndexを公開する必要があるか判断
+- [x] 既存の安全性・CoW・通常走査O(N)契約を確認
+- [ ] `swift-collections/Sources/ContainersPreview`を追跡し、`Index: Comparable`の要否を判断
+- [x] 2026-10-04時点のupstream main / 1.7.0が`Comparable`必須であることを確認
+- [x] 比較の意味、異なる木の扱い、計算量を比較表へ記録
+- [ ] Container protocol要件を踏まえ、失敗状態を格納したIndexの要否を最終判断
+- [ ] nominal Index + 内部`Result<Resolved, SealError>`案を採用するか決定
+- [ ] `try/index/1`のfailureless Index PoCを現行HEAD・ContainersPreview要件へ再評価し、Release計測
+- [ ] 採用表現を実装し、4コンテナとRange/Viewへ追従
 - [ ] 標準`Result`へのretroactive `Comparable`適合に依存しない設計を選択
 - [ ] 内部診断用`Result<..., SealError>`と公開Indexを分離するか判断
+- [x] `_O_UNCHECKED`でも消えないstale Index拒否と移動失敗診断を整備
 - [ ] 必要な候補だけReleaseで試作・計測
 - [ ] 4コンテナ、Range View、DocC、API Matrixへ反映
 - [ ] `index(inserting:)`を4コンテナのどこまで提供するか決める

@@ -7,6 +7,97 @@ Status: Idle
 No active assignment. Wait for a new request from Codex. Report only `完了` when an
 assigned task is finished; keep detailed findings in the designated Markdown record.
 
+## Completed assignment: review of the RedBlackTree Index decision gate
+
+Perform a read-only review of `### C〜F 調査結果と暫定推奨` in:
+
+- `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
+
+The product owner uses apple/swift-collections' `Sources/ContainersPreview` as the
+upstream design reference. We should track and learn from the experimental protocol as
+it evolves, permit small disposable compatibility experiments, and avoid finalizing the
+production Index representation until the requirements are sufficiently stable. The
+current nominal/non-Comparable/non-failure-valued design is a provisional recommendation.
+
+Check specifically:
+
+1. whether all four normal-mode containers and all Range/MappedValues Views can retain
+   their documented APIs without `Index: Comparable`;
+2. whether any public generic constraint, operator, range expression, benchmark,
+   external compatibility surface, or planned conformance actually requires
+   `Comparable`;
+3. whether removing failure-valued public Index loses any intentional behavior of
+   movement, bounds evaluation, stale-index diagnostics, or cross-tree resolution;
+4. whether `Equatable` / `Hashable` can honestly remain O(1), including storage identity,
+   generation, `endIndex`, and `ALLOW_CROSS_TREE_INDEX` behavior;
+5. whether the proposed public/internal boundary is implementable without exposing
+   `_LazyTieWrap`, `_NodePtrSealing`, `UnsafeNode`, `SealError`, or `Result` through
+   public signatures or `@inlinable` bodies;
+6. source-compatibility and migration risks that must be explicit before implementation;
+7. whether any work in C〜F remains safe and useful now without prematurely choosing the
+   future Container conformance or Index representation;
+8. whether the new `Container protocol追跡基準` accurately reflects current upstream,
+   especially `Index: Equatable & Hashable` without `Comparable`, and whether span/lifetime
+   requirements create a separate blocker for this node-based tree;
+9. the existing `try/index/1` preparation implementation, using its merge-base with HEAD
+   and only the Index-related diff. Confirm what it already proves, what is obsolete, and
+   what blocks reuse on current HEAD. Pay particular attention to `_LazyTiedPtr`, internal
+   resolver Results, `try!`, bare `fatalError()`, the Debug `.nullptr` sentinel, the
+   sanitizer TODO, and O(1) equality/hash claims. Do not merge or modify that branch.
+
+Do not edit source, tests, access levels, Package.swift, the proposed section, or another
+document. Do not implement or benchmark a prototype and do not reopen Memoize/B4 work.
+Append only `### Claude review of C〜F Index decision gate` immediately before
+`### 主経路のチェックリスト` in the same file. Separate blocking corrections,
+non-blocking safeguards, confirmed findings, and give one verdict:
+
+- `tracking boundary is correct`
+- `decision boundary needs correction`
+
+Then set this task to Completed, append a concise result below this assignment, and
+report only `完了` to the user. All detail belongs in the Markdown record.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+Appended `### Claude review of C〜F Index decision gate` before `### 主経路のチェックリスト`.
+The review was read-only: no build, test, or prototype was run. Upstream evidence came
+only from the in-repo checkouts: swift-collections 1.7.0 (`a66de878`, pinned by
+`Benchmarks/Package.resolved`) and a 2026-05 snapshot.
+
+Verdict: `decision boundary needs correction`. Blocking corrections:
+
+1. Upstream 1.7.0 `Container.Index` is `Equatable, Comparable, Hashable`, and
+   `RangeExpression2` also requires `Comparable`. The 2026-05 snapshot had `Equatable`
+   only, so Comparable was added, not removed. Cite a newer upstream commit or correct
+   the tracking criteria.
+2. Rejecting a stale index before dereference fails under the `_O_UNCHECKED` trait. The
+   subscript validates with `precondition` followed by `pointer!`, and `-Ounchecked`
+   removes both checks. E's "precondition failure" would carry the same gap into the
+   contract.
+3. With `ALLOW_CROSS_TREE_INDEX`, an old index still resolves in a CoW copy but compares
+   unequal to that copy's indices. F must define `==` as token identity. The hash
+   description in C is also inaccurate: it does not include storage identity.
+4. `try/index/1` still publicly aliases `_LazyTieWrap`. It is a partial Result-removal
+   PoC, not a nominal-type PoC.
+
+Non-blocking points cover:
+
+- compat-mode Comparable;
+- the Debug Comparable numbered spec test;
+- source-migration items;
+- `@frozen` having no effect without library evolution, and `@inlinable` bodies still
+  serializing internals;
+- HEAD's bare `fatalError()` and the double `adv_iter` call in `form_index`;
+- span and lifetime as a separate blocker.
+
+Reuse blockers in `try/index/1`:
+
+- `try!` without diagnostic messages;
+- the Debug `.nullptr` sentinel, which reintroduces a failure state;
+- an assert weakened around a sanitizer report (suspected early release);
+- missing MappedValuesView;
+- stale paths and duplicated overloads.
+
 ## Completed assignment: adversarial review of Gate B classification draft
 
 Read-only review the new `## Gate B classification draft` in:

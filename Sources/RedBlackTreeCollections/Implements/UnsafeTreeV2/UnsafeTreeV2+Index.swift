@@ -95,26 +95,41 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func prev_iter(_ i: _LazyTieWrappedPtr) -> _LazyTieWrappedPtr {
-    __purified_(i)
+    let result = __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
       .flatMap { index($0) }
-      .mapError { _ in fatalError() }
+    switch result {
+    case .success:
+      return result
+    case .failure(let error):
+      fatalError(errorMessage(error))
+    }
   }
 
   @inlinable
   func next_iter(_ i: _LazyTieWrappedPtr) -> _LazyTieWrappedPtr {
-    __purified_(i)
+    let result = __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
       .flatMap { index($0) }
-      .mapError { _ in fatalError() }
+    switch result {
+    case .success:
+      return result
+    case .failure(let error):
+      fatalError(errorMessage(error))
+    }
   }
 
   @inlinable
   func adv_iter(_ i: _LazyTieWrappedPtr, offsetBy distance: Int) -> _LazyTieWrappedPtr {
-    __purified_(i)
+    let result = __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .flatMap { index($0) }
-      .mapError { _ in fatalError() }
+    switch result {
+    case .success:
+      return result
+    case .failure(let error):
+      fatalError(errorMessage(error))
+    }
   }
 
   @inlinable
@@ -141,8 +156,8 @@ extension UnsafeTreeV2 {
       return advanced
     case .failure(.limit):
       return nil
-    case .failure:
-      fatalError()
+    case .failure(let error):
+      fatalError(errorMessage(error))
     }
   }
 
@@ -152,6 +167,10 @@ extension UnsafeTreeV2 {
   )
     -> Bool
   {
+    // The environment-provided nullptr lives in ManagedBufferHeader. The first
+    // traversal intentionally brings that header's cache line in before the
+    // decision traversal invokes the API again. Do not fold these calls
+    // together without remeasuring this path.
     let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
     switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
     case .success:
@@ -160,8 +179,8 @@ extension UnsafeTreeV2 {
     case .failure(.limit):
       i = limit
       return false
-    default:
-      fatalError()
+    case .failure(let error):
+      fatalError(errorMessage(error))
     }
   }
 }

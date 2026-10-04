@@ -64,7 +64,7 @@ as history but its snapshot anchors are superseded by the commits above for this
 | `P5` | confirmed test hazard | Debug fixture semantics | `_LazyTieWrap.unsafe(tree:rawTag:)` maps every retrieval, seal, or banding failure to synthetic `.nullptr`. On an empty tree, `_emptyLazyDetach` is shared, so same-tie purification can assert on the null pointer instead of producing the intended `SealError`. Synthetic-null tests must use a non-empty tree and verify the error reason, not merely expect process failure. |
 | `P6` | confirmed artifacts; review queued | Public surface | External type-checking confirms both `UnsafeIndexV3` and the added `_LazyTiedPtr._NodePtr` are directly nameable after `import RedBlackTreeCollections`. Treat their visibility as prototype public-surface artifacts, not as evidence for or against the success-only representation. |
 | `P7` | verified by inspection | Equality / hashing | Synthesized `_NodePtrSealing` equality/hash cover pointer, seal, and (when present) the pointer-derived tracking tag. `_LazyTieWrap` equality additionally checks tie identity while its coarser hash omits it, which is contract-valid. All are O(1). Keep a regression test. |
-| `P8` | unverified | Limited movement | `adv_iter(_:offsetBy:limitedBy:)` still returns internal `Result`, while public optional/Bool adapters collapse only `.limit` and trap on other resolver failures. Verify end, stale, recycled, detached, and cross-tree behavior in both movement directions. Confirm that `form_index(limitedBy:)` retains develop's deliberately measured double `adv_iter` call. |
+| `P8` | partially inspected | Limited movement | The old Result-valued and success-only overloads share the same limited-movement structure. A stale-limit probe exited successfully, but invalid Index input is outside the standard Collection preconditions, so this is not classified as a PoC failure and the provisional death test was removed. Valid boundary behavior and the deliberate double `adv_iter` call remain covered; any stronger invalid-Index guarantee requires a separate contract decision. |
 | `P9` | unverified | Performance | Confirm equality and hashing remain O(1), full and range traversal remain O(N), and success-only resolution does not add per-element search or allocation. Preserve raw measurements separately from the design decision. |
 | `P10` | documentation | Design records | Several documents still describe the develop representation (`UnsafeIndexV3 = _LazyTieWrappedPtr`) or say the PoC must not be merged wholesale. Update them only after the validation verdict; for now record the branch and commit used as evidence. |
 | `P11` | cleanup, non-blocking | Merge artifacts | Remove only after semantic validation: duplicated comments, commented-out old alias, trailing blank lines in `_LazyTie.swift`, duplicated `過去の状態で封印する` documentation, and the `Package.swift` comment-spacing change. These are not quality failures. |
@@ -291,3 +291,30 @@ supported public lifetime check.
 
 Batch result: Codex `pass` for the stated outliving-storage property; exact error classification is
 `unmapped`; independent review queued.
+
+### P8 — stale `limitedBy` exploratory probe
+
+Source inspection found that the success-only overload computes the limit as:
+
+```swift
+let __l = __purified_(limit).map(\.pointer)
+```
+
+but then passes that `Result` directly to `___tree_adv_iter`. When `__l` is a failure and the start
+Index is valid, the traversal's equality checks do not propagate the limit failure; ordinary
+movement can therefore succeed while ignoring the invalid limit.
+
+An exploratory public-API exit test removed the node used as `limit`, then called
+`index(_:offsetBy:limitedBy:)` from a still-valid start Index. The subprocess returned
+`EXIT_SUCCESS`, demonstrating that this invalid limit is not diagnosed on that path.
+
+Source comparison confirms that the old `_LazyTieWrappedPtr` Result-valued overload has the same
+`let __l = __purified_(limit).map(\.pointer)` structure and passes `__l` to the same traversal
+helper. This is therefore not a representation difference. More importantly, a stale Index is not
+a valid `Collection` input, so abnormal termination is not adopted here as an additional public
+guarantee. The provisional failing death test was removed rather than encoding that unsupported
+contract. The structurally similar `form_index` path calls the same helper (twice by deliberate
+measured design).
+
+No production change is required by this probe. P8 remains open only for valid-input boundary
+coverage and any separately authorized stronger invalid-Index contract.

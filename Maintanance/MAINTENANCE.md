@@ -28,7 +28,7 @@
   `CppBenchmarks`は`Benchmarks`パッケージという分離を維持する
 - 2026-10-04 ユーザー要望: `REFACTORING_FROM_ATCODER_2025.md`の`unsafe tree !!!!`
   前後は重要だが、週内はC++ compare完了を優先して履歴調査を後回しにする
-- 2026-10-04 ユーザー決定: `WorldClassAssessment`の「世界最高峰候補」という看板を
+- 2026-10-04 ユーザー決定: 採用準備評価文書の「世界最高峰候補」という看板を
   取り下げる。検証可能な証拠、反証、限界、評価軸は捨てず、AppleやSwift Collectionsと
   競争する主張ではないAdoption Readiness / Quality Evidence系の内容へ再構成する
 - 2026-10-04 次タスク: 上記文書の再構成後、Debugテストのprocess-globalなallocation /

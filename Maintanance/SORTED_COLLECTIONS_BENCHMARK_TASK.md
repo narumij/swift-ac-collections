@@ -4,7 +4,7 @@ Status: Phase 3 pilot accepted as procedural evidence — publishable run deferr
 
 ## Why this task exists
 
-`WorldClassAssessment.md` (now titled "Adoption Readiness and Quality Evidence")
+`AdoptionReadinessAssessment.md` (titled "Adoption Readiness and Quality Evidence")
 identifies a missing external reference point. A valuable
 Swift peer is Apple's experimental `SortedCollections` module: `SortedSet` and
 `SortedDictionary`, implemented over an in-memory B-tree.
@@ -194,7 +194,7 @@ Phase 1 and constraints N1–N4 are accepted with these decisions:
 Phase 2 is authorized only to implement the reviewed matrix, correctness checks, and
 neutral Swift-only chart definitions under `Benchmarks/`, followed by a small Release
 smoke run. Do not perform the large/publishable measurement run, interpret timings,
-change production collection code, or update WorldClassAssessment in this phase.
+change production collection code, or update AdoptionReadinessAssessment in this phase.
 
 **Independent re-verification (2026-10-04 01:55 JST, Claude Opus 5.5, separate
 session).** Re-read both existing Set benchmark files, `AdHoc5.json`,
@@ -356,7 +356,7 @@ Phase 3 is limited to validating the measurement procedure before a publishable 
 
 Do not run sizes above 65536, change source after seeing results, omit unfavorable
 rows, infer cache/allocation causes from wall-clock timing, rank either package, or
-update WorldClassAssessment. Stop for Codex review after the pilot.
+update AdoptionReadinessAssessment. Stop for Codex review after the pilot.
 
 ### Phase 3 result (2026-10-04 02:09 JST, Claude Opus 5.5) — awaiting review
 
@@ -459,7 +459,7 @@ Decisions for a future resumption:
    focused repetitions of the flagged rows. Establish a stability rule before looking
    at the repeated timings.
 4. Preserve every row and the D02/S08 disclosures. Do not update either
-   WorldClassAssessment from this pilot.
+   AdoptionReadinessAssessment from this pilot.
 
 The benchmark line is intentionally paused here so work can return to C++ behavioral
 correctness, which remains the higher completion priority.
@@ -601,7 +601,7 @@ maturity would narrow or end this bridging role.
 - Stop if setup or validation cannot be removed symmetrically from the timed region.
 - Stop before changing either production implementation to improve a measured result.
 - Stop before publishing a chart whose task names hide different semantics.
-- Do not edit `WorldClassAssessment` conclusions until the result artifacts and
+- Do not edit `AdoptionReadinessAssessment` conclusions until the result artifacts and
   methodology have been independently reviewed.
 
 ## Deliverables
@@ -612,7 +612,7 @@ maturity would narrow or end this bridging role.
 - raw result artifacts and paired charts;
 - a concise methodology and results report containing relative advantages,
   disadvantages, crossovers, and unmeasured axes;
-- a proposed evidence-only update to both WorldClassAssessment language versions,
+- a proposed evidence-only update to both AdoptionReadinessAssessment language versions,
   applied only after user approval.
 
 ## Acceptance criteria
@@ -623,4 +623,4 @@ maturity would narrow or end this bridging role.
 - No production collection code changes are mixed into the baseline comparison.
 - The report names the upstream version and unstable trait status.
 - At least one independent review checks task symmetry before conclusions are added
-  to the adoption-readiness evidence document (`WorldClassAssessment.md`).
+  to the adoption-readiness evidence document (`AdoptionReadinessAssessment.md`).

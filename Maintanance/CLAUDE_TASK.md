@@ -145,7 +145,7 @@ remain available for explicit Linux validation.
 
 ## Completed assignment: WorldClass framing withdrawal
 
-Withdraw the `WorldClassAssessment` / 「世界最高峰候補」framing in both language
+Withdraw the 「世界最高峰候補」framing in both language
 versions. Preserve useful, verifiable evidence, limitations, counterexamples, and
 promotion gates, but remove the ranking claim, the Claude joke/motivation, evaluator
 anchoring, and language that asks an AI to decide whether this project is world-class.
@@ -166,8 +166,8 @@ files and exact reframing in this md, then set this status to Completed. Report 
 
 ### Result (2026-10-04, Claude Opus 5.5)
 
-- **Filenames kept** (`WorldClassAssessment.md` / `.ja.md`) to avoid uncertain
-  external-link breakage; each now states this in a note under the title.
+- **At this stage the filenames were kept** to avoid uncertain external-link breakage;
+  they were later renamed to `AdoptionReadinessAssessment.md` / `.ja.md` by user request.
 - **New titles:** "Adoption Readiness and Quality Evidence" /
   「採用判断のための品質証拠」.
 - **Removed:** the ranking claim and "world-class candidate" conclusion; the
@@ -197,7 +197,7 @@ files and exact reframing in this md, then set this status to Completed. Report 
   the document); `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md` (lines 7, 13, 592,
   626: title note, "world-class" → adoption readiness). `MAINTENANCE.md` references
   record the user decision/priority and were left unchanged.
-- **Changed files:** the two WorldClassAssessment files, the two references above, this
+- **Changed files:** the two adoption-readiness assessment files, the two references above, this
   file. No production Swift, tests, or benchmark changed.
 - **Validation:** `git diff --check` clean.
 
@@ -310,7 +310,7 @@ You may edit only:
 
 Do not edit production Swift, `Package.swift`, `Benchmarks/`, existing Set/MultiSet/
 Dictionary tests, randomized tests, workflows, dashboard documents, either
-`WorldClassAssessment` file, or the queued benchmark task.
+`AdoptionReadinessAssessment` file, or the queued benchmark task.
 
 ## Required MultiMap Comparison
 
@@ -433,7 +433,7 @@ Task decisions in this phase follow this order:
 5. add implementation or benchmark breadth only when it strengthens one of the above.
 
 Do not change production code to improve a result, silently substitute a merely
-similar operation, or update either WorldClassAssessment conclusion from preliminary
+similar operation, or update either AdoptionReadinessAssessment conclusion from preliminary
 measurements. Treat Swift Collections as a respected upstream reference within the
 same ecosystem; describe tradeoffs and suitable use cases in neutral language. Frame
 this package as a provisional bridge or complement for currently unmet needs, not as

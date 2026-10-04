@@ -1,6 +1,6 @@
 # 採用判断のための品質証拠
 
-[English](WorldClassAssessment.md) | 日本語
+[English](AdoptionReadinessAssessment.md) | 日本語
 
 > リンク維持のためファイル名は据え置いている。この文書は順位付けの主張を行わず、
 > 評価もしない。

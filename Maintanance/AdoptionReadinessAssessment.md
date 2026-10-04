@@ -1,6 +1,6 @@
 # Adoption Readiness and Quality Evidence
 
-English | [日本語](WorldClassAssessment.ja.md)
+English | [日本語](AdoptionReadinessAssessment.ja.md)
 
 > The filename is kept for link stability. This document no longer makes or
 > evaluates a ranking claim.

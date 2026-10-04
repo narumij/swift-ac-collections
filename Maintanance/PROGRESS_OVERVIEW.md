@@ -188,7 +188,7 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [ ] `OptionalArrayModule`のpublic宣言を列挙し、既存コメントと実際の契約を照合
 - [ ] `BareArrayModule`のpublic宣言を列挙し、所有権・非所有View・破棄責務を重点監査
 - [x] `AcCollections`と`RedBlackTreeModule`のmodule-level説明と再公開範囲を確認
-- [ ] 適用可能なtargetでDocC生成または同等のリンク・警告確認を行う
+- [x] 適用可能なtargetでDocC生成または同等のリンク・警告確認を行う（`AcCollections` / `RedBlackTreeModule`をwarnings-as-errorsで確認）
 
 これは赤黒木のIndex設計とは独立して進められるが、現在の最優先経路を割り込ませない。
 

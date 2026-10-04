@@ -168,6 +168,7 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [ ] Container protocol要件を踏まえ、失敗状態を格納したIndexの要否を最終判断
 - [ ] nominal Index + 内部`Result<Resolved, SealError>`案を採用するか決定
 - [ ] ユーザーが手作業で実装した`try/index/1`のfailureless Index PoCが、現行HEADとQuality Checklist（正しさ、memory / Index寿命、性能）に耐えるかCodex・Claudeが独立検証する（Comparable採否とは分離）
+- [ ] X1検証前に、`branch + commit + path + symbol + configuration`で現行HEADと`try/index/1`を別個体として記録するidentity表を作り、同名部品の意味同一性をユーザー確認まで`unknown`として扱う
 - [ ] 採用表現を実装し、4コンテナとRange/Viewへ追従
 - [ ] 標準`Result`へのretroactive `Comparable`適合に依存しない設計を選択
 - [ ] 内部診断用`Result<..., SealError>`と公開Indexを分離するか判断

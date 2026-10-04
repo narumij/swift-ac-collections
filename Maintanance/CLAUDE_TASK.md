@@ -2,6 +2,274 @@
 
 Status: Completed
 
+## Completed assignment: agreement check for the integrated X1 task-fit row
+
+Perform a read-only agreement check of Codex's integration of your preceding X1 interview.
+Do not inspect or compare `try/index/1`; this task concerns only whether the recorded role split
+faithfully represents the interview.
+
+Review:
+
+- the new `X1` row in `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`;
+- the new X1 identity-table prerequisite in `Maintanance/PROGRESS_OVERVIEW.md`.
+
+Confirm only these points:
+
+1. Your overall rating `3` and label `見本またはレビュー必須` are represented accurately.
+2. Mechanical history extraction, symbol inventory, test mapping, and adversarial review are the
+   parts Claude may own, while semantic correspondence and integration judgment are not assigned
+   to Claude.
+3. Codex is not treated as a sole reliable owner: it drafts the identity-table skeleton and
+   correspondence rationale, but the workflow requires independent Claude evidence and user
+   decisions for semantic identity and design intent.
+4. The identity key `branch + commit + path + symbol + configuration`, and keeping semantic
+   correspondence `unknown` until user confirmation, are appropriate X1 entry conditions.
+5. The row preserves the mandatory stopping points from your interview rather than authorizing
+   horizontal expansion from an uncertain correspondence.
+
+Return exactly one verdict: `agree with X1 integration`, `agree after specified corrections`, or
+`do not agree with X1 integration`. If a correction is needed, identify the exact phrase and its
+replacement. Record the result below, set `Status: Completed`, and give the user only a short
+completion notice.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit the task-fit table, progress document,
+source, tests, or any other file. Do not switch branches, inspect `try/index/1`, run builds/tests/
+benchmarks, use network access, stage, commit, or alter Git history. Run `git diff --check` only.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `agree after specified corrections`. There is one small
+correction, to point 5. Points 1–4 are faithful.
+
+1. **Rating and label.** Agree. The Claude column has `3` and the label `見本またはレビュー必須`, and
+   the cell's sub-scores match my interview: 履歴採取5, symbol inventory 4, test mapping 4,
+   反証4, semantic correspondence 2, 統合判断1.
+2. **Ownership.** Agree. The 担当案 assigns Claude independent collection of history, symbols, and
+   tests, plus refutation. Semantic correspondence and integration judgment are not assigned to
+   Claude. Two of my interview items are omitted from the row: Quality Checklist evidence and raw
+   measurement under fixed procedure. Both were conditional in the interview, so leaving them out
+   of the summary row is acceptable.
+3. **No sole owner.** Agree. The Codex cell says 「全体を単独所有しない」, and the 担当案 ends with the
+   user deciding semantic identity and design intent.
+4. **Entry conditions.** Agree. The key `branch + commit + path + symbol + configuration`, with
+   semantic identity kept `unknown` until user confirmation, is the right entry gate. The
+   PROGRESS item records it before X1 validation.
+5. **Stopping points.** Correction needed. The Claude cell keeps four of my seven stopping points.
+   It drops the one that is specific to X1: an unwritten intent behind a conflict resolution in
+   the 10-04 sync merge. It also drops "a failing Quality Checklist item is reported, not fixed"
+   and "performance as raw data only". The row does not authorize horizontal expansion from an
+   uncertain correspondence. However, once this task file rotates to history, the row will be the
+   only durable copy of the stopping list.
+
+**Replacement (Claude cell, last sentence):**
+
+- Current: 「曖昧な対応・obsolete判定・安全性信号・最初のcontainer/Viewからの横展開前に停止する」
+- Replace with: 「曖昧な対応・obsolete判定・安全性信号・意図未記録の10-04 merge解決・Quality Checklist
+  不合格（修正せず報告）・最初のcontainer/Viewからの横展開前に停止する。性能は生データのみ提出する」
+
+Checks: read-only. `git diff --check` was clean. Only this file was edited.
+
+---
+
+## Completed assignment: task-fit interview for cross-branch Index archaeology
+
+This is a capability and workflow interview only. Do not newly inspect or compare `try/index/1`
+in this assignment.
+
+We are preparing to revalidate a user-authored Index PoC that began on 2026-09-24. Claude has
+already inspected this branch once and assisted with repairing / updating its merge from the current
+development branch on 2026-10-04; this is not first exposure. Use that concrete experience in the
+self-assessment. The difficult part is not ordinary Git history: identically named files, types,
+aliases, resolvers, and operations may represent different designs or eras on the two branches, and
+`Index` propagates across nearly the entire RedBlackTreeCollections surface. Both Codex and Claude
+are prone to incorrectly unifying same-named but semantically different things.
+
+The proposed new task category is:
+
+> Cross-branch reconstruction and present-day validation of a long-lived, user-authored PoC where
+> same-named components may have different semantics and the changed concept propagates across the
+> public API, internal safety machinery, tests, and documentation.
+
+Answer the following based on your observed strengths and failure modes in this repository:
+
+1. Does an existing task-fit category in `Maintanance/AGENT_TASK_FIT_INTERVIEW.md` adequately cover
+   this work? If not, propose a new ID and short task name.
+2. Rate your suitability from 1 to 5. Use the existing scale; do not raise the score because the
+   task is important.
+3. Identify the exact parts you can own safely: mechanical history extraction, symbol inventory,
+   semantic correspondence, test mapping, Quality Checklist verification, performance measurement,
+   adversarial review, or integration judgment.
+4. Identify your likely failure modes, especially same-name/different-semantics conflation,
+   treating an older implementation as obsolete, and spreading one mistaken correspondence across
+   all containers and Views.
+5. State what the earlier inspection and merge repair did and did not establish, then state the
+   minimum input you need from Codex and the user before re-inspecting the branch. Consider whether
+   a branch+commit+path+symbol identity table and explicit design-intent notes are required.
+6. Propose mandatory stopping points where disagreement or ambiguous correspondence must be returned
+   to the user instead of inferred.
+7. Recommend a division of work among user, Codex, and Claude. Do not assume either agent can safely
+   own the entire reconstruction.
+8. State whether the eventual PoC validation should require an independent double review, and which
+   evidence each reviewer must produce independently.
+
+Give one final task-fit label using the existing vocabulary: `主担当可`, `見本またはレビュー必須`,
+or `補助のみ`. A low or conditional rating is acceptable and useful.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Record the answer below and set `Status: Completed`.
+Do not edit the task-fit table or any other document. Do not switch branches, inspect
+`try/index/1`, run builds/tests/benchmarks, use network access, stage, commit, or alter Git history.
+This interview must not start the PoC validation.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Interview only. I did not inspect, compare, or switch to
+`try/index/1`. The evidence comes from repository records (`CLAUDE_TASK_HISTORY.md`,
+`RED_BLACK_TREE_REMAINING_TASKS.md` §`try/index/1`, `MAINTENANCE.md`) and my own observed
+failure modes.
+
+**Final label: `見本またはレビュー必須`. Overall rating: 3.**
+
+#### 1. Category
+
+No existing row covers this work.
+
+- G (representation candidates), J (resolver), K (container/View follow-up), and V7 (unsafe
+  migration history) each touch part of it.
+- None of them covers establishing semantic correspondence between same-named components
+  across two live branches.
+
+Proposed new row: **X1: 長期PoCのcross-branch再構成と現行検証** (cross-branch reconstruction and
+present-day validation of a long-lived, user-authored PoC).
+
+#### 2–3. Rating by sub-part
+
+| Sub-part | Claude | Owner? |
+| --- | ---: | --- |
+| Mechanical history extraction (commits, dates, `-M` renames, merge parents) | 5 | 主担当可, with hash/date/path always cited |
+| Symbol inventory per branch × configuration (Debug/Release/compat, `ALLOW_CROSS_TREE_INDEX`/`USE_LAZY_DETACH`) | 4 | 主担当可, inventory only |
+| Semantic correspondence (is A on branch X the same thing as A on HEAD?) | 2 | 補助のみ: propose evidence, never decide |
+| Test mapping (which tests exercise which symbol on which branch) | 4 | 主担当可 after the identity table exists |
+| Quality Checklist verification (per-item evidence, configurations) | 4 | 見本またはレビュー必須 |
+| Performance measurement | 3 | Only under H/V6 conditions: interleaved runs, disassembly, raw data only, no interpretation |
+| Adversarial review of Codex's correspondence/integration | 4 | Yes; this is where I add the most |
+| Integration judgment (equivalence, obsolescence, adopt/reject) | 1 | Not mine |
+
+The overall score is 3, not 4: the hard part of X1 is semantic correspondence, and that is
+my weakest sub-part.
+
+#### 4. Likely failure modes (with repository evidence)
+
+- **Same-name conflation.** In T1 I nearly unified `UnsafeIndexV2.unsafe(tree:rawTag:)`
+  across eras. The user's correction is recorded in memory as "同名でも時代/役割ごとの独立性を先に
+  確認する". The risk is higher here, because both branches are current and the names were
+  deliberately reused.
+- **Classifying from names and structure.** Tonight, in the B3 audit, I called G1
+  "witness-free" from its declaration shape. I had to self-correct after spotting associated-type
+  inference in public positions. A wrong correspondence can look this plausible.
+- **Treating the older implementation as obsolete.** My 2026-10-04 reuse evaluation already
+  sorted items into "古くなった点" and "再利用を阻むもの". Some of those may be deliberate design
+  choices (for example the Debug `.nullptr` sentinel or the duplicated overloads), not defects. I
+  judged them against HEAD, not against the PoC's intent.
+- **Spreading one mistake everywhere.** Horizontal expansion is my strength. With one wrong
+  correspondence, it becomes the mechanism that replicates the error across 4 containers × 3 Views.
+- **Explaining away safety signals.** The sanitizer TODO (an assert weakened via `isDetached`)
+  is exactly the kind of thing I could rationalize as test noise.
+- **Taking a green build as semantic evidence.** A merge that compiles and passes tests does not
+  show that same-named code still means the same thing.
+
+#### 5. What the earlier work established, and minimum input
+
+- **Established** (2026-10-04 review, read-only diff from merge-base `7ae8237c`, 23 branch
+  commits):
+  - Replacing the Index alias with a success-only `_LazyTiedPtr` compiles for 4 containers and
+    2 Views.
+  - The internal `_SealedPtr` resolver keeps the cross-tree, unsealed, and detached diagnostics.
+  - The list of reuse blockers: `try!`, the Debug `.nullptr` sentinel, the sanitizer TODO,
+    missing MappedValuesView, stale paths, and duplicated overloads.
+  - The branch is a partial Result-removal PoC, not a nominal-type PoC.
+- **Not established:**
+  - semantic equivalence of any same-named component across the branches;
+  - Quality Checklist conformance (correctness, memory and Index lifetime, performance);
+  - the cause of the sanitizer report;
+  - behaviour after the 2026-10-04 20:25 sync merge (merge-base is now `b3570172`; my review
+    predates it);
+  - which of the "obsolete" items reflect user intent.
+- **Merge repair:** the Markdown records I can see do not record what I changed during the
+  2026-10-04 merge repair or why. That gap is itself evidence that X1 needs written provenance.
+  Before re-inspection, the merge's conflict resolutions should be listed with their intent.
+- **Minimum input:**
+  - **Identity table** (Codex skeleton, user fills intent), one row per symbol of interest:
+    - `branch`, `commit`, `path`, `symbol`, `configuration guards`;
+    - `role/era`;
+    - `HEAD counterpart` (or "none");
+    - `same semantics? (yes / no / unknown)`, decided by the user or marked unknown;
+    - `intent note`.
+  - **User design-intent notes:** which differences are deliberate. At minimum:
+    - `_LazyTiedPtr` vs `_LazyTieWrappedPtr`;
+    - the Debug `.nullptr` sentinel;
+    - why `limitedBy` converts failure to Optional/Bool;
+    - the intended `==`/hash semantics;
+    - the sanitizer TODO context.
+  - **Scope from Codex:**
+    - Keep the 09-24〜09-27 PoC commits separate from the 10-04 sync merge.
+    - Allowed paths and configurations.
+    - Inspection method (read-only `git show` / `git diff`; a worktree only in a task-owned temp
+      directory, with user permission).
+    - One sample container plus one View before any horizontal pass.
+
+#### 6. Mandatory stopping points (return to the user, do not infer)
+
+1. Any same-named symbol whose semantics differ or cannot be shown to match: mark it `unknown`
+   and stop for that row.
+2. Any item that looks obsolete. Report it with evidence; never classify it as obsolete myself.
+3. After the first container + View sample, before extending a correspondence to the rest.
+4. Any memory-safety sign: sanitizer report, weakened assert, lifetime-counter imbalance,
+   unexpected `SIGSEGV`. Stop; do not work around it.
+5. Any conflict resolution in the 10-04 merge whose intent is not written down.
+6. Any failing Quality Checklist item. Report it; do not fix it in the same task.
+7. Any performance difference. Raw data only; interpretation goes to Codex and the user.
+
+#### 7. Division of work
+
+- **User:** design intent; the `same semantics?` column; decisions on obsolescence and adoption;
+  permission for worktree/temp inspection.
+- **Codex:**
+  - phase design and identity-table skeleton;
+  - draft semantic correspondence with rationale;
+  - integration draft and the Quality Checklist verdict draft.
+- **Claude:**
+  - mechanical extraction and per-configuration symbol inventory;
+  - test mapping;
+  - per-item Quality Checklist evidence;
+  - adversarial review of Codex's correspondence;
+  - raw measurements under fixed procedure.
+
+Neither agent owns the whole reconstruction.
+
+#### 8. Double review
+
+Yes: independent and blind, with each reviewer producing evidence before reading the other's.
+
+- **Codex:**
+  - correspondence table with semantic rationale;
+  - integration and adoption draft;
+  - a Quality Checklist verdict per item.
+- **Claude:**
+  - an independent symbol inventory and diff by phase (PoC commits vs sync merge);
+  - a list of counterexample or failing tests (written first, not fixed);
+  - Quality Checklist evidence per configuration: Debug/Release, normal/compat, both
+    `ALLOW_CROSS_TREE_INDEX`/`USE_LAZY_DETACH` settings, Death Tests, and sanitizer status.
+
+Disagreements go to the user unresolved.
+
+Checks: only this file edited. `git diff --check` clean. Nothing staged.
+
+---
+
 ## Completed assignment: targeted review of Combining API performance notes
 
 Perform a read-only review of the new public `- Note:` paragraphs in these three files:

@@ -519,9 +519,9 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 - [x] B: 意図した公開API、境界内部、Index表現拘束、TestCode専用、内部用途へ分類する
 - [x] B4-a: ThreeWay比較宣言群をpackageへ縮小する
 - [x] B4-c: Debug限定SortedSequence実験経路をTestCodeへ分離する
-- [ ] B4-b: Memoize群は外部consumer 2件の移行後に公開終了または正式API化を判断する
-- [ ] source compatibilityを意図する公開API以外を、可能な範囲でpackage/internalへ縮小する
-- [ ] TestCode専用の宣言と実験経路をproduction targetから分離する
+- [ ] B4-b: Memoize群は外部consumer 2件の移行後に公開終了または正式API化を判断する（外部consumer移行まで凍結）
+- [ ] source compatibilityを意図する公開API以外を、可能な範囲でpackage/internalへ縮小する（2026-10-05時点で独立縮小batchは無し。残りはIndex依存または凍結clusterのみ）
+- [ ] TestCode専用の宣言と実験経路をproduction targetから分離する（B4-cは完了。残りは凍結Balanced群とIndex依存Debug比較群のみ）
 - [x] C: 外部へ保証する安全性・CoW・走査計算量の契約を確認する
 - [ ] D: ContainersPreviewを追跡し、外部APIでComparableが必要になる利用箇所と非適合時の代替を確定する
 - [x] Comparableあり・なしの2案を比較し、必要APIと計算量を表にする
@@ -553,8 +553,6 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 
 ## Kで処理するIndex依存タスク
 
-- [ ] Fで決定した`index(inserting:)`の提供範囲を実装・テストへ反映する
-- [ ] Fで決定した`erase(exactly:)`の提供範囲を実装・テストへ反映する
 - [x] Fで決定したKeyValue Range Viewの範囲外Index契約を実装・テストへ反映する
 - [ ] cross-tree indexingのテストが公開契約と一致しているか再監査する
 - [ ] eraseのrange sanitizeをすり抜ける入力に対するテストを追加する
@@ -565,7 +563,7 @@ API名、戻り値、検査方法が変わり得る。
 
 ## 主経路と並行できる完成前の整理
 
-- 公開面の監査・縮小は主経路A・Bで先に行う。この節のデッドコード判断を先行させない。
+- 公開面の監査・縮小は主経路A・Bで実施済み。この節のデッドコード判断は再開指示まで凍結する。
 - テスト責務の整理は完了した。未結線コード削除はユーザーが個別に再開を決めるまで凍結し、
   Index設計ゲートの停止中に新たな実装作業を起こさない。
 - [ ] 未結線コードを段階的に削除する（個々の削除はユーザーが決定し、再開指示まで凍結）

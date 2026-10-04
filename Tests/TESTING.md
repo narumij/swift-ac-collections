@@ -14,8 +14,8 @@
 赤黒木の完成判断を優先する。C++挙動比較はSet/MultiSet/Dictionary/MultiMapの
 4組へ展開済みで、`CppBehaviorReferenceTests` 35件の比較が成功している。
 挙動比較ターゲットはルートパッケージへ置き、性能測定用の`CppBenchmarks`は
-`Benchmarks`へ残す。現在の確認地点は、公開範囲の縮小と、Swift Collectionsの
-`ContainersPreview`が安定した時点で行うIndex契約の最終判断である。
+`Benchmarks`へ残す。独立した公開範囲の縮小は区切り済みである。現在の確認地点は、
+Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約の最終判断である。
 
 ## 現在地
 
@@ -82,7 +82,8 @@
   `Tests/PermutationTests/NextPermutation.swift`(未参照の旧世代実装)の削除、
   `nextPermutations()`と公開戻り値型への`///`コメントドック整備は完了済み。
   `.strictMemorySafety()`も恒久適用済みで、対象モジュールの警告0件を確認した。
-- 内部テスト層の区分、および生木テストと変更コストの均衡。
+- 内部テスト層の区分と生木テストの責務整理は、TestSupport/DebugAdditionalsおよび
+  UnsafeNode/RawBufferの整理で完了した。
 - UnsafeNode/RawBufferのテスト層は統合しない。単層テストはテスト内の算術から期待値を
   独立計算し、`MemoryLayout`、UnsafeNodeの移動・payload位置、Bucket全体の所有byte、
   queue/accessor/traverser間のstrideをそれぞれ検証する。層間クロスチェックは、別実装の
@@ -98,9 +99,9 @@
   文書化された例外として許容し、移動だけを目的とする作業は行わない。
   `TransitionFromLegacy/`、`ThreeWay+Old/`、無効化されたUnsafeTree debug/fixture群、
   `_NodePtr_.swift`内の`#if false`部は、ユーザーが再開を決めるまで凍結する。
-- 未結線コードを削除するかテストするか: `_Reverse4`関連、`swap_key`/
-  `swap_mapped_value`、`outOfRange`/`keyMismatch`、`payloadLayout`/`__root_ptr()`、
-  RawRangeの`contains(range:pointer:)`、`_TrackingTag.retire`。
+- 未結線コードは段階的に削除する方針だが、個々の削除はユーザーが決定し、再開指示まで
+  凍結する: `_Reverse4`関連、`swap_key`/`swap_mapped_value`、`outOfRange`/`keyMismatch`、
+  `payloadLayout`/`__root_ptr()`、RawRangeの`contains(range:pointer:)`、`_TrackingTag.retire`。
 
 ## 直近の引き継ぎ
 

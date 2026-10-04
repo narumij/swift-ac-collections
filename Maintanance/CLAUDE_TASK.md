@@ -2,7 +2,97 @@
 
 Status: Completed
 
-## Active assignment: define the UnsafeNode / RawBuffer test-layer responsibilities
+## Active assignment: audit the remaining RedBlackTree backlog classification
+
+Independently audit the current RedBlackTree tracking documents after the two test-responsibility
+reviews. The user's temporary operating policy is that every remaining RedBlackTree item must now
+be exactly one of:
+
+1. Index work (including Index-dependent API, tests, performance, and documentation);
+2. documentation-only work;
+3. explicitly frozen until the user requests restart or makes the required product decision.
+
+Inspect at least `Maintanance/PROGRESS_OVERVIEW.md`,
+`Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`, `Tests/TESTING.md`, and the unchecked items in the
+RedBlackTree API matrices. Identify any item whose current wording still appears to authorize an
+unfrozen non-Index implementation task, any duplicate with inconsistent status, and any completed
+item still presented as pending.
+
+Pay particular attention to public-surface shrinking, Debug/Release protocol differences,
+Memoize/external-consumer migration, ContainersPreview tracking, cross-tree/range/unsafeAddress
+tests, and dead or unwired code. Do not decide Comparable, restart `try/index/1`, or reinterpret a
+frozen item as active merely because it remains unchecked.
+
+Return a compact table with the item, correct class (`Index`, `documentation`, or `frozen`), and the
+exact tracking wording/status correction needed. If the documents already satisfy the policy, say
+so explicitly. This is a tracking audit, not authorization to implement any item.
+
+Return exactly one verdict: `backlog classification is consistent`, `classification needs the
+specified documentation corrections`, or `classification needs product-owner decision`. Record
+the findings in the first Result section, set `Status: Completed`, and tell the user only `完了`
+unless a product-owner choice remains.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit source, tests, API matrices, or other
+documentation. Do not inspect `try/index/1`, restart frozen work, build/test, use network access,
+stage, commit, push, switch branches, or alter Git history. Read-only repository inspection is
+allowed. Run `git diff --check` and inspect `git status --short` at the end.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `classification needs the specified documentation corrections`.
+
+No product-owner decision is required. Every item already fits one of the three classes. The
+problem is wording: a few entries still read as active, non-Index implementation work, and two
+pairs are duplicated with inconsistent status. Read-only inspection covered
+`PROGRESS_OVERVIEW.md`, `RED_BLACK_TREE_REMAINING_TASKS.md`, `Tests/TESTING.md`, `API-Matrix.md`,
+and `API-Matrix-View.md`.
+
+#### Items that need corrections
+
+| # | Item (location) | Class | Correction |
+| --- | --- | --- | --- |
+| 1 | 「意図しない`public`をpackage/internal/TestSupportへ縮小」 (PROGRESS:153) and 「source compatibilityを意図する公開API以外を…縮小する」 (RED:523) | Index / frozen | Both read as an open, active shrink task. The independent batches are exhausted. The remainder falls into four groups: <br>• Index-binding (Index); <br>• G4 / G3 SignedDistance (deferred public-witness design); <br>• G5 / G6 / Memoize / Balanced / `Result` overloads / `_NodePtr` (frozen); <br>• BENCHMARK hooks (Index-returning hooks = Index, the rest frozen). <br>Append: 「（2026-10-05時点で独立縮小batchは無し。残りはIndex依存または凍結clusterのみ）」 |
+| 2 | 「DebugとReleaseで公開protocol適合集合が変わる箇所を解消」 (PROGRESS:154) | Index + frozen | Replace 「いずれも保留中のcluster」 with 「Balanced群は凍結（executable API Matrix方針）、Debug比較群はIndex依存」 |
+| 3 | 「TestCode専用の宣言と実験経路をproduction targetから分離する」 (RED:524) | frozen / Index | Still unfrozen wording, although B4-c is done. The only remainders are Balanced (Debug-only executable matrix → frozen) and the Debug Comparable group (Index). Append the same class note, or check it off and point to those clusters |
+| 4 | 「B4-b: Memoize群は外部consumer 2件の移行後に…判断する」 (RED:522) | frozen | Append 「（外部consumer移行まで凍結）」. The wording is conditional, but it does not say frozen |
+| 5 | 「Fで決定した`index(inserting:)`の提供範囲を実装・テストへ反映する」 and 「…`erase(exactly:)`…」 (RED:556-557) | Index | These duplicate RED:530-531 with stale wording. The scope was already decided (all four containers, plus naming) by review, not by F. Remove these two lines, or replace them with 「→ 上記K項目（530-531）へ統合」 |
+| 6 | `index(inserting:)` / `erase(exactly:)` expansion (PROGRESS:180-181) | Index | The RED copies say 「Kで」, but the PROGRESS copies do not, so they read as immediately actionable. Prefix both with 「Kで（Index移行後）」 |
+| 7 | 優先事項: 「現在の確認地点は、公開範囲の縮小と…Index契約の最終判断である」 (TESTING.md:17-18) | Index | Public-surface shrinking is no longer an active checkpoint. Reword to 「独立した公開範囲の縮小は区切り済み。現在の確認地点は…Index契約の最終判断である」 |
+| 8 | 判断待ち: 「内部テスト層の区分、および生木テストと変更コストの均衡。」 (TESTING.md:83) | documentation (closed) | An unclassified leftover. Both test-responsibility reviews are now recorded in the bullets that follow it. Remove it, or mark it 「（TestSupport/DebugAdditionals・UnsafeNode/RawBuffer整理で完了）」 |
+| 9 | 判断待ち: 「未結線コードを削除するかテストするか…」 (TESTING.md:102-104) | frozen | Stale. The decision is now staged deletion, decided item by item by the user. Reword to match PROGRESS:224 / RED:571: 「段階的に削除（個々の削除はユーザーが決定し、再開指示まで凍結）」 |
+| 10 | 「公開面の監査・縮小は主経路A・Bで先に行う」 (RED, first bullet of 主経路と並行できる完成前の整理) | — | Minor. Since A and B are done, change 「先に行う」 to 「主経路A・Bで実施済み」 |
+
+#### Already consistent; no change needed
+
+- **Index:**
+  - ContainersPreview / Comparable tracking (PROGRESS:167, RED:526 = D);
+  - PROGRESS:170-179 and RED:529-540 (F–L, gate items 544-552);
+  - the 「Kで処理するIndex依存タスク」 tests: cross-tree re-audit, erase range-sanitize test, and
+    the MultiMap `unsafeAddress` Release check (RED:559-561);
+  - the API Matrix TODOs (`index(inserting:)` and `erase(exactly:)` for MultiSet and Dictionary),
+    which the legend defines as 採用済みで未実装.
+- **Frozen, already labelled:**
+  - the `try/index/1` PoC (PROGRESS:172, RED:528 = E);
+  - `Result` overloads and `_NodePtr` (PROGRESS:221);
+  - dead code (PROGRESS:224, RED:571);
+  - Permutation compat (PROGRESS:227; not RedBlackTree);
+  - OptionalArray / BareArray audits (PROGRESS:188-189; not RedBlackTree);
+  - the 保留・完成を止めない追加検証 list (PROGRESS:233-239);
+  - the TestSupport / DebugAdditionals frozen groups and the RawBufferHeadFixture alignment note
+    (TESTING.md).
+- **Completed items presented as pending:** none, other than #8 (and #5, which is a stale-wording
+  duplicate).
+
+This audit authorizes no implementation.
+
+Checks: only this file was edited. `git diff --check` was clean. `git status --short` shows only
+`Maintanance/CLAUDE_TASK.md`.
+
+---
+
+## Completed assignment: define the UnsafeNode / RawBuffer test-layer responsibilities
 
 Take primary ownership of the remaining RedBlackTree test-organization review. Independently inspect
 the UnsafeNode reference-fixture tests, RawBuffer/UnsafeTreeV2 single-layer tests, and the

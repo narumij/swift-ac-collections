@@ -150,8 +150,8 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 - [x] 関連型bridge 4個と`_Tree_IsMultiTraitInterface`を`@usableFromInline package`へ縮小
 - [x] `UniqueMultiplicity` / `MultiMultiplicity`を`package`へ縮小
 - [x] `_BaseNode_NodeCompareProtocol`を`package`へ縮小（G3前半。SignedDistance / Index設計とは分離）
-- [ ] 意図しない`public`をpackage/internal/TestSupportへ縮小
-- [ ] DebugとReleaseで公開protocol適合集合が変わる箇所を解消（2026-10-04時点の残りはBalanced群とDebug比較群のみで、いずれも保留中のcluster）
+- [ ] 意図しない`public`をpackage/internal/TestSupportへ縮小（2026-10-05時点で独立縮小batchは無し。残りはIndex依存または凍結clusterのみ）
+- [ ] DebugとReleaseで公開protocol適合集合が変わる箇所を解消（Balanced群はexecutable API Matrix方針により凍結、Debug比較群はIndex依存）
 
 `EXTERNAL_TYPE_EXTENSION_AUDIT.md`を監査表とする。Gate Aの機械抽出とGate B分類・
 Claudeのread-onlyレビューは完了し、blocking correctionを反映済み。B4-aの
@@ -177,8 +177,8 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [x] `_O_UNCHECKED`でも消えないstale Index拒否と移動失敗診断を整備
 - [ ] 必要な候補だけReleaseで試作・計測
 - [ ] 4コンテナ、Range View、DocC、API Matrixへ反映
-- [ ] `index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供と名称維持はCodex・Claudeレビューで決定済み。戻り値は全型で`(inserted: Bool, index: Index)`。Dictionaryは既存値を置換せず既存位置、Multi系は常に新規occurrenceと`true`を返す。`insert(_:)`と`erase(exactly:)`からSee Alsoで発見可能にする）
-- [ ] `erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み）
+- [ ] Kで（Index移行後）`index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供と名称維持はCodex・Claudeレビューで決定済み。戻り値は全型で`(inserted: Bool, index: Index)`。Dictionaryは既存値を置換せず既存位置、Multi系は常に新規occurrenceと`true`を返す。`insert(_:)`と`erase(exactly:)`からSee Alsoで発見可能にする）
+- [ ] Kで（Index移行後）`erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み）
 - [x] KeyValue Range Viewの範囲外Indexは標準Collection同様のprecondition違反とし、単一Index操作ではO(log N)の範囲内検査や停止保証を公開契約に含めない。独自のBound / range操作は処理内で入力を検査するsafe動作とする
 
 依存順と完成条件は`RED_BLACK_TREE_REMAINING_TASKS.md`を正本とする。
@@ -230,6 +230,8 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 
 以下は余裕ができたときに選ぶ追加メニューであり、当面は着手しない。完成条件や次作業には含めず、ユーザーの明示指示なしに調査・実装・Claude依頼を開始しない。
 
+- [ ] `OptionalArray`の名称を再検討する
+- [ ] `BareArray`の名称を再検討する
 - [ ] randomized trace失敗時の自動縮小
 - [ ] SortedCollectionsとのpublishableな大規模性能比較
 - [ ] RedBlackTreeCollectionsのStrict Memory Safety全面適用

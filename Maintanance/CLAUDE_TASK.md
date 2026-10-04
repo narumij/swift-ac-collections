@@ -2,6 +2,64 @@
 
 Status: Completed
 
+## Completed assignment: review the G3 SignedDistance targeted compile experiment
+
+Perform a read-only independent review of Codex's G3 SignedDistance experiment. Do not edit
+source or implement an alternative design.
+
+### Objective
+
+Confirm or refute that `_BaseNode_SignedDistanceProtocol` cannot be narrowed independently from
+`public` to `package` while preserving its `where Self: ~Copyable` extension, public
+`___signed_distance` witness, and the four container `Base` conformances to the public
+`_BaseNode_SignedDistanceInterface`.
+
+### Required checks
+
+1. Inspect `_BaseNode_SignedDistanceProtocol`, `_BaseNode_SignedDistanceInterface`, its
+   `where Self: ~Copyable` extension, the four container `Base` conformances,
+   `TreeNodeOnlyFixture`, `___TreeIndex`, and `UnsafeTreeV2+Index.swift` consumers.
+2. Confirm both compiler failures recorded under
+   `### G3 SignedDistance targeted compile experiment`:
+   - public `___signed_distance` is rejected in the extension with package requirements;
+   - package `___signed_distance` cannot satisfy the public interface requirement for the
+     public conformers.
+3. Check whether any access-only formulation was missed. Treat removal of the inverse clause,
+   moving or duplicating the witness, changing the public protocol cluster, or redesigning Index
+   only as future design work, not as part of this batch.
+4. Confirm `tree_base+distance.swift` was restored exactly to the public protocol and public
+   witness, and no source, CHANGELOG, test, Package.swift, workflow, benchmark, DocC, or Index
+   change remains from the experiment.
+5. Return one verdict: `defer G3 SignedDistance`, `G3 SignedDistance access-only narrowing
+   available`, or `G3 SignedDistance evidence incomplete`.
+
+### Output and boundaries
+
+Append a concise review below `### G3 SignedDistance targeted compile experiment` in
+`Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`, update this task with the result, and set the
+status to `Completed`. Only those two Markdown files may be edited. Do not build the full suite,
+stage, commit, switch branches, inspect `try/index/1`, use network access, or alter Git history.
+Read-only compiler experiments in a task-owned temporary directory are allowed. Run
+`git diff --check`, inspect the complete diff, and report only `完了` unless blocked or a
+product-owner decision is required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+Verdict: `defer G3 SignedDistance`. Appended `#### G3 SignedDistance experiment review
+(Claude)`.
+
+- Both recorded diagnostics were reproduced with synthetic code of the same shape: the
+  same associated-type constraints, the `~Copyable` inverse-clause extension, and a public
+  conformer.
+- The public witness fails because of the inverse clause. A package witness fails
+  because it cannot satisfy the public `_BaseNode_SignedDistanceInterface` requirement.
+- No combination of protocol access (`package` or `@usableFromInline package`) and
+  witness access (`public` or `package`) compiles, so there is no access-only formulation.
+  Design alternatives are listed only as future work.
+- Restoration: confirmed. `tree_base+distance.swift` matches HEAD, and `git diff HEAD`
+  touches only the two Markdown files.
+- The temporary directory was removed. `git diff --check`: clean. Nothing staged.
+
 ## Completed assignment: review the G3 NodeCompare protocol narrowing
 
 Perform a read-only independent review of Codex's first G3 implementation. Do not modify source.

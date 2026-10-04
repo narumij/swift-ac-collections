@@ -1299,3 +1299,51 @@ Verdict: `approve G2`
   足りない構成はない。
 
 Verdict: `approve G3 NodeCompare`
+
+### G3 SignedDistance targeted compile experiment
+
+2026-10-04 / Codex。G3後半の`_BaseNode_SignedDistanceProtocol`を、Index設計やwitness移設を
+行わないaccess-only変更として実sourceで検証した。実験後、sourceは元のpublic宣言へ復元した。
+
+1. protocolだけを`package`へ縮小し、既定の`___signed_distance`を`public`のままにすると、
+   `cannot declare a public static method in an extension with package requirements`となる。
+   extensionの`where Self: ~Copyable`により、G4と同じpackage requirements制約に当たる。
+2. `___signed_distance`も`package`へ下げると、4 containerのpublic
+   `_BaseNode_SignedDistanceInterface`適合について、`method '___signed_distance' must be
+   declared public because it matches a requirement in public protocol`となる。
+
+したがって、`where Self: ~Copyable`、public interface、4 containerのpublic適合を維持したまま、
+このprotocolだけをaccess-onlyで縮小する方法はない。where句の除去、witnessの移設・重複実装、
+public protocol clusterやIndex表現の変更は別の設計作業であり、今回の範囲外とする。
+
+- `tree_base+distance.swift`はprotocolと`___signed_distance`の両方がpublicの元状態へ復元済み。
+- CHANGELOG、テスト、Package.swift、workflow、benchmark、DocC、Index実装には変更を加えていない。
+
+Verdict: `defer G3 SignedDistance`
+
+#### G3 SignedDistance experiment review (Claude)
+
+2026-10-04 JST、Claude Opus 5.5。read-onlyの独立レビュー。repository内のsourceは編集していない。
+
+- **構造の確認:**
+  - `_BaseNode_SignedDistanceProtocol`(`tree_base+distance.swift:27`)の既定`___signed_distance`は、
+    `extension ... where Self: ~Copyable`(`:39`)にある。
+  - 4 containerのpublic `Base`は、このextensionをwitnessにしてpublic `_BaseNode_SignedDistanceInterface`を満たしている。
+  - この要件は、public typealias `___TreeIndex`と、`UnsafeTreeV2+Index.swift:65`の制約付きextension
+    (`distance(from:to:)`など)が使う。
+- **2つの失敗の再現:** 同じ形の合成コードを、task専用の一時ディレクトリで`swiftc -package-name`によりcompileした
+  (一時ディレクトリは削除済み)。合成コードは、関連型`difference_type` / `_InputIter`のsame-type制約、
+  `~Copyable`、逆制約付きextension、public適合型を含む。
+  - witnessを`public`のままにすると、`cannot declare a public static method in an extension with package
+    requirements`と、witness不足のerrorが出る。
+  - witnessを`package`にすると、`must be declared public because it matches a requirement in public protocol`が出る。
+  - protocolを素の`package`にした場合と`@usableFromInline package`にした場合で、結果は同じだった。
+  - 記録された2つのdiagnosticはどちらも再現し、G4で特定した逆制約句という原因と一致する。
+- **access修飾子だけで済む方法:** ない。protocol、witnessのどちらのaccessを組み合わせても通らない。
+  - 将来の設計案(このbatchの対象外): 逆制約句の扱いを決めること、witnessを移すか重複させること、
+    public protocol clusterを見直すこと、Indexを再設計すること。
+- **復元の確認:**
+  - `tree_base+distance.swift`は、public protocolとpublic `___signed_distance`のまま、HEADと差分がない。
+  - `git diff HEAD`の対象は、`Maintanance/CLAUDE_TASK.md`とこのファイルだけである。
+
+Verdict: `defer G3 SignedDistance`

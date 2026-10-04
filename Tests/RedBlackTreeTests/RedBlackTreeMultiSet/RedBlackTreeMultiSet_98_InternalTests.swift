@@ -10,8 +10,7 @@
 
       #expect(set.isValid(.index(set.startIndex)))
       #expect(!set.isValid(.index(set.endIndex)))
-      // Failure-valued Index is not representable on try/index/1.
-      // #expect(!set.isValid(.index(.failure(.null))))
+      #expect(!set.isValid(.index(.nullptr)))
     }
   }
 #endif

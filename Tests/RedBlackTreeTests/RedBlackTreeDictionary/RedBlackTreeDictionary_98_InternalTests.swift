@@ -12,8 +12,7 @@
 
       #expect(dictionary.isValid(.index(dictionary.startIndex)))
       #expect(!dictionary.isValid(.index(dictionary.endIndex)))
-      // Failure-valued Index is not representable on try/index/1.
-      // #expect(!dictionary.isValid(.index(.failure(.null))))
+      #expect(!dictionary.isValid(.index(.nullptr)))
     }
   }
 #endif

@@ -2,7 +2,190 @@
 
 Status: Completed
 
-## Active assignment: independently review the merged Index PoC issue inventory
+## Active assignment: independently review P1 invalid-Bound coverage restoration
+
+Review the uncommitted P1 test-only change and its evidence in
+`Maintanance/INDEX_POC_VALIDATION.md`. The four container internal tests replaced their commented
+failure-valued public Index assertion with `.index(.nullptr)` on a non-empty container.
+
+Required checks:
+
+1. Confirm the new assertion exercises the lost property (an invalid Index-bound is rejected)
+   without reintroducing a public failure-valued Index.
+2. Confirm every fixture is non-empty and therefore avoids the P5 `_emptyLazyDetach` same-tie null
+   assertion hazard.
+3. Check that `.index(.nullptr)` reaches the intended resolver failure path and that a passing
+   Boolean assertion cannot be explained by an unrelated process trap.
+4. Review the recorded Xcode result: 67 passed, 0 failed, and one `No result`. Confirm or refute that
+   `erasingRangeFromAnotherSet_terminatesProcess()` was not compiled because
+   `ALLOW_CROSS_TREE_INDEX` is enabled, and that its absence from `swift test list` makes the Xcode
+   entry stale discovery metadata rather than a test failure.
+5. Run only the four restored internal tests if needed. Do not expand into Release,
+   `_O_UNCHECKED`, compatibility, sanitizer, or the next P2 batch.
+
+Return a neutral evidence verdict exactly as one of: `P1 pass`, `P1 fail`, or `P1 unmapped`.
+Record concise evidence in the first Result section, set `Status: Completed`, and tell the user only
+`完了` unless a product-owner choice remains.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit the four tests, validation document,
+source, other documentation, Package.swift, or workflows. Do not fix findings, use network access,
+stage, commit, push, switch branches, or alter Git history. Read-only inspection and the four-test
+Debug run are allowed. Run `git diff --check` and inspect `git status --short` at the end.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `P1 pass`.
+
+1. **The lost property is restored, and no public failure-valued Index is reintroduced.**
+   - Each of the four tests now runs `#expect(!x.isValid(.index(.nullptr)))`.
+   - `.index(_:)` is the Debug-only `package static` on `RedBlackTreeBoundExpression`.
+   - `.nullptr` is the Debug-only `_LazyTieWrap.nullptr` (`_LazyTieWrap.swift:142`).
+   - Neither is public. The public Index stays success-only.
+2. **The fixtures are non-empty.**
+   - Set and MultiSet use `(0..<10)`.
+   - Dictionary uses `uniqueKeysWithValues: (0..<10)…`.
+   - MultiMap uses `keysWithValues: (0..<10)…`.
+   - Only the `UnsafeTreeV2Buffer.empty()` singleton carries `_emptyLazyDetach`
+     (`UnsafeTreeV2+Buffer.swift:105`). Non-empty buffers create their own tie on demand
+     (`BufferHeader.swift:162`).
+   - The synthetic Index therefore never shares the tree's tie, and the P5 hazard is avoided.
+3. **The intended failure path is reached.**
+   - `isValid(_ bound:)` is the test helper `self[bound] != nil`.
+   - Bound evaluation, Debug `.index(let i)`, runs `switch __purified_(i)`
+     (`UnsafeTreeV2+BoundsExpression.swift:129`).
+   - With different ties, `ALLOW_CROSS_TREE_INDEX` takes the cross-tree branch,
+     `__retrieve_(index.tag)`.
+   - `tag` evaluates to `.failure(.null)` because `rawValue.trackingTag == .nullptr`. The
+     singleton null node is created with `tag: .nullptr` (`unsafe_node.swift:270`).
+   - The failure branch sets `ptr = .failure(.null)`, so the subscript yields `nil`.
+   - A process trap cannot explain the pass: an in-process Swift Testing crash would fail the run,
+     not satisfy `#expect`.
+   - Limitation: the Boolean alone does not distinguish "rejected" from "resolved to end". The trace
+     above shows that it is the rejection path.
+4. **The Xcode `No result` entry is confirmed as stale discovery metadata.**
+   - `erasingRangeFromAnotherSet_terminatesProcess()` sits under `#if !ALLOW_CROSS_TREE_INDEX`
+     (`RedBlackTreeSet_99_DeathTests.swift:139`), and `ALLOW_CROSS_TREE_INDEX` is active
+     (`Package.swift:25`).
+   - `swift test list` contains 0 occurrences of it, so it is not compiled. It is not an executed
+     failure.
+5. **The four-test run passed.**
+   - `swift build --disable-sandbox --build-tests` (Debug): succeeded.
+   - `swift test --disable-sandbox --skip-build --filter 'InternalTests/boundExpressionIndexValidity'`:
+     4 tests in 4 suites passed.
+   - Nothing else was run: no Release, no `_O_UNCHECKED`, no compat, no sanitizer, and no P2.
+
+Checks: only this file was edited. `git diff --check` was clean. `git status --short` shows Codex's
+four test files and the validation document plus this file.
+
+---
+
+## Completed assignment: agree or disagree with the success-only Index validation posture
+
+The product owner has stated a strong preference to adopt the `try/index/1` success-only Index
+representation. Independently review the resulting validation posture now recorded under
+`## Product-owner direction` in `Maintanance/INDEX_POC_VALIDATION.md`.
+
+The proposed posture is:
+
+- treat the success-only Index representation as the leading implementation candidate, not one
+  equally weighted option in a neutral bake-off;
+- treat missing tests, documentation drift, prototype public-surface artifacts, and localized
+  defects as correction work unless they expose a deeper contradiction;
+- block or reject adoption only on concrete evidence that correctness, memory/Index lifetime,
+  external contract, or required complexity cannot satisfy the Quality Checklist without
+  abandoning the success-only representation;
+- keep `Comparable`, a nominal public wrapper, and ContainersPreview conformance as later,
+  separate decisions.
+
+Assess whether this framing is technically coherent, preserves the existing Quality Checklist and
+stop conditions, and avoids both confirmation bias and unnecessary reopening of already separated
+design questions. Identify any wording that would make a serious defect too easy to classify as a
+mere correction.
+
+Return exactly one verdict: `agree with success-only validation posture`, `agree after specified
+posture corrections`, or `do not agree with success-only validation posture`. Record concise
+reasoning in the first Result section, set `Status: Completed`, and tell the user only `完了` unless
+a product-owner choice remains.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. This is a policy/agreement review, not a code
+review. Do not inspect or comment on the currently uncommitted P1 test edits, edit the validation
+document or other files, run builds/tests, use network access, stage, commit, push, switch branches,
+or alter Git history. Read-only inspection of the Quality Checklist and recorded stop conditions is
+allowed. Run `git diff --check` and inspect `git status --short` at the end.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `agree after specified posture corrections`.
+
+**What is sound.**
+- Making the success-only Index the leading candidate is coherent and legitimate. The owner prefers
+  it, the PoC already compiles, and resolver diagnostics stay internal.
+- The posture keeps the bar: "Passing this baseline is not adoption approval".
+- It keeps all stop conditions.
+- It correctly prevents `Comparable`, the nominal wrapper, and ContainersPreview from being
+  smuggled in as rejection reasons.
+
+**Where serious defects could be too easily reclassified.** There are three wording problems.
+
+1. **Severity is conflated with remedy.** "localized defects are correction work unless they
+   reveal a deeper contradiction" lets the *location* of a defect decide its handling.
+   - A use-after-free, an out-of-bounds read, or the acceptance of a stale or recycled Index can sit
+     in one function and still be a Quality Checklist §2 failure.
+   - "Deeper contradiction" is undefined, so almost anything can be argued to be localized.
+2. **The burden of proof is unfalsifiable.** "Rejecting requires concrete evidence that … cannot be
+   made to satisfy … without abandoning the representation" asks for proof of impossibility. One
+   can always say "it could be fixed". Adoption must instead rest on positive evidence for each
+   Checklist property. A gap means `evidence incomplete`, not `adopt after corrections`.
+3. **Corrections are not tied to re-verification.** Nothing says that a "correction" counts only
+   after it has been re-verified under the same matrix. Without that, a planned fix can be counted
+   as if it were evidence.
+
+**Posture corrections** (replacement wording for the three bullets under
+`## Product-owner direction`):
+
+- Replace bullet 1 with:
+  > Missing tests, documentation drift, and prototype public-surface artifacts are correction work.
+  > Any failure of a Quality Checklist property — especially §2 memory safety and Index validity
+  > (stale, recycled, detached, cross-tree, outliving storage, `_O_UNCHECKED`) — is a blocking
+  > finding regardless of how localized its code is. It stops validation, is recorded before any
+  > fix, and counts as resolved only after the fix is re-verified in every configuration where it
+  > failed. It may be classified as correctable only if the demonstrated fix keeps the public Index
+  > success-only.
+- Replace bullet 2 with:
+  > Adoption requires positive evidence for each applicable Quality Checklist property. If a
+  > property fails and no fix within the success-only representation has been demonstrated, the
+  > verdict is `adoption blocked by specified evidence`. Unmeasured or unmapped properties give
+  > `evidence incomplete`. Neither outcome requires proving that a fix is impossible.
+- Add a definition after bullet 2:
+  > A deeper contradiction exists when any of the following holds:
+  > - a required observable behavior can only be expressed by a failure value inside the public
+  >   Index;
+  > - validity checking needs more than O(1) per access, or adds per-element work to traversal;
+  > - Index lifetime cannot be guaranteed without a different storage tie.
+- Extend bullet 3 symmetrically:
+  > …they are not reasons by themselves to reject this representation, nor evidence for adopting it.
+
+**Process guard against confirmation bias** (no posture change needed beyond the above):
+
+- Claude's independent tasks should produce per-property evidence: commands, configurations,
+  counts, and stderr reasons. Each task should use a neutral pass / fail / unmapped outcome, not
+  an adopt/block verdict.
+- The adopt/block judgment should be made only at step 6, from that evidence.
+
+**Residual, outside the posture.** `## Validation order` still lists step 1 (inventory review) as
+pending, although it is done. Step 4 still includes "MappedValues View", which step 2 already
+moved to first place. Both are wording-only fixes.
+
+Checks: only this file was edited. I did not inspect the uncommitted P1 test edits.
+`git diff --check` was clean. `git status --short` shows Codex's four test files plus this one.
+
+---
+
+## Completed assignment: independently review the merged Index PoC issue inventory
 
 Review the merged `try/index/1` branch at `6bdcfecd` against `develop/misc/48` at `2796d7c2`.
 Codex has created `Maintanance/INDEX_POC_VALIDATION.md` as an initial issue inventory. This is the

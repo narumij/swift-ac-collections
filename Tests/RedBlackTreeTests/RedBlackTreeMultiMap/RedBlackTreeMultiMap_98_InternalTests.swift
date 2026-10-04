@@ -12,8 +12,7 @@
 
       #expect(map.isValid(.index(map.startIndex)))
       #expect(!map.isValid(.index(map.endIndex)))
-      // Failure-valued Index is not representable on try/index/1.
-      // #expect(!map.isValid(.index(.failure(.null))))
+      #expect(!map.isValid(.index(.nullptr)))
     }
   }
 #endif

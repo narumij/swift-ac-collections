@@ -2,7 +2,123 @@
 
 Status: Completed
 
-## Active assignment: review the package-wide `AcCollections` facade
+## Active assignment: classify `RedBlackTreeTestSupport` and `DebugAdditionals` responsibilities
+
+Take primary ownership of the test-side responsibility review. Independently inspect
+`Tests/RedBlackTreeTests/RedBlackTreeTestSupport/` and
+`Tests/RedBlackTreeTests/DebugAdditionals/`, including their actual references from the test suite.
+The goal is to leave the RedBlackTree area, for now, with only Index work, documentation work, and
+explicitly frozen items. This assignment is classification and recommendation only; do not move or
+delete code.
+
+Classify the relevant files or coherent file groups into these three roles:
+
+1. executable reusable infrastructure used by automated tests;
+2. human-facing diagnostics or visualization support;
+3. disabled, historical, transitional, or otherwise frozen experiments.
+
+Then answer:
+
+- What is the durable responsibility boundary between `RedBlackTreeTestSupport` and
+  `DebugAdditionals`?
+- Which current items are clearly in the correct location?
+- Which items cross that boundary or have ambiguous ownership?
+- Which disabled or historical groups should simply be marked frozen rather than moved or deleted?
+- After applying that classification, does any concrete unfrozen implementation task remain in this
+  area, or can it be reduced to documentation plus frozen follow-ups?
+
+Use actual declarations and call sites as evidence. Existing notes in `Tests/TESTING_REFERENCE.md`
+and `Tests/RedBlackTreeFixture/Fixtures.md` are inputs, not binding conclusions. A preliminary Codex
+scan noticed active shared fixtures/assertions in `RedBlackTreeTestSupport`, active dump/Graphviz
+helpers in `DebugAdditionals`, and several `#if false` or `#if DEBUG && false` clusters; verify or
+correct that independently rather than assuming it is complete.
+
+Return exactly one verdict: `approve responsibility boundary`, `approve after specified
+reclassification`, or `responsibility boundary needs product-owner decision`. Record a concise
+file/group classification and the resulting remaining-work recommendation in the Result section,
+set `Status: Completed`, and tell the user only `完了` unless a product-owner choice remains.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not move, rename, delete, or edit test/source
+files or other documentation. Do not inspect `try/index/1`, restart any frozen audit, build/test,
+use network access, stage, commit, push, switch branches, or alter Git history. Read-only repository
+inspection is allowed. Run `git diff --check` and inspect `git status --short` at the end.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `approve after specified reclassification`.
+
+**Method.** Read-only. I read every file under `Tests/RedBlackTreeTests/RedBlackTreeTestSupport/`
+(13 files) and `Tests/RedBlackTreeTests/DebugAdditionals/` (15 files), together with their
+compile guards. For every distinctive symbol I searched for call sites across `Tests`. Some
+names are generic (`.value`, `.index`, `lower`/`upper`), and I could not resolve those by text
+search alone, so this report states only uses that I actually found. I did not compile anything.
+
+#### Classification
+
+| File / group | Guard | Role | Evidence (call sites) |
+| --- | --- | --- | --- |
+| TestSupport: `RedBlackTreeTestCase` | DEBUG blocks inside | 1 | Base class of 125+ XCTests. `PointerRedBlackTreeTestCase` is used by `BufferHeaderTests` and `UnsafeNodeTests`. The `RedBlackTreePair(key:value:)` helper is used here |
+| TestSupport: `RedBlackTree{Set,MultiSet,Dictionary,MultiMap}+Test(ing)` | `DEBUG && !COMPAT` | 1 | `___tree_invariant(_for_fuzz)` is used by the four `_98_FuzzTests`. `_copyCount` is used by CoW, removal, and compat tests. `assertEquiv` is used by `Set_98_SetAlgebraStressTests` |
+| TestSupport: `RedBlackTreeFixture`, `SplitMix64`, `DeathTestSignal`, `KeyValueComparer+Tuple`, `RedBlackTreePair+Testing`, `UnsafeIndexV3Range+Testing` | various | 1 | `RawBufferHeadFixture` and `UnsafeNodeRawBufferCrossCheckTests` (fixture); the four FuzzTests (RNG); `expectedSwiftTrapSignal` (11 files); `KeyValueComparerTests` (tuple payload); the Range View and comparator tests (`.lower`/`.upper`) |
+| TestSupport: `FixtureAtCoder2025Support` | `DEBUG && COMPAT` | 1 | `___node_positions` and `___is_garbaged` are used by the four `*AtCoder2025CompatibilityTests` |
+| TestSupport: `_NodePtr_.swift` | `#if false` plus an active tail | **3 + 1 mixed** | Lines 4–17 (`_TrackingTag.offset`) are disabled. The active `_TrackingTag.index` after `#endif` has no consumer I could resolve |
+| DebugAdditionals: `UnsafeTreeV2+Dump`, `UnsafeTreeV2+GraphvizDebug`, `unsafe_node+dump` | DEBUG | 2 | No test call sites. They are reached only by a human from the debugger or from ad-hoc code. `dumpNode` is used only by `Dump` |
+| DebugAdditionals: `_LazyTieWrap+Debug` (`Result.value: _TrackingTag`) | DEBUG | **1, misplaced** | Used by `*_98_IndexValidityXCTests` (`Index.unsafe(…).value`) |
+| DebugAdditionals: `unsafe_node+debug` (`UnsafeMutablePointer<UnsafeNode>.index`) | DEBUG | **1, misplaced** | Used by `___RedBlackTreeContainerTests_unsafe.swift:211` (`tree.__root.index`) |
+| DebugAdditionals: `ThreeWay+Old/` (3 files) | DEBUG, compiled | **3, but exercised** | Comments say 資料的に残している / 期待したほどじゃなかった. The only consumer is `RedBlackTreeInternal_98_CoverageTests`, which covers `___default_three_way_comparator`. The other `__lazy_synth_three_way_comparator` hits are separate same-named declarations in other targets and production |
+| DebugAdditionals: `UnsafeTreeV2+Testing` (tag-based `__left_(_:)` etc.), `RedBlackTreeDebugFixture` | DEBUG, compiled | **3 (orphaned)** | Their only consumer I found is `RedBlackTreeSet+UnsafeTreeDebug.swift`, which is `#if DEBUG && false` |
+| DebugAdditionals: `TransitionFromLegacy/` (3 files), `RedBlackTreeSet+UnsafeTreeDebug`, `___Node.swift` | `DEBUG && false` / `false` | 3 | Disabled. `___Node` is one of the three deliberately kept same-named `___Node`s (user decision not to unify) |
+
+#### Answers
+
+- **The durable boundary is set by purpose, not by mechanism.** Both directories use `#if DEBUG`
+  plus `@testable` extensions on internals, so that cannot be the dividing line.
+  - `RedBlackTreeTestSupport` holds code that an automated test calls: fixtures, invariants and
+    assertions, base classes, the RNG, signal constants, test-only initializers, and accessors.
+  - `DebugAdditionals` holds human-facing diagnostics (dump, Graphviz) and frozen reference or
+    transition code.
+- **Correctly located:**
+  - all of TestSupport except `_NodePtr_.swift`;
+  - Dump, Graphviz, and `unsafe_node+dump` in DebugAdditionals;
+  - the disabled transition groups.
+- **Crossing the boundary:**
+  - `_LazyTieWrap+Debug` and `unsafe_node+debug` are active test infrastructure, so they belong in
+    TestSupport.
+  - `_NodePtr_.swift` mixes a frozen block with an active extension.
+  - `ThreeWay+Old` is frozen reference code that is still compiled and kept alive only by a
+    coverage test. It stays where it is, but it should be labelled as frozen, not as
+    infrastructure.
+- **Mark frozen; do not move or delete:**
+  - `TransitionFromLegacy/`;
+  - `RedBlackTreeSet+UnsafeTreeDebug` together with its orphaned helpers `UnsafeTreeV2+Testing`
+    and `RedBlackTreeDebugFixture`;
+  - `___Node.swift`;
+  - `ThreeWay+Old/`;
+  - the `#if false` block in `_NodePtr_.swift`.
+
+  Removing any of these touches same-name / era history, which belongs to the user.
+
+#### Remaining work
+
+No unfrozen implementation task remains in this area.
+
+- **Documentation.** Record the purpose-based boundary and the frozen list above, for example in
+  `Fixtures.md` or `TESTING.md`. This is Codex's domain.
+- **Optional mechanical follow-up (tiny, not required).** Move `_LazyTieWrap+Debug.swift` and
+  `unsafe_node+debug.swift` into TestSupport. Either do the move, or record them as documented
+  exceptions; nothing else in the area needs to change.
+- **Not decided by this review.** If anyone wants the orphaned `UnsafeTreeV2+Testing` or
+  `RedBlackTreeDebugFixture` removed, that is a separate user decision. They may be needed again
+  if the disabled debug file is revived.
+
+Checks: only this file was edited. `git diff --check` was clean. `git status --short` shows Codex's
+files plus this one.
+
+---
+
+## Completed assignment: review the package-wide `AcCollections` facade
 
 Independently review the current uncommitted facade change. The product decision is fixed:
 `AcCollections` re-exports every current collection module, and a module is removed from the facade

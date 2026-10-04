@@ -566,6 +566,8 @@ API名、戻り値、検査方法が変わり得る。
 ## 主経路と並行できる完成前の整理
 
 - 公開面の監査・縮小は主経路A・Bで先に行う。この節のデッドコード判断を先行させない。
+- Index設計ゲートの停止中は、UnsafeNode / RawBufferのテスト役割整理、
+  ユーザー承認済み未結線コード削除の順で優先する。
 - [ ] 未結線コードを段階的に削除する（個々の削除はユーザーが決定する）
   - `_Reverse4`関連
   - iteratorの未接続API
@@ -574,7 +576,11 @@ API名、戻り値、検査方法が変わり得る。
   - BufferHeaderの`payloadLayout` / `__root_ptr()`
   - RawRangeの`contains(range:pointer:)`
   - `_TrackingTag.retire`
-- [ ] `RedBlackTreeTestSupport`と`DebugAdditionals`の責務を整理する
+- [x] `RedBlackTreeTestSupport`と`DebugAdditionals`の責務を整理する
+  - 自動テストから呼ぶ再利用基盤はTestSupport、人間向けdump/Graphvizと凍結した旧実験は
+    DebugAdditionalsとする。
+  - `_LazyTieWrap+Debug.swift`と`unsafe_node+debug.swift`は配置例外として許容し、移動作業は
+    発生させない。無効化・歴史的コードはユーザーが再開を決めるまで凍結する。
 - [ ] UnsafeNode / RawBufferのクロスチェックと単層テストの役割を記録する
 - [x] `Tests/TESTING.md`の古いC++比較件数と次作業の記述を更新する
 

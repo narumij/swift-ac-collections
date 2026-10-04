@@ -85,7 +85,12 @@
 - 内部テスト層の区分、および生木テストと変更コストの均衡。
 - UnsafeNode/RawBufferクロスチェックと既存単層テストの統合方法。前者には独立した
   計算経路間の一致確認という固有の役割がある。
-- RedBlackTreeTestSupportとDebugAdditionalsの役割整理。
+- `RedBlackTreeTestSupport`は自動テストから呼ばれるfixture・assertion・invariant・test-only
+  accessor等の再利用基盤、`DebugAdditionals`は人間向けdump/Graphvizと凍結した旧実験を置く。
+  `_LazyTieWrap+Debug.swift`と`unsafe_node+debug.swift`は自動テストから使われるが、現配置を
+  文書化された例外として許容し、移動だけを目的とする作業は行わない。
+  `TransitionFromLegacy/`、`ThreeWay+Old/`、無効化されたUnsafeTree debug/fixture群、
+  `_NodePtr_.swift`内の`#if false`部は、ユーザーが再開を決めるまで凍結する。
 - 未結線コードを削除するかテストするか: `_Reverse4`関連、`swap_key`/
   `swap_mapped_value`、`outOfRange`/`keyMismatch`、`payloadLayout`/`__root_ptr()`、
   RawRangeの`contains(range:pointer:)`、`_TrackingTag.retire`。

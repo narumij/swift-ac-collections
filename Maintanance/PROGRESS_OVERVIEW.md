@@ -185,8 +185,8 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 
 ### 3. 非RedBlackTreeのコメントドック監査
 
-- [ ] `OptionalArrayModule`のpublic宣言を列挙し、既存コメントと実際の契約を照合
-- [ ] `BareArrayModule`のpublic宣言を列挙し、所有権・非所有View・破棄責務を重点監査
+- [ ] `OptionalArrayModule`のpublic宣言を列挙し、既存コメントと実際の契約を照合（ユーザーが明示的に再開を希望するまで着手・Claude依頼を行わない）
+- [ ] `BareArrayModule`のpublic宣言を列挙し、所有権・非所有View・破棄責務を重点監査（ユーザーが明示的に再開を希望するまで着手・Claude依頼を行わない）
 - [x] `AcCollections`と`RedBlackTreeModule`のmodule-level説明と再公開範囲を確認
 - [x] 適用可能なtargetでDocC生成または同等のリンク・警告確認を行う（`AcCollections` / `RedBlackTreeModule`をwarnings-as-errorsで確認）
 
@@ -214,9 +214,13 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 
 ## 判断待ち
 
+赤黒木の設計ゲート停止中は、未凍結の整理タスクを非RedBlackTree監査より優先する。
+次はUnsafeNode / RawBufferクロスチェックと単層テストの役割整理、その後はユーザー判断を
+得た未結線コードの個別削除とする。
+
 - [x] `Int.__less()` / `__greater()`等、B4-aの内部由来public extensionをpackageへ縮小
 - [ ] `Result`のpublic比較overloadとpublic `_NodePtr` typealiasの処遇
-- [ ] RedBlackTreeTestSupportとDebugAdditionalsの責務整理
+- [x] RedBlackTreeTestSupportとDebugAdditionalsの責務整理（自動テスト基盤／人間向け診断・凍結コードで区分し、配置例外2件は移動しない）
 - [ ] UnsafeNode / RawBufferクロスチェックと単層テストの役割整理
 - [ ] 未結線コードを段階的に削除する（個々の削除はユーザーが決定する）
 - [x] Combining系APIへ実測結果に基づく条件付きコメントを追記（`CombiningAPIPerformanceEvidence.md` §3に基づき、容量による一律推奨を避ける）

@@ -1,11 +1,86 @@
 # Codex-to-Claude Work Request
 
-Status: Idle — no active assignment
+Status: Completed — final agreement on the task-fit policy
 
 ## Active assignment
 
-No work is assigned. Do not edit files, resume a previous task, or select work from
-the maintenance backlog. Wait for a new bounded assignment from Codex/the user.
+Read the final applied corrections and `## Codex response to Claude review` in:
+
+- `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`
+
+This is a final agreement check, not another open-ended review. Confirm only whether:
+
+1. the score changes and role labels accurately reflect your review;
+2. public-contract decisions are correctly left to the user after Codex drafts and
+   integrates evidence;
+3. the symmetric read-only review rule is acceptably limited to high-risk or canonical
+   Codex work rather than every local edit;
+4. the resulting table is safe to use for future assignments.
+
+Do not introduce new optimization ideas, residual tasks, source findings, or stylistic
+preferences. Do not edit the interview table, source, tests, or another document.
+If you agree, append exactly one short `### Claude final agreement` paragraph under
+`## Codex response to Claude review`, stating agreement and any already-recorded
+conditions that remain binding. If you disagree, list only a concrete mismatch between
+your prior review and the applied text; do not reopen settled subjects.
+
+Then change this file's status to `Completed` and append a one-sentence result under
+this assignment. Report only `完了` to the user.
+
+Result (2026-10-04, Claude Opus 5.5): I agreed to the applied task-fit policy in `AGENT_TASK_FIT_INTERVIEW.md` (`### Claude final agreement`); the per-row conditions already recorded remain binding.
+
+## Completed assignment: adversarial review of Codex self-assessment
+
+Perform a read-only adversarial review of the Codex side of:
+
+- `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`
+
+Review the newly filled `Codex自己評価・懸念`, the Codex ratings, assignment proposals,
+and `## Codexヒアリング回答`. The purpose is to detect overconfidence and weak task
+separation, not to be agreeable and not to re-evaluate your own column.
+
+For each material objection:
+
+- identify the row ID;
+- state whether the Codex score should stay, decrease, or increase;
+- distinguish `主担当可` from work that still requires a user decision, a Claude
+  adversarial review, an external/toolchain check, or a second implementation pass;
+- cite repository-specific evidence from prior tasks, diffs, maintenance records, or
+  observed failure modes;
+- flag places where Codex claims integration skill but may consume too much context,
+  broaden scope, stop before repetitive completion, or mistake a plausible design for
+  verified behavior;
+- also confirm strengths where the existing assignment split has concrete evidence.
+
+Pay special attention to rows rated Codex `5`, and to H, J, V1, V3, V4, and V5 where
+performance, unsafe memory, ownership, or concurrency make self-confidence costly.
+Do not lower a score merely because all engineering benefits from review; explain what
+would make the proposed ownership unsafe or inefficient in this repository.
+
+Do not edit the interview table, either self-assessment column, source, tests, or any
+other maintenance document. Do not implement residual work or run tests. Append only a
+compact `## Claude review of Codex self-assessment` section to
+`AGENT_TASK_FIT_INTERVIEW.md`, containing:
+
+- required rating/assignment corrections;
+- recommended safeguards that do not require a rating change;
+- confirmed Codex strengths;
+- a verdict on whether the table is safe to use for future assignment.
+
+Then change this file's status to `Completed` and append a one-paragraph result note
+under this assignment. Report only `完了` to the user; the review belongs in the MD.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+I appended `## Claude review of Codex self-assessment` to `AGENT_TASK_FIT_INTERVIEW.md`. The table,
+both self-assessment columns, and every other file are unchanged, and no test was run. The review
+recommends lowering B, G, H, J, V1, V3, and V4 from 5 to 4, and V5 from 4 to 3 for both agents. It
+recommends relabeling D, E, F, I, P1, and P2 as draft ownership with the decision going to the user,
+and marking D3 as blocked on the facade re-export decision. It also proposes a symmetric rule: a
+Codex-authored plan, audit, or progress index needs a Claude factual review before it becomes a work
+order. The main evidence is that all three Codex planning documents reviewed today had blocking
+corrections. The review also confirms Codex strengths in cross-configuration integration, contract
+preservation on Linux, evidence restraint, and audit-driven bug discovery.
 
 ## Completed assignment: answer the remaining-task fit interview
 

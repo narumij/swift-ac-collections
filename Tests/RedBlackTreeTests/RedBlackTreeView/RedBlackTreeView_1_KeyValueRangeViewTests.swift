@@ -27,6 +27,25 @@ import XCTest
       XCTAssertEqual(Array(view.values), ["a", "b", "c"])
     }
 
+    func test_isElementAndIsEnd_respectViewBounds() {
+      let dictionary = RedBlackTreeDictionary<Int, String>(
+        uniqueKeysWithValues: (0..<5).map { ($0, "\($0)") })
+      let lower = dictionary.index(after: dictionary.startIndex)
+      let inside = dictionary.index(after: lower)
+      let upper = dictionary.index(before: dictionary.endIndex)
+      let view = dictionary[lower..<upper]
+
+      XCTAssertFalse(view.isElement(at: dictionary.startIndex))
+      XCTAssertTrue(view.isElement(at: lower))
+      XCTAssertTrue(view.isElement(at: inside))
+      XCTAssertFalse(view.isElement(at: upper))
+      XCTAssertFalse(view.isElement(at: dictionary.endIndex))
+
+      XCTAssertFalse(view.isEnd(lower))
+      XCTAssertTrue(view.isEnd(upper))
+      XCTAssertFalse(view.isEnd(dictionary.endIndex))
+    }
+
     func test_removeFirstAndRemoveLast_removeEndpointsAndReturnRemovedElement() {
       var dictionary: RedBlackTreeDictionary = [1: "a", 2: "b", 3: "c"]
 

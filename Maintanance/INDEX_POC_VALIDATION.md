@@ -60,11 +60,11 @@ as history but its snapshot anchors are superseded by the commits above for this
 | `P1` | pass | Test as Specification | Four internal tests verify Debug `.index(.nullptr)` on non-empty containers without recreating a public failure-valued Index. Codex and Claude confirmed the resolver reaches `.failure(.null)` rather than trapping. |
 | `P2` | partial pass; review queued | Index lifetime | Representative stale/recycled/movement/MappedValues paths pass in Debug, Release, a narrowly filtered Release + `_O_UNCHECKED` batch, and Debug ASan. A new test confirms that an Index outliving its storage has a detached tie and is safely rejected by another live receiver under ASan. Direct `.detached` error propagation and full per-property mapping remain. |
 | `P3` | partial pass; review queued | Configuration matrix | Debug, Release, representative Release + `_O_UNCHECKED`, Debug `COMPATIBLE_ATCODER_2025`, and representative Debug ASan evidence is recorded below. Compatibility Release remains unmapped. |
-| `P4` | unverified | Container/View breadth | Validate `RedBlackTreeSet` and `RedBlackTreeMappedValuesView` first, then KeyValue Range View, the remaining containers, and KeyOnly Range View. MappedValues is the sensitive first View because its single-Index read/modify/swap paths depend directly on O(1) `__purified_` resolution and CoW migration. |
+| `P4` | partial pass; review queued | Container/View breadth | Set and MappedValues representative paths pass. KeyValue and KeyOnly Range Views now directly verify half-open bounds through `isElement(at:)` / `isEnd(_:)`; each 10-test suite passes. Remaining per-property mapping across MultiSet, Dictionary, and MultiMap is incomplete. |
 | `P5` | confirmed test hazard | Debug fixture semantics | `_LazyTieWrap.unsafe(tree:rawTag:)` maps every retrieval, seal, or banding failure to synthetic `.nullptr`. On an empty tree, `_emptyLazyDetach` is shared, so same-tie purification can assert on the null pointer instead of producing the intended `SealError`. Synthetic-null tests must use a non-empty tree and verify the error reason, not merely expect process failure. |
 | `P6` | confirmed artifacts; review queued | Public surface | External type-checking confirms both `UnsafeIndexV3` and the added `_LazyTiedPtr._NodePtr` are directly nameable after `import RedBlackTreeCollections`. Treat their visibility as prototype public-surface artifacts, not as evidence for or against the success-only representation. |
 | `P7` | verified by inspection | Equality / hashing | Synthesized `_NodePtrSealing` equality/hash cover pointer, seal, and (when present) the pointer-derived tracking tag. `_LazyTieWrap` equality additionally checks tie identity while its coarser hash omits it, which is contract-valid. All are O(1). Keep a regression test. |
-| `P8` | fixed; review queued | Limited movement | User classified stale-limit acceptance as a bug common to both Index representations. `develop/misc/48` now propagates limit-resolution failure, and the same correction was applied to the success-only overload here. The focused exit test and 37 valid-input movement tests pass. |
+| `P8` | fixed; review queued | Limited movement | User classified stale-limit acceptance as a bug common to both Index representations. `develop/misc/48` now propagates limit-resolution failure, and the same correction was applied to the success-only overload here. Focused `index`/`formIndex` exit tests cover forward/backward stale limits, and 37 valid-input movement tests pass. |
 | `P9` | unverified | Performance | Confirm equality and hashing remain O(1), full and range traversal remain O(N), and success-only resolution does not add per-element search or allocation. Preserve raw measurements separately from the design decision. |
 | `P10` | documentation | Design records | Several documents still describe the develop representation (`UnsafeIndexV3 = _LazyTieWrappedPtr`) or say the PoC must not be merged wholesale. Update them only after the validation verdict; for now record the branch and commit used as evidence. |
 | `P11` | cleanup, non-blocking | Merge artifacts | Remove only after semantic validation: duplicated comments, commented-out old alias, trailing blank lines in `_LazyTie.swift`, duplicated `過去の状態で封印する` documentation, and the `Package.swift` comment-spacing change. These are not quality failures. |
@@ -149,6 +149,7 @@ Current queue:
 - P2/P3 representative Debug ASan evidence.
 - P2 outliving-storage test and the distinction between receiver-based rejection and direct
   `.detached` error evidence.
+- P4 KeyValue and KeyOnly Range View half-open Index-boundary evidence.
 
 P1 was reviewed before the batching window began.
 
@@ -269,6 +270,10 @@ crash tests, detached Index, or Index outliving its storage.
 
 Batch result: Codex `pass`; independent review queued.
 
+The corresponding bounded-range assertions were also added to
+`RedBlackTreeKeyOnlyRangeViewTests`. Its 10-test suite passed with no failure, covering the same
+before-lower/lower/interior/upper/base-end classification for Set-backed Views.
+
 ### P2 — Index outliving its storage
 
 No existing normal-mode test explicitly retained a success-only Index after its source collection
@@ -323,8 +328,26 @@ overload was then changed to propagate `__purified_(limit)` failure before trave
 
 Verification on this branch:
 
-- stale-limit exit test: 1 passed;
+- stale-limit exit tests: 2 passed (`index` forward and `formIndex` backward);
 - valid-input limited movement and related Index-range tests: 37 passed;
 - both overloads retain the deliberately measured double `adv_iter` behavior in `form_index`.
 
 Batch result: Codex `pass` after correction; independent review queued.
+
+### P4 — KeyValue Range View Index boundaries
+
+The existing KeyValue Range View suite covered iteration, removal, empty-view CoW avoidance, and
+reference lifetime, but did not directly exercise the public Index-classification APIs. Added a
+half-open subrange test covering:
+
+- an Index before the lower bound: not an element;
+- the lower bound and an interior Index: elements;
+- the upper bound: not an element, but the View's end;
+- the base collection's `endIndex`: neither an element nor this bounded View's end.
+
+The View intentionally has no public Index subscript, so the initial compile probe for
+`view[index]` was removed rather than turning it into a runtime requirement.
+
+Result: `RedBlackTreeKeyValueRangeViewTests` passed 10 tests with no failure.
+
+Batch result: Codex `pass`; independent review queued.

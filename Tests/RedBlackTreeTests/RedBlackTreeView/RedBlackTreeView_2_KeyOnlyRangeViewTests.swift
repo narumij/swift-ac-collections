@@ -70,6 +70,24 @@ import XCTest
       XCTAssertFalse(view.isEnd(middle))
     }
 
+    func test_isElementAndIsEnd_respectViewBounds() {
+      let set = RedBlackTreeSet(0..<5)
+      let lower = set.index(after: set.startIndex)
+      let inside = set.index(after: lower)
+      let upper = set.index(before: set.endIndex)
+      let view = set[lower..<upper]
+
+      XCTAssertFalse(view.isElement(at: set.startIndex))
+      XCTAssertTrue(view.isElement(at: lower))
+      XCTAssertTrue(view.isElement(at: inside))
+      XCTAssertFalse(view.isElement(at: upper))
+      XCTAssertFalse(view.isElement(at: set.endIndex))
+
+      XCTAssertFalse(view.isEnd(lower))
+      XCTAssertTrue(view.isEnd(upper))
+      XCTAssertFalse(view.isEnd(set.endIndex))
+    }
+
     func test_elementsEqual_trueForSameElementsInOrder() {
       let set: RedBlackTreeSet = [1, 2, 3]
       let view = set[...]

@@ -2,6 +2,73 @@
 
 Status: Completed
 
+## Completed assignment: independently verify X1 inventory batch 2
+
+Independently verify only `CUR-ALIAS-001`, `CUR-ALIAS-002`, `POC-ALIAS-001`, and
+`POC-ALIAS-002` in `Maintanance/INDEX_POC_CROSS_BRANCH_IDENTITY.md`.
+
+Inspect these two paths at the fixed current (`aecbcddf240c…`) and PoC (`1b126ba370ba…`) anchors:
+
+- `Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap+Result.swift`
+- `Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap.swift`
+
+Check the exact typealias declarations, access, attributes, line numbers, alias targets, and local
+compile-time guards. Confirm that the evidence is purely mechanical, all four rows remain separate,
+and both semantic fields remain `unknown`. Report whether either file contains another declaration
+that must be inventoried to describe these two alias declarations themselves; do not widen into the
+implementation or conformances of `_LazyTieWrap`, `_NodePtrSealing`, `SealError`, or `Result`.
+
+Do not infer semantic correspondence merely because declaration text matches across anchors. Do not
+judge usage, intent, adoption, obsolescence, or implementation behavior.
+
+Return exactly one verdict: `approve X1 inventory batch 2`, `approve after specified corrections`,
+or `reject X1 inventory batch 2`. Record the result below, set `Status: Completed`, and give the
+user only a short completion notice.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit the identity map or any other file. Do
+not switch branches, inspect other paths, follow alias targets or extensions, generate wider
+inventories, run builds/tests/benchmarks, use network access, stage, commit, or alter Git history.
+Use read-only `git show` for the two exact paths and anchors, and run `git diff --check` only.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `approve X1 inventory batch 2`.
+
+I inspected only the two stated paths with `git show`, at `aecbcddf240c…` and `1b126ba370ba…`. I
+did not follow alias targets or extensions.
+
+1. **The declarations match the evidence.**
+   - In `_LazyTieWrap+Result.swift`, both anchors have line 33
+     `public typealias _LazyTieWrappedPtr = Result<_LazyTieWrap<_NodePtrSealing>, SealError>`.
+   - In `_LazyTieWrap.swift`, both anchors have line 41
+     `public typealias _LazyTiedPtr = _LazyTieWrap<_NodePtrSealing>`.
+   - All four declarations are top-level and have no attributes. Lines 23–32 and 40 are plain
+     comments only.
+2. **No guards apply.** In each file and at both anchors, the first `#if` comes after the alias:
+   - `_LazyTieWrap+Result.swift`: the first `#if` is at line 64, inside an extension.
+   - `_LazyTieWrap.swift`: the first `#if` is at line 51 (current) or 52 (PoC).
+
+   So all four rows are correctly described as unconditional in the inspected file.
+3. **The evidence is mechanical.** Each cell gives only a line number and the alias target. It
+   reads nothing into the matching text on both anchors.
+4. **The rows are kept apart.** All four are separate identities by side and commit. Role/era and
+   Semantic status are both `unknown`, and no row names a counterpart.
+5. **Nothing else is needed to describe these two aliases.** One note, outside this batch's
+   scope: at the PoC anchor, `_LazyTieWrap.swift` contains another public typealias,
+   `public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>`, at line 107. It sits inside an
+   `extension _LazyTieWrap where RawValue == _NodePtrSealing` that begins at line 105. At the
+   current anchor this file has only one typealias. The `_NodePtr` declaration is not needed for
+   these four rows, but a later batch should give it its own PoC-side identity row.
+
+**Optional.** For consistency with the batch-1 correction, the four Evidence cells could add "no
+attributes". This is not a correction.
+
+Checks: `git diff --check` was clean. Only this file was edited.
+
+---
+
 ## Completed assignment: independently verify X1 inventory batch 1
 
 Independently verify only the four identity rows `CUR-IDX-001`, `CUR-IDX-002`, `POC-IDX-001`, and

@@ -262,6 +262,21 @@
       }
 
       @Test
+      func indexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          var dictionary: RedBlackTreeDictionary = [0: 0, 1: 1, 2: 2]
+          let start = dictionary.startIndex
+          let staleLimit = dictionary.index(after: start)
+          dictionary.remove(at: staleLimit)
+          _ = dictionary.index(start, offsetBy: 1, limitedBy: staleLimit)
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
       func mappedValuesSubscriptWithErasedIndex_terminatesWithoutInvalidMemoryAccess() async {
         let result = await #expect(
           processExitsWith: .failure,

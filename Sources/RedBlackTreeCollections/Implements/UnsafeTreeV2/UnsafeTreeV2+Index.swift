@@ -151,10 +151,11 @@ extension UnsafeTreeV2 {
   )
     -> _LazyTieWrappedPtr
   {
-    let __l = __purified_(limit).map(\.pointer)
-    return __purified_(i)
-      .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-      .flatMap { index($0) }
+    __purified_(limit).flatMap { limit in
+      __purified_(i)
+        .flatMap { ___tree_adv_iter($0.pointer, distance, .success(limit.pointer)) }
+        .flatMap { index($0) }
+    }
   }
 
   @inlinable

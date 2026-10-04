@@ -2,6 +2,89 @@
 
 Status: Completed
 
+## Completed assignment: independently verify X1 inventory batch 1
+
+Independently verify only the four identity rows `CUR-IDX-001`, `CUR-IDX-002`, `POC-IDX-001`, and
+`POC-IDX-002` in `Maintanance/INDEX_POC_CROSS_BRANCH_IDENTITY.md`.
+
+Inspect this single path at the two fixed anchors:
+
+- current: `aecbcddf240cc039db9eac92b46721a1fde0532a`
+- PoC: `1b126ba370ba78aa90b1241ac83d888ed3861bf4`
+- path: `Sources/RedBlackTreeCollections/Implements/Index/UnsafeIndexV3.swift`
+
+Check independently:
+
+1. The exact declarations, access, attributes, and alias targets.
+2. Whether each declaration is guarded in this file by any compile-time condition.
+3. Whether the evidence text states only mechanically visible facts.
+4. Whether current and PoC rows remain separate identities with semantic status `unknown`.
+5. Whether any additional declaration in this file requires its own identity row.
+
+Do not propose semantic correspondence between rows, interpret comments as user intent, judge one
+side newer/better/obsolete, or inspect alias-target implementations. Shared symbol names are not
+evidence of shared meaning.
+
+Return exactly one verdict: `approve X1 inventory batch 1`, `approve after specified corrections`,
+or `reject X1 inventory batch 1`. Record the result below, set `Status: Completed`, and give the
+user only a short completion notice.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit the identity map or any other file. Do
+not switch branches, inspect other branch paths, follow alias targets, generate a wider symbol
+inventory, run builds/tests/benchmarks, use network access, stage, commit, or alter Git history.
+Use read-only `git show` for the exact anchors and path above, and run `git diff --check` only.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `approve after specified corrections`. One evidence
+correction is needed, for `POC-IDX-001`.
+
+I inspected only the stated path with `git show`, at `aecbcddf240c…` and `1b126ba370ba…`. I did not
+follow any alias target.
+
+1. **Declarations.**
+   - **Current side:**
+     - Line 26: `@_documentation(visibility: internal)`.
+     - Line 27: `public typealias UnsafeIndexV3 = _LazyTieWrappedPtr`.
+     - Line 30: `public typealias RedBlackTreeIndex = UnsafeIndexV3`, with a `///` doc comment on
+       line 29.
+   - **PoC side:**
+     - Line 26: the commented-out line `//public typealias UnsafeIndexV3 = _LazyTieWrappedPtr`.
+     - Line 30: `public typealias UnsafeIndexV3 = _LazyTiedPtr`. It has **no attribute**.
+     - Line 33: `public typealias RedBlackTreeIndex = UnsafeIndexV3`, with a `///` doc comment on
+       line 32.
+2. **Guards.** Neither file contains any `#if`, so all four declarations are unconditional in this
+   file. The rows say this correctly.
+3. **Evidence text.**
+   - `CUR-IDX-001`, `CUR-IDX-002`, and `POC-IDX-002` state only visible facts.
+   - `POC-IDX-001` has two problems:
+     - It omits the visible fact that the PoC declaration carries no `@_documentation` attribute.
+       On the current side this attribute is part of `CUR-IDX-001`'s evidence, so leaving it out
+       of `POC-IDX-001` would let a reader assume the two declarations have the same attributes.
+     - "the `_LazyTieWrappedPtr` form remains commented out" contains a history claim ("remains").
+       Only the commented-out text itself is visible in the file.
+4. **Separation.** All four rows are separate identities, keyed by side and commit, and each has
+   `unknown` in both Role/era and Semantic status. No row references another as a counterpart.
+5. **Other declarations.** None. The rest of both files is comments (lines 23–25 and 32–62 on
+   the PoC side, 23–25 and 32–56 on the current side). Comments are not inventoried as intent,
+   per the task.
+
+**Correction.** Replace the `POC-IDX-001` Evidence cell with:
+
+> Alias target is `_LazyTiedPtr` (line 30); the declaration has no attributes; line 26 is a
+> commented-out `public typealias UnsafeIndexV3 = _LazyTieWrappedPtr`
+
+**Optional.** Add line numbers to the other three Evidence cells, for consistency:
+- `CUR-IDX-001`: lines 26–27
+- `CUR-IDX-002`: line 30
+- `POC-IDX-002`: line 33
+
+Checks: `git diff --check` was clean. Only this file was edited.
+
+---
+
 ## Completed assignment: review the X1 identity-map skeleton
 
 Perform a read-only review of the newly created

@@ -73,7 +73,10 @@ containers into one row until the first representative container and View have b
 
 | ID | Side | Commit | Path | Symbol | Configuration | Role / era (user-supplied; otherwise unknown) | Semantic status | Evidence | User intent |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | — | — | — | — | `unknown` | `unknown` | Not started | Pending |
+| `CUR-IDX-001` | current | `aecbcddf` | `Sources/RedBlackTreeCollections/Implements/Index/UnsafeIndexV3.swift` | `public typealias UnsafeIndexV3` | Unconditional declaration in the inspected file | `unknown` | `unknown` | Lines 26–27: alias target is `_LazyTieWrappedPtr`; declaration has `@_documentation(visibility: internal)` | Pending |
+| `CUR-IDX-002` | current | `aecbcddf` | `Sources/RedBlackTreeCollections/Implements/Index/UnsafeIndexV3.swift` | `public typealias RedBlackTreeIndex` | Unconditional declaration in the inspected file | `unknown` | `unknown` | Line 30: alias target is `UnsafeIndexV3` | Pending |
+| `POC-IDX-001` | PoC | `1b126ba3` | `Sources/RedBlackTreeCollections/Implements/Index/UnsafeIndexV3.swift` | `public typealias UnsafeIndexV3` | Unconditional declaration in the inspected file | `unknown` | `unknown` | Line 30: alias target is `_LazyTiedPtr`; the declaration has no attributes; line 26 is a commented-out `public typealias UnsafeIndexV3 = _LazyTieWrappedPtr` | Pending |
+| `POC-IDX-002` | PoC | `1b126ba3` | `Sources/RedBlackTreeCollections/Implements/Index/UnsafeIndexV3.swift` | `public typealias RedBlackTreeIndex` | Unconditional declaration in the inspected file | `unknown` | `unknown` | Line 33: alias target is `UnsafeIndexV3` | Pending |
 
 ## Correspondence proposal table
 

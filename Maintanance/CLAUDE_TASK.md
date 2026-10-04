@@ -7,35 +7,9 @@ Status: Idle — no active assignment
 No work is assigned. Do not edit files, resume a previous task, or select work from
 the maintenance backlog. Wait for a new bounded assignment from Codex/the user.
 
-## Cancelled assignment record (never resume without a new user decision)
-
-Audit and correct the four existing Japanese compatibility matrices under
-`Documentation/Compatibility/` (`set`, `multiset`, `map`, `multimap`). They already
-serve as the requested API Matrix; do not create a competing summary document.
-
-Use the current public Swift API, public Test-as-Specification tests, and the accepted
-`CppBehaviorReferenceTests` as evidence. Correct stale claims, especially hint
-insertion rows that still say the API is unavailable. For every relevant operation,
-distinguish:
-
-- directly corresponding API and verified common behavior;
-- similar capability with different Swift/C++ API or return semantics;
-- implementation behavior that is not guaranteed by the C++ standard;
-- unavailable C++-specific object/allocator/node-handle behavior;
-- behavior not covered by the C++ comparison suite.
-
-Record the verified four-container comparison scope without implying total C++
-compatibility. Include the Linux/libstdc++ finding: `std::multimap::find` may select a
-different occurrence within an equivalent-key group, so compatibility covers
-presence, key, count, and contents, not mapped occurrence identity or rank. Preserve
-strict claims only where bounds, equal ranges, erase results, hinted insertion, or
-ordered contents were actually compared.
-
-Do not change production Swift, tests, benchmarks, or algorithms. Do not add English
-copies unless an established counterpart exists; these four Japanese files are the
-current canonical documents. Check all four consistently when one stale pattern is
-found. Run `git diff --check`, record the exact corrected claims and remaining
-unverified areas here, set this status to Completed, and report only `完了` to the user.
+Cancelled: the broad Compatibility-document audit was force-stopped by the user and
+must not be resumed. The dedicated C++ evidence matrix was subsequently created by
+Codex as `Maintanance/CPP_BEHAVIOR_COMPARISON_MATRIX.md`.
 
 ## Completed assignment: controllable Debug allocation/lifetime checks
 

@@ -7,6 +7,245 @@ Status: Idle
 No active assignment. Wait for a new request from Codex. Report only `完了` when an
 assigned task is finished; keep detailed findings in the designated Markdown record.
 
+## Completed assignment: narrow Debug-only Bound fixtures
+
+Narrow the two Debug-only `RedBlackTreeBoundExpression` fixture constructors from
+client-visible public API to package-only API, without changing their behavior or the
+other Debug-only clusters.
+
+## Objective
+
+Change only `index(_:)` and `debug(_:)` under `#if DEBUG` from
+`@inlinable public static` to `@inlinable package static`. Preserve their bodies,
+internal enum cases, evaluation behavior, and all callers.
+
+## Allowed changes
+
+- `Sources/RedBlackTreeCollections/Implements/BoundsExpression/RedBlackTreeBoundExpression.swift`
+- `CHANGELOG.md`
+- the relevant current-state row or note in
+  `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
+- `Maintanance/PROGRESS_OVERVIEW.md` only if an existing checklist/status statement can
+  be accurately advanced without rewriting unrelated history
+- `Maintanance/CLAUDE_TASK.md`
+
+The intended source change is exactly the two access modifiers. Tests should not need
+editing because every caller belongs to this Swift package and package access is the
+required floor for the non-`@testable` numbered specification test.
+
+## Must preserve
+
+- Keep `#if DEBUG`, `@inlinable`, signatures, bodies, `Internal.index` / `.debug`, and
+  `UnsafeTreeV2` evaluation unchanged.
+- Do not touch the `Balanced*` executable API Matrix, its conformances,
+  `freeCapacity`, or `popFirst(_:)` / `popLast(_:)`.
+- Do not touch `Result` retroactive conformance, `_LazyTieWrap`, `_NodePtrSealing`,
+  `_LazyTie`, public Index representation, Range/View contracts, or compatibility mode.
+
+## Do not
+
+- Do not edit `Package.swift`, workflows, benchmarks, API Matrix documents, or tests.
+- Do not perform unrelated cleanup.
+- Do not stage or commit files and do not perform branch/history/network operations.
+- Do not inspect `try/index/1`.
+
+## Validation
+
+1. Build tests in Debug.
+2. Run the numbered Set Bound Expression tests and the four container
+   `*_98_InternalTests` that use `.index` / `.debug`; confirm intended tests were
+   discovered and executed.
+3. Build `RedBlackTreeCollections` in Release.
+4. Run the established Release DocC warnings-as-errors command.
+5. Run `git diff --check`, inspect the complete diff, and confirm that only allowed
+   files changed.
+
+Record the access-floor evidence, exact commands, test discovery/counts, and results.
+Set this task to `Completed` and report only `完了` to the user. Explain directly only
+if blocked, if an unrelated regression appears, or if a product-owner decision is
+required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+- Changed `RedBlackTreeBoundExpression.swift:209,214` (`index(_:)`, `debug(_:)`) from
+  `@inlinable public static` to `@inlinable package static`. Nothing else in source
+  changed.
+- Access-floor evidence: `RedBlackTreeSet_16_BoundExpressionTests` imports without
+  `@testable` and still compiles unchanged, which requires `package`. The four
+  `*_98_InternalTests` use `@testable`.
+- Documentation updated:
+  - `CHANGELOG.md`: added an Unreleased / Changed entry (Debug-only source break);
+  - `PROGRESS_OVERVIEW.md`: added one checked item to the existing public-surface
+    checklist;
+  - `EXTERNAL_TYPE_EXTENSION_AUDIT.md`: appended `### Bound index / debug implementation
+    result`. That file's earlier uncommitted diff is the previous audit section.
+- Validation:
+  - `swift build --disable-sandbox --build-tests` (Debug): succeeded.
+  - `swift test --disable-sandbox --skip-build --filter 'RedBlackTreeSetBoundExpressionTests|InternalTests'`:
+    - XCTest: `RedBlackTreeSetBoundExpressionTests`, 27 tests, 0 failures.
+    - Swift Testing: `RedBlackTree{Set,MultiSet,Dictionary,MultiMap}InternalTests`,
+      4 tests in 4 suites, all passed.
+  - `swift build --disable-sandbox -c release --target RedBlackTreeCollections`:
+    succeeded.
+  - The CI Release DocC `generate-documentation ... --warnings-as-errors` command:
+    succeeded.
+  - `git diff --check`: clean.
+  - Changed files are only the allowed ones: source file, `CHANGELOG.md`, the audit,
+    `PROGRESS_OVERVIEW.md`, and this file. Nothing was staged.
+
+## Completed assignment: audit Debug / Release public-surface differences
+
+Perform a read-only decision audit of the Debug-only public surface in
+RedBlackTreeCollections, separating work that is safe before the public Index decision
+from work that must remain deferred.
+
+## Objective
+
+Produce the next bounded implementation recommendation for eliminating unintended
+Debug/Release API differences. Do not change source, tests, access levels, or build
+configuration in this task.
+
+## Scope
+
+Audit these known groups as coherent dependency clusters:
+
+1. `BalancedSequence`, `BalancedCollection`, `BalancedMultiCollection`, `BalancedView`,
+   `BalancedDynamic`, `BalancedSomething`, their container/View conformances, and
+   `RedBlackTreeSet.freeCapacity`.
+2. Debug-only `RedBlackTreeBoundExpression.index(_:)` and `.debug(_:)`.
+3. Debug-only comparison declarations involving `Result`, `_LazyTieWrap`,
+   `_NodePtrSealing`, and their conformances.
+
+Product-owner clarification for cluster 1: the `Balanced*` protocols are an executable,
+source-level API Matrix. Their purpose is to make the compiler verify that the intended
+container/View API families remain present and mutually aligned. Do not classify them
+as unused abstraction merely because production algorithms do not consume them.
+
+Use these records as the starting point:
+
+- `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
+- `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
+- `Maintanance/PROGRESS_OVERVIEW.md`
+- `Tests/TESTING.md`
+
+Inspect relevant production declarations, direct and generic callers, numbered tests,
+Debug additionals, compatibility guards, `@inlinable` visibility requirements, and
+public signatures. Repository-local evidence only; no network access.
+
+## Required analysis
+
+For each cluster, record:
+
+- exact declarations and guards;
+- why it exists and every repository consumer;
+- whether it affects observable product semantics or is test/debug instrumentation;
+- whether moving it to TestSupport, narrowing it, deleting it, or making it consistent
+  across Debug/Release is mechanically possible;
+- whether it depends on the unresolved public Index representation, `Index: Comparable`,
+  Range/View contracts, compatibility mode, or performance design;
+- the smallest independent implementation batch, required files, expected validation,
+  and source-compatibility impact.
+
+Do not treat all Debug-only declarations as one batch merely because they share a guard.
+In particular:
+
+- Preserve the compile-time API-matrix function of the `Balanced*` cluster. Compare the
+  tradeoffs of keeping it Debug-only in production source versus relocating an
+  equivalent compile-time contract to test support, but do not recommend deletion
+  unless an equally comprehensive compiler-checked replacement is identified.
+- Treat `freeCapacity` as part of that executable contract even if it has no runtime
+  caller. Determine whether it expresses an intended API requirement or an obsolete
+  matrix row; do not infer the answer from reference count alone.
+- Do not remove or redesign the retroactive `Result: Comparable` conformance; classify
+  it as Index-dependent unless source evidence proves otherwise.
+- Do not remove `freeCapacity` independently from the `BalancedDynamic` requirement.
+- Do not decide the final public Index representation or Comparable policy.
+- Do not turn Debug-only diagnostics into Release product API merely to equalize symbol
+  graphs.
+
+## Output
+
+Append one concise section named exactly:
+
+`### Debug / Release public-surface decision audit`
+
+to `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`. Include:
+
+1. a dependency table for the three clusters;
+2. confirmed independent work, if any;
+3. deferred Index/product decisions;
+4. one recommended next implementation batch, or an explicit finding that none is safe;
+5. one verdict:
+   - `independent implementation batch available`
+   - `all remaining work is decision-bound`
+   - `product-owner decision required`
+
+If an independent batch is recommended, its boundary must compile without changing the
+other two clusters.
+
+## Boundaries
+
+The only files this task may edit are:
+
+- `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
+- `Maintanance/CLAUDE_TASK.md`
+
+Do not edit source, tests, `Package.swift`, workflows, API matrices, CHANGELOG, or other
+management documents. Do not run the full test suite. Do not stage files. Do not commit,
+push, pull, merge, rebase, switch branches, inspect `try/index/1`, or alter Git history.
+
+## Validation and handoff
+
+Re-run searches covering every declaration and repository reference used by the
+conclusion. Run `git diff --check` on the two allowed files and inspect their complete
+diff plus `git status --short`. Tests are not required for this read-only audit.
+
+Set this task to `Completed`, append a concise result and validation evidence below the
+assignment, and report only `完了` to the user. Explain directly only if blocked, if a
+safety issue is found, or if a product-owner decision is required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+I appended `### Debug / Release public-surface decision audit` to
+`EXTERNAL_TYPE_EXTENSION_AUDIT.md`. Verdict: `independent implementation batch available`.
+
+- **Cluster 1 (Balanced\* protocols + `freeCapacity`):** moving it to TestSupport is
+  mechanically possible, but two decisions block it.
+  - The numbered spec test `RedBlackTreeMultiMap_8_RangeViewTests.swift:68-82` uses the
+    Debug-only `popFirst(_ k:)` / `popLast(_ k:)`. The TODO in their source says they are
+    wrong, so what happens to them is a spec decision.
+  - The performance TODO says removing the conformances hurts performance, but the
+    conformances exist only in Debug, so they cannot affect Release performance. Removing
+    that TODO contradicts the owner's note.
+  - Its Index requirement is `Equatable` only, so this cluster does not depend on
+    `Comparable`.
+- **Cluster 2 (Debug `RedBlackTreeBoundExpression.index(_:)` / `.debug(_:)`):** this is
+  the recommended next batch.
+  - Change both from `@inlinable public static` to `@inlinable package static` in
+    `RedBlackTreeBoundExpression.swift:208-216`.
+  - All callers are tests in this package. `RedBlackTreeSet_16_BoundExpressionTests`
+    imports without `@testable`, which is why the floor is `package` rather than
+    `internal`.
+  - No test edits are needed, the other clusters stay untouched, and the Release surface
+    does not change.
+  - Gate A had listed these two as waiting on the Index contract. I revised that,
+    because narrowing access does not fix the Index representation.
+- **Cluster 3 (Debug Comparable declarations: `Result` retroactive, `_LazyTieWrap`,
+  `_NodePtrSealing`, `_LazyTie`):** deferred until the Comparable policy and Index
+  representation are decided. Its consumers are the numbered test
+  `RedBlackTreeSet_9_ProtocolConformanceTests:66-71` and `TreeFoundamentalNodeSealingTests`.
+
+Validation:
+
+- Searches covered Balanced\*, `freeCapacity`, `popFirst(k)` / `popLast(k)`,
+  bound `.index` / `.debug` forms (explicit and implicit-member), and the Debug
+  Comparable declarations plus their users. They ran over `Sources`, `Tests`,
+  `Benchmarks/Sources`, and repository Markdown.
+- No build or test was run.
+- `git diff --check` on both allowed files was clean.
+- `git status --short` shows only `Maintanance/CLAUDE_TASK.md` and
+  `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md` modified.
+
 ## Completed assignment: narrow View `_isIdentical(to:)`
 
 Narrow the normal-mode View-only `_isIdentical(to:)` hooks from public API to the

@@ -552,3 +552,77 @@ B4-cは完了した。標準型へのtest-only conformanceはtest process内に�
     各View suiteが実行されたことを確認した。
   - Releaseの`swift build -c release --target RedBlackTreeCollections`が成功した。
   - CIと同じRelease DocC生成(`--warnings-as-errors`)が成功した。
+
+### Debug / Release public-surface decision audit
+
+2026-10-04 / Claude Opus 5.5。Codexの割り当てによるread-only監査。source、test、構成は
+変更していない。testは実行していない。`try/index/1`は参照していない。パスはrepository rootからの
+相対パス。
+
+#### Dependency table
+
+| cluster | 宣言とguard | repository内の利用者 | 意味 | Index / Comparable / 互換 / 性能への依存 |
+| --- | --- | --- | --- | --- |
+| 1. Balanced群 | `Sources/RedBlackTreeCollections/Implements/Protocol/BalancedSequence.swift`。protocol 6個(`:32-182`、`#if DEBUG`)、`BalancedSequence.popFirst(_ k:)` / `popLast(_ k:)`(`:52,66`。TODOに「そもそも間違ってる」とある)、4コンテナと2 Range Viewの適合、および`RedBlackTreeSet.freeCapacity`(`:186-205`、`DEBUG && !COMPATIBLE_ATCODER_2025`) | generic利用者はない。`freeCapacity`の利用者もない(`BalancedDynamic`要件のwitnessとしてだけ存在)。番号付き仕様test `Tests/RedBlackTreeTests/RedBlackTreeMultiMap/RedBlackTreeMultiMap_8_RangeViewTests.swift:68-82`(`#if DEBUG`)が`popFirst(2)` / `popLast(10)`を使う。`isValid.md:71`に記述がある | Debug専用の抽象化とinstrumentation。Releaseの製品面には存在しない | Index要件は`Equatable`だけでComparable非依存。関連型の既定値に`UnsafeIndexV3Range` / `UnsafeIndexV3RangeExpression`を名指ししているが、表現は選んでいない。互換modeでは適合しない。`:187`のTODOは「適合を外すと性能に影響する」とするが、適合はDebugにしか存在しないので、Releaseの製品性能には影響し得ない(Debugでの影響は未計測) |
+| 2. Bound `index` / `debug` | `Sources/RedBlackTreeCollections/Implements/BoundsExpression/RedBlackTreeBoundExpression.swift:207-217`の`@inlinable public static func index(_: UnsafeIndexV3)`と`debug(_: SealError)`(`#if DEBUG`)。内部case `Internal.index` / `.debug`(`:111-112`)と、評価処理(`Implements/UnsafeTreeV2/UnsafeTreeV2+BoundsExpression.swift:128-139`、`#if DEBUG`) | testだけ。`RedBlackTreeSet_16_BoundExpressionTests.swift:197-209,360`(`#if DEBUG && !COMPATIBLE_ATCODER_2025`、`@testable`なしの`import RedBlackTreeCollections`)と、4コンテナの`*_98_InternalTests.swift`(`@testable`)。production、benchmark、DocCからの参照はない | test fixture。無効なboundと他の木のIndexを合成する | signatureにIndex型と`SealError`が現れるが、access縮小は表現を選ばない。parameter型はaliasに追従する。他の2 clusterとは参照関係がない |
+| 3. Debug比較群 | `extension Result: @retroactive Comparable where Success: Comparable, Failure: Comparable`(`Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap+Result.swift:107-125`)、`_LazyTieWrap: Comparable`(`_LazyTieWrap.swift:51-`)、`_NodePtrSealing: Comparable`と`lessThanSlow`(`Implements/__tree/unsafe_node/Seal/_NodePtrSealing.swift:144-170`)、package `_LazyTie.<`(`_LazyTie.swift:84-`)。いずれも`#if DEBUG` | 番号付き仕様test `RedBlackTreeSet_9_ProtocolConformanceTests.swift:66-71`(`XCTAssertLessThan(startIndex, endIndex)`)、`Tests/RedBlackTreeTreeTests/Foundamental/TreeFoundamentalNodeSealingTests.swift:93-161`、`RedBlackTreeSet_98_PerformanceTests.swift:199-210`(`DEBUG && false`のためcompileされない) | IndexのComparable可否そのもの。標準型への遡及適合を含む | Comparable方針、Index表現、upstreamのContainer要件(1.7.0は`Index: Comparable`を要求)に依存する。`SealError: Comparable`(`unsafe_node+pointer+safe.swift:273`)はDebug限定ではない |
+
+#### Confirmed independent work
+
+- **cluster 2**は、他の2 clusterに触れずに単独で縮小できる。
+  - 呼び出し元はすべて同じpackage内のtestである。`@testable`なしで使う`_16_`も含まれるので、
+    下限は`package`になる(internalにするとtestの変更が必要になる)。
+  - production側に`@inlinable`の呼び出し元はない。
+  - Releaseのsymbolには影響せず、Debugの公開symbolが2つ減る。
+  - Gate Aでは、signatureにIndexが現れることを理由に「Index契約待ち」の一覧へ入れていた。しかし
+    access縮小は表現を固定せず、公開面を減らす方向にしか働かない。そのため独立していると判断を改める。
+
+#### Deferred decisions
+
+- **cluster 3**は、Comparable方針とIndex表現(D・F・I)を待つ。割り当ての指示どおり、
+  `Result: Comparable`は変更しない。
+- **cluster 1**は機械的にはTestSupportへ移せる。test moduleに置くprotocolへの適合で、Debugと
+  `@testable`の範囲で成立する。ただし次の2つの判断が必要になる。
+  - 番号付き仕様test `_8_`が使うDebug限定`popFirst(_ k:)` / `popLast(_ k:)`は、TODOで戻り値を
+    疑問視されている。そのため、削除、移動、仕様変更のどれにするかは仕様判断になる。
+  - 性能TODOを外す根拠はowner noteと食い違う。
+  - `freeCapacity`は`BalancedDynamic`と一緒に扱う。
+- Balanced群を移した後に、関連型の既定値(`UnsafeIndexV3Range`など)を見直すかどうかは、
+  Range/View契約に従う。
+
+#### Recommended next batch
+
+cluster 2だけを対象にする。
+
+- `Sources/RedBlackTreeCollections/Implements/BoundsExpression/RedBlackTreeBoundExpression.swift:208-216`の
+  `@inlinable public static func index(_:)`と`debug(_:)`を`@inlinable package static func`へ変更する。
+  本体、内部case、評価処理、`#if DEBUG`は変更しない。test、互換mode、他のclusterには触れない。
+- 検証:
+  - Debugの`swift build --build-tests`。
+  - `RedBlackTreeSetBoundExpressionTests`と`*_98_InternalTests`の実行。test名で発見されたことを確認する。
+  - Releaseの`swift build --target RedBlackTreeCollections`。Releaseでは宣言が存在しないので、差分がないことを確認する。
+  - CIと同じRelease DocC。
+- source互換: 影響はDebug buildの利用者だけで、Debug限定のfixture APIの削除になる。
+  CHANGELOGに1行記載すること。
+
+#### Verdict
+
+`independent implementation batch available`
+
+### Bound index / debug implementation result
+
+2026-10-04 / Claude Opus 5.5。上の推奨batch(cluster 2)をCodexの割り当てに基づき実施した。
+
+- `Sources/RedBlackTreeCollections/Implements/BoundsExpression/RedBlackTreeBoundExpression.swift:209,214`の
+  `index(_:)`と`debug(_:)`を、`@inlinable public static`から`@inlinable package static`へ変更した。
+  `#if DEBUG`、signature、本体、`Internal.index` / `.debug`、`UnsafeTreeV2`での評価処理は変更していない。
+- 下限が`package`である根拠: `RedBlackTreeSet_16_BoundExpressionTests`は`@testable`を使わずに
+  importしており、testを変更せずにcompileできた。
+- Balanced群、Debug比較群、互換mode、testは変更していない。
+- 検証:
+  - Debugの`swift build --build-tests`が成功した。
+  - `swift test --skip-build --filter 'RedBlackTreeSetBoundExpressionTests|InternalTests'`:
+    - XCTestは`RedBlackTreeSetBoundExpressionTests`の27件が0 failureで成功した。
+    - Swift Testingは4コンテナの`*InternalTests`、計4 suite・4件が成功した。
+  - Releaseの`swift build -c release --target RedBlackTreeCollections`が成功した。
+  - CIと同じRelease DocC(`--warnings-as-errors`)が成功した。

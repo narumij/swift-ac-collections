@@ -1110,3 +1110,65 @@ G2〜G4 は G1 の後に、実 source での targeted compile 実験として別
 G1は完了。次はG2 (`UniqueMultiplicity` / `MultiMultiplicity`) またはG4
 (`_ScalarBasePayloadValue_KeyProtocol`) の実source targeted compile実験を、G3のIndex隣接群とは
 分離して行える。G5 (`MultiplicityHelper`) とG6 (`UnsafeTreeBindingV2`) は引き続き保留する。
+
+### G4 targeted compile experiment
+
+2026-10-04 / Codex。実sourceでアクセス縮小を一時適用し、DebugとReleaseのtypecheck結果を確認した。
+実験後、sourceは実験前へ復元した。
+
+1. protocolだけを`@usableFromInline package`へ縮小し、既定の`__key`を`public`のままにすると、
+   `Cannot declare a public static method in an extension with package requirements`となる。
+   後続のClaudeレビューにより、これはpackage protocol extension一般の制約ではなく、
+   `where Self: ~Copyable`句がpackage requirementとして扱われることが原因と限定された。
+2. `__key`も`package`へ縮小するとファイル単体の診断は消えるが、Set / MultiSetのpublic nested
+   `Base`がpublic `_BasePayloadValue_KeyInterface`へ適合する際のwitnessとして不足する。DebugとReleaseの
+   module buildはいずれも`Method '__key' must be declared public because it matches a requirement in public
+   protocol '_BasePayloadValue_KeyInterface'`で失敗した。
+3. したがってG4はprotocol宣言だけの独立縮小として成立しない。縮小するには、public witnessを別の
+   public extension / conforming typeへ移すか、`_BasePayloadValue_KeyInterface`を含む上位clusterの公開設計を
+   変更する必要がある。これはaccess modifierだけのバッチを越えるため、この実験では実装しない。
+
+結論: `deferred; public witness boundary confirmed`。
+
+#### G4 experiment review (Claude)
+
+2026-10-04 JST、Claude Opus 5.5。read-onlyの独立レビュー。repository内のsourceは編集していない。
+task専用の一時ディレクトリで合成コードを`swiftc -package-name`でcompileした(ディレクトリは削除済み)。
+
+- **対象の確認:**
+  - `_ScalarBasePayloadValue_KeyProtocol`(`tree_base+scalar.swift:23`)は`~Copyable`で、既定の`__key`は
+    `extension ... where Self: ~Copyable`(`:25`)にある。
+  - Set / MultiSetのpublic nested `Base`は、`ScalarValueTrait`(public)を通じてpublic
+    `_BasePayloadValue_KeyInterface`に適合する。`@usableFromInline` `_ScalarBasePayload_KeyProtocol_ptr`
+    を通じて、この既定`__key`がwitnessになっている。
+- **失敗2(`__key`をpackageにした場合):** 正しい。public型のpublic適合では、public要件のwitnessは
+  publicでなければならない。合成コードでも同じ`must be declared public because it matches a requirement in
+  public protocol`が出た。
+- **失敗1の理由づけは一般化しすぎ:** 「package protocolのextensionにはpublic memberを宣言できない」は、
+  一般則としては成り立たない。原因は`where Self: ~Copyable`句である。合成コードの結果:
+
+  | protocol | extension | 結果 |
+  | --- | --- | --- |
+  | `@usableFromInline package`、`~Copyable` | where句なし、`public static func __key` | compile成功。public `Base`のpublic witnessとしても通る |
+  | 同上 | `where Self: ~Copyable`あり | `cannot declare a public static method in an extension with package requirements` と witness不足の2つが出る |
+  | 同上(適合型なし) | `where Self: ~Copyable`あり | 1つ目のerrorだけで失敗する。逆制約(`~Copyable`)の句だけで、extensionがpackage制約付きとみなされる |
+
+  Codexが観測したdiagnostic自体は再現した。結論も変わらない。ただし、この記録をG2/G3の判断に流用するときは、
+  原因が`where Self: ~Copyable`句であることを前提にすること。
+- **access修飾子だけで済む方法:** ない。
+  - `@usableFromInline`を外すことはできない。`@usableFromInline` `_ScalarBasePayload_KeyProtocol_ptr`が継承している。
+  - where句を外すとcompileは通る見込みだが、noncopyableな適合型に既定実装が届かなくなる。これはgenericsの変更で、
+    access-onlyではない。原木の`~Copyable`維持方針(portability)ともぶつかる。
+  - 将来の設計案(このbatchの対象外): `where Self: ~Copyable`の扱いを決めること、witnessを別のpublic
+    extensionへ移すこと、`_BasePayloadValue_KeyInterface`を含む上位clusterの公開設計を見直すこと。
+- **後続groupへの影響(参考):**
+  - G2の`UniqueMultiplicity` / `MultiMultiplicity`は、extensionにwhere句がない(`tree_base+trait.swift:80,89`)。
+    この障害には当たらない見込み。
+  - G3の`_BaseNode_SignedDistanceProtocol`は`where Self: ~Copyable`付き(`tree_base+distance.swift:39`)なので、
+    同じ障害に当たる見込み。`_BaseNode_NodeCompareProtocol`はwhere句なし(`tree_base+compare.swift:29`)。
+- **復元の確認:**
+  - `tree_base+scalar.swift`はpublic protocolとpublic `__key`のままで、HEADと差分がない。
+  - `git diff HEAD`の対象は、`Maintanance/CLAUDE_TASK.md`とこのファイルだけである。
+  - `Sources`、`Tests`、`CHANGELOG.md`、`Package.swift`、`.github`、`Benchmarks`には差分がない。
+
+Verdict: `defer G4`

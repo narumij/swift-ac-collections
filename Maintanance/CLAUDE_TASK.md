@@ -2,6 +2,64 @@
 
 Status: Completed
 
+## Completed assignment: review the G4 targeted compile experiment
+
+Perform a read-only independent review of Codex's G4 experiment concerning
+`_ScalarBasePayloadValue_KeyProtocol`. Do not edit source or implement an alternative design.
+
+### Objective
+
+Confirm or refute the conclusion that this protocol cannot be narrowed independently from
+`public` to `@usableFromInline package` because its extension supplies the public `__key`
+witness for Set / MultiSet nested `Base` conformances to `_BasePayloadValue_KeyInterface`.
+
+### Required checks
+
+1. Inspect `_ScalarBasePayloadValue_KeyProtocol`, `_BasePayloadValue_KeyInterface`,
+   `_ScalarBasePayload_KeyProtocol_ptr`, `ScalarValueTrait`, and the Set / MultiSet `Base`
+   conformances.
+2. Verify both compiler failures recorded under `### G4 targeted compile experiment` in
+   `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md` follow from Swift access and witness rules:
+   - a public member cannot be declared in an extension with package requirements;
+   - a package `__key` cannot satisfy the public protocol requirement for the public conformers.
+3. Check whether an access-only formulation was missed. Do not propose moving the witness,
+   adding duplicate implementations, or redesigning the public protocol cluster as though it
+   were part of this batch; list such options only as future design work.
+4. Confirm the source file was restored exactly to public protocol + public `__key`, and that
+   no source, CHANGELOG, test, Package.swift, workflow, benchmark, or DocC change remains from
+   the failed experiment.
+5. Return one verdict: `defer G4`, `access-only narrowing available`, or
+   `experiment evidence incomplete`.
+
+### Output and boundaries
+
+Append a concise review below the G4 experiment in
+`Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`, update this task with the result, and set the
+status to `Completed`. Only those two Markdown files may be edited. Do not build the full suite,
+stage, commit, switch branches, inspect `try/index/1`, use network access, or alter Git history.
+Read-only compiler experiments in a task-owned temporary directory are allowed. Run
+`git diff --check`, inspect the complete diff, and report only `完了` unless blocked or a
+product-owner decision is required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+Verdict: `defer G4`. Appended `#### G4 experiment review (Claude)` below the G4 experiment.
+
+- Failure 2 is confirmed by Swift witness rules: the public `Base` conformance to public
+  `_BasePayloadValue_KeyInterface` requires a public `__key`.
+- Failure 1's recorded rationale is over-general. Synthetic compiles show that a public
+  member in an extension of a `@usableFromInline package` protocol is accepted, and also
+  serves as a public witness, when the extension has no where clause. The diagnostic is
+  triggered by `where Self: ~Copyable` alone, even with no conformers.
+- No access-only formulation exists. `@usableFromInline` is required by
+  `_ScalarBasePayload_KeyProtocol_ptr`. Dropping the inverse clause is a generics change
+  that conflicts with the 原木 `~Copyable` retention. Listed only as future design work.
+- Forward note: the G2 extensions have no where clause. G3's
+  `_BaseNode_SignedDistanceProtocol` extension has one.
+- Source restoration: confirmed. `git diff HEAD` touches only the two Markdown files.
+- Synthetic experiments ran in a `mktemp -d` directory, which was removed.
+- `git diff --check`: clean. Nothing staged.
+
 ## Completed assignment: B3 protocol witness and conformance audit
 
 Perform a read-only witness and conformance audit of the residual B3 protocols that

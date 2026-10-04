@@ -2,6 +2,66 @@
 
 Status: Completed
 
+## Completed assignment: review the G3 NodeCompare protocol narrowing
+
+Perform a read-only independent review of Codex's first G3 implementation. Do not modify source.
+
+### Objective
+
+Confirm or refute that narrowing `_BaseNode_NodeCompareProtocol` from `public` to `package`
+preserves the public `___ptr_comp` / `___ptr_range_comp` witnesses and all four container
+`Base` conformances, without changing `_BaseNode_SignedDistanceProtocol` or making an Index
+design decision.
+
+### Required checks
+
+1. Inspect `tree_base+compare.swift`, `_BaseNode_PtrCompInterface`,
+   `_BaseNode_PtrRangeCompInterface`, `_Base_MultiplicityHelperInterface`, all four container
+   `Base` conformances, `TreeNodeOnlyFixture`, and relevant compatibility-mode constraints.
+2. Confirm the G4 `where Self: ~Copyable` failure does not apply: the NodeCompare extension
+   has no where clause, and its public methods remain valid witnesses after the protocol becomes
+   package.
+3. In a task-owned temporary directory, typecheck a package-name-free external client against
+   the current Release module. Confirm `___ptr_comp` / `___ptr_range_comp` remain usable through
+   public interfaces or public conforming `Base` types, while `_BaseNode_NodeCompareProtocol`
+   itself is no longer in scope. Do not use the symbol graph as witness evidence because
+   underscore-prefixed declarations may be omitted.
+4. Verify `package` is the minimum access required by Release non-`@testable` tests and whether
+   `@usableFromInline` is needed anywhere.
+5. Check that the source diff is exactly the NodeCompare access modifier; confirm
+   `_BaseNode_SignedDistanceProtocol`, Index representations, tests, and implementations are
+   untouched. Review the CHANGELOG, progress, audit wording, and Codex's build/test/DocC evidence.
+6. Return one verdict: `approve G3 NodeCompare`, `G3 NodeCompare correction required`, or
+   `G3 NodeCompare evidence incomplete`.
+
+### Output and boundaries
+
+Append a concise review below `### G3 NodeCompare protocol narrowing result` in
+`Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`, update this task with the result, and set the
+status to `Completed`. Only those two Markdown files may be edited. Do not edit source, tests,
+CHANGELOG, progress documents, Package.swift, workflows, benchmarks, or DocC. Do not stage,
+commit, switch branches, inspect `try/index/1`, use network access, or alter Git history.
+Read-only searches and bounded compiler experiments in a task-owned temporary directory are
+allowed. Run `git diff --check`, inspect the complete diff, and report only `完了` unless blocked
+or a product-owner decision is required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+Verdict: `approve G3 NodeCompare`. Appended `#### G3 NodeCompare narrowing review (Claude)`.
+
+- Source diff: the single access modifier (`tree_base+compare.swift:23`). SignedDistance,
+  Index, tests, and implementations are untouched.
+- The extension has no where clause; the Release build succeeded.
+- External client typecheck: run against the current Release module, without a package
+  name.
+  - Still works: the four `Base` types' `___ptr_comp` / `___ptr_range_comp`, both through
+    direct reference and through the public interfaces, plus `___TreeIndex`.
+  - Now fails as intended: `_BaseNode_NodeCompareProtocol` is no longer in scope.
+- `package` is the minimum access, because Release non-`@testable` `TreeNodeOnlyFixture`
+  uses the protocol. No `@usableFromInline` is needed. No compatibility-mode reference
+  exists.
+- The temporary directory was removed. `git diff --check`: clean. Nothing staged.
+
 ## Completed assignment: review the G2 multiplicity protocol narrowing
 
 Perform a read-only independent review of Codex's G2 implementation. Do not modify source.

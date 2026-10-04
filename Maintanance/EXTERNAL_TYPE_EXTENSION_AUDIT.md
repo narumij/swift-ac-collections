@@ -1247,3 +1247,55 @@ G2の実装・検証とClaudeの独立レビューは完了。Verdictは`approve
   - ほかに足りない構成はない。
 
 Verdict: `approve G2`
+
+### G3 NodeCompare protocol narrowing result
+
+2026-10-04 / Codex。G3を分割し、where句のない`_BaseNode_NodeCompareProtocol`だけを
+実sourceで検証した。`_BaseNode_SignedDistanceProtocol`とIndexの公開設計には触れていない。
+
+- `_BaseNode_NodeCompareProtocol`を`public`から`package`へ縮小した。
+- protocolの継承、既定のpublic `___ptr_comp` / `___ptr_range_comp`、4 container `Base`の適合、
+  実装本体は変更していない。
+- extensionにはG4で問題になった`where Self: ~Copyable`句がない。
+- Releaseの非`@testable` `TreeNodeOnlyFixture`がこのprotocolを直接参照するため、下限は`package`。
+
+検証:
+
+- Xcode `BuildProject(buildForTesting: true)`: 成功。対象fileのlive diagnosticsも0件。
+- 通常Debugの対象test: XCTest 135件とSwift Testingの対象suiteが成功、失敗0。
+- `swift build --disable-sandbox -c release --build-tests`: 成功。Release対象test 69件成功、失敗0。
+- `-Xswiftc -DCOMPATIBLE_ATCODER_2025 --build-tests`: 成功。対象test commandも成功、失敗0。
+- CIと同じRelease DocC生成 (`--warnings-as-errors`): 成功。
+
+公開witnessの維持はunderscore-prefixed symbolが省略されるsymbol graphでは判定しない。Claudeの
+独立レビューで、package名なしの外部clientから`___ptr_comp` / `___ptr_range_comp`が引き続き
+利用でき、`_BaseNode_NodeCompareProtocol`の名前だけがscope外になることをtypecheckする。
+
+#### G3 NodeCompare narrowing review (Claude)
+
+2026-10-04 JST、Claude Opus 5.5。独立レビュー。repository内のsourceは編集していない。
+
+- **差分:** sourceの差分は`tree_base+compare.swift:23`の`public protocol` → `package protocol`の1行だけ。
+  `_BaseNode_SignedDistanceProtocol`(`tree_base+distance.swift`)、Index、test、実装本体には差分がない。
+- **G4の障害には当たらない:** extension(`:29`)にはwhere句がない。Release buildも成功した。
+- **witnessの維持:** 現在のRelease module(`.build/out/Products/Release`)に対して、package名なしの外部clientを
+  task専用の一時ディレクトリで`swiftc -typecheck`した(一時ディレクトリは削除済み)。
+  - 通ったもの:
+    - 4 container `Base`の`___ptr_comp` / `___ptr_range_comp`を直接参照すること。
+    - `_BaseNode_PtrCompInterface` / `_BaseNode_PtrRangeCompInterface`のgeneric経由で呼ぶこと。
+    - `_BaseNode_PtrCompInterface & _BaseNode_PtrRangeCompInterface & _Base_MultiplicityHelperInterface`を
+      満たすこと。
+    - public typealias `___TreeIndex`を満たすこと。
+  - 通らなかったもの: `_BaseNode_NodeCompareProtocol`を制約に使うclientは`cannot find type ... in scope`になった。
+  - symbol graphは根拠に使っていない。
+- **最小access:** `package`が正しい。
+  - `TreeNodeOnlyFixture.swift:93,102,114`は、Releaseの非`@testable` importで使う。
+  - `@usableFromInline`は不要。このprotocolを継承する`@usableFromInline` protocolはなく、`@inlinable`本体からの参照もない。
+  - 参照は4 containerの適合と、上記fixtureだけである。
+- **互換mode:** 互換側のconsumerは`_BaseNode_PtrCompInterface` / `_PtrRangeCompInterface`(public)を制約に使う。
+  このprotocolは参照していない。
+- **記録の文言:** CHANGELOG、PROGRESS_OVERVIEW、上の結果節の内容は、実際の差分と合っている。
+  PROGRESS_OVERVIEWはSignedDistanceを分離したと明記している。Codexの検証は、通常Debug・Release・互換mode・DocCを覆っている。
+  足りない構成はない。
+
+Verdict: `approve G3 NodeCompare`

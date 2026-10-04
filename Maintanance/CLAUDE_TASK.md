@@ -2,7 +2,147 @@
 
 Status: Completed
 
-## Active assignment: audit the remaining RedBlackTree backlog classification
+## Active assignment: independently review the merged Index PoC issue inventory
+
+Review the merged `try/index/1` branch at `6bdcfecd` against `develop/misc/48` at `2796d7c2`.
+Codex has created `Maintanance/INDEX_POC_VALIDATION.md` as an initial issue inventory. This is the
+first validation gate after the user explicitly restarted work on the PoC.
+
+The product owner has now stated a strong preference to adopt this success-only Index approach.
+Treat it as the leading candidate. Do not lower the quality bar, but distinguish correctable
+prototype gaps from evidence that would actually invalidate the representation.
+
+Independently inspect the 24-path PoC-specific diff and the Quality Checklist. For each `P1`–`P12`
+item, determine whether it is supported, overstated, understated, duplicated, or missing a critical
+condition. Look especially for correctness or lifetime risks that compilation and the 69 passing
+BoundExpression tests would not expose.
+
+Required questions:
+
+1. Is the develop-to-HEAD comparison the correct current PoC scope after the merge?
+2. Does any source difference constitute an already-demonstrable defect rather than merely an
+   unverified requirement?
+3. Does the proposed representative pair (`RedBlackTreeSet` and
+   `RedBlackTreeKeyValueRangeView`) exercise the right first boundary, or should another View be
+   selected?
+4. Are the stop conditions sufficient to prevent accidental redesign or premature horizontal
+   expansion?
+5. What is the smallest next executable validation batch after the inventory is corrected?
+
+Return exactly one verdict: `approve initial PoC issue inventory`, `approve after specified
+inventory corrections`, or `issue inventory misses a blocking product decision`. Record concise
+evidence in the first Result section, set `Status: Completed`, and tell the user only `完了` unless
+a product-owner choice remains.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit the inventory, source, tests, other
+documentation, Package.swift, or workflows. Do not fix findings, run broad test matrices or
+performance measurements, use network access, stage, commit, push, switch branches, or alter Git
+history. Read-only repository inspection and narrow compile/test inspection of existing results are
+allowed. Run `git diff --check` and inspect `git status --short` at the end.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `approve after specified inventory corrections`.
+
+No product-owner decision blocks the next step: P12 already keeps the nominal type, Comparable,
+and ContainersPreview separate. Evidence came from a read-only reading of
+`git diff 2796d7c2..HEAD` (on `try/index/1` at `6bdcfecd`, whose parents are `1b126ba3` and
+`2796d7c2`). Nothing was built or run.
+
+**Q1. Scope.** Correct. `merge-base(2796d7c2, HEAD)` = `2796d7c2`, so the two-dot diff is exactly
+the net PoC delta on top of current develop. Two things are missing from the scope:
+
+- The 10-04 merge (`1b126ba3`) and the new merge (`6bdcfecd`) resolutions are folded into that net
+  delta. The X1 stop condition ("a conflict resolution has no recorded intent") is not carried
+  over.
+- The X1 identity map is still anchored at `aecbcddf` / `1b126ba3`. It should be recorded as
+  superseded or re-anchored for this validation.
+
+**Q2. Demonstrable defects.** I found none in production behavior. Two concrete problems are
+visible in the diff and are missing or understated:
+
+- **P13 (new, documentation regression).** In `RedBlackTreeDictionary+Index.swift` and
+  `RedBlackTreeMultiMap+Index.swift`, `/// - Complexity: O( log count )` is inserted above the
+  existing summary line ("Returns the index of the element with the given key."). The callout
+  therefore becomes the first doc line and displaces the DocC abstract. This is a PoC artifact.
+  Classify it with P11 as a cleanup item, but note that it is user-visible.
+- **P14 (new, dual representation).** The old-type overloads still exist alongside the new ones,
+  differing only in return type: `___index` / `___index_or_nil` returning `_LazyTieWrappedPtr` in
+  the four containers, plus `UnsafeTreeV2.index(_:)`, the header `index(_:)`, and the
+  form-/adv-iter family. Sources contain 31 non-Deprecated `_LazyTieWrappedPtr` references.
+  - Overload resolution by return type currently selects the right one silently, so this is not a
+    failure today. It is, however, the main place where an old-representation path can survive
+    unnoticed.
+  - Add a gate: list which call sites still resolve to `_LazyTieWrappedPtr`, and confirm that none
+    is reachable from a public `Index`-typed API.
+  - The new `_LazyTieWrap.isValid` (seal-only, `purified` without a tree) has no Sources consumer.
+    Note that it does not reflect cross-tree / CoW resolution.
+
+**Corrections to the existing items:**
+
+- **P1.** Understated remedy. A Debug-only replacement already exists: `.index(.nullptr)` on a
+  non-empty container. The synthetic Index takes the cross-tree path,
+  `__retrieve_(tag = .failure(.null))`, and fails, so `isValid` returns `false`. Restore the four
+  assertions this way. A public failure value is not needed.
+- **P5.** Understated, and missing a critical condition. The synthetic `.nullptr` uses
+  `_emptyLazyDetach`, and every storage-less (empty) tree shares that same tie
+  (`UnsafeTreeV2+Buffer.swift:105`). On an empty tree, `__isSameLazyDetach` is therefore `true`,
+  so the same-tree path `index.sealed.purified` runs on the nullptr sentinel and hits
+  `assert(!pointer.___is_null)`. The intended `SealError` failure does not occur.
+  - An exit test that only expects `.failure` can pass for the wrong reason.
+  - Require any test built from `_LazyTieWrap.unsafe(tree:rawTag:)` or `.nullptr` to use a
+    non-empty tree, or to assert the `SealError` message.
+- **P7.** Overstated. This can be closed from code reading.
+  - Synthesized `Hashable` / `Equatable` on `_NodePtrSealing` both cover pointer, seal, and
+    `trackingTag` (the last only `#if !USE_LAZY_DETACH`, and derived from pointer). The old custom
+    hash covered pointer and seal, so it was coarser but consistent.
+  - `_LazyTieWrap.hash` still omits `lazyDetach` while `==` includes its identity. This is
+    consistent, because the hash is coarser than equality.
+  - Both are O(1). Downgrade P7 to "verified by inspection; keep one regression test".
+- **P8.** Also add a check that `form_index(limitedBy:)` keeps develop's deliberate double
+  `adv_iter` call (cache-line comment) unchanged, so that P9 timing is comparable.
+- **P2 / P3 / P4 / P6 / P9 / P10 / P11 / P12.** Supported as written. For P11, also list the
+  trailing blank lines in `_LazyTie.swift` and the duplicated `/// 過去の状態で封印する` doc line in
+  `_NodePtrSealing.swift`.
+
+**Q3. Representative pair.** Keep `RedBlackTreeSet`, but use `RedBlackTreeMappedValuesView`
+instead of, or in addition to, KeyValue.
+
+- Since `211ca2fc`, the MappedValues single-Index operations rely only on `__purified_` of the
+  Index type: no membership check, O(1), and CoW migration inside the setter and `swapAt`. That
+  makes them the most sensitive boundary for a change of Index representation.
+- KeyValue can follow, because it shares the same tree path but adds range checks that can hide
+  resolver faults.
+
+**Q4. Stop conditions.** Add the following:
+
+- (a) a merge conflict resolution, in either merge, without recorded intent;
+- (b) any public `Index`-typed path resolving to a `_LazyTieWrappedPtr` overload (P14);
+- (c) a Debug `assert` firing where a `SealError` trap was expected. Exit tests must check the
+  `SealError` reason, not only `.failure` (P5).
+
+With these added, the list prevents redesign and premature expansion.
+
+**Q5. Smallest next executable batch.**
+
+1. Correct the inventory as above.
+2. **Test-only change:** restore the four P1 assertions via `.index(.nullptr)` on non-empty
+   containers.
+3. On the branch, Debug only, run the existing narrow suites for the pair:
+   - the Set Index-validity, CoW, and Death tests;
+   - `RedBlackTreeMappedValuesViewTests`;
+   - the Dictionary MappedValues Death tests.
+4. Record the commands, counts, and any stderr reasons.
+5. Run Release and `_O_UNCHECKED` only after this passes. Stop on the first signal.
+
+Checks: only this file was edited. `git diff --check` was clean. `git status --short` shows Codex's
+staged `INDEX_POC_VALIDATION.md` plus this file.
+
+---
+
+## Completed assignment: audit the remaining RedBlackTree backlog classification
 
 Independently audit the current RedBlackTree tracking documents after the two test-responsibility
 reviews. The user's temporary operating policy is that every remaining RedBlackTree item must now

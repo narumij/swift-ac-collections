@@ -2,6 +2,145 @@
 
 Status: Completed
 
+## Active assignment: review O(1) MappedValues single-Index operations
+
+Independently review the current uncommitted change that removes the per-operation View-range
+membership search from `RedBlackTreeMappedValuesView` subscript access and `swapAt(_:_:)`.
+
+The product decision is fixed: as with standard Collection Index operations, an Index passed to a
+single-Index operation must belong to the View; violating that precondition has unspecified
+behavior. These operations must not pay O(log N) to prove View membership. The explicit
+`isElement(at:)` query and range/Bound operations remain checked and are not part of this change.
+
+### Required review
+
+1. Confirm that removing the three `isElement(at:)` calls eliminates key comparisons from the
+   getter, setter, and `swapAt(_:_:)` normal paths.
+2. Trace `_unsafeAddress`, `_unsafeMutableAddress`, `__purified_`, and the `accessible` result far
+   enough to determine whether invalidated, stale/recycled, detached, end, and otherwise
+   unresolvable indices still fail without unsafe memory access, including under `-Ounchecked`.
+3. Check CoW index migration in the setter and `swapAt(_:_:)`; in particular, verify that an Index
+   accepted before `_ensureUnique()` still resolves to the corresponding node after a copy.
+4. Review the three removed death tests. Confirm that same-tree-but-outside-View cases, including a
+   View `endIndex` that is still a base-tree element, must no longer assert a controlled trap.
+5. Check that the new comparison-count regression test actually isolates the three single-Index
+   operations and cannot pass while an O(log N) membership search remains.
+6. Check the source comments and `API-Matrix-View.md` against the fixed contract. Flag any claim
+   that is broader than the implementation or inconsistent with cross-tree configurations.
+7. Run the focused MappedValues tests and a normal Xcode build if available. Do not broaden this
+   into the unresolved Comparable/Index PoC design or range-operation redesign.
+
+Return exactly one verdict: `approve O(1) MappedValues Index operations`, `approve after specified
+corrections`, or `reject O(1) MappedValues Index operations`. Record concise evidence under a
+`### Result` subsection below, set `Status: Completed`, and tell the user only `完了` unless a
+product-owner decision is required.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Review all four current changed implementation,
+test, and documentation files plus the minimum Index-validation dependencies needed for the safety
+trace. Do not edit source/tests/docs, switch branches, inspect `try/index/1`, use network access,
+stage, commit, push, or alter Git history. Do not run the full test suite. Run `git diff --check`
+and inspect `git status --short` at the end.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `approve after specified corrections`.
+
+The implementation change is correct. Both corrections are test-only, and neither is a safety
+regression.
+
+1. **Key comparisons are gone from the normal paths.**
+   - The removed `isElement(at:)` (`RedBlackTreeMappedValuesView.swift:362`) called
+     `_NodeKey.isInHalfOpenRange`. That function calls `lessThan`, which compares
+     `_NodeKey(.key(Base._Key))` values, that is, key `<`.
+   - After the change, the getter, setter, and `swapAt` paths are `__purified_` → `.accessible` →
+     pointer only. None of them makes a key comparison.
+2. **Unresolvable indices still fail safely, including under `-Ounchecked`.**
+   - The getter goes through `_unsafeAddress`; the setter goes through `_unsafeMutableAddress`
+     (`UnsafeTreeV2+Subscript.swift:28-45`).
+   - `_unsafeMutableAddress` switches on `__purified_(position).accessible` and calls `fatalError`
+     on failure. That is not `precondition` or `!`, so `-Ounchecked` does not remove it.
+   - `swapAt` uses `guard … .accessible.pointer else { fatalError }`.
+   - Same tree: `index.sealed.purified` rejects a seal mismatch (stale or recycled) as `.unsealed`
+     (`_NodePtrSealing.swift:100`).
+   - Cross tree in the default config (`ALLOW_CROSS_TREE_INDEX` on, `USE_LAZY_DETACH` off):
+     - `__retrieve_(tag).deepPurified` returns `.unknown` when the tag is at or beyond
+       `initializedCount`.
+     - `deepPurified` itself returns `.garbaged` for a node without payload, and `.unsealed` for
+       a seal mismatch.
+   - `.accessible` maps the end node and garbaged nodes to `.garbaged`.
+   - The node memory being validated is kept alive by the index's `_LazyTie`.
+   - This is the same validation `isElement(at:)` ran first; the removed code added only the
+     range-membership test, never a safety check.
+3. **CoW index migration is correct in the default config.**
+   - `_ensureUnique()` copies the tree and re-retrieves `_sealed_start` / `_sealed_end`.
+   - The caller's index still refers to the old tree, so `__purified_` takes the cross-tree path
+     and resolves it by tracking tag in the copy.
+   - The new test exercises this path, because `values` shares storage with `dictionary`.
+   - Pre-existing, not a regression: without `ALLOW_CROSS_TREE_INDEX`, a caller's index taken
+     before the copy fails with `.crossTree` after `_ensureUnique()`. The old code behaved the
+     same way after its `isElement` check passed.
+   - Cross-tree resolution walks the fresh-pool buckets (`_FreshPool.swift:112`). That is O(1)
+     under the documented single-bucket-after-CoW invariant.
+4. **The three removed death tests are correctly removed.** All three used indices that were valid
+   base-tree elements but outside the View (`startIndex` below a lower bound, and the View's
+   `endIndex` while it was still a base element). Under the fixed contract these are
+   unspecified-behaviour cases, and they are memory-safe because the nodes are live, so no
+   controlled trap can be required of them.
+5. **The comparison-count test does isolate the three operations.**
+   - Against the old code it would fail: `lessThan` short-circuits only when the two nodes are
+     equal. `first` equals the View's start node, but it is still compared with the View's end,
+     `upper`, which is a base element with key 4. So the getter, setter, and `swapAt` would each
+     count at least one `<`.
+   - Robustness note: the test depends on `upper` being a base element. If the View's end were
+     `.end`, no key `<` would run, and an O(log N) check could slip through.
+6. **Docs are consistent with the contract.** The doc comments (`Precondition` / `Complexity: O(1)`)
+   and `API-Matrix-View.md` match it. "対象のtreeで要素へ安全に解決できないIndexは下層のIndex検証で拒否する" is no
+   broader than the implementation:
+   - In the no-cross-tree configuration, a CoW-copied index is one that cannot be resolved, so it
+     is rejected.
+   - An index from an unrelated tree can resolve to an unrelated live node. That is memory-safe,
+     and `UnsafeIndexV3.swift` already documents it as unspecified.
+7. **Validation.**
+   - `swift build --disable-sandbox --build-tests`: succeeded.
+   - `swift test --skip-build --filter RedBlackTreeMappedValuesViewTests`: 17 tests, 0 failures.
+     The new `test_subrangeValuesSingleIndexOperations_doNotCompareKeys` was discovered and passed.
+   - No Xcode build and no full suite were run.
+
+**Corrections (tests only):**
+
+- **(a)** With the three removals, no MappedValues test remains that pins the safety half of the
+  contract. Add death tests to `RedBlackTreeDictionary_99_DeathTests.swift`, each using
+  `observing: [\.standardErrorContent]` plus `expectNoInvalidMemoryAccess`. They should check that
+  the following terminate without invalid memory access:
+  - `values[i]` where `i` was erased from the base;
+  - `values[i] = v` where `i` was erased from the base;
+  - `values.swapAt(i, j)` with a stale `i`;
+  - `values[dictionary.endIndex]`.
+- **(b)** In the new test:
+  - Add a one-line comment saying why `upper` must be a base element.
+  - Assert the results after the setter and `swapAt`: `values` should read `"changed"` and then
+    swapped, and `dictionary` should be unchanged. That pins the CoW migration that the test
+    already exercises.
+
+Checks: only this file was edited. `git diff --check` was clean. `git status --short` shows the
+four reviewed files plus this one.
+
+### Codex follow-up
+
+Both requested test corrections were applied. Four focused death tests now pin rejection without
+invalid memory access for erased indices in getter/setter/`swapAt` and for the base tree's
+`endIndex`. The comparison-count test now explains why its upper bound must remain a live base-tree
+element and verifies the setter result, swap result, and unchanged original dictionary across CoW.
+
+Xcode verification: the complete `RedBlackTreeMappedValuesViewTests` class (17 tests) plus the four
+new death tests passed, 21/21 total. Build-for-testing also succeeded.
+
+---
+
+Status at completion: Completed
+
 ## Completed assignment: independently verify X1 inventory batch 4
 
 Independently verify only `CUR-WRAP-001` and `POC-WRAP-001` in

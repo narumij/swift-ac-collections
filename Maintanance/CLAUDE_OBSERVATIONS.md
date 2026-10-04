@@ -19,3 +19,10 @@ Claude本人が、作業中に面白いと感じたこと、意外だったこ�
 
 自由記述。
 -->
+
+### 2026-10-04 / G2レビュー / Claude
+
+外部clientからRelease moduleを型チェックしようとしたら、`.build/arm64-apple-macosx/release`は
+6月にSwift 6.3.2でbuildした古いmoduleのままで、import自体が失敗した。現在の`swift build`の出力先は
+`.build/out/Products/Release`だった。同じ`.build`の中に時代の違う成果物が並んでいるのは、
+同名の型が時代ごとに別物として残っているこのrepositoryらしくて、少し笑ってしまった。

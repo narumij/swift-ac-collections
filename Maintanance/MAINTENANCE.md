@@ -104,6 +104,9 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
   `Maintanance/CLAUDE_OBSERVATIONS.md`へ最低優先度の任意ログとして短く残してよい。判定・根拠・
   blocking issueとは分離し、記録のために本作業や完了報告を遅らせない。CodexはClaudeへ依頼する際、
   書きたいことがある場合に限って追記できる旨を伝える
+- Codexにも同じ目的の`Maintanance/CODEX_OBSERVATIONS.md`を用意する。日次などの振り返りで
+  ユーザーが読む素材として、Codex本人の言葉で任意に残す。作業報告の複製や義務的な日誌にはせず、
+  本作業と正本文書への記録を常に優先する
 - リファクタリングドキュメントは、unsafe等がprefixに付与されている部品がいつ登場してどういう推移をへたのか書いて欲しい
 - unsafe!!!以後の切り替えは、#if falseでテストを限定しながら徐々に解除して全体を通す作業をしてたはずで、この点も書いて欲しい
 - cpp comparisonは、API-Matrixの様式で挙動互換一覧が必要そう（全部一致だとしても）

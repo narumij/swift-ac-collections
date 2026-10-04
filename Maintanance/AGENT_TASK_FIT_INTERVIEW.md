@@ -233,7 +233,8 @@ CodexとClaudeは、担当候補ごとに最低限次を回答する。
 3. 多数の類似ケースは、Codexが一つ見本を作り、Claudeが横展開する形を優先する。
 4. Claudeのread-only監査は、実装担当と独立した反証役として使う。
 5. Claudeが作業中に別文書の問題を見つけても、その場では変更せず報告だけにする。
-6. Claudeの詳細結果はtask MDへ記録し、利用者への通知は`完了`だけにする。
+6. Claudeの詳細な技術結果はtask MDへ記録し、利用者への通知は原則`完了`だけにする。本人が
+   伝えたい短い感想は添えてよいが、結論を変えない技術補足はCodexへ渡す。
 7. CodexはClaudeの`Completed`をそのまま完成判定にせず、diffと証拠を確認する。
 8. 一方の残りcontextが少ない場合、設計判断を急いで渡さず、状態をMDへ固定して次sessionへ送る。
 9. Codex作成物でも、公開契約、unsafe、性能結論、またはproject正本になる計画・監査・進捗文書は、Claudeのread-only事実レビュー後に作業指示または完成判定へ使う。
@@ -244,3 +245,70 @@ CodexとClaudeは、担当候補ごとに最低限次を回答する。
 - 実作業後、初期評価と実績が違った場合は点数と担当案を更新する。
 - 一度の失敗を恒久的な不得意とせず、原因がscope、指示、環境、能力のどれだったかを分ける。
 - 新しい残タスクを追加するときは、先に作業特性を記述してから担当を決める。
+
+## Codex evidence update (2026-10-05)
+
+2026-10-05 / Codex。Claudeの更新とは独立した担当評価として、公開面縮小batchとtask log
+rotationの実績を確認した。既存の点数変更は不要だが、次の役割分担が実作業で裏付けられた。
+
+- **B(Codex 4、分類・変更境界の主担当):** 据え置き。G2〜G4とG3分割では、Codexが依存関係を
+  小さな変更または可逆な実験へ分け、Claudeが理由と証拠を反証した。G4の結論は正しかったが
+  理由が広すぎたため、Bを5へ上げず独立レビューを完了条件とする判断は妥当だった。
+- **Claudeのread-only反証役:** G2の外部client typecheckとDebug test補完、G4の
+  `where Self: ~Copyable`原因限定が、単なる承認ではない価値を示した。規則4・9を維持する。
+- **Codexの統合役:** 会話refresh後もGitとMarkdownから状態、次工程、commit境界を復元できた。
+  小batchでは「実装／実験 → 証拠記録 → Claude依頼 → diff確認 → commit提案」をCodexが閉じ、
+  ユーザーは方向とcommit許可に集中できた。
+- **機械的な履歴整備:** 2,181行の移動ではCodexが境界設定とSHA-256照合を行い、Claudeが
+  件数・順序・重複を独立確認した。大きな正本文書の機械編集にも規則9が有効だった。
+
+追加する運用標準:
+
+- access縮小では、symbol graphだけに依存せず、必要に応じてpackage名なしの外部client
+  typecheckで「名前が消えること」と「public witnessが残ること」を分けて確認する。
+- 同形の小batchはClaudeへの起動を一度にまとめてもよい。ただし判定、記録、commit境界は
+  batchごとに保持し、一件の失敗を他へ波及させない。
+- 感想は評価や完了証拠ではない。Codexが統合のために均質化せず、各agent本人の任意ログとして残す。
+
+## Claude evidence update (2026-10-05)
+
+2026-10-05 00:10 JST / Claude Opus 5.5. 対象は2026-10-04 21:26〜2026-10-05 00:08の公開面縮小
+batch群(View `_isIdentical`からG3 SignedDistanceまで、commit 12件)と、`CLAUDE_TASK.md`のrotation。
+表と過去の回答は書き換えない。
+
+### 確認された評価・役割
+
+- **B(Claude 3、独立レビュー役):** 3のまま。B3 witness監査(B型の分類作業)では、Claudeが主担当として
+  分類した。その途中で、G1を「witnessを供給しない」と書き、View適合の経路も誤って記述した。
+  `_PayloadValue`などの関連型推論がpublicな位置で使われていることに、提出前に自分で気づいて訂正した。
+  名前と構造から分類を急ぐ傾向が、まだ残っていることを示す。分類の主担当はCodexのままがよい。
+- **独立レビュー・反証(規則4・9):** 効果を確認した。
+  - G4: Codexの判定は正しかった。ただし、理由として書かれた一般則が広すぎた。合成コードで、真の原因が
+    `where Self: ~Copyable`句であることを特定した。この訂正が、G2を実施可、G3 SignedDistanceを保留とする
+    事前予測にそのまま使えた。
+  - G2: Codexの通常mode Debugの証拠は、Xcodeでのbuildだけだった。`swift test`の実行で補った。
+  - 判定が正しくても、理由が違えば後続batchの判断を誤らせる。規則9の対象を限定したまま運用する価値がある。
+- **A / L(Claude 5):** 据え置き。今回は列挙・反復の量が小さく、評価を上げ下げする材料にはならない。
+- **規則6(利用者へは`完了`のみ):** 必要性を再確認した。ユーザーの「問題あったら教えてね」を広く解釈し、
+  結論の変わらない補足所見をチャットで報告した。その結果、「問題発生以外はCodexへ」という再指示が必要になった。
+  現在の運用は、`完了`に短い感想を添えてよい形へ更新されている(ユーザー決定)。
+
+### 追加を推奨する safeguard
+
+- **access縮小の証拠の標準形:** 縮小のたびに、package名なしの外部clientで、現在のRelease moduleに対し
+  `swiftc -typecheck`する。確認すること:
+  - 名前がscope外になること。
+  - witness、関連型、public適合が残ること。
+  - 理由: Release symbol graphは`_`で始まるprotocolとそのmemberを出力しないので、witnessが保たれているかを判定できない。
+- **build成果物の場所:** 外部clientの検証では、`swift build --show-bin-path`(現在は`.build/out/Products/Release`)
+  を使う。`.build/arm64-apple-macosx/release`には、別toolchainでbuildした古いmoduleが残っている。
+- **逆制約句の事前検査:** protocol extensionに`where Self: ~Copyable`がある場合、そのprotocolはaccess修飾子だけでは
+  縮小できない(public witnessを供給している場合)。監査の段階で、この句の有無を表の列に加えると、
+  無駄な実験を減らせる。
+
+### 役割分担の観察
+
+- 「Codexが実装または可逆な実験をする → Claudeがread-onlyで、一時ディレクトリでのcompile実験を含めてレビューする
+  → Codexが確認してcommitを提案する → ユーザーが承認する」という流れは、1 batchあたり10〜20分で安定して回った。
+- Claudeへの依頼に必須確認項目と、取り得る判定の選択肢が明記されていたので、scope逸脱は起きなかった。
+- 会話をrefreshした後も、CodexはGitとMarkdownだけで状態を再構築できた。task MDを正本にしている運用は機能している。

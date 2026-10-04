@@ -14,6 +14,60 @@ import XCTest
 
 final class PermutationTests: XCTestCase {
 
+  private func requireSendable<T: Sendable>(_: T) {}
+  private func requireSendableType<T: Sendable>(_: T.Type) {}
+
+  func testSendableSequenceSurface() {
+    requireSendableType(Permutations<[Int]>.self)
+    requireSendable([1, 2, 3].nextPermutations())
+  }
+
+  func testSendableIteratorAndYieldedValueRemainIndependentAcrossTask() async throws {
+    var iterator = [1, 2, 3].nextPermutations().makeIterator()
+    let first = try XCTUnwrap(iterator.next())
+
+    requireSendable(iterator)
+    requireSendable(first)
+
+    let reader = Task.detached { Array(first) }
+    let second = try XCTUnwrap(iterator.next())
+    let firstElements = await reader.value
+
+    XCTAssertEqual(firstElements, [1, 2, 3])
+    XCTAssertEqual(Array(second), [1, 3, 2])
+  }
+
+  func testSendableIteratorCopiesAdvanceIndependentlyAcrossTasks() async {
+    let iterator = [1, 2, 3].nextPermutations().makeIterator()
+
+    let firstTask = Task.detached { () -> [[Int]] in
+      var copy = iterator
+      var results: [[Int]] = []
+      while let value = copy.next() {
+        results.append(Array(value))
+      }
+      return results
+    }
+    let secondTask = Task.detached { () -> [[Int]] in
+      var copy = iterator
+      var results: [[Int]] = []
+      while let value = copy.next() {
+        results.append(Array(value))
+      }
+      return results
+    }
+
+    let firstResults = await firstTask.value
+    let secondResults = await secondTask.value
+    let expected = [
+      [1, 2, 3], [1, 3, 2], [2, 1, 3],
+      [2, 3, 1], [3, 1, 2], [3, 2, 1],
+    ]
+
+    XCTAssertEqual(firstResults, expected)
+    XCTAssertEqual(secondResults, expected)
+  }
+
   #if USING_ALGORITHMS
   // 挙動比較用
     func testExample0() throws {
@@ -37,34 +91,6 @@ final class PermutationTests: XCTestCase {
       }
     }
   #endif
-
-  func testUnsafePermutations() throws {
-    do {
-      let a = [1, 2]
-      XCTAssertEqual(
-        a.unsafePermutations().map { $0.map { $0 } },
-        [[1, 2], [2, 1]])
-    }
-    do {
-      let a = [1, 2, 3]
-      XCTAssertEqual(
-        a.unsafePermutations().map { $0.map { $0 } },
-        [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
-    }
-    do {
-      let a = [0, 0, 1]
-      XCTAssertEqual(
-        a.unsafePermutations().map { $0.map { $0 } },
-        [[0, 0, 1], [0, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 0, 0]])
-    }
-    do {
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
-        for p in (0..<4).unsafePermutations() {
-          XCTAssertEqual(p._copyCount, 0)
-        }
-      #endif
-    }
-  }
 
   func testNextPermutations() throws {
     do {
@@ -100,6 +126,28 @@ final class PermutationTests: XCTestCase {
         [[4, 3, 2, 1]])
     }
     do {
+      // 空コレクション: 要素が無いので並べ替え不可能だが、他の境界(1回で終了)と
+      // 同様に最初の1件のみ(空配列)を返して終了する
+      let a = [Int]()
+      let aa = a.nextPermutations().map { $0 }
+      XCTAssertEqual(aa.map { $0.map { $0 } }, [[]])
+    }
+    do {
+      // 単一要素: 並べ替えの余地が無いので最初の1件のみで終了する
+      let a = [5]
+      let aa = a.nextPermutations().map { $0 }
+      XCTAssertEqual(aa.map { $0.map { $0 } }, [[5]])
+    }
+    do {
+      // 辞書順で先頭(昇順)ではない開始位置から辞書順の「現在位置以降」だけを
+      // 辿ることを確認する(先頭からの全列挙ではないことの確認)
+      let a = [2, 1, 3]
+      let aa = a.nextPermutations().map { $0 }
+      XCTAssertEqual(
+        aa.map { $0.map { $0 } },
+        [[2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
+    }
+    do {
       #if AC_COLLECTIONS_INTERNAL_CHECKS
         for p in (0..<4).nextPermutations() {
           XCTAssertEqual(p._copyCount, 0)
@@ -107,70 +155,33 @@ final class PermutationTests: XCTestCase {
       #endif
     }
   }
-  
-  func testUnsafeNextPermutations() throws {
-    do {
-      let a = [1, 2]
-      // 単にmapしただけではコピーが行われず、原本への参照だけが返る、
-      // このためその後利用する場合結果が全て初期状態で同一となる
-      XCTAssertEqual(
-        a.unsafeNextPermutations().map { $0 }.map { $0.map { $0 } },
-        [[1, 2], [1, 2]])
-      // つまり素直な期待動作とは異なるので注意が必要
-      XCTAssertNotEqual(
-        a.unsafeNextPermutations().map { $0 }.map { $0.map { $0 } },
-        [[1, 2], [2, 1]])
-      // すぐに配列に変換するなどの対応をすると期待通りとなる
-      XCTAssertEqual(
-        a.unsafeNextPermutations().map { $0.map { $0 } },
-        [[1, 2], [2, 1]])
-    }
-    do {
-      let a = [1, 2, 3]
-      XCTAssertEqual(
-        a.unsafeNextPermutations().map { $0.map { $0 } },
-        [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
-    }
-    do {
-      let a = [0, 0]
-      // 辞書順では変化しようがないので、最初の一回で終了となる
-      XCTAssertEqual(
-        a.unsafeNextPermutations().map { $0.map { $0 } },
-        [[0, 0]])
-    }
-    do {
-      let a = [4, 3, 2, 1]
-      // 辞書順で最後なので、最初の一回で終了となる
-      XCTAssertEqual(
-        a.unsafeNextPermutations().map { $0.map { $0 } },
-        [[4, 3, 2, 1]])
-    }
-    do {
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
-        for p in (0..<4).unsafeNextPermutations() {
-          XCTAssertEqual(p._copyCount, 0)
-        }
-      #endif
-    }
+
+  func testNextPermutationsRetainedResultsRemainStable() throws {
+    // CoWにより、以前にyieldされた結果(SubSequenceN)はイテレータがさらに進んでも
+    // 書き換わらずに安定していることを直接確認する。
+    let a = [1, 2, 3]
+    var iterator = a.nextPermutations().makeIterator()
+    let first = iterator.next()
+    let second = iterator.next()
+    let third = iterator.next()
+    XCTAssertEqual(first.map { Array($0) }, [1, 2, 3])
+    XCTAssertEqual(second.map { Array($0) }, [1, 3, 2])
+    XCTAssertEqual(third.map { Array($0) }, [2, 1, 3])
+  }
+
+  func testSubSequenceSubscriptValidBoundaries() throws {
+    // 有効範囲の両端(startIndex と endIndex - 1)は添字でアクセスできる。
+    // 範囲外の添字は PermutationDeathTests で precondition 失敗を確認する。
+    var iterator = [1, 2, 3].nextPermutations().makeIterator()
+    _ = iterator.next()
+    let p = try XCTUnwrap(iterator.next())
+    XCTAssertEqual(p.startIndex, 0)
+    XCTAssertEqual(p.endIndex, 3)
+    XCTAssertEqual(p[p.startIndex], 1)
+    XCTAssertEqual(p[p.endIndex - 1], 2)
   }
 
 #if ENABLE_PERFORMANCE_TESTING
-  func testPerformance00() throws {
-    #if DEBUG
-    let s = (0..<9) + []
-    #else
-    let s = (0..<10) + []
-    #endif
-    var ans = 0
-    self.measure {
-      var p = s
-      repeat {
-        ans += p.count
-      } while p.nextPermutation()
-    }
-    print(ans)
-  }
-
   #if USING_ALGORITHMS
     func testPerformance0() throws {
       #if DEBUG
@@ -187,20 +198,5 @@ final class PermutationTests: XCTestCase {
       print(ans)
     }
   #endif
-
-  func testPerformance1() throws {
-    #if DEBUG
-      let s = (0..<9) + []
-    #else
-      let s = (0..<10) + []
-    #endif
-    var ans = 0
-    self.measure {
-      for p in s.unsafePermutations() {
-        ans += p.count
-      }
-    }
-    print(ans)
-  }
 #endif
 }

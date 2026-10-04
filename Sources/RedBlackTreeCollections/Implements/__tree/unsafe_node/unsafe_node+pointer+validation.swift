@@ -23,17 +23,17 @@
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
   @inlinable
-  internal var ___is_null: Bool {
+  package var ___is_null: Bool {
     pointee.___tracking_tag == .nullptr
   }
 
   @inlinable
-  internal var ___is_end: Bool {
+  package var ___is_end: Bool {
     pointee.___tracking_tag == .end
   }
 
   @inlinable
-  internal var ___is_root: Bool {
+  package var ___is_root: Bool {
     __parent_.___is_end
   }
 }

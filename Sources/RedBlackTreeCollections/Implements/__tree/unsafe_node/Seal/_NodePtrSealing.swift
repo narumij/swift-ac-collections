@@ -20,22 +20,22 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// ノードに封印を施す
-///
-/// 転生前のノードと転生後のノードを同一として扱うことを避けるための仕組み
-///
-/// 封が剥がされ、封印が解かれた場合、現世のノードではないことを表す
-///
+// ノードに封印を施す
+//
+// 転生前のノードと転生後のノードを同一として扱うことを避けるための仕組み
+//
+// 封が剥がされ、封印が解かれた場合、現世のノードではないことを表す
+//
 @frozen
 public struct _NodePtrSealing {
-  /// ご神体の御名
-  ///
-  /// 八百万な方々
+  // ご神体の御名
+  //
+  // 八百万な方々
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
-  /// ご神体
-  @usableFromInline var pointer: _NodePtr
-  /// 封印
-  @usableFromInline var seal: UnsafeNode.Seal
+  // ご神体
+  @usableFromInline package var pointer: _NodePtr
+  // 封印
+  @usableFromInline package var seal: UnsafeNode.Seal
 
   #if !USE_LAZY_DETACH
     @usableFromInline var trackingTag: _TrackingTag
@@ -44,7 +44,7 @@ public struct _NodePtrSealing {
   // UnsafeNode.SealはUInt32となっていて、オーバーフローして一周すると、
   // かたわれどきが生じて同一判定となるが、これは仕様
 
-  /// 現在の状態で封印する
+  // 現在の状態で封印する
   @inlinable
   init(_p: _NodePtr) {
     assert(!_p.___is_null)
@@ -67,6 +67,7 @@ public struct _NodePtrSealing {
   #endif
 
   /// 過去の状態で封印する
+  // 過去の状態で封印する
   @inlinable
   init(_p: _NodePtr, _seal: UnsafeNode.Seal) {
     assert(!_p.___is_null)
@@ -78,24 +79,24 @@ public struct _NodePtrSealing {
   }
 
   // 特段の意味は無い。利用箇所での可読性向上のためのフック
-  /// 現在の状態で封印する
+  // 現在の状態で封印する
   @inlinable
   static func uncheckedSeal(_ _p: _NodePtr) -> _NodePtrSealing {
     .init(_p: _p)
   }
 
   // 特段の意味は無い。利用箇所での可読性向上のためのフック
-  /// 過去の状態で封印する
+  // 過去の状態で封印する
   @inlinable
   static func uncheckedSeal(_ _p: _NodePtr, _ seal: UnsafeNode.Seal) -> _NodePtrSealing {
     .init(_p: _p, _seal: seal)
   }
 
-  /// 封印が剥がされているかどうかを返す
-  ///
-  /// 結果が偽で封印が有効な場合は現世ノードであることをあらわす.
-  ///
-  /// 封印が剥がされたものは呪物扱い
+  // 封印が剥がされているかどうかを返す
+  //
+  // 結果が偽で封印が有効な場合は現世ノードであることをあらわす.
+  //
+  // 封印が剥がされたものは呪物扱い
   @inlinable
   var isUnsealed: Bool {
     // 死後と転生後を判定している
@@ -106,7 +107,7 @@ public struct _NodePtrSealing {
     pointer.pointee.___recycle_count != seal
   }
 
-  /// お清め
+  // お清め
   @inlinable
   var purified: _SealedPtr {
     // 基本的にここにnullは到達しない
@@ -139,7 +140,7 @@ public struct _NodePtrSealing {
     }
   #endif
 
-  /// 引換券
+  // 引換券
   @inlinable
   var tag: _SealedTag {
     #if USE_LAZY_DETACH

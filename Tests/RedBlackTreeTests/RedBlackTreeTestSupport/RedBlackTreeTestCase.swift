@@ -1,0 +1,104 @@
+import XCTest
+
+#if DEBUG
+  @testable import RedBlackTreeCollections
+#else
+  import RedBlackTreeCollections
+#endif
+
+@inline(never)
+func blackHole<T>(_ value: T) {
+  withExtendedLifetime(value) {}
+}
+
+class RedBlackTreeTestCase: XCTestCase {
+
+  override func setUpWithError() throws {
+    #if DEBUG
+      // DONE: 以下のアサートが止まるケースがあることについて、理由を調査すること
+      // 直前にこのクラスを継承してないテストが走り、事後処理がないためだった。
+      // assert(deallocatedCount == 0) // アサート(a)
+      // assert(payloadDeinitializedCount == 0)
+      // SKIP_DEBUG_LIFETIME_BALANCE_CHECKS(テスト専用trait)は釣り合い検査だけを省略する。
+      // counterのresetと構造検査は常に行う。
+      #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS && !SKIP_DEBUG_LIFETIME_SETUP_CHECKS
+        XCTAssertEqual(deallocatedCount, 0)
+        XCTAssertEqual(nodeDeinitializedCount, 0)
+        XCTAssertEqual(payloadDeinitializedCount, 0)
+      #endif
+      // シングルトンはテストケース期間に開放されず、数があわなくなるので、その調整
+      _ = RedBlackTreeSet<Int>()
+      allocatedCount = 0
+      // アサート(a)時はdeallocatedCount = 0をコメントアウト
+      deallocatedCount = 0
+      //      XCTAssertEqual(nodeInitializedCount, 0)
+      nodeInitializedCount = 0
+      nodeDeinitializedCount = 0
+      payloadInitializedCount = 0
+      payloadDeinitializedCount = 0
+    #endif
+  }
+
+  override func tearDownWithError() throws {
+    XCTAssertEqual(RedBlackTreeSet<Int>().capacity, 0, "\(name)")
+    if RedBlackTreeSet<Int>().capacity != 0 {
+      fatalError("singleton bufffer broken")
+    }
+    #if DEBUG
+      // XCTAssertNil(_emptyTreeStorage.header._tied)
+      // ホットパス改善のため最初から結束バンド済みにした
+      XCTAssertNotNil(_emptyTreeStorage.header._tied)
+      XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCapacity, 0)
+      XCTAssertEqual(_emptyTreeStorage.header.freshPoolActualCount, 0)
+
+      #if !SKIP_DEBUG_LIFETIME_BALANCE_CHECKS
+        XCTAssertEqual(allocatedCount, deallocatedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
+        // これで止まるケースは、スコープ外での初期化の影響のケースがあった
+        assert(allocatedCount == deallocatedCount)
+        XCTAssertEqual(nodeInitializedCount, nodeDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある")
+        assert(nodeInitializedCount == nodeDeinitializedCount)
+        XCTAssertEqual(
+          payloadInitializedCount, payloadDeinitializedCount, "このチェックに通過しない場合、メモリリークの可能性がある (\(nodeInitializedCount))")
+        assert(payloadInitializedCount == payloadDeinitializedCount)
+      #endif
+      allocatedCount = 0
+      deallocatedCount = 0
+      nodeInitializedCount = 0
+      nodeDeinitializedCount = 0
+      payloadInitializedCount = 0
+      payloadDeinitializedCount = 0
+
+    assert(UnsafeNode.nullptr.pointee.__left_ == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__right_ == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__parent_ == .nullptr)
+    assert(UnsafeNode.nullptr.pointee.__is_black_ == false)
+    assert(UnsafeNode.nullptr.pointee.___has_payload_content == false)
+    assert(UnsafeNode.nullptr.pointee.___recycle_count == 0)
+    assert(UnsafeNode.nullptr.pointee.___tracking_tag == .nullptr)
+    #endif
+  }
+}
+
+extension RedBlackTreeTestCase {
+
+  func keyValue<K, V>(_ k: K, _ v: V) -> (key: K, value: V) { (k, v) }
+  func keyValue<K, V>(_ kv: (K, V)) -> (key: K, value: V) {
+    (kv.0, kv.1)
+  }
+  func _value<K, V>(_ k: K, _ v: V) -> RedBlackTreePair<K, V> { RedBlackTreePair(key: k, value: v) }
+  func _value<K, V>(_ kv: (K, V)) -> RedBlackTreePair<K, V> {
+    RedBlackTreePair(key: kv.0, value: kv.1)
+  }
+
+  func tuple<K, V>(_ kv: (key: K, value: V)) -> (K, V) {
+    (kv.key, kv.value)
+  }
+  func __key<K, V>(_ kv: (key: K, value: V)) -> K {
+    kv.key
+  }
+  func __value<K, V>(_ kv: (key: K, value: V)) -> V {
+    kv.value
+  }
+}
+
+class PointerRedBlackTreeTestCase: RedBlackTreeTestCase, _UnsafeNodePtrType {}

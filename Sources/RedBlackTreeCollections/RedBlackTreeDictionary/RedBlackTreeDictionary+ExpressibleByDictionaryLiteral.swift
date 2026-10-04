@@ -24,7 +24,11 @@
 
 extension RedBlackTreeDictionary: ExpressibleByDictionaryLiteral {
 
-  /// - Complexity: O(*n* log *n*)
+  /// Creates a dictionary from a dictionary literal.
+  ///
+  /// - Important: A runtime error occurs if the literal contains duplicate keys.
+  /// - Parameter elements: The key-value pairs of the literal.
+  /// - Complexity: O(*n* log *n*), where *n* is the number of literal pairs.
   @inlinable
   public init(dictionaryLiteral elements: (Key, Value)...) {
     self.init(uniqueKeysWithValues: elements)

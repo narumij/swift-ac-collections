@@ -23,19 +23,31 @@
 #if !COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 where Base: ___TreeIndex {
 
-    public typealias Index = UnsafeIndexV3
+    public typealias Index = RedBlackTreeIndex
   }
 #endif
 
+#if COMPATIBLE_ATCODER_2025
 extension UnsafeTreeV2 {
 
-  public typealias _PayloadValues = RedBlackTreeIteratorV2.Values<Base>
+  public typealias _PayloadValues = UnsafeIterator.Values<Base>
 }
 
 extension UnsafeTreeV2 where Base: PairValueTrait {
 
-  public typealias _KeyValues = RedBlackTreeIteratorV2.KeyValues<Base>
+  public typealias _KeyValues = UnsafeIterator.KeyValues<Base>
 }
+#else
+extension UnsafeTreeV2 {
+
+  public typealias _PayloadValues = RedBlackTreeIterator.Values<Base>
+}
+
+extension UnsafeTreeV2 where Base: PairValueTrait {
+
+  public typealias _KeyValues = RedBlackTreeIterator.KeyValues<Base>
+}
+#endif
 
 extension UnsafeTreeV2 {
 
@@ -96,26 +108,41 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func prev_iter(_ i: _LazyTieWrappedPtr) -> _LazyTieWrappedPtr {
-    __purified_(i)
+    let result = __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
       .flatMap { index($0) }
-      .mapError { _ in fatalError() }
+    switch result {
+    case .success:
+      return result
+    case .failure(let error):
+      fatalError(errorMessage(error))
+    }
   }
 
   @inlinable
   func next_iter(_ i: _LazyTieWrappedPtr) -> _LazyTieWrappedPtr {
-    __purified_(i)
+    let result = __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
       .flatMap { index($0) }
-      .mapError { _ in fatalError() }
+    switch result {
+    case .success:
+      return result
+    case .failure(let error):
+      fatalError(errorMessage(error))
+    }
   }
 
   @inlinable
   func adv_iter(_ i: _LazyTieWrappedPtr, offsetBy distance: Int) -> _LazyTieWrappedPtr {
-    __purified_(i)
+    let result = __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .flatMap { index($0) }
-      .mapError { _ in fatalError() }
+    switch result {
+    case .success:
+      return result
+    case .failure(let error):
+      fatalError(errorMessage(error))
+    }
   }
 
   @inlinable
@@ -142,8 +169,8 @@ extension UnsafeTreeV2 {
       return advanced
     case .failure(.limit):
       return nil
-    case .failure:
-      fatalError()
+    case .failure(let error):
+      fatalError(errorMessage(error))
     }
   }
 
@@ -153,6 +180,10 @@ extension UnsafeTreeV2 {
   )
     -> Bool
   {
+    // The environment-provided nullptr lives in ManagedBufferHeader. The first
+    // traversal intentionally brings that header's cache line in before the
+    // decision traversal invokes the API again. Do not fold these calls
+    // together without remeasuring this path.
     let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
     switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
     case .success:
@@ -161,8 +192,8 @@ extension UnsafeTreeV2 {
     case .failure(.limit):
       i = limit
       return false
-    default:
-      fatalError()
+    case .failure(let error):
+      fatalError(errorMessage(error))
     }
   }
 }
@@ -171,26 +202,41 @@ extension UnsafeTreeV2 {
 
   @inlinable
   func prev_iter(_ i: _LazyTiedPtr) -> _LazyTiedPtr {
-    try! __purified_(i)
+    let result = __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
       .flatMap { index($0) }
-      .get()
+    switch result {
+    case .success(let index):
+      return index
+    case .failure(let error):
+      fatalError(errorMessage(error))
+    }
   }
 
   @inlinable
   func next_iter(_ i: _LazyTiedPtr) -> _LazyTiedPtr {
-    try! __purified_(i)
+    let result = __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
       .flatMap { index($0) }
-      .get()
+    switch result {
+    case .success(let index):
+      return index
+    case .failure(let error):
+      fatalError(errorMessage(error))
+    }
   }
 
   @inlinable
   func adv_iter(_ i: _LazyTiedPtr, offsetBy distance: Int) -> _LazyTiedPtr {
-    try! __purified_(i)
+    let result = __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .flatMap { index($0) }
-      .get()
+    switch result {
+    case .success(let index):
+      return index
+    case .failure(let error):
+      fatalError(errorMessage(error))
+    }
   }
 
   @inlinable
@@ -211,14 +257,13 @@ extension UnsafeTreeV2 {
   )
     -> _LazyTiedPtr?
   {
-    let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
-    switch advanced {
-    case .success:
-      return try? advanced.get()
+    switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
+    case .success(let index):
+      return index
     case .failure(.limit):
       return nil
-    case .failure:
-      fatalError()
+    case .failure(let error):
+      fatalError(errorMessage(error))
     }
   }
 
@@ -228,18 +273,22 @@ extension UnsafeTreeV2 {
   )
     -> Bool
   {
+    // The environment-provided nullptr lives in ManagedBufferHeader. The first
+    // traversal intentionally brings that header's cache line in before the
+    // decision traversal invokes the API again. Do not fold these calls
+    // together without remeasuring this path.
     let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
     switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
     case .success:
-      if let a = try? advanced.get() {
-        i = a
+      if case .success(let index) = advanced {
+        i = index
       }
       return true
     case .failure(.limit):
       i = limit
       return false
-    case .failure:
-      fatalError()
+    case .failure(let error):
+      fatalError(errorMessage(error))
     }
   }
 }

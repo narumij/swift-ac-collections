@@ -30,54 +30,55 @@ public typealias ___TreeIndex = _BasePaylodValue_ElementInterface
   & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface
 
 public protocol _BaseBridge {
-  /// 基本情報
+  // 基本情報
   associatedtype Base: ___TreeBase
 }
 
 // コレクション実装の基点
 public protocol ___Root: _BaseBridge {
-  /// 木
+  // 木
   associatedtype Tree
 }
 
-/// 木にどれを使うのかしっている
+// 木にどれを使うのかしっている
+@_documentation(visibility: internal)
 public protocol UnsafeTreeBindingV2: ___Root & _UnsafeNodePtrType
 where Tree == UnsafeTreeV2<Base>, Base: ___TreeBase {}
 
-/// 共通生木メンバー
+// 共通生木メンバー
 @usableFromInline
 protocol UnsafeTreeHostV2: UnsafeTreeBindingV2 {
   var __tree_: Tree { get }
 }
 
-/// 変更可能共通生木メンバー
+// 変更可能共通生木メンバー
 @usableFromInline
 protocol UnsafeMutableTreeHostV2: UnsafeTreeHostV2 & _PayloadValueBride {
   var __tree_: Tree { get set }
 }
 
-/// 区間指定メンバー
+// 区間指定メンバー
 @usableFromInline
 protocol UnsafeTreeRangeBaseInterfaceV2: UnsafeTreeHostV2 {
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
 
-/// 区間指定メンバー
+// 区間指定メンバー
 @usableFromInline
 protocol UnsafeTreeSealedRangeBaseInterfaceV2: UnsafeTreeHostV2 {
   var _sealed_start: _SealedPtr { get }
   var _sealed_end: _SealedPtr { get }
 }
 
-/// 変更可能区間指定メンバー
+// 変更可能区間指定メンバー
 @usableFromInline
 protocol UnsafeMutableTreeRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
   var _start: _NodePtr { get }
   var _end: _NodePtr { get }
 }
 
-/// 変更可能区間指定メンバー
+// 変更可能区間指定メンバー
 @usableFromInline
 protocol UnsafeMutableTreeSealedRangeBaseInterfaceV2: UnsafeMutableTreeHostV2 {
   var _sealed_start: _SealedPtr { get }

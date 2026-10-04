@@ -21,13 +21,13 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol _TreeNode_KeyProtocol:
+protocol _TreeNode_KeyProtocol: ~Copyable,
   _TreeNode_KeyInterface
     & _TreePayloadValue_KeyInterface
     & _TreeNode_PayloadValueInterface
 {}
 
-extension _TreeNode_KeyProtocol {
+extension _TreeNode_KeyProtocol where Self: ~Copyable {
 
   #if true
     @inlinable
@@ -43,17 +43,17 @@ extension _TreeNode_KeyProtocol {
 }
 
 @usableFromInline
-protocol BeginProtocol: BeginNodeInterface {
+protocol BeginProtocol: ~Copyable, BeginNodeInterface {
   // __begin_node_が圧倒的に速いため
   @available(*, deprecated, renamed: "__begin_node_")
-  /// 木の左端のノードを返す
+  // 木の左端のノードを返す
   @inlinable func begin() -> _NodePtr
 }
 
-extension BeginProtocol {
+extension BeginProtocol where Self: ~Copyable {
   // __begin_node_が圧倒的に速いため
   @available(*, deprecated, renamed: "__begin_node_")
   @inlinable
-  /// 木の左端のノードを返す
+  // 木の左端のノードを返す
   internal func begin() -> _NodePtr { __begin_node_ }
 }

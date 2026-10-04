@@ -21,13 +21,13 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol AllocationInterface: _NodePtrType & _PayloadValueType {
-  /// ノードを構築する
+protocol AllocationInterface:  ~Copyable, _NodePtrType & _PayloadValueType {
+  // ノードを構築する
   @inlinable func __construct_node(_ k: _PayloadValue) -> _NodePtr
 }
 
 @usableFromInline
-protocol DellocationInterface: _NodePtrType {
-  /// ノードを破壊する
+protocol DellocationInterface:  ~Copyable, _NodePtrType {
+  // ノードを破壊する
   @inlinable func destroy(_ p: _NodePtr)
 }

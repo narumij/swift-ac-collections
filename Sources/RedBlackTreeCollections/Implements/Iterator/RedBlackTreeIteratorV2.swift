@@ -20,11 +20,13 @@
 //
 //===----------------------------------------------------------------------===//
 
-public enum RedBlackTreeIteratorV2 {}
+public enum RedBlackTreeIterator {}
 
-extension RedBlackTreeIteratorV2 {
+extension RedBlackTreeIterator {
   public typealias Values = UnsafeIterator.ValueObverse
   public typealias Keys = UnsafeIterator.KeyObverse
   public typealias KeyValues = UnsafeIterator.KeyValueObverse
   public typealias MappedValues = UnsafeIterator.MappedValueObverse
 }
+
+//public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2

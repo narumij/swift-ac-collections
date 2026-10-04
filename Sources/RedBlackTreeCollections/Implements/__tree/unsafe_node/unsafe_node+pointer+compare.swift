@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @inlinable
-internal func ___ptr_comp_multi(
+package func ___ptr_comp_multi(
   _ __l: UnsafeMutablePointer<UnsafeNode>,
   _ __r: UnsafeMutablePointer<UnsafeNode>
 )
@@ -70,7 +70,7 @@ internal func ___ptr_comp_multi(
 
 // ノードの高さを数える
 @inlinable
-internal func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
+package func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
   assert(!__p.___is_null, "Node shouldn't be null")
   var __h = 0
   var __p = __p
@@ -83,13 +83,15 @@ internal func ___ptr_height(_ __p: UnsafeMutablePointer<UnsafeNode>) -> Int {
 
 extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
+  // TODO: bitmapをpath_bitmapにリネームする
+
   // 128bit幅でかつ、必要なレジスタ数が削減されている
-  /// ルートからノードまでのパスをビットでコード化した値を返す
-  ///
-  /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
+  // ルートからノードまでのパスをビットでコード化した値を返す
+  //
+  // leftを0、rightを1、末端を1とし、ルートから左詰めした数値
   @available(macOS 15.0, *)
   @inlinable
-  internal func ___ptr_bitmap_128() -> UInt128 {
+  package func ___ptr_bitmap_128() -> UInt128 {
     assert(!___is_null, "Node shouldn't be null")
     assert(!___is_end, "Node shouldn't be end")
     var __f: UInt128 = 1 &<< (UInt128.bitWidth &- 1)
@@ -103,9 +105,9 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
   }
 
   // 64bit幅でかつ、必要なレジスタ数が削減されている
-  /// ルートからノードまでのパスをビットでコード化した値を返す
-  ///
-  /// leftを0、rightを1、末端を1とし、ルートから左詰めした数値
+  // ルートからノードまでのパスをビットでコード化した値を返す
+  //
+  // leftを0、rightを1、末端を1とし、ルートから左詰めした数値
   @inlinable
   internal func ___ptr_bitmap_64() -> UInt64 {
     assert(!___is_null, "Node shouldn't be null")
@@ -122,7 +124,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 }
 
 @inlinable
-func ___ptr_comp_bitmap(
+package func ___ptr_comp_bitmap(
   _ __l: UnsafeMutablePointer<UnsafeNode>, _ __r: UnsafeMutablePointer<UnsafeNode>
 ) -> Bool {
   assert(!__l.___is_null, "Left node shouldn't be null")
@@ -138,3 +140,19 @@ func ___ptr_comp_bitmap(
   return (__l.___is_end ? .max : __l.___ptr_bitmap_64())
     < (__r.___is_end ? .max : __r.___ptr_bitmap_64())
 }
+
+//@inlinable
+//func lessThan(
+//  lhs: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?),
+//  rhs: (node: UnsafeMutablePointer<UnsafeNode>, bitmap: _NodePathBitmap?)
+//)
+//  -> (
+//    result: Bool,
+//    lhsBitmap: _NodePathBitmap?,
+//    rhsBitmap: _NodePathBitmap?
+//  )
+//{
+//  let lhsBitmap = lhs.bitmap ?? _NodePathBitmap(lhs.node)
+//  let rhsBitmap = rhs.bitmap ?? _NodePathBitmap(rhs.node)
+//  return (lhsBitmap < rhsBitmap, lhsBitmap, rhsBitmap)
+//}

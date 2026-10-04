@@ -81,6 +81,26 @@ AtCoder 2025 ジャッジ環境との互換性が必要な場合は、`compatibl
 インデックスは削除で無効になります（再利用不可）。
 連続削除には範囲削除 API を使用してください。
 
+## ドキュメント
+
+生成済みのAPIドキュメントは
+[GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)で閲覧できます。
+
+Swift-DocCでAPIドキュメントを生成し、ドキュメントコメントを検証できます。
+
+```console
+swift package -c release generate-documentation \
+  --target RedBlackTreeCollections \
+  --warnings-as-errors
+```
+
+ブラウザでローカルプレビューするには、次を実行します。
+
+```console
+swift package -c release --disable-sandbox preview-documentation \
+  --target RedBlackTreeCollections
+```
+
 ## アンダースコア付き宣言について
 
 「アンダースコア付き宣言」は、完全修飾名のどこかにアンダースコア (`_`) で始まる部分が含まれる宣言のことを指します。たとえば、以下のような名前は技術的に `public` として宣言されていても、パブリックAPIには含まれません：

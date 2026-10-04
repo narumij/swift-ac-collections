@@ -1,6 +1,8 @@
 import RedBlackTreeCollections
 import XCTest
 
+// The numbered RedBlackTreeMultiMap tests are the canonical Test as Spec suite.
+// Keep public, current behavior here; implementation and stress tests may remain elsewhere.
 final class RedBlackTreeMultiMapInitializationTests: RedBlackTreeTestCase {
 
   // MARK: - 「空なものは空である」と「空でないものは空ではない」のトートロジー
@@ -61,6 +63,35 @@ final class RedBlackTreeMultiMapInitializationTests: RedBlackTreeTestCase {
 
     XCTAssertFalse(multiMap.isEmpty, "空ではないこと")
     XCTAssertEqual(multiMap.count, expected.count, "要素数が期待通りであること")
+  }
+
+  func test_literalInitialization_preservesEveryValueForDuplicateKeys() {
+    let multiMap: RedBlackTreeMultiMap<Int, String> = [
+      1: "first",
+      1: "second",
+      2: "third",
+    ]
+
+    XCTAssertEqual(multiMap.map(\.key), [1, 1, 2])
+    XCTAssertEqual(multiMap.map(\.value), ["first", "second", "third"])
+  }
+
+  func test_groupingInitialization_groupsElementsWithoutCollapsingEqualKeys() {
+    let words = ["ant", "ape", "bear", "bird"]
+
+    let multiMap = RedBlackTreeMultiMap(grouping: words, by: { $0.first! })
+
+    XCTAssertEqual(multiMap.map(\.key), ["a", "a", "b", "b"])
+    XCTAssertEqual(multiMap.map(\.value), words)
+  }
+
+  func test_groupingInitialization_acceptsAnySequence() {
+    let numbers = AnySequence(0..<6)
+
+    let multiMap = RedBlackTreeMultiMap(grouping: numbers, by: { $0 % 2 })
+
+    XCTAssertEqual(multiMap.map(\.key), [0, 0, 0, 1, 1, 1])
+    XCTAssertEqual(multiMap.map(\.value), [0, 2, 4, 1, 3, 5])
   }
 
 

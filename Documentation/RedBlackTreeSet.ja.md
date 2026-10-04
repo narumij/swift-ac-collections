@@ -1,4 +1,6 @@
 <!-- このRedBlackTreeSet.ja.mdを正本とします。RedBlackTreeSet.mdは、この文書の英訳コピーです。 -->
+<!-- 人間向け、割と初心者向け -->
+
 # RedBlackTreeSet
 
 [English](RedBlackTreeSet.md) | 日本語
@@ -8,7 +10,7 @@
 ## Declaration
 
 ```swift
-import RedBlackTreeCollections
+import AcCollections
 
 struct RedBlackTreeSet<Element: Comparable>
 ```
@@ -120,11 +122,13 @@ index は整数オフセットではありません。
 
 この点は `Array` とは異なります。
 
-また、集合を変更する操作によって既存の index が無効になる場合があります。
-無効になった index を後から再利用してはいけません。
+別の要素を挿入または削除しても、指している要素が存在する限り、
+その index は有効なままです。指している要素自体を削除すると無効になり、
+同じslotが再利用されても、そのindexを後から再利用することはできません。
 
-特に、要素を削除した後は、その削除された要素を指していた index を
-使用することはできません。
+CoWで分岐したコレクションでも、対応する要素が存在し世代が一致する限り、
+indexからその位置を特定できます。無関係なコレクションから取得したindexを
+使用することは事前条件違反であり、その検出は保証しません。
 
 ## Set Operations
 
@@ -163,9 +167,8 @@ numbers.remove(3)
 | lower-bound 検索 | O(log `count`) |
 | upper-bound 検索 | O(log `count`) |
 | 要素の挿入 | O(log `count`) |
-| 要素の削除 | O(log `count`) |
-
-これらは赤黒木そのものの構造に基づく計算量です。
+| 値を検索して削除 | O(log `count`) |
+| 既知のindexから削除 | 償却 O(1) |
 
 実際の実行時間は、`Element` の比較コストやメモリアクセスの特性によっても変化します。
 
@@ -201,11 +204,14 @@ allocation overhead を削減できます。
 これにより、赤黒木として必要なノードベースの構造を維持しながら、
 走査時のメモリアクセス効率を改善できるよう設計されています。
 
-ただし、`Array` のようにすべての要素が1つの連続したバッファに
-格納されているわけではありません。
+`RedBlackTreeSet` の要素は論理的には常に昇順に並んでいますが、
+メモリ上でもその順序どおりに配置されているわけではありません。
+
+つまり、論理的にはソート済みですが、`Array` のように
+物理的な配置までソート順になっているデータ構造ではありません。
 
 そのため、`RedBlackTreeSet` は連続配列とは異なる
-性能特性を持ちます。
+メモリアクセス特性や性能特性を持ちます。
 
 ## Choosing a Collection
 

@@ -60,4 +60,25 @@ final class RedBlackTreeMultiMapSequenceTests: RedBlackTreeTestCase {
     }
     XCTAssertEqual(count, 0)
   }
+
+  func test_sequencePredicates_observeEntriesInKeyOrder() {
+    let multiMap: RedBlackTreeMultiMap = [(1, 11), (2, 22), (3, 33)]
+
+    XCTAssertEqual(multiMap.first(where: { $0.value == 22 })?.key, 2)
+    XCTAssertNil(multiMap.first(where: { $0.value == 44 }))
+    XCTAssertTrue(multiMap.contains(where: { $0.key == 3 }))
+    XCTAssertFalse(multiMap.contains(where: { $0.key == 4 }))
+    XCTAssertTrue(multiMap.allSatisfy { $0.value == $0.key * 11 })
+  }
+
+  #if !COMPATIBLE_ATCODER_2025
+    func test_sortedAndReversed_followElementOrder() {
+      let multiMap: RedBlackTreeMultiMap = [(2, 20), (1, 10), (1, 11), (3, 30)]
+
+      XCTAssertEqual(multiMap.sorted().map(\.key), [1, 1, 2, 3])
+      XCTAssertEqual(multiMap.sorted().map(\.value), [10, 11, 20, 30])
+      XCTAssertEqual(multiMap.reversed().map(\.key), [3, 2, 1, 1])
+      XCTAssertEqual(multiMap.reversed().map(\.value), [30, 20, 11, 10])
+    }
+  #endif
 }

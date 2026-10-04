@@ -23,7 +23,7 @@
 #if AC_COLLECTIONS_INTERNAL_CHECKS
 extension UnsafeTreeV2 {
 
-    /// CoWの発火回数を観察するためのプロパティ
+    // CoWの発火回数を観察するためのプロパティ
     package var copyCount: UInt {
       get { _buffer.header.copyCount }
       set {
@@ -40,9 +40,9 @@ extension UnsafeTreeV2 {
 
 #if DEBUG
   extension UnsafeTreeV2 {
-    /// 木に紐付く生バッファを遅延処理するプロクシ
-    ///
-    /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
+    // 木に紐付く生バッファを遅延処理するプロクシ
+    //
+    // - WARNING: 触ると生成されてしまうため不用意に触らないこと
     @inlinable
     var lazyDetach: _LazyTie {
       withMutableHeader { $0.lazyDetach }

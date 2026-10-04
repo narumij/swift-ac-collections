@@ -46,6 +46,8 @@
 
   extension BalancedSequence {
 
+    // そもそも間違ってる
+    // TODO: Elementを返すようにすること
     @discardableResult
     public mutating func popFirst(_ k: Int) -> Int {
       var i = 0
@@ -58,6 +60,8 @@
       return i
     }
 
+    // そもそも間違ってる
+    // TODO: Elementを返すようにすること
     @discardableResult
     public mutating func popLast(_ k: Int) -> Int {
       var i = 0
@@ -113,11 +117,11 @@
 
     // MARK: -
 
-    func isValid(_: Index) -> Bool
-    func isValid(_: IndexRange) -> Bool
-    func isValid(_: IndexRangeExpression) -> Bool
-    func isValid(_: Bound) -> Bool
-    func isValid(_: BoundRangeExpression) -> Bool
+    // func isValid(_: Index) -> Bool
+    // func isValid(_: IndexRange) -> Bool
+    // func isValid(_: IndexRangeExpression) -> Bool
+    // func isValid(_: Bound) -> Bool
+    // func isValid(_: BoundRangeExpression) -> Bool
 
     // 必須では無くなった
     //    func distance(from: Bound, to: Bound) -> Int
@@ -171,6 +175,12 @@
     mutating func reserveCapacity(_ minimumCapacity: Int)
     var freeCapacity: Int { get }
   }
+
+  public protocol BalancedSomething {
+    associatedtype Index
+    func isElement(at: Index) -> Bool
+    func isEnd(_: Index) -> Bool
+  }
 #endif
 
 // MARK: -
@@ -178,14 +188,19 @@
 #if DEBUG && !COMPATIBLE_ATCODER_2025
   // TODO: プロトコル適合を外したいが、なぜか性能に影響するので、外せずにいる
   extension RedBlackTreeSet: BalancedCollection {}
+  extension RedBlackTreeSet: BalancedSomething {}
   extension RedBlackTreeSet: BalancedDynamic {
     public var freeCapacity: Int { __tree_.freeCapacity }
   }
 
   extension RedBlackTreeDictionary: BalancedCollection {}
+  extension RedBlackTreeDictionary: BalancedSomething {}
 
   extension RedBlackTreeMultiSet: BalancedMultiCollection {}
+  extension RedBlackTreeMultiSet: BalancedSomething {}
+
   extension RedBlackTreeMultiMap: BalancedMultiCollection {}
+  extension RedBlackTreeMultiMap: BalancedSomething {}
 
   extension RedBlackTreeKeyOnlyRangeView: BalancedView {}
   extension RedBlackTreeKeyValueRangeView: BalancedView {}

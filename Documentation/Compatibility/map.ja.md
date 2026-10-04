@@ -191,8 +191,8 @@ counts[key]++;
 | `insert_or_assign` | subscript / value 更新 API | △ | API が異なる |
 | `try_emplace` | 必要時のみ Value を生成する操作 | △ | Swift では表現方法が異なる |
 | `emplace(...)` | 値を構築して挿入 | △ | C++ の construction semantics とは異なる |
-| `emplace_hint(...)` | — | ❌ | |
-| `insert(hint, value)` | — | ❌ | |
+| `emplace_hint(...)` | `insert(_:hint:)` | △ | hint は利用できるが、C++ の construction semantics とは異なる |
+| `insert(hint, value)` | `insert(_:hint:)` | ✅ | 戻り値は `(inserted, indexAfterInsert)`。通常構成のみ |
 | range insertion | `Sequence` ベース | △ | iterator pair とは API が異なる |
 
 ### `insert` と値の更新
@@ -254,8 +254,8 @@ hint 付き insertion API があります。
 正しい hint が与えられた場合には、
 root からの検索を省略して高速化できる場合があります。
 
-`RedBlackTreeDictionary` では、
-C++ と同じ形式の hint 付き insertion API は提供しません。
+`RedBlackTreeDictionary`では`insert(_:hint:)`および
+`insert(key:value:hint:)`を提供します。`endIndex`も有効なhintです。
 
 ## 削除
 
@@ -265,7 +265,7 @@ C++ と同じ形式の hint 付き insertion API は提供しません。
 | `erase(iterator)` | index による削除 | ✅ | 既知の位置にある要素を削除 |
 | `erase(first, last)` | 範囲削除 | △ | iterator pair とは API が異なる |
 | `clear()` | 全要素削除 | ✅ | |
-| `node_handle` | node handle 相当 | ✅ | |
+| `node_handle` | `Index` | △ | CoWで分岐した木でも対応するnodeを追跡する位置handle。nodeのownershipは持たない |
 | `extract()` | — | ❌ | 直接対応する公開 API はない |
 
 Swift の辞書 API では、
@@ -295,11 +295,13 @@ C++ の `std::map` は、
 auto node = map.extract(key);
 ```
 
-`RedBlackTreeDictionary` にも
-node を表現する handle に相当する仕組みがあります。
+`RedBlackTreeDictionary` では、`Index` がnodeの位置を識別するhandleに相当します。
+cross-tree indexingが有効な通常構成では、CoWで分岐した木でも、対応するnodeが
+存在し世代が一致する限り、その位置を追跡できます。
 
-一方、C++ の `std::map::extract()` と直接対応する
-公開 API は提供していません。
+ただし、`Index` はnodeのownershipを保持しません。nodeをコンテナから切り離して
+別のコンテナへ移送するC++の `node_handle` とは意味論が異なり、
+`std::map::extract()` と直接対応する公開APIも提供していません。
 
 ここでの対応は公開 API とその semantics に基づくものであり、
 内部の node storage や allocation strategy から
@@ -349,6 +351,10 @@ index は有効なままです。
 C++ の `std::map` iterator を保持しながら
 辞書を更新するアルゴリズムを Swift へ読み替える場合にも、
 この性質を利用できます。
+
+CoWで分岐したコレクションでも、対応する要素が存在し世代が一致する限り、
+Indexからその位置を特定できます。無関係なコレクションから取得したIndexを
+使用することは事前条件違反であり、その検出は保証しません。
 
 ## Key と Value
 
@@ -511,7 +517,7 @@ container ごとに comparator を差し替えるモデルではありません�
 | copy construction | copy-on-write | △ | コピーを実現する仕組みが異なる |
 | move construction | Swift の ownership semantics | △ | object model が異なる |
 | allocator customization | — | ❌ | C++ allocator API の直接対応はない |
-| `node_handle` | node handle 相当 | ✅ | |
+| `node_handle` | `Index` | △ | 位置handleとしての役割は近いが、nodeのownershipは持たない |
 | `swap()` | Swift `swap` | ✅ | |
 | RAII | Swift の自動 lifetime 管理 | △ | lifetime / ownership model が異なる |
 
@@ -606,11 +612,11 @@ iterator model などと強く結びついており、
 - `extract()` による node の切り離し
 - node transfer を利用した `merge()`
 - `emplace()` / `emplace_hint()` の C++ と同一の construction semantics
-- hint 付き `insert`
 - container ごとに保持する comparator object
 
-一方、
-`node_handle` に相当する仕組みは提供されています。
+一方、`Index` はCoWで分岐した木でも対応するnodeを追跡する位置handleとして
+利用できます。ただし、nodeのownershipや移送を担うC++の `node_handle` と
+同一の機能ではありません。
 
 C++ と直接同じ API がない場合でも、
 その操作が目的としている処理を

@@ -9,7 +9,7 @@ A red-black-tree-based dictionary that keeps its keys in ascending order and all
 ## Declaration
 
 ```swift
-import RedBlackTreeCollections
+import AcCollections
 
 struct RedBlackTreeMultiMap<Key: Comparable, Value>
 ```
@@ -131,10 +131,18 @@ for value in elements.values {
 The `keys` and `values` properties also return views that traverse the corresponding range,
 rather than copying elements into arrays.
 
-The range view is not read-only.
-
-When held as a mutable value, it can remove elements from the beginning or end of the range,
+The range view is not read-only. Calling a mutating operation directly on the original
+multimap's subscript can remove elements from the beginning or end of the range,
 erase the entire range, or erase elements that match a predicate.
+
+```swift
+map[key].popFirst()
+map[key].erase()
+```
+
+If a range view is first copied into an independent variable, as in
+`var elements = map[key]`, subsequent mutations apply to `elements` through value semantics
+and are not reflected in the original `map`.
 
 This allows the group of elements associated with a key to be used not only as a search result,
 but also as a directly manipulable subcollection.
@@ -228,6 +236,28 @@ This is an important distinction from a simple
 `RedBlackTreeSet<(Key, Value)>`,
 where both the key and value could participate in ordering.
 
+### Swapping Values
+
+`RedBlackTreeMultiMap` lets you exchange the values of different elements
+without changing their keys.
+
+The `RedBlackTreeMappedValuesView` obtained from the `values` property of a
+key-value range view is mutable. Use `swapAt(_:_:)` to exchange the mapped
+values at two indices.
+
+```swift
+map[key].values.swapAt(i, j)
+```
+
+This operation exchanges only the values.
+
+Because the keys do not change, the elements retain their positions in the
+red-black tree and their key-sorted order.
+
+This operation relies on a defining property of `RedBlackTreeMultiMap`: keys
+determine the tree's ordering, while mapped values do not participate in that
+ordering.
+
 ## Indices
 
 A `RedBlackTreeMultiMap` index represents a logical position
@@ -246,11 +276,14 @@ indices are not integer offsets.
 
 This differs from `Array`.
 
-Operations that modify the collection may invalidate existing indices.
-An invalidated index must not be reused later.
+Inserting or removing a different element does not invalidate an index as long as the
+element it refers to still exists. Removing that element invalidates the index, and the
+index must not be reused even if the same slot is later recycled.
 
-In particular, after removing an element, an index that referred to the removed element
-can no longer be used.
+An index can also identify the corresponding position in a collection derived through
+copy-on-write, as long as the corresponding element still exists and its generation matches.
+Using an index with an unrelated collection is a precondition violation, and detection of
+that misuse is not guaranteed.
 
 ## Multimap Operations
 
@@ -283,8 +316,9 @@ results in:
 
 Adding elements automatically preserves key order.
 
-The range view returned for a key can also be used
-to traverse or remove the group of elements associated with that key.
+The range view returned for a key can be used to traverse the group of elements associated
+with that key. To remove those elements from the original multimap, call the mutating
+operation directly on the subscript, as in `map[key].erase()`.
 
 ## Performance
 
@@ -303,9 +337,13 @@ The complexities of representative operations are as follows:
 | Lower-bound lookup | O(log `count`) |
 | Upper-bound lookup | O(log `count`) |
 | Element insertion | O(log `count`) |
-| Element removal | O(log `count`) |
+| Search for a key and remove one element | O(log `count`) |
+| Search for a key and remove K matching elements | O(log `count` + K) |
+| Removal at a known index | Amortized O(1) |
 
 These complexities follow from the structure of the red-black tree itself.
+If storage is shared and a mutation triggers copy-on-write, copying the tree adds
+O(`count`) work.
 
 Processing all elements with the same key additionally requires time proportional
 to the number of elements associated with that key.

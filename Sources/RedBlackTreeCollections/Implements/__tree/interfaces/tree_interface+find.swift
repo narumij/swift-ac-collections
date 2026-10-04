@@ -21,17 +21,32 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol FindLeafInterface: _NodePtrType & _KeyType {
+protocol FindLeafInterface: ~Copyable, _NodePtrType & _KeyType {
   @inlinable func __find_leaf_low(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
   @inlinable func __find_leaf_high(_ __parent: inout _NodePtr, _ __v: _Key) -> _NodeRef
 }
 
 @usableFromInline
-protocol FindEqualInterface: _NodePtrType & _KeyType {
+protocol FindHintLeafInterface: ~Copyable, _NodePtrType & _KeyType {
+  @inlinable func __find_leaf(
+    _ __hint: _NodePtr,
+    _ __parent: inout _NodePtr,
+    _ __v: _Key
+  ) -> _NodeRef
+}
+
+@usableFromInline
+protocol FindEqualInterface: ~Copyable, _NodePtrType & _KeyType {
   @inlinable func __find_equal(_ __v: _Key) -> (__parent: _NodePtr, __child: _NodeRef)
 }
 
 @usableFromInline
-protocol FindInteface: _NodePtrType & _KeyType {
+protocol FindHintEqualInterface: ~Copyable, _NodePtrType & _KeyType {
+  @inlinable func __find_equal(_ __hint: _NodePtr, _ __dummy: _NodeRef, _ __v: _Key)
+    -> (__parent: _NodePtr, __child: _NodeRef)
+}
+
+@usableFromInline
+protocol FindInteface: ~Copyable, _NodePtrType & _KeyType {
   @inlinable func find(_ __v: _Key) -> _NodePtr
 }

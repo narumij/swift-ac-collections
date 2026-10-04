@@ -57,7 +57,7 @@
         withUnsafeMutablePointerToHeader { $0 }
       }
     }
-    
+
     @inlinable
     var isDetached: Bool {
       buffer != nil
@@ -81,13 +81,15 @@
   }
 #endif
 
-extension _LazyTie {
+#if DEBUG
+  extension _LazyTie {
 
-  @inlinable
-  package static func < (lhs: _LazyTie, rhs: _LazyTie) -> Bool {
-    ObjectIdentifier(lhs) < ObjectIdentifier(rhs)
+    @inlinable
+    package static func < (lhs: _LazyTie, rhs: _LazyTie) -> Bool {
+      ObjectIdentifier(lhs) < ObjectIdentifier(rhs)
+    }
   }
-}
+#endif
 
 extension _LazyTie {
 

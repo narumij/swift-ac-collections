@@ -20,6 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+@_documentation(visibility: internal)
 public enum UnsafeIterator {}
 
 #if !COMPATIBLE_ATCODER_2025

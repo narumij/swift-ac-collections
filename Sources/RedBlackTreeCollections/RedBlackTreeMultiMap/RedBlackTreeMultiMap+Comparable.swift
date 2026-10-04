@@ -31,6 +31,9 @@ extension RedBlackTreeMultiMap: Comparable where Value: Comparable {
   ///   - lhs: A value to compare.
   ///   - rhs: Another value to compare.
   ///
+  /// - Returns: `true` if `lhs` lexicographically precedes `rhs` when every
+  ///   key-value pair is visited in sorted key order; otherwise, `false`.
+  ///
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func < (lhs: Self, rhs: Self) -> Bool {

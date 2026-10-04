@@ -24,7 +24,7 @@ public struct BareArray<Element>: ~Copyable {
   public init(repeating value: Element, count: Int) {
     let capacity = count
     self.payload = .allocate(capacity: capacity)
-    self.payload.initialize(repeating: value, count: capacity)
+    unsafe self.payload.initialize(repeating: value, count: capacity)
     self.count = count
   }
 
@@ -33,15 +33,15 @@ public struct BareArray<Element>: ~Copyable {
     let capacity = count
     self.payload = .allocate(capacity: capacity)
     for i in 0..<count {
-      (payload + i).initialize(to: f())
+      unsafe (payload + i).initialize(to: f())
     }
     self.count = count
   }
 
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, count: Int) {
+  @unsafe internal init(payload: UnsafeMutablePointer<Element>, count: Int) {
     self.count = count
-    self.payload = payload
+    self.payload = unsafe payload
   }
 
   @usableFromInline let count: Int
@@ -52,25 +52,25 @@ public struct BareArray<Element>: ~Copyable {
     @inline(__always)
     unsafeAddress {
       precondition(0 <= position && position < count)
-      return UnsafePointer(payload + position)
+      return unsafe UnsafePointer(payload + position)
     }
     @inline(__always)
     unsafeMutableAddress {
-      precondition(position < count)
-      return payload + position
+      precondition(0 <= position && position < count)
+      return unsafe payload + position
     }
   }
 
   deinit {
-    self.payload.deinitialize(count: count)
-    self.payload.deallocate()
+    unsafe self.payload.deinitialize(count: count)
+    unsafe self.payload.deallocate()
   }
 
   @inlinable
   func clone() -> Self {
     let payload = UnsafeMutablePointer<Element>.allocate(capacity: count)
-    payload.initialize(from: self.payload, count: count)
-    return .init(payload: payload, count: count)
+    unsafe payload.initialize(from: self.payload, count: count)
+    return unsafe .init(payload: payload, count: count)
   }
 }
 
@@ -94,7 +94,7 @@ public struct BareArray2D<Element>: ~Copyable {
   public init(repeating value: Element, width: Int, height: Int) {
     self.capacity = height * width
     self.payload = .allocate(capacity: capacity)
-    self.payload.initialize(repeating: value, count: capacity)
+    unsafe self.payload.initialize(repeating: value, count: capacity)
     self.width = width
     self.height = height
   }
@@ -104,16 +104,16 @@ public struct BareArray2D<Element>: ~Copyable {
     self.capacity = height * width
     self.payload = .allocate(capacity: capacity)
     for i in 0..<capacity {
-      (payload + i).initialize(to: f())
+      unsafe (payload + i).initialize(to: f())
     }
     self.width = width
     self.height = height
   }
 
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int) {
+  @unsafe internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int) {
     self.capacity = height * width
-    self.payload = payload
+    self.payload = unsafe payload
     self.width = width
     self.height = height
   }
@@ -129,7 +129,7 @@ public struct BareArray2D<Element>: ~Copyable {
     @inline(__always)
     get {
       precondition(0 <= position && position < height)
-      return .init(payload: payload + width * position, count: width)
+      return unsafe .init(payload: payload + width * position, count: width)
     }
 
     @inline(__always)
@@ -139,15 +139,15 @@ public struct BareArray2D<Element>: ~Copyable {
   }
 
   deinit {
-    self.payload.deinitialize(count: capacity)
-    self.payload.deallocate()
+    unsafe self.payload.deinitialize(count: capacity)
+    unsafe self.payload.deallocate()
   }
 
   @inlinable
   func clone() -> Self {
     let payload = UnsafeMutablePointer<Element>.allocate(capacity: capacity)
-    payload.initialize(from: self.payload, count: capacity)
-    return .init(payload: payload, width: width, height: height)
+    unsafe payload.initialize(from: self.payload, count: capacity)
+    return unsafe .init(payload: payload, width: width, height: height)
   }
 }
 
@@ -171,7 +171,7 @@ public struct BareArray3D<Element>: ~Copyable {
   public init(repeating value: Element, width: Int, height: Int, depth: Int) {
     self.capacity = height * width * depth
     self.payload = .allocate(capacity: capacity)
-    self.payload.initialize(repeating: value, count: capacity)
+    unsafe self.payload.initialize(repeating: value, count: capacity)
     self.width = width
     self.height = height
     self.depth = depth
@@ -182,7 +182,7 @@ public struct BareArray3D<Element>: ~Copyable {
     self.capacity = width * height * depth
     self.payload = .allocate(capacity: capacity)
     for i in 0..<capacity {
-      (payload + i).initialize(to: f())
+      unsafe (payload + i).initialize(to: f())
     }
     self.width = width
     self.height = height
@@ -190,9 +190,11 @@ public struct BareArray3D<Element>: ~Copyable {
   }
 
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int) {
-    self.capacity = height * width
-    self.payload = payload
+  @unsafe internal init(
+    payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int
+  ) {
+    self.capacity = width * height * depth
+    self.payload = unsafe payload
     self.width = width
     self.height = height
     self.depth = depth
@@ -210,7 +212,8 @@ public struct BareArray3D<Element>: ~Copyable {
     @inline(__always)
     get {
       precondition(0 <= position && position < depth)
-      return .init(payload: payload + width * height * position, width: width, height: height)
+      return unsafe .init(
+        payload: payload + width * height * position, width: width, height: height)
     }
 
     @inline(__always)
@@ -220,15 +223,15 @@ public struct BareArray3D<Element>: ~Copyable {
   }
 
   deinit {
-    self.payload.deinitialize(count: capacity)
-    self.payload.deallocate()
+    unsafe self.payload.deinitialize(count: capacity)
+    unsafe self.payload.deallocate()
   }
 
   @inlinable
   func clone() -> Self {
     let payload = UnsafeMutablePointer<Element>.allocate(capacity: capacity)
-    payload.initialize(from: self.payload, count: capacity)
-    return .init(payload: payload, width: width, height: height, depth: depth)
+    unsafe payload.initialize(from: self.payload, count: capacity)
+    return unsafe .init(payload: payload, width: width, height: height, depth: depth)
   }
 }
 
@@ -246,7 +249,7 @@ public struct BareArray4D<Element>: ~Copyable {
   public init(repeating value: Element, size0: Int, size1: Int, size2: Int, size3: Int) {
     self.capacity = size0 * size1 * size2 * size3
     self.payload = .allocate(capacity: capacity)
-    self.payload.initialize(repeating: value, count: capacity)
+    unsafe self.payload.initialize(repeating: value, count: capacity)
     self.size0 = size0
     self.size1 = size1
     self.size2 = size2
@@ -258,7 +261,7 @@ public struct BareArray4D<Element>: ~Copyable {
     self.capacity = size0 * size1 * size2 * size3
     self.payload = .allocate(capacity: capacity)
     for i in 0..<capacity {
-      (payload + i).initialize(to: f())
+      unsafe (payload + i).initialize(to: f())
     }
     self.size0 = size0
     self.size1 = size1
@@ -267,9 +270,11 @@ public struct BareArray4D<Element>: ~Copyable {
   }
   
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, size0: Int, size1: Int, size2: Int, size3: Int) {
+  @unsafe internal init(
+    payload: UnsafeMutablePointer<Element>, size0: Int, size1: Int, size2: Int, size3: Int
+  ) {
     self.capacity = size0 * size1 * size2 * size3
-    self.payload = payload
+    self.payload = unsafe payload
     self.size0 = size0
     self.size1 = size1
     self.size2 = size2
@@ -289,7 +294,7 @@ public struct BareArray4D<Element>: ~Copyable {
     @inline(__always)
     get {
       precondition(0 <= position && position < size3)
-      return .init(
+      return unsafe .init(
         payload: payload + size0 * size1 * size2 * position, width: size0, height: size1,
         depth: size2)
     }
@@ -301,15 +306,15 @@ public struct BareArray4D<Element>: ~Copyable {
   }
 
   deinit {
-    self.payload.deinitialize(count: capacity)
-    self.payload.deallocate()
+    unsafe self.payload.deinitialize(count: capacity)
+    unsafe self.payload.deallocate()
   }
   
   @inlinable
   func clone() -> Self {
     let payload = UnsafeMutablePointer<Element>.allocate(capacity: capacity)
-    payload.initialize(from: self.payload, count: capacity)
-    return .init(payload: payload, size0: size0, size1: size1, size2: size2, size3: size3)
+    unsafe payload.initialize(from: self.payload, count: capacity)
+    return unsafe .init(payload: payload, size0: size0, size1: size1, size2: size2, size3: size3)
   }
 }
 
@@ -329,9 +334,9 @@ extension BareArray4D: @unchecked Sendable where Element: Sendable { }
 public struct BareArray1DView<Element> {
 
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, count: Int) {
+  @unsafe internal init(payload: UnsafeMutablePointer<Element>, count: Int) {
     self.count = count
-    self.payload = payload
+    self.payload = unsafe payload
   }
 
   @usableFromInline let count: Int
@@ -341,13 +346,13 @@ public struct BareArray1DView<Element> {
   public subscript(position: Int) -> Element {
     @inline(__always)
     unsafeAddress {
-      precondition(position < count)
-      return UnsafePointer(payload + position)
+      precondition(0 <= position && position < count)
+      return unsafe UnsafePointer(payload + position)
     }
     @inline(__always)
     unsafeMutableAddress {
-      precondition(position < count)
-      return payload + position
+      precondition(0 <= position && position < count)
+      return unsafe payload + position
     }
   }
 }
@@ -364,9 +369,9 @@ extension BareArray1DView {
 public struct BareArray2DView<Element> {
 
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int) {
+  @unsafe internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int) {
     self.capacity = height * width
-    self.payload = payload
+    self.payload = unsafe payload
     self.width = width
     self.height = height
   }
@@ -381,8 +386,8 @@ public struct BareArray2DView<Element> {
 
     @inline(__always)
     get {
-      precondition(position < height)
-      return .init(payload: payload + width * position, count: width)
+      precondition(0 <= position && position < height)
+      return unsafe .init(payload: payload + width * position, count: width)
     }
 
     @inline(__always)
@@ -404,9 +409,11 @@ extension BareArray2DView {
 public struct BareArray3DView<Element> {
 
   @inlinable
-  internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int) {
+  @unsafe internal init(
+    payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int
+  ) {
     self.capacity = height * width
-    self.payload = payload
+    self.payload = unsafe payload
     self.width = width
     self.height = height
     self.depth = depth
@@ -423,8 +430,9 @@ public struct BareArray3DView<Element> {
 
     @inline(__always)
     get {
-      precondition(position < depth)
-      return .init(payload: payload + width * height * position, width: width, height: height)
+      precondition(0 <= position && position < depth)
+      return unsafe .init(
+        payload: payload + width * height * position, width: width, height: height)
     }
 
     @inline(__always)

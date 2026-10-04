@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// ポインタベースの木の基本型定義
+// ポインタベースの木の基本型定義
 public protocol _UnsafeNodePtrType: ~Copyable, _NodePtrType
 where
   _NodePtr == UnsafeMutablePointer<UnsafeNode>,
@@ -30,32 +30,32 @@ where
 // MARK: -
 // 以下はヘルパー類
 
-extension _KeyType where Self: _UnsafeNodePtrType {
+extension _KeyType where Self: ~Copyable,  Self: _UnsafeNodePtrType {
   public typealias _KeyPtr = UnsafeMutablePointer<_Key>
 }
 
-extension _PayloadValueType where Self: _UnsafeNodePtrType {
+extension _PayloadValueType where Self: ~Copyable, Self: _UnsafeNodePtrType {
   public typealias _PayloadPtr = UnsafeMutablePointer<_PayloadValue>
   public typealias _PayloadBuffer = UnsafeMutableBufferPointer<_PayloadValue>
 }
 
-extension _MappedValueType where Self: _UnsafeNodePtrType {
+extension _MappedValueType where Self: ~Copyable, Self: _UnsafeNodePtrType {
   public typealias _MappedValuePtr = UnsafeMutablePointer<_MappedValue>
 }
 
-extension _ElementType where Self: _UnsafeNodePtrType {
+extension _ElementType where Self: ~Copyable, Self: _UnsafeNodePtrType {
   public typealias _ElementValuePtr = UnsafeMutablePointer<Element>
 }
 
-extension _UnsafeNodePtrType where Self: _PayloadValueType {
+extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PayloadValueType {
 
-  /// ペイロードのポインタ
-  ///
-  /// ```
-  /// ...|Node|Payload|Node...
-  ///    |    ^--__payload_
-  ///    ^-- UnsafeMutablePointer<UnsafeNode>
-  /// ```
+  // ペイロードのポインタ
+  //
+  // ```
+  // ...|Node|Payload|Node...
+  //    |    ^--__payload_
+  //    ^-- UnsafeMutablePointer<UnsafeNode>
+  // ```
   @inlinable
   static func __payload_ptr(_ p: _NodePtr) -> _PayloadPtr {
     p.__value_()
@@ -86,15 +86,15 @@ extension _UnsafeNodePtrType where Self: _PayloadValueType {
   }
 }
 
-extension _UnsafeNodePtrType where Self: _ScalarBaseType {
+extension _UnsafeNodePtrType where Self: ~Copyable, Self: _ScalarBaseType {
 
-  /// `_PayloadValue`と`_Key`が一致する場合に、 ペイロードをキーとみなしたポインタ
-  ///
-  /// ```
-  /// ...|Node|Key|Node...
-  ///    |    ^--__key_ptr
-  ///    ^-- UnsafeMutablePointer<UnsafeNode>
-  /// ```
+  // `_PayloadValue`と`_Key`が一致する場合に、 ペイロードをキーとみなしたポインタ
+  //
+  // ```
+  // ...|Node|Key|Node...
+  //    |    ^--__key_ptr
+  //    ^-- UnsafeMutablePointer<UnsafeNode>
+  // ```
   @inlinable
   static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
     __payload_ptr(p)
@@ -114,15 +114,15 @@ extension _UnsafeNodePtrType where Self: _ScalarBaseType {
   }
 }
 
-extension _UnsafeNodePtrType where Self: _PairBaseType {
+extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType {
   
-  /// `_PayloadValue`が`Pair`の場合のキーへのポインタ
-  ///
-  /// ```
-  /// ...|Node|Key|MappedValue|Node...
-  ///    |    ^--__key_ptr
-  ///    ^-- UnsafeMutablePointer<UnsafeNode>
-  /// ```
+  // `_PayloadValue`が`Pair`の場合のキーへのポインタ
+  //
+  // ```
+  // ...|Node|Key|MappedValue|Node...
+  //    |    ^--__key_ptr
+  //    ^-- UnsafeMutablePointer<UnsafeNode>
+  // ```
   @inlinable
   static func __key_ptr(_ p: _NodePtr) -> _KeyPtr {
     _ref(to: &__payload_ptr(p).pointee.tuple.key)
@@ -141,13 +141,13 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
     __payload_(p).tuple.key
   }
   
-  /// `_PayloadValue`が`Pair`の場合のバリューへのポインタ
-  ///
-  /// ```
-  /// ...|Node|Key|MappedValue|Node...
-  ///    |        ^--__mapped_value_ptr
-  ///    ^-- UnsafeMutablePointer<UnsafeNode>
-  /// ```
+  // `_PayloadValue`が`Pair`の場合のバリューへのポインタ
+  //
+  // ```
+  // ...|Node|Key|MappedValue|Node...
+  //    |        ^--__mapped_value_ptr
+  //    ^-- UnsafeMutablePointer<UnsafeNode>
+  // ```
   @inlinable
   static func __mapped_value_ptr(_ p: _NodePtr) -> _MappedValuePtr {
     _ref(to: &__payload_ptr(p).pointee.tuple.value)
@@ -167,7 +167,7 @@ extension _UnsafeNodePtrType where Self: _PairBaseType {
   }
 }
 
-extension _UnsafeNodePtrType where Self: _PairBaseType & _KeyValueElementType {
+extension _UnsafeNodePtrType where Self: ~Copyable, Self: _PairBaseType & _KeyValueElementType {
   
   @inlinable
   static func __element__ptr(_ p: _NodePtr) -> _ElementValuePtr {

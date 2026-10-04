@@ -101,13 +101,17 @@ Key による順序
 
 | C++ `std::multimap` | Swift / `RedBlackTreeMultiMap` | 対応 | 備考 |
 | --- | --- | :---: | --- |
-| `find(key)` | キーによる検索 | ✅ | O(log `count`) |
+| `find(key)` | `find(_:)` | ✅ | O(log `count`)。同値キー群内のどの個体を返すかは互換保証に含めない |
 | `contains(key)` | キーの存在確認 | ✅ | O(log `count`) |
 | `count(key)` | キー範囲の `count` | △ | 同一キーの range view を通して要素数を取得できる |
 | `lower_bound(key)` | lower-bound 検索 | ✅ | O(log `count`) |
 | `upper_bound(key)` | upper-bound 検索 | ✅ | O(log `count`) |
 | `equal_range(key)` | `equalRange(_:)` | ✅ | 同じキーを持つ要素の半開区間を返す |
 | キー範囲検索 | tree index / range | ✅ | 先頭から線形走査する必要がない |
+
+`std::multimap::find`は、同値キー群内の特定のmapped valueや位置を返すことを
+標準では保証しません。したがって互換比較では、存在、返されたキー、要素数、
+および全内容を照合し、同値群内の個体とrankは比較していません。
 
 ## `equal_range`
 
@@ -211,17 +215,17 @@ for value in elements.values {
 `keys` と `values` も対象要素を配列へコピーするのではなく、
 対応する範囲を走査する view を返します。
 
-range view は読み取り専用ではありません。
-
-変更可能な値として保持している場合には、
-範囲内の要素を直接削除できます。
+range view は読み取り専用ではありません。元のmultimapのsubscriptに対して
+変更操作を直接呼び出すと、範囲内の要素を元のmultimapから削除できます。
 
 ```swift
-var elements = map[key]
-
-elements.popFirst()
-elements.popLast()
+map[key].popFirst()
+map[key].popLast()
 ```
+
+`var elements = map[key]` のようにrange viewを独立した変数へ取り出した場合、
+その後の変更はvalue semanticsにより `elements` 側へ適用され、元の `map` には
+反映されません。
 
 範囲全体や、条件に一致する要素を削除することもできます。
 
@@ -263,8 +267,8 @@ map[key]
 | duplicate key insertion | 同一キーの挿入 | ✅ | 重複キーを許容する |
 | 同値キー範囲の末尾への挿入 | 挿入順を保持 | ✅ | 同一キー内の相対順序を維持する |
 | `emplace(...)` | 値を構築して挿入 | △ | C++ の in-place construction に直接対応する API はない |
-| `emplace_hint(...)` | — | ❌ | C++ の emplacement / hint API は採用していない |
-| `insert(hint, value)` | — | ❌ | hint 付き挿入は採用していない |
+| `emplace_hint(...)` | `insert(_:hint:)` | △ | hint は利用できるが、C++ の in-place construction semantics はない |
+| `insert(hint, value)` | `insert(_:hint:)` | ✅ | 新しいkey-value要素のindexを返す |
 | range insertion | `Sequence` ベースの初期化 / 挿入 | △ | Swift では iterator pair より `Sequence` を使う |
 
 同じキーを持つ要素を追加しても、
@@ -300,8 +304,8 @@ C++ の `std::multimap::insert` には、
 root から挿入位置を探索する処理を省略できるため、
 挿入を高速化できる場合があります。
 
-`RedBlackTreeMultiMap` では、
-C++ と同じ形式の hint 付き挿入 API は提供しません。
+`RedBlackTreeMultiMap`では`insert(_:hint:)`を提供します。利用可能なhintは
+同値キー群の内部を含む挿入位置として使われ、`endIndex`も有効です。
 
 ## Emplacement
 
@@ -329,21 +333,20 @@ C++ と同一の `emplace` semantics は提供しません。
 | `clear()` | 全要素削除 | ✅ | |
 | `extract()` | — | ❌ | C++ の node ownership model に強く依存する機能 |
 
-キー subscript が返す range view 自体から、
-そのキーに対応する要素群をまとめて削除できます。
+キー subscript に対して変更操作を直接呼び出すことで、
+そのキーに対応する要素群をまとめて元のmultimapから削除できます。
 
 ```swift
-var elements = map[key]
-elements.erase()
+map[key].erase()
 ```
 
 また、複数ある同一キー要素のうち一部だけを削除できます。
 
 ```swift
-elements.popFirst()
-elements.popLast()
+map[key].popFirst()
+map[key].popLast()
 
-elements.erase { element in
+map[key].erase { element in
   // ...
 }
 ```
@@ -365,6 +368,9 @@ C++ の `extract()` は、
 
 そのため、1つのノードを独立した ownership unit として安全に外部へ取り出す
 C++ の `node_handle` モデルとは相性がよくありません。
+
+`Index` はCoWで分岐した木でも対応するnodeを追跡する位置handleとして利用できますが、
+nodeのownershipを保持したり、別のコンテナへnodeを移送したりするものではありません。
 
 ## Iterator と Index
 
@@ -403,6 +409,10 @@ C++ の `node_handle` モデルとは相性がよくありません。
 
 この性質により、
 mutation をまたいで特定の要素位置を保持できます。
+
+CoWで分岐したコレクションでも、対応する要素が存在し世代が一致する限り、
+Indexからその位置を特定できます。無関係なコレクションから取得したIndexを
+使用することは事前条件違反であり、その検出は保証しません。
 
 同じキーを持つ複数の要素についても、
 それぞれが個別の index を持ちます。
@@ -578,7 +588,7 @@ Swift 標準ライブラリの lazy adapter をそのまま利用できます。
 | node-based tree | 赤黒木ノード | ✅ | |
 | node ごとの allocation | shared node storage | △ | 複数ノードをまとめて storage 上に配置する |
 | allocator template parameter | — | ❌ | C++ allocator customization の直接対応はない |
-| `node_handle` | — | ❌ | shared storage 方式とは ownership model が異なる |
+| `node_handle` | `Index` | △ | 位置handleとしての役割は近いが、nodeのownershipは持たない |
 | move construction | Swift の ownership / value semantics | △ | C++ と object model が異なる |
 | copy construction | copy-on-write | △ | tree storage 全体を即座に複製するとは限らない |
 | `swap()` | Swift `swap` | ✅ | |
@@ -613,9 +623,9 @@ view が表す開始位置と終了位置もコピー後の木へ引き継がれ
 | iterator / index 安定性 | 強い | 強い |
 | lazy sequence | C++ ranges 等を利用 | Swift `Sequence.lazy` |
 | node allocation | 一般に node 単位 | shared storage |
-| `node_handle` | ✅ | ❌ |
+| `node_handle` | ✅ | △ `Index`（位置handle） |
 | `extract()` | ✅ | ❌ |
-| hint insertion | ✅ | ❌ |
+| hint insertion | ✅ | ✅ `insert(_:hint:)` |
 | in-place `emplace` | ✅ | △ |
 
 特に、
@@ -655,16 +665,16 @@ map[key].values
 range view 自体から、
 
 ```swift
-popFirst()
-popLast()
-removeFirst()
-removeLast()
-erase()
-erase(where:)
+map[key].popFirst()
+map[key].popLast()
+map[key].removeFirst()
+map[key].removeLast()
+map[key].erase()
+map[key].erase(where:)
 ```
 
 などを利用して、
-対象範囲を直接変更できます。
+対象範囲を元のmultimap上で直接変更できます。
 
 このため `RedBlackTreeMultiMap` では、
 `equalRange(_:)` による index range に加えて、
@@ -678,11 +688,10 @@ iterator model と強く結びついており、
 
 - allocator customization
 - `node_type`
-- `node_handle`
+- nodeのownershipと移送を担う `node_handle`
 - `extract()`
 - node transfer を利用した `merge()`
 - `emplace()` / `emplace_hint()` の C++ と同一の構築 semantics
-- hint 付き `insert`
 - container ごとに保持する comparator object
 
 これらに直接対応する API がないことは、

@@ -29,12 +29,12 @@
 extension UnsafeTreeV2 {
 
   // デッドコードだけど削るとなぜか性能落ちるので温存
-  /// 木のコピーを作成する
-  ///
-  /// - Parameters:
-  ///   - minimumCapacity: 新しいバッファに確保する最小容量。
-  ///     - `nil` の場合はコピー元と同じ容量を使用する。
-  ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
+  // 木のコピーを作成する
+  //
+  // - Parameters:
+  //   - minimumCapacity: 新しいバッファに確保する最小容量。
+  //     - `nil` の場合はコピー元と同じ容量を使用する。
+  //     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
   internal func copy(minimumCapacity: Int) -> UnsafeTreeV2 {
     assert(__check(self), "一括チェックに合格すること")
@@ -69,12 +69,12 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2BufferHeader {
 
-  /// 木のコピーを作成する
-  ///
-  /// - Parameters:
-  ///   - minimumCapacity: 新しいバッファに確保する最小容量。
-  ///     - `nil` の場合はコピー元と同じ容量を使用する。
-  ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
+  // 木のコピーを作成する
+  //
+  // - Parameters:
+  //   - minimumCapacity: 新しいバッファに確保する最小容量。
+  //     - `nil` の場合はコピー元と同じ容量を使用する。
+  //     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
   internal func copy<Base>(minimumCapacity: Int? = nil) -> UnsafeTreeV2<Base> {
     UnsafeTreeV2<Base>._create(
@@ -82,13 +82,13 @@ extension UnsafeTreeV2BufferHeader {
         copyBuffer(Base._PayloadValue.self, minimumCapacity: minimumCapacity))
   }
 
-  /// バッファオブジェクトのコピーを作成する。
-  ///
-  /// - Parameters:
-  ///   - t: 木の要素値型（ヘッダは型消去されているため、引数で受け取る）
-  ///   - minimumCapacity: 新しいバッファに確保する最小容量。
-  ///     - `nil` の場合はコピー元と同じ容量を使用する。
-  ///     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
+  // バッファオブジェクトのコピーを作成する。
+  //
+  // - Parameters:
+  //   - t: 木の要素値型（ヘッダは型消去されているため、引数で受け取る）
+  //   - minimumCapacity: 新しいバッファに確保する最小容量。
+  //     - `nil` の場合はコピー元と同じ容量を使用する。
+  //     - 指定された場合は `max(コピー元の容量, minimumCapacity)` が実際の確保サイズとなる。
   @inlinable
   internal func copyBuffer<_PayloadValue>(_ t: _PayloadValue.Type, minimumCapacity: Int? = nil)
     -> UnsafeTreeV2Buffer
@@ -139,12 +139,12 @@ extension UnsafeTreeV2BufferHeader {
     return _newBuffer
   }
 
-  /// ヘッダの内容を空のヘッダにコピーする。
-  ///
-  /// - Parameters:
-  ///   - t: 木の要素値型（ヘッダは型消去されているため、引数で受け取る）
-  ///   - other: コピー先のヘッダ（あらかじめ容量が確保されている必要がある）
-  ///   - nullptr: ヌルポインタ （型情報アクセスのオーバーヘッドを避けるため、呼び出し元のものを再利用する）
+  // ヘッダの内容を空のヘッダにコピーする。
+  //
+  // - Parameters:
+  //   - t: 木の要素値型（ヘッダは型消去されているため、引数で受け取る）
+  //   - other: コピー先のヘッダ（あらかじめ容量が確保されている必要がある）
+  //   - nullptr: ヌルポインタ （型情報アクセスのオーバーヘッドを避けるため、呼び出し元のものを再利用する）
   @inlinable
   func copyHeader<_PayloadValue>(
     _ t: _PayloadValue.Type,
@@ -165,7 +165,7 @@ extension UnsafeTreeV2BufferHeader {
     let bucket = other.freshBucketHead!.accessor(
       pairLayout: MemoryLayout<_PayloadValue>._pairLayout)!
 
-    /// 同一番号の新ノードを取得するメソッド内ユーティリティ
+    // 同一番号の新ノードを取得するメソッド内ユーティリティ
     @inline(__always)
     func __ptr_(_ ptr: _NodePtr) -> _NodePtr {
       let index = ptr.pointee.___tracking_tag
@@ -176,7 +176,7 @@ extension UnsafeTreeV2BufferHeader {
       }
     }
 
-    /// ノードを新ノードで再構築するメソッド内ユーティリティ
+    // ノードを新ノードで再構築するメソッド内ユーティリティ
     @inline(__always)
     func node(_ s: borrowing UnsafeNode) -> UnsafeNode {
       // 値は別途管理
@@ -196,6 +196,11 @@ extension UnsafeTreeV2BufferHeader {
     while let s = usedNodes.next(), let d = other.popFresh() {
       // ノードを初期化する
       d.initialize(to: node(s.pointee))
+      
+      #if ALLOW_CROSS_TREE_INDEX
+        d.pointee.___recycle_count = s.pointee.___recycle_count
+      #endif
+      
       #if DEBUG
         nodeInitializedCount += 1
       #endif

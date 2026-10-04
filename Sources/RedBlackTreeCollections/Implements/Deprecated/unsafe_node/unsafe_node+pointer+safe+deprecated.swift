@@ -8,9 +8,9 @@
 #if COMPATIBLE_ATCODER_2025
   extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
-    /// ポインタを渡すときまたは受け取ったときに用いる
-    ///
-    /// 重ねてsealしないこと
+    // ポインタを渡すときまたは受け取ったときに用いる
+    //
+    // 重ねてsealしないこと
     @inlinable
     package var sealed: _SealedPtr {
       if ___is_null {
@@ -26,9 +26,9 @@
 
   extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
 
-    /// ポインタが変化した場合に用いる
-    ///
-    /// 重ねてsealしないこと
+    // ポインタが変化した場合に用いる
+    //
+    // 重ねてsealしないこと
     @inlinable
     var sealed: _SealedPtr { flatMap { $0.sealed } }
   }
@@ -49,7 +49,7 @@
 
   extension Result where Success == _NodePtrSealing, Failure == SealError {
 
-    /// 他のケースと異なり、endも有効となる
+    // 他のケースと異なり、endも有効となる
     @inlinable
     package var isValid: Bool {
       switch purified {

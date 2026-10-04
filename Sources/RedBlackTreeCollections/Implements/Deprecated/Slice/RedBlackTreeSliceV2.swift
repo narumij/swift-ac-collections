@@ -175,13 +175,13 @@
 
   extension RedBlackTreeSliceV2.KeyOnly {
 
-    /// Indexがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity:
-    ///
-    ///   ベースがset, map, dictionaryの場合、O(1)
-    ///
-    ///   ベースがmultiset, multimapの場合 O(log *n*)
+    // Indexがsubscriptやremoveで利用可能か判別します
+    //
+    // - Complexity:
+    //
+    //   ベースがset, map, dictionaryの場合、O(1)
+    //
+    //   ベースがmultiset, multimapの場合 O(log *n*)
     @inlinable
     public func isValid(index i: Index) -> Bool {
       (try? __tree_.__purified_(i).map { ___contains($0.pointer) }.get()) ?? false

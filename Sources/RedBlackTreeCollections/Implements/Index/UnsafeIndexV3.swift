@@ -29,6 +29,9 @@
 // 変更箇所が多くて面倒くさい
 public typealias UnsafeIndexV3 = _LazyTiedPtr
 
+/// An index into a red-black-tree collection.
+public typealias RedBlackTreeIndex = UnsafeIndexV3
+
 // 内部実装では CoW 由来の差異を救済することがある。
 // その結果として異なる木でも使えてしまう可能性があるが、仕様上は未定義。
 // 失敗は許容するが、確保外メモリへのアクセスは厳禁。
@@ -42,7 +45,6 @@ public typealias UnsafeIndexV3 = _LazyTiedPtr
 // ただ、~Escapableが欲しかったのはバッファ寿命管理コストを下げたかったことが理由だが、
 // 今はその点に関して気にならないコストとなっているので、Copyable & Escapableで問題が無い（わけでもない）
 // https://github.com/apple/swift-collections/blob/main/Documentation/Container-design.md
-
 
 // Index は container 内の論理的位置を表す。endIndex も有効な Index で、最後の要素の直後の空位置を表す。
 // ○

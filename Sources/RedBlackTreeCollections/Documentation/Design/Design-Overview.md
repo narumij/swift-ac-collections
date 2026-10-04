@@ -17,7 +17,9 @@
 - 値型としてコピーできること
 - 変更前にはストレージ共有を安全に解消すること
 - ノードのアドレスを使うIndexを扱えること
-- 削除・再利用・CoWをまたいで、古いIndexを誤認しないこと
+- 同一ストレージ内の削除・再利用で、古いIndexを誤認しないこと
+- CoWをまたぐIndexをtracking tagと世代で対応付けること
+- 空の木のCoWでは、不要なslotや世代履歴をコピーしないこと
 - 不要な確保、参照管理、探索をホットパスへ持ち込まないこと
 - payloadを型に応じて正しく初期化・破棄すること
 
@@ -114,7 +116,7 @@ _BucketAccessorは先頭アドレスへ stride * trackingTag を加えること�
 raw pointer
     └── nodeの世代
         └── 所属する木の同一性
-            └── 必要な場合だけraw memoryの寿命を延長
+            └── 解放済みストレージの検出
 ~~~
 
 すべての内部操作へ同じ安全機構を被せるのではなく、時間差で削除、再利用、CoW、
@@ -140,7 +142,7 @@ bucket、node、payload、Fresh/Recycle Pool
         │
         ▼
 Memory Safety
-世代、木の同一性、遅延寿命管理
+世代、木の同一性、解放検出、IteratorのCoW
 ~~~
 
 公開コレクションは木アルゴリズムやメモリ管理を直接実装しない。
@@ -172,13 +174,23 @@ primary/secondary bucketの確保量、初期化状態との境界を説明す�
 
 ### [メモリ安全性の設計](Design-MemorySafety.md)
 
-削除と再利用の検出、Indexと木の同一性、木より長く残るIndexのための
-遅延寿命管理、失敗の表現を説明する。
+削除と再利用の検出、Indexと木の同一性、解放済みストレージの検出、
+IteratorのCoWスナップショット、失敗の表現を説明する。
 
 ### [RangeとIndex反復の設計](Design-Range.md)
 
 標準Rangeの比較コスト、代替Range、反復方法の検討を扱う。
 この領域は実験中の設計を含むため、確定したストレージ設計とは区別して読む。
+
+### [現行APIマトリクス](../API-Matrix.md)
+
+通常構成で利用できる現行APIを、Set、MultiSet、MultiMap、Dictionaryで横断して
+確認するための一覧。DeprecatedおよびAtCoder 2025互換APIは含まない。
+
+### [品質方針](../Quality-Checklist.md)
+
+公開APIと原木内部のTest as Specification、メモリ・Index寿命、性能退行、および
+変更時の最小品質ゲートを定める。設計上の契約をどの種類のテストで観測するかを確認する。
 
 ## 推奨する読み順
 
@@ -188,7 +200,8 @@ primary/secondary bucketの確保量、初期化状態との境界を説明す�
 4. Design-CopyOnWrite.mdで値型としての分離方法を確認する。
 5. Design-MemorySafety.mdでIndexへ追加される保証を確認する。
 6. Design-InternalArchitecture.mdでコード上の各層へ対応付ける。
-7. Rangeなど実験中の領域は、必要に応じて個別文書を読む。
+7. Quality-Checklist.mdで設計契約と実行可能な検証の境界を確認する。
+8. Rangeなど実験中の領域は、必要に応じて個別文書を読む。
 
 ## この設計の性格
 
@@ -198,14 +211,21 @@ primary/secondary bucketの確保量、初期化状態との境界を説明す�
 - begin nodeを別に保持する
 - optional pointerではなく実体のあるnullptrを使う
 - 削除済みノードの左リンクをfree listへ転用する
-- CoWで有効要素だけでなく使用歴のあるslotまでコピーする
-- Indexが残る場合だけbucketの解放責任を移譲する
+- 要素を持つ木のCoWでは、有効要素だけでなく使用歴のあるslotまでコピーする
+- CoW時にrecycle countを引き継ぎ、stale Indexをコピー先でも拒否する
+- Indexは解放済みストレージをdetachedとして検出する
+- Iteratorは木のスナップショットを保持し、変更時にCoWで分離する
 
 これらは単独では理解しにくいが、ストレージ、CoW、Index安全性を同時に成立させる
 という観点では相互に理由がある。
 
 したがって変更時には、目の前の処理だけを単純化するのではなく、その状態が
 どの層から参照され、どの計算量や安全性を支えているかを確認する必要がある。
+
+公開APIの振る舞いは型別のTest as Specificationで、`__tree`移植層の不変条件、比較注入、
+所有権、境界失敗は原木のTest as Specificationで検証する。ただし、テストは移植元との
+構造的一致や到達不能コードの存在理由まで置き換えない。実行可能な契約、設計文書、
+LLVM libc++とのソース比較を、それぞれ異なる証拠として併用する。
 
 ## まとめ
 
@@ -215,5 +235,5 @@ RedBlackTreeCollectionsの中心的な問いは、
 **ポインタベースの木を、Swiftの値セマンティクスとIndexの寿命の中で、
 余分なコストを常時払わずにどう運用するか**である。
 
-bucket、二つのpool、tracking tag、世代管理、CoW時の再配置、遅延寿命管理は、
+bucket、二つのpool、tracking tag、世代管理、CoW時の再配置、解放検出は、
 この問いに対する一続きの回答になっている。

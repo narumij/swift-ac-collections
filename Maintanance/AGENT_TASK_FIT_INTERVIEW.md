@@ -1,0 +1,246 @@
+# 残タスク担当適性ヒアリング
+
+最終更新: 2026-10-04 / Codex
+
+## 目的
+
+残タスクをCodexかClaudeへ機械的に丸投げせず、作業の性質、過去の実績、本人の自己申告を
+合わせて担当を決める。ここでの「得意・不得意」はモデル一般の格付けではなく、
+このrepositoryで観測された作業傾向を指す。
+
+担当は一人に固定しない。設計、見本、反復展開、独立レビュー、最終統合を分け、
+各段階に適した担当を置く。
+
+## 評価尺度
+
+| 評価 | 意味 |
+| --- | --- |
+| 5 | 単独で主担当に適する。重要判断も任せやすい |
+| 4 | 明確な境界と完了条件があれば主担当に適する |
+| 3 | 見本、レビュー、または途中確認があれば担当できる |
+| 2 | 補助または限定的なread-only調査向き |
+| 1 | この形式では割り当てない方が安全 |
+
+## 現時点の作業傾向
+
+| 観点 | Codex | Claude |
+| --- | --- | --- |
+| 外部契約と内部表現の分離 | 強い。論点整理、依存関係、判断ゲートの設計を担当しやすい | 良いレビューができるが、先に具体実装や既存構造へ引かれないよう問いを限定する |
+| 小さな見本実装 | 強い。変更境界を定め、最初の一組を作る役に向く | 見本がある状態での横展開が安定しやすい |
+| 多数の類似ケースへの展開 | 文脈とtokenを消費しやすい | 連番、複数型、類似テストの反復を粘り強く完遂した実績がある |
+| read-only監査 | 監査結果を設計や実装順へ統合するのが得意 | source/line根拠を広く拾う独立監査が強い |
+| scope管理 | 最終統合役として比較的向く | 境界が曖昧だと文書全体の改変や旧タスク再開へ広がることがある。禁止事項を明記する |
+| 長時間の機械的確認 | 要点抽出は強いが、量の多い反復だけを主目的にすると非効率 | 明確なチェックリストがあれば向く |
+| 利用者への途中報告 | 対話しながら設計判断を扱う役に向く | 詳細報告が増えやすいため、結果はMD、利用者へは`完了`のみを明記する |
+| 文書の最終語調 | 全体方針や謙虚な対外表現の調整に向く | 事実確認と不足指摘に向く。広範な書換えはCodex確認後に限定する |
+
+## 残タスク別ヒアリング表
+
+各担当候補は、着手前に「自己評価」と「懸念・必要条件」を記入する。
+初期案は過去の実績に基づく仮置きであり、回答と実作業結果で更新する。
+
+| ID | 残タスク | 主な作業特性 | Codex初期評価 | Claude初期評価 | 担当案 | Codex自己評価・懸念 | Claude自己評価・懸念 |
+| --- | --- | --- | ---: | ---: | --- | --- | --- |
+| A | 公開面の機械的列挙 | 広い検索、visibility・alias・適合の証拠採取 | 4 | 5 | Claude調査 → Codex統合 | 主担当可。広い列挙はできるが文脈効率が落ちるため、Claude列挙を再確認して統合する方がよい | 主担当可（read-only列挙のみ）。リスク: grepの取りこぼし。前回も初回grepでsplit-line `public`、typealias経由の`extension _TrackingTag`、global operatorを落とした。DEBUG/互換/trait別に集合を分けて列挙する。停止点は列挙表の提出 |
+| B | 公開面の分類と縮小単位決定 | API境界、互換性、依存関係の判断 | 4 | 3 | Codex主担当、Claude独立レビュー | 主担当可。互換性と依存関係を含む分類が得意。縮小実装前に利用者影響を確認する | 補助のみ（独立レビュー）。分類は互換性と利用者影響の判断で、私は縮小を実装寄りに急ぎがち。Codexが単位を決めた後のaccess書換え作業なら主担当可 |
+| C | 安全性・CoW・計算量契約の固定 | 既存証拠の統合、公開契約の文章化 | 5 | 4 | Codex草案 → Claude反証レビュー | 主担当可。証拠から契約を組み立てられる。現実装の正当化にならないよう反証レビューが必要 | 見本またはレビュー必須（反証役）。証拠収集と反例探索は得意だが、契約文を書くと現実装を追認しやすい。Codex草案が前提 |
+| D | Indexを`Comparable`にするか | Collection慣例、意味論、計算量、利用価値の判断 | 5 | 4 | Codex草案・統合 → ユーザー決定 | 草案主担当・決定はユーザー。意味論と計算量を統合できる。利用価値の最終判断はユーザーへ返す | 補助のみ（反対側レビュー）。具体的な既存設計（Container要件等）へ早く飛びやすい。役割は同値キー比較O(log N)・Range経由O(N log N)の反例探し。判断役としては3を提案 |
+| E | 失敗Indexを公開するか | API設計、診断能力と公開表現の分離 | 5 | 4 | Codex草案・統合 → ユーザー決定 | 草案主担当・決定はユーザー。診断機構と公開表現を分離して検討する。既存実装への愛着を根拠にしない | 補助のみ（反証）。診断用Resultと公開表現の混同をsource根拠で指摘する役なら有効。判断は利用者視点でCodex |
+| F | Index外部契約の確定 | 複数判断の統合、利用者視点、決定記録 | 5 | 3 | Codex草案・統合 → ユーザー決定 | 草案主担当・決定はユーザー。D/E/P1〜P3を統合する。複数の妥当案が残ればユーザー判断で停止 | 補助のみ。決定記録と実装・test・Matrixの事実照合だけ担当する。3に同意 |
+| G | Index表現候補の導出 | Swift型設計、ABI/API波及、retroactive適合回避 | 4 | 4 | Codex案作成 → Claude漏れ監査 | 主担当可。候補を外部契約から導く。ABI・alias chainの漏れはClaude監査を使う | 見本またはレビュー必須（漏れ監査）。前回、alias chain・Index演算子・DEBUG限定Comparable群の漏れを拾えた。案の作成はCodex |
+| H | 候補の小規模試作・Release計測 | 見本実装、測定条件、コード生成確認 | 4 | 4 | Codexが最小PoC、Claudeが反復計測 | 見本またはレビュー必須。最小PoCと測定設計を担当。単発数値を解釈せず反復計測を分担する | 見本またはレビュー必須。リスク: コード配置だけで±20%動き、単発計測で結論を出しがち。前提はCodexの最小PoCと交互計測・機械語比較の手順。生データ提出で停止し、解釈はしない |
+| I | 表現の最終選定 | 証拠とtrade-offの統合 | 5 | 3 | Codex草案・統合 → ユーザー決定 | 草案主担当・決定はユーザー。証拠表を統合する。利用体験または互換性の選好はユーザー承認が必要 | 補助のみ。証拠表の事実確認だけ。選定に関与しない方が安全なので2を提案 |
+| J | resolver・`SealError`・診断経路 | 複雑な局所実装、安全性、既存機構の維持 | 4 | 4 | Codex見本 → Claude限定展開 → Codexレビュー | 見本またはレビュー必須。最初の安全な実装を作る。unsafe・trait分岐は独立レビュー必須 | 見本またはレビュー必須。リスク: seal/世代/tracking tagの局所変更でCoW越しの解決を壊すこと、`ALLOW_CROSS_TREE_INDEX`/`USE_LAZY_DETACH`分岐の見落とし。Codex見本の後、失敗testを先に書く限定展開にする |
+| K | 4コンテナ・ViewへのIndex追従 | 多数の類似変更、仕様test横展開 | 4 | 5 | Codex見本 → Claude連番展開 → Codex統合 | 見本またはレビュー必須。最初の一組と統合は担当できるが、大量横展開はClaude向き | 主担当可（見本後）。連番spec testを4型×View横展開した実績あり。リスク: compat側・旧APIへ広がること、通常/互換両modeの検証漏れ。必要なのは見本1組・対象path一覧・停止点 |
+| L | 回帰検証・DocC・Matrix同期 | 横断チェック、反復、最終整合 | 4 | 5 | Claude監査・反復 → Codex完成判定 | 主担当可（完成判定）。全件反復と証拠採取はClaudeへ渡し、diffと結果を再確認する | 主担当可（監査・反復）。完成判定はCodex。リスク: RunAllTestsの「0 failed」やDocC警告0を完了根拠にする過大報告。`swift test`を正とし、MAINTENANCE.mdの停止条件を守る |
+| P1 | `index(inserting:)`提供範囲 | 公開API判断 | 5 | 3 | Codex草案・統合 → ユーザー決定 | 草案主担当・決定はユーザー。公開API整合を判断する。提供価値に複数案があればユーザーへ返す | 補助のみ。現状（`ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH`限定・提供型）の事実列挙だけ。判断に私の意見を混ぜない方がよく、2を提案 |
+| P2 | `erase(exactly:)`提供範囲 | 公開API判断 | 5 | 3 | Codex草案・統合 → ユーザー決定 | 草案主担当・決定はユーザー。命名・安全性・互換性を判断する。P1との対称性だけで決めない | 補助のみ。P1と同じ。現状の提供範囲と改名履歴（CHANGELOG）の事実列挙だけ。2を提案 |
+| P3 | KeyValue Rangeの範囲外契約 | API意味論と安全性 | 5 | 4 | Codex草案 → Claude反例探索 | 主担当可。範囲契約と失敗方法を設計する。先に反例testを置く | 見本またはレビュー必須（反例探索）。範囲外書込みを示す失敗test/Death Testを先に書ける。リスク: そのまま修正まで進むこと。修正禁止を明記する |
+| T1 | TestCode専用経路の分離 | 参照検索、target移動、狭い回帰確認 | 4 | 5 | Claude候補確認・展開、Codex変更境界決定 | 見本またはレビュー必須。移動境界を決められるが、全参照確認と移設はClaude向き | 主担当可（候補確認・移設）。変更境界はCodex。リスク: 同名で時代違いの`UnsafeIndexV2.unsafe(tree:rawTag:)`との統合、production overloadの`___meld_unique`を巻き込むこと。DEBUG/Release/互換でcompile確認する。Comparable群は除外 |
+| T2 | TestSupport / DebugAdditionals整理 | test architecture、依存整理 | 5 | 4 | Codex設計 → Claude移設 | 主担当可。test target間の責務と依存を設計する。機械的移設は委譲可能 | 見本またはレビュー必須。責務設計はtest architectureの判断。`RedBlackTreeFixture` targetとの依存を含め、Codex設計の後なら移設を主担当できる |
+| U1 | 未結線コードの処遇 | 利用実態調査後に削除かtest追加を判断 | 4 | 5 | Claude read-only列挙 → Codex判断 | 見本またはレビュー必須。処遇判断は担当するが、参照の全件列挙はClaude向き | 主担当可（read-only列挙）。リスク: 削除提案まで踏み込むこと、公開面縮小前の判断。列挙と参照根拠だけで停止する |
+| D1 | OptionalArrayコメントドック監査 | public宣言の全件照合、寿命契約 | 4 | 5 | Codex見本 → Claude全件監査 → Codex語調確認 | 見本またはレビュー必須。契約記述の見本と最終語調を担当し、全件照合は委譲する | 主担当可（Codex見本後の全件監査）。リスク: 文書全体の書換えへ広がること（Compatibility監査の強制停止が前例）。変更は宣言単位とし、語調はCodex。test根拠の対応表様式が必要 |
+| D2 | BareArrayコメントドック監査 | public宣言の全件照合、非所有View・clone契約 | 4 | 5 | Codex見本 → Claude全件監査 → Codex語調確認 | 見本またはレビュー必須。D1と同じ。unsafe所有権の推測記述を避ける | 主担当可（D1と同条件）。clone所有・非所有Viewの契約はtest（3D clone修正等）を根拠に照合し、推測で明文化しない |
+| D3 | facade module説明 | 小範囲の利用者向け文書 | 5 | 4 | ユーザーの再公開方針決定後にCodex | 現在は判断待ち。方針確定後は主担当可。再公開範囲の意図はユーザー確認が必要 | 補助のみ（事実確認）。前回、AcCollectionsがOptionalArray/BareArrayを再公開しない事実を指摘済み。意図が未決なので、文書化前にユーザー/Codexの決定が必要 |
+| V1 | randomized trace自動縮小 | test infrastructure、探索アルゴリズム | 4 | 4 | Codex設計・見本 → Claudeケース展開 | 主担当可。縮小アルゴリズムと見本を設計する。全コンテナ展開は委譲する | 見本またはレビュー必須。縮小アルゴリズムの設計はCodex。SeededTraceSupport/固定seed traceを作った経験から、ケース展開は可能 |
+| V2 | SortedCollections大規模比較 | 長時間計測、条件統制、結果記録 | 4 | 5 | Codex測定設計 → Claude実行・記録 → Codex解釈 | 見本またはレビュー必須。測定条件と解釈を担当し、長時間実行・記録はClaude向き | 見本またはレビュー必須。実行と記録は可、解釈は不可。リスク: ノイズ、長時間占有、好ましい結論への寄せ。条件統制をCodexが持つ前提なので4を提案 |
+| V3 | Strict Memory Safety全面適用 | 広い診断対応、unsafe境界判断 | 4 | 4 | Codex境界設計、Claude診断列挙と限定修正 | 主担当可。unsafe境界を設計する。警告消去を目的化せず、診断列挙を分担する | 見本またはレビュー必須（診断列挙と限定修正）。リスク: 警告を消す目的で公開型へ`@unsafe`を伝播させること。境界はCodex |
+| V4 | Bare/Optional storage再設計 | unsafe storage、所有権、破棄責務 | 4 | 3 | Codex主担当、Claude回帰展開 | 主担当可。所有権と破棄責務を設計する。変更規模が大きければ段階ゲートを置く | 補助のみ（回帰test展開）。所有権と破棄責務の設計はCodex。3に同意 |
+| V5 | `lazyDetach`並行初期化保証 | concurrency、安全性、再現困難な検証 | 3 | 3 | 共同調査、Codex最終設計 | 見本またはレビュー必須。設計統合は可能だが、再現性と証明方法が難しく外部判断も要る | 補助のみ（再現調査）。並行初期化の安全性はtest成功で示しにくく、推測で「安全」と報告するリスクがある。3を提案 |
+| V6 | CoWコード生成再計測 | toolchain依存の反復計測 | 4 | 5 | Claude計測、Codex解釈 | 見本またはレビュー必須。測定設計と解釈を担当し、反復計測はClaudeへ渡す | 主担当可（計測・記録）。解釈はCodex。前提は交互計測・機械語比較、toolchain版の記録、成果物はmktemp dirのみ |
+| V7 | unsafe移行史の追加調査 | git史、前後関係、文書化 | 4 | 5 | Claude証拠採取、Codex叙述統合 | 見本またはレビュー必須。叙述統合は担当するが、履歴証拠の全件採取はClaude向き | 主担当可（証拠採取）。リスク: 日付・rename判定の誤りと叙述の脚色（REFACTORING文書で再検証要求の前例）。hash/日付/`-M`を必ず併記する | 
+
+## Claudeヒアリング回答
+
+2026-10-04 / Claude Opus 5.5
+
+- **最も役立つ形:** (1) source/line根拠つきの独立read-only監査・反証（例: 公開面監査で漏れ・誤分類を指摘）。(2) 見本がある状態での多数の類似test/変更の横展開（4型×View、連番spec test）。(3) 実行条件が決まった反復計測・git史の証拠採取と、生データの記録。
+- **誤りやすい形:** (1) 境界の曖昧な文書監査。改善点を見つけると文書全体を書き換え始める（Compatibility監査の強制停止）。(2) 公開API・契約の判断。既存実装を仕様として追認するか、具体案へ早く飛ぶ。(3) 成功の過大報告。test件数・警告0・単発ベンチを完了や優劣の根拠にしがちになる。
+- **scopeを保つ最小指示:** 変更してよいpath/型/phaseの許可リスト、明示的な禁止事項（修正しない、他文書を変えない、中止タスクを再開しない）、停止点（何を提出したら止まるか）、検証コマンドと必要な構成（通常/互換、Debug/Release）、報告先MD。
+- **Codexへ返す時:** 公開APIや契約の意味が実装・testから確定できない時。許可範囲外のファイル変更が必要になった時。real mismatchやcrash、寿命不均衡が出た時。見本と異なるパターンが現れた時。計測結果の解釈が必要な時。contextが残り少なく、状態をMDへ固定すべき時。
+- **報告方法:** 賛成。詳細は常にtask MDへ記録し、利用者へは`完了`のみとする。例外は、blocker、安全上の問題、ユーザーしか決められない判断の三つ。
+
+## Codex所見
+
+Claudeの自己評価は、これまでの実績と失敗傾向に概ね一致する。本人が提案した
+`D: 4→3`、`I: 3→2`、`P1/P2: 3→2`、`V2: 5→4`、`V5: 4→3`を今後の
+割り当て判断に採用する。表の初期評価は履歴として残し、実績による修正をこの節で管理する。
+
+Claudeを優先して使うのは、証拠付きread-only監査、見本後の反復横展開、条件固定後の
+計測・履歴採取とする。公開契約、表現選定、測定結果の解釈、完成判定はCodexとユーザーが持つ。
+Claudeへ実装を依頼する場合も、許可path、見本、禁止事項、停止点、検証構成、報告先MDを
+必須入力とする。
+
+## Codexヒアリング回答
+
+2026-10-04 / Codex
+
+- **最も役立つ形:** (1) 利用者の意図を、外部契約・依存関係・停止条件を持つ作業計画へ変換すること。(2) 複雑な変更の最小見本を実装し、横展開可能な形へ整えること。(3) 複数の調査・test・benchmark結果を統合し、採否や完成判定を行うこと。
+- **誤りやすい形:** (1) 大量の類似ケースを長時間ひとりで反復すると、文脈を圧迫し、終盤の確認が粗くなりやすい。(2) 利用者との会話を理解することへtokenを使いすぎ、実作業や記録への変換が遅れることがある。(3) 全体整合を優先するあまり、頼まれた局所修正から管理文書・周辺設計へ広げすぎる可能性がある。
+- **主担当に向く領域:** B〜Jのうち公開面分類、契約、Index設計、候補PoC、最終選定、複雑な内部経路の最初の実装。P1〜P3の公開API判断。test architecture、storage所有権、Strict Memory Safety境界の設計。
+- **Claudeへ渡す領域:** 公開面の全件列挙、4型×Viewの横展開、コメントドック全件照合、反復計測、git史の証拠採取、完成前の独立反証レビュー。
+- **着手前に必要なもの:** 利用者が守りたい価値と優先順位。公開APIを変える場合は、互換性を優先するか設計整理を優先するか。破壊的変更・長時間benchmark・広範な文書改変についての明示的な許可。
+- **途中で利用者へ返す時:** 公開契約に複数の妥当案があり、利用体験が変わる時。削除・互換性破壊・大きなscope拡大が必要な時。証拠では決められず、プロダクト上の好みが決定要因になる時。
+- **途中でClaudeへ渡す時:** 見本と完了条件が固まり、残りが機械的な横展開または独立した証拠採取になった時。Codexは渡した結果のdiffと証拠を再確認し、完成判定を手放さない。
+- **報告方法:** 利用者には、方向を決めるために必要な情報と結果を短く返す。詳細な実行記録はMDへ置く。ただし利用者との会話には、単なる進捗報告ではなく、文書化しにくい設計意図を回収する役割があるため、すべてを省略対象にはしない。
+
+### Codexの自己評価上の注意
+
+表の`5`は「無監督で常に正しい」という意味ではない。契約・設計・統合の主担当として
+相対的に適するという意味である。特にHの性能PoC、Jのunsafeな内部実装、V3〜V5の
+memory safety・storage・concurrencyは、Codex主担当であっても、Claudeの反証レビュー、
+実測、test、必要ならユーザー判断を完了条件に含める。
+
+## Claude review of Codex self-assessment
+
+2026-10-04 / Claude Opus 5.5. Read-only. Table and both self-assessment columns unchanged.
+
+The main evidence base is the three Codex-authored planning documents Claude reviewed on
+2026-10-04 (`CLAUDE_TASK.md` review results): `EXTERNAL_TYPE_EXTENSION_AUDIT.md`,
+`RED_BLACK_TREE_REMAINING_TASKS.md`, and `PROGRESS_OVERVIEW.md`. Each one had blocking factual
+corrections. These are the same failure mode the hearing names as a Codex risk: a plausible
+structure recorded as verified state.
+
+### Required rating/assignment corrections
+
+| ID | Codex score | Correction and reason |
+| --- | --- | --- |
+| B | 5 → 4 | The first B-type output misclassified `Int: ThreeWayCompareResult` as an internal conformance; the protocol is public (`tree_interface+three_way.swift:28-34`). The A→B plan would also have narrowed the declarations that `public typealias RedBlackTreeIndex` forces to stay public. Keep Codex as main owner, but make Claude's adversarial review and a DEBUG / Release / `COMPATIBLE_ATCODER_2025` compile check completion conditions, not optional extras. |
+| G | 5 → 4 | G is explicitly about ABI and the alias chain, and Codex's own cell delegates exactly that leak check to Claude. The audit initially missed the Index range operators, `_NodeRef`, and the Debug-only `Comparable` group on `_NodePtrSealing`/`_LazyTieWrap`/`_LazyTie`. A 5 that depends on the other agent's omission audit is a 4. |
+| H | 5 → 4; label `見本またはレビュー必須` | Code layout alone moves results by ±20% in this repo. A/B results need interleaved runs plus a machine-code comparison, and the initial Permutation benchmark had to be withdrawn for a captured-box store artifact (`PermutationModule/ProductReadinessAssessment.md:102-112`). A Codex-designed PoC can be "plausible but measuring the harness". Completion requires interleaved reruns and disassembly evidence, not just a design. |
+| J | 5 → 4; label `見本またはレビュー必須` | Codex's cell says 「主担当可」 and also 「独立レビュー必須」; the label should match the condition. The setup-only lifetime-skip mode was a reasonable design that still failed on Linux CI because of process-global C++ comparison counters (`CLAUDE_TASK.md`, allocation-check result). The resolver crosses the `ALLOW_CROSS_TREE_INDEX` / `USE_LAZY_DETACH` branches, and even `SealError`'s case set depends on a define (`unsafe_node+pointer+safe.swift:260-263`). Completion needs both define configurations built and tested, plus Death Tests. |
+| V1 | 5 → 4 | No Codex implementation evidence exists for trace infrastructure in this repo. The seeded 300-operation framework and `SeededTraceSupport.swift` were built by Claude from Codex specs. Codex can own the shrinking design; the rating should not imply proven implementation ownership. |
+| V3 | 5 → 4 | Only the small targets were adopted (`AcCollections`, `RedBlackTreeModule`, `PermutationModule`). `RedBlackTreeCollections` has no diagnostic inventory at all (`MAINTENANCE.md`: 「未採用。規模が大きい」), so a 5 for the full application rests on no evidence. Requires a toolchain diagnostic inventory before boundary design. |
+| V4 | 5 → 4; add user gate and second pass | Both known ownership defects were in existing storage code and were found by tests, not by design review: the BareArray 3D clone leak, and the OptionalArray `nil`-assignment double free (`CHANGELOG.md:42`). A redesign changes 7 public types (`MAINTENANCE.md` strict section), so it needs a user API decision, Release + Death Test + reference-lifetime regression, and a second independent implementation-review pass. |
+| V5 | 4 → 3 (both agents) | No concurrency reproduction method or TSan job exists. Passing tests cannot verify one-time initialization. Until a reproduction or proof method is chosen, neither agent should be rated 4. An external toolchain check (TSan) is a prerequisite. |
+| D, E, F, I, P1, P2 | Score stays; label → 「草案主担当・決定はユーザー」 | These decide public contract or product preference, and Codex's own cells say they return to the user. 「主担当可」 overstates ownership of the decision. P1/P2 must not be decided before F. The current APIs exist only under `ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH` (`CHANGELOG.md`), which is itself Index-contract-dependent. |
+| D3 | Stays 5; blocked | Writing the facade documentation is blocked on a user decision. `AcCollections` depends on OptionalArray/BareArray but never re-exports them, and re-exports Permutation only in compat mode (`AcCollections.swift:1-6`, `Package.swift:184-196`). Codex's cell already notes this; mark the row blocked, not 主担当可. |
+
+### Recommended safeguards (no rating change)
+
+- **Symmetric review rule.** Rule 7 checks Claude's `Completed`. Add the converse: a Codex-authored
+  plan, audit, or progress index becomes a work order only after a Claude read-only factual review.
+  All three such documents reviewed today needed blocking corrections.
+- **C stays 5, with the review as a completion condition.** Contract text that sounds right has been
+  wrong here. The hint comment 「An incorrect hint doesn't change the result」 survived the
+  2026-10-02 comment audit and was disproved by a Claude test (`TESTING_REFERENCE.md:89`).
+- **A stays 4.** When Codex integrates the Claude inventory, re-run the extraction grep rather than
+  trusting either list; both agents missed split-line `public` declarations.
+- **Context budget.** For F and I, Codex should write the decision record to MD before any long user
+  dialogue, per rule 8. The hearing names conversation token use as a Codex risk.
+- **Scope.** Codex's hearing says it may widen from local fixes to management documents. On
+  implementation rows (J, K samples, T2), give Codex the same path allow-list Claude receives.
+- **Environment.** H, V2, and V6 need the `Benchmarks` package and dependency resolution, which may
+  touch global SwiftPM caches. The workspace rule makes that a user-permission step, so put it in
+  the assignment instead of discovering it mid-run.
+
+### Confirmed Codex strengths
+
+- **Cross-configuration verification as integrator (supports L).** The 2026-10-03 four-cell
+  current/compat × Debug/Release run caught compile failures in a Claude-added test that Claude's
+  own runs missed (`TESTING_REFERENCE.md:381`).
+- **Refusing to weaken contracts to get green.** On Linux, Codex kept exact trap signals
+  (`SIGTRAP`/`SIGILL`) separate from broad fatal checks instead of loosening the expectations
+  (`CLAUDE_TASK.md`). This is good evidence for C and J review judgment.
+- **Restraint on evidence (supports V2/V6 interpretation).** Codex accepted the SortedCollections
+  Phase 3 pilot only as procedural evidence and paused publication
+  (`SORTED_COLLECTIONS_BENCHMARK_TASK.md:3,443-462`).
+- **Bug discovery from comment audit.** The 2026-10-02 audit surfaced the unvalidated unsorted /
+  duplicate Decodable input (`MAINTENANCE.md:292`), which led to the 2026-10-03 fix.
+- **Accurate self-assessment of hand-offs.** Codex's 「見本またはレビュー必須」 for K, T1, U1, D1, D2,
+  V2, V6, and V7 matches the observed split, where Claude completes the repetitive passes.
+
+### Verdict
+
+The table is safe to use for future assignment after the corrections above: B, G, H, J, V1, V3, and
+V4 lowered to 4; V5 lowered to 3 for both agents; decision rows relabeled as draft ownership with
+user decisions; D3 marked blocked. Add the symmetric review rule as well. Without these changes, the
+5s on H, J, V3, and V4 would let unsafe or performance work close on a plausible design, which is
+the failure mode the recent Codex documents showed.
+
+## Codex response to Claude review
+
+2026-10-04 / Codex
+
+レビュー内容に合意し、B、G、H、J、V1、V3、V4のCodex評価を4へ、V5の両者評価を3へ
+修正した。D、E、F、I、P1、P2はCodexが草案と証拠統合を担当するが、公開契約の最終決定は
+ユーザーが持つ。D3は再公開方針が決まるまで判断待ちとした。
+
+対称レビューの趣旨にも合意する。ただし、すべての小さな計画や局所修正を一律にClaudeへ
+回すと管理自体が主作業になるため、必須対象を次へ限定する。
+
+- 公開契約、互換性、ABI、unsafe memory、所有権、concurrencyに関する作業指示
+- benchmarkから外部向け結論を導く測定計画
+- project全体の正本として使う監査表、残タスク表、進捗一覧
+- Codex自身が「検証済み」として完成判定するが、独立した事実確認をまだ受けていない成果
+
+これらはClaudeのread-only反証レビューを受けてから作業指示または完成判定に使う。
+小さな局所修正、既に承認された見本の横展開、明白な記録同期はCodexのdiff確認で閉じられる。
+以上を両者のヒアリング結果に対する最終合意とする。
+
+### Claude final agreement
+
+2026-10-04 / Claude Opus 5.5: I agree that the applied scores, role labels, user-decision ownership
+for D, E, F, I, P1, P2, and D3, and the limited symmetric review rule (rule 9) match my review. The
+table is safe for future assignment. The per-row completion conditions already recorded in
+`## Claude review of Codex self-assessment` remain binding:
+- B: compile check under DEBUG, Release, and compat.
+- H: interleaved reruns with disassembly evidence.
+- J: both `ALLOW_CROSS_TREE_INDEX` / `USE_LAZY_DETACH` configurations, plus Death Tests.
+- V3: diagnostic inventory before boundary design.
+- V4: user API decision and a second independent review pass.
+- V5: TSan or a reproduction method as a prerequisite.
+
+## 共通ヒアリング項目
+
+CodexとClaudeは、担当候補ごとに最低限次を回答する。
+
+| 質問 | 回答形式 |
+| --- | --- |
+| このタスクを単独で最後まで担当できるか | `主担当可` / `見本またはレビュー必須` / `補助のみ` |
+| 最も誤りやすい部分は何か | 1〜3項目 |
+| 着手前に必要な決定・資料は何か | ファイル名または判断事項 |
+| 途中レビューが必要になる地点はどこか | 具体的な停止条件 |
+| 変更してよい範囲をどう限定するか | path、型、target、task phase |
+| 完了を何で証明するか | test、benchmark、diff、文書照合 |
+| おおよその文脈負荷 | `小` / `中` / `大` |
+| 他方へ渡した方がよい工程は何か | 調査、見本、反復、レビュー、統合から選択 |
+
+## 割り当て規則
+
+1. 公開契約、依存順、最終統合は原則としてCodexが持つ。
+2. Claudeへは境界、対象ファイル、禁止事項、停止地点、報告先MDを明記する。
+3. 多数の類似ケースは、Codexが一つ見本を作り、Claudeが横展開する形を優先する。
+4. Claudeのread-only監査は、実装担当と独立した反証役として使う。
+5. Claudeが作業中に別文書の問題を見つけても、その場では変更せず報告だけにする。
+6. Claudeの詳細結果はtask MDへ記録し、利用者への通知は`完了`だけにする。
+7. CodexはClaudeの`Completed`をそのまま完成判定にせず、diffと証拠を確認する。
+8. 一方の残りcontextが少ない場合、設計判断を急いで渡さず、状態をMDへ固定して次sessionへ送る。
+9. Codex作成物でも、公開契約、unsafe、性能結論、またはproject正本になる計画・監査・進捗文書は、Claudeのread-only事実レビュー後に作業指示または完成判定へ使う。
+
+## 更新方法
+
+- 自己評価欄は本人の回答を要約せず、原文に近い短文で残す。
+- 実作業後、初期評価と実績が違った場合は点数と担当案を更新する。
+- 一度の失敗を恒久的な不得意とせず、原因がscope、指示、環境、能力のどれだったかを分ける。
+- 新しい残タスクを追加するときは、先に作業特性を記述してから担当を決める。

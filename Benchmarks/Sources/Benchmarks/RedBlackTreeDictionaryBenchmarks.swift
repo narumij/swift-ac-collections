@@ -43,7 +43,7 @@ extension Benchmark {
         }
       }
     }
-    
+
     self.add(
       title: "RedBlackTreeDictionary<Int, Int> sequential iteration (inlined buffer)",
       input: [Int].self
@@ -333,7 +333,7 @@ extension Benchmark {
         let c = input.count
         timer.measure {
           for i in lookups {
-            d[c + i, default: -1] *= 2
+             d[c + i, default: -1] *= 2
           }
         }
         precondition(d.count == 2 * input.count)

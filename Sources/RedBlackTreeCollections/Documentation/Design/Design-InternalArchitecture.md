@@ -68,6 +68,12 @@ Set系では `_Key == _PayloadValue` である。
 Dictionary系ではpayloadに `RedBlackTreePair<Key, Value>` を使い、
 公開要素との間を変換する。
 
+`RedBlackTreePair`はDictionary/MultiMapの内部保持型であり、Swift 6.2で観測されたtupleの
+性能低下を避けながら、公開要素の`(key:value:)` tupleとの往復を担う。keyとmapped valueの
+順序を保持し、`Equatable`、`Hashable`、`Comparable`は両成分のtuple semanticsに従う。
+Codable表現はkey、valueの順のunkeyed containerである。この表現は内部型であっても、
+コレクションのencode/decode経路へ影響するため、field追加時に無断でkeyed形式へ変えない。
+
 公開コレクションは木アルゴリズムを重複実装せず、`UnsafeTreeV2` へ委譲する。
 変更APIは委譲前にCoWの一意性と容量を確保する。
 
@@ -110,6 +116,12 @@ insert、eraseなどを低レベル実装へ公開する。
 ポインタとprotocolへ写されている。Swiftらしい抽象化へ全面的に置き換えることより、
 移植元との対応とホットパス性能を優先する。
 
+移植元との一致は、アルゴリズム更新時の差分監査と退行検出の手段でもある。
+移植元と同じ制御構造から生じる到達不能な末尾や重複して見える分岐は、カバレッジ率だけを
+理由に書き換えない。原木テストは到達可能な分岐と不変条件を実行可能仕様として固定するが、
+移植元との構造的一致そのものはソース比較で確認する。両者を合わせて「100%相当」と判断する
+場合は、到達不能である根拠をテスト保守記録へ残す。
+
 ## protocolによる型注入
 
 プロトコルは依存の循環を避け、必要な能力だけをアルゴリズムへ渡すために
@@ -127,9 +139,40 @@ insert、eraseなどを低レベル実装へ公開する。
 `___TreeBase` は比較可能なキー、multiplicity、ノードポインタ能力などを合成した
 制約である。
 
+比較アルゴリズムは、比較器を必ず`Base`から取得するものとして固定しない。
+現行の公開コレクションはstaticな`Base`を主経路として使う一方、`__tree`の細粒度protocolは、
+適合インスタンスが`value_comp`や三方比較を直接実装する構成でも動作する。
+これにより、fixture、別のストレージFacade、実行時状態を持つ比較器、noncopyableな適合型を、
+公開コレクションの`Base`構造へ依存させずに接続できる。
+
+`_ValueCompBridge`はstaticな`Base.value_comp`をインスタンス要件へ橋渡しする一つのadapterであり、
+`__tree`アルゴリズム自体の必須構成要素ではない。find、bound、count、hint付き探索、equal rangeは、
+static `Base`経路とインスタンス注入経路の双方で同じ探索契約を満たす。インスタンス経路では、
+降順などの状態が実際の探索分岐へ反映されなければならない。
+
 プロトコル分割には、依存関係の明確化に加えて、コンパイル負荷とwitness tableの
 削減を狙う意図がある。ただし、適合の追加・削除が最適化結果へ影響する場合があるため、
 機械的な統合は行わない。
+
+## 比較結果の契約
+
+標準の三方比較器は小・等・大をそれぞれ`-1`、`0`、`1`へ正規化する。
+アルゴリズム側は具体的な正負値ではなく、package内部の`ThreeWayCompareResult`が持つ
+`__less()`と`__greater()`で符号を読む。0はlessにもgreaterにも含めない。`Int`版と
+eager wrapperはこの符号契約を共有し、比較表現を差し替えても探索分岐の意味を変えない。
+これらは赤黒木実装と同packageのtest fixtureを接続する内部境界であり、利用者向けAPIではない。
+
+## 構造不変条件と診断
+
+`__tree_invariant`は空木を有効とし、非空木ではrootが非nullの親を持つこと、親の左リンクから
+rootへ戻れること、rootが黒であることを検査する。`__tree_sub_invariant`は各部分木について、
+親子リンクの往復、左右の非null childが同一でないこと、赤nodeのchildが赤でないこと、
+左右の黒高さが一致することを検査する。不正な部分木は0、正常な部分木は黒高さを返す。
+
+これらは正常系だけを通すassertの代替ではなく、壊れたfixtureをfalseまたは0として診断する
+能力も契約に含む。DEBUG用の`equiv`、`nullCheck`、`endCheck`も同様に、不一致を必ずtrapする
+のではなく診断結果を返せるように保つ。挿入・削除・回転のテストでは操作後のinvariantを確認し、
+不変条件検査そのもののテストでは各破損を意図的に独立して作る。
 
 ## ノードとpayload
 
@@ -159,7 +202,7 @@ Set系のpayloadはキーそのものであり、Dictionary系は
 - fresh poolの容量と利用済み数
 - recycle poolの先頭
 - bucket allocator
-- Index寿命管理用の `_tied` と `_lazyDetach`
+- 互換経路の寿命管理用 `_tied` と、Indexの同一性・解放検出用 `_lazyDetach`
 - Debug時の検査・計測値
 
 ### FreshPool
@@ -172,6 +215,10 @@ Set系のpayloadはキーそのものであり、Dictionary系は
 削除したノード領域を再利用する。削除時にpayloadを破棄し、recycle countを進め、
 古いsealed pointerを無効化してからpoolへ戻す。
 
+`ALLOW_CROSS_TREE_INDEX` 有効時のCoWコピーではrecycle countも新しいノードへ
+引き継ぎ、コピー先での世代照合に用いる。空の木ではCoWコストを抑えるため、
+不要なpool履歴を再構築しない。
+
 ### Bucket
 
 ノードとpayloadの連続領域を確保する単位である。通常の容量拡張ではbucketを追加できる。
@@ -179,8 +226,8 @@ CoWによるコピー直後はtracking tagから O(1) で解決できるよう�
 
 ## Index、Iterator、Range
 
-- `UnsafeIndexV3`: 世代管理されたノードと遅延寿命管理を組み合わせたIndex
-- `UnsafeIterator`: key、value、payload、Indexなどの走査実装の名前空間
+- `UnsafeIndexV3`: sealed pointerに `_LazyTie` の同一性・解放検出とtracking tagを加えたIndex
+- `UnsafeIterator`: 現行経路では木のスナップショットを保持してCoW共有する走査実装の名前空間。互換経路ではtied bufferを使う
 - `_RawRange`: 解決済みの内部半開範囲
 - `_RawRangeExpression`: 半開・閉・部分・非有界の内部表現
 - `UnsafeIndexV3Range`: 公開側の解決済みIndex範囲
@@ -223,6 +270,8 @@ Rangeの計算量と反復方針は `Design-Range.md` に分離して記録す�
 - `UnsafeTreeV2` を高低レベル間の橋渡しとして維持する。
 - raw pointerを公開コレクション層へ露出させない。
 - Baseの型関係とmultiplicityを壊さない。
+- 比較protocolを変更するときは、static `Base`注入と状態付きインスタンス注入の双方を維持する。
+- `_ValueCompBridge`を、`Base`を持たない適合型にまで要求する依存へしない。
 - 移植元との対応が必要なコードは、命名を一括でSwift風に変更しない。
 - protocol整理ではRelease性能とコンパイル負荷を確認する。
 - Deprecated経路と現行経路を混同しない。

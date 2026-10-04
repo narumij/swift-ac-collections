@@ -24,7 +24,10 @@
 
 extension RedBlackTreeMultiMap: CustomReflectable {
   
-  /// The custom mirror for this instance.
+  /// A mirror that presents the multimap's key-value pairs as unlabeled children.
+  ///
+  /// The mirror uses the `.dictionary` display style and contains one child for
+  /// every pair, including pairs with equivalent keys.
   public var customMirror: Mirror {
     Mirror(self, unlabeledChildren: self + [], displayStyle: .dictionary)
   }

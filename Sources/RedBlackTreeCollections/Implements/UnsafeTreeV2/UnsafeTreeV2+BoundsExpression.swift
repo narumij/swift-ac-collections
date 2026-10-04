@@ -151,7 +151,7 @@ extension RedBlackTreeBoundExpression {
     -> _SafePtr
   where
     Base: ___TreeBase,
-    Base._Key == _Key
+    Base._Key == Key
   {
     return __tree_.evaluate(_internal)
   }
@@ -164,7 +164,7 @@ extension RedBlackTreeBoundRangeExpression {
     -> _RawRangeExpression<_SafePtr>
   where
     Base: ___TreeBase,
-    Base._Key == _Key
+    Base._Key == Key
   {
     switch self {
 
@@ -206,7 +206,7 @@ extension RedBlackTreeBoundRangeExpression {
   func evaluate<Base>(_ tree: UnsafeTreeV2<Base>) -> _SafeRangeExpression
   where
   Base: ___TreeBase,
-  Base._Key == _Key
+  Base._Key == Key
   {
     sequence(__evaluate(tree))
   }

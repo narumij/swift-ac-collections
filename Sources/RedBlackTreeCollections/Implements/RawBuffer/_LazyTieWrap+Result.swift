@@ -20,16 +20,16 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// 外部に出す場合、あるいは木が常に一致するとは限らない場合に使うポインタ
-///
-/// `_LazyDetachPointer`は、`_SealedPtr`に解放時メモリ延長を付与したもの
-///
-/// `_TieWrappedPtr`は`_SealedPtr`にメモリ寿命を付与したもの
-///
-/// `_NodePtr`は内部用の最速
-///
-/// `_SealedPtr`は外部での変更リスクがある場合に使う
-///
+// 外部に出す場合、あるいは木が常に一致するとは限らない場合に使うポインタ
+//
+// `_LazyDetachPointer`は、`_SealedPtr`に解放時メモリ延長を付与したもの
+//
+// `_TieWrappedPtr`は`_SealedPtr`にメモリ寿命を付与したもの
+//
+// `_NodePtr`は内部用の最速
+//
+// `_SealedPtr`は外部での変更リスクがある場合に使う
+//
 public typealias _LazyTieWrappedPtr = Result<_LazyTieWrap<_NodePtrSealing>, SealError>
 
 extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
@@ -60,7 +60,7 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
     .success(.init(rawValue: .init(_p: _p), lazyDetach: lazyDetach))
   }
 
-  /// ポインタを利用する際に用いる
+  // ポインタを利用する際に用いる
   #if USE_LAZY_DETACH
     @inlinable
     package var purified: Result { flatMap { $0.purified } }

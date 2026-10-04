@@ -1172,3 +1172,78 @@ task専用の一時ディレクトリで合成コードを`swiftc -package-name`
   - `Sources`、`Tests`、`CHANGELOG.md`、`Package.swift`、`.github`、`Benchmarks`には差分がない。
 
 Verdict: `defer G4`
+
+### G2 multiplicity protocol narrowing result
+
+2026-10-04 / Codex。G4の理由を流用せず、where句を持たないG2を実sourceで検証した。
+
+- `UniqueMultiplicity`と`MultiMultiplicity`を`public`から`package`へ縮小した。
+- 既定のpublic `isMulti`、same-type制約 (`_MultiplicityHelper == __UniqueHelper<Self>` / `__MultiHelper<Self>`)、
+  適合、実装本体は変更していない。
+- 両extensionにはG4で問題になった`where Self: ~Copyable`句がなく、public `isMulti`はSet / MultiSet /
+  Dictionary / MultiMapのpublic nested `Base`が持つpublic `_Base_IsMultiInterface`適合のwitnessとして維持された。
+- Release symbol graphでは両protocol名が公開面に現れないことを確認した。ただし`_`始まりのprotocolと
+  memberは元々symbol graphへ出ないため、witness維持の根拠にはしていない。後続のClaudeレビューで、
+  package名なしの外部clientから`isMulti`と`_MultiplicityHelper`が引き続き利用でき、両protocol名だけが
+  scope外になったことをtypecheckで確認した。
+
+検証:
+
+- Xcode `BuildProject(buildForTesting: true)`: 成功、診断0件。
+- 通常DebugのG2利用元: XCTest 7 suite・77件とSwift Testing 4件が成功、失敗0
+  (Claudeレビューで不足していたtest実行を補完)。
+- `swift build --disable-sandbox -c release --build-tests`: 成功。
+- Release対象test (`TreeFoundamentalValueTests`、`KeyValueComparerTests`): 10件成功、失敗0。
+- `-Xswiftc -DCOMPATIBLE_ATCODER_2025 --build-tests`: 成功。G2と互換経路の対象test
+  (`TreeFoundamentalValueTests`、`KeyValueComparerTests`、`UnsafeTreeBasicTests`、
+  `AtCoder2025Compatibility`、`NaiveIteratorTests`): 42件成功、失敗0。
+- CIと同じRelease DocC生成 (`--warnings-as-errors`): 成功。
+
+G2の実装・検証とClaudeの独立レビューは完了。Verdictは`approve G2`。
+
+#### G2 narrowing review (Claude)
+
+2026-10-04 23:40 JST、Claude Opus 5.5。独立レビュー。repository内のsourceは編集していない。
+
+- **差分:** sourceの差分は`tree_base+trait.swift:78,87`の`public protocol` → `package protocol`の2行だけ。
+  `@_documentation(visibility: internal)`、where句、public `isMulti`、本体は変わっていない。
+- **G4の障害には当たらない:** 両extension(`:80`、`:89`)にはwhere句がない。G4のレビューで確認した
+  `where Self: ~Copyable`起因のdiagnosticは出ない。Debug、Release、互換modeのbuildで再確認した。
+- **witnessと関連型:** 4 containerの`Base`は、package protocolを経由して、public `_Base_IsMultiInterface` /
+  `_Base_MultiplicityHelperInterface`へのpublic適合を保っている。
+  - 確認方法: 現在のRelease module(`.build/out/Products/Release`)に対して、package名なしの外部clientを
+    task専用の一時ディレクトリで`swiftc -typecheck`した(一時ディレクトリは削除済み)。
+  - 通ったもの:
+    - `RedBlackTreeSet<Int>.Base.isMulti`と`RedBlackTreeMultiSet<Int>.Base.isMulti`の直接参照。
+    - `B: _Base_IsMultiInterface`のgeneric経由でのDictionary / MultiMap `Base`の`isMulti`。
+    - `Base._MultiplicityHelper`が`__UniqueHelper<…>` / `__MultiHelper<…>`と一致すること。
+    - `B: _Base_MultiplicityHelperInterface`への受け渡し。
+  - 通らなかったもの: `UniqueMultiplicity` / `MultiMultiplicity`を制約に使うclientは
+    `cannot find type ... in scope`になった。名前だけが外部から消えたことを示す。
+  - 補足: Release symbol graphは、`_`で始まるprotocolとそのmemberを出力しない。そのため`isMulti`が
+    保たれているかは、symbol graphでは確認できない。上のclient typecheckがその代わりになる。
+- **最小access:** `package`が正しい。
+  - `TreeNodeOnlyFixture.swift:92,101,113`は`RedBlackTreeTreeTests`にあり、guardなしの非`@testable` importで使う。
+    `RedBlackTreeInternal_KeyValueComparerTests.swift:11`も同じ。どちらもRelease test buildに含まれる。
+  - `@usableFromInline`は不要。通常modeでは`@inlinable`本体や`@usableFromInline` protocolの継承から参照されない。
+  - 互換modeの`@usableFromInline` `_CompareV2`は、extensionのwhere句で参照するだけで、継承はしていない。
+    中のmemberは`@inlinable internal`で、Codexの互換mode buildが通っている。
+- **記録の文言:** CHANGELOG、PROGRESS_OVERVIEW、上の結果節の内容は、実際の影響と合っている。
+  影響は、通常modeと互換modeの両方で名前が外部から見えなくなることだけで、挙動は変わらない。
+- **Codexの検証で欠けていたもの:**
+  - 通常modeのDebugは、Xcode `BuildProject`によるbuildだけで、`swift test`の実行がなかった。
+  - これを補うため、次を実行した。
+    - `swift build --disable-sandbox --build-tests`: 成功。
+    - `swift test --skip-build --filter`でG2の利用元を実行し、すべて成功(失敗0)。内訳はXCTest 7 suite・77件:
+      - `TreeFoundamentalComparisonInjectionTests`: 10件
+      - `TreeFoundamentalMultiplicityTests`: 16件
+      - `TreeFoundamentalSealTests`: 7件
+      - `TreeFoundamentalTests`: 19件
+      - `TreeFoundamentalValueTests`: 11件
+      - `KeyValueComparerTests`: 1件
+      - `UnsafeTreeBasicTests`: 13件
+    - 同じく、Swift Testingの`RedBlackTreeInternalPointerDeathTests`: 4件成功。
+    - 外部APIの確認は上のclient typecheckで補った。
+  - ほかに足りない構成はない。
+
+Verdict: `approve G2`

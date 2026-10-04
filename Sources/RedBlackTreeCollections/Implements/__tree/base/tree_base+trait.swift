@@ -75,7 +75,7 @@ public protocol PairValueTrait: ~Copyable,
 // 分岐を減らしたい気持ちはあるが、ホットパスというわけでもないので、無理にはやらない
 
 @_documentation(visibility: internal)
-public protocol UniqueMultiplicity: ~Copyable, _Base_MultiplicityHelperInterface
+package protocol UniqueMultiplicity: ~Copyable, _Base_MultiplicityHelperInterface
 where _MultiplicityHelper == __UniqueHelper<Self> {}
 extension UniqueMultiplicity {
 
@@ -84,7 +84,7 @@ extension UniqueMultiplicity {
 }
 
 @_documentation(visibility: internal)
-public protocol MultiMultiplicity: ~Copyable, _Base_MultiplicityHelperInterface
+package protocol MultiMultiplicity: ~Copyable, _Base_MultiplicityHelperInterface
 where _MultiplicityHelper == __MultiHelper<Self> {}
 extension MultiMultiplicity {
 

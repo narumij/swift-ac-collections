@@ -2,6 +2,67 @@
 
 Status: Completed
 
+## Completed assignment: review the G2 multiplicity protocol narrowing
+
+Perform a read-only independent review of Codex's G2 implementation. Do not modify source.
+
+### Objective
+
+Confirm or refute that narrowing `UniqueMultiplicity` and `MultiMultiplicity` from `public` to
+`package` preserves the public `isMulti` witnesses, `_MultiplicityHelper` associated-type
+inference, four container `Base` conformances, and compatibility-mode behavior.
+
+### Required checks
+
+1. Inspect `tree_base+trait.swift`, `_Base_IsMultiInterface`,
+   `_Base_MultiplicityHelperInterface`, `MultiplicityHelper`, `__UniqueHelper`,
+   `__MultiHelper`, all four container `Base` conformances, Release non-`@testable` fixtures,
+   and compatibility-mode `_CompareV2` constraints.
+2. Confirm the G4 `where Self: ~Copyable` failure does not apply: the G2 extensions have no
+   where clause, and their public `isMulti` members remain valid witnesses after the protocols
+   become package.
+3. Verify that `package` is the correct minimum access, including Release tests that import the
+   module without `@testable`; check whether `@usableFromInline` is required anywhere.
+4. Check the source diff is limited to the two protocol access modifiers and that CHANGELOG,
+   progress, and audit wording match the actual compatibility impact.
+5. Review Codex's build/test/DocC evidence and identify any missing configuration or external
+   API check. Do not run the full suite.
+6. Return one verdict: `approve G2`, `G2 correction required`, or `G2 evidence incomplete`.
+
+### Output and boundaries
+
+Append a concise review below `### G2 multiplicity protocol narrowing result` in
+`Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`, update this task with the result, and set the
+status to `Completed`. Only those two Markdown files may be edited. Do not edit source, tests,
+CHANGELOG, progress documents, Package.swift, workflows, benchmarks, or DocC. Do not stage,
+commit, switch branches, inspect `try/index/1`, use network access, or alter Git history.
+Read-only searches and bounded compiler experiments in a task-owned temporary directory are
+allowed. Run `git diff --check`, inspect the complete diff, and report only `完了` unless blocked
+or a product-owner decision is required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+Verdict: `approve G2`. Appended `#### G2 narrowing review (Claude)` below the G2 result.
+
+- Source diff: the two access modifiers only (`tree_base+trait.swift:78,87`).
+- The G4 inverse-clause failure does not apply, because the G2 extensions have no where
+  clause.
+- External-client typecheck: run against the current Release module, without a package
+  name.
+  - Still works: `Base.isMulti` (direct and through `_Base_IsMultiInterface`) and
+    `Base._MultiplicityHelper == __UniqueHelper / __MultiHelper`.
+  - Now fails as intended: `UniqueMultiplicity` / `MultiMultiplicity` are no longer in
+    scope.
+  - The symbol graph cannot show `isMulti`, because it hides `_`-prefixed protocols.
+- `package` is the minimum access, because the Release non-`@testable` fixtures
+  (`TreeNodeOnlyFixture`, `KeyValueComparerTests`) use the protocols. No
+  `@usableFromInline` is needed. Compat `_CompareV2` only uses them in where clauses.
+- Gap filled: Codex's normal-mode Debug evidence was an Xcode build only. I ran
+  `swift build --build-tests`, then the targeted XCTest suites (7 suites, 77 tests, 0
+  failures) and `RedBlackTreeInternalPointerDeathTests` (4 Swift Testing tests, passed).
+- CHANGELOG and progress wording are accurate.
+- Temporary directories were removed. `git diff --check`: clean. Nothing staged.
+
 ## Completed assignment: review the G4 targeted compile experiment
 
 Perform a read-only independent review of Codex's G4 experiment concerning

@@ -29,6 +29,10 @@ extension RedBlackTreeMultiMap {
   /// - Parameter other: A multimap whose pairs to insert.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
+  ///
+  /// - Note: Spare capacity does not make `meld(_:)` preferable; it builds new
+  ///   storage. This method inserts into the existing storage, copying it first
+  ///   if it is shared.
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiMap<Key, Value>) {
     __tree_.ensureUnique()
@@ -55,6 +59,9 @@ extension RedBlackTreeMultiMap {
   /// - Returns: The combined multimap without modifying either input.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
+  ///
+  /// - Note: Spare capacity does not make `melding(_:)` preferable; it builds
+  ///   new storage. This method copies the current storage before inserting.
   @inlinable
   public func inserting(contentsOf other: RedBlackTreeMultiMap<Key, Value>) -> Self {
     var result = self

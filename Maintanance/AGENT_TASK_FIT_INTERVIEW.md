@@ -58,7 +58,7 @@
 | P3 | KeyValue Rangeの範囲外契約 | API意味論と安全性 | 5 | 4 | Codex草案 → Claude反例探索 | 主担当可。範囲契約と失敗方法を設計する。先に反例testを置く | 見本またはレビュー必須（反例探索）。範囲外書込みを示す失敗test/Death Testを先に書ける。リスク: そのまま修正まで進むこと。修正禁止を明記する |
 | T1 | TestCode専用経路の分離 | 参照検索、target移動、狭い回帰確認 | 4 | 5 | Claude候補確認・展開、Codex変更境界決定 | 見本またはレビュー必須。移動境界を決められるが、全参照確認と移設はClaude向き | 主担当可（候補確認・移設）。変更境界はCodex。リスク: 同名で時代違いの`UnsafeIndexV2.unsafe(tree:rawTag:)`との統合、production overloadの`___meld_unique`を巻き込むこと。DEBUG/Release/互換でcompile確認する。Comparable群は除外 |
 | T2 | TestSupport / DebugAdditionals整理 | test architecture、依存整理 | 5 | 4 | Codex設計 → Claude移設 | 主担当可。test target間の責務と依存を設計する。機械的移設は委譲可能 | 見本またはレビュー必須。責務設計はtest architectureの判断。`RedBlackTreeFixture` targetとの依存を含め、Codex設計の後なら移設を主担当できる |
-| U1 | 未結線コードの処遇 | 利用実態調査後に削除かtest追加を判断 | 4 | 5 | Claude read-only列挙 → Codex判断 | 見本またはレビュー必須。処遇判断は担当するが、参照の全件列挙はClaude向き | 主担当可（read-only列挙）。リスク: 削除提案まで踏み込むこと、公開面縮小前の判断。列挙と参照根拠だけで停止する |
+| U1 | 未結線コードの処遇 | 利用実態調査後に個々の削除を判断 | 4 | 5 | Claude read-only列挙 → ユーザー決定 | 見本またはレビュー必須。参照の全件列挙と削除単位の整理を担当し、個々の削除判断はユーザーへ返す | 主担当可（read-only列挙）。リスク: 削除提案まで踏み込むこと、公開面縮小前の判断。列挙と参照根拠だけで停止する |
 | D1 | OptionalArrayコメントドック監査 | public宣言の全件照合、寿命契約 | 4 | 5 | Codex見本 → Claude全件監査 → Codex語調確認 | 見本またはレビュー必須。契約記述の見本と最終語調を担当し、全件照合は委譲する | 主担当可（Codex見本後の全件監査）。リスク: 文書全体の書換えへ広がること（Compatibility監査の強制停止が前例）。変更は宣言単位とし、語調はCodex。test根拠の対応表様式が必要 |
 | D2 | BareArrayコメントドック監査 | public宣言の全件照合、非所有View・clone契約 | 4 | 5 | Codex見本 → Claude全件監査 → Codex語調確認 | 見本またはレビュー必須。D1と同じ。unsafe所有権の推測記述を避ける | 主担当可（D1と同条件）。clone所有・非所有Viewの契約はtest（3D clone修正等）を根拠に照合し、推測で明文化しない |
 | D3 | facade module説明 | 小範囲の利用者向け文書 | 5 | 4 | ユーザーの再公開方針決定後にCodex | 現在は判断待ち。方針確定後は主担当可。再公開範囲の意図はユーザー確認が必要 | 補助のみ（事実確認）。前回、AcCollectionsがOptionalArray/BareArrayを再公開しない事実を指摘済み。意図が未決なので、文書化前にユーザー/Codexの決定が必要 |

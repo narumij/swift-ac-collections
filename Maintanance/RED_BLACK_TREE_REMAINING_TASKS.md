@@ -169,7 +169,7 @@ RedBlackTreeのIndexに閉じず、条件を満たすすべての`Result`へ適�
 これは1ライブラリの都合で標準型の意味を拡張し、他ライブラリまたは将来の
 標準ライブラリによる同じ適合と衝突し得るため、正式な解決策にはしない。
 
-### 外部境界の副論点: 失敗Indexを公開するか
+### 外部境界の主要判断: 失敗Indexを公開するか
 
 現在はpublic typealiasにより、`Index`そのものが`Result<成功値, SealError>`である。
 まず内部表現を考えず、利用者が失敗状態を格納したIndexを受け取る必要があるかを判断する。
@@ -241,7 +241,12 @@ Container protocolの要件が十分に安定した時点で行う。
 
 #### 既存試作: `try/index/1`
 
-`try/index/1`には、現行のfailure-valued `_LazyTieWrappedPtr`から、成功値だけを保持する
+`try/index/1`はユーザーが手作業で設計・実装した、この主要判断に対する先行PoCである。
+作業列は2026-09-24 15:48 JSTから始まり、同日22:46の`005a7bb3`
+(`non Result type index`)で中心案を実装した後、09-27朝までテスト修正と記録を継続した。
+さらに10-04に`develop/misc/48`をmergeして現行開発へ追従させている。短期の使い捨て試作ではなく、
+秋の連休初期から進めてきたIndex再設計の主要成果として扱う。
+現行のfailure-valued `_LazyTieWrappedPtr`から、成功値だけを保持する
 `_LazyTiedPtr`へIndex aliasを切り替える準備実装がある。主な関連commitは
 `005a7bb3` (`non Result type index`)で、その後のbranch内修正も含めて参照する。
 
@@ -255,9 +260,10 @@ Container protocolの要件が十分に安定した時点で行う。
 - branchは現在のHEADから大きく乖離しているため、branch全体をmergeしない。Gの候補検証では
   merge-base以降のIndex関連差分だけを設計資料・試作として読み直し、現行source上へ再構成する。
 
-これはnominal IndexのPoCではなく、`Result`除去の部分PoCである。したがってGはゼロから
-Result除去の成立性を調べ直す作業ではない。`try/index/1`を既存の部分PoCとして、
-ContainersPreviewの現行要件と現在の安全性testに照らして不足を列挙するところから始める。
+これはnominal IndexのPoCではなく、公開Indexから`Result`を除去できるかを検証したPoCである。
+したがってゼロから代案を作り直さず、設計意図と成立範囲を保持したまま、現行HEADと
+Quality Checklistの正しさ、memory / Index寿命、性能の要求に耐えるかをCodexとClaudeが
+独立に検証する。Comparable採否とContainersPreviewへの適合判断は、この検証と分離する。
 
 #### C. 維持する安全性・CoW・計算量
 
@@ -314,8 +320,8 @@ pointerへ触れる前に検証する内部resolverの診断結果として維�
 - stale等の拒否は`_O_UNCHECKED`でも省略せず、確保外pointerへ触れる前に停止する。
 - `RedBlackTreeIndexRange` / ExpressionとRange Viewは同じIndex契約を使用する。
 - `ALLOW_CROSS_TREE_INDEX`によるCoW分岐追跡の有無は、現行どおり構成差として扱う。
-- 現行の`index(inserting:)` / `erase(exactly:)`提供範囲はKまで変更せず、Index移行後に
-  Set / MultiMap以外へ広げる価値を別途判断する。
+- 現行の`index(inserting:)` / `erase(exactly:)`提供範囲はKまで変更しない。Index移行後は
+  いずれも4コンテナへ提供する（提供範囲は決定済み）。
 
 Gでは現行ContainersPreviewとの適合性を含む小さく破棄可能な候補比較までは進めてよいが、
 productionのIndex表現はまだ置換しない。「失敗状態を持たないnominal Index + 内部resolver」を
@@ -331,6 +337,11 @@ package helperへ委譲する。最終採用はContainer protocolの要件が十
 `1.3.0-407-g7b371ce8`、2026-05-11である。network上のupstream mainは参照していない。
 `try/index/1`は`git merge-base HEAD try/index/1` = `7ae8237c`(2026-09-27)からのdiffだけを読んだ。
 branchはmerge-base以降に23 commit、HEADは540 commitある。
+
+このmerge-baseとcommit数はClaudeレビュー時点の観測値である。その後2026-10-04 20:25 JSTに
+`develop/misc/48`を`try/index/1`へmergeしたため、現在のmerge-baseは`b3570172`へ更新されている。
+今後の検証では古い23 commitという範囲を再利用せず、09-24〜09-27のPoC作業列と10-04の
+同期mergeを区別して追跡する。
 
 #### Blocking corrections
 
@@ -514,11 +525,11 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 - [x] C: 外部へ保証する安全性・CoW・走査計算量の契約を確認する
 - [ ] D: ContainersPreviewを追跡し、外部APIでComparableが必要になる利用箇所と非適合時の代替を確定する
 - [x] Comparableあり・なしの2案を比較し、必要APIと計算量を表にする
-- [ ] E: ContainersPreviewの要件も踏まえ、利用者へ失敗Indexを公開する必要があるか最終判断する
+- [ ] E: ユーザー実装の`try/index/1`を主PoCとして、公開Indexから失敗状態を除去する設計が現行HEADとQuality Checklistに耐えるかCodex・Claudeが独立検証し、最終判断する（Comparable採否とは分離）
 - [ ] F: Container protocolの安定度を確認し、Comparable採否、失敗時の公開API、計算量を外部契約として固定する
-- [ ] `index(inserting:)`を4コンテナのどこまで提供するか決める
-- [ ] `erase(exactly:)`を4コンテナのどこまで提供するか決める
-- [ ] KeyValue Range Viewの範囲外Indexをどの公開契約で拒否するか決める
+- [ ] Kで`index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み。実装時に名称を相互レビューする）
+- [ ] Kで`erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み）
+- [x] KeyValue Range Viewの範囲外Index契約を決定（単一Indexは標準Collection同様のprecondition、Bound / range操作は入力を検査するsafe動作）
 - [ ] G: 固定した外部契約から、typealias、固有Index型等の境界表現候補を導く
 - [ ] 標準`Result`へのretroactive `Comparable`適合を正式案から除外する
 - [ ] 調査用の`SealError`情報を、Index本体から分離しても維持できることを確認する
@@ -555,7 +566,7 @@ API名、戻り値、検査方法が変わり得る。
 ## 主経路と並行できる完成前の整理
 
 - 公開面の監査・縮小は主経路A・Bで先に行う。この節のデッドコード判断を先行させない。
-- [ ] 未結線コードを削除するか、用途を確定してテストを付ける
+- [ ] 未結線コードを段階的に削除する（個々の削除はユーザーが決定する）
   - `_Reverse4`関連
   - iteratorの未接続API
   - `swap_key` / `swap_mapped_value`

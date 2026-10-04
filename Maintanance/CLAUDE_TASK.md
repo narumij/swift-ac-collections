@@ -2,6 +2,117 @@
 
 Status: Completed
 
+## Completed assignment: targeted review of Combining API performance notes
+
+Perform a read-only review of the new public `- Note:` paragraphs in these three files:
+
+- `Sources/RedBlackTreeCollections/RedBlackTreeSet/RedBlackTreeSet+Combining.swift`
+- `Sources/RedBlackTreeCollections/RedBlackTreeMultiSet/RedBlackTreeMultiSet+Combining.swift`
+- `Sources/RedBlackTreeCollections/RedBlackTreeMultiMap/RedBlackTreeMultiMap+Combining.swift`
+
+Use `Maintanance/CombiningAPIPerformanceEvidence.md` sections 1–3 as the evidence source and
+`Sources/RedBlackTreeCollections/Documentation/Quality-Checklist.md` as the quality policy.
+
+Check only the following questions:
+
+1. Does each statement accurately distinguish insertion-loop paths from `union` / `formUnion` /
+   `meld` / `melding`, including the fact that the latter build new storage rather than reuse the
+   receiver's spare capacity?
+2. Do the Set and MultiSet notes stay within the recorded measurements instead of presenting a
+   finite benchmark as a permanent performance guarantee?
+3. Does either MultiMap note improperly extrapolate a Set- or MultiSet-only measurement to
+   MultiMap? Structural implementation facts may be stated, but unmeasured timing conclusions may
+   not be transferred.
+4. Are the paired mutating and nonmutating notes attached to the correct same-type overloads?
+5. Is the amount of detail acceptable for a public DocC `Note`, with detailed raw evidence kept in
+   the maintenance document?
+
+Return exactly one verdict: `approve Combining notes`, `approve after specified corrections`, or
+`reject Combining notes`. For any correction, quote the affected API and provide replacement
+wording. Record the result below, set `Status: Completed`, and give the user only a short completion
+notice.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit source, tests, progress documents,
+evidence documents, API Matrix, DocC, Package.swift, workflows, benchmarks, or Git history. Do not
+stage, commit, switch branches, inspect `try/index/1`, run benchmarks, or use network access. You may
+inspect the named source files, the two named documents, and their uncommitted diffs. Run
+`git diff --check`; build and tests are unnecessary because this is a wording-only review and Codex
+has already completed an Xcode build.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `approve after specified corrections`.
+
+Checked against `CombiningAPIPerformanceEvidence.md` §1–3 and the current source.
+
+1. **Paths are distinguished correctly.** Every note says the alternative "builds new storage".
+   That matches §1: `___meld_unique` starts at `minimumCapacity: 2`, and `___meld_multi`
+   allocates `count + other.count`. Neither reads the receiver's spare capacity.
+2. **Set mutating note: within the measurements.**
+   - "faster for disjoint input": merge beat formUnion at all three sizes (21.50/222.46/3646.00
+     vs 45.04/482.38/8047.71).
+   - "formUnion faster at 90% duplicates": also true at all three sizes (42.42/916.42/27168.67
+     vs 28.04/300.25/4869.17).
+3. **MultiSet notes overstate.** "consistently faster" reads as a general claim. MultiSet
+   measured only disjoint, sorted, and shuffled `other`; duplicate-heavy and shared storage
+   were not measured. One comparison (16k unreserved: 323.79 vs 470.50, ≈1.45×) is inside the
+   ~1.5× band that §2 says is not significant. The claim needs the measured input shapes.
+4. **Nonmutating notes transfer the mutating measurements.**
+   - Only `merge` / `formUnion` and `insert(contentsOf:)` / `meld` were measured.
+   - `merging` and `inserting(contentsOf:)` are `var result = self` followed by the mutating call,
+     so they always copy the receiver first.
+   - Set: the "merge, shared storage" case (4504 vs formUnion 7509 at 256k) supports the
+     disjoint claim. The note should still say the measurement was of the mutating forms.
+   - MultiSet: shared storage was not measured at all, so its nonmutating timing claim is
+     unmeasured.
+5. **MultiMap notes extrapolate.** "Relative performance depends on the input's ordering and
+   the destination's storage-sharing state" is a timing conclusion. MultiMap was never measured.
+   The ordering effect was measured on Set and MultiSet; storage sharing was measured only on
+   Set. Only the structural facts may be stated.
+6. **Overloads are correct.** Each note sits on the same-type overload: Set `merge(_: Set)` /
+   `merging(_: Set)`; MultiSet and MultiMap `insert(contentsOf: Self)` /
+   `inserting(contentsOf: Self)`. The mutating/nonmutating pairing (formUnion/union,
+   meld/melding) is right.
+7. **Detail level is acceptable for DocC.** One or two sentences; raw numbers stay in the
+   evidence document. Minor readability point: in "that operation … this operation", the two
+   pronouns refer to different APIs in adjacent sentences. "it" and "this method" are clearer.
+
+#### Replacement wording
+
+- `RedBlackTreeSet.merge(_:)` (optional, pronouns only):
+  > - Note: Spare capacity does not make `formUnion(_:)` preferable; it builds new storage. In
+  >   measurements through 256K elements, this method was faster for disjoint input, while
+  >   `formUnion(_:)` was faster when 90% of `other` duplicated existing elements.
+- `RedBlackTreeSet.merging(_:)`:
+  > - Note: Spare capacity does not make `union(_:)` preferable; it builds new storage. This
+  >   method copies the current storage before inserting. In measurements of the mutating forms
+  >   through 256K elements, `merge(_:)` was faster for disjoint input, even when it first copied
+  >   shared storage, while `formUnion(_:)` was faster when 90% of `other` duplicated existing
+  >   elements.
+- `RedBlackTreeMultiSet.insert(contentsOf:)`:
+  > - Note: Spare capacity does not make `meld(_:)` preferable; it builds new storage. In
+  >   measurements through 256K elements with disjoint, sorted, and shuffled `other`, this method
+  >   was faster in each case, although the construction order of `other` materially affected
+  >   both operations.
+- `RedBlackTreeMultiSet.inserting(contentsOf:)`:
+  > - Note: Spare capacity does not make `melding(_:)` preferable; it builds new storage. This
+  >   method copies the current storage before inserting. Only the mutating forms were measured:
+  >   through 256K elements with disjoint, sorted, and shuffled `other`, `insert(contentsOf:)` was
+  >   faster than `meld(_:)` in each case.
+- `RedBlackTreeMultiMap.insert(contentsOf:)`:
+  > - Note: Spare capacity does not make `meld(_:)` preferable; it builds new storage. This
+  >   method inserts into the existing storage, copying it first if it is shared.
+- `RedBlackTreeMultiMap.inserting(contentsOf:)`:
+  > - Note: Spare capacity does not make `melding(_:)` preferable; it builds new storage. This
+  >   method copies the current storage before inserting.
+
+Checks: inspected the three source diffs and evidence §1–3. `git diff --check` is clean.
+Only this file was edited. Nothing staged. No build was run (wording-only review, as assigned).
+
+---
+
 ## Completed assignment: review the integrated collaboration reflection
 
 Please perform a read-only review of Codex's 2026-10-05 updates made after your independent

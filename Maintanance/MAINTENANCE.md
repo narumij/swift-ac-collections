@@ -119,7 +119,7 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 
 ### 保留中の判断・懸念
 
-- 2026-10-02 16:36 JST(2026-10-03 JST 根拠確認済み): Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としているが、容量条件と推奨APIの対応根拠がTest as Specificationから確定できなかった。`CLAUDE_TASK.md`のTask 2として実装追跡とベンチマークを実施し、`Maintanance/CombiningAPIPerformanceEvidence.md`へ根拠を記録した。結論: meld系(`___meld_unique`/`___meld_multi`)は呼び出し元の`reserveCapacity`状態を一切参照しないため、「十分な空き容量」という条件自体が両経路どちらの実測コストにも対応しない。1k〜256kの計測では挿入ループ経路(`merge`/`insert(contentsOf:)`)がmeld系より一貫して高速だった。公開コメントの書き換えはユーザー判断待ちのため未実施。
+- 2026-10-02 16:36 JST(2026-10-03 JST 根拠確認済み、2026-10-05方針決定): Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としていたが、容量条件と推奨APIの対応根拠がなかったため6箇所から削除済み。`Maintanance/CombiningAPIPerformanceEvidence.md`へ実装追跡とベンチマーク根拠を記録した。meld系(`___meld_unique`/`___meld_multi`)は呼び出し元の`reserveCapacity`状態を参照せず、1k〜256kでは挿入ループ経路(`merge`/`insert(contentsOf:)`)が一貫して高速だった。次のコメント改訂では同文書§3の案に基づき、重複率や共有storageなど実測で確認した傾向だけを条件付きで追記する。
 - API Matrix上の多くの共通APIが、各型のDocCでは`Default Implementations`配下に入る。今回追加した共通操作ガイドから各操作の個別シンボルへ、さらに細かいリンクを追加する必要があるかは公開結果を見て判断する
 
 ### 完了済みの要望

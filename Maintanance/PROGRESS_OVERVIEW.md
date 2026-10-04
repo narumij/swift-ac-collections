@@ -167,16 +167,16 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [x] 比較の意味、異なる木の扱い、計算量を比較表へ記録
 - [ ] Container protocol要件を踏まえ、失敗状態を格納したIndexの要否を最終判断
 - [ ] nominal Index + 内部`Result<Resolved, SealError>`案を採用するか決定
-- [ ] `try/index/1`のfailureless Index PoCを現行HEAD・ContainersPreview要件へ再評価し、Release計測
+- [ ] ユーザーが手作業で実装した`try/index/1`のfailureless Index PoCが、現行HEADとQuality Checklist（正しさ、memory / Index寿命、性能）に耐えるかCodex・Claudeが独立検証する（Comparable採否とは分離）
 - [ ] 採用表現を実装し、4コンテナとRange/Viewへ追従
 - [ ] 標準`Result`へのretroactive `Comparable`適合に依存しない設計を選択
 - [ ] 内部診断用`Result<..., SealError>`と公開Indexを分離するか判断
 - [x] `_O_UNCHECKED`でも消えないstale Index拒否と移動失敗診断を整備
 - [ ] 必要な候補だけReleaseで試作・計測
 - [ ] 4コンテナ、Range View、DocC、API Matrixへ反映
-- [ ] `index(inserting:)`を4コンテナのどこまで提供するか決める
-- [ ] `erase(exactly:)`を4コンテナのどこまで提供するか決める
-- [ ] KeyValue Range Viewの範囲外Indexをどの公開契約で拒否するか決める
+- [ ] `index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み。独自の便利APIとして、実装時に名称を相互レビューする）
+- [ ] `erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み）
+- [x] KeyValue Range Viewの範囲外Indexは標準Collection同様のprecondition違反とし、単一Index操作ではO(log N)の範囲内検査や停止保証を公開契約に含めない。独自のBound / range操作は処理内で入力を検査するsafe動作とする
 
 依存順と完成条件は`RED_BLACK_TREE_REMAINING_TASKS.md`を正本とする。
 
@@ -211,15 +211,18 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 
 ## 判断待ち
 
-- [ ] `Int.__less()` / `__greater()`等、内部由来のpublic extensionをどこまで縮小するか
+- [x] `Int.__less()` / `__greater()`等、B4-aの内部由来public extensionをpackageへ縮小
 - [ ] `Result`のpublic比較overloadとpublic `_NodePtr` typealiasの処遇
 - [ ] RedBlackTreeTestSupportとDebugAdditionalsの責務整理
 - [ ] UnsafeNode / RawBufferクロスチェックと単層テストの役割整理
-- [ ] 未結線コードを削除するかテストするか
-- [ ] Combining系APIの推奨コメントを実測結果に基づいて変更するか
-- [ ] PermutationのAtCoder 2025互換modeを実装するか（ABC328E実提出確認を含む計画は未着手）
+- [ ] 未結線コードを段階的に削除する（個々の削除はユーザーが決定する）
+- [x] Combining系APIへ実測結果に基づく条件付きコメントを追記（`CombiningAPIPerformanceEvidence.md` §3に基づき、容量による一律推奨を避ける）
+- [x] Combining系の追加NoteをClaudeが限定レビューし、測定範囲の限定とMultiMapへの未計測結果の外挿除去を反映
+- [ ] PermutationのAtCoder 2025互換mode（ユーザーが明示的に再開を指示するまで、ABC328E実提出確認を含め着手・調査・Claude依頼を行わない）
 
 ## 保留・完成を止めない追加検証
+
+以下は余裕ができたときに選ぶ追加メニューであり、当面は着手しない。完成条件や次作業には含めず、ユーザーの明示指示なしに調査・実装・Claude依頼を開始しない。
 
 - [ ] randomized trace失敗時の自動縮小
 - [ ] SortedCollectionsとのpublishableな大規模性能比較

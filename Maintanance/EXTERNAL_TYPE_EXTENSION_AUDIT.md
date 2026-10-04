@@ -100,8 +100,8 @@ Debug限定Index比較宣言群の移動は、Indexを正式に`Comparable`へ�
 
 ## 残タスク
 
-- [ ] `Int.__less()` / `__greater()`をpublicにする必要があるか確認する
-- [ ] `ThreeWayCompareResult`と`__int_compare_result`を含むInt関連宣言群の可視性を確認する
+- [x] `Int.__less()` / `__greater()`をpublicにする必要があるか確認し、B4-aでpackageへ縮小する
+- [x] `ThreeWayCompareResult`と`__int_compare_result`を含むInt関連宣言群の可視性を確認し、B4-aでpackageへ縮小する
 - [ ] Debug限定Index比較4宣言をIndex設計の決定に従って一群で移動または削除する
 - [ ] `SortedSequence`実験経路を一群でTestCodeへ移す
 - [ ] Debug/package限定`Index.unsafe(tree:rawTag:)`をTestSupportへ移す（公開面ゲートではなくtest整理）

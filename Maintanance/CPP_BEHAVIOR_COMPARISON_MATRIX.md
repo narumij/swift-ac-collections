@@ -68,8 +68,23 @@ iterator/indexを輸送せず、各操作直前に現在のzero-based rankから
 | 再現性 | 同一seedから操作列とcoverageが一致することを検査 |
 | 診断 | container、seed、operation番号、入力、両観測、失敗までのtrace |
 
-curated boundary traceとseeded traceを合わせたsuiteは35 XCTest。macOSのDebug/Releaseと、
-LinuxのDebug（libstdc++）で実行された。
+curated boundary traceとseeded traceを合わせたsuiteは35 XCTest。
+
+## C++標準ライブラリ実装別の結果
+
+ここで分ける軸はコンパイラ名そのものではなく、比較先のC++標準ライブラリ実装である。
+
+| 比較環境 | 標準ライブラリ | 構成 | 共通契約の結果 | 実装差として観測した事項 |
+| --- | --- | --- | --- | --- |
+| macOS / Apple toolchain | LLVM `libc++` | Debug / Release | 35 XCTest成功 | MultiMap `find`がSwiftと同じ同値個体を選択した |
+| Ubuntu 24.04 CI | GNU `libstdc++` | Debug | 35 XCTest成功 | MultiMap `find`が同値群の先頭を選択し、Swiftと個体・rankが異なった |
+| Windows | MSVC STL | 未実行 | 未検証 | 一般的な実装傾向から推定せず、証拠なしとする |
+
+`libstdc++`で見つかった差は、ordered contents、key、count、bounds、equal range、hint配置の
+差ではない。C++標準が固定しない`find`の同値群内選択だけだった。この結果を受けて、両環境で
+同一に検証できる共通契約からmapped occurrence identityとrankを除外した。
+
+将来MSVC STLや別版のlibc++ / libstdc++で実行した場合は、結果を混ぜずこの表へ行を追加する。
 
 ## 標準上の非保証と除外
 

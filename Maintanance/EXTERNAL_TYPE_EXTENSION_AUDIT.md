@@ -1084,3 +1084,29 @@ G2〜G4 は G1 の後に、実 source での targeted compile 実験として別
 #### Verdict
 
 `independent narrowing batch available`
+
+### G1 bridge protocol narrowing result
+
+2026-10-04 / Codex。監査で独立実装可能とされたG1を実施した。
+
+- `_KeyBride`、`_PayloadValueBride`、`_MappedValueBride`、`_ElementBride`、
+  `_Tree_IsMultiTraitInterface`を`public`から`@usableFromInline package`へ縮小した。
+- protocolの要件、same-type制約、適合、実装本体は変更していない。
+- Release symbol graphでは5個のprotocol名が外部公開面から消え、`_PayloadValue`と
+  `_MappedValue`を含む公開関連型の記録が残ることを確認した。
+- `CHANGELOG.md`の`Unreleased / Changed`へsource-breakingな公開名縮小として記録した。
+
+検証:
+
+- Xcode `BuildProject(buildForTesting: true)`: 成功、診断0件。
+- `swift build --disable-sandbox -c release --target RedBlackTreeCollections`: 成功。
+- 通常構成の対象test (`TreeFoundamentalComparisonInjectionTests`、Sequence、Equatable、
+  Comparable、ProtocolConformance、RangeView、MappedValuesView、BoundExpression、
+  lower/upper bound): 330件成功、失敗0。原木比較注入testは10件実行を確認した。
+- `-Xswiftc -DCOMPATIBLE_ATCODER_2025 --build-tests`: 成功。互換testの
+  `AtCoder2025Compatibility`と`NaiveIteratorTests`: 28件成功、失敗0。
+- CIと同じRelease DocC生成 (`--warnings-as-errors`): 成功。
+
+G1は完了。次はG2 (`UniqueMultiplicity` / `MultiMultiplicity`) またはG4
+(`_ScalarBasePayloadValue_KeyProtocol`) の実source targeted compile実験を、G3のIndex隣接群とは
+分離して行える。G5 (`MultiplicityHelper`) とG6 (`UnsafeTreeBindingV2`) は引き続き保留する。

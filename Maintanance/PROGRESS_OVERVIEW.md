@@ -145,13 +145,15 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 - [x] View 3型の`_isIdentical(to:)`を`@inlinable internal`へ縮小
 - [x] Debug限定`RedBlackTreeBoundExpression.index(_:)` / `.debug(_:)`を`package`へ縮小
 - [x] 旧世代iterator `_Obverse1...3` / `_Reverse1...3`を互換mode専用へ隔離
+- [x] 関連型bridge 4個と`_Tree_IsMultiTraitInterface`を`@usableFromInline package`へ縮小
 - [ ] 意図しない`public`をpackage/internal/TestSupportへ縮小
 - [ ] DebugとReleaseで公開protocol適合集合が変わる箇所を解消（2026-10-04時点の残りはBalanced群とDebug比較群のみで、いずれも保留中のcluster）
 
 `EXTERNAL_TYPE_EXTENSION_AUDIT.md`を監査表とする。Gate Aの機械抽出とGate B分類・
 Claudeのread-onlyレビューは完了し、blocking correctionを反映済み。B4-aの
 ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路はTestCodeへ
-分離済み。B4-bのMemoize群は`swift-ac-memoize`と`Memoization`の移行待ちとして
+分離済み。B3監査のG1関連型bridge群も縮小済み。B4-bのMemoize群は
+`swift-ac-memoize`と`Memoization`の移行待ちとして
 公開を維持する。残りも監査表に従って変更単位を限定する。
 
 ### 2. RedBlackTree Indexの公開契約

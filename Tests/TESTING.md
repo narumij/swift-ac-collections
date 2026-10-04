@@ -14,8 +14,8 @@
 赤黒木の完成判断を優先する。C++挙動比較はSet/MultiSet/Dictionary/MultiMapの
 4組へ展開済みで、`CppBehaviorReferenceTests` 35件の比較が成功している。
 挙動比較ターゲットはルートパッケージへ置き、性能測定用の`CppBenchmarks`は
-`Benchmarks`へ残す。現在の確認地点は、公開範囲の縮小と、Swift Collectionsの
-`ContainersPreview`が安定した時点で行うIndex契約の最終判断である。
+`Benchmarks`へ残す。独立した公開範囲の縮小は区切り済みである。現在の確認地点は、
+Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約の最終判断である。
 
 ## 現在地
 
@@ -45,7 +45,8 @@
   所有型・View型のpointer initializerと添字境界も整理して、一意な診断を
   約64→54→38→28→22へ削減した。残りは公開7型を`@unsafe`にするAPI判断とallocate。
   公開API全体へunsafeを伝播させる変更は採らず、storage再設計までstrict恒久適用を保留する。
-- AcCollections: 通常時の4型と互換時のPermutationModule再公開テストを追加済み。
+- AcCollections: RedBlackTreeCollections、PermutationModule、OptionalArrayModule、
+  BareArrayModuleの再公開テストを追加済み。互換modeでは旧名RedBlackTreeModuleも再公開する。
   別テストターゲットでもRedBlackTreeのDebug寿命カウンタを各テスト後に検査・初期化する。
 - PermutationModule: `swift-algorithms`の`permutations()`と重複する全順列列挙系
   (`unsafePermutations()`/`Permutations.All`/`IteratorA`/`SubSequenceA`)と、
@@ -81,13 +82,26 @@
   `Tests/PermutationTests/NextPermutation.swift`(未参照の旧世代実装)の削除、
   `nextPermutations()`と公開戻り値型への`///`コメントドック整備は完了済み。
   `.strictMemorySafety()`も恒久適用済みで、対象モジュールの警告0件を確認した。
-- 内部テスト層の区分、および生木テストと変更コストの均衡。
-- UnsafeNode/RawBufferクロスチェックと既存単層テストの統合方法。前者には独立した
-  計算経路間の一致確認という固有の役割がある。
-- RedBlackTreeTestSupportとDebugAdditionalsの役割整理。
-- 未結線コードを削除するかテストするか: `_Reverse4`関連、`swap_key`/
-  `swap_mapped_value`、`outOfRange`/`keyMismatch`、`payloadLayout`/`__root_ptr()`、
-  RawRangeの`contains(range:pointer:)`、`_TrackingTag.retire`。
+- 内部テスト層の区分と生木テストの責務整理は、TestSupport/DebugAdditionalsおよび
+  UnsafeNode/RawBufferの整理で完了した。
+- UnsafeNode/RawBufferのテスト層は統合しない。単層テストはテスト内の算術から期待値を
+  独立計算し、`MemoryLayout`、UnsafeNodeの移動・payload位置、Bucket全体の所有byte、
+  queue/accessor/traverser間のstrideをそれぞれ検証する。層間クロスチェックは、別実装の
+  reference計算とRawBuffer計算、および各要素位置が一致することを複数型・容量で検証する。
+  fixtureやproduction helperへ期待値算術を共有すると同じ誤りで両辺が一致し得るため、
+  helperとpayload matrixの重複は意図的に維持する。
+  stride一致の重複assertionは型範囲の広さのため残す。`RawBufferHeadFixture`がproductionの
+  `pairLayout.alignment`ではなく同じ分岐結果になるpayload alignmentを渡す差異は、必要に
+  なった場合だけ直す凍結中の任意改善とする。
+- `RedBlackTreeTestSupport`は自動テストから呼ばれるfixture・assertion・invariant・test-only
+  accessor等の再利用基盤、`DebugAdditionals`は人間向けdump/Graphvizと凍結した旧実験を置く。
+  `_LazyTieWrap+Debug.swift`と`unsafe_node+debug.swift`は自動テストから使われるが、現配置を
+  文書化された例外として許容し、移動だけを目的とする作業は行わない。
+  `TransitionFromLegacy/`、`ThreeWay+Old/`、無効化されたUnsafeTree debug/fixture群、
+  `_NodePtr_.swift`内の`#if false`部は、ユーザーが再開を決めるまで凍結する。
+- 未結線コードは段階的に削除する方針だが、個々の削除はユーザーが決定し、再開指示まで
+  凍結する: `_Reverse4`関連、`swap_key`/`swap_mapped_value`、`outOfRange`/`keyMismatch`、
+  `payloadLayout`/`__root_ptr()`、RawRangeの`contains(range:pointer:)`、`_TrackingTag.retire`。
 
 ## 直近の引き継ぎ
 

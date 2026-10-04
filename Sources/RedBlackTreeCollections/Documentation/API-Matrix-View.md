@@ -49,8 +49,11 @@
 | --- | :---: | :---: | :---: | --- |
 | `swapAt(_:_:)` | — | — | ✅ | 2つのIndex位置のmapped valueを交換する |
 
-MappedValues Viewの `subscript(position:)` setterと `swapAt(_:_:)` は、Indexが
-View内の要素を指すこと(`isElement(at:)`)を検証し、満たさない場合は失敗する。
+MappedValues Viewの `subscript(position:)` と `swapAt(_:_:)` は O(1)。標準
+CollectionのIndex操作と同様、渡すIndexがView内の要素を指すことは呼び出し側の
+事前条件とし、操作ごとの範囲所属検査は行わない。無効化済み、世代不一致など、
+対象のtreeで要素へ安全に解決できないIndexは下層のIndex検証で拒否する。
+範囲所属を事前に確認する必要がある場合は `isElement(at:)` を明示的に使用する。
 
 ## 削除
 

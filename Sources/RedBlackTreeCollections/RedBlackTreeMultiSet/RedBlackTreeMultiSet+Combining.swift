@@ -43,6 +43,11 @@ extension RedBlackTreeMultiSet {
   /// - Parameter other: A multiset whose occurrences to insert.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
+  ///
+  /// - Note: Spare capacity does not make `meld(_:)` preferable; it builds new
+  ///   storage. In measurements through 256K elements with disjoint, sorted,
+  ///   and shuffled `other`, this method was faster in each case, although the
+  ///   construction order of `other` materially affected both operations.
   @inlinable
   public mutating func insert(contentsOf other: RedBlackTreeMultiSet<Element>) {
     __tree_.ensureUnique()
@@ -82,6 +87,12 @@ extension RedBlackTreeMultiSet {
   /// - Returns: The combined multiset without modifying either input.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
+  ///
+  /// - Note: Spare capacity does not make `melding(_:)` preferable; it builds
+  ///   new storage. This method copies the current storage before inserting.
+  ///   Only the mutating forms were measured: through 256K elements with
+  ///   disjoint, sorted, and shuffled `other`, `insert(contentsOf:)` was faster
+  ///   than `meld(_:)` in each case.
   @inlinable
   public func inserting(contentsOf other: RedBlackTreeMultiSet<Element>) -> Self {
     var result = self

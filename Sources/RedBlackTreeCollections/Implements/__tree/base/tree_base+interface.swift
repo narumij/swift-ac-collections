@@ -63,7 +63,7 @@ public protocol _BaseKey_LessThanInterface: ~Copyable, _KeyType {
   @inlinable static func value_comp(_: _Key, _: _Key) -> Bool
 }
 
-public protocol _BaseKey_EquivInterface: ~Copyable, _KeyType {
+package protocol _BaseKey_EquivInterface: ~Copyable, _KeyType {
   // 等価比較関数は割とオプション扱い
   @inlinable static func value_equiv(_ lhs: _Key, _ rhs: _Key) -> Bool
 }
@@ -74,7 +74,7 @@ public protocol _Base_IsMultiInterface: ~Copyable {
   @inlinable static var isMulti: Bool { get }
 }
 
-public protocol _BaseNode_PtrUniqueCompInterface: ~Copyable, _UnsafeNodePtrType {
+package protocol _BaseNode_PtrUniqueCompInterface: ~Copyable, _UnsafeNodePtrType {
   @inlinable static func ___ptr_comp_unique(_ l: _NodePtr, _ r: _NodePtr) -> Bool
 }
 
@@ -101,4 +101,4 @@ where _Key: Comparable {
   associatedtype _MultiplicityHelper: MultiplicityHelper
 }
 
-public protocol _Base_MultiplicityHelperProtocol: ~Copyable, _Base_MultiplicityHelperInterface {}
+package protocol _Base_MultiplicityHelperProtocol: ~Copyable, _Base_MultiplicityHelperInterface {}

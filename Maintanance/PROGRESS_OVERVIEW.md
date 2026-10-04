@@ -106,11 +106,13 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 | `PermutationModule` | 区切り完了・独立確認待ち | 残した`nextPermutations()`と公開戻り値型の主要`///`、Specification、実装・性能上の制約 | `Permutations`型とDebug-only public memberを含む全public面の独立確認、DocC相当の出力確認 |
 | `OptionalArrayModule` | 部分完了 | `nil`代入時の破棄契約、非所有Viewの寿命、境界挙動 | 残るpublic宣言を列挙し、全件を実装・Death Test・寿命testと照合 |
 | `BareArrayModule` | 既存コメントあり・体系監査未完 | clone所有権、境界、Death Testはテストで検証済み | public宣言のコメントドックを全件監査し、非所有View・clone・破棄責務を明文化 |
-| `AcCollections` | 個別API対象外・module説明要確認 | 通常modeは`RedBlackTreeCollections`、互換modeは加えて`RedBlackTreeModule`と`PermutationModule`を再公開 | この範囲が意図どおりか確認し、ファサードの役割とimport方法をmodule-level文書へ記録 |
-| `RedBlackTreeModule` | 個別API対象外・module説明要確認 | 独自のpublic宣言を持たない再公開ファサード（source directoryは`_RedBlackTreeModule`） | ファサードの役割と互換上の位置づけをmodule-level文書として確認 |
+| `AcCollections` | module説明・再公開範囲確認済み | `RedBlackTreeCollections`、`PermutationModule`、`OptionalArrayModule`、`BareArrayModule`を再公開。互換modeは加えて旧名`RedBlackTreeModule`を再公開 | — |
+| `RedBlackTreeModule` | module説明・互換位置づけ確認済み | 独自のpublic宣言を持たない再公開ファサード（source directoryは`_RedBlackTreeModule`） | — |
 
 `OptionalArrayModule`と`BareArrayModule`はテスト整備の進捗を、コメントドック完了とみなさない。
 再公開専用moduleはmember単位の網羅率ではなく、module-level説明の有無で完了を判断する。
+`AcCollections`は現行の全collection moduleをまとめて再公開する。個別moduleの品質未達が
+確定した場合は、その時点で当該moduleをファサードから外すかを判断する。
 
 ### PermutationModule
 
@@ -142,13 +144,21 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 - [x] TestCode専用、境界内部、完全な内部用途へ分類
 - [x] 最初の独立バッチ（ThreeWay比較宣言群）をpackageへ縮小
 - [x] Debug限定SortedSequence実験経路をproduction targetからTestCodeへ分離
-- [ ] 意図しない`public`をpackage/internal/TestSupportへ縮小
-- [ ] DebugとReleaseで公開protocol適合集合が変わる箇所を解消
+- [x] View 3型の`_isIdentical(to:)`を`@inlinable internal`へ縮小
+- [x] Debug限定`RedBlackTreeBoundExpression.index(_:)` / `.debug(_:)`を`package`へ縮小
+- [x] 旧世代iterator `_Obverse1...3` / `_Reverse1...3`を互換mode専用へ隔離
+- [x] 関連型bridge 4個と`_Tree_IsMultiTraitInterface`を`@usableFromInline package`へ縮小
+- [x] `UniqueMultiplicity` / `MultiMultiplicity`を`package`へ縮小
+- [x] `_BaseNode_NodeCompareProtocol`を`package`へ縮小（G3前半。SignedDistance / Index設計とは分離）
+- [ ] 意図しない`public`をpackage/internal/TestSupportへ縮小（2026-10-05時点で独立縮小batchは無し。残りはIndex依存または凍結clusterのみ）
+- [ ] DebugとReleaseで公開protocol適合集合が変わる箇所を解消（Balanced群はexecutable API Matrix方針により凍結、Debug比較群はIndex依存）
 
 `EXTERNAL_TYPE_EXTENSION_AUDIT.md`を監査表とする。Gate Aの機械抽出とGate B分類・
 Claudeのread-onlyレビューは完了し、blocking correctionを反映済み。B4-aの
 ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路はTestCodeへ
-分離済み。B4-bのMemoize群は`swift-ac-memoize`と`Memoization`の移行待ちとして
+分離済み。B3監査のG1関連型bridge群、G2 multiplicity群、G3前半のNodeCompareも縮小済み。G4はpublic witness境界により
+独立縮小不可として保留した。B4-bのMemoize群は
+`swift-ac-memoize`と`Memoization`の移行待ちとして
 公開を維持する。残りも監査表に従って変更単位を限定する。
 
 ### 2. RedBlackTree Indexの公開契約
@@ -159,25 +169,26 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [x] 比較の意味、異なる木の扱い、計算量を比較表へ記録
 - [ ] Container protocol要件を踏まえ、失敗状態を格納したIndexの要否を最終判断
 - [ ] nominal Index + 内部`Result<Resolved, SealError>`案を採用するか決定
-- [ ] `try/index/1`のfailureless Index PoCを現行HEAD・ContainersPreview要件へ再評価し、Release計測
+- [ ] ユーザーが手作業で実装した`try/index/1`のfailureless Index PoCを現行HEADとQuality Checklistへ照合する（Comparable採否とは分離。ユーザーが明示的に再開を希望するまで、実作業時検証、追加調査、X1、Claude依頼を行わない）
+- [x] X1のidentity規則・停止条件と初期4 batchを整備し、同名部品を別個体として扱う診断基盤を保存（網羅inventoryは費用対効果により凍結）
 - [ ] 採用表現を実装し、4コンテナとRange/Viewへ追従
 - [ ] 標準`Result`へのretroactive `Comparable`適合に依存しない設計を選択
 - [ ] 内部診断用`Result<..., SealError>`と公開Indexを分離するか判断
 - [x] `_O_UNCHECKED`でも消えないstale Index拒否と移動失敗診断を整備
 - [ ] 必要な候補だけReleaseで試作・計測
 - [ ] 4コンテナ、Range View、DocC、API Matrixへ反映
-- [ ] `index(inserting:)`を4コンテナのどこまで提供するか決める
-- [ ] `erase(exactly:)`を4コンテナのどこまで提供するか決める
-- [ ] KeyValue Range Viewの範囲外Indexをどの公開契約で拒否するか決める
+- [ ] Kで（Index移行後）`index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供と名称維持はCodex・Claudeレビューで決定済み。戻り値は全型で`(inserted: Bool, index: Index)`。Dictionaryは既存値を置換せず既存位置、Multi系は常に新規occurrenceと`true`を返す。`insert(_:)`と`erase(exactly:)`からSee Alsoで発見可能にする）
+- [ ] Kで（Index移行後）`erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み）
+- [x] KeyValue Range Viewの範囲外Indexは標準Collection同様のprecondition違反とし、単一Index操作ではO(log N)の範囲内検査や停止保証を公開契約に含めない。独自のBound / range操作は処理内で入力を検査するsafe動作とする
 
 依存順と完成条件は`RED_BLACK_TREE_REMAINING_TASKS.md`を正本とする。
 
 ### 3. 非RedBlackTreeのコメントドック監査
 
-- [ ] `OptionalArrayModule`のpublic宣言を列挙し、既存コメントと実際の契約を照合
-- [ ] `BareArrayModule`のpublic宣言を列挙し、所有権・非所有View・破棄責務を重点監査
-- [ ] `AcCollections`と`RedBlackTreeModule`のmodule-level説明と再公開範囲を確認
-- [ ] 適用可能なtargetでDocC生成または同等のリンク・警告確認を行う
+- [ ] `OptionalArrayModule`のpublic宣言を列挙し、既存コメントと実際の契約を照合（ユーザーが明示的に再開を希望するまで着手・Claude依頼を行わない）
+- [ ] `BareArrayModule`のpublic宣言を列挙し、所有権・非所有View・破棄責務を重点監査（ユーザーが明示的に再開を希望するまで着手・Claude依頼を行わない）
+- [x] `AcCollections`と`RedBlackTreeModule`のmodule-level説明と再公開範囲を確認
+- [x] 適用可能なtargetでDocC生成または同等のリンク・警告確認を行う（`AcCollections` / `RedBlackTreeModule`をwarnings-as-errorsで確認）
 
 これは赤黒木のIndex設計とは独立して進められるが、現在の最優先経路を割り込ませない。
 
@@ -203,16 +214,24 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 
 ## 判断待ち
 
-- [ ] `Int.__less()` / `__greater()`等、内部由来のpublic extensionをどこまで縮小するか
-- [ ] `Result`のpublic比較overloadとpublic `_NodePtr` typealiasの処遇
-- [ ] RedBlackTreeTestSupportとDebugAdditionalsの責務整理
-- [ ] UnsafeNode / RawBufferクロスチェックと単層テストの役割整理
-- [ ] 未結線コードを削除するかテストするか
-- [ ] Combining系APIの推奨コメントを実測結果に基づいて変更するか
-- [ ] PermutationのAtCoder 2025互換modeを実装するか（ABC328E実提出確認を含む計画は未着手）
+赤黒木の設計ゲート停止中、テスト責務の整理は完了した。未結線コードの個別削除は
+ユーザー判断を得るまで凍結し、赤黒木側はIndex、文書、明示的な凍結事項だけとする。
+
+- [x] `Int.__less()` / `__greater()`等、B4-aの内部由来public extensionをpackageへ縮小
+- [ ] `Result`のpublic比較overloadとpublic `_NodePtr` typealiasの処遇（ユーザーが再開を決めるまで凍結）
+- [x] RedBlackTreeTestSupportとDebugAdditionalsの責務整理（自動テスト基盤／人間向け診断・凍結コードで区分し、配置例外2件は移動しない）
+- [x] UnsafeNode / RawBufferクロスチェックと単層テストの役割整理（独立計算によるfault independenceを維持し、共有化しない）
+- [ ] 未結線コードを段階的に削除する（個々の削除はユーザーが決定し、再開指示まで凍結）
+- [x] Combining系APIへ実測結果に基づく条件付きコメントを追記（`CombiningAPIPerformanceEvidence.md` §3に基づき、容量による一律推奨を避ける）
+- [x] Combining系の追加NoteをClaudeが限定レビューし、測定範囲の限定とMultiMapへの未計測結果の外挿除去を反映
+- [ ] PermutationのAtCoder 2025互換mode（ユーザーが明示的に再開を指示するまで、ABC328E実提出確認を含め着手・調査・Claude依頼を行わない）
 
 ## 保留・完成を止めない追加検証
 
+以下は余裕ができたときに選ぶ追加メニューであり、当面は着手しない。完成条件や次作業には含めず、ユーザーの明示指示なしに調査・実装・Claude依頼を開始しない。
+
+- [ ] `OptionalArray`の名称を再検討する
+- [ ] `BareArray`の名称を再検討する
 - [ ] randomized trace失敗時の自動縮小
 - [ ] SortedCollectionsとのpublishableな大規模性能比較
 - [ ] RedBlackTreeCollectionsのStrict Memory Safety全面適用

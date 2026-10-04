@@ -26,6 +26,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - staleな赤黒木Indexのsubscript・移動を`-Ounchecked`でも検査し、確保外メモリアクセス前に具体的な`SealError`診断で停止するよう変更
 - 赤黒木内部の三方比較機構 (`ThreeWayCompareResult`、`Int.__less()` / `__greater()`、関連alias / eager wrapper) をpublic APIからpackage内部境界へ縮小
+- KeyOnly / KeyValue Range ViewとMappedValues Viewの内部同一性hook `_isIdentical(to:)` をpublic APIから`@inlinable internal`へ縮小 (source-breaking。View同士の`==` / `<`の結果と計算量、4型の`isTriviallyIdentical(to:)`は変更なし)
+- Debug構成限定のtest fixture `RedBlackTreeBoundExpression.index(_:)` / `.debug(_:)` をpublic APIから`package`へ縮小 (Debug buildのみsource-breaking。Release構成には元々存在しない)
+- 旧世代のiterator `UnsafeIterator._Obverse1`〜`_Obverse3` / `_Reverse1`〜`_Reverse3` を`COMPATIBLE_ATCODER_2025`専用へ隔離 (通常構成ではsource-breaking。互換構成の挙動は変更なし)
+- 通常構成で適合型のない旧iterator protocol層 (`ObverseIterator`、`ReverseIterator`、`UnsafeIteratorProtocol`と、各wrapperの条件付き適合・`reversed()`) を`COMPATIBLE_ATCODER_2025`専用へ隔離 (通常構成ではsource-breaking。互換構成の挙動は変更なし)
+- 適合型もpublic signatureからの参照もない原木の参照用protocol (`_BaseKey_EquivInterface`、`_BaseNode_PtrUniqueCompInterface`、`_Base_MultiplicityHelperProtocol`、`_pointer_type`、`_BaseNode_KeyProtocol`と既定の`__get_value(_:)`) をpublic APIから`package`へ縮小 (source-breaking。宣言は移植用資料として保持し、挙動の変更なし)
+- 内部の関連型を橋渡しするprotocol (`_KeyBride`、`_PayloadValueBride`、`_MappedValueBride`、`_ElementBride`、`_Tree_IsMultiTraitInterface`) をpublic APIから`@usableFromInline package`へ縮小 (source-breaking。公開コンテナ／Viewの関連型と挙動は変更なし)
+- 要素の重複可否を内部型へ注入するprotocol (`UniqueMultiplicity`、`MultiMultiplicity`) をpublic APIから`package`へ縮小 (source-breaking。`isMulti` witness、関連型、4コンテナの挙動は変更なし)
+- node pointerの比較witnessを供給するprotocol (`_BaseNode_NodeCompareProtocol`) をpublic APIから`package`へ縮小 (source-breaking。`___ptr_comp` / `___ptr_range_comp` witnessと4コンテナの挙動は変更なし)
 - Debug限定の`SortedSequence`とsorted range union実験実装をproduction targetからテストコードへ移動
 - DocCの公開メンバーをSwift標準`Set`/`Dictionary`に近い利用目的別Topicsへ分類し、独自のIndex・Range・Bound APIと全オーバーロードへ具象型ページから辿れるように変更
 - Swift-DocCおよび`UInt128`を使用する通常構成に合わせ、パッケージのmacOS最小バージョンを15へ変更

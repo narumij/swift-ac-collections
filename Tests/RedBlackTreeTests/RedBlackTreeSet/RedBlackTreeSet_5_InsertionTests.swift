@@ -21,6 +21,18 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     }
   }
 
+  private struct RunnableTask: Comparable {
+    let pid: Int
+    let virtualRuntime: Int
+
+    static func < (lhs: Self, rhs: Self) -> Bool {
+      if lhs.virtualRuntime != rhs.virtualRuntime {
+        return lhs.virtualRuntime < rhs.virtualRuntime
+      }
+      return lhs.pid < rhs.pid
+    }
+  }
+
   /// 要素を挿入した場合、集合に含まれること
   func test_insert_singleElement() {
     // 事前条件: 空集合を用意
@@ -221,6 +233,29 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
       let duplicate = set.update(20, hint: set.endIndex)
       XCTAssertEqual(duplicate, 20)
       XCTAssertEqual(set + [], [10, 20, 25, 30])
+    }
+  #endif
+
+  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+    /// Linuxのスケジューラ風に、run queueへのenqueue時にIndexを保存し、
+    /// sleep/dequeue時はtaskを再検索せず、そのIndexから取り除く主用途の実験。
+    func test_indexInserting_linuxSchedulerStyleRunQueueExperiment() {
+      var runQueue = RedBlackTreeSet<RunnableTask>()
+      let interactive = RunnableTask(pid: 101, virtualRuntime: 10)
+      let background = RunnableTask(pid: 202, virtualRuntime: 30)
+
+      let (interactiveInserted, _) = runQueue.index(inserting: interactive)
+      let (backgroundInserted, backgroundIndex) = runQueue.index(inserting: background)
+
+      XCTAssertTrue(interactiveInserted)
+      XCTAssertTrue(backgroundInserted)
+      XCTAssertEqual(runQueue.first, interactive)
+
+      // The background task sleeps: dequeue it directly through its saved Index.
+      let successor = runQueue.erase(exactly: backgroundIndex)
+
+      XCTAssertEqual(successor, runQueue.endIndex)
+      XCTAssertEqual(Array(runQueue), [interactive])
     }
   #endif
 

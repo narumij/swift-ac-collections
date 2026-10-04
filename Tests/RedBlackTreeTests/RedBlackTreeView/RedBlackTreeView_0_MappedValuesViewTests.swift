@@ -6,6 +6,17 @@ import XCTest
 #if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeMappedValuesViewTests: RedBlackTreeTestCase {
 
+    private struct ComparisonCountingKey: Comparable {
+      nonisolated(unsafe) static var comparisonCount = 0
+
+      let value: Int
+
+      static func < (lhs: Self, rhs: Self) -> Bool {
+        comparisonCount += 1
+        return lhs.value < rhs.value
+      }
+    }
+
     func test_valuesSwapAt_swapsValuesWithoutChangingKeys() {
       var dictionary: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
       let first = dictionary.startIndex
@@ -105,6 +116,31 @@ import XCTest
 
       XCTAssertEqual(dictionary.map(\.value), ["changed", "b"])
       XCTAssertEqual(copy.map(\.value), ["a", "b"])
+    }
+
+    func test_subrangeValuesSingleIndexOperations_doNotCompareKeys() {
+      var dictionary = RedBlackTreeDictionary<ComparisonCountingKey, String>(
+        uniqueKeysWithValues: (0..<5).map { (ComparisonCountingKey(value: $0), "\($0)") })
+      let lower = dictionary.index(after: dictionary.startIndex)
+      // Keep the View end on a live base-tree element so an old range check must compare keys.
+      let upper = dictionary.index(before: dictionary.endIndex)
+      let first = lower
+      let last = dictionary.index(before: upper)
+      var values = dictionary[lower..<upper].values
+
+      ComparisonCountingKey.comparisonCount = 0
+      XCTAssertEqual(values[first], "1")
+      XCTAssertEqual(ComparisonCountingKey.comparisonCount, 0)
+
+      values[first] = "changed"
+      XCTAssertEqual(ComparisonCountingKey.comparisonCount, 0)
+      XCTAssertEqual(Array(values), ["changed", "2", "3"])
+      XCTAssertEqual(dictionary.map(\.value), ["0", "1", "2", "3", "4"])
+
+      values.swapAt(first, last)
+      XCTAssertEqual(ComparisonCountingKey.comparisonCount, 0)
+      XCTAssertEqual(Array(values), ["3", "2", "changed"])
+      XCTAssertEqual(dictionary.map(\.value), ["0", "1", "2", "3", "4"])
     }
 
     func test_valuesCount_matchesDictionaryCount() {

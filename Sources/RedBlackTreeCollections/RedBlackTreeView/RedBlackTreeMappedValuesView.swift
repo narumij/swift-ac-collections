@@ -156,21 +156,14 @@
     /// - Parameter position: A valid element index within this view.
     /// - Precondition: `position` identifies an element inside the view.
     ///
-    /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
-    ///   elements in the base collection.
+    /// - Complexity: O(1).
     @inlinable
     public subscript(position: Index) -> Element {
       @inline(__always)
       get {
-        guard isElement(at: position) else {
-          fatalError(.invalidIndex)
-        }
         return __tree_._unsafeAddress(position).pointee.tuple.value
       }
       set {
-        guard isElement(at: position) else {
-          fatalError(.invalidIndex)
-        }
         _ensureUnique()
         // TODO: unsafeMutableAddressにしたい
         __tree_._unsafeMutableAddress(position).pointee.tuple.value = newValue
@@ -187,13 +180,8 @@
     ///   - i: A valid element index within this view.
     ///   - j: Another valid element index within this view.
     /// - Precondition: Both indices identify elements inside the view.
-    /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
-    ///   elements in the base collection.
+    /// - Complexity: O(1).
     public mutating func swapAt(_ i: Index, _ j: Index) {
-      guard isElement(at: i), isElement(at: j) else {
-        fatalError(.invalidIndex)
-      }
-
       _ensureUnique()
 
       let __i = __tree_.__purified_(i)
@@ -356,7 +344,7 @@
     ///   otherwise, `false`.
     /// - Complexity: O(1)
     @inlinable
-    public func _isIdentical(to other: Self) -> Bool {
+    internal func _isIdentical(to other: Self) -> Bool {
       let (_start, _end) = _raw_range
       let (_other_start, _other_end) = other._raw_range
       return __tree_.isIdentical(to: other.__tree_) && _start == _other_start

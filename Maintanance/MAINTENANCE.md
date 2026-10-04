@@ -98,7 +98,15 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 - 2026-10-02 20:48 JST ユーザー要望: 公開ドキュメントメンテナンスと同様に`Tests/TESTING.md`も定期的にレビューする。ドキュメント監査中にテスト仕様の不足、陳腐化、実装との不一致、判断待ちを見つけた場合は、本ユーザー記入欄の`保留中の判断・懸念`へ連絡事項として追記する
 - 2026-10-02 16:02 JST ユーザー要望: Test as Specificationとの照合中に公開仕様として疑問が残った点は、推測で確定せず、この文書の`保留中の判断・懸念`へ連絡事項として記録する
 - 最後に作業したモデル名とバージョンを記録する
+- 実装・検証・記録が独立した区切りまで完了したらコミットを提案し、推奨コミットメッセージを示す。ユーザーから明示的に依頼されるまで、Codexはコミットを実行しない
 - 完了済みログを無制限に蓄積しない。恒久的な知見は規則へ移し、`Current handoff`は直近の状況を中心に保つ
+- Claudeは、作業中に面白いと感じたこと、意外だった挙動、あとでユーザーへ話したい感想があれば、
+  `Maintanance/CLAUDE_OBSERVATIONS.md`へ最低優先度の任意ログとして短く残してよい。判定・根拠・
+  blocking issueとは分離し、記録のために本作業や完了報告を遅らせない。CodexはClaudeへ依頼する際、
+  書きたいことがある場合に限って追記できる旨を伝える
+- Codexにも同じ目的の`Maintanance/CODEX_OBSERVATIONS.md`を用意する。日次などの振り返りで
+  ユーザーが読む素材として、Codex本人の言葉で任意に残す。作業報告の複製や義務的な日誌にはせず、
+  本作業と正本文書への記録を常に優先する
 - リファクタリングドキュメントは、unsafe等がprefixに付与されている部品がいつ登場してどういう推移をへたのか書いて欲しい
 - unsafe!!!以後の切り替えは、#if falseでテストを限定しながら徐々に解除して全体を通す作業をしてたはずで、この点も書いて欲しい
 - cpp comparisonは、API-Matrixの様式で挙動互換一覧が必要そう（全部一致だとしても）
@@ -111,13 +119,12 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 
 ### 保留中の判断・懸念
 
-- 2026-10-02 16:36 JST(2026-10-03 JST 根拠確認済み): Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としているが、容量条件と推奨APIの対応根拠がTest as Specificationから確定できなかった。`CLAUDE_TASK.md`のTask 2として実装追跡とベンチマークを実施し、`Maintanance/CombiningAPIPerformanceEvidence.md`へ根拠を記録した。結論: meld系(`___meld_unique`/`___meld_multi`)は呼び出し元の`reserveCapacity`状態を一切参照しないため、「十分な空き容量」という条件自体が両経路どちらの実測コストにも対応しない。1k〜256kの計測では挿入ループ経路(`merge`/`insert(contentsOf:)`)がmeld系より一貫して高速だった。公開コメントの書き換えはユーザー判断待ちのため未実施。
+- 2026-10-02 16:36 JST(2026-10-03 JST 根拠確認済み、2026-10-05方針決定): Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としていたが、容量条件と推奨APIの対応根拠がなかったため6箇所から削除済み。`Maintanance/CombiningAPIPerformanceEvidence.md`へ実装追跡とベンチマーク根拠を記録した。meld系(`___meld_unique`/`___meld_multi`)は呼び出し元の`reserveCapacity`状態を参照せず、1k〜256kでは挿入ループ経路(`merge`/`insert(contentsOf:)`)が一貫して高速だった。次のコメント改訂では同文書§3の案に基づき、重複率や共有storageなど実測で確認した傾向だけを条件付きで追記する。
 - API Matrix上の多くの共通APIが、各型のDocCでは`Default Implementations`配下に入る。今回追加した共通操作ガイドから各操作の個別シンボルへ、さらに細かいリンクを追加する必要があるかは公開結果を見て判断する
 
 ### 完了済みの要望
 
 (ユーザーが確認したら各項目を整理します)
-
 
 ## 文書の役割と正本
 

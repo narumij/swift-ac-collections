@@ -262,33 +262,61 @@
       }
 
       @Test
-      func mappedValuesSubscriptOutsideView_terminatesProcess() async {
-        await #expect(processExitsWith: .failure) {
-          let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d"]
-          let lower = dictionary.index(after: dictionary.startIndex)
-          let values = dictionary[lower..<dictionary.endIndex].values
-          _ = values[dictionary.startIndex]
+      func mappedValuesSubscriptWithErasedIndex_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          var dictionary: RedBlackTreeDictionary = [0: "a", 1: "b"]
+          let stale = dictionary.startIndex
+          dictionary.remove(at: stale)
+          _ = dictionary.values[stale]
         }
+
+        expectNoInvalidMemoryAccess(result)
       }
 
       @Test
-      func mappedValuesAssignmentAtViewEnd_terminatesProcess() async {
-        await #expect(processExitsWith: .failure) {
-          let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d"]
-          let upper = dictionary.index(before: dictionary.endIndex)
-          var values = dictionary[dictionary.startIndex..<upper].values
-          values[upper] = "outside"
+      func mappedValuesAssignmentWithErasedIndex_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          var dictionary: RedBlackTreeDictionary = [0: "a", 1: "b"]
+          let stale = dictionary.startIndex
+          dictionary.remove(at: stale)
+          dictionary.values[stale] = "stale"
         }
+
+        expectNoInvalidMemoryAccess(result)
       }
 
       @Test
-      func mappedValuesSwapWithIndexOutsideView_terminatesProcess() async {
-        await #expect(processExitsWith: .failure) {
-          let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d"]
-          let lower = dictionary.index(after: dictionary.startIndex)
-          var values = dictionary[lower..<dictionary.endIndex].values
-          values.swapAt(lower, dictionary.startIndex)
+      func mappedValuesSwapWithErasedIndex_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          var dictionary: RedBlackTreeDictionary = [0: "a", 1: "b"]
+          let stale = dictionary.startIndex
+          dictionary.remove(at: stale)
+          dictionary.values.swapAt(stale, dictionary.startIndex)
         }
+
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func mappedValuesSubscriptAtTreeEnd_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b"]
+          _ = dictionary.values[dictionary.endIndex]
+        }
+
+        expectNoInvalidMemoryAccess(result)
       }
 
       private func expectNoInvalidMemoryAccess(_ result: ExitTest.Result?) {

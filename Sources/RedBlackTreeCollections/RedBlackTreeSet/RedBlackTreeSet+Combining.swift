@@ -29,6 +29,11 @@ extension RedBlackTreeSet {
   /// - Parameter other: A set whose elements to insert.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
+  ///
+  /// - Note: Spare capacity does not make `formUnion(_:)` preferable; it
+  ///   builds new storage. In measurements through 256K elements, this method
+  ///   was faster for disjoint input, while `formUnion(_:)`
+  ///   was faster when 90% of `other` duplicated existing elements.
   @inlinable
   public mutating func merge(_ other: RedBlackTreeSet<Element>) {
     __tree_.ensureUnique()
@@ -71,6 +76,13 @@ extension RedBlackTreeSet {
   /// - Returns: The merged set.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
+  ///
+  /// - Note: Spare capacity does not make `union(_:)` preferable; it builds
+  ///   new storage. This method copies the current storage before inserting.
+  ///   In measurements of the mutating forms through 256K elements,
+  ///   `merge(_:)` was faster for disjoint input, even when it first copied
+  ///   shared storage, while `formUnion(_:)` was faster when 90% of `other`
+  ///   duplicated existing elements.
   @inlinable
   public func merging(_ other: RedBlackTreeSet<Element>) -> Self {
     var result: Self = self

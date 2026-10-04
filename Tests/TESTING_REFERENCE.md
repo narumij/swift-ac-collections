@@ -59,7 +59,8 @@
 - 現行APIかどうか判断に迷った場合API-Matrix.md及びAPI-Matrix-View.mdに照らすこと
 - カバレッジが落ちてきてるので横展開と合わせてカバレッジ改善（90%目安)
 - Test as Specで一応の品質は保てるが、言語や環境の挙動変更による影響やマジックナンバー等の取り扱いミスを検出できるようにする必要もある
-- RedBlackTreeTestSupportとDebugAdditionalsは役割がかぶってるので、再度整理が必要
+- RedBlackTreeTestSupportとDebugAdditionalsの責務境界は`Tests/TESTING.md`に確定済み。
+  自動テスト用基盤と人間向け診断・凍結コードを目的で分け、既存2ファイルだけを配置例外とする。
 - 横展開の過不足についてはSources/RedBlackTreeCollections/Documentation/API-Matrix.mdと照らし合わせること
 - Test as SpecについてはSources/RedBlackTreeCollections/Documentation/Quality-Checklist.mdと照らし合わせること
 - テストコード生成時はTests/RedBlackTreeTests/Fixtures.mdを参照し、フィードバックすること
@@ -394,14 +395,14 @@ xcrun llvm-cov show \
   - `RawRange/UnsafeTreeV2+RawRange.swift`の`contains(range:pointer:)`(3オーバーロード)
   - `tree_basic+tag.swift`の`_TrackingTag.retire`
 - **直近の主要な修正**(2026-10-01): `RedBlackTreeMultiMap.index(inserting:)`が`__insert_unique`を誤って呼んでいた実バグを修正。「削除系メソッドは空/未発見でもトラップせずに無駄なCoWを起こしてはいけない」という原則の横展開で、`erase(exactly:)`・両View系列・4型`popFirst`/`popLast`等・`removeAll(keepingCapacity:)`の計10箇所超を修正。
-- **UnsafeNode(原木) vs RawBuffer クロスチェック**(2026-10-01、2026-10-02配置更新): `UnsafeNode._advanced(with:count:)`と`_BucketAllocator`/`_Bucket`が同じメモリ配置を導くことを検証。双方から使う`UnsafeNodeReferenceFixture`は共有`RedBlackTreeFixture/UnsafeNodeReferenceFixture.swift`へ、RawBuffer側の`RawBufferHeadFixture`とクロスチェック本体は`RedBlackTreeTests/UnsafeTreeV2/Instance/`へ配置している。既存helperとの意図的な重複は維持する。
+- **UnsafeNode(原木) vs RawBuffer クロスチェック**(2026-10-01、2026-10-02配置更新、2026-10-05責務確定): `UnsafeNode._advanced(with:count:)`と`_BucketAllocator`/`_Bucket`が同じメモリ配置を導くことを検証。双方から使う`UnsafeNodeReferenceFixture`は共有`RedBlackTreeFixture/UnsafeNodeReferenceFixture.swift`へ、RawBuffer側の`RawBufferHeadFixture`とクロスチェック本体は`RedBlackTreeTests/UnsafeTreeV2/Instance/`へ配置している。単層テストの期待値算術とfixtureを共有するとfault independenceを失うため、既存helper・payload matrixとの重複は意図的に維持する。層ごとの検出対象は`Tests/TESTING.md`に記録した。
 - **ツール注記**: XcodeのMCP `RunAllTests`が実行漏れを"0 failed"と誤表示する不具合を確認済み。全体テストの合否は`swift test`(CLI)、カバレッジは`swift test --enable-code-coverage`+`xcrun llvm-cov`を正とする。
 
 ### 年代順ログ
 - Set・MultiSet・Dictionary・MultiMap の旧フォルダ(`set`/`multiset`/`dictionary`/`multimap`/ルート直下の雑多ファイル)は棚卸しが完了し、現行仕様は型別連番、内部実装・性能・fuzzは型別`_98_*.swift`、互換仕様は型別compatibility fileへ移管済み。旧フォルダ・旧ファイルは残っていない。
 - `RedBlackTreeInternal/`・`unsafeTree/`配下は「実際に使っているFixture種別」(Synthetic/Base/Instance)でサブフォルダ分け済み。
 - `Legacy/`は`ArrayBased/`(V0の純粋ジェネリック`_NodePtr`アルゴリズム+`_TrackingTag`結線、「配列だけで赤黒木が動く証拠」)・`ArrayBased/ThreeWay/`・`ArrayBasedFixture/`(V0 Fixture+テスト)の構成で確定済み。内部で分類はしてよいが、公開API境界には染み出させない制約は継続する。
-- 現行`UnsafeTreeV2`/`RedBlackTreeSet`向けのデバッグ支援(dump/Graphviz/Testing拡張)はLegacyではなくトップレベル`DebugAdditionals/`が最終的な置き場所。
+- 現行`UnsafeTreeV2`/`RedBlackTreeSet`向けの人間用デバッグ支援(dump/Graphviz)はLegacyではなくトップレベル`DebugAdditionals/`が最終的な置き場所。自動テストから呼ぶTesting拡張は原則`RedBlackTreeTestSupport/`とし、既存の配置例外は`Tests/TESTING.md`に記録する。
 - `RedBlackTreeView/`フォルダを新設し、`RedBlackTreeMappedValuesView`・`RedBlackTreeKeyValueRangeView`等Dictionary/MultiMap共有View型も連番Test as Spec化済み。
 - 4型横展開(ValueSemantics/LazySequenceTests/IntegerElement・KeyTests/`_99_DeathTests`境界trap)完了。`_98_RemovalInternalXCTests`(4型共有の生実装のため複製見送り)・`_98_SetAlgebraStressTests`(マルチセット多重度は別設計が必要なため見送り)は意図的な対象外として確定。
 - `EtcTests.swift`はユーザー方針で削除せず残置(「なんかあるとつい触るやつ」)。内容整理する場合もファイル自体は残すこと。

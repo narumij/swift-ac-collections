@@ -214,15 +214,14 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 
 ## 判断待ち
 
-赤黒木の設計ゲート停止中は、未凍結の整理タスクを非RedBlackTree監査より優先する。
-次はUnsafeNode / RawBufferクロスチェックと単層テストの役割整理、その後はユーザー判断を
-得た未結線コードの個別削除とする。
+赤黒木の設計ゲート停止中、テスト責務の整理は完了した。未結線コードの個別削除は
+ユーザー判断を得るまで凍結し、赤黒木側はIndex、文書、明示的な凍結事項だけとする。
 
 - [x] `Int.__less()` / `__greater()`等、B4-aの内部由来public extensionをpackageへ縮小
-- [ ] `Result`のpublic比較overloadとpublic `_NodePtr` typealiasの処遇
+- [ ] `Result`のpublic比較overloadとpublic `_NodePtr` typealiasの処遇（ユーザーが再開を決めるまで凍結）
 - [x] RedBlackTreeTestSupportとDebugAdditionalsの責務整理（自動テスト基盤／人間向け診断・凍結コードで区分し、配置例外2件は移動しない）
-- [ ] UnsafeNode / RawBufferクロスチェックと単層テストの役割整理
-- [ ] 未結線コードを段階的に削除する（個々の削除はユーザーが決定する）
+- [x] UnsafeNode / RawBufferクロスチェックと単層テストの役割整理（独立計算によるfault independenceを維持し、共有化しない）
+- [ ] 未結線コードを段階的に削除する（個々の削除はユーザーが決定し、再開指示まで凍結）
 - [x] Combining系APIへ実測結果に基づく条件付きコメントを追記（`CombiningAPIPerformanceEvidence.md` §3に基づき、容量による一律推奨を避ける）
 - [x] Combining系の追加NoteをClaudeが限定レビューし、測定範囲の限定とMultiMapへの未計測結果の外挿除去を反映
 - [ ] PermutationのAtCoder 2025互換mode（ユーザーが明示的に再開を指示するまで、ABC328E実提出確認を含め着手・調査・Claude依頼を行わない）

@@ -2,7 +2,123 @@
 
 Status: Completed
 
-## Active assignment: classify `RedBlackTreeTestSupport` and `DebugAdditionals` responsibilities
+## Active assignment: define the UnsafeNode / RawBuffer test-layer responsibilities
+
+Take primary ownership of the remaining RedBlackTree test-organization review. Independently inspect
+the UnsafeNode reference-fixture tests, RawBuffer/UnsafeTreeV2 single-layer tests, and the
+UnsafeNode-versus-RawBuffer cross-check introduced on 2026-10-01. Determine what distinct defect
+class each layer detects and whether the current intentional overlap is justified.
+
+At minimum, trace these areas and their actual helpers/call sites:
+
+- `Tests/RedBlackTreeFixture/UnsafeNodeReferenceFixture.swift`;
+- `RawBufferHeadFixture` and `UnsafeNodeRawBufferCrossCheckTests` under the current
+  `Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/` organization;
+- the existing `MemoryLayoutTests`, `UnsafeNodeMemoryLayoutTests`, `BucketAllocatorTests`, and their
+  `checkXxx` helpers or payload-type matrices;
+- the current records in `Tests/TESTING.md` and `Tests/TESTING_REFERENCE.md`.
+
+Answer:
+
+1. What independently computed fact does each test layer establish?
+2. Would consolidating the duplicated helper logic or payload matrices weaken fault independence?
+3. Which duplication is deliberate verification redundancy, and which—if any—is merely accidental?
+4. Is any code move, helper merge, or new test required now?
+5. Can this item be closed through documentation alone so the RedBlackTree work remains limited to
+   Index work, documentation, and explicitly frozen items?
+
+Prefer preserving independent calculation paths when sharing would allow one defect to make both
+sides agree incorrectly. Do not treat fewer lines or fewer fixtures as an objective by itself.
+
+Return exactly one verdict: `retain independent test layers`, `consolidate specified test support`,
+or `test-layer responsibility needs product-owner decision`. Record concise evidence and a concrete
+remaining-work recommendation in the first Result section, set `Status: Completed`, and tell the
+user only `完了` unless a product-owner choice remains.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit, move, merge, rename, or delete tests,
+fixtures, sources, or other documentation. Do not inspect `try/index/1`, restart frozen work,
+build/test, use network access, stage, commit, push, switch branches, or alter Git history.
+Read-only repository inspection is allowed. Run `git diff --check` and inspect
+`git status --short` at the end.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `retain independent test layers`.
+
+I inspected the test files and the production layout code read-only. Nothing was built or run.
+
+#### 1. What each layer establishes independently
+
+| Layer | Expected value comes from | Defect class detected |
+| --- | --- | --- |
+| `MemoryLayoutTests.checkMemoryLayout` | Arithmetic local to the test (`nodeStride + payload.stride`, `alignedUp`, `max(align)`) | `MemoryLayout<P>._pairLayout` (production `_MemoryLayout.init`, a bit-mask formula) and `__value_(as:)` placement wrong for one payload type |
+| `UnsafeNodeMemoryLayoutTests.checkMemoryLayout` | The same kind of test-local arithmetic | `_advanced(with:count:)` ±1 movement and `__value_(as:)` address/alignment in the UnsafeNode layer |
+| `BucketAllocatorTests.checkHeadAllocationSize` | Byte-ownership counting over the whole allocation (header / end_ptr / nodes / payloads) | Overlap, gaps, or out-of-bounds placement in `_headAllocationSize` + `start` + `_BucketAccessor`. No other layer catches this |
+| `BucketMemoryLayoutTests` | Agreement between queue, accessor, and traverser | Two of the three access paths using different strides |
+| `UnsafeNodeRawBufferLayoutAgreementTests` (2026-10-04) | Production reference functions against `_BucketAllocator` (`_referenceAlignment`/`_referenceStride`/`_referenceAllocationByteCount(prefix:)`/`_referenceFirstNode` vs `pairLayout`/`_allocationSize(prefix:)`/`start`), with prefixes 0, 1, and 3 bucket strides | The two production calculators diverging. `_referenceStride` rounds by division, `_MemoryLayout` by bit mask, and the two are written separately |
+| `UnsafeNodeRawBufferCrossCheckTests` + both fixtures | `UnsafeNodeReferenceFixture` (`_advanced`) against `RawBufferHeadFixture` (`_BucketAccessor[i]`) | Per-element node offsets diverging at capacities 1, 2, 3, and 16 across 10 payload types, with element counts beyond 2 |
+
+#### 2. Would consolidating weaken fault independence?
+
+Yes.
+- Each single-layer test computes its expected value without calling the code under test.
+- If those expectations were moved into a shared helper, or into one of the fixtures, then a defect
+  in that shared code would make both sides agree incorrectly. For example, if the "expected" side
+  started using `_referenceStride`, a bug there would be invisible.
+- The fixtures exist to reach the two production paths, not to provide expectations. Keeping them
+  separate from the test-local arithmetic is the point.
+
+#### 3. Deliberate redundancy versus accidental duplication
+
+- **Deliberate:**
+  - The two groups use different payload matrices (single-layer tests vs. the 10-type cross-check
+    matrix).
+  - Each layer computes the same layout fact in its own way.
+  - `__value_(as:)` is used on both sides of the cross-check. This is acceptable because
+    `MemoryLayoutTests` and `UnsafeNodeMemoryLayoutTests` verify `__value_` independently against
+    test-computed addresses.
+- **Accidental but harmless:**
+  - `CrossCheck.testPairStrideMatchesAcrossLayers` asserts the same pair as
+    `LayoutAgreementTests` (`_referenceStride` vs `pairLayout.stride`), just over a different type
+    matrix. It adds coverage breadth, not an independent calculation path.
+- **Fixture call form differs from production:**
+  - `RawBufferHeadFixture` and `BucketAllocatorTests` call
+    `start(storage:payloadOrPairAlignment: MemoryLayout<P>.alignment)`.
+  - The production call sites (`_BucketAccessor`, `_BucketQueue`, `_BucketTraverser`) pass
+    `pairLayout.alignment`.
+  - The results are identical today. `start` branches only on whether the argument is at most the
+    node alignment, and `max(node, payload)` falls in the same branch as `payload`.
+  - However, the fixture is documented as measuring the actual layout. If `start` ever treats these
+    two arguments differently, the fixture would silently stop measuring the production path.
+
+#### 4. Is any move, merge, or new test needed now?
+
+No.
+
+#### 5. Can this item close through documentation alone?
+
+Yes. The recommended documentation is:
+
+- In `Tests/TESTING.md`, close the open item (line 86) by recording the layer → defect-class table
+  above, and the rule that test-local expected arithmetic must not be shared with fixtures or
+  production helpers.
+- Optionally note the two minor items:
+  - the duplicated stride assertion, kept for breadth;
+  - the alignment-argument difference between `RawBufferHeadFixture` and production.
+- If Codex wants zero ambiguity, the second item has an alternative: a one-line future fixture
+  change to pass `pairLayout.alignment`. That is a frozen, optional follow-up, not required work.
+
+With this, the RedBlackTree work stays limited to Index work, documentation, and explicitly frozen
+items.
+
+Checks: only this file was edited. `git diff --check` was clean. `git status --short` shows only
+`Maintanance/CLAUDE_TASK.md`.
+
+---
+
+## Completed assignment: classify `RedBlackTreeTestSupport` and `DebugAdditionals` responsibilities
 
 Take primary ownership of the test-side responsibility review. Independently inspect
 `Tests/RedBlackTreeTests/RedBlackTreeTestSupport/` and

@@ -395,7 +395,7 @@ xcrun llvm-cov show \
   - `RawRange/UnsafeTreeV2+RawRange.swift`の`contains(range:pointer:)`(3オーバーロード)
   - `tree_basic+tag.swift`の`_TrackingTag.retire`
 - **直近の主要な修正**(2026-10-01): `RedBlackTreeMultiMap.index(inserting:)`が`__insert_unique`を誤って呼んでいた実バグを修正。「削除系メソッドは空/未発見でもトラップせずに無駄なCoWを起こしてはいけない」という原則の横展開で、`erase(exactly:)`・両View系列・4型`popFirst`/`popLast`等・`removeAll(keepingCapacity:)`の計10箇所超を修正。
-- **UnsafeNode(原木) vs RawBuffer クロスチェック**(2026-10-01、2026-10-02配置更新): `UnsafeNode._advanced(with:count:)`と`_BucketAllocator`/`_Bucket`が同じメモリ配置を導くことを検証。双方から使う`UnsafeNodeReferenceFixture`は共有`RedBlackTreeFixture/UnsafeNodeReferenceFixture.swift`へ、RawBuffer側の`RawBufferHeadFixture`とクロスチェック本体は`RedBlackTreeTests/UnsafeTreeV2/Instance/`へ配置している。既存helperとの意図的な重複は維持する。
+- **UnsafeNode(原木) vs RawBuffer クロスチェック**(2026-10-01、2026-10-02配置更新、2026-10-05責務確定): `UnsafeNode._advanced(with:count:)`と`_BucketAllocator`/`_Bucket`が同じメモリ配置を導くことを検証。双方から使う`UnsafeNodeReferenceFixture`は共有`RedBlackTreeFixture/UnsafeNodeReferenceFixture.swift`へ、RawBuffer側の`RawBufferHeadFixture`とクロスチェック本体は`RedBlackTreeTests/UnsafeTreeV2/Instance/`へ配置している。単層テストの期待値算術とfixtureを共有するとfault independenceを失うため、既存helper・payload matrixとの重複は意図的に維持する。層ごとの検出対象は`Tests/TESTING.md`に記録した。
 - **ツール注記**: XcodeのMCP `RunAllTests`が実行漏れを"0 failed"と誤表示する不具合を確認済み。全体テストの合否は`swift test`(CLI)、カバレッジは`swift test --enable-code-coverage`+`xcrun llvm-cov`を正とする。
 
 ### 年代順ログ

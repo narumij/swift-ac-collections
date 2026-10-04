@@ -83,8 +83,15 @@
   `nextPermutations()`と公開戻り値型への`///`コメントドック整備は完了済み。
   `.strictMemorySafety()`も恒久適用済みで、対象モジュールの警告0件を確認した。
 - 内部テスト層の区分、および生木テストと変更コストの均衡。
-- UnsafeNode/RawBufferクロスチェックと既存単層テストの統合方法。前者には独立した
-  計算経路間の一致確認という固有の役割がある。
+- UnsafeNode/RawBufferのテスト層は統合しない。単層テストはテスト内の算術から期待値を
+  独立計算し、`MemoryLayout`、UnsafeNodeの移動・payload位置、Bucket全体の所有byte、
+  queue/accessor/traverser間のstrideをそれぞれ検証する。層間クロスチェックは、別実装の
+  reference計算とRawBuffer計算、および各要素位置が一致することを複数型・容量で検証する。
+  fixtureやproduction helperへ期待値算術を共有すると同じ誤りで両辺が一致し得るため、
+  helperとpayload matrixの重複は意図的に維持する。
+  stride一致の重複assertionは型範囲の広さのため残す。`RawBufferHeadFixture`がproductionの
+  `pairLayout.alignment`ではなく同じ分岐結果になるpayload alignmentを渡す差異は、必要に
+  なった場合だけ直す凍結中の任意改善とする。
 - `RedBlackTreeTestSupport`は自動テストから呼ばれるfixture・assertion・invariant・test-only
   accessor等の再利用基盤、`DebugAdditionals`は人間向けdump/Graphvizと凍結した旧実験を置く。
   `_LazyTieWrap+Debug.swift`と`unsafe_node+debug.swift`は自動テストから使われるが、現配置を

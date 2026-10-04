@@ -7,7 +7,7 @@
 
 import XCTest
 
-#if DEBUG
+#if DEBUG && COMPATIBLE_ATCODER_2025
   @testable import RedBlackTreeCollections
 
   final class NaiveIteratorTests: RedBlackTreeTestCase {

@@ -1,11 +1,221 @@
 # Codex-to-Claude Work Request
 
-Status: Idle
+Status: Completed
 
 ## Active assignment
 
-No active assignment. Wait for a new request from Codex. Report only `完了` when an
-assigned task is finished; keep detailed findings in the designated Markdown record.
+Isolate deprecated iterator generations 1–3 to `COMPATIBLE_ATCODER_2025` without
+deleting any generation or changing compatibility behavior.
+
+## Objective
+
+Remove `_Obverse1...3` and `_Reverse1...3` from the normal-mode compiled/public surface,
+while retaining all six implementations and their existing tests in compatibility mode.
+
+## Allowed implementation
+
+1. Wrap each of these six complete files in `#if COMPATIBLE_ATCODER_2025`:
+   - `UnsafeIterator+Obverse1.swift`, `Obverse2.swift`, `Obverse3.swift`
+   - `UnsafeIterator+Reverse1.swift`, `Reverse2.swift`, `Reverse3.swift`
+   under `Sources/RedBlackTreeCollections/Implements/Deprecated/Iterator/`.
+2. Within generations 2 and 3, remove only branches that become unreachable because
+   the complete file is compatibility-only. Preserve the compatibility branch bodies
+   exactly. If removing an inner branch is less safe than retaining it, retain it and
+   explain why; isolation is the required outcome, cleanup is secondary.
+3. Put all tests in
+   `Tests/RedBlackTreeTests/RedBlackTreeInternal/Instance/RedBlackTreeInternal_NaiveIteratorTests.swift`
+   under `DEBUG && COMPATIBLE_ATCODER_2025`, retaining all 10 tests. Do not delete or
+   rewrite generation 3 tests.
+4. Add a concise source-breaking normal-mode isolation entry to `CHANGELOG.md`.
+5. Append the implementation result and validation to
+   `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`; update an existing relevant checkbox
+   in `PROGRESS_OVERVIEW.md` only if accurate; update this task.
+
+## Must preserve
+
+- Compatibility mode's generation 1 `unsafeSequence` / `unsafeValues` behavior.
+- Compatibility aliases and generation 2 behavior.
+- Generation 3 source and its two tests; deletion requires a separate user decision.
+- `_Obverse4`, `_Reverse4`, `_CopyOnWrite`, current container/View iterators, Index
+  representation, and all iterator protocols.
+- Do not act on the side finding about now-uninhabited normal-mode iterator protocols.
+
+## Validation
+
+1. Normal mode: Debug build-tests, relevant sequence/equality/comparison/hash/View tests,
+   and Release `RedBlackTreeCollections` build.
+2. Compatibility mode: use command-line compiler definition
+   `-Xswiftc -DCOMPATIBLE_ATCODER_2025` if it reproduces the package's established mode
+   without editing `Package.swift`; otherwise stop and report the exact blocker rather
+   than modifying package configuration. Build tests and run the Naive iterator suite,
+   confirming all 10 tests are discovered and pass.
+3. Run Release DocC warnings-as-errors for normal mode.
+4. Search the normal-mode source paths to confirm generations 1–3 are referenced only
+   inside compatibility guards.
+5. Run `git diff --check`, inspect the full diff and `git status --short`.
+
+## Boundaries
+
+Do not delete generation 3. Do not edit `Package.swift`, workflows, unrelated tests,
+benchmarks, iterator protocols, or nondeprecated iterator implementations. Do not stage,
+commit, use network access, switch branches, inspect `try/index/1`, or alter Git history.
+
+Set this task to `Completed`, append exact commands and results, and report only `完了`
+to the user. Explain directly only if blocked or a product-owner decision is required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+Isolation is done. A follow-up by Codex made the current-API C++ comparison tests
+normal-mode-only, closing the compatibility-mode validation gap.
+
+**Changes**
+
+- The six files under `Implements/Deprecated/Iterator/` are each wrapped entirely in
+  `#if COMPATIBLE_ATCODER_2025`.
+- Inside generations 2 and 3 there were six inner `#if COMPATIBLE_ATCODER_2025` /
+  `#else` blocks. The compatibility branch bodies are kept. Only the now-unreachable
+  `#else` side was removed: the normal-mode `_start` / `_end` and `reversed()`. The
+  whitespace-insensitive diff contains only these.
+- Generation 3 is kept.
+- The Naive iterator tests now sit under `#if DEBUG && COMPATIBLE_ATCODER_2025`, and all
+  10 tests are retained.
+- Documentation:
+  - `CHANGELOG.md`: added an entry marked source-breaking in normal mode;
+  - `PROGRESS_OVERVIEW.md`: checked one item;
+  - `EXTERNAL_TYPE_EXTENSION_AUDIT.md`: appended `### Deprecated iterator generations 1–3
+    isolation result`.
+
+**Normal-mode validation**
+
+- `swift build --disable-sandbox --build-tests`: succeeded.
+- `swift test --disable-sandbox --skip-build --filter 'SequenceTests|Equatable|Comparable|Hashable|ProtocolConformance|RangeView|MappedValuesView|NaiveIterator'`:
+  256 RedBlackTreeTests and 2 RedBlackTreeTreeTests XCTest cases, plus 1 Swift Testing
+  test, all passed with 0 failures. NaiveIteratorTests was absent, as expected.
+- `swift build --disable-sandbox -c release --target RedBlackTreeCollections`:
+  succeeded.
+- The CI Release DocC command with `--warnings-as-errors`: succeeded.
+- A scan that tracks `#if` nesting confirmed that every reference to generations 1–3 in
+  `Sources` and `Tests` is inside a `COMPATIBLE_ATCODER_2025` guard.
+
+**Compatibility-mode validation**
+
+- `swift build --disable-sandbox --target RedBlackTreeTests -Xswiftc -DCOMPATIBLE_ATCODER_2025`
+  succeeded, so the six types and the Naive iterator tests compile in this mode.
+- Codex wrapped the four current-API behavior-comparison files in
+  `#if !COMPATIBLE_ATCODER_2025`; these tests compare the current Swift API with libc++
+  and do not define a legacy compatibility contract.
+- `swift build --disable-sandbox --build-tests -Xswiftc -DCOMPATIBLE_ATCODER_2025`
+  then succeeded.
+- `swift test --disable-sandbox --skip-build -Xswiftc -DCOMPATIBLE_ATCODER_2025
+  --filter NaiveIteratorTests` discovered and passed all 10 tests.
+- After returning to normal mode, `swift test --disable-sandbox --filter
+  CppBehaviorReferenceTests` discovered and passed all 35 C++ comparison tests.
+
+**Other checks**
+
+- `git diff --check`: clean, after removing trailing whitespace from one whitespace-only
+  line that re-indentation had produced.
+- Nothing was staged.
+
+## Completed assignment: audit deprecated iterator generations 1–3
+
+Perform a read-only disposition audit of deprecated iterator implementations
+`_Obverse1` through `_Obverse3` and `_Reverse1` through `_Reverse3` in the default
+RedBlackTreeCollections build.
+
+## Objective
+
+Determine why these deprecated iterator generations remain in the normal build and
+whether the next safe action is deletion, compatibility-only isolation, TestSupport
+relocation, or continued deferral. Do not implement the disposition in this task.
+
+## Required work
+
+1. Enumerate the six types, their files, guards, access levels, stored representations,
+   protocol conformances, public/internal members, and all repository references.
+2. Identify which iterator generation is used by the four current containers and Views,
+   and whether `_Obverse4` / the current reverse path fully supersedes generations 1–3.
+3. Check normal mode, `COMPATIBLE_ATCODER_2025`, Debug/Release, tests, documentation,
+   and benchmarks separately. Do not infer compatibility use merely from a Deprecated
+   directory or filename.
+4. Compare observable behavior that might prevent removal: traversal direction,
+   start/end handling, stale/sealed pointer behavior, ownership/lifetime, mutation,
+   iterator protocol requirements, and complexity.
+5. Determine whether any public alias, signature, `@inlinable` body, protocol witness,
+   serialized layout, or external compatibility promise still exposes these types.
+6. Separate Index-dependent issues from purely dead or compatibility-only code. Do not
+   decide the final Index representation.
+7. Propose the smallest implementation batch, exact files, required test migration or
+   replacement evidence, validation matrix, and source-compatibility impact.
+
+Use `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md` and
+`Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md` as current records. Preserve the user's
+existing iterator design intent where source/history in the repository establishes it;
+do not classify by reference count alone.
+
+## Output
+
+Append one section named exactly:
+
+`### Deprecated iterator generations 1–3 disposition audit`
+
+to `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`. Include a compact type/reference
+table, supersession evidence, configuration findings, blockers, recommended batch, and
+one verdict:
+
+- `safe independent removal batch`
+- `compatibility-only isolation batch`
+- `test-support relocation batch`
+- `Index decision required`
+- `product-owner decision required`
+
+## Boundaries
+
+Only these files may be edited:
+
+- `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
+- `Maintanance/CLAUDE_TASK.md`
+
+Do not edit source, tests, Package.swift, documentation, CHANGELOG, workflows, or
+benchmarks. Do not run the full suite. Do not stage or commit. Do not use network access,
+switch branches, inspect `try/index/1`, or alter Git history.
+
+Re-run searches sufficient to support completeness, run `git diff --check` on the two
+allowed files, and inspect their full diff plus `git status --short`. Set the task to
+`Completed`, append concise evidence, and report only `完了` to the user. Explain
+directly only if blocked or a product-owner decision is required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+- I appended `### Deprecated iterator generations 1–3 disposition audit` to
+  `EXTERNAL_TYPE_EXTENSION_AUDIT.md`. Verdict: `compatibility-only isolation batch`.
+- **Normal mode:** all six types are compiled as public types, yet production does not
+  use them. The current containers and Views use `_Obverse4` / `_Reverse4` through
+  `_CopyOnWrite`, and the normal-mode `unsafeSequence` / `unsafeValues` return
+  `_Obverse4`. The only normal-mode consumer is the Debug test
+  `RedBlackTreeInternal_NaiveIteratorTests.swift:17-82` (8 tests).
+- **Compatibility mode:**
+  - Generation 1 backs compat `unsafeSequence` / `unsafeValues`, which the tree's
+    `==`, `<`, hash, filter, and key/value helpers use.
+  - Generation 2 backs the compat public aliases `_RemoveAware*` / `TiedIndexing`.
+  - Generation 3 is unused in both modes.
+- **Recommended batch:**
+  - Wrap all six files in `#if COMPATIBLE_ATCODER_2025` and drop the now-dead
+    normal-mode `#else` members.
+  - Move the normal-mode Naive iterator tests under the same guard, so no coverage is
+    lost.
+  - Deleting generation 3 is optional and needs approval first, because it removes 2
+    tests.
+- **Index dependence:** none. Isolating chooses no Index representation.
+- **Side finding:** after isolation, `UnsafeIteratorProtocol`, `ObverseIterator`, and
+  `ReverseIterator` have no conformers in normal mode. That is for a separate audit.
+- Validation:
+  - Searches covered `_Obverse/_Reverse 1–3`, `unsafeSequence` / `unsafeValues`,
+    `_RemoveTrait` / `_RemoveAware*`, and the iterator protocols, across `Sources`,
+    `Tests`, `Benchmarks/Sources`, and repository Markdown.
+  - No build or test was run.
+  - `git diff --check` was clean.
+  - `git status --short` shows only the two allowed files modified.
 
 ## Completed assignment: narrow Debug-only Bound fixtures
 

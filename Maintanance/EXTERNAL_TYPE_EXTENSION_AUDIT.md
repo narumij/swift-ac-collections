@@ -626,3 +626,123 @@ cluster 2だけを対象にする。
     - Swift Testingは4コンテナの`*InternalTests`、計4 suite・4件が成功した。
   - Releaseの`swift build -c release --target RedBlackTreeCollections`が成功した。
   - CIと同じRelease DocC(`--warnings-as-errors`)が成功した。
+
+### Deprecated iterator generations 1–3 disposition audit
+
+2026-10-04 / Claude Opus 5.5。Codexの割り当てによるread-only監査。source、test、構成は変更して
+いない。build、test、`try/index/1`の参照は行っていない。パスは
+`Sources/RedBlackTreeCollections/`からの相対パス。
+
+#### Types and references
+
+6型とも`Implements/Deprecated/Iterator/UnsafeIterator+{Obverse,Reverse}{1,2,3}.swift`にあり、
+ファイル全体を囲むguardはない(既定構成でもcompileされる)。いずれも`public struct`で`@frozen`ではなく、
+`_UnsafeNodePtrType`、`UnsafeIteratorProtocol`、`ObverseIterator`(Reverseは`ReverseIterator`)、
+`IteratorProtocol`、`Sequence`、`Equatable`、`@unchecked Sendable`に適合する。
+
+| 型 | 保存表現 | 互換modeでの利用 | 通常modeでの利用 |
+| --- | --- | --- | --- |
+| `_Obverse1` / `_Reverse1` | raw `_NodePtr` × 3。`public let _start` / `_end`、`public var _current` | `Implements/Deprecated/UnsafeTreeV2/UnsafeTreeV2+sequence+deprecated.swift:64-79`の`unsafeSequence` / `unsafeValues`(`COMPATIBLE_ATCODER_2025`)。これらを`UnsafeTreeV2+Sequence.swift:30-80,194`、`UnsafeTreeV2+Hashable.swift:27`、`UnsafeTreeV2+KeyValue.swift:155,177`の`==`、`<`、hash、filterなどが使う | production利用なし。Debugのtestだけ |
+| `_Obverse2` / `_Reverse2` | `_SealedPtr` × 3(public)。毎step `purified`で再検証する | `Implements/Deprecated/Iterator/UnsafeIterator+deprecated.swift:23-66`の互換public alias(`_RemoveTrait<_Obverse2>`、`_RemoveAwarePointers`など。`COMPATIBLE_ATCODER_2025`)。memberの`#if COMPATIBLE_ATCODER_2025` / `#else`も互換modeを前提に分かれている | production利用なし。Debugのtestだけ |
+| `_Obverse3` / `_Reverse3` | `_SafePtr` × 3(public) | 利用なし | 利用なし。Debugのtestだけ |
+
+- **test:** `Tests/RedBlackTreeTests/RedBlackTreeInternal/Instance/RedBlackTreeInternal_NaiveIteratorTests.swift`。
+  - `#if DEBUG`下の通常部分(`:17-82`)にある8件が、6型と`_Payload<_, _Obverse1/_Reverse1>`を直接生成する。
+  - 互換部分(`:85-105`)の2件は`_Obverse1` / `_Reverse1`を使う。
+- **その他の参照:** benchmark、DocC、Markdownからの参照はない(この監査記録を除く)。
+
+#### Supersession evidence
+
+- 通常modeの4コンテナとViewは、`UnsafeIterator.swift:27-47`(`!COMPATIBLE_ATCODER_2025`)の
+  `_CopyOnWrite<_Payload/_Key/_KeyValue/_MappedValue<Base, _Obverse4/_Reverse4>>`を使う。
+  内部走査の`unsafeSequence` / `unsafeValues`も、通常modeでは`_Obverse4`を返す
+  (`UnsafeTreeV2+Sequence.swift:204-223`)。
+- 挙動の違い:
+  - 世代1と3は、有効なpayloadが無いと`fatalError(.outOfBounds)`で止まる。
+  - 世代2は、毎stepのseal検証で、走査中のstaleを`fatalError(.invalidIndex)`として検出する。
+  - 世代4は`_CopyOnWrite`と組み合わせ、変更されない複製を走査することで同じ安全性を確保している。
+    nullptrは木から受け取る。
+- 通常modeの公開表面で、これらの挙動を必要とする型、alias、signatureはない。いずれも順方向・逆方向の
+  O(1)/step走査で、計算量の契約に差はない。
+- 世代1〜3を出荷版として使っているのは互換modeだけで、その設計意図
+  (2026-05-29のcommit `0684ea2e` "deprecated"でDeprecatedへ移動)と一致する。
+
+#### Configuration findings
+
+- **通常mode(DebugとRelease):** 6型はpublicなsymbolとして残り、public memberから`_SealedPtr`、
+  `_SafePtr`、`_NodePtr`を露出している(B2のIndex表現に拘束される型)。
+- **互換mode:** 世代1と2は必要で、世代3は不要である。
+- **通常modeの公開signatureと`@inlinable`本体:** これらの型を参照しているものはない。
+  `@frozen`ではないので、レイアウトの約束もない。
+- **副次的な観察:** 通常modeでは、`UnsafeIteratorProtocol` / `ObverseIterator` / `ReverseIterator`の
+  適合型がこの6型だけになる(世代4はこれらに適合しない)。`_Key`などの条件付き適合
+  (`Iterator/UnsafeIterator/UnsafeIterator+Key.swift:96-110`ほか)は、隔離後も残るが適合する型がなくなる。
+  これらの扱いは別の監査で決める。
+
+#### Blockers
+
+- 互換modeの隔離はIndex表現を選ばない。互換modeのIndex契約(`UnsafeIndexV2`)にも触れない。
+  したがって、Indexの判断によるblockerはない。
+- 通常modeでの削除はsource-breakingになる。`UnsafeIterator`は`@_documentation(visibility: internal)`の
+  underscore型だが、CHANGELOGに記載すること。
+- 世代3は両modeで未使用なので削除できる。ただし削除するとtest 2件(`testNaive{Forward,Reverse}3`)の
+  coverageも消える。`Tests/CLAUDE.md`に従い、coverageの削除は承認を得てから行うこと。
+  隔離だけならcoverageは互換runへ移るだけで、失われない。
+
+#### Recommended batch
+
+互換mode専用への隔離を、1つのbatchで行う。
+
+- 6ファイルの全体を`#if COMPATIBLE_ATCODER_2025`で囲む。世代2と3の内部にある`#else`
+  (通常mode用の`_start` / `_end` / `reversed()`)は不要になるので除去する。本体の挙動は変えない。
+- `RedBlackTreeInternal_NaiveIteratorTests.swift:17-82`を`COMPATIBLE_ATCODER_2025`の下へ移す。
+  coverageは互換runで保持される。
+- 世代3の削除は、承認を得たうえで別batchにしてよい。
+- 検証:
+  - 通常modeのDebugとReleaseのbuild、Debugの`--build-tests`。
+  - 走査を使うtest(Sequence、Equatable、Comparable、Hashable、RangeView、MappedValuesView)。
+  - 互換modeのDebugのbuildとtest(`NaiveIteratorTests`の10件が発見・実行されることを確認する)。
+    互換modeの検証は、通常→互換の2回のbuildで十分である。
+  - Release DocC。
+- source互換: 通常modeの利用者だけに影響する(underscore付きの内部iterator 6型が消える)。
+  互換modeは変わらない。
+
+#### Verdict
+
+`compatibility-only isolation batch`
+
+### Deprecated iterator generations 1–3 isolation result
+
+2026-10-04 / Claude Opus 5.5。上の推奨batchをCodexの割り当てに基づき実施した。
+
+- **source:** `Sources/RedBlackTreeCollections/Implements/Deprecated/Iterator/UnsafeIterator+{Obverse,Reverse}{1,2,3}.swift`
+  の6ファイルを、ファイル全体で`#if COMPATIBLE_ATCODER_2025`に入れた。
+  - 世代2と3の内側にあった`#if COMPATIBLE_ATCODER_2025` / `#else`は計6か所(Obverse2: 2、Obverse3: 2、
+    Reverse2: 1、Reverse3: 1)。互換branchの本体はそのまま残し、到達しなくなった`#else`側
+    (通常mode用の`_start` / `_end`と`reversed()`)だけを削除した。
+  - 空白を無視したdiffでは、directiveと上記の`#else`側以外に変更がない。
+  - 世代3は削除していない。
+- **test:** `RedBlackTreeInternal_NaiveIteratorTests.swift`の外側のguardを`#if DEBUG && COMPATIBLE_ATCODER_2025`へ
+  変更した。10件はすべて残している。内側の互換guardは冗長だが、差分を最小にするため残した。
+- **変更していないもの:** `_Obverse4` / `_Reverse4`、`_CopyOnWrite`、iterator protocol、互換alias、
+  `Package.swift`。
+- **通常modeの検証:**
+  - Debugの`--build-tests`が成功した。
+  - `swift test --skip-build --filter 'SequenceTests|Equatable|Comparable|Hashable|ProtocolConformance|RangeView|MappedValuesView|NaiveIterator'`:
+    RedBlackTreeTests 256件とRedBlackTreeTreeTests 2件のXCTest、Swift Testing 1件が、いずれも0 failureで成功した。
+    NaiveIteratorTestsは期待どおり発見されなかった。
+  - Releaseの`swift build -c release --target RedBlackTreeCollections`が成功した。
+  - Release DocC(`--warnings-as-errors`)が成功した。
+  - `#if`の入れ子を追跡する走査で、`Sources`と`Tests`にある世代1〜3の参照が、すべて
+    `COMPATIBLE_ATCODER_2025`のguard内にあることを確認した。
+- **互換modeの検証:**
+  - `swift build --target RedBlackTreeTests -Xswiftc -DCOMPATIBLE_ATCODER_2025`は成功した。
+    6型とNaiveIteratorTestsを含めてcompileできた。
+  - 当初は`CppBehaviorReferenceTests`が現行Index APIを前提としていたため、互換modeのtest buildが失敗した。
+    C++比較4ファイル全体を`#if !COMPATIBLE_ATCODER_2025`に限定した。C++比較は現行Swift APIと
+    libc++の挙動比較であり、旧AtCoder互換APIの比較対象ではない。
+  - `swift build --build-tests -Xswiftc -DCOMPATIBLE_ATCODER_2025`が成功した。
+  - `NaiveIteratorTests` 10件を発見・実行し、0 failureで成功した。
+  - 通常modeへ戻して`CppBehaviorReferenceTests` 35件を実行し、0 failureで成功した。
+- **source互換:** 通常modeでは`UnsafeIterator._Obverse1...3` / `_Reverse1...3`が消える
+  (CHANGELOGに記載)。互換modeは変わらない。

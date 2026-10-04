@@ -144,6 +144,7 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 - [x] Debug限定SortedSequence実験経路をproduction targetからTestCodeへ分離
 - [x] View 3型の`_isIdentical(to:)`を`@inlinable internal`へ縮小
 - [x] Debug限定`RedBlackTreeBoundExpression.index(_:)` / `.debug(_:)`を`package`へ縮小
+- [x] 旧世代iterator `_Obverse1...3` / `_Reverse1...3`を互換mode専用へ隔離
 - [ ] 意図しない`public`をpackage/internal/TestSupportへ縮小
 - [ ] DebugとReleaseで公開protocol適合集合が変わる箇所を解消
 

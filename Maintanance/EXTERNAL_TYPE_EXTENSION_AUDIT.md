@@ -860,3 +860,129 @@ cluster 2だけを対象にする。
 - **guardの確認:** `#if`の入れ子を追跡する走査で、`Sources`と`Tests`にある`ObverseIterator` /
   `ReverseIterator` / `UnsafeIteratorProtocol`の参照が、すべて`COMPATIBLE_ATCODER_2025`のguard内にあることを
   確認した。`UnsafeAssosiatedIterator`は通常modeに残っている。
+
+### Public-surface cleanup closure audit
+
+2026-10-04 / Claude Opus 5.5。Codexの割り当てによるread-only監査。sourceは変更していない。
+
+#### Method
+
+- 現在のworking treeで`swift build --target RedBlackTreeCollections`をDebugとReleaseで実行した。
+- `swift-symbolgraph-extract -minimum-access-level internal -emit-extension-block-symbols`の出力を
+  `mktemp -d`へ置き、親型を含めて実効publicの宣言とconformanceを再集計した。一時ディレクトリは削除済み。
+- 各public protocolについて、他のpublic宣言のsignature、generic制約、extension制約、protocol継承から
+  参照されているかと、適合型があるかを機械的に調べた。
+
+#### Residual table
+
+| 区分 | 現在の残り(既定構成) | 分類 |
+| --- | --- | --- |
+| 4コンテナ、3 View、bound DSL、`RedBlackTreePair`、`RedBlackTreeIterator` | 製品API | 意図した製品面 |
+| Index alias chain、`_LazyTieWrap`、`_NodePtrSealing`、`SealError`、`_SafePtr` / `_SealedPtr`、`_RawRange*`、`UnsafeIndexV3Range*`、特殊化`Result`の`==` / `!=`、`Result._NodePtr`、`UnsafeNode`、`_TrackingTag` | B2 | 保留中のcluster(Index) |
+| Debug限定の差分: Balanced群(protocol 6個とその要件、`RedBlackTreeSet.freeCapacity`)と、Debug比較群(`Result.<`、`_LazyTieWrap.<`、`_NodePtrSealing.<`) | Debugだけにある実効public宣言(Releaseだけにあるものは0件) | 保留中のcluster(executable API Matrix / Index) |
+| Memoize群、`LinkPairValueTrait` | 外部consumerの移行待ち | 保留中のcluster |
+| `BENCHMARK` traitの公開hook | 別packageのBenchmarksが利用 | 保留中のcluster |
+| `UnsafeMutablePointer<UnsafeNode>._NodePtr` / `._NodeRef` | 標準型extensionに残るpublic memberはこれと特殊化`Result`の演算子だけ | B2(Index表現と同じ型) |
+| `ComparableKeyTrait` / `ScalarValueTrait` / `PairValueTrait` / `KeyValueTrait` / `ValueComparer` / `___Root` / `_UnsafeNodePtrType` / `UnsafeAssosiatedIterator`、および多数の`_Base*` / `_*Type`系 | Viewのgeneric制約、`UnsafeTreeV2.Index`の制約、protocol継承から参照される | B3: 境界内部(外側のsignature設計が先) |
+| 実効public protocolのうち、public signatureからの参照がなく、適合型が直接ある13個: `UniqueMultiplicity`、`MultiMultiplicity`、`UnsafeTreeBindingV2`、`_ElementBride`、`_KeyBride`、`_MappedValueBride`、`_PayloadValueBride`、`_ScalarBasePayloadValue_KeyProtocol`、`_Tree_IsMultiTraitInterface`、`_BaseNode_NodeCompareProtocol`、`_BaseNode_SignedDistanceProtocol`、`LinkPairValueTrait`(Memoize)、`MultiplicityHelper`(関連型制約からのみ参照) | 4コンテナやnested `Base`が適合し、これらのprotocol extensionが他のpublic protocol要件のwitnessを提供している可能性がある | B3: typecheckを要する(下記) |
+| **public signatureからの参照がなく、production内に適合型もないもの: 5個**(下記) | 下記 | **独立して対処できる、意図しない公開面** |
+
+#### Independently actionable items
+
+いずれも`Sources/RedBlackTreeCollections/Implements/__tree/`の原木protocolである。
+
+| 宣言 | 場所 | repository内の参照 | 下限 |
+| --- | --- | --- | --- |
+| `_BaseKey_EquivInterface` | `base/tree_base+interface.swift:66` | 宣言だけ。参照0件 | `package`(近隣に合わせるなら`@usableFromInline package`) |
+| `_BaseNode_PtrUniqueCompInterface` | `base/tree_base+interface.swift:77` | 宣言だけ。参照0件 | 同上 |
+| `_Base_MultiplicityHelperProtocol` | `base/tree_base+interface.swift:104` | 宣言だけ。参照0件 | 同上 |
+| `_pointer_type` | `_types/tree_basic+types.swift:218` | `@usableFromInline package protocol TreeEndNodeAccessInterface`(`interfaces/tree_interface+node.swift:27`)が継承するだけ | `@usableFromInline package` |
+| `_BaseNode_KeyProtocol`(とextensionの既定`__get_value`) | `base/tree_base+common.swift:26-45`。コメントに「資料的に残されている」とある | production内に適合型はない。test fixtureとして`Tests/RedBlackTreeTreeTests/Foundamental/TreeFoundamentalValueTests.swift:38`と`Tests/RedBlackTreeTests/RedBlackTreeInternal/Synthetic/RedBlackTreeInternal_98_CoverageTests.swift:21`(同じpackage)が使う | `package` |
+
+- **外部露出:** 5個とも、public signature、`@inlinable`本体の型制約、DocC、benchmarkからの参照はない。
+  利用者から見えるのは名前だけである。
+- **構成による差:** guardはなく、Debug、Release、互換modeで同じである。互換mode側にも参照はない。
+- **Index依存:** ない。
+- **最小の変更範囲:** 3ファイルで5宣言の`public`を変えるだけ。削除はしない。
+  - 原木は将来のportabilityのために、参照用の宣言を意図的に残している(上表のコメント参照)。
+    access縮小はこの意図を保つが、削除はこの意図とぶつかる。
+- **検証項目:**
+  - 通常modeのDebugの`--build-tests`(上記2つのtest fixtureがpackage accessでcompileできること)とReleaseのbuild。
+  - `RedBlackTreeTreeTests`の`TreeFoundamentalValueTests`と、`RedBlackTreeInternal_98_CoverageTests`。
+  - 互換modeのbuild。
+  - Release DocC。
+- **source互換:** 名前だけのpublic protocolが消える。形式上は破壊的変更なので、CHANGELOGに記載すること。
+
+#### Accounting corrections
+
+- 実効publicの件数は、Gate A時点のDebug 963 / Release 892から、Debug 889 / Release 819になった。
+  public protocolはReleaseで56個(Gate Aでは非Balancedが60個)。減った4個は`ThreeWayCompareResult`、
+  `ObverseIterator`、`ReverseIterator`、`UnsafeIteratorProtocol`で、実施済みのbatchと一致する。
+- 冒頭の「現在の一覧」表の`Int.__less()` / `__greater()`(`:23`)と`Int: ThreeWayCompareResult`(`:24`)、
+  および残タスク`:103-104`は、B4-aでpackageへ縮小済みである。表は過去の監査記録として残っているが、
+  現状を表していない。
+- 冒頭表の`UnsafeMutablePointer`のhelper行(`:36`)は、Gate Aで「package中心」と補正済みである。
+
+#### Debug / Release item
+
+`PROGRESS_OVERVIEW.md`の「DebugとReleaseで公開protocol適合集合が変わる箇所を解消」が未完のまま残る理由は、
+Balanced群とDebug比較群(どちらも保留中のcluster)だけである。それ以外のDebug限定の差分は見つからなかった。
+
+#### Remaining gates
+
+- Index契約: D、F、Iの判断。
+- Balanced群: executable API Matrixの方針と、Debug/Releaseの扱い。
+- 世代3を削除するかどうか: owner判断。
+- Memoize群: 外部consumer 2つの移行。
+- B3: 適合型を持つ13個のprotocolは、witnessの提供関係をtypecheckしてからでないと、縮小できるか判定できない。
+
+#### Verdict
+
+`independent cleanup remains`
+
+次の作業は、上の5個のprotocolをpackageへ縮小するbatchとする。完了後は、B3のtypecheck監査に進まない限り、
+独立して進められる公開面整理は終わりになる。
+
+### 原木 reference protocol narrowing result
+
+2026-10-04 22:30 JST、Claude Opus 5.5。closure auditで独立対処可能とした5個を、削除せずにpublicから縮小した。
+差分はaccess修飾子と属性だけで、要件、本体、コメントは変えていない。
+
+| 宣言 | 場所 | 変更 |
+| --- | --- | --- |
+| `_BaseKey_EquivInterface` | `base/tree_base+interface.swift:66` | `public protocol` → `package protocol` |
+| `_BaseNode_PtrUniqueCompInterface` | `base/tree_base+interface.swift:77` | 同上 |
+| `_Base_MultiplicityHelperProtocol` | `base/tree_base+interface.swift:104` | 同上 |
+| `_pointer_type` | `_types/tree_basic+types.swift:218-219` | `public protocol` → `@usableFromInline package protocol` |
+| `_BaseNode_KeyProtocol` | `base/tree_base+common.swift:26` | `public protocol` → `package protocol` |
+| 既定の`__get_value(_:)` | `base/tree_base+common.swift:42-43` | `@inlinable public static` → `@inlinable package static` |
+
+- **access下限:**
+  - 3個の参照0件protocolは、public `@inlinable`本体からも`@usableFromInline` protocolからも参照されないので、
+    `@usableFromInline`を付けない素の`package`でcompileできた。
+  - `_pointer_type`は`@usableFromInline package`の`TreeEndNodeAccessInterface`が継承するので、
+    指示どおり`@usableFromInline package`にした。
+  - `_BaseNode_KeyProtocol`のfixture 2つは、どちらも`#if DEBUG`内で`@testable import`する
+    (`TreeFoundamentalValueTests.swift:37-65`、`RedBlackTreeInternal_98_CoverageTests.swift`は
+    `DEBUG && DEATH_TEST`)。したがって、今のtestだけなら`internal`でも足りる。
+    指示どおり`package`にしたので、非`@testable`の同package testから使える余地も残っている。
+  - Releaseのtest buildには、このfixtureは含まれない。Releaseでpackage accessを確かめたことにはならない。
+- **保持:** `_BaseKey_LessThanInterface`、`_BaseNode_PtrCompInterface`、`_BaseNode_PtrRangeCompInterface`、
+  `_Base_MultiplicityHelperInterface`、`_PointerType`、`_parent_pointer_type`、
+  `_BaseComparableKey_LessThanProtocol`、test fixture 2つは変えていない。
+- **参照の再確認:** `Sources`、`Tests`、`Benchmarks/Sources`で5個の名前を検索した。production内の参照は、
+  `TreeEndNodeAccessInterface`(package)による`_pointer_type`の継承だけだった。testの参照は、上記fixture 2つと
+  `Fixtures.md`だけだった。public signatureからの参照はない。
+- **検証(通常mode):**
+  - `swift build --disable-sandbox --build-tests`: 成功。
+  - `swift test --disable-sandbox --skip-build --filter 'TreeFoundamentalValueTests|RedBlackTreeInternalCoverageTests'`:
+    - `TreeFoundamentalValueTests`: XCTest 11件、失敗0。
+    - `RedBlackTreeInternalCoverageTests`: Swift Testing 5件(`_BaseNode_KeyProtocolのカバレッジ確保`を含む)、すべて成功。
+  - `swift build --disable-sandbox -c release --target RedBlackTreeCollections`: 成功。
+  - `swift build --disable-sandbox -c release --target RedBlackTreeTreeTests`: 成功。
+  - CIと同じRelease DocCの`generate-documentation ... --warnings-as-errors`: 成功。
+- **検証(互換mode):** `-Xswiftc -DCOMPATIBLE_ATCODER_2025`を付けて、`RedBlackTreeTreeTests`と
+  `RedBlackTreeTests`をbuildした。どちらも成功。
+- **source互換:** 名前だけのpublic protocol 5個と、public extension member 1個が外部から見えなくなる。
+  `CHANGELOG.md`の`Unreleased / Changed`に記載した。
+- **残り:** B3の13 protocolのtypecheck監査と、保留中のgate。独立した公開面整理はこれで一区切りになる。

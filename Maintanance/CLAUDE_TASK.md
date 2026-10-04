@@ -2,7 +2,228 @@
 
 Status: Completed
 
-## Active assignment
+## Completed assignment: narrow five 原木 reference protocols
+
+Narrow the five independently actionable 原木 protocols identified by the closure
+audit from public API to package implementation surface. Preserve them as porting
+reference code; do not delete them.
+
+## Objective
+
+Remove five unused/reference-only protocol names from the external public surface
+without changing production behavior, Index design, or the retained 原木 structure.
+
+## Allowed implementation
+
+1. In `Implements/__tree/base/tree_base+interface.swift`, narrow these declarations:
+   - `_BaseKey_EquivInterface`
+   - `_BaseNode_PtrUniqueCompInterface`
+   - `_Base_MultiplicityHelperProtocol`
+   Use the minimum package visibility compatible with their `@inlinable` requirements
+   and neighboring 原木 declarations. Do not change requirements or bodies.
+2. In `Implements/__tree/_types/tree_basic+types.swift`, change `_pointer_type` to
+   `@usableFromInline package`; it is inherited by the existing
+   `@usableFromInline package` `TreeEndNodeAccessInterface`.
+3. In `Implements/__tree/base/tree_base+common.swift`, narrow
+   `_BaseNode_KeyProtocol` to package and narrow its default `__get_value(_:)`
+   implementation from public to the minimum package visibility needed by same-package
+   Debug and Release tests. Preserve `@inlinable`, its requirements, implementation,
+   and the comments explaining that it is retained as reference material.
+4. Add one concise source-breaking entry to `CHANGELOG.md`.
+5. Append exact changes and validation to `EXTERNAL_TYPE_EXTENSION_AUDIT.md`; update
+   this task. Update `PROGRESS_OVERVIEW.md` only if an existing checkbox becomes fully
+   accurate; do not close the overall public-surface item while the 13-protocol B3
+   typecheck audit and deferred gates remain.
+
+## Must preserve
+
+- All five declarations and their semantics as 原木/reference code.
+- `_BaseKey_LessThanInterface`, `_BaseNode_PtrCompInterface`,
+  `_BaseNode_PtrRangeCompInterface`, `_Base_MultiplicityHelperInterface`,
+  `_PointerType`, `_parent_pointer_type`, and `_BaseComparableKey_LessThanProtocol`.
+- Both test fixtures using `_BaseNode_KeyProtocol`.
+- Index/Comparable/Result, Balanced, Memoize, BENCHMARK, iterator, container, and View
+  code.
+
+## Validation
+
+1. Normal mode:
+   - Debug `--build-tests`;
+   - run `TreeFoundamentalValueTests` and
+     `RedBlackTreeInternal_98_CoverageTests`, confirming actual discovery;
+   - Release `RedBlackTreeCollections` build;
+   - build the relevant test targets in Release if needed to prove package access;
+   - Release DocC warnings-as-errors.
+2. Compatibility mode: build `RedBlackTreeCollections` and the relevant test target(s)
+   with `-Xswiftc -DCOMPATIBLE_ATCODER_2025`.
+3. Search the current tree to confirm the five names have no externally required
+   public signature and the expected same-package test references remain.
+4. Run `git diff --check`, inspect the complete diff, and inspect `git status --short`.
+
+## Boundaries
+
+Do not edit `Package.swift`, workflows, benchmarks, unrelated protocols or tests,
+DocC, Index code, or `try/index/1`. Do not stage, commit, switch branches, use network
+access, or alter Git history. Keep the source diff to access modifiers/attributes only;
+do not reformat the files.
+
+Set this task to `Completed` and report only `完了` to the user. Put details in the
+Markdown records. Explain directly only if blocked or a product-owner decision is
+required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+Source diff is access modifiers/attributes only (3 files, 6 lines changed + 1 attribute
+line added). Details are in `EXTERNAL_TYPE_EXTENSION_AUDIT.md`,
+`### 原木 reference protocol narrowing result`.
+
+- `_BaseKey_EquivInterface`, `_BaseNode_PtrUniqueCompInterface`,
+  `_Base_MultiplicityHelperProtocol`: `public` -> plain `package` (no `@usableFromInline`
+  needed; nothing serialized or `@usableFromInline` references them).
+- `_pointer_type`: `public` -> `@usableFromInline package`.
+- `_BaseNode_KeyProtocol`: `public` -> `package`; default `__get_value(_:)`:
+  `@inlinable public static` -> `@inlinable package static`. Comments kept.
+- Note: both `_BaseNode_KeyProtocol` fixtures are `#if DEBUG` and use `@testable import`,
+  so `internal` would also satisfy current tests; `package` was used as assigned. The
+  Release test build therefore does not exercise these fixtures.
+- `CHANGELOG.md`: one source-breaking Unreleased / Changed entry.
+- `PROGRESS_OVERVIEW.md`: unchanged by this task (no checkbox became fully accurate).
+
+Validation:
+
+- `swift build --disable-sandbox --build-tests`: succeeded.
+- `swift test --disable-sandbox --skip-build --filter 'TreeFoundamentalValueTests|RedBlackTreeInternalCoverageTests'`:
+  `TreeFoundamentalValueTests` 11 XCTest cases, 0 failures; `RedBlackTreeInternalCoverageTests`
+  5 Swift Testing tests (incl. `_BaseNode_KeyProtocolのカバレッジ確保`) passed.
+- Release: `--target RedBlackTreeCollections` and `--target RedBlackTreeTreeTests` built.
+- CI Release DocC `generate-documentation ... --warnings-as-errors`: succeeded.
+- Compatibility mode (`-Xswiftc -DCOMPATIBLE_ATCODER_2025`): `RedBlackTreeTreeTests` and
+  `RedBlackTreeTests` targets built.
+- Search over `Sources`, `Tests`, `Benchmarks/Sources`: no public signature references the
+  five names; only package `TreeEndNodeAccessInterface` inherits `_pointer_type`; test
+  references are the two fixtures plus `Fixtures.md`.
+- `git diff --check`: clean. Nothing staged.
+
+## Completed assignment: public-surface cleanup closure audit
+
+Perform a read-only closure audit of the remaining RedBlackTreeCollections public
+surface after the completed narrowing/isolation batches. Do not implement changes.
+
+## Objective
+
+Determine whether any independently actionable, unintended public declaration remains
+outside the already documented deferral clusters. The goal is to decide whether the
+public-surface cleanup can reach a clean stopping point before the Index contract is
+settled.
+
+## Baseline exclusions
+
+Do not re-propose these as immediate work:
+
+- Index representation and everything classified as Index-binding, including
+  `Result` Comparable, `_LazyTieWrap`, `_NodePtrSealing`, `SealError`, raw ranges, and
+  Index-returning benchmark hooks;
+- Balanced protocols / `freeCapacity`, which intentionally act as an executable API
+  matrix and remain coupled to Index/Range and Debug-vs-Release policy;
+- Memoize APIs, which wait for the two external consumers to migrate;
+- `BENCHMARK`-trait public hooks used by the separate Benchmarks package;
+- generation 3 deletion, which requires a separate owner decision;
+- already completed ThreeWay, SortedSequence, View `_isIdentical`, Bound fixture,
+  deprecated iterator, and iterator-protocol batches.
+
+## Required work
+
+1. Re-run the public declaration/conformance inventory against the current working tree,
+   not the pre-cleanup snapshot. Cover public `_` / `__`, `Unsafe*`, public typealiases,
+   external-type extensions, conditional conformances, and Debug/Release differences.
+2. Reconcile every residual item with `EXTERNAL_TYPE_EXTENSION_AUDIT.md` and
+   `RED_BLACK_TREE_REMAINING_TASKS.md` as one of:
+   - intended product/API-matrix surface;
+   - known deferred cluster listed above;
+   - compatibility-only and correctly guarded;
+   - independently actionable unintended public surface;
+   - documentation/accounting error only.
+3. For each independently actionable item, prove repository consumers, external
+   exposure, `@inlinable` constraints, configuration behavior, Index dependence, and
+   the smallest safe change boundary. Do not classify from naming or reference count
+   alone.
+4. Verify whether the progress item “DebugとReleaseで公開protocol適合集合が変わる箇所を解消”
+   should remain open solely because of intentional/deferred clusters, or whether an
+   overlooked independent mismatch remains.
+5. Recommend exactly one next action, or explicitly recommend closing the independent
+   public-surface-cleanup phase until the Index/owner/external-consumer gates move.
+
+## Output
+
+Append a section named exactly:
+
+`### Public-surface cleanup closure audit`
+
+to `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`. Include a compact residual table,
+accounting corrections, remaining gates, and one verdict:
+
+- `independent cleanup remains`
+- `independent cleanup complete; deferred gates only`
+- `inventory inconsistency blocks closure`
+
+Update `PROGRESS_OVERVIEW.md` and `RED_BLACK_TREE_REMAINING_TASKS.md` only if a stale
+statement can be corrected without marking deferred work complete. Update this task
+with concise evidence and set it to `Completed`.
+
+## Boundaries
+
+Only these files may be edited:
+
+- `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
+- `Maintanance/PROGRESS_OVERVIEW.md`
+- `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
+- `Maintanance/CLAUDE_TASK.md`
+
+Do not edit source, tests, Package.swift, CHANGELOG, workflows, benchmarks, or DocC.
+Do not stage, commit, switch branches, use network access, inspect `try/index/1`, or
+alter Git history. Do not run the full suite. Use source/configuration searches and
+targeted typechecking only if a concrete classification cannot otherwise be resolved.
+Run `git diff --check`, inspect the complete diff, and inspect `git status --short`.
+
+Report only `完了` to the user. Put all details in Markdown. Explain directly only if
+blocked or a product-owner decision is required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+I appended `### Public-surface cleanup closure audit` to
+`EXTERNAL_TYPE_EXTENSION_AUDIT.md`. Verdict: `independent cleanup remains`.
+
+- **Inventory:** rebuilt Debug and Release from the current tree and re-extracted the
+  symbol graphs. Effectively public symbols are now Debug 889 / Release 819 (Gate A:
+  963 / 892). Release has 56 public protocols. All Debug-only differences belong to the
+  deferred Balanced and Debug-Comparable clusters; nothing is Release-only.
+- **Method for the protocol check:** for every public protocol, I checked whether any
+  public signature, generic or extension constraint, or protocol inheritance references
+  it, and whether any type conforms to it.
+- **Independently actionable:** five 原木 protocols have no public-signature use and no
+  production conformer:
+  - `_BaseKey_EquivInterface`, `_BaseNode_PtrUniqueCompInterface`, and
+    `_Base_MultiplicityHelperProtocol`: zero references anywhere.
+  - `_pointer_type`: its only user is a `@usableFromInline package` protocol, so the
+    floor is `@usableFromInline package`.
+  - `_BaseNode_KeyProtocol`: used only by two same-package test fixtures.
+- **Recommended next action:** narrow those five from `public` to `package`, without
+  deleting them. Deleting would conflict with the 原木 reference/porting retention
+  intent.
+- **Left in B3:** 13 protocols that also lack public-signature use but do have
+  conformers. Their extensions may supply witnesses for public protocol requirements,
+  so they need a typecheck audit before they can be narrowed.
+- **Accounting corrections recorded:** the original top table's ThreeWay rows and
+  remaining-task lines 103-104 are stale after B4-a.
+- **`PROGRESS_OVERVIEW.md`:** annotated the open Debug/Release checkbox to say that only
+  the deferred clusters remain. It stays unchecked.
+- Validation:
+  - The temporary symbol-graph directory was removed.
+  - `git diff --check` was clean.
+  - `git status --short` shows only `CLAUDE_TASK.md`,
+    `EXTERNAL_TYPE_EXTENSION_AUDIT.md`, and `PROGRESS_OVERVIEW.md` modified.
+
+## Completed assignment: isolate obsolete iterator protocol layer
 
 Isolate the obsolete iterator protocol layer to `COMPATIBLE_ATCODER_2025`, following
 the completed disposition audit. Preserve generation-4 behavior and compatibility mode.

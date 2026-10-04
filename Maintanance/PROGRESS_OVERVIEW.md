@@ -146,7 +146,7 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 - [x] Debug限定`RedBlackTreeBoundExpression.index(_:)` / `.debug(_:)`を`package`へ縮小
 - [x] 旧世代iterator `_Obverse1...3` / `_Reverse1...3`を互換mode専用へ隔離
 - [ ] 意図しない`public`をpackage/internal/TestSupportへ縮小
-- [ ] DebugとReleaseで公開protocol適合集合が変わる箇所を解消
+- [ ] DebugとReleaseで公開protocol適合集合が変わる箇所を解消（2026-10-04時点の残りはBalanced群とDebug比較群のみで、いずれも保留中のcluster）
 
 `EXTERNAL_TYPE_EXTENSION_AUDIT.md`を監査表とする。Gate Aの機械抽出とGate B分類・
 Claudeのread-onlyレビューは完了し、blocking correctionを反映済み。B4-aの

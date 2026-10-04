@@ -215,7 +215,8 @@ where _NodePtr == _Pointer {
 }
 
 // ノードポインタの別名の定義
-public protocol _pointer_type: ~Copyable, _PointerType
+@usableFromInline
+package protocol _pointer_type: ~Copyable, _PointerType
 where pointer == _Pointer {
   associatedtype pointer
 }

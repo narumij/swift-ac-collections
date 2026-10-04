@@ -12,10 +12,10 @@
 ## 優先事項
 
 赤黒木の完成判断を優先する。C++挙動比較はSet/MultiSet/Dictionary/MultiMapの
-4組へ展開済みで、`CppBehaviorReferenceTests` 17件の比較が成功している。
+4組へ展開済みで、`CppBehaviorReferenceTests` 35件の比較が成功している。
 挙動比較ターゲットはルートパッケージへ置き、性能測定用の`CppBenchmarks`は
-`Benchmarks`へ残す。次の確認地点は、Swift CollectionsのSortedCollectionsを
-敬意ある外部参照とするベンチマークのPhase 1（既存監査と比較条件案）である。
+`Benchmarks`へ残す。現在の確認地点は、公開範囲の縮小と、Swift Collectionsの
+`ContainersPreview`が安定した時点で行うIndex契約の最終判断である。
 
 ## 現在地
 

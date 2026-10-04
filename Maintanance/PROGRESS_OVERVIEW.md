@@ -183,9 +183,9 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 
 ### 4. 記録間の同期
 
-- [ ] `Tests/TESTING.md`のC++比較件数を17件から現在の35件へ同期
-- [ ] `AdoptionReadinessAssessment`英日版へLinux実績とlibc++正本／libstdc++参考の区別を同期
-- [ ] 4コンテナのDecodable修正を`CHANGELOG.md`へ記録
+- [x] `Tests/TESTING.md`のC++比較件数を17件から現在の35件へ同期
+- [x] `AdoptionReadinessAssessment`英日版へLinux実績とlibc++正本／libstdc++参考の区別を同期
+- [x] 4コンテナのDecodable修正を`CHANGELOG.md`へ記録
 
 いずれも実装の未完ではなく、Claudeの進捗レビューで判明した記録上の不整合である。
 

@@ -42,6 +42,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set / MultiMapの`removeSafe(at:)`を`erase(exactly:)`へ改名し、戻り値を`Bool`から削除後の`Index?`へ変更
 
 ### Fixed
+- `OptionalArray3DView`のsubscriptが`depth`ではなく`height`を上限に使い、非立方形の4次元配列で有効位置を拒否または範囲外位置を許していた問題を修正
+- RedBlackTreeの4コンテナで、`Decodable`が未整列入力を木の順序へ正しく再構築するよう修正し、Set / Dictionaryの一意性とMultiSet / MultiMapの重複保持を回帰テストで確認
 - `OptionalArray1D` / `OptionalArray1DView`で、subscriptを通じて参照型要素を`nil`へ変更した際、`move()`済みのstorageを再度deinitializeして二重解放する問題を修正
 - 異なるツリー、削除済みnode、世代の異なる再利用slotに属するIndexを誤って有効と扱う問題を修正
 - Copy-on-Writeで分岐した木におけるIndex解決、node世代の継承、stale Index判定を修正

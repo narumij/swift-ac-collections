@@ -565,7 +565,7 @@ API名、戻り値、検査方法が変わり得る。
   - `_TrackingTag.retire`
 - [ ] `RedBlackTreeTestSupport`と`DebugAdditionals`の責務を整理する
 - [ ] UnsafeNode / RawBufferのクロスチェックと単層テストの役割を記録する
-- [ ] `Tests/TESTING.md`の古いC++比較件数と次作業の記述を更新する
+- [x] `Tests/TESTING.md`の古いC++比較件数と次作業の記述を更新する
 
 ## 完成を止めない追加検証
 

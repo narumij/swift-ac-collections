@@ -116,6 +116,11 @@ mapped valueを出現の識別子として使い、同値キー群内の配置�
 2026-10-04時点で、DebugとReleaseの両方で35件のXCTestが失敗0で成功した。詳細と限界は
 `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`にある。
 
+この実装はLLVM libc++の赤黒木を移植・適応したものなので、挙動比較の正本はlibc++とする。
+同じ35件はUbuntu CIのGNU libstdc++でもDebug成功したが、これは移植性の参考情報であり、
+意味論の正解判定には用いない。libstdc++との差だけではSwift側の不具合と判定しない。
+MSVC STLとの比較は現行計画の対象外である。
+
 ```sh
 swift test --disable-sandbox --filter CppBehaviorReferenceTests
 ```
@@ -171,7 +176,8 @@ swift test --disable-sandbox --filter CppBehaviorReferenceTests
 - 公開APIの互換性はまだ保証されておらず、バージョニング方針も明示されていない
 - 外部利用者による長期運用の証拠は限定的である
 - 複数OS、複数Swift toolchain、Sanitizer構成の網羅性には限界がある。seed付きC++比較は
-  ローカルのLinuxでは未実行である
+  Ubuntu CIのGNU libstdc++で成功したが、ローカルのLinuxでは未実行である。正本の
+  Debug・Release実績はmacOSのLLVM libc++による
 - 全ターゲットでstrict memory safetyを恒久適用した状態ではない
 - C++比較は上記の操作を対象とし、全公開APIではない。共通の戻り値がない事実
   (例: `insert(key:value:)`後のrank)は内容比較でのみ確認している

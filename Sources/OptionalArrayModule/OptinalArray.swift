@@ -464,7 +464,7 @@ public struct OptionalArray3DView<Element> {
   public subscript(position: Int) -> OptionalArray2DView<Element> {
     @inline(__always)
     get {
-      precondition(0 <= position && position < height)
+      precondition(0 <= position && position < depth)
       return unsafe .init(
         hasPayload: hasPayload + width * position,
         payload: payload + width * position,

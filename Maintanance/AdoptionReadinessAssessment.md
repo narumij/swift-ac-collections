@@ -126,6 +126,12 @@ On 2026-10-04 the suite ran 35 XCTest cases with 0 failures in both Debug and
 Release; details and limitations are in
 `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`.
 
+LLVM libc++ is the normative comparison because this implementation is adapted
+from its red-black tree. The same 35 tests also passed in Debug on Ubuntu CI with
+GNU libstdc++, but that result is portability evidence rather than the semantic
+oracle. A difference from libstdc++ alone is therefore not classified as a Swift
+defect. MSVC STL comparison is outside the current plan.
+
 ```sh
 swift test --disable-sandbox --filter CppBehaviorReferenceTests
 ```
@@ -187,7 +193,9 @@ repair, and cross-layer post-fix validation. The two facts are recorded separate
 - Public API compatibility is not yet guaranteed, and no versioning policy is stated.
 - Evidence from long-running external users is limited.
 - The OS, Swift toolchain, and sanitizer matrix is incomplete. The seeded C++
-  comparison has not been run locally on Linux.
+  comparison passed on Ubuntu CI with GNU libstdc++, but has not been run locally
+  on Linux; the normative Debug/Release result remains the LLVM libc++ run on
+  macOS.
 - Strict memory safety is not permanently enabled for every target.
 - C++ comparison covers the operations listed above, not every public API. Some
   facts have no common return value (for example, the rank after

@@ -192,6 +192,19 @@ final class OptionalArrayTests: XCTestCase {
     XCTAssertEqual(array[1][1][1][1], 777)
   }
 
+  func testOptionalArray4DViewUsesDepthAsItsOuterBound() {
+    var array = OptionalArray4D<Int>(
+      size0: 1,
+      size1: 1,
+      size2: 3,
+      size3: 1)
+
+    array[0][2][0][0] = 42
+
+    XCTAssertEqual(array[0][2][0][0], 42)
+    XCTAssertEqual(Array(array[0].indices), [0, 1, 2])
+  }
+
   func testOptionalArray4DIndices() {
     let array = OptionalArray4D<Int>(
       size0: 1,

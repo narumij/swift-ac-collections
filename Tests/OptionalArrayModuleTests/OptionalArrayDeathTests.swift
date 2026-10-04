@@ -55,5 +55,12 @@
         array[0][-1][0][0] = 1
       }
     }
+
+    @Test func upperBoundIndexGet_traps_view3D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var array = OptionalArray4D<Int>(size0: 1, size1: 3, size2: 2, size3: 1)
+        array[0][2][0][0] = 1
+      }
+    }
   }
 #endif

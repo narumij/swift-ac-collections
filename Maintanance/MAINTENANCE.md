@@ -100,6 +100,10 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 - 最後に作業したモデル名とバージョンを記録する
 - 実装・検証・記録が独立した区切りまで完了したらコミットを提案し、推奨コミットメッセージを示す。ユーザーから明示的に依頼されるまで、Codexはコミットを実行しない
 - 完了済みログを無制限に蓄積しない。恒久的な知見は規則へ移し、`Current handoff`は直近の状況を中心に保つ
+- Claudeは、作業中に面白いと感じたこと、意外だった挙動、あとでユーザーへ話したい感想があれば、
+  `Maintanance/CLAUDE_OBSERVATIONS.md`へ最低優先度の任意ログとして短く残してよい。判定・根拠・
+  blocking issueとは分離し、記録のために本作業や完了報告を遅らせない。CodexはClaudeへ依頼する際、
+  書きたいことがある場合に限って追記できる旨を伝える
 - リファクタリングドキュメントは、unsafe等がprefixに付与されている部品がいつ登場してどういう推移をへたのか書いて欲しい
 - unsafe!!!以後の切り替えは、#if falseでテストを限定しながら徐々に解除して全体を通す作業をしてたはずで、この点も書いて欲しい
 - cpp comparisonは、API-Matrixの様式で挙動互換一覧が必要そう（全部一致だとしても）
@@ -118,7 +122,6 @@ Communicate with the user in Japanese. Internal instructions and Codex-to-Claude
 ### 完了済みの要望
 
 (ユーザーが確認したら各項目を整理します)
-
 
 ## 文書の役割と正本
 

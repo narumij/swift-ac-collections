@@ -175,7 +175,7 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [x] `_O_UNCHECKED`でも消えないstale Index拒否と移動失敗診断を整備
 - [ ] 必要な候補だけReleaseで試作・計測
 - [ ] 4コンテナ、Range View、DocC、API Matrixへ反映
-- [ ] `index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み。独自の便利APIとして、実装時に名称を相互レビューする）
+- [ ] `index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供と名称維持はCodex・Claudeレビューで決定済み。戻り値は全型で`(inserted: Bool, index: Index)`。Dictionaryは既存値を置換せず既存位置、Multi系は常に新規occurrenceと`true`を返す。`insert(_:)`と`erase(exactly:)`からSee Alsoで発見可能にする）
 - [ ] `erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み）
 - [x] KeyValue Range Viewの範囲外Indexは標準Collection同様のprecondition違反とし、単一Index操作ではO(log N)の範囲内検査や停止保証を公開契約に含めない。独自のBound / range操作は処理内で入力を検査するsafe動作とする
 

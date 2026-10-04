@@ -527,7 +527,7 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 - [x] Comparableあり・なしの2案を比較し、必要APIと計算量を表にする
 - [ ] E: ユーザー実装の`try/index/1`を主PoCとして、公開Indexから失敗状態を除去する設計が現行HEADとQuality Checklistに耐えるかCodex・Claudeが独立検証し、最終判断する（Comparable採否とは分離。ユーザーが明示的に再開を希望するまで、実作業時検証、追加調査、X1、Claude依頼を行わない）
 - [ ] F: Container protocolの安定度を確認し、Comparable採否、失敗時の公開API、計算量を外部契約として固定する
-- [ ] Kで`index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み。実装時に名称を相互レビューする）
+- [ ] Kで`index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供と名称維持はCodex・Claudeレビューで決定済み。戻り値は全型で`(inserted: Bool, index: Index)`。Dictionaryは既存値を置換せず既存位置、Multi系は常に新規occurrenceと`true`を返す。`insert(_:)`と`erase(exactly:)`からSee Alsoで発見可能にする）
 - [ ] Kで`erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み）
 - [x] KeyValue Range Viewの範囲外Index契約を決定（単一Indexは標準Collection同様のprecondition、Bound / range操作は入力を検査するsafe動作）
 - [ ] G: 固定した外部契約から、typealias、固有Index型等の境界表現候補を導く

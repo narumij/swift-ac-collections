@@ -2,7 +2,237 @@
 
 Status: Completed
 
-## Active assignment: review O(1) MappedValues single-Index operations
+## Active assignment: call-site review of the scheduler handle workflow
+
+Re-evaluate the insertion-Index API name using the new executable main-use-case experiment, rather
+than relying primarily on abstract naming rules.
+
+Read
+`Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_5_InsertionTests.swift`, especially
+`test_indexInserting_linuxSchedulerStyleRunQueueExperiment()`. The modeled workflow is a Linux
+scheduler-style red-black-tree run queue: order runnable tasks by virtual runtime, retain the node
+position returned at enqueue time, and later dequeue a sleeping task through that saved handle
+without searching by value again.
+
+### Questions
+
+1. At the actual call sites below, is the operation immediately readable to a Swift user?
+   - `let backgroundNode = runQueue.index(inserting: background)`
+   - `runQueue.erase(exactly: backgroundNode.index)`
+2. Is `index(inserting:)` memorable and discoverable when a user remembers the concept as either
+   "enqueue and retain its node/index" or "insert and give me a handle"?
+3. Does the tuple force awkward `.index` repetition (`backgroundNode.index`), and if so is that a
+   naming problem, a local-variable problem, or a return-contract problem?
+4. Write the same short workflow using each serious alternative from the prior review. Judge the
+   complete two-line enqueue/dequeue pair, not the insertion method in isolation.
+5. Consider whether Swift-facing terminology should remain `Index` rather than expose the
+   implementation idea of a node or generic handle. Do not rename the public Index type.
+6. Give a concrete recommendation for the declaration and the clearest natural local-variable
+   naming pattern. A previous `retain index(inserting:)` verdict is not binding; change it if the
+   executable usage exposes a better API.
+
+Return exactly one verdict: `retain index(inserting:) after call-site review`, `rename to <exact
+declaration base name>`, or `return contract must be decided first`. Record a concise comparison
+and preferred example in `### Result`, set `Status: Completed`, and tell the user only `完了` unless
+a product-owner choice remains.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit the experiment, source, other tests,
+API Matrix, maintenance decisions, DocC, or CHANGELOG. Do not implement the four-container
+expansion, inspect `try/index/1`, use network access, build/test, stage, commit, push, or alter Git
+history. Read-only repository inspection is allowed. Run `git diff --check` and inspect
+`git status --short` at the end.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `retain index(inserting:) after call-site review`.
+
+I read `test_indexInserting_linuxSchedulerStyleRunQueueExperiment()` (uncommitted, in
+`RedBlackTreeSet_5_InsertionTests.swift`). This review was read-only; I built and ran nothing.
+
+1. **Readability.** `runQueue.index(inserting: background)` and
+   `runQueue.erase(exactly: backgroundNode.index)` are both understandable at a glance: "give me
+   the index, inserting X" and "erase exactly this position". The friction in the experiment does
+   not come from either method name. It comes from the local variable:
+   `backgroundNode` holds a **tuple**, not a node. `.index` then reads as "the node's index".
+2. **Memorability and discoverability.**
+   - "Enqueue and keep its index" maps directly onto the name.
+   - "Insert and give me a handle" does not: a user who types `runQueue.insert` will not find it
+     in completion. This is the real cost of the name.
+   - An `insert…`-prefixed name would gain completion but loses on the call-site reading (item 4).
+     The cheaper fix is documentation: add a See Also link to `index(inserting:)` from each
+     container's `insert(_:)`, and from `erase(exactly:)`.
+3. **The `.index` repetition is a local-variable problem**, not a naming or return-contract one.
+   The contract `(inserted: Bool, index: Index)` matches the swift-collections precedent
+   `OrderedSet.append(_:) -> (inserted: Bool, index: Int)`, and that precedent is used
+   destructured. Keep the tuple. In the scheduler case `inserted` is uninteresting, because the
+   pid tie-break makes tasks unique, but for Set and Dictionary it matters in general.
+4. **The whole enqueue/dequeue pair, written with each candidate:**
+
+   ```swift
+   // index(inserting:)
+   let (_, backgroundIndex) = runQueue.index(inserting: background)
+   runQueue.erase(exactly: backgroundIndex)
+
+   // insertAndReturnIndex(_:)  — "AndReturnIndex" is redundant, and inaccurate: it also returns `inserted`
+   let (_, backgroundIndex) = runQueue.insertAndReturnIndex(background)
+   runQueue.erase(exactly: backgroundIndex)
+
+   // insertReturningIndex(_:)  — the same inaccuracy; reads as a variant of SetAlgebra insert(_:)
+   let (_, backgroundIndex) = runQueue.insertReturningIndex(background)
+   runQueue.erase(exactly: backgroundIndex)
+
+   // ensureIndex(for:)  — reads as a lookup, and is dishonest for MultiSet/MultiMap
+   let (_, backgroundIndex) = runQueue.ensureIndex(for: background)
+   runQueue.erase(exactly: backgroundIndex)
+   ```
+
+   Read as a pair, `index(inserting:)` / `erase(exactly:)` is the shortest. Its first line is the
+   only one whose base name matches what is kept, an index, and nothing in it is redundant.
+5. **Keep "Index" as the Swift-facing term.** "Node" exposes the implementation, and "handle"
+   suggests ownership or lifetime guarantees beyond the Index contract. The experiment's local
+   names (`interactiveNode`, `backgroundNode`) and its comment "saved node handle" should become
+   `…Index` / "saved index". This is an edit to the experiment, so it is Codex's call; I did not
+   make it.
+6. **Recommendation.**
+   - Declaration: unchanged.
+
+     ```swift
+     @discardableResult
+     public mutating func index(inserting newMember: Element) -> (inserted: Bool, index: Index)
+     ```
+
+   - Preferred call-site pattern:
+
+     ```swift
+     let (_, backgroundIndex) = runQueue.index(inserting: background)
+     // … later, when the task sleeps:
+     runQueue.erase(exactly: backgroundIndex)
+     ```
+
+     When only the index is needed, use `let backgroundIndex = runQueue.index(inserting: background).index`.
+   - Add a DocC See Also link from `insert(_:)` to `index(inserting:)`.
+   - The earlier naming result's requirements still apply to the four-container expansion: fix the
+     MultiMap doc comment, and specify the Dictionary existing-key behaviour.
+
+Checks: only this file was edited. `git diff --check` was clean. `git status --short` shows Codex's
+uncommitted files plus this one.
+
+---
+
+Status at completion: Completed
+
+## Completed assignment: review the `index(inserting:)` API name
+
+Perform an independent API-naming review before the already-approved four-container expansion of
+`index(inserting:)`. This is naming and contract analysis only; implementation remains deferred.
+
+Codex's provisional recommendation is to retain `index(inserting:)`: the primary result is an
+Index, the argument label makes the insertion side effect visible, and the same spelling can cover
+unique and multi containers. Rejected provisional alternatives are `insertAndReturnIndex(_:)` as
+overly procedural and `ensureIndex(for:)` because MultiSet/MultiMap always insert a new element.
+
+### Required review
+
+1. Inspect the current Set and MultiMap declarations, documentation, tests, API Matrix entries, and
+   adjacent insertion/index naming in all four containers.
+2. Evaluate `index(inserting:)` under Swift API naming conventions at the call site. Explicitly
+   compare it with at least `insertAndReturnIndex(_:)`, `insertReturningIndex(_:)`, and
+   `ensureIndex(for:)`; add another serious candidate only if it is materially better.
+3. Account for the semantic split:
+   - Set/Dictionary are unique-key containers and may return an existing position;
+   - MultiSet/MultiMap always insert a new occurrence;
+   - the API must return the usable position in every case.
+4. Determine whether one shared name remains honest across all four containers. Do not assume the
+   existing `(inserted: Bool, index: Index)` result shape must be identical for all four; identify
+   any return-label issue that must be settled alongside the name.
+5. Review `erase(exactly:)` only for consistency with the paired workflow. Do not redesign it
+   unless its spelling makes the recommended insertion name misleading.
+6. Separate naming conclusions from Index representation, Comparable, `try/index/1`, and the
+   implementation gate. `try/index/1` is explicitly deferred until the user requests its restart.
+
+Return exactly one verdict: `retain index(inserting:)`, `rename to <exact declaration base name>`,
+or `naming decision blocked by return contract`. Record concise reasoning in a `### Result`
+subsection below, set `Status: Completed`, and tell the user only `完了` unless a product-owner
+decision is required.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit source, tests, API Matrix, other
+maintenance files, DocC, or CHANGELOG. Do not implement APIs, switch branches, inspect
+`try/index/1`, use network access, build/test, stage, commit, push, or alter Git history. Use only
+read-only repository inspection, then run `git diff --check` and inspect `git status --short`.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `retain index(inserting:)`.
+
+This is read-only inspection; no build was run. It is independent of the Index representation,
+Comparable, `try/index/1`, and the implementation gate.
+
+1. **Current state.**
+   - Set (`RedBlackTreeSet+Index.swift:284`) and MultiMap (`RedBlackTreeMultiMap+Index.swift:307`)
+     declare `mutating func index(inserting newMember: Element) -> (inserted: Bool, index: Index)`
+     with `@discardableResult`.
+   - Both are guarded by `!COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH`.
+   - Tests: `RedBlackTreeSet_5_InsertionTests.swift:235,248` and
+     `RedBlackTreeMultiMap_5_InsertionTests.swift:99,102`.
+   - Adjacent naming in all four containers: `insert(_:)` returns
+     `(inserted: Bool, memberAfterInsert: Element)`. That includes MultiSet (`RedBlackTreeMultiSet.swift:236`)
+     and MultiMap (`:264,280`), where `inserted` is always `true`. The insertion family also has
+     `insert(_:hint:)`, `update(with:)`, and `updateValue(_:forKey:)`.
+2. **Call-site reading.**
+   - `let (inserted, i) = set.index(inserting: x)` reads as "the index, inserting x". The argument
+     label states the side effect, and the base name states the primary result.
+   - The cost: Swift API guidelines say methods with side effects should read as imperative verb
+     phrases, and `index(…)` is otherwise a non-mutating family (`index(after:)`, `index(forKey:)`).
+     This is acceptable here. `mutating` is enforced by the compiler, so it cannot be called on a
+     `let` or used as a silent query, and the label `inserting:` makes the mutation explicit.
+   - The verb-led alternatives are worse:
+     - `insertAndReturnIndex(_:)` is procedural; "AndReturn" restates the return type.
+     - `insertReturningIndex(_:)` is non-idiomatic. It also reads like a variant of `insert(_:)`
+       while returning a different shape, which invites confusion with the SetAlgebra
+       `insert(_:)`, whose return type cannot change (the source comment notes this).
+     - `ensureIndex(for:)` is dishonest for MultiSet/MultiMap, which always add a new occurrence;
+       "ensure" implies idempotence.
+     - Overloading `insert(_:)` by return type alone would be ambiguous under
+       `@discardableResult`.
+   - No materially better candidate exists.
+3. **Semantic split.** One name stays honest across all four containers:
+   - Set and Dictionary may return an existing position with `inserted == false`, which matches
+     `Set.insert`.
+   - MultiSet and MultiMap always insert and return the new occurrence.
+   - "inserting" names the attempted action in both cases, exactly as `insert(_:)` already does
+     across the same four containers.
+4. **The return contract is not blocking; precedent settles it.** Every container's `insert(_:)`
+   already keeps `inserted` even where it is constantly `true`, so the uniform
+   `(inserted: Bool, index: Index)` shape should be kept for all four. Settle these points
+   alongside the expansion:
+   - **(a) Bug to fix with the expansion.** The MultiMap doc comment is copied from Set. It says
+     "inserting it if necessary" and "If an equivalent element is already present, `inserted` is
+     `false`…". Both are false for MultiMap. The MultiSet/MultiMap doc should say that a new
+     occurrence is always inserted, that `inserted` is always `true`, and that `index` refers to
+     the new occurrence.
+   - **(b) Dictionary must specify existing-key behaviour.** Follow `insert(_:)`: the stored value
+     is not replaced, and `index` refers to the existing pair. The overwrite form remains
+     `updateValue(_:forKey:)`. Without this sentence, "inserting" is ambiguous for a key-value
+     container.
+   - **(c)** `@discardableResult` can stay. The method's purpose is the index, but discarding it
+     degrades only to an ordinary insert.
+5. **`erase(exactly:)`.** It pairs consistently:
+   `let i = s.index(inserting: x).index; …; s.erase(exactly: i)`. The `erase` verb plus a
+   distinguishing label is the library's existing removal style, and it returns the successor
+   `Index?`. Its spelling does not make `index(inserting:)` misleading, so no redesign is needed.
+
+Checks: only this file was edited. `git diff --check` was clean. `git status --short` shows only
+`Maintanance/CLAUDE_TASK.md`.
+
+---
+
+Status at completion: Completed
+
+## Completed assignment: review O(1) MappedValues single-Index operations
 
 Independently review the current uncommitted change that removes the per-operation View-range
 membership search from `RedBlackTreeMappedValuesView` subscript access and `swapAt(_:_:)`.

@@ -1,6 +1,6 @@
 # Index PoC cross-branch identity map
 
-Status: Skeleton reviewed — symbol inventory and semantic correspondence have not started
+Status: Frozen after reviewed inventory batch 4 — resume only for a concrete implementation blocker
 
 ## Purpose
 
@@ -13,6 +13,17 @@ Every side remains a separate object until the user confirms the intended corres
 
 This document does not decide whether the PoC should be adopted, whether an item is obsolete, or
 whether `Index` should conform to `Comparable`.
+
+## Freeze decision (2026-10-05)
+
+The user stopped proactive full-surface inventory because its work and relay cost were too high
+relative to immediate implementation value. Preserve this document and the reviewed identities as
+diagnostic infrastructure, but do not continue enumerating symbols or requesting Claude reviews.
+
+Resume X1 only when concrete implementation work encounters an ambiguous same-named component,
+unwritten merge resolution, failing Quality Checklist item, or another blocker that cannot be
+resolved safely from the active branch alone. On resumption, add the minimum rows needed for that
+specific blocker; do not restart exhaustive inventory automatically.
 
 ## Fixed anchors
 
@@ -82,6 +93,8 @@ containers into one row until the first representative container and View have b
 | `POC-ALIAS-001` | PoC | `1b126ba3` | `Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap+Result.swift` | `public typealias _LazyTieWrappedPtr` | Unconditional declaration in the inspected file | `unknown` | `unknown` | Line 33: alias target is `Result<_LazyTieWrap<_NodePtrSealing>, SealError>`; no attributes | Pending |
 | `POC-ALIAS-002` | PoC | `1b126ba3` | `Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap.swift` | `public typealias _LazyTiedPtr` | Unconditional declaration in the inspected file | `unknown` | `unknown` | Line 41: alias target is `_LazyTieWrap<_NodePtrSealing>`; no attributes | Pending |
 | `POC-NODEPTR-001` | PoC | `1b126ba3` | `Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap.swift` | `_LazyTieWrap<_NodePtrSealing>._NodePtr` (`public typealias`) | Unconditional extension declaration in the inspected file | `unknown` | `unknown` | Lines 105–107: declared in `extension _LazyTieWrap where RawValue == _NodePtrSealing`; alias target is `UnsafeMutablePointer<UnsafeNode>`; no attributes. The current anchor has no `_NodePtr` declaration in this same path | Pending |
+| `CUR-WRAP-001` | current | `aecbcddf` | `Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap.swift` | `public struct _LazyTieWrap<RawValue>` | Unconditional declaration in the inspected file | `unknown` | `unknown` | Lines 24–38: `@frozen public struct`; stored properties are `@usableFromInline package let rawValue: RawValue` and `@usableFromInline package let lazyDetach: _LazyTie`; initializer is `@inlinable package init(rawValue:lazyDetach:)` | Pending |
+| `POC-WRAP-001` | PoC | `1b126ba3` | `Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap.swift` | `public struct _LazyTieWrap<RawValue>` | Unconditional declaration in the inspected file | `unknown` | `unknown` | Lines 24–38: `@frozen public struct`; stored properties are `@usableFromInline package let rawValue: RawValue` and `@usableFromInline package let lazyDetach: _LazyTie`; initializer is `@inlinable package init(rawValue:lazyDetach:)` | Pending |
 
 Mechanical name count only: `git grep` finds 15 `_NodePtr` typealias declarations at the current
 anchor and 16 at the PoC anchor, plus one `associatedtype _NodePtr` on each side. The only path-level

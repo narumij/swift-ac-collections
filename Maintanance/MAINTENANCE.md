@@ -4,6 +4,9 @@
 
 この文書は、公開ドキュメント、コメントドック、Swift-DocC、およびCHANGELOGを継続的に整備するための作業連絡と判断基準をまとめる。
 
+Codex不在時にChatGPTへClaude向け作業の代理発注を頼む場合は、
+`Maintanance/CLAUDE_PROXY_ASSIGNMENT_GUIDE.md`を正本とする。
+
 ドキュメントに関する作業を行ったCodexおよびClaudeは、作業結果、残件、検証内容をこの文書へ都度反映すること。長期的に有効な知見は作業ログだけに残さず、該当する規則へ反映する。
 
 ## User requests for the next session

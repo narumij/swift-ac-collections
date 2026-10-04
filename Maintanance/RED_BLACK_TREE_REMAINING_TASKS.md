@@ -224,6 +224,8 @@ precondition failure等の契約へ変換する。
 - [x] `SealError`、`Unsafe*`、`_` / `__`系public宣言とpublic typealiasを抽出する
 - [x] B: 意図した公開API、境界内部、Index表現拘束、TestCode専用、内部用途へ分類する
 - [x] B4-a: ThreeWay比較宣言群をpackageへ縮小する
+- [x] B4-c: Debug限定SortedSequence実験経路をTestCodeへ分離する
+- [ ] B4-b: Memoize群は外部consumer 2件の移行後に公開終了または正式API化を判断する
 - [ ] source compatibilityを意図する公開API以外を、可能な範囲でpackage/internalへ縮小する
 - [ ] TestCode専用の宣言と実験経路をproduction targetから分離する
 - [ ] C: 外部へ保証する安全性・CoW・走査計算量の契約を確認する

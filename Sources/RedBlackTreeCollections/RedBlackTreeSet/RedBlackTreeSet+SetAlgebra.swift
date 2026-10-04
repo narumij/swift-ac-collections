@@ -119,30 +119,6 @@ extension RedBlackTreeSet: SetAlgebra {
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025 && DEBUG
-  // 実験実装
-  @usableFromInline
-  package protocol SortedSequence: Sequence {
-    // 標準にこういうの有れば楽なのに
-  }
-
-  // 実験実装
-  extension Range: SortedSequence where Self: Sequence {}
-  // 実験実装
-  extension ClosedRange: SortedSequence where Self: Sequence {}
-
-  extension RedBlackTreeSet {
-
-    // 実験実装
-    @inlinable
-    package func union<S>(_ other: S)
-      -> RedBlackTreeSet<Element>
-    where S: SortedSequence, S.Element == Element {
-      .init(__tree_: __tree_.___meld_unique(other))
-    }
-  }
-#endif
-
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 

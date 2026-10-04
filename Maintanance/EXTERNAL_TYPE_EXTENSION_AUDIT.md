@@ -494,3 +494,33 @@ B4-bは技術的には独立できるが、product ownerの判断を待つ。
 
 Gate B分類はClaude reviewを反映済みとして確定する。公開面全体の縮小は未完了だが、
 B4-aは完了した。
+
+### B4-c implementation result
+
+2026-10-04 / Codex。Debug限定の`SortedSequence`、`Range` / `ClosedRange`適合、
+generic `union` / `___meld_unique` / iterator版`___copy_range`を、唯一の利用者である
+`EtcTests.swift`へ移した。productionで使う非genericのtree-to-tree set algebra経路は変更していない。
+
+- Xcode file diagnosticsとproject buildは成功した。
+- `EtcTests.testAPICheck`は1件成功した。
+- Releaseのpackage buildは成功した。
+- `git diff --check`は成功した。
+
+B4-cは完了した。標準型へのtest-only conformanceはtest process内に限定される。
+
+### B4-b external-consumer decision
+
+2026-10-04 / User + Codex。B4-bのMemoize群は現時点でTestCodeへ移さず、外部consumerの
+移行待ちとして保留する。
+
+- `swift-ac-memoize`は次回AtCoder向けでは削除予定。ただし現在の`main`は
+  `AcCollections`（`compatible/AtCoder/2025`）へ依存し、LRU cacheをbalanced treeで実装すると
+  公開説明している。
+- `Memoization`は今後のんびり継続する別プロジェクトで、現在の`main`も
+  `swift-ac-collections` 0.1.30以降の`AcCollections`へ依存している。
+- このrepositoryのMemoize群はproduction内部からは使われていないが、外部packageの依存が
+  残っているため「repository内参照がtestだけ」を根拠に非公開化しない。
+
+解除条件は、(1) `swift-ac-memoize`の次回AtCoder系から依存を削除またはrepositoryを終了し、
+(2) `Memoization`が独自実装へ移行するか、必要な正式APIを別途固定した後とする。それまでは
+新規の製品中心APIとして拡張せず、互換維持対象として扱う。

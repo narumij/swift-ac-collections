@@ -106,11 +106,13 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 | `PermutationModule` | 区切り完了・独立確認待ち | 残した`nextPermutations()`と公開戻り値型の主要`///`、Specification、実装・性能上の制約 | `Permutations`型とDebug-only public memberを含む全public面の独立確認、DocC相当の出力確認 |
 | `OptionalArrayModule` | 部分完了 | `nil`代入時の破棄契約、非所有Viewの寿命、境界挙動 | 残るpublic宣言を列挙し、全件を実装・Death Test・寿命testと照合 |
 | `BareArrayModule` | 既存コメントあり・体系監査未完 | clone所有権、境界、Death Testはテストで検証済み | public宣言のコメントドックを全件監査し、非所有View・clone・破棄責務を明文化 |
-| `AcCollections` | 個別API対象外・module説明要確認 | 通常modeは`RedBlackTreeCollections`、互換modeは加えて`RedBlackTreeModule`と`PermutationModule`を再公開 | この範囲が意図どおりか確認し、ファサードの役割とimport方法をmodule-level文書へ記録 |
-| `RedBlackTreeModule` | 個別API対象外・module説明要確認 | 独自のpublic宣言を持たない再公開ファサード（source directoryは`_RedBlackTreeModule`） | ファサードの役割と互換上の位置づけをmodule-level文書として確認 |
+| `AcCollections` | module説明・再公開範囲確認済み | `RedBlackTreeCollections`、`PermutationModule`、`OptionalArrayModule`、`BareArrayModule`を再公開。互換modeは加えて旧名`RedBlackTreeModule`を再公開 | — |
+| `RedBlackTreeModule` | module説明・互換位置づけ確認済み | 独自のpublic宣言を持たない再公開ファサード（source directoryは`_RedBlackTreeModule`） | — |
 
 `OptionalArrayModule`と`BareArrayModule`はテスト整備の進捗を、コメントドック完了とみなさない。
 再公開専用moduleはmember単位の網羅率ではなく、module-level説明の有無で完了を判断する。
+`AcCollections`は現行の全collection moduleをまとめて再公開する。個別moduleの品質未達が
+確定した場合は、その時点で当該moduleをファサードから外すかを判断する。
 
 ### PermutationModule
 
@@ -185,7 +187,7 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 
 - [ ] `OptionalArrayModule`のpublic宣言を列挙し、既存コメントと実際の契約を照合
 - [ ] `BareArrayModule`のpublic宣言を列挙し、所有権・非所有View・破棄責務を重点監査
-- [ ] `AcCollections`と`RedBlackTreeModule`のmodule-level説明と再公開範囲を確認
+- [x] `AcCollections`と`RedBlackTreeModule`のmodule-level説明と再公開範囲を確認
 - [ ] 適用可能なtargetでDocC生成または同等のリンク・警告確認を行う
 
 これは赤黒木のIndex設計とは独立して進められるが、現在の最優先経路を割り込ませない。

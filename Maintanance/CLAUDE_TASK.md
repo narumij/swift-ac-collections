@@ -2,7 +2,120 @@
 
 Status: Completed
 
-## Active assignment: call-site review of the scheduler handle workflow
+## Active assignment: review the package-wide `AcCollections` facade
+
+Independently review the current uncommitted facade change. The product decision is fixed:
+`AcCollections` re-exports every current collection module, and a module is removed from the facade
+later only if it is confirmed not to meet the package's quality requirements.
+
+Expected normal-mode facade:
+
+- `RedBlackTreeCollections`
+- `PermutationModule`
+- `OptionalArrayModule`
+- `BareArrayModule`
+
+AtCoder 2025 compatibility mode additionally re-exports the legacy `RedBlackTreeModule` shim.
+
+### Required review
+
+1. Verify `Package.swift` dependencies and `Sources/AcCollections/AcCollections.swift` implement
+   exactly the expected normal and compatibility surfaces without redundant or missing imports.
+2. Verify `AcCollectionsTests` proves reachability through `import AcCollections` alone for all four
+   defining modules. Check that the sample operations are valid public uses and not made visible by
+   another explicit test import.
+3. Review both new DocC module pages for factual accuracy, module ownership, compatibility wording,
+   and unsupported guarantees.
+4. Check `PROGRESS_OVERVIEW.md` and `Tests/TESTING.md` accurately record the decision without
+   claiming the unfinished OptionalArray/BareArray quality audits are complete.
+5. Run the `AcCollectionsTests` target and a normal build. If practical within the existing project
+   setup, also check that both DocC catalogs are recognized; do not expand into a full documentation
+   audit.
+
+Return exactly one verdict: `approve all-module AcCollections facade`, `approve after specified
+corrections`, or `reject all-module AcCollections facade`. Record concise evidence in `### Result`,
+set `Status: Completed`, and tell the user only `完了` unless a product-owner choice remains.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit source, tests, DocC, other maintenance
+files, Package.swift, or CHANGELOG. Do not inspect `try/index/1`, change any module's public API,
+perform its quality audit, use network access, stage, commit, push, switch branches, or alter Git
+history. Run `git diff --check` and inspect `git status --short` at the end.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `approve after specified corrections`.
+
+The facade, the tests, and the progress records are correct. The two corrections concern a DocC
+sentence and an untracked catalog.
+
+1. **Surfaces are exact.**
+   - `Package.swift` (unchanged): the `AcCollections` target already depends on
+     `RedBlackTreeCollections`, `RedBlackTreeModule`, `PermutationModule`, `OptionalArrayModule`,
+     and `BareArrayModule`.
+   - `AcCollections.swift` now `@_exported import`s the four collection modules unconditionally.
+     Under `#if COMPATIBLE_ATCODER_2025` it imports only `RedBlackTreeModule`.
+   - `PermutationModule` has moved out of the compat block, with no duplicate import left behind.
+   - `RedBlackTreeModule.swift` is just `@_exported import RedBlackTreeCollections`. Re-exporting it
+     in compat mode is therefore redundant at the symbol level, but intentional for the module name.
+2. **Reachability is proven through `import AcCollections` alone.**
+   - The `AcCollectionsTests` target depends only on `AcCollections` and `RedBlackTreeCollections`.
+     The file imports `AcCollections`, and imports `@testable RedBlackTreeCollections` only under
+     `#if DEBUG`, for the lifetime counters.
+   - `PermutationModule`, `OptionalArrayModule`, and `BareArrayModule` are not dependencies of the
+     test target and are not imported by it, so the three new tests can compile only through the
+     facade.
+   - The sample calls are public API: `Array.nextPermutations()`;
+     `OptionalArray1D(capacity:)` with `subscript(position:) -> Element?`
+     (`OptinalArray.swift:28,64`); `BareArray(repeating:count:)` with
+     `subscript(position:)` (`BareArray.swift:24,51`).
+   - In Release, the RedBlackTree tests also rely on the facade alone.
+3. **DocC pages.**
+   - `AcCollections.md` is accurate. It covers ownership ("does not declare collection types of its
+     own"), the compat-mode wording, and the inclusion policy. "bare multidimensional arrays" is
+     slightly loose, because 1D `BareArray` is included, but it is acceptable.
+   - `RedBlackTreeModule.md` contains one unsupported recommendation: "New code should import
+     `RedBlackTreeCollections` directly". The package's only product is
+     `.library(name: "AcCollections")` (`Package.swift:122`). `RedBlackTreeCollections` is not
+     exposed as a product, so external clients have no supported way to import it.
+4. **Records.** `PROGRESS_OVERVIEW.md` and `Tests/TESTING.md` record the facade decision only. The
+   OptionalArray and BareArray audit rows and checkboxes stay open, and the existing note that test
+   progress is not comment-doc completion is kept. No audit is claimed as complete.
+5. **Validation.**
+   - Normal mode: `swift build --disable-sandbox --build-tests` succeeded.
+   - `swift test --skip-build --filter AcCollectionsTests`: 6 tests passed, including the three new
+     `exposesNextPermutations`, `exposesOptionalArray`, and `exposesBareArray`.
+   - Compat mode: `swift build --target AcCollectionsTests -Xswiftc -DCOMPATIBLE_ATCODER_2025`
+     succeeded.
+   - DocC: Release `generate-documentation --warnings-as-errors` for both `--target AcCollections`
+     and `--target RedBlackTreeModule` succeeded, writing into a `mktemp -d` directory that was then
+     removed. Both catalogs were recognized (`accollections`, `redblacktreemodule`). The only
+     output was the existing compiler warning "-Ounchecked … strict memory safety", which is not a
+     DocC warning.
+
+**Corrections:**
+
+- **(a)** `RedBlackTreeModule.md`, last paragraph. Replace with: "New code should import
+  `AcCollections`, the package's library product."
+- **(b)** `Sources/_RedBlackTreeModule/RedBlackTreeModule.docc/` is untracked (`??`), whereas
+  `AcCollections.docc` is staged. Add it with the batch, or the catalog will be missing from the
+  commit.
+
+Checks: only this file was edited. `git diff --check` was clean. `git status --short` shows Codex's
+files plus this one.
+
+### Codex follow-up
+
+Accepted both corrections. The legacy-module page now directs new external clients to the
+`AcCollections` library product rather than the non-product `RedBlackTreeCollections` target. The
+untracked `RedBlackTreeModule.docc` catalog will be explicitly included in the batch commit.
+
+---
+
+Status at completion: Completed
+
+## Completed assignment: call-site review of the scheduler handle workflow
 
 Re-evaluate the insertion-Index API name using the new executable main-use-case experiment, rather
 than relying primarily on abstract naming rules.

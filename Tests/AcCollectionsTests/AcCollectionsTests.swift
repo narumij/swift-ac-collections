@@ -68,16 +68,21 @@ final class AcCollectionsTests: XCTestCase {
     let multimap: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "b")]
     XCTAssertEqual(multimap.count(forKey: 1), 2)
   }
-}
 
-#if COMPATIBLE_ATCODER_2025
-  extension AcCollectionsTests {
-
-    /// 互換モードでは`PermutationModule`が追加で再公開され、`import AcCollections`
-    /// だけで`nextPermutations()`等が直接使えること。
-    func test_importAcCollections_compatModeExposesNextPermutations() {
-      let result = [1, 2].nextPermutations().map { $0.map { $0 } }
-      XCTAssertEqual(result, [[1, 2], [2, 1]])
-    }
+  func test_importAcCollections_exposesNextPermutations() {
+    let result = [1, 2].nextPermutations().map { $0.map { $0 } }
+    XCTAssertEqual(result, [[1, 2], [2, 1]])
   }
-#endif
+
+  func test_importAcCollections_exposesOptionalArray() {
+    var array = OptionalArray1D<Int>(capacity: 2)
+    array[1] = 7
+    XCTAssertEqual(array[1], 7)
+  }
+
+  func test_importAcCollections_exposesBareArray() {
+    var array = BareArray(repeating: 0, count: 2)
+    array[1] = 7
+    XCTAssertEqual(array[1], 7)
+  }
+}

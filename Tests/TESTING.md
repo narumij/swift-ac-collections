@@ -45,7 +45,8 @@
   所有型・View型のpointer initializerと添字境界も整理して、一意な診断を
   約64→54→38→28→22へ削減した。残りは公開7型を`@unsafe`にするAPI判断とallocate。
   公開API全体へunsafeを伝播させる変更は採らず、storage再設計までstrict恒久適用を保留する。
-- AcCollections: 通常時の4型と互換時のPermutationModule再公開テストを追加済み。
+- AcCollections: RedBlackTreeCollections、PermutationModule、OptionalArrayModule、
+  BareArrayModuleの再公開テストを追加済み。互換modeでは旧名RedBlackTreeModuleも再公開する。
   別テストターゲットでもRedBlackTreeのDebug寿命カウンタを各テスト後に検査・初期化する。
 - PermutationModule: `swift-algorithms`の`permutations()`と重複する全順列列挙系
   (`unsafePermutations()`/`Permutations.All`/`IteratorA`/`SubSequenceA`)と、

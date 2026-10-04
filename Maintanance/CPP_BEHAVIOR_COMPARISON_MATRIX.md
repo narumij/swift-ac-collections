@@ -3,6 +3,17 @@
 この文書は公開API一覧ではなく、`CppBehaviorReferenceTests`がC++標準コンテナと
 実際に比較した挙動の証拠表である。
 
+## 判定基準
+
+RedBlackTreeCollectionsはLLVM libc++の赤黒木実装を移植・適応したものであるため、
+C++挙動一致の正本はLLVM libc++とする。macOS / Apple toolchainでlibc++を使った
+比較結果を、移植元との一致および回帰判定に用いる。
+
+GNU libstdc++など、その他のC++標準ライブラリ実装との比較は参考情報である。
+これらは移植性、C++標準が許す実装差、利用者が遭遇し得る挙動の幅を確認するために
+実行するが、libc++と異なることだけをSwift実装の不具合とは判定しない。逆に、複数実装で
+一致していても、移植元libc++との不一致を正当化する根拠にはしない。
+
 比較対象:
 
 | Swift | C++ |
@@ -73,18 +84,20 @@ curated boundary traceとseeded traceを合わせたsuiteは35 XCTest。
 ## C++標準ライブラリ実装別の結果
 
 ここで分ける軸はコンパイラ名そのものではなく、比較先のC++標準ライブラリ実装である。
+「正本」は一致判定に使う移植元、「参考」は標準上の実装差と移植性を観測する環境を表す。
 
-| 比較環境 | 標準ライブラリ | 構成 | 共通契約の結果 | 実装差として観測した事項 |
-| --- | --- | --- | --- | --- |
-| macOS / Apple toolchain | LLVM `libc++` | Debug / Release | 35 XCTest成功 | MultiMap `find`がSwiftと同じ同値個体を選択した |
-| Ubuntu 24.04 CI | GNU `libstdc++` | Debug | 35 XCTest成功 | MultiMap `find`が同値群の先頭を選択し、Swiftと個体・rankが異なった |
-| Windows | MSVC STL | 未実行 | 未検証 | 一般的な実装傾向から推定せず、証拠なしとする |
+| 位置付け | 比較環境 | 標準ライブラリ | 構成 | 共通契約の結果 | 実装差として観測した事項 |
+| --- | --- | --- | --- | --- | --- |
+| 正本 | macOS / Apple toolchain | LLVM `libc++` | Debug / Release | 35 XCTest成功 | MultiMap `find`がSwiftと同じ同値個体を選択した |
+| 参考 | Ubuntu 24.04 CI | GNU `libstdc++` | Debug | 35 XCTest成功 | MultiMap `find`が同値群の先頭を選択し、Swiftと個体・rankが異なった |
+| 対象外 | Windows | MSVC STL | 実施しない | 未検証 | 2026-10-04ユーザー決定。完成条件・追加検証に含めない |
 
 `libstdc++`で見つかった差は、ordered contents、key、count、bounds、equal range、hint配置の
 差ではない。C++標準が固定しない`find`の同値群内選択だけだった。この結果を受けて、両環境で
 同一に検証できる共通契約からmapped occurrence identityとrankを除外した。
 
-将来MSVC STLや別版のlibc++ / libstdc++で実行した場合は、結果を混ぜずこの表へ行を追加する。
+将来、別版のlibc++ / libstdc++や別の参考実装で実行する明示判断があった場合は、
+結果を混ぜずこの表へ行を追加する。MSVC STL比較は現行計画では実施しない。
 
 ## 標準上の非保証と除外
 

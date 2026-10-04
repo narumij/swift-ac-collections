@@ -74,7 +74,7 @@ Indexの検討では、利用者に見える契約と、その契約を実現・
 ```text
 A. 外部: RedBlackTreeCollectionsの公開面を監査
     ↓
-B. 外部: 意図した公開・境界内部・TestCode・内部へ分類して縮小
+B. 外部: 公開・境界内部・Index表現拘束・TestCode・内部へ分類
     ↓
 C. 外部: 既存の安全性・計算量契約を固定
     ↓
@@ -109,6 +109,11 @@ retroactive conformance問題は消えるが、調査用の失敗状態を公開
 具体的には`SealError`、`Unsafe*`型、`_` / `__`接頭辞の型・typealias・member、
 public typealiasが露出する具体型、public protocol適合を対象にする。
 
+Bでは「Index表現拘束」を独立分類にする。現行Indexのalias chainを成立させる
+`_LazyTieWrap`、`_NodePtrSealing`、`SealError`、中間alias、特殊化`Result`の比較、
+Index range operator等は分類だけ行い、G〜Kで表現を変更するまで狭めない。
+これらをBで先に狭めるとcompile不能になるか、Fより前にIndex表現を決めることになる。
+
 TestCode専用と確認できたfixture・実験経路は先にproduction targetから外せる。
 ただし`Result: Comparable`はIndexのComparable採否に依存するため、分類だけ行い、
 D〜Iの判断が済むまで最終処置を固定しない。
@@ -116,12 +121,15 @@ D〜Iの判断が済むまで最終処置を固定しない。
 公開範囲の縮小はデッドコード判断より先に行う。未使用コードは外部へ見えなければ
 後から削除できるが、意図しないpublic APIは利用者が現れた時点から変更コストを持つ。
 
+A・Bの監査と、Cの既存契約確認、DのComparable要否、Eの失敗Index要否は並行して
+調査できる。DとEは互いに独立した外部契約判断であり、両方の結論をFへ入力する。
+
 一方、外部へ影響させないresolverの`Result`や`SealError`診断は、外部契約を変えずに
 維持・改善できる。ただし境界内部の型を先に仮定して大量に作り込まず、Iの決定後に
 Jで接続する。
 
 未結線コードやテスト支持層の整理は主経路と並行できる。ただしIndex、Range、Viewに
-触れる整理はJ・Kと競合するため、Iの設計確定まで開始しない。MSVC比較や大規模ベンチは
+触れる整理はJ・Kと競合するため、Iの設計確定まで開始しない。追加の参考比較や大規模ベンチは
 主経路の依存先ではなく、完成後にも実施できる追加検証である。
 
 ## 主経路: Indexの表現と契約の確定
@@ -214,7 +222,7 @@ precondition failure等の契約へ変換する。
 - [ ] A: 外部所有型extensionと、内部実装由来に見えるpublic宣言を列挙する
 - [ ] `EXTERNAL_TYPE_EXTENSION_AUDIT.md`のRedBlackTreeCollections対象を確定する
 - [ ] `SealError`、`Unsafe*`、`_` / `__`系public宣言とpublic typealiasを抽出する
-- [ ] B: 意図した公開API、境界内部、TestCode専用、内部用途へ分類する
+- [ ] B: 意図した公開API、境界内部、Index表現拘束、TestCode専用、内部用途へ分類する
 - [ ] source compatibilityを意図する公開API以外を、可能な範囲でpackage/internalへ縮小する
 - [ ] TestCode専用の宣言と実験経路をproduction targetから分離する
 - [ ] C: 外部へ保証する安全性・CoW・走査計算量の契約を確認する
@@ -222,6 +230,9 @@ precondition failure等の契約へ変換する。
 - [ ] Comparableあり・なしの2案を比較し、必要APIと計算量を表にする
 - [ ] E: 利用者へ失敗Indexを公開する必要があるか判断する
 - [ ] F: Comparable採否、失敗時の公開API、計算量を外部契約として固定する
+- [ ] `index(inserting:)`を4コンテナのどこまで提供するか決める
+- [ ] `erase(exactly:)`を4コンテナのどこまで提供するか決める
+- [ ] KeyValue Range Viewの範囲外Indexをどの公開契約で拒否するか決める
 - [ ] G: 固定した外部契約から、typealias、固有Index型等の境界表現候補を導く
 - [ ] 標準`Result`へのretroactive `Comparable`適合を正式案から除外する
 - [ ] 調査用の`SealError`情報を、Index本体から分離しても維持できることを確認する
@@ -245,9 +256,9 @@ precondition failure等の契約へ変換する。
 
 ## Kで処理するIndex依存タスク
 
-- [ ] `index(inserting:)`を4コンテナのどこまで提供するか確定する
-- [ ] `erase(exactly:)`を4コンテナのどこまで提供するか確定する
-- [ ] KeyValue Range Viewの値変更で、範囲外Indexを拒否する契約とテストを確定する
+- [ ] Fで決定した`index(inserting:)`の提供範囲を実装・テストへ反映する
+- [ ] Fで決定した`erase(exactly:)`の提供範囲を実装・テストへ反映する
+- [ ] Fで決定したKeyValue Range Viewの範囲外Index契約を実装・テストへ反映する
 - [ ] cross-tree indexingのテストが公開契約と一致しているか再監査する
 - [ ] eraseのrange sanitizeをすり抜ける入力に対するテストを追加する
 - [ ] MultiMapの`unsafeAddress`利用経路をReleaseでも確認する
@@ -272,7 +283,6 @@ API名、戻り値、検査方法が変わり得る。
 
 ## 完成を止めない追加検証
 
-- MSVC STLとのC++挙動比較
 - ランダム比較失敗時の自動縮小
 - SortedCollectionsとの大規模性能比較
 - Strict Memory Safetyの全面適用に向けたstorage再設計
@@ -281,6 +291,8 @@ API名、戻り値、検査方法が変わり得る。
 
 これらは重要だが、現時点では赤黒木の完成条件へ含めない。公開契約または安全性に
 新しい問題が見つかった場合のみ主経路またはIndex依存タスクへ昇格する。
+
+MSVC STLとの比較は2026-10-04のユーザー決定により実施しない。保留タスクにも置かない。
 
 ## 完成条件
 

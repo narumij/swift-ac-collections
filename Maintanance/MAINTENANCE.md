@@ -276,7 +276,8 @@ MemoryLayoutテストから`_Bucket` / `_BucketAllocator`依存の横断一致�
 同じ作業で、公開Compatibility文書とは別に、C++比較テストが実証した範囲だけをまとめる
 `CPP_BEHAVIOR_COMPARISON_MATRIX.md`を新設した。4型×操作、境界、seed条件、比較した返却事実、
 標準上の非保証と未比較項目を一覧化し、今後のC++ compareの正本サマリーとする。結果は
-LLVM libc++、GNU libstdc++、未実行のMSVC STLを混同せず、標準ライブラリ実装別に記録する。
+LLVM libc++を正本、GNU libstdc++を参考情報として混同せず記録する。MSVC STL比較は
+2026-10-04のユーザー決定により実施せず、完成条件や保留タスクにも含めない。
 
 Claudeなどへ委任した作業の詳細な完了報告、検証結果、変更ファイル、制約、懸念は、Codexが
 監査できる指定のタスクmdへ記録し、完了時にユーザーへ直接報告しない。作業がblocked、

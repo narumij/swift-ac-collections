@@ -1,15 +1,396 @@
 # Codex-to-Claude Work Request
 
-Status: Idle — no active assignment
+Status: Assigned — answer the remaining-task fit interview
 
 ## Active assignment
 
-No work is assigned. Do not edit files, resume a previous task, or select work from
-the maintenance backlog. Wait for a new bounded assignment from Codex/the user.
+Read and answer the Claude side of:
 
-Cancelled: the broad Compatibility-document audit was force-stopped by the user and
-must not be resumed. The dedicated C++ evidence matrix was subsequently created by
-Codex as `Maintanance/CPP_BEHAVIOR_COMPARISON_MATRIX.md`.
+- `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`
+
+This is a self-assessment and assignment-design interview, not an implementation task.
+Evaluate your fit based on how you actually work in this repository, including both
+successful long-form test expansion and the observed tendency to broaden scope or
+over-report when boundaries are unclear.
+
+For every row in the remaining-task table:
+
+- fill `Claude自己評価・懸念` with one compact entry using
+  `主担当可` / `見本またはレビュー必須` / `補助のみ`;
+- name the most important risk or prerequisite in the same cell;
+- challenge the existing Claude score or assignment proposal when you disagree, but
+  give a concrete repository-specific reason;
+- distinguish work you can implement well from work where your stronger role is
+  adversarial/read-only review;
+- state where you need a Codex example, design decision, stop point, or final review.
+
+After the table, add a short `## Claudeヒアリング回答` section answering the common
+questions once at the level of overall working style. Include:
+
+- the three task shapes where you are most useful;
+- the three task shapes most likely to go wrong;
+- the minimum instructions needed to keep scope bounded;
+- when you should stop and return the work to Codex;
+- whether detailed findings should always go to the task MD while the user receives
+  only `完了`.
+
+Do not edit the Codex self-assessment column, silently rewrite Codex's ratings, alter
+source/tests, change any other maintenance document, implement a residual task, run
+tests, or reopen cancelled work. You may suggest score/assignment changes in your own
+cell or response section; Codex will decide whether to apply them.
+
+Keep each table response short. This is not an invitation to produce an essay for each
+row. When finished, change this file's status to `Completed` and append a one-paragraph
+result note immediately below this assignment. Report only `完了` to the user; the
+substantive answer belongs in `AGENT_TASK_FIT_INTERVIEW.md`.
+
+## Completed assignment: review the consolidated progress overview
+
+Perform a read-only factual review of:
+
+- `Maintanance/PROGRESS_OVERVIEW.md`
+
+Check it against the current source, tests, package manifest, git-visible documentation,
+and the existing maintenance records. The purpose is to make the overview trustworthy,
+not to expand the project scope or restart old work.
+
+Review all modules, not only `RedBlackTreeCollections`. In particular:
+
+- identify completed or active work missing from the overview for
+  `PermutationModule`, `BareArrayModule`, `OptionalArrayModule`, `AcCollections`, and
+  `_RedBlackTreeModule`;
+- verify that every `完了`, `ほぼ完了`, `部分完了`, `保留`, and `中止` judgment has
+  evidence and is not overstated;
+- review the new module-by-module comment-documentation table. Distinguish existing
+  comments from a systematic public-API audit, and check whether each module's stated
+  remaining work is accurate;
+- verify that facade/re-export modules really have no independent public declarations,
+  and whether module-level documentation is the right remaining unit;
+- check that the LLVM libc++ normative comparison, GNU libstdc++ reference-only result,
+  and explicit exclusion of MSVC are represented consistently;
+- check that the current work order reflects real dependencies: public-surface audit
+  and Index contract first, dead-code judgment afterward, without falsely making
+  independent non-RedBlackTree documentation depend on Index;
+- identify stale claims, duplicated tasks, missing evidence documents, incorrect names,
+  or material completed work recorded only elsewhere;
+- distinguish a missing progress entry from a new task proposal. Do not manufacture
+  completion claims from raw comment counts or passing tests alone.
+
+Do not edit `PROGRESS_OVERVIEW.md` or any source/test/documentation file. Do not implement
+fixes, resume benchmarks, run the full test suite, or reopen the cancelled broad
+Compatibility-document audit. Narrow read-only searches are allowed; builds are not
+needed unless a specific factual claim cannot otherwise be checked.
+
+Append a concise `### Review result` directly under this assignment containing:
+
+- blocking factual corrections;
+- missing progress items;
+- non-blocking wording or ordering improvements;
+- confirmed claims;
+- an explicit verdict on whether the overview is safe to use as the project progress
+  index.
+
+Give file/line or maintenance-record evidence for material corrections. Then change
+the status to `Completed`. Report only `完了` to the user; all details belong in this
+file for Codex to read.
+
+### Review result (2026-10-04, Claude Opus 5.5)
+
+Read-only: grep/sed of source, manifest, tests, and maintenance records. No build or test was run.
+Line numbers refer to `Maintanance/PROGRESS_OVERVIEW.md` (abbreviated `PO`) unless a file is named.
+
+**Blocking factual corrections**
+
+1. *PermutationModule's AtCoder 2025 compatibility mode is missing, so 「ほぼ完了」 is overstated.*
+   The plan is user-requested (`MAINTENANCE.md:91-93`) and still unimplemented.
+   `AtCoder2025CompatibilityPlan.md:101-110` lists every implementation step as 「今回実施しない」.
+   `Sources/PermutationModule` contains neither `COMPATIBLE_ATCODER_2025` nor `Compatibility/`, and
+   `COMPATIBLE_ATCODER_2025` is still a commented manual define (`Package.swift:36`), not a trait.
+   PO:33 and PO:104 should list this as 未着手/保留 with the plan as evidence. PO:178 (ABC328E) is
+   step 3 of that same plan (`AtCoder2025CompatibilityPlan.md:86-91`), so it is not an independent
+   item. "PO:30 Permutationは完了" applies only to the current-mode comment docs.
+2. *Module name.* The module/target is `RedBlackTreeModule`; `_RedBlackTreeModule` is only its
+   directory (`Package.swift:226-229`, `path: "Sources/_RedBlackTreeModule"`). Fix PO:108 and PO:162.
+3. *The AcCollections re-export scope is stated too broadly.* PO:107 and PO:130 say re-export works
+   in normal and compat mode. Normal mode re-exports only `RedBlackTreeCollections`. Compat mode
+   adds `RedBlackTreeModule` and `PermutationModule` (`Sources/AcCollections/AcCollections.swift:1-6`).
+   `OptionalArrayModule` and `BareArrayModule` are dependencies of `AcCollections`
+   (`Package.swift:184-196`) but are never re-exported, and the only product is `AcCollections`
+   (`Package.swift:122`). The tests cover exactly RBT in normal mode and `nextPermutations()` in
+   compat mode (`Tests/AcCollectionsTests/AcCollectionsTests.swift:48-79`). The overview should
+   state this scope as fact. Whether it is intended is a facade-documentation question for the
+   user or Codex, not something already verified.
+4. *Permutation comment-doc 「完了」 does not meet the recorded stop condition.* `MAINTENANCE.md`
+   (停止条件, 2026-10-02 21:08) requires independent Codex and Claude checks that include DocC
+   output. Only `RedBlackTreeCollections` has a DocC catalog and a CI DocC step (single `.docc`
+   under `Sources/RedBlackTreeCollections`; `.github/workflows/swift.yml` builds `--target
+   RedBlackTreeCollections` only). Write PO:104 as 区切り完了 (独立確認・DocC未実施), not 完了.
+   Also, public `enum Permutations` has no `///` (`Sources/PermutationModule/Permutations.swift:27-29`),
+   and `SubSequenceN._copyCount` is public only under `AC_COLLECTIONS_INTERNAL_CHECKS`
+   (Debug, :172-174). That is a Debug-only public member, the same class of issue as the RBT
+   Debug/Release surface gate.
+
+**Missing progress items (completed or active work recorded elsewhere)**
+
+- Decodable bug fix for unsorted and duplicate input in all 4 RBT types (2026-10-03), with
+  regression tests: `RedBlackTreeSet_13_CodableTests.swift:18`, `RedBlackTreeDictionary_10_CodableTests.swift:20`,
+  `RedBlackTreeMultiSet_15_CodableTests.swift:18`, `RedBlackTreeMultiMap_10_CodableTests.swift:22`.
+  It was found by the comment audit (`MAINTENANCE.md:292`). It is absent from PO:38-47, and it is
+  also absent from `CHANGELOG.md` Fixed. Record that gap; do not fix it here.
+- OptionalArray1D/View double-free on `nil` assignment, fixed (`CHANGELOG.md:42`). PO:123-130
+  lists only the BareArray clone fix.
+- Strict memory safety permanently applied to `AcCollections` and `RedBlackTreeModule` with
+  0 warnings (`Package.swift:194,231`; `MAINTENANCE.md:85`). PO only mentions Permutation.
+- DocC catalog plus Release `--warnings-as-errors` CI and GitHub Pages publishing (`CHANGELOG.md`
+  Added; `swift.yml:49-74`). PO:90 mentions only the Topics reorganization.
+- The RBT public comment audit series (Sequence/transform/protocol conformance comments,
+  `MAINTENANCE.md:292` and neighbouring entries). PO:103 summarizes it, but this is evidence
+  for the 「宣言コメント」 part and could be cited.
+- Missing evidence documents in 正本 (PO:207-216): `CHANGELOG.md`; `CombiningAPIPerformanceEvidence.md`
+  (needed by PO:177); `PermutationModule/{Specification,ImplementationPlan,ProductReadinessAssessment,
+  AtCoder2025CompatibilityPlan}.md`; `REFACTORING_FROM_ATCODER_2025.md` (PO:95);
+  `AdoptionReadinessAssessment*.md` (PO:31).
+
+**Non-blocking wording / ordering improvements**
+
+- Stale claims in documents that PO marks complete or canonical:
+  - `Tests/TESTING.md:15` still says `CppBehaviorReferenceTests` 17件 (actual 35). PO:209 names
+    `TESTING.md` as canonical. The update task exists only in `RED_BLACK_TREE_REMAINING_TASKS.md`.
+  - `AdoptionReadinessAssessment.md:189-190,221` and `.ja.md:173-174,200` still list Linux
+    validation as unmeasured or as a gate, and do not state the libc++-normative / libstdc++-reference
+    split. This conflicts with PO:27 and PO:31 「完了・更新継続」.
+- PO:79: the Linux Death Test run used `SKIP_DEBUG_LIFETIME_BALANCE_CHECKS` (this file, MultiMap
+  Linux note). Qualify it, so that no one reads it as Linux lifetime-balance evidence. Linux
+  lifetime balance relies on the normal CI Debug job; cite that run if one is claimed.
+- Duplicated or misplaced tasks:
+  - PO:169-170 are already main-path items in PO:136-140 and the audit's checklist.
+  - PO:171-173 (`index(inserting:)`, `erase(exactly:)`, KeyValue View rejection) are now F-step
+    contract decisions (`RED_BLACK_TREE_REMAINING_TASKS.md:233-234`), not open 判断待ち. Move them
+    under PO §2.
+  - PO §2 omits step C (confirming the existing safety/CoW/traversal contracts).
+- PO:198-205 is presented as a linear sequence. Per `RED_BLACK_TREE_REMAINING_TASKS.md:124`, the
+  A/B audit, C, D, and E can run in parallel, and PO:165 says non-RBT comment docs are independent.
+  Mark steps 3 and 6 as parallelizable rather than "after".
+  Step 2 should exclude the Debug-only Comparable group (`_NodePtrSealing`/`_LazyTieWrap`/`_LazyTie`/
+  `Result`). That group is classify-only until D–I.
+- PO:87 「4コンテナの英日ガイド」: the four-type set exists only under
+  `Sources/RedBlackTreeCollections/Documentation/Head/`. Root `Documentation/` has Set, MultiSet,
+  and MultiMap guides, with no Dictionary guide. Name the canonical location.
+- Comment-doc table: the BareArray/OptionalArray rows correctly separate test evidence from a
+  comment audit (PO:110). As a sanity hint only, not as completion evidence: about 6/29 and about
+  10/29 public declaration lines are preceded by `///` in `BareArray.swift` / `OptinalArray.swift`.
+  This matches 「体系監査未完」. The OptionalArray 「重要契約のみ更新」 claim is supported by
+  `MAINTENANCE.md:303`.
+
+**Confirmed claims**
+
+- The C++ standard-library roles are consistent across PO:27,69-70,193,
+  `CPP_BEHAVIOR_COMPARISON_MATRIX.md:9-12,91-93,100`, `RED_BLACK_TREE_REMAINING_TASKS.md:23,295`, and
+  `MAINTENANCE.md:278-279`: libc++ normative with 35 tests in Debug and Release, libstdc++ reference
+  with 35 tests in Debug, MSVC excluded.
+- The MultiMap `find` non-guarantee is reflected in `Documentation/Compatibility/multimap.ja.md:104,112`.
+- Neither facade declares anything public of its own. Their sources are only `@_exported import`s.
+- The PO:142-143 claim that the topology review is reflected holds:
+  `EXTERNAL_TYPE_EXTENSION_AUDIT.md:24-25,29,35,39,86,104,110-111` and
+  `RED_BLACK_TREE_REMAINING_TASKS.md:77,112-115,124,225`.
+- Permutation: strict memory safety is permanent (`Package.swift:318`), the API was reduced to
+  `nextPermutations()` (`CHANGELOG.md` Removed; `TESTING.md:50-58`), and the Sendable rationale is
+  documented (`Permutations.swift:153-155`).
+- BareArray/OptionalArray strict memory safety is deferred pending storage redesign (`MAINTENANCE.md:86-89`).
+- SortedCollections is 保留 after the Phase 3 pilot (`SORTED_COLLECTIONS_BENCHMARK_TASK.md:3,443-462`).
+- The Compatibility-audit stop is recorded in 中止 with a no-resume rule.
+
+**Verdict:** The overview is usable as a progress index once corrections 1–4 are applied
+(Permutation compat-mode status, module name, re-export scope, Permutation doc-completion wording)
+and the missing items are added. Until then it overstates Permutation and facade completeness. The
+RBT main-path content and the C++ comparison representation are accurate.
+
+## Completed assignment: review RedBlackTree remaining-task topology and public-surface audit
+
+Perform a read-only review of these two new planning documents:
+
+- `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
+- `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
+
+The purpose is to check whether the remaining work is ordered by real dependencies and
+whether declarations that can affect library users are identified before dead-code
+cleanup. The intended three layers are:
+
+1. external contract;
+2. implementation choices that can still affect clients, compatibility, overload
+   resolution, conformances, layout, or serialized client code;
+3. implementation details that are genuinely hidden from clients.
+
+Review the documents against the actual source. In particular:
+
+- verify the claims about `RedBlackTreeIndex`, its `Result` representation, and the
+  Debug-only retroactive `Result: Comparable` conformance;
+- check the external-type extension inventory for material omissions or incorrect
+  visibility classifications, including `Int`, `Result`, `Range`, `ClosedRange`,
+  `String`, `MemoryLayout`, pointer types, and any other standard-library-owned type;
+- distinguish public members, public/retroactive conformances, package/internal
+  members, `@usableFromInline`, and `@inlinable` effects precisely;
+- verify which candidates are genuinely test-only by checking all source and test
+  references. Pay particular attention to the `SortedSequence` experiment,
+  `_LazyTieWrap`/`Result` Comparable support, and `unsafe(tree:rawTag:)`;
+- review the A-to-L dependency order. Flag choices that are independent, incorrectly
+  serialized, circular, or placed after work that depends on them;
+- check that public-surface narrowing is correctly prioritized ahead of dead-code
+  decisions without making unrelated PermutationModule API block RedBlackTree
+  completion;
+- identify any public `_`/`__`, `Unsafe*`, `SealError`, public typealias, or protocol
+  conformance that should be included in the public-surface gate.
+
+Do not implement fixes, move code, change access levels, run broad benchmarks, resume
+the cancelled Compatibility audit, or edit either reviewed document. This assignment
+is review only. Read-only searches and narrowly targeted build/typecheck checks are
+allowed if needed, but do not run the full suite merely for a documentation review.
+
+Append a concise `### Review result` under this active assignment containing:
+
+- blocking corrections, if any;
+- non-blocking improvements;
+- confirmed claims;
+- an explicit verdict on whether the topology is safe to use as the next work order.
+
+Include source file and line evidence for every material correction. Then change the
+status to `Completed`. Report only `完了` to the user; all detail belongs in this file
+for Codex to read.
+
+Cancelled context remains binding: the broad Compatibility-document audit was
+force-stopped by the user and must not be resumed.
+
+### Review result (2026-10-04, Claude Opus 5.5)
+
+Read-only: source/test grep only. No build, test, or edit other than this section and the status line.
+Paths are relative to `Sources/RedBlackTreeCollections/` unless they start with `Tests/`.
+
+**Blocking corrections**
+
+1. *`Int: ThreeWayCompareResult` is a public conformance, not an internal one.* The
+   protocol is `public` (`Implements/__tree/interfaces/tree_interface+three_way.swift:28-34`,
+   split-line `public` / `protocol`, only `@_documentation(visibility: internal)`).
+   `Int.__less()` / `__greater()` (`.../three_way_compare/three_way_compare_result.swift:28-33`)
+   are its requirement witnesses, so they cannot become non-public while the protocol
+   and the conformance stay public. The decision unit is the protocol's visibility. Its
+   only uses are the package protocol `_ThreeWayResultType` (`tree_interface+three_way.swift:38-41`)
+   and `__eager_compare_result` (`three_way_compare_result.swift:36-37`), so
+   `@usableFromInline package` looks feasible. That remains to be verified. Also
+   inventory `public typealias __int_compare_result = Int` (`three_way_compare_result.swift:24`).
+2. *Material omissions in the external-type inventory:*
+   - Public global operators on the `Result` specialization: `..<`, `...`, prefix `..<`/`...`,
+     postfix `...` taking `RedBlackTreeIndex` (`Implements/Index/UnsafeIndexV3RangeExpression.swift:44-70`).
+     In Debug, `Result` is also `Comparable`, so the stdlib `Comparable` range operators become
+     candidates too. Code such as `let r: Range<RedBlackTreeIndex> = a..<b` therefore
+     type-checks only in Debug. This is a client-visible difference in overload
+     resolution between Debug and Release.
+   - `UnsafeMutablePointer<UnsafeNode>._NodeRef` public typealias (`Implements/__tree/unsafe_node/unsafe_node+pointer.swift:26`),
+     next to the listed `_NodePtr` (:25).
+   - `extension _TrackingTag` is an extension of `Int`, or `Int32` under `USE_COMPACT_NODE_METADATA`
+     (`Implements/__tree/_types/tree_basic+tag.swift:46-79`). It adds `package @inlinable`
+     statics `nullptr`/`end`/`retire`/`debug` to the whole integer type. The `Int` rows miss it.
+   - A compat-only public member on `Result<_NodePtrSealing, SealError>`: `exists`
+     (`Implements/Deprecated/unsafe_node/unsafe_node+pointer+safe+deprecated.swift:66-70`, under
+     `COMPATIBLE_ATCODER_2025`). List it as a compat-only exception. Do not open the cancelled compat audit.
+   - The Debug-only `Comparable` group has more than two members: public `_NodePtrSealing: Comparable`
+     (`Implements/__tree/unsafe_node/Seal/_NodePtrSealing.swift:144-170`), public conditional
+     `_LazyTieWrap: Comparable` (`Implements/RawBuffer/_LazyTieWrap.swift:51-67`), package
+     `_LazyTie.<` (`Implements/RawBuffer/_LazyTie.swift:84-92`), and retroactive `Result: Comparable`
+     (`Implements/RawBuffer/_LazyTieWrap+Result.swift:107-124`). All four must be moved or deleted
+     together. Completion condition 4 should name all of them.
+3. *Topology: B cannot narrow the declarations that make up the Index type.*
+   `public typealias RedBlackTreeIndex = UnsafeIndexV3 = _LazyTieWrappedPtr =
+   Result<_LazyTieWrap<_NodePtrSealing>, SealError>` (`Implements/Index/UnsafeIndexV3.swift:27,30`,
+   `_LazyTieWrap+Result.swift:33`). This forces `_LazyTieWrap`, `_NodePtrSealing`, `SealError`, the
+   intermediate aliases, the Index `==`/`!=` (`_LazyTieWrap+Result.swift:35-53`), and the Index range
+   operators above to stay public. B therefore needs an explicit fourth class:
+   "Index-representation-bound — classify in A/B, act in G–K". Without it, B either fails to
+   compile or quietly decides the representation before F. That would contradict
+   「境界内部の表現は、外部契約より先に固定しない」. The class must cover the whole
+   declaration group, not only `Result: Comparable`.
+
+**Non-blocking improvements**
+
+- Ordering: C, D, and E do not depend on B, so they can run in parallel with A/B. D and E are
+  independent of each other and both feed F. Keep "narrow before dead-code" as stated. It is correct.
+- Three items in "Kで処理するIndex依存タスク" are contract decisions, not implementation:
+  `index(inserting:)`, `erase(exactly:)`, and KeyValue Range View out-of-range rejection.
+  Decide them in F, or in a step between F and G, so that K only implements them.
+- `_SealedPtr` leaks into the public surface regardless of the Index design, through the public
+  `init(_:_start:_end:)`/`_sealed_start`/`_sealed_end` of `UnsafeIterator` types
+  (`Implements/Iterator/UnsafeIterator/UnsafeIterator+Payload.swift:37-52`, `+Key.swift:38-53`).
+  Narrowing the `Result` aliases requires narrowing those iterator members as well.
+- The specialized `==`/`!=` on `_SafePtr` (`Implements/__tree/unsafe_node/unsafe_node+pointer+safe.swift:86-104`),
+  `_SealedPtr` (:172-190), and Index duplicate stdlib's conditional `Result: Equatable`. Every
+  payload type is Equatable, so generic contexts already use the stdlib `==`, which has the same
+  semantics. The overloads only affect concrete-context resolution. The `_SafePtr`/`_SealedPtr`
+  overloads do not depend on the Index and can be decided in B.
+- Add these to the A gate list. `SealError` is a public non-`@frozen` enum. Its case set depends on
+  a define: `crossTree` exists only when `!ALLOW_CROSS_TREE_INDEX` (`unsafe_node+pointer+safe.swift:260-263`).
+  It has public `Equatable`/`Comparable`/`Hashable` (:272-274). The public typealiases are `_SafePtr` (:84),
+  `_SealedPtr` (:170), `_SafeRange` (`Implements/RawRange/_RawRange.swift:104`),
+  `_SafeRangeExpression` (`Implements/RawRange/_RawRangeExpression.swift:207`), `_LazyTiedPtr`
+  (`_LazyTieWrap.swift:41`), and `UnsafeNode.Seal`, which is trait-dependent `UInt32`/`UInt16`
+  (`Implements/__tree/unsafe_node/unsafe_node.swift:167-171`). The A list should also cover public
+  global functions/operators: `start`/`last`/`end`/`lowerBound`/`upperBound`/`find`
+  (`Implements/BoundsExpression/RedBlackTreeBoundExpression+TopLevel.swift:31-79`) and
+  `equalRange` plus the bound operators (`RedBlackTreeBoundRangeExpression.swift:83-122`).
+  They are probably the intended DSL; confirm that rather than assume it.
+- A concrete layout example for the "@frozen layout" item: the stored property `trackingTag` of the
+  `@frozen public _NodePtrSealing` exists only when `!USE_LAZY_DETACH` (`_NodePtrSealing.swift:29-42`).
+- SortedSequence move: the production overload `___meld_unique(_ other: UnsafeTreeV2)`
+  (`Implements/UnsafeTreeV2/UnsafeTreeV2+SetAlgebra.swift:42`) is used by the public `union`/`formUnion`
+  (`RedBlackTreeSet/RedBlackTreeSet+SetAlgebra.swift:35,70`). Only the
+  `#if !COMPATIBLE_ATCODER_2025 && DEBUG` blocks are experimental: `UnsafeTreeV2+SetAlgebra.swift:210-278`
+  (generic `___meld_unique<S: SortedSequence>`, iterator `___copy_range`) and
+  `RedBlackTreeSet+SetAlgebra.swift:122-144`. Reword 「`___meld_unique`等」 so the production overload
+  is not moved. `testAPICheck` (`Tests/RedBlackTreeTests/EtcTests.swift:49-62`) resolves to the
+  package `union<S: SortedSequence>`, because no public generic `union` exists (only
+  `union(RedBlackTreeSet)` at :32). The move must bring that overload along, or retire the test.
+- `Result.unsafe(tree:rawTag:)` is `package` and `DEBUG`-only, so clients cannot see it. Moving it is
+  test-support cleanup, not a public-surface gate item. A same-named internal fixture from a different
+  era exists on the compat `UnsafeIndexV2` (`Implements/Deprecated/Index/UnsafeIndexV2.swift:204-208`,
+  used by `Tests/.../RedblacktreemultimapAtCoder2025CompatibilityTests.swift:66`). Do not merge the two.
+- The Debug-only Index `Comparable` is asserted by a numbered Test-as-Specification case,
+  `test_index_comparable` (`Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_9_ProtocolConformanceTests.swift:66-71`).
+  Handle it at D/F under the gate rule 「Debugだけで成立する適合…根拠にしない」.
+- Other omitted rows: the unconstrained internal `Result.flatMapThrowing` (`UnsafeTreeV2+Erase.swift:143-156`),
+  the unconstrained `extension Result where Failure == SealError { package var error }`
+  (`unsafe_node+pointer+safe.swift:327-338`), and `MemoryLayout where T: ~Copyable`, which applies to
+  every `MemoryLayout` (`Implements/RawBuffer/_BucketQueue.swift:78-85`). All are internal or package.
+  They are low-risk but belong in the mechanical inventory.
+- The audit's completion conditions cover `PermutationModule` as well. State explicitly that only the
+  RedBlackTreeCollections rows gate RedBlackTree completion. `nextPermutations()` is already "intended
+  public", so nothing blocks today. `AcCollections` re-exports `RedBlackTreeCollections` (`@_exported`),
+  so every leak propagates through it too.
+
+**Confirmed claims**
+
+- The Index alias chain and the `Result` representation (above). `_NodePtrSealing` carries a pointer,
+  a seal, and a tracking tag under the current define set; `USE_LAZY_DETACH` is off.
+- `Result: Comparable` is `@retroactive`, `public`, Debug-only, and conditional on
+  `Success: Comparable, Failure: Comparable`. It is visible to every `Result` that meets the condition.
+- The `Result._NodePtr` public typealias sits on an unconstrained `extension Result`, so it applies to
+  all `Result`s (`unsafe_node+pointer+safe.swift:322-325`). `UnsafeMutablePointer._NodePtr` is public.
+- `Range`/`ClosedRange: SortedSequence` is a package-protocol conformance under
+  `DEBUG && !COMPATIBLE_ATCODER_2025`, referenced only by `testAPICheck`.
+- `unsafe(tree:rawTag:)` has no production caller. It is referenced only by the four
+  `_98_IndexValidityXCTests` files (7/7/8/11 occurrences).
+- The `String` messages are internal `@usableFromInline`. `UnsafeMutableRawPointer` helpers are internal
+  (some `@inlinable`) and split by `USE_C_MALLOC`. `Collection where Index == Int` exposes only
+  `nextPermutations()` publicly. No other standard-library-owned type is extended in `Sources`.
+- Narrowing the public surface ahead of dead-code decisions is correctly prioritized, and
+  PermutationModule does not block the RedBlackTree main path.
+
+**Not verified**
+
+- That `test_index_comparable` is the only code depending on `Result: Comparable`. This was found by
+  grep only. A typecheck with the conformance removed needs a source edit, which this review forbids.
+  The 「性能実験」 usage named in the audit was not located by grep.
+
+**Verdict:** The A–L topology can be the next work order once blocking items 1–3 are reflected in the
+two documents. Item 3 needs no reordering, only the Index-bound class in B. Without that class, B is
+unsafe to start, because the natural narrowing pass would hit declarations the public Index alias requires.
 
 ## Completed assignment: controllable Debug allocation/lifetime checks
 

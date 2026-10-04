@@ -2,6 +2,71 @@
 
 Status: Completed
 
+## Completed assignment: independently verify X1 inventory batch 3
+
+Independently verify only `POC-NODEPTR-001` in
+`Maintanance/INDEX_POC_CROSS_BRANCH_IDENTITY.md`.
+
+Inspect `Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap.swift` at the fixed
+current (`aecbcddf240c…`) and PoC (`1b126ba370ba…`) anchors. Check the exact enclosing extension,
+declaration, access, attributes, alias target, line numbers, and local compile-time guards. Verify
+mechanically whether the current anchor has a `_NodePtr` declaration in this same path.
+
+You may mechanically list other `_NodePtr` declarations to demonstrate name multiplicity, but do
+not inspect their contents or propose any as a counterpart. This batch must not decide whether the
+PoC declaration is `one-sided`, moved, duplicated, obsolete, or semantically related to another
+same-named alias. Its semantic fields must remain `unknown`.
+
+Return exactly one verdict: `approve X1 inventory batch 3`, `approve after specified corrections`,
+or `reject X1 inventory batch 3`. Record the result below, set `Status: Completed`, and give the
+user only a short completion notice.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit the identity map or any other file. Do
+not switch branches, inspect unrelated file contents, infer semantic correspondence, run builds/
+tests/benchmarks, use network access, stage, commit, or alter Git history. Use read-only `git show`
+for the exact path and `git grep` only to count/list same-named declarations. Run
+`git diff --check` only.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `approve X1 inventory batch 3`.
+
+I read `_LazyTieWrap.swift` with `git show` at `aecbcddf240c…` and `1b126ba370ba…`. For name
+multiplicity I listed matching declarations with `git grep`, and did not open any of the listed
+files.
+
+1. **The declaration matches the row.**
+   - At the PoC anchor, the enclosing declaration is line 105:
+     `extension _LazyTieWrap where RawValue == _NodePtrSealing {`, with no attributes and no access
+     modifier. It closes at line 137.
+   - Line 107 is `public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>`, with no
+     attributes.
+   - The row's "Lines 105–107", the extension text, the alias target, and "no attributes" are all
+     exact.
+2. **No compile-time guard applies.** The PoC file has three `#if DEBUG` blocks, at 52–68, 87–103,
+   and 139–146. The extension at 105–137 lies between the second and third blocks, so it is not
+   inside any guard. "Unconditional extension declaration in the inspected file" is correct.
+3. **The current anchor has no `_NodePtr`.** At `aecbcddf`, this path has 101 lines and contains
+   no `_NodePtr` token at all. The row's last sentence is correct.
+4. **Name multiplicity (listing only).** With `git grep -E 'typealias +_NodePtr( |=|:|$)'` over
+   `Sources`:
+   - The current anchor has 15 typealias declarations named `_NodePtr`.
+   - The PoC anchor has 16.
+   - Both anchors also have one `associatedtype _NodePtr`, at `__tree/_types/tree_basic+types.swift:55`.
+   - The only path that appears at one anchor and not the other is `RawBuffer/_LazyTieWrap.swift:107`
+     (PoC). The other 15 paths and line numbers appear at both anchors.
+
+   This shows the name is widely reused. I made no counterpart, move, duplicate, `one-sided`, or
+   obsolescence judgment.
+5. **The row is held at unknown.** It is a separate PoC-side identity, Role/era and Semantic
+   status are both `unknown`, and no counterpart is named.
+
+Checks: `git diff --check` was clean. Only this file was edited.
+
+---
+
 ## Completed assignment: independently verify X1 inventory batch 2
 
 Independently verify only `CUR-ALIAS-001`, `CUR-ALIAS-002`, `POC-ALIAS-001`, and

@@ -81,6 +81,12 @@ containers into one row until the first representative container and View have b
 | `CUR-ALIAS-002` | current | `aecbcddf` | `Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap.swift` | `public typealias _LazyTiedPtr` | Unconditional declaration in the inspected file | `unknown` | `unknown` | Line 41: alias target is `_LazyTieWrap<_NodePtrSealing>`; no attributes | Pending |
 | `POC-ALIAS-001` | PoC | `1b126ba3` | `Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap+Result.swift` | `public typealias _LazyTieWrappedPtr` | Unconditional declaration in the inspected file | `unknown` | `unknown` | Line 33: alias target is `Result<_LazyTieWrap<_NodePtrSealing>, SealError>`; no attributes | Pending |
 | `POC-ALIAS-002` | PoC | `1b126ba3` | `Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap.swift` | `public typealias _LazyTiedPtr` | Unconditional declaration in the inspected file | `unknown` | `unknown` | Line 41: alias target is `_LazyTieWrap<_NodePtrSealing>`; no attributes | Pending |
+| `POC-NODEPTR-001` | PoC | `1b126ba3` | `Sources/RedBlackTreeCollections/Implements/RawBuffer/_LazyTieWrap.swift` | `_LazyTieWrap<_NodePtrSealing>._NodePtr` (`public typealias`) | Unconditional extension declaration in the inspected file | `unknown` | `unknown` | Lines 105–107: declared in `extension _LazyTieWrap where RawValue == _NodePtrSealing`; alias target is `UnsafeMutablePointer<UnsafeNode>`; no attributes. The current anchor has no `_NodePtr` declaration in this same path | Pending |
+
+Mechanical name count only: `git grep` finds 15 `_NodePtr` typealias declarations at the current
+anchor and 16 at the PoC anchor, plus one `associatedtype _NodePtr` on each side. The only path-level
+difference in that declaration list is `POC-NODEPTR-001`. These counts do not establish a
+counterpart, move, duplicate, or semantic relationship.
 
 ## Correspondence proposal table
 

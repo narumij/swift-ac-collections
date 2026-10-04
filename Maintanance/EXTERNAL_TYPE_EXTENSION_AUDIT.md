@@ -746,3 +746,117 @@ cluster 2だけを対象にする。
   - 通常modeへ戻して`CppBehaviorReferenceTests` 35件を実行し、0 failureで成功した。
 - **source互換:** 通常modeでは`UnsafeIterator._Obverse1...3` / `_Reverse1...3`が消える
   (CHANGELOGに記載)。互換modeは変わらない。
+
+### Iterator protocol layer disposition audit
+
+2026-10-04 / Claude Opus 5.5。Codexの割り当てによるread-only監査。source、test、構成は変更して
+いない。buildとtestは実行していない。パスは`Sources/RedBlackTreeCollections/Implements/`からの相対パス。
+
+#### Declarations and references
+
+| 宣言 | 場所 / guard | 通常modeの適合型 | 互換modeの適合型 | 通常modeの参照元 |
+| --- | --- | --- | --- | --- |
+| `ObverseIterator`(`associatedtype ReversedIterator`、`reversed()`)と、既定の`typealias Reversed` | `Iterator/UnsafeIterator/UnsafeIterator+Protocol.swift:23-32`。guardなし。public、`@_documentation(visibility: internal)` | なし(下の条件付き適合だけで、条件を満たす型がない) | 世代1〜3のObverse、`_RemoveAware`、`_RemoveCheck`、`Tied`、`LazyTie`、`TiedIndexing`と、wrapperの条件付き適合 | `_Payload` / `_Key` / `_KeyValue` / `_MappedValue`の条件付き適合(`UnsafeIterator+{Payload,Key,KeyValue,MappedValue}.swift`の`:96-110` / `:116-129` / `:101-114`、guardなし)と、`_CopyOnWrite`の条件付き適合(`UnsafeIterator+CopyOnWrite.swift:72-85`、`!COMPATIBLE_ATCODER_2025`) |
+| `ReverseIterator`(要件なしのmarker protocol) | 同`:34-35`。guardなし | なし | 世代1〜3のReverseと各wrapper | 上と同じ条件付き適合 |
+| `UnsafeIteratorProtocol`(`init(_start: _NodePtr, _end: _NodePtr)`) | 同`:37-42`(`!COMPATIBLE_ATCODER_2025`)。互換modeは別の宣言(`Deprecated/Iterator/UnsafeIterator+Protocol+deprecated.swift:9`、`_SealedPtr`版) | なし(世代1〜3を互換modeへ隔離した結果) | 世代1〜3と`_RemoveAware` / `_RemoveCheck` | 上の条件付き適合のwhere句(`Source.ReversedIterator: UnsafeIteratorProtocol & Sequence`)だけ |
+| (参考)`UnsafeAssosiatedIterator` | 同`:44-49`(`!COMPATIBLE_ATCODER_2025`) | `_Payload` / `_Key` / `_KeyValue` / `_MappedValue` | 互換版は別の宣言 | `_CopyOnWrite<Source: UnsafeAssosiatedIterator>`の制約。世代4の経路に必要なので、変更の対象外 |
+
+- **世代4は使っていない:** `_Obverse4` / `_Reverse4`は`_UnsafeNodePtrType`、`IteratorProtocol`、`Sequence`、
+  `Equatable`、`TreeAlgorithmBaseProtocol_ptr`にだけ適合する(`Iterator/UnsafeIterator/UnsafeIterator+Obverse4.swift:26-31`)。
+  通常modeの逆走査は、`UnsafeIterator.swift:29-46`のaliasが`_Reverse4`を直接組み立てて実現している。
+  `reversed()` / `Reversed`を使う通常modeのコードはない。`.Reversed`を使っているのは4コンテナの
+  `*+Deprecated.swift`(ファイル全体が`COMPATIBLE_ATCODER_2025`)だけである。
+- **test、benchmark、DocC:** いずれのprotocol名も参照していない。
+
+#### Normal vs compatibility
+
+- **通常mode:**
+  - 3つのprotocolはどれも適合型を持たない。
+  - `_Payload` / `_Key` / `_KeyValue` / `_MappedValue` / `_CopyOnWrite`の`ObverseIterator` / `ReverseIterator`
+    への条件付き適合(計10個)は、条件を満たす型がない。`reversed()`とpublic typealias `Reversed`を
+    宣言だけしている状態である。
+  - いずれもIndex型やComparableに依存しない。
+- **互換mode:** `ObverseIterator`と`ReverseIterator`、および`_Payload`ほか4 wrapperの条件付き適合が必要である
+  (`Tree._PayloadValues.Reversed`などのcontainer `reversed()`経路)。`UnsafeIteratorProtocol`は互換mode用に
+  別の宣言を持つので、通常modeの宣言とは独立している。
+
+#### Public-surface impact
+
+- 通常modeから、public protocol 3個、そのrequirement(`reversed()`、`init(_start:_end:)`)、10個の条件付き適合に
+  ある`reversed()`と`Reversed`が消える。
+- 利用者がこれらを使うには、独自のiteratorを`ObverseIterator` / `UnsafeIteratorProtocol`に適合させたうえで、
+  public `init(source:)`を持つwrapperに入れる必要があり、現実的な使い方ではない。`_CopyOnWrite`の
+  `init(_source:tree:)`はinternalなので、利用者は作れない。
+- 形式上はsource-breakingなので、CHANGELOGに記載すること。互換modeの公開面は変わらない。
+
+#### Proposed batch
+
+互換mode専用への隔離を、1つのbatchで行う。
+
+1. `Iterator/UnsafeIterator/UnsafeIterator+Protocol.swift`
+   - `ObverseIterator`、その既定extension、`ReverseIterator`を`#if COMPATIBLE_ATCODER_2025`に入れる。
+   - `!COMPATIBLE_ATCODER_2025`側の`UnsafeIteratorProtocol`を削除する。互換modeの宣言は別ファイルにある。
+   - `UnsafeAssosiatedIterator`は残す。
+2. `Iterator/UnsafeIterator/UnsafeIterator+{Payload,Key,KeyValue,MappedValue}.swift`
+   - guardのない`ObverseIterator` / `ReverseIterator`の条件付き適合を`#if COMPATIBLE_ATCODER_2025`に入れる。
+     本体は変えない。
+3. `Iterator/UnsafeIterator/UnsafeIterator+CopyOnWrite.swift:72-85`
+   - `_CopyOnWrite`の2つの条件付き適合を削除する。これらは通常mode専用で、通常modeでは条件を満たす型がない。
+     protocolを互換mode専用にするとcompileできなくなる。
+
+#### Validation matrix
+
+- **通常mode:**
+  - Debugの`--build-tests`。
+  - Sequence、reversed、RangeView、MappedValuesView、ProtocolConformanceのtest。
+  - Releaseのbuild。
+  - Release DocC(`--warnings-as-errors`)。
+  - `#if`の入れ子を追跡する走査で、3つのprotocolの参照がすべて互換guard内にあることを確認する。
+- **互換mode:**
+  - `-Xswiftc -DCOMPATIBLE_ATCODER_2025`でbuild-testsする。前回のCppBehaviorReferenceTestsの互換対応は
+    Codexが済ませている前提である。
+  - `NaiveIteratorTests` 10件。
+  - 4コンテナのAtCoder2025互換test。
+- **coverageの注意:** `NaiveIteratorTests` 10件は世代1と`_RemoveAware`の順方向・逆方向の走査を検証するが、
+  wrapperの`reversed()`(条件付き適合のwitness)は呼んでいない。互換modeでcontainerの`reversed()`
+  (`*+Deprecated.swift`の`-> Tree._PayloadValues.Reversed`)を通るtestがあるかを実装batchで確認すること。
+  無ければ、そのtestを追加するかどうかを判断すること。
+
+#### Verdict
+
+`compatibility-only isolation batch`
+
+### Iterator protocol layer isolation result
+
+2026-10-04 / Claude Opus 5.5。上の推奨batchをCodexの割り当てに基づき実施した。差分は構造的な変更に
+限定し、既存行のインデント変更は行っていない。
+
+- **変更内容:** パスは`Sources/RedBlackTreeCollections/Implements/Iterator/UnsafeIterator/`からの相対パス。
+  - `UnsafeIterator+Protocol.swift`
+    - `ObverseIterator`、その既定`Reversed`、`ReverseIterator`を`#if COMPATIBLE_ATCODER_2025`で囲んだ。
+    - 通常modeの`UnsafeIteratorProtocol`を削除した。
+    - `UnsafeAssosiatedIterator`は変更していない。
+  - `UnsafeIterator+{Payload,Key,KeyValue,MappedValue}.swift`
+    - `ObverseIterator` / `ReverseIterator`への条件付き適合だけを`#if COMPATIBLE_ATCODER_2025`で囲んだ。
+    - wrapper型と`UnsafeAssosiatedIterator`への適合は変更していない。
+  - `UnsafeIterator+CopyOnWrite.swift`
+    - 通常mode専用の2つの条件付き適合を削除した。型、`Sendable`適合、世代4の経路は変更していない。
+- **通常modeの検証:**
+  - Debugの`swift build --disable-sandbox --build-tests`が成功した。
+  - `swift test --skip-build --filter 'SequenceTests|Reversed|reversed|RangeView|MappedValuesView|ProtocolConformance'`:
+    RedBlackTreeTestsのXCTest 253件が0 failureで成功し、Swift Testingも1 suite・4件が成功した。
+  - Releaseの`swift build -c release --target RedBlackTreeCollections`が成功した。
+  - Release DocC(`--warnings-as-errors`)が成功した。
+- **互換modeの検証(`-Xswiftc -DCOMPATIBLE_ATCODER_2025`):**
+  - `--build-tests`(全test target)が成功した。
+  - `swift test --skip-build --filter 'NaiveIteratorTests|AtCoder2025Compatibility'`: `NaiveIteratorTests` 10件、
+    `DictionaryAtCoder2025CompatibilityTests` 5件、`SetAtCoder2025CompatibilityTests` 12件、
+    `MultiMapAtCoder2025CompatibilityTests` 1件が、いずれも0 failureで成功した。
+  - `RedBlackTreeMultiset*LegacyTests`(Pointer、Etc、IndexRemoval)は10件で、1件skip、0 failureだった。
+  - wrapperの`reversed()`(条件付き適合のwitness)を通る
+    `RedBlackTreeDictionaryEtcAtCoder2025LegacyTests.testKeysAndValuesFunctionStyleReversed`が
+    実行され、成功したことを確認した。
+  - 検証後、通常modeで`--build-tests`を再実行し、`.build`を元に戻した。
+- **guardの確認:** `#if`の入れ子を追跡する走査で、`Sources`と`Tests`にある`ObverseIterator` /
+  `ReverseIterator` / `UnsafeIteratorProtocol`の参照が、すべて`COMPATIBLE_ATCODER_2025`のguard内にあることを
+  確認した。`UnsafeAssosiatedIterator`は通常modeに残っている。

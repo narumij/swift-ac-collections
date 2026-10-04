@@ -113,6 +113,7 @@ extension UnsafeIterator._KeyValue {
   }
 }
 
+#if COMPATIBLE_ATCODER_2025
 extension UnsafeIterator._KeyValue: ObverseIterator
 where
   Source: ObverseIterator,
@@ -127,3 +128,4 @@ where
 
 extension UnsafeIterator._KeyValue: ReverseIterator
 where Source: ReverseIterator {}
+#endif

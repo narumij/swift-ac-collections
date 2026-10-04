@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - KeyOnly / KeyValue Range ViewとMappedValues Viewの内部同一性hook `_isIdentical(to:)` をpublic APIから`@inlinable internal`へ縮小 (source-breaking。View同士の`==` / `<`の結果と計算量、4型の`isTriviallyIdentical(to:)`は変更なし)
 - Debug構成限定のtest fixture `RedBlackTreeBoundExpression.index(_:)` / `.debug(_:)` をpublic APIから`package`へ縮小 (Debug buildのみsource-breaking。Release構成には元々存在しない)
 - 旧世代のiterator `UnsafeIterator._Obverse1`〜`_Obverse3` / `_Reverse1`〜`_Reverse3` を`COMPATIBLE_ATCODER_2025`専用へ隔離 (通常構成ではsource-breaking。互換構成の挙動は変更なし)
+- 通常構成で適合型のない旧iterator protocol層 (`ObverseIterator`、`ReverseIterator`、`UnsafeIteratorProtocol`と、各wrapperの条件付き適合・`reversed()`) を`COMPATIBLE_ATCODER_2025`専用へ隔離 (通常構成ではsource-breaking。互換構成の挙動は変更なし)
 - Debug限定の`SortedSequence`とsorted range union実験実装をproduction targetからテストコードへ移動
 - DocCの公開メンバーをSwift標準`Set`/`Dictionary`に近い利用目的別Topicsへ分類し、独自のIndex・Range・Bound APIと全オーバーロードへ具象型ページから辿れるように変更
 - Swift-DocCおよび`UInt128`を使用する通常構成に合わせ、パッケージのmacOS最小バージョンを15へ変更

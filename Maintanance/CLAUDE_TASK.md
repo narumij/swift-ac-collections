@@ -4,6 +4,241 @@ Status: Completed
 
 ## Active assignment
 
+Isolate the obsolete iterator protocol layer to `COMPATIBLE_ATCODER_2025`, following
+the completed disposition audit. Preserve generation-4 behavior and compatibility mode.
+
+## Objective
+
+Remove the uninhabited normal-mode public protocols and conditional conformances while
+retaining the protocol layer required by deprecated AtCoder-2025 iterators.
+
+## Allowed implementation
+
+1. In `Iterator/UnsafeIterator/UnsafeIterator+Protocol.swift`:
+   - put `ObverseIterator`, its default `Reversed` alias, and `ReverseIterator` under
+     `#if COMPATIBLE_ATCODER_2025`;
+   - remove the normal-mode `UnsafeIteratorProtocol` declaration;
+   - preserve normal-mode `UnsafeAssosiatedIterator` exactly, including its spelling.
+2. In `UnsafeIterator+Payload.swift`, `UnsafeIterator+Key.swift`,
+   `UnsafeIterator+KeyValue.swift`, and `UnsafeIterator+MappedValue.swift`, place only
+   the `ObverseIterator` / `ReverseIterator` conditional conformances under
+   `COMPATIBLE_ATCODER_2025`. Do not guard or alter the wrapper types or their
+   `UnsafeAssosiatedIterator` conformances used by generation 4.
+3. In `UnsafeIterator+CopyOnWrite.swift`, remove only its two normal-mode conditional
+   conformances to `ObverseIterator` and `ReverseIterator`. Preserve the type,
+   `Sendable` conformance, storage/lifetime behavior, and generation-4 path.
+4. Add a concise source-breaking normal-mode entry to `CHANGELOG.md`.
+5. Append the implementation and exact validation results to
+   `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`; update this task. Update an existing
+   relevant checkbox in `PROGRESS_OVERVIEW.md` only if the wording becomes fully true.
+
+## Must preserve
+
+- `_Obverse4`, `_Reverse4`, `_CopyOnWrite`, `UnsafeAssosiatedIterator`, current
+  container/View iterators, and all Index/Range behavior.
+- Compatibility generations 1–3, deprecated aliases, wrapper conformances, and
+  container `reversed()` return types.
+- The four current-API C++ comparison files remain normal-mode-only.
+- No decision about Index, Comparable, `Result`, or generation-3 deletion.
+
+## Validation
+
+1. Normal mode:
+   - Debug build-tests;
+   - targeted Sequence, reversed, RangeView, MappedValuesView, and
+     ProtocolConformance tests;
+   - Release `RedBlackTreeCollections` build;
+   - Release DocC warnings-as-errors.
+2. Compatibility mode with `-Xswiftc -DCOMPATIBLE_ATCODER_2025`:
+   - build all tests;
+   - run all 10 `NaiveIteratorTests`;
+   - run the four containers' AtCoder2025 compatibility tests relevant to reversed
+     wrappers. Existing Dictionary compatibility tests around reversed keys/values are
+     known to exercise the wrapper witness; confirm discovery and execution rather than
+     adding a duplicate test unless coverage is actually absent.
+3. Search with configuration nesting in mind and confirm `ObverseIterator`,
+   `ReverseIterator`, and `UnsafeIteratorProtocol` have no normal-mode declarations or
+   references. `UnsafeAssosiatedIterator` must remain in normal mode.
+4. Run `git diff --check`, inspect the complete diff and `git status --short`.
+
+## Boundaries
+
+Do not edit `Package.swift`, workflows, benchmarks, unrelated protocols or tests,
+generation 1–4 implementations, container APIs, Views, Index code, or `try/index/1`.
+Do not stage, commit, switch branches, use network access, or alter Git history. Avoid
+whole-file reformatting; keep the source diff structural and minimal.
+
+Set this task to `Completed` and report only `完了` to the user. Put details in the
+Markdown records. Explain directly only if blocked or a product-owner decision is
+required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+All changes are structural and minimal; no existing lines were re-indented.
+
+**Source changes** (under `Implements/Iterator/UnsafeIterator/`)
+
+- `UnsafeIterator+Protocol.swift`:
+  - wrapped `ObverseIterator`, its default `Reversed` alias, and `ReverseIterator` in
+    `#if COMPATIBLE_ATCODER_2025`;
+  - removed the normal-mode `UnsafeIteratorProtocol`;
+  - left `UnsafeAssosiatedIterator` unchanged.
+- `UnsafeIterator+{Payload,Key,KeyValue,MappedValue}.swift`: wrapped only the
+  `ObverseIterator` / `ReverseIterator` conditional conformances in the compat guard.
+- `UnsafeIterator+CopyOnWrite.swift`: deleted the two normal-only conditional
+  conformances.
+
+**Documentation**
+
+- `CHANGELOG.md`: added an entry marked source-breaking in normal mode.
+- `EXTERNAL_TYPE_EXTENSION_AUDIT.md`: appended `### Iterator protocol layer isolation
+  result`.
+- `PROGRESS_OVERVIEW.md`: left unchanged. No existing checkbox became fully true.
+
+**Normal-mode validation**
+
+- `swift build --disable-sandbox --build-tests`: succeeded.
+- `swift test --disable-sandbox --skip-build --filter 'SequenceTests|Reversed|reversed|RangeView|MappedValuesView|ProtocolConformance'`:
+  253 XCTest cases passed with 0 failures, plus 4 Swift Testing tests in 1 suite.
+- `swift build --disable-sandbox -c release --target RedBlackTreeCollections`:
+  succeeded.
+- The CI Release DocC command with `--warnings-as-errors`: succeeded.
+
+**Compatibility-mode validation**
+
+- `swift build --disable-sandbox --build-tests -Xswiftc -DCOMPATIBLE_ATCODER_2025`
+  (all test targets): succeeded.
+- `swift test --disable-sandbox --skip-build --filter 'NaiveIteratorTests|AtCoder2025Compatibility'`:
+  all passed with 0 failures:
+  - `NaiveIteratorTests`: 10 tests;
+  - `DictionaryAtCoder2025CompatibilityTests`: 5 tests;
+  - `SetAtCoder2025CompatibilityTests`: 12 tests;
+  - `MultiMapAtCoder2025CompatibilityTests`: 1 test.
+- `--filter 'RedBlackTreeMultiset.*LegacyTests'`: 10 tests, 1 skipped, 0 failures.
+- The reversed-wrapper witness test
+  `RedBlackTreeDictionaryEtcAtCoder2025LegacyTests.testKeysAndValuesFunctionStyleReversed`
+  was discovered and passed.
+- Afterwards normal mode was rebuilt with `--build-tests`, restoring `.build`.
+
+**Other checks**
+
+- A scan that tracks `#if` nesting found 0 references to `ObverseIterator`,
+  `ReverseIterator`, or `UnsafeIteratorProtocol` outside the compat guard.
+  `UnsafeAssosiatedIterator` remains in normal mode.
+- `git diff --check`: clean.
+- Nothing was staged.
+
+## Completed assignment: audit iterator protocol layer disposition
+
+Audit the iterator protocol layer left behind after deprecated iterator generations
+1–3 were isolated to `COMPATIBLE_ATCODER_2025`. This is a read-only disposition audit;
+do not edit source or tests.
+
+## Objective
+
+Determine whether `UnsafeIteratorProtocol`, `ObverseIterator`, `ReverseIterator`, and
+their conditional conformances/helpers can be isolated to compatibility mode, narrowed,
+or removed from the normal build without affecting generation 4, current containers,
+Views, or public iteration behavior.
+
+## Required analysis
+
+1. Enumerate the three protocols, every requirement/default implementation, every
+   conforming type, and every generic constraint/reference in Sources, Tests,
+   Benchmarks, DocC, and maintenance records.
+2. Analyze normal mode and `COMPATIBLE_ATCODER_2025` separately. Verify rather than
+   assume whether `_Obverse4`, `_Reverse4`, `_CopyOnWrite`, `_Payload`, `_Key`, and
+   `_Value` use or conform to this protocol layer.
+3. Separate:
+   - protocol declarations and default implementations;
+   - compatibility-only conformers and aliases;
+   - conditional conformances/helpers that become uninhabited in normal mode;
+   - code still required by the current generation-4 path.
+4. Check access levels, public signatures, `@inlinable` references, serialized bodies,
+   and source-compatibility impact. Underscore-prefixed public declarations still count
+   as public surface.
+5. Determine the smallest safe implementation batch. Prefer configuration isolation
+   over deletion when compatibility mode still needs a declaration.
+6. Identify exact tests needed in both modes, including whether the existing 10
+   `NaiveIteratorTests` cover the compatibility witnesses sufficiently.
+7. Keep this independent of the unresolved public Index/Comparable decision. If any
+   proposed change actually depends on that decision, isolate it as a blocker instead
+   of assuming an answer.
+
+## Output
+
+Append a section named exactly:
+
+`### Iterator protocol layer disposition audit`
+
+to `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`. Include a compact declaration /
+reference table, normal-versus-compatibility findings, public-surface impact, proposed
+file list, validation matrix, and one verdict:
+
+- `compatibility-only isolation batch`
+- `normal-mode narrowing batch`
+- `safe removal batch`
+- `Index decision required`
+- `product-owner decision required`
+
+Update this task with concise evidence and set it to `Completed` when done.
+
+## Boundaries
+
+Only these files may be edited:
+
+- `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
+- `Maintanance/CLAUDE_TASK.md`
+
+Do not edit source, tests, Package.swift, CHANGELOG, workflows, benchmarks, or other
+documentation. Do not stage or commit, switch branches, use network access, inspect
+`try/index/1`, or alter Git history. Do not run the full test suite; searches and
+targeted compilation only if needed to resolve a concrete ambiguity are sufficient.
+Run `git diff --check` on the two allowed files and inspect the full diff plus
+`git status --short`.
+
+Report only `完了` to the user. Put all details in the Markdown record. Explain directly
+only if blocked or a product-owner decision is required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+I appended `### Iterator protocol layer disposition audit` to
+`EXTERNAL_TYPE_EXTENSION_AUDIT.md`. Verdict: `compatibility-only isolation batch`.
+
+- **Normal mode:**
+  - `ObverseIterator`, `ReverseIterator`, and the normal-mode `UnsafeIteratorProtocol`
+    have no conforming types.
+  - The 10 conditional conformances (on `_Payload`, `_Key`, `_KeyValue`, `_MappedValue`,
+    and `_CopyOnWrite`) can never be satisfied.
+  - Generation 4 (`_Obverse4` / `_Reverse4`) does not adopt these protocols. Normal-mode
+    reverse iteration uses `_Reverse4` aliases directly.
+  - `.Reversed` is used only by the four containers' compat-only `*+Deprecated.swift`
+    files.
+- **Compatibility mode:** it still needs `ObverseIterator` / `ReverseIterator` and the
+  wrapper conformances. Its `UnsafeIteratorProtocol` is a separate declaration.
+- **Required by generation 4:** `UnsafeAssosiatedIterator`. It stays.
+- **Proposed batch:**
+  - In `UnsafeIterator+Protocol.swift`, guard `ObverseIterator` / `ReverseIterator` with
+    compat and drop the normal-mode `UnsafeIteratorProtocol`.
+  - In `UnsafeIterator+{Payload,Key,KeyValue,MappedValue}.swift`, guard the conditional
+    conformances with compat.
+  - In `UnsafeIterator+CopyOnWrite.swift:72-85`, delete the two normal-only conditional
+    conformances. They can never be satisfied, and they would no longer compile once the
+    protocols are compat-only.
+- **Test caveat:** the 10 `NaiveIteratorTests` never call a wrapper's `reversed()`.
+  The implementation batch must confirm that some compat test reaches container
+  `reversed() -> Tree._PayloadValues.Reversed`, or decide whether to add one.
+- **Index dependence:** none.
+- Validation:
+  - Searches covered all four protocol names, `.Reversed` / `reversed()`, and the
+    file-level guards of every deprecated iterator and container file, across `Sources`,
+    `Tests`, `Benchmarks/Sources`, and the DocC/documentation Markdown.
+  - No build was run.
+  - `git diff --check` was clean.
+  - `git status --short` shows only the two allowed files modified.
+
+## Completed assignment: isolate deprecated iterator generations 1–3
+
 Isolate deprecated iterator generations 1–3 to `COMPATIBLE_ATCODER_2025` without
 deleting any generation or changing compatibility behavior.
 

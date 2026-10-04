@@ -64,7 +64,7 @@ as history but its snapshot anchors are superseded by the commits above for this
 | `P5` | confirmed test hazard | Debug fixture semantics | `_LazyTieWrap.unsafe(tree:rawTag:)` maps every retrieval, seal, or banding failure to synthetic `.nullptr`. On an empty tree, `_emptyLazyDetach` is shared, so same-tie purification can assert on the null pointer instead of producing the intended `SealError`. Synthetic-null tests must use a non-empty tree and verify the error reason, not merely expect process failure. |
 | `P6` | confirmed artifacts; review queued | Public surface | External type-checking confirms both `UnsafeIndexV3` and the added `_LazyTiedPtr._NodePtr` are directly nameable after `import RedBlackTreeCollections`. Treat their visibility as prototype public-surface artifacts, not as evidence for or against the success-only representation. |
 | `P7` | verified by inspection | Equality / hashing | Synthesized `_NodePtrSealing` equality/hash cover pointer, seal, and (when present) the pointer-derived tracking tag. `_LazyTieWrap` equality additionally checks tie identity while its coarser hash omits it, which is contract-valid. All are O(1). Keep a regression test. |
-| `P8` | partially inspected | Limited movement | The old Result-valued and success-only overloads share the same limited-movement structure. A stale-limit probe exited successfully, but invalid Index input is outside the standard Collection preconditions, so this is not classified as a PoC failure and the provisional death test was removed. Valid boundary behavior and the deliberate double `adv_iter` call remain covered; any stronger invalid-Index guarantee requires a separate contract decision. |
+| `P8` | fixed; review queued | Limited movement | User classified stale-limit acceptance as a bug common to both Index representations. `develop/misc/48` now propagates limit-resolution failure, and the same correction was applied to the success-only overload here. The focused exit test and 37 valid-input movement tests pass. |
 | `P9` | unverified | Performance | Confirm equality and hashing remain O(1), full and range traversal remain O(N), and success-only resolution does not add per-element search or allocation. Preserve raw measurements separately from the design decision. |
 | `P10` | documentation | Design records | Several documents still describe the develop representation (`UnsafeIndexV3 = _LazyTieWrappedPtr`) or say the PoC must not be merged wholesale. Update them only after the validation verdict; for now record the branch and commit used as evidence. |
 | `P11` | cleanup, non-blocking | Merge artifacts | Remove only after semantic validation: duplicated comments, commented-out old alias, trailing blank lines in `_LazyTie.swift`, duplicated `過去の状態で封印する` documentation, and the `Package.swift` comment-spacing change. These are not quality failures. |
@@ -316,5 +316,15 @@ guarantee. The provisional failing death test was removed rather than encoding t
 contract. The structurally similar `form_index` path calls the same helper (twice by deliberate
 measured design).
 
-No production change is required by this probe. P8 remains open only for valid-input boundary
-coverage and any separately authorized stronger invalid-Index contract.
+The user subsequently classified this behavior as a bug despite the invalid-Index precondition.
+The shared Result-valued implementation was corrected first on `develop/misc/48` in `edcf8c46`,
+with a permanent exit test. That commit was cherry-picked here as `5e41e32b`, and the success-only
+overload was then changed to propagate `__purified_(limit)` failure before traversal as well.
+
+Verification on this branch:
+
+- stale-limit exit test: 1 passed;
+- valid-input limited movement and related Index-range tests: 37 passed;
+- both overloads retain the deliberately measured double `adv_iter` behavior in `form_index`.
+
+Batch result: Codex `pass` after correction; independent review queued.

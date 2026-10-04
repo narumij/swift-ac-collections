@@ -72,41 +72,56 @@ Indexの検討では、利用者に見える契約と、その契約を実現・
 重要度の一覧と着手順を混同しない。赤黒木完成までの主経路は次のとおり。
 
 ```text
-A. 外部: 既存の安全性・計算量契約を固定
+A. 外部: RedBlackTreeCollectionsの公開面を監査
     ↓
-B. 外部: Comparableが本当に必要かを判断
+B. 外部: 意図した公開・境界内部・TestCode・内部へ分類して縮小
     ↓
-C. 外部: 公開APIに失敗Indexが必要か判断
+C. 外部: 既存の安全性・計算量契約を固定
     ↓
-D. 外部契約を固定
+D. 外部: IndexのComparableが本当に必要かを判断
     ↓
-E. 境界内部: 外部へ波及する表現候補を導く
+E. 外部: 公開APIに失敗Indexが必要か判断
+    ↓
+F. Indexの外部契約を固定
+    ↓
+G. 境界内部: 外部へ波及する表現候補を導く
    ├─ 現行Result typealias
    ├─ 成功tokenだけのIndex
    └─ 失敗状態を隠蔽する固有nominal Index型
     ↓
-F. 境界内部: 必要な候補だけ試作・Release計測
+H. 境界内部: 必要な候補だけ試作・Release計測
     ↓
-G. 境界内部の表現を最終決定
+I. 境界内部の表現を最終決定
     ↓
-H. 閉じた内部: resolver・SealError・診断経路を実装
+J. 閉じた内部: resolver・SealError・診断経路を実装
     ↓
-I. 境界内部: Index表現とRange/Viewを実装・追従
+K. 境界内部: Index表現とRange/Viewを実装・追従
     ↓
-J. 回帰検証・文書同期・完成判定
+L. 回帰検証・文書同期・完成判定
 ```
 
 境界内部の表現は、外部契約より先に固定しない。Comparable不要なら
 retroactive conformance問題は消えるが、調査用の失敗状態を公開Indexへ残す妥当性は
 別途判断する。Comparableが必要なら、標準`Result`へのretroactive conformanceを
-避けられる表現だけをE以降の候補にする。
+避けられる表現だけをG以降の候補にする。
+
+公開面監査では、外部所有型extensionに加えて、内部実装由来に見えるpublic宣言も扱う。
+具体的には`SealError`、`Unsafe*`型、`_` / `__`接頭辞の型・typealias・member、
+public typealiasが露出する具体型、public protocol適合を対象にする。
+
+TestCode専用と確認できたfixture・実験経路は先にproduction targetから外せる。
+ただし`Result: Comparable`はIndexのComparable採否に依存するため、分類だけ行い、
+D〜Iの判断が済むまで最終処置を固定しない。
+
+公開範囲の縮小はデッドコード判断より先に行う。未使用コードは外部へ見えなければ
+後から削除できるが、意図しないpublic APIは利用者が現れた時点から変更コストを持つ。
 
 一方、外部へ影響させないresolverの`Result`や`SealError`診断は、外部契約を変えずに
-維持・改善できる。ただし境界内部の型を先に仮定して大量に作り込まず、Gの決定後に
-Hで接続する。
+維持・改善できる。ただし境界内部の型を先に仮定して大量に作り込まず、Iの決定後に
+Jで接続する。
 
 未結線コードやテスト支持層の整理は主経路と並行できる。ただしIndex、Range、Viewに
-触れる整理はH・Iと競合するため、Gの設計確定まで開始しない。MSVC比較や大規模ベンチは
+触れる整理はJ・Kと競合するため、Iの設計確定まで開始しない。MSVC比較や大規模ベンチは
 主経路の依存先ではなく、完成後にも実施できる追加検証である。
 
 ## 主経路: Indexの表現と契約の確定
@@ -196,19 +211,25 @@ precondition failure等の契約へ変換する。
 
 ### 主経路のチェックリスト
 
-- [ ] A: 外部へ保証する安全性・CoW・走査計算量の契約を確認する
-- [ ] B: 外部APIでComparableが必要になる利用箇所と、非適合時の代替を確認する
+- [ ] A: 外部所有型extensionと、内部実装由来に見えるpublic宣言を列挙する
+- [ ] `EXTERNAL_TYPE_EXTENSION_AUDIT.md`のRedBlackTreeCollections対象を確定する
+- [ ] `SealError`、`Unsafe*`、`_` / `__`系public宣言とpublic typealiasを抽出する
+- [ ] B: 意図した公開API、境界内部、TestCode専用、内部用途へ分類する
+- [ ] source compatibilityを意図する公開API以外を、可能な範囲でpackage/internalへ縮小する
+- [ ] TestCode専用の宣言と実験経路をproduction targetから分離する
+- [ ] C: 外部へ保証する安全性・CoW・走査計算量の契約を確認する
+- [ ] D: 外部APIでComparableが必要になる利用箇所と、非適合時の代替を確認する
 - [ ] Comparableあり・なしの2案を比較し、必要APIと計算量を表にする
-- [ ] C: 利用者へ失敗Indexを公開する必要があるか判断する
-- [ ] D: Comparable採否、失敗時の公開API、計算量を外部契約として固定する
-- [ ] E: 固定した外部契約から、typealias、固有Index型等の境界表現候補を導く
+- [ ] E: 利用者へ失敗Indexを公開する必要があるか判断する
+- [ ] F: Comparable採否、失敗時の公開API、計算量を外部契約として固定する
+- [ ] G: 固定した外部契約から、typealias、固有Index型等の境界表現候補を導く
 - [ ] 標準`Result`へのretroactive `Comparable`適合を正式案から除外する
 - [ ] 調査用の`SealError`情報を、Index本体から分離しても維持できることを確認する
-- [ ] F: 必要な境界表現候補だけ小さく試作し、比較・移動・dereferenceをRelease計測する
-- [ ] G: 採用した境界表現と不採用案、その理由をDesign文書へ記録する
-- [ ] H: 外部から隠すresolver、`SealError`、診断経路を採用表現へ接続する
-- [ ] I: Index本体を実装し、4コンテナと両Range Viewへ追従させる
-- [ ] J: テスト・DocC・API Matrixを採用案へ同期する
+- [ ] H: 必要な境界表現候補だけ小さく試作し、比較・移動・dereferenceをRelease計測する
+- [ ] I: 採用した境界表現と不採用案、その理由をDesign文書へ記録する
+- [ ] J: 外部から隠すresolver、`SealError`、診断経路を採用表現へ接続する
+- [ ] K: Index本体を実装し、4コンテナと両Range Viewへ追従させる
+- [ ] L: テスト・DocC・API Matrixを採用案へ同期する
 
 ### Index完了ゲート
 
@@ -222,7 +243,7 @@ precondition failure等の契約へ変換する。
 - [ ] Debugだけで成立する適合や検査を公開仕様の根拠にしない
 - [ ] Index表現を変更した場合もC++比較・fuzz・不変条件検査が成功する
 
-## Iで処理するIndex依存タスク
+## Kで処理するIndex依存タスク
 
 - [ ] `index(inserting:)`を4コンテナのどこまで提供するか確定する
 - [ ] `erase(exactly:)`を4コンテナのどこまで提供するか確定する
@@ -236,6 +257,7 @@ API名、戻り値、検査方法が変わり得る。
 
 ## 主経路と並行できる完成前の整理
 
+- 公開面の監査・縮小は主経路A・Bで先に行う。この節のデッドコード判断を先行させない。
 - [ ] 未結線コードを削除するか、用途を確定してテストを付ける
   - `_Reverse4`関連
   - iteratorの未接続API
@@ -264,9 +286,9 @@ API名、戻り値、検査方法が変わり得る。
 
 RedBlackTreeCollectionsを完成と判断する条件は次のとおり。
 
-1. 主経路A〜Jが完了し、Index表現と契約について実装・テスト・文書が一致している。
+1. 主経路A〜Lが完了し、意図した公開面とIndex契約について実装・テスト・文書が一致している。
 2. Index依存APIと安全性境界が、そのIndex契約に基づいて確定している。
-3. 並行整理対象の未結線コードについて、残す理由または削除の判断が記録されている。
+3. 公開範囲の縮小を終えた後、未結線コードについて残す理由または削除の判断が記録されている。
 4. 4コンテナのfuzz・不変条件検査・C++比較に回帰がない。
 5. 未完了の追加検証が、完成を止めない理由とともに明示されている。
 
@@ -275,6 +297,7 @@ RedBlackTreeCollectionsを完成と判断する条件は次のとおり。
 - `Tests/TESTING.md`
 - `Tests/TESTING_REFERENCE.md`
 - `Maintanance/CPP_BEHAVIOR_COMPARISON_MATRIX.md`
+- `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
 - `Sources/RedBlackTreeCollections/Documentation/Design/Design-CopyOnWrite.md`
 - `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md`
 - `Sources/RedBlackTreeCollections/Documentation/Design/Design-Range.md`

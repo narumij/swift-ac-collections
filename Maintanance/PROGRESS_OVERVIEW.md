@@ -142,6 +142,7 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 - [x] TestCode専用、境界内部、完全な内部用途へ分類
 - [x] 最初の独立バッチ（ThreeWay比較宣言群）をpackageへ縮小
 - [x] Debug限定SortedSequence実験経路をproduction targetからTestCodeへ分離
+- [x] View 3型の`_isIdentical(to:)`を`@inlinable internal`へ縮小
 - [ ] 意図しない`public`をpackage/internal/TestSupportへ縮小
 - [ ] DebugとReleaseで公開protocol適合集合が変わる箇所を解消
 

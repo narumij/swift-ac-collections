@@ -7,6 +7,128 @@ Status: Idle
 No active assignment. Wait for a new request from Codex. Report only `完了` when an
 assigned task is finished; keep detailed findings in the designated Markdown record.
 
+## Completed assignment: narrow View `_isIdentical(to:)`
+
+Narrow the normal-mode View-only `_isIdentical(to:)` hooks from public API to the
+minimum visibility required by their public `@inlinable` comparison operators.
+
+## Objective
+
+Remove the three underscored View identity hooks from the client-visible API without
+changing View equality, ordering, complexity, compatibility mode, or the four
+containers' documented `isTriviallyIdentical(to:)` API.
+
+## Context
+
+- Branch: `develop/misc/48`. The working tree was clean when assigned.
+- Codex independently confirmed that normal mode has three relevant declarations:
+  KeyOnly Range View, KeyValue Range View, and MappedValues View.
+- KeyOnly and KeyValue call the hook from public `@inlinable` `==` / `<`; MappedValues
+  has no repository caller. No public protocol requires the hook.
+- This batch is independent of the unresolved public Index representation decision.
+- The four containers' non-underscored `isTriviallyIdentical(to:)` is intentional,
+  documented public API and is not part of this change.
+
+## Allowed changes
+
+1. In these three normal-mode files only, replace `public` on `_isIdentical(to:)` with
+   the narrowest compiler-valid visibility required by serialized callers, expected to
+   be `@usableFromInline internal`, while preserving `@inlinable` and the implementation:
+   - `Sources/RedBlackTreeCollections/RedBlackTreeView/RedBlackTreeRangeView+KeyOnly.swift`
+   - `Sources/RedBlackTreeCollections/RedBlackTreeView/RedBlackTreeRangeView+KeyValue.swift`
+   - `Sources/RedBlackTreeCollections/RedBlackTreeView/RedBlackTreeMappedValuesView.swift`
+2. Update the `_isIdentical(to:)` row in
+   `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` so it records the
+   completed narrowing rather than listing it as an unresolved public audit candidate.
+3. Add a concise source-breaking public-surface narrowing entry to `CHANGELOG.md`.
+4. Append a concise implementation result to
+   `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`, including exact declarations,
+   validation, and the fact that compatibility-mode declarations were untouched.
+5. Update this task with the result and validation evidence.
+
+## Must preserve
+
+- Do not change `isTriviallyIdentical(to:)` on Set, MultiSet, Dictionary, or MultiMap.
+- Do not change compatibility-mode `_isIdentical` declarations under
+  `Implements/Deprecated`.
+- Do not change method bodies, equality/ordering semantics, raw range representation,
+  Index representation, protocols, or generic constraints.
+- Preserve unrelated user changes and existing completed audit records.
+
+## Do not
+
+- Do not perform unrelated cleanup or documentation rewrites.
+- Do not edit `Package.swift`, workflows, benchmarks, or tests unless compilation proves
+  a narrowly scoped test edit is indispensable; stop and record the reason before doing
+  so.
+- Do not commit, push, pull, merge, rebase, switch branches, or alter Git history.
+- Do not stage files.
+- Do not inspect or modify `try/index/1`.
+
+## Validation
+
+Run the narrowest checks first, then confirm the batch across its serialization boundary:
+
+1. Refresh/compile the three changed source files or build `RedBlackTreeCollections` in
+   Debug.
+2. Run the existing Range View and MappedValues View tests, confirming intended tests
+   were actually discovered and executed.
+3. Build `RedBlackTreeCollections` in Release.
+4. Validate Release DocC with warnings as errors using the repository's established
+   command if it is available without changing configuration.
+5. Run `git diff --check` and inspect `git status --short` plus the complete diff.
+
+If `@usableFromInline internal` does not compile, do not broaden visibility by guesswork.
+Record the compiler evidence and choose only the narrowest visibility demonstrably
+required by the public `@inlinable` callers.
+
+## Handoff
+
+Set this task to `Completed`, append a concise result and exact validation commands
+below this assignment, and report only `完了` to the user. Put all technical detail in
+this Markdown file. Explain directly only if blocked, if an unrelated regression is
+found, or if a product-owner decision is required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+- Narrowed `public func _isIdentical(to:)` to `internal func` in three files, keeping
+  `@inlinable` and the bodies unchanged:
+  - `RedBlackTreeView/RedBlackTreeRangeView+KeyOnly.swift:351`
+  - `RedBlackTreeView/RedBlackTreeRangeView+KeyValue.swift:422`
+  - `RedBlackTreeView/RedBlackTreeMappedValuesView.swift:351`
+- Why the access is `@inlinable internal` rather than `@usableFromInline internal`: an
+  internal `@inlinable` declaration is already usable from inlinable code, so the public
+  `@inlinable` `==` / `<` can still call it, and the Release build compiles. Adding
+  `@usableFromInline` would be redundant. No caller elsewhere in the package needs
+  `package` access.
+- Left unchanged:
+  - the compatibility-mode `_isIdentical` declarations under `Implements/Deprecated`;
+  - the four containers' `isTriviallyIdentical(to:)`;
+  - tests, benchmarks, and `Package.swift`.
+- Documentation updated:
+  - `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md`: the
+    `_isIdentical(to:)` row now records the completed narrowing;
+  - `CHANGELOG.md`: added an `Unreleased` / `Changed` entry marked source-breaking;
+  - `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`: appended
+    `### _isIdentical implementation result`.
+- Validation:
+  - `swift build --disable-sandbox --target RedBlackTreeCollections` (Debug): succeeded.
+  - `swift build --disable-sandbox --build-tests` (Debug): succeeded.
+  - `swift test --disable-sandbox --skip-build --filter 'RangeView|MappedValuesView'`:
+    98 RedBlackTreeTests XCTest cases passed with 0 failures, plus 1 Swift Testing test.
+    The discovered suites included KeyOnly, KeyValue, and MappedValues View tests, and
+    the Set, MultiSet, Dictionary, and MultiMap Range View tests.
+  - `swift build --disable-sandbox -c release --target RedBlackTreeCollections`:
+    succeeded.
+  - The CI Release DocC command (`swift package --disable-sandbox -c release ...
+    generate-documentation --target RedBlackTreeCollections --output-path
+    .build/documentation --transform-for-static-hosting --hosting-base-path
+    swift-ac-collections --warnings-as-errors`) succeeded. Its output went to the
+    existing `.build/documentation` path.
+  - `git diff --check`: clean.
+  - `git status --short` shows only the seven intended files modified. Nothing was
+    staged.
+
 ## Completed assignment: review of the RedBlackTree Index decision gate
 
 Perform a read-only review of `### C〜F 調査結果と暫定推奨` in:

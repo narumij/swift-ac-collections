@@ -524,3 +524,31 @@ B4-cは完了した。標準型へのtest-only conformanceはtest process内に�
 解除条件は、(1) `swift-ac-memoize`の次回AtCoder系から依存を削除またはrepositoryを終了し、
 (2) `Memoization`が独自実装へ移行するか、必要な正式APIを別途固定した後とする。それまでは
 新規の製品中心APIとして拡張せず、互換維持対象として扱う。
+
+### _isIdentical implementation result
+
+2026-10-04 / Claude Opus 5.5。Codexの割り当てに基づき実装した。
+
+- 次の3宣言について、`@inlinable public func _isIdentical(to:)`を
+  `@inlinable internal func _isIdentical(to:)`へ変更した。本体と`@inlinable`は変更していない。
+  - `Sources/RedBlackTreeCollections/RedBlackTreeView/RedBlackTreeRangeView+KeyOnly.swift:351`
+  - `Sources/RedBlackTreeCollections/RedBlackTreeView/RedBlackTreeRangeView+KeyValue.swift:422`
+  - `Sources/RedBlackTreeCollections/RedBlackTreeView/RedBlackTreeMappedValuesView.swift:351`
+- 下限の判断:
+  - internalの`@inlinable`宣言は、それ自体で`@usableFromInline`として扱われる。そのため、
+    public `@inlinable`の`==` / `<`から呼び出せる。`@usableFromInline`を重ねて付ける必要はない。
+  - 呼び出し元はpackage内にないので、`package`は不要である。
+  - DebugとReleaseのbuildがどちらも成功したことで確認した。
+- 変更していないもの:
+  - 互換modeの`_isIdentical`(`Implements/Deprecated/Protocol/UnsafeTreeSealedRangeProtocol.swift:50`、
+    `Implements/Deprecated/RawBuffer/_TiedRawBuffer+deprecated.swift:12`)
+  - 4コンテナの`isTriviallyIdentical(to:)`
+  - test、benchmark、`Package.swift`
+- 同期した文書: API Matrixの監査候補の行、`CHANGELOG.md`(source-breakingな公開面縮小として記載)。
+- 検証:
+  - Debugの`swift build --target RedBlackTreeCollections`と`--build-tests`が成功した。
+  - `swift test --skip-build --filter 'RangeView|MappedValuesView'`は、RedBlackTreeTestsのXCTest 98件が
+    0 failureで成功した。KeyOnly、KeyValue、MappedValues、Set、MultiSet、Dictionary、MultiMapの
+    各View suiteが実行されたことを確認した。
+  - Releaseの`swift build -c release --target RedBlackTreeCollections`が成功した。
+  - CIと同じRelease DocC生成(`--warnings-as-errors`)が成功した。

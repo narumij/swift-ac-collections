@@ -241,11 +241,14 @@ Viewの `endIndex` は基底コンテナ内の要素を指す場合がある。�
 | API名 | 現在の用途 |
 | --- | --- |
 | `_Key`, `_MappedValue`, `_PayloadValue` | 内部ジェネリック制約とpayload表現 |
-| `_isIdentical(to:)` | Range View・MappedValues Viewのストレージ・境界同一性判定 |
 | `__raw_find(_:)`, `__raw_end` | raw pointerを扱う内部フック。Setのみ、`BENCHMARK` trait有効時だけ公開される |
 
 これらを製品APIとしない場合は、`package` または `internal` へ狭められるか、
 `@usableFromInline` で十分かをABI公開前に確認する。
+
+`_isIdentical(to:)`は監査を完了し、Range View・MappedValues Viewの
+`@inlinable internal`な最適化hookへ縮小済みである。View同士の`==` / `<`の結果と
+計算量には影響しない。
 
 `_create(_:)` は削除済み。`___erase(_:)` と `_unsafe` / `_checked` ラベルの
 subscriptは `COMPATIBLE_ATCODER_2025` 構成でのみ公開され、通常構成には存在しない。

@@ -2,6 +2,141 @@
 
 Status: Completed
 
+## Completed assignment: B3 protocol witness and conformance audit
+
+Perform a read-only witness and conformance audit of the residual B3 protocols that
+have production conformers but no direct public-signature use. Do not narrow anything
+yet.
+
+## Objective
+
+Determine which residual protocol declarations can be narrowed independently without
+removing required witnesses, changing public conformances, or forcing an Index design
+decision. Produce the next smallest safe batch, or prove that the remaining protocols
+must stay deferred.
+
+## Scope
+
+Audit these protocols from the closure-audit residual table:
+
+- `UniqueMultiplicity`
+- `MultiMultiplicity`
+- `UnsafeTreeBindingV2`
+- `_ElementBride`
+- `_KeyBride`
+- `_MappedValueBride`
+- `_PayloadValueBride`
+- `_ScalarBasePayloadValue_KeyProtocol`
+- `_Tree_IsMultiTraitInterface`
+- `_BaseNode_NodeCompareProtocol`
+- `_BaseNode_SignedDistanceProtocol`
+- `MultiplicityHelper`
+
+Treat `LinkPairValueTrait` as Memoize-owned and excluded from immediate action. Mention
+it only to preserve accounting.
+
+## Required analysis
+
+1. For each scoped protocol, enumerate declaration/access, inherited protocols,
+   requirements, associated types, conforming types, conditional conformances,
+   constrained extensions, default implementations, and repository consumers.
+2. Build a witness graph showing which default implementations satisfy requirements of
+   other public protocols or public container/`Base` conformances. Distinguish a method
+   merely callable through a protocol constraint from a method installed as a witness.
+3. Check public and `@inlinable` signatures, serialized bodies, nested public `Base`
+   types, Views, generation-4 iteration, compatibility mode, and the four containers.
+4. Separate protocol-name exposure from behavior exposure. A protocol may be safely
+   narrowed only if required behavior and public conformances continue to typecheck.
+5. Group protocols into dependency-connected change batches. For each group, state the
+   minimum plausible visibility (`public`, `@usableFromInline package`, `package`, or
+   internal), source-compatibility impact, and exact compilation/tests needed to prove
+   it.
+6. Keep Index-binding, Balanced, Memoize, BENCHMARK, compatibility-generation deletion,
+   and external API design out of scope. If a group reaches one of those boundaries,
+   mark it deferred rather than assuming a decision.
+7. Recommend exactly one next action: one minimal implementation batch, a targeted
+   compile experiment, or closure of B3 until another gate moves.
+
+## Output
+
+Append a section named exactly:
+
+`### B3 protocol witness and conformance audit`
+
+to `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`. Include a compact protocol/witness
+table, dependency groups, configuration findings, proposed validation matrix, and one
+verdict:
+
+- `independent narrowing batch available`
+- `targeted compile experiment required`
+- `deferred gates only`
+- `inventory inconsistency blocks decision`
+
+Update this task with concise evidence and set it to `Completed`. Update other
+maintenance documents only to correct a demonstrably stale statement; do not mark the
+overall cleanup complete.
+
+## Boundaries
+
+Only these files may be edited:
+
+- `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
+- `Maintanance/CLAUDE_TASK.md`
+- `Maintanance/PROGRESS_OVERVIEW.md`
+- `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
+
+Do not edit source, tests, Package.swift, CHANGELOG, workflows, benchmarks, or DocC.
+Do not stage, commit, switch branches, use network access, inspect `try/index/1`, or
+alter Git history. Do not run the full suite. Targeted builds/typechecking are allowed
+only if they do not require source edits; otherwise specify the needed compile
+experiment as the verdict. Run `git diff --check`, inspect the complete diff, and inspect
+`git status --short`.
+
+Report only `完了` to the user. Put details in Markdown. Explain directly only if blocked
+or a product-owner decision is required.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+I appended `### B3 protocol witness and conformance audit` to
+`EXTERNAL_TYPE_EXTENSION_AUDIT.md`. Verdict: `independent narrowing batch available`.
+
+- **G1 (recommended batch):** `_KeyBride`, `_PayloadValueBride`, `_ElementBride`,
+  `_MappedValueBride`, `_Tree_IsMultiTraitInterface` -> `@usableFromInline package`.
+  No method witnesses; all refiners (normal and compat) are internal/`@usableFromInline`;
+  tests use them only under Debug `@testable`. Floor is `@usableFromInline` because
+  `@usableFromInline` protocols refine them.
+  - Caveat recorded: the Bride same-type constraints let containers/Views infer `_Key` /
+    `_PayloadValue` / `_MappedValue`, which appear in public positions (e.g. View
+    `Equatable where _PayloadValue: Equatable`). The validation matrix therefore includes
+    View Equatable/Comparable tests and a Release symbol-graph check that those types stay
+    public.
+- **G2** `UniqueMultiplicity` / `MultiMultiplicity`, **G3** `_BaseNode_NodeCompareProtocol` /
+  `_BaseNode_SignedDistanceProtocol` (Index-adjacent), **G4**
+  `_ScalarBasePayloadValue_KeyProtocol`: their extensions supply witnesses for public
+  requirements (`isMulti`, `___ptr_comp`, `___signed_distance`, `__key`). They need a
+  real-source compile experiment as a later task. Floor `package` (Release non-`@testable`
+  tests `TreeNodeOnlyFixture`, `KeyValueComparerTests`, `TreeFoundamentalValueTests`).
+- **G5** `MultiplicityHelper`: must stay public (associated-type constraint of public
+  `_Base_MultiplicityHelperInterface`).
+- **G6** `UnsafeTreeBindingV2`: deferred; compat-mode public protocols
+  `UnsafeIndexBindingV2` / `UnsafeIndicesBinding` inherit it.
+- `LinkPairValueTrait`: Memoize, excluded.
+
+Evidence:
+
+- Searches over `Sources`, `Tests`, `Benchmarks/Sources` for all 13 names, their refiners,
+  conformers, `isMulti`, `difference_type` / `_InputIter`, View constraints, and explicit
+  associated-type typealiases; compat guards of every Deprecated consumer checked.
+- Language-rule checks with synthetic code compiled by `swiftc -package-name` in a
+  task-owned `mktemp -d` directory (removed afterwards): package-protocol-extension witness
+  for a public requirement compiles and works from a client; a `@usableFromInline`
+  protocol refining a non-UFI package protocol is an error; inferred associated types
+  through a `@usableFromInline package` protocol work in public conditional conformances
+  and from a client. No repository source was edited and no package build was run.
+- `PROGRESS_OVERVIEW.md` / `RED_BLACK_TREE_REMAINING_TASKS.md`: no demonstrably stale
+  statement found for this scope; unchanged.
+- `git diff --check`: clean. Nothing staged.
+
 ## Completed assignment: narrow five 原木 reference protocols
 
 Narrow the five independently actionable 原木 protocols identified by the closure

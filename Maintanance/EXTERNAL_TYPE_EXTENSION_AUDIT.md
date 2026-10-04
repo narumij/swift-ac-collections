@@ -986,3 +986,101 @@ Balanced群とDebug比較群(どちらも保留中のcluster)だけである。�
 - **source互換:** 名前だけのpublic protocol 5個と、public extension member 1個が外部から見えなくなる。
   `CHANGELOG.md`の`Unreleased / Changed`に記載した。
 - **残り:** B3の13 protocolのtypecheck監査と、保留中のgate。独立した公開面整理はこれで一区切りになる。
+
+### B3 protocol witness and conformance audit
+
+2026-10-04 22:31 JST、Claude Opus 5.5。read-onlyの監査である。source、test、`Package.swift`は編集していない。
+対象はclosure auditの残り13個から、Memoize所有の`LinkPairValueTrait`を除いた12個。
+
+#### Protocol / witness table
+
+「witness」の列は、その protocol の extension にある既定実装が、container の`Base`などの**public適合**で、
+他の public protocol の要件を満たしているかどうかを示す。単に protocol 制約を通して呼べるだけのものは含めない。
+
+| protocol | 継承 / 要件 | production の適合型 | 既定実装が満たす public 要件(witness) | 参照元 | 下限 |
+| --- | --- | --- | --- | --- | --- |
+| `_KeyBride` | `_BaseBridge & _KeyType`、`where _Key == Base._Key`。要件なし | 4 container(内部の`_RedBlackTreeKeyOnlyV2` / `_RedBlackTreeKeyValuesV2`経由) | メソッドの witness はなし(extensionなし)。ただし same-type 制約で関連型`_Key`を推論させている(下記) | `@usableFromInline`内部protocol `_SequenceV2`、`_PayloadValueBridge_Key`、`_ValueCompBridge`、内部typealias `_SetBridge` / `_MapBridge`。互換modeでは`@usableFromInline` `___UnsafeIndexV2`、内部`_CompareV2`。test: `TreeFoundamentalComparisonInjectionTests`(`#if DEBUG`、`@testable`) | `@usableFromInline`が必須(`@usableFromInline` protocolが継承するため) |
+| `_PayloadValueBride` | 同上(`_PayloadValue`) | 4 container、3 View(`UnsafeMutableTreeHostV2`) | メソッドの witness はなし。関連型`_PayloadValue`を推論させている(下記) | `@usableFromInline` `UnsafeMutableTreeHostV2`、`_SequenceV2`、`_PayloadValueBridge_Key`、内部typealias。互換modeでは内部`___RemoveV2` / `_RemoveV2` / `UnsafeTreeSealedRangeProtocol` | 同上 |
+| `_ElementBride` | 同上(`Element`) | 4 container | なし | `@usableFromInline` `_PaylodValueBridge_Element`、内部typealias | 同上 |
+| `_MappedValueBride` | 同上(`_MappedValue`) | Dictionary / MultiMap | なし | 内部typealias `_MapBridge`のみ | 同上 |
+| `_Tree_IsMultiTraitInterface` | `isMulti`(instance) | `UnsafeTreeV2`(自前の`public var isMulti`)、内部handle 2つ | なし(既定実装なし。witnessは各型自身のmember) | `@usableFromInline` `BoundBothProtocol`の`@inlinable` lower/upper bound | 同上 |
+| `UniqueMultiplicity` | `_Base_MultiplicityHelperInterface`、`where _MultiplicityHelper == __UniqueHelper<Self>` | Set / Dictionary の`Base` | **あり**: `isMulti`(public `_Base_IsMultiInterface`、つまり public typealias `___TreeBase`の要件)。関連型`_MultiplicityHelper`も same-type 制約で供給 | 互換modeの内部`_CompareV2` extension。test: `TreeNodeOnlyFixture`と`RedBlackTreeInternal_KeyValueComparerTests`(どちらも guard なしの非`@testable` import)、ほか Debug `@testable` 3件 | `package`(Release の非`@testable` test) |
+| `MultiMultiplicity` | 同上(`__MultiHelper<Self>`) | MultiSet / MultiMap の`Base` | **あり**: 同上 | 同上(`TreeNodeOnlyFixture`) | `package` |
+| `MultiplicityHelper` | `___ptr_comp`、`___ptr_range_comp` | public struct `__UniqueHelper` / `__MultiHelper` | — | public protocol `_Base_MultiplicityHelperInterface`の**関連型制約** | **public のまま**(public protocol の関連型制約は public でなければならない) |
+| `_BaseNode_NodeCompareProtocol` | `_BaseNode_PtrCompInterface & _BaseNode_PtrRangeCompInterface & _Base_MultiplicityHelperInterface` | 4 container の`Base` | **あり**: `___ptr_comp` / `___ptr_range_comp`(public `_BaseNode_PtrCompInterface` / `_PtrRangeCompInterface`。public typealias `___TreeIndex`、`UnsafeTreeV2`の public 制約付き extension(RawRange、Erase)が使う) | test: `TreeNodeOnlyFixture`(非`@testable`) | `package` |
+| `_BaseNode_SignedDistanceProtocol` | `_UnsafeNodePtrType & _BaseNode_SignedDistanceInterface & _BaseNode_PtrCompInterface`、独自の関連型`difference_type` / `_InputIter` | 4 container の`Base` | **あり**: `___signed_distance`(public `_BaseNode_SignedDistanceInterface`。`___TreeIndex`と`UnsafeTreeV2+Index.swift:65`の public 制約付き extension が使う) | test: `TreeNodeOnlyFixture`(非`@testable`) | `package` |
+| `_ScalarBasePayloadValue_KeyProtocol` | `_ScalarBaseType & _BasePayloadValue_KeyInterface` | Set / MultiSet の`Base`(`@usableFromInline` `_ScalarBasePayload_KeyProtocol_ptr`経由) | **あり**: `__key`(public `_BasePayloadValue_KeyInterface`、`ScalarValueTrait`経由) | `@usableFromInline` `_ScalarBasePayload_KeyProtocol_ptr`。test: `TreeFoundamentalValueTests:19-20`(guard 外。Release では非`@testable`)、`UnsafeTreeBasicTests`(Debug `@testable`) | `@usableFromInline package` |
+| `UnsafeTreeBindingV2` | `___Root & _UnsafeNodePtrType`、`where Tree == UnsafeTreeV2<Base>`。要件なし | 通常mode: 4 container と 3 View(`@usableFromInline` `UnsafeTreeHostV2`経由)。互換mode: public struct `UnsafeIndexV2` 等 | なし | 通常mode: `@usableFromInline` `UnsafeTreeHostV2`のみ。**互換mode: public protocol `UnsafeIndexBindingV2` / `UnsafeIndicesBinding`が継承** | 通常mode `@usableFromInline package`、**互換mode public** |
+| (`LinkPairValueTrait`) | — | — | — | Memoize 所有。対象外(件数合わせのためだけに記載) | — |
+
+- **public signature:** 12個とも、public な関数・型の signature、public typealias、View の generic 制約から
+  直接は参照されない。View の generic 制約は`___Root`、`___TreeBase`、`ScalarValueTrait`などで、対象の12個は含まない。Benchmarks/Sources からの参照も0件。
+- **関連型の推論:** 4 container の外側の型と3 View は`_Key` / `_PayloadValue` / `_MappedValue`(container は`Element`も)を
+  明示的に宣言していない。Bride の same-type 制約(`_PayloadValue == Base._PayloadValue`など)から推論される。
+  この推論された型は public な位置で使われている。例: `RedBlackTreeKeyOnlyRangeView`の
+  `extension ...: Equatable where _PayloadValue: Equatable`(`RedBlackTreeRangeView+KeyOnly.swift:313`)と
+  `Comparable`(`:323`)。したがって Bride 群は、public signature に名前は出ないが、public signature の型を決めている。
+- **名前の露出と挙動の露出:** witness 列が「あり」の5個は、縮小しても挙動は public 要件を通じて外から呼べるまま残る。
+  縮小で消えるのは protocol 名と、container `Base`の public 適合一覧に出る名前だけである。
+
+#### 言語規則の確認(合成コード)
+
+実 source を編集せずに判断するため、task 専用の一時ディレクトリで合成コードを`swiftc -package-name`で compile した
+(一時ディレクトリは削除済み)。
+
+| 形 | 結果 |
+| --- | --- |
+| public 型が package protocol `Q`(public `P`を継承)に適合し、`P`の要件の witness が`Q`の extension にある(`public`宣言) | compile 成功。別 package の client から`-O`で generic 経由・直接呼び出しとも動作した |
+| `@usableFromInline` internal protocol が、`@usableFromInline`なしの package protocol を継承 | **error**: `protocol refined by '@usableFromInline' protocol must be '@usableFromInline' or public` |
+| `@usableFromInline package` protocol(`where K == B.K`)を`@usableFromInline` internal protocol 経由で public 型が採用。関連型の明示あり / 推論のみ | どちらも compile 成功 |
+| 上と同じ形で、推論された関連型`_PayloadValue`を public 条件付き適合(`Equatable where _PayloadValue: Equatable`)と public method の戻り値に使う | compile 成功。別 package の client から`V<Int>._PayloadValue`の参照、`==`、method 呼び出しとも動作した |
+
+結論:
+
+- witness を供給する protocol を縮小しても、言語上は public 適合が壊れるとは限らない。
+- ただし実コードには`~Copyable`、`where _MultiplicityHelper == __UniqueHelper<Self>`による関連型推論、
+  Release / 互換mode の差がある。合成コードの結果だけで witness 群の縮小が通るとは言えない。
+- Bride 群と`_Tree_IsMultiTraitInterface`は`@usableFromInline` protocol から継承されているので、
+  下限は`@usableFromInline package`(または`@usableFromInline internal`)。素の`package`にはできない。
+
+#### Dependency groups
+
+| group | protocol | 状態 | 理由 |
+| --- | --- | --- | --- |
+| G1 | `_KeyBride`、`_PayloadValueBride`、`_ElementBride`、`_MappedValueBride`、`_Tree_IsMultiTraitInterface` | **独立して縮小できる** | メソッドの witness を供給しない(関連型の推論は供給するが、同じ形が合成コードで client 利用まで通った)。refiner は通常mode・互換modeとも internal / `@usableFromInline`だけ。test は Debug `@testable`のみ。Index、Balanced、Memoize、BENCHMARK に触れない |
+| G2 | `UniqueMultiplicity`、`MultiMultiplicity` | 実コードでの compile 実験が要る | `isMulti`の witness と`_MultiplicityHelper`の関連型推論を供給する |
+| G3 | `_BaseNode_NodeCompareProtocol`、`_BaseNode_SignedDistanceProtocol` | 実コードでの compile 実験が要る。Index に隣接 | Index の比較・距離を支える public 要件の witness を供給する。縮小は Index 表現を決めないが、`___TreeIndex`の要件と同じ場所なので、Index 契約の作業と同時に動かすほうが安全 |
+| G4 | `_ScalarBasePayloadValue_KeyProtocol` | 実コードでの compile 実験が要る | `__key`の witness を供給する。下限は`@usableFromInline package` |
+| G5 | `MultiplicityHelper` | 現状では public のまま | public `_Base_MultiplicityHelperInterface`の関連型制約。縮小するなら`_Base_MultiplicityHelperInterface`、`__UniqueHelper` / `__MultiHelper`まで含む大きな cluster になり、今回の範囲外 |
+| G6 | `UnsafeTreeBindingV2` | 互換mode の境界で保留 | 互換mode の public protocol 2つが継承する。縮小には構成ごとに access を変える分岐が要る |
+
+#### Configuration findings
+
+- Debug / Release: G1〜G4 の宣言と適合に guard はなく、両構成で同じ。Release の非`@testable` test が
+  G2〜G4 を参照するので、これらの下限は`package`以上になる。G1 は Release の test から参照されない。
+- 互換mode: G1 の互換 refiner(`___UnsafeIndexV2`、`_CompareV2`、`___RemoveV2`、`_RemoveV2`、
+  `UnsafeTreeSealedRangeProtocol`)はすべて internal / `@usableFromInline`で、縮小と両立する。
+  互換mode に public refiner があるのは G6 だけ。
+
+#### Proposed validation matrix(G1 batch)
+
+| 構成 | 内容 |
+| --- | --- |
+| 通常 Debug | `swift build --build-tests`。`TreeFoundamentalComparisonInjectionTests`、Sequence / RangeView / MappedValuesView(View の Equatable / Comparable を含む)、ProtocolConformance、BoundExpression と lower/upper bound 系の test を実行し、discovery を確認 |
+| 通常 Release | `RedBlackTreeCollections`、`RedBlackTreeTests`、`RedBlackTreeTreeTests`の build |
+| DocC | CI と同じ Release DocC `--warnings-as-errors` |
+| 互換mode | `-Xswiftc -DCOMPATIBLE_ATCODER_2025`で build-tests。`AtCoder2025Compatibility`と`NaiveIteratorTests`を実行 |
+| 検索 | 5個の名前が public signature に無く、`@usableFromInline` refiner からだけ参照されること |
+| 関連型 | Release symbol graph で、4 container / 3 View の`_Key` / `_PayloadValue` / `_MappedValue` / `Element`が引き続き public であること(推論された型 witness が隠れていないこと) |
+
+source 互換: 5個の protocol 名が外部から見えなくなる(4 container / 3 View の public 適合一覧からも消える)。
+挙動は変わらない。CHANGELOG に source-breaking として記載する。
+
+#### Recommended next action
+
+G1 の5個を`public`から`@usableFromInline package`へ縮小する batch。要件・本体・コメントは変えない。
+G2〜G4 は G1 の後に、実 source での targeted compile 実験として別 task にする。G5 / G6 は保留。
+
+#### Verdict
+
+`independent narrowing batch available`

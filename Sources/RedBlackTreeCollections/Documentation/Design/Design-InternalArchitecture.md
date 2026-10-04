@@ -157,9 +157,10 @@ static `Base`経路とインスタンス注入経路の双方で同じ探索契�
 ## 比較結果の契約
 
 標準の三方比較器は小・等・大をそれぞれ`-1`、`0`、`1`へ正規化する。
-アルゴリズム側は具体的な正負値ではなく、`ThreeWayCompareResult`の`__less()`と
-`__greater()`で符号を読む。0はlessにもgreaterにも含めない。`Int`版とeager wrapperは
-この符号契約を共有し、比較表現を差し替えても探索分岐の意味を変えない。
+アルゴリズム側は具体的な正負値ではなく、package内部の`ThreeWayCompareResult`が持つ
+`__less()`と`__greater()`で符号を読む。0はlessにもgreaterにも含めない。`Int`版と
+eager wrapperはこの符号契約を共有し、比較表現を差し替えても探索分岐の意味を変えない。
+これらは赤黒木実装と同packageのtest fixtureを接続する内部境界であり、利用者向けAPIではない。
 
 ## 構造不変条件と診断
 

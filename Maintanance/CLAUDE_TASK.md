@@ -1,11 +1,130 @@
 # Codex-to-Claude Work Request
 
-Status: Idle — no active assignment
+Status: Idle
 
 ## Active assignment
 
-No work is assigned. Do not edit files, resume a previous task, or select work from
-the maintenance backlog. Wait for a new bounded assignment from Codex/the user.
+No active assignment. Wait for a new request from Codex. Report only `完了` when an
+assigned task is finished; keep detailed findings in the designated Markdown record.
+
+## Completed assignment: adversarial review of Gate B classification draft
+
+Read-only review the new `## Gate B classification draft` in:
+
+- `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
+
+Check whether Codex has classified any declaration as Index-independent when it is
+actually required by the current or candidate Index/Range/View surface, or proposed a
+batch that cannot compile independently. Focus on B4-a through B4-e, the boundary
+between B2 and B3, and the claim that B4-a is the safest first implementation unit.
+
+Use source/reference evidence. Verify especially `@inlinable` / `@usableFromInline`
+constraints, public protocol requirements, benchmark target access, production vs
+experimental `___meld_unique`, Memoize references, and Debug-only APIs. Do not edit the
+draft, source, tests, access levels, or Package.swift; do not run the full suite.
+
+Append only `### Claude review of Gate B draft` after the draft verdict, containing
+blocking corrections, non-blocking safeguards, confirmed classifications, and a verdict
+on whether B4-a may become the first implementation work order. Then mark this task
+Completed and report only `完了` to the user.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+Appended `### Claude review of Gate B draft` to `EXTERNAL_TYPE_EXTENSION_AUDIT.md`. The
+review was read-only: no build or test was run, and no source, test, or `Package.swift`
+was edited.
+
+Blocking corrections:
+
+1. B4-d: `freeCapacity` exists only to satisfy the Debug `BalancedDynamic` requirement,
+   so it cannot be removed independently. Move it to B5 with the Balanced group.
+2. B4-e has two problems:
+   - It is not Index-independent: `_Indices.next()` returns `UnsafeIndexV3`, and
+     `__raw_find` returns `UnsafeMutablePointer<UnsafeNode>`.
+   - The `Benchmarks/` client is a separate package, so it can never use `package` or
+     test-support access.
+3. B2 and B3 overlap: B3 lists `UnsafeNode` and `_RawRange*`, which are Index layout and
+   range storage, and `UnsafeTreeV2.Index` belongs to B2.
+
+Verdict: B4-a may be the first work order, under these conditions:
+
+- the narrowing floor is `@usableFromInline package`, because tests in three targets use
+  these declarations directly;
+- the order states whether `__eager_compare_result` is included;
+- the three test targets are built and run in both Debug and Release;
+- the design document and CHANGELOG are synchronized.
+
+B4-b (Memoize) is technically separable but needs a product-owner decision, because it
+was published in 0.1.33 as a feature.
+
+## Completed assignment: close RedBlackTree public-surface inventory gate A
+
+Perform the final read-only mechanical extraction for gate A of
+`Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`.
+
+Primary record:
+
+- `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
+
+Inspect `Sources/RedBlackTreeCollections` and enumerate declarations that can affect
+clients before Codex classifies or narrows them. Cover at least:
+
+- public members and types whose names begin with `_` or `__`;
+- public `Unsafe*`, `SealError`, public typealiases, global functions and operators;
+- extensions of standard-library-owned types, including split-line access modifiers;
+- public and retroactive protocol conformances;
+- declarations exposed through a public typealias or public signature;
+- `@frozen`, `@inlinable`, and `@usableFromInline` declarations relevant to client
+  compatibility;
+- differences under DEBUG / Release, `COMPATIBLE_ATCODER_2025`,
+  `ALLOW_CROSS_TREE_INDEX`, `USE_LAZY_DETACH`, and compact metadata branches.
+
+This is inventory only. Do not decide what should remain public, edit source/tests,
+move TestCode, run the suite, change access levels, or act on Index-dependent groups.
+Do not inspect unrelated module APIs except where `AcCollections` re-exports the
+RedBlackTree surface.
+
+Append a bounded `## Gate A final extraction` section to
+`EXTERNAL_TYPE_EXTENSION_AUDIT.md`. It must contain:
+
+- newly found omissions with source/line evidence;
+- existing rows confirmed complete;
+- configuration-only surface differences;
+- an explicit list of declarations whose classification must wait for the Index
+  contract;
+- a verdict: `complete for classification` or `not complete`, with exact blockers.
+
+Do not rewrite the existing audit table. If there are no omissions, say so and record
+the extraction method. Then change this task status to `Completed`, append a concise
+result here, and report only `完了` to the user.
+
+### Result (2026-10-04, Claude Opus 5.5)
+
+- Appended `## Gate A final extraction` to `EXTERNAL_TYPE_EXTENSION_AUDIT.md`. The
+  existing table was not rewritten.
+- Method: `swift build --target RedBlackTreeCollections` in Debug and Release, plus
+  Debug variants with `-Xswiftc -D{COMPATIBLE_ATCODER_2025,USE_LAZY_DETACH,USE_COMPACT_NODE_METADATA}`.
+  The default Debug was rebuilt afterward. Symbol graphs were extracted with
+  `swift-symbolgraph-extract -minimum-access-level internal` into a `mktemp -d` directory,
+  filtered to effectively public symbols, and the directory was then deleted.
+  Disabled `ALLOW_CROSS_TREE_INDEX` and `BENCHMARK` were checked from source only.
+- Result: all stdlib-type extension rows were confirmed. The `UnsafeMutablePointer` helper
+  row is mostly `package`, not "internal-centred". There are 13 omission groups. The main ones:
+  - the Debug `Result: Comparable` is generic over every `Result` whose `Success` and
+    `Failure` are `Comparable`;
+  - Debug-only public `Balanced*` protocols and container conformances, Debug-only
+    `RedBlackTreeSet.freeCapacity`, and `BoundExpression.index`/`.debug`;
+  - 60 public protocols (45 underscore-named);
+  - `UnsafeTreeV2`/`UnsafeNode` public members;
+  - deprecated `_Obverse1-3`/`_Reverse1-3` compiled in the default build;
+  - the Memoize group;
+  - `@frozen` layout exposure.
+- Configuration-only differences are recorded. Debug vs Release: +71/0 declarations.
+  Compat: +340/-297. `USE_LAZY_DETACH`: removes Set/MultiMap
+  `index(inserting:)`/`erase(exactly:)` and changes the Index layout. Compact metadata:
+  changes `_TrackingTag`/`Seal` widths.
+- An Index-bound list is recorded. Verdict: `complete for classification`, with no
+  blockers. No source, tests, or `Package.swift` were changed, and the suite was not run.
 
 ## Completed assignment: independently assess the user's project management
 

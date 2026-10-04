@@ -219,10 +219,11 @@ precondition failure等の契約へ変換する。
 
 ### 主経路のチェックリスト
 
-- [ ] A: 外部所有型extensionと、内部実装由来に見えるpublic宣言を列挙する
-- [ ] `EXTERNAL_TYPE_EXTENSION_AUDIT.md`のRedBlackTreeCollections対象を確定する
-- [ ] `SealError`、`Unsafe*`、`_` / `__`系public宣言とpublic typealiasを抽出する
-- [ ] B: 意図した公開API、境界内部、Index表現拘束、TestCode専用、内部用途へ分類する
+- [x] A: 外部所有型extensionと、内部実装由来に見えるpublic宣言を列挙する
+- [x] `EXTERNAL_TYPE_EXTENSION_AUDIT.md`のRedBlackTreeCollections対象を確定する
+- [x] `SealError`、`Unsafe*`、`_` / `__`系public宣言とpublic typealiasを抽出する
+- [x] B: 意図した公開API、境界内部、Index表現拘束、TestCode専用、内部用途へ分類する
+- [x] B4-a: ThreeWay比較宣言群をpackageへ縮小する
 - [ ] source compatibilityを意図する公開API以外を、可能な範囲でpackage/internalへ縮小する
 - [ ] TestCode専用の宣言と実験経路をproduction targetから分離する
 - [ ] C: 外部へ保証する安全性・CoW・走査計算量の契約を確認する

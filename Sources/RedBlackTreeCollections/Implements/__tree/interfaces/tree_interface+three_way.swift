@@ -25,8 +25,8 @@
 // <=>演算子に対応するものらしい
 //
 // <=>はspaceship operatorというらしい
-@_documentation(visibility: internal)
-public
+@usableFromInline
+package
   protocol ThreeWayCompareResult
 {
   @inlinable func __less() -> Bool

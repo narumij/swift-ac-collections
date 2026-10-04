@@ -2,6 +2,160 @@
 
 Status: Completed
 
+## Completed assignment: review the X1 identity-map skeleton
+
+Perform a read-only review of the newly created
+`Maintanance/INDEX_POC_CROSS_BRANCH_IDENTITY.md`. This review covers the map structure and
+mechanical provenance only. It must not begin semantic correspondence or PoC validation.
+
+Check the following:
+
+1. Verify the listed commit hashes, dates, parent relationships, current tips, and merge base using
+   commit metadata only.
+2. Verify that the mechanical PoC-side path inventory matches
+   `git diff --name-status b3570172..try/index/1` without interpreting file contents.
+3. Confirm that the identity key (`branch + commit + path + symbol + configuration`) and the
+   configuration dimensions are sufficient to prevent same-name conflation.
+4. Confirm that every semantic status remains user-controlled and that neither Codex nor Claude is
+   authorized to promote `unknown` to another state.
+5. Check that the user-intent questions ask only for intent that source/history cannot establish;
+   flag questions that unnecessarily ask the user to reconstruct mechanical facts.
+6. Check that the mandatory stops and review sequence faithfully implement the agreed X1 row in
+   `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`.
+7. Identify any wording that accidentally treats the PoC as obsolete, treats current HEAD as
+   authoritative by default, or implies semantic identity from a shared name or path.
+
+Return exactly one verdict: `approve X1 identity skeleton`, `approve after specified corrections`,
+or `reject X1 identity skeleton`. For corrections, cite the exact section and replacement wording.
+Record the result below, set `Status: Completed`, and give the user only a short completion notice.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit the identity map, task-fit table,
+progress document, source, tests, or any other file. Do not switch branches, inspect branch file
+contents, generate symbol inventories, infer semantic correspondence, run builds/tests/benchmarks,
+use network access, stage, commit, or alter Git history. Allowed Git operations are limited to
+read-only commit metadata, `rev-parse`, `merge-base`, and `diff --name-status` for the anchors already
+named in the identity map. Run `git diff --check` only.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Verdict: `approve after specified corrections`.
+
+The review was read-only. Git use was limited to `rev-parse`, `merge-base`, `log`/`rev-list`
+commit metadata, and `diff --name-status` / `--name-only` between the named anchors. I did not read
+any branch file contents.
+
+#### 1. Anchors: verified
+
+- **Tips.** `develop/misc/48` = HEAD = `aecbcddf` (2026-10-05 04:07, parent `c04fec93`).
+  `try/index/1` = `1b126ba3` (2026-10-04 20:25, parents `a250c677` and `b3570172`).
+- **Merge base.** `merge-base` returns `b3570172` (2026-10-04 20:06), which is the second parent of
+  `1b126ba3`, as stated.
+- **PoC commits.** `005a7bb3` (2026-09-24 22:46) has parent `49de7dd9`. `a250c677` (2026-09-27
+  06:29) is the first parent of the sync merge.
+
+Two mechanical facts are missing from the anchor table:
+
+- **The branch has two earlier sync merges.** Both are before the center commit:
+  `8d5f9928` (09-24 22:04, merges `main`) and `49de7dd9` (09-24 22:05, merges
+  `develop/misc/35`). So `49de7dd9`, the "Parent of the center commit", is itself a merge. And
+  "Last pre-sync PoC commit" is ambiguous, because there are three sync merges, not one.
+- **Where the PoC starts.** It has 24 branch-unique first-parent commits (`try/index/1 --not
+  develop/misc/48`). The earliest is `21bdd758` (09-24 19:40, `memo`). The commits from 15:44 to
+  15:56 that `RED_BLACK_TREE_REMAINING_TASKS.md` dates as the start of the work are reachable from
+  `develop/misc/48`, so they are not branch-unique.
+
+#### 2. Path inventory: verified, with one gap
+
+- `git diff --name-status b3570172..try/index/1` returns exactly the 24 listed paths, and all
+  24 are `M`. There are no `A`, `D`, or `R` entries, which is worth recording.
+- **Gap: the current side is missing.** `b3570172..aecbcddf` changes 45 paths. Five paths
+  changed on **both** sides since the merge base:
+  - `Maintanance/CLAUDE_TASK.md`
+  - `RedBlackTreeBoundExpression.swift`
+  - `RedBlackTreeMappedValuesView.swift`
+  - `RedBlackTreeRangeView+KeyOnly.swift`
+  - `RedBlackTreeRangeView+KeyValue.swift`
+
+  These are the paths where same-path conflation is most likely, because the content has
+  already diverged after the sync.
+
+#### 3. Identity key and configuration: correction needed
+
+The key is right. The configuration list has two problems:
+
+- **It omits defines that change compiled Index-related code:** `BENCHMARK`, which exposes public
+  Index-returning hooks; `USE_INT128`, which selects the ptr-bitmap path in `__MultiHelper`;
+  `ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND`; and `DEATH_TEST` / `ENABLE_DEATH_TESTS` on the test
+  side.
+- **It assumes configuration names mean the same thing on both branches.** That is itself a
+  same-name assumption, and `Package.swift` differs on the PoC side.
+
+#### 4. Status control: confirmed
+
+Every status is closed by the user, and "must not promote a row out of `unknown`" is explicit.
+One structural conflict: the **Symbol identity table** has a `Proposed counterpart` column, but
+review step 1 says to populate it "without semantic pairing". The `Role / era` column is also an
+interpretation if Codex or Claude fills it in step 1.
+
+#### 5. User-intent questions: one asks for mechanical facts
+
+The first six questions ask about intent. The seventh, "What conflicts were resolved during the
+2026-10-04 sync merge", asks the user to recall something mechanical: the conflict set can be
+recovered from the merge and its two parents. Only the second half of the question (intent versus
+restoring compilation) is a question for the user.
+
+#### 6. Stops and sequence: faithful
+
+All seven agreed stopping points from the corrected X1 row are present, including the 10-04
+conflict intent, a failing Quality Checklist item, and raw performance data only. The sequence
+keeps Claude's extraction independent, keeps correspondence undecided by the agents, gates on the
+user, and validates one representative before expanding.
+
+#### 7. Wording
+
+Nothing treats the PoC as obsolete, and no correspondence is inferred from a shared name. One
+phrase can be read as making HEAD the reference standard: "validating ... `try/index/1` PoC
+against the current development branch".
+
+#### Corrections (section → replacement)
+
+1. **§Fixed anchors.**
+   - Rename the row "Last pre-sync PoC commit" to "Last PoC commit before the 2026-10-04 sync merge".
+   - Add these rows:
+     - `21bdd758…` (2026-09-24 19:40), Role: "Earliest branch-unique first-parent commit
+       (`try/index/1 --not develop/misc/48`)".
+     - `8d5f9928…` (2026-09-24 22:04), Role: "Earlier sync merge (`main`) before the center commit".
+     - `49de7dd9`'s Role: append "; itself a sync merge of `develop/misc/35`".
+2. **§Mechanical PoC-side path scope.**
+   - Add after the first paragraph: "All 24 entries are `M`; there are no added, deleted, or
+     renamed paths."
+   - Add a subsection **"Paths changed on both sides since `b3570172`"** listing the five paths
+     above, with: "Same-path content has diverged on both sides after the sync; treat every symbol
+     in these files as a separate identity on each side."
+   - Optionally add the full current-side inventory (`b3570172..aecbcddf`, 45 paths).
+3. **§Identity rule.**
+   - Replace "Configuration includes, when applicable:" with "Configuration is the define/trait set
+     declared by that commit's `Package.swift`; a configuration name is not assumed to mean the
+     same on both branches. Dimensions include, when applicable:".
+   - Add the following to the list: `BENCHMARK`, `USE_INT128`,
+     `ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND`, and `DEATH_TEST` / `ENABLE_DEATH_TESTS` (tests).
+4. **§Symbol identity table.**
+   - Remove the `Proposed counterpart` column; pairing belongs only in the Correspondence proposal
+     table.
+   - Rename `Role / era` to `Role / era (user-supplied; otherwise unknown)`.
+5. **§Required user-intent checkpoints, last bullet.** Replace it with: "For each conflict
+   resolution in the 2026-10-04 sync merge (listed mechanically beforehand from the merge and its
+   two parents), did the resolution express design intent, or only restore compilation?"
+6. **§Purpose, first sentence.** Replace it with: "This document is the entry gate for X1:
+   reconstructing the user-authored `try/index/1` PoC and validating it, on top of the current
+   development branch, against the Quality Checklist."
+
+Checks: `git diff --check` was clean. Only this file was edited. Nothing was staged.
+
+---
+
 ## Completed assignment: agreement check for the integrated X1 task-fit row
 
 Perform a read-only agreement check of Codex's integration of your preceding X1 interview.

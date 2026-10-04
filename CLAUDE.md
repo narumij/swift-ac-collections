@@ -2,11 +2,6 @@
 
 At the beginning of every session, read `Tests/CLAUDE.md` before doing any work and follow its instructions.
 
-Assignments prepared by ChatGPT while Codex is unavailable follow
-`Maintanance/CLAUDE_PROXY_ASSIGNMENT_GUIDE.md`. The active assignment in
-`Maintanance/CLAUDE_TASK.md` remains authoritative; the guide does not grant broader
-Git, repository, or product-decision authority.
-
 # Communication
 
 Communicate with the user in Japanese. Internal instructions and Codex-to-Claude work requests may be written in English, but explanations, questions, progress updates, and final reports addressed to the user must be in Japanese.

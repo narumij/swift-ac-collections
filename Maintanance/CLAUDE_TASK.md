@@ -474,6 +474,8 @@ Confirmed state, no action taken:
     - Details are in the audit's "Follow-up" section. The Codex re-check still stands.
   - Ⅱ-α done: the two counterintuitive assertions in `RedBlackTreeSet_3_IndexSequenceTests.swift`
     now carry a comment referencing `Design-RuntimeChecks.md` (audit proposal 3).
+  - Ⅱ-β done: the two detached-premise internal tests were added to MultiSet, Dictionary, and
+    MultiMap. All 6 pass, full `swift test` passes, and the compatibility-mode build succeeds.
 - Ⅰ done: planning-doc sync, facts only. The user approved that scope; structure and policy are
   untouched.
   - `PROGRESS_OVERVIEW.md`:

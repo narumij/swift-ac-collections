@@ -108,7 +108,7 @@ The comments do not reference the design document.
 ## Follow-up: specs added (2026-10-05, after the audit)
 
 The user asked Claude to proceed with proposals 1 and 2 before the Codex re-check. Proposal 3
-(comment references) is not applied.
+(comment references) was applied afterwards as Ⅱ-α.
 
 - F3 and F4 specs were added to all four `_3_IndexSequenceTests.swift`:
   - `testIndexOutlivingItsOriginResolvesInSurvivingCopy`
@@ -129,8 +129,8 @@ The user asked Claude to proceed with proposals 1 and 2 before the Codex re-chec
   - all 12 new tests pass, with no source change;
   - full `swift test` (Debug): exit 0;
   - compatibility-mode test build: succeeds.
-- The premise is checked for Set only. The other three types use the same construction but have no
-  internal premise test.
+- The premise is now checked on all four types (Ⅱ-β, 2026-10-05): the same two internal tests were
+  added to the MultiSet, Dictionary, and MultiMap `_98_IndexValidityXCTests.swift`, and all six pass.
 
 The questions below still stand. Question 2 now has evidence, but the construction still deserves
 an independent look.

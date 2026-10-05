@@ -119,8 +119,13 @@ current instruction and prepare the handoff for Codex if requested.
 - X1/PoCの準備・検証記録、Combining性能根拠、Adoption Readiness、SortedCollections pilotは
   完了資料として`Maintanance/Archived/`へ移動済み。C++比較の作業履歴もArchivedに置き、
   現行の証拠正本は`Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`とする。
-- 現在ユーザー判断を待つ主項目は、Index完了ゲート（Comparable、公開Indexと内部`SealError`の
-  分離、完了範囲）と、Index-range `erase`の空guardである。P10はdetached訂正後の残存記述確認のみ。
+- 現在の律速は外部（`swift-collections`の`Container.Index`要件）。Index完了ゲート、その内訳
+  （公開Indexと内部`SealError`の分離・完了範囲）、Index-range `erase`の空guardはいずれも
+  `WAITING_EXTERNAL`。2026-10-06、詳細正本（公開Index表現の最終固定はContainer要件安定後、
+  空guardはIndex契約依存）に基づき、ClaudeがユーザーのレビューでRegistryを`WAITING_USER`から
+  訂正した。Indexゲートは公開Index表現・完了範囲とComparable採否へ分割し、内部の必須順序は
+  Task precedenceで管理する。Claude再レビューの4指摘をCodexが反映し、2026-10-06にユーザーが運用ルールとして確定した（commit「Clarify task dependency states」、push未確認）。P10は
+  detached訂正後の残存記述確認のみ。
 - 旧task ID（不変、`CONVERSATION_REFERENCE_IDS.md`が参照）: Ⅰ 計画文書同期（完了）、Ⅱ cross-tree
   Index監査（完了）、Ⅲ P10記録更新（detached訂正のみ完了）、Ⅳ Index完了ゲート、Ⅴ
   `Tests/TESTING.md`同期（完了）、Ⅵ Index-range `erase`の空guard、Ⅶ CROSS無効スモークテスト（完了）。

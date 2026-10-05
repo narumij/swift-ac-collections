@@ -18,12 +18,18 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 この表を作業状態、担当、再開条件の正本とする。後続のチェックリストと各詳細文書は、証拠と
 内訳を保持するためのものであり、この表と食い違う場合は本表を優先する。
 
+**現在の律速:** 外部（`swift-collections` ContainersPreviewの`Container.Index`要件）。
+Index契約とそれに関わる残taskは、この外部条件が安定するまで最終確定できない。ユーザー判断で
+解消できるtaskは現在ない。
+
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `RBT-001` | `WAITING_USER` | User / Codex | Index完了ゲート | Comparable、公開Indexと内部`SealError`の分離、1.0での完了範囲を決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-002` | `WAITING_USER` | User / Codex | Index-range `erase`の空guard | 無効範囲検査と不要なCoW回避の契約を決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-010` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲートのうち公開Index表現と完了範囲 | Container要件の安定後、公開Indexと内部`SealError`の分離、1.0での完了範囲を決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-002` | `WAITING_EXTERNAL` | User / Codex | Index-range `erase`の空guard | Index契約の確定後に、無効範囲検査と不要なCoW回避の契約を決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `DOC-001` | `ACTIVE` | Codex | P10残存記述確認 | Index統合前の表現が残る箇所を確認し、必要箇所だけ同期 | `MAINTENANCE.md` |
-| `RBT-003` | `FROZEN` | Codex | `Result`のpublic比較overloadとpublic `_NodePtr` | ユーザーが明示的に再開 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
+| `RBT-003` | `FROZEN` | Codex | `Result`のpublic比較overloadとpublic `_NodePtr` | Index完了ゲート後、ユーザーが明示的に再開 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-006` | `FROZEN` | User / Codex | 未結線コードの個別削除 | ユーザーが対象を個別指定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -45,11 +51,27 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 | `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 
+### Task precedence
+
+Task Registryの状態は、通常の再開判断に使う計算済みの表示である。次の辺リストは、内部taskの
+厳密な順序制約を保持し、状態の監査とトポロジカルソートに使う。
+
+| 後続task | 前提task | 制約 |
+| --- | --- | --- |
+| `RBT-001` Index完了ゲート | `RBT-010` 公開Index表現と完了範囲 | 前提taskの完了後に後続taskを完了できる |
+| `RBT-001` Index完了ゲート | `RBT-011` `Comparable`採否 | 前提taskの完了後に後続taskを完了できる |
+| `RBT-003` `Result`のpublic比較overloadとpublic `_NodePtr` | `RBT-001` Index完了ゲート | 前提taskの完了後に着手候補にできる |
+| `RBT-002` Index-range `erase`の空guard | `RBT-001` Index完了ゲート | 前提taskの完了後に契約を確定できる |
+
+ここには必須のAND前提だけを記録する。外部条件は各taskの状態と再開・完了条件、選択肢や
+OR条件は詳細正本で扱う。必須前提が増えた場合は辺を追加し、循環が生じる場合はtask境界または
+未確定の設計判断を見直す。
+
 ### Registry rules
 
 - IDは作成後に変更・再利用しない。分類や状態が変わってもIDを維持する。
-- 状態は`ACTIVE`、`WAITING_USER`、`FROZEN`、`USER_ONLY`、`EXCLUDED`、`DONE`、`ARCHIVED`の
-  いずれかとする。
+- 状態は`ACTIVE`、`WAITING_USER`、`WAITING_EXTERNAL`、`FROZEN`、`USER_ONLY`、`EXCLUDED`、
+  `DONE`、`ARCHIVED`のいずれかとする。
 - 状態語はAIの管理用であり、ユーザーが名称を覚えたり指定したりする必要はない。Codexが
   ユーザーの通常の言葉を対応する状態へ翻訳して記録する。
 - 固定Task IDもAIの管理用とし、通常のユーザー向け報告では表示も指定要求もしない。項目名と、
@@ -59,6 +81,14 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 - `USER_ONLY`はユーザー専任とし、AIは着手、代行、催促を行わない。
 - `EXCLUDED`は実施対象外であり、再開候補として扱わない。
 - `DONE`を履歴資料へ移した場合だけ`ARCHIVED`へ変更する。
+- `WAITING_EXTERNAL`は外部条件が解消するまで着手可能とみなさない。外部条件の詳細と過去の観測は
+  task行の詳細正本で管理し、Task Registry表の各行へ依存列を追加しない。
+- Task precedenceは内部task間の必須順序だけを保持する。Task Registryの状態を更新するときは
+  辺リストとの整合を確認するが、通常の再開報告では計算済みの状態を優先して提示する。
+- 前提taskが待機中で後続taskの着手または確定を止める場合、その影響を後続taskの状態にも反映する。
+  通常の再開判断で、AIに毎回辺リストから着手可否を導出させない。
+- 同じ条件が複数taskを止めている場合、Task Registry表の直前に`現在の律速`として明示する。
+  律速が変わるか解消した時点で、記述と影響を受けるtaskの状態を同時に更新する。
 - 会話参照IDの`A-1`等は一時座標であり、この固定IDとは分離する。
 - 優先順位は、ユーザーの最新指示、Task Registry、task行が示す詳細正本、Archivedと過去ログの
   順とする。食い違いを見つけても、古い記述だけを根拠にtaskを再開しない。
@@ -71,6 +101,7 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 | --- | --- |
 | `ACTIVE` | AIが次の作業として着手可能 |
 | `WAITING_USER` | ユーザー判断または設計判断が必要 |
+| `WAITING_EXTERNAL` | repository内の判断だけでは解消できない外部条件を待っている |
 | `FROZEN` | 明示的な再開指示が必要 |
 | `USER_ONLY` | ユーザー専任。AIは着手・代行・催促しない |
 | `EXCLUDED` | 実施対象外。再開候補にも含めない |

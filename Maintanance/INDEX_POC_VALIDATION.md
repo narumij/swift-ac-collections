@@ -59,8 +59,8 @@ as history but its snapshot anchors are superseded by the commits above for this
 | --- | --- | --- | --- |
 | `P1` | pass | Test as Specification | Four internal tests verify Debug `.index(.nullptr)` on non-empty containers without recreating a public failure-valued Index. Codex and Claude confirmed the resolver reaches `.failure(.null)` rather than trapping. |
 | `P2` | partial pass; independently reviewed | Index lifetime | Representative stale/recycled/movement/MappedValues paths pass in Debug, Release, a narrowly filtered Release + `_O_UNCHECKED` batch, and Debug ASan. An Index outliving its storage has a detached tie and is safely rejected by the tested empty receiver under ASan; behavior with a non-empty unrelated receiver remains unspecified and unmapped. |
-| `P3` | partial pass; review queued | Configuration matrix | Debug, Release, representative Release + `_O_UNCHECKED`, Debug `COMPATIBLE_ATCODER_2025`, and representative Debug ASan evidence is recorded below. Compatibility Release remains unmapped. |
-| `P4` | partial pass; review queued | Container/View breadth | Set and MappedValues representative paths pass. KeyValue and KeyOnly Range Views now directly verify half-open bounds through `isElement(at:)` / `isEnd(_:)`; each 10-test suite passes. Remaining per-property mapping across MultiSet, Dictionary, and MultiMap is incomplete. |
+| `P3` | pass; review queued | Configuration matrix | Debug, Release, representative Release + `_O_UNCHECKED`, Debug ASan, and both Debug and Release `COMPATIBLE_ATCODER_2025` evidence is recorded below. |
+| `P4` | pass; review queued | Container/View breadth | All four containers passed a 111-test Index-validity/movement/CoW batch. MappedValues representative paths pass, and KeyValue/KeyOnly Range Views each passed 10 tests including direct half-open boundary classification. |
 | `P5` | confirmed test hazard | Debug fixture semantics | `_LazyTieWrap.unsafe(tree:rawTag:)` maps every retrieval, seal, or banding failure to synthetic `.nullptr`. On an empty tree, `_emptyLazyDetach` is shared, so same-tie purification can assert on the null pointer instead of producing the intended `SealError`. Synthetic-null tests must use a non-empty tree and verify the error reason, not merely expect process failure. |
 | `P6` | confirmed artifacts; independently reviewed | Public surface | `UnsafeIndexV3` and `_LazyTiedPtr` were already externally nameable on develop. PoC surface changes are removal of `@_documentation(visibility: internal)` (DocC exposure) and the new nested public `_LazyTiedPtr._NodePtr` alias. These are prototype artifacts, not representation evidence. |
 | `P7` | verified by inspection | Equality / hashing | Synthesized `_NodePtrSealing` equality/hash cover pointer, seal, and (when present) the pointer-derived tracking tag. `_LazyTieWrap` equality additionally checks tie identity while its coarser hash omits it, which is contract-valid. All are O(1). Keep a regression test. |
@@ -274,6 +274,27 @@ Batch result: Codex `pass`; independent review queued.
 The corresponding bounded-range assertions were also added to
 `RedBlackTreeKeyOnlyRangeViewTests`. Its 10-test suite passed with no failure, covering the same
 before-lower/lower/interior/upper/base-end classification for Set-backed Views.
+
+### P4 — four-container breadth
+
+A combined Debug selection covered `IndexValidityXCTests`, `IndexRangeTests`,
+`BidirectionalCollectionTests`, and `CopyOnWriteTests` for Set, MultiSet, Dictionary, and MultiMap.
+It executed 111 XCTest cases with no failure. The batch includes stale/recycled Index rejection,
+element/end distinction, copied-tree resolution, forward/backward movement, limited movement,
+range-bound rejection, consecutive mutation after CoW, and the existing container-specific CoW
+stress cases.
+
+Batch result: Codex `pass`; independent review queued.
+
+### P3 — compatibility Release
+
+The representative compatibility batch was also run in Release with
+`-Xswiftc -DCOMPATIBLE_ATCODER_2025`, covering the AtCoder 2025 compatibility suites together with
+the selected CoW, bidirectional movement, Index range, and SubSequence suites. It executed 120
+XCTest cases with no failure (4 intentional skips), followed by 1 Swift Testing case with no
+failure.
+
+Batch result: Codex `pass`; independent review queued.
 
 ### P2 — Index outliving its storage
 

@@ -557,7 +557,7 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 
 - [x] Fで決定したKeyValue Range Viewの範囲外Index契約を実装・テストへ反映する
 - [ ] cross-tree indexingのテストが公開契約と一致しているか再監査する
-- [ ] eraseのrange sanitizeをすり抜ける入力に対するテストを追加する
+- [x] eraseのrange sanitizeをすり抜ける入力に対するテストを追加する（2026-10-05: 4型で逆向き範囲と同値キーの逆向き区間を追加し、すり抜けがないことを確認。空でのBound範囲eraseの無駄なCoWを8か所修正。Index range版の空guardはIndex契約に関わるため未変更）
 - [x] MultiMapで確認されたaccessorのcompiler不具合と同種の問題がないか、`unsafeAddress` /
   `unsafeMutableAddress` accessorを使用する他の箇所をReleaseビルドで横断確認する。MultiMap自身は
   通常`get`へ退避済みであり、対象は内部の`_unsafeAddress`関数呼び出しではなくSwift accessor宣言である

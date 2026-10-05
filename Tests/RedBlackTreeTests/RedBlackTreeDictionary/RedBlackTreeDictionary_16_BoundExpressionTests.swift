@@ -68,6 +68,39 @@
       XCTAssertEqual(Array(b).map { $0.key }, [0, 4])
     }
 
+    /// 下端が上端より後ろにある逆向きの範囲は空の範囲として扱い、何も削除しないこと。
+    func testEraseReversedBoundsRemovesNothing() throws {
+      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+      b.erase(upperBound(10)..<lowerBound(-10))
+      XCTAssertEqual(Array(b).map { $0.key }, [0, 1, 2, 3, 4])
+      b.erase(lowerBound(3)..<lowerBound(1))
+      XCTAssertEqual(Array(b).map { $0.key }, [0, 1, 2, 3, 4])
+    }
+
+    /// 逆向きの範囲では、条件クロージャを一度も呼ばず、何も削除しないこと。
+    func testEraseReversedBoundsWhereRemovesNothingAndSkipsPredicate() throws {
+      var b: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
+      var calls = 0
+      b.erase(lowerBound(3)..<lowerBound(1)) { _ in
+        calls += 1
+        return true
+      }
+      XCTAssertEqual(calls, 0)
+      XCTAssertEqual(Array(b).map { $0.key }, [0, 1, 2, 3, 4])
+    }
+
+    /// 空のDictionaryに対するBound範囲のeraseは、無駄なCoW(共有される空シングルトン
+    /// バッファからの退避)を発生させないこと。
+    func testEraseBoundsOnEmptyDictionaryDoesNotCopy() throws {
+      var b = RedBlackTreeDictionary<Int, String>()
+      XCTAssertEqual(b._copyCount, 0)
+      b.erase(lowerBound(0)..<upperBound(10))
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(lowerBound(0)..<upperBound(10)) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertTrue(b.isEmpty)
+    }
+
     func testSubscriptBoundsView() throws {
       let view = a[lowerBound(0)..<upperBound(2)]
       XCTAssertEqual(Array(view).map { $0.key }, [0, 1, 2])

@@ -274,6 +274,39 @@
       XCTAssertEqual(Array(b), [1, 3])
     }
 
+    /// 下端が上端より後ろにある逆向きの範囲は空の範囲として扱い、何も削除しないこと。
+    func testEraseReversedBoundsRemovesNothing() throws {
+      var b = RedBlackTreeSet<Int>(0..<5)
+      b.erase(upperBound(10)..<lowerBound(-10))
+      XCTAssertEqual(Array(b), [0, 1, 2, 3, 4])
+      b.erase(lowerBound(3)..<lowerBound(1))
+      XCTAssertEqual(Array(b), [0, 1, 2, 3, 4])
+    }
+
+    /// 逆向きの範囲では、条件クロージャを一度も呼ばず、何も削除しないこと。
+    func testEraseReversedBoundsWhereRemovesNothingAndSkipsPredicate() throws {
+      var b = RedBlackTreeSet<Int>(0..<5)
+      var calls = 0
+      b.erase(lowerBound(3)..<lowerBound(1)) { _ in
+        calls += 1
+        return true
+      }
+      XCTAssertEqual(calls, 0)
+      XCTAssertEqual(Array(b), [0, 1, 2, 3, 4])
+    }
+
+    /// 空のSetに対するBound範囲のeraseは、無駄なCoW(共有される空シングルトン
+    /// バッファからの退避)を発生させないこと。
+    func testEraseBoundsOnEmptySetDoesNotCopy() throws {
+      var b = RedBlackTreeSet<Int>()
+      XCTAssertEqual(b._copyCount, 0)
+      b.erase(lowerBound(0)..<upperBound(10))
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(lowerBound(0)..<upperBound(10)) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertTrue(b.isEmpty)
+    }
+
     func testIsValidBoundsInvalidDoesNotCrash() throws {
       XCTAssertFalse(a.isValid(upperBound(10)..<lowerBound(-10)))
       XCTAssertTrue(a[upperBound(10)..<lowerBound(-10)].isEmpty)

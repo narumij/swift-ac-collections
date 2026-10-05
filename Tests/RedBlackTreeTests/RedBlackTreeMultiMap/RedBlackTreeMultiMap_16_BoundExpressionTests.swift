@@ -80,6 +80,42 @@
       XCTAssertEqual(Array(b).map { $0.key }, [0, 4])
     }
 
+    /// 下端が上端より後ろにある逆向きの範囲は空の範囲として扱い、何も削除しないこと。
+    /// 同値キーの区間を逆向きに指定した場合も同じであること。
+    func testEraseReversedBoundsRemovesNothing() throws {
+      var b = RedBlackTreeMultiMap<Int, String>()
+      b.insert((0, "a")); b.insert((1, "b")); b.insert((1, "c")); b.insert((2, "d"))
+      b.erase(upperBound(10)..<lowerBound(-10))
+      XCTAssertEqual(Array(b).map { $0.value }, ["a", "b", "c", "d"])
+      b.erase(upperBound(1)..<lowerBound(1))
+      XCTAssertEqual(Array(b).map { $0.value }, ["a", "b", "c", "d"])
+    }
+
+    /// 逆向きの範囲では、条件クロージャを一度も呼ばず、何も削除しないこと。
+    func testEraseReversedBoundsWhereRemovesNothingAndSkipsPredicate() throws {
+      var b = RedBlackTreeMultiMap<Int, String>()
+      b.insert((0, "a")); b.insert((1, "b")); b.insert((1, "c")); b.insert((2, "d"))
+      var calls = 0
+      b.erase(upperBound(1)..<lowerBound(1)) { _ in
+        calls += 1
+        return true
+      }
+      XCTAssertEqual(calls, 0)
+      XCTAssertEqual(Array(b).map { $0.value }, ["a", "b", "c", "d"])
+    }
+
+    /// 空のMultiMapに対するBound範囲のeraseは、無駄なCoW(共有される空シングルトン
+    /// バッファからの退避)を発生させないこと。
+    func testEraseBoundsOnEmptyMultiMapDoesNotCopy() throws {
+      var b = RedBlackTreeMultiMap<Int, String>()
+      XCTAssertEqual(b._copyCount, 0)
+      b.erase(lowerBound(0)..<upperBound(10))
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(lowerBound(0)..<upperBound(10)) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertTrue(b.isEmpty)
+    }
+
     func testRemoveBoundsWhere() throws {
       var b: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c", 3: "d", 4: "e"]
       b.erase(lowerBound(0)..<upperBound(4)) { $0.key % 2 == 0 }

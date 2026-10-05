@@ -430,6 +430,26 @@ Confirmed state, no action taken:
   - Not run: the performance job. The change adds new `@inlinable` APIs and an early-return guard
     to Set's `erase(exactly:)`; existing hot paths are untouched. Pushing and CI are the user's
     call.
+- 6-b: tests for erase inputs that could bypass range sanitization.
+  - Bound DSL `erase` sanitizes an invalid range to empty, and that is the path this item targets.
+    Index-range `erase` validates and stops instead.
+  - Added specs to the four `_16_BoundExpressionTests.swift`:
+    - reversed bound ranges remove nothing;
+    - for Multi types, also a reversed range across equal keys;
+    - the `erase(_:where:)` predicate is never called for a reversed range.
+    - All of them passed before any change. No bypass exists, because `___ptr_comp` orders
+      equal-key nodes positionally.
+  - A new empty-collection spec failed on all four types: Bound-range `erase` / `erase(_:where:)`
+    called `ensureUnique()` first, a CoW-on-empty copy. Added the `count > 0` guard to the 8 sites.
+  - **Not changed; deferred to Codex (user decision, 2026-10-05):** Index-range `erase` has the
+    same shape. A guard there would make an invalid range on an empty tree pass instead of stop.
+    That is the Index contract, so it is left as is for Codex to judge.
+  - Removed the done `TODO: サニタイズすりぬけを検出するテストの追加` in
+    `UnsafeTreeV2+Erase.swift`. Ticked the item in `RED_BLACK_TREE_REMAINING_TASKS.md`.
+  - Validation:
+    - the four BoundExpression suites: 81 XCTests pass;
+    - full `swift test` (Debug): exit 0;
+    - compatibility-mode test build: succeeds.
 
 ## Completed assignment: update Claude's user assessment and reflection
 

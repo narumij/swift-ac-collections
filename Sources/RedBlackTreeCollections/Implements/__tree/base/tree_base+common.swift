@@ -23,6 +23,7 @@
 // 資料的に残されている
 //
 // 実際には特殊化されたものをつかっている
+@usableFromInline
 package protocol _BaseNode_KeyProtocol:
   ~Copyable,
   _BaseNode_KeyInterface

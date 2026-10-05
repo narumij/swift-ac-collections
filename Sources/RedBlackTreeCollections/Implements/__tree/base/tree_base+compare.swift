@@ -20,6 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+@usableFromInline
 package protocol _BaseNode_NodeCompareProtocol: ~Copyable,
   _BaseNode_PtrCompInterface
     & _BaseNode_PtrRangeCompInterface

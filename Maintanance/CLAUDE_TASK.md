@@ -72,6 +72,11 @@ permission.
   current branch before editing and again before committing.
 - Update the relevant canonical record for durable decisions. Do not expose a private note merely
   to improve agent continuity.
+- When actual use reveals a possible improvement to the conversation reference ID rule, Claude may
+  append a concrete proposed diff to `Maintanance/CONVERSATION_REFERENCE_IDS.md` under
+  `運用中の改訂候補` without waiting for a separate assignment. A proposal does not change the
+  active rule; integrate it into the adopted text only after the user approves it or explicitly
+  asks Claude to apply it.
 
 ### Handoff for Codex return
 
@@ -99,7 +104,8 @@ User decisions:
   performance-incident retrospective review): closed, no edit. The user accepts that the mechanism
   is partly inferable from public records, as long as the correct answer is not trivially
   obtainable. The rule-only guidance above is the intended safeguard.
-- P10 design-record update after the Index integration: deferred to Codex; not urgent.
+- P10 design-record update after the Index integration: the detached-description correction was
+  completed on 2026-10-06; broader record cleanup remains deferred to Codex and is not urgent.
 - Index completion gate (`Comparable`, `SealError` separation, completion scope): deferred to
   Codex.
 - `Tests/TESTING.md` sync: completed by Codex on 2026-10-06 from this handoff. Future test work
@@ -232,10 +238,11 @@ Confirmed state, no action taken:
   - Subdivisions use Greek letters (Ⅰ-α), then あいうえお if those run out.
   - Items inside a single reply use plain numbers (1, 1-a). Superseded on 2026-10-06 by
     `Maintanance/CONVERSATION_REFERENCE_IDS.md` (`A-1-b` style); the task IDs below are unchanged.
-  - Open tasks as of now:
+  - Tracked tasks at this handoff (completion state is recorded per item):
     - Ⅰ: planning-doc sync (`PROGRESS_OVERVIEW.md`, `RED_BLACK_TREE_REMAINING_TASKS.md`; old 1-a/1-b).
-    - Ⅱ: cross-tree test audit (old 6-a); awaits a Codex re-check.
-    - Ⅲ: design-record update P10 (old 2); Codex.
+    - Ⅱ: cross-tree test audit (old 6-a); completed by Codex on 2026-10-06.
+    - Ⅲ: design-record update P10 (old 2); detached-description correction completed, broader P10
+      record cleanup remains.
     - Ⅳ: Index completion gate (old 7); Codex.
     - Ⅴ: `Tests/TESTING.md` sync (old 1-c); completed by Codex on 2026-10-06.
     - Ⅵ: Index-range `erase` empty guard; Codex.
@@ -280,3 +287,22 @@ Confirmed state, no action taken:
     - added a merged-status note at the top of the `try/index/1` section;
     - ticked item E.
   - Both files' `最終更新` lines now name this sync.
+
+**2026-10-06, Claude Opus 5.5, on `develop/misc/49`.**
+
+- Ⅲ (P10) partly done. The user lifted the Codex wait for it; Codex had judged the correction safe.
+  - `Design-MemorySafety.md` now describes the standard-configuration behavior: a detached Index
+    is re-resolved in the receiving tree via its stored tracking tag and seal, and the original raw
+    pointer is never dereferenced. CROSS off rejects it as `.crossTree`. This was confirmed against
+    `UnsafeTreeV2.__purified_` and `_NodePtrSealing.tag`. Five places were corrected (basic policy,
+    lifetime, CoW, invariants, verification).
+  - The matching open item in `Design-RuntimeChecks.md` 未決事項 is marked resolved.
+  - Not done: the rest of P10 (other records still describing the develop representation, and
+    closing the X1/PoC entries).
+  - Observation, unchanged: the package-only tree-free `_LazyTieWrap.isValid` checks
+    `rawValue.isUnsealed`, which reads the node, so calling it on a detached Index would touch freed
+    memory. No test or production path does that today.
+- Ⅱ: completed by Codex on 2026-10-06. The four audit questions are answered in
+  `CROSS_TREE_INDEX_TEST_AUDIT.md`; the focused F2/F3/F4 and detached-premise selection passed
+  18 tests with no failures.
+- Ⅴ: done by Codex (`336c4d9c`).

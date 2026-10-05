@@ -1,6 +1,7 @@
 # Cross-tree Index test audit (6-a)
 
-Status: Claude audit complete, awaiting Codex re-check. No tests or source changed.
+Status: Completed. Claude audit and follow-up tests independently re-checked by Codex on
+2026-10-06.
 
 2026-10-05 / Claude Opus 5.5, on `develop/misc/49` at `cfbf8cf8`.
 
@@ -171,3 +172,28 @@ an independent look.
    while a CoW branch survives?
 3. Is the unrelated-tree audit in section 2 sufficient, or does it need a non-name-based method?
 4. Should columns A/B get a build with the trait removed, or is the `#if` coverage enough?
+
+## Codex independent re-check (2026-10-06)
+
+Verdict: accept and close this audit.
+
+1. The cell mapping is correct for the standard configuration. After the follow-up, F2 has direct
+   coverage in MultiMap as well as the previously cited coverage, and F3/F4 have public behavior
+   specs in all four collection types.
+2. F3/F4 deserve tests because detached origin storage selects a distinct resolver path from an
+   ordinary live CoW source. The construction is valid: mutation first gives the returned copy its
+   own buffer, returning from the `@inline(never)` helper releases the source buffer, and the
+   internal tests in all four types directly confirm `lazyDetach.isDetached`. F4 also preserves an
+   allocated corresponding slot and changes its generation, so rejection is not merely a missing-tag
+   result.
+3. The unrelated-tree audit is sufficient for this closure. Its name-based limitation is real, but
+   the public contract deliberately leaves unrelated-tree misuse unspecified, and no contrary test
+   was found. A more elaborate data-flow audit would not change the acceptance criterion here.
+4. No additional columns A/B build is required. The trait-off smoke build already succeeded and
+   the test failures matched the predicted cross-tree behavior. The user has classified CROSS=OFF
+   as effectively deprecated, so making that full suite green is not a completion requirement.
+
+Codex also re-ran the focused F2/F3/F4 and detached-premise selection with
+`swift test --disable-sandbox --filter 'testIndex(OutlivingItsOrigin|FromFreedOrigin|ValidityAgainstOrigin)'`:
+18 tests passed with no failures. The first attempt without `--disable-sandbox` was rejected while
+initializing SwiftPM's sandbox and did not execute tests.

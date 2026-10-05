@@ -15,7 +15,8 @@ RedBlackTreeCollectionsは、生ポインタと独自アロケータを使って
 - 生ポインタは、木の所有下で即時に完結する内部処理に限定する。
 - 外部へ渡るIndexには、ノードの世代とストレージの同一性を付加する。
 - 削除されたノードと、同じアドレスへ再配置された新しいノードを区別する。
-- 木が解放された後のIndexは、raw pointerへ触れる前にdetachedとして拒否する。
+- 木が解放された後のIndexでは、元のraw pointerをdereferenceしない。標準構成では、
+  利用先の木でtracking tagから再解決する。
 - CoWで分岐した木では、tracking tagを使って対応するノードを解決できる。
 - 安全性のためであっても、ホットループへ不要な O(log N) 検査を追加しない。
 - この型群はスレッドセーフではない。並行変更を許可する仕組みではない。
@@ -73,9 +74,18 @@ CoWで分岐したコレクション間でIndexを利用するための経路で
 ## IndexとIteratorの寿命
 
 現行構成のIndexはsealed pointerと `_LazyTie` を保持するが、bucketの所有権は
-保持しない。木のバッファが解放されると `_LazyTie.isDetached` が設定され、
-以後のIndex解決はraw pointerを検査する前に `.detached` として失敗する。
+保持しない。木のバッファが解放されると `_LazyTie.isDetached` が設定される。
+
+標準構成(`ALLOW_CROSS_TREE_INDEX` 有効)では、detachedなIndexの `_LazyTie` は、
+生きているどの木の `_LazyTie` とも一致しない。そのため、Index解決は別の木の経路を通る。
+Indexに保存したtracking tagとsealを使って利用先の木の対応ノードを探し、そのノードの
+世代と照合する。元のraw pointerはdereferenceしない。
+CoWで分岐した木が生き残っていれば、対応ノードとして解決できる。
+利用先の木にtagが無い場合や、世代が一致しない場合は拒否される。
 これにより、Indexのためだけに解放済みノード領域へアクセスすることを避ける。
+
+`ALLOW_CROSS_TREE_INDEX` 無効時(実質deprecated)は、別の木として `.crossTree` で
+拒否される。
 
 現行のIteratorは `UnsafeTreeV2` の値をスナップショットとして保持する。
 コレクションとIteratorは最初は同じストレージを共有し、その後コレクションを
@@ -146,8 +156,9 @@ tracking tagを維持し、`ALLOW_CROSS_TREE_INDEX` の経路でコピー元Inde
 `count == 0` のコピーでは対応付ける有効要素がないため、CoWコストを抑える目的で
 使用済みslotと世代履歴を再構築しない。
 
-元ストレージ自体が解放された場合は `_LazyTie.isDetached` により、元のraw pointerを
-dereferenceする前に拒否する。
+元ストレージ自体が解放された場合も、元のraw pointerはdereferenceしない。
+Indexに保存したtracking tagとsealにより、生き残ったCoW分岐の木で解決する
+(「IndexとIteratorの寿命」を参照)。
 
 ## 並行アクセス
 
@@ -168,7 +179,8 @@ dereferenceする前に拒否する。
 - `ALLOW_CROSS_TREE_INDEX` 有効時のCoWでは、要素を持つ木のrecycle countを引き継ぐ。
 - payload破棄後は `___has_payload_content == false` とする。
 - cross-tree解決はCoW由来の木を前提とし、無関係な木での成功を契約にしない。
-- 現行Indexはbucketを所有せず、detached確認後にのみpointerを検証する。
+- 現行Indexはbucketを所有しない。元のraw pointerを検証するのは、利用先の木と
+  `_LazyTie` が一致する場合だけとする。
 - 互換経路で `_TiedRawBuffer` へ所有権を移した場合、木側から直接解放しない。
 - 失敗した検証結果からpointerを強制的に取り出さない。
 - Indexの安全性を理由に、確保外メモリへ検査アクセスしない。
@@ -178,7 +190,8 @@ dereferenceする前に拒否する。
 - 削除済みIndexが `.garbaged` または `.unsealed` として拒否されること
 - 同じストレージ内でrecycleされた同一アドレスを古いIndexが指せないこと
 - cross-tree無効時は別の木のIndexが `.crossTree` になること
-- 木よりIndexが長生きした場合は `.detached` となり、確保外アクセスが起こらないこと
+- 木よりIndexが長生きした場合も確保外アクセスが起こらず、生き残ったCoW分岐の木では
+  tracking tagと世代で解決・拒否されること
 - Iteratorが作成時の木を保持し、元コレクションの変更時にCoWされること
 - 互換経路の所有権移行でbucketが二重解放されないこと
 - CoW由来の有効なIndexをtracking tagから対応付けられること

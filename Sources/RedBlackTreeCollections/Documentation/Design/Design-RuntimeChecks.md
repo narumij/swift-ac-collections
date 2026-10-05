@@ -264,6 +264,8 @@ deployment構成だと判明した時点で再開する。標準ライブラリ�
 - `Design-MemorySafety.md`は、木が解放された後のIndexを「detachedとして拒否する」と書いている。
   - これは`ALLOW_CROSS_TREE_INDEX`無効時の挙動であり、標準構成の表と食い違う。
   - Index統合後の設計文書の更新(P10)で揃える。
+  - 解決済み(2026-10-06): `Design-MemorySafety.md`を標準構成の挙動に合わせた。detachedなIndexは
+    別の木の経路でtracking tagから再解決され、元のraw pointerはdereferenceしない。
 - `_MemoryLayout.swift`の`precondition(count <= maximumCount)`と、`unsafe_node+pointer.swift`
   の`precondition(prefix >= 0)` / `precondition(capacity >= 0)`は、確保サイズの計算に関わる。
   - 呼び出し側の契約か、内部破損の防壁かを確認する。

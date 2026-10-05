@@ -137,7 +137,7 @@
           end().advanced(by: -5, limit: start().advanced(by: 3)), start().advanced(by: 3)))
       XCTAssertEqual(
         a._error(
-          end().advanced(by: -5, limit: start().advanced(by: 4))), .lowerOutOfBounds)
+          end().advanced(by: -5, limit: start().advanced(by: 4))), .upperOutOfBounds)
     }
 
     func testLimitedAdvance3() throws {
@@ -189,7 +189,7 @@
 
       XCTAssertEqual(
         a._error(start().advanced(by: 3).advanced(by: -5, limit: start().advanced(by: 4))),
-        .lowerOutOfBounds)
+        .upperOutOfBounds)
     }
 
     func testLimitedAdvance6() throws {

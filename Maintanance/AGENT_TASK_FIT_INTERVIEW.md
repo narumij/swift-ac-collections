@@ -2,6 +2,10 @@
 
 最終更新: 2026-10-04 / Codex
 
+> 運用状態(2026-10-06): 担当を決めるための継続資料として使用する。表中の完了済みtaskや
+> X1の記述は当時の適性根拠であり、再開指示ではない。現在のtask状態は
+> `PROGRESS_OVERVIEW.md`と`RED_BLACK_TREE_REMAINING_TASKS.md`を正とする。
+
 ## 目的
 
 残タスクをCodexかClaudeへ機械的に丸投げせず、作業の性質、過去の実績、本人の自己申告を
@@ -144,7 +148,7 @@ structure recorded as verified state.
   All three such documents reviewed today needed blocking corrections.
 - **C stays 5, with the review as a completion condition.** Contract text that sounds right has been
   wrong here. The hint comment 「An incorrect hint doesn't change the result」 survived the
-  2026-10-02 comment audit and was disproved by a Claude test (`TESTING_REFERENCE.md:89`).
+  2026-10-02 comment audit and was disproved by a Claude test (`Tests/Archived/TESTING_REFERENCE.md:90`).
 - **A stays 4.** When Codex integrates the Claude inventory, re-run the extraction grep rather than
   trusting either list; both agents missed split-line `public` declarations.
 - **Context budget.** For F and I, Codex should write the decision record to MD before any long user
@@ -159,7 +163,7 @@ structure recorded as verified state.
 
 - **Cross-configuration verification as integrator (supports L).** The 2026-10-03 four-cell
   current/compat × Debug/Release run caught compile failures in a Claude-added test that Claude's
-  own runs missed (`TESTING_REFERENCE.md:381`).
+  own runs missed (`Tests/Archived/TESTING_REFERENCE.md:383`).
 - **Refusing to weaken contracts to get green.** On Linux, Codex kept exact trap signals
   (`SIGTRAP`/`SIGILL`) separate from broad fatal checks instead of loosening the expectations
   (`CLAUDE_TASK.md`). This is good evidence for C and J review judgment.

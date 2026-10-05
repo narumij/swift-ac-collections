@@ -31,7 +31,8 @@
 ### 文書に関係する未決事項
 
 - Index完了ゲート: `Comparable`、公開Indexと内部`SealError`の分離、完了範囲。
-- P10の残り: Index統合前の表現を説明する設計記録とX1/PoC記録の整理。
+- P10の残り: Index統合前の表現を説明する設計記録のうち、detached説明以外の残存箇所を確認する。
+  X1/PoCの準備・検証記録は完了資料としてArchivedへ整理済み。
 - Index-range `erase`の空guard: 不要なCoWを避けるために不正範囲の検証を飛ばしてよいか。
 - 上記が確定した後の公開コメント、Design、API Matrix、DocC Topicsの最終同期。
 - `RedBlackTreeCollections`全体のstrict memory safety採用。現状は未採用で、独立タスクとして扱う。
@@ -209,9 +210,10 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
-- Index関連で文書作業として残るのは、Index完了ゲート、P10の残り、Index-range `erase`の
+- Index関連で文書作業として残るのは、Index完了ゲート、P10の残存記述確認、Index-range `erase`の
   空guard判断、および決定後の公開文書最終同期である。
-- cross-tree Index監査とdetached説明の訂正は完了済み。再監査の依頼がない限り再開しない。
+- cross-tree Index監査とdetached説明の訂正は完了済み。X1/PoCの準備・検証記録もArchivedへ
+  整理済みであり、具体的な疑義または再監査の依頼がない限り再開しない。
 - C++比較、公開コメントの横断監査、TESTING dashboard同期は完了済み。古いhandoffの
   「次はC++比較」等を現在指示として扱わない。
 - 文書だけの変更では通常フルテストを必須としない。コメントドックやコード例を変更した場合は、

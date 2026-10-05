@@ -1,6 +1,6 @@
 # RedBlackTree 残タスク
 
-最終更新: 2026-10-05 / Claude(PR #158 merge後の事実の同期のみ。構成・方針は2026-10-04 / Codex)
+最終更新: 2026-10-06 / Codex
 
 ## 目的
 
@@ -539,8 +539,8 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 - [ ] 調査用の`SealError`情報を、Index本体から分離しても維持できることを確認する
 - [ ] H: 必要な境界表現候補だけ小さく試作し、比較・移動・dereferenceをRelease計測する
 - [ ] I: 採用した境界表現と不採用案、その理由をDesign文書へ記録する
-- [ ] J: 外部から隠すresolver、`SealError`、診断経路を採用表現へ接続する
-- [ ] K: Index本体を実装し、4コンテナと両Range Viewへ追従させる
+- [x] J: 外部から隠すresolver、`SealError`、診断経路をsuccess-only公開Indexへ接続する（PR #158）
+- [x] K: success-only Index本体を実装し、4コンテナと両Range Viewへ追従させる（PR #158）
 - [ ] L: テスト・DocC・API Matrixを採用案へ同期する
 
 ### Index完了ゲート
@@ -558,7 +558,9 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 ## Kで処理するIndex依存タスク
 
 - [x] Fで決定したKeyValue Range Viewの範囲外Index契約を実装・テストへ反映する
-- [ ] cross-tree indexingのテストが公開契約と一致しているか再監査する
+- [x] cross-tree indexingのテストが公開契約と一致しているか再監査する（2026-10-06:
+  Codexが4問を独立再確認し、focused test 18件成功。正本は
+  `Archived/CROSS_TREE_INDEX_TEST_AUDIT.md`）
 - [x] eraseのrange sanitizeをすり抜ける入力に対するテストを追加する（2026-10-05: 4型で逆向き範囲と同値キーの逆向き区間を追加し、すり抜けがないことを確認。空でのBound範囲eraseの無駄なCoWを8か所修正。Index range版の空guardはIndex契約に関わるため未変更）
 - [x] MultiMapで確認されたaccessorのcompiler不具合と同種の問題がないか、`unsafeAddress` /
   `unsafeMutableAddress` accessorを使用する他の箇所をReleaseビルドで横断確認する。MultiMap自身は
@@ -620,7 +622,7 @@ RedBlackTreeCollectionsを完成と判断する条件は次のとおり。
 ## 関連文書
 
 - `Tests/TESTING.md`
-- `Tests/TESTING_REFERENCE.md`
+- `Tests/Archived/TESTING_REFERENCE.md`
 - `Maintanance/Archived/CPP_BEHAVIOR_COMPARISON_MATRIX.md`
 - `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
 - `Sources/RedBlackTreeCollections/Documentation/Design/Design-CopyOnWrite.md`

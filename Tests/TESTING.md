@@ -1,7 +1,7 @@
 # テストメンテナンス・ダッシュボード
 
 現在情報だけを保持する。作業規則は `Tests/CLAUDE.md`、CodexからClaudeへの依頼は
-`Maintanance/CLAUDE_TASK.md`、2026-10-03以前の詳細は `Tests/TESTING_REFERENCE.md` にある。
+`Maintanance/CLAUDE_TASK.md`、2026-10-03以前の詳細は `Tests/Archived/TESTING_REFERENCE.md` にある。
 参照資料は必要な箇所だけ検索し、通常は通読しない。
 
 ## 目的

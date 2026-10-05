@@ -2,6 +2,10 @@
 
 # `.strictMemorySafety()` 採用レディネス調査 (CLAUDE_TASK.md Task 1)
 
+> 状態(2026-10-06): `AcCollections`、`RedBlackTreeModule`、`PermutationModule`への採用は完了。
+> `BareArrayModule`、`OptionalArrayModule`、`RedBlackTreeCollections`への全面適用は保留中で、
+> 明示的な再開判断なしに次段階へ進めない。
+
 `.strictMemorySafety()`を各ターゲットへ一時的に適用して診断を収集した初回調査と、
 その後の段階的な対応結果を記録する。§1〜§7の初回調査ではproduction codeを変更せず、
 `Package.swift`も調査後に復元した。後続の対応ではproduction codeを変更し、下表の

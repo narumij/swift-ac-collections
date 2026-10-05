@@ -1,6 +1,6 @@
 # 開発・メンテナンス進捗一覧
 
-最終更新: 2026-10-05 / Claude(PR #158 merge後の事実の同期のみ。構成・方針は2026-10-04 / Codex)
+最終更新: 2026-10-06 / Codex
 
 ## 対象期間と読み方
 
@@ -170,8 +170,9 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [ ] Container protocol要件を踏まえ、失敗状態を格納したIndexの要否を最終判断
 - [ ] nominal Index + 内部`Result<Resolved, SealError>`案を採用するか決定
 - [x] ユーザーが手作業で実装した`try/index/1`のfailureless Index PoCを現行HEADとQuality Checklistへ照合する（2026-10-05: Codex・Claudeの独立検証を経てverdict `adopt after corrections`、補正後にPR #158でmerge(`a6c8a474`)。正本は`Archived/INDEX_POC_VALIDATION.md`。Comparable採否とは分離）
-- [x] X1のidentity規則・停止条件と初期4 batchを整備し、同名部品を別個体として扱う診断基盤を保存（網羅inventoryは費用対効果により凍結）
-- [ ] 採用表現を実装し、4コンテナとRange/Viewへ追従（success-only表現はPR #158で4コンテナ・Viewへ実装済み。nominal wrapper等を含む最終表現の判断は残る）
+- [x] X1のidentity規則・停止条件と初期4 batchを整備し、同名部品を別個体として扱う診断基盤を保存（PoC統合後、検証記録とともにArchivedへ整理）
+- [x] 採用したsuccess-only表現を実装し、4コンテナとRange/Viewへ追従（PR #158）
+- [ ] Comparable採否により必要となる場合は、nominal wrapper等の最終境界表現を判断する
 - [ ] 標準`Result`へのretroactive `Comparable`適合に依存しない設計を選択
 - [ ] 内部診断用`Result<..., SealError>`と公開Indexを分離するか判断
 - [x] `_O_UNCHECKED`でも消えないstale Index拒否と移動失敗診断を整備（現行実装の
@@ -252,19 +253,18 @@ Claudeが既存文書を広範囲に改変し始めたため、ユーザーが�
 
 ## 次の区切り
 
-1. 公開面監査表に従い、Index表現に拘束されない項目から変更単位を限定する。Debug-only Comparable群は分類だけ行い、Index判断まで変更しない。
-2. 既存の安全性・CoW・計算量契約、Comparable採否、公開失敗状態の要否を、公開面監査と並行して確認する。
-3. TestCodeへ移せるfixture・実験経路を、Index表現に依存しない範囲で小さく分離する。
-4. 外部契約から内部表現を選び、実装・回帰検証する。
-5. 公開範囲を縮小してから、最後にデッドコードの処遇を判断する。
+1. Index完了ゲートとして、Comparable採否、公開Indexと内部`SealError`の分離、1.0での完了範囲を決める。
+2. Index-range `erase`の空guardを、無効範囲の検査と不要なCoW回避のどちらを優先するか判断する。
+3. P10に残るIndex統合前の記述を確認し、必要な箇所だけ現行表現へ同期する。
+4. 上記の決定後、公開コメント、Design、API Matrix、DocC Topicsを最終同期する。
 
-非RedBlackTreeのコメントドック監査は上記と独立して並行可能であり、OptionalArray、BareArray、
-再公開moduleの順で閉じる。
+外部所有型extension監査、strict memory safety、OptionalArray/BareArrayの体系監査は保留中の独立作業であり、
+明示的な再開判断なしに主経路へ混ぜない。
 
 ## 正本
 
 - 現在のテスト状態: `Tests/TESTING.md`
-- 詳細履歴: `Tests/TESTING_REFERENCE.md`
+- 詳細履歴: `Tests/Archived/TESTING_REFERENCE.md`
 - 変更履歴: `CHANGELOG.md`
 - 文書管理: `Maintanance/MAINTENANCE.md`
 - RedBlackTree残タスク: `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`

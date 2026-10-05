@@ -22,6 +22,16 @@ This decision does not decide `Comparable`, a nominal public wrapper, or Contain
 shared Bound DSL `limit:` defect, `_O_UNCHECKED` empty-removal triage, concurrent first
 `lazyDetach` initialization, and other frozen work remain separate follow-up items.
 
+Follow-up status (2026-10-05):
+
+- The Bound DSL `limit:` defect was fixed by `747c0486`.
+- The `_O_UNCHECKED` empty-removal triage is closed by the runtime-check policy in
+  `Design-RuntimeChecks.md`.
+  - Empty removal is a caller contract (`preconditionFailure`), so passing through under
+    `-Ounchecked` is by design. It is not a defect.
+  - The empty-removal Death Tests now cover the four containers and the three shared Views. All of
+    them stop in normal Release and exit successfully under Release + `_O_UNCHECKED`.
+
 ## Product-owner direction
 
 The user strongly prefers adopting this success-only Index approach. Validation therefore treats

@@ -179,6 +179,19 @@ RBT:    Index ──> identity / generation ──> 再利用されるslot ─�
 - 空の削除のDeath Testは、`_O_UNCHECKED`では停止せずに終わる。これは仕様どおりである。
 - Index解決のDeath Testは現行実装の上乗せ防御を記録する。公開契約上の必須要件とはしない。
 - CIは`_O_UNCHECKED` traitを使わない。この構成の確認は、必要時に範囲を絞って行う。
+  そのため、`_O_UNCHECKED`で全件を流すと、空の削除のDeath Testは失敗として報告される。
+
+空の削除の確認結果(2026-10-05):
+
+- 対象は16件である。
+  - 4型の`removeFirst()` / `removeLast()`(各`_99_DeathTests.swift`)
+  - 共有View 3種(KeyOnly / KeyValue Range View、MappedValues View)の空Viewでの同じ操作。
+    空でない木の空範囲も含む(`RedBlackTreeView_99_DeathTests.swift`)
+- 通常のRelease: 16件とも停止する。
+  - `swift test -c release --filter 'removing(First|Last)FromEmpty'`: 8件
+  - `swift test -c release --filter 'RedBlackTreeViewDeathTests'`: 8件
+- Release + `_O_UNCHECKED`: 同じ16件とも`EXIT_SUCCESS`で終わる。
+  - 停止の原因が、外される契約検査そのものであることも、これで確かめられる。
 
 ## 決定: 契約は標準に揃え、実装変更は1.0前に再審査する
 
@@ -233,6 +246,9 @@ RBT:    Index ──> identity / generation ──> 再利用されるslot ─�
 3. README、DocC、利用者向けguide、Adoption Readinessの安全性表明を照合する。
 4. その時点のSwift標準ライブラリ、特に`Dictionary`のIndex検査を再確認する。
 5. `-Ounchecked`を正式対応する構成とするか、許容するだけの構成とするかを決める。
+   - 手がかり: `Package.swift`の`_O_UNCHECKED` traitには、ユーザーが2026-05-30に
+     「一応用意してあるが、あまり効果が無いどころか逆効果かもしれない」とコメントしている。
+   - この所感を、1.の測定で確かめる。
 6. AtCoderの実際のcompile flagsと、`_O_UNCHECKED` Death Testおよび
    `INDEX_POC_VALIDATION.md`の位置づけを確認する。
 

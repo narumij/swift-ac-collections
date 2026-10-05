@@ -258,6 +258,11 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
 extension RedBlackTreeSetRemoveTests {
 
   /// removeFirstが空のときはエラーを投げること
+  ///
+  /// - Note: 実際にはエラーを投げず、事前条件違反としてプロセスを停止する。XCTestでは停止を
+  ///   検証できないため、本文は空のままにしてある。停止の検証は
+  ///   `RedBlackTreeSet_99_DeathTests.swift`の`removingFirstFromEmptySet_terminatesProcess`が行う。
+  ///   `-Ounchecked`では停止しないのが仕様である(`Design-RuntimeChecks.md`)。
   func test_removeFirst_throws_whenEmpty() {
     //    var set = RedBlackTreeSet<Int>()
     //    XCTAssertThrowsError({
@@ -282,6 +287,11 @@ extension RedBlackTreeSetRemoveTests {
   }
 
   /// removeLastが空のときはエラーを投げること
+  ///
+  /// - Note: 実際にはエラーを投げず、事前条件違反としてプロセスを停止する。XCTestでは停止を
+  ///   検証できないため、本文は空のままにしてある。停止の検証は
+  ///   `RedBlackTreeSet_99_DeathTests.swift`の`removingLastFromEmptySet_terminatesProcess`が行う。
+  ///   `-Ounchecked`では停止しないのが仕様である(`Design-RuntimeChecks.md`)。
   func test_removeLast_throws_whenEmpty() {
     //    var set = RedBlackTreeSet<Int>()
     //    XCTAssertThrowsError({

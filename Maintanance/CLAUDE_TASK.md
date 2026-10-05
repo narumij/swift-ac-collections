@@ -388,6 +388,28 @@ Confirmed state, no action taken:
       index uses `_precondition`.
 - `PROGRESS_OVERVIEW.md`, `RED_BLACK_TREE_REMAINING_TASKS.md`, and `Tests/TESTING.md` still
   describe the Index PoC as frozen or pending, so they predate the PR #158 merge. Not edited.
+- Empty-removal follow-through after the runtime-check policy (`e8eb92c6`). The user asked Claude
+  to "do as much as possible" on this item.
+  - Added `Tests/RedBlackTreeTests/RedBlackTreeView/RedBlackTreeView_99_DeathTests.swift`: 8
+    Death Tests for empty `removeFirst()` / `removeLast()` on the three shared Views. Two of them
+    use an empty range over a non-empty tree.
+    - The Views' six `preconditionFailure(.emptyFirst/.emptyLast)` sites had no termination test
+      before this.
+    - The file is guarded by `DEATH_TEST && !COMPATIBLE_ATCODER_2025`, matching the View tests.
+  - Results: the 8 new tests and the 8 existing container tests stop in Debug and in normal
+    Release. All 16 exit with `EXIT_SUCCESS` under Release + `_O_UNCHECKED`, which is by design.
+    The earlier record covered only 4 Set/Dictionary cases.
+  - The compatibility-mode test build succeeds.
+  - Recorded the commands and results in `Design-RuntimeChecks.md`. Closed the empty-removal triage
+    (and noted the `747c0486` Bound DSL fix) in `INDEX_POC_VALIDATION.md`.
+  - Linked the user's 2026-05-30 `Package.swift` comment on `_O_UNCHECKED` ("あまり効果が無いどころか
+    逆効果かもしれない") to 1.0 review item 5.
+  - `RedBlackTreeSet_6_RemovalTests.swift` `test_removeFirst_throws_whenEmpty` /
+    `test_removeLast_throws_whenEmpty` have commented-out bodies.
+    - **User decision:** keep them as Test as Specification entries, and add a note.
+    - Each now has a `- Note:` explaining three things: the operation stops the process instead
+      of throwing, which Death Test verifies it, and that passing through under `-Ounchecked` is
+      by design.
 
 ## Completed assignment: update Claude's user assessment and reflection
 

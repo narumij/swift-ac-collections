@@ -2,6 +2,9 @@
 
 [English](AdoptionReadinessAssessment.md) | 日本語
 
+> 状態: 2026-10-06時点の品質証拠としてarchive。具体的なreleaseまたは採用判断で
+> 証拠更新が必要になった場合だけ再開する。
+
 > リンク維持のためファイル名は据え置いている。この文書は順位付けの主張を行わず、
 > 評価もしない。
 
@@ -182,7 +185,7 @@ swift test --disable-sandbox --filter CppBehaviorReferenceTests
 - C++比較は上記の操作を対象とし、全公開APIではない。共通の戻り値がない事実
   (例: `insert(key:value:)`後のrank)は内容比較でのみ確認している
 - Swift Collectionsの`SortedCollections`との性能比較は公開していない。手法は
-  `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md`で定めているが、存在するのは
+  `Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md`で定めているが、存在するのは
   手順確認用のpilotのみで、その数値は結論ではない
 
 ## レビューする人間・AIへの指針

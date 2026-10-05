@@ -72,7 +72,7 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 - [x] MultiMap `find`の同値キー内個体・rankが標準上非保証であることを比較契約へ反映
 - [x] 操作、境界、seed、標準ライブラリ別結果を専用Matrixへ記録
 
-正本: `CPP_BEHAVIOR_COMPARISON_MATRIX.md`
+正本: `Archived/CPP_BEHAVIOR_COMPARISON_MATRIX.md`
 
 ### Death Test・寿命検査・CI
 
@@ -224,7 +224,7 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [x] RedBlackTreeTestSupportとDebugAdditionalsの責務整理（自動テスト基盤／人間向け診断・凍結コードで区分し、配置例外2件は移動しない）
 - [x] UnsafeNode / RawBufferクロスチェックと単層テストの役割整理（独立計算によるfault independenceを維持し、共有化しない）
 - [ ] 未結線コードを段階的に削除する（個々の削除はユーザーが決定し、再開指示まで凍結）
-- [x] Combining系APIへ実測結果に基づく条件付きコメントを追記（`CombiningAPIPerformanceEvidence.md` §3に基づき、容量による一律推奨を避ける）
+- [x] Combining系APIへ実測結果に基づく条件付きコメントを追記（`Archived/CombiningAPIPerformanceEvidence.md` §3に基づき、容量による一律推奨を避ける）
 - [x] Combining系の追加NoteをClaudeが限定レビューし、測定範囲の限定とMultiMapへの未計測結果の外挿除去を反映
 - [ ] PermutationのAtCoder 2025互換mode（ユーザーが明示的に再開を指示するまで、ABC328E実提出確認を含め着手・調査・Claude依頼を行わない）
 
@@ -269,10 +269,10 @@ Claudeが既存文書を広範囲に改変し始めたため、ユーザーが�
 - 文書管理: `Maintanance/MAINTENANCE.md`
 - RedBlackTree残タスク: `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
 - 外部所有型extension監査: `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
-- C++比較: `Maintanance/CPP_BEHAVIOR_COMPARISON_MATRIX.md`
-- SortedCollections比較: `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md`
-- Combining性能証拠: `Maintanance/CombiningAPIPerformanceEvidence.md`
+- C++比較: `Maintanance/Archived/CPP_BEHAVIOR_COMPARISON_MATRIX.md`
+- SortedCollections比較: `Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md`
+- Combining性能証拠: `Maintanance/Archived/CombiningAPIPerformanceEvidence.md`
 - Permutation計画・評価: `Maintanance/PermutationModule/`
 - AtCoder 2025からの再構成履歴: `Maintanance/REFACTORING_FROM_ATCODER_2025.md`
-- 品質証拠・利用検討資料: `Maintanance/AdoptionReadinessAssessment.md`、同`.ja.md`
+- 品質証拠・利用検討資料: `Maintanance/Archived/AdoptionReadinessAssessment.md`、同`.ja.md`
 - strict memory safety: `Maintanance/StrictMemorySafetyReadiness.md`

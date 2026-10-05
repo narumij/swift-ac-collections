@@ -1,5 +1,8 @@
 # C++ Behavior Comparison Matrix
 
+> 状態: 完了・archive(2026-10-06)。別版の標準ライブラリ実装を明示的に比較する場合、
+> または比較契約を変更する場合だけ再開する。
+
 この文書は公開API一覧ではなく、`CppBehaviorReferenceTests`がC++標準コンテナと
 実際に比較した挙動の証拠表である。
 

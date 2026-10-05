@@ -15,9 +15,14 @@ archiveされた文書は削除済み資料ではない。現行文書から根�
 
 ## 2026-10-06移動分
 
-- `AGENT_TASK_FIT_INTERVIEW.md`
+- `AdoptionReadinessAssessment.md`
+- `AdoptionReadinessAssessment.ja.md`
 - `CLAUDE_TASK_HISTORY.md`
+- `CombiningAPIPerformanceEvidence.md`
+- `CPP_BEHAVIOR_COMPARISON_MATRIX.md`
 - `CPP_BEHAVIOR_COMPARISON_TASK.md`
 - `CROSS_TREE_INDEX_TEST_AUDIT.md`
+- `INDEX_POC_CROSS_BRANCH_IDENTITY.md`
 - `INDEX_POC_VALIDATION.md`
 - `RUNTIME_CHECK_POLICY.md`
+- `SORTED_COLLECTIONS_BENCHMARK_TASK.md`

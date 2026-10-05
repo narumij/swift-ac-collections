@@ -161,7 +161,7 @@ Codex回答を参照せず、Claudeが独立に記入する。
 - 調査記録の公開範囲を決めた。
 
 **証拠の出どころ:** 二分探索とCI履歴の訂正には、Claudeは関わっていない。その部分は
-`PERFORMANCE_REGRESSION_BISECTION.md`、`Archived/AGENT_TASK_FIT_INTERVIEW.md`、Gitから判断した
+`PERFORMANCE_REGRESSION_BISECTION.md`、`AGENT_TASK_FIT_INTERVIEW.md`、Gitから判断した
 (間接の証拠)。直接見たのは、Claudeとユーザーの会話と、Claudeが担当した監査とレビューである。
 
 ### 点数の変更

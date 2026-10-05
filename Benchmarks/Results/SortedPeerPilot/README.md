@@ -1,7 +1,7 @@
 # SortedPeer Phase 3 bounded measurement pilot
 
 Pilot evidence only. Not a publishable result; not interpreted. See
-`Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md` (Phase 3 result) for the review.
+`Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md` (Phase 3 result) for the review.
 
 - Raw artifact: `results-20261004-020908-988aecaf.json` (harness format version 1,
   per task/size: five cycle samples, each the minimum over that cycle's iterations;

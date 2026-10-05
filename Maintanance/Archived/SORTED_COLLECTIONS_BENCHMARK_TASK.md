@@ -1,10 +1,12 @@
 # RedBlackTreeCollections and Swift Collections SortedCollections
 
-Status: Phase 3 pilot accepted as procedural evidence — publishable run deferred
+Status: Archived after Phase 3 pilot acceptance (2026-10-06) — publishable run intentionally
+deferred. Reopen only when a concrete adoption or release decision needs an equal-condition public
+comparison and the upstream API/toolchain can be fixed for a reproducible run.
 
 ## Why this task exists
 
-`AdoptionReadinessAssessment.md` (titled "Adoption Readiness and Quality Evidence")
+`Archived/AdoptionReadinessAssessment.md` (titled "Adoption Readiness and Quality Evidence")
 identifies a missing external reference point. A valuable
 Swift peer is Apple's experimental `SortedCollections` module: `SortedSet` and
 `SortedDictionary`, implemented over an in-memory B-tree.
@@ -623,4 +625,4 @@ maturity would narrow or end this bridging role.
 - No production collection code changes are mixed into the baseline comparison.
 - The report names the upstream version and unstable trait status.
 - At least one independent review checks task symmetry before conclusions are added
-  to the adoption-readiness evidence document (`AdoptionReadinessAssessment.md`).
+  to the adoption-readiness evidence document (`Archived/AdoptionReadinessAssessment.md`).

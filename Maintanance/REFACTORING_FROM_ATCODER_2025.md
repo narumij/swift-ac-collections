@@ -155,7 +155,7 @@ AtCoder2025版よりさらに前に遡る。
 
 ## 現行ノード格納方式と結合処理の性能観察(2026-10-03)
 
-**[事実]** 現行実装を対象とした`Maintanance/CombiningAPIPerformanceEvidence.md`の計測では、
+**[事実]** 現行実装を対象とした`Maintanance/Archived/CombiningAPIPerformanceEvidence.md`の計測では、
 1k〜256k要素の範囲で、既存ツリーへ逐次挿入する`merge`/`insert(contentsOf:)`経路が、
 新しい結果ツリーを構築する`formUnion`/`meld`経路より一貫して高速だった。Setのdisjoint入力では
 前者が後者のおよそ2倍速く、MultiSetでも同様の傾向を確認した。
@@ -196,10 +196,10 @@ Swift向け順序付きコレクションとしての品質と信憑性を高め
 - MultiSetのC++差分比較は、非空コンテナへの`endIndex` hint挿入でSwift側だけが停止する
   不具合を発見した。最小trace、process-isolatedな修正前失敗、libc++との制御構造差、
   一条件の修正、start/end/空境界、共有経路を使うMultiMapまでを検証へ結び付けた。
-- `Maintanance/AdoptionReadinessAssessment.md`と日本語版(表題「採用判断のための品質証拠」)は、
+- `Maintanance/Archived/AdoptionReadinessAssessment.md`と日本語版(表題「採用判断のための品質証拠」)は、
   順位付けの主張を行わず、有利・不利な証拠へ同じ水準を要求し、検証済みの証拠、限界・
   未計測の軸、採用拡大のゲートを分けている。
-- `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md`は、Apple
+- `Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md`は、Apple
   `swift-collections`のB-treeベース`SortedSet`/`SortedDictionary`を外部比較対象とし、
   同条件の入力・storage状態・計測区間で勝敗と未計測軸を残す計画を定めている。
 

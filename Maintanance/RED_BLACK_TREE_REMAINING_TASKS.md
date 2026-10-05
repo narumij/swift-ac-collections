@@ -24,7 +24,7 @@ RedBlackTreeCollections全体はまだ完成とはしない。
 - raw treeの専用テストターゲット、通常到達可能行のcoverage確認
 - Debug寿命検査、境界Death Test、LinuxでのDeath Test実行実績
 
-C++比較の詳細は`CPP_BEHAVIOR_COMPARISON_MATRIX.md`を正本とする。
+C++比較の詳細は`Archived/CPP_BEHAVIOR_COMPARISON_MATRIX.md`を正本とする。
 
 ## 外部契約と二種類の内部実装を分ける
 
@@ -621,7 +621,7 @@ RedBlackTreeCollectionsを完成と判断する条件は次のとおり。
 
 - `Tests/TESTING.md`
 - `Tests/TESTING_REFERENCE.md`
-- `Maintanance/CPP_BEHAVIOR_COMPARISON_MATRIX.md`
+- `Maintanance/Archived/CPP_BEHAVIOR_COMPARISON_MATRIX.md`
 - `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
 - `Sources/RedBlackTreeCollections/Documentation/Design/Design-CopyOnWrite.md`
 - `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md`

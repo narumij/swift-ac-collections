@@ -84,15 +84,15 @@ extension UnsafeTreeV2 {
           }
 
         case .some(let __l):
-          let l = evaluate(__l)
-          let __r = ptr.flatMap {
-            ___tree_adv_iter($0, offset, l)
-          }
-          ptr =
-            switch __r {
-            case .failure(.limit): l
-            default: __r
+          ptr = evaluate(__l).flatMap { limit in
+            let result = ptr.flatMap {
+              ___tree_adv_iter($0, offset, .success(limit))
             }
+            return switch result {
+            case .failure(.limit): .success(limit)
+            default: result
+            }
+          }
         }
 
       case .before:

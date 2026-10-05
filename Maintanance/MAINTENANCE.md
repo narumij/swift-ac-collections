@@ -3,13 +3,15 @@
 # Documentation maintenance notes
 
 この文書は、公開ドキュメント、コメントドック、Swift-DocC、およびCHANGELOGを継続的に
-整備するための恒久的な判断基準と、現在の文書handoffをまとめる。
+整備するための恒久的な判断基準と、現在の文書handoffをまとめる。プロジェクト作業の入口では
+ない。作業開始時は`PROGRESS_OVERVIEW.md`のTask Registryを読み、文書taskから参照された場合だけ
+本書の該当箇所を読む。
 
 個別タスクの長文結果は、対応する設計文書、監査文書、task文書へ記録する。この文書には
 同じ結果を時系列ログとして重複させず、正本への導線、現在の未決事項、再利用する規則だけを
 保持する。作業後は`Current handoff`を上書きし、無制限に追記しない。
 
-## Current dashboard
+## Documentation dashboard
 
 最終更新: 2026-10-06 / Codex
 
@@ -41,7 +43,9 @@
 
 - 新しいユーザー要望は、このdashboardまたは該当する正本文書へ日付付きで追加する。
 - 完了した個別作業の証拠は正本文書へ置き、本書には状態とリンクだけを残す。
-- `Current handoff`は直近の作業再開に必要な最大5項目を目安とする。
+- `CLAUDE_TASK.md`の`Current handoff`は追記型ログにせず、直近の作業再開に必要な最大10項目を
+  目安に常に上書きする。正本と重複しない保存価値のある履歴だけを
+  `Archived/CLAUDE_TASK_HISTORY.md`へ移す。
 - 2026-10-04以前の要望とhandoffは下記の履歴節に残すが、現在のtask queueとして解釈しない。
 
 ## Historical user requests and decisions (through 2026-10-04)

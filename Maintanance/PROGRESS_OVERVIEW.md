@@ -9,14 +9,70 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 
 細かなコミット数ではなく、現在の判断に必要な状態を記録する。
 
+この文書のTask Registryを、CodexとClaudeが作業を再開するときの唯一の入口とする。まずRegistry
+だけを読み、選択したtask行が示す詳細正本だけを追加で読む。全管理文書やArchivedを開始時に
+横断しない。
+
+## Task registry
+
+この表を作業状態、担当、再開条件の正本とする。後続のチェックリストと各詳細文書は、証拠と
+内訳を保持するためのものであり、この表と食い違う場合は本表を優先する。
+
+| ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
+| --- | --- | --- | --- | --- | --- |
+| `RBT-001` | `WAITING_USER` | User / Codex | Index完了ゲート | Comparable、公開Indexと内部`SealError`の分離、1.0での完了範囲を決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-002` | `WAITING_USER` | User / Codex | Index-range `erase`の空guard | 無効範囲検査と不要なCoW回避の契約を決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `DOC-001` | `ACTIVE` | Codex | P10残存記述確認 | Index統合前の表現が残る箇所を確認し、必要箇所だけ同期 | `MAINTENANCE.md` |
+| `RBT-003` | `FROZEN` | Codex | `Result`のpublic比較overloadとpublic `_NodePtr` | ユーザーが明示的に再開 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
+| `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
+| `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
+| `RBT-006` | `FROZEN` | User / Codex | 未結線コードの個別削除 | ユーザーが対象を個別指定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `TEST-001` | `FROZEN` | User / Codex | 無効化・歴史的テストコードの処遇 | ユーザーが対象を個別指定 | `Tests/TESTING.md` |
+| `TEST-002` | `FROZEN` | Codex | stride assertion／fixture alignmentの任意改善 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
+| `PERM-001` | `FROZEN` | Codex | AtCoder 2025互換mode | ユーザーが明示的に再開 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-002` | `USER_ONLY` | User | ABC328E実提出確認 | ユーザーが手作業で実施 | `PermutationModule/ImplementationPlan.md` |
+| `OPT-001` | `FROZEN` | Codex | OptionalArrayの体系監査・名称再検討 | ユーザーが明示的に再開 | `Tests/TESTING.md` |
+| `BARE-001` | `FROZEN` | Codex | BareArrayの体系監査・名称再検討 | ユーザーが明示的に再開 | `Tests/TESTING.md` |
+| `ARRAY-001` | `FROZEN` | User / Codex | BareArray／OptionalArrayのstorage再設計とstrict恒久適用 | 公開unsafe境界を決定して再開 | `StrictMemorySafetyReadiness.md` |
+| `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
+| `BENCH-001` | `FROZEN` | Codex | SortedCollectionsとのpublishableな大規模比較 | ユーザーが明示的に再開 | `Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md` |
+| `TEST-003` | `FROZEN` | Codex | randomized trace失敗時の自動縮小 | 実害または明示的な再開指示 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
+| `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `PERF-001` | `FROZEN` | Codex | Swift更新後のCoWコード生成再計測 | Swift更新または明示的な再計測指示 | `PERFORMANCE_REGRESSION_BISECTION.md` |
+| `HIST-001` | `FROZEN` | Codex | unsafe移行史の追加調査 | ユーザーが明示的に再開 | `REFACTORING_FROM_ATCODER_2025.md` |
+| `TEST-004` | `FROZEN` | Codex | 原木Fixtureの追加portable化 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
+| `RBT-009` | `FROZEN` | User / Codex | runtime-check実装の再審査 | 1.0判断直前、または`-Ounchecked`が主要構成と判明 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
+| `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
+| `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
+
+### Registry rules
+
+- IDは作成後に変更・再利用しない。分類や状態が変わってもIDを維持する。
+- 状態は`ACTIVE`、`WAITING_USER`、`FROZEN`、`USER_ONLY`、`EXCLUDED`、`DONE`、`ARCHIVED`の
+  いずれかとする。
+- 状態語はAIの管理用であり、ユーザーが名称を覚えたり指定したりする必要はない。Codexが
+  ユーザーの通常の言葉を対応する状態へ翻訳して記録する。
+- `FROZEN`は明示的な再開指示なしに着手しない。
+- `USER_ONLY`はユーザー専任とし、AIは着手、代行、催促を行わない。
+- `EXCLUDED`は実施対象外であり、再開候補として扱わない。
+- `DONE`を履歴資料へ移した場合だけ`ARCHIVED`へ変更する。
+- 会話参照IDの`A-1`等は一時座標であり、この固定IDとは分離する。
+- 優先順位は、ユーザーの最新指示、Task Registry、task行が示す詳細正本、Archivedと過去ログの
+  順とする。食い違いを見つけても、古い記述だけを根拠にtaskを再開しない。
+- Task Registryの確定更新はCodexが担当する。Claudeは自分のhandoffを更新し、Registryの変更が
+  必要な場合は具体的な差分案を残す。
+
+## 状態表示
+
 | 状態 | 意味 |
 | --- | --- |
-| 完了 | 実装・必要な検証・記録まで一区切りしている |
-| 完了・追加検証可 | 現在の完成判断を止めないが、環境や比較対象を増やせる |
-| 進行中 | 現在の主経路に含まれる |
-| 判断待ち | ユーザーまたは設計判断が先に必要 |
-| 保留 | 重要だが現在の完成条件には含めない |
-| 中止 | 明示的に停止し、勝手に再開しない |
+| `ACTIVE` | AIが次の作業として着手可能 |
+| `WAITING_USER` | ユーザー判断または設計判断が必要 |
+| `FROZEN` | 明示的な再開指示が必要 |
+| `USER_ONLY` | ユーザー専任。AIは着手・代行・催促しない |
+| `EXCLUDED` | 実施対象外。再開候補にも含めない |
+| `DONE` | 完了。現役の正本を維持 |
+| `ARCHIVED` | 完了し、履歴資料へ移動済み |
 
 ## 全体サマリー
 

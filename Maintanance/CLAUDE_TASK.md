@@ -65,6 +65,9 @@ permission.
 
 ### Task execution
 
+- Establish current state from the Task Registry at the top of `Maintanance/PROGRESS_OVERVIEW.md`.
+  After selecting a task, read only the detailed canonical document linked from that row. Do not
+  scan all maintenance or Archived documents at session start.
 - Read only the task-specific portions of maintenance documents needed for the current request.
   Do not turn backlog discovery into authorization to implement it.
 - Preserve unrelated worktree changes. Never reset or discard user work to make a task clean.
@@ -84,7 +87,9 @@ permission.
 
 ### Handoff for Codex return
 
-Maintain a concise dated handoff in the Result section below. Record only durable state:
+Maintain exactly one concise dated `Current handoff` in the Result section below. This is an
+overwrite-only dashboard, not a chronological log. Keep it to at most 10 bullet items and replace
+superseded state instead of appending another dated result block. Record only durable state:
 
 - user decisions;
 - commits and whether they were pushed;
@@ -93,9 +98,13 @@ Maintain a concise dated handoff in the Result section below. Record only durabl
 - frozen items explicitly resumed or newly frozen; and
 - questions still requiring the user or Codex.
 
-Do not paste routine command output or duplicate existing canonical documents. On or after
-2026-10-10, do not assume this temporary primary role continues; follow the user's current
-instruction and prepare the handoff for Codex if requested.
+Do not paste routine command output or duplicate existing canonical documents. Before replacing
+the dashboard, move only non-duplicated durable history that is still worth preserving to
+`Maintanance/Archived/CLAUDE_TASK_HISTORY.md`; otherwise remove superseded handoff text. Do not keep
+a chronological log below `Current handoff`.
+
+On or after 2026-10-10, do not assume this temporary primary role continues; follow the user's
+current instruction and prepare the handoff for Codex if requested.
 
 ### Result / handoff
 

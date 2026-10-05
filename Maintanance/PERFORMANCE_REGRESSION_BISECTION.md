@@ -152,9 +152,9 @@ Dictionary removeとSet removeが30%回帰の閾値を超えた。
 
 ### 最小差分の確認
 
-最初の赤の一時worktreeで2プロトコルだけを `public` に戻すと、局所benchmarkは緑へ戻った。
-さらに、`package` のまま両プロトコルへ `@usableFromInline` を付けても、4タスクすべてのdifference
-scoreが1.05以下へ戻った。
+最初の赤の一時worktreeで2プロトコルのvisibility変更だけを戻すと、局所benchmarkは緑へ戻った。
+さらに、意図した外部公開範囲を維持する最小のvisibility修正でも、4タスクすべてのdifference
+scoreが1.05以下へ戻った。具体的な属性方針は、この公開用の障害調査記録では扱わない。
 
 この事例では、コンパイルと機能テストだけでは検出されないコード生成上の回帰を、同一条件での
 二分探索と最小差分A/B測定によって特定した。

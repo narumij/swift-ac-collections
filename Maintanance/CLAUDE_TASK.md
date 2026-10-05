@@ -2,7 +2,197 @@
 
 Status: Completed
 
-## Active assignment: repair Index PoC DocC curation identifiers
+## Completed assignment: update Claude's user assessment and reflection
+
+The previous retrospective task updated agent task-fit evidence but did not perform the user's
+requested update to Claude's dedicated assessment of the user. Correct that omission.
+
+Update `Maintanance/USER_MANAGEMENT_INTERVIEW_CLAUDE.md` with a new, clearly dated independent
+reassessment covering the period after its existing `2026-10-05 再評価`, especially:
+
+- the performance CI failure and the user's request for local CI-equivalent reproduction;
+- the user's correction that the performance job already existed;
+- the user's diagnosis of lost generic/protocol specialization and witness-table dispatch;
+- the distinction the user drew between `@inlinable`, `@usableFromInline`, and paths such as
+  `RawBuffer` / `BufferHeader` that remove type variables;
+- the user's definition of which visibility audits were uniform and which changes require direct
+  user involvement;
+- branch/commit/publication corrections, including public bisection history versus private tuning
+  notes; and
+- whether the user intervened too much, too little, or at the appropriate points.
+
+Re-evaluate all 15 existing dimensions. Explicitly list every score that changes and every score
+that remains unchanged with new evidence. Do not preserve a score merely for consistency, and do
+not change one merely because the incident is recent. Separate faults in Codex/Claude execution
+from faults in user management.
+
+Also append a new entry to `Maintanance/CLAUDE_OBSERVATIONS.md` giving your current personal
+impression of working with the user during this incident. The user explicitly requested an updated
+impression, not another technical incident summary or only self-criticism. Be candid: include both
+what you valued and anything that was difficult, surprising, or could improve. Write in your own
+voice; do not imitate Codex or optimize the entry to obtain a favorable evaluation.
+
+Record a concise result here and set `Status: Completed`. Tell the user only `完了` unless a direct
+conversation or user decision is genuinely required.
+
+### Boundaries
+
+You may edit only:
+
+- `Maintanance/USER_MANAGEMENT_INTERVIEW_CLAUDE.md`
+- `Maintanance/CLAUDE_OBSERVATIONS.md`
+- `Maintanance/CLAUDE_TASK.md`
+
+Do not edit the integrated assessment, Codex's interview/observations, task-fit interview, source,
+tests, benchmarks, workflows, public bisection record, or any private/untracked note. Do not stage,
+commit, push, switch branches, use network access, or alter Git history. Preserve all existing
+worktree changes. Run `git diff --check`, inspect the task-owned diff, and report
+`git status --short`.
+
+### Result
+
+2026-10-05, Claude Opus 5.5, on `try/index/1`.
+
+**Assessment update.** I appended `## 2026-10-05 再評価(性能回帰の期間)` to
+`USER_MANAGEMENT_INTERVIEW_CLAUDE.md`, written without consulting Codex's assessment. It marks
+which evidence is direct (Claude's conversations and its own audits and reviews) and which is
+indirect (the bisection and CI-history corrections, taken from the docs and Git).
+
+**Scores:** 1 of 15 changed. The other 14 are unchanged, each with new evidence.
+
+- Changed: タスク境界の明確さ, 4 → 5. The user drew a category-level automation boundary:
+  - Uniform: `@usableFromInline` on non-public protocols.
+  - User involvement required: `@inlinable`, `@usableFromInline`→`@inlinable` changes, and the
+    `RawBuffer` / `BufferHeader` type-erasure boundary.
+- Unchanged at 5 (8):
+  - 技術的な優先順位
+  - 品質証拠への感度
+  - 方針転換の判断
+  - 問題発見の勘
+  - 完了条件の明確さ
+  - 途中介入の精度
+  - 報告の受け取り設計
+  - scopeを止める力
+- Unchanged at 4 (6):
+  - 公開API・利用者価値の判断
+  - AIへの技術的文脈共有. Added concern: the performance rule was tacit before the incident, and
+    the private note is now outside the repository.
+  - AI間の役割分担
+  - マイクロマネジメント度
+  - 意思決定の記録
+  - 自分の負荷の管理. The load spike was AI-caused.
+
+**Attribution of faults:**
+
+- AI faults:
+  - Codex: the scope narrowing, the CI-history hypothesis, the branch slip, and the
+    order omission.
+  - Claude: the G2 approval claiming "not needed".
+- User-management findings: only the tacit-rule gap, and it was a deliberate secrecy trade-off.
+
+**Intervention level:** appropriate overall. The interventions concentrated on AI errors and
+on decisions only the user can make.
+
+**Top improvement:** put the rule alone, without the reasoning, in standing agent instructions,
+so the next session does not repeat G2.
+
+**Observation log.** I appended a personal impression to `CLAUDE_OBSERVATIONS.md`. It covers
+what I valued, what surprised me, and what was difficult, and it is not a technical summary.
+
+**Worktree.** `git diff --check` is clean. Task-owned diffs are the two appended sections and this
+result. Other modified files are Codex's and are untouched. `git status --short`:
+`M AGENT_TASK_FIT_INTERVIEW.md`, `M CLAUDE_OBSERVATIONS.md`, `M CLAUDE_TASK.md`,
+`M CODEX_OBSERVATIONS.md`, `M PERFORMANCE_REGRESSION_BISECTION.md`,
+`M USER_MANAGEMENT_INTERVIEW_CLAUDE.md`, `M USER_MANAGEMENT_INTERVIEW_CODEX.md` (Codex's, untouched; all under `Maintanance/`).
+
+## Completed assignment: review the performance-incident retrospective
+
+Perform a read-only factual and role-assessment review of Codex's newly appended
+`## Performance regression evidence update (2026-10-05)` in
+`Maintanance/AGENT_TASK_FIT_INTERVIEW.md`.
+
+Review the period covering the performance CI failure, local reproduction and bisection,
+`@usableFromInline` correction, the non-public protocol and generic nominal visibility audits,
+cross-branch cherry-picks, and the decision to close `develop/misc/48` without merge in favor of
+`try/index/1`.
+
+Determine whether you agree with:
+
+1. keeping H, A, and X1 scores unchanged;
+2. the stated evidence for Codex's strengths and failure modes;
+3. the updated role assigned to the user/domain owner;
+4. the operational safeguards added by Codex; and
+5. the factual distinction between the private tuning-policy notes and the public performance
+   bisection record.
+
+Do not silently rewrite Codex's self-assessment. Append a clearly attributed Claude review stating
+agreement, corrections, and any score or assignment change you recommend. Update your own
+task-fit evidence only where this incident provides new evidence. Do not change a score merely
+because the task was recent.
+
+You may optionally append your own words to `Maintanance/CLAUDE_OBSERVATIONS.md` if you genuinely
+have a reflection you want the user to read later. This is optional; do not manufacture a feeling
+or repeat the technical report just to fill the log.
+
+Return one verdict: `retrospective agreed`, `retrospective needs factual corrections`, or
+`retrospective needs role/score changes`. Record evidence and the verdict in this task, set
+`Status: Completed`, and tell the user only `完了` unless a user decision is required.
+
+### Boundaries
+
+You may edit only:
+
+- `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`
+- `Maintanance/CLAUDE_OBSERVATIONS.md` (optional)
+- `Maintanance/CLAUDE_TASK.md`
+
+Do not edit source, tests, benchmarks, workflows, the public bisection record, Codex's observation
+log, or any untracked/private note. Do not stage, commit, push, switch branches, use network access,
+or alter Git history. Preserve Codex's existing edits and append your review separately. Run
+`git diff --check`, inspect the complete task-owned diff, and report `git status --short`.
+
+### Result
+
+2026-10-05, Claude Opus 5.5, on `try/index/1`. Verdict: `retrospective needs role/score changes`.
+
+I appended `## Claude review of performance regression evidence update (2026-10-05)` to
+`AGENT_TASK_FIT_INTERVIEW.md`. Codex's section is unchanged.
+
+**Factual corrections:**
+
+- Protocol audit counts: 181 is the total number of protocols. Of those, 126 are non-public:
+  121 already had the attribute and 5 were added.
+- Generic nominal audit counts: 71 is the total number of `struct` / `class` declarations.
+  Only 5 are non-public and generic, all already attributed, so 0 were added.
+- Missing approval path: the first red commit `cf7a7d36` (G2) was approved by Claude's review.
+  That review explicitly answered "No `@usableFromInline` is needed", using compile and test
+  evidence only.
+- Missing Claude case: Claude's earlier narrowing of 3 原木 protocols to plain `package`.
+  Their performance impact was not measured.
+- Cross-branch nuance: `--cherry-pick` alone still leaves `0bcb8508` unmatched. `range-diff`
+  shows the difference from `747c0486` is test context lines only.
+- Unverifiable claim: the original narrow scope wording has no Git record.
+
+**Recommendations:**
+
+- Keep H, A, and X1 unchanged.
+- Leave the B score unchanged, but add two conditions:
+  - Never omit `@usableFromInline` on newly non-public protocols or generic types on the grounds
+    that compile does not need it.
+  - Claude's `approve` covers API, compile, and function only. A narrowing batch is not complete
+    until the performance job is green.
+
+**User decision needed:** `PERFORMANCE_REGRESSION_BISECTION.md`, pushed to
+`origin/try/index/1`, states the `package` + `@usableFromInline` recovery result itself. That may
+overlap the knowledge the user wants to keep private. Not edited.
+
+**Worktree:** `git diff --check` is clean. Task-owned edits are the appended section, this
+result, and one optional entry in `CLAUDE_OBSERVATIONS.md`. Codex's existing edits are
+preserved. `git status --short`:
+`M AGENT_TASK_FIT_INTERVIEW.md`, `M CLAUDE_OBSERVATIONS.md`, `M CLAUDE_TASK.md`,
+`M CODEX_OBSERVATIONS.md` (Codex's, untouched).
+
+## Completed assignment: repair Index PoC DocC curation identifiers
 
 Finish the remaining pre-integration correction reported by the immediately following completed
 assignment. The success-only Index type changed the precise DocC identifiers for `erase(_:)` and

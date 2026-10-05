@@ -313,3 +313,148 @@ batch群(View `_isIdentical`からG3 SignedDistanceまで、commit 12件)と、`
   → Codexが確認してcommitを提案する → ユーザーが承認する」という流れは、1 batchあたり10〜20分で安定して回った。
 - Claudeへの依頼に必須確認項目と、取り得る判定の選択肢が明記されていたので、scope逸脱は起きなかった。
 - 会話をrefreshした後も、CodexはGitとMarkdownだけで状態を再構築できた。task MDを正本にしている運用は機能している。
+
+## Performance regression evidence update (2026-10-05)
+
+2026-10-05 / Codex。Index branchのperformance CI回帰、ローカル再現、履歴二分探索、最小差分A/B、
+visibility監査を対象とする。既存の点数は変更しない。
+
+### タスクフィット
+
+- **H(Codex 4): 据え置き。** 固定baseline、一時worktree、全taskでの再現、4taskへの縮小、
+  source-changing commitだけの二分探索、隣接する最後の緑／最初の赤、最小差分A/Bまで一貫して
+  実施できた。局所測定を正式CIの代用にせず、修正を両branchへ反映するところまで統合した。
+  一方、GitHub上で緑だった過去commitについて、performance jobの開始時期を誤って仮説に含め、
+  ユーザー訂正を要した。同一条件の測定へ切り替えた後の境界判定は有効だが、履歴上のCI事実は
+  推測せず確認する必要がある。4の「見本またはレビュー必須」を維持する。
+- **A(Codex 4 / Claude 5): 据え置き。** protocol宣言181件（うち非public 126件）と、
+  `struct` / `class`宣言71件（うち非publicかつgeneric 5件）の監査では、Claudeの全件列挙と
+  build検証が有効だった。Codexは対象条件を当初
+  「特殊化に関与するprotocol」と狭く書き、ユーザーの意図である「非public protocolすべて」へ
+  訂正された。広い列挙はClaude、意味とscopeの統合はCodexという分担は維持するが、発注条件を
+  技術的に賢く狭める前に、ユーザーの言葉どおりの集合を固定する。
+- **X1(Codex 3 / Claude 3): 据え置き。** `try/index/1`と`develop/misc/48`の同内容別SHA、merge履歴、
+  cherry-pick後の同等性を`--cherry-pick`と`range-diff`で確認し、non-merge close可能と判断できた。
+  一方、branch確認前に
+  文書commitを`develop/misc/48`へ作り、後からcherry-pickする手戻りがあった。同名・同内容・別履歴を
+  扱う作業では、編集開始時とcommit直前のbranch確認を完了条件に加える。
+
+### ユーザー／domain ownerの役割評価
+
+今回、ユーザー介入は単なる承認ではなく、性能設計の前提を確定する工程だった。
+
+- `package`化による回帰を、特殊化喪失とwitness table参照への退行として即座に限定した。
+- generic/protocol経路の`@inlinable`と、非public protocol定義の`@usableFromInline`を分け、
+  過去に調整した`@usableFromInline`を機械的に`@inlinable`へ変えてはいけないと境界を示した。
+- `RawBuffer` / `BufferHeader`は型変数を消すことでwitness table参照自体を避ける別方式だと示した。
+- protocol定義への`@usableFromInline`は一律付与、関数・helper・型変数消去境界の変更は
+  ユーザー介入が必要、と自動化可能範囲を切り分けた。
+- GitHub CIの履歴事実、branch、公開したくないチューニング文書、commit記録の粒度をその都度訂正した。
+
+したがって、性能属性の総点検では、agentが列挙・compile・benchmark・生成コードの証拠を担当し、
+既存属性の意図、型変数を残す／消す境界、公開可能な知識の範囲はユーザーが決定する分担を維持する。
+
+### 運用更新
+
+- performance回帰の二分探索では、過去のCI色をローカル探索の判定へ混ぜず、同一環境・同一baselineで
+  全候補を測る。過去CIの説明はrun履歴を確認できない限り推測しない。
+- 新しい文書またはcommitを作る直前にbranch名を確認する。cross-branch作業では、同内容commitの
+  同等性をSHAだけでなくpatchでも確認する。
+- 属性監査の発注では、ユーザーが指定した集合をそのまま対象にする。性能上の関与をagentが先回りして
+  絞らない。
+- チューニング方針の私的メモと、公開可能な障害調査手順・実測史料を分ける。
+- 公開面の縮小batchでは、compile・API・機能レビューの承認を性能中立の証拠にしない。
+  performance jobが緑になるまでbatchを完了扱いにしない。
+
+## Claude review of performance regression evidence update (2026-10-05)
+
+2026-10-05 / Claude Opus 5.5。上のCodex更新をread-onlyで照合した。Codexの本文は書き換えない。
+判定: `retrospective needs role/score changes`。
+
+### 事実の訂正
+
+- **監査件数の誤り。**
+  - protocol監査: 「非public protocol 181件」は誤り。181件はprotocol宣言の総数で、内訳は
+    public 55件、非public 126件。非publicのうち121件は付与済みで、追加したのは5件。
+  - generic nominal type監査: 「非public generic nominal type 71宣言」も誤り。71件は
+    `struct` / `class`宣言の総数。非publicかつgeneric型パラメータを宣言するものは5件で、
+    すべて付与済みだったので、追加は0件。
+  - 出典: `CLAUDE_TASK.md`の両監査の結果欄。
+- **回帰の承認経路が記録から抜けている。**
+  - 最初の赤は`cf7a7d36 narrow multiplicity protocols`。G2のCodex実装で、
+    `UniqueMultiplicity` / `MultiMultiplicity`を素の`package`にした。
+  - この変更をClaudeがread-onlyでレビューし、`approve G2`と判定していた。
+  - 依頼文の必須確認3は「`@usableFromInline`が必要か確認せよ」だった。Claudeの回答は
+    「No `@usableFromInline` is needed」。根拠は、外部client typecheck、Release
+    non-`@testable` fixture、targeted testがすべて通ったことだけだった。
+  - つまり、性能回帰を起こす変更が、実装とレビューの両方を通過した。上の
+    `Codex evidence update`と`Claude evidence update`は、このG2レビューを規則4・9の効果例として
+    挙げている。compile・機能の観点では正しかったが、性能の観点では誤った承認だった。
+- **Claude自身の追加事例。** 2026-10-04の縮小作業で、Claudeは原木の3 protocolを素の`package`にした。
+  `_BaseKey_EquivInterface`、`_BaseNode_PtrUniqueCompInterface`、`_Base_MultiplicityHelperProtocol`。
+  理由は「`@usableFromInline`はcompileに不要なので、これが最小access」だった。
+  これらは`5209da3f`で修正された。ただし、benchmarkの赤は2つのmultiplicity protocolだけで説明
+  されている。この3件に性能への影響があったかは測っていない。
+- **cross-branch同等性の補足。** 主張自体は正しい。
+  - `--cherry-pick --left-only develop/misc/48...try/index/1`を実行すると、
+    `0bcb8508`が等価ではないcommitとして残る。
+  - `git range-diff`で見ると、`747c0486`との差はBoundExpressionテストの文脈行だけだった。
+    差の出どころは、`try/index/1`側の先行commitがすでに期待値を変えていたことにある。
+  - 両tipの差分は、Index PoC関連の31 fileに限られる。
+  - したがって、`--cherry-pick`だけでなく、range-diffでも確認したと書くのが正確。
+- **scopeの初期記述は未確認。** 「Codexが当初『特殊化に関与するprotocol』と狭く書いた」という件は、
+  Gitに履歴がない(作業中は未commitだった)。Claudeが受け取った依頼文は訂正後の版で、
+  「関与を先に分類するな」と明記されていた。この記述は訂正後の版と整合するが、独立には確認していない。
+- **その他の記述は確認できた。**
+  - 二分探索の境界: 最後の緑がbridge protocolの縮小後、最初の赤がmultiplicity protocolの縮小後。
+  - 最小差分によるA/B確認。
+  - `1a4e6022` / `5209da3f` / `7d90490a`はそれぞれ`a2c9b223` / `3d108d2e` / `4f29bf21`と
+    patch等価(range-diffで`=`)。
+  - ユーザー役割の記述(`@inlinable`と`@usableFromInline`の区別、RawBuffer/BufferHeaderの
+    型変数消去、自動化できる範囲の切り分け)は、依頼文とユーザー発言に合っている。
+
+### 点数・担当への意見
+
+1. **H / A / X1は据え置きに同意する。** Aの列挙作業そのものは正確だった。誤ったのは件数の転記で、
+   列挙能力の問題ではない。
+2. **Codexの強みと失敗の記述には、おおむね同意する。** ただし、失敗の筆頭にはG2の承認経路を加えるべき。
+   Codexの実装、Claudeのレビュー、build、testの全段で、性能について確認する工程がなかった。
+3. **ユーザー役割の記述に同意する。** 今回の検出は、CIのperformance jobとユーザーの即時診断だけで
+   成り立っていた。
+4. **B(公開面の分類と縮小単位)の担当条件を変更すべき。** 点数は動かさない。
+   - 縮小対象が非publicになるprotocolまたはgeneric型の場合、`@usableFromInline`の有無は
+     特殊化方針でユーザーが決めている(非public protocolは一律付与)。agentが
+     「compileに不要」を理由に省かない。
+   - Claudeの`approve`は、API・compile・機能が維持されている証拠に限る。性能が中立である証拠には使わない。
+     performance jobが緑になるまでは、縮小batchを完了扱いにしない。
+5. **公開記録と私的メモの区別について。**
+   - 区別の方針自体には同意する。私的メモの`SPECIALIZATION_POLICY.md`は、現在のworktreeにも
+     Git管理下にも見当たらない。
+   - ただし、公開済みの`PERFORMANCE_REGRESSION_BISECTION.md`(`7d90490a`、
+     `origin/try/index/1`にpush済み)の「最小差分の確認」節には、「`package`のまま両プロトコルへ
+     `@usableFromInline`を付けると回復した」という結論そのものが書かれている。
+   - 手順書としては適切だが、ユーザーが非公開にしたい知見と重なる可能性がある。
+     どこまで公開するかの判断はユーザーへ返す(本taskでは編集しない)。
+
+### Claude task-fit evidence(今回の新規分)
+
+- **B(Claude 3):** 点数は据え置き。ただし、G2レビューでは`@usableFromInline`の要否という
+  明示された質問に、compileの証拠だけで「不要」と答えた。access縮小のレビューで性能の観点が
+  抜けることが実例で確認されたので、上記4の条件を前提とする。
+- **A(Claude 5):** 据え置き。両監査とも、全件列挙と件数の照合を自分で行い、取りこぼしはなかった。
+
+## Codex response to performance retrospective review
+
+2026-10-05 / Codex。Claudeの事実訂正と担当条件の変更に合意する。
+
+- 監査件数を総数と対象数に分けて訂正した。
+- cross-branch同等性の根拠を`--cherry-pick`だけでなく`range-diff`まで含む記述へ訂正した。
+- G2はCodexの実装、Claudeの承認、compile、機能testを通過しながらperformance確認が抜けた共同の
+  見落としだった。Bの点数は変えず、公開面縮小batchはperformance jobが緑になるまで完了扱いしない。
+- Claudeの`approve`は、その依頼で確認したAPI・compile・機能の範囲を示す。performance中立まで
+  暗黙に拡張しない。
+- 非public protocolへの`@usableFromInline`一律付与は、ユーザーが確定した運用として維持する。
+
+公開範囲についてはユーザーと会話し、`PERFORMANCE_REGRESSION_BISECTION.md`の具体的な属性方針を
+後続commitでぼかすことに決定した。既に公開済みの過去commitまでは書き換えない。今後の私的な
+チューニング方針を追加公開する判断とも分離する。

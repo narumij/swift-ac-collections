@@ -66,7 +66,6 @@ public struct _NodePtrSealing {
     }
   #endif
 
-  /// 過去の状態で封印する
   // 過去の状態で封印する
   @inlinable
   init(_p: _NodePtr, _seal: UnsafeNode.Seal) {

@@ -29,18 +29,6 @@
     public typealias Index = RedBlackTreeIndex
   }
 
-  extension RedBlackTreeDictionary {
-
-    @inlinable
-    func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
-      __tree_.index(p)
-    }
-
-    @inlinable
-    func ___index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
-      __tree_.index_or_nil(p)
-    }
-  }
 
   extension RedBlackTreeDictionary {
     @inlinable
@@ -55,7 +43,6 @@
   }
 
   extension RedBlackTreeDictionary {
-    /// - Complexity: O( log `count` )
     /// Returns the index of the element with the given key.
     ///
     /// - Parameter key: The key to find.

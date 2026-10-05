@@ -105,13 +105,6 @@
     }
   }
 
-  extension RedBlackTreeKeyValueRangeView {
-
-    @inlinable
-    func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
-      __tree_.index(p)
-    }
-  }
 
   extension RedBlackTreeKeyValueRangeView {
 

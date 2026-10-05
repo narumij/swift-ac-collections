@@ -1,6 +1,26 @@
 # `try/index/1` validation
 
-Status: Initial issue inventory after merging `develop/misc/48`
+Status: Validation complete — adopt the success-only Index representation
+
+## Final decision
+
+Verdict: **adopt after corrections; required corrections completed**.
+
+Codex and Claude found no correctness, lifetime, public-contract, or complexity evidence requiring
+a failure value inside the public Index. The success-only representation retains O(1) validity
+resolution and O(K) traversal, and passed the recorded Debug, Release, narrow `_O_UNCHECKED`, ASan,
+compatibility, four-container, and View evidence.
+
+Before closing validation, the branch restored the intended internal DocC visibility, narrowed the
+new nested pointer alias to package scope, removed 19 proven-unused Result-valued overloads while
+retaining the two still used internally, corrected the Index DocC abstracts, removed the enumerated
+merge artifacts, and regenerated 20 Index-dependent DocC disambiguation suffixes. Post-correction
+checks passed: P4 (111), P1 (4), narrow Release + `_O_UNCHECKED` (17 XCTest and 23 Swift Testing),
+Debug/Release/compatibility builds, and Release DocC with warnings as errors.
+
+This decision does not decide `Comparable`, a nominal public wrapper, or ContainersPreview. The
+shared Bound DSL `limit:` defect, `_O_UNCHECKED` empty-removal triage, concurrent first
+`lazyDetach` initialization, and other frozen work remain separate follow-up items.
 
 ## Product-owner direction
 
@@ -58,19 +78,19 @@ as history but its snapshot anchors are superseded by the commits above for this
 | ID | State | Area | Issue / required evidence |
 | --- | --- | --- | --- |
 | `P1` | pass | Test as Specification | Four internal tests verify Debug `.index(.nullptr)` on non-empty containers without recreating a public failure-valued Index. Codex and Claude confirmed the resolver reaches `.failure(.null)` rather than trapping. |
-| `P2` | partial pass; independently reviewed | Index lifetime | Representative stale/recycled/movement/MappedValues paths pass in Debug, Release, a narrowly filtered Release + `_O_UNCHECKED` batch, and Debug ASan. An Index outliving its storage has a detached tie and is safely rejected by the tested empty receiver under ASan; behavior with a non-empty unrelated receiver remains unspecified and unmapped. |
-| `P3` | pass; review queued | Configuration matrix | Debug, Release, representative Release + `_O_UNCHECKED`, Debug ASan, and both Debug and Release `COMPATIBLE_ATCODER_2025` evidence is recorded below. |
-| `P4` | pass; review queued | Container/View breadth | All four containers passed a 111-test Index-validity/movement/CoW batch. MappedValues representative paths pass, and KeyValue/KeyOnly Range Views each passed 10 tests including direct half-open boundary classification. |
+| `P2` | pass with intentional unmapping; independently reviewed | Index lifetime | Representative stale/recycled/movement/MappedValues paths pass in Debug, Release, a narrowly filtered Release + `_O_UNCHECKED` batch, and Debug ASan. An Index outliving its storage has a detached tie and is safely rejected by the tested empty receiver under ASan. A non-empty unrelated receiver and the exact internal `.detached` reason are outside the public contract and intentionally unmapped. |
+| `P3` | pass; independently reviewed | Configuration matrix | Debug, Release, representative Release + `_O_UNCHECKED`, Debug ASan, and both Debug and Release `COMPATIBLE_ATCODER_2025` evidence is recorded below. |
+| `P4` | pass; independently reviewed | Container/View breadth | All four containers passed a 111-test Index-validity/movement/CoW batch. MappedValues representative paths pass, and KeyValue/KeyOnly Range Views each passed 10 tests including direct half-open boundary classification. |
 | `P5` | confirmed test hazard | Debug fixture semantics | `_LazyTieWrap.unsafe(tree:rawTag:)` maps every retrieval, seal, or banding failure to synthetic `.nullptr`. On an empty tree, `_emptyLazyDetach` is shared, so same-tie purification can assert on the null pointer instead of producing the intended `SealError`. Synthetic-null tests must use a non-empty tree and verify the error reason, not merely expect process failure. |
-| `P6` | confirmed artifacts; independently reviewed | Public surface | `UnsafeIndexV3` and `_LazyTiedPtr` were already externally nameable on develop. PoC surface changes are removal of `@_documentation(visibility: internal)` (DocC exposure) and the new nested public `_LazyTiedPtr._NodePtr` alias. These are prototype artifacts, not representation evidence. |
+| `P6` | corrected; independently reviewed | Public surface | Restored `@_documentation(visibility: internal)` and narrowed `_LazyTiedPtr._NodePtr` to `@usableFromInline package`; the prototype no longer adds the unintended external surface. |
 | `P7` | verified by inspection | Equality / hashing | Synthesized `_NodePtrSealing` equality/hash cover pointer, seal, and (when present) the pointer-derived tracking tag. `_LazyTieWrap` equality additionally checks tie identity while its coarser hash omits it, which is contract-valid. All are O(1). Keep a regression test. |
 | `P8` | fixed; independently reviewed | Limited movement | User classified stale-limit acceptance as a bug common to both Index representations. Both overloads now propagate limit-resolution failure; focused `index`/`formIndex` tests and 37 valid-input tests pass. Claude found the same unpropagated-failure shape in Bound DSL `.advanced(limit:)`; prior user policy classifies that sibling as a bug to fix next. |
-| `P9` | unverified | Performance | Confirm equality and hashing remain O(1), full and range traversal remain O(N), and success-only resolution does not add per-element search or allocation. Preserve raw measurements separately from the design decision. |
-| `P10` | documentation | Design records | Several documents still describe the develop representation (`UnsafeIndexV3 = _LazyTieWrappedPtr`) or say the PoC must not be merged wholesale. Update them only after the validation verdict; for now record the branch and commit used as evidence. |
-| `P11` | cleanup, non-blocking | Merge artifacts | Remove only after semantic validation: duplicated comments, commented-out old alias, trailing blank lines in `_LazyTie.swift`, duplicated `過去の状態で封印する` documentation, and the `Package.swift` comment-spacing change. These are not quality failures. |
+| `P9` | pass by inspection; independently reviewed | Performance | Equality, hashing, and same-tree Index resolution remain O(1); cross-tree resolution is O(1) under the post-CoW single-bucket invariant. Index construction creates at most one lifetime tie per storage, not per Index, and traversal stays pointer-based O(K). Timing comparison is optional follow-up evidence. |
+| `P10` | post-validation follow-up | Design records | Update records that still describe the develop representation and close the X1/PoC entries when integrating the adopted branch. This does not affect the representation verdict. |
+| `P11` | corrected | Merge artifacts | Removed the enumerated duplicated comments, commented alias, trailing blank lines, temporary notes, and Package.swift comment-spacing drift. |
 | `P12` | design gate | Adoption boundary | This PoC proves only that a failureless public Index can compile and operate. It does not decide a nominal public Index type, `Comparable`, ContainersPreview adoption, or the final external contract. Keep those decisions separate. |
-| `P13` | confirmed documentation regression | Public DocC | Dictionary and MultiMap place the complexity callout before the summary sentence, displacing the DocC abstract. Move it into the existing documentation body during cleanup. |
-| `P14` | Codex pass; review queued | Dual representation | Success-only and old Result-returning overload families coexist and often differ only by return type. Initial call-site inventory found no public `Index`-typed path with an old Result context; independent review is queued. The new seal-only `_LazyTieWrap.isValid` has no Sources consumer and is not evidence of tree-aware validity. |
+| `P13` | corrected | Public DocC | Removed the duplicate misplaced complexity callouts; the correctly placed body callouts remain. Release DocC passes with warnings as errors after updating all 20 Index-dependent curation identifiers. |
+| `P14` | corrected; independently reviewed | Dual representation | Removed 19 unused Result-valued overloads. Two Result-valued `index(_:)` functions remain because success-only movement uses them internally; the alias and resolver paths with genuine consumers remain. `_LazyTieWrap.isValid` is retained with its actual test/performance consumers documented. |
 
 ## Validation order
 
@@ -284,17 +304,50 @@ element/end distinction, copied-tree resolution, forward/backward movement, limi
 range-bound rejection, consecutive mutation after CoW, and the existing container-specific CoW
 stress cases.
 
-Batch result: Codex `pass`; independent review queued.
+```text
+swift test --disable-sandbox --skip-build \
+  --filter 'RedBlackTree(Set|MultiSet|Dictionary|MultiMap)(IndexValidityXCTests|IndexRangeTests|BidirectionalCollectionTests|CopyOnWriteTests)'
+```
+
+Batch result: Codex `pass`; independently reproduced and reviewed by Claude.
 
 ### P3 — compatibility Release
 
-The representative compatibility batch was also run in Release with
-`-Xswiftc -DCOMPATIBLE_ATCODER_2025`, covering the AtCoder 2025 compatibility suites together with
-the selected CoW, bidirectional movement, Index range, and SubSequence suites. It executed 120
-XCTest cases with no failure (4 intentional skips), followed by 1 Swift Testing case with no
-failure.
+The representative compatibility batch was also run in Release:
 
-Batch result: Codex `pass`; independent review queued.
+```text
+swift test --disable-sandbox -c release -Xswiftc -DCOMPATIBLE_ATCODER_2025 \
+  --filter 'AtCoder2025|CopyOnWriteTests|BidirectionalCollectionTests|IndexRangeTests|SubSequenceTests'
+```
+
+It covered the AtCoder 2025 compatibility suites together with the selected CoW, bidirectional
+movement, Index range, and SubSequence suites. It executed 120 XCTest cases with no failure
+(4 intentional skips), followed by 1 Swift Testing case with no failure.
+
+Batch result: Codex `pass`; independently reviewed by Claude as legacy-contract and shared-resolver
+configuration evidence, not direct success-only representation evidence.
+
+### P9 — complexity inspection
+
+The success-only representation does not change the asymptotic Index or traversal costs:
+
+- Same-tree `__purified_` performs a lifetime-tie identity comparison and reads the stored seal:
+  O(1).
+- Cross-tree resolution uses the stored tracking tag to access `_FreshPool`. The post-CoW invariant
+  requires exactly one contiguous bucket, so this lookup is O(1) in the supported state.
+- Constructing an Index wraps the pointer and storage lifetime tie. `lazyDetach` allocates at most
+  one tie per storage on first access and reuses it for later indices; there is no allocation per
+  Index.
+- Full and range traversal use `UnsafeIterator._Obverse4`, advancing raw node pointers directly.
+  They do not construct or resolve a public Index for every element, so traversing K elements
+  remains O(K).
+- Equality and hashing use the stored pointer/seal/tag and lifetime-tie identity and remain O(1),
+  consistent with P7.
+
+This closes the required complexity property by source inspection. Wall-clock A/B measurements
+remain optional evidence and must be kept separate from the representation decision.
+
+Batch result: Codex `pass`; independently reviewed by Claude.
 
 ### P2 — Index outliving its storage
 

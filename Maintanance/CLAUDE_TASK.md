@@ -2,7 +2,462 @@
 
 Status: Completed
 
-## Active assignment: independently review the accumulated Index PoC evidence batches
+## Active assignment: repair Index PoC DocC curation identifiers
+
+Finish the remaining pre-integration correction reported by the immediately following completed
+assignment. The success-only Index type changed the precise DocC identifiers for `erase(_:)` and
+`distance(from:to:)`, leaving 20 stale disambiguation suffixes across Set, MultiSet, Dictionary,
+and MultiMap Topics.
+
+Required work:
+
+1. Reproduce the Release DocC `--warnings-as-errors` failure and record the exact command.
+2. Resolve every stale Index-related curation link to the intended overload. Update only the hash
+   suffix or precise symbol link needed for that overload; do not reorder or rewrite Topics.
+3. Re-run the same Release DocC command with warnings as errors and require a clean result.
+4. Run `git diff --check` and inspect the final diff for accidental documentation changes.
+
+Do not edit source or tests, change public API, perform the broader P10 design-record rewrite, or
+touch the deferred Bound DSL bug, `_O_UNCHECKED` empty removals, `Comparable`, nominal wrappers,
+ContainersPreview, Permutation, or frozen tasks.
+
+### Boundaries
+
+You may edit only the affected DocC catalog files and `Maintanance/CLAUDE_TASK.md`. Do not edit
+`Maintanance/INDEX_POC_VALIDATION.md`; Codex will integrate the result. Do not stage, commit, push,
+switch branches, merge, or alter Git history. If any error is not an obsolete symbol
+disambiguation caused by the Index type change, leave it unchanged and report it separately.
+
+Record the exact command, changed catalog files, old/new link classification, and final result in
+the first Result section below. Set `Status: Completed` and tell the user only `完了` unless a
+product-owner decision remains.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Release DocC `--warnings-as-errors` is now clean. Only DocC catalog
+files were changed, and nothing was staged.
+
+**Command** (the CI command, both before and after the fix):
+
+```
+swift package --disable-sandbox -c release --allow-writing-to-directory .build/documentation \
+  generate-documentation --target RedBlackTreeCollections --output-path .build/documentation \
+  --transform-for-static-hosting --hosting-base-path swift-ac-collections --warnings-as-errors
+```
+
+- **Before:** 20 errors of the form "'<hash>' isn't a disambiguation", plus the follow-on archive
+  move error caused by the failed build.
+- **After:** exit 0, "Finished building documentation".
+
+**How the intended overload was identified.** I did not guess from position. In a task-owned
+`mktemp -d` directory, since removed:
+
+1. I exported `Sources/RedBlackTreeCollections` from develop `2796d7c2` (`git archive`) and copied
+   the current working tree.
+2. For each, I compiled a symbol graph with `swiftc` (`-DALLOW_CROSS_TREE_INDEX`, `-O`), with no
+   package resolution.
+3. I ran `xcrun docc convert` with that catalog.
+
+The develop run reproduced every old hash exactly, which validates the mapping. For each
+container, I then paired the old and new hash pages by their rendered declaration.
+
+**Changed files and links** (old → new; 5 per file, 20 in total):
+
+| File | `erase(_ ptr: Index)` | `erase(_: IndexRange)` | `erase(_: IndexRangeExpression)` | `erase(_: UnboundedRange)` | `distance(from: Index, to:)` |
+| --- | --- | --- | --- | --- | --- |
+| `RedBlackTreeSet.md` | `1hm5m`→`66kob` | `7sncn`→`207dn` | `1chhq`→`fmh0` | `zwzk`→`6xhp2` | `9y0yy`→`7ecok` |
+| `RedBlackTreeMultiSet.md` | `8bace`→`7om7w` | `8o69d`→`9tgad` | `5st1y`→`9ceva` | `8u5n5`→`6z958` | `74m7h`→`5fn2h` |
+| `RedBlackTreeDictionary.md` | `12h1o`→`tsqp` | `7r9ok`→`7b3q1` | `96i73`→`1yrnu` | `88doh`→`7e9wt` | `1nyff`→`26cz3` |
+| `RedBlackTreeMultiMap.md` | `78u56`→`151rw` | `5jzi8`→`7ofvq` | `7haxv`→`8begn` | `42awa`→`sjf1` | `6mvs2`→`4uhx1` |
+
+All files are under `Sources/RedBlackTreeCollections/RedBlackTreeCollections.docc/`.
+
+- **Classification:** all 20 are obsolete disambiguations caused by the Index type change. The
+  overloads that do not involve `Index` (`Bound` / `BoundRangeExpression` `erase`, and the Bound
+  `distance`) kept their hashes and were not touched.
+- **Unchanged otherwise:** only the suffixes changed. No Topics were reordered or reworded, and no
+  other link was edited.
+- **One correction to an assumption:** in each container's "Removing …" section, the lone
+  `erase(_:)` link points to the **IndexRangeExpression** overload (Dictionary `96i73`, for
+  example), not the single-Index overload. The old mapping preserved this.
+- **Other errors:** none.
+
+**Checks.** `git diff --check` was clean. The catalog diff has 20 insertions and 20 deletions, all
+hash suffixes. I made no source, test, or ledger edits in this task.
+
+### Result
+
+Pending.
+
+---
+
+## Completed assignment: implement the approved pre-integration Index corrections
+
+Implement the local corrections required by the immediately following completed verdict
+(`adopt after corrections`) on `try/index/1`. Keep the success-only Index representation intact.
+
+Required work:
+
+1. P6 public surface:
+   - restore `@_documentation(visibility: internal)` on `UnsafeIndexV3`;
+   - make the newly introduced `_LazyTiedPtr._NodePtr` alias `package` unless its implementation
+     makes that impossible, in which case stop and report the exact compiler constraint.
+2. P14 dual family:
+   - first make the obsolete Result-valued overload candidates unavailable in a disposable edit
+     and build to prove that production callers do not need them;
+   - then remove only the proven-unused `_LazyTieWrappedPtr` variants of tree/header
+     `index`/`index_or_nil`, container/View `___index`/`___index_or_nil`, and movement functions;
+   - retain the `_LazyTieWrappedPtr` alias and resolver/construction paths that still have genuine
+     diagnostic, Debug, or test consumers;
+   - remove the unused seal-only `_LazyTieWrap.isValid`, or document its real remaining consumer.
+3. P13 DocC: move the misplaced `Complexity` callouts below the summary sentences in Dictionary
+   and MultiMap Index documentation.
+4. P11 cleanup: remove only the listed PoC/merge artifacts: the commented-out old alias and its
+   `実質V4` block, duplicated `過去の状態で封印する` line, trailing blank lines, Package.swift
+   comment-spacing-only drift, and temporary `O(1) ready` notes (replace with proper Complexity
+   prose only where it adds a public contract).
+
+Do not perform P10's post-integration design-document rewrite yet. Do not touch the deferred Bound
+DSL bug, `_O_UNCHECKED` empty removals, `Comparable`, nominal wrappers, ContainersPreview,
+Permutation, or frozen tasks.
+
+Validation:
+
+- run `git diff --check`;
+- run the four-container P4 filter and the four P1 restored invalid-Bound tests;
+- run a Release DocC build with warnings as errors if the repository's existing command is readily
+  discoverable; otherwise report it as the remaining Codex integration check;
+- run a narrow Release + `_O_UNCHECKED` Index filter only if you can derive a precise filter that
+  excludes the known empty-removal cases. Record the exact command and counts.
+
+### Boundaries
+
+You may edit the necessary source files, `Package.swift`, and `Maintanance/CLAUDE_TASK.md`. Do not
+edit `Maintanance/INDEX_POC_VALIDATION.md`; Codex will integrate the result. Do not stage, commit,
+push, switch branches, merge, or alter Git history. Do not broaden cleanup beyond the enumerated
+artifacts. If the disposable unavailable proof finds a caller, restore that disposable edit and
+report the overload as retained rather than redesigning it.
+
+Record changed files, proof results, exact validation commands/counts, and any retained overloads
+in the first Result section below. Set `Status: Completed` and tell the user only `完了` unless a
+product-owner decision is required.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. All four corrections are implemented on `try/index/1`, and the
+success-only representation is unchanged. Nothing was staged. The ledger is not edited.
+
+**Changed files** (14; 12 insertions, 196 deletions):
+
+- `Package.swift`: the comment-spacing drift is reverted; the file is identical to develop.
+- `Implements/Index/UnsafeIndexV3.swift`:
+  - P6: restored `@_documentation(visibility: internal)` and the develop-style `//` comment header.
+  - P11: removed the commented-out old alias and the 「実質V4」 block.
+- `Implements/RawBuffer/_LazyTieWrap.swift`:
+  - P6: `_LazyTiedPtr._NodePtr` is now `@usableFromInline package`. Plain `package` is impossible:
+    the compiler requires it to be `@usableFromInline` because the `@inlinable` `unchecked(_:end_ptr:lazyDetach:)`
+    uses it in its signature (errors: "type alias '_NodePtr' is package and cannot be referenced from
+    an '@inlinable' function" and "the parameter of a '@usableFromInline' method must be
+    '@usableFromInline' or public"). It is no longer externally nameable.
+  - P11: removed both `/// O(1) ready` notes. No Complexity prose was added, because `==` / `hash`
+    are not documented public entry points.
+  - P14: kept `isValid` and documented its real consumers with a comment. Its tree-free,
+    issuer-based check is used by `RedBlackTreeSet_98_IndexValidityXCTests:77,99`,
+    `RedBlackTreeDictionary_98_IndexValidityXCTests:72,95`, `RedBlackTreeSet_3_IndexSequenceTests:53,72`,
+    and `RedBlackTreeSet_98_PerformanceTests:192-195`.
+- `Implements/RawBuffer/_LazyTie.swift`: removed the trailing blank lines; the file is identical to
+  develop.
+- `__tree/unsafe_node/Seal/_NodePtrSealing.swift`: removed the duplicated `/// 過去の状態で封印する`.
+- `RedBlackTreeDictionary+Index.swift` and `RedBlackTreeMultiMap+Index.swift` (P13): removed the
+  misplaced `/// - Complexity: O( log count )` above the summary. Each comment already contains a
+  correctly placed `- Complexity: O(log count)` below its Returns line, so moving the line would
+  only have duplicated it.
+- P14 removals, with the extensions they left empty also removed:
+  - `UnsafeTreeV2+Index.swift`: the old `index_or_nil`, `prev_iter`, `next_iter`,
+    `adv_iter(offsetBy:)`, `adv_iter(offsetBy:limitedBy:)`, `index_or_nil(offsetBy:limitedBy:)`,
+    and `form_index`.
+  - `UnsafeTreeV2+BufferHeader.swift`: the old `index_or_nil`.
+  - Set, MultiSet, Dictionary, and MultiMap `+Index.swift`: the old `___index` /
+    `___index_or_nil`.
+  - MappedValues, KeyOnly, and KeyValue Views: the old `___index`.
+
+**P14 proof.**
+
+1. Disposable `@available(*, unavailable)` on all 21 candidates. The Debug build failed only
+   inside the old bodies themselves (old `___index` → old `index`), so the proof was inconclusive.
+2. Restored the originals from a `mktemp -d` backup and deleted all 21. The build then found real
+   callers: the success-only movement functions use `.flatMap { index($0) }`, which resolves to the
+   Result-valued `UnsafeTreeV2.index(_:)` (`UnsafeTreeV2+Index.swift:102,115,128,146`).
+3. **Retained**, with a comment: `UnsafeTreeV2.index(_:) -> _LazyTieWrappedPtr` and the header's
+   `index(_:) -> _LazyTieWrappedPtr` that it calls.
+4. **Removed:** the other 19.
+5. With only those two retained, these all succeed:
+   - `swift build --disable-sandbox --build-tests` (Debug);
+   - `swift build --disable-sandbox -c release --target RedBlackTreeCollections`;
+   - `swift build --disable-sandbox --build-tests -Xswiftc -DCOMPATIBLE_ATCODER_2025`.
+6. Also retained: the `_LazyTieWrappedPtr` alias, the `__purified_` / `__purified_safe_(_: _LazyTieWrappedPtr)`
+   resolvers, the success-only `adv_iter(limitedBy:)`'s internal `Result` return, and the Debug
+   `band`.
+7. The backup directory has been removed.
+
+**Validation**:
+
+- `git diff --check`: clean.
+- P4: `swift test --disable-sandbox --skip-build --filter 'RedBlackTree(Set|MultiSet|Dictionary|MultiMap)(IndexValidityXCTests|IndexRangeTests|BidirectionalCollectionTests|CopyOnWriteTests)'`:
+  111 tests, 0 failures.
+- P1: `swift test --disable-sandbox --skip-build --filter 'InternalTests/boundExpressionIndexValidity'`:
+  4 tests in 4 suites passed.
+- Release + `_O_UNCHECKED`:
+  `swift test --disable-sandbox -c release --traits _O_UNCHECKED --filter 'RedBlackTree(Set|MultiSet|Dictionary|MultiMap)IndexValidityXCTests|RedBlackTreeMappedValuesViewTests|(indexAfterEndIndex|indexBeforeStartIndex|indexOffsetBy[A-Za-z]*|formIndexOffsetBy[A-Za-z]*|staleIndexSubscript|mappedValues[A-Za-z]*|removingAnAlreadyRemovedIndex)_terminates'`.
+  - XCTest: 17 (MappedValues), 0 failures. The `IndexValidityXCTests` suites are `#if DEBUG` and
+    therefore absent in Release.
+  - Swift Testing: 23 tests in 4 Death-test suites passed. The empty `removeFirst` /
+    `removeLast` cases are excluded by name.
+- After those runs I made only one more edit, a whitespace fix (removing two stray blank lines
+  left by the extension removal), and rebuilt Debug successfully.
+
+**Remaining Codex integration check: Release DocC `--warnings-as-errors` fails** with 20 curation
+errors such as `'88doh' isn't a disambiguation for 'erase(_:)'`.
+
+- They break down per container (Set, MultiSet, Dictionary, MultiMap) as 4 × `erase(_:)` and
+  1 × `distance(from:to:)`.
+- They come from the PoC's Index type change itself: the overloads taking `Index` now have
+  different precise identifiers, so the hash suffixes changed. None of these corrections causes
+  them, since no public signature changed.
+- Fixing them means regenerating the hash suffixes in the DocC Topics. That belongs with
+  P10 / integration documentation, so I left it.
+
+There is no product-owner decision.
+
+### Result
+
+Pending.
+
+---
+
+## Completed assignment: issue the final success-only Index validation verdict
+
+Independently review the now-complete evidence ledger in `Maintanance/INDEX_POC_VALIDATION.md`,
+including Codex's uncommitted final-batch integration after `714252d1`. Issue exactly one verdict:
+
+- `adopt after corrections`
+- `adoption blocked by specified evidence`
+- `evidence incomplete`
+
+Judge only the success-only Index representation. Do not fold `Comparable`, a nominal public
+wrapper, ContainersPreview, the deferred shared Bound DSL bug, `_O_UNCHECKED` empty-removal triage,
+or frozen work into the representation verdict. Verify that the P9 complexity note is supported by
+the cited implementation shape and that P2's intentional unmapping is consistent with the stated
+public contract. Treat missing original command text for already-reviewed normal Release and
+`_O_UNCHECKED` runs as a reproducibility/documentation limitation, not automatically as missing
+behavioral evidence; say explicitly if it changes your verdict.
+
+If the verdict is `adopt after corrections`, list only the corrections required before integrating
+the PoC, separating them from optional or deferred work. If blocked or incomplete, identify the
+smallest concrete missing evidence. Keep the result concise enough to serve as the validation's
+closing decision record.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit source, tests, the validation ledger,
+other documentation, Package.swift, or workflows. Do not run broad tests, fix findings, stage,
+commit, push, switch branches, or alter Git history. Read-only inspection and a narrow disputed-
+claim check are allowed. Run `git diff --check` and inspect `git status --short` at the end.
+
+Record the verdict in the first Result section below, set `Status: Completed`, and tell the user
+only `完了` unless a product-owner choice remains.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. **Verdict: `adopt after corrections`.**
+
+**Scope.** The verdict covers the success-only representation on `try/index/1` (`714252d1` plus
+Codex's uncommitted ledger integration), in the default configuration: `ALLOW_CROSS_TREE_INDEX`
+on, `USE_LAZY_DETACH` off, normal mode, Debug and Release. It does not cover `Comparable`, a
+nominal wrapper, ContainersPreview, the shared Bound DSL `limit:` bug, the `_O_UNCHECKED`
+empty-removal triage, the `USE_LAZY_DETACH` configuration (unused, commented out), or frozen work.
+
+**Basis.** Every required Quality Checklist property now has positive evidence or a documented
+intentional unmapping:
+
+- P1: invalid-Bound coverage restored.
+- P2: stale, recycled, movement, MappedValues, detached marking, and memory-safe outliving storage,
+  in Debug, Release, narrow `_O_UNCHECKED`, and ASan. The unmapped parts are outside the public
+  contract (another tree is unspecified per `UnsafeIndexV3.swift`).
+- P3: configuration matrix, including compat Debug and Release as legacy-contract evidence.
+- P4: four-container breadth (111 tests, reproduced), plus three Views.
+- P7: equality and hashing.
+- P8: stale limit, corrected in both overload families.
+- P9: complexity, closed by inspection.
+- P14: no public `Index` path can reach the old family, by type.
+
+I checked P9 against the code:
+
+- Same-tree purification compares the tie identity, then compares one stored seal with the node's
+  `___recycle_count` (`_NodePtrSealing.isUnsealed`): O(1).
+- Cross-tree lookup walks the fresh-pool buckets, which is O(1) under the post-CoW invariant.
+- At most one `lazyDetach` is created per storage.
+- `makeIterator` returns `Tree._PayloadValues`, a raw-pointer `_Obverse4`, so traversal is O(K).
+
+Ledger nuance: "reads the stored seal" should read "compares the stored seal with the node's
+recycle count". The cost is unchanged.
+
+None of the evidence shows a deeper contradiction. No required behavior needs a failure value in
+the public Index, validity checks stay O(1), and lifetime is held by the existing storage tie.
+
+**Missing command text.** The original command text for the normal Release and `_O_UNCHECKED`
+runs is still missing. This does **not** change the verdict: those results were reviewed and the
+filters are re-derivable. It is a reproducibility limitation. The integration's own validation run
+should record its commands.
+
+**Corrections required before integrating the PoC.** All are local and none changes the
+representation.
+
+1. **P6, public surface.**
+   - Restore `@_documentation(visibility: internal)` on `UnsafeIndexV3`.
+   - Make the new nested `_LazyTiedPtr._NodePtr` non-public (package), or record an explicit owner
+     decision to keep it. It is new public surface, and it parallels the frozen `Result._NodePtr`
+     item.
+2. **P14, dual family.** Remove the old Result-valued overloads that differ from the success-only
+   ones only by return type, and that have no remaining caller:
+   - the `_LazyTieWrappedPtr` variants of `___index` / `___index_or_nil`;
+   - the tree and header `index` / `index_or_nil`;
+   - the movement family.
+
+   A disposable `@available(*, unavailable)` build is the mechanical proof that they have no
+   caller. Keep the `_LazyTieWrappedPtr` alias and resolver paths that remain genuinely used. Also
+   remove or document the unused seal-only `_LazyTieWrap.isValid`.
+3. **P13.** Move the two `/// - Complexity` lines below the summary sentences in
+   `RedBlackTreeDictionary+Index.swift` and `RedBlackTreeMultiMap+Index.swift`.
+4. **P11.** Remove the merge and prototype artifacts:
+   - the commented-out old alias and its 「実質V4」 comment block;
+   - the duplicated 「過去の状態で封印する」 doc line;
+   - the trailing blank lines;
+   - the `Package.swift` comment-spacing change;
+   - the `/// O(1) ready` notes, or turn them into proper `Complexity` text.
+5. **P10.** After integration, update the design records that still describe
+   `UnsafeIndexV3 = _LazyTieWrappedPtr`, and close the X1 identity-map and PoC entries.
+6. **Re-run after corrections.** Run the four-container P4 filter, the P1 tests, the narrow
+   Release + `_O_UNCHECKED` Index filter, and the Release DocC `--warnings-as-errors` build. Record
+   the exact commands.
+
+**Optional or deferred** (not required for integration):
+
+- the Debug `.unsafe(tree:rawTag:)` / `.nullptr` non-empty-tree rule (P5), which only needs a
+  comment;
+- wall-clock A/B timing;
+- an ASan run in Release;
+- the Bound DSL `limit:` fix and the `_O_UNCHECKED` empty-removal triage, both already deferred;
+- `lazyDetach` concurrent first-access, which remains frozen and also exists on develop;
+- `Comparable`, the nominal wrapper, and ContainersPreview.
+
+Checks: only this file was edited. `git diff --check` was clean. `git status --short` shows
+Codex's ledger plus this file.
+
+### Result
+
+Pending.
+
+---
+
+## Completed assignment: review the final Index PoC evidence gap
+
+Independently review the committed `try/index/1` evidence through `714252d1`. The product owner
+wants to finish the overall success-only Index validation before applying the already-confirmed
+shared Bound DSL `.advanced(limit:)` fix. Minimize additional work: distinguish evidence required
+for the representation decision from cleanup, later API design, frozen work, and defects shared
+with `develop`.
+
+Required output:
+
+1. Review the new `P3` compatibility Release evidence: 120 XCTest cases passed with 4 intentional
+   skips, followed by 1 Swift Testing case passed. Return `P3 pass`, `P3 fail`, or `P3 unmapped`.
+2. Review the new `P4` four-container batch: 111 tests spanning Index validity/ranges,
+   bidirectional movement, and CoW across Set, MultiSet, Dictionary, and MultiMap, plus the already
+   reviewed Range View evidence. Return `P4 pass`, `P4 fail`, or `P4 unmapped`.
+3. Audit the remaining `P2`, `P9`, `P10`, `P11`, and `P13` entries. Classify each as exactly one of:
+   `required before adoption verdict`, `correction after verdict`, or `intentionally unmapped`.
+4. For every item classified as required, specify the smallest concrete command, inspection, or
+   measurement that would close it. Do not request a broad matrix rerun when committed evidence
+   already establishes the property.
+5. State whether the next Codex step can be a final evidence batch, or whether more than one
+   independent batch is genuinely necessary. Do not issue the final adopt/reject verdict yet.
+
+The success-only representation is the leading candidate. A shared/local defect, cleanup item,
+documentation drift, `Comparable`, nominal wrappers, and ContainersPreview are not representation
+blockers unless you identify a concrete safety, correctness, external-contract, or complexity
+failure. The Bound DSL fix and `_O_UNCHECKED` empty-removal triage are deferred until this overall
+validation is closed. Permutation compatibility work and the other recorded frozen tasks remain
+frozen.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit source, tests, the validation ledger,
+other documentation, Package.swift, or workflows. Do not fix findings, stage, commit, push, switch
+branches, or alter Git history. Prefer committed records and read-only inspection; run only a
+narrow command needed to resolve a disputed claim. Run `git diff --check` and inspect
+`git status --short` at the end.
+
+Record the review in the first Result section below, set `Status: Completed`, and tell the user
+only `完了` unless a product-owner choice remains.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Read-only review through `714252d1`. The only command I ran was the
+P4 reproduction below.
+
+**1. `P3 pass`.** The compatibility Release batch (120 XCTest, 4 intentional skips, 1 Swift
+Testing) is configuration evidence for the legacy `UnsafeIndexV2` contract and the shared
+resolver. As already classified, it is not direct success-only evidence. Limitation: the ledger
+still records no exact command or `--filter` for this run, or for the normal Release and
+`_O_UNCHECKED` runs. This is a bookkeeping gap, not a missing property.
+
+**2. `P4 pass`.** I reproduced the batch in Debug at HEAD:
+
+```
+swift test --disable-sandbox --skip-build \
+  --filter 'RedBlackTree(Set|MultiSet|Dictionary|MultiMap)(IndexValidityXCTests|IndexRangeTests|BidirectionalCollectionTests|CopyOnWriteTests)'
+```
+
+It executed 111 tests with 0 failures, matching the ledger. Scope note:
+`BidirectionalCollectionTests` exists only for Set and MultiSet. Dictionary and MultiMap
+movement is covered through their `IndexValidityXCTests` and `IndexRangeTests`. The Range View
+evidence was reviewed previously.
+
+**3–4. Classification of the remaining entries:**
+
+| Item | Class | Reason / smallest closure |
+| --- | --- | --- |
+| `P2` | `intentionally unmapped` | The required lifetime properties already pass: stale, recycled, movement, MappedValues, detached marking, memory-safe outliving storage; in Debug, Release, narrow `_O_UNCHECKED`, and ASan. What remains is (a) a non-empty unrelated receiver, whose behaviour is documented as unspecified (生成元以外の木での使用は未定義), and (b) the exact internal `.detached` reason. Neither is a public contract |
+| `P9` | `required before adoption verdict`, but only the complexity part | Closure is a source-inspection note in the ledger; no benchmark is needed. It must state: <br>(1) same-tree `__purified_` is a tie identity comparison plus one seal read, O(1); <br>(2) cross-tree resolution walks the fresh-pool buckets, O(1) under the single-bucket-after-CoW invariant (`_FreshPool.swift:112`); <br>(3) `index(_:)` builds `_LazyTieWrap` with no allocation per Index; the `lazyDetach` getter creates at most one tie per storage (`UnsafeTreeV2+BufferHeader.swift:157-165`); <br>(4) traversal uses `_Obverse4` raw pointers and never constructs or resolves an Index per element, so K-element traversal stays O(K); <br>(5) `==` / `hash` are O(1) (P7). <br>Real-time A/B measurement is `correction after verdict` (optional): it is not a Checklist gate, and this repository needs interleaved runs plus a machine-code comparison for any wall-clock claim |
+| `P10` | `correction after verdict` | Design-record update. It must follow the verdict, as the entry itself says |
+| `P11` | `correction after verdict` | Merge-artifact cleanup. Not a quality property |
+| `P13` | `correction after verdict` | A DocC abstract regression in two doc comments, shared by every representation. Not a representation property |
+
+**Side note, not a blocker and not new.** Creating the first Index on a shared, immutable
+collection mutates the storage header lazily (`lazyDetach`). Concurrent first access from two
+threads is therefore the already-frozen 「`lazyDetach`等の並行初期化保証」 item. The develop
+representation has it too.
+
+**5. One final evidence batch is enough.** It needs only:
+- (a) the P9 complexity inspection note above;
+- (b) the exact commands and filters for the normal Release, Release `_O_UNCHECKED`, compatibility
+  Release, and P4 runs (copied from the shell history, not re-run).
+
+No further independent batch is needed. After that, the ledger has positive evidence or
+documented intentional unmapping for every required property, and the final verdict can be
+issued. No adopt/reject verdict is given here.
+
+Checks: only this file was edited. `git diff --check` was clean. `git status --short` shows only
+this file.
+
+### Result
+
+Pending.
+
+---
+
+## Completed assignment: independently review the accumulated Index PoC evidence batches
 
 Independently review the committed evidence and corrections on `try/index/1` through
 `beba869e`. The evidence ledger is `Maintanance/INDEX_POC_VALIDATION.md`. Preserve a separate

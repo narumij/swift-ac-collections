@@ -20,13 +20,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// 木のノード識別子
-///
-/// - Important: 生成元以外の木での使用は未定義。
-//public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
-
-// 実質V4だが、V3からV4への確定はエイリアスのリネームでまかないそう。
-// 変更箇所が多くて面倒くさい
+// 木のノード識別子
+//
+// - Important: 生成元以外の木での使用は未定義。
+@_documentation(visibility: internal)
 public typealias UnsafeIndexV3 = _LazyTiedPtr
 
 /// An index into a red-black-tree collection.

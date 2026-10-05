@@ -42,7 +42,6 @@ public typealias _LazyTiedPtr = _LazyTieWrap<_NodePtrSealing>
 
 extension _LazyTieWrap: Equatable where RawValue: Equatable {
 
-  /// O(1) ready
   @inlinable
   public static func == (lhs: _LazyTieWrap<RawValue>, rhs: _LazyTieWrap<RawValue>) -> Bool {
     lhs.rawValue == rhs.rawValue && lhs.lazyDetach === rhs.lazyDetach
@@ -69,7 +68,6 @@ extension _LazyTieWrap: Equatable where RawValue: Equatable {
 
 extension _LazyTieWrap: Hashable where RawValue: Hashable {
 
-  /// O(1) ready
   @inlinable
   public func hash(into hasher: inout Hasher) {
     rawValue.hash(into: &hasher)
@@ -104,7 +102,8 @@ extension _LazyTieWrap where RawValue == _NodePtrSealing {
 
 extension _LazyTieWrap where RawValue == _NodePtrSealing {
 
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  @usableFromInline
+  package typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
   @inlinable
   @inline(__always)
@@ -122,6 +121,7 @@ extension _LazyTieWrap where RawValue == _NodePtrSealing {
     lazyDetach === rhs
   }
 
+  // treeを経由しない封印のみの判定。発行元基準での有効性確認としてテストが使う
   @usableFromInline
   package var isValid: Bool {
     switch purified {

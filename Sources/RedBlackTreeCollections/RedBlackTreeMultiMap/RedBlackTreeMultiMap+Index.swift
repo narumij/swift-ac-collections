@@ -29,18 +29,6 @@
     public typealias Index = RedBlackTreeIndex
   }
 
-  extension RedBlackTreeMultiMap {
-
-    @inlinable
-    func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
-      __tree_.index(p)
-    }
-
-    @inlinable
-    func ___index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
-      __tree_.index_or_nil(p)
-    }
-  }
 
   extension RedBlackTreeMultiMap {
 
@@ -57,7 +45,6 @@
 
   extension RedBlackTreeMultiMap {
 
-    /// - Complexity: O( log `count` )
     /// Returns the index of the first element with the given key.
     ///
     /// - Parameter key: The key to find.

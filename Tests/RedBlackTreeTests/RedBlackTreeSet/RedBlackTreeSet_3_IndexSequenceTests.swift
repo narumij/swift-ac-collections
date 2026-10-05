@@ -39,6 +39,45 @@ final class RedBlackTreeSetIndexRangeTests: RedBlackTreeTestCase {
       }
     #endif
 
+    #if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+      /// 発行元の木が解放されたIndexでも、CoWで分岐して生き残った木では対応する要素へ
+      /// 解決できること(`index_stale_check.md`のF3)。
+      func testIndexOutlivingItsOriginResolvesInSurvivingCopy() {
+        @inline(never)
+        func makeSurvivingCopyAndIndex() -> (RedBlackTreeSet<Int>, RedBlackTreeSet<Int>.Index) {
+          let source: RedBlackTreeSet = [0, 1, 2]
+          var copy = source
+          copy.insert(3)  // CoWでcopyが専用のバッファを持ち、sourceは元のバッファを持つ
+          return (copy, source.find(1))
+        }
+
+        // ここでsourceのバッファが解放され、Indexの発行元は失われる
+        let (copy, index) = makeSurvivingCopyAndIndex()
+
+        XCTAssertTrue(copy.isElement(at: index))
+        XCTAssertEqual(copy[index], 1)
+      }
+
+      /// 発行元の木が解放されたIndexは、生き残った木で対応するnodeが削除・再利用されて
+      /// いれば拒否されること(`index_stale_check.md`のF4)。
+      func testIndexOutlivingItsOriginIsRejectedAfterSurvivingCopyRecyclesItsNode() {
+        @inline(never)
+        func makeSurvivingCopyAndIndex() -> (RedBlackTreeSet<Int>, RedBlackTreeSet<Int>.Index) {
+          let source: RedBlackTreeSet = [0, 1, 2]
+          var copy = source
+          copy.remove(1)  // CoWが起き、copyでnodeが削除される
+          copy.insert(1)  // 同じslotが新しい世代で再利用される
+          return (copy, source.find(1))
+        }
+
+        let (copy, index) = makeSurvivingCopyAndIndex()
+
+        XCTAssertFalse(copy.isElement(at: index))
+        XCTAssertFalse(copy.isEnd(index))
+        XCTAssertTrue(copy.contains(1), "要素自体はcopyに存在する")
+      }
+    #endif
+
     /// コピー後に片方をCoW変異させても、発行元(コピー元)に対するIndexの有効性チェックは影響を受けないこと
     func testIndexValidityAgainstOriginIsUnaffectedByCopyThenMutateCoW() throws {
       var b = RedBlackTreeSet<Int>(0..<20)

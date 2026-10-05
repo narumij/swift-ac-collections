@@ -105,6 +105,36 @@ The comments do not reference the design document.
 2. Add an F2 spec for MultiMap.
 3. Add a `Design-RuntimeChecks.md` reference to the two comments in section 3.
 
+## Follow-up: specs added (2026-10-05, after the audit)
+
+The user asked Claude to proceed with proposals 1 and 2 before the Codex re-check. Proposal 3
+(comment references) is not applied.
+
+- F3 and F4 specs were added to all four `_3_IndexSequenceTests.swift`:
+  - `testIndexOutlivingItsOriginResolvesInSurvivingCopy`
+  - `testIndexOutlivingItsOriginIsRejectedAfterSurvivingCopyRecyclesItsNode`
+- An F2 spec was added to `RedBlackTreeMultiMap_3_IndexSequenceTests.swift`:
+  `testIndexValidityAgainstOriginIsUnaffectedByCopyThenMutateCoW`.
+- Construction: the source and its copy are built inside an `@inline(never)` helper. The copy is
+  mutated first, so CoW gives it its own buffer. The helper returns the copy and an Index taken
+  from the source, so the source's buffer is freed when the helper returns.
+- Premise check: `RedBlackTreeSet_98_IndexValidityXCTests.swift` has two internal tests. Both
+  assert `lazyDetach.isDetached`, which the public specs cannot observe.
+  - `testIndexFromFreedOriginIsDetachedWhileCopySurvives` covers the F3 construction. It also
+    asserts that the Index is *not* detached while the source is alive.
+  - `testIndexFromFreedOriginIsDetachedAndRejectedByGenerationInSurvivingCopy` covers the F4
+    construction. It also asserts that the copy still has three elements, so the rejection comes
+    from the generation match and not from a missing tag.
+- Results:
+  - all 12 new tests pass, with no source change;
+  - full `swift test` (Debug): exit 0;
+  - compatibility-mode test build: succeeds.
+- The premise is checked for Set only. The other three types use the same construction but have no
+  internal premise test.
+
+The questions below still stand. Question 2 now has evidence, but the construction still deserves
+an independent look.
+
 ## Questions for Codex
 
 1. Is the cell mapping in section 1 correct? In particular, do the cited tests really exercise

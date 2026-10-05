@@ -77,6 +77,63 @@ final class RedBlackTreeMultiMapIndexRangeTests: RedBlackTreeTestCase {
         XCTAssertTrue(copy.isElement(at: source.firstIndex(of: 1)!))
         XCTAssertTrue(copy.isEnd(source.endIndex))
       }
+
+      /// コピー後に片方をCoW変異させた場合、変異させた側では削除済みnodeのIndexが
+      /// 拒否され、変異させていない側では引き続き要素として扱われること
+      /// (`index_stale_check.md`のF2)。
+      func testIndexValidityAgainstOriginIsUnaffectedByCopyThenMutateCoW() {
+        var b: RedBlackTreeMultiMap = [(0, "a"), (1, "b"), (1, "c"), (2, "d")]
+        let a = b
+        let b0 = b.startIndex
+        b.removeFirst()  // この時点でCoWが発生する
+
+        XCTAssertFalse(b.isElement(at: b0), "CoW後のb自身に対しては無効化されていること")
+        XCTAssertTrue(a.isElement(at: b0), "CoWで分岐した相手の変更は、aでの有効性に影響しない")
+      }
+    #endif
+
+    #if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+      /// 発行元の木が解放されたIndexでも、CoWで分岐して生き残った木では対応する要素へ
+      /// 解決できること(`index_stale_check.md`のF3)。
+      func testIndexOutlivingItsOriginResolvesInSurvivingCopy() {
+        @inline(never)
+        func makeSurvivingCopyAndIndex() -> (
+          RedBlackTreeMultiMap<Int, String>, RedBlackTreeMultiMap<Int, String>.Index
+        ) {
+          let source: RedBlackTreeMultiMap = [(0, "a"), (1, "b"), (1, "c"), (2, "d")]
+          var copy = source
+          copy.insert((3, "e"))  // CoWでcopyが専用のバッファを持ち、sourceは元のバッファを持つ
+          return (copy, source.firstIndex(of: 1)!)
+        }
+
+        // ここでsourceのバッファが解放され、Indexの発行元は失われる
+        let (copy, index) = makeSurvivingCopyAndIndex()
+
+        XCTAssertTrue(copy.isElement(at: index))
+        XCTAssertEqual(copy[index].key, 1)
+        XCTAssertEqual(copy[index].value, "b")
+      }
+
+      /// 発行元の木が解放されたIndexは、生き残った木で対応するnodeが削除・再利用されて
+      /// いれば拒否されること(`index_stale_check.md`のF4)。
+      func testIndexOutlivingItsOriginIsRejectedAfterSurvivingCopyRecyclesItsNode() {
+        @inline(never)
+        func makeSurvivingCopyAndIndex() -> (
+          RedBlackTreeMultiMap<Int, String>, RedBlackTreeMultiMap<Int, String>.Index
+        ) {
+          let source: RedBlackTreeMultiMap = [(0, "a"), (1, "b"), (1, "c"), (2, "d")]
+          var copy = source
+          copy.remove(at: copy.firstIndex(of: 1)!)  // CoWが起き、copyでnodeが削除される
+          copy.insert((1, "z"))  // 同じslotが新しい世代で再利用される
+          return (copy, source.firstIndex(of: 1)!)
+        }
+
+        let (copy, index) = makeSurvivingCopyAndIndex()
+
+        XCTAssertFalse(copy.isElement(at: index))
+        XCTAssertFalse(copy.isEnd(index))
+        XCTAssertEqual(copy.count(forKey: 1), 2, "キー自体はcopyに存在する")
+      }
     #endif
   #endif
 

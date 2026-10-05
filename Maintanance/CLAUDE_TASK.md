@@ -467,6 +467,11 @@ Confirmed state, no action taken:
   - Main finding: cells F3 (detached → resolves in a CoW branch) and F4 (detached + generation
     mismatch → rejected) of `index_stale_check.md` have no tests in any type. MultiMap also lacks
     F2.
+  - Follow-up, at the user's request: added F3 and F4 specs to all four types and an F2 spec to
+    MultiMap. Two Set-only internal tests confirm that the constructed Index really is detached.
+    - All 12 tests pass, full `swift test` passes, and the compatibility-mode build succeeds.
+    - There is no source change.
+    - Details are in the audit's "Follow-up" section. The Codex re-check still stands.
 
 ## Completed assignment: update Claude's user assessment and reflection
 

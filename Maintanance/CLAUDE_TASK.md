@@ -131,5 +131,7 @@ current instruction and prepare the handoff for Codex if requested.
   `Tests/TESTING.md`同期（完了）、Ⅵ Index-range `erase`の空guard、Ⅶ CROSS無効スモークテスト（完了）。
 - K項目4/5（`index(inserting:)` / `erase(exactly:)`展開、`1e0c9501`）はpush済み。
   GitHub Actionsのランナー不具合で一時未実行だったが、CIはグリーン（2026-10-06ユーザー確認）。
+- 2026-10-06、試運転10回目でRegistry（`現在の律速`、`WAITING_EXTERNAL`、Task precedence）
+  から状態を把握できることを確認し、ユーザーがこの運用の採用を決定した。
 - 2026-10-06までの時系列handoff logは整理済み。正本へ未記録の分だけ
   `Archived/CLAUDE_TASK_HISTORY.md`の「Handoff log cleanup」に移した。

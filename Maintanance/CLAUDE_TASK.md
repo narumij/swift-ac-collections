@@ -472,6 +472,22 @@ Confirmed state, no action taken:
     - All 12 tests pass, full `swift test` passes, and the compatibility-mode build succeeds.
     - There is no source change.
     - Details are in the audit's "Follow-up" section. The Codex re-check still stands.
+  - Ⅱ-α done: the two counterintuitive assertions in `RedBlackTreeSet_3_IndexSequenceTests.swift`
+    now carry a comment referencing `Design-RuntimeChecks.md` (audit proposal 3).
+- Ⅰ done: planning-doc sync, facts only. The user approved that scope; structure and policy are
+  untouched.
+  - `PROGRESS_OVERVIEW.md`:
+    - ticked the `try/index/1` PoC verification item, citing the verdict and PR #158;
+    - annotated "採用表現を実装し…": success-only is implemented, but the final representation is
+      still open, so the item stays unticked.
+  - `RED_BLACK_TREE_REMAINING_TASKS.md`:
+    - the current-judgement sentence now says success-only is adopted and the contract is still
+      open;
+    - the "現行の`RedBlackTreeIndex`" alias is corrected to `_LazyTiedPtr`, with the pre-PR #158
+      alias noted;
+    - added a merged-status note at the top of the `try/index/1` section;
+    - ticked item E.
+  - Both files' `最終更新` lines now name this sync.
 
 ## Completed assignment: update Claude's user assessment and reflection
 

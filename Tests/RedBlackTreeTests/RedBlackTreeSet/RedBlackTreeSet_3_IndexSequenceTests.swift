@@ -90,6 +90,8 @@ final class RedBlackTreeSetIndexRangeTests: RedBlackTreeTestCase {
       b.removeFirst()  // この時点でCoWが発生する
 
       XCTAssertTrue(b0.isValid, "発行元(a)に対するチェックは有効を示す")
+      // CoWで分岐した相手の変更は、このIndexの有効性に影響しない(`Design-RuntimeChecks.md`の
+      // 「状態ごとの結果」、`index_stale_check.md`のF列)。
       XCTAssertTrue(a.isElement(at: b0), "直感に反するが、発行元では引き続き要素として扱われる")
       XCTAssertEqual(b.sorted(), Array(1..<20))
 
@@ -113,6 +115,7 @@ final class RedBlackTreeSetIndexRangeTests: RedBlackTreeTestCase {
       #if USE_LAZY_DETACH || !ALLOW_CROSS_TREE_INDEX
         XCTAssertFalse(a.isElement(at: b0))
       #else
+        // Indexは受け取り側の木のnodeとだけ照合する(`Design-RuntimeChecks.md`の「状態ごとの結果」)。
         XCTAssertTrue(a.isElement(at: b0), "ソース側世代チェックが省略されているため")
       #endif
       XCTAssertEqual(b.sorted(), Array(1..<19))

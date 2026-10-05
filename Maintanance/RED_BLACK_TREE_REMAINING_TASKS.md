@@ -529,7 +529,7 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 - [x] C: 外部へ保証する安全性・CoW・走査計算量の契約を確認する
 - [ ] D: ContainersPreviewを追跡し、外部APIでComparableが必要になる利用箇所と非適合時の代替を確定する
 - [x] Comparableあり・なしの2案を比較し、必要APIと計算量を表にする
-- [x] E: ユーザー実装の`try/index/1`を主PoCとして、公開Indexから失敗状態を除去する設計が現行HEADとQuality Checklistに耐えるかCodex・Claudeが独立検証し、最終判断する（2026-10-05: verdict `adopt after corrections`、PR #158でmerge。正本は`INDEX_POC_VALIDATION.md`。Comparable採否とは分離）
+- [x] E: ユーザー実装の`try/index/1`を主PoCとして、公開Indexから失敗状態を除去する設計が現行HEADとQuality Checklistに耐えるかCodex・Claudeが独立検証し、最終判断する（2026-10-05: verdict `adopt after corrections`、PR #158でmerge。正本は`Archived/INDEX_POC_VALIDATION.md`。Comparable採否とは分離）
 - [ ] F: Container protocolの安定度を確認し、Comparable採否、失敗時の公開API、計算量を外部契約として固定する
 - [x] Kで`index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供と名称維持はCodex・Claudeレビューで決定済み。戻り値は全型で`(inserted: Bool, index: Index)`。Dictionaryは既存値を置換せず既存位置、Multi系は常に新規occurrenceと`true`を返す。`insert(_:)`と`erase(exactly:)`からSee Alsoで発見可能にする。2026-10-05実装・テスト済み）
 - [x] Kで`erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み。2026-10-05実装・テスト済み。Setの空でのCoW回避漏れも同時に修正）

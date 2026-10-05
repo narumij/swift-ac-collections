@@ -2,7 +2,7 @@
 
 > 状態: 現行方針(2026-10-05)。1.0リリース判定前に再審査する。
 > 基礎資料:
-> - `Maintanance/RUNTIME_CHECK_POLICY.md`(Swift標準ライブラリの検査モデルの調査)
+> - `Maintanance/Archived/RUNTIME_CHECK_POLICY.md`(Swift標準ライブラリの検査モデルの調査)
 > - `Implements/Index/index_stale_check.md`(構成と状態ごとのIndex解決表。ユーザー作成)
 
 ## 中心となる考え方
@@ -29,7 +29,7 @@ memory safetyを保証しない。現行実装の常時検査は、この契約�
 `USE_LAZY_DETACH`はdeprecatedであり、この文書では扱わない。
 `ALLOW_CROSS_TREE_INDEX`を無効にした構成も、実質deprecatedとして扱う。2026-10-05のスモークテストで、
 ライブラリはビルドできるが、テスト全体はCROSS有効を前提とするテストが落ちて通らないことを確認した
-(`Maintanance/CROSS_TREE_INDEX_TEST_AUDIT.md`の4節)。表の無効列は参考として残す。
+(`Maintanance/Archived/CROSS_TREE_INDEX_TEST_AUDIT.md`の4節)。表の無効列は参考として残す。
 
 `ALLOW_CROSS_TREE_INDEX`は、CoWで分岐したコレクション間でIndexを使えるようにするために用いる。
 CoWで分岐した木は、Indexの解決では「別の木」として扱われる。
@@ -253,7 +253,7 @@ RBT:    Index ──> identity / generation ──> 再利用されるslot ─�
      「一応用意してあるが、あまり効果が無いどころか逆効果かもしれない」とコメントしている。
    - この所感を、1.の測定で確かめる。
 6. AtCoderの実際のcompile flagsと、`_O_UNCHECKED` Death Testおよび
-   `INDEX_POC_VALIDATION.md`の位置づけを確認する。
+   `Maintanance/Archived/INDEX_POC_VALIDATION.md`の位置づけを確認する。
 
 再審査の責任者はユーザーである。1.0を宣言するとき、または`-Ounchecked`が主要な
 deployment構成だと判明した時点で再開する。標準ライブラリの前例や性能測定は判断材料であり、
@@ -286,5 +286,5 @@ deployment構成だと判明した時点で再開する。標準ライブラリ�
 
 - `Design-MemorySafety.md`: Indexの世代、storage同一性、detached検出の仕組み
 - `Quality-Checklist.md`: `-Ounchecked`を通常の品質保証と区別する方針
-- `Maintanance/RUNTIME_CHECK_POLICY.md`: 標準ライブラリの検査モデルの調査
+- `Maintanance/Archived/RUNTIME_CHECK_POLICY.md`: 標準ライブラリの検査モデルの調査
 - `Implements/Index/index_stale_check.md`: 構成と状態ごとのIndex解決表

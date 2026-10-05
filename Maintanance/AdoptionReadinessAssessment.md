@@ -124,7 +124,7 @@ equivalent-key group is observable rather than normalized away.
 
 On 2026-10-04 the suite ran 35 XCTest cases with 0 failures in both Debug and
 Release; details and limitations are in
-`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`.
+`Maintanance/Archived/CPP_BEHAVIOR_COMPARISON_TASK.md`.
 
 LLVM libc++ is the normative comparison because this implementation is adapted
 from its red-black tree. The same 35 tests also passed in Debug on Ubuntu CI with

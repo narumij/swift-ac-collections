@@ -112,4 +112,4 @@ curated boundary traceとseeded traceを合わせたsuiteは35 XCTest。
 - randomized failureの自動shrinkingは未実装。
 
 詳細な操作生成、coverage count、実行履歴は
-`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`を参照する。
+`Maintanance/Archived/CPP_BEHAVIOR_COMPARISON_TASK.md`を参照する。

@@ -169,7 +169,7 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [x] 比較の意味、異なる木の扱い、計算量を比較表へ記録
 - [ ] Container protocol要件を踏まえ、失敗状態を格納したIndexの要否を最終判断
 - [ ] nominal Index + 内部`Result<Resolved, SealError>`案を採用するか決定
-- [x] ユーザーが手作業で実装した`try/index/1`のfailureless Index PoCを現行HEADとQuality Checklistへ照合する（2026-10-05: Codex・Claudeの独立検証を経てverdict `adopt after corrections`、補正後にPR #158でmerge(`a6c8a474`)。正本は`INDEX_POC_VALIDATION.md`。Comparable採否とは分離）
+- [x] ユーザーが手作業で実装した`try/index/1`のfailureless Index PoCを現行HEADとQuality Checklistへ照合する（2026-10-05: Codex・Claudeの独立検証を経てverdict `adopt after corrections`、補正後にPR #158でmerge(`a6c8a474`)。正本は`Archived/INDEX_POC_VALIDATION.md`。Comparable採否とは分離）
 - [x] X1のidentity規則・停止条件と初期4 batchを整備し、同名部品を別個体として扱う診断基盤を保存（網羅inventoryは費用対効果により凍結）
 - [ ] 採用表現を実装し、4コンテナとRange/Viewへ追従（success-only表現はPR #158で4コンテナ・Viewへ実装済み。nominal wrapper等を含む最終表現の判断は残る）
 - [ ] 標準`Result`へのretroactive `Comparable`適合に依存しない設計を選択

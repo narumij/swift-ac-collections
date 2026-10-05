@@ -114,7 +114,7 @@ equal range、erase/remove、mapped value更新について返された要素と
 mapped valueを出現の識別子として使い、同値キー群内の配置を正規化せず観測する。
 
 2026-10-04時点で、DebugとReleaseの両方で35件のXCTestが失敗0で成功した。詳細と限界は
-`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`にある。
+`Maintanance/Archived/CPP_BEHAVIOR_COMPARISON_TASK.md`にある。
 
 この実装はLLVM libc++の赤黒木を移植・適応したものなので、挙動比較の正本はlibc++とする。
 同じ35件はUbuntu CIのGNU libstdc++でもDebug成功したが、これは移植性の参考情報であり、

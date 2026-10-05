@@ -18,15 +18,15 @@
 - C++挙動比較は4型・35件で完了している。正本は
   `Maintanance/CPP_BEHAVIOR_COMPARISON_MATRIX.md`。性能測定用`CppBenchmarks`とは分離する。
 - failureless public Index PoCはPR #158で統合済み。検証正本は
-  `Maintanance/INDEX_POC_VALIDATION.md`。
+  `Maintanance/Archived/INDEX_POC_VALIDATION.md`。
 - cross-tree Indexテスト監査はCodexの独立再確認を経て完了した。正本は
-  `Maintanance/CROSS_TREE_INDEX_TEST_AUDIT.md`。
+  `Maintanance/Archived/CROSS_TREE_INDEX_TEST_AUDIT.md`。
 - `Design-MemorySafety.md`のdetached Index説明は標準構成の実挙動へ同期済み。
 - 公開コメント、DocC、API Matrixの大規模監査は一区切りしているが、Index契約確定後の
   最終同期と、本書の停止条件にある独立確認は残る。
 - テストの現在地は`Tests/TESTING.md`、全体進捗は`Maintanance/PROGRESS_OVERVIEW.md`を正とする。
 - Claudeの現行権限とhandoffは`Maintanance/CLAUDE_TASK.md`、完了履歴は
-  `Maintanance/CLAUDE_TASK_HISTORY.md`を正とする。
+  `Maintanance/Archived/CLAUDE_TASK_HISTORY.md`を正とする。
 
 ### 文書に関係する未決事項
 
@@ -61,7 +61,7 @@
 
 - C++挙動比較は4型へ展開済み。挙動比較はルートパッケージ、性能測定は
   `Benchmarks/CppBenchmarks`に分離する。正本は
-  `CPP_BEHAVIOR_COMPARISON_MATRIX.md`と`CPP_BEHAVIOR_COMPARISON_TASK.md`。
+  `CPP_BEHAVIOR_COMPARISON_MATRIX.md`と`Archived/CPP_BEHAVIOR_COMPARISON_TASK.md`。
 - 採用準備文書から競争的な「世界最高峰候補」の看板を外し、検証可能な証拠、反証、限界を
   中心とするAdoption Readinessへ再構成済み。
 - Debug allocation/lifetime検査の制御とLinux Death Testの実証は完了済み。Linux経路は

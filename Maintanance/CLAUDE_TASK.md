@@ -149,7 +149,7 @@ Confirmed state, no action taken:
   - Consequence: the empty-removal Death Tests exit normally under `_O_UNCHECKED`, by design. No
     test carries `_O_UNCHECKED` gating, and CI does not use the trait, so nothing was changed.
 - Runtime-check policy, in progress:
-  - `Maintanance/RUNTIME_CHECK_POLICY.md` is the user's ChatGPT discussion draft, kept unedited as
+  - `Maintanance/Archived/RUNTIME_CHECK_POLICY.md` is the user's ChatGPT discussion draft, kept unedited as
     source material.
   - Claude drafted `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md`
     from it, corrected against the code and prior decisions. Its main correction to the source
@@ -184,7 +184,7 @@ Confirmed state, no action taken:
     The earlier record covered only 4 Set/Dictionary cases.
   - The compatibility-mode test build succeeds.
   - Recorded the commands and results in `Design-RuntimeChecks.md`. Closed the empty-removal triage
-    (and noted the `747c0486` Bound DSL fix) in `INDEX_POC_VALIDATION.md`.
+    (and noted the `747c0486` Bound DSL fix) in `Archived/INDEX_POC_VALIDATION.md`.
   - Linked the user's 2026-05-30 `Package.swift` comment on `_O_UNCHECKED` ("あまり効果が無いどころか
     逆効果かもしれない") to 1.0 review item 5.
   - `RedBlackTreeSet_6_RemovalTests.swift` `test_removeFirst_throws_whenEmpty` /
@@ -248,7 +248,7 @@ Confirmed state, no action taken:
     - Ⅵ: Index-range `erase` empty guard; Codex.
 - Ⅱ / 6-a (cross-tree Index tests vs. the public contract): audit only, no code change.
   - **Codex re-check requested:** the user is not confident accepting this on their own review.
-    Read `Maintanance/CROSS_TREE_INDEX_TEST_AUDIT.md` and answer its four questions.
+    Read `Maintanance/Archived/CROSS_TREE_INDEX_TEST_AUDIT.md` and answer its four questions.
   - Main finding: cells F3 (detached → resolves in a CoW branch) and F4 (detached + generation
     mismatch → rejected) of `index_stale_check.md` have no tests in any type. MultiMap also lacks
     F2.
@@ -303,6 +303,6 @@ Confirmed state, no action taken:
     `rawValue.isUnsealed`, which reads the node, so calling it on a detached Index would touch freed
     memory. No test or production path does that today.
 - Ⅱ: completed by Codex on 2026-10-06. The four audit questions are answered in
-  `CROSS_TREE_INDEX_TEST_AUDIT.md`; the focused F2/F3/F4 and detached-premise selection passed
+  `Archived/CROSS_TREE_INDEX_TEST_AUDIT.md`; the focused F2/F3/F4 and detached-premise selection passed
   18 tests with no failures.
 - Ⅴ: done by Codex (`336c4d9c`).

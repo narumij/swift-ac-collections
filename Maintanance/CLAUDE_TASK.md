@@ -102,8 +102,8 @@ User decisions:
 - P10 design-record update after the Index integration: deferred to Codex; not urgent.
 - Index completion gate (`Comparable`, `SealError` separation, completion scope): deferred to
   Codex.
-- `Tests/TESTING.md` sync: deferred to Codex. Its priority section is still accurate, and only the
-  10/03 handoff is stale. Until Codex syncs it, record test work in this handoff.
+- `Tests/TESTING.md` sync: completed by Codex on 2026-10-06 from this handoff. Future test work
+  should again update that dashboard directly rather than accumulating here.
 
 Confirmed state, no action taken:
 
@@ -237,7 +237,7 @@ Confirmed state, no action taken:
     - Ⅱ: cross-tree test audit (old 6-a); awaits a Codex re-check.
     - Ⅲ: design-record update P10 (old 2); Codex.
     - Ⅳ: Index completion gate (old 7); Codex.
-    - Ⅴ: `Tests/TESTING.md` sync (old 1-c); Codex.
+    - Ⅴ: `Tests/TESTING.md` sync (old 1-c); completed by Codex on 2026-10-06.
     - Ⅵ: Index-range `erase` empty guard; Codex.
 - Ⅱ / 6-a (cross-tree Index tests vs. the public contract): audit only, no code change.
   - **Codex re-check requested:** the user is not confident accepting this on their own review.

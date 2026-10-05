@@ -247,6 +247,7 @@ extension RedBlackTreeDictionary {
   /// - Parameter newMember: A key-value pair to insert.
   /// - Returns: Whether insertion occurred and the inserted or existing key-value pair.
   /// - Complexity: O(log *n*)
+  /// - SeeAlso: `index(inserting:)`, which also returns the index of the inserted or existing element.
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element)

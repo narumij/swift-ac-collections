@@ -78,6 +78,7 @@
 
 - ``RedBlackTreeMultiSet/insert(_:)``
 - ``RedBlackTreeMultiSet/insert(_:hint:)``
+- ``RedBlackTreeMultiSet/index(inserting:)``
 - ``RedBlackTreeMultiSet/update(_:at:)``
 - ``RedBlackTreeMultiSet/insert(contentsOf:)-39uhw``
 - ``RedBlackTreeMultiSet/insert(contentsOf:)-9etyf``
@@ -96,6 +97,7 @@
 - ``RedBlackTreeMultiSet/removeAll(keepingCapacity:)``
 - ``RedBlackTreeMultiSet/erase(where:)``
 - ``RedBlackTreeMultiSet/erase(_:)-9tgad``
+- ``RedBlackTreeMultiSet/erase(exactly:)``
 - ``RedBlackTreeMultiSet/eraseUnique(_:)``
 - ``RedBlackTreeMultiSet/eraseMulti(_:)``
 

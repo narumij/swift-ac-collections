@@ -231,6 +231,7 @@ extension RedBlackTreeMultiSet {
   /// - Parameter newMember: An element to insert.
   /// - Returns: `(true, newMember)`; a multiset always inserts another occurrence.
   /// - Complexity: O(log *n*)
+  /// - SeeAlso: `index(inserting:)`, which also returns the index of the inserted or existing element.
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (

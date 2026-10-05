@@ -263,4 +263,72 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(result["b"], 10)
     XCTAssertEqual(result["c"], 3)
   }
+
+  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+    /// 新しいキーへの`index(inserting:)`は挿入し、`inserted`は`true`、`index`は
+    /// 挿入した要素を指すこと。
+    func test_indexInserting_insertsNewKey() {
+      var dictionary: RedBlackTreeDictionary = ["a": 1]
+
+      let result = dictionary.index(inserting: ("b", 2))
+
+      XCTAssertTrue(result.inserted)
+      XCTAssertEqual(dictionary[result.index].key, "b")
+      XCTAssertEqual(dictionary[result.index].value, 2)
+      XCTAssertEqual(dictionary.count, 2)
+    }
+
+    /// 既存キーへの`index(inserting:)`は既存の値を置き換えず、`inserted`は`false`、
+    /// `index`は既存の要素を指すこと。
+    func test_indexInserting_existingKeyKeepsValueAndReturnsExistingIndex() {
+      var dictionary: RedBlackTreeDictionary = ["a": 1, "b": 2]
+      let existing = dictionary.index(forKey: "b")!
+
+      let result = dictionary.index(inserting: ("b", 20))
+
+      XCTAssertFalse(result.inserted)
+      XCTAssertEqual(result.index, existing)
+      XCTAssertEqual(dictionary["b"], 2, "既存の値は置き換えないはず")
+      XCTAssertEqual(dictionary.count, 2)
+    }
+
+    /// `erase(exactly:)`は、Indexが指す要素を削除し、後続のIndexを返すこと。
+    func test_eraseExactly_removesIndexedElementAndReturnsSuccessor() {
+      var dictionary: RedBlackTreeDictionary = ["a": 1, "b": 2, "c": 3]
+      let index = dictionary.index(forKey: "b")!
+
+      let successor = dictionary.erase(exactly: index)
+
+      XCTAssertEqual(successor, dictionary.index(forKey: "c"))
+      XCTAssertNil(dictionary["b"])
+      XCTAssertEqual(dictionary.map(\.key), ["a", "c"])
+    }
+
+    /// 削除済みのIndexや`endIndex`に対する`erase(exactly:)`は、何も削除せず`nil`を返すこと。
+    func test_eraseExactly_returnsNilForStaleOrEndIndex() {
+      var dictionary: RedBlackTreeDictionary = ["a": 1, "b": 2, "c": 3]
+      let index = dictionary.index(forKey: "b")!
+      XCTAssertNotNil(dictionary.erase(exactly: index))
+
+      XCTAssertNil(dictionary.erase(exactly: index))
+      XCTAssertNil(dictionary.erase(exactly: dictionary.endIndex))
+      XCTAssertEqual(dictionary.map(\.key), ["a", "c"])
+    }
+
+    /// 空のDictionaryに対して`erase(exactly:)`を呼んでもトラップせず、`nil`を返すこと。
+    /// トラップしない以上、無駄なCoW(共有される空シングルトンバッファからの退避)も
+    /// 発生しないこと。
+    func test_eraseExactly_onEmptyDictionaryReturnsNilWithoutCopy() {
+      var dictionary = RedBlackTreeDictionary<String, Int>()
+
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        XCTAssertEqual(dictionary._copyCount, 0)
+      #endif
+      XCTAssertNil(dictionary.erase(exactly: dictionary.startIndex))
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        XCTAssertEqual(dictionary._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
+      #endif
+      XCTAssertNil(dictionary.erase(exactly: dictionary.endIndex))
+    }
+  #endif
 }

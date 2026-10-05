@@ -287,8 +287,6 @@
 #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
   extension RedBlackTreeMultiMap {
     
-    // TODO: 他のコンテナへの展開
-
     // TODO: 名前の再検討
     
     // SetAlgebra都合でinsertの戻りが変えられない。
@@ -328,6 +326,7 @@
     /// - Returns: The index that followed `index` before removal, or `nil` if
     ///   `index` doesn't refer to an accessible key-value pair of the multimap.
     /// - Complexity: Amortized O(1)
+    /// - SeeAlso: `index(inserting:)`, which returns an index to pass to this method.
     @inlinable
     @discardableResult
     public mutating func erase(exactly index: Index) -> Index? {

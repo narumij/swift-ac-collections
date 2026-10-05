@@ -410,6 +410,26 @@ Confirmed state, no action taken:
     - Each now has a `- Note:` explaining three things: the operation stops the process instead
       of throwing, which Death Test verifies it, and that passing through under `-Ounchecked` is
       by design.
+- K items 4/5 implemented: `index(inserting:)` and `erase(exactly:)` on MultiSet and Dictionary,
+  following the decided spec and the Set / MultiMap implementations.
+  - Test first: the new specs in `_5_InsertionTests` failed to compile before the APIs existed.
+    A new Set spec (`test_eraseExactly_onEmptySetReturnsNilWithoutCopy`) failed on the copy
+    count, which exposed a CoW-on-empty omission in Set's `erase(exactly:)`. MultiMap already had
+    the guard.
+  - Fixed Set by adding the same `count > 0` guard.
+  - Added `- SeeAlso:` from all four `insert(_:)` and `erase(exactly:)` docs to
+    `index(inserting:)`, as the spec required.
+  - Removed the two now-done `TODO: 他のコンテナへの展開` comments.
+  - Updated the DocC Topics (MultiSet, Dictionary) and the API Matrix (TODO → ✅). Ticked both K
+    items in `RED_BLACK_TREE_REMAINING_TASKS.md` and `PROGRESS_OVERVIEW.md`.
+  - Validation:
+    - the four Insertion suites: 63 XCTests pass;
+    - full `swift test` (Debug): exit 0;
+    - compatibility-mode test build: succeeds;
+    - Release DocC `--warnings-as-errors` (CI command): finished cleanly.
+  - Not run: the performance job. The change adds new `@inlinable` APIs and an early-return guard
+    to Set's `erase(exactly:)`; existing hot paths are untouched. Pushing and CI are the user's
+    call.
 
 ## Completed assignment: update Claude's user assessment and reflection
 

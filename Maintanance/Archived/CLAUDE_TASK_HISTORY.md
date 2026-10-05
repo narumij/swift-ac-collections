@@ -5,6 +5,21 @@ Completed assignments and result summaries moved verbatim from
 order (newest first). Headings such as "Active" or "above" refer to their
 position in the original file at the time they were written.
 
+# Handoff log cleanup (2026-10-06, Claude Opus 5.5)
+
+The chronological handoff log for 2026-10-05/06 was removed from `Maintanance/CLAUDE_TASK.md`.
+Most of it is already recorded in the canonical documents (`Design-RuntimeChecks.md`,
+`Design-MemorySafety.md`, `RED_BLACK_TREE_REMAINING_TASKS.md`, `Tests/TESTING.md`,
+`Archived/CROSS_TREE_INDEX_TEST_AUDIT.md`, `Archived/INDEX_POC_VALIDATION.md`). Only the items
+not recorded elsewhere are kept here:
+
+- User decision (2026-10-05): `PERFORMANCE_REGRESSION_BISECTION.md` publication level is closed
+  with no edit. The mechanism may be partly inferable from public records, as long as the correct
+  answer is not trivially obtainable.
+- Observation, no action: the package-only tree-free `_LazyTieWrap.isValid` checks
+  `rawValue.isUnsealed`, which reads the node. Calling it on a detached Index would touch freed
+  memory. No test or production path does that as of 2026-10-06.
+
 # Archive (2026-10-06): moved from `Maintanance/CLAUDE_TASK.md`
 
 Moved verbatim from `Maintanance/CLAUDE_TASK.md` on 2026-10-06 to keep the active file small.

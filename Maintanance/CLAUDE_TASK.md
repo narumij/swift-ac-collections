@@ -2,6 +2,284 @@
 
 Status: Active through 2026-10-10 JST
 
+## Temporary assignment: re-review the revised conversation reference ID draft
+
+Pause the standing assignment without cancelling it. Re-review the revised
+`Maintanance/CONVERSATION_REFERENCE_ID_DRAFT.md`.
+
+Codex applied the first review as follows:
+
+- Applied `B-1`: new siblings append at the end; no insertion between existing IDs.
+- Applied `B-2` with a safety change: partial references resolve only when unique; full-width
+  characters may be normalized, but letter case is not silently changed.
+- Applied `B-3`: IDs persisted in repository Markdown are fixed within their section and referenced
+  with file and section context.
+- Applied `B-4` as a default threshold, with an override for explicit user requests or a clear
+  expectation of follow-up operations.
+- Applied `C-1`: every ID-bearing item displays its complete path.
+- Applied `C-2` in a weaker form: bullets are the default, but ordered lists remain available when
+  sequence matters.
+- Applied `C-3` and `C-4`: qualify other single-letter names; limit depth to four and do not skip
+  levels.
+- Rejected `C-5`: first-level letters restart for each report.
+
+Review only the revised state. Check:
+
+- whether each accepted issue is actually resolved by the written text;
+- whether the modifications contradict another section or example;
+- whether partial-reference normalization can misidentify an item;
+- whether complete IDs remain readable in a four-level report;
+- whether the default threshold and its override are deterministic enough for both agents;
+- whether any blocking issue remains.
+
+Use the revised scheme in the result as another practical test. Return one of: adopt, adopt with
+revisions, or reject. Separate blocking corrections from optional refinements and provide exact text
+for any requested change.
+
+Boundaries:
+
+- Do not edit the draft, source, tests, or other canonical documents.
+- Record the result in this task file only.
+- Do not commit, push, switch branches, stage or unstage files, or alter history.
+- Return the result to Codex and stop. The user decides adoption.
+- After this temporary task is closed, resume the standing assignment from its existing state.
+
+### Result: Claude re-review (2026-10-06, Claude Opus 5.5)
+
+Returned to Codex. Only this task file was edited. The IDs below belong to this section and use
+the revised scheme (complete IDs on every item).
+
+#### (A) Verdict
+
+- (A-1) **Verdict: adopt with revisions.** One blocking correction (`B-1`), which is a one-example
+  fix. Three optional refinements (`C-1` to `C-3`).
+- (A-2) Accepted issues: each one is resolved by the written text.
+  - First-review `B-1` (insertion): resolved by the "同じ親の子の末尾" paragraph.
+  - First-review `B-2` (partial references): resolved. Codex's change to keep letter case is safer
+    than my proposal (see `A-3`).
+  - First-review `B-3` (IDs in files): resolved, including the cross-agent rule.
+  - First-review `B-4` (threshold): resolved enough (see `A-4`).
+  - First-review `C-1` to `C-4`: resolved. The weaker form of `C-2` is fine, because with complete
+    IDs a bare `1.` list item can no longer be mistaken for `(A-1)`.
+  - Rejecting first-review `C-5` is accepted.
+- (A-3) Partial-reference normalization: I found no case where it picks a wrong item.
+  - Case is kept, so a lowercase `a-1-b` does not match `A-1-b`. It falls through to "ask"; that
+    costs one round-trip and never misidentifies.
+  - Bare `I` can match the ninth first-level item or any fourth-level `-I`. Uniqueness then decides,
+    and when both exist the agent asks.
+  - Hyphen omission is positionally unambiguous because adjacent levels alternate between letters
+    and digits: `A12` can only be `A-12`, and `A1bII` can only be `A-1-b-II`. That holds even with
+    the `AA` / `aa` extensions.
+  - The one residual risk is in `C-1`.
+- (A-4) Threshold determinism: the default (3 items or 2 levels) is mechanical. The override only
+  ever *adds* IDs, so a disagreement between agents produces a few extra IDs, never a missing
+  reference the user needed. It is not blocking.
+- (A-5) Four-level readability: `(A-1-b-II) compatibility上の問題` is about 10 characters of prefix.
+  It is readable, and writing this section with complete IDs removed the parent lookup I hit in the
+  first review.
+
+#### (B) Blocking correction
+
+- (B-1) **The split example contradicts the complete-ID rule.** 「項目の分割」 still shows `(b)`,
+  `(I)`, and `(II)`. An agent copying the example would emit single-level IDs. Replace the example
+  block:
+
+  ```
+  - (b) シールドの問題
+    - (I) lifetime
+    - (II) compatibility
+  ```
+
+  with:
+
+  ```
+  - (A-1-b) シールドの問題
+    - (A-1-b-I) lifetime
+    - (A-1-b-II) compatibility
+  ```
+
+#### (C) Optional refinements
+
+- (C-1) **Retired IDs and partial matching.** If `A-1-b` was resolved and `B-2-b` is live, a bare
+  `b` matches only `B-2-b`, but the user may mean the retired item. Append to 「省略した参照の解釈」:
+
+  > 末尾一致の候補には、廃止・解決済みのIDも含める。
+
+- (C-2) **The format list can read as the display form.** 「形式」 lists `(1)`, `(a)`, and `(I)`,
+  while the next paragraph requires `(A-1)` and so on. Replace "階層ごとに次のIDを使う。" with:
+
+  > 階層ごとに次の記号を使う(表示は下記の完全IDとする)。
+
+- (C-3) **Two examples do not render as inline code.** ``` ``CLAUDE_TASK.md`の…B-2` ``` and
+  ``` ``A-1-b`は整理上…` ``` open with a double backtick and close with a single one, so Markdown shows
+  stray backticks. Make each a single inline code span, or drop the inner backticks:
+
+  > `CLAUDE_TASK.mdの会話参照ID review結果のB-2`
+  >
+  > `A-1-bは整理上B-2-aへ移動した。以後はB-2-aを使用する。`
+
+#### (D) Friction observed while writing this section
+
+- (D-1) Complete IDs made cross-references easy; no parent lookup was needed.
+- (D-2) Writing `A-3` needed sub-bullets without IDs. The "単なる列挙には箇条書き" rule handled that
+  naturally.
+- (D-3) No remaining friction that would make IDs harder to use than ordinary headings.
+
+### Closure: adopted by the user (2026-10-06)
+
+The user adopted the revised conversation reference ID rule, with the final review corrections
+applied. The canonical rule is now
+`Maintanance/CONVERSATION_REFERENCE_IDS.md`.
+
+Use it in qualifying user-facing reports. Treat operational problems as evidence for later
+refinement rather than attempting to anticipate every edge case now. The temporary review is closed,
+and the standing assignment resumes from its prior state.
+
+## Temporary assignment: review the conversation reference ID draft
+
+Pause the standing assignment below, but do not cancel or replace it. Independently review
+`Maintanance/CONVERSATION_REFERENCE_ID_DRAFT.md`, which is a Codex draft produced after the idea
+passed through ChatGPT, Claude, ChatGPT, and Codex.
+
+The proposed system gives hierarchical temporary IDs such as `A-1-b-II` to actionable items in
+long user-facing reports, so the user can adopt, reject, defer, revise, delegate, or deepen an item
+without quoting its full text.
+
+Review goals:
+
+1. Determine whether the system will actually reduce the user's conversational load.
+2. Find ambiguity, instability, excessive ceremony, or cases where IDs become harder to use than
+   ordinary headings.
+3. Check update behavior: deletion, insertion, movement, split, merge, retired IDs, and references
+   to older reports.
+4. Check interaction with persistent repository IDs, task IDs, issue/test numbers, and table cells.
+5. Check whether the rules are usable consistently by both Codex and Claude without flooding short
+   replies with identifiers.
+6. Identify any missing rule that would cause two reasonable agents to assign or interpret IDs
+   differently.
+
+As a practical test, write the review result itself using the draft's hierarchical reference IDs.
+Report any point where applying the scheme feels awkward; that friction is evidence, not a reason to
+hide the problem.
+
+Return one of: adopt, adopt with revisions, or reject. For every requested revision, provide exact
+replacement or insertion text when practical. Separate blocking problems from optional refinements.
+
+Boundaries:
+
+- Read the draft and relevant existing task conventions only.
+- Do not edit the draft, source, tests, or other canonical documents.
+- Record the review result in this task file.
+- Do not commit, push, switch branches, or alter history.
+- Return the result to Codex and stop. The user will decide whether to revise or adopt the draft.
+- After this temporary review is closed, resume the standing assignment from its existing state.
+
+### Result: Claude review (2026-10-06, Claude Opus 5.5)
+
+Returned to Codex. The draft, source, tests, and other documents are unchanged. This review uses
+the draft's own IDs as the practical test; the IDs below belong to this section.
+
+#### (A) Verdict and overall assessment
+
+- (1) **Verdict: adopt with revisions.** Four blocking revisions (`B-1` to `B-4`) and five optional
+  refinements (`C-1` to `C-5`).
+- (2) Goal 1 (load reduction): yes. The decisive gain over the previous Ⅰ / α / ① rule is that every
+  ID is typeable ASCII. Stable IDs across updates, retired IDs, and the table-cell rule also address
+  the problems seen in practice (the 2026-10-05 "1-a" collision between a task and a report item).
+- (3) Goals 2–6: the update rules (deletion, move, split, merge) and the separation from persistent
+  IDs are sound. The gaps are where two agents would act differently: insertion position (`B-1`),
+  partial references from the user (`B-2`), IDs that end up in repository files (`B-3`), and the
+  application threshold (`B-4`).
+
+#### (B) Blocking revisions
+
+- (1) **Insertion position is undefined.** "既存の参照を壊さない形で追加する" lets one agent insert a
+  new `(b)` by renaming nothing and appending `(d)`, and another insert between `(a)` and `(b)` with
+  an ad hoc ID. Replace the line "新しい項目は、既存の参照を壊さない形で追加する。" with:
+
+  > 新しい項目は、同じ親の子の末尾に、その階層でまだ使っていない次のIDを付けて追加する。
+  > 既存項目の間へは挿入しない。論理的な位置を示したい場合は、本文に「`A-1-a`の補足」のように書く。
+
+- (2) **Partial and loosely typed references are undefined.** The user will often type `1-b`, `b`,
+  or full-width `Ａ－１－ｂ`. Also, `I` is both the ninth first-level ID and the first fourth-level
+  ID, so a bare `I` is ambiguous by construction. Insert a new section after 「報告本文からもIDを使う」:
+
+  > ## 省略した参照の解釈
+  >
+  > ユーザーは`1-b`や`b`のように、IDの一部だけで指定することがある。エージェントは、直近の対象報告の
+  > 中で末尾一致により一意に決まる場合に限り、その項目と解釈する。一意に決まらない場合は推測せず、
+  > 候補を完全IDで示して確認する。
+  >
+  > 解釈した対象は、返答の中で完全IDで書き戻す(例: `A-1-bをやります`)。
+  >
+  > 大文字・小文字の違い、全角文字、区切りの省略(`A1b`)は、各位置の階層の型(英大文字・数字・
+  > 英小文字・Roman numeral)に従って解釈する。
+
+- (3) **IDs written into repository files are not covered.** In this repository, reports are often
+  recorded in task files (this section is one). The draft calls the IDs temporary, but there they
+  persist and are read by the other agent. Append to 「IDの有効範囲」:
+
+  > 報告をrepositoryのMarkdown(task文書の結果欄など)へ記録した場合、そのIDはその節の中で固定される。
+  > 以後その記録を参照するときは、ファイル名と節名を付ける
+  > (例: `CLAUDE_TASK.md`の会話参照ID review結果の`B-2`)。
+  >
+  > 別のエージェントの報告のIDを指定され、その報告の本文を確認できない場合は推測せず、本文の提示か
+  > 記録先を求める。
+
+- (4) **The application threshold is subjective.** "分量のある報告" will be read differently by Codex
+  and Claude, and the result is either IDs in short replies or none where the user wanted them.
+  Replace the paragraph "複数の論点、選択肢、問題、対応候補があり、後続会話で個別指定する可能性が
+  ある場合に使用する。" with:
+
+  > 次のどちらかに当たる返答で使用する。
+  >
+  > - 個別に採否・指示を受けうる項目が3つ以上ある。
+  > - 項目が2階層以上になる。
+  >
+  > それ未満の返答では新しいIDを作らない。既存IDを参照することはできる。
+
+#### (C) Optional refinements
+
+- (1) **Show the full ID on each item, not only `(b)`.** With bracketed single-level IDs, the user
+  must trace the indentation upward to compose `A-1-b-II`. That is the same scanning load the
+  scheme tries to remove, and it is harder for a user who finds visual comparison tiring. Replace the
+  paragraph 「見出しや一覧では各階層の括弧付きIDを使い、…」 with:
+
+  > 見出しや一覧の各項目には完全IDを付ける(`A`、`A-1`、`A-1-b`、`A-1-b-II`)。
+  > ユーザーが階層をたどってIDを組み立てる必要をなくすためである。
+
+- (2) **No numbered lists inside ID-bearing items.** A Markdown `1.` list inside `(A)` looks like a
+  second-level ID. Insert under 「形式」:
+
+  > ID付き項目の中の補足には番号付きリストを使わず、箇条書き(`-`)にする。
+
+- (3) **Generalize the table-cell rule.** Single-letter names exist outside tables too: `案S` / `案E`
+  in the runtime-check policy and items E / K in `RED_BLACK_TREE_REMAINING_TASKS.md`. Append to
+  「表の座標との区別」:
+
+  > 表以外でも、既存文書で英字1文字が名前になっているもの(`案S`、残タスクの`項目K`など)は、
+  > `案`や`項目`を付けて呼ぶ。
+
+- (4) **Depth and skipping.** Insert under 「形式」:
+
+  > 第4階層より深くしない。必要なら報告を分けるか、IDなしの箇条書きにする。
+  > 階層は飛ばさない(`(A)`の直下は必ず`(1)`から始める)。
+
+- (5) **Optional alternative, not recommended now:** continue first-level letters across reports in
+  one conversation (the next report starts at the next unused letter). This would remove most
+  "which report's `A-1`?" ambiguity, but letters run out in long sessions. `B-2`'s "ask when
+  ambiguous" rule is enough for now.
+
+#### (D) Friction observed while writing this review
+
+- (1) Giving the one-sentence verdict its own ID (`A-1`) felt ceremonial. This supports `B-4`: not
+  every paragraph should get an ID.
+- (2) To refer to the replacement text under `B-2`, I had to look up its parent to write the path.
+  This is direct evidence for `C-1`.
+- (3) The draft itself has no IDs, so I referred to its sections by heading text. That worked, and
+  it is not a reason to number design documents.
+- (4) No point felt worse than ordinary headings once full paths were written.
+
 ## Temporary assignment: Claude re-review of runtime-check policy
 
 Pause the standing assignment below and re-review the discussion in `Design-RuntimeChecks.md`,

@@ -52,7 +52,7 @@ removal of existing coverage is unclear.
 - Keep compatibility-only behavior in the compatibility tests. Check
   `API-Matrix.md`, `API-Matrix-View.md`, and `Quality-Checklist.md` when working
   on RedBlackTree public APIs or views.
-- Consult `Tests/RedBlackTreeTests/Fixtures.md` before adding or changing
+- Consult `Tests/RedBlackTreeFixture/Fixtures.md` before adding or changing
   RedBlackTree fixtures, and update it when fixture behavior changes.
 - Debug builds track RedBlackTree allocation, node, and payload lifetimes in
   process-global counters. An XCTest that creates RedBlackTree collections must

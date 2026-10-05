@@ -184,7 +184,7 @@ Copy on Writeによって分岐したコレクションは、Indexの所属判�
 | 公開APIの存在と4型への展開 | `API-Matrix.md` |
 | 優先して守る品質 | この文書 |
 | 外部または内部から観察可能な仕様 | Test as Specification |
-| テストで使用するFixture | `Tests/RedBlackTreeTests/Fixtures.md` |
+| テストで使用するFixture | `Tests/RedBlackTreeFixture/Fixtures.md` |
 | 設計理由、所有権、計算量、および内部構造 | `Design/*` |
 | CIで実際に検証するtoolchain、Sanitizer、および構成 | GitHub Actions |
 

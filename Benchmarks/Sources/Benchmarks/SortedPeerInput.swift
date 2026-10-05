@@ -1,6 +1,6 @@
 // Seeded input for the RedBlackTreeCollections / SortedCollections peer matrix.
 //
-// See `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md` (Phase 2). The global
+// See `Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md` (Phase 2). The global
 // `[Int]` generators of swift-collections-benchmark use `SystemRandomNumberGenerator`,
 // so their inputs differ between cycles and runs. This input type is used only by the
 // `peer` tasks and is fully determined by the size.

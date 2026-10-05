@@ -2,6 +2,229 @@
 
 Status: Active through 2026-10-10 JST
 
+## Temporary assignment: Claude re-review of runtime-check policy
+
+Pause the standing assignment below and re-review the discussion in `Design-RuntimeChecks.md`,
+section `検討中: Indexの検査も標準に揃えるか`.
+
+The standing assignment is paused, not cancelled. Complete this re-review first and present the
+recommendation directly to the user. Do not modify source, tests, or the canonical design conclusion
+until the user approves a policy. After approval, update the canonical design and task records, then
+resume the standing assignment from the restart point recorded below.
+
+Re-review inputs and questions:
+
+- Reassess all four questions in the comparison section; do not merely adopt Codex's conclusion.
+- Codex confirmed from current Swift sources that native `Dictionary` validates bucket occupancy
+  and Index age using `_precondition`, and recommends案S.
+- Check Codex's important qualification: immediate same-tree stale-Index resolution appears to stay
+  within the node pool, but a stale mutation may corrupt tree or recycle-pool structure and a later
+  operation may then reach an out-of-bounds access. Distinguish immediate resolution safety from any
+  broader post-misuse memory-safety claim.
+- Recommend案S or案E in Claude's own judgment, state the decisive reason briefly, and identify the
+  exact documentation, source, and test consequences if案S is chosen.
+- Stop for the user's explicit approval before applying that conclusion.
+
+### Result: Claude re-review (2026-10-05, Claude Opus 5.5)
+
+Returned to Codex by the user's instruction. **The user has not yet approved a policy.** Do not
+apply either option to source, tests, or the canonical conclusion until the user approves.
+
+**Recommendation: 案S**, reached independently. Decisive reason: `-Ounchecked` is the user's explicit
+request to drop precondition checks. That is the same argument the user already accepted for empty
+removal ("すり抜けてくれる方がいい"). Runtime cost is equal under both options, because the CoW
+cross-tree resolution (tag lookup and generation match) runs either way, so only rule consistency
+separates them. Codex's confirmation that native `Dictionary` uses `_precondition` for bucket
+occupancy and Index age settles the precedent.
+
+**Codex's qualification is correct, and the consequences of 案S are wider than the draft said.**
+Claude corrected its own comparison section in `Design-RuntimeChecks.md` (the discussion section
+only; the canonical conclusion is untouched):
+
+1. **Out-of-bounds slot: possible.** The draft claimed the `initializedCount` comparison survives
+   under 案S. That was wrong. With the failure branch as `preconditionFailure`, the `-Ounchecked`
+   optimizer may assume success. The comparison exists only to produce the failure, so it may be
+   removed.
+2. **Double payload destruction: possible** (new). Erasing through a stale Index whose node's
+   payload was already destroyed destroys it again. For a reference-type element this is a double
+   release, which corrupts the heap outside the tree.
+3. **Tree / recycle-pool corruption: possible.** A node pushed to the recycle pool twice can later
+   be handed out to two tree positions.
+
+Correct statement for 案S: "for programs that violate documented preconditions, nothing is
+guaranteed under `-Ounchecked`". This is the same position as `Array` and `Dictionary`. Immediate
+same-tree resolution staying inside the pool does not extend to a post-misuse memory-safety claim.
+Correct-use safety is identical under both options.
+
+**If 案S is approved, the work is:**
+
+- Documentation:
+  - `Design-RuntimeChecks.md`: drop the exception. Rewrite the guarantee section and the
+    classification table, and replace "Index解決を例外とする理由" with the rationale for following
+    the standard library.
+  - `RED_BLACK_TREE_REMAINING_TASKS.md:272`: revise the "全構成で維持" contract row.
+  - `PROGRESS_OVERVIEW.md:177`: annotate the completed item.
+  - `Design-MemorySafety.md`: add a scope note to its opening goal ("失敗時にも確保外メモリへアクセス
+    しない") that excludes `-Ounchecked` misuse.
+  - `UnsafeTreeV2+Subscript.swift`: revise the "Keep this check active under -Ounchecked" comment.
+- Source: Index-resolution failure `fatalError` → `preconditionFailure`, about 45 sites:
+  - `UnsafeTreeV2+Index.swift`;
+  - `UnsafeTreeV2+Subscript.swift`;
+  - the four containers' `.invalidIndex` sites;
+  - the four containers' `+RangeExpression.swift`;
+  - `_SealedTag.swift`.
+
+  These sit in `@inlinable` code, so the change is performance-sensitive and is not complete until
+  the performance job is green.
+- Tests:
+  - Normal Debug and Release are unchanged, since both primitives trap.
+  - Under `_O_UNCHECKED`, the Index Death Tests stop terminating. Record this as by design, like
+    empty removal.
+  - The `_O_UNCHECKED` evidence in `INDEX_POC_VALIDATION.md` is no longer a requirement.
+
+Restart state:
+
+- Branch: `develop/misc/49`.
+- Uncommitted task-owned changes: this file and `Design-RuntimeChecks.md`.
+- `git diff --check` passed before reassignment. No build or tests were required for the
+  documentation-only transition.
+- No commit, push, branch switch, or source/test change was made during the transition.
+
+## Second re-review: product responsibility and the 1.0 gate
+
+The user has returned the policy to Claude for one more review before treating the current direction
+as settled. Review the technical recommendation together with the product-level responsibility it
+expresses; do not reduce this pass to another inventory of failure primitives.
+
+Current proposed disposition:
+
+- Adopt案S as the working policy: follow Swift's standard-library contract model for Index misuse.
+- Under `-Ounchecked`, documented preconditions are assumed; detection, safe termination, and memory
+  safety after misuse are not guaranteed.
+- Preserve案E's strongest case in the record rather than presenting it as technically mistaken:
+  its inexpensive always-on checks can contain stale-Index misuse before double destruction or
+  tree/recycle-pool corruption, and the implementation and tests already exist.
+- Treat案S as the present engineering decision, not an irreversible product promise.
+- Before declaring version 1.0, reopen this policy explicitly. Recheck runtime cost, every relevant
+  failure site's classification, the public safety claim, then-current Swift standard-library
+  behavior, and whether `-Ounchecked` is a supported configuration.
+- Do not mechanically convert the estimated 45 sites. Separate caller/Index contract failures from
+  internal corruption barriers, allocation-boundary checks, and truly impossible implementation
+  states; retain always-on failure where the latter classifications justify it.
+
+The user's framing is part of the review input:
+
+> The final responsibility belongs to the user, and this policy is part of the foundation of how the
+> user chooses to face the world through this product.
+
+Interpret this concretely: the decision defines how responsibility is divided between the library
+and its callers. Standard-library precedent and performance evidence inform that decision but do
+not make it automatically. Codex's role and Claude's role are to surface facts, counterarguments,
+costs, and failure consequences; the product owner makes and owns the final choice.
+
+Claude should now answer briefly:
+
+1. Does this framing change the recommendation between案S and案E? Why?
+2. Is adopting案S now with a mandatory pre-1.0 review a coherent policy, or does it create a harmful
+   temporary contract?
+3. What exact caveats and reopening criteria must survive in the canonical record so that the 1.0
+   review is substantive rather than ceremonial?
+4. Is there any remaining objection strong enough that the user should not adopt案S even as the
+   working policy?
+
+Return the result to Codex and stop. Do not change source, tests, or the canonical design conclusion,
+and do not resume the standing assignment until the user has considered this second review.
+
+### Result: Claude second re-review (2026-10-05, Claude Opus 5.5)
+
+Returned to Codex. No source, test, or canonical-conclusion change.
+
+**1. Does the framing change the recommendation?** No, 案S stands. The framing changes what 案S
+*is*: a statement of how responsibility is split between the library and callers who choose
+`-Ounchecked`, not merely a primitive choice.
+
+It therefore adds one obligation. The split must be stated where callers will read it (the public
+guides and DocC), not only in internal design notes. Precedent and cost inform the choice; the
+written allocation of responsibility is what the user owns.
+
+**2. Is 案S now plus a mandatory pre-1.0 review coherent?** Yes, if the contract and the code are
+separated:
+
+- The safe direction of change matters. Moving later from 案S to 案E *adds* a guarantee, which is
+  non-breaking. Moving from 案E to 案S *removes* one. Adopting 案S as the documented contract now
+  keeps the 1.0 review free in both directions.
+- The harmful version would be converting the ~45 sites now and possibly reverting them at 1.0.
+  That is churn in `@inlinable` code, needs a performance job each time, and buys nothing measurable,
+  since the predicted runtime difference is about zero.
+- Recommendation: adopt 案S as the **documented contract** now, and **leave the current
+  `fatalError` implementation in place**. Behavior that over-delivers on a weaker contract is
+  allowed. Make "convert the sites or not" one of the 1.0 review items, decided on measured
+  `-Ounchecked` cost.
+- This also satisfies Codex's "do not mechanically convert": nothing is converted until the
+  per-site classification exists.
+
+**3. Caveats and reopening criteria that must survive in the canonical record.** Otherwise the 1.0
+review becomes ceremonial.
+
+- Caveats:
+  - The explicit misuse consequences under `-Ounchecked`, listed rather than summarized:
+    out-of-bounds slot, double payload destruction (heap corruption for reference elements), and
+    tree / recycle-pool corruption.
+  - Correct-use safety is guaranteed in every configuration.
+  - 案E's strongest case, recorded as a legitimate alternative: cheap, already implemented and
+    tested, and it contains stale-Index misuse before double destruction.
+  - The current gap between contract and implementation: the contract follows 案S, while the code
+    still stops via `fatalError`. Record the reason for the gap.
+- 1.0 review items, each with the evidence it requires:
+  1. Measured `-Ounchecked` cost of the Index-resolution failure branches. Use interleaved A/B runs
+     plus a machine-code comparison, because code layout alone moves results by ±20% here.
+  2. A complete per-site classification: Index contract, internal corruption barrier, allocation
+     boundary, or impossible state. Only the first class is eligible for conversion.
+  3. Public claims (README, DocC, guides, `AdoptionReadinessAssessment`) consistent with the chosen
+     contract.
+  4. The Swift standard-library behavior at that toolchain, rechecked (the `Dictionary`
+     `_precondition` precedent).
+  5. Whether `-Ounchecked` is a configuration the product supports or merely tolerates, including
+     what the primary target environment actually compiles with (see 4).
+  6. The status of the `_O_UNCHECKED` Index Death Tests and of the `INDEX_POC_VALIDATION.md`
+     evidence that encode the current behavior.
+- Owner and trigger: the user decides. The review is triggered by declaring 1.0, or earlier if
+  item 5 shows that `-Ounchecked` is the main deployment configuration.
+
+**4. Any objection strong enough to block 案S as the working policy?** No blocking objection. One
+fact could change the weight and must be checked first in the 1.0 review, or sooner:
+
+- This package targets AtCoder. If the AtCoder judge's Swift build uses `-Ounchecked`, then
+  `-Ounchecked` is the main deployment configuration, not a niche one.
+- Under 案S, a contestant's stale-Index bug would then become a silent wrong answer or heap
+  corruption instead of a runtime error.
+- Claude has not verified the judge's flags. The repository records none, and network access was
+  not used.
+- This does not block 案S as a documented contract, because the current `fatalError` code keeps
+  stopping in the meantime. It does weigh on whether the sites should ever be converted.
+- **User reply (2026-10-05):** the judge's Swift environment is decided by a volunteer, and that
+  volunteer is the user. The user acknowledged the need for care.
+  - The library contract and the judge configuration are therefore in the same hands.
+  - The judge configuration affects every Swift contestant, not only users of this library.
+  - The user has read this second review.
+
+### Closure: user-approved working policy (2026-10-05)
+
+The user approved closing this discussion at the current landing point:
+
+- 案S is the current documented contract.
+- The existing 案E-style `fatalError` implementation remains as behavior that exceeds the contract.
+- No source or test conversion is performed now.
+- 案E's safety case and the concrete consequences of `-Ounchecked` misuse remain in the canonical
+  design record.
+- The policy and implementation are reopened before version 1.0, or earlier if `-Ounchecked` is
+  found to be a primary deployment configuration.
+- The final decision belongs to the user as product owner; standard-library precedent and
+  performance evidence inform, but do not replace, that responsibility.
+
+`Design-RuntimeChecks.md` records the decision and reopening criteria. The temporary review is
+closed, and the standing assignment below resumes from its prior restart point.
+
 ## Standing assignment: primary user support during Codex leave
 
 From now through 2026-10-10 JST, act as the primary repository assistant for the user while Codex
@@ -157,6 +380,12 @@ Confirmed state, no action taken:
     by tag in the receiving tree, so `Design-MemorySafety.md`'s "detachedとして拒否する"
     describes the CROSS-off behavior and is listed as a P10 follow-up.
   - Not decided yet. The draft is committed before applying a planned Codex consultation.
+  - **Codex spot review requested:** read the section `検討中: Indexの検査も標準に揃えるか` in
+    `Design-RuntimeChecks.md` and answer its four questions.
+    - The user leans toward following the Swift standard library for Index checks too.
+    - The section compares that option with the current exception.
+    - Question 1 asks Codex to verify Claude's unconfirmed claim that Swift's native `Dictionary`
+      index uses `_precondition`.
 - `PROGRESS_OVERVIEW.md`, `RED_BLACK_TREE_REMAINING_TASKS.md`, and `Tests/TESTING.md` still
   describe the Index PoC as frozen or pending, so they predate the PR #158 merge. Not edited.
 

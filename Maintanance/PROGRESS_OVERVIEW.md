@@ -174,7 +174,9 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [ ] 採用表現を実装し、4コンテナとRange/Viewへ追従
 - [ ] 標準`Result`へのretroactive `Comparable`適合に依存しない設計を選択
 - [ ] 内部診断用`Result<..., SealError>`と公開Indexを分離するか判断
-- [x] `_O_UNCHECKED`でも消えないstale Index拒否と移動失敗診断を整備
+- [x] `_O_UNCHECKED`でも消えないstale Index拒否と移動失敗診断を整備（現行実装の
+  上乗せ防御。公開契約はSwift標準ライブラリと同じ事前条件モデルとし、実装を寄せるかは
+  1.0前、または`-Ounchecked`が主要構成と判明した時点で再審査する）
 - [ ] 必要な候補だけReleaseで試作・計測
 - [ ] 4コンテナ、Range View、DocC、API Matrixへ反映
 - [ ] Kで（Index移行後）`index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供と名称維持はCodex・Claudeレビューで決定済み。戻り値は全型で`(inserted: Bool, index: Index)`。Dictionaryは既存値を置換せず既存位置、Multi系は常に新規occurrenceと`true`を返す。`insert(_:)`と`erase(exactly:)`からSee Alsoで発見可能にする）

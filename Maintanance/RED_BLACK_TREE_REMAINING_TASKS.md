@@ -269,7 +269,7 @@ Quality Checklistの正しさ、memory / Index寿命、性能の要求に耐え�
 
 | 契約 | 採用 | 根拠・注意 |
 | --- | --- | --- |
-| stale / recycled / detachedをdereference前に拒否 | 全構成で維持 | seal、世代、storage tieで検証する。`_O_UNCHECKED`でも消えないguard / `fatalError`を使い、`precondition`後のforce unwrapだけに依存しない |
+| stale / recycled / detachedをdereference前に拒否 | 現行実装で維持 | 公開契約は事前条件とし、`-Ounchecked`での検出・安全停止を保証しない。現行のguard / `fatalError`は契約を上回る防御として1.0前の再審査まで維持する |
 | CoW分岐後の論理node解決 | 構成に応じ維持 | `ALLOW_CROSS_TREE_INDEX`有効時だけtracking tagで引き直す。無効時は同一storageだけを受理 |
 | 親コンテナとRange ViewのIndex共有 | 維持 | 現在はいずれも`RedBlackTreeIndex`を使用し、View側で範囲包含を追加検証する |
 | 全走査・範囲走査 | O(N)を維持 | traversalはnode successorを使う。位置比較を反復条件へ持ち込まない |
@@ -302,7 +302,7 @@ Debug限定の`Result: Comparable` retroactive conformanceは正式設計から�
 | `find`の不一致 | 不要 | 現行どおり`endIndex` |
 | 検証可能な単一位置 | 不要 | `isElement(at:)` / `isEnd(_:)`でBool化 |
 | 条件付き削除の不成立 | 不要 | `erase(exactly:)`で`nil` |
-| 不正なsubscript / index移動 | 不要 | 内部診断の失敗理由を保持して停止する。memory safety境界では`_O_UNCHECKED`で消える`precondition`だけに依存しない |
+| 不正なsubscript / index移動 | 不要 | 公開契約はprecondition failure。現行実装は内部診断の失敗理由を保持し、`_O_UNCHECKED`でも停止するが、この上乗せ挙動は保証しない |
 
 **暫定推奨:** 公開Indexは生成時からfailureである値を持たない。`SealError`と`Result`は、
 pointerへ触れる前に検証する内部resolverの診断結果として維持する。公開APIでは既存の
@@ -317,7 +317,8 @@ pointerへ触れる前に検証する内部resolverの診断結果として維�
 - 有効な要素位置と`endIndex`を表現できる。failureを正常なIndex値として生成しない。
 - mutationによりstaleになり得るsoft referenceとし、利用時には必ず対象treeで解決・検証する。
 - stale / recycled / detached / foreign storageの詳細は内部`Result<Resolved, SealError>`に残す。
-- stale等の拒否は`_O_UNCHECKED`でも省略せず、確保外pointerへ触れる前に停止する。
+- stale等の拒否は現行実装では`_O_UNCHECKED`でも省略しない。公開契約上は事前条件違反であり、
+  検出と安全停止を保証しない。実装を契約へ寄せるかは1.0前に再審査する。
 - `RedBlackTreeIndexRange` / ExpressionとRange Viewは同じIndex契約を使用する。
 - `ALLOW_CROSS_TREE_INDEX`によるCoW分岐追跡の有無は、現行どおり構成差として扱う。
 - 現行の`index(inserting:)` / `erase(exactly:)`提供範囲はKまで変更しない。Index移行後は
@@ -490,7 +491,8 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 
 追加で次を確定した。
 
-- `_O_UNCHECKED`でもIndex検証をmemory safety境界として残す。ここでは`precondition`だけを使わない。
+- `_O_UNCHECKED`でもIndex検証を残すのは現行実装の上乗せ防御とする。公開契約は
+  Swift標準ライブラリと同じ事前条件モデルとし、実装を寄せるかは1.0前に再審査する。
 - `==`はcross-tree resolver上の論理位置一致ではなく、O(1)のtoken identityとする。
 - hashはstorage identityを含めなくても整合するが、その事実を文書化する。
 - `try/index/1`はResult除去の部分PoCとしてのみ再利用し、nominal型の実証とは扱わない。

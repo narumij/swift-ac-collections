@@ -43,6 +43,10 @@ The following still require explicit user direction:
 - commit, push, merge, PR close/reopen, branch creation/deletion/switching, or history rewriting;
 - publishing private performance-tuning knowledge.
 
+Codex is the primary owner for public documentation. When public-document work is delegated to
+Claude, keep it to explicitly named sections, factual verification, independent review, or a bounded
+correction. Do not expand a Compatibility-document request into a four-document audit or rewrite.
+
 When the user explicitly requests a commit, first verify the branch and complete diff. When it is
 a good commit boundary, say `コミットおすすめです`. Never infer push permission from commit
 permission.

@@ -228,7 +228,6 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [x] Combining系APIへ実測結果に基づく条件付きコメントを追記（`Archived/CombiningAPIPerformanceEvidence.md` §3に基づき、容量による一律推奨を避ける）
 - [x] Combining系の追加NoteをClaudeが限定レビューし、測定範囲の限定とMultiMapへの未計測結果の外挿除去を反映
 - [ ] PermutationのAtCoder 2025互換mode（ユーザーが明示的に再開を指示するまで着手・調査・Claude依頼を行わない）
-- [ ] ABC328E実提出確認（ユーザーが手作業で行う専任項目として凍結。AIは着手・代行・催促しない）
 
 ## 保留・完成を止めない追加検証
 
@@ -247,6 +246,7 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 ## 中止・再開禁止
 
 - [x] MSVC STLとのC++挙動比較（2026-10-04ユーザー決定により実施しない）
+- [ ] ABC328E実提出確認（ユーザーが手作業で行う専任項目として凍結。AIは着手・代行・催促しない）
 
 Compatibility文書4本の包括監査は凍結taskから削除した。公開ドキュメントはCodexを第一担当とし、
 `Cpp-Matrix.md`または具体的な実装差を根拠に対象項目を限定して更新する。Claudeへ委譲する場合も、

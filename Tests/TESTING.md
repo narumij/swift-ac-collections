@@ -92,9 +92,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   (`Permutations`と`Nexts where C: Sendable`、コンパイル時テスト)は実装・検証済み。
   共有CoW bufferを持つ`IteratorN`/`SubSequenceN`も、Bufferの`final`化、変更前detachの
   根拠コメント、Taskを跨ぐ回帰テストとともに対応済み(`Maintanance/StrictMemorySafetyReadiness.md`
-  §9)。ABC328E実提出による性能検証は、ユーザーが手作業で行う専任項目として凍結し、
-  AIは着手・代行・催促しない(詳細は`Maintanance/PermutationModule/ImplementationPlan.md`参照)。
-  `All`系・`unsafe`系の削除、
+  §9)。`All`系・`unsafe`系の削除、
   `Tests/PermutationTests/NextPermutation.swift`(未参照の旧世代実装)の削除、
   `nextPermutations()`と公開戻り値型への`///`コメントドック整備は完了済み。
   `.strictMemorySafety()`も恒久適用済みで、対象モジュールの警告0件を確認した。
@@ -118,6 +116,12 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 - 未結線コードは段階的に削除する方針だが、個々の削除はユーザーが決定し、再開指示まで
   凍結する: `_Reverse4`関連、`swap_key`/`swap_mapped_value`、`outOfRange`/`keyMismatch`、
   `payloadLayout`/`__root_ptr()`、RawRangeの`contains(range:pointer:)`、`_TrackingTag.retire`。
+
+## 凍結・AI再開禁止
+
+- ABC328E実提出による性能検証は、ユーザーが手作業で行う専任項目として凍結する。
+  AIは着手・代行・催促しない。詳細は
+  `Maintanance/PermutationModule/ImplementationPlan.md`を参照する。
 
 ## 直近の引き継ぎ
 

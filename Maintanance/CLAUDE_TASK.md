@@ -450,6 +450,23 @@ Confirmed state, no action taken:
     - the four BoundExpression suites: 81 XCTests pass;
     - full `swift test` (Debug): exit 0;
     - compatibility-mode test build: succeeds.
+- **Task numbering (user rule, 2026-10-05):**
+  - Carried-over tasks use Roman numerals (Ⅰ, Ⅱ, …), never renumbered or reused.
+  - Subdivisions use Greek letters (Ⅰ-α), then あいうえお if those run out.
+  - Items inside a single reply use plain numbers (1, 1-a).
+  - Open tasks as of now:
+    - Ⅰ: planning-doc sync (`PROGRESS_OVERVIEW.md`, `RED_BLACK_TREE_REMAINING_TASKS.md`; old 1-a/1-b).
+    - Ⅱ: cross-tree test audit (old 6-a); awaits a Codex re-check.
+    - Ⅲ: design-record update P10 (old 2); Codex.
+    - Ⅳ: Index completion gate (old 7); Codex.
+    - Ⅴ: `Tests/TESTING.md` sync (old 1-c); Codex.
+    - Ⅵ: Index-range `erase` empty guard; Codex.
+- Ⅱ / 6-a (cross-tree Index tests vs. the public contract): audit only, no code change.
+  - **Codex re-check requested:** the user is not confident accepting this on their own review.
+    Read `Maintanance/CROSS_TREE_INDEX_TEST_AUDIT.md` and answer its four questions.
+  - Main finding: cells F3 (detached → resolves in a CoW branch) and F4 (detached + generation
+    mismatch → rejected) of `index_stale_check.md` have no tests in any type. MultiMap also lacks
+    F2.
 
 ## Completed assignment: update Claude's user assessment and reflection
 

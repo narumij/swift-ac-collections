@@ -72,7 +72,7 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 - [x] MultiMap `find`の同値キー内個体・rankが標準上非保証であることを比較契約へ反映
 - [x] 操作、境界、seed、標準ライブラリ別結果を専用Matrixへ記録
 
-正本: `Archived/CPP_BEHAVIOR_COMPARISON_MATRIX.md`
+正本: `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`
 
 ### Death Test・寿命検査・CI
 
@@ -269,7 +269,7 @@ Claudeが既存文書を広範囲に改変し始めたため、ユーザーが�
 - 文書管理: `Maintanance/MAINTENANCE.md`
 - RedBlackTree残タスク: `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
 - 外部所有型extension監査: `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
-- C++比較: `Maintanance/Archived/CPP_BEHAVIOR_COMPARISON_MATRIX.md`
+- C++比較: `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`
 - SortedCollections比較: `Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md`
 - Combining性能証拠: `Maintanance/Archived/CombiningAPIPerformanceEvidence.md`
 - Permutation計画・評価: `Maintanance/PermutationModule/`

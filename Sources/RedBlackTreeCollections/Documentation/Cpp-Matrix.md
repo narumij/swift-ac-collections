@@ -1,10 +1,14 @@
 # C++ Behavior Comparison Matrix
 
-> 状態: 完了・archive(2026-10-06)。別版の標準ライブラリ実装を明示的に比較する場合、
-> または比較契約を変更する場合だけ再開する。
+> 状態: 現行のC++挙動比較正本(2026-10-06)。別版の標準ライブラリ実装を明示的に比較する場合、
+> または比較契約を変更する場合だけ更新する。
 
 この文書は公開API一覧ではなく、`CppBehaviorReferenceTests`がC++標準コンテナと
 実際に比較した挙動の証拠表である。
+
+`Documentation/Compatibility/`の型別4文書は、この証拠表を根拠に利用者向けの対応関係を
+説明する派生文書である。比較作業の履歴は
+`Maintanance/Archived/CPP_BEHAVIOR_COMPARISON_TASK.md`へ分離している。
 
 ## 判定基準
 

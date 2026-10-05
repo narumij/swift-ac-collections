@@ -15,8 +15,8 @@
 
 ### 現在の状態
 
-- C++挙動比較は4型・35件で完了している。正本は
-  `Maintanance/Archived/CPP_BEHAVIOR_COMPARISON_MATRIX.md`。性能測定用`CppBenchmarks`とは分離する。
+- C++挙動比較は4型・35件で完了している。現行の証拠正本は
+  `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`。性能測定用`CppBenchmarks`とは分離する。
 - failureless public Index PoCはPR #158で統合済み。検証正本は
   `Maintanance/Archived/INDEX_POC_VALIDATION.md`。
 - cross-tree Indexテスト監査はCodexの独立再確認を経て完了した。正本は
@@ -61,8 +61,9 @@
 ### 完了または正本へ移した要望
 
 - C++挙動比較は4型へ展開済み。挙動比較はルートパッケージ、性能測定は
-  `Benchmarks/CppBenchmarks`に分離する。正本は
-  `Archived/CPP_BEHAVIOR_COMPARISON_MATRIX.md`と`Archived/CPP_BEHAVIOR_COMPARISON_TASK.md`。
+  `Benchmarks/CppBenchmarks`に分離する。証拠正本は
+  `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`、作業履歴は
+  `Archived/CPP_BEHAVIOR_COMPARISON_TASK.md`。
 - 採用準備文書から競争的な「世界最高峰候補」の看板を外し、検証可能な証拠、反証、限界を
   中心とするAdoption Readinessへ再構成済み。
 - Debug allocation/lifetime検査の制御とLinux Death Testの実証は完了済み。Linux経路は
@@ -257,7 +258,7 @@ MultiMap `find`は同値キー群内の個体・rankをC++互換保証に含め�
 MemoryLayoutテストから`_Bucket` / `_BucketAllocator`依存の横断一致検査をRawBuffer側へ移し、
 原木側のcoloring用prefixは汎用word幅へ変更した。原木6件、RawBuffer横断1件が成功した。
 同じ作業で、公開Compatibility文書とは別に、C++比較テストが実証した範囲だけをまとめる
-`Archived/CPP_BEHAVIOR_COMPARISON_MATRIX.md`を新設した。4型×操作、境界、seed条件、比較した返却事実、
+`CPP_BEHAVIOR_COMPARISON_MATRIX.md`（現`Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`）を新設した。4型×操作、境界、seed条件、比較した返却事実、
 標準上の非保証と未比較項目を一覧化し、今後のC++ compareの正本サマリーとする。結果は
 LLVM libc++を正本、GNU libstdc++を参考情報として混同せず記録する。MSVC STL比較は
 2026-10-04のユーザー決定により実施せず、完成条件や保留タスクにも含めない。

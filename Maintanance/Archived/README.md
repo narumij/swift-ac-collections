@@ -19,7 +19,6 @@ archiveされた文書は削除済み資料ではない。現行文書から根�
 - `AdoptionReadinessAssessment.ja.md`
 - `CLAUDE_TASK_HISTORY.md`
 - `CombiningAPIPerformanceEvidence.md`
-- `CPP_BEHAVIOR_COMPARISON_MATRIX.md`
 - `CPP_BEHAVIOR_COMPARISON_TASK.md`
 - `CROSS_TREE_INDEX_TEST_AUDIT.md`
 - `INDEX_POC_CROSS_BRANCH_IDENTITY.md`

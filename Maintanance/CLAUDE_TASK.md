@@ -103,8 +103,9 @@ instruction and prepare the handoff for Codex if requested.
 - runtime-check方針はユーザー承認と再レビューを経て確定した。設計正本は
   `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md`、議論記録は
   `Archived/RUNTIME_CHECK_POLICY.md`。1.0判断直前に再審査する。
-- X1/PoCの準備・検証記録、C++比較、Combining性能根拠、Adoption Readiness、
-  SortedCollections pilotは完了資料として`Maintanance/Archived/`へ移動済み。
+- X1/PoCの準備・検証記録、Combining性能根拠、Adoption Readiness、SortedCollections pilotは
+  完了資料として`Maintanance/Archived/`へ移動済み。C++比較の作業履歴もArchivedに置き、
+  現行の証拠正本は`Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`とする。
 - 現在ユーザー判断を待つ主項目は、Index完了ゲート（Comparable、公開Indexと内部`SealError`の
   分離、完了範囲）と、Index-range `erase`の空guardである。P10はdetached訂正後の残存記述確認のみ。
 

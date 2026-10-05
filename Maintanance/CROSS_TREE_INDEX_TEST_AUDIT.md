@@ -88,8 +88,36 @@ The comments do not reference the design document.
   - `RedBlackTreeInternal/Instance/RedBlackTreeInternal_PurifiedTests.swift` `testExample3`
     (`.crossTree`);
   - the Set Death Test above.
-- Both are under `#if !ALLOW_CROSS_TREE_INDEX`, so they are not compiled in CI. Claude did not
-  build with the trait removed.
+- Both are under `#if !ALLOW_CROSS_TREE_INDEX`, so they are not compiled in CI.
+
+### Smoke test with `ALLOW_CROSS_TREE_INDEX` removed (Ⅶ, 2026-10-05)
+
+`Package.swift` was backed up to a `mktemp -d` directory and the define was commented out.
+Afterwards the file was restored (no diff) and the directory removed.
+
+- Build: the tests build cleanly.
+- Full `swift test`: fails (exit 1). The column-B Swift Testing Death Test
+  `index from another tree cannot be subscripted` passes. The failures are in tests that assume CROSS
+  on but are not guarded by `#if ALLOW_CROSS_TREE_INDEX`:
+  1. `RedBlackTreeMappedValuesViewTests.test_subrangeValuesSingleIndexOperations_doNotCompareKeys`
+     hits `Fatal error: crossTree` (`UnsafeTreeV2+Subscript.swift:42`).
+     - Writing through the View CoWs its storage, and the base dictionary's indices then count as
+       another tree.
+     - The fatal error **kills the RedBlackTreeTests XCTest process**, so later XCTests in that
+       bundle did not run. That includes `RedBlackTreeInternal_PurifiedTests.testExample3`, which
+       was therefore not confirmed.
+  2. `CppBehaviorReferenceTests.DictionaryBehaviorComparisonTests.test_dictionaryHintedInsertionMatchesCpp`
+     hits `Fatal error: Attempting to access RedBlackTree elements using an invalid index`
+     (`RedBlackTreeDictionary.swift:299`). This also kills that XCTest process.
+  3. `RedBlackTreeMultiSet_99_DeathTests.insertWithHintIntoEmptyMultiSet_exitsSuccessfully`
+     expects a successful exit but gets a signal. An Index from the empty shared singleton becomes
+     "another tree" once the first insertion detaches it.
+- Interpretation: every failure is the column-B behavior the table predicts, since a CoW'd or
+  detached-from-singleton storage counts as another tree when CROSS is off. These are not
+  regressions in the standard configuration. CROSS=OFF is simply not a runnable configuration for
+  the current suite.
+- User decision (2026-10-05): knowing that the suite fails under CROSS=OFF is enough. The tests
+  are not guarded; the premise has been fixed to CROSS on for a long time.
 
 ## Proposed changes (not applied)
 

@@ -27,6 +27,9 @@ memory safetyを保証しない。現行実装の常時検査は、この契約�
 
 標準構成は`ALLOW_CROSS_TREE_INDEX`が有効、`USE_LAZY_DETACH`が無効である。
 `USE_LAZY_DETACH`はdeprecatedであり、この文書では扱わない。
+`ALLOW_CROSS_TREE_INDEX`を無効にした構成も、実質deprecatedとして扱う。2026-10-05のスモークテストで、
+ライブラリはビルドできるが、テスト全体はCROSS有効を前提とするテストが落ちて通らないことを確認した
+(`Maintanance/CROSS_TREE_INDEX_TEST_AUDIT.md`の4節)。表の無効列は参考として残す。
 
 `ALLOW_CROSS_TREE_INDEX`は、CoWで分岐したコレクション間でIndexを使えるようにするために用いる。
 CoWで分岐した木は、Indexの解決では「別の木」として扱われる。
@@ -48,7 +51,7 @@ CoWで分岐した木は、Indexの解決では「別の木」として扱われ
 
 `o`は解決できる、`x`は拒否する、`-`は起こらないことを表す。
 
-| Indexの状態 | 同じ木 | 別の木(標準構成) | 別の木(`ALLOW_CROSS_TREE_INDEX`無効) |
+| Indexの状態 | 同じ木 | 別の木(標準構成) | 別の木(`ALLOW_CROSS_TREE_INDEX`無効、実質deprecated) |
 | --- | :---: | :---: | :---: |
 | 健全 | o | o | x |
 | 世代違い | x | x | x |

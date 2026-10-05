@@ -474,6 +474,18 @@ Confirmed state, no action taken:
     - Details are in the audit's "Follow-up" section. The Codex re-check still stands.
   - Ⅱ-α done: the two counterintuitive assertions in `RedBlackTreeSet_3_IndexSequenceTests.swift`
     now carry a comment referencing `Design-RuntimeChecks.md` (audit proposal 3).
+  - Ⅶ done (smoke test, user-approved): ran the suite with `ALLOW_CROSS_TREE_INDEX` removed.
+    `Package.swift` was restored with no diff.
+    - The build passes, but `swift test` fails.
+    - Three tests that assume CROSS on are unguarded. Two of them crash their XCTest process, so
+      part of the bundle never ran.
+    - All failures are the predicted column-B behavior, not standard-configuration regressions.
+    - User decision: knowing it fails is enough, and the tests are not guarded, because the premise
+      has been fixed to CROSS on for a long time. Details are in the audit section 4.
+    - Follow-up (user decision): CROSS=OFF is treated as effectively deprecated. This is noted in
+      `Design-RuntimeChecks.md` (a standard-configuration note and the table column) and in a one-line
+      `Package.swift` comment. `index_stale_check.md` is history and stays unchanged; the
+      `#if !ALLOW_CROSS_TREE_INDEX` code stays frozen.
   - Ⅱ-β done: the two detached-premise internal tests were added to MultiSet, Dictionary, and
     MultiMap. All 6 pass, full `swift test` passes, and the compatibility-mode build succeeds.
 - Ⅰ done: planning-doc sync, facts only. The user approved that scope; structure and policy are

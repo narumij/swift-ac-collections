@@ -102,6 +102,8 @@ User decisions:
 - P10 design-record update after the Index integration: deferred to Codex; not urgent.
 - Index completion gate (`Comparable`, `SealError` separation, completion scope): deferred to
   Codex.
+- `Tests/TESTING.md` sync: deferred to Codex. Its priority section is still accurate, and only the
+  10/03 handoff is stale. Until Codex syncs it, record test work in this handoff.
 
 Confirmed state, no action taken:
 
@@ -123,8 +125,38 @@ Confirmed state, no action taken:
     item is now checked in `RED_BLACK_TREE_REMAINING_TASKS.md`. The TODO comment in
     `RedBlackTreeMultiMap+Subscript.swift` is removed. The user then added `// TODO: またいつか試す`,
     an intent to retry the accessor later, not a test gap.
-  - Not run: no local Release run. CI runs only on push, which is the user's call; the user chose
-    to defer the full run to that point.
+  - Not run: no full local Release run. CI runs only on push, which is the user's call; the user
+    chose to defer the full run to that point.
+  - Narrow local Release check passed:
+    `swift test --disable-sandbox -c release --skip-build --filter 'RedBlackTree(SetBidirectionalCollection|MultiSetInsertion|MultiSetRemoval|DictionaryInsertion)Tests'`
+    ran 50 XCTests (17 + 10 + 12 + 11) with 0 failures.
+- `_O_UNCHECKED` empty `removeFirst` / `removeLast` triage, by code reading:
+  - `removeFirst()` is `guard let element = popFirst() else { preconditionFailure(.emptyFirst) }`.
+  - `popFirst()` returns `nil` on `count == 0` before touching nodes.
+  - Under `-Ounchecked` the optimizer may assume `preconditionFailure` is unreachable, which
+    explains the earlier "successful exits". This is the standard-library precondition contract
+    (`Array.removeFirst()` behaves the same), not a tree-memory defect.
+  - Index checks use `fatalError`, which survives `-Ounchecked`, so the current split is
+    deliberate in effect.
+  - **User decision (closed):** keep `preconditionFailure`. Passing through under `-Ounchecked`
+    is what that mode is for, so empty removal must not be converted to a check that survives it.
+  - Consequence: the empty-removal Death Tests exit normally under `_O_UNCHECKED`, by design. No
+    test carries `_O_UNCHECKED` gating, and CI does not use the trait, so nothing was changed.
+- Runtime-check policy, in progress:
+  - `Maintanance/RUNTIME_CHECK_POLICY.md` is the user's ChatGPT discussion draft, kept unedited as
+    source material.
+  - Claude drafted `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md`
+    from it, corrected against the code and prior decisions. Its main correction to the source
+    material: public Index validity stays a check that survives `-Ounchecked`, per the adopted
+    "全構成で維持" contract.
+  - Draft 4 applies ChatGPT's review of draft 2 and makes the user's
+    `Implements/Index/index_stale_check.md` resolution table its center. The title is now
+    "Indexの解決と実行時検査の設計".
+  - Correction found while folding in the table: in the standard configuration
+    (`ALLOW_CROSS_TREE_INDEX` on), a detached Index is not rejected by itself. It is re-resolved
+    by tag in the receiving tree, so `Design-MemorySafety.md`'s "detachedとして拒否する"
+    describes the CROSS-off behavior and is listed as a P10 follow-up.
+  - Not decided yet. The draft is committed before applying a planned Codex consultation.
 - `PROGRESS_OVERVIEW.md`, `RED_BLACK_TREE_REMAINING_TASKS.md`, and `Tests/TESTING.md` still
   describe the Index PoC as frozen or pending, so they predate the PR #158 merge. Not edited.
 

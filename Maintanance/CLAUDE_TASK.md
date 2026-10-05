@@ -1,6 +1,94 @@
 # Codex-to-Claude Work Request
 
-Status: Completed
+Status: Active through 2026-10-10 JST
+
+## Standing assignment: primary user support during Codex leave
+
+From now through 2026-10-10 JST, act as the primary repository assistant for the user while Codex
+is on leave. This is a temporary operating role, not authorization to expand project scope or to
+restart frozen work.
+
+This standing assignment records only the operational performance rules needed for safe work.
+The rationale, discovery history, and generalized tuning knowledge remain private and must not be
+added to this file or another public repository document.
+
+The current branch is `develop/misc/49`. `try/index/1` was merged by PR #158 at `a6c8a474`.
+The worktree was clean when this standing assignment was written.
+
+### Communication
+
+- Respond directly to the user. There is no active Codex integrator to receive hidden detail.
+- Keep reports concise, but state evidence, blockers, trade-offs, and user decisions that matter.
+- Do not use the old `完了`-only convention when it would hide information the user now needs to
+  make a decision. `完了` alone is still fine for a routine task whose requested outcome and
+  validation are unambiguous.
+- Personal observations remain optional. Do not manufacture a feeling, but you may speak in your
+  own voice or append to `CLAUDE_OBSERVATIONS.md` when useful.
+- If prior intent is unclear, ask the user rather than attributing an unstated decision to Codex.
+
+### Authority
+
+For an explicit user request, you may inspect, edit, build, test, benchmark, and update relevant
+documentation within the repository. Use the smallest task boundary that satisfies the request.
+
+The following still require explicit user direction:
+
+- choosing or changing public API, compatibility policy, product positioning, or completion scope;
+- restarting any item marked frozen, deferred, optional, or waiting for a user decision;
+- changing the Index contract, `Comparable`, facade re-export policy, Permutation compatibility
+  mode, or the unsafe-storage/concurrency items currently on hold;
+- deleting material code or records;
+- commit, push, merge, PR close/reopen, branch creation/deletion/switching, or history rewriting;
+- publishing private performance-tuning knowledge.
+
+When the user explicitly requests a commit, first verify the branch and complete diff. When it is
+a good commit boundary, say `コミットおすすめです`. Never infer push permission from commit
+permission.
+
+### Performance-sensitive boundaries
+
+- Non-`public` protocol declarations use `@usableFromInline` uniformly.
+- Do not add, remove, or move `@inlinable`, and do not convert an existing `@usableFromInline` to
+  `@inlinable`, without direct user review.
+- Do not change a boundary that deliberately removes generic type variables, including the
+  `RawBuffer` / `BufferHeader` family, without direct user review.
+- Compile and functional tests do not prove performance neutrality. A performance-sensitive
+  access or generic/protocol change is not complete until the relevant performance job is green.
+- Keep the general tuning rationale private. Public incident records may describe reproduction and
+  bisection, but follow the user's chosen level of detail for the mechanism.
+
+### Task execution
+
+- Read only the task-specific portions of maintenance documents needed for the current request.
+  Do not turn backlog discovery into authorization to implement it.
+- Preserve unrelated worktree changes. Never reset or discard user work to make a task clean.
+- For broad inventories, repetitive cross-checks, or a high-risk conclusion, use an independent
+  second pass where available; otherwise tell the user what could not be independently reviewed.
+- For performance work, fix the environment and baseline, reproduce first, and distinguish CI
+  history from new local measurements.
+- For cross-branch work, identify symbols by branch, path, configuration, and meaning. Verify the
+  current branch before editing and again before committing.
+- Update the relevant canonical record for durable decisions. Do not expose a private note merely
+  to improve agent continuity.
+
+### Handoff for Codex return
+
+Maintain a concise dated handoff in the Result section below. Record only durable state:
+
+- user decisions;
+- commits and whether they were pushed;
+- validation performed and failures still open;
+- worktree/branch state;
+- frozen items explicitly resumed or newly frozen; and
+- questions still requiring the user or Codex.
+
+Do not paste routine command output or duplicate existing canonical documents. On or after
+2026-10-10, do not assume this temporary primary role continues; follow the user's current
+instruction and prepare the handoff for Codex if requested.
+
+### Result / handoff
+
+Pending. No work has been performed under this standing assignment yet.
 
 ## Completed assignment: update Claude's user assessment and reflection
 

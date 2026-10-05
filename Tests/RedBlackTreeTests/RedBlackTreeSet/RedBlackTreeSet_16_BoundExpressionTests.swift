@@ -195,15 +195,15 @@
     func testLimitedAdvance6() throws {
       XCTAssertEqual(
         a._error(start().advanced(by: 1).advanced(by: -5, limit: .debug(.null))),
-        .lowerOutOfBounds)
+        .null)
 
       XCTAssertEqual(
         a._error(start().advanced(by: 2).advanced(by: -5, limit: .debug(.null))),
-        .lowerOutOfBounds)
+        .null)
 
       XCTAssertEqual(
         a._error(start().advanced(by: 3).advanced(by: -5, limit: .debug(.null))),
-        .lowerOutOfBounds)
+        .null)
 
       XCTAssertEqual(
         a._error(.debug(.null).advanced(by: -5, limit: .debug(.null))),

@@ -2,7 +2,94 @@
 
 Status: Completed
 
-## Active assignment: independently review P1 invalid-Bound coverage restoration
+## Active assignment: independently review the accumulated Index PoC evidence batches
+
+Independently review the committed evidence and corrections on `try/index/1` through
+`beba869e`. The evidence ledger is `Maintanance/INDEX_POC_VALIDATION.md`. Preserve a separate
+neutral verdict for every batch; do not collapse them into one overall adoption verdict.
+
+Required batch verdicts:
+
+1. `P14`: dual-representation call-site inventory — verify whether any normal public `Index` path
+   can resolve to the old Result-valued overload family.
+2. `P6`: external public-surface evidence — verify the classification of `UnsafeIndexV3` and
+   `_LazyTiedPtr._NodePtr` as externally nameable prototype artifacts.
+3. `P2/P3 Release`: review the normal Release pass, the broad `_O_UNCHECKED` scope-contaminated
+   failure, and the narrower Index-specific `_O_UNCHECKED` pass.
+4. `P3 compatibility Debug`: confirm that the passing compatibility batch tests the separate
+   legacy Index contract and is not direct success-only evidence.
+5. `P2/P3 ASan`: review the representative 64-test ASan pass and its stated limitations.
+6. `P2 outliving storage`: review the new test proving detached marking and safe rejection by a
+   live receiver; confirm that the document does not overclaim the exact internal error reason.
+7. `P8`: review the stale-limit diagnosis and correction. Confirm that the bug existed in the old
+   Result-valued implementation, that `edcf8c46`/`5e41e32b` correct that shared path, and that
+   `425c02c3` correctly applies equivalent failure propagation to the success-only overload.
+   Include the later `formIndex` backward-direction test committed in `beba869e`.
+8. `P4`: review the KeyValue and KeyOnly bounded Range View tests and whether their half-open
+   `isElement(at:)` / `isEnd(_:)` expectations match the public contract.
+
+For each item return exactly one of `pass`, `fail`, or `unmapped`, followed by concise evidence and
+any scope limitation. Then state whether the current ledger wording should be corrected. Do not
+issue a final adopt/reject verdict; remaining breadth, performance, compatibility Release, cleanup,
+and documentation work is intentionally unfinished.
+
+### Boundaries
+
+Only `Maintanance/CLAUDE_TASK.md` may be edited. Do not edit source, tests, the validation ledger,
+other documentation, Package.swift, or workflows. Do not fix findings, use network access, stage,
+commit, push, switch branches, or alter Git history. Read-only inspection is allowed. Run only
+narrow tests needed to resolve a disputed claim; do not rerun the whole matrix. Run
+`git diff --check` and inspect `git status --short` at the end.
+
+Record the review in the first Result section below, set `Status: Completed`, and tell the user only
+`完了` unless a product-owner choice remains.
+
+### Result
+
+2026-10-05, Claude Opus 5.5. Per-batch neutral verdicts are below; there is no adoption verdict.
+Inspection covered `try/index/1` through `beba869e`, read-only. I re-ran only the five tests whose
+claims I reviewed, in Debug:
+
+- the two StaleLimit exit tests (2 passed);
+- the outliving-storage test (1 passed);
+- the KeyValue and KeyOnly `isElementAndIsEnd_respectViewBounds` tests (2 passed).
+
+| Batch | Verdict | Evidence / limitation |
+| --- | --- | --- |
+| **P14** dual representation | `pass` | Every non-Deprecated `_LazyTieWrappedPtr` reference is an old-family internal declaration: `index` / `index_or_nil`, movement, `___index` helpers, `__purified_`, and `band`. No public signature uses it apart from the public alias itself. The type system rules out the feared path: there is no implicit conversion between `_LazyTiedPtr` and `Result`, so a public `-> Index` context cannot select the old overload, and a public `Index` argument cannot enter the old movement family. Limitation: this is a declaration survey, not a compile-time proof. Marking the old family `@available(*, unavailable)` in a disposable experiment would make it mechanical |
+| **P6** external surface | `pass`, with a classification correction | An external `swiftc -typecheck` against `.build/out/Products/Debug` accepted `UnsafeIndexV3`, `_LazyTiedPtr._NodePtr`, and `RedBlackTreeIndex`. However, `UnsafeIndexV3` and `_LazyTiedPtr` were already public and nameable on develop (`2796d7c2`). The PoC artifact is therefore (a) the removal of `@_documentation(visibility: internal)`, which changes DocC exposure, not nameability, and (b) the new nested `public typealias _NodePtr`. It mirrors the already-frozen `Result._NodePtr` item. The ledger should say this, not "externally nameable prototype artifacts" for both |
+| **P2/P3** Release | normal Release `pass`; narrow `_O_UNCHECKED` `pass`; broad `_O_UNCHECKED` `unmapped` for the PoC | The scope-contamination reasoning is correct: `removeFirst` / `removeLast` on an empty collection are not Index paths, and `-Ounchecked` removes their `precondition`. Two limitations: (1) the ledger gives counts but not the exact `--filter` strings or full commands for either Release batch, so the batches are not reproducible as written; (2) the four "successful exits" are a **develop-side** observation that needs separate triage, because an unchecked empty `removeFirst` / `removeLast` may not be memory-safe. It is not PoC evidence |
+| **P3** compat Debug | `pass` (classification confirmed) | In compat mode the containers' `Tree.Index` is `UnsafeIndexV2<Base>` (`UnsafeTreeV2+index+deprecated.swift:11`). It stores its own `_SealedPtr` plus `_TiedRawBuffer`, not `_LazyTiedPtr`. The batch therefore checks the legacy contract and the shared resolver, and is correctly `unmapped` as direct success-only evidence. Compat Release is still not run |
+| **P2/P3** ASan | `pass` (scoped) | 64 XCTests with no report. The stated limitations are accurate. The ASan section's "does not cover … Index outliving its storage" is now stale, because the outliving test was later run under ASan |
+| **P2** outliving storage | `pass` for the stated narrow property; the wording overclaims | Detached marking is verified, and memory safety holds: the cross-tree path reads only the Index's stored tag and seal, not its freed pointer. But the receiver in the test is **empty**, so `__retrieve_` fails on `tag < initializedCount` (0). With a **non-empty** receiver, the tag and seal of the outliving Index can match a live receiver node (for example tag 0 with seal 0). `deepPurified` would then succeed, and `isElement(at:)` could return `true`. That is the documented unspecified other-tree behaviour (`UnsafeIndexV3.swift`: 生成元以外の木での使用は未定義), not a rejection. "Safe public receiver-based rejection path" holds only for an empty receiver. I traced this in code and did not test it |
+| **P8** stale limit | `pass` | `5e41e32b` (the old overload) and `425c02c3` (the success-only overload) both replace `let __l = __purified_(limit).map(\.pointer)` with `__purified_(limit).flatMap { … .success(limit.pointer) }`, which propagates a limit failure before traversal. The old structure confirms the bug was not representation-specific. The forward `index` test and the backward `formIndex` test (`beba869e`) both pass. `form_index`'s double `adv_iter` is retained. **Sibling instance outside the ledger:** the Bound DSL `.advanced(offset, limit:)` path (`UnsafeTreeV2+BoundsExpression.swift:86-90`) still passes `l = evaluate(__l)` unpropagated to `___tree_adv_iter`. A failed limit Bound is therefore ignored there by the same mechanism. It is shared with develop. Its classification needs a user decision, as the stale-limit case did |
+| **P4** Range View bounds | `pass` | The KeyValue and KeyOnly half-open expectations match the public docs. The View's `endIndex` can be a base element; `isEnd` is `true` only for the view's end; the base `endIndex` is neither an element of the view nor its end (`RedBlackTreeRangeView+KeyValue.swift:474-480`; API-Matrix-View lines 39-42) |
+
+**Ledger wording corrections:**
+
+1. P6: reclassify as described in the table.
+2. P2 outliving: limit "rejected by another receiver" to an empty receiver, and add the non-empty
+   receiver case as `unmapped` (unspecified cross-tree acceptance).
+3. Record the exact commands and filters for both Release batches.
+4. Remove the stale "does not cover outliving" phrase from the ASan section.
+5. Move the KeyOnly paragraph, which currently sits inside the ASan section, under P4.
+6. Add two triage items:
+   - the Bound DSL `.advanced(limit:)` sibling;
+   - `_O_UNCHECKED` empty `removeFirst` / `removeLast` (develop-side).
+
+**Product-owner choice:** whether the Bound DSL `limit:` failure should be treated as a bug, like
+the stale-limit `limitedBy` case.
+
+Checks: only this file was edited. `git diff --check` was clean. `git status --short` shows only
+this file.
+
+### Result
+
+Pending.
+
+---
+
+## Completed assignment: independently review P1 invalid-Bound coverage restoration
 
 Review the uncommitted P1 test-only change and its evidence in
 `Maintanance/INDEX_POC_VALIDATION.md`. The four container internal tests replaced their commented

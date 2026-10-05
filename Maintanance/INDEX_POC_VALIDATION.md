@@ -58,13 +58,13 @@ as history but its snapshot anchors are superseded by the commits above for this
 | ID | State | Area | Issue / required evidence |
 | --- | --- | --- | --- |
 | `P1` | pass | Test as Specification | Four internal tests verify Debug `.index(.nullptr)` on non-empty containers without recreating a public failure-valued Index. Codex and Claude confirmed the resolver reaches `.failure(.null)` rather than trapping. |
-| `P2` | partial pass; review queued | Index lifetime | Representative stale/recycled/movement/MappedValues paths pass in Debug, Release, a narrowly filtered Release + `_O_UNCHECKED` batch, and Debug ASan. A new test confirms that an Index outliving its storage has a detached tie and is safely rejected by another live receiver under ASan. Direct `.detached` error propagation and full per-property mapping remain. |
+| `P2` | partial pass; independently reviewed | Index lifetime | Representative stale/recycled/movement/MappedValues paths pass in Debug, Release, a narrowly filtered Release + `_O_UNCHECKED` batch, and Debug ASan. An Index outliving its storage has a detached tie and is safely rejected by the tested empty receiver under ASan; behavior with a non-empty unrelated receiver remains unspecified and unmapped. |
 | `P3` | partial pass; review queued | Configuration matrix | Debug, Release, representative Release + `_O_UNCHECKED`, Debug `COMPATIBLE_ATCODER_2025`, and representative Debug ASan evidence is recorded below. Compatibility Release remains unmapped. |
 | `P4` | partial pass; review queued | Container/View breadth | Set and MappedValues representative paths pass. KeyValue and KeyOnly Range Views now directly verify half-open bounds through `isElement(at:)` / `isEnd(_:)`; each 10-test suite passes. Remaining per-property mapping across MultiSet, Dictionary, and MultiMap is incomplete. |
 | `P5` | confirmed test hazard | Debug fixture semantics | `_LazyTieWrap.unsafe(tree:rawTag:)` maps every retrieval, seal, or banding failure to synthetic `.nullptr`. On an empty tree, `_emptyLazyDetach` is shared, so same-tie purification can assert on the null pointer instead of producing the intended `SealError`. Synthetic-null tests must use a non-empty tree and verify the error reason, not merely expect process failure. |
-| `P6` | confirmed artifacts; review queued | Public surface | External type-checking confirms both `UnsafeIndexV3` and the added `_LazyTiedPtr._NodePtr` are directly nameable after `import RedBlackTreeCollections`. Treat their visibility as prototype public-surface artifacts, not as evidence for or against the success-only representation. |
+| `P6` | confirmed artifacts; independently reviewed | Public surface | `UnsafeIndexV3` and `_LazyTiedPtr` were already externally nameable on develop. PoC surface changes are removal of `@_documentation(visibility: internal)` (DocC exposure) and the new nested public `_LazyTiedPtr._NodePtr` alias. These are prototype artifacts, not representation evidence. |
 | `P7` | verified by inspection | Equality / hashing | Synthesized `_NodePtrSealing` equality/hash cover pointer, seal, and (when present) the pointer-derived tracking tag. `_LazyTieWrap` equality additionally checks tie identity while its coarser hash omits it, which is contract-valid. All are O(1). Keep a regression test. |
-| `P8` | fixed; review queued | Limited movement | User classified stale-limit acceptance as a bug common to both Index representations. `develop/misc/48` now propagates limit-resolution failure, and the same correction was applied to the success-only overload here. Focused `index`/`formIndex` exit tests cover forward/backward stale limits, and 37 valid-input movement tests pass. |
+| `P8` | fixed; independently reviewed | Limited movement | User classified stale-limit acceptance as a bug common to both Index representations. Both overloads now propagate limit-resolution failure; focused `index`/`formIndex` tests and 37 valid-input tests pass. Claude found the same unpropagated-failure shape in Bound DSL `.advanced(limit:)`; prior user policy classifies that sibling as a bug to fix next. |
 | `P9` | unverified | Performance | Confirm equality and hashing remain O(1), full and range traversal remain O(N), and success-only resolution does not add per-element search or allocation. Preserve raw measurements separately from the design decision. |
 | `P10` | documentation | Design records | Several documents still describe the develop representation (`UnsafeIndexV3 = _LazyTieWrappedPtr`) or say the PoC must not be merged wholesale. Update them only after the validation verdict; for now record the branch and commit used as evidence. |
 | `P11` | cleanup, non-blocking | Merge artifacts | Remove only after semantic validation: duplicated comments, commented-out old alias, trailing blank lines in `_LazyTie.swift`, duplicated `過去の状態で封印する` documentation, and the `Package.swift` comment-spacing change. These are not quality failures. |
@@ -266,7 +266,8 @@ swift test --disable-sandbox --sanitize address \
 The ASan build completed and 64 selected XCTest cases passed with no failure or sanitizer report.
 The batch covers Set stale/recycled and Range View validity, four-container CoW paths, Set value
 semantics, and MappedValues single-Index mutation/swap/erase paths. It does not cover intentional
-crash tests, detached Index, or Index outliving its storage.
+crash tests or the exact `.detached` error classification. The outliving-storage case was later run
+separately under ASan.
 
 Batch result: Codex `pass`; independent review queued.
 
@@ -287,10 +288,12 @@ suite. An `@inline(never)` helper returns the Index from a local source, after w
 
 Normal Debug: 1 passed. Debug ASan: 1 passed.
 
-This proves the storage-deinit marker and a safe public receiver-based rejection path. It does not
+This proves the storage-deinit marker and safe rejection by the tested empty receiver. It does not
 prove that a public operation reports the specific internal `.detached` reason: once the source is
 gone, resolution necessarily occurs against a different receiver, and the cross-tree retrieval path
-may classify the failure differently. Also, `_LazyTiedPtr.isValid` itself checks only its sealed
+may classify the failure differently. With a non-empty unrelated receiver, matching tag and seal
+can be accepted under the documented unspecified cross-tree behavior; that case remains unmapped.
+Also, `_LazyTiedPtr.isValid` itself checks only its sealed
 pointer and has no production Sources consumer; calling it after detachment is not treated as a
 supported public lifetime check.
 

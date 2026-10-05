@@ -556,7 +556,12 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 - [x] Fで決定したKeyValue Range Viewの範囲外Index契約を実装・テストへ反映する
 - [ ] cross-tree indexingのテストが公開契約と一致しているか再監査する
 - [ ] eraseのrange sanitizeをすり抜ける入力に対するテストを追加する
-- [ ] MultiMapの`unsafeAddress`利用経路をReleaseでも確認する
+- [x] MultiMapで確認されたaccessorのcompiler不具合と同種の問題がないか、`unsafeAddress` /
+  `unsafeMutableAddress` accessorを使用する他の箇所をReleaseビルドで横断確認する。MultiMap自身は
+  通常`get`へ退避済みであり、対象は内部の`_unsafeAddress`関数呼び出しではなくSwift accessor宣言である
+  （2026-10-05: Test as Specを主とし、届かない経路だけ内部テストとする方針により、CIの
+  `swift test -c release`で担保する。公開accessorのSet / MultiSet `[position]`とDictionary
+  `[key, default:]`は`#if DEBUG`外の連番テストで使用され、内部accessorはその下で通る）
 
 これらは現在のIndex表現を前提に先走って横展開しない。Index契約の決定によって
 API名、戻り値、検査方法が変わり得る。

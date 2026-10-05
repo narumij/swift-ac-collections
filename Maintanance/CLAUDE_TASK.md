@@ -18,10 +18,12 @@ The worktree was clean when this standing assignment was written.
 ### Communication
 
 - Respond directly to the user. There is no active Codex integrator to receive hidden detail.
-- Keep reports concise, but state evidence, blockers, trade-offs, and user decisions that matter.
-- Do not use the old `完了`-only convention when it would hide information the user now needs to
-  make a decision. `完了` alone is still fine for a routine task whose requested outcome and
-  validation are unambiguous.
+- Default to low-information reports. Give the outcome, any actual problem, and the next user
+  decision or action only. Do not proactively explain background, commands, evidence, or every
+  consideration; the user will ask when more detail is wanted.
+- `完了` alone is preferred for a routine task whose requested outcome and validation are
+  unambiguous. Expand without being asked only for a blocker, safety/correctness problem, failed
+  validation, irreversible action, or a decision that only the user can make.
 - Personal observations remain optional. Do not manufacture a feeling, but you may speak in your
   own voice or append to `CLAUDE_OBSERVATIONS.md` when useful.
 - If prior intent is unclear, ask the user rather than attributing an unstated decision to Codex.
@@ -88,7 +90,43 @@ instruction and prepare the handoff for Codex if requested.
 
 ### Result / handoff
 
-Pending. No work has been performed under this standing assignment yet.
+**2026-10-05, Claude Opus 5.5, on `develop/misc/49`.** No code or commit yet; worktree was clean
+apart from this file.
+
+User decisions:
+
+- `PERFORMANCE_REGRESSION_BISECTION.md` publication level (the question left open in the
+  performance-incident retrospective review): closed, no edit. The user accepts that the mechanism
+  is partly inferable from public records, as long as the correct answer is not trivially
+  obtainable. The rule-only guidance above is the intended safeguard.
+- P10 design-record update after the Index integration: deferred to Codex; not urgent.
+- Index completion gate (`Comparable`, `SealError` separation, completion scope): deferred to
+  Codex.
+
+Confirmed state, no action taken:
+
+- `index(inserting:)` and `erase(exactly:)` exist only on Set and MultiMap. MultiSet and
+  Dictionary are still unimplemented, matching the TODO cells in `API-Matrix.md`. The user had
+  believed they were done.
+- Bound DSL `.advanced(limit:)` propagation is already fixed by `747c0486`.
+- User policy: if Test as Specification is solid, that is enough. Only paths it cannot reach need
+  internal tests.
+- Under that policy, the `unsafeAddress` / `unsafeMutableAddress` accessor item in
+  `RED_BLACK_TREE_REMAINING_TASKS.md` reduces to running Test as Specification in Release.
+  - CI's `release` job already does this with `swift test -c release`.
+  - The public accessors are covered by numbered tests with no `#if DEBUG` gating:
+    - Set `[position]` in `_2`;
+    - MultiSet `[position]` in `_5` and `_6`;
+    - Dictionary `[key, default:]` (`unsafeMutableAddress`) in `_5`.
+  - The internal accessors are reached through these public paths.
+  - Closed: the user treated Codex's uncommitted edit as irregular and allowed touching it, so the
+    item is now checked in `RED_BLACK_TREE_REMAINING_TASKS.md`. The TODO comment in
+    `RedBlackTreeMultiMap+Subscript.swift` is removed. The user then added `// TODO: またいつか試す`,
+    an intent to retry the accessor later, not a test gap.
+  - Not run: no local Release run. CI runs only on push, which is the user's call; the user chose
+    to defer the full run to that point.
+- `PROGRESS_OVERVIEW.md`, `RED_BLACK_TREE_REMAINING_TASKS.md`, and `Tests/TESTING.md` still
+  describe the Index PoC as frozen or pending, so they predate the PR #158 merge. Not edited.
 
 ## Completed assignment: update Claude's user assessment and reflection
 

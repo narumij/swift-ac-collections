@@ -10,7 +10,7 @@
 
       #expect(set.isValid(.index(set.startIndex)))
       #expect(!set.isValid(.index(set.endIndex)))
-      #expect(!set.isValid(.index(.failure(.null))))
+      #expect(!set.isValid(.index(.nullptr)))
     }
   }
 #endif

@@ -1,32 +1,26 @@
-// TODO: 模索の痕跡がのこっていて散らかっているので、要点に沿って整理しなおすか、廃止するか、いずれかを次回ジャッジ更新までに行うこと
-
 extension Collection where Index == Int {
 
-  /// 単に辞書順の操作をするだけのもの
+  /// Yields the current element order, then its lexicographic successors one at a time.
   ///
-  /// C++のnext_permutationの挙動をmapやfilterで使う場合はこちら。
+  /// This mirrors the behavior of C++'s `next_permutation`:
+  ///
+  /// - The current order is always yielded first.
+  /// - Only the lexicographic successors of that starting order are yielded afterward; this is
+  ///   not a full enumeration of every permutation.
+  /// - Elements that compare equal do not produce duplicate value orderings.
+  /// - A descending order, all-equal elements, a single element, and an empty collection each
+  ///   yield only the current order once.
+  /// - Results already yielded by the iterator remain unchanged as iteration advances.
+  ///
+  /// Advancing by one step is worst-case O(n).
+  ///
+  /// If you need every permutation rather than only the lexicographic successors of the
+  /// current order, use `swift-algorithms`'s `permutations()` instead.
   @inlinable
   @inline(__always)
   public func nextPermutations() -> Permutations<Self>.Nexts
   where Element: Comparable {
-    .init(safe: self)
-  }
-
-  /// 単に辞書順の操作をするだけのもの
-  ///
-  /// C++のnext_permutationの挙動をfor文で使う場合はこちらも利用できます。
-  @inlinable
-  @inline(__always)
-  public func unsafeNextPermutations() -> Permutations<Self>.Nexts
-  where Element: Comparable {
-    .init(unsafe: self)
-  }
-
-  /// 全通りをしっかりpermutationsするが、CoWをさっぱりしないもの
-  @inlinable
-  @inline(__always)
-  public func unsafePermutations() -> Permutations<Self>.All {
-    .init(unsafe: self)
+    .init(self)
   }
 }
 
@@ -34,130 +28,38 @@ public
   enum Permutations<C> where C: Collection, C.Index == Int
 {}
 
+extension Permutations: Sendable {}
+
 extension Permutations {
 
-  public struct All: Sequence {
-    @usableFromInline
-    let source: C
-
-    @usableFromInline
-    var _unsafe: Bool
-
-    @inlinable
-    @inline(__always)
-    public init(unsafe source: C) {
-      self.source = source
-      _unsafe = true
-    }
-
-    @inlinable
-    @inline(__always)
-    public init(safe source: C) {
-      self.source = source
-      _unsafe = false
-    }
-
-    @inlinable
-    @inline(__always)
-    public func makeIterator() -> IteratorA {
-      .init(
-        elementBuffer: .prepare(source: source),
-        buffer: .prepare(count: source.count),
-        _unsafe: _unsafe)
-    }
-  }
-
+  /// The sequence returned by `nextPermutations()`.
   public struct Nexts: Sequence where C.Element: Comparable {
     @usableFromInline
     let source: C
 
-    @usableFromInline
-    var _unsafe: Bool
-
     @inlinable
     @inline(__always)
-    public init(unsafe source: C) {
+    internal init(_ source: C) {
       self.source = source
-      _unsafe = true
-    }
-
-    @inlinable
-    @inline(__always)
-    public init(safe source: C) {
-      self.source = source
-      _unsafe = false
     }
 
     @inlinable
     @inline(__always)
     public func makeIterator() -> IteratorN {
-      .init(
-        elementBuffer: .prepare(source: source),
-        _unsafe: _unsafe)
+      .init(elementBuffer: .prepare(source: source))
     }
   }
 
-  public
-    struct IteratorA: IteratorProtocol
-  {
-    @inlinable
-    @inline(__always)
-    internal init(
-      elementBuffer: Buffer<C.Element>,
-      buffer: Buffer<Int>,
-      _unsafe: Bool
-    ) {
-      self.elementBuffer = elementBuffer
-      self.indexBuffer = buffer
-      self._unsafe = _unsafe
-    }
-
-    @usableFromInline
-    let elementBuffer: Buffer<C.Element>
-    @usableFromInline
-    var indexBuffer: Buffer<Int>
-    @usableFromInline
-    var start = true
-    @usableFromInline
-    var end = false
-    @usableFromInline
-    var _unsafe: Bool
-
-    @inlinable
-    @inline(__always)
-    mutating func ensureUnique() {
-      if !isKnownUniquelyReferenced(&indexBuffer) {
-        indexBuffer = indexBuffer.copy()
-      }
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> SubSequenceA? {
-      guard !end else { return nil }
-      if start {
-        start = false
-      } else {
-        if !_unsafe {
-          ensureUnique()
-        }
-        end = !indexBuffer.nextPermutation()
-      }
-      return end ? nil : SubSequenceA(elementBuffer: elementBuffer, buffer: indexBuffer)
-    }
-  }
-
+  /// The iterator for `Nexts`.
   public
     struct IteratorN: IteratorProtocol where C.Element: Comparable
   {
     @inlinable
     @inline(__always)
     internal init(
-      elementBuffer: Buffer<C.Element>,
-      _unsafe: Bool
+      elementBuffer: Buffer<C.Element>
     ) {
       self.elementBuffer = elementBuffer
-      self._unsafe = _unsafe
     }
 
     @usableFromInline
@@ -166,8 +68,6 @@ extension Permutations {
     var start = true
     @usableFromInline
     var end = false
-    @usableFromInline
-    var _unsafe: Bool
 
     @inlinable
     @inline(__always)
@@ -184,15 +84,19 @@ extension Permutations {
       if start {
         start = false
       } else {
-        if !_unsafe {
-          ensureUnique()
-        }
+        ensureUnique()
         end = !elementBuffer.nextPermutation()
       }
       return end ? nil : SubSequenceN(elementBuffer: elementBuffer)
     }
   }
 }
+
+extension Permutations.Nexts: Sendable where C: Sendable {}
+
+// `IteratorN` is the only mutation gateway for its buffer. Before advancing, it
+// detaches whenever another iterator or a yielded `SubSequenceN` shares storage.
+extension Permutations.IteratorN: @unchecked Sendable where C.Element: Sendable {}
 
 extension Permutations {
 
@@ -215,37 +119,21 @@ extension Permutations {
   }
 
   @usableFromInline
-  class Buffer<Element>: ManagedBuffer<Header, Element> {
+  final class Buffer<Element>: ManagedBuffer<Header, Element> {
 
     public typealias Element = Element
 
     @inlinable
     deinit {
-      self.withUnsafeMutablePointers { header, elements in
-        elements.deinitialize(count: header.pointee.count)
-        header.deinitialize(count: 1)
+      unsafe self.withUnsafeMutablePointers { header, elements in
+        unsafe elements.deinitialize(count: header.pointee.count)
+        unsafe header.deinitialize(count: 1)
       }
     }
   }
 
-  public
-    struct SubSequenceA
-  {
-    @inlinable
-    @inline(__always)
-    internal init(
-      elementBuffer: Buffer<C.Element>,
-      buffer: Buffer<Int>
-    ) {
-      self.elementBuffer = elementBuffer
-      self.indexBuffer = buffer
-    }
-    @usableFromInline
-    let elementBuffer: Buffer<C.Element>
-    @usableFromInline
-    var indexBuffer: Buffer<Int>
-  }
-
+  /// One element order yielded by `Nexts`. Remains unchanged once yielded, even as the
+  /// iterator advances further.
   public
     struct SubSequenceN
   {
@@ -262,24 +150,9 @@ extension Permutations {
 
 }
 
-extension Permutations.SubSequenceA: RandomAccessCollection {
-  @inlinable
-  @inline(__always)
-  public var startIndex: Int { indexBuffer.startIndex }
-  @inlinable
-  @inline(__always)
-  public var endIndex: Int { indexBuffer.endIndex }
-  public typealias Index = Int
-  public typealias Element = C.Element
-  @inlinable
-  @inline(__always)
-  public subscript(position: Int) -> C.Element {
-    elementBuffer[indexBuffer[position]]
-  }
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    public var _copyCount: UInt { indexBuffer.header.copyCount }
-  #endif
-}
+// A yielded subsequence only reads its buffer. Any iterator that still shares
+// that buffer detaches before its next mutation, so an existing value is stable.
+extension Permutations.SubSequenceN: @unchecked Sendable where C.Element: Sendable {}
 
 extension Permutations.SubSequenceN: RandomAccessCollection {
   @inlinable
@@ -293,7 +166,8 @@ extension Permutations.SubSequenceN: RandomAccessCollection {
   @inlinable
   @inline(__always)
   public subscript(position: Int) -> C.Element {
-    elementBuffer[position]
+    precondition(position >= startIndex && position < endIndex, "Index out of range")
+    return elementBuffer[position]
   }
   #if AC_COLLECTIONS_INTERNAL_CHECKS
     public var _copyCount: UInt { elementBuffer.header.copyCount }
@@ -306,14 +180,8 @@ extension Permutations.Buffer {
 
   @inlinable
   @inline(__always)
-  var __header_ptr: UnsafeMutablePointer<Permutations.Header> {
-    withUnsafeMutablePointerToHeader({ $0 })
-  }
-
-  @inlinable
-  @inline(__always)
-  var __storage_ptr: UnsafeMutablePointer<Element> {
-    withUnsafeMutablePointerToElements({ $0 })
+  @unsafe var __storage_ptr: UnsafeMutablePointer<Element> {
+    unsafe withUnsafeMutablePointerToElements({ unsafe $0 })
   }
 
   @usableFromInline
@@ -321,13 +189,13 @@ extension Permutations.Buffer {
 
   @inlinable
   @inline(__always)
-  var isEmpty: Bool { __header_ptr.pointee.count == 0 }
+  var isEmpty: Bool { header.count == 0 }
   @inlinable
   @inline(__always)
   var startIndex: Index { 0 }
   @inlinable
   @inline(__always)
-  var endIndex: Index { __header_ptr.pointee.count }
+  var endIndex: Index { header.count }
 
   @inlinable
   @inline(__always)
@@ -349,9 +217,12 @@ extension Permutations.Buffer {
   @inlinable
   subscript(position: Index) -> Element {
     @inline(__always)
-    get { __storage_ptr[position] }
+    get { unsafe __storage_ptr[position] }
     @inline(__always)
-    _modify { yield &__storage_ptr[position] }
+    _modify {
+      let storage = unsafe __storage_ptr
+      yield unsafe &storage[position]
+    }
   }
 }
 
@@ -365,7 +236,7 @@ extension Permutations.Buffer {
     let storage = Permutations.Buffer<Element>.create(minimumCapacity: capacity) { _ in
       Permutations.Header(capacity: capacity, count: 0)
     }
-    return unsafeDowncast(storage, to: Self.self)
+    return unsafe unsafeDowncast(storage, to: Self.self)
   }
 
   @inlinable
@@ -374,6 +245,7 @@ extension Permutations.Buffer {
 
     let capacity = newCapacity ?? self.header.capacity
     let count = self.header.count
+    precondition(capacity >= count, "Capacity must accommodate initialized elements")
     #if AC_COLLECTIONS_INTERNAL_CHECKS
       let copyCount = self.header.copyCount
     #endif
@@ -386,37 +258,12 @@ extension Permutations.Buffer {
       newStorage.header.copyCount = copyCount &+ 1
     #endif
 
-    self.withUnsafeMutablePointerToElements { oldElements in
-      newStorage.withUnsafeMutablePointerToElements { newElements in
-        newElements.initialize(from: oldElements, count: count)
+    unsafe self.withUnsafeMutablePointerToElements { oldElements in
+      unsafe newStorage.withUnsafeMutablePointerToElements { newElements in
+        unsafe newElements.initialize(from: oldElements, count: count)
       }
     }
 
-    return newStorage
-  }
-}
-
-extension Permutations.Buffer {
-
-  @inlinable
-  @inline(__always)
-  static func prepare(count: Int) -> Permutations.Buffer<Element>
-  where Element == Int {
-
-    let capacity = count
-    let count = count
-
-    let newStorage = Permutations.Buffer<Element>.create(withCapacity: capacity)
-    newStorage.header.capacity = capacity
-    newStorage.header.count = count
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      newStorage.header.copyCount = 0
-    #endif
-    newStorage.withUnsafeMutablePointerToElements { newElements in
-      for i in 0..<count {
-        (newElements + Int(i)).initialize(to: i)
-      }
-    }
     return newStorage
   }
 }
@@ -438,19 +285,11 @@ extension Permutations.Buffer {
       newStorage.header.copyCount = 0
     #endif
 
-    #if false
-      source.withUnsafeBufferPointer { sourceElements in
-        newStorage.withUnsafeMutablePointerToElements { newElements in
-          newElements.initialize(from: sourceElements.baseAddress!, count: count)
-        }
+    unsafe newStorage.withUnsafeMutablePointerToElements { newElements in
+      source.enumerated().forEach { i, v in
+        unsafe (newElements + i).initialize(to: v)
       }
-    #else
-      newStorage.withUnsafeMutablePointerToElements { newElements in
-        source.enumerated().forEach { i, v in
-          (newElements + i).initialize(to: v)
-        }
-      }
-    #endif
+    }
     return newStorage
   }
 }

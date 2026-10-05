@@ -140,8 +140,8 @@ lower-bound と upper-bound を使って同様の範囲を表現できます。
 | `insert(value)` | `insert(_:)` | ✅ | ソート順を維持する |
 | 重複要素の挿入を拒否 | `insert(_:)` | ✅ | 同値な要素は重複して追加されない |
 | `emplace(...)` | 値を構築して `insert(_:)` | △ | C++ の in-place construction に直接対応する API はない |
-| `emplace_hint(...)` | — | ❌ | C++ の emplacement / hint API は採用していない |
-| `insert(hint, value)` | — | ❌ | hint 付き挿入は既存 API と semantics が異なる |
+| `emplace_hint(...)` | `insert(_:hint:)` | △ | hint は利用できるが、C++ の in-place construction semantics はない |
+| `insert(hint, value)` | `insert(_:hint:)` | ✅ | 戻り値は `(inserted, indexAfterInsert)`。通常構成のみ |
 | range insertion | `Sequence` ベースの初期化 / 挿入 | △ | Swift では iterator pair より `Sequence` を使う |
 
 Swift 標準 `Set` と `RedBlackTreeSet` はどちらも、
@@ -160,11 +160,8 @@ C++ の `std::set::insert` には、
 root から挿入位置を探索する処理を省略できるため、
 挿入を高速化できる場合があります。
 
-ただし、hint 付き `insert` は通常の `insert` と
-戻り値や API semantics が異なります。
-
-`RedBlackTreeSet` では、
-C++ と同じ形式の hint 付き挿入 API は提供しません。
+`RedBlackTreeSet`では`insert(_:hint:)`を提供します。`endIndex`も有効なhintで、
+不適切なhintは結果を変えず、性能だけに影響します。戻り値の形はC++と異なります。
 
 ### Emplacement
 
@@ -632,7 +629,6 @@ iterator model などと強く結びついており、
 - `extract()` による node の切り離し
 - node transfer を利用した `merge()`
 - `emplace()` / `emplace_hint()` の C++ と同一の construction semantics
-- hint 付き `insert`
 - container ごとに保持する comparator object
 
 一方、`Index` はCoWで分岐した木でも対応するnodeを追跡する位置handleとして

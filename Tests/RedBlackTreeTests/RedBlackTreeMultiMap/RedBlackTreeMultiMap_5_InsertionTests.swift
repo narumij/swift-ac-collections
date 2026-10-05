@@ -49,6 +49,19 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(map.map(\.key), [1, 1, 1, 2, 3, 4])
     }
 
+    /// `insert(_:hint:)`は、std::multimapと同様にhintが示す位置そのものへ挿入する。
+    /// hintが同値キー群の途中を指す場合、新しいpairは末尾ではなくその途中へ入る
+    /// (通常の`insert(_:)`が常に同値キー群の末尾へ追加するのとは異なる)。
+    /// 2026-10-03にユーザー確認: C++の`std::multimap::insert(hint, value)`に倣う。
+    func test_insertWithHint_placesNewPairAtHintPositionWithinEquivalentKeyGroup() {
+      var map: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "b"), (1, "c")]
+      let hint = map.index(after: map.startIndex)  // "b"を指す
+
+      map.insert((1, "X"), hint: hint)
+
+      XCTAssertEqual(map.map(\.value), ["a", "X", "b", "c"])
+    }
+
     func test_updateValue_replacesOnlyTheSpecifiedDuplicatePosition() {
       var map: RedBlackTreeMultiMap<Int, String> = [(1, "first"), (1, "middle"), (1, "last")]
       let index = map.index(after: map.startIndex)

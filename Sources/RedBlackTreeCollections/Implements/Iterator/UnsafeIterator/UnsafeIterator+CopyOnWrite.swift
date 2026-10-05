@@ -68,19 +68,4 @@
   }
 
   extension UnsafeIterator._CopyOnWrite: @unchecked Sendable where Source: Sendable {}
-
-  extension UnsafeIterator._CopyOnWrite: ObverseIterator
-  where
-    Source: ObverseIterator,
-    Source.ReversedIterator: UnsafeAssosiatedIterator & Sequence,
-    Source.ReversedIterator.Base == Source.Base
-  {
-    @inlinable
-    public func reversed() -> UnsafeIterator._CopyOnWrite<Source.ReversedIterator> {
-      .init(_source: source.reversed(), tree: tree)
-    }
-  }
-
-  extension UnsafeIterator._CopyOnWrite: ReverseIterator
-  where Source: ReverseIterator {}
 #endif

@@ -29,21 +29,25 @@
     public typealias Index = RedBlackTreeIndex
   }
 
-  extension RedBlackTreeDictionary {
 
+  extension RedBlackTreeDictionary {
     @inlinable
-    func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
+    func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
       __tree_.index(p)
     }
-    
+
     @inlinable
-    func ___index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
+    func ___index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
       __tree_.index_or_nil(p)
     }
   }
 
   extension RedBlackTreeDictionary {
-    /// - Complexity: O( log `count` )
+    /// Returns the index of the element with the given key.
+    ///
+    /// - Parameter key: The key to find.
+    /// - Returns: The matching index, or `nil` if the dictionary doesn't contain `key`.
+    /// - Complexity: O(log `count`)
     @inlinable
     public func firstIndex(of key: Key) -> Index? {
       ___index_or_nil(__tree_.update { $0.find_first(key) })
@@ -51,7 +55,11 @@
   }
 
   extension RedBlackTreeDictionary {
-    /// - Complexity: O( log `count` )
+    /// Returns the index of the element with the given key.
+    ///
+    /// - Parameter key: The key to find.
+    /// - Returns: The matching index, or `nil` if the dictionary doesn't contain `key`.
+    /// - Complexity: O(log `count`)
     @inlinable
     public func index(forKey key: Key) -> Index? {
       ___index_or_nil(__tree_.update { $0.find_first(key) })
@@ -60,10 +68,14 @@
 
   extension RedBlackTreeDictionary {
 
+    /// The position of the first element in a nonempty dictionary.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public var startIndex: Index { ___index(_start) }
 
+    /// The dictionary's “past the end” position.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public var endIndex: Index { ___index(_end) }
@@ -71,6 +83,15 @@
 
   extension RedBlackTreeDictionary {
 
+    /// Returns the distance between two indices.
+    ///
+    /// The result is negative when `end` precedes `start`.
+    ///
+    /// - Parameters:
+    ///   - start: A valid index of this dictionary.
+    ///   - end: Another valid index of this dictionary.
+    /// - Returns: The number of index steps from `start` to `end`.
+    /// - Precondition: Both indices are valid for this dictionary.
     /// - Complexity: O(log *n* + *k*)
     @inlinable
     public func distance(from start: Index, to end: Index)
@@ -125,7 +146,11 @@
 
   extension RedBlackTreeDictionary {
 
-    /// - Complexity: O( log `count` )
+    /// Returns the index of the element with the given key.
+    ///
+    /// - Parameter key: The key to find.
+    /// - Returns: The matching index, or `endIndex` if the dictionary doesn't contain `key`.
+    /// - Complexity: O(log `count`)
     @inlinable
     public func find(_ key: Key) -> Index {
       ___index(__tree_.find(key))
@@ -134,6 +159,13 @@
 
   extension RedBlackTreeDictionary {
 
+    /// Returns the range of indices containing the element with the given key.
+    ///
+    /// A dictionary contains at most one matching key. If `key` isn't present,
+    /// the returned range is empty at the position where it could be inserted.
+    ///
+    /// - Parameter key: The key whose range to find.
+    /// - Returns: A half-open range from `lowerBound(key)` to `upperBound(key)`.
     /// - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func equalRange(_ key: Key) -> RedBlackTreeIndexRange {
@@ -144,24 +176,35 @@
 
   extension RedBlackTreeDictionary {
 
+    /// Returns the position immediately before the given index.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public func index(before i: Index) -> Index {
       __tree_.prev_iter(i)
     }
 
+    /// Returns the position immediately after the given index.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public func index(after i: Index) -> Index {
       __tree_.next_iter(i)
     }
 
+    /// Returns an index that is the specified distance from the given index.
+    ///
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(_ i: Index, offsetBy distance: Int) -> Index {
       __tree_.adv_iter(i, offsetBy: distance)
     }
 
+    /// Returns an index at the specified distance, unless movement would pass `limit`.
+    ///
+    /// Reaching `limit` exactly succeeds. The method returns `nil` only when the
+    /// requested movement would pass the limit in the direction of travel.
+    ///
     /// - Complexity: O(`distance`)
     @inlinable
     public func index(
@@ -173,24 +216,35 @@
 
   extension RedBlackTreeDictionary {
 
+    /// Replaces the given index with its predecessor.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public func formIndex(before i: inout Index) {
       i = __tree_.prev_iter(i)
     }
 
+    /// Replaces the given index with its successor.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public func formIndex(after i: inout Index) {
       i = __tree_.next_iter(i)
     }
 
+    /// Offsets the given index by the specified distance.
+    ///
     /// - Complexity: O(*d*)
     @inlinable
     public func formIndex(_ i: inout Index, offsetBy distance: Int) {
       i = __tree_.adv_iter(i, offsetBy: distance)
     }
 
+    /// Offsets the given index unless movement would pass `limit`.
+    ///
+    /// Reaching `limit` exactly succeeds and returns `true`. If movement would
+    /// pass the limit, the index is moved to `limit` and the method returns `false`.
+    ///
     /// - Complexity: O(*d*)
     @inlinable
     public func formIndex(
@@ -212,6 +266,8 @@
     /// `endIndex` is a valid collection boundary, but it is not an element,
     /// so this method returns `false` for `endIndex`.
     ///
+    /// - Parameter index: The index to validate.
+    /// - Returns: `true` if `index` identifies an accessible element of this dictionary; otherwise, `false`.
     /// - Complexity: O(1)
     @inlinable
     public func isElement(at index: Index) -> Bool {
@@ -222,6 +278,8 @@
     ///
     /// An invalid or stale index returns `false`.
     ///
+    /// - Parameter index: The index to validate.
+    /// - Returns: `true` if `index` is this dictionary's `endIndex`; otherwise, `false`.
     /// - Complexity: O(1)
     @inlinable
     public func isEnd(_ index: Index) -> Bool {

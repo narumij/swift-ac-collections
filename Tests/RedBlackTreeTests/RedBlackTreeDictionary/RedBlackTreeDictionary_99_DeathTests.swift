@@ -7,14 +7,14 @@
 
     @Test
     func duplicateKeysInUniqueKeysInitializer_terminateProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         _ = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: [(1, 1), (1, 2)])
       }
     }
 
     @Test
     func removingFirstFromEmptyDictionary_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var dictionary = RedBlackTreeDictionary<Int, Int>()
         dictionary.removeFirst()
       }
@@ -22,7 +22,7 @@
 
     @Test
     func removingLastFromEmptyDictionary_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var dictionary = RedBlackTreeDictionary<Int, Int>()
         dictionary.removeLast()
       }
@@ -31,7 +31,7 @@
     #if !COMPATIBLE_ATCODER_2025
       @Test
       func emptyStartIndexSubscript_terminatesProcess() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
           let dictionary = RedBlackTreeDictionary<Int, Int>()
           _ = dictionary[dictionary.startIndex]
         }
@@ -39,7 +39,7 @@
 
       @Test
       func removingEmptyStartIndex_terminatesProcess() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
           var dictionary = RedBlackTreeDictionary<Int, Int>()
           dictionary.remove(at: dictionary.startIndex)
         }
@@ -47,7 +47,7 @@
 
       @Test
       func removingEndIndex_terminatesProcess() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
           var dictionary = RedBlackTreeDictionary<Int, Int>(
             uniqueKeysWithValues: (0..<100).map { ($0, $0) }
           )
@@ -132,7 +132,7 @@
 
       @Test
       func endIndexSubscript_terminatesProcess() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
           let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
           _ = dictionary[dictionary.endIndex]
         }
@@ -259,6 +259,94 @@
           _ = dictionary.formIndex(&i, offsetBy: 1, limitedBy: dictionary.startIndex)
         }
         expectNoInvalidMemoryAccess(result2)
+      }
+
+      @Test
+      func indexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          var dictionary: RedBlackTreeDictionary = [0: 0, 1: 1, 2: 2]
+          let start = dictionary.startIndex
+          let staleLimit = dictionary.index(after: start)
+          dictionary.remove(at: staleLimit)
+          _ = dictionary.index(start, offsetBy: 1, limitedBy: staleLimit)
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func formIndexOffsetByLimitedByStaleLimit_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          var dictionary: RedBlackTreeDictionary = [0: 0, 1: 1, 2: 2]
+          var start = dictionary.endIndex
+          let staleLimit = dictionary.index(before: start)
+          dictionary.remove(at: staleLimit)
+          _ = dictionary.formIndex(&start, offsetBy: -1, limitedBy: staleLimit)
+        }
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func mappedValuesSubscriptWithErasedIndex_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          var dictionary: RedBlackTreeDictionary = [0: "a", 1: "b"]
+          let stale = dictionary.startIndex
+          dictionary.remove(at: stale)
+          _ = dictionary.values[stale]
+        }
+
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func mappedValuesAssignmentWithErasedIndex_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          var dictionary: RedBlackTreeDictionary = [0: "a", 1: "b"]
+          let stale = dictionary.startIndex
+          dictionary.remove(at: stale)
+          dictionary.values[stale] = "stale"
+        }
+
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func mappedValuesSwapWithErasedIndex_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          var dictionary: RedBlackTreeDictionary = [0: "a", 1: "b"]
+          let stale = dictionary.startIndex
+          dictionary.remove(at: stale)
+          dictionary.values.swapAt(stale, dictionary.startIndex)
+        }
+
+        expectNoInvalidMemoryAccess(result)
+      }
+
+      @Test
+      func mappedValuesSubscriptAtTreeEnd_terminatesWithoutInvalidMemoryAccess() async {
+        let result = await #expect(
+          processExitsWith: .failure,
+          observing: [\.standardErrorContent]
+        ) {
+          let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b"]
+          _ = dictionary.values[dictionary.endIndex]
+        }
+
+        expectNoInvalidMemoryAccess(result)
       }
 
       private func expectNoInvalidMemoryAccess(_ result: ExitTest.Result?) {

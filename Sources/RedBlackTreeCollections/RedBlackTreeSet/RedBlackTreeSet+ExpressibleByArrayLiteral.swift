@@ -24,7 +24,10 @@
 
 extension RedBlackTreeSet: ExpressibleByArrayLiteral {
 
-  /// - Complexity: O(*n* log *n* + *n*)
+  /// Creates a set from an array literal, discarding duplicate elements.
+  ///
+  /// - Parameter elements: The elements of the literal.
+  /// - Complexity: O(*n* log *n*), where *n* is the number of literal elements.
   @inlinable
   public init(arrayLiteral elements: Element...) {
     self.init(elements)

@@ -79,3 +79,35 @@ extension RedBlackTreeSetProtocolConformanceTests {
     }
   #endif
 }
+
+// MARK: - elementsEqual / lexicographicallyPrecedes
+extension RedBlackTreeSetProtocolConformanceTests {
+
+  func test_elementsEqual_trueForSameElementsInOrder() {
+    let set: RedBlackTreeSet = [1, 2, 3]
+    XCTAssertTrue(set.elementsEqual([1, 2, 3]))
+  }
+
+  func test_elementsEqual_falseForDifferentElements() {
+    let set: RedBlackTreeSet = [1, 2, 3]
+    XCTAssertFalse(set.elementsEqual([1, 2, 4]))
+  }
+
+  func test_lexicographicallyPrecedes_trueWhenSmallerAtFirstDifference() {
+    let set: RedBlackTreeSet = [1, 2, 3]
+    XCTAssertTrue(set.lexicographicallyPrecedes([1, 2, 4]))
+  }
+
+  func test_lexicographicallyPrecedes_falseWhenEqualOrGreater() {
+    let set: RedBlackTreeSet = [1, 2, 3]
+    XCTAssertFalse(set.lexicographicallyPrecedes([1, 2, 3]))
+    XCTAssertFalse(set.lexicographicallyPrecedes([1, 2, 2]))
+  }
+
+  func test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix() {
+    let shorter: RedBlackTreeSet = [1, 2]
+    let longer: RedBlackTreeSet = [1, 2, 3]
+    XCTAssertTrue(shorter.lexicographicallyPrecedes(longer))
+    XCTAssertFalse(longer.lexicographicallyPrecedes(shorter))
+  }
+}

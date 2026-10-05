@@ -23,7 +23,8 @@
 // 資料的に残されている
 //
 // 実際には特殊化されたものをつかっている
-public protocol _BaseNode_KeyProtocol:
+@usableFromInline
+package protocol _BaseNode_KeyProtocol:
   ~Copyable,
   _BaseNode_KeyInterface
     & _BasePayloadValue_KeyInterface
@@ -40,7 +41,7 @@ extension _BaseNode_KeyProtocol where Self: ~Copyable {
   //
   // `__key(_:)`が定義されてる場合に`__get_value(_:)`を定義する
   @inlinable
-  public static func __get_value(_ p: _NodePtr) -> _Key {
+  package static func __get_value(_ p: _NodePtr) -> _Key {
     __key(__value_(p))
   }
 }

@@ -13,7 +13,7 @@
   struct RedBlackTreeInternalCoverageTests {
 
     @Test func `_TrackingTagSealing.sealのカバレッジ確保`() async throws {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         _ = _TrackingTagSealing.seal(raw: .min, seal: 0)
       }
     }

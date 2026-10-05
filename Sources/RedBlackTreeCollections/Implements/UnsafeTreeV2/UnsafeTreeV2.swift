@@ -211,6 +211,36 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2 {
 
+  #if ALLOW_CROSS_TREE_INDEX
+    @inlinable
+    package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
+      #if USE_LAZY_DETACH
+        withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+          ? index.sealed.purified
+          : __retrieve_(index.sealed.purified.tag).deepPurified
+      #else
+        withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+          ? index.sealed.purified
+          : __retrieve_(index.tag).deepPurified
+      #endif
+    }
+  #else
+    @inlinable
+    package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
+      withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
+        ? index.sealed.purified
+        : .failure(.crossTree)
+    }
+  #endif
+
+  @inlinable
+  internal func __purified_safe_(_ index: _LazyTiedPtr) -> _SafePtr {
+    __purified_(index).map(\.pointer)
+  }
+}
+
+extension UnsafeTreeV2 {
+
   @inlinable
   internal func __purified_safe_(
     _ range: _RawRange<UnsafeIndexV3>

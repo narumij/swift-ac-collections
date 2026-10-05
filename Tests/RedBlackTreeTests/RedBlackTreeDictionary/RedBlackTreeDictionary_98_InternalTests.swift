@@ -12,7 +12,7 @@
 
       #expect(dictionary.isValid(.index(dictionary.startIndex)))
       #expect(!dictionary.isValid(.index(dictionary.endIndex)))
-      #expect(!dictionary.isValid(.index(.failure(.null))))
+      #expect(!dictionary.isValid(.index(.nullptr)))
     }
   }
 #endif

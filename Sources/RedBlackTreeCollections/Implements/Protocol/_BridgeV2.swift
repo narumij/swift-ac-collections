@@ -21,19 +21,19 @@
 //===----------------------------------------------------------------------===//
 
 // ベースのキー型を受け継ぐ
-public protocol _KeyBride: _BaseBridge & _KeyType
+@usableFromInline package protocol _KeyBride: _BaseBridge & _KeyType
 where _Key == Base._Key, Base: _KeyType {}
 
 // ベースの積載型を受け継ぐ
-public protocol _PayloadValueBride: _BaseBridge & _PayloadValueType
+@usableFromInline package protocol _PayloadValueBride: _BaseBridge & _PayloadValueType
 where _PayloadValue == Base._PayloadValue, Base: _PayloadValueType {}
 
 // ベースのバリュー型を受け継ぐ
-public protocol _MappedValueBride: _BaseBridge & _MappedValueType
+@usableFromInline package protocol _MappedValueBride: _BaseBridge & _MappedValueType
 where _MappedValue == Base._MappedValue, Base: _MappedValueType {}
 
 // ベースの要素型を受け継ぐ
-public protocol _ElementBride: _BaseBridge & _ElementType
+@usableFromInline package protocol _ElementBride: _BaseBridge & _ElementType
 where Element == Base.Element, Base: _ElementType {}
 
 // ツリー使用条件をインジェクションされる側の実装プロトコル

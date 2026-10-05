@@ -24,6 +24,9 @@
 - ``RedBlackTreeDictionary/last``
 - ``RedBlackTreeDictionary/min()``
 - ``RedBlackTreeDictionary/max()``
+- ``RedBlackTreeDictionary/description``
+- ``RedBlackTreeDictionary/debugDescription``
+- ``RedBlackTreeDictionary/customMirror``
 
 ### Accessing Keys and Values
 
@@ -67,13 +70,13 @@
 - ``RedBlackTreeDictionary/containsSubrange(_:)-6et6n``
 - ``RedBlackTreeDictionary/containsSubrange(_:)-ecvx``
 - ``RedBlackTreeDictionary/distance(from:to:)-1agrj``
-- ``RedBlackTreeDictionary/distance(from:to:)-1nyff``
+- ``RedBlackTreeDictionary/distance(from:to:)-26cz3``
 - ``RedBlackTreeDictionary/subscript(_:)-7ie0l``
-- ``RedBlackTreeDictionary/erase(_:)-88doh``
-- ``RedBlackTreeDictionary/erase(_:)-12h1o``
+- ``RedBlackTreeDictionary/erase(_:)-7e9wt``
+- ``RedBlackTreeDictionary/erase(_:)-tsqp``
 - ``RedBlackTreeDictionary/erase(_:)-2quii``
 - ``RedBlackTreeDictionary/erase(_:)-4l2hq``
-- ``RedBlackTreeDictionary/erase(_:)-7r9ok``
+- ``RedBlackTreeDictionary/erase(_:)-7b3q1``
 - ``RedBlackTreeDictionary/erase(_:where:)-18oym``
 - ``RedBlackTreeDictionary/erase(_:where:)-4atb3``
 - ``RedBlackTreeDictionary/erase(_:where:)-806jw``
@@ -98,7 +101,7 @@
 - ``RedBlackTreeDictionary/removeValue(forKey:)``
 - ``RedBlackTreeDictionary/removeAll(keepingCapacity:)``
 - ``RedBlackTreeDictionary/erase(where:)``
-- ``RedBlackTreeDictionary/erase(_:)-96i73``
+- ``RedBlackTreeDictionary/erase(_:)-1yrnu``
 
 ### Merging Dictionaries
 

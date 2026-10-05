@@ -12,7 +12,7 @@
 
       #expect(map.isValid(.index(map.startIndex)))
       #expect(!map.isValid(.index(map.endIndex)))
-      #expect(!map.isValid(.index(.failure(.null))))
+      #expect(!map.isValid(.index(.nullptr)))
     }
   }
 #endif

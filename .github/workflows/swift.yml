@@ -236,5 +236,19 @@ jobs:
 
       - name: Run tests with Address Sanitizer
         env:
-          ASAN_OPTIONS: detect_leaks=0
-        run: swift test -c debug --sanitize address --build-system native
+          ASAN_OPTIONS: detect_leaks=0:symbolize=1:abort_on_error=1:log_path=asan-logs/asan
+          SWIFT_BACKTRACE: enable=yes
+        shell: bash
+        run: |
+          mkdir -p asan-logs
+          set -o pipefail
+          swift test -c debug --sanitize address --build-system native 2>&1 \
+            | tee asan-logs/full-console.log
+
+      - name: Upload Address Sanitizer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: address-sanitizer-diagnostics
+          path: asan-logs
+          if-no-files-found: warn

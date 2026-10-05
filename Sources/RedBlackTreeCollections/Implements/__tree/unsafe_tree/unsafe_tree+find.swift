@@ -122,7 +122,7 @@ extension FindHintLeafProtocol_ptr where Self: ~Copyable {
         __prior = __tree_prev_iter(__prior)
         return __prior
       }
-      if __hint == end || !value_comp(__v, __get_value(prefixDecrement())) {
+      if __prior == __begin_node_ || !value_comp(__v, __get_value(prefixDecrement())) {
         // *prev(__hint) <= __v <= *__hint
         if __hint.__left_ == nullptr {
           __parent = __hint

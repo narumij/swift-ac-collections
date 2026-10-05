@@ -24,6 +24,14 @@
 
 extension RedBlackTreeDictionary {
 
+  /// Merges the key-value pairs of `other` into this dictionary.
+  ///
+  /// For duplicate keys, `combine` receives the current value followed by the
+  /// value from `other`, and its result becomes the stored value.
+  ///
+  /// - Parameters:
+  ///   - other: A dictionary whose key-value pairs to merge.
+  ///   - combine: A closure that resolves duplicate keys.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -43,6 +51,11 @@ extension RedBlackTreeDictionary {
   /// Merges the elements of `other` into the dictionary.
   /// If duplicate keys are encountered, the result of `combine` is used.
   ///
+  /// `combine` receives the current value followed by the value from `other`.
+  ///
+  /// - Parameters:
+  ///   - other: A sequence of key-value pairs to merge.
+  ///   - combine: A closure that resolves duplicate keys.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -58,6 +71,12 @@ extension RedBlackTreeDictionary {
     ) { Base.__payload_($0) }
   }
 
+  /// Returns a new dictionary by merging this dictionary with `other`.
+  ///
+  /// - Parameters:
+  ///   - other: A dictionary whose key-value pairs to merge.
+  ///   - combine: A closure that resolves duplicate keys, receiving the current value first.
+  /// - Returns: The merged dictionary without modifying either input.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable
@@ -72,6 +91,10 @@ extension RedBlackTreeDictionary {
 
   /// Returns a new dictionary by merging `self` and `other`.
   ///
+  /// - Parameters:
+  ///   - other: A sequence of key-value pairs to merge.
+  ///   - combine: A closure that resolves duplicate keys, receiving the current value first.
+  /// - Returns: The merged dictionary without modifying this dictionary.
   /// - Complexity: O(*n* log(*m + n*)), where *n* is the length of `other`
   ///   and *m* is the size of the current tree.
   @inlinable

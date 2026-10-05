@@ -7,7 +7,7 @@
 
     @Test
     func iteratorWhoseSourceWasMutated_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeSet((0..<5).map { $0 * 5 })
         var iterator = set[set.firstIndex(of: 5)!..<set.lowerBound(20)].makeIterator()
         set.remove(10)

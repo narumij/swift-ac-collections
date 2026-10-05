@@ -24,6 +24,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - raw range expression、node sealing、pointer比較、木の基本操作、赤黒木fixture、raw memory / allocationを直接検証する内部テストを追加
 
 ### Changed
+- staleな赤黒木Indexのsubscript・移動を`-Ounchecked`でも検査し、確保外メモリアクセス前に具体的な`SealError`診断で停止するよう変更
+- 赤黒木内部の三方比較機構 (`ThreeWayCompareResult`、`Int.__less()` / `__greater()`、関連alias / eager wrapper) をpublic APIからpackage内部境界へ縮小
+- KeyOnly / KeyValue Range ViewとMappedValues Viewの内部同一性hook `_isIdentical(to:)` をpublic APIから`@inlinable internal`へ縮小 (source-breaking。View同士の`==` / `<`の結果と計算量、4型の`isTriviallyIdentical(to:)`は変更なし)
+- Debug構成限定のtest fixture `RedBlackTreeBoundExpression.index(_:)` / `.debug(_:)` をpublic APIから`package`へ縮小 (Debug buildのみsource-breaking。Release構成には元々存在しない)
+- 旧世代のiterator `UnsafeIterator._Obverse1`〜`_Obverse3` / `_Reverse1`〜`_Reverse3` を`COMPATIBLE_ATCODER_2025`専用へ隔離 (通常構成ではsource-breaking。互換構成の挙動は変更なし)
+- 通常構成で適合型のない旧iterator protocol層 (`ObverseIterator`、`ReverseIterator`、`UnsafeIteratorProtocol`と、各wrapperの条件付き適合・`reversed()`) を`COMPATIBLE_ATCODER_2025`専用へ隔離 (通常構成ではsource-breaking。互換構成の挙動は変更なし)
+- 適合型もpublic signatureからの参照もない原木の参照用protocol (`_BaseKey_EquivInterface`、`_BaseNode_PtrUniqueCompInterface`、`_Base_MultiplicityHelperProtocol`、`_pointer_type`、`_BaseNode_KeyProtocol`と既定の`__get_value(_:)`) をpublic APIから`package`へ縮小 (source-breaking。宣言は移植用資料として保持し、挙動の変更なし)
+- 内部の関連型を橋渡しするprotocol (`_KeyBride`、`_PayloadValueBride`、`_MappedValueBride`、`_ElementBride`、`_Tree_IsMultiTraitInterface`) をpublic APIから`@usableFromInline package`へ縮小 (source-breaking。公開コンテナ／Viewの関連型と挙動は変更なし)
+- 要素の重複可否を内部型へ注入するprotocol (`UniqueMultiplicity`、`MultiMultiplicity`) をpublic APIから`package`へ縮小 (source-breaking。`isMulti` witness、関連型、4コンテナの挙動は変更なし)
+- node pointerの比較witnessを供給するprotocol (`_BaseNode_NodeCompareProtocol`) をpublic APIから`package`へ縮小 (source-breaking。`___ptr_comp` / `___ptr_range_comp` witnessと4コンテナの挙動は変更なし)
+- Debug限定の`SortedSequence`とsorted range union実験実装をproduction targetからテストコードへ移動
 - DocCの公開メンバーをSwift標準`Set`/`Dictionary`に近い利用目的別Topicsへ分類し、独自のIndex・Range・Bound APIと全オーバーロードへ具象型ページから辿れるように変更
 - Swift-DocCおよび`UInt128`を使用する通常構成に合わせ、パッケージのmacOS最小バージョンを15へ変更
 - BoundsExpression / RangeExpressionを現行のBound / Index Rangeモデルへ整理し、4型の範囲subscriptと範囲削除実装を共通化
@@ -39,6 +50,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set / MultiMapの`removeSafe(at:)`を`erase(exactly:)`へ改名し、戻り値を`Bool`から削除後の`Index?`へ変更
 
 ### Fixed
+- `OptionalArray3DView`のsubscriptが`depth`ではなく`height`を上限に使い、非立方形の4次元配列で有効位置を拒否または範囲外位置を許していた問題を修正
+- RedBlackTreeの4コンテナで、`Decodable`が未整列入力を木の順序へ正しく再構築するよう修正し、Set / Dictionaryの一意性とMultiSet / MultiMapの重複保持を回帰テストで確認
+- `OptionalArray1D` / `OptionalArray1DView`で、subscriptを通じて参照型要素を`nil`へ変更した際、`move()`済みのstorageを再度deinitializeして二重解放する問題を修正
 - 異なるツリー、削除済みnode、世代の異なる再利用slotに属するIndexを誤って有効と扱う問題を修正
 - Copy-on-Writeで分岐した木におけるIndex解決、node世代の継承、stale Index判定を修正
 - Bounds / Index Rangeの解決、距離、比較、条件付き削除、逆順・空範囲の処理を修正
@@ -52,6 +66,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 旧Array-based treeの重複実装をLegacyへ隔離し、復旧不能または現行テストと重複するテスト・補助実装を削除
 - 型別Test as Specificationへ移管済みの旧dictionary / multiset / multimap / fatalError / root直下テストを削除
 - `Bound`/`BoundRangeExpression`を引数に取る`isValid(_:)`を削除(評価が常に安全なため事前判定が不要。空判定は`collection[bounds].isEmpty`で代替)
+- PermutationModuleの全順列列挙系(`unsafePermutations()`、`Permutations.All`、`IteratorA`、`SubSequenceA`)および`unsafe`系の公開初期化経路(`unsafeNextPermutations()`、`Permutations.Nexts.init(safe:)`/`init(unsafe:)`)を削除し、`nextPermutations()`のみを公開APIとして残した(ソース破壊的変更)
+- Range Viewの`unranged()`と、それ専用のプロトコル(`ScalarBaseInit`/`KeyValueBaseInit`)および`_create(_:)`要件を削除(ソース破壊的変更)
 
 ## [0.4.4] - 2026-09-24
 

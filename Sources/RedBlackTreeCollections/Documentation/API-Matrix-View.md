@@ -18,7 +18,7 @@
 | --- | --- | --- | --- |
 | `RedBlackTreeKeyOnlyRangeView` | Set / MultiSet | Key | Keyの範囲をMutable Viewとして扱う |
 | `RedBlackTreeKeyValueRangeView` | MultiMap / Dictionary | `(Key, Value)` | Key-Valueの範囲をMutable Viewとして扱う |
-| `RedBlackTreeMappedValuesView` | KeyValue Range View | Value | KeyValue Viewのmapped valueをMutable Viewとして扱う |
+| `RedBlackTreeMappedValuesView` | MultiMap / Dictionary / KeyValue Range View | Value | mapped valueをMutable Viewとして扱う。MultiMapの `subscript(key:)`、Map系とKeyValue Range Viewの `values` が返す |
 
 ## 基本状態と参照
 
@@ -27,13 +27,10 @@
 | `startIndex` / `endIndex` | ✅ | ✅ | ✅ | View固有の半開範囲境界を返す |
 | `isEmpty` / `count` | ✅ | ✅ | ✅ | Viewの空判定または要素数を返す |
 | `first` / `last` | ✅ | ✅ | ✅ | View端の要素を返す |
-| `subscript(index:)` | — | — | ✅ | Index位置の要素を参照する |
-| `subscript(index:)` setter | — | — | ✅ | Index位置のmapped valueを更新する |
+| `subscript(position:)` | — | — | ✅ | Index位置の要素を参照する |
+| `subscript(position:)` setter | — | — | ✅ | Index位置のmapped valueを更新する |
 | `keys` | — | ✅ | — | KeyValue Viewのキーを遅延走査する |
 | `values` | — | ✅ | — | mapped valueを扱うMappedValues Viewを返す |
-| `unranged()` | ✅ | ✅ | — | Viewが保持するtreeから基底コンテナ値を取得する(削除検討中) |
-
-`unranged()` は実験的APIとする。
 
 ## Index
 
@@ -52,7 +49,11 @@
 | --- | :---: | :---: | :---: | --- |
 | `swapAt(_:_:)` | — | — | ✅ | 2つのIndex位置のmapped valueを交換する |
 
-MappedValues ViewのIndex更新については、View範囲内であることの検証を追加するTODOがある。
+MappedValues Viewの `subscript(position:)` と `swapAt(_:_:)` は O(1)。標準
+CollectionのIndex操作と同様、渡すIndexがView内の要素を指すことは呼び出し側の
+事前条件とし、操作ごとの範囲所属検査は行わない。無効化済み、世代不一致など、
+対象のtreeで要素へ安全に解決できないIndexは下層のIndex検証で拒否する。
+範囲所属を事前に確認する必要がある場合は `isElement(at:)` を明示的に使用する。
 
 ## 削除
 

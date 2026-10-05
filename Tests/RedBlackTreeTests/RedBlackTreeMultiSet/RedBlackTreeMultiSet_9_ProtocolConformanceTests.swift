@@ -14,6 +14,32 @@ extension RedBlackTreeMultiSetProtocolConformanceTests {
   }
 }
 
+// MARK: - elementsEqual / lexicographicallyPrecedes
+extension RedBlackTreeMultiSetProtocolConformanceTests {
+
+  func test_elementsEqual_trueForSameElementsInOrderIncludingDuplicates() {
+    let multiset: RedBlackTreeMultiSet = [1, 1, 2]
+    XCTAssertTrue(multiset.elementsEqual([1, 1, 2]))
+  }
+
+  func test_elementsEqual_falseWhenMultiplicityDiffers() {
+    let multiset: RedBlackTreeMultiSet = [1, 1, 2]
+    XCTAssertFalse(multiset.elementsEqual([1, 2, 2]))
+  }
+
+  func test_lexicographicallyPrecedes_trueWhenSmallerAtFirstDifference() {
+    let multiset: RedBlackTreeMultiSet = [1, 1, 2]
+    XCTAssertTrue(multiset.lexicographicallyPrecedes([1, 2, 2]))
+  }
+
+  func test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix() {
+    let shorter: RedBlackTreeMultiSet = [1, 1]
+    let longer: RedBlackTreeMultiSet = [1, 1, 2]
+    XCTAssertTrue(shorter.lexicographicallyPrecedes(longer))
+    XCTAssertFalse(longer.lexicographicallyPrecedes(shorter))
+  }
+}
+
 // MARK: - CustomStringConvertible
 extension RedBlackTreeMultiSetProtocolConformanceTests {
 
@@ -46,6 +72,32 @@ extension RedBlackTreeMultiSetProtocolConformanceTests {
     let elements = mirror.children.compactMap { $0.value as? Int }.sorted()
     XCTAssertEqual(elements, [1, 2, 3])
     XCTAssertEqual(elements.count, set.count)
+  }
+
+  /// 重複する要素も、個別の子としてすべて反映されること
+  func test_customReflectable_duplicateElementsAreEachRepresented() {
+    let set: RedBlackTreeMultiSet = [1, 1, 2]
+    let mirror = set.customMirror
+
+    let elements = mirror.children.compactMap { $0.value as? Int }.sorted()
+    XCTAssertEqual(elements, [1, 1, 2])
+    XCTAssertEqual(mirror.children.count, set.count)
+  }
+
+  /// すべての子がラベル無し(unlabeled)であること
+  func test_customReflectable_childrenAreUnlabeled() {
+    let set: RedBlackTreeMultiSet = [1, 1, 2]
+    let mirror = set.customMirror
+
+    XCTAssertTrue(mirror.children.allSatisfy { $0.label == nil })
+  }
+
+  /// 空のMultiSetの子は0件であること
+  func test_customReflectable_emptyMultiSetHasNoChildren() {
+    let set = RedBlackTreeMultiSet<Int>()
+    let mirror = set.customMirror
+
+    XCTAssertEqual(mirror.children.count, 0)
   }
 }
 

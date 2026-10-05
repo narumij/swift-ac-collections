@@ -25,6 +25,10 @@
 extension RedBlackTreeMultiSet: Hashable where Element: Hashable {
 
   /// Hashes the essential components of this value by feeding them into the given hasher.
+  ///
+  /// Equivalent elements are combined once for every occurrence.
+  ///
+  /// - Parameter hasher: The hasher to use when combining the multiset's elements.
   @inlinable
   public func hash(into hasher: inout Hasher) {
     hasher.combine(__tree_)

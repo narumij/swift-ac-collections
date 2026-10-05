@@ -50,7 +50,7 @@
 
     @Test
     func emptyStartIndexSubscript_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         let set = RedBlackTreeSet<Int>()
         _ = set[set.startIndex]
       }
@@ -58,7 +58,7 @@
 
     @Test
     func removingEmptyStartIndex_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeSet<Int>()
         set.remove(at: set.startIndex)
       }
@@ -66,7 +66,7 @@
 
     @Test
     func removingEndIndex_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeSet<Int>(0..<100)
         set.remove(at: set.endIndex)
       }
@@ -74,7 +74,7 @@
 
     @Test
     func removingAnAlreadyRemovedIndex_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeSet<Int>(0..<100)
         let removed = set.startIndex
         set.remove(at: removed)
@@ -83,8 +83,46 @@
     }
 
     @Test
+    func staleIndexSubscript_terminatesWithoutInvalidMemoryAccess() async {
+      let result = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        var set = RedBlackTreeSet<Int>(0..<8)
+        let stale = set.index(set.startIndex, offsetBy: 3)
+        set.remove(at: stale)
+        _ = set[stale]
+      }
+
+      expectNoInvalidMemoryAccess(result)
+
+      guard let result else { return }
+      let stderr = String(decoding: result.standardErrorContent, as: UTF8.self)
+      #expect(stderr.contains("The pointer is being used as a different node"))
+    }
+
+    @Test
+    func advancingStaleIndex_reportsReasonWithoutInvalidMemoryAccess() async {
+      let result = await #expect(
+        processExitsWith: .failure,
+        observing: [\.standardErrorContent]
+      ) {
+        var set = RedBlackTreeSet<Int>(0..<8)
+        let stale = set.index(set.startIndex, offsetBy: 3)
+        set.remove(at: stale)
+        _ = set.index(after: stale)
+      }
+
+      expectNoInvalidMemoryAccess(result)
+
+      guard let result else { return }
+      let stderr = String(decoding: result.standardErrorContent, as: UTF8.self)
+      #expect(stderr.contains("The pointer is being used as a different node"))
+    }
+
+    @Test
     func removingFirstFromEmptySet_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeSet<Int>()
         set.removeFirst()
       }
@@ -92,7 +130,7 @@
 
     @Test
     func removingLastFromEmptySet_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeSet<Int>()
         set.removeLast()
       }
@@ -101,7 +139,7 @@
     #if !ALLOW_CROSS_TREE_INDEX
       @Test
       func erasingRangeFromAnotherSet_terminatesProcess() async {
-        await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
           let source = RedBlackTreeSet(0..<8)
           var target = RedBlackTreeSet(100..<108)
           let lower = source.index(source.startIndex, offsetBy: 2)

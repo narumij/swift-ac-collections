@@ -16,6 +16,22 @@ extension RedBlackTreeSetProtocolConformanceMoreTests {
     XCTAssertEqual(elements, [1, 2, 3])
     XCTAssertEqual(elements.count, set.count)
   }
+
+  /// すべての子がラベル無し(unlabeled)であること
+  func test_customReflectable_childrenAreUnlabeled() {
+    let set: RedBlackTreeSet = [1, 2, 3]
+    let mirror = set.customMirror
+
+    XCTAssertTrue(mirror.children.allSatisfy { $0.label == nil })
+  }
+
+  /// 空のSetの子は0件であること
+  func test_customReflectable_emptySetHasNoChildren() {
+    let set = RedBlackTreeSet<Int>()
+    let mirror = set.customMirror
+
+    XCTAssertEqual(mirror.children.count, 0)
+  }
 }
 
 // MARK: - Is Trivially Identical

@@ -24,7 +24,7 @@
 //
 // - Important: 生成元以外の木での使用は未定義。
 @_documentation(visibility: internal)
-public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
+public typealias UnsafeIndexV3 = _LazyTiedPtr
 
 /// An index into a red-black-tree collection.
 public typealias RedBlackTreeIndex = UnsafeIndexV3
@@ -54,3 +54,6 @@ public typealias RedBlackTreeIndex = UnsafeIndexV3
 
 // Index は Equatable / Comparable / Hashable を要求し、それらの比較・hash は O(1) としている。
 // ×
+
+
+// _LazyTieWrappedPtrを選択した理由として、nullptrを外に晒したくないという事情があった点は今後も再考が必要。

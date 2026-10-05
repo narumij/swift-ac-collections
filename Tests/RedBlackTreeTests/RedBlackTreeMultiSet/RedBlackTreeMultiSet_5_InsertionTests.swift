@@ -81,6 +81,48 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(Array(multiset), [1, 1, 1, 2, 3, 4])
     }
 
+    /// `insert(_:hint:)`は、std::multisetと同様にhintが示す位置そのものへ挿入する。
+    /// hintが同値要素群の途中を指す場合、新しい要素は末尾ではなくその途中へ入る
+    /// (通常の`insert(_:)`が常に同値要素群の末尾へ追加するのとは異なる)。
+    /// 2026-10-03にユーザー確認: C++の`std::multiset::insert(hint, value)`に倣う。
+    func test_insertWithHint_placesNewMemberAtHintPositionWithinEquivalentGroup() {
+      let a = Member(key: 1, label: "a")
+      let b = Member(key: 1, label: "b")
+      let c = Member(key: 1, label: "c")
+      var multiset = RedBlackTreeMultiSet<Member>([a, b, c])
+      let hint = multiset.index(after: multiset.startIndex)  // bを指す
+
+      let x = Member(key: 1, label: "X")
+      multiset.insert(x, hint: hint)
+
+      XCTAssertEqual(multiset.map(\.label), ["a", "X", "b", "c"])
+    }
+
+    /// `startIndex`・`endIndex`(空の場合は両者が一致)はいずれも有効なhintで、
+    /// std::multisetと同様にその位置へ挿入する。
+    func test_insertWithHint_acceptsStartAndEndIndexBoundaries() {
+      var empty = RedBlackTreeMultiSet<Int>()
+      let intoEmpty = empty.insert(10, hint: empty.endIndex)
+      XCTAssertEqual(empty[intoEmpty], 10)
+      XCTAssertEqual(Array(empty), [10])
+
+      var multiset = RedBlackTreeMultiSet([10, 20])
+      let atEnd = multiset.insert(30, hint: multiset.endIndex)
+      XCTAssertEqual(multiset[atEnd], 30)
+      XCTAssertEqual(multiset.index(after: atEnd), multiset.endIndex)
+
+      let newLeast = multiset.insert(5, hint: multiset.startIndex)
+      XCTAssertEqual(newLeast, multiset.startIndex)
+      XCTAssertEqual(Array(multiset), [5, 10, 20, 30])
+
+      let first = Member(key: 1, label: "first")
+      var members = RedBlackTreeMultiSet<Member>([first])
+      let equivalent = Member(key: 1, label: "new")
+      let atStart = members.insert(equivalent, hint: members.startIndex)
+      XCTAssertEqual(atStart, members.startIndex)
+      XCTAssertEqual(members.map(\.label), ["new", "first"])
+    }
+
     func test_update_replacesOnlySpecifiedEquivalentMember() {
       let members = [
         Member(key: 1, label: "first"),

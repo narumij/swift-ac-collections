@@ -44,6 +44,23 @@
       XCTAssertFalse(set.isElement(at: stale))
     }
 
+    func testIndexOutlivingItsStorageIsDetachedAndRejectedByAnotherReceiver() {
+      typealias Index = RedBlackTreeSet<Int>.Index
+
+      @inline(never)
+      func makeIndex() -> Index {
+        let source: RedBlackTreeSet = [1, 2, 3]
+        return source.startIndex
+      }
+
+      let detached = makeIndex()
+      let receiver = RedBlackTreeSet<Int>()
+
+      XCTAssertTrue(detached.lazyDetach.isDetached)
+      XCTAssertFalse(receiver.isElement(at: detached))
+      XCTAssertFalse(receiver.isEnd(detached))
+    }
+
     /// RangeView版でも、コピー後の片方のCoW変異が発行元に対するIndex有効性チェックへ影響しないこと
     func testRangeViewIndexValidityAgainstOriginIsUnaffectedByCopyThenMutateCoW() throws {
       let base = RedBlackTreeSet<Int>(0..<20)

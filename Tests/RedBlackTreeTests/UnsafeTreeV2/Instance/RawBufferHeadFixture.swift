@@ -9,7 +9,7 @@
 
   /// `_BucketAllocator`/`_Bucket`/`_BucketAccessor`を直接操作し、headバケツの
   /// 実際のメモリ配置を測定するFixture。生木(`UnsafeTreeV2`/`RedBlackTreeSet`)を
-  /// 経由しない。参照計算側は`Tree/Fixture/UnsafeNodeReferenceFixture.swift`を参照。
+  /// 経由しない。参照計算側は共有`RedBlackTreeFixture/UnsafeNodeReferenceFixture.swift`を参照。
   struct RawBufferHeadFixture<Payload> {
 
     let allocator: _BucketAllocator

@@ -16,7 +16,7 @@ private struct ReferenceMultiMap {
 #if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeMultiMapFuzzTests: RedBlackTreeTestCase {
 
-    func test_randomizedInsertAndEraseMatchesReferenceMultiMap() {
+    func test_randomizedInsertAndEraseMatchesReferenceMultiMapAndMaintainsTreeInvariant() {
       var rng = SplitMix64(seed: 0xBADC0DE)
       let rounds = 150
       let opsPerRound = 400
@@ -40,26 +40,36 @@ private struct ReferenceMultiMap {
           default:  // count check only
             break
           }
-          // 同期検証
-          XCTAssertEqual(mm.count(forKey: k), ref.count(of: k))
+          // キーの多重度とキー・値ペアの同期検証
+          // (本テストでは value == key で挿入するため、キーの多重度一致が
+          // ペア全体の一致を意味する)
+          XCTAssertEqual(mm.map(\.key).sorted(), ref.sortedKeys)
+          XCTAssertTrue(mm.allSatisfy { $0.value == $0.key })
+          XCTAssertTrue(mm.___tree_invariant_for_fuzz())
         }
-        XCTAssertEqual(mm.map(\.key).sorted(), ref.sortedKeys)
       }
     }
 
-    func test_randomInsertAndEraseMaintainsTreeInvariant() {
+    func test_randomInsertAndEraseMatchesReferenceAndMaintainsTreeInvariant() {
       var rng = SplitMix64(seed: 0xDEADBEEF)
       var multiMap = RedBlackTreeMultiMap<Int, Int>()
+      var reference = ReferenceMultiMap()
 
       for _ in 0..<3 {
         for _ in 0..<1000 {
           let v = Int(rng.next() % 500)
           multiMap.insert((v, v))
+          reference.insert(v)
+          XCTAssertEqual(multiMap.map(\.key).sorted(), reference.sortedKeys)
+          XCTAssertTrue(multiMap.allSatisfy { $0.value == $0.key })
           XCTAssertTrue(multiMap.___tree_invariant_for_fuzz())
         }
         for _ in 0..<1000 {
           let v = Int(rng.next() % 500)
           multiMap.eraseMulti(v)
+          reference.removeAll(v)
+          XCTAssertEqual(multiMap.map(\.key).sorted(), reference.sortedKeys)
+          XCTAssertTrue(multiMap.allSatisfy { $0.value == $0.key })
           XCTAssertTrue(multiMap.___tree_invariant_for_fuzz())
         }
       }

@@ -22,6 +22,10 @@
 
 #if !COMPATIBLE_ATCODER_2025
   @frozen
+  /// A mutable view over a contiguous range of a red-black-tree set or multiset.
+  ///
+  /// The view preserves sorted order. Mutating it applies copy-on-write and
+  /// affects only elements inside the view's bounds.
   public struct RedBlackTreeKeyOnlyRangeView<Container>: UnsafeMutableTreeHostV2
   where
     Container: ___Root,
@@ -42,10 +46,12 @@
     @usableFromInline
     internal var __tree_: Tree
 
+    /// The position of the first element in a nonempty view.
     public var startIndex: Index {
       ___index(_sealed_start.pointer!)
     }
 
+    /// The view's “past the end” position.
     public var endIndex: Index {
       ___index(_sealed_end.pointer!)
     }
@@ -104,10 +110,11 @@
     }
   }
 
+
   extension RedBlackTreeKeyOnlyRangeView {
 
     @inlinable
-    func ___index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
+    func ___index(_ p: _NodePtr) -> _LazyTiedPtr {
       __tree_.index(p)
     }
   }
@@ -117,6 +124,8 @@
 
     extension RedBlackTreeKeyOnlyRangeView {
 
+      /// Returns an iterator over the elements in ascending order.
+      ///
       /// - Complexity: O(1)
       @inlinable
       public __consuming func makeIterator() -> UnsafeIterator.ValueObverse<Container.Base> {
@@ -128,6 +137,8 @@
 
   extension RedBlackTreeKeyOnlyRangeView {
 
+    /// Returns the view's elements in ascending order.
+    ///
     /// - Complexity: O(`count`)
     @inlinable
     public __consuming func sorted() -> [Element] {
@@ -135,6 +146,8 @@
       return __tree_.___copy_to_array(_start, _end)
     }
 
+    /// Returns the view's elements in descending order.
+    ///
     /// - Complexity: O(`count`)
     @inlinable
     public __consuming func reversed() -> [Element] {
@@ -145,34 +158,10 @@
 
   // MARK: -
 
-  @_documentation(visibility: internal)
-  public protocol ScalarBaseInit: ___Root
-  where Self.Base: ___TreeBase & ScalarValueTrait {
-    static func _create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self
-  }
-
-  extension RedBlackTreeSet: ScalarBaseInit {
-    public static func _create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self {
-      .init(__tree_: view.__tree_)
-    }
-  }
-
-  extension RedBlackTreeMultiSet: ScalarBaseInit {
-    public static func _create(_ view: RedBlackTreeKeyOnlyRangeView<Self>) -> Self {
-      .init(__tree_: view.__tree_)
-    }
-  }
-
-  extension RedBlackTreeKeyOnlyRangeView where Container: ScalarBaseInit {
-    @available(*, deprecated)
-    @_documentation(visibility: internal)
-    public func unranged() -> Container { ._create(self) }
-  }
-
-  // MARK: -
-
   extension RedBlackTreeKeyOnlyRangeView {
 
+    /// A Boolean value indicating whether the view contains no elements.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public var isEmpty: Bool {
@@ -180,6 +169,8 @@
       return l == u
     }
 
+    /// The number of elements in the view.
+    ///
     /// - Complexity: O(`count`)
     @inlinable
     public var count: Int {
@@ -190,6 +181,8 @@
 
   extension RedBlackTreeKeyOnlyRangeView {
 
+    /// The first element of the view, or `nil` if the view is empty.
+    ///
     /// - Complexity: O(1)
     @inlinable
     public var first: Element? {
@@ -198,6 +191,9 @@
       return Base.__payload_(_start)
     }
 
+    /// The last element of the view, or `nil` if the view is empty.
+    ///
+    /// - Complexity: O(1)
     @inlinable
     public var last: Element? {
       let (_start, _end) = _raw_range
@@ -208,6 +204,7 @@
 
   extension RedBlackTreeKeyOnlyRangeView {
 
+    /// Removes and returns the first element, or returns `nil` if the view is empty.
     @inlinable
     @discardableResult
     public mutating func popFirst() -> Element? {
@@ -219,6 +216,7 @@
       return _r
     }
 
+    /// Removes and returns the last element, or returns `nil` if the view is empty.
     @inlinable
     @discardableResult
     public mutating func popLast() -> Element? {
@@ -228,6 +226,9 @@
       return __tree_._unchecked_remove(at: __tree_.__tree_prev_iter(_end)).payload
     }
 
+    /// Removes and returns the first element.
+    ///
+    /// - Precondition: The view isn't empty.
     @inlinable
     @discardableResult
     public mutating func removeFirst() -> Element {
@@ -237,6 +238,9 @@
       return element
     }
 
+    /// Removes and returns the last element.
+    ///
+    /// - Precondition: The view isn't empty.
     @inlinable
     @discardableResult
     public mutating func removeLast() -> Element {
@@ -249,6 +253,9 @@
 
   extension RedBlackTreeKeyOnlyRangeView {
 
+    /// Removes every element in the view.
+    ///
+    /// - Returns: The index immediately following the removed range.
     @inlinable
     @discardableResult
     public mutating func erase() -> Index {
@@ -260,6 +267,9 @@
       return ___index(try! __tree_.___erase_range(_start, _end).get())
     }
 
+    /// Removes the elements in the view that satisfy `shouldBeRemoved`.
+    ///
+    /// - Parameter shouldBeRemoved: A predicate that returns `true` for each element to remove.
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
       guard _raw_range.0 != _raw_range.1 else { return }
@@ -273,6 +283,10 @@
   #if !COMPATIBLE_ATCODER_2025
     extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Equatable {
 
+      /// Returns whether this view and `other` contain equal elements in the same order.
+      ///
+      /// - Parameter other: A sequence to compare with this view.
+      /// - Returns: `true` if both sequences contain the same elements in the same order.
       /// - Complexity: O(*m*), where *m* is the lesser of the length of the
       ///   sequence and the length of `other`.
       @inlinable
@@ -284,6 +298,10 @@
 
     extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Comparable {
 
+      /// Returns whether this view precedes `other` in lexicographical order.
+      ///
+      /// - Parameter other: A sequence to compare with this view.
+      /// - Returns: `true` if this view lexicographically precedes `other`.
       /// - Complexity: O(*m*), where *m* is the lesser of the length of the
       ///   sequence and the length of `other`.
       @inlinable
@@ -295,6 +313,7 @@
 
     extension RedBlackTreeKeyOnlyRangeView: Equatable where _PayloadValue: Equatable {
 
+      /// Returns whether both views contain equal elements in the same order.
       /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
       @inlinable
       public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -304,6 +323,7 @@
 
     extension RedBlackTreeKeyOnlyRangeView: Comparable where _PayloadValue: Comparable {
 
+      /// Returns whether `lhs` lexicographically precedes `rhs`.
       /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
       @inlinable
       public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -321,8 +341,15 @@
 
   extension RedBlackTreeKeyOnlyRangeView {
 
+    /// Returns whether two views reference the same tree and the same range boundaries.
+    ///
+    /// Identity is stronger than element equality and can be checked without traversing the range.
+    ///
+    /// - Parameter other: Another view to compare by identity.
+    /// - Returns: `true` if both views have identical storage and bounds; otherwise, `false`.
+    /// - Complexity: O(1)
     @inlinable
-    public func _isIdentical(to other: Self) -> Bool {
+    internal func _isIdentical(to other: Self) -> Bool {
       let (_start, _end) = _raw_range
       let (_other_start, _other_end) = other._raw_range
       return __tree_.isIdentical(to: other.__tree_) && _start == _other_start
@@ -340,6 +367,8 @@
     /// The view's end position is not an element. An index outside the view,
     /// or an invalid or stale index, returns `false`.
     ///
+    /// - Parameter index: The index to validate.
+    /// - Returns: `true` if `index` identifies an accessible element inside this view; otherwise, `false`.
     /// - Complexity: O(log *n*) in the worst case, where *n* is the number of
     ///   elements in the base collection.
     @inlinable
@@ -368,6 +397,8 @@
     /// A view's end position may refer to an element in its base collection.
     /// An invalid or stale index returns `false`.
     ///
+    /// - Parameter index: The index to validate.
+    /// - Returns: `true` if `index` is this view's `endIndex`; otherwise, `false`.
     /// - Complexity: O(1)
     @inlinable
     public func isEnd(_ index: Index) -> Bool {

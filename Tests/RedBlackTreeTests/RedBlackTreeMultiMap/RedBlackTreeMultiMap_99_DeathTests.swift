@@ -44,7 +44,7 @@
 
     @Test
     func emptyStartIndexSubscript_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         let map = RedBlackTreeMultiMap<Int, Int>()
         _ = map[map.startIndex]
       }
@@ -52,7 +52,7 @@
 
     @Test
     func removingEmptyStartIndex_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var map = RedBlackTreeMultiMap<Int, Int>()
         map.remove(at: map.startIndex)
       }
@@ -60,7 +60,7 @@
 
     @Test
     func removingEndIndex_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var map = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (0..<100).map { ($0, $0) })
         map.remove(at: map.endIndex)
       }
@@ -68,7 +68,7 @@
 
     @Test
     func removingFirstFromEmptyMultiMap_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var map = RedBlackTreeMultiMap<Int, Int>()
         map.removeFirst()
       }
@@ -76,7 +76,7 @@
 
     @Test
     func removingLastFromEmptyMultiMap_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var map = RedBlackTreeMultiMap<Int, Int>()
         map.removeLast()
       }
@@ -219,7 +219,7 @@
 
     @Test
     func endIndexSubscript_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         let map: RedBlackTreeMultiMap = [0: "a", 1: "b", 2: "c"]
         _ = map[map.endIndex]
       }

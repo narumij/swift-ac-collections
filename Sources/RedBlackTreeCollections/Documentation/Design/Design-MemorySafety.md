@@ -188,6 +188,17 @@ dereferenceする前に拒否する。
 - DebugとReleaseの両方で検証経路が成立すること
 - sanitizerおよび削除・再利用を繰り返すテストで問題がないこと
 
+通常ケースは、`_SafePtr`と`_SealedPtr`が成功値と`SealError`を失わず伝播し、payloadを
+持たないnodeを`.garbaged`として拒否することまで確認する。nodeを再利用した場合は、同じ
+アドレスであっても保存済みsealと現在のrecycle countが一致せず、`.unsealed`になることを
+直接検証する。
+
+preconditionやfatal errorを伴う契約は、通常テスト内で故意に踏まない。原木のDeath Testを
+別プロセスで実行し、不正なpointer前提条件やtracking tagが正常終了しないことを確認する。
+子プロセスへ親プロセスの生ポインタをcaptureせず、各ケースの中で有効なfixtureまたは
+原木が提供するsingletonを構成する。これにより、停止契約そのものと、プロセス境界を越えた
+無効ポインタによる偶発的クラッシュを区別する。
+
 ## 関連文書
 
 - [設計Overview](Design-Overview.md)

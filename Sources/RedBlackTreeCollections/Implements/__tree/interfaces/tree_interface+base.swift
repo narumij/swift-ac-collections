@@ -138,6 +138,6 @@ protocol ValueInterface: ~Copyable,
     & _end_interface
 {}
 
-public protocol _Tree_IsMultiTraitInterface:  ~Copyable {
+@usableFromInline package protocol _Tree_IsMultiTraitInterface:  ~Copyable {
   @inlinable var isMulti: Bool { get }
 }

@@ -51,13 +51,19 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
 extension UnsafeTreeV2 {
 
+  // Result連鎖(`flatMap { index($0) }`)内で成功値を包む用途として残す
   @inlinable
   func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
     return withMutableHeader { $0.index(p) }
   }
 
   @inlinable
-  func index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
+  func index(_ p: _NodePtr) -> _LazyTiedPtr {
+    return withMutableHeader { $0.index(p) }
+  }
+
+  @inlinable
+  func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
     return withMutableHeader { $0.index_or_nil(p) }
   }
 }
@@ -94,74 +100,95 @@ extension UnsafeTreeV2 where Base: _UnsafeNodePtrType & _BaseNode_SignedDistance
 extension UnsafeTreeV2 {
 
   @inlinable
-  func prev_iter(_ i: _LazyTieWrappedPtr) -> _LazyTieWrappedPtr {
-    __purified_(i)
+  func prev_iter(_ i: _LazyTiedPtr) -> _LazyTiedPtr {
+    let result = __purified_(i)
       .flatMap { ___tree_prev_iter($0.pointer) }
       .flatMap { index($0) }
-      .mapError { _ in fatalError() }
+    switch result {
+    case .success(let index):
+      return index
+    case .failure(let error):
+      fatalError(errorMessage(error))
+    }
   }
 
   @inlinable
-  func next_iter(_ i: _LazyTieWrappedPtr) -> _LazyTieWrappedPtr {
-    __purified_(i)
+  func next_iter(_ i: _LazyTiedPtr) -> _LazyTiedPtr {
+    let result = __purified_(i)
       .flatMap { ___tree_next_iter($0.pointer) }
       .flatMap { index($0) }
-      .mapError { _ in fatalError() }
+    switch result {
+    case .success(let index):
+      return index
+    case .failure(let error):
+      fatalError(errorMessage(error))
+    }
   }
 
   @inlinable
-  func adv_iter(_ i: _LazyTieWrappedPtr, offsetBy distance: Int) -> _LazyTieWrappedPtr {
-    __purified_(i)
+  func adv_iter(_ i: _LazyTiedPtr, offsetBy distance: Int) -> _LazyTiedPtr {
+    let result = __purified_(i)
       .flatMap { ___tree_adv_iter($0.pointer, distance) }
       .flatMap { index($0) }
-      .mapError { _ in fatalError() }
+    switch result {
+    case .success(let index):
+      return index
+    case .failure(let error):
+      fatalError(errorMessage(error))
+    }
   }
 
   @inlinable
   func adv_iter(
-    _ i: _LazyTieWrappedPtr, offsetBy distance: Int, limitedBy limit: _LazyTieWrappedPtr
+    _ i: _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
   )
     -> _LazyTieWrappedPtr
   {
-    let __l = __purified_(limit).map(\.pointer)
-    return __purified_(i)
-      .flatMap { ___tree_adv_iter($0.pointer, distance, __l) }
-      .flatMap { index($0) }
+    __purified_(limit).flatMap { limit in
+      __purified_(i)
+        .flatMap { ___tree_adv_iter($0.pointer, distance, .success(limit.pointer)) }
+        .flatMap { index($0) }
+    }
   }
 
   @inlinable
   func index_or_nil(
-    _ i: _LazyTieWrappedPtr, offsetBy distance: Int, limitedBy limit: _LazyTieWrappedPtr
+    _ i: _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
   )
-    -> _LazyTieWrappedPtr?
+    -> _LazyTiedPtr?
   {
-    let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
-    switch advanced {
-    case .success:
-      return advanced
+    switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
+    case .success(let index):
+      return index
     case .failure(.limit):
       return nil
-    case .failure:
-      fatalError()
+    case .failure(let error):
+      fatalError(errorMessage(error))
     }
   }
 
   @inlinable
   func form_index(
-    _ i: inout _LazyTieWrappedPtr, offsetBy distance: Int, limitedBy limit: _LazyTieWrappedPtr
+    _ i: inout _LazyTiedPtr, offsetBy distance: Int, limitedBy limit: _LazyTiedPtr
   )
     -> Bool
   {
+    // The environment-provided nullptr lives in ManagedBufferHeader. The first
+    // traversal intentionally brings that header's cache line in before the
+    // decision traversal invokes the API again. Do not fold these calls
+    // together without remeasuring this path.
     let advanced = adv_iter(i, offsetBy: distance, limitedBy: limit)
     switch adv_iter(i, offsetBy: distance, limitedBy: limit) {
     case .success:
-      i = advanced
+      if case .success(let index) = advanced {
+        i = index
+      }
       return true
     case .failure(.limit):
       i = limit
       return false
-    default:
-      fatalError()
+    case .failure(let error):
+      fatalError(errorMessage(error))
     }
   }
 }

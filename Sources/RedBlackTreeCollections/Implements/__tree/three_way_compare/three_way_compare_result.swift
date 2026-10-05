@@ -21,28 +21,30 @@
 //===----------------------------------------------------------------------===//
 
 // 結局のところ最も速い
-public typealias __int_compare_result = Int
+@usableFromInline
+package typealias __int_compare_result = Int
 
 extension Int: ThreeWayCompareResult {}
 
 extension Int {
   @inlinable
-  public func __less() -> Bool { self < 0 }
+  package func __less() -> Bool { self < 0 }
   @inlinable
-  public func __greater() -> Bool { self > 0 }
+  package func __greater() -> Bool { self > 0 }
 }
 
 // 安定して速い
-public
+@usableFromInline
+package
   struct __eager_compare_result: ThreeWayCompareResult
 {
   @usableFromInline internal var __res_: Int
   @inlinable
-  internal init(_ __res_: Int) {
+  package init(_ __res_: Int) {
     self.__res_ = __res_
   }
   @inlinable
-  public func __less() -> Bool { __res_ < 0 }
+  package func __less() -> Bool { __res_ < 0 }
   @inlinable
-  public func __greater() -> Bool { __res_ > 0 }
+  package func __greater() -> Bool { __res_ > 0 }
 }

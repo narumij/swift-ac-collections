@@ -206,12 +206,12 @@ extension RedBlackTreeBoundExpression {
 
   #if DEBUG
     @inlinable
-    public static func index(_ p: UnsafeIndexV3) -> Self {
-      .init(_internal: .init(.index(p.purified)))
+    package static func index(_ p: UnsafeIndexV3) -> Self {
+      .init(_internal: .init(.index(p)))
     }
 
     @inlinable
-    public static func debug(_ e: SealError) -> Self {
+    package static func debug(_ e: SealError) -> Self {
       .init(_internal: .init(.debug(e)))
     }
   #endif

@@ -80,6 +80,21 @@ var _settings: [SwiftSetting] =
     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
 
     .define("DEATH_TEST", .when(platforms: [.macOS])),
+    // macOS以外では明示的なtraitでDeath Testを有効化する。
+    // Linux CIで#expect(processExitsWith:)の実動作を検証するために使用する。
+    .define("DEATH_TEST", .when(traits: ["ENABLE_DEATH_TESTS"])),
+
+    // テスト専用: Debug XCTestのprocess-globalなallocation/node/payload検査を調整する
+    // 既定では検査は有効。SETUPは開始時の残留値検査だけ、BALANCEは開始時と終了時の
+    // 釣り合い検査を省略する。不利なスケジューリング等を調べる場合に限り選ぶ
+    // 省略時も各XCTestの開始時と終了時にcounterは無条件にresetされる
+    // 製品コードはこの条件を参照しない
+    .define(
+      "SKIP_DEBUG_LIFETIME_BALANCE_CHECKS",
+      .when(traits: ["SKIP_DEBUG_LIFETIME_BALANCE_CHECKS"])),
+    .define(
+      "SKIP_DEBUG_LIFETIME_SETUP_CHECKS",
+      .when(traits: ["SKIP_DEBUG_LIFETIME_SETUP_CHECKS"])),
 
     .define(
       "ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND",
@@ -132,6 +147,21 @@ let package = Package(
     .trait(
       name: "_O_UNCHECKED"
     ),
+    .trait(
+      name: "SKIP_DEBUG_LIFETIME_BALANCE_CHECKS",
+      description:
+        "Test-only. Skip the Debug XCTest allocation/node/payload balance assertions while still resetting the counters around every case. Not the normal configuration."
+    ),
+    .trait(
+      name: "SKIP_DEBUG_LIFETIME_SETUP_CHECKS",
+      description:
+        "Test-only. Skip only the incoming Debug XCTest lifetime assertions; teardown balance assertions remain enabled."
+    ),
+    .trait(
+      name: "ENABLE_DEATH_TESTS",
+      description:
+        "Compile and run Swift Testing subprocess exit tests on platforms where they are not enabled by default."
+    ),
   ],
   dependencies: [
 
@@ -160,6 +190,16 @@ let package = Package(
         "OptionalArrayModule",
         "BareArrayModule",
       ],
+      swiftSettings: _settings + [
+        .strictMemorySafety()
+      ]
+    ),
+    .testTarget(
+      name: "AcCollectionsTests",
+      dependencies: [
+        "AcCollections",
+        "RedBlackTreeCollections",
+      ],
       swiftSettings: _settings
     ),
 
@@ -186,7 +226,20 @@ let package = Package(
     .target(
       name: "RedBlackTreeModule",
       dependencies: ["RedBlackTreeCollections"],
-      path: "Sources/_RedBlackTreeModule"
+      path: "Sources/_RedBlackTreeModule",
+      swiftSettings: [
+        .strictMemorySafety()
+      ]
+    ),
+
+    .target(
+      name: "RedBlackTreeFixture",
+      dependencies: ["RedBlackTreeCollections"],
+      path: "Tests/RedBlackTreeFixture",
+      exclude: [
+        "Fixtures.md"
+      ],
+      swiftSettings: _settings
     ),
 
     .testTarget(
@@ -195,9 +248,40 @@ let package = Package(
         .product(name: "Algorithms", package: "swift-algorithms"),
         //        .product(name: "TrailingElementsModule", package: "swift-collections"),
         "RedBlackTreeCollections",
+        "RedBlackTreeFixture",
       ],
-      exclude: [
-        "Fixtures.md"
+      swiftSettings: _settings
+    ),
+
+    .testTarget(
+      name: "RedBlackTreeLegacyTests",
+      dependencies: [
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        "RedBlackTreeCollections",
+      ],
+      swiftSettings: _settings
+    ),
+
+    .testTarget(
+      name: "RedBlackTreeTreeTests",
+      dependencies: [
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        "RedBlackTreeCollections",
+        "RedBlackTreeFixture",
+      ],
+      swiftSettings: _settings
+    ),
+
+    .target(
+      name: "CppBehaviorReference",
+      publicHeadersPath: "include"
+    ),
+    .testTarget(
+      name: "CppBehaviorReferenceTests",
+      dependencies: [
+        "CppBehaviorReference",
+        "AcCollections",
+        "RedBlackTreeCollections",
       ],
       swiftSettings: _settings
     ),
@@ -209,7 +293,8 @@ let package = Package(
       name: "OptionalArrayModuleTests",
       dependencies: [
         "OptionalArrayModule"
-      ]
+      ],
+      swiftSettings: _settings
     ),
 
     .target(
@@ -219,13 +304,19 @@ let package = Package(
       name: "BareArrayModuleTests",
       dependencies: [
         "BareArrayModule"
-      ]
+      ],
+      swiftSettings: _settings
     ),
 
     .target(
       name: "PermutationModule",
       dependencies: [],
-      swiftSettings: _settings
+      exclude: [
+        "Documentation"
+      ],
+      swiftSettings: _settings + [
+        .strictMemorySafety()
+      ]
     ),
     .testTarget(
       name: "PermutationTests",

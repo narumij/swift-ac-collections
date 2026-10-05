@@ -15,4 +15,12 @@
       (try? map(\.rawValue.pointer.trackingTag).get()) ?? .nullptr
     }
   }
+
+  extension _LazyTieWrap where RawValue == _NodePtrSealing {
+    
+    @inlinable
+    package var value: _TrackingTag {
+      rawValue.pointer.trackingTag
+    }
+  }
 #endif

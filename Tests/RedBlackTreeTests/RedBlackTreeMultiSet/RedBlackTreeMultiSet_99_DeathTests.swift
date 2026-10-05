@@ -44,7 +44,7 @@
 
     @Test
     func emptyStartIndexSubscript_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         let set = RedBlackTreeMultiSet<Int>()
         _ = set[set.startIndex]
       }
@@ -52,7 +52,7 @@
 
     @Test
     func removingEmptyStartIndex_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeMultiSet<Int>()
         set.remove(at: set.startIndex)
       }
@@ -60,7 +60,7 @@
 
     @Test
     func removingEndIndex_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeMultiSet<Int>(0..<100)
         set.remove(at: set.endIndex)
       }
@@ -68,7 +68,7 @@
 
     @Test
     func removingFirstFromEmptyMultiSet_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeMultiSet<Int>()
         set.removeFirst()
       }
@@ -76,7 +76,7 @@
 
     @Test
     func removingLastFromEmptyMultiSet_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         var set = RedBlackTreeMultiSet<Int>()
         set.removeLast()
       }
@@ -217,9 +217,53 @@
       expectNoInvalidMemoryAccess(result)
     }
 
+    // insert(_:hint:)の境界hintは有効なhintであり、プロセスは正常終了しなければならない。
+    // 修正前に停止していた経路を本体ランナーから隔離して検証する。
+
+    @Test
+    func insertWithEndIndexHintIntoNonEmptyMultiSet_exitsSuccessfully() async {
+      await #expect(processExitsWith: .success) {
+        var set = RedBlackTreeMultiSet<Int>([10])
+        let index = set.insert(20, hint: set.endIndex)
+        precondition(set[index] == 20)
+        precondition(Array(set) == [10, 20])
+      }
+    }
+
+    @Test
+    func insertNewLeastWithStartIndexHint_exitsSuccessfully() async {
+      await #expect(processExitsWith: .success) {
+        var set = RedBlackTreeMultiSet<Int>([10, 20])
+        let index = set.insert(5, hint: set.startIndex)
+        precondition(index == set.startIndex)
+        precondition(Array(set) == [5, 10, 20])
+      }
+    }
+
+    @Test
+    func insertEquivalentToFirstWithStartIndexHint_exitsSuccessfully() async {
+      await #expect(processExitsWith: .success) {
+        var set = RedBlackTreeMultiSet<Int>([10, 20])
+        let index = set.insert(10, hint: set.startIndex)
+        precondition(index == set.startIndex)
+        precondition(Array(set) == [10, 10, 20])
+      }
+    }
+
+    @Test
+    func insertWithHintIntoEmptyMultiSet_exitsSuccessfully() async {
+      await #expect(processExitsWith: .success) {
+        var set = RedBlackTreeMultiSet<Int>()
+        precondition(set.startIndex == set.endIndex)
+        let index = set.insert(10, hint: set.endIndex)
+        precondition(set[index] == 10)
+        precondition(Array(set) == [10])
+      }
+    }
+
     @Test
     func endIndexSubscript_terminatesProcess() async {
-      await #expect(processExitsWith: .signal(SIGTRAP)) {
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
         let set = RedBlackTreeMultiSet<Int>([0, 1, 2])
         _ = set[set.endIndex]
       }

@@ -191,8 +191,8 @@ counts[key]++;
 | `insert_or_assign` | subscript / value 更新 API | △ | API が異なる |
 | `try_emplace` | 必要時のみ Value を生成する操作 | △ | Swift では表現方法が異なる |
 | `emplace(...)` | 値を構築して挿入 | △ | C++ の construction semantics とは異なる |
-| `emplace_hint(...)` | — | ❌ | |
-| `insert(hint, value)` | — | ❌ | |
+| `emplace_hint(...)` | `insert(_:hint:)` | △ | hint は利用できるが、C++ の construction semantics とは異なる |
+| `insert(hint, value)` | `insert(_:hint:)` | ✅ | 戻り値は `(inserted, indexAfterInsert)`。通常構成のみ |
 | range insertion | `Sequence` ベース | △ | iterator pair とは API が異なる |
 
 ### `insert` と値の更新
@@ -254,8 +254,8 @@ hint 付き insertion API があります。
 正しい hint が与えられた場合には、
 root からの検索を省略して高速化できる場合があります。
 
-`RedBlackTreeDictionary` では、
-C++ と同じ形式の hint 付き insertion API は提供しません。
+`RedBlackTreeDictionary`では`insert(_:hint:)`および
+`insert(key:value:hint:)`を提供します。`endIndex`も有効なhintです。
 
 ## 削除
 
@@ -612,7 +612,6 @@ iterator model などと強く結びついており、
 - `extract()` による node の切り離し
 - node transfer を利用した `merge()`
 - `emplace()` / `emplace_hint()` の C++ と同一の construction semantics
-- hint 付き `insert`
 - container ごとに保持する comparator object
 
 一方、`Index` はCoWで分岐した木でも対応するnodeを追跡する位置handleとして

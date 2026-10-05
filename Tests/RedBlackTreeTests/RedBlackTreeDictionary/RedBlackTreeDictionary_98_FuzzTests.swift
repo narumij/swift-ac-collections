@@ -42,23 +42,29 @@ final class RedBlackTreeDictionaryFuzzTests: RedBlackTreeTestCase {
         default: break
         }
         assertEqual(rb, std)
+        XCTAssertTrue(rb.___tree_invariant_for_fuzz())
       }
     }
   }
 
-  func test_randomInsertAndEraseMaintainsTreeInvariant() {
+  func test_randomInsertAndEraseMatchesReferenceAndMaintainsTreeInvariant() {
     var rng = SplitMix64(seed: 0xDEADBEEF)
     var dictionary = RedBlackTreeDictionary<Int, Int>()
+    var reference = [Int: Int]()
 
     for _ in 0..<3 {
       for _ in 0..<1000 {
         let v = Int(rng.next() % 500)
         dictionary[v] = v
+        reference[v] = v
+        assertEqual(dictionary, reference)
         XCTAssertTrue(dictionary.___tree_invariant_for_fuzz())
       }
       for _ in 0..<1000 {
         let v = Int(rng.next() % 500)
         dictionary.removeValue(forKey: v)
+        reference.removeValue(forKey: v)
+        assertEqual(dictionary, reference)
         XCTAssertTrue(dictionary.___tree_invariant_for_fuzz())
       }
     }

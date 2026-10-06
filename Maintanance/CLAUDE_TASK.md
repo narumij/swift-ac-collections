@@ -147,7 +147,8 @@ current instruction and prepare the handoff for Codex if requested.
   から状態を把握できることを確認し、ユーザーがこの運用の採用を決定した。
 - `DOC-001`完了（`9b0f42d5`、push未実施）。管理文書2件の統合前Index表現を事実訂正し、Index完了ゲートの
   Result分離項目をユーザー確認のうえチェック済みにした。未対応の報告: 外部契約論点リストの同項目、
-  `UnsafeIndexV3.swift:59`のユーザー設計メモ、`Design-MemorySafety.md:126`の`Result`言及（P10由来でない）。
+  `Design-MemorySafety.md:126`の`Result`言及（P10由来でない。公開文書なのでユーザー判断でCodex担当）。
+  `UnsafeIndexV3.swift`の`_LazyTieWrappedPtr`選択理由コメントは、2026-10-06ユーザー判断で削除した。
 - `GRAPH-001`初期合格（2026-10-06）: Claude DBの`ready`はRegistry表示と一致（`GRAPH-001`のみ）。
   入力はRegistry 30行とprecedence 7辺、未知状態語・宙に浮いた辺・循環はいずれも0。観測: DBは毎回Registryから
   作り直すprojectionで、書き戻しなし。取り込みはRegistry表の書式（backtick付きID、状態列）に依存する。

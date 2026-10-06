@@ -1,10 +1,16 @@
 # 外部所有型Extension監査
 
-最終更新: 2026-10-04 / Codex
+最終更新: 2026-10-07 / Codex
 
 > 現在の状態(2026-10-06): 機械抽出と分類、独立縮小可能なbatchは完了。残る対象は
 > Index契約依存、外部consumer移行待ち、または凍結clusterであり、明示的な再開条件が満たされるまで
 > 本文中の旧「次タスク」を現行指示として扱わない。
+>
+> 2026-10-07追記: 特殊化`Result`のpublic比較overloadとpublic `Result._NodePtr`の縮小は完了した。
+> Debug / Release / 互換mode / DocCの検証に加え、GitHub Actionsのperformance job成功
+> (run 37502938888、job 112404281751、5分34秒)を確認した。これらを一つの完了単位として閉じる。
+> 後続コミットで削除した`Result: @retroactive Comparable`と旧Result-based Index helperもこの完了を
+> 妨げない。残るDebug比較3宣言は別の凍結taskであり、本項目へ戻さない。
 
 ## 目的
 

@@ -1,6 +1,6 @@
 # 開発・メンテナンス進捗一覧
 
-最終更新: 2026-10-06 / Codex
+最終更新: 2026-10-07 / Codex
 
 ## 対象期間と読み方
 
@@ -32,7 +32,7 @@ Index契約とそれに関わる残taskは、この外部条件が安定する�
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-002` | `FROZEN` | Codex | Codex用task graph DBの独立試験 | Codexのcontext reset後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-003` | `FROZEN` | User / Codex / Claude | 二つのtask graph DBの統合議論 | 両試験の完了後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
-| `RBT-003` | `WAITING_EXTERNAL` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 実装・4構成build・通常testは完了。performance job成功後に完了 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
+| `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認（run 37502938888、job 112404281751） | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-006` | `FROZEN` | User / Codex | 未結線コードの個別削除 | ユーザーが対象を個別指定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |

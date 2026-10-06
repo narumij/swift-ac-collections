@@ -152,7 +152,11 @@ current instruction and prepare the handoff for Codex if requested.
 - `RBT-003`は2026-10-06、ユーザー指示で範囲限定で再開した。特殊化`Result`の`==` / `!=`は`_SafePtr`・`_SealedPtr`用をpackage化し、
   `_LazyTieWrappedPtr`用をRedBlackTreeTestsへ移した。`Result._NodePtr`は`@usableFromInline package`にし、
   `UnsafeMutablePointer`の`_NodePtr` / `_NodeRef`は現状維持とした。ビルドは通常／互換×Debug／Releaseの4構成で通り、
-  `swift test`（Debug・通常）もグリーン。未コミット。性能ジョブは未実施。Registryの状態は未更新。
+  `swift test`（Debug・通常）もグリーン。`6dea75d7`でコミット済み、push未実施、性能ジョブ未実施。
+  **Codexへの依頼（ユーザー判断でRegistry修正はCodexに委ねる）:** precedence辺「`RBT-003` ← `RBT-001`」と
+  `RBT-003`の再開条件「Index完了ゲート後」は、`try/index/1`（PR #158）マージ前の`Result`ベースIndexを前提にしたもので、
+  マージ後は依存が消えている（ユーザー確認）。辺を削除し、再開条件を訂正し、性能ジョブがグリーンになった後に
+  `RBT-003`を`DONE`にしてほしい。
 - `GRAPH-001`初期合格（2026-10-06）: Claude DBの`ready`はRegistry表示と一致（`GRAPH-001`のみ）。
   入力はRegistry 30行とprecedence 7辺、未知状態語・宙に浮いた辺・循環はいずれも0。観測: DBは毎回Registryから
   作り直すprojectionで、書き戻しなし。取り込みはRegistry表の書式（backtick付きID、状態列）に依存する。
@@ -164,3 +168,5 @@ current instruction and prepare the handoff for Codex if requested.
   公開しないローカルメモを追加した。symbol graphは既定構成だけを見るため、`#if`外の宣言はsource走査で補う。
   非public protocolの`@usableFromInline`規則は既定構成104件・構成外21件とも違反0。呼び出し・参照はcompiler
   index store由来で補った（既定構成のDebugのみ）。性能に関わる候補は列挙のみで、sourceは未変更。
+  2026-10-06の観測: precedence辺には成立理由と時点が無いので、前提が設計変更で消えても（`RBT-003` ← `RBT-001`の例）
+  graphからは古さを検出できない。`ready`判定は辺の正しさを前提にしている。

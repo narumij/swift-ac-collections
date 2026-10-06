@@ -48,6 +48,7 @@ Index契約とそれに関わる残taskは、この外部条件が安定する�
 | `HIST-001` | `FROZEN` | Codex | unsafe移行史の追加調査 | ユーザーが明示的に再開 | `REFACTORING_FROM_ATCODER_2025.md` |
 | `TEST-004` | `FROZEN` | Codex | 原木Fixtureの追加portable化 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
 | `RBT-009` | `FROZEN` | User / Codex | runtime-check実装の再審査 | 1.0判断直前、または`-Ounchecked`が主要構成と判明 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
+| `QUALITY-001` | `FROZEN` | User / Codex | 汎用基盤ライブラリとしての1.0採用品質ゲート | Index契約確定後、ユーザーが明示的に再開 | `Sources/RedBlackTreeCollections/Documentation/Quality-Checklist.md` |
 | `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 
@@ -62,6 +63,7 @@ Task Registryの状態は、通常の再開判断に使う計算済みの表示�
 | `RBT-001` Index完了ゲート | `RBT-011` `Comparable`採否 | 前提taskの完了後に後続taskを完了できる |
 | `RBT-003` `Result`のpublic比較overloadとpublic `_NodePtr` | `RBT-001` Index完了ゲート | 前提taskの完了後に着手候補にできる |
 | `RBT-002` Index-range `erase`の空guard | `RBT-001` Index完了ゲート | 前提taskの完了後に契約を確定できる |
+| `QUALITY-001` 1.0採用品質ゲート | `RBT-001` Index完了ゲート | 前提taskの完了後に着手候補にできる |
 
 ここには必須のAND前提だけを記録する。外部条件は各taskの状態と再開・完了条件、選択肢や
 OR条件は詳細正本で扱う。必須前提が増えた場合は辺を追加し、循環が生じる場合はtask境界または

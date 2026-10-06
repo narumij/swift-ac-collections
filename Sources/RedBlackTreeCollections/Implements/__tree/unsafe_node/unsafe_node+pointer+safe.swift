@@ -86,7 +86,7 @@ public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
 
   @inlinable
-  public static func == (lhs: Self, rhs: Self) -> Bool {
+  package static func == (lhs: Self, rhs: Self) -> Bool {
     switch (lhs, rhs) {
     case (.success(let lhs), .success(let rhs)):
       return lhs == rhs
@@ -98,7 +98,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   }
 
   @inlinable
-  public static func != (lhs: Self, rhs: Self) -> Bool {
+  package static func != (lhs: Self, rhs: Self) -> Bool {
     !(lhs == rhs)
   }
 }
@@ -172,7 +172,7 @@ public typealias _SealedPtr = Result<_NodePtrSealing, SealError>
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable
-  public static func == (lhs: Self, rhs: Self) -> Bool {
+  package static func == (lhs: Self, rhs: Self) -> Bool {
     switch (lhs, rhs) {
     case (.success(let lhs), .success(let rhs)):
       return lhs == rhs
@@ -184,7 +184,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   }
 
   @inlinable
-  public static func != (lhs: Self, rhs: Self) -> Bool {
+  package static func != (lhs: Self, rhs: Self) -> Bool {
     !(lhs == rhs)
   }
 }
@@ -321,7 +321,8 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 
 extension Result {
 
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  @usableFromInline
+  package typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 }
 
 extension Result where Failure == SealError {

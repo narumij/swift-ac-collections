@@ -149,6 +149,10 @@ current instruction and prepare the handoff for Codex if requested.
   Result分離項目をユーザー確認のうえチェック済みにした。未対応の報告: 外部契約論点リストの同項目、
   `Design-MemorySafety.md:126`の`Result`言及（P10由来でない。公開文書なのでユーザー判断でCodex担当）。
   `UnsafeIndexV3.swift`の`_LazyTieWrappedPtr`選択理由コメントは、2026-10-06ユーザー判断で削除した。
+- `RBT-003`は2026-10-06、ユーザー指示で範囲限定で再開した。特殊化`Result`の`==` / `!=`は`_SafePtr`・`_SealedPtr`用をpackage化し、
+  `_LazyTieWrappedPtr`用をRedBlackTreeTestsへ移した。`Result._NodePtr`は`@usableFromInline package`にし、
+  `UnsafeMutablePointer`の`_NodePtr` / `_NodeRef`は現状維持とした。ビルドは通常／互換×Debug／Releaseの4構成で通り、
+  `swift test`（Debug・通常）もグリーン。未コミット。性能ジョブは未実施。Registryの状態は未更新。
 - `GRAPH-001`初期合格（2026-10-06）: Claude DBの`ready`はRegistry表示と一致（`GRAPH-001`のみ）。
   入力はRegistry 30行とprecedence 7辺、未知状態語・宙に浮いた辺・循環はいずれも0。観測: DBは毎回Registryから
   作り直すprojectionで、書き戻しなし。取り込みはRegistry表の書式（backtick付きID、状態列）に依存する。

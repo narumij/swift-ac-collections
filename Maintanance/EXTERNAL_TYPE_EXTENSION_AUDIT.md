@@ -109,8 +109,8 @@ Debug限定Index比較宣言群の移動は、Indexを正式に`Comparable`へ�
 - [ ] Debug限定Index比較4宣言をIndex設計の決定に従って一群で移動または削除する
 - [ ] `SortedSequence`実験経路を一群でTestCodeへ移す
 - [ ] Debug/package限定`Index.unsafe(tree:rawTag:)`をTestSupportへ移す（公開面ゲートではなくtest整理）
-- [ ] 特殊化`Result`のpublic `==` / `!=`が必要か確認する
-- [ ] `Result._NodePtr`と`UnsafeMutablePointer._NodePtr`のpublic typealiasを非公開化できるか確認する
+- [x] 特殊化`Result`のpublic `==` / `!=`が必要か確認する（2026-10-06ユーザー判断: `_SafePtr`・`_SealedPtr`用はpackage、`_LazyTieWrappedPtr`用はRedBlackTreeTestsへ移動。標準の`Equatable`適合があるので外部の比較結果は不変）
+- [x] `Result._NodePtr`と`UnsafeMutablePointer._NodePtr`のpublic typealiasを非公開化できるか確認する（2026-10-06ユーザー判断: `Result._NodePtr`は`@usableFromInline package`、`UnsafeMutablePointer`の`_NodePtr` / `_NodeRef`は現状維持）
 - [ ] `_NodeRef`、`_SafePtr`、`_SealedPtr`、`_SafeRange`、`_SafeRangeExpression`、`_LazyTiedPtr`、`UnsafeNode.Seal`を追加監査する
 - [ ] `_SealedPtr`を公開する`UnsafeIterator`のinitializer / propertyを追加監査する
 - [ ] public global operatorとbound DSLを追加監査する

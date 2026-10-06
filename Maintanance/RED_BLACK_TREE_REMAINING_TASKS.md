@@ -45,7 +45,7 @@ Indexの検討では、利用者に見える契約と、その契約を実現・
 公開APIとして直接説明しなくても、利用者のコード、互換性、または他ライブラリへ
 影響し得るため、外部契約を決めた後に慎重に選ぶ。
 
-- public typealiasが露出する具体型。現状では`Result`がそのまま見える
+- public typealiasが露出する具体型。現状では`_LazyTieWrap<_NodePtrSealing>`がそのまま見える(PR #158以前は`Result`)
 - `RedBlackTreeIndex`を固有nominal型にするか
 - `Comparable`等の適合と、特に標準型へのretroactive conformance
 - `@frozen`型の保存プロパティ、サイズ、レイアウト
@@ -171,7 +171,8 @@ RedBlackTreeのIndexに閉じず、条件を満たすすべての`Result`へ適�
 
 ### 外部境界の主要判断: 失敗Indexを公開するか
 
-現在はpublic typealiasにより、`Index`そのものが`Result<成功値, SealError>`である。
+PR #158以前はpublic typealiasにより、`Index`そのものが`Result<成功値, SealError>`だった
+(現在は成功値だけを保持する`_LazyTiedPtr`の別名)。
 まず内部表現を考えず、利用者が失敗状態を格納したIndexを受け取る必要があるかを判断する。
 この形を採った当初の主な理由は、失敗状態と原因をそのまま保持でき、実装の調査が
 容易になると考えたためである。公開Indexが失敗値を保持する必要がある、という
@@ -546,7 +547,7 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 ### Index完了ゲート
 
 - [ ] Comparableの採否と理由が明記されている
-- [ ] ResultをIndex本体に残すか、API境界へ分離するかが決まっている
+- [x] ResultをIndex本体に残すか、API境界へ分離するかが決まっている（分離。PR #158でsuccess-only Indexをmergeしたことで決定済みと、2026-10-06にユーザーが確認）
 - [ ] 標準型へのretroactive conformanceへ依存していない
 - [ ] stale / recycled / detached / out-of-rangeを、確保外メモリへ触れる前に処理できる
 - [ ] CoW前後の契約が4コンテナとViewで一貫している

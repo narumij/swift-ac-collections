@@ -272,8 +272,9 @@ Debug限定Index比較宣言群の移動は、Indexを正式に`Comparable`へ�
 
 ### Index契約が決まるまで分類を保留する宣言
 
-- alias chain: `RedBlackTreeIndex` → `UnsafeIndexV3` → `_LazyTieWrappedPtr` →
-  `Result<_LazyTieWrap<_NodePtrSealing>, SealError>`。関連する`_LazyTiedPtr`。
+- alias chain: `RedBlackTreeIndex` → `UnsafeIndexV3` → `_LazyTiedPtr` → `_LazyTieWrap<_NodePtrSealing>`
+  (PR #158で切替。以前の`UnsafeIndexV3`は`_LazyTieWrappedPtr`の別名)。public aliasとして残る
+  `_LazyTieWrappedPtr` = `Result<_LazyTieWrap<_NodePtrSealing>, SealError>`。
 - `_LazyTieWrap`、`_NodePtrSealing`(`_NodePtr`、`hash`、`description`を含む)、`SealError`
   (全case、`Equatable` / `Comparable` / `Hashable`、構成で変わる`crossTree`)。
 - `_SealedPtr`、`_SafePtr`、特殊化`Result`の`==` / `!=`(3種類)、`Result._NodePtr`。

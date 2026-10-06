@@ -100,22 +100,3 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
     }
   }
 #endif
-
-#if DEBUG
-  // TODO: ContainerのIndexがComparable必須で確定した場合、_LazyTiedPtrをIndexとすることを検討すること
-  extension Result: @retroactive Comparable
-  where Success: Comparable, Failure: Comparable {
-    public static func < (lhs: Self, rhs: Self) -> Bool {
-      switch (lhs, rhs) {
-      case (.failure(let l), .failure(let r)):
-        return l < r
-      case (.failure, .success):
-        return true
-      case (.success, .failure):
-        return false
-      case (.success(let l), .success(let r)):
-        return l < r
-      }
-    }
-  }
-#endif

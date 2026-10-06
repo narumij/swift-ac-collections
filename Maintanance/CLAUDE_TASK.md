@@ -181,4 +181,5 @@ current instruction and prepare the handoff for Codex if requested.
   `Result: @retroactive Comparable`（`_LazyTieWrap+Result.swift:107`付近）は、Sourcesにもテストにも利用者がない
   （index store確認、さらに一時的に無効化して通常／互換Debugのテスト込みビルドが通ることを確認し、元に戻した）。
   直前のTODO「Comparable必須ならIndexを`_LazyTiedPtr`に」はPR #158で実現済み。`RBT-003`と同じく、マージで
-  Index依存が消えた可能性がある。凍結中のため未変更、扱いはユーザー判断。
+  Index依存が消えた可能性がある。ユーザー指示で削除した（`RBT-004`の部分着手、Registry未更新）。通常／互換×
+  Debug／Releaseの4構成ビルドと`swift test`はグリーン、性能ジョブは未実施。

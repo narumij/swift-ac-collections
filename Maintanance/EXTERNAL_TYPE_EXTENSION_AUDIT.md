@@ -106,7 +106,7 @@ Debug限定Index比較宣言群の移動は、Indexを正式に`Comparable`へ�
 
 - [x] `Int.__less()` / `__greater()`をpublicにする必要があるか確認し、B4-aでpackageへ縮小する
 - [x] `ThreeWayCompareResult`と`__int_compare_result`を含むInt関連宣言群の可視性を確認し、B4-aでpackageへ縮小する
-- [ ] Debug限定Index比較4宣言をIndex設計の決定に従って一群で移動または削除する
+- [ ] Debug限定Index比較4宣言をIndex設計の決定に従って一群で移動または削除する（2026-10-06: うち`Result: @retroactive Comparable`はPR #158後に利用者0件と確認し、ユーザー指示で削除済み。残りは`_LazyTieWrap`・`_NodePtrSealing`・`_LazyTie`の3宣言）
 - [ ] `SortedSequence`実験経路を一群でTestCodeへ移す
 - [ ] Debug/package限定`Index.unsafe(tree:rawTag:)`をTestSupportへ移す（公開面ゲートではなくtest整理）
 - [x] 特殊化`Result`のpublic `==` / `!=`が必要か確認する（2026-10-06ユーザー判断: `_SafePtr`・`_SealedPtr`用はpackage、`_LazyTieWrappedPtr`用はRedBlackTreeTestsへ移動。標準の`Equatable`適合があるので外部の比較結果は不変）

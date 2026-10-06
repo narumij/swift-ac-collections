@@ -169,4 +169,16 @@ current instruction and prepare the handoff for Codex if requested.
   非public protocolの`@usableFromInline`規則は既定構成104件・構成外21件とも違反0。呼び出し・参照はcompiler
   index store由来で補った（既定構成のDebugのみ）。性能に関わる候補は列挙のみで、sourceは未変更。
   2026-10-06の観測: precedence辺には成立理由と時点が無いので、前提が設計変更で消えても（`RBT-003` ← `RBT-001`の例）
-  graphからは古さを検出できない。`ready`判定は辺の正しさを前提にしている。
+  graphからは古さを検出できない。`ready`判定は辺の正しさを前提にしている。ユーザー提案（task→code→task）で、
+  taskごとの対象コードをローカルDBに登録し、手書きの辺とコード上の結合を突き合わせる検査を追加した
+  （ユーザー許可済み、DBと道具は非追跡の`.task-graphs/`内）。試験: `RBT-003`と`RBT-001`だけ登録し、現HEADでは
+  「結合なし（前提が消えた可能性）」、Index typealiasをマージ前の`_LazyTieWrappedPtr`に仮定すると「結合あり」と出て、
+  ユーザーの判断と一致した。限界: マージ前を実際にビルドしたのではなくtypealiasの仮定であること、既定構成のみ、
+  判断待ちの依存はコードに現れないこと、対象コードの登録は手作業であること。続けて`RBT-002`、`RBT-004`、
+  `RBT-010`、`RBT-011`も登録した。既存の辺はすべて裏付けあり（`RBT-003`の辺だけ結合なし）。書き漏れ候補は
+  `RBT-004`とIndex系の組（Registryの再開条件「Index契約…の確定後」というOR条件として既に文章化済み）と、
+  `RBT-010`/`RBT-011`の組（同じゲートの内訳なので想定内）。**新しい発見:** `RBT-004`内のDebug限定
+  `Result: @retroactive Comparable`（`_LazyTieWrap+Result.swift:107`付近）は、Sourcesにもテストにも利用者がない
+  （index store確認、さらに一時的に無効化して通常／互換Debugのテスト込みビルドが通ることを確認し、元に戻した）。
+  直前のTODO「Comparable必須ならIndexを`_LazyTiedPtr`に」はPR #158で実現済み。`RBT-003`と同じく、マージで
+  Index依存が消えた可能性がある。凍結中のため未変更、扱いはユーザー判断。

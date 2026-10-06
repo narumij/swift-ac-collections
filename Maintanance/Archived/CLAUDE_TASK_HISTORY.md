@@ -7310,3 +7310,111 @@ Status: Completed (2026-10-04, Claude Opus 5.5)
   semantics. Documented that the current C++ mode spells out `insert_or_assign`'s
   effect and that `erase(key)` cannot report Swift's removed mapped value.
 - Added 4 tests; all 13 root comparison tests passed. `git diff --check` passed.
+
+# Archived Result — Claude handoff 2026-10-06〜07（圧縮前の全文）
+
+2026-10-07にCurrent handoffを10項目以内へ圧縮した際、圧縮前の全文をそのまま移した。
+
+#### Current handoff (2026-10-06〜07, 圧縮前)
+
+- PR #158のsuccess-only Indexは4コンテナとViewへ統合済み。`index(inserting:)`と
+  `erase(exactly:)`のMultiSet / Dictionary展開も実装・テスト済み。
+- cross-tree Index監査、`Design-MemorySafety.md`のdetached説明訂正、`Tests/TESTING.md`同期は完了済み。
+- runtime-check方針はユーザー承認と再レビューを経て確定した。設計正本は
+  `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md`、議論記録は
+  `Archived/RUNTIME_CHECK_POLICY.md`。1.0判断直前に再審査する。
+- X1/PoCの準備・検証記録、Combining性能根拠、Adoption Readiness、SortedCollections pilotは
+  完了資料として`Maintanance/Archived/`へ移動済み。C++比較の作業履歴もArchivedに置き、
+  現行の証拠正本は`Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`とする。
+- 現在の律速は外部（`swift-collections`の`Container.Index`要件）。Index完了ゲート、その内訳
+  （公開Indexと内部`SealError`の分離・完了範囲）、Index-range `erase`の空guardはいずれも
+  `WAITING_EXTERNAL`。2026-10-06、詳細正本（公開Index表現の最終固定はContainer要件安定後、
+  空guardはIndex契約依存）に基づき、ClaudeがユーザーのレビューでRegistryを`WAITING_USER`から
+  訂正した。Indexゲートは公開Index表現・完了範囲とComparable採否へ分割し、内部の必須順序は
+  Task precedenceで管理する。Claude再レビューの4指摘をCodexが反映し、2026-10-06にユーザーが運用ルールとして確定した（commit「Clarify task dependency states」、push未確認）。P10は
+  detached訂正後の残存記述確認のみ。
+- 旧task ID（不変、`CONVERSATION_REFERENCE_IDS.md`が参照）: Ⅰ 計画文書同期（完了）、Ⅱ cross-tree
+  Index監査（完了）、Ⅲ P10記録更新（detached訂正のみ完了）、Ⅳ Index完了ゲート、Ⅴ
+  `Tests/TESTING.md`同期（完了）、Ⅵ Index-range `erase`の空guard、Ⅶ CROSS無効スモークテスト（完了）。
+- K項目4/5（`index(inserting:)` / `erase(exactly:)`展開、`1e0c9501`）はpush済み。
+  GitHub Actionsのランナー不具合で一時未実行だったが、CIはグリーン（2026-10-06ユーザー確認）。
+- 2026-10-06、試運転10回目でRegistry（`現在の律速`、`WAITING_EXTERNAL`、Task precedence）
+  から状態を把握できることを確認し、ユーザーがこの運用の採用を決定した。
+- `DOC-001`完了（`9b0f42d5`、push未実施）。管理文書2件の統合前Index表現を事実訂正し、Index完了ゲートの
+  Result分離項目をユーザー確認のうえチェック済みにした。未対応の報告: 外部契約論点リストの同項目、
+  `Design-MemorySafety.md:126`の`Result`言及（P10由来でない。公開文書なのでユーザー判断でCodex担当）。
+  `UnsafeIndexV3.swift`の`_LazyTieWrappedPtr`選択理由コメントは、2026-10-06ユーザー判断で削除した。
+- `RBT-003`は2026-10-06、ユーザー指示で範囲限定で再開した。特殊化`Result`の`==` / `!=`は`_SafePtr`・`_SealedPtr`用をpackage化し、
+  `_LazyTieWrappedPtr`用をRedBlackTreeTestsへ移した。`Result._NodePtr`は`@usableFromInline package`にし、
+  `UnsafeMutablePointer`の`_NodePtr` / `_NodeRef`は現状維持とした。ビルドは通常／互換×Debug／Releaseの4構成で通り、
+  `swift test`（Debug・通常）もグリーン。`6dea75d7`でコミット済み、push未実施、性能ジョブ未実施。
+  **Codexへの依頼（ユーザー判断でRegistry修正はCodexに委ねる）:** precedence辺「`RBT-003` ← `RBT-001`」と
+  `RBT-003`の再開条件「Index完了ゲート後」は、`try/index/1`（PR #158）マージ前の`Result`ベースIndexを前提にしたもので、
+  マージ後は依存が消えている（ユーザー確認）。辺を削除し、再開条件を訂正し、性能ジョブがグリーンになった後に
+  `RBT-003`を`DONE`にしてほしい。
+  **`RBT-002`は2026-10-06に実施済み（Registry更新はCodexに依頼）:** 2026-10-05の空でのBound範囲erase修正の漏れ
+  （当時Claudeが保留した）とユーザーが判断し、契約はdoc commentのprecondition（無効範囲はtrap）で既に決まっているので
+  Test as Specで扱った。先に4型の`_16`へ「空でCoWしない」仕様を追加して失敗を確認し、4型の`UnboundedRange` /
+  `IndexRange` / `IndexRangeExpression`版（`where`付き含む、計20か所）で空のときだけ`ensureUnique()`を省いた。
+  空の範囲は削除ループに入らないので範囲検査はそのまま行う（`erase(_range:)`等のassertを`count == 0 ||`で緩和）。
+  `_99`に「空でも他木の範囲はtrap」のDeath Testを追加。4構成ビルドと`swift test`はグリーン。
+- **Index完了ゲートの検証（2026-10-06、ユーザー指示。チェックの付け替えはCodexに依頼）:**
+  - 閉じられる: 「retroactive conformanceに依存しない」（Sourcesに`@retroactive`は0件）、主経路「`Result`の
+    retroactive `Comparable`を正式案から除外」（`d239a903`）、「`SealError`情報を分離後も維持」
+    （`RedBlackTreeInternal_PurifiedTests`が公開Indexから`.unsealed` / `.crossTree` / `.garbaged`を確認）、
+    「C++比較・fuzz・不変条件検査が成功」（現HEADで4型のFuzz＋C++比較を実行・成功）、
+    「全走査と範囲走査がO(N log N)にならない」（4型の`_1`に比較回数の仕様テストを追加: 全走査とIndex前後走査は0回、
+    範囲の作成は1回、範囲走査は0回。Releaseでも実行）、「stale / recycled / detached / out-of-range」（4型の`_3`・
+    `_98_IndexValidity`と`_99`のSIGSEGV以外で停止するDeath Test、CIのASan。Setの範囲外系は名前が異なり中身は未読）。
+  - 追加で閉じられる（2026-10-07）: 「CoW前後の一貫性」。4型の`_98_CopyOnWrite`はシナリオ1〜6と3000が揃っていた。
+    唯一の穴だった範囲Viewの`erase(where:)`のCoW（Setだけ＝KeyOnly View）を、Dictionary / MultiMap（KeyValue View）へ追加。
+  - Comparable依存だけが残る: 「Debugだけの適合を仕様の根拠にしない」は、一時無効化ビルドで違反2件を特定。
+    `RedBlackTreeMultiMap_8`のDebug限定Balanced群（`popFirst(_:)` / `popLast(_:)`）は新設の
+    `RedBlackTreeMultiMap_98_DebugOnlyAPITests.swift`へ移して解消。残る`RedBlackTreeSet_9`の`test_index_comparable`は
+    `RBT-011`しだい。「`==` / `<` / hash」も`RBT-011`依存。検証は4構成ビルドとDebug / Releaseの`swift test`で全グリーン。
+  - `RBT-011`のupstream確認（2026-10-07）: swift-collections `main`の`Container.swift`は`associatedtype Index: Equatable,
+    Comparable, Hashable`のまま。最終変更は2026-09-21 `b2424210`「Reinstate requirement for Comparable indices」で、
+    その後の変更なし。Comparableを外す検討のFIXMEも残る。外部待ちのまま。なおPR #158でIndexが独自型になったので、
+    `RED_BLACK_TREE_REMAINING_TASKS.md`の「Indexが`Result`のtypealiasなのでComparableにできない」という記述は古い（Codexへ）。
+- `GRAPH-001`初期合格・試験運用継続（2026-10-07、ユーザー確認）: Claude DBの`ready`はRegistry表示と一致
+  （初期試験時点では`GRAPH-001`のみ）。local DBを通常作業で継続利用し、統合議論まで観測を蓄積する。
+  2026-10-07の観測: 赤黒木以外（`OPT-001` / `BARE-001` / `ARRAY-001` / `PERM-001` / `RBT-005` / `RBT-008`）も対象コードを登録した。
+  対象を型やファイル単位で登録すると結合が過大に出る（`RBT-008`を`_LazyTie`型まるごとで登録してIndex系と誤って結合、
+  遅延生成箇所だけに絞ると消えた。ファイル単位では`OPT`/`BARE`の監査と`ARRAY`のstorage再設計という別レベルを区別できない）。
+  対象は「そのtaskが実際に変えるもの」で登録する。完了済みtaskは検査から除外した。ユーザー: `RBT-008`の完了条件は
+  「ユーザーが納得できるコードの提示」、`OPT`/`BARE`と`ARRAY`のレベル整理はCodex担当。
+  同日、`RBT-008`の現状コード（`lazyDetach` / `tiedRawBuffer`の遅延生成と`@unchecked Sendable`による初回並行アクセスの競合）と
+  TODO記載の3案（生成時に先に作る / `AtomicLazyReference` / 初回並行は保証外）を提示し、ユーザー判断で不採用。凍結のまま、コード未変更。
+  入力はRegistry 30行とprecedence 7辺、未知状態語・宙に浮いた辺・循環はいずれも0。観測: DBは毎回Registryから
+  作り直すprojectionで、書き戻しなし。取り込みはRegistry表の書式（backtick付きID、状態列）に依存する。
+  `ready`は状態語と前提完了の両方で決まり、前提だけでは決まらない。改善後の観測: precedenceの
+  「完了できる／確定できる」と「着手候補にできる」は
+  意味が異なり、前者を着手の前提として扱うとACTIVEなtaskを誤ってready外にする。外部条件はRegistryにnodeが
+  無いので直接は問えない。凍結21件の再開条件は文章で、graphでは判定できない。2026-10-06、ユーザーがこの会話の
+  範囲で拡大解釈を許可（根拠はユーザーメモ）し、同じDBへコードの依存graph（compiler symbol graph由来）と
+  公開しないローカルメモを追加した。symbol graphは既定構成だけを見るため、`#if`外の宣言はsource走査で補う。
+  非public protocolの`@usableFromInline`規則は既定構成104件・構成外21件とも違反0。呼び出し・参照はcompiler
+  index store由来で補った（既定構成のDebugのみ）。性能に関わる候補は列挙のみで、sourceは未変更。
+  2026-10-06の観測: precedence辺には成立理由と時点が無いので、前提が設計変更で消えても（`RBT-003` ← `RBT-001`の例）
+  graphからは古さを検出できない。`ready`判定は辺の正しさを前提にしている。ユーザー提案（task→code→task）で、
+  taskごとの対象コードをローカルDBに登録し、手書きの辺とコード上の結合を突き合わせる検査を追加した
+  （ユーザー許可済み、DBと道具は非追跡の`.task-graphs/`内）。試験: `RBT-003`と`RBT-001`だけ登録し、現HEADでは
+  「結合なし（前提が消えた可能性）」、Index typealiasをマージ前の`_LazyTieWrappedPtr`に仮定すると「結合あり」と出て、
+  ユーザーの判断と一致した。限界: マージ前を実際にビルドしたのではなくtypealiasの仮定であること、既定構成のみ、
+  判断待ちの依存はコードに現れないこと、対象コードの登録は手作業であること。続けて`RBT-002`、`RBT-004`、
+  `RBT-010`、`RBT-011`も登録した。既存の辺はすべて裏付けあり（`RBT-003`の辺だけ結合なし）。書き漏れ候補は
+  `RBT-004`とIndex系の組（Registryの再開条件「Index契約…の確定後」というOR条件として既に文章化済み）と、
+  `RBT-010`/`RBT-011`の組（同じゲートの内訳なので想定内）。**新しい発見:** `RBT-004`内のDebug限定
+  `Result: @retroactive Comparable`（`_LazyTieWrap+Result.swift:107`付近）は、Sourcesにもテストにも利用者がない
+  （index store確認、さらに一時的に無効化して通常／互換Debugのテスト込みビルドが通ることを確認し、元に戻した）。
+  直前のTODO「Comparable必須ならIndexを`_LazyTiedPtr`に」はPR #158で実現済み。`RBT-003`と同じく、マージで
+  Index依存が消えた可能性がある。ユーザー指示で削除した（`RBT-004`の部分着手、Registry未更新）。通常／互換×
+  Debug／Releaseの4構成ビルドと`swift test`はグリーン、性能ジョブは未実施。
+  同じ方法で、PR #158前のIndex（`_LazyTieWrappedPtr`）向けの宣言群が今は未使用だと分かった。ユーザー判断で削除は保留し、
+  `Tests/RedBlackTreeTests/DebugAdditionals/UnsafeTreeV2+Debug/_LazyTieWrappedPtr+Retired.swift`へ待避した
+  （`@inlinable`等は外した。寝かせて後で判断）:
+  `UnsafeTreeV2.__purified_(_ : _LazyTieWrappedPtr)`（2構成分）と`__purified_safe_`同型、
+  `Result<_LazyTieWrap<_NodePtrSealing>, SealError>`の`purified` / `isValid` / `sealed` / `lazyDetach` /
+  `__isSameLazyDetach` / Debug版`unsafe(tree:rawTag:)`。一時的に無効化して4構成のテスト込みビルドと`swift test`が
+  通ることを確認し、元に戻した。`unchecked`と`index(_:) -> _LazyTieWrappedPtr`系はResult連鎖用として使用中なので
+  対象外。`ALLOW_CROSS_TREE_INDEX`無効構成は未確認。`RBT-008`の前提（`lazyDetach`の遅延生成）は現行コードでも有効。

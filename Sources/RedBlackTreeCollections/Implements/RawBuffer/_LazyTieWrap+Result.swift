@@ -39,50 +39,9 @@ extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == Seal
   static func unchecked(_ _p: _NodePtr, end_ptr: _NodePtr, lazyDetach: _LazyTie) -> Self {
     .success(.init(rawValue: .init(_p: _p), lazyDetach: lazyDetach))
   }
-
-  // ポインタを利用する際に用いる
-  #if USE_LAZY_DETACH
-    @inlinable
-    package var purified: Result { flatMap { $0.purified } }
-  #else
-    @inlinable
-    package var purified: Result {
-      flatMap {
-        $0.lazyDetach.isDetached ? .failure(.detached) : $0.purified
-      }
-    }
-  #endif
-
-  @usableFromInline
-  package var isValid: Bool {
-    switch purified {
-    case .success: true
-    default: false
-    }
-  }
-
-  @inlinable
-  package var sealed: _SealedPtr {
-    map(\.rawValue)
-  }
 }
 
 #if DEBUG
-  extension Result where Success == _LazyTieWrap<_NodePtrSealing>, Failure == SealError {
-
-    package static func unsafe<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag)
-      -> Self
-    {
-      if rawTag == .nullptr {
-        return .failure(.null)
-      }
-
-      return tree.__retrieve_(rawTag)
-        .flatMap(\.uncheckedSeal)
-        .flatMap { $0.band(tree) }
-    }
-  }
-
   extension _LazyTieWrap where RawValue == _NodePtrSealing {
     
     package static func unsafe<Base: ___TreeBase>(tree: UnsafeTreeV2<Base>, rawTag: _TrackingTag)

@@ -183,3 +183,11 @@ current instruction and prepare the handoff for Codex if requested.
   直前のTODO「Comparable必須ならIndexを`_LazyTiedPtr`に」はPR #158で実現済み。`RBT-003`と同じく、マージで
   Index依存が消えた可能性がある。ユーザー指示で削除した（`RBT-004`の部分着手、Registry未更新）。通常／互換×
   Debug／Releaseの4構成ビルドと`swift test`はグリーン、性能ジョブは未実施。
+  同じ方法で、PR #158前のIndex（`_LazyTieWrappedPtr`）向けの宣言群が今は未使用だと分かった。ユーザー判断で削除は保留し、
+  `Tests/RedBlackTreeTests/DebugAdditionals/UnsafeTreeV2+Debug/_LazyTieWrappedPtr+Retired.swift`へ待避した
+  （`@inlinable`等は外した。寝かせて後で判断）:
+  `UnsafeTreeV2.__purified_(_ : _LazyTieWrappedPtr)`（2構成分）と`__purified_safe_`同型、
+  `Result<_LazyTieWrap<_NodePtrSealing>, SealError>`の`purified` / `isValid` / `sealed` / `lazyDetach` /
+  `__isSameLazyDetach` / Debug版`unsafe(tree:rawTag:)`。一時的に無効化して4構成のテスト込みビルドと`swift test`が
+  通ることを確認し、元に戻した。`unchecked`と`index(_:) -> _LazyTieWrappedPtr`系はResult連鎖用として使用中なので
+  対象外。`ALLOW_CROSS_TREE_INDEX`無効構成は未確認。`RBT-008`の前提（`lazyDetach`の遅延生成）は現行コードでも有効。

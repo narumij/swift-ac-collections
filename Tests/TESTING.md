@@ -1,7 +1,7 @@
 # テストメンテナンス・ダッシュボード
 
 現在情報だけを保持する。作業規則は `Tests/CLAUDE.md`、CodexからClaudeへの依頼は
-`Maintanance/CLAUDE_TASK.md`、2026-10-03以前の詳細は `Tests/TESTING_REFERENCE.md` にある。
+`Maintanance/CLAUDE_TASK.md`、2026-10-03以前の詳細は `Tests/Archived/TESTING_REFERENCE.md` にある。
 参照資料は必要な箇所だけ検索し、通常は通読しない。
 
 ## 目的
@@ -31,6 +31,22 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   `___tree_invariant_for_fuzz()` チェックを同一の操作列・状態に対して行うよう
   統合済み。MultiSet/MultiMapは「選択キーのみ」の部分比較だった箇所を全要素
   比較に強化した。production codeの変更なし、不具合は未検出。
+- 空コレクションへの`removeFirst()` / `removeLast()`は、4コンテナと3種の共有Viewで
+  Death Testを整備済み。Debugと通常Releaseでは停止し、Release + `_O_UNCHECKED`では
+  標準ライブラリ同様に`preconditionFailure`が保証されない。これは採用済みの実行時検査
+  方針であり、CIは`_O_UNCHECKED`を使用しない。Viewの8件を追加し、既存分と合わせた
+  16件で構成差を確認した。互換モードのテストビルドも成功している。
+- `index(inserting:)`と`erase(exactly:)`は4コンテナへ横展開済み。4つのInsertion suite
+  63件、フルDebug、互換モードのテストビルドが成功した。Setの空`erase(exactly:)`で
+  発見した不要なCoWも修正済み。性能jobはpush後のCIへ委ねる。
+- Bound-rangeの`erase` / `erase(_:where:)`は、4型で逆順範囲・Multi型の同一キー逆順範囲・
+  predicate非呼出しを仕様化した。4つのBoundExpression suite 81件、フルDebug、互換モードの
+  テストビルドが成功した。空コレクションでの不要なCoWは8経路を修正済み。Index-range版の
+  空guardはIndex契約を変え得るため未変更である。
+- cross-tree Index契約の監査で不足していたF3/F4を4型へ、F2をMultiMapへ追加した。
+  detached前提を確認する内部テストも4型へ展開済み。追加分、フルDebug、互換モードの
+  テストビルドは成功した。`ALLOW_CROSS_TREE_INDEX`なしでは予測どおり3件が失敗し、
+  CROSS=OFFは実質deprecatedとして扱う。標準構成のテスト不足ではない。
 
 - OptionalArrayModule: Release実行、Death Test、参照型寿命、公開API化漏れを対応済み。
   strict memory safetyの4バッチで所有型の破棄・変更・初期化とView境界を整理し、
@@ -76,9 +92,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   (`Permutations`と`Nexts where C: Sendable`、コンパイル時テスト)は実装・検証済み。
   共有CoW bufferを持つ`IteratorN`/`SubSequenceN`も、Bufferの`final`化、変更前detachの
   根拠コメント、Taskを跨ぐ回帰テストとともに対応済み(`Maintanance/StrictMemorySafetyReadiness.md`
-  §9)。ABC328E実提出による性能検証
-  (外部AtCoder提出、ユーザー実施)が判断待ち(詳細は`Maintanance/PermutationModule/
-  ImplementationPlan.md`の「保留中の判断」参照)。`All`系・`unsafe`系の削除、
+  §9)。`All`系・`unsafe`系の削除、
   `Tests/PermutationTests/NextPermutation.swift`(未参照の旧世代実装)の削除、
   `nextPermutations()`と公開戻り値型への`///`コメントドック整備は完了済み。
   `.strictMemorySafety()`も恒久適用済みで、対象モジュールの警告0件を確認した。
@@ -103,22 +117,29 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   凍結する: `_Reverse4`関連、`swap_key`/`swap_mapped_value`、`outOfRange`/`keyMismatch`、
   `payloadLayout`/`__root_ptr()`、RawRangeの`contains(range:pointer:)`、`_TrackingTag.retire`。
 
+## 凍結・AI再開禁止
+
+- ABC328E実提出による性能検証は、ユーザーが手作業で行う専任項目として凍結する。
+  AIは着手・代行・催促しない。詳細は
+  `Maintanance/PermutationModule/ImplementationPlan.md`を参照する。
+
 ## 直近の引き継ぎ
 
-- `CLAUDE_TASK.md`の4タスク(Permutation境界チェックの検証・end-to-end計測・単一比較PoC・
-  `erase(where:)`の空CoW回避)を完了しCompletedへ更新。前回分は`CLAUDE_TASK_HISTORY.md`へ移動。
-- Permutation: 初回ベンチマークの手法の問題(キャプチャ変数のbox化、タイマー分解能)を補正した
-  `(batched)`版とend-to-end版を追加。実利用ではチェックが最適化で消え、end-to-endの約20%差は
-  コード配置によるものと特定した。2比較の`precondition`を維持(単一比較は不採用)。
-  詳細は`ProductReadinessAssessment.md`。
-- `PermutationDeathTests.swift`に`Int.min`/`Int.max`を追加(計5件、Debug/Releaseとも成功)。
-- `erase(where:)`: 4型で`ensureUnique()`の前に空チェックを追加。4型の空削除CoWテストを
-  先に拡張して失敗を確認してから修正した。旧既知挙動テストは
-  `testEraseWhereOnEmptyCollectionKeepsSingleton`へ改めた。
-- 検証: 通常/互換モードの対象スイート、フルの`swift test`、通常ビルド、`git diff --check`が成功。
-  `Package.swift`と一時的な本体変更は復元済み。
+- runtime-check方針に沿い、コンテナと共有Viewの空remove Death Testを通常構成と
+  `_O_UNCHECKED`で確認した。後者で停止しないことは仕様どおりで、テストへの構成guardは加えない。
+- `index(inserting:)` / `erase(exactly:)`の4型横展開と、Bound-range eraseの逆順範囲・空コレクションの
+  仕様化をTest as Specification先行で完了し、空時の不要なCoWを修正した。
+- Index-range eraseの空guard(`RBT-002`)を完了した。4型の`_16`に「空でCoWしない」仕様(修正前に失敗を確認)、
+  `_99`に「空でも他木の範囲はtrap」のDeath Testを追加。範囲検査は維持している。
+- Index完了ゲートの検証として、4型の`_1`に走査の比較回数の仕様(全走査・前後走査・範囲走査は0回、範囲作成は1回)、
+  Dictionary / MultiMapの`_98_CopyOnWrite`にKeyValue Range Viewの`erase(where:)` CoWを追加した。
+  Debug限定Balanced群に依存していた`RedBlackTreeMultiMap_8`のテストは`_98_DebugOnlyAPITests`へ移した。
+  `RedBlackTreeSet_9`の`test_index_comparable`はDebug限定Index `Comparable`依存のまま、`RBT-011`待ち。
+- PR #158前のIndex(`_LazyTieWrappedPtr`)向けの未使用宣言は、削除を保留して
+  `DebugAdditionals/UnsafeTreeV2+Debug/_LazyTieWrappedPtr+Retired.swift`へ待避した。
+  4構成ビルドとDebug / Releaseの`swift test`は成功。LinuxのCIはpush後に確認する。
 
-最終更新: 2026-10-03 21:23 JST / Codex
+最終更新: 2026-10-07 01:40 JST / Claude Opus 5.5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

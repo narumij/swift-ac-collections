@@ -1,6 +1,11 @@
 # Session Startup
 
-At the beginning of every session, read `Tests/CLAUDE.md` before doing any work and follow its instructions.
+At the beginning of every session, read only the Task Registry at the top of
+`Maintanance/PROGRESS_OVERVIEW.md` to establish current task state. Then read the detailed canonical
+document linked from the selected task row. Do not scan all maintenance or Archived documents by
+default.
+
+For work under `Tests/`, read `Tests/CLAUDE.md` after the Task Registry and follow its instructions.
 
 # Communication
 

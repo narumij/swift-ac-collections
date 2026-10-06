@@ -98,7 +98,6 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
   
   @inlinable
   func ___erase_sanitize_range(_ range: _SafeRange) -> Result<UnsafeIndexV3, SealError> {
-    // TODO: サニタイズすりぬけを検出するテストの追加
     sanitize(range)
       .flatMap {
         $0.fold(___erase_range)
@@ -128,7 +127,6 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool
   ) rethrows -> Result<UnsafeIndexV3, SealError> {
 
-    // TODO: サニタイズすりぬけを検出するテストの追加
     try sanitize(range)
       .flatMapThrowing { range in
         try range.fold { first, last in

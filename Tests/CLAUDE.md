@@ -1,20 +1,23 @@
 # Test Work Instructions
 
-Use this file as the entry point for all work under `Tests/`. Paths in this
+Use the Task Registry in `Maintanance/PROGRESS_OVERVIEW.md` as the project-level entry point. Use this
+file as the test-specific instruction layer after a test task has been selected. Paths in this
 document are relative to the repository root.
 
 ## Start Here
 
 Before changing files:
 
-1. Read `Maintanance/CLAUDE_TASK.md`. If it contains an active assignment,
+1. Read only the Task Registry at the top of `Maintanance/PROGRESS_OVERVIEW.md` and identify the
+   selected task. Do not scan all maintenance or Archived documents.
+2. Read `Maintanance/CLAUDE_TASK.md`. If it contains an active assignment,
    treat it as the current task. Codex-to-Claude work requests in that file
    must be written in English.
-2. Read `Tests/TESTING.md`, which is the concise current-state dashboard.
-3. Search `Tests/TESTING_REFERENCE.md` only when the current task requires
+3. Read only the task-relevant portions of `Tests/TESTING.md`.
+4. Search `Tests/Archived/TESTING_REFERENCE.md` only when the current task requires
    historical context or a detailed legacy procedure. Do not read it from
    beginning to end by default.
-4. Inspect the relevant implementation, tests, fixtures, and API matrices
+5. Inspect the relevant implementation, tests, fixtures, and API matrices
    before deciding what is missing.
 
 Do not begin unrelated cleanup while an explicit user request, an active task,
@@ -49,7 +52,7 @@ removal of existing coverage is unclear.
 - Keep compatibility-only behavior in the compatibility tests. Check
   `API-Matrix.md`, `API-Matrix-View.md`, and `Quality-Checklist.md` when working
   on RedBlackTree public APIs or views.
-- Consult `Tests/RedBlackTreeTests/Fixtures.md` before adding or changing
+- Consult `Tests/RedBlackTreeFixture/Fixtures.md` before adding or changing
   RedBlackTree fixtures, and update it when fixture behavior changes.
 - Debug builds track RedBlackTree allocation, node, and payload lifetimes in
   process-global counters. An XCTest that creates RedBlackTree collections must

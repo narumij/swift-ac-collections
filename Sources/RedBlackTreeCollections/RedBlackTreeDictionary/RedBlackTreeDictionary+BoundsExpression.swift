@@ -110,6 +110,9 @@
     @inlinable
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
+      // 空の場合は削除対象が存在し得ないため、ensureUnique()による
+      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
+      guard __tree_.count > 0 else { return }
       __tree_.ensureUnique()
       _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
     }
@@ -125,6 +128,9 @@
       _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
+      // 空の場合は削除対象が存在し得ないため、ensureUnique()による
+      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
+      guard __tree_.count > 0 else { return }
       __tree_.ensureUnique()
       _ = try __tree_.___erase_sanitize_range_if(
         bounds.evaluate(__tree_).relative(to: __tree_)

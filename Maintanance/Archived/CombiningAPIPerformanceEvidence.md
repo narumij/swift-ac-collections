@@ -1,13 +1,13 @@
-<!-- Codex/Claude作業メモ -->
+# Combining API性能根拠調査
 
-# Combining API性能根拠調査 (CLAUDE_TASK.md Task 2)
+> 状態: 完了・追加検証可(2026-10-06)。追加検証は現在の正しさや1.0判断を止めない。
 
 `merge`/`merging`/`insert(contentsOf:)`/`inserting(contentsOf:)`(挿入ループ経路、
 O(*n* log(*m + n*)))と、`union`/`formUnion`/`meld`/`melding`(meld経路、O(*n* + *m*))の
 既存コメント`- Important: If sufficient space is available, using 〜 is recommended.`
-の根拠を実装追跡とベンチマークで検証した結果。**本調査は証拠収集のみで、production
-codeも公開コメントも変更していない。**(後続タスクでの公開コメント訂正とPoCは
-§3末尾・§4に記録。)
+の根拠を実装追跡とベンチマークで検証した結果。調査ではproduction codeを変更せず、
+後続作業で根拠のない公開コメント6箇所を削除した。追加の推奨文は設けていない。
+容量事前確保PoCは計測後に完全復元した。詳細は§3末尾・§4に記録する。
 
 ## 1. 実装経路の追跡
 
@@ -264,7 +264,10 @@ swift run -c release benchmark run \
   過剰確保になる。MultiSet側(`___meld_multi`)と揃えること自体を目的とするなら、
   性能ではなくコード整合性の判断としてユーザーが決める事項である。
 
-## 保留事項
+## 任意の追加検証(非blocking)
+
+以下は追加で掘れる論点であり、本調査の完了条件、現在のAPIの正しさ、1.0のblocking条件には
+含めない。具体的な利用上の必要または性能回帰が生じた場合に再開する。
 
 - 256kを超える入力サイズでのクロスオーバーの有無は未計測。
 - 16kでは同一コードのケース間で約1.5倍の差が再現する(実行順/アロケータ状態の影響と

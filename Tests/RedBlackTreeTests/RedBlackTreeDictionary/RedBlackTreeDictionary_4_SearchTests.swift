@@ -57,3 +57,20 @@ final class RedBlackTreeDictionarySearchTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary.max()?.key, 3)
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeDictionaryFindTests: RedBlackTreeTestCase {
+
+    /// `find(_:)`はキーの位置を返し、無ければ`endIndex`を返すこと。
+    func testFindReturnsKeyIndexOrEndIndex() {
+      let d: RedBlackTreeDictionary = [1: "a", 2: "b", 3: "c"]
+      let i = d.find(2)
+      XCTAssertEqual(d[i].key, 2)
+      XCTAssertEqual(d[i].value, "b")
+      XCTAssertEqual(d.find(9), d.endIndex)
+    }
+  }
+#endif

@@ -138,3 +138,21 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
     XCTAssertEqual(DeinitializeCounter.count, 0)
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiMapEraseIndexTests: RedBlackTreeTestCase {
+
+    /// `erase(_:)`はIndexの位置の組を取り除き、その次の位置を返すこと。
+    func testEraseIndexReturnsFollowingIndex() {
+      var m = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "a"), (2, "b"), (2, "c"), (3, "d")])
+      let next = m.erase(m.index(after: m.startIndex))
+      XCTAssertEqual(m[next].value, "c")
+      XCTAssertEqual(m.map(\.value), ["a", "c", "d"])
+      let last = m.erase(m.index(before: m.endIndex))
+      XCTAssertEqual(last, m.endIndex)
+    }
+  }
+#endif

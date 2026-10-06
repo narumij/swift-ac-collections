@@ -5,6 +5,22 @@
 
   struct RedBlackTreeDictionaryDeathTests {
 
+    #if !COMPATIBLE_ATCODER_2025
+      /// 空のDictionaryでも、他の木の要素を指すIndex範囲のeraseは検査で停止すること
+      /// (空のときにCoWを省いても、範囲の検査は省かない)。
+      @Test
+      func erasingForeignRangeFromEmptyDictionary_terminatesProcess() async {
+        await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+          let source = RedBlackTreeDictionary<Int, String>(
+            uniqueKeysWithValues: (0..<8).map { ($0, "\($0)") })
+          var target = RedBlackTreeDictionary<Int, String>()
+          let lower = source.index(source.startIndex, offsetBy: 2)
+          let upper = source.index(source.startIndex, offsetBy: 6)
+          target.erase(lower..<upper)
+        }
+      }
+    #endif
+
     @Test
     func duplicateKeysInUniqueKeysInitializer_terminateProcess() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {

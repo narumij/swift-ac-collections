@@ -2,6 +2,9 @@
 
 [English](AdoptionReadinessAssessment.md) | 日本語
 
+> 状態: 2026-10-06時点の品質証拠としてarchive。具体的なreleaseまたは採用判断で
+> 証拠更新が必要になった場合だけ再開する。
+
 > リンク維持のためファイル名は据え置いている。この文書は順位付けの主張を行わず、
 > 評価もしない。
 
@@ -114,7 +117,7 @@ equal range、erase/remove、mapped value更新について返された要素と
 mapped valueを出現の識別子として使い、同値キー群内の配置を正規化せず観測する。
 
 2026-10-04時点で、DebugとReleaseの両方で35件のXCTestが失敗0で成功した。詳細と限界は
-`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`にある。
+`Maintanance/Archived/CPP_BEHAVIOR_COMPARISON_TASK.md`にある。
 
 この実装はLLVM libc++の赤黒木を移植・適応したものなので、挙動比較の正本はlibc++とする。
 同じ35件はUbuntu CIのGNU libstdc++でもDebug成功したが、これは移植性の参考情報であり、
@@ -182,7 +185,7 @@ swift test --disable-sandbox --filter CppBehaviorReferenceTests
 - C++比較は上記の操作を対象とし、全公開APIではない。共通の戻り値がない事実
   (例: `insert(key:value:)`後のrank)は内容比較でのみ確認している
 - Swift Collectionsの`SortedCollections`との性能比較は公開していない。手法は
-  `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md`で定めているが、存在するのは
+  `Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md`で定めているが、存在するのは
   手順確認用のpilotのみで、その数値は結論ではない
 
 ## レビューする人間・AIへの指針

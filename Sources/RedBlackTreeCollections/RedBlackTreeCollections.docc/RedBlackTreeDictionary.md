@@ -87,6 +87,7 @@
 - ``RedBlackTreeDictionary/insert(_:hint:)``
 - ``RedBlackTreeDictionary/insert(key:value:)``
 - ``RedBlackTreeDictionary/insert(key:value:hint:)``
+- ``RedBlackTreeDictionary/index(inserting:)``
 - ``RedBlackTreeDictionary/update(_:hint:)``
 - ``RedBlackTreeDictionary/updateValue(_:forKey:)``
 - ``RedBlackTreeDictionary/updateValue(_:forKey:hint:)``
@@ -102,6 +103,7 @@
 - ``RedBlackTreeDictionary/removeAll(keepingCapacity:)``
 - ``RedBlackTreeDictionary/erase(where:)``
 - ``RedBlackTreeDictionary/erase(_:)-1yrnu``
+- ``RedBlackTreeDictionary/erase(exactly:)``
 
 ### Merging Dictionaries
 

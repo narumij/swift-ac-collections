@@ -263,8 +263,6 @@
 #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
   extension RedBlackTreeSet {
     
-    // TODO: 他のコンテナへの展開
-
     // TODO: 名前の再検討
     
     // SetAlgebra都合でinsertの戻りが変えられない。
@@ -304,9 +302,13 @@
     /// - Returns: The index that followed `index` before removal, or `nil` if
     ///   `index` doesn't refer to an accessible element of the set.
     /// - Complexity: Amortized O(1)
+    /// - SeeAlso: `index(inserting:)`, which returns an index to pass to this method.
     @inlinable
     @discardableResult
     public mutating func erase(exactly index: Index) -> Index? {
+      // 空の場合はアクセス可能な要素が存在し得ないため、ensureUnique()による
+      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       guard let __p = __tree_.__purified_(index).accessible.pointer else {
         return nil

@@ -1,6 +1,16 @@
 # 外部所有型Extension監査
 
-最終更新: 2026-10-04 / Codex
+最終更新: 2026-10-07 / Codex
+
+> 現在の状態(2026-10-06): 機械抽出と分類、独立縮小可能なbatchは完了。残る対象は
+> Index契約依存、外部consumer移行待ち、または凍結clusterであり、明示的な再開条件が満たされるまで
+> 本文中の旧「次タスク」を現行指示として扱わない。
+>
+> 2026-10-07追記: 特殊化`Result`のpublic比較overloadとpublic `Result._NodePtr`の縮小は完了した。
+> Debug / Release / 互換mode / DocCの検証に加え、GitHub Actionsのperformance job成功
+> (run 37502938888、job 112404281751、5分34秒)を確認した。これらを一つの完了単位として閉じる。
+> 後続コミットで削除した`Result: @retroactive Comparable`と旧Result-based Index helperもこの完了を
+> 妨げない。残るDebug比較3宣言は別の凍結taskであり、本項目へ戻さない。
 
 ## 目的
 
@@ -102,11 +112,11 @@ Debug限定Index比較宣言群の移動は、Indexを正式に`Comparable`へ�
 
 - [x] `Int.__less()` / `__greater()`をpublicにする必要があるか確認し、B4-aでpackageへ縮小する
 - [x] `ThreeWayCompareResult`と`__int_compare_result`を含むInt関連宣言群の可視性を確認し、B4-aでpackageへ縮小する
-- [ ] Debug限定Index比較4宣言をIndex設計の決定に従って一群で移動または削除する
+- [ ] Debug限定Index比較4宣言をIndex設計の決定に従って一群で移動または削除する（2026-10-06: うち`Result: @retroactive Comparable`はPR #158後に利用者0件と確認し、ユーザー指示で削除済み。残りは`_LazyTieWrap`・`_NodePtrSealing`・`_LazyTie`の3宣言）
 - [ ] `SortedSequence`実験経路を一群でTestCodeへ移す
 - [ ] Debug/package限定`Index.unsafe(tree:rawTag:)`をTestSupportへ移す（公開面ゲートではなくtest整理）
-- [ ] 特殊化`Result`のpublic `==` / `!=`が必要か確認する
-- [ ] `Result._NodePtr`と`UnsafeMutablePointer._NodePtr`のpublic typealiasを非公開化できるか確認する
+- [x] 特殊化`Result`のpublic `==` / `!=`が必要か確認する（2026-10-06ユーザー判断: `_SafePtr`・`_SealedPtr`用はpackage、`_LazyTieWrappedPtr`用はRedBlackTreeTestsへ移動。標準の`Equatable`適合があるので外部の比較結果は不変）
+- [x] `Result._NodePtr`と`UnsafeMutablePointer._NodePtr`のpublic typealiasを非公開化できるか確認する（2026-10-06ユーザー判断: `Result._NodePtr`は`@usableFromInline package`、`UnsafeMutablePointer`の`_NodePtr` / `_NodeRef`は現状維持）
 - [ ] `_NodeRef`、`_SafePtr`、`_SealedPtr`、`_SafeRange`、`_SafeRangeExpression`、`_LazyTiedPtr`、`UnsafeNode.Seal`を追加監査する
 - [ ] `_SealedPtr`を公開する`UnsafeIterator`のinitializer / propertyを追加監査する
 - [ ] public global operatorとbound DSLを追加監査する
@@ -268,8 +278,9 @@ Debug限定Index比較宣言群の移動は、Indexを正式に`Comparable`へ�
 
 ### Index契約が決まるまで分類を保留する宣言
 
-- alias chain: `RedBlackTreeIndex` → `UnsafeIndexV3` → `_LazyTieWrappedPtr` →
-  `Result<_LazyTieWrap<_NodePtrSealing>, SealError>`。関連する`_LazyTiedPtr`。
+- alias chain: `RedBlackTreeIndex` → `UnsafeIndexV3` → `_LazyTiedPtr` → `_LazyTieWrap<_NodePtrSealing>`
+  (PR #158で切替。以前の`UnsafeIndexV3`は`_LazyTieWrappedPtr`の別名)。public aliasとして残る
+  `_LazyTieWrappedPtr` = `Result<_LazyTieWrap<_NodePtrSealing>, SealError>`。
 - `_LazyTieWrap`、`_NodePtrSealing`(`_NodePtr`、`hash`、`description`を含む)、`SealError`
   (全case、`Equatable` / `Comparable` / `Hashable`、構成で変わる`crossTree`)。
 - `_SealedPtr`、`_SafePtr`、特殊化`Result`の`==` / `!=`(3種類)、`Result._NodePtr`。

@@ -1,6 +1,6 @@
 # RedBlackTree 残タスク
 
-最終更新: 2026-10-04 / Codex
+最終更新: 2026-10-06 / Codex
 
 ## 目的
 
@@ -11,7 +11,7 @@ RedBlackTreeCollectionsを「完成」と判断するまでに残っている作
 ## 現在の判定
 
 赤黒木アルゴリズムと4つの公開コンテナの基本的な正しさについては、完成判断に使える
-証拠が揃っている。一方、公開`Index`の表現と契約が確定していないため、
+証拠が揃っている。一方、公開`Index`はsuccess-only表現を採用済み(PR #158)だが、Comparable採否等の契約が確定していないため、
 RedBlackTreeCollections全体はまだ完成とはしない。
 
 ### 確認済みの根拠
@@ -24,7 +24,7 @@ RedBlackTreeCollections全体はまだ完成とはしない。
 - raw treeの専用テストターゲット、通常到達可能行のcoverage確認
 - Debug寿命検査、境界Death Test、LinuxでのDeath Test実行実績
 
-C++比較の詳細は`CPP_BEHAVIOR_COMPARISON_MATRIX.md`を正本とする。
+C++比較の詳細は`Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`を正本とする。
 
 ## 外部契約と二種類の内部実装を分ける
 
@@ -45,7 +45,7 @@ Indexの検討では、利用者に見える契約と、その契約を実現・
 公開APIとして直接説明しなくても、利用者のコード、互換性、または他ライブラリへ
 影響し得るため、外部契約を決めた後に慎重に選ぶ。
 
-- public typealiasが露出する具体型。現状では`Result`がそのまま見える
+- public typealiasが露出する具体型。現状では`_LazyTiedPtr`がそのまま見える(PR #158以前は`Result`)
 - `RedBlackTreeIndex`を固有nominal型にするか
 - `Comparable`等の適合と、特に標準型へのretroactive conformance
 - `@frozen`型の保存プロパティ、サイズ、レイアウト
@@ -136,8 +136,8 @@ Jで接続する。
 
 これは赤黒木の完成を止める最優先タスクである。
 
-現行の`RedBlackTreeIndex`は`UnsafeIndexV3`、さらに
-`Result<_LazyTieWrap<_NodePtrSealing>, SealError>`の別名である。ノードのsealed pointer、
+現行の`RedBlackTreeIndex`は`UnsafeIndexV3`、さらに成功値だけを保持する`_LazyTiedPtr`の別名である
+(2026-10-05時点。PR #158以前は`Result<_LazyTieWrap<_NodePtrSealing>, SealError>`の別名だった)。ノードのsealed pointer、
 世代、ストレージの同一性・解放検出を組み合わせ、CoWで分岐した木ではtracking tagを
 使って対応ノードを解決する。
 
@@ -163,15 +163,16 @@ Jで接続する。
 現状の`Comparable`実装はDebug構成に限定されている。これは調査用の状態であり、
 公開仕様が確定した根拠にはしない。
 
-特に、`Index`が標準ライブラリの`Result`のtypealiasである現状では、Indexだけを
-`Comparable`にできない。`Result`へretroactiveな`Comparable`適合を追加すると、
+PR #158以前は`Index`が標準ライブラリの`Result`のtypealiasだったため、Indexだけを
+`Comparable`にできなかった。`Result`へretroactiveな`Comparable`適合を追加すると、
 RedBlackTreeのIndexに閉じず、条件を満たすすべての`Result`へ適合が見える。
 これは1ライブラリの都合で標準型の意味を拡張し、他ライブラリまたは将来の
 標準ライブラリによる同じ適合と衝突し得るため、正式な解決策にはしない。
 
 ### 外部境界の主要判断: 失敗Indexを公開するか
 
-現在はpublic typealiasにより、`Index`そのものが`Result<成功値, SealError>`である。
+PR #158以前はpublic typealiasにより、`Index`そのものが`Result<成功値, SealError>`だった
+(現在は成功値だけを保持する`_LazyTiedPtr`の別名)。
 まず内部表現を考えず、利用者が失敗状態を格納したIndexを受け取る必要があるかを判断する。
 この形を採った当初の主な理由は、失敗状態と原因をそのまま保持でき、実装の調査が
 容易になると考えたためである。公開Indexが失敗値を保持する必要がある、という
@@ -241,6 +242,8 @@ Container protocolの要件が十分に安定した時点で行う。
 
 #### 既存試作: `try/index/1`
 
+> 2026-10-05時点: 検証を経てPR #158でmerge済み(`a6c8a474`)。以下はmerge前の記録である。
+
 `try/index/1`はユーザーが手作業で設計・実装した、この主要判断に対する先行PoCである。
 作業列は2026-09-24 15:48 JSTから始まり、同日22:46の`005a7bb3`
 (`non Result type index`)で中心案を実装した後、09-27朝までテスト修正と記録を継続した。
@@ -269,7 +272,7 @@ Quality Checklistの正しさ、memory / Index寿命、性能の要求に耐え�
 
 | 契約 | 採用 | 根拠・注意 |
 | --- | --- | --- |
-| stale / recycled / detachedをdereference前に拒否 | 全構成で維持 | seal、世代、storage tieで検証する。`_O_UNCHECKED`でも消えないguard / `fatalError`を使い、`precondition`後のforce unwrapだけに依存しない |
+| stale / recycled / detachedをdereference前に拒否 | 現行実装で維持 | 公開契約は事前条件とし、`-Ounchecked`での検出・安全停止を保証しない。現行のguard / `fatalError`は契約を上回る防御として1.0前の再審査まで維持する |
 | CoW分岐後の論理node解決 | 構成に応じ維持 | `ALLOW_CROSS_TREE_INDEX`有効時だけtracking tagで引き直す。無効時は同一storageだけを受理 |
 | 親コンテナとRange ViewのIndex共有 | 維持 | 現在はいずれも`RedBlackTreeIndex`を使用し、View側で範囲包含を追加検証する |
 | 全走査・範囲走査 | O(N)を維持 | traversalはnode successorを使う。位置比較を反復条件へ持ち込まない |
@@ -302,7 +305,7 @@ Debug限定の`Result: Comparable` retroactive conformanceは正式設計から�
 | `find`の不一致 | 不要 | 現行どおり`endIndex` |
 | 検証可能な単一位置 | 不要 | `isElement(at:)` / `isEnd(_:)`でBool化 |
 | 条件付き削除の不成立 | 不要 | `erase(exactly:)`で`nil` |
-| 不正なsubscript / index移動 | 不要 | 内部診断の失敗理由を保持して停止する。memory safety境界では`_O_UNCHECKED`で消える`precondition`だけに依存しない |
+| 不正なsubscript / index移動 | 不要 | 公開契約はprecondition failure。現行実装は内部診断の失敗理由を保持し、`_O_UNCHECKED`でも停止するが、この上乗せ挙動は保証しない |
 
 **暫定推奨:** 公開Indexは生成時からfailureである値を持たない。`SealError`と`Result`は、
 pointerへ触れる前に検証する内部resolverの診断結果として維持する。公開APIでは既存の
@@ -317,7 +320,8 @@ pointerへ触れる前に検証する内部resolverの診断結果として維�
 - 有効な要素位置と`endIndex`を表現できる。failureを正常なIndex値として生成しない。
 - mutationによりstaleになり得るsoft referenceとし、利用時には必ず対象treeで解決・検証する。
 - stale / recycled / detached / foreign storageの詳細は内部`Result<Resolved, SealError>`に残す。
-- stale等の拒否は`_O_UNCHECKED`でも省略せず、確保外pointerへ触れる前に停止する。
+- stale等の拒否は現行実装では`_O_UNCHECKED`でも省略しない。公開契約上は事前条件違反であり、
+  検出と安全停止を保証しない。実装を契約へ寄せるかは1.0前に再審査する。
 - `RedBlackTreeIndexRange` / ExpressionとRange Viewは同じIndex契約を使用する。
 - `ALLOW_CROSS_TREE_INDEX`によるCoW分岐追跡の有無は、現行どおり構成差として扱う。
 - 現行の`index(inserting:)` / `erase(exactly:)`提供範囲はKまで変更しない。Index移行後は
@@ -490,7 +494,8 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 
 追加で次を確定した。
 
-- `_O_UNCHECKED`でもIndex検証をmemory safety境界として残す。ここでは`precondition`だけを使わない。
+- `_O_UNCHECKED`でもIndex検証を残すのは現行実装の上乗せ防御とする。公開契約は
+  Swift標準ライブラリと同じ事前条件モデルとし、実装を寄せるかは1.0前に再審査する。
 - `==`はcross-tree resolver上の論理位置一致ではなく、O(1)のtoken identityとする。
 - hashはstorage identityを含めなくても整合するが、その事実を文書化する。
 - `try/index/1`はResult除去の部分PoCとしてのみ再利用し、nominal型の実証とは扱わない。
@@ -525,38 +530,47 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 - [x] C: 外部へ保証する安全性・CoW・走査計算量の契約を確認する
 - [ ] D: ContainersPreviewを追跡し、外部APIでComparableが必要になる利用箇所と非適合時の代替を確定する
 - [x] Comparableあり・なしの2案を比較し、必要APIと計算量を表にする
-- [ ] E: ユーザー実装の`try/index/1`を主PoCとして、公開Indexから失敗状態を除去する設計が現行HEADとQuality Checklistに耐えるかCodex・Claudeが独立検証し、最終判断する（Comparable採否とは分離。ユーザーが明示的に再開を希望するまで、実作業時検証、追加調査、X1、Claude依頼を行わない）
+- [x] E: ユーザー実装の`try/index/1`を主PoCとして、公開Indexから失敗状態を除去する設計が現行HEADとQuality Checklistに耐えるかCodex・Claudeが独立検証し、最終判断する（2026-10-05: verdict `adopt after corrections`、PR #158でmerge。正本は`Archived/INDEX_POC_VALIDATION.md`。Comparable採否とは分離）
 - [ ] F: Container protocolの安定度を確認し、Comparable採否、失敗時の公開API、計算量を外部契約として固定する
-- [ ] Kで`index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供と名称維持はCodex・Claudeレビューで決定済み。戻り値は全型で`(inserted: Bool, index: Index)`。Dictionaryは既存値を置換せず既存位置、Multi系は常に新規occurrenceと`true`を返す。`insert(_:)`と`erase(exactly:)`からSee Alsoで発見可能にする）
-- [ ] Kで`erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み）
+- [x] Kで`index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供と名称維持はCodex・Claudeレビューで決定済み。戻り値は全型で`(inserted: Bool, index: Index)`。Dictionaryは既存値を置換せず既存位置、Multi系は常に新規occurrenceと`true`を返す。`insert(_:)`と`erase(exactly:)`からSee Alsoで発見可能にする。2026-10-05実装・テスト済み）
+- [x] Kで`erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み。2026-10-05実装・テスト済み。Setの空でのCoW回避漏れも同時に修正）
 - [x] KeyValue Range Viewの範囲外Index契約を決定（単一Indexは標準Collection同様のprecondition、Bound / range操作は入力を検査するsafe動作）
 - [ ] G: 固定した外部契約から、typealias、固有Index型等の境界表現候補を導く
-- [ ] 標準`Result`へのretroactive `Comparable`適合を正式案から除外する
-- [ ] 調査用の`SealError`情報を、Index本体から分離しても維持できることを確認する
+- [x] 標準`Result`へのretroactive `Comparable`適合を正式案から除外する（2026-10-06、未使用のDebug限定適合も削除）
+- [x] 調査用の`SealError`情報を、Index本体から分離しても維持できることを確認する（内部resolver testで確認）
 - [ ] H: 必要な境界表現候補だけ小さく試作し、比較・移動・dereferenceをRelease計測する
 - [ ] I: 採用した境界表現と不採用案、その理由をDesign文書へ記録する
-- [ ] J: 外部から隠すresolver、`SealError`、診断経路を採用表現へ接続する
-- [ ] K: Index本体を実装し、4コンテナと両Range Viewへ追従させる
+- [x] J: 外部から隠すresolver、`SealError`、診断経路をsuccess-only公開Indexへ接続する（PR #158）
+- [x] K: success-only Index本体を実装し、4コンテナと両Range Viewへ追従させる（PR #158）
 - [ ] L: テスト・DocC・API Matrixを採用案へ同期する
 
 ### Index完了ゲート
 
 - [ ] Comparableの採否と理由が明記されている
-- [ ] ResultをIndex本体に残すか、API境界へ分離するかが決まっている
-- [ ] 標準型へのretroactive conformanceへ依存していない
-- [ ] stale / recycled / detached / out-of-rangeを、確保外メモリへ触れる前に処理できる
-- [ ] CoW前後の契約が4コンテナとViewで一貫している
+- [x] ResultをIndex本体に残すか、API境界へ分離するかが決まっている（分離。PR #158でsuccess-only Indexをmergeしたことで決定済みと、2026-10-06にユーザーが確認）
+- [x] 標準型へのretroactive conformanceへ依存していない
+- [x] stale / recycled / detached / out-of-rangeを、確保外メモリへ触れる前に処理できる
+- [x] CoW前後の契約が4コンテナとViewで一貫している
 - [ ] 採用する`==`、`<`、`hash(into:)`の意味と計算量が矛盾しない
-- [ ] 通常の全走査と範囲走査が意図せずO(N log N)にならない
+- [x] 通常の全走査と範囲走査が意図せずO(N log N)にならない
 - [ ] Debugだけで成立する適合や検査を公開仕様の根拠にしない
-- [ ] Index表現を変更した場合もC++比較・fuzz・不変条件検査が成功する
+- [x] Index表現を変更した場合もC++比較・fuzz・不変条件検査が成功する
 
 ## Kで処理するIndex依存タスク
 
 - [x] Fで決定したKeyValue Range Viewの範囲外Index契約を実装・テストへ反映する
-- [ ] cross-tree indexingのテストが公開契約と一致しているか再監査する
-- [ ] eraseのrange sanitizeをすり抜ける入力に対するテストを追加する
-- [ ] MultiMapの`unsafeAddress`利用経路をReleaseでも確認する
+- [x] cross-tree indexingのテストが公開契約と一致しているか再監査する（2026-10-06:
+  Codexが4問を独立再確認し、focused test 18件成功。正本は
+  `Archived/CROSS_TREE_INDEX_TEST_AUDIT.md`）
+- [x] eraseのrange sanitizeをすり抜ける入力に対するテストを追加する（2026-10-05: 4型で逆向き範囲と同値キーの逆向き区間を追加し、すり抜けがないことを確認。空でのBound範囲eraseの無駄なCoWを8か所修正。Index range版の空guardはIndex契約に関わるとして保留したが、2026-10-06にユーザー判断でTest as Spec案件として実施:
+  4型の`UnboundedRange` / `IndexRange` / `IndexRangeExpression`版（`where`付き含む）で空のときだけ`ensureUnique()`を省き、
+  範囲検査は維持。空でCoWしない仕様と、空でも他木の範囲でtrapするDeath Testを追加）
+- [x] MultiMapで確認されたaccessorのcompiler不具合と同種の問題がないか、`unsafeAddress` /
+  `unsafeMutableAddress` accessorを使用する他の箇所をReleaseビルドで横断確認する。MultiMap自身は
+  通常`get`へ退避済みであり、対象は内部の`_unsafeAddress`関数呼び出しではなくSwift accessor宣言である
+  （2026-10-05: Test as Specを主とし、届かない経路だけ内部テストとする方針により、CIの
+  `swift test -c release`で担保する。公開accessorのSet / MultiSet `[position]`とDictionary
+  `[key, default:]`は`#if DEBUG`外の連番テストで使用され、内部accessorはその下で通る）
 
 これらは現在のIndex表現を前提に先走って横展開しない。Index契約の決定によって
 API名、戻り値、検査方法が変わり得る。
@@ -611,8 +625,8 @@ RedBlackTreeCollectionsを完成と判断する条件は次のとおり。
 ## 関連文書
 
 - `Tests/TESTING.md`
-- `Tests/TESTING_REFERENCE.md`
-- `Maintanance/CPP_BEHAVIOR_COMPARISON_MATRIX.md`
+- `Tests/Archived/TESTING_REFERENCE.md`
+- `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`
 - `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
 - `Sources/RedBlackTreeCollections/Documentation/Design/Design-CopyOnWrite.md`
 - `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md`

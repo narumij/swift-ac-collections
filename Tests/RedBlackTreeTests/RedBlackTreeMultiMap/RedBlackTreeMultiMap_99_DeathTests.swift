@@ -42,6 +42,22 @@
 
   struct RedBlackTreeMultiMapDeathTests {
 
+    #if !COMPATIBLE_ATCODER_2025
+      /// 空のMultiMapでも、他の木の要素を指すIndex範囲のeraseは検査で停止すること
+      /// (空のときにCoWを省いても、範囲の検査は省かない)。
+      @Test
+      func erasingForeignRangeFromEmptyMultiMap_terminatesProcess() async {
+        await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+          let source = RedBlackTreeMultiMap<Int, String>(
+            keysWithValues: (0..<8).map { ($0, "\($0)") })
+          var target = RedBlackTreeMultiMap<Int, String>()
+          let lower = source.index(source.startIndex, offsetBy: 2)
+          let upper = source.index(source.startIndex, offsetBy: 6)
+          target.erase(lower..<upper)
+        }
+      }
+    #endif
+
     @Test
     func emptyStartIndexSubscript_terminatesProcess() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {

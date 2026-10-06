@@ -2,6 +2,9 @@
 
 English | [日本語](AdoptionReadinessAssessment.ja.md)
 
+> Status: Archived evidence snapshot (2026-10-06). Reopen only for a concrete release or adoption
+> decision that requires refreshing the evidence.
+
 > The filename is kept for link stability. This document no longer makes or
 > evaluates a ranking claim.
 
@@ -124,7 +127,7 @@ equivalent-key group is observable rather than normalized away.
 
 On 2026-10-04 the suite ran 35 XCTest cases with 0 failures in both Debug and
 Release; details and limitations are in
-`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`.
+`Maintanance/Archived/CPP_BEHAVIOR_COMPARISON_TASK.md`.
 
 LLVM libc++ is the normative comparison because this implementation is adapted
 from its red-black tree. The same 35 tests also passed in Debug on Ubuntu CI with
@@ -201,7 +204,7 @@ repair, and cross-layer post-fix validation. The two facts are recorded separate
   facts have no common return value (for example, the rank after
   `insert(key:value:)`) and are compared only through contents.
 - Performance relative to Swift Collections `SortedCollections` has not been
-  published. `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md` defines the method;
+  published. `Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md` defines the method;
   only a procedural pilot exists, and its numbers are not a conclusion.
 
 ## Guidance for reviewers

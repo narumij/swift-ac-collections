@@ -137,3 +137,18 @@ extension RedBlackTreeSetSearchTests {
     XCTAssertEqual(sub + [], [3, 4, 5, 6])
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeSetCountOfTests: RedBlackTreeTestCase {
+
+    /// `count(of:)`は、要素を含めば1、含まなければ0を返すこと。
+    func testCountOfIsOneOrZero() {
+      let s = RedBlackTreeSet<Int>([1, 2, 3])
+      XCTAssertEqual(s.count(of: 2), 1)
+      XCTAssertEqual(s.count(of: 9), 0)
+    }
+  }
+#endif

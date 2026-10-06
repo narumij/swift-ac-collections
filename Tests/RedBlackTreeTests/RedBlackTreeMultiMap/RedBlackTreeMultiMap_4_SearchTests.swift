@@ -55,3 +55,20 @@ final class RedBlackTreeMultiMapSearchTests: RedBlackTreeTestCase {
     }
   #endif
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiMapFindTests: RedBlackTreeTestCase {
+
+    /// `find(_:)`は同値キーのうち先頭の位置を返し、無ければ`endIndex`を返すこと。
+    func testFindReturnsFirstEquivalentKeyOrEndIndex() {
+      let m = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "a"), (2, "b"), (2, "c"), (3, "d")])
+      let i = m.find(2)
+      XCTAssertEqual(m[i].key, 2)
+      XCTAssertEqual(m[i].value, "b")
+      XCTAssertEqual(m.find(9), m.endIndex)
+    }
+  }
+#endif

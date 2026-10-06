@@ -222,5 +222,33 @@ import XCTest
       XCTAssertEqual(xy[1]!._copyCount, 0)
       XCTAssertEqual(loopCount, count / N)
     }
+
+    #if !COMPATIBLE_ATCODER_2025
+      // Setの同名テストのKeyValue Range View版。KeyOnly / KeyValueの両Viewで同じCoW契約を確認する
+      func testEraseWhereOnRangeViewOfSharedTreeDoesNotCopy() throws {
+        var map = RedBlackTreeMultiMap(keysWithValues: (0..<20).map { ($0, $0) })
+
+        map[lowerBound(10).advanced(by: 2)..<end()].erase {
+          $0.key % 2 == 0
+        }
+
+        XCTAssertEqual(map.map(\.key), (0..<20).filter { $0 < 12 || $0 % 2 != 0 })
+        XCTAssertEqual(map._copyCount, 0)
+      }
+
+      func testEraseWhereOnStandaloneRangeViewCopiesOnceButLeavesBaseUntouched() throws {
+        let map = RedBlackTreeMultiMap(keysWithValues: (0..<20).map { ($0, $0) })
+        var range = map[lowerBound(10).advanced(by: 2)..<end()]
+
+        range.erase {
+          $0.key % 2 == 0
+        }
+
+        // rangeが別変数として保持されているため、消去はrange側のみに反映され、元は変化しない
+        XCTAssertEqual(map.map(\.key), Array(0..<20))
+        XCTAssertEqual(map._copyCount, 0)
+        XCTAssertEqual(range._copyCount, 1)
+      }
+    #endif
   }
 #endif

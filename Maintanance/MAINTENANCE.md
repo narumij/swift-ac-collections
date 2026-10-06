@@ -2,129 +2,98 @@
 
 # Documentation maintenance notes
 
-この文書は、公開ドキュメント、コメントドック、Swift-DocC、およびCHANGELOGを継続的に整備するための作業連絡と判断基準をまとめる。
+この文書は、公開ドキュメント、コメントドック、Swift-DocC、およびCHANGELOGを継続的に
+整備するための恒久的な判断基準と、現在の文書handoffをまとめる。プロジェクト作業の入口では
+ない。作業開始時は`PROGRESS_OVERVIEW.md`のTask Registryを読み、文書taskから参照された場合だけ
+本書の該当箇所を読む。
 
-ドキュメントに関する作業を行ったCodexおよびClaudeは、作業結果、残件、検証内容をこの文書へ都度反映すること。長期的に有効な知見は作業ログだけに残さず、該当する規則へ反映する。
+個別タスクの長文結果は、対応する設計文書、監査文書、task文書へ記録する。この文書には
+同じ結果を時系列ログとして重複させず、正本への導線、現在の未決事項、再利用する規則だけを
+保持する。作業後は`Current handoff`を上書きし、無制限に追記しない。
 
-## User requests for the next session
+## Documentation dashboard
 
-次回のドキュメント作業で優先してほしい内容をユーザーが書く欄。この欄に記載がある場合、CodexおよびClaudeは`Current handoff`より先に読み、最新のユーザー要望として優先する。完了した項目を勝手に削除せず、完了済みの要望へ移すか、ユーザー確認後に整理する。
+最終更新: 2026-10-06 / Codex
 
-<!-- ユーザー記入欄: この下へ追記 -->
+### 現在の状態
 
-### ビジョン
+- C++挙動比較は4型・35件で完了している。現行の証拠正本は
+  `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`。性能測定用`CppBenchmarks`とは分離する。
+- failureless public Index PoCはPR #158で統合済み。検証正本は
+  `Maintanance/Archived/INDEX_POC_VALIDATION.md`。
+- cross-tree Indexテスト監査はCodexの独立再確認を経て完了した。正本は
+  `Maintanance/Archived/CROSS_TREE_INDEX_TEST_AUDIT.md`。
+- `Design-MemorySafety.md`のdetached Index説明は標準構成の実挙動へ同期済み。
+- 公開コメント、DocC、API Matrixの大規模監査は一区切りしているが、Index契約確定後の
+  最終同期と、本書の停止条件にある独立確認は残る。
+- テストの現在地は`Tests/TESTING.md`、全体進捗は`Maintanance/PROGRESS_OVERVIEW.md`を正とする。
+- Claudeの現行権限とhandoffは`Maintanance/CLAUDE_TASK.md`、完了履歴は
+  `Maintanance/Archived/CLAUDE_TASK_HISTORY.md`を正とする。
 
-- 公開APIの意味、制約、計算量を、実装を読まなくても正しく把握できる状態を維持する
-- 日英の案内文書、コメントドック、DocC、API一覧の内容を同期する
-- DocCの警告と生成結果を、公開前にCIで継続的に検証する
+### 文書に関係する未決事項
 
-### 優先事項
+- Index完了ゲート: `Comparable`、公開Indexと内部`SealError`の分離、完了範囲。
+- P10の残り: Index統合前の表現を説明する設計記録のうち、detached説明以外の残存箇所を確認する。
+  X1/PoCの準備・検証記録は完了資料としてArchivedへ整理済み。
+- Index-range `erase`の空guard: 不要なCoWを避けるために不正範囲の検証を飛ばしてよいか。
+- 上記が確定した後の公開コメント、Design、API Matrix、DocC Topicsの最終同期。
+- `RedBlackTreeCollections`全体のstrict memory safety採用。現状は未採用で、独立タスクとして扱う。
 
-- 2026-10-04 ユーザー要望: 赤黒木の完成を優先し、C++標準ライブラリとの挙動比較を
-  先に完了させる。Set/MultiSet/Dictionaryのcuratedおよびseed付き比較、4型のcurated比較、
-  XCTestへの移行、Debug/Release/全体テストとCI確認まで完了済み。現在の最終実装区切りは
-  `Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`のMultiMap seed付き比較であり、これが通ったら
-  4型のC++ compareを完了扱いにして区切る。挙動比較はルートパッケージ、性能測定用の
-  `CppBenchmarks`は`Benchmarks`パッケージという分離を維持する
-- 2026-10-04 ユーザー要望: `REFACTORING_FROM_ATCODER_2025.md`の`unsafe tree !!!!`
-  前後は重要だが、週内はC++ compare完了を優先して履歴調査を後回しにする
-- 2026-10-04 ユーザー決定: 採用準備評価文書の「世界最高峰候補」という看板を
-  取り下げる。検証可能な証拠、反証、限界、評価軸は捨てず、AppleやSwift Collectionsと
-  競争する主張ではないAdoption Readiness / Quality Evidence系の内容へ再構成する
-- 2026-10-04 次タスク: 上記文書の再構成後、Debugテストのprocess-globalなallocation /
-  lifetime釣り合い検査を無効化できるフラグを設計する。無効時も各XCTest開始時には全counterを
-  無条件resetし、テスト順序・skip・生成破棄の差を次ケースへ持ち越さない。方針変更後は
-  LinuxのDeath Test経路も検証対象にする
-- 2026-10-03 02:50 JST ユーザー要望: 今後、C++標準ライブラリとの挙動照合を継続的に行える専用ターゲットを追加する
-  - 現時点では実装を開始せず、`Maintanance/CPP_BEHAVIOR_COMPARISON_TASK.md`を作業依頼の正本とする
-  - 既存の`CppBenchmarks`は性能測定専用として維持し、照合用C++参照実装とSwiftテストは別ターゲットにする
-  - 2026-10-04のユーザー判断により、挙動比較はルートパッケージへ置く方針へ更新
-- 2026-10-03 02:47 JST ユーザー要望: 作業に余裕があるとき、`release/AtCoder/2025`から現行構成までの設計変更の推移をまとめる
-  - `Maintanance/REFACTORING_FROM_ATCODER_2025.md`を正本として育てる
-  - コミット履歴、旧パス、新パス、移した契約、代替テストを根拠にし、推測を確定事項へ混ぜない
-  - 単なるファイル移動一覧ではなく、コンテナ直結から内部層分離、Fixture分割、原木テスト、公開4型のTest as Specificationへ至った設計意図を記録する
-- 2026-10-02 15:45 JST ユーザー要望: Test as Specificationと現行実装を根拠に、公開メソッド・公開関数のコメントドックに不備がないか確認し、必要な修正を行う
-  - 公開APIは型別の連番テスト、共有Viewテスト、API Matrixと照合する
-  - 説明、引数名、戻り値、事前条件、失敗条件、重複要素の扱い、Indexの有効性、計算量、所有権と破棄責任を確認する
-  - 1型または1経路で不備を見つけた場合、4型と共有Viewの対応する公開APIへ横展開する
-  - 原木および内部APIのコメントドックは監査・修正対象に含めず、公開仕様を確定するために必要な場合だけ内部テスト・実装・Design文書を根拠として参照する
-  - テストだけでは意味を確定できない場合は実装とDesign文書を確認し、推測でコメントドックを変更しない
-  - 修正後はRelease DocCを`--warnings-as-errors`で生成し、生成ページのTopicsとリンクも確認する
+### 文書管理の運用
 
-- メイン担当は定期的にこの文書確認する癖をつけること
-- startIndexとendIndexの記述は標準に倣って欲しい
-- Sources/RedBlackTreeCollections/Documentation/Head に4型先頭のコメントドックの原稿を用意する
- - Documentations の.mdと現在のソースとの和集合を街頭フォルダに配置してほしい
- - その後ユーザーが主導して編集する
+- 新しいユーザー要望は、このdashboardまたは該当する正本文書へ日付付きで追加する。
+- 完了した個別作業の証拠は正本文書へ置き、本書には状態とリンクだけを残す。
+- `CLAUDE_TASK.md`の`Current handoff`は追記型ログにせず、直近の作業再開に必要な最大10項目を
+  目安に常に上書きする。正本と重複しない保存価値のある履歴だけを
+  `Archived/CLAUDE_TASK_HISTORY.md`へ移す。
+- 2026-10-04以前の要望とhandoffは下記の履歴節に残すが、現在のtask queueとして解釈しない。
 
-- REFACTORING_FROM_ATCODER_2025 について
-  - 既存のテスト群をゼロ構築するのではなく、そのまま活用する判断があったことを記述して欲しい
-  - ソース本体の遷移も大事だが、テストの遷移もあらっぽいけど大事
+## Historical user requests and decisions (through 2026-10-04)
 
-- Tests/CLAUDE.md について
-  - ちゃっぴーが以下をすすめるので検討して
-  
-- 内部バッファが空のシングルトンであることを確認するフローと、その条件の整理とClaudeへの発注をしてほしい
+以下は当時のユーザー要望と判断の要約である。原文はGit履歴に残る。現行状態は
+`Current dashboard`と各正本文書を優先し、この節だけを根拠に作業を自動再開しない。
 
-```
-# Session Startup
+### 維持する方針
 
-For work involving `Tests/`, read `Tests/CLAUDE.md` before making changes and follow its instructions.
+- 公開APIの意味、制約、計算量を、実装を読まなくても把握できる状態を目指す。
+- 日英の利用者向け文書、コメントドック、DocC、API Matrixを同期する。
+- 公開仕様はTest as Specification、実装、Design文書を照合して確定し、推測で埋めない。
+- 1型で不備を見つけた場合は、4型と共有Viewの対応箇所を横断確認する。
+- DocCはRelease構成かつ`--warnings-as-errors`で検証する。
+- 完了判断はテスト成功やDocC警告0だけに依存せず、独立確認とユーザー確認を含める。
 
-# Communication
+### 完了または正本へ移した要望
 
-Communicate with the user in Japanese. Internal instructions and Codex-to-Claude work requests may be written in English, but explanations, questions, progress updates, and final reports addressed to the user must be in Japanese.
-```
+- C++挙動比較は4型へ展開済み。挙動比較はルートパッケージ、性能測定は
+  `Benchmarks/CppBenchmarks`に分離する。証拠正本は
+  `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`、作業履歴は
+  `Archived/CPP_BEHAVIOR_COMPARISON_TASK.md`。
+- 採用準備文書から競争的な「世界最高峰候補」の看板を外し、検証可能な証拠、反証、限界を
+  中心とするAdoption Readinessへ再構成済み。
+- Debug allocation/lifetime検査の制御とLinux Death Testの実証は完了済み。Linux経路は
+  通常CIから外し、明示traitで再実行可能な状態を維持する。
+- 4型先頭コメントの編集原稿は
+  `Sources/RedBlackTreeCollections/Documentation/Head/`へ配置済み。
+- 空storage singletonの条件整理と内部テストは完了済み。現在地は`Tests/TESTING.md`。
+- 公開コメントドックの横断監査は一区切り済み。Index契約確定後に最終同期する。
+- strict memory safetyの診断、採否、保留理由は
+  `StrictMemorySafetyReadiness.md`へ移した。
+- AtCoder 2025互換モードの方針は
+  `PermutationModule/AtCoder2025CompatibilityPlan.md`を正本とする。
 
-### 相談事項
+### 残す判断と境界
 
-- DocCの手動Topicsは`API-Matrix.md`と`API-Matrix-View.md`を基準に、検索・挿入・削除・範囲操作などへ広げる。4型の具象型ページだけでなく、共通protocolのDefault ImplementationsやViewへの導線をどこへ置くかは引き続き検討する
-- .strictMemorySafety() にしていきたい
-  - 詳細な診断分類、対応履歴、検証結果は
-    `Maintanance/StrictMemorySafetyReadiness.md`を正本とする
-  - `AcCollections`/`RedBlackTreeModule`/`PermutationModule`は警告0件で恒久適用済み
-  - `BareArrayModule`は一意な診断を約64→22件、`OptionalArrayModule`は
-    82→21件へ削減済み。残件は公開型のunsafe storageとallocationに集中するため、
-    警告を消す目的だけで公開型を`@unsafe`にせず、storage再設計まで恒久適用を保留する
-  - `RedBlackTreeCollections`は未採用。規模が大きいため別段階で扱う
-
-- PermutationModuleは`release/AtCoder/2025`版と併存し、コンパイル時に現行版と
-  互換版を切り替えられるようにする。実装前の方針と段階は
-  `Maintanance/PermutationModule/AtCoder2025CompatibilityPlan.md`を正本とする。
-
-### 連絡事項
-
-- この文書のユーザー記入欄を更新する場合は、日付に加えて時刻も記載する
-- 2026-10-02 20:48 JST ユーザー要望: 公開ドキュメントメンテナンスと同様に`Tests/TESTING.md`も定期的にレビューする。ドキュメント監査中にテスト仕様の不足、陳腐化、実装との不一致、判断待ちを見つけた場合は、本ユーザー記入欄の`保留中の判断・懸念`へ連絡事項として追記する
-- 2026-10-02 16:02 JST ユーザー要望: Test as Specificationとの照合中に公開仕様として疑問が残った点は、推測で確定せず、この文書の`保留中の判断・懸念`へ連絡事項として記録する
-- 最後に作業したモデル名とバージョンを記録する
-- 実装・検証・記録が独立した区切りまで完了したらコミットを提案し、推奨コミットメッセージを示す。ユーザーから明示的に依頼されるまで、Codexはコミットを実行しない
-- 完了済みログを無制限に蓄積しない。恒久的な知見は規則へ移し、`Current handoff`は直近の状況を中心に保つ
-- Claudeは、作業中に面白いと感じたこと、意外だった挙動、あとでユーザーへ話したい感想があれば、
-  `Maintanance/CLAUDE_OBSERVATIONS.md`へ最低優先度の任意ログとして短く残してよい。判定・根拠・
-  blocking issueとは分離し、記録のために本作業や完了報告を遅らせない。CodexはClaudeへ依頼する際、
-  書きたいことがある場合に限って追記できる旨を伝える
-- Codexにも同じ目的の`Maintanance/CODEX_OBSERVATIONS.md`を用意する。日次などの振り返りで
-  ユーザーが読む素材として、Codex本人の言葉で任意に残す。作業報告の複製や義務的な日誌にはせず、
-  本作業と正本文書への記録を常に優先する
-- リファクタリングドキュメントは、unsafe等がprefixに付与されている部品がいつ登場してどういう推移をへたのか書いて欲しい
-- unsafe!!!以後の切り替えは、#if falseでテストを限定しながら徐々に解除して全体を通す作業をしてたはずで、この点も書いて欲しい
-- cpp comparisonは、API-Matrixの様式で挙動互換一覧が必要そう（全部一致だとしても）
-
-### 停止条件
-
-- 2026-10-02 21:08 JST ユーザー要望: ドキュメントメンテナンス全体を完了扱いにする最上位条件は、CodexとClaudeがそれぞれ独立に公開API、Test as Specification、実装、API Matrix、DocC生成結果をダブルチェックして双方がOKと判断し、その確認結果にユーザーが納得していること。一方のAIの完了申告、DocC警告0、テスト失敗0、またはAPI Matrixの表面上の一致だけで全体完了としない。型・APIカテゴリ単位の作業は区切りとして完了記録してよいが、独立確認とユーザー確認が済むまで再監査可能な状態と根拠を保つ
-- 公開APIの意味を実装やテストから確定できない場合は、推測で文書化せずユーザーへ確認する
-- 日英どちらを正とするか判断できない差異を見つけた場合は、一方へ機械的に合わせず保留事項として記録する
-
-### 保留中の判断・懸念
-
-- 2026-10-02 16:36 JST(2026-10-03 JST 根拠確認済み、2026-10-05方針決定): Combining系コメントの既存`Important`は「十分な空き容量がある場合は`formUnion` / `union` / `meld` / `melding`推奨」としていたが、容量条件と推奨APIの対応根拠がなかったため6箇所から削除済み。`Maintanance/CombiningAPIPerformanceEvidence.md`へ実装追跡とベンチマーク根拠を記録した。meld系(`___meld_unique`/`___meld_multi`)は呼び出し元の`reserveCapacity`状態を参照せず、1k〜256kでは挿入ループ経路(`merge`/`insert(contentsOf:)`)が一貫して高速だった。次のコメント改訂では同文書§3の案に基づき、重複率や共有storageなど実測で確認した傾向だけを条件付きで追記する。
-- API Matrix上の多くの共通APIが、各型のDocCでは`Default Implementations`配下に入る。今回追加した共通操作ガイドから各操作の個別シンボルへ、さらに細かいリンクを追加する必要があるかは公開結果を見て判断する
-
-### 完了済みの要望
-
-(ユーザーが確認したら各項目を整理します)
+- `REFACTORING_FROM_ATCODER_2025.md`は、sourceの移動だけでなく、既存テストを活用した判断、
+  Fixture分割、`#if false`を段階的に解除した移行過程も証言とGit証拠を分けて記録する。
+- Swift標準ライブラリとの比較は前例として使うが、本製品の公開契約を自動的に決める根拠にはしない。
+- 公開仕様を確定できない差異、日英どちらが正しいか判断できない差異は保留し、機械的に片方へ揃えない。
+- MSVC STL比較は実施せず、完成条件にも含めない。
+- 公開ドキュメントの第一担当はCodexとする。Compatibility文書4本の包括監査は独立taskとして
+  管理せず、`Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`または具体的な実装差を
+  根拠に、Codexが対象ファイル・項目を限定して扱う。
+- Claudeへ公開ドキュメントを委譲する場合は、対象箇所を指定した事実確認、独立レビュー、または
+  限定修正とし、4文書全体の監査・改稿へ拡張しない。
+- benchmark再開、原木Fixtureの追加portable化、unsafe移行史の追加調査は自動開始しない。
 
 ## 文書の役割と正本
 
@@ -249,6 +218,21 @@ swift package -c release --disable-sandbox preview-documentation \
 
 ## Current handoff
 
+- Index関連で文書作業として残るのは、Index完了ゲート、P10の残存記述確認、Index-range `erase`の
+  空guard判断、および決定後の公開文書最終同期である。
+- cross-tree Index監査とdetached説明の訂正は完了済み。X1/PoCの準備・検証記録もArchivedへ
+  整理済みであり、具体的な疑義または再監査の依頼がない限り再開しない。
+- C++比較、公開コメントの横断監査、TESTING dashboard同期は完了済み。古いhandoffの
+  「次はC++比較」等を現在指示として扱わない。
+- 文書だけの変更では通常フルテストを必須としない。コメントドックやコード例を変更した場合は、
+  Release DocCまたは対応テストを選ぶ。
+- Claudeへ委譲する場合は`CLAUDE_TASK.md`へ対象ファイル、終了条件、編集禁止範囲を記録し、
+  完了後にCodexがdiffと正本への反映を確認する。
+
+## Historical handoff (through 2026-10-04)
+
+以下は2026-10-04時点の作業記録である。現在のhandoffではない。
+
 ### タスク選定の現在方針（2026-10-04〜）
 
 開発は、機能や検証項目を広く増やす段階から、既存の順序付きコレクションを絞って磨き、
@@ -281,7 +265,7 @@ MultiMap `find`は同値キー群内の個体・rankをC++互換保証に含め�
 MemoryLayoutテストから`_Bucket` / `_BucketAllocator`依存の横断一致検査をRawBuffer側へ移し、
 原木側のcoloring用prefixは汎用word幅へ変更した。原木6件、RawBuffer横断1件が成功した。
 同じ作業で、公開Compatibility文書とは別に、C++比較テストが実証した範囲だけをまとめる
-`CPP_BEHAVIOR_COMPARISON_MATRIX.md`を新設した。4型×操作、境界、seed条件、比較した返却事実、
+`CPP_BEHAVIOR_COMPARISON_MATRIX.md`（現`Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`）を新設した。4型×操作、境界、seed条件、比較した返却事実、
 標準上の非保証と未比較項目を一覧化し、今後のC++ compareの正本サマリーとする。結果は
 LLVM libc++を正本、GNU libstdc++を参考情報として混同せず記録する。MSVC STL比較は
 2026-10-04のユーザー決定により実施せず、完成条件や保留タスクにも含めない。

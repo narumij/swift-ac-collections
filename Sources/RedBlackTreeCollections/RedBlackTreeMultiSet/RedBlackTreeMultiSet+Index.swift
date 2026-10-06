@@ -260,6 +260,62 @@
   }
 #endif
 
+#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  extension RedBlackTreeMultiSet {
+
+    // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要
+    // CoW分の生木をずっともってしまうと重いので、!USE_LAZY_DETACH専用にする
+
+    /// Inserts the given element and returns the index of the new occurrence.
+    ///
+    /// A multiset always inserts another occurrence, even when an equivalent
+    /// element is already present. Therefore `inserted` is always `true`, and
+    /// `index` refers to the newly inserted occurrence.
+    ///
+    /// - Complexity: O(log **n**), where **n** is the number of elements.
+    @inlinable
+    @discardableResult
+    public mutating func index(inserting newMember: Element) -> (
+      inserted: Bool, index: Index
+    ) {
+      __tree_.ensureUniqueAndCapacity()
+      let __r = __tree_.update { $0.__insert_multi(newMember) }
+      return (true, ___index(__r))
+    }
+  }
+
+  extension RedBlackTreeMultiSet {
+
+    // index(inserting:)で取得したIndexでもりもり消したい場合に過剰にチェックしなくて済むように追加
+    // remove(at:)では世代違いをトラップするので、isValidチェックを2回行うことになるので。
+    // ただ、オーバーフローで一周した場合への対策はなにもない
+
+    /// Removes the element at the given index if the index is still valid.
+    ///
+    /// Only the occurrence that `index` refers to is removed. Other equivalent
+    /// occurrences remain.
+    ///
+    /// - Parameter index: An index that was created for this multiset.
+    /// - Returns: The index that followed `index` before removal, or `nil` if
+    ///   `index` doesn't refer to an accessible element of the multiset.
+    /// - Complexity: Amortized O(1)
+    /// - SeeAlso: `index(inserting:)`, which returns an index to pass to this method.
+    @inlinable
+    @discardableResult
+    public mutating func erase(exactly index: Index) -> Index? {
+      // 空の場合はアクセス可能な要素が存在し得ないため、ensureUnique()による
+      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
+      guard __tree_.count > 0 else { return nil }
+      __tree_.ensureUnique()
+      guard let __p = __tree_.__purified_(index).accessible.pointer else {
+        return nil
+      }
+      let __r = __tree_._unchecked_remove(at: __p).__r
+      return ___index(__r)
+    }
+  }
+#endif
+
 #if !COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeMultiSet {

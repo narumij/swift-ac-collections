@@ -1,6 +1,6 @@
 # 開発・メンテナンス進捗一覧
 
-最終更新: 2026-10-04 / Codex
+最終更新: 2026-10-07 / Codex
 
 ## 対象期間と読み方
 
@@ -9,14 +9,109 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 
 細かなコミット数ではなく、現在の判断に必要な状態を記録する。
 
+この文書のTask Registryを、CodexとClaudeが作業を再開するときの唯一の入口とする。まずRegistry
+だけを読み、選択したtask行が示す詳細正本だけを追加で読む。全管理文書やArchivedを開始時に
+横断しない。
+
+## Task registry
+
+この表を作業状態、担当、再開条件の正本とする。後続のチェックリストと各詳細文書は、証拠と
+内訳を保持するためのものであり、この表と食い違う場合は本表を優先する。
+
+**現在の律速:** 外部（`swift-collections` ContainersPreviewの`Container.Index`要件）。
+Index契約とそれに関わる残taskは、この外部条件が安定するまで最終確定できない。ユーザー判断で
+解消できるtaskは現在ない。
+
+| ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
+| --- | --- | --- | --- | --- | --- |
+| `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-010` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲートのうち公開Index表現と完了範囲 | Container要件の安定後、公開Indexと内部`SealError`の分離、1.0での完了範囲を決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-002` | `DONE` | User / Codex / Claude | Index-range `erase`の空guard | 2026-10-06、範囲検査を維持して空での不要なCoWを回避（`11817dfe`） | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `DOC-001` | `DONE` | Codex / Claude | P10残存記述確認 | 2026-10-06、監査と必要箇所の同期を完了（`9b0f42d5`） | `MAINTENANCE.md` |
+| `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-002` | `FROZEN` | Codex | Codex用task graph DBの独立試験 | Codexのcontext reset後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-003` | `FROZEN` | User / Codex / Claude | 二つのtask graph DBの統合議論 | 両試験の完了後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
+| `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認（run 37502938888、job 112404281751） | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
+| `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
+| `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
+| `RBT-006` | `FROZEN` | User / Codex | 未結線コードの個別削除 | ユーザーが対象を個別指定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `TEST-001` | `FROZEN` | User / Codex | 無効化・歴史的テストコードの処遇 | ユーザーが対象を個別指定 | `Tests/TESTING.md` |
+| `TEST-002` | `FROZEN` | Codex | stride assertion／fixture alignmentの任意改善 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
+| `PERM-001` | `FROZEN` | Codex | AtCoder 2025互換mode | ユーザーが明示的に再開 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-002` | `USER_ONLY` | User | ABC328E実提出確認 | ユーザーが手作業で実施 | `PermutationModule/ImplementationPlan.md` |
+| `OPT-001` | `FROZEN` | Codex | OptionalArrayの体系監査・名称再検討 | ユーザーが明示的に再開 | `Tests/TESTING.md` |
+| `BARE-001` | `FROZEN` | Codex | BareArrayの体系監査・名称再検討 | ユーザーが明示的に再開 | `Tests/TESTING.md` |
+| `ARRAY-001` | `FROZEN` | User / Codex | BareArray／OptionalArrayのstorage再設計とstrict恒久適用 | 公開unsafe境界を決定して再開 | `StrictMemorySafetyReadiness.md` |
+| `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
+| `BENCH-001` | `FROZEN` | Codex | SortedCollectionsとのpublishableな大規模比較 | ユーザーが明示的に再開 | `Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md` |
+| `TEST-003` | `FROZEN` | Codex | randomized trace失敗時の自動縮小 | 実害または明示的な再開指示 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
+| `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `PERF-001` | `FROZEN` | Codex | Swift更新後のCoWコード生成再計測 | Swift更新または明示的な再計測指示 | `PERFORMANCE_REGRESSION_BISECTION.md` |
+| `HIST-001` | `FROZEN` | Codex | unsafe移行史の追加調査 | ユーザーが明示的に再開 | `REFACTORING_FROM_ATCODER_2025.md` |
+| `TEST-004` | `FROZEN` | Codex | 原木Fixtureの追加portable化 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
+| `RBT-009` | `FROZEN` | User / Codex | runtime-check実装の再審査 | 1.0判断直前、または`-Ounchecked`が主要構成と判明 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
+| `QUALITY-001` | `FROZEN` | User / Codex | 汎用基盤ライブラリとしての1.0採用品質ゲート | Index契約確定後、ユーザーが明示的に再開 | `Sources/RedBlackTreeCollections/Documentation/Quality-Checklist.md` |
+| `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
+| `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
+
+### Task precedence
+
+Task Registryの状態は、通常の再開判断に使う計算済みの表示である。次の辺リストは、内部taskの
+厳密な順序制約を保持し、状態の監査とトポロジカルソートに使う。
+
+| 後続task | 前提task | 制約 |
+| --- | --- | --- |
+| `RBT-001` Index完了ゲート | `RBT-010` 公開Index表現と完了範囲 | 前提taskの完了後に後続taskを完了できる |
+| `RBT-001` Index完了ゲート | `RBT-011` `Comparable`採否 | 前提taskの完了後に後続taskを完了できる |
+| `QUALITY-001` 1.0採用品質ゲート | `RBT-001` Index完了ゲート | 前提taskの完了後に着手候補にできる |
+| `GRAPH-003` task graph DB統合議論 | `GRAPH-001` Claude独立試験 | 前提taskの完了後に着手候補にできる |
+| `GRAPH-003` task graph DB統合議論 | `GRAPH-002` Codex独立試験 | 前提taskの完了後に着手候補にできる |
+
+ここには必須のAND前提だけを記録する。外部条件は各taskの状態と再開・完了条件、選択肢や
+OR条件は詳細正本で扱う。必須前提が増えた場合は辺を追加し、循環が生じる場合はtask境界または
+未確定の設計判断を見直す。
+
+### Registry rules
+
+- IDは作成後に変更・再利用しない。分類や状態が変わってもIDを維持する。
+- 状態は`ACTIVE`、`WAITING_USER`、`WAITING_EXTERNAL`、`FROZEN`、`USER_ONLY`、`EXCLUDED`、
+  `DONE`、`ARCHIVED`のいずれかとする。
+- 状態語はAIの管理用であり、ユーザーが名称を覚えたり指定したりする必要はない。Codexが
+  ユーザーの通常の言葉を対応する状態へ翻訳して記録する。
+- 固定Task IDもAIの管理用とし、通常のユーザー向け報告では表示も指定要求もしない。項目名と、
+  分量のある報告で必要になる一時的な会話参照IDを優先する。固定IDはユーザーが求めた場合、または
+  文書・sessionをまたぐ実際の曖昧さを解消する場合だけ示す。
+- `FROZEN`は明示的な再開指示なしに着手しない。
+- `USER_ONLY`はユーザー専任とし、AIは着手、代行、催促を行わない。
+- `EXCLUDED`は実施対象外であり、再開候補として扱わない。
+- `DONE`を履歴資料へ移した場合だけ`ARCHIVED`へ変更する。
+- `WAITING_EXTERNAL`は外部条件が解消するまで着手可能とみなさない。外部条件の詳細と過去の観測は
+  task行の詳細正本で管理し、Task Registry表の各行へ依存列を追加しない。
+- Task precedenceは内部task間の必須順序だけを保持する。Task Registryの状態を更新するときは
+  辺リストとの整合を確認するが、通常の再開報告では計算済みの状態を優先して提示する。
+- 前提taskが待機中で後続taskの着手または確定を止める場合、その影響を後続taskの状態にも反映する。
+  通常の再開判断で、AIに毎回辺リストから着手可否を導出させない。
+- 同じ条件が複数taskを止めている場合、Task Registry表の直前に`現在の律速`として明示する。
+  律速が変わるか解消した時点で、記述と影響を受けるtaskの状態を同時に更新する。
+- 会話参照IDの`A-1`等は一時座標であり、この固定IDとは分離する。
+- 優先順位は、ユーザーの最新指示、Task Registry、task行が示す詳細正本、Archivedと過去ログの
+  順とする。食い違いを見つけても、古い記述だけを根拠にtaskを再開しない。
+- Task Registryの確定更新はCodexが担当する。Claudeは自分のhandoffを更新し、Registryの変更が
+  必要な場合は具体的な差分案を残す。
+
+## 状態表示
+
 | 状態 | 意味 |
 | --- | --- |
-| 完了 | 実装・必要な検証・記録まで一区切りしている |
-| 完了・追加検証可 | 現在の完成判断を止めないが、環境や比較対象を増やせる |
-| 進行中 | 現在の主経路に含まれる |
-| 判断待ち | ユーザーまたは設計判断が先に必要 |
-| 保留 | 重要だが現在の完成条件には含めない |
-| 中止 | 明示的に停止し、勝手に再開しない |
+| `ACTIVE` | AIが次の作業として着手可能 |
+| `WAITING_USER` | ユーザー判断または設計判断が必要 |
+| `WAITING_EXTERNAL` | repository内の判断だけでは解消できない外部条件を待っている |
+| `FROZEN` | 明示的な再開指示が必要 |
+| `USER_ONLY` | ユーザー専任。AIは着手・代行・催促しない |
+| `EXCLUDED` | 実施対象外。再開候補にも含めない |
+| `DONE` | 完了。現役の正本を維持 |
+| `ARCHIVED` | 完了し、履歴資料へ移動済み |
 
 ## 全体サマリー
 
@@ -72,7 +167,7 @@ Index / lazy tie周辺の再設計、赤黒木のテスト再編、公開文書�
 - [x] MultiMap `find`の同値キー内個体・rankが標準上非保証であることを比較契約へ反映
 - [x] 操作、境界、seed、標準ライブラリ別結果を専用Matrixへ記録
 
-正本: `CPP_BEHAVIOR_COMPARISON_MATRIX.md`
+正本: `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`
 
 ### Death Test・寿命検査・CI
 
@@ -169,16 +264,19 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [x] 比較の意味、異なる木の扱い、計算量を比較表へ記録
 - [ ] Container protocol要件を踏まえ、失敗状態を格納したIndexの要否を最終判断
 - [ ] nominal Index + 内部`Result<Resolved, SealError>`案を採用するか決定
-- [ ] ユーザーが手作業で実装した`try/index/1`のfailureless Index PoCを現行HEADとQuality Checklistへ照合する（Comparable採否とは分離。ユーザーが明示的に再開を希望するまで、実作業時検証、追加調査、X1、Claude依頼を行わない）
-- [x] X1のidentity規則・停止条件と初期4 batchを整備し、同名部品を別個体として扱う診断基盤を保存（網羅inventoryは費用対効果により凍結）
-- [ ] 採用表現を実装し、4コンテナとRange/Viewへ追従
+- [x] ユーザーが手作業で実装した`try/index/1`のfailureless Index PoCを現行HEADとQuality Checklistへ照合する（2026-10-05: Codex・Claudeの独立検証を経てverdict `adopt after corrections`、補正後にPR #158でmerge(`a6c8a474`)。正本は`Archived/INDEX_POC_VALIDATION.md`。Comparable採否とは分離）
+- [x] X1のidentity規則・停止条件と初期4 batchを整備し、同名部品を別個体として扱う診断基盤を保存（PoC統合後、検証記録とともにArchivedへ整理）
+- [x] 採用したsuccess-only表現を実装し、4コンテナとRange/Viewへ追従（PR #158）
+- [ ] Comparable採否により必要となる場合は、nominal wrapper等の最終境界表現を判断する
 - [ ] 標準`Result`へのretroactive `Comparable`適合に依存しない設計を選択
 - [ ] 内部診断用`Result<..., SealError>`と公開Indexを分離するか判断
-- [x] `_O_UNCHECKED`でも消えないstale Index拒否と移動失敗診断を整備
+- [x] `_O_UNCHECKED`でも消えないstale Index拒否と移動失敗診断を整備（現行実装の
+  上乗せ防御。公開契約はSwift標準ライブラリと同じ事前条件モデルとし、実装を寄せるかは
+  1.0前、または`-Ounchecked`が主要構成と判明した時点で再審査する）
 - [ ] 必要な候補だけReleaseで試作・計測
 - [ ] 4コンテナ、Range View、DocC、API Matrixへ反映
-- [ ] Kで（Index移行後）`index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供と名称維持はCodex・Claudeレビューで決定済み。戻り値は全型で`(inserted: Bool, index: Index)`。Dictionaryは既存値を置換せず既存位置、Multi系は常に新規occurrenceと`true`を返す。`insert(_:)`と`erase(exactly:)`からSee Alsoで発見可能にする）
-- [ ] Kで（Index移行後）`erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み）
+- [x] Kで（Index移行後）`index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供と名称維持はCodex・Claudeレビューで決定済み。戻り値は全型で`(inserted: Bool, index: Index)`。Dictionaryは既存値を置換せず既存位置、Multi系は常に新規occurrenceと`true`を返す。`insert(_:)`と`erase(exactly:)`からSee Alsoで発見可能にする。2026-10-05実装・テスト済み）
+- [x] Kで（Index移行後）`erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み。2026-10-05実装・テスト済み。Setの空でのCoW回避漏れも同時に修正）
 - [x] KeyValue Range Viewの範囲外Indexは標準Collection同様のprecondition違反とし、単一Index操作ではO(log N)の範囲内検査や停止保証を公開契約に含めない。独自のBound / range操作は処理内で入力を検査するsafe動作とする
 
 依存順と完成条件は`RED_BLACK_TREE_REMAINING_TASKS.md`を正本とする。
@@ -222,9 +320,9 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [x] RedBlackTreeTestSupportとDebugAdditionalsの責務整理（自動テスト基盤／人間向け診断・凍結コードで区分し、配置例外2件は移動しない）
 - [x] UnsafeNode / RawBufferクロスチェックと単層テストの役割整理（独立計算によるfault independenceを維持し、共有化しない）
 - [ ] 未結線コードを段階的に削除する（個々の削除はユーザーが決定し、再開指示まで凍結）
-- [x] Combining系APIへ実測結果に基づく条件付きコメントを追記（`CombiningAPIPerformanceEvidence.md` §3に基づき、容量による一律推奨を避ける）
+- [x] Combining系APIへ実測結果に基づく条件付きコメントを追記（`Archived/CombiningAPIPerformanceEvidence.md` §3に基づき、容量による一律推奨を避ける）
 - [x] Combining系の追加NoteをClaudeが限定レビューし、測定範囲の限定とMultiMapへの未計測結果の外挿除去を反映
-- [ ] PermutationのAtCoder 2025互換mode（ユーザーが明示的に再開を指示するまで、ABC328E実提出確認を含め着手・調査・Claude依頼を行わない）
+- [ ] PermutationのAtCoder 2025互換mode（ユーザーが明示的に再開を指示するまで着手・調査・Claude依頼を行わない）
 
 ## 保留・完成を止めない追加検証
 
@@ -242,35 +340,35 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 
 ## 中止・再開禁止
 
-- [x] Compatibility文書4本の広範囲な一括監査
 - [x] MSVC STLとのC++挙動比較（2026-10-04ユーザー決定により実施しない）
+- [ ] ABC328E実提出確認（ユーザーが手作業で行う専任項目として凍結。AIは着手・代行・催促しない）
 
-Claudeが既存文書を広範囲に改変し始めたため、ユーザーが強制停止した。限定的に確認済みの
-修正以外は残っていない。この監査は新しい明示依頼なしに再開しない。
+Compatibility文書4本の包括監査は凍結taskから削除した。公開ドキュメントはCodexを第一担当とし、
+`Cpp-Matrix.md`または具体的な実装差を根拠に対象項目を限定して更新する。Claudeへ委譲する場合も、
+範囲指定された事実確認、独立レビュー、または限定修正に留める。
 
 ## 次の区切り
 
-1. 公開面監査表に従い、Index表現に拘束されない項目から変更単位を限定する。Debug-only Comparable群は分類だけ行い、Index判断まで変更しない。
-2. 既存の安全性・CoW・計算量契約、Comparable採否、公開失敗状態の要否を、公開面監査と並行して確認する。
-3. TestCodeへ移せるfixture・実験経路を、Index表現に依存しない範囲で小さく分離する。
-4. 外部契約から内部表現を選び、実装・回帰検証する。
-5. 公開範囲を縮小してから、最後にデッドコードの処遇を判断する。
+1. Index完了ゲートとして、Comparable採否、公開Indexと内部`SealError`の分離、1.0での完了範囲を決める。
+2. Index-range `erase`の空guardを、無効範囲の検査と不要なCoW回避のどちらを優先するか判断する。
+3. P10に残るIndex統合前の記述を確認し、必要な箇所だけ現行表現へ同期する。
+4. 上記の決定後、公開コメント、Design、API Matrix、DocC Topicsを最終同期する。
 
-非RedBlackTreeのコメントドック監査は上記と独立して並行可能であり、OptionalArray、BareArray、
-再公開moduleの順で閉じる。
+外部所有型extension監査、strict memory safety、OptionalArray/BareArrayの体系監査は保留中の独立作業であり、
+明示的な再開判断なしに主経路へ混ぜない。
 
 ## 正本
 
 - 現在のテスト状態: `Tests/TESTING.md`
-- 詳細履歴: `Tests/TESTING_REFERENCE.md`
+- 詳細履歴: `Tests/Archived/TESTING_REFERENCE.md`
 - 変更履歴: `CHANGELOG.md`
 - 文書管理: `Maintanance/MAINTENANCE.md`
 - RedBlackTree残タスク: `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
 - 外部所有型extension監査: `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
-- C++比較: `Maintanance/CPP_BEHAVIOR_COMPARISON_MATRIX.md`
-- SortedCollections比較: `Maintanance/SORTED_COLLECTIONS_BENCHMARK_TASK.md`
-- Combining性能証拠: `Maintanance/CombiningAPIPerformanceEvidence.md`
+- C++比較: `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`
+- SortedCollections比較: `Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md`
+- Combining性能証拠: `Maintanance/Archived/CombiningAPIPerformanceEvidence.md`
 - Permutation計画・評価: `Maintanance/PermutationModule/`
 - AtCoder 2025からの再構成履歴: `Maintanance/REFACTORING_FROM_ATCODER_2025.md`
-- 品質証拠・利用検討資料: `Maintanance/AdoptionReadinessAssessment.md`、同`.ja.md`
+- 品質証拠・利用検討資料: `Maintanance/Archived/AdoptionReadinessAssessment.md`、同`.ja.md`
 - strict memory safety: `Maintanance/StrictMemorySafetyReadiness.md`

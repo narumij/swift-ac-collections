@@ -1,6 +1,10 @@
 # Index PoC cross-branch identity map
 
-Status: Frozen after reviewed inventory batch 4 — resume only for a concrete implementation blocker
+Status: Archived after PR #158 integrated the validated Index PoC (2026-10-06)
+
+The cross-branch preparation and adoption decision are complete. The resulting validation record is
+preserved in `INDEX_POC_VALIDATION.md`. Reopen this identity map only when a concrete historical
+merge or identity ambiguity cannot be resolved from the active branch and that validation record.
 
 ## Purpose
 

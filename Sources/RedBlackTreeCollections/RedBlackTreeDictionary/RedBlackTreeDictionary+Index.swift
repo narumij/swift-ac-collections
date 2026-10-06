@@ -287,3 +287,57 @@
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  extension RedBlackTreeDictionary {
+
+    // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要
+    // CoW分の生木をずっともってしまうと重いので、!USE_LAZY_DETACH専用にする
+
+    /// Returns the index of the given key-value pair's key, inserting the pair if necessary.
+    ///
+    /// If the key is inserted, `inserted` is `true` and `index` refers to the
+    /// newly inserted key-value pair. If the key is already present, the
+    /// existing value isn't replaced, `inserted` is `false`, and `index` refers
+    /// to the existing key-value pair.
+    ///
+    /// - Complexity: O(log **n**), where **n** is the number of key-value pairs.
+    @inlinable
+    @discardableResult
+    public mutating func index(inserting newMember: Element) -> (
+      inserted: Bool, index: Index
+    ) {
+      __tree_.ensureUniqueAndCapacity()
+      let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
+      return (__inserted, ___index(__r))
+    }
+  }
+
+  extension RedBlackTreeDictionary {
+
+    // index(inserting:)で取得したIndexでもりもり消したい場合に過剰にチェックしなくて済むように追加
+    // remove(at:)では世代違いをトラップするので、isValidチェックを2回行うことになるので。
+    // ただ、オーバーフローで一周した場合への対策はなにもない
+
+    /// Removes the key-value pair at the given index if the index is still valid.
+    ///
+    /// - Parameter index: An index that was created for this dictionary.
+    /// - Returns: The index that followed `index` before removal, or `nil` if
+    ///   `index` doesn't refer to an accessible key-value pair of the dictionary.
+    /// - Complexity: Amortized O(1)
+    /// - SeeAlso: `index(inserting:)`, which returns an index to pass to this method.
+    @inlinable
+    @discardableResult
+    public mutating func erase(exactly index: Index) -> Index? {
+      // 空の場合はアクセス可能な要素が存在し得ないため、ensureUnique()による
+      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
+      guard __tree_.count > 0 else { return nil }
+      __tree_.ensureUnique()
+      guard let __p = __tree_.__purified_(index).accessible.pointer else {
+        return nil
+      }
+      let __r = __tree_._unchecked_remove(at: __p).__r
+      return ___index(__r)
+    }
+  }
+#endif

@@ -257,6 +257,22 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(successor, runQueue.endIndex)
       XCTAssertEqual(Array(runQueue), [interactive])
     }
+
+    /// 空のSetに対して`erase(exactly:)`を呼んでもトラップせず、`nil`を返すこと。
+    /// トラップしない以上、無駄なCoW(共有される空シングルトンバッファからの退避)も
+    /// 発生しないこと。
+    func test_eraseExactly_onEmptySetReturnsNilWithoutCopy() {
+      var set = RedBlackTreeSet<Int>()
+
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        XCTAssertEqual(set._copyCount, 0)
+      #endif
+      XCTAssertNil(set.erase(exactly: set.startIndex))
+      #if AC_COLLECTIONS_INTERNAL_CHECKS
+        XCTAssertEqual(set._copyCount, 0, "空の削除はnilを返すだけで、バッファのコピーを発生させないはず")
+      #endif
+      XCTAssertNil(set.erase(exactly: set.endIndex))
+    }
   #endif
 
   #if DEBUG && !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH

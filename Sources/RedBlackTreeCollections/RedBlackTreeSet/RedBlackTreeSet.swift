@@ -234,6 +234,7 @@ extension RedBlackTreeSet {
   /// - Returns: A tuple indicating whether insertion occurred and containing
   ///   either `newMember` or the existing equivalent element.
   /// - Complexity: O(log *n*), where *n* is the number of elements.
+  /// - SeeAlso: `index(inserting:)`, which also returns the index of the inserted or existing element.
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (

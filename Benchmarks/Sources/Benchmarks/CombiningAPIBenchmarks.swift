@@ -15,7 +15,7 @@
 // unique vs duplicate-heavy other, reserved vs unreserved destination
 // capacity, and unique vs shared destination storage.
 //
-// Methodology (see Maintanance/CombiningAPIPerformanceEvidence.md):
+// Methodology (see Maintanance/Archived/CombiningAPIPerformanceEvidence.md):
 // - The outer closure runs once per size; the inner closure runs once per
 //   sample and only `timer.measure` is timed. Every sample therefore builds a
 //   fresh destination (outside the timed region) so that no sample starts

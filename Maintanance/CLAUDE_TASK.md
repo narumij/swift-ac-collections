@@ -145,16 +145,13 @@ current instruction and prepare the handoff for Codex if requested.
   GitHub Actionsのランナー不具合で一時未実行だったが、CIはグリーン（2026-10-06ユーザー確認）。
 - 2026-10-06、試運転10回目でRegistry（`現在の律速`、`WAITING_EXTERNAL`、Task precedence）
   から状態を把握できることを確認し、ユーザーがこの運用の採用を決定した。
-- P10残存記述確認（`DOC-001`）: 2026-10-06ユーザー指示でClaudeが監査と限定修正を実施（commit済み、push未実施）。
-  修正3件（事実の訂正のみ）: `EXTERNAL_TYPE_EXTENSION_AUDIT.md`のalias chain、
-  `RED_BLACK_TREE_REMAINING_TASKS.md`の「現状では`Result`が見える」と「現在は`Index`が`Result`である」。
-  Design 8文書・API Matrix・DSL・isValid・README/Documentationに統合前表現は無かった。
-  merge前と明記された節・日付付きレビュー記録・CHANGELOGは履歴として未変更。
-  Index完了ゲート「ResultをIndex本体に残すか…決まっている」は、PR #158のmergeで決定済みとユーザーが
-  2026-10-06に確認し、チェック済みにした。修正せず報告: (1) 外部契約の論点リスト「失敗状態を格納した
-  Indexを受け取る必要があるか」も同じ理由で回答済みだが、論点リストの書き換えは未実施。(2) `UnsafeIndexV3.swift:59`のソースコメント「`_LazyTieWrappedPtr`を選択した理由…」
-  はユーザーの設計メモで、統合前の選択を指す。(3) `Design-MemorySafety.md:126`「公開APIでは…`Result`…へ
-  変換」は通常構成にResultを返すpublic APIが無いが、P10由来ではなく互換modeも絡むため未変更。
-  Registryの`DOC-001`完了処理はCodex。
-- 2026-10-06までの時系列handoff logは整理済み。正本へ未記録の分だけ
-  `Archived/CLAUDE_TASK_HISTORY.md`の「Handoff log cleanup」に移した。
+- `DOC-001`完了（`9b0f42d5`、push未実施）。管理文書2件の統合前Index表現を事実訂正し、Index完了ゲートの
+  Result分離項目をユーザー確認のうえチェック済みにした。未対応の報告: 外部契約論点リストの同項目、
+  `UnsafeIndexV3.swift:59`のユーザー設計メモ、`Design-MemorySafety.md:126`の`Result`言及（P10由来でない）。
+- `GRAPH-001`初期合格（2026-10-06）: Claude DBの`ready`はRegistry表示と一致（`GRAPH-001`のみ）。
+  入力はRegistry 30行とprecedence 7辺、未知状態語・宙に浮いた辺・循環はいずれも0。観測: DBは毎回Registryから
+  作り直すprojectionで、書き戻しなし。取り込みはRegistry表の書式（backtick付きID、状態列）に依存する。
+  `ready`は状態語と前提完了の両方で決まり、前提だけでは決まらない。ユーザー判断で完了にせず`ACTIVE`のまま
+  継続し、定期的に使って試す。改善後の観測: precedenceの「完了できる／確定できる」と「着手候補にできる」は
+  意味が異なり、前者を着手の前提として扱うとACTIVEなtaskを誤ってready外にする。外部条件はRegistryにnodeが
+  無いので直接は問えない。凍結21件の再開条件は文章で、graphでは判定できない。

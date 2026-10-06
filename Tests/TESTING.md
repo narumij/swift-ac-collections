@@ -127,16 +127,19 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 
 - runtime-check方針に沿い、コンテナと共有Viewの空remove Death Testを通常構成と
   `_O_UNCHECKED`で確認した。後者で停止しないことは仕様どおりで、テストへの構成guardは加えない。
-- `index(inserting:)` / `erase(exactly:)`の4型横展開をTest as Specification先行で完了した。
-  Setの空`erase(exactly:)`にあった不要なCoWもテストで検出して修正した。
-- Bound-range eraseの逆順範囲と空コレクションを4型で仕様化し、空時の不要なCoWを修正した。
-  Index-range eraseの空guardはIndex契約判断が必要なため、既存タスクⅥとして保留している。
-- cross-tree Index監査で見つかったF2/F3/F4不足とdetached前提確認を補完した。標準構成は成功し、
-  CROSS=OFFの失敗は確認済みのdeprecated構成として記録した。
-- 上記の該当suite、フルDebug、必要な互換モードビルドは成功した。KのAPI追加に対する
-  performance jobとフルのローカルReleaseは未実施で、push後のCIに委ねる。
+- `index(inserting:)` / `erase(exactly:)`の4型横展開と、Bound-range eraseの逆順範囲・空コレクションの
+  仕様化をTest as Specification先行で完了し、空時の不要なCoWを修正した。
+- Index-range eraseの空guard(`RBT-002`)を完了した。4型の`_16`に「空でCoWしない」仕様(修正前に失敗を確認)、
+  `_99`に「空でも他木の範囲はtrap」のDeath Testを追加。範囲検査は維持している。
+- Index完了ゲートの検証として、4型の`_1`に走査の比較回数の仕様(全走査・前後走査・範囲走査は0回、範囲作成は1回)、
+  Dictionary / MultiMapの`_98_CopyOnWrite`にKeyValue Range Viewの`erase(where:)` CoWを追加した。
+  Debug限定Balanced群に依存していた`RedBlackTreeMultiMap_8`のテストは`_98_DebugOnlyAPITests`へ移した。
+  `RedBlackTreeSet_9`の`test_index_comparable`はDebug限定Index `Comparable`依存のまま、`RBT-011`待ち。
+- PR #158前のIndex(`_LazyTieWrappedPtr`)向けの未使用宣言は、削除を保留して
+  `DebugAdditionals/UnsafeTreeV2+Debug/_LazyTieWrappedPtr+Retired.swift`へ待避した。
+  4構成ビルドとDebug / Releaseの`swift test`は成功。LinuxのCIはpush後に確認する。
 
-最終更新: 2026-10-06 JST / Codex
+最終更新: 2026-10-07 01:40 JST / Claude Opus 5.5
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

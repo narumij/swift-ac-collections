@@ -32,6 +32,7 @@ Index契約とそれに関わる残taskは、この外部条件が安定する�
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-002` | `FROZEN` | Codex | Codex用task graph DBの独立試験 | Codexのcontext reset後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-003` | `FROZEN` | User / Codex / Claude | 二つのtask graph DBの統合議論 | 両試験の完了後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-004` | `ACTIVE` | Claude | AIとgraph DBによるrefactoring smellの独立試験 | 専用ノートをClaudeが自由編集し、観測・仮説・反証・再利用可能な判断基準を継続記録 | `AI_GRAPH_REFACTORING_SMELL_NOTES.md` |
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認（run 37502938888、job 112404281751） | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
@@ -40,6 +41,14 @@ Index契約とそれに関わる残taskは、この外部条件が安定する�
 | `TEST-002` | `FROZEN` | Codex | stride assertion／fixture alignmentの任意改善 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
 | `PERM-001` | `FROZEN` | Codex | AtCoder 2025互換mode | ユーザーが明示的に再開 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-002` | `USER_ONLY` | User | ABC328E実提出確認 | ユーザーが手作業で実施 | `PermutationModule/ImplementationPlan.md` |
+| `PERM-003` | `FROZEN` | Claude | 現行Permutation契約の基準固定 | 本taskの明示的な再開後、互換modeから独立して現行API・通常test・旧unsafe API非露出を基準化 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-004` | `FROZEN` | Codex | AtCoder 2025互換ソースの隔離 | 基準版を専用fileへ配置し、通常版と排他的にcompileできる状態にする | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-005` | `FROZEN` | Codex | Permutation互換traitのPackage設定 | 互換defineをtraitへ接続し、traitなしを通常版の既定にする | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-006` | `FROZEN` | Codex | 互換modeのTest as Specification | 列挙順・重複・safe CoW・unsafe aliasing・境界を基準refに対して固定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-007` | `FROZEN` | Codex | 両modeのAcCollections再公開検証 | 通常・互換の期待APIをAcCollections経由でcompile・test | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-008` | `FROZEN` | Codex | Permutation互換CIの分離 | 通常版と互換版を別jobとして表示し、結果を混在させない | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-009` | `FROZEN` | Codex | AtCoder単一file生成とローカル検証 | 互換版から自己完結fileを生成し、ABC328E相当入力で検証 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-010` | `FROZEN` | Codex | Permutation互換mode文書同期 | 通常APIと互換APIを混同せず、trait・制限・検証方法を文書化 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `OPT-001` | `FROZEN` | Codex | OptionalArrayの体系監査・名称再検討 | ユーザーが明示的に再開 | `Tests/TESTING.md` |
 | `BARE-001` | `FROZEN` | Codex | BareArrayの体系監査・名称再検討 | ユーザーが明示的に再開 | `Tests/TESTING.md` |
 | `ARRAY-001` | `FROZEN` | User / Codex | BareArray／OptionalArrayのstorage再設計とstrict恒久適用 | 公開unsafe境界を決定して再開 | `StrictMemorySafetyReadiness.md` |
@@ -67,6 +76,16 @@ Task Registryの状態は、通常の再開判断に使う計算済みの表示�
 | `QUALITY-001` 1.0採用品質ゲート | `RBT-001` Index完了ゲート | 前提taskの完了後に着手候補にできる |
 | `GRAPH-003` task graph DB統合議論 | `GRAPH-001` Claude独立試験 | 前提taskの完了後に着手候補にできる |
 | `GRAPH-003` task graph DB統合議論 | `GRAPH-002` Codex独立試験 | 前提taskの完了後に着手候補にできる |
+| `PERM-004` AtCoder 2025互換ソースの隔離 | `PERM-003` 現行Permutation契約の基準固定 | 前提taskの完了後に着手できる |
+| `PERM-005` Permutation互換traitのPackage設定 | `PERM-004` AtCoder 2025互換ソースの隔離 | 前提taskの完了後に着手できる |
+| `PERM-006` 互換modeのTest as Specification | `PERM-005` Permutation互換traitのPackage設定 | 前提taskの完了後に着手できる |
+| `PERM-007` 両modeのAcCollections再公開検証 | `PERM-006` 互換modeのTest as Specification | 前提taskの完了後に着手できる |
+| `PERM-008` Permutation互換CIの分離 | `PERM-006` 互換modeのTest as Specification | 前提taskの完了後に着手できる |
+| `PERM-009` AtCoder単一file生成とローカル検証 | `PERM-007` 両modeのAcCollections再公開検証 | 前提taskの完了後に着手できる |
+| `PERM-010` Permutation互換mode文書同期 | `PERM-007` 両modeのAcCollections再公開検証 | 前提taskの完了後に着手できる |
+| `PERM-010` Permutation互換mode文書同期 | `PERM-008` Permutation互換CIの分離 | 前提taskの完了後に着手できる |
+| `PERM-010` Permutation互換mode文書同期 | `PERM-009` AtCoder単一file生成とローカル検証 | 前提taskの完了後に着手できる |
+| `PERM-001` AtCoder 2025互換mode | `PERM-010` Permutation互換mode文書同期 | 前提taskの完了後に後続taskを完了できる |
 
 ここには必須のAND前提だけを記録する。外部条件は各taskの状態と再開・完了条件、選択肢や
 OR条件は詳細正本で扱う。必須前提が増えた場合は辺を追加し、循環が生じる場合はtask境界または

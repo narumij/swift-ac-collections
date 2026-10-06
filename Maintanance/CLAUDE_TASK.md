@@ -188,6 +188,8 @@ current instruction and prepare the handoff for Codex if requested.
   遅延生成箇所だけに絞ると消えた。ファイル単位では`OPT`/`BARE`の監査と`ARRAY`のstorage再設計という別レベルを区別できない）。
   対象は「そのtaskが実際に変えるもの」で登録する。完了済みtaskは検査から除外した。ユーザー: `RBT-008`の完了条件は
   「ユーザーが納得できるコードの提示」、`OPT`/`BARE`と`ARRAY`のレベル整理はCodex担当。
+  同日、`RBT-008`の現状コード（`lazyDetach` / `tiedRawBuffer`の遅延生成と`@unchecked Sendable`による初回並行アクセスの競合）と
+  TODO記載の3案（生成時に先に作る / `AtomicLazyReference` / 初回並行は保証外）を提示し、ユーザー判断で不採用。凍結のまま、コード未変更。
   入力はRegistry 30行とprecedence 7辺、未知状態語・宙に浮いた辺・循環はいずれも0。観測: DBは毎回Registryから
   作り直すprojectionで、書き戻しなし。取り込みはRegistry表の書式（backtick付きID、状態列）に依存する。
   `ready`は状態語と前提完了の両方で決まり、前提だけでは決まらない。改善後の観測: precedenceの

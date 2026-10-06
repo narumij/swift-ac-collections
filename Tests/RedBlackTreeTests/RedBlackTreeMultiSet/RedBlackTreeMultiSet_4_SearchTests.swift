@@ -54,3 +54,21 @@ final class RedBlackTreeMultiSetSearchTests: RedBlackTreeTestCase {
     XCTAssertNil(empty.max())
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiSetFindTests: RedBlackTreeTestCase {
+
+    /// `find(_:)`は同値要素のうち先頭の位置を返し、無ければ`endIndex`を返すこと。
+    func testFindReturnsFirstEquivalentOrEndIndex() {
+      let m = RedBlackTreeMultiSet<Int>([1, 2, 2, 2, 3])
+      let i = m.find(2)
+      XCTAssertEqual(m[i], 2)
+      XCTAssertEqual(i, m.lowerBound(2))
+      XCTAssertEqual(m.find(9), m.endIndex)
+      XCTAssertEqual(RedBlackTreeMultiSet<Int>().find(0), RedBlackTreeMultiSet<Int>().endIndex)
+    }
+  }
+#endif

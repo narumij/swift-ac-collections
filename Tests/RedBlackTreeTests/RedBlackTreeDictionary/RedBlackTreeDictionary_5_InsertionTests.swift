@@ -332,3 +332,22 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     }
   #endif
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeDictionaryMergingTests: RedBlackTreeTestCase {
+
+    /// `merging(_:uniquingKeysWith:)`は重複キーを`combine`でまとめた新しい辞書を返し、入力を変えないこと。
+    func testMergingCombinesDuplicateKeys() {
+      let a: RedBlackTreeDictionary = [1: "a", 2: "b"]
+      let b: RedBlackTreeDictionary = [2: "x", 3: "c"]
+      let merged = a.merging(b) { $0 + $1 }
+      XCTAssertEqual(merged.map(\.key), [1, 2, 3])
+      XCTAssertEqual(merged.map(\.value), ["a", "bx", "c"])
+      XCTAssertEqual(a.map(\.value), ["a", "b"])
+      XCTAssertEqual(b.map(\.value), ["x", "c"])
+    }
+  }
+#endif

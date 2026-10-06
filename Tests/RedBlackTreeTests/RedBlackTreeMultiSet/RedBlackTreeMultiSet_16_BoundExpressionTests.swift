@@ -195,3 +195,20 @@
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiSetBoundDistanceTests: RedBlackTreeTestCase {
+
+    /// Bound式どうしの`distance(from:to:)`は、評価した2位置の間の要素数を返すこと。
+    func testDistanceBetweenBoundExpressions() {
+      let c = RedBlackTreeMultiSet<Int>([0, 1, 1, 2, 2, 2, 3])
+      XCTAssertEqual(c.distance(from: lowerBound(1), to: upperBound(2)), 5, "同値キーをすべて含む")
+      XCTAssertEqual(c.distance(from: lowerBound(2), to: upperBound(2)), 3, "同値キーの区間")
+      XCTAssertEqual(c.distance(from: start(), to: end()), c.count)
+      XCTAssertEqual(c.distance(from: lowerBound(2), to: lowerBound(2)), 0)
+    }
+  }
+#endif

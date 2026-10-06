@@ -229,3 +229,36 @@ final class RedBlackTreeMultiSetSequenceTests: RedBlackTreeTestCase {
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiSetReversedTests: RedBlackTreeTestCase {
+
+    /// `reversed()`は要素を降順に並べた配列を返し、元のコレクションを変えないこと。
+    func testReversedReturnsDescendingArray() {
+      let c = RedBlackTreeMultiSet<Int>([2, 1, 2, 3])
+      let r: [Int] = c.reversed()
+      XCTAssertEqual(r, [3, 2, 2, 1])
+      XCTAssertEqual(Array(c), r.reversed())
+      XCTAssertEqual(RedBlackTreeMultiSet<Int>().reversed() as [Int], [])
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiSetFilterTests: RedBlackTreeTestCase {
+
+    /// `filter(_:)`は条件を満たす出現だけを含む新しいmultisetを返し、元を変えないこと。
+    func testFilterKeepsIncludedOccurrences() {
+      let m = RedBlackTreeMultiSet<Int>([1, 2, 2, 3, 3, 3])
+      let f: RedBlackTreeMultiSet<Int> = m.filter { $0 != 2 }
+      XCTAssertEqual(Array(f), [1, 3, 3, 3])
+      XCTAssertEqual(Array(m), [1, 2, 2, 3, 3, 3])
+    }
+  }
+#endif

@@ -291,3 +291,20 @@ final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeSetReversedTests: RedBlackTreeTestCase {
+
+    /// `reversed()`は要素を降順に並べた配列を返し、元のコレクションを変えないこと。
+    func testReversedReturnsDescendingArray() {
+      let c = RedBlackTreeSet<Int>([3, 1, 2])
+      let r: [Int] = c.reversed()
+      XCTAssertEqual(r, [3, 2, 1])
+      XCTAssertEqual(Array(c), r.reversed())
+      XCTAssertEqual(RedBlackTreeSet<Int>().reversed() as [Int], [])
+    }
+  }
+#endif

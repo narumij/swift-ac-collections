@@ -83,3 +83,21 @@ final class RedBlackTreeMultiSetIndexRangeTests: RedBlackTreeTestCase {
     #endif
   #endif
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiSetFormIndexLimitedTests: RedBlackTreeTestCase {
+
+    /// `formIndex(_:offsetBy:limitedBy:)`は、限界に届かなければ移動して`true`、届けば限界で止まって`false`を返すこと。
+    func testFormIndexOffsetByLimitedBy() {
+      let m = RedBlackTreeMultiSet<Int>([1, 2, 2, 3])
+      var i = m.startIndex
+      XCTAssertTrue(m.formIndex(&i, offsetBy: 2, limitedBy: m.endIndex))
+      XCTAssertEqual(m[i], 2)
+      XCTAssertFalse(m.formIndex(&i, offsetBy: 10, limitedBy: m.endIndex))
+      XCTAssertEqual(i, m.endIndex)
+    }
+  }
+#endif

@@ -125,5 +125,17 @@ import XCTest
       _ = dictionary[...].erase()
       XCTAssertEqual(DeinitializeCounter.count, 0)
     }
+
+    /// `elementsEqual(_:)`はキーと値の組を順に比べ、`lexicographicallyPrecedes(_:)`は辞書順で比べること。
+    func test_elementsEqualAndLexicographicallyPrecedes_compareKeyValuePairsInOrder() {
+      let dictionary: RedBlackTreeDictionary = [1: "a", 2: "b", 3: "c"]
+      let view = dictionary[...]
+      XCTAssertTrue(view.elementsEqual([(key: 1, value: "a"), (key: 2, value: "b"), (key: 3, value: "c")]))
+      XCTAssertFalse(view.elementsEqual([(key: 1, value: "a"), (key: 2, value: "x"), (key: 3, value: "c")]))
+      XCTAssertFalse(view.elementsEqual([(key: 1, value: "a")]))
+      XCTAssertTrue(view.lexicographicallyPrecedes([(key: 1, value: "a"), (key: 2, value: "c")]))
+      XCTAssertFalse(view.lexicographicallyPrecedes([(key: 1, value: "a"), (key: 2, value: "b"), (key: 3, value: "c")]))
+      XCTAssertTrue(view.lexicographicallyPrecedes([(key: 1, value: "a"), (key: 2, value: "b"), (key: 3, value: "c"), (key: 4, value: "d")]))
+    }
   }
 #endif

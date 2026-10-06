@@ -127,3 +127,23 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
     }
   #endif
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiMapInsertContentsOfTests: RedBlackTreeTestCase {
+
+    /// `insert(contentsOf:)`と`inserting(contentsOf:)`は、同値キーも含め全ての組を加えること。
+    func testInsertAndInsertingContentsOfMultiMap() {
+      let other = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "x"), (3, "c")])
+      var m = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(1, "a"), (2, "b")])
+      let combined = m.inserting(contentsOf: other)
+      XCTAssertEqual(combined.map(\.key), [1, 1, 2, 3])
+      XCTAssertEqual(m.map(\.key), [1, 2], "insertingは元を変えない")
+      m.insert(contentsOf: other)
+      XCTAssertEqual(m.map(\.key), [1, 1, 2, 3])
+      XCTAssertEqual(m.map(\.value), ["a", "x", "b", "c"], "同値キーは既存の後ろに入る")
+    }
+  }
+#endif

@@ -229,3 +229,21 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     }
   #endif
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiSetInsertingContentsOfTests: RedBlackTreeTestCase {
+
+    /// `inserting(contentsOf:)`は、multisetでもsetでも全出現を加えた新しいmultisetを返し、入力を変えないこと。
+    func testInsertingContentsOfMultiSetAndSet() {
+      let m = RedBlackTreeMultiSet<Int>([1, 2])
+      let other = RedBlackTreeMultiSet<Int>([2, 3])
+      XCTAssertEqual(Array(m.inserting(contentsOf: other)), [1, 2, 2, 3])
+      XCTAssertEqual(Array(m.inserting(contentsOf: RedBlackTreeSet<Int>([2, 4]))), [1, 2, 2, 4])
+      XCTAssertEqual(Array(m), [1, 2])
+      XCTAssertEqual(Array(other), [2, 3])
+    }
+  }
+#endif

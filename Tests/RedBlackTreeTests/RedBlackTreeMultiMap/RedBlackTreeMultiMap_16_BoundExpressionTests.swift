@@ -193,3 +193,20 @@
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiMapBoundDistanceTests: RedBlackTreeTestCase {
+
+    /// Bound式どうしの`distance(from:to:)`は、評価した2位置の間の要素数を返すこと。
+    func testDistanceBetweenBoundExpressions() {
+      let c = RedBlackTreeMultiMap<Int, String>(keysWithValues: [(0, "a"), (1, "b"), (1, "c"), (2, "d"), (2, "e"), (2, "f"), (3, "g")])
+      XCTAssertEqual(c.distance(from: lowerBound(1), to: upperBound(2)), 5, "同値キーをすべて含む")
+      XCTAssertEqual(c.distance(from: lowerBound(2), to: upperBound(2)), 3, "同値キーの区間")
+      XCTAssertEqual(c.distance(from: start(), to: end()), c.count)
+      XCTAssertEqual(c.distance(from: lowerBound(2), to: lowerBound(2)), 0)
+    }
+  }
+#endif

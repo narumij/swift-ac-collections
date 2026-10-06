@@ -89,3 +89,35 @@ final class RedBlackTreeDictionarySequenceTests: RedBlackTreeTestCase {
     }
   }
 #endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeDictionaryReversedTests: RedBlackTreeTestCase {
+
+    /// `reversed()`はキーの降順に並べた配列を返し、元の辞書を変えないこと。
+    func testReversedReturnsDescendingKeyOrder() {
+      let d: RedBlackTreeDictionary = [3: "c", 1: "a", 2: "b"]
+      let r = d.reversed()
+      XCTAssertEqual(r.map(\.key), [3, 2, 1])
+      XCTAssertEqual(r.map(\.value), ["c", "b", "a"])
+      XCTAssertEqual(d.map(\.key), [1, 2, 3])
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeDictionarySortedTests: RedBlackTreeTestCase {
+
+    /// `sorted()`はキー順の組の配列を返すこと。
+    func testSortedReturnsPairsInKeyOrder() {
+      let d: RedBlackTreeDictionary = [3: "c", 1: "a", 2: "b"]
+      XCTAssertEqual(d.sorted().map(\.key), [1, 2, 3])
+      XCTAssertEqual(d.sorted().map(\.value), ["a", "b", "c"])
+    }
+  }
+#endif

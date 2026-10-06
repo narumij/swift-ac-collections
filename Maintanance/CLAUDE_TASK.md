@@ -183,6 +183,11 @@ current instruction and prepare the handoff for Codex if requested.
     `RED_BLACK_TREE_REMAINING_TASKS.md`の「Indexが`Result`のtypealiasなのでComparableにできない」という記述は古い（Codexへ）。
 - `GRAPH-001`初期合格・試験運用継続（2026-10-07、ユーザー確認）: Claude DBの`ready`はRegistry表示と一致
   （初期試験時点では`GRAPH-001`のみ）。local DBを通常作業で継続利用し、統合議論まで観測を蓄積する。
+  2026-10-07の観測: 赤黒木以外（`OPT-001` / `BARE-001` / `ARRAY-001` / `PERM-001` / `RBT-005` / `RBT-008`）も対象コードを登録した。
+  対象を型やファイル単位で登録すると結合が過大に出る（`RBT-008`を`_LazyTie`型まるごとで登録してIndex系と誤って結合、
+  遅延生成箇所だけに絞ると消えた。ファイル単位では`OPT`/`BARE`の監査と`ARRAY`のstorage再設計という別レベルを区別できない）。
+  対象は「そのtaskが実際に変えるもの」で登録する。完了済みtaskは検査から除外した。ユーザー: `RBT-008`の完了条件は
+  「ユーザーが納得できるコードの提示」、`OPT`/`BARE`と`ARRAY`のレベル整理はCodex担当。
   入力はRegistry 30行とprecedence 7辺、未知状態語・宙に浮いた辺・循環はいずれも0。観測: DBは毎回Registryから
   作り直すprojectionで、書き戻しなし。取り込みはRegistry表の書式（backtick付きID、状態列）に依存する。
   `ready`は状態語と前提完了の両方で決まり、前提だけでは決まらない。改善後の観測: precedenceの

@@ -46,3 +46,46 @@ final class RedBlackTreeDictionarySequenceTests: RedBlackTreeTestCase {
     XCTAssertEqual(count, 0)
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  /// 全走査と範囲走査がキー比較を行わないこと。走査が要素ごとの探索(O(N log N))に
+  /// 落ちていないことを、利用者の`Comparable`から観測できる形で固定する。
+  final class RedBlackTreeDictionaryTraversalComparisonCountTests: RedBlackTreeTestCase {
+
+    private struct CountingKey: Comparable {
+      nonisolated(unsafe) static var count = 0
+      let value: Int
+      static func < (lhs: Self, rhs: Self) -> Bool {
+        count += 1
+        return lhs.value < rhs.value
+      }
+    }
+
+    func testFullAndRangeTraversalDoNotCompareKeys() {
+      let c = RedBlackTreeDictionary(
+        uniqueKeysWithValues: (0..<64).map { (CountingKey(value: $0), $0) })
+      let lower = c.index(c.startIndex, offsetBy: 8)
+      let upper = c.index(c.startIndex, offsetBy: 56)
+      CountingKey.count = 0
+
+      var visited = 0
+      for _ in c { visited += 1 }
+      XCTAssertEqual(visited, 64)
+      XCTAssertEqual(CountingKey.count, 0, "全走査はキー比較を行わないはず")
+
+      var i = c.startIndex
+      while i != c.endIndex { c.formIndex(after: &i) }
+      while i != c.startIndex { c.formIndex(before: &i) }
+      XCTAssertEqual(CountingKey.count, 0, "Indexによる前後の走査はキー比較を行わないはず")
+
+      let view = c[lower..<upper]
+      let afterViewCreation = CountingKey.count
+      XCTAssertLessThanOrEqual(afterViewCreation, 1, "範囲の作成は定数回の比較に収まるはず")
+
+      visited = 0
+      for _ in view { visited += 1 }
+      XCTAssertEqual(visited, 48)
+      XCTAssertEqual(CountingKey.count, afterViewCreation, "範囲走査はキー比較を行わないはず")
+    }
+  }
+#endif

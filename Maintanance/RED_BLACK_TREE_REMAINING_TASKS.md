@@ -45,7 +45,7 @@ Indexの検討では、利用者に見える契約と、その契約を実現・
 公開APIとして直接説明しなくても、利用者のコード、互換性、または他ライブラリへ
 影響し得るため、外部契約を決めた後に慎重に選ぶ。
 
-- public typealiasが露出する具体型。現状では`_LazyTieWrap<_NodePtrSealing>`がそのまま見える(PR #158以前は`Result`)
+- public typealiasが露出する具体型。現状では`_LazyTiedPtr`がそのまま見える(PR #158以前は`Result`)
 - `RedBlackTreeIndex`を固有nominal型にするか
 - `Comparable`等の適合と、特に標準型へのretroactive conformance
 - `@frozen`型の保存プロパティ、サイズ、レイアウト
@@ -163,8 +163,8 @@ Jで接続する。
 現状の`Comparable`実装はDebug構成に限定されている。これは調査用の状態であり、
 公開仕様が確定した根拠にはしない。
 
-特に、`Index`が標準ライブラリの`Result`のtypealiasである現状では、Indexだけを
-`Comparable`にできない。`Result`へretroactiveな`Comparable`適合を追加すると、
+PR #158以前は`Index`が標準ライブラリの`Result`のtypealiasだったため、Indexだけを
+`Comparable`にできなかった。`Result`へretroactiveな`Comparable`適合を追加すると、
 RedBlackTreeのIndexに閉じず、条件を満たすすべての`Result`へ適合が見える。
 これは1ライブラリの都合で標準型の意味を拡張し、他ライブラリまたは将来の
 標準ライブラリによる同じ適合と衝突し得るため、正式な解決策にはしない。
@@ -536,8 +536,8 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 - [x] Kで`erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み。2026-10-05実装・テスト済み。Setの空でのCoW回避漏れも同時に修正）
 - [x] KeyValue Range Viewの範囲外Index契約を決定（単一Indexは標準Collection同様のprecondition、Bound / range操作は入力を検査するsafe動作）
 - [ ] G: 固定した外部契約から、typealias、固有Index型等の境界表現候補を導く
-- [ ] 標準`Result`へのretroactive `Comparable`適合を正式案から除外する
-- [ ] 調査用の`SealError`情報を、Index本体から分離しても維持できることを確認する
+- [x] 標準`Result`へのretroactive `Comparable`適合を正式案から除外する（2026-10-06、未使用のDebug限定適合も削除）
+- [x] 調査用の`SealError`情報を、Index本体から分離しても維持できることを確認する（内部resolver testで確認）
 - [ ] H: 必要な境界表現候補だけ小さく試作し、比較・移動・dereferenceをRelease計測する
 - [ ] I: 採用した境界表現と不採用案、その理由をDesign文書へ記録する
 - [x] J: 外部から隠すresolver、`SealError`、診断経路をsuccess-only公開Indexへ接続する（PR #158）
@@ -548,13 +548,13 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 
 - [ ] Comparableの採否と理由が明記されている
 - [x] ResultをIndex本体に残すか、API境界へ分離するかが決まっている（分離。PR #158でsuccess-only Indexをmergeしたことで決定済みと、2026-10-06にユーザーが確認）
-- [ ] 標準型へのretroactive conformanceへ依存していない
-- [ ] stale / recycled / detached / out-of-rangeを、確保外メモリへ触れる前に処理できる
-- [ ] CoW前後の契約が4コンテナとViewで一貫している
+- [x] 標準型へのretroactive conformanceへ依存していない
+- [x] stale / recycled / detached / out-of-rangeを、確保外メモリへ触れる前に処理できる
+- [x] CoW前後の契約が4コンテナとViewで一貫している
 - [ ] 採用する`==`、`<`、`hash(into:)`の意味と計算量が矛盾しない
-- [ ] 通常の全走査と範囲走査が意図せずO(N log N)にならない
+- [x] 通常の全走査と範囲走査が意図せずO(N log N)にならない
 - [ ] Debugだけで成立する適合や検査を公開仕様の根拠にしない
-- [ ] Index表現を変更した場合もC++比較・fuzz・不変条件検査が成功する
+- [x] Index表現を変更した場合もC++比較・fuzz・不変条件検査が成功する
 
 ## Kで処理するIndex依存タスク
 

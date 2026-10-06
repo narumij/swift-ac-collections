@@ -4,14 +4,14 @@ Status: Active through 2026-10-10 JST
 
 ## Active task: independent task graph DB experiment
 
-Run the Claude-owned experiment defined by `Maintanance/TASK_GRAPH_DB_EXPERIMENT.md`. Design and
-operate only Claude's local SQLite database. Do not inspect, query, copy, infer, or document the
-Codex-owned database or its schema. Do not place Claude's schema in this handoff or another tracked
-file. The Markdown Task Registry remains authoritative; never write back to it from the database.
+Continue operating the Claude-owned experiment defined by
+`Maintanance/TASK_GRAPH_DB_EXPERIMENT.md`. Design and operate only Claude's local SQLite database.
+Do not inspect, query, copy, infer, or document the Codex-owned database or its schema. Do not place
+Claude's schema in this handoff or another tracked file. The Markdown Task Registry remains
+authoritative; never write back to it from the database.
 
-The initial acceptance criterion is only that Claude's `ready` result agrees with the current
-Registry display for the Registry tasks and mandatory precedence edges in scope. Record only the
-verdict and operational observations that do not reveal the schema. Do not begin the frozen
+Use it during ordinary task work and keep checking that its `ready` result agrees with the current
+Registry display. Record only schema-independent operational observations. Do not begin the frozen
 integration discussion.
 
 ## Standing assignment: primary user support during Codex leave
@@ -163,11 +163,30 @@ current instruction and prepare the handoff for Codex if requested.
   `IndexRange` / `IndexRangeExpression`版（`where`付き含む、計20か所）で空のときだけ`ensureUnique()`を省いた。
   空の範囲は削除ループに入らないので範囲検査はそのまま行う（`erase(_range:)`等のassertを`count == 0 ||`で緩和）。
   `_99`に「空でも他木の範囲はtrap」のDeath Testを追加。4構成ビルドと`swift test`はグリーン。
-- `GRAPH-001`初期合格（2026-10-06）: Claude DBの`ready`はRegistry表示と一致（`GRAPH-001`のみ）。
+- **Index完了ゲートの検証（2026-10-06、ユーザー指示。チェックの付け替えはCodexに依頼）:**
+  - 閉じられる: 「retroactive conformanceに依存しない」（Sourcesに`@retroactive`は0件）、主経路「`Result`の
+    retroactive `Comparable`を正式案から除外」（`d239a903`）、「`SealError`情報を分離後も維持」
+    （`RedBlackTreeInternal_PurifiedTests`が公開Indexから`.unsealed` / `.crossTree` / `.garbaged`を確認）、
+    「C++比較・fuzz・不変条件検査が成功」（現HEADで4型のFuzz＋C++比較を実行・成功）、
+    「全走査と範囲走査がO(N log N)にならない」（4型の`_1`に比較回数の仕様テストを追加: 全走査とIndex前後走査は0回、
+    範囲の作成は1回、範囲走査は0回。Releaseでも実行）、「stale / recycled / detached / out-of-range」（4型の`_3`・
+    `_98_IndexValidity`と`_99`のSIGSEGV以外で停止するDeath Test、CIのASan。Setの範囲外系は名前が異なり中身は未読）。
+  - 追加で閉じられる（2026-10-07）: 「CoW前後の一貫性」。4型の`_98_CopyOnWrite`はシナリオ1〜6と3000が揃っていた。
+    唯一の穴だった範囲Viewの`erase(where:)`のCoW（Setだけ＝KeyOnly View）を、Dictionary / MultiMap（KeyValue View）へ追加。
+  - Comparable依存だけが残る: 「Debugだけの適合を仕様の根拠にしない」は、一時無効化ビルドで違反2件を特定。
+    `RedBlackTreeMultiMap_8`のDebug限定Balanced群（`popFirst(_:)` / `popLast(_:)`）は新設の
+    `RedBlackTreeMultiMap_98_DebugOnlyAPITests.swift`へ移して解消。残る`RedBlackTreeSet_9`の`test_index_comparable`は
+    `RBT-011`しだい。「`==` / `<` / hash」も`RBT-011`依存。検証は4構成ビルドとDebug / Releaseの`swift test`で全グリーン。
+  - `RBT-011`のupstream確認（2026-10-07）: swift-collections `main`の`Container.swift`は`associatedtype Index: Equatable,
+    Comparable, Hashable`のまま。最終変更は2026-09-21 `b2424210`「Reinstate requirement for Comparable indices」で、
+    その後の変更なし。Comparableを外す検討のFIXMEも残る。外部待ちのまま。なおPR #158でIndexが独自型になったので、
+    `RED_BLACK_TREE_REMAINING_TASKS.md`の「Indexが`Result`のtypealiasなのでComparableにできない」という記述は古い（Codexへ）。
+- `GRAPH-001`初期合格・試験運用継続（2026-10-07、ユーザー確認）: Claude DBの`ready`はRegistry表示と一致
+  （初期試験時点では`GRAPH-001`のみ）。local DBを通常作業で継続利用し、統合議論まで観測を蓄積する。
   入力はRegistry 30行とprecedence 7辺、未知状態語・宙に浮いた辺・循環はいずれも0。観測: DBは毎回Registryから
   作り直すprojectionで、書き戻しなし。取り込みはRegistry表の書式（backtick付きID、状態列）に依存する。
-  `ready`は状態語と前提完了の両方で決まり、前提だけでは決まらない。ユーザー判断で完了にせず`ACTIVE`のまま
-  継続し、定期的に使って試す。改善後の観測: precedenceの「完了できる／確定できる」と「着手候補にできる」は
+  `ready`は状態語と前提完了の両方で決まり、前提だけでは決まらない。改善後の観測: precedenceの
+  「完了できる／確定できる」と「着手候補にできる」は
   意味が異なり、前者を着手の前提として扱うとACTIVEなtaskを誤ってready外にする。外部条件はRegistryにnodeが
   無いので直接は問えない。凍結21件の再開条件は文章で、graphでは判定できない。2026-10-06、ユーザーがこの会話の
   範囲で拡大解釈を許可（根拠はユーザーメモ）し、同じDBへコードの依存graph（compiler symbol graph由来）と

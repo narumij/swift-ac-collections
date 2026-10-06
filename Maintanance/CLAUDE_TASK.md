@@ -154,4 +154,8 @@ current instruction and prepare the handoff for Codex if requested.
   `ready`は状態語と前提完了の両方で決まり、前提だけでは決まらない。ユーザー判断で完了にせず`ACTIVE`のまま
   継続し、定期的に使って試す。改善後の観測: precedenceの「完了できる／確定できる」と「着手候補にできる」は
   意味が異なり、前者を着手の前提として扱うとACTIVEなtaskを誤ってready外にする。外部条件はRegistryにnodeが
-  無いので直接は問えない。凍結21件の再開条件は文章で、graphでは判定できない。
+  無いので直接は問えない。凍結21件の再開条件は文章で、graphでは判定できない。2026-10-06、ユーザーがこの会話の
+  範囲で拡大解釈を許可（根拠はユーザーメモ）し、同じDBへコードの依存graph（compiler symbol graph由来）と
+  公開しないローカルメモを追加した。symbol graphは既定構成だけを見るため、`#if`外の宣言はsource走査で補う。
+  非public protocolの`@usableFromInline`規則は既定構成104件・構成外21件とも違反0。呼び出し・参照はcompiler
+  index store由来で補った（既定構成のDebugのみ）。性能に関わる候補は列挙のみで、sourceは未変更。

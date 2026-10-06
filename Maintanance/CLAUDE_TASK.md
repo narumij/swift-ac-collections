@@ -157,6 +157,12 @@ current instruction and prepare the handoff for Codex if requested.
   `RBT-003`の再開条件「Index完了ゲート後」は、`try/index/1`（PR #158）マージ前の`Result`ベースIndexを前提にしたもので、
   マージ後は依存が消えている（ユーザー確認）。辺を削除し、再開条件を訂正し、性能ジョブがグリーンになった後に
   `RBT-003`を`DONE`にしてほしい。
+  **`RBT-002`は2026-10-06に実施済み（Registry更新はCodexに依頼）:** 2026-10-05の空でのBound範囲erase修正の漏れ
+  （当時Claudeが保留した）とユーザーが判断し、契約はdoc commentのprecondition（無効範囲はtrap）で既に決まっているので
+  Test as Specで扱った。先に4型の`_16`へ「空でCoWしない」仕様を追加して失敗を確認し、4型の`UnboundedRange` /
+  `IndexRange` / `IndexRangeExpression`版（`where`付き含む、計20か所）で空のときだけ`ensureUnique()`を省いた。
+  空の範囲は削除ループに入らないので範囲検査はそのまま行う（`erase(_range:)`等のassertを`count == 0 ||`で緩和）。
+  `_99`に「空でも他木の範囲はtrap」のDeath Testを追加。4構成ビルドと`swift test`はグリーン。
 - `GRAPH-001`初期合格（2026-10-06）: Claude DBの`ready`はRegistry表示と一致（`GRAPH-001`のみ）。
   入力はRegistry 30行とprecedence 7辺、未知状態語・宙に浮いた辺・循環はいずれも0。観測: DBは毎回Registryから
   作り直すprojectionで、書き戻しなし。取り込みはRegistry表の書式（backtick付きID、状態列）に依存する。

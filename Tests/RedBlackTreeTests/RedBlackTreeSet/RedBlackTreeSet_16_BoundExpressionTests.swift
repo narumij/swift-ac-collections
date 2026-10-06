@@ -307,6 +307,25 @@
       XCTAssertTrue(b.isEmpty)
     }
 
+    /// 空のSetに対するIndex範囲・範囲式・全範囲のeraseは、無駄なCoW(共有される空シングルトン
+    /// バッファからの退避)を発生させず、`endIndex`を返すこと。
+    func testEraseIndexRangeOnEmptySetDoesNotCopy() throws {
+      var b = RedBlackTreeSet<Int>()
+      XCTAssertEqual(b._copyCount, 0)
+      let range: RedBlackTreeIndexRange = b.equalRange(0)
+      XCTAssertEqual(b.erase(range), b.endIndex)
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(range) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertEqual(b.erase(b.startIndex..<b.endIndex), b.endIndex)
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(b.startIndex..<b.endIndex) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertEqual(b.erase(...), b.endIndex)
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertTrue(b.isEmpty)
+    }
+
     func testIsValidBoundsInvalidDoesNotCrash() throws {
       XCTAssertFalse(a.isValid(upperBound(10)..<lowerBound(-10)))
       XCTAssertTrue(a[upperBound(10)..<lowerBound(-10)].isEmpty)

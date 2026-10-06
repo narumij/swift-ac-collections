@@ -42,6 +42,21 @@
 
   struct RedBlackTreeMultiSetDeathTests {
 
+    #if !COMPATIBLE_ATCODER_2025
+      /// 空のMultiSetでも、他の木の要素を指すIndex範囲のeraseは検査で停止すること
+      /// (空のときにCoWを省いても、範囲の検査は省かない)。
+      @Test
+      func erasingForeignRangeFromEmptyMultiSet_terminatesProcess() async {
+        await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
+          let source = RedBlackTreeMultiSet(0..<8)
+          var target = RedBlackTreeMultiSet<Int>()
+          let lower = source.index(source.startIndex, offsetBy: 2)
+          let upper = source.index(source.startIndex, offsetBy: 6)
+          target.erase(lower..<upper)
+        }
+      }
+    #endif
+
     @Test
     func emptyStartIndexSubscript_terminatesProcess() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {

@@ -562,7 +562,9 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 - [x] cross-tree indexingのテストが公開契約と一致しているか再監査する（2026-10-06:
   Codexが4問を独立再確認し、focused test 18件成功。正本は
   `Archived/CROSS_TREE_INDEX_TEST_AUDIT.md`）
-- [x] eraseのrange sanitizeをすり抜ける入力に対するテストを追加する（2026-10-05: 4型で逆向き範囲と同値キーの逆向き区間を追加し、すり抜けがないことを確認。空でのBound範囲eraseの無駄なCoWを8か所修正。Index range版の空guardはIndex契約に関わるため未変更）
+- [x] eraseのrange sanitizeをすり抜ける入力に対するテストを追加する（2026-10-05: 4型で逆向き範囲と同値キーの逆向き区間を追加し、すり抜けがないことを確認。空でのBound範囲eraseの無駄なCoWを8か所修正。Index range版の空guardはIndex契約に関わるとして保留したが、2026-10-06にユーザー判断でTest as Spec案件として実施:
+  4型の`UnboundedRange` / `IndexRange` / `IndexRangeExpression`版（`where`付き含む）で空のときだけ`ensureUnique()`を省き、
+  範囲検査は維持。空でCoWしない仕様と、空でも他木の範囲でtrapするDeath Testを追加）
 - [x] MultiMapで確認されたaccessorのcompiler不具合と同種の問題がないか、`unsafeAddress` /
   `unsafeMutableAddress` accessorを使用する他の箇所をReleaseビルドで横断確認する。MultiMap自身は
   通常`get`へ退避済みであり、対象は内部の`_unsafeAddress`関数呼び出しではなくSwift accessor宣言である

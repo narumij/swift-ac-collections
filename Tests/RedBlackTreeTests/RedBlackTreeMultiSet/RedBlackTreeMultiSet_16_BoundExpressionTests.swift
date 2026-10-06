@@ -129,6 +129,25 @@
       XCTAssertTrue(b.isEmpty)
     }
 
+    /// 空のMultiSetに対するIndex範囲・範囲式・全範囲のeraseは、無駄なCoW(共有される空シングルトン
+    /// バッファからの退避)を発生させず、`endIndex`を返すこと。
+    func testEraseIndexRangeOnEmptyMultiSetDoesNotCopy() throws {
+      var b = RedBlackTreeMultiSet<Int>()
+      XCTAssertEqual(b._copyCount, 0)
+      let range: RedBlackTreeIndexRange = b.equalRange(0)
+      XCTAssertEqual(b.erase(range), b.endIndex)
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(range) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertEqual(b.erase(b.startIndex..<b.endIndex), b.endIndex)
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      b.erase(b.startIndex..<b.endIndex) { _ in true }
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertEqual(b.erase(...), b.endIndex)
+      XCTAssertEqual(b._copyCount, 0, "空の削除はバッファのコピーを発生させないはず")
+      XCTAssertTrue(b.isEmpty)
+    }
+
     func testLessThanAndOrEqualMulti() throws {
       let b = RedBlackTreeMultiSet<Int>([0, 1, 1, 2])
 

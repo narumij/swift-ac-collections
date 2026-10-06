@@ -2,6 +2,18 @@
 
 Status: Active through 2026-10-10 JST
 
+## Active task: independent task graph DB experiment
+
+Run the Claude-owned experiment defined by `Maintanance/TASK_GRAPH_DB_EXPERIMENT.md`. Design and
+operate only Claude's local SQLite database. Do not inspect, query, copy, infer, or document the
+Codex-owned database or its schema. Do not place Claude's schema in this handoff or another tracked
+file. The Markdown Task Registry remains authoritative; never write back to it from the database.
+
+The initial acceptance criterion is only that Claude's `ready` result agrees with the current
+Registry display for the Registry tasks and mandatory precedence edges in scope. Record only the
+verdict and operational observations that do not reveal the schema. Do not begin the frozen
+integration discussion.
+
 ## Standing assignment: primary user support during Codex leave
 
 From now through 2026-10-10 JST, act as the primary repository assistant for the user while Codex

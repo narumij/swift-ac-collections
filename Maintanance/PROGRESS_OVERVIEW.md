@@ -28,7 +28,10 @@ Index契約とそれに関わる残taskは、この外部条件が安定する�
 | `RBT-010` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲートのうち公開Index表現と完了範囲 | Container要件の安定後、公開Indexと内部`SealError`の分離、1.0での完了範囲を決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-002` | `WAITING_EXTERNAL` | User / Codex | Index-range `erase`の空guard | Index契約の確定後に、無効範囲検査と不要なCoW回避の契約を決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `DOC-001` | `ACTIVE` | Codex | P10残存記述確認 | Index統合前の表現が残る箇所を確認し、必要箇所だけ同期 | `MAINTENANCE.md` |
+| `DOC-001` | `DONE` | Codex / Claude | P10残存記述確認 | 2026-10-06、監査と必要箇所の同期を完了（`9b0f42d5`） | `MAINTENANCE.md` |
+| `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認 | `TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-002` | `FROZEN` | Codex | Codex用task graph DBの独立試験 | Codexのcontext reset後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-003` | `FROZEN` | User / Codex / Claude | 二つのtask graph DBの統合議論 | 両試験の完了後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `RBT-003` | `FROZEN` | Codex | `Result`のpublic比較overloadとpublic `_NodePtr` | Index完了ゲート後、ユーザーが明示的に再開 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
@@ -64,6 +67,8 @@ Task Registryの状態は、通常の再開判断に使う計算済みの表示�
 | `RBT-003` `Result`のpublic比較overloadとpublic `_NodePtr` | `RBT-001` Index完了ゲート | 前提taskの完了後に着手候補にできる |
 | `RBT-002` Index-range `erase`の空guard | `RBT-001` Index完了ゲート | 前提taskの完了後に契約を確定できる |
 | `QUALITY-001` 1.0採用品質ゲート | `RBT-001` Index完了ゲート | 前提taskの完了後に着手候補にできる |
+| `GRAPH-003` task graph DB統合議論 | `GRAPH-001` Claude独立試験 | 前提taskの完了後に着手候補にできる |
+| `GRAPH-003` task graph DB統合議論 | `GRAPH-002` Codex独立試験 | 前提taskの完了後に着手候補にできる |
 
 ここには必須のAND前提だけを記録する。外部条件は各taskの状態と再開・完了条件、選択肢や
 OR条件は詳細正本で扱う。必須前提が増えた場合は辺を追加し、循環が生じる場合はtask境界または

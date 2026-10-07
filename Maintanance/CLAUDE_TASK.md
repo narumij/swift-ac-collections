@@ -144,6 +144,8 @@ current instruction and prepare the handoff for Codex if requested.
   LinuxのCIと性能jobはpush後に確認。
 - push: `develop/misc/50`は`39360dd8`以降が未push。`4eae63f9`でPermutationのheader二重破棄を修正し、
   共有中の終端で無駄なコピーをしないよう`next()`を変更。後者の性能確認は、ユーザー判断で`PERM-013`のチューニング時に行う。
+- `RBT-012`: ユーザー指示で前倒し実施（2026-10-07）。4型の値セマンティクス仕様に、両側をassertion内で変更するテストを追加。
+  Permutationでは同じ形が今もReleaseで赤だが、赤黒木はRelease/Debugとも緑で再現せず、テストは有効のまま残した。Registryの更新はCodex。
 - `RBT-008`: 現状コード（`lazyDetach` / `tiedRawBuffer`の遅延生成と`@unchecked Sendable`による初回並行アクセスの競合）と
   TODO記載の3案を提示し、ユーザー判断で不採用（Codexも以前に不採用）。超ホットパスなので、再提案は性能試験の結果を添えて
   判断が冴えているときに行う。完了条件は「ユーザーが納得できるコードの提示」。

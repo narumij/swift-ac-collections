@@ -68,4 +68,19 @@ final class RedBlackTreeSetValueSemanticsTests: RedBlackTreeTestCase {
       DeinitializeCounter.count, 0,
       "両コピーが破棄された後、共有されていた要素(削除済みの0を含む)も全て解放されていること")
   }
+
+  /// コピーした後、元の側とコピーの側をそれぞれクロージャの中で変更しても、互いに影響しないこと
+  func test_copyOnWrite_mutatingInsideClosuresKeepsCopiesIndependent() {
+    var original: RedBlackTreeSet = [1, 2, 3]
+    _ = original.insert(0)
+    var copy = original
+
+    // 変更はassertionの@autoclosureの中で行う。Swift 6.4の`-O`では、この形でCoWが壊れる型が
+    // あった(`NextPermutationsSequence`、2026-10-07)。赤黒木では再現しなかった
+    XCTAssertTrue(original.insert(99).inserted)
+    XCTAssertTrue(copy.insert(99).inserted)
+
+    XCTAssertEqual(Array(original), [0, 1, 2, 3, 99])
+    XCTAssertEqual(Array(copy), [0, 1, 2, 3, 99])
+  }
 }

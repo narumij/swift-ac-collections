@@ -142,7 +142,8 @@ current instruction and prepare the handoff for Codex if requested.
   走査比較回数・KeyValue View CoWの仕様テスト追加とDebug限定APIテストの`_98`移動。
 - 検証: 上記はいずれも通常／互換×Debug／Releaseのビルドと`swift test`（Debug、最後はReleaseも）で成功。
   LinuxのCIと性能jobはpush後に確認。
-- push: `develop/misc/50`は`39360dd8`（graph DB交流taskへの置き換え）の1件だけ未push。
+- push: `develop/misc/50`は`39360dd8`以降が未push。`4eae63f9`でPermutationのheader二重破棄を修正し、
+  共有中の終端で無駄なコピーをしないよう`next()`を変更。後者の性能確認は、ユーザー判断で`PERM-013`のチューニング時に行う。
 - `RBT-008`: 現状コード（`lazyDetach` / `tiedRawBuffer`の遅延生成と`@unchecked Sendable`による初回並行アクセスの競合）と
   TODO記載の3案を提示し、ユーザー判断で不採用（Codexも以前に不採用）。超ホットパスなので、再提案は性能試験の結果を添えて
   判断が冴えているときに行う。完了条件は「ユーザーが納得できるコードの提示」。

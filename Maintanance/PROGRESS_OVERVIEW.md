@@ -111,6 +111,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `PERM-018` | `DONE` | Claude | [EXECUTION] swift-algorithms同時import時のPermutation名前衝突test | 2026-10-07、両moduleの同時import、名前解決、successor列と全順列の使い分けを仕様testで固定（`0ff5fd84`） | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-019` | `EXCLUDED` | — | [EXECUTION] 利用者向けPermutation使用例の仕様test化 | 2026-10-08、使用例の選定は利用者向け文書作業そのものとして文書フェーズへ移し、独立taskから除外 | `Tests/PermutationTests/NextPermutationsSequence/` |
+| `PERM-020` | `ACTIVE` | Claude | [DISCOVERY] Permutation公開API・コメントledger | `Permutations.swift`のpublic宣言を型・member・制約・source位置・コメント有無へ全件対応し、件数を再集計 | `PermutationModule/DocumentationHandoffAudit.md` |
+| `PERM-021` | `ACTIVE` | Claude | [DISCOVERY] Permutation公開契約と仕様testの対応表 | 番号付きtestが固定する列挙順、境界、値セマンティクス、collection、共存契約と未検証事項を表化 | `PermutationModule/DocumentationHandoffAudit.md` |
+| `PERM-022` | `ACTIVE` | Claude | [DISCOVERY] Permutation名称・契約履歴ledger | 現行3公開型、削除済みAPI、通常版と互換modeについて決定済み・履歴事実・未決定を分離 | `PermutationModule/DocumentationHandoffAudit.md` |
+| `PERM-023` | `FROZEN` | Codex | [EXECUTION] Permutationユーザードキュメント作業への引き渡し判定 | `PERM-017`と`PERM-020`〜`PERM-022`後、公開面、test根拠、履歴、品質評価、文書作業で残す判断を検収 | `PermutationModule/DocumentationHandoffAudit.md` |
 | `RBT-016` | `EXCLUDED` | — | `RedBlackTreePair.tuple`の仕様test | 2026-10-07、型全体がdocumentation上internalで公開仕様testは不要。graphのspec-gap検出を修正して0件を確認 | `Tests/RedBlackTreeTests/` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
@@ -186,6 +190,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `RBT-001` | 前提taskの完了後に着手候補にできる |
 | `QUALITY-001` | `RBT-009` | runtime-check実装の1.0採否を再審査した後に品質ゲートを判断する |
 | `PERM-017` | `PERM-016` | 品質評価の事実更新後にreviewする |
+| `PERM-023` | `PERM-017` | 品質評価review後に文書作業への引き渡しを判定する |
+| `PERM-023` | `PERM-020` | 公開API ledgerをCodexが検収後、引き渡しを判定する |
+| `PERM-023` | `PERM-021` | test evidence matrixをCodexが検収後、引き渡しを判定する |
+| `PERM-023` | `PERM-022` | 名称・契約履歴ledgerをCodexが検収後、引き渡しを判定する |
 | `RBT-014` | `RBT-013` | TODO/FIXMEの文書影響を分類後にoutlineを照合する |
 | `RBT-026` | `RBT-014` | outlineのAPI照合後、利用者向け文書作業フェーズで契約を再判断する |
 | `PERM-014` | `PERM-003` | 現行契約の基準固定後に手順を決定できる |

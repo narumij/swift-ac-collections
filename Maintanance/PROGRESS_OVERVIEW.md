@@ -18,6 +18,7 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 - Permutationを、Codexのユーザードキュメント作業フェーズへ渡せる状態にする。
 - RedBlackTreeに見えていない残作業がないかを確認し、Codexのユーザードキュメント作業フェーズへ
   渡せる状態にする。
+- BareArrayを、Codexのユーザードキュメント作業フェーズへ渡せる状態にする。
 - Claudeへ渡すtask出しを、「一つのtaskに一つのユーザー判断、またはユーザー判断なし」まで
   分解できる状態にする。
 
@@ -25,6 +26,8 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 - ユーザードキュメント作業後、RedBlackTreeを汎用基盤ライブラリの1.0として採用できるか判断可能な
   状態にする。この段階でruntime-check実装を再審査し、その結論とIndex契約を1.0品質ゲートへ渡す。
+- ユーザードキュメント作業後、BareArrayを1.0として採用できるか判断可能な状態にする。
+  この段階で性能基準と計測、および`ARRAY-001`が扱うView寿命とstrict memory safetyを審査する。
 
 中間ゴールは、複数taskをまたぐ現在の到達点をカンバン上で共有し、着手可能なtaskから何を優先するかを
 判断するために使う。taskそのものではないためIDや状態は持たず、Task Registryの状態、担当、依存、
@@ -113,7 +116,13 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-009` | `FROZEN` | Codex | AtCoder単一file生成とローカル検証 | 互換版から自己完結fileを生成し、ABC328E相当入力で検証 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-010` | `FROZEN` | Codex | Permutation互換mode文書同期 | 通常APIと互換APIを混同せず、trait・制限・検証方法を文書化 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `OPT-001` | `FROZEN` | Codex | OptionalArrayの体系監査・名称再検討 | ユーザーが明示的に再開 | `Tests/TESTING.md` |
-| `BARE-001` | `FROZEN` | Codex | BareArrayの体系監査・名称再検討 | ユーザーが明示的に再開 | `Tests/TESTING.md` |
+| `BARE-001` | `ACTIVE` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-002`〜`BARE-005`を閉じ、Codexのユーザードキュメント作業フェーズへ渡せる状態にする | `Tests/TESTING.md` |
+| `BARE-002` | `ACTIVE` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 公開宣言ごとの境界・寿命・破棄契約を既存test・git履歴・OptionalArrayとの対応に照らし、過去の決定と新しい判断候補を報告 | `Tests/TESTING.md` |
+| `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |
+| `BARE-004` | `FROZEN` | User | [DECISION] BareArray公開型・次元名の命名体系 | `BARE-003`後、型名、View名、次元property名とOptionalArray1Dとの整合について一つの命名体系を判断 | `Tests/TESTING.md` |
+| `BARE-005` | `FROZEN` | Claude | [EXECUTION] BareArrayModuleTestsのTest as Specification整理 | `BARE-002`後、既存testを番号付きTest as Specificationへ整理。コメントドック全件整備は含めない | `Tests/TESTING.md` |
+| `BARE-006` | `FROZEN` | User / Codex | [DECISION] BareArray 1.0の性能基準 | ユーザードキュメント作業後、低レベル部品としての存在理由を評価できる性能基準と計測方法を一つの基準として決定 | `Tests/TESTING.md` |
+| `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray 1.0の性能計測 | `BARE-006`で決めた基準と方法に従って計測し、1.0判断へ渡す | `Tests/TESTING.md` |
 | `ARRAY-001` | `FROZEN` | User / Codex | BareArray／OptionalArrayのstorage再設計とstrict恒久適用 | 公開unsafe境界を決定して再開 | `StrictMemorySafetyReadiness.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `BENCH-001` | `FROZEN` | Codex | SortedCollectionsとのpublishableな大規模比較 | ユーザーが明示的に再開 | `Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md` |
@@ -150,6 +159,14 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-010` | `PERM-008` | 前提taskの完了後に着手できる |
 | `PERM-010` | `PERM-009` | 前提taskの完了後に着手できる |
 | `PERM-001` | `PERM-010` | 前提taskの完了後に後続taskを完了できる |
+| `BARE-003` | `BARE-002` | 棚卸しで位置づけが未決定と判明した場合だけ判断する |
+| `BARE-004` | `BARE-003` | BareArrayを公開継続する判断後に命名体系を決定する |
+| `BARE-005` | `BARE-002` | 契約棚卸し後に既存testを仕様単位へ整理する |
+| `BARE-007` | `BARE-006` | 性能基準と計測方法の決定後に計測する |
+| `BARE-001` | `BARE-002` | 公開契約の棚卸しを親taskの完了条件とする |
+| `BARE-001` | `BARE-003` | 未決定だった場合の位置づけ判断を親taskの完了条件とする |
+| `BARE-001` | `BARE-004` | 公開継続時の命名判断を親taskの完了条件とする |
+| `BARE-001` | `BARE-005` | Test as Specification整理を親taskの完了条件とする |
 
 ## Registry rules
 

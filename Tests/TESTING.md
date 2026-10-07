@@ -61,6 +61,25 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   所有型・View型のpointer initializerと添字境界も整理して、一意な診断を
   約64→54→38→28→22へ削減した。残りは公開7型を`@unsafe`にするAPI判断とallocate。
   公開API全体へunsafeを伝播させる変更は採らず、storage再設計までstrict恒久適用を保留する。
+
+### BareArray体系監査
+
+現在の到達点は、BareArrayをCodexのユーザードキュメント作業フェーズへ渡せる状態にすることである。
+親taskの範囲は次の4件とし、コメントドックの全件整備はユーザードキュメント作業そのものとして含めない。
+
+1. Claudeが、所有型`BareArray` / 2D / 3D / 4DとView 1D〜3Dの公開7型について、公開宣言ごとの
+   境界・寿命・破棄契約を既存test、git履歴、OptionalArrayとの対応に照らして棚卸しする。
+   過去の決定の有無を確認し、新しい判断点は`DECISION`候補として報告する。
+2. 1の結果で未決定なら、ユーザーが競技プログラミング用の低レベル部品として公開を続けるか判断する。
+3. 公開継続の判断後、ユーザーが`BareArray` / `BareArray1DView`の不揃い、2D・3Dの
+   `width` / `height` / `depth`と4Dの`size0`〜`size3`、`OptionalArray1D`との整合を含む
+   命名体系を判断する。
+4. 1の完了後、Claudeが`BareArrayModuleTests`を番号付きTest as Specificationへ整理する。
+
+ユーザードキュメント作業後の後続中間ゴールでは、BareArrayを1.0として採用可能か判断できる状態を作る。
+その段階まで性能基準と計測は凍結し、Viewが所有者より長く生きて解放済みメモリを指し得る寿命問題と
+strict memory safetyの恒久適用は`ARRAY-001`のstorage再設計論点として着手しない。
+
 - AcCollections: RedBlackTreeCollections、PermutationModule、OptionalArrayModule、
   BareArrayModuleの再公開テストを追加済み。互換modeでは旧名RedBlackTreeModuleも再公開する。
   別テストターゲットでもRedBlackTreeのDebug寿命カウンタを各テスト後に検査・初期化する。
@@ -139,7 +158,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   `DebugAdditionals/UnsafeTreeV2+Debug/_LazyTieWrappedPtr+Retired.swift`へ待避した。
   4構成ビルドとDebug / Releaseの`swift test`は成功。LinuxのCIはpush後に確認する。
 
-最終更新: 2026-10-07 01:40 JST / Claude Opus 5.5
+最終更新: 2026-10-08 / Codex
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

@@ -417,6 +417,21 @@ test-first: 修正前に追加testを走らせ、次の失敗を確認した。
 `size0 * size1`がoverflowするなら全体の積もoverflowしてinitで拒否されるので起きない（机上。実行はしていない）。
 修正するかどうかはCodexが判断する。
 
+### Codex intakeとOPT-034 assignment（2026-10-08）
+
+`OPT-033`の次元検査、zero成功test、負値・overflow Death Test、Debug／Release結果は範囲内の成果として
+checkpointへ保存した。ただし、報告された4D zero-volumeの外側subscript defectは、zero dimensionを
+有効な空配列とする決定済み契約に反するため、`OPT-033`はまだ完了としない。
+
+担当: Claude。`OptionalArray4D.subscript`だけを対象に、`size0`、`size1`、`size2`のいずれかが0なら
+途中の次元積を評価せずoffset 0の空`OptionalArray3DView`を返せるようにする。すべて非zeroの場合は、
+initializerで全次元積が表現可能と確認済みであることを前提に現行offsetを維持する。
+
+少なくとも、`size3 > 0`で内側各軸が0の3形状を外側subscriptで辿り、返るViewの`indices`が空になる
+仕様testを追加する。`Int.max`と別の非zero次元を組み合わせ、修正前の途中積overflowを再現する形を
+1件含める。型名、次元契約、initializer、他のsubscript、storage、BareArrayを変更しない。
+Debug／ReleaseのOptionalArray testを実行し、新しいdefectを見つけた場合は範囲を広げず報告して停止する。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

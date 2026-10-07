@@ -66,7 +66,7 @@ final class NextPermutationsSequence_1_EnumerationTests: XCTestCase {
   }
 
   func testAcceptsNonArrayIntIndexedSources() throws {
-    // Index == Int の任意のCollectionを入力にでき、元の並びから列挙する。
+    // Array以外のCollectionも入力にでき、元の並びから列挙する。
     XCTAssertEqual(
       (1..<4).nextPermutations().map { Array($0) },
       [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
@@ -76,6 +76,13 @@ final class NextPermutationsSequence_1_EnumerationTests: XCTestCase {
     XCTAssertEqual(
       slice.nextPermutations().map { Array($0) },
       [[3, 1, 2], [3, 2, 1]])
+  }
+
+  func testAcceptsNonIntIndexedSources() throws {
+    // 要素はbufferへコピーしてから並べ替えるので、入力の添字型は問わない(2026-10-07から)。
+    XCTAssertEqual(
+      "bac".nextPermutations().map { String($0) },
+      ["bac", "bca", "cab", "cba"])
   }
 
   func testSourceIsNotModified() throws {

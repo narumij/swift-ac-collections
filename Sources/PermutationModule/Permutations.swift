@@ -1,4 +1,4 @@
-extension Collection where Index == Int {
+extension Collection {
 
   /// Yields the current element order, then its lexicographic successors one at a time.
   ///
@@ -25,7 +25,7 @@ extension Collection where Index == Int {
 
 /// The sequence returned by `nextPermutations()`.
 public struct NextPermutationsSequence<Base>: Sequence
-where Base: Collection, Base.Index == Int, Base.Element: Comparable {
+where Base: Collection, Base.Element: Comparable {
   @usableFromInline
   let base: Base
 
@@ -48,13 +48,13 @@ extension NextPermutationsSequence {
   {
     @inlinable
     internal init(
-      elementBuffer: Buffer<Base.Element>
+      elementBuffer: Buffer
     ) {
       self.elementBuffer = elementBuffer
     }
 
     @usableFromInline
-    var elementBuffer: Buffer<Base.Element>
+    var elementBuffer: Buffer
     @usableFromInline
     var start = true
     @usableFromInline
@@ -87,29 +87,26 @@ extension NextPermutationsSequence: Sendable where Base: Sendable {}
 // detaches whenever another iterator or a yielded `Permutation` shares storage.
 extension NextPermutationsSequence.Iterator: @unchecked Sendable where Base.Element: Sendable {}
 
+/// The header of `NextPermutationsSequence.Buffer`. It does not depend on `Base`, so it is not
+/// nested in the generic sequence type.
+@usableFromInline
+struct NextPermutationsBufferHeader {
+  @usableFromInline
+  internal init(count: Int) {
+    self.count = count
+  }
+  @usableFromInline
+  var count: Int
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    @usableFromInline
+    var copyCount: UInt = 0
+  #endif
+}
+
 extension NextPermutationsSequence {
 
   @usableFromInline
-  struct Header {
-    @usableFromInline
-    internal init(capacity: Int, count: Int) {
-      self.capacity = capacity
-      self.count = count
-    }
-    @usableFromInline
-    var capacity: Int
-    @usableFromInline
-    var count: Int
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      @usableFromInline
-      var copyCount: UInt = 0
-    #endif
-  }
-
-  @usableFromInline
-  final class Buffer<Element>: ManagedBuffer<Header, Element> {
-
-    public typealias Element = Element
+  final class Buffer: ManagedBuffer<NextPermutationsBufferHeader, Base.Element> {
 
     @inlinable
     deinit {
@@ -127,17 +124,17 @@ extension NextPermutationsSequence {
   {
     @inlinable
     internal init(
-      elementBuffer: Buffer<Base.Element>
+      elementBuffer: Buffer
     ) {
       self.elementBuffer = elementBuffer
     }
     @usableFromInline
-    let elementBuffer: Buffer<Base.Element>
+    let elementBuffer: Buffer
   }
 
 }
 
-// A yielded subsequence only reads its buffer. Any iterator that still shares
+// A yielded permutation only reads its buffer. Any iterator that still shares
 // that buffer detaches before its next mutation, so an existing value is stable.
 extension NextPermutationsSequence.Permutation: @unchecked Sendable where Base.Element: Sendable {}
 
@@ -163,6 +160,9 @@ extension NextPermutationsSequence.Permutation: RandomAccessCollection {
 }
 
 extension NextPermutationsSequence.Buffer {
+
+  @usableFromInline
+  typealias Element = Base.Element
 
   @inlinable
   @unsafe var __storage_ptr: UnsafeMutablePointer<Element> {
@@ -203,60 +203,34 @@ extension NextPermutationsSequence.Buffer {
 
 extension NextPermutationsSequence.Buffer {
 
+  /// Creates a buffer whose header records `count` initialized elements. The caller must
+  /// initialize exactly that many elements before the buffer is used.
   @inlinable
-  internal static func create(
-    withCapacity capacity: Int
-  ) -> Self {
-    let storage = NextPermutationsSequence.Buffer<Element>.create(minimumCapacity: capacity) { _ in
-      NextPermutationsSequence.Header(capacity: capacity, count: 0)
+  internal static func create(count: Int) -> NextPermutationsSequence.Buffer {
+    let storage = NextPermutationsSequence.Buffer.create(minimumCapacity: count) { _ in
+      NextPermutationsBufferHeader(count: count)
     }
-    return unsafe unsafeDowncast(storage, to: Self.self)
+    return unsafe unsafeDowncast(storage, to: NextPermutationsSequence.Buffer.self)
   }
 
   @inlinable
-  internal func copy(newCapacity: Int? = nil) -> NextPermutationsSequence.Buffer<Element> {
-
-    let capacity = newCapacity ?? self.header.capacity
-    let count = self.header.count
-    precondition(capacity >= count, "Capacity must accommodate initialized elements")
+  internal func copy() -> NextPermutationsSequence.Buffer {
+    let count = header.count
+    let newStorage = NextPermutationsSequence.Buffer.create(count: count)
     #if AC_COLLECTIONS_INTERNAL_CHECKS
-      let copyCount = self.header.copyCount
+      newStorage.header.copyCount = header.copyCount &+ 1
     #endif
-
-    let newStorage = NextPermutationsSequence.Buffer<Element>.create(withCapacity: capacity)
-
-    newStorage.header.capacity = capacity
-    newStorage.header.count = count
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      newStorage.header.copyCount = copyCount &+ 1
-    #endif
-
     unsafe self.withUnsafeMutablePointerToElements { oldElements in
       unsafe newStorage.withUnsafeMutablePointerToElements { newElements in
         unsafe newElements.initialize(from: oldElements, count: count)
       }
     }
-
     return newStorage
   }
-}
-
-extension NextPermutationsSequence.Buffer {
 
   @inlinable
-  static func prepare<CC>(source: CC) -> NextPermutationsSequence.Buffer<Element>
-  where CC: Collection, CC.Element == Element {
-
-    let capacity = source.count
-    let count = source.count
-
-    let newStorage = NextPermutationsSequence.Buffer<Element>.create(withCapacity: capacity)
-    newStorage.header.capacity = capacity
-    newStorage.header.count = count
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      newStorage.header.copyCount = 0
-    #endif
-
+  static func prepare(source: Base) -> NextPermutationsSequence.Buffer {
+    let newStorage = NextPermutationsSequence.Buffer.create(count: source.count)
     unsafe newStorage.withUnsafeMutablePointerToElements { newElements in
       source.enumerated().forEach { i, v in
         unsafe (newElements + i).initialize(to: v)
@@ -270,12 +244,10 @@ extension NextPermutationsSequence.Buffer where Element: Comparable {
 
   // オリジナルはhttps://github.com/apple/swift-algorithms/blob/main/Sources/Algorithms/Permutations.swift
   @inlinable
-  internal func nextPermutation(upperBound: Index? = nil) -> Bool {
+  internal func nextPermutation() -> Bool {
     guard !isEmpty else { return false }
     var i = index(before: endIndex)
     if i == startIndex { return false }
-
-    let upperBound = upperBound ?? endIndex
 
     while true {
       let ip1 = i
@@ -285,12 +257,7 @@ extension NextPermutationsSequence.Buffer where Element: Comparable {
         let j = lastIndex { self[i] < $0 }!
         swapAt(i, j)
         reverse(subrange: ip1..<endIndex)
-        if i < upperBound {
-          return true
-        } else {
-          i = index(before: endIndex)
-          continue
-        }
+        return true
       }
 
       if i == startIndex {

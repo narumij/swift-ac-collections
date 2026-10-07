@@ -55,7 +55,7 @@ Permutationの計測は入っていない。2026-10-07の`@inline(__always)`27�
 
 | 副特性 | 判定 | 根拠 |
 | --- | --- | --- |
-| 共存性 | 部分 | swift-algorithms 1.2.1の型名（`PermutationsSequence`・`UniquePermutationsSequence`）と衝突しないことは目視で確認した。両方をimportし、修飾なしで両APIを解決するtestを`_4_CoexistenceTests`に追加済み（`0ff5fd84`、`PERM-018`） |
+| 共存性 | 満たす | 通常版はswift-algorithms 1.2.1と同時importし、修飾なしで両APIを解決するtestを`_4_CoexistenceTests`に追加済み（`0ff5fd84`、`PERM-018`）。未実装で凍結中の互換modeは現行通常版の評価へ含めない |
 | 相互運用性 | 満たす | `Sequence`・`IteratorProtocol`・`RandomAccessCollection`へ適合し、標準の`map`や`Array(_:)`で使える（`_1_`〜`_3_`）。`Permutation`は`Equatable`・`Hashable`（要素が`Hashable`のとき）で、`Set`や辞書のキーにできる（`_3_`）。結果の添字は入力に関係なく0始まりの`Int`（`_3_`の`testIndicesStartAtZeroForAnySource`）。`AcCollections`経由の再公開は`AcCollectionsTests.test_importAcCollections_exposesNextPermutations` |
 
 ### 3.4 インタラクション能力（Interaction capability。旧: 使用性）
@@ -134,8 +134,8 @@ Releaseでの停止は2026-10-03にローカルのmacOSで5件とも確認した
 
 ## 5. 判定の要約
 
-- 満たす: 機能完全性、機能適切性、相互運用性、運用操作性、ユーザーエラー防止性、保守性の全副特性、適応性、設置性
-- 部分: 機能正確性、時間効率性、資源効率性、共存性、適切度認識性、習得性、自己記述性、成熟性、完全性、置換性
+- 満たす: 機能完全性、機能適切性、共存性、相互運用性、運用操作性、ユーザーエラー防止性、保守性の全副特性、適応性、設置性
+- 部分: 機能正確性、時間効率性、資源効率性、適切度認識性、習得性、自己記述性、成熟性、完全性、置換性
 - 未評価: 利用時の品質
 
 ## 6. Codexへのレビュー依頼
@@ -235,3 +235,20 @@ Codex acceptance（2026-10-08）: 指定された3点だけが照合結果へ同
 `満たす` / `部分`の評価、必要な追加test、互換modeの再開、文書境界を決めない。source、test、CI、
 本文の評価語を変更しない。新しいdefectまたは判断点を見つけた場合は根拠を記録して停止する。
 成果物は本節の直後へ追記し、Codexが共存性の評価を決める入力にする。
+
+### PERM-026 共存性の検証範囲
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `d66bf0f1`。既存testと`Package.swift`の読み取りだけで、test・構成は変更していない。
+
+| 対象 | 構成 | 根拠test | 確認できる事実 | 未検証事項 |
+| --- | --- | --- | --- | --- |
+| 通常版`PermutationModule`とswift-algorithmsの同時import | 通常mode。`PermutationTests`は`Algorithms`へ依存（`Package.swift:322-324`）。CIはLinuxのDebug / Release（`swift.yml:79-100`） | `NextPermutationsSequence_4_CoexistenceTests.swift:16,23`（`0ff5fd84`） | `nextPermutations()`と`permutations()`が修飾なしで解決する。型注釈で`NextPermutationsSequence<[Int]>`と`PermutationsSequence<[Int]>`を書ける。後続だけと全順列の違い | `uniquePermutations()` / `UniquePermutationsSequence`と、`permutations(ofCount:)`・範囲版overloadは参照していない。名前が異なるので衝突の可能性は低いが、testでは固定されていない。swift-algorithmsの版は1.2.1（`Package.resolved`）だけ |
+| swift-algorithms側の`nextPermutation` | 同上 | なし | swift-algorithms 1.2.1の`nextPermutation(upperBound:)`は`internal`（`.build/checkouts/swift-algorithms/Sources/Algorithms/Permutations.swift:32`）なので、公開名としては衝突しない | upstreamが将来これを公開した場合の衝突は、F4では検出されない（現行のF4は`nextPermutations`（複数形）と`permutations`しか呼ばない） |
+| `AcCollections`経由の再公開 | 通常mode。`AcCollections`は`PermutationModule`を無条件に`@_exported`（`Sources/AcCollections/AcCollections.swift:2`）。`AcCollectionsTests`は`Algorithms`へ依存しない（`Package.swift:198-202`） | `Tests/AcCollectionsTests/AcCollectionsTests.swift:72`（`test_importAcCollections_exposesNextPermutations`） | `import AcCollections`だけで`nextPermutations()`を呼べ、結果が`[[1, 2], [2, 1]]` | `import AcCollections`と`import Algorithms`の同時importは未検証。facadeはRedBlackTree・OptionalArray・BareArrayも再公開するので、その組み合わせでの名前解決も固定されていない |
+| AtCoder 2025互換mode（`COMPATIBLE_ATCODER_2025`） | 互換modeの実装は未着手（`PERM-004`〜`PERM-010` FROZEN）。facadeは互換modeでだけ`RedBlackTreeModule`も再公開（`AcCollections.swift:6-8`） | なし。F0の非露出検査は互換modeで外れる（`_0_PublicSurfaceTests.swift:44`） | 互換modeのPermutationは、現行の通常版と同じsourceのまま（Permutation用の分岐はまだ無い） | 互換版（旧名`Permutations.*`、`unsafePermutations()`）とswift-algorithmsの同時import、互換版の`AcCollections`経由の利用は、実装後でなければ検証できない |
+
+停止事項: なし。新しいdefectと判断点は見つからなかった。
+
+Codex review（2026-10-08）: `PERM-026`を受け入れた。現行通常版については、直接依存する
+swift-algorithmsとの同時import・主要入口の名前解決が仕様testで固定されているため、共存性を
+`満たす`へ更新した。未実装で凍結中の互換modeと、将来のupstream変更は現行通常版の不足へ数えない。

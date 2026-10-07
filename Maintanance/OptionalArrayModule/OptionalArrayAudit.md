@@ -225,6 +225,27 @@ Codex acceptance（2026-10-08）: 2点だけが証拠表どおりに補正され
 検索で見つかった場合だけ確認し、広い再構築を行わない。source、test、本文の既存結論を変更しない。
 新しい判断点は結論を埋めず根拠だけを記録し、Codexへ返す。
 
+### OPT-027 判断候補の決定来歴
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `d66bf0f1`。検索範囲は共通で、`git log -S`（Sources）、
+全branchのcommit message（`--grep`）、`Maintanance/`のArchived以外のMarkdown、`Tests/TESTING.md`、`README.md`。
+Archivedは検索で具体的な参照が見つかった`PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`だけを開いた。
+OptionalArray関係のcommit messageは、2026-06の4件がすべて「bare, optional」「memo」「refactoring」で、本文が無い。
+
+| 候補 | 検索範囲（共通以外） | 発見した記録 | 区分 |
+| --- | --- | --- | --- |
+| 競技プログラミング用の低レベル公開部品としての位置づけ | sourceの冒頭コメントとdoc comment | `OptinalArray.swift:12-13`の「コピペで提出に使っていただいて構いません。提出の際のライセンス記載は不要です」（`40d09031`、2026-06-08から）。型のdoc commentは「メモ化用配列」（`6fd45542`から）。EDPC-J / EDPC-Lの利用例（`55d19905`）。`README.md`にはOptionalArrayの記載が無い。facadeは2026-10-05から無条件に再公開（`d421972b`、`AcCollections.swift:3`） | 実装事実のみ（用途を示すコメントと利用例はあるが、公開部品として維持するという決定の記録は無い） |
+| `OptionalArray1D`の型名（BareArrayの1D所有型は`BareArray`） | `-S"OptionalArray1D"`、`-S"BareArray1D"` | 導入の`6fd45542`（2026-06-07）から`OptionalArray1D`。BareArrayは同じcommitから1D所有型が`BareArray`で、`BareArray1D`という所有型の記録は無い（`BareArray1D`の検索に当たるのは`1b461564`以降の`BareArray1DView`）。`1b461564`（2026-06-08）で両moduleの`*Slice*`が`*View`へ改名された。2026-10-07以前の追加メニューに「`OptionalArray`の名称を再検討する」と「`BareArray`の名称を再検討する」があった（`Archived/PROGRESS_OVERVIEW_HISTORY_2026-10-07.md:350-351`、未着手のchecklist）。Registry `OPT-001`は「体系監査・名称再検討」 | 実装事実のみ（名称の再検討は課題として記録されているが、決定は無い） |
+| 2D〜4Dの次元property名（2D / 3Dの`width`・`height`・`depth`、4Dの`size0`〜`size3`） | `-S"size0"`、`-S"width"`、BareArrayのinit | 導入の`6fd45542`から同じ名前（`size0`は`1b461564` / `cc0293ba`でも変更されている）。BareArrayのinitも同じ体系（`BareArray.swift:94,103,171,181,249,260`）。名前を選んだ理由の記録は見つからない | 実装事実のみ |
+| 不正次元（負値・zero・積overflow）の契約 | `-S"init(capacity"`、`StrictMemorySafetyReadiness.md`、`Tests/TESTING.md` | 導入時からinitに次元の検査は無い（`6fd45542`）。現挙動はOPT-022で実測した。本文95-96行目に「不正次元をどう扱うかのユーザー決定は確認できていない」とある。検索範囲の文書に、不正次元の契約を決めた記録は無い | 履歴なし |
+
+停止事項: なし。どの候補にも明示的な決定は見つからず、判断候補は4件とも未決のままである（本文の既存結論と一致）。
+4件の選択肢や方針は書いていない。
+
+Codex acceptance（2026-10-08）: `OPT-027`を受け入れた。公開宣言・契約・履歴とtest根拠の
+各package、横断coverage、本文同期が受入基準を満たしたため、`OPT-008`と`OPT-009`を完了とする。
+4件の判断候補は未決のまま維持し、名称・次元体系の比較を`OPT-010`で続ける。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

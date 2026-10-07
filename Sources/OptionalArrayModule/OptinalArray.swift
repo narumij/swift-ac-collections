@@ -26,6 +26,7 @@ public struct OptionalArray1D<Element>: ~Copyable {
 
   @inlinable
   public init(capacity: Int) {
+    precondition(capacity >= 0)
     self.count = capacity
     self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
@@ -127,7 +128,10 @@ public struct OptionalArray2D<Element>: ~Copyable {
 
   @inlinable
   public init(width: Int, height: Int) {
-    self.capacity = height * width
+    precondition(width >= 0 && height >= 0)
+    let (capacity, overflow) = height.multipliedReportingOverflow(by: width)
+    precondition(!overflow)
+    self.capacity = capacity
     self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
     self.payload = .allocate(capacity: capacity)
@@ -199,7 +203,16 @@ public struct OptionalArray3D<Element>: ~Copyable {
 
   @inlinable
   public init(width: Int, height: Int, depth: Int) {
-    self.capacity = height * width * depth
+    precondition(width >= 0 && height >= 0 && depth >= 0)
+    // 0の次元があれば積は0。途中の積だけがoverflowする入力を拒否しないよう、先に判定する。
+    if width == 0 || height == 0 || depth == 0 {
+      self.capacity = 0
+    } else {
+      let (plane, overflow0) = height.multipliedReportingOverflow(by: width)
+      let (capacity, overflow1) = plane.multipliedReportingOverflow(by: depth)
+      precondition(!overflow0 && !overflow1)
+      self.capacity = capacity
+    }
     self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
     self.payload = .allocate(capacity: capacity)
@@ -273,7 +286,17 @@ public struct OptionalArray4D<Element>: ~Copyable {
 
   @inlinable
   public init(size0: Int, size1: Int, size2: Int, size3: Int) {
-    self.capacity = size0 * size1 * size2 * size3
+    precondition(size0 >= 0 && size1 >= 0 && size2 >= 0 && size3 >= 0)
+    // 0の次元があれば積は0。途中の積だけがoverflowする入力を拒否しないよう、先に判定する。
+    if size0 == 0 || size1 == 0 || size2 == 0 || size3 == 0 {
+      self.capacity = 0
+    } else {
+      let (plane, overflow0) = size0.multipliedReportingOverflow(by: size1)
+      let (cube, overflow1) = plane.multipliedReportingOverflow(by: size2)
+      let (capacity, overflow2) = cube.multipliedReportingOverflow(by: size3)
+      precondition(!overflow0 && !overflow1 && !overflow2)
+      self.capacity = capacity
+    }
     self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
     self.payload = .allocate(capacity: capacity)

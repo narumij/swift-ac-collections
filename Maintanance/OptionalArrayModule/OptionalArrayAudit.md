@@ -373,6 +373,50 @@ safety、コメントドック全件整備、test file全体の番号整理へ�
 契約を固定できない問題を見つけた場合、独自方式を追加せず根拠を報告して停止する。完了時は変更file、
 追加した仕様、Debug／Releaseの実行結果を記録し、Codexが受け入れる。
 
+### OPT-033 実施結果
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。未commit（ユーザーのcommit許可待ち）。
+
+変更file:
+
+- `Sources/OptionalArrayModule/OptinalArray.swift`: 1D〜4Dのinitializerだけを変更した。
+  - 各次元の`>= 0`を、積の計算より前に`precondition`で検査する。
+  - 2Dは`multipliedReportingOverflow`で積を求め、overflowを`precondition`で拒否する。
+  - 3D / 4Dは、0の次元があれば積を0とする。無ければ`multipliedReportingOverflow`を順に適用し、
+    いずれかのoverflowを`precondition`で拒否する（途中の積だけがoverflowする入力も0なら受け入れる）。
+  - 停止messageは付けていない（既存のsubscriptの`precondition`と同じ形）。型名、label、storage、属性は変更していない。
+    ドキュメントコメントも追加していない（利用者向け文書はCodexの担当）。
+- `Tests/OptionalArrayModuleTests/OptionalArrayTests.swift`: `// MARK: - Dimension contract`に5件を追加した。
+  1D〜4Dのzero dimensionで要素を1つも持たないこと、0の次元があれば他の次元が大きくても受け入れることを固定する。
+- `Tests/OptionalArrayModuleTests/OptionalArrayDeathTests.swift`: `OptionalArrayDimensionDeathTests`を追加した（13件）。
+  内訳は、各initializerの各軸の負値10件と、2D〜4Dの積overflow 3件。既存と同じ`processExitsWith: .failure`方式。
+
+test-first: 修正前に追加testを走らせ、次の失敗を確認した。
+
+- 負の軸のほかに0の軸を置いた負値9件は、修正前はinitが成功して`EXIT_SUCCESS`だった。
+- 0の次元と大きな次元を組み合わせたXCTestは、修正前は積の途中のoverflowでprocessごと停止した（signal 5）。
+- 1Dの負値と積overflow 3件は、修正前から停止していた（確保の失敗、または乗算のoverflow trap）。
+
+実行結果（macOS、Swift 6.4）:
+
+- `swift test --filter OptionalArrayModuleTests`（Debug）: XCTest 34件、Swift Testing 21件、すべて成功。
+- `swift test -c release --filter OptionalArrayModuleTests`（Release）: 同じ件数で、すべて成功。
+- `swift test --filter "AcCollectionsTests\."`: 6件成功。
+- `-Ounchecked`は実行していない（契約上、停止を期待しない）。互換modeはOptionalArrayに分岐が無いので、ビルドしていない。
+
+既存Death Test基盤の限界（報告）: `.failure`は停止の理由を区別しない。そのため1Dの負値と積overflowのtestは、
+修正前の確保失敗・乗算trapでも成功する。「overflow計算や不正確保へ進む前に停止する」ことはtestではなく、
+実装（検査が乗算と`allocate`より前にあること）で担保している。独自方式は追加していない。
+
+**範囲外のdefect（修正せず停止）:** 4Dの外側subscriptはoffsetを`size0 * size1 * size2 * position`と左から計算する
+（`OptinalArray.swift`の`OptionalArray4D.subscript`）。`size2 == 0`で`size0 * size1`がoverflowする場合、契約上有効な配列
+（積は0）でも、範囲内の`a[0]`がoverflow trapで停止する。最小再現（修正後のsourceを一時dirで`-Onone`実行）:
+`OptionalArray4D<Int>(size0: Int.max, size1: 2, size2: 0, size3: 1)`はinitに成功し、`a[0]`で終了コード133。
+3D（`width * height * position`）は、`height == 0`なら`width * height`が0なので起きない。4D由来の3DView
+（`width * height * position` = `size0 * size1 * z`）は、`z`へ届くには`size2 > 0`かつ`size3 > 0`が必要で、そのとき
+`size0 * size1`がoverflowするなら全体の積もoverflowしてinitで拒否されるので起きない（机上。実行はしていない）。
+修正するかどうかはCodexが判断する。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

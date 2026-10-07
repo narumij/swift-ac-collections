@@ -65,7 +65,7 @@ Permutationの計測は入っていない。2026-10-07の`@inline(__always)`27�
 | 習得性 | 部分 | 命名はswift-algorithmsの`PermutationsSequence<Base>`に合わせた（`169401a0`）。使用例はない |
 | 運用操作性 | 満たす | 入口は1つ。Array以外や添字がIntでないCollectionも受け付ける（`_1_`の`testAcceptsNonIntIndexedSources`） |
 | ユーザーエラー防止性 | 満たす | 利用者は直接初期化できない（`_0_`がcompile時に固定）。範囲外の添字は`precondition`で停止（`_99_DeathTests`） |
-| 自己記述性 | 部分 | 公開型の説明はドキュメントコメントのみ。DocCカタログはない |
+| 自己記述性 | 部分 | 公開型の説明はドキュメントコメントのみ。DocCカタログはない。結果は`print`でArrayと同じ形に表示される（`_3_`の`testDescriptionLooksLikeArray`） |
 
 ### 3.5 信頼性（Reliability）
 

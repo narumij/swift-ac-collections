@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- PermutationModuleの`NextPermutationsSequence.Permutation`を`Equatable`、`Hashable`(要素が`Hashable`のとき)、`CustomStringConvertible`(`[1, 3, 2]`形式)へ適合。いずれも要素の並びだけで決まる
 - RedBlackTreeCollectionsのSwift-DocCカタログを追加し、4つのコレクション型、3つのRange/MappedValues View、共通操作ガイドを公開APIドキュメントとして整備
 - Release構成でDocCを警告込みで検証し、artifact保存と`main`からGitHub Pagesへの自動公開を行うCIを追加
 - RedBlackTreeSet / MultiSet / MultiMapの利用者向け日英ドキュメントと、4型のAtCoder 2025互換APIドキュメントを追加

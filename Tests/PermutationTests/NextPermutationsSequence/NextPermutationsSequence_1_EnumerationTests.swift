@@ -71,7 +71,7 @@ final class NextPermutationsSequence_1_EnumerationTests: XCTestCase {
       (1..<4).nextPermutations().map { Array($0) },
       [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
     // startIndexが0でないスライスでも、要素値の並びは同じ規則で列挙される。
-    // (yieldされるPermutationの添字の起点は契約として固定しない)
+    // (結果の添字の起点は`_3_PermutationCollectionTests`で固定する)
     let slice = [9, 3, 1, 2, 9][1..<4]
     XCTAssertEqual(
       slice.nextPermutations().map { Array($0) },

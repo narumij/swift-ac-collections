@@ -54,12 +54,23 @@ extension NextPermutationsSequence {
     }
 
     @usableFromInline
+    enum State {
+      /// The current order has not been yielded yet.
+      case initial
+      /// The next call advances to the lexicographic successor.
+      case advancing
+      /// The last order has been yielded.
+      case finished
+    }
+
+    @usableFromInline
     var elementBuffer: Buffer
     @usableFromInline
-    var start = true
-    @usableFromInline
-    var end = false
+    var state = State.initial
 
+    // TODO: Swift 6.4の`-O`では、コピーしたiteratorの元の側をクロージャ内で進めると、
+    // `isKnownUniquelyReferenced`がコピーを見落とし、共有bufferを直接書き換える
+    // (2026-10-07確認、ライブラリ非依存の最小再現あり)。1.0直前に、修正されたかを確認する。
     @inlinable
     mutating func ensureUnique() {
       if !isKnownUniquelyReferenced(&elementBuffer) {
@@ -69,14 +80,19 @@ extension NextPermutationsSequence {
 
     @inlinable
     public mutating func next() -> Permutation? {
-      guard !end else { return nil }
-      if start {
-        start = false
-      } else {
+      switch state {
+      case .finished:
+        return nil
+      case .initial:
+        state = .advancing
+      case .advancing:
         ensureUnique()
-        end = !elementBuffer.nextPermutation()
+        guard elementBuffer.nextPermutation() else {
+          state = .finished
+          return nil
+        }
       }
-      return end ? nil : Permutation(elementBuffer: elementBuffer)
+      return Permutation(elementBuffer: elementBuffer)
     }
   }
 }
@@ -159,6 +175,28 @@ extension NextPermutationsSequence.Permutation: RandomAccessCollection {
   #endif
 }
 
+// Equality, hashing, and description depend only on the element order.
+extension NextPermutationsSequence.Permutation: Equatable {
+  @inlinable
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.elementBuffer === rhs.elementBuffer || lhs.elementsEqual(rhs)
+  }
+}
+
+extension NextPermutationsSequence.Permutation: Hashable where Base.Element: Hashable {
+  @inlinable
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(count)
+    for element in self {
+      hasher.combine(element)
+    }
+  }
+}
+
+extension NextPermutationsSequence.Permutation: CustomStringConvertible {
+  public var description: String { Array(self).description }
+}
+
 extension NextPermutationsSequence.Buffer {
 
   @usableFromInline
@@ -185,6 +223,9 @@ extension NextPermutationsSequence.Buffer {
   func formIndex(after i: inout Index) { i += 1 }
   @inlinable
   func index(before i: Index) -> Index { i - 1 }
+  // TODO: `a == b`のとき、同じ要素へ2つのinoutアクセスが重なる。現在の呼び出し元
+  // (`nextPermutation()`と`reverse(subrange:)`)はどちらも`a != b`を保証するので実害はない。
+  // `Array.swapAt`と同様に`guard a != b else { return }`を足すかを検討する(2026-10-07)。
   @inlinable
   func swapAt(_ a: Index, _ b: Index) { swap(&self[a], &self[b]) }
   @inlinable
@@ -228,6 +269,10 @@ extension NextPermutationsSequence.Buffer {
     return newStorage
   }
 
+  // TODO: `source.count`を信じてbufferを確保し、`enumerated()`の個数だけ書き込んでいる。
+  // `count`と実際の要素数が食い違うCollectionでは確保範囲の外へ書く。
+  // `UnsafeMutableBufferPointer.initialize(fromContentsOf:)`で個数のずれを検出して止めるかを、
+  // 失敗するDeath Testを先に書いてから検討する(2026-10-07)。
   @inlinable
   static func prepare(source: Base) -> NextPermutationsSequence.Buffer {
     let newStorage = NextPermutationsSequence.Buffer.create(count: source.count)

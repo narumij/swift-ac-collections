@@ -164,6 +164,8 @@ current instruction and prepare the handoff for Codex if requested.
   新helperへの`@inlinable` / `get`も検査するか / 要素を指さないIndexと別の木のIndexの扱い / MultiMapのtest。
   `PERM-016`完了（2026-10-07夜、未commit）: 品質評価を`c64116e0`時点の事実へ更新。`swapAt`の懸念を削除し、header二重破棄の修正、
   終端の不要コピー回避（未計測を明記）、走査の共有、`#if DEBUG`の`package`検査member、行数（254行）を反映。判定と§6の問いは変えていない。`PERM-017`へ渡せる。
+  `PERM-018`完了（2026-10-07夜、ユーザー了承で`PermutationTests`へswift-algorithms依存を追加、未commit）: `_4_CoexistenceTests`で
+  両moduleの同時importと使い分けを固定。品質評価の共存性の判定（部分）は変えていない（判定の更新は`PERM-017`のreview側）。`PERM-019`へ進める。
   `RBT-016`は不要（ユーザー了承、2026-10-07）: `RedBlackTreePair`は型ごと`@_documentation(visibility: internal)`で、
   入口も`subscript(_pair:)`だけ。graphのspec-gapsが型側の属性を見ていなかった誤検知で、道具を直して0件を確認。閉じる処理はCodex。
 - `GRAPH-001`（試験運用継続）: Registryのprojectionとコード依存graphに、taskと対象コードの対応を加え、手書きの辺を

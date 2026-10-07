@@ -19,6 +19,8 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **現在の中間ゴール:**
 
+- このrepositoryで得たtask運用知見を、別projectでもCodexが同程度の管理品質を再現できる
+  移植可能なplaybookへ整理する。
 - Permutationを、Codexのユーザードキュメント作業フェーズへ渡せる状態にする。
 - OptionalArrayを、Codexが作業設計・網羅性確認・完了判定を担う管理方式で、Codexの
   ユーザードキュメント作業フェーズへ渡せる状態にする。
@@ -86,6 +88,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-003` | `EXCLUDED` | — | 二つのtask graph DBの統合議論 | 2026-10-07、統合方針をdrop。再開候補にしない | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-004` | `ACTIVE` | Codex / Claude | [DISCOVERY] AIとインメモリ関係モデルによるsmell判定スキーム共有試験 | 解析ごとに関係をインメモリ構築し、共有するnode・edge・根拠・確度・query・判定結果のスキームがcode / test / taskの臭い判断に有効か検証する。永続化するのは再利用可能なスキームと観測記録だけとする | `AI_GRAPH_SMELL_NOTES.md` |
 | `GRAPH-005` | `ACTIVE` | Codex / Claude | ClaudeとCodexのgraph DB交流会 | 合意した共有面で観測、問い、反証、試したい見方を交換。tracked MDを強制せず、統合や正本化を目的にしない | `TASK_GRAPH_DB_EXPERIMENT.md` |
+| `OPS-001` | `ACTIVE` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 現行運用の原則、手順、停止条件、受入、委任、失敗知見を初版へ整理し、別projectで再現性を検証できる状態にする | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
 | `FIT-002` | `DONE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08、責任境界、現行補正、OptionalArray 10 package、追加skillについて項目別回答を記録 | `AGENT_TASK_FIT_INTERVIEW.md` |

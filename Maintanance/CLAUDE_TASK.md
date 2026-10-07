@@ -136,18 +136,11 @@ current instruction and prepare the handoff for Codex if requested.
   `Equatable, Comparable, Hashable`のまま（最終変更`b2424210`、削除検討のFIXMEあり）。`RBT-001` / `010` / `011`は外部待ち。
 - Index完了ゲートは、Comparable依存（`RBT-011`、`RedBlackTreeSet_9`の`test_index_comparable`、`==` / `<` / hashの意味）と
   ドキュメントを除き、検証で閉じられることを確認した（根拠は履歴の圧縮前全文）。ゲートのチェック付け替えはCodex。
-- push / worktree: `develop/misc/50`の未pushは`ee258340`だけ。作業ツリーにCodexの`RBT-018`〜`RBT-025`登録と
-  このhandoff・履歴の更新があり、未commit。性能jobの未確認: Permutation `next()`の変更（`4eae63f9`、`PERM-013`で確認する
+- push / worktree: `develop/misc/50`には未pushのmaintenance更新があるため、push前にupstreamとの差分を確認する。
+  `RBT-017`系の終了反映は`9390433f`。性能jobの未確認: Permutation `next()`の変更（`4eae63f9`、`PERM-013`で確認する
   ユーザー判断）と`__construct_node`への`@inlinable`（`19a894c3`）。
 - `RBT-008`: ユーザー判断で現行3案は不採用。超ホットパスなので、再提案は性能試験の結果を添えて判断が冴えているときに行う。
   完了条件は「ユーザーが納得できるコードの提示」。
-- `RBT-017`〜`RBT-025`は不要として閉じる依頼（2026-10-08夜、ユーザー了承、Registry反映はCodex）: `211ca2fc`（2026-10-05、
-  ユーザーcommit）と`API-Matrix-View.md`で「部分Viewの`subscript` / `swapAt`はO(1)、範囲所属は標準Collection同様の呼び出し側
-  事前条件、必要なら`isElement(at:)`を明示的に使う」と確定済みで、仕様test`test_subrangeValuesSingleIndexOperations_doNotCompareKeys`
-  が固定している。発端の`RBT-013`報告「文書は範囲内前提なのに実装が検査しない＝不一致」はClaudeの誤認（事前条件を実装で検査しない
-  のは不一致ではない）で、`RBT-018`も履歴・仕様test・API Matrixを見ずに判断点なしとした調査不足。F-1〜F-4の判断は無効。
-  コード変更なし（`RBT-024`の試行は元に戻した）。`RED_BLACK_TREE_REMAINING_TASKS.md`の「文書を緩めず、実装側へ範囲検査を追加して
-  解消する」節と`RBT-014` ← `RBT-024`の依存も外す。
 - 文書・整理の残依頼（Codex）: `RED_BLACK_TREE_REMAINING_TASKS.md`の「Indexが`Result`のtypealiasなのでComparableにできない」は
   PR #158で古い。`OPT-001` / `BARE-001`（体系・名称）と`ARRAY-001`（storage再設計）はレベルが違うので整理を見直す。
   `RBT-013`由来で未処理: 「名前の再検討」4件は残task文書で現名確定と記載済みだが、TODOコメントは残っている。

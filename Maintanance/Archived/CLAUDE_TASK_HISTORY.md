@@ -7455,3 +7455,10 @@ Status: Completed (2026-10-04, Claude Opus 5.5)
   両moduleの同時importと使い分けを固定。品質評価の共存性の判定（部分）は変えていない（判定の更新は`PERM-017`のreview側）。
 - `RBT-016`は不要（ユーザー了承、2026-10-07）: `RedBlackTreePair`は型ごと`@_documentation(visibility: internal)`で、
   入口も`subscript(_pair:)`だけ。graphのspec-gapsが型側の属性を見ていなかった誤検知で、道具を直して0件を確認。
+- `RBT-017`〜`RBT-025`は不要として終了（2026-10-08夜、ユーザー了承、Codexが`9390433f`で反映。契約の再判断は`RBT-026`として凍結）: `211ca2fc`（2026-10-05、
+  ユーザーcommit）と`API-Matrix-View.md`で「部分Viewの`subscript` / `swapAt`はO(1)、範囲所属は標準Collection同様の呼び出し側
+  事前条件、必要なら`isElement(at:)`を明示的に使う」と確定済みで、仕様test`test_subrangeValuesSingleIndexOperations_doNotCompareKeys`
+  が固定している。発端の`RBT-013`報告「文書は範囲内前提なのに実装が検査しない＝不一致」はClaudeの誤認（事前条件を実装で検査しない
+  のは不一致ではない）で、`RBT-018`も履歴・仕様test・API Matrixを見ずに判断点なしとした調査不足。F-1〜F-4の判断は無効。
+  コード変更なし（`RBT-024`の試行は元に戻した）。`RED_BLACK_TREE_REMAINING_TASKS.md`の「文書を緩めず、実装側へ範囲検査を追加して
+  解消する」節と`RBT-014` ← `RBT-024`の依存も外す。

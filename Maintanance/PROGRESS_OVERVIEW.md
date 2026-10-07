@@ -21,6 +21,11 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 - Claudeへ渡すtask出しを、「一つのtaskに一つのユーザー判断、またはユーザー判断なし」まで
   分解できる状態にする。
 
+**後続の中間ゴール:**
+
+- ユーザードキュメント作業後、RedBlackTreeを汎用基盤ライブラリの1.0として採用できるか判断可能な
+  状態にする。この段階でruntime-check実装を再審査し、その結論とIndex契約を1.0品質ゲートへ渡す。
+
 中間ゴールは、複数taskをまたぐ現在の到達点をカンバン上で共有し、着手可能なtaskから何を優先するかを
 判断するために使う。taskそのものではないためIDや状態は持たず、Task Registryの状態、担当、依存、
 再開条件を上書きしない。特に、中間ゴールに含まれることだけを理由に`FROZEN`または`USER_ONLY`のtaskを
@@ -117,7 +122,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERF-001` | `FROZEN` | Codex | Swift更新後のCoWコード生成再計測 | Swift更新または明示的な再計測指示 | `PERFORMANCE_REGRESSION_BISECTION.md` |
 | `HIST-001` | `FROZEN` | Codex | unsafe移行史の追加調査 | ユーザーが明示的に再開 | `REFACTORING_FROM_ATCODER_2025.md` |
 | `TEST-004` | `FROZEN` | Codex | 原木Fixtureの追加portable化 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
-| `RBT-009` | `FROZEN` | User / Codex | runtime-check実装の再審査 | 1.0判断直前、または`-Ounchecked`が主要構成と判明 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
+| `RBT-009` | `FROZEN` | User / Codex | [DECISION] runtime-check実装の再審査 | ユーザードキュメント作業後、1.0中間ゴールへ移行した時点、または`-Ounchecked`が主要構成と判明した時点で再開し、現行実装を1.0へ採用するか一つだけ判断 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
 | `QUALITY-001` | `FROZEN` | User / Codex | 汎用基盤ライブラリとしての1.0採用品質ゲート | Index契約確定後、ユーザーが明示的に再開 | `Sources/RedBlackTreeCollections/Documentation/Quality-Checklist.md` |
 | `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
@@ -129,6 +134,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-001` | `RBT-010` | 前提taskの完了後に後続taskを完了できる |
 | `RBT-001` | `RBT-011` | 前提taskの完了後に後続taskを完了できる |
 | `QUALITY-001` | `RBT-001` | 前提taskの完了後に着手候補にできる |
+| `QUALITY-001` | `RBT-009` | runtime-check実装の1.0採否を再審査した後に品質ゲートを判断する |
 | `PERM-017` | `PERM-016` | 品質評価の事実更新後にreviewする |
 | `RBT-014` | `RBT-013` | TODO/FIXMEの文書影響を分類後にoutlineを照合する |
 | `RBT-026` | `RBT-014` | outlineのAPI照合後、利用者向け文書作業フェーズで契約を再判断する |

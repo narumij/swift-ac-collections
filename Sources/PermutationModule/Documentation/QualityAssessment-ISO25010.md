@@ -55,7 +55,7 @@ Permutationの計測は入っていない。2026-10-07の`@inline(__always)`27�
 
 | 副特性 | 判定 | 根拠 |
 | --- | --- | --- |
-| 共存性 | 部分 | swift-algorithms 1.2.1の型名（`PermutationsSequence`・`UniquePermutationsSequence`）と衝突しないことは目視で確認した。両方をimportした状態のtestはない |
+| 共存性 | 部分 | swift-algorithms 1.2.1の型名（`PermutationsSequence`・`UniquePermutationsSequence`）と衝突しないことは目視で確認した。両方をimportし、修飾なしで両APIを解決するtestを`_4_CoexistenceTests`に追加済み（`0ff5fd84`、`PERM-018`） |
 | 相互運用性 | 満たす | `Sequence`・`IteratorProtocol`・`RandomAccessCollection`へ適合し、標準の`map`や`Array(_:)`で使える（`_1_`〜`_3_`）。`Permutation`は`Equatable`・`Hashable`（要素が`Hashable`のとき）で、`Set`や辞書のキーにできる（`_3_`）。結果の添字は入力に関係なく0始まりの`Int`（`_3_`の`testIndicesStartAtZeroForAnySource`）。`AcCollections`経由の再公開は`AcCollectionsTests.test_importAcCollections_exposesNextPermutations` |
 
 ### 3.4 インタラクション能力（Interaction capability。旧: 使用性）
@@ -65,7 +65,7 @@ Permutationの計測は入っていない。2026-10-07の`@inline(__always)`27�
 | 副特性 | 判定 | 根拠 |
 | --- | --- | --- |
 | 適切度認識性 | 部分 | ドキュメントコメントに、全順列ではないこと、swift-algorithmsとの使い分けを記載。利用者向けの文書（赤黒木の`Documentation/*.md`に相当するもの）はない |
-| 習得性 | 部分 | 命名はswift-algorithmsの`PermutationsSequence<Base>`に合わせた（`169401a0`）。使用例はない |
+| 習得性 | 部分 | 公開型を`NextPermutationsSequence` / `.Iterator` / `.Permutation`へ改名した（`169401a0`）。commitに記録された理由は、`N`接尾辞が削除済みの`All`系との区別にしか使われていなかったことと、`SubSequenceN`が`Collection.SubSequence`と紛らわしいこと。使用例はない |
 | 運用操作性 | 満たす | 入口は1つ。Array以外や添字がIntでないCollectionも受け付ける（`_1_`の`testAcceptsNonIntIndexedSources`） |
 | ユーザーエラー防止性 | 満たす | 利用者は直接初期化できない（`_0_`がcompile時に固定）。範囲外の添字は`precondition`で停止（`_99_DeathTests`） |
 | 自己記述性 | 部分 | 公開型の説明はドキュメントコメントのみ。DocCカタログはない。結果は`print`でArrayと同じ形に表示される（`_3_`の`testDescriptionLooksLikeArray`） |
@@ -94,7 +94,7 @@ assertionの外で`next()`を呼んでこれを避けている。ユーザー判
 | 機密性・否認防止性・責任追跡性・真正性・耐性 | 対象外 | 秘密情報や外部入力の境界を持たない |
 
 懸念: Death Testは、macOSでは既定で、Linuxではtrait指定時だけ有効になる。CI（Linux）では実行されていない。
-Releaseでの停止は2026-10-07にローカルのmacOSで5件とも確認したのみ。
+Releaseでの停止は2026-10-03にローカルのmacOSで5件とも確認したのみ（`Maintanance/PermutationModule/ProductReadinessAssessment.md:152`）。
 
 ### 3.7 保守性（Maintainability）
 
@@ -214,3 +214,14 @@ Codex acceptance（2026-10-08）: 参照箇所と現物の対応、結果分類�
 対象箇所の品質評価（`満たす` / `部分`等）、1.0前の改善候補、R-1〜R-3、性能・文書方針は変更しない。
 3点以外の本文、source、test、CI、他文書も変更しない。事実補正が評価語と矛盾する場合は評価を自分で
 変更せず、その位置を報告して停止する。
+
+### PERM-025 実施結果
+
+2026-10-08 / Claude Opus 5.5。§3.3の共存性、§3.4の習得性、§3.6の懸念の3か所だけを直した。評価語は変更していない。
+
+停止事項（評価語との関係）: 共存性の「部分」は、補正前の本文では「両方をimportした状態のtestはない」が唯一の欠けとして
+読めた。補正後の根拠欄には欠けが書かれていないので、「部分」の理由が本文から読み取れなくなった。評価を変えるか、
+別の欠けを根拠に書くかはCodexが判断する。習得性の「部分」は「使用例はない」が残るので、根拠と矛盾しない。
+
+Codex acceptance（2026-10-08）: 指定された3点だけが照合結果へ同期され、評価語は維持されたため
+受け入れた。共存性の評価はR-1〜R-4 reviewでCodexが扱い、`PERM-025`を完了とする。

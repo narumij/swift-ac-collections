@@ -47,7 +47,7 @@ OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ
 | View型1D〜3D | 3 | storageを所有せず親のbufferを参照。親より長く保持できない | storage共有、コメントドック | 寿命は型システムで拘束されず、恒久対応は凍結中のstorage再設計範囲 |
 | View subscript | 3 | 1Dはoptional値を変更。2D/3Dは一段低いViewを返す | View上書き寿命、View境界Death Test、full-plane stride回帰test | 3D Viewの2D面stride不足を修正済み。NOP setterの位置づけは所有型と同じ |
 | View `indices` | 3 | count、height、depthを外側範囲として返す | `testViewIndices`、4D次元回帰test | 3D Viewのdepth境界と非対称な面strideを回帰testで固定済み |
-| `@unchecked Sendable` | 4適合 | move-only所有型を、ElementがSendableならTask間移送可能と宣言 | compile test | 並行共有を許す契約ではないことの明文化と根拠確認が必要 |
+| `@unchecked Sendable` | 4適合 | move-only所有型を、ElementがSendableならTask間移送可能と宣言 | 1Dだけのcompile test（`testSendable_compiles`）。2D〜4Dのcompile testはない | 並行共有を許す契約ではないことの明文化と根拠確認が必要 |
 
 ## test対応の現在地
 
@@ -59,12 +59,13 @@ OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ
 - 参照型要素の上書き、nil代入、`removeAll()`、所有型deinitでの一回だけの破棄。
 - 3D/4Dの`removeAll()`後のslot再利用。
 - 1D所有型とView、および2D/3D Viewの一部境界違反。
-- 所有4型の条件付き`Sendable`がcompileすること。
+- `OptionalArray1D`の条件付き`Sendable`がcompileすること（2D〜4Dのcompile testはない）。
 
 ### 利用例
 
-`EDPC-J.swift` と `EDPC-L.swift` は競技プログラミングでの実利用形状を示す。
-アルゴリズムの期待値testとしては有用だが、公開宣言ごとの契約を閉じる仕様testとは区別する。
+`EDPC-J.swift` と `EDPC-L.swift` は競技プログラミングでの実利用形状を示すcompile対象である。
+両fileの関数はどのtestからも呼ばれず、アルゴリズムの期待値testとしては実行されていない。
+公開宣言ごとの契約を閉じる仕様testとも区別する。
 
 ### 未検証または部分的なもの
 
@@ -209,6 +210,9 @@ Codex acceptance（2026-10-08）: 指定された受入基準への再配置、�
 既存testの価値、必要な追加test、公開契約、`Sendable`採用理由、利用例の採否を判断しない。
 source、test、利用者向け文書、証拠表は変更しない。2点以外の本文へ変更を広げず、別の不一致を
 見つけた場合は根拠を報告して停止する。
+
+Codex acceptance（2026-10-08）: 2点だけが証拠表どおりに補正され、契約判断やtest追加へ広がって
+いないため受け入れた。`OPT-026`を完了とする。
 
 ## Claude証拠表（2026-10-08）
 

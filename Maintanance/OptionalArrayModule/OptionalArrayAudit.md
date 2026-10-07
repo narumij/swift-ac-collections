@@ -257,6 +257,53 @@ Codex acceptance（2026-10-08）: `OPT-027`を受け入れた。公開宣言・�
 offset defect等を見つけた場合は実装せず、根拠と最小再現候補を記録して停止する。Codexが`OPT-010`の
 判断候補整理に使う。
 
+### OPT-028 名称・次元surface比較
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `12d7f133`の現行宣言だけを読んだ。`O:L<n>`は`OptinalArray.swift`、
+`B:L<n>`は`BareArray.swift`の行。履歴はOPT-027を参照（どちらの名前も導入の`6fd45542`から、Viewは`1b461564`で`*Slice*`から改名）。
+「落とす軸」は、そのsubscriptの引数が選ぶ軸（外側の軸）を指す。
+
+| 次元 | 項目 | OptionalArray | BareArray | 一致 / 不揃い |
+| --- | --- | --- | --- | --- |
+| 1D | 所有型名 | `OptionalArray1D`（O:L21） | `BareArray`（B:L21） | 不揃い（次元suffixの有無） |
+| 1D | initializer label | `init(capacity:)`（O:L28） | `init(repeating:count:)`（B:L24）、`init(count:_:)`（B:L32） | 不揃い（`capacity`と`count`。BareArrayは初期値を受け取る2種） |
+| 1D | 保存される次元property | `count`（O:L23） | `count`（B:L47） | 一致 |
+| 1D | subscriptの要素型・accessor | `Element?`、get / `_modify`（O:L64） | `Element`、`unsafeAddress` / `unsafeMutableAddress`（B:L51-59） | 不揃い（型の性質による違い） |
+| 1D | `indices`の軸 | `0..<count`（O:L96） | `0..<count`（B:L80） | 一致 |
+| 2D | 所有型名 | `OptionalArray2D`（O:L120） | `BareArray2D`（B:L91） | 一致（同じ命名形） |
+| 2D | initializer label | `init(width:height:)`（O:L129） | `init(repeating:width:height:)`（B:L94）、`init(width:height:_:)`（B:L103） | 次元labelは一致。初期値引数の有無だけ違う |
+| 2D | 保存される次元property | `width`, `height`, `capacity`（O:L124-126） | `capacity`, `width`, `height`（B:L121-124） | 一致（宣言順だけ違う） |
+| 2D | subscriptが落とす軸 / 返す型 | `height`（O:L163）/ `OptionalArray1DView`、offset `width * position`（O:L165） | `height`（B:L131）/ `BareArray1DView`、offset `width * position`（B:L132） | 一致 |
+| 2D | `indices`の軸 | `0..<height`（O:L181） | `0..<height`（B:L157） | 一致 |
+| 3D | 所有型名 | `OptionalArray3D`（O:L191） | `BareArray3D`（B:L168） | 一致 |
+| 3D | initializer label | `init(width:height:depth:)`（O:L201） | `init(repeating:width:height:depth:)`（B:L171）、`init(width:height:depth:_:)`（B:L181） | 次元labelは一致 |
+| 3D | 保存される次元property | `width`, `height`, `depth`, `capacity`（O:L195-198） | `capacity`, `width`, `height`, `depth`（B:L203-207） | 一致 |
+| 3D | subscriptが落とす軸 / 返す型 | `depth`（O:L236）/ `OptionalArray2DView`、offset `width * height * position`（O:L238） | `depth`（B:L214）/ `BareArray2DView`、offset `width * height * position`（B:L216） | 一致 |
+| 3D | `indices`の軸 | `0..<depth`（O:L254） | `0..<depth`（B:L241） | 一致 |
+| 4D | 所有型名 | `OptionalArray4D`（O:L264） | `BareArray4D`（B:L246） | 一致 |
+| 4D | initializer label | `init(size0:size1:size2:size3:)`（O:L275） | `init(repeating:size0:size1:size2:size3:)`（B:L249）、`init(size0:size1:size2:size3:_:)`（B:L260） | 次元labelは一致。両moduleとも4Dだけ`size0`〜`size3`で、2D / 3Dの`width`系と体系が違う |
+| 4D | 保存される次元property | `size0`〜`size3`, `capacity`（O:L268-272） | `capacity`, `size0`〜`size3`（B:L284-289） | 一致 |
+| 4D | subscriptが落とす軸 / 返す型 | `size3`（O:L311）/ `OptionalArray3DView(width: size0, height: size1, depth: size2)`、offset `size0 * size1 * size2 * position`（O:L313-317） | `size3`（B:L296）/ `BareArray3DView(width: size0, height: size1, depth: size2)`、同じoffset（B:L297-299） | 一致 |
+| 4D | `indices`の軸 | `0..<size3`（O:L331） | `0..<size3`（B:L324） | 一致 |
+| View 1D | 型名 | `OptionalArray1DView`（O:L343） | `BareArray1DView`（B:L334） | 一致 |
+| View 1D | 保存property / `indices` | `count` / `0..<count`（O:L355、L396） | `count` / `0..<count`（B:L342、L363） | 一致 |
+| View 2D | 型名 | `OptionalArray2DView`（O:L403） | `BareArray2DView`（B:L369） | 一致 |
+| View 2D | 保存property | `width`, `height`（O:L419-420） | `capacity`, `width`, `height`（B:L379-382） | 不揃い（BareArrayのViewだけ`capacity`を持つ） |
+| View 2D | 落とす軸 / offset / `indices` | `height` / `width * position` / `0..<height`（O:L426-428、L443） | `height` / `width * position` / `0..<height`（B:L389-390、L403） | 一致 |
+| View 3D | 型名 | `OptionalArray3DView`（O:L450） | `BareArray3DView`（B:L409） | 一致 |
+| View 3D | 保存property | `width`, `height`, `depth`（O:L467-469） | `capacity`, `width`, `height`, `depth`（B:L422-426） | 不揃い（同上） |
+| View 3D | 落とす軸 / offset / `indices` | `depth` / `width * height * position` / `0..<depth`（O:L475-477、L493） | `depth` / `width * height * position` / `0..<depth`（B:L433-435、L448） | 一致 |
+
+名称・次元以外で目に入った宣言上の差（比較対象外。記録だけ）: OptionalArrayは2D〜4Dだけ`@frozen`（O:L119 / L190 / L263）で、
+BareArrayにはどの型にも`@frozen`が無い。BareArrayの所有型にも`@unsafe internal init(payload:...)`がある（B:L42 / L114 / L193 / L273）。
+
+停止事項: なし。3D View・4Dのoffsetは、両moduleとも`width * height * position`と`size0 * size1 * size2 * position`で、
+OptionalArrayで修正済みの面stride不足（`89a93f9d`）と同じ形の欠落はBareArray側にも無い。
+
+Codex acceptance（2026-10-08）: 比較対象と位置が揃い、命名案やBareArray監査へ範囲を広げていないため
+受け入れた。1D所有型名のsuffix差、4Dだけの`size0`〜`size3`、Viewの`capacity`差を判断入力として
+分離できたため、`OPT-028`と親の`OPT-010`を完了とする。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

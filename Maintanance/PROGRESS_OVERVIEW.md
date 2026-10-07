@@ -123,7 +123,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-024` | `DONE` | Claude | [DISCOVERY] Permutation品質評価の根拠参照照合 | 2026-10-08、commit・file・test・数値参照を照合し、不一致1件と未確認2件を評価変更せず記録 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-025` | `DONE` | Claude | [EXECUTION] Permutation品質評価の事実参照補正 | 2026-10-08、共存test、改名理由、Release確認日の3点を根拠へ同期し、共存性の評価判断をCodexへ返却 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-026` | `DONE` | Claude | [DISCOVERY] Permutation共存性の残存evidence gap確認 | 2026-10-08、通常版、facade、凍結中の互換modeを分離して検証済み・未検証範囲を整理 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
-| `PERM-027` | `ACTIVE` | Claude | [DISCOVERY] Permutation 1.0前改善候補3件の実施前提整理 | 性能CI、C++差分比較、Linux Death Testについて現状・既存基盤・依存・未確認だけを整理し、採否や優先順位は決めない | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-027` | `DONE` | Claude | [DISCOVERY] Permutation 1.0前改善候補3件の実施前提整理 | 2026-10-08、性能CI、C++差分比較、Linux Death Testの現状・基盤・依存・未確認を採否判断なしで整理 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `RBT-016` | `EXCLUDED` | — | `RedBlackTreePair.tuple`の仕様test | 2026-10-07、型全体がdocumentation上internalで公開仕様testは不要。graphのspec-gap検出を修正して0件を確認 | `Tests/RedBlackTreeTests/` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
@@ -154,7 +154,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-007` | `DONE` | Codex | [EXECUTION] OptionalArray監査の暫定受入基準策定 | 2026-10-08、公開宣言網羅、契約・test・履歴対応、判断分離、引き渡し成果物を監査開始前の基準として確定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-008` | `DONE` | Codex | [DISCOVERY] OptionalArray公開7型の宣言・契約・履歴監査 | 2026-10-08、29宣言と4適合の契約・履歴を棚卸しし、決定記録のない4件を判断候補として分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-009` | `DONE` | Codex | [DISCOVERY] OptionalArray公開契約とtest根拠の対応監査 | 2026-10-08、実装・test・利用例・coverageを公開宣言へ対応し、未検証範囲と本文不一致を確定・同期 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-010` | `ACTIVE` | Codex | [DISCOVERY] OptionalArrayの型名・次元API体系監査 | 1D〜4DとView 1D〜3Dの型名、`capacity`、`width`・`height`・`depth`、`size0`〜`size3`、BareArrayとの対応を比較し判断候補を整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-010` | `DONE` | Codex | [DISCOVERY] OptionalArrayの型名・次元API体系監査 | 2026-10-08、OptionalArrayとBareArrayの型名・View名・次元label・property・軸対応を比較し、不揃いを判断候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-011` | `FROZEN` | Codex | [EXECUTION] OptionalArray監査で見つかった判断taskの登録 | `OPT-008`〜`OPT-010`後、新しい判断点を一判断ごとの`DECISION`としてRegistryへ登録し、agent判断で埋めない | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-012` | `FROZEN` | Codex | [EXECUTION] OptionalArrayModuleTestsのTest as Specification整理 | `OPT-009`と必要な判断taskの完了後、仕様根拠を番号付きTest as Specificationへ整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-013` | `FROZEN` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 契約表、test対応、決定済み事項、未決定事項、文書入力を暫定受入基準で検収し、親taskを完了可能にする | `OptionalArrayModule/OptionalArrayAudit.md` |
@@ -172,7 +172,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-025` | `DONE` | Claude | [DISCOVERY] OptionalArray証拠packageの受入基準coverage照合 | 2026-10-08、10 packageを29宣言と受入基準へ再配置し、既知の本文不一致2件とcoverage不足を表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-026` | `DONE` | Claude | [EXECUTION] OptionalArray監査本文の証拠同期 | 2026-10-08、Sendable testは1Dのみ、EDPC利用例は未実行のcompile対象という事実へ本文を同期 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-027` | `DONE` | Claude | [DISCOVERY] OptionalArray判断候補4件の決定来歴確認 | 2026-10-08、4件とも明示決定なし。用途・名称・次元は実装事実、不正次元は履歴なしとして確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-028` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray・BareArray名称次元surface比較 | 現行宣言だけから型名、View名、initializer label、保持property、indices軸を対応表化し、命名案は出さない | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-028` | `DONE` | Claude | [DISCOVERY] OptionalArray・BareArray名称次元surface比較 | 2026-10-08、現行宣言の型名・View名・initializer・property・subscript軸・indices軸を対応表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |

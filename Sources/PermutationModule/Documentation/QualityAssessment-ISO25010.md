@@ -262,3 +262,20 @@ swift-algorithmsとの同時import・主要入口の名前解決が仕様testで
 1.0前に必要か、どの順で行うか、品質評価を`満たす`へ上げる条件を決めない。性能基準、C++との
 期待差分、CI構成も設計しない。source、test、benchmark、workflow、本文の評価語を変更せず、
 新しい判断点またはdefectは根拠を記録して停止する。CodexがR-2をreviewする入力とする。
+
+### PERM-027 1.0前改善候補3件の実施前提
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `12d7f133`。読み取りだけで、benchmark・workflow・test・sourceは変更していない。
+採否、順序、評価を上げる条件、性能基準、期待差分、CI構成は書いていない。
+
+| 候補 | 現状 | 利用できる既存基盤 | 必須依存 | 実施時に変更する範囲 | 対応するRegistry task | 未確認事項 |
+| --- | --- | --- | --- | --- | --- | --- |
+| CIの性能比較にPermutationを加える（§3.2） | performance jobはPRのときだけ、base / HEADの両方で`Benchmarks/Libraries/CI.json`を走らせて比較する（`swift.yml:102-200`）。`CI.json`にPermutationの計測は無い | `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`の5計測（`main.swift:14`で登録済み。表題は旧名`Permutations.SubSequenceN`のまま） | `Benchmarks`は別package。ローカルで動かすには依存の解決が要り、global SwiftPM cacheへ触れる可能性がある（`AGENT_TASK_FIT_INTERVIEW.md`の環境safeguard）。結果はPRのCIで出るので、ユーザーのpushが要る | `Benchmarks/Libraries/CI.json`へ計測を追加 | `PERM-013`（FROZEN。再開条件は「作業の区切りでユーザーが再開」。Claudeが`CI.json`へ追加し、ユーザーのpush後にbase比較で`0ef177d3`以降の影響を確認） | base側にPermutationの計測が無い最初のPRで、比較がどう表示されるか（片側だけの計測の扱い）。表題を旧名のまま`CI.json`へ載せた場合の比較の連続性 |
+| C++ `std::next_permutation`との差分比較（§3.1） | Permutationの比較は無い（`CppBehaviorReference`にもそのtestにも`permutation`の語が無い） | `Sources/CppBehaviorReference`（C++。`extern "C"`の関数をheaderで公開、`Package.swift:274-277`）と`Tests/CppBehaviorReferenceTests`（赤黒木4型の比較、`SeededTraceSupport.swift`）。`CPP-001` DONE。実行実績はmacOS（libc++）のDebug・ReleaseとLinux（libstdc++）のDebug（`RED_BLACK_TREE_REMAINING_TASKS.md`の確認済み根拠） | `CppBehaviorReferenceTests`へ`PermutationModule`の依存を足す必要がある（現在の依存は`CppBehaviorReference`、`AcCollections`、`RedBlackTreeCollections`。`AcCollections`経由でも届く） | `Sources/CppBehaviorReference`へ`std::next_permutation`の`extern "C"` wrapperを追加し、`Tests/CppBehaviorReferenceTests`へ比較testを追加。依存を足すなら`Package.swift` | なし（`CPP-001`は「比較契約または対象環境を変更する場合だけ更新」、`CPP-002`はMSVCでEXCLUDED） | C++側は比較に`operator<`を使う。Swift側の`Comparable`と同じ結果になる入力の範囲（整数以外の要素型を比べるか）。libc++ / libstdc++の両方で同じ列挙になること |
+| Linux CIでDeath Testを有効にする（§3.6） | CIはLinuxの`swift test -c debug` / `-c release`だけで、`ENABLE_DEATH_TESTS`を指定していない（`swift.yml:79-100`、workflow内に`DEATH`の語が無い） | trait `ENABLE_DEATH_TESTS`で`DEATH_TEST`を定義する設定（`Package.swift:85`）。Permutationの`_99_DeathTests`は正確なsignal（Linuxでは`SIGILL`）を期待する（`DeathTestSignal.swift`）。Linuxでの手動実行の手順は`Tests/CLAUDE.md`（`swift test -c debug --traits ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`） | traitを有効にするとPermutation以外のDeath Testも全部走る（OptionalArray、BareArray、RedBlackTree）。`Tests/CLAUDE.md`は、Linuxでは`SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`との併用を指示している | `.github/workflows/swift.yml`へjobまたはstepを追加 | なし（Permutation専用のtaskも、全module共通のtaskも見つからない） | PermutationのDeath Testだけを走らせるか、全moduleで走らせるか（判断点の候補。Claudeは決めない）。Releaseでも走らせるか。Linuxで5件が`SIGILL`で止まることの最近の実行記録（RedBlackTree側の実績は文書にあるが、Permutationの記録は今回見つからない） |
+
+停止事項: なし。新しいdefectは無い。上の表の「判断点の候補」（Linux Death Testの対象範囲）は、選択肢を書かずに位置だけを記録した。
+
+Codex acceptance（2026-10-08）: 3候補の現状、既存基盤、依存、変更範囲、Registry対応、未確認事項が
+採否と優先順位を決めずに分離されているため受け入れた。`PERM-027`を完了とし、R-2の判断は
+`PERM-017`へ残す。

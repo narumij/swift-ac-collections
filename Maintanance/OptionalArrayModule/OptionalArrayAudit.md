@@ -304,6 +304,20 @@ Codex acceptance（2026-10-08）: 比較対象と位置が揃い、命名案やB
 受け入れた。1D所有型名のsuffix差、4Dだけの`size0`〜`size3`、Viewの`capacity`差を判断入力として
 分離できたため、`OPT-028`と親の`OPT-010`を完了とする。
 
+## 判断taskへの分離（2026-10-08）
+
+監査で明示決定が存在しないと確認した事項を、一判断ずつ次の4件へ分離した。いずれもUser / Codexが
+決定し、Claudeへ結論を委譲しない。
+
+1. 公開位置づけ: 競技プログラミング用の低レベル公開部品として1.0でも公開を続けるか。
+2. 1D所有型名: `OptionalArray1D`を維持するか、次元suffixを持たない体系へ揃えるか。
+3. 次元名称体系: 2D / 3Dの`width`・`height`・`depth`と4Dの`size0`〜`size3`の混在を維持するか統一するか。
+4. 不正次元契約: 負値、zero、次元積overflowをどの事前条件として扱うか。
+
+各判断ではsource compatibility、BareArrayとの整合、既存testと利用例への影響を入力にするが、
+BareArrayの凍結task、storage再設計、strict memory safety恒久適用は再開しない。4件の登録により
+`OPT-011`を完了とし、結論が揃うまでTest as Specification整理は凍結を維持する。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

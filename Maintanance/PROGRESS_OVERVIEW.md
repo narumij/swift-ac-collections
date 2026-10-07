@@ -155,7 +155,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-008` | `DONE` | Codex | [DISCOVERY] OptionalArray公開7型の宣言・契約・履歴監査 | 2026-10-08、29宣言と4適合の契約・履歴を棚卸しし、決定記録のない4件を判断候補として分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-009` | `DONE` | Codex | [DISCOVERY] OptionalArray公開契約とtest根拠の対応監査 | 2026-10-08、実装・test・利用例・coverageを公開宣言へ対応し、未検証範囲と本文不一致を確定・同期 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-010` | `DONE` | Codex | [DISCOVERY] OptionalArrayの型名・次元API体系監査 | 2026-10-08、OptionalArrayとBareArrayの型名・View名・次元label・property・軸対応を比較し、不揃いを判断候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-011` | `FROZEN` | Codex | [EXECUTION] OptionalArray監査で見つかった判断taskの登録 | `OPT-008`〜`OPT-010`後、新しい判断点を一判断ごとの`DECISION`としてRegistryへ登録し、agent判断で埋めない | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-011` | `DONE` | Codex | [EXECUTION] OptionalArray監査で見つかった判断taskの登録 | 2026-10-08、位置づけ、1D型名、次元名、不正次元契約を一判断ずつ4 taskへ分離登録 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-012` | `FROZEN` | Codex | [EXECUTION] OptionalArrayModuleTestsのTest as Specification整理 | `OPT-009`と必要な判断taskの完了後、仕様根拠を番号付きTest as Specificationへ整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-013` | `FROZEN` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 契約表、test対応、決定済み事項、未決定事項、文書入力を暫定受入基準で検収し、親taskを完了可能にする | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-014` | `DONE` | Codex | [EXECUTION] OptionalArray3DViewの2D面stride修正 | 2026-10-08、非対称次元testで修正前のslice aliasを確認し、offsetを`width * height * position`へ修正。NOP setterは連鎖writeback用と明文化 | `OptionalArrayModule/OptionalArrayAudit.md` |
@@ -173,6 +173,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-026` | `DONE` | Claude | [EXECUTION] OptionalArray監査本文の証拠同期 | 2026-10-08、Sendable testは1Dのみ、EDPC利用例は未実行のcompile対象という事実へ本文を同期 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-027` | `DONE` | Claude | [DISCOVERY] OptionalArray判断候補4件の決定来歴確認 | 2026-10-08、4件とも明示決定なし。用途・名称・次元は実装事実、不正次元は履歴なしとして確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-028` | `DONE` | Claude | [DISCOVERY] OptionalArray・BareArray名称次元surface比較 | 2026-10-08、現行宣言の型名・View名・initializer・property・subscript軸・indices軸を対応表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-029` | `WAITING_USER` | User / Codex | [DECISION] OptionalArrayの公開位置づけ | 競技プログラミング用の低レベル公開部品として1.0でも公開を続けるか、一つの位置づけを決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-030` | `WAITING_USER` | User / Codex | [DECISION] OptionalArray 1D所有型の名称 | `OptionalArray1D`を維持するか、次元suffixを持たない体系へ揃えるか、一つの型名体系を決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-031` | `WAITING_USER` | User / Codex | [DECISION] OptionalArray 2D〜4Dの次元名称体系 | `width`系と`size0`系の混在を維持するか統一するか、一つのproperty・initializer label体系を決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-032` | `WAITING_USER` | User / Codex | [DECISION] OptionalArray initializerの不正次元契約 | 負値・zero・積overflowをどの事前条件で扱うか、一つの契約方針を決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |
@@ -250,6 +254,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-011` | `OPT-009` | test根拠監査後に判断候補を登録する |
 | `OPT-011` | `OPT-010` | 名称・次元体系監査後に判断候補を登録する |
 | `OPT-012` | `OPT-009` | test根拠と不足を把握した後に仕様単位へ整理する |
+| `OPT-012` | `OPT-029` | 公開位置づけの決定後に仕様testの範囲を確定する |
+| `OPT-012` | `OPT-030` | 1D型名の決定後に仕様testの名称を確定する |
+| `OPT-012` | `OPT-031` | 次元名称体系の決定後に次元契約testを整理する |
+| `OPT-012` | `OPT-032` | 不正次元契約の決定後に境界testを整理する |
 | `OPT-013` | `OPT-011` | 必要な判断taskを登録・完了または除外した後に引き渡し判定する |
 | `OPT-013` | `OPT-012` | Test as Specification整理後に引き渡し判定する |
 | `OPT-001` | `OPT-013` | 引き渡し検収後に親taskを完了できる |

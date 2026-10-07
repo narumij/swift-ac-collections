@@ -89,7 +89,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `FIT-002` | `DONE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08、責任境界、現行補正、OptionalArray 10 package、追加skillについて項目別回答を記録 | `AGENT_TASK_FIT_INTERVIEW.md` |
 | `FIT-003` | `DONE` | Codex | [DISCOVERY] agent task適性表の合意・不一致整理 | 2026-10-08、実質的不一致なし。修正提案を条件付き合意へ整理し、OptionalArray固有の疑義は監査packageへ移管 | `AGENT_TASK_FIT_INTERVIEW.md` |
 | `FIT-004` | `EXCLUDED` | — | [EXECUTION] agent task適性表の不一致decision登録 | `FIT-003`でユーザー判断を要する実質的不一致が無かったため登録不要 | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-005` | `ACTIVE` | Codex | [EXECUTION] agent task適性表の合意済み最終反映 | 合意済み内容だけを現行表・割り当て規則・Registryへ反映し、Claudeの差分確認へ渡す | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-005` | `DONE` | Codex | [EXECUTION] agent task適性表の合意済み最終反映 | 2026-10-08、合意済み責任境界とsmell 4・tuning確認3を現行運用へ反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-006` | `ACTIVE` | Claude | [DISCOVERY] agent task適性表の最終差分確認 | 合意matrixに対する取り違えだけを確認し、項目ごとに同意または留保を記録。既存本文とRegistryは変更しない | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-007` | `FROZEN` | Codex | [EXECUTION] agent task適性表更新の完成判定 | `FIT-006`後、留保を検収して必要なら個別task化し、問題がなければ更新全体を完了する | `AGENT_TASK_FIT_INTERVIEW.md` |
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-012` | `DONE` | Claude | Swift 6.4 `-O`のCoW誤コンパイルに対する値セマンティクスのTest as Spec拡充 | 2026-10-07、closure-captured mutation形状を4型へ追加し、Debug / Releaseで値セマンティクス維持を確認（`4249ed8c`） | `Tests/RedBlackTreeTests/` |
 | `RBT-013` | `DONE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 2026-10-07、27件を分類。文書へ影響するRange View検査と公開API名、古いコメント2件を判断候補として報告 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -234,6 +236,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `FIT-004` | `FIT-003` | 合意整理後、残ったユーザー判断を一件ずつ登録する |
 | `FIT-005` | `FIT-003` | 両agentの合意範囲が明確になった後に最終反映する |
 | `FIT-005` | `FIT-004` | 必要な不一致decisionを登録し、各判断が完了または除外された後に最終反映する |
+| `FIT-006` | `FIT-005` | Codexの最終反映後、Claudeが合意matrixとの取り違えを確認する |
+| `FIT-007` | `FIT-006` | Claudeの最終確認後、Codexが留保を検収して完成判定する |
 
 ## Registry rules
 

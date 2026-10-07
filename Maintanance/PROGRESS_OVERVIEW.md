@@ -85,7 +85,11 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-004` | `ACTIVE` | Claude | AIとgraph DBによるsmell（code / test / task）の独立試験 | 専用ノートをClaudeが自由編集し、観測・仮説・反証・再利用可能な判断基準を継続記録 | `AI_GRAPH_SMELL_NOTES.md` |
 | `GRAPH-005` | `ACTIVE` | Codex / Claude | ClaudeとCodexのgraph DB交流会 | 合意した共有面で観測、問い、反証、試したい見方を交換。tracked MDを強制せず、統合や正本化を目的にしない | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
-| `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界への更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を現行規則へ反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-002` | `ACTIVE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08追記を実績と自己認識に照らし、項目ごとに同意・修正案・根拠を回答する。既存本文とRegistryは変更しない | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-003` | `FROZEN` | Codex | [DISCOVERY] agent task適性表の合意・不一致整理 | `FIT-002`後、両者の根拠を照合して合意事項と不一致を分離。点数・担当・責任境界をまだ確定しない | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-004` | `FROZEN` | Codex | [EXECUTION] agent task適性表の不一致decision登録 | `FIT-003`でユーザー判断が必要な不一致が残った場合、一判断ごとの`DECISION` taskとして登録する | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-005` | `FROZEN` | Codex | [EXECUTION] agent task適性表の合意済み最終反映 | `FIT-003`と必要な個別判断後、合意済み内容だけを現行表・割り当て規則・Registryへ反映する | `AGENT_TASK_FIT_INTERVIEW.md` |
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-012` | `DONE` | Claude | Swift 6.4 `-O`のCoW誤コンパイルに対する値セマンティクスのTest as Spec拡充 | 2026-10-07、closure-captured mutation形状を4型へ追加し、Debug / Releaseで値セマンティクス維持を確認（`4249ed8c`） | `Tests/RedBlackTreeTests/` |
 | `RBT-013` | `DONE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 2026-10-07、27件を分類。文書へ影響するRange View検査と公開API名、古いコメント2件を判断候補として報告 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -226,6 +230,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-009` | `OPT-019` | 寿命test matrixをCodexが検収後、test対応監査を完了できる |
 | `OPT-009` | `OPT-023` | EDPC利用例の責務分類をCodexが検収後、test対応監査を完了できる |
 | `OPT-009` | `OPT-024` | コメントドックcoverageをCodexが検収後、test対応監査を完了できる |
+| `FIT-003` | `FIT-002` | Claudeの独立review後にCodexが合意・不一致を整理する |
+| `FIT-004` | `FIT-003` | 合意整理後、残ったユーザー判断を一件ずつ登録する |
+| `FIT-005` | `FIT-003` | 両agentの合意範囲が明確になった後に最終反映する |
+| `FIT-005` | `FIT-004` | 必要な不一致decisionを登録し、各判断が完了または除外された後に最終反映する |
 
 ## Registry rules
 

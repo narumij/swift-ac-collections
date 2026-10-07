@@ -86,10 +86,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-005` | `ACTIVE` | Codex / Claude | ClaudeとCodexのgraph DB交流会 | 合意した共有面で観測、問い、反証、試したい見方を交換。tracked MDを強制せず、統合や正本化を目的にしない | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-002` | `ACTIVE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08追記を実績と自己認識に照らし、項目ごとに同意・修正案・根拠を回答する。既存本文とRegistryは変更しない | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-003` | `FROZEN` | Codex | [DISCOVERY] agent task適性表の合意・不一致整理 | `FIT-002`後、両者の根拠を照合して合意事項と不一致を分離。点数・担当・責任境界をまだ確定しない | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-004` | `FROZEN` | Codex | [EXECUTION] agent task適性表の不一致decision登録 | `FIT-003`でユーザー判断が必要な不一致が残った場合、一判断ごとの`DECISION` taskとして登録する | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-005` | `FROZEN` | Codex | [EXECUTION] agent task適性表の合意済み最終反映 | `FIT-003`と必要な個別判断後、合意済み内容だけを現行表・割り当て規則・Registryへ反映する | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-002` | `DONE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08、責任境界、現行補正、OptionalArray 10 package、追加skillについて項目別回答を記録 | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-003` | `DONE` | Codex | [DISCOVERY] agent task適性表の合意・不一致整理 | 2026-10-08、実質的不一致なし。修正提案を条件付き合意へ整理し、OptionalArray固有の疑義は監査packageへ移管 | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-004` | `EXCLUDED` | — | [EXECUTION] agent task適性表の不一致decision登録 | `FIT-003`でユーザー判断を要する実質的不一致が無かったため登録不要 | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-005` | `ACTIVE` | Codex | [EXECUTION] agent task適性表の合意済み最終反映 | 合意済み内容だけを現行表・割り当て規則・Registryへ反映し、Claudeの差分確認へ渡す | `AGENT_TASK_FIT_INTERVIEW.md` |
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-012` | `DONE` | Claude | Swift 6.4 `-O`のCoW誤コンパイルに対する値セマンティクスのTest as Spec拡充 | 2026-10-07、closure-captured mutation形状を4型へ追加し、Debug / Releaseで値セマンティクス維持を確認（`4249ed8c`） | `Tests/RedBlackTreeTests/` |
 | `RBT-013` | `DONE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 2026-10-07、27件を分類。文書へ影響するRange View検査と公開API名、古いコメント2件を判断候補として報告 | `RED_BLACK_TREE_REMAINING_TASKS.md` |

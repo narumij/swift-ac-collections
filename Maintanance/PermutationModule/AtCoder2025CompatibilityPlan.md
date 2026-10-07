@@ -50,7 +50,9 @@ unsafeな結果共有を、現行APIとして再推奨もしない。
 
 - 基準ref: `remotes/origin/release/AtCoder/2025`
 - 基準ソース: `Sources/PermutationModule/Permutations.swift`
-- 現行と共有可能: `NextPermutationProtocol.swift`。基準refとの差分はない。
+- 共有しない（2026-10-07変更）: 基準refの`NextPermutationProtocol.swift`。通常版はこのprotocolを
+  廃止し、アルゴリズムを`NextPermutation.swift`の`Buffer`拡張へまとめた。互換版は基準refの
+  protocolファイルを互換ディレクトリへ自分で持つ。
 - 型名の差（2026-10-07）: 通常版は`Permutations<C>.Nexts`/`IteratorN`/`SubSequenceN`を
   `NextPermutationsSequence<Base>`/`.Iterator`/`.Permutation`へ改名し、`Permutations`名前空間を
   廃止した。互換版は基準refの旧名をそのまま持つ。
@@ -78,9 +80,11 @@ unsafeな結果共有を、現行APIとして再推奨もしない。
 
 ```text
 Sources/PermutationModule/
-├── NextPermutationProtocol.swift              # 両モードで共有
-├── Permutations.swift                          # 現行版のみ
-└── Compatibility/AtCoder2025/Permutations.swift # 互換版のみ
+├── NextPermutation.swift                         # 現行版のみ
+├── Permutations.swift                            # 現行版のみ
+└── Compatibility/AtCoder2025/
+    ├── NextPermutationProtocol.swift             # 互換版のみ
+    └── Permutations.swift                        # 互換版のみ
 ```
 
 - 現行ファイル全体を`#if !COMPATIBLE_ATCODER_2025`で囲む。

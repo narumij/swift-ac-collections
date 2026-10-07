@@ -31,27 +31,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-@usableFromInline
-protocol NextPermutationProtocol where Element: Comparable {
-  associatedtype Element
-  var isEmpty: Bool { get }
-  var startIndex: Index { get }
-  var endIndex: Index { get }
-  func formIndex(before i: inout Index)
-  func formIndex(after i: inout Index)
-  func index(before i: Index) -> Index
-  func swapAt(_ a: Index, _ b: Index)
-  func lastIndex(where predicate: (Element) -> Bool) -> Index?
-  subscript(position: Index) -> Element { get set }
-}
-
-extension NextPermutationProtocol {
-
-  public typealias Index = Int
+extension NextPermutationsSequence.Buffer where Element: Comparable {
 
   // オリジナルはhttps://github.com/apple/swift-algorithms/blob/main/Sources/Algorithms/Permutations.swift
   @inlinable
-  @inline(__always)
   internal func nextPermutation(upperBound: Index? = nil) -> Bool {
     guard !isEmpty else { return false }
     var i = index(before: endIndex)
@@ -84,7 +67,6 @@ extension NextPermutationProtocol {
 
   // オリジナルはhttps://github.com/apple/swift-algorithms/blob/main/Sources/Algorithms/Rotate.swift
   @inlinable
-  @inline(__always)
   internal func reverse(subrange: Range<Index>) {
     if subrange.isEmpty { return }
     var lower = subrange.lowerBound

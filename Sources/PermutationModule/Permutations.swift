@@ -17,7 +17,6 @@ extension Collection where Index == Int {
   /// If you need every permutation rather than only the lexicographic successors of the
   /// current order, use `swift-algorithms`'s `permutations()` instead.
   @inlinable
-  @inline(__always)
   public func nextPermutations() -> NextPermutationsSequence<Self>
   where Element: Comparable {
     .init(self)
@@ -31,13 +30,11 @@ where Base: Collection, Base.Index == Int, Base.Element: Comparable {
   let base: Base
 
   @inlinable
-  @inline(__always)
   internal init(_ base: Base) {
     self.base = base
   }
 
   @inlinable
-  @inline(__always)
   public func makeIterator() -> Iterator {
     .init(elementBuffer: .prepare(source: base))
   }
@@ -50,7 +47,6 @@ extension NextPermutationsSequence {
     struct Iterator: IteratorProtocol
   {
     @inlinable
-    @inline(__always)
     internal init(
       elementBuffer: Buffer<Base.Element>
     ) {
@@ -65,7 +61,6 @@ extension NextPermutationsSequence {
     var end = false
 
     @inlinable
-    @inline(__always)
     mutating func ensureUnique() {
       if !isKnownUniquelyReferenced(&elementBuffer) {
         elementBuffer = elementBuffer.copy()
@@ -73,7 +68,6 @@ extension NextPermutationsSequence {
     }
 
     @inlinable
-    @inline(__always)
     public mutating func next() -> Permutation? {
       guard !end else { return nil }
       if start {
@@ -98,7 +92,6 @@ extension NextPermutationsSequence {
   @usableFromInline
   struct Header {
     @usableFromInline
-    @inline(__always)
     internal init(capacity: Int, count: Int) {
       self.capacity = capacity
       self.count = count
@@ -133,7 +126,6 @@ extension NextPermutationsSequence {
     struct Permutation
   {
     @inlinable
-    @inline(__always)
     internal init(
       elementBuffer: Buffer<Base.Element>
     ) {
@@ -151,15 +143,12 @@ extension NextPermutationsSequence.Permutation: @unchecked Sendable where Base.E
 
 extension NextPermutationsSequence.Permutation: RandomAccessCollection {
   @inlinable
-  @inline(__always)
   public var startIndex: Int { elementBuffer.startIndex }
   @inlinable
-  @inline(__always)
   public var endIndex: Int { elementBuffer.endIndex }
   public typealias Index = Int
   public typealias Element = Base.Element
   @inlinable
-  @inline(__always)
   public subscript(position: Int) -> Base.Element {
     precondition(position >= startIndex && position < endIndex, "Index out of range")
     return elementBuffer[position]
@@ -169,12 +158,9 @@ extension NextPermutationsSequence.Permutation: RandomAccessCollection {
   #endif
 }
 
-extension NextPermutationsSequence.Buffer: NextPermutationProtocol where Element: Comparable {}
-
 extension NextPermutationsSequence.Buffer {
 
   @inlinable
-  @inline(__always)
   @unsafe var __storage_ptr: UnsafeMutablePointer<Element> {
     unsafe withUnsafeMutablePointerToElements({ unsafe $0 })
   }
@@ -183,37 +169,27 @@ extension NextPermutationsSequence.Buffer {
   typealias Index = Int
 
   @inlinable
-  @inline(__always)
   var isEmpty: Bool { header.count == 0 }
   @inlinable
-  @inline(__always)
   var startIndex: Index { 0 }
   @inlinable
-  @inline(__always)
   var endIndex: Index { header.count }
 
   @inlinable
-  @inline(__always)
   func formIndex(before i: inout Index) { i -= 1 }
   @inlinable
-  @inline(__always)
   func formIndex(after i: inout Index) { i += 1 }
   @inlinable
-  @inline(__always)
   func index(before i: Index) -> Index { i - 1 }
   @inlinable
-  @inline(__always)
   func swapAt(_ a: Index, _ b: Index) { swap(&self[a], &self[b]) }
   @inlinable
-  @inline(__always)
   func lastIndex(where predicate: (Element) -> Bool) -> Index? {
     (startIndex..<endIndex).last { predicate(self[$0]) }
   }
   @inlinable
   subscript(position: Index) -> Element {
-    @inline(__always)
     get { unsafe __storage_ptr[position] }
-    @inline(__always)
     _modify {
       let storage = unsafe __storage_ptr
       yield unsafe &storage[position]
@@ -224,7 +200,6 @@ extension NextPermutationsSequence.Buffer {
 extension NextPermutationsSequence.Buffer {
 
   @inlinable
-  @inline(__always)
   internal static func create(
     withCapacity capacity: Int
   ) -> Self {
@@ -235,7 +210,6 @@ extension NextPermutationsSequence.Buffer {
   }
 
   @inlinable
-  @inline(__always)
   internal func copy(newCapacity: Int? = nil) -> NextPermutationsSequence.Buffer<Element> {
 
     let capacity = newCapacity ?? self.header.capacity
@@ -266,7 +240,6 @@ extension NextPermutationsSequence.Buffer {
 extension NextPermutationsSequence.Buffer {
 
   @inlinable
-  @inline(__always)
   static func prepare<CC>(source: CC) -> NextPermutationsSequence.Buffer<Element>
   where CC: Collection, CC.Element == Element {
 

@@ -62,23 +62,23 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   約64→54→38→28→22へ削減した。残りは公開7型を`@unsafe`にするAPI判断とallocate。
   公開API全体へunsafeを伝播させる変更は採らず、storage再設計までstrict恒久適用を保留する。
 
-### BareArray体系監査
+### OptionalArray体系監査と管理方式の検証
 
-現在の到達点は、BareArrayをCodexのユーザードキュメント作業フェーズへ渡せる状態にすることである。
-親taskの範囲は次の4件とし、コメントドックの全件整備はユーザードキュメント作業そのものとして含めない。
+現在の到達点は、OptionalArrayをCodexのユーザードキュメント作業フェーズへ渡せる状態にすることである。
+Codexが作業設計、調査範囲の閉鎖、網羅性確認、成果物の受入れ、完了判定を担う。Claudeへ作業を委任する
+場合も、対象・確認資料・成果物形式・停止条件をCodexが指定し、その提出だけで親taskを完了扱いにしない。
+新しい判断点はagentが補わず、一判断ごとの`DECISION`候補として分離する。
 
-1. Claudeが、所有型`BareArray` / 2D / 3D / 4DとView 1D〜3Dの公開7型について、公開宣言ごとの
-   境界・寿命・破棄契約を既存test、git履歴、OptionalArrayとの対応に照らして棚卸しする。
-   過去の決定の有無を確認し、新しい判断点は`DECISION`候補として報告する。
-2. 1の結果で未決定なら、ユーザーが競技プログラミング用の低レベル部品として公開を続けるか判断する。
-3. 公開継続の判断後、ユーザーが`BareArray` / `BareArray1DView`の不揃い、2D・3Dの
-   `width` / `height` / `depth`と4Dの`size0`〜`size3`、`OptionalArray1D`との整合を含む
-   命名体系を判断する。
-4. 1の完了後、Claudeが`BareArrayModuleTests`を番号付きTest as Specificationへ整理する。
+この管理方式は次の順で検証する。
 
-ユーザードキュメント作業後の後続中間ゴールでは、BareArrayを1.0として採用可能か判断できる状態を作る。
-その段階まで性能基準と計測は凍結し、Viewが所有者より長く生きて解放済みメモリを指し得る寿命問題と
-strict memory safetyの恒久適用は`ARRAY-001`のstorage再設計論点として着手しない。
+1. BareArrayの親・子・後続性能taskと`ARRAY-001`を凍結し、途中成果を保持する。
+2. OptionalArrayの体系監査・名称再検討をCodex管理で再開し、ユーザードキュメント作業へ渡す。
+3. 完了後、実際に有効だった作業設計・責任境界・受入基準を抽出する。
+4. Claude向け委任規則を正本へ明文化する必要があるかを別taskで判断し、必要な場合だけ反映する。
+5. 検証済みの管理方式を踏まえ、BareArray監査を再開するかを別taskで判断する。
+
+BareArrayについて既に登録した公開7型の契約棚卸し、位置づけ、命名、Test as Specification、性能の論点は
+削除しない。再開判断までは追加調査・判断・整理を行わず、コメントドック全件整備も開始しない。
 
 - AcCollections: RedBlackTreeCollections、PermutationModule、OptionalArrayModule、
   BareArrayModuleの再公開テストを追加済み。互換modeでは旧名RedBlackTreeModuleも再公開する。

@@ -8,10 +8,6 @@
 import PermutationModule
 import XCTest
 
-#if USING_ALGORITHMS
-  import Algorithms
-#endif
-
 final class PermutationTests: XCTestCase {
 
   private func requireSendable<T: Sendable>(_: T) {}
@@ -75,30 +71,6 @@ final class PermutationTests: XCTestCase {
     XCTAssertEqual(firstResults, expected)
     XCTAssertEqual(secondResults, expected)
   }
-
-  #if USING_ALGORITHMS
-  // 挙動比較用
-    func testExample0() throws {
-      do {
-        let a = [1, 2]
-        XCTAssertEqual(
-          a.permutations().map { $0 },
-          [[1, 2], [2, 1]])
-      }
-      do {
-        let a = [1, 2, 3]
-        XCTAssertEqual(
-          a.permutations().map { $0 },
-          [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
-      }
-      do {
-        let a = [0, 0, 1]
-        XCTAssertEqual(
-          a.permutations().map { $0 },
-          [[0, 0, 1], [0, 1, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 0, 0]])
-      }
-    }
-  #endif
 
   func testNextPermutations() throws {
     do {
@@ -166,7 +138,7 @@ final class PermutationTests: XCTestCase {
 
   func testNextPermutationsDoNotDuplicateEqualElements() throws {
     // 比較上等しい要素は位置の違いだけで重複列挙しない(next_permutationと同じ)。
-    // swift-algorithmsのpermutations()は[0, 0, 1]で6件を返す(testExample0)。
+    // 参考: swift-algorithmsのpermutations()は[0, 0, 1]で、位置違いの重複を含む6件を返す。
     XCTAssertEqual(
       [0, 0, 1].nextPermutations().map { Array($0) },
       [[0, 0, 1], [0, 1, 0], [1, 0, 0]])
@@ -215,23 +187,4 @@ final class PermutationTests: XCTestCase {
     XCTAssertEqual(p[p.startIndex], 1)
     XCTAssertEqual(p[p.endIndex - 1], 2)
   }
-
-#if ENABLE_PERFORMANCE_TESTING
-  #if USING_ALGORITHMS
-    func testPerformance0() throws {
-      #if DEBUG
-        let s = (0..<9) + []
-      #else
-        let s = (0..<10) + []
-      #endif
-      var ans = 0
-      self.measure {
-        for p in s.permutations() {
-          ans += p.count
-        }
-      }
-      print(ans)
-    }
-  #endif
-#endif
 }

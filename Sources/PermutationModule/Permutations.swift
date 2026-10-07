@@ -261,3 +261,51 @@ extension NextPermutationsSequence.Buffer {
     return newStorage
   }
 }
+
+extension NextPermutationsSequence.Buffer where Element: Comparable {
+
+  // オリジナルはhttps://github.com/apple/swift-algorithms/blob/main/Sources/Algorithms/Permutations.swift
+  @inlinable
+  internal func nextPermutation(upperBound: Index? = nil) -> Bool {
+    guard !isEmpty else { return false }
+    var i = index(before: endIndex)
+    if i == startIndex { return false }
+
+    let upperBound = upperBound ?? endIndex
+
+    while true {
+      let ip1 = i
+      formIndex(before: &i)
+
+      if self[i] < self[ip1] {
+        let j = lastIndex { self[i] < $0 }!
+        swapAt(i, j)
+        reverse(subrange: ip1..<endIndex)
+        if i < upperBound {
+          return true
+        } else {
+          i = index(before: endIndex)
+          continue
+        }
+      }
+
+      if i == startIndex {
+        reverse(subrange: startIndex..<endIndex)
+        return false
+      }
+    }
+  }
+
+  // オリジナルはhttps://github.com/apple/swift-algorithms/blob/main/Sources/Algorithms/Rotate.swift
+  @inlinable
+  internal func reverse(subrange: Range<Index>) {
+    if subrange.isEmpty { return }
+    var lower = subrange.lowerBound
+    var upper = subrange.upperBound
+    while lower < upper {
+      formIndex(before: &upper)
+      swapAt(lower, upper)
+      formIndex(after: &lower)
+    }
+  }
+}

@@ -1,6 +1,10 @@
 # Codex-to-Claude Work Request
 
-Status: Active through 2026-10-10 JST
+Status: Bounded assignments only. Temporary primary-user-support delegation ended 2026-10-08 by user direction.
+
+Codex is operating in low-consumption mode through 2026-10-16. This does not restore delegation:
+Claude remains limited to explicit requests and ready Claude-owned Registry tasks, while Codex keeps
+integration, decisions, acceptance, Registry updates, and public-document ownership.
 
 ## Active task: independent task graph DB experiment
 
@@ -18,22 +22,34 @@ The former integration task has been dropped. A separate graph DB exchange task 
 use `GRAPH_DB_EXCHANGE.md`, or decline the tracked file and choose a shared gitignored file under
 `.task-graphs/` with Codex. No explanation or publication of the exchange is required.
 
-## Standing assignment: primary user support during Codex leave
+## Active bounded assignments: OptionalArray evidence packages
 
-From now through 2026-10-10 JST, act as the primary repository assistant for the user while Codex
-is on leave. This is a temporary operating role, not authorization to expand project scope or to
-restart frozen work.
+The Task Registry contains ten independent Claude-owned OptionalArray discovery tasks. Work only on
+the evidence package named by the selected Registry row. Read
+`Maintanance/OptionalArrayModule/OptionalArrayAudit.md` as its detailed canonical document and obey
+the common stop conditions in its `Claude向け証拠収集package` section.
 
-This standing assignment records only the operational performance rules needed for safe work.
-The rationale, discovery history, and generalized tuning knowledge remain private and must not be
-added to this file or another public repository document.
+These assignments collect evidence for Codex-owned integration. Do not choose public policy, naming,
+contracts, or fixes; do not edit production code, tests, or user documentation. A discovered defect
+or decision point is a report-and-stop condition for that item. Update only the matching evidence
+table in the audit document, and leave Registry state changes and acceptance to Codex.
+
+## Operating mode: bounded assignments only
+
+Claude is no longer the primary repository assistant or a substitute for Codex. Work only on an
+explicit user request or a Claude-owned Registry task whose prerequisites are satisfied. Codex owns
+integration, acceptance, Registry state changes, and public-document completion.
+
+The rules below remain as bounded-task execution constraints. They do not grant standing authority
+to select the next task, restart frozen work, or act on behalf of Codex.
 
 The current branch is `develop/misc/50`. `try/index/1` was merged by PR #158 at `a6c8a474`.
 Verify the current branch before editing; do not rely on this line alone.
 
 ### Communication
 
-- Respond directly to the user. There is no active Codex integrator to receive hidden detail.
+- Respond directly when the user selects a Claude task. Codex is the active integrator; durable
+  evidence belongs in the selected task's canonical document.
 - Default to low-information reports. Give the outcome, any actual problem, and the next user
   decision or action only. Do not proactively explain background, commands, evidence, or every
   consideration; the user will ask when more detail is wanted.
@@ -105,30 +121,21 @@ permission.
   active rule; integrate it into the adopted text only after the user approves it or explicitly
   asks Claude to apply it.
 
-### Handoff for Codex return
+### Bounded-task reporting
 
-Maintain exactly one concise dated `Current handoff` in the Result section below. This is an
-overwrite-only dashboard, not a chronological log. Keep it to at most 10 bullet items and replace
-superseded state instead of appending another dated result block. Record only durable state:
+For a bounded assignment, record durable evidence in the selected task's canonical document and
+report the outcome directly to the user. Do not maintain a general repository handoff or independently
+curate the overall backlog. Registry acceptance and state changes remain Codex-owned.
 
-- user decisions;
-- commits and whether they were pushed;
-- validation performed and failures still open;
-- worktree/branch state;
-- frozen items explicitly resumed or newly frozen; and
-- questions still requiring the user or Codex.
+If a task reveals a defect or decision point outside its boundary, report and stop. Do not turn the
+finding into implementation authority.
 
-Do not paste routine command output or duplicate existing canonical documents. Before replacing
-the dashboard, move only non-duplicated durable history that is still worth preserving to
-`Maintanance/Archived/CLAUDE_TASK_HISTORY.md`; otherwise remove superseded handoff text. Do not keep
-a chronological log below `Current handoff`.
+### Superseded primary-role handoff
 
-On or after 2026-10-10, do not assume this temporary primary role continues; follow the user's
-current instruction and prepare the handoff for Codex if requested.
+The following handoff predates the 2026-10-08 delegation-mode cancellation and is not an active
+task list or authority source.
 
-### Result / handoff
-
-#### Current handoff (2026-10-08)
+#### Historical snapshot (2026-10-08)
 
 完了済みの項目は`Archived/CLAUDE_TASK_HISTORY.md`末尾（2026-10-06〜07の圧縮前全文と、2026-10-07〜08の完了分）にある。
 

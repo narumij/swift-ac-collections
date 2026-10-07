@@ -11,6 +11,10 @@
 **現在の律速:** 外部（`swift-collections` ContainersPreviewの`Container.Index`要件）。
 Index契約と関連taskは、この外部条件が安定するまで最終確定できない。
 
+**一時運用:** 2026-10-16まではCodexを低燃費運用とする。Codexはユーザーが選んだ作業、
+統合・判断・Registry更新などCodex固有の責務を小さな単位で進め、広い再調査や先回りの展開を
+行わない。Claudeへの全面委譲は再開せず、Claudeは境界が確定した担当taskだけを実行する。
+
 **中間ゴールの取り扱い**
 
 **現在の中間ゴール:**
@@ -134,6 +138,16 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-012` | `FROZEN` | Codex | [EXECUTION] OptionalArrayModuleTestsのTest as Specification整理 | `OPT-009`と必要な判断taskの完了後、仕様根拠を番号付きTest as Specificationへ整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-013` | `FROZEN` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 契約表、test対応、決定済み事項、未決定事項、文書入力を暫定受入基準で検収し、親taskを完了可能にする | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-014` | `DONE` | Codex | [EXECUTION] OptionalArray3DViewの2D面stride修正 | 2026-10-08、非対称次元testで修正前のslice aliasを確認し、offsetを`width * height * position`へ修正。NOP setterは連鎖writeback用と明文化 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-015` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray公開宣言29件のledger作成 | 公開宣言を一件ずつ型・member種別・source位置・現在のコメントドックへ対応付ける。契約判断やsource変更は行わない | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-016` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray所有4型のtest根拠表 | initializer、removeAll、subscript、indices、Sendableについて、既存test名と検証事実を対応付け、不足を列挙 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-017` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray View 3型のtest根拠表 | Viewの非所有性、親storage共有、subscript、indicesについて、既存test名と検証事実を対応付け、不足を列挙 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-018` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray境界test matrix | 所有型・Viewの各subscript経路について、負値・上端、read・write、Debug・Release・Death Testの有無を表にする。追加実装はしない | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-019` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray参照型寿命test matrix | 1D〜4DとViewについて、構築、上書き、nil代入、removeAll、再利用、deinitの検証有無と期待破棄回数を表にする | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-020` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray次元・offset式の独立照合 | 2D〜4DとViewの各軸、indices、linear offset式を非対称次元で机上照合し、既存test対応と疑義を報告。production codeは変更しない | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-021` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray Sendable採用履歴の事実確認 | `@unchecked Sendable`導入commitと後続変更を限定調査し、導入理由として記録された事実、現行test、未記録部分を区別して報告 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-022` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray不正次元の現挙動確認 | 負値、zero dimension、次元積overflowについて、現行実装・標準APIの結果とtest有無を確認。望ましい方針は決めずproduction codeも変更しない | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-023` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray EDPC利用例の責務分類 | EDPC-J / EDPC-Lが使う公開面、固定する利用形状、アルゴリズム固有部分を分け、仕様testとして代替できない契約を報告 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-024` | `ACTIVE` | Claude | [DISCOVERY] OptionalArrayコメントドックcoverage表 | 公開宣言29件についてコメントの有無と、境界・所有・寿命・破棄・変更・計算量の記載有無だけを棚卸しする。コメント整備は行わない | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |
@@ -200,6 +214,16 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-013` | `OPT-011` | 必要な判断taskを登録・完了または除外した後に引き渡し判定する |
 | `OPT-013` | `OPT-012` | Test as Specification整理後に引き渡し判定する |
 | `OPT-001` | `OPT-013` | 引き渡し検収後に親taskを完了できる |
+| `OPT-008` | `OPT-015` | 公開宣言ledgerをCodexが検収後、契約・履歴監査を完了できる |
+| `OPT-008` | `OPT-020` | 次元・offset式の独立照合をCodexが検収後、契約監査を完了できる |
+| `OPT-008` | `OPT-021` | Sendable履歴調査をCodexが検収後、契約監査を完了できる |
+| `OPT-008` | `OPT-022` | 不正次元の現挙動をCodexが検収後、契約監査を完了できる |
+| `OPT-009` | `OPT-016` | 所有型のtest根拠表をCodexが検収後、test対応監査を完了できる |
+| `OPT-009` | `OPT-017` | Viewのtest根拠表をCodexが検収後、test対応監査を完了できる |
+| `OPT-009` | `OPT-018` | 境界test matrixをCodexが検収後、test対応監査を完了できる |
+| `OPT-009` | `OPT-019` | 寿命test matrixをCodexが検収後、test対応監査を完了できる |
+| `OPT-009` | `OPT-023` | EDPC利用例の責務分類をCodexが検収後、test対応監査を完了できる |
+| `OPT-009` | `OPT-024` | コメントドックcoverageをCodexが検収後、test対応監査を完了できる |
 
 ## Registry rules
 

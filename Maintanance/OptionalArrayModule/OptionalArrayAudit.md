@@ -354,6 +354,25 @@ BareArrayの凍結task、storage再設計、strict memory safety恒久適用は�
 `-Ounchecked`での停止や安全な回復は公開保証に含めず、呼び出し側が事前条件を満たす責任を負う。
 この決定はstorage再設計やstrict memory safety恒久適用を再開するものではない。
 
+### OPT-033 次元事前条件の実装・仕様test assignment（2026-10-08）
+
+担当: Claude。`OptionalArray1D`〜`OptionalArray4D`のpublic initializerへ、決定済みの次元契約を
+実装する。各入力次元が0以上であることを積の計算前に検査し、2D〜4Dはoverflowを起こさずに
+次元積が`Int`で表現可能か確認してからcapacityを確定する。zero dimensionは成功し、空の`indices`と
+capacity相当の空状態を維持する。
+
+同じtaskで既存のTesting／Death Test方式に従い、少なくとも次を仕様として固定する。
+
+- 1D〜4Dのzero dimensionが有効で空になること。
+- 各initializerの負値が通常の検査構成で停止すること。
+- 2D〜4Dの次元積overflowが、overflow計算や不正確保へ進む前に停止すること。
+- DebugとReleaseで契約が成立すること。`-Ounchecked`の停止は期待しない。
+
+型名、次元label、公開位置づけ、停止messageの文言、storage構造を変更しない。BareArray、strict memory
+safety、コメントドック全件整備、test file全体の番号整理へ範囲を広げない。既存のDeath Test基盤では
+契約を固定できない問題を見つけた場合、独自方式を追加せず根拠を報告して停止する。完了時は変更file、
+追加した仕様、Debug／Releaseの実行結果を記録し、Codexが受け入れる。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

@@ -20,8 +20,6 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 **現在の中間ゴール:**
 
 - Permutationを、Codexのユーザードキュメント作業フェーズへ渡せる状態にする。
-- RedBlackTreeに見えていない残作業がないかを確認し、Codexのユーザードキュメント作業フェーズへ
-  渡せる状態にする。
 - OptionalArrayを、Codexが作業設計・網羅性確認・完了判定を担う管理方式で、Codexの
   ユーザードキュメント作業フェーズへ渡せる状態にする。
 - OptionalArrayの体系監査完了時点で、ISO/IEC 25010観点の品質評価の初版を策定し、
@@ -31,6 +29,9 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **後続の中間ゴール:**
 
+- Permutation、OptionalArray、BareArrayのユーザードキュメント作業を通じて作業方式を習熟した後、
+  RedBlackTreeに見えていない残作業を確認し、Codexのユーザードキュメント作業フェーズへ渡せる
+  状態にする。BareArrayは既存の再開判断を経るまで凍結を維持する。
 - ユーザードキュメント作業後、RedBlackTreeを汎用基盤ライブラリの1.0として採用できるか判断可能な
   状態にする。この段階でruntime-check実装を再審査し、その結論とIndex契約を1.0品質ゲートへ渡す。
 - ユーザードキュメント作業後、OptionalArrayのISO/IEC 25010観点の品質評価を再評価し、
@@ -59,7 +60,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 必要とする`EXECUTION`は、対応する`DECISION`を前提taskにする。soft orderは同時に着手可能なnode間の
 推奨順にだけ使い、必須依存へ読み替えない。
 
-中間ゴールへ向けた残る主系列の推奨順は、`OPT-001`、`PERM-017`、`RBT-014`、`RBT-015`とする。
+中間ゴールへ向けた残る主系列の推奨順は、`OPT-001`、`PERM-017`、`RBT-015`とする。
 これは後続作業への影響が大きいものを先に調べるためのsoft orderであり、Task precedenceに記録した
 必須依存以外の着手を禁止しない。
 
@@ -89,7 +90,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-013` | `DONE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 2026-10-07、27件を分類。文書へ影響するRange View検査と公開API名、古いコメント2件を判断候補として報告 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `PERM-016` | `DONE` | Claude | [EXECUTION] Permutation品質評価の事実更新 | 2026-10-07、解消済み`swapAt`懸念を除き、header二重破棄、終端の不要copy、走査共有、Debug限定検査member、行数を反映（`127a0d5b`） | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-017` | `ACTIVE` | Codex | Permutation品質評価R-1〜R-4 review | `PERM-016`後の§6をreviewし、品質特性の解釈、1.0前の不足、根拠の正確性へ回答を反映。R-3は文書形式を決めず、ユーザー判断に必要な選択肢と技術的根拠までを整理 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
-| `RBT-014` | `ACTIVE` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | `RBT-013`後、workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
+| `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-015` | `ACTIVE` | Codex | RedBlackTree残task文書の事実更新 | PR #158前提の記述など、現在の実装とRegistryに対して古い記述を修正 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-017` | `EXCLUDED` | — | [EXECUTION] Mapped Values Range Viewの範囲外更新防止ゲート | 2026-10-08、範囲所属は呼び出し側の事前条件、単一Index操作はO(1)と`211ca2fc`で確定済みのため変更不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-018` | `EXCLUDED` | — | [DISCOVERY] Mapped Values ViewのIndex検査条件調査 | 2026-10-08、調査は既存のAPI Matrix・仕様testを見落としており、追加判断が必要という前提を撤回 | `RED_BLACK_TREE_REMAINING_TASKS.md` |

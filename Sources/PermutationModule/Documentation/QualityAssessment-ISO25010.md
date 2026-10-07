@@ -1,7 +1,7 @@
 # PermutationModule 品質評価（ISO/IEC 25000シリーズ観点）
 
 > 状態: ドラフト（2026-10-07 / Claude Opus 5.5）。Codexのレビュー前提。
-> 評価時点: `4a75b9f8`（branch `develop/misc/50`）。
+> 評価時点: `d8734a65`（branch `develop/misc/50`）。
 > 赤黒木（RedBlackTreeCollections）の品質ゲートは`Sources/RedBlackTreeCollections/Documentation/Quality-Checklist.md`
 > （`QUALITY-001`）であり、本書はPermutationModuleだけを対象とする。
 
@@ -25,6 +25,9 @@
 - 対象: `Sources/PermutationModule/Permutations.swift`の公開表面
   （`Collection.nextPermutations()`、`NextPermutationsSequence`、`.Iterator`、`.Permutation`）。
 - 対象外: AtCoder 2025互換mode（`PERM-004`〜`PERM-010`、未実装）。実装後に別途評価する。
+- 前提（2026-10-07、ユーザー判断）: Swiftの標準protocolの意味論・契約（例: `Collection.count`が走査できる
+  要素数と一致すること、`Comparable`が全順序であること）は信じる。契約に違反する適合型への防御は品質要求に含めない。
+  利用者が普通に踏みうる誤用（範囲外の添字など）への`precondition`とは区別する。
 
 ## 3. 製品品質（ISO/IEC 25010:2023）
 
@@ -53,7 +56,7 @@ Permutationの計測は入っていない。2026-10-07の`@inline(__always)`27�
 | 副特性 | 判定 | 根拠 |
 | --- | --- | --- |
 | 共存性 | 部分 | swift-algorithms 1.2.1の型名（`PermutationsSequence`・`UniquePermutationsSequence`）と衝突しないことは目視で確認した。両方をimportした状態のtestはない |
-| 相互運用性 | 満たす | `Sequence`・`IteratorProtocol`・`RandomAccessCollection`へ適合し、標準の`map`や`Array(_:)`で使える（`_1_`〜`_3_`）。`AcCollections`経由の再公開は`AcCollectionsTests.test_importAcCollections_exposesNextPermutations` |
+| 相互運用性 | 満たす | `Sequence`・`IteratorProtocol`・`RandomAccessCollection`へ適合し、標準の`map`や`Array(_:)`で使える（`_1_`〜`_3_`）。`Permutation`は`Equatable`・`Hashable`（要素が`Hashable`のとき）で、`Set`や辞書のキーにできる（`_3_`）。結果の添字は入力に関係なく0始まりの`Int`（`_3_`の`testIndicesStartAtZeroForAnySource`）。`AcCollections`経由の再公開は`AcCollectionsTests.test_importAcCollections_exposesNextPermutations` |
 
 ### 3.4 インタラクション能力（Interaction capability。旧: 使用性）
 
@@ -87,7 +90,7 @@ assertionの外で`next()`を呼んでこれを避けている。ユーザー判
 
 | 副特性 | 判定 | 根拠 |
 | --- | --- | --- |
-| 完全性 | 部分 | target全体に`.strictMemorySafety()`を恒久適用し、unsafe操作は所有境界ごとのscoped `unsafe`に限定（`Maintanance/StrictMemorySafetyReadiness.md`）。添字の範囲検査はDebug・Releaseで有効。`-Ounchecked`では省略されうる（ソースのドキュメントコメントに明記） |
+| 完全性 | 部分 | target全体に`.strictMemorySafety()`を恒久適用し、unsafe操作は所有境界ごとのscoped `unsafe`に限定（`Maintanance/StrictMemorySafetyReadiness.md`）。添字の範囲検査はDebug・Releaseで有効。`-Ounchecked`では省略されうる（ソースのドキュメントコメントに明記）。入力のbufferへのコピーは`Collection.count`の契約を信じている（§2の前提。`count`を偽る適合型では範囲外へ書きうることを2026-10-07に確認したうえで、防御しないと判断） |
 | 機密性・否認防止性・責任追跡性・真正性・耐性 | 対象外 | 秘密情報や外部入力の境界を持たない |
 
 懸念: Death Testは、macOSでは既定で、Linuxではtrait指定時だけ有効になる。CI（Linux）では実行されていない。
@@ -100,8 +103,10 @@ Releaseでの停止は2026-10-07にローカルのmacOSで5件とも確認した
 | モジュール性 | 満たす | 1 file、空行・コメントを除いて213行（`4a75b9f8`時点）。基準ref（`release/AtCoder/2025`）の約446行から縮小 |
 | 再利用性 | 満たす | 外部依存なし |
 | 解析性 | 満たす | 仕様は連番のTest as Specificationだけにあり、文書との二重管理はない（`5efc1a9c`）。`.task-graphs`の`spec-gaps`で公開APIの仕様test参照を確認（0件） |
-| 修正性 | 満たす | 死んだ汎用化（使われない`upperBound`・`capacity`・二重の型パラメータ）を除去済み（`4a75b9f8`） |
+| 修正性 | 満たす | 死んだ汎用化（使われない`upperBound`・`capacity`・二重の型パラメータ）を除去済み（`4a75b9f8`）。iteratorの状態は3値のenumで、ありえない組み合わせを持たない（`c204dd9f`） |
 | 試験性 | 満たす | 「存在しないこと」の約束は、同名宣言を置いてcompile errorで検出する方式。実際にAPIを戻して検出を確認済み |
+
+懸念: 内部の`swapAt`は同じ位置どうしの入れ替えを想定していない。現在の呼び出し元は異なる位置を保証するので実害はなく、TODOとして保留。
 
 懸念: AtCoder 2025互換modeを実装すると、基準refの実装が別fileとして戻る。通常版と排他的にcompileされることの
 検証（`PERM-005`〜`PERM-008`）が済むまでは、この判定は通常版だけについてのものである。

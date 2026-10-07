@@ -432,6 +432,28 @@ initializerで全次元積が表現可能と確認済みであることを前提
 1件含める。型名、次元契約、initializer、他のsubscript、storage、BareArrayを変更しない。
 Debug／ReleaseのOptionalArray testを実行し、新しいdefectを見つけた場合は範囲を広げず報告して停止する。
 
+### OPT-034 実施結果
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。未commit。
+
+- `Sources/OptionalArrayModule/OptinalArray.swift`: `OptionalArray4D.subscript`のgetterだけを変更した。
+  `size0` / `size1` / `size2`のいずれかが0ならoffsetを0とし、途中の積を評価しない。すべて非zeroなら現行の
+  `size0 * size1 * size2 * position`のまま。返すViewの次元（`width: size0, height: size1, depth: size2`）は変えていない。
+- `Tests/OptionalArrayModuleTests/OptionalArrayTests.swift`: `testOptionalArray4DZeroVolumeOuterSubscriptReachesEmptyViews`を追加した。
+  `size3 = 1`で`size0` / `size1` / `size2`のそれぞれを0にした3形状と、`(Int.max, 2, 0, 1)`の1形状を外側subscriptで辿る。
+- 解釈（記録）: 依頼の「返るViewの`indices`が空になる」は、0の軸に当たるViewまで辿って空になることとして固定した。
+  `size0 == 0`や`size1 == 0`のとき、外側subscriptが直接返す3DViewの`indices`は`0..<size2`で、空ではない（既存の意味のまま）。
+- test-first: 修正前は、追加したtestがprocessごと停止した（signal 5、`(Int.max, 2, 0, 1)`の途中積overflow）。
+- 実行結果: `swift test --filter OptionalArrayModuleTests`をDebugとReleaseの両方で実行し、XCTest 35件とSwift Testing 21件がすべて成功した
+  （Release productは実行時刻に更新）。
+- 性能: `@inline(__always)`のgetterに分岐を1つ足した。性能は測っていない。OptionalArrayは`Benchmarks/Libraries/CI.json`に入っていない
+  ので、performance jobでも確認されない。
+- 新しいdefect: なし。
+
+Codex acceptance（2026-10-08）: zero-volume時だけ途中積を避け、非zero時のoffsetとView次元を維持している。
+内側3軸それぞれのzeroと途中積overflow形状がtestで固定され、Debug／Releaseが成功したため受け入れる。
+`OPT-034`を完了し、これを前提とする`OPT-033`も完了とする。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

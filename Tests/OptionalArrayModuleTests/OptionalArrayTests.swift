@@ -522,4 +522,27 @@ final class OptionalArrayTests: XCTestCase {
     let array4D = OptionalArray4D<Int>(size0: Int.max, size1: 2, size2: 0, size3: 1)
     XCTAssertEqual(array4D.indices.count, 1)
   }
+
+  func testOptionalArray4DZeroVolumeOuterSubscriptReachesEmptyViews() {
+    // `size3 > 0`で内側のいずれかの軸が0のとき、外側subscriptは有効で、
+    // 0の軸に当たるViewまで辿るとindicesが空になる。
+    let zeroSize0 = OptionalArray4D<Int>(size0: 0, size1: 2, size2: 2, size3: 1)
+    for z in zeroSize0[0].indices {
+      for y in zeroSize0[0][z].indices {
+        XCTAssertTrue(zeroSize0[0][z][y].indices.isEmpty)
+      }
+    }
+
+    let zeroSize1 = OptionalArray4D<Int>(size0: 2, size1: 0, size2: 2, size3: 1)
+    for z in zeroSize1[0].indices {
+      XCTAssertTrue(zeroSize1[0][z].indices.isEmpty)
+    }
+
+    let zeroSize2 = OptionalArray4D<Int>(size0: 2, size1: 2, size2: 0, size3: 1)
+    XCTAssertTrue(zeroSize2[0].indices.isEmpty)
+
+    // 内側の途中の積(`size0 * size1`)だけがoverflowする形でも、外側subscriptは停止しない。
+    let largeZeroVolume = OptionalArray4D<Int>(size0: Int.max, size1: 2, size2: 0, size3: 1)
+    XCTAssertTrue(largeZeroVolume[0].indices.isEmpty)
+  }
 }

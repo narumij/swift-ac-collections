@@ -332,9 +332,11 @@ public struct OptionalArray4D<Element>: ~Copyable {
     @inline(__always)
     get {
       precondition(0 <= position && position < size3)
+      // 内側に0の次元があれば要素は無い。途中の積はoverflowし得るので評価しない。
+      let offset = size0 == 0 || size1 == 0 || size2 == 0 ? 0 : size0 * size1 * size2 * position
       return unsafe .init(
-        hasPayload: hasPayload + size0 * size1 * size2 * position,
-        payload: payload + size0 * size1 * size2 * position,
+        hasPayload: hasPayload + offset,
+        payload: payload + offset,
         width: size0,
         height: size1,
         depth: size2)

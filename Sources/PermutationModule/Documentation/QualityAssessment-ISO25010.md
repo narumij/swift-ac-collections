@@ -225,3 +225,13 @@ Codex acceptance（2026-10-08）: 参照箇所と現物の対応、結果分類�
 
 Codex acceptance（2026-10-08）: 指定された3点だけが照合結果へ同期され、評価語は維持されたため
 受け入れた。共存性の評価はR-1〜R-4 reviewでCodexが扱い、`PERM-025`を完了とする。
+
+### PERM-026 共存性evidence gap assignment（2026-10-08）
+
+担当: Claude。通常版Permutationとswift-algorithmsの同時import、`AcCollections`経由の再公開、
+凍結中の互換modeを混同せず、共存性について既存testで検証済みの範囲と未検証の範囲を表にする。
+対象、構成、根拠test、確認できる事実、未検証事項を記録する。
+
+`満たす` / `部分`の評価、必要な追加test、互換modeの再開、文書境界を決めない。source、test、CI、
+本文の評価語を変更しない。新しいdefectまたは判断点を見つけた場合は根拠を記録して停止する。
+成果物は本節の直後へ追記し、Codexが共存性の評価を決める入力にする。

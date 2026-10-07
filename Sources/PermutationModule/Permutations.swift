@@ -148,6 +148,10 @@ extension NextPermutationsSequence.Permutation: RandomAccessCollection {
   public var endIndex: Int { elementBuffer.endIndex }
   public typealias Index = Int
   public typealias Element = Base.Element
+  /// Accesses the element at `position`.
+  ///
+  /// - Precondition: `position` is in `startIndex..<endIndex`. An out-of-range position stops
+  ///   execution in Debug and Release builds; `-Ounchecked` builds may omit this check.
   @inlinable
   public subscript(position: Int) -> Base.Element {
     precondition(position >= startIndex && position < endIndex, "Index out of range")

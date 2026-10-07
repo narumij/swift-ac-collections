@@ -25,6 +25,9 @@
 ## 1. 現行契約の基準固定（2026-10-07完了 / Claude Opus 5.5）
 
 通常版の基準は次のtestで固定した。互換modeの検証はユーザー判断で省略した。
+2026-10-07のTest as Specification切り替えで、下の2つは
+`Tests/PermutationTests/NextPermutationsSequence/`の連番fileへ再編した
+（`PermutationRemovedAPITests` → `_0_PublicSurfaceTests`、`PermutationTests` → `_0_`〜`_3_`・`_98_`）。
 
 - `PermutationRemovedAPITests`: 基準版にだけある`unsafePermutations()`と
   `unsafeNextPermutations()`が復活するとcompileが失敗する。一時的に再追加し、個別に

@@ -13,7 +13,7 @@
   /// 不定値を返す、あるいはSIGSEGVになっていた(2026-10-03調査)。
   /// このファイルは、`endIndex`・`-1`・`endIndex + 1`・`Int.min`・`Int.max`への読み取りが、通常の
   /// precondition失敗(SIGTRAP)として停止することを検証する。
-  struct PermutationDeathTests {
+  struct NextPermutationsSequence_99_DeathTests {
 
     @Test func endIndexRead_traps() async throws {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {

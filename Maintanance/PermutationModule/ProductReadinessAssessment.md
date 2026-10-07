@@ -3,8 +3,8 @@
 この文書は、`PermutationModule`の公開APIを調査した所見の記録である。2026-10-03、
 `Maintanance/CLAUDE_TASK.md`のユーザー最終決定に基づき、本書で削除候補として
 扱っていた`All`系・`unsafe`系の公開APIは実際に削除済み(実施記録は
-`ImplementationPlan.md`、現行APIは`Sources/PermutationModule/Documentation/Specification.md`
-を参照)。本書は調査結果・判断根拠の記録として残す。
+`ImplementationPlan.md`、現行APIは
+`Tests/PermutationTests/NextPermutationsSequence/`のTest as Specification（2026-10-07に`Specification.md`から切り替え）を参照)。本書は調査結果・判断根拠の記録として残す。
 
 ## 存在理由(`release/AtCoder/2025`ブランチのREADME.mdより)
 

@@ -3,7 +3,7 @@
 本書は `Maintanance/CLAUDE_TASK.md` のユーザー最終決定(バリアント削減、2026-10-03)に
 基づき実施した `PermutationModule` の公開API削除の記録である。削除前の調査所見は
 `Maintanance/PermutationModule/ProductReadinessAssessment.md`、現行の公開API仕様は
-`Sources/PermutationModule/Documentation/Specification.md` にある。
+`Tests/PermutationTests/NextPermutationsSequence/`のTest as Specification（2026-10-07に`Specification.md`から切り替え）である。
 
 ## 実施したこと(2026-10-03、完了)
 

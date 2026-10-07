@@ -344,6 +344,16 @@ BareArrayの凍結task、storage再設計、strict memory safety恒久適用は�
 内側の軸へ進むことを明記する。BareArrayも現時点で同じ次元label体系だが、この決定によって
 凍結中のBareArray監査を再開したことにはしない。
 
+### 不正次元契約の決定（2026-10-08）
+
+ユーザー判断により、initializerへ渡す各次元は0以上であり、全次元の積が`Int`で表現可能であることを
+事前条件とする。zero dimensionは空配列として許可する。負値または積overflowは契約違反であり、
+有効な配列として受け入れない。
+
+通常の検査構成では契約違反を明確に停止させる実装とtestを後続taskで整備する。ただし、
+`-Ounchecked`での停止や安全な回復は公開保証に含めず、呼び出し側が事前条件を満たす責任を負う。
+この決定はstorage再設計やstrict memory safety恒久適用を再開するものではない。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

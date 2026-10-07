@@ -176,7 +176,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-029` | `DONE` | User / Codex | [DECISION] OptionalArrayの公開位置づけ | 2026-10-08、競技プログラミング用の低レベル公開部品として1.0でも公開を継続すると決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-030` | `DONE` | User / Codex | [DECISION] OptionalArray 1D所有型の名称 | 2026-10-08、`OptionalArray1D`を維持。BareArray再開時または文書作業で具体的問題が判明した場合は再検討可能 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-031` | `DONE` | User / Codex | [DECISION] OptionalArray 2D〜4Dの次元名称体系 | 2026-10-08、2D／3Dの意味名と4Dの`size0`〜`size3`という現行体系を維持 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-032` | `WAITING_USER` | User / Codex | [DECISION] OptionalArray initializerの不正次元契約 | 負値・zero・積overflowをどの事前条件で扱うか、一つの契約方針を決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-032` | `DONE` | User / Codex | [DECISION] OptionalArray initializerの不正次元契約 | 2026-10-08、各次元は0以上、zeroは許可、次元積は`Int`で表現可能であることを事前条件に決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |

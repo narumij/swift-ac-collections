@@ -120,19 +120,20 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-008` | `FROZEN` | Codex | Permutation互換CIの分離 | 通常版と互換版を別jobとして表示し、結果を混在させない | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-009` | `FROZEN` | Codex | AtCoder単一file生成とローカル検証 | 互換版から自己完結fileを生成し、ABC328E相当入力で検証 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-010` | `FROZEN` | Codex | Permutation互換mode文書同期 | 通常APIと互換APIを混同せず、trait・制限・検証方法を文書化 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
-| `OPT-001` | `ACTIVE` | Codex | [DISCOVERY] OptionalArrayの体系監査・名称再検討 | Codexが作業設計・網羅性確認・完了判定を担い、ユーザードキュメント作業フェーズへ渡せる状態にする | `Tests/TESTING.md` |
-| `OPT-002` | `FROZEN` | Codex | [DISCOVERY] OptionalArray監査の管理方式と受入基準の抽出 | `OPT-001`完了後、実際に有効だった作業設計・責任境界・受入基準を再利用可能な形で整理 | `Tests/TESTING.md` |
-| `OPT-003` | `FROZEN` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | `OPT-002`後、抽出した管理方式をClaude向け運用規則として残す必要があるか一つだけ判断 | `Tests/TESTING.md` |
-| `OPT-004` | `FROZEN` | Codex | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で明文化すると決定した場合、人物評価を含めず責任境界・成果物・停止条件として正本へ反映 | `Tests/TESTING.md` |
-| `OPT-005` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の初版策定 | `OPT-001`完了後、Permutationの品質評価と同じISO/IEC 25010観点で事実・根拠・不足を整理し、ユーザードキュメント作業へ渡す | `Tests/TESTING.md` |
-| `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `Tests/TESTING.md` |
-| `OPT-007` | `DONE` | Codex | [EXECUTION] OptionalArray監査の暫定受入基準策定 | 2026-10-08、公開宣言網羅、契約・test・履歴対応、判断分離、引き渡し成果物を監査開始前の基準として確定 | `Tests/TESTING.md` |
-| `OPT-008` | `ACTIVE` | Codex | [DISCOVERY] OptionalArray公開7型の宣言・契約・履歴監査 | 公開宣言29件について境界・所有・寿命・破棄・変更・Sendable・次元契約と過去判断を棚卸しし、未決定事項を判断候補へ分離 | `Tests/TESTING.md` |
-| `OPT-009` | `ACTIVE` | Codex | [DISCOVERY] OptionalArray公開契約とtest根拠の対応監査 | 実装1ファイルとtest 4ファイルを照合し、公開宣言ごとの仕様根拠、未検証契約、重複、利用例の役割を整理 | `Tests/TESTING.md` |
-| `OPT-010` | `FROZEN` | Codex | [DISCOVERY] OptionalArrayの型名・次元API体系監査 | `OPT-008`後、1D〜4DとView 1D〜3Dの型名、`capacity`、`width`・`height`・`depth`、`size0`〜`size3`、BareArrayとの対応を比較し判断候補を整理 | `Tests/TESTING.md` |
-| `OPT-011` | `FROZEN` | Codex | [EXECUTION] OptionalArray監査で見つかった判断taskの登録 | `OPT-008`〜`OPT-010`後、新しい判断点を一判断ごとの`DECISION`としてRegistryへ登録し、agent判断で埋めない | `Tests/TESTING.md` |
-| `OPT-012` | `FROZEN` | Codex | [EXECUTION] OptionalArrayModuleTestsのTest as Specification整理 | `OPT-009`と必要な判断taskの完了後、仕様根拠を番号付きTest as Specificationへ整理 | `Tests/TESTING.md` |
-| `OPT-013` | `FROZEN` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 契約表、test対応、決定済み事項、未決定事項、文書入力を暫定受入基準で検収し、親taskを完了可能にする | `Tests/TESTING.md` |
+| `OPT-001` | `ACTIVE` | Codex | [DISCOVERY] OptionalArrayの体系監査・名称再検討 | Codexが作業設計・網羅性確認・完了判定を担い、ユーザードキュメント作業フェーズへ渡せる状態にする | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-002` | `FROZEN` | Codex | [DISCOVERY] OptionalArray監査の管理方式と受入基準の抽出 | `OPT-001`完了後、実際に有効だった作業設計・責任境界・受入基準を再利用可能な形で整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-003` | `FROZEN` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | `OPT-002`後、抽出した管理方式をClaude向け運用規則として残す必要があるか一つだけ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-004` | `FROZEN` | Codex | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で明文化すると決定した場合、人物評価を含めず責任境界・成果物・停止条件として正本へ反映 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-005` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の初版策定 | `OPT-001`完了後、Permutationの品質評価と同じISO/IEC 25010観点で事実・根拠・不足を整理し、ユーザードキュメント作業へ渡す | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-007` | `DONE` | Codex | [EXECUTION] OptionalArray監査の暫定受入基準策定 | 2026-10-08、公開宣言網羅、契約・test・履歴対応、判断分離、引き渡し成果物を監査開始前の基準として確定 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-008` | `ACTIVE` | Codex | [DISCOVERY] OptionalArray公開7型の宣言・契約・履歴監査 | 公開宣言29件について境界・所有・寿命・破棄・変更・Sendable・次元契約と過去判断を棚卸しし、未決定事項を判断候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-009` | `ACTIVE` | Codex | [DISCOVERY] OptionalArray公開契約とtest根拠の対応監査 | 実装1ファイルとtest 4ファイルを照合し、公開宣言ごとの仕様根拠、未検証契約、重複、利用例の役割を整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-010` | `FROZEN` | Codex | [DISCOVERY] OptionalArrayの型名・次元API体系監査 | `OPT-008`後、1D〜4DとView 1D〜3Dの型名、`capacity`、`width`・`height`・`depth`、`size0`〜`size3`、BareArrayとの対応を比較し判断候補を整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-011` | `FROZEN` | Codex | [EXECUTION] OptionalArray監査で見つかった判断taskの登録 | `OPT-008`〜`OPT-010`後、新しい判断点を一判断ごとの`DECISION`としてRegistryへ登録し、agent判断で埋めない | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-012` | `FROZEN` | Codex | [EXECUTION] OptionalArrayModuleTestsのTest as Specification整理 | `OPT-009`と必要な判断taskの完了後、仕様根拠を番号付きTest as Specificationへ整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-013` | `FROZEN` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 契約表、test対応、決定済み事項、未決定事項、文書入力を暫定受入基準で検収し、親taskを完了可能にする | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-014` | `DONE` | Codex | [EXECUTION] OptionalArray3DViewの2D面stride修正 | 2026-10-08、非対称次元testで修正前のslice aliasを確認し、offsetを`width * height * position`へ修正。NOP setterは連鎖writeback用と明文化 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |

@@ -205,6 +205,19 @@ final class OptionalArrayTests: XCTestCase {
     XCTAssertEqual(Array(array[0].indices), [0, 1, 2])
   }
 
+  func testOptionalArray4DViewUsesFullPlaneStride() {
+    var array = OptionalArray4D<Int>(
+      size0: 2,
+      size1: 3,
+      size2: 2,
+      size3: 1)
+
+    array[0][1][0][0] = 42
+
+    XCTAssertEqual(array[0][1][0][0], 42)
+    XCTAssertNil(array[0][0][1][0])
+  }
+
   func testOptionalArray4DIndices() {
     let array = OptionalArray4D<Int>(
       size0: 1,

@@ -169,6 +169,8 @@ public struct OptionalArray2D<Element>: ~Copyable {
 
     @inline(__always)
     set {
+      // The mutation has already been applied through the pointer-backed View.
+      // This setter only completes writeback for a chained subscript expression.
       /* NOP */
     }
   }
@@ -240,6 +242,8 @@ public struct OptionalArray3D<Element>: ~Copyable {
 
     @inline(__always)
     set {
+      // The mutation has already been applied through the pointer-backed View.
+      // This setter only completes writeback for a chained subscript expression.
       /* NOP */
     }
   }
@@ -315,6 +319,8 @@ public struct OptionalArray4D<Element>: ~Copyable {
 
     @inline(__always)
     set {
+      // The mutation has already been applied through the pointer-backed View.
+      // This setter only completes writeback for a chained subscript expression.
       /* NOP */
     }
   }
@@ -426,6 +432,8 @@ public struct OptionalArray2DView<Element> {
 
     @inline(__always)
     set {
+      // The mutation has already been applied through the pointer-backed View.
+      // This setter only completes writeback for a chained subscript expression.
       /* NOP */
     }
   }
@@ -466,14 +474,16 @@ public struct OptionalArray3DView<Element> {
     get {
       precondition(0 <= position && position < depth)
       return unsafe .init(
-        hasPayload: hasPayload + width * position,
-        payload: payload + width * position,
+        hasPayload: hasPayload + width * height * position,
+        payload: payload + width * height * position,
         width: width,
         height: height)
     }
 
     @inline(__always)
     set {
+      // The mutation has already been applied through the pointer-backed View.
+      // This setter only completes writeback for a chained subscript expression.
       /* NOP */
     }
   }

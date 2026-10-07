@@ -71,11 +71,15 @@ extension NextPermutationsSequence {
     // TODO: Swift 6.4の`-O`では、コピーしたiteratorの元の側をクロージャ内で進めると、
     // `isKnownUniquelyReferenced`がコピーを見落とし、共有bufferを直接書き換える
     // (2026-10-07確認、ライブラリ非依存の最小再現あり)。1.0直前に、修正されたかを確認する。
+    /// Makes the buffer unique before advancing. Returns `false` without copying when the
+    /// buffer is shared and has no successor, because such a copy would only be discarded.
     @inlinable
-    mutating func ensureUnique() {
+    mutating func ensureUnique() -> Bool {
       if !isKnownUniquelyReferenced(&elementBuffer) {
+        guard elementBuffer.hasNextPermutation else { return false }
         elementBuffer = elementBuffer.copy()
       }
+      return true
     }
 
     @inlinable
@@ -86,8 +90,7 @@ extension NextPermutationsSequence {
       case .initial:
         state = .advancing
       case .advancing:
-        ensureUnique()
-        guard elementBuffer.nextPermutation() else {
+        guard ensureUnique(), elementBuffer.nextPermutation() else {
           state = .finished
           return nil
         }
@@ -116,19 +119,34 @@ struct NextPermutationsBufferHeader {
   #if AC_COLLECTIONS_INTERNAL_CHECKS
     @usableFromInline
     var copyCount: UInt = 0
+    @usableFromInline
+    var probe = NextPermutationsHeaderProbe()
   #endif
 }
+
+#if AC_COLLECTIONS_INTERNAL_CHECKS
+  /// A reference owned by the header, so that how many times a header is destroyed is
+  /// observable from tests.
+  @usableFromInline
+  final class NextPermutationsHeaderProbe {
+    nonisolated(unsafe) static var deinitCount = 0
+    @usableFromInline
+    init() {}
+    deinit { Self.deinitCount += 1 }
+  }
+#endif
 
 extension NextPermutationsSequence {
 
   @usableFromInline
   final class Buffer: ManagedBuffer<NextPermutationsBufferHeader, Base.Element> {
 
+    // `header`は`ManagedBuffer`のstored propertyなので、Swiftが自動で破棄する。
+    // ここでは要素だけを破棄する。
     @inlinable
     deinit {
       unsafe self.withUnsafeMutablePointers { header, elements in
         unsafe elements.deinitialize(count: header.pointee.count)
-        unsafe header.deinitialize(count: 1)
       }
     }
   }
@@ -285,6 +303,19 @@ extension NextPermutationsSequence.Buffer {
 
 extension NextPermutationsSequence.Buffer where Element: Comparable {
 
+  /// Whether a lexicographic successor exists. Reads only.
+  @inlinable
+  internal var hasNextPermutation: Bool {
+    guard !isEmpty else { return false }
+    var i = index(before: endIndex)
+    while i != startIndex {
+      let ip1 = i
+      formIndex(before: &i)
+      if self[i] < self[ip1] { return true }
+    }
+    return false
+  }
+
   // オリジナルはhttps://github.com/apple/swift-algorithms/blob/main/Sources/Algorithms/Permutations.swift
   @inlinable
   internal func nextPermutation() -> Bool {
@@ -297,6 +328,7 @@ extension NextPermutationsSequence.Buffer where Element: Comparable {
       formIndex(before: &i)
 
       if self[i] < self[ip1] {
+        // `self[ip1]`が`self[i]`より大きいので、必ず見つかる
         let j = lastIndex { self[i] < $0 }!
         swapAt(i, j)
         reverse(subrange: ip1..<endIndex)
@@ -313,7 +345,6 @@ extension NextPermutationsSequence.Buffer where Element: Comparable {
   // オリジナルはhttps://github.com/apple/swift-algorithms/blob/main/Sources/Algorithms/Rotate.swift
   @inlinable
   internal func reverse(subrange: Range<Index>) {
-    if subrange.isEmpty { return }
     var lower = subrange.lowerBound
     var upper = subrange.upperBound
     while lower < upper {

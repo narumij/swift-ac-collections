@@ -24,6 +24,19 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 再開条件を上書きしない。特に、中間ゴールに含まれることだけを理由に`FROZEN`または`USER_ONLY`のtaskを
 開始しない。達成または方針変更時は、ユーザーの指示に基づいて現在の中間ゴールを更新する。
 
+中間ゴールへ向けた主系列の推奨順は、`RBT-013`、`PERM-016`、`PERM-017`、`RBT-014`、
+`RBT-015`とする。これは後続作業への影響が大きいものを先に調べるためのsoft orderであり、
+Task precedenceに記録した必須依存以外の着手を禁止しない。`PERM-018`、`PERM-019`、`RBT-016`は
+空いたときに差し込める小作業とする。
+
+次の判断は今回の作業taskへ含めない。必要になった時点でユーザーと別途決定する。
+
+- 利用者向け文書の形（Markdown、DocC、documentation commentのみのいずれにするか）
+- Permutation通常版と互換modeの文書境界
+- 性能の数値を利用者向け文書へ掲載するか
+- 1.0ゲート（`QUALITY-001`）との境界
+- RedBlackTreeのデバッグ用memberを`#if DEBUG`へ揃えるか
+
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -39,6 +52,14 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-012` | `DONE` | Claude | Swift 6.4 `-O`のCoW誤コンパイルに対する値セマンティクスのTest as Spec拡充 | 2026-10-07、closure-captured mutation形状を4型へ追加し、Debug / Releaseで値セマンティクス維持を確認（`4249ed8c`） | `Tests/RedBlackTreeTests/` |
+| `RBT-013` | `ACTIVE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 27件を「利用者向け文書に影響」「内部だけ」「古い」に分類し、新しいtaskまたは未決事項が見つかればRegistry更新候補として報告 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `PERM-016` | `ACTIVE` | Claude | Permutation品質評価の事実更新 | §3.7の解消済み`swapAt`懸念を除き、header二重破棄、終端の不要copy、`#if DEBUG`と`package`への整理を根拠へ反映 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-017` | `ACTIVE` | Codex | Permutation品質評価R-1〜R-4 review | `PERM-016`後の§6をreviewし、品質特性の解釈、1.0前の不足、根拠の正確性へ回答を反映。R-3は文書形式を決めず、ユーザー判断に必要な選択肢と技術的根拠までを整理 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `RBT-014` | `ACTIVE` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | `RBT-013`後、workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
+| `RBT-015` | `ACTIVE` | Codex | RedBlackTree残task文書の事実更新 | PR #158前提の記述など、現在の実装とRegistryに対して古い記述を修正 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `PERM-018` | `ACTIVE` | Claude | swift-algorithms同時import時のPermutation名前衝突test | test targetへ必要なpackage依存を追加し、両moduleを同時importして公開名が衝突しないことをTest as Specificationで確認 | `Tests/PermutationTests/NextPermutationsSequence/` |
+| `PERM-019` | `ACTIVE` | Claude | 利用者向けPermutation使用例の仕様test化 | 文書へ載せる使用例を、文書本文より先にTest as Specificationとして追加 | `Tests/PermutationTests/NextPermutationsSequence/` |
+| `RBT-016` | `ACTIVE` | Claude | `RedBlackTreePair.tuple`の仕様test | 仕様以外の既存testからの間接利用に頼らず、`tuple`の公開契約を専用のTest as Specificationで固定 | `Tests/RedBlackTreeTests/` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-006` | `FROZEN` | User / Codex | 未結線コードの個別削除 | ユーザーが対象を個別指定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -81,6 +102,9 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 | `RBT-001` | `RBT-010` | 前提taskの完了後に後続taskを完了できる |
 | `RBT-001` | `RBT-011` | 前提taskの完了後に後続taskを完了できる |
 | `QUALITY-001` | `RBT-001` | 前提taskの完了後に着手候補にできる |
+| `PERM-017` | `PERM-016` | 品質評価の事実更新後にreviewする |
+| `RBT-014` | `RBT-013` | TODO/FIXMEの文書影響を分類後にoutlineを照合する |
+| `PERM-019` | `PERM-018` | 同時import時の名前衝突がないことを確認後に使用例を固定する |
 | `PERM-014` | `PERM-003` | 現行契約の基準固定後に手順を決定できる |
 | `PERM-015` | `PERM-014` | 実施手順の決定後にtask依存を再評価できる |
 | `PERM-004` | `PERM-015` | task依存の再評価とRegistry反映後に着手できる |
@@ -107,6 +131,6 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 ## Current summary
 
 - RedBlackTreeの実装、正当性検証、主要な公開面整理は完了済み。
-- RedBlackTreeの主な残件は、外部要件待ちのIndex `Comparable`判断と、その結論に基づく最終文書同期。
-- Permutationは現行契約の基準固定を完了し、互換modeの実施手順をユーザーとCodexで決定中。依存再評価と実装はその後に行う。
+- RedBlackTreeは外部要件待ちのIndex判断と並行して、見えていない残作業の棚卸しと利用者向け文書の準備を進める。
+- Permutationは互換modeの手順決定に加え、品質評価、利用者向け使用例、他packageとの名前衝突を確認する。
 - Claudeのtask graph DB試験とsmell知見試験が進行中。

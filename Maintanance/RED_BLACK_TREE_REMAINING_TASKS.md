@@ -11,7 +11,10 @@ RedBlackTreeCollectionsを「完成」と判断するまでに残っている作
 ## 現在の判定
 
 赤黒木アルゴリズムと4つの公開コンテナの基本的な正しさについては、完成判断に使える
-証拠が揃っている。一方、公開`Index`はsuccess-only表現を採用済み(PR #158)だが、Comparable採否等の契約が確定していないため、
+証拠が揃っている。公開`Index`から`Result`（失敗状態）を分離し、success-only表現にする判断と実装は
+PR #158で完了している。`SealError`は内部resolverの診断に残る。一方、公開Indexの最終表現（typealiasのままか
+固有nominal型か）と1.0での完了範囲、`Comparable`の採否、`==` / `<` / `hash(into:)`の契約は、
+`swift-collections`のContainer要件の安定を待つ外部待ちで、まだ確定していない。このため
 RedBlackTreeCollections全体はまだ完成とはしない。
 
 ### Mapped Values Range Viewの範囲契約（変更なしで終了）
@@ -31,8 +34,8 @@ RedBlackTreeCollections全体はまだ完成とはしない。
 判断する。維持する場合の具体的な警告文と使用例、変更する場合の実装・test・性能検証は、結論後の
 ノー判断taskへ分ける。
 
-`index(inserting:)`と`erase(exactly:)`は現行名で確定し、名前再検討のTODOを終了する。実装済みの
-Mapped Values Viewに関する古いTODOも削除する。
+`index(inserting:)`と`erase(exactly:)`は現行名で確定し、名前再検討のTODOは削除済みである。実装済みの
+Mapped Values Viewに関する古いTODOも削除済みである（現存確認は`Source path and symbol evidence`）。
 
 ### 確認済みの根拠
 
@@ -65,7 +68,8 @@ Indexの検討では、利用者に見える契約と、その契約を実現・
 公開APIとして直接説明しなくても、利用者のコード、互換性、または他ライブラリへ
 影響し得るため、外部契約を決めた後に慎重に選ぶ。
 
-- public typealiasが露出する具体型。現状では`_LazyTiedPtr`がそのまま見える(PR #158以前は`Result`)
+- public typealiasが露出する具体型。現状ではsuccess-onlyの`_LazyTiedPtr`がそのまま見える(PR #158以前は`Result`)。
+  失敗状態の分離は完了済みで、未確定なのはこの具体型を最終表現として残すかどうかである
 - `RedBlackTreeIndex`を固有nominal型にするか
 - `Comparable`等の適合と、特に標準型へのretroactive conformance
 - `@frozen`型の保存プロパティ、サイズ、レイアウト
@@ -263,30 +267,38 @@ Container protocolの要件が十分に安定した時点で行う。
 #### 既存試作: `try/index/1`
 
 > 2026-10-05時点: 検証を経てPR #158でmerge済み(`a6c8a474`)。以下はmerge前の記録である。
+> 結果として`try/index/1`はbranch全体がmergeされ（先端`ebda7370`は現HEADの祖先）、現行の公開Indexは
+> success-onlyの`_LazyTiedPtr`である。merge前後の検証の正本は`Archived/INDEX_POC_VALIDATION.md`。
+> 以下の「現行」「HEAD」「〜する」は、すべてmerge前（2026-10-04〜05朝）の時点を指す。
 
-`try/index/1`はユーザーが手作業で設計・実装した、この主要判断に対する先行PoCである。
-作業列は2026-09-24 15:48 JSTから始まり、同日22:46の`005a7bb3`
+`try/index/1`は、ユーザーが手作業で設計・実装した、この主要判断に対する先行PoCだった。
+作業列は2026-09-24 15:48 JSTから始まったと記録されている（未確認: branchにしかない最初のcommitは
+19:40の`21bdd758`で、15:48の`9ba679e7`はmainにも含まれる）。同日22:46の`005a7bb3`
 (`non Result type index`)で中心案を実装した後、09-27朝までテスト修正と記録を継続した。
-さらに10-04に`develop/misc/48`をmergeして現行開発へ追従させている。短期の使い捨て試作ではなく、
-秋の連休初期から進めてきたIndex再設計の主要成果として扱う。
-現行のfailure-valued `_LazyTieWrappedPtr`から、成功値だけを保持する
-`_LazyTiedPtr`へIndex aliasを切り替える準備実装がある。主な関連commitは
-`005a7bb3` (`non Result type index`)で、その後のbranch内修正も含めて参照する。
+さらに10-04に`develop/misc/48`をmergeして、当時の開発へ追従させた（10-05 05:36の`6bdcfecd`でも同期している）。
+短期の使い捨て試作ではなく、秋の連休初期から進めてきたIndex再設計の主要成果として扱った。
+当時の公開Indexだったfailure-valued `_LazyTieWrappedPtr`から、成功値だけを保持する
+`_LazyTiedPtr`へIndex aliasを切り替える準備実装だった。主な関連commitは
+`005a7bb3` (`non Result type index`)で、その後のbranch内修正も含めて参照した。
 
-- `UnsafeIndexV3 = _LazyTiedPtr`とし、公開Index本体から`Result`を外している。
+当時のbranchの状態:
+
+- `UnsafeIndexV3 = _LazyTiedPtr`とし、公開Index本体から`Result`を外していた。
 - tree resolverは引き続き`_SealedPtr`（内部`Result`）を返し、cross-tree、unsealed等の
-  診断を内部に維持している。
-- limited movementだけは内部のfailureをoptional / Boolへ変換する試作になっている。
-- `Equatable`はpointer sealとstorage tie、`Hashable`はpointerとsealを用いるO(1)実装を継続している。
-- 一方、`try!` / bare `fatalError()`、Debug用の擬似`.nullptr`、sanitizer TODOが残り、
-  現在のproductionへそのままmergeできる完成実装ではない。
-- branchは現在のHEADから大きく乖離しているため、branch全体をmergeしない。Gの候補検証では
-  merge-base以降のIndex関連差分だけを設計資料・試作として読み直し、現行source上へ再構成する。
+  診断を内部に維持していた。
+- limited movementだけは内部のfailureをoptional / Boolへ変換する試作になっていた。
+- `Equatable`はpointer sealとstorage tie、`Hashable`はpointerとsealを用いるO(1)実装を継続していた。
+- 一方、`try!` / bare `fatalError()`、Debug用の擬似`.nullptr`、sanitizer TODOが残っており、
+  当時のproductionへそのままmergeできる完成実装ではなかった。
+- 当時の判断: branchは当時のHEADから大きく乖離しているため、branch全体をmergeしない。Gの候補検証では
+  merge-base以降のIndex関連差分だけを設計資料・試作として読み直し、当時のsource上へ再構成する。
+  この判断はその後の検証で変わり、最終的にはPR #158でbranch全体がmergeされた。
 
-これはnominal IndexのPoCではなく、公開Indexから`Result`を除去できるかを検証したPoCである。
-したがってゼロから代案を作り直さず、設計意図と成立範囲を保持したまま、現行HEADと
+これはnominal IndexのPoCではなく、公開Indexから`Result`を除去できるかを検証したPoCだった。
+そこで当時は、ゼロから代案を作り直さず、設計意図と成立範囲を保持したまま、当時のHEADと
 Quality Checklistの正しさ、memory / Index寿命、性能の要求に耐えるかをCodexとClaudeが
-独立に検証する。Comparable採否とContainersPreviewへの適合判断は、この検証と分離する。
+独立に検証すると決めた。この検証は2026-10-05に`adopt after corrections`で完了している（主経路checklistのE）。
+Comparable採否とContainersPreviewへの適合判断は、この検証と分離した。
 
 #### C. 維持する安全性・CoW・計算量
 
@@ -551,7 +563,7 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 - [ ] D: ContainersPreviewを追跡し、外部APIでComparableが必要になる利用箇所と非適合時の代替を確定する
 - [x] Comparableあり・なしの2案を比較し、必要APIと計算量を表にする
 - [x] E: ユーザー実装の`try/index/1`を主PoCとして、公開Indexから失敗状態を除去する設計が現行HEADとQuality Checklistに耐えるかCodex・Claudeが独立検証し、最終判断する（2026-10-05: verdict `adopt after corrections`、PR #158でmerge。正本は`Archived/INDEX_POC_VALIDATION.md`。Comparable採否とは分離）
-- [ ] F: Container protocolの安定度を確認し、Comparable採否、失敗時の公開API、計算量を外部契約として固定する
+- [ ] F: Container protocolの安定度を確認し、Comparable採否、失敗時の公開API、計算量を外部契約として固定する（Index本体からの失敗状態の分離はPR #158で完了済み。ここで残るのは、失敗をAPI境界でどう返すかの最終的な契約と、Comparable・計算量）
 - [x] Kで`index(inserting:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供と名称維持はCodex・Claudeレビューで決定済み。戻り値は全型で`(inserted: Bool, index: Index)`。Dictionaryは既存値を置換せず既存位置、Multi系は常に新規occurrenceと`true`を返す。`insert(_:)`と`erase(exactly:)`からSee Alsoで発見可能にする。2026-10-05実装・テスト済み）
 - [x] Kで`erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み。2026-10-05実装・テスト済み。Setの空でのCoW回避漏れも同時に修正）
 - [x] KeyValue Range Viewの範囲外Index契約を決定（単一Indexは標準Collection同様のprecondition、Bound / range操作は入力を検査するsafe動作）
@@ -565,6 +577,10 @@ Claudeの結論も正しいが、確認範囲を明確化する。PR #623（comm
 - [ ] L: テスト・DocC・API Matrixを採用案へ同期する
 
 ### Index完了ゲート
+
+完了済みの項目と外部待ちの項目を分ける。`Result`のIndex本体からの分離（下の2項目目）は完了済みで、
+未決へ戻さない。外部待ちは、公開Indexの最終表現と完了範囲、`Comparable`の採否、`==` / `<` / `hash(into:)`の
+契約である（Container要件の安定待ち）。
 
 - [ ] Comparableの採否と理由が明記されている
 - [x] ResultをIndex本体に残すか、API境界へ分離するかが決まっている（分離。PR #158でsuccess-only Indexをmergeしたことで決定済みと、2026-10-06にユーザーが確認）
@@ -848,3 +864,12 @@ git上の確認: `a6c8a474`はPR #158のmerge（2026-10-05 15:09、親`3ca35eb3`
 完了条件: RBT-028のL570不一致が、完成済みの分離と未確定の最終表現を区別する文言で解消されること。
 
 両assignmentの完了後、Codexがdiffと証拠台帳を照合し、`RBT-015`を完了できるか判定する。
+
+### Codex acceptance（2026-10-08）
+
+両assignmentを受け入れた。merge前PoC節は当時の判断とmerge後の現行事実を区別でき、
+success-only Indexへの分離済み事項と、公開Indexの最終表現・`Comparable`等の外部待ち事項も
+check状態を変えずに区別できる。削除済みTODOの表現も現状へ同期された。
+
+これにより`RBT-030`、`RBT-031`および親の`RBT-015`を完了とする。新しい公開契約の判断、
+source・test変更、凍結taskの再開はない。

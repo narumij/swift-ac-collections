@@ -817,3 +817,34 @@ git上の確認: `a6c8a474`はPR #158のmerge（2026-10-05 15:09、親`3ca35eb3`
 - 移動・削除済みpathとsymbol、構成限定flagは、現在形の説明だけを現行HEADへ合わせる。
 
 3 packageの完了により`RBT-015`の証拠前提は揃った。本文反映と`RBT-015`の完成判定はCodexが別に行う。
+
+## RBT-015 bounded correction assignments（2026-10-08）
+
+### Merge前PoC節の時制補正
+
+担当: Claude。対象は`既存試作: try/index/1`節だけ。
+
+- 節がPR #158 merge前の評価記録であることを、冒頭の注記だけでなく曖昧な現在形にも反映する。
+- `_LazyTieWrappedPtr`から`_LazyTiedPtr`へ切り替える「準備実装」、branchがHEADから乖離している、
+  branch全体をmergeしない、現行HEADで独立検証する、という記述を当時の判断として読める時制へ直す。
+- PR #158で最終的にmergeされた事実と、検証正本が`Archived/INDEX_POC_VALIDATION.md`であることを示す。
+- 当時の評価内容、commit、時刻、設計上の懸念は削除・再評価しない。15:48開始の未確認事項は断定せず残す。
+- 対象節以外、Registry、source、testは変更しない。
+
+完了条件: RBT-027で`曖昧`と分類されたPoC時制が、現行事実と履歴事実を混同せず読めること。
+
+### 完了済み分離と未確定gateの表現補正
+
+担当: Claude。対象は`現在の判定`、`外部へ影響し得る内部実装`、主経路checklist、
+`Index完了ゲート`の関係する文だけ。
+
+- public Indexから`Result`を分離しsuccess-only表現をmergeした事実は完了済みとして維持する。
+- 外部待ちなのは、公開Indexの最終表現・完了範囲、`Comparable`、`==`／`<`／hashの契約であると
+  読めるようにし、`SealError`分離を再び未決へ戻さない。
+- `index(inserting:)`／`erase(exactly:)`の名称TODOとMapped Values Viewの古いTODOは削除済みとする。
+- checklistの`[ ]`／`[x]`は変更しない。新しいtaskや判断を追加しない。
+- 指定範囲外、Registry、source、testは変更しない。
+
+完了条件: RBT-028のL570不一致が、完成済みの分離と未確定の最終表現を区別する文言で解消されること。
+
+両assignmentの完了後、Codexがdiffと証拠台帳を照合し、`RBT-015`を完了できるか判定する。

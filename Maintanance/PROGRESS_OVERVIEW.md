@@ -112,6 +112,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-027` | `DONE` | Claude | [DISCOVERY] RedBlackTree残task文書のbranch・commit時制ledger | 2026-10-08、PR #158前後と現行HEADの記述を現行／履歴／曖昧へ分類し、commit根拠を記録 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-028` | `DONE` | Claude | [DISCOVERY] RedBlackTree残task文書とRegistryの状態対応表 | 2026-10-08、checkbox・状態語・task IDをRegistryへ対応し、一致・履歴説明・対応なし・不一致を表化 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-029` | `DONE` | Claude | [DISCOVERY] RedBlackTree残task文書のpath・symbol現存ledger | 2026-10-08、現在形のpath・symbol・flagを存在・移動・削除・構成限定・未確認へ分類 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-030` | `ACTIVE` | Claude | [EXECUTION] RedBlackTree merge前PoC節の時制補正 | RBT-027の曖昧箇所だけを、PR #158前の判断とmerge後の現行事実が混同されない時制へ修正 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-031` | `ACTIVE` | Claude | [EXECUTION] RedBlackTree完了済みIndex分離と未確定gateの表現補正 | success-only分離済みと、公開Index最終形・Comparable等の外部待ちを区別し、check状態は変更しない | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `PERM-018` | `DONE` | Claude | [EXECUTION] swift-algorithms同時import時のPermutation名前衝突test | 2026-10-07、両moduleの同時import、名前解決、successor列と全順列の使い分けを仕様testで固定（`0ff5fd84`） | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-019` | `EXCLUDED` | — | [EXECUTION] 利用者向けPermutation使用例の仕様test化 | 2026-10-08、使用例の選定は利用者向け文書作業そのものとして文書フェーズへ移し、独立taskから除外 | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-020` | `DONE` | Claude | [DISCOVERY] Permutation公開API・コメントledger | 2026-10-08、公開宣言14件と別枠の公開適合9件をsource位置・制約・属性・コメントへ対応 | `PermutationModule/DocumentationHandoffAudit.md` |
@@ -201,6 +203,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-015` | `RBT-027` | branch・commit時制の全件確認後に内部残task文書を更新する |
 | `RBT-015` | `RBT-028` | Registryとチェック状態の対応確認後に内部残task文書を更新する |
 | `RBT-015` | `RBT-029` | path・symbolの現存確認後に内部残task文書を更新する |
+| `RBT-015` | `RBT-030` | merge前PoC記録の時制補正後に内部残task文書を完了判定する |
+| `RBT-015` | `RBT-031` | 完了済みIndex分離と未確定gateの表現分離後に内部残task文書を完了判定する |
 | `RBT-026` | `RBT-014` | outlineのAPI照合後、利用者向け文書作業フェーズで契約を再判断する |
 | `PERM-014` | `PERM-003` | 現行契約の基準固定後に手順を決定できる |
 | `PERM-015` | `PERM-014` | 実施手順の決定後にtask依存を再評価できる |

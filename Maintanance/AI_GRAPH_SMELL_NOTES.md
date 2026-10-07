@@ -1,10 +1,10 @@
-# AIとGraph DBによるRefactoring Smell知見ノート
+# AIとGraph DBによるSmell知見ノート（code / test / task）
 
-最終更新: 2026-10-07 / Codex（初期割当）
+最終更新: 2026-10-07 / Claude Opus 5.5（PERM-003で試験）
 
 ## 位置づけ
 
-この文書は、AIとgraph DBを組み合わせてrepositoryを観察したときに見つかるrefactoring smellと、
+この文書は、AIとgraph DBを組み合わせてrepositoryを観察したときに見つかるsmellと、
 その判定方法に関するClaudeの独立試験用の継続的な知見ノートである。`GRAPH-001`と同様に、
 Claudeが逐次の編集承認を求めず、自由に構成・追記・整理する。ユーザーとCodexは成果を閲覧する。
 
@@ -15,9 +15,18 @@ Claudeが逐次の編集承認を求めず、自由に構成・追記・整理�
 - ノート中の候補を、記録しただけで実装taskや着手可能taskとして扱わない。
 - ほかのgraph DB試験との統合、正式運用への昇格、source変更は、この独立試験とは別に決定する。
 
+## 用語と対象
+
+旧名は「refactoring smell」（2026-10-07にユーザー判断で改名）。一般的な用語に合わせ、
+対象を次の3種類に分けて扱う。
+
+- code smell: production codeの臭い。出典はMartin Fowler『Refactoring』（用語はKent Beck）。
+- test smell: test codeとtest運用の臭い。出典はGerard Meszaros『xUnit Test Patterns』（2007）。
+- task smell: task graphの区切り方・順序制約の臭い。このrepository固有の観点（S-1〜S-3）。
+
 ## 目的
 
-- source、test、documentation、履歴、task graph間の関係からrefactoring smellを見つける。
+- source、test、documentation、履歴、task graph間の関係からsmellを見つける。
 - AIの推測とgraph DBから得た構造的事実を分離する。
 - 誤検知、反証、見送り理由を残し、同じ調査の反復を減らす。
 - repository固有の観測から、ほかの作業にも再利用できる判断基準を抽出する。
@@ -70,6 +79,50 @@ Claudeがここから自由に追記・再構成する。
 閾値は先に決めず、試験の当たり・空振りから決める。graphの結果は候補出しに使い、確定は
 コンパイラ・テスト・人の判断で行う。
 
+### Fowlerの臭いとの対応（2026-10-07）
+
+出典: Martin Fowler『Refactoring』第2版（2018）の24の臭い。graphで見つけやすいかで3つに分ける。
+分類はAIの見立てで、実地で当たり・空振りを見て直す。
+
+- graph向き（依存・参照・変更履歴で分かる）: Divergent Change、Shotgun Surgery、Feature Envy、
+  Insider Trading、Message Chains、Middle Man、Lazy Element、Refused Bequest、Large Class
+- 半分graph向き（graphで候補を出し、読んで確定する）: Speculative Generality、
+  Long Parameter List、Data Clumps、Duplicated Code、Global Data、Mutable Data、Temporary Field、
+  Data Class、Alternative Classes with Different Interfaces、Repeated Switches
+- 読まないと分からない: Mysterious Name、Long Function、Primitive Obsession、Loops、Comments
+
+本ノートの候補との対応:
+
+- S-1 ≒ Divergent Change（変更理由をtaskに置き換えたもの）
+- S-3 ≒ Large Classのtask版
+- S-2・S-4: Fowlerの一覧に対応なし。task graphとtest coverageに固有の観点
+- PERM-003で見つけた`nextPermutation(upperBound:)`の死んだ引数 = Speculative Generality
+
+### Meszarosのtest smellとの対応（2026-10-07）
+
+出典: Gerard Meszaros『xUnit Test Patterns』（2007）。3つの層に分かれる。
+
+- code（test codeを読めば分かる）: Obscure Test、Conditional Test Logic、Hard-to-Test Code、
+  Test Code Duplication、Test Logic in Production
+- behavior（実行すると分かる）: Assertion Roulette、Erratic Test（原因の1つにInteracting Tests）、
+  Fragile Test、Frequent Debugging、Manual Intervention、Slow Tests
+- project（運営で分かる）: Buggy Tests、Developers Not Writing Tests、High Test Maintenance Cost、
+  Production Bugs（原因にUntested Code、Untested Requirementなど）
+
+graph向きなのは、Untested Code（production symbolとtestの参照辺）、Test Logic in Production
+（test専用flag下の公開symbol）、Interacting Tests（process-globalな状態を触るtestの集合）。
+残りは主に読む・実行する側で見る。
+
+本ノート・このrepositoryとの対応:
+
+- S-4 ≒ Untested Code
+- PERM-003の`PermutationRemovedAPITests` = Untested Requirement（削除済みAPIを出さない要件）を
+  埋めたもの。項目ごとに文を分けた直しは、Assertion Rouletteを避けるのと同じ考え方
+- RedBlackTreeのlifetime counter汚染（XCTestの順番次第で落ちた件） = Interacting Testsによる
+  Erratic Test
+- `AC_COLLECTIONS_INTERNAL_CHECKS`下の`_copyCount`等: Test Logic in Productionの境界。意図した
+  設計なので、臭いと確定しない。観測対象として残す
+
 ### S-1 1つのsymbolに複数taskが集中する（候補）
 
 - 事実（2026-10-07）: `_LazyTieWrap.<(_:_:)` を `RBT-001`・`RBT-004`・`RBT-010`・`RBT-011`
@@ -102,6 +155,37 @@ Claudeがここから自由に追記・再構成する。
 - 次の確認: 間接的に守られているかは、テストを壊して確かめる（mutation的な確認）以外に
   判定しにくい。費用が高いので、対象を絞ってから行う。
 
-### 試験予定
+### 試験記録: PERM-003（2026-10-07, d784b91e）
 
-- `PERM-003`（現行Permutation契約の基準固定）の作業中に、S-2とS-4を小さい範囲で試す。
+**S-2の結果: 判定不能（scopeが粗い）。** `PERM-001/004/006/007`のscopeはどれも
+PermutationModule全体（73 symbol）なので、どの2つを選んでもコード上の結合ありになる。
+S-2は、scopeがtaskごとに絞られていて初めて意味を持つ。S-3（scope過大）が先に解消されないと、
+S-2は空振りではなく「常に当たり」になって情報を持たない。
+`PERM-005/008/009/010`にはscopeがない。Package設定・CI・生成・文書の順序制約なので、
+S-2の代替説明（コードに現れない依存）に当たる。
+
+**S-4の結果: 道具の死角。** `spec-gaps`は`RedBlackTree*_NN_*.swift`だけを仕様testとして数える。
+PermutationModuleには番号付き仕様testがないため、このmoduleは最初から対象外になる。
+手で見ると、公開API（`nextPermutations()`・`Nexts`・`IteratorN`・`SubSequenceN`）は
+すべて`PermutationTests`から参照されていた。
+
+**当たり1件（S-4の延長、graph＋目視）。** `code-impact NextPermutationProtocol`で、内部の
+急所（全公開APIが経由する）を特定し、本文を読んだ。
+- 事実: `nextPermutation(upperBound:)`の`upperBound`は、現行版でも基準ref
+  （`release/AtCoder/2025`）でも、呼び出し側から一度も渡されない。そのため`i < upperBound`は
+  常に真になり、`else`節（`i = index(before: endIndex); continue`）には到達しない。
+- 解釈: swift-algorithmsの部分順列（k-permutations）用の引数が、移植時にそのまま残ったもの。
+- graphの役割: 急所の特定まで。引数の既定値や到達不能な分岐はsymbol graphに現れないので、
+  発見そのものは目視による。
+- 実装しない理由: このfileは通常版と互換版で共有する予定（互換計画）なので、削るなら両modeに
+  効く。また、削除にはユーザーの指示が要る。
+- 候補: 引数と`else`節を削る。採否はユーザーが決める。
+
+**知見（再利用できる判断基準）。**
+1. graphは「あるのに守られていないもの」は探せるが、「無いままであるべきもの」は表せない。
+   削除済みAPIの非露出のように、不在を守る契約は、graphではなくcompile時のtestで固定する
+   （PERM-003で`PermutationRemovedAPITests`として実施）。
+2. fan-inの大きい内部symbolは、仕様testの有無より先に本文を読む価値がある。全経路が通るので、
+   死んだ引数や分岐のような残骸が、変更なしで長く残りやすい。
+3. 道具の対象範囲（今回は`spec-gaps`のfile名規則）を先に確かめる。対象外のmoduleでの
+   「指摘0件」は、問題が無いことを意味しない。

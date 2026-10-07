@@ -14,6 +14,20 @@ RedBlackTreeCollectionsを「完成」と判断するまでに残っている作
 証拠が揃っている。一方、公開`Index`はsuccess-only表現を採用済み(PR #158)だが、Comparable採否等の契約が確定していないため、
 RedBlackTreeCollections全体はまだ完成とはしない。
 
+### Mapped Values Range Viewの範囲契約
+
+`RedBlackTreeKeyValueRangeView.values`から得る`RedBlackTreeMappedValuesView`は、setterと
+`swapAt(_:_:)`へView範囲内のIndexを渡すことを前提条件として文書化している。一方、現行実装は
+元の木で利用可能なIndexかを検査するだけで、View範囲外の要素を書き換えられる。この不一致は
+文書を緩めず、実装側へ範囲検査を追加して解消する。
+
+実装前に、範囲外Indexによるsetterと`swapAt(_:_:)`が停止することを`_99_DeathTests`へ追加し、
+現行実装で失敗することを確認する。修正後は通常のbuildとtestに加え、値更新のhot pathへの影響を
+performance jobで確認する。
+
+`index(inserting:)`と`erase(exactly:)`は現行名で確定し、名前再検討のTODOを終了する。実装済みの
+Mapped Values Viewに関する古いTODOも削除する。
+
 ### 確認済みの根拠
 
 - Set / MultiSet / Dictionary / MultiMapの参照モデル付きfuzz testと、各操作後の木の不変条件検査

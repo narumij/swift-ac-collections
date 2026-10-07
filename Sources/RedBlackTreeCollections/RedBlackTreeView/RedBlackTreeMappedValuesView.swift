@@ -20,8 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// TODO: Implement This
-
 // swapAt可能にする
 
 // multimap, dictionary用のView, SubView

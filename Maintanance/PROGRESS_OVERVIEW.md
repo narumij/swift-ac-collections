@@ -24,7 +24,8 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 再開条件を上書きしない。特に、中間ゴールに含まれることだけを理由に`FROZEN`または`USER_ONLY`のtaskを
 開始しない。達成または方針変更時は、ユーザーの指示に基づいて現在の中間ゴールを更新する。
 
-中間ゴールへ向けた残る主系列の推奨順は、`PERM-016`、`PERM-017`、`RBT-014`、`RBT-015`とする。
+中間ゴールへ向けた残る主系列の推奨順は、`PERM-016`、`PERM-017`、`RBT-017`、`RBT-014`、
+`RBT-015`とする。
 これは後続作業への影響が大きいものを先に調べるためのsoft orderであり、Task precedenceに記録した
 必須依存以外の着手を禁止しない。`PERM-018`、`PERM-019`は空いたときに差し込める小作業とする。
 
@@ -56,6 +57,7 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 | `PERM-017` | `ACTIVE` | Codex | Permutation品質評価R-1〜R-4 review | `PERM-016`後の§6をreviewし、品質特性の解釈、1.0前の不足、根拠の正確性へ回答を反映。R-3は文書形式を決めず、ユーザー判断に必要な選択肢と技術的根拠までを整理 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `RBT-014` | `ACTIVE` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | `RBT-013`後、workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-015` | `ACTIVE` | Codex | RedBlackTree残task文書の事実更新 | PR #158前提の記述など、現在の実装とRegistryに対して古い記述を修正 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-017` | `ACTIVE` | Claude | Mapped Values Range Viewの範囲外更新防止 | 範囲外Indexによるsetterと`swapAt`が停止するdeath testを先に追加して失敗を確認後、範囲検査を実装し、通常testとperformance jobで検証 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `PERM-018` | `ACTIVE` | Claude | swift-algorithms同時import時のPermutation名前衝突test | test targetへ必要なpackage依存を追加し、両moduleを同時importして公開名が衝突しないことをTest as Specificationで確認 | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-019` | `ACTIVE` | Claude | 利用者向けPermutation使用例の仕様test化 | 文書へ載せる使用例を、文書本文より先にTest as Specificationとして追加 | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `RBT-016` | `EXCLUDED` | — | `RedBlackTreePair.tuple`の仕様test | 2026-10-07、型全体がdocumentation上internalで公開仕様testは不要。graphのspec-gap検出を修正して0件を確認 | `Tests/RedBlackTreeTests/` |
@@ -103,6 +105,7 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 | `QUALITY-001` | `RBT-001` | 前提taskの完了後に着手候補にできる |
 | `PERM-017` | `PERM-016` | 品質評価の事実更新後にreviewする |
 | `RBT-014` | `RBT-013` | TODO/FIXMEの文書影響を分類後にoutlineを照合する |
+| `RBT-014` | `RBT-017` | Range Viewの更新契約と実装を一致させてからoutlineを照合する |
 | `PERM-019` | `PERM-018` | 同時import時の名前衝突がないことを確認後に使用例を固定する |
 | `PERM-014` | `PERM-003` | 現行契約の基準固定後に手順を決定できる |
 | `PERM-015` | `PERM-014` | 実施手順の決定後にtask依存を再評価できる |

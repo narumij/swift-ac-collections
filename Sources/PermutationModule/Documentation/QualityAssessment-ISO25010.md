@@ -1,0 +1,146 @@
+# PermutationModule 品質評価（ISO/IEC 25000シリーズ観点）
+
+> 状態: ドラフト（2026-10-07 / Claude Opus 5.5）。Codexのレビュー前提。
+> 評価時点: `4a75b9f8`（branch `develop/misc/50`）。
+> 赤黒木（RedBlackTreeCollections）の品質ゲートは`Sources/RedBlackTreeCollections/Documentation/Quality-Checklist.md`
+> （`QUALITY-001`）であり、本書はPermutationModuleだけを対象とする。
+
+## 1. 位置づけ
+
+- 品質モデルはISO/IEC 25010:2023の製品品質9特性を使う。利用時の品質（ISO/IEC 25019）は
+  §4にだけ簡単に触れる。
+- 評価の進め方はISO/IEC 25040の流れ（目的 → 品質要求 → 評価の設計 → 実施 → 結論）に
+  ゆるく合わせる。測定量（ISO/IEC 25023）の厳密な適用はしない。
+- 仕様の正本はTest as Specification（`Tests/PermutationTests/NextPermutationsSequence/`の
+  連番file）である。本書は仕様を再記述しない。各判定の根拠としてtestやfileを指すだけにする。
+- 判定は次の4段階とする。
+  - 満たす: 根拠となるtestや確認がある。
+  - 部分: 根拠はあるが、構成・環境・範囲に欠けがある。
+  - 未評価: 根拠がまだない。
+  - 対象外: このmoduleの性質上、評価しない。
+
+## 2. 評価の目的と対象
+
+- 目的: 汎用ライブラリの部品として公開してよい品質かを、1.0判断の前に把握する。
+- 対象: `Sources/PermutationModule/Permutations.swift`の公開表面
+  （`Collection.nextPermutations()`、`NextPermutationsSequence`、`.Iterator`、`.Permutation`）。
+- 対象外: AtCoder 2025互換mode（`PERM-004`〜`PERM-010`、未実装）。実装後に別途評価する。
+
+## 3. 製品品質（ISO/IEC 25010:2023）
+
+### 3.1 機能適合性（Functional suitability）
+
+| 副特性 | 判定 | 根拠 |
+| --- | --- | --- |
+| 機能完全性 | 満たす | 公開APIは`nextPermutations()`の1経路だけ。全順列列挙はswift-algorithmsへ委ねる設計で、削除済みAPIの非露出は`_0_PublicSurfaceTests`がcompile時に固定 |
+| 機能正確性 | 部分 | 列挙順・境界・重複・入力型は`_1_EnumerationTests`、値の安定性は`_2_ValueSemanticsTests`。期待値は手書きで、C++ `std::next_permutation`との差分比較（`CppBehaviorReference`）はない |
+| 機能適切性 | 満たす | C++の`next_permutation`相当という目的に対し、APIはそれだけを提供する |
+
+### 3.2 性能効率性（Performance efficiency）
+
+| 副特性 | 判定 | 根拠 |
+| --- | --- | --- |
+| 時間効率性 | 部分 | 1ステップ最悪O(n)はソースのドキュメントコメントでの約束で、testはない。`Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`に5件の計測がある |
+| 資源効率性 | 部分 | 入力を1回bufferへコピーする。結果を保持しなければ追加のコピーは起きないことを`_98_InternalTests`が`AC_COLLECTIONS_INTERNAL_CHECKS`下でだけ確認 |
+| 容量 | 対象外 | 列挙数は入力に対して階乗的に増えるが、それは列挙の性質であり、このmoduleの上限ではない |
+
+懸念: CIの性能比較（`.github/workflows/swift.yml`のperformance job）が使う`Benchmarks/Libraries/CI.json`に、
+Permutationの計測は入っていない。2026-10-07の`@inline(__always)`27件の全削除（`0ef177d3`）の影響は、
+どこでも測られていない。
+
+### 3.3 互換性（Compatibility）
+
+| 副特性 | 判定 | 根拠 |
+| --- | --- | --- |
+| 共存性 | 部分 | swift-algorithms 1.2.1の型名（`PermutationsSequence`・`UniquePermutationsSequence`）と衝突しないことは目視で確認した。両方をimportした状態のtestはない |
+| 相互運用性 | 満たす | `Sequence`・`IteratorProtocol`・`RandomAccessCollection`へ適合し、標準の`map`や`Array(_:)`で使える（`_1_`〜`_3_`）。`AcCollections`経由の再公開は`AcCollectionsTests.test_importAcCollections_exposesNextPermutations` |
+
+### 3.4 インタラクション能力（Interaction capability。旧: 使用性）
+
+ライブラリでは、利用者＝API利用者として読む。
+
+| 副特性 | 判定 | 根拠 |
+| --- | --- | --- |
+| 適切度認識性 | 部分 | ドキュメントコメントに、全順列ではないこと、swift-algorithmsとの使い分けを記載。利用者向けの文書（赤黒木の`Documentation/*.md`に相当するもの）はない |
+| 習得性 | 部分 | 命名はswift-algorithmsの`PermutationsSequence<Base>`に合わせた（`169401a0`）。使用例はない |
+| 運用操作性 | 満たす | 入口は1つ。Array以外や添字がIntでないCollectionも受け付ける（`_1_`の`testAcceptsNonIntIndexedSources`） |
+| ユーザーエラー防止性 | 満たす | 利用者は直接初期化できない（`_0_`がcompile時に固定）。範囲外の添字は`precondition`で停止（`_99_DeathTests`） |
+| 自己記述性 | 部分 | 公開型の説明はドキュメントコメントのみ。DocCカタログはない |
+
+### 3.5 信頼性（Reliability）
+
+| 副特性 | 判定 | 根拠 |
+| --- | --- | --- |
+| 成熟性 | 部分 | Test as Specificationを`swift test`のDebug・Releaseで実行（CIはLinux）。テストできない約束は少ない |
+| 可用性 | 対象外 | 常駐するサービスではない |
+| 障害許容性 | 対象外 | 誤用は`precondition`で停止させる方針で、継続動作は目指さない |
+| 回復性 | 対象外 | 状態を永続化しない |
+
+懸念: 2026-10-07、Swift 6.4の`-O`で、コピーした変数をクロージャ内で変更すると
+`isKnownUniquelyReferenced`がコピーを見落とし、共有bufferが直接書き換わる現象を見つけた。
+ライブラリに依存しない最小再現で起きる。`_2_ValueSemanticsTests.testIteratorCopiesAdvanceIndependently`は
+assertionの外で`next()`を呼んでこれを避けている。ユーザー判断で、深追いは1.0直前まで保留。
+
+### 3.6 セキュリティ（Security）
+
+ここではメモリ安全性として読む。
+
+| 副特性 | 判定 | 根拠 |
+| --- | --- | --- |
+| 完全性 | 部分 | target全体に`.strictMemorySafety()`を恒久適用し、unsafe操作は所有境界ごとのscoped `unsafe`に限定（`Maintanance/StrictMemorySafetyReadiness.md`）。添字の範囲検査はDebug・Releaseで有効。`-Ounchecked`では省略されうる（ソースのドキュメントコメントに明記） |
+| 機密性・否認防止性・責任追跡性・真正性・耐性 | 対象外 | 秘密情報や外部入力の境界を持たない |
+
+懸念: Death Testは、macOSでは既定で、Linuxではtrait指定時だけ有効になる。CI（Linux）では実行されていない。
+Releaseでの停止は2026-10-07にローカルのmacOSで5件とも確認したのみ。
+
+### 3.7 保守性（Maintainability）
+
+| 副特性 | 判定 | 根拠 |
+| --- | --- | --- |
+| モジュール性 | 満たす | 1 file、空行・コメントを除いて213行（`4a75b9f8`時点）。基準ref（`release/AtCoder/2025`）の約446行から縮小 |
+| 再利用性 | 満たす | 外部依存なし |
+| 解析性 | 満たす | 仕様は連番のTest as Specificationだけにあり、文書との二重管理はない（`5efc1a9c`）。`.task-graphs`の`spec-gaps`で公開APIの仕様test参照を確認（0件） |
+| 修正性 | 満たす | 死んだ汎用化（使われない`upperBound`・`capacity`・二重の型パラメータ）を除去済み（`4a75b9f8`） |
+| 試験性 | 満たす | 「存在しないこと」の約束は、同名宣言を置いてcompile errorで検出する方式。実際にAPIを戻して検出を確認済み |
+
+懸念: AtCoder 2025互換modeを実装すると、基準refの実装が別fileとして戻る。通常版と排他的にcompileされることの
+検証（`PERM-005`〜`PERM-008`）が済むまでは、この判定は通常版だけについてのものである。
+
+### 3.8 柔軟性（Flexibility。旧: 移植性）
+
+| 副特性 | 判定 | 根拠 |
+| --- | --- | --- |
+| 適応性 | 満たす | 入力は任意の`Collection`（要素は`Comparable`）。2026-10-07に`Index == Int`制約を除去 |
+| 拡張性 | 対象外 | 利用者が拡張する設計ではない |
+| 設置性 | 満たす | SwiftPMのtargetとして利用。`swift-tools-version: 6.2`、`platforms: [.macOS(.v15)]` |
+| 置換性 | 部分 | AtCoder 2025版から移行する利用者向けの互換modeは未実装（`PERM-004`以降） |
+
+懸念: AtCoderの判定環境は`import AcCollections`に依存できない。単一fileでの提出確認（`PERM-002`、ユーザー専任）と
+その生成（`PERM-009`）は未実施。
+
+### 3.9 安全性（Safety）
+
+| 副特性 | 判定 | 根拠 |
+| --- | --- | --- |
+| 全副特性 | 対象外 | 人命・財産・環境に直接影響する用途を想定しない。誤用時に停止する性質は§3.4・§3.6で扱う |
+
+## 4. 利用時の品質（ISO/IEC 25019）
+
+主な利用文脈はAtCoderでの競技プログラミング（ABC328Eが存在理由）。有効性・効率性の実地確認は、
+`PERM-002`（ユーザーによる実提出）に委ねる。未評価。
+
+## 5. 判定の要約
+
+- 満たす: 機能完全性、機能適切性、相互運用性、運用操作性、ユーザーエラー防止性、保守性の全副特性、適応性、設置性
+- 部分: 機能正確性、時間効率性、資源効率性、共存性、適切度認識性、習得性、自己記述性、成熟性、完全性、置換性
+- 未評価: 利用時の品質
+
+## 6. Codexへのレビュー依頼
+
+- (R-1) 25010:2023の特性・副特性の読み替え（ライブラリでの「インタラクション能力」「セキュリティ」の解釈）は妥当か。
+- (R-2) 「部分」としたもののうち、1.0の前に「満たす」へ上げるべきものはどれか。Claudeの見立ては次の3つ。
+  - CIの性能比較にPermutationの計測を加える（§3.2）
+  - C++ `std::next_permutation`との差分比較を加える（§3.1）
+  - Linux CIでDeath Testを有効にする（§3.6）
+- (R-3) 利用者向け文書（§3.4）を、赤黒木と同じ形で用意するか。用意しない場合、ドキュメントコメントだけで足りるとする根拠をどう書くか。
+- (R-4) 事実の誤り、根拠の指し違い（commit・file・test名）がないか。

@@ -152,6 +152,12 @@ current instruction and prepare the handoff for Codex if requested.
   判断が冴えているときに行う。完了条件は「ユーザーが納得できるコードの提示」。
 - Codexへの残依頼: `RED_BLACK_TREE_REMAINING_TASKS.md`の「Indexが`Result`のtypealiasなのでComparableにできない」は
   PR #158で古い。`OPT-001` / `BARE-001`（体系・名称）と`ARRAY-001`（storage再設計）はレベルが違うので整理を見直す。
+  `RBT-013`完了（2026-10-07）: grepの27件は、TODOコメント26件と未使用の`Message.keyMismatch`の仮文字列"TODO"1件。
+  文書に影響: (1) `RedBlackTreeKeyValueRangeView.values`（RangeView+KeyValue.swift:203）は「範囲内の添字」を前提条件と文書化しているが、
+  `RedBlackTreeMappedValuesView`の`subscript(position:)`の`set`と`swapAt`は範囲を検査しない。検査するか文書を変えるかの決定とその実装がtask候補。
+  (2) 「名前の再検討」4件（Set / MultiMapの`index(inserting:)`と`erase(exactly:)`）。文書化前に現名で確定するかのユーザー判断がtask候補。
+  (3) `BalancedSequence`の3件は`#if DEBUG`限定で`RBT-004`の範囲。内部だけ17件のうち4件は`PERF-001` / `RBT-008` / `RBT-011` / `RBT-006`で既に覆われる。
+  古い2件（コメント削除のみ、ユーザーの「消して」待ち）: `RedBlackTreeMappedValuesView.swift:23`「Implement This」、`RedBlackTreeMultiMap+Sequence.swift:181`（`values`は既にView）。
   `RBT-016`は不要（ユーザー了承、2026-10-07）: `RedBlackTreePair`は型ごと`@_documentation(visibility: internal)`で、
   入口も`subscript(_pair:)`だけ。graphのspec-gapsが型側の属性を見ていなかった誤検知で、道具を直して0件を確認。閉じる処理はCodex。
 - `GRAPH-001`（試験運用継続）: Registryのprojectionとコード依存graphに、taskと対象コードの対応を加え、手書きの辺を

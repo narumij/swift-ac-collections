@@ -24,10 +24,9 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 再開条件を上書きしない。特に、中間ゴールに含まれることだけを理由に`FROZEN`または`USER_ONLY`のtaskを
 開始しない。達成または方針変更時は、ユーザーの指示に基づいて現在の中間ゴールを更新する。
 
-中間ゴールへ向けた主系列の推奨順は、`RBT-013`、`PERM-016`、`PERM-017`、`RBT-014`、
-`RBT-015`とする。これは後続作業への影響が大きいものを先に調べるためのsoft orderであり、
-Task precedenceに記録した必須依存以外の着手を禁止しない。`PERM-018`、`PERM-019`、`RBT-016`は
-空いたときに差し込める小作業とする。
+中間ゴールへ向けた残る主系列の推奨順は、`PERM-016`、`PERM-017`、`RBT-014`、`RBT-015`とする。
+これは後続作業への影響が大きいものを先に調べるためのsoft orderであり、Task precedenceに記録した
+必須依存以外の着手を禁止しない。`PERM-018`、`PERM-019`は空いたときに差し込める小作業とする。
 
 次の判断は今回の作業taskへ含めない。必要になった時点でユーザーと別途決定する。
 
@@ -52,14 +51,14 @@ Task precedenceに記録した必須依存以外の着手を禁止しない。`P
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-012` | `DONE` | Claude | Swift 6.4 `-O`のCoW誤コンパイルに対する値セマンティクスのTest as Spec拡充 | 2026-10-07、closure-captured mutation形状を4型へ追加し、Debug / Releaseで値セマンティクス維持を確認（`4249ed8c`） | `Tests/RedBlackTreeTests/` |
-| `RBT-013` | `ACTIVE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 27件を「利用者向け文書に影響」「内部だけ」「古い」に分類し、新しいtaskまたは未決事項が見つかればRegistry更新候補として報告 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-013` | `DONE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 2026-10-07、27件を分類。文書へ影響するRange View検査と公開API名、古いコメント2件を判断候補として報告 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `PERM-016` | `ACTIVE` | Claude | Permutation品質評価の事実更新 | §3.7の解消済み`swapAt`懸念を除き、header二重破棄、終端の不要copy、`#if DEBUG`と`package`への整理を根拠へ反映 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-017` | `ACTIVE` | Codex | Permutation品質評価R-1〜R-4 review | `PERM-016`後の§6をreviewし、品質特性の解釈、1.0前の不足、根拠の正確性へ回答を反映。R-3は文書形式を決めず、ユーザー判断に必要な選択肢と技術的根拠までを整理 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `RBT-014` | `ACTIVE` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | `RBT-013`後、workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-015` | `ACTIVE` | Codex | RedBlackTree残task文書の事実更新 | PR #158前提の記述など、現在の実装とRegistryに対して古い記述を修正 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `PERM-018` | `ACTIVE` | Claude | swift-algorithms同時import時のPermutation名前衝突test | test targetへ必要なpackage依存を追加し、両moduleを同時importして公開名が衝突しないことをTest as Specificationで確認 | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-019` | `ACTIVE` | Claude | 利用者向けPermutation使用例の仕様test化 | 文書へ載せる使用例を、文書本文より先にTest as Specificationとして追加 | `Tests/PermutationTests/NextPermutationsSequence/` |
-| `RBT-016` | `ACTIVE` | Claude | `RedBlackTreePair.tuple`の仕様test | 仕様以外の既存testからの間接利用に頼らず、`tuple`の公開契約を専用のTest as Specificationで固定 | `Tests/RedBlackTreeTests/` |
+| `RBT-016` | `EXCLUDED` | — | `RedBlackTreePair.tuple`の仕様test | 2026-10-07、型全体がdocumentation上internalで公開仕様testは不要。graphのspec-gap検出を修正して0件を確認 | `Tests/RedBlackTreeTests/` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-006` | `FROZEN` | User / Codex | 未結線コードの個別削除 | ユーザーが対象を個別指定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |

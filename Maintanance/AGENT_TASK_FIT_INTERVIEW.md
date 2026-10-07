@@ -543,6 +543,17 @@ Claudeへの全面委譲は行わない。
 
 ## 2026-10-08 更新合意task description
 
+### ユーザー提供の追加評価入力
+
+2026-10-08、ユーザーはClaudeが次のskillを獲得済みであると明示した。これは今回の再評価で見落とさない
+能力入力として扱う。点数、担当範囲、accountabilityは、Claudeの自己評価と実績照合を経て別途合意する。
+
+- code、test、task graphのsmellを発見し、調査候補として提示するskill。
+- 性能チューニングの意図と結果を確認し、回帰や疑義を証拠候補として示すskill。
+
+両skillとも、発見・確認能力と、修正方針の決定、性能結論の解釈、完成判定を区別する。Claude reviewでは、
+何を単独で確認できるか、どこでCodexへ返すか、どの証拠で完了を示すかを回答対象に含める。
+
 ### Claude: 暫定更新reviewと自己評価
 
 **目的:** Codexが追記した`2026-10-08 OptionalArray管理方式による更新`を、Claude自身の実績と
@@ -559,6 +570,8 @@ Archived記録からtaskを復活させない。
 3. OptionalArrayの10個の証拠収集形について、単独実行可能か、必要な追加入力、停止条件の不足を回答する。
 4. Claudeが引き受けられない責務、またはCodex側に残すべき責務を明記する。
 5. 点数を変更すべきと考える場合は、能力の根拠とaccountability境界を別々に示す。
+6. code・test・task graphのsmell検出と、チューニング確認について、単独実行可能な範囲、実績、
+   必要な入力、Codexへ返す停止条件を回答する。
 
 **成果物:** この文書末尾へ`Claude response to 2026-10-08 provisional update`節だけを追記する。
 既存本文、点数表、Codex暫定案、Task Registry、他文書は変更しない。

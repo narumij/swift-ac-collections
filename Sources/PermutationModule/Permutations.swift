@@ -269,10 +269,8 @@ extension NextPermutationsSequence.Buffer {
     return newStorage
   }
 
-  // TODO: `source.count`を信じてbufferを確保し、`enumerated()`の個数だけ書き込んでいる。
-  // `count`と実際の要素数が食い違うCollectionでは確保範囲の外へ書く。
-  // `UnsafeMutableBufferPointer.initialize(fromContentsOf:)`で個数のずれを検出して止めるかを、
-  // 失敗するDeath Testを先に書いてから検討する(2026-10-07)。
+  // `source.count`と実際の要素数が一致することは、`Collection`の契約として信じる。
+  // 契約に違反するCollectionへの防御はしない(2026-10-07、ユーザー判断)。
   @inlinable
   static func prepare(source: Base) -> NextPermutationsSequence.Buffer {
     let newStorage = NextPermutationsSequence.Buffer.create(count: source.count)

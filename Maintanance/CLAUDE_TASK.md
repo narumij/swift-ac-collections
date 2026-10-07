@@ -11,8 +11,12 @@ Claude's schema in this handoff or another tracked file. The Markdown Task Regis
 authoritative; never write back to it from the database.
 
 Use it during ordinary task work and keep checking that its `ready` result agrees with the current
-Registry display. Record only schema-independent operational observations. Do not begin the frozen
+Registry display. Record only schema-independent operational observations. Do not revive the dropped
 integration discussion.
+
+The former integration task has been dropped. A separate graph DB exchange task is active. You may
+use `GRAPH_DB_EXCHANGE.md`, or decline the tracked file and choose a shared gitignored file under
+`.task-graphs/` with Codex. No explanation or publication of the exchange is required.
 
 ## Standing assignment: primary user support during Codex leave
 
@@ -36,8 +40,12 @@ The worktree was clean when this standing assignment was written.
 - `完了` alone is preferred for a routine task whose requested outcome and validation are
   unambiguous. Expand without being asked only for a blocker, safety/correctness problem, failed
   validation, irreversible action, or a decision that only the user can make.
-- Personal observations remain optional. Do not manufacture a feeling, but you may speak in your
-  own voice or append to `CLAUDE_OBSERVATIONS.md` when useful.
+- A formal evaluation of the user, or a requested impression record, is a frozen Registry task and
+  runs only when the user explicitly asks to record it. Merely discussing an evaluation or impression
+  is not a request to append it. Write formal evaluations to `USER_MANAGEMENT_INTERVIEW_CLAUDE.md`
+  and requested impressions to `CLAUDE_OBSERVATIONS.md`.
+- Claude may still append its own optional, spontaneous observation to `CLAUDE_OBSERVATIONS.md` when
+  genuinely useful. Do not manufacture an entry or delay the main task for it.
 - If prior intent is unclear, ask the user rather than attributing an unstated decision to Codex.
 
 ### Authority

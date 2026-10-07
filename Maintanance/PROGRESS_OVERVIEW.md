@@ -20,8 +20,10 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 | `DOC-001` | `DONE` | Codex / Claude | P10残存記述確認 | 2026-10-06、監査と必要箇所の同期を完了（`9b0f42d5`） | `MAINTENANCE.md` |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-002` | `FROZEN` | Codex | Codex用task graph DBの独立試験 | Codexのcontext reset後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
-| `GRAPH-003` | `FROZEN` | User / Codex / Claude | 二つのtask graph DBの統合議論 | 両試験の完了後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-003` | `EXCLUDED` | — | 二つのtask graph DBの統合議論 | 2026-10-07、統合方針をdrop。再開候補にしない | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-004` | `ACTIVE` | Claude | AIとgraph DBによるsmell（code / test / task）の独立試験 | 専用ノートをClaudeが自由編集し、観測・仮説・反証・再利用可能な判断基準を継続記録 | `AI_GRAPH_SMELL_NOTES.md` |
+| `GRAPH-005` | `ACTIVE` | Codex / Claude | ClaudeとCodexのgraph DB交流会 | 合意した共有面で観測、問い、反証、試したい見方を交換。tracked MDを強制せず、統合や正本化を目的にしない | `TASK_GRAPH_DB_EXPERIMENT.md` |
+| `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-012` | `FROZEN` | Claude | Swift 6.4 `-O`のCoW誤コンパイルに対する値セマンティクスのTest as Spec拡充 | 1.0判断の直前に再開。4型の値セマンティクス仕様（`_15_ValueSemanticsTests`等）へ「コピー後に元の側をクロージャ内で変更しても、コピーは変わらない」をReleaseで追加し、当たれば回避策を相談。発見と最小再現はPermutationの`ensureUnique()`のTODO（2026-10-07） | `Tests/RedBlackTreeTests/` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
@@ -64,8 +66,6 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 | `RBT-001` | `RBT-010` | 前提taskの完了後に後続taskを完了できる |
 | `RBT-001` | `RBT-011` | 前提taskの完了後に後続taskを完了できる |
 | `QUALITY-001` | `RBT-001` | 前提taskの完了後に着手候補にできる |
-| `GRAPH-003` | `GRAPH-001` | 前提taskの完了後に着手候補にできる |
-| `GRAPH-003` | `GRAPH-002` | 前提taskの完了後に着手候補にできる |
 | `PERM-004` | `PERM-003` | 前提taskの完了後に着手できる |
 | `PERM-005` | `PERM-004` | 前提taskの完了後に着手できる |
 | `PERM-006` | `PERM-005` | 前提taskの完了後に着手できる |

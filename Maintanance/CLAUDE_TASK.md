@@ -158,6 +158,12 @@ current instruction and prepare the handoff for Codex if requested.
   (2) 「名前の再検討」4件（Set / MultiMapの`index(inserting:)`と`erase(exactly:)`）。文書化前に現名で確定するかのユーザー判断がtask候補。
   (3) `BalancedSequence`の3件は`#if DEBUG`限定で`RBT-004`の範囲。内部だけ17件のうち4件は`PERF-001` / `RBT-008` / `RBT-011` / `RBT-006`で既に覆われる。
   古い2件（コメント削除のみ、ユーザーの「消して」待ち）: `RedBlackTreeMappedValuesView.swift:23`「Implement This」、`RedBlackTreeMultiMap+Sequence.swift:181`（`values`は既にView）。
+  `RBT-017`（2026-10-07夜）: 範囲外Indexでの`values[i] = x`と`swapAt`が止まらないことをDeath Testで赤確認済み。
+  実装はClaudeが相談すべき点を独断で決めたため取り下げ（未commit、作業ツリーは元に戻した）。着手前にユーザーと決める点:
+  全体viewで検査を省くか / 部分範囲での計算量O(log n)化を許すか / 停止メッセージ（`outOfRange`は凍結中） /
+  新helperへの`@inlinable` / `get`も検査するか / 要素を指さないIndexと別の木のIndexの扱い / MultiMapのtest。
+  `PERM-016`完了（2026-10-07夜、未commit）: 品質評価を`c64116e0`時点の事実へ更新。`swapAt`の懸念を削除し、header二重破棄の修正、
+  終端の不要コピー回避（未計測を明記）、走査の共有、`#if DEBUG`の`package`検査member、行数（254行）を反映。判定と§6の問いは変えていない。`PERM-017`へ渡せる。
   `RBT-016`は不要（ユーザー了承、2026-10-07）: `RedBlackTreePair`は型ごと`@_documentation(visibility: internal)`で、
   入口も`subscript(_pair:)`だけ。graphのspec-gapsが型側の属性を見ていなかった誤検知で、道具を直して0件を確認。閉じる処理はCodex。
 - `GRAPH-001`（試験運用継続）: Registryのprojectionとコード依存graphに、taskと対象コードの対応を加え、手書きの辺を

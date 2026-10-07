@@ -471,6 +471,57 @@ XCTestからSwift Testingへの移行可否は、次の制約を明示して判�
 このtaskではfile rename、test移動、XCTest移行、production変更を行わない。testの追加・削除や仕様範囲も
 決めない。新しいdefectまたは判断点は根拠を記録して停止し、Codexが実行taskを分割する入力にする。
 
+### OPT-035 Test as Specification配置・移行設計
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `63f40cdd`。現行4 fileを読んだだけで、移動・改名・移行はしていない。
+`T<n>` / `D<n>`は現行の`OptionalArrayTests.swift` / `OptionalArrayDeathTests.swift`の行（このHEADの時点。OPT-015冒頭の略記とは行番号が違う）。
+
+前提として確認した事実:
+
+- XCTestは`final class OptionalArrayTests: XCTestCase`の1 class（35件）だけ。`setUp` / `tearDown`、`measure`などのperformance API、
+  `@MainActor`、`continueAfterFailure`の変更、`static var`は無い。`XCTUnwrap`も使っていない。
+- 参照型破棄のcountは、8件とも各testの中で宣言する`var deinitCount`と、test内の`final class Box`（closureでcountを増やす）で数える。
+  test間で共有する状態は無いので、Swift Testingで並列に実行しても意味は変わらない。
+- test targetの依存は`OptionalArrayModule`だけ（`Package.swift:292-297`）。RedBlackTreeのprocess-globalなlifetime counterと、
+  その専用XCTest基底classの規則（`Tests/CLAUDE.md`）は関係しない。
+- Death Testは既にSwift Testing（`#if DEATH_TEST`、`processExitsWith: .failure`）で、2 suite・21件。
+- 番号付きfileの命名は、Permutationが`<型名>_<n>_<主題>Tests.swift`（1型）、RedBlackTreeが型ごとのdirectoryと同じ形。
+  `_98_`は実装確認、`_99_`はDeath Test（`Tests/CLAUDE.md`）。
+
+提案するfile構成（module内の公開7型を一つの仕様群として扱い、接頭辞を`OptionalArray`にした案。型ごとに分けるかはCodexが判断する）:
+
+| 仕様番号 | 提案file名 | 含める現行test | 固定する契約 | Swift Testingへの移行 | 移行時の注意点 |
+| --- | --- | --- | --- | --- | --- |
+| 0 | `OptionalArray_0_PublicSurfaceTests.swift` | `testSendable_compiles`（T277） | 所有型の条件付き`Sendable` | 可 | `#if swift(>=5.5)`の囲みは現行toolchainでは不要になるが、外すかは決めていない。`borrowing T`と`~Copyable`の制約はSwift Testingでもそのまま書ける |
+| 1 | `OptionalArray_1_InitializationTests.swift` | T8（1D初期nil）、T466 / T471 / T482 / T499 / T513（zero dimension）、T526（4D zero-volumeの外側subscript） | 初期状態、次元契約のうち成功側（zeroを含む）。停止側は`_99_` | 可 | T526はsubscriptの経路も固定するので、`_3_`へ置く案もある（判断点。決めていない） |
+| 2 | `OptionalArray_2_ElementAccessTests.swift` | T16、T27、T59、T107、T155 | 取得・設定・nil代入 | 可 | — |
+| 3 | `OptionalArray_3_ViewTests.swift` | T86、T132、T182、T195、T208 | Viewによる親storageの共有、非対称次元でのstrideと外側境界 | 可 | — |
+| 4 | `OptionalArray_4_IndicesTests.swift` | T51、T97、T144、T221、T233 | 所有4型とView 3型の`indices`の軸 | 可 | — |
+| 5 | `OptionalArray_5_RemoveAllTests.swift` | T37、T72、T119、T168 | `removeAll()`後の未設定状態 | 可 | 参照型での`removeAll()`は`_6_`にある。`_5_`と`_6_`のどちらに寄せるかは決めていない |
+| 6 | `OptionalArray_6_ReferenceLifetimeTests.swift` | T286、T312、T339、T357、T374、T391、T410、T435 | 上書き・nil代入・`removeAll()`・deinitでの一回だけの破棄、`removeAll()`後の再利用 | 可（状態はtest内だけ） | 8件とも同じ`Box`をtest内に複製している。共通化はtest内容の変更になるので、移行taskとは分けるのが安全 |
+| 99 | `OptionalArray_99_DeathTests.swift` | 現行`OptionalArrayDeathTests.swift`の2 suite（D8〜とD72〜） | 境界違反と次元契約違反での停止 | 移行済み（Swift Testing） | file名だけの変更。冒頭の「このファイル自体は整理整頓時に消さないこと」コメントはユーザー指示なので維持する。通常testとは混ぜない |
+| 別枠 | `EDPC-J.swift` / `EDPC-L.swift`（番号なし、現名のまま） | `EDPC_J(N:)`、`hoge(N:A:)` | 利用形状のcompileだけ（実行されない、OPT-023） | 対象外 | testではないので番号を付けない |
+
+移行の進め方の制約（確認できた範囲）:
+
+- XCTestCase単位の段階移行: 現行は1 classなので、class単位だと一括になる。仕様番号ごとにfileを分けたうえで、file単位で移す形なら
+  混在期間を作れる。`swift test`はXCTestとSwift Testingの両方を実行し、`--filter`は両方に効く（このsessionのOPT-033 / 034で確認）。
+- `XCTAssertEqual` / `XCTAssertNil` / `XCTAssertTrue`は`#expect`へ置き換えられる。`XCTAssertTrue(a === b)`（T410 / T435）は
+  `#expect(a === b)`で書ける。失敗後も続ける挙動は、XCTestの既定（`continueAfterFailure == true`）と`#expect`で同じ。
+- `@Test(arguments:)`の候補（採用は決めない）: `_99_`の軸ごとの負値10件、`_1_`のzero dimensionの形状、`_6_`の2D〜4Dの残存deinit。
+  exit testの本体は引数をcaptureしない書き方が既存にある（`Tests/RedBlackTreeTreeTests/Foundamental/TreeFoundamentalDeathTests.swift:96-`、
+  enumを`switch`して各caseで`#expect(processExitsWith:)`を呼ぶ）。所有型は`~Copyable`で型ごとにinitializerが違うので、
+  `_6_`を1つのparameterized testにするには型ごとの分岐が要る。
+
+停止事項: 新しいdefectは無い。判断点は表に書いた2つ（T526の置き場所、参照型`removeAll()`の置き場所）と、
+型ごとにfileを分けるかどうかで、いずれも決めていない。D45 / D52 / D59の名前と本体（Getの名前で本体は書込み）のずれは、
+OPT-018で記録済み。改名はこのtaskの範囲外。
+
+Codex acceptance（2026-10-08）: 公開7型を一つの仕様群として0〜6、99へ分ける案、EDPC利用例の別枠、
+XCTestからSwift Testingへの段階移行条件が、現行testと既存規約に対応しているため受け入れる。
+`OPT-035`を完了とする。配置の小判断と実行taskへの分割は小休止後にCodexが行い、`OPT-012`は
+それまで凍結を維持する。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

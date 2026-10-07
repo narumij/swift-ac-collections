@@ -11,6 +11,19 @@
 **現在の律速:** 外部（`swift-collections` ContainersPreviewの`Container.Index`要件）。
 Index契約と関連taskは、この外部条件が安定するまで最終確定できない。
 
+**中間ゴールの取り扱い**
+
+**現在の中間ゴール:**
+
+- Permutationを、Codexのユーザードキュメント作業フェーズへ渡せる状態にする。
+- RedBlackTreeに見えていない残作業がないかを確認し、Codexのユーザードキュメント作業フェーズへ
+  渡せる状態にする。
+
+中間ゴールは、複数taskをまたぐ現在の到達点をカンバン上で共有し、着手可能なtaskから何を優先するかを
+判断するために使う。taskそのものではないためIDや状態は持たず、Task Registryの状態、担当、依存、
+再開条件を上書きしない。特に、中間ゴールに含まれることだけを理由に`FROZEN`または`USER_ONLY`のtaskを
+開始しない。達成または方針変更時は、ユーザーの指示に基づいて現在の中間ゴールを更新する。
+
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる | `RED_BLACK_TREE_REMAINING_TASKS.md` |

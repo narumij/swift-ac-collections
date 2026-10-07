@@ -6,33 +6,25 @@
 // 2026-10-03に通常版から削除した公開API(`release/AtCoder/2025`にだけ存在する表面)が
 // 復活していないことを、コンパイル時に固定する。
 //
-// このファイルは削除済みAPIと同名の宣言をテスト側に置き、それを参照する。
-// - メソッドとイニシャライザは、ライブラリ側に同名のものが復活すると
-//   `ambiguous use of ...`でコンパイルが失敗する。
-// - ネスト型(`All`等)は同名のstatic varで代用する。ライブラリ側に同名の型が復活すると、
-//   型の方が優先されて`Marker`への代入が型不一致となり、コンパイルが失敗する。
+// このファイルは削除済みメソッドと同名の宣言をテスト側に置き、型注釈なしで呼び出す。
+// ライブラリ側に同名のメソッドが復活すると`ambiguous use of ...`でコンパイルが失敗する。
+// 型注釈を付けるとテスト側の宣言が黙って選ばれ、検出できない。
+//
+// 旧型名(`Permutations`名前空間と、その下の`All`・`IteratorA`・`SubSequenceA`・`Nexts`等)は
+// この方法では守れない。トップレベルの名前はテスト側の宣言が優先され、黙って通るためである
+// (2026-10-07確認)。互換版のソースが通常ビルドへ漏れた場合は、同じファイルにある
+// 下の2メソッドも一緒に漏れるので、これを漏れの警報として扱う。
 //
 // 互換mode(`COMPATIBLE_ATCODER_2025`)では基準版の表面が意図的に存在するため対象外とする。
 #if !COMPATIBLE_ATCODER_2025
   import PermutationModule
   import XCTest
 
-  private enum RemovedAPIMarker {}
+  private struct RemovedAPIMarker {}
 
   extension Collection where Index == Int {
-    fileprivate func unsafePermutations() -> RemovedAPIMarker? { nil }
-    fileprivate func unsafeNextPermutations() -> RemovedAPIMarker? { nil }
-  }
-
-  extension Permutations {
-    fileprivate static var All: RemovedAPIMarker? { nil }
-    fileprivate static var IteratorA: RemovedAPIMarker? { nil }
-    fileprivate static var SubSequenceA: RemovedAPIMarker? { nil }
-  }
-
-  extension Permutations.Nexts {
-    fileprivate init?(safe source: C) { return nil }
-    fileprivate init?(unsafe source: C) { return nil }
+    fileprivate func unsafePermutations() -> RemovedAPIMarker { .init() }
+    fileprivate func unsafeNextPermutations() -> RemovedAPIMarker { .init() }
   }
 
   final class PermutationRemovedAPITests: XCTestCase {
@@ -40,22 +32,11 @@
     func testRemovedPublicSurfaceIsNotExposed() {
       let a = [1, 2, 3]
       // 1項目ずつ別の文にして、復活したAPIごとに個別のコンパイルエラーが出るようにする。
-      // メソッドとinitには型注釈を付けない。付けるとテスト側の宣言が黙って選ばれ、検出できない。
       let unsafePermutations = a.unsafePermutations()
       let unsafeNextPermutations = a.unsafeNextPermutations()
-      let all: RemovedAPIMarker? = Permutations<[Int]>.All
-      let iteratorA: RemovedAPIMarker? = Permutations<[Int]>.IteratorA
-      let subSequenceA: RemovedAPIMarker? = Permutations<[Int]>.SubSequenceA
-      let nextsSafe = Permutations<[Int]>.Nexts(safe: a)
-      let nextsUnsafe = Permutations<[Int]>.Nexts(unsafe: a)
 
-      XCTAssertNil(unsafePermutations)
-      XCTAssertNil(unsafeNextPermutations)
-      XCTAssertNil(all)
-      XCTAssertNil(iteratorA)
-      XCTAssertNil(subSequenceA)
-      XCTAssertNil(nextsSafe)
-      XCTAssertNil(nextsUnsafe)
+      XCTAssertTrue(type(of: unsafePermutations) == RemovedAPIMarker.self)
+      XCTAssertTrue(type(of: unsafeNextPermutations) == RemovedAPIMarker.self)
     }
   }
 #endif

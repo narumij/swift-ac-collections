@@ -11,8 +11,9 @@
 
 // Added for Maintanance/CLAUDE_TASK.md (Permutation boundary fix).
 // Measures repeated valid element access through the public
-// `Permutations.SubSequenceN.subscript(position:)`, so that the cost of a
-// bounds precondition on that subscript can be compared before and after.
+// `NextPermutationsSequence.Permutation.subscript(position:)` (formerly
+// `Permutations.SubSequenceN`; titles keep the old name for result continuity),
+// so that the cost of a bounds precondition on that subscript can be compared before and after.
 //
 // Methodology (see Maintanance/PermutationModule/ProductReadinessAssessment.md):
 // - The permutation and the index order are built outside the timed region.
@@ -40,7 +41,7 @@ private struct PermutationBenchmarkRNG: RandomNumberGenerator {
 }
 
 /// Returns the first permutation yielded for `0..<size`, i.e. `0, 1, ..., size - 1`.
-private func firstPermutation(_ size: Int) -> Permutations<[Int]>.SubSequenceN {
+private func firstPermutation(_ size: Int) -> NextPermutationsSequence<[Int]>.Permutation {
   var iterator = Array(0..<size).nextPermutations().makeIterator()
   return iterator.next()!
 }

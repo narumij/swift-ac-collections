@@ -18,8 +18,16 @@ final class PermutationTests: XCTestCase {
   private func requireSendableType<T: Sendable>(_: T.Type) {}
 
   func testSendableSequenceSurface() {
-    requireSendableType(Permutations<[Int]>.self)
+    requireSendableType(NextPermutationsSequence<[Int]>.self)
     requireSendable([1, 2, 3].nextPermutations())
+  }
+
+  func testPublicTypeNames() throws {
+    // 公開型の名前と入れ子の形を固定する(2026-10-07改名)。
+    let sequence: NextPermutationsSequence<[Int]> = [1, 2].nextPermutations()
+    var iterator: NextPermutationsSequence<[Int]>.Iterator = sequence.makeIterator()
+    let first: NextPermutationsSequence<[Int]>.Permutation? = iterator.next()
+    XCTAssertEqual(first.map { Array($0) }, [1, 2])
   }
 
   func testSendableIteratorAndYieldedValueRemainIndependentAcrossTask() async throws {
@@ -176,7 +184,7 @@ final class PermutationTests: XCTestCase {
       (1..<4).nextPermutations().map { Array($0) },
       [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
     // startIndexが0でないスライスでも、要素値の並びは同じ規則で列挙される。
-    // (yieldされるSubSequenceNの添字の起点は契約として固定しない)
+    // (yieldされるPermutationの添字の起点は契約として固定しない)
     let slice = [9, 3, 1, 2, 9][1..<4]
     XCTAssertEqual(
       slice.nextPermutations().map { Array($0) },
@@ -184,7 +192,7 @@ final class PermutationTests: XCTestCase {
   }
 
   func testNextPermutationsRetainedResultsRemainStable() throws {
-    // CoWにより、以前にyieldされた結果(SubSequenceN)はイテレータがさらに進んでも
+    // CoWにより、以前にyieldされた結果(Permutation)はイテレータがさらに進んでも
     // 書き換わらずに安定していることを直接確認する。
     let a = [1, 2, 3]
     var iterator = a.nextPermutations().makeIterator()

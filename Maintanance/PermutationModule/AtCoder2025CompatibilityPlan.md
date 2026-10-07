@@ -26,10 +26,13 @@
 
 通常版の基準は次のtestで固定した。互換modeの検証はユーザー判断で省略した。
 
-- `PermutationRemovedAPITests`: 基準版にだけある7つの公開表面（`unsafePermutations()`、
-  `unsafeNextPermutations()`、`All`、`IteratorA`、`SubSequenceA`、`Nexts.init(safe:)`、
-  `init(unsafe:)`）が復活するとcompileが失敗する。7件を一時的に再追加し、全件が個別に
+- `PermutationRemovedAPITests`: 基準版にだけある`unsafePermutations()`と
+  `unsafeNextPermutations()`が復活するとcompileが失敗する。一時的に再追加し、個別に
   compile errorになることを確認済み。`COMPATIBLE_ATCODER_2025`では対象外。
+  - 2026-10-07の改名で`Permutations`名前空間を廃止したため、その下にあった旧型
+    （`All`・`IteratorA`・`SubSequenceA`・`Nexts`等）の検査は外した。トップレベルの型名は
+    テスト側の同名宣言が優先されて黙って通るので、この方式では守れない。互換版が通常ビルドへ
+    漏れた場合は上の2メソッドも漏れるので、それを漏れの警報とする。
 - `PermutationTests`: 列挙順・境界・取得済み結果の安定性・`Sendable`に加え、重複要素と
   非Array入力（`Range`、起点が0でないslice）を追加した。sliceについては、yieldされる結果の
   添字の起点を契約として固定していない（未決）。
@@ -48,6 +51,9 @@ unsafeな結果共有を、現行APIとして再推奨もしない。
 - 基準ref: `remotes/origin/release/AtCoder/2025`
 - 基準ソース: `Sources/PermutationModule/Permutations.swift`
 - 現行と共有可能: `NextPermutationProtocol.swift`。基準refとの差分はない。
+- 型名の差（2026-10-07）: 通常版は`Permutations<C>.Nexts`/`IteratorN`/`SubSequenceN`を
+  `NextPermutationsSequence<Base>`/`.Iterator`/`.Permutation`へ改名し、`Permutations`名前空間を
+  廃止した。互換版は基準refの旧名をそのまま持つ。
 - 既存の切替名: `COMPATIBLE_ATCODER_2025`。現在の`Package.swift`とテスト運用で既に
   使用実績があるが、Permutationの実装自体はまだ切り替わらない。
 
@@ -108,7 +114,7 @@ AtCoderへ貼り付ける単一ファイルの生成はSwiftPM traitとは別問
 ### 2. モード別Test as Specification
 
 - 通常モードでは現在の`PermutationTests`をそのまま実行し、削除済みAPIが復活して
-  いないこと、取得済み`SubSequenceN`が安定することを維持する。
+  いないこと、取得済み`NextPermutationsSequence.Permutation`が安定することを維持する。
 - 互換モードでは基準refのテストを復元し、次を明示的に固定する。
   - `unsafePermutations()`の全順列列挙順と重複の見え方
   - `nextPermutations()`が現在位置以降だけを列挙すること

@@ -85,6 +85,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-004` | `ACTIVE` | Claude | AIとgraph DBによるsmell（code / test / task）の独立試験 | 専用ノートをClaudeが自由編集し、観測・仮説・反証・再利用可能な判断基準を継続記録 | `AI_GRAPH_SMELL_NOTES.md` |
 | `GRAPH-005` | `ACTIVE` | Codex / Claude | ClaudeとCodexのgraph DB交流会 | 合意した共有面で観測、問い、反証、試したい見方を交換。tracked MDを強制せず、統合や正本化を目的にしない | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
+| `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界への更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を現行規則へ反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-012` | `DONE` | Claude | Swift 6.4 `-O`のCoW誤コンパイルに対する値セマンティクスのTest as Spec拡充 | 2026-10-07、closure-captured mutation形状を4型へ追加し、Debug / Releaseで値セマンティクス維持を確認（`4249ed8c`） | `Tests/RedBlackTreeTests/` |
 | `RBT-013` | `DONE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 2026-10-07、27件を分類。文書へ影響するRange View検査と公開API名、古いコメント2件を判断候補として報告 | `RED_BLACK_TREE_REMAINING_TASKS.md` |

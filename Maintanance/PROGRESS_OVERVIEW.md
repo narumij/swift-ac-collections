@@ -173,7 +173,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-026` | `DONE` | Claude | [EXECUTION] OptionalArray監査本文の証拠同期 | 2026-10-08、Sendable testは1Dのみ、EDPC利用例は未実行のcompile対象という事実へ本文を同期 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-027` | `DONE` | Claude | [DISCOVERY] OptionalArray判断候補4件の決定来歴確認 | 2026-10-08、4件とも明示決定なし。用途・名称・次元は実装事実、不正次元は履歴なしとして確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-028` | `DONE` | Claude | [DISCOVERY] OptionalArray・BareArray名称次元surface比較 | 2026-10-08、現行宣言の型名・View名・initializer・property・subscript軸・indices軸を対応表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-029` | `WAITING_USER` | User / Codex | [DECISION] OptionalArrayの公開位置づけ | 競技プログラミング用の低レベル公開部品として1.0でも公開を続けるか、一つの位置づけを決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-029` | `DONE` | User / Codex | [DECISION] OptionalArrayの公開位置づけ | 2026-10-08、競技プログラミング用の低レベル公開部品として1.0でも公開を継続すると決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-030` | `WAITING_USER` | User / Codex | [DECISION] OptionalArray 1D所有型の名称 | `OptionalArray1D`を維持するか、次元suffixを持たない体系へ揃えるか、一つの型名体系を決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-031` | `WAITING_USER` | User / Codex | [DECISION] OptionalArray 2D〜4Dの次元名称体系 | `width`系と`size0`系の混在を維持するか統一するか、一つのproperty・initializer label体系を決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-032` | `WAITING_USER` | User / Codex | [DECISION] OptionalArray initializerの不正次元契約 | 負値・zero・積overflowをどの事前条件で扱うか、一つの契約方針を決定 | `OptionalArrayModule/OptionalArrayAudit.md` |

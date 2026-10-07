@@ -144,16 +144,16 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-012` | `FROZEN` | Codex | [EXECUTION] OptionalArrayModuleTestsのTest as Specification整理 | `OPT-009`と必要な判断taskの完了後、仕様根拠を番号付きTest as Specificationへ整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-013` | `FROZEN` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 契約表、test対応、決定済み事項、未決定事項、文書入力を暫定受入基準で検収し、親taskを完了可能にする | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-014` | `DONE` | Codex | [EXECUTION] OptionalArray3DViewの2D面stride修正 | 2026-10-08、非対称次元testで修正前のslice aliasを確認し、offsetを`width * height * position`へ修正。NOP setterは連鎖writeback用と明文化 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-015` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray公開宣言29件のledger作成 | 公開宣言を一件ずつ型・member種別・source位置・現在のコメントドックへ対応付ける。契約判断やsource変更は行わない | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-016` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray所有4型のtest根拠表 | initializer、removeAll、subscript、indices、Sendableについて、既存test名と検証事実を対応付け、不足を列挙 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-017` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray View 3型のtest根拠表 | Viewの非所有性、親storage共有、subscript、indicesについて、既存test名と検証事実を対応付け、不足を列挙 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-018` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray境界test matrix | 所有型・Viewの各subscript経路について、負値・上端、read・write、Debug・Release・Death Testの有無を表にする。追加実装はしない | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-019` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray参照型寿命test matrix | 1D〜4DとViewについて、構築、上書き、nil代入、removeAll、再利用、deinitの検証有無と期待破棄回数を表にする | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-020` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray次元・offset式の独立照合 | 2D〜4DとViewの各軸、indices、linear offset式を非対称次元で机上照合し、既存test対応と疑義を報告。production codeは変更しない | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-021` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray Sendable採用履歴の事実確認 | `@unchecked Sendable`導入commitと後続変更を限定調査し、導入理由として記録された事実、現行test、未記録部分を区別して報告 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-022` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray不正次元の現挙動確認 | 負値、zero dimension、次元積overflowについて、現行実装・標準APIの結果とtest有無を確認。望ましい方針は決めずproduction codeも変更しない | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-023` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray EDPC利用例の責務分類 | EDPC-J / EDPC-Lが使う公開面、固定する利用形状、アルゴリズム固有部分を分け、仕様testとして代替できない契約を報告 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-024` | `ACTIVE` | Claude | [DISCOVERY] OptionalArrayコメントドックcoverage表 | 公開宣言29件についてコメントの有無と、境界・所有・寿命・破棄・変更・計算量の記載有無だけを棚卸しする。コメント整備は行わない | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-015` | `DONE` | Claude | [DISCOVERY] OptionalArray公開宣言29件のledger作成 | 2026-10-08、型7・init 4・removeAll 4・subscript 7・indices 7をsource位置とコメントへ対応 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-016` | `DONE` | Claude | [DISCOVERY] OptionalArray所有4型のtest根拠表 | 2026-10-08、4型のinit、removeAll、subscript、indices、Sendable、deinitの根拠と不足を表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-017` | `DONE` | Claude | [DISCOVERY] OptionalArray View 3型のtest根拠表 | 2026-10-08、非所有性、storage共有、subscript、indicesの直接・間接証拠と不足を表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-018` | `DONE` | Claude | [DISCOVERY] OptionalArray境界test matrix | 2026-10-08、所有型・Viewの負値／上端、read／write、Debug／Release／`-Ounchecked`を表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-019` | `DONE` | Claude | [DISCOVERY] OptionalArray参照型寿命test matrix | 2026-10-08、構築、上書き、nil、removeAll、再利用、deinitの期待破棄数と既存testを表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-020` | `DONE` | Claude | [DISCOVERY] OptionalArray次元・offset式の独立照合 | 2026-10-08、非対称次元で2D〜4DとViewのoffset・indicesを机上および一時実行で照合 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-021` | `DONE` | Claude | [DISCOVERY] OptionalArray Sendable採用履歴の事実確認 | 2026-10-08、導入commit、後続変更、現行test、未記録の導入理由と利用範囲を分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-022` | `DONE` | Claude | [DISCOVERY] OptionalArray不正次元の現挙動確認 | 2026-10-08、zero・負値・overflowを構成別に確認し、`-Ounchecked`の安全性疑義で方針判断せず停止 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-023` | `DONE` | Claude | [DISCOVERY] OptionalArray EDPC利用例の責務分類 | 2026-10-08、使用公開面、capture・連鎖subscript形状、DP固有部分、未実行状態を分類 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-024` | `DONE` | Claude | [DISCOVERY] OptionalArrayコメントドックcoverage表 | 2026-10-08、29宣言の境界・所有・寿命・破棄・変更・計算量の明示記載を棚卸し | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |

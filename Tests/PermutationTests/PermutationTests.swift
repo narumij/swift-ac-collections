@@ -156,6 +156,33 @@ final class PermutationTests: XCTestCase {
     }
   }
 
+  func testNextPermutationsDoNotDuplicateEqualElements() throws {
+    // 比較上等しい要素は位置の違いだけで重複列挙しない(next_permutationと同じ)。
+    // swift-algorithmsのpermutations()は[0, 0, 1]で6件を返す(testExample0)。
+    XCTAssertEqual(
+      [0, 0, 1].nextPermutations().map { Array($0) },
+      [[0, 0, 1], [0, 1, 0], [1, 0, 0]])
+    XCTAssertEqual(
+      [1, 1, 2, 2].nextPermutations().map { Array($0) },
+      [
+        [1, 1, 2, 2], [1, 2, 1, 2], [1, 2, 2, 1],
+        [2, 1, 1, 2], [2, 1, 2, 1], [2, 2, 1, 1],
+      ])
+  }
+
+  func testNextPermutationsAcceptNonArrayIntIndexedSources() throws {
+    // Index == Int の任意のCollectionを入力にでき、元の並びから列挙する。
+    XCTAssertEqual(
+      (1..<4).nextPermutations().map { Array($0) },
+      [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
+    // startIndexが0でないスライスでも、要素値の並びは同じ規則で列挙される。
+    // (yieldされるSubSequenceNの添字の起点は契約として固定しない)
+    let slice = [9, 3, 1, 2, 9][1..<4]
+    XCTAssertEqual(
+      slice.nextPermutations().map { Array($0) },
+      [[3, 1, 2], [3, 2, 1]])
+  }
+
   func testNextPermutationsRetainedResultsRemainStable() throws {
     // CoWにより、以前にyieldされた結果(SubSequenceN)はイテレータがさらに進んでも
     // 書き換わらずに安定していることを直接確認する。

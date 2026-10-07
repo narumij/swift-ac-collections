@@ -22,6 +22,18 @@
 1から4は実行順として直列になる。4の完了後、5と6は独立して進められる。7は5を前提とし、8は
 5、6、7の完了後に行う。実提出確認はこの実装列に含めず、引き続きユーザー専任とする。
 
+## 1. 現行契約の基準固定（2026-10-07完了 / Claude Opus 5.5）
+
+通常版の基準は次のtestで固定した。互換modeの検証はユーザー判断で省略した。
+
+- `PermutationRemovedAPITests`: 基準版にだけある7つの公開表面（`unsafePermutations()`、
+  `unsafeNextPermutations()`、`All`、`IteratorA`、`SubSequenceA`、`Nexts.init(safe:)`、
+  `init(unsafe:)`）が復活するとcompileが失敗する。7件を一時的に再追加し、全件が個別に
+  compile errorになることを確認済み。`COMPATIBLE_ATCODER_2025`では対象外。
+- `PermutationTests`: 列挙順・境界・取得済み結果の安定性・`Sendable`に加え、重複要素と
+  非Array入力（`Range`、起点が0でないslice）を追加した。sliceについては、yieldされる結果の
+  添字の起点を契約として固定していない（未決）。
+
 ## 目的
 
 通常ビルドでは、整理済みの現行`PermutationModule`だけを提供する。一方、既存の

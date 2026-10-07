@@ -72,69 +72,58 @@ final class PermutationTests: XCTestCase {
     XCTAssertEqual(secondResults, expected)
   }
 
-  func testNextPermutations() throws {
-    do {
-      let a = [1, 2]
-      XCTAssertEqual(
-        a.nextPermutations().map { $0.map { $0 } },
-        [[1, 2], [2, 1]])
-      XCTAssertEqual(
-        a.nextPermutations().map { $0 }.map { $0.map { $0 } },
-        [[1, 2], [2, 1]])
-    }
-    do {
-      let a = [1, 2, 3]
-      let aa = a.nextPermutations().map { $0 }
-      XCTAssertEqual(
-        aa.map { $0.map { $0 } },
-        [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
-    }
-    do {
-      let a = [0, 0]
-      let aa = a.nextPermutations().map { $0 }
-      // 辞書順では変化しようがないので、最初の一回で終了となる
-      XCTAssertEqual(
-        aa.map { $0.map { $0 } },
-        [[0, 0]])
-    }
-    do {
-      let a = [4, 3, 2, 1]
-      let aa = a.nextPermutations().map { $0 }
-      // 辞書順で最後なので、最初の一回で終了となる
-      XCTAssertEqual(
-        aa.map { $0.map { $0 } },
-        [[4, 3, 2, 1]])
-    }
-    do {
-      // 空コレクション: 要素が無いので並べ替え不可能だが、他の境界(1回で終了)と
-      // 同様に最初の1件のみ(空配列)を返して終了する
-      let a = [Int]()
-      let aa = a.nextPermutations().map { $0 }
-      XCTAssertEqual(aa.map { $0.map { $0 } }, [[]])
-    }
-    do {
-      // 単一要素: 並べ替えの余地が無いので最初の1件のみで終了する
-      let a = [5]
-      let aa = a.nextPermutations().map { $0 }
-      XCTAssertEqual(aa.map { $0.map { $0 } }, [[5]])
-    }
-    do {
-      // 辞書順で先頭(昇順)ではない開始位置から辞書順の「現在位置以降」だけを
-      // 辿ることを確認する(先頭からの全列挙ではないことの確認)
-      let a = [2, 1, 3]
-      let aa = a.nextPermutations().map { $0 }
-      XCTAssertEqual(
-        aa.map { $0.map { $0 } },
-        [[2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
-    }
-    do {
-      #if AC_COLLECTIONS_INTERNAL_CHECKS
-        for p in (0..<4).nextPermutations() {
-          XCTAssertEqual(p._copyCount, 0)
-        }
-      #endif
-    }
+  func testNextPermutationsTwoElements() throws {
+    XCTAssertEqual(
+      [1, 2].nextPermutations().map { Array($0) },
+      [[1, 2], [2, 1]])
+    // 先に全件を集めてから読んでも、各結果は列挙時の並びのまま
+    let collected = Array([1, 2].nextPermutations())
+    XCTAssertEqual(collected.map { Array($0) }, [[1, 2], [2, 1]])
   }
+
+  func testNextPermutationsFromAscendingOrderEnumeratesAll() throws {
+    XCTAssertEqual(
+      [1, 2, 3].nextPermutations().map { Array($0) },
+      [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
+  }
+
+  func testNextPermutationsAllEqualYieldsOnce() throws {
+    // 辞書順では変化しようがないので、最初の一回で終了となる
+    XCTAssertEqual([0, 0].nextPermutations().map { Array($0) }, [[0, 0]])
+  }
+
+  func testNextPermutationsDescendingYieldsOnce() throws {
+    // 辞書順で最後なので、最初の一回で終了となる
+    XCTAssertEqual([4, 3, 2, 1].nextPermutations().map { Array($0) }, [[4, 3, 2, 1]])
+  }
+
+  func testNextPermutationsEmptyYieldsOnce() throws {
+    // 空コレクション: 要素が無いので並べ替え不可能だが、他の境界(1回で終了)と
+    // 同様に最初の1件のみ(空配列)を返して終了する
+    XCTAssertEqual([Int]().nextPermutations().map { Array($0) }, [[]])
+  }
+
+  func testNextPermutationsSingleElementYieldsOnce() throws {
+    // 単一要素: 並べ替えの余地が無いので最初の1件のみで終了する
+    XCTAssertEqual([5].nextPermutations().map { Array($0) }, [[5]])
+  }
+
+  func testNextPermutationsStartFromCurrentOrder() throws {
+    // 辞書順で先頭(昇順)ではない開始位置から辞書順の「現在位置以降」だけを
+    // 辿ることを確認する(先頭からの全列挙ではないことの確認)
+    XCTAssertEqual(
+      [2, 1, 3].nextPermutations().map { Array($0) },
+      [[2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
+  }
+
+  #if AC_COLLECTIONS_INTERNAL_CHECKS
+    func testNextPermutationsDoNotCopyWhenResultsAreNotRetained() throws {
+      // 結果を保持せずに進めるなら、bufferのコピーは起きない
+      for p in (0..<4).nextPermutations() {
+        XCTAssertEqual(p._copyCount, 0)
+      }
+    }
+  #endif
 
   func testNextPermutationsDoNotDuplicateEqualElements() throws {
     // 比較上等しい要素は位置の違いだけで重複列挙しない(next_permutationと同じ)。

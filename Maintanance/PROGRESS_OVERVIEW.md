@@ -179,6 +179,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-032` | `DONE` | User / Codex | [DECISION] OptionalArray initializerの不正次元契約 | 2026-10-08、各次元は0以上、zeroは許可、次元積は`Int`で表現可能であることを事前条件に決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-033` | `DONE` | Claude | [EXECUTION] OptionalArray次元事前条件の実装と仕様test | 2026-10-08、非負・積overflow検査、zero成功、負値・overflow停止を実装しDebug／Releaseで固定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-034` | `DONE` | Claude | [EXECUTION] OptionalArray4D zero-volume外側subscriptのoverflow回避 | 2026-10-08、内側zero軸では途中積を評価せず空Viewへ辿れるよう修正しDebug／Releaseで固定 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-035` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray Test as Specification配置・移行設計 | 既存testを仕様群へ分類し、番号付きfile案、XCTestからSwift Testingへの移行可否、共有状態・並列化制約を整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |
@@ -261,6 +262,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-012` | `OPT-031` | 次元名称体系の決定後に次元契約testを整理する |
 | `OPT-012` | `OPT-032` | 不正次元契約の決定後に境界testを整理する |
 | `OPT-012` | `OPT-033` | 決定済みの次元事前条件を実装・仕様test化した後、test全体を整理する |
+| `OPT-012` | `OPT-035` | 番号付き仕様fileと段階的移行の設計をCodexが検収後、test全体を整理する |
 | `OPT-033` | `OPT-034` | zero-volume 4Dの有効なView取得を固定した後、次元事前条件taskを完了できる |
 | `OPT-013` | `OPT-011` | 必要な判断taskを登録・完了または除外した後に引き渡し判定する |
 | `OPT-013` | `OPT-012` | Test as Specification整理後に引き渡し判定する |

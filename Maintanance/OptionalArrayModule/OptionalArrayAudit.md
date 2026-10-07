@@ -454,6 +454,23 @@ Codex acceptance（2026-10-08）: zero-volume時だけ途中積を避け、非ze
 内側3軸それぞれのzeroと途中積overflow形状がtestで固定され、Debug／Releaseが成功したため受け入れる。
 `OPT-034`を完了し、これを前提とする`OPT-033`も完了とする。
 
+### OPT-035 Test as Specification配置・移行設計 assignment（2026-10-08）
+
+担当: Claude。`Tests/OptionalArrayModuleTests`の現行4ファイルを読み、各testを公開契約の仕様群へ分類する。
+成果物は、仕様番号、提案file名、含める現行test、固定する契約、Swift Testingへ移行可能か、移行時の
+注意点を対応させた表とする。EDPC-J / EDPC-Lは実行testではない利用例として別枠に置く。
+
+XCTestからSwift Testingへの移行可否は、次の制約を明示して判定する。
+
+- XCTestCase単位で段階移行し、混在期間を許容する。
+- 参照型破棄countなど共有・capture状態と、Swift Testingの並列実行で意味が変わらないか確認する。
+- Death Testは既存のSwift Testing基盤を維持し、通常testと混ぜない。
+- performance API、setup / teardown、MainActor依存、`continueAfterFailure`の有無を確認する。
+- 繰り返し形状は`@Test(arguments:)`候補として記録できるが、採用は決めない。
+
+このtaskではfile rename、test移動、XCTest移行、production変更を行わない。testの追加・削除や仕様範囲も
+決めない。新しいdefectまたは判断点は根拠を記録して停止し、Codexが実行taskを分割する入力にする。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

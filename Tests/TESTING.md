@@ -80,6 +80,11 @@ Codexが作業設計、調査範囲の閉鎖、網羅性確認、成果物の受
 BareArrayについて既に登録した公開7型の契約棚卸し、位置づけ、命名、Test as Specification、性能の論点は
 削除しない。再開判断までは追加調査・判断・整理を行わず、コメントドック全件整備も開始しない。
 
+OptionalArrayの品質評価は、PermutationModuleの`QualityAssessment-ISO25010.md`と同様に、仕様を再記述せず
+Test as Specification、実装、CI、利用者向け文書を根拠としてISO/IEC 25010の品質特性ごとに整理する。
+体系監査完了時に初版を策定して文書作業と1.0準備の不足を発見し、ユーザードキュメント作業後に再評価する。
+後者で残った不足を独立task候補へ分離してから1.0採用判断へ進み、初版だけを品質ゲートの最終評価にしない。
+
 - AcCollections: RedBlackTreeCollections、PermutationModule、OptionalArrayModule、
   BareArrayModuleの再公開テストを追加済み。互換modeでは旧名RedBlackTreeModuleも再公開する。
   別テストターゲットでもRedBlackTreeのDebug寿命カウンタを各テスト後に検査・初期化する。

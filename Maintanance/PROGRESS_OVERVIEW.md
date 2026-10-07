@@ -20,6 +20,8 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
   渡せる状態にする。
 - OptionalArrayを、Codexが作業設計・網羅性確認・完了判定を担う管理方式で、Codexの
   ユーザードキュメント作業フェーズへ渡せる状態にする。
+- OptionalArrayの体系監査完了時点で、ISO/IEC 25010観点の品質評価の初版を策定し、
+  ユーザードキュメント作業と1.0準備で埋める不足を見える状態にする。
 - Claudeへ渡すtask出しを、「一つのtaskに一つのユーザー判断、またはユーザー判断なし」まで
   分解できる状態にする。
 
@@ -27,7 +29,9 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 - ユーザードキュメント作業後、RedBlackTreeを汎用基盤ライブラリの1.0として採用できるか判断可能な
   状態にする。この段階でruntime-check実装を再審査し、その結論とIndex契約を1.0品質ゲートへ渡す。
-- ユーザードキュメント作業後、OptionalArrayを1.0として採用できるか判断可能な状態にする。
+- ユーザードキュメント作業後、OptionalArrayのISO/IEC 25010観点の品質評価を再評価し、
+  1.0判断前に解消する不足をtaskへ分離できる状態にする。
+- 再評価後、OptionalArrayを1.0として採用できるか判断可能な状態にする。
   BareArrayの各taskと`ARRAY-001`は、OptionalArrayで管理方式を検証して再開を判断するまで凍結する。
 
 中間ゴールは、複数taskをまたぐ現在の到達点をカンバン上で共有し、着手可能なtaskから何を優先するかを
@@ -120,6 +124,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-002` | `FROZEN` | Codex | [DISCOVERY] OptionalArray監査の管理方式と受入基準の抽出 | `OPT-001`完了後、実際に有効だった作業設計・責任境界・受入基準を再利用可能な形で整理 | `Tests/TESTING.md` |
 | `OPT-003` | `FROZEN` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | `OPT-002`後、抽出した管理方式をClaude向け運用規則として残す必要があるか一つだけ判断 | `Tests/TESTING.md` |
 | `OPT-004` | `FROZEN` | Codex | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で明文化すると決定した場合、人物評価を含めず責任境界・成果物・停止条件として正本へ反映 | `Tests/TESTING.md` |
+| `OPT-005` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の初版策定 | `OPT-001`完了後、Permutationの品質評価と同じISO/IEC 25010観点で事実・根拠・不足を整理し、ユーザードキュメント作業へ渡す | `Tests/TESTING.md` |
+| `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `Tests/TESTING.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |
@@ -176,6 +182,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-003` | `OPT-002` | 管理方式と受入基準の抽出後に明文化の要否を判断する |
 | `OPT-004` | `OPT-003` | 明文化すると決定した場合だけ運用規則へ反映する |
 | `BARE-008` | `OPT-002` | OptionalArrayで管理方式を検証した後にBareArray再開を判断する |
+| `OPT-005` | `OPT-001` | 体系監査の完了後に品質評価の初版を策定する |
+| `OPT-006` | `OPT-005` | 初版策定後、ユーザードキュメント作業の完了も確認して再評価する |
 
 ## Registry rules
 

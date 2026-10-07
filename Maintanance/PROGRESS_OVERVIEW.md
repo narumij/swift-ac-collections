@@ -123,6 +123,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-024` | `DONE` | Claude | [DISCOVERY] Permutation品質評価の根拠参照照合 | 2026-10-08、commit・file・test・数値参照を照合し、不一致1件と未確認2件を評価変更せず記録 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-025` | `DONE` | Claude | [EXECUTION] Permutation品質評価の事実参照補正 | 2026-10-08、共存test、改名理由、Release確認日の3点を根拠へ同期し、共存性の評価判断をCodexへ返却 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-026` | `DONE` | Claude | [DISCOVERY] Permutation共存性の残存evidence gap確認 | 2026-10-08、通常版、facade、凍結中の互換modeを分離して検証済み・未検証範囲を整理 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-027` | `ACTIVE` | Claude | [DISCOVERY] Permutation 1.0前改善候補3件の実施前提整理 | 性能CI、C++差分比較、Linux Death Testについて現状・既存基盤・依存・未確認だけを整理し、採否や優先順位は決めない | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `RBT-016` | `EXCLUDED` | — | `RedBlackTreePair.tuple`の仕様test | 2026-10-07、型全体がdocumentation上internalで公開仕様testは不要。graphのspec-gap検出を修正して0件を確認 | `Tests/RedBlackTreeTests/` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
@@ -171,6 +172,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-025` | `DONE` | Claude | [DISCOVERY] OptionalArray証拠packageの受入基準coverage照合 | 2026-10-08、10 packageを29宣言と受入基準へ再配置し、既知の本文不一致2件とcoverage不足を表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-026` | `DONE` | Claude | [EXECUTION] OptionalArray監査本文の証拠同期 | 2026-10-08、Sendable testは1Dのみ、EDPC利用例は未実行のcompile対象という事実へ本文を同期 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-027` | `DONE` | Claude | [DISCOVERY] OptionalArray判断候補4件の決定来歴確認 | 2026-10-08、4件とも明示決定なし。用途・名称・次元は実装事実、不正次元は履歴なしとして確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-028` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray・BareArray名称次元surface比較 | 現行宣言だけから型名、View名、initializer label、保持property、indices軸を対応表化し、命名案は出さない | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |
@@ -204,6 +206,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-017` | `PERM-024` | 根拠参照の機械照合後に品質評価reviewを完了する |
 | `PERM-017` | `PERM-025` | 確認済みの事実参照補正後に品質評価reviewを完了する |
 | `PERM-017` | `PERM-026` | 共存性の検証済み・未検証範囲を確認後に品質評価reviewを完了する |
+| `PERM-017` | `PERM-027` | 1.0前改善候補3件の実施前提を確認後に品質評価reviewを完了する |
 | `PERM-023` | `PERM-017` | 品質評価review後に文書作業への引き渡しを判定する |
 | `PERM-023` | `PERM-020` | 公開API ledgerをCodexが検収後、引き渡しを判定する |
 | `PERM-023` | `PERM-021` | test evidence matrixをCodexが検収後、引き渡しを判定する |
@@ -242,6 +245,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-005` | `OPT-001` | 体系監査の完了後に品質評価の初版を策定する |
 | `OPT-006` | `OPT-005` | 初版策定後、ユーザードキュメント作業の完了も確認して再評価する |
 | `OPT-010` | `OPT-008` | 公開契約と過去判断を棚卸しした後に名称・次元体系を比較する |
+| `OPT-010` | `OPT-028` | 現行surfaceの機械的な対応表を検収後、名称・次元体系監査を完了できる |
 | `OPT-011` | `OPT-008` | 公開契約監査後に判断候補を登録する |
 | `OPT-011` | `OPT-009` | test根拠監査後に判断候補を登録する |
 | `OPT-011` | `OPT-010` | 名称・次元体系監査後に判断候補を登録する |

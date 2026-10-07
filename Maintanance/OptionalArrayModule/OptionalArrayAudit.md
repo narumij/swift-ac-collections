@@ -246,6 +246,17 @@ Codex acceptance（2026-10-08）: `OPT-027`を受け入れた。公開宣言・�
 各package、横断coverage、本文同期が受入基準を満たしたため、`OPT-008`と`OPT-009`を完了とする。
 4件の判断候補は未決のまま維持し、名称・次元体系の比較を`OPT-010`で続ける。
 
+### OPT-028 名称・次元surface比較 assignment（2026-10-08）
+
+担当: Claude。OptionalArray 1D〜4D・View 1D〜3Dと、現行BareArray 1D〜4D・View 1D〜3Dについて、
+型名、View名、initializer label、保存される次元property、各subscriptが落とす軸、`indices`が表す軸を
+宣言と実装位置付きで対応表にする。不揃いと一致を機械的に示し、履歴調査はOPT-027を再利用する。
+
+名称案、移行方法、source compatibility、どちらへ揃えるかを提案・決定しない。BareArrayの監査taskを
+再開せず、比較に必要な現行宣言だけを読む。source、test、利用者向け文書、既存の判断候補を変更しない。
+offset defect等を見つけた場合は実装せず、根拠と最小再現候補を記録して停止する。Codexが`OPT-010`の
+判断候補整理に使う。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

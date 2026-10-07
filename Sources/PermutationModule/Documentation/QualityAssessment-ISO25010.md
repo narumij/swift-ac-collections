@@ -252,3 +252,13 @@ Codex acceptance（2026-10-08）: 指定された3点だけが照合結果へ同
 Codex review（2026-10-08）: `PERM-026`を受け入れた。現行通常版については、直接依存する
 swift-algorithmsとの同時import・主要入口の名前解決が仕様testで固定されているため、共存性を
 `満たす`へ更新した。未実装で凍結中の互換modeと、将来のupstream変更は現行通常版の不足へ数えない。
+
+### PERM-027 1.0前改善候補の実施前提 assignment（2026-10-08）
+
+担当: Claude。R-2に列挙された性能CI、C++ `std::next_permutation`との差分比較、Linux CIのDeath Testの
+3件について、現状、利用できる既存基盤、必須依存、実施時に変更する範囲、未確認事項を対応表にする。
+既存Registry taskがある場合は対応付け、無い場合も新taskを自分で登録しない。
+
+1.0前に必要か、どの順で行うか、品質評価を`満たす`へ上げる条件を決めない。性能基準、C++との
+期待差分、CI構成も設計しない。source、test、benchmark、workflow、本文の評価語を変更せず、
+新しい判断点またはdefectは根拠を記録して停止する。CodexがR-2をreviewする入力とする。

@@ -109,9 +109,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-024` | `EXCLUDED` | — | [EXECUTION] Mapped Values View範囲検査の実装と機能検証 | 既存契約に反する実装となるため実施しない。試行差分は破棄済み | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-025` | `EXCLUDED` | — | [EXECUTION] Mapped Values View範囲検査の性能確認 | 実装を行わないため性能確認も不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-027` | `ACTIVE` | Claude | [DISCOVERY] RedBlackTree残task文書のbranch・commit時制ledger | `try/index/1`、PR #158、merge前後、現行HEADの記述を全件列挙し、現行／履歴／曖昧と根拠を表化 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-028` | `ACTIVE` | Claude | [DISCOVERY] RedBlackTree残task文書とRegistryの状態対応表 | checkbox、状態語、task IDをRegistryへ対応し、一致／不一致／履歴説明／対応なしへ分類 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-029` | `ACTIVE` | Claude | [DISCOVERY] RedBlackTree残task文書のpath・symbol現存ledger | 現在形で参照するpath、型、member、compile flagを存在／移動／改名／削除／構成限定／未確認へ分類 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-027` | `DONE` | Claude | [DISCOVERY] RedBlackTree残task文書のbranch・commit時制ledger | 2026-10-08、PR #158前後と現行HEADの記述を現行／履歴／曖昧へ分類し、commit根拠を記録 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-028` | `DONE` | Claude | [DISCOVERY] RedBlackTree残task文書とRegistryの状態対応表 | 2026-10-08、checkbox・状態語・task IDをRegistryへ対応し、一致・履歴説明・対応なし・不一致を表化 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-029` | `DONE` | Claude | [DISCOVERY] RedBlackTree残task文書のpath・symbol現存ledger | 2026-10-08、現在形のpath・symbol・flagを存在・移動・削除・構成限定・未確認へ分類 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `PERM-018` | `DONE` | Claude | [EXECUTION] swift-algorithms同時import時のPermutation名前衝突test | 2026-10-07、両moduleの同時import、名前解決、successor列と全順列の使い分けを仕様testで固定（`0ff5fd84`） | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-019` | `EXCLUDED` | — | [EXECUTION] 利用者向けPermutation使用例の仕様test化 | 2026-10-08、使用例の選定は利用者向け文書作業そのものとして文書フェーズへ移し、独立taskから除外 | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-020` | `DONE` | Claude | [DISCOVERY] Permutation公開API・コメントledger | 2026-10-08、公開宣言14件と別枠の公開適合9件をsource位置・制約・属性・コメントへ対応 | `PermutationModule/DocumentationHandoffAudit.md` |

@@ -685,3 +685,135 @@ RedBlackTreeの利用者向け文書作業は後段へ凍結したまま、内�
 この文書が現在形で参照するsource／test path、型、member、compile flagを列挙し、現行HEADで
 存在、移動、改名、削除、構成限定、未確認へ分類する。Archived正本への参照や明示的な履歴記述は対象外。
 存在確認だけを行い、APIの要否や削除判断を行わない。成果物は`### Source path and symbol evidence`節。
+
+### Branch and commit tense evidence
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`RBT-027`。`L<n>`は本書の行（`c91a6ff4`時点、この節を追記する前）。
+git上の確認: `a6c8a474`はPR #158のmerge（2026-10-05 15:09、親`3ca35eb3` / `ebda7370`）。`try/index/1`と`origin/try/index/1`は
+どちらも`ebda7370`で、現HEADの祖先になっている（`git merge-base --is-ancestor`）。
+
+| 位置 | 現在の主張 | 時制 | 根拠・確認結果 |
+| --- | --- | --- | --- |
+| L14 | 公開Indexはsuccess-only表現を採用済み（PR #158） | 現行 | `a6c8a474`。`UnsafeIndexV3.swift:27,30`、`_LazyTieWrap.swift:41` |
+| L68 | 現状は`_LazyTiedPtr`がそのまま見える（PR #158以前は`Result`） | 現行 | 同上 |
+| L159-160 | 現行の`RedBlackTreeIndex`は`UnsafeIndexV3`、さらに`_LazyTiedPtr`の別名（2026-10-05時点） | 現行（日付つき） | 同上。HEADでも成立 |
+| L186-190 | PR #158以前は`Result`のtypealiasだったので`Comparable`にできなかった | 履歴 | 「以前」と明記されている |
+| L194-195 | PR #158以前は`Index`が`Result<成功値, SealError>` | 履歴 | 同上 |
+| L265 | 2026-10-05時点でPR #158によりmerge済み（`a6c8a474`）。以下はmerge前の記録 | 現行（以下を履歴と宣言） | `a6c8a474`で確認 |
+| L267-271 | ユーザー実装のPoC。2026-09-24 15:48 JSTに開始、22:46の`005a7bb3`で中心案、09-27朝まで継続、10-04に`develop/misc/48`をmerge | 履歴 | `005a7bb3`は09-24 22:46で一致。09-27は最後の`a250c677`（06:29）で一致。10-04のmergeは`1b126ba3`（20:25）で一致。**15:48は未確認:** その時刻の`9ba679e7`はmainにも含まれる。branchだけにある最初のcommitは`21bdd758`（19:40） |
+| L270「現行開発へ追従させている」 | 現在形 | 曖昧 | L265によれば履歴。10-04の後にも、記載の無い同期merge `6bdcfecd`（2026-10-05 05:36）がある |
+| L272-274 | 「現行のfailure-valued `_LazyTieWrappedPtr`から…切り替える準備実装がある」 | 曖昧 | L265の下にあるので履歴だが、「現行」「準備実装」の語が残る。`_LazyTieWrappedPtr`はHEADに現存（4 file） |
+| L276-282 | branchの実装内容（`try!`、擬似`.nullptr`、sanitizer TODO、「productionへそのままmergeできない」） | 履歴 | merge前の評価。merge後の状態は`Archived/INDEX_POC_VALIDATION.md`が正本（L553） |
+| L283-284 | 「branchは現在のHEADから大きく乖離しているため、branch全体をmergeしない」 | 曖昧（現在形だが事実と逆） | 実際にはbranch全体がPR #158でmergeされた（`ebda7370`はHEADの祖先）。L265の範囲内なので履歴とも読める |
+| L286-289 | 現行HEADとQuality Checklistに耐えるかをCodexとClaudeが独立に検証する | 履歴 | 検証はL553で完了（`adopt after corrections`） |
+| L357-363 | Claude reviewの時点で、merge-baseは`7ae8237c`（09-27）、branch 23 commit、HEAD 540 commit | 履歴（日付つき） | L365に観測値と明記されている |
+| L365-368 | 「現在のmerge-baseは`b3570172`へ更新されている」 | 曖昧（現在形だが古い） | 現HEADとのmerge-baseは`ebda7370`（`try/index/1`の先端）。`b3570172`は10-04 20:06の`develop/misc/48`側commit |
+| L405-410、L462-480 | `try/index/1`の評価、「HEADでの再利用を阻むもの」 | 履歴（2026-10-04のreview内） | 節の日付による |
+| L428 | `Benchmarks/`は`path: ".."`としてHEADに追従している | 現行 | 未確認（今回は`Benchmarks/Package.swift`を開いていない） |
+| L438-441 | 「HEADの移動処理の既存問題」、`try/index/1`も同じ形を引き継ぐ | 履歴（2026-10-04のreview内） | L533-535で、二重`adv_iter`は意図的な構造として維持すると記録されている |
+| L521 | `try/index/1`はResult除去の部分PoCとしてのみ再利用する | 履歴（2026-10-04のCodex response） | その後のPR #158でbranch全体がmergeされた |
+| L553 | E: `try/index/1`を主PoCとして独立検証（2026-10-05: `adopt after corrections`、PR #158でmerge） | 現行（完了記録） | `a6c8a474` |
+| L563-564 | J / K完了（PR #158） | 現行（完了記録） | 同上 |
+| L570 | 分離。PR #158でsuccess-only Indexをmergeしたことで決定済み（2026-10-06にユーザー確認） | 現行 | Registryとの対応はRBT-028の表を参照 |
+
+### Registry and checklist state evidence
+
+2026-10-08 / Claude Opus 5.5。`RBT-028`。Registryは`c91a6ff4`時点。分類は、一致 / 不一致 / 履歴説明として妥当 / Registryに対応行なし。
+
+| 位置 | 本書の状態 | Registry | 分類 |
+| --- | --- | --- | --- |
+| L14-15 | 「契約が確定していない、まだ完成とはしない」 | `RBT-001` / `010` / `011`が`WAITING_EXTERNAL` | 一致 |
+| L17、L25-26 | Mapped Values Viewは「変更なしで終了」、`RBT-017`〜`025`を`EXCLUDED` | 9行すべて`EXCLUDED` | 一致 |
+| L29-31 | `RBT-026`は文書作業フェーズで再開 | `RBT-026` `FROZEN`、前提`RBT-014` | 一致 |
+| L34-35 | `index(inserting:)` / `erase(exactly:)`は現行名で確定、古いTODOも削除する | 対応行なし（`RBT-013` DONEが判断候補として報告） | Registryに対応行なし（RBT-029の表の現存確認も参照） |
+| L295、L328、L343-344 | `_O_UNCHECKED`の上乗せ防御は1.0前に再審査 | `RBT-009` `FROZEN` | 一致 |
+| L541-546 `[x]` A、B、B4-a、B4-c | 完了 | 対応行なし | 履歴説明として妥当 |
+| L547 `[ ]` B4-b Memoize（外部consumer移行まで凍結） | 未完了・凍結 | `RBT-005` `FROZEN`（外部consumer 2件の移行後） | 一致 |
+| L548 `[ ]` 公開API以外の縮小（残りはIndex依存または凍結clusterのみ） | 未完了 | 単独の行なし。凍結clusterは`RBT-004` / `RBT-005`が近い | Registryに対応行なし |
+| L549 `[ ]` TestCode専用の分離（残りは凍結Balanced群とIndex依存Debug比較群） | 未完了 | `RBT-004` `FROZEN`（Debug限定Comparable群・Balanced群） | 一致 |
+| L550 `[x]` C | 完了 | 対応行なし | 履歴説明として妥当 |
+| L551 `[ ]` D ContainersPreview追跡 | 未完了 | `RBT-011` `WAITING_EXTERNAL` | 一致 |
+| L552 `[x]` Comparableあり・なしの比較表 | 完了 | 対応行なし | 履歴説明として妥当 |
+| L553 `[x]` E | 完了（2026-10-05） | 対応行なし | 履歴説明として妥当 |
+| L554 `[ ]` F | 未完了 | `RBT-001` / `RBT-010` `WAITING_EXTERNAL` | 一致 |
+| L555-556 `[x]` `index(inserting:)` / `erase(exactly:)`の横展開 | 完了 | 対応行なし | 履歴説明として妥当 |
+| L557 `[x]` KeyValue Range Viewの範囲外Index契約 | 完了 | 対応行なし | 履歴説明として妥当 |
+| L558 `[ ]` G、L561 `[ ]` H、L562 `[ ]` I | 未完了 | 単独の行なし。`RBT-010`（公開Index表現）が包含すると読めるが、行には書かれていない | Registryに対応行なし |
+| L559 `[x]` retroactive `Comparable`除外（2026-10-06） | 完了 | 対応行なし（`RBT-003` DONEは`Result`のpublic比較overloadで、別件） | 履歴説明として妥当 |
+| L560 `[x]` `SealError`情報の維持 | 完了 | 対応行なし | 履歴説明として妥当 |
+| L563-564 `[x]` J / K（PR #158） | 完了 | 対応行なし | 履歴説明として妥当 |
+| L565 `[ ]` L（test・DocC・API Matrixの同期） | 未完了 | 対応行なし（`RBT-014`は文書workflowとoutline照合で、範囲が違う） | Registryに対応行なし |
+| L569 `[ ]` Comparable採否 | 未完了 | `RBT-011` | 一致 |
+| L570 `[x]` Resultの分離は決定済み（2026-10-06にユーザー確認） | 完了 | `RBT-010` `WAITING_EXTERNAL`の再開条件に「公開Indexと内部`SealError`の分離」がある | **不一致**: 本書は分離を決定済みとし、Registryは同じ語を未決の内容として持つ。Registryの意味が「表現の最終形」なら一致とも読めるが、行の文言からは判別できない |
+| L571-573、L575、L577 `[x]` | 完了 | 対応行なし | 履歴説明として妥当 |
+| L574 `[ ]` `==` / `<` / `hash`の意味 | 未完了 | `RBT-001` / `RBT-011` | 一致 |
+| L576 `[ ]` Debugだけの適合を根拠にしない | 未完了 | `RBT-004` `FROZEN` | 一致 |
+| L581-593 `[x]` Kで処理するIndex依存task | 完了 | L585の空guardは`RBT-002` DONE（`11817dfe`）。ほかは対応行なし | L585は一致。ほかは履歴説明として妥当 |
+| L600-603 `[ ]` 未結線コード削除（再開指示まで凍結） | 未完了・凍結 | `RBT-006` `FROZEN`（ユーザーが個別指定） | 一致 |
+| L611-620 `[x]` TestSupport整理ほか | 完了 | 対応行なし | 履歴説明として妥当 |
+| L615 「無効化・歴史的コードはユーザーが再開を決めるまで凍結」 | 凍結 | 対応行なし | Registryに対応行なし |
+| L619 「凍結中の任意改善」（stride assertion重複等） | 凍結 | 対応行なし | Registryに対応行なし |
+| L624 自動縮小、L625 SortedCollections比較、L628 CoW再計測 | 完成を止めない追加検証 | 対応行なし | Registryに対応行なし |
+| L626 Strict Memory Safetyの全面適用 | 同上 | `RBT-007` `FROZEN` | 一致 |
+| L627 `lazyDetach`の並行初期化 | 同上 | `RBT-008` `FROZEN` | 一致 |
+| L633 MSVC比較は実施しない | 実施しない | 対応行なし | 履歴説明として妥当（保留taskにも置かない、と明記） |
+| L656-688 RBT-015 evidence packages | 進行中 | `RBT-015` `ACTIVE`（Codex）、前提`RBT-027`〜`029` | 一致 |
+
+### Source path and symbol evidence
+
+2026-10-08 / Claude Opus 5.5。`RBT-029`。現在形の参照だけを対象にし、2026-10-04のClaude review（L355-505）、Codex response（L507-523）、
+2026-10-04の改善記録（L525-538）、L265以下のmerge前記録は、明示的な履歴として除外した。HEADは`c91a6ff4`。
+`S/`は`Sources/RedBlackTreeCollections/`。
+
+| 参照（位置） | 分類 | 現行HEADでの事実 |
+| --- | --- | --- |
+| `RedBlackTreeMappedValuesView`の`subscript(position:)` / `swapAt` / `isElement(at:)`（L19-21） | 存在 | `S/RedBlackTreeView/RedBlackTreeMappedValuesView.swift`。`func isElement(at`は8 fileにある |
+| `211ca2fc`（L23） | 存在 | 2026-10-05「make mapped values index operations constant time」 |
+| `API-Matrix-View.md`（L23） | 存在 | `S/Documentation/API-Matrix-View.md` |
+| `test_subrangeValuesSingleIndexOperations_doNotCompareKeys`（L24） | 存在 | `Tests/RedBlackTreeTests/RedBlackTreeView/RedBlackTreeView_0_MappedValuesViewTests.swift` |
+| 名前再検討のTODO・Mapped Values Viewの古いTODO（L34-35、「削除する」） | 削除 | `RedBlackTreeMappedValuesView.swift`に「Implement This」は無い。`index(inserting:)` / `erase(exactly:)`の名前に関するTODOも、`TODO`と`再検討`のgrepでは見つからない。同fileにはL159の別TODO（`unsafeMutableAddress`）がある |
+| `index(inserting:)` / `erase(exactly:)`（L34、L347） | 存在 | どちらも4 file |
+| `Cpp-Matrix.md`（L47） | 存在 | `S/Documentation/Cpp-Matrix.md` |
+| `RedBlackTreeIndex` / `UnsafeIndexV3` / `_LazyTiedPtr`（L57、L68、L159） | 存在 | `S/Implements/Index/UnsafeIndexV3.swift:27,30`、`S/Implements/RawBuffer/_LazyTieWrap.swift:41`（`_LazyTieWrap<_NodePtrSealing>`） |
+| `_LazyTieWrap`、`_NodePtrSealing`、`SealError`（L132-133） | 存在 | `SealError`は`Equatable` / `Comparable` / `Hashable`へ無条件に適合（`S/Implements/__tree/unsafe_node/unsafe_node+pointer+safe.swift:272-274`） |
+| 特殊化`Result`の比較（L133） | 削除 | `extension Result`は3件あるが、`Comparable`適合は無い（L559の削除と一致）。比較overloadは`RBT-003`で縮小済み |
+| `RedBlackTreeIndexRange` / `IndexRangeExpression`（L180、L307、L345） | 存在（別名） | `RedBlackTreeIndexRange = UnsafeIndexV3Range`（`S/Implements/Index/UnsafeIndexV3Range.swift:40`）。`RedBlackTreeIndexRangeExpression`は5 file |
+| 現状の`Comparable`はDebug構成に限定（L183） | 構成限定 | `_LazyTieWrap: Comparable where RawValue: Comparable`は`#if DEBUG`（`_LazyTieWrap.swift:51-52`）。`_NodePtrSealing: Comparable`も`#if DEBUG`の中（`_NodePtrSealing.swift:156-172`） |
+| `ALLOW_CROSS_TREE_INDEX`（L296、L346） | 存在 | `Package.swift:25`で有効。コメントは「無効化は実質deprecated（テスト全体が通らない）」 |
+| `_O_UNCHECKED`（L328、L343） | 構成限定 | `Package.swift:104`（Releaseかつtraitのときだけ`-Ounchecked`）、trait宣言は`:148` |
+| `USE_LAZY_DETACH`（本書は直接参照しない） | 構成限定（無効） | `Package.swift:27`でコメントアウト |
+| `isEnd(_:)`（L326） | 存在 | 8 file |
+| Memoize群（L547） | 存在 | `S/Implements/Memoize/___LRUMemoizeStorage.swift`ほか |
+| Balanced群（L549） | 存在（production側） | `S/Implements/Protocol/BalancedSequence.swift` |
+| B4-cのSortedSequence実験経路（L546） | 移動 | `Sources/`に無く、`Tests/RedBlackTreeTests/EtcTests.swift`にある |
+| `_Reverse4`関連（L604） | 存在 | `S/Implements/Iterator/UnsafeIterator/UnsafeIterator+Reverse4.swift:26`（public） |
+| `swap_key` / `swap_mapped_value`（L606） | 存在 | `S/Implements/UnsafeTreeV2/UnsafeTreeV2+Update.swift` |
+| `Message.outOfRange` / `keyMismatch`（L607） | 存在 | `S/Implements/Misc/Message.swift` |
+| `payloadLayout`（L608） | 存在 | `S/Implements/UnsafeTreeV2/Buffer/UnsafeTreeV2+BufferHeader.swift:90` |
+| `__root_ptr()`（L608） | 存在 | `UnsafeTreeV2+__tree.swift:73`（package）、`UnsafeTreeV2+KeyOnlyHandle.swift:149`。本書の「BufferHeaderの」に当たる宣言はBufferHeader fileに無い（BufferHeaderとの関係は未確認） |
+| RawRangeの`contains(range:pointer:)`（L609） | 存在 | `S/Implements/UnsafeTreeV2/UnsafeTreeV2+RawRange.swift:57,62`（2 overload） |
+| `_TrackingTag.retire`（L610） | 存在 | `S/Implements/__tree/_types/tree_basic+tag.swift:70`（`package static var retire`）。直前に「時間が出来たら再考」のTODOがある |
+| `RedBlackTreeTestSupport` / `DebugAdditionals`（L611-613） | 存在 | `Tests/RedBlackTreeTests/RedBlackTreeTestSupport`、`Tests/RedBlackTreeTests/DebugAdditionals` |
+| `_LazyTieWrap+Debug.swift`（L614） | 存在 | `Tests/RedBlackTreeTests/DebugAdditionals/UnsafeTreeV2+Debug/_LazyTieWrap+Debug.swift` |
+| `unsafe_node+debug.swift`（L614） | 存在 | `S/Implements/__tree/unsafe_node/unsafe_node+debug.swift` |
+| `Tests/TESTING.md`、`Tests/Archived/TESTING_REFERENCE.md`（L647-648） | 存在 | — |
+| `EXTERNAL_TYPE_EXTENSION_AUDIT.md`、Design 3文書、`API-Matrix.md`（L650-654） | 存在 | `Maintanance/`と`S/Documentation/`にある |
+| `Benchmarks/`の`path: ".."`（L428、review内） | 未確認 | 履歴節なので対象外だが、RBT-027の表で触れたため記録だけ残す |
+
+停止事項: なし。defectと新しい判断点は見つからなかった。不一致はRBT-028の表のL570の1件で、判断はCodexに渡す。
+
+### Codex evidence intake（2026-10-08）
+
+`RBT-027`〜`RBT-029`は、指定された成果物、禁止事項、停止条件を満たす証拠packageとして受け入れる。
+既存本文の修正、公開契約の変更、凍結taskの再開はまだ行わない。
+
+`RBT-015`へ引き継ぐ事項:
+
+- PR #158 merge後もmerge前記録の中に現在形が残る箇所を、履歴記述として読める形へ直す。
+- success-only Indexへの`Result`分離は完了済みである一方、Registryの公開Index表現ゲートは最終形と
+  完了範囲を外部条件待ちにしている。分離済みの事実と、最終表現が未確定であることを区別する。
+- checklistとRegistryに一対一のtaskが無い項目は、履歴説明または上位gateの内訳かをCodexが分類し、
+  不要な新規taskを機械的に作らない。
+- 移動・削除済みpathとsymbol、構成限定flagは、現在形の説明だけを現行HEADへ合わせる。
+
+3 packageの完了により`RBT-015`の証拠前提は揃った。本文反映と`RBT-015`の完成判定はCodexが別に行う。

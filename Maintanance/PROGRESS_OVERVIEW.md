@@ -37,6 +37,8 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 | `PERM-011` | `DONE` | Claude | Permutation公開型の改名 | 2026-10-07、`NextPermutationsSequence`/`.Iterator`/`.Permutation`へ改名し`Permutations`名前空間を廃止（source-breaking、ユーザー承認済み） | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-012` | `DONE` | Claude | Permutation仕様のTest as Specification化 | 2026-10-07、仕様をテストの連番fileへ移し、`Specification.md`を削除（ユーザー判断）。テストで表せない約束はソースのドキュメントコメントへ | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-013` | `FROZEN` | User / Claude | Permutation性能のCIベース比較 | 作業の区切りでユーザーが再開。Claudeが`Benchmarks/Libraries/CI.json`へPermutationの計測を追加し、ユーザーのpush後にperformance jobのベース比較で`@inline(__always)`全削除（`0ef177d3`）以降の影響を確認 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-014` | `ACTIVE` | User / Codex | Permutation互換modeの実施手順決定 | Claude案を出発点に、`PERM-004`〜`PERM-010`のcommit境界、検証範囲、警告とtestの扱いをユーザーとCodexで決定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-015` | `FROZEN` | Codex | Permutation互換task依存の再評価 | `PERM-014`完了後、`PERM-004`〜`PERM-010`と`PERM-013`の順序を再評価し、候補`PERM-004` ← `PERM-013`を確定または棄却してRegistryへ反映 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-004` | `FROZEN` | Codex | AtCoder 2025互換ソースの隔離 | 基準版を専用fileへ配置し、通常版と排他的にcompileできる状態にする | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-005` | `FROZEN` | Codex | Permutation互換traitのPackage設定 | 互換defineをtraitへ接続し、traitなしを通常版の既定にする | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-006` | `FROZEN` | Codex | 互換modeのTest as Specification | 列挙順・重複・safe CoW・unsafe aliasing・境界を基準refに対して固定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
@@ -66,7 +68,9 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 | `RBT-001` | `RBT-010` | 前提taskの完了後に後続taskを完了できる |
 | `RBT-001` | `RBT-011` | 前提taskの完了後に後続taskを完了できる |
 | `QUALITY-001` | `RBT-001` | 前提taskの完了後に着手候補にできる |
-| `PERM-004` | `PERM-003` | 前提taskの完了後に着手できる |
+| `PERM-014` | `PERM-003` | 現行契約の基準固定後に手順を決定できる |
+| `PERM-015` | `PERM-014` | 実施手順の決定後にtask依存を再評価できる |
+| `PERM-004` | `PERM-015` | task依存の再評価とRegistry反映後に着手できる |
 | `PERM-005` | `PERM-004` | 前提taskの完了後に着手できる |
 | `PERM-006` | `PERM-005` | 前提taskの完了後に着手できる |
 | `PERM-007` | `PERM-006` | 前提taskの完了後に着手できる |
@@ -91,5 +95,5 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 - RedBlackTreeの実装、正当性検証、主要な公開面整理は完了済み。
 - RedBlackTreeの主な残件は、外部要件待ちのIndex `Comparable`判断と、その結論に基づく最終文書同期。
-- Permutationは現行契約の基準固定を独立した先頭taskとし、互換mode作業はその後に凍結されている。
+- Permutationは現行契約の基準固定を完了し、互換modeの実施手順をユーザーとCodexで決定中。依存再評価と実装はその後に行う。
 - Claudeのtask graph DB試験とsmell知見試験が進行中。

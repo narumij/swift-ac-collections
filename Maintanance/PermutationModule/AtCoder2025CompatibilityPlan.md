@@ -10,17 +10,19 @@
 | 順序 | 成果単位 | 完了条件 |
 | --- | --- | --- |
 | 1 | 現行契約の基準固定 | 現行API、通常test、取得済み結果の安定性、旧unsafe APIの非露出を基準として固定 |
-| 2 | 互換ソースの隔離 | 基準refの実装を専用fileへ置き、通常版と排他的にcompileできる |
-| 3 | Package trait設定 | traitありだけが互換版、traitなしは必ず通常版になる |
-| 4 | 互換仕様test | 列挙順、重複、safe CoW、unsafe aliasing、境界が基準refどおりに成功する |
-| 5 | `AcCollections`再公開検証 | 通常・互換の両modeで期待する公開APIを利用できる |
-| 6 | CI分離 | 通常版と互換版を別jobで検証し、結果を混在させない |
-| 7 | 単一file生成・ローカル検証 | 自己完結fileを生成し、ABC328E相当入力で検証する |
-| 8 | 文書同期 | 通常APIと互換APIを混同せず、trait、制限、検証方法を記録する |
+| 2 | 互換modeの実施手順決定 | `PERM-004`〜`PERM-010`のcommit境界、検証範囲、警告とtestの扱いをユーザーとCodexで決定 |
+| 3 | task依存の再評価 | 決定した手順を基に`PERM-004`〜`PERM-010`と`PERM-013`の順序を見直し、Registryへ反映 |
+| 4 | 互換ソースの隔離 | 基準refの実装を専用fileへ置き、通常版と排他的にcompileできる |
+| 5 | Package trait設定 | traitありだけが互換版、traitなしは必ず通常版になる |
+| 6 | 互換仕様test | 列挙順、重複、safe CoW、unsafe aliasing、境界が基準refどおりに成功する |
+| 7 | `AcCollections`再公開検証 | 通常・互換の両modeで期待する公開APIを利用できる |
+| 8 | CI分離 | 通常版と互換版を別jobで検証し、結果を混在させない |
+| 9 | 単一file生成・ローカル検証 | 自己完結fileを生成し、ABC328E相当入力で検証する |
+| 10 | 文書同期 | 通常APIと互換APIを混同せず、trait、制限、検証方法を記録する |
 
-1は互換modeの実装判断から独立して実施できる。2以降の互換mode taskはすべて1の成果に依存し、
-1から4は実行順として直列になる。4の完了後、5と6は独立して進められる。7は5を前提とし、8は
-5、6、7の完了後に行う。実提出確認はこの実装列に含めず、引き続きユーザー専任とする。
+1は互換modeの実装判断から独立して実施できる。2で実施手順を決め、その結果を入力として3で
+依存を再評価してから4へ進む。4以降の正確な順序は3の成果を正本とする。実提出確認はこの実装列に
+含めず、引き続きユーザー専任とする。
 
 ## 1. 現行契約の基準固定（2026-10-07完了 / Claude Opus 5.5）
 
@@ -39,6 +41,50 @@
 - `PermutationTests`: 列挙順・境界・取得済み結果の安定性・`Sendable`に加え、重複要素と
   非Array入力（`Range`、起点が0でないslice）を追加した。sliceについては、yieldされる結果の
   添字の起点を契約として固定していない（未決）。
+
+## 2. 互換modeの実施手順決定（`PERM-014`）
+
+ユーザーとCodexで`PERM-004`〜`PERM-010`の実施手順を決める。次のClaude案を出発点とし、
+このtaskでは実装を始めない。
+
+### 出発点となる`PERM-004`手順案
+
+1. `origin/release/AtCoder/2025`の`Permutations.swift`（456行）と
+   `NextPermutationProtocol.swift`（98行）を
+   `Sources/PermutationModule/Compatibility/AtCoder2025/`へ無改変でコピーし、それぞれの
+   ファイル全体を`#if COMPATIBLE_ATCODER_2025`で囲む。
+2. 現行`Permutations.swift`のファイル全体を`#if !COMPATIBLE_ATCODER_2025`で囲む。
+3. 「コピーして囲んだだけ」の段階を1 commitにし、現行toolchainに必要な修正は別commitにする。
+4. 通常modeはbuildとtestを行う。互換modeはPackage traitがまだ無いため、`Package.swift`を
+   一時的に切り替えてPermutationModuleのbuildだけを確認する。
+
+行数は対象refを識別するための参考値であり、実施時にはrefとfile内容を照合する。
+
+### このtaskで決める未決事項
+
+- `R-1`: 基準refはerror 0だが、PermutationModuleのstrict-memory-safety警告が38件ある。
+  互換性を変える注釈で消さず、`PERM-004`では既知警告として受け入れてよいか。
+- `R-2`: 互換modeでは通常版test（`NextPermutationsSequence_1`〜`_98`）と
+  `AcCollectionsTests`の`nextPermutations` testがcompileできない。`PERM-004`ではmoduleの
+  buildだけを確認し、testのmode別切り分けを`PERM-006`と`PERM-007`へ送ってよいか。
+
+完了時には、各taskの成果単位、commit境界、通常・互換modeそれぞれの検証方法と、`R-1`・`R-2`の
+結論をこの文書へ記録する。
+
+## 3. task依存の再評価（`PERM-015`）
+
+`PERM-014`で手順が決まった後にだけ、`PERM-004`〜`PERM-010`と`PERM-013`の順序を見直す。
+成果はTask Registryのprecedence更新であり、このtaskでは互換modeを実装しない。
+
+必ず確定または棄却する候補は`PERM-004` ← `PERM-013`である。通常版には、まだ性能を計測して
+いない`@inline(__always)`全削除（`0ef177d3`）と`next()`の変更（`4eae63f9`）がある。
+`PERM-004`で通常版fileを条件コンパイルで囲み、互換fileを追加した後では、性能差にコード配置の
+ノイズが混ざり、未計測の変更と互換mode導入の影響を分離しにくい。この候補を採用する場合は、
+先に`PERM-013`で通常版の性能基準を取得する。
+
+graph DBのscope-checkはこの組を「辺なし・結合あり」と検出していた。当初は誤検知と判断されたが、
+計測結果の帰属という依存を正しく示していた。この訂正と再利用可能な知見は
+`AI_GRAPH_SMELL_NOTES.md`を参照する。
 
 ## 目的
 

@@ -28,8 +28,8 @@ This standing assignment records only the operational performance rules needed f
 The rationale, discovery history, and generalized tuning knowledge remain private and must not be
 added to this file or another public repository document.
 
-The current branch is `develop/misc/49`. `try/index/1` was merged by PR #158 at `a6c8a474`.
-The worktree was clean when this standing assignment was written.
+The current branch is `develop/misc/50`. `try/index/1` was merged by PR #158 at `a6c8a474`.
+Verify the current branch before editing; do not rely on this line alone.
 
 ### Communication
 
@@ -137,12 +137,12 @@ current instruction and prepare the handoff for Codex if requested.
 - Index完了ゲートは、Comparable依存（`RBT-011`、`RedBlackTreeSet_9`の`test_index_comparable`、`==` / `<` / hashの意味）と
   ドキュメントを除き、検証で閉じられることを確認した（根拠は圧縮前全文）。ゲートのチェック付け替えはCodex。
 - 2026-10-06〜07のClaude実施（commit済み）: `RBT-003`（特殊化`Result`の比較とtypealiasの縮小、`6dea75d7`。
-  Registryは性能job待ち）、`RBT-002`（Index-range eraseの空でのCoW回避、`11817dfe`、`DONE`）、
+  性能job成功を確認し`DONE`）、`RBT-002`（Index-range eraseの空でのCoW回避、`11817dfe`、`DONE`）、
   Debug限定`Result: Comparable`削除（`d239a903`）、PR #158前のIndex向け未使用宣言のテスト側待避（`2fce4782`）、
   走査比較回数・KeyValue View CoWの仕様テスト追加とDebug限定APIテストの`_98`移動。
 - 検証: 上記はいずれも通常／互換×Debug／Releaseのビルドと`swift test`（Debug、最後はReleaseも）で成功。
   LinuxのCIと性能jobはpush後に確認。
-- push: `89f0cff2`までpush済み（ユーザー）。それ以降のClaudeの記録commitは未push。
+- push: `develop/misc/50`は`39360dd8`（graph DB交流taskへの置き換え）の1件だけ未push。
 - `RBT-008`: 現状コード（`lazyDetach` / `tiedRawBuffer`の遅延生成と`@unchecked Sendable`による初回並行アクセスの競合）と
   TODO記載の3案を提示し、ユーザー判断で不採用（Codexも以前に不採用）。超ホットパスなので、再提案は性能試験の結果を添えて
   判断が冴えているときに行う。完了条件は「ユーザーが納得できるコードの提示」。
@@ -152,4 +152,5 @@ current instruction and prepare the handoff for Codex if requested.
   コード上の結合で検査できるようにした。古い辺（`RBT-003` ← `RBT-001`）と未使用コードの発見に効いた。
   観測: 対象を型・ファイル単位で登録すると結合が過大に出る（`RBT-008`の誤結合）。「そのtaskが実際に変えるもの」で登録する。
   確定判定は常にコンパイラ（無効化して多構成ビルド）で行い、DBは候補出しに使う。
+- `GRAPH-005`: 共有面はtrackedな`GRAPH_DB_EXCHANGE.md`を使う（2026-10-07、ユーザー了承）。
 - 10/10以降: task fit協議を予定（ユーザー）。この一時的な主担当の役割はその時点で見直す。

@@ -652,3 +652,36 @@ RedBlackTreeCollectionsを完成と判断する条件は次のとおり。
 - `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md`
 - `Sources/RedBlackTreeCollections/Documentation/Design/Design-Range.md`
 - `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md`
+
+## RBT-015 evidence packages（2026-10-08）
+
+RedBlackTreeの利用者向け文書作業は後段へ凍結したまま、内部の残task文書を現行実装とRegistryへ
+合わせるための事実収集だけを行う。Claudeはこの節へ指定された台帳を追記し、既存本文を修正しない。
+
+共通境界:
+
+- 公開契約、Index契約、完成条件、task状態を決めない。
+- source、test、利用者向け文書、Registry、既存本文を変更しない。
+- Archived記録からtaskを復活させない。
+- 古い記述を見つけても削除案や新しい本文を作らず、位置、現在の事実、根拠だけを書く。
+- defectまたは新しい判断点を見つけた場合は、根拠を記録してその項目を停止する。
+- Codexが3台帳を検収し、既存本文へ反映するもの、履歴として残すもの、別taskへ分けるものを判断する。
+
+### Branch and commit tense ledger
+
+`try/index/1`、PR #158、`develop/misc/48`、merge前／merge後、現行HEADを述べる箇所を全件列挙する。
+各行について、文書位置、現在の主張、時制区分（現行／履歴／曖昧）、確認根拠のcommitまたはRegistry行を
+表にする。git履歴の意味を推測せず、確認できないものは未確認とする。成果物は
+`### Branch and commit tense evidence`節。
+
+### Registry and checklist state ledger
+
+この文書の`[ ]`／`[x]`、状態語（未完了、凍結、完了、保留等）、task IDをTask Registryと照合する。
+一致、不一致、履歴説明として妥当、Registryに対応行なし、のいずれかへ分類する。チェックを変更せず、
+依存や優先順位を新しく決めない。成果物は`### Registry and checklist state evidence`節。
+
+### Source path and symbol existence ledger
+
+この文書が現在形で参照するsource／test path、型、member、compile flagを列挙し、現行HEADで
+存在、移動、改名、削除、構成限定、未確認へ分類する。Archived正本への参照や明示的な履歴記述は対象外。
+存在確認だけを行い、APIの要否や削除判断を行わない。成果物は`### Source path and symbol evidence`節。

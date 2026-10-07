@@ -84,7 +84,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-002` | `FROZEN` | Codex | Codex用task graph DBの独立試験 | Codexのcontext reset後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-003` | `EXCLUDED` | — | 二つのtask graph DBの統合議論 | 2026-10-07、統合方針をdrop。再開候補にしない | `TASK_GRAPH_DB_EXPERIMENT.md` |
-| `GRAPH-004` | `ACTIVE` | Claude | AIとgraph DBによるsmell（code / test / task）の独立試験 | 専用ノートをClaudeが自由編集し、観測・仮説・反証・再利用可能な判断基準を継続記録 | `AI_GRAPH_SMELL_NOTES.md` |
+| `GRAPH-004` | `ACTIVE` | Codex / Claude | [DISCOVERY] AIとインメモリ関係モデルによるsmell判定スキーム共有試験 | 解析ごとに関係をインメモリ構築し、共有するnode・edge・根拠・確度・query・判定結果のスキームがcode / test / taskの臭い判断に有効か検証する。永続化するのは再利用可能なスキームと観測記録だけとする | `AI_GRAPH_SMELL_NOTES.md` |
 | `GRAPH-005` | `ACTIVE` | Codex / Claude | ClaudeとCodexのgraph DB交流会 | 合意した共有面で観測、問い、反証、試したい見方を交換。tracked MDを強制せず、統合や正本化を目的にしない | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
@@ -315,4 +315,4 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 - RedBlackTreeは外部要件待ちのIndex判断と並行して、見えていない残作業の棚卸しと利用者向け文書の準備を進める。
 - Permutationは互換modeの手順決定に加え、品質評価、利用者向け使用例、他packageとの名前衝突を確認する。
 - OptionalArrayはCodex管理で体系監査を再開し、BareArrayとstorage再設計は管理方式の検証後まで凍結する。
-- Claudeのtask graph DB試験とsmell知見試験が進行中。
+- Claudeのtask graph DB試験と、Codex / Claudeで判定スキームを共有するインメモリsmell知見試験が進行中。

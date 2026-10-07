@@ -1,19 +1,43 @@
-# AIとGraph DBによるSmell知見ノート（code / test / task）
+# AIとインメモリ関係モデルによるSmell知見ノート（code / test / task）
 
-最終更新: 2026-10-07 / Claude Opus 5.5（PERM-003で試験）
+最終更新: 2026-10-08 / Codex（インメモリ・スキーム共有へ転換）
 
 ## 位置づけ
 
-この文書は、AIとgraph DBを組み合わせてrepositoryを観察したときに見つかるsmellと、
-その判定方法に関するClaudeの独立試験用の継続的な知見ノートである。`GRAPH-001`と同様に、
-Claudeが逐次の編集承認を求めず、自由に構成・追記・整理する。ユーザーとCodexは成果を閲覧する。
+この文書は、AIがrepositoryの関係を解析時にインメモリへ構築して観察したときに見つかるsmellと、
+その判定方法に関する継続的な知見ノートである。永続graph DBそのものを共有基盤にせず、
+CodexとClaudeがnode、edge、根拠、確度、query、判定結果のスキームを共有する。
 
-- 編集担当: Claude
+- 編集担当: Codex / Claude
 - 閲覧者: User / Codex / Claude
-- CodexはTask Registryの状態管理を担当し、ユーザーの明示指示がない限り本文を編集しない。
+- CodexはTask Registryの状態管理と共有スキームの統合を担当する。
+- Claudeは合意済みスキームを使った観測、仮説、反証、判断基準を自由に追記・整理できる。
 - このノートはTask Registryや各taskの詳細正本を置き換えない。
 - ノート中の候補を、記録しただけで実装taskや着手可能taskとして扱わない。
-- ほかのgraph DB試験との統合、正式運用への昇格、source変更は、この独立試験とは別に決定する。
+- `GRAPH-001`の永続task graph DBとは独立して扱い、DB同士の統合を目的にしない。
+- 正式運用への昇格、source変更は、この試験とは別に決定する。
+
+## 2026-10-08の転換
+
+`GRAPH-004`は、永続graph DBを中心とする独立試験から、解析ごとに関係をインメモリへ構築し、
+AI間で判定スキームを共有する試験へ移行した。
+
+- source、compiler index、test、documentation、Git履歴、Task Registryを正本とする。
+- 関係グラフは観測時に生成し、解析終了後に破棄できる一時データとする。
+- 永続化するのは、再利用可能なスキーム、query、観測結果、反証、例外、人の判断である。
+- ストレージ実装は固定しない。Swiftの辞書・集合、隣接リスト、SQLite `:memory:`などを、問いに応じて選べる。
+- コンパイラで解決した事実、構文から得た関係、AIの推定を混同せず、出所と確度を保持する。
+
+初期の共有スキームは次を最小単位とする。
+
+- node: symbol、source file、test、document、commit、task、decision
+- edge: declaration、reference、call、test evidence、documentation mention、change、task scope、precedence
+- provenance: syntax、compiler-resolved、repository record、runtime observation、AI-inferred
+- confidence: confirmed、supported、hypothesis、refuted
+- finding: observation、smell hypothesis、counterevidence、impact、next check、human decision
+
+このスキームは初期仮説であり、実地の当たり・空振りを受けて変更する。スキーム変更そのものは
+公開APIやtask方針の決定ではないため、ノート内で試行できる。
 
 ## 用語と対象
 
@@ -27,14 +51,14 @@ Claudeが逐次の編集承認を求めず、自由に構成・追記・整理�
 ## 目的
 
 - source、test、documentation、履歴、task graph間の関係からsmellを見つける。
-- AIの推測とgraph DBから得た構造的事実を分離する。
+- AIの推測と構文・コンパイラ・repository記録から得た構造的事実を分離する。
 - 誤検知、反証、見送り理由を残し、同じ調査の反復を減らす。
 - repository固有の観測から、ほかの作業にも再利用できる判断基準を抽出する。
-- graphの粒度、辺の種類、query方法が発見精度へ与える影響を記録する。
+- インメモリ関係モデルの粒度、辺の種類、query方法が発見精度へ与える影響を記録する。
 
 ## 自由編集の範囲
 
-Claudeは、見出し構成、分類、記録形式、仮説、query例、評価軸を必要に応じて自由に変更できる。
+CodexとClaudeは、見出し構成、分類、記録形式、仮説、query例、評価軸を必要に応じて変更できる。
 sourceやtestの変更、Task Registryの更新、新規task化、凍結taskの再開はこの自由編集に含まれない。
 
 知見から具体的な変更候補が生じた場合は、本文に候補として記録する。実装が必要なら、ユーザーまたは

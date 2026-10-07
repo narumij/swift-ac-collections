@@ -203,3 +203,33 @@ PermutationModuleには番号付き仕様testがないため、このmoduleは�
    死んだ引数や分岐のような残骸が、変更なしで長く残りやすい。
 3. 道具の対象範囲（今回は`spec-gaps`のfile名規則）を先に確かめる。対象外のmoduleでの
    「指摘0件」は、問題が無いことを意味しない。
+
+### 試験記録: Permutation・赤黒木の臭いチェック（2026-10-07, 4eae63f9〜19a894c3）
+
+**graphで当たったもの。**
+- `spec-gaps`: 未参照の公開APIが2件出た。`RedBlackTreeBoundExpression.find(_:)`は本物の空き
+  （仕様testを追加して解消）。`RedBlackTreeSet.freeCapacity`は`#if DEBUG`限定のBalanced群で、
+  Releaseの公開APIではなかった（誤検知）。`#if DEBUG`の中の宣言を数えないよう道具を直した。
+- `check`の「`@inlinable`本体から呼ばれる非`@inlinable`関数」12件: 静的には候補止まり。
+  Releaseで利用側moduleの機械語を見ると、SwiftPMのmoduleをまたぐ最適化で`elementsEqual`や
+  `unsafeValues`などは展開されていた（空振り）。本物は1件で、`filter`・`mapValues`の特殊化版が
+  未特殊化の`__construct_node<A>`を要素ごとに呼んでいた。同じ関数でも`insert`では問題がなく、
+  当たり・空振りは呼び出し元ごとに分かれる（ユーザーが`@inlinable`を付けて解消）。
+
+**graphでは見えず、読んで見つけたもの。**
+- `ManagedBuffer`の`header`を`deinit`で手動破棄していた二重破棄（headerが自明な型だけなので潜伏）。
+- 終端に達するだけの無駄なコピー、`swapAt`のTODOの事実誤り（奇数長の反転で自己交換は起きる）。
+- 横に比べて分かった不揃い: Permutationの`_copyCount`だけ`public`で、赤黒木は`package`。
+
+**誤った臭い（AI側の誤読）。**
+- Registryの`RBT-012`が発見元としてPermutationの`ensureUnique()`に触れていたため、改名すると
+  taskとの対応が壊れると考えた。task文書の記述は経緯であり、別スコープのコード名を縛らない。
+  名前の一致は結合ではない（scopeの過大登録と同種の誤り）。
+
+**知見（再利用できる判断基準）。**
+4. 特殊化境界の候補は、静的な属性の組み合わせではなく、利用側moduleのReleaseの機械語で
+   未特殊化の呼び出しが残るかで判定する。判定は呼び出し元ごとに行う。
+5. 公開APIの検査では、`#if DEBUG`などの構成限定の宣言を先に分ける。分けないと、Releaseに
+   存在しないAPIを「守られていない」と数える。
+6. メモリの寿命・CoWの誤りはsymbol graphに現れない。fan-inの大きい型の`deinit`とCoWの入口は、
+   graphの結果と関係なく本文を読む。

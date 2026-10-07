@@ -24,6 +24,8 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
   ユーザードキュメント作業フェーズへ渡せる状態にする。
 - OptionalArrayの体系監査完了時点で、ISO/IEC 25010観点の品質評価の初版を策定し、
   ユーザードキュメント作業と1.0準備で埋める不足を見える状態にする。
+- `0.5.0`としてtag付けする到達点を決め、その地点でrelease gateを通し、再現可能な節目として
+  tagを作成する。第一候補はOptionalArrayのユーザードキュメント作業への引き渡し完了時点とする。
 - Claudeへ渡すtask出しを、「一つのtaskに一つのユーザー判断、またはユーザー判断なし」まで
   分解できる状態にする。
 
@@ -200,6 +202,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `FROZEN` | User / Codex | 汎用基盤ライブラリとしての1.0採用品質ゲート | Index契約確定後、ユーザーが明示的に再開 | `Sources/RedBlackTreeCollections/Documentation/Quality-Checklist.md` |
 | `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
+| `RELEASE-001` | `WAITING_USER` | User / Codex | [DECISION] 0.5.0のtag地点 | OptionalArray引き渡し完了時点を第一候補に、0.5.0へ含める到達範囲を一つ決定 | `RELEASE_0_5_0.md` |
+| `RELEASE-002` | `FROZEN` | Codex | [EXECUTION] 0.5.0 release gateの実施 | tag地点の到達後、全体test・Release・必要なDeath Test・差分・既知事項を検証しtag可能と判定 | `RELEASE_0_5_0.md` |
+| `RELEASE-003` | `FROZEN` | User / Codex | [EXECUTION] 0.5.0 tag作成 | release gate成功後、対象commitをユーザー確認して`0.5.0` tagを作成 | `RELEASE_0_5_0.md` |
 
 ## Task precedence
 
@@ -288,6 +293,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `FIT-005` | `FIT-004` | 必要な不一致decisionを登録し、各判断が完了または除外された後に最終反映する |
 | `FIT-006` | `FIT-005` | Codexの最終反映後、Claudeが合意matrixとの取り違えを確認する |
 | `FIT-007` | `FIT-006` | Claudeの最終確認後、Codexが留保を検収して完成判定する |
+| `RELEASE-002` | `RELEASE-001` | 0.5.0へ含める到達範囲を決定後にrelease gateを実施する |
+| `RELEASE-003` | `RELEASE-002` | release gate成功後に対象commitへtagを作成する |
 
 ## Registry rules
 

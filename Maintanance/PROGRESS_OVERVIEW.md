@@ -1,6 +1,6 @@
 # 開発・メンテナンス進捗一覧
 
-最終更新: 2026-10-07 / Codex
+最終更新: 2026-10-08 / Codex
 
 この文書のTask Registryを、CodexとClaudeが作業を再開するときの唯一の入口とする。まずRegistry
 だけを読み、選択したtask行が示す詳細正本だけを追加で読む。2026-10-07までの完了チェック、判断待ち、
@@ -42,10 +42,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 必要とする`EXECUTION`は、対応する`DECISION`を前提taskにする。soft orderは同時に着手可能なnode間の
 推奨順にだけ使い、必須依存へ読み替えない。
 
-中間ゴールへ向けた残る主系列の推奨順は、`PERM-016`、`PERM-017`、`RBT-017`、`RBT-014`、
-`RBT-015`とする。
+中間ゴールへ向けた残る主系列の推奨順は、`PERM-017`、`RBT-014`、`RBT-015`とする。
 これは後続作業への影響が大きいものを先に調べるためのsoft orderであり、Task precedenceに記録した
-必須依存以外の着手を禁止しない。`PERM-018`、`PERM-019`は空いたときに差し込める小作業とする。
+必須依存以外の着手を禁止しない。
 
 次の判断は今回の作業taskへ含めない。必要になった時点でユーザーと別途決定する。
 
@@ -71,13 +70,22 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-012` | `DONE` | Claude | Swift 6.4 `-O`のCoW誤コンパイルに対する値セマンティクスのTest as Spec拡充 | 2026-10-07、closure-captured mutation形状を4型へ追加し、Debug / Releaseで値セマンティクス維持を確認（`4249ed8c`） | `Tests/RedBlackTreeTests/` |
 | `RBT-013` | `DONE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 2026-10-07、27件を分類。文書へ影響するRange View検査と公開API名、古いコメント2件を判断候補として報告 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `PERM-016` | `ACTIVE` | Claude | Permutation品質評価の事実更新 | §3.7の解消済み`swapAt`懸念を除き、header二重破棄、終端の不要copy、`#if DEBUG`と`package`への整理を根拠へ反映 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-016` | `DONE` | Claude | [EXECUTION] Permutation品質評価の事実更新 | 2026-10-07、解消済み`swapAt`懸念を除き、header二重破棄、終端の不要copy、走査共有、Debug限定検査member、行数を反映（`127a0d5b`） | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-017` | `ACTIVE` | Codex | Permutation品質評価R-1〜R-4 review | `PERM-016`後の§6をreviewし、品質特性の解釈、1.0前の不足、根拠の正確性へ回答を反映。R-3は文書形式を決めず、ユーザー判断に必要な選択肢と技術的根拠までを整理 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `RBT-014` | `ACTIVE` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | `RBT-013`後、workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-015` | `ACTIVE` | Codex | RedBlackTree残task文書の事実更新 | PR #158前提の記述など、現在の実装とRegistryに対して古い記述を修正 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-017` | `ACTIVE` | Claude | Mapped Values Range Viewの範囲外更新防止 | 範囲外Indexによるsetterと`swapAt`が停止するdeath testを先に追加して失敗を確認後、範囲検査を実装し、通常testとperformance jobで検証 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `PERM-018` | `ACTIVE` | Claude | swift-algorithms同時import時のPermutation名前衝突test | test targetへ必要なpackage依存を追加し、両moduleを同時importして公開名が衝突しないことをTest as Specificationで確認 | `Tests/PermutationTests/NextPermutationsSequence/` |
-| `PERM-019` | `ACTIVE` | Claude | 利用者向けPermutation使用例の仕様test化 | 文書へ載せる使用例を、文書本文より先にTest as Specificationとして追加 | `Tests/PermutationTests/NextPermutationsSequence/` |
+| `RBT-017` | `EXCLUDED` | — | [EXECUTION] Mapped Values Range Viewの範囲外更新防止ゲート | 2026-10-08、範囲所属は呼び出し側の事前条件、単一Index操作はO(1)と`211ca2fc`で確定済みのため変更不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-018` | `EXCLUDED` | — | [DISCOVERY] Mapped Values ViewのIndex検査条件調査 | 2026-10-08、調査は既存のAPI Matrix・仕様testを見落としており、追加判断が必要という前提を撤回 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-019` | `EXCLUDED` | — | [DECISION] 全体Mapped Values Viewの範囲検査 | 既存のO(1)契約を維持するため判断不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-020` | `EXCLUDED` | — | [DECISION] 部分Mapped Values Viewの更新計算量 | O(1)を維持する契約が確定済みのため判断不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-021` | `EXCLUDED` | — | [DECISION] Mapped Values View範囲外停止メッセージ | 範囲所属を操作内で検査しないため判断不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-022` | `EXCLUDED` | — | [DECISION] Mapped Values View getterの範囲検査 | getterもO(1)契約を維持するため判断不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-023` | `EXCLUDED` | — | [DECISION] Mapped Values View範囲判定helperのinline境界 | 新helperを追加しないため判断不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-024` | `EXCLUDED` | — | [EXECUTION] Mapped Values View範囲検査の実装と機能検証 | 既存契約に反する実装となるため実施しない。試行差分は破棄済み | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-025` | `EXCLUDED` | — | [EXECUTION] Mapped Values View範囲検査の性能確認 | 実装を行わないため性能確認も不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `PERM-018` | `DONE` | Claude | [EXECUTION] swift-algorithms同時import時のPermutation名前衝突test | 2026-10-07、両moduleの同時import、名前解決、successor列と全順列の使い分けを仕様testで固定（`0ff5fd84`） | `Tests/PermutationTests/NextPermutationsSequence/` |
+| `PERM-019` | `EXCLUDED` | — | [EXECUTION] 利用者向けPermutation使用例の仕様test化 | 2026-10-08、使用例の選定は利用者向け文書作業そのものとして文書フェーズへ移し、独立taskから除外 | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `RBT-016` | `EXCLUDED` | — | `RedBlackTreePair.tuple`の仕様test | 2026-10-07、型全体がdocumentation上internalで公開仕様testは不要。graphのspec-gap検出を修正して0件を確認 | `Tests/RedBlackTreeTests/` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
@@ -123,8 +131,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `RBT-001` | 前提taskの完了後に着手候補にできる |
 | `PERM-017` | `PERM-016` | 品質評価の事実更新後にreviewする |
 | `RBT-014` | `RBT-013` | TODO/FIXMEの文書影響を分類後にoutlineを照合する |
-| `RBT-014` | `RBT-017` | Range Viewの更新契約と実装を一致させてからoutlineを照合する |
-| `PERM-019` | `PERM-018` | 同時import時の名前衝突がないことを確認後に使用例を固定する |
+| `RBT-026` | `RBT-014` | outlineのAPI照合後、利用者向け文書作業フェーズで契約を再判断する |
 | `PERM-014` | `PERM-003` | 現行契約の基準固定後に手順を決定できる |
 | `PERM-015` | `PERM-014` | 実施手順の決定後にtask依存を再評価できる |
 | `PERM-004` | `PERM-015` | task依存の再評価とRegistry反映後に着手できる |

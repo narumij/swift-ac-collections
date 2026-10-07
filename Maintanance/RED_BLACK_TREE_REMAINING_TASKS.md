@@ -1,6 +1,6 @@
 # RedBlackTree 残タスク
 
-最終更新: 2026-10-06 / Codex
+最終更新: 2026-10-08 / Codex
 
 ## 目的
 
@@ -14,16 +14,22 @@ RedBlackTreeCollectionsを「完成」と判断するまでに残っている作
 証拠が揃っている。一方、公開`Index`はsuccess-only表現を採用済み(PR #158)だが、Comparable採否等の契約が確定していないため、
 RedBlackTreeCollections全体はまだ完成とはしない。
 
-### Mapped Values Range Viewの範囲契約
+### Mapped Values Range Viewの範囲契約（変更なしで終了）
 
-`RedBlackTreeKeyValueRangeView.values`から得る`RedBlackTreeMappedValuesView`は、setterと
-`swapAt(_:_:)`へView範囲内のIndexを渡すことを前提条件として文書化している。一方、現行実装は
-元の木で利用可能なIndexかを検査するだけで、View範囲外の要素を書き換えられる。この不一致は
-文書を緩めず、実装側へ範囲検査を追加して解消する。
+`RedBlackTreeMappedValuesView`の`subscript(position:)`と`swapAt(_:_:)`はO(1)とする。
+標準`Collection`のIndex操作と同様、IndexがView内の要素を指すことは呼び出し側の事前条件であり、
+操作ごとの範囲所属検査は行わない。必要な利用者は`isElement(at:)`を明示的に使用する。
 
-実装前に、範囲外Indexによるsetterと`swapAt(_:_:)`が停止することを`_99_DeathTests`へ追加し、
-現行実装で失敗することを確認する。修正後は通常のbuildとtestに加え、値更新のhot pathへの影響を
-performance jobで確認する。
+この契約は`211ca2fc`、`API-Matrix-View.md`、および
+`test_subrangeValuesSingleIndexOperations_doNotCompareKeys`で確定済みだった。2026-10-07〜08に提案した
+範囲検査追加は、この既存契約を見落とした誤ったtask化だったため、`RBT-017`〜`RBT-025`をすべて
+`EXCLUDED`として閉じた。試行した実装とDeath Testは破棄済みで、製品コードの変更はない。
+
+ただし、部分Viewの外でもbase treeでは有効なIndexを渡すと、停止せずView外の要素を読み書きし得る。
+性能重視の契約として成立する一方、利用者が実行時停止を期待する可能性があるため、利用者向け文書作業
+フェーズで`RBT-026`を再開する。そのtaskでは「O(1)と呼び出し側事前条件の現行契約を維持するか」だけを
+判断する。維持する場合の具体的な警告文と使用例、変更する場合の実装・test・性能検証は、結論後の
+ノー判断taskへ分ける。
 
 `index(inserting:)`と`erase(exactly:)`は現行名で確定し、名前再検討のTODOを終了する。実装済みの
 Mapped Values Viewに関する古いTODOも削除する。

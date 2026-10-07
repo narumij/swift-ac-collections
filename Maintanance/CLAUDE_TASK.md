@@ -128,51 +128,35 @@ current instruction and prepare the handoff for Codex if requested.
 
 ### Result / handoff
 
-#### Current handoff (2026-10-07)
+#### Current handoff (2026-10-08)
 
-圧縮前の全文は`Archived/CLAUDE_TASK_HISTORY.md`末尾（2026-10-06〜07）にある。
+完了済みの項目は`Archived/CLAUDE_TASK_HISTORY.md`末尾（2026-10-06〜07の圧縮前全文と、2026-10-07〜08の完了分）にある。
 
 - 現在の律速は外部（swift-collections `Container.Index`の`Comparable`要件）。2026-10-07のupstream確認でも
   `Equatable, Comparable, Hashable`のまま（最終変更`b2424210`、削除検討のFIXMEあり）。`RBT-001` / `010` / `011`は外部待ち。
 - Index完了ゲートは、Comparable依存（`RBT-011`、`RedBlackTreeSet_9`の`test_index_comparable`、`==` / `<` / hashの意味）と
-  ドキュメントを除き、検証で閉じられることを確認した（根拠は圧縮前全文）。ゲートのチェック付け替えはCodex。
-- 2026-10-06〜07のClaude実施（commit済み）: `RBT-003`（特殊化`Result`の比較とtypealiasの縮小、`6dea75d7`。
-  性能job成功を確認し`DONE`）、`RBT-002`（Index-range eraseの空でのCoW回避、`11817dfe`、`DONE`）、
-  Debug限定`Result: Comparable`削除（`d239a903`）、PR #158前のIndex向け未使用宣言のテスト側待避（`2fce4782`）、
-  走査比較回数・KeyValue View CoWの仕様テスト追加とDebug限定APIテストの`_98`移動。いずれも通常／互換×Debug／Releaseの
-  ビルドと`swift test`で成功。LinuxのCIと性能jobはpush後に確認。
-- push: `develop/misc/50`は`39360dd8`以降が未push。`4eae63f9`でPermutationのheader二重破棄を修正し、共有中の終端で
-  無駄なコピーをしないよう`next()`を変更。その性能確認はユーザー判断で`PERM-013`のチューニング時に行う。
-  `filter` / `mapValues`の特殊化版が未特殊化の`UnsafeTreeV2BufferHeader.__construct_node<A>`を要素ごとに呼んでいた件は、
-  ユーザーが`__construct_node` / `__construct_raw_node`へ`@inlinable`を付与（未commit時点でRelease機械語の解消と`swift test`成功を確認、性能jobはpush後）。
-- `RBT-012`: ユーザー指示で前倒し実施（2026-10-07）。4型の値セマンティクス仕様に、両側をassertion内で変更するテストを追加。
-  Permutationでは同じ形が今もReleaseで赤だが、赤黒木はRelease/Debugとも緑で再現せず、テストは有効のまま残した。Registryの更新はCodex。
-- `RBT-008`: 現状コード（`lazyDetach` / `tiedRawBuffer`の遅延生成と`@unchecked Sendable`による初回並行アクセスの競合）と
-  TODO記載の3案を提示し、ユーザー判断で不採用（Codexも以前に不採用）。超ホットパスなので、再提案は性能試験の結果を添えて
-  判断が冴えているときに行う。完了条件は「ユーザーが納得できるコードの提示」。
-- Codexへの残依頼: `RED_BLACK_TREE_REMAINING_TASKS.md`の「Indexが`Result`のtypealiasなのでComparableにできない」は
+  ドキュメントを除き、検証で閉じられることを確認した（根拠は履歴の圧縮前全文）。ゲートのチェック付け替えはCodex。
+- push / worktree: `develop/misc/50`の未pushは`ee258340`だけ。作業ツリーにCodexの`RBT-018`〜`RBT-025`登録と
+  このhandoff・履歴の更新があり、未commit。性能jobの未確認: Permutation `next()`の変更（`4eae63f9`、`PERM-013`で確認する
+  ユーザー判断）と`__construct_node`への`@inlinable`（`19a894c3`）。
+- `RBT-008`: ユーザー判断で現行3案は不採用。超ホットパスなので、再提案は性能試験の結果を添えて判断が冴えているときに行う。
+  完了条件は「ユーザーが納得できるコードの提示」。
+- `RBT-017`〜`RBT-025`は不要として閉じる依頼（2026-10-08夜、ユーザー了承、Registry反映はCodex）: `211ca2fc`（2026-10-05、
+  ユーザーcommit）と`API-Matrix-View.md`で「部分Viewの`subscript` / `swapAt`はO(1)、範囲所属は標準Collection同様の呼び出し側
+  事前条件、必要なら`isElement(at:)`を明示的に使う」と確定済みで、仕様test`test_subrangeValuesSingleIndexOperations_doNotCompareKeys`
+  が固定している。発端の`RBT-013`報告「文書は範囲内前提なのに実装が検査しない＝不一致」はClaudeの誤認（事前条件を実装で検査しない
+  のは不一致ではない）で、`RBT-018`も履歴・仕様test・API Matrixを見ずに判断点なしとした調査不足。F-1〜F-4の判断は無効。
+  コード変更なし（`RBT-024`の試行は元に戻した）。`RED_BLACK_TREE_REMAINING_TASKS.md`の「文書を緩めず、実装側へ範囲検査を追加して
+  解消する」節と`RBT-014` ← `RBT-024`の依存も外す。
+- 文書・整理の残依頼（Codex）: `RED_BLACK_TREE_REMAINING_TASKS.md`の「Indexが`Result`のtypealiasなのでComparableにできない」は
   PR #158で古い。`OPT-001` / `BARE-001`（体系・名称）と`ARRAY-001`（storage再設計）はレベルが違うので整理を見直す。
-  `RBT-013`完了（2026-10-07）: grepの27件は、TODOコメント26件と未使用の`Message.keyMismatch`の仮文字列"TODO"1件。
-  文書に影響: (1) `RedBlackTreeKeyValueRangeView.values`（RangeView+KeyValue.swift:203）は「範囲内の添字」を前提条件と文書化しているが、
-  `RedBlackTreeMappedValuesView`の`subscript(position:)`の`set`と`swapAt`は範囲を検査しない。検査するか文書を変えるかの決定とその実装がtask候補。
-  (2) 「名前の再検討」4件（Set / MultiMapの`index(inserting:)`と`erase(exactly:)`）。文書化前に現名で確定するかのユーザー判断がtask候補。
-  (3) `BalancedSequence`の3件は`#if DEBUG`限定で`RBT-004`の範囲。内部だけ17件のうち4件は`PERF-001` / `RBT-008` / `RBT-011` / `RBT-006`で既に覆われる。
-  古い2件（コメント削除のみ、ユーザーの「消して」待ち）: `RedBlackTreeMappedValuesView.swift:23`「Implement This」、`RedBlackTreeMultiMap+Sequence.swift:181`（`values`は既にView）。
-  `RBT-017`（2026-10-07夜）: 範囲外Indexでの`values[i] = x`と`swapAt`が止まらないことをDeath Testで赤確認済み。
-  実装はClaudeが相談すべき点を独断で決めたため取り下げ（未commit、作業ツリーは元に戻した）。着手前にユーザーと決める点:
-  全体viewで検査を省くか / 部分範囲での計算量O(log n)化を許すか / 停止メッセージ（`outOfRange`は凍結中） /
-  新helperへの`@inlinable` / `get`も検査するか / 要素を指さないIndexと別の木のIndexの扱い / MultiMapのtest。
-  `PERM-016`完了（2026-10-07夜、未commit）: 品質評価を`c64116e0`時点の事実へ更新。`swapAt`の懸念を削除し、header二重破棄の修正、
-  終端の不要コピー回避（未計測を明記）、走査の共有、`#if DEBUG`の`package`検査member、行数（254行）を反映。判定と§6の問いは変えていない。`PERM-017`へ渡せる。
-  `PERM-018`完了（2026-10-07夜、ユーザー了承で`PermutationTests`へswift-algorithms依存を追加、未commit）: `_4_CoexistenceTests`で
-  両moduleの同時importと使い分けを固定。品質評価の共存性の判定（部分）は変えていない（判定の更新は`PERM-017`のreview側）。`PERM-019`へ進める。
-  `RBT-016`は不要（ユーザー了承、2026-10-07）: `RedBlackTreePair`は型ごと`@_documentation(visibility: internal)`で、
-  入口も`subscript(_pair:)`だけ。graphのspec-gapsが型側の属性を見ていなかった誤検知で、道具を直して0件を確認。閉じる処理はCodex。
+  `RBT-013`由来で未処理: 「名前の再検討」4件は残task文書で現名確定と記載済みだが、TODOコメントは残っている。
+  古いコメント2件（`RedBlackTreeMappedValuesView.swift:23`「Implement This」、`RedBlackTreeMultiMap+Sequence.swift:181`）はユーザーの「消して」待ち。
 - `GRAPH-001`（試験運用継続）: Registryのprojectionとコード依存graphに、taskと対象コードの対応を加え、手書きの辺を
   コード上の結合で検査できるようにした。古い辺（`RBT-003` ← `RBT-001`）と未使用コードの発見に効いた。
   観測: 対象を型・ファイル単位で登録すると結合が過大に出る（`RBT-008`の誤結合）。「そのtaskが実際に変えるもの」で登録する。
-  確定判定は常にコンパイラ（無効化して多構成ビルド）で行い、DBは候補出しに使う。
-  2026-10-07夕の新しい使い方: 中間ゴール → 作業taskだけを出す → 必須依存とsoft order（推奨順）に分けて仮組み。
-  DBの着手判定は必須依存だけで行い、Registryと一致した（`PERM-017` / `RBT-014` / `PERM-019`が正しく待ち）。soft orderは文章なのでDBには見えない。
+  確定判定は常にコンパイラ（無効化して多構成ビルド）で行い、DBは候補出しに使う。中間ゴール → 作業taskだけを出す →
+  必須依存とsoft orderに分けて仮組みする使い方で、DBの着手判定はRegistryと一致。soft orderは文章なのでDBには見えない。
+  2026-10-08の観測: Registryの状態更新が遅れると、DBも完了済みtask（`PERM-016` / `PERM-018`）を着手可能と出す。
 - `GRAPH-005`: 共有面はtrackedな`GRAPH_DB_EXCHANGE.md`を使う（2026-10-07、ユーザー了承）。
 - 10/10以降: task fit協議を予定（ユーザー）。この一時的な主担当の役割はその時点で見直す。

@@ -126,6 +126,13 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-004` | `FROZEN` | Codex | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で明文化すると決定した場合、人物評価を含めず責任境界・成果物・停止条件として正本へ反映 | `Tests/TESTING.md` |
 | `OPT-005` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の初版策定 | `OPT-001`完了後、Permutationの品質評価と同じISO/IEC 25010観点で事実・根拠・不足を整理し、ユーザードキュメント作業へ渡す | `Tests/TESTING.md` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `Tests/TESTING.md` |
+| `OPT-007` | `DONE` | Codex | [EXECUTION] OptionalArray監査の暫定受入基準策定 | 2026-10-08、公開宣言網羅、契約・test・履歴対応、判断分離、引き渡し成果物を監査開始前の基準として確定 | `Tests/TESTING.md` |
+| `OPT-008` | `ACTIVE` | Codex | [DISCOVERY] OptionalArray公開7型の宣言・契約・履歴監査 | 公開宣言29件について境界・所有・寿命・破棄・変更・Sendable・次元契約と過去判断を棚卸しし、未決定事項を判断候補へ分離 | `Tests/TESTING.md` |
+| `OPT-009` | `ACTIVE` | Codex | [DISCOVERY] OptionalArray公開契約とtest根拠の対応監査 | 実装1ファイルとtest 4ファイルを照合し、公開宣言ごとの仕様根拠、未検証契約、重複、利用例の役割を整理 | `Tests/TESTING.md` |
+| `OPT-010` | `FROZEN` | Codex | [DISCOVERY] OptionalArrayの型名・次元API体系監査 | `OPT-008`後、1D〜4DとView 1D〜3Dの型名、`capacity`、`width`・`height`・`depth`、`size0`〜`size3`、BareArrayとの対応を比較し判断候補を整理 | `Tests/TESTING.md` |
+| `OPT-011` | `FROZEN` | Codex | [EXECUTION] OptionalArray監査で見つかった判断taskの登録 | `OPT-008`〜`OPT-010`後、新しい判断点を一判断ごとの`DECISION`としてRegistryへ登録し、agent判断で埋めない | `Tests/TESTING.md` |
+| `OPT-012` | `FROZEN` | Codex | [EXECUTION] OptionalArrayModuleTestsのTest as Specification整理 | `OPT-009`と必要な判断taskの完了後、仕様根拠を番号付きTest as Specificationへ整理 | `Tests/TESTING.md` |
+| `OPT-013` | `FROZEN` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 契約表、test対応、決定済み事項、未決定事項、文書入力を暫定受入基準で検収し、親taskを完了可能にする | `Tests/TESTING.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |
@@ -184,6 +191,14 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-008` | `OPT-002` | OptionalArrayで管理方式を検証した後にBareArray再開を判断する |
 | `OPT-005` | `OPT-001` | 体系監査の完了後に品質評価の初版を策定する |
 | `OPT-006` | `OPT-005` | 初版策定後、ユーザードキュメント作業の完了も確認して再評価する |
+| `OPT-010` | `OPT-008` | 公開契約と過去判断を棚卸しした後に名称・次元体系を比較する |
+| `OPT-011` | `OPT-008` | 公開契約監査後に判断候補を登録する |
+| `OPT-011` | `OPT-009` | test根拠監査後に判断候補を登録する |
+| `OPT-011` | `OPT-010` | 名称・次元体系監査後に判断候補を登録する |
+| `OPT-012` | `OPT-009` | test根拠と不足を把握した後に仕様単位へ整理する |
+| `OPT-013` | `OPT-011` | 必要な判断taskを登録・完了または除外した後に引き渡し判定する |
+| `OPT-013` | `OPT-012` | Test as Specification整理後に引き渡し判定する |
+| `OPT-001` | `OPT-013` | 引き渡し検収後に親taskを完了できる |
 
 ## Registry rules
 

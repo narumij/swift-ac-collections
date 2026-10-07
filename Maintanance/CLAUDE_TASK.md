@@ -139,11 +139,12 @@ current instruction and prepare the handoff for Codex if requested.
 - 2026-10-06〜07のClaude実施（commit済み）: `RBT-003`（特殊化`Result`の比較とtypealiasの縮小、`6dea75d7`。
   性能job成功を確認し`DONE`）、`RBT-002`（Index-range eraseの空でのCoW回避、`11817dfe`、`DONE`）、
   Debug限定`Result: Comparable`削除（`d239a903`）、PR #158前のIndex向け未使用宣言のテスト側待避（`2fce4782`）、
-  走査比較回数・KeyValue View CoWの仕様テスト追加とDebug限定APIテストの`_98`移動。
-- 検証: 上記はいずれも通常／互換×Debug／Releaseのビルドと`swift test`（Debug、最後はReleaseも）で成功。
-  LinuxのCIと性能jobはpush後に確認。
-- push: `develop/misc/50`は`39360dd8`以降が未push。`4eae63f9`でPermutationのheader二重破棄を修正し、
-  共有中の終端で無駄なコピーをしないよう`next()`を変更。後者の性能確認は、ユーザー判断で`PERM-013`のチューニング時に行う。
+  走査比較回数・KeyValue View CoWの仕様テスト追加とDebug限定APIテストの`_98`移動。いずれも通常／互換×Debug／Releaseの
+  ビルドと`swift test`で成功。LinuxのCIと性能jobはpush後に確認。
+- push: `develop/misc/50`は`39360dd8`以降が未push。`4eae63f9`でPermutationのheader二重破棄を修正し、共有中の終端で
+  無駄なコピーをしないよう`next()`を変更。その性能確認はユーザー判断で`PERM-013`のチューニング時に行う。
+  `filter` / `mapValues`の特殊化版が未特殊化の`UnsafeTreeV2BufferHeader.__construct_node<A>`を要素ごとに呼んでいた件は、
+  ユーザーが`__construct_node` / `__construct_raw_node`へ`@inlinable`を付与（未commit時点でRelease機械語の解消と`swift test`成功を確認、性能jobはpush後）。
 - `RBT-012`: ユーザー指示で前倒し実施（2026-10-07）。4型の値セマンティクス仕様に、両側をassertion内で変更するテストを追加。
   Permutationでは同じ形が今もReleaseで赤だが、赤黒木はRelease/Debugとも緑で再現せず、テストは有効のまま残した。Registryの更新はCodex。
 - `RBT-008`: 現状コード（`lazyDetach` / `tiedRawBuffer`の遅延生成と`@unchecked Sendable`による初回並行アクセスの競合）と

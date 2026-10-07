@@ -157,3 +157,48 @@ Releaseでの停止は2026-10-07にローカルのmacOSで5件とも確認した
 品質特性の評価、1.0前に必要な改善、利用者向け文書形式、性能基準を判断せず、本文の評価語も
 変更しない。不一致または新しい判断点を見つけた場合は根拠を記録して停止し、source、test、CI、
 他の文書を修正しない。CodexがR-1〜R-3の解釈とともに検収する。
+
+### PERM-024 根拠参照の照合結果
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `e169c24e`に対して照合した。`L<n>`は本書の行。評価語は変更していない。
+
+| 参照箇所 | 記載内容 | 照合先 | 結果 |
+| --- | --- | --- | --- |
+| L4 | 評価時点`d8734a65`（`develop/misc/50`）、`c64116e0`時点へ更新（`PERM-016`） | `git show`、Registry | 一致（両commitとも2026-10-07。`PERM-016` DONE） |
+| L5 | 赤黒木の品質ゲートは`Quality-Checklist.md`（`QUALITY-001`） | file、Registry | 一致（file存在、`QUALITY-001` FROZEN） |
+| L14 | 仕様の正本は`Tests/PermutationTests/NextPermutationsSequence/`の連番file | ディレクトリ | 一致（`_0_`〜`_4_`、`_98_`、`_99_`） |
+| L27 | 互換modeは`PERM-004`〜`PERM-010`、未実装 | Registry | 一致（すべてFROZEN） |
+| L38 | 削除済みAPIの非露出は`_0_PublicSurfaceTests`がcompile時に固定 | `NextPermutationsSequence_0_PublicSurfaceTests.swift:44-76` | 一致（対象は2メソッドだけ。旧型名は守れないと同file 16-19行目） |
+| L39 | `_1_EnumerationTests`、`_2_ValueSemanticsTests`。`CppBehaviorReference`との差分比較はない | test file、`Sources/CppBehaviorReference`・`Tests/CppBehaviorReferenceTests` | 一致（どちらにも`permutation`の語が無い） |
+| L46 | `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`に5件の計測 | 同file | 一致（`self.add(`が5件。表題は旧名`Permutations.SubSequenceN`のまま。旧名維持は`169401a0`の方針） |
+| L47 | 終端で不要なcopyをしない（`4eae63f9`）。`_98_InternalTests`が`DEBUG`下で確認 | commit、`_98_InternalTests.swift:8,25,67` | 一致 |
+| L50 | CIの性能比較が使う`Benchmarks/Libraries/CI.json`にPermutationは無い | `.github/workflows/swift.yml:102-`（performance job）、`CI.json` | 一致（`CI.json`に`perm`の語が無い） |
+| L51 | `@inline(__always)` 27件の全削除（`0ef177d3`） | `git show 0ef177d3 -- Sources` | 一致（削除行27、追加0） |
+| L52 | `4eae63f9`は未計測、`PERM-013`で確かめる | Registry | 一致（`PERM-013` FROZEN） |
+| L58 | swift-algorithms 1.2.1の型名`PermutationsSequence`・`UniquePermutationsSequence` | `Package.resolved`、`.build/checkouts/swift-algorithms/Sources/Algorithms/Permutations.swift:79,404` | 一致 |
+| L58 | **両方をimportした状態のtestはない** | `NextPermutationsSequence_4_CoexistenceTests.swift`（`0ff5fd84`、Registry `PERM-018` DONE） | **不一致**: 2026-10-07に、両moduleを同時importして修飾なしで解決するtestが追加されている。本書の更新（`PERM-016`、`127a0d5b`）は`0ff5fd84`より前 |
+| L59 | `testIndicesStartAtZeroForAnySource`、`AcCollectionsTests.test_importAcCollections_exposesNextPermutations` | `_3_PermutationCollectionTests.swift:24`、`Tests/AcCollectionsTests/AcCollectionsTests.swift:72` | 一致 |
+| L68 | 命名はswift-algorithmsの`PermutationsSequence<Base>`に合わせた（`169401a0`） | `169401a0`のcommit本文 | 未確認（commit本文が記録する理由は「`N`は削除済みの`All`系との区別だけ」「`SubSequenceN`は`Collection.SubSequence`と紛らわしい」。swift-algorithmsへ合わせたという記録は見つからない） |
+| L69 | `testAcceptsNonIntIndexedSources` | `_1_EnumerationTests.swift:81` | 一致 |
+| L70 | 直接初期化できないことを`_0_`が固定、範囲外は`_99_DeathTests` | `_0_PublicSurfaceTests.swift:70`、`_99_DeathTests.swift` | 一致 |
+| L71 | `testDescriptionLooksLikeArray` | `_3_PermutationCollectionTests.swift:48` | 一致 |
+| L77 | `swift test`をDebug・Releaseで実行（CIはLinux） | `swift.yml:79-100`（`ubuntu-24.04`、`-c debug` / `-c release`） | 一致 |
+| L84 | `testIteratorCopiesAdvanceIndependently`はassertionの外で`next()`を呼ぶ | `_2_ValueSemanticsTests.swift:34-47` | 一致 |
+| L85 | 深追いは1.0直前まで保留（ユーザー判断） | `Permutations.swift:71-73`のTODO | 履歴として一致（sourceのTODOに「1.0直前に確認」とある。ユーザー判断そのものの記録は今回見ていない） |
+| L93 | target全体に`.strictMemorySafety()`を恒久適用 | `Package.swift:311-320` | 一致 |
+| L93 | header二重破棄の修正（`4eae63f9`） | commit、`_98_InternalTests.swift:14` | 一致 |
+| L96 | Death Testは、macOSでは既定、Linuxではtrait指定時だけ。CI（Linux）では実行されない | `Package.swift:82,85`、`swift.yml`（`ENABLE_DEATH_TESTS`の指定なし） | 一致 |
+| L97 | Releaseでの停止は2026-10-07にローカルmacOSで5件とも確認 | `PermutationModule/ProductReadinessAssessment.md:152` | 未確認（見つかった記録は、同じ5件をDebug / ReleaseともSIGTRAPで確認した2026-10-03の節だけ。10-07の確認記録は見つからない） |
+| L103 | 空行・コメントを除いて254行（`c64116e0`）、`4a75b9f8`時点は213行、基準refは約446行 | `git show <ref>:…/Permutations.swift`で空行と`//`行を除いて数えた | 一致（254 / 213。HEADも254）。基準refは`Permutations.swift`の391行と`NextPermutationProtocol.swift`の55行を足すと446で、2 file合計としてなら一致。1 fileだけだと391行（総行数456） |
+| L105 | 二重管理なし（`5efc1a9c`）。`spec-gaps`で公開APIの仕様test参照を確認（0件） | commit、`.task-graphs/claude-tg.sh spec-gaps` | 一致（今回の実行も未参照0件。ただしcode graphは`b87c8428`時点のまま） |
+| L106 | `4a75b9f8`、`c204dd9f`、走査の共有（`2495b095`） | commit、`Permutations.swift:306-319` | 一致（`hasNextPermutation`と`nextPermutation()`が`lastAscentIndex`を共有） |
+| L107 | APIを戻して検出を確認済み。検査用memberは`#if DEBUG`の`package`（`2495b095`、`c64116e0`） | `AtCoder2025CompatibilityPlan.md:34-36`、`Permutations.swift:119-137,191-193` | 一致（戻して確認したのは履歴として記録あり） |
+| L116 | 2026-10-07に`Index == Int`制約を除去 | `4a75b9f8` | 一致 |
+| L118 | `swift-tools-version: 6.2`、`platforms: [.macOS(.v15)]` | `Package.swift:1,119-120` | 一致 |
+| L119、L121 | 互換modeは`PERM-004`以降、`PERM-002`はユーザー専任、`PERM-009`は未実施 | Registry | 一致（`PERM-002` USER_ONLY、`PERM-009` FROZEN） |
+
+停止事項: L58の不一致1件。訂正するか、共存性の判定に影響するかはCodexが判断する（本文と評価語は変更していない）。
+
+Codex acceptance（2026-10-08）: 参照箇所と現物の対応、結果分類、停止条件を満たすため受け入れた。
+共存test追加後の事実、不裏付けの命名理由、Release確認日の3点は事実補正候補として別taskへ渡す。
+品質特性の評価変更とR-1〜R-3の判断はCodexのreviewに残す。

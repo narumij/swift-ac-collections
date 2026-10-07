@@ -3,9 +3,9 @@
 //  swift-ac-collections
 //
 
-// 実装の確認(仕様ではない)。`AC_COLLECTIONS_INTERNAL_CHECKS`のときだけ有効。
+// 実装の確認(仕様ではない)。`DEBUG`のときだけ有効。
 
-#if AC_COLLECTIONS_INTERNAL_CHECKS
+#if DEBUG
   @testable import PermutationModule
   import XCTest
 
@@ -35,6 +35,33 @@
         }
       }
       XCTAssertEqual(NextPermutationsHeaderProbe.deinitCount - before, 1)
+    }
+
+    func testOddLengthReverseKeepsElementLifetimes() throws {
+      // 奇数長の反転では真ん中の要素が自分自身と入れ替わる。参照型の要素でも、
+      // 生成した数だけ破棄され、値も壊れない
+      final class Box {
+        nonisolated(unsafe) static var deinitCount = 0
+        let value: Int
+        init(_ value: Int) { self.value = value }
+        deinit { Self.deinitCount += 1 }
+      }
+      struct Element: Comparable {
+        let box: Box
+        static func < (lhs: Self, rhs: Self) -> Bool { lhs.box.value < rhs.box.value }
+        static func == (lhs: Self, rhs: Self) -> Bool { lhs.box.value == rhs.box.value }
+      }
+      let before = Box.deinitCount
+      do {
+        let source = (0..<5).map { Element(box: Box($0)) }
+        var orders: [[Int]] = []
+        for p in source.nextPermutations() {
+          orders.append(p.map(\.box.value))
+        }
+        XCTAssertEqual(orders.count, 120)
+        XCTAssertEqual(Set(orders).count, 120)
+      }
+      XCTAssertEqual(Box.deinitCount - before, 5)
     }
 
     func testNoCopyWhenResultsAreNotRetained() throws {

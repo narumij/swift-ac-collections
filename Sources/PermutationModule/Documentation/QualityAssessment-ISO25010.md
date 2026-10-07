@@ -44,7 +44,7 @@
 | 副特性 | 判定 | 根拠 |
 | --- | --- | --- |
 | 時間効率性 | 部分 | 1ステップ最悪O(n)はソースのドキュメントコメントでの約束で、testはない。`Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`に5件の計測がある |
-| 資源効率性 | 部分 | 入力を1回bufferへコピーする。結果を保持しなければ追加のコピーは起きないことを`_98_InternalTests`が`AC_COLLECTIONS_INTERNAL_CHECKS`下でだけ確認 |
+| 資源効率性 | 部分 | 入力を1回bufferへコピーする。結果を保持しなければ追加のコピーは起きないことを`_98_InternalTests`が`DEBUG`下でだけ確認 |
 | 容量 | 対象外 | 列挙数は入力に対して階乗的に増えるが、それは列挙の性質であり、このmoduleの上限ではない |
 
 懸念: CIの性能比較（`.github/workflows/swift.yml`のperformance job）が使う`Benchmarks/Libraries/CI.json`に、

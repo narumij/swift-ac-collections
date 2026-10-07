@@ -116,7 +116,7 @@ struct NextPermutationsBufferHeader {
   }
   @usableFromInline
   var count: Int
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if DEBUG
     @usableFromInline
     var copyCount: UInt = 0
     @usableFromInline
@@ -124,9 +124,9 @@ struct NextPermutationsBufferHeader {
   #endif
 }
 
-#if AC_COLLECTIONS_INTERNAL_CHECKS
+#if DEBUG
   /// A reference owned by the header, so that how many times a header is destroyed is
-  /// observable from tests.
+  /// observable from tests. Not thread-safe: count only in single-threaded tests.
   @usableFromInline
   final class NextPermutationsHeaderProbe {
     nonisolated(unsafe) static var deinitCount = 0
@@ -188,7 +188,7 @@ extension NextPermutationsSequence.Permutation: RandomAccessCollection {
     precondition(position >= startIndex && position < endIndex, "Index out of range")
     return elementBuffer[position]
   }
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
+  #if DEBUG
     public var _copyCount: UInt { elementBuffer.header.copyCount }
   #endif
 }
@@ -241,9 +241,6 @@ extension NextPermutationsSequence.Buffer {
   func formIndex(after i: inout Index) { i += 1 }
   @inlinable
   func index(before i: Index) -> Index { i - 1 }
-  // TODO: `a == b`のとき、同じ要素へ2つのinoutアクセスが重なる。現在の呼び出し元
-  // (`nextPermutation()`と`reverse(subrange:)`)はどちらも`a != b`を保証するので実害はない。
-  // `Array.swapAt`と同様に`guard a != b else { return }`を足すかを検討する(2026-10-07)。
   @inlinable
   func swapAt(_ a: Index, _ b: Index) { swap(&self[a], &self[b]) }
   @inlinable
@@ -276,7 +273,7 @@ extension NextPermutationsSequence.Buffer {
   internal func copy() -> NextPermutationsSequence.Buffer {
     let count = header.count
     let newStorage = NextPermutationsSequence.Buffer.create(count: count)
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
+    #if DEBUG
       newStorage.header.copyCount = header.copyCount &+ 1
     #endif
     unsafe self.withUnsafeMutablePointerToElements { oldElements in
@@ -303,43 +300,36 @@ extension NextPermutationsSequence.Buffer {
 
 extension NextPermutationsSequence.Buffer where Element: Comparable {
 
-  /// Whether a lexicographic successor exists. Reads only.
+  /// The last index `i` where `self[i] < self[i + 1]`, or `nil` when the current order has no
+  /// lexicographic successor. Reads only.
   @inlinable
-  internal var hasNextPermutation: Bool {
-    guard !isEmpty else { return false }
+  internal var lastAscentIndex: Index? {
+    guard !isEmpty else { return nil }
     var i = index(before: endIndex)
     while i != startIndex {
       let ip1 = i
       formIndex(before: &i)
-      if self[i] < self[ip1] { return true }
+      if self[i] < self[ip1] { return i }
     }
-    return false
+    return nil
   }
+
+  /// Whether a lexicographic successor exists. Reads only.
+  @inlinable
+  internal var hasNextPermutation: Bool { lastAscentIndex != nil }
 
   // オリジナルはhttps://github.com/apple/swift-algorithms/blob/main/Sources/Algorithms/Permutations.swift
   @inlinable
   internal func nextPermutation() -> Bool {
-    guard !isEmpty else { return false }
-    var i = index(before: endIndex)
-    if i == startIndex { return false }
-
-    while true {
-      let ip1 = i
-      formIndex(before: &i)
-
-      if self[i] < self[ip1] {
-        // `self[ip1]`が`self[i]`より大きいので、必ず見つかる
-        let j = lastIndex { self[i] < $0 }!
-        swapAt(i, j)
-        reverse(subrange: ip1..<endIndex)
-        return true
-      }
-
-      if i == startIndex {
-        reverse(subrange: startIndex..<endIndex)
-        return false
-      }
+    guard let i = lastAscentIndex else {
+      reverse(subrange: startIndex..<endIndex)
+      return false
     }
+    // `self[i + 1]`が`self[i]`より大きいので、必ず見つかる
+    let j = lastIndex { self[i] < $0 }!
+    swapAt(i, j)
+    reverse(subrange: (i + 1)..<endIndex)
+    return true
   }
 
   // オリジナルはhttps://github.com/apple/swift-algorithms/blob/main/Sources/Algorithms/Rotate.swift

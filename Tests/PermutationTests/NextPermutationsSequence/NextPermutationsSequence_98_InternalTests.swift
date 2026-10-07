@@ -6,7 +6,7 @@
 // 実装の確認(仕様ではない)。`DEBUG`のときだけ有効。
 
 #if DEBUG
-  @testable import PermutationModule
+  import PermutationModule
   import XCTest
 
   final class NextPermutationsSequence_98_InternalTests: XCTestCase {

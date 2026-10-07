@@ -128,8 +128,8 @@ struct NextPermutationsBufferHeader {
   /// A reference owned by the header, so that how many times a header is destroyed is
   /// observable from tests. Not thread-safe: count only in single-threaded tests.
   @usableFromInline
-  final class NextPermutationsHeaderProbe {
-    nonisolated(unsafe) static var deinitCount = 0
+  package final class NextPermutationsHeaderProbe {
+    nonisolated(unsafe) package static var deinitCount = 0
     @usableFromInline
     init() {}
     deinit { Self.deinitCount += 1 }
@@ -189,7 +189,7 @@ extension NextPermutationsSequence.Permutation: RandomAccessCollection {
     return elementBuffer[position]
   }
   #if DEBUG
-    public var _copyCount: UInt { elementBuffer.header.copyCount }
+    package var _copyCount: UInt { elementBuffer.header.copyCount }
   #endif
 }
 

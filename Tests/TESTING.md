@@ -61,6 +61,52 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   所有型・View型のpointer initializerと添字境界も整理して、一意な診断を
   約64→54→38→28→22へ削減した。残りは公開7型を`@unsafe`にするAPI判断とallocate。
   公開API全体へunsafeを伝播させる変更は採らず、storage再設計までstrict恒久適用を保留する。
+
+### OptionalArray体系監査と管理方式の検証
+
+詳細な契約表、test対応、履歴根拠、判断候補は
+`Maintanance/OptionalArrayModule/OptionalArrayAudit.md`を正本とする。
+
+現在の到達点は、OptionalArrayをCodexのユーザードキュメント作業フェーズへ渡せる状態にすることである。
+Codexが作業設計、調査範囲の閉鎖、網羅性確認、成果物の受入れ、完了判定を担う。Claudeへ作業を委任する
+場合も、対象・確認資料・成果物形式・停止条件をCodexが指定し、その提出だけで親taskを完了扱いにしない。
+新しい判断点はagentが補わず、一判断ごとの`DECISION`候補として分離する。
+
+この管理方式は次の順で検証する。
+
+1. BareArrayの親・子・後続性能taskと`ARRAY-001`を凍結し、途中成果を保持する。
+2. OptionalArrayの体系監査・名称再検討をCodex管理で再開し、ユーザードキュメント作業へ渡す。
+3. 完了後、実際に有効だった作業設計・責任境界・受入基準を抽出する。
+4. Claude向け委任規則を正本へ明文化する必要があるかを別taskで判断し、必要な場合だけ反映する。
+5. 検証済みの管理方式を踏まえ、BareArray監査を再開するかを別taskで判断する。
+
+BareArrayについて既に登録した公開7型の契約棚卸し、位置づけ、命名、Test as Specification、性能の論点は
+削除しない。再開判断までは追加調査・判断・整理を行わず、コメントドック全件整備も開始しない。
+
+OptionalArrayの品質評価は、PermutationModuleの`QualityAssessment-ISO25010.md`と同様に、仕様を再記述せず
+Test as Specification、実装、CI、利用者向け文書を根拠としてISO/IEC 25010の品質特性ごとに整理する。
+体系監査完了時に初版を策定して文書作業と1.0準備の不足を発見し、ユーザードキュメント作業後に再評価する。
+後者で残った不足を独立task候補へ分離してから1.0採用判断へ進み、初版だけを品質ゲートの最終評価にしない。
+
+#### 監査開始前の暫定受入基準
+
+現物確認時点の対象は、`OptinalArray.swift` 1ファイルにある所有型1D〜4DとView 1D〜3Dの公開7型・
+公開宣言29件、および`OptionalArrayModuleTests`の10ファイル（番号付き仕様test 8、利用例2）とする。
+体系監査から文書作業へ渡すには、
+次をすべて満たす。
+
+- 公開宣言を全件列挙し、境界、所有、寿命、破棄、変更、`Sendable`、次元の契約を確認する。
+- 各契約を既存test、利用例、git履歴上の決定と対応付け、事実、過去判断、現在の推論を区別する。
+- OptionalArrayとBareArrayは比較対象にするが、類似実装だけを根拠に同一契約とは扱わない。
+- 未検証契約、重複test、仕様を表さないtestを識別し、Test as Specification整理の入力にする。
+- 新しい判断点は位置づけ、名称、公開契約など一判断ごとの`DECISION`候補へ分離し、agentが結論を補わない。
+- 引き渡し時に、公開契約表、test根拠対応、決定済み事項、未決定事項、利用者向け文書への入力を検収する。
+- 利用者向け本文とコメントドック全件整備、および`ARRAY-001`のstorage再設計・strict恒久適用は含めない。
+
+実監査は、公開宣言・履歴の監査とtest根拠の対応監査を独立して開始する。その結果を受けて名称・次元体系を
+比較し、判断taskの登録、Test as Specification整理、引き渡し判定の順に閉じる。監査後には、この暫定基準を
+実績に照らして再利用可能な管理方式と受入基準へ更新する。
+
 - AcCollections: RedBlackTreeCollections、PermutationModule、OptionalArrayModule、
   BareArrayModuleの再公開テストを追加済み。互換modeでは旧名RedBlackTreeModuleも再公開する。
   別テストターゲットでもRedBlackTreeのDebug寿命カウンタを各テスト後に検査・初期化する。
@@ -139,7 +185,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   `DebugAdditionals/UnsafeTreeV2+Debug/_LazyTieWrappedPtr+Retired.swift`へ待避した。
   4構成ビルドとDebug / Releaseの`swift test`は成功。LinuxのCIはpush後に確認する。
 
-最終更新: 2026-10-07 01:40 JST / Claude Opus 5.5
+最終更新: 2026-10-08 / Codex
 
 このファイルは現在地を上書きして保つ。長文報告や年代順ログは追加せず、引き継ぎは
 最大5項目とする。ユーザー方針の変更・削除はユーザーへ確認する。

@@ -363,6 +363,22 @@
       }
     }
 
+    /// `.find(_:)`は等しい要素を指し、等しい要素が無ければendを指すこと
+    func testFindAllKeys() throws {
+      let cases: [(key: Int, expected: Int?)] = [
+        (-1, nil),
+        (0, 0),
+        (1, 1),
+        (2, 2),
+        (3, nil),
+      ]
+
+      for (key, expected) in cases {
+        XCTAssertEqual(a[.find(key)], expected, "key=\(key)")
+        XCTAssertEqual(a.isValid(.find(key)), expected != nil, "key=\(key)")
+      }
+    }
+
     func testLessGreaterHelpers() throws {
       XCTAssertEqual(a[.lessThan(1)], 0)
       XCTAssertEqual(a[.greaterThan(1)], 2)

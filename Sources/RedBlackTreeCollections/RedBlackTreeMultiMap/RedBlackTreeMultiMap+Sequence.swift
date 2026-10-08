@@ -178,7 +178,6 @@ extension RedBlackTreeMultiMap {
         .init(start: _start, end: _end, tree: __tree_)
       }
 
-      // TODO: valuesはViewにして、swapAt可能にすること
       /// A collection containing just the values of the multimap.
       ///
       /// - Complexity: O(`count`)

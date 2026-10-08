@@ -26,6 +26,7 @@ public struct OptionalArray1D<Element>: ~Copyable {
 
   @inlinable
   public init(capacity: Int) {
+    precondition(capacity >= 0)
     self.count = capacity
     self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
@@ -127,7 +128,10 @@ public struct OptionalArray2D<Element>: ~Copyable {
 
   @inlinable
   public init(width: Int, height: Int) {
-    self.capacity = height * width
+    precondition(width >= 0 && height >= 0)
+    let (capacity, overflow) = height.multipliedReportingOverflow(by: width)
+    precondition(!overflow)
+    self.capacity = capacity
     self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
     self.payload = .allocate(capacity: capacity)
@@ -169,6 +173,8 @@ public struct OptionalArray2D<Element>: ~Copyable {
 
     @inline(__always)
     set {
+      // The mutation has already been applied through the pointer-backed View.
+      // This setter only completes writeback for a chained subscript expression.
       /* NOP */
     }
   }
@@ -197,7 +203,16 @@ public struct OptionalArray3D<Element>: ~Copyable {
 
   @inlinable
   public init(width: Int, height: Int, depth: Int) {
-    self.capacity = height * width * depth
+    precondition(width >= 0 && height >= 0 && depth >= 0)
+    // 0の次元があれば積は0。途中の積だけがoverflowする入力を拒否しないよう、先に判定する。
+    if width == 0 || height == 0 || depth == 0 {
+      self.capacity = 0
+    } else {
+      let (plane, overflow0) = height.multipliedReportingOverflow(by: width)
+      let (capacity, overflow1) = plane.multipliedReportingOverflow(by: depth)
+      precondition(!overflow0 && !overflow1)
+      self.capacity = capacity
+    }
     self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
     self.payload = .allocate(capacity: capacity)
@@ -240,6 +255,8 @@ public struct OptionalArray3D<Element>: ~Copyable {
 
     @inline(__always)
     set {
+      // The mutation has already been applied through the pointer-backed View.
+      // This setter only completes writeback for a chained subscript expression.
       /* NOP */
     }
   }
@@ -269,7 +286,17 @@ public struct OptionalArray4D<Element>: ~Copyable {
 
   @inlinable
   public init(size0: Int, size1: Int, size2: Int, size3: Int) {
-    self.capacity = size0 * size1 * size2 * size3
+    precondition(size0 >= 0 && size1 >= 0 && size2 >= 0 && size3 >= 0)
+    // 0の次元があれば積は0。途中の積だけがoverflowする入力を拒否しないよう、先に判定する。
+    if size0 == 0 || size1 == 0 || size2 == 0 || size3 == 0 {
+      self.capacity = 0
+    } else {
+      let (plane, overflow0) = size0.multipliedReportingOverflow(by: size1)
+      let (cube, overflow1) = plane.multipliedReportingOverflow(by: size2)
+      let (capacity, overflow2) = cube.multipliedReportingOverflow(by: size3)
+      precondition(!overflow0 && !overflow1 && !overflow2)
+      self.capacity = capacity
+    }
     self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
     self.payload = .allocate(capacity: capacity)
@@ -305,9 +332,11 @@ public struct OptionalArray4D<Element>: ~Copyable {
     @inline(__always)
     get {
       precondition(0 <= position && position < size3)
+      // 内側に0の次元があれば要素は無い。途中の積はoverflowし得るので評価しない。
+      let offset = size0 == 0 || size1 == 0 || size2 == 0 ? 0 : size0 * size1 * size2 * position
       return unsafe .init(
-        hasPayload: hasPayload + size0 * size1 * size2 * position,
-        payload: payload + size0 * size1 * size2 * position,
+        hasPayload: hasPayload + offset,
+        payload: payload + offset,
         width: size0,
         height: size1,
         depth: size2)
@@ -315,6 +344,8 @@ public struct OptionalArray4D<Element>: ~Copyable {
 
     @inline(__always)
     set {
+      // The mutation has already been applied through the pointer-backed View.
+      // This setter only completes writeback for a chained subscript expression.
       /* NOP */
     }
   }
@@ -426,6 +457,8 @@ public struct OptionalArray2DView<Element> {
 
     @inline(__always)
     set {
+      // The mutation has already been applied through the pointer-backed View.
+      // This setter only completes writeback for a chained subscript expression.
       /* NOP */
     }
   }
@@ -466,14 +499,16 @@ public struct OptionalArray3DView<Element> {
     get {
       precondition(0 <= position && position < depth)
       return unsafe .init(
-        hasPayload: hasPayload + width * position,
-        payload: payload + width * position,
+        hasPayload: hasPayload + width * height * position,
+        payload: payload + width * height * position,
         width: width,
         height: height)
     }
 
     @inline(__always)
     set {
+      // The mutation has already been applied through the pointer-backed View.
+      // This setter only completes writeback for a chained subscript expression.
       /* NOP */
     }
   }

@@ -14,6 +14,46 @@
    selected task's detailed canonical document, then Archived records and old
    logs.
 
+## User-facing management boundary
+
+Internal management artifacts are agent tools, not user-operated dashboards.
+When the user asks for status, progress, the next action, task availability, or
+an explanation, inspect the relevant Registry and canonical records yourself and
+translate them into ordinary language. Do not tell the user to inspect an
+internal file, remember a task ID or state name, reconcile agent handoffs, or
+perform bookkeeping that Codex can do.
+
+Lead with the current outcome, its implication, and only the choice or authority
+that genuinely requires the user. Codex owns translation from conversation into
+task boundaries, dependencies, assignments, acceptance, Registry updates, and
+commit boundaries. The user retains product direction, public promises,
+priorities, irreversible choices, and any authority explicitly reserved to them.
+
+Retrospectives and evaluation documents may reveal reusable management lessons,
+but they are not startup reading. Promote a lesson that should survive a new
+conversation into a concise rule here or into the task-operation playbook rather
+than requiring future sessions to reconstruct it from reflections.
+
+## Goal relevance and proximity
+
+Being dependency-ready does not make a task necessary or next. Before creating,
+selecting, decomposing, or assigning work, determine whether it contributes to
+the current intermediate goal and describe its qualitative proximity:
+
+- `DIRECT`: completing it directly closes or decides part of the current goal.
+- `NEAR`: it is a required input to `DIRECT` work.
+- `FAR`: it is required for the current goal but reaches it through multiple
+  intermediate tasks or gates.
+- `LATER`: it belongs to an explicitly later goal or phase.
+- `OUTSIDE`: it does not contribute to the recorded goals.
+
+Use this as a selection lens, not as a replacement for Registry state or Task
+precedence. Select necessary `DIRECT`, `NEAR`, and `FAR` work using critical
+path, risk, and acceptance capacity; proximity alone is not priority. Do not
+advance merely ready, interesting, or useful `LATER` / `OUTSIDE` work unless the
+user changes the goal or explicitly requests it. Do not invent a numeric
+distance when the goal-to-task relation is not formally represented.
+
 ## Stable task IDs
 
 - Registry IDs such as `RBT-001` and `PERM-002` are persistent repository task
@@ -32,6 +72,20 @@
 - `USER_ONLY` tasks must not be started, performed, delegated, or prompted by an
   agent.
 
+## Claude work awaiting a stable ID
+
+`Maintanance/CLAUDE_PENDING_TASKS.md` is a temporary handoff queue, not a second
+Task Registry. Claude may record an unnumbered candidate there without starting
+it. When the user explicitly directs Claude to execute a concrete bounded item,
+that latest instruction authorizes only the named scope before stable ID
+assignment; Claude records the authorization and evidence under a temporary ID.
+
+Codex owns reconciliation when it returns: check for duplicates and conflicts,
+assign or merge into a stable Registry ID, review the result, and update the
+Registry. Temporary IDs must not be added to Task precedence or treated as
+completion acceptance. Do not scan the queue at startup; read it when the user
+asks for reconciliation or a queued result is handed back.
+
 ## Conversation reference IDs
 
 For a report with multiple independently actionable points, follow
@@ -44,6 +98,65 @@ For a report with multiple independently actionable points, follow
   with unused top-level letters instead of starting again at `(A)`.
 - Conversation IDs are temporary coordinates. Do not use them as replacements
   for persistent Registry IDs.
+
+## Japanese input confirmations
+
+When the user is communicating in Japanese, do not use a selection or decision
+UI to request input. Japanese IME confirmation may submit that UI before the
+user has finished answering. Ask choices in an ordinary chat message and let
+the user reply with text or a choice number. This changes only the input method;
+it does not waive a required user decision or approval.
+
+## Codex evaluation and impression records
+
+When the user asks Codex to record an evaluation or impression, use
+`Maintanance/USER_MANAGEMENT_INTERVIEW_CODEX.md` and follow its stated purpose.
+Treat the record as management-continuity evidence: preserve concrete episodes,
+the user's own characteristic wording, and what it reveals about trusted or
+untrusted ways of carrying responsibility. Do not turn it into a personality
+profile, flattery log, or substitute for current user instructions.
+
+## Routine shorthand
+
+When the user says `ルーティーン`, treat it as a request for this cycle:
+
+1. Review the reported completed work. When it satisfies its acceptance
+   conditions, update its detailed canonical document and the Task Registry.
+2. Commit only the accepted work and its corresponding progress updates,
+   preserving unrelated worktree changes.
+3. Recompute the ready work from task dependencies. Decompose the next
+   in-scope work when necessary, first checking its necessity and proximity to
+   the current intermediate goal. Keep each task appropriately bounded and
+   separate user decisions from agent execution.
+4. Assign Claude only bounded, decision-free tasks whose prerequisites are
+   satisfied and whose ownership fits Claude. If no such task exists, do not
+   manufacture an assignment.
+5. Commit any resulting task-management and handoff changes.
+
+Any phase may be a no-op. The user's latest instruction still takes priority.
+This shorthand does not make a non-ready task ready, restart `FROZEN` work,
+activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
+
+## Japanese sentence markers
+
+The markers below classify only the single sentence immediately following the
+marker, not the response as a whole. When the function changes within one
+response, a later sentence may use a different marker. Choose by the function of
+that sentence rather than by a global priority, and do not add markers to every
+sentence or to ordinary conversation.
+
+- Use `了。` before a sentence that acknowledges an instruction or request as
+  understood and accepted for execution. It is not a completion claim.
+- Use `是。` before a sentence that explicitly affirms a premise, understanding,
+  or proposed direction as correct. It is not a casual acknowledgement.
+- Use `否。` before a sentence that explicitly rejects or corrects a mistaken
+  premise, factual misunderstanding, or unsafe framing. It is not for mild
+  disagreement or stylistic preference.
+- Use `解。` before a sentence that interprets evidence, explains a reason or
+  relationship, or states what can be inferred.
+- Use `告。` before a sentence that reports an observed status, established
+  result, progress conclusion, or routine completion. It is not for intended
+  work that has not yet been performed.
 
 ## Ownership boundaries
 

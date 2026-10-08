@@ -7418,3 +7418,47 @@ Status: Completed (2026-10-04, Claude Opus 5.5)
   `__isSameLazyDetach` / Debug版`unsafe(tree:rawTag:)`。一時的に無効化して4構成のテスト込みビルドと`swift test`が
   通ることを確認し、元に戻した。`unchecked`と`index(_:) -> _LazyTieWrappedPtr`系はResult連鎖用として使用中なので
   対象外。`ALLOW_CROSS_TREE_INDEX`無効構成は未確認。`RBT-008`の前提（`lazyDetach`の遅延生成）は現行コードでも有効。
+
+# Archived Result — Claude handoff 2026-10-07〜08（完了分）
+
+2026-10-08にhandoffを上書きした際、完了済みの項目だけをここへ移した。未完了の項目はhandoffに残した。
+
+- 2026-10-06〜07のClaude実施（commit済み）: `RBT-003`（特殊化`Result`の比較とtypealiasの縮小、`6dea75d7`。
+  性能job成功を確認し`DONE`）、`RBT-002`（Index-range eraseの空でのCoW回避、`11817dfe`、`DONE`）、
+  Debug限定`Result: Comparable`削除（`d239a903`）、PR #158前のIndex向け未使用宣言のテスト側待避（`2fce4782`）、
+  走査比較回数・KeyValue View CoWの仕様テスト追加とDebug限定APIテストの`_98`移動。いずれも通常／互換×Debug／Releaseの
+  ビルドと`swift test`で成功。
+- `4eae63f9`でPermutationのheader二重破棄を修正し、共有中の終端で無駄なコピーをしないよう`next()`を変更。
+  `filter` / `mapValues`の特殊化版が未特殊化の`UnsafeTreeV2BufferHeader.__construct_node<A>`を要素ごとに呼んでいた件は、
+  ユーザーが`__construct_node` / `__construct_raw_node`へ`@inlinable`を付与（`19a894c3`、push済み）。Release機械語の解消と`swift test`成功を確認。
+- `RBT-012`: ユーザー指示で前倒し実施（2026-10-07、`4249ed8c`）。4型の値セマンティクス仕様に、両側をassertion内で変更するテストを追加。
+  Permutationでは同じ形が今もReleaseで赤だが、赤黒木はRelease/Debugとも緑で再現せず、テストは有効のまま残した。
+- `RBT-013`完了（2026-10-07）: grepの27件は、TODOコメント26件と未使用の`Message.keyMismatch`の仮文字列"TODO"1件。
+  文書に影響: (1) `RedBlackTreeKeyValueRangeView.values`（RangeView+KeyValue.swift:203）は「範囲内の添字」を前提条件と文書化しているが、
+  `RedBlackTreeMappedValuesView`の`subscript(position:)`の`set`と`swapAt`は範囲を検査しない（→`RBT-017`〜`RBT-025`として登録済み）。
+  (2) 「名前の再検討」4件（Set / MultiMapの`index(inserting:)`と`erase(exactly:)`）。
+  (3) `BalancedSequence`の3件は`#if DEBUG`限定で`RBT-004`の範囲。内部だけ17件のうち4件は`PERF-001` / `RBT-008` / `RBT-011` / `RBT-006`で既に覆われる。
+- `RBT-017`（2026-10-07夜）: 範囲外Indexでの`values[i] = x`と`swapAt`が止まらないことをDeath Testで赤確認。
+  実装は相談すべき点を独断で決めたため取り下げ、作業ツリーを戻した。2026-10-08、Codexが`RBT-018`〜`RBT-025`へ分解登録。
+- `RBT-018`完了（2026-10-08夜、Claude、コード変更なし）:
+  (1) 要素を指さないIndex: getter / setter / `swapAt`とも`__purified_(_:).accessible`で停止（treeの`endIndex`と削除済みIndexは
+  `RedBlackTreeDictionary_99_DeathTests`に既存testあり）。(2) 別の木のIndex: 既定の`ALLOW_CROSS_TREE_INDEX`ではtagで自木のnodeへ
+  読み替えるので拒否されない（既存のcross-tree契約どおり）。範囲検査は読み替え後のnodeに対して行えばよい。
+  (3) 範囲内判定: 公開済み`isElement(at:)`（`@inlinable`、`_NodeKey.isInHalfOpenRange`、文書上最悪O(log n)）が半開区間で
+  そのまま使える。再利用すれば`RBT-023`の新helperは生じない。`___ptr_range_comp`は両端を含むので不可。
+  (4) 停止メッセージの既存例: `swapAt`は`.invalidIndex`、getter / setterは`errorMessage(error)`。範囲外専用の`outOfRange`は凍結中。
+  (5) 前提条件の文書は型側の1か所で3生成元に共通。全体Viewはcontainerの`values`（`___node_range`）だけで、
+  KeyValue Range Viewの`values`とMultiMapの`subscript(key:)`は部分範囲。新しい判断点はなし。
+- `PERM-016`完了（2026-10-07夜、`127a0d5b`）: 品質評価を`c64116e0`時点の事実へ更新。`swapAt`の懸念を削除し、header二重破棄の修正、
+  終端の不要コピー回避（未計測を明記）、走査の共有、`#if DEBUG`の`package`検査member、行数（254行）を反映。判定と§6の問いは変えていない。
+- `PERM-018`完了（2026-10-07夜、`0ff5fd84`、ユーザー了承で`PermutationTests`へswift-algorithms依存を追加）: `_4_CoexistenceTests`で
+  両moduleの同時importと使い分けを固定。品質評価の共存性の判定（部分）は変えていない（判定の更新は`PERM-017`のreview側）。
+- `RBT-016`は不要（ユーザー了承、2026-10-07）: `RedBlackTreePair`は型ごと`@_documentation(visibility: internal)`で、
+  入口も`subscript(_pair:)`だけ。graphのspec-gapsが型側の属性を見ていなかった誤検知で、道具を直して0件を確認。
+- `RBT-017`〜`RBT-025`は不要として終了（2026-10-08夜、ユーザー了承、Codexが`9390433f`で反映。契約の再判断は`RBT-026`として凍結）: `211ca2fc`（2026-10-05、
+  ユーザーcommit）と`API-Matrix-View.md`で「部分Viewの`subscript` / `swapAt`はO(1)、範囲所属は標準Collection同様の呼び出し側
+  事前条件、必要なら`isElement(at:)`を明示的に使う」と確定済みで、仕様test`test_subrangeValuesSingleIndexOperations_doNotCompareKeys`
+  が固定している。発端の`RBT-013`報告「文書は範囲内前提なのに実装が検査しない＝不一致」はClaudeの誤認（事前条件を実装で検査しない
+  のは不一致ではない）で、`RBT-018`も履歴・仕様test・API Matrixを見ずに判断点なしとした調査不足。F-1〜F-4の判断は無効。
+  コード変更なし（`RBT-024`の試行は元に戻した）。`RED_BLACK_TREE_REMAINING_TASKS.md`の「文書を緩めず、実装側へ範囲検査を追加して
+  解消する」節と`RBT-014` ← `RBT-024`の依存も外す。

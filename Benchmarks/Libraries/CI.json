@@ -58,6 +58,23 @@
           ]
         }
       ]
+    },
+    {
+      "kind": "group",
+      "title": "Permutations",
+      "directory": "permutations",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "subscript access",
+          "tasks": [
+            "Permutations.SubSequenceN subscript sequential access",
+            "Permutations.SubSequenceN subscript shuffled access",
+            "Permutations.SubSequenceN subscript sequential access (batched)",
+            "Permutations.SubSequenceN subscript shuffled access (batched)"
+          ]
+        }
+      ]
     }
   ]
 }

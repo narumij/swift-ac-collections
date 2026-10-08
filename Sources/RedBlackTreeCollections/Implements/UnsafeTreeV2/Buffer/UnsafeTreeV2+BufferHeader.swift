@@ -401,6 +401,7 @@ extension UnsafeTreeV2BufferHeader {
 
 extension UnsafeTreeV2BufferHeader {
 
+  @inlinable
   public mutating func __construct_raw_node() -> _NodePtr {
     #if DEBUG
       assert(recycleCount >= 0, "リサイクル残がある場合は新規ノードを利用しないこと")
@@ -410,6 +411,7 @@ extension UnsafeTreeV2BufferHeader {
     return p
   }
 
+  @inlinable
   public mutating func __construct_node<T>(_ k: T) -> _NodePtr {
     #if DEBUG
       assert(recycleCount >= 0, "リサイクル残がある場合は新規ノードを利用しないこと")

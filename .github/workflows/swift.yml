@@ -131,6 +131,14 @@ jobs:
             --cycles 1 \
             --mode replace-all
 
+          # end-to-end は size <= 10 を要求するため、小 size 用 library を同じ結果へ追記する
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI-Small.json \
+            ../benchmark-results/current.json \
+            --max-size 10 \
+            --cycles 1 \
+            --mode append
+
       - name: Collect benchmark crash artifacts
         if: failure()
         shell: bash
@@ -182,6 +190,7 @@ jobs:
 
           # CI.json は PR 側の定義を両方の測定に使用する
           cp ../../head/Benchmarks/Libraries/CI.json ./Libraries/CI.json
+          cp ../../head/Benchmarks/Libraries/CI-Small.json ./Libraries/CI-Small.json
 
           swift run -c release benchmark library run \
             --library ./Libraries/CI.json \
@@ -189,6 +198,14 @@ jobs:
             --max-size 64k \
             --cycles 1 \
             --mode replace-all
+
+          # end-to-end は size <= 10 を要求するため、小 size 用 library を同じ結果へ追記する
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI-Small.json \
+            ../benchmark-results/base.json \
+            --max-size 10 \
+            --cycles 1 \
+            --mode append
 
       - name: Check performance regression
         working-directory: head/Benchmarks

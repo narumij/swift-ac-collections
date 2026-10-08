@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- PermutationModuleの`NextPermutationsSequence.Permutation`を`Equatable`、`Hashable`(要素が`Hashable`のとき)、`CustomStringConvertible`(`[1, 3, 2]`形式)へ適合。いずれも要素の並びだけで決まる
 - RedBlackTreeCollectionsのSwift-DocCカタログを追加し、4つのコレクション型、3つのRange/MappedValues View、共通操作ガイドを公開APIドキュメントとして整備
 - Release構成でDocCを警告込みで検証し、artifact保存と`main`からGitHub Pagesへの自動公開を行うCIを追加
 - RedBlackTreeSet / MultiSet / MultiMapの利用者向け日英ドキュメントと、4型のAtCoder 2025互換APIドキュメントを追加
@@ -24,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - raw range expression、node sealing、pointer比較、木の基本操作、赤黒木fixture、raw memory / allocationを直接検証する内部テストを追加
 
 ### Changed
+- PermutationModuleの`nextPermutations()`の`Index == Int`制約を外し、`String`など任意の`Collection`で使えるようにした (要素はbufferへコピーしてから並べ替えるため、入力の添字型に依存しない)
+- PermutationModuleの公開型を改名 (source-breaking): `Permutations<C>.Nexts` → `NextPermutationsSequence<Base>`、`IteratorN` → `NextPermutationsSequence.Iterator`、`SubSequenceN` → `NextPermutationsSequence.Permutation`。名前空間`Permutations`は廃止。`nextPermutations()`の挙動は変更なし
 - staleな赤黒木Indexのsubscript・移動を`-Ounchecked`でも検査し、確保外メモリアクセス前に具体的な`SealError`診断で停止するよう変更
 - 赤黒木内部の三方比較機構 (`ThreeWayCompareResult`、`Int.__less()` / `__greater()`、関連alias / eager wrapper) をpublic APIからpackage内部境界へ縮小
 - KeyOnly / KeyValue Range ViewとMappedValues Viewの内部同一性hook `_isIdentical(to:)` をpublic APIから`@inlinable internal`へ縮小 (source-breaking。View同士の`==` / `<`の結果と計算量、4型の`isTriviallyIdentical(to:)`は変更なし)

@@ -25,3 +25,9 @@ archiveされた文書は削除済み資料ではない。現行文書から根�
 - `INDEX_POC_VALIDATION.md`
 - `RUNTIME_CHECK_POLICY.md`
 - `SORTED_COLLECTIONS_BENCHMARK_TASK.md`
+
+## 2026-10-07移動分
+
+- `PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`: Registry軽量化前の進捗、完了チェック、判断待ち一覧
+- `MAINTENANCE_HISTORY_2026-10-07.md`: 文書運用の旧dashboard、履歴、handoff
+- `EXTERNAL_TYPE_EXTENSION_AUDIT_HISTORY_2026-10-07.md`: Gate A/B、実装batch、独立レビュー、compile実験の全記録

@@ -45,6 +45,26 @@ For a report with multiple independently actionable points, follow
 - Conversation IDs are temporary coordinates. Do not use them as replacements
   for persistent Registry IDs.
 
+## Routine shorthand
+
+When the user says `ルーティーン`, treat it as a request for this cycle:
+
+1. Review the reported completed work. When it satisfies its acceptance
+   conditions, update its detailed canonical document and the Task Registry.
+2. Commit only the accepted work and its corresponding progress updates,
+   preserving unrelated worktree changes.
+3. Recompute the ready work from task dependencies. Decompose the next
+   in-scope work when necessary, keeping each task appropriately bounded
+   and separating user decisions from agent execution.
+4. Assign Claude only bounded, decision-free tasks whose prerequisites are
+   satisfied and whose ownership fits Claude. If no such task exists, do not
+   manufacture an assignment.
+5. Commit any resulting task-management and handoff changes.
+
+Any phase may be a no-op. The user's latest instruction still takes priority.
+This shorthand does not make a non-ready task ready, restart `FROZEN` work,
+activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
+
 ## Ownership boundaries
 
 - Codex owns final updates to the Task Registry and is the primary owner of

@@ -208,6 +208,8 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
     画像は2400×2220。画像で目視し、graphと本文・ラベルの重なりを直した。
   - 公開（2026-10-09、ユーザーの独断）: ユーザー「俺の独断で配置して、置き場所はCodexに変えてもらう方式で」。2枚目のPNGを
     `Maintanance/AI_TASK_PROCESS_POSTER.png`へ仮置きした（tracked）。生成scriptは`.task-graphs/claude-viz-codex.py`のまま（Git対象外）。
+  - 追記（ユーザー:「ポスターに関係性を育てるのが大事かも、を追加してほしい」）: 下帯の上に「関係性を育てるのが大事かも」の帯を足した
+    （ファイルで渡せるのは規則と事実だけ、品質の残りは長い会話の中で育つ関係性に乗る）。画像は2400×2400。仮置きのPNGも差し替えた。
 - Codexへの依頼（ユーザー承認済み）:
   - 置き場所と名前を、文書構成に合わせて決め直す（`Maintanance/AI_TASK_PROCESS_POSTER.png`は仮置き）。
   - 中身が自分の運用と合っているかを確認する。ポスターはClaudeがplaybook・Registry rules・`AGENTS.md`・workflowから要約したもので、

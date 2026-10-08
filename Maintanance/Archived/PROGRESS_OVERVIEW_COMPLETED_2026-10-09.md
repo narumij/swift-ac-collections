@@ -247,3 +247,14 @@ IDs remain permanent and must not be reused.
 | `BARE-008` | `OPT-002` | `UNCLASSIFIED` | OptionalArrayで管理方式を検証した後にBareArray再開を判断する |
 | `OPT-006` | `OPT-005` | `UNCLASSIFIED` | 初版策定後、ユーザードキュメント作業の完了も確認して再評価する |
 | `RELEASE-004` | `RELEASE-003` | `START` | tag対象を確定してから`prepare/compatible/2`へ統合する |
+
+## Maintanance root archive audit
+
+| ID | 状態 | 担当 | 項目 | 完了結果 | 詳細正本 |
+| --- | --- | --- | --- | --- | --- |
+| `OPS-003` | `DONE` | Codex | [DISCOVERY] Maintanance直下文書の用途・参照inventory | 2026-10-09、27文書を起動・運用、現役正本、継続記録、完了証拠へ分類 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
+| `OPS-004` | `DONE` | Codex | [DECISION] 起動・運用正本を待避するか | 直下維持 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
+| `OPS-005` | `DONE` | Codex | [DECISION] graph実験文書を待避するか | 完了fixture正本2件だけ待避 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
+| `OPS-006` | `DONE` | Codex | [DECISION] 評価・observation文書を待避するか | 旧統合評価1件だけ待避 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
+| `OPS-007` | `DONE` | Codex | [DECISION] 技術調査・release文書を待避するか | 未完・凍結・後続作業の正本として直下維持 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
+| `OPS-008` | `DONE` | Codex | [EXECUTION] 採用済み文書の待避と参照更新 | 3文書を待避し索引・参照を更新 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |

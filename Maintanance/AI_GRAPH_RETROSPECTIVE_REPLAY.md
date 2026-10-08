@@ -16,7 +16,7 @@ SQLite `:memory:` fixture方式で追試可能な範囲を分類し、再実行�
 - `GRAPH_DB_EXCHANGE.md`
 - `TASK_GRAPH_DB_EXPERIMENT.md`
 
-`AI_GRAPH_SHARED_SCHEMA.md`と`AI_GRAPH_IN_MEMORY_FIXTURE.md`は追試方式の入力であり、過去知見の
+`Archived/AI_GRAPH_SHARED_SCHEMA.md`と`Archived/AI_GRAPH_IN_MEMORY_FIXTURE.md`は追試方式の入力であり、過去知見の
 棚卸し対象には数えない。Archived文書は、上の3文書から具体的根拠として参照される場合だけ読む。
 
 ## GRAPH-008: 追試可能性台帳

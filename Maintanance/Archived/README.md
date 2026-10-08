@@ -35,3 +35,7 @@ archiveされた文書は削除済み資料ではない。現行文書から根�
 ## 2026-10-09移動分
 
 - `PROGRESS_OVERVIEW_COMPLETED_2026-10-09.md`: 現行Registryから退避した`DONE`・`EXCLUDED` task行と、完了taskだけに向かうprecedence履歴
+- `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md`: `Maintanance/`直下27文書の待避判断と再確認条件
+- `AI_GRAPH_SHARED_SCHEMA.md`: 完了した共有schema最小fixtureの正本
+- `AI_GRAPH_IN_MEMORY_FIXTURE.md`: 完了したSQLiteインメモリfixtureの正本
+- `USER_MANAGEMENT_ASSESSMENT.md`: 2026-10-05時点の統合評価

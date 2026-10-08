@@ -216,7 +216,7 @@ jobs:
                 -perm -111 \
                 -print \
                 -quit
-            )
+            )"
 
             if [ -z "$BENCHMARK" ]; then
               echo "Benchmark binary not found for $CHECKOUT"

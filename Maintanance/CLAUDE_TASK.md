@@ -22,17 +22,18 @@ The former integration task has been dropped. A separate graph DB exchange task 
 use `GRAPH_DB_EXCHANGE.md`, or decline the tracked file and choose a shared gitignored file under
 `.task-graphs/` with Codex. No explanation or publication of the exchange is required.
 
-## Active bounded assignments: OptionalArray evidence packages
+## Active bounded assignments: OptionalArray quality evidence
 
-The Task Registry contains ten independent Claude-owned OptionalArray discovery tasks. Work only on
-the evidence package named by the selected Registry row. Read
-`Maintanance/OptionalArrayModule/OptionalArrayAudit.md` as its detailed canonical document and obey
-the common stop conditions in its `Claude向け証拠収集package` section.
+The Task Registry contains three independent Claude-owned OptionalArray quality-evidence tasks.
+Select one ready task at a time and read
+`Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` as its detailed canonical
+document. Follow the common boundaries in section 2 and update only the section named by the selected
+Registry row.
 
-These assignments collect evidence for Codex-owned integration. Do not choose public policy, naming,
-contracts, or fixes; do not edit production code, tests, or user documentation. A discovered defect
-or decision point is a report-and-stop condition for that item. Update only the matching evidence
-table in the audit document, and leave Registry state changes and acceptance to Codex.
+These assignments provide facts for Codex-owned ISO/IEC 25010 interpretation and evaluation. Do not
+assign quality ratings, choose improvements, change public contracts, or edit source, tests, build
+settings, CI, or other documentation. Record a new defect or decision point with its evidence and
+stop. Leave acceptance, Registry changes, synthesis, and completion to Codex.
 
 ## Operating mode: bounded assignments only
 

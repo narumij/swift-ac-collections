@@ -163,7 +163,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-002` | `FROZEN` | Codex | [DISCOVERY] OptionalArray監査の管理方式と受入基準の抽出 | `OPT-001`完了後、実際に有効だった作業設計・責任境界・受入基準を再利用可能な形で整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-003` | `FROZEN` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | `OPT-002`後、抽出した管理方式をClaude向け運用規則として残す必要があるか一つだけ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-004` | `FROZEN` | Codex | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で明文化すると決定した場合、人物評価を含めず責任境界・成果物・停止条件として正本へ反映 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-005` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の初版策定 | `OPT-001`完了後、Permutationの品質評価と同じISO/IEC 25010観点で事実・根拠・不足を整理し、ユーザードキュメント作業へ渡す | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-005` | `ACTIVE` | Codex | [DISCOVERY] OptionalArray品質評価の初版策定 | 2026-10-08、体系監査完了により再開。ISO/IEC 25010観点の証拠packageを検収し、Codexが評価と不足を初版へ統合する | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-007` | `DONE` | Codex | [EXECUTION] OptionalArray監査の暫定受入基準策定 | 2026-10-08、公開宣言網羅、契約・test・履歴対応、判断分離、引き渡し成果物を監査開始前の基準として確定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-008` | `DONE` | Codex | [DISCOVERY] OptionalArray公開7型の宣言・契約・履歴監査 | 2026-10-08、29宣言と4適合の契約・履歴を棚卸しし、決定記録のない4件を判断候補として分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
@@ -197,6 +197,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-036` | `DONE` | Claude / Codex | [EXECUTION] OptionalArray通常testの番号付き仕様file分割 | 2026-10-08、通常35件をXCTestのまま`OptionalArray_0_`〜`_6_`へ一度ずつ移し、test名集合一致と成功をCodexが確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-037` | `DONE` | Claude / Codex | [EXECUTION] OptionalArray Death Testの番号付きfile改名 | 2026-10-08、Swift Testing 21件、構成、保存指示を維持した100% renameと成功をCodexが確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-038` | `DONE` | Codex | [EXECUTION] OptionalArray Test as Specification完成判定 | 2026-10-08、file番号、test名集合、契約対応、通常35件・Death Test 21件の結果と`Tests/TESTING.md`同期を検収 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-039` | `ACTIVE` | Claude | [DISCOVERY] OptionalArrayの機能適合性・信頼性・安全性の証拠表 | 公開契約、仕様test、Death Test、境界・寿命・次元について評価せず事実・根拠・未検証範囲を整理 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
+| `OPT-040` | `ACTIVE` | Claude | [DISCOVERY] OptionalArrayの性能効率性・互換性・柔軟性の証拠表 | benchmark、計算量、SwiftPM、platform、再公開・同時利用の現状を新規計測や評価なしで整理 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
+| `OPT-041` | `ACTIVE` | Claude | [DISCOVERY] OptionalArrayのインタラクション能力・セキュリティ・保守性・利用時品質の証拠表 | コメント、誤用、unsafe境界、View寿命、source・test構成、EDPC利用例を評価せず整理 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
+| `OPT-042` | `FROZEN` | Codex | [EXECUTION] OptionalArray品質評価初版の統合・完成判定 | OPT-039〜041の受入後、Codexが品質特性の解釈、評価語、既知の不足、文書作業と1.0準備への引き渡しを統合 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |
@@ -283,6 +287,13 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-004` | `OPT-003` | 明文化すると決定した場合だけ運用規則へ反映する |
 | `BARE-008` | `OPT-002` | OptionalArrayで管理方式を検証した後にBareArray再開を判断する |
 | `OPT-005` | `OPT-001` | 体系監査の完了後に品質評価の初版を策定する |
+| `OPT-039` | `OPT-001` | 体系監査の引き渡し成果物を根拠に機能適合性・信頼性・安全性の事実を整理する |
+| `OPT-040` | `OPT-001` | 体系監査完了後、性能・互換性・柔軟性の既存根拠を整理する |
+| `OPT-041` | `OPT-001` | 体系監査完了後、文書・unsafe境界・保守性・利用文脈の既存根拠を整理する |
+| `OPT-042` | `OPT-039` | 機能適合性・信頼性・安全性の証拠受入後に初版を統合する |
+| `OPT-042` | `OPT-040` | 性能効率性・互換性・柔軟性の証拠受入後に初版を統合する |
+| `OPT-042` | `OPT-041` | インタラクション能力・セキュリティ・保守性・利用時品質の証拠受入後に初版を統合する |
+| `OPT-005` | `OPT-042` | Codexの統合・完成判定後に品質評価初版を完了できる |
 | `OPT-006` | `OPT-005` | 初版策定後、ユーザードキュメント作業の完了も確認して再評価する |
 | `OPT-010` | `OPT-008` | 公開契約と過去判断を棚卸しした後に名称・次元体系を比較する |
 | `OPT-010` | `OPT-028` | 現行surfaceの機械的な対応表を検収後、名称・次元体系監査を完了できる |

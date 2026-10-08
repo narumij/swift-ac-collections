@@ -133,7 +133,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-020` | `DONE` | Claude | [DISCOVERY] Permutation公開API・コメントledger | 2026-10-08、公開宣言14件と別枠の公開適合9件をsource位置・制約・属性・コメントへ対応 | `PermutationModule/DocumentationHandoffAudit.md` |
 | `PERM-021` | `DONE` | Claude | [DISCOVERY] Permutation公開契約と仕様testの対応表 | 2026-10-08、番号付きtestが固定する契約と未検証事項を公開宣言へ対応 | `PermutationModule/DocumentationHandoffAudit.md` |
 | `PERM-022` | `DONE` | Claude | [DISCOVERY] Permutation名称・契約履歴ledger | 2026-10-08、現行名称、削除済みAPI、通常版・互換mode・facadeの決定済み／履歴事実／未決定を分離 | `PermutationModule/DocumentationHandoffAudit.md` |
-| `PERM-023` | `ACTIVE` | Codex | [EXECUTION] Permutationユーザードキュメント作業への引き渡し判定 | 前提taskを完了済み。公開面、test根拠、履歴、品質評価、文書作業で残す判断を検収 | `PermutationModule/DocumentationHandoffAudit.md` |
+| `PERM-023` | `DONE` | Codex | [EXECUTION] Permutationユーザードキュメント作業への引き渡し判定 | 2026-10-08、公開面、test根拠、履歴、品質評価を検収し、残る判断を分離して文書作業へ引き渡し可能と判定 | `PermutationModule/DocumentationHandoffAudit.md` |
 | `PERM-024` | `DONE` | Claude | [DISCOVERY] Permutation品質評価の根拠参照照合 | 2026-10-08、commit・file・test・数値参照を照合し、不一致1件と未確認2件を評価変更せず記録 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-025` | `DONE` | Claude | [EXECUTION] Permutation品質評価の事実参照補正 | 2026-10-08、共存test、改名理由、Release確認日の3点を根拠へ同期し、共存性の評価判断をCodexへ返却 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-026` | `DONE` | Claude | [DISCOVERY] Permutation共存性の残存evidence gap確認 | 2026-10-08、通常版、facade、凍結中の互換modeを分離して検証済み・未検証範囲を整理 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |

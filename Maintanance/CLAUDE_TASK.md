@@ -11,14 +11,35 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: あり**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: なし。Permutation sequential subscriptのwitness table参照比較は
-  2026-10-09にCodex受入済み。
+- 新規bounded assignment: あり。Permutation sequential subscript性能回帰のbenchmark二分探索。
 - 本線の現在状態: 0.5.0では通常Permutationだけを公開するため、互換traitと通常sourceの排他条件を
   撤回してrelease gateを再検証中。互換切替とCI分離は`prepare/compatible/2`統合後に扱い、
   互換性能計測は行わない。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: Permutation benchmark bisection
+
+performance CIで`Permutations.SubSequenceN subscript sequential access`が二回続けてbaseline比
+約`0.7247`となった。witness table比較ではmacOS arm64上の三版hot path命令列に差がなかった。
+次の順で、実benchmarkによる再現性とcommit境界を調査する。
+
+1. repositoryの本物の`Benchmarks` packageと`CI.json`の当該taskを使う。代用品は使わない。
+2. `aea49d8b`（既知green）と`fe12677a`（既知red）を、同一toolchain・同一machine・Release・同じ
+   size / cycle / 実行順で各3回以上測り、中央値を比較する。
+3. 30%以上の差が反復して再現する場合だけ、`aea49d8b..fe12677a`をcommit単位で二分探索する。
+   各候補も同じ回数と分類基準で測る。文書だけのcommitも勝手に除外せず、除外するならtree差分が
+   benchmark binaryへ入らない根拠を記録する。
+4. 再現しない、結果が分類境界を往復する、または環境差で比較不能なら二分探索を止める。その場合は
+   Linux CIで試す最小候補commit列と、各候補で何が分かるかだけを返す。
+
+成果にはtoolchain、machine、実command、反復値、中央値、分類、調べたcommit graph、次候補を含める。
+原因を推測で断定しない。source、benchmark、workflow、Registry、既存本文を変更せず、push、commit、
+閾値変更を行わない。別worktreeまたは一時directoryを使い、現在worktreeを変更しない。
+
+結果は`Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md`末尾へ追記し、git addまで
+行う。Codexが受入、Registry更新、Linux CI候補の採否、release gateを判断する。
 
 ## Completed bounded assignment: Permutation witness table reference comparison
 

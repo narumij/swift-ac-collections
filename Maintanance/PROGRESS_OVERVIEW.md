@@ -155,6 +155,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-032` | `DONE` | User / Codex | [DECISION] Permutation CI計測の実行構成 | 2026-10-08、二つのlibraryを64k・10で実行し、同じ結果fileへ追記する構成を採用 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-033` | `DONE` | Claude / Codex | [EXECUTION] Permutation CI計測構成の実装 | 2026-10-08、4件・1件の二library、同一結果file追記、base / HEAD対称性を実装し、構文とtitle集合を検収 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-034` | `DONE` | Claude / Codex | [DISCOVERY] Permutation sequential subscriptのwitness table参照比較 | 2026-10-09、macOS arm64の同一Release条件で三版のhot path命令列が一致し、witness table参照・特殊化失敗がないことを確認。Linux実CIは次回runで別途確認 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-035` | `ACTIVE` | Claude | [DISCOVERY] Permutation sequential subscript性能回帰のbenchmark二分探索 | 実benchmarkの反復で再現性を確認し、再現時だけ`aea49d8b..fe12677a`を二分探索する。非再現時はLinux CI用候補列と停止根拠を返す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-004` | `DONE` | Codex | [EXECUTION] AtCoder 2025互換ソースの隔離 | 2026-10-09、基準2 fileを条件付き専用fileへ隔離。0.5.0の通常sourceは無条件compileへ戻し、排他切替は後続branch統合時へ移管 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-005` | `EXCLUDED` | — | Permutation互換traitのPackage設定 | 2026-10-09、0.5.0は通常Permutationだけを公開するためtraitを撤回。互換切替は`prepare/compatible/2`統合後のbranch defineで扱う | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-006` | `DONE` | Codex | 互換modeのTest as Specification | 2026-10-09、列挙順・重複・safe CoW・unsafe aliasing・境界を互換限定5 testで固定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
@@ -353,6 +354,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-002` | `RELEASE-001` | `START` | 0.5.0へ含める到達範囲を決定後にrelease gateを実施する |
 | `RELEASE-002` | `PERM-001` | `START` | 互換mode完成後に0.5.0 release gateを開始する |
 | `RELEASE-002` | `PERM-034` | `COMPLETE` | performance赤の生成コード要因を確認後にrelease gateを最終判定する |
+| `RELEASE-002` | `PERM-035` | `COMPLETE` | performance赤の再現性とcommit境界を確認後にrelease gateを最終判定する |
 | `RELEASE-003` | `RELEASE-002` | `START` | release gate成功後に対象commitへtagを作成する |
 | `RELEASE-004` | `RELEASE-003` | `START` | tag対象を確定してから`prepare/compatible/2`へ統合する |
 

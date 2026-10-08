@@ -11,13 +11,35 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: あり**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: なし。
+- 新規bounded assignment: あり。Permutation sequential subscriptのwitness table参照比較。
 - 本線の現在状態: 0.5.0では通常Permutationだけを公開するため、互換traitと通常sourceの排他条件を
   撤回してrelease gateを再検証中。互換切替とCI分離は`prepare/compatible/2`統合後に扱い、
   互換性能計測は行わない。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: Permutation witness table reference comparison
+
+performance CIで`Permutations.SubSequenceN subscript sequential access`がbaseline比`0.7247`となり、
+30%回帰判定に失敗した。通常Permutationの実行コード差はすでに撤回したため、次の三点を同一toolchain・
+Release最適化条件で比較し、生成コード上の事実だけを報告する。
+
+- baseline: `origin/main`（`046c5359`）
+- 条件付き版: `81dc5681`（通常公開入口に`#if !COMPATIBLE_ATCODER_2025`が残る版）
+- 撤回後版: `5cd66cd4`（通常sourceを無条件compileへ戻した版）
+
+対象は上記benchmarkのhot path、特に`NextPermutationsSequence.Permutation`のsubscriptと、benchmark
+loopからそこへ至る呼出経路に限定する。各版について、protocol witness table、value witness table、
+indirect call、specialization失敗を示す参照または命令列があるか確認する。symbol、demangle後の参照元、
+該当assemblyまたはSILの最小抜粋を根拠にし、三版の差を表にする。
+
+benchmarkの再計測、性能原因の断定、閾値変更、source・workflow・Registry・文書の修正、commit、pushは
+行わない。別worktreeまたは一時directoryを使い、現在のworktreeを変更しない。比較条件を三版で揃えられない、
+またはhot pathを同定できない場合は推測せず、その阻害事実を返して停止する。
+
+結果は`Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md`末尾へ、実行command、
+toolchain、比較表、結論の順で追記し、git addまで行う。Codexが受入とrelease gate判断を行う。
 
 ## Completed bounded assignment: implement Permutation CI libraries
 

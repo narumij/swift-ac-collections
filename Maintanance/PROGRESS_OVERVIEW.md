@@ -89,6 +89,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-004` | `ACTIVE` | Codex / Claude | [DISCOVERY] AIとインメモリ関係モデルによるsmell判定スキーム共有試験 | 解析ごとに関係をインメモリ構築し、共有するnode・edge・根拠・確度・query・判定結果のスキームがcode / test / taskの臭い判断に有効か検証する。永続化するのは再利用可能なスキームと観測記録だけとする | `AI_GRAPH_SMELL_NOTES.md` |
 | `GRAPH-005` | `ACTIVE` | Codex / Claude | ClaudeとCodexのgraph DB交流会 | 合意した共有面で観測、問い、反証、試したい見方を交換。tracked MDを強制せず、統合や正本化を目的にしない | `TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-006` | `DONE` | Claude / Codex | [DISCOVERY] smell判定共有スキームの最小fixture | 2026-10-08、local DB非依存の共有schema候補とRBT-017 fixtureを作成。Codexが文書件数とO(1)契約への3経路を再構築し、task→symbol辺の入力不在と自己参照除外を既知制約として受入 | `AI_GRAPH_SHARED_SCHEMA.md` |
+| `GRAPH-007` | `ACTIVE` | Claude | [EXECUTION] SQLiteインメモリ共有schema fixture | `GRAPH-006`のschema候補とRBT-017 fixtureをDDL・INSERT・queryへ変換し、空のSQLite `:memory:`から一つのcommandで期待件数を再現する。自動抽出と永続DBは含めない | `AI_GRAPH_IN_MEMORY_FIXTURE.md` |
 | `OPS-001` | `ACTIVE` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 現行運用の原則、手順、停止条件、受入、委任、失敗知見とRegistry templateを整理し、別projectで再現性を検証できる状態にする | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
@@ -214,7 +215,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 
 | 後続task | 前提task | 制約 |
 | --- | --- | --- |
-| `GRAPH-004` | `GRAPH-006` | 共有スキームの最小fixtureをCodexが受入後、インメモリ実装taskの要否を判断できる |
+| `GRAPH-007` | `GRAPH-006` | 共有schema候補と期待結果をCodexが受入後、SQLiteインメモリfixtureへ変換する |
+| `GRAPH-004` | `GRAPH-007` | 実行可能fixtureをCodexが受入後、共有スキーム試験の次段階を判断できる |
 | `RBT-001` | `RBT-010` | 前提taskの完了後に後続taskを完了できる |
 | `RBT-001` | `RBT-011` | 前提taskの完了後に後続taskを完了できる |
 | `QUALITY-001` | `RBT-001` | 前提taskの完了後に着手候補にできる |

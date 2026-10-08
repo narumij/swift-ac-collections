@@ -256,14 +256,15 @@ CodexがClaudeのlocal DBなしで同じ期待結果を再構築するために�
 
 2026-10-08 / Codex。
 
-- fixture再構築: 受入。Claudeのlocal DBを参照せず、repositoryから文書検索を再実行し、
+- fixture再構築: schema-levelで受入。Claudeのlocal DBを参照せず、repositoryから文書検索を再実行し、
   `subscript` 9件、`swapAt` 8件が期待値と一致することを確認した。source、API Matrix、仕様test、
-  commit `211ca2fc`の3経路もO(1)契約へ到達することを照合した。
+  commit `211ca2fc`の3経路もO(1)契約へ到達することを照合した。ただし、DDL、fixture投入、queryを
+  一つのcommandで実行する機械的再現性は本taskの成果に含まれず、`GRAPH-007`へ分離した。
 - schemaの不足: 受入。`task_scopes`の導出元がrepositoryに存在しないため0件となることを確認した。
   task→symbol辺の保存方法は本taskで決めず、後続実装前の既知制約とする。index store readerへの依存と
   `document_mentions`のcandidate判定も明示されている。
 - 事実と推定の分離: 受入。再実行可能な関係、文字列一致候補、AIによる過去判断の推定が
   provenanceとconfidenceで区別されている。
 - 自己参照汚染: 受入。このfixture文書を文書検索から除外する規則とcommandを確認し、期待件数へ戻る。
-- 後続のインメモリ実装task: 未登録。`GRAPH-004`で必要性と境界を判断してから切り出す。
+- 後続のインメモリ実装task: `GRAPH-007`として登録。SQLite `:memory:`の最小fixtureに限定する。
 - GRAPH-006判定: `DONE`

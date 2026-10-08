@@ -11,7 +11,8 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: あり**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: あり。Permutation sequential subscript性能回帰のbenchmark二分探索。
+- 新規bounded assignment: なし。Permutation sequential subscript性能回帰のbenchmark二分探索は
+  2026-10-09にCodex受入済み。
 - 本線の現在状態: 0.5.0では通常Permutationだけを公開するため、互換traitと通常sourceの排他条件を
   撤回してrelease gateを再検証中。互換切替とCI分離は`prepare/compatible/2`統合後に扱い、
   互換性能計測は行わない。
@@ -19,7 +20,7 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
 
-## Active bounded assignment: Permutation benchmark bisection
+## Completed bounded assignment: Permutation benchmark bisection
 
 performance CIで`Permutations.SubSequenceN subscript sequential access`が二回続けてbaseline比
 約`0.7247`となった。witness table比較ではmacOS arm64上の三版hot path命令列に差がなかった。
@@ -40,6 +41,19 @@ performance CIで`Permutations.SubSequenceN subscript sequential access`が二�
 
 結果は`Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md`末尾へ追記し、git addまで
 行う。Codexが受入、Registry更新、Linux CI候補の採否、release gateを判断する。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。結果は`QualityAssessment-ISO25010.md`末尾に追記し、git add済み（commitなし）。
+
+- Apple M1・macOS 27.0.1・Swift 6.4で、本物の`Benchmarks` packageとCI.jsonを交互に各3回測った。
+  `results compare`は3組とも差が1.05を超えるtaskなし。当該taskの幾何平均（green / red）は0.991〜1.015。
+- 再現しないため二分探索は停止。範囲12 commitのうちbuild入力を変えるのは`618786e6`・`89fb20a7`・`8ef8f3ed`だけ。
+- Linux CI候補: A/A（`aea49d8b`同士）→ `618786e6` → `8ef8f3ed`の順。採否はCodex。
+
+Codex acceptance: 2026-10-09、本物のbenchmark、同一条件、交互3回、比較toolの判定、停止条件、
+Linux候補列を検収した。macOSでは中央値`1.0053`で回帰を再現せず、size単位の比は`0.5〜2.024`と
+大きく揺れた。通常source撤回後のremote CIを先に確認し、再び赤ならLinux候補列を採用する。
 
 ## Completed bounded assignment: Permutation witness table reference comparison
 

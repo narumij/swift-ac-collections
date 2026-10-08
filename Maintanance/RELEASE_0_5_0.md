@@ -75,6 +75,11 @@ Claudeの独立生成コード比較では、macOS arm64・Swift 6.4の同一Rel
 Linuxの実benchmarkではないため回帰原因の断定には使わず、少なくとも条件コンパイルがwitness経由へ
 落としたという仮説を支持しない証拠として扱う。
 
+続く実benchmarkの反復では、macOS arm64上で既知green / redを交互に各3回測定し、当該taskの
+green / red中央値は`1.0053`、比較toolは三組とも差なしだった。size単位では`0.5〜2.024`まで揺れ、
+回帰を再現しなかったためcommit二分探索は停止した。通常source撤回後のremote CIを先に確認し、
+再び赤の場合だけ記録済みのLinux候補列で調査する。
+
 ## tag作成
 
 release gate成功後、Codexが対象commit、検証結果、既知事項を短く提示し、ユーザーが対象を確認する。

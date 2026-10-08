@@ -427,3 +427,71 @@ b.lt loop
 - 本物の`Benchmarks` package（swift-collections-benchmark、`AcCollections`経由の依存）はbuildしていない。
   依存解決にnetworkかglobal cacheが要るため、代用品の`FakeBench`で置き換えた。
 - 配置の差（`Timer.measure`の8 byte）が性能に効くかは判定していない。
+
+### Permutation sequential subscript性能回帰のbenchmark二分探索（2026-10-09）
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`CLAUDE_TASK.md`のbounded assignment。source・benchmark・
+workflow・Registry・既存本文は変更していない。
+
+**結論:** macOS arm64では、`aea49d8b`（既知green）と`fe12677a`（既知red）の差は再現しなかった。
+手順4に従い、二分探索は行わずに止めた。
+
+**環境:**
+
+- machine: Apple M1（8 core、16 GB）、macOS 27.0.1、arm64
+- toolchain: Apple Swift 6.4（`swiftlang-6.4.0.34.1 clang-2100.3.34.1`）
+- 依存（両版で同一に解決）: swift-collections `3b69ced`、swift-collections-benchmark `69cd5b4`、
+  swift-argument-parser `6a52f32`、swift-system `869129b`
+- `Benchmarks/Libraries/CI.json`は両版で同一
+
+**実command:** 一時directoryに`git archive <rev>`で両版を展開し、本物の`Benchmarks` packageをbuildした。
+SwiftPMのcache・config・securityも一時directoryに置いた。
+
+```
+swift build -c release --product benchmark \
+  --cache-path $T/spm/cache --config-path $T/spm/config --security-path $T/spm/security
+.build/release/benchmark library run --library ./Libraries/CI.json <out>.json \
+  --max-size 64k --cycles 1 --mode replace-all
+.build/release/benchmark results compare <green>.json <red>.json
+```
+
+実行順は green 1 → red 1 → green 2 → red 2 → green 3 → red 3 の交互（1回約70秒）。CI.jsonの全22 taskを
+CIと同じoptionで流した。CI-Small.jsonは当該taskを含まないので流していない。
+
+**反復値（当該task、60 size）:**
+
+| 組 | `results compare`の判定 | 幾何平均（green / red） | size別の最小〜最大 |
+| --- | --- | ---: | --- |
+| 1 | 差が1.05を超えるtaskなし | 1.0152 | 0.803〜1.976 |
+| 2 | 差が1.05を超えるtaskなし | 0.9913 | 0.664〜1.126 |
+| 3 | 差が1.05を超えるtaskなし | 1.0064 | 0.500〜2.024 |
+| 3回の中央値 | — | 1.0053 | — |
+
+- 幾何平均はsize別の時間比（CIの判定と同じ向き、green / red）から自分で計算した値。`results compare`の
+  scoreと同じ式とは確認していない。判定列は`results compare`自体の出力。
+- CIの閾値（0.769231以下で失敗）にかかる組は、3組ともない。分類は「再現しない」。
+- `--cycles 1`のため、size単位では0.5〜2.0倍の揺れがある。
+
+**commit graph（`aea49d8b..fe12677a`、12 commit）:** benchmark binaryの入力（`Sources/`、`Package.swift`、
+`Benchmarks/`）を変えるのは次の3件だけ。他の9件の変更pathは`Maintanance/`、`Tests/`、`Utilities/`、
+`.github/`、文書（`.md`・`.docc`）で、benchmark binaryに入らない（`git diff-tree --name-only`で確認）。
+
+| commit | build入力の変更 |
+| --- | --- |
+| `618786e6` Isolate AtCoder 2025 permutation sources | 互換2 file追加（全体が`#if COMPATIBLE_ATCODER_2025`）、`Permutations.swift`に`#if`追加 |
+| `89fb20a7` Correct the Swift 6.4 CoW miscompile comments | `Permutations.swift`のコメントだけ |
+| `8ef8f3ed` Add AtCoder 2025 compatibility trait | `Package.swift`に`COMPATIBLE_ATCODER_2025` traitと条件付きdefineを追加（既定では無効） |
+
+**Linux CIで試す最小候補（Codexの採否待ち）:**
+
+1. A/A: base・HEADとも`aea49d8b`。同じcommit同士でも閾値を割るかを見る。割るなら、0.7247はCIの揺れで
+   説明できるかもしれない、と分かる。
+2. `aea49d8b` → `618786e6`: 最初のbuild入力変更。ここで割れば、source隔離（`#if`と空になる2 file）の側。
+3. `618786e6` → `8ef8f3ed`: trait追加。ここで割れば、`Package.swift`の変更の側。
+4. 2と3のどちらでも割れず、`aea49d8b` → `fe12677a`だけで割れる場合は、組み合わせか揺れ。
+   その時はA/Aの反復回数を増やす判断が先になる。
+
+**未確認:**
+
+- Linux（`ubuntu-24.04`、x86_64）での再現。今回の結果はmacOS arm64だけ。
+- CIは HEAD → base の順に測る。今回は green → red の交互で、順番の影響は見ていない。

@@ -144,6 +144,25 @@ graph DBのscope-checkはこの組を「辺なし・結合あり」と検出し�
 `-DCOMPATIBLE_ATCODER_2025 -strict-memory-safety`で`PermutationModule`としてcompileし、error 0を
 確認した。strict memory safety警告は既知の対象外として変更していない。
 
+## 5. Package trait設定（2026-10-09完了）
+
+`Package.swift`へ`COMPATIBLE_ATCODER_2025` traitを宣言し、同名のcompile defineへ
+`.when(traits:)`で接続した。traitを指定しない場合はdefineが渡らず、通常版が既定になる。
+
+このdefineはPermutationだけでなく、既存のRedBlackTree互換実装と`AcCollections`の条件付き再公開にも
+使われている。従来の手編集切替と同じpackage共通の`_settings`へ条件付きdefineを置き、各targetへ
+異なる互換状態を渡さない構成とした。
+
+traitなしではXcodeのbuild-for-testingが成功し、active test planは1412件成功・失敗0件だった。
+traitありでは次のcommandで`PermutationModule` buildが成功した。
+
+```console
+swift build --disable-sandbox --target PermutationModule --traits COMPATIBLE_ATCODER_2025
+```
+
+通常の`swift build`は実行環境のmanifest sandbox生成が拒否されたため、SwiftPM自身のsandboxを無効にして
+再実行した。互換ソースのstrict-memory-safety警告は既知の対象外として変更していない。
+
 ## 目的
 
 通常ビルドでは、整理済みの現行`PermutationModule`だけを提供する。一方、既存の

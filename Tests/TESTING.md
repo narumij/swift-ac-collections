@@ -91,7 +91,8 @@ Test as Specification、実装、CI、利用者向け文書を根拠としてISO
 #### 監査開始前の暫定受入基準
 
 現物確認時点の対象は、`OptinalArray.swift` 1ファイルにある所有型1D〜4DとView 1D〜3Dの公開7型・
-公開宣言29件、および`OptionalArrayModuleTests`の4ファイルとする。体系監査から文書作業へ渡すには、
+公開宣言29件、および`OptionalArrayModuleTests`の10ファイル（番号付き仕様test 8、利用例2）とする。
+体系監査から文書作業へ渡すには、
 次をすべて満たす。
 
 - 公開宣言を全件列挙し、境界、所有、寿命、破棄、変更、`Sendable`、次元の契約を確認する。

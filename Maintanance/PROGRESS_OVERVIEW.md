@@ -170,8 +170,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-009` | `DONE` | Codex | [DISCOVERY] OptionalArray公開契約とtest根拠の対応監査 | 2026-10-08、実装・test・利用例・coverageを公開宣言へ対応し、未検証範囲と本文不一致を確定・同期 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-010` | `DONE` | Codex | [DISCOVERY] OptionalArrayの型名・次元API体系監査 | 2026-10-08、OptionalArrayとBareArrayの型名・View名・次元label・property・軸対応を比較し、不揃いを判断候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-011` | `DONE` | Codex | [EXECUTION] OptionalArray監査で見つかった判断taskの登録 | 2026-10-08、位置づけ、1D型名、次元名、不正次元契約を一判断ずつ4 taskへ分離登録 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-012` | `ACTIVE` | Codex | [EXECUTION] OptionalArrayModuleTestsのTest as Specification整理 | OPT-036・037の実行とOPT-038の検収後、番号付き仕様file、test集合、契約対応を完成判定する | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-013` | `FROZEN` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 2026-10-08に順次解凍を事前承認済み。OPT-038・012完了後は追加確認なしで再開し、契約表、test対応、決定済み事項、未決定事項、文書入力を検収する。新しいユーザー判断・契約変更・範囲拡張が必要なら停止 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-012` | `DONE` | Codex | [EXECUTION] OptionalArrayModuleTestsのTest as Specification整理 | 2026-10-08、通常35件とDeath Test 21件を番号付き仕様fileへ整理し、test集合・契約対応・実行結果を完成検収 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-013` | `ACTIVE` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 2026-10-08、順次解凍の事前承認とOPT-038・012完了により再開。契約表、test対応、決定済み事項、未決定事項、文書入力を検収する。新しいユーザー判断・契約変更・範囲拡張が必要なら停止 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-014` | `DONE` | Codex | [EXECUTION] OptionalArray3DViewの2D面stride修正 | 2026-10-08、非対称次元testで修正前のslice aliasを確認し、offsetを`width * height * position`へ修正。NOP setterは連鎖writeback用と明文化 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-015` | `DONE` | Claude | [DISCOVERY] OptionalArray公開宣言29件のledger作成 | 2026-10-08、型7・init 4・removeAll 4・subscript 7・indices 7をsource位置とコメントへ対応 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-016` | `DONE` | Claude | [DISCOVERY] OptionalArray所有4型のtest根拠表 | 2026-10-08、4型のinit、removeAll、subscript、indices、Sendable、deinitの根拠と不足を表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
@@ -196,7 +196,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-035` | `DONE` | Claude | [DISCOVERY] OptionalArray Test as Specification配置・移行設計 | 2026-10-08、8仕様群と利用例へ分類し、段階移行可否、並列化・Death Test制約を整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-036` | `DONE` | Claude / Codex | [EXECUTION] OptionalArray通常testの番号付き仕様file分割 | 2026-10-08、通常35件をXCTestのまま`OptionalArray_0_`〜`_6_`へ一度ずつ移し、test名集合一致と成功をCodexが確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-037` | `DONE` | Claude / Codex | [EXECUTION] OptionalArray Death Testの番号付きfile改名 | 2026-10-08、Swift Testing 21件、構成、保存指示を維持した100% renameと成功をCodexが確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-038` | `ACTIVE` | Codex | [EXECUTION] OptionalArray Test as Specification完成判定 | 2026-10-08、ユーザーの順次解凍承認により再開。file番号、test名集合、契約対応、通常・Death Test結果を検収しOPT-012を完成判定する | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-038` | `DONE` | Codex | [EXECUTION] OptionalArray Test as Specification完成判定 | 2026-10-08、file番号、test名集合、契約対応、通常35件・Death Test 21件の結果と`Tests/TESTING.md`同期を検収 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |

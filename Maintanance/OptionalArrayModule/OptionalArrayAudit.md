@@ -592,6 +592,12 @@ Death Test 21件を指定した実行も56件すべて成功したため、`OPT-
 進めることを承認した。各taskの受入とcommitは省略しない。新しいユーザー判断、公開契約の変更、または
 範囲拡張が必要になった場合は自動で進めず停止する。この承認は他の`FROZEN` taskには適用しない。
 
+Codex completion（2026-10-08）: 0〜6の通常test 35件と99のDeath Test 21件が、OPT-035で受け入れた
+公開契約別の配置へ一度ずつ対応し、test名集合、XCTest／Swift Testingの構成、通常・Death Testの実行結果を
+維持していることを検収した。`Tests/TESTING.md`の対象file数も、番号付き仕様test 8 fileと利用例2 fileの
+現行10 fileへ同期した。追加のdefect、重複、未分類test、ユーザー判断はないため、`OPT-038`と`OPT-012`を
+完了とし、事前承認に従って`OPT-013`を再開する。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

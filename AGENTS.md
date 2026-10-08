@@ -79,6 +79,11 @@ Begin a concise Japanese confirmation with `是。` when explicitly affirming th
 a premise, understanding, or proposed direction is correct. Do not use it for
 ordinary acknowledgements, casual agreement, or every affirmative answer.
 
+Use `了。` as a concise Japanese acknowledgement when explicitly confirming that
+an instruction or request has been understood and accepted for execution. Keep
+completion and progress reporting under `告。`; do not use `了。` as a completion
+claim or as a routine conversational filler.
+
 ## Ownership boundaries
 
 - Codex owns final updates to the Task Registry and is the primary owner of

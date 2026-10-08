@@ -226,8 +226,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `RELEASE-001` | `DONE` | User / Codex | [DECISION] 0.5.0のtag地点 | 2026-10-08、PermutationのAtCoder 2025互換mode完成を含む状態と決定 | `RELEASE_0_5_0.md` |
-| `RELEASE-002` | `ACTIVE` | Codex | [EXECUTION] 0.5.0 release gateの実施 | 互換trait撤回後、通常Debug・Release・documentation CIと最終差分を再確認してtag可能と判定 | `RELEASE_0_5_0.md` |
-| `RELEASE-003` | `FROZEN` | User / Codex | [EXECUTION] 0.5.0 tag作成 | release gate成功後、対象commitをユーザー確認して`0.5.0` tagを作成 | `RELEASE_0_5_0.md` |
+| `RELEASE-002` | `DONE` | Codex | [EXECUTION] 0.5.0 release gateの実施 | 2026-10-09、互換trait撤回とinline安定化後、PR #175のDebug・Release・documentation・ASan・performance全成功を確認 | `RELEASE_0_5_0.md` |
+| `RELEASE-003` | `DONE` | User / Codex | [EXECUTION] 0.5.0 tag作成 | 2026-10-09、ユーザー確認後、`main`のmerge commit `0dc1bd26`へannotated tag `0.5.0`を作成 | `RELEASE_0_5_0.md` |
 | `RELEASE-004` | `FROZEN` | User / Codex | [EXECUTION] 0.5.0の互換準備branch統合 | tag作成後、ユーザー確認を経て対象commitを`prepare/compatible/2`へmergeする | `RELEASE_0_5_0.md` |
 
 ## Task precedence

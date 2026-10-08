@@ -80,11 +80,19 @@ green / red中央値は`1.0053`、比較toolは三組とも差なしだった。
 回帰を再現しなかったためcommit二分探索は停止した。通常source撤回後のremote CIを先に確認し、
 再び赤の場合だけ記録済みのLinux候補列で調査する。
 
+最終的にbuffer header initializerとdebug probe initializerを`@inlinable`、buffer subscript getterを
+`@inline(__always)`として最適化判断を明示した。PR #175のhead `f01c66a6`でDebug、Release、
+documentation、Address Sanitizer、performanceの全jobが成功し、同じtreeを持つ`main`のmerge commit
+`0dc1bd26`を最終tag対象としてrelease gateを完了した。
+
 ## tag作成
 
 release gate成功後、Codexが対象commit、検証結果、既知事項を短く提示し、ユーザーが対象を確認する。
 確認後に`0.5.0` tagを作成する。remoteへのpush、release page作成、配布はこのtaskへ自動的に含めず、
 必要なら別途ユーザー承認を得る。
+
+2026-10-09、ユーザー確認後、`0dc1bd26`へannotated tag `0.5.0`（message `Release 0.5.0`）を
+作成した。tagのremote pushはこの時点では行っていない。
 
 ## 互換準備branchへの統合
 

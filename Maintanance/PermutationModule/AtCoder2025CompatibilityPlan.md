@@ -183,6 +183,20 @@ trait追加中に行った互換module・全package testの成功は実装検証
 `PermutationModule`単体だけでなくpackageの公開productからも、選択したmodeのAPIが利用できることを
 固定した。
 
+## 8. 互換branchの有効化とCI分離（2026-10-09完了）
+
+`0.5.0` tag後、`main`を`prepare/compatible/2`へmergeし、package共通define
+`COMPATIBLE_ATCODER_2025`を有効化した。通常Permutation sourceは反対条件で除外され、互換sourceと
+互換仕様test、`AcCollections`再公開testを選択するbranch構成になった。
+
+package全体のDebug・Release testはいずれもexit 0で、Death Testを含めて成功した。main向けのDocC
+catalogとbenchmark sourceは互換APIを参照してcompileできないため、このbranchではdocumentationと
+performance jobを対象外とした。互換性能計測を行わない既存判断を維持し、CIはrelease機能testを
+互換branchの継続検査とする。
+
+互換branch固有の検収条件は`COMPATIBILITY_CHECKLIST.md`へ集約し、mainのtask管理・設計・DocC資料は
+複製しない。merge commitは`0b9de44e`、整理後の最終commitは`24dfb40f`で、remoteへpush済み。
+
 ## 9. AtCoder単一file生成とローカル検証（2026-10-09完了）
 
 `Utilities/Permutation/GenerateAtCoder2025Permutation.swift`は、互換modeの2 sourceを正本として、

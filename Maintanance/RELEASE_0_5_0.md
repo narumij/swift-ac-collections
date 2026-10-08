@@ -102,3 +102,13 @@ release gate成功後、Codexが対象commit、検証結果、既知事項を短
 `0.5.0` tag作成後、対象commitを既存branch `prepare/compatible/2`へmergeする。branchの切替、merge、
 競合解消、pushは不可逆な外部影響を分離して扱い、実行直前に対象commitとbranchをユーザーへ確認する。
 remoteへのpushはmergeの承認へ自動的に含めない。
+
+2026-10-09、ユーザー確認後に`main`の`dc32159d`を`prepare/compatible/2`へ統合し、merge commit
+`0b9de44e`を作成した。READMEは互換branch側の旧版を維持し、監査済みの空の`EtcTests.swift`を採用、
+`COMPATIBLE_ATCODER_2025`をpackage共通defineとして有効化した。統合後のpackage全体についてDebug・
+Release testを実行し、いずれもexit 0、OptionalArray 21件とBareArray 11件のDeath Testを含めて成功した。
+
+main向けのDocC catalogとbenchmark sourceは互換APIでは成立しないため、互換branchではdocumentation・
+performance jobを実行せず、機能testだけをrelease構成で継続する。内部管理・設計・DocC資料は互換branchから
+除き、`COMPATIBILITY_CHECKLIST.md`へbranch固有の検収条件だけを集約した。最終commit `24dfb40f`までを
+remoteへpush済みとして、0.5.0の互換準備branch統合を完了する。

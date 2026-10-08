@@ -21,8 +21,6 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **現在の中間ゴール:**
 
-- PermutationのAtCoder 2025互換modeを完成させ、その成果を含む状態でrelease gateを通し、
-  `0.5.0`をtag付けした後、`prepare/compatible/2`へ統合する。
 - Claudeへ渡すtask出しを、「一つのtaskに一つのユーザー判断、またはユーザー判断なし」まで
   分解できる状態にする。
 
@@ -91,7 +89,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `TEST-002` | `FROZEN` | Codex | stride assertion／fixture alignmentの任意改善 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
 | `PERM-002` | `USER_ONLY` | User | ABC328E実提出確認 | ユーザーが手作業で実施 | `PermutationModule/ImplementationPlan.md` |
 | `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
-| `PERM-008` | `FROZEN` | Codex | Permutation互換branchの有効化とCI分離 | `0.5.0` tag後に`prepare/compatible/2`へ統合してから、ユーザー指示で再開。branch defineと通常sourceの排他条件を有効化し、機能testだけを通常版と互換版の別jobにする。互換性能計測は行わない | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `OPT-003` | `FROZEN` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | `OPT-002`後、抽出した管理方式をClaude向け運用規則として残す必要があるか一つだけ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-004` | `FROZEN` | Codex | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で明文化すると決定した場合、人物評価を含めず責任境界・成果物・停止条件として正本へ反映 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
@@ -113,7 +110,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `TEST-004` | `FROZEN` | Codex | 原木Fixtureの追加portable化 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
 | `RBT-009` | `FROZEN` | User / Codex | [DECISION] runtime-check実装の再審査 | ユーザードキュメント作業後、1.0中間ゴールへ移行した時点、または`-Ounchecked`が主要構成と判明した時点で再開し、現行実装を1.0へ採用するか一つだけ判断 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
 | `QUALITY-001` | `FROZEN` | User / Codex | 汎用基盤ライブラリとしての1.0採用品質ゲート | Index契約確定後、ユーザーが明示的に再開 | `Sources/RedBlackTreeCollections/Documentation/Quality-Checklist.md` |
-| `RELEASE-004` | `FROZEN` | User / Codex | [EXECUTION] 0.5.0の互換準備branch統合 | tag作成後、ユーザー確認を経て対象commitを`prepare/compatible/2`へmergeする | `RELEASE_0_5_0.md` |
 
 ## Task precedence
 
@@ -126,7 +122,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `RBT-001` | `UNCLASSIFIED` | 前提taskの完了後に着手候補にできる |
 | `QUALITY-001` | `RBT-009` | `UNCLASSIFIED` | runtime-check実装の1.0採否を再審査した後に品質ゲートを判断する |
 | `RBT-026` | `RBT-014` | `UNCLASSIFIED` | outlineのAPI照合後、利用者向け文書作業フェーズで契約を再判断する |
-| `PERM-008` | `RELEASE-004` | `START` | `prepare/compatible/2`への統合後に互換機能testを別jobへ接続する |
 | `BARE-003` | `BARE-002` | `UNCLASSIFIED` | 棚卸しで位置づけが未決定と判明した場合だけ判断する |
 | `BARE-004` | `BARE-003` | `UNCLASSIFIED` | BareArrayを公開継続する判断後に命名体系を決定する |
 | `BARE-005` | `BARE-002` | `UNCLASSIFIED` | 契約棚卸し後に既存testを仕様単位へ整理する |

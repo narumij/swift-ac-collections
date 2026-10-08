@@ -1,464 +1,159 @@
+// このファイル自体は整理整頓時に消さないこと
 import XCTest
 
 #if DEBUG
-  @testable import RedBlackTreeModule
+  @testable import RedBlackTreeCollections
 #else
-  import RedBlackTreeModule
+  import RedBlackTreeCollections
 #endif
 
-final class EtcTests: RedBlackTreeTestCase {
+#if !COMPATIBLE_ATCODER_2025 && DEBUG
+  /// Test-only marker for sequences whose iteration order is ascending.
+  private protocol SortedSequence: Sequence {}
+
+  extension Range: SortedSequence where Self: Sequence {}
+  extension ClosedRange: SortedSequence where Self: Sequence {}
+
+  extension RedBlackTreeSet {
+    fileprivate func union<S>(_ other: S) -> RedBlackTreeSet<Element>
+    where S: SortedSequence, S.Element == Element {
+      .init(__tree_: __tree_.___meld_unique(other))
+    }
+  }
+
+  extension UnsafeTreeV2 {
+    fileprivate mutating func ___copy_range<Iterator: IteratorProtocol>(
+      _ iterator: inout Iterator,
+      to parent: UnsafeMutablePointer<UnsafeNode>,
+      _ child: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>>
+    ) where Iterator.Element == _PayloadValue {
+      var (parent, child) = (parent, child)
+      while let payload = iterator.next() {
+        unsafeEnsureCapacity()
+        (parent, child) = ___emplace_hint_right(parent, child, payload)
+      }
+    }
+
+    fileprivate func ___meld_unique<S>(_ other: S) -> UnsafeTreeV2
+    where S: SortedSequence, S.Element == _PayloadValue {
+      var result: UnsafeTreeV2 =
+        ._createWithNewBuffer(minimumCapacity: 2, nullptr: nullptr)
+      var (parent, child) = result.___max_ref()
+      var (first, last) = (__begin_node_, __end_node)
+      var iterator = other.makeIterator()
+
+      outer: while let payload = iterator.next() {
+        while first != last {
+          let value = __get_value(first)
+          if value_comp(__key(payload), value) {
+            result.unsafeEnsureCapacity()
+            (parent, child) = result.___emplace_hint_right(parent, child, payload)
+            continue outer
+          }
+
+          result.unsafeEnsureCapacity()
+          (parent, child) = result.___emplace_hint_right(
+            parent, child, Base.__payload_(first)
+          )
+          first = __tree_next_iter(first)
+          if !value_comp(value, __key(payload)) {
+            continue outer
+          }
+        }
+
+        result.unsafeEnsureCapacity()
+        (parent, child) = result.___emplace_hint_right(parent, child, payload)
+        result.___copy_range(&iterator, to: parent, child)
+        return result
+      }
+
+      result.___copy_range(first, last, to: parent, child)
+      return result
+    }
+  }
+#endif
+
+/// 棚卸し用の雑多な検証置き場。
+final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
 
   override func setUpWithError() throws {
-    // Put setup code here. This method is called before the invocation of each test method in the class.
     try super.setUpWithError()
   }
 
   override func tearDownWithError() throws {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
     try super.tearDownWithError()
   }
 
-  func testExample() throws {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-    // Any test you write for XCTest can be annotated as throws and async.
-    // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-    // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+  #if !COMPATIBLE_ATCODER_2025
+    /// `formIndex(_:offsetBy:limitedBy:)`が、現在の基準である`String`と同じく、
+    /// limit到達時は成功し、超過時はlimitまで移動して失敗を返すこと。
+    func testFormIndexLimitedByMatchesString() {
+      let string = "abcd"
+      let stringLimit = string.index(after: string.startIndex)
 
-    let a = "abcdefg"
-    _ = a.index(after: a.startIndex)
-    _ = a.index(a.startIndex, offsetBy: 3)
-    //    _ = a.index(a.startIndex, offsetBy: -1)
-    //    _ = a.index(a.endIndex, offsetBy: 1)
+      var stringExact = string.startIndex
+      XCTAssertTrue(string.formIndex(&stringExact, offsetBy: 1, limitedBy: stringLimit))
+      XCTAssertEqual(stringExact, stringLimit)
 
-    var b: RedBlackTreeSet<Int> = [1, 2, 3]
-    _ = b.index(after: b.startIndex)
-    //    _ = b.index(b.startIndex, offsetBy: -1)
-    //    _ = b.index(b.endIndex, offsetBy: 1)
+      var stringOver = string.startIndex
+      XCTAssertFalse(string.formIndex(&stringOver, offsetBy: 2, limitedBy: stringLimit))
+      XCTAssertEqual(stringOver, stringLimit)
 
-    //    XCTAssertEqual(b.index(b.startIndex, offsetBy: 3).pointer, .end)
-    XCTAssertEqual(b.map { $0 * 2 }, [2, 4, 6])
+      let set = RedBlackTreeSet([0, 1, 2, 3])
+      let setLimit = set.index(after: set.startIndex)
 
-    _ = b.remove(at: b.index(before: b.lowerBound(2)))
+      var setExact = set.startIndex
+      XCTAssertTrue(set.formIndex(&setExact, offsetBy: 1, limitedBy: setLimit))
+      XCTAssertEqual(setExact, setLimit)
 
-    XCTAssertEqual(b + [], [2, 3])
-
-    XCTAssertEqual(b.distance(from: b.lowerBound(2), to: b.lowerBound(3)), 1)
-    XCTAssertEqual(b.distance(from: b.lowerBound(3), to: b.lowerBound(2)), -1)
-
-    //    let c: [Int:Int] = [1:1, 1:2]
-    //    let c: [Int:Int] = .init(uniqueKeysWithValues: [(1,1),(1,2)])
-    //    let d: RedBlackTreeDictionary<Int,Int> = .init(uniqueKeysWithValues: [(1,1),(1,2)])
-    //    let e: Set<Int> = .init()
-  }
-
-  func testExample3() throws {
-    let b: Set<Int> = [1, 2, 3]
-    XCTAssertEqual(b.distance(from: b.startIndex, to: b.endIndex), 3)
-  }
-
-  #if COMPATIBLE_ATCODER_2025
-    func testExample4() throws {
-      let b: RedBlackTreeSet<Int> = [1, 2, 3, 4]
-      XCTAssertEqual(b.endIndex.distance(to: b.startIndex), -4)
-      var result = [Int]()
-      for p in b.startIndex..<b.endIndex {
-        result.append(p.pointee!)
-      }
-      XCTAssertEqual(result, [1, 2, 3, 4])
-      //    for p in stride(from: b.startIndex, to: b.endIndex, by: 1) {
-      //      result.append(p.pointee!)
-      //    }
-      //    XCTAssertEqual(result, [1,2,3,4] + [1,2,3,4])
-      //    for p in stride(from: b.endIndex.previous!, through: b.startIndex, by: -1) {
-      //      result.append(p.pointee!)
-      //    }
-      //    XCTAssertEqual(result, [1,2,3,4] + [1,2,3,4] + [4,3,2,1])
-
-      XCTAssertEqual(b.endIndex - b.startIndex, 4)
-      XCTAssertEqual(b.startIndex + 4, b.endIndex)
-      XCTAssertEqual(b.endIndex - 4, b.startIndex)
-
-      for p in (b.startIndex..<b.endIndex).reversed() {
-        result.append(p.pointee!)
-      }
-
-      //    XCTAssertEqual(b.endIndex.rawValue, .end)
-      //    XCTAssertEqual(b.endIndex.advanced(by: 1).rawValue, .nullptr)
-      //    XCTAssertEqual(b[b.endIndex.advanced(by: 1)], 0)
-      //    let b = Array<Int>()
-      //    var c = b.startIndex
-      //    c = c.advanced(by: -1)
-      //    print(b[c])
+      var setOver = set.startIndex
+      XCTAssertFalse(set.formIndex(&setOver, offsetBy: 2, limitedBy: setLimit))
+      XCTAssertEqual(setOver, setLimit)
     }
   #endif
 
-  class A: Hashable, Comparable {
-    static func < (lhs: A, rhs: A) -> Bool {
-      lhs.x < rhs.x
-    }
-    static func == (lhs: A, rhs: A) -> Bool {
-      lhs.x == rhs.x
-    }
-    let x: Int
-    let label: String
-    init(x: Int, label: String) {
-      self.x = x
-      self.label = label
-    }
-    func hash(into hasher: inout Hasher) {
-      hasher.combine(x)
-    }
-  }
+  #if !COMPATIBLE_ATCODER_2025 && DEBUG
+    func testAPICheck() throws {
 
-  func testSetUpdate() throws {
-    let a = A(x: 3, label: "a")
-    let b = A(x: 3, label: "b")
-    var s: Set<A> = [a]
-    XCTAssertFalse(a === b)
-    XCTAssertTrue(s.update(with: b) === a)
-    XCTAssertTrue(s.update(with: a) === b)
-  }
-
-  func testSetInsert() throws {
-    let a = A(x: 3, label: "a")
-    let b = A(x: 3, label: "b")
-    var s: Set<A> = []
-    XCTAssertFalse(a === b)
-    do {
-      let r = s.insert(a)
-      XCTAssertEqual(r.inserted, true)
-      XCTAssertTrue(r.memberAfterInsert === a)
-    }
-    do {
-      let r = s.insert(b)
-      XCTAssertEqual(r.inserted, false)
-      XCTAssertTrue(r.memberAfterInsert === a)
-    }
-  }
-
-  func testIndexBefore() throws {
-    let a = [1, 2, 3]
-    XCTAssertEqual(a.index(before: a.startIndex), -1)
-  }
-
-  func testRemoving() throws {
-
-    do {
-      var b: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
-      var i = b.startIndex  // 都度異なる値となる
-      while i != b.endIndex {  // endIndexは特殊な値なので、不変です。
-        let j = i
-        i = b.index(after: i)
-        b.remove(at: j)  // jはこの時点で無効になる
-        XCTAssertFalse(b.isValid(j))
-      }
-      XCTAssertEqual(b.count, 0)
-    }
-
-    do {
-      var b: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
-      #if COMPATIBLE_ATCODER_2025
-        b.removeSubrange(b.startIndex..<b.endIndex)  // startIndexからendIndex -1までが無効になる
-      #else
-        b.erase(b.startIndex..<b.endIndex)  // startIndexからendIndex -1までが無効になる
-      #endif
-      XCTAssertEqual(b.count, 0)
-    }
-
-    do {
-      var b: RedBlackTreeSet<Int> = [0, 1, 2, 3, 4, 5]
-      var i = b.startIndex  // 都度異なる値となる
-      while i != b.endIndex {  // endIndexは特殊な値なので、不変です。
-        XCTAssertTrue(b.isValid(i))  // 次を指しているの有効
-        // extensionを書けばこのように利用可能
-        i = b.erase(at: i)
-      }
-      XCTAssertEqual(b.count, 0)
-    }
-
-    do {
-      var b: RedBlackTreeSet<Int> = .init()
-      var lo = 0
-      var hi = 32
-      while lo < hi {
-        b.insert(hi)
-        b.insert(lo)
-        lo += 1
-        hi -= 1
-      }
-      // extensionを書けばこのように利用可能
-      //      b.removeSubrange(0 ..< 6)
-      //      XCTAssertEqual(b.count, 0)
-      (12..<16).forEach {
-        b.remove($0)
+      do {
+        let result = RedBlackTreeSet([1, 2]).union(0..<10)
+        XCTAssertTrue(result.elementsEqual(0..<10), "\(result)")
       }
 
-      print("end")
-    }
-  }
-
-  func testSome() throws {
-    let set = RedBlackTreeSet<Int>((0..<50).shuffled())
-    print("!")
-    _fixLifetime(set)
-  }
-
-  func loop(
-    condition: @escaping () -> Bool,
-    expression: @escaping () -> Void
-  ) -> UnfoldFirstSequence<Void> {
-    Swift.sequence(
-      first: (),
-      next: {
-        expression()
-        return condition() ? () : nil
-      })
-  }
-
-  func loop(condition: @escaping () -> Bool) -> UnfoldFirstSequence<Void> {
-    Swift.sequence(first: (), next: { condition() ? () : nil })
-  }
-
-  func forLoop<I>(
-    initial: I, condition: (inout I) -> Bool, expression: (inout I) -> Void, body: (inout I) -> Void
-  ) {
-    var i = initial
-    while condition(&i) {
-      body(&i)
-      expression(&i)
-    }
-  }
-
-  func forLoop(condition: () -> Bool, expression: () -> Void, body: () -> Void) {
-    while condition() {
-      body()
-      expression()
-    }
-  }
-
-  func testLoop() throws {
-    do {
-      var a: [Int] = []
-      forLoop(initial: 0, condition: { $0 < 10 }, expression: { $0 += 1 }) { i in
-        a.append(i)
-      }
-      //      forLoop(condition: { i < 10}, expression: { i += 1 }) {
-      //        a.append(i)
-      //      }
-      XCTAssertEqual(a, (0..<10) + [])
-    }
-    do {
-      var a: [Int] = []
-      var i = 0
-      forLoop(condition: { i < 0 }, expression: { i += 1 }) {
-        a.append(i)
-      }
-      XCTAssertEqual(a, [])
-    }
-  }
-
-  func testHoge() throws {
-    _ = Set<String>()
-    _ = [String: String]()
-  }
-
-  #if COMPATIBLE_ATCODER_2025
-    func testIndices() throws {
-      _ = RedBlackTreeSet<Int>().indices
-      _ = RedBlackTreeMultiSet<Int>().indices
-      _ = RedBlackTreeMultiMap<Int, Int>().indices
-      _ = RedBlackTreeDictionary<Int, Int>().indices
-      let s = RedBlackTreeSet<Int>()
-      _ = s[s.startIndex..<s.endIndex].indices
-    }
-  #endif
-
-  #if COMPATIBLE_ATCODER_2025
-    func testRange() throws {
-      let a = [0, 1, 2]
-      let b = RedBlackTreeSet<Int>([0, 1, 2])
-      _ = a[0...]
-      XCTAssertTrue(b[b.startIndex.advanced(by: 1)...].elementsEqual([1, 2]))
-      XCTAssertEqual(b.endIndex.pointee, nil)
-      XCTAssertEqual(b.endIndex.advanced(by: -1).pointee, 2)
-      XCTAssertEqual(b.endIndex.advanced(by: -2).pointee, 1)
-      XCTAssertEqual(a[...a.endIndex.advanced(by: -1)] + [], [0, 1, 2])
-      XCTAssertEqual(a[..<a.endIndex.advanced(by: -1)] + [], [0, 1])
-      XCTAssertNotEqual(b.endIndex, b.endIndex.advanced(by: -1))
-      XCTAssertEqual(b[...b.endIndex.advanced(by: -1)] + [], [0, 1, 2])
-      XCTAssertEqual(b[..<b.endIndex.advanced(by: -1)] + [], [0, 1])
-      XCTAssertTrue(b[(b.startIndex + 1)...].elementsEqual([1, 2]))
-      XCTAssertTrue(b[..<(b.endIndex - 1)].elementsEqual([0, 1]))
-      XCTAssertTrue(b[...].elementsEqual([0, 1, 2]))
-    }
-  #endif
-
-  #if false
-    func testCapacity() throws {
-
-      for i in 0..<10 {
-        let s = Set<Int>(minimumCapacity: i)
-        let r = RedBlackTreeSet<Int>(minimumCapacity: i)
-        XCTAssertEqual(
-          s.capacity,
-          r.capacity,
-          "minimumCapacity=\(i)"
-        )
-        if s.capacity != r.capacity {
-          break
-        }
-      }
-    }
-
-    func testCapacity2() throws {
-
-      for i in 2..<4 {
-        let s = Set<Int>(minimumCapacity: i)
-        //      let r = StorageCapacity._growCapacity(tree: (0,0), to: i, linearly: false)
-        let r = StorageCapacity.growthFormula(count: i)
-        XCTAssertEqual(
-          s.capacity,
-          r,
-          "minimumCapacity=\(i)"
-        )
-        //      if s.capacity != r {
-        //        break
-        //      }
+      do {
+        let result = RedBlackTreeSet([1, 2]).union(0...10)
+        XCTAssertTrue(result.elementsEqual(0...10), "\(result)")
       }
     }
   #endif
 
-  #if ENABLE_PERFORMANCE_TESTING
-    func testPerformanceSuffix1() throws {
-      throw XCTSkip()
-      //    let s: String = (0 ..< 10_000_000).map { _ in "a" }.joined()
-      //    self.measure {
-      //      _ = s.suffix(10)
-      //    }
-    }
+  #if DEBUG && !COMPATIBLE_ATCODER_2025
+    /// 空配列をdecodeした場合、生木が共有の読み取り専用シングルトンになっていること
+    /// (無駄なバッファ確保をしない。2026-10-03、Decodable非ソート・重複入力バグ修正の副次確認)
+    func testDecodeEmptyArrayUsesReadOnlySingleton() throws {
+      let decoder = JSONDecoder()
+      let emptyJSON = "[]".data(using: .utf8)!
 
-    func testPerformanceSuffix2() throws {
-      throw XCTSkip()
-      //    let s: [Int] = (0 ..< 10_000_000).map { _ in 1 }
-      //    self.measure {
-      //      _ = s.suffix(10)
-      //    }
-    }
-  #endif
+      let emptySet = try decoder.decode(RedBlackTreeSet<Int>.self, from: emptyJSON)
+      XCTAssertTrue(emptySet.__tree_.isReadOnly)
 
-  /// SubSequenceのindex(_:offsetBy:limitedBy:)とformIndex(offsetBy:limitedBy:)が正しく動作すること
-  func test_subSequence_index_offsetBy_limitedBy_and_formIndex_offsetBy_limitedBy() throws {
-    // 事前条件: 集合に[1,2,3,4,5]を用意すること
-    let set = [1, 2, 3, 4, 5]
-    let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
+      let emptyDict = try decoder.decode(RedBlackTreeDictionary<Int, String>.self, from: emptyJSON)
+      XCTAssertTrue(emptyDict.__tree_.isReadOnly)
 
-    let start = sub.startIndex
-    let limit = sub.index(after: start)
+      let emptyMultiSet = try decoder.decode(RedBlackTreeMultiSet<Int>.self, from: emptyJSON)
+      XCTAssertTrue(emptyMultiSet.__tree_.isReadOnly)
 
-    // 実行: index(offsetBy:limitedBy:)とformIndex(offsetBy:limitedBy:)を呼び出すこと
-
-    // index(offsetBy:limitedBy:)成功パターン
-    let indexLimitedSuccess = sub.index(start, offsetBy: 1, limitedBy: limit)
-    XCTAssertEqual(indexLimitedSuccess, limit)  // 事後条件: 成功時にlimitを返すこと
-
-    // index(offsetBy:limitedBy:)失敗パターン
-    let indexLimitedFail = sub.index(start, offsetBy: 3, limitedBy: limit)
-    XCTAssertNil(indexLimitedFail)  // 事後条件: 失敗時にnilを返すこと
-
-    // formIndex(offsetBy:limitedBy:)成功パターン
-    var formIndexSuccess = start
-    let success = sub.formIndex(&formIndexSuccess, offsetBy: 1, limitedBy: limit)
-    XCTAssertTrue(success)  // 事後条件: 成功時にtrueを返すこと
-    XCTAssertEqual(formIndexSuccess, limit)  // 事後条件: インデックスがlimitを指すこと
-
-    // formIndex(offsetBy:limitedBy:)失敗パターン
-    var formIndexFail = start
-    let fail = sub.formIndex(&formIndexFail, offsetBy: 3, limitedBy: limit)
-    XCTAssertFalse(fail)  // 事後条件: 失敗時にfalseを返すこと
-    //    XCTAssertEqual(formIndexFail, start)  // 事後条件: インデックスが変わらないこと
-    XCTAssertEqual(formIndexFail, limit)  // limitまで進んでいる。いつから？？？？
-  }
-
-  #if COMPATIBLE_ATCODER_2025
-    func test_subSequence_index_offsetBy_limitedBy_and_formIndex_offsetBy_limitedBy2() throws {
-      // 事前条件: 集合に[1,2,3,4,5]を用意すること
-      let set = RedBlackTreeSet([1, 2, 3, 4, 5])
-      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
-
-      let start = sub.startIndex
-      let limit = sub.index(after: start)
-
-      // 実行: index(offsetBy:limitedBy:)とformIndex(offsetBy:limitedBy:)を呼び出すこと
-
-      // index(offsetBy:limitedBy:)成功パターン
-      let indexLimitedSuccess = sub.index(start, offsetBy: 1, limitedBy: limit)
-      XCTAssertEqual(indexLimitedSuccess, limit)  // 事後条件: 成功時にlimitを返すこと
-
-      // index(offsetBy:limitedBy:)失敗パターン
-      let indexLimitedFail = sub.index(start, offsetBy: 3, limitedBy: limit)
-      XCTAssertNil(indexLimitedFail)  // 事後条件: 失敗時にnilを返すこと
-
-      // formIndex(offsetBy:limitedBy:)成功パターン
-      var formIndexSuccess = start
-      let success = sub.formIndex(&formIndexSuccess, offsetBy: 1, limitedBy: limit)
-      XCTAssertTrue(success)  // 事後条件: 成功時にtrueを返すこと
-      XCTAssertEqual(formIndexSuccess, limit)  // 事後条件: インデックスがlimitを指すこと
-
-      // formIndex(offsetBy:limitedBy:)失敗パターン
-      var formIndexFail = start
-      let fail = sub.formIndex(&formIndexFail, offsetBy: 3, limitedBy: limit)
-      XCTAssertFalse(fail)  // 事後条件: 失敗時にfalseを返すこと
-      //    XCTAssertEqual(formIndexFail, start)  // 事後条件: インデックスが変わらないこと
-      XCTAssertEqual(formIndexFail, limit)  // limitまで進んでいる。いつから？？？？
+      let emptyMultiMap = try decoder.decode(RedBlackTreeMultiMap<Int, String>.self, from: emptyJSON)
+      XCTAssertTrue(emptyMultiMap.__tree_.isReadOnly)
     }
   #endif
 
-  func testSubArrayIndex() throws {
-    let set: [Int] = [1, 2, 3, 4, 5, 6]
-    let sub = set[2..<5]
-    XCTAssertEqual(sub.startIndex, 2)
-    XCTAssertEqual(sub.endIndex, 5)
-    XCTAssertEqual(sub.index(after: sub.endIndex), 6)
-    XCTAssertEqual(sub.index(before: sub.startIndex), 1)
-    XCTAssertNotNil(sub.index(sub.startIndex, offsetBy: 3, limitedBy: sub.endIndex))
-    XCTAssertNil(sub.index(sub.startIndex, offsetBy: 4, limitedBy: sub.endIndex))
-    XCTAssertNotNil(sub.index(sub.endIndex, offsetBy: -3, limitedBy: sub.startIndex))
-    XCTAssertNil(sub.index(sub.endIndex, offsetBy: -4, limitedBy: sub.startIndex))
-  }
+}
 
-  #if COMPATIBLE_ATCODER_2025
-    func testBackwordIterator1() throws {
-      let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-      let seq = AnySequence { set.indices.reversed() }
-      var result: [Int] = []
-      for i in seq {
-        result.append(set[i])
-      }
-      XCTAssertEqual(set.reversed(), result)
-    }
-
-    func testBackwordIterator2() throws {
-      var set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5]
-      let seq = AnySequence { set.reversed().indices }
-      for i in seq {
-        set.remove(at: i)
-      }
-      XCTAssertEqual(set + [], [])
-      XCTAssertTrue(set.isEmpty)
-    }
-  #endif
-
-  func testCompare() throws {
-    XCTAssertTrue([0] < [0, 1])
-    XCTAssertTrue((0, 0) < (0, 1))
-    XCTAssertTrue(AnySequence([0]).elementsEqual([0]))
-    XCTAssertFalse(AnySequence([0]).elementsEqual([0], by: !=))
-    XCTAssertTrue(AnySequence([0]).lexicographicallyPrecedes([0, 1]))
-    XCTAssertFalse(AnySequence([0, 0]).lexicographicallyPrecedes([0, 1], by: >))
-  }
-
-  #if DEBUG && COMPATIBLE_ATCODER_2025
+#if COMPATIBLE_ATCODER_2025 && DEBUG
+  // これ、整理整頓対象でいいかも
+  extension EtcTests {
+    /// 内部の逆順走査ヘルパー___rev_for_each_が正しい順序でノードを列挙すること
     func testRev() throws {
       let a = RedBlackTreeSet<Int>([0, 1, 2])
       var result = [Int]()
@@ -467,769 +162,5 @@ final class EtcTests: RedBlackTreeTestCase {
       }
       XCTAssertEqual(result, [2, 1, 0])
     }
-  #endif
-
-  #if COMPATIBLE_ATCODER_2025
-    func testObv() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      var result = [RedBlackTreeSet<Int>.Index]()
-      a.forEach { i, p in
-        result.append(i)
-      }
-      XCTAssertEqual(result, [a.startIndex + 0, a.startIndex + 1, a.startIndex + 2])
-    }
-  #endif
-
-  #if COMPATIBLE_ATCODER_2025
-    func testSubObv() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      var result = [RedBlackTreeSet<Int>.Index]()
-      a[a.startIndex..<a.endIndex].forEach { i, p in
-        result.append(i)
-      }
-      XCTAssertEqual(result, [a.startIndex + 0, a.startIndex + 1, a.startIndex + 2])
-    }
-  #endif
-
-  #if COMPATIBLE_ATCODER_2025
-    func testRev2() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      var result = [RedBlackTreeSet<Int>.Index]()
-      a.reversed().forEach { i, p in
-        result.append(i)
-      }
-      XCTAssertEqual(result, [a.startIndex + 2, a.startIndex + 1, a.startIndex + 0])
-    }
-  #endif
-
-  #if COMPATIBLE_ATCODER_2025
-    func testSubRev2() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      var result = [RedBlackTreeSet<Int>.Index]()
-      a[a.startIndex..<a.endIndex].reversed().forEach { i, p in
-        result.append(i)
-      }
-      XCTAssertEqual(result, [a.startIndex + 2, a.startIndex + 1, a.startIndex + 0])
-    }
-
-    func testSubRev3() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      var result = [RedBlackTreeSet<Int>.Index]()
-      a[a.endIndex..<a.endIndex].reversed().forEach { i, p in
-        result.append(i)
-      }
-      XCTAssertEqual(result, [])
-    }
-
-    func testSubRev4() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      var result = [RedBlackTreeSet<Int>.Index]()
-      a[a.startIndex..<a.startIndex].reversed().forEach { i, p in
-        result.append(i)
-      }
-      XCTAssertEqual(result, [])
-    }
-
-    func testSubRev5() throws {
-      let a = RedBlackTreeSet<Int>([0])
-      var result = [RedBlackTreeSet<Int>.Index]()
-      a[a.startIndex..<a.endIndex].reversed().forEach { i, p in
-        result.append(i)
-      }
-      XCTAssertEqual(result, [a.startIndex])
-    }
-  #endif
-
-  #if false
-    func testSubRev6() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      do {
-        var result = [_NodePtr]()
-        a[a.endIndex..<a.endIndex].reversed().___node_positions().forEach { i in
-          result.append(i.index)
-        }
-        XCTAssertEqual(result, [])
-      }
-      do {
-        var result = [_NodePtr]()
-        a[a.endIndex..<a.endIndex].___node_positions().reversed().forEach { i in
-          result.append(i.index)
-        }
-        XCTAssertEqual(result, [])
-      }
-    }
-
-    func testSubRev7() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      do {
-        var result = [_NodePtr]()
-        a[a.startIndex..<a.startIndex].reversed().___node_positions().forEach { i in
-          result.append(i.index)
-        }
-        XCTAssertEqual(result, [])
-      }
-      do {
-        var result = [_NodePtr]()
-        a[a.startIndex..<a.startIndex].___node_positions().reversed().forEach { i in
-          result.append(i.index)
-        }
-        XCTAssertEqual(result, [])
-      }
-    }
-
-    func testSubRev8() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      do {
-        var result = [_NodePtr]()
-        a[a.startIndex..<a.endIndex].reversed().___node_positions().forEach { i in
-          result.append(i.index)
-        }
-        XCTAssertEqual(result, [2, 1, 0])
-      }
-      do {
-        var result = [_NodePtr]()
-        a[a.startIndex..<a.endIndex].___node_positions().reversed().forEach { i in
-          result.append(i.index)
-        }
-        XCTAssertEqual(result, [2, 1, 0])
-      }
-    }
-  #endif
-
-  #if COMPATIBLE_ATCODER_2025
-    func testSubRev9() throws {
-      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-        ("a", 0), ("b", 1), ("c", 2),
-      ])
-      do {
-        var result = [String]()
-        #if COMPATIBLE_ATCODER_2025
-          a[a.endIndex..<a.endIndex].reversed().keys().forEach { i in
-            result.append(i)
-          }
-        #else
-          a[a.endIndex..<a.endIndex].reversed().keys.forEach { i in
-            result.append(i)
-          }
-        #endif
-        XCTAssertEqual(result, [])
-      }
-      do {
-        var result = [String]()
-        #if COMPATIBLE_ATCODER_2025
-          a[a.endIndex..<a.endIndex].keys().reversed().forEach { i in
-            result.append(i)
-          }
-        #else
-          a[a.endIndex..<a.endIndex].keys.reversed().forEach { i in
-            result.append(i)
-          }
-        #endif
-        XCTAssertEqual(result, [])
-      }
-    }
-
-    func testSubRev10() throws {
-      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-        ("a", 0), ("b", 1), ("c", 2),
-      ])
-      do {
-        var result = [String]()
-        #if COMPATIBLE_ATCODER_2025
-          a[a.startIndex..<a.startIndex].reversed().keys().forEach { i in
-            result.append(i)
-          }
-        #else
-          a[a.startIndex..<a.startIndex].reversed().keys.forEach { i in
-            result.append(i)
-          }
-        #endif
-        XCTAssertEqual(result, [])
-      }
-      do {
-        var result = [String]()
-        #if COMPATIBLE_ATCODER_2025
-          a[a.startIndex..<a.startIndex].keys().reversed().forEach { i in
-            result.append(i)
-          }
-        #else
-          a[a.startIndex..<a.startIndex].keys.reversed().forEach { i in
-            result.append(i)
-          }
-        #endif
-        XCTAssertEqual(result, [])
-      }
-    }
-
-    func testSubRev11() throws {
-      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-        ("a", 0), ("b", 1), ("c", 2),
-      ])
-      do {
-        var result = [String]()
-        #if COMPATIBLE_ATCODER_2025
-          a[a.startIndex..<a.endIndex].reversed().keys().forEach { i in
-            result.append(i)
-          }
-        #else
-          a[a.startIndex..<a.endIndex].reversed().keys.forEach { i in
-            result.append(i)
-          }
-        #endif
-        XCTAssertEqual(result, ["c", "b", "a"])
-      }
-      do {
-        var result = [String]()
-        #if COMPATIBLE_ATCODER_2025
-          a[a.startIndex..<a.endIndex].keys().reversed().forEach { i in
-            result.append(i)
-          }
-        #else
-          a[a.startIndex..<a.endIndex].keys.reversed().forEach { i in
-            result.append(i)
-          }
-        #endif
-        XCTAssertEqual(result, ["c", "b", "a"])
-      }
-    }
-
-    func testSubRev12() throws {
-      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-        ("a", 0), ("b", 1), ("c", 2),
-      ])
-      do {
-        var result = [Int]()
-        #if COMPATIBLE_ATCODER_2025
-          a[a.endIndex..<a.endIndex].reversed().values().forEach { i in
-            result.append(i)
-          }
-        #else
-          a[a.endIndex..<a.endIndex].reversed().values.forEach { i in
-            result.append(i)
-          }
-        #endif
-        XCTAssertEqual(result, [])
-      }
-      do {
-        var result = [Int]()
-        #if COMPATIBLE_ATCODER_2025
-          a[a.endIndex..<a.endIndex].values().reversed().forEach { i in
-            result.append(i)
-          }
-        #else
-          a[a.endIndex..<a.endIndex].values.reversed().forEach { i in
-            result.append(i)
-          }
-        #endif
-        XCTAssertEqual(result, [])
-      }
-    }
-
-    func testSubRev13() throws {
-      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-        ("a", 0), ("b", 1), ("c", 2),
-      ])
-      do {
-        var result = [Int]()
-        #if COMPATIBLE_ATCODER_2025
-          a[a.startIndex..<a.startIndex].reversed().values().forEach { i in
-            result.append(i)
-          }
-        #else
-          a[a.startIndex..<a.startIndex].reversed().values.forEach { i in
-            result.append(i)
-          }
-        #endif
-        XCTAssertEqual(result, [])
-      }
-      do {
-        var result = [Int]()
-        #if COMPATIBLE_ATCODER_2025
-          a[a.startIndex..<a.startIndex].values().reversed().forEach { i in
-            result.append(i)
-          }
-        #else
-          a[a.startIndex..<a.startIndex].values.reversed().forEach { i in
-            result.append(i)
-          }
-        #endif
-        XCTAssertEqual(result, [])
-      }
-    }
-
-    func testSubRev14() throws {
-      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-        ("a", 0), ("b", 1), ("c", 2),
-      ])
-      do {
-        var result = [Int]()
-        #if COMPATIBLE_ATCODER_2025
-          a[a.startIndex..<a.endIndex].reversed().values().forEach { i in
-            result.append(i)
-          }
-        #else
-          a[a.startIndex..<a.endIndex].reversed().values.forEach { i in
-            result.append(i)
-          }
-        #endif
-        XCTAssertEqual(result, [2, 1, 0])
-      }
-      do {
-        var result = [Int]()
-        #if COMPATIBLE_ATCODER_2025
-          a[a.startIndex..<a.endIndex].values().reversed().forEach { i in
-            result.append(i)
-          }
-        #else
-          a[a.startIndex..<a.endIndex].values.reversed().forEach { i in
-            result.append(i)
-          }
-        #endif
-        XCTAssertEqual(result, [2, 1, 0])
-      }
-    }
-
-    func testSubRev15() throws {
-      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-        ("a", 0), ("b", 1), ("c", 2),
-      ])
-      do {
-        var result = [RedBlackTreeDictionary<String, Int>.Index]()
-        a[a.endIndex..<a.endIndex].reversed().indices.forEach { i in
-          result.append(i)
-        }
-        XCTAssertEqual(result, [])
-      }
-      do {
-        var result = [RedBlackTreeDictionary<String, Int>.Index]()
-        a[a.endIndex..<a.endIndex].indices.reversed().forEach { i in
-          result.append(i)
-        }
-        XCTAssertEqual(result, [])
-      }
-    }
-
-    func testSubRev16() throws {
-      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-        ("a", 0), ("b", 1), ("c", 2),
-      ])
-      do {
-        var result = [RedBlackTreeDictionary<String, Int>.Index]()
-        a[a.startIndex..<a.startIndex].reversed().indices.forEach { i in
-          result.append(i)
-        }
-        XCTAssertEqual(result, [])
-      }
-      do {
-        var result = [RedBlackTreeDictionary<String, Int>.Index]()
-        a[a.startIndex..<a.startIndex].indices.reversed().forEach { i in
-          result.append(i)
-        }
-        XCTAssertEqual(result, [])
-      }
-    }
-
-    func testSubRev17() throws {
-      let a = RedBlackTreeDictionary<String, Int>(uniqueKeysWithValues: [
-        ("a", 0), ("b", 1), ("c", 2),
-      ])
-      do {
-        var result = [RedBlackTreeDictionary<String, Int>.Index]()
-        a[a.startIndex..<a.endIndex].reversed().indices.forEach { i in
-          result.append(i)
-        }
-        XCTAssertEqual(result, [2, 1, 0].map { a.startIndex + $0 })
-      }
-      do {
-        var result = [RedBlackTreeDictionary<String, Int>.Index]()
-        a[a.startIndex..<a.endIndex].indices.reversed().forEach { i in
-          result.append(i)
-        }
-        XCTAssertEqual(result, [2, 1, 0].map { a.startIndex + $0 })
-      }
-    }
-  #endif
-
-  static func allocationSize2(capacity: Int) -> (size: Int, alignment: Int) {
-    typealias _PayloadValue = Int
-    let s0 = MemoryLayout<UnsafeNode>.stride
-    let a0 = MemoryLayout<UnsafeNode>.alignment
-    let s1 = MemoryLayout<_PayloadValue>.stride
-    let a1 = MemoryLayout<_PayloadValue>.alignment
-    let s2 = MemoryLayout<_Bucket>.stride
-    let a2 = MemoryLayout<_Bucket>.alignment
-    let s01 = s0 + s1
-    let o01 = a1 <= a0 ? 0 : a1 - a0
-    let o012 = max(a1, a0) <= a2 ? 0 : max(a0, a1) - a2
-    return (s2 + s01 * capacity + o01 + o012, max(a0, a1, a2))
   }
-
-  static func allocationCapacity(size: Int) -> Int {
-    typealias _PayloadValue = Int
-    let s0 = MemoryLayout<UnsafeNode>.stride
-    let a0 = MemoryLayout<UnsafeNode>.alignment
-    let s1 = MemoryLayout<_PayloadValue>.stride
-    let a1 = MemoryLayout<_PayloadValue>.alignment
-    let s2 = MemoryLayout<_Bucket>.stride
-    let a2 = MemoryLayout<_Bucket>.alignment
-    let s01 = s0 + s1
-    let o01 = a0 <= a1 ? 0 : a0 - a1
-    return a2 <= max(a1, a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1, a0)) / s01
-  }
-
-  static func pagedCapacity(capacity: Int) -> Int {
-    let size = Self.allocationSize2(capacity: capacity).size
-    let pagedSize = ((size >> 10) + 1) << 10
-    return Self.allocationCapacity(size: pagedSize)
-  }
-
-  //  func testBufferSize() throws {
-  //    typealias _Payload = Int
-  //    let s0 = MemoryLayout<UnsafeNode>.stride
-  //    let a0 = MemoryLayout<UnsafeNode>.alignment
-  //    let s1 = MemoryLayout<_PayloadValue>.stride
-  //    let a1 = MemoryLayout<_PayloadValue>.alignment
-  //    let s2 = MemoryLayout<_Bucket>.stride
-  //    let a2 = MemoryLayout<_Bucket>.alignment
-  //
-  //    var hoge: [(size: Int, capacity: Int)] = []
-  //    for i in 0..<32 {
-  //      let size = 1 << i
-  //
-  //      let s01 = a1 <= a0 ? (s0 + s1) : (s0 + s1)
-  //      let o01 = a1 <= a0 ? 0 : a2 - a1
-  //      let capacity =
-  //        a2 <= max(a1, a0) ? (size - s2 - o01) / s01 : (size - s2 - o01 - a2 + max(a1, a0)) / s01
-  //
-  //      XCTAssertGreaterThanOrEqual(
-  //        size,
-  //        capacity == 0 ? 0 : Self.allocationSize2(capacity: capacity).size)
-  //      hoge.append((size, capacity))
-  //    }
-  //
-  //    for capacity1 in 32..<1024 {
-  //      let size = Self.allocationSize(capacity: capacity1).size
-  //      let pagedSize = ((size >> 10) + 1) << 10
-  //      let pagedCapacity = Self.allocationCapacity(size: pagedSize)
-  //      XCTAssertLessThanOrEqual(Self.allocationSize(capacity: pagedCapacity).size, pagedSize)
-  //    }
-  //
-  //    XCTAssertEqual(65537 / 1024, 65536 >> 10)
-  //    let N = 1024
-  //    XCTAssertEqual(1 << (Int.bitWidth - N.leadingZeroBitCount - 2), N / 2)
-  //
-  //    do {
-  //      let N = 4096
-  //      //      XCTAssertEqual( N / 1024, 4)
-  //      XCTAssertEqual((N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)), 4)
-  //      XCTAssertEqual((N / 1024 + ((N - N / 1024 * 1024) == 0 ? 0 : 1)) * 1024, 4096)
-  //      XCTAssertEqual(((N >> 10) + ((N - ((N >> 10) << 10)) == 0 ? 0 : 1)) << 10, 4096)
-  //    }
-  //
-  //    //    throw XCTSkip("\(hoge.filter { $0.capacity != 0 }.map(\.capacity))")
-  //    throw XCTSkip("\(hoge.filter { $0.capacity != 0 })")
-  //  }
-
-  #if DEBUG
-    func testPtr5() throws {
-      do {
-        let a = RedBlackTreeSet<Int>([0])
-        XCTAssertEqual(a.__tree_.__tree_prev_iter(a._start), .nullptr)
-      }
-      do {
-        let a = RedBlackTreeSet<Int>([0, 1])
-        XCTAssertEqual(a.__tree_.__tree_prev_iter(a._start), .nullptr)
-      }
-      do {
-        let a = RedBlackTreeSet<Int>([0, 1, 2])
-        XCTAssertEqual(a.__tree_.__tree_prev_iter(a._start), .nullptr)
-      }
-    }
-  #endif
-
-  #if DEBUG
-    func testRoundTrip() throws {
-      var fixture = RedBlackTreeSet<Int>(minimumCapacity: 100)
-      for _ in 0..<1000 {
-        for i in 0..<100 {
-          fixture.insert(i)
-        }
-        for i in 0..<100 {
-          fixture.remove(i)
-        }
-      }
-      XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead?.pointee.count, 100)
-      XCTAssertEqual(fixture.capacity, 100)
-    }
-
-    func testRoundTrip2() throws {
-      var fixture = RedBlackTreeSet<Int>(minimumCapacity: 100)
-      let head = fixture.__tree_._buffer.header.freshBucketHead
-      XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 100)
-      for _ in 0..<1 {
-        for i in 0..<100 {
-          fixture.insert(i)
-        }
-        for i in 0..<100 {
-          fixture.remove(i)
-        }
-        XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 100)
-        fixture.removeAll(keepingCapacity: true)
-        XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 100)
-      }
-      XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead, head)
-      //    XCTAssertEqual(fixture.__tree_.makeUsedNodeIterator().map(\.pointee.___raw_index).count, 100)
-      //    XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead?.pointee.count, 100)
-      XCTAssertEqual(fixture.capacity, 100)
-    }
-
-    func testRoundTrip3() throws {
-      var fixture = RedBlackTreeSet<Int>()
-      let head = fixture.__tree_._buffer.header.freshBucketHead
-      XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 0)
-      for _ in 0..<1 {
-        for i in 0..<100 {
-          fixture.insert(i)
-        }
-        for i in 0..<100 {
-          fixture.remove(i)
-        }
-        fixture.removeAll(keepingCapacity: false)
-        XCTAssertEqual(fixture.__tree_._buffer.header.freshPoolActualCapacity, 0)
-      }
-      XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead, head)
-      //    XCTAssertEqual(fixture.__tree_.makeUsedNodeIterator().map(\.pointee.___raw_index).count, 100)
-      //    XCTAssertEqual(fixture.__tree_._buffer.header.freshBucketHead?.pointee.count, 100)
-      XCTAssertEqual(fixture.capacity, 0)
-    }
-  #endif
-
-  struct TypeFixture<T> {
-    internal init() {
-      isInt = T.self == Int.self
-    }
-    var isInt: Bool
-  }
-
-  func testTypeFixture() throws {
-    XCTAssertEqual(TypeFixture<Double>().isInt, false)
-    XCTAssertEqual(TypeFixture<Int>().isInt, true)
-    XCTAssertEqual(TypeFixture<Int64>().isInt, false)
-  }
-
-  #if DEBUG && COMPATIBLE_ATCODER_2025
-    func testMapBehavior() throws {
-      let a = RedBlackTreeSet<Int>(0..<10)
-      do {
-        let n = a.count
-        XCTAssertEqual(n, 10)
-
-        var result = ContiguousArray<Int>()
-        result.reserveCapacity(n)
-
-        var i = a.startIndex
-
-        for _ in 0..<n {
-          result.append(a[i])
-          a.formIndex(after: &i)
-          XCTAssertNotEqual(i.rawValue, a.nullptr)
-        }
-
-        XCTAssertNotEqual(i.rawValue, a.nullptr)
-        XCTAssertEqual(a.endIndex, i)
-      }
-    }
-  #endif
-
-  #if !COMPATIBLE_ATCODER_2025
-    func testBoundsSmoke() throws {
-      var a = RedBlackTreeSet<Int>()
-      typealias Index = RedBlackTreeSet<Int>.Index
-      throw XCTSkip("動かす想定で書いてなかった。コンパイルだけ確認できればいい")
-      #if false
-        // indexを廃止しようとしている
-        let _ = a.indices(bounds: .start ..< .end)
-        let _ = a.indices(bounds: .lower(3) ..< .lower(4))
-      #endif
-      let _ = a.erase(.lowerBound(10) ..< .lowerBound(100)) { n in
-        n % 2 == 1
-      }
-      let _ = a.erase(.lowerBound(10) ... .upperBound(100)) { n in
-        n % 2 == 0
-      }
-      let _ = a[.lowerBound(10) ... .end]
-      let _ = a[...(.end)]
-      let _ = a[.start...]
-      let _ = a[start()...]
-      let _ = a[lowerBound(100)...]
-      let _ = a[lowerBound(100)..<end()]
-
-      let _ = a[lowerBound(100)]
-      let _ = a[lowerBound(100).advanced(by: 1)]
-    }
-
-    func testBounds() throws {
-      let a = RedBlackTreeSet<Int>(0..<100)
-      XCTAssertEqual(a[lowerBound(10)..<lowerBound(20)] + [], (10..<20) + [])
-      XCTAssertEqual(a[lowerBound(10)...lowerBound(20)] + [], (10...20) + [])
-      XCTAssertEqual(a[..<lowerBound(50)] + [], (0..<50) + [])
-      XCTAssertEqual(a[...lowerBound(50)] + [], (0...50) + [])
-      XCTAssertEqual(a[lowerBound(90)...] + [], (90..<100) + [])
-      XCTAssertEqual(a[upperBound(10)..<lowerBound(20)] + [], (11..<20) + [])
-      XCTAssertEqual(a[upperBound(10)...lowerBound(20)] + [], (11...20) + [])
-      XCTAssertEqual(a[lowerBound(10)..<upperBound(20)] + [], (10..<21) + [])
-      XCTAssertEqual(a[lowerBound(10)...upperBound(20)] + [], (10...21) + [])
-      XCTAssertEqual(a[..<upperBound(50)] + [], (0..<51) + [])
-      XCTAssertEqual(a[...upperBound(50)] + [], (0...51) + [])
-      XCTAssertEqual(a[upperBound(90)...] + [], (91..<100) + [])
-
-      XCTAssertEqual(a[start()..<end()] + [], (0..<100) + [])
-      XCTAssertEqual(a[start()...lowerBound(20)] + [], (0...20) + [])
-      XCTAssertEqual(a[start()..<end()] + [], (0..<100) + [])
-      XCTAssertEqual(a[start()...upperBound(20)] + [], (0...21) + [])
-      XCTAssertEqual(a[..<end()] + [], (0..<100) + [])
-      XCTAssertEqual(a[...upperBound(50)] + [], (0...51) + [])
-      XCTAssertEqual(a[start()...] + [], (0..<100) + [])
-    }
-
-    //    func testRemoveBounds() throws {
-    //      var a = RedBlackTreeSet<Int>(0..<100)
-    //      a.removeBounds(lowerBound(10)..<end())
-    //      XCTAssertEqual(a + [], (0..<10) + [])
-    //    }
-
-    func testRemoveBounds() throws {
-
-      var set = RedBlackTreeSet<Int>(0..<20)
-
-      set[lowerBound(10).advanced(by: 2)..<end()].erase {
-        $0 % 2 == 0
-      }
-
-      XCTAssertEqual(set + [], (0..<20).filter { $0 < 12 || $0 % 2 != 0 })
-
-      #if DEBUG
-        XCTAssertEqual(set._copyCount, 0)
-      #endif
-    }
-
-    func testRemoveBounds2() throws {
-
-      let set = RedBlackTreeSet<Int>(0..<20)
-      var range = set[lowerBound(10).advanced(by: 2)..<end()]
-
-      range.erase {
-        $0 % 2 == 0
-      }
-
-      XCTAssertEqual(set + [], (0..<20) + [])
-
-      #if DEBUG
-        XCTAssertEqual(set._copyCount, 0)
-        XCTAssertEqual(range._copyCount, 1)
-      #endif
-    }
-
-    func testUnchecked() throws {
-      let a = RedBlackTreeSet<Int>(0..<100)
-      //      XCTAssertEqual(
-      //        a[unchecked: lowerBound(50)...upperBound(10)].reversed() + [],
-      //        (50..<100) + [],
-      //        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-      //      XCTAssertEqual(
-      //        a[unchecked: end()...start()] + [],
-      //        [],
-      //        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-      //      XCTAssertEqual(
-      //        a[unchecked: a.lowerBound(50)...a.lowerBound(10)] + [],
-      //        (50..<100) + [],
-      //        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-      //      XCTAssertEqual(
-      //        a[unchecked: a.endIndex...a.startIndex] + [],
-      //        [],
-      //        "区間不正でも無限ループに陥らないこと。メモリエラーを起こさないこと")
-
-      //      XCTAssertEqual(a[unchecked: a.startIndex...a.endIndex] + [], [])
-      //      XCTAssertEqual((0..<100)[0...100] + [], [])
-    }
-
-    func testBound() throws {
-      var a = RedBlackTreeSet<Int>((0..<100).filter { $0 % 5 == 0 })
-      XCTAssertEqual(a[.start], 0)
-      XCTAssertEqual(a[.lowerBound(0)], 0)
-      XCTAssertEqual(a[.lowerBound(3)], 5)
-      XCTAssertEqual(a[.upperBound(5)], 10)
-      XCTAssertEqual(a[.end], nil)
-    }
-
-    //    func testIteratorInvariant() throws {
-    //      var a = RedBlackTreeSet((0..<5).map{ $0 * 5 })
-    //      var it = a[a.firstIndex(of: 5)..<a.firstIndex(of: 20)].makeIterator()
-    //      XCTAssertEqual(a + [], [0,5,10,15,20])
-    //      XCTAssertEqual(a.firstIndex(of: 20)?.trackingTag?.rawValue, 4)
-    //      a.remove(20)
-    //      XCTAssertEqual(a + [], [0,5,10,15])
-    //      XCTAssertEqual(it + [], [5,10]) // ここで落ちる
-    //    }
-
-    func testItertor() throws {
-      var a = RedBlackTreeSet((0..<10).map { $0 * 5 })
-      //      var it = a[a.lowerBound(5)..<a.firstIndex(of: 45)].makeIterator()
-      var it = a[lowerBound(5)..<find(45)].makeIterator()
-      a.remove(15)  // 二つ先以降を消しても影響がない
-      a.remove(35)  // 二つ先以降を消しても影響がない
-      //      a.remove(45)  // 二つ先以降を消しても影響がない
-      XCTAssertEqual(it.next(), 5)
-      XCTAssertEqual(it.next(), 10)
-      XCTAssertEqual(it.next(), 20)
-      XCTAssertEqual(it.next(), 25)
-      XCTAssertEqual(it.next(), 30)
-      XCTAssertEqual(it.next(), 40)
-      //      XCTAssertEqual(it.next(), 45)
-    }
-
-    func testRangeView() throws {
-      var a = RedBlackTreeSet(0..<20)
-      var b = a[start()..<lowerBound(10)]
-      XCTAssertEqual(b.popFirst(), 0)
-      XCTAssertEqual(b.popFirst(), 1)
-      XCTAssertEqual(b.popFirst(), 2)
-      XCTAssertEqual(b.popFirst(), 3)
-      XCTAssertEqual(b.popFirst(), 4)
-      XCTAssertEqual(b.popFirst(), 5)
-      XCTAssertEqual(b.popFirst(), 6)
-      XCTAssertEqual(b.popFirst(), 7)
-      XCTAssertEqual(b.popFirst(), 8)
-      XCTAssertEqual(b.popFirst(), 9)
-      XCTAssertEqual(b.popFirst(), nil)
-      XCTAssertEqual(b.unranged() + [], (10..<20) + [])
-      XCTAssertEqual(a + [], (0..<20) + [])
-    }
-
-    func testRangeView2() throws {
-      let a = RedBlackTreeSet(0..<20)
-      var b = a[start()..<lowerBound(10)]
-      while let _ = b.popFirst() {}
-      XCTAssertEqual(b.unranged() + [], (10..<20) + [])
-      XCTAssertEqual(a + [], (0..<20) + [])
-    }
-  #endif
-
-  func testLimitedBy() throws {
-    var a = Array(0..<100)
-    XCTAssertNotNil(a.index(10, offsetBy: 10, limitedBy: 20))
-    XCTAssertNil(a.index(10, offsetBy: 11, limitedBy: 20))
-  }
-
-  func testLimitedBy2() throws {
-    var a = RedBlackTreeSet(0..<100)
-    XCTAssertNotNil(a.index(a.lowerBound(10), offsetBy: 10, limitedBy: a.lowerBound(20)))
-    XCTAssertNil(a.index(a.lowerBound(10), offsetBy: 11, limitedBy: a.lowerBound(20)))
-  }
-
-  func testDict() throws {
-    var d = [Int: Int]()
-    XCTAssertEqual(d[0, default: -1], -1)
-    XCTAssertEqual(d[0], nil)
-  }
-}
+#endif

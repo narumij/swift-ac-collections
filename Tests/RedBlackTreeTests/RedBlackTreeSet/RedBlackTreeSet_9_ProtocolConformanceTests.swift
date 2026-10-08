@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class RedBlackTreeSetProtocolConformanceTests: RedBlackTreeTestCase {}
@@ -51,5 +51,63 @@ extension RedBlackTreeSetProtocolConformanceTests {
     XCTAssertTrue(
       set.contains(10) && set.contains(20) && set.contains(30),
       "配列リテラル初期化が正しく要素を格納すること")
+  }
+}
+
+// MARK: - Index: Equatable, Comparable, Hashable
+extension RedBlackTreeSetProtocolConformanceTests {
+
+  func test_index_equatable() {
+    let set = RedBlackTreeSet<Int>(0..<10)
+    XCTAssertEqual(set.startIndex, set.startIndex)
+    XCTAssertNotEqual(set.startIndex, set.endIndex)
+  }
+
+  #if DEBUG
+    func test_index_comparable() {
+      let set = RedBlackTreeSet<Int>(0..<10)
+      XCTAssertLessThan(set.startIndex, set.endIndex)
+    }
+  #endif
+
+  #if !COMPATIBLE_ATCODER_2025
+    func test_index_hashable() {
+      let set = RedBlackTreeSet<Int>(0..<10)
+      var hasher = Hasher()
+      set.startIndex.hash(into: &hasher)
+      _ = hasher.finalize()
+    }
+  #endif
+}
+
+// MARK: - elementsEqual / lexicographicallyPrecedes
+extension RedBlackTreeSetProtocolConformanceTests {
+
+  func test_elementsEqual_trueForSameElementsInOrder() {
+    let set: RedBlackTreeSet = [1, 2, 3]
+    XCTAssertTrue(set.elementsEqual([1, 2, 3]))
+  }
+
+  func test_elementsEqual_falseForDifferentElements() {
+    let set: RedBlackTreeSet = [1, 2, 3]
+    XCTAssertFalse(set.elementsEqual([1, 2, 4]))
+  }
+
+  func test_lexicographicallyPrecedes_trueWhenSmallerAtFirstDifference() {
+    let set: RedBlackTreeSet = [1, 2, 3]
+    XCTAssertTrue(set.lexicographicallyPrecedes([1, 2, 4]))
+  }
+
+  func test_lexicographicallyPrecedes_falseWhenEqualOrGreater() {
+    let set: RedBlackTreeSet = [1, 2, 3]
+    XCTAssertFalse(set.lexicographicallyPrecedes([1, 2, 3]))
+    XCTAssertFalse(set.lexicographicallyPrecedes([1, 2, 2]))
+  }
+
+  func test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix() {
+    let shorter: RedBlackTreeSet = [1, 2]
+    let longer: RedBlackTreeSet = [1, 2, 3]
+    XCTAssertTrue(shorter.lexicographicallyPrecedes(longer))
+    XCTAssertFalse(longer.lexicographicallyPrecedes(shorter))
   }
 }

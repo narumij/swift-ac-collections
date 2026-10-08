@@ -1,0 +1,190 @@
+import RedBlackTreeCollections
+import XCTest
+
+#if AC_COLLECTIONS_INTERNAL_CHECKS
+  final class RedBlackTreeSetCopyOnWriteTests: RedBlackTreeTestCase {
+
+    let count = 2_000_000
+
+    func testSet1() throws {
+      // UnsafeTreeの場合、capacity増加はバケット追加で行われるので、コピーしない
+      var set = RedBlackTreeSet<Int>()
+      XCTAssertEqual(set._copyCount, 0)
+      set.insert(0)
+      // シングルトンバッファスタートなので、空のオブジェクトは操作で必ずコピーが発生する
+      XCTAssertEqual(set._copyCount, 1)  // 挿入に備えた分増える
+      while set.count < set.capacity {
+        set.insert((2..<Int.max).randomElement()!)
+        XCTAssertEqual(set._copyCount, 1)  // 挿入に備えた分増える
+      }
+      set.insert(0)
+      XCTAssertEqual(set._copyCount, 1)  // 挿入に備えた分増えるが消費していない
+      set.insert(0)
+      XCTAssertEqual(set._copyCount, 1)  // 挿入に備えた必要分をまだ消費していない
+      set.insert(1)
+      XCTAssertEqual(set._copyCount, 1)  // 挿入に備えた必要分を消費したところ
+    }
+
+    func testSet2() throws {
+      var set = RedBlackTreeSet<Int>(minimumCapacity: 1)
+      XCTAssertEqual(set._copyCount, 0)
+      set.insert(0)
+      XCTAssertEqual(set._copyCount, 0)
+      set.remove(0)
+      XCTAssertEqual(set._copyCount, 0)
+      _ = set.lowerBound(0)
+      _ = set.upperBound(0)
+      for s in set {
+        blackHole(s)
+      }
+      set.forEach {
+        blackHole($0)
+      }
+      blackHole(set.map { $0 })
+      blackHole(set.filter { $0 != 0 })
+      blackHole(set.reduce(0, +))
+      blackHole(set.reduce(into: []) { $0.append($1) })
+      XCTAssertEqual(set._copyCount, 0)
+    }
+
+    func testSet3() throws {
+      var tree = RedBlackTreeSet<Int>(0..<20)
+      tree._copyCount = 0
+      for v in tree {
+        tree.remove(v)
+      }
+      XCTAssertEqual(tree.count, 0)
+      #if !COMPATIBLE_ATCODER_2025
+        XCTAssertEqual(tree._copyCount, 1)
+      #else
+        XCTAssertEqual(tree._copyCount, 0)
+      #endif
+    }
+
+    func testSet4() throws {
+      var tree = RedBlackTreeSet<Int>(0..<20)
+      tree._copyCount = 0
+      tree.forEach { v in
+        tree.remove(v)
+      }
+      XCTAssertEqual(tree.count, 0)
+      XCTAssertEqual(tree._copyCount, 1)
+    }
+
+    func testSet5() throws {
+      var tree = RedBlackTreeSet<Int>(0..<20)
+      tree._copyCount = 0
+      for v in tree + [] {
+        tree.remove(v)
+      }
+      XCTAssertEqual(tree.count, 0)
+      XCTAssertEqual(tree._copyCount, 0)
+    }
+
+    func testSet6() throws {
+      var tree = RedBlackTreeSet<Int>(0..<20)
+      tree._copyCount = 0
+      for v in tree.filter({ _ in true }) {
+        tree.remove(v)
+      }
+      XCTAssertEqual(tree.count, 0)
+      XCTAssertEqual(tree._copyCount, 0)
+    }
+
+    func testSet3000() throws {
+      let count = 1500
+      var loopCount = 0
+      var xy: [Int: RedBlackTreeSet<Int>] = [1: .init(0..<count)]
+      xy[1]?._copyCount = 0
+      let N = 100
+      for i in 0..<count / N {
+        loopCount += 1
+        if let lo = xy[1]?.lowerBound(i * N),
+          let hi = xy[1]?.upperBound(i * N + N)
+        {
+          #if COMPATIBLE_ATCODER_2025
+            xy[1]?.removeSubrange(lo..<hi)
+          #else
+            xy[1]?.erase(lo..<hi)
+          #endif
+        }
+      }
+      XCTAssertEqual(xy[1]!.count, 0)
+      XCTAssertEqual(xy[1]!._copyCount, 0)
+      XCTAssertEqual(loopCount, count / N)
+    }
+
+    func testABC385DBehavior() throws {
+      let x = 0
+      let new_y = 8
+      let y = 0
+      var xy: [Int: RedBlackTreeSet<Int>] = .init(uniqueKeysWithValues: [(0, .init(0..<10))])
+      var yx: [Int: RedBlackTreeSet<Int>] = .init(
+        uniqueKeysWithValues: (0..<10).map { ($0, .init([0])) })
+
+      for v in xy.values {
+        XCTAssertEqual(v.count, 10)
+        XCTAssertEqual(v._copyCount, 0)
+      }
+      for v in yx.values {
+        XCTAssertEqual(v.count, 1)
+        #if COMPATIBLE_ATCODER_2025
+          XCTAssertEqual(v._copyCount, 0)
+        #else
+          XCTAssertEqual(v._copyCount, 1)
+        #endif
+      }
+
+      var ans = 0
+      var it = xy[x, default: []].lowerBound(y)
+      while it != xy[x, default: []].endIndex, xy[x, default: []][it] <= new_y {
+        ans += 1
+        yx[xy[x]![it]]?.remove(x)
+        #if COMPATIBLE_ATCODER_2025
+          it = xy[x]!.___erase(it)
+        #else
+          it = xy[x]!.erase(it)
+        #endif
+      }
+
+      for v in xy.values {
+        XCTAssertEqual(v._copyCount, 0, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
+      }
+      for v in yx.values {
+        #if COMPATIBLE_ATCODER_2025
+          XCTAssertEqual(v._copyCount, 0, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
+        #else
+          XCTAssertEqual(v._copyCount, 1, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
+        #endif
+      }
+    }
+
+    #if !COMPATIBLE_ATCODER_2025
+      func testEraseWhereOnRangeViewOfSharedTreeDoesNotCopy() throws {
+        var set = RedBlackTreeSet<Int>(0..<20)
+
+        set[lowerBound(10).advanced(by: 2)..<end()].erase {
+          $0 % 2 == 0
+        }
+
+        XCTAssertEqual(set + [], (0..<20).filter { $0 < 12 || $0 % 2 != 0 })
+        XCTAssertEqual(set._copyCount, 0)
+      }
+
+      func testEraseWhereOnStandaloneRangeViewCopiesOnceButLeavesBaseUntouched() throws {
+        let set = RedBlackTreeSet<Int>(0..<20)
+        var range = set[lowerBound(10).advanced(by: 2)..<end()]
+
+        range.erase {
+          $0 % 2 == 0
+        }
+
+        // rangeが別変数として保持されているため、消去はrange側のみに反映され、setは変化しない
+        XCTAssertEqual(set + [], (0..<20) + [])
+        XCTAssertEqual(set._copyCount, 0)
+        XCTAssertEqual(range._copyCount, 1)
+      }
+    #endif
+
+  }
+#endif

@@ -1,0 +1,22 @@
+//
+//  UnsafeIndexV3Range+Testing.swift
+//  swift-ac-collections
+//
+//  Created by narumij on 2026/05/10.
+//
+
+#if DEBUG
+  @testable import RedBlackTreeCollections
+  // 互換維持の為のコード。互換廃止の際に削ること
+
+  extension UnsafeIndexV3Range {
+
+    package var lower: UnsafeIndexV3 {
+      range.lowerBound
+    }
+
+    package var upper: UnsafeIndexV3 {
+      range.upperBound
+    }
+  }
+#endif

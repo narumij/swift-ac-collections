@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
@@ -191,6 +191,16 @@ final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
     XCTAssertEqual(elements, [2, 4], "偶数のみであること")
   }
 
+  #if !COMPATIBLE_ATCODER_2025
+    /// filter(_:) が型推論時にRedBlackTreeSetを返し、順序と一意性を維持すること
+    func test_filterReturnsRedBlackTreeSet() {
+      let set: RedBlackTreeSet = [1, 2, 3, 4, 5]
+      let filtered = set.filter { $0 % 2 == 1 }
+
+      XCTAssertEqual(filtered, RedBlackTreeSet([1, 3, 5]))
+    }
+  #endif
+
   /// reduceでRedBlackTreeSetの要素を正しくたたみこめること
   func test_empty_set_reduce() {
     // 事前条件: 集合に[]を用意すること
@@ -214,4 +224,87 @@ final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
     // 事後条件:
     XCTAssertEqual(element, 15, "合計値であること")
   }
+
+  #if !COMPATIBLE_ATCODER_2025
+    /// makeIterator()で作成したイテレータは、生成後に元の集合が変更されても取得済みのスナップショットを返し続けること(CoW挙動)
+    func test_iterator_retainsSnapshotAfterBaseCollectionIsMutated() {
+      // 事前条件: 集合に[0, 5, 10, ..., 45]を用意し、そこからイテレータを作成すること
+      var set = RedBlackTreeSet((0..<10).map { $0 * 5 })
+      var iterator = set[set.lowerBound(5)..<set.find(45)].makeIterator()
+
+      // 実行: イテレータ作成後に該当範囲内の要素を削除すること
+      set.remove(15)
+      set.remove(35)
+
+      // 事後条件: 削除前のスナップショット通りに列挙されること(45は範囲外なので含まない)
+      XCTAssertEqual(iterator.next(), 5)
+      XCTAssertEqual(iterator.next(), 10)
+      XCTAssertEqual(iterator.next(), 15, "CoW挙動により、イテレータのスナップショットは変更されない")
+      XCTAssertEqual(iterator.next(), 20)
+      XCTAssertEqual(iterator.next(), 25)
+      XCTAssertEqual(iterator.next(), 30)
+      XCTAssertEqual(iterator.next(), 35, "CoW挙動により、イテレータのスナップショットは変更されない")
+      XCTAssertEqual(iterator.next(), 40)
+      XCTAssertNil(iterator.next())
+    }
+  #endif
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  /// 全走査と範囲走査がキー比較を行わないこと。走査が要素ごとの探索(O(N log N))に
+  /// 落ちていないことを、利用者の`Comparable`から観測できる形で固定する。
+  final class RedBlackTreeSetTraversalComparisonCountTests: RedBlackTreeTestCase {
+
+    private struct CountingKey: Comparable {
+      nonisolated(unsafe) static var count = 0
+      let value: Int
+      static func < (lhs: Self, rhs: Self) -> Bool {
+        count += 1
+        return lhs.value < rhs.value
+      }
+    }
+
+    func testFullAndRangeTraversalDoNotCompareKeys() {
+      let c = RedBlackTreeSet((0..<64).map(CountingKey.init(value:)))
+      let lower = c.index(c.startIndex, offsetBy: 8)
+      let upper = c.index(c.startIndex, offsetBy: 56)
+      CountingKey.count = 0
+
+      var visited = 0
+      for _ in c { visited += 1 }
+      XCTAssertEqual(visited, 64)
+      XCTAssertEqual(CountingKey.count, 0, "全走査はキー比較を行わないはず")
+
+      var i = c.startIndex
+      while i != c.endIndex { c.formIndex(after: &i) }
+      while i != c.startIndex { c.formIndex(before: &i) }
+      XCTAssertEqual(CountingKey.count, 0, "Indexによる前後の走査はキー比較を行わないはず")
+
+      let view = c[lower..<upper]
+      let afterViewCreation = CountingKey.count
+      XCTAssertLessThanOrEqual(afterViewCreation, 1, "範囲の作成は定数回の比較に収まるはず")
+
+      visited = 0
+      for _ in view { visited += 1 }
+      XCTAssertEqual(visited, 48)
+      XCTAssertEqual(CountingKey.count, afterViewCreation, "範囲走査はキー比較を行わないはず")
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeSetReversedTests: RedBlackTreeTestCase {
+
+    /// `reversed()`は要素を降順に並べた配列を返し、元のコレクションを変えないこと。
+    func testReversedReturnsDescendingArray() {
+      let c = RedBlackTreeSet<Int>([3, 1, 2])
+      let r: [Int] = c.reversed()
+      XCTAssertEqual(r, [3, 2, 1])
+      XCTAssertEqual(Array(c), r.reversed())
+      XCTAssertEqual(RedBlackTreeSet<Int>().reversed() as [Int], [])
+    }
+  }
+#endif

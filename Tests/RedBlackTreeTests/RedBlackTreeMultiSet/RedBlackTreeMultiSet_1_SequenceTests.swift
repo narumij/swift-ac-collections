@@ -1,5 +1,5 @@
 import XCTest
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
 final class RedBlackTreeMultiSetSequenceTests: RedBlackTreeTestCase {
 
@@ -187,3 +187,78 @@ final class RedBlackTreeMultiSetSequenceTests: RedBlackTreeTestCase {
     XCTAssertEqual(element, 22, "合計値であること")
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  /// 全走査と範囲走査がキー比較を行わないこと。走査が要素ごとの探索(O(N log N))に
+  /// 落ちていないことを、利用者の`Comparable`から観測できる形で固定する。
+  final class RedBlackTreeMultiSetTraversalComparisonCountTests: RedBlackTreeTestCase {
+
+    private struct CountingKey: Comparable {
+      nonisolated(unsafe) static var count = 0
+      let value: Int
+      static func < (lhs: Self, rhs: Self) -> Bool {
+        count += 1
+        return lhs.value < rhs.value
+      }
+    }
+
+    func testFullAndRangeTraversalDoNotCompareKeys() {
+      let c = RedBlackTreeMultiSet((0..<64).map(CountingKey.init(value:)))
+      let lower = c.index(c.startIndex, offsetBy: 8)
+      let upper = c.index(c.startIndex, offsetBy: 56)
+      CountingKey.count = 0
+
+      var visited = 0
+      for _ in c { visited += 1 }
+      XCTAssertEqual(visited, 64)
+      XCTAssertEqual(CountingKey.count, 0, "全走査はキー比較を行わないはず")
+
+      var i = c.startIndex
+      while i != c.endIndex { c.formIndex(after: &i) }
+      while i != c.startIndex { c.formIndex(before: &i) }
+      XCTAssertEqual(CountingKey.count, 0, "Indexによる前後の走査はキー比較を行わないはず")
+
+      let view = c[lower..<upper]
+      let afterViewCreation = CountingKey.count
+      XCTAssertLessThanOrEqual(afterViewCreation, 1, "範囲の作成は定数回の比較に収まるはず")
+
+      visited = 0
+      for _ in view { visited += 1 }
+      XCTAssertEqual(visited, 48)
+      XCTAssertEqual(CountingKey.count, afterViewCreation, "範囲走査はキー比較を行わないはず")
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiSetReversedTests: RedBlackTreeTestCase {
+
+    /// `reversed()`は要素を降順に並べた配列を返し、元のコレクションを変えないこと。
+    func testReversedReturnsDescendingArray() {
+      let c = RedBlackTreeMultiSet<Int>([2, 1, 2, 3])
+      let r: [Int] = c.reversed()
+      XCTAssertEqual(r, [3, 2, 2, 1])
+      XCTAssertEqual(Array(c), r.reversed())
+      XCTAssertEqual(RedBlackTreeMultiSet<Int>().reversed() as [Int], [])
+    }
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeMultiSetFilterTests: RedBlackTreeTestCase {
+
+    /// `filter(_:)`は条件を満たす出現だけを含む新しいmultisetを返し、元を変えないこと。
+    func testFilterKeepsIncludedOccurrences() {
+      let m = RedBlackTreeMultiSet<Int>([1, 2, 2, 3, 3, 3])
+      let f: RedBlackTreeMultiSet<Int> = m.filter { $0 != 2 }
+      XCTAssertEqual(Array(f), [1, 3, 3, 3])
+      XCTAssertEqual(Array(m), [1, 2, 2, 3, 3, 3])
+    }
+  }
+#endif

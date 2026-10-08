@@ -1,0 +1,55 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+// This implementation includes code derived from LLVM libc++'s red-black tree
+// implementation, originally distributed under the Apache License v2.0 with
+// LLVM Exceptions.
+//
+// Copyright © 2003-2026 The LLVM Project.
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// The original license can be found at https://llvm.org/LICENSE.txt
+//
+// This Swift implementation includes modifications and adaptations made by
+// narumij.
+//
+//===----------------------------------------------------------------------===//
+
+extension UnsafeIterator {
+
+  @frozen
+  public struct _Obverse4:
+    _UnsafeNodePtrType,
+    IteratorProtocol,
+    Sequence,
+    Equatable,
+    TreeAlgorithmBaseProtocol_ptr
+  {
+    @inlinable
+    init(nullptr: _NodePtr, _start: _NodePtr, _end: _NodePtr) {
+      self._start = _start
+      self._end = _end
+      self._current = _start
+      self.nullptr = nullptr
+    }
+
+    @usableFromInline package let nullptr: _NodePtr
+    @usableFromInline let _start: _NodePtr
+    @usableFromInline let _end: _NodePtr
+    @usableFromInline var _current: _NodePtr
+
+    @inlinable
+    public mutating func next() -> _NodePtr? {
+      guard _current != _end else { return nil }
+      defer { _current = __tree_next_iter(_current) }
+      return _current
+    }
+  }
+}
+
+extension UnsafeIterator._Obverse4: @unchecked Sendable {}

@@ -1,4 +1,4 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
 final class RedBlackTreeMultiMapProtocolConformanceTests: RedBlackTreeTestCase {}
@@ -51,6 +51,27 @@ extension RedBlackTreeMultiMapProtocolConformanceTests {
     XCTAssertEqual(mirror.displayStyle, .dictionary)
     XCTAssertEqual(mirror.children.count, map.count)
   }
+
+  /// 同一キーの複数pairも、個別の子としてすべて反映され、
+  /// 各子は`(key:value:)`タプルとしてcastできること
+  func test_customReflectable_duplicateKeyPairsAreEachRepresentedAsKeyValueTuples() {
+    let map: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "b")]
+    let mirror = map.customMirror
+
+    XCTAssertTrue(mirror.children.allSatisfy { $0.label == nil })
+    let pairs = mirror.children.compactMap { $0.value as? (key: Int, value: String) }
+    XCTAssertEqual(pairs.count, map.count)
+    XCTAssertEqual(pairs.map(\.key), [1, 1])
+    XCTAssertEqual(Set(pairs.map(\.value)), ["a", "b"])
+  }
+
+  /// 空のMultiMapの子は0件であること
+  func test_customReflectable_emptyMultiMapHasNoChildren() {
+    let map = RedBlackTreeMultiMap<Int, String>()
+    let mirror = map.customMirror
+
+    XCTAssertEqual(mirror.children.count, 0)
+  }
 }
 
 // MARK: - Is Trivially Identical
@@ -84,6 +105,15 @@ extension RedBlackTreeMultiMapProtocolConformanceTests {
     let b: RedBlackTreeMultiMap<Int, String> = [(1, "b")]
     XCTAssertNotEqual(a, b)
   }
+
+  func test_equatable_rangeViewsFromDifferentTreesCompareByElements() {
+    let aa = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (0...5).map { ($0, $0) })
+    let bb = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (3...8).map { ($0, $0) })
+
+    XCTAssertEqual(aa[aa.lowerBound(3)..<aa.lowerBound(6)], bb[bb.lowerBound(3)..<bb.lowerBound(6)])
+    XCTAssertNotEqual(
+      aa[aa.lowerBound(2)..<aa.lowerBound(6)], bb[bb.lowerBound(3)..<bb.lowerBound(6)])
+  }
 }
 
 // MARK: - Comparable
@@ -95,6 +125,14 @@ extension RedBlackTreeMultiMapProtocolConformanceTests {
 
     XCTAssertTrue(a < b)
     XCTAssertFalse(b < a)
+  }
+
+  func test_comparable_rangeViewsFromDifferentTreesOrderByElements() {
+    let aa = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (0...5).map { ($0, $0) })
+    let bb = RedBlackTreeMultiMap<Int, Int>(keysWithValues: (3...8).map { ($0, $0) })
+
+    XCTAssertTrue(aa[aa.lowerBound(2)..<aa.lowerBound(6)] < bb[bb.lowerBound(3)..<bb.lowerBound(6)])
+    XCTAssertFalse(bb[bb.lowerBound(3)..<bb.lowerBound(6)] < aa[aa.lowerBound(2)..<aa.lowerBound(6)])
   }
 }
 
@@ -125,3 +163,32 @@ extension RedBlackTreeMultiMapProtocolConformanceTests {
   }
 }
 #endif
+
+// MARK: - elementsEqual / lexicographicallyPrecedes
+extension RedBlackTreeMultiMapProtocolConformanceTests {
+
+  func test_elementsEqual_trueForSameKeyValuePairsInKeyOrderIncludingDuplicateKeys() {
+    let a: RedBlackTreeMultiMap = [(1, "a"), (1, "b"), (2, "c")]
+    let b: RedBlackTreeMultiMap = [(2, "c"), (1, "a"), (1, "b")]
+    XCTAssertTrue(a.elementsEqual(b, by: ==))
+  }
+
+  func test_elementsEqual_falseWhenValuesDiffer() {
+    let a: RedBlackTreeMultiMap = [(1, "a"), (1, "b")]
+    let b: RedBlackTreeMultiMap = [(1, "a"), (1, "z")]
+    XCTAssertFalse(a.elementsEqual(b, by: ==))
+  }
+
+  func test_lexicographicallyPrecedes_trueWhenSmallerAtFirstDifference() {
+    let a: RedBlackTreeMultiMap = [(1, "a"), (1, "b")]
+    let b: RedBlackTreeMultiMap = [(1, "a"), (1, "c")]
+    XCTAssertTrue(a.lexicographicallyPrecedes(b, by: <))
+  }
+
+  func test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix() {
+    let shorter: RedBlackTreeMultiMap = [(1, "a")]
+    let longer: RedBlackTreeMultiMap = [(1, "a"), (1, "b")]
+    XCTAssertTrue(shorter.lexicographicallyPrecedes(longer, by: <))
+    XCTAssertFalse(longer.lexicographicallyPrecedes(shorter, by: <))
+  }
+}

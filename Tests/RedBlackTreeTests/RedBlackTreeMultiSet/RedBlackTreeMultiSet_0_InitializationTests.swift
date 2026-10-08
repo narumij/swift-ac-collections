@@ -1,6 +1,8 @@
 import XCTest
-import RedBlackTreeModule
+import RedBlackTreeCollections
 
+// The numbered RedBlackTreeMultiSet tests are the canonical Test as Spec suite.
+// Keep public, current behavior here; implementation and stress tests may remain elsewhere.
 final class RedBlackTreeMultiSetInitializationTests: RedBlackTreeTestCase {
 
   // MARK: - 「空なものは空である」と「空でないものは空ではない」のトートロジー

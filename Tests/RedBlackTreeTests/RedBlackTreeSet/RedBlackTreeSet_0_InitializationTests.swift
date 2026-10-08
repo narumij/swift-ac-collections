@@ -1,6 +1,9 @@
-import RedBlackTreeModule
+import RedBlackTreeCollections
 import XCTest
 
+// RedBlackTreeSet_N_* の連番テスト群は、現行の公開APIについての Test as Spec の正本。
+// 公開APIの追加・変更時は、対応する番号のファイルへ利用者視点の仕様テストを追加する。
+// 内部実装・性能・過去互換だけの検証はここへ混在させず、専用テストへ分離する。
 final class RedBlackTreeSetInitializationTests: RedBlackTreeTestCase {
 
   // MARK: - 「空なものは空である」と「空でないものは空ではない」のトートロジー

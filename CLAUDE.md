@@ -7,6 +7,28 @@ default.
 
 For work under `Tests/`, read `Tests/CLAUDE.md` after the Task Registry and follow its instructions.
 
+# Work awaiting a Registry ID
+
+`Maintanance/CLAUDE_PENDING_TASKS.md` is a temporary handoff queue for work discussed while Codex is
+unavailable to assign a stable Registry ID. It is not a second Task Registry and must not be scanned
+at session startup or used to select work autonomously.
+
+- If the user asks only to record, decompose, or prepare a candidate, add it to the queue and do not
+  execute it.
+- If the user explicitly asks Claude to perform a concrete bounded task, Claude may execute that
+  exact request before stable ID assignment. Record the user's authorization, scope, evidence,
+  validation, and stopping points under a temporary queue ID.
+- A temporary ID never replaces a Registry ID, never appears in Task precedence, and grants no
+  authority beyond the user's explicit request.
+- Existing ownership and safety boundaries remain in force. A `USER_ONLY` task requires explicit
+  reassignment, not merely a request to record it. Public policy, final acceptance, Registry state,
+  and completion remain with their recorded owner unless the user explicitly changes ownership.
+- Do not continue from one queued item to another without a new user request. Do not mark queued
+  work accepted or complete on Codex's behalf.
+- When Codex returns, leave the result for duplicate checking, stable ID assignment or merge,
+  acceptance, and Registry reconciliation. After reconciliation, retain the stable ID and outcome in
+  the queue entry so temporary references remain traceable.
+
 # Communication
 
 Communicate with the user in Japanese. Internal instructions and Codex-to-Claude work requests may be written in English, but explanations, questions, progress updates, and final reports addressed to the user must be in Japanese.

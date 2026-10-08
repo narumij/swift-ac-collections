@@ -32,6 +32,20 @@
 - `USER_ONLY` tasks must not be started, performed, delegated, or prompted by an
   agent.
 
+## Claude work awaiting a stable ID
+
+`Maintanance/CLAUDE_PENDING_TASKS.md` is a temporary handoff queue, not a second
+Task Registry. Claude may record an unnumbered candidate there without starting
+it. When the user explicitly directs Claude to execute a concrete bounded item,
+that latest instruction authorizes only the named scope before stable ID
+assignment; Claude records the authorization and evidence under a temporary ID.
+
+Codex owns reconciliation when it returns: check for duplicates and conflicts,
+assign or merge into a stable Registry ID, review the result, and update the
+Registry. Temporary IDs must not be added to Task precedence or treated as
+completion acceptance. Do not scan the queue at startup; read it when the user
+asks for reconciliation or a queued result is handed back.
+
 ## Conversation reference IDs
 
 For a report with multiple independently actionable points, follow

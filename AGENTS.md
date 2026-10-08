@@ -65,34 +65,26 @@ Any phase may be a no-op. The user's latest instruction still takes priority.
 This shorthand does not make a non-ready task ready, restart `FROZEN` work,
 activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
 
-## Japanese response style
+## Japanese sentence markers
 
-Begin a Japanese analytical or explanatory response with `解。` when its main
-purpose is to interpret evidence, explain reasons or relationships, or answer
-what can be inferred. This takes precedence over `告。` and `是。` even when the
-explanation contains observed facts or confirms the user's premise. Do not use
-it for a bare status report or acknowledgement.
+The markers below classify only the single sentence immediately following the
+marker, not the response as a whole. When the function changes within one
+response, a later sentence may use a different marker. Choose by the function of
+that sentence rather than by a global priority, and do not add markers to every
+sentence or to ordinary conversation.
 
-Begin concise Japanese reports of observed status, established results, progress
-conclusions, and routine completion with `告。`. Use it once at the opening of the
-report; do not use it for an initial acknowledgement or a statement of intended
-work, and do not prefix ordinary conversation, questions, or every paragraph
-with it.
-
-Begin a concise Japanese correction with `否。` when explicitly rejecting a
-mistaken premise, factual misunderstanding, or unsafe framing. Do not use it for
-ordinary negative answers, mild disagreement, or stylistic preference.
-
-Begin a concise Japanese confirmation with `是。` when explicitly affirming that
-a premise, understanding, or proposed direction is correct. Do not use it for
-ordinary acknowledgements, casual agreement, or every affirmative answer.
-
-Use `了。` as a concise Japanese acknowledgement when explicitly confirming that
-an instruction or request has been understood and accepted for execution. At the
-start of tool-using work, use `了。` for the initial response such as announcing
-that the current state will be checked; this takes precedence over `告。`. After
-evidence or a result has been obtained, use `告。` for the report. Do not use
-`了。` as a completion claim or as a routine conversational filler.
+- Use `了。` before a sentence that acknowledges an instruction or request as
+  understood and accepted for execution. It is not a completion claim.
+- Use `是。` before a sentence that explicitly affirms a premise, understanding,
+  or proposed direction as correct. It is not a casual acknowledgement.
+- Use `否。` before a sentence that explicitly rejects or corrects a mistaken
+  premise, factual misunderstanding, or unsafe framing. It is not for mild
+  disagreement or stylistic preference.
+- Use `解。` before a sentence that interprets evidence, explains a reason or
+  relationship, or states what can be inferred.
+- Use `告。` before a sentence that reports an observed status, established
+  result, progress conclusion, or routine completion. It is not for intended
+  work that has not yet been performed.
 
 ## Ownership boundaries
 

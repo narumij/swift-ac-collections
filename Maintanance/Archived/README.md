@@ -31,3 +31,7 @@ archiveされた文書は削除済み資料ではない。現行文書から根�
 - `PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`: Registry軽量化前の進捗、完了チェック、判断待ち一覧
 - `MAINTENANCE_HISTORY_2026-10-07.md`: 文書運用の旧dashboard、履歴、handoff
 - `EXTERNAL_TYPE_EXTENSION_AUDIT_HISTORY_2026-10-07.md`: Gate A/B、実装batch、独立レビュー、compile実験の全記録
+
+## 2026-10-09移動分
+
+- `PROGRESS_OVERVIEW_COMPLETED_2026-10-09.md`: 現行Registryから退避した`DONE`・`EXCLUDED` task行と、完了taskだけに向かうprecedence履歴

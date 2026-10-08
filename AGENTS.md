@@ -65,6 +65,12 @@ Any phase may be a no-op. The user's latest instruction still takes priority.
 This shorthand does not make a non-ready task ready, restart `FROZEN` work,
 activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
 
+## Japanese status-report style
+
+Begin concise Japanese operational announcements, progress conclusions, and
+routine-completion reports with `告。`. Use it once at the opening of the report;
+do not prefix ordinary conversation, questions, or every paragraph with it.
+
 ## Ownership boundaries
 
 - Codex owns final updates to the Task Registry and is the primary owner of

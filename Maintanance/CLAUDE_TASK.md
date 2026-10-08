@@ -11,13 +11,13 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: あり**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: あり。Permutation 5計測のCI実行構成調査。
-- 本線の現在task: 下記「Active bounded assignment: Permutation CI execution design」。
+- 新規bounded assignment: なし。
+- 本線の現在状態: Permutation CI実行構成のユーザー判断待ち。決定後の実装taskは未割当。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
 
-## Active bounded assignment: Permutation CI execution design
+## Completed bounded assignment: Permutation CI execution design
 
 Permutationの既存5計測を、base / HEADの双方で比較可能なままCIへ加える最小実行構成を調査する。
 4件のsubscript計測は現行の`--max-size 64k`、end-to-end計測は`size <= 10`を必要とする。
@@ -32,6 +32,56 @@ Permutationの既存5計測を、base / HEADの双方で比較可能なままCI�
 repository、既存checkout、benchmark toolのhelp・sourceは読み取ってよい。tracked fileは一切変更せず、
 benchmarkを実行せず、依存解決、長時間計測、方針決定、Registry更新、commit、pushは行わない。
 5件を比較対象に保てない案は推奨しない。新しいユーザー判断が必要なら選択肢とtrade-offを返して止める。
+
+### Result
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。読み取りだけ（tracked file変更・benchmark実行・依存解決なし）。
+toolの根拠は`Benchmarks/.build/checkouts/swift-collections-benchmark/Sources/CollectionsBenchmark/`（以下`CB/`）。
+
+**推奨: 案A（libraryを2本に分け、同じ結果fileへ2回目を追記する）。** base / HEADとも既存sourceのまま5件を比較でき、
+比較stepは変えずに済む。
+
+**調べた事実**
+
+1. task単位のsize制限は既存機能としてある。`Benchmark.add(title:input:maxSize:...)`（`CB/Benchmark/Benchmark.swift:96-104`）で、
+   `Task.measure`が`size > maxSize`を測らずに読み飛ばす（`CB/Benchmark/Task.swift:50-53`）。task bodyが`nil`を返しても同様に
+   読み飛ばす（同`:54-57`）。どちらもbenchmark source側の指定で、library JSONやCLIからは指定できない
+   （JSONのkeyは`kind`・`title`・`directory`・`contents`・`charts`・`tasks`だけ）。
+2. `library run`は結果fileを`--mode append|replace|replace-all`で開き、`append`と`replace`は他taskの既存データを残す
+   （`CB/BenchmarkCLI/BenchmarkCLI+Library+Run.swift:47-63`、`CB/BenchmarkCLI/_Document.swift:121-129`）。
+   2本目のlibraryを別の`--max-size`で同じfileへ追記でき、`results merge`（`BenchmarkCLI+Results+Merge.swift`）は不要。
+3. 比較stepは`results compare base.json current.json`の1組だけ（`swift.yml`「Check performance regression」）。
+   1つのfileに5件がそろえば、比較stepと30%判定のawkは変更不要。
+4. base側はPR側の`CI.json`を`cp`して使う（`swift.yml`「Run baseline benchmarks」）。2本目のlibraryも同じく`cp`すれば、
+   PR側定義を両方で使う現行性質を保てる。5件の表題は`main`（`5a33e96d`）にも同じ文字列で存在する。
+
+**案A: library 2本 + 追記実行（推奨）**
+
+- 変更するtracked file:
+  - `Benchmarks/Libraries/CI.json`: subscript 4件（`Permutations.SubSequenceN subscript ...`）のgroupを追加。
+  - 新規`Benchmarks/Libraries/CI-Small.json`（名前は仮）: end-to-end 1件のgroup。
+  - `.github/workflows/swift.yml`（performance job）:
+    - 「Run current benchmarks」の後に`swift run -c release benchmark library run --library ./Libraries/CI-Small.json ../benchmark-results/current.json --max-size 10 --cycles 1 --mode append`。
+    - 「Run baseline benchmarks」に`cp ../../head/Benchmarks/Libraries/CI-Small.json ./Libraries/CI-Small.json`と、
+      同じcommandを`../benchmark-results/base.json`へ。
+- 結果file: 既存の`base/benchmark-results/base.json`と`head/benchmark-results/current.json`のまま。比較step、artifact
+  （crash artifact）は変更なし。
+- benchmark sourceは変更しない。最初のPRからbase / HEADとも5件を測れる。
+- 欠点: library fileが2本になり、sizeの上限がworkflowとlibraryの組で決まる（benchmark sourceを見ても分からない）。
+
+**案B: benchmark sourceの`maxSize: 10`（または`nil`返し）+ `CI.json`へ5件**
+
+- 変更するtracked file: `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`（end-to-endの`add`に`maxSize: 10`）、
+  `Benchmarks/Libraries/CI.json`。workflowは変更なし。
+- 問題: base側は`main`のsourceで動き、`main`には`maxSize`が無い。最初のPRではbase側のend-to-endが`size > 10`で
+  `precondition`停止し、performance jobが落ちる（コード上の判断。未実行）。mainへmergeされた後のPRからは成立する。
+  benchmark titleと実装は変えないが、「既存benchmarkのinput設定を変えない」に触れるかはCodexの判断。
+
+**案C: `results merge`で2つの結果fileをまとめる**: 案Aと同じことを追加のmerge stepで行うだけで、利点が無い。
+
+**未確認（実行していないため）**: 案Aの2回目の実行が`--max-size 10`で作るsizeの並び（`Size.sizes(for:significantDigits:)`、
+`CB/Benchmark/Benchmark+Options.swift:217`）と、CIでの所要時間の増分。どちらもCIの初回実行で分かる。
+新しいユーザー判断は要らないと考える（案Aは既存sourceを変えず5件を保つ）。
 
 ## Completed bounded assignment: Permutation CI benchmark selection
 

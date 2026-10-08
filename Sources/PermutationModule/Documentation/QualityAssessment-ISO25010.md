@@ -57,6 +57,15 @@ schemaは計測ごとのsize範囲を指定できず、job全体の`--max-size 6
 `size <= 10`をpreconditionとするため、追加すると10を超える入力でprocessが停止する。残る4件には同じ
 上限制約はない。したがって、5件を比較対象に保つ実行構成を別途確定してからCI設定を変更する。
 
+追加調査では、二つのlibraryを異なる最大sizeで同じ結果fileへ順次実行できることを確認した。1本目で
+subscript 4件を現行の`--max-size 64k`・`--mode replace-all`で測定し、2本目でend-to-end 1件を
+`--max-size 10`・`--mode append`により追記する。base側にもPR側の二つのlibrary定義をcopyすれば、
+既存sourceのままbase / HEADを同条件で比較でき、後段の`results compare`も変更不要である。
+
+代案としてbenchmark sourceの`add`へ`maxSize: 10`を指定できるが、base側sourceにはその変更がない
+最初のPRだけ停止するため採用候補として劣る。別結果fileを`results merge`する案にも、同じfileへ直接
+追記する方式を上回る利点はない。推奨は二つのlibraryと同一結果fileへの追記である。
+
 ### 3.3 互換性（Compatibility）
 
 | 副特性 | 判定 | 根拠 |
@@ -276,7 +285,7 @@ swift-algorithmsとの同時import・主要入口の名前解決が仕様testで
 
 | 候補 | 現状 | 利用できる既存基盤 | 必須依存 | 実施時に変更する範囲 | 対応するRegistry task | 未確認事項 |
 | --- | --- | --- | --- | --- | --- | --- |
-| CIの性能比較にPermutationを加える（§3.2） | performance jobはPRのときだけ、base / HEADの両方でPR側の`CI.json`を走らせて比較する。5件目だけ`size <= 10`で、共通の`--max-size 64k`では停止する | `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`の5計測（`main.swift:14`で登録済み。表題は旧名`Permutations.SubSequenceN`のまま） | `Benchmarks`は別package。結果はPRのCIで出るのでユーザーのpushが要る。計測別sizeをlibrary JSONで指定できない | 5件を比較対象に保つCI実行構成を決定後、library / workflowの必要最小範囲を変更 | `PERM-013`（ACTIVE）。`PERM-031`〜`PERM-033`で構成調査・判断・実装を分離 | 4件とend-to-endを異なるmax sizeで実行し、base / HEADの比較結果へ安全に渡す最小構成 |
+| CIの性能比較にPermutationを加える（§3.2） | performance jobはPRのときだけ、base / HEADの両方でPR側のlibrary定義を走らせて比較する。5件目だけ`size <= 10` | `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`の5計測。libraryを2本に分け、64kの4件と10の1件を同じ結果fileへ`replace-all`、`append`の順で記録できる | `Benchmarks`は別package。結果はPRのCIで出るのでユーザーのpushが要る | 実行構成の判断後、`CI.json`、小size用library、performance workflowを変更 | `PERM-013`（ACTIVE）。`PERM-031`で構成調査済み、`PERM-032`判断後に`PERM-033`で実装 | 初回CIの所要時間増分とsize列は実行時に確認 |
 | C++ `std::next_permutation`との差分比較（§3.1） | Permutationの比較は無い（`CppBehaviorReference`にもそのtestにも`permutation`の語が無い） | `Sources/CppBehaviorReference`（C++。`extern "C"`の関数をheaderで公開、`Package.swift:274-277`）と`Tests/CppBehaviorReferenceTests`（赤黒木4型の比較、`SeededTraceSupport.swift`）。`CPP-001` DONE。実行実績はmacOS（libc++）のDebug・ReleaseとLinux（libstdc++）のDebug（`RED_BLACK_TREE_REMAINING_TASKS.md`の確認済み根拠） | `CppBehaviorReferenceTests`へ`PermutationModule`の依存を足す必要がある（現在の依存は`CppBehaviorReference`、`AcCollections`、`RedBlackTreeCollections`。`AcCollections`経由でも届く） | `Sources/CppBehaviorReference`へ`std::next_permutation`の`extern "C"` wrapperを追加し、`Tests/CppBehaviorReferenceTests`へ比較testを追加。依存を足すなら`Package.swift` | なし（`CPP-001`は「比較契約または対象環境を変更する場合だけ更新」、`CPP-002`はMSVCでEXCLUDED） | C++側は比較に`operator<`を使う。Swift側の`Comparable`と同じ結果になる入力の範囲（整数以外の要素型を比べるか）。libc++ / libstdc++の両方で同じ列挙になること |
 | Linux CIでDeath Testを有効にする（§3.6） | CIはLinuxの`swift test -c debug` / `-c release`だけで、`ENABLE_DEATH_TESTS`を指定していない（`swift.yml:79-100`、workflow内に`DEATH`の語が無い） | trait `ENABLE_DEATH_TESTS`で`DEATH_TEST`を定義する設定（`Package.swift:85`）。Permutationの`_99_DeathTests`は正確なsignal（Linuxでは`SIGILL`）を期待する（`DeathTestSignal.swift`）。Linuxでの手動実行の手順は`Tests/CLAUDE.md`（`swift test -c debug --traits ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`） | traitを有効にするとPermutation以外のDeath Testも全部走る（OptionalArray、BareArray、RedBlackTree）。`Tests/CLAUDE.md`は、Linuxでは`SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`との併用を指示している | `.github/workflows/swift.yml`へjobまたはstepを追加 | なし（Permutation専用のtaskも、全module共通のtaskも見つからない） | PermutationのDeath Testだけを走らせるか、全moduleで走らせるか（判断点の候補。Claudeは決めない）。Releaseでも走らせるか。Linuxで5件が`SIGILL`で止まることの最近の実行記録（RedBlackTree側の実績は文書にあるが、Permutationの記録は今回見つからない） |
 

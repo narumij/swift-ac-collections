@@ -151,8 +151,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-029` | `DONE` | User / Codex | [DECISION] Permutation互換modeでstrict memory safetyを扱うか | 2026-10-08、互換modeから外し、後日独立して取り組み直すと決定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-030` | `DONE` | User / Codex | [DECISION] 互換ソース隔離段階の検証範囲 | 2026-10-08、互換module buildだけを確認し、mode別testを後続taskへ送ると決定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
-| `PERM-031` | `ACTIVE` | Claude | [DISCOVERY] Permutation 5計測のCI実行構成調査 | 4件と`size <= 10`のend-to-endをbase / HEADで比較できる最小構成を、変更せず根拠付きで提示する | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
-| `PERM-032` | `FROZEN` | User / Codex | [DECISION] Permutation CI計測の実行構成 | `PERM-031`後、5件を比較対象に保つlibrary・workflow構成を一つ決定する | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-031` | `DONE` | Claude / Codex | [DISCOVERY] Permutation 5計測のCI実行構成調査 | 2026-10-08、二つのlibraryと同一結果fileへの追記で、既存sourceのままbase / HEADの5件を比較できると確認 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-032` | `WAITING_USER` | User / Codex | [DECISION] Permutation CI計測の実行構成 | 二つのlibraryを64k・10で実行し、同じ結果fileへ追記する推奨案を採用するか一つ決定する | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-033` | `FROZEN` | Claude | [EXECUTION] Permutation CI計測構成の実装 | `PERM-032`で決めた構成だけを実装・静的検証し、commit・push・長時間計測は行わない | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-004` | `FROZEN` | Codex | AtCoder 2025互換ソースの隔離 | 基準版を専用fileへ配置し、通常版と排他的にcompileできる状態にする | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-005` | `FROZEN` | Codex | Permutation互換traitのPackage設定 | 互換defineをtraitへ接続し、traitなしを通常版の既定にする | `PermutationModule/AtCoder2025CompatibilityPlan.md` |

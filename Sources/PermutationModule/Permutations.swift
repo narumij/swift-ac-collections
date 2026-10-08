@@ -70,9 +70,10 @@ extension NextPermutationsSequence {
     @usableFromInline
     var state = State.initial
 
-    // TODO: Swift 6.4の`-O`では、コピーしたiteratorの元の側をクロージャ内で進めると、
-    // `isKnownUniquelyReferenced`がコピーを見落とし、共有bufferを直接書き換える
-    // (2026-10-07確認、ライブラリ非依存の最小再現あり)。1.0直前に、修正されたかを確認する。
+    // TODO: Swift 6.4の`swift test -c release`では、コピーしたiteratorの元の側をクロージャ内で
+    // 進めて結果を読むと、コピー側も進んだ状態になる(2026-10-07発見)。2026-10-08の再調査では
+    // このiteratorでだけ再現し、ライブラリなしの再現は作れなかった。原因(コンパイラか本実装か)は
+    // 未確定。1.0直前に、まだ起きるかを確認する。
     /// Makes the buffer unique before advancing. Returns `false` without copying when the
     /// buffer is shared and has no successor, because such a copy would only be discarded.
     @inlinable

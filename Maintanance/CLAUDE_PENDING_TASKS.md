@@ -143,3 +143,33 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   Linuxでは遅い側だけ64 byte境界をまたぐ。これは第三者AIによるassembly review（`PERM-038`）が示す
   generic getterの非inline化仮説を否定するものとして扱わず、別の観測として
   `PERFORMANCE_REGRESSION_BISECTION.md`へ分離して受入。
+
+### `CP-20261009-002` — 連絡: 第三者AI assembly review（`PERM-038`）の原因説明としての不採用をCodexへ依頼
+
+- queue状態: `AWAITING_CODEX`
+- 発見元・ユーザー指示: 2026-10-09、`PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md`（ちゃっぴー分析）をClaudeが照合した後、ユーザー:
+  「採番待ちタスク、ユーザー承認でチャッピー資料の不採用をCodexに依頼」。Claudeが実行するのは、この連絡を書くことだけ。
+- 種別候補: 連絡（Claude）。依頼先は`DECISION`の反映（Codex）
+- 対象範囲: 下の「Codexへの連絡」を書き、Codexの整理時に渡す。
+- 対象外: `PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md`本文の書き換え、Registryの状態変更、文書の削除や移動（いずれもCodex）。
+- 完了条件: Codexが、資料の扱い（不採用の範囲、冒頭の「Accepted」表記、`PERM-038`の状態）を決めて反映する。
+- 前提・既存task候補: `PERM-038`、`3e6d6ec6`（Accept independent assembly review）、`CP-20261009-001`、
+  `PERFORMANCE_REGRESSION_BISECTION.md`の「事例記録: Permutation sequential accessの配置依存」。
+- 担当候補・受入担当: Claude（連絡）/ Codex（反映・受入）
+- 停止条件: なし（連絡を書いたら終わる）。
+- Codexへの連絡（ユーザー承認済み）:
+  - **ユーザー判断:** この資料のH1「`Buffer.subscript.getter`の非inline化（呼出コスト・最適化機会の喪失）が30%回帰の原因」を、
+    回帰の原因説明としては不採用とする。
+  - **Claudeの照合で分かった根拠（2026-10-08〜09、アーティファクトとmacOS buildで確認済み）:**
+    1. 赤になった`sequential access`のmeasure内ループは、Linux x86-64の両版で命令列が同一（addressを除くdiff 0行）。
+       ループ内にcallはなく、getterも`lastAscentIndex`も通らない。資料のStep 3（hot path relevance）の答えは「通らない」。
+    2. `lastAscentIndex`を通るのはend-to-end benchmarkだが、こちらは閾値を割っていない。
+    3. 資料のStep 4（getterへ`@inline(__always)`）は`f01c66a6`で実施済みで緑になったが、この実験ではinline化の効果と
+       配置の効果を区別できない。
+  - **残してよい観測（Claudeの意見）:** 修正前は汎用版の中でgetterがcallのまま残り、`lastAscentIndex`から2回呼ばれる、という
+    構造の観測は事実で、ClaudeのmacOSでの観測とも一致する。修正でこれがinline化されて汎用版が太り（macOSで6関数・168 byte）、
+    後ろのループの配置がずれた、という「配置ずれの上流」として読める（推測）。不採用にするのは原因説明（H1）で、構造の観測ではない、
+    という扱いを提案する。
+  - **文書上の食い違い:** 資料冒頭は「Accepted independent review」「explicitly adopted by the user」のまま。
+- 成果・検証: 2026-10-09 / Claude Opus 5.5、連絡を記入。資料本文・Registryは変更していない。
+- Codex reconciliation: 未処理

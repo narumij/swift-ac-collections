@@ -75,6 +75,10 @@ Begin a concise Japanese correction with `否。` when explicitly rejecting a
 mistaken premise, factual misunderstanding, or unsafe framing. Do not use it for
 ordinary negative answers, mild disagreement, or stylistic preference.
 
+Begin a concise Japanese confirmation with `是。` when explicitly affirming that
+a premise, understanding, or proposed direction is correct. Do not use it for
+ordinary acknowledgements, casual agreement, or every affirmative answer.
+
 ## Ownership boundaries
 
 - Codex owns final updates to the Task Registry and is the primary owner of

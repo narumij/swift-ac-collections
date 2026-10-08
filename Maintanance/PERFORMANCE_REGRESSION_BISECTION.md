@@ -180,7 +180,7 @@ scoreが1.05以下へ戻った。具体的な属性方針は、この公開用�
 
 2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。ユーザーが`try/performance/1`（`f57a24d2`＝`f01c66a6`の修正前のsource
 ＋workflowの記録追加）をPRにし、baseを修正入りの`main`としてperformance jobを赤で再現させた。そのアーティファクトから読んだ事実。
-macOS側の調査は`CLAUDE_PENDING_TASKS.md`の`CP-20261009-001`を参照。
+macOS側の比較と本節のLinux artifact解析は`PERM-036`としてCodexが統合・受入した。
 
 ### 観測
 
@@ -235,3 +235,9 @@ macOS側の調査は`CLAUDE_PENDING_TASKS.md`の`CP-20261009-001`を参照。
   `f01c66a6`は、命令を速くしたのではなく、配置を動かして緑にした可能性が高い。属性を変えたときの性能差は、
   配置の影響を切り分けるまで、属性の効果とは断定しない。
 - 1回の観測で同じtaskが別向きに動くことがある（今回はsequentialが遅く、batchedが約25%速い）。どちらか片方だけを見て判断しない。
+
+### 診断artifact
+
+性能比較が失敗した場合、workflowはbase / HEADについて、実際に測定へ使ったbenchmark binary、逆アセンブル、
+demangle済みsymbol表、binary hash、測定JSON、比較結果、runner CPUを保存する。別commandで再生成したmoduleではなく、
+測定時の実物を比較対象にする。これは`PERM-037`として受入済みである。

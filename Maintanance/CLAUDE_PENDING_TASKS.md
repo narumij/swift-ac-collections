@@ -108,7 +108,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ### `CP-20261009-001` — `f01c66a6`前後の実benchmark hot path機械語比較
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: 2026-10-09、Codex低消費mode中の雑談でClaudeが提案したA-1に対し、ユーザー:
   「A-1やろうか。採番待ちタスクとして承認します。」
 - 種別候補: `DISCOVERY`
@@ -138,4 +138,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
     callで呼んでいた。修正後はどちらも0回（inline化）。
   - 未確認: Linux（CIの`ubuntu-24.04`）。`f01c66a6`の3か所がLinuxで効いたかは、この結果からは分からない。
     仮説（未検証）: Linuxでbenchmarkの特殊化が効かず汎用版を通っていたなら、修正前は要素ごとにcallが1回増えていたことになる。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-09、Linux CI artifactによる同一hot loopの配置差確認と合わせ、
+  `PERM-036`へ正式統合した。macOS・Linuxとも修正前後のregressed hot loop自体は同じ命令列で、
+  Linuxでは遅い側だけ64 byte境界をまたぐ。inline属性がhot loopの命令を直接減らしたという説明は
+  採用せず、配置依存の有力な観測と未確定な因果を`PERFORMANCE_REGRESSION_BISECTION.md`へ分離して受入。

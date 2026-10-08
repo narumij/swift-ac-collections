@@ -1,8 +1,18 @@
 # Performance Regression Investigation — Assembly Diff Review
 
+> **Superseded preliminary analysis (2026-10-09).** This review compared broad
+> binary differences before the regressed benchmark's executed hot loop was
+> identified. Later base / HEAD artifact analysis found that the sequential-access
+> hot loop has identical instructions and differs in placement: only the slower
+> build crosses a 64-byte boundary. The separate generic buffer getter discussed
+> below is not called by that measured hot loop. Treat its inlining hypothesis as
+> rejected for this regression, not as the current root-cause assessment. The
+> accepted evidence and remaining uncertainty are recorded in
+> `PERFORMANCE_REGRESSION_BISECTION.md` under `PERM-036`.
+
 ## Status
 
-- Status: Investigation
+- Status: Superseded preliminary investigation
 - Severity: High
 - Symptom: Benchmark performance regression exceeding 30%
 - Platform: Linux x86_64

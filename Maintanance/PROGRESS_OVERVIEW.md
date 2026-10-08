@@ -145,7 +145,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-003` | `DONE` | Claude | 現行Permutation契約の基準固定 | 2026-10-07、削除済みAPIの非露出をcompile時に固定し、重複要素・非Array入力のtestを追加 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-011` | `DONE` | Claude | Permutation公開型の改名 | 2026-10-07、`NextPermutationsSequence`/`.Iterator`/`.Permutation`へ改名し`Permutations`名前空間を廃止（source-breaking、ユーザー承認済み） | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-012` | `DONE` | Claude | Permutation仕様のTest as Specification化 | 2026-10-07、仕様をテストの連番fileへ移し、`Specification.md`を削除（ユーザー判断）。テストで表せない約束はソースのドキュメントコメントへ | `Tests/PermutationTests/NextPermutationsSequence/` |
-| `PERM-013` | `WAITING_USER` | User / Claude | Permutation性能のCIベース比較 | 二library構成の実装・静的検証は完了。ユーザーのpush後、performance jobのbase / HEAD比較結果を確認して基準を取得する | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-013` | `DONE` | User / Claude / Codex | Permutation性能のCIベース比較 | 2026-10-08、PR #174のperformance job成功とmergeを確認。5計測を継続比較へ追加し、互換導入前の通常版基準を確定 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-014` | `DONE` | Codex | [EXECUTION] Permutation互換modeの実施手順統合 | 2026-10-08、二つの判断結果から成果単位、commit境界、mode別検証を確定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-015` | `DONE` | Codex | [EXECUTION] Permutation互換task依存の再評価 | 2026-10-08、性能基準を互換ソース隔離の着手前提に採用し、実装・test・再公開・CI・単一file・文書のGateを確定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |

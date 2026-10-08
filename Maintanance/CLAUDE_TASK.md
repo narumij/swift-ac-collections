@@ -12,7 +12,7 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
 - 新規bounded assignment: なし。
-- 本線の現在状態: Permutation性能CIのpush・実行結果待ち。互換ソース隔離はまだ開始しない。
+- 本線の現在状態: Permutation性能CIはPR #174で成功・merge済み。次の互換ソース隔離は未割当。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
@@ -243,7 +243,7 @@ integration, acceptance, Registry state changes, and public-document completion.
 The rules below remain as bounded-task execution constraints. They do not grant standing authority
 to select the next task, restart frozen work, or act on behalf of Codex.
 
-The current branch is `develop/misc/50`. `try/index/1` was merged by PR #158 at `a6c8a474`.
+The current branch is `devleop/misc/51`. `develop/misc/50` was merged by PR #174 at `046c5359`.
 Verify the current branch before editing; do not rely on this line alone.
 
 ### Communication

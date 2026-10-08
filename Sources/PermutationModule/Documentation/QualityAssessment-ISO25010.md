@@ -75,6 +75,10 @@ current / base双方で小size用libraryを同じ結果fileへ追記する。Cod
 5 titleとの完全一致・重複なし、両経路の対称性を静的に再確認した。実際の性能値、size列、所要時間は
 ユーザーのpush後にperformance jobで確認する。
 
+PR #174のperformance jobはbase / HEAD比較を含めて成功し、同PRは`046c5359`で`main`へmergeされた。
+これによりPermutation 5計測は以後のperformance jobで継続比較され、互換ソース隔離前の通常版性能基準を
+取得できる状態になった。初回結果に回帰判定上の問題は報告されていない。
+
 ### 3.3 互換性（Compatibility）
 
 | 副特性 | 判定 | 根拠 |

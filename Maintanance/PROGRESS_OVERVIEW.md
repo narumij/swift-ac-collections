@@ -197,10 +197,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-036` | `DONE` | Claude / Codex | [EXECUTION] OptionalArray通常testの番号付き仕様file分割 | 2026-10-08、通常35件をXCTestのまま`OptionalArray_0_`〜`_6_`へ一度ずつ移し、test名集合一致と成功をCodexが確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-037` | `DONE` | Claude / Codex | [EXECUTION] OptionalArray Death Testの番号付きfile改名 | 2026-10-08、Swift Testing 21件、構成、保存指示を維持した100% renameと成功をCodexが確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-038` | `DONE` | Codex | [EXECUTION] OptionalArray Test as Specification完成判定 | 2026-10-08、file番号、test名集合、契約対応、通常35件・Death Test 21件の結果と`Tests/TESTING.md`同期を検収 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-039` | `ACTIVE` | Claude | [DISCOVERY] OptionalArrayの機能適合性・信頼性・安全性の証拠表 | 公開契約、仕様test、Death Test、境界・寿命・次元について評価せず事実・根拠・未検証範囲を整理 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
-| `OPT-040` | `ACTIVE` | Claude | [DISCOVERY] OptionalArrayの性能効率性・互換性・柔軟性の証拠表 | benchmark、計算量、SwiftPM、platform、再公開・同時利用の現状を新規計測や評価なしで整理 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
-| `OPT-041` | `ACTIVE` | Claude | [DISCOVERY] OptionalArrayのインタラクション能力・セキュリティ・保守性・利用時品質の証拠表 | コメント、誤用、unsafe境界、View寿命、source・test構成、EDPC利用例を評価せず整理 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
-| `OPT-042` | `FROZEN` | Codex | [EXECUTION] OptionalArray品質評価初版の統合・完成判定 | OPT-039〜041の受入後、Codexが品質特性の解釈、評価語、既知の不足、文書作業と1.0準備への引き渡しを統合 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
+| `OPT-039` | `DONE` | Claude / Codex | [DISCOVERY] OptionalArrayの機能適合性・信頼性・安全性の証拠表 | 2026-10-08、公開契約、仕様test、Death Test、境界・寿命・次元の事実・根拠・未検証範囲をCodexが受入 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
+| `OPT-040` | `DONE` | Claude / Codex | [DISCOVERY] OptionalArrayの性能効率性・互換性・柔軟性の証拠表 | 2026-10-08、benchmark、計算量、SwiftPM、platform、再公開・同時利用の既存根拠をCodexが受入 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
+| `OPT-041` | `DONE` | Claude / Codex | [DISCOVERY] OptionalArrayのインタラクション能力・セキュリティ・保守性・利用時品質の証拠表 | 2026-10-08、コメント、誤用、unsafe境界、View寿命、source・test構成、利用例の証拠をCodexが受入 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
+| `OPT-042` | `ACTIVE` | Codex | [EXECUTION] OptionalArray品質評価初版の統合・完成判定 | OPT-039〜041を受入済み。Codexが品質特性の解釈、評価語、既知の不足、文書作業と1.0準備への引き渡しを統合 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `Tests/TESTING.md` |

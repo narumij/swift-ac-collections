@@ -13,9 +13,9 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
 - 新規bounded assignment: あり。`GRAPH-004`のfallbackとして、Permutationのbuffer element access経路が
   保守上のsmellかを一問だけ調査する。下の「Current bounded assignment」を実施する。
-- 本線の現在状態: 0.5.0では通常Permutationだけを公開するため、互換traitと通常sourceの排他条件を
-  撤回し、PR #175の全CI成功後、`main`の`0dc1bd26`へtag `0.5.0`を作成済み。
-  互換切替とCI分離は`prepare/compatible/2`統合後に扱い、互換性能計測は行わない。
+- 本線の現在状態: `0.5.0` tag後の`prepare/compatible/2`統合、互換defineと通常source排他、
+  Debug・Release全test、互換branchのCI整理、remote pushまで完了。互換性能計測は行わない。
+  次の製品作業は新しい中間ゴールのユーザー判断待ちで、現行smell調査以外の追加assignmentはない。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。

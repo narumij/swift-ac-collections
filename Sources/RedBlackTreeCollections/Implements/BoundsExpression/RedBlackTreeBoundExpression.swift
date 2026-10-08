@@ -39,7 +39,7 @@
 /// - `before(_:)` : The previous element
 /// - `after(_:)` : The next element
 @frozen
-public struct RedBlackTreeBoundExpression<_Key> {
+public struct RedBlackTreeBoundExpression<Key> {
 
   @inlinable
   init(_internal: Internal) {
@@ -96,16 +96,16 @@ extension RedBlackTreeBoundExpression {
     case start
     case last
     case end
-    case lowerBound(_Key)
-    case upperBound(_Key)
-    case find(_Key)
+    case lowerBound(Key)
+    case upperBound(Key)
+    case find(Key)
     indirect case advanced(offset: Int, limit: Internal? = nil)
     case before
     case after
-    case lessThan(_Key)
-    case greaterThan(_Key)
-    case lessThanOrEqual(_Key)
-    case greaterThanOrEqual(_Key)
+    case lessThan(Key)
+    case greaterThan(Key)
+    case lessThanOrEqual(Key)
+    case greaterThanOrEqual(Key)
     #if DEBUG
       // 性能問題が発生したので、デバッグ便利ケース落ち
       case index(UnsafeIndexV3)
@@ -154,7 +154,7 @@ extension RedBlackTreeBoundExpression {
   /// - Complexity: O(log `count`)
   ///   (when evaluated)
   @inlinable
-  public static func lowerBound(_ k: _Key) -> Self {
+  public static func lowerBound(_ k: Key) -> Self {
     .init(_internal: .init(.lowerBound(k)))
   }
 
@@ -165,7 +165,7 @@ extension RedBlackTreeBoundExpression {
   /// - Complexity: O(log `count`)
   ///   (when evaluated)
   @inlinable
-  public static func upperBound(_ k: _Key) -> Self {
+  public static func upperBound(_ k: Key) -> Self {
     .init(_internal: .init(.upperBound(k)))
   }
 
@@ -176,42 +176,42 @@ extension RedBlackTreeBoundExpression {
   /// - Complexity: O(log `count`)
   ///   (when evaluated)
   @inlinable
-  public static func find(_ k: _Key) -> Self {
+  public static func find(_ k: Key) -> Self {
     .init(_internal: .init(.find(k)))
   }
 
   /// Represents the greatest element that is less than the given value.
   @inlinable
-  public static func lessThan(_ k: _Key) -> Self {
+  public static func lessThan(_ k: Key) -> Self {
     .init(_internal: .init(.lessThan(k)))
   }
 
   /// Represents the smallest element that is greater than the given value.
   @inlinable
-  public static func greaterThan(_ k: _Key) -> Self {
+  public static func greaterThan(_ k: Key) -> Self {
     .init(_internal: .init(.greaterThan(k)))
   }
 
   /// Represents the greatest element that is less than or equal to the given value.
   @inlinable
-  public static func lessThanOrEqual(_ k: _Key) -> Self {
+  public static func lessThanOrEqual(_ k: Key) -> Self {
     .init(_internal: .init(.lessThanOrEqual(k)))
   }
 
   /// Represents the smallest element that is greater than or equal to the given value.
   @inlinable
-  public static func greaterThanOrEqual(_ k: _Key) -> Self {
+  public static func greaterThanOrEqual(_ k: Key) -> Self {
     .init(_internal: .init(.greaterThanOrEqual(k)))
   }
 
   #if DEBUG
     @inlinable
-    public static func index(_ p: UnsafeIndexV3) -> Self {
-      .init(_internal: .init(.index(p.purified)))
+    package static func index(_ p: UnsafeIndexV3) -> Self {
+      .init(_internal: .init(.index(p)))
     }
 
     @inlinable
-    public static func debug(_ e: SealError) -> Self {
+    package static func debug(_ e: SealError) -> Self {
       .init(_internal: .init(.debug(e)))
     }
   #endif

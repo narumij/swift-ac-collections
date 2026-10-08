@@ -15,60 +15,62 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeIterator {
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeIterator {
 
-  public struct _Obverse1:
-    _UnsafeNodePtrType,
-    UnsafeIteratorProtocol,
-    ObverseIterator,
-    IteratorProtocol,
-    Sequence,
-    Equatable
-  {
-    @inlinable
-    public init(_start: _SealedPtr, _end: _SealedPtr) {
-      self._start = _start.pointer!
-      self._end = _end.pointer!
-      self._current = _start.pointer!
-    }
-
-    @inlinable
-    public init(_start: _NodePtr, _end: _NodePtr) {
-      self._start = _start
-      self._end = _end
-      self._current = _start
-    }
-
-    public let _start: _NodePtr
-    public let _end: _NodePtr
-    public var _current: _NodePtr
-
-    public var _sealed_start: _SealedPtr {
-      _start.uncheckedSeal
-    }
-
-    public var _sealed_end: _SealedPtr {
-      _end.uncheckedSeal
-    }
-
-    @inlinable
-    public mutating func next() -> _NodePtr? {
-      guard _current != _end else { return nil }
-      // 最悪でもendで止まる
-      guard _current.___has_payload_content else {
-        fatalError(.outOfBounds)
+    public struct _Obverse1:
+      _UnsafeNodePtrType,
+      UnsafeIteratorProtocol,
+      ObverseIterator,
+      IteratorProtocol,
+      Sequence,
+      Equatable
+    {
+      @inlinable
+      public init(_start: _SealedPtr, _end: _SealedPtr) {
+        self._start = _start.pointer!
+        self._end = _end.pointer!
+        self._current = _start.pointer!
       }
-      let __r = _current
-      _current = __tree_next_iter(_current)
-      return __r
-    }
 
-    public typealias Reversed = _Reverse1
+      @inlinable
+      public init(_start: _NodePtr, _end: _NodePtr) {
+        self._start = _start
+        self._end = _end
+        self._current = _start
+      }
 
-    public func reversed() -> UnsafeIterator._Reverse1 {
-      .init(_start: _sealed_start, _end: _sealed_end)
+      public let _start: _NodePtr
+      public let _end: _NodePtr
+      public var _current: _NodePtr
+
+      public var _sealed_start: _SealedPtr {
+        _start.uncheckedSeal
+      }
+
+      public var _sealed_end: _SealedPtr {
+        _end.uncheckedSeal
+      }
+
+      @inlinable
+      public mutating func next() -> _NodePtr? {
+        guard _current != _end else { return nil }
+        // 最悪でもendで止まる
+        guard _current.___has_payload_content else {
+          fatalError(.outOfBounds)
+        }
+        let __r = _current
+        _current = __tree_next_iter(_current)
+        return __r
+      }
+
+      public typealias Reversed = _Reverse1
+
+      public func reversed() -> UnsafeIterator._Reverse1 {
+        .init(_start: _sealed_start, _end: _sealed_end)
+      }
     }
   }
-}
 
-extension UnsafeIterator._Obverse1: @unchecked Sendable {}
+  extension UnsafeIterator._Obverse1: @unchecked Sendable {}
+#endif

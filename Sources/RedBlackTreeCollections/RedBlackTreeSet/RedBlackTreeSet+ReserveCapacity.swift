@@ -25,6 +25,9 @@
 extension RedBlackTreeSet {
 
   /// Creates an empty set with preallocated space for at least the specified number of elements.
+  ///
+  /// - Parameter minimumCapacity: The minimum number of elements for which to allocate storage.
+  /// - Complexity: O(1).
   @inlinable
   public init(minimumCapacity: Int) {
     self.init(__tree_: .create(minimumCapacity: minimumCapacity))

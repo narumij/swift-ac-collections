@@ -20,6 +20,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if COMPATIBLE_ATCODER_2025
+@_documentation(visibility: internal)
 public protocol ObverseIterator: IteratorProtocol
 where Element == ReversedIterator.Element {
   associatedtype ReversedIterator: IteratorProtocol
@@ -30,13 +32,12 @@ extension ObverseIterator {
   public typealias Reversed = ReversedIterator
 }
 
+@_documentation(visibility: internal)
 public protocol ReverseIterator: IteratorProtocol {}
+#endif
 
 #if !COMPATIBLE_ATCODER_2025
-  public protocol UnsafeIteratorProtocol: _UnsafeNodePtrType, IteratorProtocol {
-    init(_start: _NodePtr, _end: _NodePtr)
-  }
-
+  @_documentation(visibility: internal)
   public protocol UnsafeAssosiatedIterator: _UnsafeNodePtrType, IteratorProtocol
   where Source.Element == _NodePtr {
     associatedtype Base: ___TreeBase

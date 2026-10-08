@@ -211,13 +211,13 @@
 
   extension RedBlackTreeSliceV2.KeyValue {
 
-    /// Indexがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity:
-    ///
-    ///   ベースがset, map, dictionaryの場合、O(1)
-    ///
-    ///   ベースがmultiset, multimapの場合 O(log *n*)
+    // Indexがsubscriptやremoveで利用可能か判別します
+    //
+    // - Complexity:
+    //
+    //   ベースがset, map, dictionaryの場合、O(1)
+    //
+    //   ベースがmultiset, multimapの場合 O(log *n*)
     @inlinable
     public func isValid(index i: Index) -> Bool {
       (try? __tree_.__purified_(i).map { ___contains($0.pointer) }.get()) ?? false
@@ -244,8 +244,8 @@
 
   extension RedBlackTreeSliceV2.KeyValue {
 
-    public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
-    public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+    public typealias Keys = UnsafeIterator.Keys<Base>
+    public typealias Values = UnsafeIterator.MappedValues<Base>
 
     #if !COMPATIBLE_ATCODER_2025
       /// - Complexity: O(1)

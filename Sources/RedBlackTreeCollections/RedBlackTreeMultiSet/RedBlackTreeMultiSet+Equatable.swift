@@ -29,7 +29,9 @@ extension RedBlackTreeMultiSet: Equatable {
   /// - Parameters:
   ///   - lhs: A value to compare.
   ///   - rhs: Another value to compare.
-  ///   
+  /// - Returns: `true` if both multisets contain the same elements with the
+  ///   same multiplicities; otherwise, `false`.
+  ///
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {

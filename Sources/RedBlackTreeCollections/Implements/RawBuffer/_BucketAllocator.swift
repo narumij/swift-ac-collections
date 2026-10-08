@@ -97,24 +97,24 @@ package struct _BucketAllocator {
   public typealias _BucketPointer = UnsafeMutablePointer<_Bucket>
   public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 
-  /// `Node|Payload` のペア形式でのstrideとalignment
+  // `Node|Payload` のペア形式でのstrideとalignment
   @usableFromInline
   package let pairLayout: _MemoryLayout
 
-  /// UnsafeNode のstrideとalignement
+  // UnsafeNode のstrideとalignement
   @usableFromInline
   let nodeLayout: _MemoryLayout
 
-  /// `_Payload` のstrideとalignement
+  // `_Payload` のstrideとalignement
   @usableFromInline
   let payloadLayout: _MemoryLayout
 
-  /// 型を消去した `_Payload` のdeinitializer
-  ///
-  /// Genericsで型を特定した解放処理では、実行時に型情報へのアクセスが毎度かかり高コストなので、これを削減するためにこのようにしてある
-  ///
-  /// 普段からその方についてよく知ってるケースでは軽減されるのだが、解放処理専門といった時々しか型に触れないインスタンスで高コストになりがち
-  ///
+  // 型を消去した `_Payload` のdeinitializer
+  //
+  // Genericsで型を特定した解放処理では、実行時に型情報へのアクセスが毎度かかり高コストなので、これを削減するためにこのようにしてある
+  //
+  // 普段からその方についてよく知ってるケースでは軽減されるのだが、解放処理専門といった時々しか型に触れないインスタンスで高コストになりがち
+  //
   @usableFromInline
   let deinitialize: (UnsafeMutableRawPointer) -> Void
 }

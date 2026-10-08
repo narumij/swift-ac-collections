@@ -7,6 +7,14 @@
 
 #if COMPATIBLE_ATCODER_2025
   extension UnsafeIterator {
+    public typealias Values = UnsafeIterator.ValueObverse
+    public typealias Keys = UnsafeIterator.KeyObverse
+    public typealias KeyValues = UnsafeIterator.KeyValueObverse
+    public typealias MappedValues = UnsafeIterator.MappedValueObverse
+  }
+
+  extension UnsafeIterator {
+
     public typealias _RemoveTrait = _RemoveAware
     public typealias _TieTrait = Tied
 

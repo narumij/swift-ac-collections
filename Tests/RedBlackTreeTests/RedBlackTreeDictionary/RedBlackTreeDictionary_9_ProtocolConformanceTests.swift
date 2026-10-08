@@ -53,6 +53,26 @@ extension RedBlackTreeDictionaryProtocolConformanceTests {
     XCTAssertEqual(mirror.displayStyle, .dictionary)
     XCTAssertEqual(mirror.children.count, dict.count)
   }
+
+  /// すべての子がラベル無し(unlabeled)で、`(key:value:)`タプルとしてcastできること
+  func test_customReflectable_childrenAreUnlabeledKeyValueTuples() {
+    let dict: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b"]
+    let mirror = dict.customMirror
+
+    XCTAssertTrue(mirror.children.allSatisfy { $0.label == nil })
+    let pairs = mirror.children.compactMap { $0.value as? (key: Int, value: String) }
+    XCTAssertEqual(pairs.count, dict.count)
+    XCTAssertEqual(Set(pairs.map(\.key)), [1, 2])
+    XCTAssertEqual(Set(pairs.map(\.value)), ["a", "b"])
+  }
+
+  /// 空のDictionaryの子は0件であること
+  func test_customReflectable_emptyDictionaryHasNoChildren() {
+    let dict = RedBlackTreeDictionary<Int, String>()
+    let mirror = dict.customMirror
+
+    XCTAssertEqual(mirror.children.count, 0)
+  }
 }
 
 // MARK: - Is Trivially Identical
@@ -85,6 +105,15 @@ extension RedBlackTreeDictionaryProtocolConformanceTests {
     let a: RedBlackTreeDictionary<Int, String> = [1: "a"]
     let b: RedBlackTreeDictionary<Int, String> = [1: "b"]
     XCTAssertNotEqual(a, b)
+  }
+
+  func test_equatable_rangeViewsFromDifferentTreesCompareByElements() {
+    let aa = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: (0...5).map { ($0, $0) })
+    let bb = RedBlackTreeDictionary<Int, Int>(uniqueKeysWithValues: (3...8).map { ($0, $0) })
+
+    XCTAssertEqual(aa[aa.lowerBound(3)..<aa.lowerBound(6)], bb[bb.lowerBound(3)..<bb.lowerBound(6)])
+    XCTAssertNotEqual(
+      aa[aa.lowerBound(2)..<aa.lowerBound(6)], bb[bb.lowerBound(3)..<bb.lowerBound(6)])
   }
 }
 
@@ -127,3 +156,32 @@ extension RedBlackTreeDictionaryProtocolConformanceTests {
   }
 }
 #endif
+
+// MARK: - elementsEqual / lexicographicallyPrecedes
+extension RedBlackTreeDictionaryProtocolConformanceTests {
+
+  func test_elementsEqual_trueForSameKeyValuePairsInKeyOrder() {
+    let a: RedBlackTreeDictionary = [1: "a", 2: "b"]
+    let b: RedBlackTreeDictionary = [2: "b", 1: "a"]
+    XCTAssertTrue(a.elementsEqual(b, by: ==))
+  }
+
+  func test_elementsEqual_falseWhenValuesDiffer() {
+    let a: RedBlackTreeDictionary = [1: "a", 2: "b"]
+    let b: RedBlackTreeDictionary = [1: "a", 2: "z"]
+    XCTAssertFalse(a.elementsEqual(b, by: ==))
+  }
+
+  func test_lexicographicallyPrecedes_trueWhenSmallerAtFirstDifference() {
+    let a: RedBlackTreeDictionary = [1: "a", 2: "b"]
+    let b: RedBlackTreeDictionary = [1: "a", 2: "c"]
+    XCTAssertTrue(a.lexicographicallyPrecedes(b, by: <))
+  }
+
+  func test_lexicographicallyPrecedes_comparesLengthAfterCommonPrefix() {
+    let shorter: RedBlackTreeDictionary = [1: "a"]
+    let longer: RedBlackTreeDictionary = [1: "a", 2: "b"]
+    XCTAssertTrue(shorter.lexicographicallyPrecedes(longer, by: <))
+    XCTAssertFalse(longer.lexicographicallyPrecedes(shorter, by: <))
+  }
+}

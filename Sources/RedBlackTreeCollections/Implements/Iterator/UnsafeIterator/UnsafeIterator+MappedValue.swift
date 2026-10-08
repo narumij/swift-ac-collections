@@ -98,6 +98,7 @@
 
 extension UnsafeIterator._MappedValue: @unchecked Sendable where Source: Sendable {}
 
+#if COMPATIBLE_ATCODER_2025
 extension UnsafeIterator._MappedValue: ObverseIterator
 where
   Source: ObverseIterator,
@@ -112,3 +113,4 @@ where
 
 extension UnsafeIterator._MappedValue: ReverseIterator
 where Source: ReverseIterator {}
+#endif

@@ -55,7 +55,7 @@ print(numbers) // -> [5,6,7,8,9]
 
 ```swift
 var numbers = RedBlackTreeSet<Int>(0..<10)
-numbers[.startIndex..<.find(5)].erase()
+numbers[.start..<.find(5)].erase()
 print(numbers) // -> [5,6,7,8,9]
 ```
 

@@ -22,7 +22,7 @@
 
 // MARK: - RedBlackTreeSet
 
-/// A range expression for ordered red-black trees.
+/// A range expression for sorted red-black trees.
 ///
 /// This type represents half-open, closed, partial, and equal ranges
 /// using `RedBlackTreeBoundExpression` as endpoints.
@@ -34,9 +34,9 @@
 ///
 /// - SeeAlso: `RedBlackTreeBoundExpression`
 @frozen
-public enum RedBlackTreeBoundRangeExpression<_Key> {
+public enum RedBlackTreeBoundRangeExpression<Key> {
   /// An endpoint expression of the range.
-  public typealias Bound = RedBlackTreeBoundExpression<_Key>
+  public typealias Bound = RedBlackTreeBoundExpression<Key>
   /// A half-open range `[from, to)`.
   ///
   /// - Parameters:
@@ -74,53 +74,53 @@ public enum RedBlackTreeBoundRangeExpression<_Key> {
   /// - Note:
   ///   - For sets, the result contains at most one element.
   ///   - For multisets or multimaps, it spans all equal-key elements.
-  case equalRange(_Key)
+  case equalRange(Key)
 }
 
 // Sequence適合は不可能
 
 @inlinable
-public func ..< <_Key>(
-  lhs: RedBlackTreeBoundExpression<_Key>, rhs: RedBlackTreeBoundExpression<_Key>
+public func ..< <Key>(
+  lhs: RedBlackTreeBoundExpression<Key>, rhs: RedBlackTreeBoundExpression<Key>
 )
-  -> RedBlackTreeBoundRangeExpression<_Key>
+  -> RedBlackTreeBoundRangeExpression<Key>
 {
   .range(from: lhs, to: rhs)
 }
 
 @inlinable
-public func ... <_Key>(
-  lhs: RedBlackTreeBoundExpression<_Key>, rhs: RedBlackTreeBoundExpression<_Key>
+public func ... <Key>(
+  lhs: RedBlackTreeBoundExpression<Key>, rhs: RedBlackTreeBoundExpression<Key>
 )
-  -> RedBlackTreeBoundRangeExpression<_Key>
+  -> RedBlackTreeBoundRangeExpression<Key>
 {
   .closedRange(from: lhs, through: rhs)
 }
 
 @inlinable
-public prefix func ..< <_Key>(rhs: RedBlackTreeBoundExpression<_Key>)
-  -> RedBlackTreeBoundRangeExpression<_Key>
+public prefix func ..< <Key>(rhs: RedBlackTreeBoundExpression<Key>)
+  -> RedBlackTreeBoundRangeExpression<Key>
 {
   .partialRangeTo(rhs)
 }
 
 @inlinable
-public prefix func ... <_Key>(rhs: RedBlackTreeBoundExpression<_Key>)
-  -> RedBlackTreeBoundRangeExpression<_Key>
+public prefix func ... <Key>(rhs: RedBlackTreeBoundExpression<Key>)
+  -> RedBlackTreeBoundRangeExpression<Key>
 {
   .partialRangeThrough(rhs)
 }
 
 @inlinable
-public postfix func ... <_Key>(lhs: RedBlackTreeBoundExpression<_Key>)
-  -> RedBlackTreeBoundRangeExpression<_Key>
+public postfix func ... <Key>(lhs: RedBlackTreeBoundExpression<Key>)
+  -> RedBlackTreeBoundRangeExpression<Key>
 {
   .partialRangeFrom(lhs)
 }
 
 @inlinable
-public func equalRange<_Key>(_ __v: _Key)
-  -> RedBlackTreeBoundRangeExpression<_Key>
+public func equalRange<Key>(_ key: Key)
+  -> RedBlackTreeBoundRangeExpression<Key>
 {
-  .equalRange(__v)
+  .equalRange(key)
 }

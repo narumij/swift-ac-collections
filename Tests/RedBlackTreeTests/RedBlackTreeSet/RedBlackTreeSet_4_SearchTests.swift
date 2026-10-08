@@ -62,7 +62,6 @@ final class RedBlackTreeSetSearchTests: RedBlackTreeTestCase {
     XCTAssertNil(notFoundIndex)
   }
 
-
   /// first(where:) が条件を満たす最初の要素を返すこと
   func test_first_where_shouldReturnCorrectElement() {
     let set = RedBlackTreeSet([1, 2, 3, 4, 5])
@@ -138,3 +137,18 @@ extension RedBlackTreeSetSearchTests {
     XCTAssertEqual(sub + [], [3, 4, 5, 6])
   }
 }
+
+#if !COMPATIBLE_ATCODER_2025
+  import RedBlackTreeCollections
+  import XCTest
+
+  final class RedBlackTreeSetCountOfTests: RedBlackTreeTestCase {
+
+    /// `count(of:)`は、要素を含めば1、含まなければ0を返すこと。
+    func testCountOfIsOneOrZero() {
+      let s = RedBlackTreeSet<Int>([1, 2, 3])
+      XCTAssertEqual(s.count(of: 2), 1)
+      XCTAssertEqual(s.count(of: 9), 0)
+    }
+  }
+#endif

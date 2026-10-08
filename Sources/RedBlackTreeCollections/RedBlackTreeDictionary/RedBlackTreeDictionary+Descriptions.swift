@@ -24,7 +24,7 @@
 
 extension RedBlackTreeDictionary: CustomStringConvertible {
 
-  /// A string that represents the contents of the set.
+  /// A string that represents the contents of the dictionary.
   @inlinable
   public var description: String {
     _dictionaryDescription(for: self)
@@ -35,7 +35,7 @@ extension RedBlackTreeDictionary: CustomStringConvertible {
 
 extension RedBlackTreeDictionary: CustomDebugStringConvertible {
 
-  /// A string that represents the contents of the set, suitable for debugging.
+  /// A string that represents the contents of the dictionary, suitable for debugging.
   public var debugDescription: String {
     description
   }

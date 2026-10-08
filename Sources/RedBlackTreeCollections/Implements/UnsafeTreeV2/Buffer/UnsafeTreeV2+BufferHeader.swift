@@ -61,9 +61,9 @@ package struct UnsafeTreeV2BufferHeader {
   @usableFromInline var root_ptr: _NodeRef
   @usableFromInline var freshBucketAllocator: _BucketAllocator
 
-  /// IndexやIteratorを結ぶ共有メモリオブジェクトの内部プロパティ
-  ///
-  /// - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
+  // IndexやIteratorを結ぶ共有メモリオブジェクトの内部プロパティ
+  //
+  // - WARNING: 外部から変更しないこと。未定義動作や過剰開放となります。
   @usableFromInline var _tied: _TiedRawBuffer?
 
   @usableFromInline var _lazyDetach: _LazyTie?
@@ -73,7 +73,7 @@ package struct UnsafeTreeV2BufferHeader {
   #endif
 
   #if AC_COLLECTIONS_INTERNAL_CHECKS
-    /// CoWの発火回数を観察するためのプロパティ
+    // CoWの発火回数を観察するためのプロパティ
     @usableFromInline internal var copyCount: UInt = 0
   #endif
 }
@@ -85,7 +85,7 @@ extension UnsafeTreeV2BufferHeader {
     freshBucketAllocator.nodeLayout
   }
 
-  /// `_Payload`のstrideとalignement
+  // `_Payload`のstrideとalignement
   @inlinable
   var payloadLayout: _MemoryLayout {
     freshBucketAllocator.payloadLayout
@@ -121,7 +121,7 @@ extension UnsafeTreeV2BufferHeader {
   @inlinable
   internal func __root_ptr() -> _NodeRef { root_ptr }
 
-  /// IndexやIteratorとのメモリ共有が発生してないことを示す
+  // IndexやIteratorとのメモリ共有が発生してないことを示す
   @usableFromInline
   var isRawBufferUniquelyOwned: Bool {
     _tied == nil
@@ -138,11 +138,11 @@ extension UnsafeTreeV2BufferHeader {
   // また、このヘッダ全体はスレッドセーフではないため、この2参照だけをatomic化する意義も要検討。
   // 所有構造の再設計と、通常利用時の生成コスト・アクセス性能を測定できる段階で再検討すること。
 
-  /// IndexやIteratorを結ぶ共有メモリ
-  ///
-  /// ヘッダーにとっては解放責任のデタッチ先
-  ///
-  /// - WARNING: 触ると生成されるので不必要に触らないこと
+  // IndexやIteratorを結ぶ共有メモリ
+  //
+  // ヘッダーにとっては解放責任のデタッチ先
+  //
+  // - WARNING: 触ると生成されるので不必要に触らないこと
   @usableFromInline
   var tiedRawBuffer: _TiedRawBuffer {
     mutating get {
@@ -165,7 +165,7 @@ extension UnsafeTreeV2BufferHeader {
     }
   }
 
-  /// 確保済みメモリの内容を未初期化に戻し、木を空にする
+  // 確保済みメモリの内容を未初期化に戻し、木を空にする
   @usableFromInline
   internal mutating func deinitialize() {
     ___flushFreshPool()
@@ -177,6 +177,7 @@ extension UnsafeTreeV2BufferHeader {
 
 extension UnsafeTreeV2BufferHeader {
 
+  // `UnsafeTreeV2.index(_:) -> _LazyTieWrappedPtr`から使われる
   @inlinable
   mutating func index(_ p: _NodePtr) -> _LazyTieWrappedPtr {
     assert(p != .nullptr)
@@ -184,7 +185,13 @@ extension UnsafeTreeV2BufferHeader {
   }
 
   @inlinable
-  mutating func index_or_nil(_ p: _NodePtr) -> _LazyTieWrappedPtr? {
+  mutating func index(_ p: _NodePtr) -> _LazyTiedPtr {
+    assert(p != .nullptr)
+    return .unchecked(p, end_ptr: end_ptr, lazyDetach: lazyDetach)
+  }
+  
+  @inlinable
+  mutating func index_or_nil(_ p: _NodePtr) -> _LazyTiedPtr? {
     assert(p != .nullptr)
     return p.___has_payload_content ? .some(index(p)) : .none
   }
@@ -332,12 +339,12 @@ extension UnsafeTreeV2BufferHeader {
       recycleHead = p
     }
 
-    /// recycle poolの先頭ノードを取り出す。
-    ///
-    /// ノード生成のホットパスでは `__construct_raw_node()` と `__construct_node(_:)` が
-    /// fresh poolとの選択を済ませているため、二重チェックを避けてここでは空判定を行わない。
-    ///
-    /// - Precondition: `recycleHead != nullptr`
+    // recycle poolの先頭ノードを取り出す。
+    //
+    // ノード生成のホットパスでは `__construct_raw_node()` と `__construct_node(_:)` が
+    // fresh poolとの選択を済ませているため、二重チェックを避けてここでは空判定を行わない。
+    //
+    // - Precondition: `recycleHead != nullptr`
     @usableFromInline
     mutating func ___popRecycle() -> _NodePtr {
       let p = recycleHead
@@ -394,6 +401,7 @@ extension UnsafeTreeV2BufferHeader {
 
 extension UnsafeTreeV2BufferHeader {
 
+  @inlinable
   public mutating func __construct_raw_node() -> _NodePtr {
     #if DEBUG
       assert(recycleCount >= 0, "リサイクル残がある場合は新規ノードを利用しないこと")
@@ -403,6 +411,7 @@ extension UnsafeTreeV2BufferHeader {
     return p
   }
 
+  @inlinable
   public mutating func __construct_node<T>(_ k: T) -> _NodePtr {
     #if DEBUG
       assert(recycleCount >= 0, "リサイクル残がある場合は新規ノードを利用しないこと")

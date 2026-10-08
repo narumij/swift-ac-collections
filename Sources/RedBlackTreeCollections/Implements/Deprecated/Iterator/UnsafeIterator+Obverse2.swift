@@ -15,19 +15,19 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension UnsafeIterator {
+#if COMPATIBLE_ATCODER_2025
+  extension UnsafeIterator {
 
-  public struct _Obverse2:
-    _UnsafeNodePtrType,
-    UnsafeIteratorProtocol,
-    ObverseIterator,
-    IteratorProtocol,
-    Sequence,
-    Equatable
-  {
-    public var _sealed_start, _sealed_end, _sealed_current: _SealedPtr
+    public struct _Obverse2:
+      _UnsafeNodePtrType,
+      UnsafeIteratorProtocol,
+      ObverseIterator,
+      IteratorProtocol,
+      Sequence,
+      Equatable
+    {
+      public var _sealed_start, _sealed_end, _sealed_current: _SealedPtr
 
-    #if COMPATIBLE_ATCODER_2025
       @inlinable
       public init(_start: _SealedPtr, _end: _SealedPtr) {
         self._sealed_start = _start
@@ -35,55 +35,44 @@ extension UnsafeIterator {
         self._sealed_current = _start
       }
 
-    #else
-      public var _start: _NodePtr { _sealed_start.pointer! }
-      public var _end: _NodePtr { _sealed_end.pointer! }
-    #endif
-
-    @inlinable
-    public init(_start: _NodePtr, _end: _NodePtr) {
-      self._sealed_start = _start.uncheckedSeal
-      self._sealed_end = _end.uncheckedSeal
-      self._sealed_current = _start.uncheckedSeal
-    }
-
-    @inlinable
-    public mutating func next() -> _NodePtr? {
-
-      let _purified_current = _sealed_current.purified
-
-      guard let _end = try? _sealed_end.purified.get() else {
-        // 範囲終端が壊れている
-        fatalError(.invalidIndex)
+      @inlinable
+      public init(_start: _NodePtr, _end: _NodePtr) {
+        self._sealed_start = _start.uncheckedSeal
+        self._sealed_end = _end.uncheckedSeal
+        self._sealed_current = _start.uncheckedSeal
       }
 
-      guard let _p = try? _purified_current.get() else {
-        // current が壊れている
-        fatalError(.invalidIndex)
+      @inlinable
+      public mutating func next() -> _NodePtr? {
+
+        let _purified_current = _sealed_current.purified
+
+        guard let _end = try? _sealed_end.purified.get() else {
+          // 範囲終端が壊れている
+          fatalError(.invalidIndex)
+        }
+
+        guard let _p = try? _purified_current.get() else {
+          // current が壊れている
+          fatalError(.invalidIndex)
+        }
+
+        // 終端に到達
+        guard _p != _end else { return nil }
+
+        _sealed_current = _purified_current.flatMap { ___tree_next_iter($0.pointer).uncheckedSeal }
+
+        return _p.pointer
       }
 
-      // 終端に到達
-      guard _p != _end else { return nil }
+      public typealias Reversed = _Reverse2
 
-      _sealed_current = _purified_current.flatMap { ___tree_next_iter($0.pointer).uncheckedSeal }
-
-      return _p.pointer
-    }
-
-    public typealias Reversed = _Reverse2
-
-    #if COMPATIBLE_ATCODER_2025
       @inlinable
       public func reversed() -> UnsafeIterator._Reverse2 {
         .init(_start: _sealed_start, _end: _sealed_end)
       }
-    #else
-      @inlinable
-      public func reversed() -> UnsafeIterator._Reverse2 {
-        .init(_start: _start, _end: _end)
-      }
-    #endif
+    }
   }
-}
 
-extension UnsafeIterator._Obverse2: @unchecked Sendable {}
+  extension UnsafeIterator._Obverse2: @unchecked Sendable {}
+#endif

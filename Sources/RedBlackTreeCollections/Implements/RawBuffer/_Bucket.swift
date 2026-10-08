@@ -33,79 +33,79 @@ package struct _Bucket {
     capacity = c
   }
 
-  /// 次のバケットへのポインタ
+  // 次のバケットへのポインタ
   @usableFromInline
   package var next: _Next? = nil
-  /// 確保数
+  // 確保数
   @usableFromInline
   package let capacity: Int
-  /// 使用数
+  // 使用数
   @usableFromInline
   package var count: Int = 0
 }
 
 extension UnsafeMutablePointer where Pointee == _Bucket {
 
-  /// 次のバケットへのポインタ
+  // 次のバケットへのポインタ
   @inlinable
   var next: UnsafeMutablePointer? { pointee.next }
 
-  /// 確保数
+  // 確保数
   @inlinable
   var capacity: Int { pointee.capacity }
 
-  /// 使用数
+  // 使用数
   @inlinable
   var count: Int { pointee.count }
 
-  /// beginノードポインタの開始アドレスを返す
-  ///
-  /// 先頭バケットにしか配置されていない
-  ///
-  /// __Primary Bucket__
-  ///
-  /// ```
-  /// |Bucket|ptr|Node||Node|Value|Node|Value|...
-  ///        ^--begin_ptr
-  /// ```
+  // beginノードポインタの開始アドレスを返す
+  //
+  // 先頭バケットにしか配置されていない
+  //
+  // __Primary Bucket__
+  //
+  // ```
+  // |Bucket|ptr|Node||Node|Value|Node|Value|...
+  //        ^--begin_ptr
+  // ```
   @inlinable
   var begin_ptr: UnsafeMutablePointer<UnsafeMutablePointer<UnsafeNode>> {
     UnsafeMutableRawPointer(advanced(by: 1))
       .assumingMemoryBound(to: UnsafeMutablePointer<UnsafeNode>.self)
   }
 
-  /// endノードの開始アドレスを返す
-  ///
-  /// 先頭バケットにしか配置されていない
-  ///
-  /// __Primary Bucket__
-  ///
-  /// ```
-  /// |Bucket|ptr|Node||Node|Value|Node|Value|...
-  ///            ^--end_ptr
-  /// ```
+  // endノードの開始アドレスを返す
+  //
+  // 先頭バケットにしか配置されていない
+  //
+  // __Primary Bucket__
+  //
+  // ```
+  // |Bucket|ptr|Node||Node|Value|Node|Value|...
+  //            ^--end_ptr
+  // ```
   @inlinable
   var end_ptr: UnsafeMutablePointer<UnsafeNode> {
     UnsafeMutableRawPointer(begin_ptr.advanced(by: 1))
       .assumingMemoryBound(to: UnsafeNode.self)
   }
 
-  /// アライメント調整ギャップも含めた開始アドレスを返す
-  ///
-  /// __Primary Bucket__
-  ///
-  /// ```
-  /// |Bucket|ptr|Node| |Node|Value|Node|Value|...
-  ///                 ^--storage
-  /// ```
-  ///
-  /// __Secondary and other Buckets__
-  /// ```
-  /// |Bucket| |Node|Value|Node|Value|...
-  ///        ^--storage
-  /// ```
-  ///
-  /// 確保数0の場合、確保領域の末尾の次のアドレスとなる
+  // アライメント調整ギャップも含めた開始アドレスを返す
+  //
+  // __Primary Bucket__
+  //
+  // ```
+  // |Bucket|ptr|Node| |Node|Value|Node|Value|...
+  //                 ^--storage
+  // ```
+  //
+  // __Secondary and other Buckets__
+  // ```
+  // |Bucket| |Node|Value|Node|Value|...
+  //        ^--storage
+  // ```
+  //
+  // 確保数0の場合、確保領域の末尾の次のアドレスとなる
   @inlinable
   func storage(isPrimary: Bool) -> UnsafeMutableRawPointer {
     isPrimary ? primaryStorage() : secondaryStorage()
@@ -121,41 +121,41 @@ extension UnsafeMutablePointer where Pointee == _Bucket {
     UnsafeMutableRawPointer(advanced(by: 1))
   }
 
-  /// ノードの開始アドレスを返す
-  ///
-  /// `Node|Payload` と隣接させるために必要なアライメント調整後のアドレスとなる
-  ///
-  /// __Primary Bucket__
-  ///
-  /// ```
-  /// |Bucket|begin ptr|end Node| |Node|Payload|Node|Payload|...
-  ///                           ^- storage
-  ///                             ^-------start
-  ///                             ^-------node(0)
-  ///                             ^-------(node alignment)
-  ///                                  ^-payload
-  ///                                  ^-(payload alignment)
-  /// ```
-  ///
-  /// __Secondary and other Buckets__
-  /// ```
-  /// |Bucket| |Node|Payload|Node|Payload|...
-  ///        ^- storage
-  ///          ^-------start
-  ///          ^-------node(0)
-  ///          ^-------(node alignment)
-  ///               ^-payload(0)
-  ///               ^-(payload alignment)
-  /// ```
-  ///
-  /// - Parameters:
-  ///   - storage: Bucket固有のメタデータ直後にある、alignment調整前のslot領域先頭アドレス。
-  ///   - payloadAlignment: Payload型に要求されるalignment。max(node, payload)で構わない。
-  ///
-  /// - Returns: `node(0)`、すなわち最初の通常ノードの開始アドレス。
-  ///
-  /// - WARNING: 確保数0の場合利用してはならない
-  ///
+  // ノードの開始アドレスを返す
+  //
+  // `Node|Payload` と隣接させるために必要なアライメント調整後のアドレスとなる
+  //
+  // __Primary Bucket__
+  //
+  // ```
+  // |Bucket|begin ptr|end Node| |Node|Payload|Node|Payload|...
+  //                           ^- storage
+  //                             ^-------start
+  //                             ^-------node(0)
+  //                             ^-------(node alignment)
+  //                                  ^-payload
+  //                                  ^-(payload alignment)
+  // ```
+  //
+  // __Secondary and other Buckets__
+  // ```
+  // |Bucket| |Node|Payload|Node|Payload|...
+  //        ^- storage
+  //          ^-------start
+  //          ^-------node(0)
+  //          ^-------(node alignment)
+  //               ^-payload(0)
+  //               ^-(payload alignment)
+  // ```
+  //
+  // - Parameters:
+  //   - storage: Bucket固有のメタデータ直後にある、alignment調整前のslot領域先頭アドレス。
+  //   - payloadAlignment: Payload型に要求されるalignment。max(node, payload)で構わない。
+  //
+  // - Returns: `node(0)`、すなわち最初の通常ノードの開始アドレス。
+  //
+  // - WARNING: 確保数0の場合利用してはならない
+  //
   @inlinable
   package func start(storage: UnsafeMutableRawPointer, payloadOrPairAlignment payloadAlignment: Int) -> UnsafeMutablePointer<
     UnsafeNode

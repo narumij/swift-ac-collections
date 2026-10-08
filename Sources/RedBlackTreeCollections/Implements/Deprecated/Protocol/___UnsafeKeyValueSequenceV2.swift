@@ -71,8 +71,8 @@
 
   extension ___UnsafeKeyValueSequenceV2__ {
 
-    public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
-    public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+    public typealias Keys = UnsafeIterator.Keys<Base>
+    public typealias Values = UnsafeIterator.MappedValues<Base>
 
     @inlinable
     internal func _keys() -> Keys {

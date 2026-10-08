@@ -25,12 +25,12 @@
 
   // sealed化した結果、本当の不安が払拭されてしまい、このままでもべつにいっかという気持ちがわいている
 
-  /// 赤黒木用重量インデックス
-  ///
-  /// C++の双方向イテレータに近い内容となっている
-  ///
-  /// - note: for文の範囲指定に使える
-  ///
+  // 赤黒木用重量インデックス
+  //
+  // C++の双方向イテレータに近い内容となっている
+  //
+  // - note: for文の範囲指定に使える
+  //
   @frozen
   public struct UnsafeIndexV2<Base>: UnsafeTreeBindingV2, UnsafeIndexProtocol_tie
   where Base: ___TreeBase & ___TreeIndex {
@@ -93,11 +93,11 @@
 
   extension UnsafeIndexV2: Comparable {
 
-    /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(1)
-    ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n*)
-    ///
-    ///   内部動作がユニークな場合、値の比較で解決できますが、
-    ///   内部動作がマルチの場合、ノード位置での比較となるので重くなります。
+    // - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(1)
+    //   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n*)
+    //
+    //   内部動作がユニークな場合、値の比較で解決できますが、
+    //   内部動作がマルチの場合、ノード位置での比較となるので重くなります。
     @inlinable
     public static func < (lhs: Self, rhs: Self) -> Bool {
       guard let r = rhs.sealed.pointer,
@@ -113,8 +113,8 @@
   // その実装が要素アクセスのたびに範囲チェックを行うことを嫌って、Stridableをやめている
   extension UnsafeIndexV2 {
 
-    /// - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(*d*)
-    ///   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n* + *d*)
+    // - Complexity: RedBlackTreeSet, RedBlackTreeMap, RedBlackTreeDictionaryの場合O(*d*)
+    //   RedBlackTreeMultiSet, RedBlackTreeMultMapの場合 O(log *n* + *d*)
     @inlinable
     public func distance(to other: Self) -> Int {
       guard
@@ -138,9 +138,9 @@
 
   extension UnsafeIndexV2 {
 
-    /// 次のイテレータを返す
-    ///
-    /// 操作が不正な場合に結果がnilとなる
+    // 次のイテレータを返す
+    //
+    // 操作が不正な場合に結果がnilとなる
     @inlinable
     public var next: Self? {
       let next = sealed.purified.flatMap { ___tree_next_iter($0.pointer) }.sealed
@@ -150,9 +150,9 @@
       return result
     }
 
-    /// 前のイテレータを返す
-    ///
-    /// 操作が不正な場合に結果がnilとなる
+    // 前のイテレータを返す
+    //
+    // 操作が不正な場合に結果がnilとなる
     @inlinable
     public var previous: Self? {
       let prev = sealed.purified.flatMap { ___tree_prev_iter($0.pointer) }.sealed
@@ -173,9 +173,9 @@
 
   extension UnsafeIndexV2 {
 
-    /// 現在位置の値を返す
-    ///
-    /// 無効な場合nilとなる
+    // 現在位置の値を返す
+    //
+    // 無効な場合nilとなる
     @inlinable
     public var pointee: Pointee? {
       guard

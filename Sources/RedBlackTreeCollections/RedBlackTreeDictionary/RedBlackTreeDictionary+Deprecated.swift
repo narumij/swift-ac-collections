@@ -103,13 +103,12 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// Removes the specified subrange of elements from the collection.
-    ///
-    /// - Important: 削除後は、subrangeのインデックスが無効になります。
-    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
-    ///     range must be valid indices of the collection.
-    /// - Returns: The key-value pair that correspond to `index`.
-    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
+    // Removes the specified subrange of elements from the collection.
+    //
+    // - Important: 削除後は、subrangeのインデックスが無効になります。
+    // - Parameter bounds: The subrange of the collection to remove. The bounds of the
+    //     range must be valid indices of the collection.
+    // - Complexity: O(*m*), where *m* is the size of `bounds`.
     @inlinable
     public mutating func removeSubrange<R: RangeExpression>(
       _ bounds: R
@@ -142,7 +141,7 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// 特殊なforEach
+    // 特殊なforEach
     @inlinable
     public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
       try _forEach(body)
@@ -161,9 +160,9 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// - Important:
-    ///  要素及びノードが削除された場合、インデックスは無効になります。
-    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    // - Important:
+    //  要素及びノードが削除された場合、インデックスは無効になります。
+    // 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
     public typealias Index = Tree.Index
   }
 
@@ -307,9 +306,9 @@
       @inline(__always) get { self[_checked: position] }
     }
 
-    /// Indexがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity: O(1)
+    // Indexがsubscriptやremoveで利用可能か判別します
+    //
+    // - Complexity: O(1)
     @inlinable
     public func isValid(index: Index) -> Bool {
       _isValid(index: index)
@@ -319,9 +318,9 @@
 
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
-    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity: O(1)
+    // RangeExpressionがsubscriptやremoveで利用可能か判別します
+    //
+    // - Complexity: O(1)
     @inlinable
     public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
     where R.Bound == Index {
@@ -369,8 +368,8 @@
 
   extension RedBlackTreeDictionary {
     
-    public typealias Keys = RedBlackTreeIteratorV2.Keys<Base>
-    public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
+    public typealias Keys = UnsafeIterator.Keys<Base>
+    public typealias Values = UnsafeIterator.MappedValues<Base>
 
     /// - Complexity: O(1)
     @inlinable
@@ -389,36 +388,36 @@
   extension RedBlackTreeDictionary {
 
     // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
-    /// 範囲 `[lower, upper)` に含まれる要素を返します。
-    /// - Complexity: O(log *n*)
-    ///
-    /// **Deprecated – 以下の代替コードをご利用ください。**
-    ///
-    /// ```swift
-    /// extension RedBlackTreeDictionary {
-    ///   public func sequence(from start: Key, to end: Key) -> SubSequence {
-    ///     self[lowerBound(start)..<lowerBound(end)]
-    ///   }
-    /// }
-    /// ```
+    // 範囲 `[lower, upper)` に含まれる要素を返します。
+    // - Complexity: O(log *n*)
+    //
+    // **Deprecated – 以下の代替コードをご利用ください。**
+    //
+    // ```swift
+    // extension RedBlackTreeDictionary {
+    //   public func sequence(from start: Key, to end: Key) -> SubSequence {
+    //     self[lowerBound(start)..<lowerBound(end)]
+    //   }
+    // }
+    // ```
     @available(*, deprecated)
     public subscript(bounds: Range<Key>) -> SubSequence {
       elements(in: bounds)
     }
 
     // setやmultisetと比べて、驚き最小違反とはいいにくいので、deprecatedには一旦しない
-    /// 範囲 `[lower, upper]` に含まれる要素を返します。
-    /// - Complexity: O(log *n*)
-    ///
-    /// **Deprecated – 以下の代替コードをご利用ください。**
-    ///
-    /// ```swift
-    /// extension RedBlackTreeDictionary {
-    ///   public func sequence(from start: Key, through end: Key) -> SubSequence {
-    ///     self[lowerBound(start)..<upperBound(end)]
-    ///   }
-    /// }
-    /// ```
+    // 範囲 `[lower, upper]` に含まれる要素を返します。
+    // - Complexity: O(log *n*)
+    //
+    // **Deprecated – 以下の代替コードをご利用ください。**
+    //
+    // ```swift
+    // extension RedBlackTreeDictionary {
+    //   public func sequence(from start: Key, through end: Key) -> SubSequence {
+    //     self[lowerBound(start)..<upperBound(end)]
+    //   }
+    // }
+    // ```
     @available(*, deprecated)
     public subscript(bounds: ClosedRange<Key>) -> SubSequence {
       elements(in: bounds)
@@ -426,18 +425,18 @@
   }
 
   extension RedBlackTreeDictionary {
-    /// キーレンジ `[lower, upper)` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    ///
-    /// **Deprecated – 以下の代替コードをご利用ください。**
-    ///
-    /// ```swift
-    /// extension RedBlackTreeDictionary {
-    ///   public func sequence(from start: Key, to end: Key) -> SubSequence {
-    ///     self[lowerBound(start)..<lowerBound(end)]
-    ///   }
-    /// }
-    /// ```
+    // キーレンジ `[lower, upper)` に含まれる要素のスライス
+    // - Complexity: O(log *n*)
+    //
+    // **Deprecated – 以下の代替コードをご利用ください。**
+    //
+    // ```swift
+    // extension RedBlackTreeDictionary {
+    //   public func sequence(from start: Key, to end: Key) -> SubSequence {
+    //     self[lowerBound(start)..<lowerBound(end)]
+    //   }
+    // }
+    // ```
     @available(*, deprecated)
     public func elements(in range: Range<Key>) -> SubSequence {
       .init(
@@ -446,18 +445,18 @@
         end: __tree_.lower_bound(range.upperBound).sealed)
     }
 
-    /// キーレンジ `[lower, upper]` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    ///
-    /// **Deprecated – 以下の代替コードをご利用ください。**
-    ///
-    /// ```swift
-    /// extension RedBlackTreeDictionary {
-    ///   public func sequence(from start: Key, through end: Key) -> SubSequence {
-    ///     self[lowerBound(start)..<upperBound(end)]
-    ///   }
-    /// }
-    /// ```
+    // キーレンジ `[lower, upper]` に含まれる要素のスライス
+    // - Complexity: O(log *n*)
+    //
+    // **Deprecated – 以下の代替コードをご利用ください。**
+    //
+    // ```swift
+    // extension RedBlackTreeDictionary {
+    //   public func sequence(from start: Key, through end: Key) -> SubSequence {
+    //     self[lowerBound(start)..<upperBound(end)]
+    //   }
+    // }
+    // ```
     @available(*, deprecated)
     public func elements(in range: ClosedRange<Key>) -> SubSequence {
       .init(
@@ -469,8 +468,8 @@
 
   extension RedBlackTreeDictionary {
 
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n* + *k*)
+    // - Important: 削除したメンバーを指すインデックスが無効になります。
+    // - Complexity: O(log *n* + *k*)
     @inlinable
     public mutating func remove(contentsOf keyRange: Range<Key>) {
       __tree_._strongEnsureUnique()
@@ -479,8 +478,8 @@
       ___remove(from: lower, to: upper)
     }
 
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n* + *k*)
+    // - Important: 削除したメンバーを指すインデックスが無効になります。
+    // - Complexity: O(log *n* + *k*)
     @inlinable
     public mutating func remove(contentsOf keyRange: ClosedRange<Key>) {
       __tree_._strongEnsureUnique()

@@ -24,7 +24,7 @@
 
 /// # RedBlackTreeMultiSet
 ///
-/// `RedBlackTreeMultiSet` is an **ordered multiset (allowing duplicates)**
+/// `RedBlackTreeMultiSet` is a **sorted multiset (allowing duplicates)**
 /// implemented using a red-black tree.
 /// Elements are always kept in sorted order.
 ///
@@ -158,6 +158,8 @@ extension RedBlackTreeMultiSet {
 
   /// Returns the number of elements equal to the given value.
   ///
+  /// - Parameter element: The element to count.
+  /// - Returns: The number of occurrences of `element` in the multiset.
   /// - Complexity: O(log `count` + `distance`), where `distance` is the number of matching elements.
   @inlinable
   public func count(of element: Element) -> Int {
@@ -169,8 +171,10 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// Returns a Boolean value that indicates whether the given element exists in the set.
+  /// Returns a Boolean value that indicates whether the given element exists in the multiset.
   ///
+  /// - Parameter element: The element to look for.
+  /// - Returns: `true` if the multiset contains at least one occurrence of `element`; otherwise, `false`.
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(_ element: Element) -> Bool {
@@ -222,9 +226,12 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// Inserts the given element in the set if it is not already present.
+  /// Inserts the given element into the multiset, including when an equivalent element is already present.
   ///
+  /// - Parameter newMember: An element to insert.
+  /// - Returns: `(true, newMember)`; a multiset always inserts another occurrence.
   /// - Complexity: O(log *n*)
+  /// - SeeAlso: `index(inserting:)`, which also returns the index of the inserted or existing element.
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
@@ -236,15 +243,82 @@ extension RedBlackTreeMultiSet {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    /// Replaces the element at `i` when it is equivalent to `newMember`.
+    ///
+    /// Requiring equivalence preserves the multiset's sorted order.
+    ///
+    /// - Parameters:
+    ///   - newMember: The replacement element.
+    ///   - i: The index of the element to replace.
+    /// - Returns: The replaced element, or `nil` if the index is invalid or the elements aren't equivalent.
+    @inlinable
+    public mutating func update(_ newMember: Element, at i: Index) -> Element? {
+      __tree_.ensureUnique()
+      let __i = __tree_.__purified_(i)
+      guard
+        __i.accessible.error == nil,
+        let i = __i.pointer
+      else {
+        return nil
+      }
+
+      let oldMember = Base.__key_(i)
+      guard oldMember == newMember else {
+        return nil
+      }
+
+      Base.__key_ptr(i).pointee = newMember
+      return oldMember
+    }
+
+  }
+#endif
+
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeMultiSet {
+
+    /// Inserts another occurrence, using `hint` as a suggested insertion position.
+    ///
+    /// When `hint` is usable, the new occurrence is inserted at that position,
+    /// including within a group of equivalent elements. Otherwise, the hint affects
+    /// only performance.
+    /// `endIndex` is a valid hint.
+    ///
+    /// - Parameters:
+    ///   - newMember: An element to insert.
+    ///   - hint: A valid index of this multiset to use as an insertion hint.
+    /// - Returns: The index of the newly inserted occurrence.
+    /// - Precondition: `hint` is valid for this multiset.
+    @inlinable
+    @discardableResult
+    public mutating func insert(_ newMember: Element, hint: Index) -> Index {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let __r = __tree_.__emplace_hint_multi(__p, newMember)
+      return __tree_.index(__r)
+    }
+  }
+#endif
+
 // MARK: - Remove
 
 extension RedBlackTreeMultiSet {
 
-  /// Removes and returns the first element of the collection.
+  /// Removes and returns one least element of the multiset.
   ///
+  /// Returns `nil` if the multiset is empty.
+  ///
+  /// - Returns: The removed element, or `nil` if the multiset was empty.
   /// - Complexity: Amortized O(1)
   @inlinable
   public mutating func popFirst() -> Element? {
+    guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.___unchecked_remove_first()
   }
@@ -253,11 +327,15 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Removes and returns the last element of the collection.
+    /// Removes and returns one greatest element of the multiset.
     ///
+    /// Returns `nil` if the multiset is empty.
+    ///
+    /// - Returns: The removed element, or `nil` if the multiset was empty.
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return __tree_.___unchecked_remove_last()
     }
@@ -266,8 +344,10 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// Removes the first element of the collection.
+  /// Removes and returns one least element of the multiset.
   ///
+  /// - Returns: The removed element.
+  /// - Precondition: The multiset isn't empty.
   /// - Complexity: Amortized O(1)
   @inlinable
   @discardableResult
@@ -282,8 +362,10 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Removes the last element of the collection.
+    /// Removes and returns one greatest element of the multiset.
     ///
+    /// - Returns: The removed element.
+    /// - Precondition: The multiset isn't empty.
     /// - Complexity: O(log *n*)
     @inlinable
     @discardableResult
@@ -301,6 +383,10 @@ extension RedBlackTreeMultiSet {
 
     /// Removes the element at the given index of the set.
     ///
+    /// - Parameter index: A valid index of the multiset. The index must refer
+    ///   to an element, not the multiset's `endIndex`.
+    /// - Returns: The removed element.
+    /// - Precondition: `index` is valid for this multiset and isn't `endIndex`.
     /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult
@@ -316,15 +402,17 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// Removes all members from the set.
+  /// Removes all elements from the multiset.
   ///
-  /// - Complexity: O(1)
+  /// - Parameter keepCapacity: Pass `true` to retain the multiset's allocated
+  ///   storage for later use.
+  /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    if keepCapacity {
+    if keepCapacity && __tree_.count > 0 {
       __tree_.ensureUnique()
       __tree_.deinitialize()
-    } else {
+    } else if !keepCapacity {
       __tree_ = .create()
     }
   }
@@ -337,6 +425,11 @@ extension RedBlackTreeMultiSet {
 
     /// Removes the element at the given position from the set and returns the index of the next element.
     ///
+    /// - Parameter ptr: A valid index of the multiset. The index must refer to
+    ///   an element, not the multiset's `endIndex`.
+    /// - Returns: The index that followed `ptr` before removal, or `endIndex`
+    ///   if the removed element was last.
+    /// - Precondition: `ptr` is valid for this multiset and isn't `endIndex`.
     /// - Complexity: Amortized O(1)
     @discardableResult
     @inlinable
@@ -349,9 +442,12 @@ extension RedBlackTreeMultiSet {
 
     /// Removes all elements that satisfy the given predicate.
     ///
+    /// - Parameter shouldBeRemoved: A closure that returns `true` for an
+    ///   element that should be removed.
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      guard __tree_.count > 0 else { return }
       __tree_.ensureUnique()
       let result = try __tree_.___erase_range_if(
         __tree_.__begin_node_.unchecked,
@@ -369,7 +465,7 @@ extension RedBlackTreeMultiSet {
     ///
     /// If multiple elements with an equivalent key exist, an arbitrary one is removed.
     ///
-    /// - Parameter member: The key of the element to remove.
+    /// - Parameter member: The element to remove.
     /// - Returns: `true` if an element was removed; otherwise `false`.
     /// - Complexity: O(log *n*)
     @inlinable
@@ -384,7 +480,7 @@ extension RedBlackTreeMultiSet {
 
     /// Removes all elements equivalent to the given key.
     ///
-    /// - Parameter member: The key of the elements to remove.
+    /// - Parameter member: The element whose equivalent occurrences are removed.
     /// - Returns: The number of elements removed.
     /// - Complexity: O(log `count` + `distance`), where `distance` is the number of removed elements.
     @inlinable

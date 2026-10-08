@@ -44,6 +44,8 @@
 
     /// Accesses the element at the specified position.
     ///
+    /// - Parameter position: A valid element index of this multiset.
+    /// - Precondition: `position` identifies an element in this multiset and isn't `endIndex`.
     /// - Complexity: O(1)
     @inlinable
     public subscript(position: Index) -> Element {

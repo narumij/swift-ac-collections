@@ -65,9 +65,9 @@
 
   extension _TiedRawBuffer {
 
-    /// つながりをたぐりよせる
-    ///
-    /// 日本人的にはお祭りなどによくある千本引きのイメージ
+    // つながりをたぐりよせる
+    //
+    // 日本人的にはお祭りなどによくある千本引きのイメージ
     @inlinable
     package func __retrieve_(_ tag: _TrackingTag) -> _SafePtr {
       switch tag {
@@ -95,9 +95,9 @@
       }
     }
 
-    /// つながりをたぐりよせる
-    ///
-    /// 日本人的にはお祭りなどによくある千本引きのイメージ
+    // つながりをたぐりよせる
+    //
+    // 日本人的にはお祭りなどによくある千本引きのイメージ
     @inlinable
     package func __retrieve_(_ tag: _SealedTag) -> _SealedPtr {
       tag.flatMap { ___retrieve(tag: $0) }

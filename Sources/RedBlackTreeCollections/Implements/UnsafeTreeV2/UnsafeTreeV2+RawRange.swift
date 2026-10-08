@@ -23,6 +23,17 @@
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
   @inlinable
+  func isValid(range: _NodeRange) -> Bool {
+    range.lowerBound == range.upperBound
+      || Base.___ptr_comp(range.lowerBound, range.upperBound)
+  }
+
+  @inlinable
+  func isValid(range: _SafeRange) -> Bool {
+    (try? range.map(isValid(range:)).get()) == true
+  }
+
+  @inlinable
   func validated(range: _NodeRange) -> Result<_NodeRange, SealError> {
     isValid(range: range)
       ? .success(range)
@@ -30,19 +41,31 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
   }
 
   @inlinable
-  func isValid(range: _NodeRange) -> Bool {
-    range.lowerBound == range.upperBound
-      || Base.___ptr_comp(range.lowerBound, range.upperBound)
+  func sanitize(_ range: _NodeRange) -> _NodeRange {
+    isValid(range: range) ? range : ___empty_range
   }
-  
+
   @inlinable
-  func isValid(range: _SafeRange) -> Bool {
-    return (try? range.map(isValid(range:)).get()) == true
+  func sanitize(_ range: _SafeRange) -> _SafeRange {
+    range.map(sanitize(_:)).flatMapError { _ in .success(___empty_range) }
   }
-  
+}
+
+extension UnsafeTreeV2 where Base: _BaseNode_PtrRangeCompInterface {
+
   @inlinable
-  func sanitize(safeRange range: _SafeRange) -> _SafeRange {
-    isValid(range: range) ? range : .success(___empty_range)
+  func contains(range: _NodeRange, pointer: _NodePtr) -> Bool {
+    Base.___ptr_range_comp(range.lowerBound, pointer, range.upperBound)
+  }
+
+  @inlinable
+  func contains(range: _SafeRange, pointer: _NodePtr) -> Bool {
+    (try? range.map { contains(range: $0, pointer: pointer) }.get()) == true
+  }
+
+  @inlinable
+  func contains(range: _SafeRange, pointer: _NodePtr) -> Result<Bool, SealError> {
+    range.map { contains(range: $0, pointer: pointer) }
   }
 }
 

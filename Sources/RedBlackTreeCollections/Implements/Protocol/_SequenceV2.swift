@@ -36,12 +36,12 @@ extension _SequenceV2 {
   }
 
   @inlinable
-  var ___range: _NodeRange {
+  var ___node_range: _NodeRange {
     .init(lowerBound: __tree_.__begin_node_, upperBound: __tree_.__end_node)
   }
   
   @inlinable
   var ___safe_range: _SafeRange {
-    .success(___range)
+    .success(___node_range)
   }
 }

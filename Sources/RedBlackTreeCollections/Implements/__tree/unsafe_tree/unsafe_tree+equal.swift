@@ -20,6 +20,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// TODO: Self: ~Copyable
+
 @usableFromInline
 protocol EqualProtocol_ptr:
   _UnsafeNodePtrType

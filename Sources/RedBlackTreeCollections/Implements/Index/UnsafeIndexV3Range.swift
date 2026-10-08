@@ -20,10 +20,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// equalRangeの結果オブジェクト
-///
+// equalRangeの結果オブジェクト
+//
 // 本当は作りたくなかったが、lowerBoundやupperBoundがオプショナルになるのもいまいちなので、しかたなく。
 @frozen
+@_documentation(visibility: internal)
 public struct UnsafeIndexV3Range {
 
   @usableFromInline
@@ -34,6 +35,9 @@ public struct UnsafeIndexV3Range {
     self.range = range
   }
 }
+
+/// A pair of indices delimiting a range in a red-black-tree collection.
+public typealias RedBlackTreeIndexRange = UnsafeIndexV3Range
 
 // 削除の悩みがつきまとうので、Sequence適合せず、ループはできないようにする
 // 当然RangeExpressionなんかには適合しない

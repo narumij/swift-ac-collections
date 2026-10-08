@@ -24,7 +24,7 @@
 
 /// # RedBlackTreeDictionary
 ///
-/// `RedBlackTreeDictionary` is an **ordered dictionary (unique keys)**
+/// `RedBlackTreeDictionary` is a **sorted dictionary (unique keys)**
 /// implemented using a red-black tree.
 /// Keys are always kept in sorted order.
 ///
@@ -123,7 +123,7 @@ extension RedBlackTreeDictionary.Base: _BaseNode_SignedDistanceProtocol {}
 
 extension RedBlackTreeDictionary {
 
-  /// The total number of elements that the set can contain without allocating new storage.
+  /// The total number of key-value pairs that the dictionary can contain without allocating new storage.
   ///
   /// - Complexity: O(1)
   @inlinable
@@ -134,7 +134,7 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// A Boolean value that indicates whether the set is empty.
+  /// A Boolean value that indicates whether the dictionary is empty.
   ///
   /// - Complexity: O(1)
   @inlinable
@@ -142,7 +142,7 @@ extension RedBlackTreeDictionary {
     count == 0
   }
 
-  /// The number of elements in the set.
+  /// The number of key-value pairs in the dictionary.
   ///
   /// - Complexity: O(1)
   @inlinable
@@ -153,8 +153,12 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// Returns the number of elements equal to the given key.
+  /// Returns the number of elements with the given key.
   ///
+  /// Because a dictionary stores unique keys, the result is either `0` or `1`.
+  ///
+  /// - Parameter key: The key to count.
+  /// - Returns: `1` if the dictionary contains `key`; otherwise, `0`.
   /// - Complexity: O(log `count`)
   @inlinable
   public func count(forKey key: Key) -> Int {
@@ -166,8 +170,10 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// Returns a Boolean value that indicates whether the given element exists in the set.
+  /// Returns a Boolean value that indicates whether the given key exists in the dictionary.
   ///
+  /// - Parameter key: The key to look for.
+  /// - Returns: `true` if the dictionary contains `key`; otherwise, `false`.
   /// - Complexity: O(log `count`)
   @inlinable
   public func contains(key: Key) -> Bool {
@@ -221,35 +227,118 @@ extension RedBlackTreeDictionary {
 extension RedBlackTreeDictionary {
   // multi mapとの統一感のために復活
 
-  /// Inserts the given key-value pair in the set if it is not already present.
+  /// Inserts the given key-value pair into the dictionary if its key is not already present.
   ///
+  /// - Parameters:
+  ///   - key: The key to insert.
+  ///   - value: The value to associate with `key` when insertion succeeds.
+  /// - Returns: Whether insertion occurred and the inserted or existing key-value pair.
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
-  public mutating func insert(key: Key, value: Value) -> (
-    inserted: Bool, memberAfterInsert: Element
-  ) {
+  public mutating func insert(key: Key, value: Value)
+    -> (inserted: Bool, memberAfterInsert: Element)
+  {
     insert((key, value))
   }
 
-  /// Inserts the given element in the set if it is not already present.
+  /// Inserts the given key-value pair into the dictionary if its key is not already present.
   ///
+  /// - Parameter newMember: A key-value pair to insert.
+  /// - Returns: Whether insertion occurred and the inserted or existing key-value pair.
   /// - Complexity: O(log *n*)
+  /// - SeeAlso: `index(inserting:)`, which also returns the index of the inserted or existing element.
   @inlinable
   @discardableResult
-  public mutating func insert(_ newMember: Element) -> (
-    inserted: Bool, memberAfterInsert: Element
-  ) {
+  public mutating func insert(_ newMember: Element)
+    -> (inserted: Bool, memberAfterInsert: Element)
+  {
     __tree_.ensureUniqueAndCapacity()
     let (__r, __inserted) = __tree_.update { $0.__insert_unique(Base.__payload_(newMember)) }
     return (__inserted, __inserted ? newMember : Base.__element_(__r))
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Inserts a key-value pair, using `hint` as a suggested insertion position.
+    ///
+    /// An incorrect hint doesn't change the result; it can only affect performance.
+    /// `endIndex` is a valid hint.
+    ///
+    /// - Parameters:
+    ///   - key: The key to insert.
+    ///   - value: The value to associate with `key` when insertion succeeds.
+    ///   - hint: A valid index of this dictionary to use as an insertion hint.
+    /// - Returns: Whether insertion occurred and the index of the inserted or existing pair.
+    /// - Precondition: `hint` is valid for this dictionary.
+    @inlinable
+    @discardableResult
+    public mutating func insert(key: Key, value: Value, hint: Index)
+      -> (inserted: Bool, indexAfterInsert: Index)
+    {
+      insert((key, value), hint: hint)
+    }
+
+    /// Inserts a key-value pair, using `hint` as a suggested insertion position.
+    ///
+    /// - Parameters:
+    ///   - newMember: A key-value pair to insert.
+    ///   - hint: A valid index of this dictionary to use as an insertion hint.
+    /// - Returns: Whether insertion occurred and the index of the inserted or existing pair.
+    /// - Precondition: `hint` is valid for this dictionary.
+    @inlinable
+    @discardableResult
+    public mutating func insert(_ newMember: Element, hint: Index)
+      -> (inserted: Bool, indexAfterInsert: Index)
+    {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let (__r, __inserted) = __tree_.__emplace_hint_unique(
+        __p, newMember.key, Base.__payload_(newMember))
+      return (__inserted, ___index(__r))
+    }
+
+    /// Inserts or replaces a key-value pair, using `hint` as a suggested insertion position.
+    ///
+    /// - Parameters:
+    ///   - newMember: The pair to insert or use as a replacement.
+    ///   - hint: A valid index of this dictionary to use as an insertion hint.
+    /// - Returns: The replaced pair, or `nil` if `newMember` was newly inserted.
+    /// - Precondition: `hint` is valid for this dictionary.
+    @inlinable
+    @discardableResult
+    public mutating func update(_ newMember: Element, hint: Index)
+      -> Element?
+    {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      // endIndex is a valid insertion hint; do not require element accessibility here.
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let (__r, __inserted) = __tree_.___emplace_hint_unique_(
+        __p, newMember.key, Base.__payload_(newMember))
+      guard !__inserted else { return nil }
+      let oldMember = Base.__payload_(__r)
+      Base.__payload_ptr(__r).pointee = Base.__payload_(newMember)
+      return Base.__element_(oldMember)
+    }
+  }
+#endif
+
 extension RedBlackTreeDictionary {
 
   /// Updates the value stored in the dictionary for the given key, or adds a new key-value pair if the key does not exist.
   ///
+  /// - Parameters:
+  ///   - value: The value to store.
+  ///   - key: The key whose value to update.
+  /// - Returns: The previous value, or `nil` if a new key-value pair was inserted.
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
@@ -266,15 +355,53 @@ extension RedBlackTreeDictionary {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeDictionary {
+
+    /// Updates or inserts a value, using `hint` as a suggested insertion position.
+    ///
+    /// - Parameters:
+    ///   - value: The value to store.
+    ///   - key: The key whose value to update.
+    ///   - hint: A valid index of this dictionary to use as an insertion hint.
+    /// - Returns: The previous value, or `nil` if a new key-value pair was inserted.
+    /// - Precondition: `hint` is valid for this dictionary.
+    @inlinable
+    @discardableResult
+    public mutating func updateValue(
+      _ value: Value,
+      forKey key: Key,
+      hint: Index
+    ) -> Value? {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      // endIndex is a valid insertion hint; do not require element accessibility here.
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let (__r, __inserted) = __tree_.___emplace_hint_unique_(
+        __p, key, Base.__payload_((key, value)))
+      guard !__inserted else { return nil }
+      let oldMember = Base.__mapped_value_(__r)
+      Base.__mapped_value_ptr(__r).pointee = value
+      return oldMember
+    }
+  }
+#endif
+
 // MARK: - Remove
 
 extension RedBlackTreeDictionary {
 
-  /// Removes and returns the first element of the collection.
+  /// Removes and returns the key-value pair with the least key.
   ///
+  /// Returns `nil` if the dictionary is empty.
+  ///
+  /// - Returns: The removed key-value pair, or `nil` if the dictionary was empty.
   /// - Complexity: Amortized O(1)
   @inlinable
   public mutating func popFirst() -> Element? {
+    guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.___unchecked_remove_first().map { Base.__element_($0) }
   }
@@ -283,11 +410,15 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// Removes and returns the last element of the collection.
+    /// Removes and returns the key-value pair with the greatest key.
     ///
+    /// Returns `nil` if the dictionary is empty.
+    ///
+    /// - Returns: The removed key-value pair, or `nil` if the dictionary was empty.
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return __tree_.___unchecked_remove_last().map { Base.__element_($0) }
     }
@@ -296,8 +427,10 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// Removes the first element of the collection.
+  /// Removes and returns the key-value pair with the least key.
   ///
+  /// - Returns: The removed key-value pair.
+  /// - Precondition: The dictionary isn't empty.
   /// - Complexity: Amortized O(1)
   @inlinable
   @discardableResult
@@ -312,8 +445,10 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// Removes the last element of the collection.
+    /// Removes and returns the key-value pair with the greatest key.
     ///
+    /// - Returns: The removed key-value pair.
+    /// - Precondition: The dictionary isn't empty.
     /// - Complexity: O(log *n*)
     @inlinable
     @discardableResult
@@ -328,8 +463,12 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// Removes the element at the given index of the set.
+  /// Removes the key-value pair at the given index of the dictionary.
   ///
+  /// - Parameter index: A valid index of the dictionary. The index must refer
+  ///   to an element, not the dictionary's `endIndex`.
+  /// - Returns: The removed key-value pair.
+  /// - Precondition: `index` is valid for this dictionary and isn't `endIndex`.
   /// - Complexity: Amortized O(1)
   @inlinable
   @discardableResult
@@ -344,14 +483,19 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
+  /// Removes the key-value pair for the specified key.
+  ///
+  /// - Parameter key: The key to remove along with its value.
+  /// - Returns: The removed value, or `nil` if the key wasn't present.
   /// - Important: Indices that refer to removed members become invalid.
   /// - Complexity: O(log *n*)
   @inlinable
   @discardableResult
-  public mutating func removeValue(forKey __k: Key) -> Value? {
+  public mutating func removeValue(forKey key: Key) -> Value? {
+    guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.update {
-      let __i = $0.find(__k)
+      let __i = $0.find(key)
       if __i == $0.end {
         return nil
       }
@@ -364,15 +508,17 @@ extension RedBlackTreeDictionary {
 
 extension RedBlackTreeDictionary {
 
-  /// Removes all members from the set.
+  /// Removes all key-value pairs from the dictionary.
   ///
-  /// - Complexity: O(1)
+  /// - Parameter keepCapacity: Pass `true` to retain the dictionary's
+  ///   allocated storage for later use.
+  /// - Complexity: O(*n*), where *n* is the number of key-value pairs.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    if keepCapacity {
+    if keepCapacity && __tree_.count > 0 {
       __tree_.ensureUnique()
       __tree_.deinitialize()
-    } else {
+    } else if !keepCapacity {
       __tree_ = .create()
     }
   }
@@ -381,8 +527,13 @@ extension RedBlackTreeDictionary {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    /// Removes the element at the given position from the set and returns the index of the next element.
+    /// Removes the key-value pair at the given position from the dictionary and returns the index of the next element.
     ///
+    /// - Parameter ptr: A valid index of the dictionary. The index must refer
+    ///   to an element, not the dictionary's `endIndex`.
+    /// - Returns: The index that followed `ptr` before removal, or `endIndex`
+    ///   if the removed key-value pair was last.
+    /// - Precondition: `ptr` is valid for this dictionary and isn't `endIndex`.
     /// - Complexity: Amortized O(1)
     @discardableResult
     @inlinable
@@ -395,9 +546,12 @@ extension RedBlackTreeDictionary {
 
     /// Removes all elements that satisfy the given predicate.
     ///
+    /// - Parameter shouldBeRemoved: A closure that returns `true` for a
+    ///   key-value pair that should be removed.
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      guard __tree_.count > 0 else { return }
       __tree_.ensureUnique()
       let result = try __tree_.___erase_range_if(
         __tree_.__begin_node_.unchecked,

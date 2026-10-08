@@ -20,10 +20,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// メモ化用途向け、LRU (least recently used) cache 動作
-/// https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_(LRU)
-///
-/// InlineMemoize動作用。CoWがないので注意
+// メモ化用途向け、LRU (least recently used) cache 動作
+// https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_Recently_Used_(LRU)
+//
+// InlineMemoize動作用。CoWがないので注意
 @frozen
 public struct ___LRUMemoizeStorage<Parameters, Value>
 where Parameters: Comparable {

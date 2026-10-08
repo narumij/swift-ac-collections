@@ -62,7 +62,7 @@ Releaseビルドで再計測する。
 コピーは単なるバイト列複製ではない。新しいバッファを確保し、利用歴のあるノードを
 tracking tag順に再構築する。
 
-現行実装は次を維持する。
+要素を持つ木のコピーでは、現行実装は次を維持する。
 
 - ノードのtracking tag
 - 左・右・親へのリンク関係
@@ -71,10 +71,15 @@ tracking tag順に再構築する。
 - 有効ノード数
 - fresh poolの利用済み数
 - recycle poolの状態
+- `ALLOW_CROSS_TREE_INDEX` 有効時のノードごとのrecycle count
 - payloadを持つノードの値
 
 削除済みノードがrecycle poolに存在するとtracking tagに抜けが生じるため、
 有効要素数ではなく `freshPoolUsedCount` までをコピー対象とする。
+
+`count == 0` の場合、`copyBuffer` は必要容量を確保した後に早期returnする。
+空の木には引き継ぐ論理要素がないため、CoWコストを抑える目的で、空になる前の
+使用済みslot、recycle pool、世代履歴はコピー先へ再構築しない。
 
 新しい木のポインタは古い木と異なる。リンクはtracking tagから新しいポインタへ
 写像して再構築する。
@@ -101,15 +106,28 @@ CoW後の性能を維持するため、コピー生成時の単一bucketは重�
 `_LazyTie` の同一性を保持する。
 
 CoWで作られた木は値として等価でも、別のストレージである。
-そのため、コピー元から作られたIndexをコピー先の木へそのまま適用できることを
-公開契約にはしない。通常構成では `_LazyTie` が一致しないIndexは
-`.crossTree` として拒否される。
+通常構成ではtracking tagとsealを使ってCoW由来の差異を解決し、コピー元から
+作られた有効なIndexをコピー先の対応要素でも利用できる。
 
-内部にはtracking tagを使ってCoW由来の差異を解決するための経路もあるが、
-`ALLOW_CROSS_TREE_INDEX` が有効な場合の実験的動作であり、通常のAPI契約ではない。
+この保証はCoWによって分岐したコレクションを対象とする。無関係なコレクションから
+取得したIndexを使用することは事前条件違反であり、その検出は保証しない。
+tracking tagが偶然一致して要素を解決できた場合も、保証された動作には含めない。
 
-CoW後もtracking tagを維持することと、Indexを別の木で利用可能にすることは
-別の問題である。前者は内部再構築と検査に必要だが、後者を保証するものではない。
+世代はIndexを利用する対象木の対応ノードへ照合する。CoWで分岐した別の木で
+同じnodeが削除・再利用されても、対象木側のtracking tagと世代が一致していれば
+Indexは有効なままである。これは `index(inserting:)` が返す位置handleを、
+CoW後の対象木でも利用するために必要となる。
+
+### 世代のコピーと空の木
+
+`ALLOW_CROSS_TREE_INDEX` 有効時は、CoWコピーで各ノードの
+`___recycle_count` も引き継ぐ。異なる `_LazyTie` 間では、Indexに保存された
+tracking tagとsealをコピー先ノードのtracking tagとrecycle countへ照合する。
+このため、再利用前のstale Indexはコピー先でも `.unsealed` となる。
+
+`count == 0` のコピーは前述の早期return経路を通る。空の木には対応付ける
+有効要素がないため、使用済みslotとrecycle countの履歴を再構築せず、
+余分なCoW処理を避ける。
 
 ## CoWを減らすAPI方針
 
@@ -142,10 +160,15 @@ CoW関連の変更では、少なくとも次を確認する。
 - 一意な木の変更では木全体のコピーが発生しないこと
 - 共有された木の最初の変更でのみコピーが発生すること
 - コピー前後で要素、順序、count、tracking tagが対応すること
-- 削除済みノードを含む木でもコピー後のrecycle poolが正しいこと
+- 要素を持つ木では、削除済みノードを含めコピー後のrecycle poolが正しいこと
+- `ALLOW_CROSS_TREE_INDEX` 有効時は、コピー前後でrecycle countが一致すること
+- 空の木では、使用済みslotとrecycle poolの履歴を再構築しないこと
 - コピー直後のfresh poolが単一bucketであること
 - コピー先が元の `_tied` と `_lazyDetach` を継承しないこと
-- 古いIndexが新しい木で誤って有効扱いされないこと
+- CoW由来の有効なIndexがコピー先の対応要素へ解決されること
+- 再利用前のstale IndexがCoW後の木でも `.unsealed` になること
+- 分岐した別の木の世代変更が、対象木で有効なIndexへ影響しないこと
+- 空の木では不要なslotと世代履歴をコピーしないこと
 - `AC_COLLECTIONS_INTERNAL_CHECKS` の `copyCount` で発火回数を確認できること
 - Releaseビルドでコピー低速経路の分離とホットパスのコード生成を確認すること
 

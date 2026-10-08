@@ -43,9 +43,9 @@
 
 extension UnsafeTreeV2 {
 
-  /// 末尾チェック付きの削除ループ
-  ///
-  /// 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
+  // 末尾チェック付きの削除ループ
+  //
+  // 対応する末尾チェック無しは`__tree`のerase(_:_:)となる
   @inlinable
   @discardableResult
   func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _SafePtr {
@@ -60,7 +60,7 @@ extension UnsafeTreeV2 {
     return .success(__last)
   }
 
-  /// 末尾チェック付きの削除ループ
+  // 末尾チェック付きの削除ループ
   @inlinable
   @discardableResult
   func ___erase_range_if(
@@ -87,8 +87,7 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
 
   @inlinable
-  @discardableResult
-  func ___erase_range(_ range: _SafeRange) -> Result<UnsafeIndexV3, SealError> {
+  func ___erase_validate_range(_ range: _SafeRange) -> Result<UnsafeIndexV3, SealError> {
     range
       .flatMap(validated(range:))
       .flatMap {
@@ -96,25 +95,60 @@ extension UnsafeTreeV2 where Base: _BaseNode_PtrCompInterface {
       }
       .map(index)
   }
+  
+  @inlinable
+  func ___erase_sanitize_range(_ range: _SafeRange) -> Result<UnsafeIndexV3, SealError> {
+    sanitize(range)
+      .flatMap {
+        $0.fold(___erase_range)
+      }
+      .map(index)
+  }
 
   @inlinable
-  @discardableResult
-  func ___erase_range_if(
+  func ___erase_validate_range_if(
     _ range: _SafeRange,
     _ shouldBeRemoved: (_PayloadValue) throws -> Bool
   ) rethrows -> Result<UnsafeIndexV3, SealError> {
 
-    switch range.flatMap(validated(range:)) {
+    try range
+      .flatMap(validated(range:))
+      .flatMapThrowing { range in
+        try range.fold { first, last in
+          try ___erase_range_if(first.unchecked, last.unchecked, shouldBeRemoved)
+        }
+      }
+      .map(index)
+  }
+  
+  @inlinable
+  func ___erase_sanitize_range_if(
+    _ range: _SafeRange,
+    _ shouldBeRemoved: (_PayloadValue) throws -> Bool
+  ) rethrows -> Result<UnsafeIndexV3, SealError> {
+
+    try sanitize(range)
+      .flatMapThrowing { range in
+        try range.fold { first, last in
+          try ___erase_range_if(first.unchecked, last.unchecked, shouldBeRemoved)
+        }
+      }
+      .map(index)
+  }
+}
+
+// TODO: 以下を別ファイルに切り出す
+extension Result {
+
+  @inlinable
+  func flatMapThrowing<T>(
+    _ transform: (Success) throws -> Result<T, Failure>
+  ) rethrows -> Result<T, Failure> {
+    switch self {
+    case .success(let value):
+      return try transform(value)
     case .failure(let error):
       return .failure(error)
-
-    case .success(let range):
-      return try ___erase_range_if(
-        range.lowerBound.unchecked,
-        range.upperBound.unchecked,
-        shouldBeRemoved
-      )
-      .map(index)
     }
   }
 }

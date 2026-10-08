@@ -23,7 +23,7 @@
 @usableFromInline
 package typealias _SealedTag = Result<_TrackingTagSealing, SealError>
 
-/// トラッキング番号解決の補助データ構造
+// トラッキング番号解決の補助データ構造
 @frozen
 @usableFromInline
 package enum _TrackingTagSealing: Equatable {
@@ -33,8 +33,8 @@ package enum _TrackingTagSealing: Equatable {
 
 extension _TrackingTagSealing {
 
-  /// - Parameter raw
-  /// `_TrackingTag`はIntのエイリアス
+  // - Parameter raw
+  // `_TrackingTag`はIntのエイリアス
   @inlinable
   static func seal(raw: _TrackingTag, seal: UnsafeNode.Seal) -> Self {
     switch raw {

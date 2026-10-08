@@ -156,6 +156,12 @@ extension UnsafeTreeV2: InsertLastProtocol_ptr {}
 extension UnsafeTreeV2: TreeAlgorithmBaseProtocol_ptr {}
 extension UnsafeTreeV2: TreeAlgorithmProtocol_ptr {}
 
+extension UnsafeTreeV2: FindHintEqualProtocol_ptr {}
+extension UnsafeTreeV2: EmplaceHintUniqueProtocol_ptr {}
+
+extension UnsafeTreeV2: FindHintLeafProtocol_ptr {}
+extension UnsafeTreeV2: EmplaceHintMultiProtocol_ptr {}
+
 extension UnsafeTreeV2 {
 
   #if false

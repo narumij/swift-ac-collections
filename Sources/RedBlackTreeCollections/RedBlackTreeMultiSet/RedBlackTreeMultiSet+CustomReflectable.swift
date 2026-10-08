@@ -24,7 +24,10 @@
 
 extension RedBlackTreeMultiSet: CustomReflectable {
   
-  /// The custom mirror for this instance.
+  /// A mirror that presents the multiset's elements as unlabeled children.
+  ///
+  /// The mirror uses the `.set` display style and contains one child for every
+  /// occurrence, including equivalent elements.
   public var customMirror: Mirror {
     Mirror(self, unlabeledChildren: self + [], displayStyle: .set)
   }

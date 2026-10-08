@@ -67,16 +67,6 @@
 
   extension RedBlackTreeMultiSet {
 
-    /// Returns whether the corresponding element can be accessed.
-    @inlinable
-    public func isValid(_ bound: Bound) -> Bool {
-
-      bound.evaluate(__tree_).accessible.error == nil
-    }
-  }
-
-  extension RedBlackTreeMultiSet {
-
     @inlinable
     public func distance(from start: Bound, to end: Bound)
       -> Int
@@ -104,6 +94,14 @@
 
   extension RedBlackTreeMultiSet {
 
+    /// Removes and returns the element at the position selected by a bound expression.
+    ///
+    /// When equivalent elements exist, the expression determines which position
+    /// is removed.
+    ///
+    /// - Parameter bound: A bound expression that selects a position in the multiset.
+    /// - Returns: The removed element, or `nil` if the expression selects
+    ///   `endIndex` or can't be evaluated.
     @inlinable
     public mutating func erase(_ bound: Bound) -> Element? {
 
@@ -118,59 +116,60 @@
 
   extension RedBlackTreeMultiSet {
 
-    /// Returns whether the corresponding element can be accessed.
+    /// Accesses a view of the elements selected by a bound range expression.
     ///
-    /// Even if this returns `false`, BoundRange-related APIs will not crash.
-    @inlinable
-    public func isValid(_ bounds: BoundRangeExpression) -> Bool {
-      let range = bounds.evaluate(__tree_).relative(to: __tree_)
-      return __tree_.isValid(range: range)
-    }
-  }
-
-  extension RedBlackTreeMultiSet {
-
+    /// Mutating the returned view modifies this multiset. The view retains every
+    /// selected occurrence, including equivalent elements. A range that evaluates
+    /// to no ordered positions produces an empty view.
+    ///
+    /// - Parameter bounds: A bound range expression evaluated in this multiset.
+    /// - Returns: A view over the selected occurrences.
     @inlinable
     public subscript(bounds: BoundRangeExpression) -> View {
 
       @inline(__always) get {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        return self[_safeRange: range]
+        self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
 
       @inline(__always) _modify {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        yield &self[_safeRange: range]
+        yield &self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
     }
   }
 
   extension RedBlackTreeMultiSet {
 
+    /// Removes the elements in the range selected by a bound range expression.
+    ///
+    /// - Parameter bounds: A bound range expression that selects the elements
+    ///   to remove.
     @inlinable
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
+      // 空の場合は削除対象が存在し得ないため、ensureUnique()による
+      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
+      guard __tree_.count > 0 else { return }
       __tree_.ensureUnique()
-      let range = __tree_.sanitize(
-        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      __tree_.___erase_range(range)
+      _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
     }
 
+    /// Removes the elements in the selected range that satisfy a predicate.
+    ///
+    /// - Parameters:
+    ///   - bounds: A bound range expression that selects the elements to examine.
+    ///   - shouldBeRemoved: A closure that returns `true` for an element that
+    ///     should be removed.
     @inlinable
     public mutating func erase(
       _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
+      // 空の場合は削除対象が存在し得ないため、ensureUnique()による
+      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
+      guard __tree_.count > 0 else { return }
       __tree_.ensureUnique()
-      let range = __tree_.sanitize(
-        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      try __tree_.___erase_range_if(range, shouldBeRemoved)
+      _ = try __tree_.___erase_sanitize_range_if(
+        bounds.evaluate(__tree_).relative(to: __tree_), shouldBeRemoved)
     }
   }
 #endif

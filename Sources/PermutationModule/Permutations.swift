@@ -1,456 +1,348 @@
-// TODO: 模索の痕跡がのこっていて散らかっているので、要点に沿って整理しなおすか、廃止するか、いずれかを次回ジャッジ更新までに行うこと
+extension Collection {
 
-extension Collection where Index == Int {
-
-  /// 単に辞書順の操作をするだけのもの
+  /// Yields the current element order, then its lexicographic successors one at a time.
   ///
-  /// C++のnext_permutationの挙動をmapやfilterで使う場合はこちら。
-  @inlinable
-  @inline(__always)
-  public func nextPermutations() -> Permutations<Self>.Nexts
-  where Element: Comparable {
-    .init(safe: self)
-  }
-
-  /// 単に辞書順の操作をするだけのもの
+  /// This mirrors the behavior of C++'s `next_permutation`:
   ///
-  /// C++のnext_permutationの挙動をfor文で使う場合はこちらも利用できます。
+  /// - The current order is always yielded first.
+  /// - Only the lexicographic successors of that starting order are yielded afterward; this is
+  ///   not a full enumeration of every permutation.
+  /// - Elements that compare equal do not produce duplicate value orderings.
+  /// - A descending order, all-equal elements, a single element, and an empty collection each
+  ///   yield only the current order once.
+  /// - Results already yielded by the iterator remain unchanged as iteration advances.
+  ///
+  /// Advancing by one step is worst-case O(n).
+  ///
+  /// If you need every permutation rather than only the lexicographic successors of the
+  /// current order, use `swift-algorithms`'s `permutations()` instead.
   @inlinable
-  @inline(__always)
-  public func unsafeNextPermutations() -> Permutations<Self>.Nexts
+  public func nextPermutations() -> NextPermutationsSequence<Self>
   where Element: Comparable {
-    .init(unsafe: self)
-  }
-
-  /// 全通りをしっかりpermutationsするが、CoWをさっぱりしないもの
-  @inlinable
-  @inline(__always)
-  public func unsafePermutations() -> Permutations<Self>.All {
-    .init(unsafe: self)
+    .init(self)
   }
 }
 
-public
-  enum Permutations<C> where C: Collection, C.Index == Int
-{}
+/// The sequence returned by `nextPermutations()`.
+public struct NextPermutationsSequence<Base>: Sequence
+where Base: Collection, Base.Element: Comparable {
+  @usableFromInline
+  let base: Base
 
-extension Permutations {
-
-  public struct All: Sequence {
-    @usableFromInline
-    let source: C
-
-    @usableFromInline
-    var _unsafe: Bool
-
-    @inlinable
-    @inline(__always)
-    public init(unsafe source: C) {
-      self.source = source
-      _unsafe = true
-    }
-
-    @inlinable
-    @inline(__always)
-    public init(safe source: C) {
-      self.source = source
-      _unsafe = false
-    }
-
-    @inlinable
-    @inline(__always)
-    public func makeIterator() -> IteratorA {
-      .init(
-        elementBuffer: .prepare(source: source),
-        buffer: .prepare(count: source.count),
-        _unsafe: _unsafe)
-    }
+  @inlinable
+  internal init(_ base: Base) {
+    self.base = base
   }
 
-  public struct Nexts: Sequence where C.Element: Comparable {
-    @usableFromInline
-    let source: C
-
-    @usableFromInline
-    var _unsafe: Bool
-
-    @inlinable
-    @inline(__always)
-    public init(unsafe source: C) {
-      self.source = source
-      _unsafe = true
-    }
-
-    @inlinable
-    @inline(__always)
-    public init(safe source: C) {
-      self.source = source
-      _unsafe = false
-    }
-
-    @inlinable
-    @inline(__always)
-    public func makeIterator() -> IteratorN {
-      .init(
-        elementBuffer: .prepare(source: source),
-        _unsafe: _unsafe)
-    }
+  @inlinable
+  public func makeIterator() -> Iterator {
+    .init(elementBuffer: .prepare(source: base))
   }
+}
 
+extension NextPermutationsSequence {
+
+  /// The iterator for `NextPermutationsSequence`.
   public
-    struct IteratorA: IteratorProtocol
+    struct Iterator: IteratorProtocol
   {
     @inlinable
-    @inline(__always)
     internal init(
-      elementBuffer: Buffer<C.Element>,
-      buffer: Buffer<Int>,
-      _unsafe: Bool
+      elementBuffer: Buffer
     ) {
       self.elementBuffer = elementBuffer
-      self.indexBuffer = buffer
-      self._unsafe = _unsafe
     }
 
     @usableFromInline
-    let elementBuffer: Buffer<C.Element>
-    @usableFromInline
-    var indexBuffer: Buffer<Int>
-    @usableFromInline
-    var start = true
-    @usableFromInline
-    var end = false
-    @usableFromInline
-    var _unsafe: Bool
-
-    @inlinable
-    @inline(__always)
-    mutating func ensureUnique() {
-      if !isKnownUniquelyReferenced(&indexBuffer) {
-        indexBuffer = indexBuffer.copy()
-      }
-    }
-
-    @inlinable
-    @inline(__always)
-    public mutating func next() -> SubSequenceA? {
-      guard !end else { return nil }
-      if start {
-        start = false
-      } else {
-        if !_unsafe {
-          ensureUnique()
-        }
-        end = !indexBuffer.nextPermutation()
-      }
-      return end ? nil : SubSequenceA(elementBuffer: elementBuffer, buffer: indexBuffer)
-    }
-  }
-
-  public
-    struct IteratorN: IteratorProtocol where C.Element: Comparable
-  {
-    @inlinable
-    @inline(__always)
-    internal init(
-      elementBuffer: Buffer<C.Element>,
-      _unsafe: Bool
-    ) {
-      self.elementBuffer = elementBuffer
-      self._unsafe = _unsafe
+    enum State {
+      /// The current order has not been yielded yet.
+      case initial
+      /// The next call advances to the lexicographic successor.
+      case advancing
+      /// The last order has been yielded.
+      case finished
     }
 
     @usableFromInline
-    var elementBuffer: Buffer<C.Element>
+    var elementBuffer: Buffer
     @usableFromInline
-    var start = true
-    @usableFromInline
-    var end = false
-    @usableFromInline
-    var _unsafe: Bool
+    var state = State.initial
 
+    // TODO: Swift 6.4の`swift test -c release`では、コピーしたiteratorの元の側をクロージャ内で
+    // 進めて結果を読むと、コピー側も進んだ状態になる(2026-10-07発見)。2026-10-08の再調査では
+    // このiteratorでだけ再現し、ライブラリなしの再現は作れなかった。原因(コンパイラか本実装か)は
+    // 未確定。1.0直前に、まだ起きるかを確認する。
+    /// Makes the buffer unique before advancing. Returns `false` without copying when the
+    /// buffer is shared and has no successor, because such a copy would only be discarded.
     @inlinable
-    @inline(__always)
-    mutating func ensureUnique() {
+    mutating func ensureUnique() -> Bool {
       if !isKnownUniquelyReferenced(&elementBuffer) {
+        guard elementBuffer.hasNextPermutation else { return false }
         elementBuffer = elementBuffer.copy()
       }
+      return true
     }
 
     @inlinable
-    @inline(__always)
-    public mutating func next() -> SubSequenceN? {
-      guard !end else { return nil }
-      if start {
-        start = false
-      } else {
-        if !_unsafe {
-          ensureUnique()
+    public mutating func next() -> Permutation? {
+      switch state {
+      case .finished:
+        return nil
+      case .initial:
+        state = .advancing
+      case .advancing:
+        guard ensureUnique(), elementBuffer.nextPermutation() else {
+          state = .finished
+          return nil
         }
-        end = !elementBuffer.nextPermutation()
       }
-      return end ? nil : SubSequenceN(elementBuffer: elementBuffer)
+      return Permutation(elementBuffer: elementBuffer)
     }
   }
 }
 
-extension Permutations {
+extension NextPermutationsSequence: Sendable where Base: Sendable {}
 
-  @usableFromInline
-  struct Header {
-    @usableFromInline
-    @inline(__always)
-    internal init(capacity: Int, count: Int) {
-      self.capacity = capacity
-      self.count = count
-    }
-    @usableFromInline
-    var capacity: Int
-    @usableFromInline
-    var count: Int
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      @usableFromInline
-      var copyCount: UInt = 0
-    #endif
+// `Iterator` is the only mutation gateway for its buffer. Before advancing, it
+// detaches whenever another iterator or a yielded `Permutation` shares storage.
+extension NextPermutationsSequence.Iterator: @unchecked Sendable where Base.Element: Sendable {}
+
+/// The header of `NextPermutationsSequence.Buffer`. It does not depend on `Base`, so it is not
+/// nested in the generic sequence type.
+@usableFromInline
+struct NextPermutationsBufferHeader {
+  @inlinable
+  internal init(count: Int) {
+    self.count = count
   }
+  @usableFromInline
+  var count: Int
+  #if DEBUG
+    @usableFromInline
+    var copyCount: UInt = 0
+    @usableFromInline
+    var probe = NextPermutationsHeaderProbe()
+  #endif
+}
+
+#if DEBUG
+  /// A reference owned by the header, so that how many times a header is destroyed is
+  /// observable from tests. Not thread-safe: count only in single-threaded tests.
+  @usableFromInline
+  package final class NextPermutationsHeaderProbe {
+    nonisolated(unsafe) package static var deinitCount = 0
+    @inlinable
+    init() {}
+    deinit { Self.deinitCount += 1 }
+  }
+#endif
+
+extension NextPermutationsSequence {
 
   @usableFromInline
-  class Buffer<Element>: ManagedBuffer<Header, Element> {
+  final class Buffer: ManagedBuffer<NextPermutationsBufferHeader, Base.Element> {
 
-    public typealias Element = Element
-
+    // `header`は`ManagedBuffer`のstored propertyなので、Swiftが自動で破棄する。
+    // ここでは要素だけを破棄する。
     @inlinable
     deinit {
-      self.withUnsafeMutablePointers { header, elements in
-        elements.deinitialize(count: header.pointee.count)
-        header.deinitialize(count: 1)
+      unsafe self.withUnsafeMutablePointers { header, elements in
+        unsafe elements.deinitialize(count: header.pointee.count)
       }
     }
   }
 
+  /// One element order yielded by `NextPermutationsSequence`. Remains unchanged once
+  /// yielded, even as the iterator advances further.
   public
-    struct SubSequenceA
+    struct Permutation
   {
     @inlinable
-    @inline(__always)
     internal init(
-      elementBuffer: Buffer<C.Element>,
-      buffer: Buffer<Int>
-    ) {
-      self.elementBuffer = elementBuffer
-      self.indexBuffer = buffer
-    }
-    @usableFromInline
-    let elementBuffer: Buffer<C.Element>
-    @usableFromInline
-    var indexBuffer: Buffer<Int>
-  }
-
-  public
-    struct SubSequenceN
-  {
-    @inlinable
-    @inline(__always)
-    internal init(
-      elementBuffer: Buffer<C.Element>
+      elementBuffer: Buffer
     ) {
       self.elementBuffer = elementBuffer
     }
     @usableFromInline
-    let elementBuffer: Buffer<C.Element>
+    let elementBuffer: Buffer
   }
 
 }
 
-extension Permutations.SubSequenceA: RandomAccessCollection {
-  @inlinable
-  @inline(__always)
-  public var startIndex: Int { indexBuffer.startIndex }
-  @inlinable
-  @inline(__always)
-  public var endIndex: Int { indexBuffer.endIndex }
-  public typealias Index = Int
-  public typealias Element = C.Element
-  @inlinable
-  @inline(__always)
-  public subscript(position: Int) -> C.Element {
-    elementBuffer[indexBuffer[position]]
-  }
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    public var _copyCount: UInt { indexBuffer.header.copyCount }
-  #endif
-}
+// A yielded permutation only reads its buffer. Any iterator that still shares
+// that buffer detaches before its next mutation, so an existing value is stable.
+extension NextPermutationsSequence.Permutation: @unchecked Sendable where Base.Element: Sendable {}
 
-extension Permutations.SubSequenceN: RandomAccessCollection {
+extension NextPermutationsSequence.Permutation: RandomAccessCollection {
   @inlinable
-  @inline(__always)
   public var startIndex: Int { elementBuffer.startIndex }
   @inlinable
-  @inline(__always)
   public var endIndex: Int { elementBuffer.endIndex }
   public typealias Index = Int
-  public typealias Element = C.Element
+  public typealias Element = Base.Element
+  /// Accesses the element at `position`.
+  ///
+  /// - Precondition: `position` is in `startIndex..<endIndex`. An out-of-range position stops
+  ///   execution in Debug and Release builds; `-Ounchecked` builds may omit this check.
   @inlinable
-  @inline(__always)
-  public subscript(position: Int) -> C.Element {
-    elementBuffer[position]
+  public subscript(position: Int) -> Base.Element {
+    precondition(position >= startIndex && position < endIndex, "Index out of range")
+    return elementBuffer[position]
   }
-  #if AC_COLLECTIONS_INTERNAL_CHECKS
-    public var _copyCount: UInt { elementBuffer.header.copyCount }
+  #if DEBUG
+    package var _copyCount: UInt { elementBuffer.header.copyCount }
   #endif
 }
 
-extension Permutations.Buffer: NextPermutationProtocol where Element: Comparable {}
-
-extension Permutations.Buffer {
-
+// Equality, hashing, and description depend only on the element order.
+extension NextPermutationsSequence.Permutation: Equatable {
   @inlinable
-  @inline(__always)
-  var __header_ptr: UnsafeMutablePointer<Permutations.Header> {
-    withUnsafeMutablePointerToHeader({ $0 })
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.elementBuffer === rhs.elementBuffer || lhs.elementsEqual(rhs)
   }
+}
+
+extension NextPermutationsSequence.Permutation: Hashable where Base.Element: Hashable {
+  @inlinable
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(count)
+    for element in self {
+      hasher.combine(element)
+    }
+  }
+}
+
+extension NextPermutationsSequence.Permutation: CustomStringConvertible {
+  public var description: String { Array(self).description }
+}
+
+extension NextPermutationsSequence.Buffer {
+
+  @usableFromInline
+  typealias Element = Base.Element
 
   @inlinable
-  @inline(__always)
-  var __storage_ptr: UnsafeMutablePointer<Element> {
-    withUnsafeMutablePointerToElements({ $0 })
+  @unsafe var __storage_ptr: UnsafeMutablePointer<Element> {
+    unsafe withUnsafeMutablePointerToElements({ unsafe $0 })
   }
 
   @usableFromInline
   typealias Index = Int
 
   @inlinable
-  @inline(__always)
-  var isEmpty: Bool { __header_ptr.pointee.count == 0 }
+  var isEmpty: Bool { header.count == 0 }
   @inlinable
-  @inline(__always)
   var startIndex: Index { 0 }
   @inlinable
-  @inline(__always)
-  var endIndex: Index { __header_ptr.pointee.count }
+  var endIndex: Index { header.count }
 
   @inlinable
-  @inline(__always)
   func formIndex(before i: inout Index) { i -= 1 }
   @inlinable
-  @inline(__always)
   func formIndex(after i: inout Index) { i += 1 }
   @inlinable
-  @inline(__always)
   func index(before i: Index) -> Index { i - 1 }
   @inlinable
-  @inline(__always)
   func swapAt(_ a: Index, _ b: Index) { swap(&self[a], &self[b]) }
   @inlinable
-  @inline(__always)
   func lastIndex(where predicate: (Element) -> Bool) -> Index? {
     (startIndex..<endIndex).last { predicate(self[$0]) }
   }
   @inlinable
   subscript(position: Index) -> Element {
     @inline(__always)
-    get { __storage_ptr[position] }
-    @inline(__always)
-    _modify { yield &__storage_ptr[position] }
+    get { unsafe __storage_ptr[position] }
+    _modify {
+      let storage = unsafe __storage_ptr
+      yield unsafe &storage[position]
+    }
   }
 }
 
-extension Permutations.Buffer {
+extension NextPermutationsSequence.Buffer {
 
+  /// Creates a buffer whose header records `count` initialized elements. The caller must
+  /// initialize exactly that many elements before the buffer is used.
   @inlinable
-  @inline(__always)
-  internal static func create(
-    withCapacity capacity: Int
-  ) -> Self {
-    let storage = Permutations.Buffer<Element>.create(minimumCapacity: capacity) { _ in
-      Permutations.Header(capacity: capacity, count: 0)
+  internal static func create(count: Int) -> NextPermutationsSequence.Buffer {
+    let storage = NextPermutationsSequence.Buffer.create(minimumCapacity: count) { _ in
+      NextPermutationsBufferHeader(count: count)
     }
-    return unsafeDowncast(storage, to: Self.self)
+    return unsafe unsafeDowncast(storage, to: NextPermutationsSequence.Buffer.self)
   }
 
   @inlinable
-  @inline(__always)
-  internal func copy(newCapacity: Int? = nil) -> Permutations.Buffer<Element> {
-
-    let capacity = newCapacity ?? self.header.capacity
-    let count = self.header.count
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      let copyCount = self.header.copyCount
+  internal func copy() -> NextPermutationsSequence.Buffer {
+    let count = header.count
+    let newStorage = NextPermutationsSequence.Buffer.create(count: count)
+    #if DEBUG
+      newStorage.header.copyCount = header.copyCount &+ 1
     #endif
-
-    let newStorage = Permutations.Buffer<Element>.create(withCapacity: capacity)
-
-    newStorage.header.capacity = capacity
-    newStorage.header.count = count
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      newStorage.header.copyCount = copyCount &+ 1
-    #endif
-
-    self.withUnsafeMutablePointerToElements { oldElements in
-      newStorage.withUnsafeMutablePointerToElements { newElements in
-        newElements.initialize(from: oldElements, count: count)
+    unsafe self.withUnsafeMutablePointerToElements { oldElements in
+      unsafe newStorage.withUnsafeMutablePointerToElements { newElements in
+        unsafe newElements.initialize(from: oldElements, count: count)
       }
     }
-
     return newStorage
   }
-}
 
-extension Permutations.Buffer {
-
+  // `source.count`と実際の要素数が一致することは、`Collection`の契約として信じる。
+  // 契約に違反するCollectionへの防御はしない(2026-10-07、ユーザー判断)。
   @inlinable
-  @inline(__always)
-  static func prepare(count: Int) -> Permutations.Buffer<Element>
-  where Element == Int {
-
-    let capacity = count
-    let count = count
-
-    let newStorage = Permutations.Buffer<Element>.create(withCapacity: capacity)
-    newStorage.header.capacity = capacity
-    newStorage.header.count = count
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      newStorage.header.copyCount = 0
-    #endif
-    newStorage.withUnsafeMutablePointerToElements { newElements in
-      for i in 0..<count {
-        (newElements + Int(i)).initialize(to: i)
+  static func prepare(source: Base) -> NextPermutationsSequence.Buffer {
+    let newStorage = NextPermutationsSequence.Buffer.create(count: source.count)
+    unsafe newStorage.withUnsafeMutablePointerToElements { newElements in
+      source.enumerated().forEach { i, v in
+        unsafe (newElements + i).initialize(to: v)
       }
     }
     return newStorage
   }
 }
 
-extension Permutations.Buffer {
+extension NextPermutationsSequence.Buffer where Element: Comparable {
 
+  /// The last index `i` where `self[i] < self[i + 1]`, or `nil` when the current order has no
+  /// lexicographic successor. Reads only.
   @inlinable
-  @inline(__always)
-  static func prepare<CC>(source: CC) -> Permutations.Buffer<Element>
-  where CC: Collection, CC.Element == Element {
+  internal var lastAscentIndex: Index? {
+    guard !isEmpty else { return nil }
+    var i = index(before: endIndex)
+    while i != startIndex {
+      let ip1 = i
+      formIndex(before: &i)
+      if self[i] < self[ip1] { return i }
+    }
+    return nil
+  }
 
-    let capacity = source.count
-    let count = source.count
+  /// Whether a lexicographic successor exists. Reads only.
+  @inlinable
+  internal var hasNextPermutation: Bool { lastAscentIndex != nil }
 
-    let newStorage = Permutations.Buffer<Element>.create(withCapacity: capacity)
-    newStorage.header.capacity = capacity
-    newStorage.header.count = count
-    #if AC_COLLECTIONS_INTERNAL_CHECKS
-      newStorage.header.copyCount = 0
-    #endif
+  // オリジナルはhttps://github.com/apple/swift-algorithms/blob/main/Sources/Algorithms/Permutations.swift
+  @inlinable
+  internal func nextPermutation() -> Bool {
+    guard let i = lastAscentIndex else {
+      reverse(subrange: startIndex..<endIndex)
+      return false
+    }
+    // `self[i + 1]`が`self[i]`より大きいので、必ず見つかる
+    let j = lastIndex { self[i] < $0 }!
+    swapAt(i, j)
+    reverse(subrange: (i + 1)..<endIndex)
+    return true
+  }
 
-    #if false
-      source.withUnsafeBufferPointer { sourceElements in
-        newStorage.withUnsafeMutablePointerToElements { newElements in
-          newElements.initialize(from: sourceElements.baseAddress!, count: count)
-        }
-      }
-    #else
-      newStorage.withUnsafeMutablePointerToElements { newElements in
-        source.enumerated().forEach { i, v in
-          (newElements + i).initialize(to: v)
-        }
-      }
-    #endif
-    return newStorage
+  // オリジナルはhttps://github.com/apple/swift-algorithms/blob/main/Sources/Algorithms/Rotate.swift
+  @inlinable
+  internal func reverse(subrange: Range<Index>) {
+    var lower = subrange.lowerBound
+    var upper = subrange.upperBound
+    while lower < upper {
+      formIndex(before: &upper)
+      swapAt(lower, upper)
+      formIndex(after: &lower)
+    }
   }
 }

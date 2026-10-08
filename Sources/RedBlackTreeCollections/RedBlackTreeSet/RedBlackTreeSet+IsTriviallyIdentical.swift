@@ -36,8 +36,8 @@ extension RedBlackTreeSet {
   /// - `a.isTriviallyIdentical(to: b)` implies `b.isTriviallyIdentical(to: a)`. (Symmetry)
   /// - If `a.isTriviallyIdentical(to: b)` and `b.isTriviallyIdentical(to: c)` are both `true`,
   ///   then `a.isTriviallyIdentical(to: c)` is also `true`. (Transitivity)
-  /// - `a.isTriviallyIdentical(b)` implies `a == b`
-  ///   - `a == b` does not imply `a.isTriviallyIdentical(b)`
+  /// - `a.isTriviallyIdentical(to: b)` implies `a == b`.
+  ///   The reverse implication doesn't necessarily hold.
   ///
   /// Values produced by copying the same value, with no intervening mutations,
   /// will compare identical:
@@ -53,6 +53,9 @@ extension RedBlackTreeSet {
   /// storage object. Therefore, identical sets are guaranteed to compare equal
   /// with `==`, but not all equal sets are considered identical.
   ///
+  /// - Parameter other: The set to compare with this set.
+  /// - Returns: `true` if both values share the same underlying storage;
+  ///   otherwise, `false`.
   /// - Performance: O(1)
   @inlinable
   public func isTriviallyIdentical(to other: Self) -> Bool {

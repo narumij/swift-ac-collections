@@ -44,13 +44,13 @@ package struct _MemoryLayout {
 
 extension _MemoryLayout {
   
-  /// オーバーフローによるメモリ破壊を予防するための限度
+  // オーバーフローによるメモリ破壊を予防するための限度
   @inlinable
   var maximumCount: Int {
     Int.max / stride
   }
 
-  /// オーバーフローによるメモリ破壊を予防するための限度のチェック
+  // オーバーフローによるメモリ破壊を予防するための限度のチェック
   @inlinable
   func _preconditionOffsetDoesNotOverflow(forCount count: Int) {
     precondition(count <= maximumCount)

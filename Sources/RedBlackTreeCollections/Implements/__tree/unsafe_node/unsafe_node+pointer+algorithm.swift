@@ -51,7 +51,7 @@ __root, have a non-null __parent_ field.
 /// Returns:  true if `__x` is a left child of its parent, else false
 /// Precondition:  `__x` != nullptr.
 @inlinable
-internal func
+package func
   __tree_is_left_child(_ __x: UnsafeMutablePointer<UnsafeNode>) -> Bool
 {
   __x == __x.__parent_.__left_
@@ -61,7 +61,7 @@ internal func
 ///    `__x` is a proper subtree, returns the black height (null counts as 1).  If
 ///    `__x` is an improper subtree, returns 0.
 @usableFromInline
-internal func
+package func
   __tree_sub_invariant(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UInt
 {
   if __x == .nullptr {
@@ -103,7 +103,7 @@ internal func
 ///    `__root` == nullptr is a proper tree.  Returns true if `__root` is a proper
 ///    red black tree, else returns false.
 @usableFromInline
-internal func
+package func
   __tree_invariant(_ __root: UnsafeMutablePointer<UnsafeNode>) -> Bool
 {
   if __root == .nullptr {
@@ -126,7 +126,7 @@ internal func
 
 /// Returns:  pointer to the left-most node under `__x`.
 @inlinable
-internal func
+package func
   __tree_min(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
   assert(__x != .nullptr, "Root node shouldn't be null")
@@ -139,7 +139,7 @@ internal func
 
 /// Returns:  pointer to the right-most node under `__x`.
 @inlinable
-internal func
+package func
   __tree_max(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
   assert(__x != .nullptr, "Root node shouldn't be null")
@@ -152,7 +152,7 @@ internal func
 
 /// Returns:  pointer to the next in-order node after __x.
 @inlinable
-internal func
+package func
   __tree_next(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
   assert(__x != .nullptr, "node shouldn't be null")
@@ -173,7 +173,7 @@ internal func
 /// never happens.
 @inlinable
 @inline(__always)
-internal func
+package func
   __tree_next_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
   assert(__x != .nullptr, "node shouldn't be null")
@@ -190,7 +190,7 @@ internal func
 /// Returns:  pointer to the previous in-order node before `__x`.
 /// Note: `__x` may be the end node.
 @inlinable
-internal func
+package func
   __tree_prev_iter(_ __x: UnsafeMutablePointer<UnsafeNode>) -> UnsafeMutablePointer<UnsafeNode>
 {
   assert(__x != .nullptr, "node shouldn't be null")

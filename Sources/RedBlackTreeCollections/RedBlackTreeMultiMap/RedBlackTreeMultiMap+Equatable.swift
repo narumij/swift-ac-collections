@@ -30,6 +30,9 @@ extension RedBlackTreeMultiMap: Equatable where Value: Equatable {
   ///   - lhs: A value to compare.
   ///   - rhs: Another value to compare.
   ///
+  /// - Returns: `true` if both multimaps contain the same ordered sequence of
+  ///   key-value pairs, including duplicate-key occurrences; otherwise, `false`.
+  ///
   /// - Complexity: O(*m*), where *m* is the lesser of the length of `lhs` and `rhs`.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {

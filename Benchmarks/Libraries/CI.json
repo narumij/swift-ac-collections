@@ -1,0 +1,80 @@
+{
+  "kind": "group",
+  "title": "CI Performance Regression",
+  "directory": "CI",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "RedBlackTreeSet",
+      "directory": "set",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "core operations",
+          "tasks": [
+            "RedBlackTreeSet<Int> init from range",
+            "RedBlackTreeSet<Int> sequential iteration",
+            "RedBlackTreeSet<Int> successful find",
+            "RedBlackTreeSet<Int> unsuccessful find",
+            "RedBlackTreeSet<Int> insert",
+            "RedBlackTreeSet<Int> remove"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "copy-on-write",
+          "tasks": [
+            "RedBlackTreeSet<Int> insert, shared",
+            "RedBlackTreeSet<Int> remove, shared"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "group",
+      "title": "RedBlackTreeDictionary",
+      "directory": "dictionary",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "core operations",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> init(uniqueKeysWithValues:)",
+            "RedBlackTreeDictionary<Int, Int> sequential iteration",
+            "RedBlackTreeDictionary<Int, Int> subscript, successful lookups",
+            "RedBlackTreeDictionary<Int, Int> subscript, unsuccessful lookups",
+            "RedBlackTreeDictionary<Int, Int> subscript, insert, unique",
+            "RedBlackTreeDictionary<Int, Int> subscript, remove existing, unique"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "copy-on-write and mutation",
+          "tasks": [
+            "RedBlackTreeDictionary<Int, Int> subscript, insert, shared",
+            "RedBlackTreeDictionary<Int, Int> subscript, remove existing, shared",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify existing",
+            "RedBlackTreeDictionary<Int, Int> defaulted subscript, _modify missing"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "group",
+      "title": "Permutations",
+      "directory": "permutations",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "subscript access",
+          "tasks": [
+            "Permutations.SubSequenceN subscript sequential access",
+            "Permutations.SubSequenceN subscript shuffled access",
+            "Permutations.SubSequenceN subscript sequential access (batched)",
+            "Permutations.SubSequenceN subscript shuffled access (batched)"
+          ]
+        }
+      ]
+    }
+  ]
+}

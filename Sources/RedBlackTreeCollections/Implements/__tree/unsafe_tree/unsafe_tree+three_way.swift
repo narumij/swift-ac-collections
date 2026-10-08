@@ -22,13 +22,13 @@
 
 @usableFromInline
 package
-  protocol IntThreeWayComparator: _TreeKey_LazyThreeWayCompInterface
+  protocol IntThreeWayComparator: ~Copyable, _TreeKey_LazyThreeWayCompInterface
 where _Key: Comparable, __compare_result == __int_compare_result {}
 
-extension IntThreeWayComparator {
+extension IntThreeWayComparator where Self: ~Copyable {
 
   @inlinable
-  public func
+  package borrowing func
     __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
     -> __int_compare_result
   {

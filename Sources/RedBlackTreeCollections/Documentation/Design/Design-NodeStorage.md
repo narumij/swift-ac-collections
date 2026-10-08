@@ -8,7 +8,7 @@ bucketへまとめて確保する。ノード本体とpayloadの配置、特殊�
 
 この文書では、現行の `UnsafeTreeV2BufferHeader`、`_BucketAllocator`、
 `FreshPool`、`RecyclePool` が構成するメモリレイアウトとノードの
-ライフサイクルを記録する。Indexの検証と遅延寿命管理は
+ライフサイクルを記録する。Indexの検証・解放検出とIteratorの寿命管理は
 `Design-MemorySafety.md`、ストレージ共有と複製は
 `Design-CopyOnWrite.md` を参照する。
 
@@ -129,6 +129,13 @@ paddingはNodeとPayloadの間ではなく、slot列の開始位置に置かれ�
 tracking tagはキーや並び順の一部ではない。Fresh Poolから初めて取り出した順に
 0から割り当てられ、CoW時のポインタ再構築、診断、構造検証に使われる。
 
+通常nodeのtracking tagには0以上を使い、特殊nodeと診断状態には負の予約値を使う。
+現行値はnullptrが`-2`、endが`-1`、debug用dummyが`-999`、retire候補が整数型の
+最小値であり、互いにも通常tagにも衝突しない。`USE_COMPACT_NODE_METADATA`によって
+整数幅が変わっても、この区分を維持する。これらは永続化形式ではないが、raw storage上の
+node種別判定と診断が依存する内部表現なので、値を変更する場合は生成、コピー、seal、debug
+検査をまとめて確認する。
+
 recycle countは同じslotが削除・再利用された世代を区別する。これを使った
 Indexの検証については `Design-MemorySafety.md` で扱う。
 
@@ -144,6 +151,9 @@ tracking tagには特殊値 `.nullptr` が設定される。
 
 end nodeはprimary bucket内にあり、tracking tagには `.end` が設定される。
 payloadを持たず、その左リンクをroot格納場所として兼用する。
+通常nodeのrootはend nodeを親に持ち、rootはend nodeの左の子でなければならない。
+end node自身は通常要素ではなく、木の終端、空木のbegin、およびroot格納場所という三つの役割を
+持つ。このため、endを通常nodeと同じ色・payload・親子関係として扱わない。
 
 ### begin pointer
 
@@ -160,6 +170,9 @@ rootから左端を探索し直さないため、変更操作でこの値を維�
          /
 begin_ptr ──► minimum node
 ```
+
+挿入で新しい最小nodeが生じた場合と、現在の最小nodeを削除した場合はbegin pointerを更新する。
+最後のnodeを削除した後は、rootがnullptr、beginがend、countが0へ同時に戻らなければならない。
 
 ## 二つのpool
 
@@ -251,6 +264,29 @@ bucket全体を破棄するとき、allocatorは使用歴のあるノードを�
 `_BucketAllocator` はpayload型のstride、alignment、deinitializerを生成時に保持する。
 これにより、型消去されたbuffer headerからでも正しいレイアウトと破棄処理を利用できる。
 
+### payload所有権の移動
+
+payload全体またはそのfieldの所有権を`move()`でslot外へ取り出した時点で、move対象の
+value storageは未初期化になる。その後に通常の削除経路がpayload全体をdeinitializeすると、
+そのfieldを二重に破棄する。反対に、値を読み出しただけで削除経路にも破棄させなければ、
+参照型payloadをリークする。
+
+したがって、payloadを取り出してからnodeを削除する操作では、次のいずれか一方だけが破棄責任を
+持たなければならない。
+
+1. payloadをslot内に残し、通常の`destroy`またはRecycle Poolへの移動に破棄を任せる。
+2. `move()`で所有権を取り出し、以後の削除経路がmove済みのstorageを再び破棄しない状態へ遷移させる。
+
+この選択は値型payloadだけでは検証できない。参照型payloadのdeinit回数を使い、単体削除、
+範囲削除、重複挿入の破棄、subscriptの`_modify`など、所有権を移し得る経路ごとに構築数と
+破棄数が一致することを確認する。
+
+原木の所有fixtureでは、`__construct_node`がnode metadataとpayloadの所有を一つ増やし、
+`destroy`がそのpayloadをちょうど一度破棄して所有を一つ減らす。unique挿入が同値キーを
+拒否した場合、挿入用に一時構築したnodeがある経路では、そのnodeとpayloadを同じ呼び出し内で
+破棄し、木のsizeと未解放allocationを増やさない。multi挿入は同値payloadをそれぞれ独立した
+要素として所有し、単体・範囲・同値範囲の削除で対象数だけ破棄する。
+
 ## 容量拡張とアドレス安定性
 
 一意に所有された木の容量が不足した場合、既存bucketを再確保せず、
@@ -274,9 +310,13 @@ capacityの増加量は性能調整の対象であり、この文書では特定
 ## CoW時の再配置
 
 CoWでは新しいストレージへ木を再構築するため、ノードアドレスは変わる。
-コピー対象は現在の有効要素だけではなく、
+要素を持つ木では、コピー対象は現在の有効要素だけではなく、
 `freshPoolUsedCount` までの使用歴がある全slotである。Recycle Poolにある削除済み
 ノードもtracking tagの位置とfree listを再現するために必要になる。
+
+`count == 0` の場合は必要容量を確保した後に早期returnする。空の木には引き継ぐ
+論理要素がないため、CoWコストを抑える目的で使用済みslotやRecycle Poolの履歴を
+再構築しない。以下の再配置説明は要素を持つ木を対象とする。
 
 コピー処理は次の対応を使う。
 
@@ -317,20 +357,26 @@ CoWは値を分離するだけでなく、それまでの段階的な容量拡�
 単一bucketレイアウトがもたらす性質である。
 
 コピーではtracking tag、リンク、色、payloadの有無、Recycle Poolの連結を
-新しいポインタで再構築する。recycle countについては現行コードにコピー方法を
-再検討するTODOがあり、固定された設計契約として扱わない。
+新しいポインタで再構築する。`ALLOW_CROSS_TREE_INDEX` 有効時はrecycle countも
+コピーし、コピー先でもノード世代を維持する。これにより、再利用前のstale Indexを
+CoW後の木で有効なIndexとして扱わない。
+
+空の木は早期return経路を通り、不要な使用済みslotとrecycle countの履歴を
+意図的にコピーしない。
 
 CoWの値セマンティクス、一意性確認、コピー先へ持ち越さない寿命管理状態については
 `Design-CopyOnWrite.md` を参照する。
 
 ## bucketの解放責任
 
-通常は `UnsafeTreeV2BufferHeader` がbucket chainの解放責任を持つ。ただし、
-木より長く生存するIndexやIteratorがある場合、raw memoryの寿命を直ちに終えられない。
+通常は `UnsafeTreeV2BufferHeader` がbucket chainの解放責任を持つ。現行のIndexは
+bucketを所有せず、headerの解放時に `_LazyTie` をdetached状態へ移す。現行のIteratorは
+`UnsafeTreeV2` のスナップショットを保持するため、共有中のheaderとbucketは生存し、
+元コレクションを変更するとCoWで分離される。
 
-その場合はbucket先頭とallocatorを `_TiedRawBuffer` に結び付け、
-解放責任を遅延できる。メモリが残っていることとpayloadへのアクセスが許可されることは
-別に管理される。この仕組みの契約は `Design-MemorySafety.md` で扱う。
+`_TiedRawBuffer` へbucket先頭とallocatorを結び付けて解放責任を遅延する仕組みは、
+`COMPATIBLE_ATCODER_2025` のIteratorなど互換・旧経路で使う。メモリが残ることと
+payloadへのアクセス許可は別に管理される。詳細は `Design-MemorySafety.md` で扱う。
 
 ## 責務の境界
 
@@ -341,7 +387,7 @@ CoWの値セマンティクス、一意性確認、コピー先へ持ち越さ�
 | `_Bucket` | 一つの確保領域のcapacity、使用数、次bucketの保持 |
 | `_BucketQueue` | Fresh Poolとして未使用slotを順に供給 |
 | `UnsafeNode` | 木のリンク、色、tracking metadata、payload初期化状態 |
-| `_TiedRawBuffer` | 必要な場合にbucket chainの解放責任を遅延して引き受ける |
+| `_TiedRawBuffer` | 互換・旧経路でbucket chainの解放責任を遅延して引き受ける |
 
 `UnsafeNode` はpayload型、bucket、所有者を知らない。
 `_BucketAllocator` は赤黒木のリンク構造を知らない。
@@ -353,16 +399,22 @@ CoWの値セマンティクス、一意性確認、コピー先へ持ち越さ�
 - secondary bucketはbegin pointerとend nodeを持たない。
 - rootはend nodeの左リンクに格納する。
 - 空の木ではbeginがendを指し、rootがnullptrである。
+- 非空木のrootはend nodeを親に持ち、end nodeの左リンクから参照される。
+- begin pointerは非空木の最小nodeを指す。
 - 通常payloadは対応する `UnsafeNode` の直後にあり、正しくalignされている。
 - payloadを持つノードだけをdeinitializeする。
+- payload全体またはfieldの所有権を`move()`したstorageを、通常の削除経路で再度deinitializeしない。
+- unique挿入で拒否した一時nodeを残さず、multi挿入した同値payloadは個別に所有する。
 - Recycle Poolへ送る前にpayloadを破棄し、世代を進める。
 - Recycle Poolにslotがある間はFresh Poolより再利用を優先する。
 - tracking tagはキー比較や木の順序へ使用しない。
+- 通常tracking tagの非負領域と特殊tagの負領域を衝突させない。
 - 通常の容量拡張で既存ノードを移動しない。
-- CoWのコピー先は、使用歴のあるslotを少なくとも収容する。
+- 要素を持つ木のCoWコピー先は、使用歴のあるslotを少なくとも収容する。
+- `ALLOW_CROSS_TREE_INDEX` 有効時は、コピーしたslotのrecycle countを維持する。
 - CoW直後のコピー先bucketは単一である。
 - `count <= freshPoolUsedCount <= freshPoolCapacity` を維持する。
-- bucketの解放責任をheaderと `_TiedRawBuffer` の双方に持たせない。
+- 互換経路ではbucketの解放責任をheaderと `_TiedRawBuffer` の双方に持たせない。
 
 ## 変更時の確認事項
 
@@ -379,7 +431,7 @@ CoWの値セマンティクス、一意性確認、コピー先へ持ち越さ�
 - bucketの所有権を `_TiedRawBuffer` へ移す条件の変更
 
 変更時には、空・capacity 0・複数bucket・削除済みノードあり・CoW直後・
-Indexが木より長生きする場合をそれぞれ検証する。
+Indexが木より長生きする場合・Iterator保持中の変更をそれぞれ検証する。
 
 ## 関連文書
 

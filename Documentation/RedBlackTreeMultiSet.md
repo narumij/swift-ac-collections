@@ -9,7 +9,7 @@ A red-black-tree-based set that keeps its elements in ascending order and allows
 ## Declaration
 
 ```swift
-import RedBlackTreeCollections
+import AcCollections
 
 struct RedBlackTreeMultiSet<Element: Comparable>
 ```
@@ -126,11 +126,14 @@ indices are not integer offsets.
 
 This differs from `Array`.
 
-Operations that modify the set may invalidate existing indices.
-An invalidated index must not be reused later.
+Inserting or removing a different element does not invalidate an index as long as the
+element it refers to still exists. Removing that element invalidates the index, and the
+index must not be reused even if the same slot is later recycled.
 
-In particular, after removing an element, an index that referred to the removed element
-can no longer be used.
+An index can also identify the corresponding position in a collection derived through
+copy-on-write, as long as the corresponding element still exists and its generation matches.
+Using an index with an unrelated collection is a precondition violation, and detection of
+that misuse is not guaranteed.
 
 ## Multiset Operations
 
@@ -168,9 +171,13 @@ The complexities of representative operations are as follows:
 | Lower-bound lookup | O(log `count`) |
 | Upper-bound lookup | O(log `count`) |
 | Element insertion | O(log `count`) |
-| Element removal | O(log `count`) |
+| Search for a value and remove one element | O(log `count`) |
+| Search for a value and remove K matching elements | O(log `count` + K) |
+| Removal at a known index | Amortized O(1) |
 
 These complexities follow from the structure of the red-black tree itself.
+If storage is shared and a mutation triggers copy-on-write, copying the tree adds
+O(`count`) work.
 
 Actual execution time also depends on factors such as the comparison cost of `Element`
 and memory-access characteristics.

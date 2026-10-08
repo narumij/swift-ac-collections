@@ -12,11 +12,6 @@
       & UnsafeIndexProviderProtocolV2
   {}
 
-  public typealias RedBlackTreeIndex = UnsafeIndexV2
-  public typealias RedBlackTreeIndices = UnsafeIndexV2Collection
-  public typealias RedBlackTreeIterator = RedBlackTreeIteratorV2
-  public typealias RedBlackTreeSlice = RedBlackTreeSliceV2
-
   @usableFromInline
   protocol _RedBlackTreeKeyOnlyBase:
     UnsafeIndexProtocol_tree

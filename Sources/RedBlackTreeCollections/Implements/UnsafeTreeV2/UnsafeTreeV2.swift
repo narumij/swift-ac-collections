@@ -21,6 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @frozen
+@_documentation(visibility: internal)
 public struct UnsafeTreeV2<Base: ___TreeBase> {
 
   @inlinable
@@ -61,9 +62,9 @@ extension UnsafeTreeV2 {
   }
 
   #if COMPATIBLE_ATCODER_2025
-    /// 木に紐付いている生バッファ
-    ///
-    /// - WARNING: 触ると生成されてしまうため不用意に触らないこと
+    // 木に紐付いている生バッファ
+    //
+    // - WARNING: 触ると生成されてしまうため不用意に触らないこと
     @usableFromInline
     var tied: _TiedRawBuffer {
       withMutableHeader { $0.tiedRawBuffer }
@@ -148,9 +149,9 @@ extension UnsafeTreeV2 {
     }
   }
 
-  /// つながりをたぐりよせる
-  ///
-  /// 日本人的にはお祭りなどによくある千本引きのイメージ
+  // つながりをたぐりよせる
+  //
+  // 日本人的にはお祭りなどによくある千本引きのイメージ
   @inlinable
   package func __retrieve_(_ tag: _SealedTag) -> _SealedPtr {
     tag.flatMap { ___retrieve(tag: $0) }
@@ -160,49 +161,29 @@ extension UnsafeTreeV2 {
 extension UnsafeTreeV2 {
 
   #if ALLOW_CROSS_TREE_INDEX
-    // TODO: デタッチ判定が分裂してることについて確認すること
-    /// インデックスをポインタに解決する
-    ///
-    /// 木が同一の場合、インデックスが保持するポインタを返す。
-    /// 木が異なる場合、インデックスが保持するノード番号に対応するポインタを返す。
     @inlinable
-    package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
+    package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
       #if USE_LAZY_DETACH
-        // 同一木判定
         withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
-          // 木が同一のケース
-          // 中身を取り出し、生存確認を行って返している
           ? index.sealed.purified
-          // 木が異なるケース
-          // 中身を取り出し、元の木に対して生存確認を行ってからタグを取得
-          // タグで該当ポインタを取得
-          // 該当ポインタの生存確認を行う（解放確認で十分なところ、実装サボりで生存確認になっていそう）
-          // 要は、元の木と現在の木のどちらかで失効している場合、失効ポインタを返す動作
           : __retrieve_(index.sealed.purified.tag).deepPurified
       #else
-        // 同一木判定
         withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
-          // 木が同一のケース
           ? index.sealed.purified
-          // 木が異なるケース
-          // ソース側の生木がないので、ソース側の世代チェックを省いている
-          : __retrieve_(index.sealed.tag).deepPurified
+          : __retrieve_(index.tag).deepPurified
       #endif
     }
   #else
     @inlinable
-    package func __purified_(_ index: _LazyTieWrappedPtr) -> _SealedPtr {
-      // 同一木判定
+    package func __purified_(_ index: _LazyTiedPtr) -> _SealedPtr {
       withMutableHeader { index.__isSameLazyDetach($0._lazyDetach) }
-        // 木が同一のケース
         ? index.sealed.purified
-        // 木が異なるケース
         : .failure(.crossTree)
     }
   #endif
 
   @inlinable
-  internal func __purified_safe_(_ index: _LazyTieWrappedPtr) -> _SafePtr {
+  internal func __purified_safe_(_ index: _LazyTiedPtr) -> _SafePtr {
     __purified_(index).map(\.pointer)
   }
 }

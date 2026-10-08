@@ -24,9 +24,9 @@
 
 extension RedBlackTreeMultiSet {
 
-  /// Creates a new, empty multi set.
+  /// Creates a new, empty multiset.
   ///
-  /// - Complexity: O(1)
+  /// - Complexity: O(1).
   @inlinable
   public init() {
     self.init(__tree_: .create())
@@ -36,9 +36,12 @@ extension RedBlackTreeMultiSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Creates a new set from a finite sequence of items.
+    /// Creates a new multiset containing the elements of the given sequence.
     ///
-    /// - Complexity: O(*n* log *n*)
+    /// Duplicate elements are retained and all elements are stored in sorted order.
+    ///
+    /// - Parameter sequence: A finite sequence of elements for the new multiset.
+    /// - Complexity: O(*n* log *n*), where *n* is the length of `sequence`.
     ///   When inserting elements sequentially from an already sorted sequence,
     ///   no search is required, and rebalancing is amortized O(1),
     ///   so the overall construction cost becomes O(*n*).
@@ -50,9 +53,13 @@ extension RedBlackTreeMultiSet {
       self.init(__tree_: tree)
     }
 
-    /// Creates a new set from a finite sequence of items.
+    /// Creates a new multiset containing the elements of the given collection.
     ///
-    /// - Complexity: O(*n* log *n*)
+    /// Duplicate elements are retained. This overload reserves storage using the collection's
+    /// count before inserting its elements.
+    ///
+    /// - Parameter collection: A finite collection of elements for the new multiset.
+    /// - Complexity: O(*n* log *n*), where *n* is `collection.count`.
     ///   When inserting elements sequentially from an already sorted sequence,
     ///   no search is required, and rebalancing is amortized O(1),
     ///   so the overall construction cost becomes O(*n*).
@@ -72,11 +79,14 @@ extension RedBlackTreeMultiSet {
 
 extension RedBlackTreeMultiSet {
 
-  /// Creates a new set from a finite sequence of items.
+  /// Creates a new multiset from an ascending range of elements.
   ///
-  /// - Important: This implementation assumes ascending order and omits certain checks.
-  ///   Using it with descending order results in undefined behavior.
-  /// - Complexity: Amortized O(*n*).
+  /// This overload is a specialized linear-time path for `Range` and `ClosedRange` values.
+  /// Other finite sequences, including descending strides, use the sequence initializer.
+  ///
+  /// - Parameter range: An ascending `Range` or `ClosedRange` containing the elements.
+  /// - Precondition: `range` is a `Range<Element>` or `ClosedRange<Element>`.
+  /// - Complexity: O(*n*), where *n* is the number of elements in `range`.
   @inlinable
   public init<R>(_ range: __owned R)
   where R: RangeExpression, R: Collection, R.Element == Element {

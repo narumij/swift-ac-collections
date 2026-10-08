@@ -46,12 +46,19 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
       let found = __child.pointee != nullptr
 
-      var value: Base._MappedValue? = found ? Base.__mapped_value_ptr(__child).move() : nil
+      // NOTE: ここで`.move()`すると、`value`がnilのまま(=キー削除)の分岐で
+      // `erase(_:)`がpayload全体を正しくdeinitializeする際に、既に所有権を失っている
+      // はずの値を再度destroyしてしまい、参照型Valueで二重解放になる(2026-10-03発見)。
+      // `_MappedValue`は常にCopyableなので、移動ではなく読み取り(コピー)で済ませる。
+      var value: Base._MappedValue? = found ? Base.__mapped_value_ptr(__child).pointee : nil
 
       defer {
         if let value {
           if found {
-            Base.__mapped_value_ptr(__child).initialize(to: value)
+            // 既存の値を保持したままの代入(`.initialize`ではない)。
+            // ポインタの`.pointee`代入はdeinit-old→init-newを自動で行うため、
+            // 上の読み取りで複製されたぶんの解放漏れ(リーク)が起きない。
+            Base.__mapped_value_ptr(__child).pointee = value
           } else {
             unsafeEnsureCapacity()
             update {
@@ -88,16 +95,20 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
       let (__parent, __child) = __find_equal(key)
 
-      if __child.pointee == nullptr {
+      var __node = __child.pointee
+
+      if __node == nullptr {
         unsafeEnsureCapacity()
         assert(capacity > count)
         update {
-          let __h = $0.__construct_node(Base.__payload_((key, defaultValue())))
-          $0.__insert_node_at(__parent, __child, __h)
+          __node = $0.__construct_node(Base.__payload_((key, defaultValue())))
+          $0.__insert_node_at(__parent, __child, __node)
         }
       }
 
-      yield &Base.__mapped_value_ptr(__child.pointee).pointee
+      defer { _fixLifetime(self) }
+
+      yield &Base.__mapped_value_ptr(__node).pointee
     }
   }
 
@@ -105,21 +116,24 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   mutating func mappedValuePtr(for key: Base._Key, default defaultValue: () -> Base._MappedValue)
     -> Base._MappedValuePtr
   {
-
     ensureUnique()
 
     let (__parent, __child) = __find_equal(key)
 
-    if __child.pointee == nullptr {
+    var __node = __child.pointee
+
+    if __node == nullptr {
       unsafeEnsureCapacity()
       assert(capacity > count)
       update {
-        let __h = $0.__construct_node(Base.__payload_((key, defaultValue())))
-        $0.__insert_node_at(__parent, __child, __h)
+        __node = $0.__construct_node(Base.__payload_((key, defaultValue())))
+        $0.__insert_node_at(__parent, __child, __node)
       }
     }
 
-    return Base.__mapped_value_ptr(__child.pointee)
+//    defer { _fixLifetime(self) }
+
+    return Base.__mapped_value_ptr(__node)
   }
 }
 

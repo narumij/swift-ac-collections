@@ -144,8 +144,8 @@ set.count(of: 2)
 | `insert(value)` | `insert(_:)` | ✅ | 同値な要素が既に存在しても追加される |
 | duplicate insertion | `insert(_:)` | ✅ | 重複を許容する |
 | `emplace(...)` | 値を構築して `insert(_:)` | △ | C++ の in-place construction に直接対応する API はない |
-| `emplace_hint(...)` | — | ❌ | C++ の emplacement / hint API は採用していない |
-| `insert(hint, value)` | — | ❌ | hint 付き挿入は採用していない |
+| `emplace_hint(...)` | `insert(_:hint:)` | △ | hint は利用できるが、C++ の in-place construction semantics はない |
+| `insert(hint, value)` | `insert(_:hint:)` | ✅ | 新しい要素のindexを返す。通常構成のみ |
 | range insertion | `Sequence` ベースの初期化 / 挿入 | △ | Swift では iterator pair より `Sequence` を使う |
 
 `RedBlackTreeSet` と異なり、
@@ -168,8 +168,8 @@ C++ の `std::multiset::insert` には、
 root から挿入位置を探索する処理を省略できるため、
 挿入を高速化できる場合があります。
 
-`RedBlackTreeMultiSet` では、
-C++ と同じ形式の hint 付き挿入 API は提供しません。
+`RedBlackTreeMultiSet`では`insert(_:hint:)`を提供します。`endIndex`も有効で、
+利用可能なhintは同値要素群の内部を含む挿入位置として使われます。
 
 ## Emplacement
 
@@ -253,6 +253,9 @@ C++ の `extract()` は、
 そのため、1つのノードを独立した ownership unit として外部へ取り出す
 C++ の `node_handle` モデルとは相性がよくありません。
 
+`Index` はCoWで分岐した木でも対応するnodeを追跡する位置handleとして利用できますが、
+nodeのownershipを保持したり、別のコンテナへnodeを移送したりするものではありません。
+
 ## Iterator と Index
 
 | C++ `std::multiset` | Swift / `RedBlackTreeMultiSet` | 対応 | 備考 |
@@ -296,6 +299,10 @@ C++ の `node_handle` モデルとは相性がよくありません。
 
 この性質により、
 mutation をまたいで特定の要素位置を保持できます。
+
+CoWで分岐したコレクションでも、対応する要素が存在し世代が一致する限り、
+Indexからその位置を特定できます。無関係なコレクションから取得したIndexを
+使用することは事前条件違反であり、その検出は保証しません。
 
 重複要素についても、
 それぞれの index は個別の要素位置を表します。
@@ -518,7 +525,7 @@ Swift 標準ライブラリの lazy adapter を利用できます。
 | node-based tree | 赤黒木ノード | ✅ | |
 | node ごとの allocation | shared node storage | △ | 複数ノードをまとめて storage 上に配置する |
 | allocator template parameter | — | ❌ | C++ allocator customization の直接対応はない |
-| `node_handle` | — | ❌ | shared storage 方式とは ownership model が異なる |
+| `node_handle` | `Index` | △ | 位置handleとしての役割は近いが、nodeのownershipは持たない |
 | move construction | Swift の ownership / value semantics | △ | C++ と object model が異なる |
 | copy construction | copy-on-write | △ | tree storage 全体を即座に複製するとは限らない |
 | `swap()` | Swift `swap` | ✅ | |
@@ -555,9 +562,9 @@ Swift 標準ライブラリの lazy adapter を利用できます。
 | Swift `SetAlgebra` | — | ❌ |
 | lazy sequence | C++ ranges 等を利用 | Swift `Sequence.lazy` |
 | node allocation | 一般に node 単位 | shared storage |
-| `node_handle` | ✅ | ❌ |
+| `node_handle` | ✅ | △ `Index`（位置handle） |
 | `extract()` | ✅ | ❌ |
-| hint insertion | ✅ | ❌ |
+| hint insertion | ✅ | ✅ `insert(_:hint:)` |
 | in-place `emplace` | ✅ | △ |
 
 ## C++ に固有性の強い機能
@@ -568,11 +575,10 @@ iterator model と強く結びついており、
 
 - allocator customization
 - `node_type`
-- `node_handle`
+- nodeのownershipと移送を担う `node_handle`
 - `extract()`
 - node transfer を利用した `merge()`
 - `emplace()` / `emplace_hint()` の C++ と同一の構築 semantics
-- hint 付き `insert`
 - container ごとに保持する comparator object
 
 これらに直接対応する API がないことは、

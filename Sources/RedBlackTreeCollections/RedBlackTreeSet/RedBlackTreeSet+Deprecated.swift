@@ -41,9 +41,9 @@
   // これを標準に引き上げ
   extension RedBlackTreeSet {
 
-    /// - Complexity: O(*n* log *n*)
-    ///
-    /// 省メモリでの初期化
+    // - Complexity: O(*n* log *n*)
+    //
+    // 省メモリでの初期化
     @inlinable
     public init<Source>(naive sequence: __owned Source)
     where Element == Source.Element, Source: Sequence {
@@ -87,37 +87,37 @@
   // Rangeの使い方としておかしいので、便利だが将来的に削除することにした
   extension RedBlackTreeSet {
 
-    /// 範囲 `[lower, upper)` に含まれる要素を返します。
-    ///
-    /// index範囲ではないことに留意
-    ///
-    /// **Deprecated – 以下の代替コードをご利用ください。**
-    ///
-    /// ```swift
-    /// extension RedBlackTreeSet {
-    ///   public func sequence(from start: Element, to end: Element) -> SubSequence {
-    ///     self[lowerBound(start)..<lowerBound(end)]
-    ///   }
-    /// }
-    /// ```
+    // 範囲 `[lower, upper)` に含まれる要素を返します。
+    //
+    // index範囲ではないことに留意
+    //
+    // **Deprecated – 以下の代替コードをご利用ください。**
+    //
+    // ```swift
+    // extension RedBlackTreeSet {
+    //   public func sequence(from start: Element, to end: Element) -> SubSequence {
+    //     self[lowerBound(start)..<lowerBound(end)]
+    //   }
+    // }
+    // ```
     @available(*, deprecated)
     public subscript(bounds: Range<Element>) -> SubSequence {
       elements(in: bounds)
     }
 
-    /// 範囲 `[lower, upper]` に含まれる要素を返します。
-    ///
-    /// index範囲ではないことに留意
-    ///
-    /// **Deprecated – 以下の代替コードをご利用ください。**
-    ///
-    /// ```swift
-    /// extension RedBlackTreeSet {
-    ///   public func sequence(from start: Element, through end: Element) -> SubSequence {
-    ///     self[lowerBound(start)..<upperBound(end)]
-    ///   }
-    /// }
-    /// ```
+    // 範囲 `[lower, upper]` に含まれる要素を返します。
+    //
+    // index範囲ではないことに留意
+    //
+    // **Deprecated – 以下の代替コードをご利用ください。**
+    //
+    // ```swift
+    // extension RedBlackTreeSet {
+    //   public func sequence(from start: Element, through end: Element) -> SubSequence {
+    //     self[lowerBound(start)..<upperBound(end)]
+    //   }
+    // }
+    // ```
     @available(*, deprecated)
     public subscript(bounds: ClosedRange<Element>) -> SubSequence {
       elements(in: bounds)
@@ -125,18 +125,18 @@
   }
 
   extension RedBlackTreeSet {
-    /// 値レンジ `[lower, upper)` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    ///
-    /// **Deprecated – 以下の代替コードをご利用ください。**
-    ///
-    /// ```swift
-    /// extension RedBlackTreeSet {
-    ///   public func sequence(from start: Element, to end: Element) -> SubSequence {
-    ///     self[lowerBound(start)..<lowerBound(end)]
-    ///   }
-    /// }
-    /// ```
+    // 値レンジ `[lower, upper)` に含まれる要素のスライス
+    // - Complexity: O(log *n*)
+    //
+    // **Deprecated – 以下の代替コードをご利用ください。**
+    //
+    // ```swift
+    // extension RedBlackTreeSet {
+    //   public func sequence(from start: Element, to end: Element) -> SubSequence {
+    //     self[lowerBound(start)..<lowerBound(end)]
+    //   }
+    // }
+    // ```
     @available(*, deprecated)
     public func elements(in range: Range<Element>) -> SubSequence {
       .init(
@@ -145,18 +145,18 @@
         end: __tree_.lower_bound(range.upperBound).sealed)
     }
 
-    /// 値レンジ `[lower, upper]` に含まれる要素のスライス
-    /// - Complexity: O(log *n*)
-    ///
-    /// **Deprecated – 以下の代替コードをご利用ください。**
-    ///
-    /// ```swift
-    /// extension RedBlackTreeSet {
-    ///   public func sequence(from start: Element, through end: Element) -> SubSequence {
-    ///     self[lowerBound(start)..<upperBound(end)]
-    ///   }
-    /// }
-    /// ```
+    // 値レンジ `[lower, upper]` に含まれる要素のスライス
+    // - Complexity: O(log *n*)
+    //
+    // **Deprecated – 以下の代替コードをご利用ください。**
+    //
+    // ```swift
+    // extension RedBlackTreeSet {
+    //   public func sequence(from start: Element, through end: Element) -> SubSequence {
+    //     self[lowerBound(start)..<upperBound(end)]
+    //   }
+    // }
+    // ```
     @available(*, deprecated)
     public func elements(in range: ClosedRange<Element>) -> SubSequence {
       .init(
@@ -168,8 +168,8 @@
 
   extension RedBlackTreeSet {
 
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n* + *k*)
+    // - Important: 削除したメンバーを指すインデックスが無効になります。
+    // - Complexity: O(log *n* + *k*)
     @inlinable
     public mutating func remove(contentsOf elementRange: Range<Element>) {
       __tree_._strongEnsureUnique()
@@ -178,8 +178,8 @@
       ___remove(from: lower, to: upper)
     }
 
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n* + *k*)
+    // - Important: 削除したメンバーを指すインデックスが無効になります。
+    // - Complexity: O(log *n* + *k*)
     @inlinable
     public mutating func remove(contentsOf elementRange: ClosedRange<Element>) {
       __tree_._strongEnsureUnique()
@@ -207,13 +207,12 @@
 
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
-    /// Removes the specified subrange of elements from the collection.
-    ///
-    /// - Important: 削除後は、subrangeのインデックスが無効になります。
-    /// - Parameter bounds: The subrange of the collection to remove. The bounds of the
-    ///     range must be valid indices of the collection.
-    /// - Returns: The key-value pair that correspond to `index`.
-    /// - Complexity: O(`m ) where  `m` is the size of `bounds`
+    // Removes the specified subrange of elements from the collection.
+    //
+    // - Important: 削除後は、subrangeのインデックスが無効になります。
+    // - Parameter bounds: The subrange of the collection to remove. The bounds of the
+    //     range must be valid indices of the collection.
+    // - Complexity: O(*m*), where *m* is the size of `bounds`.
     @inlinable
     public mutating func removeSubrange<R: RangeExpression>(
       _ bounds: R
@@ -230,9 +229,9 @@
 
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
-    /// RangeExpressionがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity: O(1)
+    // RangeExpressionがsubscriptやremoveで利用可能か判別します
+    //
+    // - Complexity: O(1)
     @inlinable
     public func isValid<R: RangeExpression>(_ bounds: R) -> Bool
     where R.Bound == Index {
@@ -243,7 +242,7 @@
 
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
-    /// 特殊なforEach
+    // 特殊なforEach
     @inlinable
     public func forEach(_ body: (Index, Element) throws -> Void) rethrows {
       try _forEach(body)
@@ -254,19 +253,20 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(1)
+    // - Important: 削除したメンバーを指すインデックスが無効になります。
+    // - Complexity: O(1)
     // @available(*, deprecated, renamed: "popMin")
     @inlinable
     public mutating func popFirst() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return ___unchecked_remove_first()?.payload
     }
   }
 
   extension RedBlackTreeSet {
-    /// - Important: 削除したメンバーを指すインデックスが無効になります。
-    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    // - Important: 削除したメンバーを指すインデックスが無効になります。
+    // - Complexity: O(log *n*), where *n* is the number of elements.
     // @available(*, deprecated)
     @inlinable
     @discardableResult
@@ -285,9 +285,9 @@
 #if COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// - Important:
-    ///  要素及びノードが削除された場合、インデックスは無効になります。
-    /// 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
+    // - Important:
+    //  要素及びノードが削除された場合、インデックスは無効になります。
+    // 無効なインデックスを使用するとランタイムエラーや不正な参照が発生する可能性があるため注意してください。
     public
       typealias Index = Tree.Index
   }
@@ -309,8 +309,8 @@
 
   extension RedBlackTreeSet {
 
-    /// - Important: 削除後は、インデックスが無効になります。
-    /// - Complexity: O(1)
+    // - Important: 削除後は、インデックスが無効になります。
+    // - Complexity: O(1)
     @inlinable
     @discardableResult
     public mutating func remove(at index: Index) -> Element {
@@ -329,36 +329,36 @@
 
   extension RedBlackTreeSet {
 
-    /// `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
-    /// 最初の位置（`Index`）を返します。
-    ///
-    /// たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
-    /// - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
-    /// - `lowerBound(3)` は要素 `3` の位置を返します。
-    /// - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
-    /// - `lowerBound(10)` は `endIndex` を返します。
-    ///
-    /// - Parameter member: 二分探索で検索したい要素
-    /// - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
-    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    // `lowerBound(_:)` は、指定した要素 `member` 以上の値が格納されている
+    // 最初の位置（`Index`）を返します。
+    //
+    // たとえば、ソートされた `[1, 3, 5, 7, 9]` があるとき、
+    // - `lowerBound(0)` は最初の要素 `1` の位置を返します。（つまり `startIndex`）
+    // - `lowerBound(3)` は要素 `3` の位置を返します。
+    // - `lowerBound(4)` は要素 `5` の位置を返します。（`4` 以上で最初に出現する値が `5`）
+    // - `lowerBound(10)` は `endIndex` を返します。
+    //
+    // - Parameter member: 二分探索で検索したい要素
+    // - Returns: 指定した要素 `member` 以上の値が格納されている先頭の `Index`
+    // - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func lowerBound(_ member: Element) -> Index {
       ___index_lower_bound(member)
     }
 
-    /// `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
-    /// 最初の位置（`Index`）を返します。
-    ///
-    /// たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
-    /// - `upperBound(3)` は要素 `5` の位置を返します。
-    ///   （`3` より大きい値が最初に現れる場所）
-    /// - `upperBound(5)` は要素 `7` の位置を返します。
-    ///   （`5` と等しい要素は含まないため、`5` の直後）
-    /// - `upperBound(9)` は `endIndex` を返します。
-    ///
-    /// - Parameter member: 二分探索で検索したい要素
-    /// - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
-    /// - Complexity: O(log *n*), where *n* is the number of elements.
+    // `upperBound(_:)` は、指定した要素 `member` より大きい値が格納されている
+    // 最初の位置（`Index`）を返します。
+    //
+    // たとえば、ソートされた `[1, 3, 5, 5, 7, 9]` があるとき、
+    // - `upperBound(3)` は要素 `5` の位置を返します。
+    //   （`3` より大きい値が最初に現れる場所）
+    // - `upperBound(5)` は要素 `7` の位置を返します。
+    //   （`5` と等しい要素は含まないため、`5` の直後）
+    // - `upperBound(9)` は `endIndex` を返します。
+    //
+    // - Parameter member: 二分探索で検索したい要素
+    // - Returns: 指定した要素 `member` より大きい値が格納されている先頭の `Index`
+    // - Complexity: O(log *n*), where *n* is the number of elements.
     @inlinable
     public func upperBound(_ member: Element) -> Index {
       ___index_upper_bound(member)
@@ -448,9 +448,9 @@
       @inline(__always) _read { yield self[_unsafe: position] }
     }
 
-    /// Indexがsubscriptやremoveで利用可能か判別します
-    ///
-    /// - Complexity: O(1)
+    // Indexがsubscriptやremoveで利用可能か判別します
+    //
+    // - Complexity: O(1)
     @inlinable
     public func isValid(index: Index) -> Bool {
       _isValid(index: index)

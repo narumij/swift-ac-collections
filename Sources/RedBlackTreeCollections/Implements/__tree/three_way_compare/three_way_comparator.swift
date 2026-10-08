@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @inlinable
-package func __default_three_way_comparator<T: Comparable>(_ __lhs: T, _ __rhs: T) -> Int {
+package func __default_three_way_comparator<T: ~Copyable & Comparable>(_ __lhs: borrowing T, _ __rhs: borrowing T) -> Int {
   if __lhs < __rhs {
     -1
   } else if __lhs > __rhs {

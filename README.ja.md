@@ -342,6 +342,26 @@ ABC328Eという問題がありまして、C++で書かれた解説コードを�
 
 勘違いの結果、オーバーヘッドが少ない実装を追い求め、結果としてとても軽量な実装を生み出すこととなりました。おまけでunsafePermutationsとunsafeNextPermutationsというものもありますが、コピーオンライトをキャンセルして行わない動作となっています。
 
+## ドキュメント
+
+生成済みのAPIドキュメントは
+[GitHub Pages](https://narumij.github.io/swift-ac-collections/documentation/redblacktreecollections/)で閲覧できます。
+
+Swift-DocCでAPIドキュメントを生成し、ドキュメントコメントを検証できます。
+
+```console
+swift package -c release generate-documentation \
+  --target RedBlackTreeCollections \
+  --warnings-as-errors
+```
+
+ブラウザでローカルプレビューするには、次を実行します。
+
+```console
+swift package -c release --disable-sandbox preview-documentation \
+  --target RedBlackTreeCollections
+```
+
 ## アンダースコア付き宣言について
 
 「アンダースコア付き宣言」は、完全修飾名のどこかにアンダースコア (`_`) で始まる部分が含まれる宣言のことを指します。たとえば、以下のような名前は技術的に `public` として宣言されていても、パブリックAPIには含まれません：

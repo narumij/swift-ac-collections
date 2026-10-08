@@ -28,7 +28,7 @@
 ///
 /// - Complexity: O(1)
 ///   (when evaluated)
-public func start<K>() -> RedBlackTreeBoundExpression<K> {
+public func start<Key>() -> RedBlackTreeBoundExpression<Key> {
   .start
 }
 
@@ -38,7 +38,7 @@ public func start<K>() -> RedBlackTreeBoundExpression<K> {
 ///
 /// - Complexity: O(log `count`)
 ///   (when evaluated)
-public func last<K>() -> RedBlackTreeBoundExpression<K> {
+public func last<Key>() -> RedBlackTreeBoundExpression<Key> {
   .last
 }
 
@@ -46,7 +46,7 @@ public func last<K>() -> RedBlackTreeBoundExpression<K> {
 ///
 /// - Complexity: O(1)
 ///   (when evaluated)
-public func end<K>() -> RedBlackTreeBoundExpression<K> {
+public func end<Key>() -> RedBlackTreeBoundExpression<Key> {
   .end
 }
 
@@ -56,8 +56,8 @@ public func end<K>() -> RedBlackTreeBoundExpression<K> {
 ///
 /// - Complexity: O(log `count`)
 ///   (when evaluated)
-public func lowerBound<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .lowerBound(k)
+public func lowerBound<Key>(_ key: Key) -> RedBlackTreeBoundExpression<Key> {
+  .lowerBound(key)
 }
 
 /// Represents the first element that is greater than the given value.
@@ -66,8 +66,8 @@ public func lowerBound<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
 ///
 /// - Complexity: O(log `count`)
 ///   (when evaluated)
-public func upperBound<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .upperBound(k)
+public func upperBound<Key>(_ key: Key) -> RedBlackTreeBoundExpression<Key> {
+  .upperBound(key)
 }
 
 /// Represents the element equal to the given value.
@@ -76,6 +76,6 @@ public func upperBound<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
 ///
 /// - Complexity: O(log `count`)
 ///   (when evaluated)
-public func find<K>(_ k: K) -> RedBlackTreeBoundExpression<K> {
-  .find(k)
+public func find<Key>(_ key: Key) -> RedBlackTreeBoundExpression<Key> {
+  .find(key)
 }

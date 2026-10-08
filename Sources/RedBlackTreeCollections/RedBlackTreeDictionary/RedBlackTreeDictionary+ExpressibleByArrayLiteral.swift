@@ -28,12 +28,16 @@ extension RedBlackTreeDictionary: ExpressibleByArrayLiteral {
   ///
   /// - Important: If duplicate keys are present,
   ///   a **runtime error** occurs, just like `Dictionary(uniqueKeysWithValues:)`.
-  ///   (If you want to allow duplicates and merge them, use `merge` / `merging`.)
+  ///   To combine duplicate values during initialization, use
+  ///   ``init(_:uniquingKeysWith:)``.
   ///
   /// Example:
   /// ```swift
   /// let d: RedBlackTreeDictionary = [("a", 1), ("b", 2)]
   /// ```
+  ///
+  /// - Parameter elements: The key-value pairs of the literal.
+  /// - Complexity: O(*n* log *n*), where *n* is the number of literal pairs.
   @inlinable
   public init(arrayLiteral elements: (Key, Value)...) {
     self.init(uniqueKeysWithValues: elements)

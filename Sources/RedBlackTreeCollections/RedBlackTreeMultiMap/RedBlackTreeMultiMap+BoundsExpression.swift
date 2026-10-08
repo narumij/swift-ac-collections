@@ -38,16 +38,6 @@
 
   extension RedBlackTreeMultiMap {
 
-    /// Returns whether the corresponding element can be accessed.
-    @inlinable
-    public func isValid(_ bound: Bound) -> Bool {
-
-      bound.evaluate(__tree_).accessible.error == nil
-    }
-  }
-
-  extension RedBlackTreeMultiMap {
-
     @inlinable
     public func distance(from start: Bound, to end: Bound)
       -> Int
@@ -75,6 +65,13 @@
 
   extension RedBlackTreeMultiMap {
 
+    /// Removes and returns the key-value pair at the position selected by a bound expression.
+    ///
+    /// When equivalent keys exist, the expression determines which position is removed.
+    ///
+    /// - Parameter bound: A bound expression that selects a position in the multimap.
+    /// - Returns: The removed key-value pair, or `nil` if the expression selects
+    ///   `endIndex` or can't be evaluated.
     @inlinable
     public mutating func erase(_ bound: Bound) -> Element? {
 
@@ -85,63 +82,64 @@
     }
   }
 
-  // MARK: -
-
   extension RedBlackTreeMultiMap {
 
-    /// Returns whether the corresponding element can be accessed.
+    /// Accesses a view of the key-value pairs selected by a bound range expression.
     ///
-    /// Even if this returns `false`, BoundRange-related APIs will not crash.
-    @inlinable
-    public func isValid(_ bounds: BoundRangeExpression) -> Bool {
-      let range = bounds.evaluate(__tree_).relative(to: __tree_)
-      return __tree_.isValid(range: range)
-    }
-  }
-
-  extension RedBlackTreeMultiMap {
-
+    /// Mutating the returned view modifies this multimap. The view retains every
+    /// selected pair, including pairs with equivalent keys. A range that evaluates
+    /// to no ordered positions produces an empty view.
+    ///
+    /// - Parameter bounds: A bound range expression evaluated against the
+    ///   multimap's keys.
+    /// - Returns: A view over the selected key-value pairs.
     @inlinable
     public subscript(bounds: BoundRangeExpression) -> View {
 
       @inline(__always) get {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        return self[_safeRange: range]
+        self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
 
       @inline(__always) _modify {
-
-        let range = __tree_.sanitize(
-          safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-
-        yield &self[_safeRange: range]
+        yield &self[_sanitize: bounds.evaluate(__tree_).relative(to: __tree_)]
       }
     }
   }
 
   extension RedBlackTreeMultiMap {
 
+    /// Removes the key-value pairs in the range selected by a bound range expression.
+    ///
+    /// - Parameter bounds: A bound range expression that selects the key-value
+    ///   pairs to remove.
     @inlinable
     public mutating func erase(_ bounds: BoundRangeExpression) {
 
+      // 空の場合は削除対象が存在し得ないため、ensureUnique()による
+      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
+      guard __tree_.count > 0 else { return }
       __tree_.ensureUnique()
-      let range = __tree_.sanitize(
-        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      __tree_.___erase_range(range)
+      _ = __tree_.___erase_sanitize_range(bounds.evaluate(__tree_).relative(to: __tree_))
     }
 
+    /// Removes the key-value pairs in the selected range that satisfy a predicate.
+    ///
+    /// - Parameters:
+    ///   - bounds: A bound range expression that selects the key-value pairs to examine.
+    ///   - shouldBeRemoved: A closure that returns `true` for a key-value pair
+    ///     that should be removed.
     @inlinable
     public mutating func erase(
       _ bounds: BoundRangeExpression, where shouldBeRemoved: (Element) throws -> Bool
     ) rethrows {
 
+      // 空の場合は削除対象が存在し得ないため、ensureUnique()による
+      // 無駄なコピー(共有される空シングルトンバッファからの退避)を避ける。
+      guard __tree_.count > 0 else { return }
       __tree_.ensureUnique()
-      let range = __tree_.sanitize(
-        safeRange: bounds.evaluate(__tree_).relative(to: __tree_))
-      try __tree_.___erase_range_if(range) {
+      _ = try __tree_.___erase_sanitize_range_if(
+        bounds.evaluate(__tree_).relative(to: __tree_)
+      ) {
         try shouldBeRemoved($0.tuple)
       }
     }

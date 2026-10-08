@@ -23,10 +23,10 @@
 public struct _RawRange<Bound> {
 
   @usableFromInline
-  internal var lowerBound: Bound
+  package var lowerBound: Bound
 
   @usableFromInline
-  internal var upperBound: Bound
+  package var upperBound: Bound
 
   @inlinable
   internal init(lowerBound: Bound, upperBound: Bound) {
@@ -38,13 +38,13 @@ public struct _RawRange<Bound> {
 extension _RawRange {
 
   @inlinable
-  func map<T>(_ f: (Bound) -> T) -> _RawRange<T> {
-    .init(lowerBound: f(lowerBound), upperBound: f(upperBound))
+  func map<T>(_ f: (Bound) throws -> T) rethrows -> _RawRange<T> {
+    .init(lowerBound: try f(lowerBound), upperBound: try f(upperBound))
   }
 
   @inlinable
-  func fold<T>(_ f: (Bound, Bound) -> T) -> T {
-    f(lowerBound, upperBound)
+  func fold<T>(_ f: (Bound, Bound) throws -> T) rethrows -> T {
+    try f(lowerBound, upperBound)
   }
 }
 

@@ -24,7 +24,10 @@
 
 extension RedBlackTreeDictionary: CustomReflectable {
   
-  /// The custom mirror for this instance.
+  /// A mirror that presents the dictionary's key-value pairs as unlabeled children.
+  ///
+  /// The mirror uses the `.dictionary` display style and contains one child for
+  /// each key-value pair.
   public var customMirror: Mirror {
     Mirror(self, unlabeledChildren: self + [], displayStyle: .dictionary)
   }

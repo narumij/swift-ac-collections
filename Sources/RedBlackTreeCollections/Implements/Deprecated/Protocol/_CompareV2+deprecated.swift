@@ -13,7 +13,7 @@
 
   extension _CompareV2 where Base: UniqueMultiplicity {
 
-    ///（重複なし）
+    //（重複なし）
     @inlinable
     internal func ___equal_range(_ k: _Key) -> (lower: _NodePtr, upper: _NodePtr) {
       __tree_.__equal_range_unique(k)
@@ -22,7 +22,7 @@
 
   extension _CompareV2 where Base: MultiMultiplicity {
 
-    /// （重複あり）
+    // （重複あり）
     @inlinable
     internal func ___equal_range(_ k: _Key) -> (lower: _NodePtr, upper: _NodePtr) {
       __tree_.__equal_range_multi(k)
@@ -31,7 +31,7 @@
 
   extension _CompareV2 where Base: UniqueMultiplicity, Self: UnsafeIndexProviderProtocolV2 {
 
-    ///（重複なし）
+    //（重複なし）
     @inlinable
     internal func ___index_equal_range(_ k: _Key) -> (lower: Index, upper: Index) {
       let (lo, hi) = ___equal_range(k)
@@ -41,7 +41,7 @@
 
   extension _CompareV2 where Base: MultiMultiplicity, Self: UnsafeIndexProviderProtocolV2 {
 
-    /// （重複あり）
+    // （重複あり）
     @inlinable
     internal func ___index_equal_range(_ k: _Key) -> (lower: Index, upper: Index) {
       let (lo, hi) = __tree_.__equal_range_multi(k)

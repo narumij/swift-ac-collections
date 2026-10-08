@@ -20,10 +20,12 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// 資料的に残されている
-///
-/// 実際には特殊化されたものをつかっている
-public protocol _BaseNode_KeyProtocol:
+// 資料的に残されている
+//
+// 実際には特殊化されたものをつかっている
+@usableFromInline
+package protocol _BaseNode_KeyProtocol:
+  ~Copyable,
   _BaseNode_KeyInterface
     & _BasePayloadValue_KeyInterface
     & _BaseNode_PayloadValueInterface
@@ -31,24 +33,24 @@ public protocol _BaseNode_KeyProtocol:
   static func __get_value(_: _NodePtr) -> _Key
 }
 
-extension _BaseNode_KeyProtocol {
+extension _BaseNode_KeyProtocol where Self: ~Copyable {
 
-  /// 資料的に残されている
-  ///
-  /// 実際には特殊化されたものをつかっている
-  ///
-  /// `__key(_:)`が定義されてる場合に`__get_value(_:)`を定義する
+  // 資料的に残されている
+  //
+  // 実際には特殊化されたものをつかっている
+  //
+  // `__key(_:)`が定義されてる場合に`__get_value(_:)`を定義する
   @inlinable
-  public static func __get_value(_ p: _NodePtr) -> _Key {
+  package static func __get_value(_ p: _NodePtr) -> _Key {
     __key(__value_(p))
   }
 }
 
-public protocol _BaseComparableKey_LessThanProtocol: _BaseKey_LessThanInterface
+public protocol _BaseComparableKey_LessThanProtocol: ~Copyable, _BaseKey_LessThanInterface
 where _Key: Comparable {}
 
-extension _BaseComparableKey_LessThanProtocol {
-  /// Comparableプロトコルの場合の標準実装
+extension _BaseComparableKey_LessThanProtocol where Self: ~Copyable {
+  // Comparableプロトコルの場合の標準実装
   @inlinable
   public static func value_comp(_ a: _Key, _ b: _Key) -> Bool {
     a < b

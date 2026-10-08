@@ -25,13 +25,19 @@
 extension RedBlackTreeMultiMap: ExpressibleByArrayLiteral {
 
   #if COMPATIBLE_ATCODER_2025
-    /// - Complexity: O(*n* log *n*)
+    /// Creates a multimap from an array literal, retaining pairs with duplicate keys.
+    ///
+    /// - Parameter elements: The key-value pairs of the literal.
+    /// - Complexity: O(*n* log *n*), where *n* is the number of literal pairs.
     @inlinable
     public init(arrayLiteral elements: (Key, Value)...) {
       self.init(multiKeysWithValues: elements)
     }
   #else
-    /// - Complexity: O(*n* log *n*)
+    /// Creates a multimap from an array literal, retaining pairs with duplicate keys.
+    ///
+    /// - Parameter elements: The key-value pairs of the literal.
+    /// - Complexity: O(*n* log *n*), where *n* is the number of literal pairs.
     @inlinable
     public init(arrayLiteral elements: (Key, Value)...) {
       self.init(keysWithValues: elements)

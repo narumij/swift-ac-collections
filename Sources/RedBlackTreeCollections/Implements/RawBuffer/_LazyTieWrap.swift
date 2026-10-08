@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// （遅延）結束バンド
+// （遅延）結束バンド
 @frozen
 public struct _LazyTieWrap<RawValue> {
 
@@ -96,6 +96,51 @@ extension _LazyTieWrap where RawValue == _NodePtrSealing {
     @inlinable
     package func band<Base>(_ __tree_: UnsafeTreeV2<Base>) -> _LazyTiedPtr {
       .init(rawValue: self, lazyDetach: __tree_.lazyDetach)
+    }
+  }
+#endif
+
+extension _LazyTieWrap where RawValue == _NodePtrSealing {
+
+  @usableFromInline
+  package typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+
+  @inlinable
+  @inline(__always)
+  static func unchecked(_ _p: _NodePtr, end_ptr: _NodePtr, lazyDetach: _LazyTie) -> Self {
+    .init(rawValue: .init(_p: _p), lazyDetach: lazyDetach)
+  }
+
+  @inlinable
+  package var sealed: _SealedPtr {
+    rawValue.purified
+  }
+
+  @inlinable
+  func __isSameLazyDetach(_ rhs: _LazyTie?) -> Bool {
+    lazyDetach === rhs
+  }
+
+  // treeを経由しない封印のみの判定。発行元基準での有効性確認としてテストが使う
+  @usableFromInline
+  package var isValid: Bool {
+    switch purified {
+    case .success: true
+    default: false
+    }
+  }
+
+  @inlinable
+  package var tag: _SealedTag {
+    rawValue.trackingTag == .nullptr ? .failure(.null) : rawValue.tag
+  }
+}
+
+#if DEBUG
+  extension _LazyTieWrap where RawValue == _NodePtrSealing {
+    @usableFromInline
+    static var nullptr: Self {
+      .init(rawValue: .init(unsafe: .nullptr), lazyDetach: _emptyLazyDetach)
     }
   }
 #endif

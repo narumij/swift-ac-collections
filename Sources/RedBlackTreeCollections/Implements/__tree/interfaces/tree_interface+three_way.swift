@@ -20,36 +20,40 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// 三方比較結果
-///
-/// <=>演算子に対応するものらしい
-///
-/// <=>はspaceship operatorというらしい
-public
+// 三方比較結果
+//
+// <=>演算子に対応するものらしい
+//
+// <=>はspaceship operatorというらしい
+@usableFromInline
+package
   protocol ThreeWayCompareResult
 {
   @inlinable func __less() -> Bool
   @inlinable func __greater() -> Bool
 }
 
-/// 三方比較結果型の定義
+// 三方比較結果型の定義
 @usableFromInline
- package protocol _ThreeWayResultType
-{
-  /// 三方比較結果型
+package protocol _ThreeWayResultType: ~Copyable {
+  // 三方比較結果型
   associatedtype __compare_result: ThreeWayCompareResult
 }
 
 // MARK: -
 
-@usableFromInline package
-protocol _TreeKey_LazyThreeWayCompInterface: _KeyType & _ThreeWayResultType {
+@usableFromInline
+package
+  protocol _TreeKey_LazyThreeWayCompInterface: ~Copyable, _KeyType & _ThreeWayResultType
+{
   @inlinable
-  func __lazy_synth_three_way_comparator(_ __lhs: _Key, _ __rhs: _Key)
+  borrowing func __lazy_synth_three_way_comparator(_ __lhs: borrowing _Key, _ __rhs: borrowing _Key)
     -> __compare_result
 }
 
-@usableFromInline package
-protocol _TreeKey_ThreeWayCompInterface: _KeyType & _ThreeWayResultType {
-  @inlinable func __comp(_ __lhs: _Key, _ __rhs: _Key) -> __compare_result
+@usableFromInline
+package
+  protocol _TreeKey_ThreeWayCompInterface: ~Copyable, _KeyType & _ThreeWayResultType
+{
+  @inlinable borrowing func __comp(_ __lhs: borrowing _Key, _ __rhs: borrowing _Key) -> __compare_result
 }

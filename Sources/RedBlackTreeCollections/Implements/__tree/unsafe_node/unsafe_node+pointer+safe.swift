@@ -80,13 +80,13 @@
 // （互換動作を削除して以後）
 //
 
-/// エラー補足付きポインタ
+// エラー補足付きポインタ
 public typealias _SafePtr = Result<UnsafeMutablePointer<UnsafeNode>, SealError>
 
 extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == SealError {
 
   @inlinable
-  public static func == (lhs: Self, rhs: Self) -> Bool {
+  package static func == (lhs: Self, rhs: Self) -> Bool {
     switch (lhs, rhs) {
     case (.success(let lhs), .success(let rhs)):
       return lhs == rhs
@@ -98,7 +98,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   }
 
   @inlinable
-  public static func != (lhs: Self, rhs: Self) -> Bool {
+  package static func != (lhs: Self, rhs: Self) -> Bool {
     !(lhs == rhs)
   }
 }
@@ -112,9 +112,9 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
     return .success(self)
   }
 
-  /// ペイロードを持っているかどうかを返す
-  ///
-  /// nullptr、end、解放済みポインタかどうかをひとまとめに判定できる
+  // ペイロードを持っているかどうかを返す
+  //
+  // nullptr、end、解放済みポインタかどうかをひとまとめに判定できる
   @inlinable
   var ___has_payload_content: Bool {
     pointee.___has_payload_content
@@ -129,7 +129,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   }
 
   @inlinable
-  var ___has_payload_content: Bool {
+  package var ___has_payload_content: Bool {
     switch self {
     case .success(let success):
       success.pointee.___has_payload_content
@@ -139,7 +139,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   }
 
   @inlinable
-  var ___is_end: Bool {
+  package var ___is_end: Bool {
     switch self {
     case .success(let success):
       success.___is_end
@@ -149,7 +149,7 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   }
 
   @inlinable
-  var accessible: _SafePtr {
+  package var accessible: _SafePtr {
     ___has_payload_content ? self : .failure(.garbaged)
   }
 }
@@ -163,16 +163,16 @@ extension Result where Success == UnsafeMutablePointer<UnsafeNode>, Failure == S
   }
 }
 
-/// 世代管理付きポインタ
-///
-/// 外部的には、これをさらに寿命管理付きでラップして用いる
-/// 内部的にはこれを用いる理由は特にない、はず
+// 世代管理付きポインタ
+//
+// 外部的には、これをさらに寿命管理付きでラップして用いる
+// 内部的にはこれを用いる理由は特にない、はず
 public typealias _SealedPtr = Result<_NodePtrSealing, SealError>
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
   @inlinable
-  public static func == (lhs: Self, rhs: Self) -> Bool {
+  package static func == (lhs: Self, rhs: Self) -> Bool {
     switch (lhs, rhs) {
     case (.success(let lhs), .success(let rhs)):
       return lhs == rhs
@@ -184,7 +184,7 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
   }
 
   @inlinable
-  public static func != (lhs: Self, rhs: Self) -> Bool {
+  package static func != (lhs: Self, rhs: Self) -> Bool {
     !(lhs == rhs)
   }
 }
@@ -201,7 +201,7 @@ extension UnsafeMutablePointer where Pointee == UnsafeNode {
 
 extension Result where Success == _NodePtrSealing, Failure == SealError {
 
-  /// ポインタを利用する際に用いる
+  // ポインタを利用する際に用いる
   @inlinable
   package var purified: Result { flatMap { $0.purified } }
 
@@ -213,57 +213,59 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 
 public enum SealError: Error {
 
-  /// nullptrが生じた
-  ///
-  /// 把握済みのケースは他のエラーとなるはずなので、これが生じるのは基本的にバグ
+  // nullptrが生じた
+  //
+  // 把握済みのケースは他のエラーとなるはずなので、これが生じるのは基本的にバグ
   case null
 
-  /// 回収された
-  ///
-  /// ただし、unsealedにも含まれる。こちらは封印前に失敗した場合のみとなる
+  // 回収された
+  //
+  // ただし、unsealedにも含まれる。こちらは封印前に失敗した場合のみとなる
   case garbaged
 
-  /// 知らない
-  ///
-  /// 何か変なことしてんちゃう？
+  // 知らない
+  //
+  // 何か変なことしてんちゃう？
   case unknown
 
-  /// 指定された限界を越えて操作した
-  ///
-  /// `index(_:by:limit:)` で指定された `limit` を越える移動を試みた
+  // 指定された限界を越えて操作した
+  //
+  // `index(_:by:limit:)` で指定された `limit` を越える移動を試みた
   case limit
 
-  /// 未許可
-  ///
-  /// 半分わすれたが、多分大本の木が解放済み
-  ///
-  /// これが発生するのは基本的にバグ
+  // 未許可
+  //
+  // 半分わすれたが、多分大本の木が解放済み
+  //
+  // これが発生するのは基本的にバグ
   case notAllowed
 
-  /// 封印が剥がされた
-  ///
-  /// 封印を剥がして転生しちゃったみたい
+  // 封印が剥がされた
+  //
+  // 封印を剥がして転生しちゃったみたい
   case unsealed
 
-  /// nullptrに到達した
-  ///
-  /// 平衡木の下限を超えた操作を行ったことを表す
+  // nullptrに到達した
+  //
+  // 平衡木の下限を超えた操作を行ったことを表す
   case lowerOutOfBounds
 
-  /// endを越えようとした
-  ///
-  /// 平衡木の上限を超えた操作を行ったことを表す
+  // endを越えようとした
+  //
+  // 平衡木の上限を超えた操作を行ったことを表す
   case upperOutOfBounds
 
   case outOfBounds
 
-  /// 木が不一致
-  case crossTree
+  #if !ALLOW_CROSS_TREE_INDEX
+    // 木が不一致
+    case crossTree
+  #endif
 
-  /// 木と分離済み
+  // 木と分離済み
   case detached
-  
-  /// あとでエラーの扱いを変える予定のもの
+
+  // あとでエラーの扱いを変える予定のもの
   case other
 }
 
@@ -272,7 +274,7 @@ extension SealError: Comparable {}
 extension SealError: Hashable {}
 
 @usableFromInline
-func errorMessage<E: Error>(_ e: E) -> String {
+package func errorMessage<E: Error>(_ e: E) -> String {
   switch e as? SealError {
   case .null:
     "Unexpected null pointer"
@@ -319,7 +321,8 @@ extension Result where Success == _NodePtrSealing, Failure == SealError {
 
 extension Result {
 
-  public typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
+  @usableFromInline
+  package typealias _NodePtr = UnsafeMutablePointer<UnsafeNode>
 }
 
 extension Result where Failure == SealError {

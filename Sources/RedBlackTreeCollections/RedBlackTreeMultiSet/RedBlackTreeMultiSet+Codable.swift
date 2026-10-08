@@ -25,8 +25,10 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet: Encodable where Element: Encodable {
 
-    /// Encodes the elements of this multi set into the given encoder in an unkeyed
+    /// Encodes the elements of this multiset into the given encoder in an unkeyed
     /// container.
+    ///
+    /// Every occurrence is encoded in sorted order, including equivalent elements.
     ///
     /// This function throws an error if any values are invalid for the given
     /// encoder's format.
@@ -43,7 +45,9 @@
 
   extension RedBlackTreeMultiSet: Decodable where Element: Decodable {
 
-    /// Creates a new multi set by decoding from the given decoder.
+    /// Creates a new multiset by decoding from the given decoder.
+    ///
+    /// Every decoded occurrence is retained, including equivalent elements.
     ///
     /// This initializer throws an error if reading from the decoder fails, or
     /// if the data read is corrupted or otherwise invalid.
@@ -51,7 +55,7 @@
     /// - Parameter decoder: The decoder to read data from.
     @inlinable
     public init(from decoder: Decoder) throws {
-      self.init(__tree_: try .create(from: decoder))
+      self.init(__tree_: try .createMulti(from: decoder))
     }
   }
 #endif

@@ -20,10 +20,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// DictionaryやMultimap用に特殊化されたハンドル
-///
-/// `_Key`の取得に関して特殊化済みとなっている。
-///
+// DictionaryやMultimap用に特殊化されたハンドル
+//
+// `_Key`の取得に関して特殊化済みとなっている。
+//
 @frozen
 @usableFromInline
 struct UnsafeTreeV2KeyValueHandle<_Key, _MappedValue> where _Key: Comparable {

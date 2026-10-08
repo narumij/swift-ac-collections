@@ -24,7 +24,10 @@
 
 extension RedBlackTreeMultiSet: ExpressibleByArrayLiteral {
 
-  /// - Complexity: O(*n* log *n*)
+  /// Creates a multiset from an array literal, retaining duplicate elements.
+  ///
+  /// - Parameter elements: The elements of the literal.
+  /// - Complexity: O(*n* log *n*), where *n* is the number of literal elements.
   @inlinable
   public init(arrayLiteral elements: Element...) {
     self.init(elements)

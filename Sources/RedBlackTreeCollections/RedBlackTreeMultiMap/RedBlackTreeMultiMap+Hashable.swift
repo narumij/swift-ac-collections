@@ -25,6 +25,11 @@
 extension RedBlackTreeMultiMap: Hashable where Key: Hashable, Value: Hashable {
 
   /// Hashes the essential components of this value by feeding them into the given hasher.
+  ///
+  /// Pairs with equivalent keys are combined once for every occurrence.
+  ///
+  /// - Parameter hasher: The hasher to use when combining the multimap's
+  ///   key-value pairs.
   @inlinable
   public func hash(into hasher: inout Hasher) {
     hasher.combine(__tree_)

@@ -1,3 +1,5 @@
+<!-- TrailingArrayのヘッダと先頭要素の組み合わせをずらっとならべたのが基本的なアイデア -->
+
 # メモリレイアウトの設計
 
 ## この文書の目的
@@ -270,9 +272,28 @@ tracking tag順に単一primary bucketへ再配置されるため、再び `star
 6. Fresh、live、Recycleの各状態で初期化と破棄が一度ずつ対応する。
 7. build configurationごとの `UnsafeNode` レイアウト差を前提にしても算式が成立する。
 
+### 参照計算と塗り分けによる検証
+
+`UnsafeNode`の参照レイアウト計算は、原木だけを使うfixtureが生メモリを確保するための
+リファレンス実装である。製品側の`RawBuffer`計算とは別の入口から、pair alignment、
+pair stride、prefixを含む確保byte数、および最初のnode位置が一致することを照合する。
+
+ただし、同じ計算結果を比較するだけでは、両者が同じ誤った境界を書き込む不具合を検出できない。
+そこで確保領域をpoison値で初期化し、prefix、node、payload、末尾guardを異なる値で塗る。
+検証では各色のbyte数、paddingに残るpoison、末尾guardの不変性を確認し、次を独立に保証する。
+
+- nodeとpayloadが重ならない。
+- leading gapとslot末尾paddingへ値を書き込まない。
+- capacity個のslotが確保範囲内に収まる。
+- 最終payloadの後ろにあるguardを侵食しない。
+
+参照fixtureを`RawBuffer`の内部helperだけで組み立てると、独立した照合にならない。
+算式を変更するときは参照計算との一致と塗り分け検査を併用する。
+
 ## 関連文書
 
-- `Design-NodeStorage.md`: bucketの所有、pool、ノードのライフサイクル
-- `Design-CopyOnWrite.md`: tracking tagを用いた単一bucketへの再配置
-- `Design-MemorySafety.md`: 削除、再利用、Indexの寿命と検証
-- `Design-InternalArchitecture.md`: allocatorとtree層の責務境界
+- [設計Overview](Design-Overview.md)
+- [ノードストレージの設計](Design-NodeStorage.md): bucketの所有、pool、ノードのライフサイクル
+- [Copy on Writeの設計](Design-CopyOnWrite.md): tracking tagを用いた単一bucketへの再配置
+- [メモリ安全性の設計](Design-MemorySafety.md): 削除、再利用、Indexの寿命と検証
+- [内部アーキテクチャ](Design-InternalArchitecture.md): allocatorとtree層の責務境界

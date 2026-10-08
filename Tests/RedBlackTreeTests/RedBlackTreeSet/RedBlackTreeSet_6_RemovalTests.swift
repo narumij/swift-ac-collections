@@ -77,6 +77,14 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.contains(1), "削除後、最初の要素はセットに含まれないこと")
   }
 
+  /// removeLast() が最後の要素を削除すること
+  func test_removeLast() {
+    var set = RedBlackTreeSet([1, 2, 3])
+    let removed = set.removeLast()
+
+    XCTAssertEqual(removed, 3, "最後の要素を削除すること")
+    XCTAssertEqual(set + [], [1, 2], "削除後、最後の要素はセットに含まれないこと")
+  }
 
   /// removeSubrange() が指定範囲の要素を削除すること
   func test_removeSubrange() {
@@ -102,11 +110,159 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     XCTAssertTrue(set.isEmpty, "removeAll() 実行後、セットは空になること")
   }
 
+  #if !COMPATIBLE_ATCODER_2025
+    /// erase(_:) が空範囲と集合の境界を含むすべての半開範囲を正しく削除すること
+    func test_erase_eachBoundedRange() {
+      let source = [1, 3, 5, 7, 9]
+
+      for lowerBound in 0..<10 {
+        for upperBound in lowerBound...10 {
+          var set = RedBlackTreeSet(source)
+          set.erase(set.lowerBound(lowerBound)..<set.upperBound(upperBound))
+
+          XCTAssertEqual(set + [], source.filter { !(lowerBound...upperBound).contains($0) })
+        }
+      }
+    }
+
+    /// removeAll(keepingCapacity:) が要素を消しつつ、指定時には確保容量を維持すること
+    func test_removeAllKeepingCapacity() {
+      var set = RedBlackTreeSet(0..<8)
+      let capacity = set.capacity
+
+      set.removeAll(keepingCapacity: true)
+
+      XCTAssertTrue(set.isEmpty)
+      XCTAssertEqual(set.capacity, capacity)
+    }
+  #endif
+
+  /// removeAll(keepingCapacity:) が保持していた参照型要素を正しく解放すること(二重解放やリークがないこと)
+  func test_removeAllKeepingCapacity_releasesRetainedReferenceElements() {
+    final class DeinitializeCounter: Comparable {
+      static func < (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num < rhs.num
+      }
+      static func == (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num == rhs.num
+      }
+      nonisolated(unsafe) static var count = 0
+      let num: Int
+      init(num: Int) {
+        self.num = num
+        Self.count += 1
+      }
+      deinit { Self.count -= 1 }
+    }
+
+    var set = RedBlackTreeSet<DeinitializeCounter>((0..<3).map { DeinitializeCounter(num: $0) })
+    XCTAssertEqual(DeinitializeCounter.count, 3)
+
+    set.removeAll(keepingCapacity: true)
+
+    XCTAssertEqual(DeinitializeCounter.count, 0)
+  }
+
+  /// popFirst/popLast/remove(_:)/remove(at:)/removeFirst/removeLastが、保持していた
+  /// 参照型要素を正しく解放すること(二重解放やリークがないこと)
+  func test_variousRemovalMethods_releaseRetainedReferenceElementsExactlyOnce() {
+    final class DeinitializeCounter: Comparable {
+      static func < (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num < rhs.num
+      }
+      static func == (lhs: DeinitializeCounter, rhs: DeinitializeCounter) -> Bool {
+        lhs.num == rhs.num
+      }
+      nonisolated(unsafe) static var count = 0
+      let num: Int
+      init(num: Int) {
+        self.num = num
+        Self.count += 1
+      }
+      deinit { Self.count -= 1 }
+    }
+
+    var set = RedBlackTreeSet<DeinitializeCounter>((0..<6).map { DeinitializeCounter(num: $0) })
+    XCTAssertEqual(DeinitializeCounter.count, 6)
+
+    _ = set.popFirst()
+    XCTAssertEqual(DeinitializeCounter.count, 5)
+
+    #if !COMPATIBLE_ATCODER_2025
+      _ = set.popLast()
+      XCTAssertEqual(DeinitializeCounter.count, 4)
+    #endif
+
+    _ = set.remove(DeinitializeCounter(num: 2))
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(DeinitializeCounter.count, 4, "removeで検索用に新たに作った一時要素も、実際に削除された既存要素も両方解放されること")
+    #else
+      XCTAssertEqual(DeinitializeCounter.count, 3, "removeで検索用に新たに作った一時要素も、実際に削除された既存要素も両方解放されること")
+    #endif
+
+    _ = set.removeFirst()
+    #if COMPATIBLE_ATCODER_2025
+      XCTAssertEqual(DeinitializeCounter.count, 3)
+    #else
+      XCTAssertEqual(DeinitializeCounter.count, 2)
+    #endif
+
+    set.removeAll()
+    XCTAssertEqual(DeinitializeCounter.count, 0)
+  }
+
+  /// 空集合への削除操作はトラップしない以上、無駄なCoW(共有される空シングルトン
+  /// バッファからの退避)も発生させないこと。
+  func test_removalMethods_onEmptySet_doNotTriggerCopyOnWrite() {
+    #if AC_COLLECTIONS_INTERNAL_CHECKS
+      var set = RedBlackTreeSet<Int>()
+      XCTAssertEqual(set._copyCount, 0)
+
+      XCTAssertNil(set.popFirst())
+      XCTAssertEqual(set._copyCount, 0)
+
+      #if !COMPATIBLE_ATCODER_2025
+        XCTAssertNil(set.popLast())
+        XCTAssertEqual(set._copyCount, 0)
+      #endif
+
+      XCTAssertNil(set.remove(1))
+      XCTAssertEqual(set._copyCount, 0)
+
+      set.removeAll(keepingCapacity: true)
+      XCTAssertEqual(set._copyCount, 0, "空集合へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
+
+      #if !COMPATIBLE_ATCODER_2025
+        var predicateCalled = false
+        set.erase(where: { _ in
+          predicateCalled = true
+          return true
+        })
+        XCTAssertFalse(predicateCalled, "空の集合へのerase(where:)は述語を呼ばないはず")
+        XCTAssertEqual(set._copyCount, 0, "空の集合へのerase(where:)は退避コピーを発生させないはず")
+      #endif
+    #endif
+  }
+
+  /// remove(_:) が整数型の最小値と最大値も削除できること
+  func test_removeIntegerLimits() {
+    var set: RedBlackTreeSet = [Int.min, Int.max]
+
+    XCTAssertEqual(set.remove(Int.min), Int.min)
+    XCTAssertEqual(set.remove(Int.max), Int.max)
+    XCTAssertTrue(set.isEmpty)
+  }
+
 }
 
 extension RedBlackTreeSetRemoveTests {
 
   /// removeFirstが空のときはエラーを投げること
+  ///
+  /// - Note: 実際にはエラーを投げず、事前条件違反としてプロセスを停止する。XCTestでは停止を
+  ///   検証できないため、本文は空のままにしてある。停止の検証は
+  ///   `RedBlackTreeSet_99_DeathTests.swift`の`removingFirstFromEmptySet_terminatesProcess`が行う。
+  ///   `-Ounchecked`では停止しないのが仕様である(`Design-RuntimeChecks.md`)。
   func test_removeFirst_throws_whenEmpty() {
     //    var set = RedBlackTreeSet<Int>()
     //    XCTAssertThrowsError({
@@ -131,6 +287,11 @@ extension RedBlackTreeSetRemoveTests {
   }
 
   /// removeLastが空のときはエラーを投げること
+  ///
+  /// - Note: 実際にはエラーを投げず、事前条件違反としてプロセスを停止する。XCTestでは停止を
+  ///   検証できないため、本文は空のままにしてある。停止の検証は
+  ///   `RedBlackTreeSet_99_DeathTests.swift`の`removingLastFromEmptySet_terminatesProcess`が行う。
+  ///   `-Ounchecked`では停止しないのが仕様である(`Design-RuntimeChecks.md`)。
   func test_removeLast_throws_whenEmpty() {
     //    var set = RedBlackTreeSet<Int>()
     //    XCTAssertThrowsError({

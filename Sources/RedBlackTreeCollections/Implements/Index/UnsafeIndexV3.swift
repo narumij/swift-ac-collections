@@ -20,10 +20,14 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// 木のノード識別子
-///
-/// - Important: 生成元以外の木での使用は未定義。
-public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
+// 木のノード識別子
+//
+// - Important: 生成元以外の木での使用は未定義。
+@_documentation(visibility: internal)
+public typealias UnsafeIndexV3 = _LazyTiedPtr
+
+/// An index into a red-black-tree collection.
+public typealias RedBlackTreeIndex = UnsafeIndexV3
 
 // 内部実装では CoW 由来の差異を救済することがある。
 // その結果として異なる木でも使えてしまう可能性があるが、仕様上は未定義。
@@ -39,7 +43,6 @@ public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
 // 今はその点に関して気にならないコストとなっているので、Copyable & Escapableで問題が無い（わけでもない）
 // https://github.com/apple/swift-collections/blob/main/Documentation/Container-design.md
 
-
 // Index は container 内の論理的位置を表す。endIndex も有効な Index で、最後の要素の直後の空位置を表す。
 // ○
 
@@ -51,4 +54,3 @@ public typealias UnsafeIndexV3 = _LazyTieWrappedPtr
 
 // Index は Equatable / Comparable / Hashable を要求し、それらの比較・hash は O(1) としている。
 // ×
-

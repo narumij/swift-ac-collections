@@ -22,6 +22,9 @@
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
+    /// A view over a contiguous range of this multiset in ascending order.
+    ///
+    /// The view preserves every occurrence in the selected range.
     public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Self>
   }
 #endif
@@ -31,8 +34,12 @@
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
-    /// Returns a new multi set containing the elements of the set that satisfy the given predicate.
+    /// Returns a new multiset containing the elements that satisfy the given predicate.
     ///
+    /// Every included occurrence is retained, including equivalent elements.
+    ///
+    /// - Parameter isIncluded: A closure that returns `true` for an occurrence to include.
+    /// - Returns: A new multiset containing only the included occurrences.
     /// - Complexity: O(*n*)
     @inlinable
     public func filter(
@@ -49,8 +56,11 @@ extension RedBlackTreeMultiSet: Sequence {}
 
 extension RedBlackTreeMultiSet {
 
-  /// Returns an iterator over the members of the set.
+  /// Returns an iterator over the members of the multiset.
   ///
+  /// The iterator visits every occurrence in sorted order.
+  ///
+  /// - Returns: An iterator over the multiset's elements.
   /// - Complexity: O(1)
   @inlinable
   public func makeIterator() -> Tree._PayloadValues {
@@ -67,6 +77,9 @@ extension RedBlackTreeMultiSet {
 
     /// Returns the elements of the sequence, sorted.
     ///
+    /// Equivalent elements occur in the result with their full multiplicity.
+    ///
+    /// - Returns: An array containing every occurrence in sorted order.
     /// - Complexity: O(*n*)
     @inlinable
     public func sorted() -> [Element] {
@@ -75,6 +88,9 @@ extension RedBlackTreeMultiSet {
 
     /// Returns an array containing the elements of this sequence in reverse order.
     ///
+    /// Equivalent elements occur in the result with their full multiplicity.
+    ///
+    /// - Returns: An array containing every occurrence in descending order.
     /// - Complexity: O(`count`)
     @inlinable
     public func reversed() -> [Element] {

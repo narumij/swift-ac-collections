@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 // NOTE: 性能過敏なので修正する場合は必ず計測しながら行うこと
-/// 使用歴ありのノードを列挙するイテレータ
+// 使用歴ありのノードを列挙するイテレータ
 @frozen
 @usableFromInline
 struct _FreshPoolUsedIterator<_PayloadValue>: IteratorProtocol, Sequence, _UnsafeNodePtrType {

@@ -24,7 +24,7 @@
 
 /// # RedBlackTreeSet
 ///
-/// `RedBlackTreeSet` is an **ordered unique set** implemented using a red-black tree.
+/// `RedBlackTreeSet` is a **sorted unique set** implemented using a red-black tree.
 /// Elements are always kept in sorted order.
 ///
 /// ```swift
@@ -88,7 +88,7 @@
 /// print(set[.find(2)]) // -> nil (not found)
 /// ```
 ///
-/// - Important: `RedBlackTreeDictionary` is not thread-safe.
+/// - Important: `RedBlackTreeSet` is not thread-safe.
 @frozen
 public struct RedBlackTreeSet<Element: Comparable> {
 
@@ -96,7 +96,7 @@ public struct RedBlackTreeSet<Element: Comparable> {
     typealias Element = Element
 
   @usableFromInline
-  var __tree_: Tree
+  package var __tree_: Tree
 
   @inlinable
   package init(__tree_: Tree) {
@@ -158,6 +158,10 @@ extension RedBlackTreeSet {
 
   /// Returns the number of elements equal to the given value.
   ///
+  /// Because a set stores unique elements, the result is either `0` or `1`.
+  ///
+  /// - Parameter element: The element to count.
+  /// - Returns: `1` if the set contains `element`; otherwise, `0`.
   /// - Complexity: O(log `count`)
   @inlinable
   public func count(of element: Element) -> Int {
@@ -171,6 +175,8 @@ extension RedBlackTreeSet {
 
   /// Returns a Boolean value that indicates whether the given element exists in the set.
   ///
+  /// - Parameter element: The element to look for.
+  /// - Returns: `true` if the set contains `element`; otherwise, `false`.
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   public func contains(_ element: Element) -> Bool {
@@ -224,7 +230,11 @@ extension RedBlackTreeSet {
 
   /// Inserts the given element in the set if it is not already present.
   ///
+  /// - Parameter newMember: An element to insert.
+  /// - Returns: A tuple indicating whether insertion occurred and containing
+  ///   either `newMember` or the existing equivalent element.
   /// - Complexity: O(log *n*), where *n* is the number of elements.
+  /// - SeeAlso: `index(inserting:)`, which also returns the index of the inserted or existing element.
   @inlinable
   @discardableResult
   public mutating func insert(_ newMember: Element) -> (
@@ -235,8 +245,10 @@ extension RedBlackTreeSet {
     return (__inserted, __inserted ? newMember : Base.__payload_(__r))
   }
 
-  /// Inserts the given element into the set unconditionally.
+  /// Inserts the given element, replacing an existing equivalent element if one is already present.
   ///
+  /// - Parameter newMember: The element to insert or use as a replacement.
+  /// - Returns: The replaced element, or `nil` if `newMember` was newly inserted.
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   @discardableResult
@@ -250,25 +262,89 @@ extension RedBlackTreeSet {
   }
 }
 
+#if !COMPATIBLE_ATCODER_2025
+  extension RedBlackTreeSet {
+
+    /// Inserts an element, using `hint` as a suggested insertion position.
+    ///
+    /// An incorrect hint doesn't change the result; it can only affect performance.
+    /// `endIndex` is a valid hint.
+    ///
+    /// - Parameters:
+    ///   - newMember: An element to insert.
+    ///   - hint: A valid index of this set to use as an insertion hint.
+    /// - Returns: Whether insertion occurred and the index of the inserted or existing element.
+    /// - Precondition: `hint` is valid for this set.
+    @inlinable
+    @discardableResult
+    public mutating func insert(_ newMember: Element, hint: Index)
+      -> (inserted: Bool, indexAfterInsert: Index)
+    {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      // endIndex is a valid insertion hint; do not require element accessibility here.
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember, newMember)
+      return (__inserted, ___index(__r))
+    }
+
+    /// Inserts or replaces an element, using `hint` as a suggested insertion position.
+    ///
+    /// An incorrect hint doesn't change the result; it can only affect performance.
+    /// `endIndex` is a valid hint.
+    ///
+    /// - Parameters:
+    ///   - newMember: The element to insert or use as a replacement.
+    ///   - hint: A valid index of this set to use as an insertion hint.
+    /// - Returns: The replaced element, or `nil` if `newMember` was newly inserted.
+    /// - Precondition: `hint` is valid for this set.
+    @inlinable
+    @discardableResult
+    public mutating func update(_ newMember: Element, hint: Index) -> Element? {
+      __tree_.ensureUniqueAndCapacity()
+      let p = __tree_.__purified_(hint)
+      // endIndex is a valid insertion hint; do not require element accessibility here.
+      guard let __p = p.pointer else {
+        fatalError(.invalidIndex)
+      }
+      let (__r, __inserted) = __tree_.___emplace_hint_unique_(__p, newMember, newMember)
+      guard !__inserted else { return nil }
+      let oldMember = Base.__payload_(__r)
+      Base.__payload_ptr(__r).pointee = newMember
+      return oldMember
+    }
+  }
+#endif
+
 // MARK: - Removal
 
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// Removes and returns the first element of the collection.
+    /// Removes and returns the least element of the set.
     ///
+    /// Returns `nil` if the set is empty.
+    ///
+    /// - Returns: The removed element, or `nil` if the set was empty.
     /// - Complexity: Amortized O(1)
     @inlinable
     public mutating func popFirst() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return __tree_.___unchecked_remove_first()
     }
 
-    /// Removes and returns the last element of the collection.
+    /// Removes and returns the greatest element of the set.
     ///
+    /// Returns `nil` if the set is empty.
+    ///
+    /// - Returns: The removed element, or `nil` if the set was empty.
     /// - Complexity: O(log `count`)
     @inlinable
     public mutating func popLast() -> Element? {
+      guard __tree_.count > 0 else { return nil }
       __tree_.ensureUnique()
       return __tree_.___unchecked_remove_last()
     }
@@ -277,8 +353,10 @@ extension RedBlackTreeSet {
 
 extension RedBlackTreeSet {
 
-  /// Removes the first element of the collection.
+  /// Removes and returns the least element of the set.
   ///
+  /// - Returns: The removed element.
+  /// - Precondition: The set isn't empty.
   /// - Complexity: Amortized O(1)
   @inlinable
   @discardableResult
@@ -293,8 +371,10 @@ extension RedBlackTreeSet {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
-    /// Removes the last element of the collection.
+    /// Removes and returns the greatest element of the set.
     ///
+    /// - Returns: The removed element.
+    /// - Precondition: The set isn't empty.
     /// - Complexity: O(log *n*)
     @inlinable
     @discardableResult
@@ -311,10 +391,14 @@ extension RedBlackTreeSet {
 
   /// Removes the specified element from the set.
   ///
+  /// - Parameter member: The element to remove.
+  /// - Returns: The removed element, or `nil` if the set didn't contain an
+  ///   equivalent element.
   /// - Complexity: O(log *n*), where *n* is the number of elements.
   @inlinable
   @discardableResult
   public mutating func remove(_ member: Element) -> Element? {
+    guard __tree_.count > 0 else { return nil }
     __tree_.ensureUnique()
     return __tree_.update { $0.___erase_unique(member) } ? member : nil
   }
@@ -325,6 +409,10 @@ extension RedBlackTreeSet {
 
     /// Removes the element at the given index of the set.
     ///
+    /// - Parameter index: A valid index of the set. The index must refer to an
+    ///   element, not the set's `endIndex`.
+    /// - Returns: The removed element.
+    /// - Precondition: `index` is valid for this set and isn't `endIndex`.
     /// - Complexity: Amortized O(1)
     @inlinable
     @discardableResult
@@ -342,13 +430,15 @@ extension RedBlackTreeSet {
 
   /// Removes all members from the set.
   ///
-  /// - Complexity: O(1)
+  /// - Parameter keepCapacity: Pass `true` to retain the set's allocated
+  ///   storage for later use.
+  /// - Complexity: O(*n*), where *n* is the number of elements.
   @inlinable
   public mutating func removeAll(keepingCapacity keepCapacity: Bool = false) {
-    if keepCapacity {
+    if keepCapacity && __tree_.count > 0 {
       __tree_.ensureUnique()
       __tree_.deinitialize()
-    } else {
+    } else if !keepCapacity {
       __tree_ = .create()
     }
   }
@@ -359,6 +449,11 @@ extension RedBlackTreeSet {
 
     /// Removes the element at the given position from the set and returns the index of the next element.
     ///
+    /// - Parameter ptr: A valid index of the set. The index must refer to an
+    ///   element, not the set's `endIndex`.
+    /// - Returns: The index that followed `ptr` before removal, or `endIndex`
+    ///   if the removed element was last.
+    /// - Precondition: `ptr` is valid for this set and isn't `endIndex`.
     /// - Complexity: Amortized O(1)
     @discardableResult
     @inlinable
@@ -371,9 +466,12 @@ extension RedBlackTreeSet {
 
     /// Removes all elements that satisfy the given predicate.
     ///
+    /// - Parameter shouldBeRemoved: A closure that returns `true` for an
+    ///   element that should be removed.
     /// - Complexity: O(n log n)
     @inlinable
     public mutating func erase(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+      guard __tree_.count > 0 else { return }
       __tree_.ensureUnique()
       let result = try __tree_.___erase_range_if(
         __tree_.__begin_node_.unchecked,

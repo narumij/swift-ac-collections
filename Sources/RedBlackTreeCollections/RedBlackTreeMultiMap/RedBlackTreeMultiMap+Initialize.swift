@@ -26,7 +26,7 @@ extension RedBlackTreeMultiMap {
 
   /// Creates a new, empty multi map.
   ///
-  /// - Complexity: O(1)
+  /// - Complexity: O(1).
   @inlinable
   public init() {
     self.init(__tree_: .create())
@@ -36,7 +36,12 @@ extension RedBlackTreeMultiMap {
 #if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
-    /// - Complexity: O(*n* log *n*)
+    /// Creates a multimap containing every key-value pair in the given sequence.
+    ///
+    /// Duplicate keys are retained and the resulting multimap stores pairs in key order.
+    ///
+    /// - Parameter keysAndValues: A finite sequence of key-value pairs for the multimap.
+    /// - Complexity: O(*n* log *n*), where *n* is the length of `keysAndValues`.
     ///   When inserting elements sequentially from an already sorted sequence,
     ///   no search is required, and rebalancing is amortized O(1),
     ///   so the overall construction cost becomes O(*n*).
@@ -50,7 +55,13 @@ extension RedBlackTreeMultiMap {
       self.init(__tree_: tree)
     }
 
-    /// - Complexity: O(*n* log *n*)
+    /// Creates a multimap containing every key-value pair in the given collection.
+    ///
+    /// Duplicate keys are retained. This overload reserves storage using the collection's count
+    /// before inserting its pairs.
+    ///
+    /// - Parameter keysAndValues: A finite collection of key-value pairs for the multimap.
+    /// - Complexity: O(*n* log *n*), where *n* is `keysAndValues.count`.
     ///   When inserting elements sequentially from an already sorted sequence,
     ///   no search is required, and rebalancing is amortized O(1),
     ///   so the overall construction cost becomes O(*n*).
@@ -69,7 +80,15 @@ extension RedBlackTreeMultiMap {
 extension RedBlackTreeMultiMap {
   // Dictionaryからぱくってきたが、割と様子見
 
-  /// - Complexity: O(*n* log *n* + *n*)
+  /// Creates a multimap by assigning a key to every value in the given sequence.
+  ///
+  /// Unlike the dictionary grouping initializer, this initializer keeps one key-value pair for
+  /// every source element. Equal keys are retained rather than combined into arrays.
+  ///
+  /// - Parameters:
+  ///   - values: A finite sequence of values for the multimap.
+  ///   - keyForValue: A closure that returns the key for each source value.
+  /// - Complexity: O(*n* log *n*), where *n* is the length of `values`.
   @inlinable
   public init<S: Sequence>(
     grouping values: __owned S,

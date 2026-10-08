@@ -21,7 +21,7 @@
 //===----------------------------------------------------------------------===//
 
 @usableFromInline
-protocol FindLeafProtocol_ptr:
+protocol FindLeafProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & _TreeNode_KeyInterface
     & _TreeKey_CompInterface
@@ -32,7 +32,7 @@ protocol FindLeafProtocol_ptr:
     & NullPtrInterface
 {}
 
-extension FindLeafProtocol_ptr {
+extension FindLeafProtocol_ptr where Self: ~Copyable {
 
   @inlinable
   internal func
@@ -92,7 +92,56 @@ extension FindLeafProtocol_ptr {
 }
 
 @usableFromInline
-protocol FindEqualProtocol_ptr:
+protocol FindHintLeafProtocol_ptr: ~Copyable,
+  _UnsafeNodePtrType
+    & _TreeNode_KeyInterface
+    & _TreeKey_CompInterface
+    & FindLeafInterface
+    & EndInterface
+    & BeginNodeInterface
+    & NullPtrInterface
+{}
+
+extension FindHintLeafProtocol_ptr where Self: ~Copyable {
+
+  /// Find leaf place to insert closest to `__hint`
+  /// First check prior to `__hint`.
+  /// Next check after `__hint`.
+  /// Next do O(log N) search.
+  /// Set `__parent` to parent of null leaf
+  /// Return reference to null leaf
+  @inlinable
+  internal func __find_leaf(
+    _ __hint: _NodePtr, _ __parent: inout _NodePtr, _ __v: _Key
+  ) -> _NodeRef {
+    if __hint == end || !value_comp(__get_value(__hint), __v)  // check before
+    {
+      var __prior = __hint
+      // __v <= *__hint
+      let prefixDecrement = {
+        __prior = __tree_prev_iter(__prior)
+        return __prior
+      }
+      if __prior == __begin_node_ || !value_comp(__v, __get_value(prefixDecrement())) {
+        // *prev(__hint) <= __v <= *__hint
+        if __hint.__left_ == nullptr {
+          __parent = __hint
+          return __parent.__left_ref
+        } else {
+          __parent = __prior
+          return __prior.__right_ref
+        }
+      }
+      // __v < *prev(__hint)
+      return __find_leaf_high(&__parent, __v)
+    }
+    // else __v > *__hint
+    return __find_leaf_low(&__parent, __v)
+  }
+}
+
+@usableFromInline
+protocol FindEqualProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & _TreeKey_ThreeWayCompInterface
     & _TreeNode_KeyInterface
@@ -103,7 +152,7 @@ protocol FindEqualProtocol_ptr:
     & NullPtrInterface
 {}
 
-extension FindEqualProtocol_ptr {
+extension FindEqualProtocol_ptr where Self: ~Copyable {
 
   @inlinable
   // @inline(never)
@@ -144,7 +193,7 @@ extension FindEqualProtocol_ptr {
 }
 
 @usableFromInline
-protocol FindEqualProtocol_ptr_old:
+protocol FindEqualProtocol_ptr_old: ~Copyable,
   _UnsafeNodePtrType
     & _TreeKey_CompInterface
     & _TreeNode_KeyInterface
@@ -155,7 +204,7 @@ protocol FindEqualProtocol_ptr_old:
     & NullPtrInterface
 {}
 
-extension FindEqualProtocol_ptr_old {
+extension FindEqualProtocol_ptr_old where Self: ~Copyable {
 
   @inlinable
   func
@@ -194,7 +243,7 @@ extension FindEqualProtocol_ptr_old {
 }
 
 @usableFromInline
-protocol FindProtocol_find_equal_ptr:
+protocol FindProtocol_find_equal_ptr: ~Copyable,
   _UnsafeNodePtrType
     & FindInteface
     & FindEqualInterface
@@ -202,7 +251,7 @@ protocol FindProtocol_find_equal_ptr:
     & NullPtrInterface
 {}
 
-extension FindProtocol_find_equal_ptr {
+extension FindProtocol_find_equal_ptr where Self: ~Copyable {
 
   @inlinable
   internal func find(_ __v: _Key) -> _NodePtr {
@@ -238,7 +287,68 @@ extension FindProtocol_find_equal_ptr {
 }
 
 @usableFromInline
-protocol FindProtocol_lower_bound_ptr:
+protocol FindHintEqualProtocol_ptr: ~Copyable,
+  _UnsafeNodePtrType
+    & _TreeKey_CompInterface
+    & _TreeNode_KeyInterface
+    & EndInterface
+    & BeginNodeInterface
+    & NullPtrInterface
+    & FindEqualInterface
+{}
+
+extension FindHintEqualProtocol_ptr where Self: ~Copyable {
+
+  /// Find `__v`
+  /// First check prior to `__hint`.
+  /// Next check after `__hint`.
+  /// Next do O(log N) search.
+  /// If `__v` exists, return the parent of the node of `__v` and a /reference to the pointer to the node of `__v`.
+  /// If `__v` doesn't exist, return the parent of the null leaf and a reference to the pointer to the null leaf.
+  @inlinable
+  internal func __find_equal(_ __hint: _NodePtr, _ __dummy: _NodeRef, _ __v: _Key)
+    -> (__parent: _NodePtr, __child: _NodeRef)
+  {
+    if __hint == end || value_comp(__v, __get_value(__hint)) {  // check before
+      // __v < *__hint
+      var __prior = __hint
+      let prefixDecrement = {
+        __prior = __tree_prev_iter(__prior)
+        return __prior
+      }
+      if __prior == __begin_node_ || value_comp(__get_value(prefixDecrement()), __v) {
+        // *prev(__hint) < __v < *__hint
+        if __hint.__left_ == nullptr {
+          return (__hint, __hint.__left_ref)
+        }
+        return (__prior, __prior.__right_ref)
+      }
+      // __v <= *prev(__hint)
+      return __find_equal(__v)
+    }
+
+    if value_comp(__get_value(__hint), __v) {  // check after
+      // *__hint < __v
+      let __next = __tree_next_iter(__hint)
+      if __next == end || value_comp(__v, __get_value(__next)) {
+        // *__hint < __v < *std::next(__hint)
+        if __hint.__right_ == nullptr {
+          return (__hint, __hint.__right_ref)
+        }
+        return (__next, __next.__left_ref)
+      }
+      // *next(__hint) <= __v
+      return __find_equal(__v)
+    }
+
+    // else __v == *__hint
+    __dummy.pointee = __hint
+    return (__hint, __dummy)
+  }
+}
+
+@usableFromInline
+protocol FindProtocol_lower_bound_ptr: ~Copyable,
   _UnsafeNodePtrType
     & FindInteface
     & BoundInteface
@@ -247,7 +357,7 @@ protocol FindProtocol_lower_bound_ptr:
     & _TreeKey_CompInterface
 {}
 
-extension FindProtocol_lower_bound_ptr {
+extension FindProtocol_lower_bound_ptr where Self: ~Copyable {
 
   @inlinable
   internal func find(_ __v: _Key) -> _NodePtr {
@@ -267,7 +377,7 @@ extension FindProtocol_lower_bound_ptr {
 
 // よくよく考えてmulti系のfirstIndexの挙動が変わってしまっているので、修正が必要だった
 @usableFromInline
-protocol FindFirstProtocol_ptr:
+protocol FindFirstProtocol_ptr: ~Copyable,
   _UnsafeNodePtrType
     & BoundInteface
     & EndInterface
@@ -275,9 +385,9 @@ protocol FindFirstProtocol_ptr:
     & _TreeNode_KeyInterface
 {}
 
-extension FindFirstProtocol_ptr {
+extension FindFirstProtocol_ptr where Self: ~Copyable {
 
-  /// 旧型のfindと同じ挙動
+  // 旧型のfindと同じ挙動
   @inlinable
   internal func find_first(_ __v: _Key) -> _NodePtr {
     let __p = lower_bound(__v)

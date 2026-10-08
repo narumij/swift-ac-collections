@@ -146,8 +146,11 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-011` | `DONE` | Claude | Permutation公開型の改名 | 2026-10-07、`NextPermutationsSequence`/`.Iterator`/`.Permutation`へ改名し`Permutations`名前空間を廃止（source-breaking、ユーザー承認済み） | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-012` | `DONE` | Claude | Permutation仕様のTest as Specification化 | 2026-10-07、仕様をテストの連番fileへ移し、`Specification.md`を削除（ユーザー判断）。テストで表せない約束はソースのドキュメントコメントへ | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-013` | `FROZEN` | User / Claude | Permutation性能のCIベース比較 | 作業の区切りでユーザーが再開。Claudeが`Benchmarks/Libraries/CI.json`へPermutationの計測を追加し、ユーザーのpush後にperformance jobのベース比較で`@inline(__always)`全削除（`0ef177d3`）以降の影響を確認 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
-| `PERM-014` | `ACTIVE` | User / Codex | Permutation互換modeの実施手順決定 | Claude案を出発点に、`PERM-004`〜`PERM-010`のcommit境界、検証範囲、警告とtestの扱いをユーザーとCodexで決定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-014` | `DONE` | Codex | [EXECUTION] Permutation互換modeの実施手順統合 | 2026-10-08、二つの判断結果から成果単位、commit境界、mode別検証を確定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-015` | `FROZEN` | Codex | Permutation互換task依存の再評価 | `PERM-014`完了後、`PERM-004`〜`PERM-010`と`PERM-013`の順序を再評価し、候補`PERM-004` ← `PERM-013`を確定または棄却してRegistryへ反映 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-029` | `DONE` | User / Codex | [DECISION] Permutation互換modeでstrict memory safetyを扱うか | 2026-10-08、互換modeから外し、後日独立して取り組み直すと決定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-030` | `DONE` | User / Codex | [DECISION] 互換ソース隔離段階の検証範囲 | 2026-10-08、互換module buildだけを確認し、mode別testを後続taskへ送ると決定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-004` | `FROZEN` | Codex | AtCoder 2025互換ソースの隔離 | 基準版を専用fileへ配置し、通常版と排他的にcompileできる状態にする | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-005` | `FROZEN` | Codex | Permutation互換traitのPackage設定 | 互換defineをtraitへ接続し、traitなしを通常版の既定にする | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-006` | `FROZEN` | Codex | 互換modeのTest as Specification | 列挙順・重複・safe CoW・unsafe aliasing・境界を基準refに対して固定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
@@ -263,6 +266,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-015` | `RBT-031` | `UNCLASSIFIED` | 完了済みIndex分離と未確定gateの表現分離後に内部残task文書を完了判定する |
 | `RBT-026` | `RBT-014` | `UNCLASSIFIED` | outlineのAPI照合後、利用者向け文書作業フェーズで契約を再判断する |
 | `PERM-014` | `PERM-003` | `START` | 現行契約の基準固定後に手順を決定できる |
+| `PERM-014` | `PERM-029` | `COMPLETE` | strict memory safetyの扱いを決定後に実施手順を完成できる |
+| `PERM-014` | `PERM-030` | `COMPLETE` | 初期検証範囲を決定後に実施手順を完成できる |
 | `PERM-015` | `PERM-014` | `START` | 実施手順の決定後にtask依存を再評価できる |
 | `PERM-004` | `PERM-015` | `UNCLASSIFIED` | task依存の再評価とRegistry反映後に着手できる |
 | `PERM-005` | `PERM-004` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |

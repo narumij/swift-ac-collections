@@ -63,10 +63,31 @@
 ### このtaskで決める未決事項
 
 - `R-1`: 基準refはerror 0だが、PermutationModuleのstrict-memory-safety警告が38件ある。
-  互換性を変える注釈で消さず、`PERM-004`では既知警告として受け入れてよいか。
+  strict memory safety対応は互換mode作業から外し、後日独立して取り組み直すか。
 - `R-2`: 互換modeでは通常版test（`NextPermutationsSequence_1`〜`_98`）と
   `AcCollectionsTests`の`nextPermutations` testがcompileできない。`PERM-004`ではmoduleの
   buildだけを確認し、testのmode別切り分けを`PERM-006`と`PERM-007`へ送ってよいか。
+
+### 決定状況（2026-10-08）
+
+- `R-1`: strict memory safety対応自体を中断し、互換modeの選択肢、検証範囲、完了条件から外す。
+  38件の警告は互換modeで解消・受入判定せず、後日独立taskとして前提から再検討する。
+- `R-2`: `PERM-004`では互換modeの`PermutationModule` buildだけを確認する。通常版testと
+  `AcCollectionsTests`のmode別切り分けは、それぞれ`PERM-006`と`PERM-007`へ送る。
+
+### 確定した実施手順（2026-10-08）
+
+| 成果単位 | commit境界 | 通常modeの検証 | 互換modeの検証 |
+| --- | --- | --- | --- |
+| 互換ソース隔離 | 基準refの無改変コピーとfile単位の条件コンパイルを1 commit。現行toolchain対応が必要なら別commit | buildと既存test | 一時的なPackage設定による`PermutationModule` buildのみ |
+| Package trait | trait、define、既定通常modeを1 commit | traitなしbuildとtest | traitありmodule build |
+| 互換仕様test | 基準refの挙動ごとにreview可能なtest commit | 既存testを維持 | 列挙順、重複、safe CoW、unsafe aliasing、境界 |
+| `AcCollections`再公開 | mode別の再公開testを1 commit | 現行API | 互換API |
+| CI分離 | 通常・互換jobの分離を1 commit | 通常job | 互換job |
+| 単一file生成・検証 | 生成手順とローカル検証を1 commit | 対象外 | ABC328E相当入力。実提出はユーザー専任 |
+| 文書同期 | 実装・検証完了後の文書差分を1 commit | 現行APIを記載 | trait、制限、検証方法を区別して記載 |
+
+strict memory safetyの警告件数、注釈、適合判定は上のどの成果単位にも含めない。
 
 完了時には、各taskの成果単位、commit境界、通常・互換modeそれぞれの検証方法と、`R-1`・`R-2`の
 結論をこの文書へ記録する。
@@ -161,7 +182,8 @@ AtCoderへ貼り付ける単一ファイルの生成はSwiftPM traitとは別問
 1. 基準refの`Permutations.swift`を互換ファイルの出発点にする。
 2. 公開宣言、列挙順、重複値、safe/unsafeのaliasing挙動を変えない。
 3. 現行toolchainでのコンパイルに必要な構文修正は、公開挙動と分けて記録する。
-4. strict-memory-safety注釈や`Sendable`を、診断を消す目的だけでunsafe経路へ追加しない。
+4. strict-memory-safety注釈や適合判定はこの互換mode作業で扱わない。診断を消す目的だけでunsafe経路へ
+   注釈を追加しない。
 
 ### 2. モード別Test as Specification
 

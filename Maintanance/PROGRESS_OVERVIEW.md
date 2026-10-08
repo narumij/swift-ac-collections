@@ -110,7 +110,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-012` | `DONE` | Claude | Swift 6.4 `-O`のCoW誤コンパイルに対する値セマンティクスのTest as Spec拡充 | 2026-10-07、closure-captured mutation形状を4型へ追加し、Debug / Releaseで値セマンティクス維持を確認（`4249ed8c`） | `Tests/RedBlackTreeTests/` |
 | `RBT-013` | `DONE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 2026-10-07、27件を分類。文書へ影響するRange View検査と公開API名、古いコメント2件を判断候補として報告 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `PERM-016` | `DONE` | Claude | [EXECUTION] Permutation品質評価の事実更新 | 2026-10-07、解消済み`swapAt`懸念を除き、header二重破棄、終端の不要copy、走査共有、Debug限定検査member、行数を反映（`127a0d5b`） | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
-| `PERM-017` | `ACTIVE` | Codex | Permutation品質評価R-1〜R-4 review | `PERM-016`後の§6をreviewし、品質特性の解釈、1.0前の不足、根拠の正確性へ回答を反映。R-3は文書形式を決めず、ユーザー判断に必要な選択肢と技術的根拠までを整理 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-017` | `DONE` | Codex | Permutation品質評価R-1〜R-4 review | 2026-10-08、品質特性の読み替え、1.0前改善候補、文書形式の選択肢、事実参照をreviewし初版を完成 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-015` | `DONE` | Codex | RedBlackTree残task文書の事実更新 | 2026-10-08、PR #158前後の時制、success-only Index分離済みと外部待ちgate、削除済みTODOの表現を現状へ同期 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-017` | `EXCLUDED` | — | [EXECUTION] Mapped Values Range Viewの範囲外更新防止ゲート | 2026-10-08、範囲所属は呼び出し側の事前条件、単一Index操作はO(1)と`211ca2fc`で確定済みのため変更不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -133,7 +133,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-020` | `DONE` | Claude | [DISCOVERY] Permutation公開API・コメントledger | 2026-10-08、公開宣言14件と別枠の公開適合9件をsource位置・制約・属性・コメントへ対応 | `PermutationModule/DocumentationHandoffAudit.md` |
 | `PERM-021` | `DONE` | Claude | [DISCOVERY] Permutation公開契約と仕様testの対応表 | 2026-10-08、番号付きtestが固定する契約と未検証事項を公開宣言へ対応 | `PermutationModule/DocumentationHandoffAudit.md` |
 | `PERM-022` | `DONE` | Claude | [DISCOVERY] Permutation名称・契約履歴ledger | 2026-10-08、現行名称、削除済みAPI、通常版・互換mode・facadeの決定済み／履歴事実／未決定を分離 | `PermutationModule/DocumentationHandoffAudit.md` |
-| `PERM-023` | `FROZEN` | Codex | [EXECUTION] Permutationユーザードキュメント作業への引き渡し判定 | `PERM-017`と`PERM-020`〜`PERM-022`後、公開面、test根拠、履歴、品質評価、文書作業で残す判断を検収 | `PermutationModule/DocumentationHandoffAudit.md` |
+| `PERM-023` | `ACTIVE` | Codex | [EXECUTION] Permutationユーザードキュメント作業への引き渡し判定 | 前提taskを完了済み。公開面、test根拠、履歴、品質評価、文書作業で残す判断を検収 | `PermutationModule/DocumentationHandoffAudit.md` |
 | `PERM-024` | `DONE` | Claude | [DISCOVERY] Permutation品質評価の根拠参照照合 | 2026-10-08、commit・file・test・数値参照を照合し、不一致1件と未確認2件を評価変更せず記録 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-025` | `DONE` | Claude | [EXECUTION] Permutation品質評価の事実参照補正 | 2026-10-08、共存test、改名理由、Release確認日の3点を根拠へ同期し、共存性の評価判断をCodexへ返却 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-026` | `DONE` | Claude | [DISCOVERY] Permutation共存性の残存evidence gap確認 | 2026-10-08、通常版、facade、凍結中の互換modeを分離して検証済み・未検証範囲を整理 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |

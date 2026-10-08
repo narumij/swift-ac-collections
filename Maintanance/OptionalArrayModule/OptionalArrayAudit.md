@@ -557,6 +557,31 @@ OPT-035で残した配置上の小判断を、公開契約の変更を伴わな�
 - test名、本体、期待する終了条件を変更しない。
 - 通常testへ統合せず、Death Test構成での実行成功を記録する。
 
+#### OPT-036・OPT-037 Claude実施結果（2026-10-08）
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。基点HEAD `24aa7107`。git addまで、commitなし。
+
+- OPT-036: `OptionalArrayTests.swift`の35 testを、上の配置判断どおり7 fileへ移し、元fileを削除した。
+  件数は`_0_` 1、`_1_` 7（T8、T466、T471、T482、T499、T513、T526）、`_2_` 5、`_3_` 5、`_4_` 5、`_5_` 4、`_6_` 8。
+  class名はPermutationに合わせてfile名と同じ（`OptionalArray_<n>_<主題>Tests: XCTestCase`）。
+  各fileは元の`import`2行、各testの直前にあった`// MARK:`、`#if swift(>=5.5)`の囲み、`///`コメント、
+  `_1_`の次元契約コメント3行をそのまま持つ。test本文、期待値、test名は変えていない。
+- 移動の照合: import・class宣言・閉じ括弧・MARK・空行を除いた行の多重集合が、元fileと新7 fileの合計で一致。
+  `swift test list`のtest名集合は移動前後とも56件（通常35、Death Test 21）で、method名の集合が一致。
+- OPT-037: `git mv`で`OptionalArray_99_DeathTests.swift`へ改名（類似度100%、内容の変更なし）。
+  2 suite・21 test、`#if DEATH_TEST`、冒頭の保存指示コメントを維持。suite名`OptionalArrayDeathTests`は変えていないので、
+  `_1_`の次元契約コメントにある`OptionalArrayDeathTests`への言及はそのまま正しい。
+- 実行: `swift test --filter OptionalArrayModuleTests`をDebugとReleaseで実行し、どちらもXCTest 35件・失敗0、
+  Swift Testing 21件（2 suite）成功。7 suiteそれぞれの実行件数も配置どおり。
+- 停止事項: 新しいdefect、重複、表に無いtest、意味判断が必要な依存は無かった。
+- 未更新（Codex判断）: `Tests/TESTING.md`の94行目が「`OptionalArrayModuleTests`の4ファイル」と現物確認時点の構成を述べている。
+  現在は通常7・Death Test 1・利用例2の10 fileになる。
+
+Codex acceptance（2026-10-08）: 通常35件のtest名集合と配置を移動前後で照合し、Death Testは内容変更なしの
+100% renameであることを確認した。Xcodeのbuild-for-testingが成功し、新しい7 fileの通常35件と改名後の
+Death Test 21件を指定した実行も56件すべて成功したため、`OPT-036`と`OPT-037`を受け入れて完了とする。
+`Tests/TESTING.md`のfile件数更新はこの受入commitへ含めず、後続の完成判定で扱う。
+
 #### OPT-038 OptionalArray Test as Specification完成判定
 
 担当: Codex。OPT-036・037後、file番号、test名集合、公開契約表との対応、通常test、Death Testを検収する。

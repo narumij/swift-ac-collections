@@ -194,8 +194,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-033` | `DONE` | Claude | [EXECUTION] OptionalArray次元事前条件の実装と仕様test | 2026-10-08、非負・積overflow検査、zero成功、負値・overflow停止を実装しDebug／Releaseで固定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-034` | `DONE` | Claude | [EXECUTION] OptionalArray4D zero-volume外側subscriptのoverflow回避 | 2026-10-08、内側zero軸では途中積を評価せず空Viewへ辿れるよう修正しDebug／Releaseで固定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-035` | `DONE` | Claude | [DISCOVERY] OptionalArray Test as Specification配置・移行設計 | 2026-10-08、8仕様群と利用例へ分類し、段階移行可否、並列化・Death Test制約を整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-036` | `ACTIVE` | Claude | [EXECUTION] OptionalArray通常testの番号付き仕様file分割 | 現行35 testをXCTestのまま`OptionalArray_0_`〜`_6_`へ一度ずつ移し、test名集合一致とfocused test成功を確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-037` | `ACTIVE` | Claude | [EXECUTION] OptionalArray Death Testの番号付きfile改名 | 現行Swift Testing 21件、構成、保存指示を変えず`OptionalArray_99_DeathTests.swift`へ改名しDeath Test成功を確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-036` | `DONE` | Claude / Codex | [EXECUTION] OptionalArray通常testの番号付き仕様file分割 | 2026-10-08、通常35件をXCTestのまま`OptionalArray_0_`〜`_6_`へ一度ずつ移し、test名集合一致と成功をCodexが確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-037` | `DONE` | Claude / Codex | [EXECUTION] OptionalArray Death Testの番号付きfile改名 | 2026-10-08、Swift Testing 21件、構成、保存指示を維持した100% renameと成功をCodexが確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-038` | `FROZEN` | Codex | [EXECUTION] OptionalArray Test as Specification完成判定 | OPT-036・037後、file番号、test名集合、契約対応、通常・Death Test結果を検収しOPT-012を完成判定する | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `FROZEN` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | `BARE-008`で再開すると決定し、ユーザーが明示的に再開するまで着手しない | `Tests/TESTING.md` |
 | `BARE-002` | `FROZEN` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 途中成果を保持し、`BARE-008`で再開すると決定するまで追加作業を行わない | `Tests/TESTING.md` |

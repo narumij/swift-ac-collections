@@ -228,6 +228,19 @@ done
 - RP-08の「DEBUG限定」の判定: `#if`条件に`DEBUG`を含み、`!DEBUG`を含まないもの。`freeCapacity`の条件は`DEBUG && !COMPATIBLE_ATCODER_2025`（`BalancedSequence.swift:188`）。条件式の一般的な評価はしていない。
 - RP-08の`58aab943`より前: 仕様testから`find(_:)`への参照が無いことは、当時の`spec-gaps`の記録に基づく。index storeを再構築して確かめてはいない。
 
+### GRAPH-009 一括実行の入口（2026-10-08 / Claude）
+
+repository rootから次の一つで、GRAPH-007とRP-01・05・08・15・17の6件を実行する。
+
+```sh
+sh Maintanance/AIGraphInMemoryFixture/run_all.sh
+```
+
+- `run_all.sh`は各fixtureを別の`sqlite3 :memory:`で流す（fixture同士でDBを共有しない）。Claude専用DBや永続DBは読まない。
+- fixtureごとに`PASS` / `FAIL`と最終行を1行ずつ表示し、最後に`ALL PASS: 6 of 6 fixtures`または`FAILED: N of 6 fixtures`を出す。
+- 終了コードは全件PASSのときだけ0、それ以外は1。fixtureのFAIL行、SQL error（`sqlite3`の終了コードが0以外）、PASS行が出ない場合はすべてFAILとして数える。
+- 確認: 全件で`ALL PASS: 6 of 6 fixtures`、終了コード0。一時directoryへの複製で、RP-15の期待値を1か所ずらすと`FAILED: 1 of 6 fixtures`・終了コード1。RP-01の先頭に存在しないtableへのSELECTを入れると、RP-01が`sqlite3 exit 1`のFAILになり、同じく全体失敗になった。repository内のfixtureは変更していない。
+
 ## Codex受入欄
 
 ### GRAPH-008

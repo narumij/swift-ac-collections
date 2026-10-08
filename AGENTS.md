@@ -156,7 +156,9 @@ sentence or to ordinary conversation.
 - Use `了。` before a sentence that acknowledges an instruction or request as
   understood and accepted for execution. It is not a completion claim.
 - Use `是。` before a sentence that explicitly affirms a premise, understanding,
-  or proposed direction as correct. It is not a casual acknowledgement.
+  or proposed direction in the user's immediately preceding statement as correct.
+  Do not use it merely to reinforce the agent's own explanation or conclusion. It
+  is not a casual acknowledgement.
 - Use `否。` before a sentence that explicitly rejects or corrects a mistaken
   premise, factual misunderstanding, or unsafe framing in the user's immediately
   preceding statement. Do not use it when correcting the agent's own earlier

@@ -294,3 +294,19 @@ Gateは条件付き依存を表す`制約`欄を置き換えない。前提task�
 
 意味分類、Registry更新、移行の完成判定はCodexが担い、Claudeは確定済み分類に対するDB・fixture実装を
 担う。この採用判断によりRP-19は「意味判断不足で実装しない」状態から、pilot後に実装可能な状態へ移った。
+
+### Gate列pilot結果（2026-10-08 / Codex）
+
+Task precedenceへGate列を追加し、現行`ACTIVE` taskを始点または終点に持つ6辺だけを分類した。
+
+| 後続task | 前提task | Gate | 根拠 |
+| --- | --- | --- | --- |
+| `GRAPH-004` | `GRAPH-009` | `COMPLETE` | 共有スキーム試験は並行着手でき、追試fixture群の受入が次段階の判断だけを止める |
+| `GRAPH-016` | `GRAPH-015` | `START` | Gateの意味と移行方針の決定前にはpilotを開始しない |
+| `GRAPH-017` | `GRAPH-016` | `START` | 確定したpilot分類をfixture入力にする |
+| `GRAPH-004` | `GRAPH-018` | `COMPLETE` | 共有スキーム試験は継続できるが、Gate移行前には試験全体を完了できない |
+| `PERM-014` | `PERM-003` | `START` | 現行契約の基準固定後にだけ実施手順を決定する |
+| `PERM-015` | `PERM-014` | `START` | 実施手順の決定結果を入力にtask依存を再評価する |
+
+その他の既存辺は意味を自動推定せず`UNCLASSIFIED`とした。これによりRP-19 fixtureへ渡すpilot入力が
+確定したが、後続taskは明示的な再開指示があるまで`FROZEN`を維持する。

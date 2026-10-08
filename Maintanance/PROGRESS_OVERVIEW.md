@@ -89,7 +89,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-013` | `DONE` | Claude / Codex | [EXECUTION] document match precision fixture | 2026-10-08、基準snapshotの単語照合36件・所属型併用9件と自己参照後38・9件のPASSを確認 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-014` | `DONE` | Claude / Codex | [EXECUTION] observation staleness fixture | 2026-10-08、古い観測をstale、再構築後をnot staleとするPASSを確認 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-015` | `DONE` | User / Codex | [DECISION] Task precedence Gateの意味と段階移行 | 2026-10-08、`START`・`COMPLETE`・移行中の`UNCLASSIFIED`を定義し、現役辺pilot、fixture検証、残辺移行の順に浸透させると決定 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
-| `GRAPH-016` | `ACTIVE` | Codex | [EXECUTION] Task precedence Gate列のpilot導入 | Gate列を追加し、現行`ACTIVE` taskに関係する辺だけを意味確認して分類。他の既存辺は`UNCLASSIFIED`とし、自動推定しない | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-016` | `DONE` | Codex | [EXECUTION] Task precedence Gate列のpilot導入 | 2026-10-08、Gate列を追加し、現行`ACTIVE` taskに接続する6辺を`START` 4件・`COMPLETE` 2件へ分類。他の既存辺は`UNCLASSIFIED`のまま保持 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-017` | `FROZEN` | Claude | [EXECUTION] RP-19 readiness fixture | pilot分類後、`START`だけがready判定を阻止し、`COMPLETE`と`UNCLASSIFIED`を混同しないSQLite fixtureを作る | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-018` | `FROZEN` | Codex | [EXECUTION] Task precedence Gateの段階移行完成判定 | RP-19受入後、残る`UNCLASSIFIED`を小batchで意味確認し、ready集合の差分を検収して必須欄への移行可否を判定 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `OPS-001` | `ACTIVE` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 現行運用の原則、手順、停止条件、受入、委任、失敗知見とRegistry templateを整理し、別projectで再現性を検証できる状態にする | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
@@ -223,122 +223,122 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 
 ## Task precedence
 
-| 後続task | 前提task | 制約 |
-| --- | --- | --- |
-| `GRAPH-007` | `GRAPH-006` | 共有schema候補と期待結果をCodexが受入後、SQLiteインメモリfixtureへ変換する |
-| `GRAPH-008` | `GRAPH-007` | 実行可能fixtureの受入後、同じ方式で過去知見の追試可能性を分類する |
-| `GRAPH-010` | `GRAPH-008` | 追試可能性台帳の受入後、RP-01をfixture化する |
-| `GRAPH-011` | `GRAPH-008` | 追試可能性台帳の受入後、RP-05をfixture化する |
-| `GRAPH-012` | `GRAPH-008` | 追試可能性台帳の受入後、RP-08をfixture化する |
-| `GRAPH-013` | `GRAPH-008` | 追試可能性台帳の受入後、RP-15をfixture化する |
-| `GRAPH-014` | `GRAPH-008` | 追試可能性台帳の受入後、RP-17をfixture化する |
-| `GRAPH-009` | `GRAPH-010` | precedence fixture受入後に追試全体を完成判定する |
-| `GRAPH-009` | `GRAPH-011` | specification role fixture受入後に追試全体を完成判定する |
-| `GRAPH-009` | `GRAPH-012` | configuration-aware spec-gap fixture受入後に追試全体を完成判定する |
-| `GRAPH-009` | `GRAPH-013` | document match fixture受入後に追試全体を完成判定する |
-| `GRAPH-009` | `GRAPH-014` | observation staleness fixture受入後に追試全体を完成判定する |
-| `GRAPH-004` | `GRAPH-009` | 過去知見の追試fixture群を受入後、共有スキーム試験の次段階を判断できる |
-| `GRAPH-016` | `GRAPH-015` | Gateの意味と段階移行方針の決定後にpilotを開始する |
-| `GRAPH-017` | `GRAPH-016` | 現役辺のGate分類をCodexが確定した後にRP-19 fixtureを実装する |
-| `GRAPH-018` | `GRAPH-017` | RP-19でready判定の意味一致を確認後、残る辺を段階移行する |
-| `GRAPH-004` | `GRAPH-018` | Gate移行の完成判定後に共有スキーム試験全体を完了できる |
-| `RBT-001` | `RBT-010` | 前提taskの完了後に後続taskを完了できる |
-| `RBT-001` | `RBT-011` | 前提taskの完了後に後続taskを完了できる |
-| `QUALITY-001` | `RBT-001` | 前提taskの完了後に着手候補にできる |
-| `QUALITY-001` | `RBT-009` | runtime-check実装の1.0採否を再審査した後に品質ゲートを判断する |
-| `PERM-017` | `PERM-016` | 品質評価の事実更新後にreviewする |
-| `PERM-017` | `PERM-024` | 根拠参照の機械照合後に品質評価reviewを完了する |
-| `PERM-017` | `PERM-025` | 確認済みの事実参照補正後に品質評価reviewを完了する |
-| `PERM-017` | `PERM-026` | 共存性の検証済み・未検証範囲を確認後に品質評価reviewを完了する |
-| `PERM-017` | `PERM-027` | 1.0前改善候補3件の実施前提を確認後に品質評価reviewを完了する |
-| `PERM-023` | `PERM-017` | 品質評価review後に文書作業への引き渡しを判定する |
-| `PERM-023` | `PERM-020` | 公開API ledgerをCodexが検収後、引き渡しを判定する |
-| `PERM-023` | `PERM-021` | test evidence matrixをCodexが検収後、引き渡しを判定する |
-| `PERM-023` | `PERM-022` | 名称・契約履歴ledgerをCodexが検収後、引き渡しを判定する |
-| `RBT-014` | `RBT-013` | TODO/FIXMEの文書影響を分類後にoutlineを照合する |
-| `RBT-015` | `RBT-027` | branch・commit時制の全件確認後に内部残task文書を更新する |
-| `RBT-015` | `RBT-028` | Registryとチェック状態の対応確認後に内部残task文書を更新する |
-| `RBT-015` | `RBT-029` | path・symbolの現存確認後に内部残task文書を更新する |
-| `RBT-015` | `RBT-030` | merge前PoC記録の時制補正後に内部残task文書を完了判定する |
-| `RBT-015` | `RBT-031` | 完了済みIndex分離と未確定gateの表現分離後に内部残task文書を完了判定する |
-| `RBT-026` | `RBT-014` | outlineのAPI照合後、利用者向け文書作業フェーズで契約を再判断する |
-| `PERM-014` | `PERM-003` | 現行契約の基準固定後に手順を決定できる |
-| `PERM-015` | `PERM-014` | 実施手順の決定後にtask依存を再評価できる |
-| `PERM-004` | `PERM-015` | task依存の再評価とRegistry反映後に着手できる |
-| `PERM-005` | `PERM-004` | 前提taskの完了後に着手できる |
-| `PERM-006` | `PERM-005` | 前提taskの完了後に着手できる |
-| `PERM-007` | `PERM-006` | 前提taskの完了後に着手できる |
-| `PERM-008` | `PERM-006` | 前提taskの完了後に着手できる |
-| `PERM-009` | `PERM-007` | 前提taskの完了後に着手できる |
-| `PERM-010` | `PERM-007` | 前提taskの完了後に着手できる |
-| `PERM-010` | `PERM-008` | 前提taskの完了後に着手できる |
-| `PERM-010` | `PERM-009` | 前提taskの完了後に着手できる |
-| `PERM-001` | `PERM-010` | 前提taskの完了後に後続taskを完了できる |
-| `BARE-003` | `BARE-002` | 棚卸しで位置づけが未決定と判明した場合だけ判断する |
-| `BARE-004` | `BARE-003` | BareArrayを公開継続する判断後に命名体系を決定する |
-| `BARE-005` | `BARE-002` | 契約棚卸し後に既存testを仕様単位へ整理する |
-| `BARE-007` | `BARE-006` | 性能基準と計測方法の決定後に計測する |
-| `BARE-001` | `BARE-002` | 公開契約の棚卸しを親taskの完了条件とする |
-| `BARE-001` | `BARE-003` | 未決定だった場合の位置づけ判断を親taskの完了条件とする |
-| `BARE-001` | `BARE-004` | 公開継続時の命名判断を親taskの完了条件とする |
-| `BARE-001` | `BARE-005` | Test as Specification整理を親taskの完了条件とする |
-| `OPT-002` | `OPT-001` | OptionalArray監査の完了後に実績から管理方式を抽出する |
-| `OPT-003` | `OPT-002` | 管理方式と受入基準の抽出後に明文化の要否を判断する |
-| `OPT-004` | `OPT-003` | 明文化すると決定した場合だけ運用規則へ反映する |
-| `BARE-008` | `OPT-002` | OptionalArrayで管理方式を検証した後にBareArray再開を判断する |
-| `OPT-005` | `OPT-001` | 体系監査の完了後に品質評価の初版を策定する |
-| `OPT-039` | `OPT-001` | 体系監査の引き渡し成果物を根拠に機能適合性・信頼性・安全性の事実を整理する |
-| `OPT-040` | `OPT-001` | 体系監査完了後、性能・互換性・柔軟性の既存根拠を整理する |
-| `OPT-041` | `OPT-001` | 体系監査完了後、文書・unsafe境界・保守性・利用文脈の既存根拠を整理する |
-| `OPT-042` | `OPT-039` | 機能適合性・信頼性・安全性の証拠受入後に初版を統合する |
-| `OPT-042` | `OPT-040` | 性能効率性・互換性・柔軟性の証拠受入後に初版を統合する |
-| `OPT-042` | `OPT-041` | インタラクション能力・セキュリティ・保守性・利用時品質の証拠受入後に初版を統合する |
-| `OPT-005` | `OPT-042` | Codexの統合・完成判定後に品質評価初版を完了できる |
-| `OPT-006` | `OPT-005` | 初版策定後、ユーザードキュメント作業の完了も確認して再評価する |
-| `OPT-010` | `OPT-008` | 公開契約と過去判断を棚卸しした後に名称・次元体系を比較する |
-| `OPT-010` | `OPT-028` | 現行surfaceの機械的な対応表を検収後、名称・次元体系監査を完了できる |
-| `OPT-011` | `OPT-008` | 公開契約監査後に判断候補を登録する |
-| `OPT-011` | `OPT-009` | test根拠監査後に判断候補を登録する |
-| `OPT-011` | `OPT-010` | 名称・次元体系監査後に判断候補を登録する |
-| `OPT-012` | `OPT-009` | test根拠と不足を把握した後に仕様単位へ整理する |
-| `OPT-012` | `OPT-029` | 公開位置づけの決定後に仕様testの範囲を確定する |
-| `OPT-012` | `OPT-030` | 1D型名の決定後に仕様testの名称を確定する |
-| `OPT-012` | `OPT-031` | 次元名称体系の決定後に次元契約testを整理する |
-| `OPT-012` | `OPT-032` | 不正次元契約の決定後に境界testを整理する |
-| `OPT-012` | `OPT-033` | 決定済みの次元事前条件を実装・仕様test化した後、test全体を整理する |
-| `OPT-012` | `OPT-035` | 番号付き仕様fileと段階的移行の設計をCodexが検収後、test全体を整理する |
-| `OPT-036` | `OPT-035` | 受入済み配置案とCodexの小判断に従い通常testを分割する |
-| `OPT-037` | `OPT-035` | 受入済み配置案に従いDeath Test fileを改名する |
-| `OPT-038` | `OPT-036` | 通常testの番号付き分割後に全体を検収する |
-| `OPT-038` | `OPT-037` | Death Test file改名後に全体を検収する |
-| `OPT-012` | `OPT-038` | Codexの完成検収後にTest as Specification整理を完了できる |
-| `OPT-033` | `OPT-034` | zero-volume 4Dの有効なView取得を固定した後、次元事前条件taskを完了できる |
-| `OPT-013` | `OPT-011` | 必要な判断taskを登録・完了または除外した後に引き渡し判定する |
-| `OPT-013` | `OPT-012` | Test as Specification整理後に引き渡し判定する |
-| `OPT-001` | `OPT-013` | 引き渡し検収後に親taskを完了できる |
-| `OPT-008` | `OPT-015` | 公開宣言ledgerをCodexが検収後、契約・履歴監査を完了できる |
-| `OPT-008` | `OPT-020` | 次元・offset式の独立照合をCodexが検収後、契約監査を完了できる |
-| `OPT-008` | `OPT-021` | Sendable履歴調査をCodexが検収後、契約監査を完了できる |
-| `OPT-008` | `OPT-022` | 不正次元の現挙動をCodexが検収後、契約監査を完了できる |
-| `OPT-009` | `OPT-016` | 所有型のtest根拠表をCodexが検収後、test対応監査を完了できる |
-| `OPT-009` | `OPT-017` | Viewのtest根拠表をCodexが検収後、test対応監査を完了できる |
-| `OPT-009` | `OPT-018` | 境界test matrixをCodexが検収後、test対応監査を完了できる |
-| `OPT-009` | `OPT-019` | 寿命test matrixをCodexが検収後、test対応監査を完了できる |
-| `OPT-009` | `OPT-023` | EDPC利用例の責務分類をCodexが検収後、test対応監査を完了できる |
-| `OPT-009` | `OPT-024` | コメントドックcoverageをCodexが検収後、test対応監査を完了できる |
-| `OPT-008` | `OPT-025` | 受入基準coverageの横断照合をCodexが検収後、契約・履歴監査を完了できる |
-| `OPT-009` | `OPT-025` | 受入基準coverageの横断照合をCodexが検収後、test対応監査を完了できる |
-| `OPT-008` | `OPT-026` | 監査本文の事実を証拠表へ同期後、契約・履歴監査を完了できる |
-| `OPT-009` | `OPT-026` | 監査本文の事実を証拠表へ同期後、test対応監査を完了できる |
-| `OPT-008` | `OPT-027` | 判断候補4件の決定来歴を確認後、契約・履歴監査を完了できる |
-| `FIT-003` | `FIT-002` | Claudeの独立review後にCodexが合意・不一致を整理する |
-| `FIT-004` | `FIT-003` | 合意整理後、残ったユーザー判断を一件ずつ登録する |
-| `FIT-005` | `FIT-003` | 両agentの合意範囲が明確になった後に最終反映する |
-| `FIT-005` | `FIT-004` | 必要な不一致decisionを登録し、各判断が完了または除外された後に最終反映する |
-| `FIT-006` | `FIT-005` | Codexの最終反映後、Claudeが合意matrixとの取り違えを確認する |
-| `FIT-007` | `FIT-006` | Claudeの最終確認後、Codexが留保を検収して完成判定する |
-| `RELEASE-002` | `RELEASE-001` | 0.5.0へ含める到達範囲を決定後にrelease gateを実施する |
-| `RELEASE-003` | `RELEASE-002` | release gate成功後に対象commitへtagを作成する |
+| 後続task | 前提task | Gate | 制約 |
+| --- | --- | --- | --- |
+| `GRAPH-007` | `GRAPH-006` | `UNCLASSIFIED` | 共有schema候補と期待結果をCodexが受入後、SQLiteインメモリfixtureへ変換する |
+| `GRAPH-008` | `GRAPH-007` | `UNCLASSIFIED` | 実行可能fixtureの受入後、同じ方式で過去知見の追試可能性を分類する |
+| `GRAPH-010` | `GRAPH-008` | `UNCLASSIFIED` | 追試可能性台帳の受入後、RP-01をfixture化する |
+| `GRAPH-011` | `GRAPH-008` | `UNCLASSIFIED` | 追試可能性台帳の受入後、RP-05をfixture化する |
+| `GRAPH-012` | `GRAPH-008` | `UNCLASSIFIED` | 追試可能性台帳の受入後、RP-08をfixture化する |
+| `GRAPH-013` | `GRAPH-008` | `UNCLASSIFIED` | 追試可能性台帳の受入後、RP-15をfixture化する |
+| `GRAPH-014` | `GRAPH-008` | `UNCLASSIFIED` | 追試可能性台帳の受入後、RP-17をfixture化する |
+| `GRAPH-009` | `GRAPH-010` | `UNCLASSIFIED` | precedence fixture受入後に追試全体を完成判定する |
+| `GRAPH-009` | `GRAPH-011` | `UNCLASSIFIED` | specification role fixture受入後に追試全体を完成判定する |
+| `GRAPH-009` | `GRAPH-012` | `UNCLASSIFIED` | configuration-aware spec-gap fixture受入後に追試全体を完成判定する |
+| `GRAPH-009` | `GRAPH-013` | `UNCLASSIFIED` | document match fixture受入後に追試全体を完成判定する |
+| `GRAPH-009` | `GRAPH-014` | `UNCLASSIFIED` | observation staleness fixture受入後に追試全体を完成判定する |
+| `GRAPH-004` | `GRAPH-009` | `COMPLETE` | 過去知見の追試fixture群を受入後、共有スキーム試験の次段階を判断できる |
+| `GRAPH-016` | `GRAPH-015` | `START` | Gateの意味と段階移行方針の決定後にpilotを開始する |
+| `GRAPH-017` | `GRAPH-016` | `START` | 現役辺のGate分類をCodexが確定した後にRP-19 fixtureを実装する |
+| `GRAPH-018` | `GRAPH-017` | `UNCLASSIFIED` | RP-19でready判定の意味一致を確認後、残る辺を段階移行する |
+| `GRAPH-004` | `GRAPH-018` | `COMPLETE` | Gate移行の完成判定後に共有スキーム試験全体を完了できる |
+| `RBT-001` | `RBT-010` | `UNCLASSIFIED` | 前提taskの完了後に後続taskを完了できる |
+| `RBT-001` | `RBT-011` | `UNCLASSIFIED` | 前提taskの完了後に後続taskを完了できる |
+| `QUALITY-001` | `RBT-001` | `UNCLASSIFIED` | 前提taskの完了後に着手候補にできる |
+| `QUALITY-001` | `RBT-009` | `UNCLASSIFIED` | runtime-check実装の1.0採否を再審査した後に品質ゲートを判断する |
+| `PERM-017` | `PERM-016` | `UNCLASSIFIED` | 品質評価の事実更新後にreviewする |
+| `PERM-017` | `PERM-024` | `UNCLASSIFIED` | 根拠参照の機械照合後に品質評価reviewを完了する |
+| `PERM-017` | `PERM-025` | `UNCLASSIFIED` | 確認済みの事実参照補正後に品質評価reviewを完了する |
+| `PERM-017` | `PERM-026` | `UNCLASSIFIED` | 共存性の検証済み・未検証範囲を確認後に品質評価reviewを完了する |
+| `PERM-017` | `PERM-027` | `UNCLASSIFIED` | 1.0前改善候補3件の実施前提を確認後に品質評価reviewを完了する |
+| `PERM-023` | `PERM-017` | `UNCLASSIFIED` | 品質評価review後に文書作業への引き渡しを判定する |
+| `PERM-023` | `PERM-020` | `UNCLASSIFIED` | 公開API ledgerをCodexが検収後、引き渡しを判定する |
+| `PERM-023` | `PERM-021` | `UNCLASSIFIED` | test evidence matrixをCodexが検収後、引き渡しを判定する |
+| `PERM-023` | `PERM-022` | `UNCLASSIFIED` | 名称・契約履歴ledgerをCodexが検収後、引き渡しを判定する |
+| `RBT-014` | `RBT-013` | `UNCLASSIFIED` | TODO/FIXMEの文書影響を分類後にoutlineを照合する |
+| `RBT-015` | `RBT-027` | `UNCLASSIFIED` | branch・commit時制の全件確認後に内部残task文書を更新する |
+| `RBT-015` | `RBT-028` | `UNCLASSIFIED` | Registryとチェック状態の対応確認後に内部残task文書を更新する |
+| `RBT-015` | `RBT-029` | `UNCLASSIFIED` | path・symbolの現存確認後に内部残task文書を更新する |
+| `RBT-015` | `RBT-030` | `UNCLASSIFIED` | merge前PoC記録の時制補正後に内部残task文書を完了判定する |
+| `RBT-015` | `RBT-031` | `UNCLASSIFIED` | 完了済みIndex分離と未確定gateの表現分離後に内部残task文書を完了判定する |
+| `RBT-026` | `RBT-014` | `UNCLASSIFIED` | outlineのAPI照合後、利用者向け文書作業フェーズで契約を再判断する |
+| `PERM-014` | `PERM-003` | `START` | 現行契約の基準固定後に手順を決定できる |
+| `PERM-015` | `PERM-014` | `START` | 実施手順の決定後にtask依存を再評価できる |
+| `PERM-004` | `PERM-015` | `UNCLASSIFIED` | task依存の再評価とRegistry反映後に着手できる |
+| `PERM-005` | `PERM-004` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
+| `PERM-006` | `PERM-005` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
+| `PERM-007` | `PERM-006` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
+| `PERM-008` | `PERM-006` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
+| `PERM-009` | `PERM-007` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
+| `PERM-010` | `PERM-007` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
+| `PERM-010` | `PERM-008` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
+| `PERM-010` | `PERM-009` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
+| `PERM-001` | `PERM-010` | `UNCLASSIFIED` | 前提taskの完了後に後続taskを完了できる |
+| `BARE-003` | `BARE-002` | `UNCLASSIFIED` | 棚卸しで位置づけが未決定と判明した場合だけ判断する |
+| `BARE-004` | `BARE-003` | `UNCLASSIFIED` | BareArrayを公開継続する判断後に命名体系を決定する |
+| `BARE-005` | `BARE-002` | `UNCLASSIFIED` | 契約棚卸し後に既存testを仕様単位へ整理する |
+| `BARE-007` | `BARE-006` | `UNCLASSIFIED` | 性能基準と計測方法の決定後に計測する |
+| `BARE-001` | `BARE-002` | `UNCLASSIFIED` | 公開契約の棚卸しを親taskの完了条件とする |
+| `BARE-001` | `BARE-003` | `UNCLASSIFIED` | 未決定だった場合の位置づけ判断を親taskの完了条件とする |
+| `BARE-001` | `BARE-004` | `UNCLASSIFIED` | 公開継続時の命名判断を親taskの完了条件とする |
+| `BARE-001` | `BARE-005` | `UNCLASSIFIED` | Test as Specification整理を親taskの完了条件とする |
+| `OPT-002` | `OPT-001` | `UNCLASSIFIED` | OptionalArray監査の完了後に実績から管理方式を抽出する |
+| `OPT-003` | `OPT-002` | `UNCLASSIFIED` | 管理方式と受入基準の抽出後に明文化の要否を判断する |
+| `OPT-004` | `OPT-003` | `UNCLASSIFIED` | 明文化すると決定した場合だけ運用規則へ反映する |
+| `BARE-008` | `OPT-002` | `UNCLASSIFIED` | OptionalArrayで管理方式を検証した後にBareArray再開を判断する |
+| `OPT-005` | `OPT-001` | `UNCLASSIFIED` | 体系監査の完了後に品質評価の初版を策定する |
+| `OPT-039` | `OPT-001` | `UNCLASSIFIED` | 体系監査の引き渡し成果物を根拠に機能適合性・信頼性・安全性の事実を整理する |
+| `OPT-040` | `OPT-001` | `UNCLASSIFIED` | 体系監査完了後、性能・互換性・柔軟性の既存根拠を整理する |
+| `OPT-041` | `OPT-001` | `UNCLASSIFIED` | 体系監査完了後、文書・unsafe境界・保守性・利用文脈の既存根拠を整理する |
+| `OPT-042` | `OPT-039` | `UNCLASSIFIED` | 機能適合性・信頼性・安全性の証拠受入後に初版を統合する |
+| `OPT-042` | `OPT-040` | `UNCLASSIFIED` | 性能効率性・互換性・柔軟性の証拠受入後に初版を統合する |
+| `OPT-042` | `OPT-041` | `UNCLASSIFIED` | インタラクション能力・セキュリティ・保守性・利用時品質の証拠受入後に初版を統合する |
+| `OPT-005` | `OPT-042` | `UNCLASSIFIED` | Codexの統合・完成判定後に品質評価初版を完了できる |
+| `OPT-006` | `OPT-005` | `UNCLASSIFIED` | 初版策定後、ユーザードキュメント作業の完了も確認して再評価する |
+| `OPT-010` | `OPT-008` | `UNCLASSIFIED` | 公開契約と過去判断を棚卸しした後に名称・次元体系を比較する |
+| `OPT-010` | `OPT-028` | `UNCLASSIFIED` | 現行surfaceの機械的な対応表を検収後、名称・次元体系監査を完了できる |
+| `OPT-011` | `OPT-008` | `UNCLASSIFIED` | 公開契約監査後に判断候補を登録する |
+| `OPT-011` | `OPT-009` | `UNCLASSIFIED` | test根拠監査後に判断候補を登録する |
+| `OPT-011` | `OPT-010` | `UNCLASSIFIED` | 名称・次元体系監査後に判断候補を登録する |
+| `OPT-012` | `OPT-009` | `UNCLASSIFIED` | test根拠と不足を把握した後に仕様単位へ整理する |
+| `OPT-012` | `OPT-029` | `UNCLASSIFIED` | 公開位置づけの決定後に仕様testの範囲を確定する |
+| `OPT-012` | `OPT-030` | `UNCLASSIFIED` | 1D型名の決定後に仕様testの名称を確定する |
+| `OPT-012` | `OPT-031` | `UNCLASSIFIED` | 次元名称体系の決定後に次元契約testを整理する |
+| `OPT-012` | `OPT-032` | `UNCLASSIFIED` | 不正次元契約の決定後に境界testを整理する |
+| `OPT-012` | `OPT-033` | `UNCLASSIFIED` | 決定済みの次元事前条件を実装・仕様test化した後、test全体を整理する |
+| `OPT-012` | `OPT-035` | `UNCLASSIFIED` | 番号付き仕様fileと段階的移行の設計をCodexが検収後、test全体を整理する |
+| `OPT-036` | `OPT-035` | `UNCLASSIFIED` | 受入済み配置案とCodexの小判断に従い通常testを分割する |
+| `OPT-037` | `OPT-035` | `UNCLASSIFIED` | 受入済み配置案に従いDeath Test fileを改名する |
+| `OPT-038` | `OPT-036` | `UNCLASSIFIED` | 通常testの番号付き分割後に全体を検収する |
+| `OPT-038` | `OPT-037` | `UNCLASSIFIED` | Death Test file改名後に全体を検収する |
+| `OPT-012` | `OPT-038` | `UNCLASSIFIED` | Codexの完成検収後にTest as Specification整理を完了できる |
+| `OPT-033` | `OPT-034` | `UNCLASSIFIED` | zero-volume 4Dの有効なView取得を固定した後、次元事前条件taskを完了できる |
+| `OPT-013` | `OPT-011` | `UNCLASSIFIED` | 必要な判断taskを登録・完了または除外した後に引き渡し判定する |
+| `OPT-013` | `OPT-012` | `UNCLASSIFIED` | Test as Specification整理後に引き渡し判定する |
+| `OPT-001` | `OPT-013` | `UNCLASSIFIED` | 引き渡し検収後に親taskを完了できる |
+| `OPT-008` | `OPT-015` | `UNCLASSIFIED` | 公開宣言ledgerをCodexが検収後、契約・履歴監査を完了できる |
+| `OPT-008` | `OPT-020` | `UNCLASSIFIED` | 次元・offset式の独立照合をCodexが検収後、契約監査を完了できる |
+| `OPT-008` | `OPT-021` | `UNCLASSIFIED` | Sendable履歴調査をCodexが検収後、契約監査を完了できる |
+| `OPT-008` | `OPT-022` | `UNCLASSIFIED` | 不正次元の現挙動をCodexが検収後、契約監査を完了できる |
+| `OPT-009` | `OPT-016` | `UNCLASSIFIED` | 所有型のtest根拠表をCodexが検収後、test対応監査を完了できる |
+| `OPT-009` | `OPT-017` | `UNCLASSIFIED` | Viewのtest根拠表をCodexが検収後、test対応監査を完了できる |
+| `OPT-009` | `OPT-018` | `UNCLASSIFIED` | 境界test matrixをCodexが検収後、test対応監査を完了できる |
+| `OPT-009` | `OPT-019` | `UNCLASSIFIED` | 寿命test matrixをCodexが検収後、test対応監査を完了できる |
+| `OPT-009` | `OPT-023` | `UNCLASSIFIED` | EDPC利用例の責務分類をCodexが検収後、test対応監査を完了できる |
+| `OPT-009` | `OPT-024` | `UNCLASSIFIED` | コメントドックcoverageをCodexが検収後、test対応監査を完了できる |
+| `OPT-008` | `OPT-025` | `UNCLASSIFIED` | 受入基準coverageの横断照合をCodexが検収後、契約・履歴監査を完了できる |
+| `OPT-009` | `OPT-025` | `UNCLASSIFIED` | 受入基準coverageの横断照合をCodexが検収後、test対応監査を完了できる |
+| `OPT-008` | `OPT-026` | `UNCLASSIFIED` | 監査本文の事実を証拠表へ同期後、契約・履歴監査を完了できる |
+| `OPT-009` | `OPT-026` | `UNCLASSIFIED` | 監査本文の事実を証拠表へ同期後、test対応監査を完了できる |
+| `OPT-008` | `OPT-027` | `UNCLASSIFIED` | 判断候補4件の決定来歴を確認後、契約・履歴監査を完了できる |
+| `FIT-003` | `FIT-002` | `UNCLASSIFIED` | Claudeの独立review後にCodexが合意・不一致を整理する |
+| `FIT-004` | `FIT-003` | `UNCLASSIFIED` | 合意整理後、残ったユーザー判断を一件ずつ登録する |
+| `FIT-005` | `FIT-003` | `UNCLASSIFIED` | 両agentの合意範囲が明確になった後に最終反映する |
+| `FIT-005` | `FIT-004` | `UNCLASSIFIED` | 必要な不一致decisionを登録し、各判断が完了または除外された後に最終反映する |
+| `FIT-006` | `FIT-005` | `UNCLASSIFIED` | Codexの最終反映後、Claudeが合意matrixとの取り違えを確認する |
+| `FIT-007` | `FIT-006` | `UNCLASSIFIED` | Claudeの最終確認後、Codexが留保を検収して完成判定する |
+| `RELEASE-002` | `RELEASE-001` | `UNCLASSIFIED` | 0.5.0へ含める到達範囲を決定後にrelease gateを実施する |
+| `RELEASE-003` | `RELEASE-002` | `UNCLASSIFIED` | release gate成功後に対象commitへtagを作成する |
 
 ## Registry rules
 
@@ -348,6 +348,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 - `USER_ONLY`はユーザー専任とし、AIは着手、代行、催促を行わない。
 - `WAITING_EXTERNAL`は外部条件が解消するまで着手可能とみなさない。
 - Task precedenceには内部task間の必須AND前提だけを記録する。
+- Task precedenceのGateは`START`、`COMPLETE`、`UNCLASSIFIED`のいずれかとし、新規・更新辺は`START`か`COMPLETE`を必須とする。
 - 新規または内容更新したtaskの項目名は、`[DECISION]`、`[EXECUTION]`、`[DISCOVERY]`のいずれかで始める。
 - `DECISION`は一つのユーザー判断だけを含む。複数の判断がある場合は登録前または発見時に分割する。
 - `EXECUTION`と`DISCOVERY`はノー判断taskとし、未確定の判断をagentが補って完了させない。

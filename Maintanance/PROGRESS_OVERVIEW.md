@@ -21,11 +21,6 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 - このrepositoryで得たtask運用知見を、別projectでもCodexが同程度の管理品質を再現できる
   移植可能なplaybookへ整理する。
-- Permutationを、Codexのユーザードキュメント作業フェーズへ渡せる状態にする。
-- OptionalArrayを、Codexが作業設計・網羅性確認・完了判定を担う管理方式で、Codexの
-  ユーザードキュメント作業フェーズへ渡せる状態にする。
-- OptionalArrayの体系監査完了時点で、ISO/IEC 25010観点の品質評価の初版を策定し、
-  ユーザードキュメント作業と1.0準備で埋める不足を見える状態にする。
 - `0.5.0`としてtag付けする到達点を決め、その地点でrelease gateを通し、再現可能な節目として
   tagを作成する。第一候補はOptionalArrayのユーザードキュメント作業への引き渡し完了時点とする。
 - Claudeへ渡すtask出しを、「一つのtaskに一つのユーザー判断、またはユーザー判断なし」まで
@@ -63,10 +58,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 判定する。`DISCOVERY`が新しい判断点を見つけた場合は、一判断ごとの`DECISION`へ分ける。その結論を
 必要とする`EXECUTION`は、対応する`DECISION`を前提taskにする。soft orderは同時に着手可能なnode間の
 推奨順にだけ使い、必須依存へ読み替えない。
-
-中間ゴールへ向けた残る主系列の推奨順は、`OPT-001`、`PERM-017`、`RBT-015`とする。
-これは後続作業への影響が大きいものを先に調べるためのsoft orderであり、Task precedenceに記録した
-必須依存以外の着手を禁止しない。
 
 次の判断は今回の作業taskへ含めない。必要になった時点でユーザーと別途決定する。
 
@@ -353,11 +344,3 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 - `EXECUTION`と`DISCOVERY`はノー判断taskとし、未確定の判断をagentが補って完了させない。
 - Task Registryの確定更新はCodexが担当する。
 - 優先順位は、ユーザーの最新指示、Task Registry、詳細正本、Archivedと過去ログの順とする。
-
-## Current summary
-
-- RedBlackTreeの実装、正当性検証、主要な公開面整理は完了済み。
-- RedBlackTreeは外部要件待ちのIndex判断と並行して、見えていない残作業の棚卸しと利用者向け文書の準備を進める。
-- Permutationは互換modeの手順決定に加え、品質評価、利用者向け使用例、他packageとの名前衝突を確認する。
-- OptionalArrayはCodex管理で体系監査を再開し、BareArrayとstorage再設計は管理方式の検証後まで凍結する。
-- Claudeのtask graph DB試験と、Codex / Claudeで判定スキームを共有するインメモリsmell知見試験が進行中。

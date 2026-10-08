@@ -134,8 +134,8 @@ RP-11はAだが、G7と同じ規則の別事例なので、追加するかはCod
 
 ## GRAPH-009: 受入済み項目のSQLite追試fixture化
 
-状態は`PROPOSED`とする。GRAPH-008のCodex受入後、`A / B`から実装対象を確定し、対象項目、期待結果、
-schema変更範囲、完了条件をこの節へ追記してから`ACTIVE`へ移す。それまでは着手・委任しない。
+GRAPH-008のCodex受入により、RP-01・RP-05・RP-08・RP-15・RP-17を実装対象とする。
+GRAPH-009は5件の子taskを統合して完成判定するtaskとし、各fixtureの実装はGRAPH-010〜014へ分ける。
 
 現時点の共通境界は次のとおり。
 
@@ -145,16 +145,70 @@ schema変更範囲、完了条件をこの節へ追記してから`ACTIVE`へ移
 - Claude専用DB、永続DB、production変更に依存しない。
 - 自動抽出が必要な`C`と回帰fixtureにしない`D`は実装しない。
 
+### 今回実装しない項目
+
+- RP-11: `task_scopes` 0件の規則はGRAPH-007と同じで、別事例を足す情報利得が小さい。
+- RP-14: GRAPH-007が全体を実装済み。
+- RP-19: precedence辺が着手前提か完了前提かを示すfieldがRegistryになく、意味判断が未確定。
+
+### GRAPH-010: precedence missing-pair fixture（RP-01）
+
+- 担当: Claude
+- `task_precedence` relationをSQLite schemaへ追加する。
+- RBT-001・004・010・011と、記録された2辺をfixtureへ入れる。
+- 4 taskの全pairから、どちら向きにも辺のない4組を返すqueryと期待値を作る。
+- symbol共有、task→symbol、scopeは扱わない。
+
+### GRAPH-011: specification file role fixture（RP-05）
+
+- 担当: Claude
+- test pathと観測commitを入力し、旧規則と現行規則で`spec / non-spec`を計算する。
+- `d784b91e`とHEAD相当のsnapshotをfixtureへ入れる。
+- 現行規則で番号0〜4がspec、98・99がnon-specとなる期待値を固定する。
+- Gitやfilesystemからの自動抽出は行わない。
+
+### GRAPH-012: configuration-aware spec-gap fixture（RP-08）
+
+- 担当: Claude
+- symbolへaccessと構成条件を表す最小fieldまたはtableを追加する。
+- `RedBlackTreeBoundExpression.find(_:)`と`RedBlackTreeSet.freeCapacity`、`58aab943`前後のtest edgeをfixture化する。
+- DEBUG限定symbolをRelease公開gapから除き、test追加前は`find(_:)`だけ1件、追加後は0件となるqueryと期待値を作る。
+- compilerやbuildからの自動抽出は行わない。
+
+### GRAPH-013: document match precision fixture（RP-15）
+
+- 担当: Claude
+- 文書照合方法を表すfieldまたはrelationを追加する。
+- `bb77fafc`時点を基準snapshotとし、`subscript`単語だけ36件、所属型との組で9件を期待値にする。
+- `f6f84d6c`で38件になる自己参照増加は別snapshotとして記録し、基準件数へ混ぜない。
+- 文書filesystemからの自動抽出は行わない。
+
+### GRAPH-014: observation staleness fixture（RP-17）
+
+- 担当: Claude
+- nodeの`observed_at`と、commit間で変更されたfileのsnapshotを使う。
+- `b87c8428`観測nodeは`bb77fafc`時点でstale、`bb77fafc`観測nodeはnot staleとなるqueryと期待値を作る。
+- Gitから変更fileを自動抽出せず、追試に必要な入力をfixtureへ明示する。
+
+### GRAPH-009の完了条件
+
+- GRAPH-010〜014をCodexが個別に受入済み。
+- repository rootから一つのcommandでGRAPH-007と追加5 fixtureを空のSQLite `:memory:`へ読み込める。
+- 各replay IDについて独立したPASS / FAILが表示される。
+- 既存GRAPH-007の8区分が引き続きPASSする。
+- Claude専用DB、永続DB、production変更、自動抽出へ依存しない。
+
 ## Codex受入欄
 
 ### GRAPH-008
 
-- coverage: 未確認
-- 分類根拠: 未確認
-- GRAPH-009候補集合: 未確定
-- 判定: `ACTIVE`
+- coverage: 受入。対象3文書の見出しと試験記録を23項目へ対応し、重複記録は代表項目へ統合した。
+- 分類根拠: 受入。repositoryに入力のないtask→symbol・親子関係をD、自動抽出・runtime・機械語を
+  必要とするものをCへ置き、AI推定でA/Bへ昇格していない。
+- GRAPH-009候補集合: RP-01、RP-05、RP-08、RP-15、RP-17。RP-11・14は重複、RP-19は意味判断不足で除外。
+- 判定: `DONE`
 
 ### GRAPH-009
 
-- scope: 未確定
-- 状態: `PROPOSED`
+- scope: GRAPH-010〜014の5 fixtureと一括再現・回帰確認。
+- 状態: `ACTIVE`

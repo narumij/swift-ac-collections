@@ -130,6 +130,20 @@ graph DBのscope-checkはこの組を「辺なし・結合あり」と検出し�
 `AcCollections`再公開検証とCI分離は、互換仕様test後に並行着手できる。単一file生成はCI分離を
 待たない。文書同期だけが三経路の合流点となる。
 
+## 4. 互換ソースの隔離（2026-10-08完了）
+
+`origin/release/AtCoder/2025`の`Permutations.swift`と`NextPermutationProtocol.swift`を
+`Sources/PermutationModule/Compatibility/AtCoder2025/`へ配置し、file全体を
+`#if COMPATIBLE_ATCODER_2025`で囲んだ。現行`Permutations.swift`は反対条件の
+`#if !COMPATIBLE_ATCODER_2025`で囲み、両実装を排他的にした。
+
+同一target内の同名basenameを現行toolchainが拒否したため、互換側だけを
+`PermutationsAtCoder2025.swift`とした。条件ラッパーと原文2行の行末空白正規化を除く2 fileの内容は
+基準refと一致する。
+通常構成はXcode build-for-testing成功、active test plan 1412件成功・失敗0。互換構成は2 fileを
+`-DCOMPATIBLE_ATCODER_2025 -strict-memory-safety`で`PermutationModule`としてcompileし、error 0を
+確認した。strict memory safety警告は既知の対象外として変更していない。
+
 ## 目的
 
 通常ビルドでは、整理済みの現行`PermutationModule`だけを提供する。一方、既存の

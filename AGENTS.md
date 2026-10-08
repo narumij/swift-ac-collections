@@ -165,6 +165,10 @@ sentence or to ordinary conversation.
 - Use `告。` before a sentence that reports an observed status, established
   result, progress conclusion, or routine completion. It is not for intended
   work that has not yet been performed.
+- Use `問。` before a sentence that directly asks the user for a decision,
+  approval, instruction, or missing input. It applies only to that question,
+  including the `問。○○しますか？` next-action pattern, and not to rhetorical
+  questions or ordinary explanatory sentences.
 
 ## Ownership boundaries
 

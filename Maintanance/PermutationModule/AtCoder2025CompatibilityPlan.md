@@ -190,6 +190,19 @@ swift build --disable-sandbox --target PermutationModule --traits COMPATIBLE_ATC
 `PermutationModule`単体だけでなくpackageの公開productからも、選択したmodeのAPIが利用できることを
 固定した。
 
+## 9. AtCoder単一file生成とローカル検証（2026-10-09完了）
+
+`Utilities/Permutation/GenerateAtCoder2025Permutation.swift`は、互換modeの2 sourceを正本として、
+外側の`COMPATIBLE_ATCODER_2025`条件と不要な`Foundation` importだけを除き、標準出力へ連結する。
+生成物はrepositoryへ常設しない。sourceの外側条件が期待形と異なる場合は生成を失敗させる。
+
+`Utilities/Permutation/ABC328ELocalValidation.swift`は、ABC328Eと同じ入力形式、制約、
+`N - 1`辺の組合せ列挙、union-findによる全域木判定、重み合計のmodulo最小化を行うローカルfixtureである。
+生成した555行の単一fileとfixtureをcompileし、公式sample 1を入力して期待値`33`を確認した。
+生成fileに互換条件と`Foundation` importが残っていないことも静的に確認した。
+
+実提出は引き続きユーザー専任であり、この完了には含めない。
+
 ## 目的
 
 通常ビルドでは、整理済みの現行`PermutationModule`だけを提供する。一方、既存の

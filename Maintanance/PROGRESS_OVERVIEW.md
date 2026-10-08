@@ -159,7 +159,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-006` | `DONE` | Codex | 互換modeのTest as Specification | 2026-10-09、列挙順・重複・safe CoW・unsafe aliasing・境界を互換限定5 testで固定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-007` | `DONE` | Codex | 両modeのAcCollections再公開検証 | 2026-10-09、AcCollectionsだけをimportした通常API・互換APIのcompileとtest成功を確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-008` | `FROZEN` | Codex | Permutation互換CIの分離 | `0.5.0` tag後に`prepare/compatible/2`へ統合してから、ユーザー指示で再開。機能testだけを通常版と互換版の別jobにし、互換性能計測は行わない | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
-| `PERM-009` | `FROZEN` | Codex | AtCoder単一file生成とローカル検証 | 互換版から自己完結fileを生成し、ABC328E相当入力で検証 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-009` | `DONE` | Codex | AtCoder単一file生成とローカル検証 | 2026-10-09、互換2 sourceから自己完結fileを生成し、ABC328E公式sampleでcompile・実行結果33を確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-010` | `FROZEN` | Codex | Permutation互換mode文書同期 | 通常APIと互換APIを混同せず、trait・制限・検証方法を文書化 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `OPT-001` | `DONE` | Codex | [DISCOVERY] OptionalArrayの体系監査・名称再検討 | 2026-10-08、公開7型・29宣言の契約、test、履歴、判断、Test as Specificationを検収し、ユーザードキュメント作業へ引き渡し | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-002` | `DONE` | Codex | [DISCOVERY] OptionalArray監査の管理方式と受入基準の抽出 | 2026-10-08、実績から段階構成、責任境界、受入基準、停止条件を再利用可能な監査方式として抽出 | `OptionalArrayModule/OptionalArrayAudit.md` |

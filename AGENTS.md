@@ -107,6 +107,15 @@ user has finished answering. Ask choices in an ordinary chat message and let
 the user reply with text or a choice number. This changes only the input method;
 it does not waive a required user decision or approval.
 
+## Codex evaluation and impression records
+
+When the user asks Codex to record an evaluation or impression, use
+`Maintanance/USER_MANAGEMENT_INTERVIEW_CODEX.md` and follow its stated purpose.
+Treat the record as management-continuity evidence: preserve concrete episodes,
+the user's own characteristic wording, and what it reveals about trusted or
+untrusted ways of carrying responsibility. Do not turn it into a personality
+profile, flattery log, or substitute for current user instructions.
+
 ## Routine shorthand
 
 When the user says `ルーティーン`, treat it as a request for this cycle:

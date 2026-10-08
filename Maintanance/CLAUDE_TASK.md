@@ -11,13 +11,13 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: あり**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: あり。決定済みPermutation CI二library構成の実装。
-- 本線の現在task: 下記「Active bounded assignment: implement Permutation CI libraries」。
+- 新規bounded assignment: なし。
+- 本線の現在状態: Permutation性能CIのpush・実行結果待ち。互換ソース隔離はまだ開始しない。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
 
-## Active bounded assignment: implement Permutation CI libraries
+## Completed bounded assignment: implement Permutation CI libraries
 
 決定済みの次の構成だけを実装する。
 
@@ -32,6 +32,28 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 `.github/workflows/swift.yml`だけ。JSON構文、YAML差分、task title 5件との完全一致、base / HEADの対称性を
 静的に確認する。benchmark実行、依存解決、長時間計測、source・test・文書・Registry変更、commit、pushは
 行わない。範囲内で成立しない事実を見つけた場合は変更を広げず停止して返す。
+
+### Result
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。指定の3 fileだけを変更し、git add済み（commitなし）。
+
+- `Benchmarks/Libraries/CI.json`: 末尾に`Permutations` group（directory `permutations`、chart `subscript access`）を追加し、
+  subscript 4件を登録。既存groupの内容と書式は変えていない。
+- 新規`Benchmarks/Libraries/CI-Small.json`: root group `CI Performance Regression (small sizes)`（directory `CI-Small`）の下に
+  `Permutations` / chart `end-to-end`で1件。
+- `.github/workflows/swift.yml`（performance jobだけ）:
+  - 「Run current benchmarks」: 既存実行の後に`--library ./Libraries/CI-Small.json ../benchmark-results/current.json --max-size 10 --cycles 1 --mode append`。
+  - 「Run baseline benchmarks」: `cp ../../head/Benchmarks/Libraries/CI-Small.json ./Libraries/CI-Small.json`を既存の`CI.json`のcopyの直後に追加し、
+    既存実行の後に同じcommandを`../benchmark-results/base.json`へ。
+  - 各追記の前に理由を1行コメント（`end-to-end は size <= 10 を要求するため…`）。
+  - `results compare`、30%判定、crash artifact、benchmark sourceは変更なし（diffは上の3 hunkだけ）。
+- 静的確認:
+  - JSON: 2 fileとも`python3 -m json.tool`で構文OK。
+  - YAML: `swift.yml`をrubyの`YAML.load_file`で読み込みOK（python yamlは無い環境）。
+  - title: source（`PermutationBenchmarks.swift`）の`title:` 5件と、`CI.json`のPermutation 4件 + `CI-Small.json` 1件が完全一致。
+    重複なし、`CI.json`内のtask名の重複もなし。
+  - 対称性: current / baseの`library run`は各2回で、結果file名を除いて同一。base側は2 libraryともPR側からcopyする。
+- 未確認（実行していない）: CIでの実際の所要時間と、`--max-size 10`で作られるsizeの並び。初回のPRのperformance jobで分かる。
 
 ## Completed bounded assignment: Permutation CI execution design
 

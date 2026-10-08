@@ -70,6 +70,11 @@ subscript 4件を現行の`--max-size 64k`・`--mode replace-all`で測定し、
 end-to-end 1件を小size用library・最大10で同じ結果fileへ追記する。base / HEADの両方にPR側の二つの
 library定義を用い、benchmark sourceと既存の比較・回帰判定は変更しない。
 
+同日、上の構成を実装した。`CI.json`へ4件、`CI-Small.json`へ1件を登録し、performance workflowの
+current / base双方で小size用libraryを同じ結果fileへ追記する。CodexはJSON・YAMLの構文、source上の
+5 titleとの完全一致・重複なし、両経路の対称性を静的に再確認した。実際の性能値、size列、所要時間は
+ユーザーのpush後にperformance jobで確認する。
+
 ### 3.3 互換性（Compatibility）
 
 | 副特性 | 判定 | 根拠 |

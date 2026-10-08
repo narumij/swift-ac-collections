@@ -3,7 +3,7 @@ import PermutationModule
 import XCTest
 
 // `release/AtCoder/2025`で公開していたPermutation APIのTest as Specification。
-// 通常版の`NextPermutationsSequence`契約とは混ぜず、互換traitでだけ実行する。
+// 通常版の`NextPermutationsSequence`契約とは混ぜず、互換defineでだけ実行する。
 final class AtCoder2025Compatibility_0_SpecificationTests: XCTestCase {
 
   func testUnsafePermutationsEnumeratesEveryPositionOrder() {

@@ -155,12 +155,12 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-032` | `DONE` | User / Codex | [DECISION] Permutation CI計測の実行構成 | 2026-10-08、二つのlibraryを64k・10で実行し、同じ結果fileへ追記する構成を採用 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-033` | `DONE` | Claude / Codex | [EXECUTION] Permutation CI計測構成の実装 | 2026-10-08、4件・1件の二library、同一結果file追記、base / HEAD対称性を実装し、構文とtitle集合を検収 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-004` | `DONE` | Codex | [EXECUTION] AtCoder 2025互換ソースの隔離 | 2026-10-08、基準2 fileを条件付き専用fileへ配置し、通常版との排他compile、通常test、互換module buildを確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
-| `PERM-005` | `DONE` | Codex | Permutation互換traitのPackage設定 | 2026-10-09、traitを互換defineへ接続し、traitなしの通常testとtraitありの互換module buildを確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-005` | `EXCLUDED` | — | Permutation互換traitのPackage設定 | 2026-10-09、0.5.0は通常Permutationだけを公開するためtraitを撤回。互換切替は`prepare/compatible/2`統合後のbranch defineで扱う | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-006` | `DONE` | Codex | 互換modeのTest as Specification | 2026-10-09、列挙順・重複・safe CoW・unsafe aliasing・境界を互換限定5 testで固定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-007` | `DONE` | Codex | 両modeのAcCollections再公開検証 | 2026-10-09、AcCollectionsだけをimportした通常API・互換APIのcompileとtest成功を確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-008` | `FROZEN` | Codex | Permutation互換CIの分離 | `0.5.0` tag後に`prepare/compatible/2`へ統合してから、ユーザー指示で再開。機能testだけを通常版と互換版の別jobにし、互換性能計測は行わない | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-009` | `DONE` | Codex | AtCoder単一file生成とローカル検証 | 2026-10-09、互換2 sourceから自己完結fileを生成し、ABC328E公式sampleでcompile・実行結果33を確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
-| `PERM-010` | `DONE` | Codex | Permutation互換mode文書同期 | 2026-10-09、日英README、AcCollections DocC、品質評価をtrait・mode別API・制限・検証結果へ同期 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-010` | `DONE` | Codex | Permutation互換mode文書同期 | 2026-10-09、現行文書は通常版だけを扱い、互換資料と品質評価は後続branch define・制限・検証結果へ同期 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `OPT-001` | `DONE` | Codex | [DISCOVERY] OptionalArrayの体系監査・名称再検討 | 2026-10-08、公開7型・29宣言の契約、test、履歴、判断、Test as Specificationを検収し、ユーザードキュメント作業へ引き渡し | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-002` | `DONE` | Codex | [DISCOVERY] OptionalArray監査の管理方式と受入基準の抽出 | 2026-10-08、実績から段階構成、責任境界、受入基準、停止条件を再利用可能な監査方式として抽出 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-003` | `FROZEN` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | `OPT-002`後、抽出した管理方式をClaude向け運用規則として残す必要があるか一つだけ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
@@ -224,7 +224,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `RELEASE-001` | `DONE` | User / Codex | [DECISION] 0.5.0のtag地点 | 2026-10-08、PermutationのAtCoder 2025互換mode完成を含む状態と決定 | `RELEASE_0_5_0.md` |
-| `RELEASE-002` | `DONE` | Codex | [EXECUTION] 0.5.0 release gateの実施 | 2026-10-09、通常Debug・Release・互換Debugの全体test、Death Test、公開面・Package差分、tag区間と既知事項を確認しtag可能と判定 | `RELEASE_0_5_0.md` |
+| `RELEASE-002` | `ACTIVE` | Codex | [EXECUTION] 0.5.0 release gateの実施 | 互換trait撤回後、通常Debug・Release・documentation CIと最終差分を再確認してtag可能と判定 | `RELEASE_0_5_0.md` |
 | `RELEASE-003` | `FROZEN` | User / Codex | [EXECUTION] 0.5.0 tag作成 | release gate成功後、対象commitをユーザー確認して`0.5.0` tagを作成 | `RELEASE_0_5_0.md` |
 | `RELEASE-004` | `FROZEN` | User / Codex | [EXECUTION] 0.5.0の互換準備branch統合 | tag作成後、ユーザー確認を経て対象commitを`prepare/compatible/2`へmergeする | `RELEASE_0_5_0.md` |
 

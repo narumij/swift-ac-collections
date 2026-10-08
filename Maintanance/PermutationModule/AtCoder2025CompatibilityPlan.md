@@ -145,28 +145,20 @@ CI分離は互換mode完成、release gate、`0.5.0` tag、`prepare/compatible/2
 `-DCOMPATIBLE_ATCODER_2025 -strict-memory-safety`で`PermutationModule`としてcompileし、error 0を
 確認した。strict memory safety警告は既知の対象外として変更していない。
 
-## 5. Package trait設定（2026-10-09完了）
+## 5. Package trait設定（2026-10-09撤回）
 
-`Package.swift`へ`COMPATIBLE_ATCODER_2025` traitを宣言し、同名のcompile defineへ
-`.when(traits:)`で接続した。traitを指定しない場合はdefineが渡らず、通常版が既定になる。
+一度は`COMPATIBLE_ATCODER_2025`をPackage traitとして同名compile defineへ接続したが、ユーザー判断により
+0.5.0は通常Permutationだけを公開することを再確認し、traitを撤回した。DocC pluginがsymbol抽出時に
+全traitを有効化し、通常版DocCと互換RedBlackTreeのsymbol graphを混在させる問題も実際に確認した。
 
-このdefineはPermutationだけでなく、既存のRedBlackTree互換実装と`AcCollections`の条件付き再公開にも
-使われている。従来の手編集切替と同じpackage共通の`_settings`へ条件付きdefineを置き、各targetへ
-異なる互換状態を渡さない構成とした。
-
-traitなしではXcodeのbuild-for-testingが成功し、active test planは1412件成功・失敗0件だった。
-traitありでは次のcommandで`PermutationModule` buildが成功した。
-
-```console
-swift build --disable-sandbox --target PermutationModule --traits COMPATIBLE_ATCODER_2025
-```
-
-通常の`swift build`は実行環境のmanifest sandbox生成が拒否されたため、SwiftPM自身のsandboxを無効にして
-再実行した。互換ソースのstrict-memory-safety警告は既知の対象外として変更していない。
+`Package.swift`は従来どおりコメントアウトされたpackage共通defineだけを残す。0.5.0では有効化せず、
+tag後に`prepare/compatible/2`へ統合したbranchでdefineを有効化して互換構成を検証する。
+trait追加中に行った互換module・全package testの成功は実装検証の履歴として保持するが、0.5.0の
+公開Package設定とはしない。
 
 ## 6. 互換modeのTest as Specification（2026-10-09完了）
 
-`Tests/PermutationTests/AtCoder2025Compatibility/`へ互換traitでだけ有効な番号付き仕様testを追加した。
+`Tests/PermutationTests/AtCoder2025Compatibility/`へ互換defineでだけ有効な番号付き仕様testを追加した。
 基準refの既存testを出発点に、次を5 testで固定した。
 
 - `unsafePermutations()`の全位置順列と、同値要素を位置違いとして重複列挙する挙動
@@ -176,13 +168,13 @@ swift build --disable-sandbox --target PermutationModule --traits COMPATIBLE_ATC
 - 空、単一、全要素同値、降順の各入力を最初の1件だけ返す境界
 
 通常版の番号付き仕様testは`!COMPATIBLE_ATCODER_2025`へ限定し、公開型と所有権モデルが異なる2 modeの
-契約を同じ実行へ混ぜない。互換構成は対象5件成功・失敗0、traitなしのactive test planは
+契約を同じ実行へ混ぜない。互換構成は対象5件成功・失敗0、通常構成のactive test planは
 1412件成功・失敗0だった。
 
 ## 7. `AcCollections`再公開検証（2026-10-09完了）
 
-`AcCollectionsTests`は`AcCollections`だけをimportし、traitなしでは現行の
-`NextPermutationsSequence`と`nextPermutations()`、traitありでは互換版の
+`AcCollectionsTests`は`AcCollections`だけをimportし、通常defineでは現行の
+`NextPermutationsSequence`と`nextPermutations()`、互換defineでは互換版の
 `Permutations.Nexts`、`Permutations.All`、`unsafePermutations()`、`unsafeNextPermutations()`へ
 到達できることをcompileと実行で確認する。
 
@@ -207,7 +199,7 @@ swift build --disable-sandbox --target PermutationModule --traits COMPATIBLE_ATC
 
 日英READMEは既存のbranch案内に留め、現行READMEへ互換modeの詳細を混在させない。
 `AcCollections`のDocCはmodeごとのPermutation再公開面へ同期した。Permutation品質評価は通常版だけを
-評価対象とする境界を維持しながら、互換modeのtrait、旧API、aliasing、仕様test、facade、単一file検証、
+評価対象とする境界を維持しながら、互換modeのbranch define、旧API、aliasing、仕様test、facade、単一file検証、
 strict memory safety警告、統合後CIへの延期が確認済みであることへ更新した。
 
 ## 目的
@@ -229,8 +221,8 @@ unsafeな結果共有を、現行APIとして再推奨もしない。
 - 型名の差（2026-10-07）: 通常版は`Permutations<C>.Nexts`/`IteratorN`/`SubSequenceN`を
   `NextPermutationsSequence<Base>`/`.Iterator`/`.Permutation`へ改名し、`Permutations`名前空間を
   廃止した。互換版は基準refの旧名をそのまま持つ。
-- 切替名: `COMPATIBLE_ATCODER_2025`。`Package.swift`の同名traitがpackage共通のcompile defineへ
-  接続され、Permutationを含むAtCoder 2025互換実装を切り替える。
+- 切替名: `COMPATIBLE_ATCODER_2025`。0.5.0では公開traitにせず、後続の
+  `prepare/compatible/2`でpackage共通のcompile defineとして有効化する。
 
 基準版にだけ存在する公開表面は次のとおり。
 
@@ -269,13 +261,11 @@ Sources/PermutationModule/
 
 ## Package設定
 
-`COMPATIBLE_ATCODER_2025`をPackage traitとして宣言し、既存の手編集コメント切替を
-trait条件のdefineへ置き換える。traitを指定しない既定ビルドは必ず現行版とする。
+0.5.0では`COMPATIBLE_ATCODER_2025`をPackage traitとして公開しない。既定ビルドは現行版だけとする。
+tag後に`prepare/compatible/2`へ統合したbranchで、既存のpackage共通defineを有効化する。
+これはPermutationだけでなくRedBlackTreeと`AcCollections`も同じ互換状態に揃えるためである。
 
-互換defineは、互換性を検証する必要がある既存ターゲットへだけ渡す。新しい通常APIが
-誤って互換defineへ依存しないよう、可能なら全ターゲット共通の`_settings`から分離する。
-
-AtCoderへ貼り付ける単一ファイルの生成はSwiftPM traitとは別問題である。生成元を
+AtCoderへ貼り付ける単一ファイルの生成はPackage切替とは別問題である。生成元を
 互換ファイルへ固定し、生成物自体はリポジトリへ常設しない。
 
 ## 実装段階

@@ -15,12 +15,6 @@ import AcCollections
 The facade does not declare collection types of its own. Each API remains owned and documented by
 its defining module.
 
-With the `COMPATIBLE_ATCODER_2025` package trait, the facade selects the package-wide AtCoder 2025
-compatibility API. It re-exports the legacy `RedBlackTreeModule` module name and the legacy
-Permutation surface, including `Permutations`, `unsafePermutations()`, and
-`unsafeNextPermutations()`. Without the trait, it exposes the current
-`NextPermutationsSequence` API instead.
-
 The current policy is to include every collection module shipped by the package. If a module is
 later confirmed not to meet the package's quality requirements, its facade exposure is reconsidered
 at that time.

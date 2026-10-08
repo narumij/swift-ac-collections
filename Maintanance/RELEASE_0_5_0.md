@@ -13,8 +13,8 @@ tag地点、release gate、tag作成を分離し、未完了taskを暗黙に完�
 `0.5.0`と関係しないことを確定した。この地点と、そのために行ったPermutation、OptionalArray、
 task管理方式の整理を、tag地点の根拠や到達範囲へ自動的に含めない。
 
-`0.5.0`で表す製品上の到達点と対象commitは、release固有の判断として別途一つだけ決定する。
-決定前にrelease gateやtag作成へ進まない。
+2026-10-08、ユーザー判断により、PermutationのAtCoder 2025互換modeを完成させた状態を
+`0.5.0`の製品上の到達点とする。確定済みの互換mode実施列を完了するまでrelease gateへ進まない。
 
 ## release gate
 
@@ -35,3 +35,9 @@ release gate成功によって解消済みとは扱わない。
 release gate成功後、Codexが対象commit、検証結果、既知事項を短く提示し、ユーザーが対象を確認する。
 確認後に`0.5.0` tagを作成する。remoteへのpush、release page作成、配布はこのtaskへ自動的に含めず、
 必要なら別途ユーザー承認を得る。
+
+## 互換準備branchへの統合
+
+`0.5.0` tag作成後、対象commitを既存branch `prepare/compatible/2`へmergeする。branchの切替、merge、
+競合解消、pushは不可逆な外部影響を分離して扱い、実行直前に対象commitとbranchをユーザーへ確認する。
+remoteへのpushはmergeの承認へ自動的に含めない。

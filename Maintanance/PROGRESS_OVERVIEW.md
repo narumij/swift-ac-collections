@@ -19,8 +19,8 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **現在の中間ゴール:**
 
-- `0.5.0`としてtag付けする到達点を、OptionalArray監査・引き渡しとは独立に決め、その地点で
-  release gateを通し、再現可能な節目としてtagを作成する。
+- PermutationのAtCoder 2025互換modeを完成させ、その成果を含む状態でrelease gateを通し、
+  `0.5.0`をtag付けした後、`prepare/compatible/2`へ統合する。
 - Claudeへ渡すtask出しを、「一つのtaskに一つのユーザー判断、またはユーザー判断なし」まで
   分解できる状態にする。
 
@@ -140,12 +140,12 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-006` | `FROZEN` | User / Codex | 未結線コードの個別削除 | ユーザーが対象を個別指定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `TEST-001` | `FROZEN` | User / Codex | 無効化・歴史的テストコードの処遇 | ユーザーが対象を個別指定 | `Tests/TESTING.md` |
 | `TEST-002` | `FROZEN` | Codex | stride assertion／fixture alignmentの任意改善 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
-| `PERM-001` | `FROZEN` | Codex | AtCoder 2025互換mode | ユーザーが明示的に再開 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-001` | `ACTIVE` | Codex | AtCoder 2025互換mode | 2026-10-08、0.5.0へ含めるユーザー判断により再開。性能基準取得後、確定済みの実施順で進める | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-002` | `USER_ONLY` | User | ABC328E実提出確認 | ユーザーが手作業で実施 | `PermutationModule/ImplementationPlan.md` |
 | `PERM-003` | `DONE` | Claude | 現行Permutation契約の基準固定 | 2026-10-07、削除済みAPIの非露出をcompile時に固定し、重複要素・非Array入力のtestを追加 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-011` | `DONE` | Claude | Permutation公開型の改名 | 2026-10-07、`NextPermutationsSequence`/`.Iterator`/`.Permutation`へ改名し`Permutations`名前空間を廃止（source-breaking、ユーザー承認済み） | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-012` | `DONE` | Claude | Permutation仕様のTest as Specification化 | 2026-10-07、仕様をテストの連番fileへ移し、`Specification.md`を削除（ユーザー判断）。テストで表せない約束はソースのドキュメントコメントへ | `Tests/PermutationTests/NextPermutationsSequence/` |
-| `PERM-013` | `FROZEN` | User / Claude | Permutation性能のCIベース比較 | 作業の区切りでユーザーが再開。Claudeが`Benchmarks/Libraries/CI.json`へPermutationの計測を追加し、ユーザーのpush後にperformance jobのベース比較で`@inline(__always)`全削除（`0ef177d3`）以降の影響を確認 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-013` | `ACTIVE` | User / Claude | Permutation性能のCIベース比較 | 2026-10-08再開。Claudeが`Benchmarks/Libraries/CI.json`へ既存5計測を追加し、Codex受入後、ユーザーのpushとperformance jobで基準を取得する | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-014` | `DONE` | Codex | [EXECUTION] Permutation互換modeの実施手順統合 | 2026-10-08、二つの判断結果から成果単位、commit境界、mode別検証を確定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-015` | `DONE` | Codex | [EXECUTION] Permutation互換task依存の再評価 | 2026-10-08、性能基準を互換ソース隔離の着手前提に採用し、実装・test・再公開・CI・単一file・文書のGateを確定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
@@ -220,9 +220,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `FROZEN` | User / Codex | 汎用基盤ライブラリとしての1.0採用品質ゲート | Index契約確定後、ユーザーが明示的に再開 | `Sources/RedBlackTreeCollections/Documentation/Quality-Checklist.md` |
 | `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
-| `RELEASE-001` | `WAITING_USER` | User / Codex | [DECISION] 0.5.0のtag地点 | 2026-10-08、OptionalArray引き渡し地点を候補から除外。0.5.0固有の到達範囲を別途一つ決定 | `RELEASE_0_5_0.md` |
+| `RELEASE-001` | `DONE` | User / Codex | [DECISION] 0.5.0のtag地点 | 2026-10-08、PermutationのAtCoder 2025互換mode完成を含む状態と決定 | `RELEASE_0_5_0.md` |
 | `RELEASE-002` | `FROZEN` | Codex | [EXECUTION] 0.5.0 release gateの実施 | tag地点の到達後、全体test・Release・必要なDeath Test・差分・既知事項を検証しtag可能と判定 | `RELEASE_0_5_0.md` |
 | `RELEASE-003` | `FROZEN` | User / Codex | [EXECUTION] 0.5.0 tag作成 | release gate成功後、対象commitをユーザー確認して`0.5.0` tagを作成 | `RELEASE_0_5_0.md` |
+| `RELEASE-004` | `FROZEN` | User / Codex | [EXECUTION] 0.5.0の互換準備branch統合 | tag作成後、ユーザー確認を経て対象commitを`prepare/compatible/2`へmergeする | `RELEASE_0_5_0.md` |
 
 ## Task precedence
 
@@ -343,8 +344,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `FIT-005` | `FIT-004` | `UNCLASSIFIED` | 必要な不一致decisionを登録し、各判断が完了または除外された後に最終反映する |
 | `FIT-006` | `FIT-005` | `UNCLASSIFIED` | Codexの最終反映後、Claudeが合意matrixとの取り違えを確認する |
 | `FIT-007` | `FIT-006` | `UNCLASSIFIED` | Claudeの最終確認後、Codexが留保を検収して完成判定する |
-| `RELEASE-002` | `RELEASE-001` | `UNCLASSIFIED` | 0.5.0へ含める到達範囲を決定後にrelease gateを実施する |
-| `RELEASE-003` | `RELEASE-002` | `UNCLASSIFIED` | release gate成功後に対象commitへtagを作成する |
+| `RELEASE-002` | `RELEASE-001` | `START` | 0.5.0へ含める到達範囲を決定後にrelease gateを実施する |
+| `RELEASE-002` | `PERM-001` | `START` | 互換mode完成後に0.5.0 release gateを開始する |
+| `RELEASE-003` | `RELEASE-002` | `START` | release gate成功後に対象commitへtagを作成する |
+| `RELEASE-004` | `RELEASE-003` | `START` | tag対象を確定してから`prepare/compatible/2`へ統合する |
 
 ## Registry rules
 

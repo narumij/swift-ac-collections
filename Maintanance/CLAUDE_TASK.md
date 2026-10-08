@@ -11,12 +11,23 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: あり**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: なし。
-- 本線の次候補: Permutation通常版の性能基準取得。現在は`FROZEN`かつ未割当であり、ユーザーが
-  明示的に再開するまでClaudeは着手しない。
+- 新規bounded assignment: あり。Permutation通常版の性能基準取得に向けたCI設定追加。
+- 本線の現在task: 下記「Active bounded assignment: Permutation CI benchmark selection」。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: Permutation CI benchmark selection
+
+`Benchmarks/Libraries/CI.json`へ、
+`Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`に既存の5計測を追加する。
+既存benchmarkのtitle、input、実装、iteration設定は変更せず、CI libraryの既存形式に従って
+5件すべてを選択対象へ加える。変更対象は`Benchmarks/Libraries/CI.json`だけとする。
+
+JSONの妥当性と、CI設定から5件が選択されることを既存benchmark toolで可能な範囲まで確認する。
+長時間の性能測定、結果の評価、基準値や許容差の決定、workflow・source・test・文書・Registryの変更、
+commit、pushは行わない。base側に計測がない比較の扱いなど、設定追加だけでは決まらない事項を発見した
+場合は、推測で補わず根拠とともにCodexへ返す。
 
 ## Completed bounded assignment: playbook portability consistency review
 

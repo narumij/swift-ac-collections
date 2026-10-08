@@ -99,6 +99,14 @@ For a report with multiple independently actionable points, follow
 - Conversation IDs are temporary coordinates. Do not use them as replacements
   for persistent Registry IDs.
 
+## Japanese input confirmations
+
+When the user is communicating in Japanese, do not use a selection or decision
+UI to request input. Japanese IME confirmation may submit that UI before the
+user has finished answering. Ask choices in an ordinary chat message and let
+the user reply with text or a choice number. This changes only the input method;
+it does not waive a required user decision or approval.
+
 ## Routine shorthand
 
 When the user says `ルーティーン`, treat it as a request for this cycle:

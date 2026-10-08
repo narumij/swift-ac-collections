@@ -6,6 +6,18 @@ Codex is operating in low-consumption mode through 2026-10-16. This does not res
 Claude remains limited to explicit requests and ready Claude-owned Registry tasks, while Codex keeps
 integration, decisions, acceptance, Registry updates, and public-document ownership.
 
+## Current job status
+
+**実行中ジョブ: あり**
+
+- 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
+- 新規bounded assignment: なし。
+- 本線の次候補: Permutation通常版の性能基準取得。現在は`FROZEN`かつ未割当であり、ユーザーが
+  明示的に再開するまでClaudeは着手しない。
+
+この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
+読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
 ## Completed bounded assignment: playbook portability consistency review
 
 Independently review the current worktree versions of

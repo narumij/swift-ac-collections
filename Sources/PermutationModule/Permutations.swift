@@ -111,7 +111,7 @@ extension NextPermutationsSequence.Iterator: @unchecked Sendable where Base.Elem
 /// nested in the generic sequence type.
 @usableFromInline
 struct NextPermutationsBufferHeader {
-  @usableFromInline
+  @inlinable
   internal init(count: Int) {
     self.count = count
   }
@@ -131,7 +131,7 @@ struct NextPermutationsBufferHeader {
   @usableFromInline
   package final class NextPermutationsHeaderProbe {
     nonisolated(unsafe) package static var deinitCount = 0
-    @usableFromInline
+    @inlinable
     init() {}
     deinit { Self.deinitCount += 1 }
   }
@@ -250,6 +250,7 @@ extension NextPermutationsSequence.Buffer {
   }
   @inlinable
   subscript(position: Index) -> Element {
+    @inline(__always)
     get { unsafe __storage_ptr[position] }
     _modify {
       let storage = unsafe __storage_ptr

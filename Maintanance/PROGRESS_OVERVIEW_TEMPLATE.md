@@ -33,6 +33,12 @@ playbookへ短い行動規則として昇格させる。
 
 - <現在のgoal達成後に扱う到達状態。未定なら「未設定」>
 
+taskが依存上readyでも、現在の中間ゴールに必要とは限らない。次taskを選ぶときは、現在のgoalを直接
+閉じる`DIRECT`、その必須入力である`NEAR`、複数の中間taskやgateを経るが現goalに必要な`FAR`、
+後続goalの`LATER`、記録されたgoalへ寄与しない`OUTSIDE`のどこにあるかを確認する。これは状態や
+必須依存を置き換えるfieldではなく、今進める必要性を見るための選択観点である。近さだけを優先度へ
+読み替えず、関係を形式化していない場合は根拠のない数値距離を付けない。
+
 ### taskの型
 
 - `DISCOVERY`: 事実、選択肢、依存、判断task候補を発見する。仕様や方針を決定しない。
@@ -139,6 +145,7 @@ soft orderは、同時に着手可能なtask間の推奨順であり、Task prec
 - [ ] project名、日付、更新者を置き換えた。
 - [ ] 例示taskとplaceholderを実データへ置き換えた。
 - [ ] 現在の中間ゴールを到達状態として書いた。
+- [ ] ready taskを現在のgoalへの必要性と`DIRECT / NEAR / FAR / LATER / OUTSIDE`で見直した。
 - [ ] 既存の未完了作業を重複なしでRegistryへ登録した。
 - [ ] 凍結、ユーザー専任、外部待ちを明示した。
 - [ ] task候補は`PROPOSED`に置き、実行taskと区別した。
@@ -176,4 +183,7 @@ soft orderは、同時に着手可能なtask間の推奨順であり、Task prec
    task-management system or read an internal file to learn current status.
 9. Ask the user only for product direction, reserved authority, or a decision
    that cannot be made safely from the recorded evidence.
+10. Dependency-ready does not mean necessary or next. Before selecting or
+    assigning work, check whether it is `DIRECT`, `NEAR`, `FAR`, `LATER`, or
+    `OUTSIDE` relative to the current intermediate goal.
 ```

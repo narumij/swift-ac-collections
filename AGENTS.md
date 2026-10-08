@@ -34,6 +34,26 @@ but they are not startup reading. Promote a lesson that should survive a new
 conversation into a concise rule here or into the task-operation playbook rather
 than requiring future sessions to reconstruct it from reflections.
 
+## Goal relevance and proximity
+
+Being dependency-ready does not make a task necessary or next. Before creating,
+selecting, decomposing, or assigning work, determine whether it contributes to
+the current intermediate goal and describe its qualitative proximity:
+
+- `DIRECT`: completing it directly closes or decides part of the current goal.
+- `NEAR`: it is a required input to `DIRECT` work.
+- `FAR`: it is required for the current goal but reaches it through multiple
+  intermediate tasks or gates.
+- `LATER`: it belongs to an explicitly later goal or phase.
+- `OUTSIDE`: it does not contribute to the recorded goals.
+
+Use this as a selection lens, not as a replacement for Registry state or Task
+precedence. Select necessary `DIRECT`, `NEAR`, and `FAR` work using critical
+path, risk, and acceptance capacity; proximity alone is not priority. Do not
+advance merely ready, interesting, or useful `LATER` / `OUTSIDE` work unless the
+user changes the goal or explicitly requests it. Do not invent a numeric
+distance when the goal-to-task relation is not formally represented.
+
 ## Stable task IDs
 
 - Registry IDs such as `RBT-001` and `PERM-002` are persistent repository task
@@ -88,8 +108,9 @@ When the user says `ルーティーン`, treat it as a request for this cycle:
 2. Commit only the accepted work and its corresponding progress updates,
    preserving unrelated worktree changes.
 3. Recompute the ready work from task dependencies. Decompose the next
-   in-scope work when necessary, keeping each task appropriately bounded
-   and separating user decisions from agent execution.
+   in-scope work when necessary, first checking its necessity and proximity to
+   the current intermediate goal. Keep each task appropriately bounded and
+   separate user decisions from agent execution.
 4. Assign Claude only bounded, decision-free tasks whose prerequisites are
    satisfied and whose ownership fits Claude. If no such task exists, do not
    manufacture an assignment.

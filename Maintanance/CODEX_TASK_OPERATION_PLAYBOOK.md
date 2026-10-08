@@ -80,6 +80,22 @@ goalは「何をするか」ではなく「何が判断・引き渡し可能に�
 - 公開APIをユーザードキュメント作業へ渡せる状態にする。
 - 文書作業後、1.0採用を判断できる状態にする。
 
+taskの`ready`は「依存上は着手できる」ことしか表さず、「現在のgoalに必要」「次に行うべき」を意味しない。
+taskを作成、選択、分解、委任する前に、現在の中間goalへの寄与と距離を定性的に確認する。
+
+| 距離 | 意味 | 運用 |
+| --- | --- | --- |
+| `DIRECT` | 完了により現在のgoalの一部を直接閉じる、または判断可能にする | 必要なものを優先する |
+| `NEAR` | `DIRECT`なtaskの成立に必要な入力 | 必須依存とriskを見て進める |
+| `FAR` | 現在のgoalに必要だが、複数の中間taskまたはgateを経て到達する | critical pathと先行riskを見て着手時期を決める |
+| `LATER` | 明記済みの後続goalまたは後続phaseに属する | 現goalだけを理由に進めない |
+| `OUTSIDE` | 記録されたgoalへ寄与しない | ユーザーの明示変更なしに進めない |
+
+これはRegistry状態やTask precedenceを置き換えない選択観点である。goalとtaskの関係が形式化されて
+いない場合、根拠のない数値距離を付けない。近いこと自体を優先度へ読み替えず、必要な`FAR`はcritical
+pathや不確実性に応じて早く始める。有用、面白い、依存上readyというだけで`LATER`または`OUTSIDE`の
+作業を作らず、現在のgoalに不要なら候補、凍結、後続phaseのまま維持する。
+
 ### 5. 必須依存と推奨順を分ける
 
 Task precedenceには、後続taskの成立に不可欠なAND依存だけを書く。調査効率や優先度による順番は
@@ -97,7 +113,9 @@ Task precedenceは、有向非巡回graphとして扱う。トポロジカルな
 2. 前提taskがすべて`DONE`であるtaskを依存上のready候補にする。
 3. `PROPOSED`、`FROZEN`、`USER_ONLY`、`WAITING_USER`、`WAITING_EXTERNAL`をready候補から除く。
 4. task固有の再開条件、担当、ユーザーの最新指示を確認する。
-5. 残ったready集合から、中間goal、soft order、risk、受入可能量を使って次taskを選ぶ。
+5. 残ったready集合を現在の中間goalへの必要性と`DIRECT / NEAR / FAR / LATER / OUTSIDE`で見直す。
+6. 必要な`DIRECT`・`NEAR`・`FAR`の中から、critical path、soft order、risk、受入可能量を使って
+   次taskを選ぶ。
 
 `EXCLUDED`は自動的に前提達成とみなさない。前提taskが不要になった結果、後続taskも不要なら後続も
 `EXCLUDED`にする。別経路で後続taskが成立するなら、依存辺と完了条件を明示的に更新してからreadyを
@@ -136,7 +154,8 @@ IDは提案時点から永続とし、昇格や除外時に採番し直さない
 4. 未知を、事実不足、ユーザー判断、実行作業へ分類する。
 5. 複数判断を分割し、判断済みの実行だけをagentへ渡す。
 6. 各taskへ担当、完了条件、停止条件、canonical document、必須依存を与える。
-7. 全体goalへの寄与と、完了後の受入担当を確認する。
+7. 現在の中間goalへの必要性と距離を確認し、不要または後続なら今は着手させない。
+8. 全体goalへの寄与と、完了後の受入担当を確認する。
 
 この情報がまだ揃わないが候補を失いたくない場合は、無理にtask descriptionを完成させず
 `PROPOSED`として登録する。

@@ -119,6 +119,12 @@ jobs:
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest
 
+      # 配置差の影響（JCC erratumなど）はCPUに依存するため、runごとのCPUを結果と一緒に残す
+      - name: Record runner CPU
+        run: |
+          mkdir -p head/benchmark-results
+          lscpu | tee head/benchmark-results/cpu.txt
+
       - name: Run current benchmarks
         working-directory: head/Benchmarks
         run: |

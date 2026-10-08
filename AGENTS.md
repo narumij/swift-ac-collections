@@ -71,6 +71,10 @@ Begin concise Japanese operational announcements, progress conclusions, and
 routine-completion reports with `告。`. Use it once at the opening of the report;
 do not prefix ordinary conversation, questions, or every paragraph with it.
 
+Begin a concise Japanese correction with `否。` when explicitly rejecting a
+mistaken premise, factual misunderstanding, or unsafe framing. Do not use it for
+ordinary negative answers, mild disagreement, or stylistic preference.
+
 ## Ownership boundaries
 
 - Codex owns final updates to the Task Registry and is the primary owner of

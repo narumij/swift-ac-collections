@@ -107,6 +107,14 @@ user has finished answering. Ask choices in an ordinary chat message and let
 the user reply with text or a choice number. This changes only the input method;
 it does not waive a required user decision or approval.
 
+When one concrete next action is clearly recommended but still requires the
+user to start it, end the ordinary chat message with a direct Japanese question
+such as `○○しますか？`. Treat the user's `イエス` as explicit authorization
+for that named action. Keep the question to one action; do not hide multiple
+decisions, destructive operations, pushes, or unrelated scope inside it. This
+pattern does not itself restart frozen work or replace any separately required
+approval before an irreversible operation.
+
 ## Codex evaluation and impression records
 
 When the user asks Codex to record an evaluation or impression, use
@@ -157,6 +165,10 @@ sentence or to ordinary conversation.
 - Use `告。` before a sentence that reports an observed status, established
   result, progress conclusion, or routine completion. It is not for intended
   work that has not yet been performed.
+- Use `問。` before a sentence that directly asks the user for a decision,
+  approval, instruction, or missing input. It applies only to that question,
+  including the `問。○○しますか？` next-action pattern, and not to rhetorical
+  questions or ordinary explanatory sentences.
 
 ## Ownership boundaries
 

@@ -24,7 +24,8 @@
 - 目的: 汎用ライブラリの部品として公開してよい品質かを、1.0判断の前に把握する。
 - 対象: `Sources/PermutationModule/Permutations.swift`の公開表面
   （`Collection.nextPermutations()`、`NextPermutationsSequence`、`.Iterator`、`.Permutation`）。
-- 対象外: AtCoder 2025互換mode（`PERM-004`〜`PERM-010`、未実装）。実装後に別途評価する。
+- 対象外: AtCoder 2025互換mode。2026-10-09に実装・仕様test・再公開・単一file検証まで完了したが、
+  本書の評価語は通常版だけを対象とし、互換版は別途再評価する。
 - 前提（2026-10-07、ユーザー判断）: Swiftの標準protocolの意味論・契約（例: `Collection.count`が走査できる
   要素数と一致すること、`Comparable`が全順序であること）は信じる。契約に違反する適合型への防御は品質要求に含めない。
   利用者が普通に踏みうる誤用（範囲外の添字など）への`precondition`とは区別する。
@@ -75,12 +76,16 @@ current / base双方で小size用libraryを同じ結果fileへ追記する。Cod
 5 titleとの完全一致・重複なし、両経路の対称性を静的に再確認した。実際の性能値、size列、所要時間は
 ユーザーのpush後にperformance jobで確認する。
 
+PR #174のperformance jobはbase / HEAD比較を含めて成功し、同PRは`046c5359`で`main`へmergeされた。
+これによりPermutation 5計測は以後のperformance jobで継続比較され、互換ソース隔離前の通常版性能基準を
+取得できる状態になった。初回結果に回帰判定上の問題は報告されていない。
+
 ### 3.3 互換性（Compatibility）
 
 | 副特性 | 判定 | 根拠 |
 | --- | --- | --- |
-| 共存性 | 満たす | 通常版はswift-algorithms 1.2.1と同時importし、修飾なしで両APIを解決するtestを`_4_CoexistenceTests`に追加済み（`0ff5fd84`、`PERM-018`）。未実装で凍結中の互換modeは現行通常版の評価へ含めない |
-| 相互運用性 | 満たす | `Sequence`・`IteratorProtocol`・`RandomAccessCollection`へ適合し、標準の`map`や`Array(_:)`で使える（`_1_`〜`_3_`）。`Permutation`は`Equatable`・`Hashable`（要素が`Hashable`のとき）で、`Set`や辞書のキーにできる（`_3_`）。結果の添字は入力に関係なく0始まりの`Int`（`_3_`の`testIndicesStartAtZeroForAnySource`）。`AcCollections`経由の再公開は`AcCollectionsTests.test_importAcCollections_exposesNextPermutations` |
+| 共存性 | 満たす | 通常版はswift-algorithms 1.2.1と同時importし、修飾なしで両APIを解決するtestを`_4_CoexistenceTests`に追加済み（`0ff5fd84`、`PERM-018`）。互換modeは別評価とする |
+| 相互運用性 | 満たす | `Sequence`・`IteratorProtocol`・`RandomAccessCollection`へ適合し、標準の`map`や`Array(_:)`で使える（`_1_`〜`_3_`）。`Permutation`は`Equatable`・`Hashable`（要素が`Hashable`のとき）で、`Set`や辞書のキーにできる（`_3_`）。結果の添字は入力に関係なく0始まりの`Int`（`_3_`の`testIndicesStartAtZeroForAnySource`）。`AcCollections`経由の通常版再公開は`test_importAcCollections_exposesCurrentPermutationAPI`で固定 |
 
 ### 3.4 インタラクション能力（Interaction capability。旧: 使用性）
 
@@ -140,7 +145,7 @@ Releaseでの停止は2026-10-03にローカルのmacOSで5件とも確認した
 | 適応性 | 満たす | 入力は任意の`Collection`（要素は`Comparable`）。2026-10-07に`Index == Int`制約を除去 |
 | 拡張性 | 対象外 | 利用者が拡張する設計ではない |
 | 設置性 | 満たす | SwiftPMのtargetとして利用。`swift-tools-version: 6.2`、`platforms: [.macOS(.v15)]` |
-| 置換性 | 部分 | AtCoder 2025版から移行する利用者向けの互換modeは未実装（`PERM-004`以降） |
+| 置換性 | 満たす | AtCoder 2025版の公開APIと観測可能な挙動をpackage traitで選択でき、仕様test、`AcCollections`再公開、単一file生成を検証済み。実提出はユーザー専任 |
 
 懸念: AtCoderの判定環境は`import AcCollections`に依存できない。単一fileでの提出確認（`PERM-002`、ユーザー専任）と
 その生成（`PERM-009`）は未実施。
@@ -268,14 +273,14 @@ Codex acceptance（2026-10-08）: 指定された3点だけが照合結果へ同
 | --- | --- | --- | --- | --- |
 | 通常版`PermutationModule`とswift-algorithmsの同時import | 通常mode。`PermutationTests`は`Algorithms`へ依存（`Package.swift:322-324`）。CIはLinuxのDebug / Release（`swift.yml:79-100`） | `NextPermutationsSequence_4_CoexistenceTests.swift:16,23`（`0ff5fd84`） | `nextPermutations()`と`permutations()`が修飾なしで解決する。型注釈で`NextPermutationsSequence<[Int]>`と`PermutationsSequence<[Int]>`を書ける。後続だけと全順列の違い | `uniquePermutations()` / `UniquePermutationsSequence`と、`permutations(ofCount:)`・範囲版overloadは参照していない。名前が異なるので衝突の可能性は低いが、testでは固定されていない。swift-algorithmsの版は1.2.1（`Package.resolved`）だけ |
 | swift-algorithms側の`nextPermutation` | 同上 | なし | swift-algorithms 1.2.1の`nextPermutation(upperBound:)`は`internal`（`.build/checkouts/swift-algorithms/Sources/Algorithms/Permutations.swift:32`）なので、公開名としては衝突しない | upstreamが将来これを公開した場合の衝突は、F4では検出されない（現行のF4は`nextPermutations`（複数形）と`permutations`しか呼ばない） |
-| `AcCollections`経由の再公開 | 通常mode。`AcCollections`は`PermutationModule`を無条件に`@_exported`（`Sources/AcCollections/AcCollections.swift:2`）。`AcCollectionsTests`は`Algorithms`へ依存しない（`Package.swift:198-202`） | `Tests/AcCollectionsTests/AcCollectionsTests.swift:72`（`test_importAcCollections_exposesNextPermutations`） | `import AcCollections`だけで`nextPermutations()`を呼べ、結果が`[[1, 2], [2, 1]]` | `import AcCollections`と`import Algorithms`の同時importは未検証。facadeはRedBlackTree・OptionalArray・BareArrayも再公開するので、その組み合わせでの名前解決も固定されていない |
-| AtCoder 2025互換mode（`COMPATIBLE_ATCODER_2025`） | 互換modeの実装は未着手（`PERM-004`〜`PERM-010` FROZEN）。facadeは互換modeでだけ`RedBlackTreeModule`も再公開（`AcCollections.swift:6-8`） | なし。F0の非露出検査は互換modeで外れる（`_0_PublicSurfaceTests.swift:44`） | 互換modeのPermutationは、現行の通常版と同じsourceのまま（Permutation用の分岐はまだ無い） | 互換版（旧名`Permutations.*`、`unsafePermutations()`）とswift-algorithmsの同時import、互換版の`AcCollections`経由の利用は、実装後でなければ検証できない |
+| `AcCollections`経由の再公開 | 通常mode。`AcCollections`は`PermutationModule`を無条件に`@_exported`（`Sources/AcCollections/AcCollections.swift:2`）。`AcCollectionsTests`は`Algorithms`へ依存しない（`Package.swift:198-202`） | `AcCollectionsTests.test_importAcCollections_exposesCurrentPermutationAPI` | `import AcCollections`だけで`NextPermutationsSequence`と`nextPermutations()`を利用でき、結果が`[[1, 2], [2, 1]]` | `import AcCollections`と`import Algorithms`の同時importは未検証。facadeはRedBlackTree・OptionalArray・BareArrayも再公開するので、その組み合わせでの名前解決も固定されていない |
+| AtCoder 2025互換mode（`COMPATIBLE_ATCODER_2025`） | 後続の`prepare/compatible/2`でcompile defineにより通常版と互換版を排他的に選択する。0.5.0にはPackage traitを公開しない | `AtCoder2025Compatibility_0_SpecificationTests`、`AcCollectionsTests.test_importAcCollections_exposesAtCoder2025PermutationAPI` | 旧`Permutations.*`、safe CoW、unsafe aliasing、列挙順・重複・境界、`AcCollections`経由の利用を固定。生成した単一fileはABC328E sample 1で結果33 | 互換版とswift-algorithmsの同時importは未検証。strict memory safety警告は別task。独立CI jobは`prepare/compatible/2`統合後へ延期 |
 
 停止事項: なし。新しいdefectと判断点は見つからなかった。
 
 Codex review（2026-10-08）: `PERM-026`を受け入れた。現行通常版については、直接依存する
 swift-algorithmsとの同時import・主要入口の名前解決が仕様testで固定されているため、共存性を
-`満たす`へ更新した。未実装で凍結中の互換modeと、将来のupstream変更は現行通常版の不足へ数えない。
+`満たす`へ更新した。互換modeは別評価であり、将来のupstream変更は現行通常版の不足へ数えない。
 
 ### PERM-027 1.0前改善候補の実施前提 assignment（2026-10-08）
 
@@ -319,7 +324,7 @@ Codex acceptance（2026-10-08）: 3候補の現状、既存基盤、依存、変
 
 | 候補 | 結論 | 理由 |
 | --- | --- | --- |
-| 性能CIへのPermutation追加 | 1.0最終判断前の実施候補として維持 | 既存benchmarkはあるが継続比較へ入っておらず、inline属性削除と終端copy削減の影響が未計測。性能基準を決めずに評価語だけ上げない。実施は凍結中の`PERM-013`をユーザーが再開した場合に行う |
+| 性能CIへのPermutation追加 | 完了 | 5計測を二つのlibraryでbase / HEAD比較へ追加し、PR #174のperformance job成功後にmerge済み。互換modeの性能計測は行わない |
 | C++ `std::next_permutation`との差分比較 | 1.0必須にしない | 公開契約はSwiftのTest as Specificationで固定され、C++ ABIや実装との互換を約束していない。追加すれば独立した比較契約と対象入力の判断が必要になる |
 | Linux CIでDeath Testを有効化 | Permutation単独の1.0必須にしない | macOSのDebug／Releaseでは停止を確認済み。Linuxで有効にすると他moduleのDeath Testも同時に動くため、package全体のCI構成判断として分離すべきである |
 
@@ -349,3 +354,144 @@ Codex acceptance（2026-10-08）: 3候補の現状、既存基盤、依存、変
 以上により、R-1〜R-4を閉じ、Permutation品質評価の初版レビューを完了する。この結論は通常版を
 利用者向け文書作業へ渡せるという判定材料であり、互換modeの実装、利用者向け文書形式、性能基準、
 1.0採用を決定するものではない。
+
+### Permutation sequential subscriptのwitness table参照比較（2026-10-09）
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`CLAUDE_TASK.md`のbounded assignment。benchmarkの再計測、
+性能原因の断定、source・workflow・Registryの変更は行っていない。
+
+**比較対象:** baseline `046c5359`、条件付き版 `81dc5681`、撤回後版 `5cd66cd4`。
+
+**toolchain:** Apple Swift 6.4（`swiftlang-6.4.0.34.1 clang-2100.3.34.1`）、macOS 27.0.1、arm64。
+
+**方法:** 一時directory（`mktemp -d`）に、版ごとに依存なしのSwiftPM packageを作った。
+
+- `PermutationModule`: `git archive <rev> Sources/PermutationModule`を展開して`Documentation`を除いた。
+  swiftSettingsはroot `Package.swift`の`_settings`のうちbuild条件に効く定義（`ENABLE_PERFORMANCE_TESTING`は
+  release時、benchmark packageが有効にする`BENCHMARK`）と`.strictMemorySafety()`。
+- `FakeBench`: swift-collections-benchmark `69cd5b4`の`Timer.measure`（`@inline(never) mutating`、
+  前後で時刻取得）と`blackHole`（`@inline(never) @_optimize(none)`）を同じ属性で写した代用品。
+- `Bench`: `Permutations.SubSequenceN subscript sequential access`の本体（`firstPermutation`、
+  `timer.measure`内の`while`ループ、`blackHole`、合計の検証）をそのまま写した。
+
+三版とも同じpackage定義と同じcommandで作った。
+
+```
+swift build -c release --disable-dependency-cache -v
+xcrun objdump -d --no-show-raw-insn .build/release/Bench
+xcrun otool -Iv .build/release/Bench      # stubの解決
+```
+
+`PermutationModule`のcompile flagは三版とも`-O -whole-module-optimization -strict-memory-safety
+-DBENCHMARK -DENABLE_PERFORMANCE_TESTING`。hot pathの関数は、命令列のaddressとlabelを正規化して三版でdiffした。
+
+**source差:** 通常modeのcompile対象に、実行コードの差はない。`046c5359`→`5cd66cd4`はコメントだけ。
+`81dc5681`は`extension Collection { nextPermutations() }`を`#if !COMPATIBLE_ATCODER_2025`で囲むだけで、
+未定義なのでcompileされる。互換2 fileは`#if COMPATIBLE_ATCODER_2025`で全体が空になる。
+
+**比較表:**
+
+| hot path上の関数 | 命令数 | 046c5359 / 81dc5681 / 5cd66cd4 の差 | 間接call・witness table参照 |
+| --- | ---: | --- | --- |
+| measure内の閉包（ループ本体） | 29 | なし（開始address `0x100000f3c`も三版同一） | なし |
+| `closure #1 (inout Timer)`のforwarder | 38 | なし | なし |
+| `makeSequential(_:)` | 73 | なし | なし |
+| `Timer.measure(_:)` | 26 | 開始addressだけ（baselineは`0x1000038b4`、他は`0x1000038bc`） | `blr` 1件（`body()`の閉包呼出、三版同一） |
+
+ループ本体（三版共通、要約）:
+
+```
+bl   _swift_beginAccess          ; 捕捉した`sum`への排他access開始（ループの外で1回）
+ldr  x11, [x9, x8, lsl #3]       ; p[i]（bufferから直接load）
+add  x10, x11, x10               ; sum &+= p[i]
+str  x10, [x20]
+add  x8, x8, #1
+ldur x11, [x19, #...]            ; endIndex（header.count）を毎回再load
+cmp  x8, x11
+b.lt loop
+```
+
+- `Permutation.subscript`はinline化され、`NextPermutationsSequence<[Int]>`で特殊化されている。
+  protocol witness table、value witness table、`swift_getWitnessTable` / `swift_getAssociatedTypeWitness`への
+  参照は、hot pathの4関数のどれにもない。
+- 範囲検査の`precondition`は、ループ条件と合わせて消えている（ループ内に比較分岐は終了判定の1つだけ）。
+- binary全体の差は、`PermutationModule`内のsymbol（`Iterator.state`の初期値関数、`Iterator`のvalue witness、
+  `Permutation`のmetadata instantiation関数）の配置順と、それに伴う後続addressのずれだけ。
+
+**結論:** この条件では、三版のhot pathは同じ命令列で、witness table参照・間接call・特殊化失敗はどの版にもない。
+
+**未確認:**
+
+- performance CIは`ubuntu-24.04`（x86_64、Linux toolchain）で動く。今回はmacOS arm64でしか比較していない。
+  CIの`0.7247`と同じ条件の生成コードは見ていない。
+- 本物の`Benchmarks` package（swift-collections-benchmark、`AcCollections`経由の依存）はbuildしていない。
+  依存解決にnetworkかglobal cacheが要るため、代用品の`FakeBench`で置き換えた。
+- 配置の差（`Timer.measure`の8 byte）が性能に効くかは判定していない。
+
+### Permutation sequential subscript性能回帰のbenchmark二分探索（2026-10-09）
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`CLAUDE_TASK.md`のbounded assignment。source・benchmark・
+workflow・Registry・既存本文は変更していない。
+
+**結論:** macOS arm64では、`aea49d8b`（既知green）と`fe12677a`（既知red）の差は再現しなかった。
+手順4に従い、二分探索は行わずに止めた。
+
+**環境:**
+
+- machine: Apple M1（8 core、16 GB）、macOS 27.0.1、arm64
+- toolchain: Apple Swift 6.4（`swiftlang-6.4.0.34.1 clang-2100.3.34.1`）
+- 依存（両版で同一に解決）: swift-collections `3b69ced`、swift-collections-benchmark `69cd5b4`、
+  swift-argument-parser `6a52f32`、swift-system `869129b`
+- `Benchmarks/Libraries/CI.json`は両版で同一
+
+**実command:** 一時directoryに`git archive <rev>`で両版を展開し、本物の`Benchmarks` packageをbuildした。
+SwiftPMのcache・config・securityも一時directoryに置いた。
+
+```
+swift build -c release --product benchmark \
+  --cache-path $T/spm/cache --config-path $T/spm/config --security-path $T/spm/security
+.build/release/benchmark library run --library ./Libraries/CI.json <out>.json \
+  --max-size 64k --cycles 1 --mode replace-all
+.build/release/benchmark results compare <green>.json <red>.json
+```
+
+実行順は green 1 → red 1 → green 2 → red 2 → green 3 → red 3 の交互（1回約70秒）。CI.jsonの全22 taskを
+CIと同じoptionで流した。CI-Small.jsonは当該taskを含まないので流していない。
+
+**反復値（当該task、60 size）:**
+
+| 組 | `results compare`の判定 | 幾何平均（green / red） | size別の最小〜最大 |
+| --- | --- | ---: | --- |
+| 1 | 差が1.05を超えるtaskなし | 1.0152 | 0.803〜1.976 |
+| 2 | 差が1.05を超えるtaskなし | 0.9913 | 0.664〜1.126 |
+| 3 | 差が1.05を超えるtaskなし | 1.0064 | 0.500〜2.024 |
+| 3回の中央値 | — | 1.0053 | — |
+
+- 幾何平均はsize別の時間比（CIの判定と同じ向き、green / red）から自分で計算した値。`results compare`の
+  scoreと同じ式とは確認していない。判定列は`results compare`自体の出力。
+- CIの閾値（0.769231以下で失敗）にかかる組は、3組ともない。分類は「再現しない」。
+- `--cycles 1`のため、size単位では0.5〜2.0倍の揺れがある。
+
+**commit graph（`aea49d8b..fe12677a`、12 commit）:** benchmark binaryの入力（`Sources/`、`Package.swift`、
+`Benchmarks/`）を変えるのは次の3件だけ。他の9件の変更pathは`Maintanance/`、`Tests/`、`Utilities/`、
+`.github/`、文書（`.md`・`.docc`）で、benchmark binaryに入らない（`git diff-tree --name-only`で確認）。
+
+| commit | build入力の変更 |
+| --- | --- |
+| `618786e6` Isolate AtCoder 2025 permutation sources | 互換2 file追加（全体が`#if COMPATIBLE_ATCODER_2025`）、`Permutations.swift`に`#if`追加 |
+| `89fb20a7` Correct the Swift 6.4 CoW miscompile comments | `Permutations.swift`のコメントだけ |
+| `8ef8f3ed` Add AtCoder 2025 compatibility trait | `Package.swift`に`COMPATIBLE_ATCODER_2025` traitと条件付きdefineを追加（既定では無効） |
+
+**Linux CIで試す最小候補（Codexの採否待ち）:**
+
+1. A/A: base・HEADとも`aea49d8b`。同じcommit同士でも閾値を割るかを見る。割るなら、0.7247はCIの揺れで
+   説明できるかもしれない、と分かる。
+2. `aea49d8b` → `618786e6`: 最初のbuild入力変更。ここで割れば、source隔離（`#if`と空になる2 file）の側。
+3. `618786e6` → `8ef8f3ed`: trait追加。ここで割れば、`Package.swift`の変更の側。
+4. 2と3のどちらでも割れず、`aea49d8b` → `fe12677a`だけで割れる場合は、組み合わせか揺れ。
+   その時はA/Aの反復回数を増やす判断が先になる。
+
+**未確認:**
+
+- Linux（`ubuntu-24.04`、x86_64）での再現。今回の結果はmacOS arm64だけ。
+- CIは HEAD → base の順に測る。今回は green → red の交互で、順番の影響は見ていない。

@@ -18,6 +18,7 @@
 // (2026-10-07確認)。互換版のソースが通常ビルドへ漏れた場合は、同じファイルにある
 // `unsafePermutations()`・`unsafeNextPermutations()`も一緒に漏れるので、これを漏れの警報とする。
 
+#if !COMPATIBLE_ATCODER_2025
 import PermutationModule
 import XCTest
 
@@ -41,7 +42,6 @@ final class NextPermutationsSequence_0_PublicSurfaceTests: XCTestCase {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   // 互換mode(`COMPATIBLE_ATCODER_2025`)では基準版の表面が意図的に存在するため対象外とする。
 
   private struct AbsentAPIMarker {}

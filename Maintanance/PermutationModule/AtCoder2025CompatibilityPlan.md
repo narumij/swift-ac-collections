@@ -1,6 +1,6 @@
 # PermutationModule AtCoder 2025互換モード計画
 
-最終更新: 2026-10-07 / Codex
+最終更新: 2026-10-09 / Codex
 
 ## 実装タスク境界
 
@@ -16,7 +16,7 @@
 | 5 | Package trait設定 | traitありだけが互換版、traitなしは必ず通常版になる |
 | 6 | 互換仕様test | 列挙順、重複、safe CoW、unsafe aliasing、境界が基準refどおりに成功する |
 | 7 | `AcCollections`再公開検証 | 通常・互換の両modeで期待する公開APIを利用できる |
-| 8 | CI分離 | 通常版と互換版を別jobで検証し、結果を混在させない |
+| 8 | CI分離 | `prepare/compatible/2`統合後、通常版と互換版の機能testを別jobで検証する。性能計測は行わない |
 | 9 | 単一file生成・ローカル検証 | 自己完結fileを生成し、ABC328E相当入力で検証する |
 | 10 | 文書同期 | 通常APIと互換APIを混同せず、trait、制限、検証方法を記録する |
 
@@ -83,7 +83,7 @@
 | Package trait | trait、define、既定通常modeを1 commit | traitなしbuildとtest | traitありmodule build |
 | 互換仕様test | 基準refの挙動ごとにreview可能なtest commit | 既存testを維持 | 列挙順、重複、safe CoW、unsafe aliasing、境界 |
 | `AcCollections`再公開 | mode別の再公開testを1 commit | 現行API | 互換API |
-| CI分離 | 通常・互換jobの分離を1 commit | 通常job | 互換job |
+| CI分離 | `prepare/compatible/2`統合後、通常・互換の機能test job分離を1 commit。互換性能計測は追加しない | 通常job | 互換job |
 | 単一file生成・検証 | 生成手順とローカル検証を1 commit | 対象外 | ABC328E相当入力。実提出はユーザー専任 |
 | 文書同期 | 実装・検証完了後の文書差分を1 commit | 現行APIを記載 | trait、制限、検証方法を区別して記載 |
 
@@ -122,13 +122,86 @@ graph DBのscope-checkはこの組を「辺なし・結合あり」と検出し�
 | Package trait | 互換ソース隔離 | `START` | 隔離済みfileへdefineを接続する |
 | 互換仕様test | Package trait | `START` | traitで互換modeを選択可能にしてからtestする |
 | `AcCollections`再公開検証 | 互換仕様test | `START` | 互換APIの基準挙動を固定してからfacadeを検証する |
-| CI分離 | 互換仕様test | `START` | mode別test集合の確定後にjobを分離する |
+| CI分離 | `prepare/compatible/2`統合 | `START` | 互換準備branchへ統合してから機能testだけを別jobへ接続する |
 | 単一file生成 | 再公開検証 | `START` | package内の公開経路を確認後に貼り付け形を検証する |
-| 文書同期 | 再公開検証・CI分離・単一file生成 | `START` | 実装と検証結果が揃ってから利用方法を同期する |
+| 文書同期 | 再公開検証・単一file生成 | `START` | 互換mode完成時点の実装と検証結果を利用方法へ同期する。統合後CIは後から追記する |
 | 互換mode親task完了 | 文書同期 | `COMPLETE` | 文書同期までは親taskを完了しない |
 
-`AcCollections`再公開検証とCI分離は、互換仕様test後に並行着手できる。単一file生成はCI分離を
-待たない。文書同期だけが三経路の合流点となる。
+単一file生成は再公開検証後に着手する。文書同期は再公開検証と単一file生成の合流点とする。
+CI分離は互換mode完成、release gate、`0.5.0` tag、`prepare/compatible/2`統合の後へ延期し、
+互換mode親taskと文書同期の完了条件には含めない。
+
+## 4. 互換ソースの隔離（2026-10-08完了）
+
+`origin/release/AtCoder/2025`の`Permutations.swift`と`NextPermutationProtocol.swift`を
+`Sources/PermutationModule/Compatibility/AtCoder2025/`へ配置し、file全体を
+`#if COMPATIBLE_ATCODER_2025`で囲んだ。当初は現行`Permutations.swift`の公開入口を反対条件で
+囲んだが、0.5.0を通常Permutationだけの構成へ戻す判断に伴い撤回した。通常sourceへの排他条件は
+`prepare/compatible/2`統合時に追加する。
+
+同一target内の同名basenameを現行toolchainが拒否したため、互換側だけを
+`PermutationsAtCoder2025.swift`とした。条件ラッパーと原文2行の行末空白正規化を除く2 fileの内容は
+基準refと一致する。
+通常構成はXcode build-for-testing成功、active test plan 1412件成功・失敗0。互換構成は2 fileを
+`-DCOMPATIBLE_ATCODER_2025 -strict-memory-safety`で`PermutationModule`としてcompileし、error 0を
+確認した。strict memory safety警告は既知の対象外として変更していない。
+
+## 5. Package trait設定（2026-10-09撤回）
+
+一度は`COMPATIBLE_ATCODER_2025`をPackage traitとして同名compile defineへ接続したが、ユーザー判断により
+0.5.0は通常Permutationだけを公開することを再確認し、traitを撤回した。DocC pluginがsymbol抽出時に
+全traitを有効化し、通常版DocCと互換RedBlackTreeのsymbol graphを混在させる問題も実際に確認した。
+
+`Package.swift`は従来どおりコメントアウトされたpackage共通defineだけを残す。0.5.0では有効化せず、
+tag後に`prepare/compatible/2`へ統合したbranchでdefineを有効化して互換構成を検証する。
+trait追加中に行った互換module・全package testの成功は実装検証の履歴として保持するが、0.5.0の
+公開Package設定とはしない。
+
+## 6. 互換modeのTest as Specification（2026-10-09完了）
+
+`Tests/PermutationTests/AtCoder2025Compatibility/`へ互換defineでだけ有効な番号付き仕様testを追加した。
+基準refの既存testを出発点に、次を5 testで固定した。
+
+- `unsafePermutations()`の全位置順列と、同値要素を位置違いとして重複列挙する挙動
+- `nextPermutations()`の辞書順、現在位置以降の列挙、同値要素の重複排除
+- safeな`nextPermutations()`で、iteratorを進めた後も保持済み結果が変化しないCoW
+- `unsafeNextPermutations()`で、保持済み結果がiteratorのbufferを共有するaliasing
+- 空、単一、全要素同値、降順の各入力を最初の1件だけ返す境界
+
+通常版の番号付き仕様testは`!COMPATIBLE_ATCODER_2025`へ限定し、公開型と所有権モデルが異なる2 modeの
+契約を同じ実行へ混ぜない。互換構成は対象5件成功・失敗0、通常構成のactive test planは
+1412件成功・失敗0だった。
+
+## 7. `AcCollections`再公開検証（2026-10-09完了）
+
+`AcCollectionsTests`は`AcCollections`だけをimportし、通常defineでは現行の
+`NextPermutationsSequence`と`nextPermutations()`、互換defineでは互換版の
+`Permutations.Nexts`、`Permutations.All`、`unsafePermutations()`、`unsafeNextPermutations()`へ
+到達できることをcompileと実行で確認する。
+
+通常・互換それぞれの再公開testを個別に実行し、各1件成功・失敗0だった。これにより、
+`PermutationModule`単体だけでなくpackageの公開productからも、選択したmodeのAPIが利用できることを
+固定した。
+
+## 9. AtCoder単一file生成とローカル検証（2026-10-09完了）
+
+`Utilities/Permutation/GenerateAtCoder2025Permutation.swift`は、互換modeの2 sourceを正本として、
+外側の`COMPATIBLE_ATCODER_2025`条件と不要な`Foundation` importだけを除き、標準出力へ連結する。
+生成物はrepositoryへ常設しない。sourceの外側条件が期待形と異なる場合は生成を失敗させる。
+
+`Utilities/Permutation/ABC328ELocalValidation.swift`は、ABC328Eと同じ入力形式、制約、
+`N - 1`辺の組合せ列挙、union-findによる全域木判定、重み合計のmodulo最小化を行うローカルfixtureである。
+生成した555行の単一fileとfixtureをcompileし、公式sample 1を入力して期待値`33`を確認した。
+生成fileに互換条件と`Foundation` importが残っていないことも静的に確認した。
+
+実提出は引き続きユーザー専任であり、この完了には含めない。
+
+## 10. 互換mode文書同期（2026-10-09完了）
+
+日英READMEは既存のbranch案内に留め、現行READMEへ互換modeの詳細を混在させない。
+`AcCollections`のDocCはmodeごとのPermutation再公開面へ同期した。Permutation品質評価は通常版だけを
+評価対象とする境界を維持しながら、互換modeのbranch define、旧API、aliasing、仕様test、facade、単一file検証、
+strict memory safety警告、統合後CIへの延期が確認済みであることへ更新した。
 
 ## 目的
 
@@ -149,8 +222,8 @@ unsafeな結果共有を、現行APIとして再推奨もしない。
 - 型名の差（2026-10-07）: 通常版は`Permutations<C>.Nexts`/`IteratorN`/`SubSequenceN`を
   `NextPermutationsSequence<Base>`/`.Iterator`/`.Permutation`へ改名し、`Permutations`名前空間を
   廃止した。互換版は基準refの旧名をそのまま持つ。
-- 既存の切替名: `COMPATIBLE_ATCODER_2025`。現在の`Package.swift`とテスト運用で既に
-  使用実績があるが、Permutationの実装自体はまだ切り替わらない。
+- 切替名: `COMPATIBLE_ATCODER_2025`。0.5.0では公開traitにせず、後続の
+  `prepare/compatible/2`でpackage共通のcompile defineとして有効化する。
 
 基準版にだけ存在する公開表面は次のとおり。
 
@@ -176,10 +249,11 @@ Sources/PermutationModule/
 ├── Permutations.swift                            # 現行版のみ（アルゴリズム含む）
 └── Compatibility/AtCoder2025/
     ├── NextPermutationProtocol.swift             # 互換版のみ
-    └── Permutations.swift                        # 互換版のみ
+    └── PermutationsAtCoder2025.swift             # 互換版のみ
 ```
 
-- 現行ファイル全体を`#if !COMPATIBLE_ATCODER_2025`で囲む。
+- 0.5.0では現行ファイルを無条件でcompileする。`prepare/compatible/2`統合時に、互換側と重複する
+  現行公開入口へ`#if !COMPATIBLE_ATCODER_2025`を追加する。
 - 互換ファイル全体を`#if COMPATIBLE_ATCODER_2025`で囲む。
 - 同じ宣言へ細かな`#if`を散らさない。2版の公開表面と所有権モデルが大きく異なるため、
   ファイル単位で分けた方が差分を監査しやすい。
@@ -189,13 +263,11 @@ Sources/PermutationModule/
 
 ## Package設定
 
-`COMPATIBLE_ATCODER_2025`をPackage traitとして宣言し、既存の手編集コメント切替を
-trait条件のdefineへ置き換える。traitを指定しない既定ビルドは必ず現行版とする。
+0.5.0では`COMPATIBLE_ATCODER_2025`をPackage traitとして公開しない。既定ビルドは現行版だけとする。
+tag後に`prepare/compatible/2`へ統合したbranchで、既存のpackage共通defineを有効化する。
+これはPermutationだけでなくRedBlackTreeと`AcCollections`も同じ互換状態に揃えるためである。
 
-互換defineは、互換性を検証する必要がある既存ターゲットへだけ渡す。新しい通常APIが
-誤って互換defineへ依存しないよう、可能なら全ターゲット共通の`_settings`から分離する。
-
-AtCoderへ貼り付ける単一ファイルの生成はSwiftPM traitとは別問題である。生成元を
+AtCoderへ貼り付ける単一ファイルの生成はPackage切替とは別問題である。生成元を
 互換ファイルへ固定し、生成物自体はリポジトリへ常設しない。
 
 ## 実装段階
@@ -232,15 +304,10 @@ AtCoderへ貼り付ける単一ファイルの生成はSwiftPM traitとは別問
 - traitなしの通常ビルドで、削除済みunsafe/All APIが公開されない。
 - traitありの互換ビルドで、基準版の公開テストがソース変更なしでコンパイル・成功する。
 - 両モードで`AcCollections`経由の利用を検証する。
-- 通常版と互換版のテストを同一実行結果として混ぜず、CI上で別ジョブとして表示する。
+- 通常版と互換版の仕様testを条件で分離する。CIの別job化は`prepare/compatible/2`統合後に行う。
 - 互換版の存在を理由に、現行仕様書へunsafe APIを現役APIとして掲載しない。
 
-## 今回実施しないこと
+## 完了後に残すこと
 
-- 互換ソースのコピーと条件コンパイル
-- Package traitの追加
-- CIジョブの追加
-- AtCoder用単一ファイル生成器の実装
-- ABC328Eへの外部提出
-
-この文書は、上記を小さなレビュー単位で実装するための方針確定までを扱う。
+- `prepare/compatible/2`統合後、通常版と互換版の機能testをCIの別jobにする。互換性能計測は行わない。
+- ABC328Eへの外部提出はユーザー専任とし、agentは着手・代行・催促しない。

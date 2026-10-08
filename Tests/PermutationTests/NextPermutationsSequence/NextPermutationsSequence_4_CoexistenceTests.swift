@@ -7,6 +7,7 @@
 // 全順列が欲しい場合はswift-algorithmsの`permutations()`を使う、という使い分けの前提を固定する。
 // 衝突すれば、このfileはcompileできない。
 
+#if !COMPATIBLE_ATCODER_2025
 import Algorithms
 import PermutationModule
 import XCTest
@@ -31,3 +32,4 @@ final class NextPermutationsSequence_4_CoexistenceTests: XCTestCase {
     XCTAssertTrue(every.contains([1, 2, 3]))
   }
 }
+#endif

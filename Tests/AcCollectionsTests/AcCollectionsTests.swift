@@ -69,10 +69,23 @@ final class AcCollectionsTests: XCTestCase {
     XCTAssertEqual(multimap.count(forKey: 1), 2)
   }
 
-  func test_importAcCollections_exposesNextPermutations() {
-    let result = [1, 2].nextPermutations().map { $0.map { $0 } }
-    XCTAssertEqual(result, [[1, 2], [2, 1]])
-  }
+  #if !COMPATIBLE_ATCODER_2025
+    func test_importAcCollections_exposesCurrentPermutationAPI() {
+      let sequence: NextPermutationsSequence<[Int]> = [1, 2].nextPermutations()
+      XCTAssertEqual(sequence.map { Array($0) }, [[1, 2], [2, 1]])
+    }
+  #else
+    func test_importAcCollections_exposesAtCoder2025PermutationAPI() {
+      let nexts: Permutations<[Int]>.Nexts = [1, 2].nextPermutations()
+      let all: Permutations<[Int]>.All = [1, 2].unsafePermutations()
+
+      XCTAssertEqual(nexts.map { Array($0) }, [[1, 2], [2, 1]])
+      XCTAssertEqual(all.map { Array($0) }, [[1, 2], [2, 1]])
+      XCTAssertEqual(
+        [1, 2].unsafeNextPermutations().map { Array($0) },
+        [[1, 2], [2, 1]])
+    }
+  #endif
 
   func test_importAcCollections_exposesOptionalArray() {
     var array = OptionalArray1D<Int>(capacity: 2)

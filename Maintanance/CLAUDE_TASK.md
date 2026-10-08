@@ -11,11 +11,85 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: あり**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: なし。
-- 本線の現在状態: Permutation性能CIのpush・実行結果待ち。互換ソース隔離はまだ開始しない。
+- 新規bounded assignment: なし。Permutation sequential subscript性能回帰のbenchmark二分探索は
+  2026-10-09にCodex受入済み。
+- 本線の現在状態: 0.5.0では通常Permutationだけを公開するため、互換traitと通常sourceの排他条件を
+  撤回してrelease gateを再検証中。互換切替とCI分離は`prepare/compatible/2`統合後に扱い、
+  互換性能計測は行わない。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Completed bounded assignment: Permutation benchmark bisection
+
+performance CIで`Permutations.SubSequenceN subscript sequential access`が二回続けてbaseline比
+約`0.7247`となった。witness table比較ではmacOS arm64上の三版hot path命令列に差がなかった。
+次の順で、実benchmarkによる再現性とcommit境界を調査する。
+
+1. repositoryの本物の`Benchmarks` packageと`CI.json`の当該taskを使う。代用品は使わない。
+2. `aea49d8b`（既知green）と`fe12677a`（既知red）を、同一toolchain・同一machine・Release・同じ
+   size / cycle / 実行順で各3回以上測り、中央値を比較する。
+3. 30%以上の差が反復して再現する場合だけ、`aea49d8b..fe12677a`をcommit単位で二分探索する。
+   各候補も同じ回数と分類基準で測る。文書だけのcommitも勝手に除外せず、除外するならtree差分が
+   benchmark binaryへ入らない根拠を記録する。
+4. 再現しない、結果が分類境界を往復する、または環境差で比較不能なら二分探索を止める。その場合は
+   Linux CIで試す最小候補commit列と、各候補で何が分かるかだけを返す。
+
+成果にはtoolchain、machine、実command、反復値、中央値、分類、調べたcommit graph、次候補を含める。
+原因を推測で断定しない。source、benchmark、workflow、Registry、既存本文を変更せず、push、commit、
+閾値変更を行わない。別worktreeまたは一時directoryを使い、現在worktreeを変更しない。
+
+結果は`Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md`末尾へ追記し、git addまで
+行う。Codexが受入、Registry更新、Linux CI候補の採否、release gateを判断する。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。結果は`QualityAssessment-ISO25010.md`末尾に追記し、git add済み（commitなし）。
+
+- Apple M1・macOS 27.0.1・Swift 6.4で、本物の`Benchmarks` packageとCI.jsonを交互に各3回測った。
+  `results compare`は3組とも差が1.05を超えるtaskなし。当該taskの幾何平均（green / red）は0.991〜1.015。
+- 再現しないため二分探索は停止。範囲12 commitのうちbuild入力を変えるのは`618786e6`・`89fb20a7`・`8ef8f3ed`だけ。
+- Linux CI候補: A/A（`aea49d8b`同士）→ `618786e6` → `8ef8f3ed`の順。採否はCodex。
+
+Codex acceptance: 2026-10-09、本物のbenchmark、同一条件、交互3回、比較toolの判定、停止条件、
+Linux候補列を検収した。macOSでは中央値`1.0053`で回帰を再現せず、size単位の比は`0.5〜2.024`と
+大きく揺れた。通常source撤回後のremote CIを先に確認し、再び赤ならLinux候補列を採用する。
+
+## Completed bounded assignment: Permutation witness table reference comparison
+
+performance CIで`Permutations.SubSequenceN subscript sequential access`がbaseline比`0.7247`となり、
+30%回帰判定に失敗した。通常Permutationの実行コード差はすでに撤回したため、次の三点を同一toolchain・
+Release最適化条件で比較し、生成コード上の事実だけを報告する。
+
+- baseline: `origin/main`（`046c5359`）
+- 条件付き版: `81dc5681`（通常公開入口に`#if !COMPATIBLE_ATCODER_2025`が残る版）
+- 撤回後版: `5cd66cd4`（通常sourceを無条件compileへ戻した版）
+
+対象は上記benchmarkのhot path、特に`NextPermutationsSequence.Permutation`のsubscriptと、benchmark
+loopからそこへ至る呼出経路に限定する。各版について、protocol witness table、value witness table、
+indirect call、specialization失敗を示す参照または命令列があるか確認する。symbol、demangle後の参照元、
+該当assemblyまたはSILの最小抜粋を根拠にし、三版の差を表にする。
+
+benchmarkの再計測、性能原因の断定、閾値変更、source・workflow・Registry・文書の修正、commit、pushは
+行わない。別worktreeまたは一時directoryを使い、現在のworktreeを変更しない。比較条件を三版で揃えられない、
+またはhot pathを同定できない場合は推測せず、その阻害事実を返して停止する。
+
+結果は`Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md`末尾へ、実行command、
+toolchain、比較表、結論の順で追記し、git addまで行う。Codexが受入とrelease gate判断を行う。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。結果は`QualityAssessment-ISO25010.md`末尾に追記し、git add済み（commitなし）。
+
+- macOS arm64、Swift 6.4で、三版のhot path 4関数を命令列で比較した。ループ本体・forwarder・`makeSequential`は
+  差なし。`Timer.measure`は開始addressが8 byte違うだけ。
+- witness table参照・間接call（閉包呼出の`blr`を除く）・特殊化失敗は、どの版にもない。
+- 未確認: CIの`ubuntu-24.04`での生成コード。本物の`Benchmarks` package（依存解決が必要）は使わず、
+  `Timer.measure`と`blackHole`を同じ属性で写した代用品で比較した。
+
+Codex acceptance: 2026-10-09、三版同条件、対象hot path、symbol・命令列根拠、未確認範囲の分離を検収した。
+macOS arm64では条件コンパイルによるwitness table経由化を否定できる。Linux CIの赤の説明には使い切らず、
+通常source撤回後のremote performance再実行をrelease gateの最終根拠とする。
 
 ## Completed bounded assignment: implement Permutation CI libraries
 
@@ -243,7 +317,7 @@ integration, acceptance, Registry state changes, and public-document completion.
 The rules below remain as bounded-task execution constraints. They do not grant standing authority
 to select the next task, restart frozen work, or act on behalf of Codex.
 
-The current branch is `develop/misc/50`. `try/index/1` was merged by PR #158 at `a6c8a474`.
+The current branch is `devleop/misc/51`. `develop/misc/50` was merged by PR #174 at `046c5359`.
 Verify the current branch before editing; do not rely on this line alone.
 
 ### Communication

@@ -8,6 +8,7 @@
 // - イテレータのコピーは、それぞれ独立に進む
 // - 上の2点は、別のTaskへ渡した場合も成り立つ
 
+#if !COMPATIBLE_ATCODER_2025
 import PermutationModule
 import XCTest
 
@@ -35,9 +36,9 @@ final class NextPermutationsSequence_2_ValueSemanticsTests: XCTestCase {
     var original = [1, 2, 3].nextPermutations().makeIterator()
     _ = original.next()
     var copy = original
-    // `next()`はassertionの外で呼ぶ。Swift 6.4の`-O`では、コピー後の変数をクロージャ
-    // (XCTAssertEqualの@autoclosureを含む)の中で変更すると、`isKnownUniquelyReferenced`が
-    // コピーを見落として共有bufferを直接書き換える(2026-10-07確認、ライブラリ非依存で再現)。
+    // `next()`はassertionの外で呼ぶ。Swift 6.4のReleaseでは、`original.next()`を
+    // XCTAssertEqualの中で呼んで結果を読むと、`copy`も進んだ状態になり失敗する(2026-10-07発見)。
+    // ライブラリなしの再現は作れず、原因は未確定(2026-10-08再調査、`Permutations.swift`のTODO参照)。
     let originalSecond = original.next().map { Array($0) }
     let originalThird = original.next().map { Array($0) }
     let copySecond = copy.next().map { Array($0) }
@@ -89,3 +90,4 @@ final class NextPermutationsSequence_2_ValueSemanticsTests: XCTestCase {
     XCTAssertEqual(secondResults, expected)
   }
 }
+#endif

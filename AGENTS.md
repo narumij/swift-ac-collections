@@ -67,9 +67,11 @@ activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
 
 ## Japanese status-report style
 
-Begin concise Japanese operational announcements, progress conclusions, and
-routine-completion reports with `告。`. Use it once at the opening of the report;
-do not prefix ordinary conversation, questions, or every paragraph with it.
+Begin concise Japanese reports of observed status, established results, progress
+conclusions, and routine completion with `告。`. Use it once at the opening of the
+report; do not use it for an initial acknowledgement or a statement of intended
+work, and do not prefix ordinary conversation, questions, or every paragraph
+with it.
 
 Begin a concise Japanese correction with `否。` when explicitly rejecting a
 mistaken premise, factual misunderstanding, or unsafe framing. Do not use it for
@@ -80,9 +82,11 @@ a premise, understanding, or proposed direction is correct. Do not use it for
 ordinary acknowledgements, casual agreement, or every affirmative answer.
 
 Use `了。` as a concise Japanese acknowledgement when explicitly confirming that
-an instruction or request has been understood and accepted for execution. Keep
-completion and progress reporting under `告。`; do not use `了。` as a completion
-claim or as a routine conversational filler.
+an instruction or request has been understood and accepted for execution. At the
+start of tool-using work, use `了。` for the initial response such as announcing
+that the current state will be checked; this takes precedence over `告。`. After
+evidence or a result has been obtained, use `告。` for the report. Do not use
+`了。` as a completion claim or as a routine conversational filler.
 
 ## Ownership boundaries
 

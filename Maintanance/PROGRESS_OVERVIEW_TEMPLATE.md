@@ -49,6 +49,10 @@ taskが依存上readyでも、現在の中間ゴールに必要とは限らな�
 `DECISION`へ分ける。`EXECUTION`中に新しい判断が必要になったら、agentは推測で埋めずに停止して
 task分割へ戻す。
 
+分解後、判断済みで担当・正本・停止条件・検証・commit境界が共通する連続した`EXECUTION` taskは、
+stable IDと依存を残したまま一つのassignment packageへインライン化してよい。判断、凍結、待機、
+担当の異なるtaskはまとめない。新しい判断や失敗を見つけたらpackageを解除し、元のtask単位へ戻る。
+
 ### 推奨順と今回扱わない判断
 
 **soft order:** <例: `CORE-001` → `DOC-001`。必須依存でなければ「なし」>
@@ -151,6 +155,7 @@ soft orderは、同時に着手可能なtask間の推奨順であり、Task prec
 - [ ] task候補は`PROPOSED`に置き、実行taskと区別した。
 - [ ] 各taskから詳細正本へ辿れる。
 - [ ] 複数判断を含むtaskを分割した。
+- [ ] assignment前に、追跡可能性を失わずまとめられる連続`EXECUTION` taskがあるか確認した。
 - [ ] 必須依存とsoft orderを分けた。
 - [ ] Registryと同じ状態を繰り返すsummaryやchecklistを作っていない。
 - [ ] 完了した中間goal、完了taskだけのsoft order、古い概要を現行部に残していない。

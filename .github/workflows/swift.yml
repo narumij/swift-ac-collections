@@ -219,9 +219,10 @@ jobs:
               ../benchmark-results/current.json
           )"
 
-          echo "$OUTPUT"
+          printf '%s\n' "$OUTPUT" \
+            | tee ../benchmark-results/comparison.txt
 
-          echo "$OUTPUT" |
+          printf '%s\n' "$OUTPUT" |
           awk '
             /^[[:space:]]*[0-9]/ {
               regression = $4
@@ -241,6 +242,16 @@ jobs:
               exit failed ? 1 : 0
             }
           '
+
+      - name: Upload benchmark performance artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-performance-results
+          path: |
+            head/benchmark-results
+            base/benchmark-results
+          if-no-files-found: warn
 
   address-sanitizer:
     runs-on: ubuntu-24.04

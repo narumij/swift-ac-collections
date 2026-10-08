@@ -4,20 +4,16 @@
 
 ## 目的
 
-`0.5.0`を、現在進行中の体系監査と利用者向け文書準備に対する再現可能な節目としてtag付けする。
+`0.5.0`固有の到達範囲を決め、その再現可能な節目をtag付けする。
 tag地点、release gate、tag作成を分離し、未完了taskを暗黙に完了扱いしない。
 
 ## tag地点の判断
 
-第一候補は、OptionalArrayをCodexのユーザードキュメント作業フェーズへ引き渡せる状態にしたcommit。
-この候補では、少なくとも次を0.5.0の到達範囲として説明できる。
+2026-10-08、ユーザー判断により、OptionalArrayの監査・ユーザードキュメント作業への引き渡しは
+`0.5.0`と関係しないことを確定した。この地点と、そのために行ったPermutation、OptionalArray、
+task管理方式の整理を、tag地点の根拠や到達範囲へ自動的に含めない。
 
-- Permutationの公開面、名称、仕様test、品質評価の整理。
-- OptionalArrayの公開契約監査、名称・次元・不正次元契約の判断、Test as Specification整理。
-- RedBlackTreeの主要な安全性・Index周辺整理。ただし外部待ちのIndex最終契約は未完了として明記する。
-- Registryを中心とするtask管理と、Codex統合・Claude限定委譲の作業方式。
-
-この第一候補でtagを振るか、別の到達点まで待つかをユーザーとCodexが一つだけ決定する。
+`0.5.0`で表す製品上の到達点と対象commitは、release固有の判断として別途一つだけ決定する。
 決定前にrelease gateやtag作成へ進まない。
 
 ## release gate

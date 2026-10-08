@@ -19,15 +19,15 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **現在の中間ゴール:**
 
-- このrepositoryで得たtask運用知見を、別projectでもCodexが同程度の管理品質を再現できる
-  移植可能なplaybookへ整理する。
-- `0.5.0`としてtag付けする到達点を決め、その地点でrelease gateを通し、再現可能な節目として
-  tagを作成する。第一候補はOptionalArrayのユーザードキュメント作業への引き渡し完了時点とする。
+- `0.5.0`としてtag付けする到達点を、OptionalArray監査・引き渡しとは独立に決め、その地点で
+  release gateを通し、再現可能な節目としてtagを作成する。
 - Claudeへ渡すtask出しを、「一つのtaskに一つのユーザー判断、またはユーザー判断なし」まで
   分解できる状態にする。
 
 **後続の中間ゴール:**
 
+- 保留中の運用playbookをユーザー指示で再開した後、このrepositoryで得たtask運用知見を、
+  別projectでもCodexが同程度の管理品質を再現できる移植可能な形へ整理する。
 - Permutation、OptionalArray、BareArrayのユーザードキュメント作業を通じて作業方式を習熟した後、
   RedBlackTreeに見えていない残作業を確認し、Codexのユーザードキュメント作業フェーズへ渡せる
   状態にする。BareArrayは既存の再開判断を経るまで凍結を維持する。
@@ -92,7 +92,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-016` | `DONE` | Codex | [EXECUTION] Task precedence Gate列のpilot導入 | 2026-10-08、Gate列を追加し、現行`ACTIVE` taskに接続する6辺を`START` 4件・`COMPLETE` 2件へ分類。他の既存辺は`UNCLASSIFIED`のまま保持 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-017` | `FROZEN` | Claude | [EXECUTION] RP-19 readiness fixture | pilot分類後、`START`だけがready判定を阻止し、`COMPLETE`と`UNCLASSIFIED`を混同しないSQLite fixtureを作る | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-018` | `FROZEN` | Codex | [EXECUTION] Task precedence Gateの段階移行完成判定 | RP-19受入後、残る`UNCLASSIFIED`を小batchで意味確認し、ready集合の差分を検収して必須欄への移行可否を判定 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
-| `OPS-001` | `ACTIVE` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 現行運用の原則、手順、停止条件、受入、委任、失敗知見とRegistry templateを整理し、別projectで再現性を検証できる状態にする | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
+| `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、別projectでの再現性検証へ進む | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
 | `OPS-002` | `FROZEN` | Codex | [DISCOVERY] task分解・インライン化・割当の三段階運用検討 | 後日ユーザーが明示的に再開したとき、細粒度taskを構造確定後にインライン化する条件と、割当前の停止条件を整理する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
@@ -159,7 +159,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-009` | `FROZEN` | Codex | AtCoder単一file生成とローカル検証 | 互換版から自己完結fileを生成し、ABC328E相当入力で検証 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-010` | `FROZEN` | Codex | Permutation互換mode文書同期 | 通常APIと互換APIを混同せず、trait・制限・検証方法を文書化 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `OPT-001` | `DONE` | Codex | [DISCOVERY] OptionalArrayの体系監査・名称再検討 | 2026-10-08、公開7型・29宣言の契約、test、履歴、判断、Test as Specificationを検収し、ユーザードキュメント作業へ引き渡し | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-002` | `FROZEN` | Codex | [DISCOVERY] OptionalArray監査の管理方式と受入基準の抽出 | `OPT-001`完了後、実際に有効だった作業設計・責任境界・受入基準を再利用可能な形で整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-002` | `DONE` | Codex | [DISCOVERY] OptionalArray監査の管理方式と受入基準の抽出 | 2026-10-08、実績から段階構成、責任境界、受入基準、停止条件を再利用可能な監査方式として抽出 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-003` | `FROZEN` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | `OPT-002`後、抽出した管理方式をClaude向け運用規則として残す必要があるか一つだけ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-004` | `FROZEN` | Codex | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で明文化すると決定した場合、人物評価を含めず責任境界・成果物・停止条件として正本へ反映 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-005` | `DONE` | Codex / Claude | [DISCOVERY] OptionalArray品質評価の初版策定 | 2026-10-08、9製品品質特性を評価し、既知の不足を利用者向け文書作業と1.0準備へ分離して初版を完成 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
@@ -220,7 +220,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `FROZEN` | User / Codex | 汎用基盤ライブラリとしての1.0採用品質ゲート | Index契約確定後、ユーザーが明示的に再開 | `Sources/RedBlackTreeCollections/Documentation/Quality-Checklist.md` |
 | `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
-| `RELEASE-001` | `WAITING_USER` | User / Codex | [DECISION] 0.5.0のtag地点 | OptionalArray引き渡し完了時点を第一候補に、0.5.0へ含める到達範囲を一つ決定 | `RELEASE_0_5_0.md` |
+| `RELEASE-001` | `WAITING_USER` | User / Codex | [DECISION] 0.5.0のtag地点 | 2026-10-08、OptionalArray引き渡し地点を候補から除外。0.5.0固有の到達範囲を別途一つ決定 | `RELEASE_0_5_0.md` |
 | `RELEASE-002` | `FROZEN` | Codex | [EXECUTION] 0.5.0 release gateの実施 | tag地点の到達後、全体test・Release・必要なDeath Test・差分・既知事項を検証しtag可能と判定 | `RELEASE_0_5_0.md` |
 | `RELEASE-003` | `FROZEN` | User / Codex | [EXECUTION] 0.5.0 tag作成 | release gate成功後、対象commitをユーザー確認して`0.5.0` tagを作成 | `RELEASE_0_5_0.md` |
 

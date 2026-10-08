@@ -11,8 +11,8 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: あり**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: あり。`GRAPH-004`のfallbackとして、Permutationのbuffer element access経路が
-  保守上のsmellかを一問だけ調査する。下の「Current bounded assignment」を実施する。
+- 新規bounded assignment: なし。`GRAPH-004` fallbackのPermutation buffer access-path smell checkは結果を返却済み
+  （2026-10-09、`Maintanance/Graph/AI_GRAPH_SMELL_NOTES.md`末尾、Codex受入待ち）。
 - 本線の現在状態: `0.5.0` tag後の`prepare/compatible/2`統合、互換defineと通常source排他、
   Debug・Release全test、互換branchのCI整理、remote pushまで完了。互換性能計測は行わない。
   次の製品作業は新しい中間ゴールのユーザー判断待ちで、現行smell調査以外の追加assignmentはない。
@@ -20,7 +20,7 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
 
-## Current bounded assignment: Permutation buffer access-path smell check
+## Completed bounded assignment: Permutation buffer access-path smell check
 
 これは現在の中間ゴールを進める本線taskがClaudeへ割当不能な間だけ行う、`GRAPH-004`のfallback調査である。
 本線のready taskが生じた場合はそちらを優先し、この調査を広げない。

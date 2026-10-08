@@ -327,3 +327,59 @@ graphの指摘を退けていた。
 - 限界（推測）: commit履歴は宣言本体の範囲で取るので、別fileへ移された判断や、文書だけで決めた契約は経路3では届かない。
   経路2（文書）と経路1（仕様test）が補う前提で使う。
 - 運用: DISCOVERYと「足す／戻す」taskの着手前に、対象symbolへ一度引く。
+
+### 試験記録: Permutationのbuffer要素アクセス経路（2026-10-09、`GRAPH-004` fallback）
+
+2026-10-09 06:48 JST / Claude Opus 5.5（`claude-opus-5-5`）。`CLAUDE_TASK.md`のbounded assignment。
+問い: `Permutation`の公開subscript、内部`Buffer.subscript`、`__storage_ptr`の複数経路は、保守上のsmellか、
+公開境界・CoW・unsafe境界を分けるための必要な構造か。source・test・文書は変更していない。build・benchmarkは実行していない。
+
+**1. 事実（`Sources/PermutationModule/Permutations.swift`と`git log -L`）**
+- 経路は3段。
+  - 公開`Permutation.subscript(position:)`（188行）: `@inlinable`。範囲の`precondition`を行い、`elementBuffer[position]`へ委ねる。
+    読み取り専用（`Permutation`は`let elementBuffer`だけを持つ）。
+  - 内部`Buffer.subscript(position:)`（252行）: `@inlinable`。getterは`@inline(__always)`で`unsafe __storage_ptr[position]`、
+    `_modify`は`__storage_ptr`をlocalへ取り出して`yield unsafe &storage[position]`。
+  - `__storage_ptr`（225行）: `@inlinable @unsafe`。`withUnsafeMutablePointerToElements({ unsafe $0 })`で
+    pointerをclosureの外へ持ち出す。参照元は`Buffer.subscript`のgetterと`_modify`だけ。
+- `Buffer.subscript`の利用者: 公開subscript（get）、`swapAt`（`swap(&self[a], &self[b])`で`_modify`）、
+  `lastIndex(where:)`・`lastAscentIndex`（get）。`nextPermutation`と`reverse`はこれらを経由する。
+- 同じstorageへの別の入り方が3か所ある: `deinit`（`withUnsafeMutablePointers`）、`copy()`と`prepare(source:)`
+  （`withUnsafeMutablePointerToElements`のclosure内で使う）。こちらは持ち出さず、closure内で完結する。
+- test・benchmarkは`__storage_ptr`も`elementBuffer`も直接参照しない（`grep`で0件）。仕様は公開subscript経由で固定されている。
+- 変更履歴: 3宣言とも初出は`bab50616`（2025-01-02、ユーザー）。`fd68782c`（2026-10-03）で`@unsafe`・`unsafe`注記を付与。
+  `0ef177d3`（2026-10-07、Claude）がmodule内の`@inline(__always)` 27個を「計測なしの初期チューニング」として一括で外し、
+  getterのものも外れた。`f01c66a6`（2026-10-09、ユーザー）がgetterにだけ`@inline(__always)`を戻した。コメントでの理由づけはない。
+
+**2. smell仮説**
+- H-a（最適化判断の分散）: hot pathのinline化は3宣言の属性の組み合わせで決まり、getterの属性は3日で2回変わった。
+  性能の調整が1宣言に閉じない、という意味での「散弾銃的変更」候補。
+- H-b（unsafe境界の書き方の不統一）: 同じstorageに、pointerを持ち出す書き方（`__storage_ptr`）とclosure内で完結する書き方
+  （`deinit`・`copy()`・`prepare`）が並ぶ。持ち出したpointerの有効期間は「`self`が生きている間」という暗黙の前提に依存する。
+
+**3. 必要な層分離だとする代替説明・反証**
+- 3段はそれぞれ別の境界を受け持つ。公開subscriptは公開契約（範囲検査、読み取り専用の値）、`Buffer.subscript`は内部の
+  変更口（`swapAt`の`_modify`）、`__storage_ptr`は`unsafe`を1か所に閉じこめ、`lastAscentIndex`・`reverse`・`swapAt`などの
+  アルゴリズム側を`unsafe`なしで書けるようにしている（`.strictMemorySafety()`下で意味がある）。どれを畳んでも、
+  境界のどれかが消えるか、`unsafe`がアルゴリズム側へ広がる。
+- H-aへの反証: 2026-10-09のLinux artifactでは、計測ループの命令列はgetterの属性の有無で変わらなかった
+  （`PERFORMANCE_REGRESSION_BISECTION.md`の事例記録）。属性が効いたのは汎用版の大きさと配置で、経路の多さそのものが
+  hot pathを悪くした証拠はない。散弾銃的変更は、構造よりも「属性を付け外しした理由が残っていない」ことのほうに由来する。
+- H-bへの反証: `ManagedBuffer`の要素領域はobjectが生きている間は動かない。`__storage_ptr`は`Buffer`のmethod内でだけ使われ、
+  `@unsafe`で明示されている。2026-10-08に`Buffer.subscript`をclosure内完結に書き換えても、Releaseの値semanticsの失敗は
+  変わらなかった（`CP-20261009-001`前の調査、memory記録）。持ち出しが実害を出した証拠はない。
+
+**4. 影響・確度・次に確かめるなら**
+- 構造（3段）は必要な層分離と判断する。確度: 高い。
+- H-a: 構造のsmellではなく、記録のsmell（tuning intentが宣言の近くにも記録にも残っていない）。影響は中程度
+  （次に誰かが`0ef177d3`と同じ一括整理をすると、また外れる）。確度: 中。次に確かめるなら、module内に残る他の
+  `@inlinable`・`@inline(__always)`のうち、`0ef177d3`で外れて戻っていないものが性能に関係するかを、計測ループの機械語で見る。
+- H-b: 低い。確度: 中。次に確かめるなら、`__storage_ptr`の持ち出しがmethodの外（返り値やescaping closure）へ漏れる経路が
+  将来できないかを、宣言の可視性（`internal`）とfan-inで見張る。
+
+**5. 判断**
+- 現状維持でよい（3段の構造は変えない）。
+- Codexへ返す価値がある独立task候補は1件だけ: getterの`@inline(__always)`（`f01c66a6`）に、付けた理由と根拠（2026-10-09の
+  事例記録）を1行で残すかどうか。source（コメント）か記録のどちらに置くかは性能方針の判断を含むので、ここでは決めない。
+- 参考: `0ef177d3`で外した27個は、初出が2025-01-02のユーザーのチューニングだった。外した側（Claude）の判断理由
+  「計測なし」は、初出時期で意図を判断するという後の運用とは合わない。

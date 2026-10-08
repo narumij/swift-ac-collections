@@ -315,3 +315,15 @@ graphの指摘を退けていた。
 - 次のgraph作業の候補: (1) Registry・詳細正本の前回読んだ状態を覚え、変わっていたら「読み直せ」と出す（事実の賞味期限）
   (2) 段階・ゴールの無い親taskを警告する（行き先の無い辺） (3) DISCOVERY開始時に対象symbolの仕様test・文書・直近の変更を並べる
   （隣を引く） (4) ユーザーに指摘されたずれを事実・手順・観点・目的の段ごとに記録し、ループが上の段へ上がっているかを見る。
+
+### 試験記録: 隣を引く（2026-10-08、Claude graph）
+
+「観点: 隣を引く」の試すことを実装し、`RBT-017`の対象（Mapped Values Viewの`subscript`・`swapAt`）へ遡って当てた。
+- 結果（事実）: 仕様test（`RedBlackTreeView_0_MappedValuesViewTests.swift`）、名指しする文書（`API-Matrix-View.md`を含む9件）、
+  宣言本体の直近commit（先頭が`211ca2fc` 2026-10-05「make mapped values index operations constant time」）の3経路すべてで、
+  10/5のO(1)契約に着手前に届く。`RBT-018`当時に引いていれば、誤った前提のtask分解は避けられた。
+- 調整（事実）: `subscript`のような一般名は文書36件・無関係taskを拾った。memberは所属型の名前も含む文書だけに絞ると9件になり、
+  全件が関係文書だった。
+- 限界（推測）: commit履歴は宣言本体の範囲で取るので、別fileへ移された判断や、文書だけで決めた契約は経路3では届かない。
+  経路2（文書）と経路1（仕様test）が補う前提で使う。
+- 運用: DISCOVERYと「足す／戻す」taskの着手前に、対象symbolへ一度引く。

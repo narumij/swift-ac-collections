@@ -254,4 +254,11 @@ sh Maintanance/AIGraphInMemoryFixture/run_all.sh
 ### GRAPH-009
 
 - scope: GRAPH-010〜014の5 fixtureと一括再現・回帰確認。
-- 状態: `ACTIVE`
+- 個別fixture: 受入。RP-01・05・08・15・17がそれぞれ独立してPASSすることをCodexが確認した。
+- 一括実行: 受入。`sh Maintanance/AIGraphInMemoryFixture/run_all.sh`をrepository rootから実行し、
+  GRAPH-007を含む6件すべてのPASSと`ALL PASS: 6 of 6 fixtures`を確認した。
+- 終了状態: 受入。全件成功時のexit status 0を確認し、runnerがSQL error、PASS行欠落、FAILを
+  全体失敗として集約することを実装で照合した。
+- 依存境界: 受入。各fixtureは別の空SQLite `:memory:`を使い、Claude専用DB、永続DB、production変更、
+  runtime自動抽出に依存しない。
+- 状態: `DONE`

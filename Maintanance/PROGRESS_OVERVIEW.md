@@ -91,12 +91,12 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-006` | `DONE` | Claude / Codex | [DISCOVERY] smell判定共有スキームの最小fixture | 2026-10-08、local DB非依存の共有schema候補とRBT-017 fixtureを作成。Codexが文書件数とO(1)契約への3経路を再構築し、task→symbol辺の入力不在と自己参照除外を既知制約として受入 | `AI_GRAPH_SHARED_SCHEMA.md` |
 | `GRAPH-007` | `DONE` | Claude / Codex | [EXECUTION] SQLiteインメモリ共有schema fixture | 2026-10-08、tracked SQL 4 fileで空のSQLite `:memory:`から2 symbol・8区分を再現。Codexが一発command、期待件数、外部キー違反なし、local DB非依存を確認 | `AI_GRAPH_IN_MEMORY_FIXTURE.md` |
 | `GRAPH-008` | `DONE` | Claude / Codex | [DISCOVERY] 過去graph知見のインメモリ追試可能性台帳 | 2026-10-08、graph系3文書を23項目へ整理しA〜D分類。CodexがRP-01・05・08・15・17を実装対象として受入 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
-| `GRAPH-009` | `ACTIVE` | Codex | [EXECUTION] 受入済み過去graph知見のSQLite追試完成判定 | GRAPH-010〜014を個別受入後、一つのcommandでGRAPH-007と5 fixtureが独立にPASSすることを確認する | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
-| `GRAPH-010` | `ACTIVE` | Claude | [EXECUTION] precedence missing-pair fixture | RP-01のtask 4件・既存辺2件から、辺のない4組をSQLite `:memory:`で再現する。symbol scopeは含めない | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
-| `GRAPH-011` | `ACTIVE` | Claude | [EXECUTION] specification file role fixture | RP-05の旧・現行file名規則を2 snapshotへ適用し、現行規則で番号0〜4をspec、98・99をnon-specとして再現する | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
-| `GRAPH-012` | `ACTIVE` | Claude | [EXECUTION] configuration-aware spec-gap fixture | RP-08のDEBUG限定symbol除外と`58aab943`前後をfixture化し、Release公開gapが追加前1件・追加後0件を再現する | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
-| `GRAPH-013` | `ACTIVE` | Claude | [EXECUTION] document match precision fixture | RP-15を`bb77fafc`基準で単語照合36件・所属型併用9件として再現し、`f6f84d6c`の自己参照増加を別snapshotにする | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
-| `GRAPH-014` | `ACTIVE` | Claude | [EXECUTION] observation staleness fixture | RP-17の`observed_at`と変更file snapshotから、古い観測と現行観測をSQLite `:memory:`で判定する | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-009` | `DONE` | Claude / Codex | [EXECUTION] 受入済み過去graph知見のSQLite追試完成判定 | 2026-10-08、GRAPH-007とRP-01・05・08・15・17を一つのcommandで実行し、6件全PASS・exit 0・local DB非依存をCodexが確認 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-010` | `DONE` | Claude / Codex | [EXECUTION] precedence missing-pair fixture | 2026-10-08、task 4件・既存辺2件から辺のない4組を再現しCodexがPASSを確認 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-011` | `DONE` | Claude / Codex | [EXECUTION] specification file role fixture | 2026-10-08、旧・現行規則を2 snapshotへ適用し、番号0〜4がspec、98・99がnon-specとなるPASSを確認 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-012` | `DONE` | Claude / Codex | [EXECUTION] configuration-aware spec-gap fixture | 2026-10-08、DEBUG限定を除きRelease公開gapがtest追加前1件・追加後0件となるPASSを確認 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-013` | `DONE` | Claude / Codex | [EXECUTION] document match precision fixture | 2026-10-08、基準snapshotの単語照合36件・所属型併用9件と自己参照後38・9件のPASSを確認 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-014` | `DONE` | Claude / Codex | [EXECUTION] observation staleness fixture | 2026-10-08、古い観測をstale、再構築後をnot staleとするPASSを確認 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `OPS-001` | `ACTIVE` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 現行運用の原則、手順、停止条件、受入、委任、失敗知見とRegistry templateを整理し、別projectで再現性を検証できる状態にする | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |

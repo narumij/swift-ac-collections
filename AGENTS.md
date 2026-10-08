@@ -158,7 +158,9 @@ sentence or to ordinary conversation.
 - Use `是。` before a sentence that explicitly affirms a premise, understanding,
   or proposed direction as correct. It is not a casual acknowledgement.
 - Use `否。` before a sentence that explicitly rejects or corrects a mistaken
-  premise, factual misunderstanding, or unsafe framing. It is not for mild
+  premise, factual misunderstanding, or unsafe framing in the user's immediately
+  preceding statement. Do not use it when correcting the agent's own earlier
+  statement or decision; state that correction directly. It is not for mild
   disagreement or stylistic preference.
 - Use `解。` before a sentence that interprets evidence, explains a reason or
   relationship, or states what can be inferred.

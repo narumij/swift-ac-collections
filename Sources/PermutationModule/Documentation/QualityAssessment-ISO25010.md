@@ -24,7 +24,8 @@
 - 目的: 汎用ライブラリの部品として公開してよい品質かを、1.0判断の前に把握する。
 - 対象: `Sources/PermutationModule/Permutations.swift`の公開表面
   （`Collection.nextPermutations()`、`NextPermutationsSequence`、`.Iterator`、`.Permutation`）。
-- 対象外: AtCoder 2025互換mode（`PERM-004`〜`PERM-010`、未実装）。実装後に別途評価する。
+- 対象外: AtCoder 2025互換mode。2026-10-09に実装・仕様test・再公開・単一file検証まで完了したが、
+  本書の評価語は通常版だけを対象とし、互換版は別途再評価する。
 - 前提（2026-10-07、ユーザー判断）: Swiftの標準protocolの意味論・契約（例: `Collection.count`が走査できる
   要素数と一致すること、`Comparable`が全順序であること）は信じる。契約に違反する適合型への防御は品質要求に含めない。
   利用者が普通に踏みうる誤用（範囲外の添字など）への`precondition`とは区別する。
@@ -83,8 +84,8 @@ PR #174のperformance jobはbase / HEAD比較を含めて成功し、同PRは`04
 
 | 副特性 | 判定 | 根拠 |
 | --- | --- | --- |
-| 共存性 | 満たす | 通常版はswift-algorithms 1.2.1と同時importし、修飾なしで両APIを解決するtestを`_4_CoexistenceTests`に追加済み（`0ff5fd84`、`PERM-018`）。未実装で凍結中の互換modeは現行通常版の評価へ含めない |
-| 相互運用性 | 満たす | `Sequence`・`IteratorProtocol`・`RandomAccessCollection`へ適合し、標準の`map`や`Array(_:)`で使える（`_1_`〜`_3_`）。`Permutation`は`Equatable`・`Hashable`（要素が`Hashable`のとき）で、`Set`や辞書のキーにできる（`_3_`）。結果の添字は入力に関係なく0始まりの`Int`（`_3_`の`testIndicesStartAtZeroForAnySource`）。`AcCollections`経由の再公開は`AcCollectionsTests.test_importAcCollections_exposesNextPermutations` |
+| 共存性 | 満たす | 通常版はswift-algorithms 1.2.1と同時importし、修飾なしで両APIを解決するtestを`_4_CoexistenceTests`に追加済み（`0ff5fd84`、`PERM-018`）。互換modeは別評価とする |
+| 相互運用性 | 満たす | `Sequence`・`IteratorProtocol`・`RandomAccessCollection`へ適合し、標準の`map`や`Array(_:)`で使える（`_1_`〜`_3_`）。`Permutation`は`Equatable`・`Hashable`（要素が`Hashable`のとき）で、`Set`や辞書のキーにできる（`_3_`）。結果の添字は入力に関係なく0始まりの`Int`（`_3_`の`testIndicesStartAtZeroForAnySource`）。`AcCollections`経由の通常版再公開は`test_importAcCollections_exposesCurrentPermutationAPI`で固定 |
 
 ### 3.4 インタラクション能力（Interaction capability。旧: 使用性）
 
@@ -144,7 +145,7 @@ Releaseでの停止は2026-10-03にローカルのmacOSで5件とも確認した
 | 適応性 | 満たす | 入力は任意の`Collection`（要素は`Comparable`）。2026-10-07に`Index == Int`制約を除去 |
 | 拡張性 | 対象外 | 利用者が拡張する設計ではない |
 | 設置性 | 満たす | SwiftPMのtargetとして利用。`swift-tools-version: 6.2`、`platforms: [.macOS(.v15)]` |
-| 置換性 | 部分 | AtCoder 2025版から移行する利用者向けの互換modeは未実装（`PERM-004`以降） |
+| 置換性 | 満たす | AtCoder 2025版の公開APIと観測可能な挙動をpackage traitで選択でき、仕様test、`AcCollections`再公開、単一file生成を検証済み。実提出はユーザー専任 |
 
 懸念: AtCoderの判定環境は`import AcCollections`に依存できない。単一fileでの提出確認（`PERM-002`、ユーザー専任）と
 その生成（`PERM-009`）は未実施。
@@ -272,14 +273,14 @@ Codex acceptance（2026-10-08）: 指定された3点だけが照合結果へ同
 | --- | --- | --- | --- | --- |
 | 通常版`PermutationModule`とswift-algorithmsの同時import | 通常mode。`PermutationTests`は`Algorithms`へ依存（`Package.swift:322-324`）。CIはLinuxのDebug / Release（`swift.yml:79-100`） | `NextPermutationsSequence_4_CoexistenceTests.swift:16,23`（`0ff5fd84`） | `nextPermutations()`と`permutations()`が修飾なしで解決する。型注釈で`NextPermutationsSequence<[Int]>`と`PermutationsSequence<[Int]>`を書ける。後続だけと全順列の違い | `uniquePermutations()` / `UniquePermutationsSequence`と、`permutations(ofCount:)`・範囲版overloadは参照していない。名前が異なるので衝突の可能性は低いが、testでは固定されていない。swift-algorithmsの版は1.2.1（`Package.resolved`）だけ |
 | swift-algorithms側の`nextPermutation` | 同上 | なし | swift-algorithms 1.2.1の`nextPermutation(upperBound:)`は`internal`（`.build/checkouts/swift-algorithms/Sources/Algorithms/Permutations.swift:32`）なので、公開名としては衝突しない | upstreamが将来これを公開した場合の衝突は、F4では検出されない（現行のF4は`nextPermutations`（複数形）と`permutations`しか呼ばない） |
-| `AcCollections`経由の再公開 | 通常mode。`AcCollections`は`PermutationModule`を無条件に`@_exported`（`Sources/AcCollections/AcCollections.swift:2`）。`AcCollectionsTests`は`Algorithms`へ依存しない（`Package.swift:198-202`） | `Tests/AcCollectionsTests/AcCollectionsTests.swift:72`（`test_importAcCollections_exposesNextPermutations`） | `import AcCollections`だけで`nextPermutations()`を呼べ、結果が`[[1, 2], [2, 1]]` | `import AcCollections`と`import Algorithms`の同時importは未検証。facadeはRedBlackTree・OptionalArray・BareArrayも再公開するので、その組み合わせでの名前解決も固定されていない |
-| AtCoder 2025互換mode（`COMPATIBLE_ATCODER_2025`） | 互換modeの実装は未着手（`PERM-004`〜`PERM-010` FROZEN）。facadeは互換modeでだけ`RedBlackTreeModule`も再公開（`AcCollections.swift:6-8`） | なし。F0の非露出検査は互換modeで外れる（`_0_PublicSurfaceTests.swift:44`） | 互換modeのPermutationは、現行の通常版と同じsourceのまま（Permutation用の分岐はまだ無い） | 互換版（旧名`Permutations.*`、`unsafePermutations()`）とswift-algorithmsの同時import、互換版の`AcCollections`経由の利用は、実装後でなければ検証できない |
+| `AcCollections`経由の再公開 | 通常mode。`AcCollections`は`PermutationModule`を無条件に`@_exported`（`Sources/AcCollections/AcCollections.swift:2`）。`AcCollectionsTests`は`Algorithms`へ依存しない（`Package.swift:198-202`） | `AcCollectionsTests.test_importAcCollections_exposesCurrentPermutationAPI` | `import AcCollections`だけで`NextPermutationsSequence`と`nextPermutations()`を利用でき、結果が`[[1, 2], [2, 1]]` | `import AcCollections`と`import Algorithms`の同時importは未検証。facadeはRedBlackTree・OptionalArray・BareArrayも再公開するので、その組み合わせでの名前解決も固定されていない |
+| AtCoder 2025互換mode（`COMPATIBLE_ATCODER_2025`） | traitで通常版と互換版を排他的に選択。facadeは互換modeで`RedBlackTreeModule`も再公開（`AcCollections.swift:6-8`） | `AtCoder2025Compatibility_0_SpecificationTests`、`AcCollectionsTests.test_importAcCollections_exposesAtCoder2025PermutationAPI` | 旧`Permutations.*`、safe CoW、unsafe aliasing、列挙順・重複・境界、`AcCollections`経由の利用を固定。生成した単一fileはABC328E sample 1で結果33 | 互換版とswift-algorithmsの同時importは未検証。strict memory safety警告は別task。独立CI jobは`prepare/compatible/2`統合後へ延期 |
 
 停止事項: なし。新しいdefectと判断点は見つからなかった。
 
 Codex review（2026-10-08）: `PERM-026`を受け入れた。現行通常版については、直接依存する
 swift-algorithmsとの同時import・主要入口の名前解決が仕様testで固定されているため、共存性を
-`満たす`へ更新した。未実装で凍結中の互換modeと、将来のupstream変更は現行通常版の不足へ数えない。
+`満たす`へ更新した。互換modeは別評価であり、将来のupstream変更は現行通常版の不足へ数えない。
 
 ### PERM-027 1.0前改善候補の実施前提 assignment（2026-10-08）
 
@@ -323,7 +324,7 @@ Codex acceptance（2026-10-08）: 3候補の現状、既存基盤、依存、変
 
 | 候補 | 結論 | 理由 |
 | --- | --- | --- |
-| 性能CIへのPermutation追加 | 1.0最終判断前の実施候補として維持 | 既存benchmarkはあるが継続比較へ入っておらず、inline属性削除と終端copy削減の影響が未計測。性能基準を決めずに評価語だけ上げない。実施は凍結中の`PERM-013`をユーザーが再開した場合に行う |
+| 性能CIへのPermutation追加 | 完了 | 5計測を二つのlibraryでbase / HEAD比較へ追加し、PR #174のperformance job成功後にmerge済み。互換modeの性能計測は行わない |
 | C++ `std::next_permutation`との差分比較 | 1.0必須にしない | 公開契約はSwiftのTest as Specificationで固定され、C++ ABIや実装との互換を約束していない。追加すれば独立した比較契約と対象入力の判断が必要になる |
 | Linux CIでDeath Testを有効化 | Permutation単独の1.0必須にしない | macOSのDebug／Releaseでは停止を確認済み。Linuxで有効にすると他moduleのDeath Testも同時に動くため、package全体のCI構成判断として分離すべきである |
 

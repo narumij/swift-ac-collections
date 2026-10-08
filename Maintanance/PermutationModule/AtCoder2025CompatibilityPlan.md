@@ -1,6 +1,6 @@
 # PermutationModule AtCoder 2025互換モード計画
 
-最終更新: 2026-10-07 / Codex
+最終更新: 2026-10-09 / Codex
 
 ## 実装タスク境界
 
@@ -203,6 +203,13 @@ swift build --disable-sandbox --target PermutationModule --traits COMPATIBLE_ATC
 
 実提出は引き続きユーザー専任であり、この完了には含めない。
 
+## 10. 互換mode文書同期（2026-10-09完了）
+
+日英READMEは既存のbranch案内に留め、現行READMEへ互換modeの詳細を混在させない。
+`AcCollections`のDocCはmodeごとのPermutation再公開面へ同期した。Permutation品質評価は通常版だけを
+評価対象とする境界を維持しながら、互換modeのtrait、旧API、aliasing、仕様test、facade、単一file検証、
+strict memory safety警告、統合後CIへの延期が確認済みであることへ更新した。
+
 ## 目的
 
 通常ビルドでは、整理済みの現行`PermutationModule`だけを提供する。一方、既存の
@@ -222,8 +229,8 @@ unsafeな結果共有を、現行APIとして再推奨もしない。
 - 型名の差（2026-10-07）: 通常版は`Permutations<C>.Nexts`/`IteratorN`/`SubSequenceN`を
   `NextPermutationsSequence<Base>`/`.Iterator`/`.Permutation`へ改名し、`Permutations`名前空間を
   廃止した。互換版は基準refの旧名をそのまま持つ。
-- 既存の切替名: `COMPATIBLE_ATCODER_2025`。現在の`Package.swift`とテスト運用で既に
-  使用実績があるが、Permutationの実装自体はまだ切り替わらない。
+- 切替名: `COMPATIBLE_ATCODER_2025`。`Package.swift`の同名traitがpackage共通のcompile defineへ
+  接続され、Permutationを含むAtCoder 2025互換実装を切り替える。
 
 基準版にだけ存在する公開表面は次のとおり。
 
@@ -249,7 +256,7 @@ Sources/PermutationModule/
 ├── Permutations.swift                            # 現行版のみ（アルゴリズム含む）
 └── Compatibility/AtCoder2025/
     ├── NextPermutationProtocol.swift             # 互換版のみ
-    └── Permutations.swift                        # 互換版のみ
+    └── PermutationsAtCoder2025.swift             # 互換版のみ
 ```
 
 - 現行ファイル全体を`#if !COMPATIBLE_ATCODER_2025`で囲む。
@@ -305,15 +312,10 @@ AtCoderへ貼り付ける単一ファイルの生成はSwiftPM traitとは別問
 - traitなしの通常ビルドで、削除済みunsafe/All APIが公開されない。
 - traitありの互換ビルドで、基準版の公開テストがソース変更なしでコンパイル・成功する。
 - 両モードで`AcCollections`経由の利用を検証する。
-- 通常版と互換版のテストを同一実行結果として混ぜず、CI上で別ジョブとして表示する。
+- 通常版と互換版の仕様testを条件で分離する。CIの別job化は`prepare/compatible/2`統合後に行う。
 - 互換版の存在を理由に、現行仕様書へunsafe APIを現役APIとして掲載しない。
 
-## 今回実施しないこと
+## 完了後に残すこと
 
-- 互換ソースのコピーと条件コンパイル
-- Package traitの追加
-- CIジョブの追加
-- AtCoder用単一ファイル生成器の実装
-- ABC328Eへの外部提出
-
-この文書は、上記を小さなレビュー単位で実装するための方針確定までを扱う。
+- `prepare/compatible/2`統合後、通常版と互換版の機能testをCIの別jobにする。互換性能計測は行わない。
+- ABC328Eへの外部提出はユーザー専任とし、agentは着手・代行・催促しない。

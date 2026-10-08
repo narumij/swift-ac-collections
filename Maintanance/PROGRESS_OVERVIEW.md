@@ -140,7 +140,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-006` | `FROZEN` | User / Codex | 未結線コードの個別削除 | ユーザーが対象を個別指定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `TEST-001` | `FROZEN` | User / Codex | 無効化・歴史的テストコードの処遇 | ユーザーが対象を個別指定 | `Tests/TESTING.md` |
 | `TEST-002` | `FROZEN` | Codex | stride assertion／fixture alignmentの任意改善 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
-| `PERM-001` | `ACTIVE` | Codex | AtCoder 2025互換mode | 2026-10-08、0.5.0へ含めるユーザー判断により再開。性能基準取得後、確定済みの実施順で進める | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-001` | `DONE` | Codex | AtCoder 2025互換mode | 2026-10-09、互換source、trait、仕様test、再公開、単一file、文書同期を完了。CI分離は統合後へ移管 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-002` | `USER_ONLY` | User | ABC328E実提出確認 | ユーザーが手作業で実施 | `PermutationModule/ImplementationPlan.md` |
 | `PERM-003` | `DONE` | Claude | 現行Permutation契約の基準固定 | 2026-10-07、削除済みAPIの非露出をcompile時に固定し、重複要素・非Array入力のtestを追加 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-011` | `DONE` | Claude | Permutation公開型の改名 | 2026-10-07、`NextPermutationsSequence`/`.Iterator`/`.Permutation`へ改名し`Permutations`名前空間を廃止（source-breaking、ユーザー承認済み） | `Tests/PermutationTests/NextPermutationsSequence/` |
@@ -160,7 +160,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-007` | `DONE` | Codex | 両modeのAcCollections再公開検証 | 2026-10-09、AcCollectionsだけをimportした通常API・互換APIのcompileとtest成功を確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-008` | `FROZEN` | Codex | Permutation互換CIの分離 | `0.5.0` tag後に`prepare/compatible/2`へ統合してから、ユーザー指示で再開。機能testだけを通常版と互換版の別jobにし、互換性能計測は行わない | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-009` | `DONE` | Codex | AtCoder単一file生成とローカル検証 | 2026-10-09、互換2 sourceから自己完結fileを生成し、ABC328E公式sampleでcompile・実行結果33を確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
-| `PERM-010` | `FROZEN` | Codex | Permutation互換mode文書同期 | 通常APIと互換APIを混同せず、trait・制限・検証方法を文書化 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-010` | `DONE` | Codex | Permutation互換mode文書同期 | 2026-10-09、日英README、AcCollections DocC、品質評価をtrait・mode別API・制限・検証結果へ同期 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `OPT-001` | `DONE` | Codex | [DISCOVERY] OptionalArrayの体系監査・名称再検討 | 2026-10-08、公開7型・29宣言の契約、test、履歴、判断、Test as Specificationを検収し、ユーザードキュメント作業へ引き渡し | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-002` | `DONE` | Codex | [DISCOVERY] OptionalArray監査の管理方式と受入基準の抽出 | 2026-10-08、実績から段階構成、責任境界、受入基準、停止条件を再利用可能な監査方式として抽出 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-003` | `FROZEN` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | `OPT-002`後、抽出した管理方式をClaude向け運用規則として残す必要があるか一つだけ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |

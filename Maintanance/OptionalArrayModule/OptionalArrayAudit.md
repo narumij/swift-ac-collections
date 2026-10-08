@@ -522,6 +522,46 @@ XCTestからSwift Testingへの段階移行条件が、現行testと既存規約
 `OPT-035`を完了とする。配置の小判断と実行taskへの分割は小休止後にCodexが行い、`OPT-012`は
 それまで凍結を維持する。
 
+### OPT-012 Test as Specification実行分割（2026-10-08 / Codex）
+
+OPT-035で残した配置上の小判断を、公開契約の変更を伴わないtest整理として次のとおり確定する。
+
+- 公開7型を型ごとに分断せず、一つの`OptionalArray`仕様群として`OptionalArray_<n>_*Tests.swift`へ置く。
+- zero-volume 4Dの外側subscript test（OPT-035のT526）は、次元・zero-volumeの成功契約を固定する
+  `_1_InitializationTests`へ置く。
+- 参照型要素を使う`removeAll()` testは、破棄回数と再利用を固定する`_6_ReferenceLifetimeTests`へ置く。
+  `_5_RemoveAllTests`はoptional値としての基本的な未設定化を固定する。
+- 今回はtest frameworkを変更しない。通常testはXCTestを維持し、既にSwift TestingであるDeath Testも
+  現状を維持する。Swift Testingへの移行はTest as Specification整理の完了条件に含めない。
+- test本文、期待値、production source、公開契約は変更しない。移動に必要なclass名、import、file構造の
+  機械的変更だけを許す。
+
+実行を次の3件へ分ける。
+
+#### OPT-036 通常testの番号付き仕様file分割
+
+担当: Claude。現行`OptionalArrayTests.swift`の35 testを、OPT-035の表と上の配置判断どおり
+`OptionalArray_0_`〜`OptionalArray_6_`の7 fileへ移す。
+
+- XCTestを維持する。
+- testの追加、削除、期待値変更、共通helper化、parameterized化を行わない。
+- 各現行testを一度だけ移し、元fileは全test移動後に削除する。
+- 新しいdefect、重複、表に無いtest、移動に意味判断が必要な依存を見つけた場合は停止する。
+- 完了時に、移動前後のtest名集合が一致することと、通常構成のfocused test成功を記録する。
+
+#### OPT-037 Death Testの番号付きfile改名
+
+担当: Claude。`OptionalArrayDeathTests.swift`を`OptionalArray_99_DeathTests.swift`へ改名する。
+
+- 既存のSwift Testing suite、21 test、`#if DEATH_TEST`、冒頭の保存指示コメントを維持する。
+- test名、本体、期待する終了条件を変更しない。
+- 通常testへ統合せず、Death Test構成での実行成功を記録する。
+
+#### OPT-038 OptionalArray Test as Specification完成判定
+
+担当: Codex。OPT-036・037後、file番号、test名集合、公開契約表との対応、通常test、Death Testを検収する。
+不足があれば新taskへ分離し、問題がなければOPT-012を完了する。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

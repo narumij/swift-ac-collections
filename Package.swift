@@ -216,7 +216,6 @@ let package = Package(
       dependencies: additionalDependencies,
       path: "Sources/RedBlackTreeCollections",
       exclude: [
-        "Documentation",
         "Implements/Index/index_stale_check.md",
       ],
       swiftSettings: _settings + [
@@ -311,9 +310,6 @@ let package = Package(
     .target(
       name: "PermutationModule",
       dependencies: [],
-      exclude: [
-        "Documentation"
-      ],
       swiftSettings: _settings + [
         .strictMemorySafety()
       ]

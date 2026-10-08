@@ -16,7 +16,7 @@
 | 5 | Package trait設定 | traitありだけが互換版、traitなしは必ず通常版になる |
 | 6 | 互換仕様test | 列挙順、重複、safe CoW、unsafe aliasing、境界が基準refどおりに成功する |
 | 7 | `AcCollections`再公開検証 | 通常・互換の両modeで期待する公開APIを利用できる |
-| 8 | CI分離 | 通常版と互換版を別jobで検証し、結果を混在させない |
+| 8 | CI分離 | `prepare/compatible/2`統合後、通常版と互換版の機能testを別jobで検証する。性能計測は行わない |
 | 9 | 単一file生成・ローカル検証 | 自己完結fileを生成し、ABC328E相当入力で検証する |
 | 10 | 文書同期 | 通常APIと互換APIを混同せず、trait、制限、検証方法を記録する |
 
@@ -83,7 +83,7 @@
 | Package trait | trait、define、既定通常modeを1 commit | traitなしbuildとtest | traitありmodule build |
 | 互換仕様test | 基準refの挙動ごとにreview可能なtest commit | 既存testを維持 | 列挙順、重複、safe CoW、unsafe aliasing、境界 |
 | `AcCollections`再公開 | mode別の再公開testを1 commit | 現行API | 互換API |
-| CI分離 | 通常・互換jobの分離を1 commit | 通常job | 互換job |
+| CI分離 | `prepare/compatible/2`統合後、通常・互換の機能test job分離を1 commit。互換性能計測は追加しない | 通常job | 互換job |
 | 単一file生成・検証 | 生成手順とローカル検証を1 commit | 対象外 | ABC328E相当入力。実提出はユーザー専任 |
 | 文書同期 | 実装・検証完了後の文書差分を1 commit | 現行APIを記載 | trait、制限、検証方法を区別して記載 |
 
@@ -122,13 +122,14 @@ graph DBのscope-checkはこの組を「辺なし・結合あり」と検出し�
 | Package trait | 互換ソース隔離 | `START` | 隔離済みfileへdefineを接続する |
 | 互換仕様test | Package trait | `START` | traitで互換modeを選択可能にしてからtestする |
 | `AcCollections`再公開検証 | 互換仕様test | `START` | 互換APIの基準挙動を固定してからfacadeを検証する |
-| CI分離 | 互換仕様test | `START` | mode別test集合の確定後にjobを分離する |
+| CI分離 | `prepare/compatible/2`統合 | `START` | 互換準備branchへ統合してから機能testだけを別jobへ接続する |
 | 単一file生成 | 再公開検証 | `START` | package内の公開経路を確認後に貼り付け形を検証する |
-| 文書同期 | 再公開検証・CI分離・単一file生成 | `START` | 実装と検証結果が揃ってから利用方法を同期する |
+| 文書同期 | 再公開検証・単一file生成 | `START` | 互換mode完成時点の実装と検証結果を利用方法へ同期する。統合後CIは後から追記する |
 | 互換mode親task完了 | 文書同期 | `COMPLETE` | 文書同期までは親taskを完了しない |
 
-`AcCollections`再公開検証とCI分離は、互換仕様test後に並行着手できる。単一file生成はCI分離を
-待たない。文書同期だけが三経路の合流点となる。
+単一file生成は再公開検証後に着手する。文書同期は再公開検証と単一file生成の合流点とする。
+CI分離は互換mode完成、release gate、`0.5.0` tag、`prepare/compatible/2`統合の後へ延期し、
+互換mode親taskと文書同期の完了条件には含めない。
 
 ## 4. 互換ソースの隔離（2026-10-08完了）
 

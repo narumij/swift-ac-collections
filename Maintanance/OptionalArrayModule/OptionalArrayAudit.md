@@ -10,7 +10,7 @@ OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ
 ## 範囲と受入基準
 
 対象は `Sources/OptionalArrayModule/OptinalArray.swift` の公開7型・公開宣言29件、および
-`Tests/OptionalArrayModuleTests` の4ファイルである。
+`Tests/OptionalArrayModuleTests` の番号付き仕様test 8ファイルと利用例2ファイルである。
 
 完了には次をすべて満たす。
 
@@ -25,25 +25,25 @@ OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ
 
 ## 現物
 
-- 実装: `OptinalArray.swift` 1ファイル、487行。
+- 実装: `OptinalArray.swift` 1ファイル、521行。
 - 公開所有型: `OptionalArray1D`、`OptionalArray2D`、`OptionalArray3D`、
   `OptionalArray4D`。
 - 公開非所有View: `OptionalArray1DView`、`OptionalArray2DView`、
   `OptionalArray3DView`。
 - 公開宣言: 型7、initializer 4、`removeAll()` 4、subscript 7、`indices` 7、計29。
 - 公開適合: 所有4型が `Element: Sendable` のとき `@unchecked Sendable`。
-- test: `OptionalArrayTests.swift`、`OptionalArrayDeathTests.swift`、
-  `EDPC-J.swift`、`EDPC-L.swift`。
+- test: `OptionalArray_0_`〜`OptionalArray_6_`の通常仕様test、
+  `OptionalArray_99_DeathTests.swift`、`EDPC-J.swift`、`EDPC-L.swift`の10ファイル。
 
 ## 公開契約表
 
 | 公開面 | 宣言数 | 実装から確認できる契約 | 主な既存根拠 | 現在の状態 |
 | --- | ---: | --- | --- | --- |
 | 所有型1D〜4D | 4 | move-only。raw storageを所有し、deinitで設定済み要素と2本のbufferを破棄 | 2D〜4Dの参照型deinit test | 1Dの残存要素deinitを直接固定するtestがない |
-| initializer | 4 | 全slotを未設定にし、次元積をcapacityとして確保 | 初期nil、2D〜4Dの基本アクセス | 負値、積overflow、zero dimensionの契約が未整理 |
+| initializer | 4 | 全slotを未設定にし、次元積をcapacityとして確保。各次元は0以上、zeroを許可し、積は`Int`で表現可能であることを事前条件とする | 初期nil、2D〜4Dの基本アクセス、次元Death Test | 決定済み契約を実装・仕様testへ反映済み |
 | `removeAll()` | 4 | 設定済み要素を破棄し、全slotを未設定へ戻す。capacityは保持 | 1D〜4D基本test、2D参照破棄、3D/4D再利用test | 1D/2Dの参照型再利用は直接未固定 |
 | 所有型subscript | 4 | 1Dはoptional値を取得・変更。2D〜4Dは一段低い非所有Viewを返す | 基本アクセス、storage共有、4D次元回帰test | NOP setterはpointer-backed Viewで完了済みの変更を連鎖subscriptへwritebackする実装手段。View全体代入の提供を意図したものではない |
-| 所有型`indices` | 4 | 1Dはcapacity、2Dはheight、3Dはdepth、4Dはsize3を外側範囲として返す | 各型のindices test | 命名と軸順序の体系判断は未実施 |
+| 所有型`indices` | 4 | 1Dはcapacity、2Dはheight、3Dはdepth、4Dはsize3を外側範囲として返す | 各型のindices test | 現行の意味名と4Dの`size0`〜`size3`を維持すると決定済み |
 | View型1D〜3D | 3 | storageを所有せず親のbufferを参照。親より長く保持できない | storage共有、コメントドック | 寿命は型システムで拘束されず、恒久対応は凍結中のstorage再設計範囲 |
 | View subscript | 3 | 1Dはoptional値を変更。2D/3Dは一段低いViewを返す | View上書き寿命、View境界Death Test、full-plane stride回帰test | 3D Viewの2D面stride不足を修正済み。NOP setterの位置づけは所有型と同じ |
 | View `indices` | 3 | count、height、depthを外側範囲として返す | `testViewIndices`、4D次元回帰test | 3D Viewのdepth境界と非対称な面strideを回帰testで固定済み |
@@ -597,6 +597,24 @@ Codex completion（2026-10-08）: 0〜6の通常test 35件と99のDeath Test 21�
 維持していることを検収した。`Tests/TESTING.md`の対象file数も、番号付き仕様test 8 fileと利用例2 fileの
 現行10 fileへ同期した。追加のdefect、重複、未分類test、ユーザー判断はないため、`OPT-038`と`OPT-012`を
 完了とし、事前承認に従って`OPT-013`を再開する。
+
+## ユーザードキュメント作業への引き渡し判定（2026-10-08）
+
+Codexは暫定受入基準に対し、公開7型・公開宣言29件と公開適合4件のledger、公開契約表、test根拠、
+git履歴、4件のユーザー判断、決定後の実装・仕様test、および番号付きTest as Specificationの完成結果を
+検収した。事実、過去判断、現在の判断、未検証範囲は区別されており、利用者向け本文の入力として参照できる。
+
+文書作業へ明示して渡す既知事項は次のとおり。
+
+- Viewはstorageを所有せず、所有者より長く保持できないが、この寿命は型システムで拘束されない。
+- 条件付き`@unchecked Sendable`は所有4型にあるが、compile testは1Dだけで、並行共有を許す契約ではない。
+- EDPC-J / EDPC-Lは実利用形状のcompile対象であり、期待値testとしては実行されていない。
+- 境界、参照型寿命、非対称次元、コメントドックには既知の部分coverageがある。現時点で新しいdefectまたは
+  公開契約変更を要求する証拠ではなく、品質評価初版と利用者向け文書で不足として扱う。
+- storage再設計、strict memory safety恒久適用、コメントドック全件整備はこの監査の範囲外である。
+
+新しいユーザー判断、公開契約変更、範囲拡張を要する停止事項はない。したがって、OptionalArrayはCodexの
+ユーザードキュメント作業フェーズへ引き渡せる状態にあり、`OPT-013`と親監査`OPT-001`を完了とする。
 
 ## Claude証拠表（2026-10-08）
 

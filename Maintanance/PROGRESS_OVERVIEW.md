@@ -159,7 +159,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-008` | `FROZEN` | Codex | Permutation互換CIの分離 | 通常版と互換版を別jobとして表示し、結果を混在させない | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-009` | `FROZEN` | Codex | AtCoder単一file生成とローカル検証 | 互換版から自己完結fileを生成し、ABC328E相当入力で検証 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-010` | `FROZEN` | Codex | Permutation互換mode文書同期 | 通常APIと互換APIを混同せず、trait・制限・検証方法を文書化 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
-| `OPT-001` | `ACTIVE` | Codex | [DISCOVERY] OptionalArrayの体系監査・名称再検討 | Codexが作業設計・網羅性確認・完了判定を担い、ユーザードキュメント作業フェーズへ渡せる状態にする | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-001` | `DONE` | Codex | [DISCOVERY] OptionalArrayの体系監査・名称再検討 | 2026-10-08、公開7型・29宣言の契約、test、履歴、判断、Test as Specificationを検収し、ユーザードキュメント作業へ引き渡し | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-002` | `FROZEN` | Codex | [DISCOVERY] OptionalArray監査の管理方式と受入基準の抽出 | `OPT-001`完了後、実際に有効だった作業設計・責任境界・受入基準を再利用可能な形で整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-003` | `FROZEN` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | `OPT-002`後、抽出した管理方式をClaude向け運用規則として残す必要があるか一つだけ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-004` | `FROZEN` | Codex | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で明文化すると決定した場合、人物評価を含めず責任境界・成果物・停止条件として正本へ反映 | `OptionalArrayModule/OptionalArrayAudit.md` |
@@ -171,7 +171,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-010` | `DONE` | Codex | [DISCOVERY] OptionalArrayの型名・次元API体系監査 | 2026-10-08、OptionalArrayとBareArrayの型名・View名・次元label・property・軸対応を比較し、不揃いを判断候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-011` | `DONE` | Codex | [EXECUTION] OptionalArray監査で見つかった判断taskの登録 | 2026-10-08、位置づけ、1D型名、次元名、不正次元契約を一判断ずつ4 taskへ分離登録 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-012` | `DONE` | Codex | [EXECUTION] OptionalArrayModuleTestsのTest as Specification整理 | 2026-10-08、通常35件とDeath Test 21件を番号付き仕様fileへ整理し、test集合・契約対応・実行結果を完成検収 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-013` | `ACTIVE` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 2026-10-08、順次解凍の事前承認とOPT-038・012完了により再開。契約表、test対応、決定済み事項、未決定事項、文書入力を検収する。新しいユーザー判断・契約変更・範囲拡張が必要なら停止 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-013` | `DONE` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 2026-10-08、契約表、test対応、決定事項、既知の不足、文書入力を検収し、追加判断なしで引き渡し可能と判定 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-014` | `DONE` | Codex | [EXECUTION] OptionalArray3DViewの2D面stride修正 | 2026-10-08、非対称次元testで修正前のslice aliasを確認し、offsetを`width * height * position`へ修正。NOP setterは連鎖writeback用と明文化 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-015` | `DONE` | Claude | [DISCOVERY] OptionalArray公開宣言29件のledger作成 | 2026-10-08、型7・init 4・removeAll 4・subscript 7・indices 7をsource位置とコメントへ対応 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-016` | `DONE` | Claude | [DISCOVERY] OptionalArray所有4型のtest根拠表 | 2026-10-08、4型のinit、removeAll、subscript、indices、Sendable、deinitの根拠と不足を表化 | `OptionalArrayModule/OptionalArrayAudit.md` |

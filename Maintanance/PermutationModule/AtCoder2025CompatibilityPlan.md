@@ -178,6 +178,17 @@ swift build --disable-sandbox --target PermutationModule --traits COMPATIBLE_ATC
 契約を同じ実行へ混ぜない。互換構成は対象5件成功・失敗0、traitなしのactive test planは
 1412件成功・失敗0だった。
 
+## 7. `AcCollections`再公開検証（2026-10-09完了）
+
+`AcCollectionsTests`は`AcCollections`だけをimportし、traitなしでは現行の
+`NextPermutationsSequence`と`nextPermutations()`、traitありでは互換版の
+`Permutations.Nexts`、`Permutations.All`、`unsafePermutations()`、`unsafeNextPermutations()`へ
+到達できることをcompileと実行で確認する。
+
+通常・互換それぞれの再公開testを個別に実行し、各1件成功・失敗0だった。これにより、
+`PermutationModule`単体だけでなくpackageの公開productからも、選択したmodeのAPIが利用できることを
+固定した。
+
 ## 目的
 
 通常ビルドでは、整理済みの現行`PermutationModule`だけを提供する。一方、既存の

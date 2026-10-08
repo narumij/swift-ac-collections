@@ -241,3 +241,10 @@ macOS側の比較と本節のLinux artifact解析は`PERM-036`としてCodexが�
 性能比較が失敗した場合、workflowはbase / HEADについて、実際に測定へ使ったbenchmark binary、逆アセンブル、
 demangle済みsymbol表、binary hash、測定JSON、比較結果、runner CPUを保存する。別commandで再生成したmoduleではなく、
 測定時の実物を比較対象にする。これは`PERM-037`として受入済みである。
+
+### 独立reviewとの関係
+
+ユーザーが採用した第三者AI（Chappy）のassembly reviewは、binary全体の比較からgeneric buffer getterの
+分離と`lastAscentIndex`のcall増加を有力仮説としている（`PERM-038`）。本節の「実測hot loopの命令列は
+同一で配置が異なる」という観測とは対象範囲が違うため、どちらかで他方を棄却しない。getter差が実測taskへ
+どう到達するか、配置差と性能差の因果が何かは、同reviewの検証手順に従う追加調査まで未確定とする。

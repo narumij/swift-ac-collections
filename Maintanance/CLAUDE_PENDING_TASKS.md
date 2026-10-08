@@ -140,5 +140,6 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
     仮説（未検証）: Linuxでbenchmarkの特殊化が効かず汎用版を通っていたなら、修正前は要素ごとにcallが1回増えていたことになる。
 - Codex reconciliation: 2026-10-09、Linux CI artifactによる同一hot loopの配置差確認と合わせ、
   `PERM-036`へ正式統合した。macOS・Linuxとも修正前後のregressed hot loop自体は同じ命令列で、
-  Linuxでは遅い側だけ64 byte境界をまたぐ。inline属性がhot loopの命令を直接減らしたという説明は
-  採用せず、配置依存の有力な観測と未確定な因果を`PERFORMANCE_REGRESSION_BISECTION.md`へ分離して受入。
+  Linuxでは遅い側だけ64 byte境界をまたぐ。これは第三者AIによるassembly review（`PERM-038`）が示す
+  generic getterの非inline化仮説を否定するものとして扱わず、別の観測として
+  `PERFORMANCE_REGRESSION_BISECTION.md`へ分離して受入。

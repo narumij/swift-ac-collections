@@ -198,6 +198,36 @@ GRAPH-009は5件の子taskを統合して完成判定するtaskとし、各fixtu
 - 既存GRAPH-007の8区分が引き続きPASSする。
 - Claude専用DB、永続DB、production変更、自動抽出へ依存しない。
 
+### GRAPH-010〜014 Claude実装結果（2026-10-08）
+
+各fixtureは単独のfileで、repository rootから空の`:memory:`へ流す。どれも`schema.sql`を読んでから自分の入力を足すので、互いに独立している。
+
+```sh
+for f in rp01_precedence rp05_spec_role rp08_spec_gap rp15_document_match rp17_staleness; do
+  sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/$f.sql | tail -1
+done
+```
+
+| task | file | 結果（最終行） | 足したもの |
+| --- | --- | --- | --- |
+| GRAPH-010 | `rp01_precedence.sql` | `RP-01: PASS (4 pairs without a precedence edge)` | `schema.sql`の`edge.relation`に`task_precedence`を追加（srcのtaskがdstのtaskを必要とする） |
+| GRAPH-011 | `rp05_spec_role.sql` | `RP-05: PASS (current rule: 0-4 spec, 98 and 99 non-spec)` | `test_path`（snapshot別のpath）と、file名から旧規則・現行規則の`role`を計算するview |
+| GRAPH-012 | `rp08_spec_gap.sql` | `RP-08: PASS (before 58aab943: 1 gap find(_:), after: 0; freeCapacity excluded as DEBUG-only)` | `symbol_config`（accessと`#if`条件）、`introduced_by`（commitが加えたedge。前のsnapshotはこれを除いて作る） |
+| GRAPH-013 | `rp15_document_match.sql` | `RP-15: PASS (baseline bb77fafc: word 36, with owner 9; f6f84d6c: 38 / 9)` | `document_match`（snapshot・path・所属型も含むか）。`f6f84d6c`で増えた2件が`AI_GRAPH_SMELL_NOTES.md`と`GRAPH_DB_EXCHANGE.md`であることも照合 |
+| GRAPH-014 | `rp17_staleness.sql` | `RP-17: PASS (observed at b87c8428: stale, at bb77fafc: not stale)` | `observation`（nodeの観測commitごとの記録）、`diff_range`・`changed_file`（写したcommit範囲と変更file）。写していない範囲は`unknown`とし、「変更なし」と区別する |
+
+**確認したこと**
+
+- GRAPH-007の`run.sql`は、`schema.sql`変更後も`PASS: all 8 section counts match`。
+- 6 fileすべてで`PRAGMA foreign_key_check`の違反0件。
+- 各fixtureで期待値か入力を1か所ずらしてpipeで流すと、5本とも`FAIL (2 mismatch(es))`になる（fileは変更していない）。
+
+**決めずに記録した前提**
+
+- RP-05の旧規則: `AI_GRAPH_SMELL_NOTES.md`に「`RedBlackTree*_NN_*`」とだけあり、番号の上限（`< 90`）があったかは記録が無い。対照用のRedBlackTree fileは番号16の1件だけにして、上限の有無で結果が変わらないようにした。
+- RP-08の「DEBUG限定」の判定: `#if`条件に`DEBUG`を含み、`!DEBUG`を含まないもの。`freeCapacity`の条件は`DEBUG && !COMPATIBLE_ATCODER_2025`（`BalancedSequence.swift:188`）。条件式の一般的な評価はしていない。
+- RP-08の`58aab943`より前: 仕様testから`find(_:)`への参照が無いことは、当時の`spec-gaps`の記録に基づく。index storeを再構築して確かめてはいない。
+
 ## Codex受入欄
 
 ### GRAPH-008

@@ -31,7 +31,8 @@ CREATE TABLE node (
 CREATE TABLE edge (
   src        TEXT NOT NULL REFERENCES node(id),
   dst        TEXT NOT NULL REFERENCES node(id),
-  relation   TEXT NOT NULL CHECK (relation IN ('test_references', 'document_mentions', 'commit_changes', 'task_scopes')),
+  relation   TEXT NOT NULL CHECK (relation IN ('test_references', 'document_mentions', 'commit_changes', 'task_scopes',
+                                         'task_precedence')),  -- task_precedence: src task needs dst task (RP-01)
   provenance TEXT NOT NULL REFERENCES provenance(value),
   confidence TEXT NOT NULL REFERENCES confidence(value),
   evidence   TEXT NOT NULL,      -- file:line, commit, or a command that reproduces the edge

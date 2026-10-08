@@ -135,8 +135,9 @@ CI分離は互換mode完成、release gate、`0.5.0` tag、`prepare/compatible/2
 
 `origin/release/AtCoder/2025`の`Permutations.swift`と`NextPermutationProtocol.swift`を
 `Sources/PermutationModule/Compatibility/AtCoder2025/`へ配置し、file全体を
-`#if COMPATIBLE_ATCODER_2025`で囲んだ。現行`Permutations.swift`は反対条件の
-`#if !COMPATIBLE_ATCODER_2025`で囲み、両実装を排他的にした。
+`#if COMPATIBLE_ATCODER_2025`で囲んだ。当初は現行`Permutations.swift`の公開入口を反対条件で
+囲んだが、0.5.0を通常Permutationだけの構成へ戻す判断に伴い撤回した。通常sourceへの排他条件は
+`prepare/compatible/2`統合時に追加する。
 
 同一target内の同名basenameを現行toolchainが拒否したため、互換側だけを
 `PermutationsAtCoder2025.swift`とした。条件ラッパーと原文2行の行末空白正規化を除く2 fileの内容は
@@ -251,7 +252,8 @@ Sources/PermutationModule/
     └── PermutationsAtCoder2025.swift             # 互換版のみ
 ```
 
-- 現行ファイル全体を`#if !COMPATIBLE_ATCODER_2025`で囲む。
+- 0.5.0では現行ファイルを無条件でcompileする。`prepare/compatible/2`統合時に、互換側と重複する
+  現行公開入口へ`#if !COMPATIBLE_ATCODER_2025`を追加する。
 - 互換ファイル全体を`#if COMPATIBLE_ATCODER_2025`で囲む。
 - 同じ宣言へ細かな`#if`を散らさない。2版の公開表面と所有権モデルが大きく異なるため、
   ファイル単位で分けた方が差分を監査しやすい。

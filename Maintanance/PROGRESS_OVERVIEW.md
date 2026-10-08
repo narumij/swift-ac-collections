@@ -154,11 +154,11 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-031` | `DONE` | Claude / Codex | [DISCOVERY] Permutation 5計測のCI実行構成調査 | 2026-10-08、二つのlibraryと同一結果fileへの追記で、既存sourceのままbase / HEADの5件を比較できると確認 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-032` | `DONE` | User / Codex | [DECISION] Permutation CI計測の実行構成 | 2026-10-08、二つのlibraryを64k・10で実行し、同じ結果fileへ追記する構成を採用 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-033` | `DONE` | Claude / Codex | [EXECUTION] Permutation CI計測構成の実装 | 2026-10-08、4件・1件の二library、同一結果file追記、base / HEAD対称性を実装し、構文とtitle集合を検収 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
-| `PERM-004` | `DONE` | Codex | [EXECUTION] AtCoder 2025互換ソースの隔離 | 2026-10-08、基準2 fileを条件付き専用fileへ配置し、通常版との排他compile、通常test、互換module buildを確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-004` | `DONE` | Codex | [EXECUTION] AtCoder 2025互換ソースの隔離 | 2026-10-09、基準2 fileを条件付き専用fileへ隔離。0.5.0の通常sourceは無条件compileへ戻し、排他切替は後続branch統合時へ移管 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-005` | `EXCLUDED` | — | Permutation互換traitのPackage設定 | 2026-10-09、0.5.0は通常Permutationだけを公開するためtraitを撤回。互換切替は`prepare/compatible/2`統合後のbranch defineで扱う | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-006` | `DONE` | Codex | 互換modeのTest as Specification | 2026-10-09、列挙順・重複・safe CoW・unsafe aliasing・境界を互換限定5 testで固定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-007` | `DONE` | Codex | 両modeのAcCollections再公開検証 | 2026-10-09、AcCollectionsだけをimportした通常API・互換APIのcompileとtest成功を確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
-| `PERM-008` | `FROZEN` | Codex | Permutation互換CIの分離 | `0.5.0` tag後に`prepare/compatible/2`へ統合してから、ユーザー指示で再開。機能testだけを通常版と互換版の別jobにし、互換性能計測は行わない | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-008` | `FROZEN` | Codex | Permutation互換branchの有効化とCI分離 | `0.5.0` tag後に`prepare/compatible/2`へ統合してから、ユーザー指示で再開。branch defineと通常sourceの排他条件を有効化し、機能testだけを通常版と互換版の別jobにする。互換性能計測は行わない | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-009` | `DONE` | Codex | AtCoder単一file生成とローカル検証 | 2026-10-09、互換2 sourceから自己完結fileを生成し、ABC328E公式sampleでcompile・実行結果33を確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-010` | `DONE` | Codex | Permutation互換mode文書同期 | 2026-10-09、現行文書は通常版だけを扱い、互換資料と品質評価は後続branch define・制限・検証結果へ同期 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `OPT-001` | `DONE` | Codex | [DISCOVERY] OptionalArrayの体系監査・名称再検討 | 2026-10-08、公開7型・29宣言の契約、test、履歴、判断、Test as Specificationを検収し、ユーザードキュメント作業へ引き渡し | `OptionalArrayModule/OptionalArrayAudit.md` |

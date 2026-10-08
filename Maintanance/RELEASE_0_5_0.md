@@ -65,6 +65,11 @@ trait撤回後、cleanなscratch directoryでCIと同じ`generate-documentation 
 exit 0を確認した。`AcCollections`から通常版Permutation APIへ到達するtestも成功した。remote CIの
 再実行で通常Debug・Release・documentationを最終確認する。
 
+remote CIでは通常Debug・Release・documentation・Address Sanitizerが成功した一方、performanceで
+Permutation sequential subscriptがbaseline比`0.7247`となり30%閾値を超えた。通常sourceの製品差分は
+公開入口を囲む`#if !COMPATIBLE_ATCODER_2025`だけだったため、0.5.0からこの条件も撤回し、
+`origin/main`と同じ無条件compileへ戻した。再push後のperformanceを含むCI全体を最終確認する。
+
 ## tag作成
 
 release gate成功後、Codexが対象commit、検証結果、既知事項を短く提示し、ユーザーが対象を確認する。

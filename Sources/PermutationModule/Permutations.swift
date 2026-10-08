@@ -1,4 +1,3 @@
-#if !COMPATIBLE_ATCODER_2025
 extension Collection {
 
   /// Yields the current element order, then its lexicographic successors one at a time.
@@ -23,7 +22,6 @@ extension Collection {
     .init(self)
   }
 }
-#endif
 
 /// The sequence returned by `nextPermutations()`.
 public struct NextPermutationsSequence<Base>: Sequence

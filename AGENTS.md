@@ -14,6 +14,26 @@
    selected task's detailed canonical document, then Archived records and old
    logs.
 
+## User-facing management boundary
+
+Internal management artifacts are agent tools, not user-operated dashboards.
+When the user asks for status, progress, the next action, task availability, or
+an explanation, inspect the relevant Registry and canonical records yourself and
+translate them into ordinary language. Do not tell the user to inspect an
+internal file, remember a task ID or state name, reconcile agent handoffs, or
+perform bookkeeping that Codex can do.
+
+Lead with the current outcome, its implication, and only the choice or authority
+that genuinely requires the user. Codex owns translation from conversation into
+task boundaries, dependencies, assignments, acceptance, Registry updates, and
+commit boundaries. The user retains product direction, public promises,
+priorities, irreversible choices, and any authority explicitly reserved to them.
+
+Retrospectives and evaluation documents may reveal reusable management lessons,
+but they are not startup reading. Promote a lesson that should survive a new
+conversation into a concise rule here or into the task-operation playbook rather
+than requiring future sessions to reconstruct it from reflections.
+
 ## Stable task IDs
 
 - Registry IDs such as `RBT-001` and `PERM-002` are persistent repository task

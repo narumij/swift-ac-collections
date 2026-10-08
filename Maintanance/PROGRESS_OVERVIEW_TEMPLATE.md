@@ -8,6 +8,11 @@
 <統合担当>はsession開始時に、まずこの文書のTask Registryだけを読む。taskを選択した後、その行が示す
 詳細正本だけを追加で読む。完了済みの長い記録は必要に応じて`Archived/`へ移す。
 
+内部のRegistry、ID、状態名、handoffはagentの管理道具である。ユーザーへfile確認や状態照合を返さず、
+agentが読み取った現在地、意味、次の選択肢、必要なユーザー判断へ翻訳して報告する。評価やretrospective
+から別sessionでも守るべき知見が得られた場合は、長い記録を起動時に読ませず、AGENTS規則または運用
+playbookへ短い行動規則として昇格させる。
+
 ## Task Registry
 
 **現在の律速:** <なし／外部条件／ユーザー判断／技術的blocker。影響するtaskも書く>
@@ -166,4 +171,9 @@ soft orderは、同時に着手可能なtask間の推奨順であり、Task prec
    unless their explicit activation or restart condition has been satisfied.
 7. Codex owns final Registry updates and completion acceptance unless the
    Registry explicitly assigns that responsibility elsewhere.
+8. Internal Registry files, IDs, states, and handoffs are agent tools. Inspect
+   them yourself and translate the result; do not ask the user to operate the
+   task-management system or read an internal file to learn current status.
+9. Ask the user only for product direction, reserved authority, or a decision
+   that cannot be made safely from the recorded evidence.
 ```

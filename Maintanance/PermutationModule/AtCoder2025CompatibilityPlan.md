@@ -163,6 +163,21 @@ swift build --disable-sandbox --target PermutationModule --traits COMPATIBLE_ATC
 通常の`swift build`は実行環境のmanifest sandbox生成が拒否されたため、SwiftPM自身のsandboxを無効にして
 再実行した。互換ソースのstrict-memory-safety警告は既知の対象外として変更していない。
 
+## 6. 互換modeのTest as Specification（2026-10-09完了）
+
+`Tests/PermutationTests/AtCoder2025Compatibility/`へ互換traitでだけ有効な番号付き仕様testを追加した。
+基準refの既存testを出発点に、次を5 testで固定した。
+
+- `unsafePermutations()`の全位置順列と、同値要素を位置違いとして重複列挙する挙動
+- `nextPermutations()`の辞書順、現在位置以降の列挙、同値要素の重複排除
+- safeな`nextPermutations()`で、iteratorを進めた後も保持済み結果が変化しないCoW
+- `unsafeNextPermutations()`で、保持済み結果がiteratorのbufferを共有するaliasing
+- 空、単一、全要素同値、降順の各入力を最初の1件だけ返す境界
+
+通常版の番号付き仕様testは`!COMPATIBLE_ATCODER_2025`へ限定し、公開型と所有権モデルが異なる2 modeの
+契約を同じ実行へ混ぜない。互換構成は対象5件成功・失敗0、traitなしのactive test planは
+1412件成功・失敗0だった。
+
 ## 目的
 
 通常ビルドでは、整理済みの現行`PermutationModule`だけを提供する。一方、既存の

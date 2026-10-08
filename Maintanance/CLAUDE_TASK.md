@@ -11,7 +11,8 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: あり**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: あり。Permutation sequential subscriptのwitness table参照比較。
+- 新規bounded assignment: なし。Permutation sequential subscriptのwitness table参照比較は
+  2026-10-09にCodex受入済み。
 - 本線の現在状態: 0.5.0では通常Permutationだけを公開するため、互換traitと通常sourceの排他条件を
   撤回してrelease gateを再検証中。互換切替とCI分離は`prepare/compatible/2`統合後に扱い、
   互換性能計測は行わない。
@@ -19,7 +20,7 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
 
-## Active bounded assignment: Permutation witness table reference comparison
+## Completed bounded assignment: Permutation witness table reference comparison
 
 performance CIで`Permutations.SubSequenceN subscript sequential access`がbaseline比`0.7247`となり、
 30%回帰判定に失敗した。通常Permutationの実行コード差はすでに撤回したため、次の三点を同一toolchain・
@@ -40,6 +41,20 @@ benchmarkの再計測、性能原因の断定、閾値変更、source・workflow
 
 結果は`Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md`末尾へ、実行command、
 toolchain、比較表、結論の順で追記し、git addまで行う。Codexが受入とrelease gate判断を行う。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。結果は`QualityAssessment-ISO25010.md`末尾に追記し、git add済み（commitなし）。
+
+- macOS arm64、Swift 6.4で、三版のhot path 4関数を命令列で比較した。ループ本体・forwarder・`makeSequential`は
+  差なし。`Timer.measure`は開始addressが8 byte違うだけ。
+- witness table参照・間接call（閉包呼出の`blr`を除く）・特殊化失敗は、どの版にもない。
+- 未確認: CIの`ubuntu-24.04`での生成コード。本物の`Benchmarks` package（依存解決が必要）は使わず、
+  `Timer.measure`と`blackHole`を同じ属性で写した代用品で比較した。
+
+Codex acceptance: 2026-10-09、三版同条件、対象hot path、symbol・命令列根拠、未確認範囲の分離を検収した。
+macOS arm64では条件コンパイルによるwitness table経由化を否定できる。Linux CIの赤の説明には使い切らず、
+通常source撤回後のremote performance再実行をrelease gateの最終根拠とする。
 
 ## Completed bounded assignment: implement Permutation CI libraries
 

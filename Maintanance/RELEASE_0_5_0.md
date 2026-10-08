@@ -70,6 +70,11 @@ Permutation sequential subscriptがbaseline比`0.7247`となり30%閾値を超�
 公開入口を囲む`#if !COMPATIBLE_ATCODER_2025`だけだったため、0.5.0からこの条件も撤回し、
 `origin/main`と同じ無条件compileへ戻した。再push後のperformanceを含むCI全体を最終確認する。
 
+Claudeの独立生成コード比較では、macOS arm64・Swift 6.4の同一Release条件でbaseline、条件付き版、
+撤回後版のhot path命令列が一致し、protocol / value witness table参照と特殊化失敗はなかった。
+Linuxの実benchmarkではないため回帰原因の断定には使わず、少なくとも条件コンパイルがwitness経由へ
+落としたという仮説を支持しない証拠として扱う。
+
 ## tag作成
 
 release gate成功後、Codexが対象commit、検証結果、既知事項を短く提示し、ユーザーが対象を確認する。

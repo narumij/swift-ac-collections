@@ -354,3 +354,76 @@ Codex acceptance（2026-10-08）: 3候補の現状、既存基盤、依存、変
 以上により、R-1〜R-4を閉じ、Permutation品質評価の初版レビューを完了する。この結論は通常版を
 利用者向け文書作業へ渡せるという判定材料であり、互換modeの実装、利用者向け文書形式、性能基準、
 1.0採用を決定するものではない。
+
+### Permutation sequential subscriptのwitness table参照比較（2026-10-09）
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`CLAUDE_TASK.md`のbounded assignment。benchmarkの再計測、
+性能原因の断定、source・workflow・Registryの変更は行っていない。
+
+**比較対象:** baseline `046c5359`、条件付き版 `81dc5681`、撤回後版 `5cd66cd4`。
+
+**toolchain:** Apple Swift 6.4（`swiftlang-6.4.0.34.1 clang-2100.3.34.1`）、macOS 27.0.1、arm64。
+
+**方法:** 一時directory（`mktemp -d`）に、版ごとに依存なしのSwiftPM packageを作った。
+
+- `PermutationModule`: `git archive <rev> Sources/PermutationModule`を展開して`Documentation`を除いた。
+  swiftSettingsはroot `Package.swift`の`_settings`のうちbuild条件に効く定義（`ENABLE_PERFORMANCE_TESTING`は
+  release時、benchmark packageが有効にする`BENCHMARK`）と`.strictMemorySafety()`。
+- `FakeBench`: swift-collections-benchmark `69cd5b4`の`Timer.measure`（`@inline(never) mutating`、
+  前後で時刻取得）と`blackHole`（`@inline(never) @_optimize(none)`）を同じ属性で写した代用品。
+- `Bench`: `Permutations.SubSequenceN subscript sequential access`の本体（`firstPermutation`、
+  `timer.measure`内の`while`ループ、`blackHole`、合計の検証）をそのまま写した。
+
+三版とも同じpackage定義と同じcommandで作った。
+
+```
+swift build -c release --disable-dependency-cache -v
+xcrun objdump -d --no-show-raw-insn .build/release/Bench
+xcrun otool -Iv .build/release/Bench      # stubの解決
+```
+
+`PermutationModule`のcompile flagは三版とも`-O -whole-module-optimization -strict-memory-safety
+-DBENCHMARK -DENABLE_PERFORMANCE_TESTING`。hot pathの関数は、命令列のaddressとlabelを正規化して三版でdiffした。
+
+**source差:** 通常modeのcompile対象に、実行コードの差はない。`046c5359`→`5cd66cd4`はコメントだけ。
+`81dc5681`は`extension Collection { nextPermutations() }`を`#if !COMPATIBLE_ATCODER_2025`で囲むだけで、
+未定義なのでcompileされる。互換2 fileは`#if COMPATIBLE_ATCODER_2025`で全体が空になる。
+
+**比較表:**
+
+| hot path上の関数 | 命令数 | 046c5359 / 81dc5681 / 5cd66cd4 の差 | 間接call・witness table参照 |
+| --- | ---: | --- | --- |
+| measure内の閉包（ループ本体） | 29 | なし（開始address `0x100000f3c`も三版同一） | なし |
+| `closure #1 (inout Timer)`のforwarder | 38 | なし | なし |
+| `makeSequential(_:)` | 73 | なし | なし |
+| `Timer.measure(_:)` | 26 | 開始addressだけ（baselineは`0x1000038b4`、他は`0x1000038bc`） | `blr` 1件（`body()`の閉包呼出、三版同一） |
+
+ループ本体（三版共通、要約）:
+
+```
+bl   _swift_beginAccess          ; 捕捉した`sum`への排他access開始（ループの外で1回）
+ldr  x11, [x9, x8, lsl #3]       ; p[i]（bufferから直接load）
+add  x10, x11, x10               ; sum &+= p[i]
+str  x10, [x20]
+add  x8, x8, #1
+ldur x11, [x19, #...]            ; endIndex（header.count）を毎回再load
+cmp  x8, x11
+b.lt loop
+```
+
+- `Permutation.subscript`はinline化され、`NextPermutationsSequence<[Int]>`で特殊化されている。
+  protocol witness table、value witness table、`swift_getWitnessTable` / `swift_getAssociatedTypeWitness`への
+  参照は、hot pathの4関数のどれにもない。
+- 範囲検査の`precondition`は、ループ条件と合わせて消えている（ループ内に比較分岐は終了判定の1つだけ）。
+- binary全体の差は、`PermutationModule`内のsymbol（`Iterator.state`の初期値関数、`Iterator`のvalue witness、
+  `Permutation`のmetadata instantiation関数）の配置順と、それに伴う後続addressのずれだけ。
+
+**結論:** この条件では、三版のhot pathは同じ命令列で、witness table参照・間接call・特殊化失敗はどの版にもない。
+
+**未確認:**
+
+- performance CIは`ubuntu-24.04`（x86_64、Linux toolchain）で動く。今回はmacOS arm64でしか比較していない。
+  CIの`0.7247`と同じ条件の生成コードは見ていない。
+- 本物の`Benchmarks` package（swift-collections-benchmark、`AcCollections`経由の依存）はbuildしていない。
+  依存解決にnetworkかglobal cacheが要るため、代用品の`FakeBench`で置き換えた。
+- 配置の差（`Timer.measure`の8 byte）が性能に効くかは判定していない。

@@ -88,6 +88,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-012` | `DONE` | Claude / Codex | [EXECUTION] configuration-aware spec-gap fixture | 2026-10-08、DEBUG限定を除きRelease公開gapがtest追加前1件・追加後0件となるPASSを確認 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-013` | `DONE` | Claude / Codex | [EXECUTION] document match precision fixture | 2026-10-08、基準snapshotの単語照合36件・所属型併用9件と自己参照後38・9件のPASSを確認 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-014` | `DONE` | Claude / Codex | [EXECUTION] observation staleness fixture | 2026-10-08、古い観測をstale、再構築後をnot staleとするPASSを確認 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-015` | `DONE` | User / Codex | [DECISION] Task precedence Gateの意味と段階移行 | 2026-10-08、`START`・`COMPLETE`・移行中の`UNCLASSIFIED`を定義し、現役辺pilot、fixture検証、残辺移行の順に浸透させると決定 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-016` | `ACTIVE` | Codex | [EXECUTION] Task precedence Gate列のpilot導入 | Gate列を追加し、現行`ACTIVE` taskに関係する辺だけを意味確認して分類。他の既存辺は`UNCLASSIFIED`とし、自動推定しない | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-017` | `FROZEN` | Claude | [EXECUTION] RP-19 readiness fixture | pilot分類後、`START`だけがready判定を阻止し、`COMPLETE`と`UNCLASSIFIED`を混同しないSQLite fixtureを作る | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-018` | `FROZEN` | Codex | [EXECUTION] Task precedence Gateの段階移行完成判定 | RP-19受入後、残る`UNCLASSIFIED`を小batchで意味確認し、ready集合の差分を検収して必須欄への移行可否を判定 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `OPS-001` | `ACTIVE` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 現行運用の原則、手順、停止条件、受入、委任、失敗知見とRegistry templateを整理し、別projectで再現性を検証できる状態にする | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
@@ -233,6 +237,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-009` | `GRAPH-013` | document match fixture受入後に追試全体を完成判定する |
 | `GRAPH-009` | `GRAPH-014` | observation staleness fixture受入後に追試全体を完成判定する |
 | `GRAPH-004` | `GRAPH-009` | 過去知見の追試fixture群を受入後、共有スキーム試験の次段階を判断できる |
+| `GRAPH-016` | `GRAPH-015` | Gateの意味と段階移行方針の決定後にpilotを開始する |
+| `GRAPH-017` | `GRAPH-016` | 現役辺のGate分類をCodexが確定した後にRP-19 fixtureを実装する |
+| `GRAPH-018` | `GRAPH-017` | RP-19でready判定の意味一致を確認後、残る辺を段階移行する |
+| `GRAPH-004` | `GRAPH-018` | Gate移行の完成判定後に共有スキーム試験全体を完了できる |
 | `RBT-001` | `RBT-010` | 前提taskの完了後に後続taskを完了できる |
 | `RBT-001` | `RBT-011` | 前提taskの完了後に後続taskを完了できる |
 | `QUALITY-001` | `RBT-001` | 前提taskの完了後に着手候補にできる |

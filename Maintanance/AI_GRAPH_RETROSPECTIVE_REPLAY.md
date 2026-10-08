@@ -262,3 +262,35 @@ sh Maintanance/AIGraphInMemoryFixture/run_all.sh
 - 依存境界: 受入。各fixtureは別の空SQLite `:memory:`を使い、Claude専用DB、永続DB、production変更、
   runtime自動抽出に依存しない。
 - 状態: `DONE`
+
+## RP-19の採用判断と段階移行（2026-10-08）
+
+Claudeのユーザーインタビューで、Task precedenceの各辺へ「着手の前提」か「完了の前提」かを示す
+fieldを追加する提案があった。`GRAPH-004` ← `GRAPH-009`を着手前提と読むと、Registryで`ACTIVE`の
+`GRAPH-004`がDBでは着手不可となる食い違いを再確認した。この辺は、共有スキーム試験を並行して進める
+ことを妨げず、追試受入前の完成判定だけを止める完了前提である。
+
+ユーザーとCodexは、この提案を採用し、次の意味を確定した。
+
+| Gate | 意味 | readinessへの作用 | completionへの作用 |
+| --- | --- | --- | --- |
+| `START` | 前提taskの完了まで後続taskを開始・assignできない | 未完了ならreadyではない | 着手済みならRegistry不整合として扱う |
+| `COMPLETE` | 後続taskは並行着手できるが、前提taskの完了まで完成判定できない | 阻止しない | 未完了なら`DONE`にできない |
+| `UNCLASSIFIED` | 移行中で意味をまだCodexが確定していない | ready／not readyを自動確定しない | complete／incompleteを自動確定しない |
+
+Gateは条件付き依存を表す`制約`欄を置き換えない。前提taskが`EXCLUDED`の場合も自動的に充足とはせず、
+後続taskを`EXCLUDED`にするか、辺または制約を更新してから再判定する。DBとfixtureはRegistryへ状態を
+書き戻さず、`UNCLASSIFIED`を文言から推定して補完しない。
+
+全行を一度に変換すると、`START`を`COMPLETE`と誤って前提未完了の作業を開始する危険と、逆方向に
+誤って作業を不必要に止める危険がある。このため、次の順で段階移行する。
+
+1. Task precedence表へGate列を追加し、現行`ACTIVE` taskに関係する辺だけをCodexが分類する。
+   他の既存辺は`UNCLASSIFIED`とする。新規または意味を更新する辺には`START`か`COMPLETE`を必須とする。
+2. Claudeが確定済みpilotだけを入力にRP-19 fixtureを作り、`START`だけがready判定を阻止すること、
+   `COMPLETE`と`UNCLASSIFIED`を混同しないことを再現する。
+3. Codexが残る`UNCLASSIFIED`を小さいbatchで分類し、各batchでRegistry表示とready集合の差分を検収する。
+4. 全辺の意味とfixtureが安定した後にだけ、Gateを必須欄として完成判定する。
+
+意味分類、Registry更新、移行の完成判定はCodexが担い、Claudeは確定済み分類に対するDB・fixture実装を
+担う。この採用判断によりRP-19は「意味判断不足で実装しない」状態から、pilot後に実装可能な状態へ移った。

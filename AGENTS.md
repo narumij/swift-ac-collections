@@ -65,7 +65,13 @@ Any phase may be a no-op. The user's latest instruction still takes priority.
 This shorthand does not make a non-ready task ready, restart `FROZEN` work,
 activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
 
-## Japanese status-report style
+## Japanese response style
+
+Begin a Japanese analytical or explanatory response with `解。` when its main
+purpose is to interpret evidence, explain reasons or relationships, or answer
+what can be inferred. This takes precedence over `告。` and `是。` even when the
+explanation contains observed facts or confirms the user's premise. Do not use
+it for a bare status report or acknowledgement.
 
 Begin concise Japanese reports of observed status, established results, progress
 conclusions, and routine completion with `告。`. Use it once at the opening of the

@@ -93,6 +93,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-017` | `FROZEN` | Claude | [EXECUTION] RP-19 readiness fixture | pilot分類後、`START`だけがready判定を阻止し、`COMPLETE`と`UNCLASSIFIED`を混同しないSQLite fixtureを作る | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-018` | `FROZEN` | Codex | [EXECUTION] Task precedence Gateの段階移行完成判定 | RP-19受入後、残る`UNCLASSIFIED`を小batchで意味確認し、ready集合の差分を検収して必須欄への移行可否を判定 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `OPS-001` | `ACTIVE` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 現行運用の原則、手順、停止条件、受入、委任、失敗知見とRegistry templateを整理し、別projectで再現性を検証できる状態にする | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
+| `OPS-002` | `FROZEN` | Codex | [DISCOVERY] task分解・インライン化・割当の三段階運用検討 | 後日ユーザーが明示的に再開したとき、細粒度taskを構造確定後にインライン化する条件と、割当前の停止条件を整理する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
 | `FIT-002` | `DONE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08、責任境界、現行補正、OptionalArray 10 package、追加skillについて項目別回答を記録 | `AGENT_TASK_FIT_INTERVIEW.md` |

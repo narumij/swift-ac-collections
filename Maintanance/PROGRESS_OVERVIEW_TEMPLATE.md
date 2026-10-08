@@ -5,7 +5,7 @@
 > このファイルを別projectへコピーしたら、山括弧のplaceholderと「例」行を置き換える。
 > Task Registryを残taskの唯一の入口とし、会話や古いchecklistを正本にしない。
 
-Codexはsession開始時に、まずこの文書のTask Registryだけを読む。taskを選択した後、その行が示す
+<統合担当>はsession開始時に、まずこの文書のTask Registryだけを読む。taskを選択した後、その行が示す
 詳細正本だけを追加で読む。完了済みの長い記録は必要に応じて`Archived/`へ移す。
 
 ## Task Registry
@@ -43,6 +43,7 @@ task分割へ戻す。
 **soft order:** <例: `CORE-001` → `DOC-001`。必須依存でなければ「なし」>
 
 soft orderは、同時に着手可能なtask間の推奨順であり、Task precedenceの必須依存ではない。
+完了taskだけになったsoft orderは現行部から削除する。
 
 **現在の作業へ含めない判断:**
 
@@ -67,6 +68,8 @@ soft orderは、同時に着手可能なtask間の推奨順であり、Task prec
 このgraphのトポロジカル判定は、前提未完了のtaskを除き、ready候補を求めるために使う。一意の実施順を
 決めるものではない。依存上readyでも、`PROPOSED`、`FROZEN`、`USER_ONLY`、`WAITING_USER`、
 `WAITING_EXTERNAL`は着手しない。cycleを検出した場合は実行を止め、task分割または依存辺を見直す。
+`EXCLUDED`の前提taskを自動的に達成扱いしない。後続も不要なら`EXCLUDED`にし、別経路で成立するなら
+依存辺と完了条件を更新してからreadyを再判定する。
 
 | 後続task | 前提task | 制約 |
 | --- | --- | --- |
@@ -105,7 +108,7 @@ soft orderは、同時に着手可能なtask間の推奨順であり、Task prec
 ### 更新と完成判定
 
 - 優先順位は、ユーザーの最新指示、Task Registry、選択taskの詳細正本、Archived・旧logの順とする。
-- Task Registryの確定更新は統合担当のCodexが行う。
+- Task Registryの確定更新は<統合担当>が行う。
 - 担当agentの完了報告だけで`DONE`にしない。diff、test、根拠、完了条件を照合する。
 - 新しい判断点、前提との衝突、scope逸脱を見つけたら実装を止め、task分割または状態更新へ戻る。
 - `EXCLUDED`は失敗の隠蔽ではない。前提誤りや方針変更の理由を保存する完了状態として扱う。
@@ -113,7 +116,7 @@ soft orderは、同時に着手可能なtask間の推奨順であり、Task prec
 
 ## Session restart procedure
 
-Codexは新しいsessionで次の順に再開する。
+<統合担当>は新しいsessionで次の順に再開する。
 
 1. このRegistryだけを読む。
 2. ユーザーの最新指示に合うtaskを選ぶ。
@@ -122,15 +125,7 @@ Codexは新しいsessionで次の順に再開する。
 5. worktreeと直近commitを確認する。
 6. 着手可能なら小さな単位で進め、判断不足なら停止してユーザーへ返す。
 
-`PROPOSED`、`FROZEN`、`USER_ONLY`、`WAITING_EXTERNAL`を、古い文書の未完了記述だけで開始しない。
-
-## Current summary
-
-この節は人間向けの短いsnapshotであり、Registryを上書きしない。古くなったら更新または削除する。
-
-- <projectの現在地を1文で書く。>
-- <現在進行中の主系列を書く。>
-- <最大のblockerまたは意図的な凍結を書く。>
+`PROPOSED`、`WAITING_USER`、`FROZEN`、`USER_ONLY`、`WAITING_EXTERNAL`を、古い文書の未完了記述だけで開始しない。
 
 ## Bootstrap checklist
 
@@ -145,6 +140,8 @@ Codexは新しいsessionで次の順に再開する。
 - [ ] 各taskから詳細正本へ辿れる。
 - [ ] 複数判断を含むtaskを分割した。
 - [ ] 必須依存とsoft orderを分けた。
+- [ ] Registryと同じ状態を繰り返すsummaryやchecklistを作っていない。
+- [ ] 完了した中間goal、完了taskだけのsoft order、古い概要を現行部に残していない。
 - [ ] AGENTS.mdなどのsession開始規則から、このRegistryを唯一の入口として参照した。
 - [ ] 新しいsessionで、会話履歴なしに次taskを選べるか試した。
 
@@ -165,7 +162,7 @@ Codexは新しいsessionで次の順に再開する。
    Do not revive tasks from old checklists, handoffs, or logs.
 5. Priority order is: the user's latest instruction, the Task Registry, the
    selected task's canonical document, then archived records and old logs.
-6. Never start `PROPOSED`, `FROZEN`, `USER_ONLY`, or `WAITING_EXTERNAL` tasks
+6. Never start `PROPOSED`, `WAITING_USER`, `FROZEN`, `USER_ONLY`, or `WAITING_EXTERNAL` tasks
    unless their explicit activation or restart condition has been satisfied.
 7. Codex owns final Registry updates and completion acceptance unless the
    Registry explicitly assigns that responsibility elsewhere.

@@ -65,3 +65,10 @@ Git対象外共有fileへ切り替えてよい。形式とfile名は両者で決
 - Registryやsourceの変更提案は交流ログだけで確定しない。
 - 統合DB、共通schema、勝者の選定を成果物にしない。
 - tracked版とGit対象外版を二重運用しない。選んだ共有面だけを使う。
+
+## Local visualization PoC
+
+2026-10-08、Claude専用のlocal projectionから、現在のready周辺と中間goal観点をSVG／PNGへ描く
+二つのPoCを試した。生成scriptと画像は`.task-graphs/`に置き、Git対象外とする。Codexは標準library
+だけで再生成でき、出力が空でないことを確認した。goalとtaskの対応は正本ではなく候補表示に限定し、
+Registryへの書き戻しや外部tool導入は行わない。

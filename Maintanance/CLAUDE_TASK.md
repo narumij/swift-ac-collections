@@ -6,6 +6,58 @@ Codex is operating in low-consumption mode through 2026-10-16. This does not res
 Claude remains limited to explicit requests and ready Claude-owned Registry tasks, while Codex keeps
 integration, decisions, acceptance, Registry updates, and public-document ownership.
 
+## Completed bounded assignment: playbook portability consistency review
+
+Independently review the current worktree versions of
+`Maintanance/CODEX_TASK_OPERATION_PLAYBOOK.md` and
+`Maintanance/PROGRESS_OVERVIEW_TEMPLATE.md` for internal consistency and portability to another
+project. This is a decision-free factual review supporting the Codex-owned task-operation playbook.
+
+Check only the following:
+
+- the template implements the playbook's rules for source of truth, task states, task types,
+  readiness, restart behavior, acceptance, and stale-record cleanup;
+- repository-specific assumptions are clearly examples or placeholders rather than hidden
+  requirements;
+- the removal of the duplicate `Current summary` does not leave a dangling instruction or checklist
+  reference;
+- the two documents do not contradict each other about derived summaries or archival history.
+
+Do not edit either reviewed document, choose policy, broaden the review to other maintenance files,
+or update the Task Registry. Record a compact result in this section under a `### Result` heading:
+list each concrete mismatch with exact file and line evidence, or state that no mismatch was found.
+If a policy decision would be required, identify it and stop. Codex owns corrections and acceptance.
+
+### Result
+
+2026-10-08 / Claude Opus 5.5 (`claude-opus-5-5`). Reviewed the worktree versions (P = playbook, T = template line).
+Five mismatches; no dangling reference from the `Current summary` removal.
+
+1. State set differs: T91 defines `ARCHIVED`; the playbook state list (P36-P43) has no `ARCHIVED`, and
+   P185 refers only to "Archived記録". The template adds a state the playbook does not define.
+2. Restart/no-start list omits `WAITING_USER`: T125 and the snippet T161 list `PROPOSED`, `FROZEN`,
+   `USER_ONLY`, `WAITING_EXTERNAL`, while the readiness exclusion (T68-T69, P83) also excludes
+   `WAITING_USER`. P234 likewise names only frozen, user-only, and external-wait. Whether `WAITING_USER`
+   belongs in the no-start lists is a policy choice; not decided here.
+3. Readiness rule not carried into the template: P87-P89 (an `EXCLUDED` predecessor is not treated as
+   satisfied; mark the successor `EXCLUDED` or update the edge, then re-evaluate) has no counterpart in
+   T62-T76 or T80-T112.
+4. Stale-record cleanup only partly implemented: P184 says to remove completed intermediate goals,
+   soft orders listing only completed tasks, and outdated overviews from the current section. The template's
+   goal and soft-order sections (T17-T29, T41-T45) carry no such instruction; T140 covers only duplicated
+   summaries, and T112 covers moving completed tasks.
+5. Agent name is fixed where the playbook says it is an example: P19 states the agent names are examples,
+   not requirements. T8, T108, and T116 state "Codex" as the integrator without a placeholder; only the
+   snippet T163 allows reassignment ("unless the Registry explicitly assigns ..."). The example owners
+   in T55-T58 are covered by T60 as examples.
+
+No mismatch found for: task types (T33-T39 / P51-P56), `PROPOSED` promotion (T99-T103 / P102-P114),
+restart order (T116-T123 / P28, P143), acceptance and `DONE` (T90, T109 / P43, P169), derived summaries
+versus archival history (T9, T112, T140 / P180-P186). `Current summary` removal: no remaining reference to
+that section in either document; the new checklist item T140 matches P180.
+
+Codex acceptance: 2026-10-08、5件を検収し、既存方針から決まる整合修正をplaybookとtemplateへ反映。
+
 ## Active task: independent task graph DB experiment
 
 Continue operating the Claude-owned experiment defined by

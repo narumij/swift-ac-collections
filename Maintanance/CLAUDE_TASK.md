@@ -11,11 +11,27 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: あり**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: なし。
-- 本線の現在状態: Permutation CI実行構成のユーザー判断待ち。決定後の実装taskは未割当。
+- 新規bounded assignment: あり。決定済みPermutation CI二library構成の実装。
+- 本線の現在task: 下記「Active bounded assignment: implement Permutation CI libraries」。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: implement Permutation CI libraries
+
+決定済みの次の構成だけを実装する。
+
+1. `Benchmarks/Libraries/CI.json`へ既存subscript benchmark 4件のgroupを追加する。
+2. 小size用libraryを`Benchmarks/Libraries/CI-Small.json`として追加し、既存end-to-end benchmark 1件だけを含める。
+3. `.github/workflows/swift.yml`のperformance jobで、current側は既存CI library実行後、同じ
+   `current.json`へ小size用libraryを`--max-size 10 --cycles 1 --mode append`で追記する。
+4. base側はPR側の`CI-Small.json`もcopyし、同じ順序とoptionで`base.json`へ追記する。
+5. 既存の`results compare`、30%回帰判定、artifact、benchmark sourceは変更しない。
+
+変更可能fileは`Benchmarks/Libraries/CI.json`、新規`Benchmarks/Libraries/CI-Small.json`、
+`.github/workflows/swift.yml`だけ。JSON構文、YAML差分、task title 5件との完全一致、base / HEADの対称性を
+静的に確認する。benchmark実行、依存解決、長時間計測、source・test・文書・Registry変更、commit、pushは
+行わない。範囲内で成立しない事実を見つけた場合は変更を広げず停止して返す。
 
 ## Completed bounded assignment: Permutation CI execution design
 

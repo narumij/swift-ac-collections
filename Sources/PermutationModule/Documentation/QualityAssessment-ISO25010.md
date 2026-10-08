@@ -66,6 +66,10 @@ subscript 4件を現行の`--max-size 64k`・`--mode replace-all`で測定し、
 最初のPRだけ停止するため採用候補として劣る。別結果fileを`results merge`する案にも、同じfileへ直接
 追記する方式を上回る利点はない。推奨は二つのlibraryと同一結果fileへの追記である。
 
+2026-10-08、ユーザー判断により推奨案を採用した。subscript 4件を既存`CI.json`・最大64kで測り、
+end-to-end 1件を小size用library・最大10で同じ結果fileへ追記する。base / HEADの両方にPR側の二つの
+library定義を用い、benchmark sourceと既存の比較・回帰判定は変更しない。
+
 ### 3.3 互換性（Compatibility）
 
 | 副特性 | 判定 | 根拠 |

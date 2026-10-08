@@ -105,3 +105,37 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
     ただし中継の重さは粒度ではなく受け渡しの仕組みの問題として、別に扱うのがよいとユーザーと整理した。
 - Codex reconciliation: 2026-10-08、将来の独立したCodex担当taskとしてRegistryへ正式登録。運用上の観測: Codex担当の作業を承認された場合、queueは「Claudeが連絡を書く」taskとして
   扱えば、今の状態語（`USER_AUTHORIZED`→`AWAITING_CODEX`）のままで回る。状態語を足すかはCodexが判断する。
+
+### `CP-20261009-001` — `f01c66a6`前後の実benchmark hot path機械語比較
+
+- queue状態: `AWAITING_CODEX`
+- 発見元・ユーザー指示: 2026-10-09、Codex低消費mode中の雑談でClaudeが提案したA-1に対し、ユーザー:
+  「A-1やろうか。採番待ちタスクとして承認します。」
+- 種別候補: `DISCOVERY`
+- 対象範囲: 本物の`Benchmarks` packageを`f01c66a6^`（`f57a24d2`）と`f01c66a6`でbuildし、
+  `Permutations.SubSequenceN subscript sequential access`のhot loopの機械語を比べる。buffer subscript getter、
+  header initializer、probe initializerが呼出として残るか、inline化されるかを記録する。
+- 対象外: Linuxでの確認、benchmark再計測、source・benchmark・workflowの変更、原因の断定、commit。
+- 完了条件: 両版のhot loopの該当命令と、呼出として残るsymbolの有無を示す。差がなければ「macOSでは差なし」と書く。
+- 前提・既存task候補: `CLAUDE_TASK.md`の完了済みassignment 2件（witness table比較、二分探索）の補足。
+- 担当候補・受入担当: Claude / Codex（取り込みの要否）
+- 停止条件: 依存解決ができない、またはhot loopを同定できない場合。
+- 成果・検証（2026-10-09 / Claude Opus 5.5）:
+  - 環境: Apple M1、macOS 27.0.1、Swift 6.4（`swiftlang-6.4.0.34.1`）。一時directoryへ`git archive`で両版を展開し、
+    本物の`Benchmarks` packageを`swift build -c release --product benchmark`でbuild（SwiftPMのcache・config・securityも一時directory）。
+    `xcrun objdump -d`で、当該taskの閉包5関数（登録閉包、Timer閉包とforwarder、measure内閉包とforwarder）を比べた。
+  - 結果: **macOSでは差なし。** 5関数とも命令数は同じ（73 / 37 / 4 / 30 / 4）で、違いは開始address（両版で0xa8ずれる）と、
+    addressから付いたlabel名だけ。
+  - hot loop（measure内閉包）は両版とも7命令: `ldr`（`p[i]`）→ `add` → `str`（`sum`）→ `add`（`i += 1`）→
+    `ldur`（`endIndex`の再load）→ `cmp` → `b.lt`。ループの外で`swift_beginAccess`を1回呼ぶ。
+  - 5関数のどこにも、`Buffer.subscript.getter`、`NextPermutationsBufferHeader.init(count:)`、`NextPermutationsHeaderProbe.init()`
+    への呼出はない。両版ともinline化されている。
+  - 配置の事実だけ: ループ先頭は`f57a24d2`が`0x10027ac0c`、`f01c66a6`が`0x10027acb4`。性能への影響は判定していない。
+  - 0xa8（168 byte）のずれの内訳（`nm -n`の隣接address差で比較）: `PermutationModule`の**特殊化されていない汎用版**の6関数が
+    大きくなった分。`Permutation.subscript.getter` +72、同`read` +20、`lastAscentIndex.getter` +36、`lastIndex(where:)`の閉包 +20、
+    `nextPermutation()`の閉包 +16、`hash(into:)` +4。合計168。benchmarkの特殊化済みhot pathは変わっていない。
+  - 汎用版の中身: 修正前は`Permutation.subscript.getter`が`Buffer.subscript.getter`を1回、`lastAscentIndex.getter`が2回、
+    callで呼んでいた。修正後はどちらも0回（inline化）。
+  - 未確認: Linux（CIの`ubuntu-24.04`）。`f01c66a6`の3か所がLinuxで効いたかは、この結果からは分からない。
+    仮説（未検証）: Linuxでbenchmarkの特殊化が効かず汎用版を通っていたなら、修正前は要素ごとにcallが1回増えていたことになる。
+- Codex reconciliation: 未処理

@@ -129,7 +129,10 @@ sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/run.sql
 
 ## Codex受入欄
 
-- 再現command: 未確認
-- 期待件数: 未確認
-- local DB非依存: 未確認
-- GRAPH-007判定: `ACTIVE`
+2026-10-08 / Codex。
+
+- 再現command: 受入。repository rootから`sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/run.sql`を実行した。
+- 期待件数: 受入。`subscript`のtest 2・document 9・commit 6・task 0、`swapAt`のtest 4・document 8・commit 7・task 0が一致し、`PASS: all 8 section counts match`を確認した。
+- local DB非依存: 受入。空の`:memory:`からtracked SQL 4 fileだけを読み、外部キー違反なし。
+- 既知制約: taskは`nothing to derive from`、fixture文書は手動列挙対象外として期待値の自己汚染を防ぐ。
+- GRAPH-007判定: `DONE`

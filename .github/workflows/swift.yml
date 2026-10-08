@@ -12,6 +12,9 @@ on:
 
 jobs:
   documentation:
+    # The compatibility branch intentionally exposes an older API surface, so
+    # the documentation catalog merged from main cannot be validated there.
+    if: github.ref == 'refs/heads/main' || github.base_ref == 'main'
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -100,7 +103,9 @@ jobs:
         run: swift test -c release
 
   performance:
-    if: github.event_name == 'pull_request'
+    # Benchmarks track the current API surface and do not compile against the
+    # intentionally older compatibility API.
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
     runs-on: ubuntu-24.04
 
     steps:

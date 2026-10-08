@@ -105,7 +105,7 @@ strict memory safetyの警告件数、注釈、適合判定は上のどの成果
 
 graph DBのscope-checkはこの組を「辺なし・結合あり」と検出していた。当初は誤検知と判断されたが、
 計測結果の帰属という依存を正しく示していた。この訂正と再利用可能な知見は
-`AI_GRAPH_SMELL_NOTES.md`を参照する。
+`Graph/AI_GRAPH_SMELL_NOTES.md`を参照する。
 
 ### 再評価結果（2026-10-08 / Codex）
 

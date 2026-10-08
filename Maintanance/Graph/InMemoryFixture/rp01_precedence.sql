@@ -1,9 +1,9 @@
 -- GRAPH-010 / RP-01: task pairs without a precedence edge in either direction.
--- From the repository root:  sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/rp01_precedence.sql
+-- From the repository root:  sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/rp01_precedence.sql
 -- Input transcribed from the Task Registry / Task precedence of Maintanance/PROGRESS_OVERVIEW.md at a31dbcb3.
 -- Symbol sharing (task -> symbol scope) has no repository record and is not part of this fixture.
 .bail on
-.read Maintanance/AIGraphInMemoryFixture/schema.sql
+.read Maintanance/Graph/InMemoryFixture/schema.sql
 
 INSERT INTO node(id, kind, display, location, provenance, confidence, observed_at) VALUES
   ('RBT-001', 'task', 'Index完了ゲート',                              'Maintanance/PROGRESS_OVERVIEW.md', 'repo_text', 'confirmed', 'a31dbcb3'),

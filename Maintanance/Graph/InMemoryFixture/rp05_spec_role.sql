@@ -1,10 +1,10 @@
 -- GRAPH-011 / RP-05: which test files count as specification files, under the old and the current file-name rule.
--- From the repository root:  sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/rp05_spec_role.sql
+-- From the repository root:  sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/rp05_spec_role.sql
 -- Input transcribed from `git ls-tree -r --name-only <commit> -- Tests/PermutationTests` at d784b91e and a31dbcb3.
 -- Snapshot 'control' holds one RedBlackTree specification file at a31dbcb3, so that the old rule is shown to match something.
 -- Whether the old rule also had the "< 90" condition is not recorded, so the control has no file numbered 90 or above.
 .bail on
-.read Maintanance/AIGraphInMemoryFixture/schema.sql
+.read Maintanance/Graph/InMemoryFixture/schema.sql
 
 CREATE TABLE test_path (
   snapshot TEXT NOT NULL,

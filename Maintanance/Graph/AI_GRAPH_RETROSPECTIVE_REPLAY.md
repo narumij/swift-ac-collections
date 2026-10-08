@@ -12,9 +12,9 @@ SQLite `:memory:` fixture方式で追試可能な範囲を分類し、再実行�
 
 ## 対象文書
 
-- `AI_GRAPH_SMELL_NOTES.md`
-- `GRAPH_DB_EXCHANGE.md`
-- `TASK_GRAPH_DB_EXPERIMENT.md`
+- `Graph/AI_GRAPH_SMELL_NOTES.md`
+- `Graph/GRAPH_DB_EXCHANGE.md`
+- `Graph/TASK_GRAPH_DB_EXPERIMENT.md`
 
 `Archived/AI_GRAPH_SHARED_SCHEMA.md`と`Archived/AI_GRAPH_IN_MEMORY_FIXTURE.md`は追試方式の入力であり、過去知見の
 棚卸し対象には数えない。Archived文書は、上の3文書から具体的根拠として参照される場合だけ読む。
@@ -85,7 +85,7 @@ SQLite `:memory:` fixture方式で追試可能な範囲を分類し、再実行�
 
 ### 台帳（2026-10-08 / Claude）
 
-観測時点: HEAD `ce97783d`。略記: SN = `AI_GRAPH_SMELL_NOTES.md`、EX = `GRAPH_DB_EXCHANGE.md`、TE = `TASK_GRAPH_DB_EXPERIMENT.md`、
+観測時点: HEAD `ce97783d`。略記: SN = `Graph/AI_GRAPH_SMELL_NOTES.md`、EX = `Graph/GRAPH_DB_EXCHANGE.md`、TE = `Graph/TASK_GRAPH_DB_EXPERIMENT.md`、
 G7 = GRAPH-007のfixture。「task→symbol」はrepositoryに入力が無い関係を指す（GRAPH-006 A-1）。
 
 | replay ID | source | original claim | expected result | required input | query shape | class | reason | overlap |
@@ -204,7 +204,7 @@ GRAPH-009は5件の子taskを統合して完成判定するtaskとし、各fixtu
 
 ```sh
 for f in rp01_precedence rp05_spec_role rp08_spec_gap rp15_document_match rp17_staleness; do
-  sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/$f.sql | tail -1
+  sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/$f.sql | tail -1
 done
 ```
 
@@ -213,7 +213,7 @@ done
 | GRAPH-010 | `rp01_precedence.sql` | `RP-01: PASS (4 pairs without a precedence edge)` | `schema.sql`の`edge.relation`に`task_precedence`を追加（srcのtaskがdstのtaskを必要とする） |
 | GRAPH-011 | `rp05_spec_role.sql` | `RP-05: PASS (current rule: 0-4 spec, 98 and 99 non-spec)` | `test_path`（snapshot別のpath）と、file名から旧規則・現行規則の`role`を計算するview |
 | GRAPH-012 | `rp08_spec_gap.sql` | `RP-08: PASS (before 58aab943: 1 gap find(_:), after: 0; freeCapacity excluded as DEBUG-only)` | `symbol_config`（accessと`#if`条件）、`introduced_by`（commitが加えたedge。前のsnapshotはこれを除いて作る） |
-| GRAPH-013 | `rp15_document_match.sql` | `RP-15: PASS (baseline bb77fafc: word 36, with owner 9; f6f84d6c: 38 / 9)` | `document_match`（snapshot・path・所属型も含むか）。`f6f84d6c`で増えた2件が`AI_GRAPH_SMELL_NOTES.md`と`GRAPH_DB_EXCHANGE.md`であることも照合 |
+| GRAPH-013 | `rp15_document_match.sql` | `RP-15: PASS (baseline bb77fafc: word 36, with owner 9; f6f84d6c: 38 / 9)` | `document_match`（snapshot・path・所属型も含むか）。`f6f84d6c`で増えた2件が当時の`AI_GRAPH_SMELL_NOTES.md`と`GRAPH_DB_EXCHANGE.md`であることも照合 |
 | GRAPH-014 | `rp17_staleness.sql` | `RP-17: PASS (observed at b87c8428: stale, at bb77fafc: not stale)` | `observation`（nodeの観測commitごとの記録）、`diff_range`・`changed_file`（写したcommit範囲と変更file）。写していない範囲は`unknown`とし、「変更なし」と区別する |
 
 **確認したこと**
@@ -224,7 +224,7 @@ done
 
 **決めずに記録した前提**
 
-- RP-05の旧規則: `AI_GRAPH_SMELL_NOTES.md`に「`RedBlackTree*_NN_*`」とだけあり、番号の上限（`< 90`）があったかは記録が無い。対照用のRedBlackTree fileは番号16の1件だけにして、上限の有無で結果が変わらないようにした。
+- RP-05の旧規則: `Graph/AI_GRAPH_SMELL_NOTES.md`に「`RedBlackTree*_NN_*`」とだけあり、番号の上限（`< 90`）があったかは記録が無い。対照用のRedBlackTree fileは番号16の1件だけにして、上限の有無で結果が変わらないようにした。
 - RP-08の「DEBUG限定」の判定: `#if`条件に`DEBUG`を含み、`!DEBUG`を含まないもの。`freeCapacity`の条件は`DEBUG && !COMPATIBLE_ATCODER_2025`（`BalancedSequence.swift:188`）。条件式の一般的な評価はしていない。
 - RP-08の`58aab943`より前: 仕様testから`find(_:)`への参照が無いことは、当時の`spec-gaps`の記録に基づく。index storeを再構築して確かめてはいない。
 
@@ -233,7 +233,7 @@ done
 repository rootから次の一つで、GRAPH-007とRP-01・05・08・15・17の6件を実行する。
 
 ```sh
-sh Maintanance/AIGraphInMemoryFixture/run_all.sh
+sh Maintanance/Graph/InMemoryFixture/run_all.sh
 ```
 
 - `run_all.sh`は各fixtureを別の`sqlite3 :memory:`で流す（fixture同士でDBを共有しない）。Claude専用DBや永続DBは読まない。
@@ -255,7 +255,7 @@ sh Maintanance/AIGraphInMemoryFixture/run_all.sh
 
 - scope: GRAPH-010〜014の5 fixtureと一括再現・回帰確認。
 - 個別fixture: 受入。RP-01・05・08・15・17がそれぞれ独立してPASSすることをCodexが確認した。
-- 一括実行: 受入。`sh Maintanance/AIGraphInMemoryFixture/run_all.sh`をrepository rootから実行し、
+- 一括実行: 受入。`sh Maintanance/Graph/InMemoryFixture/run_all.sh`をrepository rootから実行し、
   GRAPH-007を含む6件すべてのPASSと`ALL PASS: 6 of 6 fixtures`を確認した。
 - 終了状態: 受入。全件成功時のexit status 0を確認し、runnerがSQL error、PASS行欠落、FAILを
   全体失敗として集約することを実装で照合した。

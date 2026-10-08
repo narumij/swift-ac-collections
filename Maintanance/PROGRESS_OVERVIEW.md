@@ -74,12 +74,12 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-010` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲートのうち公開Index表現と完了範囲 | Container要件の安定後、公開Indexと内部`SealError`の分離、1.0での完了範囲を決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `TASK_GRAPH_DB_EXPERIMENT.md` |
-| `GRAPH-002` | `FROZEN` | Codex | Codex用task graph DBの独立試験 | Codexのcontext reset後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
-| `GRAPH-004` | `ACTIVE` | Codex / Claude | [DISCOVERY] AIとインメモリ関係モデルによるsmell判定スキーム共有試験 | 解析ごとに関係をインメモリ構築し、共有するnode・edge・根拠・確度・query・判定結果のスキームがcode / test / taskの臭い判断に有効か検証する。永続化するのは再利用可能なスキームと観測記録だけとする | `AI_GRAPH_SMELL_NOTES.md` |
-| `GRAPH-005` | `ACTIVE` | Codex / Claude | ClaudeとCodexのgraph DB交流会 | 合意した共有面で観測、問い、反証、試したい見方を交換。tracked MDを強制せず、統合や正本化を目的にしない | `TASK_GRAPH_DB_EXPERIMENT.md` |
-| `GRAPH-017` | `FROZEN` | Claude | [EXECUTION] RP-19 readiness fixture | pilot分類後、`START`だけがready判定を阻止し、`COMPLETE`と`UNCLASSIFIED`を混同しないSQLite fixtureを作る | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
-| `GRAPH-018` | `FROZEN` | Codex | [EXECUTION] Task precedence Gateの段階移行完成判定 | RP-19受入後、残る`UNCLASSIFIED`を小batchで意味確認し、ready集合の差分を検収して必須欄への移行可否を判定 | `AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-002` | `FROZEN` | Codex | Codex用task graph DBの独立試験 | Codexのcontext reset後、ユーザーが明示的に再開 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-004` | `ACTIVE` | Codex / Claude | [DISCOVERY] AIとインメモリ関係モデルによるsmell判定スキーム共有試験 | 解析ごとに関係をインメモリ構築し、共有するnode・edge・根拠・確度・query・判定結果のスキームがcode / test / taskの臭い判断に有効か検証する。永続化するのは再利用可能なスキームと観測記録だけとする | `Graph/AI_GRAPH_SMELL_NOTES.md` |
+| `GRAPH-005` | `ACTIVE` | Codex / Claude | ClaudeとCodexのgraph DB交流会 | 合意した共有面で観測、問い、反証、試したい見方を交換。tracked MDを強制せず、統合や正本化を目的にしない | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-017` | `FROZEN` | Claude | [EXECUTION] RP-19 readiness fixture | pilot分類後、`START`だけがready判定を阻止し、`COMPLETE`と`UNCLASSIFIED`を混同しないSQLite fixtureを作る | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-018` | `FROZEN` | Codex | [EXECUTION] Task precedence Gateの段階移行完成判定 | RP-19受入後、残る`UNCLASSIFIED`を小batchで意味確認し、ready集合の差分を検収して必須欄への移行可否を判定 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、別projectでの再現性検証へ進む | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |

@@ -95,7 +95,7 @@ fixtureやtask定義文書自身をdocument nodeへ追加せず、期待値を�
 repository rootで実行する（`.read`はrepository rootからの相対pathで書いてある）。
 
 ```sh
-sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/run.sql
+sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/run.sql
 ```
 
 最終行が`PASS: all 8 section counts match`なら期待件数どおり。sqlite3 3.54.0（macOS同梱）で確認した。
@@ -131,7 +131,7 @@ sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/run.sql
 
 2026-10-08 / Codex。
 
-- 再現command: 受入。repository rootから`sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/run.sql`を実行した。
+- 再現command: 受入。repository rootから`sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/run.sql`を実行した。
 - 期待件数: 受入。`subscript`のtest 2・document 9・commit 6・task 0、`swapAt`のtest 4・document 8・commit 7・task 0が一致し、`PASS: all 8 section counts match`を確認した。
 - local DB非依存: 受入。空の`:memory:`からtracked SQL 4 fileだけを読み、外部キー違反なし。
 - 既知制約: taskは`nothing to derive from`、fixture文書は手動列挙対象外として期待値の自己汚染を防ぐ。

@@ -406,7 +406,7 @@ Codex回答は参照していない。
 task graph DBの試験(`GRAPH-001`)と、そのコードの依存graphへの拡張、特殊化境界の候補の判定を含む。
 
 **証拠の出どころ:** Claudeとユーザーの直接の会話と、commitによる(直接の証拠)。
-Codexの関与は、ユーザーが作ったtask(`TASK_GRAPH_DB_EXPERIMENT.md`)とcommit `34b46a27`からの間接の証拠である。
+Codexの関与は、ユーザーが作ったtask(`Graph/TASK_GRAPH_DB_EXPERIMENT.md`)とcommit `34b46a27`からの間接の証拠である。
 
 ### 点数の変更
 

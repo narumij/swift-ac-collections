@@ -1,12 +1,12 @@
 -- GRAPH-013 / RP-15: how many documents a member name matches, by match method.
--- From the repository root:  sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/rp15_document_match.sql
+-- From the repository root:  sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/rp15_document_match.sql
 -- Input transcribed from `git grep` at two commits (no filesystem extraction):
 --   word:  git grep -l -w -F subscript <commit> -- 'Sources/*.md' 'Documentation/*.md' 'Maintanance/*.md' README.md ':!Maintanance/Archived'
 --   owner: the same file also matches git grep -F RedBlackTreeMappedValuesView
 -- Baseline snapshot is bb77fafc (36 / 9). f6f84d6c is the commit that recorded the trial itself; its two notes mention
 -- `subscript`, so the word-only count grows to 38. That self-reference is kept as a separate snapshot, not the baseline.
 .bail on
-.read Maintanance/AIGraphInMemoryFixture/schema.sql
+.read Maintanance/Graph/InMemoryFixture/schema.sql
 
 CREATE TABLE document_match (
   snapshot   TEXT NOT NULL,

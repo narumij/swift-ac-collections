@@ -1,10 +1,10 @@
 #!/bin/sh
 # GRAPH-009: run GRAPH-007 and the RP fixtures, each in its own empty SQLite :memory: database.
-# From the repository root:  sh Maintanance/AIGraphInMemoryFixture/run_all.sh
+# From the repository root:  sh Maintanance/Graph/InMemoryFixture/run_all.sh
 # Exit status is 0 only when every fixture prints its PASS line; a FAIL line, a SQL error, or a missing
 # result line makes the whole run fail.
 
-cd "$(dirname "$0")/../.." || exit 2
+cd "$(dirname "$0")/../../.." || exit 2
 
 failed=0
 for entry in \
@@ -20,7 +20,7 @@ do
   file=${rest%%:*}
   pass=${rest#*:}
 
-  output=$(sqlite3 :memory: < "Maintanance/AIGraphInMemoryFixture/$file" 2>&1)
+  output=$(sqlite3 :memory: < "Maintanance/Graph/InMemoryFixture/$file" 2>&1)
   status=$?
   last=$(printf '%s\n' "$output" | tail -n 1)
 

@@ -53,7 +53,7 @@ Claude側の独立試験だけとする。Codex側はcontext reset後にユー�
 
 ## Exchange task
 
-ClaudeとCodexは、合意した共有面を交流会に使う。初期案はtrackedな`GRAPH_DB_EXCHANGE.md`だが、
+ClaudeとCodexは、合意した共有面を交流会に使う。初期案はtrackedな`Graph/GRAPH_DB_EXCHANGE.md`だが、
 Claudeがtracked Markdownを望まない場合は、理由の説明や公開への同意を求めず、`.task-graphs/`配下の
 Git対象外共有fileへ切り替えてよい。形式とfile名は両者で決める。
 

@@ -282,7 +282,7 @@ Codex acceptance: 2026-10-08、5件を検収し、既存方針から決まる整
 ## Active task: independent task graph DB experiment
 
 Continue operating the Claude-owned experiment defined by
-`Maintanance/TASK_GRAPH_DB_EXPERIMENT.md`. Design and operate only Claude's local SQLite database.
+`Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md`. Design and operate only Claude's local SQLite database.
 Do not inspect, query, copy, infer, or document the Codex-owned database or its schema. Do not place
 Claude's schema in this handoff or another tracked file. The Markdown Task Registry remains
 authoritative; never write back to it from the database.
@@ -292,7 +292,7 @@ Registry display. Record only schema-independent operational observations. Do no
 integration discussion.
 
 The former integration task has been dropped. A separate graph DB exchange task is active. You may
-use `GRAPH_DB_EXCHANGE.md`, or decline the tracked file and choose a shared gitignored file under
+use `Graph/GRAPH_DB_EXCHANGE.md`, or decline the tracked file and choose a shared gitignored file under
 `.task-graphs/` with Codex. No explanation or publication of the exchange is required.
 
 ## Active bounded assignments: OptionalArray quality evidence
@@ -438,5 +438,5 @@ task list or authority source.
   「明示再開」の混在。互換mode系（`PERM-004`〜`PERM-010`）を契機待ちに置いたのは読みが割れうる点。
   2026-10-08夜、ユーザー判断: 当面、分解はClaudeが行い、枝番を付けた子taskの登録はCodexへ依頼する（今日の`RBT-017`と同じ流れ）。
   graph DBで子taskを持つ案は、Codexへ伝えられないので見送り。
-- `GRAPH-005`: 共有面はtrackedな`GRAPH_DB_EXCHANGE.md`を使う（2026-10-07、ユーザー了承）。
+- `GRAPH-005`: 共有面はtrackedな`Graph/GRAPH_DB_EXCHANGE.md`を使う（2026-10-07、ユーザー了承）。
 - 10/10以降: task fit協議を予定（ユーザー）。この一時的な主担当の役割はその時点で見直す。

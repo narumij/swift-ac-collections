@@ -7,7 +7,7 @@
 この文書は、Claude専用graph DBに依存せず、CodexとClaudeが同じ意味でrepositoryの関係を
 再構築・照会するための共有スキーム候補を作る`GRAPH-006`の正本である。
 
-`AI_GRAPH_SMELL_NOTES.md`と`GRAPH_DB_EXCHANGE.md`の既存記録は、過去の観測と入力資料であって、
+`Graph/AI_GRAPH_SMELL_NOTES.md`と`Graph/GRAPH_DB_EXCHANGE.md`の既存記録は、過去の観測と入力資料であって、
 そこに書かれた未完了項目や「次に試すこと」はこのtaskの指示ではない。
 
 ## 目的
@@ -92,7 +92,7 @@ CodexがClaudeのlocal DBなしで同じ期待結果を再構築するために�
 - production source、test、build設定の変更
 - 永続DB、SQLite、Swift型など保存・実装方式の選定
 - `GRAPH-001`、`GRAPH-004`、`GRAPH-005`の統合
-- `GRAPH_DB_EXCHANGE.md`へ観測だけを追記して成果物の代わりにすること
+- `Graph/GRAPH_DB_EXCHANGE.md`へ観測だけを追記して成果物の代わりにすること
 - 共有スキームの正式採用
 
 ## 停止条件

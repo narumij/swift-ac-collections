@@ -147,7 +147,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-012` | `DONE` | Claude | Permutation仕様のTest as Specification化 | 2026-10-07、仕様をテストの連番fileへ移し、`Specification.md`を削除（ユーザー判断）。テストで表せない約束はソースのドキュメントコメントへ | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-013` | `FROZEN` | User / Claude | Permutation性能のCIベース比較 | 作業の区切りでユーザーが再開。Claudeが`Benchmarks/Libraries/CI.json`へPermutationの計測を追加し、ユーザーのpush後にperformance jobのベース比較で`@inline(__always)`全削除（`0ef177d3`）以降の影響を確認 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-014` | `DONE` | Codex | [EXECUTION] Permutation互換modeの実施手順統合 | 2026-10-08、二つの判断結果から成果単位、commit境界、mode別検証を確定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
-| `PERM-015` | `FROZEN` | Codex | Permutation互換task依存の再評価 | `PERM-014`完了後、`PERM-004`〜`PERM-010`と`PERM-013`の順序を再評価し、候補`PERM-004` ← `PERM-013`を確定または棄却してRegistryへ反映 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
+| `PERM-015` | `DONE` | Codex | [EXECUTION] Permutation互換task依存の再評価 | 2026-10-08、性能基準を互換ソース隔離の着手前提に採用し、実装・test・再公開・CI・単一file・文書のGateを確定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-029` | `DONE` | User / Codex | [DECISION] Permutation互換modeでstrict memory safetyを扱うか | 2026-10-08、互換modeから外し、後日独立して取り組み直すと決定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-030` | `DONE` | User / Codex | [DECISION] 互換ソース隔離段階の検証範囲 | 2026-10-08、互換module buildだけを確認し、mode別testを後続taskへ送ると決定 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
@@ -269,16 +269,17 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-014` | `PERM-029` | `COMPLETE` | strict memory safetyの扱いを決定後に実施手順を完成できる |
 | `PERM-014` | `PERM-030` | `COMPLETE` | 初期検証範囲を決定後に実施手順を完成できる |
 | `PERM-015` | `PERM-014` | `START` | 実施手順の決定後にtask依存を再評価できる |
-| `PERM-004` | `PERM-015` | `UNCLASSIFIED` | task依存の再評価とRegistry反映後に着手できる |
-| `PERM-005` | `PERM-004` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
-| `PERM-006` | `PERM-005` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
-| `PERM-007` | `PERM-006` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
-| `PERM-008` | `PERM-006` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
-| `PERM-009` | `PERM-007` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
-| `PERM-010` | `PERM-007` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
-| `PERM-010` | `PERM-008` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
-| `PERM-010` | `PERM-009` | `UNCLASSIFIED` | 前提taskの完了後に着手できる |
-| `PERM-001` | `PERM-010` | `UNCLASSIFIED` | 前提taskの完了後に後続taskを完了できる |
+| `PERM-004` | `PERM-013` | `START` | 互換file追加前の通常版で性能基準を取得する |
+| `PERM-004` | `PERM-015` | `START` | task依存の再評価とRegistry反映後に着手できる |
+| `PERM-005` | `PERM-004` | `START` | 前提taskの完了後に着手できる |
+| `PERM-006` | `PERM-005` | `START` | 前提taskの完了後に着手できる |
+| `PERM-007` | `PERM-006` | `START` | 前提taskの完了後に着手できる |
+| `PERM-008` | `PERM-006` | `START` | 前提taskの完了後に着手できる |
+| `PERM-009` | `PERM-007` | `START` | 前提taskの完了後に着手できる |
+| `PERM-010` | `PERM-007` | `START` | 前提taskの完了後に着手できる |
+| `PERM-010` | `PERM-008` | `START` | 前提taskの完了後に着手できる |
+| `PERM-010` | `PERM-009` | `START` | 前提taskの完了後に着手できる |
+| `PERM-001` | `PERM-010` | `COMPLETE` | 前提taskの完了後に後続taskを完了できる |
 | `BARE-003` | `BARE-002` | `UNCLASSIFIED` | 棚卸しで位置づけが未決定と判明した場合だけ判断する |
 | `BARE-004` | `BARE-003` | `UNCLASSIFIED` | BareArrayを公開継続する判断後に命名体系を決定する |
 | `BARE-005` | `BARE-002` | `UNCLASSIFIED` | 契約棚卸し後に既存testを仕様単位へ整理する |

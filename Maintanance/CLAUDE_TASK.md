@@ -11,14 +11,42 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: あり**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: なし。Permutation sequential subscript性能回帰のbenchmark二分探索は
-  2026-10-09にCodex受入済み。
+- 新規bounded assignment: あり。`GRAPH-004`のfallbackとして、Permutationのbuffer element access経路が
+  保守上のsmellかを一問だけ調査する。下の「Current bounded assignment」を実施する。
 - 本線の現在状態: 0.5.0では通常Permutationだけを公開するため、互換traitと通常sourceの排他条件を
   撤回し、PR #175の全CI成功後、`main`の`0dc1bd26`へtag `0.5.0`を作成済み。
   互換切替とCI分離は`prepare/compatible/2`統合後に扱い、互換性能計測は行わない。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Current bounded assignment: Permutation buffer access-path smell check
+
+これは現在の中間ゴールを進める本線taskがClaudeへ割当不能な間だけ行う、`GRAPH-004`のfallback調査である。
+本線のready taskが生じた場合はそちらを優先し、この調査を広げない。
+
+問いは一つだけとする。
+
+> `NextPermutationsSequence.Permutation`から要素へ到達する公開subscript、内部`Buffer.subscript`、
+> `__storage_ptr`の複数経路は、変更理由や最適化判断が分散する保守上のsmellか、それとも公開境界・CoW・
+> unsafe境界を分けるために必要な構造か。
+
+対象は`Sources/PermutationModule/Permutations.swift`内の上記宣言と、それらを直接裏づけるtest、文書、
+直近のGit履歴に限定する。必要ならClaudeが獲得済みのcode-smell確認とtuning確認の観点を使ってよい。
+ただし性能回帰の原因調査を再開せず、既存のassembly分析は反証または補助証拠としてだけ扱う。
+
+次を区別して記録する。
+
+1. 宣言・参照・test・文書・変更履歴から確認できる事実
+2. smell仮説と、該当するならその分類
+3. 必要な層分離だとする代替説明または反証
+4. 影響、確度、次に確かめるなら何か
+5. 現状維持でよいか、独立task候補をCodexへ返す価値があるか
+
+成果は`Maintanance/Graph/AI_GRAPH_SMELL_NOTES.md`へ日付付きの試験記録として追記し、git addまで行う。
+source、test、benchmark、workflow、Registry、他の正本文書は変更しない。buildやbenchmark実行は不要。
+公開契約、性能方針、実装修正の判断が必要になった場合は決めずに候補として止める。別のsmellや対象領域を
+見つけても今回へ追加しない。
 
 ## Completed bounded assignment: Permutation benchmark bisection
 

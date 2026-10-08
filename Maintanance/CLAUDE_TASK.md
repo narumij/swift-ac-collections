@@ -11,13 +11,29 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: あり**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: あり。Permutation通常版の性能基準取得に向けたCI設定追加。
-- 本線の現在task: 下記「Active bounded assignment: Permutation CI benchmark selection」。
+- 新規bounded assignment: あり。Permutation 5計測のCI実行構成調査。
+- 本線の現在task: 下記「Active bounded assignment: Permutation CI execution design」。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
 
-## Active bounded assignment: Permutation CI benchmark selection
+## Active bounded assignment: Permutation CI execution design
+
+Permutationの既存5計測を、base / HEADの双方で比較可能なままCIへ加える最小実行構成を調査する。
+4件のsubscript計測は現行の`--max-size 64k`、end-to-end計測は`size <= 10`を必要とする。
+
+次だけを根拠付きで比較し、推奨案を一つ提示する。
+
+- libraryを分けて異なる`--max-size`で実行し、二つの出力を既存regression checkへ渡せるか。
+- benchmark toolにtask単位のsize制限または同等の既存機能があるか。
+- base / HEADで同じPR側定義を使う現行性質を維持できるか。
+- 各案で変更が必要なtracked file、command、結果file、artifactを正確に列挙する。
+
+repository、既存checkout、benchmark toolのhelp・sourceは読み取ってよい。tracked fileは一切変更せず、
+benchmarkを実行せず、依存解決、長時間計測、方針決定、Registry更新、commit、pushは行わない。
+5件を比較対象に保てない案は推奨しない。新しいユーザー判断が必要なら選択肢とtrade-offを返して止める。
+
+## Completed bounded assignment: Permutation CI benchmark selection
 
 `Benchmarks/Libraries/CI.json`へ、
 `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`に既存の5計測を追加する。
@@ -28,6 +44,26 @@ JSONの妥当性と、CI設定から5件が選択されることを既存benchma
 長時間の性能測定、結果の評価、基準値や許容差の決定、workflow・source・test・文書・Registryの変更、
 commit、pushは行わない。base側に計測がない比較の扱いなど、設定追加だけでは決まらない事項を発見した
 場合は、推測で補わず根拠とともにCodexへ返す。
+
+### Result
+
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。**停止してCodexへ返す。`CI.json`は変更していない。**
+
+- 5件の表題はHEADと`main`（`5a33e96d`）の両方に同じ文字列で存在し、`Benchmarks/Sources/benchmark-tool/main.swift:14`で
+  登録済み。base側に計測が無い問題は起きない（performance jobはbase側にもPR側の`CI.json`を使う。`swift.yml`の
+  「Run baseline benchmarks」）。
+- 阻害要因: libraryのJSONは`kind`・`title`・`directory`・`contents`・`charts`・`tasks`だけを持ち、計測ごとのsize範囲を
+  指定できない（`Benchmarks/.build/checkouts/swift-collections-benchmark/Sources/CollectionsBenchmark/Benchmark/Benchmark+ChartLibrary.swift`
+  のCodingKeys）。sizeは実行全体の`--max-size 64k`から`Size.sizes(for: minSize ... maxSize, ...)`で決まる
+  （`Benchmark+Options.swift:153`、`:217`、`BenchmarkCLI+Library+Run.swift:62`）。
+- `Permutations nextPermutations end-to-end checksum`は`precondition(1 <= size && size <= 10)`を持つ
+  （`PermutationBenchmarks.swift`の同計測）。CIの`--max-size 64k`では10を超えるsizeでも呼ばれるため、Releaseでも
+  `precondition`でprocessが停止し、performance jobが失敗すると判断した。**実行による確認はしていない**
+  （Benchmarks packageのbuildで依存解決がrepository外のSwiftPM cacheへ触れ得るため）。
+- 残り4件（`Permutations.SubSequenceN subscript ...`）にはsizeの上限検査が無い（`firstPermutation(size)`と、加算は`&+=`）。
+- 決めていない選択肢: (1) 今回は4件だけを`CI.json`へ入れ、end-to-endは別扱い、(2) end-to-endのbenchmark sourceで
+  sizeを10へ丸める等の変更、(3) workflowでPermutationだけ別の`--max-size`で走らせる。いずれも本assignmentの範囲
+  （`CI.json`だけ、5件すべて）の外。
 
 ## Completed bounded assignment: playbook portability consistency review
 

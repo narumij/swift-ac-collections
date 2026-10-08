@@ -12,8 +12,8 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 - 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
 - 新規bounded assignment: なし。
-- 本線の現在状態: Permutation互換mode本体と文書同期まで完了。次の0.5.0 release gateは未割当。
-  互換CI分離は`prepare/compatible/2`への統合後まで延期し、互換性能計測は行わない。
+- 本線の現在状態: Permutation互換modeと0.5.0 release gateが完了。tag作成はユーザー確認待ち。
+  互換CI分離はtag後に`prepare/compatible/2`へ統合してから再開し、互換性能計測は行わない。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。

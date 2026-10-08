@@ -1,6 +1,6 @@
 # 開発・メンテナンス進捗一覧
 
-最終更新: 2026-10-08 / Codex
+最終更新: 2026-10-09 / Codex
 
 この文書のTask Registryを、CodexとClaudeが作業を再開するときの唯一の入口とする。まずRegistry
 だけを読み、選択したtask行が示す詳細正本だけを追加で読む。2026-10-07までの完了チェック、判断待ち、
@@ -224,7 +224,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `RELEASE-001` | `DONE` | User / Codex | [DECISION] 0.5.0のtag地点 | 2026-10-08、PermutationのAtCoder 2025互換mode完成を含む状態と決定 | `RELEASE_0_5_0.md` |
-| `RELEASE-002` | `FROZEN` | Codex | [EXECUTION] 0.5.0 release gateの実施 | tag地点の到達後、全体test・Release・必要なDeath Test・差分・既知事項を検証しtag可能と判定 | `RELEASE_0_5_0.md` |
+| `RELEASE-002` | `DONE` | Codex | [EXECUTION] 0.5.0 release gateの実施 | 2026-10-09、通常Debug・Release・互換Debugの全体test、Death Test、公開面・Package差分、tag区間と既知事項を確認しtag可能と判定 | `RELEASE_0_5_0.md` |
 | `RELEASE-003` | `FROZEN` | User / Codex | [EXECUTION] 0.5.0 tag作成 | release gate成功後、対象commitをユーザー確認して`0.5.0` tagを作成 | `RELEASE_0_5_0.md` |
 | `RELEASE-004` | `FROZEN` | User / Codex | [EXECUTION] 0.5.0の互換準備branch統合 | tag作成後、ユーザー確認を経て対象commitを`prepare/compatible/2`へmergeする | `RELEASE_0_5_0.md` |
 

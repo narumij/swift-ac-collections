@@ -86,3 +86,22 @@ Codex推奨の0.5.1到達範囲は「BareArrayの既存公開契約を堅牢化�
 `7d1a9a79`のDebug検証で、OptionalArrayの品質評価文書がSwiftPMの未処理ファイル警告として残ることを
 検出した。BareArray targetでは同種の警告を除外済みであり、OptionalArray targetにも`Documentation`の
 excludeを追加する。この修正により暫定候補を解除し、commit後に候補commitとlocal gateを固定し直す。
+
+### 2. Codex一次検収
+
+検証候補`7884ecb4`（repository tree `227801b5699f51c6a8c5a3d3687c3240b067bdc6`）で実施した。
+
+- [x] Debug package全test成功。BareArray通常35件、Death Test 42件を含む。
+- [x] Release package全test成功。BareArray通常28件、Death Test 42件を含む。
+- [x] CIと同じRedBlackTreeCollections documentation commandを`--warnings-as-errors`付きで実行し成功。
+- [x] OptionalArray／BareArrayの品質評価文書をtargetからexcludeし、SwiftPM未処理file警告を解消。
+- [ ] 公開API・再公開面・Package構成の意図しない差分を最終確認する。
+- [ ] remote CIの全必須jobを同一候補commitでgreenにする。
+- [ ] Claudeの独立チェックを実施する。
+
+既知の非阻害候補として、Permutation sourceの未使用result警告と既存testの`var`等の警告が残る。今回の
+製品差分で導入した警告ではなく、testは成功している。documentation gateのwarning-as-errorには影響しない。
+release阻害／後続扱いの最終分類は公開差分確認とClaude独立チェック後に確定する。
+
+本節を加えるcommitはrelease記録だけを変更する。commit後のHEADをremote CIと独立チェックの最終候補とし、
+`7884ecb4..HEAD`でsource、test、Package、workflow、利用者向け文書に差分がないことを確認する。

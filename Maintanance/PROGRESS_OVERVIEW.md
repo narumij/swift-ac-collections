@@ -97,6 +97,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-015` | `DONE` | User / Codex | [DECISION] release treeにおける文書境界 | 2026-10-09、tag対象には利用者向け文書だけを残し、品質評価、内部設計、執筆workflow・outline・memoと、通常版から除く互換mode専用文書はmainだけに保持すると決定 | `RELEASE_CHECKLIST.md` |
 | `RELEASE-016` | `DONE` | User / Codex | [DECISION] release工程の全test実行方式 | 2026-10-09、`Tests`はtag対象へ残し、Debugのprocess-global寿命カウンタ等価検査を`SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`で外して、隔離されていたSwift Testing・Death Testを含む通常版の全testをrelease工程で実行すると決定。ASanの扱いは変更しない | `RELEASE_CHECKLIST.md` |
 | `RELEASE-017` | `DONE` | User / Codex | [DECISION] release専用workflowの変更branch | 2026-10-09、現在の作業branchとmainのworkflowは変更せず、`prepare/release/template`上でrelease専用workflowを別fileとして用意すると決定。`release/<version>`はユーザー操作でremoteへpushしてrelease CIを実行し、変換時にmain用workflowを除外する | `RELEASE_CHECKLIST.md` |
+| `RELEASE-018` | `DONE` | User / Codex | [DECISION] release treeにおけるbenchmark結果 | 2026-10-09、benchmark source・release profile・再実行手段はtag対象へ残す一方、`Benchmarks/Results/**`の過去結果は除外し、release測定結果・環境・binary・assemblyはtag対象と同じcommitのCI artifactとして保存すると決定 | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` |
+| `RELEASE-019` | `DONE` | User / Codex | [DECISION] release性能の比較baseline | 2026-10-09、直前のrelease tagをbaselineとし、candidate側で固定したrelease profile・benchmark定義をbaselineとcandidateの双方へ適用して同じrunner job内で比較すると決定。0.5.2のbaselineは0.5.1 | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` |
 | `RELEASE-006` | `FROZEN` | User / Codex | [DECISION] 0.5.2の到達範囲とrelease検討開始 | 全公開対象のコメントドック・ドラフト完成後、0.5.2へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_5_2.md` |
 | `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | 全公開対象の利用者向けドキュメント初版完成後、0.6.0へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_6_0.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
@@ -172,6 +174,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-011` | `RELEASE-015` | `PARALLEL_JOIN` | 文書分類は先行できるが、tag treeの構成確定前に利用者向け文書だけを残す方針と合流する |
 | `RELEASE-011` | `RELEASE-016` | `PARALLEL_JOIN` | test工程の設計は先行できるが、template branch作成へ渡す前に寿命カウンタ検査を外して全testを走らせる方針と合流する |
 | `RELEASE-011` | `RELEASE-017` | `PARALLEL_JOIN` | workflow設計は現在branchで進められるが、実装へ渡す前に変更をtemplate branchだけへ限定する方針と合流する |
+| `RELEASE-011` | `RELEASE-018` | `PARALLEL_JOIN` | benchmark構成の分類は先行できるが、tag tree確定前に過去結果を除外してrelease結果をCI artifactへ残す方針と合流する |
+| `RELEASE-011` | `RELEASE-019` | `PARALLEL_JOIN` | performance workflowの設計は先行できるが、比較実装前に直前release tagをbaselineとする方針と合流する |
 
 ## Registry rules
 

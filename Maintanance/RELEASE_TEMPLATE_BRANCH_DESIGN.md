@@ -80,6 +80,32 @@ release専用workflowはmain用`.github/workflows/swift.yml`と別file名でtemp
 
 `Utilities/Permutation`は通常版への変換検証中だけ使用し、最終的なtag treeから除外する。
 
+### File allowlist
+
+release treeは「削除対象らしい名前」を推測する方式ではなく、次の配布目的ごとのallowlistと、その補集合を
+検査するmanifestで構成する。新規fileは自動的に配布せず、どの目的で必要かを確認してallowlistへ加える。
+
+| 目的 | 残すpath | 除外する代表例 |
+| --- | --- | --- |
+| Package | `Package.swift` | 変換後に存在しないpathを指す`exclude`設定 |
+| 製品source | `Sources/**`のbuild入力、`Sources/**/*.docc/**` | module内の品質評価、内部設計、草稿、memo、互換専用source |
+| Test | `Tests/**`のtest・fixture sourceと実行時resource | `Tests/CLAUDE.md`、`Tests/TESTING.md`、`Tests/Archived/**`、fixture作業文書 |
+| 利用者文書 | root README、CHANGELOG、LICENSE、通常版のtop-level `Documentation` | `Documentation/Compatibility/**`、内部評価・設計・執筆資料 |
+| Benchmark | `Benchmarks/Package.swift`、`Benchmarks/Sources/**`、release profileと再実行script | ad-hoc profile、絶対path依存script、過去の結果・chart・作業出力 |
+| Release工程 | release専用workflow、tree変換・lint・検証に必要な最小script | main用workflow、AI運用・task管理資産 |
+
+`Benchmarks/Results/**`はtag treeへ含めない。release測定のresult、比較、CPU・toolchain情報、実行binary、
+symbol、assemblyは、tag対象と同じcommitを入力にしたCI artifactとして保存する。tag treeには利用者が
+同じ測定を追試できるbenchmark source、profile、commandを残す。
+
+内部文書を削除した結果、`Package.swift`の`exclude`が存在しないpathを指す場合は、変換時にその設定も
+除去する。最終的なPackage manifestは変換後treeだけを参照し、SwiftPMの未処理file警告を出さないことを
+gateで確認する。
+
+2026-10-09、Swift 6.2の最小fixtureで、存在しないtarget `exclude`はbuildを失敗させない一方、
+`Invalid Exclude ... File not found`警告を`swift package describe`と`swift build`の両方で出すことを確認した。
+したがって、release変換では削除済みpathの`exclude`を残さない。
+
 ## 通常版treeへの変換
 
 `COMPATIBLE_ATCODER_2025`を未定義のまま残すのではなく、通常版として条件分岐を具体化する。
@@ -127,8 +153,12 @@ release専用workflowはmain用`.github/workflows/swift.yml`と別file名でtemp
 
 - 通常CIより大きな入力規模を含むrelease profileを使う。
 - `16M`は候補値であり、対象、実行時間、memory上限、反復数とともに別途確定する。
+- baselineは直前のrelease tagとし、candidate側で固定したrelease profile・benchmark定義をbaselineと
+  candidateの双方へ適用する。0.5.2では`0.5.1`を比較対象とする。
 - command、toolchain、runner情報、入力条件、結果をartifactとして保存する。
+- baselineとcandidateは同じrunner job内で測定し、両方のcommit、tree、実行順、個別結果を保存する。
 - tag treeに残る`Benchmarks`から利用者が同じ測定を再実行できるようにする。
+- `Benchmarks/Results/**`の過去の実験結果はbaselineとして暗黙採用せず、releaseごとの比較基準を明示する。
 
 ## Versionごとの流れ
 
@@ -160,7 +190,7 @@ release専用workflowはmain用`.github/workflows/swift.yml`と別file名でtemp
 
 - `prepare/release/template`を作る起点commit
 - 条件付きコンパイルを具体化するtoolの方式と検証fixture
-- release benchmarkの対象、最大size、反復、時間・memory上限
+- release benchmarkの対象、最大size、反復、時間・memory上限、失敗閾値
 - release専用workflowのtriggerと、branch protection上の必須job名
 - release pageや配布artifactをこの工程へ含める時期
 

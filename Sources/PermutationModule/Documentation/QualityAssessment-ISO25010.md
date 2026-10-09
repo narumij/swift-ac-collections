@@ -343,7 +343,8 @@ Codex acceptance（2026-10-08）: 3候補の現状、既存基盤、依存、変
 
 形式にかかわらず、利用者向け文書には少なくとも通常版だけを対象とすること、swift-algorithmsの全順列API
 との使い分け、入力自身を含む後続順列の列挙、重複要素、結果の0始まりIndex、値semantics、1ステップ
-最悪O(n)、`-Ounchecked`での範囲検査を含める。互換modeとの境界は、その実装を再開した場合に別途決める。
+最悪O(n)、`-Ounchecked`での範囲検査を含める。2026-10-09のユーザー決定により、0.5.2のコメントドックは
+通常版だけを対象とし、AtCoder 2025互換modeは含めない。
 
 ### R-4 事実と参照
 
@@ -501,8 +502,8 @@ CIと同じoptionで流した。CI-Small.jsonは当該taskを含まないので�
 通常版の公開APIを`NextPermutationsSequence_0`〜`_4`のTest as Specificationと照合し、既存の列挙規則に
 加えて、入力copy、iterator copyの独立性、終端後の動作、`Permutation`のzero-based index、値に基づく
 等値・hash・表示、subscriptとiteratorの計算量をsource commentへ記載した。内部実装testだけが示すcopy
-最適化と、原因未確定のSwift 6.4事象は公開契約へ含めていない。AtCoder 2025互換modeは対象外とし、変更して
-いない。
+最適化と、原因未確定のSwift 6.4事象は公開契約へ含めていない。AtCoder 2025互換modeは0.5.2の対象外と
+するユーザー決定に従い、変更していない。
 
 これはユーザーが契約内容をレビューできる段階のドラフトとして、0.5.2の文書作業へ引き渡したものである。
 この段階では内容の受入レビュー、Claudeによる独立レビュー、公開可否の判断を完了条件に含めない。

@@ -6,9 +6,9 @@
 
 0.5.2を現在の中間ゴールとして、前提となるコメントドック作業を開始した。独立した事前棚卸しを閉じてから
 執筆する方式は取りやめ、対象別にTest as Specificationを確認しながら期待動作を公開APIコメントへ記載する。
-BareArrayのドラフトと検証は完了した。release検討開始条件は未達であり、
-現時点ではrelease候補commit、到達範囲、必須gate、tag位置を決定しない。release rehearsal関連taskの凍結も
-維持し、0.5.2の到達範囲判断時に採用するrelease工程を別途決める。
+  全公開対象のレビュー用ドラフトと検証は完了し、release検討開始条件へ到達した。
+現時点ではrelease候補commit、到達範囲、必須gate、tag位置をまだ決定していない。release rehearsal関連taskの
+凍結も維持し、0.5.2の到達範囲判断時に採用するrelease工程を別途決める。
 
 0.5.2は、製品上の到達範囲とは別に、`prepare/release/template`から`release/0.5.2`を作成し、mainをmergeして
 専用工程を通すtemplate branch方式の初回rehearsal候補とする。実際の適用はrelease検討開始後に判断し、
@@ -34,8 +34,8 @@ checklistへ進むかを一つの判断として確定する。
 
 - `DOC-002`: 独立した事前棚卸しを完了させてから執筆する方式を取りやめ、`EXCLUDED`。各対象の実行taskで
   Test as Specificationを確認しながら期待動作を直接コメントへ記載する。
-- `DOC-003`: Permutation全体のコメントドック・ドラフト完成判定。通常版の執筆は`DOC-011`へ分離して
-  先行し、AtCoder 2025互換modeの境界は`DOC-007`で後から合流する。
+- `DOC-003`: Permutation全体のコメントドック・ドラフト完成判定。2026-10-09完了。通常版のドラフトと
+  検証を受け入れ、AtCoder 2025互換modeを0.5.2の対象外とする`DOC-007`の決定により追加実行なしで閉じた。
 - `DOC-004`: OptionalArrayのコメントドック・ドラフト作成と検証。2026-10-09完了。現行名の公開29宣言と
   4適合をTest as Specification・実装へ再照合し、所有、View寿命、破棄、変更共有、軸、境界、計算量を
   コメントへ記載した。Debug／Release通常35件＋Death Test 21件、documentation warning-as-error成功。
@@ -47,7 +47,7 @@ checklistへ進むかを一つの判断として確定する。
   Head原稿、API Matrix、Test as Specification、Release DocC検証により、0.5.2が要求するユーザーレビュー可能な
   段階へ到達済み。`RBT-014`は公開可能な利用者向け文書初版へ進む0.6.0側の作業として分離する。
 - `DOC-007`: Permutation通常版とAtCoder 2025互換modeのコメントドック境界を一つ決める`DECISION` task。
-  ユーザー判断として`DOC-003`の前提に置き、2026-10-09のユーザー指示により後回しとして`FROZEN`。
+  2026-10-09、0.5.2の対象は通常版だけとし、互換modeは含めないとユーザーが決定した。
 - `DOC-008`: `DOC-005`のBareArrayコメントドックをTest as Specification、実装、受入済み契約と照合する
   Claudeの独立レビュー。公開29宣言のcoverage、Test as Specificationとの一致、BLOCKなしをCodexが受入済み。
 - `DOC-009`: View保持中のSendable注記候補。Codex再検収で、`@unchecked Sendable`の妥当性を覆す

@@ -78,7 +78,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 次の判断は今回の作業taskへ含めない。必要になった時点でユーザーと別途決定する。
 
 - 利用者向け文書の形（Markdown、DocC、documentation commentのみのいずれにするか）
-- Permutation通常版と互換modeの文書境界
 - 性能の数値を利用者向け文書へ掲載するか
 - 1.0ゲート（`QUALITY-001`）との境界
 - RedBlackTreeのデバッグ用memberを`#if DEBUG`へ揃えるか
@@ -112,11 +111,11 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-022` | `PROPOSED` | User / Codex | [DECISION] 0.5.2 release可否ゲート | 後から分解する準備・検収taskが固定候補と必須証拠を揃えた後、0.5.2をreleaseしてよいか一つだけ判断する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-023` | `EXCLUDED` | User / Codex | [EXECUTION] 0.5.2 tag・push・公開 | 2026-10-09、工程確定前の分解は早すぎるため未着手で除外。可否決定後の操作は必要になった時点で個別にtask化する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
-| `DOC-003` | `PROPOSED` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト完成判定 | 通常版コメントを受け入れ、`DOC-007`で互換modeを含めるか確定し、含める場合だけ追加実行を分解してから、Permutation全体のドラフトと検証結果を完成判定する | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `DOC-003` | `DONE` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト完成判定 | 2026-10-09、通常版のレビュー用ドラフトと検証を受入。`DOC-007`でAtCoder 2025互換modeを0.5.2の対象外と決定したため、追加実行なしでユーザーへの引き渡しを完了 | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `DOC-004` | `DONE` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | 2026-10-09、現行名の公開29宣言と4適合をTest as Specification・実装へ再照合し、所有、View寿命、破棄、変更共有、軸、境界、計算量をレビュー用コメントへ記載。Debug／Release通常35件＋Death Test 21件、documentation warning-as-error成功。0.5.2段階の成果としてユーザーへ引き渡し済み | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
 | `DOC-005` | `DONE` | Codex | [EXECUTION] BareArray公開APIコメントドック・ドラフト | 2026-10-09、8群のTest as Specificationを確認しながら公開29宣言へ期待動作を記載。Debug／Release通常test・Death Test 42件、code issues 0件、documentation build成功を確認 | `RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
 | `DOC-006` | `DONE` | Codex | [EXECUTION] RedBlackTree公開APIコメントドック・ドラフト | 2026-10-09、既存の公開コメント横断監査、4公開型のHead原稿、API Matrix、Test as Specification、Release DocC検証により、0.5.2が要求するユーザーレビュー可能なドラフトへ到達済みと確認。公開可能な初版への仕上げは0.6.0側で扱う | `RELEASE_0_5_2.md` / `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
-| `DOC-007` | `FROZEN` | User / Codex | [DECISION] Permutation通常版と互換modeのコメントドック境界 | 2026-10-09、ユーザー指示により判断を後回し。明示的な再開後、通常版だけを対象とするかAtCoder 2025互換modeも含めるかを一つ決め、`DOC-003`の入力にする | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `DOC-007` | `DONE` | User / Codex | [DECISION] Permutation通常版と互換modeのコメントドック境界 | 2026-10-09、0.5.2のコメントドック対象は通常版だけとし、AtCoder 2025互換modeは含めないと決定 | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `DOC-008` | `DONE` | Claude / Codex | [DISCOVERY] BareArrayコメントドック独立レビュー | 2026-10-09、公開29宣言のcoverage、Test as Specificationとの一致、BLOCKなしを受入。判断不要の不揃い4点を補正し、残る2候補はCodexの再検収対象へ分離 | `RELEASE_0_5_2.md` / `CLAUDE_TASK.md` |
 | `DOC-009` | `EXCLUDED` | Codex | [EXECUTION] BareArrayのView保持中Sendable注記 | 2026-10-09、`@unchecked Sendable`の妥当性を覆す指摘ではなく、一般的な並行アクセス規則を重ねる蛇足とCodexが判定。公開コメントへの追記は行わない | `RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
 | `DOC-010` | `FROZEN` | Codex | [DISCOVERY] BareArrayの定性的性能表現の再検討 | 2026-10-09、比較対象はSwiftの`[[Element]]`であり、COWと連鎖subscriptによる深刻な性能劣化を単一連続storageと非所有Viewで迂回する設計意図があると確認。アンカリングを避けるため、ユーザー指示による再訪まで文言判断を保留 | `RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |

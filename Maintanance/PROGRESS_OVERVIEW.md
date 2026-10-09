@@ -91,7 +91,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-002` | `USER_ONLY` | User | ABC328E実提出確認 | ユーザーが手作業で実施 | `PermutationModule/ImplementationPlan.md` |
 | `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-043` | `ACTIVE` | Claude / Codex | [DISCOVERY] OptionalArray命名体系のAI間再検討 | BareArray再開を再検討条件として、Claudeが現行API・BareArray・互換性・移行コストから案と反証を整理し、Codexが独立評価・統合して判断材料へする | `ARRAY_NAMING_REVIEW.md` |
+| `OPT-043` | `WAITING_EXTERNAL` | External AI / Codex | [DISCOVERY] OptionalArray命名体系のAI間再検討 | Claude初稿のCodex予備評価後、第三者AI向け補完依頼へ切替。回答受領後、Codexが独立評価・統合して判断材料へする | `ARRAY_NAMING_REVIEW.md` / `CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` |
 | `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | `OPT-043`受入後、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | `OPT-043`受入後、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `ACTIVE` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | 公開7型の契約棚卸し、必要な個別判断、Test as Specification整理、品質評価初版を受入れ、ユーザードキュメント作業への引き渡し可否を判定する | `BareArrayModule/BareArrayAudit.md` |
@@ -105,7 +105,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-009` | `DONE` | Claude | [EXECUTION] BareArray既存契約の不足test追加 | 2026-10-09、所有2D〜4D外側subscriptの上下限6件と、非対称寸法での所有型・Viewの全位置照合5件をDebug／Releaseで受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-010` | `WAITING_USER` | User | [DECISION] BareArrayのNOP setter契約 | 連鎖writeback用の実装手段として維持し、View全体代入を公開契約から除外するか一つだけ判断 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-011` | `WAITING_USER` | User | [DECISION] BareArrayの不正寸法契約 | 負値と積のoverflowを呼び出し側事前条件として明文化・検査するか一つだけ判断 | `BareArrayModule/BareArrayAudit.md` |
-| `BARE-012` | `ACTIVE` | Claude / Codex | [DISCOVERY] BareArray命名体系のAI間検討 | Claudeが現行API・OptionalArray・互換性・移行コストから案と反証を整理し、Codexが独立評価・統合して、ユーザーが一つ選べる判断材料へする | `ARRAY_NAMING_REVIEW.md` |
+| `BARE-012` | `WAITING_EXTERNAL` | External AI / Codex | [DISCOVERY] BareArray命名体系のAI間検討 | Claude初稿のCodex予備評価後、第三者AI向け補完依頼へ切替。回答受領後、Codexが独立評価・統合して判断材料へする | `ARRAY_NAMING_REVIEW.md` / `CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` |
 | `ARRAY-001` | `FROZEN` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのTest as Specification前に必要な振り分けは`BARE-002`受入へ移管済み。全体再分解はユーザードキュメント作業後、再開時点の契約・品質評価を入力に行う | `StrictMemorySafetyReadiness.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `RED_BLACK_TREE_REMAINING_TASKS.md` |

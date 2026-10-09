@@ -7,10 +7,12 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: あり（BareArray／OptionalArray命名体系のAI間検討）**
+**実行中ジョブ: なし（2026-10-13 16:00 JSTまで新規assignment停止）**
 
 - 継続ジョブ: なし。
-- 新規bounded assignment: `BARE-012`と`OPT-043`の共有調査。下記の境界で命名候補と反証を整理する。
+- 新規bounded assignment: なし。命名調査の補完はClaudeへ戻さず、第三者AI向け依頼書へ切り替えた。
+- 一時制限: ユーザー指示により、2026-10-13 16:00 JSTまではClaudeへの新規assignmentを行わない。
+  時刻到達だけで自動再開せず、その時点のゴールへの必要性とClaudeの利用量を再確認する。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
   受け入れた。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持する。
@@ -18,7 +20,7 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
 
-## Current bounded assignment: Array module naming review
+## Completed bounded assignment: Array module naming review
 
 [`ARRAY_NAMING_REVIEW.md`](ARRAY_NAMING_REVIEW.md)に従い、BareArrayとOptionalArrayの命名体系を調査する。
 
@@ -32,6 +34,22 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 source、test、利用例、コメントドック、Registryを変更せず、renameや互換aliasを実装せず、命名を決定
 しない。性能、安全性、storage設計へ広げない。結果を`ARRAY_NAMING_REVIEW.md`へ追記し、このhandoffを
 返却待ちへ更新してgit addまで行う。Codexが独立評価、統合、ユーザー判断への引き渡しを担当する。
+
+## Cancelled before start: Array naming review supplement
+
+この補完依頼は開始前に取り止め、第三者AI向け依頼書へ移した。Claudeは着手しない。
+
+当初の範囲は次のとおりだった。
+
+- `Bare`と`Optional`について、実質的な代替接頭語を複数比較し、契約を誤認させる点と棄却理由を示す。
+- `View`維持案と代替suffixを、標準の`Slice`、`Span`、`View`が与える期待と比較する。
+- 4Dの名称変更と軸契約反転を別案に分ける。軸契約変更を命名推奨へ混ぜない。
+- 公式`swift-collections`現行`main`とSE-0527を入力に、ownership-aware arrayの命名が標準へ移る方向を
+  反証へ加える。
+- 三判断単位の推奨を必要なら更新し、それぞれ最強の反証を残す。
+
+既存のsurface表、local toolchain確認、移行件数は再調査しない。source、test、利用例、Registryを変更せず、
+名称も軸契約も決定しない、という境界は第三者AI向け依頼書へ継承した。
 
 ## Completed bounded assignment: BareArray existing-contract test gaps
 

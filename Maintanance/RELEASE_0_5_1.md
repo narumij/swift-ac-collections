@@ -105,3 +105,10 @@ release阻害／後続扱いの最終分類は公開差分確認とClaude独立�
 
 本節を加えるcommitはrelease記録だけを変更する。commit後のHEADをremote CIと独立チェックの最終候補とし、
 `7884ecb4..HEAD`でsource、test、Package、workflow、利用者向け文書に差分がないことを確認する。
+
+### 独立チェック1回目
+
+Claudeは候補`4d5ce7b8`について、CHANGELOGで0.5.0と0.5.1の項目が同じ`Unreleased`節へ混在し、0.5.1の
+変更を版単位で識別できない点を`BLOCK`とした。CIのhead SHAを直接確認できなかった2項目は`UNVERIFIED`、
+その他は`PASS`だった。このBLOCKを受け入れ、`Unreleased`を空にし、`0.5.1`の3項目と従来の`0.5.0`項目を
+別の版見出しへ分離する。修正後のcommitを新候補とし、remote CIと独立チェックを再実施する。

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-09
+
+### Changed
+- Permutation、OptionalArray、BareArrayのテストを、公開契約へ対応する番号付きTest as Specificationとして整理
+
+### Fixed
+- BareArrayの全公開initializerで、負の次元と`Int`で表現できない次元積を事前条件違反として停止し、zero次元は空配列として許可
+- BareArrayの多次元subscriptで、連鎖書き込み時の同一View writebackだけを許可し、別storageまたは範囲外位置のView代入を停止
+
+## [0.5.0] - 2026-10-09
+
 ### Added
 - 後続の互換branchで使用するAtCoder 2025時点のPermutation sourceと、提出用単一file生成utilityを追加（0.5.0の既定APIは通常版）
 - PermutationModuleの`NextPermutationsSequence.Permutation`を`Equatable`、`Hashable`(要素が`Hashable`のとき)、`CustomStringConvertible`(`[1, 3, 2]`形式)へ適合。いずれも要素の並びだけで決まる
@@ -26,7 +37,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - raw range expression、node sealing、pointer比較、木の基本操作、赤黒木fixture、raw memory / allocationを直接検証する内部テストを追加
 
 ### Changed
-- Permutation、OptionalArray、BareArrayのテストを、公開契約へ対応する番号付きTest as Specificationとして整理
 - PermutationModuleの`nextPermutations()`の`Index == Int`制約を外し、`String`など任意の`Collection`で使えるようにした (要素はbufferへコピーしてから並べ替えるため、入力の添字型に依存しない)
 - PermutationModuleの公開型を改名 (source-breaking): `Permutations<C>.Nexts` → `NextPermutationsSequence<Base>`、`IteratorN` → `NextPermutationsSequence.Iterator`、`SubSequenceN` → `NextPermutationsSequence.Permutation`。名前空間`Permutations`は廃止。`nextPermutations()`の挙動は変更なし
 - staleな赤黒木Indexのsubscript・移動を`-Ounchecked`でも検査し、確保外メモリアクセス前に具体的な`SealError`診断で停止するよう変更
@@ -55,8 +65,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set / MultiMapの`removeSafe(at:)`を`erase(exactly:)`へ改名し、戻り値を`Bool`から削除後の`Index?`へ変更
 
 ### Fixed
-- BareArrayの全公開initializerで、負の次元と`Int`で表現できない次元積を事前条件違反として停止し、zero次元は空配列として許可
-- BareArrayの多次元subscriptで、連鎖書き込み時の同一View writebackだけを許可し、別storageまたは範囲外位置のView代入を停止
 - `OptionalArray3DView`のsubscriptが`depth`ではなく`height`を上限に使い、非立方形の4次元配列で有効位置を拒否または範囲外位置を許していた問題を修正
 - RedBlackTreeの4コンテナで、`Decodable`が未整列入力を木の順序へ正しく再構築するよう修正し、Set / Dictionaryの一意性とMultiSet / MultiMapの重複保持を回帰テストで確認
 - `OptionalArray1D` / `OptionalArray1DView`で、subscriptを通じて参照型要素を`nil`へ変更した際、`move()`済みのstorageを再度deinitializeして二重解放する問題を修正

@@ -7,10 +7,10 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（BareArray品質評価初版はCodex受入済み）**
+**実行中ジョブ: なし（0.5.1独立チェック1回目を受入、候補修正中）**
 
 - 継続ジョブ: なし。
-- 新規bounded assignment: なし。
+- 新規bounded assignment: `4d5ce7b8`を固定対象とする0.5.1最終候補の独立チェック。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
   Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
   停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。今回の一件は、
@@ -22,6 +22,63 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Completed bounded assignment: 0.5.1 independent release check (first pass)
+
+`Maintanance/RELEASE_CHECKLIST.md` §3と`Maintanance/RELEASE_0_5_1.md`に従い、0.5.1の最終候補を独立確認する。
+
+- 候補branch: `develop/misc/52`
+- 候補commit: `4d5ce7b8378aff803a327df72a73722d33141140`
+- 前version tag: `0.5.0`
+- remote ref: `origin/develop/misc/52`が`4d5ce7b8`と一致することをCodex確認済み
+- CI: ユーザーが同候補の全必須job greenを報告済み
+- local gate: Debug／Release package全test、BareArray Death Test 42件、DocC `--warnings-as-errors`が成功
+
+候補commitと`0.5.0`の差分、release正本、CHANGELOG、README、Package、workflow、CI証拠を独立に確認し、
+次を`PASS` / `BLOCK` / `UNVERIFIED`で報告する。
+
+1. tag予定commitと全必須CIのcommit一致。
+2. version、CHANGELOG、README、Package、release正本の整合。
+3. release対象外の互換mode、trait、後続作業の混入有無。
+4. test、documentation、Address Sanitizer、performanceを含む必須gateの未実施・赤の有無。
+5. 既知事項と後続taskを誤って完了扱いしていないこと。
+6. worktree、branch、tag予定位置、push予定ref、tag後記録の境界。
+
+source、test、workflow、release正本、Registryを変更しない。修正、commit、tag、push、mergeを行わない。
+CIを確認できない場合は推測でPASSにせず`UNVERIFIED`とする。結果はこのassignmentの`Result`だけへ追記し、
+ジョブ状態を返却待ちへ変えてgit addまで行う。Codexが原資料と照合し、最終ユーザー確認へ渡す。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。変更なし（この節とジョブ状態だけ）。build・testの再実行はしていない。
+
+**1. 対象と証拠**: HEAD = `origin/develop/misc/52`（local tracking ref）= `4d5ce7b8`、tree `aad90875`、branch `develop/misc/52`。
+`0.5.0`（`0dc1bd26`）は祖先で、86 commit・merge commitなし。`7884ecb4..4d5ce7b8`は`RELEASE_0_5_1.md`の+19行だけ（gate実行commitとの差はrelease記録のみ）。
+`0.5.0..4d5ce7b8`のsource差分は`BareArray.swift`と品質評価文書だけ。BareArrayの`public`／`extension`行は0.5.0と同一（公開面の追加・削除なし）。
+gh CLIが無く、remote CIは見ていない。
+
+**2. 項目別**
+
+1. tag予定commitとCIのcommit一致: `UNVERIFIED`。ユーザー報告だけで、job名・headShaを独立に読めていない。
+2. version・CHANGELOG・README・Package・正本の整合: `BLOCK`。CHANGELOGに`[0.5.0]`も`[0.5.1]`の見出しも無く、0.5.1の3行が
+   0.5.0の項目（例「0.5.0の既定APIは通常版」、Permutation改名）と同じ`[Unreleased]`へ混ざる。正本の「`Unreleased`へ追記」とは一致するが、
+   tag `0.5.1`の時点でCHANGELOGから0.5.1の変更を区別できない。READMEにversion固定表記なし、Package差分は`exclude: ["Documentation"]`2件だけで整合。
+3. 対象外の混入: `PASS`。`COMPATIBLE_ATCODER_2025`・trait・`@_exported`の差分なし。ただし正本に記載の無い非製品差分がある:
+   `.github/workflows/swift.yml`（performance jobのCPU記録・artifact収集の組み替え、+56/−44）、`AGENTS.md`、`Utilities/Maintenance/`の2 script、`Tests/TESTING.md`。製品buildへは入らない。
+4. 必須gateの未実施・赤: `UNVERIFIED`。local gate（Debug／Release全test、Death Test 42、DocC warnings-as-errors）は`7884ecb4`での記録を確認し、
+   候補との差がrelease記録だけなので有効と判断。remote（Linux、ASan、performance）は1と同じ理由で未確認。正本§2の「公開API・Package差分の最終確認」は未チェックのまま。
+5. 既知事項・後続taskの扱い: `PASS`。正本は品質評価初版を文書作業の入力とし、コメントドック・文書初版・性能・View寿命・strictを後続に残す。CHANGELOGも完了扱いしていない。
+6. worktree・branch・tag・push・tag後記録: `PASS`（条件付き）。worktreeの未commit差分は`CLAUDE_TASK.md`だけで候補外。tag `0.5.1`は未作成。
+   正本（候補commit内）の冒頭「状態」は「候補commitとtag位置を固定せず」のままで、tag名・push予定refは正本に書かれていない（依頼文にだけある）。
+
+**3. Codex一次検収との不一致**: CHANGELOGの版見出し（項目2）。workflow等の非製品差分が正本の差分説明に無い（項目3）。
+
+**4. releaseを止める事項**: 項目2。CHANGELOGに版見出しを切るか、現行運用（`Unreleased`のまま）を維持するかはCodex／ユーザーの判断。
+直す場合は候補commitが変わり、gateの再固定が必要。あわせて、この結果をcommitする場合もtagは`4d5ce7b8`を指す前提を保つこと。
+
+Codex acceptance: 2026-10-09、CHANGELOGの版境界BLOCKを妥当として受入。ユーザー判断により`Unreleased`、
+`0.5.1`、`0.5.0`を分離し、候補commit、remote CI、独立チェックを固定し直す。CIの2件はClaudeがhead SHAを
+直接読めなかったための`UNVERIFIED`であり、greenというユーザー報告との事実衝突ではない。
 
 ## Completed bounded assignment: BareArray quality assessment first edition
 

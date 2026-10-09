@@ -136,6 +136,8 @@ IDs remain permanent and must not be reused.
 | `OPT-040` | `DONE` | Claude / Codex | [DISCOVERY] OptionalArrayの性能効率性・互換性・柔軟性の証拠表 | 2026-10-08、benchmark、計算量、SwiftPM、platform、再公開・同時利用の既存根拠をCodexが受入 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
 | `OPT-041` | `DONE` | Claude / Codex | [DISCOVERY] OptionalArrayのインタラクション能力・セキュリティ・保守性・利用時品質の証拠表 | 2026-10-08、コメント、誤用、unsafe境界、View寿命、source・test構成、利用例の証拠をCodexが受入 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
 | `OPT-042` | `DONE` | Codex | [EXECUTION] OptionalArray品質評価初版の統合・完成判定 | 2026-10-08、証拠3 packageを統合し、評価語、既知の不足、文書作業と1.0準備への引き渡しを確定 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
+| `OPT-003` | `DONE` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | 2026-10-09、独立文書は作らず、必要な責任境界・成果物・停止条件を既存のAGENTS規則とplaybookへ保持すると決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-004` | `EXCLUDED` | — | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で独立文書を作らないと決定し、必要事項は既存規則へ吸収済みのため独立実行を除外 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `RELEASE-001` | `DONE` | User / Codex | [DECISION] 0.5.0のtag地点 | 2026-10-08、PermutationのAtCoder 2025互換mode完成を含む状態と決定 | `RELEASE_0_5_0.md` |
@@ -261,6 +263,7 @@ IDs remain permanent and must not be reused.
 | `OPT-003` | `OPT-002` | `UNCLASSIFIED` | 管理方式と受入基準の抽出後に明文化の要否を判断する |
 | `BARE-008` | `OPT-002` | `UNCLASSIFIED` | OptionalArrayで管理方式を検証した後にBareArray再開を判断する |
 | `OPT-006` | `OPT-005` | `UNCLASSIFIED` | 初版策定後、ユーザードキュメント作業の完了も確認して再評価する |
+| `OPT-004` | `OPT-003` | `UNCLASSIFIED` | 明文化すると決定した場合だけ運用規則へ反映する |
 | `RELEASE-004` | `RELEASE-003` | `START` | tag対象を確定してから`prepare/compatible/2`へ統合する |
 
 ## Maintanance root archive audit

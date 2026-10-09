@@ -663,6 +663,13 @@ OptionalArray監査で実際に有効だった方式を、別の低レベルcoll
 分離できたため完了とする。Claude向け規則として正本化するか、およびBareArray監査を再開するかは、
 それぞれ独立した後続判断とする。
 
+### 委任規則の独立文書化判断（2026-10-09）
+
+ユーザー判断により、OptionalArray監査から抽出した委任規則のために独立文書を追加しない。
+必要な責任境界、成果物、停止条件は`AGENTS.md`、`CLAUDE.md`、
+`Maintanance/CODEX_TASK_OPERATION_PLAYBOOK.md`へ既に吸収され、BareArray監査の正本にも適用済みである。
+このため判断taskを完了し、独立した反映taskは不要として除外する。
+
 ## Claude証拠表（2026-10-08）
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`OPT-015`〜`OPT-024`の提出物。表が無かったので

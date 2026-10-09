@@ -89,8 +89,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `TEST-002` | `FROZEN` | Codex | stride assertion／fixture alignmentの任意改善 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
 | `PERM-002` | `USER_ONLY` | User | ABC328E実提出確認 | ユーザーが手作業で実施 | `PermutationModule/ImplementationPlan.md` |
 | `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
-| `OPT-003` | `FROZEN` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | `OPT-002`後、抽出した管理方式をClaude向け運用規則として残す必要があるか一つだけ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-004` | `FROZEN` | Codex | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で明文化すると決定した場合、人物評価を含めず責任境界・成果物・停止条件として正本へ反映 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `ACTIVE` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | 公開7型の契約棚卸し、必要な個別判断、Test as Specification整理を受入れ、ユーザードキュメント作業への引き渡し可否を判定する | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-002` | `ACTIVE` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 既存のsafety・test証拠を入力に、公開29宣言と4適合の境界・寿命・破棄契約を履歴・OptionalArrayとの対応に照らして閉じ、新しい判断点を分離する | `BareArrayModule/BareArrayAudit.md` |
@@ -99,7 +97,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-005` | `FROZEN` | Claude | [EXECUTION] BareArrayModuleTestsのTest as Specification整理 | `BARE-002`後、既存testを番号付きTest as Specificationへ整理。コメントドック全件整備は含めない | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-006` | `FROZEN` | User / Codex | [DECISION] BareArray 1.0の性能基準 | ユーザードキュメント作業後、低レベル部品としての存在理由を評価できる性能基準と計測方法を一つの基準として決定 | `Tests/TESTING.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray 1.0の性能計測 | `BARE-006`で決めた基準と方法に従って計測し、1.0判断へ渡す | `Tests/TESTING.md` |
-| `ARRAY-001` | `FROZEN` | User / Codex | BareArray／OptionalArrayのstorage再設計とstrict恒久適用 | 公開unsafe境界を決定して再開 | `StrictMemorySafetyReadiness.md` |
+| `ARRAY-001` | `FROZEN` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | ユーザードキュメント作業後、再開時点の契約・品質評価・task分解方式を入力に、module別の事実確認、ユーザー判断、実行へ分解してから着手する | `StrictMemorySafetyReadiness.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `BENCH-001` | `FROZEN` | Codex | SortedCollectionsとのpublishableな大規模比較 | ユーザーが明示的に再開 | `Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md` |
 | `TEST-003` | `FROZEN` | Codex | randomized trace失敗時の自動縮小 | 実害または明示的な再開指示 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
@@ -127,7 +125,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-001` | `BARE-003` | `UNCLASSIFIED` | 未決定だった場合の位置づけ判断を親taskの完了条件とする |
 | `BARE-001` | `BARE-004` | `UNCLASSIFIED` | 公開継続時の命名判断を親taskの完了条件とする |
 | `BARE-001` | `BARE-005` | `UNCLASSIFIED` | Test as Specification整理を親taskの完了条件とする |
-| `OPT-004` | `OPT-003` | `UNCLASSIFIED` | 明文化すると決定した場合だけ運用規則へ反映する |
 
 ## Registry rules
 

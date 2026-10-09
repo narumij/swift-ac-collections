@@ -396,3 +396,8 @@ pointer initializerでそのstorageへ代入する診断6件、strict有効時�
 消すには公開7型への`@unsafe`伝播、または生ポインタstorageの隔離設計が必要になる。
 `BareArrayModule`と同じ理由で、警告を消すためだけに公開型を`@unsafe`へ変更せず、
 `OptionalArrayModule`のstrict設定は無効のままとする。
+
+`ARRAY-001`は、storage再設計、View寿命、公開unsafe境界、strict恒久適用を現在の粒度のまま実行するtaskではない。
+ユーザードキュメント作業後、再開時点で得られている公開契約、品質評価、task分解方式を入力に、BareArrayと
+OptionalArrayそれぞれの事実確認、一判断ごとの`DECISION`、判断済み方針の`EXECUTION`へ分解する。
+将来の方が適切な境界を見つけられる可能性を残すため、現時点では子taskを先行登録しない。

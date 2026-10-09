@@ -78,5 +78,11 @@ Codex推奨の0.5.1到達範囲は「BareArrayの既存公開契約を堅牢化�
 - [x] `0.5.0..HEAD`のcommit一覧と差分を確認した。
 - [x] READMEにversion固定表記がなく、Package manifestにもrelease version設定がないことを確認した。
 - [x] CHANGELOGの`Unreleased`へ0.5.1固有のTest as Specification整理とBareArray修正を追記した。
-- [ ] release計画とCHANGELOGをcommitし、worktreeがcleanな地点を候補commitとして固定する。
+- [x] release計画とCHANGELOGをcommitし、`7d1a9a79`を暫定候補に固定した。
 - [ ] 意図しないmerge、生成物、local専用file、release対象外構成の混入がないことを最終確認する。
+
+### 候補固定後の再固定記録
+
+`7d1a9a79`のDebug検証で、OptionalArrayの品質評価文書がSwiftPMの未処理ファイル警告として残ることを
+検出した。BareArray targetでは同種の警告を除外済みであり、OptionalArray targetにも`Documentation`の
+excludeを追加する。この修正により暫定候補を解除し、commit後に候補commitとlocal gateを固定し直す。

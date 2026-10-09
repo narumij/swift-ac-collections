@@ -94,10 +94,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-002` | `ACTIVE` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 既存のsafety・test証拠を入力に、公開29宣言と4適合の境界・寿命・破棄契約を履歴・OptionalArrayとの対応に照らして閉じ、新しい判断点を分離する | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-004` | `FROZEN` | User | [DECISION] BareArray公開型・次元名の命名体系 | `BARE-003`後、型名、View名、次元property名とOptionalArray1Dとの整合について一つの命名体系を判断 | `BareArrayModule/BareArrayAudit.md` |
-| `BARE-005` | `FROZEN` | Claude | [EXECUTION] BareArrayModuleTestsのTest as Specification整理 | `BARE-002`後、既存testを番号付きTest as Specificationへ整理。コメントドック全件整備は含めない | `BareArrayModule/BareArrayAudit.md` |
+| `BARE-005` | `FROZEN` | Claude | [EXECUTION] BareArrayModuleTestsのTest as Specification整理 | `BARE-002`受入時の再計算後、先行する契約判断・不足testが残らない状態で、既存testを番号付きTest as Specificationへ整理。コメントドック全件整備は含めない | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-006` | `FROZEN` | User / Codex | [DECISION] BareArray 1.0の性能基準 | ユーザードキュメント作業後、低レベル部品としての存在理由を評価できる性能基準と計測方法を一つの基準として決定 | `Tests/TESTING.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray 1.0の性能計測 | `BARE-006`で決めた基準と方法に従って計測し、1.0判断へ渡す | `Tests/TESTING.md` |
-| `ARRAY-001` | `FROZEN` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | ユーザードキュメント作業後、再開時点の契約・品質評価・task分解方式を入力に、module別の事実確認、ユーザー判断、実行へ分解してから着手する | `StrictMemorySafetyReadiness.md` |
+| `ARRAY-001` | `FROZEN` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのTest as Specification前に必要な振り分けは`BARE-002`受入へ移管済み。全体再分解はユーザードキュメント作業後、再開時点の契約・品質評価を入力に行う | `StrictMemorySafetyReadiness.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `BENCH-001` | `FROZEN` | Codex | SortedCollectionsとのpublishableな大規模比較 | ユーザーが明示的に再開 | `Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md` |
 | `TEST-003` | `FROZEN` | Codex | randomized trace失敗時の自動縮小 | 実害または明示的な再開指示 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
@@ -119,7 +119,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-026` | `RBT-014` | `UNCLASSIFIED` | outlineのAPI照合後、利用者向け文書作業フェーズで契約を再判断する |
 | `BARE-003` | `BARE-002` | `UNCLASSIFIED` | 棚卸しで位置づけが未決定と判明した場合だけ判断する |
 | `BARE-004` | `BARE-003` | `UNCLASSIFIED` | BareArrayを公開継続する判断後に命名体系を決定する |
-| `BARE-005` | `BARE-002` | `UNCLASSIFIED` | 契約棚卸し後に既存testを仕様単位へ整理する |
+| `BARE-005` | `BARE-002` | `START` | 契約棚卸しを受け入れ、先行する契約判断・不足testの有無を再計算した後に整理へ着手できる |
 | `BARE-007` | `BARE-006` | `UNCLASSIFIED` | 性能基準と計測方法の決定後に計測する |
 | `BARE-001` | `BARE-002` | `UNCLASSIFIED` | 公開契約の棚卸しを親taskの完了条件とする |
 | `BARE-001` | `BARE-003` | `UNCLASSIFIED` | 未決定だった場合の位置づけ判断を親taskの完了条件とする |

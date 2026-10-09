@@ -6,8 +6,9 @@
 
 0.5.2を現在の中間ゴールとして、前提となるコメントドック作業を開始した。独立した事前棚卸しを閉じてから
 執筆する方式は取りやめ、対象別にTest as Specificationを確認しながら期待動作を公開APIコメントへ記載した。
-全公開対象のレビュー用ドラフトと検証は完了し、release検討開始条件へ到達した。
-現時点ではrelease候補commit、到達範囲、必須gate、tag位置をまだ決定していない。release rehearsal関連taskの
+全公開対象のレビュー用ドラフトと検証は完了した。2026-10-09、ユーザーはBareArray、Permutation通常モード、
+OptionalArray、RedBlackTreeのコメントドック・ドラフトを0.5.2の製品スコープとして採用し、release checklistへ
+進むと決定した。現時点ではrelease候補commit、必須gate、tag位置をまだ決定していない。release rehearsal関連taskの
 凍結も維持する。
 
 2026-10-09、template branch方式は準備不足のため0.5.2では中止した。0.5.2は0.5.1相当の工程とし、作業branchで
@@ -33,7 +34,7 @@
 確認できる段階を指し、文章の最終校正、公開可能な初版への仕上げ、release noteの完成までは要求しない。
 
 これはrelease完了条件ではない。条件到達後、ユーザーが0.5.2へ含める製品上の到達範囲と、release
-checklistへ進むかを一つの判断として確定する。
+checklistへ進むかを一つの判断として確定する。2026-10-09、この判断は採用で完了した。
 
 ## 依存の登録方針
 

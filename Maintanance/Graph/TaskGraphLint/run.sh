@@ -90,12 +90,7 @@ UNION ALL
 SELECT 'ERROR', 'invalid_flow',
        successor || ' -> ' || prerequisite || ': ' || flow
 FROM precedence
-WHERE flow NOT IN ('SEQUENCE', 'PARALLEL_JOIN', 'UNCLASSIFIED')
-UNION ALL
-SELECT 'WARNING', 'unclassified_flow',
-       successor || ' -> ' || prerequisite
-FROM precedence
-WHERE flow = 'UNCLASSIFIED'
+WHERE flow NOT IN ('SEQUENCE', 'PARALLEL_JOIN')
 UNION ALL
 SELECT 'WARNING', 'conditional_prerequisite',
        p.successor || ' -> ' || p.prerequisite
@@ -155,7 +150,7 @@ direct_error(value) AS (
   UNION ALL SELECT 1 FROM precedence p LEFT JOIN task t ON t.id = p.prerequisite WHERE t.id IS NULL
   UNION ALL SELECT 1 FROM precedence WHERE successor = prerequisite
   UNION ALL SELECT 1 FROM precedence GROUP BY successor, prerequisite HAVING COUNT(*) > 1
-  UNION ALL SELECT 1 FROM precedence WHERE flow NOT IN ('SEQUENCE', 'PARALLEL_JOIN', 'UNCLASSIFIED')
+  UNION ALL SELECT 1 FROM precedence WHERE flow NOT IN ('SEQUENCE', 'PARALLEL_JOIN')
 ),
 walk(start, current, path, cycle) AS (
   SELECT successor, prerequisite, '|' || successor || '|' || prerequisite || '|', successor = prerequisite

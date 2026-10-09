@@ -327,9 +327,8 @@ agentの適性は固定的な人格評価ではなく、実績で更新する。
 次の判断を再開する。
 
 1. **決定済み:** 終了・除外済みの`GRAPH-004`を参照するルーティーンfallbackは削除する。
-2. Task precedenceの実行関係は、直列の`SEQUENCE`と、並行可能だが完了前に合流する
-   `PARALLEL_JOIN`で表す。段階移行用のFlow `UNCLASSIFIED`を廃止するか。現行8辺の分類は一括判断せず、
-   一辺につき一つのユーザー判断taskとして順に閉じ、その後に廃止自体を判断する。
+2. **決定済み:** Task precedenceの実行関係は、直列の`SEQUENCE`と、並行可能だが完了前に合流する
+   `PARALLEL_JOIN`で表す。現行8辺を一辺ずつ分類した後、段階移行用の`UNCLASSIFIED`を廃止した。
    - Index完了ゲート←公開Index表現・完了範囲: `PARALLEL_JOIN`。Comparable採否の外部依存とは分離する。
    - Index完了ゲート←Comparable採否: `PARALLEL_JOIN`。外部依存は判断task側に残し、他のIndex作業の
      着手を止めない。

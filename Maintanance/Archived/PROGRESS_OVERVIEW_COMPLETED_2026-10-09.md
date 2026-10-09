@@ -291,3 +291,4 @@ IDs remain permanent and must not be reused.
 | `OPS-022` | `DONE` | User / Codex | [DECISION] BareArray親監査←契約棚卸しのFlow分類 | `PARALLEL_JOIN`。親監査と契約棚卸しを並行可能とし、親監査の完了前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-025` | `DONE` | User / Codex | [DECISION] Task precedence実行関係の名称 | 2026-10-09、列名を`Flow`、直列を`SEQUENCE`、並行可能で完了前に合流する関係を`PARALLEL_JOIN`とした | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-023` | `DONE` | User / Codex | [DECISION] BareArray親監査←Test as Specification整理のFlow分類 | `PARALLEL_JOIN`。親監査を先行可能とし、完了前にTest as Specification整理と合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-013` | `DONE` | User / Codex | [DECISION] Task precedenceの`UNCLASSIFIED` Flowを廃止するか | 2026-10-09、現行辺をすべて`SEQUENCE`または`PARALLEL_JOIN`へ個別分類した後、移行用の`UNCLASSIFIED`を現行規則とlintから廃止 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |

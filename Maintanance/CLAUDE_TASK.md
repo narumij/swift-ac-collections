@@ -7,13 +7,15 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（2026-10-13 16:00 JSTまでessential-only）**
+**実行中ジョブ: あり — BareArray Test as Specificationポリッシング（essential-only例外）**
 
-- 継続ジョブ: なし。
-- 新規bounded assignment: なし。命名調査の補完はClaudeへ戻さず、第三者AI向け依頼書へ切り替えた。
+- 継続ジョブ: `BARE-005`のポリッシング。Codexが作成・検証・commit済みの番号付きtest構成を入力とする。
+- 新規bounded assignment: 下記一件だけ。現在の直接ゴールを止めず、ユーザーがClaudeを担当に指定したため
+  essential-only条件内で割り当てる。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
   Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
-  停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。
+  停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。今回の一件は、
+  他に並行可能な現在ゴールの作業がなく、ユーザーがClaudeをポリッシング担当に指定したため該当する。
   時刻到達だけで自動的に通常運用へ戻さず、その時点のゴールへの必要性と利用量を再確認する。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
@@ -21,6 +23,32 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: BareArray Test as Specification polishing
+
+HEAD `09702717`を入力に、`Tests/BareArrayModuleTests`の番号付きtestをTest as Specificationとして
+ポリッシングする。Codexは三つの仕様群への改名、3D・4Dの`init(repeating:)` test追加、1D〜4D所有型の
+`Sendable` compile test追加、Xcode build-for-testingと通常test成功まで確認済みである。
+
+次だけを行う。
+
+1. 公開29宣言・4適合と既存testの対応を照合し、通常testを契約単位でさらに分割する方が明瞭なら、
+   `0`〜`6`の番号付きfileへ再配置する。番号に空きがあってもよく、OptionalArrayの構成を機械的に写さない。
+2. test名、class名、`MARK`、短い説明を、何の公開契約を証明するか読める形へ整える。
+3. `6_Clone`がDEBUG限定のinternal `clone()`契約、`99_Death`がtrap契約として適切か確認する。
+4. 重複、公開契約を証明しない実装依存、または棚卸し済みなのに未証明の項目を見つけた場合、契約判断を
+   補わず、証拠と最小の提案を結果へ記録する。決定済み契約を証明する不足testは追加してよい。
+5. Debug／Releaseの通常testとDeath Testを実行し、構成別の件数と結果を報告する。
+
+source、公開API、公開契約、命名、コメントドック、Registry、他moduleのtestは変更しない。View寿命、性能、
+storage再設計、strict memory safetyを開始しない。新しい製品判断が必要なら変更せず停止する。
+
+変更可能範囲は`Tests/BareArrayModuleTests`と、このassignmentの`Result`節だけ。完了時はジョブ状態を
+返却待ちへ変え、変更と実行結果を`Result`へ記録し、git addまで行う。commitと最終受入はCodexへ残す。
+
+### Result
+
+返却待ち。
 
 ## Completed bounded assignment: Array module naming review
 

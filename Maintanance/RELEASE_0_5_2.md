@@ -116,3 +116,9 @@ documentation buildの結果と未確認事項が記録され、ユーザーが�
 4. tag作成、push、release page、後続branch統合は、それぞれ対象を示して別途承認を得る。
 
 この文書とtaskの登録は、release、tag、pushを許可しない。
+
+## 候補計画の具体化
+
+2026-10-09、製品範囲とbranch方式の決定を入力に、0.5.1から現HEADまでの差分を製品範囲、後続、内部管理へ
+分類し、候補境界と必須証拠を具体化する`RELEASE-025`を開始した。このDISCOVERYは候補commitの作成、PR、
+merge、tag、pushを行わず、判断不要の実行taskと必要な判断taskを分離して登録するところまでを扱う。

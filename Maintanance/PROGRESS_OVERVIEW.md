@@ -112,6 +112,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-022` | `PROPOSED` | User / Codex | [DECISION] 0.5.2 release可否ゲート | 後から分解する準備・検収taskが固定候補と必須証拠を揃えた後、0.5.2をreleaseしてよいか一つだけ判断する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-023` | `EXCLUDED` | User / Codex | [EXECUTION] 0.5.2 tag・push・公開 | 2026-10-09、工程確定前の分解は早すぎるため未着手で除外。可否決定後の操作は必要になった時点で個別にtask化する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-024` | `DONE` | User / Codex | [DECISION] 0.5.2のrelease branch方式 | 2026-10-09、template branch rehearsalは準備不足のため0.5.2では中止。0.5.1相当として、作業branchで候補を準備・検証し、PRでmainへmerge後、main CIがgreenの同一commitをtag候補とする方式を採用 | `RELEASE_0_5_2.md` / `RELEASE_0_5_1.md` |
+| `RELEASE-025` | `ACTIVE` | Codex | [DISCOVERY] 0.5.2候補計画と必須証拠の具体化 | 0.5.1から現HEADまでの差分を製品範囲・後続・内部管理へ分類し、候補境界と必須local gate、remote CI、documentation、性能、独立確認を定め、判断不要の実行taskへ分解する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
 | `DOC-003` | `DONE` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト完成判定 | 2026-10-09、通常版のレビュー用ドラフトと検証を受入。`DOC-007`でAtCoder 2025互換modeを0.5.2の対象外と決定したため、追加実行なしでユーザーへの引き渡しを完了 | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `DOC-004` | `DONE` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | 2026-10-09、現行名の公開29宣言と4適合をTest as Specification・実装へ再照合し、所有、View寿命、破棄、変更共有、軸、境界、計算量をレビュー用コメントへ記載。Debug／Release通常35件＋Death Test 21件、documentation warning-as-error成功。0.5.2段階の成果としてユーザーへ引き渡し済み | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
@@ -199,6 +200,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-011` | `RELEASE-018` | `PARALLEL_JOIN` | benchmark構成の分類は先行できるが、tag tree確定前に過去結果を除外してrelease結果をCI artifactへ残す方針と合流する |
 | `RELEASE-011` | `RELEASE-019` | `PARALLEL_JOIN` | performance workflowの設計は先行できるが、比較実装前に直前release tagをbaselineとする方針と合流する |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |
+| `RELEASE-025` | `RELEASE-006` | `SEQUENCE` | 0.5.2の製品範囲とrelease検討開始を確定してから候補計画を具体化する |
+| `RELEASE-025` | `RELEASE-024` | `SEQUENCE` | 0.5.2で使うbranch方式を確定してから、その工程に沿った候補境界と証拠を設計する |
 | `RELEASE-007` | `OPT-044` | `PARALLEL_JOIN` | 利用者向け文書作業は現行名で先行できるが、0.6.0の到達範囲判断前に1D所有型名を確定する |
 | `RELEASE-007` | `OPT-045` | `PARALLEL_JOIN` | 利用者向け文書作業は現行名で先行できるが、0.6.0の到達範囲判断前に次元名体系を確定する |
 | `DOC-003` | `DOC-007` | `PARALLEL_JOIN` | 通常版の執筆は先行できるが、Permutation全体の完成判定前に互換modeの対象境界を確定する |

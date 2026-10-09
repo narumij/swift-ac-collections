@@ -82,8 +82,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPS-013` | `FROZEN` | User / Codex | [DECISION] Task precedenceの`UNCLASSIFIED` Barrierを廃止するか | `OPS-016`〜`OPS-023`で現行8辺を個別分類した後、移行用状態を廃止するか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-014` | `FROZEN` | User / Codex | [DECISION] 採番済み条件付きtaskの整理方針 | `OPS-013`後、上流結果待ちのまま保持するか、現時点で不要判定できるものを除外するか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `BareArrayModule/BareArrayAudit.md` |
 | `OPS-015` | `FROZEN` | User / Codex | [DECISION] 期限後のCodex低燃費運用規則の処遇 | `OPS-014`後かつ2026-10-16の方針変更時に、一時運用を削除、更新、継続のいずれにするか決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-018` | `WAITING_USER` | User / Codex | [DECISION] 1.0品質ゲート←Index完了のBarrier分類 | Index契約完了を1.0品質ゲートの`HEAD`と`LAST`のどちらで待つか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-019` | `FROZEN` | User / Codex | [DECISION] 1.0品質ゲート←runtime-check再審査のBarrier分類 | `OPS-018`後、runtime-check再審査を1.0品質ゲートの`HEAD`と`LAST`のどちらで待つか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-019` | `WAITING_USER` | User / Codex | [DECISION] 1.0品質ゲート←runtime-check再審査のBarrier分類 | runtime-check再審査を1.0品質ゲートの`HEAD`と`LAST`のどちらで待つか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-020` | `FROZEN` | User / Codex | [DECISION] Mapped Values判断←API照合のBarrier分類 | `OPS-019`後、API照合をMapped Values契約判断の`HEAD`と`LAST`のどちらで待つか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-021` | `FROZEN` | User / Codex | [DECISION] BareArray性能計測←性能基準のBarrier分類 | `OPS-020`後、性能基準決定を性能計測の`HEAD`と`LAST`のどちらで待つか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-022` | `FROZEN` | User / Codex | [DECISION] BareArray親監査←契約棚卸しのBarrier分類 | `OPS-021`後、契約棚卸しを親監査の`HEAD`と`LAST`のどちらで待つか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
@@ -123,14 +122,13 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | --- | --- | --- | --- |
 | `RBT-001` | `RBT-010` | `LAST` | 公開Index表現・完了範囲の判断は、Comparable採否と分離したまま親ゲートの完了だけを止める |
 | `RBT-001` | `RBT-011` | `LAST` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了だけを止める |
-| `QUALITY-001` | `RBT-001` | `UNCLASSIFIED` | 前提taskの完了後に着手候補にできる |
+| `QUALITY-001` | `RBT-001` | `LAST` | 品質調査は先行できるが、1.0品質判定を確定する前にIndex契約完了を待つ |
 | `QUALITY-001` | `RBT-009` | `UNCLASSIFIED` | runtime-check実装の1.0採否を再審査した後に品質ゲートを判断する |
 | `RBT-026` | `RBT-014` | `UNCLASSIFIED` | outlineのAPI照合後、利用者向け文書作業フェーズで契約を再判断する |
 | `BARE-005` | `BARE-002` | `HEAD` | 契約棚卸しを受け入れ、先行する契約判断・不足testの有無を再計算した後に整理へ着手できる |
 | `BARE-007` | `BARE-006` | `UNCLASSIFIED` | 性能基準と計測方法の決定後に計測する |
 | `BARE-001` | `BARE-002` | `UNCLASSIFIED` | 公開契約の棚卸しを親taskの完了条件とする |
 | `BARE-001` | `BARE-005` | `UNCLASSIFIED` | Test as Specification整理を親taskの完了条件とする |
-| `OPS-013` | `OPS-018` | `HEAD` | 現行辺を個別分類した後に`UNCLASSIFIED`廃止を判断する |
 | `OPS-013` | `OPS-019` | `HEAD` | 現行辺を個別分類した後に`UNCLASSIFIED`廃止を判断する |
 | `OPS-013` | `OPS-020` | `HEAD` | 現行辺を個別分類した後に`UNCLASSIFIED`廃止を判断する |
 | `OPS-013` | `OPS-021` | `HEAD` | 現行辺を個別分類した後に`UNCLASSIFIED`廃止を判断する |

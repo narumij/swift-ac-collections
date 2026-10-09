@@ -15,9 +15,13 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **中間ゴールの取り扱い**
 
-**現在の中間ゴール:** 0.5.2を完成させる。全公開対象のコメントドック・ドラフトを揃えることは、0.5.2の
+**直近達成した中間ゴール:** 0.5.2を完成させる。全公開対象のコメントドック・ドラフトを揃えることは、0.5.2の
 到達範囲とrelease開始を判断するための前提であり、中間ゴールそのものではない。対象範囲と証拠の棚卸し、
 対象別ドラフト、到達範囲の判断、採用されたrelease工程の実行を、0.5.2へ至るtask graphとして扱う。
+
+2026-10-09、main merge commit `631cb59a`のCI greenを確認し、annotated tag `0.5.2`を同commitへ作成・pushして
+remote到達を確認した。現在の中間ゴールは未設定であり、ユーザーが次の中間ゴールを判断するまで既存taskから
+推測して開始しない。
 
 **凍結中の中間ゴール（前任conversationの残存記録）:**
 
@@ -119,6 +123,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-029` | `EXCLUDED` | Claude / Codex | [EXECUTION] 0.5.2固定候補の独立確認 | 2026-10-09、0.5.2はユーザーへのドラフト引き渡しを目的とし、Claudeの使用量制約下では独立レビューなしで進めるというユーザー決定を再確認。release阻害条件から除外 | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-030` | `DONE` | User | [EXECUTION] 0.5.2固定候補branchのremote push | 2026-10-09、ユーザーが固定候補branchをremoteへpushし、CI greenを確認。AIはpushを実行していない | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-031` | `PROPOSED` | User / Codex | [DISCOVERY] release専用Task Registryの分離設計 | 0.5.2 release完了後に今回の実績を入力として再開し、候補commitを動かさずに候補SHA、gate、判断、操作権限、実績、通常Registryへの還元を管理する配置・schema・life cycleを設計し、必要な一判断taskと実装taskへ分解する | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-032` | `DONE` | User / Codex | [EXECUTION] 0.5.2 annotated tag作成 | 2026-10-09、ユーザー承認後、main CI greenのmerge commit `631cb59a`へmessage `Release 0.5.2`のannotated tag `0.5.2`をlocal作成し、対象commitを読み戻した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-033` | `DONE` | User / Codex | [EXECUTION] 0.5.2 tag push | 2026-10-09、ユーザー承認後、`refs/tags/0.5.2`だけをoriginへpushし、remote tagが`631cb59a`を指すことを読み戻した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
 | `DOC-003` | `DONE` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト完成判定 | 2026-10-09、通常版のレビュー用ドラフトと検証を受入。`DOC-007`でAtCoder 2025互換modeを0.5.2の対象外と決定したため、追加実行なしでユーザーへの引き渡しを完了 | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `DOC-004` | `DONE` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | 2026-10-09、現行名の公開29宣言と4適合をTest as Specification・実装へ再照合し、所有、View寿命、破棄、変更共有、軸、境界、計算量をレビュー用コメントへ記載。Debug／Release通常35件＋Death Test 21件、documentation warning-as-error成功。0.5.2段階の成果としてユーザーへ引き渡し済み | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |

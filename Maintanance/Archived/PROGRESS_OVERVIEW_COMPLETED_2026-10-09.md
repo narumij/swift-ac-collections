@@ -281,11 +281,12 @@ IDs remain permanent and must not be reused.
 | `OPS-010` | `DONE` | Codex | [DISCOVERY] AI task process posterの内容照合 | Registryの全9状態、第三者AIの役割、関係性の記述を正本と照合し、修正点を確定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-011` | `DONE` | Codex | [EXECUTION] AI task process posterへのreview反映 | 内容照合の指摘を生成scriptと成果物へ反映し、再生成と画像確認を完了 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-012` | `DONE` | User / Codex | [DECISION] 終了済みGRAPH-004 fallback規則を削除するか | 2026-10-09、削除を決定。ルーティーンから終了済み共有smell試験へのfallbackを除き、割当を無理に作らない原則は維持 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-016` | `DONE` | User / Codex | [DECISION] Index完了ゲート←公開Index判断のBarrier分類 | `LAST`。Comparable採否の外部依存を巻き込まず、公開Index表現・完了範囲の判断だけを親ゲートの終わりに待つ | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-017` | `DONE` | User / Codex | [DECISION] Index完了ゲート←Comparable判断のBarrier分類 | `LAST`。外部依存はComparable判断taskに残し、他のIndex作業を進めながら親ゲートの終わりに待つ | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-024` | `DONE` | User / Codex | [DECISION] Task precedence同期位置の名称 | 2026-10-09、列名を`Barrier`、開始前の待合せを`HEAD`、終了前の待合せを`LAST`とし、同期位置を表す名称へ変更 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-018` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←Index完了のBarrier分類 | `LAST`。品質調査は先行可能とし、1.0品質判定を確定する前にIndex契約完了を待つ | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-019` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←runtime-check再審査のBarrier分類 | `LAST`。他の1.0品質作業を並行可能とし、最終判定前にruntime-check実装の採否を待つ | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-020` | `DONE` | User / Codex | [DECISION] Mapped Values判断←API照合のBarrier分類 | `HEAD`。現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-021` | `EXCLUDED` | User / Codex | [DECISION] BareArray性能計測←性能基準のBarrier分類 | 共通条件は既存方式に従い、BareArray固有部分もCodexの測定設計調査へ変更したため、ユーザー判断を不要として除外。依存は`HEAD` | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-022` | `DONE` | User / Codex | [DECISION] BareArray親監査←契約棚卸しのBarrier分類 | `LAST`。親監査と契約棚卸しを並行可能とし、親監査の完了時に公開契約の棚卸しを待つ | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-016` | `DONE` | User / Codex | [DECISION] Index完了ゲート←公開Index判断のFlow分類 | `PARALLEL_JOIN`。Comparable採否の外部依存を巻き込まず、公開Index表現・完了範囲の判断と親ゲートを並行可能にする | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-017` | `DONE` | User / Codex | [DECISION] Index完了ゲート←Comparable判断のFlow分類 | `PARALLEL_JOIN`。外部依存はComparable判断taskに残し、他のIndex作業と並行して親ゲートの完了前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-024` | `DONE` | User / Codex | [DECISION] Task precedence同期位置の名称 | 2026-10-09、`Barrier: HEAD / LAST`を中間案として採用。直後に実行関係を直接表す`Flow`へ洗練したため、現行名称は`OPS-025`を参照 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-018` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←Index完了のFlow分類 | `PARALLEL_JOIN`。品質調査とIndex契約を並行可能とし、1.0品質判定の確定前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-019` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←runtime-check再審査のFlow分類 | `PARALLEL_JOIN`。他の1.0品質作業と並行し、最終判定前にruntime-check実装の採否と合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-020` | `DONE` | User / Codex | [DECISION] Mapped Values判断←API照合のFlow分類 | `SEQUENCE`。現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-021` | `EXCLUDED` | User / Codex | [DECISION] BareArray性能計測←性能基準のFlow分類 | 共通条件は既存方式に従い、BareArray固有部分もCodexの測定設計調査へ変更したため、ユーザー判断を不要として除外。依存は`SEQUENCE` | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-022` | `DONE` | User / Codex | [DECISION] BareArray親監査←契約棚卸しのFlow分類 | `PARALLEL_JOIN`。親監査と契約棚卸しを並行可能とし、親監査の完了前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-025` | `DONE` | User / Codex | [DECISION] Task precedence実行関係の名称 | 2026-10-09、列名を`Flow`、直列を`SEQUENCE`、並行可能で完了前に合流する関係を`PARALLEL_JOIN`とした | `CODEX_TASK_OPERATION_PLAYBOOK.md` |

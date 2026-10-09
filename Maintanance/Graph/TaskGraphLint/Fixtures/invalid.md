@@ -7,11 +7,11 @@
 
 ## Task precedence
 
-| 後続task | 前提task | Barrier | 制約 |
+| 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
-| `T-001` | `T-002` | `HEAD` | cycle half |
-| `T-002` | `T-001` | `LAST` | cycle half |
-| `T-001` | `T-001` | `HEAD` | self dependency |
-| `T-002` | `MISSING` | `INVALID` | dangling and invalid barrier |
+| `T-001` | `T-002` | `SEQUENCE` | cycle half |
+| `T-002` | `T-001` | `PARALLEL_JOIN` | cycle half |
+| `T-001` | `T-001` | `SEQUENCE` | self dependency |
+| `T-002` | `MISSING` | `INVALID` | dangling and invalid flow |
 
 ## Registry rules

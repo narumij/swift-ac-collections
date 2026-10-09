@@ -80,19 +80,21 @@ soft orderは、同時に着手可能なtask間の推奨順であり、Task prec
 内部task間の必須AND依存だけを書く。便利な実施順、同じfileを触ること、同じgoalに属することだけを
 理由に辺を追加しない。外部条件やユーザーの明示的再開はRegistryの状態・条件欄で表す。
 
-このgraphのトポロジカル判定は、`HEAD`の前提未完了taskを除き、ready候補を求めるために使う。一意の
-実施順を決めるものではない。`LAST`はready判定を止めないが、前提完了まで後続taskを`DONE`にしない。
+このgraphのトポロジカル判定は、`SEQUENCE`の前提未完了taskを除き、ready候補を求めるために使う。
+一意の実施順を決めるものではない。`PARALLEL_JOIN`はready判定を止めないが、前提完了まで後続taskを
+`DONE`にしない。
 依存上readyでも、`PROPOSED`、`FROZEN`、`USER_ONLY`、`WAITING_USER`、
 `WAITING_EXTERNAL`は着手しない。cycleを検出した場合は実行を止め、task分割または依存辺を見直す。
 `EXCLUDED`の前提taskを自動的に達成扱いしない。後続も不要なら`EXCLUDED`にし、別経路で成立するなら
 依存辺と完了条件を更新してからreadyを再判定する。
 
-| 後続task | 前提task | Barrier | 制約 |
+| 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
-| `AREA-002` | `AREA-001` | `HEAD` | 調査結果を開始前に待ってから判断する |
-| `AREA-003` | `AREA-002` | `HEAD` | 判断確定を開始前に待ってから実行する |
+| `AREA-002` | `AREA-001` | `SEQUENCE` | 調査結果を受けてから判断する |
+| `AREA-003` | `AREA-002` | `SEQUENCE` | 判断確定後に実行する |
 
-`HEAD`は前提taskを後続taskの開始前に待ち、`LAST`は後続taskを並行して進めた後、その完了前に待つ。
+`SEQUENCE`は前提taskの完了後に後続taskを始める。`PARALLEL_JOIN`は並行を許可するが、後続taskの
+完了前に前提taskと合流する。
 
 > 必須依存がなければ、見出しとtable headerを残してデータ行を空にする。
 

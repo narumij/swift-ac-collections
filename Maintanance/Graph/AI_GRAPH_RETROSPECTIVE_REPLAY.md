@@ -319,6 +319,6 @@ Gate段階移行の完成判定は不要になった。pilotで確定した`STAR
 
 ### 同期位置としての名称変更（2026-10-09）
 
-ユーザーとCodexは、task依存が同期処理であり、「はじめに待つ」か「終わりに待つ」かを表すものとして、
-現行名称を`Barrier`列の`HEAD` / `LAST`へ変更した。`HEAD`は旧`START`、`LAST`は旧`COMPLETE`と同じ意味を
-持つ。この節より前の`Gate`、`START`、`COMPLETE`表記は、採用時点の履歴として保持する。
+ユーザーとCodexは、task依存が同期処理であることを確認し、現行名称を`Flow`列の`SEQUENCE` /
+`PARALLEL_JOIN`へ変更した。`SEQUENCE`は旧`START`（一時案`HEAD`）、`PARALLEL_JOIN`は旧`COMPLETE`
+（一時案`LAST`）と同じ意味を持つ。この節より前の旧表記は、採用時点の履歴として保持する。

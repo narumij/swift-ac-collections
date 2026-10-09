@@ -118,8 +118,8 @@ pathや不確実性に応じて早く始める。有用、面白い、依存上r
 Task precedenceには、後続taskの成立に不可欠なAND依存だけを書く。調査効率や優先度による順番は
 soft orderとして別に示す。順番が便利というだけで依存辺を足すと、不必要な待機が生じる。
 
-各辺の`Barrier`は同期位置を表す。`HEAD`は前提taskの完了を後続taskの開始前に待ち、`LAST`は後続taskを
-並行して進められるが、その完了前に前提taskの完了を待つ。どちらも前提taskの状態そのものではない。
+各辺の`Flow`は実行関係を表す。`SEQUENCE`は前提taskの完了後に後続taskを始める。`PARALLEL_JOIN`は
+並行を許可するが、後続taskの完了前に前提taskと合流する。並行は許可であり、同時実行の強制ではない。
 
 ### 6. トポロジカル判定はready集合を求めるために使う
 
@@ -130,15 +130,16 @@ Task precedenceは、有向非巡回graphとして扱う。トポロジカルな
 基本手順は次のとおり。
 
 1. 現行Registryに存在するtaskと必須依存辺を読む。
-2. `HEAD`の前提taskがすべて`DONE`であるtaskを依存上のready候補にする。`LAST`はready判定を止めない。
+2. `SEQUENCE`の前提taskがすべて`DONE`であるtaskを依存上のready候補にする。`PARALLEL_JOIN`は
+   ready判定を止めない。
 3. `PROPOSED`、`FROZEN`、`USER_ONLY`、`WAITING_USER`、`WAITING_EXTERNAL`をready候補から除く。
 4. task固有の再開条件、担当、ユーザーの最新指示を確認する。
 5. 残ったready集合を現在の中間goalへの必要性と`DIRECT / NEAR / FAR / LATER / OUTSIDE`で見直す。
 6. 必要な`DIRECT`・`NEAR`・`FAR`の中から、critical path、soft order、risk、受入可能量を使って
    次taskを選ぶ。
 
-完成判定では、`HEAD`と`LAST`の前提taskがすべて`DONE`であることを確認する。`LAST`が未完了なら作業成果を
-先に作れても、後続taskを`DONE`へ移さない。
+完成判定では、両Flowの前提taskがすべて`DONE`であることを確認する。`PARALLEL_JOIN`の前提が未完了なら
+作業成果を先に作れても、後続taskを`DONE`へ移さない。
 
 `EXCLUDED`は自動的に前提達成とみなさない。前提taskが不要になった結果、後続taskも不要なら後続も
 `EXCLUDED`にする。別経路で後続taskが成立するなら、依存辺と完了条件を明示的に更新してからreadyを
@@ -326,18 +327,18 @@ agentの適性は固定的な人格評価ではなく、実績で更新する。
 次の判断を再開する。
 
 1. **決定済み:** 終了・除外済みの`GRAPH-004`を参照するルーティーンfallbackは削除する。
-2. Task precedenceの同期位置は、前提taskを後続taskの開始前に待つ`HEAD`と、終わりに待つ`LAST`で
-   表す。段階移行用のBarrier `UNCLASSIFIED`を廃止するか。現行8辺の分類は一括判断せず、
+2. Task precedenceの実行関係は、直列の`SEQUENCE`と、並行可能だが完了前に合流する
+   `PARALLEL_JOIN`で表す。段階移行用のFlow `UNCLASSIFIED`を廃止するか。現行8辺の分類は一括判断せず、
    一辺につき一つのユーザー判断taskとして順に閉じ、その後に廃止自体を判断する。
-   - Index完了ゲート←公開Index表現・完了範囲: `LAST`。Comparable採否の外部依存とは分離する。
-   - Index完了ゲート←Comparable採否: `LAST`。外部依存は判断task側に残し、他のIndex作業の
+   - Index完了ゲート←公開Index表現・完了範囲: `PARALLEL_JOIN`。Comparable採否の外部依存とは分離する。
+   - Index完了ゲート←Comparable採否: `PARALLEL_JOIN`。外部依存は判断task側に残し、他のIndex作業の
      着手を止めない。
-   - 1.0品質ゲート←Index契約完了: `LAST`。品質調査は先行できるが、1.0品質判定の確定前に待つ。
-   - 1.0品質ゲート←runtime-check再審査: `LAST`。他の品質作業を並行し、最終判定前に待つ。
-   - Mapped Values契約判断←API照合: `HEAD`。現行APIを判断材料として揃えてから判断する。
-   - BareArray性能計測←性能測定設計: `HEAD`。共通の測定条件は既存方式に従い、BareArray固有の
+   - 1.0品質ゲート←Index契約完了: `PARALLEL_JOIN`。品質調査を並行し、1.0品質判定の確定前に合流する。
+   - 1.0品質ゲート←runtime-check再審査: `PARALLEL_JOIN`。他の品質作業を並行し、最終判定前に合流する。
+   - Mapped Values契約判断←API照合: `SEQUENCE`。現行APIを判断材料として揃えてから判断する。
+   - BareArray性能計測←性能測定設計: `SEQUENCE`。共通の測定条件は既存方式に従い、BareArray固有の
      対象操作・size・比較対象はCodexの`DISCOVERY`で整理するため、ユーザー判断taskは不要とした。
-   - BareArray親監査←契約棚卸し: `LAST`。親監査と棚卸しは並行し、親監査の完了時に待つ。
+   - BareArray親監査←契約棚卸し: `PARALLEL_JOIN`。親監査と棚卸しを並行し、完了前に合流する。
 3. 上流判断前に採番済みとなった条件付きtaskを、結果待ちで保持するか、不要と判定できる時点で
    `EXCLUDED`へ送るか。
 4. 2026-10-16までのCodex低燃費運用を、期限後に削除、更新、または継続するか。

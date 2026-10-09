@@ -8,8 +8,8 @@
 
 ## Task precedence
 
-| 後続task | 前提task | Barrier | 制約 |
+| 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
-| `T-003` | `T-001` | `HEAD` | root後に着手 |
+| `T-003` | `T-001` | `SEQUENCE` | root後に着手 |
 
 ## Registry rules

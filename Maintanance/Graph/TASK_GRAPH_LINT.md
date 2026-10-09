@@ -26,9 +26,9 @@ sh Maintanance/Graph/TaskGraphLint/run_fixtures.sh
 | `ERROR` | `dangling_successor` / `dangling_prerequisite` | precedenceがRegistryにないtaskを参照している |
 | `ERROR` | `self_dependency` | taskが自身を前提にしている |
 | `ERROR` | `duplicate_edge` | 同じtask組のprecedenceが重複している |
-| `ERROR` | `invalid_barrier` | Barrierが`HEAD`、`LAST`、`UNCLASSIFIED`以外である |
+| `ERROR` | `invalid_flow` | Flowが`SEQUENCE`、`PARALLEL_JOIN`、`UNCLASSIFIED`以外である |
 | `ERROR` | `dependency_cycle` | 必須依存にcycleがある |
-| `WARNING` | `unclassified_barrier` | 段階移行中のBarrierが残っている |
+| `WARNING` | `unclassified_flow` | 段階移行中のFlowが残っている |
 | `WARNING` | `conditional_prerequisite` | 「場合だけ／場合に限り」で再開するtaskが必須前提として使われている |
 
 条件付き判定は自然言語による保守的なheuristicであり、0件でも意味上の健全性を証明しない。将来の規則は

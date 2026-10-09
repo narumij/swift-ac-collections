@@ -79,10 +79,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、別projectでの再現性検証へ進む | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
-| `OPS-013` | `FROZEN` | User / Codex | [DECISION] Task precedenceの`UNCLASSIFIED` Barrierを廃止するか | `OPS-016`〜`OPS-023`で現行8辺を個別分類した後、移行用状態を廃止するか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-013` | `FROZEN` | User / Codex | [DECISION] Task precedenceの`UNCLASSIFIED` Flowを廃止するか | `OPS-016`〜`OPS-023`で現行8辺を個別分類した後、移行用状態を廃止するか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-014` | `FROZEN` | User / Codex | [DECISION] 採番済み条件付きtaskの整理方針 | `OPS-013`後、上流結果待ちのまま保持するか、現時点で不要判定できるものを除外するか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `BareArrayModule/BareArrayAudit.md` |
 | `OPS-015` | `FROZEN` | User / Codex | [DECISION] 期限後のCodex低燃費運用規則の処遇 | `OPS-014`後かつ2026-10-16の方針変更時に、一時運用を削除、更新、継続のいずれにするか決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-023` | `WAITING_USER` | User / Codex | [DECISION] BareArray親監査←Test as Specification整理のBarrier分類 | Test as Specification整理を親監査の`HEAD`と`LAST`のどちらで待つか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-023` | `WAITING_USER` | User / Codex | [DECISION] BareArray親監査←Test as Specification整理のFlow分類 | Test as Specification整理と親監査を`SEQUENCE`と`PARALLEL_JOIN`のどちらで進めるか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -114,18 +114,18 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 
 ## Task precedence
 
-| 後続task | 前提task | Barrier | 制約 |
+| 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
-| `RBT-001` | `RBT-010` | `LAST` | 公開Index表現・完了範囲の判断は、Comparable採否と分離したまま親ゲートの完了だけを止める |
-| `RBT-001` | `RBT-011` | `LAST` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了だけを止める |
-| `QUALITY-001` | `RBT-001` | `LAST` | 品質調査は先行できるが、1.0品質判定を確定する前にIndex契約完了を待つ |
-| `QUALITY-001` | `RBT-009` | `LAST` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否を待つ |
-| `RBT-026` | `RBT-014` | `HEAD` | 現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する |
-| `BARE-005` | `BARE-002` | `HEAD` | 契約棚卸しを受け入れ、先行する契約判断・不足testの有無を再計算した後に整理へ着手できる |
-| `BARE-007` | `BARE-006` | `HEAD` | 既存方式に沿った対象操作・size・比較対象の測定設計を入力にして計測する |
-| `BARE-001` | `BARE-002` | `LAST` | 親監査と契約棚卸しは並行できるが、公開契約の棚卸しを親監査の完了時に待つ |
+| `RBT-001` | `RBT-010` | `PARALLEL_JOIN` | 公開Index表現・完了範囲の判断は、Comparable採否と分離したまま親ゲートの完了前に合流する |
+| `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |
+| `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |
+| `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |
+| `RBT-026` | `RBT-014` | `SEQUENCE` | 現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する |
+| `BARE-005` | `BARE-002` | `SEQUENCE` | 契約棚卸しを受け入れ、先行する契約判断・不足testの有無を再計算した後に整理へ着手できる |
+| `BARE-007` | `BARE-006` | `SEQUENCE` | 既存方式に沿った対象操作・size・比較対象の測定設計を入力にして計測する |
+| `BARE-001` | `BARE-002` | `PARALLEL_JOIN` | 親監査と契約棚卸しは並行できるが、親監査の完了前に合流する |
 | `BARE-001` | `BARE-005` | `UNCLASSIFIED` | Test as Specification整理を親taskの完了条件とする |
-| `OPS-013` | `OPS-023` | `HEAD` | 現行辺を個別分類した後に`UNCLASSIFIED`廃止を判断する |
+| `OPS-013` | `OPS-023` | `SEQUENCE` | 現行辺を個別分類した後に`UNCLASSIFIED`廃止を判断する |
 
 ## Registry rules
 
@@ -135,8 +135,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 - `USER_ONLY`はユーザー専任とし、AIは着手、代行、催促を行わない。
 - `WAITING_EXTERNAL`は外部条件が解消するまで着手可能とみなさない。
 - Task precedenceには内部task間の必須AND前提だけを記録する。
-- Task precedenceのBarrierは、前提taskを後続taskの開始前に待つ`HEAD`、終わりに待つ`LAST`、
-  移行中の`UNCLASSIFIED`のいずれかとし、新規・更新辺は`HEAD`か`LAST`を必須とする。
+- Task precedenceのFlowは、前提taskの後に後続taskを始める`SEQUENCE`、並行を許可して後続taskの
+  完了前に合流する`PARALLEL_JOIN`、移行中の`UNCLASSIFIED`のいずれかとし、新規・更新辺は
+  `SEQUENCE`か`PARALLEL_JOIN`を必須とする。
 - 新規または内容更新したtaskの項目名は、`[DECISION]`、`[EXECUTION]`、`[DISCOVERY]`のいずれかで始める。
 - `DECISION`は一つのユーザー判断だけを含む。複数の判断がある場合は登録前または発見時に分割する。
 - `EXECUTION`と`DISCOVERY`はノー判断taskとし、未確定の判断をagentが補って完了させない。

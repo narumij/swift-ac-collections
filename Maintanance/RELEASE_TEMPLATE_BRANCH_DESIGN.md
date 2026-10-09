@@ -4,8 +4,28 @@
 
 ## 状態
 
-設計ドラフト。`prepare/release/template`やrelease用branchの作成、workflow変更、source変換、tag、pushを
-この文書だけでは許可しない。
+2026-10-09、release rehearsalを設計していた前任conversationの意図と途中経過が失われ、そのままでは
+安全な再開が困難なため、関連taskとともに凍結した設計ドラフト。
+ユーザーの明示的な再開指示があるまで、`prepare/release/template`やrelease用branchの作成、workflow変更、
+source変換、test、benchmark、tag、pushを進めない。この文書だけでは再開や各操作を許可しない。
+
+### 前任conversationの残存資料
+
+以下は前任conversationが残した設計内容である。現在のCodexには、その選択へ至った意図、検討途中の状態、
+各項目間の優先関係を十分に復元できない。したがって既決事項や再開指示として扱わず、当面削除せずに保存する
+参考資料とする。再開時は、ユーザーの明示指示を受けて目的と境界を確定し直し、採用できる部分だけを選ぶ。
+
+- `prepare/release/template`からversion別`release/<version>`を作り、固定したmain候補をmergeする。
+- version別branchはmainへ戻さず、検証済み終端への同version tagで完成とする。
+- 内部管理資産と内部文書をrelease treeから除き、Testsと再実行可能なBenchmarksは残す。
+- 通常版変換では`COMPATIBLE_ATCODER_2025`を具体化し、`Utilities/Permutation`は最終treeから除く。
+- release専用workflowはmain用workflowと別fileにし、version別branchのremote pushはユーザー操作とする。
+- benchmark結果はCI artifactへ保存し、直前release tagを同一runner・同一定義で測るbaselineとする。
+
+残存記録上は、実際の変換、allowlist、workflow、lint、test、benchmarkで成立させる試行と、0.5.1実績を
+汎用checklistへ反映する作業が未完に見える。ただし、これが完全な残作業一覧であることや、同じ順序で再開
+できることは確認できない。凍結時点のworktreeにある未追跡`Utilities/Release/`はPython bytecode cacheだけで、
+設計成果または再開可能な実装として扱わない。
 
 ## 目的
 

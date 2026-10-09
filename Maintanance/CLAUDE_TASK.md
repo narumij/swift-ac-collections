@@ -7,14 +7,14 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（OPS-002のClaude初稿をCodex受入、本文統合待ち）**
+**実行中ジョブ: なし（OPS-004 orientation独立レビューは作業完了、内容は不採用）**
 
 - 継続ジョブ: なし。
 - 新規bounded assignment: なし。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
   Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
   停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。今回の一件は、
-  ユーザーがClaudeによるドラフトを明示指定したため、その指定範囲に限る例外として割り当てる。
+  ユーザーがClaudeによるレビューを明示指定したため、その指定範囲に限る例外として割り当てる。
   時刻到達だけで自動的に通常運用へ戻さず、その時点のゴールへの必要性と利用量を再確認する。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
@@ -22,6 +22,73 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Completed bounded assignment: Codex commander orientation independent review
+
+Registryの`OPS-004`として、現行`Maintanance/CODEX_ORIENTATION.md`を独立に反証レビューする。
+初稿作成時の意図やCodexの完成判定を前提にせず、必要な根拠として`AGENTS.md`、
+`Maintanance/AI_COLLABORATION_PHILOSOPHY.md`、`Maintanance/Graph/TASK_GRAPH_LINT.md`を照合する。
+現在の個別task内容を再調査したり、ArchivedやMaintanance全体を走査したりしない。
+
+次の観点だけを確認する。
+
+1. ユーザー、Codex、Claude、第三者AIの責任・判断・検収境界に矛盾や誤解を招く省略がないか。
+2. 新しいCodexが会話、branch、worktree、CIの文脈を失った場合に、推測や旧記録からtaskを復活させず復帰できるか。
+3. Debug、Release、Death Test、Sanitizer、documentation、性能、履歴、独立レビューの証拠範囲を混同させないか。
+4. 変動するtask状態やrelease境界を本文へ固定せず、Registryと詳細正本へ戻す構造になっているか。
+5. 初回確認のtask graph lint例が、機械検査と意味判断の境界を実際に確認できるか。
+6. 文書の長さ、重複、参照関係が、新しい会話の認知負荷や復帰速度を不必要に悪化させていないか。
+
+各指摘を`PASS`、`RISK`、`BLOCK`、`UNVERIFIED`で分類し、根拠、もっとも強い反証、最小の修正案を示す。
+単なる好みや全面的な書き直し案は出さず、修正不要ならその理由を明記する。新しい製品方針、公開契約、
+agent権限を決定しない。レビューによって判断点が見つかった場合は、一判断ずつ分離してCodexへ返す。
+
+`CODEX_ORIENTATION.md`、Registry、AGENTS.md、思想文書、lint文書、source、test、workflowを変更しない。
+変更可能範囲はこのassignmentの`Result`節と冒頭のジョブ状態だけ。完了時はジョブ状態を返却待ちへ変え、
+結果を下へ追記する。commit、push、branch操作、受入、Registry更新は行わない。Codexが原資料と照合し、
+指摘の採否、本文修正、受入、task完了を扱う。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`develop/misc/53` HEAD `dca1d939`、未commitのOPS-004割当を含むworktree。
+読んだのは`CODEX_ORIENTATION.md`、`AGENTS.md`、`AI_COLLABORATION_PHILOSOPHY.md`の該当節、`Graph/TASK_GRAPH_LINT.md`だけ。
+追加の事実確認は、3 branchのRegistry行の比較（git show）と、read-onlyのlint実行だけ。文書は変更していない。
+
+**独立性の限界（`UNVERIFIED`）**: 本文の「証拠を混同しない」の表と「復帰手順」は、Claudeの初稿（OPS-002）から引き継がれている。
+`AGENT_TASK_FIT_INTERVIEW.md`の合意どおり、この2節へのClaudeの`PASS`は独立reviewに数えないこと。必要なら第三者AIかCodex自身で確認する。
+
+1. **責任・判断・検収の境界: `RISK`**。表（L30-35）と原則（L18-26）は思想文書§1・§2・§8と一致し、Claudeを責任主体に置かない点も一致する。
+   - 最強の反証: ユーザー欄（L32）は「マネジメント設計、最終accountability」だけで、tag・push・merge・外部公開などの不可逆操作の承認を書いていない。
+     `AGENTS.md:36-38`は「commit boundariesはCodex、irreversible choicesはユーザー」と分けており、本文だけを読むとcommitとpushの扱いの差が分からない。
+   - 修正案: ユーザー欄に「不可逆操作（tag、push、merge、外部公開）の承認」を1句足す。
+2. **文脈喪失からの復帰: `BLOCK`**。
+   - 根拠: 手順2（L147）はTask Registryを読んで状態を確定するが、手順4（L149）でbranchを確かめるのはその後。Registryはbranchごとに別物になる。
+     本日の実測では、`prepare/release/template`と`main`のRegistryは`RELEASE-008`が`ACTIVE`で`OPS-002`〜`004`が無い。
+     `develop/misc/53`では`RELEASE-008`が`DONE`、`OPS-002`・`003`が`DONE`。誤ったbranchで手順2を行うと、古いRegistryを正としてtaskを復活させる。
+     これは`AGENTS.md:12`の「旧記録から復活させない」に反するが、手順の順序では検出できない。
+   - 修正案（最小）: 手順2の前に「作業branchを確定する。branch間でRegistryが食い違う、またはどれが現行か決められないときは、ユーザーへ一つだけ確認する」を置く。
+     あわせて手順4へ`git stash list`を加える（本日、OPS-002の未commit変更はstashに退避された。また、Claudeの`Result`2件が未commitのまま、どのrefにも残らなかった）。
+3. **証拠範囲の区別: `RISK`（軽微）**。表（L118-127）は種類ごとの限界を正しく分けている。
+   - 最強の反証: Release testの行は`-Ounchecked`（事前条件が消える構成）を区別しない。independent reviewの行は「作成者自身の再確認は独立でない」を落としている（上の限界と同じ根）。
+   - 修正案: 2行とも1句ずつ足す。詳細は`AI_TECHNICAL_ORIENTATION.md`へ委ねてよい（この文書は今回の範囲外で、読んでいない）。
+4. **変動情報の分離: `PASS`**。task状態・release境界・個別契約はRegistryと正本へ戻している（L109-110、L138-140）。
+   L47-58のRedBlackTree差し替えの分担は現在の局面の記述だが、「固定的な評価ではない」（L56）と明記されており修正不要。
+5. **lint例の確認力: `RISK`**。
+   - 根拠: 5つの問い（L185-189）の答えは`TASK_GRAPH_LINT.md`の本文（L8、L19-20、L33-34）にほぼそのまま書かれている。読めば暗唱で答えられ、境界の理解を確かめにくい。
+     さらに現行Registryでlintを実行すると`tasks 55 / edges 40 / warnings 0 / errors 0`、fixtureも`PASS`で、解釈すべき実例が出ない（2026-10-09、`run.sh`・`run_fixtures.sh`）。
+   - 修正案: 「`run_fixtures.sh`の異常fixtureで出るERRORを一つ選び、それがRegistryの意味について何を言い、何を言わないかを説明させる」へ置き換える。実物の出力を前提にすれば、暗唱では答えられない。
+6. **長さ・重複・参照: `RISK`**。
+   - 根拠: 初回は本書213行と思想文書360行を読む（L12）。本書のL16-26・L37-45・L60-75は、思想文書§1〜§3とほぼ同じ内容。
+     復帰手順は142行目で、事故時に必要な手順が思想の後ろにある。「詳しく読む場所」には10文書があり、正本でない`CODEX_OBSERVATIONS.md`も並ぶ（L203では正本でないと明記済み）。
+   - 修正案（どちらか一つ）: (a) 冒頭の「目的と読み方」に「事故からの復帰は§復帰手順を先に」と1行足す。(b) 思想文書と重なる3箇所を、各1〜2行の要約と参照に縮める。全面的な書き直しは不要。
+
+**判断点（Codexへ一つずつ）**: なし。上の修正はいずれも既存の`AGENTS.md`・思想文書から導ける文言の補正で、新しい方針・権限の決定を含まない。
+
+Codex completion record: 2026-10-09、指定した6観点について根拠、反証、最小修正案、独立性の限界を
+報告したため、レビュー作業自体は完了とする。ただし、報告された`BLOCK`、`RISK`、修正案はCodexの評価や
+方針として採用せず、参考資料としてのみ保存する。Claude自身の初稿を含む本文への自己レビューでもあり、
+内容を鵜呑みにして`CODEX_ORIENTATION.md`へ反映しない。本文は変更せず、このレビューから後続taskを
+作成しない。オリエンテーションの作成・確認・レビューに関する一連の作業はここで終了する。
 
 ## Completed bounded assignment: release template branch design review
 

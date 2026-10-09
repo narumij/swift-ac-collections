@@ -15,7 +15,11 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **中間ゴールの取り扱い**
 
-**現在の中間ゴール:**
+**現在の中間ゴール:** 0.5.2を完成させる。全公開対象のコメントドック・ドラフトを揃えることは、0.5.2の
+到達範囲とrelease開始を判断するための前提であり、中間ゴールそのものではない。対象範囲と証拠の棚卸し、
+対象別ドラフト、到達範囲の判断、採用されたrelease工程の実行を、0.5.2へ至るtask graphとして扱う。
+
+**凍結中の中間ゴール（前任conversationの残存記録）:**
 
 - 0.5.1の実施結果からrelease checklistの不足を抽出し、Webマージ、main CI、実際のmain commit確認、
   tag作成、tag pushの順序を次回releaseで誤認しない汎用手順へ改訂する。
@@ -84,15 +88,16 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-010` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲートのうち公開Index表現と完了範囲 | Container要件の安定後、公開Indexと内部`SealError`の分離、1.0での完了範囲を決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | ready判定を維持する常設nodeとして`ACTIVE`を保つ。個別assignmentや実行中ジョブを意味せず、必要なときだけ現行Registryとの一致を確認 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、別projectでの再現性検証へ進む | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
 | `OPS-002` | `DONE` | Codex / Claude | [EXECUTION] 司令塔オリエンテーションMDの作成 | 2026-10-09、責任分担、証拠基準、技術的難所への入口、文書境界、事故時の復帰経路を統合し、新しい会話による実読確認とユーザー確認を完了 | `CODEX_ORIENTATION.md` |
 | `OPS-003` | `DONE` | Codex | [EXECUTION] AI向け技術オリエンテーションの作成 | 2026-10-09、AIが誤認しやすい技術構造、既存中核の由来、証拠経路、停止点を整理し、ユーザー確認を完了 | `AI_TECHNICAL_ORIENTATION.md` |
+| `OPS-004` | `DONE` | Claude / Codex | [DISCOVERY] Codex司令塔オリエンテーションの独立レビュー | 2026-10-09、指定6観点のレビュー報告をもって作業完了。指摘と修正案は採用せず参考資料として保存し、本文へ反映しない | `CODEX_ORIENTATION.md` / `CLAUDE_TASK.md` |
 | `RELEASE-005` | `DONE` | User / Codex | [DECISION] 0.5.1の到達範囲とrelease検討開始 | 2026-10-09、BareArray契約の堅牢化と三対象のTest as Specificationを0.5.1の範囲として採用し、release checklistへ進むと決定 | `RELEASE_0_5_1.md` |
 | `RELEASE-008` | `DONE` | Codex / Claude | [EXECUTION] 0.5.1 release候補の準備と検収 | 2026-10-09、PR #176をmainへmergeし、main CI green確認後、merge commit `d7b3863e`へannotated tag `0.5.1`を作成・pushしてremote到達を確認 | `RELEASE_0_5_1.md` / `RELEASE_CHECKLIST.md` |
-| `RELEASE-009` | `ACTIVE` | Codex | [DISCOVERY] 0.5.1実績に基づくrelease checklist見直し | CHANGELOGの`Unreleased`・当該版・前版の分離と、候補branch検収後のWebマージ、main CI、実main commit確認、tag作成、tag pushの順序・承認境界を検証し、必要な最小改訂案を示す | `RELEASE_CHECKLIST.md` / `RELEASE_0_5_1.md` |
+| `RELEASE-009` | `FROZEN` | Codex | [DISCOVERY] 0.5.1実績に基づくrelease checklist見直し | 2026-10-09、前任conversationの意図と途中経過の喪失により再開困難なため凍結。明示的な再開指示後、残存記録を参考資料として目的と境界から再確認 | `RELEASE_CHECKLIST.md` / `RELEASE_0_5_1.md` |
 | `RELEASE-010` | `DONE` | User / Codex | [DECISION] release template branch方式の採用 | 2026-10-09、`prepare/release/template`から`release/<version>`を切り、mainをmergeして専用工程を実施し、mainへ戻さず同versionのtagを打って完成とする方式を採用。残りの`0.5.x`を工程のrehearsal系列とし、改善をtemplateへ還元して`0.6.0`を成熟した工程の本運用候補とする | `RELEASE_CHECKLIST.md` |
-| `RELEASE-011` | `ACTIVE` | Codex | [DISCOVERY] `prepare/release/template`の構成設計と試行 | 配布対象の削除規則、通常版としての`COMPATIBLE_ATCODER_2025`条件分岐の具体化、release専用test・workflow・lint、main merge時の競合と製品修正の差し戻し境界を整理し、template branch作成へ渡せる案と試行結果を示す | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-011` | `FROZEN` | Codex | [DISCOVERY] `prepare/release/template`の構成設計と試行 | 2026-10-09、前任conversationの意図と途中経過の喪失により再開困難なため凍結。残存ドラフトは当面保存するが既決事項とは扱わず、明示的な再開指示後に目的と境界を再確認 | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-012` | `DONE` | User / Codex | [DECISION] release treeから除外する内部管理資産 | 2026-10-09、`Maintanance`、`AGENTS.md`、`CLAUDE.md`、`Utilities/Maintenance`はmainへ保持し、release treeから除外すると決定 | `RELEASE_CHECKLIST.md` |
 | `RELEASE-013` | `DONE` | User / Codex | [DECISION] release treeにおける互換生成・検証utility | 2026-10-09、`Utilities/Permutation`は通常版への変換を検証する工程中だけ使用し、最終的なtag対象から除外すると決定 | `RELEASE_CHECKLIST.md` |
 | `RELEASE-014` | `DONE` | User / Codex | [DECISION] release treeにおけるbenchmark | 2026-10-09、`Benchmarks`はrelease性能gateと利用者が追試できる証拠としてtag対象へ残し、release時は通常CIより大きい入力規模も扱える設計対象とすると決定 | `RELEASE_CHECKLIST.md` |
@@ -103,6 +108,14 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-019` | `DONE` | User / Codex | [DECISION] release性能の比較baseline | 2026-10-09、直前のrelease tagをbaselineとし、candidate側で固定したrelease profile・benchmark定義をbaselineとcandidateの双方へ適用して同じrunner job内で比較すると決定。0.5.2のbaselineは0.5.1 | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` |
 | `RELEASE-020` | `FROZEN` | Codex | [EXECUTION] 0.6.0でGitHub Pages更新元をrelease tagへ一本化 | 0.5.xではmain pushとrelease tag pushの双方によるdeploy競合を許容。0.6.0のrelease工程でmain由来のdeployを停止し、tag commitから生成・検証した利用者向け文書だけがPagesを更新することを確認 | `RELEASE_0_6_0.md` / `RELEASE_TEMPLATE_BRANCH_DESIGN.md` |
 | `RELEASE-006` | `FROZEN` | User / Codex | [DECISION] 0.5.2の到達範囲とrelease検討開始 | 全公開対象のコメントドック・ドラフト完成後、0.5.2へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_5_2.md` |
+| `RELEASE-021` | `EXCLUDED` | Codex | [EXECUTION] 0.5.2 release候補の準備と検収 | 2026-10-09、工程確定前の分解は早すぎるため未着手で除外。準備・検収はrelease工程を具体化する時点で新しいtaskへ分解する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-022` | `PROPOSED` | User / Codex | [DECISION] 0.5.2 release可否ゲート | 後から分解する準備・検収taskが固定候補と必須証拠を揃えた後、0.5.2をreleaseしてよいか一つだけ判断する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-023` | `EXCLUDED` | User / Codex | [EXECUTION] 0.5.2 tag・push・公開 | 2026-10-09、工程確定前の分解は早すぎるため未着手で除外。可否決定後の操作は必要になった時点で個別にtask化する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `DOC-002` | `ACTIVE` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 4対象の公開宣言、既存コメント、契約正本、test証拠、未確定判断をledger化し、対象別実行taskの開始可否と必要依存を確定 | `RELEASE_0_5_2.md` |
+| `DOC-003` | `PROPOSED` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト | `DOC-002`で確定した公開対象と契約証拠に従い、ユーザーが契約内容をレビューできるコメントドック・ドラフトと検証結果を揃える | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `DOC-004` | `PROPOSED` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | `DOC-002`で命名判断との境界を確定後、公開対象と契約証拠に従い、ユーザーがレビューできるコメントドック・ドラフトと検証結果を揃える | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
+| `DOC-005` | `PROPOSED` | Codex | [EXECUTION] BareArray公開APIコメントドック・ドラフト | `DOC-002`で確定した公開対象と受入済み監査を入力に、寿命責務と4D軸順を含むコメントドック・ドラフトと検証結果を揃える | `RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
+| `DOC-006` | `PROPOSED` | Codex | [EXECUTION] RedBlackTree公開APIコメントドック・ドラフト | `DOC-002`、`RBT-014`、必要な公開契約判断の完了後、4公開型のコメントドック・ドラフトと検証結果を揃える | `RELEASE_0_5_2.md` / `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | 全公開対象の利用者向けドキュメント初版完成後、0.6.0へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_6_0.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -180,6 +193,15 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-011` | `RELEASE-018` | `PARALLEL_JOIN` | benchmark構成の分類は先行できるが、tag tree確定前に過去結果を除外してrelease結果をCI artifactへ残す方針と合流する |
 | `RELEASE-011` | `RELEASE-019` | `PARALLEL_JOIN` | performance workflowの設計は先行できるが、比較実装前に直前release tagをbaselineとする方針と合流する |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |
+| `DOC-003` | `DOC-002` | `SEQUENCE` | 公開対象、契約証拠、阻害判断を確定してからPermutation本文を作成する |
+| `DOC-004` | `DOC-002` | `SEQUENCE` | OptionalArrayの命名判断との境界を含む開始条件を確定してから本文を作成する |
+| `DOC-005` | `DOC-002` | `SEQUENCE` | 受入済みBareArray監査と公開宣言の対応を確定してから本文を作成する |
+| `DOC-006` | `DOC-002` | `SEQUENCE` | RedBlackTreeの公開対象と必要な契約判断を確定してから本文を作成する |
+| `DOC-006` | `RBT-014` | `SEQUENCE` | 三対象で文書作業方式を確認した後、4公開型outlineを現行APIへ照合してから本文を作成する |
+| `RELEASE-006` | `DOC-003` | `PARALLEL_JOIN` | 0.5.2到達範囲の判断前にPermutationコメントドック・ドラフトを揃える |
+| `RELEASE-006` | `DOC-004` | `PARALLEL_JOIN` | 0.5.2到達範囲の判断前にOptionalArrayコメントドック・ドラフトを揃える |
+| `RELEASE-006` | `DOC-005` | `PARALLEL_JOIN` | 0.5.2到達範囲の判断前にBareArrayコメントドック・ドラフトを揃える |
+| `RELEASE-006` | `DOC-006` | `PARALLEL_JOIN` | 0.5.2到達範囲の判断前にRedBlackTreeコメントドック・ドラフトを揃える |
 
 ## Registry rules
 

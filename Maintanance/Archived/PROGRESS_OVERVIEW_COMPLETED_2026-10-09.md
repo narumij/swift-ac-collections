@@ -280,3 +280,4 @@ IDs remain permanent and must not be reused.
 | `OPS-009` | `DONE` | Claude / Codex | [EXECUTION] AI task process posterの作成と正式配置 | 2026-10-09、AIによるtask処理と責任境界を1枚にまとめ、生成scriptとSVGを追跡対象へ移した | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-010` | `DONE` | Codex | [DISCOVERY] AI task process posterの内容照合 | Registryの全9状態、第三者AIの役割、関係性の記述を正本と照合し、修正点を確定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-011` | `DONE` | Codex | [EXECUTION] AI task process posterへのreview反映 | 内容照合の指摘を生成scriptと成果物へ反映し、再生成と画像確認を完了 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-012` | `DONE` | User / Codex | [DECISION] 終了済みGRAPH-004 fallback規則を削除するか | 2026-10-09、削除を決定。ルーティーンから終了済み共有smell試験へのfallbackを除き、割当を無理に作らない原則は維持 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |

@@ -138,13 +138,8 @@ When the user says `ルーティーン`, treat it as a request for this cycle:
    separate user decisions from agent execution.
 4. Assign Claude only bounded, decision-free tasks whose prerequisites are
    satisfied and whose ownership fits Claude. Prefer work that advances the
-   current intermediate goal. If no such assignment exists and `GRAPH-004`
-   remains active, use one small refactoring-smell investigation from its
-   canonical scope as fallback work. Bound it by one question or target area,
-   require evidence and counterevidence, and limit the result to observations
-   or task candidates; do not let it modify source, decide product policy,
-   activate tasks, or displace goal-directed work. If no concrete bounded
-   investigation is available, do not manufacture an assignment.
+   current intermediate goal. If no concrete bounded assignment is available,
+   do not manufacture one.
 5. Commit any resulting task-management and handoff changes.
 
 Any phase may be a no-op. The user's latest instruction still takes priority.

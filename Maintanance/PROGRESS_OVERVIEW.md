@@ -79,8 +79,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、別projectでの再現性検証へ進む | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
-| `OPS-012` | `WAITING_USER` | User / Codex | [DECISION] 終了済みGRAPH-004 fallback規則を削除するか | ルーティーンから、発火不能になったsmell調査fallbackを削除するか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-013` | `FROZEN` | User / Codex | [DECISION] Task precedenceの`UNCLASSIFIED` Gateを廃止するか | `OPS-012`の判断と反映後、現行8辺を分類して移行用状態を廃止するか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-013` | `WAITING_USER` | User / Codex | [DECISION] Task precedenceの`UNCLASSIFIED` Gateを廃止するか | 現行8辺を`START`または`COMPLETE`へ分類し、移行用状態を廃止するか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-014` | `FROZEN` | User / Codex | [DECISION] 採番済み条件付きtaskの整理方針 | `OPS-013`後、上流結果待ちのまま保持するか、現時点で不要判定できるものを除外するか一つだけ決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `BareArrayModule/BareArrayAudit.md` |
 | `OPS-015` | `FROZEN` | User / Codex | [DECISION] 期限後のCodex低燃費運用規則の処遇 | `OPS-014`後かつ2026-10-16の方針変更時に、一時運用を削除、更新、継続のいずれにするか決定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `EVAL-001` | `FROZEN` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | ユーザーが記録を明示的に依頼した時だけ再開し、記録後は再び凍結。Claude自身の任意observation追記は妨げない | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |

@@ -186,7 +186,9 @@ validation result, remaining uncertainty, or reason that the sentence needs.
   still requires verification. It is not a substitute for stating the evidence.
 - Use `終。` before a sentence that reports the requested work itself as complete.
   State the validation performed and any material unverified remainder; do not use
-  it for acknowledgement, partial progress, or merely finishing a tool call.
+  it for acknowledgement, partial progress, or merely finishing a tool call. Name
+  the completed operation precisely: `BareArray監査を再開した` is an ongoing-task
+  status and uses `告。`; `BareArray監査の再開処理を完了した` may use `終。`.
 - Use `良。` before a sentence that reports a specific validation as successful.
   Name the validation; do not infer overall task completion from it.
 - Use `謝。` before correcting the agent's own earlier error. State briefly what

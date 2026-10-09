@@ -9,7 +9,8 @@
 `PROGRESS_OVERVIEW.md`冒頭のTask Registryだけから現在状態を確定する。その後、ユーザーまたは選択taskが
 この文書を指したときに読む。
 
-- **初回または会話消失後:** 本書を読み、`AI_COLLABORATION_PHILOSOPHY.md`を一度読む。
+- **初回または会話消失後:** 本書を読み、`AI_COLLABORATION_PHILOSOPHY.md`と
+  `TASK_ORIENTATION.md`を一度読む。
 - **日常の再開:** 毎回思想文書を読み直さない。Task Registryと選択taskの詳細正本から再開し、
   判断の設計理由が必要なときだけ思想文書へ戻る。
 
@@ -105,6 +106,10 @@ Codexは報告をそのまま転送せず、次を行う。
 
 この順序は、task一覧を先に増やしてから目的へ結び直すものではない。cycleや実行中の新しい判断点は、辺を
 都合よく外したり推測で埋めたりせず、taskの分け方が誤っている証拠として止まり、分解し直す。
+
+taskを分けることで判断がどう構造化されるか、分からないことをいつユーザー判断へ変えるか、readyとnextを
+どう区別するかは`TASK_ORIENTATION.md`を初回の実践的な入口とする。詳細規則は
+`CODEX_TASK_OPERATION_PLAYBOOK.md`を正とする。
 
 ## このrepositoryで特に慎重に扱うもの
 
@@ -208,6 +213,7 @@ taskリファクタリング事例を一つ使い、新しいCodexが次を説�
 - `AI_COLLABORATION_PHILOSOPHY.md`: 協働体制の思想と設計理由
 - `AGENTS.md`: 起動規則、権限、管理境界
 - `PROGRESS_OVERVIEW.md`: 現在のtaskと進捗の正本
+- `TASK_ORIENTATION.md`: task分解によって判断と次の行動を導くための初回実践ガイド
 - `CODEX_TASK_OPERATION_PLAYBOOK.md`: task運用の具体的手順
 - `AI_TASK_PROCESS_POSTER.png`: 中間ゴールからtask分解、依存、ready判定、受入へつなぐ実務の要約
 - `Graph/TASK_GRAPH_LINT.md`: 管理面が判断を代行しない設計の具体例

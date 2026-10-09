@@ -7,9 +7,9 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（`PERM-029`のClaude返却はCodex検収済み）**
+**実行中ジョブ: なし（`DOC-019`はCodex統合・受入済み）**
 
-- 継続ジョブ: なし。`PERM-029`はCodex検収とCI確認を終えて完了。
+- 継続ジョブ: なし。`DOC-019`のClaude回答はCodexが統合・受入済み。
 - 新規bounded assignment: 2026-10-10、ユーザーが利用制限待機より本依頼を優先すると明示したため、
   下記の範囲だけ例外として発注する。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
@@ -22,6 +22,26 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: code snippet candidate TOP10 survey
+
+Registryの`DOC-019`として、`Maintanance/CODE_SNIPPET_SURVEY.md`の共通設問に回答する。
+対象はBareArray、OptionalArray、Permutationの公開APIだけ。回答先は
+`Maintanance/CODE_SNIPPET_SURVEY_CLAUDE.md`だけとし、回答確定までは
+`Maintanance/CODE_SNIPPET_SURVEY_CODEX.md`を読まない。
+
+公開宣言と生成済みの公開コメントを中心に読み、最大10件を順位付けする。不明な挙動だけ対応testで
+事実確認する。各候補にはsymbol、順位、
+利用者の疑問、スニペットで示すべき最小の振る舞い、既存説明だけでは不足する理由を記載する。
+同一パターンの次元違いを重複させる場合は理由を示す。source、test、Registry、共通設問正本、Codex回答を
+変更しない。コードスニペット自体の実装、掲載場所の決定、統合順位の作成は行わない。
+
+完了時はClaude回答fileの回答状態を完了へ変更し、冒頭のジョブ状態を返却待ちへ変える。commit、受入、
+Registry更新はCodexが扱う。
+
+Codex acceptance（2026-10-10）: Claude回答がCodex回答を未読のまま専用fileへ確定されたことを確認した。
+両回答の強い一致8観点と相違を共通正本へ統合し、メソッドTOP10として受け入れた。候補選定にtest読解を
+必須とした当初の発注は広すぎたため、公開宣言・コメント中心、不明点だけtest確認へ補正した。
 
 ## Active bounded assignment: Swift 6.4 Release iterator copy fix independent review
 

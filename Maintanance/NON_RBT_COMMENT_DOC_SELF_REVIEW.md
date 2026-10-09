@@ -17,9 +17,25 @@
    一方、source内TODOにはSwift 6.4 Release構成で元iteratorの進行がcopy側へ波及した
    未解決事象が記録されている。実装由来かcompiler由来か確定していないため、コメントを
    修正すべきとは推定しない。1.0前の再現確認までは未確認事項として残す。
-2. `OptionalArrayModule`の多次元subscriptとView subscriptは、連鎖書き込みのための
-   setterが任意の`newValue`を黙って無視する。公開コメントはView共有と寿命を説明するが、
-   setterがwriteback専用であることや別View代入の扱いは説明していない。testは連鎖書き込みと
-   取得したViewからの変更共有を確認するが、別Viewの直接代入契約は定めていない。
-   BareArray同様に代入を契約違反として検査するか、現在のno-opを公開契約として記載するかは
-   製品判断が必要であり、本レビューでは修正しない。
+2. `OptionalArrayModule`の多次元subscriptとView subscriptのsetterは任意の`newValue`を
+   黙って無視するが、`OptionalArrayAudit.md`を再確認すると、2026-10-08に「連鎖subscriptの
+   writeback用の実装手段で、View全体代入を提供する公開契約ではない」とユーザー確認済みだった。
+   したがって新しい製品判断候補ではなく、公開コメントへsetterの実装詳細を追加しない現状を維持する。
+
+## Claude独立照合の受入
+
+2026-10-10、Claudeのread-only照合は完成判定ではなく証拠packageとしてCodexが検収した。
+先行観測2件に加え、次の判断不要な修正候補を受け入れた。
+
+- `NextPermutationsSequence.makeIterator()`はsource collectionをbufferへcopyするためO(n)だが、
+  公開コメントに計算量がない。
+- `OptionalArray1D`と`OptionalArray1DView`の要素subscriptは、設定済みslotへ非`nil`を
+  上書きしたとき以前の要素を破棄することがtestで固定されているが、コメントに明記されていない。
+- `OptionalArray4D`の軸説明が`array[size3][size2][size1][size0]`となっており、寸法名を
+  添字値のように見せるため、添字記号へ直す余地がある。
+- 1D `BareArray`の本文に「多次元配列」が残っている。
+
+一方、公開仕様testがないことだけを理由にした`next()`終端とOptionalArray境界条件の
+`UNVERIFIED`分類は採用しない。実装と既存testからコメントとの一致を確認できる。
+`removeAll()`を`let`所有値から呼べる点も、利用者が必要とするコメント制約とは判定しない。
+3 moduleを公開初版へ進める完成判定はClaudeの結論から切り離し、Codexに残す。

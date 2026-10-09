@@ -7,14 +7,13 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（`DOC-008` BareArrayコメントドック独立レビューはCodex受入済み）**
+**実行中ジョブ: なし（`DOC-013`はCodex検収済み）**
 
 - 継続ジョブ: なし。
-- 新規bounded assignment: なし。
+- 新規bounded assignment: なし。`DOC-013`はClaude返却済みで、以後はCodexが検収する。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
-  Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
-  停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。今回の一件は、
-  ユーザーがClaudeによるレビューを明示指定したため、その指定範囲に限る例外として割り当てる。
+  Codex、第三者AI、または延期で代替できる仕事は割り当てない。2026-10-10のユーザー指示により、
+  課金状態にかかわらず火曜16:00まではClaudeへ新しい依頼を行わない。
   時刻到達だけで自動的に通常運用へ戻さず、その時点のゴールへの必要性と利用量を再確認する。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
@@ -22,6 +21,81 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Returned bounded assignment: three-module documentation-comment draft review
+
+Registryの`DOC-013`として、次の通常版公開コメントが公開初版へ進めるドラフト品質かを独立に反証レビューする。
+
+- `Sources/BareArrayModule/BareArray.swift`
+- `Sources/OptionalArrayModule/OptinalArray.swift`
+- `Sources/PermutationModule/Permutations.swift`
+
+対応する`Tests/BareArrayModuleTests`、`Tests/OptionalArrayModuleTests`、
+`Tests/PermutationTests/NextPermutationsSequence`をTest as Specificationとして読む。実装だけで契約が
+分からない箇所は推定せずtestを確認し、それでも確定できなければ`UNVERIFIED`とする。
+`Maintanance/NON_RBT_COMMENT_DOC_SELF_REVIEW.md`はCodexの先行観測として読んでよいが、結論を追認せず反証する。
+AtCoder 2025互換mode、RedBlackTree系、利用者向けMarkdown、命名変更、性能方針、1.0方針は対象外。
+
+各moduleについて次を確認する。
+
+1. 公開宣言のコメントcoverageと、説明の正確さ、用語、軸順、ownership、View寿命、値semantics。
+2. 初期化、空／zero次元、境界・事前条件、writeback、要素寿命、計算量が実装とtestに一致するか。
+3. testが示さない保証や、未解決事項を確定事項として書いていないか。
+4. 利用者が誤用を避けるために必要な重要制約が欠けていないか。
+5. 全面的な書き直しではなく、公開初版へ進むドラフトとして阻害する問題があるか。
+
+指摘はmodule・symbol単位に分け、`PASS`、`RISK`、`BLOCK`、`UNVERIFIED`のいずれか、根拠となるsource／test、
+最も強い反証、最小の修正案、製品判断が必要かを記載する。単なる好みは除外する。特にCodexが記録した
+Permutationのiterator copy独立性とOptionalArrayのView setter契約は、対応testを読んだうえで独立評価する。
+
+source、test、Registry、既存監査文書を変更しない。変更可能範囲はこのassignmentの`Result`節と冒頭の
+ジョブ状態だけ。buildやtestの再実行は必須ではなく、read-only照合でよい。完了時はジョブ状態を返却待ちへ
+変え、下の`Result`へ結果を追記する。commit、push、修正採否、受入、Registry完了はCodexが扱う。
+
+### Result
+
+2026-10-10 / Claude Opus 5.5（`claude-opus-5-5`）。`develop/misc/55` HEAD `6b56cb61`。read-onlyの照合だけ（build・test再実行なし）。
+**結論: 3 moduleとも、公開初版へ進むのを止めるBLOCKは無い。** 判断が要るのは2件（Permutationのiterator copy、OptionalArrayのView setter）。
+
+**Permutation（`Permutations.swift`）**
+
+- P1 `RISK`・**判断候補1**: `NextPermutationsSequence`（L31）と`Iterator`（L59）は「copyは独立に進む」を無条件の保証として書く。
+  対応test `testIteratorCopiesAdvanceIndependently`（`2_ValueSemanticsTests.swift:35-48`）は、Release構成で壊れる呼び方（`XCTAssertEqual`の中で`original.next()`を呼ぶ）を**わざと避けて**書かれている（同L39-41のコメント）。
+  つまり、testが示すのは「その書き方なら独立」までで、Release構成には既知の反例がある（L86-89のTODO、原因未確定）。
+  最強の反証: 原因がcompilerなら、ライブラリの契約としては正しい。修正案: 「Swift 6.4のRelease構成で、特定の書き方だとcopyが連動する未解決の事象がある」を1文足すか、現状のまま1.0前の再現確認に任せるか。製品判断が必要。
+  Codexの先行観測（「コメント修正とは推定しない」）とは、testが反例を避けている点を加えた分だけ評価が違う。
+- P2 `RISK`（軽微）: `makeIterator()`は元の要素をbufferへcopyするのでO(n)だが、計算量の記載が無い（L48-52）。`nextPermutations()`の「1 stepはO(n)」だけでは、iterator作成の費用が読めない。修正案: `makeIterator()`に`- Complexity: O(n)`。製品判断不要。
+- P3 `UNVERIFIED`: `next()`の「終わった後の呼び出しもnilを返す」（L103-104）は、実装（`.finished`）では成り立つが、公開仕様test（`1_`〜`4_`）には無く、内部test（`98_InternalTests.swift:34`）にだけある。
+- P4 `PASS`: 現在の順から始めること、辞書順の後続だけ、等しい要素で重複しない、降順・全要素同値・1要素・空は1回、元のcollectionを変えない、返した値が後で変わらない、0始まりのindex、`==`・`hash`・`description`、範囲外の事前条件と`-Ounchecked`。いずれも`1_`・`2_`・`3_`・`99_`と一致。
+  条件付き`Sendable`（L125・L129・L198）には公開コメントが無い（実装側のコメントだけ）が、`0_PublicSurfaceTests.testSendableConformances`で固定されており、阻害ではない。
+
+**OptionalArray（`OptinalArray.swift`）**
+
+- O1 `RISK`・**判断候補2**: 所有2D〜4DとView 2D・3Dの外側subscriptのsetterは何もしない（L212-216、L318-、L432-436、L561-、L622-）。範囲検査もしない。
+  コメントは「返されたViewからの変更はこの配列へ反映されます」とだけ書くので、`a[0] = b[1]`のような代入が黙って無視されること、範囲外のpositionでも止まらないことが読み取れない。testにもView代入の契約は無い（`grep`で該当なし）。
+  最強の反証: 連鎖書き込み`a[y][x] = v`は正しく動き、普通の使い方では問題が出ない。
+  修正案: 「setterは連鎖書き込みの書き戻し専用で、Viewそのものの代入には意味がない」を1文。BareArray監査のledger #9に「OptionalArrayでは連鎖writeback用と確定（2026-10-08）」とあるので、**既に決まっている可能性がある**。
+  決まっていればコメントに反映するだけ、決まっていなければ「BareArrayと同じく検査してtrapさせるか、黙って無視するのを契約にするか」の判断になる。Codexの先行観測と同じ結論で、既決かどうかの確認を足した。
+- O2 `RISK`（軽微）: 要素subscriptのコメント（1D L70-73、View 1D L474-476）は「非nilの代入で構築、nilの代入で破棄」だけで、**設定済みの位置へ非nilを上書きすると以前の要素が破棄される**ことを書いていない。
+  testはこれを固定している（`6_ReferenceLifetimeTests.swift`の上書きtest 2件）。修正案: 1句足す。製品判断不要。
+- O3 `RISK`（軽微）: `removeAll()`は`mutating`でない`func`（L61ほか）なので、`let`で持った配列にも呼べる。コメントはこの点を書かない。testはすべて`var`で呼んでいる（`5_RemoveAllTests.swift`）。
+  BareArrayの「`let`所有者からの変更」と同じ性質の論点。今は修正不要だが、1.0判断の入力に含めるとよい。
+- O4 `UNVERIFIED`: 所有2D〜4Dの外側subscriptの範囲外、1Dの上限書き込み、View 1Dの上限は、事前条件として書かれ、sourceにも検査があるが、Death Testが無い（`99_DeathTests.swift`の21件に含まれない）。コメントは「trapする」とは書いていないので過大表示ではない。
+- O5 `RISK`（軽微）: 4Dの軸順を`array[size3][size2][size1][size0]`と書く（L341）。寸法名を添字の位置に置いているため、添字の値と寸法を取り違えやすい。BareArrayは`array[w][z][y][x]`。修正案: 添字は別の記号にする。製品判断不要。
+- O6 `PASS`: 初期化（未設定slot、capacity 0、zero次元、非負・積overflow）、`indices`の軸、`removeAll()`でshapeとstorageを保持して再利用できること、所有と破棄、View共有と寿命、`-Ounchecked`の注意。いずれも`1_`・`3_`・`4_`・`5_`・`6_`・`99_`と一致。
+
+**BareArray（`BareArray.swift`）**
+
+- B1 `RISK`（軽微）: 1Dの型コメントは見出しが「1次元配列」に直ったが、2行目が「ヒープ領域に確保される軽量な**多次元**配列です。」のまま（L17）。修正案: 「配列」に。
+- B2: DOC-008で返した判断候補（Viewを残したまま所有者を送る使い方の注記、「C言語の配列に近いアクセス性能」の表現）は未反映のまま。判断が出ていなければ、そのままの扱いで問題ない。
+- B3 `PASS`: DOC-008以後に揃えられた点（4Dの変更反映の文、「別のViewの代入は契約違反」の統一、`BareArray1DView.indices`の範囲）を確認した。そのほかはDOC-008の結果どおり。
+
+**3 module共通**: 所有型の「`Element`が`Sendable`なら配列も`Sendable`」（BareArray・OptionalArray）は、Viewを残したまま所有者を送る使い方に触れない。DOC-008の判断候補1と同じ論点で、OptionalArrayにも同じ形で当てはまる。
+
+Codex acceptance（2026-10-10）: 本結果を完成判定ではなくread-only証拠packageとして検収した。
+先行観測2件と、計算量1件・破棄説明1件・用語2件を受入。test不足だけを理由にした`UNVERIFIED`2件、
+`removeAll()`の`let`呼出し説明要求、共通`Sendable`注記は採用しない。詳細は
+`NON_RBT_COMMENT_DOC_SELF_REVIEW.md`へ統合した。Claudeへの追加依頼は行わない。
 
 ## Active bounded assignment: BareArray documentation-comment independent review
 

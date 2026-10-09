@@ -7,17 +7,16 @@
 ## 目的
 
 BareArray、OptionalArray、Permutationの公開APIについて、利用者向けコードスニペットを追加する効果が
-高いsymbolを、二つのAIの独立回答から選ぶ。既存コメントの正誤監査ではなく、例示による理解支援の
+高いsymbolを、二つのAIの回答から選ぶ。既存コメントの正誤監査ではなく、例示による理解支援の
 優先順位を決めるための調査である。
 
 ## 実施方法
 
-ユーザーが再開したとき、CodexとClaudeが互いの回答を見ずに「コードスニペットがあると理解・誤用防止・
-採用判断に特に効くメソッド」を各10件まで順位付けする。
+CodexとClaudeが「コードスニペットがあると理解・誤用防止・採用判断に特に効くメソッド」を各10件まで
+順位付けする。回答fileは同時編集の競合を避けるために分ける。
 
 - Codexは`CODE_SNIPPET_SURVEY_CODEX.md`だけへ回答する。
 - Claudeは`CODE_SNIPPET_SURVEY_CLAUDE.md`だけへ回答する。
-- 両者は回答確定まで相手の回答fileを読まない。
 - 共通の本書、source、testは両者ともread-onlyとし、同時作業時のwrite競合を避ける。
 
 各回答はsymbol、順位、想定する利用者の疑問、スニペットで示すべき最小の振る舞い、既存説明だけでは
@@ -37,7 +36,7 @@ initializer、subscript、operatorも候補に含めてよいが、同一パタ�
 両回答で同じ利用場面を挙げた候補を優先し、次元違いは例の必要性が別に説明できる場合だけ残した。
 
 1. `Collection.nextPermutations()` — 現在順以後だけを返すことと、全順列には事前sortが必要なこと。
-2. `OptionalArray1D.subscript(_:)` — メモ化の`if let`、設定、`nil`による未設定化。
+2. `OptionalArray1D.subscript(_:)` — 初期未設定、値の設定、`nil`による未設定化。
 3. `BareArray2D.subscript(_:)` — `array[y][x]`の軸順と通常の連鎖書き込み。
 4. `OptionalArray2D.subscript(_:)` — View越しでもOptional slotの読み書きと解除が働くこと。
 5. `BareArray.init(count:_:)` — closureによる逐次生成と0要素時の非呼出し。

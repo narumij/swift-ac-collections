@@ -40,10 +40,12 @@ OptionalArrayModule、BareArrayModule）。互換mode、`Deprecated/`配下、�
 
 ### 4. `OptionalArray1D.subscript(position:) -> Element?`
 
-- 利用者の疑問: メモ化再帰で「未計算」をどう判定し、どう書き込むのか。
-- 示す最小の振る舞い: `if let v = memo[i] { return v }`、計算後に`memo[i] = r`。番兵値が要らないこと。
-- 既存説明の不足: get/set/`nil`代入の意味論は正確だが、型の存在理由であるメモ化の定型が文章からは
-  組み立てにくい（第1弾の1位と同じ判断）。
+- 利用者の疑問: 未設定のslotを読むと何が返るのか。`nil`を代入すると何が起きるのか。
+- 示す最小の振る舞い: 作成直後の`a[0] == nil`、`a[0] = 5`の後は`5`、`a[0] = nil`で再び`nil`。
+- 既存説明の不足: 三つの状態遷移は文章で正しく書かれているが、`Element?`を返すsubscriptの読み書きは
+  3行の例のほうが速く伝わる。
+- 2026-10-10訂正: 当初のメモ化再帰の定型は撤回する（第1弾と同じ訂正）。その定型はマクロが展開する
+  コードで、型のコメントで教える内容ではない。順位は据え置く。
 
 ### 5. `RedBlackTreeBoundExpression.advanced(by:limit:)`、`before`、`after`
 

@@ -149,6 +149,9 @@ def transform_lines(lines: list[str], path: Path) -> list[str]:
     output, index, stop = transform_region(lines, 0, path, set())
     if stop is not None or index != len(lines):
         raise ValueError(f"{path}: unmatched conditional-compilation directive")
+    if output != lines:
+        while len(output) > 1 and not output[-1].strip() and not output[-2].strip():
+            output.pop()
     return output
 
 

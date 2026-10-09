@@ -14,6 +14,14 @@
    selected task's detailed canonical document, then Archived records and old
    logs.
 
+## Orientation request
+
+When the user says `オリエンテーション` or otherwise asks Codex to orient
+itself to this repository, read `Maintanance/CODEX_ORIENTATION.md` in full and
+follow the reading and confirmation guidance in that document. This is an
+explicit user-requested orientation path, not routine startup reading, and it
+does not replace the Task Registry or revive inactive tasks.
+
 ## User-facing management boundary
 
 Internal management artifacts are agent tools, not user-operated dashboards.
@@ -147,6 +155,17 @@ This shorthand does not make a non-ready task ready, restart `FROZEN` work,
 activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
 
 ## Japanese sentence markers
+
+Japanese sentence markers are currently suspended. Do not use `了。`, `是。`,
+`否。`, `解。`, or any of the other markers below unless the user explicitly
+directs Codex to resume them. Keep the definitions for a possible later restart.
+
+A new conversation is not eligible to use the markers merely because it has read
+their definitions. It must first complete the repository orientation, demonstrate
+through actual task work that it understands and can apply the management model,
+and then receive the user's explicit permission. Codex must not decide for itself
+that it is sufficiently accustomed or treat completion of the orientation reading
+alone as permission.
 
 The markers below classify only the single sentence immediately following the
 marker, not the response as a whole. When the function changes within one

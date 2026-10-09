@@ -10,6 +10,11 @@ release候補の品質、対象commit、履歴操作を分離して確認し、t
 この文書は汎用手順である。version固有の到達範囲、実行結果、既知事項、commit hashは、
 `RELEASE_<VERSION>.md`などの個別正本へ記録する。
 
+2026-10-09、0.5.1実績に基づく本checklistの見直しとrelease rehearsalは、前任conversationの意図と途中経過が
+失われ、そのままでは安全な再開が困難なため一旦凍結した。現行本文と設計ドラフトは部分的な参考資料として
+当面保存するが、未完の見直しや次releaseへの適用を開始しない。再開時はTask Registryから入り、
+`RELEASE_TEMPLATE_BRANCH_DESIGN.md`の「前任conversationの残存資料」を既決事項ではなく参考として扱う。
+
 ## 責任境界
 
 - ユーザーは、versionの製品上の到達範囲、公開上の約束、release実行、tag、pushを最終承認する。

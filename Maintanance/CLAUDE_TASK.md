@@ -7,14 +7,14 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（0.5.1独立チェック1回目を受入、候補修正中）**
+**実行中ジョブ: なし（`DOC-008` BareArrayコメントドック独立レビューはCodex受入済み）**
 
 - 継続ジョブ: なし。
-- 新規bounded assignment: `4d5ce7b8`を固定対象とする0.5.1最終候補の独立チェック。
+- 新規bounded assignment: なし。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
   Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
   停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。今回の一件は、
-  他に並行可能な現在ゴールの作業がなく、ユーザーがClaudeをポリッシング担当に指定したため該当する。
+  ユーザーがClaudeによるレビューを明示指定したため、その指定範囲に限る例外として割り当てる。
   時刻到達だけで自動的に通常運用へ戻さず、その時点のゴールへの必要性と利用量を再確認する。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
@@ -22,6 +22,260 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: BareArray documentation-comment independent review
+
+Registryの`DOC-008`として、`DOC-005`で追加した`Sources/BareArrayModule/BareArray.swift`の公開APIコメントを
+独立に反証レビューする。ユーザーがClaudeレビューを明示指定したため、上記essential-only期間の例外として、
+この範囲だけを実行する。
+
+入力は次に限定する。
+
+- `Sources/BareArrayModule/BareArray.swift`
+- `Tests/BareArrayModuleTests/BareArray_0_PublicSurfaceTests.swift`
+- `Tests/BareArrayModuleTests/BareArray_1_InitializationTests.swift`
+- `Tests/BareArrayModuleTests/BareArray_2_ElementAccessTests.swift`
+- `Tests/BareArrayModuleTests/BareArray_3_ViewTests.swift`
+- `Tests/BareArrayModuleTests/BareArray_4_IndicesTests.swift`
+- `Tests/BareArrayModuleTests/BareArray_5_ReferenceLifetimeTests.swift`
+- `Tests/BareArrayModuleTests/BareArray_99_DeathTests.swift`
+- `Maintanance/BareArrayModule/BareArrayAudit.md`の公開契約、`BARE-014`、`BARE-015`、`DOC-005`の節
+- `Maintanance/RELEASE_0_5_2.md`の`DOC-005`と`DOC-008`に関する節
+
+次の観点だけを確認する。
+
+1. 公開29宣言と所有4型の`Sendable`適合について、利用者が必要とするコメントに欠落がないか。
+2. 初期化、zero次元、軸順、連鎖subscript、View共有、`indices`、要素寿命、境界trap、writeback制約の説明が
+   Test as Specificationと一致し、testが示さない保証を追加していないか。
+3. 非所有Viewの寿命責務、条件付き`Sendable`、Viewを残したまま所有者を送る場合の未解決事項を混同していないか。
+4. `-Ounchecked`、事前条件、計算量の表現が実装と受入済み契約に一致するか。
+5. 日本語の公開コメントとして、同じ概念の用語、軸の向き、setterの説明に誤解を招く表現がないか。
+6. `DOC-005`に記録したDebug／Release test、Death Test 42件、Xcode診断、documentation buildの証拠範囲が
+   実際の結果を過大評価していないか。
+
+各指摘を`PASS`、`RISK`、`BLOCK`、`UNVERIFIED`で分類し、対象symbolまたは行、根拠、最も強い反証、
+最小の修正案を示す。単なる好み、全面的な書き直し、利用者向けMarkdownや1.0方針の提案は含めない。
+新しい公開契約、性能基準、View寿命対策、strict memory safety方針を決定しない。判断点を発見した場合は、
+一判断ずつ分離してCodexへ返す。
+
+source、test、Registry、release正本、監査本文を変更しない。変更可能範囲はこのassignmentの`Result`節と
+冒頭のジョブ状態だけ。完了時はジョブ状態を返却待ちへ変え、結果を下へ追記する。buildやtestの再実行は
+必須ではなく、既存記録とのread-only照合でよい。commit、push、受入、修正採否、task完了はCodexが扱う。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`develop/misc/53` HEAD `7509c173`＋未commitの`BareArray.swift`差分（`git diff`）を対象にした。
+追加実行は`swift package --disable-sandbox generate-documentation --target BareArrayModule --warnings-as-errors`だけ（成功、warning 0）。source・testは変更していない。
+
+1. **欠落: `PASS`（軽微な不揃いあり）**。公開29宣言すべてにコメントがある（型7、init 8、subscript 7、`indices` 7）。`Sendable`適合4件は各所有型の型コメントで述べている。
+   不揃い: 4Dの外側subscript（`BareArray4D.subscript`）だけ「返されたViewからの変更はこの配列へ反映されます」が無い。2D・3Dにはある。
+   「別のViewの代入は契約違反」は2Dだけにあり、3D・4D・View 2D・View 3Dは「…だけを受け入れます」までで止まる。意味は同じなので修正は任意（揃えるなら1文ずつコピー）。
+2. **testとの一致: `PASS`**。zero次元でclosureが呼ばれない（`1_Initialization`）、軸順（`array[y][x]`〜`array[w][z][y][x]`、4Dは`size0`最内、`2_`の非対称全位置）、
+   View共有（`3_`）、`indices`の軸（`4_`）、上書き・破棄の寿命（`5_`）、writeback制約（`99_`の別storage 5件と範囲外position 5件）と一致する。
+   停止を「trapする」ではなく「Precondition／契約違反」と書いており、testが示さない保証（`-Ounchecked`でのtrap）を加えていない。
+3. **View寿命と`Sendable`: `RISK`**。
+   - 根拠: 所有型の型コメントは「`Element`が`Sendable`なら、配列も`Sendable`です」だけ。Viewの寿命は「所有配列の生存中だけ使用」と書くが、
+     所有者が生きたまま別の並行文脈へ送られ、手元にViewが残る場合（Audit ledger C1の未解決事項）は、この文では禁止されない。読み手は「生存中ならViewを使い続けてよい」と取れる。
+   - 最強の反証: 未解決事項をコメントへ書くと、新しい契約を書いたことになりかねない。現行文は何も約束していない、とも読める。
+   - 扱い: **判断候補1**（Codexへ）。所有型の`Sendable`の文に「Viewを残したまま所有者を別の並行文脈へ送る使い方は保証しない」の1文を足すかどうか。足さない場合は現状のまま。
+4. **`-Ounchecked`・事前条件・計算量: `RISK`（2件）**。
+   - (a) `-Ounchecked`の注意は所有4型の型コメントにしかない。View 3型のsubscriptも事前条件を持つが、View側にはこの注意が無い。最小案: View 3型の型コメントにも同じ1文を足す。
+   - (b) 計算量の`O(count)`等は実装と一致する（closure版は`f`を要素数回呼ぶ）。ただし1D〜3Dの型コメントに既存の「C言語の配列に近いアクセス性能を持ちます」が残る。
+     benchmarkは無く、測定根拠が無い（`QualityAssessment-ISO25010.md` §3.2）。DOC-005で足した文ではないが、今回の公開コメントに含まれる。
+     **判断候補2**（Codexへ）: この性能表現を残すか、計算量（O(1)のsubscript）だけにするか。Registryの「性能の数値を利用者向け文書へ掲載するか」の判断と同じ根。
+5. **用語・軸・setter: `RISK`（軽微）**。
+   - 1Dの`BareArray`の型コメント冒頭が「競技プログラミング用多次元配列」のまま（既存文）。1次元の型を「多次元」と呼んでいる。最小案: 「1次元配列」へ。
+   - `BareArray1DView.indices`だけ「このViewで有効な位置を返します」で、他の`indices`のような範囲（`0..<count`）の記載が無い。最小案: 他と同じ形に揃える。
+   - 「Viewからの変更はこの配列へ反映されます」は`let`の所有者から得たViewにも当てはまって読める（Audit 判断候補3、1.0判断に残した性質）。新しい契約にはしていないが、
+     文書作業後の1.0判断でこの性質を扱うとき、コメントが既に「反映される」と書いていることを入力に含めるとよい。今は修正不要。
+6. **DOC-005の証拠記録: `PASS`（範囲の明記を推奨）**。記録された内容は実態を超えていない。ただし`generate-documentation`は`--warnings-as-errors`無しの実行と書かれている。
+   今回`--warnings-as-errors`付きでも成功を確認した（上記）。通常testの件数（Debug 35・Release 28）を書いていないので、件数で比較したいなら追記するとよい。Linuxは記録どおり未確認。
+
+**判断候補（一つずつ）**: (1) View保持中に所有者を送る使い方の注記を入れるか。(2) 「C言語の配列に近いアクセス性能」の表現を残すか。どちらも新しい契約・性能方針に触れるため、Claudeは決めていない。
+
+Codex acceptance（2026-10-09）: 公開29宣言のcoverage、Test as Specificationとの一致、BLOCKなしという
+レビュー結果を受け入れた。4D説明、Viewの`-Ounchecked`注意、1D型説明、1DViewの範囲表記は判断不要の
+不揃いとして補正した。View保持中のSendable注記と定性的性能表現は別々のユーザー判断へ分離し、Claudeの
+レビュー作業自体を完了とする。
+
+## Completed bounded assignment: Codex commander orientation independent review
+
+Registryの`OPS-004`として、現行`Maintanance/CODEX_ORIENTATION.md`を独立に反証レビューする。
+初稿作成時の意図やCodexの完成判定を前提にせず、必要な根拠として`AGENTS.md`、
+`Maintanance/AI_COLLABORATION_PHILOSOPHY.md`、`Maintanance/Graph/TASK_GRAPH_LINT.md`を照合する。
+現在の個別task内容を再調査したり、ArchivedやMaintanance全体を走査したりしない。
+
+次の観点だけを確認する。
+
+1. ユーザー、Codex、Claude、第三者AIの責任・判断・検収境界に矛盾や誤解を招く省略がないか。
+2. 新しいCodexが会話、branch、worktree、CIの文脈を失った場合に、推測や旧記録からtaskを復活させず復帰できるか。
+3. Debug、Release、Death Test、Sanitizer、documentation、性能、履歴、独立レビューの証拠範囲を混同させないか。
+4. 変動するtask状態やrelease境界を本文へ固定せず、Registryと詳細正本へ戻す構造になっているか。
+5. 初回確認のtask graph lint例が、機械検査と意味判断の境界を実際に確認できるか。
+6. 文書の長さ、重複、参照関係が、新しい会話の認知負荷や復帰速度を不必要に悪化させていないか。
+
+各指摘を`PASS`、`RISK`、`BLOCK`、`UNVERIFIED`で分類し、根拠、もっとも強い反証、最小の修正案を示す。
+単なる好みや全面的な書き直し案は出さず、修正不要ならその理由を明記する。新しい製品方針、公開契約、
+agent権限を決定しない。レビューによって判断点が見つかった場合は、一判断ずつ分離してCodexへ返す。
+
+`CODEX_ORIENTATION.md`、Registry、AGENTS.md、思想文書、lint文書、source、test、workflowを変更しない。
+変更可能範囲はこのassignmentの`Result`節と冒頭のジョブ状態だけ。完了時はジョブ状態を返却待ちへ変え、
+結果を下へ追記する。commit、push、branch操作、受入、Registry更新は行わない。Codexが原資料と照合し、
+指摘の採否、本文修正、受入、task完了を扱う。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`develop/misc/53` HEAD `dca1d939`、未commitのOPS-004割当を含むworktree。
+読んだのは`CODEX_ORIENTATION.md`、`AGENTS.md`、`AI_COLLABORATION_PHILOSOPHY.md`の該当節、`Graph/TASK_GRAPH_LINT.md`だけ。
+追加の事実確認は、3 branchのRegistry行の比較（git show）と、read-onlyのlint実行だけ。文書は変更していない。
+
+**独立性の限界（`UNVERIFIED`）**: 本文の「証拠を混同しない」の表と「復帰手順」は、Claudeの初稿（OPS-002）から引き継がれている。
+`AGENT_TASK_FIT_INTERVIEW.md`の合意どおり、この2節へのClaudeの`PASS`は独立reviewに数えないこと。必要なら第三者AIかCodex自身で確認する。
+
+1. **責任・判断・検収の境界: `RISK`**。表（L30-35）と原則（L18-26）は思想文書§1・§2・§8と一致し、Claudeを責任主体に置かない点も一致する。
+   - 最強の反証: ユーザー欄（L32）は「マネジメント設計、最終accountability」だけで、tag・push・merge・外部公開などの不可逆操作の承認を書いていない。
+     `AGENTS.md:36-38`は「commit boundariesはCodex、irreversible choicesはユーザー」と分けており、本文だけを読むとcommitとpushの扱いの差が分からない。
+   - 修正案: ユーザー欄に「不可逆操作（tag、push、merge、外部公開）の承認」を1句足す。
+2. **文脈喪失からの復帰: `BLOCK`**。
+   - 根拠: 手順2（L147）はTask Registryを読んで状態を確定するが、手順4（L149）でbranchを確かめるのはその後。Registryはbranchごとに別物になる。
+     本日の実測では、`prepare/release/template`と`main`のRegistryは`RELEASE-008`が`ACTIVE`で`OPS-002`〜`004`が無い。
+     `develop/misc/53`では`RELEASE-008`が`DONE`、`OPS-002`・`003`が`DONE`。誤ったbranchで手順2を行うと、古いRegistryを正としてtaskを復活させる。
+     これは`AGENTS.md:12`の「旧記録から復活させない」に反するが、手順の順序では検出できない。
+   - 修正案（最小）: 手順2の前に「作業branchを確定する。branch間でRegistryが食い違う、またはどれが現行か決められないときは、ユーザーへ一つだけ確認する」を置く。
+     あわせて手順4へ`git stash list`を加える（本日、OPS-002の未commit変更はstashに退避された。また、Claudeの`Result`2件が未commitのまま、どのrefにも残らなかった）。
+3. **証拠範囲の区別: `RISK`（軽微）**。表（L118-127）は種類ごとの限界を正しく分けている。
+   - 最強の反証: Release testの行は`-Ounchecked`（事前条件が消える構成）を区別しない。independent reviewの行は「作成者自身の再確認は独立でない」を落としている（上の限界と同じ根）。
+   - 修正案: 2行とも1句ずつ足す。詳細は`AI_TECHNICAL_ORIENTATION.md`へ委ねてよい（この文書は今回の範囲外で、読んでいない）。
+4. **変動情報の分離: `PASS`**。task状態・release境界・個別契約はRegistryと正本へ戻している（L109-110、L138-140）。
+   L47-58のRedBlackTree差し替えの分担は現在の局面の記述だが、「固定的な評価ではない」（L56）と明記されており修正不要。
+5. **lint例の確認力: `RISK`**。
+   - 根拠: 5つの問い（L185-189）の答えは`TASK_GRAPH_LINT.md`の本文（L8、L19-20、L33-34）にほぼそのまま書かれている。読めば暗唱で答えられ、境界の理解を確かめにくい。
+     さらに現行Registryでlintを実行すると`tasks 55 / edges 40 / warnings 0 / errors 0`、fixtureも`PASS`で、解釈すべき実例が出ない（2026-10-09、`run.sh`・`run_fixtures.sh`）。
+   - 修正案: 「`run_fixtures.sh`の異常fixtureで出るERRORを一つ選び、それがRegistryの意味について何を言い、何を言わないかを説明させる」へ置き換える。実物の出力を前提にすれば、暗唱では答えられない。
+6. **長さ・重複・参照: `RISK`**。
+   - 根拠: 初回は本書213行と思想文書360行を読む（L12）。本書のL16-26・L37-45・L60-75は、思想文書§1〜§3とほぼ同じ内容。
+     復帰手順は142行目で、事故時に必要な手順が思想の後ろにある。「詳しく読む場所」には10文書があり、正本でない`CODEX_OBSERVATIONS.md`も並ぶ（L203では正本でないと明記済み）。
+   - 修正案（どちらか一つ）: (a) 冒頭の「目的と読み方」に「事故からの復帰は§復帰手順を先に」と1行足す。(b) 思想文書と重なる3箇所を、各1〜2行の要約と参照に縮める。全面的な書き直しは不要。
+
+**判断点（Codexへ一つずつ）**: なし。上の修正はいずれも既存の`AGENTS.md`・思想文書から導ける文言の補正で、新しい方針・権限の決定を含まない。
+
+Codex completion record: 2026-10-09、指定した6観点について根拠、反証、最小修正案、独立性の限界を
+報告したため、レビュー作業自体は完了とする。ただし、報告された`BLOCK`、`RISK`、修正案はCodexの評価や
+方針として採用せず、参考資料としてのみ保存する。Claude自身の初稿を含む本文への自己レビューでもあり、
+内容を鵜呑みにして`CODEX_ORIENTATION.md`へ反映しない。本文は変更せず、このレビューから後続taskを
+作成しない。オリエンテーションの作成・確認・レビューに関する一連の作業はここで終了する。
+
+## Completed bounded assignment: release template branch design review
+
+Registryの`RELEASE-011`と`Maintanance/RELEASE_TEMPLATE_BRANCH_DESIGN.md`を入力に、
+`prepare/release/0`方式の設計ドラフトを独立に反証レビューする。Codexの推奨を前提にせず、次の問いだけを
+確認する。
+
+1. `prepare/release/0`からversion別`prepare/release/x`を作り、固定したmain候補をmergeし、`/x`をmainへ
+   戻さず終端へtagを打つtopologyに、履歴、merge、tag到達性、次回releaseの再現性上の破綻がないか。
+2. main、template、version別branchの責任境界が、製品修正をrelease branchだけへ閉じ込めたり、
+   templateへ製品差分を混入させたりしないか。
+3. 内部管理資産と内部文書の削除、利用者向け文書・Tests・Benchmarksの保持、`Utilities/Permutation`の
+   最終除外というtree境界に、build、test、documentation、利用者の追試を壊す不足がないか。
+4. `COMPATIBLE_ATCODER_2025`を通常版へ具体化する規則が、入れ子、`#else`、複合条件、file単位除外、
+   Package設定を含め、決定的な変換と残存lintを設計できる粒度か。実装方式は決定しない。
+5. `SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`を使ってSwift Testing・Death Testを含む全testを実行する説明が、
+   既存traitの契約と一致し、何を検証しなくなるかを過小評価していないか。
+6. 大規模benchmark、documentation、ASan、tree lint、CHANGELOG、独立チェック、tag・pushの承認境界に
+   抜け、誤順序、同一commit性の破れがないか。
+7. 起点commitを決める前に、追加のユーザー判断または小さい事実確認へ分離すべき事項があるか。
+
+報告は`PASS`、`RISK`、`BLOCK`、`UNVERIFIED`を使い、各項目について根拠、最強の反証、最小の修正案を
+示す。特に、設計が成立しない問題と、初回rehearsalで検証すればよい不確実性を分ける。
+
+source、test、workflow、Package、設計ドラフト、release checklist、Registryを変更しない。branch作成、
+merge、build、test、benchmark、tag、pushを行わない。変更可能範囲はこのassignmentの`Result`節と冒頭の
+ジョブ状態だけ。完了時は状態を返却待ちへ変え、結果を追記してgit addまで行う。commit、受入、設計修正、
+ユーザー判断への引渡しはCodexへ残す。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `7f3694f8`（`develop/misc/53`）。読み取りとgit grepだけ。branch・build・testなし。
+「成立しない」はBLOCK、「初回rehearsalで確かめればよい」はRISK/UNVERIFIEDとして分けた。
+
+1. **topology: `RISK`**。tag到達性と再現性は成立する（tagが`/x`終端を保持し、`/x`はmainへ戻らない。次回も`/0`起点でmerge baseは`/0`作成点Pのまま）。
+   最強の反証: `/0`はmainを取り込まないので、P以後に両側が変えたfileは**毎回**同じ競合になる。確実なのは`.github/workflows/swift.yml`（RELEASE-017で`/0`側が置換、mainも直近で+56/−44変更）。
+   修正案: release workflowを別file名で`/0`へ追加し、main側`swift.yml`は手順5の削除対象にする（競合を構造的に消す）。または「`/0`所有fileはtemplate側採用」の解決規則を明記する。
+2. **責任境界: `PASS`**。製品修正はmainへ戻し候補を再固定、`/0`には工程だけ、が一貫している。注記: tag treeの製品source（互換除去後）はmainのどのcommitとも一致しないので、
+   「変換後treeでだけ落ちるtest」の差し戻し先（変換scriptの誤り→`/0`、製品の誤り→main）を判定する手順を1行足すとよい。
+3. **tree境界: `RISK`**。build／test／追試を壊す候補が4点（いずれも事実、実行は未確認）。
+   - `Package.swift`は`RedBlackTreeCollections`の`exclude: ["Documentation", "Implements/Index/index_stale_check.md"]`、Optional／BareArrayの`exclude: ["Documentation"]`を持つ。内部文書を削除するとexclude先が消える。変換で`Package.swift`のexcludeも整合させる必要がある（SwiftPMの挙動は未確認）。
+   - 内部文書と利用者文書が同じdirectoryに混在: `Sources/RedBlackTreeCollections/Documentation/`（`Design/`、`Head/DOCUMENTATION_WORKFLOW.md`、`Head/Outlines/`、`MEMO.md`、`Quality-Checklist.md`と、`API-Matrix*.md`、`Head/*.md`草稿）、root `Documentation/Compatibility/`（互換専用）。
+     「残す／除く」を種類名でなく**file単位のallowlist**で持たないとlintが決まらない。
+   - 「`Tests`は選別せず残す」と「内部文書を除く」が衝突: `Tests/CLAUDE.md`、`Tests/TESTING.md`、`Tests/Archived/`は内部文書（除外対象の`CLAUDE.md`はroot以外にもある）。
+   - `Benchmarks`の追試性: `CombiningAPIBenchmarks.swift:18`、`PermutationBenchmarks.swift:18`、`SortedPeerInput.swift:3`が方法論を`Maintanance/…`へ参照しており、tag treeでは参照先が消える。`Benchmarks/Results/`（128 file）を残すかも未記載。
+   build・testが内部pathに依存する箇所は見つからなかった（Swiftから`Maintanance`・`Utilities`を読む箇所なし、`Benchmarks/Package.swift`は`path: ".."`）。
+4. **互換分岐の具体化: `BLOCK`（lint規則）＋`RISK`（変換規則）**。
+   - BLOCK: 「tracked fileに`COMPATIBLE_ATCODER_2025`が残っていない」lintは、そのままでは必ず落ちる。地の文に残る: `CHANGELOG.md:46,47,59`、`API-Matrix.md`・`isValid.md`等、source comment（`// MARK: - COMPATIBLE_ATCODER_2025用` 3件）、test comment、`Benchmarks/Results/SortedPeerPilot/README.md`。
+     しかもCHANGELOG gateは「mainと変換以外で食い違わない」を求める。修正案: lintをcompilation条件（`#if`/`#elseif`の式と`Package.swift`の`define`）に限定し、地の文は対象外か明示allowlistにする。
+   - RISK: 実在する形は`#if`のほか、`#elseif !COMPATIBLE_ATCODER_2025`→`#elseif true`→`#else`の連鎖（`ABC370DTests.swift:23-179`）、
+     `&& false`／`&& true`との複合、`|| ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND`（残る条件を保持する部分評価が要る）、`canImport`の入れ子（`NextPermutationsSequence_99_DeathTests.swift`）。設計は`#elseif`規則を書いていない。
+     件数は`#if !C` 150、`#if C` 142、複合38。`Package.swift`は互換定義がcomment行（`:36`）だけで、traitは無い。粒度は十分に設計可能で、`#elseif`と部分評価をfixtureへ入れればよい。
+5. **`SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`: `RISK`**。traitの説明（`Package.swift:150-154`）とは一致する（XCTestの釣り合い検査だけを外し、resetは残す）。
+   過小評価の点: (a) この方式ではtag tree（変換後source）のDebug寿命釣り合いを**どこでも**検証しない（Releaseにcounterは無く、釣り合い検査はmain候補のgateだけ）。
+   `Tests/CLAUDE.md`も「このmodeのgreenは寿命の釣り合いの証拠ではない」とする。(b) Swift TestingにはこのtraitはDeath Testを可能にしない。Linuxでは`ENABLE_DEATH_TESTS`が別途必要で、設計に記載がない。
+   修正案: 「釣り合い検査はmain候補で済ませ、変換後treeでは省く」と明記するか、変換後treeでtrait無しのDebug XCTestを追加する。どちらを採るかは判断。
+6. **gateと承認の境界: `BLOCK`（push承認）＋`UNVERIFIED`（性能比較）**。
+   - BLOCK: 手順7のremote gate（release専用workflow、RELEASE-017）は`/x`がremoteに無いと走らないが、手順11は「tagだけをpush」で、`/x`をpushする承認が手順のどこにも無い。
+     tag pushでCIを起動する方法では、gate前にtagが公開されて順序が破れる。修正案: 手順6と7の間に「`/x`のpush（対象refを示して別承認）」を入れるか、gateをlocalだけと定める。
+   - 同一commit性: gate結果・Claude確認の記録は`Maintanance`がtag treeから消えるため`/x`へ積めない。tag後にmainへ記録すると明記するとよい（現行0.5.1の「記録を候補commitへ含める」運用とは異なる）。
+   - UNVERIFIED: 性能gateの比較基準（前tag treeか、main候補か）が未記載。
+7. **起点commit前に分ける事項**（一判断ずつ）:
+   - DECISION: `/x`をremoteへpushしてrelease gateを走らせるか（6）。
+   - DECISION: 変換後treeでDebugの寿命釣り合い検査を行うか、main候補の結果で代えるか（5）。
+   - DECISION: 境界が曖昧な文書（`Head/*.md`草稿、`API-Matrix*.md`、`Cpp-Matrix.md`、`DSL.md`、`Remove.md`、`isValid.md`、`Tests`内の文書、`Benchmarks/Results`）を残すか除くか（3）。
+   - 事実確認: excludeの対象pathが無いときのSwiftPMの挙動（3）、`#elseif`と部分評価を含む変換fixture（4）、Linux Death Test traitの要否（5）。
+   - 設計修正（判断不要）: 互換lintの対象をcompilation条件へ限定（4）、release workflowを別file名にする（1）。
+
+Codex acceptance: 2026-10-09、topology自体は成立するという評価と、互換lint、remote CI前のbranch push、
+workflow競合、tree境界、寿命検査、性能基準の不足を受入。互換lintをコンパイル条件へ限定し、release
+workflowを別file化し、version別branchのremote pushをユーザー操作として工程へ追加した。残る文書・結果物
+境界、変換fixture、Package exclude、性能比較基準は`RELEASE-011`の設計・試行で処理する。その後のユーザー
+判断で、template名は`prepare/release/template`、version別branchは`release/<version>`へ改め、同versionの
+tag作成をbranch完成条件とした。上記Result中の`/0`・`/x`はレビュー時点の名称として保持する。
+## Completed bounded assignment: Codex commander orientation draft
+
+Task Registryの`OPS-002`と、その詳細正本`Maintanance/CODEX_ORIENTATION.md`に従い、新しいCodex会話へ渡す
+司令塔orientationの初稿を作成する。これは他taskから独立した運用基盤taskであり、0.5.1 release作業の
+一部または前提として扱わない。
+
+正本の`入力資料`に列挙された文書だけを、このassignmentの追加資料として必要な範囲で読む。内容は
+`CODEX_ORIENTATION.md`の`## Claude draft`節だけへ記録し、次を短く、実際の行動へつながる順序で含める。
+
+1. 最初に理解すべき責任分担: ユーザー、Codex、Claude、第三者AIが何を持つか。
+2. 能力と決定権・完了承認を分け、AI同士の一致を証拠とみなさない原則。
+3. unsafe storage、CoW、Index／View寿命、specialization／inlining、性能を含むrepository固有の難所。
+4. Debug、Release、Death Test、Address Sanitizer、documentation、performanceを別種の証拠として扱うこと。
+5. mainの管理文書と、削ぎ落とすrelease成果物の境界。
+6. 会話や作業場所を失った際、推測で復元せず、AGENTS.mdからTask Registryと選択taskの正本へ戻る復帰手順。
+
+長い管理規則の複製、task一覧、過去の出来事の時系列、個人評価、未確定のrelease工程案は含めない。
+既存の`この文書の位置づけ`、`作成task`、`入力資料`、`本文`は変更しない。Registry、AGENTS.md、
+CLAUDE.md、他の入力資料、source、test、workflowを変更しない。新しい方針や判断点が必要なら本文へ推測で
+埋めず、`Claude draft`末尾に`未決定`として根拠とともに記録して止める。
+
+Codexが原資料との照合、編集、本文への統合、受入、Registry更新を行う。Claudeはtaskを完了扱いせず、
+ドラフト作成後はこのassignmentへ短い`### Result`を追記し、ジョブ状態を返却待ちへ変更する。commit、push、
+branch操作は行わない。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`CODEX_ORIENTATION.md`の`## Claude draft`節だけへ初稿を追記した。他の節・文書は変更していない。
+commit・branch操作なし（git addもしていない。指示に無いため）。
+
+- 構成: 指定6項目を順に（責任分担表、能力と決定権、難所5種、証拠種類の表、main／release境界、復帰手順7段）。各項末尾に出典を付けた。
+- 末尾`未決定`3件: 入力資料に無い`AGENTS.md`・Registryへの依存の扱い、`CODEX_OBSERVATIONS.md`を根拠に使うか、現況・非公開知識の粒度。
+- 気づいた事実（変更なし）: 現branch `prepare/release/template`は`develop/misc/53`の10 commit（`RELEASE_TEMPLATE_BRANCH_DESIGN.md`、design review受入`9596e675`を含む）を持たない。
+  また、0.5.1独立チェック2回目とtemplate design reviewの`Result`はgit上のどのrefにも無い（受入記録は`develop/misc/53`の`9596e675`）。tag `0.5.1`は`d7b3863e`（treeは確認した`b779da53`と同一）。
+
+Codex acceptance: 2026-10-09、指定6項目を備え、責任境界、技術的難所、証拠区分、復帰手順を原資料へ
+接続した境界付き初稿として受入。変動するIndexの現況、第三者AIの依頼主体、復帰手順が参照する入力資料を
+Codexが本文統合時に調整する。OPS-002全体の完成判定とRegistry更新は行わない。
 
 ## Completed bounded assignment: 0.5.1 independent release check (first pass)
 

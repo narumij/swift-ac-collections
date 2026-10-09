@@ -18,12 +18,20 @@
 /// 未初期化値の番兵を用意することなく利用できます。
 /// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
 /// subscriptへ`nil`を代入すると、設定済みの要素を破棄して未設定状態へ戻します。
+/// `Element`が`Sendable`なら、配列も`Sendable`です。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 public struct OptionalArray1D<Element>: ~Copyable {
 
   @usableFromInline let count: Int
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
 
+  /// `capacity`個の未設定slotを持つ配列を作ります。
+  ///
+  /// `capacity`が0なら空の配列を作ります。
+  ///
+  /// - Precondition: `capacity`は0以上でなければなりません。
+  /// - Complexity: O(`capacity`)
   @inlinable
   public init(capacity: Int) {
     precondition(capacity >= 0)
@@ -44,7 +52,11 @@ public struct OptionalArray1D<Element>: ~Copyable {
     unsafe hasPayload.deallocate()
   }
 
-  /// すべての要素を破棄し、各slotを未設定状態へ戻します。
+  /// 設定済みの要素をすべて破棄し、各slotを未設定状態へ戻します。
+  ///
+  /// slot数と確保済みstorageは保持され、各位置を再利用できます。
+  ///
+  /// - Complexity: O(`indices.count`)
   @inlinable
   public func removeAll() {
     for i in 0..<count {
@@ -61,6 +73,7 @@ public struct OptionalArray1D<Element>: ~Copyable {
   /// `nil`を代入すると既存要素をちょうど一度破棄します。
   ///
   /// - Precondition: `position`が`indices`に含まれること。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> Element? {
 
@@ -93,7 +106,10 @@ public struct OptionalArray1D<Element>: ~Copyable {
 }
 
 extension OptionalArray1D {
-  
+
+  /// 有効なslot位置である`0..<capacity`を返します。
+  ///
+  /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<count }
 }
 
@@ -117,6 +133,10 @@ extension OptionalArray1D {
 ///
 /// 配列ベースのメモ化に用いる配列です。
 /// 未初期化値の番兵を用意することなく利用できます。
+/// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
+/// 連鎖subscriptは`array[y][x]`の順で、`width`が最内軸、`height`が最外軸です。
+/// `Element`が`Sendable`なら、配列も`Sendable`です。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
 public struct OptionalArray2D<Element>: ~Copyable {
 
@@ -126,6 +146,12 @@ public struct OptionalArray2D<Element>: ~Copyable {
   @usableFromInline let height: Int
   @usableFromInline let capacity: Int
 
+  /// `width * height`個の未設定slotを持つ配列を作ります。
+  ///
+  /// いずれかの次元が0なら要素を持たない配列を作ります。
+  ///
+  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  /// - Complexity: O(`width * height`)
   @inlinable
   public init(width: Int, height: Int) {
     precondition(width >= 0 && height >= 0)
@@ -150,6 +176,11 @@ public struct OptionalArray2D<Element>: ~Copyable {
     unsafe hasPayload.deallocate()
   }
 
+  /// 設定済みの要素をすべて破棄し、各slotを未設定状態へ戻します。
+  ///
+  /// shapeと確保済みstorageは保持され、各位置を再利用できます。
+  ///
+  /// - Complexity: O(`width * height`)
   @inlinable
   public func removeAll() {
     for i in 0..<capacity {
@@ -160,6 +191,12 @@ public struct OptionalArray2D<Element>: ~Copyable {
     unsafe hasPayload.update(repeating: false, count: capacity)
   }
 
+  /// `position`番目の行を参照する非所有Viewを返します。
+  ///
+  /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
+  ///
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> OptionalArray1DView<Element> {
     @inline(__always)
@@ -182,6 +219,9 @@ public struct OptionalArray2D<Element>: ~Copyable {
 
 extension OptionalArray2D {
 
+  /// 外側の軸に有効な位置である`0..<height`を返します。
+  ///
+  /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<height }
 }
 
@@ -191,6 +231,10 @@ extension OptionalArray2D: @unchecked Sendable where Element: Sendable { }
 ///
 /// 配列ベースのメモ化に用いる配列です。
 /// 未初期化値の番兵を用意することなく利用できます。
+/// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
+/// 連鎖subscriptは`array[z][y][x]`の順で、`width`が最内軸、`depth`が最外軸です。
+/// `Element`が`Sendable`なら、配列も`Sendable`です。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
 public struct OptionalArray3D<Element>: ~Copyable {
 
@@ -201,6 +245,12 @@ public struct OptionalArray3D<Element>: ~Copyable {
   @usableFromInline let depth: Int
   @usableFromInline let capacity: Int
 
+  /// `width * height * depth`個の未設定slotを持つ配列を作ります。
+  ///
+  /// いずれかの次元が0なら要素を持たない配列を作ります。
+  ///
+  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  /// - Complexity: O(`width * height * depth`)
   @inlinable
   public init(width: Int, height: Int, depth: Int) {
     precondition(width >= 0 && height >= 0 && depth >= 0)
@@ -232,6 +282,11 @@ public struct OptionalArray3D<Element>: ~Copyable {
     unsafe hasPayload.deallocate()
   }
 
+  /// 設定済みの要素をすべて破棄し、各slotを未設定状態へ戻します。
+  ///
+  /// shapeと確保済みstorageは保持され、各位置を再利用できます。
+  ///
+  /// - Complexity: O(`width * height * depth`)
   @inlinable
   public func removeAll() {
     for i in 0..<capacity {
@@ -242,6 +297,12 @@ public struct OptionalArray3D<Element>: ~Copyable {
     unsafe hasPayload.update(repeating: false, count: capacity)
   }
 
+  /// `position`番目の2次元面を参照する非所有Viewを返します。
+  ///
+  /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
+  ///
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> OptionalArray2DView<Element> {
     @inline(__always)
@@ -264,6 +325,9 @@ public struct OptionalArray3D<Element>: ~Copyable {
 
 extension OptionalArray3D {
 
+  /// 外側の軸に有効な位置である`0..<depth`を返します。
+  ///
+  /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<depth }
 }
 
@@ -273,6 +337,11 @@ extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
 ///
 /// 配列ベースのメモ化に用いる配列です。
 /// 未初期化値の番兵を用意することなく利用できます。
+/// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
+/// 連鎖subscriptは`array[size3][size2][size1][size0]`の順で、`size0`が最内軸、
+/// `size3`が最外軸です。
+/// `Element`が`Sendable`なら、配列も`Sendable`です。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
 public struct OptionalArray4D<Element>: ~Copyable {
 
@@ -284,6 +353,12 @@ public struct OptionalArray4D<Element>: ~Copyable {
   @usableFromInline let size3: Int
   @usableFromInline let capacity: Int
 
+  /// `size0 * size1 * size2 * size3`個の未設定slotを持つ配列を作ります。
+  ///
+  /// いずれかの次元が0なら要素を持たない配列を作ります。
+  ///
+  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
   public init(size0: Int, size1: Int, size2: Int, size3: Int) {
     precondition(size0 >= 0 && size1 >= 0 && size2 >= 0 && size3 >= 0)
@@ -317,6 +392,11 @@ public struct OptionalArray4D<Element>: ~Copyable {
     unsafe hasPayload.deallocate()
   }
 
+  /// 設定済みの要素をすべて破棄し、各slotを未設定状態へ戻します。
+  ///
+  /// shapeと確保済みstorageは保持され、各位置を再利用できます。
+  ///
+  /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
   public func removeAll() {
     for i in 0..<capacity {
@@ -327,6 +407,12 @@ public struct OptionalArray4D<Element>: ~Copyable {
     unsafe hasPayload.update(repeating: false, count: capacity)
   }
 
+  /// `position`番目の3次元領域を参照する非所有Viewを返します。
+  ///
+  /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
+  ///
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> OptionalArray3DView<Element> {
     @inline(__always)
@@ -353,6 +439,9 @@ public struct OptionalArray4D<Element>: ~Copyable {
 
 extension OptionalArray4D {
 
+  /// 外側の軸に有効な位置である`0..<size3`を返します。
+  ///
+  /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<size3 }
 }
 
@@ -365,6 +454,7 @@ extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
 /// 親の多次元配列が所有する一部分を参照します。View自身はstorageを所有しません。
 /// 親配列の生存中だけ使用でき、Viewを親配列より長く保持してはいけません。
 /// Viewを通じた変更は親配列の同じ要素へ反映されます。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 public struct OptionalArray1DView<Element> {
 
   @inlinable
@@ -386,6 +476,7 @@ public struct OptionalArray1DView<Element> {
   /// `nil`を代入すると親配列が所有する既存要素を破棄し、そのslotを未設定状態へ戻します。
   ///
   /// - Precondition: `position`がこのViewの有効範囲に含まれること。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> Element? {
 
@@ -418,6 +509,9 @@ public struct OptionalArray1DView<Element> {
 }
 
 extension OptionalArray1DView {
+  /// このViewに有効なslot位置である`0..<count`を返します。
+  ///
+  /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<count }
 }
 
@@ -425,6 +519,8 @@ extension OptionalArray1DView {
 ///
 /// 親配列のstorageを所有せずに参照する2次元Viewです。
 /// 親配列の生存中だけ使用でき、Viewを通じた変更は親配列へ反映されます。
+/// 連鎖subscriptは`view[y][x]`の順で、`width`が最内軸、`height`が最外軸です。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 public struct OptionalArray2DView<Element> {
 
   @inlinable
@@ -444,6 +540,12 @@ public struct OptionalArray2DView<Element> {
   @usableFromInline let width: Int
   @usableFromInline let height: Int
 
+  /// `position`番目の行を参照する非所有Viewを返します。
+  ///
+  /// 返されたViewからの変更は同じ親配列へ反映されます。Viewは親配列の生存中だけ使用してください。
+  ///
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> OptionalArray1DView<Element> {
     @inline(__always)
@@ -465,6 +567,9 @@ public struct OptionalArray2DView<Element> {
 }
 
 extension OptionalArray2DView {
+  /// 外側の軸に有効な位置である`0..<height`を返します。
+  ///
+  /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<height }
 }
 
@@ -472,6 +577,8 @@ extension OptionalArray2DView {
 ///
 /// 親配列のstorageを所有せずに参照する3次元Viewです。
 /// 親配列の生存中だけ使用でき、Viewを通じた変更は親配列へ反映されます。
+/// 連鎖subscriptは`view[z][y][x]`の順で、`width`が最内軸、`depth`が最外軸です。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 public struct OptionalArray3DView<Element> {
 
   @inlinable
@@ -493,6 +600,12 @@ public struct OptionalArray3DView<Element> {
   @usableFromInline let height: Int
   @usableFromInline let depth: Int
 
+  /// `position`番目の2次元面を参照する非所有Viewを返します。
+  ///
+  /// 返されたViewからの変更は同じ親配列へ反映されます。Viewは親配列の生存中だけ使用してください。
+  ///
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> OptionalArray2DView<Element> {
     @inline(__always)
@@ -515,6 +628,9 @@ public struct OptionalArray3DView<Element> {
 }
 
 extension OptionalArray3DView {
+  /// 外側の軸に有効な位置である`0..<depth`を返します。
+  ///
+  /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<depth }
 }
 

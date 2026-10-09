@@ -60,6 +60,10 @@ Codex用独立試験は再開せず、既存の知見とfixtureだけを履歴�
 Claude用独立試験はClaude自身の補助具として継続できる。この決定はClaudeのlocal DB、schema、運用を
 Codex側へ統合または移植するものではない。
 
+2026-10-09、ユーザー確認により、Registry上の`GRAPH-001`はready判定を維持するための常設nodeとして
+`ACTIVE`を保つ。この状態はClaudeへの個別assignmentや実行中ジョブを意味しない。したがって、
+`CLAUDE_TASK.md`の「実行中ジョブなし」と矛盾せず、現在の中間ゴールがないことだけを理由に凍結しない。
+
 ## Exchange task
 
 ClaudeとCodexは、合意した共有面を交流会に使う。初期案はtrackedな`Graph/GRAPH_DB_EXCHANGE.md`だが、

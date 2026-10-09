@@ -23,7 +23,18 @@ extension Collection {
   }
 }
 
-/// The sequence returned by `nextPermutations()`.
+/// A sequence of the current element order followed by its lexicographic successors.
+///
+/// Create this sequence by calling `nextPermutations()`. The source elements are
+/// copied when an iterator is created, so iteration does not modify the source collection.
+///
+/// Each iterator advances independently, including iterators made by copying an existing
+/// iterator. Previously yielded values also remain unchanged as iteration advances.
+///
+/// ```swift
+/// let orders = [2, 1, 3].nextPermutations().map(Array.init)
+/// // [[2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]
+/// ```
 public struct NextPermutationsSequence<Base>: Sequence
 where Base: Collection, Base.Element: Comparable {
   @usableFromInline
@@ -34,6 +45,7 @@ where Base: Collection, Base.Element: Comparable {
     self.base = base
   }
 
+  /// Creates an iterator that starts at the source collection's current element order.
   @inlinable
   public func makeIterator() -> Iterator {
     .init(elementBuffer: .prepare(source: base))
@@ -42,7 +54,10 @@ where Base: Collection, Base.Element: Comparable {
 
 extension NextPermutationsSequence {
 
-  /// The iterator for `NextPermutationsSequence`.
+  /// An iterator over the current element order and its lexicographic successors.
+  ///
+  /// Copies of an iterator advance independently. A yielded ``Permutation`` remains unchanged
+  /// when this iterator advances.
   public
     struct Iterator: IteratorProtocol
   {
@@ -83,6 +98,12 @@ extension NextPermutationsSequence {
       return true
     }
 
+    /// Returns the current order on the first call, then each lexicographic successor.
+    ///
+    /// Returns `nil` after the lexicographically last order has been returned. Further calls also
+    /// return `nil`.
+    ///
+    /// - Complexity: O(n) in the worst case, where n is the number of elements.
     @inlinable
     public mutating func next() -> Permutation? {
       switch state {
@@ -152,8 +173,11 @@ extension NextPermutationsSequence {
     }
   }
 
-  /// One element order yielded by `NextPermutationsSequence`. Remains unchanged once
-  /// yielded, even as the iterator advances further.
+  /// One element order yielded by ``NextPermutationsSequence``.
+  ///
+  /// A permutation is a zero-based random-access collection. Its indices are independent of the
+  /// source collection's index type and starting index. The value remains unchanged once yielded,
+  /// even as the iterator advances further.
   public
     struct Permutation
   {
@@ -174,16 +198,21 @@ extension NextPermutationsSequence {
 extension NextPermutationsSequence.Permutation: @unchecked Sendable where Base.Element: Sendable {}
 
 extension NextPermutationsSequence.Permutation: RandomAccessCollection {
+  /// The position of the first element, always zero.
   @inlinable
   public var startIndex: Int { elementBuffer.startIndex }
+  /// The position one past the last element.
   @inlinable
   public var endIndex: Int { elementBuffer.endIndex }
+  /// The integer type used to index a permutation.
   public typealias Index = Int
+  /// The type of element stored in a permutation.
   public typealias Element = Base.Element
   /// Accesses the element at `position`.
   ///
   /// - Precondition: `position` is in `startIndex..<endIndex`. An out-of-range position stops
   ///   execution in Debug and Release builds; `-Ounchecked` builds may omit this check.
+  /// - Complexity: O(1).
   @inlinable
   public subscript(position: Int) -> Base.Element {
     precondition(position >= startIndex && position < endIndex, "Index out of range")
@@ -196,6 +225,7 @@ extension NextPermutationsSequence.Permutation: RandomAccessCollection {
 
 // Equality, hashing, and description depend only on the element order.
 extension NextPermutationsSequence.Permutation: Equatable {
+  /// Returns whether two permutations contain equal elements in the same order.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.elementBuffer === rhs.elementBuffer || lhs.elementsEqual(rhs)
@@ -203,6 +233,7 @@ extension NextPermutationsSequence.Permutation: Equatable {
 }
 
 extension NextPermutationsSequence.Permutation: Hashable where Base.Element: Hashable {
+  /// Hashes the number and order of the permutation's elements.
   @inlinable
   public func hash(into hasher: inout Hasher) {
     hasher.combine(count)
@@ -213,6 +244,7 @@ extension NextPermutationsSequence.Permutation: Hashable where Base.Element: Has
 }
 
 extension NextPermutationsSequence.Permutation: CustomStringConvertible {
+  /// A representation of the elements using array syntax.
   public var description: String { Array(self).description }
 }
 

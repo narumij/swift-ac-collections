@@ -6,6 +6,15 @@
 
 release検討開始条件待ち。現時点ではrelease候補commit、到達範囲、必須gate、tag位置を決定しない。
 
+`prepare/release/template`を起点とするrelease branch方式は、準備完了後の適切なreleaseでrehearsalし、
+工程上の改善をtemplateへ還元する。0.5.2は準備不足のためrehearsal対象から外し、0.5.1相当のmain release
+工程を用いる。0.6.0をtemplate方式の本運用候補にできるかは、それまでの準備とrehearsal実績から改めて
+判断する。この位置づけは製品上の到達範囲とrelease開始条件を変更しない。
+
+`0.5.x`のrehearsal中は、main pushとrelease tag pushの双方がGitHub Pagesをdeployし、完了順で表示内容が
+入れ替わり得る状態を許容する。0.6.0のrelease工程でmain由来のdeployを停止し、以後はrelease tag commit
+から生成・検証した利用者向け文書だけをPagesへdeployする。
+
 ## Release検討開始条件
 
 全公開対象の利用者向けドキュメントが、公開可能な初版として揃っていることを、0.6.0のrelease検討を
@@ -21,6 +30,10 @@ checklistへ進むかを一つの判断として確定する。
 
 各対象の利用者向けドキュメント初版を完成させるtaskが具体化した時点で、この判断taskへ必須依存を
 接続する。ドラフト作成taskを初版完成と読み替えず、レビューと公開可能性の確認を残す。
+
+OptionalArrayの1D所有型名と次元名体系は、0.5.2のコメントドック・ドラフトを現行名で先行させ、
+`OPT-044`と`OPT-045`をこの0.6.0到達範囲判断の前提として合流させる。名称を変更する場合のsource、test、
+コメントドック、移行措置は、判断後の実行taskとして分離する。
 
 ## 条件到達後の流れ
 

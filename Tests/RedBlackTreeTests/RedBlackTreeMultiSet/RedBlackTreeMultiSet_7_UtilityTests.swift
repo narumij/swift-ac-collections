@@ -29,14 +29,10 @@ final class RedBlackTreeMultiSetUtilityTests: RedBlackTreeTestCase {
     var copy = original
 
     copy.insert(2)
-    #if !COMPATIBLE_ATCODER_2025
       XCTAssertTrue(copy.eraseUnique(1))
-    #endif
 
     XCTAssertEqual(Array(original), [1, 2, 2, 3])
-    #if !COMPATIBLE_ATCODER_2025
       XCTAssertEqual(Array(copy), [2, 2, 2, 3])
-    #endif
   }
 
   func test_insertingContentsOf_returnsChangedCopy() {

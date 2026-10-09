@@ -15,7 +15,6 @@
 
   extension _BucketTraverser {
 
-    #if true
       // テストで使っている
       @inlinable
       subscript(index: Int) -> _NodePtr {
@@ -26,23 +25,6 @@
             .assumingMemoryBound(to: UnsafeNode.self)
         }
       }
-    #else
-      // なんちゃってABC411Fのベンチが2.2倍も速くなって、嬉しいけど逆に不安
-      // やっぱり壊れていた
-      @inlinable
-      subscript(index: Int) -> _NodePtr {
-        @inline(__always)
-        unsafeAddress {
-          withUnsafePointer(
-            to: UnsafeMutableRawPointer(start)
-              .advanced(by: stride &* index)
-              .assumingMemoryBound(to: UnsafeNode.self)
-          ) {
-            $0
-          }
-        }
-      }
-    #endif
   }
 
   final class BucketMemoryLayoutTests: XCTestCase {

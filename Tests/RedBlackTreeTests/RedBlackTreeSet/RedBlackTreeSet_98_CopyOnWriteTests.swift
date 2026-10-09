@@ -54,11 +54,7 @@ import XCTest
         tree.remove(v)
       }
       XCTAssertEqual(tree.count, 0)
-      #if !COMPATIBLE_ATCODER_2025
         XCTAssertEqual(tree._copyCount, 1)
-      #else
-        XCTAssertEqual(tree._copyCount, 0)
-      #endif
     }
 
     func testSet4() throws {
@@ -102,11 +98,7 @@ import XCTest
         if let lo = xy[1]?.lowerBound(i * N),
           let hi = xy[1]?.upperBound(i * N + N)
         {
-          #if COMPATIBLE_ATCODER_2025
-            xy[1]?.removeSubrange(lo..<hi)
-          #else
             xy[1]?.erase(lo..<hi)
-          #endif
         }
       }
       XCTAssertEqual(xy[1]!.count, 0)
@@ -128,11 +120,7 @@ import XCTest
       }
       for v in yx.values {
         XCTAssertEqual(v.count, 1)
-        #if COMPATIBLE_ATCODER_2025
-          XCTAssertEqual(v._copyCount, 0)
-        #else
           XCTAssertEqual(v._copyCount, 1)
-        #endif
       }
 
       var ans = 0
@@ -140,26 +128,17 @@ import XCTest
       while it != xy[x, default: []].endIndex, xy[x, default: []][it] <= new_y {
         ans += 1
         yx[xy[x]![it]]?.remove(x)
-        #if COMPATIBLE_ATCODER_2025
-          it = xy[x]!.___erase(it)
-        #else
           it = xy[x]!.erase(it)
-        #endif
       }
 
       for v in xy.values {
         XCTAssertEqual(v._copyCount, 0, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
       }
       for v in yx.values {
-        #if COMPATIBLE_ATCODER_2025
-          XCTAssertEqual(v._copyCount, 0, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
-        #else
           XCTAssertEqual(v._copyCount, 1, "C++の解説コードと同じ削除方法でもコピーが発生しないこと")
-        #endif
       }
     }
 
-    #if !COMPATIBLE_ATCODER_2025
       func testEraseWhereOnRangeViewOfSharedTreeDoesNotCopy() throws {
         var set = RedBlackTreeSet<Int>(0..<20)
 
@@ -184,7 +163,6 @@ import XCTest
         XCTAssertEqual(set._copyCount, 0)
         XCTAssertEqual(range._copyCount, 1)
       }
-    #endif
 
   }
 #endif

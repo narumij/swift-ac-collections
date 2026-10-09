@@ -5,7 +5,6 @@ import RedBlackTreeCollections
 //
 // 標準コンテナに寄せた結果、メソッドとして浮き始めてきたので、盆栽対象とすることにした
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     @inlinable
@@ -18,4 +17,3 @@ import RedBlackTreeCollections
       _ = erase(lowerBound(range.lowerBound)..<upperBound(range.upperBound))
     }
   }
-#endif

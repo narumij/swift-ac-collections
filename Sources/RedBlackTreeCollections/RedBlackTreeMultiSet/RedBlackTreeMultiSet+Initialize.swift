@@ -33,7 +33,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// Creates a new multiset containing the elements of the given sequence.
@@ -75,7 +74,6 @@ extension RedBlackTreeMultiSet {
       }
     }
   }
-#endif
 
 extension RedBlackTreeMultiSet {
 

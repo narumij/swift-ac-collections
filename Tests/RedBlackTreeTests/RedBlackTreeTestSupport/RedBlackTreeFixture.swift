@@ -42,7 +42,6 @@ extension RedBlackTreeMultiSet: RedBlackTreeFixture {}
 extension RedBlackTreeMultiMap: RedBlackTreeFixture {}
 extension RedBlackTreeDictionary: RedBlackTreeFixture {}
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeKeyOnlyRangeView
   where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
     func isValid(index: Index) -> Bool {
@@ -56,7 +55,6 @@ extension RedBlackTreeDictionary: RedBlackTreeFixture {}
       isElement(at: index) || isEnd(index)
     }
   }
-#endif
 
 func assertEquiv<Target>(
   _ lhs: Target,

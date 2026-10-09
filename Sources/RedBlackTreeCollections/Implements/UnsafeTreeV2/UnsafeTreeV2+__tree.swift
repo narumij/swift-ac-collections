@@ -119,9 +119,6 @@ extension UnsafeTreeV2 {
 
 extension UnsafeTreeV2: _PayloadValueBridge_Key & _ValueCompBridge {}
 
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeTreeV2: _PtrRangeCompBridge where Base: _BaseNode_PtrRangeCompInterface {}
-#endif
 
 extension UnsafeTreeV2: BoundBothInterface {
 
@@ -164,13 +161,6 @@ extension UnsafeTreeV2: EmplaceHintMultiProtocol_ptr {}
 
 extension UnsafeTreeV2 {
 
-  #if false
-    // 資料的に残してある
-    @inlinable
-    internal func ___min() -> _PayloadValue? {
-      __root == nullptr ? nil : Base.__payload_(__tree_min(__root))
-    }
-  #endif
 
   @inlinable
   internal func ___max() -> _PayloadValue? {

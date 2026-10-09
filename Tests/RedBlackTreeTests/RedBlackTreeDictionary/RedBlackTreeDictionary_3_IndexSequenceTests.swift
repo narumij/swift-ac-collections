@@ -3,7 +3,6 @@ import XCTest
 
 final class RedBlackTreeDictionaryIndexRangeTests: RedBlackTreeTestCase {
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_distance_isPositiveForwardAndNegativeBackward() {
       let dictionary: RedBlackTreeDictionary = [0: "a", 1: "b", 2: "c"]
 
@@ -122,7 +121,6 @@ final class RedBlackTreeDictionaryIndexRangeTests: RedBlackTreeTestCase {
         XCTAssertEqual(copy[1], "z", "キー自体はcopyに存在する")
       }
     #endif
-  #endif
 
   /// index(_:offsetBy:) が指定距離のエントリを指すこと
   func test_index_offsetBy() {

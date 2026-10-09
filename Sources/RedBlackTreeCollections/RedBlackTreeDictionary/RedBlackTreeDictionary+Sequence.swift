@@ -20,12 +20,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
     /// A view over a contiguous key-value range in ascending key order.
     public typealias SubSequence = RedBlackTreeKeyValueRangeView<Self>
   }
-#endif
 
 // MARK: - Transformation
 
@@ -90,15 +88,10 @@ extension RedBlackTreeDictionary {
   /// - Complexity: O(1)
   @inlinable
   public func makeIterator() -> Tree._KeyValues {
-    #if !COMPATIBLE_ATCODER_2025
       .init(start: _start, end: _end, tree: __tree_)
-    #else
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-    #endif
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeDictionary {
 
@@ -120,34 +113,11 @@ extension RedBlackTreeDictionary {
       __tree_.___rev_copy_all_to_array { Base.__element_($0) }
     }
   }
-#endif
 
 // MARK: -
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
-    #if false
-      // 標準に倣うと、Collections適合が必要なのでこちらになる
-      public typealias Keys = [Key]
-      public typealias Values = [Value]
-
-      /// A collection containing just the keys of the dictionary.
-      ///
-      /// - Complexity: O(`count`)
-      @inlinable
-      public var keys: [Key] {
-        __tree_.___copy_all_to_array(Base.__key_)
-      }
-
-      /// A collection containing just the values of the dictionary.
-      ///
-      /// - Complexity: O(`count`)
-      @inlinable
-      public var values: [Value] {
-        __tree_.___copy_all_to_array(Base.__mapped_value_)
-      }
-    #else
       // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
       public typealias Keys = RedBlackTreeIterator.Keys<Base>
       //      public typealias Values = RedBlackTreeIteratorV2.MappedValues<Base>
@@ -191,6 +161,4 @@ extension RedBlackTreeDictionary {
           yield &view
         }
       }
-    #endif
   }
-#endif

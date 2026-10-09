@@ -66,7 +66,6 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(multiset), [1, 2, 2, 3, 3])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_insertWithHint_handlesDuplicateGoodAndBadHints() {
       var multiset = RedBlackTreeMultiSet([1, 1, 3])
 
@@ -164,9 +163,8 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertTrue(multiset[multiset.startIndex] === newMember)
       XCTAssertTrue(copy[copy.startIndex] === oldMember)
     }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
     /// MultiSetは同値要素を許容するため、`index(inserting:)`は常に新しいoccurrenceを
     /// 挿入し、`inserted`は`true`、`index`はその新しいoccurrenceを指すこと。
     func test_indexInserting_alwaysInsertsNewOccurrence() {
@@ -230,7 +228,6 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
   #endif
 }
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -246,4 +243,3 @@ final class RedBlackTreeMultiSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(Array(other), [2, 3])
     }
   }
-#endif

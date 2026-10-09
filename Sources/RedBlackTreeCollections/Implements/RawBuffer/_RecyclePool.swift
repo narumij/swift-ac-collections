@@ -39,9 +39,7 @@
       assert(p.pointee.___tracking_tag > .end, "特殊ポインタのリサイクル不可")
       assert(recycleHead != p, "過剰リサイクル不可")
       count -= 1
-      #if DEBUG || true
         p.pointee.___recycle_count &+= 1
-      #endif
       freshBucketAllocator.deinitialize(p.advanced(by: 1))
       #if DEBUG
         payloadDeinitializedCount += 1

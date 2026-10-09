@@ -1,4 +1,3 @@
-#if !COMPATIBLE_ATCODER_2025
 import AcCollections
 import CppBehaviorReference
 import XCTest
@@ -768,4 +767,3 @@ extension MultiSetBehaviorComparisonTests {
         XCTAssertFalse(message.contains("\n  \(failing + 1): "))
     }
 }
-#endif

@@ -20,24 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeTreeV2 {
-
-    @inlinable
-    @discardableResult
-    func ___erase_range(_ __first: _NodePtr, _ __last: _NodePtr) -> _NodePtr {
-
-      var __first = __first
-      while __first != __last {
-        guard __first.___has_payload_content else {
-          fatalError(.outOfBounds)  // エラー種別がしっくりこない
-        }
-        __first = erase(__first)
-      }
-      return __last
-    }
-  }
-#endif
 
 // MARK: -
 

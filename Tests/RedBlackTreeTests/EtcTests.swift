@@ -7,7 +7,7 @@ import XCTest
   import RedBlackTreeCollections
 #endif
 
-#if !COMPATIBLE_ATCODER_2025 && DEBUG
+#if DEBUG
   /// Test-only marker for sequences whose iteration order is ascending.
   private protocol SortedSequence: Sequence {}
 
@@ -84,7 +84,6 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     try super.tearDownWithError()
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     /// `formIndex(_:offsetBy:limitedBy:)`が、現在の基準である`String`と同じく、
     /// limit到達時は成功し、超過時はlimitまで移動して失敗を返すこと。
     func testFormIndexLimitedByMatchesString() {
@@ -110,9 +109,8 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
       XCTAssertFalse(set.formIndex(&setOver, offsetBy: 2, limitedBy: setLimit))
       XCTAssertEqual(setOver, setLimit)
     }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025 && DEBUG
+  #if DEBUG
     func testAPICheck() throws {
 
       do {
@@ -127,7 +125,7 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
     }
   #endif
 
-  #if DEBUG && !COMPATIBLE_ATCODER_2025
+  #if DEBUG
     /// 空配列をdecodeした場合、生木が共有の読み取り専用シングルトンになっていること
     /// (無駄なバッファ確保をしない。2026-10-03、Decodable非ソート・重複入力バグ修正の副次確認)
     func testDecodeEmptyArrayUsesReadOnlySingleton() throws {
@@ -149,18 +147,3 @@ final class EtcTests: RedBlackTreeTestCase, _UnsafeNodePtrType {
   #endif
 
 }
-
-#if COMPATIBLE_ATCODER_2025 && DEBUG
-  // これ、整理整頓対象でいいかも
-  extension EtcTests {
-    /// 内部の逆順走査ヘルパー___rev_for_each_が正しい順序でノードを列挙すること
-    func testRev() throws {
-      let a = RedBlackTreeSet<Int>([0, 1, 2])
-      var result = [Int]()
-      a.__tree_.___rev_for_each_(__p: a.startIndex.sealed, __l: a.endIndex.sealed) { p in
-        result.append(p.index)
-      }
-      XCTAssertEqual(result, [2, 1, 0])
-    }
-  }
-#endif

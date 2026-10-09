@@ -20,24 +20,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 where Base: ___TreeIndex {
 
     public typealias Index = RedBlackTreeIndex
   }
-#endif
 
-#if COMPATIBLE_ATCODER_2025
-extension UnsafeTreeV2 {
-
-  public typealias _PayloadValues = UnsafeIterator.Values<Base>
-}
-
-extension UnsafeTreeV2 where Base: PairValueTrait {
-
-  public typealias _KeyValues = UnsafeIterator.KeyValues<Base>
-}
-#else
 extension UnsafeTreeV2 {
 
   public typealias _PayloadValues = RedBlackTreeIterator.Values<Base>
@@ -47,7 +34,6 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
 
   public typealias _KeyValues = RedBlackTreeIterator.KeyValues<Base>
 }
-#endif
 
 extension UnsafeTreeV2 {
 

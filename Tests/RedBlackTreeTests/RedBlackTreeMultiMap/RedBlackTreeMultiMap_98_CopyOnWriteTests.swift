@@ -45,11 +45,7 @@ import XCTest
       XCTAssertEqual(set._copyCount, 0)
       set.insert(key: 0, value: 0)
       XCTAssertEqual(set._copyCount, 0)
-      #if COMPATIBLE_ATCODER_2025
-        set.removeAll(forKey: 0)
-      #else
         set.eraseMulti(0)
-      #endif
       XCTAssertEqual(set._copyCount, 0)
       _ = set.lowerBound(0)
       _ = set.upperBound(0)
@@ -65,7 +61,6 @@ import XCTest
       XCTAssertEqual(set._copyCount, 0)
     }
 
-    #if !COMPATIBLE_ATCODER_2025
       func testSet3() throws {
         tree._copyCount = 0
         for v in tree {
@@ -74,9 +69,7 @@ import XCTest
         XCTAssertEqual(tree.count, 0)
         XCTAssertEqual(tree._copyCount, 1)
       }
-    #endif
 
-    #if !COMPATIBLE_ATCODER_2025
       func testSet3_2() throws {
         tree._copyCount = 0
         for v in tree + [] {
@@ -85,9 +78,7 @@ import XCTest
         XCTAssertEqual(tree.count, 0)
         XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
       }
-    #endif
 
-    #if !COMPATIBLE_ATCODER_2025
       func testSet3_3() throws {
         tree._copyCount = 0
         for v in tree + [] {
@@ -96,9 +87,7 @@ import XCTest
         XCTAssertEqual(tree.count, 0)
         XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
       }
-    #endif
 
-    #if !COMPATIBLE_ATCODER_2025
       func testSet4() throws {
         tree._copyCount = 0
         tree.forEach { v in
@@ -107,9 +96,7 @@ import XCTest
         XCTAssertEqual(tree.count, 0)
         XCTAssertEqual(tree._copyCount, 1)
       }
-    #endif
 
-    #if !COMPATIBLE_ATCODER_2025
       func testSet5() throws {
         tree._copyCount = 0
         for v in tree + [] {
@@ -118,16 +105,11 @@ import XCTest
         XCTAssertEqual(tree.count, 0)
         XCTAssertEqual(tree._copyCount, 0)
       }
-    #endif
 
     func testSet6() throws {
       tree._copyCount = 0
       for v in tree.filter({ _ in true }) {
-        #if COMPATIBLE_ATCODER_2025
-          tree.removeAll(forKey: v.key)
-        #else
           tree.eraseMulti(v.key)
-        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
@@ -136,11 +118,7 @@ import XCTest
     func testSet7() throws {
       tree._copyCount = 0
       for v in tree {
-        #if COMPATIBLE_ATCODER_2025
-          tree.removeAll(forKey: v.key)
-        #else
           tree.eraseMulti(v.key)
-        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 1)  // multi setの場合、インデックスを破壊するので1とする
@@ -149,11 +127,7 @@ import XCTest
     func testSet8() throws {
       tree._copyCount = 0
       for v in tree + [] {
-        #if COMPATIBLE_ATCODER_2025
-          tree.removeAll(forKey: v.key)
-        #else
           tree.eraseMulti(v.key)
-        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)  // mapで操作が済んでいるので、インデックス破壊の心配がない
@@ -162,11 +136,7 @@ import XCTest
     func testSet9() throws {
       tree._copyCount = 0
       tree.forEach { v in
-        #if COMPATIBLE_ATCODER_2025
-          tree.removeAll(forKey: v.key)
-        #else
           tree.eraseMulti(v.key)
-        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 1)
@@ -175,11 +145,7 @@ import XCTest
     func testSet10() throws {
       tree._copyCount = 0
       for v in tree + [] {
-        #if COMPATIBLE_ATCODER_2025
-          tree.removeAll(forKey: v.key)
-        #else
           tree.eraseMulti(v.key)
-        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
@@ -188,11 +154,7 @@ import XCTest
     func testSet11() throws {
       tree._copyCount = 0
       for v in tree.filter({ _ in true }) {
-        #if COMPATIBLE_ATCODER_2025
-          tree.removeAll(forKey: v.key)
-        #else
           tree.eraseMulti(v.key)
-        #endif
       }
       XCTAssertEqual(tree.count, 0)
       XCTAssertEqual(tree._copyCount, 0)
@@ -211,11 +173,7 @@ import XCTest
         if let lo = xy[1]?.lowerBound(i * N),
           let hi = xy[1]?.upperBound(i * N + N)
         {
-          #if COMPATIBLE_ATCODER_2025
-            xy[1]?.removeSubrange(lo..<hi)
-          #else
             _ = xy[1]?.erase(lo..<hi)
-          #endif
         }
       }
       XCTAssertEqual(xy[1]!.count, 0)
@@ -223,7 +181,6 @@ import XCTest
       XCTAssertEqual(loopCount, count / N)
     }
 
-    #if !COMPATIBLE_ATCODER_2025
       // Setの同名テストのKeyValue Range View版。KeyOnly / KeyValueの両Viewで同じCoW契約を確認する
       func testEraseWhereOnRangeViewOfSharedTreeDoesNotCopy() throws {
         var map = RedBlackTreeMultiMap(keysWithValues: (0..<20).map { ($0, $0) })
@@ -249,6 +206,5 @@ import XCTest
         XCTAssertEqual(map._copyCount, 0)
         XCTAssertEqual(range._copyCount, 1)
       }
-    #endif
   }
 #endif

@@ -172,7 +172,6 @@ import XCTest
 
     // MARK: - erase(where:)
 
-    #if !COMPATIBLE_ATCODER_2025
       /// 空コレクションへの`erase(where:)`は`ensureUnique()`の前に早期returnするため、
       /// 4型すべてでシングルトンからdetachしない(2026-10-03修正、以前はdetachしていた)。
       func testEraseWhereOnEmptyCollectionKeepsSingleton() throws {
@@ -192,6 +191,5 @@ import XCTest
         multiMap.erase(where: { _ in true })
         assertIsSingleton(multiMap.__tree_, "空多重連想配列へのerase(where:)はdetachしないはず")
       }
-    #endif
   }
-#endif  // DEBUG
+#endif

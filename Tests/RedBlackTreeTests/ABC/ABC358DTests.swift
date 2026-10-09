@@ -20,7 +20,6 @@ final class ABC358DTests: RedBlackTreeTestCase {
     try super.tearDownWithError()
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func testABC358D(N: Int, M: Int, _A: [Int], B: [Int]) throws {
       var A = RedBlackTreeMultiSet(_A)
       var ans = 0
@@ -33,21 +32,6 @@ final class ABC358DTests: RedBlackTreeTestCase {
       }
       print(ans)
     }
-  #else
-    func testABC358D(N: Int, M: Int, _A: [Int], B: [Int]) throws {
-      var A = RedBlackTreeMultiSet(_A)
-      var ans = 0
-      for b in B {
-        let i = A.lowerBound(b)
-        guard i != A.endIndex else {
-          ans = -1
-          break
-        }
-        ans += A.remove(at: i)
-      }
-      print(ans)
-    }
-  #endif
 
   func testExample2() throws {
     try testABC358D(
@@ -82,7 +66,7 @@ final class ABC358DTests: RedBlackTreeTestCase {
     }
   }
 
-  #if ENABLE_PERFORMANCE_TESTING && !COMPATIBLE_ATCODER_2025
+  #if ENABLE_PERFORMANCE_TESTING
     // Linux CIの互換モードでは、XCTestのmeasure実行中にテストプロセスが異常終了した。
     // 同じ処理を通常のループで100回実行しても再現しないため、メモリ管理の不具合とは
     // 断定できず、標準出力を伴う処理とLinux版XCTestの性能計測経路との組み合わせを

@@ -14,7 +14,6 @@ final class RedBlackTreeMultiMapUtilityTests: RedBlackTreeTestCase {
     XCTAssertTrue(map.isEmpty)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_keysAndValues_followEntryOrderIncludingDuplicateKeys() {
       let map: RedBlackTreeMultiMap = [(1, "a"), (2, "c"), (1, "b")]
 
@@ -42,7 +41,6 @@ final class RedBlackTreeMultiMapUtilityTests: RedBlackTreeTestCase {
       XCTAssertEqual(map.map(\.value), ["b", "a"])
       XCTAssertEqual(copy.map(\.value), ["a", "b"])
     }
-  #endif
 
   func test_copyOnWrite_mutatingCopyPreservesOriginal() {
     let original: RedBlackTreeMultiMap = [(1, "a"), (1, "b")]

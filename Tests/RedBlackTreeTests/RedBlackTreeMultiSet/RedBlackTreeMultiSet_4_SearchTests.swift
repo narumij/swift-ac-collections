@@ -55,7 +55,6 @@ final class RedBlackTreeMultiSetSearchTests: RedBlackTreeTestCase {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -71,4 +70,3 @@ final class RedBlackTreeMultiSetSearchTests: RedBlackTreeTestCase {
       XCTAssertEqual(RedBlackTreeMultiSet<Int>().find(0), RedBlackTreeMultiSet<Int>().endIndex)
     }
   }
-#endif

@@ -114,12 +114,8 @@ where Base: _UnsafeNodePtrType & _BaseNode_KeyInterface, Base._Key: Comparable {
       return !l.___is_end && r.___is_end
     }
 
-    #if true
       // ポインタ化によりこちらのほうが速くなった
       return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_multi(l, r))
-    #else
-      return ___ptr_comp_unique(l, r) || (!___ptr_comp_unique(r, l) && ___ptr_comp_bitmap(l, r))
-    #endif
   }
 
   // ptrのrange判定

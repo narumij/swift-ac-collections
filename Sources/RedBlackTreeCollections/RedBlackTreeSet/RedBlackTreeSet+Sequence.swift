@@ -20,14 +20,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
     /// A view over a contiguous range of this set in ascending order.
     public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Self>
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Returns a new set containing the elements of the set that satisfy the given predicate.
@@ -44,7 +41,6 @@
       .init(__tree_: try __tree_.___filter(_start, _end, isIncluded))
     }
   }
-#endif
 
 // MARK: - Sequence Conformance
 
@@ -60,15 +56,10 @@ extension RedBlackTreeSet {
   /// - Complexity: O(1)
   @inlinable
   public func makeIterator() -> Tree._PayloadValues {
-    #if !COMPATIBLE_ATCODER_2025
       .init(start: _start, end: _end, tree: __tree_)
-    #else
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-    #endif
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Returns the elements of the sequence, sorted.
@@ -89,4 +80,3 @@ extension RedBlackTreeSet {
       __tree_.___rev_copy_all_to_array()
     }
   }
-#endif

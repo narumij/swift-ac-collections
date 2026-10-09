@@ -1,4 +1,3 @@
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -48,4 +47,3 @@
       }
     }
   }
-#endif

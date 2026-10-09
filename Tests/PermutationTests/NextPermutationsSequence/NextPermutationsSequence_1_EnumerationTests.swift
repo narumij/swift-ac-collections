@@ -7,7 +7,6 @@
 // `nextPermutations()`はC++の`next_permutation`と同じく、現在の並びを最初に返し、
 // 辞書順で後続する並びだけを返す。全順列の列挙ではない。
 
-#if !COMPATIBLE_ATCODER_2025
 import PermutationModule
 import XCTest
 
@@ -93,4 +92,3 @@ final class NextPermutationsSequence_1_EnumerationTests: XCTestCase {
     XCTAssertEqual(a, [1, 2, 3])
   }
 }
-#endif

@@ -1,7 +1,6 @@
 import RedBlackTreeCollections
 import XCTest
 
-#if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeDictionaryElementRangeTests: RedBlackTreeTestCase {
 
     func testElementRangeExposesItsBounds() {
@@ -25,4 +24,3 @@ import XCTest
       XCTAssertEqual(elements.reversed().map(\.key), [3, 2])
     }
   }
-#endif

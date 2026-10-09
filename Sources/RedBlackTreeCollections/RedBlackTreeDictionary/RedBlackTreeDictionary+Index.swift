@@ -20,7 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// - Important:
@@ -254,11 +253,9 @@
       __tree_.form_index(&i, offsetBy: distance, limitedBy: limit)
     }
   }
-#endif
 
 // MARK: -
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// Returns whether the given index refers to an accessible element.
@@ -286,9 +283,8 @@
       __tree_.__purified_(index).pointer?.___is_end == true
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+#if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
   extension RedBlackTreeDictionary {
 
     // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要

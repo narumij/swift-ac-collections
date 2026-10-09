@@ -2,7 +2,6 @@ import Foundation
 import RedBlackTreeCollections
 import XCTest
 
-#if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeSetCodableTests: RedBlackTreeTestCase {
 
     func test_codable_roundTripsElementsInOrder() throws {
@@ -37,4 +36,3 @@ import XCTest
     }
 
   }
-#endif

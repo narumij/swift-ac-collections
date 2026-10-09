@@ -23,7 +23,6 @@
 @_documentation(visibility: internal)
 public enum UnsafeIterator {}
 
-#if !COMPATIBLE_ATCODER_2025
   extension UnsafeIterator {
 
     public typealias ValueObverse<Base> = _CopyOnWrite<_Payload<Base, _Obverse4>>
@@ -46,4 +45,3 @@ public enum UnsafeIterator {}
     public typealias KeyValueReverse<Base> = _CopyOnWrite<_KeyValue<Base, _Reverse4>>
     where Base: ___TreeBase & PairValueTrait
   }
-#endif

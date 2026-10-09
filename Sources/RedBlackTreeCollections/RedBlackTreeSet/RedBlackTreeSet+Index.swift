@@ -20,7 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// - Important:
@@ -28,11 +27,9 @@
     ///   Using an invalid index may result in a runtime error or undefined behavior.
     public typealias Index = RedBlackTreeIndex
   }
-#endif
 
 // MARK: -
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Returns whether the given index refers to an accessible element.
@@ -60,9 +57,7 @@
       __tree_.__purified_(index).pointer?.___is_end == true
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Returns the distance between two indices.
@@ -84,9 +79,7 @@
       return d
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Returns the index of `member` in the set.
@@ -114,9 +107,7 @@
     @inlinable
     public var endIndex: Index { ___index(_end) }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Returns the position immediately before the given index.
@@ -199,11 +190,9 @@
       __tree_.form_index(&i, offsetBy: distance, limitedBy: limit)
     }
   }
-#endif
 
 // MARK: -
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Returns the index of the first element that is not less than the given value.
@@ -258,9 +247,8 @@
       ___index(__tree_.update { $0.find(member) })
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+#if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
   extension RedBlackTreeSet {
     
     // SetAlgebra都合でinsertの戻りが変えられない。
@@ -315,7 +303,6 @@
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeSet {
 
@@ -329,4 +316,3 @@
       __tree_.withMutableHeader { $0.index_or_nil(p) }
     }
   }
-#endif

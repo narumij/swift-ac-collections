@@ -128,9 +128,7 @@ extension RedBlackTreeMultiMap.Base: _PairBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeMultiMap.Base: _BaseNode_NodeCompareProtocol {}
 extension RedBlackTreeMultiMap.Base: _BaseNode_SignedDistanceProtocol {}
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesV2 {}
-#endif
 //extension RedBlackTreeMultiMap: _RedBlackTreeKeyValuesBase {}
 
 // MARK: - Inspecting a MultiMap
@@ -233,7 +231,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
 //  extension RedBlackTreeMultiMap {
 //
 //    /// - Complexity: O(log *n*)
@@ -243,7 +240,6 @@ extension RedBlackTreeMultiMap {
 //      return __tree_.___copy_to_array(lo, hi) { Base.__mapped_value_($0) }
 //    }
 //  }
-#endif
 
 // MARK: - Insert
 
@@ -287,7 +283,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   // 結局復活してみた。でも少し変えた
   extension RedBlackTreeMultiMap {
 
@@ -310,9 +305,7 @@ extension RedBlackTreeMultiMap {
       return old
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
 extension RedBlackTreeMultiMap {
 
   /// Inserts another key-value pair, using `hint` as a suggested insertion position.
@@ -338,7 +331,6 @@ extension RedBlackTreeMultiMap {
     return __tree_.index(__r)
   }
 }
-#endif
 
 // MARK: - Remove（削除）
 
@@ -358,7 +350,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
     /// Removes and returns one key-value pair with the greatest key.
@@ -374,7 +365,6 @@ extension RedBlackTreeMultiMap {
       return __tree_.___unchecked_remove_last().map { Base.__element_($0) }
     }
   }
-#endif
 
 extension RedBlackTreeMultiMap {
 
@@ -393,7 +383,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
     /// Removes and returns one key-value pair with the greatest key.
@@ -410,7 +399,6 @@ extension RedBlackTreeMultiMap {
       return element
     }
   }
-#endif
 
 extension RedBlackTreeMultiMap {
 
@@ -450,7 +438,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
     /// Removes the key-value pair at the given position from the multimap and returns the index of the next element.
@@ -486,9 +473,7 @@ extension RedBlackTreeMultiMap {
       assert(result.error == nil)
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
     /// Removes a single element equivalent to the given key.
@@ -520,4 +505,3 @@ extension RedBlackTreeMultiMap {
       return __tree_.___erase_multi(key)
     }
   }
-#endif

@@ -1,7 +1,6 @@
 import RedBlackTreeCollections
 import XCTest
 
-#if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeMultiMapRangeViewTests: RedBlackTreeTestCase {
 
     func test_unboundedRangeView_containsEveryEntryInOrder() {
@@ -130,4 +129,3 @@ import XCTest
       XCTAssertEqual(copy.map(\.value), ["first", "middle", "last"])
     }
   }
-#endif

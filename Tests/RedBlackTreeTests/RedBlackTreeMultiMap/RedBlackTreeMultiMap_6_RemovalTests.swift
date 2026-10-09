@@ -7,16 +7,12 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
     var map: RedBlackTreeMultiMap = [(1, "a"), (1, "b"), (2, "c"), (3, "d")]
 
     XCTAssertEqual(map.popFirst()?.value, "a")
-    #if !COMPATIBLE_ATCODER_2025
       XCTAssertEqual(map.popLast()?.value, "d")
       XCTAssertEqual(map.map(\.value), ["b", "c"])
-    #endif
 
     var empty = RedBlackTreeMultiMap<Int, String>()
     XCTAssertNil(empty.popFirst())
-    #if !COMPATIBLE_ATCODER_2025
       XCTAssertNil(empty.popLast())
-    #endif
   }
 
   /// 空のMultiMapへの削除操作はトラップしない以上、無駄なCoW(共有される空
@@ -29,15 +25,12 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
       XCTAssertNil(empty.popFirst())
       XCTAssertEqual(empty._copyCount, 0)
 
-      #if !COMPATIBLE_ATCODER_2025
         XCTAssertNil(empty.popLast())
         XCTAssertEqual(empty._copyCount, 0)
-      #endif
 
       empty.removeAll(keepingCapacity: true)
       XCTAssertEqual(empty._copyCount, 0, "空のMultiMapへのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
 
-      #if !COMPATIBLE_ATCODER_2025
         var predicateCalled = false
         empty.erase(where: { _ in
           predicateCalled = true
@@ -45,7 +38,6 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
         })
         XCTAssertFalse(predicateCalled, "空のMultiMapへのerase(where:)は述語を呼ばないはず")
         XCTAssertEqual(empty._copyCount, 0, "空のMultiMapへのerase(where:)は退避コピーを発生させないはず")
-      #endif
     #endif
   }
 
@@ -57,7 +49,6 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
     XCTAssertEqual(map.map(\.value), ["b", "c"])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_removeAt_removesOnlyTheSelectedDuplicate() {
       var map: RedBlackTreeMultiMap = [(1, "a"), (1, "b"), (1, "c"), (2, "d")]
       let middle = map.index(after: map.startIndex)
@@ -92,7 +83,6 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
 
       XCTAssertEqual(map.map(\.value), ["a", "d"])
     }
-  #endif
 
   func test_removeAll_clearsEntriesAndHonorsCapacityChoice() {
     var keepingCapacity = RedBlackTreeMultiMap(keysWithValues: (0..<10).map { ($0, $0) })
@@ -123,23 +113,18 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
     _ = map.popFirst()
     XCTAssertEqual(DeinitializeCounter.count, 4)
 
-    #if !COMPATIBLE_ATCODER_2025
       _ = map.popLast()
       XCTAssertEqual(DeinitializeCounter.count, 3)
-    #endif
 
-    #if !COMPATIBLE_ATCODER_2025
       let erasedCount = map.eraseMulti(3)
       XCTAssertEqual(erasedCount, 1)
       XCTAssertEqual(DeinitializeCounter.count, 2, "キー検索に値の一時生成は不要なので、削除された分だけ減ること")
-    #endif
 
     map.removeAll()
     XCTAssertEqual(DeinitializeCounter.count, 0)
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -155,4 +140,3 @@ final class RedBlackTreeMultiMapRemovalTests: RedBlackTreeTestCase {
       XCTAssertEqual(last, m.endIndex)
     }
   }
-#endif

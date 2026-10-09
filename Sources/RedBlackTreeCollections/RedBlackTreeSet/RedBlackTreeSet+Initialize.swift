@@ -33,7 +33,6 @@ extension RedBlackTreeSet {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Creates a new set containing the unique elements of the given sequence.
@@ -53,7 +52,6 @@ extension RedBlackTreeSet {
       self.init(__tree_: tree)
     }
   }
-#endif
 
 extension RedBlackTreeSet {
 

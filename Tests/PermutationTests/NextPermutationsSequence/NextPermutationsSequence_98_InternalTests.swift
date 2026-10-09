@@ -5,7 +5,7 @@
 
 // 実装の確認(仕様ではない)。`DEBUG`のときだけ有効。
 
-#if DEBUG && !COMPATIBLE_ATCODER_2025
+#if DEBUG
   import PermutationModule
   import XCTest
 

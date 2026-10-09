@@ -3,7 +3,6 @@ import XCTest
 
 final class RedBlackTreeMultiSetIndexRangeTests: RedBlackTreeTestCase {
 
-  #if !COMPATIBLE_ATCODER_2025
     func testIsElementAndIsEndDistinguishElementFromEnd() {
       let multiset: RedBlackTreeMultiSet = [0, 1, 1, 2]
 
@@ -81,10 +80,8 @@ final class RedBlackTreeMultiSetIndexRangeTests: RedBlackTreeTestCase {
         XCTAssertEqual(copy.count(of: 1), 2, "要素自体はcopyに存在する")
       }
     #endif
-  #endif
 }
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -100,4 +97,3 @@ final class RedBlackTreeMultiSetIndexRangeTests: RedBlackTreeTestCase {
       XCTAssertEqual(i, m.endIndex)
     }
   }
-#endif

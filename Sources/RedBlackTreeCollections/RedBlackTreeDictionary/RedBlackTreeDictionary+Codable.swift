@@ -22,7 +22,6 @@
 
 // MARK: - Codable
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary: Encodable where Key: Encodable, Value: Encodable {
 
     /// Encodes the elements of this dictionary into the given encoder in an unkeyed
@@ -58,4 +57,3 @@
       self.init(__tree_: try .create(from: decoder))
     }
   }
-#endif

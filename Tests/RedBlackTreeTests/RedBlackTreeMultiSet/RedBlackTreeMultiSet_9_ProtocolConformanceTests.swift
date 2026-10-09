@@ -192,7 +192,6 @@ extension RedBlackTreeMultiSetProtocolConformanceTests {
 #endif
 
 // MARK: - Codable
-#if !COMPATIBLE_ATCODER_2025
 extension RedBlackTreeMultiSetProtocolConformanceTests {
 
   func test_codable_roundTrip() throws {
@@ -206,4 +205,3 @@ extension RedBlackTreeMultiSetProtocolConformanceTests {
     XCTAssertEqual(decoded, original)
   }
 }
-#endif

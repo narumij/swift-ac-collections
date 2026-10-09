@@ -188,7 +188,6 @@ final class RedBlackTreeMultiSetSequenceTests: RedBlackTreeTestCase {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   /// 全走査と範囲走査がキー比較を行わないこと。走査が要素ごとの探索(O(N log N))に
   /// 落ちていないことを、利用者の`Comparable`から観測できる形で固定する。
   final class RedBlackTreeMultiSetTraversalComparisonCountTests: RedBlackTreeTestCase {
@@ -228,9 +227,7 @@ final class RedBlackTreeMultiSetSequenceTests: RedBlackTreeTestCase {
       XCTAssertEqual(CountingKey.count, afterViewCreation, "範囲走査はキー比較を行わないはず")
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -245,9 +242,7 @@ final class RedBlackTreeMultiSetSequenceTests: RedBlackTreeTestCase {
       XCTAssertEqual(RedBlackTreeMultiSet<Int>().reversed() as [Int], [])
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -261,4 +256,3 @@ final class RedBlackTreeMultiSetSequenceTests: RedBlackTreeTestCase {
       XCTAssertEqual(Array(m), [1, 2, 2, 3, 3, 3])
     }
   }
-#endif

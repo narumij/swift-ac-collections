@@ -191,7 +191,6 @@ final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
     XCTAssertEqual(elements, [2, 4], "偶数のみであること")
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     /// filter(_:) が型推論時にRedBlackTreeSetを返し、順序と一意性を維持すること
     func test_filterReturnsRedBlackTreeSet() {
       let set: RedBlackTreeSet = [1, 2, 3, 4, 5]
@@ -199,7 +198,6 @@ final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
 
       XCTAssertEqual(filtered, RedBlackTreeSet([1, 3, 5]))
     }
-  #endif
 
   /// reduceでRedBlackTreeSetの要素を正しくたたみこめること
   func test_empty_set_reduce() {
@@ -225,7 +223,6 @@ final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
     XCTAssertEqual(element, 15, "合計値であること")
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     /// makeIterator()で作成したイテレータは、生成後に元の集合が変更されても取得済みのスナップショットを返し続けること(CoW挙動)
     func test_iterator_retainsSnapshotAfterBaseCollectionIsMutated() {
       // 事前条件: 集合に[0, 5, 10, ..., 45]を用意し、そこからイテレータを作成すること
@@ -247,10 +244,8 @@ final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
       XCTAssertEqual(iterator.next(), 40)
       XCTAssertNil(iterator.next())
     }
-  #endif
 }
 
-#if !COMPATIBLE_ATCODER_2025
   /// 全走査と範囲走査がキー比較を行わないこと。走査が要素ごとの探索(O(N log N))に
   /// 落ちていないことを、利用者の`Comparable`から観測できる形で固定する。
   final class RedBlackTreeSetTraversalComparisonCountTests: RedBlackTreeTestCase {
@@ -290,9 +285,7 @@ final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
       XCTAssertEqual(CountingKey.count, afterViewCreation, "範囲走査はキー比較を行わないはず")
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -307,4 +300,3 @@ final class RedBlackTreeSetSequenceTests: RedBlackTreeTestCase {
       XCTAssertEqual(RedBlackTreeSet<Int>().reversed() as [Int], [])
     }
   }
-#endif

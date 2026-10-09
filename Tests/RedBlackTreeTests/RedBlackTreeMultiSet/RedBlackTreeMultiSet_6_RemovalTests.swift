@@ -7,16 +7,12 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
     var multiset = RedBlackTreeMultiSet([1, 1, 2, 3, 3])
 
     XCTAssertEqual(multiset.popFirst(), 1)
-    #if !COMPATIBLE_ATCODER_2025
       XCTAssertEqual(multiset.popLast(), 3)
       XCTAssertEqual(Array(multiset), [1, 2, 3])
-    #endif
 
     var empty = RedBlackTreeMultiSet<Int>()
     XCTAssertNil(empty.popFirst())
-    #if !COMPATIBLE_ATCODER_2025
       XCTAssertNil(empty.popLast())
-    #endif
   }
 
   /// 空集合への削除操作はトラップしない以上、無駄なCoW(共有される空シングルトン
@@ -29,15 +25,12 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
       XCTAssertNil(empty.popFirst())
       XCTAssertEqual(empty._copyCount, 0)
 
-      #if !COMPATIBLE_ATCODER_2025
         XCTAssertNil(empty.popLast())
         XCTAssertEqual(empty._copyCount, 0)
-      #endif
 
       empty.removeAll(keepingCapacity: true)
       XCTAssertEqual(empty._copyCount, 0, "空集合へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
 
-      #if !COMPATIBLE_ATCODER_2025
         var predicateCalled = false
         empty.erase(where: { _ in
           predicateCalled = true
@@ -45,7 +38,6 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
         })
         XCTAssertFalse(predicateCalled, "空のMultiSetへのerase(where:)は述語を呼ばないはず")
         XCTAssertEqual(empty._copyCount, 0, "空のMultiSetへのerase(where:)は退避コピーを発生させないはず")
-      #endif
     #endif
   }
 
@@ -57,7 +49,6 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
     XCTAssertEqual(Array(multiset), [1, 2, 3])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_removeAt_removesOnlyTheSelectedDuplicate() {
       var multiset = RedBlackTreeMultiSet([1, 2, 2, 2, 3])
       let middleDuplicate = multiset.index(after: multiset.lowerBound(2))
@@ -118,7 +109,6 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
 
       XCTAssertEqual(Array(multiset), [0, 1, 3, 4])
     }
-  #endif
 
   func test_removeAll_clearsElementsAndHonorsCapacityChoice() {
     var keepingCapacity = RedBlackTreeMultiSet(0..<10)
@@ -159,16 +149,12 @@ final class RedBlackTreeMultiSetRemovalTests: RedBlackTreeTestCase {
     _ = multiset.popFirst()
     XCTAssertEqual(DeinitializeCounter.count, 4)
 
-    #if !COMPATIBLE_ATCODER_2025
       _ = multiset.popLast()
       XCTAssertEqual(DeinitializeCounter.count, 3)
-    #endif
 
-    #if !COMPATIBLE_ATCODER_2025
       let erasedCount = multiset.eraseMulti(DeinitializeCounter(num: 3))
       XCTAssertEqual(erasedCount, 1)
       XCTAssertEqual(DeinitializeCounter.count, 2, "検索キー・削除された重複要素とも解放されること(残りは1,2の2個)")
-    #endif
 
     multiset.removeAll()
     XCTAssertEqual(DeinitializeCounter.count, 0)

@@ -20,7 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeMultiSet {
 
@@ -172,4 +171,3 @@
         bounds.evaluate(__tree_).relative(to: __tree_), shouldBeRemoved)
     }
   }
-#endif

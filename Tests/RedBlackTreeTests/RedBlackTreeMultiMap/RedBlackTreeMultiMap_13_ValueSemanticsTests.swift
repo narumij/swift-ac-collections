@@ -9,11 +9,7 @@ final class RedBlackTreeMultiMapValueSemanticsTests: RedBlackTreeTestCase {
     var copy = original
 
     copy.insert(key: 99, value: "z")
-    #if COMPATIBLE_ATCODER_2025
-      copy.removeAll(forKey: 2)
-    #else
       copy.eraseMulti(2)
-    #endif
 
     XCTAssertEqual(Array(original.map(\.key)), [1, 2, 2, 3])
     XCTAssertEqual(Array(copy.map(\.key)), [1, 3, 99])

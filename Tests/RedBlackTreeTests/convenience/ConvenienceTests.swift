@@ -59,18 +59,10 @@ final class ConvenienceTests: RedBlackTreeTestCase {
 
   func testSetIndexRange0() throws {
     let set: RedBlackTreeSet<Int> = [1, 2, 3, 4, 5, 6]
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertTrue(set.startIndex < set.endIndex)
-      XCTAssertFalse(set.startIndex > set.endIndex)
-    #endif
     XCTAssertFalse(set.startIndex == set.endIndex)
     _ = set.startIndex..<set.endIndex
     XCTAssertNotEqual(set[set.startIndex..<set.endIndex] + [], [])
 
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertTrue(set.lowerBound(2) < set.upperBound(4))
-      XCTAssertFalse(set.lowerBound(2) > set.upperBound(4))
-    #endif
     XCTAssertFalse(set.lowerBound(2) == set.upperBound(4))
     _ = set.lowerBound(2)..<set.upperBound(4)
   }
@@ -126,16 +118,10 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       if a > b { swap(&a, &b) }
       let lo = set.lowerBound(a)
       let hi = set.upperBound(b)
-      #if COMPATIBLE_ATCODER_2025
-        guard lo > hi, a < b else { continue }
-      #endif
       // 数値比較で大小が逆転している場合、標準のdistance実装では迷子になってクラッシュする
       // distanceを実装することで、クラッシュせずに動く
       //      let seq: RedBlackTreeSet<Int>.___SubSequence = set[a ..< b]
       let seq = set.elements(in: a..<b)
-      #if COMPATIBLE_ATCODER_2025
-        XCTAssertNotEqual(seq + [], [])
-      #endif
       XCTAssertEqual(seq + [], seq.sorted())
       XCTAssertEqual((seq + []).reversed(), seq.reversed())
       XCTAssertTrue(seq.allSatisfy { $0 >= a })
@@ -154,7 +140,6 @@ final class ConvenienceTests: RedBlackTreeTestCase {
     XCTAssertEqual(set + [], [2, 10])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_set_LT_GT() throws {
       var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
       XCTAssertEqual(set.count, 5)
@@ -231,9 +216,7 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       XCTAssertEqual(set[.greaterThan(5)], nil)
       XCTAssertEqual(set.elements, [])
     }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_set_LE_GE() throws {
       var set = RedBlackTreeSet<Int>([0, 1, 2, 3, 4])
       XCTAssertEqual(set.count, 5)
@@ -310,9 +293,7 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       XCTAssertEqual(set[.greaterThanOrEqual(5)], nil)
       XCTAssertEqual(set.elements, [])
     }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_Multiset_LT_GT() throws {
       var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
       XCTAssertEqual(set.count, 5)
@@ -389,9 +370,7 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       XCTAssertEqual(set[.greaterThan(5)], nil)
       XCTAssertEqual(set.sorted(), [])
     }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_Multiset_LE_GE() throws {
       var set = RedBlackTreeMultiSet<Int>([0, 1, 2, 3, 4])
       XCTAssertEqual(set.count, 5)
@@ -468,9 +447,7 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       XCTAssertEqual(set[.greaterThanOrEqual(5)], nil)
       XCTAssertEqual(set.sorted(), [])
     }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025
     func testRedBlackTreeConveniences() throws {
       let numbers: RedBlackTreeSet = [1, 3, 5, 7, 9]
 
@@ -484,5 +461,4 @@ final class ConvenienceTests: RedBlackTreeTestCase {
       XCTAssertEqual(numbers[.greaterThan(5)], 7)
       XCTAssertEqual(numbers[.greaterThanOrEqual(5)], 5)
     }
-  #endif
 }

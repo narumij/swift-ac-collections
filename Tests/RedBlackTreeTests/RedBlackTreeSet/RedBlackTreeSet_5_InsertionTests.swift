@@ -197,7 +197,6 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     XCTAssertTrue(rejected.memberAfterInsert === original)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     /// ヒント付きinsertが新規要素と重複要素を正しく扱うこと
     func test_insert_withHint() {
       var set = RedBlackTreeSet([10, 30])
@@ -234,9 +233,8 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(duplicate, 20)
       XCTAssertEqual(set + [], [10, 20, 25, 30])
     }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
     /// Linuxのスケジューラ風に、run queueへのenqueue時にIndexを保存し、
     /// sleep/dequeue時はtaskを再検索せず、そのIndexから取り除く主用途の実験。
     func test_indexInserting_linuxSchedulerStyleRunQueueExperiment() {
@@ -275,7 +273,7 @@ final class RedBlackTreeSetInsertionTests: RedBlackTreeTestCase {
     }
   #endif
 
-  #if DEBUG && !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if DEBUG && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
     /// CoW後もindex(inserting:)で保存したIndexから対象を削除できること
     func test_indexInserting_savedIndicesRemainUsableAfterCopyOnWrite() {
       var set = RedBlackTreeSet(0..<8)

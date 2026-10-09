@@ -20,7 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// - Important:
@@ -258,9 +257,8 @@
       __tree_.form_index(&i, offsetBy: distance, limitedBy: limit)
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+#if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
   extension RedBlackTreeMultiSet {
 
     // CoWでstaleすると破綻するため、ALLOW_CROSS_TREE_INDEXが必要
@@ -316,7 +314,6 @@
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025
 
   extension RedBlackTreeMultiSet {
 
@@ -330,4 +327,3 @@
       __tree_.index_or_nil(p)
     }
   }
-#endif

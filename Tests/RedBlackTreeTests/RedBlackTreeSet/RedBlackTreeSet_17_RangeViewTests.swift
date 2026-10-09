@@ -5,7 +5,6 @@
 //  Created by narumij on 2026/02/14.
 //
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -249,4 +248,3 @@
     }
 
   }
-#endif

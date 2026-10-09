@@ -20,49 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if COMPATIBLE_ATCODER_2025
-  extension UnsafeIterator {
-
-    public struct _Payload<Base: ___TreeBase, Source: IteratorProtocol & Sequence>:
-      _UnsafeNodePtrType,
-      UnsafeAssosiatedIterator,
-      IteratorProtocol,
-      Sequence
-    where
-      Base: _UnsafeNodePtrType,
-      Source.Element == UnsafeMutablePointer<UnsafeNode>,
-      Source: UnsafeIteratorProtocol
-    {
-      @inlinable
-      public init(_ t: Base.Type, _start: _SealedPtr, _end: _SealedPtr) {
-        self.init(source: .init(_start: _start, _end: _end))
-      }
-
-      public var _source: Source
-
-      @inlinable
-      internal init(source: Source) {
-        self._source = source
-      }
-
-      public var _sealed_start: _SealedPtr {
-        _source._sealed_start
-      }
-
-      public var _sealed_end: _SealedPtr {
-        _source._sealed_end
-      }
-
-      @inlinable
-      public mutating func next() -> Base._PayloadValue? {
-        guard let p = _source.next() else {
-          return nil
-        }
-        return Base.__payload_(p)
-      }
-    }
-  }
-#else
   extension UnsafeIterator {
 
     public struct _Payload<Base: ___TreeBase, Source>:
@@ -89,23 +46,5 @@
       }
     }
   }
-#endif
 
 extension UnsafeIterator._Payload: @unchecked Sendable where Source: Sendable {}
-
-#if COMPATIBLE_ATCODER_2025
-extension UnsafeIterator._Payload: ObverseIterator
-where
-  Source: ObverseIterator,
-  Source.ReversedIterator: UnsafeIteratorProtocol & Sequence
-{
-  @inlinable
-  public func reversed() -> UnsafeIterator._Payload<Base, Source.ReversedIterator> {
-    .init(source: _source.reversed())
-  }
-  public typealias Reversed = UnsafeIterator._Payload<Base, Source.ReversedIterator>
-}
-
-extension UnsafeIterator._Payload: ReverseIterator
-where Source: ReverseIterator {}
-#endif

@@ -1,7 +1,6 @@
 import RedBlackTreeCollections
 import XCTest
 
-#if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeMultiSetRangeViewTests: RedBlackTreeTestCase {
 
     func test_unboundedRangeView_containsEveryPosition() {
@@ -92,4 +91,3 @@ import XCTest
       XCTAssertTrue(multiset.isEmpty)
     }
   }
-#endif

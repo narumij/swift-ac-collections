@@ -1,6 +1,6 @@
 // このファイル自体は整理整頓時に消さないこと
 
-#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+#if DEATH_TEST
   import Testing
 
   /// 棚卸し用の雑多な検証置き場。

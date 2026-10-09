@@ -3,7 +3,6 @@ import XCTest
 
 /// `RedBlackTreeKeyOnlyRangeView`(`Set`/`MultiSet`のRangeViewが返す型)の仕様。
 /// ジェネリックな共有Viewのため、代表としてSetのインスタンスで検証する。
-#if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeKeyOnlyRangeViewTests: RedBlackTreeTestCase {
 
     func test_sorted_returnsElementsAlreadyInOrder() {
@@ -138,4 +137,3 @@ import XCTest
       XCTAssertEqual(DeinitializeCounter.count, 0)
     }
   }
-#endif

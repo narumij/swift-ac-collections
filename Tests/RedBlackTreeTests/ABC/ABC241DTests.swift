@@ -26,7 +26,6 @@ final class ABC241DTests: RedBlackTreeTestCase {
     case over(Int, Int)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func testABC241D(queries: [Query]) throws {
       var multiset = RedBlackTreeMultiSet<Int>()
       for q in queries {
@@ -40,21 +39,6 @@ final class ABC241DTests: RedBlackTreeTestCase {
         }
       }
     }
-  #else
-    func testABC241D(queries: [Query]) throws {
-      var multiset = RedBlackTreeMultiSet<Int>()
-      for q in queries {
-        switch q {
-        case .insert(let x):
-          multiset.insert(x)
-        case .under(let x, let k):
-          print(multiset.upperBound(x).advanced(by: -k).pointee ?? -1)
-        case .over(let x, let k):
-          print(multiset.lowerBound(x).advanced(by: k - 1).pointee ?? -1)
-        }
-      }
-    }
-  #endif
 
   func testExample() throws {
     try testABC241D(

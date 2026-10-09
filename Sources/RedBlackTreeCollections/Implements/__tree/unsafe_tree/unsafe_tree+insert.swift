@@ -160,31 +160,6 @@ extension InsertLastProtocol_ptr where Self: ~Copyable {
   }
 }
 
-#if false
-extension InsertLastProtocol_ptr where Self: ~Copyable {
-
-    // 資料的に残してある
-    //
-    // こちらのほうがAPIとしては収まりがいいが、かすかに上のモノの方が速い
-    // 分岐の有無の差だとおもわれる
-    @inlinable
-    internal func ___emplace_hint_right(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
-      let __child = __p == end ? __end_node.__left_ref : __p.__right_ref
-      //                        ^--- これの差
-      let __h = __construct_node(__k)
-      __insert_node_at(__p, __child, __h)
-      return __h
-    }
-
-    @inlinable
-    internal func ___emplace_hint_left(_ __p: _NodePtr, _ __k: _PayloadValue) -> _NodePtr {
-      let __child = __p.__left_ref
-      let __h = __construct_node(__k)
-      __insert_node_at(__p, __child, __h)
-      return __h
-    }
-  }
-#endif
 
 // MARK: -
 
@@ -268,36 +243,6 @@ extension EmplaceHintUniqueProtocol_ptr where Self: ~Copyable {
     return (__r, __inserted)
   }
 
-  #if false
-    // __get_valueでしかキーが取れないケースに使う分割後半バージョン
-    @inlinable
-    internal func ___emplace_hint_unique_(
-      _ __p: _NodePtr,
-      _ __v: @autoclosure () -> _PayloadValue
-    ) -> (__r: _NodePtr, __inserted: Bool) {
-      let __h = __construct_node(__v())
-
-      var __dummy = nullptr
-
-      // 簡略記法もあるが、ここが若干あぶないことに気づけるよう、with記法を採用
-      let (__parent, __child) = withUnsafeMutablePointer(to: &__dummy) { __dummy in
-        __find_equal(__p, __dummy, __get_value(__h))
-      }
-
-      var __r = __child.pointee
-      var __inserted = false
-
-      if __child.pointee == nullptr {
-        __insert_node_at(__parent, __child, __h)
-        __r = __h
-        __inserted = true
-      } else {
-        destroy(__h)
-      }
-
-      return (__r, __inserted)
-    }
-  #endif
 }
 
 @usableFromInline

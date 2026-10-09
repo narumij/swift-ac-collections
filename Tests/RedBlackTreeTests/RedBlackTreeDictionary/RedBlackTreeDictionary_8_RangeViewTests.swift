@@ -1,7 +1,6 @@
 import RedBlackTreeCollections
 import XCTest
 
-#if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeDictionaryRangeViewTests: RedBlackTreeTestCase {
 
     func test_unboundedRangeView_containsEveryEntryInKeyOrder() {
@@ -103,4 +102,3 @@ import XCTest
       XCTAssertEqual(dictionary.map(\.key), [1, 3])
     }
   }
-#endif

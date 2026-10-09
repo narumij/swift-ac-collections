@@ -9,11 +9,7 @@ final class RedBlackTreeMultiSetValueSemanticsTests: RedBlackTreeTestCase {
     var copy = original
 
     copy.insert(99)
-    #if COMPATIBLE_ATCODER_2025
-      copy.removeAll(2)
-    #else
       copy.eraseMulti(2)
-    #endif
 
     XCTAssertEqual(Array(original), [1, 2, 2, 3])
     XCTAssertEqual(Array(copy), [1, 3, 99])

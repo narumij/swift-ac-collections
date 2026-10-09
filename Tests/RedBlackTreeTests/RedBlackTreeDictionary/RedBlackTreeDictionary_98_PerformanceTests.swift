@@ -134,11 +134,7 @@ final class RedBlackTreeDictionaryPerformanceTests: RedBlackTreeTestCase {
       self.measure {
         var d: RedBlackTreeDictionary<Int, Int> = .init(
           uniqueKeysWithValues: (0..<1_000_000).map { ($0, $0) })
-        #if COMPATIBLE_ATCODER_2025
-          d.removeSubrange(d.startIndex..<d.endIndex)
-        #else
           _ = d.erase(d.startIndex..<d.endIndex)
-        #endif
       }
     }
 

@@ -138,7 +138,6 @@ extension RedBlackTreeSetSearchTests {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -151,4 +150,3 @@ extension RedBlackTreeSetSearchTests {
       XCTAssertEqual(s.count(of: 9), 0)
     }
   }
-#endif

@@ -20,18 +20,15 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
     /// A view over a contiguous range of this multiset in ascending order.
     ///
     /// The view preserves every occurrence in the selected range.
     public typealias SubSequence = RedBlackTreeKeyOnlyRangeView<Self>
   }
-#endif
 
 // MARK: -
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// Returns a new multiset containing the elements that satisfy the given predicate.
@@ -48,7 +45,6 @@
       .init(__tree_: try __tree_.___filter(_start, _end, isIncluded))
     }
   }
-#endif
 
 // MARK: - Sequence Conformance
 
@@ -64,15 +60,10 @@ extension RedBlackTreeMultiSet {
   /// - Complexity: O(1)
   @inlinable
   public func makeIterator() -> Tree._PayloadValues {
-    #if !COMPATIBLE_ATCODER_2025
       .init(start: _start, end: _end, tree: __tree_)
-    #else
-      .init(start: _sealed_start, end: _sealed_end, tie: __tree_.tied)
-    #endif
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// Returns the elements of the sequence, sorted.
@@ -97,4 +88,3 @@ extension RedBlackTreeMultiSet {
       __tree_.___rev_copy_all_to_array()
     }
   }
-#endif

@@ -25,14 +25,6 @@
 
     @usableFromInline
     package func equiv(with tree: UnsafeNode) -> Bool {
-      #if false
-        assert(___tracking_tag == tree.___tracking_tag)
-        assert(__left_.pointee.___tracking_tag == tree.__left_.pointee.___tracking_tag)
-        assert(__right_.pointee.___tracking_tag == tree.__right_.pointee.___tracking_tag)
-        assert(__parent_.pointee.___tracking_tag == tree.__parent_.pointee.___tracking_tag)
-        assert(__is_black_ == tree.__is_black_)
-        assert(___has_payload_content == tree.___has_payload_content)
-      #endif
       guard
         ___tracking_tag == tree.___tracking_tag,
         __left_.pointee.___tracking_tag == tree.__left_.pointee.___tracking_tag,
@@ -51,14 +43,6 @@
 
     @usableFromInline
     package func nullCheck() -> Bool {
-      #if false
-        assert(___tracking_tag == .nullptr)
-        assert(__left_ == UnsafeNode.nullptr)
-        assert(__right_ == UnsafeNode.nullptr)
-        assert(__parent_ == UnsafeNode.nullptr)
-        assert(__is_black_ == false)
-        assert(___has_payload_content == false)
-      #endif
       guard
         ___tracking_tag == .nullptr,
         __right_ == UnsafeNode.nullptr,
@@ -74,13 +58,6 @@
 
     @usableFromInline
     package func endCheck() -> Bool {
-      #if false
-        assert(___tracking_tag == .end)
-        assert(__right_ == UnsafeNode.nullptr)
-        assert(__parent_ == UnsafeNode.nullptr)
-        assert(__is_black_ == false)
-        assert(___has_payload_content == false)
-      #endif
       guard
         ___tracking_tag == .end,
         __right_ == UnsafeNode.nullptr,

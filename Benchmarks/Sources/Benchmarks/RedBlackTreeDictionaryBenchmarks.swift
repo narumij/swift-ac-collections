@@ -486,28 +486,3 @@ extension Benchmark {
 
   }
 }
-
-#if false
-  extension RedBlackTreeDictionary {
-
-    @inlinable
-    @inline(__always)
-    func index(forKey key: Key) -> Index? {
-      firstIndex(of: key)
-    }
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var keys: KeyIterator<Tree, Key, Value> {
-      keys()
-    }
-
-    /// - Complexity: O(1)
-    @inlinable
-    @inline(__always)
-    public var values: ValueIterator<Tree, Key, Value> {
-      values()
-    }
-  }
-#endif

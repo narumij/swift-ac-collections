@@ -3,7 +3,6 @@ import XCTest
 
 /// `RedBlackTreeMappedValuesView`(`Dictionary`/`MultiMap`の`.values`が返す型)の仕様。
 /// ジェネリックな共有Viewのため、代表としてDictionaryのインスタンスで検証する。
-#if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeMappedValuesViewTests: RedBlackTreeTestCase {
 
     private struct ComparisonCountingKey: Comparable {
@@ -225,4 +224,3 @@ import XCTest
       XCTAssertFalse(dictionary.values.isEnd(start))
     }
   }
-#endif

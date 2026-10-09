@@ -22,7 +22,6 @@
 
 // MARK: - Codable
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet: Encodable where Element: Encodable {
 
     /// Encodes the elements of this multiset into the given encoder in an unkeyed
@@ -58,4 +57,3 @@
       self.init(__tree_: try .createMulti(from: decoder))
     }
   }
-#endif

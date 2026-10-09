@@ -185,7 +185,7 @@
 
 // MARK: -
 
-#if DEBUG && !COMPATIBLE_ATCODER_2025
+#if DEBUG
   // TODO: プロトコル適合を外したいが、なぜか性能に影響するので、外せずにいる
   extension RedBlackTreeSet: BalancedCollection {}
   extension RedBlackTreeSet: BalancedSomething {}

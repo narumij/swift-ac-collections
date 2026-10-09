@@ -138,7 +138,6 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary[3], 10)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_insertWithHint_insertsRegardlessOfHintAccuracyAndRejectsDuplicateKey() {
       var dictionary: RedBlackTreeDictionary<Int, String> = [1: "one", 3: "three"]
 
@@ -219,7 +218,6 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(dictionary[2], "replacement")
       XCTAssertEqual(dictionary.map(\.key), [1, 2, 3, 4])
     }
-  #endif
 
   func test_updateValue_returnsTheReplacedValue() {
     var dictionary: RedBlackTreeDictionary<Int, String> = [1: "old"]
@@ -264,7 +262,7 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(result["c"], 3)
   }
 
-  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
     /// 新しいキーへの`index(inserting:)`は挿入し、`inserted`は`true`、`index`は
     /// 挿入した要素を指すこと。
     func test_indexInserting_insertsNewKey() {
@@ -333,7 +331,6 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
   #endif
 }
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -350,4 +347,3 @@ final class RedBlackTreeDictionaryInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(b.map(\.value), ["x", "c"])
     }
   }
-#endif

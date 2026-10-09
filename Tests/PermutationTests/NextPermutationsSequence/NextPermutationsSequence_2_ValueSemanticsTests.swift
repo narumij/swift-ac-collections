@@ -8,7 +8,6 @@
 // - イテレータのコピーは、それぞれ独立に進む
 // - 上の2点は、別のTaskへ渡した場合も成り立つ
 
-#if !COMPATIBLE_ATCODER_2025
 import PermutationModule
 import XCTest
 
@@ -90,4 +89,3 @@ final class NextPermutationsSequence_2_ValueSemanticsTests: XCTestCase {
     XCTAssertEqual(secondResults, expected)
   }
 }
-#endif

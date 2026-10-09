@@ -33,7 +33,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// Creates a dictionary from a sequence of key-value pairs with unique keys.
@@ -76,7 +75,6 @@ extension RedBlackTreeDictionary {
       self.init(__tree_: tree)
     }
   }
-#endif
 
 extension RedBlackTreeDictionary {
 

@@ -70,14 +70,12 @@ extension RedBlackTreeSetProtocolConformanceTests {
     }
   #endif
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_index_hashable() {
       let set = RedBlackTreeSet<Int>(0..<10)
       var hasher = Hasher()
       set.startIndex.hash(into: &hasher)
       _ = hasher.finalize()
     }
-  #endif
 }
 
 // MARK: - elementsEqual / lexicographicallyPrecedes

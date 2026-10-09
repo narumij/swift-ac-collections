@@ -380,15 +380,8 @@ extension UnsafeTreeV2BufferHeader {
       return nullptr
     }
     assert(p.pointee.___tracking_tag == .debug, "未使用ノードであること")
-    #if true
       p.initialize(to: UnsafeNode.template.pointee)
       p.pointee.___tracking_tag = _TrackingTag(truncatingIfNeeded: freshPoolUsedCount)
-    #else
-      p.initialize(
-        to: .create(
-          tag: _TrackingTag(truncatingIfNeeded: freshPoolUsedCount),
-          nullptr: nullptr))
-    #endif
     assert(p.pointee.___has_payload_content == true)
     #if DEBUG
       nodeInitializedCount += 1

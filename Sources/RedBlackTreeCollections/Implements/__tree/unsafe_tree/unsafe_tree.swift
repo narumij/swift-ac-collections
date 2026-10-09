@@ -29,17 +29,10 @@ protocol _TreeNode_KeyProtocol: ~Copyable,
 
 extension _TreeNode_KeyProtocol where Self: ~Copyable {
 
-  #if true
     @inlinable
     internal func __get_value(_ p: _NodePtr) -> _Key {
       __key(__value_(p))
     }
-  #else
-    @inlinable
-    internal func __get_value(_ p: _NodePtr) -> __node_value_type {
-      __key(__value_(p))
-    }
-  #endif
 }
 
 @usableFromInline

@@ -5,7 +5,6 @@
 
   struct RedBlackTreeDictionaryDeathTests {
 
-    #if !COMPATIBLE_ATCODER_2025
       /// 空のDictionaryでも、他の木の要素を指すIndex範囲のeraseは検査で停止すること
       /// (空のときにCoWを省いても、範囲の検査は省かない)。
       @Test
@@ -19,7 +18,6 @@
           target.erase(lower..<upper)
         }
       }
-    #endif
 
     @Test
     func duplicateKeysInUniqueKeysInitializer_terminateProcess() async {
@@ -44,7 +42,6 @@
       }
     }
 
-    #if !COMPATIBLE_ATCODER_2025
       @Test
       func emptyStartIndexSubscript_terminatesProcess() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
@@ -376,6 +373,5 @@
         let standardError = String(decoding: result.standardErrorContent, as: UTF8.self)
         #expect(!standardError.contains("AddressSanitizer"))
       }
-    #endif
   }
 #endif

@@ -22,7 +22,6 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
     XCTAssertEqual(dictionary.map(\.key), [1, 3])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_erase_returnsTheFollowingIndex() {
       var dictionary: RedBlackTreeDictionary<Int, String> = [1: "a", 2: "b", 3: "c"]
       let removed = dictionary.firstIndex(of: 2)!
@@ -45,7 +44,6 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
 
       XCTAssertEqual(dictionary.map(\.key), [1, 3])
     }
-  #endif
 
   func test_popFirst_returnsNilOrRemovesLowestKey() {
     var empty = RedBlackTreeDictionary<Int, String>()
@@ -66,10 +64,8 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
       XCTAssertNil(empty.popFirst())
       XCTAssertEqual(empty._copyCount, 0)
 
-      #if !COMPATIBLE_ATCODER_2025
         XCTAssertNil(empty.popLast())
         XCTAssertEqual(empty._copyCount, 0)
-      #endif
 
       XCTAssertNil(empty.removeValue(forKey: 1))
       XCTAssertEqual(empty._copyCount, 0)
@@ -77,7 +73,6 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
       empty.removeAll(keepingCapacity: true)
       XCTAssertEqual(empty._copyCount, 0, "空の辞書へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
 
-      #if !COMPATIBLE_ATCODER_2025
         var predicateCalled = false
         empty.erase(where: { _ in
           predicateCalled = true
@@ -85,7 +80,6 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
         })
         XCTAssertFalse(predicateCalled, "空の辞書へのerase(where:)は述語を呼ばないはず")
         XCTAssertEqual(empty._copyCount, 0, "空の辞書へのerase(where:)は退避コピーを発生させないはず")
-      #endif
     #endif
   }
 
@@ -127,17 +121,11 @@ final class RedBlackTreeDictionaryRemovalTests: RedBlackTreeTestCase {
     _ = dictionary.popFirst()
     XCTAssertEqual(DeinitializeCounter.count, 3)
 
-    #if !COMPATIBLE_ATCODER_2025
       _ = dictionary.popLast()
       XCTAssertEqual(DeinitializeCounter.count, 2)
-    #endif
 
     _ = dictionary.removeValue(forKey: 1)
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(DeinitializeCounter.count, 2)
-    #else
       XCTAssertEqual(DeinitializeCounter.count, 1)
-    #endif
 
     dictionary.removeAll()
     XCTAssertEqual(DeinitializeCounter.count, 0)

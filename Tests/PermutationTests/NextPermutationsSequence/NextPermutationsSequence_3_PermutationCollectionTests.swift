@@ -7,7 +7,6 @@
 // 範囲外の添字は`NextPermutationsSequence_99_DeathTests`で固定する。
 // 等値・ハッシュ・表示は、要素の並びだけで決まる(2026-10-07から)。
 
-#if !COMPATIBLE_ATCODER_2025
 import PermutationModule
 import XCTest
 
@@ -63,4 +62,3 @@ final class NextPermutationsSequence_3_PermutationCollectionTests: XCTestCase {
     XCTAssertEqual(p[p.endIndex - 1], 2)
   }
 }
-#endif

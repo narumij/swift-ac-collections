@@ -20,7 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025
   @frozen
   /// A mutable view over a contiguous range of a red-black-tree set or multiset.
   ///
@@ -119,7 +118,6 @@
     }
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     extension RedBlackTreeKeyOnlyRangeView: Sequence {}
 
     extension RedBlackTreeKeyOnlyRangeView {
@@ -133,7 +131,6 @@
         return .init(start: _start, end: _end, tree: __tree_)
       }
     }
-  #endif
 
   extension RedBlackTreeKeyOnlyRangeView {
 
@@ -280,7 +277,6 @@
     }
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     extension RedBlackTreeKeyOnlyRangeView where _PayloadValue: Equatable {
 
       /// Returns whether this view and `other` contain equal elements in the same order.
@@ -330,7 +326,6 @@
         !lhs._isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
       }
     }
-  #endif
 
   #if swift(>=5.5)
     extension RedBlackTreeKeyOnlyRangeView: @unchecked Sendable
@@ -411,4 +406,3 @@
       return index == end
     }
   }
-#endif

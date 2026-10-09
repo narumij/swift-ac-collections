@@ -1,4 +1,4 @@
-#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+#if DEATH_TEST
   import Foundation
   import RedBlackTreeCollections
   import Testing

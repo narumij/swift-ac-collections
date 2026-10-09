@@ -215,10 +215,6 @@ let package = Package(
       name: "RedBlackTreeCollections",
       dependencies: additionalDependencies,
       path: "Sources/RedBlackTreeCollections",
-      exclude: [
-        "Documentation",
-        "Implements/Index/index_stale_check.md",
-      ],
       swiftSettings: _settings + [
         // .strictMemorySafety()
       ]),
@@ -236,9 +232,6 @@ let package = Package(
       name: "RedBlackTreeFixture",
       dependencies: ["RedBlackTreeCollections"],
       path: "Tests/RedBlackTreeFixture",
-      exclude: [
-        "Fixtures.md"
-      ],
       swiftSettings: _settings
     ),
 
@@ -288,9 +281,6 @@ let package = Package(
 
     .target(
       name: "OptionalArrayModule",
-      exclude: [
-        "Documentation"
-      ],
     ),
     .testTarget(
       name: "OptionalArrayModuleTests",
@@ -302,9 +292,6 @@ let package = Package(
 
     .target(
       name: "BareArrayModule",
-      exclude: [
-        "Documentation"
-      ],
     ),
     .testTarget(
       name: "BareArrayModuleTests",
@@ -317,9 +304,6 @@ let package = Package(
     .target(
       name: "PermutationModule",
       dependencies: [],
-      exclude: [
-        "Documentation"
-      ],
       swiftSettings: _settings + [
         .strictMemorySafety()
       ]

@@ -3,7 +3,6 @@ import XCTest
 
 final class RedBlackTreeMultiMapIndexRangeTests: RedBlackTreeTestCase {
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_distanceCountsDuplicatePositionsInBothDirections() {
       let multimap: RedBlackTreeMultiMap = [(0, "a"), (1, "b"), (1, "c"), (2, "d")]
 
@@ -135,7 +134,6 @@ final class RedBlackTreeMultiMapIndexRangeTests: RedBlackTreeTestCase {
         XCTAssertEqual(copy.count(forKey: 1), 2, "キー自体はcopyに存在する")
       }
     #endif
-  #endif
 
   /// index(_:offsetBy:) が指定距離のエントリを指すこと
   func test_index_offsetBy() {

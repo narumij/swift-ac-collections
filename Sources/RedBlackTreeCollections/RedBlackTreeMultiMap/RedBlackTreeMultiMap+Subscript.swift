@@ -20,7 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
 //    /// - Complexity: O(log *n*)
@@ -58,9 +57,7 @@
       }
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
     /// Accesses the element at the specified position.
@@ -78,4 +75,3 @@
       }
     }
   }
-#endif

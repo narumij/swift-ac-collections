@@ -20,7 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if true
   // 非常に重要なポイントなので元ソース尊重よりもわかりやすさを優先しつつ、
   // エクスキューズ的に#ifで元の名前をリスペクトする感じ？
   public protocol _BaseNode_KeyInterface: ~Copyable, _NodePtrType, _KeyType {
@@ -29,16 +28,6 @@
     // DictionaryやMultiMapではKeyに該当する
     @inlinable static func __get_value(_: _NodePtr) -> _Key
   }
-#else
-  // 型の名前にねじれがあるので注意
-  @usableFromInline
-  protocol _BaseNode_KeyInterface: ~Copyable, _NodePtrType & _KeyType & __node_value_type {
-    // ノードから比較用の値を取り出す。
-    // SetやMultisetではElementに該当する
-    // DictionaryやMultiMapではKeyに該当する
-    @inlinable static func __get_value(_: _NodePtr) -> __node_value_type
-  }
-#endif
 
 // 配列インデックス方式ではこれを経由する必要があるが、ポインタ方式では縛りがない
 public protocol _BaseNode_PayloadValueInterface: ~Copyable, _NodePtrType & _PayloadValueType {

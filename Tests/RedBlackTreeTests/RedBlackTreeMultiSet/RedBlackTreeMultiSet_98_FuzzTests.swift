@@ -13,7 +13,6 @@ private struct ReferenceMultiset {
   var sorted: [Int] { dict.flatMap { Array(repeating: $0.key, count: $0.value) }.sorted() }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeMultiSetFuzzTests: RedBlackTreeTestCase {
 
     func test_randomizedInsertAndEraseMatchesReferenceMultisetAndMaintainsTreeInvariant() {
@@ -70,4 +69,3 @@ private struct ReferenceMultiset {
       }
     }
   }
-#endif

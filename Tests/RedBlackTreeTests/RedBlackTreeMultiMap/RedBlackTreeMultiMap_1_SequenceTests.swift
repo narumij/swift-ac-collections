@@ -71,7 +71,6 @@ final class RedBlackTreeMultiMapSequenceTests: RedBlackTreeTestCase {
     XCTAssertTrue(multiMap.allSatisfy { $0.value == $0.key * 11 })
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_sortedAndReversed_followElementOrder() {
       let multiMap: RedBlackTreeMultiMap = [(2, 20), (1, 10), (1, 11), (3, 30)]
 
@@ -80,10 +79,8 @@ final class RedBlackTreeMultiMapSequenceTests: RedBlackTreeTestCase {
       XCTAssertEqual(multiMap.reversed().map(\.key), [3, 2, 1, 1])
       XCTAssertEqual(multiMap.reversed().map(\.value), [30, 20, 11, 10])
     }
-  #endif
 }
 
-#if !COMPATIBLE_ATCODER_2025
   /// 全走査と範囲走査がキー比較を行わないこと。走査が要素ごとの探索(O(N log N))に
   /// 落ちていないことを、利用者の`Comparable`から観測できる形で固定する。
   final class RedBlackTreeMultiMapTraversalComparisonCountTests: RedBlackTreeTestCase {
@@ -124,4 +121,3 @@ final class RedBlackTreeMultiMapSequenceTests: RedBlackTreeTestCase {
       XCTAssertEqual(CountingKey.count, afterViewCreation, "範囲走査はキー比較を行わないはず")
     }
   }
-#endif

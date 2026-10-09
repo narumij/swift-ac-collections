@@ -3,7 +3,6 @@ import XCTest
 
 /// `RedBlackTreeKeyValueRangeView`(`Dictionary`/`MultiMap`のRangeViewが返す型)の仕様。
 /// ジェネリックな共有Viewのため、代表としてDictionaryのインスタンスで検証する。
-#if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeKeyValueRangeViewTests: RedBlackTreeTestCase {
 
     func test_sorted_returnsElementsAlreadyInKeyOrder() {
@@ -138,4 +137,3 @@ import XCTest
       XCTAssertTrue(view.lexicographicallyPrecedes([(key: 1, value: "a"), (key: 2, value: "b"), (key: 3, value: "c"), (key: 4, value: "d")]))
     }
   }
-#endif

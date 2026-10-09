@@ -12,11 +12,7 @@ final class RedBlackTreeMultiSetIntegerElementTests: RedBlackTreeTestCase {
     }
 
     let original = set
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(set.removeAll(0), 0)
-    #else
       XCTAssertEqual(set.eraseMulti(0), 2)
-    #endif
     XCTAssertTrue(set.insert(42).inserted)
     XCTAssertEqual(Array(original), values.sorted())
     XCTAssertEqual(Array(set), [.min, -1, 1, 42, .max])
@@ -30,11 +26,7 @@ final class RedBlackTreeMultiSetIntegerElementTests: RedBlackTreeTestCase {
     let original: RedBlackTreeMultiSet<Int128> = [low, middle, high, middle]
     var copy = original
 
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(copy.removeAll(middle), middle)
-    #else
       XCTAssertEqual(copy.eraseMulti(middle), 2)
-    #endif
     copy.insert(.min)
     copy.insert(.max)
 

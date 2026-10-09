@@ -118,9 +118,7 @@ extension RedBlackTreeMultiSet.Base: _ScalarBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeMultiSet.Base: _BaseNode_NodeCompareProtocol {}
 extension RedBlackTreeMultiSet.Base: _BaseNode_SignedDistanceProtocol {}
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet: _RedBlackTreeKeyOnlyV2 {}
-#endif
 
 // MARK: - Inspecting a MultiSet
 
@@ -243,7 +241,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// Replaces the element at `i` when it is equivalent to `newMember`.
@@ -275,9 +272,7 @@ extension RedBlackTreeMultiSet {
     }
 
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// Inserts another occurrence, using `hint` as a suggested insertion position.
@@ -304,7 +299,6 @@ extension RedBlackTreeMultiSet {
       return __tree_.index(__r)
     }
   }
-#endif
 
 // MARK: - Remove
 
@@ -324,7 +318,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// Removes and returns one greatest element of the multiset.
@@ -340,7 +333,6 @@ extension RedBlackTreeMultiSet {
       return __tree_.___unchecked_remove_last()
     }
   }
-#endif
 
 extension RedBlackTreeMultiSet {
 
@@ -359,7 +351,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// Removes and returns one greatest element of the multiset.
@@ -376,9 +367,7 @@ extension RedBlackTreeMultiSet {
       return element
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// Removes the element at the given index of the set.
@@ -398,7 +387,6 @@ extension RedBlackTreeMultiSet {
       return __tree_._unchecked_remove(at: __p).payload
     }
   }
-#endif
 
 extension RedBlackTreeMultiSet {
 
@@ -420,7 +408,6 @@ extension RedBlackTreeMultiSet {
 
 // MARK: - Transformation
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// Removes the element at the given position from the set and returns the index of the next element.
@@ -456,9 +443,7 @@ extension RedBlackTreeMultiSet {
       assert(result.error == nil)
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// Removes a single element equivalent to the given key.
@@ -490,4 +475,3 @@ extension RedBlackTreeMultiSet {
       return __tree_.___erase_multi(member)
     }
   }
-#endif

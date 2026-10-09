@@ -117,7 +117,6 @@ extension RedBlackTreeMultiSet {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// Returns the difference of two multisets.
@@ -146,26 +145,3 @@ extension RedBlackTreeMultiSet {
       __tree_ = __tree_.___difference(other.__tree_)
     }
   }
-#endif
-
-#if COMPATIBLE_ATCODER_2025
-  extension RedBlackTreeMultiSet {
-
-    @available(*, deprecated, message: "This API is buggy and may behave incorrectly.")
-    @inlinable
-    public func difference(_ other: __owned RedBlackTreeMultiSet<Element>)
-      -> RedBlackTreeMultiSet<Element>
-    {
-      var result = self
-      result.formDifference(other)
-      return result
-    }
-
-    /// - Complexity: O(*n* + *m*)
-    @available(*, deprecated, message: "This API is buggy and may behave incorrectly.")
-    @inlinable
-    public mutating func formDifference(_ other: __owned RedBlackTreeMultiSet<Element>) {
-      __tree_ = __tree_.___difference(other.__tree_)
-    }
-  }
-#endif

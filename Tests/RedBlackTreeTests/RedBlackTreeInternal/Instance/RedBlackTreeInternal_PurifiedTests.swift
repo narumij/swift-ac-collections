@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/05/26.
 //
 
-#if DEBUG && !COMPATIBLE_ATCODER_2025
+#if DEBUG
   import XCTest
   @testable import RedBlackTreeCollections
 

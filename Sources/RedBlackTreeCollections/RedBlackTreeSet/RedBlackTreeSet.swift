@@ -118,9 +118,7 @@ extension RedBlackTreeSet.Base: _ScalarBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeSet.Base: _BaseNode_NodeCompareProtocol {}
 extension RedBlackTreeSet.Base: _BaseNode_SignedDistanceProtocol {}
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet: _RedBlackTreeKeyOnlyV2 {}
-#endif
 
 // MARK: - Inspecting a Set
 
@@ -262,7 +260,6 @@ extension RedBlackTreeSet {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Inserts an element, using `hint` as a suggested insertion position.
@@ -316,11 +313,9 @@ extension RedBlackTreeSet {
       return oldMember
     }
   }
-#endif
 
 // MARK: - Removal
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Removes and returns the least element of the set.
@@ -349,7 +344,6 @@ extension RedBlackTreeSet {
       return __tree_.___unchecked_remove_last()
     }
   }
-#endif
 
 extension RedBlackTreeSet {
 
@@ -368,7 +362,6 @@ extension RedBlackTreeSet {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Removes and returns the greatest element of the set.
@@ -385,7 +378,6 @@ extension RedBlackTreeSet {
       return element
     }
   }
-#endif
 
 extension RedBlackTreeSet {
 
@@ -404,7 +396,6 @@ extension RedBlackTreeSet {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Removes the element at the given index of the set.
@@ -424,7 +415,6 @@ extension RedBlackTreeSet {
       return __tree_._unchecked_remove(at: __p).payload
     }
   }
-#endif
 
 extension RedBlackTreeSet {
 
@@ -444,7 +434,6 @@ extension RedBlackTreeSet {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Removes the element at the given position from the set and returns the index of the next element.
@@ -480,4 +469,3 @@ extension RedBlackTreeSet {
       assert(result.error == nil)
     }
   }
-#endif

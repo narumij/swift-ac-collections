@@ -64,11 +64,7 @@ import XCTest
         tree.removeValue(forKey: v.key)
       }
       XCTAssertEqual(tree.count, 0)
-      #if !COMPATIBLE_ATCODER_2025
         XCTAssertEqual(tree._copyCount, 1)
-      #else
-        XCTAssertEqual(tree._copyCount, 0)
-      #endif
     }
 
     func testDict4() throws {
@@ -111,11 +107,7 @@ import XCTest
         if let lo = xy[1]?.lowerBound(i * N),
           let hi = xy[1]?.upperBound(i * N + N)
         {
-          #if COMPATIBLE_ATCODER_2025
-            xy[1]?.removeSubrange(lo..<hi)
-          #else
             _ = xy[1]?.erase(lo..<hi)
-          #endif
         }
       }
       XCTAssertEqual(xy[1]!.count, 0)
@@ -123,7 +115,6 @@ import XCTest
       XCTAssertEqual(loopCount, count / N)
     }
 
-    #if !COMPATIBLE_ATCODER_2025
       // Setの同名テストのKeyValue Range View版。KeyOnly / KeyValueの両Viewで同じCoW契約を確認する
       func testEraseWhereOnRangeViewOfSharedTreeDoesNotCopy() throws {
         var dictionary = RedBlackTreeDictionary(uniqueKeysWithValues: (0..<20).map { ($0, $0) })
@@ -149,6 +140,5 @@ import XCTest
         XCTAssertEqual(dictionary._copyCount, 0)
         XCTAssertEqual(range._copyCount, 1)
       }
-    #endif
   }
 #endif

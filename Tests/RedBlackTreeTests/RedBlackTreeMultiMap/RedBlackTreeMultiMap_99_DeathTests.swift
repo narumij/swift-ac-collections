@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/02/14.
 //
 
-#if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+#if DEATH_TEST
   import Foundation
   import RedBlackTreeCollections
   import Testing
@@ -42,7 +42,6 @@
 
   struct RedBlackTreeMultiMapDeathTests {
 
-    #if !COMPATIBLE_ATCODER_2025
       /// 空のMultiMapでも、他の木の要素を指すIndex範囲のeraseは検査で停止すること
       /// (空のときにCoWを省いても、範囲の検査は省かない)。
       @Test
@@ -56,7 +55,6 @@
           target.erase(lower..<upper)
         }
       }
-    #endif
 
     @Test
     func emptyStartIndexSubscript_terminatesProcess() async {
@@ -364,4 +362,4 @@
       expectNoInvalidMemoryAccess(result2)
     }
   }
-#endif  // DEATH_TEST && !COMPATIBLE_ATCODER_2025
+#endif

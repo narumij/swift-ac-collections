@@ -1,4 +1,3 @@
-#if !COMPATIBLE_ATCODER_2025
 import AcCollections
 import CppBehaviorReference
 import XCTest
@@ -795,4 +794,3 @@ extension MultiMapBehaviorComparisonTests {
         XCTAssertFalse(message.contains("\n  \(failing + 1): "))
     }
 }
-#endif

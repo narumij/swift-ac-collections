@@ -33,7 +33,6 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
     XCTAssertEqual(map.map(\.value), ["b", "c", "d"])
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_insertWithHint_handlesEquivalentGoodAndBadHints() {
       var map: RedBlackTreeMultiMap<Int, String> = [(1, "a"), (1, "c"), (3, "x")]
 
@@ -88,9 +87,8 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(map.first?.value, "new")
       XCTAssertEqual(copy.first?.value, "old")
     }
-  #endif
 
-  #if !COMPATIBLE_ATCODER_2025 && ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
+  #if ALLOW_CROSS_TREE_INDEX && !USE_LAZY_DETACH
     /// MultiMapはキー重複を許容するため、既存キーへの`index(inserting:)`も
     /// (Setのような一意挿入ではなく)常に新しいエントリとして挿入されること。
     func test_indexInserting_allowsDuplicateKeysAndErasesByIndex() {
@@ -128,7 +126,6 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
   #endif
 }
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -146,4 +143,3 @@ final class RedBlackTreeMultiMapInsertionTests: RedBlackTreeTestCase {
       XCTAssertEqual(m.map(\.value), ["a", "x", "b", "c"], "同値キーは既存の後ろに入る")
     }
   }
-#endif

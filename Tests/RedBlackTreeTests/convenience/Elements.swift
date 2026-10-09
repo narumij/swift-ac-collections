@@ -1,6 +1,5 @@
 import RedBlackTreeCollections
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
     subscript(bounds: Range<Element>) -> RedBlackTreeKeyOnlyRangeView<Self> {
       elements(in: bounds)
@@ -18,9 +17,7 @@ import RedBlackTreeCollections
       self[lowerBound(range.lowerBound)..<upperBound(range.upperBound)]
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
     subscript(bounds: Range<Element>) -> SubSequence {
       elements(in: bounds)
@@ -37,9 +34,7 @@ import RedBlackTreeCollections
       self[lowerBound(range.lowerBound)..<upperBound(range.upperBound)]
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
     subscript(bounds: Range<Key>) -> SubSequence {
       elements(in: bounds)
@@ -56,9 +51,7 @@ import RedBlackTreeCollections
       self[lowerBound(range.lowerBound)..<upperBound(range.upperBound)]
     }
   }
-#endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
     subscript(bounds: Range<Key>) -> SubSequence {
       elements(in: bounds)
@@ -75,4 +68,3 @@ import RedBlackTreeCollections
       self[lowerBound(range.lowerBound)..<upperBound(range.upperBound)]
     }
   }
-#endif

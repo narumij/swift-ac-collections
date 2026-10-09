@@ -201,7 +201,6 @@ extension UnsafeTreeV2 {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension UnsafeTreeV2 {
 
     @usableFromInline
@@ -220,4 +219,3 @@ extension UnsafeTreeV2 {
       .init(source: .init(nullptr: nullptr, _start: __first, _end: __last))
     }
   }
-#endif

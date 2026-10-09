@@ -79,11 +79,7 @@ final class RedBlackTreeSetPerformanceTests: RedBlackTreeTestCase {
     func testPerformanceEraseFullRange() throws {
       self.measure {
         var set = RedBlackTreeSet<Int>(0..<10_000_000)
-        #if COMPATIBLE_ATCODER_2025
-          set.removeSubrange(set.startIndex..<set.endIndex)
-        #else
           set.erase(set.startIndex..<set.endIndex)
-        #endif
       }
     }
 
@@ -179,37 +175,6 @@ final class RedBlackTreeSetPerformanceTests: RedBlackTreeTestCase {
     }
 
 
-    #if DEBUG && false
-      // <でinvalid判定する場合は以下のようにしたいが、invalid判定を削ったので、不要な仕様となった。
-      func testInvalid() throws {
-        var set: RedBlackTreeSet<Int> = .init(0..<2)
-        set.reserveCapacity(4)
-        XCTAssertGreaterThanOrEqual(set.capacity, 2)
-        let valid0 = RedBlackTreeSet<Int>.TreePointer(__storage: set._storage, pointer: 0)
-        let valid1 = RedBlackTreeSet<Int>.TreePointer(__storage: set._storage, pointer: 1)
-        let invalid2 = RedBlackTreeSet<Int>.TreePointer(__storage: set._storage, pointer: 2)
-        let invalid3 = RedBlackTreeSet<Int>.TreePointer(__storage: set._storage, pointer: 3)
-        XCTAssertTrue(valid0.isValid)
-        XCTAssertTrue(valid1.isValid)
-        XCTAssertFalse(invalid2.isValid)
-        XCTAssertFalse(invalid3.isValid)
-        let _ /* smoke */ = invalid2..<invalid3
-        let _ /* smoke */ = invalid3..<invalid2
-        let _ /* smoke */ = invalid2..<invalid2
-        let _ /* smoke */ = invalid2..<valid1
-        let _ /* smoke */ = valid1..<invalid2
-        XCTAssertFalse(invalid2 < invalid3)
-        XCTAssertFalse(invalid2 > invalid3)
-        XCTAssertFalse(invalid2 == invalid3)
-        //    XCTAssertFalse(invalid2 == invalid2) // 期待と異なるが、一旦目をつむる
-        XCTAssertFalse(valid1 < invalid3)
-        XCTAssertFalse(valid1 > invalid3)
-        XCTAssertFalse(valid1 == invalid3)
-        XCTAssertFalse(valid1 == invalid2)
-        XCTAssertFalse(set.endIndex < invalid2)
-        XCTAssertFalse(invalid2 < set.endIndex)
-      }
-    #endif
 
   #endif
 }

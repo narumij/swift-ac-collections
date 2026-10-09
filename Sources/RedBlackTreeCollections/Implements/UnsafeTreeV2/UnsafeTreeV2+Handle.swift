@@ -25,17 +25,6 @@ extension UnsafeTreeV2 where Base: ScalarValueTrait {
   @usableFromInline
   typealias Handle = UnsafeTreeV2KeyOnlyHandle<UnsafeTreeV2<Base>._PayloadValue>
 
-  #if false
-    @inlinable
-    @inline(__always)
-    internal func read<R>(_ body: (Handle) throws -> R) rethrows -> R {
-      try _buffer.withUnsafeMutablePointers { header, elements in
-        let handle = Handle(
-          header: header, isMulti: isMulti)
-        return try body(handle)
-      }
-    }
-  #endif
 
   @inlinable
   @inline(__always)
@@ -53,16 +42,6 @@ extension UnsafeTreeV2 where Base: PairValueTrait {
   @usableFromInline
   typealias KeyValueHandle = UnsafeTreeV2KeyValueHandle<_Key, Base._MappedValue>
 
-  #if false
-    @inlinable
-    @inline(__always)
-    internal func read<R>(_ body: (KeyValueHandle) throws -> R) rethrows -> R {
-      try _buffer.withUnsafeMutablePointers { header, elements in
-        let handle = KeyValueHandle(header: header, isMulti: isMulti)
-        return try body(handle)
-      }
-    }
-  #endif
 
   @inlinable
   @inline(__always)

@@ -5,7 +5,7 @@
 //  Created by narumij on 2026/02/08.
 //
 
-#if DEBUG && !COMPATIBLE_ATCODER_2025
+#if DEBUG
   import XCTest
   import RedBlackTreeCollections
 
@@ -439,7 +439,6 @@
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -454,4 +453,3 @@
       XCTAssertEqual(c.distance(from: lowerBound(4), to: lowerBound(4)), 0)
     }
   }
-#endif

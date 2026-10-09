@@ -58,7 +58,6 @@ final class RedBlackTreeDictionarySearchTests: RedBlackTreeTestCase {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -73,4 +72,3 @@ final class RedBlackTreeDictionarySearchTests: RedBlackTreeTestCase {
       XCTAssertEqual(d.find(9), d.endIndex)
     }
   }
-#endif

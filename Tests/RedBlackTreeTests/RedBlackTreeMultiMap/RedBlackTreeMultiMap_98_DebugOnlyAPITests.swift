@@ -6,7 +6,7 @@
 //  公開仕様の根拠にしないため、番号付きのTest as Specから移した（2026-10-07）。
 //
 
-#if DEBUG && !COMPATIBLE_ATCODER_2025
+#if DEBUG
   import RedBlackTreeCollections
   import XCTest
 

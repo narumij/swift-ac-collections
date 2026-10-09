@@ -44,12 +44,10 @@ extension UnsafeTreeV2 {
     return true
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     @inlinable
     internal mutating func _strongEnsureUnique() {
       return ensureUnique()
     }
-  #endif
 }
 
 extension UnsafeTreeV2 {

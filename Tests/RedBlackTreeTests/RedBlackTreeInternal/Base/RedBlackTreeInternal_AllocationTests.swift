@@ -109,11 +109,6 @@ final class AllocationTests: RedBlackTreeTestCase {
           let C = A.__tree_
           defer { _fixLifetime(C) }
           A.__tree_.ensureUnique()
-          #if false
-            // シングルトンバッファを使っているので、コピーが発生するようになった
-            // 弱ユニーク化は発火しないが
-            XCTAssertEqual(A._copyCount, 0)
-          #endif
           A.__tree_._strongEnsureUnique()
           // 強ユニーク化は発火すること
           XCTAssertEqual(A._copyCount, 1)
@@ -145,5 +140,5 @@ final class AllocationTests: RedBlackTreeTestCase {
       XCTAssertTrue(a.__tree_.isReadOnly)
     }
 
-  #endif  // DEBUG
+  #endif
 }

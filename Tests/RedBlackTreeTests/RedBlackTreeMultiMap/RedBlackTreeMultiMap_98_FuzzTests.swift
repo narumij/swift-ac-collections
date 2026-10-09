@@ -13,7 +13,6 @@ private struct ReferenceMultiMap {
   var sortedKeys: [Int] { dict.flatMap { Array(repeating: $0.key, count: $0.value) }.sorted() }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   final class RedBlackTreeMultiMapFuzzTests: RedBlackTreeTestCase {
 
     func test_randomizedInsertAndEraseMatchesReferenceMultiMapAndMaintainsTreeInvariant() {
@@ -75,4 +74,3 @@ private struct ReferenceMultiMap {
       }
     }
   }
-#endif

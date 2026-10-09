@@ -29,11 +29,7 @@ final class RedBlackTreeMultiMapIntegerKeyTests: RedBlackTreeTestCase {
   private func eraseAll<Key: FixedWidthInteger, Value>(
     _ key: Key, from map: inout RedBlackTreeMultiMap<Key, Value>
   ) -> Int {
-    #if COMPATIBLE_ATCODER_2025
-      return map.removeAll(forKey: key)
-    #else
       return map.eraseMulti(key)
-    #endif
   }
 
   private func checkReadAndWrite<Key: FixedWidthInteger, Value: Equatable>(

@@ -1,4 +1,4 @@
-#if DEBUG && !COMPATIBLE_ATCODER_2025
+#if DEBUG
   @testable import RedBlackTreeCollections
   import XCTest
 

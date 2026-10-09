@@ -220,7 +220,6 @@ extension RedBlackTreeSetSetAlgebraTests {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -243,4 +242,3 @@ extension RedBlackTreeSetSetAlgebraTests {
       XCTAssertEqual(Array(a), [1, 3])
     }
   }
-#endif

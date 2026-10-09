@@ -4,7 +4,6 @@
   import RedBlackTreeCollections
 #endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Compatibility helper for tests that still exercise Bound lookup behavior.
@@ -35,7 +34,6 @@
       containsSubrange(bounds)
     }
   }
-#endif
 
 #if AC_COLLECTIONS_INTERNAL_CHECKS
   extension RedBlackTreeSet {
@@ -46,7 +44,6 @@
   }
 #endif
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Alias retained for tests shared with the AtCoder 2025 compatibility build.
@@ -67,7 +64,6 @@
       i.after
     }
   }
-#endif
 
 extension RedBlackTreeSet {
 
@@ -108,7 +104,7 @@ extension RedBlackTreeSet {
   }
 #endif
 
-#if DEBUG && !COMPATIBLE_ATCODER_2025
+#if DEBUG
   extension RedBlackTreeSet {
 
     /// - Complexity: O(1)

@@ -24,7 +24,6 @@
 
 // multimap, dictionary用のView, SubView
 
-#if !COMPATIBLE_ATCODER_2025
   @frozen
   /// A mutable view of mapped values in a contiguous dictionary or multimap range.
   ///
@@ -123,7 +122,6 @@
     }
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     extension RedBlackTreeMappedValuesView: Sequence {}
 
     extension RedBlackTreeMappedValuesView {
@@ -137,7 +135,6 @@
         return .init(start: _start, end: _end, tree: __tree_)
       }
     }
-  #endif
 
   extension RedBlackTreeMappedValuesView
   where Base: _BaseNode_KeyInterface, Base._Key: Comparable {
@@ -397,4 +394,3 @@
       return index == end
     }
   }
-#endif

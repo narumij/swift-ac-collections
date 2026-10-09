@@ -134,11 +134,7 @@ final class RedBlackTreeMultiMapPerformanceTests: RedBlackTreeTestCase {
       self.measure {
         var m: RedBlackTreeMultiMap<Int, Int> = .init(
           keysWithValues: (0..<1_000_000).map { ($0, $0) })
-        #if COMPATIBLE_ATCODER_2025
-          m.removeSubrange(m.startIndex..<m.endIndex)
-        #else
           _ = m.erase(m.startIndex..<m.endIndex)
-        #endif
       }
     }
 

@@ -1,4 +1,4 @@
-#if DEBUG && DEATH_TEST && !COMPATIBLE_ATCODER_2025
+#if DEBUG && DEATH_TEST
   @testable import RedBlackTreeCollections
   import Testing
 

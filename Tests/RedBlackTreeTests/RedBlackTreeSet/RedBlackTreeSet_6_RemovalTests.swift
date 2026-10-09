@@ -20,23 +20,17 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     XCTAssertFalse(set.contains(popped!), "取り出した要素はセットから削除されていること")
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     /// popFirst() が空セットの場合に nil を返すこと
     func test_popLast_empty() {
       var set = RedBlackTreeSet<Int>()
       let popped = set.popLast()
       XCTAssertNil(popped, "空セットの場合、popLast() は nil を返すこと")
     }
-  #endif
 
   /// popLast() / removeLast() が要素を正しく取り出し、セットが更新されること
   func test_popLast_nonEmpty() {
     var set = RedBlackTreeSet([1, 2, 3])
-    #if COMPATIBLE_ATCODER_2025
-      let popped = Optional(set.removeLast())
-    #else
       let popped = set.popLast()
-    #endif
     XCTAssertNotNil(popped, "空でないセットでは末尾の要素を返すこと")
     XCTAssertTrue([1, 2, 3].contains(popped!), "取り出した要素が元のセット内の要素であること")
     XCTAssertEqual(set.count, 2, "実行後、要素数が 1 減少すること")
@@ -91,26 +85,17 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     var set = RedBlackTreeSet([1, 2, 3, 4, 5])
     let start = set.index(after: set.startIndex)
     let end = set.index(start, offsetBy: 3)
-    #if COMPATIBLE_ATCODER_2025
-      set.removeSubrange(start..<end)
-    #else
       set.erase(start..<end)
-    #endif
     XCTAssertEqual(set.sorted(), [1, 5], "指定範囲の要素を削除すること")
   }
 
   /// removeAll() がセットを空にすること
   func test_removeAll() {
     var set = RedBlackTreeSet([1, 2, 3])
-    #if COMPATIBLE_ATCODER_2025
       set.removeAll()
-    #else
-      set.removeAll()
-    #endif
     XCTAssertTrue(set.isEmpty, "removeAll() 実行後、セットは空になること")
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     /// erase(_:) が空範囲と集合の境界を含むすべての半開範囲を正しく削除すること
     func test_erase_eachBoundedRange() {
       let source = [1, 3, 5, 7, 9]
@@ -135,7 +120,6 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
       XCTAssertTrue(set.isEmpty)
       XCTAssertEqual(set.capacity, capacity)
     }
-  #endif
 
   /// removeAll(keepingCapacity:) が保持していた参照型要素を正しく解放すること(二重解放やリークがないこと)
   func test_removeAllKeepingCapacity_releasesRetainedReferenceElements() {
@@ -188,24 +172,14 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
     _ = set.popFirst()
     XCTAssertEqual(DeinitializeCounter.count, 5)
 
-    #if !COMPATIBLE_ATCODER_2025
       _ = set.popLast()
       XCTAssertEqual(DeinitializeCounter.count, 4)
-    #endif
 
     _ = set.remove(DeinitializeCounter(num: 2))
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(DeinitializeCounter.count, 4, "removeで検索用に新たに作った一時要素も、実際に削除された既存要素も両方解放されること")
-    #else
       XCTAssertEqual(DeinitializeCounter.count, 3, "removeで検索用に新たに作った一時要素も、実際に削除された既存要素も両方解放されること")
-    #endif
 
     _ = set.removeFirst()
-    #if COMPATIBLE_ATCODER_2025
-      XCTAssertEqual(DeinitializeCounter.count, 3)
-    #else
       XCTAssertEqual(DeinitializeCounter.count, 2)
-    #endif
 
     set.removeAll()
     XCTAssertEqual(DeinitializeCounter.count, 0)
@@ -221,10 +195,8 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
       XCTAssertNil(set.popFirst())
       XCTAssertEqual(set._copyCount, 0)
 
-      #if !COMPATIBLE_ATCODER_2025
         XCTAssertNil(set.popLast())
         XCTAssertEqual(set._copyCount, 0)
-      #endif
 
       XCTAssertNil(set.remove(1))
       XCTAssertEqual(set._copyCount, 0)
@@ -232,7 +204,6 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
       set.removeAll(keepingCapacity: true)
       XCTAssertEqual(set._copyCount, 0, "空集合へのremoveAll(keepingCapacity: true)は退避コピーを発生させないはず")
 
-      #if !COMPATIBLE_ATCODER_2025
         var predicateCalled = false
         set.erase(where: { _ in
           predicateCalled = true
@@ -240,7 +211,6 @@ final class RedBlackTreeSetRemoveTests: RedBlackTreeTestCase {
         })
         XCTAssertFalse(predicateCalled, "空の集合へのerase(where:)は述語を呼ばないはず")
         XCTAssertEqual(set._copyCount, 0, "空の集合へのerase(where:)は退避コピーを発生させないはず")
-      #endif
     #endif
   }
 
@@ -299,28 +269,10 @@ extension RedBlackTreeSetRemoveTests {
     //    }(), "removeLast() should preconditionFailure when empty")
   }
 
-  #if COMPATIBLE_ATCODER_2025
-    /// removeLastが1要素のとき正しく動作すること
-    func test_removeLast_singleElement() {
-      var set = RedBlackTreeSet([20])
-      let removed = set.removeLast()
-      XCTAssertEqual(removed, 20)
-      XCTAssertTrue(set.isEmpty)
-    }
-
-    /// removeLastが複数要素のとき末尾要素を削除すること
-    func test_removeLast_multipleElements() {
-      var set = RedBlackTreeSet([4, 5, 6])
-      let removed = set.removeLast()
-      XCTAssertEqual(removed, 6)
-      XCTAssertEqual(set.sorted(), [4, 5])
-    }
-  #endif
 }
 
 extension RedBlackTreeSetRemoveTests {
 
-  #if !COMPATIBLE_ATCODER_2025
     /// erase(_:) が指定インデックスの要素を削除し、次のインデックスを返すこと
     func test_erase_index_returnsNext() {
       var set = RedBlackTreeSet([1, 2, 3])
@@ -338,7 +290,6 @@ extension RedBlackTreeSetRemoveTests {
 
       XCTAssertEqual(set.sorted(), [1, 3, 5])
     }
-  #endif
 
   /// remove後にindexが無効化されること
   func test_isValid_index_afterRemoval() {
@@ -359,23 +310,4 @@ extension RedBlackTreeSetRemoveTests {
 
 extension RedBlackTreeSetRemoveTests {
 
-  #if COMPATIBLE_ATCODER_2025
-    /// SubSequence内で削除後にindexが無効化されること
-    func test_isValid_index_inSubSequence_afterRemoval() throws {
-      // 事前条件: 集合に[1, 2, 3, 4, 5]
-      var set = RedBlackTreeSet([1, 2, 3, 4, 5])
-      let sub = set[set.index(after: set.startIndex)..<set.index(before: set.endIndex)]  // [2,3,4]
-      let subIndex = sub.startIndex  // index pointing to 2
-
-      // 実行: 削除（2を削除する）
-      let element = sub[subIndex]
-      XCTAssertEqual(element, 2)
-      _ = set.remove(element)
-
-      // 事後条件:
-      // - 削除したindexは無効になること
-      throw XCTSkip("CoWの挙動変更のため")
-      XCTAssertFalse(sub.isValid(index: subIndex), "削除後、SubSequenceのindexは無効になること")
-    }
-  #endif
 }

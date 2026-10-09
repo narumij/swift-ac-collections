@@ -20,26 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025 && false
-  // 追加するか検討
-  extension RedBlackTreeMultiSet {
 
-    /// - Complexity: O(log *n*)
-    @inlinable
-    public subscript(element: Element) -> View {
-      @inline(__always) get {
-        let (lower, upper) = ___equal_range(element)
-        return self[unchecked: .init(lowerBound: lower.sealed, upperBound: upper.sealed)]
-      }
-      @inline(__always) _modify {
-        let (lower, upper) = ___equal_range(element)
-        yield &self[unchecked: .init(lowerBound: lower.sealed, upperBound: upper.sealed)]
-      }
-    }
-  }
-#endif
-
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiSet {
 
     /// Accesses the element at the specified position.
@@ -54,4 +35,3 @@
       unsafeAddress { __tree_._unsafeAddress(position) }
     }
   }
-#endif

@@ -14,7 +14,6 @@ extension RedBlackTreeSet {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     @inlinable
@@ -27,4 +26,3 @@ extension RedBlackTreeSet {
       erase(lowerBound(range.lowerBound)..<upperBound(range.upperBound))
     }
   }
-#endif

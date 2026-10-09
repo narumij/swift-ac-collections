@@ -22,7 +22,6 @@
 
 // MARK: - Codable
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap: Encodable where Key: Encodable, Value: Encodable {
 
     /// Encodes the elements of this multimap into the given encoder in an unkeyed
@@ -59,4 +58,3 @@
       self.init(__tree_: try .createMulti(from: decoder))
     }
   }
-#endif

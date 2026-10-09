@@ -22,7 +22,6 @@
 
 // MARK: - Codable
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet: Encodable where Element: Encodable {
     
     /// Encodes the elements of this set into the given encoder in an unkeyed
@@ -56,4 +55,3 @@
       self.init(__tree_: try .create(from: decoder))
     }
   }
-#endif

@@ -1,4 +1,3 @@
-#if !COMPATIBLE_ATCODER_2025
   import Foundation
   import RedBlackTreeCollections
   import XCTest
@@ -34,4 +33,3 @@
       XCTAssertTrue(decoded.isEmpty)
     }
   }
-#endif

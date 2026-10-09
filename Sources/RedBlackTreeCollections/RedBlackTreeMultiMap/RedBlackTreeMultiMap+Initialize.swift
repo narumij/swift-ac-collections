@@ -33,7 +33,6 @@ extension RedBlackTreeMultiMap {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeMultiMap {
 
     /// Creates a multimap containing every key-value pair in the given sequence.
@@ -75,7 +74,6 @@ extension RedBlackTreeMultiMap {
       self.init(__tree_: tree)
     }
   }
-#endif
 
 extension RedBlackTreeMultiMap {
   // Dictionaryからぱくってきたが、割と様子見

@@ -19,9 +19,7 @@ final class RedBlackTreeMultiMapSearchTests: RedBlackTreeTestCase {
 
     XCTAssertEqual(map.distance(from: lower, to: upper), 2)
     XCTAssertEqual(map[lower..<upper].map(\.value).sorted(), ["b", "c"])
-    #if !COMPATIBLE_ATCODER_2025
       XCTAssertEqual(map[map.equalRange(2)].map(\.value).sorted(), ["b", "c"])
-    #endif
   }
 
   func test_firstIndex_findsFirstEntryForKey() {
@@ -45,7 +43,6 @@ final class RedBlackTreeMultiMapSearchTests: RedBlackTreeTestCase {
     XCTAssertNil(empty.last)
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     func test_keySubscript_returnsEveryValueForKey() {
       let map: RedBlackTreeMultiMap = [("x", 10), ("x", 20), ("y", 30)]
 
@@ -53,10 +50,8 @@ final class RedBlackTreeMultiMapSearchTests: RedBlackTreeTestCase {
       XCTAssertEqual(Array(map["y"]), [30])
       XCTAssertTrue(map["z"].isEmpty)
     }
-  #endif
 }
 
-#if !COMPATIBLE_ATCODER_2025
   import RedBlackTreeCollections
   import XCTest
 
@@ -71,4 +66,3 @@ final class RedBlackTreeMultiMapSearchTests: RedBlackTreeTestCase {
       XCTAssertEqual(m.find(9), m.endIndex)
     }
   }
-#endif

@@ -115,9 +115,7 @@ extension RedBlackTreeDictionary.Base: _PairBasePayload_KeyProtocol_ptr {}
 extension RedBlackTreeDictionary.Base: _BaseNode_NodeCompareProtocol {}
 extension RedBlackTreeDictionary.Base: _BaseNode_SignedDistanceProtocol {}
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary: _RedBlackTreeKeyValuesV2 {}
-#endif
 
 // MARK: - Inspecting a MultiMap
 
@@ -259,7 +257,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// Inserts a key-value pair, using `hint` as a suggested insertion position.
@@ -329,7 +326,6 @@ extension RedBlackTreeDictionary {
       return Base.__element_(oldMember)
     }
   }
-#endif
 
 extension RedBlackTreeDictionary {
 
@@ -355,7 +351,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// Updates or inserts a value, using `hint` as a suggested insertion position.
@@ -387,7 +382,6 @@ extension RedBlackTreeDictionary {
       return oldMember
     }
   }
-#endif
 
 // MARK: - Remove
 
@@ -407,7 +401,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// Removes and returns the key-value pair with the greatest key.
@@ -423,7 +416,6 @@ extension RedBlackTreeDictionary {
       return __tree_.___unchecked_remove_last().map { Base.__element_($0) }
     }
   }
-#endif
 
 extension RedBlackTreeDictionary {
 
@@ -442,7 +434,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// Removes and returns the key-value pair with the greatest key.
@@ -459,7 +450,6 @@ extension RedBlackTreeDictionary {
       return element
     }
   }
-#endif
 
 extension RedBlackTreeDictionary {
 
@@ -524,7 +514,6 @@ extension RedBlackTreeDictionary {
   }
 }
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeDictionary {
 
     /// Removes the key-value pair at the given position from the dictionary and returns the index of the next element.
@@ -560,4 +549,3 @@ extension RedBlackTreeDictionary {
       assert(result.error == nil)
     }
   }
-#endif

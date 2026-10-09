@@ -34,16 +34,4 @@ func EDPC_J(N: Int) {
     return rec(i, j, k)
   }
 
-  #if false
-    var (one, two, three) = (0, 0, 0)
-    for _ in 0..<N {
-      switch Int.stdin {
-      case 1: one += 1
-      case 2: two += 1
-      default: three += 1
-      }
-    }
-
-    print(rec(one, two, three))
-  #endif
 }

@@ -20,7 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025
   @frozen
   /// A mutable view over a contiguous range of a red-black-tree dictionary or multimap.
   ///
@@ -114,7 +113,6 @@
     }
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     extension RedBlackTreeKeyValueRangeView: Sequence {}
 
     extension RedBlackTreeKeyValueRangeView {
@@ -128,7 +126,6 @@
         return .init(start: _start, end: _end, tree: __tree_)
       }
     }
-  #endif
 
   extension RedBlackTreeKeyValueRangeView {
 
@@ -151,28 +148,6 @@
     }
   }
 
-  #if !COMPATIBLE_ATCODER_2025
-    #if false
-      // 標準に倣うと、Collections適合が必要なのでこちらになる
-      extension RedBlackTreeKeyValueRangeView {
-
-        /// A sequence containing the keys in this view, in ascending order.
-        ///
-        /// - Complexity: O(1) to create the sequence.
-        @inlinable
-        public var keys: [Key] {
-          let (_start, _end) = _raw_range
-          return __tree_.___copy_to_array(_start, _end) { Base.__key_($0) }
-        }
-
-        /// - Complexity: O(1)
-        @inlinable
-        public var values: [Value] {
-          let (_start, _end) = _raw_range
-          return __tree_.___copy_to_array(_start, _end) { Base.__mapped_value_($0) }
-        }
-      }
-    #else
       // そもそもCollections適合を捨ててるので、こちらで十分だが、迷っている
       extension RedBlackTreeKeyValueRangeView {
 
@@ -222,8 +197,6 @@
           }
         }
       }
-    #endif
-  #endif
 
   // MARK: -
 
@@ -351,7 +324,6 @@
     }
   }
 
-  #if !COMPATIBLE_ATCODER_2025
     extension RedBlackTreeKeyValueRangeView where _PayloadValue: Equatable {
 
       /// Returns whether this view and `other` contain equal key-value pairs in the same order.
@@ -401,7 +373,6 @@
         !lhs._isIdentical(to: rhs) && lhs.lexicographicallyPrecedes(rhs)
       }
     }
-  #endif
 
   #if swift(>=5.5)
     extension RedBlackTreeKeyValueRangeView: @unchecked Sendable
@@ -482,4 +453,3 @@
       return index == end
     }
   }
-#endif

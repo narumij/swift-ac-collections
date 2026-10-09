@@ -20,7 +20,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// Accesses the element at the specified position.
@@ -35,4 +34,3 @@
       unsafeAddress { __tree_._unsafeAddress(position) }
     }
   }
-#endif

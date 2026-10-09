@@ -141,7 +141,6 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
       XCTAssertNil(result.lastBitmap)
     }
 
-    #if !COMPATIBLE_ATCODER_2025
       func testNodeKeyRangeContainment() {
         typealias SUT = _NodeKey<RedBlackTreeSet<Int>.Base>
         let set: RedBlackTreeSet = [0, 1, 2, 3, 4]
@@ -170,7 +169,6 @@ final class RedBlackTreeComparatorsTests: RedBlackTreeTestCase {
         XCTAssertFalse(contains(outerFirst: 0, outerLast: 3, innerFirst: 1, innerLast: 4))
         XCTAssertFalse(contains(outerFirst: 0, outerLast: 4, innerFirst: 3, innerLast: 2))
       }
-    #endif
   #endif
 
   #if DEBUG

@@ -3,7 +3,6 @@ import XCTest
 
 final class RedBlackTreeSetIndexRangeTests: RedBlackTreeTestCase {
 
-  #if !COMPATIBLE_ATCODER_2025
     func testIsElementAndIsEndDistinguishElementFromEnd() {
       let set: RedBlackTreeSet = [0, 1, 2]
 
@@ -120,7 +119,6 @@ final class RedBlackTreeSetIndexRangeTests: RedBlackTreeTestCase {
       #endif
       XCTAssertEqual(b.sorted(), Array(1..<19))
     }
-  #endif
 
   /// formIndex(after:)/(before:) がindex(after:)/(before:)と同じ順序で全要素を辿り、境界で正しく停止すること
   func testFormIndexAfterAndBeforeMatchIndexAfterAndBeforeTraversal() {

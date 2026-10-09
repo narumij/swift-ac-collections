@@ -32,11 +32,7 @@
       let r = __right_ == .nullptr ? nil : __right_.pointee.___tracking_tag
       let p = __parent_ == .nullptr ? nil : __parent_.pointee.___tracking_tag
       let color = __is_black_ ? "B" : "R"
-      #if DEBUG || true
         let rc = ___recycle_count
-      #else
-        let rc = -1
-      #endif
 
       return """
         - node[\(id)] \(color)

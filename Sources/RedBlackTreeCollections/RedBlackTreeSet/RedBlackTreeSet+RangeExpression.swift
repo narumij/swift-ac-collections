@@ -22,7 +22,6 @@
 
 // MARK: -
 
-#if !COMPATIBLE_ATCODER_2025
   extension RedBlackTreeSet {
 
     /// A mutable view over a contiguous range of this set.
@@ -321,4 +320,3 @@
       return .init(.init(lowerBound: ___index(lower), upperBound: ___index(upper)))
     }
   }
-#endif

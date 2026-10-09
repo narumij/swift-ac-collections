@@ -8,14 +8,14 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: あり**
+**実行中ジョブ: なし（2026-10-09 11:40 JSTまで停止）**
 
-- 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: なし。`GRAPH-004` fallbackのPermutation buffer access-path smell checkは結果を返却済み
-  （2026-10-09、`Maintanance/Graph/AI_GRAPH_SMELL_NOTES.md`末尾、Codex受入待ち）。
+- 継続ジョブ: Claude専用task graph DBの独立試験は、ユーザー指示により11:40まで停止。
+- 新規bounded assignment: 11:40まで停止。`GRAPH-004` fallbackのPermutation buffer access-path smell checkは
+  2026-10-09にCodexが受入済み。
 - 本線の現在状態: `0.5.0` tag後の`prepare/compatible/2`統合、互換defineと通常source排他、
   Debug・Release全test、互換branchのCI整理、remote pushまで完了。互換性能計測は行わない。
-  次の製品作業は新しい中間ゴールのユーザー判断待ちで、現行smell調査以外の追加assignmentはない。
+  次の製品作業は新しい中間ゴールのユーザー判断待ちで、追加assignmentはない。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
@@ -47,6 +47,11 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 source、test、benchmark、workflow、Registry、他の正本文書は変更しない。buildやbenchmark実行は不要。
 公開契約、性能方針、実装修正の判断が必要になった場合は決めずに候補として止める。別のsmellや対象領域を
 見つけても今回へ追加しない。
+
+Codex acceptance: 2026-10-09、3段のアクセス経路は公開契約、内部変更口、unsafe境界を分けるために
+必要な構造であり、構造上のsmellではないとの結論を受入。残るのはgetterの`@inline(__always)`に
+tuning intentが残っていない記録上のsmellである。現在の中間ゴールへ直接寄与せず、性能方針の判断も
+含むため独立taskは起動しない。候補は`AI_GRAPH_SMELL_NOTES.md`の観測記録に保持する。
 
 ## Completed bounded assignment: Permutation benchmark bisection
 

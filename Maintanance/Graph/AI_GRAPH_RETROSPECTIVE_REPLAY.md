@@ -316,3 +316,9 @@ Task precedenceへGate列を追加し、現行`ACTIVE` taskを始点または終
 Codex用graph DBと共有smell判定スキームを継続しないとのユーザー判断により、RP-19 readiness fixtureと
 Gate段階移行の完成判定は不要になった。pilotで確定した`START` / `COMPLETE`の意味と既存fixtureは保持するが、
 未分類辺をDBのために全件移行する作業は行わない。Registryで新規・更新する辺には、引き続き確定したGateを付ける。
+
+### 同期位置としての名称変更（2026-10-09）
+
+ユーザーとCodexは、task依存が同期処理であり、「はじめに待つ」か「終わりに待つ」かを表すものとして、
+現行名称を`Barrier`列の`HEAD` / `LAST`へ変更した。`HEAD`は旧`START`、`LAST`は旧`COMPLETE`と同じ意味を
+持つ。この節より前の`Gate`、`START`、`COMPLETE`表記は、採用時点の履歴として保持する。

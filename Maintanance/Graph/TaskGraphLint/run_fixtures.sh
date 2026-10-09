@@ -18,7 +18,7 @@ fi
 
 grep -q 'dangling_prerequisite' "$invalid_output"
 grep -q 'self_dependency' "$invalid_output"
-grep -q 'invalid_gate' "$invalid_output"
+grep -q 'invalid_barrier' "$invalid_output"
 grep -q 'dependency_cycle' "$invalid_output"
 grep -q 'TASK_GRAPH_LINT: FAIL' "$invalid_output"
 

@@ -57,7 +57,7 @@ CREATE TABLE task (
 CREATE TABLE precedence (
   successor TEXT NOT NULL,
   prerequisite TEXT NOT NULL,
-  gate TEXT NOT NULL,
+  barrier TEXT NOT NULL,
   constraint_text TEXT NOT NULL
 );
 
@@ -87,15 +87,15 @@ FROM precedence
 GROUP BY successor, prerequisite
 HAVING COUNT(*) > 1
 UNION ALL
-SELECT 'ERROR', 'invalid_gate',
-       successor || ' -> ' || prerequisite || ': ' || gate
+SELECT 'ERROR', 'invalid_barrier',
+       successor || ' -> ' || prerequisite || ': ' || barrier
 FROM precedence
-WHERE gate NOT IN ('START', 'COMPLETE', 'UNCLASSIFIED')
+WHERE barrier NOT IN ('HEAD', 'LAST', 'UNCLASSIFIED')
 UNION ALL
-SELECT 'WARNING', 'unclassified_gate',
+SELECT 'WARNING', 'unclassified_barrier',
        successor || ' -> ' || prerequisite
 FROM precedence
-WHERE gate = 'UNCLASSIFIED'
+WHERE barrier = 'UNCLASSIFIED'
 UNION ALL
 SELECT 'WARNING', 'conditional_prerequisite',
        p.successor || ' -> ' || p.prerequisite
@@ -145,7 +145,7 @@ SQL
 
 error_count=$(sqlite3 :memory: <<SQL
 CREATE TABLE task (id TEXT PRIMARY KEY, state TEXT, owner TEXT, item TEXT, restart_condition TEXT);
-CREATE TABLE precedence (successor TEXT, prerequisite TEXT, gate TEXT, constraint_text TEXT);
+CREATE TABLE precedence (successor TEXT, prerequisite TEXT, barrier TEXT, constraint_text TEXT);
 .mode tabs
 .import '$work_dir/tasks.tsv' task
 .import '$work_dir/precedence.tsv' precedence
@@ -155,7 +155,7 @@ direct_error(value) AS (
   UNION ALL SELECT 1 FROM precedence p LEFT JOIN task t ON t.id = p.prerequisite WHERE t.id IS NULL
   UNION ALL SELECT 1 FROM precedence WHERE successor = prerequisite
   UNION ALL SELECT 1 FROM precedence GROUP BY successor, prerequisite HAVING COUNT(*) > 1
-  UNION ALL SELECT 1 FROM precedence WHERE gate NOT IN ('START', 'COMPLETE', 'UNCLASSIFIED')
+  UNION ALL SELECT 1 FROM precedence WHERE barrier NOT IN ('HEAD', 'LAST', 'UNCLASSIFIED')
 ),
 walk(start, current, path, cycle) AS (
   SELECT successor, prerequisite, '|' || successor || '|' || prerequisite || '|', successor = prerequisite

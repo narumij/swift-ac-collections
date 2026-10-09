@@ -7,10 +7,11 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（BareArray Test as Specificationポリッシング受入済み）**
+**実行中ジョブ: あり — BareArray品質評価初版（essential-only例外）**
 
 - 継続ジョブ: なし。
-- 新規bounded assignment: なし。
+- 新規bounded assignment: `BARE-008`の品質評価初版。現在の直接ゴールを閉じる最後の入力であり、
+  ユーザーの明示的な再開・割当指示によりessential-only条件内で実行する。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
   Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
   停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。今回の一件は、
@@ -22,6 +23,36 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: BareArray quality assessment first edition
+
+`Maintanance/BareArrayModule/BareArrayAudit.md`の`BARE-008`に従い、BareArrayのISO/IEC 25010観点の品質評価
+初版を作成する。入力は公開29宣言・4適合のledger、確定した契約判断、番号付きTest as Specification、
+`Sources/BareArrayModule/BareArray.swift`とする。Permutation版とOptionalArray版の品質評価は構成と証拠の
+粒度を学ぶ参考にしてよいが、評価内容や結論を転写しない。
+
+成果は新規`Sources/BareArrayModule/Documentation/QualityAssessment-ISO25010.md`へ記録し、少なくとも次を
+含める。
+
+1. 対象、評価時点、根拠source・test・監査記録、評価対象外を明示する。
+2. ISO/IEC 25010の関連品質特性ごとに、確認済みの証拠、制約、不足、未確認を区別する。
+3. 公開契約と番号付きtest fileを対応付け、証明できる範囲を過大評価しない。
+4. ユーザードキュメントで説明すべき事項と、文書作業後の1.0判断へ送る事項を分離する。
+5. 性能基準、View寿命、storage再設計、strict memory safety、`let`所有者からのView変更は未決定として
+   既存の後続境界へ接続する。結論を補わず、新しい判断点があれば一判断ごとのtask候補として止める。
+6. 現時点でユーザードキュメント作業の入力として使えるかを、証拠に基づく所見として示す。公開採用、
+   1.0採用、品質水準の最終判断は行わない。
+
+source、test、公開契約、コメントドック、Registry、他module文書は変更しない。benchmark、新しい安全性実装、
+性能計測を開始しない。既存testの再実行は不要で、`BARE-005`の受入記録を証拠として使う。
+
+変更可能範囲は新規品質評価文書と、このassignmentの`Result`節だけ。完了時はジョブ状態を返却待ちへ変え、
+作成内容、根拠、未確認、判断task候補を`Result`へ記録し、git addまで行う。commit、Registry更新、品質評価の
+受入、ユーザードキュメント作業への引渡し判定はCodexへ残す。
+
+### Result
+
+返却待ち。
 
 ## Completed bounded assignment: BareArray Test as Specification polishing
 

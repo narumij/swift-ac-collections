@@ -54,7 +54,8 @@ checklistへ進むかを一つの判断として確定する。
   ユーザー指示による再訪までCodex担当の`DISCOVERY`として`FROZEN`。
 - `DOC-011`: Permutation通常版だけのコメントドック・レビュー用ドラフト作成と検証。2026-10-09完了。通常版のTest as
   Specificationへ照合し、Debug 32件＋Death Test 5件、Release 28件＋Death Test 5件、documentation
-  warning-as-error成功。内容の受入はユーザーレビュー待ち。`DOC-007`は解除せず、互換modeのsource・test・文書は変更していない。
+  warning-as-error成功。0.5.2段階ではユーザーがレビューできるドラフトの引き渡しを完了条件とし、内容の受入レビューと
+  Claude独立レビューは要求しない。`DOC-007`は解除せず、互換modeのsource・test・文書は変更していない。
 
 ### 3対象の実行分解（2026-10-09）
 

@@ -87,7 +87,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-003` | `FROZEN` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | `BARE-002`後、未決定と判明した場合だけ一つの位置づけを判断。決定済みなら不要として除外 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-004` | `FROZEN` | User | [DECISION] BareArray公開型・次元名の命名体系 | `BARE-003`後、型名、View名、次元property名とOptionalArray1Dとの整合について一つの命名体系を判断 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-005` | `FROZEN` | Claude | [EXECUTION] BareArrayModuleTestsのTest as Specification整理 | `BARE-002`受入時の再計算後、先行する契約判断・不足testが残らない状態で、既存testを番号付きTest as Specificationへ整理。コメントドック全件整備は含めない | `BareArrayModule/BareArrayAudit.md` |
-| `BARE-006` | `FROZEN` | Codex | [DISCOVERY] BareArray 1.0の性能測定設計 | ユーザードキュメント作業後、既存のRelease・同一環境・base/HEAD比較・30%回帰判定を前提に、対象操作・size・比較対象を整理。既存方式で閉じない製品判断が出た場合だけ停止 | `Tests/TESTING.md` |
+| `BARE-006` | `FROZEN` | Codex | [DISCOVERY] BareArray 1.0の性能測定設計 | ユーザードキュメント作業後、共通の測定基盤を入力に対象操作・size・比較対象・評価方法を設計し、BareArray固有の製品判断候補を分離 | `Tests/TESTING.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray 1.0の性能計測 | `BARE-006`で整理した対象操作・size・比較対象と既存の測定方式に従って計測し、1.0判断へ渡す | `Tests/TESTING.md` |
 | `ARRAY-001` | `FROZEN` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのTest as Specification前に必要な振り分けは`BARE-002`受入へ移管済み。全体再分解はユーザードキュメント作業後、再開時点の契約・品質評価を入力に行う | `StrictMemorySafetyReadiness.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
@@ -106,7 +106,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |
 | `RBT-026` | `RBT-014` | `SEQUENCE` | 現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する |
 | `BARE-005` | `BARE-002` | `SEQUENCE` | 契約棚卸しを受け入れ、先行する契約判断・不足testの有無を再計算した後に整理へ着手できる |
-| `BARE-007` | `BARE-006` | `SEQUENCE` | 既存方式に沿った対象操作・size・比較対象の測定設計を入力にして計測する |
+| `BARE-007` | `BARE-006` | `SEQUENCE` | BareArray固有の測定設計と、必要なら分離した製品判断の完了後に計測する |
 | `BARE-001` | `BARE-002` | `PARALLEL_JOIN` | 親監査と契約棚卸しは並行できるが、親監査の完了前に合流する |
 | `BARE-001` | `BARE-005` | `PARALLEL_JOIN` | 親監査は先行できるが、完了前にTest as Specification整理と合流する |
 

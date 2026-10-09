@@ -287,7 +287,7 @@ IDs remain permanent and must not be reused.
 | `OPS-018` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←Index完了のFlow分類 | `PARALLEL_JOIN`。品質調査とIndex契約を並行可能とし、1.0品質判定の確定前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-019` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←runtime-check再審査のFlow分類 | `PARALLEL_JOIN`。他の1.0品質作業と並行し、最終判定前にruntime-check実装の採否と合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-020` | `DONE` | User / Codex | [DECISION] Mapped Values判断←API照合のFlow分類 | `SEQUENCE`。現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-021` | `EXCLUDED` | User / Codex | [DECISION] BareArray性能計測←性能基準のFlow分類 | 共通条件は既存方式に従い、BareArray固有部分もCodexの測定設計調査へ変更したため、ユーザー判断を不要として除外。依存は`SEQUENCE` | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-021` | `EXCLUDED` | User / Codex | [DECISION] BareArray性能計測←性能基準のFlow分類 | Flow自体は`SEQUENCE`で判断不要。BareArray固有の測定設計はCodexの`DISCOVERY`とし、そこで見つかった製品判断だけを別taskへ分離する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-022` | `DONE` | User / Codex | [DECISION] BareArray親監査←契約棚卸しのFlow分類 | `PARALLEL_JOIN`。親監査と契約棚卸しを並行可能とし、親監査の完了前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-025` | `DONE` | User / Codex | [DECISION] Task precedence実行関係の名称 | 2026-10-09、列名を`Flow`、直列を`SEQUENCE`、並行可能で完了前に合流する関係を`PARALLEL_JOIN`とした | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-023` | `DONE` | User / Codex | [DECISION] BareArray親監査←Test as Specification整理のFlow分類 | `PARALLEL_JOIN`。親監査を先行可能とし、完了前にTest as Specification整理と合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |

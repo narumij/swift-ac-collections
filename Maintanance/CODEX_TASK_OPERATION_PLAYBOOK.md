@@ -335,8 +335,8 @@ agentの適性は固定的な人格評価ではなく、実績で更新する。
    - 1.0品質ゲート←Index契約完了: `PARALLEL_JOIN`。品質調査を並行し、1.0品質判定の確定前に合流する。
    - 1.0品質ゲート←runtime-check再審査: `PARALLEL_JOIN`。他の品質作業を並行し、最終判定前に合流する。
    - Mapped Values契約判断←API照合: `SEQUENCE`。現行APIを判断材料として揃えてから判断する。
-   - BareArray性能計測←性能測定設計: `SEQUENCE`。共通の測定条件は既存方式に従い、BareArray固有の
-     対象操作・size・比較対象はCodexの`DISCOVERY`で整理するため、ユーザー判断taskは不要とした。
+   - BareArray性能計測←性能測定設計: `SEQUENCE`。共通基盤は既存方式に従うが、BareArray固有の
+     対象操作・size・比較対象・評価方法はCodexの`DISCOVERY`で整理し、製品判断があれば個別に分離する。
    - BareArray親監査←契約棚卸し: `PARALLEL_JOIN`。親監査と棚卸しを並行し、完了前に合流する。
    - BareArray親監査←Test as Specification整理: `PARALLEL_JOIN`。親監査を先行可能とし、完了前に
      テスト整理と合流する。

@@ -97,6 +97,16 @@ Codexが確認してから再開する。
 名称、配置、契約対応をポリッシングする。Claudeへの割当は一時使用制限に従い、Codexの土台完成後まで
 開始しない。最終受入とRegistry更新はCodexが行う。
 
+Codex acceptance（2026-10-09）: 公開surface、初期化、要素access、View、indices、参照寿命、internal
+`clone()`、trap契約の8個の番号付き仕様群を受け入れた。Claudeは既存testを契約単位へ再配置し、名称と
+説明を整え、決定済み契約の不足Death Test 6件を追加した。Debug通常35件（clone 7件を含む）、Release
+通常28件、Death Testは両構成42件が成功した。CodexもXcode build-for-testingと通常test全体1451件成功・
+失敗0件を独立確認した。LinuxとDeath Testの独立再実行はCodex未確認で、Claudeの両構成成功記録を採用する。
+
+`let`所有者からView経由で変更する既存testは現行挙動の証拠として残したが、公開契約化の判断は行って
+いない。文書作業後の1.0判断で、`var`を使うtestへ変えるか契約として認めるかを再評価する。同一pointer・
+別shapeのViewは公開APIから構成不能であり、shape不一致trapは未証明のまま公開契約へ含めない。
+
 ## 品質評価初版の位置づけ
 
 品質評価初版は、コメントドックまたは利用者向け本文そのものではない。Test as Specificationで確定した

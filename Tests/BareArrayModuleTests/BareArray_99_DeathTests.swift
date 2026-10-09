@@ -5,10 +5,15 @@
 
   import BareArrayModule
 
-  /// `BareArray`系の`subscript`は、読み取り(`unsafeAddress`)では下限チェックを行うが、
-  /// 書き込み(`unsafeMutableAddress`)では下限チェックが抜けていたことがある(2026-10-03発見)。
-  /// このファイルは、負インデックスへの書き込みが読み取りと同じようにトラップすることを検証する。
+  /// 公開契約のうち、違反時にprocessを停止させるもの（trap契約）を検証する。
+  ///
+  /// - 要素subscriptと外側subscriptの位置は`0..<長さ`で、範囲外は読み・書きともtrapする。
+  ///   書き込み(`unsafeMutableAddress`)では下限チェックが抜けていたことがある(2026-10-03発見)。
+  /// - 外側subscriptのsetterは、同じ位置から返されたViewの書き戻しだけを受け付ける（BARE-014）。
+  /// - 公開initializerの次元は非負で、積が`Int`で表現可能でなければならない（BARE-015）。
   struct BareArray_99_DeathTests {
+
+    // MARK: - Element subscript bounds (BareArray)
 
     @Test func negativeIndexWrite_traps() async throws {
       await #expect(processExitsWith: .failure) {
@@ -38,6 +43,8 @@
       }
     }
 
+    // MARK: - Element subscript bounds (BareArray1DView)
+
     @Test func negativeIndexRead_traps_view1D() async throws {
       await #expect(processExitsWith: .failure) {
         let array = BareArray2D<Int>(repeating: 0, width: 3, height: 2)
@@ -52,12 +59,21 @@
       }
     }
 
+    @Test func upperBoundIndexRead_traps_view1D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let array = BareArray2D<Int>(repeating: 0, width: 3, height: 2)
+        _ = array[0][3]
+      }
+    }
+
     @Test func upperBoundIndexWrite_traps_view1D() async throws {
       await #expect(processExitsWith: .failure) {
         var array = BareArray2D<Int>(repeating: 0, width: 3, height: 2)
         array[0][3] = 1
       }
     }
+
+    // MARK: - Outer subscript bounds (views)
 
     @Test func negativeIndexGet_traps_view2D() async throws {
       await #expect(processExitsWith: .failure) {
@@ -87,7 +103,7 @@
       }
     }
 
-    // 所有2D〜4Dの外側subscript（View を返す側）の上下限（BARE-009）
+    // MARK: - Outer subscript bounds (owned arrays, BARE-009)
 
     @Test func negativeOuterIndex_traps_owned2D() async throws {
       await #expect(processExitsWith: .failure) {
@@ -131,7 +147,9 @@
       }
     }
 
-    // 外側subscriptのsetterは、連鎖writebackと異なるView全体代入を拒否する（BARE-014）
+    // MARK: - Outer subscript writeback (BARE-014)
+    //
+    // 連鎖書き込みのwriteback以外のView全体代入は契約違反。別storageのView、範囲外の位置を拒否する。
 
     @Test func foreignViewAssignment_traps_owned2D() async throws {
       await #expect(processExitsWith: .failure) {
@@ -175,7 +193,44 @@
       }
     }
 
-    // 公開initializerの次元は非負で、積がIntで表現可能でなければならない（BARE-015）
+    @Test func outOfRangeWritebackPosition_traps_owned2D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var array = BareArray2D<Int>(repeating: 0, width: 2, height: 2)
+        array[2] = array[1]
+      }
+    }
+
+    @Test func outOfRangeWritebackPosition_traps_owned3D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var array = BareArray3D<Int>(repeating: 0, width: 2, height: 2, depth: 2)
+        array[2] = array[1]
+      }
+    }
+
+    @Test func outOfRangeWritebackPosition_traps_owned4D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var array = BareArray4D<Int>(repeating: 0, size0: 2, size1: 2, size2: 2, size3: 2)
+        array[2] = array[1]
+      }
+    }
+
+    @Test func outOfRangeWritebackPosition_traps_view2D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let array = BareArray3D<Int>(repeating: 0, width: 2, height: 2, depth: 2)
+        var plane = array[0]
+        plane[2] = plane[1]
+      }
+    }
+
+    @Test func outOfRangeWritebackPosition_traps_view3D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let array = BareArray4D<Int>(repeating: 0, size0: 2, size1: 2, size2: 2, size3: 2)
+        var cube = array[0]
+        cube[2] = cube[1]
+      }
+    }
+
+    // MARK: - Initializer dimensions (BARE-015)
 
     @Test func negativeDimension_traps_1DRepeating() async throws {
       await #expect(processExitsWith: .failure) {

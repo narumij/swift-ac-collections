@@ -7,11 +7,10 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: あり — BareArray Test as Specificationポリッシング（essential-only例外）**
+**実行中ジョブ: なし（BareArray Test as Specificationポリッシング受入済み）**
 
-- 継続ジョブ: `BARE-005`のポリッシング。Codexが作成・検証・commit済みの番号付きtest構成を入力とする。
-- 新規bounded assignment: 下記一件だけ。現在の直接ゴールを止めず、ユーザーがClaudeを担当に指定したため
-  essential-only条件内で割り当てる。
+- 継続ジョブ: なし。
+- 新規bounded assignment: なし。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
   Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
   停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。今回の一件は、
@@ -24,7 +23,7 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
 
-## Active bounded assignment: BareArray Test as Specification polishing
+## Completed bounded assignment: BareArray Test as Specification polishing
 
 HEAD `09702717`を入力に、`Tests/BareArrayModuleTests`の番号付きtestをTest as Specificationとして
 ポリッシングする。Codexは三つの仕様群への改名、3D・4Dの`init(repeating:)` test追加、1D〜4D所有型の
@@ -48,7 +47,21 @@ storage再設計、strict memory safetyを開始しない。新しい製品判�
 
 ### Result
 
-返却待ち。
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `1b743630`。変更は`Tests/BareArrayModuleTests`とこの節だけ。git add済み（commitなし）。
+
+1. 再配置（契約単位、test本体は移動のみ）: `0_PublicSurface`（Sendable 1）、`1_Initialization`（repeating 1D〜4D、closureの格納順 1D〜4D、zero次元）、
+   `2_ElementAccess`（連鎖書き込み 1D〜4D、非対称寸法の全位置 2D〜4D）、`3_View`（View経由の共有 1D〜3D View、非対称offset 2D・3D View）、
+   `4_Indices`、`5_ReferenceLifetime`（`Box`をclass内private型へ集約）。旧`1_PublicContract`は`2_ElementAccess`へ`git mv`。
+2. 名前: `Slice`の旧名を`View`へ（例`testBareArray2DViewWritesReflectInOwnerStorage`）、`InitializerClosure`→`ClosureFillsStorageInOrder`等。各classに証明する契約の短い説明を付けた。
+3. `6_Clone`→`98_CloneTests`へ改名。`clone()`は公開宣言ではなく`internal`（sourceは`#if DEBUG`ではない）で、`Tests/CLAUDE.md`の「実装testは`_98_*`」に従った。
+   testの`#if DEBUG`は`@testable import`のためで妥当。`99_Death`はtrap契約として妥当。古い冒頭コメント（負indexの書き込みだけ）を三契約の説明へ更新し`MARK`で区分。
+4. 追加（決定済み契約の不足のみ、Death Test 6件）: View 1Dの上限読み1件、BARE-014の「範囲外position」書き戻し5経路（所有2D〜4D、View 2D・3D、例`array[2] = array[1]`）。
+   記録のみ: (a) 正方寸法のclosure順test 2D〜4Dは非対称全位置testと事実が重なる（削除提案、残置）。(b) `3_View`と非対称View testは`let`所有者からView経由で書き換えており、
+   1.0判断へ残した判断候補3を暗黙に固定している（提案: 1.0判断時に`var`へ変えるか契約化するか決める）。(c) 同一pointerで別shapeのViewは公開APIから作れず、shape不一致trapは未証明。
+5. 実行（`swift test -c {debug,release} --disable-sandbox --filter BareArrayModuleTests`）: 通常test Debug 35件（clone 7件含む）・Release 28件、Death Test 両構成42件、すべて成功。新規warningなし。Linux未確認。
+
+Codex acceptance: 2026-10-09、8個の番号付き仕様群、公開29宣言・4適合との対応、追加Death Test 6件、
+判断候補の停止を検収して受入。Xcode build-for-testingと通常test全体1451件成功・失敗0件を独立確認した。
 
 ## Completed bounded assignment: Array module naming review
 

@@ -7,16 +7,32 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（`BARE-002`はCodex受入済み）**
+**実行中ジョブ: あり（BareArray既存契約の不足test追加）**
 
 - 継続ジョブ: なし。
-- 新規bounded assignment: なし。公開継続のユーザー判断後に、必要な判断と不足testを再分解する。
+- 新規bounded assignment: `BARE-009`。下記の境界で既存契約の不足testを追加する。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
   受け入れた。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持する。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Current bounded assignment: BareArray existing-contract test gaps
+
+`Maintanance/BareArrayModule/BareArrayAudit.md`の`BARE-009`に従い、次の不足testだけを追加する。
+
+1. 所有2D、3D、4Dの外側subscriptについて、負のindexと上限indexがtrapするDeath Test。
+2. 非対称寸法で、2D、3D、4D所有型の連鎖subscriptが正しいstorage位置へ到達する通常test。
+3. 非対称寸法で、2D Viewと3D Viewのoffset / stride、およびView経由の変更共有を確認する通常test。
+
+source、公開契約、命名、NOP setter、不正寸法の扱いは変更しない。不正寸法、View寿命、Sendable、性能へ
+範囲を広げない。既存test方式に合わせ、同じ事実を不要に重複させない。別のdefectまたは判断点を見つけた
+場合は修正せず、最小の再現条件と影響を返して停止する。
+
+対象testをDebugとReleaseで実行する。Death Testは既存の`DEATH_TEST`条件に従って実行し、通常testと
+分けて結果を報告する。変更は`Tests/BareArrayModuleTests`と、このhandoffの結果節だけに限定し、git add
+まで行う。commit、Registry更新、Test as Specificationへのファイル再編はCodexへ残す。
 
 ## Completed bounded assignment: Permutation buffer access-path smell check
 

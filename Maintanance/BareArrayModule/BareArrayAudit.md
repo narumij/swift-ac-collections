@@ -232,3 +232,33 @@ closure initializerは添字を受け取らないため「軸順に呼ぶ」と�
 Test as Specificationへ直行せず、まず公開継続の判断を行う。公開継続時だけ、命名、NOP setter、不正寸法、
 不足testを必要な単位へ分ける。`let`所有者からのView経由変更、View寿命、Sendableとの交差は、現行仕様へ
 固定せず文書作業後の1.0判断へ残す。
+
+### 公開継続の決定（2026-10-09）
+
+ユーザーは、BareArrayを競技プログラミング向けの低レベル公開部品として維持すると決定した。これにより、
+命名、NOP setter、不正寸法の契約判断と、現行契約の不足testをTest as Specificationより前に進める。
+
+不足testは、すでにsourceで成立している境界とoffset / strideを固定するもので、公開契約を変更しない。
+一方、不正寸法のtestは契約判断後に必要範囲が決まるため、この不足test追加へ先取りしない。
+
+## `BARE-009` — 既存契約の不足test追加
+
+### 対象
+
+- 所有2D、3D、4Dの外側subscriptについて、負のindexと上限indexがtrapすること。
+- 非対称寸法を使い、2D、3D、4D所有型の連鎖subscriptが期待するstorage位置へ到達すること。
+- 非対称寸法を使い、2D Viewと3D Viewのoffset / stride、およびView経由の変更共有が正しいこと。
+
+### 境界
+
+- source、公開契約、命名、NOP setter、不正寸法の扱いを変更しない。
+- 既存の通常testとDeath Testの方式に従い、同じ事実を不要に重複させない。
+- 不正寸法、View寿命、Sendable、性能のtestを追加しない。
+- 別のdefectまたは新しい判断点を発見した場合は修正せず、再現条件と影響を返して停止する。
+
+### Codex受入条件
+
+- 所有2D〜4Dの外側subscriptについて、上下限のtrapが各次元で証明される。
+- 正方形・立方体では隠れるstride誤りを、非対称寸法で検出できる。
+- View 2D / 3Dを経由したoffsetと変更共有が証明される。
+- 対象testがDebug構成とRelease構成で成功し、Death Testの実行条件が既存方式と一致する。

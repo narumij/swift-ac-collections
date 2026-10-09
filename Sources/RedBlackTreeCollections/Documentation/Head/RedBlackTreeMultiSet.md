@@ -301,7 +301,7 @@ It allows specifying elements or boundaries without handling indices directly.
 
 ```swift
 var set: RedBlackTreeMultiSet<Int> = [1, 1, 3, 4, 5]
-print(set[.start.advance(by: 1)]) // -> 1
+print(set[.start.advanced(by: 1)]) // -> 1
 ```
 
 ```swift

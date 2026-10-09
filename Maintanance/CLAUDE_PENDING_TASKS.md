@@ -294,3 +294,24 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   共有時のcold pathだけが非specializeの`copy()`を直接呼ぶこと、内部の`Collection` witness table参照は
   `Element` metadata解決に限られるという機械語確認を受け入れた。性能の推測自体は根拠にせず、
   ユーザー報告の性能CI greenと回帰test成功を別証拠として完了判定した。新規stable IDは不要。
+
+### `CP-20261010-002` — 赤黒木の型コメント・Head文書の境界式例を現行APIへ修正
+
+- queue状態: `AWAITING_CODEX`
+- 発見元・ユーザー指示: `DOC-020`回答中にClaudeが発見。2026-10-10、ユーザーが「採番まちでやっていいよ」と明示許可。
+- 種別候補: `EXECUTION`
+- 対象範囲: 境界式の例で使われている、存在しない`.advance(by:)`と`.endIndex`（境界式としての）だけを、
+  `.advanced(by:)`と`.end`へ置き換える。対象は`RedBlackTreeSet`／`MultiSet`／`MultiMap`の型コメントと
+  `Sources/RedBlackTreeCollections/Documentation/Head/`の対応する`.md`／`.ja.md`。
+- 対象外: Index版の`x.lowerBound(4)..<x.endIndex`（現行APIで有効）、例の出力コメントの書き方、その他の文面。
+- 完了条件: 置換後の例を一時clientでコンパイルし、期待値どおり動くこと。
+- 担当候補・受入担当: Claude（実施）/ Codex（受入）
+- 停止条件: 置換で直らない例が見つかった場合（直さず報告）。
+- 成果・検証: 
+  - 2026-10-10 Claude: 9 file（型コメント3、Head文書6）で`.start.advance(by: 1)`→`.start.advanced(by: 1)`、
+    `.lowerBound(4) ..< .endIndex`→`.lowerBound(4) ..< .end`へ置換（15行）。
+  - 検証: 作業treeのcopyに一時clientを作り、Set／MultiSet／MultiMap／Dictionaryの境界式・Index範囲の例9件を
+    コンパイル・実行。全件通り、要素の結果は各コメントの期待値と一致した。一時directoryは削除済み。
+  - 残り（対象外）: `print(set[...])`の出力は`Optional(3)`になるが、コメントは`-> 3`と書いている。
+    同じ書き方は既存の`.lowerBound(5)`等の例にもあるので、直すかはCodex判断。
+- Codex reconciliation: 未処理

@@ -7,9 +7,9 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（`DOC-019`はCodex統合・受入済み）**
+**実行中ジョブ: なし（`DOC-020`のClaude回答は返却済み、Codexまとめ待ち）**
 
-- 継続ジョブ: なし。`DOC-019`のClaude回答はCodexが統合・受入済み。
+- 継続ジョブ: なし。`DOC-020`のClaude回答は`PUBLIC_API_CODE_SNIPPET_SURVEY_2_CLAUDE.md`へ記入済み。
 - 新規bounded assignment: 2026-10-10、ユーザーが利用制限待機より本依頼を優先すると明示したため、
   下記の範囲だけ例外として発注する。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
@@ -22,6 +22,17 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: repository public API code snippet candidate TOP10 survey
+
+`DOC-020`として、`PUBLIC_API_CODE_SNIPPET_SURVEY_2.md`の共通設問に回答する。このリポジトリの
+公開API全体から、公開APIのコメントドックへコードスニペットがあると特に有効な箇所を最大10件
+順位付けし、`PUBLIC_API_CODE_SNIPPET_SURVEY_2_CLAUDE.md`だけへ書く。第1弾の回答は変更しない。
+
+公開宣言と現在のコメントドックを中心に判断し、不明な挙動だけtestで確認する。
+`PUBLIC_API_CODE_SNIPPET_SURVEY_2_CODEX.md`は同時編集しない。各候補にはsymbol、利用者の疑問、
+示すべき最小の振る舞い、既存説明だけでは不足する理由を記載する。source、test、Registry、共通正本は
+変更しない。完了時は冒頭のジョブ状態を返却待ちへ変える。
 
 ## Active bounded assignment: code snippet candidate TOP10 survey
 

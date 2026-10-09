@@ -47,8 +47,6 @@ dependencies: [
 import AcCollections
 ```
 
-@Snippet(path: "swift-ac-collections/Snippets/RBTSetHead_1", slice: "first")
-
 <!-- 英訳: Branch Strategy -->
 ## ブランチ運用方針
 

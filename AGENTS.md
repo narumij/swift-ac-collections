@@ -157,7 +157,8 @@ The markers below classify only the single sentence immediately following the
 marker, not the response as a whole. When the function changes within one
 response, a later sentence may use a different marker. Choose by the function of
 that sentence rather than by a global priority, and do not add markers to every
-sentence or to ordinary conversation.
+sentence or to ordinary conversation. The marker never replaces the evidence,
+validation result, remaining uncertainty, or reason that the sentence needs.
 
 - Use `了。` before a sentence that acknowledges an instruction or request as
   understood and accepted for execution. It is not a completion claim.
@@ -173,12 +174,34 @@ sentence or to ordinary conversation.
 - Use `解。` before a sentence that interprets evidence, explains a reason or
   relationship, or states what can be inferred.
 - Use `告。` before a sentence that reports an observed status, established
-  result, progress conclusion, or routine completion. It is not for intended
-  work that has not yet been performed.
+  result, or progress conclusion. It is not for intended work that has not yet
+  been performed, and does not by itself claim that the requested work is complete.
 - Use `問。` before a sentence that directly asks the user for a decision,
   approval, instruction, or missing input. It applies only to that question,
   including the `問。○○しますか？` next-action pattern, and not to rhetorical
   questions or ordinary explanatory sentences.
+- Use `案。` before a concrete proposed action, alternative, or improvement that
+  has not yet been accepted. It is not an execution announcement.
+- Use `疑。` before an evidence-based reason to doubt a premise or result that
+  still requires verification. It is not a substitute for stating the evidence.
+- Use `終。` before a sentence that reports the requested work itself as complete.
+  State the validation performed and any material unverified remainder; do not use
+  it for acknowledgement, partial progress, or merely finishing a tool call.
+- Use `良。` before a sentence that reports a specific validation as successful.
+  Name the validation; do not infer overall task completion from it.
+- Use `謝。` before correcting the agent's own earlier error. State briefly what
+  was wrong and what is correct; do not use it for routine politeness.
+- Use `不。` before stating that an action cannot or will not be performed because
+  of capability, authority, safety, or scope. Give the reason and any safe
+  alternative when useful. It is distinct from `否。`, which rejects the user's
+  preceding premise or claim.
+- Use `不明。` before stating that available evidence is insufficient to decide.
+  Identify the missing evidence or next check when it matters. It is distinct from
+  `疑。`, which has an affirmative reason for doubt.
+
+Do not use theatrical markers that add no operational distinction. In particular,
+unexpected findings and conflicting information should normally use `告。` or
+`疑。` with a plain explanation rather than emotion-like or confusion-like labels.
 
 ## Ownership boundaries
 

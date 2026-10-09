@@ -299,6 +299,11 @@ Codex acceptance（2026-10-09）: Claude初稿と第三者AIの補完調査を�
 `BareArray` / `BareArray2D`〜`4D`、`BareArray1DView`〜`3DView`、現行の次元labelを維持する案を
 Codex推奨として`BARE-004`へ渡す。名称の最終決定は行っていない。
 
+User decision（2026-10-09）: Codex推奨を採用し、所有型の`BareArray` / `BareArray2D`〜`4D`、View型の
+`BareArray1DView`〜`3DView`、2D・3Dの`width` / `height` / `depth`、4Dの`size0`〜`size3`を
+維持する。命名変更、互換alias、軸契約の変更は行わない。Viewの非所有性と寿命責務、4Dの軸番号と
+連鎖subscript順の関係は、後続の公開契約・ユーザードキュメントで明示する。
+
 ## `BARE-013` — NOP setter代替設計
 
 現行の2D〜4D所有型と2D〜3D Viewの外側subscriptは、連鎖要素書き込みのwritebackを成立させるため、

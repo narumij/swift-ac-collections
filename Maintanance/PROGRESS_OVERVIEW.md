@@ -17,7 +17,8 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **現在の中間ゴール:**
 
-- BareArrayを、Codexのユーザードキュメント作業フェーズへ渡せる状態にする。
+- 2026-10-09、BareArrayをCodexのユーザードキュメント作業フェーズへ渡せる状態にするゴールを達成した。
+  次の中間ゴールはユーザー判断で選択する。
 
 **後続の中間ゴール:**
 
@@ -94,14 +95,14 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-043` | `DONE` | External AI / Codex | [DISCOVERY] OptionalArray命名体系のAI間再検討 | 2026-10-09、Claude初稿と第三者AI補完調査をCodexが独立評価し、1D所有型名と次元名を別々の判断へ渡せる材料として受入 | `ARRAY_NAMING_REVIEW.md` / `CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` |
 | `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | `OPT-043`受入後、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | `OPT-043`受入後、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `BARE-001` | `ACTIVE` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | 公開7型の契約棚卸し、必要な個別判断、Test as Specification整理、品質評価初版を受入れ、ユーザードキュメント作業への引き渡し可否を判定する | `BareArrayModule/BareArrayAudit.md` |
+| `BARE-001` | `DONE` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | 2026-10-09、契約棚卸し、個別判断、Test as Specification、品質評価初版を受入れ、ユーザードキュメント作業へ引渡可能と判定 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-002` | `DONE` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 2026-10-09、公開29宣言と4適合のledger、新しい判断点、後続への振り分けをCodexが受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-003` | `DONE` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | 2026-10-09、競技プログラミング向けの低レベル公開部品として維持すると決定 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-004` | `DONE` | User | [DECISION] BareArray公開型・次元名の命名体系 | 2026-10-09、所有型・View型・次元propertyの現行命名体系を維持し、寿命責務と4D軸順は文書で明示すると決定 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-005` | `DONE` | Codex / Claude | [EXECUTION] BareArrayModuleTestsのTest as Specification整理 | 2026-10-09、8個の番号付き仕様群、通常test Debug 35件・Release 28件、Death Test 42件をCodexが受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-006` | `FROZEN` | Codex | [DISCOVERY] BareArray 1.0の性能測定設計 | ユーザードキュメント作業後、共通の測定基盤を入力に対象操作・size・比較対象・評価方法を設計し、BareArray固有の製品判断候補を分離 | `Tests/TESTING.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray 1.0の性能計測 | `BARE-006`で整理した対象操作・size・比較対象と既存の測定方式に従って計測し、1.0判断へ渡す | `Tests/TESTING.md` |
-| `BARE-008` | `ACTIVE` | Claude / Codex | [DISCOVERY] BareArray品質評価初版 | Test as Specificationを入力に、ClaudeがISO/IEC 25010観点の証拠と不足を初稿化し、Codexが製品判断を分離して受入れ、ユーザードキュメント作業へ渡す | `BareArrayModule/BareArrayAudit.md` |
+| `BARE-008` | `DONE` | Claude / Codex | [DISCOVERY] BareArray品質評価初版 | 2026-10-09、ISO/IEC 25010観点の証拠・制約・不足・未確認と後続境界を分離した初版をCodexが受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-009` | `DONE` | Claude | [EXECUTION] BareArray既存契約の不足test追加 | 2026-10-09、所有2D〜4D外側subscriptの上下限6件と、非対称寸法での所有型・Viewの全位置照合5件をDebug／Releaseで受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-010` | `DONE` | User | [DECISION] BareArrayのNOP setter契約 | 2026-10-09、連鎖書き込みを維持し、同一pointer・shapeのwritebackだけを許す検査付きsetterへ変更すると決定 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-011` | `DONE` | User | [DECISION] BareArrayの不正寸法契約 | 2026-10-09、各次元は非負、zero許可、次元積は`Int`で表現可能というOptionalArrayと同じ事前条件を採用 | `BareArrayModule/BareArrayAudit.md` |

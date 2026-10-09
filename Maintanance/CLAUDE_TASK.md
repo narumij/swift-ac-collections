@@ -7,11 +7,10 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: あり — BareArray品質評価初版（essential-only例外）**
+**実行中ジョブ: なし（BareArray品質評価初版はCodex受入済み）**
 
 - 継続ジョブ: なし。
-- 新規bounded assignment: `BARE-008`の品質評価初版。現在の直接ゴールを閉じる最後の入力であり、
-  ユーザーの明示的な再開・割当指示によりessential-only条件内で実行する。
+- 新規bounded assignment: なし。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
   Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
   停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。今回の一件は、
@@ -24,7 +23,7 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
 
-## Active bounded assignment: BareArray quality assessment first edition
+## Completed bounded assignment: BareArray quality assessment first edition
 
 `Maintanance/BareArrayModule/BareArrayAudit.md`の`BARE-008`に従い、BareArrayのISO/IEC 25010観点の品質評価
 初版を作成する。入力は公開29宣言・4適合のledger、確定した契約判断、番号付きTest as Specification、
@@ -52,7 +51,21 @@ source、test、公開契約、コメントドック、Registry、他module文�
 
 ### Result
 
-返却待ち。
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `8900ba15`。新規`Sources/BareArrayModule/Documentation/QualityAssessment-ISO25010.md`と
+この節だけを変更し、git add済み（commitなし）。
+
+1. 構成: §1 対象・時点・根拠・対象外、§2 公開契約と番号付きtest fileの対応表、§3 9特性＋利用時の品質を「確認済み／制約／不足／未確認」の4列で記録、
+   §4.1 文書作業で説明すべき事項、§4.2 1.0判断へ送る事項（`BARE-006`/`007`、`ARRAY-001`、`let`所有者、`-Ounchecked`、Linux）、§5 判断task候補、§6 所見。評価語は付けずCodexへ残した。
+2. 根拠: source行、Audit（ledger、BARE-009〜015、BARE-005受入）、`StrictMemorySafetyReadiness.md` §10、Package.swift、CI設定、git履歴。test再実行・計測はしていない。
+3. 主な不足: benchmark無し（型コメントの「C言語の配列に近いアクセス性能」に測定根拠なし）、コメントドック6/29（4D型・init・subscript・`indices`は無し）、
+   利用例無し（AcCollectionsのfacade test 1件だけ）、View寿命・Sendable範囲の記録無し、shape不一致trap未証明、strict診断数は10/03時点のまま。
+4. 判断task候補: なし（すべて既存境界へ接続）。所見: 文書作業の入力として使えると考える。ただし性能・利用時の品質は証拠無し。
+5. 範囲外の発見（未変更）: 新規`Documentation/`によりSwiftPMの`found 1 file(s) which are unhandled`警告が1件増える（移動前後の`swift build --target BareArrayModule`で1→2件を確認）。
+   `PermutationModule`は`exclude: ["Documentation"]`を持つが、BareArrayModule（とOptionalArrayModule）のtargetは持たない。`Package.swift`の対応はCodexへ。
+
+Codex acceptance: 2026-10-09、公開契約とtestの対応、品質特性ごとの証拠区分、文書作業と1.0判断の境界を
+検収して受入。新しい製品判断の混入はない。新規Documentation警告はBareArrayModule targetのexclude追加で
+処理し、BareArrayをユーザードキュメント作業へ引き渡せると判定した。
 
 ## Completed bounded assignment: BareArray Test as Specification polishing
 

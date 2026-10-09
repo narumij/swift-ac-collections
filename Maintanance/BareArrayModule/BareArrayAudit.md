@@ -96,6 +96,14 @@ Codexが確認してから再開する。
 ユーザードキュメント作業の入力を作るDISCOVERYとし、性能基準、View寿命、storage再設計、strict memory
 safety、`let`所有者からのView変更は文書作業後の1.0判断側へ残す。
 
+Codex acceptance（2026-10-09）: `Sources/BareArrayModule/Documentation/QualityAssessment-ISO25010.md`初版を
+受け入れた。公開29宣言・4適合と番号付きtestの対応、ISO/IEC 25010の関連品質特性ごとの証拠・制約・不足・
+未確認、ユーザードキュメントで説明する事項、文書作業後の1.0判断へ送る事項が分離されている。性能と
+利用時品質は証拠なし、安全性の主要論点は未決定と明記され、新しい判断task候補は生じなかった。
+
+これにより、公開契約棚卸し、個別判断、Test as Specification、品質評価初版がすべて受け入れられ、
+BareArrayはCodexのユーザードキュメント作業フェーズへ渡せる状態になった。
+
 2026-10-09、すべての先行前提の完了を確認し、ユーザー指示で`BARE-005`を再開した。Codexが番号付き
 仕様群への整理と棚卸しで不足していたtestを整備・検証し、その後ClaudeがTest as Specificationとしての
 名称、配置、契約対応をポリッシングする。Claudeへの割当は一時使用制限に従い、Codexの土台完成後まで

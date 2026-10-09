@@ -299,6 +299,9 @@ let package = Package(
 
     .target(
       name: "BareArrayModule",
+      exclude: [
+        "Documentation"
+      ],
     ),
     .testTarget(
       name: "BareArrayModuleTests",

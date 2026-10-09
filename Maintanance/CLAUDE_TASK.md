@@ -7,10 +7,11 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（`DOC-013`はCodex検収済み）**
+**実行中ジョブ: なし（`PERM-029`はClaude返却済み、Codex検収待ち）**
 
-- 継続ジョブ: なし。
-- 新規bounded assignment: なし。`DOC-013`はClaude返却済みで、以後はCodexが検収する。
+- 継続ジョブ: 下記`PERM-029`の独立確認だけ。
+- 新規bounded assignment: 2026-10-10、ユーザーが利用制限待機より本依頼を優先すると明示したため、
+  下記の範囲だけ例外として発注する。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
   Codex、第三者AI、または延期で代替できる仕事は割り当てない。2026-10-10のユーザー指示により、
   課金状態にかかわらず火曜16:00まではClaudeへ新しい依頼を行わない。
@@ -21,6 +22,66 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: Swift 6.4 Release iterator copy fix independent review
+
+Registryの`PERM-029`について、commit `a7663bbb`の修正を独立に反証レビューする。問題は、
+`XCTAssertEqual`のautoclosure内で元iteratorの`next()`を呼ぶと、Swift 6.4 Releaseでコピー側も
+1要素余分に進むこと。Codexは回帰testを追加し、`next()`へ`@inline(never)`を付けるとDebug／Releaseの
+Permutation testが成功することを確認した。一方、ユーザーの性能testでは赤となり、元実装が非常に
+短いため僅かな命令差でも約30%悪化し得る。正しさと性能のどちらかを捨てる結論を前提にしないこと。
+
+入力は次に限定する。
+
+- `Sources/PermutationModule/Permutations.swift`
+- `Tests/PermutationTests/NextPermutationsSequence/NextPermutationsSequence_2_ValueSemanticsTests.swift`
+- `Tests/PermutationTests/NextPermutationsSequence/NextPermutationsSequence_98_InternalTests.swift`
+- Permutationの性能test／benchmarkと、その実行方法を直接定義するファイル
+- `Maintanance/PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md`
+- `Maintanance/PERFORMANCE_REGRESSION_BISECTION.md`
+- commit `a7663bbb`の差分と、その直前commitとの差分
+
+次だけを確認する。
+
+1. 回帰testが実際の公開契約違反を捕捉しているか。test自身のautoclosure、最適化、寿命短縮による
+   観測上の問題にすぎない可能性も反証する。
+2. `@inline(never)`が正しさを回復する理由について、確認できた事実と推測を分離する。
+3. 性能testの赤が同変更によるものかを、既存の正式な実行方法で確認する。可能なら変更前後を同条件で
+   複数回測り、分散と中央値を示す。約30%というユーザー報告を無条件に追認しない。
+4. `next()`全体のインライン化を止めずに、公開契約と既存の未保持時無コピー経路を維持できる最小候補を
+   2件以内で調べる。候補ごとにDebug／Release回帰testと性能testで反証する。
+5. compiler問題か実装問題か断定できない場合は`UNVERIFIED`とし、Swift bug報告用の最小再現へ
+   切り出せる事実だけを整理する。
+
+source、test、Registry、性能基準を変更しない。実験的変更が必要ならtask専用の一時directoryまたは
+作業tree外の一時copyで行い、repositoryのworktreeへ残さない。commit、branch、pushを行わない。
+結果は`PASS`、`RISK`、`BLOCK`、`UNVERIFIED`で分類し、実行command、構成、測定値、反証結果、
+推奨候補をこのassignmentの`Result`へ記録する。採用、実装修正、Registry更新、完了判定はCodexが行う。
+完了時は冒頭のジョブ状態を返却待ちへ変更する。
+
+### Result
+
+2026-10-10 Claude返却（ユーザー指示「低燃費で」により絞り込み実施）。
+
+- 前提ずれ: 発注後にユーザーがcommit `b71d490a`／`74f391cf`／`927cfd1a`で`next()`の
+  `@inline(never)`を外し、代わりに`Buffer.copy()`を`@inlinable`→`@usableFromInline`へ変更済み。
+  これは項目4の「`next()`のインライン化を維持する最小候補」そのものなので、HEADを候補1として確認した。
+- 1. `PASS`: 回帰testは公開契約違反を捕捉している。autoclosureは非escapingで、その中で`original`を
+  進めても`copy`は値として独立でなければならない。`copy.next()`が`[2, 1, 3]`(3番目)を返すのは観測上の
+  問題ではなく、値セマンティクスの破れそのもの。
+- 2/4. `PASS`(事実): HEADでRelease・Debugとも`NextPermutationsSequence_2_ValueSemanticsTests` 6件0失敗。
+  一時copyで`copy()`だけ`@inlinable`へ戻すとRelease回帰testが`("[2, 1, 3]") != ("[1, 3, 2]")`で失敗。
+  よって効いているのは`copy()`の非インライン化。理由(推測): `copy()`展開後の最適化で、uniqueness検査と
+  新buffer代入の順序または`copy`側との別名解析が崩れる。未検証。
+- 3. `UNVERIFIED`: 性能testは未実施（低燃費指示、性能はCI確認の運用）。HEADでは`next()`は再び
+  inlinableで、外へ出たのは共有時だけ通るcold pathの`copy()`なので、`@inline(never)`版より影響は
+  小さいはず。CIの性能結果で確認すること。
+- 5. `UNVERIFIED`: compiler問題か実装問題かは未断定。最小再現の材料は「ManagedBuffer + 
+  `isKnownUniquelyReferenced` + inlinableな`copy()`、XCTAssertEqualのautoclosure内で`mutating next()`」。
+- 残課題: HEADの`copy()`のTODO(witness table参照チェック)と`Permutations.swift`冒頭コメントが
+  まだ「`next()`のインライン化だけを抑止」と書いており、現実装と食い違う。修正はCodex判断。
+- 実行command: `swift test [-c release] --filter 'PermutationTests.NextPermutationsSequence_2_ValueSemanticsTests'`。
+  一時copyは`mktemp -d`配下で実施し削除済み。repositoryのsource/testは無変更。
 
 ## Returned bounded assignment: three-module documentation-comment draft review
 

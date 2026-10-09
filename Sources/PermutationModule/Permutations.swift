@@ -93,13 +93,11 @@ extension NextPermutationsSequence {
     /// Makes the buffer unique before advancing. Returns `false` without copying when the
     /// buffer is shared and has no successor, because such a copy would only be discarded.
     @inlinable
-    @inline(__always)
     mutating func ensureUnique() -> Bool {
-      if isKnownUniquelyReferenced(&elementBuffer) {
-        return true
+      if !isKnownUniquelyReferenced(&elementBuffer) {
+        guard elementBuffer.hasNextPermutation else { return false }
+        elementBuffer = elementBuffer.copy()
       }
-      guard elementBuffer.hasNextPermutation else { return false }
-      elementBuffer = elementBuffer.copy()
       return true
     }
 
@@ -319,7 +317,7 @@ extension NextPermutationsSequence.Buffer {
     return unsafe unsafeDowncast(storage, to: NextPermutationsSequence.Buffer.self)
   }
 
-  @inlinable
+  @usableFromInline
   internal func copy() -> NextPermutationsSequence.Buffer {
     let count = header.count
     let newStorage = NextPermutationsSequence.Buffer.create(count: count)

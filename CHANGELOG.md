@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- リリース専用Task Registry、判断gate、訓練テンプレート、完了時cleanupを含むリリースプロセスを整備
+
 ## [0.5.2] - 2026-10-09
 
 ### Changed

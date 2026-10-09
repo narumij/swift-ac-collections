@@ -105,7 +105,7 @@ strict memory safetyの警告件数、注釈、適合判定は上のどの成果
 
 graph DBのscope-checkはこの組を「辺なし・結合あり」と検出していた。当初は誤検知と判断されたが、
 計測結果の帰属という依存を正しく示していた。この訂正と再利用可能な知見は
-`AI_GRAPH_SMELL_NOTES.md`を参照する。
+`Graph/AI_GRAPH_SMELL_NOTES.md`を参照する。
 
 ### 再評価結果（2026-10-08 / Codex）
 
@@ -115,17 +115,17 @@ graph DBのscope-checkはこの組を「辺なし・結合あり」と検出し�
 
 後続の実施順とGateは次のとおり。
 
-| 後続 | 前提 | Gate | 理由 |
+| 後続 | 前提 | Flow | 理由 |
 | --- | --- | --- | --- |
-| 互換ソース隔離 | 性能基準取得 | `START` | 隔離前の通常版を測定対象として固定する |
-| 互換ソース隔離 | task依存再評価 | `START` | 確定した順序を反映してから実装を始める |
-| Package trait | 互換ソース隔離 | `START` | 隔離済みfileへdefineを接続する |
-| 互換仕様test | Package trait | `START` | traitで互換modeを選択可能にしてからtestする |
-| `AcCollections`再公開検証 | 互換仕様test | `START` | 互換APIの基準挙動を固定してからfacadeを検証する |
-| CI分離 | `prepare/compatible/2`統合 | `START` | 互換準備branchへ統合してから機能testだけを別jobへ接続する |
-| 単一file生成 | 再公開検証 | `START` | package内の公開経路を確認後に貼り付け形を検証する |
-| 文書同期 | 再公開検証・単一file生成 | `START` | 互換mode完成時点の実装と検証結果を利用方法へ同期する。統合後CIは後から追記する |
-| 互換mode親task完了 | 文書同期 | `COMPLETE` | 文書同期までは親taskを完了しない |
+| 互換ソース隔離 | 性能基準取得 | `SEQUENCE` | 隔離前の通常版を測定対象として固定する |
+| 互換ソース隔離 | task依存再評価 | `SEQUENCE` | 確定した順序を反映してから実装を始める |
+| Package trait | 互換ソース隔離 | `SEQUENCE` | 隔離済みfileへdefineを接続する |
+| 互換仕様test | Package trait | `SEQUENCE` | traitで互換modeを選択可能にしてからtestする |
+| `AcCollections`再公開検証 | 互換仕様test | `SEQUENCE` | 互換APIの基準挙動を固定してからfacadeを検証する |
+| CI分離 | `prepare/compatible/2`統合 | `SEQUENCE` | 互換準備branchへ統合してから機能testだけを別jobへ接続する |
+| 単一file生成 | 再公開検証 | `SEQUENCE` | package内の公開経路を確認後に貼り付け形を検証する |
+| 文書同期 | 再公開検証・単一file生成 | `SEQUENCE` | 互換mode完成時点の実装と検証結果を利用方法へ同期する。統合後CIは後から追記する |
+| 互換mode親task完了 | 文書同期 | `PARALLEL_JOIN` | 文書同期までは親taskを完了しない |
 
 単一file生成は再公開検証後に着手する。文書同期は再公開検証と単一file生成の合流点とする。
 CI分離は互換mode完成、release gate、`0.5.0` tag、`prepare/compatible/2`統合の後へ延期し、
@@ -182,6 +182,20 @@ trait追加中に行った互換module・全package testの成功は実装検証
 通常・互換それぞれの再公開testを個別に実行し、各1件成功・失敗0だった。これにより、
 `PermutationModule`単体だけでなくpackageの公開productからも、選択したmodeのAPIが利用できることを
 固定した。
+
+## 8. 互換branchの有効化とCI分離（2026-10-09完了）
+
+`0.5.0` tag後、`main`を`prepare/compatible/2`へmergeし、package共通define
+`COMPATIBLE_ATCODER_2025`を有効化した。通常Permutation sourceは反対条件で除外され、互換sourceと
+互換仕様test、`AcCollections`再公開testを選択するbranch構成になった。
+
+package全体のDebug・Release testはいずれもexit 0で、Death Testを含めて成功した。main向けのDocC
+catalogとbenchmark sourceは互換APIを参照してcompileできないため、このbranchではdocumentationと
+performance jobを対象外とした。互換性能計測を行わない既存判断を維持し、CIはrelease機能testを
+互換branchの継続検査とする。
+
+互換branch固有の検収条件は`COMPATIBILITY_CHECKLIST.md`へ集約し、mainのtask管理・設計・DocC資料は
+複製しない。merge commitは`0b9de44e`、整理後の最終commitは`24dfb40f`で、remoteへpush済み。
 
 ## 9. AtCoder単一file生成とローカル検証（2026-10-09完了）
 

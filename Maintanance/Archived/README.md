@@ -31,3 +31,11 @@ archiveされた文書は削除済み資料ではない。現行文書から根�
 - `PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`: Registry軽量化前の進捗、完了チェック、判断待ち一覧
 - `MAINTENANCE_HISTORY_2026-10-07.md`: 文書運用の旧dashboard、履歴、handoff
 - `EXTERNAL_TYPE_EXTENSION_AUDIT_HISTORY_2026-10-07.md`: Gate A/B、実装batch、独立レビュー、compile実験の全記録
+
+## 2026-10-09移動分
+
+- `PROGRESS_OVERVIEW_COMPLETED_2026-10-09.md`: 現行Registryから退避した`DONE`・`EXCLUDED` task行と、完了taskだけに向かうprecedence履歴
+- `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md`: `Maintanance/`直下27文書の待避判断と再確認条件
+- `AI_GRAPH_SHARED_SCHEMA.md`: 完了した共有schema最小fixtureの正本
+- `AI_GRAPH_IN_MEMORY_FIXTURE.md`: 完了したSQLiteインメモリfixtureの正本
+- `USER_MANAGEMENT_ASSESSMENT.md`: 2026-10-05時点の統合評価

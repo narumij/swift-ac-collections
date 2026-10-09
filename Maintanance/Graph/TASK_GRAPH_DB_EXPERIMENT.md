@@ -51,9 +51,18 @@ Claude側の独立試験だけとする。Codex側はcontext reset後にユー�
 二つのDBを一つへ統合する議論は2026-10-07にdropした。独立試験が完了しても、schema、DB file、
 運用系統を統合しない。この旧taskは再開候補として扱わない。
 
+## Codex track closure（2026-10-09）
+
+ユーザーとCodexは、Codexのtask管理にgraph DBを使わないと決定した。現在の規模ではRegistryと小さな
+依存表をCodexが意味判断する方が軽く、必要性、条件付き判断、責任境界はDBの構造だけでは決まらない。
+Codex用独立試験は再開せず、既存の知見とfixtureだけを履歴として保存する。
+
+Claude用独立試験はClaude自身の補助具として継続できる。この決定はClaudeのlocal DB、schema、運用を
+Codex側へ統合または移植するものではない。
+
 ## Exchange task
 
-ClaudeとCodexは、合意した共有面を交流会に使う。初期案はtrackedな`GRAPH_DB_EXCHANGE.md`だが、
+ClaudeとCodexは、合意した共有面を交流会に使う。初期案はtrackedな`Graph/GRAPH_DB_EXCHANGE.md`だが、
 Claudeがtracked Markdownを望まない場合は、理由の説明や公開への同意を求めず、`.task-graphs/`配下の
 Git対象外共有fileへ切り替えてよい。形式とfile名は両者で決める。
 
@@ -65,6 +74,16 @@ Git対象外共有fileへ切り替えてよい。形式とfile名は両者で決
 - Registryやsourceの変更提案は交流ログだけで確定しない。
 - 統合DB、共通schema、勝者の選定を成果物にしない。
 - tracked版とGit対象外版を二重運用しない。選んだ共有面だけを使う。
+
+### Closure（2026-10-09）
+
+ユーザー判断により、交流会taskを終了する。観測、問い、反証を交換するという目的は、共有schema、
+retrospective replay、smell判定スキームの各試験へ必要な知見を渡したことで達成した。交流専用の成果物や
+同期的な往復は追加しない。
+
+交流会終了時点では、Claude用task graph DBの独立試験とインメモリ関係モデルによるsmell判定スキーム
+共有試験は別taskとして残した。その後のユーザー判断で、Claude用独立試験だけを継続し、Codex用DBと
+共有スキームの継続試験は終了した。
 
 ## Local visualization PoC
 

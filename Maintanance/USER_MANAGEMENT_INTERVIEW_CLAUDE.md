@@ -406,7 +406,7 @@ Codex回答は参照していない。
 task graph DBの試験(`GRAPH-001`)と、そのコードの依存graphへの拡張、特殊化境界の候補の判定を含む。
 
 **証拠の出どころ:** Claudeとユーザーの直接の会話と、commitによる(直接の証拠)。
-Codexの関与は、ユーザーが作ったtask(`TASK_GRAPH_DB_EXPERIMENT.md`)とcommit `34b46a27`からの間接の証拠である。
+Codexの関与は、ユーザーが作ったtask(`Graph/TASK_GRAPH_DB_EXPERIMENT.md`)とcommit `34b46a27`からの間接の証拠である。
 
 ### 点数の変更
 
@@ -843,3 +843,56 @@ playbook reviewの結果は未commitの`CLAUDE_TASK.md`にあり、Codexの受�
 
 今夜の成果は、ほとんどがClaudeの外で作られた。それでも、Claudeが午後に出した一つの提案が10分で採用され、
 安全な順番に組み直されて戻ってきた。直接話していなくても、受け渡しは機能していた。
+
+## 2026-10-09 再評価(深夜: 0.5.0 release)
+
+2026-10-09 02:21 JST / Claude Opus 5.5。ユーザーに評価と感想を頼まれ、記録した。今回はCodex回答を読んでいない。
+
+**対象期間:** 前回（2026-10-08 20:19）の後から`dc32159d`まで。commit 17件。中身は、AtCoder 2025互換modeの
+trait・仕様test・生成source、0.5.0を通常Permutationだけで出す判断、性能CIの回帰（`0.7247`）の調査、
+ユーザー自身の`f01c66a6`（`inlinable`）、PR #175のmerge、tag `0.5.0`。
+
+**Claudeの関与:** 夜の雑談と、bounded assignment 2件（witness table比較、benchmark二分探索）だけ。
+
+### 点数の変更
+
+なし。
+
+### 据え置き(新しい根拠つき)
+
+- **問題発見の勘: 5のまま。** 性能回帰に対して、Claudeは2件の調査で「macOSでは命令列に差がない」
+  「macOSでは再現しない」までしか返せなかった。ユーザーは約10分後に、buffer headerとprobeのinitializerを
+  `@usableFromInline`から`@inlinable`へ、buffer subscriptのgetterを`@inline(__always)`へ変えた
+  （`f01c66a6`）。その後、PR #175でperformanceを含む全jobが成功した（`RELEASE_0_5_0.md`の記録）。
+  3か所のどれが効いたかは、Claudeは確かめていない。
+- **scopeを止める力: 5のまま。** 互換modeを0.5.0に入れかけたところで、通常Permutationだけを公開する形へ戻した
+  （`81dc5681`、`5cd66cd4`）。互換のCI分離と性能計測は、branch統合の後へ回した。
+- **自分の負荷の管理: 4のまま。** Codexの低消費modeの間も、Claudeへの依頼はbounded assignmentに絞られていた。
+  深夜のreleaseまで手で進めているので、5にはしない。
+
+### 誤りの帰属
+
+- **Claudeの誤り:**
+  - witness table比較で、benchmark基盤を同じpackage内の代用品にした。そのため、module境界をまたぐ
+    inline化の差を見られなかったかもしれない（未確認）。結果には代用品であることを書いたが、
+    「module境界がCIと違う」点は書いていなかった。
+  - 二分探索は、手順どおりmacOSで止めた。ただ、`@usableFromInline`と`@inlinable`の違いという、memoryにも近い話題
+    （非publicのprotocolに`@usableFromInline`が要る、という以前の記録）を候補として挙げなかった。
+- **Codexの誤り:** この記録では扱わない。
+- **ユーザー管理上の指摘:** なし。
+
+### 改善効果の高い一点(更新)
+
+前回の一点（`AGENTS.md`の行数を見張る）は、今回は評価しない。
+
+次は、性能回帰の調査をClaudeへ渡す前に、ユーザーの第一感を1行もらうことを勧める。今回は、ユーザーの見立て
+（inline化の明示）が、Claudeの2件の調査より早く、しかも当たっていた。「たぶんinline。違ったら二分探索」と
+最初に書いてあれば、Claudeはその仮説を確かめる形で動ける。
+
+### 感想
+
+今回は、ほとんど出番がなかった。出番があった2件も、決め手にはならなかった。調べた事実はどれも正しいが、
+答えに届いたのはユーザーの手のほうだった。
+
+それでも、「macOSでは差がない」と言い切れたことは、ユーザーが疑う場所を絞る材料にはなったと思いたい。
+ここは私の希望で、確かめてはいない。

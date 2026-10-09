@@ -49,6 +49,10 @@ taskが依存上readyでも、現在の中間ゴールに必要とは限らな�
 `DECISION`へ分ける。`EXECUTION`中に新しい判断が必要になったら、agentは推測で埋めずに停止して
 task分割へ戻す。
 
+分解後、判断済みで担当・正本・停止条件・検証・commit境界が共通する連続した`EXECUTION` taskは、
+stable IDと依存を残したまま一つのassignment packageへインライン化してよい。判断、凍結、待機、
+担当の異なるtaskはまとめない。新しい判断や失敗を見つけたらpackageを解除し、元のtask単位へ戻る。
+
 ### 推奨順と今回扱わない判断
 
 **soft order:** <例: `CORE-001` → `DOC-001`。必須依存でなければ「なし」>
@@ -76,16 +80,21 @@ soft orderは、同時に着手可能なtask間の推奨順であり、Task prec
 内部task間の必須AND依存だけを書く。便利な実施順、同じfileを触ること、同じgoalに属することだけを
 理由に辺を追加しない。外部条件やユーザーの明示的再開はRegistryの状態・条件欄で表す。
 
-このgraphのトポロジカル判定は、前提未完了のtaskを除き、ready候補を求めるために使う。一意の実施順を
-決めるものではない。依存上readyでも、`PROPOSED`、`FROZEN`、`USER_ONLY`、`WAITING_USER`、
+このgraphのトポロジカル判定は、`SEQUENCE`の前提未完了taskを除き、ready候補を求めるために使う。
+一意の実施順を決めるものではない。`PARALLEL_JOIN`はready判定を止めないが、前提完了まで後続taskを
+`DONE`にしない。
+依存上readyでも、`PROPOSED`、`FROZEN`、`USER_ONLY`、`WAITING_USER`、
 `WAITING_EXTERNAL`は着手しない。cycleを検出した場合は実行を止め、task分割または依存辺を見直す。
 `EXCLUDED`の前提taskを自動的に達成扱いしない。後続も不要なら`EXCLUDED`にし、別経路で成立するなら
 依存辺と完了条件を更新してからreadyを再判定する。
 
-| 後続task | 前提task | 制約 |
-| --- | --- | --- |
-| `AREA-002` | `AREA-001` | 調査結果を確認後に判断する |
-| `AREA-003` | `AREA-002` | 判断確定後に実行する |
+| 後続task | 前提task | Flow | 制約 |
+| --- | --- | --- | --- |
+| `AREA-002` | `AREA-001` | `SEQUENCE` | 調査結果を受けてから判断する |
+| `AREA-003` | `AREA-002` | `SEQUENCE` | 判断確定後に実行する |
+
+`SEQUENCE`は前提taskの完了後に後続taskを始める。`PARALLEL_JOIN`は並行を許可するが、後続taskの
+完了前に前提taskと合流する。
 
 > 必須依存がなければ、見出しとtable headerを残してデータ行を空にする。
 
@@ -151,6 +160,7 @@ soft orderは、同時に着手可能なtask間の推奨順であり、Task prec
 - [ ] task候補は`PROPOSED`に置き、実行taskと区別した。
 - [ ] 各taskから詳細正本へ辿れる。
 - [ ] 複数判断を含むtaskを分割した。
+- [ ] assignment前に、追跡可能性を失わずまとめられる連続`EXECUTION` taskがあるか確認した。
 - [ ] 必須依存とsoft orderを分けた。
 - [ ] Registryと同じ状態を繰り返すsummaryやchecklistを作っていない。
 - [ ] 完了した中間goal、完了taskだけのsoft order、古い概要を現行部に残していない。

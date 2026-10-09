@@ -2,7 +2,9 @@
   @testable import BareArrayModule
   import XCTest
 
-  final class BareArrayInternalTests: XCTestCase {
+  /// 実装test: `clone()`は公開宣言ではなく`internal`で、`@testable import`が使えるDEBUG構成だけで検証する。
+  /// cloneは新しいstorageへ要素をcopy初期化し、元配列と独立に要素を保持する。
+  final class BareArray_98_CloneTests: XCTestCase {
 
     func testBareArrayCloneCreatesIndependentStorage() {
       var array = BareArray<Int>(repeating: 0, count: 3)

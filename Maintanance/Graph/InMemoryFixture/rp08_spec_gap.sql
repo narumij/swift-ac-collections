@@ -1,10 +1,10 @@
 -- GRAPH-012 / RP-08: Release public API with no specification-test reference, excluding configuration-limited symbols.
--- From the repository root:  sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/rp08_spec_gap.sql
+-- From the repository root:  sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/rp08_spec_gap.sql
 -- Input transcribed by hand (no build): USRs and access from the symbol graph, the enclosing `#if` from the source,
 -- and the specification-test reference added by 58aab943 ("Specify RedBlackTreeBoundExpression.find(_:) in Set bound
 -- expression tests"). Before 58aab943 no specification test referenced find(_:), as recorded in AI_GRAPH_SMELL_NOTES.md.
 .bail on
-.read Maintanance/AIGraphInMemoryFixture/schema.sql
+.read Maintanance/Graph/InMemoryFixture/schema.sql
 
 INSERT INTO node VALUES
   ('s:23RedBlackTreeCollections0abC15BoundExpressionV4findyACyxGxFZ', 'symbol', 'RedBlackTreeBoundExpression.find(_:)',

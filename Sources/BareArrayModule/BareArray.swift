@@ -22,6 +22,7 @@ public struct BareArray<Element>: ~Copyable {
 
   @inlinable
   public init(repeating value: Element, count: Int) {
+    precondition(count >= 0)
     let capacity = count
     self.payload = .allocate(capacity: capacity)
     unsafe self.payload.initialize(repeating: value, count: capacity)
@@ -30,6 +31,7 @@ public struct BareArray<Element>: ~Copyable {
 
   @inlinable
   public init(count: Int, _ f: () -> Element) {
+    precondition(count >= 0)
     let capacity = count
     self.payload = .allocate(capacity: capacity)
     for i in 0..<count {
@@ -92,7 +94,10 @@ public struct BareArray2D<Element>: ~Copyable {
 
   @inlinable
   public init(repeating value: Element, width: Int, height: Int) {
-    self.capacity = height * width
+    precondition(width >= 0 && height >= 0)
+    let (capacity, overflow) = height.multipliedReportingOverflow(by: width)
+    precondition(!overflow)
+    self.capacity = capacity
     self.payload = .allocate(capacity: capacity)
     unsafe self.payload.initialize(repeating: value, count: capacity)
     self.width = width
@@ -101,7 +106,10 @@ public struct BareArray2D<Element>: ~Copyable {
 
   @inlinable
   public init(width: Int, height: Int, _ f: () -> Element) {
-    self.capacity = height * width
+    precondition(width >= 0 && height >= 0)
+    let (capacity, overflow) = height.multipliedReportingOverflow(by: width)
+    precondition(!overflow)
+    self.capacity = capacity
     self.payload = .allocate(capacity: capacity)
     for i in 0..<capacity {
       unsafe (payload + i).initialize(to: f())
@@ -134,7 +142,9 @@ public struct BareArray2D<Element>: ~Copyable {
 
     @inline(__always)
     set {
-      /* NOP */
+      precondition(0 <= position && position < height)
+      precondition(newValue.payload == payload + width * position)
+      precondition(newValue.count == width)
     }
   }
 
@@ -169,7 +179,15 @@ public struct BareArray3D<Element>: ~Copyable {
 
   @inlinable
   public init(repeating value: Element, width: Int, height: Int, depth: Int) {
-    self.capacity = height * width * depth
+    precondition(width >= 0 && height >= 0 && depth >= 0)
+    if width == 0 || height == 0 || depth == 0 {
+      self.capacity = 0
+    } else {
+      let (plane, overflow0) = height.multipliedReportingOverflow(by: width)
+      let (capacity, overflow1) = plane.multipliedReportingOverflow(by: depth)
+      precondition(!overflow0 && !overflow1)
+      self.capacity = capacity
+    }
     self.payload = .allocate(capacity: capacity)
     unsafe self.payload.initialize(repeating: value, count: capacity)
     self.width = width
@@ -179,7 +197,15 @@ public struct BareArray3D<Element>: ~Copyable {
 
   @inlinable
   public init(width: Int, height: Int, depth: Int, _ f: () -> Element) {
-    self.capacity = width * height * depth
+    precondition(width >= 0 && height >= 0 && depth >= 0)
+    if width == 0 || height == 0 || depth == 0 {
+      self.capacity = 0
+    } else {
+      let (plane, overflow0) = width.multipliedReportingOverflow(by: height)
+      let (capacity, overflow1) = plane.multipliedReportingOverflow(by: depth)
+      precondition(!overflow0 && !overflow1)
+      self.capacity = capacity
+    }
     self.payload = .allocate(capacity: capacity)
     for i in 0..<capacity {
       unsafe (payload + i).initialize(to: f())
@@ -218,7 +244,9 @@ public struct BareArray3D<Element>: ~Copyable {
 
     @inline(__always)
     set {
-      /* NOP */
+      precondition(0 <= position && position < depth)
+      precondition(newValue.payload == payload + width * height * position)
+      precondition(newValue.width == width && newValue.height == height)
     }
   }
 
@@ -247,7 +275,16 @@ public struct BareArray4D<Element>: ~Copyable {
 
   @inlinable
   public init(repeating value: Element, size0: Int, size1: Int, size2: Int, size3: Int) {
-    self.capacity = size0 * size1 * size2 * size3
+    precondition(size0 >= 0 && size1 >= 0 && size2 >= 0 && size3 >= 0)
+    if size0 == 0 || size1 == 0 || size2 == 0 || size3 == 0 {
+      self.capacity = 0
+    } else {
+      let (plane, overflow0) = size0.multipliedReportingOverflow(by: size1)
+      let (cube, overflow1) = plane.multipliedReportingOverflow(by: size2)
+      let (capacity, overflow2) = cube.multipliedReportingOverflow(by: size3)
+      precondition(!overflow0 && !overflow1 && !overflow2)
+      self.capacity = capacity
+    }
     self.payload = .allocate(capacity: capacity)
     unsafe self.payload.initialize(repeating: value, count: capacity)
     self.size0 = size0
@@ -258,7 +295,16 @@ public struct BareArray4D<Element>: ~Copyable {
 
   @inlinable
   public init(size0: Int, size1: Int, size2: Int, size3: Int, _ f: () -> Element) {
-    self.capacity = size0 * size1 * size2 * size3
+    precondition(size0 >= 0 && size1 >= 0 && size2 >= 0 && size3 >= 0)
+    if size0 == 0 || size1 == 0 || size2 == 0 || size3 == 0 {
+      self.capacity = 0
+    } else {
+      let (plane, overflow0) = size0.multipliedReportingOverflow(by: size1)
+      let (cube, overflow1) = plane.multipliedReportingOverflow(by: size2)
+      let (capacity, overflow2) = cube.multipliedReportingOverflow(by: size3)
+      precondition(!overflow0 && !overflow1 && !overflow2)
+      self.capacity = capacity
+    }
     self.payload = .allocate(capacity: capacity)
     for i in 0..<capacity {
       unsafe (payload + i).initialize(to: f())
@@ -301,7 +347,10 @@ public struct BareArray4D<Element>: ~Copyable {
 
     @inline(__always)
     set {
-      /* NOP */
+      precondition(0 <= position && position < size3)
+      precondition(newValue.payload == payload + size0 * size1 * size2 * position)
+      precondition(
+        newValue.width == size0 && newValue.height == size1 && newValue.depth == size2)
     }
   }
 
@@ -392,7 +441,9 @@ public struct BareArray2DView<Element> {
 
     @inline(__always)
     set {
-      /* NOP */
+      precondition(0 <= position && position < height)
+      precondition(newValue.payload == payload + width * position)
+      precondition(newValue.count == width)
     }
   }
 }
@@ -437,7 +488,9 @@ public struct BareArray3DView<Element> {
 
     @inline(__always)
     set {
-      /* NOP */
+      precondition(0 <= position && position < depth)
+      precondition(newValue.payload == payload + width * height * position)
+      precondition(newValue.width == width && newValue.height == height)
     }
   }
 }

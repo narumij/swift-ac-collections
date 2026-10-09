@@ -119,6 +119,12 @@ jobs:
       - name: Set up Swift
         uses: SwiftyLab/setup-swift@latest
 
+      # 配置差の影響（JCC erratumなど）はCPUに依存するため、runごとのCPUを結果と一緒に残す
+      - name: Record runner CPU
+        run: |
+          mkdir -p head/benchmark-results
+          lscpu | tee head/benchmark-results/cpu.txt
+
       - name: Run current benchmarks
         working-directory: head/Benchmarks
         run: |
@@ -138,50 +144,6 @@ jobs:
             --max-size 10 \
             --cycles 1 \
             --mode append
-
-      - name: Collect benchmark crash artifacts
-        if: failure()
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          mkdir -p benchmark-crash
-
-          BENCHMARK="$(
-            find head/Benchmarks/.build \
-              -type f \
-              -name benchmark \
-              -perm -111 \
-              -print \
-              -quit
-          )"
-
-          if [ -z "$BENCHMARK" ]; then
-            echo "Benchmark binary not found"
-            exit 1
-          fi
-
-          echo "Benchmark binary: $BENCHMARK"
-
-          objdump -d "$BENCHMARK" \
-            > benchmark-crash/benchmark.asm
-
-          nm -n "$BENCHMARK" \
-            | swift demangle \
-            > benchmark-crash/benchmark.nm
-
-          file "$BENCHMARK" \
-            > benchmark-crash/benchmark.file
-
-          cp "$BENCHMARK" benchmark-crash/benchmark
-
-      - name: Upload benchmark crash artifacts
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: benchmark-crash
-          path: benchmark-crash
-          if-no-files-found: error
 
       - name: Run baseline benchmarks
         working-directory: base/Benchmarks
@@ -219,9 +181,10 @@ jobs:
               ../benchmark-results/current.json
           )"
 
-          echo "$OUTPUT"
+          printf '%s\n' "$OUTPUT" \
+            | tee ../benchmark-results/comparison.txt
 
-          echo "$OUTPUT" |
+          printf '%s\n' "$OUTPUT" |
           awk '
             /^[[:space:]]*[0-9]/ {
               regression = $4
@@ -241,6 +204,51 @@ jobs:
               exit failed ? 1 : 0
             }
           '
+
+      - name: Collect executed benchmark binaries
+        if: failure()
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for CHECKOUT in base head; do
+            OUTPUT="benchmark-binaries/$CHECKOUT"
+            mkdir -p "$OUTPUT"
+
+            BENCHMARK="$(
+              find "$CHECKOUT/Benchmarks/.build" \
+                -type f \
+                -name benchmark \
+                -perm -111 \
+                -print \
+                -quit
+            )"
+
+            if [ -z "$BENCHMARK" ]; then
+              echo "Benchmark binary not found for $CHECKOUT"
+              continue
+            fi
+
+            echo "Benchmark binary for $CHECKOUT: $BENCHMARK"
+            objdump -d "$BENCHMARK" > "$OUTPUT/benchmark.asm"
+            nm -n "$BENCHMARK" \
+              | swift demangle \
+              > "$OUTPUT/benchmark.nm"
+            file "$BENCHMARK" > "$OUTPUT/benchmark.file"
+            sha256sum "$BENCHMARK" > "$OUTPUT/benchmark.sha256"
+            cp "$BENCHMARK" "$OUTPUT/benchmark"
+          done
+
+      - name: Upload benchmark performance artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-performance-results
+          path: |
+            head/benchmark-results
+            base/benchmark-results
+            benchmark-binaries
+          if-no-files-found: warn
 
   address-sanitizer:
     runs-on: ubuntu-24.04

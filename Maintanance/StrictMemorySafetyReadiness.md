@@ -283,6 +283,21 @@ with 'unsafe'`で、`NextPermutationProtocol.swift`は0件。§4に見られた
 - 診断メッセージの正確なカウントはビルドログの行パターンマッチングに依存して
   いるため、Swiftコンパイラの出力形式が変わった場合は再集計が必要。
 
+## Array系再分解の時点整理(2026-10-09)
+
+Array系全体のstorage、View寿命、strict memory safetyを実装単位へ再分解する作業は、各moduleの
+ユーザードキュメント作業後に行う。ただし、BareArrayのTest as Specification整理後に現行契約の
+不足が判明して手戻りすることを避けるため、次の事前振り分けだけは公開契約棚卸しの受入時に行う。
+
+- 現行公開契約を確定するために必要な事実確認、ユーザー判断、不足testは、Test as Specification整理
+  より前へ置く。
+- 確定済み契約に対する既存testの配置・名称・対応付けは、Test as Specification整理へ渡す。
+- View寿命、storage再設計、strict memory safetyの恒久適用など、現行契約の記録を超えて1.0採否へ
+  影響する論点は、現時点で実装taskへ分けず、文書作業後の再分解へ残す。
+
+この振り分けは`BareArrayModule/BareArrayAudit.md`のCodex受入工程で行う。棚卸し結果が出る前に
+条件付きの子taskを採番せず、必要性が確定したものだけをその時点で登録する。
+
 ## 10. `BareArrayModule` 段階対応(2026-10-03、バッチ4実施済み)
 
 `.strictMemorySafety()`を一時適用してXcodeで再コンパイルした。従来の116件は重複を
@@ -396,3 +411,8 @@ pointer initializerでそのstorageへ代入する診断6件、strict有効時�
 消すには公開7型への`@unsafe`伝播、または生ポインタstorageの隔離設計が必要になる。
 `BareArrayModule`と同じ理由で、警告を消すためだけに公開型を`@unsafe`へ変更せず、
 `OptionalArrayModule`のstrict設定は無効のままとする。
+
+`ARRAY-001`は、storage再設計、View寿命、公開unsafe境界、strict恒久適用を現在の粒度のまま実行するtaskではない。
+ユーザードキュメント作業後、再開時点で得られている公開契約、品質評価、task分解方式を入力に、BareArrayと
+OptionalArrayそれぞれの事実確認、一判断ごとの`DECISION`、判断済み方針の`EXECUTION`へ分解する。
+将来の方が適切な境界を見つけられる可能性を残すため、現時点では子taskを先行登録しない。

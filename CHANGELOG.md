@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-09
+
+### Changed
+- Permutation、OptionalArray、BareArrayのテストを、公開契約へ対応する番号付きTest as Specificationとして整理
+
+### Fixed
+- BareArrayの全公開initializerで、負の次元と`Int`で表現できない次元積を事前条件違反として停止し、zero次元は空配列として許可
+- BareArrayの多次元subscriptで、連鎖書き込み時の同一View writebackだけを許可し、別storageまたは範囲外位置のView代入を停止
+
+## [0.5.0] - 2026-10-09
+
 ### Added
 - 後続の互換branchで使用するAtCoder 2025時点のPermutation sourceと、提出用単一file生成utilityを追加（0.5.0の既定APIは通常版）
 - PermutationModuleの`NextPermutationsSequence.Permutation`を`Equatable`、`Hashable`(要素が`Hashable`のとき)、`CustomStringConvertible`(`[1, 3, 2]`形式)へ適合。いずれも要素の並びだけで決まる

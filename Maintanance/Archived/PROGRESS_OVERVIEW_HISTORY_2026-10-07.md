@@ -29,9 +29,9 @@ Index契約とそれに関わる残taskは、この外部条件が安定する�
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-002` | `DONE` | User / Codex / Claude | Index-range `erase`の空guard | 2026-10-06、範囲検査を維持して空での不要なCoWを回避（`11817dfe`） | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `DOC-001` | `DONE` | Codex / Claude | P10残存記述確認 | 2026-10-06、監査と必要箇所の同期を完了（`9b0f42d5`） | `MAINTENANCE.md` |
-| `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `TASK_GRAPH_DB_EXPERIMENT.md` |
-| `GRAPH-002` | `FROZEN` | Codex | Codex用task graph DBの独立試験 | Codexのcontext reset後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
-| `GRAPH-003` | `FROZEN` | User / Codex / Claude | 二つのtask graph DBの統合議論 | 両試験の完了後、ユーザーが明示的に再開 | `TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-002` | `FROZEN` | Codex | Codex用task graph DBの独立試験 | Codexのcontext reset後、ユーザーが明示的に再開 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-003` | `FROZEN` | User / Codex / Claude | 二つのtask graph DBの統合議論 | 両試験の完了後、ユーザーが明示的に再開 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-004` | `ACTIVE` | Claude | AIとgraph DBによるrefactoring smellの独立試験 | 専用ノートをClaudeが自由編集し、観測・仮説・反証・再利用可能な判断基準を継続記録 | `AI_GRAPH_REFACTORING_SMELL_NOTES.md` |
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認（run 37502938888、job 112404281751） | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |

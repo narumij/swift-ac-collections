@@ -288,6 +288,9 @@ let package = Package(
 
     .target(
       name: "OptionalArrayModule",
+      exclude: [
+        "Documentation"
+      ],
     ),
     .testTarget(
       name: "OptionalArrayModuleTests",
@@ -299,6 +302,9 @@ let package = Package(
 
     .target(
       name: "BareArrayModule",
+      exclude: [
+        "Documentation"
+      ],
     ),
     .testTarget(
       name: "BareArrayModuleTests",

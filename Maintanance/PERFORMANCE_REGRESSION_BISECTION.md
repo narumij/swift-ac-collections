@@ -175,3 +175,76 @@ scoreが1.05以下へ戻った。具体的な属性方針は、この公開用�
 - 最後の緑と最初の赤
 - 最小差分A/B測定
 - 採用した修正と正式CIの結果
+
+## 事例記録: Permutation sequential accessの配置依存（2026-10-09）
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。ユーザーが`try/performance/1`（`f57a24d2`＝`f01c66a6`の修正前のsource
+＋workflowの記録追加）をPRにし、baseを修正入りの`main`としてperformance jobを赤で再現させた。そのアーティファクトから読んだ事実。
+macOS側の比較と本節のLinux artifact解析は`PERM-036`としてCodexが統合・受入した。
+
+### 観測
+
+- `Permutations.SubSequenceN subscript sequential access`のRegressionsは4回とも閾値割れ（0.7371、0.7116、0.7355、0.7392）。
+  size別のbase / currentは、size 8以下で1.00、256以上で0.55〜0.67にそろう。65536要素で1要素あたり、
+  修正あり（base）約0.31 ns、修正なし（head）約0.54 ns。
+- `... sequential access (batched)`は逆向きで、4回とも修正なしのほうが約25%速い（1.246、1.258、1.269、1.262）。
+- 1回目だけ`RedBlackTreeSet<Int> insert, shared`も0.7550で閾値を割ったが、2回目以降は出ていない。
+
+### 生成コード（Linux x86-64、アーティファクトの`benchmark.asm`）
+
+- sequential accessのmeasure内閉包（`...addPermutationC0yyFyAA5TimerVzcSgSicfU_yAGzcfU_yyXEfU_`）は、両版で命令列が同一
+  （addressを除くdiffが0行）。ループは`add 0x18(%r14,%rcx,8),%rax` → `mov` → `inc` → `cmp 0x10(%r14),%rcx` → `jl`の17 byte。
+- 置き場所だけが違う:
+
+| 版 | ループ | 64 byte境界 |
+| --- | --- | --- |
+| 修正あり（base、速い） | `0x23b7c0..0x23b7d0` | 64 byte境界から始まり、1つに収まる |
+| 修正なし（head、遅い） | `0x23b770..0x23b780` | 末尾の`jl`（`0x77f-0x780`）が`0x780`をまたぐ |
+
+- batchedの閉包は、addressを除くdiffが2行。3つのループはどちらの版でも32 byte境界をまたいでいない。中身は未確認。
+
+### runner
+
+- `lscpu`（`4691d68e`で追加したstep）: AMD EPYC 7763（Zen 3）、4 vCPU、Hypervisor Microsoft。
+- IntelのJCC erratumは対象外なので、その説明は成り立たない。
+
+### 判断材料（未確定）
+
+- 同じ命令列が、配置だけで約1 cycle/要素から約1.7 cycle/要素になった、という読みと数値は矛盾しない。
+  Zen 3で小さいループが64 byteの取り込み単位をまたぐと遅くなる、という仮説はあるが、文書化された既知問題としては確認していない。
+- このtaskは1 cycle/要素という限界近くを測っているため、無関係な変更でbinaryの配置がずれても30%の閾値をまたぎうる。
+- `lscpu`を記録したrun（4回目）も赤だった。少なくともAMD EPYC 7763で赤が再現している。
+- 未確認: 赤runのCPUが毎回同じか。
+
+### 今後のチューニングで気にとめる知見
+
+- **1 cycle/要素に近い小さいループは、配置だけで30%の閾値をまたぐ。** 命令列が同じでも、無関係な変更でbinaryの
+  配置がずれると赤・緑が入れ替わりうる。このようなtaskの赤は、まず命令列が変わったかを見る。
+- **確かめる順番:** ①赤runのアーティファクトで、hot loopの命令列をbase / headでdiffする（addressは除く）。
+  ②命令列が同じなら、ループの開始addressと64 byte・32 byte境界との関係を比べる。③`cpu.txt`でrunnerのCPUを見る
+  （今回はAMD EPYC 7763。IntelのJCC erratumは対象外だった）。
+- **原因を確定させる実験（未実施）:** 遅い側のsourceのまま、配置だけを変えて測る。たとえば`-Xllvm -align-loops=64`で
+  ループを64 byte境界にそろえる。緑になれば配置が原因と確定し、赤のままなら64 byte境界の仮説は外れ。
+  ただし2026-10-03のmacOSでの調査（end-to-end benchmarkの17〜20%差、timed loopはbyte単位で同一）では、無関係な
+  padding関数を足すと遅さが再現した一方、`-align-loops=64`では消えなかった。ループの先頭をそろえるだけでは足りない
+  可能性があるので、この実験は「緑にならない＝配置ではない」とまでは言えない。
+- 今回のループは、閉包が捕捉した`sum`へ毎周storeし、`endIndex`も毎周loadし直している（`mov %rax,(%rbx)`、
+  `cmp 0x10(%r14),%rcx`）。捕捉した`var`がheap boxになるためで、これも2026-10-03に見つけていた形。
+  このstore・loadがあるので、ループは前端の取り込みに敏感になりやすい（推測）。
+- **`@inlinable`や`@inline(__always)`の変更は、hot path以外の汎用版の大きさを変え、後ろの関数をずらす。**
+  `f01c66a6`は、命令を速くしたのではなく、配置を動かして緑にした可能性が高い。属性を変えたときの性能差は、
+  配置の影響を切り分けるまで、属性の効果とは断定しない。
+- 1回の観測で同じtaskが別向きに動くことがある（今回はsequentialが遅く、batchedが約25%速い）。どちらか片方だけを見て判断しない。
+
+### 診断artifact
+
+性能比較が失敗した場合、workflowはbase / HEADについて、実際に測定へ使ったbenchmark binary、逆アセンブル、
+demangle済みsymbol表、binary hash、測定JSON、比較結果、runner CPUを保存する。別commandで再生成したmoduleではなく、
+測定時の実物を比較対象にする。これは`PERM-037`として受入済みである。
+
+### 独立reviewとの関係
+
+第三者AIのassembly reviewは、binary全体におけるgeneric buffer getterの分離と`lastAscentIndex`のcall増加を
+構造上の観測として残す（`PERM-038`）。一方、赤になった実測hot loopにはgetterも`lastAscentIndex`も到達せず、
+両版の命令列が同一だったため、ユーザーはgetter非inline化を当該回帰の原因説明として不採用とした。
+`@inline(__always)`を加えて緑になった実験はinline化と配置変更を分離しておらず、因果の証明には使わない。

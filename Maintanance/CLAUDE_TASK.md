@@ -2,23 +2,265 @@
 
 Status: Bounded assignments only. Temporary primary-user-support delegation ended 2026-10-08 by user direction.
 
-Codex is operating in low-consumption mode through 2026-10-16. This does not restore delegation:
 Claude remains limited to explicit requests and ready Claude-owned Registry tasks, while Codex keeps
 integration, decisions, acceptance, Registry updates, and public-document ownership.
 
 ## Current job status
 
-**実行中ジョブ: あり**
+**実行中ジョブ: なし（0.5.1独立チェック1回目を受入、候補修正中）**
 
-- 継続ジョブ: Claude専用task graph DBの独立試験。通常作業時にready集合とRegistryの一致を確認する。
-- 新規bounded assignment: なし。Permutation sequential subscript性能回帰のbenchmark二分探索は
-  2026-10-09にCodex受入済み。
-- 本線の現在状態: 0.5.0では通常Permutationだけを公開するため、互換traitと通常sourceの排他条件を
-  撤回し、PR #175の全CI成功後、`main`の`0dc1bd26`へtag `0.5.0`を作成済み。
-  互換切替とCI分離は`prepare/compatible/2`統合後に扱い、互換性能計測は行わない。
+- 継続ジョブ: なし。
+- 新規bounded assignment: `4d5ce7b8`を固定対象とする0.5.1最終候補の独立チェック。
+- 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
+  Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
+  停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。今回の一件は、
+  他に並行可能な現在ゴールの作業がなく、ユーザーがClaudeをポリッシング担当に指定したため該当する。
+  時刻到達だけで自動的に通常運用へ戻さず、その時点のゴールへの必要性と利用量を再確認する。
+- 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
+  `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
+  受け入れた。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持する。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Completed bounded assignment: 0.5.1 independent release check (first pass)
+
+`Maintanance/RELEASE_CHECKLIST.md` §3と`Maintanance/RELEASE_0_5_1.md`に従い、0.5.1の最終候補を独立確認する。
+
+- 候補branch: `develop/misc/52`
+- 候補commit: `4d5ce7b8378aff803a327df72a73722d33141140`
+- 前version tag: `0.5.0`
+- remote ref: `origin/develop/misc/52`が`4d5ce7b8`と一致することをCodex確認済み
+- CI: ユーザーが同候補の全必須job greenを報告済み
+- local gate: Debug／Release package全test、BareArray Death Test 42件、DocC `--warnings-as-errors`が成功
+
+候補commitと`0.5.0`の差分、release正本、CHANGELOG、README、Package、workflow、CI証拠を独立に確認し、
+次を`PASS` / `BLOCK` / `UNVERIFIED`で報告する。
+
+1. tag予定commitと全必須CIのcommit一致。
+2. version、CHANGELOG、README、Package、release正本の整合。
+3. release対象外の互換mode、trait、後続作業の混入有無。
+4. test、documentation、Address Sanitizer、performanceを含む必須gateの未実施・赤の有無。
+5. 既知事項と後続taskを誤って完了扱いしていないこと。
+6. worktree、branch、tag予定位置、push予定ref、tag後記録の境界。
+
+source、test、workflow、release正本、Registryを変更しない。修正、commit、tag、push、mergeを行わない。
+CIを確認できない場合は推測でPASSにせず`UNVERIFIED`とする。結果はこのassignmentの`Result`だけへ追記し、
+ジョブ状態を返却待ちへ変えてgit addまで行う。Codexが原資料と照合し、最終ユーザー確認へ渡す。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。変更なし（この節とジョブ状態だけ）。build・testの再実行はしていない。
+
+**1. 対象と証拠**: HEAD = `origin/develop/misc/52`（local tracking ref）= `4d5ce7b8`、tree `aad90875`、branch `develop/misc/52`。
+`0.5.0`（`0dc1bd26`）は祖先で、86 commit・merge commitなし。`7884ecb4..4d5ce7b8`は`RELEASE_0_5_1.md`の+19行だけ（gate実行commitとの差はrelease記録のみ）。
+`0.5.0..4d5ce7b8`のsource差分は`BareArray.swift`と品質評価文書だけ。BareArrayの`public`／`extension`行は0.5.0と同一（公開面の追加・削除なし）。
+gh CLIが無く、remote CIは見ていない。
+
+**2. 項目別**
+
+1. tag予定commitとCIのcommit一致: `UNVERIFIED`。ユーザー報告だけで、job名・headShaを独立に読めていない。
+2. version・CHANGELOG・README・Package・正本の整合: `BLOCK`。CHANGELOGに`[0.5.0]`も`[0.5.1]`の見出しも無く、0.5.1の3行が
+   0.5.0の項目（例「0.5.0の既定APIは通常版」、Permutation改名）と同じ`[Unreleased]`へ混ざる。正本の「`Unreleased`へ追記」とは一致するが、
+   tag `0.5.1`の時点でCHANGELOGから0.5.1の変更を区別できない。READMEにversion固定表記なし、Package差分は`exclude: ["Documentation"]`2件だけで整合。
+3. 対象外の混入: `PASS`。`COMPATIBLE_ATCODER_2025`・trait・`@_exported`の差分なし。ただし正本に記載の無い非製品差分がある:
+   `.github/workflows/swift.yml`（performance jobのCPU記録・artifact収集の組み替え、+56/−44）、`AGENTS.md`、`Utilities/Maintenance/`の2 script、`Tests/TESTING.md`。製品buildへは入らない。
+4. 必須gateの未実施・赤: `UNVERIFIED`。local gate（Debug／Release全test、Death Test 42、DocC warnings-as-errors）は`7884ecb4`での記録を確認し、
+   候補との差がrelease記録だけなので有効と判断。remote（Linux、ASan、performance）は1と同じ理由で未確認。正本§2の「公開API・Package差分の最終確認」は未チェックのまま。
+5. 既知事項・後続taskの扱い: `PASS`。正本は品質評価初版を文書作業の入力とし、コメントドック・文書初版・性能・View寿命・strictを後続に残す。CHANGELOGも完了扱いしていない。
+6. worktree・branch・tag・push・tag後記録: `PASS`（条件付き）。worktreeの未commit差分は`CLAUDE_TASK.md`だけで候補外。tag `0.5.1`は未作成。
+   正本（候補commit内）の冒頭「状態」は「候補commitとtag位置を固定せず」のままで、tag名・push予定refは正本に書かれていない（依頼文にだけある）。
+
+**3. Codex一次検収との不一致**: CHANGELOGの版見出し（項目2）。workflow等の非製品差分が正本の差分説明に無い（項目3）。
+
+**4. releaseを止める事項**: 項目2。CHANGELOGに版見出しを切るか、現行運用（`Unreleased`のまま）を維持するかはCodex／ユーザーの判断。
+直す場合は候補commitが変わり、gateの再固定が必要。あわせて、この結果をcommitする場合もtagは`4d5ce7b8`を指す前提を保つこと。
+
+Codex acceptance: 2026-10-09、CHANGELOGの版境界BLOCKを妥当として受入。ユーザー判断により`Unreleased`、
+`0.5.1`、`0.5.0`を分離し、候補commit、remote CI、独立チェックを固定し直す。CIの2件はClaudeがhead SHAを
+直接読めなかったための`UNVERIFIED`であり、greenというユーザー報告との事実衝突ではない。
+
+## Completed bounded assignment: BareArray quality assessment first edition
+
+`Maintanance/BareArrayModule/BareArrayAudit.md`の`BARE-008`に従い、BareArrayのISO/IEC 25010観点の品質評価
+初版を作成する。入力は公開29宣言・4適合のledger、確定した契約判断、番号付きTest as Specification、
+`Sources/BareArrayModule/BareArray.swift`とする。Permutation版とOptionalArray版の品質評価は構成と証拠の
+粒度を学ぶ参考にしてよいが、評価内容や結論を転写しない。
+
+成果は新規`Sources/BareArrayModule/Documentation/QualityAssessment-ISO25010.md`へ記録し、少なくとも次を
+含める。
+
+1. 対象、評価時点、根拠source・test・監査記録、評価対象外を明示する。
+2. ISO/IEC 25010の関連品質特性ごとに、確認済みの証拠、制約、不足、未確認を区別する。
+3. 公開契約と番号付きtest fileを対応付け、証明できる範囲を過大評価しない。
+4. ユーザードキュメントで説明すべき事項と、文書作業後の1.0判断へ送る事項を分離する。
+5. 性能基準、View寿命、storage再設計、strict memory safety、`let`所有者からのView変更は未決定として
+   既存の後続境界へ接続する。結論を補わず、新しい判断点があれば一判断ごとのtask候補として止める。
+6. 現時点でユーザードキュメント作業の入力として使えるかを、証拠に基づく所見として示す。公開採用、
+   1.0採用、品質水準の最終判断は行わない。
+
+source、test、公開契約、コメントドック、Registry、他module文書は変更しない。benchmark、新しい安全性実装、
+性能計測を開始しない。既存testの再実行は不要で、`BARE-005`の受入記録を証拠として使う。
+
+変更可能範囲は新規品質評価文書と、このassignmentの`Result`節だけ。完了時はジョブ状態を返却待ちへ変え、
+作成内容、根拠、未確認、判断task候補を`Result`へ記録し、git addまで行う。commit、Registry更新、品質評価の
+受入、ユーザードキュメント作業への引渡し判定はCodexへ残す。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `8900ba15`。新規`Sources/BareArrayModule/Documentation/QualityAssessment-ISO25010.md`と
+この節だけを変更し、git add済み（commitなし）。
+
+1. 構成: §1 対象・時点・根拠・対象外、§2 公開契約と番号付きtest fileの対応表、§3 9特性＋利用時の品質を「確認済み／制約／不足／未確認」の4列で記録、
+   §4.1 文書作業で説明すべき事項、§4.2 1.0判断へ送る事項（`BARE-006`/`007`、`ARRAY-001`、`let`所有者、`-Ounchecked`、Linux）、§5 判断task候補、§6 所見。評価語は付けずCodexへ残した。
+2. 根拠: source行、Audit（ledger、BARE-009〜015、BARE-005受入）、`StrictMemorySafetyReadiness.md` §10、Package.swift、CI設定、git履歴。test再実行・計測はしていない。
+3. 主な不足: benchmark無し（型コメントの「C言語の配列に近いアクセス性能」に測定根拠なし）、コメントドック6/29（4D型・init・subscript・`indices`は無し）、
+   利用例無し（AcCollectionsのfacade test 1件だけ）、View寿命・Sendable範囲の記録無し、shape不一致trap未証明、strict診断数は10/03時点のまま。
+4. 判断task候補: なし（すべて既存境界へ接続）。所見: 文書作業の入力として使えると考える。ただし性能・利用時の品質は証拠無し。
+5. 範囲外の発見（未変更）: 新規`Documentation/`によりSwiftPMの`found 1 file(s) which are unhandled`警告が1件増える（移動前後の`swift build --target BareArrayModule`で1→2件を確認）。
+   `PermutationModule`は`exclude: ["Documentation"]`を持つが、BareArrayModule（とOptionalArrayModule）のtargetは持たない。`Package.swift`の対応はCodexへ。
+
+Codex acceptance: 2026-10-09、公開契約とtestの対応、品質特性ごとの証拠区分、文書作業と1.0判断の境界を
+検収して受入。新しい製品判断の混入はない。新規Documentation警告はBareArrayModule targetのexclude追加で
+処理し、BareArrayをユーザードキュメント作業へ引き渡せると判定した。
+
+## Completed bounded assignment: BareArray Test as Specification polishing
+
+HEAD `09702717`を入力に、`Tests/BareArrayModuleTests`の番号付きtestをTest as Specificationとして
+ポリッシングする。Codexは三つの仕様群への改名、3D・4Dの`init(repeating:)` test追加、1D〜4D所有型の
+`Sendable` compile test追加、Xcode build-for-testingと通常test成功まで確認済みである。
+
+次だけを行う。
+
+1. 公開29宣言・4適合と既存testの対応を照合し、通常testを契約単位でさらに分割する方が明瞭なら、
+   `0`〜`6`の番号付きfileへ再配置する。番号に空きがあってもよく、OptionalArrayの構成を機械的に写さない。
+2. test名、class名、`MARK`、短い説明を、何の公開契約を証明するか読める形へ整える。
+3. `6_Clone`がDEBUG限定のinternal `clone()`契約、`99_Death`がtrap契約として適切か確認する。
+4. 重複、公開契約を証明しない実装依存、または棚卸し済みなのに未証明の項目を見つけた場合、契約判断を
+   補わず、証拠と最小の提案を結果へ記録する。決定済み契約を証明する不足testは追加してよい。
+5. Debug／Releaseの通常testとDeath Testを実行し、構成別の件数と結果を報告する。
+
+source、公開API、公開契約、命名、コメントドック、Registry、他moduleのtestは変更しない。View寿命、性能、
+storage再設計、strict memory safetyを開始しない。新しい製品判断が必要なら変更せず停止する。
+
+変更可能範囲は`Tests/BareArrayModuleTests`と、このassignmentの`Result`節だけ。完了時はジョブ状態を
+返却待ちへ変え、変更と実行結果を`Result`へ記録し、git addまで行う。commitと最終受入はCodexへ残す。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `1b743630`。変更は`Tests/BareArrayModuleTests`とこの節だけ。git add済み（commitなし）。
+
+1. 再配置（契約単位、test本体は移動のみ）: `0_PublicSurface`（Sendable 1）、`1_Initialization`（repeating 1D〜4D、closureの格納順 1D〜4D、zero次元）、
+   `2_ElementAccess`（連鎖書き込み 1D〜4D、非対称寸法の全位置 2D〜4D）、`3_View`（View経由の共有 1D〜3D View、非対称offset 2D・3D View）、
+   `4_Indices`、`5_ReferenceLifetime`（`Box`をclass内private型へ集約）。旧`1_PublicContract`は`2_ElementAccess`へ`git mv`。
+2. 名前: `Slice`の旧名を`View`へ（例`testBareArray2DViewWritesReflectInOwnerStorage`）、`InitializerClosure`→`ClosureFillsStorageInOrder`等。各classに証明する契約の短い説明を付けた。
+3. `6_Clone`→`98_CloneTests`へ改名。`clone()`は公開宣言ではなく`internal`（sourceは`#if DEBUG`ではない）で、`Tests/CLAUDE.md`の「実装testは`_98_*`」に従った。
+   testの`#if DEBUG`は`@testable import`のためで妥当。`99_Death`はtrap契約として妥当。古い冒頭コメント（負indexの書き込みだけ）を三契約の説明へ更新し`MARK`で区分。
+4. 追加（決定済み契約の不足のみ、Death Test 6件）: View 1Dの上限読み1件、BARE-014の「範囲外position」書き戻し5経路（所有2D〜4D、View 2D・3D、例`array[2] = array[1]`）。
+   記録のみ: (a) 正方寸法のclosure順test 2D〜4Dは非対称全位置testと事実が重なる（削除提案、残置）。(b) `3_View`と非対称View testは`let`所有者からView経由で書き換えており、
+   1.0判断へ残した判断候補3を暗黙に固定している（提案: 1.0判断時に`var`へ変えるか契約化するか決める）。(c) 同一pointerで別shapeのViewは公開APIから作れず、shape不一致trapは未証明。
+5. 実行（`swift test -c {debug,release} --disable-sandbox --filter BareArrayModuleTests`）: 通常test Debug 35件（clone 7件含む）・Release 28件、Death Test 両構成42件、すべて成功。新規warningなし。Linux未確認。
+
+Codex acceptance: 2026-10-09、8個の番号付き仕様群、公開29宣言・4適合との対応、追加Death Test 6件、
+判断候補の停止を検収して受入。Xcode build-for-testingと通常test全体1451件成功・失敗0件を独立確認した。
+
+## Completed bounded assignment: Array module naming review
+
+[`ARRAY_NAMING_REVIEW.md`](ARRAY_NAMING_REVIEW.md)に従い、BareArrayとOptionalArrayの命名体系を調査する。
+
+必須条件は、Swift標準ライブラリおよび`swift-collections`の公開型名・主要用語・命名規則と衝突せず、
+それらの型だと誤認されにくいこと。両moduleは正式公開前なので、既存名とのsource compatibilityより、
+公開後に長く維持できることを優先する。ただし現行利用例と移行範囲は証拠として残す。
+
+成果は、現行surface対応表、一次資料に基づく衝突確認、候補比較、影響宣言、判断単位ごとの推奨と最強の
+反証を含める。判断単位はBareArray体系、OptionalArray 1D型名、OptionalArray次元名体系の三つに分ける。
+
+source、test、利用例、コメントドック、Registryを変更せず、renameや互換aliasを実装せず、命名を決定
+しない。性能、安全性、storage設計へ広げない。結果を`ARRAY_NAMING_REVIEW.md`へ追記し、このhandoffを
+返却待ちへ更新してgit addまで行う。Codexが独立評価、統合、ユーザー判断への引き渡しを担当する。
+
+## Cancelled before start: Array naming review supplement
+
+この補完依頼は開始前に取り止め、第三者AI向け依頼書へ移した。Claudeは着手しない。
+
+当初の範囲は次のとおりだった。
+
+- `Bare`と`Optional`について、実質的な代替接頭語を複数比較し、契約を誤認させる点と棄却理由を示す。
+- `View`維持案と代替suffixを、標準の`Slice`、`Span`、`View`が与える期待と比較する。
+- 4Dの名称変更と軸契約反転を別案に分ける。軸契約変更を命名推奨へ混ぜない。
+- 公式`swift-collections`現行`main`とSE-0527を入力に、ownership-aware arrayの命名が標準へ移る方向を
+  反証へ加える。
+- 三判断単位の推奨を必要なら更新し、それぞれ最強の反証を残す。
+
+既存のsurface表、local toolchain確認、移行件数は再調査しない。source、test、利用例、Registryを変更せず、
+名称も軸契約も決定しない、という境界は第三者AI向け依頼書へ継承した。
+
+## Completed bounded assignment: BareArray existing-contract test gaps
+
+`Maintanance/BareArrayModule/BareArrayAudit.md`の`BARE-009`に従い、次の不足testだけを追加する。
+
+1. 所有2D、3D、4Dの外側subscriptについて、負のindexと上限indexがtrapするDeath Test。
+2. 非対称寸法で、2D、3D、4D所有型の連鎖subscriptが正しいstorage位置へ到達する通常test。
+3. 非対称寸法で、2D Viewと3D Viewのoffset / stride、およびView経由の変更共有を確認する通常test。
+
+source、公開契約、命名、NOP setter、不正寸法の扱いは変更しない。不正寸法、View寿命、Sendable、性能へ
+範囲を広げない。既存test方式に合わせ、同じ事実を不要に重複させない。別のdefectまたは判断点を見つけた
+場合は修正せず、最小の再現条件と影響を返して停止する。
+
+対象testをDebugとReleaseで実行する。Death Testは既存の`DEATH_TEST`条件に従って実行し、通常testと
+分けて結果を報告する。変更は`Tests/BareArrayModuleTests`と、このhandoffの結果節だけに限定し、git add
+まで行う。commit、Registry更新、Test as Specificationへのファイル再編はCodexへ残す。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `8fd4d06d`。変更は`Tests/BareArrayModuleTests`の2 fileとこの節だけ。git add済み（commitなし）。
+
+- `BareArrayDeathTests.swift`（`DEATH_TEST`、Swift Testing）: 所有2D・3D・4Dの外側subscriptで、負のindexと上限index
+  （`height` / `depth` / `size3`）がtrapする6件を追加。寸法は非対称（2D 3×2、3D 2×3×4、4D 2×3×4×5）。
+- `BareArrayTests.swift`（XCTest）: 5件を追加。
+  - 所有2D・3D・4Dの連鎖subscript: 初期化closureの値（＝線形位置）を全位置で照合（3件）。
+  - View 2D（3D所有の面）とView 3D（4D所有の立方体）: 全位置のoffsetを照合し、View経由で全要素を書き換えたあと、
+    所有型から全位置を読んで反映と面・立方体の外へのはみ出しが無いことを確認（2件）。
+- 既存の正方・立方体のtest（InitializerClosure、SliceReflects）は残し、事実を重ねていない（新testは非対称寸法の全位置）。
+- 実行: `swift test -c debug --filter BareArrayModuleTests` と `-c release` の両方で成功。
+  - 通常test（XCTest）: Debug 32件（`DEBUG`時のみのinternal 7件を含む）、Release 25件。
+  - Death Test（Swift Testing、macOSでは`DEATH_TEST`が既定で有効）: Debug・Releaseとも17件。
+  - 新規11件が両構成で実行され、すべて成功したことをtest名で確認した。
+- defect・新しい判断点: なし。source・公開契約・NOP setter・不正寸法の扱いは変更していない。
+- 未確認: Linux（Death Testは`ENABLE_DEATH_TESTS` traitが必要で、今回は実行していない）。
+
+## Completed bounded assignment: Permutation buffer access-path smell check
+
+これは現在の中間ゴールを進める本線taskがClaudeへ割当不能な間だけ行う、`GRAPH-004`のfallback調査である。
+本線のready taskが生じた場合はそちらを優先し、この調査を広げない。
+
+問いは一つだけとする。
+
+> `NextPermutationsSequence.Permutation`から要素へ到達する公開subscript、内部`Buffer.subscript`、
+> `__storage_ptr`の複数経路は、変更理由や最適化判断が分散する保守上のsmellか、それとも公開境界・CoW・
+> unsafe境界を分けるために必要な構造か。
+
+対象は`Sources/PermutationModule/Permutations.swift`内の上記宣言と、それらを直接裏づけるtest、文書、
+直近のGit履歴に限定する。必要ならClaudeが獲得済みのcode-smell確認とtuning確認の観点を使ってよい。
+ただし性能回帰の原因調査を再開せず、既存のassembly分析は反証または補助証拠としてだけ扱う。
+
+次を区別して記録する。
+
+1. 宣言・参照・test・文書・変更履歴から確認できる事実
+2. smell仮説と、該当するならその分類
+3. 必要な層分離だとする代替説明または反証
+4. 影響、確度、次に確かめるなら何か
+5. 現状維持でよいか、独立task候補をCodexへ返す価値があるか
+
+成果は`Maintanance/Graph/AI_GRAPH_SMELL_NOTES.md`へ日付付きの試験記録として追記し、git addまで行う。
+source、test、benchmark、workflow、Registry、他の正本文書は変更しない。buildやbenchmark実行は不要。
+公開契約、性能方針、実装修正の判断が必要になった場合は決めずに候補として止める。別のsmellや対象領域を
+見つけても今回へ追加しない。
+
+Codex acceptance: 2026-10-09、3段のアクセス経路は公開契約、内部変更口、unsafe境界を分けるために
+必要な構造であり、構造上のsmellではないとの結論を受入。残るのはgetterの`@inline(__always)`に
+tuning intentが残っていない記録上のsmellである。現在の中間ゴールへ直接寄与せず、性能方針の判断も
+含むため独立taskは起動しない。候補は`AI_GRAPH_SMELL_NOTES.md`の観測記録に保持する。
 
 ## Completed bounded assignment: Permutation benchmark bisection
 
@@ -282,7 +524,7 @@ Codex acceptance: 2026-10-08、5件を検収し、既存方針から決まる整
 ## Active task: independent task graph DB experiment
 
 Continue operating the Claude-owned experiment defined by
-`Maintanance/TASK_GRAPH_DB_EXPERIMENT.md`. Design and operate only Claude's local SQLite database.
+`Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md`. Design and operate only Claude's local SQLite database.
 Do not inspect, query, copy, infer, or document the Codex-owned database or its schema. Do not place
 Claude's schema in this handoff or another tracked file. The Markdown Task Registry remains
 authoritative; never write back to it from the database.
@@ -292,7 +534,7 @@ Registry display. Record only schema-independent operational observations. Do no
 integration discussion.
 
 The former integration task has been dropped. A separate graph DB exchange task is active. You may
-use `GRAPH_DB_EXCHANGE.md`, or decline the tracked file and choose a shared gitignored file under
+use `Graph/GRAPH_DB_EXCHANGE.md`, or decline the tracked file and choose a shared gitignored file under
 `.task-graphs/` with Codex. No explanation or publication of the exchange is required.
 
 ## Active bounded assignments: OptionalArray quality evidence
@@ -438,5 +680,5 @@ task list or authority source.
   「明示再開」の混在。互換mode系（`PERM-004`〜`PERM-010`）を契機待ちに置いたのは読みが割れうる点。
   2026-10-08夜、ユーザー判断: 当面、分解はClaudeが行い、枝番を付けた子taskの登録はCodexへ依頼する（今日の`RBT-017`と同じ流れ）。
   graph DBで子taskを持つ案は、Codexへ伝えられないので見送り。
-- `GRAPH-005`: 共有面はtrackedな`GRAPH_DB_EXCHANGE.md`を使う（2026-10-07、ユーザー了承）。
+- `GRAPH-005`: 共有面はtrackedな`Graph/GRAPH_DB_EXCHANGE.md`を使った。2026-10-09、ユーザー判断で交流会を終了。
 - 10/10以降: task fit協議を予定（ユーザー）。この一時的な主担当の役割はその時点で見直す。

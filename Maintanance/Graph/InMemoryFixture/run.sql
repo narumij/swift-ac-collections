@@ -1,12 +1,12 @@
 -- GRAPH-007 entry point. From the repository root:
---   sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/run.sql
+--   sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/run.sql
 -- Starts from an empty in-memory database and reads no other database file.
 .bail on
 .headers on
 .mode column
-.read Maintanance/AIGraphInMemoryFixture/schema.sql
-.read Maintanance/AIGraphInMemoryFixture/rbt017_fixture.sql
-.read Maintanance/AIGraphInMemoryFixture/neighbors.sql
+.read Maintanance/Graph/InMemoryFixture/schema.sql
+.read Maintanance/Graph/InMemoryFixture/rbt017_fixture.sql
+.read Maintanance/Graph/InMemoryFixture/neighbors.sql
 
 INSERT INTO query_input SELECT id FROM node WHERE kind = 'symbol';
 .print == foreign key violations (expect none) ==

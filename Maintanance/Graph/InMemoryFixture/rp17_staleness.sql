@@ -1,9 +1,9 @@
 -- GRAPH-014 / RP-17: is an observation stale, given the commit it was observed at and the files changed since then?
--- From the repository root:  sqlite3 :memory: < Maintanance/AIGraphInMemoryFixture/rp17_staleness.sql
+-- From the repository root:  sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/rp17_staleness.sql
 -- Input transcribed from `git diff --name-only b87c8428..bb77fafc -- Sources` (no Git extraction at run time).
 -- The code graph observed at b87c8428 was shown as stale at the start of the 2026-10-08 session and rebuilt at bb77fafc.
 .bail on
-.read Maintanance/AIGraphInMemoryFixture/schema.sql
+.read Maintanance/Graph/InMemoryFixture/schema.sql
 
 INSERT INTO node VALUES
   ('s:19OptionalArrayModule0A7Array4DV', 'symbol', 'OptionalArray4D', 'Sources/OptionalArrayModule/OptinalArray.swift:277',

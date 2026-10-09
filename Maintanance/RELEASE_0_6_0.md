@@ -10,6 +10,10 @@ release検討開始条件待ち。現時点ではrelease候補commit、到達範
 templateへ還元する。0.6.0は、その結果として成熟したrelease工程を本運用する最初の候補とする。
 この位置づけは製品上の到達範囲とrelease開始条件を変更しない。
 
+`0.5.x`のrehearsal中は、main pushとrelease tag pushの双方がGitHub Pagesをdeployし、完了順で表示内容が
+入れ替わり得る状態を許容する。0.6.0のrelease工程でmain由来のdeployを停止し、以後はrelease tag commit
+から生成・検証した利用者向け文書だけをPagesへdeployする。
+
 ## Release検討開始条件
 
 全公開対象の利用者向けドキュメントが、公開可能な初版として揃っていることを、0.6.0のrelease検討を

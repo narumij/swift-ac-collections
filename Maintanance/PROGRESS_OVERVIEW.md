@@ -99,6 +99,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-017` | `DONE` | User / Codex | [DECISION] release専用workflowの変更branch | 2026-10-09、現在の作業branchとmainのworkflowは変更せず、`prepare/release/template`上でrelease専用workflowを別fileとして用意すると決定。`release/<version>`はユーザー操作でremoteへpushしてrelease CIを実行し、変換時にmain用workflowを除外する | `RELEASE_CHECKLIST.md` |
 | `RELEASE-018` | `DONE` | User / Codex | [DECISION] release treeにおけるbenchmark結果 | 2026-10-09、benchmark source・release profile・再実行手段はtag対象へ残す一方、`Benchmarks/Results/**`の過去結果は除外し、release測定結果・環境・binary・assemblyはtag対象と同じcommitのCI artifactとして保存すると決定 | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` |
 | `RELEASE-019` | `DONE` | User / Codex | [DECISION] release性能の比較baseline | 2026-10-09、直前のrelease tagをbaselineとし、candidate側で固定したrelease profile・benchmark定義をbaselineとcandidateの双方へ適用して同じrunner job内で比較すると決定。0.5.2のbaselineは0.5.1 | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` |
+| `RELEASE-020` | `FROZEN` | Codex | [EXECUTION] 0.6.0でGitHub Pages更新元をrelease tagへ一本化 | 0.5.xではmain pushとrelease tag pushの双方によるdeploy競合を許容。0.6.0のrelease工程でmain由来のdeployを停止し、tag commitから生成・検証した利用者向け文書だけがPagesを更新することを確認 | `RELEASE_0_6_0.md` / `RELEASE_TEMPLATE_BRANCH_DESIGN.md` |
 | `RELEASE-006` | `FROZEN` | User / Codex | [DECISION] 0.5.2の到達範囲とrelease検討開始 | 全公開対象のコメントドック・ドラフト完成後、0.5.2へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_5_2.md` |
 | `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | 全公開対象の利用者向けドキュメント初版完成後、0.6.0へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_6_0.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
@@ -176,6 +177,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-011` | `RELEASE-017` | `PARALLEL_JOIN` | workflow設計は現在branchで進められるが、実装へ渡す前に変更をtemplate branchだけへ限定する方針と合流する |
 | `RELEASE-011` | `RELEASE-018` | `PARALLEL_JOIN` | benchmark構成の分類は先行できるが、tag tree確定前に過去結果を除外してrelease結果をCI artifactへ残す方針と合流する |
 | `RELEASE-011` | `RELEASE-019` | `PARALLEL_JOIN` | performance workflowの設計は先行できるが、比較実装前に直前release tagをbaselineとする方針と合流する |
+| `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |
 
 ## Registry rules
 

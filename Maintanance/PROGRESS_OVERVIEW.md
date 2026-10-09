@@ -21,6 +21,8 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **後続の中間ゴール:**
 
+- Permutation、OptionalArray、BareArrayのTest as Specification整理が完了した時点で、0.5.1の
+  製品上の到達範囲を決め、release checklistへ進むか判断できる状態にする。
 - Permutationの利用者向け文書ドラフトを、公開契約と品質評価に接続し、ユーザーが本文をレビューできる
   状態にする。公開可能な初版の完成はこのゴールに含めない。
 - OptionalArrayの利用者向け文書ドラフトを、公開契約と品質評価に接続し、ユーザーが本文をレビューできる
@@ -75,6 +77,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、別projectでの再現性検証へ進む | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
+| `RELEASE-005` | `FROZEN` | User / Codex | [DECISION] 0.5.1の到達範囲とrelease検討開始 | 三対象のTest as Specification整理後、0.5.1へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_5_1.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
@@ -109,6 +112,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-007` | `BARE-006` | `SEQUENCE` | BareArray固有の測定設計と、必要なら分離した製品判断の完了後に計測する |
 | `BARE-001` | `BARE-002` | `PARALLEL_JOIN` | 親監査と契約棚卸しは並行できるが、親監査の完了前に合流する |
 | `BARE-001` | `BARE-005` | `PARALLEL_JOIN` | 親監査は先行できるが、完了前にTest as Specification整理と合流する |
+| `RELEASE-005` | `BARE-005` | `SEQUENCE` | PermutationとOptionalArrayは整理済み。BareArrayのTest as Specification整理後に0.5.1を検討する |
 
 ## Registry rules
 

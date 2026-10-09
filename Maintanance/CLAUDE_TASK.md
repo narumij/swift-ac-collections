@@ -7,12 +7,14 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（2026-10-13 16:00 JSTまで新規assignment停止）**
+**実行中ジョブ: なし（2026-10-13 16:00 JSTまでessential-only）**
 
 - 継続ジョブ: なし。
 - 新規bounded assignment: なし。命名調査の補完はClaudeへ戻さず、第三者AI向け依頼書へ切り替えた。
-- 一時制限: ユーザー指示により、2026-10-13 16:00 JSTまではClaudeへの新規assignmentを行わない。
-  時刻到達だけで自動再開せず、その時点のゴールへの必要性とClaudeの利用量を再確認する。
+- 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
+  Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
+  停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。
+  時刻到達だけで自動的に通常運用へ戻さず、その時点のゴールへの必要性と利用量を再確認する。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
   受け入れた。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持する。

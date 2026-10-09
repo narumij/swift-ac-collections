@@ -7,9 +7,9 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（`PERM-029`はClaude返却済み、Codex検収待ち）**
+**実行中ジョブ: なし（`PERM-029`のClaude返却はCodex検収済み）**
 
-- 継続ジョブ: 下記`PERM-029`の独立確認だけ。
+- 継続ジョブ: なし。`PERM-029`はCodex検収とCI確認を終えて完了。
 - 新規bounded assignment: 2026-10-10、ユーザーが利用制限待機より本依頼を優先すると明示したため、
   下記の範囲だけ例外として発注する。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
@@ -82,6 +82,13 @@ source、test、Registry、性能基準を変更しない。実験的変更が�
   まだ「`next()`のインライン化だけを抑止」と書いており、現実装と食い違う。修正はCodex判断。
 - 実行command: `swift test [-c release] --filter 'PermutationTests.NextPermutationsSequence_2_ValueSemanticsTests'`。
   一時copyは`mktemp -d`配下で実施し削除済み。repositoryのsource/testは無変更。
+
+Codex acceptance（2026-10-10）: HEADとcommit差分を照合し、回帰testが値semanticsの公開契約違反を
+捕捉すること、`Buffer.copy()`だけを非インライン化したHEADでDebug 6件が成功すること、Claudeが
+一時copyで`copy()`を再び`@inlinable`にするとReleaseで再現したという反証結果を受け入れた。
+原因の説明と性能影響はClaude自身が`UNVERIFIED`としており、確定事実としては受け入れない。
+その後ユーザー報告のCI greenを確認証拠として受け入れ、現実装に合わせて内部コメントを補正し、
+`PERM-029`を完了とした。
 
 ## Returned bounded assignment: three-module documentation-comment draft review
 

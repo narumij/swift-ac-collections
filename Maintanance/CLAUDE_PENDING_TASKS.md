@@ -265,7 +265,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ### `CP-20261010-001` — Permutation `Buffer.copy()`非inlinable化のwitness table参照確認
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: 2026-10-10、ユーザーが「採番待ち追加でいいので、これのwitness table参照確認して」と明示依頼。
   対象は`Permutations.swift`の`copy()`に付いたTODO（`@usableFromInline`化に伴うwitness table参照チェック）。
 - 種別候補: `DISCOVERY`
@@ -290,4 +290,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
     `Element`の関連型の解決に限られる。
   - 判断材料: コストは「共有されたiteratorが進むとき1回」だけで、その時点で既にO(n)の確保とcopyが発生する経路なので、
     相対的な上乗せは小さいと見込む。性能測定は未実施（`UNVERIFIED`）。TODOを消すかどうかはCodexが判断する。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-10、既存の`PERM-029`へ統合。呼出し側のhot pathは`copy()`に触れず、
+  共有時のcold pathだけが非specializeの`copy()`を直接呼ぶこと、内部の`Collection` witness table参照は
+  `Element` metadata解決に限られるという機械語確認を受け入れた。性能の推測自体は根拠にせず、
+  ユーザー報告の性能CI greenと回帰test成功を別証拠として完了判定した。新規stable IDは不要。

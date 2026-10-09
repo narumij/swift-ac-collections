@@ -88,9 +88,10 @@ extension NextPermutationsSequence {
     var state = State.initial
 
     // TODO: しばらく様子を見て再現しない場合メモを削除すること
-    // Swift 6.4のRelease最適化では、`next()`を呼び出し側へ展開すると、assertionのautoclosure内で
-    // 元iteratorを進めた後にcopy側も1要素余分に進む事象を確認した。原因は未確定のため、`next()`の
-    // インライン化だけを抑止し、COWと未保持時の無コピー経路は維持する(2026-10-10回帰test追加)。
+    // Swift 6.4のRelease最適化では、assertionのautoclosure内で元iteratorを進めた後にcopy側も
+    // 1要素余分に進む事象を確認した。原因は未確定のため、共有時だけ通る`Buffer.copy()`の
+    // インライン化を抑止し、`next()`と未保持時の無コピー経路はインライン化可能なまま維持する。
+    // (2026-10-10回帰test追加、Debug／Release／性能CI成功)
     /// Makes the buffer unique before advancing. Returns `false` without copying when the
     /// buffer is shared and has no successor, because such a copy would only be discarded.
     @inlinable
@@ -318,7 +319,9 @@ extension NextPermutationsSequence.Buffer {
     return unsafe unsafeDowncast(storage, to: NextPermutationsSequence.Buffer.self)
   }
 
-  // TODO: バグ対応だし、コールドパスだしでusableFromInlineにしているが、witness table参照チェックが必要
+  // Swift 6.4 ReleaseのCOW回帰を避けるため、共有時だけ通るcopy処理をインライン化しない。
+  // Release機械語ではhot pathから分離され、内部のCollection witness table参照はElement metadataの
+  // 解決に限られる。回帰testと性能CIの成功も2026-10-10に確認済み。
   @usableFromInline
   internal func copy() -> NextPermutationsSequence.Buffer {
     let count = header.count

@@ -7,14 +7,14 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（release template branch設計レビューをCodex受入）**
+**実行中ジョブ: なし（OPS-002のClaude初稿をCodex受入、本文統合待ち）**
 
 - 継続ジョブ: なし。
-- 新規bounded assignment: `RELEASE-011`の設計ドラフトを変更せずに反証レビューする。
+- 新規bounded assignment: なし。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
   Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
   停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。今回の一件は、
-  `prepare/release/0`の起点commitを決める前の独立した反証確認をユーザーが明示的に求めたため該当する。
+  ユーザーがClaudeによるドラフトを明示指定したため、その指定範囲に限る例外として割り当てる。
   時刻到達だけで自動的に通常運用へ戻さず、その時点のゴールへの必要性と利用量を再確認する。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
@@ -23,7 +23,7 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
 
-## Current bounded assignment: release template branch design review
+## Completed bounded assignment: release template branch design review
 
 Registryの`RELEASE-011`と`Maintanance/RELEASE_TEMPLATE_BRANCH_DESIGN.md`を入力に、
 `prepare/release/0`方式の設計ドラフトを独立に反証レビューする。Codexの推奨を前提にせず、次の問いだけを
@@ -96,6 +96,44 @@ workflowを別file化し、version別branchのremote pushをユーザー操作�
 境界、変換fixture、Package exclude、性能比較基準は`RELEASE-011`の設計・試行で処理する。その後のユーザー
 判断で、template名は`prepare/release/template`、version別branchは`release/<version>`へ改め、同versionの
 tag作成をbranch完成条件とした。上記Result中の`/0`・`/x`はレビュー時点の名称として保持する。
+## Completed bounded assignment: Codex commander orientation draft
+
+Task Registryの`OPS-002`と、その詳細正本`Maintanance/CODEX_ORIENTATION.md`に従い、新しいCodex会話へ渡す
+司令塔orientationの初稿を作成する。これは他taskから独立した運用基盤taskであり、0.5.1 release作業の
+一部または前提として扱わない。
+
+正本の`入力資料`に列挙された文書だけを、このassignmentの追加資料として必要な範囲で読む。内容は
+`CODEX_ORIENTATION.md`の`## Claude draft`節だけへ記録し、次を短く、実際の行動へつながる順序で含める。
+
+1. 最初に理解すべき責任分担: ユーザー、Codex、Claude、第三者AIが何を持つか。
+2. 能力と決定権・完了承認を分け、AI同士の一致を証拠とみなさない原則。
+3. unsafe storage、CoW、Index／View寿命、specialization／inlining、性能を含むrepository固有の難所。
+4. Debug、Release、Death Test、Address Sanitizer、documentation、performanceを別種の証拠として扱うこと。
+5. mainの管理文書と、削ぎ落とすrelease成果物の境界。
+6. 会話や作業場所を失った際、推測で復元せず、AGENTS.mdからTask Registryと選択taskの正本へ戻る復帰手順。
+
+長い管理規則の複製、task一覧、過去の出来事の時系列、個人評価、未確定のrelease工程案は含めない。
+既存の`この文書の位置づけ`、`作成task`、`入力資料`、`本文`は変更しない。Registry、AGENTS.md、
+CLAUDE.md、他の入力資料、source、test、workflowを変更しない。新しい方針や判断点が必要なら本文へ推測で
+埋めず、`Claude draft`末尾に`未決定`として根拠とともに記録して止める。
+
+Codexが原資料との照合、編集、本文への統合、受入、Registry更新を行う。Claudeはtaskを完了扱いせず、
+ドラフト作成後はこのassignmentへ短い`### Result`を追記し、ジョブ状態を返却待ちへ変更する。commit、push、
+branch操作は行わない。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`CODEX_ORIENTATION.md`の`## Claude draft`節だけへ初稿を追記した。他の節・文書は変更していない。
+commit・branch操作なし（git addもしていない。指示に無いため）。
+
+- 構成: 指定6項目を順に（責任分担表、能力と決定権、難所5種、証拠種類の表、main／release境界、復帰手順7段）。各項末尾に出典を付けた。
+- 末尾`未決定`3件: 入力資料に無い`AGENTS.md`・Registryへの依存の扱い、`CODEX_OBSERVATIONS.md`を根拠に使うか、現況・非公開知識の粒度。
+- 気づいた事実（変更なし）: 現branch `prepare/release/template`は`develop/misc/53`の10 commit（`RELEASE_TEMPLATE_BRANCH_DESIGN.md`、design review受入`9596e675`を含む）を持たない。
+  また、0.5.1独立チェック2回目とtemplate design reviewの`Result`はgit上のどのrefにも無い（受入記録は`develop/misc/53`の`9596e675`）。tag `0.5.1`は`d7b3863e`（treeは確認した`b779da53`と同一）。
+
+Codex acceptance: 2026-10-09、指定6項目を備え、責任境界、技術的難所、証拠区分、復帰手順を原資料へ
+接続した境界付き初稿として受入。変動するIndexの現況、第三者AIの依頼主体、復帰手順が参照する入力資料を
+Codexが本文統合時に調整する。OPS-002全体の完成判定とRegistry更新は行わない。
 
 ## Completed bounded assignment: 0.5.1 independent release check (first pass)
 

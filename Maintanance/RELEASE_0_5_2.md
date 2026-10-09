@@ -130,7 +130,8 @@ template方式のrelease tree変換や内部管理文書の除外は行わない
 - remote gate: 通常test、Linux、documentation、Address Sanitizer、performanceを含むworkflowの全必須job。
 - 記録境界: CHANGELOGとrelease記録を候補commitへ含めてから固定し、tag後の記録は新しい作業branchへ積む。
 - 独立確認: local／remote gateが同じ候補commitで揃った後にClaudeが変更せず確認する。使用量制約が解消するまで待つ。
-- 操作境界: remote反映、PR merge、tag作成、tag push、release pageは必要な段階で一操作ずつ承認を得る。
+- 操作境界: branch pushはユーザー専任とし、Codexは実行、承認依頼、催促を行わない。PR merge、tag作成、tag push、
+  release pageも必要な段階でそれぞれの権限境界に従う。
 
 この計画を、候補内容の準備・固定、local一次検収、remote CI、Claude独立確認へ分解した。候補固定後に製品差分または
 release記録を変更した場合は、候補を固定し直し、影響する証拠を同じcommitへ取り直す。
@@ -155,4 +156,5 @@ local一次検収の対象とし、それ以降に製品差分が入った場合
 
 Permutationの`withUnsafeMutablePointers`未使用result警告とDebug probeのstrict-memory-safety警告は既存であり、
 今回の製品差分では導入していない。testとDocCは成功しているため0.5.2の非阻害事項とし、暗黙に解消済みとは扱わない。
-本記録の同期後、同じ内容のHEADをremote CI候補とする。remote pushは別のユーザー判断を要する。
+本記録の同期後、同じ内容のHEADをremote CI候補とする。branchのremote pushはユーザー専任であり、Codexは
+実行、承認依頼、催促を行わず、push後のCI確認だけを担当する。

@@ -115,9 +115,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-025` | `DONE` | Codex | [DISCOVERY] 0.5.2候補計画と必須証拠の具体化 | 2026-10-09、0.5.1からの差分を公開コメント3 sourceと内部管理文書へ分類し、0.5.1相当のlocal／remote gate、記録境界、Claude独立確認を定め、候補準備・一次検収・remote CI・独立確認へ分解 | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-026` | `DONE` | Codex | [EXECUTION] 0.5.2候補内容の準備と固定 | 2026-10-09、CHANGELOGへ公開コメント差分を記録し、製品差分がBareArray・OptionalArray・Permutation通常モードのコメントだけで、Package・workflow・READMEに差分がないことを確認。内容基準commit `5eb56236`を固定し、記録同期後のHEADをlocal検証へ渡した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-027` | `DONE` | Codex | [EXECUTION] 0.5.2候補のlocal一次検収 | 2026-10-09、固定候補でDebug／Release全testとDeath Test、4対象のdocumentation warning-as-error、公開source・Package・workflow・README差分を検証して成功。既存Permutation compiler警告だけを非阻害として確認 | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
-| `RELEASE-028` | `PROPOSED` | User / Codex | [EXECUTION] 0.5.2候補のremote CI確認 | `RELEASE-030`で固定候補branchのpushが承認された後、通常test、Linux、documentation、Address Sanitizer、performanceを含む全必須jobが同じcommitでgreenか確認する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-028` | `WAITING_EXTERNAL` | Codex | [EXECUTION] 0.5.2候補のremote CI確認 | ユーザー専任のremote push後、通常test、Linux、documentation、Address Sanitizer、performanceを含む全必須jobが同じcommitでgreenか確認する。Codexはpushを実行・催促しない | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-029` | `WAITING_EXTERNAL` | Claude / Codex | [EXECUTION] 0.5.2固定候補の独立確認 | local／remote gateが同じ候補commitで揃い、Claudeの使用量制約が解消した後、変更せずに候補、証拠、既知事項、tag予定位置を独立確認する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
-| `RELEASE-030` | `WAITING_USER` | User / Codex | [DECISION] 0.5.2固定候補branchのremote反映 | local一次検収済みの`develop/misc/53`をremote CIへ渡すため、同名branchをpushしてよいか一つだけ判断する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-030` | `USER_ONLY` | User | [EXECUTION] 0.5.2固定候補branchのremote push | local一次検収済みの`develop/misc/53`を、ユーザーが自分のタイミングでremoteへpushする。AIは着手、代行、承認依頼、催促を行わない | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
 | `DOC-003` | `DONE` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト完成判定 | 2026-10-09、通常版のレビュー用ドラフトと検証を受入。`DOC-007`でAtCoder 2025互換modeを0.5.2の対象外と決定したため、追加実行なしでユーザーへの引き渡しを完了 | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `DOC-004` | `DONE` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | 2026-10-09、現行名の公開29宣言と4適合をTest as Specification・実装へ再照合し、所有、View寿命、破棄、変更共有、軸、境界、計算量をレビュー用コメントへ記載。Debug／Release通常35件＋Death Test 21件、documentation warning-as-error成功。0.5.2段階の成果としてユーザーへ引き渡し済み | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
@@ -210,7 +210,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-026` | `RELEASE-025` | `SEQUENCE` | 候補境界と必須証拠を具体化してから候補内容を準備・固定する |
 | `RELEASE-027` | `RELEASE-026` | `SEQUENCE` | 候補commitを固定してから同じcommitへlocal一次検収を行う |
 | `RELEASE-028` | `RELEASE-026` | `SEQUENCE` | 候補commitを固定し、remote反映の対象を一意にしてからCIを確認する |
-| `RELEASE-028` | `RELEASE-030` | `SEQUENCE` | 固定候補branchのremote pushをユーザーが承認してからCIを確認する |
+| `RELEASE-028` | `RELEASE-030` | `SEQUENCE` | ユーザー専任のfixed candidate branch pushが完了してからCodexがCIを確認する |
 | `RELEASE-029` | `RELEASE-027` | `PARALLEL_JOIN` | local一次検収の証拠を揃えてから独立確認へ渡す |
 | `RELEASE-029` | `RELEASE-028` | `PARALLEL_JOIN` | 同じ候補commitのremote CI証拠を揃えてから独立確認へ渡す |
 | `RELEASE-022` | `RELEASE-027` | `PARALLEL_JOIN` | release可否判断前に固定候補のlocal一次検収を完了する |

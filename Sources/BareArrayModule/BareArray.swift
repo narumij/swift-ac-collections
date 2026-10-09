@@ -134,7 +134,9 @@ public struct BareArray2D<Element>: ~Copyable {
 
     @inline(__always)
     set {
-      /* NOP */
+      precondition(0 <= position && position < height)
+      precondition(newValue.payload == payload + width * position)
+      precondition(newValue.count == width)
     }
   }
 
@@ -218,7 +220,9 @@ public struct BareArray3D<Element>: ~Copyable {
 
     @inline(__always)
     set {
-      /* NOP */
+      precondition(0 <= position && position < depth)
+      precondition(newValue.payload == payload + width * height * position)
+      precondition(newValue.width == width && newValue.height == height)
     }
   }
 
@@ -301,7 +305,10 @@ public struct BareArray4D<Element>: ~Copyable {
 
     @inline(__always)
     set {
-      /* NOP */
+      precondition(0 <= position && position < size3)
+      precondition(newValue.payload == payload + size0 * size1 * size2 * position)
+      precondition(
+        newValue.width == size0 && newValue.height == size1 && newValue.depth == size2)
     }
   }
 
@@ -392,7 +399,9 @@ public struct BareArray2DView<Element> {
 
     @inline(__always)
     set {
-      /* NOP */
+      precondition(0 <= position && position < height)
+      precondition(newValue.payload == payload + width * position)
+      precondition(newValue.count == width)
     }
   }
 }
@@ -437,7 +446,9 @@ public struct BareArray3DView<Element> {
 
     @inline(__always)
     set {
-      /* NOP */
+      precondition(0 <= position && position < depth)
+      precondition(newValue.payload == payload + width * height * position)
+      precondition(newValue.width == width && newValue.height == height)
     }
   }
 }

@@ -340,3 +340,27 @@ Codexはsourceを変更せず、次を確認する。
 
 Codexの推奨は2。compile時の完全除外はできないが、現行の利用形状と計算量を維持しつつ、全体代入を
 無言のNOPから契約違反として検出できる。
+
+### ユーザー決定（2026-10-09）
+
+検査付きsetterを採用する。2D〜4D所有型と2D〜3D Viewで、外側subscriptのsetterは同一positionから
+返されたpointerとshapeを持つViewだけをwritebackとして受け入れる。別Viewの代入、範囲外position、
+shape不一致は契約違反としてtrapさせる。View全体を要素copyする契約は導入しない。
+
+## `BARE-014` — 検査付きView writeback setter
+
+- 5つのNOP setterへ、position境界、pointer、次元またはcountの一致検査を追加する。
+- 既存の連鎖要素書き込みがDebug・Releaseで成功することを維持する。
+- 別storageの同shape Viewを全体代入するとtrapすることを5経路で固定する。
+- source上の計算量はO(1)を維持し、要素copy、rename、View寿命対策を混ぜない。
+
+### Codex受入（2026-10-09）
+
+5つの外側subscript setterへ、position境界、pointer、countまたは次元の一致検査を追加した。既存の通常testに
+より連鎖要素書き込みと変更共有が維持され、別storageの同shape Viewを代入するDeath Test 5件がすべて
+trapすることを確認した。
+
+`swift test --disable-sandbox --filter BareArrayModuleTests`をDebugとReleaseで実行した。Debugは通常32件と
+Death Test 22件、Releaseは通常25件とDeath Test 22件が成功した。既存警告以外の新しいwarningはなく、
+source上のsetterは要素を走査せずO(1)を維持する。Linuxと生成コード上での検査除去可否は未確認で、後続の
+性能測定設計へ残す。

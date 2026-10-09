@@ -130,5 +130,49 @@
         _ = array[5]
       }
     }
+
+    // 外側subscriptのsetterは、連鎖writebackと異なるView全体代入を拒否する（BARE-014）
+
+    @Test func foreignViewAssignment_traps_owned2D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var lhs = BareArray2D<Int>(repeating: 0, width: 2, height: 2)
+        let rhs = BareArray2D<Int>(repeating: 1, width: 2, height: 2)
+        lhs[0] = rhs[0]
+      }
+    }
+
+    @Test func foreignViewAssignment_traps_owned3D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var lhs = BareArray3D<Int>(repeating: 0, width: 2, height: 2, depth: 2)
+        let rhs = BareArray3D<Int>(repeating: 1, width: 2, height: 2, depth: 2)
+        lhs[0] = rhs[0]
+      }
+    }
+
+    @Test func foreignViewAssignment_traps_owned4D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var lhs = BareArray4D<Int>(repeating: 0, size0: 2, size1: 2, size2: 2, size3: 2)
+        let rhs = BareArray4D<Int>(repeating: 1, size0: 2, size1: 2, size2: 2, size3: 2)
+        lhs[0] = rhs[0]
+      }
+    }
+
+    @Test func foreignViewAssignment_traps_view2D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let lhsArray = BareArray3D<Int>(repeating: 0, width: 2, height: 2, depth: 2)
+        let rhsArray = BareArray3D<Int>(repeating: 1, width: 2, height: 2, depth: 2)
+        var lhs = lhsArray[0]
+        lhs[0] = rhsArray[0][0]
+      }
+    }
+
+    @Test func foreignViewAssignment_traps_view3D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let lhsArray = BareArray4D<Int>(repeating: 0, size0: 2, size1: 2, size2: 2, size3: 2)
+        let rhsArray = BareArray4D<Int>(repeating: 1, size0: 2, size1: 2, size2: 2, size3: 2)
+        var lhs = lhsArray[0]
+        lhs[0] = rhsArray[0][0]
+      }
+    }
   }
 #endif

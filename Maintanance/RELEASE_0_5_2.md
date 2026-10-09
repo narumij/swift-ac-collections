@@ -119,6 +119,18 @@ documentation buildの結果と未確認事項が記録され、ユーザーが�
 
 ## 候補計画の具体化
 
-2026-10-09、製品範囲とbranch方式の決定を入力に、0.5.1から現HEADまでの差分を製品範囲、後続、内部管理へ
-分類し、候補境界と必須証拠を具体化する`RELEASE-025`を開始した。このDISCOVERYは候補commitの作成、PR、
-merge、tag、pushを行わず、判断不要の実行taskと必要な判断taskを分離して登録するところまでを扱う。
+2026-10-09、製品範囲とbranch方式の決定を入力に、0.5.1から現HEADまでの差分を確認した。製品差分は
+BareArray、OptionalArray、Permutation通常モードの公開コメントで、RedBlackTreeのレビュー用ドラフトは0.5.1時点の
+treeですでに到達済みである。残りは内部管理文書であり、0.5.2ではmain commitをそのままtag候補にするため、
+template方式のrelease tree変換や内部管理文書の除外は行わない。
+
+0.5.1相当として、次を必須証拠とする。
+
+- local gate: Debug／Releaseの全test、Death Test、documentation warning-as-error、公開API・再公開面・Package構成の差分確認。
+- remote gate: 通常test、Linux、documentation、Address Sanitizer、performanceを含むworkflowの全必須job。
+- 記録境界: CHANGELOGとrelease記録を候補commitへ含めてから固定し、tag後の記録は新しい作業branchへ積む。
+- 独立確認: local／remote gateが同じ候補commitで揃った後にClaudeが変更せず確認する。使用量制約が解消するまで待つ。
+- 操作境界: remote反映、PR merge、tag作成、tag push、release pageは必要な段階で一操作ずつ承認を得る。
+
+この計画を、候補内容の準備・固定、local一次検収、remote CI、Claude独立確認へ分解した。候補固定後に製品差分または
+release記録を変更した場合は、候補を固定し直し、影響する証拠を同じcommitへ取り直す。

@@ -112,7 +112,11 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-022` | `PROPOSED` | User / Codex | [DECISION] 0.5.2 release可否ゲート | 後から分解する準備・検収taskが固定候補と必須証拠を揃えた後、0.5.2をreleaseしてよいか一つだけ判断する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-023` | `EXCLUDED` | User / Codex | [EXECUTION] 0.5.2 tag・push・公開 | 2026-10-09、工程確定前の分解は早すぎるため未着手で除外。可否決定後の操作は必要になった時点で個別にtask化する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-024` | `DONE` | User / Codex | [DECISION] 0.5.2のrelease branch方式 | 2026-10-09、template branch rehearsalは準備不足のため0.5.2では中止。0.5.1相当として、作業branchで候補を準備・検証し、PRでmainへmerge後、main CIがgreenの同一commitをtag候補とする方式を採用 | `RELEASE_0_5_2.md` / `RELEASE_0_5_1.md` |
-| `RELEASE-025` | `ACTIVE` | Codex | [DISCOVERY] 0.5.2候補計画と必須証拠の具体化 | 0.5.1から現HEADまでの差分を製品範囲・後続・内部管理へ分類し、候補境界と必須local gate、remote CI、documentation、性能、独立確認を定め、判断不要の実行taskへ分解する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-025` | `DONE` | Codex | [DISCOVERY] 0.5.2候補計画と必須証拠の具体化 | 2026-10-09、0.5.1からの差分を公開コメント3 sourceと内部管理文書へ分類し、0.5.1相当のlocal／remote gate、記録境界、Claude独立確認を定め、候補準備・一次検収・remote CI・独立確認へ分解 | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-026` | `ACTIVE` | Codex | [EXECUTION] 0.5.2候補内容の準備と固定 | CHANGELOGへ実差分を記録し、0.5.1からのcommit・tree・公開API・Package・workflow・利用者向け文書差分を確認して、local検証へ渡す候補commitを固定する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-027` | `PROPOSED` | Codex | [EXECUTION] 0.5.2候補のlocal一次検収 | 固定候補に対してDebug／Release全test、Death Test、documentation warning-as-error、公開API・再公開面・Package構成を検証し、既知事項を分類する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-028` | `PROPOSED` | User / Codex | [EXECUTION] 0.5.2候補のremote CI確認 | 固定候補のremote反映を別途承認後、通常test、Linux、documentation、Address Sanitizer、performanceを含む全必須jobが同じcommitでgreenか確認する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-029` | `WAITING_EXTERNAL` | Claude / Codex | [EXECUTION] 0.5.2固定候補の独立確認 | local／remote gateが同じ候補commitで揃い、Claudeの使用量制約が解消した後、変更せずに候補、証拠、既知事項、tag予定位置を独立確認する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
 | `DOC-003` | `DONE` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト完成判定 | 2026-10-09、通常版のレビュー用ドラフトと検証を受入。`DOC-007`でAtCoder 2025互換modeを0.5.2の対象外と決定したため、追加実行なしでユーザーへの引き渡しを完了 | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `DOC-004` | `DONE` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | 2026-10-09、現行名の公開29宣言と4適合をTest as Specification・実装へ再照合し、所有、View寿命、破棄、変更共有、軸、境界、計算量をレビュー用コメントへ記載。Debug／Release通常35件＋Death Test 21件、documentation warning-as-error成功。0.5.2段階の成果としてユーザーへ引き渡し済み | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
@@ -202,6 +206,14 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |
 | `RELEASE-025` | `RELEASE-006` | `SEQUENCE` | 0.5.2の製品範囲とrelease検討開始を確定してから候補計画を具体化する |
 | `RELEASE-025` | `RELEASE-024` | `SEQUENCE` | 0.5.2で使うbranch方式を確定してから、その工程に沿った候補境界と証拠を設計する |
+| `RELEASE-026` | `RELEASE-025` | `SEQUENCE` | 候補境界と必須証拠を具体化してから候補内容を準備・固定する |
+| `RELEASE-027` | `RELEASE-026` | `SEQUENCE` | 候補commitを固定してから同じcommitへlocal一次検収を行う |
+| `RELEASE-028` | `RELEASE-026` | `SEQUENCE` | 候補commitを固定し、remote反映の対象を一意にしてからCIを確認する |
+| `RELEASE-029` | `RELEASE-027` | `PARALLEL_JOIN` | local一次検収の証拠を揃えてから独立確認へ渡す |
+| `RELEASE-029` | `RELEASE-028` | `PARALLEL_JOIN` | 同じ候補commitのremote CI証拠を揃えてから独立確認へ渡す |
+| `RELEASE-022` | `RELEASE-027` | `PARALLEL_JOIN` | release可否判断前に固定候補のlocal一次検収を完了する |
+| `RELEASE-022` | `RELEASE-028` | `PARALLEL_JOIN` | release可否判断前に同じ候補commitのremote CIを確認する |
+| `RELEASE-022` | `RELEASE-029` | `PARALLEL_JOIN` | release可否判断前にClaude独立確認とCodex受入を完了する |
 | `RELEASE-007` | `OPT-044` | `PARALLEL_JOIN` | 利用者向け文書作業は現行名で先行できるが、0.6.0の到達範囲判断前に1D所有型名を確定する |
 | `RELEASE-007` | `OPT-045` | `PARALLEL_JOIN` | 利用者向け文書作業は現行名で先行できるが、0.6.0の到達範囲判断前に次元名体系を確定する |
 | `DOC-003` | `DOC-007` | `PARALLEL_JOIN` | 通常版の執筆は先行できるが、Permutation全体の完成判定前に互換modeの対象境界を確定する |

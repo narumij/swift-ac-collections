@@ -286,3 +286,4 @@ IDs remain permanent and must not be reused.
 | `OPS-024` | `DONE` | User / Codex | [DECISION] Task precedence同期位置の名称 | 2026-10-09、列名を`Barrier`、開始前の待合せを`HEAD`、終了前の待合せを`LAST`とし、同期位置を表す名称へ変更 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-018` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←Index完了のBarrier分類 | `LAST`。品質調査は先行可能とし、1.0品質判定を確定する前にIndex契約完了を待つ | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-019` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←runtime-check再審査のBarrier分類 | `LAST`。他の1.0品質作業を並行可能とし、最終判定前にruntime-check実装の採否を待つ | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-020` | `DONE` | User / Codex | [DECISION] Mapped Values判断←API照合のBarrier分類 | `HEAD`。現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |

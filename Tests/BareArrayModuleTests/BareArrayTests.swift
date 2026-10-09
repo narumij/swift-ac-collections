@@ -357,4 +357,125 @@ import XCTest
       XCTAssertEqual(deinitCount, 1)
       withExtendedLifetime(array) {}
     }
+
+    // MARK: - Asymmetric dimensions (BARE-009)
+    //
+    // 正方形・立方体ではstrideの取り違えが隠れるため、各軸の長さを変えて全位置を確かめる。
+    // 初期化closureの返り値はstorageへ順に格納されるので、各位置の値はそのまま線形位置になる。
+
+    func testBareArray2DChainedSubscriptReachesEveryPositionWithAsymmetricDimensions() {
+      let (width, height) = (3, 2)
+      var next = 0
+      let array = BareArray2D<Int>(width: width, height: height) {
+        defer { next += 1 }
+        return next
+      }
+
+      for y in 0..<height {
+        for x in 0..<width {
+          XCTAssertEqual(array[y][x], y * width + x, "[\(y)][\(x)]")
+        }
+      }
+    }
+
+    func testBareArray3DChainedSubscriptReachesEveryPositionWithAsymmetricDimensions() {
+      let (width, height, depth) = (2, 3, 4)
+      var next = 0
+      let array = BareArray3D<Int>(width: width, height: height, depth: depth) {
+        defer { next += 1 }
+        return next
+      }
+
+      for z in 0..<depth {
+        for y in 0..<height {
+          for x in 0..<width {
+            XCTAssertEqual(array[z][y][x], (z * height + y) * width + x, "[\(z)][\(y)][\(x)]")
+          }
+        }
+      }
+    }
+
+    func testBareArray4DChainedSubscriptReachesEveryPositionWithAsymmetricDimensions() {
+      let (size0, size1, size2, size3) = (2, 3, 4, 5)
+      var next = 0
+      let array = BareArray4D<Int>(size0: size0, size1: size1, size2: size2, size3: size3) {
+        defer { next += 1 }
+        return next
+      }
+
+      for w in 0..<size3 {
+        for z in 0..<size2 {
+          for y in 0..<size1 {
+            for x in 0..<size0 {
+              XCTAssertEqual(
+                array[w][z][y][x], ((w * size2 + z) * size1 + y) * size0 + x,
+                "[\(w)][\(z)][\(y)][\(x)]")
+            }
+          }
+        }
+      }
+    }
+
+    func testBareArray2DViewOffsetAndSharingWithAsymmetricDimensions() {
+      let (width, height, depth) = (2, 3, 4)
+      var next = 0
+      let array = BareArray3D<Int>(width: width, height: height, depth: depth) {
+        defer { next += 1 }
+        return next
+      }
+
+      for z in 0..<depth {
+        var plane = array[z]
+        for y in 0..<height {
+          for x in 0..<width {
+            let linear = (z * height + y) * width + x
+            XCTAssertEqual(plane[y][x], linear, "plane \(z) [\(y)][\(x)]")
+            plane[y][x] = -linear - 1
+          }
+        }
+      }
+
+      // View経由の書き込みが、各面の外へはみ出さず元のstorageへ反映されていること
+      for z in 0..<depth {
+        for y in 0..<height {
+          for x in 0..<width {
+            XCTAssertEqual(array[z][y][x], -((z * height + y) * width + x) - 1, "[\(z)][\(y)][\(x)]")
+          }
+        }
+      }
+    }
+
+    func testBareArray3DViewOffsetAndSharingWithAsymmetricDimensions() {
+      let (size0, size1, size2, size3) = (2, 3, 4, 5)
+      var next = 0
+      let array = BareArray4D<Int>(size0: size0, size1: size1, size2: size2, size3: size3) {
+        defer { next += 1 }
+        return next
+      }
+
+      for w in 0..<size3 {
+        var cube = array[w]
+        for z in 0..<size2 {
+          for y in 0..<size1 {
+            for x in 0..<size0 {
+              let linear = ((w * size2 + z) * size1 + y) * size0 + x
+              XCTAssertEqual(cube[z][y][x], linear, "cube \(w) [\(z)][\(y)][\(x)]")
+              cube[z][y][x] = -linear - 1
+            }
+          }
+        }
+      }
+
+      for w in 0..<size3 {
+        for z in 0..<size2 {
+          for y in 0..<size1 {
+            for x in 0..<size0 {
+              XCTAssertEqual(
+                array[w][z][y][x], -(((w * size2 + z) * size1 + y) * size0 + x) - 1,
+                "[\(w)][\(z)][\(y)][\(x)]")
+            }
+          }
+        }
+      }
+    }
   }

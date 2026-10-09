@@ -263,6 +263,16 @@ Test as Specificationへ直行せず、まず公開継続の判断を行う。�
 - View 2D / 3Dを経由したoffsetと変更共有が証明される。
 - 対象testがDebug構成とRelease構成で成功し、Death Testの実行条件が既存方式と一致する。
 
+### Codex受入（2026-10-09）
+
+所有2D〜4Dの外側subscript上下限6件と、非対称寸法による所有型・Viewの全位置照合5件を受け入れた。
+Codex側でも`swift test --disable-sandbox --filter BareArrayModuleTests`をDebugとReleaseで実行し、Debugは
+通常32件・Death Test 17件が成功、Releaseも終了コード0で成功した。Linuxは未確認だが、今回の受入範囲は
+既存のplatform条件を変更していない。
+
+initializerのtestコメントは、closure自体が軸添字を受け取らないことに合わせ、「軸順に呼ばれる」から
+「返り値がstorageへ順に格納される」へ補正した。defectまたは新しい判断点は見つからなかった。
+
 ## `BARE-012` — 命名体系のAI間検討
 
 ユーザー判断の前に、ClaudeとCodexが次を検討する。

@@ -7,10 +7,10 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: あり（BareArray既存契約の不足test追加）**
+**実行中ジョブ: なし（`BARE-009`はCodex受入済み）**
 
 - 継続ジョブ: なし。
-- 新規bounded assignment: `BARE-009`。下記の境界で既存契約の不足testを追加する。
+- 新規bounded assignment: なし。`BARE-009`は2026-10-09に返却され、Codexが受け入れた。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
   受け入れた。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持する。
@@ -18,7 +18,7 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
 
-## Current bounded assignment: BareArray existing-contract test gaps
+## Completed bounded assignment: BareArray existing-contract test gaps
 
 `Maintanance/BareArrayModule/BareArrayAudit.md`の`BARE-009`に従い、次の不足testだけを追加する。
 
@@ -33,6 +33,24 @@ source、公開契約、命名、NOP setter、不正寸法の扱いは変更し�
 対象testをDebugとReleaseで実行する。Death Testは既存の`DEATH_TEST`条件に従って実行し、通常testと
 分けて結果を報告する。変更は`Tests/BareArrayModuleTests`と、このhandoffの結果節だけに限定し、git add
 まで行う。commit、Registry更新、Test as Specificationへのファイル再編はCodexへ残す。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `8fd4d06d`。変更は`Tests/BareArrayModuleTests`の2 fileとこの節だけ。git add済み（commitなし）。
+
+- `BareArrayDeathTests.swift`（`DEATH_TEST`、Swift Testing）: 所有2D・3D・4Dの外側subscriptで、負のindexと上限index
+  （`height` / `depth` / `size3`）がtrapする6件を追加。寸法は非対称（2D 3×2、3D 2×3×4、4D 2×3×4×5）。
+- `BareArrayTests.swift`（XCTest）: 5件を追加。
+  - 所有2D・3D・4Dの連鎖subscript: 初期化closureの値（＝線形位置）を全位置で照合（3件）。
+  - View 2D（3D所有の面）とView 3D（4D所有の立方体）: 全位置のoffsetを照合し、View経由で全要素を書き換えたあと、
+    所有型から全位置を読んで反映と面・立方体の外へのはみ出しが無いことを確認（2件）。
+- 既存の正方・立方体のtest（InitializerClosure、SliceReflects）は残し、事実を重ねていない（新testは非対称寸法の全位置）。
+- 実行: `swift test -c debug --filter BareArrayModuleTests` と `-c release` の両方で成功。
+  - 通常test（XCTest）: Debug 32件（`DEBUG`時のみのinternal 7件を含む）、Release 25件。
+  - Death Test（Swift Testing、macOSでは`DEATH_TEST`が既定で有効）: Debug・Releaseとも17件。
+  - 新規11件が両構成で実行され、すべて成功したことをtest名で確認した。
+- defect・新しい判断点: なし。source・公開契約・NOP setter・不正寸法の扱いは変更していない。
+- 未確認: Linux（Death Testは`ENABLE_DEATH_TESTS` traitが必要で、今回は実行していない）。
 
 ## Completed bounded assignment: Permutation buffer access-path smell check
 

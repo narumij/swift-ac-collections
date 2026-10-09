@@ -102,7 +102,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-006` | `FROZEN` | Codex | [DISCOVERY] BareArray 1.0の性能測定設計 | ユーザードキュメント作業後、共通の測定基盤を入力に対象操作・size・比較対象・評価方法を設計し、BareArray固有の製品判断候補を分離 | `Tests/TESTING.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray 1.0の性能計測 | `BARE-006`で整理した対象操作・size・比較対象と既存の測定方式に従って計測し、1.0判断へ渡す | `Tests/TESTING.md` |
 | `BARE-008` | `FROZEN` | Claude / Codex | [DISCOVERY] BareArray品質評価初版 | Test as Specification整理後、ClaudeがISO/IEC 25010観点の証拠と不足を初稿化し、Codexが製品判断を分離して受入れ、ユーザードキュメント作業へ渡す | `BareArrayModule/BareArrayAudit.md` |
-| `BARE-009` | `ACTIVE` | Claude | [EXECUTION] BareArray既存契約の不足test追加 | 所有2D〜4D外側subscriptの境界と、非対称寸法での2D〜4D・View 2D〜3Dのoffset / strideをtestで固定し、既存契約を変更せずCodex受入へ返す | `BareArrayModule/BareArrayAudit.md` |
+| `BARE-009` | `DONE` | Claude | [EXECUTION] BareArray既存契約の不足test追加 | 2026-10-09、所有2D〜4D外側subscriptの上下限6件と、非対称寸法での所有型・Viewの全位置照合5件をDebug／Releaseで受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-010` | `WAITING_USER` | User | [DECISION] BareArrayのNOP setter契約 | 連鎖writeback用の実装手段として維持し、View全体代入を公開契約から除外するか一つだけ判断 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-011` | `WAITING_USER` | User | [DECISION] BareArrayの不正寸法契約 | 負値と積のoverflowを呼び出し側事前条件として明文化・検査するか一つだけ判断 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-012` | `ACTIVE` | Claude / Codex | [DISCOVERY] BareArray命名体系のAI間検討 | Claudeが現行API・OptionalArray・互換性・移行コストから案と反証を整理し、Codexが独立評価・統合して、ユーザーが一つ選べる判断材料へする | `BareArrayModule/BareArrayAudit.md` |

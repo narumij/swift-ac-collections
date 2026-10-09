@@ -86,5 +86,49 @@
         array[0][2][0][0] = 1
       }
     }
+
+    // 所有2D〜4Dの外側subscript（View を返す側）の上下限（BARE-009）
+
+    @Test func negativeOuterIndex_traps_owned2D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let array = BareArray2D<Int>(repeating: 0, width: 3, height: 2)
+        _ = array[-1]
+      }
+    }
+
+    @Test func upperBoundOuterIndex_traps_owned2D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let array = BareArray2D<Int>(repeating: 0, width: 3, height: 2)
+        _ = array[2]
+      }
+    }
+
+    @Test func negativeOuterIndex_traps_owned3D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let array = BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4)
+        _ = array[-1]
+      }
+    }
+
+    @Test func upperBoundOuterIndex_traps_owned3D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let array = BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4)
+        _ = array[4]
+      }
+    }
+
+    @Test func negativeOuterIndex_traps_owned4D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let array = BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5)
+        _ = array[-1]
+      }
+    }
+
+    @Test func upperBoundOuterIndex_traps_owned4D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let array = BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5)
+        _ = array[5]
+      }
+    }
   }
 #endif

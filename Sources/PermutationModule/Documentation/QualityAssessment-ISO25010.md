@@ -495,3 +495,20 @@ CIと同じoptionで流した。CI-Small.jsonは当該taskを含まないので�
 
 - Linux（`ubuntu-24.04`、x86_64）での再現。今回の結果はmacOS arm64だけ。
 - CIは HEAD → base の順に測る。今回は green → red の交互で、順番の影響は見ていない。
+
+## 通常版の公開APIコメントドック・レビュー用ドラフト（2026-10-09）
+
+通常版の公開APIを`NextPermutationsSequence_0`〜`_4`のTest as Specificationと照合し、既存の列挙規則に
+加えて、入力copy、iterator copyの独立性、終端後の動作、`Permutation`のzero-based index、値に基づく
+等値・hash・表示、subscriptとiteratorの計算量をsource commentへ記載した。内部実装testだけが示すcopy
+最適化と、原因未確定のSwift 6.4事象は公開契約へ含めていない。AtCoder 2025互換modeは対象外とし、変更して
+いない。
+
+これはユーザーが契約内容をレビューするためのドラフトであり、内容の受入または公開可否の判断は未実施である。
+
+検証結果:
+
+- Debug: 通常版32件とDeath Test 5件が成功。
+- Release: 通常版28件とDeath Test 5件が成功（Debug限定の内部test 4件は対象外）。
+- `swift package --disable-sandbox generate-documentation --target PermutationModule --warnings-as-errors`: 成功。
+- Xcode診断の2件は、今回変更していないDebug probeのunsafe accessと`ManagedBuffer`破棄処理に対する既存警告。

@@ -34,8 +34,8 @@ checklistへ進むかを一つの判断として確定する。
 
 - `DOC-002`: 独立した事前棚卸しを完了させてから執筆する方式を取りやめ、`EXCLUDED`。各対象の実行taskで
   Test as Specificationを確認しながら期待動作を直接コメントへ記載する。
-- `DOC-003`: Permutationのコメントドック・ドラフト作成と検証。通常版とAtCoder 2025互換modeの境界を
-  `DOC-007`で決めるまで`PROPOSED`。
+- `DOC-003`: Permutation全体のコメントドック・ドラフト完成判定。通常版の執筆は`DOC-011`へ分離して
+  先行し、AtCoder 2025互換modeの境界は`DOC-007`で後から合流する。
 - `DOC-004`: OptionalArrayのコメントドック・ドラフト作成と検証。公開29宣言・4適合を対象とし、1D所有型名と
   次元名体系を`OPT-044`、`OPT-045`で決めるまで`PROPOSED`。
 - `DOC-005`: BareArrayのコメントドック・ドラフト作成と検証。8群のTest as Specificationを確認しながら、
@@ -52,12 +52,15 @@ checklistへ進むかを一つの判断として確定する。
 - `DOC-010`: 既存の「C言語の配列に近いアクセス性能」の再検討。比較対象はSwiftの`[[Element]]`で、
   COWと連鎖subscriptによる深刻な性能劣化を迂回する設計意図があると確認した。アンカリングを避けるため、
   ユーザー指示による再訪までCodex担当の`DISCOVERY`として`FROZEN`。
+- `DOC-011`: Permutation通常版だけのコメントドック・レビュー用ドラフト作成と検証。2026-10-09完了。通常版のTest as
+  Specificationへ照合し、Debug 32件＋Death Test 5件、Release 28件＋Death Test 5件、documentation
+  warning-as-error成功。内容の受入はユーザーレビュー待ち。`DOC-007`は解除せず、互換modeのsource・test・文書は変更していない。
 
 ### 3対象の実行分解（2026-10-09）
 
 - Permutation: 通常版には入口、列挙規則、重複要素、値semantics、Index、計算量、範囲条件の既存コメントが
-  ある。公開memberの不足を補いTest as Specificationへ接続する実行はCodexが担う。互換modeを同じ対象へ
-  含めるかだけは`DOC-007`でユーザーが決める。
+  ある。通常版の公開memberをTest as Specificationへ接続する`DOC-011`は先行できる。互換modeを同じ対象へ
+  含めるかは`DOC-007`で後から決め、Permutation全体の完成判定前に合流する。
 - OptionalArray: 既存ledgerの公開29宣言と4適合を現在のsourceへ再照合し、コメントの無い19宣言、全宣言で
   未記載の計算量、capacity保持、所有・破棄・View寿命・変更共有・境界・軸を文書化する。実行はCodexが担うが、
   `OPT-044`と`OPT-045`の命名判断を先に閉じる。

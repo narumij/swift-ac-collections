@@ -294,3 +294,11 @@ IDs remain permanent and must not be reused.
 | `OPS-013` | `DONE` | User / Codex | [DECISION] Task precedenceの`UNCLASSIFIED` Flowを廃止するか | 2026-10-09、現行辺をすべて`SEQUENCE`または`PARALLEL_JOIN`へ個別分類した後、移行用の`UNCLASSIFIED`を現行規則とlintから廃止 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-014` | `DONE` | User / Codex | [DECISION] 採番済み条件付きtaskの整理方針 | 上流結果まで必須依存を持たない凍結状態で保持し、必要なら再開、決定済みまたは不要なら`EXCLUDED`へ送る | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `BareArrayModule/BareArrayAudit.md` |
 | `OPS-015` | `DONE` | User / Codex | [DECISION] 期限後のCodex低燃費運用規則の処遇 | 2026-10-09、ユーザー判断により予定期限前に低燃費運用を終了し、現行Registryから一時運用規則を削除 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `EVAL-001` | `EXCLUDED` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | 反復して再開する常設運用であり完了可能なtaskではないためRegistryから除外。明示依頼時の記録規則と既存文書は維持 | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
+| `RBT-006` | `EXCLUDED` | User / Codex | 未結線コードの個別削除 | 対象未指定の待機枠を閉じた。必要時は具体的な対象と完了条件を持つ新taskを作る | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `TEST-001` | `EXCLUDED` | User / Codex | 無効化・歴史的テストコードの処遇 | 対象未指定の待機枠を閉じた。必要時は具体的な対象と完了条件を持つ新taskを作る | `Tests/TESTING.md` |
+| `TEST-002` | `EXCLUDED` | Codex | stride assertion／fixture alignmentの任意改善 | 実害のない任意改善taskを閉じた。問題発生時は現状に基づく新taskを作る | `Tests/TESTING.md` |
+| `TEST-003` | `EXCLUDED` | Codex | randomized trace失敗時の自動縮小 | 実害待ちの機能候補を閉じた。必要時は具体的な失敗事例を入力に新taskを作る | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
+| `TEST-004` | `EXCLUDED` | Codex | 原木Fixtureの追加portable化 | 実害のない任意portable化taskを閉じた。問題発生時は対象環境を持つ新taskを作る | `Tests/TESTING.md` |
+| `PERF-001` | `EXCLUDED` | Codex | Swift更新後のCoWコード生成再計測 | 将来eventへの常設待機枠を閉じた。Swift更新時はtoolchainと測定範囲を持つ新taskを作る | `PERFORMANCE_REGRESSION_BISECTION.md` |
+| `BENCH-001` | `EXCLUDED` | Codex | SortedCollectionsとのpublishableな大規模比較 | 現行goalへ接続しない任意研究候補を閉じた。公開比較が必要になった時点で新taskを作る | `Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md` |

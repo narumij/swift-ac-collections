@@ -4,7 +4,8 @@
 
 ## 状態
 
-release検討開始条件待ち。現時点ではrelease候補commit、到達範囲、必須gate、tag位置を決定しない。
+製品上の到達範囲を確定し、release checklistによる候補準備中。現時点ではrelease候補commitとtag位置を
+固定せず、tag・pushを行わない。
 
 ## Release検討開始条件
 
@@ -12,7 +13,7 @@ release検討開始条件待ち。現時点ではrelease候補commit、到達範
 
 - Permutation: 完了済み
 - OptionalArray: 完了済み
-- BareArray: 公開契約棚卸し後の整理待ち
+- BareArray: 完了済み
 
 これはrelease完了条件ではない。条件到達後、ユーザーが0.5.1へ含める製品上の到達範囲と、release
 checklistへ進むかを一つの判断として確定する。
@@ -26,3 +27,37 @@ checklistへ進むかを一つの判断として確定する。
 4. tag作成、push、release page、後続branch統合は、それぞれ対象を示して別途承認を得る。
 
 この文書とtaskの登録は、release、tag、pushを許可しない。
+
+## 2026-10-09 到達範囲の判断材料
+
+`0.5.0..HEAD`の製品コード差分はBareArrayが中心である。公開名と型構成は維持し、次を確定・実装した。
+
+- 公開initializerへ、各次元が非負、zero許可、次元積が`Int`で表現可能という事前条件を追加。
+- 所有2D〜4DとView 2D〜3Dの連鎖writebackを、同一pointer・shapeだけ許す検査付きsetterへ変更。
+- 非対称寸法、境界、writeback、不正寸法、参照寿命を含むBareArrayの番号付きTest as Specificationを完成。
+- Permutation、OptionalArray、BareArrayの三対象でTest as Specificationが揃った。
+- BareArray品質評価初版は文書作業への入力であり、コメントドック全件整備、利用者向け文書初版、性能基準、
+  View寿命、strict memory safetyの1.0判断は後続releaseへ残る。
+
+Codex推奨の0.5.1到達範囲は「BareArrayの既存公開契約を堅牢化し、三対象のTest as Specificationをrelease
+根拠として揃えたmaintenance release」とする。新しい公開機能、公開名変更、ユーザードキュメント初版、
+1.0品質判断は含めない。
+
+ユーザーがこの範囲を採用した場合だけ、release検討を開始し、`RELEASE_CHECKLIST.md`に従って候補commitと
+必須gateを具体化する。
+
+### User decision
+
+2026-10-09、上記のCodex推奨範囲を0.5.1として採用し、release checklistへ進むと決定した。
+
+## Release計画
+
+- 到達範囲: BareArrayの既存公開契約の堅牢化と、Permutation・OptionalArray・BareArrayのTest as
+  Specification整備。新しい公開機能、名称変更、文書初版、1.0品質判断は含めない。
+- 必須local gate: Debug／Releaseの通常test、Death Test、documentation warning-as-error、公開API・再公開面・
+  Package構成の差分確認。
+- 必須remote gate: 通常test、Linux、documentation、Address Sanitizer、performanceを含むworkflowの全必須job。
+  performanceは製品性能変更を主張するためではなく、候補commit全体のrelease gateとして扱う。
+- 独立チェック: local・remote gateが同一候補commitで揃った後、Claudeが変更せずに最終候補を確認する。
+- 記録境界: release記録を候補commitへ含めてから固定する。tag後の記録は新しい作業branchへ積む。
+- 操作境界: tag作成、tag push、release page、後続branch統合は別々にユーザー承認を得る。

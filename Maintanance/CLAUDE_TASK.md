@@ -7,16 +7,31 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（`BARE-009`はCodex受入済み）**
+**実行中ジョブ: あり（BareArray／OptionalArray命名体系のAI間検討）**
 
 - 継続ジョブ: なし。
-- 新規bounded assignment: なし。`BARE-009`は2026-10-09に返却され、Codexが受け入れた。
+- 新規bounded assignment: `BARE-012`と`OPT-043`の共有調査。下記の境界で命名候補と反証を整理する。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
   受け入れた。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持する。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Current bounded assignment: Array module naming review
+
+[`ARRAY_NAMING_REVIEW.md`](ARRAY_NAMING_REVIEW.md)に従い、BareArrayとOptionalArrayの命名体系を調査する。
+
+必須条件は、Swift標準ライブラリおよび`swift-collections`の公開型名・主要用語・命名規則と衝突せず、
+それらの型だと誤認されにくいこと。両moduleは正式公開前なので、既存名とのsource compatibilityより、
+公開後に長く維持できることを優先する。ただし現行利用例と移行範囲は証拠として残す。
+
+成果は、現行surface対応表、一次資料に基づく衝突確認、候補比較、影響宣言、判断単位ごとの推奨と最強の
+反証を含める。判断単位はBareArray体系、OptionalArray 1D型名、OptionalArray次元名体系の三つに分ける。
+
+source、test、利用例、コメントドック、Registryを変更せず、renameや互換aliasを実装せず、命名を決定
+しない。性能、安全性、storage設計へ広げない。結果を`ARRAY_NAMING_REVIEW.md`へ追記し、このhandoffを
+返却待ちへ更新してgit addまで行う。Codexが独立評価、統合、ユーザー判断への引き渡しを担当する。
 
 ## Completed bounded assignment: BareArray existing-contract test gaps
 

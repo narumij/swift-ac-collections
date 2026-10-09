@@ -156,10 +156,9 @@ activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
 
 ## Japanese sentence markers
 
-Japanese sentence markers are active by explicit user direction. Use `了。`,
-`是。`, `否。`, `解。`, and the other markers below when the sentence has the
-corresponding operational function. Do not add a marker to ordinary conversation
-that has no such function.
+Japanese sentence markers are currently suspended. Do not use `了。`, `是。`,
+`否。`, `解。`, or any of the other markers below unless the user explicitly
+directs Codex to resume them. Keep the definitions for a possible later restart.
 
 The markers below classify only the single sentence immediately following the
 marker, not the response as a whole. When the function changes within one

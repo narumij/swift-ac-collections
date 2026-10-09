@@ -129,3 +129,12 @@ tag後の記録変更は、原則として新しい作業branchへcommitする�
 - release対象と後続作業の境界が曖昧である。
 - 未コミット変更や無関係な差分が混在している。
 - tag、push、mergeの対象またはユーザー承認が曖昧である。
+
+## 後続の運用設計
+
+`RELEASE-031`で、release候補treeと進捗記録を分離するrelease専用Task Registryを設計する。0.5.2で、remote CI
+green後に通常Registryとrelease正本を更新した結果、候補commitが動いて再pushとCI再実行が必要になった実績を入力にする。
+
+設計対象は、固定候補SHA、local／remote gate、ユーザー判断、操作権限、実施結果、次に許可される操作、release後の
+通常Registryへの還元である。配置、永続化形式、正本境界、開始・終了条件はDISCOVERY中に整理し、複数のユーザー判断が
+必要なら一判断ごとのtaskへ分離する。0.5.2のrelease完了前には実装せず、現候補やtag位置を変更しない。

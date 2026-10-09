@@ -61,3 +61,22 @@ Codex推奨の0.5.1到達範囲は「BareArrayの既存公開契約を堅牢化�
 - 独立チェック: local・remote gateが同一候補commitで揃った後、Claudeが変更せずに最終候補を確認する。
 - 記録境界: release記録を候補commitへ含めてから固定する。tag後の記録は新しい作業branchへ積む。
 - 操作境界: tag作成、tag push、release page、後続branch統合は別々にユーザー承認を得る。
+
+## Checklist進捗
+
+### 0. Release計画
+
+- [x] version `0.5.1`と製品上の到達範囲をユーザーが確認した。
+- [x] releaseへ含める変更と、文書作業・1.0判断へ残す変更を分けた。
+- [x] 本書をversion固有のrelease正本とした。
+- [x] 必須local／remote gateとClaude独立チェックを定めた。
+- [x] tag、push、release page、後続branch統合を別操作と確認した。
+- [x] release記録を候補commitへ含め、tag後の記録は新しい作業branchへ積むと決定した。
+
+### 1. 候補commit固定前
+
+- [x] `0.5.0..HEAD`のcommit一覧と差分を確認した。
+- [x] READMEにversion固定表記がなく、Package manifestにもrelease version設定がないことを確認した。
+- [x] CHANGELOGの`Unreleased`へ0.5.1固有のTest as Specification整理とBareArray修正を追記した。
+- [ ] release計画とCHANGELOGをcommitし、worktreeがcleanな地点を候補commitとして固定する。
+- [ ] 意図しないmerge、生成物、local専用file、release対象外構成の混入がないことを最終確認する。

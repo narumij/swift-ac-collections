@@ -146,7 +146,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ### `CP-20261009-002` — 連絡: 第三者AI assembly review（`PERM-038`）の原因説明としての不採用をCodexへ依頼
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: 2026-10-09、`PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md`（ちゃっぴー分析）をClaudeが照合した後、ユーザー:
   「採番待ちタスク、ユーザー承認でチャッピー資料の不採用をCodexに依頼」。Claudeが実行するのは、この連絡を書くことだけ。
 - 種別候補: 連絡（Claude）。依頼先は`DECISION`の反映（Codex）
@@ -172,11 +172,12 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
     という扱いを提案する。
   - **文書上の食い違い:** 資料冒頭は「Accepted independent review」「explicitly adopted by the user」のまま。
 - 成果・検証: 2026-10-09 / Claude Opus 5.5、連絡を記入。資料本文・Registryは変更していない。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-09、既存の`PERM-038`へ統合。独立reviewの構造観測は残し、H1は実測回帰の原因説明として
+  不採用であることをassembly review、二分探索記録、Archived台帳へ反映した。新規stable IDは不要。
 
 ### `CP-20261009-003` — このrepositoryのAIチーム体制をポスター風に描く
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: 2026-10-09、ユーザー:「このリポジトリのAIチーム体制について、ポスターっぽくしてほしいなと。採番待ちタスクにして」。
   記録だけを依頼されたので、いったん着手しなかった。形式の決定のあと、ユーザー:「かいて」。
 - 種別候補: `EXECUTION`（見せ方に判断が要るなら、先に`DECISION`が分かれる）
@@ -216,4 +217,48 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
     Codexの確認を通っていない。
   - 再生成の仕組み（生成scriptをtrackedにするか）を決める。今は`.task-graphs/`にしかない。
   - 公開物として、「ちゃっぴー（ChatGPT）」の表記と内部file名の扱いを確認する。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-09、`OPS-009`として正式化・受入。公開配置は
+  `Maintanance/AI_TASK_PROCESS_POSTER.png`のままとし、生成script、SVG、macOS標準環境用PNG rendererを
+  tracked fileへ移した。
+
+### `CP-20261009-004` — 連絡: AIタスク処理ポスターの内容レビューをCodexへ依頼
+
+- queue状態: `RECONCILED`
+- 発見元・ユーザー指示: 2026-10-09、ユーザー:「ポスターのやつ、採番待ちで、Codexへのレビュー依頼と反映タスクやろうか」。
+  Claudeが実行するのは、この連絡を書くことだけ。
+- 種別候補: 連絡（Claude）。依頼先は`DISCOVERY`（Codexによる内容照合）
+- 対象範囲: `Maintanance/AI_TASK_PROCESS_POSTER.png`（生成script `.task-graphs/claude-viz-codex.py`）の内容が、Codex自身の運用と
+  合っているかの確認。
+- 対象外: ポスターの描き直し（`CP-20261009-005`でClaudeが行う）、playbook・`AGENTS.md`・Registryの変更。
+- 完了条件: Codexが、直すべき点を箇条書きで返す（なければ「なし」）。
+- 前提・既存task候補: `CP-20261009-003`（ポスター作成。置き場所・script・表記の確認依頼はそちらに記載済み。本件は中身の照合だけ）。
+- 担当候補・受入担当: Claude（連絡）/ Codex（レビュー）/ ユーザー（採否）
+- 停止条件: なし（連絡を書いたら終わる）。
+- Codexへの連絡（ユーザー承認済み）:
+  - ポスターは、Claudeが`CODEX_TASK_OPERATION_PLAYBOOK.md`、`PROGRESS_OVERVIEW.md`のRegistry rules、`AGENTS.md`
+    （User-facing management boundary、Goal relevance、Routine shorthand、Ownership）、`.github/workflows/swift.yml`から要約した。
+    Codex本人の確認を通っていない。
+  - 見てほしい点: ①6段の流れ（受け取る・分ける・つなぐ・渡す・受け入れる・記録する）が実際のルーティーンと合っているか、
+    ②4つの欄（タスク分解・トポロジカル判定・無駄を削る・タスク割り当て）に誤りや抜けがないか、③状態8つの一言説明、
+    ④「関係性を育てるのが大事かも」の帯（ユーザーの気づき。新しい会話で1回試した観察で、裏づけはまだ薄い）の書き方、
+    ⑤Codexの運用で、絵にすべきなのに抜けている大事なこと。
+  - 返し方: 直すべき点を箇条書きで。Claudeが`CP-20261009-005`で反映する。
+- 成果・検証: 2026-10-09 / Claude Opus 5.5、連絡を記入。
+- Codex reconciliation: 2026-10-09、`OPS-010`として正式化・受入。6段の流れと4欄は運用に合致。
+  不足していた`ARCHIVED`、狭すぎた`EXCLUDED`説明、第三者AIの責任表現、関係性の断定度を修正点として確定した。
+
+### `CP-20261009-005` — AIタスク処理ポスターへCodexレビューを反映
+
+- queue状態: `RECONCILED`
+- 発見元・ユーザー指示: 2026-10-09、ユーザー（`CP-20261009-004`と同じ発言）。
+- 種別候補: `EXECUTION`
+- 対象範囲: `CP-20261009-004`でCodexが返した指摘を、`.task-graphs/claude-viz-codex.py`へ反映して描き直し、
+  `Maintanance/AI_TASK_PROCESS_POSTER.png`（Codexが置き場所を変えていればその場所）を差し替える。
+- 対象外: 指摘にない描き直し、playbookや運用そのものの変更。
+- 完了条件: 指摘がすべて反映されるか、反映しない理由が書かれ、ユーザーが画像で見え方を確かめる。
+- 前提: `CP-20261009-004`のCodexレビューが返っていること（返るまで着手しない）。
+- 担当候補・受入担当: Claude（反映）/ ユーザー（見え方）/ Codex（内容の再確認が要るなら）
+- 停止条件: 指摘どうしが食い違う、または指摘が運用そのものの変更を求めている場合（反映せず、候補として返す）。
+- 成果・検証（2026-10-09 / Codex）: `OPS-010`の全指摘を生成scriptへ反映し、SVGとPNGを再生成して目視確認した。
+- Codex reconciliation: 2026-10-09、ユーザーの「Dおわらせて」を実行許可として`OPS-011`へ正式化・受入。
+  当初のClaude反映taskは、Codexがreviewと反映を同一作業内で完結したため担当を統合した。

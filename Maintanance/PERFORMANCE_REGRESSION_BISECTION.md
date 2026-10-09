@@ -244,7 +244,7 @@ demangle済みsymbol表、binary hash、測定JSON、比較結果、runner CPU�
 
 ### 独立reviewとの関係
 
-ユーザーが採用した第三者AI（Chappy）のassembly reviewは、binary全体の比較からgeneric buffer getterの
-分離と`lastAscentIndex`のcall増加を有力仮説としている（`PERM-038`）。本節の「実測hot loopの命令列は
-同一で配置が異なる」という観測とは対象範囲が違うため、どちらかで他方を棄却しない。getter差が実測taskへ
-どう到達するか、配置差と性能差の因果が何かは、同reviewの検証手順に従う追加調査まで未確定とする。
+第三者AIのassembly reviewは、binary全体におけるgeneric buffer getterの分離と`lastAscentIndex`のcall増加を
+構造上の観測として残す（`PERM-038`）。一方、赤になった実測hot loopにはgetterも`lastAscentIndex`も到達せず、
+両版の命令列が同一だったため、ユーザーはgetter非inline化を当該回帰の原因説明として不採用とした。
+`@inline(__always)`を加えて緑になった実験はinline化と配置変更を分離しておらず、因果の証明には使わない。

@@ -77,7 +77,7 @@ IDs remain permanent and must not be reused.
 | `PERM-035` | `DONE` | Claude / Codex | [DISCOVERY] Permutation sequential subscript性能回帰のbenchmark二分探索 | 2026-10-09、実benchmarkを交互に各3回測定し中央値1.0053で回帰を再現せず、規定どおり探索を停止。Linux CI候補列を記録 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-036` | `DONE` | Claude / Codex | [DISCOVERY] Permutation sequential subscriptの実benchmark hot path比較 | 2026-10-09、macOS arm64とLinux x86-64で修正前後の実benchmark binaryを比較。regressed hot loopの命令列は同一で、Linuxでは遅い側だけ64 byte境界をまたぐ配置差を確認。第三者assembly reviewのgetter非inline化仮説とは独立した観測として保持 | `PERFORMANCE_REGRESSION_BISECTION.md` |
 | `PERM-037` | `DONE` | User / Codex / Claude | [EXECUTION] performance失敗時の診断artifact拡充 | 2026-10-09、base / HEADの実行済みbenchmark binary、逆アセンブル、symbol、hash、測定JSON、比較結果、runner CPUを失敗時に保存するworkflowへ更新し、引用符不備も補正 | `PERFORMANCE_REGRESSION_BISECTION.md` |
-| `PERM-038` | `DONE` | User / Codex | [DISCOVERY] 第三者AIによるPermutation assembly reviewの採用 | 2026-10-09、Chappyによるbinary全体の独立比較をユーザーが採用。generic buffer getterの分離と`lastAscentIndex`のcall増加を有力仮説として保持し、実測hot loopの配置差観測との因果関係は未確定として追加検証条件を残す | `PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md` |
+| `PERM-038` | `DONE` | User / Codex | [DISCOVERY] 第三者AIによるPermutation assembly reviewの採用 | 2026-10-09、binary全体の独立比較を構造上の観測として採用。後続のhot-path検証によりgetter非inline化は実測回帰の原因説明として不採用とし、元の仮説は履歴として保持 | `PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md` |
 | `RELEASE-004` | `DONE` | User / Codex | [EXECUTION] 0.5.0の互換準備branch統合 | 2026-10-09、`main`を`prepare/compatible/2`へmergeし、競合解消、Debug・Release全test、互換branch資料整理、remote pushまで完了 | `RELEASE_0_5_0.md` |
 | `PERM-008` | `DONE` | Codex | [EXECUTION] Permutation互換branchの有効化とCI分離 | 2026-10-09、branch defineと通常source排他を有効化。互換機能testを維持し、対象外のdocumentation・performance jobを互換branchで停止 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-004` | `DONE` | Codex | [EXECUTION] AtCoder 2025互換ソースの隔離 | 2026-10-09、基準2 fileを条件付き専用fileへ隔離。0.5.0の通常sourceは無条件compileへ戻し、排他切替は後続branch統合時へ移管 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
@@ -260,3 +260,6 @@ IDs remain permanent and must not be reused.
 | `OPS-006` | `DONE` | Codex | [DECISION] 評価・observation文書を待避するか | 旧統合評価1件だけ待避 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
 | `OPS-007` | `DONE` | Codex | [DECISION] 技術調査・release文書を待避するか | 未完・凍結・後続作業の正本として直下維持 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
 | `OPS-008` | `DONE` | Codex | [EXECUTION] 採用済み文書の待避と参照更新 | 3文書を待避し索引・参照を更新 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
+| `OPS-009` | `DONE` | Claude / Codex | [EXECUTION] AI task process posterの作成と正式配置 | 2026-10-09、AIによるtask処理と責任境界を1枚にまとめ、生成scriptとSVGを追跡対象へ移した | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-010` | `DONE` | Codex | [DISCOVERY] AI task process posterの内容照合 | Registryの全9状態、第三者AIの役割、関係性の記述を正本と照合し、修正点を確定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-011` | `DONE` | Codex | [EXECUTION] AI task process posterへのreview反映 | 内容照合の指摘を生成scriptと成果物へ反映し、再生成と画像確認を完了 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |

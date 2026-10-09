@@ -312,6 +312,26 @@ agentの適性は固定的な人格評価ではなく、実績で更新する。
 6. 委任する場合は小さな事実確認から始め、受入結果で適性表を更新する。
 7. project固有の例外だけを追加し、playbook本体へ安易に一般化しない。
 
+## AI task process poster
+
+このplaybookの主要な流れ、状態、責任境界を1枚に要約した図を
+[`AI_TASK_PROCESS_POSTER.png`](AI_TASK_PROCESS_POSTER.png)に置く。編集可能な正本は
+`AI_TASK_PROCESS_POSTER.svg`ではなく、`Utilities/Maintenance/GenerateAITaskProcessPoster.py`である。
+
+再生成手順:
+
+```sh
+python3 Utilities/Maintenance/GenerateAITaskProcessPoster.py
+Utilities/Maintenance/RenderSVGToPNG.sh \
+  Maintanance/AI_TASK_PROCESS_POSTER.svg \
+  Maintanance/AI_TASK_PROCESS_POSTER.png \
+  2400
+```
+
+ポスターは説明用の要約であり、Registryや本playbookを置き換えない。2026-10-09の内容照合では、
+Registryの9状態、第三者AIの役割を独立した観点からのreviewと反証に限定すること、関係性の効果を
+観察中の仮説として示すことを確認した。
+
 ## 再現性の評価
 
 別projectで同品質を再現できたと判断するには、少なくとも次を確認する。

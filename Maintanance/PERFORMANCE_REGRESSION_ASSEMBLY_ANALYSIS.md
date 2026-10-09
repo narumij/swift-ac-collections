@@ -1,16 +1,16 @@
 # Performance Regression Investigation — Assembly Diff Review
 
-> **Accepted independent review (2026-10-09).** This review was performed after
-> Claude's investigation by a third-party AI (“Chappy”) and was explicitly adopted
-> by the user. Claude's artifact analysis separately found that the measured
-> sequential-access hot loop has identical instructions and differs in placement.
-> This review identifies broader binary structure and generic getter differences.
-> Keep both findings: their causal relationship to the measured regression remains
-> unresolved and requires the verification steps below.
+> **Independent review retained; root-cause hypothesis rejected (2026-10-09).**
+> This third-party review remains useful as a record of broader binary structure and
+> generic getter differences. After hot-path verification, the user rejected H1
+> (getter non-inlining) as the cause of the measured sequential-access regression.
+> The measured Linux hot loop has identical instructions in both binaries, contains
+> no getter or `lastAscentIndex` call, and differs in placement. The original review
+> below is retained as an independent hypothesis, not as the accepted cause.
 
 ## Status
 
-- Status: Accepted independent investigation
+- Status: Structural observations retained; H1 rejected as the measured regression's cause
 - Severity: High
 - Symptom: Benchmark performance regression exceeding 30%
 - Platform: Linux x86_64

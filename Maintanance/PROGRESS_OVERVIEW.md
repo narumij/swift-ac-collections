@@ -111,11 +111,15 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-021` | `EXCLUDED` | Codex | [EXECUTION] 0.5.2 release候補の準備と検収 | 2026-10-09、工程確定前の分解は早すぎるため未着手で除外。準備・検収はrelease工程を具体化する時点で新しいtaskへ分解する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-022` | `PROPOSED` | User / Codex | [DECISION] 0.5.2 release可否ゲート | 後から分解する準備・検収taskが固定候補と必須証拠を揃えた後、0.5.2をreleaseしてよいか一つだけ判断する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-023` | `EXCLUDED` | User / Codex | [EXECUTION] 0.5.2 tag・push・公開 | 2026-10-09、工程確定前の分解は早すぎるため未着手で除外。可否決定後の操作は必要になった時点で個別にtask化する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
-| `DOC-002` | `ACTIVE` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 4対象の公開宣言、既存コメント、契約正本、test証拠、未確定判断をledger化し、対象別実行taskの開始可否と必要依存を確定 | `RELEASE_0_5_2.md` |
-| `DOC-003` | `PROPOSED` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト | `DOC-002`で確定した公開対象と契約証拠に従い、ユーザーが契約内容をレビューできるコメントドック・ドラフトと検証結果を揃える | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
-| `DOC-004` | `PROPOSED` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | `DOC-002`で命名判断との境界を確定後、公開対象と契約証拠に従い、ユーザーがレビューできるコメントドック・ドラフトと検証結果を揃える | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
-| `DOC-005` | `PROPOSED` | Codex | [EXECUTION] BareArray公開APIコメントドック・ドラフト | `DOC-002`で確定した公開対象と受入済み監査を入力に、寿命責務と4D軸順を含むコメントドック・ドラフトと検証結果を揃える | `RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
-| `DOC-006` | `PROPOSED` | Codex | [EXECUTION] RedBlackTree公開APIコメントドック・ドラフト | `DOC-002`、`RBT-014`、必要な公開契約判断の完了後、4公開型のコメントドック・ドラフトと検証結果を揃える | `RELEASE_0_5_2.md` / `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
+| `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
+| `DOC-003` | `PROPOSED` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト | `DOC-007`で通常版と互換modeの境界を確定後、公開対象と契約証拠に従い、ユーザーが契約内容をレビューできるコメントドック・ドラフトと検証結果を揃える | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `DOC-004` | `PROPOSED` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | `OPT-044`と`OPT-045`の命名判断後、公開29宣言と4適合を現在のsourceへ再照合し、所有・寿命・破棄・変更・軸・計算量を含むドラフトと検証結果を揃える | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
+| `DOC-005` | `DONE` | Codex | [EXECUTION] BareArray公開APIコメントドック・ドラフト | 2026-10-09、8群のTest as Specificationを確認しながら公開29宣言へ期待動作を記載。Debug／Release通常test・Death Test 42件、code issues 0件、documentation build成功を確認 | `RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
+| `DOC-006` | `PROPOSED` | Codex | [EXECUTION] RedBlackTree公開APIコメントドック・ドラフト | `RBT-014`と必要な公開契約判断の完了後、4公開型のコメントドック・ドラフトと検証結果を揃える。2026-10-09の`DOC-002`棚卸し対象には含めない | `RELEASE_0_5_2.md` / `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
+| `DOC-007` | `FROZEN` | User / Codex | [DECISION] Permutation通常版と互換modeのコメントドック境界 | 2026-10-09、ユーザー指示により判断を後回し。明示的な再開後、通常版だけを対象とするかAtCoder 2025互換modeも含めるかを一つ決め、`DOC-003`の入力にする | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `DOC-008` | `DONE` | Claude / Codex | [DISCOVERY] BareArrayコメントドック独立レビュー | 2026-10-09、公開29宣言のcoverage、Test as Specificationとの一致、BLOCKなしを受入。判断不要の不揃い4点を補正し、Sendableと性能表現の判断候補を分離 | `RELEASE_0_5_2.md` / `CLAUDE_TASK.md` |
+| `DOC-009` | `WAITING_USER` | User / Codex | [DECISION] BareArrayのView保持中Sendable注記 | 所有者から得たViewを残したまま所有者を別の並行文脈へ送る使い方を「保証しない」と公開コメントへ明記するか一つだけ判断 | `RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
+| `DOC-010` | `PROPOSED` | User / Codex | [DECISION] BareArrayの定性的性能表現 | 既存の「C言語の配列に近いアクセス性能」を残すか、測定根拠がないためO(1)のsubscriptという計算量表現だけへ限定するか一つだけ判断 | `RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
 | `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | 全公開対象の利用者向けドキュメント初版完成後、0.6.0へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_6_0.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -193,11 +197,11 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-011` | `RELEASE-018` | `PARALLEL_JOIN` | benchmark構成の分類は先行できるが、tag tree確定前に過去結果を除外してrelease結果をCI artifactへ残す方針と合流する |
 | `RELEASE-011` | `RELEASE-019` | `PARALLEL_JOIN` | performance workflowの設計は先行できるが、比較実装前に直前release tagをbaselineとする方針と合流する |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |
-| `DOC-003` | `DOC-002` | `SEQUENCE` | 公開対象、契約証拠、阻害判断を確定してからPermutation本文を作成する |
-| `DOC-004` | `DOC-002` | `SEQUENCE` | OptionalArrayの命名判断との境界を含む開始条件を確定してから本文を作成する |
-| `DOC-005` | `DOC-002` | `SEQUENCE` | 受入済みBareArray監査と公開宣言の対応を確定してから本文を作成する |
-| `DOC-006` | `DOC-002` | `SEQUENCE` | RedBlackTreeの公開対象と必要な契約判断を確定してから本文を作成する |
+| `DOC-003` | `DOC-007` | `SEQUENCE` | 通常版と互換modeの対象境界を一つに決めてからPermutation本文を作成する |
+| `DOC-004` | `OPT-044` | `SEQUENCE` | 1D所有型名を確定してから最終的な公開名に沿って本文を作成する |
+| `DOC-004` | `OPT-045` | `SEQUENCE` | 次元名体系を確定してから軸契約を本文へ反映する |
 | `DOC-006` | `RBT-014` | `SEQUENCE` | 三対象で文書作業方式を確認した後、4公開型outlineを現行APIへ照合してから本文を作成する |
+| `DOC-008` | `DOC-005` | `SEQUENCE` | BareArrayコメントドックと検証記録が完成してから独立レビューする |
 | `RELEASE-006` | `DOC-003` | `PARALLEL_JOIN` | 0.5.2到達範囲の判断前にPermutationコメントドック・ドラフトを揃える |
 | `RELEASE-006` | `DOC-004` | `PARALLEL_JOIN` | 0.5.2到達範囲の判断前にOptionalArrayコメントドック・ドラフトを揃える |
 | `RELEASE-006` | `DOC-005` | `PARALLEL_JOIN` | 0.5.2到達範囲の判断前にBareArrayコメントドック・ドラフトを揃える |

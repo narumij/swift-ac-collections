@@ -12,14 +12,21 @@
 // コピペで提出に使っていただいて構いません。
 // 提出の際のライセンス記載は不要です。
 
-/// 競技プログラミング用多次元配列
+/// 競技プログラミング用1次元配列
 ///
 /// ヒープ領域に確保される軽量な多次元配列です。
 /// 動的計画法などで利用する大きな配列を簡潔に記述できます。
 ///
 /// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
+/// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
+/// `Element`が`Sendable`なら、配列も`Sendable`です。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 public struct BareArray<Element>: ~Copyable {
 
+  /// `count`個の要素を`value`で初期化します。
+  ///
+  /// - Precondition: `count`は0以上でなければなりません。
+  /// - Complexity: O(`count`)
   @inlinable
   public init(repeating value: Element, count: Int) {
     precondition(count >= 0)
@@ -29,6 +36,12 @@ public struct BareArray<Element>: ~Copyable {
     self.count = count
   }
 
+  /// `f`を`count`回呼び、その返り値を添字順に格納します。
+  ///
+  /// `count`が0のとき、`f`は呼ばれません。
+  ///
+  /// - Precondition: `count`は0以上でなければなりません。
+  /// - Complexity: O(`count`)
   @inlinable
   public init(count: Int, _ f: () -> Element) {
     precondition(count >= 0)
@@ -49,6 +62,12 @@ public struct BareArray<Element>: ~Copyable {
   @usableFromInline let count: Int
   @usableFromInline let payload: UnsafeMutablePointer<Element>
 
+  /// `position`の要素へアクセスします。
+  ///
+  /// 値を置き換えると、以前の要素は破棄されます。
+  ///
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> Element {
     @inline(__always)
@@ -78,6 +97,9 @@ public struct BareArray<Element>: ~Copyable {
 
 extension BareArray {
 
+  /// 有効な要素位置である`0..<count`を返します。
+  ///
+  /// - Complexity: O(1)
   @inlinable
   public var indices: Range<Int> { 0..<count }
 }
@@ -90,8 +112,18 @@ extension BareArray: @unchecked Sendable where Element: Sendable { }
 /// 動的計画法などで利用する大きな配列を簡潔に記述できます。
 ///
 /// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
+/// 連鎖subscriptは`array[y][x]`の順で、`width`が最内軸、`height`が最外軸です。
+/// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
+/// `Element`が`Sendable`なら、配列も`Sendable`です。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 public struct BareArray2D<Element>: ~Copyable {
 
+  /// `width * height`個の要素を`value`で初期化します。
+  ///
+  /// いずれかの次元が0なら空のstorageを作ります。
+  ///
+  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  /// - Complexity: O(`width * height`)
   @inlinable
   public init(repeating value: Element, width: Int, height: Int) {
     precondition(width >= 0 && height >= 0)
@@ -104,6 +136,12 @@ public struct BareArray2D<Element>: ~Copyable {
     self.height = height
   }
 
+  /// `f`を`width * height`回呼び、その返り値を連続するstorageへ順に格納します。
+  ///
+  /// いずれかの次元が0なら`f`は呼ばれません。
+  ///
+  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  /// - Complexity: O(`width * height`)
   @inlinable
   public init(width: Int, height: Int, _ f: () -> Element) {
     precondition(width >= 0 && height >= 0)
@@ -131,6 +169,14 @@ public struct BareArray2D<Element>: ~Copyable {
   @usableFromInline let width: Int
   @usableFromInline let height: Int
 
+  /// `position`番目の行を参照する非所有Viewを返します。
+  ///
+  /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置から返された同一storage・同一shapeの
+  /// Viewだけを受け入れ、別のViewの代入は契約違反です。
+  ///
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> BareArray1DView<Element> {
 
@@ -163,6 +209,9 @@ public struct BareArray2D<Element>: ~Copyable {
 
 extension BareArray2D {
 
+  /// 外側の軸に有効な位置である`0..<height`を返します。
+  ///
+  /// - Complexity: O(1)
   @inlinable
   public var indices: Range<Int> { 0..<height }
 }
@@ -175,8 +224,18 @@ extension BareArray2D: @unchecked Sendable where Element: Sendable { }
 /// 動的計画法などで利用する大きな配列を簡潔に記述できます。
 ///
 /// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
+/// 連鎖subscriptは`array[z][y][x]`の順で、`width`が最内軸、`depth`が最外軸です。
+/// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
+/// `Element`が`Sendable`なら、配列も`Sendable`です。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 public struct BareArray3D<Element>: ~Copyable {
 
+  /// `width * height * depth`個の要素を`value`で初期化します。
+  ///
+  /// いずれかの次元が0なら空のstorageを作ります。
+  ///
+  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  /// - Complexity: O(`width * height * depth`)
   @inlinable
   public init(repeating value: Element, width: Int, height: Int, depth: Int) {
     precondition(width >= 0 && height >= 0 && depth >= 0)
@@ -195,6 +254,12 @@ public struct BareArray3D<Element>: ~Copyable {
     self.depth = depth
   }
 
+  /// `f`を要素数と同じ回数呼び、その返り値を連続するstorageへ順に格納します。
+  ///
+  /// いずれかの次元が0なら`f`は呼ばれません。
+  ///
+  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  /// - Complexity: O(`width * height * depth`)
   @inlinable
   public init(width: Int, height: Int, depth: Int, _ f: () -> Element) {
     precondition(width >= 0 && height >= 0 && depth >= 0)
@@ -232,6 +297,14 @@ public struct BareArray3D<Element>: ~Copyable {
   @usableFromInline let height: Int
   @usableFromInline let depth: Int
 
+  /// `position`番目の面を参照する非所有Viewを返します。
+  ///
+  /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを受け入れ、
+  /// 別のViewの代入は契約違反です。
+  ///
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> BareArray2DView<Element> {
 
@@ -265,14 +338,30 @@ public struct BareArray3D<Element>: ~Copyable {
 
 extension BareArray3D {
 
+  /// 外側の軸に有効な位置である`0..<depth`を返します。
+  ///
+  /// - Complexity: O(1)
   @inlinable
   public var indices: Range<Int> { 0..<depth }
 }
 
 extension BareArray3D: @unchecked Sendable where Element: Sendable { }
 
+/// 連続したメモリ領域に要素を所有する4次元配列です。
+///
+/// 連鎖subscriptは`array[w][z][y][x]`の順です。`size0`が最内軸、`size3`が最外軸で、
+/// storage上では`size0`の軸が最も速く進みます。
+/// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
+/// `Element`が`Sendable`なら、配列も`Sendable`です。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 public struct BareArray4D<Element>: ~Copyable {
 
+  /// 全要素を`value`で初期化します。
+  ///
+  /// いずれかの次元が0なら空のstorageを作ります。
+  ///
+  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
   public init(repeating value: Element, size0: Int, size1: Int, size2: Int, size3: Int) {
     precondition(size0 >= 0 && size1 >= 0 && size2 >= 0 && size3 >= 0)
@@ -293,6 +382,12 @@ public struct BareArray4D<Element>: ~Copyable {
     self.size3 = size3
   }
 
+  /// `f`を要素数と同じ回数呼び、その返り値を連続するstorageへ順に格納します。
+  ///
+  /// いずれかの次元が0なら`f`は呼ばれません。
+  ///
+  /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
+  /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
   public init(size0: Int, size1: Int, size2: Int, size3: Int, _ f: () -> Element) {
     precondition(size0 >= 0 && size1 >= 0 && size2 >= 0 && size3 >= 0)
@@ -334,6 +429,14 @@ public struct BareArray4D<Element>: ~Copyable {
   @usableFromInline let size2: Int
   @usableFromInline let size3: Int
 
+  /// `position`番目の3次元領域を参照する非所有Viewを返します。
+  ///
+  /// `position`は`size3`の軸を選びます。返されたViewからの変更はこの配列へ反映されます。
+  /// Viewはこの配列の生存中だけ使用してください。setterは連鎖要素書き込みのwriteback専用です。
+  /// 同じ位置の同一storage・同一shapeのViewだけを受け入れ、別のViewの代入は契約違反です。
+  ///
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> BareArray3DView<Element> {
 
@@ -369,6 +472,9 @@ public struct BareArray4D<Element>: ~Copyable {
 
 extension BareArray4D {
 
+  /// 外側の軸に有効な位置である`0..<size3`を返します。
+  ///
+  /// - Complexity: O(1)
   @inlinable
   public var indices: Range<Int> { 0..<size3 }
 }
@@ -377,9 +483,11 @@ extension BareArray4D: @unchecked Sendable where Element: Sendable { }
 
 // MARK: -
 
-/// 要素アクセスの為の一時データ構造
+/// 所有配列の連続する1次元領域を参照する非所有Viewです。
 ///
-/// 参照型の挙動をする
+/// Viewからの変更は所有配列の同じ要素へ反映されます。Viewはstorageの寿命を延長しないため、
+/// 元の所有配列の生存中だけ使用してください。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 public struct BareArray1DView<Element> {
 
   @inlinable
@@ -391,6 +499,12 @@ public struct BareArray1DView<Element> {
   @usableFromInline let count: Int
   @usableFromInline let payload: UnsafeMutablePointer<Element>
 
+  /// `position`の要素へアクセスします。
+  ///
+  /// 値を置き換えると、所有配列のstorageにあった以前の要素は破棄されます。
+  ///
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> Element {
     @inline(__always)
@@ -408,13 +522,18 @@ public struct BareArray1DView<Element> {
 
 extension BareArray1DView {
 
+  /// このViewで有効な位置である`0..<count`を返します。
+  ///
+  /// - Complexity: O(1)
   @inlinable
   public var indices: Range<Int> { 0..<count }
 }
 
-/// 要素アクセスの為の一時データ構造
+/// 所有配列の連続する2次元領域を参照する非所有Viewです。
 ///
-/// 参照型の挙動をする
+/// 連鎖subscriptは`view[y][x]`の順です。Viewからの変更は所有配列へ反映されます。
+/// Viewはstorageの寿命を延長しないため、元の所有配列の生存中だけ使用してください。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 public struct BareArray2DView<Element> {
 
   @inlinable
@@ -430,6 +549,13 @@ public struct BareArray2DView<Element> {
   @usableFromInline let width: Int
   @usableFromInline let height: Int
 
+  /// `position`番目の行を参照する非所有Viewを返します。
+  ///
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを受け入れ、
+  /// 別のViewの代入は契約違反です。
+  ///
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> BareArray1DView<Element> {
 
@@ -450,13 +576,18 @@ public struct BareArray2DView<Element> {
 
 extension BareArray2DView {
 
+  /// 外側の軸に有効な位置である`0..<height`を返します。
+  ///
+  /// - Complexity: O(1)
   @inlinable
   public var indices: Range<Int> { 0..<height }
 }
 
-/// 要素アクセスの為の一時データ構造
+/// 所有配列の連続する3次元領域を参照する非所有Viewです。
 ///
-/// 参照型の挙動をする
+/// 連鎖subscriptは`view[z][y][x]`の順です。Viewからの変更は所有配列へ反映されます。
+/// Viewはstorageの寿命を延長しないため、元の所有配列の生存中だけ使用してください。
+/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 public struct BareArray3DView<Element> {
 
   @inlinable
@@ -476,6 +607,13 @@ public struct BareArray3DView<Element> {
   @usableFromInline let height: Int
   @usableFromInline let depth: Int
 
+  /// `position`番目の面を参照する非所有Viewを返します。
+  ///
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを受け入れ、
+  /// 別のViewの代入は契約違反です。
+  ///
+  /// - Precondition: `position`は`indices`に含まれなければなりません。
+  /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> BareArray2DView<Element> {
 
@@ -497,6 +635,9 @@ public struct BareArray3DView<Element> {
 
 extension BareArray3DView {
 
+  /// 外側の軸に有効な位置である`0..<depth`を返します。
+  ///
+  /// - Complexity: O(1)
   @inlinable
   public var indices: Range<Int> { 0..<depth }
 }

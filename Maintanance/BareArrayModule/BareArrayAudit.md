@@ -428,3 +428,34 @@ OptionalArrayと同じく、各次元は0以上、zero次元は許可、全次�
 `swift test --disable-sandbox --filter BareArrayModuleTests`をDebugとReleaseで実行した。Debugは通常33件と
 Death Test 36件、Releaseは通常26件とDeath Test 36件が成功した。Linuxと`-Ounchecked`は未確認で、
 `-Ounchecked`における検査の位置づけは文書作業後の安全性再評価へ残す。
+
+## `DOC-005` — 公開APIコメントドック・ドラフト（2026-10-09）
+
+独立した棚卸しを先に閉じるのではなく、`BareArray_0_PublicSurfaceTests`から
+`BareArray_5_ReferenceLifetimeTests`、`BareArray_99_DeathTests`までのTest as Specificationを確認し、
+対応する公開29宣言へ期待動作を直接記載した。
+
+- 所有4型: 連続storage、所有と破棄、条件付き`Sendable`、軸順、`-Ounchecked`での検査省略可能性。
+- initializer 8件: repeating／closureの動作、zero次元、非負・積overflow事前条件、計算量。
+- subscript 7件: 有効範囲、連鎖アクセス、非所有View、変更共有、要素寿命、検査付きwriteback、計算量。
+- `indices` 7件: 各型の外側軸に対応する範囲と計算量。
+- View 3型: storageを所有せず所有者の寿命を延長しないこと、所有者より長く保持しない呼び出し側責務。
+
+検証結果:
+
+- Xcode file diagnostics: 0件。
+- `swift test --disable-sandbox --filter BareArrayModuleTests`: 成功。通常testとDeath Test 42件が成功。
+- `swift test -c release --disable-sandbox --filter BareArrayModuleTests`: 成功。通常testとDeath Test 42件が成功。
+- `swift package --disable-sandbox generate-documentation --target BareArrayModule`: 成功。
+- 既存のSwiftPM cache警告と他moduleの既知warningは残るが、今回のコメント変更に由来する新しいwarningは無い。
+
+### `DOC-008` 独立レビュー受入（2026-10-09）
+
+Claudeの独立レビューにより、公開29宣言のコメントcoverage、Test as Specificationとの一致、BLOCKなしを確認した。
+判断不要の不揃いとして、4D subscriptの変更共有と契約違反表現、View 3型の`-Ounchecked`注意、1D型の説明、
+1DViewの`indices`範囲を補正した。
+
+新しい判断点は混ぜず、次の二件へ分離した。
+
+- `DOC-009`: Viewを保持したまま所有者を別の並行文脈へ送る使い方を保証しないと明記するか。
+- `DOC-010`: 「C言語の配列に近いアクセス性能」という測定根拠のない既存表現を残すか。

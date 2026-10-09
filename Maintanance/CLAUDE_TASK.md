@@ -7,7 +7,7 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（OPS-004 orientation独立レビューは作業完了、内容は不採用）**
+**実行中ジョブ: なし（`DOC-008` BareArrayコメントドック独立レビューはCodex受入済み）**
 
 - 継続ジョブ: なし。
 - 新規bounded assignment: なし。
@@ -22,6 +22,81 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: BareArray documentation-comment independent review
+
+Registryの`DOC-008`として、`DOC-005`で追加した`Sources/BareArrayModule/BareArray.swift`の公開APIコメントを
+独立に反証レビューする。ユーザーがClaudeレビューを明示指定したため、上記essential-only期間の例外として、
+この範囲だけを実行する。
+
+入力は次に限定する。
+
+- `Sources/BareArrayModule/BareArray.swift`
+- `Tests/BareArrayModuleTests/BareArray_0_PublicSurfaceTests.swift`
+- `Tests/BareArrayModuleTests/BareArray_1_InitializationTests.swift`
+- `Tests/BareArrayModuleTests/BareArray_2_ElementAccessTests.swift`
+- `Tests/BareArrayModuleTests/BareArray_3_ViewTests.swift`
+- `Tests/BareArrayModuleTests/BareArray_4_IndicesTests.swift`
+- `Tests/BareArrayModuleTests/BareArray_5_ReferenceLifetimeTests.swift`
+- `Tests/BareArrayModuleTests/BareArray_99_DeathTests.swift`
+- `Maintanance/BareArrayModule/BareArrayAudit.md`の公開契約、`BARE-014`、`BARE-015`、`DOC-005`の節
+- `Maintanance/RELEASE_0_5_2.md`の`DOC-005`と`DOC-008`に関する節
+
+次の観点だけを確認する。
+
+1. 公開29宣言と所有4型の`Sendable`適合について、利用者が必要とするコメントに欠落がないか。
+2. 初期化、zero次元、軸順、連鎖subscript、View共有、`indices`、要素寿命、境界trap、writeback制約の説明が
+   Test as Specificationと一致し、testが示さない保証を追加していないか。
+3. 非所有Viewの寿命責務、条件付き`Sendable`、Viewを残したまま所有者を送る場合の未解決事項を混同していないか。
+4. `-Ounchecked`、事前条件、計算量の表現が実装と受入済み契約に一致するか。
+5. 日本語の公開コメントとして、同じ概念の用語、軸の向き、setterの説明に誤解を招く表現がないか。
+6. `DOC-005`に記録したDebug／Release test、Death Test 42件、Xcode診断、documentation buildの証拠範囲が
+   実際の結果を過大評価していないか。
+
+各指摘を`PASS`、`RISK`、`BLOCK`、`UNVERIFIED`で分類し、対象symbolまたは行、根拠、最も強い反証、
+最小の修正案を示す。単なる好み、全面的な書き直し、利用者向けMarkdownや1.0方針の提案は含めない。
+新しい公開契約、性能基準、View寿命対策、strict memory safety方針を決定しない。判断点を発見した場合は、
+一判断ずつ分離してCodexへ返す。
+
+source、test、Registry、release正本、監査本文を変更しない。変更可能範囲はこのassignmentの`Result`節と
+冒頭のジョブ状態だけ。完了時はジョブ状態を返却待ちへ変え、結果を下へ追記する。buildやtestの再実行は
+必須ではなく、既存記録とのread-only照合でよい。commit、push、受入、修正採否、task完了はCodexが扱う。
+
+### Result
+
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`develop/misc/53` HEAD `7509c173`＋未commitの`BareArray.swift`差分（`git diff`）を対象にした。
+追加実行は`swift package --disable-sandbox generate-documentation --target BareArrayModule --warnings-as-errors`だけ（成功、warning 0）。source・testは変更していない。
+
+1. **欠落: `PASS`（軽微な不揃いあり）**。公開29宣言すべてにコメントがある（型7、init 8、subscript 7、`indices` 7）。`Sendable`適合4件は各所有型の型コメントで述べている。
+   不揃い: 4Dの外側subscript（`BareArray4D.subscript`）だけ「返されたViewからの変更はこの配列へ反映されます」が無い。2D・3Dにはある。
+   「別のViewの代入は契約違反」は2Dだけにあり、3D・4D・View 2D・View 3Dは「…だけを受け入れます」までで止まる。意味は同じなので修正は任意（揃えるなら1文ずつコピー）。
+2. **testとの一致: `PASS`**。zero次元でclosureが呼ばれない（`1_Initialization`）、軸順（`array[y][x]`〜`array[w][z][y][x]`、4Dは`size0`最内、`2_`の非対称全位置）、
+   View共有（`3_`）、`indices`の軸（`4_`）、上書き・破棄の寿命（`5_`）、writeback制約（`99_`の別storage 5件と範囲外position 5件）と一致する。
+   停止を「trapする」ではなく「Precondition／契約違反」と書いており、testが示さない保証（`-Ounchecked`でのtrap）を加えていない。
+3. **View寿命と`Sendable`: `RISK`**。
+   - 根拠: 所有型の型コメントは「`Element`が`Sendable`なら、配列も`Sendable`です」だけ。Viewの寿命は「所有配列の生存中だけ使用」と書くが、
+     所有者が生きたまま別の並行文脈へ送られ、手元にViewが残る場合（Audit ledger C1の未解決事項）は、この文では禁止されない。読み手は「生存中ならViewを使い続けてよい」と取れる。
+   - 最強の反証: 未解決事項をコメントへ書くと、新しい契約を書いたことになりかねない。現行文は何も約束していない、とも読める。
+   - 扱い: **判断候補1**（Codexへ）。所有型の`Sendable`の文に「Viewを残したまま所有者を別の並行文脈へ送る使い方は保証しない」の1文を足すかどうか。足さない場合は現状のまま。
+4. **`-Ounchecked`・事前条件・計算量: `RISK`（2件）**。
+   - (a) `-Ounchecked`の注意は所有4型の型コメントにしかない。View 3型のsubscriptも事前条件を持つが、View側にはこの注意が無い。最小案: View 3型の型コメントにも同じ1文を足す。
+   - (b) 計算量の`O(count)`等は実装と一致する（closure版は`f`を要素数回呼ぶ）。ただし1D〜3Dの型コメントに既存の「C言語の配列に近いアクセス性能を持ちます」が残る。
+     benchmarkは無く、測定根拠が無い（`QualityAssessment-ISO25010.md` §3.2）。DOC-005で足した文ではないが、今回の公開コメントに含まれる。
+     **判断候補2**（Codexへ）: この性能表現を残すか、計算量（O(1)のsubscript）だけにするか。Registryの「性能の数値を利用者向け文書へ掲載するか」の判断と同じ根。
+5. **用語・軸・setter: `RISK`（軽微）**。
+   - 1Dの`BareArray`の型コメント冒頭が「競技プログラミング用多次元配列」のまま（既存文）。1次元の型を「多次元」と呼んでいる。最小案: 「1次元配列」へ。
+   - `BareArray1DView.indices`だけ「このViewで有効な位置を返します」で、他の`indices`のような範囲（`0..<count`）の記載が無い。最小案: 他と同じ形に揃える。
+   - 「Viewからの変更はこの配列へ反映されます」は`let`の所有者から得たViewにも当てはまって読める（Audit 判断候補3、1.0判断に残した性質）。新しい契約にはしていないが、
+     文書作業後の1.0判断でこの性質を扱うとき、コメントが既に「反映される」と書いていることを入力に含めるとよい。今は修正不要。
+6. **DOC-005の証拠記録: `PASS`（範囲の明記を推奨）**。記録された内容は実態を超えていない。ただし`generate-documentation`は`--warnings-as-errors`無しの実行と書かれている。
+   今回`--warnings-as-errors`付きでも成功を確認した（上記）。通常testの件数（Debug 35・Release 28）を書いていないので、件数で比較したいなら追記するとよい。Linuxは記録どおり未確認。
+
+**判断候補（一つずつ）**: (1) View保持中に所有者を送る使い方の注記を入れるか。(2) 「C言語の配列に近いアクセス性能」の表現を残すか。どちらも新しい契約・性能方針に触れるため、Claudeは決めていない。
+
+Codex acceptance（2026-10-09）: 公開29宣言のcoverage、Test as Specificationとの一致、BLOCKなしという
+レビュー結果を受け入れた。4D説明、Viewの`-Ounchecked`注意、1D型説明、1DViewの範囲表記は判断不要の
+不揃いとして補正した。View保持中のSendable注記と定性的性能表現は別々のユーザー判断へ分離し、Claudeの
+レビュー作業自体を完了とする。
 
 ## Completed bounded assignment: Codex commander orientation independent review
 

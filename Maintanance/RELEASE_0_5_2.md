@@ -4,7 +4,9 @@
 
 ## 状態
 
-0.5.2を現在の中間ゴールとして、前提となるコメントドック作業を開始した。release検討開始条件は未達であり、
+0.5.2を現在の中間ゴールとして、前提となるコメントドック作業を開始した。独立した事前棚卸しを閉じてから
+執筆する方式は取りやめ、対象別にTest as Specificationを確認しながら期待動作を公開APIコメントへ記載する。
+BareArrayのドラフトと検証は完了した。release検討開始条件は未達であり、
 現時点ではrelease候補commit、到達範囲、必須gate、tag位置を決定しない。release rehearsal関連taskの凍結も
 維持し、0.5.2の到達範囲判断時に採用するrelease工程を別途決める。
 
@@ -30,15 +32,34 @@ checklistへ進むかを一つの判断として確定する。
 
 ## コメントドック作業task
 
-- `DOC-002`: 4対象の公開宣言、既存コメント、契約正本、test証拠、阻害判断を棚卸しする。これだけを最初の
-  `ACTIVE` taskとし、sourceコメントは変更しない。
-- `DOC-003`: Permutationのコメントドック・ドラフト作成と検証。棚卸し完了まで`PROPOSED`。
-- `DOC-004`: OptionalArrayのコメントドック・ドラフト作成と検証。命名判断との境界を棚卸しで確定するまで
-  `PROPOSED`。
-- `DOC-005`: BareArrayのコメントドック・ドラフト作成と検証。受入済み監査を契約入力に使い、棚卸し完了まで
-  `PROPOSED`。
-- `DOC-006`: RedBlackTree 4公開型のコメントドック・ドラフト作成と検証。`DOC-002`と`RBT-014`を前提とし、
-  必要な公開契約判断を棚卸しで確定するまで`PROPOSED`。
+- `DOC-002`: 独立した事前棚卸しを完了させてから執筆する方式を取りやめ、`EXCLUDED`。各対象の実行taskで
+  Test as Specificationを確認しながら期待動作を直接コメントへ記載する。
+- `DOC-003`: Permutationのコメントドック・ドラフト作成と検証。通常版とAtCoder 2025互換modeの境界を
+  `DOC-007`で決めるまで`PROPOSED`。
+- `DOC-004`: OptionalArrayのコメントドック・ドラフト作成と検証。公開29宣言・4適合を対象とし、1D所有型名と
+  次元名体系を`OPT-044`、`OPT-045`で決めるまで`PROPOSED`。
+- `DOC-005`: BareArrayのコメントドック・ドラフト作成と検証。8群のTest as Specificationを確認しながら、
+  公開29宣言へ初期化、軸順、連鎖アクセス、View共有、`indices`、要素寿命、範囲外停止、writeback制約、
+  不正寸法、計算量を記載した。Debug／Release通常testとDeath Test 42件、code issues 0件、documentation build成功。
+- `DOC-006`: RedBlackTree 4公開型のコメントドック・ドラフト作成と検証。今回の棚卸しには含めず、
+  `RBT-014`と必要な公開契約判断を前提として`PROPOSED`を維持する。
+- `DOC-007`: Permutation通常版とAtCoder 2025互換modeのコメントドック境界を一つ決める`DECISION` task。
+  ユーザー判断として`DOC-003`の前提に置き、2026-10-09のユーザー指示により後回しとして`FROZEN`。
+- `DOC-008`: `DOC-005`のBareArrayコメントドックをTest as Specification、実装、受入済み契約と照合する
+  Claudeの独立レビュー。公開29宣言のcoverage、Test as Specificationとの一致、BLOCKなしをCodexが受入済み。
+- `DOC-009`: Viewを残したまま所有者を別の並行文脈へ送る使い方を保証しないと明記するかのユーザー判断。
+- `DOC-010`: 既存の「C言語の配列に近いアクセス性能」を残すか、計算量表現だけへ限定するかのユーザー判断。
+
+### 3対象の実行分解（2026-10-09）
+
+- Permutation: 通常版には入口、列挙規則、重複要素、値semantics、Index、計算量、範囲条件の既存コメントが
+  ある。公開memberの不足を補いTest as Specificationへ接続する実行はCodexが担う。互換modeを同じ対象へ
+  含めるかだけは`DOC-007`でユーザーが決める。
+- OptionalArray: 既存ledgerの公開29宣言と4適合を現在のsourceへ再照合し、コメントの無い19宣言、全宣言で
+  未記載の計算量、capacity保持、所有・破棄・View寿命・変更共有・境界・軸を文書化する。実行はCodexが担うが、
+  `OPT-044`と`OPT-045`の命名判断を先に閉じる。
+- BareArray: 完了。受入済み契約判断と8群のTest as Specificationを公開宣言ごとに照合し、期待動作を
+  コメントへ記載して検証した。
 
 各実行taskの共通完了条件は、対象公開宣言にコメントが対応し、契約正本とTest as Specificationへ追跡でき、
 documentation buildの結果と未確認事項が記録され、ユーザーが本文をレビューできることである。最終校正、

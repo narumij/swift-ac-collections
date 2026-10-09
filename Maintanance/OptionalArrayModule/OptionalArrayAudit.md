@@ -935,3 +935,15 @@ storage保持、要素破棄、非所有Viewの親寿命依存、変更共有、
 - 最初のsandbox付きtestは既知のSwiftPM manifest sandbox制約で開始前に失敗し、`--disable-sandbox`付きで再実行した。
 - build中に今回変更していないPermutationModule 2件とOptionalArray test 1件の既存warningが出たが、
   OptionalArrayModuleの変更箇所に新しいcompiler warningはない。
+## OPT-046: View writeback setterの契約検査
+
+所有2D〜4DとView 2D〜3Dの外側subscript setterは、連鎖要素書き込みのwritebackだけを
+受け入れる。BareArrayと同様にposition、storage、shapeを検査する。OptionalArrayでは値storageの
+`payload`に加えて設定状態storageの`hasPayload`も一致させる。通常の連鎖書き込みを維持し、
+別storageのView代入がDeath Testで停止することを完了条件とする。
+
+2026-10-10完了。5 setterすべてへposition、`hasPayload`、`payload`、shapeの検査を追加した。
+既存の連鎖書き込みを含む通常testはDebug／Releaseとも35件成功し、別storage代入5件を追加した
+Death Testは両構成とも26件成功した。OptionalArrayModuleのdocumentation buildも
+`--warnings-as-errors`付きで成功した。内側に0次元がある4Dではgetterと同じoffset計算を用い、
+許可済みのzero-volume shapeを維持した。

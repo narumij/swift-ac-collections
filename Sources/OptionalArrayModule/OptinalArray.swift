@@ -200,6 +200,8 @@ public struct OptionalArray2D<Element>: ~Copyable {
   /// `position`番目の行を参照する非所有Viewを返します。
   ///
   /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置から返された同一storage・同一shapeの
+  /// Viewだけを受け入れ、別のViewの代入は契約違反です。
   ///
   /// - Parameter position: 参照する行の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
@@ -217,9 +219,11 @@ public struct OptionalArray2D<Element>: ~Copyable {
 
     @inline(__always)
     set {
-      // The mutation has already been applied through the pointer-backed View.
-      // This setter only completes writeback for a chained subscript expression.
-      /* NOP */
+      precondition(0 <= position && position < height)
+      let offset = width * position
+      precondition(newValue.hasPayload == hasPayload + offset)
+      precondition(newValue.payload == payload + offset)
+      precondition(newValue.count == width)
     }
   }
 }
@@ -311,6 +315,8 @@ public struct OptionalArray3D<Element>: ~Copyable {
   /// `position`番目の2次元面を参照する非所有Viewを返します。
   ///
   /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを
+  /// 受け入れ、別のViewの代入は契約違反です。
   ///
   /// - Parameter position: 参照する面の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
@@ -328,9 +334,11 @@ public struct OptionalArray3D<Element>: ~Copyable {
 
     @inline(__always)
     set {
-      // The mutation has already been applied through the pointer-backed View.
-      // This setter only completes writeback for a chained subscript expression.
-      /* NOP */
+      precondition(0 <= position && position < depth)
+      let offset = width * height * position
+      precondition(newValue.hasPayload == hasPayload + offset)
+      precondition(newValue.payload == payload + offset)
+      precondition(newValue.width == width && newValue.height == height)
     }
   }
 }
@@ -427,6 +435,8 @@ public struct OptionalArray4D<Element>: ~Copyable {
   /// `position`番目の3次元領域を参照する非所有Viewを返します。
   ///
   /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを
+  /// 受け入れ、別のViewの代入は契約違反です。
   ///
   /// - Parameter position: `size3`軸で参照する位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
@@ -448,9 +458,13 @@ public struct OptionalArray4D<Element>: ~Copyable {
 
     @inline(__always)
     set {
-      // The mutation has already been applied through the pointer-backed View.
-      // This setter only completes writeback for a chained subscript expression.
-      /* NOP */
+      precondition(0 <= position && position < size3)
+      let offset =
+        size0 == 0 || size1 == 0 || size2 == 0 ? 0 : size0 * size1 * size2 * position
+      precondition(newValue.hasPayload == hasPayload + offset)
+      precondition(newValue.payload == payload + offset)
+      precondition(
+        newValue.width == size0 && newValue.height == size1 && newValue.depth == size2)
     }
   }
 }
@@ -563,6 +577,8 @@ public struct OptionalArray2DView<Element> {
   /// `position`番目の行を参照する非所有Viewを返します。
   ///
   /// 返されたViewからの変更は同じ親配列へ反映されます。Viewは親配列の生存中だけ使用してください。
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置から返された同一storage・同一shapeの
+  /// Viewだけを受け入れ、別のViewの代入は契約違反です。
   ///
   /// - Parameter position: 参照する行の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
@@ -580,9 +596,11 @@ public struct OptionalArray2DView<Element> {
 
     @inline(__always)
     set {
-      // The mutation has already been applied through the pointer-backed View.
-      // This setter only completes writeback for a chained subscript expression.
-      /* NOP */
+      precondition(0 <= position && position < height)
+      let offset = width * position
+      precondition(newValue.hasPayload == hasPayload + offset)
+      precondition(newValue.payload == payload + offset)
+      precondition(newValue.count == width)
     }
   }
 }
@@ -624,6 +642,8 @@ public struct OptionalArray3DView<Element> {
   /// `position`番目の2次元面を参照する非所有Viewを返します。
   ///
   /// 返されたViewからの変更は同じ親配列へ反映されます。Viewは親配列の生存中だけ使用してください。
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを
+  /// 受け入れ、別のViewの代入は契約違反です。
   ///
   /// - Parameter position: 参照する面の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
@@ -642,9 +662,11 @@ public struct OptionalArray3DView<Element> {
 
     @inline(__always)
     set {
-      // The mutation has already been applied through the pointer-backed View.
-      // This setter only completes writeback for a chained subscript expression.
-      /* NOP */
+      precondition(0 <= position && position < depth)
+      let offset = width * height * position
+      precondition(newValue.hasPayload == hasPayload + offset)
+      precondition(newValue.payload == payload + offset)
+      precondition(newValue.width == width && newValue.height == height)
     }
   }
 }

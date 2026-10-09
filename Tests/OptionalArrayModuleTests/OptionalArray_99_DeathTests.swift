@@ -62,6 +62,48 @@
         array[0][2][0][0] = 1
       }
     }
+
+    @Test func assigningForeignView_traps_2D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var destination = OptionalArray2D<Int>(width: 2, height: 2)
+        let source = OptionalArray2D<Int>(width: 2, height: 2)
+        destination[0] = source[0]
+      }
+    }
+
+    @Test func assigningForeignView_traps_3D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var destination = OptionalArray3D<Int>(width: 2, height: 2, depth: 2)
+        let source = OptionalArray3D<Int>(width: 2, height: 2, depth: 2)
+        destination[0] = source[0]
+      }
+    }
+
+    @Test func assigningForeignView_traps_4D() async throws {
+      await #expect(processExitsWith: .failure) {
+        var destination = OptionalArray4D<Int>(size0: 2, size1: 2, size2: 2, size3: 2)
+        let source = OptionalArray4D<Int>(size0: 2, size1: 2, size2: 2, size3: 2)
+        destination[0] = source[0]
+      }
+    }
+
+    @Test func assigningForeignView_traps_view2D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let destination = OptionalArray3D<Int>(width: 2, height: 2, depth: 2)
+        let source = OptionalArray3D<Int>(width: 2, height: 2, depth: 2)
+        var destinationView = destination[0]
+        destinationView[0] = source[0][0]
+      }
+    }
+
+    @Test func assigningForeignView_traps_view3D() async throws {
+      await #expect(processExitsWith: .failure) {
+        let destination = OptionalArray4D<Int>(size0: 2, size1: 2, size2: 2, size3: 2)
+        let source = OptionalArray4D<Int>(size0: 2, size1: 2, size2: 2, size3: 2)
+        var destinationView = destination[0]
+        destinationView[0] = source[0][0]
+      }
+    }
   }
 
   /// initializerの次元契約(2026-10-08、OPT-032)に違反する入力で停止することを検証する。

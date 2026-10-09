@@ -158,6 +158,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-043` | `DONE` | External AI / Codex | [DISCOVERY] OptionalArray命名体系のAI間再検討 | 2026-10-09、Claude初稿と第三者AI補完調査をCodexが独立評価し、1D所有型名と次元名を別々の判断へ渡せる材料として受入 | `ARRAY_NAMING_REVIEW.md` / `CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` |
 | `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | 0.6.0の到達範囲判断前に、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
+| `OPT-046` | `DONE` | Codex | [EXECUTION] OptionalArray View writeback setterの契約検査 | 2026-10-10、所有2D〜4DとView 2D〜3Dの5 setterへposition・`hasPayload`・`payload`・shape検査を追加。Debug／Release通常test各35件、Death Test各26件、documentation buildが成功 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `DONE` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | 2026-10-09、契約棚卸し、個別判断、Test as Specification、品質評価初版を受入れ、ユーザードキュメント作業へ引渡可能と判定 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-002` | `DONE` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 2026-10-09、公開29宣言と4適合のledger、新しい判断点、後続への振り分けをCodexが受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-003` | `DONE` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | 2026-10-09、競技プログラミング向けの低レベル公開部品として維持すると決定 | `BareArrayModule/BareArrayAudit.md` |

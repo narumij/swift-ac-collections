@@ -339,6 +339,8 @@ agentの適性は固定的な人格評価ではなく、実績で更新する。
    - BareArray性能計測←性能測定設計: `SEQUENCE`。共通の測定条件は既存方式に従い、BareArray固有の
      対象操作・size・比較対象はCodexの`DISCOVERY`で整理するため、ユーザー判断taskは不要とした。
    - BareArray親監査←契約棚卸し: `PARALLEL_JOIN`。親監査と棚卸しを並行し、完了前に合流する。
+   - BareArray親監査←Test as Specification整理: `PARALLEL_JOIN`。親監査を先行可能とし、完了前に
+     テスト整理と合流する。
 3. 上流判断前に採番済みとなった条件付きtaskを、結果待ちで保持するか、不要と判定できる時点で
    `EXCLUDED`へ送るか。
 4. 2026-10-16までのCodex低燃費運用を、期限後に削除、更新、または継続するか。

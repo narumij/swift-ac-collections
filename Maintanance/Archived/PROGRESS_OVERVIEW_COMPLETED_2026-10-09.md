@@ -290,3 +290,4 @@ IDs remain permanent and must not be reused.
 | `OPS-021` | `EXCLUDED` | User / Codex | [DECISION] BareArray性能計測←性能基準のFlow分類 | 共通条件は既存方式に従い、BareArray固有部分もCodexの測定設計調査へ変更したため、ユーザー判断を不要として除外。依存は`SEQUENCE` | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-022` | `DONE` | User / Codex | [DECISION] BareArray親監査←契約棚卸しのFlow分類 | `PARALLEL_JOIN`。親監査と契約棚卸しを並行可能とし、親監査の完了前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-025` | `DONE` | User / Codex | [DECISION] Task precedence実行関係の名称 | 2026-10-09、列名を`Flow`、直列を`SEQUENCE`、並行可能で完了前に合流する関係を`PARALLEL_JOIN`とした | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-023` | `DONE` | User / Codex | [DECISION] BareArray親監査←Test as Specification整理のFlow分類 | `PARALLEL_JOIN`。親監査を先行可能とし、完了前にTest as Specification整理と合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |

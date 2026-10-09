@@ -15,16 +15,12 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **中間ゴールの取り扱い**
 
-**直近達成した中間ゴール:** 0.5.2を完成させる。全公開対象のコメントドック・ドラフトを揃えることは、0.5.2の
-到達範囲とrelease開始を判断するための前提であり、中間ゴールそのものではない。対象範囲と証拠の棚卸し、
-対象別ドラフト、到達範囲の判断、採用されたrelease工程の実行を、0.5.2へ至るtask graphとして扱う。
+**直近達成した中間ゴール:** 0.5.3を完成させる。
 
-2026-10-09、main merge commit `631cb59a`のCI greenを確認し、annotated tag `0.5.2`を同commitへ作成・pushして
-remote到達を確認した。
+2026-10-10、main merge commit `139ffef8`のCI greenを確認し、annotated tag `0.5.3`を同commitへ作成・pushして
+remote到達を確認した。release後の記録用branchとして、同tagから`develop/misc/55`を作成した。
 
-**現在の中間ゴール:** 0.5.3を完成させる。ユーザーによる`README.ja.md`のダミー編集を契機に中間ゲートを起動し、
-0.5.3のrelease作業を開始するか一問で判断する。編集自体をgate通過や0.5.3の製品scopeとは扱わない。
-Yesの場合は準備済みの`RELEASE_0_5_3.md`を`_ReleaseTask/ACTIVE.md`へコピーし、release実行を委譲する。
+**現在の中間ゴール:** 未設定。次の製品目標または運用taskは、ユーザー指示に基づいて選択する。
 
 **凍結中の中間ゴール（前任conversationの残存記録）:**
 
@@ -128,7 +124,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-032` | `DONE` | User / Codex | [EXECUTION] 0.5.2 annotated tag作成 | 2026-10-09、ユーザー承認後、main CI greenのmerge commit `631cb59a`へmessage `Release 0.5.2`のannotated tag `0.5.2`をlocal作成し、対象commitを読み戻した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-033` | `DONE` | User / Codex | [EXECUTION] 0.5.2 tag push | 2026-10-09、ユーザー承認後、`refs/tags/0.5.2`だけをoriginへpushし、remote tagが`631cb59a`を指すことを読み戻した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-069` | `DONE` | User | [EXECUTION] 0.5.3中間ゲート起動 | 2026-10-10、ユーザーが`README.ja.md`をcommit `f7fcdd09`で編集し、中間ゲートを起動。AIは編集を代行していない | `README.ja.md` |
-| `RELEASE-034` | `READY` | User / Codex | [DECISION] 0.5.3 release作業開始 | 0.5.3のrelease作業を行うか一問で判断する。Yesなら準備済み正本を`ACTIVE.md`へコピーして実行を委譲する | `RELEASE_0_5_3.md` |
+| `RELEASE-034` | `DONE` | User / Codex | [DECISION] 0.5.3 release作業開始 | 2026-10-10、ユーザーが開始を承認し、release専用Registryを起動して実行へ委譲 | `RELEASE_0_5_3.md` |
+| `RELEASE-070` | `DONE` | User / Codex | [EXECUTION] 0.5.3 release実行 | candidate `5c22e2cf`のlocal build・DocC、remote CI、main merge・CIを確認し、merge commit `139ffef8`へannotated tag `0.5.3`を作成・push。remote到達確認後、`develop/misc/55`を作成 | `RELEASE_0_5_3.md` |
 | `RELEASE-035` | `PROPOSED` | Codex | [EXECUTION] release checklistのRegistry templateへの移行 | checklist本文を読んで判断・操作・証拠へ分類する規則とtask骨格をtemplateへ移し、一判断ごとの必須依存、`REL-000`からの内部採番、任意task除去条件を検証する | `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-036` | `PROPOSED` | Codex | [EXECUTION] release専用Registryへの正本切替 | 移行後の旧checklistをArchivedへ移し、現行参照をtemplateとactive Registryへ切り替え、生成・startup precedence・完了／中止還元を一往復検証する | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |

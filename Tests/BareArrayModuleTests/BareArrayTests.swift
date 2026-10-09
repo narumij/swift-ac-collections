@@ -280,6 +280,34 @@ import XCTest
       XCTAssertEqual(Array(array.indices), [])
     }
 
+    func testZeroDimensionsCreateEmptyStorageWithoutCallingInitializerClosure() {
+      var calls = 0
+
+      let one = BareArray<Int>(count: 0) {
+        calls += 1
+        return 0
+      }
+      let two = BareArray2D<Int>(width: 0, height: 3) {
+        calls += 1
+        return 0
+      }
+      let three = BareArray3D<Int>(width: .max, height: .max, depth: 0) {
+        calls += 1
+        return 0
+      }
+      let four = BareArray4D<Int>(size0: .max, size1: .max, size2: .max, size3: 0) {
+        calls += 1
+        return 0
+      }
+
+      XCTAssertTrue(one.indices.isEmpty)
+      XCTAssertEqual(Array(two.indices), [0, 1, 2])
+      XCTAssertTrue(two[0].indices.isEmpty)
+      XCTAssertTrue(three.indices.isEmpty)
+      XCTAssertTrue(four.indices.isEmpty)
+      XCTAssertEqual(calls, 0)
+    }
+
     // MARK: - Sendable
 
     #if swift(>=5.5)

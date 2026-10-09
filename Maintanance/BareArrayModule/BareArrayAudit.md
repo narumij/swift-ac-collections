@@ -364,3 +364,30 @@ trapすることを確認した。
 Death Test 22件、Releaseは通常25件とDeath Test 22件が成功した。既存警告以外の新しいwarningはなく、
 source上のsetterは要素を走査せずO(1)を維持する。Linuxと生成コード上での検査除去可否は未確認で、後続の
 性能測定設計へ残す。
+
+## `BARE-015` — 不正寸法事前条件
+
+### ユーザー決定（2026-10-09）
+
+OptionalArrayと同じく、各次元は0以上、zero次元は許可、全次元の数学的な積は`Int`で表現可能であることを
+公開initializerの事前条件とする。負値と積overflowはtrapさせる。途中積だけがoverflowしても最終積がzeroに
+なる入力を拒否しないよう、3D・4Dはzero次元を先に判定する。
+
+### 実行範囲
+
+- 1Dの2 initializerと、2D〜4Dの各2 initializerへ同じ事前条件を実装する。
+- zero次元ではclosureを呼ばず、空storageを構築できることを通常testで固定する。
+- 負値と積overflowがDebug・ReleaseでtrapすることをDeath Testで固定する。
+- internal unsafe initializer、View、命名、storage設計、`-Ounchecked`方針は変更しない。
+
+### Codex受入（2026-10-09）
+
+1D〜4Dの公開initializer 8件へ非負検査を追加し、2D〜4Dは`multipliedReportingOverflow`で次元積を検査した。
+3D・4Dはzero次元を積より先に判定し、途中積だけがoverflowするが数学的な最終積はzeroになる入力を許可する。
+
+通常test 1件で、1D〜4Dのzero次元、closureが一度も呼ばれないこと、2Dの空row、巨大な内側次元とzeroの
+組合せを確認した。Death Test 14件で、8 initializerの負値と2D〜4D両initializerの積overflowを確認した。
+
+`swift test --disable-sandbox --filter BareArrayModuleTests`をDebugとReleaseで実行した。Debugは通常33件と
+Death Test 36件、Releaseは通常26件とDeath Test 36件が成功した。Linuxと`-Ounchecked`は未確認で、
+`-Ounchecked`における検査の位置づけは文書作業後の安全性再評価へ残す。

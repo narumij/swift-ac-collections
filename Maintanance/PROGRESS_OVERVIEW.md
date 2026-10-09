@@ -104,10 +104,11 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-008` | `FROZEN` | Claude / Codex | [DISCOVERY] BareArray品質評価初版 | Test as Specification整理後、ClaudeがISO/IEC 25010観点の証拠と不足を初稿化し、Codexが製品判断を分離して受入れ、ユーザードキュメント作業へ渡す | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-009` | `DONE` | Claude | [EXECUTION] BareArray既存契約の不足test追加 | 2026-10-09、所有2D〜4D外側subscriptの上下限6件と、非対称寸法での所有型・Viewの全位置照合5件をDebug／Releaseで受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-010` | `DONE` | User | [DECISION] BareArrayのNOP setter契約 | 2026-10-09、連鎖書き込みを維持し、同一pointer・shapeのwritebackだけを許す検査付きsetterへ変更すると決定 | `BareArrayModule/BareArrayAudit.md` |
-| `BARE-011` | `WAITING_USER` | User | [DECISION] BareArrayの不正寸法契約 | 負値と積のoverflowを呼び出し側事前条件として明文化・検査するか一つだけ判断 | `BareArrayModule/BareArrayAudit.md` |
+| `BARE-011` | `DONE` | User | [DECISION] BareArrayの不正寸法契約 | 2026-10-09、各次元は非負、zero許可、次元積は`Int`で表現可能というOptionalArrayと同じ事前条件を採用 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-012` | `WAITING_EXTERNAL` | External AI / Codex | [DISCOVERY] BareArray命名体系のAI間検討 | Claude初稿のCodex予備評価後、第三者AI向け補完依頼へ切替。回答受領後、Codexが独立評価・統合して判断材料へする | `ARRAY_NAMING_REVIEW.md` / `CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` |
 | `BARE-013` | `DONE` | Codex | [DISCOVERY] BareArray NOP setter代替設計 | 2026-10-09、get-onlyでは連鎖代入不可、settable accessorでは全体代入を構文上除外不可、同一pointer・shapeを検査するsetterは成立すると確認 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-014` | `DONE` | Codex | [EXECUTION] BareArray検査付きView writeback setter | 2026-10-09、所有2D〜4DとView 2D〜3Dを検査付きsetterへ変更し、連鎖書き込み成功と別View代入trap 5件をDebug／Releaseで受入 | `BareArrayModule/BareArrayAudit.md` |
+| `BARE-015` | `DONE` | Codex | [EXECUTION] BareArray不正寸法事前条件 | 2026-10-09、1D〜4Dの公開initializerへ非負・zero・積overflow契約を実装し、通常1件・Death Test 14件をDebug／Releaseで受入 | `BareArrayModule/BareArrayAudit.md` |
 | `ARRAY-001` | `FROZEN` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのTest as Specification前に必要な振り分けは`BARE-002`受入へ移管済み。全体再分解はユーザードキュメント作業後、再開時点の契約・品質評価を入力に行う | `StrictMemorySafetyReadiness.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -133,12 +134,14 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-010` | `BARE-003` | `SEQUENCE` | 公開維持の決定後に、NOP setterの公開契約上の位置づけを判断する |
 | `BARE-010` | `BARE-013` | `SEQUENCE` | NOP導入経緯と、連鎖書き込みを維持する代替accessorの成立性を確認してから契約を判断する |
 | `BARE-014` | `BARE-010` | `SEQUENCE` | 決定した検査付きsetter契約だけを実装・検証する |
+| `BARE-015` | `BARE-011` | `SEQUENCE` | 決定した不正寸法事前条件だけを実装・検証する |
 | `BARE-011` | `BARE-003` | `SEQUENCE` | 公開維持の決定後に、不正寸法の公開契約を判断する |
 | `BARE-005` | `BARE-004` | `SEQUENCE` | 命名体系を確定してから、最終的な公開名に沿って仕様testを整理する |
 | `BARE-005` | `BARE-009` | `SEQUENCE` | 現行契約の不足testを追加してからTest as Specificationへ編成する |
 | `BARE-005` | `BARE-010` | `SEQUENCE` | NOP setterの契約を確定し、必要な証拠を揃えてから仕様testを整理する |
 | `BARE-005` | `BARE-014` | `SEQUENCE` | 検査付きsetterの実装と仕様testを受け入れてからtest全体を整理する |
 | `BARE-005` | `BARE-011` | `SEQUENCE` | 不正寸法の契約を確定し、必要な後続実行を閉じてから仕様testを整理する |
+| `BARE-005` | `BARE-015` | `SEQUENCE` | 不正寸法の事前条件実装と仕様testを受け入れてからtest全体を整理する |
 | `BARE-007` | `BARE-006` | `SEQUENCE` | BareArray固有の測定設計と、必要なら分離した製品判断の完了後に計測する |
 | `BARE-001` | `BARE-002` | `PARALLEL_JOIN` | 親監査と契約棚卸しは並行できるが、親監査の完了前に合流する |
 | `BARE-001` | `BARE-005` | `PARALLEL_JOIN` | 親監査は先行できるが、完了前にTest as Specification整理と合流する |

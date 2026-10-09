@@ -915,3 +915,23 @@ Codex acceptance（2026-10-09）: Claude初稿と第三者AIの補完調査を�
 別々に判断できる材料が揃ったため受け入れた。第三者AIは`OptionalArray1D`と現行labelの維持を推奨した。
 Codexは現行label維持に同意する一方、1D所有型名はslot配列を独立した型系列と見るかで結論が変わるため、
 推奨だけで確定せず、二つのユーザー判断へ渡す。
+
+## 公開APIコメントドック・レビュー用ドラフト（2026-10-09）
+
+0.5.2では現行名を用い、公開29宣言と所有4型の条件付き`@unchecked Sendable`適合を、番号付きのTest as
+Specificationと現行実装へ再照合した。初期状態、zero dimension、不正次元、次元積、`removeAll()`後の
+storage保持、要素破棄、非所有Viewの親寿命依存、変更共有、軸順、`indices`、境界事前条件、計算量を公開
+コメントへ記載した。NOP setterは公開契約として説明を増やさず、連鎖subscriptによる変更共有という利用者に
+必要な結果だけを記載した。命名判断は0.6.0へ移しており、このドラフトでは現行名を変更していない。
+
+これはユーザーが契約内容をレビューできる段階のドラフトとして、0.5.2の文書作業へ引き渡したものである。
+この段階では内容の受入レビュー、Claudeによる独立レビュー、公開可否の判断を完了条件に含めない。
+
+検証結果:
+
+- Debug: 通常35件とDeath Test 21件が成功。
+- Release: 通常35件とDeath Test 21件が成功。
+- `swift package --disable-sandbox generate-documentation --target OptionalArrayModule --warnings-as-errors`: 成功。
+- 最初のsandbox付きtestは既知のSwiftPM manifest sandbox制約で開始前に失敗し、`--disable-sandbox`付きで再実行した。
+- build中に今回変更していないPermutationModule 2件とOptionalArray test 1件の既存warningが出たが、
+  OptionalArrayModuleの変更箇所に新しいcompiler warningはない。

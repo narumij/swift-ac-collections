@@ -36,8 +36,10 @@ checklistへ進むかを一つの判断として確定する。
   Test as Specificationを確認しながら期待動作を直接コメントへ記載する。
 - `DOC-003`: Permutation全体のコメントドック・ドラフト完成判定。通常版の執筆は`DOC-011`へ分離して
   先行し、AtCoder 2025互換modeの境界は`DOC-007`で後から合流する。
-- `DOC-004`: OptionalArrayのコメントドック・ドラフト作成と検証。公開29宣言・4適合を対象とし、0.5.2では
-  現行の1D所有型名と次元名体系を用いて先行する。命名判断は0.6.0の到達範囲判断へ移した。
+- `DOC-004`: OptionalArrayのコメントドック・ドラフト作成と検証。2026-10-09完了。現行名の公開29宣言と
+  4適合をTest as Specification・実装へ再照合し、所有、View寿命、破棄、変更共有、軸、境界、計算量を
+  コメントへ記載した。Debug／Release通常35件＋Death Test 21件、documentation warning-as-error成功。
+  0.5.2段階の成果としてユーザーへ引き渡し済み。命名判断は0.6.0の到達範囲判断へ移した。
 - `DOC-005`: BareArrayのコメントドック・ドラフト作成と検証。8群のTest as Specificationを確認しながら、
   公開29宣言へ初期化、軸順、連鎖アクセス、View共有、`indices`、要素寿命、範囲外停止、writeback制約、
   不正寸法、計算量を記載した。Debug／Release通常testとDeath Test 42件、code issues 0件、documentation build成功。
@@ -63,9 +65,9 @@ checklistへ進むかを一つの判断として確定する。
 - Permutation: 通常版には入口、列挙規則、重複要素、値semantics、Index、計算量、範囲条件の既存コメントが
   ある。通常版の公開memberをTest as Specificationへ接続する`DOC-011`は先行できる。互換modeを同じ対象へ
   含めるかは`DOC-007`で後から決め、Permutation全体の完成判定前に合流する。
-- OptionalArray: 既存ledgerの公開29宣言と4適合を現在のsourceへ再照合し、コメントの無い19宣言、全宣言で
-  未記載の計算量、capacity保持、所有・破棄・View寿命・変更共有・境界・軸を文書化する。実行はCodexが担い、
-  現行名のままレビュー用ドラフトを作成する。`OPT-044`と`OPT-045`は0.6.0ゲートで合流する。
+- OptionalArray: 完了。既存ledgerの公開29宣言と4適合を現在のsourceへ再照合し、コメントの無かった19宣言、
+  全宣言で未記載だった計算量、capacity保持、所有・破棄・View寿命・変更共有・境界・軸を現行名で文書化した。
+  `OPT-044`と`OPT-045`は0.6.0ゲートで合流する。
 - BareArray: 完了。受入済み契約判断と8群のTest as Specificationを公開宣言ごとに照合し、期待動作を
   コメントへ記載して検証した。
 

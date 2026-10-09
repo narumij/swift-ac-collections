@@ -1,6 +1,6 @@
 # 開発・メンテナンス進捗一覧
 
-最終更新: 2026-10-09 / Codex
+最終更新: 2026-10-10 / Codex
 
 この文書のTask Registryを、CodexとClaudeが作業を再開するときの唯一の入口とする。まずRegistry
 だけを読み、選択したtask行が示す詳細正本だけを追加で読む。2026-10-07までの完了チェック、判断待ち、
@@ -22,10 +22,9 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 2026-10-09、main merge commit `631cb59a`のCI greenを確認し、annotated tag `0.5.2`を同commitへ作成・pushして
 remote到達を確認した。
 
-**現在の中間ゴール:** 0.5.3を完成させる。0.5.3へ含める製品上の到達範囲は`RELEASE-034`のユーザー判断に
-依存する。その判断が完了するまでは、既存taskから0.5.3のscopeを推測せず、製品作業やrelease準備を開始しない。
-release検討開始は成果と証拠が揃った後の別判断とする。release専用Task Registryの設計は、0.5.3の製品scopeを
-決めずに進められる運用基盤として分離して扱う。
+**現在の中間ゴール:** 0.5.3を完成させる。ユーザーによる`README.ja.md`のダミー編集を契機に中間ゲートを起動し、
+0.5.3のrelease作業を開始するか一問で判断する。編集自体をgate通過や0.5.3の製品scopeとは扱わない。
+Yesの場合は準備済みの`RELEASE_0_5_3.md`を`_ReleaseTask/ACTIVE.md`へコピーし、release実行を委譲する。
 
 **凍結中の中間ゴール（前任conversationの残存記録）:**
 
@@ -128,7 +127,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-031` | `DONE` | User / Codex | [DISCOVERY] release専用Task Registryの分離設計 | 2026-10-09、配置、schema、life cycle、startup precedence、task運用summary、完了／中止cleanup、checklist由来の実行task骨格、内部採番、移行taskへの分解を確定 | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-032` | `DONE` | User / Codex | [EXECUTION] 0.5.2 annotated tag作成 | 2026-10-09、ユーザー承認後、main CI greenのmerge commit `631cb59a`へmessage `Release 0.5.2`のannotated tag `0.5.2`をlocal作成し、対象commitを読み戻した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-033` | `DONE` | User / Codex | [EXECUTION] 0.5.2 tag push | 2026-10-09、ユーザー承認後、`refs/tags/0.5.2`だけをoriginへpushし、remote tagが`631cb59a`を指すことを読み戻した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
-| `RELEASE-034` | `WAITING_USER` | User / Codex | [DECISION] 0.5.3の製品上の到達範囲 | 0.5.3として完成させる製品上のscopeを一つ判断する。release検討開始、release可否、merge、tag、pushは含めない | `RELEASE_0_5_3.md` |
+| `RELEASE-069` | `USER_ONLY` | User | [EXECUTION] 0.5.3中間ゲート起動 | ユーザーが`README.ja.md`をダミー編集した時点で中間ゲートを起動する。AIは編集、代行、催促を行わない | `README.ja.md` |
+| `RELEASE-034` | `BLOCKED` | User / Codex | [DECISION] 0.5.3 release作業開始 | 中間ゲート起動後、0.5.3のrelease作業を行うか一問で判断する。Yesなら準備済み正本を`ACTIVE.md`へコピーして実行を委譲する | `RELEASE_0_5_3.md` |
 | `RELEASE-035` | `PROPOSED` | Codex | [EXECUTION] release checklistのRegistry templateへの移行 | checklist本文を読んで判断・操作・証拠へ分類する規則とtask骨格をtemplateへ移し、一判断ごとの必須依存、`REL-000`からの内部採番、任意task除去条件を検証する | `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-036` | `PROPOSED` | Codex | [EXECUTION] release専用Registryへの正本切替 | 移行後の旧checklistをArchivedへ移し、現行参照をtemplateとactive Registryへ切り替え、生成・startup precedence・完了／中止還元を一往復検証する | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
@@ -224,6 +224,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-027` | `RELEASE-026` | `SEQUENCE` | 候補commitを固定してから同じcommitへlocal一次検収を行う |
 | `RELEASE-028` | `RELEASE-026` | `SEQUENCE` | 候補commitを固定し、remote反映の対象を一意にしてからCIを確認する |
 | `RELEASE-028` | `RELEASE-030` | `SEQUENCE` | ユーザー専任のfixed candidate branch pushが完了してからCodexがCIを確認する |
+| `RELEASE-034` | `RELEASE-069` | `GATE` | 日本語READMEのダミー編集を契機に中間ゲートを起動し、0.5.3のrelease作業開始を判断する |
 | `RELEASE-035` | `RELEASE-031` | `SEQUENCE` | 分離設計とtask骨格の確定後に旧checklistをtemplateへ移行する |
 | `RELEASE-036` | `RELEASE-035` | `SEQUENCE` | checklist移行を検証してから実行正本をactive Registryへ切り替える |
 | `RELEASE-029` | `RELEASE-027` | `PARALLEL_JOIN` | local一次検収の証拠を揃えてから独立確認へ渡す |

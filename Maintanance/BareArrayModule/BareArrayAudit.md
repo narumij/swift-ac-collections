@@ -293,3 +293,50 @@ Claudeは候補、根拠、反証、影響する公開宣言を列挙する。Co
 
 `BARE-009`の実行中に命名検討を割り込ませない。Claudeの現行assignment完了後、境界付きの次assignment
 として渡し、Codexの独立評価を経てからユーザー判断を起動する。
+
+## `BARE-013` — NOP setter代替設計
+
+現行の2D〜4D所有型と2D〜3D Viewの外側subscriptは、連鎖要素書き込みのwritebackを成立させるため、
+受け取ったViewを捨てるNOP setterを持つ。このためView全体代入もcompileされ、観測可能な無効果操作になる。
+ユーザーからは、言語上の必須要件というより実装を簡単にするために置かれた可能性が示された。
+
+Codexはsourceを変更せず、次を確認する。
+
+- NOP setterの導入commitと、その時点で記録された意図。
+- 外側subscriptをget-onlyにし、返されたViewのpointer経由の変更だけで連鎖書き込みが成立するか。
+- inner Viewの`unsafeMutableAddress`または`nonmutating set`が、一時値と`let`所有者の双方でどう働くか。
+- `_modify`など別accessorを使う場合、View全体代入を再び許可しないか。
+- 2D〜4D所有型とView 2D〜3Dへ同じ方式を適用できるか。
+- compile可否だけでなく、変更共有、最適化可能性、公開API surfaceへの影響。
+
+最小再現と現行型を使う一時的なtypecheckまたはtestだけを行う。source、test、公開契約は変更しない。
+成立する最小案、成立しない案、過去の便宜的実装だった可能性、未確認事項を分け、`BARE-010`の
+ユーザー判断へ渡す。
+
+### Codex調査結果（2026-10-09）
+
+- NOP setterは`6fd45542`でBareArrayの初版と同時に導入された。commit messageは`bare, optional`で、
+  setterを選んだ理由の記録はない。後から追加された便宜実装ではなく初版構造だが、意図は未確認。
+- 現行と同じpointerを持つ値型Viewをget-only outer subscriptから返す最小例では、inner subscriptが
+  `unsafeMutableAddress`を持っていても、`a[0][0] = 42`は`subscript is get-only`でcompile拒否された。
+- `get`と`_modify`、または`get`と`set`で外側をsettableにすれば連鎖代入は可能になるが、同じaccessorは
+  View全体代入にも使われる。通常の値型subscriptの代入構文を保ったまま、全体代入だけをcompile時に
+  禁止する構成は確認できなかった。
+- setterで、戻されたViewのpointerとshapeが、そのpositionから返すViewと一致することを`precondition`で
+  検査する最小例は成立した。`a[0][0] = 42`は成功し、値42が元storageへ反映された。
+- この検査付きsetterなら、通常のwritebackは無効果のまま許し、別storageまたは別shapeのView全体代入は
+  trapにできる。完全なNOPより誤用を早く検出でき、要素copyという新しいO(n)契約も導入しない。
+- `_modify`でも終了時に同じ検査は可能だが、View全体代入の構文自体は許すため、setterより明確な利点は
+  見つからなかった。
+
+### 判断材料
+
+1. **現行NOPを維持:** 実装が最小で、既存の連鎖書き込みを維持する。別View代入を黙って捨てる。
+2. **検査付きsetterへ変更:** 同一pointer・shapeのwritebackだけを許し、別View代入はtrapする。連鎖構文と
+   O(1)を維持し、無言の誤用を減らす。
+3. **View全体をcopyするsetter:** 直接代入に意味を与えられるが、連鎖要素代入後のwritebackとの区別、
+   overlap、O(n)化を新たに扱う必要があるため推奨しない。
+4. **get-only化:** 現行の連鎖代入構文を失うため、現行APIを維持する案にはならない。
+
+Codexの推奨は2。compile時の完全除外はできないが、現行の利用形状と計算量を維持しつつ、全体代入を
+無言のNOPから契約違反として検出できる。

@@ -39,3 +39,18 @@
 `UNVERIFIED`分類は採用しない。実装と既存testからコメントとの一致を確認できる。
 `removeAll()`を`let`所有値から呼べる点も、利用者が必要とするコメント制約とは判定しない。
 3 moduleを公開初版へ進める完成判定はClaudeの結論から切り離し、Codexに残す。
+
+## 後続対応
+
+2026-10-10、ユーザー指示によりA系統を実行した。
+
+- Permutationは`makeIterator()`だけでなく、公開入口、index、等値比較、hash、descriptionまで
+  計算量を横断確認し、実装に基づく記載を補った。OptionalArrayとBareArrayは、計算量を記載すべき
+  公開operationに既に記載があり、実装との新たな不一致は見つからなかった。
+- OptionalArrayの上書き破棄は、所有1Dと1DViewの別々の`_modify`実装、および両経路の参照寿命testで
+  契約が固定されていた。記載不能な契約ではなく、ドラフト時にnil代入だけを説明して非nil上書きを
+  落とした重要なcoverage不足と判定し、両subscriptへ以前の要素を破棄して置き換える旨を追記した。
+- OptionalArray4Dの軸表現とBareArray 1Dの「多次元配列」を最小補正した。
+- Xcode build成功。OptionalArrayとBareArrayのfile診断は0件。Permutationのfile診断2件は既存の
+  unsafe／未使用結果warningで、今回のコメント差分とは無関係。3 targetのdocumentation buildを
+  `--warnings-as-errors`付きで実行し、すべて成功した。

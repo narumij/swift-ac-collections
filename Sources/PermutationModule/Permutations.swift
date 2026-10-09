@@ -16,6 +16,8 @@ extension Collection {
   ///
   /// If you need every permutation rather than only the lexicographic successors of the
   /// current order, use `swift-algorithms`'s `permutations()` instead.
+  ///
+  /// - Complexity: O(1). Creating an iterator copies the elements in O(n) time.
   @inlinable
   public func nextPermutations() -> NextPermutationsSequence<Self>
   where Element: Comparable {
@@ -46,6 +48,8 @@ where Base: Collection, Base.Element: Comparable {
   }
 
   /// Creates an iterator that starts at the source collection's current element order.
+  ///
+  /// - Complexity: O(n), where n is the number of elements.
   @inlinable
   public func makeIterator() -> Iterator {
     .init(elementBuffer: .prepare(source: base))
@@ -199,9 +203,13 @@ extension NextPermutationsSequence.Permutation: @unchecked Sendable where Base.E
 
 extension NextPermutationsSequence.Permutation: RandomAccessCollection {
   /// The position of the first element, always zero.
+  ///
+  /// - Complexity: O(1).
   @inlinable
   public var startIndex: Int { elementBuffer.startIndex }
   /// The position one past the last element.
+  ///
+  /// - Complexity: O(1).
   @inlinable
   public var endIndex: Int { elementBuffer.endIndex }
   /// The integer type used to index a permutation.
@@ -226,6 +234,8 @@ extension NextPermutationsSequence.Permutation: RandomAccessCollection {
 // Equality, hashing, and description depend only on the element order.
 extension NextPermutationsSequence.Permutation: Equatable {
   /// Returns whether two permutations contain equal elements in the same order.
+  ///
+  /// - Complexity: O(n) in the worst case, where n is the number of elements.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.elementBuffer === rhs.elementBuffer || lhs.elementsEqual(rhs)
@@ -234,6 +244,8 @@ extension NextPermutationsSequence.Permutation: Equatable {
 
 extension NextPermutationsSequence.Permutation: Hashable where Base.Element: Hashable {
   /// Hashes the number and order of the permutation's elements.
+  ///
+  /// - Complexity: O(n), where n is the number of elements.
   @inlinable
   public func hash(into hasher: inout Hasher) {
     hasher.combine(count)
@@ -245,6 +257,9 @@ extension NextPermutationsSequence.Permutation: Hashable where Base.Element: Has
 
 extension NextPermutationsSequence.Permutation: CustomStringConvertible {
   /// A representation of the elements using array syntax.
+  ///
+  /// - Complexity: O(n), where n is the number of elements, excluding the cost of each
+  ///   element's description.
   public var description: String { Array(self).description }
 }
 

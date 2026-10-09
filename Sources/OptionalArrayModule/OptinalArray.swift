@@ -70,7 +70,8 @@ public struct OptionalArray1D<Element>: ~Copyable {
   /// 指定位置の要素を取得または更新します。
   ///
   /// 未設定の位置からは`nil`を返します。非`nil`の値を代入するとその位置へ要素を構築し、
-  /// `nil`を代入すると既存要素をちょうど一度破棄します。
+  /// 設定済みの位置へ代入すると以前の要素を破棄して置き換えます。`nil`を代入すると
+  /// 既存要素をちょうど一度破棄します。
   ///
   /// - Precondition: `position`が`indices`に含まれること。
   /// - Complexity: O(1)
@@ -338,7 +339,7 @@ extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
 /// 配列ベースのメモ化に用いる配列です。
 /// 未初期化値の番兵を用意することなく利用できます。
 /// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
-/// 連鎖subscriptは`array[size3][size2][size1][size0]`の順で、`size0`が最内軸、
+/// 連鎖subscriptは`array[w][z][y][x]`の順で、`size0`が最内軸、
 /// `size3`が最外軸です。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
@@ -473,7 +474,8 @@ public struct OptionalArray1DView<Element> {
 
   /// 指定位置の要素を取得または更新します。
   ///
-  /// `nil`を代入すると親配列が所有する既存要素を破棄し、そのslotを未設定状態へ戻します。
+  /// 設定済みの位置へ非`nil`の値を代入すると、親配列が所有する以前の要素を破棄して
+  /// 置き換えます。`nil`を代入すると既存要素を破棄し、そのslotを未設定状態へ戻します。
   ///
   /// - Precondition: `position`がこのViewの有効範囲に含まれること。
   /// - Complexity: O(1)

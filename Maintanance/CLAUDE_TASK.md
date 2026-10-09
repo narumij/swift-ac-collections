@@ -471,5 +471,5 @@ task list or authority source.
   「明示再開」の混在。互換mode系（`PERM-004`〜`PERM-010`）を契機待ちに置いたのは読みが割れうる点。
   2026-10-08夜、ユーザー判断: 当面、分解はClaudeが行い、枝番を付けた子taskの登録はCodexへ依頼する（今日の`RBT-017`と同じ流れ）。
   graph DBで子taskを持つ案は、Codexへ伝えられないので見送り。
-- `GRAPH-005`: 共有面はtrackedな`Graph/GRAPH_DB_EXCHANGE.md`を使う（2026-10-07、ユーザー了承）。
+- `GRAPH-005`: 共有面はtrackedな`Graph/GRAPH_DB_EXCHANGE.md`を使った。2026-10-09、ユーザー判断で交流会を終了。
 - 10/10以降: task fit協議を予定（ユーザー）。この一時的な主担当の役割はその時点で見直す。

@@ -66,6 +66,15 @@ Git対象外共有fileへ切り替えてよい。形式とfile名は両者で決
 - 統合DB、共通schema、勝者の選定を成果物にしない。
 - tracked版とGit対象外版を二重運用しない。選んだ共有面だけを使う。
 
+### Closure（2026-10-09）
+
+ユーザー判断により、交流会taskを終了する。観測、問い、反証を交換するという目的は、共有schema、
+retrospective replay、smell判定スキームの各試験へ必要な知見を渡したことで達成した。交流専用の成果物や
+同期的な往復は追加しない。
+
+この終了は、Claude用task graph DBの独立試験と、インメモリ関係モデルによるsmell判定スキーム共有試験を
+終了または統合する判断ではない。両taskはそれぞれのRegistry上の条件で継続する。
+
 ## Local visualization PoC
 
 2026-10-08、Claude専用のlocal projectionから、現在のready周辺と中間goal観点をSVG／PNGへ描く

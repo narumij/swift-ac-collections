@@ -80,7 +80,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-002` | `FROZEN` | Codex | Codex用task graph DBの独立試験 | Codexのcontext reset後、ユーザーが明示的に再開 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-004` | `ACTIVE` | Codex / Claude | [DISCOVERY] AIとインメモリ関係モデルによるsmell判定スキーム共有試験 | 解析ごとに関係をインメモリ構築し、共有するnode・edge・根拠・確度・query・判定結果のスキームがcode / test / taskの臭い判断に有効か検証する。永続化するのは再利用可能なスキームと観測記録だけとする | `Graph/AI_GRAPH_SMELL_NOTES.md` |
-| `GRAPH-005` | `ACTIVE` | Codex / Claude | ClaudeとCodexのgraph DB交流会 | 合意した共有面で観測、問い、反証、試したい見方を交換。tracked MDを強制せず、統合や正本化を目的にしない | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-017` | `FROZEN` | Claude | [EXECUTION] RP-19 readiness fixture | pilot分類後、`START`だけがready判定を阻止し、`COMPLETE`と`UNCLASSIFIED`を混同しないSQLite fixtureを作る | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-018` | `FROZEN` | Codex | [EXECUTION] Task precedence Gateの段階移行完成判定 | RP-19受入後、残る`UNCLASSIFIED`を小batchで意味確認し、ready集合の差分を検収して必須欄への移行可否を判定 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、別projectでの再現性検証へ進む | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |

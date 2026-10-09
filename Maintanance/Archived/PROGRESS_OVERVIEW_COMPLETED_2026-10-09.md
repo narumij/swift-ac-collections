@@ -27,6 +27,7 @@ IDs remain permanent and must not be reused.
 | `GRAPH-014` | `DONE` | Claude / Codex | [EXECUTION] observation staleness fixture | 2026-10-08、古い観測をstale、再構築後をnot staleとするPASSを確認 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-015` | `DONE` | User / Codex | [DECISION] Task precedence Gateの意味と段階移行 | 2026-10-08、`START`・`COMPLETE`・移行中の`UNCLASSIFIED`を定義し、現役辺pilot、fixture検証、残辺移行の順に浸透させると決定 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-016` | `DONE` | Codex | [EXECUTION] Task precedence Gate列のpilot導入 | 2026-10-08、Gate列を追加し、現行`ACTIVE` taskに接続する6辺を`START` 4件・`COMPLETE` 2件へ分類。他の既存辺は`UNCLASSIFIED`のまま保持 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-005` | `DONE` | User / Codex / Claude | ClaudeとCodexのgraph DB交流会 | 2026-10-09、必要な観測交換を終え、ユーザー判断で終了。独立DB試験と共有smellスキーム試験は別taskとして継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `OPS-002` | `DONE` | Codex | [DISCOVERY] task分解・インライン化・割当の三段階運用検討 | 2026-10-09、stable ID・依存・履歴は維持し、条件の揃った連続`EXECUTION`だけを一時assignment packageへまとめる方式を採用。判断・凍結・待機taskは対象外とし、新判断や失敗時は元taskへ戻す | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
 | `FIT-002` | `DONE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08、責任境界、現行補正、OptionalArray 10 package、追加skillについて項目別回答を記録 | `AGENT_TASK_FIT_INTERVIEW.md` |

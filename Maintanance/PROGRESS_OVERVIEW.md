@@ -91,10 +91,13 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-002` | `USER_ONLY` | User | ABC328E実提出確認 | ユーザーが手作業で実施 | `PermutationModule/ImplementationPlan.md` |
 | `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-043` | `ACTIVE` | Claude / Codex | [DISCOVERY] OptionalArray命名体系のAI間再検討 | BareArray再開を再検討条件として、Claudeが現行API・BareArray・互換性・移行コストから案と反証を整理し、Codexが独立評価・統合して判断材料へする | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | `OPT-043`受入後、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | `OPT-043`受入後、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `ACTIVE` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | 公開7型の契約棚卸し、必要な個別判断、Test as Specification整理、品質評価初版を受入れ、ユーザードキュメント作業への引き渡し可否を判定する | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-002` | `DONE` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 2026-10-09、公開29宣言と4適合のledger、新しい判断点、後続への振り分けをCodexが受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-003` | `DONE` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | 2026-10-09、競技プログラミング向けの低レベル公開部品として維持すると決定 | `BareArrayModule/BareArrayAudit.md` |
-| `BARE-004` | `WAITING_USER` | User | [DECISION] BareArray公開型・次元名の命名体系 | 公開維持を前提に、型名、View名、次元property名とOptionalArray1Dとの整合について一つの命名体系を判断 | `BareArrayModule/BareArrayAudit.md` |
+| `BARE-004` | `FROZEN` | User | [DECISION] BareArray公開型・次元名の命名体系 | `BARE-012`のAI間検討を受入後、型名、View名、次元property名とOptionalArray1Dとの整合について、整理済みの選択肢から一つの命名体系を判断 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-005` | `FROZEN` | Claude | [EXECUTION] BareArrayModuleTestsのTest as Specification整理 | `BARE-002`受入時の再計算後、先行する契約判断・不足testが残らない状態で、既存testを番号付きTest as Specificationへ整理。コメントドック全件整備は含めない | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-006` | `FROZEN` | Codex | [DISCOVERY] BareArray 1.0の性能測定設計 | ユーザードキュメント作業後、共通の測定基盤を入力に対象操作・size・比較対象・評価方法を設計し、BareArray固有の製品判断候補を分離 | `Tests/TESTING.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray 1.0の性能計測 | `BARE-006`で整理した対象操作・size・比較対象と既存の測定方式に従って計測し、1.0判断へ渡す | `Tests/TESTING.md` |
@@ -102,6 +105,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-009` | `ACTIVE` | Claude | [EXECUTION] BareArray既存契約の不足test追加 | 所有2D〜4D外側subscriptの境界と、非対称寸法での2D〜4D・View 2D〜3Dのoffset / strideをtestで固定し、既存契約を変更せずCodex受入へ返す | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-010` | `WAITING_USER` | User | [DECISION] BareArrayのNOP setter契約 | 連鎖writeback用の実装手段として維持し、View全体代入を公開契約から除外するか一つだけ判断 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-011` | `WAITING_USER` | User | [DECISION] BareArrayの不正寸法契約 | 負値と積のoverflowを呼び出し側事前条件として明文化・検査するか一つだけ判断 | `BareArrayModule/BareArrayAudit.md` |
+| `BARE-012` | `ACTIVE` | Claude / Codex | [DISCOVERY] BareArray命名体系のAI間検討 | Claudeが現行API・OptionalArray・互換性・移行コストから案と反証を整理し、Codexが独立評価・統合して、ユーザーが一つ選べる判断材料へする | `BareArrayModule/BareArrayAudit.md` |
 | `ARRAY-001` | `FROZEN` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのTest as Specification前に必要な振り分けは`BARE-002`受入へ移管済み。全体再分解はユーザードキュメント作業後、再開時点の契約・品質評価を入力に行う | `StrictMemorySafetyReadiness.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -120,6 +124,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-026` | `RBT-014` | `SEQUENCE` | 現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する |
 | `BARE-005` | `BARE-002` | `SEQUENCE` | 契約棚卸しを受け入れ、先行する契約判断・不足testの有無を再計算した後に整理へ着手できる |
 | `BARE-004` | `BARE-003` | `SEQUENCE` | 公開維持の決定後に、公開名として維持または変更する命名体系を判断する |
+| `BARE-004` | `BARE-012` | `SEQUENCE` | AI同士で命名案、互換性、移行コスト、反証を整理してからユーザー判断へ渡す |
+| `OPT-044` | `OPT-043` | `SEQUENCE` | AI同士で1D型名の案、BareArrayとの一貫性、互換性、移行コストを整理してからユーザー判断へ渡す |
+| `OPT-045` | `OPT-043` | `SEQUENCE` | AI同士で次元名の案、BareArrayとの一貫性、互換性、移行コストを整理してからユーザー判断へ渡す |
 | `BARE-009` | `BARE-003` | `SEQUENCE` | 公開維持の決定後に、現行公開契約の不足testを追加する |
 | `BARE-010` | `BARE-003` | `SEQUENCE` | 公開維持の決定後に、NOP setterの公開契約上の位置づけを判断する |
 | `BARE-011` | `BARE-003` | `SEQUENCE` | 公開維持の決定後に、不正寸法の公開契約を判断する |

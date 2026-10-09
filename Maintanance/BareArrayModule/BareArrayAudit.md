@@ -262,3 +262,24 @@ Test as Specificationへ直行せず、まず公開継続の判断を行う。�
 - 正方形・立方体では隠れるstride誤りを、非対称寸法で検出できる。
 - View 2D / 3Dを経由したoffsetと変更共有が証明される。
 - 対象testがDebug構成とRelease構成で成功し、Death Testの実行条件が既存方式と一致する。
+
+## `BARE-012` — 命名体系のAI間検討
+
+ユーザー判断の前に、ClaudeとCodexが次を検討する。
+
+- 所有1Dだけが`BareArray`で、Viewは`BareArray1DView`である非対称性。
+- 2D・3Dの`width` / `height` / `depth`と、4Dの`size0`〜`size3`の非対称性。
+- `OptionalArray1D`および同moduleの多次元型との一貫性。
+- 現行名を維持する案、段階的に揃える案、1.0前に破壊的に揃える案の利用者価値と移行コスト。
+- 競技プログラミングでの可読性、検索性、推測可能性と、source compatibilityのtrade-off。
+- Swift標準ライブラリおよび`swift-collections`の公開型名・用語・命名規則と衝突しないこと。
+
+BareArrayは正式公開前であるため、既存名の維持やsource compatibilityを最優先の制約とはしない。公開後も
+長く維持でき、標準または`swift-collections`の型だと誤認されにくい名称であることを必須条件にする。
+
+Claudeは候補、根拠、反証、影響する公開宣言を列挙する。Codexは同じ証拠を独立に評価し、単純な賛否では
+なく、前提ごとに推奨が変わる箇所を統合する。両者は命名を決定せず、ユーザーが一つの命名体系を選べる
+比較材料として`BARE-004`へ渡す。
+
+`BARE-009`の実行中に命名検討を割り込ませない。Claudeの現行assignment完了後、境界付きの次assignment
+として渡し、Codexの独立評価を経てからユーザー判断を起動する。

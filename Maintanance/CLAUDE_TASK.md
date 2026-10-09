@@ -2,20 +2,18 @@
 
 Status: Bounded assignments only. Temporary primary-user-support delegation ended 2026-10-08 by user direction.
 
-Codex is operating in low-consumption mode through 2026-10-16. This does not restore delegation:
 Claude remains limited to explicit requests and ready Claude-owned Registry tasks, while Codex keeps
 integration, decisions, acceptance, Registry updates, and public-document ownership.
 
 ## Current job status
 
-**実行中ジョブ: なし（2026-10-09 11:40 JSTまで停止）**
+**実行中ジョブ: なし（`BARE-002`はCodex受入済み）**
 
-- 継続ジョブ: Claude専用task graph DBの独立試験は、ユーザー指示により11:40まで停止。
-- 新規bounded assignment: 11:40まで停止。以前の`GRAPH-004` fallbackはCodex受入済みで、共有スキームの
-  継続task自体もユーザー判断で終了したため、今後のfallbackには使わない。
-- 本線の現在状態: ユーザー判断によりBareArray監査を再開し、公開7型の契約棚卸し`BARE-002`が
-  Claude担当のready taskになった。ただし11:40までは割り当てない。性能、View寿命、strict memory safetyは
-  後続の1.0判断まで凍結を維持する。
+- 継続ジョブ: なし。
+- 新規bounded assignment: なし。公開継続のユーザー判断後に、必要な判断と不足testを再分解する。
+- 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
+  `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
+  受け入れた。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持する。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。

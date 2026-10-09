@@ -5,14 +5,24 @@
 ## 状態
 
 0.5.2を現在の中間ゴールとして、前提となるコメントドック作業を開始した。独立した事前棚卸しを閉じてから
-執筆する方式は取りやめ、対象別にTest as Specificationを確認しながら期待動作を公開APIコメントへ記載する。
-  全公開対象のレビュー用ドラフトと検証は完了し、release検討開始条件へ到達した。
+執筆する方式は取りやめ、対象別にTest as Specificationを確認しながら期待動作を公開APIコメントへ記載した。
+全公開対象のレビュー用ドラフトと検証は完了し、release検討開始条件へ到達した。
 現時点ではrelease候補commit、到達範囲、必須gate、tag位置をまだ決定していない。release rehearsal関連taskの
-凍結も維持し、0.5.2の到達範囲判断時に採用するrelease工程を別途決める。
+凍結も維持する。
 
-0.5.2は、製品上の到達範囲とは別に、`prepare/release/template`から`release/0.5.2`を作成し、mainをmergeして
-専用工程を通すtemplate branch方式の初回rehearsal候補とする。実際の適用はrelease検討開始後に判断し、
-この記録だけではbranch作成、merge、tag、pushを許可しない。
+2026-10-09、template branch方式は準備不足のため0.5.2では中止した。0.5.2は0.5.1相当の工程とし、作業branchで
+候補を準備・検証し、PRでmainへmergeした後、main CIがgreenになった同一main commitをtag候補とする。
+`prepare/release/template`または`release/0.5.2`は使用しない。この決定だけではPR作成、merge、tag、pushを
+許可しない。
+
+## Release branch方式
+
+- 候補準備とlocal検証は現在の作業branchで行う。
+- 固定候補をremote CIと独立確認へ渡し、必要な修正があれば候補を固定し直す。
+- release可否判断後、別途承認されたPRをmainへmergeする。
+- main CIが同じmerge commitでgreenになったことを確認し、そのmain commitをtag候補とする。
+- tag作成、tag push、release pageはそれぞれ別操作として承認を得る。
+- template branch rehearsalとrelease tree変換は0.5.2の工程へ含めない。
 
 ## Release検討開始条件
 

@@ -24,9 +24,9 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 - 0.5.1の実施結果からrelease checklistの不足を抽出し、Webマージ、main CI、実際のmain commit確認、
   tag作成、tag pushの順序を次回releaseで誤認しない汎用手順へ改訂する。
 - `prepare/release/template`をrelease工程のtemplate branchとする方式について、削除規則、release専用test、
-  workflow、mainとのmerge境界を設計し、次回releaseへ適用できる状態にする。
-- 残りの`0.5.x`でtemplate branch方式のrelease rehearsalを重ね、各回の工程上の改善だけを
-  `prepare/release/template`へ還元し、`0.6.0`を成熟した工程による最初の本運用候補にする。
+  workflow、mainとのmerge境界を設計し、準備完了後のreleaseへ適用できる状態にする。0.5.2には適用しない。
+- 0.5.2より後の適切なreleaseでtemplate branch方式のrelease rehearsalを重ね、各回の工程上の改善だけを
+  `prepare/release/template`へ還元し、成熟後のreleaseを本運用候補にする。
 
 **後続の中間ゴール:**
 
@@ -96,7 +96,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-005` | `DONE` | User / Codex | [DECISION] 0.5.1の到達範囲とrelease検討開始 | 2026-10-09、BareArray契約の堅牢化と三対象のTest as Specificationを0.5.1の範囲として採用し、release checklistへ進むと決定 | `RELEASE_0_5_1.md` |
 | `RELEASE-008` | `DONE` | Codex / Claude | [EXECUTION] 0.5.1 release候補の準備と検収 | 2026-10-09、PR #176をmainへmergeし、main CI green確認後、merge commit `d7b3863e`へannotated tag `0.5.1`を作成・pushしてremote到達を確認 | `RELEASE_0_5_1.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-009` | `FROZEN` | Codex | [DISCOVERY] 0.5.1実績に基づくrelease checklist見直し | 2026-10-09、前任conversationの意図と途中経過の喪失により再開困難なため凍結。明示的な再開指示後、残存記録を参考資料として目的と境界から再確認 | `RELEASE_CHECKLIST.md` / `RELEASE_0_5_1.md` |
-| `RELEASE-010` | `DONE` | User / Codex | [DECISION] release template branch方式の採用 | 2026-10-09、`prepare/release/template`から`release/<version>`を切り、mainをmergeして専用工程を実施し、mainへ戻さず同versionのtagを打って完成とする方式を採用。残りの`0.5.x`を工程のrehearsal系列とし、改善をtemplateへ還元して`0.6.0`を成熟した工程の本運用候補とする | `RELEASE_CHECKLIST.md` |
+| `RELEASE-010` | `DONE` | User / Codex | [DECISION] release template branch方式の採用 | 2026-10-09、`prepare/release/template`から`release/<version>`を切り、mainをmergeして専用工程を実施し、mainへ戻さず同versionのtagを打って完成とする方式を将来方式として採用。0.5.2は準備不足により適用せず、0.5.1相当のmain release工程を用いる | `RELEASE_CHECKLIST.md` |
 | `RELEASE-011` | `FROZEN` | Codex | [DISCOVERY] `prepare/release/template`の構成設計と試行 | 2026-10-09、前任conversationの意図と途中経過の喪失により再開困難なため凍結。残存ドラフトは当面保存するが既決事項とは扱わず、明示的な再開指示後に目的と境界を再確認 | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-012` | `DONE` | User / Codex | [DECISION] release treeから除外する内部管理資産 | 2026-10-09、`Maintanance`、`AGENTS.md`、`CLAUDE.md`、`Utilities/Maintenance`はmainへ保持し、release treeから除外すると決定 | `RELEASE_CHECKLIST.md` |
 | `RELEASE-013` | `DONE` | User / Codex | [DECISION] release treeにおける互換生成・検証utility | 2026-10-09、`Utilities/Permutation`は通常版への変換を検証する工程中だけ使用し、最終的なtag対象から除外すると決定 | `RELEASE_CHECKLIST.md` |
@@ -111,6 +111,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-021` | `EXCLUDED` | Codex | [EXECUTION] 0.5.2 release候補の準備と検収 | 2026-10-09、工程確定前の分解は早すぎるため未着手で除外。準備・検収はrelease工程を具体化する時点で新しいtaskへ分解する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-022` | `PROPOSED` | User / Codex | [DECISION] 0.5.2 release可否ゲート | 後から分解する準備・検収taskが固定候補と必須証拠を揃えた後、0.5.2をreleaseしてよいか一つだけ判断する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-023` | `EXCLUDED` | User / Codex | [EXECUTION] 0.5.2 tag・push・公開 | 2026-10-09、工程確定前の分解は早すぎるため未着手で除外。可否決定後の操作は必要になった時点で個別にtask化する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-024` | `DONE` | User / Codex | [DECISION] 0.5.2のrelease branch方式 | 2026-10-09、template branch rehearsalは準備不足のため0.5.2では中止。0.5.1相当として、作業branchで候補を準備・検証し、PRでmainへmerge後、main CIがgreenの同一commitをtag候補とする方式を採用 | `RELEASE_0_5_2.md` / `RELEASE_0_5_1.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
 | `DOC-003` | `DONE` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト完成判定 | 2026-10-09、通常版のレビュー用ドラフトと検証を受入。`DOC-007`でAtCoder 2025互換modeを0.5.2の対象外と決定したため、追加実行なしでユーザーへの引き渡しを完了 | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `DOC-004` | `DONE` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | 2026-10-09、現行名の公開29宣言と4適合をTest as Specification・実装へ再照合し、所有、View寿命、破棄、変更共有、軸、境界、計算量をレビュー用コメントへ記載。Debug／Release通常35件＋Death Test 21件、documentation warning-as-error成功。0.5.2段階の成果としてユーザーへ引き渡し済み | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |

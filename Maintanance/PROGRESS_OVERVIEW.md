@@ -19,6 +19,8 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 - 0.5.1の実施結果からrelease checklistの不足を抽出し、Webマージ、main CI、実際のmain commit確認、
   tag作成、tag pushの順序を次回releaseで誤認しない汎用手順へ改訂する。
+- `prepare/release/0`をrelease工程のtemplate branchとする方式について、削除規則、release専用test、
+  workflow、mainとのmerge境界を設計し、次回releaseへ適用できる状態にする。
 
 **後続の中間ゴール:**
 
@@ -85,6 +87,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-005` | `DONE` | User / Codex | [DECISION] 0.5.1の到達範囲とrelease検討開始 | 2026-10-09、BareArray契約の堅牢化と三対象のTest as Specificationを0.5.1の範囲として採用し、release checklistへ進むと決定 | `RELEASE_0_5_1.md` |
 | `RELEASE-008` | `DONE` | Codex / Claude | [EXECUTION] 0.5.1 release候補の準備と検収 | 2026-10-09、PR #176をmainへmergeし、main CI green確認後、merge commit `d7b3863e`へannotated tag `0.5.1`を作成・pushしてremote到達を確認 | `RELEASE_0_5_1.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-009` | `ACTIVE` | Codex | [DISCOVERY] 0.5.1実績に基づくrelease checklist見直し | CHANGELOGの`Unreleased`・当該版・前版の分離と、候補branch検収後のWebマージ、main CI、実main commit確認、tag作成、tag pushの順序・承認境界を検証し、必要な最小改訂案を示す | `RELEASE_CHECKLIST.md` / `RELEASE_0_5_1.md` |
+| `RELEASE-010` | `DONE` | User / Codex | [DECISION] release template branch方式の採用 | 2026-10-09、`prepare/release/0`からreleaseごとの`prepare/release/x`を切り、mainをmergeして専用工程を実施し、mainへ戻さず終端へtagを打つ方式を採用 | `RELEASE_CHECKLIST.md` |
+| `RELEASE-011` | `ACTIVE` | Codex | [DISCOVERY] `prepare/release/0`の構成設計と試行 | 配布対象の削除規則、release専用test・workflow・lint、main merge時の競合と製品修正の差し戻し境界を整理し、template branch作成へ渡せる案と試行結果を示す | `RELEASE_CHECKLIST.md` |
 | `RELEASE-006` | `FROZEN` | User / Codex | [DECISION] 0.5.2の到達範囲とrelease検討開始 | 全公開対象のコメントドック・ドラフト完成後、0.5.2へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_5_2.md` |
 | `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | 全公開対象の利用者向けドキュメント初版完成後、0.6.0へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_6_0.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
@@ -153,6 +157,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-005` | `BARE-005` | `SEQUENCE` | PermutationとOptionalArrayは整理済み。BareArrayのTest as Specification整理後に0.5.1を検討する |
 | `RELEASE-008` | `RELEASE-005` | `SEQUENCE` | 製品上の到達範囲とrelease検討開始を確定してから候補commitを準備する |
 | `RELEASE-009` | `RELEASE-008` | `SEQUENCE` | 0.5.1の実際のrelease完了までを観測してから、汎用checklistとの差を見直す |
+| `RELEASE-011` | `RELEASE-010` | `SEQUENCE` | template branch方式の採用後に、実際の構成と検証方法を設計・試行する |
 
 ## Registry rules
 

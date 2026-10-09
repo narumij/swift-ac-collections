@@ -4,6 +4,11 @@ This file preserves task rows and precedence edges removed when the active Regis
 The exact pre-compression snapshot is commit `42f19324`. Detailed evidence remains in each row’s canonical document.
 IDs remain permanent and must not be reused.
 
+## Completed intermediate goals
+
+- 2026-10-09、Claudeへ渡すtask出しを「一つのtaskに一つのユーザー判断、またはユーザー判断なし」まで
+  分解できる状態にするゴールから、BareArrayをユーザードキュメント作業へ渡すゴールへ移行した。
+
 ## Completed and excluded tasks
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
@@ -78,6 +83,7 @@ IDs remain permanent and must not be reused.
 | `PERM-036` | `DONE` | Claude / Codex | [DISCOVERY] Permutation sequential subscriptの実benchmark hot path比較 | 2026-10-09、macOS arm64とLinux x86-64で修正前後の実benchmark binaryを比較。regressed hot loopの命令列は同一で、Linuxでは遅い側だけ64 byte境界をまたぐ配置差を確認。第三者assembly reviewのgetter非inline化仮説とは独立した観測として保持 | `PERFORMANCE_REGRESSION_BISECTION.md` |
 | `PERM-037` | `DONE` | User / Codex / Claude | [EXECUTION] performance失敗時の診断artifact拡充 | 2026-10-09、base / HEADの実行済みbenchmark binary、逆アセンブル、symbol、hash、測定JSON、比較結果、runner CPUを失敗時に保存するworkflowへ更新し、引用符不備も補正 | `PERFORMANCE_REGRESSION_BISECTION.md` |
 | `PERM-038` | `DONE` | User / Codex | [DISCOVERY] 第三者AIによるPermutation assembly reviewの採用 | 2026-10-09、binary全体の独立比較を構造上の観測として採用。後続のhot-path検証によりgetter非inline化は実測回帰の原因説明として不採用とし、元の仮説は履歴として保持 | `PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md` |
+| `BARE-008` | `DONE` | User / Codex | [DECISION] BareArray監査を再開するか | 2026-10-09、OptionalArrayで検証した管理方式を用いて監査を再開。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持 | `Tests/TESTING.md` |
 | `RELEASE-004` | `DONE` | User / Codex | [EXECUTION] 0.5.0の互換準備branch統合 | 2026-10-09、`main`を`prepare/compatible/2`へmergeし、競合解消、Debug・Release全test、互換branch資料整理、remote pushまで完了 | `RELEASE_0_5_0.md` |
 | `PERM-008` | `DONE` | Codex | [EXECUTION] Permutation互換branchの有効化とCI分離 | 2026-10-09、branch defineと通常source排他を有効化。互換機能testを維持し、対象外のdocumentation・performance jobを互換branchで停止 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-004` | `DONE` | Codex | [EXECUTION] AtCoder 2025互換ソースの隔離 | 2026-10-09、基準2 fileを条件付き専用fileへ隔離。0.5.0の通常sourceは無条件compileへ戻し、排他切替は後続branch統合時へ移管 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |

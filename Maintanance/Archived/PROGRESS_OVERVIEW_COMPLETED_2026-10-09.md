@@ -32,6 +32,7 @@ IDs remain permanent and must not be reused.
 | `GRAPH-004` | `EXCLUDED` | User / Codex / Claude | [DISCOVERY] AIとインメモリ関係モデルによるsmell判定スキーム共有試験 | 2026-10-09、継続taskとしては終了。既存schema・fixture・観測を保存し、必要時だけその場の関係整理として再利用する | `Graph/AI_GRAPH_SMELL_NOTES.md` |
 | `GRAPH-017` | `EXCLUDED` | — | [EXECUTION] RP-19 readiness fixture | 親目的の共有スキーム試験を終了したため、未実施のfixtureを不要として除外 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-018` | `EXCLUDED` | — | [EXECUTION] Task precedence Gateの段階移行完成判定 | Codex用DBと共有スキームの継続を終了し、DB向けGate移行の完成判定を不要として除外 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-019` | `DONE` | Codex | [EXECUTION] Task Registry構造lintの最小実装 | 2026-10-09、現行MarkdownをSQLiteインメモリDBへ読み込み、cycle・参照切れ・自己依存・重複edge・Gate・条件付き前提をread-only検査する入口を追加 | `Graph/TASK_GRAPH_LINT.md` |
 | `OPS-002` | `DONE` | Codex | [DISCOVERY] task分解・インライン化・割当の三段階運用検討 | 2026-10-09、stable ID・依存・履歴は維持し、条件の揃った連続`EXECUTION`だけを一時assignment packageへまとめる方式を採用。判断・凍結・待機taskは対象外とし、新判断や失敗時は元taskへ戻す | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
 | `FIT-002` | `DONE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08、責任境界、現行補正、OptionalArray 10 package、追加skillについて項目別回答を記録 | `AGENT_TASK_FIT_INTERVIEW.md` |

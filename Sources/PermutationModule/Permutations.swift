@@ -87,10 +87,9 @@ extension NextPermutationsSequence {
     @usableFromInline
     var state = State.initial
 
-    // TODO: Swift 6.4の`swift test -c release`では、コピーしたiteratorの元の側をクロージャ内で
-    // 進めて結果を読むと、コピー側も進んだ状態になる(2026-10-07発見)。2026-10-08の再調査では
-    // このiteratorでだけ再現し、ライブラリなしの再現は作れなかった。原因(コンパイラか本実装か)は
-    // 未確定。1.0直前に、まだ起きるかを確認する。
+    // Swift 6.4のRelease最適化では、`next()`を呼び出し側へ展開すると、assertionのautoclosure内で
+    // 元iteratorを進めた後にcopy側も1要素余分に進む事象を確認した。原因は未確定のため、`next()`の
+    // インライン化だけを抑止し、COWと未保持時の無コピー経路は維持する(2026-10-10回帰test追加)。
     /// Makes the buffer unique before advancing. Returns `false` without copying when the
     /// buffer is shared and has no successor, because such a copy would only be discarded.
     @inlinable
@@ -109,6 +108,8 @@ extension NextPermutationsSequence {
     ///
     /// - Complexity: O(n) in the worst case, where n is the number of elements.
     @inlinable
+    // Swift 6.4 ReleaseのCOW回帰を避ける。上のコメントと回帰testを参照。
+    @inline(never)
     public mutating func next() -> Permutation? {
       switch state {
       case .finished:

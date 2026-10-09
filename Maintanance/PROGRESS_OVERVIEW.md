@@ -127,8 +127,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-031` | `DONE` | User / Codex | [DISCOVERY] release専用Task Registryの分離設計 | 2026-10-09、配置、schema、life cycle、startup precedence、task運用summary、完了／中止cleanup、checklist由来の実行task骨格、内部採番、移行taskへの分解を確定 | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-032` | `DONE` | User / Codex | [EXECUTION] 0.5.2 annotated tag作成 | 2026-10-09、ユーザー承認後、main CI greenのmerge commit `631cb59a`へmessage `Release 0.5.2`のannotated tag `0.5.2`をlocal作成し、対象commitを読み戻した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-033` | `DONE` | User / Codex | [EXECUTION] 0.5.2 tag push | 2026-10-09、ユーザー承認後、`refs/tags/0.5.2`だけをoriginへpushし、remote tagが`631cb59a`を指すことを読み戻した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
-| `RELEASE-069` | `USER_ONLY` | User | [EXECUTION] 0.5.3中間ゲート起動 | ユーザーが`README.ja.md`をダミー編集した時点で中間ゲートを起動する。AIは編集、代行、催促を行わない | `README.ja.md` |
-| `RELEASE-034` | `BLOCKED` | User / Codex | [DECISION] 0.5.3 release作業開始 | 中間ゲート起動後、0.5.3のrelease作業を行うか一問で判断する。Yesなら準備済み正本を`ACTIVE.md`へコピーして実行を委譲する | `RELEASE_0_5_3.md` |
+| `RELEASE-069` | `DONE` | User | [EXECUTION] 0.5.3中間ゲート起動 | 2026-10-10、ユーザーが`README.ja.md`をcommit `f7fcdd09`で編集し、中間ゲートを起動。AIは編集を代行していない | `README.ja.md` |
+| `RELEASE-034` | `READY` | User / Codex | [DECISION] 0.5.3 release作業開始 | 0.5.3のrelease作業を行うか一問で判断する。Yesなら準備済み正本を`ACTIVE.md`へコピーして実行を委譲する | `RELEASE_0_5_3.md` |
 | `RELEASE-035` | `PROPOSED` | Codex | [EXECUTION] release checklistのRegistry templateへの移行 | checklist本文を読んで判断・操作・証拠へ分類する規則とtask骨格をtemplateへ移し、一判断ごとの必須依存、`REL-000`からの内部採番、任意task除去条件を検証する | `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-036` | `PROPOSED` | Codex | [EXECUTION] release専用Registryへの正本切替 | 移行後の旧checklistをArchivedへ移し、現行参照をtemplateとactive Registryへ切り替え、生成・startup precedence・完了／中止還元を一往復検証する | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |

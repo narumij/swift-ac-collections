@@ -142,3 +142,17 @@ release記録を変更した場合は、候補を固定し直し、影響する�
 OptionalArray、Permutation通常モードのコメントだけで、Package.swift、workflow、READMEに差分はない。
 RedBlackTreeのレビュー用ドラフトは0.5.1のtreeにすでに含まれる。Task Registryと本記録を同期した後のHEADを
 local一次検収の対象とし、それ以降に製品差分が入った場合は候補を固定し直す。
+
+### Local一次検収
+
+2026-10-09、候補`c092d625`で次を実施した。
+
+- `swift test --disable-sandbox -c debug`: 成功。通常testとDeath Testを含む。
+- `swift test --disable-sandbox -c release`: 成功。通常testとDeath Testを含む。
+- CIと同じRedBlackTreeCollectionsのRelease DocCを`--warnings-as-errors`付きで生成: 成功。
+- BareArrayModule、OptionalArrayModule、PermutationModuleのDocCを`--warnings-as-errors`付きで生成: 成功。
+- 0.5.1からPackage.swift、workflow、READMEに差分なし。公開sourceの変更は3対象のコメントだけ。
+
+Permutationの`withUnsafeMutablePointers`未使用result警告とDebug probeのstrict-memory-safety警告は既存であり、
+今回の製品差分では導入していない。testとDocCは成功しているため0.5.2の非阻害事項とし、暗黙に解消済みとは扱わない。
+本記録の同期後、同じ内容のHEADをremote CI候補とする。remote pushは別のユーザー判断を要する。

@@ -7,14 +7,14 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（0.5.1独立チェック1回目を受入、候補修正中）**
+**実行中ジョブ: あり（release template branch設計ドラフトの独立レビュー）**
 
 - 継続ジョブ: なし。
-- 新規bounded assignment: `4d5ce7b8`を固定対象とする0.5.1最終候補の独立チェック。
+- 新規bounded assignment: `RELEASE-011`の設計ドラフトを変更せずに反証レビューする。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
   Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
   停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。今回の一件は、
-  他に並行可能な現在ゴールの作業がなく、ユーザーがClaudeをポリッシング担当に指定したため該当する。
+  `prepare/release/0`の起点commitを決める前の独立した反証確認をユーザーが明示的に求めたため該当する。
   時刻到達だけで自動的に通常運用へ戻さず、その時点のゴールへの必要性と利用量を再確認する。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
@@ -22,6 +22,38 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Current bounded assignment: release template branch design review
+
+Registryの`RELEASE-011`と`Maintanance/RELEASE_TEMPLATE_BRANCH_DESIGN.md`を入力に、
+`prepare/release/0`方式の設計ドラフトを独立に反証レビューする。Codexの推奨を前提にせず、次の問いだけを
+確認する。
+
+1. `prepare/release/0`からversion別`prepare/release/x`を作り、固定したmain候補をmergeし、`/x`をmainへ
+   戻さず終端へtagを打つtopologyに、履歴、merge、tag到達性、次回releaseの再現性上の破綻がないか。
+2. main、template、version別branchの責任境界が、製品修正をrelease branchだけへ閉じ込めたり、
+   templateへ製品差分を混入させたりしないか。
+3. 内部管理資産と内部文書の削除、利用者向け文書・Tests・Benchmarksの保持、`Utilities/Permutation`の
+   最終除外というtree境界に、build、test、documentation、利用者の追試を壊す不足がないか。
+4. `COMPATIBLE_ATCODER_2025`を通常版へ具体化する規則が、入れ子、`#else`、複合条件、file単位除外、
+   Package設定を含め、決定的な変換と残存lintを設計できる粒度か。実装方式は決定しない。
+5. `SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`を使ってSwift Testing・Death Testを含む全testを実行する説明が、
+   既存traitの契約と一致し、何を検証しなくなるかを過小評価していないか。
+6. 大規模benchmark、documentation、ASan、tree lint、CHANGELOG、独立チェック、tag・pushの承認境界に
+   抜け、誤順序、同一commit性の破れがないか。
+7. 起点commitを決める前に、追加のユーザー判断または小さい事実確認へ分離すべき事項があるか。
+
+報告は`PASS`、`RISK`、`BLOCK`、`UNVERIFIED`を使い、各項目について根拠、最強の反証、最小の修正案を
+示す。特に、設計が成立しない問題と、初回rehearsalで検証すればよい不確実性を分ける。
+
+source、test、workflow、Package、設計ドラフト、release checklist、Registryを変更しない。branch作成、
+merge、build、test、benchmark、tag、pushを行わない。変更可能範囲はこのassignmentの`Result`節と冒頭の
+ジョブ状態だけ。完了時は状態を返却待ちへ変え、結果を追記してgit addまで行う。commit、受入、設計修正、
+ユーザー判断への引渡しはCodexへ残す。
+
+### Result
+
+未着手。
 
 ## Completed bounded assignment: 0.5.1 independent release check (first pass)
 

@@ -156,6 +156,10 @@ activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
 
 ## Japanese sentence markers
 
+Japanese sentence markers are currently suspended. Do not use `了。`, `是。`,
+`否。`, `解。`, or any of the other markers below unless the user explicitly
+directs Codex to resume them. Keep the definitions for a possible later restart.
+
 The markers below classify only the single sentence immediately following the
 marker, not the response as a whole. When the function changes within one
 response, a later sentence may use a different marker. Choose by the function of

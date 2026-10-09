@@ -282,3 +282,4 @@ IDs remain permanent and must not be reused.
 | `OPS-011` | `DONE` | Codex | [EXECUTION] AI task process posterへのreview反映 | 内容照合の指摘を生成scriptと成果物へ反映し、再生成と画像確認を完了 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-012` | `DONE` | User / Codex | [DECISION] 終了済みGRAPH-004 fallback規則を削除するか | 2026-10-09、削除を決定。ルーティーンから終了済み共有smell試験へのfallbackを除き、割当を無理に作らない原則は維持 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-016` | `DONE` | User / Codex | [DECISION] Index完了ゲート←公開Index判断のGate分類 | `COMPLETE`。Comparable採否の外部依存を巻き込まず、公開Index表現・完了範囲の判断だけを親ゲートの完了前提とする | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-017` | `DONE` | User / Codex | [DECISION] Index完了ゲート←Comparable判断のGate分類 | `COMPLETE`。外部依存はComparable判断taskに残し、他のIndex作業を進めながら親ゲートの完了だけを止める | `CODEX_TASK_OPERATION_PLAYBOOK.md` |

@@ -86,7 +86,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、別projectでの再現性検証へ進む | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
-| `OPS-002` | `ACTIVE` | Codex / Claude | [EXECUTION] 司令塔オリエンテーションMDの作成 | Claudeが境界付きドラフトを作成し、Codexが原資料との照合、統合、受入を行う。他taskを前提としない独立した運用基盤として、新しいCodex会話が、このrepository固有の責任分担、証拠基準、技術的難所、文書境界、事故時の復帰入口を短時間で把握でき、ユーザーが内容を確認できる状態にする | `CODEX_ORIENTATION.md` |
+| `OPS-002` | `DONE` | Codex / Claude | [EXECUTION] 司令塔オリエンテーションMDの作成 | 2026-10-09、責任分担、証拠基準、技術的難所への入口、文書境界、事故時の復帰経路を統合し、新しい会話による実読確認とユーザー確認を完了 | `CODEX_ORIENTATION.md` |
+| `OPS-003` | `DONE` | Codex | [EXECUTION] AI向け技術オリエンテーションの作成 | 2026-10-09、AIが誤認しやすい技術構造、既存中核の由来、証拠経路、停止点を整理し、ユーザー確認を完了 | `AI_TECHNICAL_ORIENTATION.md` |
 | `RELEASE-005` | `DONE` | User / Codex | [DECISION] 0.5.1の到達範囲とrelease検討開始 | 2026-10-09、BareArray契約の堅牢化と三対象のTest as Specificationを0.5.1の範囲として採用し、release checklistへ進むと決定 | `RELEASE_0_5_1.md` |
 | `RELEASE-008` | `DONE` | Codex / Claude | [EXECUTION] 0.5.1 release候補の準備と検収 | 2026-10-09、PR #176をmainへmergeし、main CI green確認後、merge commit `d7b3863e`へannotated tag `0.5.1`を作成・pushしてremote到達を確認 | `RELEASE_0_5_1.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-009` | `ACTIVE` | Codex | [DISCOVERY] 0.5.1実績に基づくrelease checklist見直し | CHANGELOGの`Unreleased`・当該版・前版の分離と、候補branch検収後のWebマージ、main CI、実main commit確認、tag作成、tag pushの順序・承認境界を検証し、必要な最小改訂案を示す | `RELEASE_CHECKLIST.md` / `RELEASE_0_5_1.md` |

@@ -14,6 +14,14 @@
    selected task's detailed canonical document, then Archived records and old
    logs.
 
+## Orientation request
+
+When the user says `オリエンテーション` or otherwise asks Codex to orient
+itself to this repository, read `Maintanance/CODEX_ORIENTATION.md` in full and
+follow the reading and confirmation guidance in that document. This is an
+explicit user-requested orientation path, not routine startup reading, and it
+does not replace the Task Registry or revive inactive tasks.
+
 ## User-facing management boundary
 
 Internal management artifacts are agent tools, not user-operated dashboards.

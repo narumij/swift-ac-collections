@@ -44,6 +44,19 @@ Codexには単なる定型処理を超える判断が委譲されている。既
 taskの依存変更、不要な作業の除外、追加調査、実行順序、Claudeへの割当、証拠に基づく技術評価を自ら処理する。
 境界を守ることと、境界内で積極的に判断することは両立する。
 
+agentの適性は、文書かcodeかという成果物の種類だけで決めない。同じcoding taskでも、工程によって必要な能力が
+異なる。このrepository、とくにRedBlackTreeの差し替えrefactoringでは、次の分担を基本にする。
+
+- **Codexが初動を担う:** 継承・protocol graph、原典との対応、差し替え段階、条件コンパイル、symbolの複数の意味を
+  同時に読み、最初の実装経路と変更境界を定める。構造判断が未確定のままClaudeへ横展開を委ねない。
+- **Claudeが横断展開を担う:** 最初の実装、判断軸、差異の境界が成立した後、Set、MultiSet、Dictionary、MultiMap等へ
+  反復し、Test as Specificationを保守し、型ごとの漏れと反証候補を拾う。
+- **Codexが統合と受入を担う:** Claudeの広い変更を原判断、差分、test、性能、正本へ照合し、完成範囲を確定する。
+
+これは固定的な能力評価ではない。Codexは構造全体を保持したまま多数のvariantを反復すると負荷が高くなりやすく、
+Claudeは型関係と移行上の意味が未確定な初動を単独で組み立てることに向かない、という実運用上の適性である。
+初動と横展開を一つのassignmentへ曖昧に束ねず、どこから反復可能になったかをCodexが判断して引き渡す。
+
 ## 高い解像度をユーザーの判断へ変換する
 
 Claudeは細部、例外、矛盾、反証候補を高い解像度で拾える。その能力を弱めてはならない。一方、その報告を
@@ -95,6 +108,8 @@ Codexは報告をそのまま転送せず、次を行う。
 
 性能やunsafeに関わるもっともらしい説明を、証拠の代わりにしない。該当taskの正本、source、test、計測、履歴、
 独立確認へ戻る。変わり得る現在状態や個別契約は、このorientationへ固定せずTask Registryと詳細正本で確認する。
+AIが技術判断を誤りやすい構造、典型的な誤認、必要な証拠、停止点の詳細は
+`AI_TECHNICAL_ORIENTATION.md`を読む。
 
 ## 証拠を混同しない
 
@@ -183,6 +198,7 @@ taskリファクタリング事例を一つ使い、新しいCodexが次を説�
 - `PROGRESS_OVERVIEW.md`: 現在のtaskと進捗の正本
 - `CODEX_TASK_OPERATION_PLAYBOOK.md`: task運用の具体的手順
 - `Graph/TASK_GRAPH_LINT.md`: 管理面が判断を代行しない設計の具体例
+- `AI_TECHNICAL_ORIENTATION.md`: AIにとっての技術的難所、誤認、証拠、停止点
 - `AGENT_TASK_FIT_INTERVIEW.md`: repository固有のagent適性と独立確認
 - `CODEX_OBSERVATIONS.md`: 運用から得た観察。判断の正本ではない
 - `REFACTORING_FROM_ATCODER_2025.md`: 技術的な変遷と証拠の継承
@@ -191,7 +207,7 @@ taskリファクタリング事例を一つ使い、新しいCodexが次を説�
 ## 作成記録
 
 - Registry task: `OPS-002`
-- 状態: 本文再構成済み、ユーザー確認待ち
+- 状態: 本文再構成・ユーザー確認完了
 - 独立性: 他taskの前提にも後続にも置かない独立した運用基盤task
 - 作成経路: Claudeの境界付き初稿をCodexが受け入れ、ユーザーとの対話と
   `AI_COLLABORATION_PHILOSOPHY.md`を入力に統合した。

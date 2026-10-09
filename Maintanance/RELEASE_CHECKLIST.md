@@ -27,10 +27,17 @@ release候補の品質、対象commit、履歴操作を分離して確認し、t
 
 ## 0. Release計画
 
+- [ ] `_ReleaseTask/ACTIVE.md`が存在しないことを確認し、tracked templateからgitignore対象の同pathへ配置した。
+- [ ] version、base tag、release方式、template commit、候補の初期状態を実値で記入した。
+- [ ] 実releaseのtaskを、stable ID、型、担当、完了条件、証拠欄とともにrelease専用Registryへ登録した。
+- [ ] 必須依存をTask precedenceへ登録し、placeholderと不要な例示taskを残していないことを確認した。
+- [ ] `Next permitted operation`が、登録taskと依存から一意に説明できることを確認した。
 - [ ] versionと製品上の到達範囲をユーザーが確認した。
 - [ ] releaseへ含める変更と、後続branch・次version・1.0へ残す変更を分けた。
 - [ ] version固有のrelease正本を用意した。
 - [ ] 必須CI、追加test、性能gate、documentation gateを決めた。
+- [ ] 中間ゴール側のrelease開始gateについて、条件と証拠を照合し、通過を確認した。
+- [ ] gate通過の対象と証拠を提示し、ユーザーがrelease開始可否を一問で判断した。
 - [ ] tag、remote push、release page、後続branchへの統合を別操作として扱うことを確認した。
 - [ ] release記録をmerge前に完成させるか、tag後の記録を新しい作業branchへ積むか決めた。
 
@@ -52,12 +59,11 @@ release候補の品質、対象commit、履歴操作を分離して確認し、t
 
 個別releaseで必要と決めた構成を実行し、command、環境、結果をversion固有の正本へ記録する。
 
-- [ ] Debug build / testが成功した。
-- [ ] Release build / testが成功した。
-- [ ] 通常CIに含まれない契約testやDeath Testを確認した。
-- [ ] documentationをwarning error扱いで生成できた。
-- [ ] Address Sanitizerなど、必須にした追加jobが成功した。
-- [ ] 性能gateを設けた場合、固定した基準と候補の比較が成功した。
+- [ ] Debug testが成功した。macOSでは事前に`DEATH_TEST`を有効とし、対象testが発見・実行されたことを確認した。
+- [ ] Release testが成功した。macOSでは事前に`DEATH_TEST`を有効とし、対象testが発見・実行されたことを確認した。
+- [ ] documentation testをwarning error扱いで実行できた。
+- [ ] candidate push後、Address Sanitizerなど必須にしたremote CI jobが同じcandidate commitで成功した。
+- [ ] candidate push後、性能gateを設けた場合はremote CIで固定した基準と同じcandidate commitの比較が成功した。
 - [ ] 公開API、再公開面、symbol、Package構成に意図しない差分がない。
 - [ ] CIの全必須jobが同じ候補commitに対してgreenである。
 - [ ] 未確認事項と既知事項を、release阻害／非阻害／後続判断へ分類した。
@@ -141,3 +147,6 @@ green後に通常Registryとrelease正本を更新した結果、候補commitが
 設計対象は、固定候補SHA、local／remote gate、ユーザー判断、操作権限、実施結果、次に許可される操作、release後の
 通常Registryへの還元である。配置、永続化形式、正本境界、開始・終了条件はDISCOVERY中に整理し、複数のユーザー判断が
 必要なら一判断ごとのtaskへ分離する。0.5.2のrelease完了前には実装せず、現候補やtag位置を変更しない。
+
+0.5.3以降、release検討開始のユーザー判断後に`_ReleaseTask/ACTIVE.md`を生成し、release中の進捗は同fileだけへ
+記録する。通常Task Registryとversion固有正本への結果反映は、完了または中止後の新しい作業branchで行う。

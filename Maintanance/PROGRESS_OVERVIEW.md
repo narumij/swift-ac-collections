@@ -117,13 +117,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `RBT-001` | `UNCLASSIFIED` | 前提taskの完了後に着手候補にできる |
 | `QUALITY-001` | `RBT-009` | `UNCLASSIFIED` | runtime-check実装の1.0採否を再審査した後に品質ゲートを判断する |
 | `RBT-026` | `RBT-014` | `UNCLASSIFIED` | outlineのAPI照合後、利用者向け文書作業フェーズで契約を再判断する |
-| `BARE-003` | `BARE-002` | `UNCLASSIFIED` | 棚卸しで位置づけが未決定と判明した場合だけ判断する |
-| `BARE-004` | `BARE-003` | `UNCLASSIFIED` | BareArrayを公開継続する判断後に命名体系を決定する |
 | `BARE-005` | `BARE-002` | `START` | 契約棚卸しを受け入れ、先行する契約判断・不足testの有無を再計算した後に整理へ着手できる |
 | `BARE-007` | `BARE-006` | `UNCLASSIFIED` | 性能基準と計測方法の決定後に計測する |
 | `BARE-001` | `BARE-002` | `UNCLASSIFIED` | 公開契約の棚卸しを親taskの完了条件とする |
-| `BARE-001` | `BARE-003` | `UNCLASSIFIED` | 未決定だった場合の位置づけ判断を親taskの完了条件とする |
-| `BARE-001` | `BARE-004` | `UNCLASSIFIED` | 公開継続時の命名判断を親taskの完了条件とする |
 | `BARE-001` | `BARE-005` | `UNCLASSIFIED` | Test as Specification整理を親taskの完了条件とする |
 
 ## Registry rules

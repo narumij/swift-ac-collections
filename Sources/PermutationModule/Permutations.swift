@@ -93,11 +93,13 @@ extension NextPermutationsSequence {
     /// Makes the buffer unique before advancing. Returns `false` without copying when the
     /// buffer is shared and has no successor, because such a copy would only be discarded.
     @inlinable
+    @inline(__always)
     mutating func ensureUnique() -> Bool {
-      if !isKnownUniquelyReferenced(&elementBuffer) {
-        guard elementBuffer.hasNextPermutation else { return false }
-        elementBuffer = elementBuffer.copy()
+      if isKnownUniquelyReferenced(&elementBuffer) {
+        return true
       }
+      guard elementBuffer.hasNextPermutation else { return false }
+      elementBuffer = elementBuffer.copy()
       return true
     }
 
@@ -108,8 +110,6 @@ extension NextPermutationsSequence {
     ///
     /// - Complexity: O(n) in the worst case, where n is the number of elements.
     @inlinable
-    // Swift 6.4 ReleaseのCOW回帰を避ける。上のコメントと回帰testを参照。
-    @inline(never)
     public mutating func next() -> Permutation? {
       switch state {
       case .finished:
@@ -159,7 +159,7 @@ struct NextPermutationsBufferHeader {
     nonisolated(unsafe) package static var deinitCount = 0
     @inlinable
     init() {}
-    deinit { Self.deinitCount += 1 }
+    deinit { unsafe Self.deinitCount += 1 }
   }
 #endif
 
@@ -173,7 +173,7 @@ extension NextPermutationsSequence {
     @inlinable
     deinit {
       unsafe self.withUnsafeMutablePointers { header, elements in
-        unsafe elements.deinitialize(count: header.pointee.count)
+        _ = unsafe elements.deinitialize(count: header.pointee.count)
       }
     }
   }

@@ -1,7 +1,7 @@
 import BareArrayModule
 import XCTest
 
-  final class BareArrayTests: XCTestCase {
+  final class BareArray_1_PublicContractTests: XCTestCase {
 
     // MARK: - BareArray
 
@@ -120,6 +120,18 @@ import XCTest
       XCTAssertEqual(array[1][0][1], 30)
     }
 
+    func testBareArray3DRepeating() {
+      let array = BareArray3D<Int>(repeating: 7, width: 2, height: 3, depth: 4)
+
+      for z in array.indices {
+        for y in array[z].indices {
+          for x in array[z][y].indices {
+            XCTAssertEqual(array[z][y][x], 7)
+          }
+        }
+      }
+    }
+
     func testBareArray3DInitializerClosure() {
       var value = 0
 
@@ -168,6 +180,20 @@ import XCTest
       array[1][0][1][0] = 1234
 
       XCTAssertEqual(array[1][0][1][0], 1234)
+    }
+
+    func testBareArray4DRepeating() {
+      let array = BareArray4D<Int>(repeating: 7, size0: 2, size1: 3, size2: 2, size3: 2)
+
+      for w in array.indices {
+        for z in array[w].indices {
+          for y in array[w][z].indices {
+            for x in array[w][z][y].indices {
+              XCTAssertEqual(array[w][z][y][x], 7)
+            }
+          }
+        }
+      }
     }
 
     func testBareArray4DInitializerClosure() {
@@ -313,8 +339,10 @@ import XCTest
     #if swift(>=5.5)
       func testSendable_compiles() {
         func requiresSendable<T: Sendable & ~Copyable>(_ value: borrowing T) {}
-        let array = BareArray<Int>(repeating: 0, count: 1)
-        requiresSendable(array)
+        requiresSendable(BareArray<Int>(repeating: 0, count: 1))
+        requiresSendable(BareArray2D<Int>(repeating: 0, width: 1, height: 1))
+        requiresSendable(BareArray3D<Int>(repeating: 0, width: 1, height: 1, depth: 1))
+        requiresSendable(BareArray4D<Int>(repeating: 0, size0: 1, size1: 1, size2: 1, size3: 1))
       }
     #endif
 

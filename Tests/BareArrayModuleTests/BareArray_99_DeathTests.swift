@@ -8,7 +8,7 @@
   /// `BareArray`系の`subscript`は、読み取り(`unsafeAddress`)では下限チェックを行うが、
   /// 書き込み(`unsafeMutableAddress`)では下限チェックが抜けていたことがある(2026-10-03発見)。
   /// このファイルは、負インデックスへの書き込みが読み取りと同じようにトラップすることを検証する。
-  struct BareArrayDeathTests {
+  struct BareArray_99_DeathTests {
 
     @Test func negativeIndexWrite_traps() async throws {
       await #expect(processExitsWith: .failure) {

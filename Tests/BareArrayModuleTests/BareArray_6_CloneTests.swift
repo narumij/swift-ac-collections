@@ -2,7 +2,7 @@
   @testable import BareArrayModule
   import XCTest
 
-  final class BareArrayInternalTests: XCTestCase {
+  final class BareArray_6_CloneTests: XCTestCase {
 
     func testBareArrayCloneCreatesIndependentStorage() {
       var array = BareArray<Int>(repeating: 0, count: 3)

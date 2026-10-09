@@ -6,7 +6,7 @@
 
 release検討開始条件待ち。現時点ではrelease候補commit、到達範囲、必須gate、tag位置を決定しない。
 
-0.5.2は、製品上の到達範囲とは別に、`prepare/release/0`からrelease用branchを作成し、mainをmergeして
+0.5.2は、製品上の到達範囲とは別に、`prepare/release/template`から`release/0.5.2`を作成し、mainをmergeして
 専用工程を通すtemplate branch方式の初回rehearsal候補とする。実際の適用はrelease検討開始後に判断し、
 この記録だけではbranch作成、merge、tag、pushを許可しない。
 

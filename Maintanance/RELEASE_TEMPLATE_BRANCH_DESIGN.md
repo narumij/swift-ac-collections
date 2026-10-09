@@ -4,7 +4,7 @@
 
 ## 状態
 
-設計ドラフト。`prepare/release/0`やrelease用branchの作成、workflow変更、source変換、tag、pushを
+設計ドラフト。`prepare/release/template`やrelease用branchの作成、workflow変更、source変換、tag、pushを
 この文書だけでは許可しない。
 
 ## 目的
@@ -17,18 +17,19 @@ template branchから、versionごとのrelease treeを作る。
 ## Branch topology
 
 ```text
-prepare/release/0 ──┬─ prepare/release/1 ← main candidate
-                    │       └─ transform → verify → tag
-                    ├─ prepare/release/2 ← later main candidate
-                    │       └─ transform → verify → tag
-                    └─ ...
+prepare/release/template ──┬─ release/0.5.2 ← main candidate
+                           │       └─ transform → verify → tag 0.5.2
+                           ├─ release/0.5.3 ← later main candidate
+                           │       └─ transform → verify → tag 0.5.3
+                           └─ ...
 ```
 
-- `prepare/release/0`は製品releaseではなく、工程と検証のtemplateである。
-- versionごとの`prepare/release/x`は`prepare/release/0`から作り、固定した`main`候補をmergeする。
-- `/x`は`main`へmergeしない。検証済みの終端へannotated tagを作成して終了する。
-- 次回の`/x`は前回tagや前回`/x`ではなく、更新済みの`prepare/release/0`から作る。
-- `prepare/release/0`へ`main`を直接mergeしない。
+- `prepare/release/template`は製品releaseではなく、工程と検証のtemplateである。
+- versionごとの`release/<version>`はtemplateから作り、固定した`main`候補をmergeする。
+- `release/<version>`は`main`へmergeしない。検証済みの終端へ同じversionのannotated tagを作成した時点で
+  完成とし、以後commitを追加しない。
+- 次回のrelease branchは前回tagや前回release branchではなく、更新済みのtemplateから作る。
+- `prepare/release/template`へ`main`を直接mergeしない。
 
 ## 責任境界
 
@@ -38,10 +39,10 @@ prepare/release/0 ──┬─ prepare/release/1 ← main candidate
 - CHANGELOGなど、次の開発でも必要なrelease記録
 - Package構成の製品上の修正
 
-release工程中にこれらの修正が必要と判明した場合、`/x`だけで直さず`main`へ戻す。修正後はmain候補を
+release工程中にこれらの修正が必要と判明した場合、release branchだけで直さず`main`へ戻す。修正後はmain候補を
 固定し直し、新しいmerge結果に対して必要なgateを再実行する。
 
-### `prepare/release/0`へ還元するもの
+### `prepare/release/template`へ還元するもの
 
 - release専用workflowとtest runner
 - 配布対象を検査するlint
@@ -133,19 +134,19 @@ release専用workflowはmain用`.github/workflows/swift.yml`と別file名でtemp
 
 1. `main`で製品範囲、CHANGELOG、利用者向け文書、version固有のrelease記録を完成させる。
 2. main候補commitを固定し、通常のlocal・remote gateを通す。
-3. `prepare/release/0`から未使用の`prepare/release/x`を作る。
-4. 固定したmain候補を`/x`へmergeする。
+3. `prepare/release/template`から`release/<version>`を作る。
+4. 固定したmain候補をrelease branchへmergeする。
 5. 決定的な通常版変換と配布対象の削除を実行する。
 6. tree lintを通し、release tree commitを固定する。
 7. localで実行するrelease専用gateを同じcommitで通す。
-8. 対象branchとcommitを提示し、ユーザー操作で`prepare/release/x`をremoteへpushする。
+8. 対象branchとcommitを提示し、ユーザー操作で`release/<version>`をremoteへpushする。
 9. release専用のremote CIで全test、documentation、ASan、performance、tree lintを同じcommitに通す。
 10. Claudeが固定commit、CHANGELOG、tree、gate結果を変更せず独立確認する。
 11. ユーザーへversion、tag予定commit、既知事項、次の操作一つを提示する。
-12. 承認後、`/x`終端へannotated tagを作成する。
+12. 承認後、release branch終端へ同じversionのannotated tagを作成し、branchを完成扱いとする。
 13. tagを読み戻し、別承認後にtagだけをpushする。
 14. remote tagのpeeled commitを読み戻す。
-15. 工程上の改善だけを別作業として`prepare/release/0`へ還元する。
+15. 工程上の改善だけを別作業として`prepare/release/template`へ還元する。
 
 ## CHANGELOG gate
 
@@ -157,7 +158,7 @@ release専用workflowはmain用`.github/workflows/swift.yml`と別file名でtemp
 
 ## 未確定の実装事項
 
-- `prepare/release/0`を作る起点commitと、最初の`/x`番号
+- `prepare/release/template`を作る起点commit
 - 条件付きコンパイルを具体化するtoolの方式と検証fixture
 - release benchmarkの対象、最大size、反復、時間・memory上限
 - release専用workflowのtriggerと、branch protection上の必須job名

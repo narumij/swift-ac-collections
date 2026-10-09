@@ -6,7 +6,7 @@
 
 release検討開始条件待ち。現時点ではrelease候補commit、到達範囲、必須gate、tag位置を決定しない。
 
-残りの`0.5.x`で`prepare/release/0`を起点とするtemplate branch方式をrehearsalし、工程上の改善を
+残りの`0.5.x`で`prepare/release/template`を起点とするrelease branch方式をrehearsalし、工程上の改善を
 templateへ還元する。0.6.0は、その結果として成熟したrelease工程を本運用する最初の候補とする。
 この位置づけは製品上の到達範囲とrelease開始条件を変更しない。
 

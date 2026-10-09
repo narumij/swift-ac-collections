@@ -93,7 +93,9 @@ merge、build、test、benchmark、tag、pushを行わない。変更可能範�
 Codex acceptance: 2026-10-09、topology自体は成立するという評価と、互換lint、remote CI前のbranch push、
 workflow競合、tree境界、寿命検査、性能基準の不足を受入。互換lintをコンパイル条件へ限定し、release
 workflowを別file化し、version別branchのremote pushをユーザー操作として工程へ追加した。残る文書・結果物
-境界、変換fixture、Package exclude、性能比較基準は`RELEASE-011`の設計・試行で処理する。
+境界、変換fixture、Package exclude、性能比較基準は`RELEASE-011`の設計・試行で処理する。その後のユーザー
+判断で、template名は`prepare/release/template`、version別branchは`release/<version>`へ改め、同versionの
+tag作成をbranch完成条件とした。上記Result中の`/0`・`/x`はレビュー時点の名称として保持する。
 
 ## Completed bounded assignment: 0.5.1 independent release check (first pass)
 

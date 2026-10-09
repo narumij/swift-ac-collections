@@ -1,0 +1,270 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - "release/**"
+    tags:
+      - "*.*.*"
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  tree:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify release tree
+        run: python3 Utilities/Release/verify_release_tree.py
+
+  debug-all-tests:
+    needs: tree
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: SwiftyLab/setup-swift@latest
+      - name: Run all Debug tests
+        run: >-
+          swift test -c debug
+          --traits SKIP_DEBUG_LIFETIME_BALANCE_CHECKS,ENABLE_DEATH_TESTS
+
+  release-all-tests:
+    needs: tree
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: SwiftyLab/setup-swift@latest
+      - name: Run all Release tests
+        run: swift test -c release --traits ENABLE_DEATH_TESTS
+
+  address-sanitizer:
+    needs: tree
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: SwiftyLab/setup-swift@latest
+      - name: Run all tests with Address Sanitizer
+        env:
+          ASAN_OPTIONS: detect_leaks=0:symbolize=1:abort_on_error=1:log_path=asan-logs/asan
+          SWIFT_BACKTRACE: enable=yes
+        shell: bash
+        run: |
+          mkdir -p asan-logs
+          set -o pipefail
+          swift test -c debug --sanitize address --build-system native \
+            --traits SKIP_DEBUG_LIFETIME_BALANCE_CHECKS,ENABLE_DEATH_TESTS 2>&1 \
+            | tee asan-logs/full-console.log
+      - name: Upload Address Sanitizer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-address-sanitizer-diagnostics
+          path: asan-logs
+          if-no-files-found: warn
+
+  documentation:
+    needs: tree
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: SwiftyLab/setup-swift@latest
+      - name: Build documentation
+        run: >-
+          swift package -c release --allow-writing-to-directory .build/documentation
+          generate-documentation
+          --target RedBlackTreeCollections
+          --output-path .build/documentation
+          --transform-for-static-hosting
+          --hosting-base-path swift-ac-collections
+          --warnings-as-errors
+      - name: Archive documentation
+        run: tar -czf .build/release-documentation.tar.gz -C .build/documentation .
+      - name: Upload documentation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-documentation-${{ github.sha }}
+          path: .build/release-documentation.tar.gz
+          if-no-files-found: error
+      - name: Upload GitHub Pages artifact
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .build/documentation
+
+  deploy-documentation:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs:
+      - debug-all-tests
+      - release-all-tests
+      - address-sanitizer
+      - documentation
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    steps:
+      - name: Deploy release documentation
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  performance:
+    if: startsWith(github.ref, 'refs/heads/release/')
+    needs: tree
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v4
+        with:
+          path: candidate
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Resolve previous release tag
+        id: baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASELINE_TAG="$(git -C candidate tag --sort=-version:refname | head -n 1)"
+          test -n "$BASELINE_TAG"
+          echo "tag=$BASELINE_TAG" >> "$GITHUB_OUTPUT"
+          echo "Baseline tag: $BASELINE_TAG"
+      - name: Checkout baseline
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.baseline.outputs.tag }}
+          path: baseline
+      - uses: SwiftyLab/setup-swift@latest
+      - name: Record environment
+        shell: bash
+        run: |
+          mkdir -p artifacts/environment
+          uname -a | tee artifacts/environment/uname.txt
+          lscpu | tee artifacts/environment/cpu.txt
+          swift --version | tee artifacts/environment/swift.txt
+          git -C baseline rev-parse HEAD | tee artifacts/environment/baseline-commit.txt
+          git -C candidate rev-parse HEAD | tee artifacts/environment/candidate-commit.txt
+      - name: Use candidate benchmark definitions for baseline
+        shell: bash
+        run: |
+          cp candidate/Benchmarks/Libraries/CI.json baseline/Benchmarks/Libraries/CI.json
+          cp candidate/Benchmarks/Libraries/CI-Small.json baseline/Benchmarks/Libraries/CI-Small.json
+      - name: Run candidate benchmarks
+        working-directory: candidate/Benchmarks
+        run: |
+          mkdir -p ../benchmark-results
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI.json ../benchmark-results/candidate-2m.json \
+            --max-size 2M --cycles 1 --mode replace-all
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI-Small.json ../benchmark-results/candidate-2m.json \
+            --max-size 10 --cycles 1 --mode append
+      - name: Run baseline benchmarks
+        working-directory: baseline/Benchmarks
+        run: |
+          mkdir -p ../benchmark-results
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI.json ../benchmark-results/baseline-2m.json \
+            --max-size 2M --cycles 1 --mode replace-all
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI-Small.json ../benchmark-results/baseline-2m.json \
+            --max-size 10 --cycles 1 --mode append
+      - name: Check performance regression
+        working-directory: candidate/Benchmarks
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          OUTPUT="$(
+            swift run -c release benchmark results compare \
+              ../../baseline/benchmark-results/baseline-2m.json \
+              ../benchmark-results/candidate-2m.json
+          )"
+
+          printf '%s\n' "$OUTPUT" \
+            | tee ../benchmark-results/comparison-2m.txt
+
+          printf '%s\n' "$OUTPUT" |
+          awk '
+            /^[[:space:]]*[0-9]/ {
+              regression = $4
+              sub(/\(.*/, "", regression)
+
+              # 30% slower:
+              # candidate / baseline >= 1.30
+              # => baseline / candidate <= 1 / 1.30
+              if ((regression + 0) <= 0.769231) {
+                print ""
+                print "Performance regression >= 30%: " $0
+                failed = 1
+              }
+            }
+
+            END {
+              exit failed ? 1 : 0
+            }
+          '
+      - name: Generate release charts
+        if: success()
+        working-directory: candidate/Benchmarks
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ../benchmark-results ../benchmark-charts
+
+          for LIBRARY in RedBlackTreeSet RedBlackTreeDictionary; do
+            RESULT="../benchmark-results/chart-$LIBRARY-2m.json"
+            swift run -c release benchmark library run \
+              --library "./Libraries/$LIBRARY.json" "$RESULT" \
+              --max-size 2M --cycles 3 --mode replace-all
+            swift run -c release benchmark library render \
+              --library "./Libraries/$LIBRARY.json" "$RESULT" \
+              --max-time 10us --min-time 1ns --percentile 90 \
+              --output ../benchmark-charts
+          done
+
+          for LIBRARY in Long Long2; do
+            RESULT="../benchmark-results/chart-$LIBRARY-16m.json"
+            swift run -c release benchmark library run \
+              --library "./Libraries/$LIBRARY.json" "$RESULT" \
+              --max-size 16M --cycles 1 --mode replace-all
+            swift run -c release benchmark library render \
+              --library "./Libraries/$LIBRARY.json" "$RESULT" \
+              --max-time 10us --min-time 1ns --percentile 90 \
+              --output ../benchmark-charts
+          done
+      - name: Collect benchmark binaries and symbols
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          for CHECKOUT in baseline candidate; do
+            OUTPUT="artifacts/binaries/$CHECKOUT"
+            mkdir -p "$OUTPUT"
+            BENCHMARK="$(find "$CHECKOUT/Benchmarks/.build" -type f -name benchmark -perm -111 -print -quit)"
+            if [ -z "$BENCHMARK" ]; then continue; fi
+            objdump -d "$BENCHMARK" > "$OUTPUT/benchmark.asm"
+            nm -n "$BENCHMARK" | swift demangle > "$OUTPUT/benchmark.nm"
+            file "$BENCHMARK" > "$OUTPUT/benchmark.file"
+            sha256sum "$BENCHMARK" > "$OUTPUT/benchmark.sha256"
+            cp "$BENCHMARK" "$OUTPUT/benchmark"
+          done
+      - name: Upload performance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-performance-${{ github.sha }}
+          path: |
+            artifacts
+            baseline/benchmark-results
+            candidate/benchmark-charts
+            candidate/benchmark-results
+          if-no-files-found: error

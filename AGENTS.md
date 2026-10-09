@@ -2,17 +2,32 @@
 
 ## Startup
 
-1. Read only the Task Registry at the top of
-   `Maintanance/PROGRESS_OVERVIEW.md` to establish the current task state.
-2. Treat that Registry as the sole source of truth for remaining tasks, status,
-   ownership, and restart conditions.
-3. After a task is selected, read only the detailed canonical document linked
-   from that task row.
-4. Do not scan all maintenance documents or Archived records at session start.
+1. Check only whether `_ReleaseTask/ACTIVE.md` exists. If it exists, read it
+   first and treat it as the source of truth for the active release's candidate,
+   gates, decisions, authority, and next permitted operation. Do not scan the
+   rest of `_ReleaseTask/`.
+2. If no active release Registry exists, read only the Task Registry at the top
+   of `Maintanance/PROGRESS_OVERVIEW.md` to establish the current task state.
+3. During an active release, use the normal Task Registry only for non-release
+   work and context explicitly referenced by the release Registry. Otherwise,
+   treat the normal Registry as the sole source of truth for remaining tasks,
+   status, ownership, and restart conditions.
+4. After a task is selected, read only the detailed canonical document linked
+   from the controlling Registry row.
+5. Do not scan all maintenance documents or Archived records at session start.
    Do not reconstruct or revive tasks from older checklists, handoffs, or logs.
-5. Priority order is: the user's latest instruction, the Task Registry, the
-   selected task's detailed canonical document, then Archived records and old
-   logs.
+6. Priority order is: the user's latest instruction, an active release Registry,
+   the normal Task Registry, the selected task's detailed canonical document,
+   then Archived records and old logs.
+
+## AGENTS.md retention
+
+Treat this file as persistent conversation-continuity infrastructure. Preserve
+it on `main` and working branches across cleanup, archival, release preparation,
+and task reorganization. Do not delete, archive, replace with a generated copy,
+or temporarily remove it to simplify a release tree. A future release artifact
+may exclude internal management files only if the tracked source-of-truth copy
+remains intact on `main` and the active working branch.
 
 ## Orientation request
 
@@ -78,7 +93,22 @@ distance when the goal-to-task relation is not formally represented.
 - `FROZEN` tasks require explicit restart direction. Do not start them because
   an old document describes unfinished work.
 - `USER_ONLY` tasks must not be started, performed, delegated, or prompted by an
-  agent.
+  agent. When a recorded workflow explicitly defines a handoff to a
+  `USER_ONLY` operation, Codex may present the exact target once and wait for
+  the user's completion report, but must not perform, delegate, or repeatedly
+  prompt the operation.
+
+## Repository operation authority
+
+- Creating a branch, creating a commit, and pushing a branch or tag each
+  require a separate explicit user authorization immediately before the
+  operation. Authorization for one does not authorize the others.
+- Candidate branch push, GitHub merge, and tag push are user-operated. Codex
+  presents the exact source, destination, or ref when the recorded workflow
+  reaches that handoff, then verifies the reported result.
+- After release tag creation, move from `main` to a release-record working
+  branch before updating tracked Registry or release records. Do not put the
+  post-release bookkeeping commit directly on `main`.
 
 ## Claude work awaiting a stable ID
 

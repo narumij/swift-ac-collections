@@ -13,3 +13,4 @@ Tests/Executables/MarriedSource/main.swift
 .swift-version
 Benchmarks/.build/
 /.task-graphs/
+/_ReleaseTask/

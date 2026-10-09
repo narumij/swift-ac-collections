@@ -1,6 +1,6 @@
 # 開発・メンテナンス進捗一覧
 
-最終更新: 2026-10-09 / Codex
+最終更新: 2026-10-10 / Codex
 
 この文書のTask Registryを、CodexとClaudeが作業を再開するときの唯一の入口とする。まずRegistry
 だけを読み、選択したtask行が示す詳細正本だけを追加で読む。2026-10-07までの完了チェック、判断待ち、
@@ -15,9 +15,16 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **中間ゴールの取り扱い**
 
-**現在の中間ゴール:** 0.5.2を完成させる。全公開対象のコメントドック・ドラフトを揃えることは、0.5.2の
+**直近達成した中間ゴール:** 0.5.2を完成させる。全公開対象のコメントドック・ドラフトを揃えることは、0.5.2の
 到達範囲とrelease開始を判断するための前提であり、中間ゴールそのものではない。対象範囲と証拠の棚卸し、
 対象別ドラフト、到達範囲の判断、採用されたrelease工程の実行を、0.5.2へ至るtask graphとして扱う。
+
+2026-10-09、main merge commit `631cb59a`のCI greenを確認し、annotated tag `0.5.2`を同commitへ作成・pushして
+remote到達を確認した。
+
+**現在の中間ゴール:** 0.5.3を完成させる。ユーザーによる`README.ja.md`のダミー編集を契機に中間ゲートを起動し、
+0.5.3のrelease作業を開始するか一問で判断する。編集自体をgate通過や0.5.3の製品scopeとは扱わない。
+Yesの場合は準備済みの`RELEASE_0_5_3.md`を`_ReleaseTask/ACTIVE.md`へコピーし、release実行を委譲する。
 
 **凍結中の中間ゴール（前任conversationの残存記録）:**
 
@@ -25,8 +32,6 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
   tag作成、tag pushの順序を次回releaseで誤認しない汎用手順へ改訂する。
 - `prepare/release/template`をrelease工程のtemplate branchとする方式について、削除規則、release専用test、
   workflow、mainとのmerge境界を設計し、準備完了後のreleaseへ適用できる状態にする。0.5.2には適用しない。
-- 0.5.2より後の適切なreleaseでtemplate branch方式のrelease rehearsalを重ね、各回の工程上の改善だけを
-  `prepare/release/template`へ還元し、成熟後のreleaseを本運用候補にする。
 
 **後続の中間ゴール:**
 
@@ -93,6 +98,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPS-003` | `DONE` | Codex | [EXECUTION] AI向け技術オリエンテーションの作成 | 2026-10-09、AIが誤認しやすい技術構造、既存中核の由来、証拠経路、停止点を整理し、ユーザー確認を完了 | `AI_TECHNICAL_ORIENTATION.md` |
 | `OPS-004` | `DONE` | Claude / Codex | [DISCOVERY] Codex司令塔オリエンテーションの独立レビュー | 2026-10-09、指定6観点のレビュー報告をもって作業完了。指摘と修正案は採用せず参考資料として保存し、本文へ反映しない | `CODEX_ORIENTATION.md` / `CLAUDE_TASK.md` |
 | `OPS-005` | `DONE` | Codex | [EXECUTION] taskオリエンテーションMDの作成 | 2026-10-09、中間ゴールからtask分解、判断分離、依存、ready、距離、受入、ユーザー判断への変換を、OptionalArray・RedBlackTree・独立レビューの実例で説明する初回実践ガイドを作成。三者の反復による由来と事故後の復帰確認を記録し、司令塔オリエンテーションから導線を追加 | `TASK_ORIENTATION.md` / `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-006` | `DONE` | User / Codex | [DECISION] `AGENTS.md`の恒久保持 | 2026-10-09、`AGENTS.md`を会話継続性の基盤としてmainと作業branchへ恒久的に保持し、cleanup、archive、release準備、task再編で削除・退避・一時除去しないと決定。release artifactから内部管理fileを除外する場合も正本は保持する | `AGENTS.md` |
 | `RELEASE-005` | `DONE` | User / Codex | [DECISION] 0.5.1の到達範囲とrelease検討開始 | 2026-10-09、BareArray契約の堅牢化と三対象のTest as Specificationを0.5.1の範囲として採用し、release checklistへ進むと決定 | `RELEASE_0_5_1.md` |
 | `RELEASE-008` | `DONE` | Codex / Claude | [EXECUTION] 0.5.1 release候補の準備と検収 | 2026-10-09、PR #176をmainへmergeし、main CI green確認後、merge commit `d7b3863e`へannotated tag `0.5.1`を作成・pushしてremote到達を確認 | `RELEASE_0_5_1.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-009` | `FROZEN` | Codex | [DISCOVERY] 0.5.1実績に基づくrelease checklist見直し | 2026-10-09、前任conversationの意図と途中経過の喪失により再開困難なため凍結。明示的な再開指示後、残存記録を参考資料として目的と境界から再確認 | `RELEASE_CHECKLIST.md` / `RELEASE_0_5_1.md` |
@@ -118,6 +124,13 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-028` | `DONE` | Codex | [EXECUTION] 0.5.2候補のremote CI確認 | 2026-10-09、ユーザーから固定候補のremote CI green報告を受け入れ、release可否判断へ引き渡した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-029` | `EXCLUDED` | Claude / Codex | [EXECUTION] 0.5.2固定候補の独立確認 | 2026-10-09、0.5.2はユーザーへのドラフト引き渡しを目的とし、Claudeの使用量制約下では独立レビューなしで進めるというユーザー決定を再確認。release阻害条件から除外 | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-030` | `DONE` | User | [EXECUTION] 0.5.2固定候補branchのremote push | 2026-10-09、ユーザーが固定候補branchをremoteへpushし、CI greenを確認。AIはpushを実行していない | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-031` | `DONE` | User / Codex | [DISCOVERY] release専用Task Registryの分離設計 | 2026-10-09、配置、schema、life cycle、startup precedence、task運用summary、完了／中止cleanup、checklist由来の実行task骨格、内部採番、移行taskへの分解を確定 | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-032` | `DONE` | User / Codex | [EXECUTION] 0.5.2 annotated tag作成 | 2026-10-09、ユーザー承認後、main CI greenのmerge commit `631cb59a`へmessage `Release 0.5.2`のannotated tag `0.5.2`をlocal作成し、対象commitを読み戻した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-033` | `DONE` | User / Codex | [EXECUTION] 0.5.2 tag push | 2026-10-09、ユーザー承認後、`refs/tags/0.5.2`だけをoriginへpushし、remote tagが`631cb59a`を指すことを読み戻した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-069` | `DONE` | User | [EXECUTION] 0.5.3中間ゲート起動 | 2026-10-10、ユーザーが`README.ja.md`をcommit `f7fcdd09`で編集し、中間ゲートを起動。AIは編集を代行していない | `README.ja.md` |
+| `RELEASE-034` | `READY` | User / Codex | [DECISION] 0.5.3 release作業開始 | 0.5.3のrelease作業を行うか一問で判断する。Yesなら準備済み正本を`ACTIVE.md`へコピーして実行を委譲する | `RELEASE_0_5_3.md` |
+| `RELEASE-035` | `PROPOSED` | Codex | [EXECUTION] release checklistのRegistry templateへの移行 | checklist本文を読んで判断・操作・証拠へ分類する規則とtask骨格をtemplateへ移し、一判断ごとの必須依存、`REL-000`からの内部採番、任意task除去条件を検証する | `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_CHECKLIST.md` |
+| `RELEASE-036` | `PROPOSED` | Codex | [EXECUTION] release専用Registryへの正本切替 | 移行後の旧checklistをArchivedへ移し、現行参照をtemplateとactive Registryへ切り替え、生成・startup precedence・完了／中止還元を一往復検証する | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
 | `DOC-003` | `DONE` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト完成判定 | 2026-10-09、通常版のレビュー用ドラフトと検証を受入。`DOC-007`でAtCoder 2025互換modeを0.5.2の対象外と決定したため、追加実行なしでユーザーへの引き渡しを完了 | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `DOC-004` | `DONE` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | 2026-10-09、現行名の公開29宣言と4適合をTest as Specification・実装へ再照合し、所有、View寿命、破棄、変更共有、軸、境界、計算量をレビュー用コメントへ記載。Debug／Release通常35件＋Death Test 21件、documentation warning-as-error成功。0.5.2段階の成果としてユーザーへ引き渡し済み | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
@@ -211,6 +224,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-027` | `RELEASE-026` | `SEQUENCE` | 候補commitを固定してから同じcommitへlocal一次検収を行う |
 | `RELEASE-028` | `RELEASE-026` | `SEQUENCE` | 候補commitを固定し、remote反映の対象を一意にしてからCIを確認する |
 | `RELEASE-028` | `RELEASE-030` | `SEQUENCE` | ユーザー専任のfixed candidate branch pushが完了してからCodexがCIを確認する |
+| `RELEASE-034` | `RELEASE-069` | `GATE` | 日本語READMEのダミー編集を契機に中間ゲートを起動し、0.5.3のrelease作業開始を判断する |
+| `RELEASE-035` | `RELEASE-031` | `SEQUENCE` | 分離設計とtask骨格の確定後に旧checklistをtemplateへ移行する |
+| `RELEASE-036` | `RELEASE-035` | `SEQUENCE` | checklist移行を検証してから実行正本をactive Registryへ切り替える |
 | `RELEASE-029` | `RELEASE-027` | `PARALLEL_JOIN` | local一次検収の証拠を揃えてから独立確認へ渡す |
 | `RELEASE-029` | `RELEASE-028` | `PARALLEL_JOIN` | 同じ候補commitのremote CI証拠を揃えてから独立確認へ渡す |
 | `RELEASE-022` | `RELEASE-027` | `PARALLEL_JOIN` | release可否判断前に固定候補のlocal一次検収を完了する |

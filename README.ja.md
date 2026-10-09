@@ -136,3 +136,5 @@ RedBlackTreeCollectionsの`__tree`は LLVM による実装をもとに改変し�
 不具合報告や機能追加の要望は、Issue または Pull Request でお気軽にお寄せください。  
 
 [atcoder]: https://atcoder.jp/
+
+<!-- 何度目かの正直 -->

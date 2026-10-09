@@ -165,3 +165,14 @@ Permutationの`withUnsafeMutablePointers`未使用result警告とDebug probeのs
 ドラフト引き渡しを目的とし、Claudeの使用量制約下では独立レビューなしで進めるという既決事項に従い、独立確認は
 release阻害条件から除外した。同日、ユーザーはlocal一次検収とremote CI greenを入力に、固定候補を0.5.2として
 release可と判断した。この判断はPR merge、tag作成、tag push、release pageの操作承認を兼ねない。
+
+### Main mergeとtag
+
+2026-10-09、PR #178をmainへmergeし、merge commit `631cb59a2ae38e04d2429531a60e6441c7b1839b`に対する
+main CI greenを確認した。ユーザーの明示承認後、message `Release 0.5.2`のannotated tag `0.5.2`を同commitへ
+local作成し、tag対象を読み戻した。同じ明示指示に基づいて`refs/tags/0.5.2`だけをoriginへpushし、remoteの
+peeled tagが同じcommitを指すことを確認した。
+
+tag objectは`93b431deb0b6d810e996097533b36a82b7ac6928`、対象commitは`631cb59a2ae38e04d2429531a60e6441c7b1839b`。
+release pageは作成しておらず、この操作の承認にも含めていない。tag後の記録はmainではなく
+`develop/misc/54`へ積む。

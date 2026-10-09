@@ -36,13 +36,14 @@ checklistへ進むかを一つの判断として確定する。
   Test as Specificationを確認しながら期待動作を直接コメントへ記載する。
 - `DOC-003`: Permutation全体のコメントドック・ドラフト完成判定。通常版の執筆は`DOC-011`へ分離して
   先行し、AtCoder 2025互換modeの境界は`DOC-007`で後から合流する。
-- `DOC-004`: OptionalArrayのコメントドック・ドラフト作成と検証。公開29宣言・4適合を対象とし、1D所有型名と
-  次元名体系を`OPT-044`、`OPT-045`で決めるまで`PROPOSED`。
+- `DOC-004`: OptionalArrayのコメントドック・ドラフト作成と検証。公開29宣言・4適合を対象とし、0.5.2では
+  現行の1D所有型名と次元名体系を用いて先行する。命名判断は0.6.0の到達範囲判断へ移した。
 - `DOC-005`: BareArrayのコメントドック・ドラフト作成と検証。8群のTest as Specificationを確認しながら、
   公開29宣言へ初期化、軸順、連鎖アクセス、View共有、`indices`、要素寿命、範囲外停止、writeback制約、
   不正寸法、計算量を記載した。Debug／Release通常testとDeath Test 42件、code issues 0件、documentation build成功。
-- `DOC-006`: RedBlackTree 4公開型のコメントドック・ドラフト作成と検証。今回の棚卸しには含めず、
-  `RBT-014`と必要な公開契約判断を前提として`PROPOSED`を維持する。
+- `DOC-006`: RedBlackTree 4公開型のコメントドック・ドラフト。既存の公開コメント横断監査、4公開型の
+  Head原稿、API Matrix、Test as Specification、Release DocC検証により、0.5.2が要求するユーザーレビュー可能な
+  段階へ到達済み。`RBT-014`は公開可能な利用者向け文書初版へ進む0.6.0側の作業として分離する。
 - `DOC-007`: Permutation通常版とAtCoder 2025互換modeのコメントドック境界を一つ決める`DECISION` task。
   ユーザー判断として`DOC-003`の前提に置き、2026-10-09のユーザー指示により後回しとして`FROZEN`。
 - `DOC-008`: `DOC-005`のBareArrayコメントドックをTest as Specification、実装、受入済み契約と照合する
@@ -63,8 +64,8 @@ checklistへ進むかを一つの判断として確定する。
   ある。通常版の公開memberをTest as Specificationへ接続する`DOC-011`は先行できる。互換modeを同じ対象へ
   含めるかは`DOC-007`で後から決め、Permutation全体の完成判定前に合流する。
 - OptionalArray: 既存ledgerの公開29宣言と4適合を現在のsourceへ再照合し、コメントの無い19宣言、全宣言で
-  未記載の計算量、capacity保持、所有・破棄・View寿命・変更共有・境界・軸を文書化する。実行はCodexが担うが、
-  `OPT-044`と`OPT-045`の命名判断を先に閉じる。
+  未記載の計算量、capacity保持、所有・破棄・View寿命・変更共有・境界・軸を文書化する。実行はCodexが担い、
+  現行名のままレビュー用ドラフトを作成する。`OPT-044`と`OPT-045`は0.6.0ゲートで合流する。
 - BareArray: 完了。受入済み契約判断と8群のTest as Specificationを公開宣言ごとに照合し、期待動作を
   コメントへ記載して検証した。
 

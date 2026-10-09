@@ -113,9 +113,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-023` | `EXCLUDED` | User / Codex | [EXECUTION] 0.5.2 tag・push・公開 | 2026-10-09、工程確定前の分解は早すぎるため未着手で除外。可否決定後の操作は必要になった時点で個別にtask化する | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
 | `DOC-003` | `PROPOSED` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト完成判定 | 通常版コメントを受け入れ、`DOC-007`で互換modeを含めるか確定し、含める場合だけ追加実行を分解してから、Permutation全体のドラフトと検証結果を完成判定する | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
-| `DOC-004` | `PROPOSED` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | `OPT-044`と`OPT-045`の命名判断後、公開29宣言と4適合を現在のsourceへ再照合し、所有・寿命・破棄・変更・軸・計算量を含むドラフトと検証結果を揃える | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
+| `DOC-004` | `ACTIVE` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | 0.5.2では現行の公開名を用い、公開29宣言と4適合を現在のsourceへ再照合し、所有・寿命・破棄・変更・軸・計算量を含むレビュー用ドラフトと検証結果を揃えてユーザーへ引き渡す | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
 | `DOC-005` | `DONE` | Codex | [EXECUTION] BareArray公開APIコメントドック・ドラフト | 2026-10-09、8群のTest as Specificationを確認しながら公開29宣言へ期待動作を記載。Debug／Release通常test・Death Test 42件、code issues 0件、documentation build成功を確認 | `RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
-| `DOC-006` | `PROPOSED` | Codex | [EXECUTION] RedBlackTree公開APIコメントドック・ドラフト | `RBT-014`と必要な公開契約判断の完了後、4公開型のコメントドック・ドラフトと検証結果を揃える。2026-10-09の`DOC-002`棚卸し対象には含めない | `RELEASE_0_5_2.md` / `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
+| `DOC-006` | `DONE` | Codex | [EXECUTION] RedBlackTree公開APIコメントドック・ドラフト | 2026-10-09、既存の公開コメント横断監査、4公開型のHead原稿、API Matrix、Test as Specification、Release DocC検証により、0.5.2が要求するユーザーレビュー可能なドラフトへ到達済みと確認。公開可能な初版への仕上げは0.6.0側で扱う | `RELEASE_0_5_2.md` / `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `DOC-007` | `FROZEN` | User / Codex | [DECISION] Permutation通常版と互換modeのコメントドック境界 | 2026-10-09、ユーザー指示により判断を後回し。明示的な再開後、通常版だけを対象とするかAtCoder 2025互換modeも含めるかを一つ決め、`DOC-003`の入力にする | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `DOC-008` | `DONE` | Claude / Codex | [DISCOVERY] BareArrayコメントドック独立レビュー | 2026-10-09、公開29宣言のcoverage、Test as Specificationとの一致、BLOCKなしを受入。判断不要の不揃い4点を補正し、残る2候補はCodexの再検収対象へ分離 | `RELEASE_0_5_2.md` / `CLAUDE_TASK.md` |
 | `DOC-009` | `EXCLUDED` | Codex | [EXECUTION] BareArrayのView保持中Sendable注記 | 2026-10-09、`@unchecked Sendable`の妥当性を覆す指摘ではなく、一般的な並行アクセス規則を重ねる蛇足とCodexが判定。公開コメントへの追記は行わない | `RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
@@ -130,8 +130,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-043` | `DONE` | External AI / Codex | [DISCOVERY] OptionalArray命名体系のAI間再検討 | 2026-10-09、Claude初稿と第三者AI補完調査をCodexが独立評価し、1D所有型名と次元名を別々の判断へ渡せる材料として受入 | `ARRAY_NAMING_REVIEW.md` / `CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` |
-| `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | `OPT-043`受入後、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | `OPT-043`受入後、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | 0.6.0の到達範囲判断前に、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
+| `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
 | `BARE-001` | `DONE` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | 2026-10-09、契約棚卸し、個別判断、Test as Specification、品質評価初版を受入れ、ユーザードキュメント作業へ引渡可能と判定 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-002` | `DONE` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 2026-10-09、公開29宣言と4適合のledger、新しい判断点、後続への振り分けをCodexが受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-003` | `DONE` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | 2026-10-09、競技プログラミング向けの低レベル公開部品として維持すると決定 | `BareArrayModule/BareArrayAudit.md` |
@@ -198,11 +198,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-011` | `RELEASE-018` | `PARALLEL_JOIN` | benchmark構成の分類は先行できるが、tag tree確定前に過去結果を除外してrelease結果をCI artifactへ残す方針と合流する |
 | `RELEASE-011` | `RELEASE-019` | `PARALLEL_JOIN` | performance workflowの設計は先行できるが、比較実装前に直前release tagをbaselineとする方針と合流する |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |
+| `RELEASE-007` | `OPT-044` | `PARALLEL_JOIN` | 利用者向け文書作業は現行名で先行できるが、0.6.0の到達範囲判断前に1D所有型名を確定する |
+| `RELEASE-007` | `OPT-045` | `PARALLEL_JOIN` | 利用者向け文書作業は現行名で先行できるが、0.6.0の到達範囲判断前に次元名体系を確定する |
 | `DOC-003` | `DOC-007` | `PARALLEL_JOIN` | 通常版の執筆は先行できるが、Permutation全体の完成判定前に互換modeの対象境界を確定する |
 | `DOC-003` | `DOC-011` | `PARALLEL_JOIN` | 通常版の公開APIコメントと検証を先行して揃え、Permutation全体の完成判定前に合流する |
-| `DOC-004` | `OPT-044` | `SEQUENCE` | 1D所有型名を確定してから最終的な公開名に沿って本文を作成する |
-| `DOC-004` | `OPT-045` | `SEQUENCE` | 次元名体系を確定してから軸契約を本文へ反映する |
-| `DOC-006` | `RBT-014` | `SEQUENCE` | 三対象で文書作業方式を確認した後、4公開型outlineを現行APIへ照合してから本文を作成する |
 | `DOC-008` | `DOC-005` | `SEQUENCE` | BareArrayコメントドックと検証記録が完成してから独立レビューする |
 | `RELEASE-006` | `DOC-003` | `PARALLEL_JOIN` | 0.5.2到達範囲の判断前にPermutationコメントドック・ドラフトを揃える |
 | `RELEASE-006` | `DOC-004` | `PARALLEL_JOIN` | 0.5.2到達範囲の判断前にOptionalArrayコメントドック・ドラフトを揃える |

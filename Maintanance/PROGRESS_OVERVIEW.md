@@ -97,6 +97,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPS-003` | `DONE` | Codex | [EXECUTION] AI向け技術オリエンテーションの作成 | 2026-10-09、AIが誤認しやすい技術構造、既存中核の由来、証拠経路、停止点を整理し、ユーザー確認を完了 | `AI_TECHNICAL_ORIENTATION.md` |
 | `OPS-004` | `DONE` | Claude / Codex | [DISCOVERY] Codex司令塔オリエンテーションの独立レビュー | 2026-10-09、指定6観点のレビュー報告をもって作業完了。指摘と修正案は採用せず参考資料として保存し、本文へ反映しない | `CODEX_ORIENTATION.md` / `CLAUDE_TASK.md` |
 | `OPS-005` | `DONE` | Codex | [EXECUTION] taskオリエンテーションMDの作成 | 2026-10-09、中間ゴールからtask分解、判断分離、依存、ready、距離、受入、ユーザー判断への変換を、OptionalArray・RedBlackTree・独立レビューの実例で説明する初回実践ガイドを作成。三者の反復による由来と事故後の復帰確認を記録し、司令塔オリエンテーションから導線を追加 | `TASK_ORIENTATION.md` / `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-006` | `DONE` | User / Codex | [DECISION] `AGENTS.md`の恒久保持 | 2026-10-09、`AGENTS.md`を会話継続性の基盤としてmainと作業branchへ恒久的に保持し、cleanup、archive、release準備、task再編で削除・退避・一時除去しないと決定。release artifactから内部管理fileを除外する場合も正本は保持する | `AGENTS.md` |
 | `RELEASE-005` | `DONE` | User / Codex | [DECISION] 0.5.1の到達範囲とrelease検討開始 | 2026-10-09、BareArray契約の堅牢化と三対象のTest as Specificationを0.5.1の範囲として採用し、release checklistへ進むと決定 | `RELEASE_0_5_1.md` |
 | `RELEASE-008` | `DONE` | Codex / Claude | [EXECUTION] 0.5.1 release候補の準備と検収 | 2026-10-09、PR #176をmainへmergeし、main CI green確認後、merge commit `d7b3863e`へannotated tag `0.5.1`を作成・pushしてremote到達を確認 | `RELEASE_0_5_1.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-009` | `FROZEN` | Codex | [DISCOVERY] 0.5.1実績に基づくrelease checklist見直し | 2026-10-09、前任conversationの意図と途中経過の喪失により再開困難なため凍結。明示的な再開指示後、残存記録を参考資料として目的と境界から再確認 | `RELEASE_CHECKLIST.md` / `RELEASE_0_5_1.md` |

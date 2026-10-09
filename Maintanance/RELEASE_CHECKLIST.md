@@ -43,6 +43,9 @@ release候補の品質、対象commit、履歴操作を分離して確認し、t
 - [ ] version表記、Package設定、README、CHANGELOG、利用者向け文書の整合を確認した。
 - [ ] 通常版、互換mode、experimental traitなど、release対象外の構成が混入していない。
 
+`AGENTS.md`は会話継続性の基盤としてmainと作業branchへ恒久的に保持する。release artifactから内部管理fileを
+除外する方式を採る場合も、source-of-truthを削除、一時除去、archive移動しない。
+
 候補commit固定後に製品差分を変更した場合、以降の検証はすべて新しいcommitを対象にやり直す。
 
 ## 2. Codexによる一次検収

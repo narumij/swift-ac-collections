@@ -14,6 +14,15 @@
    selected task's detailed canonical document, then Archived records and old
    logs.
 
+## AGENTS.md retention
+
+Treat this file as persistent conversation-continuity infrastructure. Preserve
+it on `main` and working branches across cleanup, archival, release preparation,
+and task reorganization. Do not delete, archive, replace with a generated copy,
+or temporarily remove it to simplify a release tree. A future release artifact
+may exclude internal management files only if the tracked source-of-truth copy
+remains intact on `main` and the active working branch.
+
 ## Orientation request
 
 When the user says `オリエンテーション` or otherwise asks Codex to orient

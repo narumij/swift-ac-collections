@@ -160,6 +160,13 @@ Japanese sentence markers are currently suspended. Do not use `了。`, `是。`
 `否。`, `解。`, or any of the other markers below unless the user explicitly
 directs Codex to resume them. Keep the definitions for a possible later restart.
 
+A new conversation is not eligible to use the markers merely because it has read
+their definitions. It must first complete the repository orientation, demonstrate
+through actual task work that it understands and can apply the management model,
+and then receive the user's explicit permission. Codex must not decide for itself
+that it is sufficiently accustomed or treat completion of the orientation reading
+alone as permission.
+
 The markers below classify only the single sentence immediately following the
 marker, not the response as a whole. When the function changes within one
 response, a later sentence may use a different marker. Choose by the function of

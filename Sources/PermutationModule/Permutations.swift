@@ -219,6 +219,7 @@ extension NextPermutationsSequence.Permutation: RandomAccessCollection {
   public typealias Element = Base.Element
   /// Accesses the element at `position`.
   ///
+  /// - Parameter position: The zero-based position of the element to access.
   /// - Precondition: `position` is in `startIndex..<endIndex`. An out-of-range position stops
   ///   execution in Debug and Release builds; `-Ounchecked` builds may omit this check.
   /// - Complexity: O(1).
@@ -236,6 +237,9 @@ extension NextPermutationsSequence.Permutation: RandomAccessCollection {
 extension NextPermutationsSequence.Permutation: Equatable {
   /// Returns whether two permutations contain equal elements in the same order.
   ///
+  /// - Parameters:
+  ///   - lhs: A permutation to compare.
+  ///   - rhs: Another permutation to compare.
   /// - Complexity: O(n) in the worst case, where n is the number of elements.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -246,6 +250,7 @@ extension NextPermutationsSequence.Permutation: Equatable {
 extension NextPermutationsSequence.Permutation: Hashable where Base.Element: Hashable {
   /// Hashes the number and order of the permutation's elements.
   ///
+  /// - Parameter hasher: The hasher to use when combining the elements.
   /// - Complexity: O(n), where n is the number of elements.
   @inlinable
   public func hash(into hasher: inout Hasher) {

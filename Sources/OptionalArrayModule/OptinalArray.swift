@@ -30,6 +30,7 @@ public struct OptionalArray1D<Element>: ~Copyable {
   ///
   /// `capacity`が0なら空の配列を作ります。
   ///
+  /// - Parameter capacity: slot数。
   /// - Precondition: `capacity`は0以上でなければなりません。
   /// - Complexity: O(`capacity`)
   @inlinable
@@ -73,6 +74,7 @@ public struct OptionalArray1D<Element>: ~Copyable {
   /// 設定済みの位置へ代入すると以前の要素を破棄して置き換えます。`nil`を代入すると
   /// 既存要素をちょうど一度破棄します。
   ///
+  /// - Parameter position: 取得または更新するslotの位置。
   /// - Precondition: `position`が`indices`に含まれること。
   /// - Complexity: O(1)
   @inlinable
@@ -151,6 +153,9 @@ public struct OptionalArray2D<Element>: ~Copyable {
   ///
   /// いずれかの次元が0なら要素を持たない配列を作ります。
   ///
+  /// - Parameters:
+  ///   - width: 最内軸のslot数。
+  ///   - height: 最外軸のslot数。
   /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
   /// - Complexity: O(`width * height`)
   @inlinable
@@ -196,6 +201,7 @@ public struct OptionalArray2D<Element>: ~Copyable {
   ///
   /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
   ///
+  /// - Parameter position: 参照する行の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
@@ -250,6 +256,10 @@ public struct OptionalArray3D<Element>: ~Copyable {
   ///
   /// いずれかの次元が0なら要素を持たない配列を作ります。
   ///
+  /// - Parameters:
+  ///   - width: 最内軸のslot数。
+  ///   - height: 中間軸のslot数。
+  ///   - depth: 最外軸のslot数。
   /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
   /// - Complexity: O(`width * height * depth`)
   @inlinable
@@ -302,6 +312,7 @@ public struct OptionalArray3D<Element>: ~Copyable {
   ///
   /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
   ///
+  /// - Parameter position: 参照する面の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
@@ -358,6 +369,11 @@ public struct OptionalArray4D<Element>: ~Copyable {
   ///
   /// いずれかの次元が0なら要素を持たない配列を作ります。
   ///
+  /// - Parameters:
+  ///   - size0: 最内軸のslot数。
+  ///   - size1: 内側から2番目の軸のslot数。
+  ///   - size2: 内側から3番目の軸のslot数。
+  ///   - size3: 最外軸のslot数。
   /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
   /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
@@ -412,6 +428,7 @@ public struct OptionalArray4D<Element>: ~Copyable {
   ///
   /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
   ///
+  /// - Parameter position: `size3`軸で参照する位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
@@ -477,6 +494,7 @@ public struct OptionalArray1DView<Element> {
   /// 設定済みの位置へ非`nil`の値を代入すると、親配列が所有する以前の要素を破棄して
   /// 置き換えます。`nil`を代入すると既存要素を破棄し、そのslotを未設定状態へ戻します。
   ///
+  /// - Parameter position: 取得または更新するslotの位置。
   /// - Precondition: `position`がこのViewの有効範囲に含まれること。
   /// - Complexity: O(1)
   @inlinable
@@ -546,6 +564,7 @@ public struct OptionalArray2DView<Element> {
   ///
   /// 返されたViewからの変更は同じ親配列へ反映されます。Viewは親配列の生存中だけ使用してください。
   ///
+  /// - Parameter position: 参照する行の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
@@ -606,6 +625,7 @@ public struct OptionalArray3DView<Element> {
   ///
   /// 返されたViewからの変更は同じ親配列へ反映されます。Viewは親配列の生存中だけ使用してください。
   ///
+  /// - Parameter position: 参照する面の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable

@@ -54,3 +54,13 @@
 - Xcode build成功。OptionalArrayとBareArrayのfile診断は0件。Permutationのfile診断2件は既存の
   unsafe／未使用結果warningで、今回のコメント差分とは無関係。3 targetのdocumentation buildを
   `--warnings-as-errors`付きで実行し、すべて成功した。
+## DOC-018: 公開コメントのparameter欄補完
+
+BareArray、OptionalArray、Permutationの公開APIコメントについて、引数を持つ宣言にDocCの
+`Parameter`／`Parameters`欄を補う。既存の公開契約は変更せず、各引数の意味は実装とtestで確認する。
+完了条件は対象宣言のparameter coverage確認と、3 targetのdocumentation build成功。
+
+2026-10-10完了。parameterを持つ公開宣言29件（BareArray 15件、OptionalArray 11件、
+Permutation 3件）を照合し、`Parameter`／`Parameters`欄を補完した。軸・位置・closureの意味は
+既存実装とtestで確定している表現に限定した。3 targetとも`--warnings-as-errors`付きの
+documentation buildに成功した。

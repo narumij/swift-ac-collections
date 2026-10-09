@@ -91,6 +91,12 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-009` | `ACTIVE` | Codex | [DISCOVERY] 0.5.1実績に基づくrelease checklist見直し | CHANGELOGの`Unreleased`・当該版・前版の分離と、候補branch検収後のWebマージ、main CI、実main commit確認、tag作成、tag pushの順序・承認境界を検証し、必要な最小改訂案を示す | `RELEASE_CHECKLIST.md` / `RELEASE_0_5_1.md` |
 | `RELEASE-010` | `DONE` | User / Codex | [DECISION] release template branch方式の採用 | 2026-10-09、`prepare/release/0`からreleaseごとの`prepare/release/x`を切り、mainをmergeして専用工程を実施し、mainへ戻さず終端へtagを打つ方式を採用。残りの`0.5.x`を工程のrehearsal系列とし、改善を`prepare/release/0`へ還元して`0.6.0`を成熟した工程の本運用候補とする | `RELEASE_CHECKLIST.md` |
 | `RELEASE-011` | `ACTIVE` | Codex | [DISCOVERY] `prepare/release/0`の構成設計と試行 | 配布対象の削除規則、通常版としての`COMPATIBLE_ATCODER_2025`条件分岐の具体化、release専用test・workflow・lint、main merge時の競合と製品修正の差し戻し境界を整理し、template branch作成へ渡せる案と試行結果を示す | `RELEASE_CHECKLIST.md` |
+| `RELEASE-012` | `DONE` | User / Codex | [DECISION] release treeから除外する内部管理資産 | 2026-10-09、`Maintanance`、`AGENTS.md`、`CLAUDE.md`、`Utilities/Maintenance`はmainへ保持し、release treeから除外すると決定 | `RELEASE_CHECKLIST.md` |
+| `RELEASE-013` | `DONE` | User / Codex | [DECISION] release treeにおける互換生成・検証utility | 2026-10-09、`Utilities/Permutation`は通常版への変換を検証する工程中だけ使用し、最終的なtag対象から除外すると決定 | `RELEASE_CHECKLIST.md` |
+| `RELEASE-014` | `DONE` | User / Codex | [DECISION] release treeにおけるbenchmark | 2026-10-09、`Benchmarks`はrelease性能gateと利用者が追試できる証拠としてtag対象へ残し、release時は通常CIより大きい入力規模も扱える設計対象とすると決定 | `RELEASE_CHECKLIST.md` |
+| `RELEASE-015` | `DONE` | User / Codex | [DECISION] release treeにおける文書境界 | 2026-10-09、tag対象には利用者向け文書だけを残し、品質評価、内部設計、執筆workflow・outline・memoと、通常版から除く互換mode専用文書はmainだけに保持すると決定 | `RELEASE_CHECKLIST.md` |
+| `RELEASE-016` | `DONE` | User / Codex | [DECISION] release工程の全test実行方式 | 2026-10-09、`Tests`はtag対象へ残し、Debugのprocess-global寿命カウンタ等価検査を`SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`で外して、隔離されていたSwift Testing・Death Testを含む通常版の全testをrelease工程で実行すると決定。ASanの扱いは変更しない | `RELEASE_CHECKLIST.md` |
+| `RELEASE-017` | `DONE` | User / Codex | [DECISION] release専用workflowの変更branch | 2026-10-09、現在の作業branchとmainのworkflowは変更せず、`prepare/release/0`を構築するbranch上でのみmain用workflowをrelease専用workflowへ置き換えると決定 | `RELEASE_CHECKLIST.md` |
 | `RELEASE-006` | `FROZEN` | User / Codex | [DECISION] 0.5.2の到達範囲とrelease検討開始 | 全公開対象のコメントドック・ドラフト完成後、0.5.2へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_5_2.md` |
 | `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | 全公開対象の利用者向けドキュメント初版完成後、0.6.0へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_6_0.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
@@ -160,6 +166,12 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-008` | `RELEASE-005` | `SEQUENCE` | 製品上の到達範囲とrelease検討開始を確定してから候補commitを準備する |
 | `RELEASE-009` | `RELEASE-008` | `SEQUENCE` | 0.5.1の実際のrelease完了までを観測してから、汎用checklistとの差を見直す |
 | `RELEASE-011` | `RELEASE-010` | `SEQUENCE` | template branch方式の採用後に、実際の構成と検証方法を設計・試行する |
+| `RELEASE-011` | `RELEASE-012` | `PARALLEL_JOIN` | 構成設計は先行できるが、template branch作成へ渡す前に内部管理資産の除外方針と合流する |
+| `RELEASE-011` | `RELEASE-013` | `PARALLEL_JOIN` | 変換検証は先行できるが、tag treeの構成確定前に互換生成・検証utilityの扱いと合流する |
+| `RELEASE-011` | `RELEASE-014` | `PARALLEL_JOIN` | 性能gateの設計は先行できるが、tag treeの構成確定前にbenchmarkを再現証拠として残す方針と合流する |
+| `RELEASE-011` | `RELEASE-015` | `PARALLEL_JOIN` | 文書分類は先行できるが、tag treeの構成確定前に利用者向け文書だけを残す方針と合流する |
+| `RELEASE-011` | `RELEASE-016` | `PARALLEL_JOIN` | test工程の設計は先行できるが、template branch作成へ渡す前に寿命カウンタ検査を外して全testを走らせる方針と合流する |
+| `RELEASE-011` | `RELEASE-017` | `PARALLEL_JOIN` | workflow設計は現在branchで進められるが、実装へ渡す前に変更をtemplate branchだけへ限定する方針と合流する |
 
 ## Registry rules
 

@@ -287,3 +287,4 @@ IDs remain permanent and must not be reused.
 | `OPS-018` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←Index完了のBarrier分類 | `LAST`。品質調査は先行可能とし、1.0品質判定を確定する前にIndex契約完了を待つ | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-019` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←runtime-check再審査のBarrier分類 | `LAST`。他の1.0品質作業を並行可能とし、最終判定前にruntime-check実装の採否を待つ | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-020` | `DONE` | User / Codex | [DECISION] Mapped Values判断←API照合のBarrier分類 | `HEAD`。現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-021` | `EXCLUDED` | User / Codex | [DECISION] BareArray性能計測←性能基準のBarrier分類 | 共通条件は既存方式に従い、BareArray固有部分もCodexの測定設計調査へ変更したため、ユーザー判断を不要として除外。依存は`HEAD` | `CODEX_TASK_OPERATION_PLAYBOOK.md` |

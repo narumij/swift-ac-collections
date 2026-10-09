@@ -33,8 +33,6 @@ release検討開始は成果と証拠が揃った後の別判断とする。rele
   tag作成、tag pushの順序を次回releaseで誤認しない汎用手順へ改訂する。
 - `prepare/release/template`をrelease工程のtemplate branchとする方式について、削除規則、release専用test、
   workflow、mainとのmerge境界を設計し、準備完了後のreleaseへ適用できる状態にする。0.5.2には適用しない。
-- 0.5.2より後の適切なreleaseでtemplate branch方式のrelease rehearsalを重ね、各回の工程上の改善だけを
-  `prepare/release/template`へ還元し、成熟後のreleaseを本運用候補にする。
 
 **後続の中間ゴール:**
 
@@ -133,22 +131,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-034` | `WAITING_USER` | User / Codex | [DECISION] 0.5.3の製品上の到達範囲 | 0.5.3として完成させる製品上のscopeを一つ判断する。release検討開始、release可否、merge、tag、pushは含めない | `RELEASE_0_5_3.md` |
 | `RELEASE-035` | `PROPOSED` | Codex | [EXECUTION] release checklistのRegistry templateへの移行 | checklist本文を読んで判断・操作・証拠へ分類する規則とtask骨格をtemplateへ移し、一判断ごとの必須依存、`REL-000`からの内部採番、任意task除去条件を検証する | `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-036` | `PROPOSED` | Codex | [EXECUTION] release専用Registryへの正本切替 | 移行後の旧checklistをArchivedへ移し、現行参照をtemplateとactive Registryへ切り替え、生成・startup precedence・完了／中止還元を一往復検証する | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
-| `RELEASE-037` | `DONE` | Codex | [EXECUTION] 0.5.3リリース訓練その1 | 2026-10-09、gate構成と再開判定後に`CANCELLED`還元。ただし内部taskを通常Registry形式で誤採番し、ユーザー判断も除外して一問提示とready変化を確認せず、対話訓練として未達だったと記録 | `RELEASE_0_5_3_REHEARSAL_1.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
-| `RELEASE-054` | `DONE` | Codex | [EXECUTION] release訓練モードの終了規則 | 2026-10-09、訓練対象の判断gateへ到達するまで対象taskを除外せず、回答後のready変化を確認してから残る実release操作を中止し、`CANCELLED`還元する規則を設計とtemplateへ追加 | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_0_5_3_REHEARSAL_1.md` |
-| `RELEASE-055` | `DONE` | Codex | [EXECUTION] 0.5.3リリース訓練その2 | 2026-10-09、模擬証拠を判断gateへ接続して一問を提示後、通常Registryとrelease専用Registryの採番名前空間を再検討するためユーザー指示で中止。判断は未回答、外部副作用なしで`CANCELLED`還元 | `RELEASE_0_5_3_REHEARSAL_2.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
-| `RELEASE-056` | `DONE` | User / Codex | [DECISION] release専用Registryのtask ID名前空間 | 2026-10-09、通常Registryはreleaseまたは訓練全体の一taskだけを消費し、release専用Registry内は毎回`REL-000`から採番してRegistry識別子との組で参照すると決定 | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
-| `RELEASE-057` | `DONE` | Codex | [EXECUTION] 0.5.3リリース訓練その3 | 2026-10-09、通常Registryは本taskだけ、内部は`REL-000`から採番。模擬証拠によるrelease可否の一問へユーザーが訓練上release可と回答し、merge判断gateのready変化を確認後、外部操作なしで`CANCELLED`還元 | `RELEASE_0_5_3_REHEARSAL_3.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
-| `RELEASE-058` | `DONE` | Codex | [EXECUTION] 0.5.3リリース訓練その4 | 2026-10-09、CHANGELOG準備を候補固定前へ移し、local gateとpush・CI・merge・tag工程を再分解。candidate branchの仮想最終push前にユーザー指示で中止し、実操作・外部副作用なしで`CANCELLED`還元 | `RELEASE_0_5_3_REHEARSAL_4.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
-| `RELEASE-059` | `DONE` | User / Codex | [EXECUTION] 0.5.3リリース訓練その5 | 2026-10-09、CHANGELOG準備、個別local gate、最終push、候補CI、merge、main CI待機、tag打刻を仮想実行。tag push前に中止し、仮想記録branchへ移動。実操作・外部副作用なし | `RELEASE_0_5_3_REHEARSAL_5.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
-| `RELEASE-060` | `DONE` | User / Codex | [EXECUTION] 0.5.3リリース訓練その6 | 2026-10-09、candidate CI後のmerge要請直前まで進行したが、固定fixtureを先に定めずscope、gate、担当、順序をCodexが独自設定したため目的未達で中止。実操作・外部副作用なし | `RELEASE_0_5_3_REHEARSAL_6.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
-| `RELEASE-061` | `DONE` | User / Codex | [EXECUTION] 0.5.3リリース訓練その7 | 2026-10-09、同一fixtureの回帰訓練を開始。CHANGELOGを準備済みと記録しただけでpush前本文読み上げを初回進行から漏らし、修正後のpush要請をユーザーが不許可として中止。実操作・外部副作用なし | `RELEASE_0_5_3_REHEARSAL_7.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
-| `RELEASE-062` | `DONE` | User / Codex | [EXECUTION] 0.5.3リリース訓練その8 | 2026-10-09、CHANGELOG、candidate、worktree、差分、内容整合まで順次確認したが、ユーザーの開始許可をrelease Registryの独立した開始判断taskへ登録せず後続をreadyにした構造違反を検出し中止。実操作・外部副作用なし | `RELEASE_0_5_3_REHEARSAL_8.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
-| `RELEASE-063` | `DONE` | User / Codex | [EXECUTION] 0.5.3リリース訓練その9 | 2026-10-09、release開始判断をrelease専用Registry内へ置き、判断前にactive入口を生成する循環を検出して中止。模擬release工程、実操作、外部副作用なし | `RELEASE_0_5_3_REHEARSAL_9.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
-| `RELEASE-064` | `DONE` | User / Codex | [DECISION] 0.5.3リリース訓練その10の仮想release開始可否 | 2026-10-09、計画提示後に開始許可を得てactive入口を生成したが、開始gate通過証拠を判断前に確認していなかった。local工程の誤分解も検出し、documentation test前にユーザー指示で中止。実操作・外部副作用なし | `RELEASE_0_5_3_REHEARSAL_10.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
-| `RELEASE-065` | `DONE` | User / Codex | [DECISION] 訓練11中間ゴール達成可否 | 2026-10-10、前提taskの判断gate到達後にユーザーがYesと判断 | `RELEASE_0_5_3_REHEARSAL_11.md` |
-| `RELEASE-066` | `DONE` | Codex | [EXECUTION] 訓練11リリースTask Registry起動 | 2026-10-10、正本を`_ReleaseTask/ACTIVE.md`へコピーして起動。起動後の委譲動作はユーザー判断Noのため訓練未達として`CANCELLED` | `RELEASE_0_5_3_REHEARSAL_11.md` |
-| `RELEASE-067` | `DONE` | User / Codex | [DECISION] 訓練11再実施の中間ゴール達成可否 | 2026-10-10、判断gate到達後にユーザーがYesと判断 | `RELEASE_0_5_3_REHEARSAL_11.md` |
-| `RELEASE-068` | `DONE` | Codex | [EXECUTION] 訓練11再実施のリリースTask Registry起動 | 2026-10-10、正本を起動し、CHANGELOG、candidate、三build、push、candidate CI、merge、main CI、tag、作業branch、結果記録を一taskずつ訓練実行。実際のbranch、push、merge、tag、公開操作なし | `RELEASE_0_5_3_REHEARSAL_11.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
 | `DOC-003` | `DONE` | Codex | [EXECUTION] Permutation公開APIコメントドック・ドラフト完成判定 | 2026-10-09、通常版のレビュー用ドラフトと検証を受入。`DOC-007`でAtCoder 2025互換modeを0.5.2の対象外と決定したため、追加実行なしでユーザーへの引き渡しを完了 | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `DOC-004` | `DONE` | Codex | [EXECUTION] OptionalArray公開APIコメントドック・ドラフト | 2026-10-09、現行名の公開29宣言と4適合をTest as Specification・実装へ再照合し、所有、View寿命、破棄、変更共有、軸、境界、計算量をレビュー用コメントへ記載。Debug／Release通常35件＋Death Test 21件、documentation warning-as-error成功。0.5.2段階の成果としてユーザーへ引き渡し済み | `RELEASE_0_5_2.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
@@ -244,22 +226,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-028` | `RELEASE-030` | `SEQUENCE` | ユーザー専任のfixed candidate branch pushが完了してからCodexがCIを確認する |
 | `RELEASE-035` | `RELEASE-031` | `SEQUENCE` | 分離設計とtask骨格の確定後に旧checklistをtemplateへ移行する |
 | `RELEASE-036` | `RELEASE-035` | `SEQUENCE` | checklist移行を検証してから実行正本をactive Registryへ切り替える |
-| `RELEASE-037` | `RELEASE-031` | `SEQUENCE` | 分離設計を入力に、正本切替前の軽量訓練で開始・再開・中止を一往復する |
-| `RELEASE-054` | `RELEASE-037` | `SEQUENCE` | 訓練その1で判明した対話gate未達を入力に訓練モードの終了規則を定める |
-| `RELEASE-055` | `RELEASE-054` | `SEQUENCE` | 訓練モード規則の追加後に、実際の一問と回答後のready変化を検証する |
-| `RELEASE-056` | `RELEASE-055` | `SEQUENCE` | 訓練その2で表面化した通常Registryと内部Registryの採番境界を決定する |
-| `RELEASE-057` | `RELEASE-056` | `SEQUENCE` | 独立した内部task名前空間の決定後に、対話gateを再訓練する |
-| `RELEASE-058` | `RELEASE-057` | `SEQUENCE` | 対話gateの基本訓練後に、checklistの読み上げとtag作成までを訓練する |
-| `RELEASE-059` | `RELEASE-058` | `SEQUENCE` | 訓練その4で見つかった準備・検収・push・merge工程の欠落を補正して再訓練する |
-| `RELEASE-060` | `RELEASE-059` | `SEQUENCE` | 訓練5の会話順序とRegistry運用の不一致を補正し、commit回数を抑えて再訓練する |
-| `RELEASE-061` | `RELEASE-060` | `SEQUENCE` | 訓練6の独自設定混入を排し、同一fixtureで修正反映、手順漏れ、実行精度を検証する |
-| `RELEASE-062` | `RELEASE-061` | `SEQUENCE` | 訓練7で露呈した完了ラベルによる内容確認の代替をやめ、各工程の実内容を順番どおり確認する |
-| `RELEASE-063` | `RELEASE-062` | `SEQUENCE` | 訓練8で欠落したrelease開始判断gateを計画提示と後続工程の間へ置いて再訓練する |
-| `RELEASE-064` | `RELEASE-063` | `SEQUENCE` | 訓練9で誤配置したrelease開始判断を通常Registryへ戻し、active入口生成前に判断する |
-| `RELEASE-065` | `RELEASE-064` | `SEQUENCE` | 訓練10終了後、中間ゴールからrelease専用Registryへの委譲境界をステップ実行する |
-| `RELEASE-066` | `RELEASE-065` | `GATE` | 中間ゴール達成のユーザー判断がYesの場合だけ正本を起動する |
-| `RELEASE-067` | `RELEASE-066` | `SEQUENCE` | 訓練11初回の未達を受け、No回答時の例外チェックリストを追加した正本で再実施する |
-| `RELEASE-068` | `RELEASE-067` | `GATE` | 中間ゴール達成のユーザー判断がYesの場合だけ正本を起動する |
 | `RELEASE-029` | `RELEASE-027` | `PARALLEL_JOIN` | local一次検収の証拠を揃えてから独立確認へ渡す |
 | `RELEASE-029` | `RELEASE-028` | `PARALLEL_JOIN` | 同じ候補commitのremote CI証拠を揃えてから独立確認へ渡す |
 | `RELEASE-022` | `RELEASE-027` | `PARALLEL_JOIN` | release可否判断前に固定候補のlocal一次検収を完了する |

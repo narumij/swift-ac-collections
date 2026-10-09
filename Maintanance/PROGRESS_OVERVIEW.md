@@ -91,13 +91,13 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-002` | `USER_ONLY` | User | ABC328E実提出確認 | ユーザーが手作業で実施 | `PermutationModule/ImplementationPlan.md` |
 | `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-043` | `WAITING_EXTERNAL` | External AI / Codex | [DISCOVERY] OptionalArray命名体系のAI間再検討 | Claude初稿のCodex予備評価後、第三者AI向け補完依頼へ切替。回答受領後、Codexが独立評価・統合して判断材料へする | `ARRAY_NAMING_REVIEW.md` / `CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` |
+| `OPT-043` | `DONE` | External AI / Codex | [DISCOVERY] OptionalArray命名体系のAI間再検討 | 2026-10-09、Claude初稿と第三者AI補完調査をCodexが独立評価し、1D所有型名と次元名を別々の判断へ渡せる材料として受入 | `ARRAY_NAMING_REVIEW.md` / `CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` |
 | `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | `OPT-043`受入後、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | `OPT-043`受入後、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `ACTIVE` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | 公開7型の契約棚卸し、必要な個別判断、Test as Specification整理、品質評価初版を受入れ、ユーザードキュメント作業への引き渡し可否を判定する | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-002` | `DONE` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 2026-10-09、公開29宣言と4適合のledger、新しい判断点、後続への振り分けをCodexが受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-003` | `DONE` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | 2026-10-09、競技プログラミング向けの低レベル公開部品として維持すると決定 | `BareArrayModule/BareArrayAudit.md` |
-| `BARE-004` | `FROZEN` | User | [DECISION] BareArray公開型・次元名の命名体系 | `BARE-012`のAI間検討を受入後、型名、View名、次元property名とOptionalArray1Dとの整合について、整理済みの選択肢から一つの命名体系を判断 | `BareArrayModule/BareArrayAudit.md` |
+| `BARE-004` | `WAITING_USER` | User | [DECISION] BareArray公開型・次元名の命名体系 | AI間検討を受入済み。Codex推奨の現行体系を維持するか、整理済みの代替体系へ変更するかを一つ判断 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-005` | `FROZEN` | Claude | [EXECUTION] BareArrayModuleTestsのTest as Specification整理 | `BARE-002`受入時の再計算後、先行する契約判断・不足testが残らない状態で、既存testを番号付きTest as Specificationへ整理。コメントドック全件整備は含めない | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-006` | `FROZEN` | Codex | [DISCOVERY] BareArray 1.0の性能測定設計 | ユーザードキュメント作業後、共通の測定基盤を入力に対象操作・size・比較対象・評価方法を設計し、BareArray固有の製品判断候補を分離 | `Tests/TESTING.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray 1.0の性能計測 | `BARE-006`で整理した対象操作・size・比較対象と既存の測定方式に従って計測し、1.0判断へ渡す | `Tests/TESTING.md` |
@@ -105,7 +105,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-009` | `DONE` | Claude | [EXECUTION] BareArray既存契約の不足test追加 | 2026-10-09、所有2D〜4D外側subscriptの上下限6件と、非対称寸法での所有型・Viewの全位置照合5件をDebug／Releaseで受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-010` | `DONE` | User | [DECISION] BareArrayのNOP setter契約 | 2026-10-09、連鎖書き込みを維持し、同一pointer・shapeのwritebackだけを許す検査付きsetterへ変更すると決定 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-011` | `DONE` | User | [DECISION] BareArrayの不正寸法契約 | 2026-10-09、各次元は非負、zero許可、次元積は`Int`で表現可能というOptionalArrayと同じ事前条件を採用 | `BareArrayModule/BareArrayAudit.md` |
-| `BARE-012` | `WAITING_EXTERNAL` | External AI / Codex | [DISCOVERY] BareArray命名体系のAI間検討 | Claude初稿のCodex予備評価後、第三者AI向け補完依頼へ切替。回答受領後、Codexが独立評価・統合して判断材料へする | `ARRAY_NAMING_REVIEW.md` / `CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` |
+| `BARE-012` | `DONE` | External AI / Codex | [DISCOVERY] BareArray命名体系のAI間検討 | 2026-10-09、Claude初稿と第三者AI補完調査をCodexが独立評価し、現行体系維持を推奨してユーザー判断へ引渡 | `ARRAY_NAMING_REVIEW.md` / `CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` |
 | `BARE-013` | `DONE` | Codex | [DISCOVERY] BareArray NOP setter代替設計 | 2026-10-09、get-onlyでは連鎖代入不可、settable accessorでは全体代入を構文上除外不可、同一pointer・shapeを検査するsetterは成立すると確認 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-014` | `DONE` | Codex | [EXECUTION] BareArray検査付きView writeback setter | 2026-10-09、所有2D〜4DとView 2D〜3Dを検査付きsetterへ変更し、連鎖書き込み成功と別View代入trap 5件をDebug／Releaseで受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-015` | `DONE` | Codex | [EXECUTION] BareArray不正寸法事前条件 | 2026-10-09、1D〜4Dの公開initializerへ非負・zero・積overflow契約を実装し、通常1件・Death Test 14件をDebug／Releaseで受入 | `BareArrayModule/BareArrayAudit.md` |

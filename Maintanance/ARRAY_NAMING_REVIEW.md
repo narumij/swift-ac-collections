@@ -190,3 +190,34 @@ source変更、軸契約変更は行わない。
 Claudeへの補完依頼は開始前に取り止めた。2026-10-09のユーザー指示により、追加調査は
 [`CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md`](CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md)を使って第三者AIへ
 依頼する。Codexはその回答を受け入れた後に独立評価を完成し、ユーザー判断へ渡す。
+
+## Codex独立評価 — 第三者AI補完調査の受入（2026-10-09）
+
+第三者AIの回答は[`CHATGPT_ARRAY_NAMING_REVIEW_COMPLEMENT.md`](CHATGPT_ARRAY_NAMING_REVIEW_COMPLEMENT.md)として受領した。Codexは回答全体と一次資料を照合し、Claude初稿に
+不足していた次の材料が補われたため、`BARE-012`と`OPT-043`の調査結果として受け入れる。
+
+- `Bare`の代替として`Fixed`、`Rigid`、`Contiguous`、`Raw`、`Unsafe`、`Dense`、`Static`、`Flat`、
+  `Buffer`を比較し、現行契約を過剰に約束する案または既存概念との誤認が強い案を棄却した。
+- `View`を`Slice`、`Span`、`UnsafeView`と比較し、範囲保持、寿命保証、pointer APIについて各語が与える
+  期待を分離した。
+- 4Dのstorage軸を変更せずに名称だけを変える案と、軸契約そのものを反転する案を分離した。
+- 公式`swift-collections`の現行系列とSE-0527を踏まえ、完全一致だけでなくownership-aware arrayとしての
+  意味上の近さを評価した。SE-0527がSwift 6.4でImplementedであることもCodexが一次資料で再確認した。
+
+Codexの統合結論は次のとおり。
+
+1. BareArrayは、所有型の`BareArray` / `BareArray2D`〜`4D`と、非所有型の
+   `BareArray1DView`〜`3DView`を維持する案を推奨する。`Bare`は固定容量を直接表さない弱点があるが、
+   `RigidArray`と同じ可変countのcontainer、標準`Span`と同じ寿命保証、`Raw`の型なしbyteなどを誤って
+   約束しない。`UnsafeView`は有力な反証だが、役割より危険性だけを前面へ出し、pointer APIの存在まで
+   期待させるため現行`View`を上回らない。寿命責務は名称ではなく公開契約で明記する。
+2. OptionalArray 1D所有型は、`OptionalArray1D`維持と`OptionalArray`への改名の根拠が拮抗する。
+   BareArrayの見た目へ揃えることだけでは決めず、slot配列を独立した型系列と見るかをユーザー判断へ残す。
+3. 多次元labelは、2D・3Dの`width` / `height` / `depth`と4Dの`size0`〜`size3`を維持する案を
+   推奨する。全次元の機械的統一より2D・3Dの利用箇所での明瞭さを優先し、4Dの番号と連鎖subscript順が
+   逆である点は文書で明示する。軸契約自体の反転は命名判断へ含めない。
+
+回答中の`:chatgpt-content-reference`は生成元固有の参照記号であり、repository内では解決不能である。
+回答原本は入力証拠として保持し、上の統合結論では解決可能な一次資料だけを根拠として扱う。また、候補名
+すべての網羅的な衝突検査は未実施だが、推奨はいずれも現行名維持であり、Claudeが行った現行名の完全一致
+検査と第三者AIの意味比較を合わせれば、三つのユーザー判断を順次行う材料として十分である。

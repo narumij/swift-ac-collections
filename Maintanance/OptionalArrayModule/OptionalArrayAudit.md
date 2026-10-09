@@ -909,3 +909,8 @@ OptionalArrayは正式公開前であるため、既存名の維持やsource com
 
 両判断は`OPT-043`をCodexが受け入れた後に一件ずつ行う。変更を選んだ場合のsource、互換措置、test、
 コメントドック更新は、判断taskへ混ぜず後続の実行taskへ分離する。
+
+Codex acceptance（2026-10-09）: Claude初稿と第三者AIの補完調査を独立評価し、1D所有型名と多次元labelを
+別々に判断できる材料が揃ったため受け入れた。第三者AIは`OptionalArray1D`と現行labelの維持を推奨した。
+Codexは現行label維持に同意する一方、1D所有型名はslot配列を独立した型系列と見るかで結論が変わるため、
+推奨だけで確定せず、二つのユーザー判断へ渡す。

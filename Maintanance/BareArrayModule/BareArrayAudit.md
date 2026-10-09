@@ -294,6 +294,11 @@ Claudeは候補、根拠、反証、影響する公開宣言を列挙する。Co
 `BARE-009`の実行中に命名検討を割り込ませない。Claudeの現行assignment完了後、境界付きの次assignment
 として渡し、Codexの独立評価を経てからユーザー判断を起動する。
 
+Codex acceptance（2026-10-09）: Claude初稿と第三者AIの補完調査を独立評価し、現行名、実質的な代替名、
+標準の`RigidArray`・`Span`等との意味差、移行範囲、反証が揃ったため受け入れた。BareArrayについては
+`BareArray` / `BareArray2D`〜`4D`、`BareArray1DView`〜`3DView`、現行の次元labelを維持する案を
+Codex推奨として`BARE-004`へ渡す。名称の最終決定は行っていない。
+
 ## `BARE-013` — NOP setter代替設計
 
 現行の2D〜4D所有型と2D〜3D Viewの外側subscriptは、連鎖要素書き込みのwritebackを成立させるため、

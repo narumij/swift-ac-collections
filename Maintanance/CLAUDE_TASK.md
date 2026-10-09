@@ -11,8 +11,8 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 **実行中ジョブ: なし（2026-10-09 11:40 JSTまで停止）**
 
 - 継続ジョブ: Claude専用task graph DBの独立試験は、ユーザー指示により11:40まで停止。
-- 新規bounded assignment: 11:40まで停止。`GRAPH-004` fallbackのPermutation buffer access-path smell checkは
-  2026-10-09にCodexが受入済み。
+- 新規bounded assignment: 11:40まで停止。以前の`GRAPH-004` fallbackはCodex受入済みで、共有スキームの
+  継続task自体もユーザー判断で終了したため、今後のfallbackには使わない。
 - 本線の現在状態: ユーザー判断によりBareArray監査を再開し、公開7型の契約棚卸し`BARE-002`が
   Claude担当のready taskになった。ただし11:40までは割り当てない。性能、View寿命、strict memory safetyは
   後続の1.0判断まで凍結を維持する。

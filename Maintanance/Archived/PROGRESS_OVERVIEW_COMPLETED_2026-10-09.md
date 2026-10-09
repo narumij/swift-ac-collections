@@ -27,7 +27,11 @@ IDs remain permanent and must not be reused.
 | `GRAPH-014` | `DONE` | Claude / Codex | [EXECUTION] observation staleness fixture | 2026-10-08、古い観測をstale、再構築後をnot staleとするPASSを確認 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-015` | `DONE` | User / Codex | [DECISION] Task precedence Gateの意味と段階移行 | 2026-10-08、`START`・`COMPLETE`・移行中の`UNCLASSIFIED`を定義し、現役辺pilot、fixture検証、残辺移行の順に浸透させると決定 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-016` | `DONE` | Codex | [EXECUTION] Task precedence Gate列のpilot導入 | 2026-10-08、Gate列を追加し、現行`ACTIVE` taskに接続する6辺を`START` 4件・`COMPLETE` 2件へ分類。他の既存辺は`UNCLASSIFIED`のまま保持 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
-| `GRAPH-005` | `DONE` | User / Codex / Claude | ClaudeとCodexのgraph DB交流会 | 2026-10-09、必要な観測交換を終え、ユーザー判断で終了。独立DB試験と共有smellスキーム試験は別taskとして継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-005` | `DONE` | User / Codex / Claude | ClaudeとCodexのgraph DB交流会 | 2026-10-09、必要な観測交換を終え、ユーザー判断で終了。後続判断によりClaude専用DBだけを継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-002` | `EXCLUDED` | User / Codex | Codex用task graph DBの独立試験 | 2026-10-09、Registryと意味判断で十分であり、Codex用DBを再開しないと決定 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
+| `GRAPH-004` | `EXCLUDED` | User / Codex / Claude | [DISCOVERY] AIとインメモリ関係モデルによるsmell判定スキーム共有試験 | 2026-10-09、継続taskとしては終了。既存schema・fixture・観測を保存し、必要時だけその場の関係整理として再利用する | `Graph/AI_GRAPH_SMELL_NOTES.md` |
+| `GRAPH-017` | `EXCLUDED` | — | [EXECUTION] RP-19 readiness fixture | 親目的の共有スキーム試験を終了したため、未実施のfixtureを不要として除外 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
+| `GRAPH-018` | `EXCLUDED` | — | [EXECUTION] Task precedence Gateの段階移行完成判定 | Codex用DBと共有スキームの継続を終了し、DB向けGate移行の完成判定を不要として除外 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `OPS-002` | `DONE` | Codex | [DISCOVERY] task分解・インライン化・割当の三段階運用検討 | 2026-10-09、stable ID・依存・履歴は維持し、条件の揃った連続`EXECUTION`だけを一時assignment packageへまとめる方式を採用。判断・凍結・待機taskは対象外とし、新判断や失敗時は元taskへ戻す | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
 | `FIT-002` | `DONE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08、責任境界、現行補正、OptionalArray 10 package、追加skillについて項目別回答を記録 | `AGENT_TASK_FIT_INTERVIEW.md` |
@@ -155,6 +159,10 @@ IDs remain permanent and must not be reused.
 | `GRAPH-009` | `GRAPH-013` | `UNCLASSIFIED` | document match fixture受入後に追試全体を完成判定する |
 | `GRAPH-009` | `GRAPH-014` | `UNCLASSIFIED` | observation staleness fixture受入後に追試全体を完成判定する |
 | `GRAPH-016` | `GRAPH-015` | `START` | Gateの意味と段階移行方針の決定後にpilotを開始する |
+| `GRAPH-017` | `GRAPH-016` | `START` | 確定したpilot分類をfixture入力にする |
+| `GRAPH-018` | `GRAPH-017` | `UNCLASSIFIED` | RP-19でready判定の意味一致を確認後、残る辺を段階移行する |
+| `GRAPH-004` | `GRAPH-009` | `COMPLETE` | 過去知見の追試fixture群の受入後に共有スキーム試験の次段階を判断する |
+| `GRAPH-004` | `GRAPH-018` | `COMPLETE` | Gate移行の完成判定後に共有スキーム試験全体を完了できる |
 | `PERM-017` | `PERM-016` | `UNCLASSIFIED` | 品質評価の事実更新後にreviewする |
 | `PERM-017` | `PERM-024` | `UNCLASSIFIED` | 根拠参照の機械照合後に品質評価reviewを完了する |
 | `PERM-017` | `PERM-025` | `UNCLASSIFIED` | 確認済みの事実参照補正後に品質評価reviewを完了する |
@@ -249,8 +257,6 @@ IDs remain permanent and must not be reused.
 
 | 後続task | 完了済み前提task | Gate | 制約 |
 | --- | --- | --- | --- |
-| `GRAPH-004` | `GRAPH-009` | `COMPLETE` | 過去知見の追試fixture群を受入後、共有スキーム試験の次段階を判断できる |
-| `GRAPH-017` | `GRAPH-016` | `START` | 現役辺のGate分類をCodexが確定した後にRP-19 fixtureを実装する |
 | `RBT-014` | `RBT-013` | `UNCLASSIFIED` | TODO/FIXMEの文書影響を分類後にoutlineを照合する |
 | `OPT-003` | `OPT-002` | `UNCLASSIFIED` | 管理方式と受入基準の抽出後に明文化の要否を判断する |
 | `BARE-008` | `OPT-002` | `UNCLASSIFIED` | OptionalArrayで管理方式を検証した後にBareArray再開を判断する |

@@ -310,3 +310,9 @@ Task precedenceへGate列を追加し、現行`ACTIVE` taskを始点または終
 
 その他の既存辺は意味を自動推定せず`UNCLASSIFIED`とした。これによりRP-19 fixtureへ渡すpilot入力が
 確定したが、後続taskは明示的な再開指示があるまで`FROZEN`を維持する。
+
+### 後続fixtureの終了（2026-10-09）
+
+Codex用graph DBと共有smell判定スキームを継続しないとのユーザー判断により、RP-19 readiness fixtureと
+Gate段階移行の完成判定は不要になった。pilotで確定した`START` / `COMPLETE`の意味と既存fixtureは保持するが、
+未分類辺をDBのために全件移行する作業は行わない。Registryで新規・更新する辺には、引き続き確定したGateを付ける。

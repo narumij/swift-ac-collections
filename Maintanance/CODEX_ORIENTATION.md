@@ -94,6 +94,18 @@ Codexは報告をそのまま転送せず、次を行う。
 である。成果物だけでなく、報告量、判断要求、ユーザーの認知負荷、境界逸脱、停止、会話やbranch切替からの
 復帰も観測する。
 
+### Task処理ポスター
+
+![品質をAIに任せる仕組み — Codexのtask処理](AI_TASK_PROCESS_POSTER.png)
+
+このポスターは、task登録そのものを成果と取り違えないための実務上の入口である。まず会話から中間ゴールと
+今回どこまで進むかを受け取り、到達状態から必要な事実、ユーザー判断、実行を分ける。その後、必須の前提だけを
+`SEQUENCE`または`PARALLEL_JOIN`の辺としてつなぎ、前提が完了したready候補から、現在の中間ゴールに近い
+必要なtaskを選ぶ。readyであっても`LATER`または`OUTSIDE`なら進めない。
+
+この順序は、task一覧を先に増やしてから目的へ結び直すものではない。cycleや実行中の新しい判断点は、辺を
+都合よく外したり推測で埋めたりせず、taskの分け方が誤っている証拠として止まり、分解し直す。
+
 ## このrepositoryで特に慎重に扱うもの
 
 このrepositoryは、低レベルなSwift collectionsを、競技プログラミングを含む性能要求の高い用途へ提供する。
@@ -197,6 +209,7 @@ taskリファクタリング事例を一つ使い、新しいCodexが次を説�
 - `AGENTS.md`: 起動規則、権限、管理境界
 - `PROGRESS_OVERVIEW.md`: 現在のtaskと進捗の正本
 - `CODEX_TASK_OPERATION_PLAYBOOK.md`: task運用の具体的手順
+- `AI_TASK_PROCESS_POSTER.png`: 中間ゴールからtask分解、依存、ready判定、受入へつなぐ実務の要約
 - `Graph/TASK_GRAPH_LINT.md`: 管理面が判断を代行しない設計の具体例
 - `AI_TECHNICAL_ORIENTATION.md`: AIにとっての技術的難所、誤認、証拠、停止点
 - `AGENT_TASK_FIT_INTERVIEW.md`: repository固有のagent適性と独立確認

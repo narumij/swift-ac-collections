@@ -134,3 +134,11 @@ template方式のrelease tree変換や内部管理文書の除外は行わない
 
 この計画を、候補内容の準備・固定、local一次検収、remote CI、Claude独立確認へ分解した。候補固定後に製品差分または
 release記録を変更した場合は、候補を固定し直し、影響する証拠を同じcommitへ取り直す。
+
+### 候補内容の準備
+
+2026-10-09、CHANGELOGへ0.5.2の実差分を追記し、内容基準commitを`5eb56236`（tree
+`bea2f5a886c534a5695df9b897e2bf0e178750b0`）に固定した。0.5.1からの公開source差分はBareArray、
+OptionalArray、Permutation通常モードのコメントだけで、Package.swift、workflow、READMEに差分はない。
+RedBlackTreeのレビュー用ドラフトは0.5.1のtreeにすでに含まれる。Task Registryと本記録を同期した後のHEADを
+local一次検収の対象とし、それ以降に製品差分が入った場合は候補を固定し直す。

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-10-09
+
+### Changed
+- BareArrayとOptionalArrayの公開APIコメントに、所有権、非所有Viewの寿命と変更共有、軸順、境界条件、破棄、計算量を明記
+- Permutation通常モードの公開APIコメントに、列挙規則、入力copy、iteratorの独立性、終端、zero-based index、値semantics、計算量を明記
+
 ## [0.5.1] - 2026-10-09
 
 ### Changed

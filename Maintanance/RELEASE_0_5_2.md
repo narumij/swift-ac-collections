@@ -158,3 +158,10 @@ Permutationの`withUnsafeMutablePointers`未使用result警告とDebug probeのs
 今回の製品差分では導入していない。testとDocCは成功しているため0.5.2の非阻害事項とし、暗黙に解消済みとは扱わない。
 本記録の同期後、同じ内容のHEADをremote CI候補とする。branchのremote pushはユーザー専任であり、Codexは
 実行、承認依頼、催促を行わず、push後のCI確認だけを担当する。
+
+### Remote CIとrelease可否
+
+2026-10-09、ユーザーが固定候補branchをremoteへpushし、CI greenを確認した。0.5.2はユーザーへのコメントドック・
+ドラフト引き渡しを目的とし、Claudeの使用量制約下では独立レビューなしで進めるという既決事項に従い、独立確認は
+release阻害条件から除外した。同日、ユーザーはlocal一次検収とremote CI greenを入力に、固定候補を0.5.2として
+release可と判断した。この判断はPR merge、tag作成、tag push、release pageの操作承認を兼ねない。

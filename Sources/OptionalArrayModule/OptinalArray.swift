@@ -635,5 +635,3 @@ extension OptionalArray3DView {
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<depth }
 }
-
-// Bare Naked Ladies オマージュかもしれない

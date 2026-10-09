@@ -7,7 +7,7 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: あり（release template branch設計ドラフトの独立レビュー）**
+**実行中ジョブ: なし（release template branch設計レビューをCodex受入）**
 
 - 継続ジョブ: なし。
 - 新規bounded assignment: `RELEASE-011`の設計ドラフトを変更せずに反証レビューする。
@@ -53,7 +53,47 @@ merge、build、test、benchmark、tag、pushを行わない。変更可能範�
 
 ### Result
 
-未着手。
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `7f3694f8`（`develop/misc/53`）。読み取りとgit grepだけ。branch・build・testなし。
+「成立しない」はBLOCK、「初回rehearsalで確かめればよい」はRISK/UNVERIFIEDとして分けた。
+
+1. **topology: `RISK`**。tag到達性と再現性は成立する（tagが`/x`終端を保持し、`/x`はmainへ戻らない。次回も`/0`起点でmerge baseは`/0`作成点Pのまま）。
+   最強の反証: `/0`はmainを取り込まないので、P以後に両側が変えたfileは**毎回**同じ競合になる。確実なのは`.github/workflows/swift.yml`（RELEASE-017で`/0`側が置換、mainも直近で+56/−44変更）。
+   修正案: release workflowを別file名で`/0`へ追加し、main側`swift.yml`は手順5の削除対象にする（競合を構造的に消す）。または「`/0`所有fileはtemplate側採用」の解決規則を明記する。
+2. **責任境界: `PASS`**。製品修正はmainへ戻し候補を再固定、`/0`には工程だけ、が一貫している。注記: tag treeの製品source（互換除去後）はmainのどのcommitとも一致しないので、
+   「変換後treeでだけ落ちるtest」の差し戻し先（変換scriptの誤り→`/0`、製品の誤り→main）を判定する手順を1行足すとよい。
+3. **tree境界: `RISK`**。build／test／追試を壊す候補が4点（いずれも事実、実行は未確認）。
+   - `Package.swift`は`RedBlackTreeCollections`の`exclude: ["Documentation", "Implements/Index/index_stale_check.md"]`、Optional／BareArrayの`exclude: ["Documentation"]`を持つ。内部文書を削除するとexclude先が消える。変換で`Package.swift`のexcludeも整合させる必要がある（SwiftPMの挙動は未確認）。
+   - 内部文書と利用者文書が同じdirectoryに混在: `Sources/RedBlackTreeCollections/Documentation/`（`Design/`、`Head/DOCUMENTATION_WORKFLOW.md`、`Head/Outlines/`、`MEMO.md`、`Quality-Checklist.md`と、`API-Matrix*.md`、`Head/*.md`草稿）、root `Documentation/Compatibility/`（互換専用）。
+     「残す／除く」を種類名でなく**file単位のallowlist**で持たないとlintが決まらない。
+   - 「`Tests`は選別せず残す」と「内部文書を除く」が衝突: `Tests/CLAUDE.md`、`Tests/TESTING.md`、`Tests/Archived/`は内部文書（除外対象の`CLAUDE.md`はroot以外にもある）。
+   - `Benchmarks`の追試性: `CombiningAPIBenchmarks.swift:18`、`PermutationBenchmarks.swift:18`、`SortedPeerInput.swift:3`が方法論を`Maintanance/…`へ参照しており、tag treeでは参照先が消える。`Benchmarks/Results/`（128 file）を残すかも未記載。
+   build・testが内部pathに依存する箇所は見つからなかった（Swiftから`Maintanance`・`Utilities`を読む箇所なし、`Benchmarks/Package.swift`は`path: ".."`）。
+4. **互換分岐の具体化: `BLOCK`（lint規則）＋`RISK`（変換規則）**。
+   - BLOCK: 「tracked fileに`COMPATIBLE_ATCODER_2025`が残っていない」lintは、そのままでは必ず落ちる。地の文に残る: `CHANGELOG.md:46,47,59`、`API-Matrix.md`・`isValid.md`等、source comment（`// MARK: - COMPATIBLE_ATCODER_2025用` 3件）、test comment、`Benchmarks/Results/SortedPeerPilot/README.md`。
+     しかもCHANGELOG gateは「mainと変換以外で食い違わない」を求める。修正案: lintをcompilation条件（`#if`/`#elseif`の式と`Package.swift`の`define`）に限定し、地の文は対象外か明示allowlistにする。
+   - RISK: 実在する形は`#if`のほか、`#elseif !COMPATIBLE_ATCODER_2025`→`#elseif true`→`#else`の連鎖（`ABC370DTests.swift:23-179`）、
+     `&& false`／`&& true`との複合、`|| ENABLE_LEGACY_TREE_LOWER_UPPER_BOUND`（残る条件を保持する部分評価が要る）、`canImport`の入れ子（`NextPermutationsSequence_99_DeathTests.swift`）。設計は`#elseif`規則を書いていない。
+     件数は`#if !C` 150、`#if C` 142、複合38。`Package.swift`は互換定義がcomment行（`:36`）だけで、traitは無い。粒度は十分に設計可能で、`#elseif`と部分評価をfixtureへ入れればよい。
+5. **`SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`: `RISK`**。traitの説明（`Package.swift:150-154`）とは一致する（XCTestの釣り合い検査だけを外し、resetは残す）。
+   過小評価の点: (a) この方式ではtag tree（変換後source）のDebug寿命釣り合いを**どこでも**検証しない（Releaseにcounterは無く、釣り合い検査はmain候補のgateだけ）。
+   `Tests/CLAUDE.md`も「このmodeのgreenは寿命の釣り合いの証拠ではない」とする。(b) Swift TestingにはこのtraitはDeath Testを可能にしない。Linuxでは`ENABLE_DEATH_TESTS`が別途必要で、設計に記載がない。
+   修正案: 「釣り合い検査はmain候補で済ませ、変換後treeでは省く」と明記するか、変換後treeでtrait無しのDebug XCTestを追加する。どちらを採るかは判断。
+6. **gateと承認の境界: `BLOCK`（push承認）＋`UNVERIFIED`（性能比較）**。
+   - BLOCK: 手順7のremote gate（release専用workflow、RELEASE-017）は`/x`がremoteに無いと走らないが、手順11は「tagだけをpush」で、`/x`をpushする承認が手順のどこにも無い。
+     tag pushでCIを起動する方法では、gate前にtagが公開されて順序が破れる。修正案: 手順6と7の間に「`/x`のpush（対象refを示して別承認）」を入れるか、gateをlocalだけと定める。
+   - 同一commit性: gate結果・Claude確認の記録は`Maintanance`がtag treeから消えるため`/x`へ積めない。tag後にmainへ記録すると明記するとよい（現行0.5.1の「記録を候補commitへ含める」運用とは異なる）。
+   - UNVERIFIED: 性能gateの比較基準（前tag treeか、main候補か）が未記載。
+7. **起点commit前に分ける事項**（一判断ずつ）:
+   - DECISION: `/x`をremoteへpushしてrelease gateを走らせるか（6）。
+   - DECISION: 変換後treeでDebugの寿命釣り合い検査を行うか、main候補の結果で代えるか（5）。
+   - DECISION: 境界が曖昧な文書（`Head/*.md`草稿、`API-Matrix*.md`、`Cpp-Matrix.md`、`DSL.md`、`Remove.md`、`isValid.md`、`Tests`内の文書、`Benchmarks/Results`）を残すか除くか（3）。
+   - 事実確認: excludeの対象pathが無いときのSwiftPMの挙動（3）、`#elseif`と部分評価を含む変換fixture（4）、Linux Death Test traitの要否（5）。
+   - 設計修正（判断不要）: 互換lintの対象をcompilation条件へ限定（4）、release workflowを別file名にする（1）。
+
+Codex acceptance: 2026-10-09、topology自体は成立するという評価と、互換lint、remote CI前のbranch push、
+workflow競合、tree境界、寿命検査、性能基準の不足を受入。互換lintをコンパイル条件へ限定し、release
+workflowを別file化し、version別branchのremote pushをユーザー操作として工程へ追加した。残る文書・結果物
+境界、変換fixture、Package exclude、性能比較基準は`RELEASE-011`の設計・試行で処理する。
 
 ## Completed bounded assignment: 0.5.1 independent release check (first pass)
 

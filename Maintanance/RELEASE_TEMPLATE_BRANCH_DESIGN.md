@@ -51,6 +51,9 @@ release工程中にこれらの修正が必要と判明した場合、`/x`だけ
 
 製品差分やversion固有の測定結果はtemplateへ還元しない。
 
+release専用workflowはmain用`.github/workflows/swift.yml`と別file名でtemplateへ置き、version別branchの
+変換時にmain用workflowを除外する。同じfileを両branchで変更して毎回競合する構造を作らない。
+
 ## Release treeの構成
 
 ### 残すもの
@@ -88,7 +91,9 @@ release工程中にこれらの修正が必要と判明した場合、`/x`だけ
 - `Package.swift`から互換mode固有の設定を整合する形で除く。
 
 変換は手編集の集合ではなく、同じ入力から同じtreeを作れるscriptまたは明示的なpatchとして実装する。
-変換後はtracked fileに`COMPATIBLE_ATCODER_2025`が残っていないことをlintする。
+変換後は、Swiftの`#if`・`#elseif`条件式と`Package.swift`のdefineに
+`COMPATIBLE_ATCODER_2025`が残っていないことをlintする。CHANGELOG、コメント、過去の説明など、
+コンパイルへ影響しない地の文はこのlintの対象にしない。
 
 ## Release専用gate
 
@@ -105,9 +110,11 @@ release工程中にこれらの修正が必要と判明した場合、`/x`だけ
 - `Tests`は選別せずtag treeへ残す。
 - Debugでは`SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`を有効にし、process-globalなallocation、node、payloadの
   寿命カウンタ等価検査だけを外す。
-- Swift TestingとDeath Testを含む通常版の全testを実行する。
+- Linuxでは`ENABLE_DEATH_TESTS`も有効にし、Swift TestingとDeath Testを含む通常版の全testを実行する。
 - Releaseでも通常版の全testを実行する。
 - lifetime counterの構造検査やcounter resetまで外さない。
+- 変換後treeでは寿命カウンタの釣り合いをrelease gateの証拠にしない。釣り合い検査は変換前のmain候補で
+  完了させ、変換後treeではSwift Testingを含む全testの実行を優先する。
 - Address Sanitizerの扱いは、この判断によって変更しない。
 
 ### Documentation
@@ -130,13 +137,15 @@ release工程中にこれらの修正が必要と判明した場合、`/x`だけ
 4. 固定したmain候補を`/x`へmergeする。
 5. 決定的な通常版変換と配布対象の削除を実行する。
 6. tree lintを通し、release tree commitを固定する。
-7. release専用の全test、documentation、ASan、performance gateを同じcommitで通す。
-8. Claudeが固定commit、CHANGELOG、tree、gate結果を変更せず独立確認する。
-9. ユーザーへversion、tag予定commit、既知事項、次の操作一つを提示する。
-10. 承認後、`/x`終端へannotated tagを作成する。
-11. tagを読み戻し、別承認後にtagだけをpushする。
-12. remote tagのpeeled commitを読み戻す。
-13. 工程上の改善だけを別作業として`prepare/release/0`へ還元する。
+7. localで実行するrelease専用gateを同じcommitで通す。
+8. 対象branchとcommitを提示し、ユーザー操作で`prepare/release/x`をremoteへpushする。
+9. release専用のremote CIで全test、documentation、ASan、performance、tree lintを同じcommitに通す。
+10. Claudeが固定commit、CHANGELOG、tree、gate結果を変更せず独立確認する。
+11. ユーザーへversion、tag予定commit、既知事項、次の操作一つを提示する。
+12. 承認後、`/x`終端へannotated tagを作成する。
+13. tagを読み戻し、別承認後にtagだけをpushする。
+14. remote tagのpeeled commitを読み戻す。
+15. 工程上の改善だけを別作業として`prepare/release/0`へ還元する。
 
 ## CHANGELOG gate
 

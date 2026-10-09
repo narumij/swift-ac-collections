@@ -31,6 +31,10 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
   状態にする。公開可能な初版の完成はこのゴールに含めない。
 - 三対象の文書ドラフト作業を通じて作業方式を習熟した後、RedBlackTreeに見えていない残作業を確認し、
   Codexのユーザードキュメント作業フェーズへ渡せる状態にする。
+- 全公開対象のコメントドックについて、公開契約に接続したドラフトが揃った時点で、0.5.2の製品上の
+  到達範囲を決め、release checklistへ進むか判断できる状態にする。
+- 全公開対象の利用者向けドキュメントが公開可能な初版として揃った時点で、0.6.0の製品上の到達範囲を
+  決め、release checklistへ進むか判断できる状態にする。
 - ユーザードキュメント作業後、OptionalArrayのISO/IEC 25010観点の品質評価を再評価し、
   1.0判断前に解消する不足をtaskへ分離できる状態にする。
 - 再評価後、OptionalArrayを1.0として採用できるか判断可能な状態にする。
@@ -78,6 +82,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、別projectでの再現性検証へ進む | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
 | `RELEASE-005` | `FROZEN` | User / Codex | [DECISION] 0.5.1の到達範囲とrelease検討開始 | 三対象のTest as Specification整理後、0.5.1へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_5_1.md` |
+| `RELEASE-006` | `FROZEN` | User / Codex | [DECISION] 0.5.2の到達範囲とrelease検討開始 | 全公開対象のコメントドック・ドラフト完成後、0.5.2へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_5_2.md` |
+| `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | 全公開対象の利用者向けドキュメント初版完成後、0.6.0へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_6_0.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |

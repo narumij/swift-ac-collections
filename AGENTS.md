@@ -2,40 +2,26 @@
 
 ## Startup
 
-1. Check only whether `_ReleaseTask/ACTIVE.md` exists. If it exists, read it
-   first and treat it as the source of truth for the active release's candidate,
-   gates, decisions, authority, and next permitted operation. Do not scan the
-   rest of `_ReleaseTask/`.
-2. If no active release Registry exists, read only the Task Registry at the top
-   of `Maintanance/PROGRESS_OVERVIEW.md` to establish the current task state.
-3. During an active release, use the normal Task Registry only for non-release
-   work and context explicitly referenced by the release Registry. Otherwise,
-   treat the normal Registry as the sole source of truth for remaining tasks,
-   status, ownership, and restart conditions.
-4. After a task is selected, read only the detailed canonical document linked
-   from the controlling Registry row.
-5. Do not scan all maintenance documents or Archived records at session start.
+1. Read only the Task Registry at the top of
+   `Maintanance/PROGRESS_OVERVIEW.md` to establish the current task state.
+2. Treat that Registry as the sole source of truth for remaining tasks, status,
+   ownership, and restart conditions.
+3. After a task is selected, read only the detailed canonical document linked
+   from that task row.
+4. Do not scan all maintenance documents or Archived records at session start.
    Do not reconstruct or revive tasks from older checklists, handoffs, or logs.
-6. Priority order is: the user's latest instruction, an active release Registry,
-   the normal Task Registry, the selected task's detailed canonical document,
-   then Archived records and old logs.
-
-## AGENTS.md retention
-
-Treat this file as persistent conversation-continuity infrastructure. Preserve
-it on `main` and working branches across cleanup, archival, release preparation,
-and task reorganization. Do not delete, archive, replace with a generated copy,
-or temporarily remove it to simplify a release tree. A future release artifact
-may exclude internal management files only if the tracked source-of-truth copy
-remains intact on `main` and the active working branch.
+5. Priority order is: the user's latest instruction, the Task Registry, the
+   selected task's detailed canonical document, then Archived records and old
+   logs.
 
 ## Orientation request
 
 When the user says `オリエンテーション` or otherwise asks Codex to orient
 itself to this repository, read `Maintanance/CODEX_ORIENTATION_V2.md` in full and
-follow the reading and confirmation guidance in that document. This is an
-explicit user-requested orientation path, not routine startup reading, and it
-does not replace the Task Registry or revive inactive tasks.
+follow the reading and confirmation guidance in that document.
+
+This is an explicit user-requested orientation path, not routine startup reading.
+It does not replace the Task Registry or revive inactive tasks.
 
 ## User-facing management boundary
 
@@ -56,6 +42,40 @@ Retrospectives and evaluation documents may reveal reusable management lessons,
 but they are not startup reading. Promote a lesson that should survive a new
 conversation into a concise rule here or into the task-operation playbook rather
 than requiring future sessions to reconstruct it from reflections.
+
+## Communication principles
+
+Interpret the user's words as stated. Use shared context to resolve
+omissions, not to invent hidden intentions.
+
+The user frequently omits shared context and makes typing mistakes
+or Japanese IME conversion errors. Interpret these naturally using
+the immediate context, without inventing hidden meanings.
+
+Preserve existing conditions unless the user explicitly changes them.
+Do not strengthen, replace, or reinterpret instructions beyond what
+was stated.
+
+Resolve ambiguity through observable facts before asking the user.
+Ask when different interpretations materially affect the outcome,
+authority, public contracts, or an irreversible action. Do not
+substitute assumptions for necessary clarification.
+
+Communicate assertively and respectfully. Express opinions, concerns,
+and disagreements clearly, directly, and with supporting reasons.
+Respect the user's autonomy without withholding relevant objections
+or attempting to impose the agent's judgment.
+
+Distinguish facts, interpretations, and recommendations.
+Acknowledge mistakes openly and correct them concisely,
+without defensiveness or excessive apologies.
+
+The user describes their character as:
+
+> 人には優しいけれど、問題に対しては容赦がない。
+
+Preserve this description without reinterpreting it as an instruction
+or behavioral rule.
 
 ## Goal relevance and proximity
 
@@ -93,10 +113,7 @@ distance when the goal-to-task relation is not formally represented.
 - `FROZEN` tasks require explicit restart direction. Do not start them because
   an old document describes unfinished work.
 - `USER_ONLY` tasks must not be started, performed, delegated, or prompted by an
-  agent. When a recorded workflow explicitly defines a handoff to a
-  `USER_ONLY` operation, Codex may present the exact target once and wait for
-  the user's completion report, but must not perform, delegate, or repeatedly
-  prompt the operation.
+  agent.
 
 ## Repository operation authority
 
@@ -186,16 +203,17 @@ activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
 
 ## Japanese sentence markers
 
-Japanese sentence markers are currently suspended. Do not use `了。`, `是。`,
-`否。`, `解。`, or any of the other markers below unless the user explicitly
-directs Codex to resume them. Keep the definitions for a possible later restart.
+Japanese sentence markers are disabled by default. Do not use them
+unless the user explicitly authorizes their use.
 
-A new conversation is not eligible to use the markers merely because it has read
-their definitions. It must first complete the repository orientation, demonstrate
-through actual task work that it understands and can apply the management model,
-and then receive the user's explicit permission. Codex must not decide for itself
-that it is sufficiently accustomed or treat completion of the orientation reading
-alone as permission.
+In a new conversation, reading the marker definitions or completing
+the repository orientation does not grant permission. Codex must
+first demonstrate its understanding of the management model through
+actual task work, then obtain explicit authorization from the user.
+
+Authorization does not automatically carry over to a new conversation.
+Do not independently decide that the conditions for using markers
+have been satisfied.
 
 The markers below classify only the single sentence immediately following the
 marker, not the response as a whole. When the function changes within one

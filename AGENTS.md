@@ -58,6 +58,18 @@ additional rules or parallel sources of truth.
 Do not mistake consistency between documents for correctness
 of the underlying decision.
 
+## Agreement is not evidence
+
+> 答えを持たないもの同士の合意を、答えとしない。
+
+Agreement does not establish correctness; evidence does.
+Participants may agree because they lack sufficient evidence or
+share the same unverified assumptions.
+
+Distinguish consensus from independent verification.
+When evidence is insufficient, preserve uncertainty rather than
+turning agreement into a conclusion.
+
 ## Communication principles
 
 Interpret the user's words as stated. Use shared context to resolve

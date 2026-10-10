@@ -7,9 +7,9 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**返却待ち: RELEASE-077**
+**実行中ジョブ: なし（`RELEASE-077`はCodex検収済み）**
 
-- 継続ジョブ: `RELEASE-077`。下記のbounded assignmentだけを実行する。
+- 継続ジョブ: なし。
 - 2026-10-11、ユーザーが2026-10-13 16:00 JSTまでの開始制限を解除し、この作業のClaudeへの
   正式登録を明示的に承認した。
 - `RELEASE-074`再作成版は`User/QUALITY_REQUIREMENTS_CLAUDE_V2.md`へ記入済みであり、今回の入力として使う。
@@ -75,6 +75,12 @@ Codexが行う。
   ためCodexが更新してほしい。
 - ユーザー判断として残るもの: 本体V4の§6の表にある「コードスニペット」「利用者経路」は、現時点では既存資産として
   存在しない（調査段階、smoke testなし）。本体の表に「候補」と示すかどうかは本体の文言変更になるので触れていない。
+
+Codex acceptance（2026-10-11）: commit `3c496eeb`を検収し、ユーザーがClaudeへ直接commitを許可していたことを
+確認した。本体を`QUALITY_REQUIREMENTS.md`へ正本化し、非規範的な参照資料と元ドラフトを相対linkで相互に
+識別できる構造を受け入れた。追加された観察は作成時点の`UNVERIFIED`として隔離され、要求、達成水準、受入条件を
+追加していない。§6の「コードスニペット」「利用者経路」の現状表現は本taskの阻害条件とはせず、後続の品質資産
+具体化で再評価する。
 
 ## Returned bounded assignment: product quality requirements same-level redraft
 

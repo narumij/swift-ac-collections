@@ -72,7 +72,7 @@ release工程中にこれらの修正が必要と判明した場合、release br
 
 製品差分やversion固有の測定結果はtemplateへ還元しない。
 
-release専用workflowはmain用`.github/workflows/swift.yml`と別file名でtemplateへ置き、version別branchの
+release専用workflowはmain用`.github/workflows/main.yml`と別file名でtemplateへ置き、version別branchの
 変換時にmain用workflowを除外する。同じfileを両branchで変更して毎回競合する構造を作らない。
 
 ## Release treeの構成

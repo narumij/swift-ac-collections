@@ -132,6 +132,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-074` | `DONE` | User / Codex / Claude | [DISCOVERY] 製品品質要求定義の同抽象度ドラフト再作成 | 2026-10-10、コンセプトから上位品質要求を導き、既存のTest as Specification、品質評価、性能証拠、文書、CIへの接続、洗練の手がかり、V&V、不足仕様候補までを同じ抽象度で再作成。Claudeは他案未読、CodexはChappy版既読を明示し、具体的閾値・release停止条件・工程設計を確定せず完了 | `User/CONCEPT_DEFINITION.md` / `User/QUALITY_REQUIREMENTS_CODEX_V2.md` / `User/QUALITY_REQUIREMENTS_CLAUDE_V2.md` |
 | `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | ユーザーが、定義した品質要求に対して不足する工程仕様、判定基準、証拠取得方法、停止・復旧手順を補い、V&V可能な状態にする。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `User/RELEASE_PROCESS.md` |
 | `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `User/RELEASE_PROCESS.md` |
+| `RELEASE-077` | `WAITING_EXTERNAL` | Claude / Codex | [EXECUTION] 製品品質要求ドラフトの正本化 | 2026-10-13 16:00 JST以降、必要性とClaude利用量を再確認してから開始する。Chappy V4を正本候補、Codex／Claude V2を別紙材料として、採用要求、既存品質資産への接続、未確定事項、別紙境界を一つの正本へ整理し、Codexが検収する。時刻到達だけでは自動開始しない | `User/QUALITY_REQUIREMENTS_CHAPPY_V4.md` / `User/QUALITY_REQUIREMENTS_CODEX_V2.md` / `User/QUALITY_REQUIREMENTS_CLAUDE_V2.md` |
 | `RELEASE-035` | `PROPOSED` | Codex | [EXECUTION] release checklistのRegistry templateへの移行 | checklist本文を読んで判断・操作・証拠へ分類する規則とtask骨格をtemplateへ移し、一判断ごとの必須依存、`REL-000`からの内部採番、任意task除去条件を検証する | `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-036` | `PROPOSED` | Codex | [EXECUTION] release専用Registryへの正本切替 | 移行後の旧checklistをArchivedへ移し、現行参照をtemplateとactive Registryへ切り替え、生成・startup precedence・完了／中止還元を一往復検証する | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
@@ -245,6 +246,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-074` | `RELEASE-073` | `SEQUENCE` | 人間向けリリース工程のコンセプトを定めてから、それを実現するための品質要求と証拠を具体化する |
 | `RELEASE-075` | `RELEASE-074` | `SEQUENCE` | リリース工程の品質要求を定義してから、その要求に対する不足仕様を充当する |
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |
+| `RELEASE-077` | `RELEASE-074` | `SEQUENCE` | 同抽象度の独立ドラフトと既存品質資産への接続候補を揃えてから、品質要求の正本化を行う |
 | `RELEASE-029` | `RELEASE-027` | `PARALLEL_JOIN` | local一次検収の証拠を揃えてから独立確認へ渡す |
 | `RELEASE-029` | `RELEASE-028` | `PARALLEL_JOIN` | 同じ候補commitのremote CI証拠を揃えてから独立確認へ渡す |
 | `RELEASE-022` | `RELEASE-027` | `PARALLEL_JOIN` | release可否判断前に固定候補のlocal一次検収を完了する |

@@ -1,3 +1,4 @@
+<!-- 品質の定義。「それが何であるかを成立させること」 -->
 # swift-ac-collections Concept Definition
 
 ## 日本語

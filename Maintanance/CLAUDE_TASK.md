@@ -7,9 +7,9 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（`RELEASE-074`のClaudeドラフトはCodex検収済み）**
+**実行中ジョブ: なし（`RELEASE-074`再作成版のClaudeドラフトはCodex検収済み）**
 
-- 継続ジョブ: なし。`RELEASE-074`は`User/QUALITY_REQUIREMENTS_CLAUDE.md`へ記入済み。
+- 継続ジョブ: なし。`RELEASE-074`再作成版は`User/QUALITY_REQUIREMENTS_CLAUDE_V2.md`へ記入済み。
 - 新規bounded assignment: 2026-10-10、ユーザーがCodexとClaudeの双方へ品質要求定義ドラフトを
   明示的に割り当てたため、下記の範囲だけ例外として発注する。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
@@ -22,6 +22,33 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Returned bounded assignment: product quality requirements same-level redraft
+
+Registryの`RELEASE-074`として、`Maintanance/User/CONCEPT_DEFINITION.md`を唯一の上位入力に、製品品質要求の
+独立ドラフトを再作成する。前回はrelease tree、CI、停止条件へ具体化しすぎたため、今回は次の抽象度を守る。
+
+1. 製品コンセプトから、製品全体に共通する上位品質要求を導く。
+2. 各要求が必要な理由と、コンセプトのどの部分へ接続するかを示す。
+3. Test as Specification、既存のモジュール別品質評価、C/C++比較とperformance evidence、DocC・利用者向け文書、
+   CI・release検証など、既にある資産が各要求へどう接続するかを示す。
+4. 既存資産を置換せず、それらを洗練・再利用できる手がかりと、不足仕様候補を示す。
+5. VerificationとValidationを区別し、要求、既存証拠、未確認事項を混同しない。
+
+回答先は`Maintanance/User/QUALITY_REQUIREMENTS_CLAUDE_V2.md`だけとする。
+`QUALITY_REQUIREMENTS_CHAPPY.md`、`QUALITY_REQUIREMENTS_CODEX.md`、`QUALITY_REQUIREMENTS_CODEX_V2.md`、前回の
+`QUALITY_REQUIREMENTS_CLAUDE.md`は読まない。ISO/IEC 25010など既知の品質モデルを参照してよいが、全特性を
+機械的に採用せず、コンセプトとの関係を示す。
+
+性能閾値、具体的なCI job、release停止条件、工程表、実装案、個別仕様の確定へは進まない。source、test、
+workflow、Registry、既存文書を変更しない。完了時は回答fileへドラフトを記録し、冒頭のジョブ状態を返却待ちへ
+変更する。commit、branch、pushは行わない。
+
+Codex acceptance（2026-10-10）: Claude版は他の品質要求案を未読のまま、コンセプトを四つの含意へ分け、
+上位要求6件を必要理由、コンセプト接続、既存資産、洗練の手がかりとともに提示した。Verification／Validation、
+不足仕様候補、採用しないISO特性の理由も分離され、性能閾値、CI job、停止条件、工程へ降りていない。
+Codex版V2も同じ抽象度で、要求7件と既存資産の横断的な再接続を提示したため、同抽象度の再作成を完了として
+受け入れた。両案の統合と品質要求の確定は行わず、ユーザーの比較・判断へ渡す。
 
 ## Returned bounded assignment: release quality requirements independent draft
 

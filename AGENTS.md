@@ -17,7 +17,7 @@
 ## Orientation request
 
 When the user says `オリエンテーション` or otherwise asks Codex to orient
-itself to this repository, read `Maintanance/CODEX_ORIENTATION_V2.md` in full and
+itself to this repository, read `Maintanance/CODEX_ORIENTATION_V3.md` in full and
 follow the reading and confirmation guidance in that document.
 
 This is an explicit user-requested orientation path, not routine startup reading.
@@ -42,6 +42,21 @@ Retrospectives and evaluation documents may reveal reusable management lessons,
 but they are not startup reading. Promote a lesson that should survive a new
 conversation into a concise rule here or into the task-operation playbook rather
 than requiring future sessions to reconstruct it from reflections.
+
+## Single Source of Truth (SSoT)
+
+Maintain a single authoritative source for each decision, rule,
+contract, and task state.
+
+Other documents may reference or explain the authoritative source,
+but must not independently redefine or duplicate its authority.
+
+When inconsistencies arise, identify the controlling source
+before making changes. Correct references rather than creating
+additional rules or parallel sources of truth.
+
+Do not mistake consistency between documents for correctness
+of the underlying decision.
 
 ## Communication principles
 

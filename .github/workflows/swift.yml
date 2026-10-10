@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - compatible/AtCoder/2025
-      - "release/**"
+      - "prepare/**"
   pull_request:
     branches:
       - main

@@ -2,7 +2,8 @@
 
 > **文書状態:** 製品品質要求の正本（2026-10-11、ユーザーがChappy V4を正本として採用し、版・作者を含まない名前へ改名）。
 > 非規範的な参照資料は[`QUALITY_REQUIREMENTS_REFERENCE.md`](QUALITY_REQUIREMENTS_REFERENCE.md)、
-> 元になった独立ドラフトは[`QUALITY_REQUIREMENTS_CLAUDE_V2.md`](QUALITY_REQUIREMENTS_CLAUDE_V2.md)等を参照する。
+> 元になった独立ドラフトは
+> [`Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md`](Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md)等を参照する。
 
 ## 1. 位置づけ
 

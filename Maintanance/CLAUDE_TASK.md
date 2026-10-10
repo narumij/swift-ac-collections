@@ -12,7 +12,7 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 - 継続ジョブ: なし。
 - 2026-10-11、ユーザーが2026-10-13 16:00 JSTまでの開始制限を解除し、この作業のClaudeへの
   正式登録を明示的に承認した。
-- `RELEASE-074`再作成版は`User/QUALITY_REQUIREMENTS_CLAUDE_V2.md`へ記入済みであり、今回の入力として使う。
+- `RELEASE-074`再作成版は`User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md`へ保存済みである。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
   受け入れた。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持する。
@@ -26,7 +26,7 @@ Registryの`RELEASE-077`として、製品品質要求を「本体」と「非�
 ユーザーが求めているのは三案を統合した新しい正本の作成ではない。次の構造を成立させることが目的である。
 
 - `Maintanance/User/QUALITY_REQUIREMENTS_CHAPPY_V4.md`を品質要求の本体として維持する。
-- `Maintanance/User/QUALITY_REQUIREMENTS_CLAUDE_V2.md`から、既存品質資産との接続、洗練の手がかり、
+- `Maintanance/User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md`から、既存品質資産との接続、洗練の手がかり、
   Verification／Validationの例、不足仕様候補など、本体から参照するのに有用な内容だけを抽出・再編する。
 - 抽出先を`Maintanance/User/QUALITY_REQUIREMENTS_REFERENCE.md`とし、本体から相対linkで参照可能にする。
 - Claude V2そのものは独立ドラフトと由来の記録として保存し、抽出先を明示する。
@@ -94,9 +94,10 @@ Registryの`RELEASE-074`として、`Maintanance/User/CONCEPT_DEFINITION.md`を�
 4. 既存資産を置換せず、それらを洗練・再利用できる手がかりと、不足仕様候補を示す。
 5. VerificationとValidationを区別し、要求、既存証拠、未確認事項を混同しない。
 
-回答先は`Maintanance/User/QUALITY_REQUIREMENTS_CLAUDE_V2.md`だけとする。
-`QUALITY_REQUIREMENTS_CHAPPY.md`、`QUALITY_REQUIREMENTS_CODEX.md`、`QUALITY_REQUIREMENTS_CODEX_V2.md`、前回の
-`QUALITY_REQUIREMENTS_CLAUDE.md`は読まない。ISO/IEC 25010など既知の品質モデルを参照してよいが、全特性を
+回答先は現在の`Maintanance/User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md`だけとする。
+同じ`Archived/`にある`QUALITY_REQUIREMENTS_CHAPPY.md`、`QUALITY_REQUIREMENTS_CODEX.md`、
+`QUALITY_REQUIREMENTS_CODEX_V2.md`、前回の`QUALITY_REQUIREMENTS_CLAUDE.md`は読まない。
+ISO/IEC 25010など既知の品質モデルを参照してよいが、全特性を
 機械的に採用せず、コンセプトとの関係を示す。
 
 性能閾値、具体的なCI job、release停止条件、工程表、実装案、個別仕様の確定へは進まない。source、test、
@@ -113,8 +114,8 @@ Codex版V2も同じ抽象度で、要求7件と既存資産の横断的な再接
 
 Registryの`RELEASE-074`として、`Maintanance/User/CONCEPT_DEFINITION.md`を入力に、製品コンセプトを
 実現するリリース品質要求の独立ドラフトを作成する。回答先は
-`Maintanance/User/QUALITY_REQUIREMENTS_CLAUDE.md`だけとし、Codex版
-`Maintanance/User/QUALITY_REQUIREMENTS_CODEX.md`は回答確定まで読まない。
+現在の`Maintanance/User/Archived/QUALITY_REQUIREMENTS_CLAUDE.md`だけとし、Codex版
+`Maintanance/User/Archived/QUALITY_REQUIREMENTS_CODEX.md`は回答確定まで読まない。
 
 次を要求候補として整理する。
 

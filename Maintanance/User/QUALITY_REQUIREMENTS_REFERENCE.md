@@ -9,7 +9,8 @@
 既存の品質資産との接続、VerificationとValidationの例、不足仕様の候補を整理する。
 ここに記載された既存資産、検証手段、候補は、品質要求、達成水準、受入条件を追加または確定しない。
 
-本書は[`QUALITY_REQUIREMENTS_CLAUDE_V2.md`](QUALITY_REQUIREMENTS_CLAUDE_V2.md)から、正本を洗練する
+本書は
+[`Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md`](Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md)から、正本を洗練する
 手がかりとして利用できる内容を抽出・再編した。元文書は独立ドラフトとして保存する。
 
 各節の「洗練の手がかり」は、正本を具体化するときに検討する論点であり、作業義務や受入条件ではない。

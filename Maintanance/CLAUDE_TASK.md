@@ -7,11 +7,11 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（`DOC-020`のClaude回答は返却済み、Codexまとめ待ち）**
+**実行中ジョブ: なし（`RELEASE-074`のClaudeドラフトはCodex検収済み）**
 
-- 継続ジョブ: なし。`DOC-020`のClaude回答は`PUBLIC_API_CODE_SNIPPET_SURVEY_2_CLAUDE.md`へ記入済み。
-- 新規bounded assignment: 2026-10-10、ユーザーが利用制限待機より本依頼を優先すると明示したため、
-  下記の範囲だけ例外として発注する。
+- 継続ジョブ: なし。`RELEASE-074`は`User/QUALITY_REQUIREMENTS_CLAUDE.md`へ記入済み。
+- 新規bounded assignment: 2026-10-10、ユーザーがCodexとClaudeの双方へ品質要求定義ドラフトを
+  明示的に割り当てたため、下記の範囲だけ例外として発注する。
 - 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
   Codex、第三者AI、または延期で代替できる仕事は割り当てない。2026-10-10のユーザー指示により、
   課金状態にかかわらず火曜16:00まではClaudeへ新しい依頼を行わない。
@@ -22,6 +22,33 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Returned bounded assignment: release quality requirements independent draft
+
+Registryの`RELEASE-074`として、`Maintanance/User/CONCEPT_DEFINITION.md`を入力に、製品コンセプトを
+実現するリリース品質要求の独立ドラフトを作成する。回答先は
+`Maintanance/User/QUALITY_REQUIREMENTS_CLAUDE.md`だけとし、Codex版
+`Maintanance/User/QUALITY_REQUIREMENTS_CODEX.md`は回答確定まで読まない。
+
+次を要求候補として整理する。
+
+1. 掃除後のrelease treeが保持すべき製品品質と公開契約。
+2. Test as Specification、Debug／Release test、DocC、性能回帰、利用者経路のsmoke testなど、
+   各要求を受け入れるために必要な証拠。
+3. リリースを停止する条件と、0.5.xの実験として受容できる残余risk。
+4. Verification（要求どおり作られたか）とValidation（コンセプトの用途に適合するか）の区別。
+5. 要求から見つかる不足仕様候補。実装案や工程表そのものへは進まない。
+
+既存のrelease Registryやchecklistを完成形として追認せず、コンセプトから必要性を判断する。
+source、test、workflow、Registry、既存release文書を変更しない。新しい製品仕様、性能閾値、公開契約を
+確定しない。不明点は`UNVERIFIED`、ユーザー判断が必要な候補は一問ずつ分離する。commit、branch、pushを
+行わない。完了時は回答fileへドラフトと参照した証拠を記録し、冒頭のジョブ状態を返却待ちへ変更する。
+
+Codex acceptance（2026-10-10）: Claude版がCodex版を未読のまま専用fileへ確定され、性能、競技用途、
+一般Swift利用の三軸から、品質要求、必要証拠、停止条件、残余risk、Verification／Validation、不足仕様候補を
+提示したことを確認した。両案は、Test as Specification、前release比較、利用者経路のsmoke test、DocC、
+由来追跡を主要証拠とする点で一致する。ASanをrelease停止条件にするか、対応platform、C/C++比較の対象範囲、
+コード例compile保証は未決のまま後続のユーザー判断へ渡し、独立ドラフト作成を完了として受け入れた。
 
 ## Active bounded assignment: repository public API code snippet candidate TOP10 survey
 

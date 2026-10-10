@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - compatible/AtCoder/2025
+      - "release/**"
   pull_request:
     branches:
       - main
@@ -85,7 +86,9 @@ jobs:
         uses: SwiftyLab/setup-swift@latest
 
       - name: Run tests
-        run: swift test -c debug
+        run: >-
+          swift test -c debug
+          --traits SKIP_DEBUG_LIFETIME_BALANCE_CHECKS,ENABLE_DEATH_TESTS
 
   release:
     runs-on: ubuntu-24.04
@@ -97,7 +100,7 @@ jobs:
         uses: SwiftyLab/setup-swift@latest
 
       - name: Run tests
-        run: swift test -c release
+        run: swift test -c release --traits ENABLE_DEATH_TESTS
 
   performance:
     if: github.event_name == 'pull_request'

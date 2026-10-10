@@ -45,6 +45,10 @@ Claudeの確認では、RedBlackTree各型の既存スニペットに現在の�
 `RedBlackTreeSet.upperBound(_:)`の例がSetに重複値を含めている。これらは新規スニペット候補とは別の
 既存コメント修正候補として記録する。
 
+このうちAPI名の不一致は、`DOC-021`として型コメント3 fileとHead文書6 fileを修正した。2026-10-11、
+Claudeの一時clientによる9例のcompile・実行成功、対象範囲に旧表記が残っていないこと、現在のHEADの
+Xcode build成功をCodexが確認して受け入れた。出力コメントの表現と`upperBound(_:)`例は対象外のままとする。
+
 ## 受入
 
 2026-10-10、両回答がリポジトリ全体の公開APIを対象とし、各候補にsymbol、利用者の疑問、最小の

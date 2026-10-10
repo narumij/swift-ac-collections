@@ -297,7 +297,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ### `CP-20261010-002` — 赤黒木の型コメント・Head文書の境界式例を現行APIへ修正
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: `DOC-020`回答中にClaudeが発見。2026-10-10、ユーザーが「採番まちでやっていいよ」と明示許可。
 - 種別候補: `EXECUTION`
 - 対象範囲: 境界式の例で使われている、存在しない`.advance(by:)`と`.endIndex`（境界式としての）だけを、
@@ -314,4 +314,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
     コンパイル・実行。全件通り、要素の結果は各コメントの期待値と一致した。一時directoryは削除済み。
   - 残り（対象外）: `print(set[...])`の出力は`Optional(3)`になるが、コメントは`-> 3`と書いている。
     同じ書き方は既存の`.lowerBound(5)`等の例にもあるので、直すかはCodex判断。
-- Codex reconciliation: 未処理
+- Codex reconciliation: 2026-10-11、`DOC-021`として正式採番。commit `9122b5fa`の対象差分が許可された
+  型コメント3 fileとHead文書6 fileの15行だけであること、旧API表記が対象範囲に残っていないこと、現在のHEADで
+  Xcode buildが成功することを確認し、Claudeの一時clientによる9例のcompile・実行結果と合わせて受け入れた。
+  出力コメントの表現は当初どおり対象外とし、このtaskでは変更しない。

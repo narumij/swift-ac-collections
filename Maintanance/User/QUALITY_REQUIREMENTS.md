@@ -1,4 +1,8 @@
-# swift-ac-collections Quality Requirements — V4 Draft
+# swift-ac-collections Quality Requirements
+
+> **文書状態:** 製品品質要求の正本（2026-10-11、ユーザーがChappy V4を正本として採用し、版・作者を含まない名前へ改名）。
+> 非規範的な参照資料は[`QUALITY_REQUIREMENTS_REFERENCE.md`](QUALITY_REQUIREMENTS_REFERENCE.md)、
+> 元になった独立ドラフトは[`QUALITY_REQUIREMENTS_CLAUDE_V2.md`](QUALITY_REQUIREMENTS_CLAUDE_V2.md)等を参照する。
 
 ## 1. 位置づけ
 
@@ -10,6 +14,10 @@ swift-ac-collectionsの製品品質要求を定義する。
 
 具体的な達成水準、検証方法、受入条件、リリース工程は、
 本書から派生する下位の定義と評価に委ねる。
+
+既存品質資産との接続、VerificationとValidationの例、
+不足仕様候補の詳細は、非規範的な
+[`QUALITY_REQUIREMENTS_REFERENCE.md`](QUALITY_REQUIREMENTS_REFERENCE.md)に整理する。
 
 ## 2. 製品コンセプト
 
@@ -192,6 +200,9 @@ AI同士の評価が一致したことを、
 
 この対応表は非規範的な参照情報であり、
 既存資産を調査・洗練する際の案内として利用する。
+
+個別資産との接続や洗練の手がかりは、
+[`QUALITY_REQUIREMENTS_REFERENCE.md`](QUALITY_REQUIREMENTS_REFERENCE.md)を参照する。
 
 品質要求と既存資産の対応は一対一ではなく、
 この表は網羅性や品質要求への適合を保証しない。

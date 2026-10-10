@@ -7,21 +7,74 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（`RELEASE-074`再作成版のClaudeドラフトはCodex検収済み）**
+**返却待ち: RELEASE-077**
 
-- 継続ジョブ: なし。`RELEASE-074`再作成版は`User/QUALITY_REQUIREMENTS_CLAUDE_V2.md`へ記入済み。
-- 新規bounded assignment: 2026-10-10、ユーザーがCodexとClaudeの双方へ品質要求定義ドラフトを
-  明示的に割り当てたため、下記の範囲だけ例外として発注する。
-- 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
-  Codex、第三者AI、または延期で代替できる仕事は割り当てない。2026-10-10のユーザー指示により、
-  課金状態にかかわらず火曜16:00まではClaudeへ新しい依頼を行わない。
-  時刻到達だけで自動的に通常運用へ戻さず、その時点のゴールへの必要性と利用量を再確認する。
+- 継続ジョブ: `RELEASE-077`。下記のbounded assignmentだけを実行する。
+- 2026-10-11、ユーザーが2026-10-13 16:00 JSTまでの開始制限を解除し、この作業のClaudeへの
+  正式登録を明示的に承認した。
+- `RELEASE-074`再作成版は`User/QUALITY_REQUIREMENTS_CLAUDE_V2.md`へ記入済みであり、今回の入力として使う。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
   受け入れた。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持する。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: separate quality requirements body and reference material
+
+Registryの`RELEASE-077`として、製品品質要求を「本体」と「非規範的な参照資料」に分離する。
+ユーザーが求めているのは三案を統合した新しい正本の作成ではない。次の構造を成立させることが目的である。
+
+- `Maintanance/User/QUALITY_REQUIREMENTS_CHAPPY_V4.md`を品質要求の本体として維持する。
+- `Maintanance/User/QUALITY_REQUIREMENTS_CLAUDE_V2.md`から、既存品質資産との接続、洗練の手がかり、
+  Verification／Validationの例、不足仕様候補など、本体から参照するのに有用な内容だけを抽出・再編する。
+- 抽出先を`Maintanance/User/QUALITY_REQUIREMENTS_REFERENCE.md`とし、本体から相対linkで参照可能にする。
+- Claude V2そのものは独立ドラフトと由来の記録として保存し、抽出先を明示する。
+
+Codexが先に同3fileへ未commitの暫定案を作成している。これは確定済みの成果ではなく、Claudeはユーザー意図に
+照らして反証・修正してよい。特に次を確認する。
+
+1. 参照資料が品質要求、達成水準、受入条件を勝手に追加していないこと。
+2. Claude V2の全文を別名で複製せず、正本の具体化や評価に役立つ材料へ整理されていること。
+3. 既存資産の存在を、要求適合の証明として扱っていないこと。
+4. VerificationとValidation、自己比較とC/C++外部比較、確認済みと未確認を混同していないこと。
+5. 本体、参照資料、元ドラフトの役割とlinkが、各fileだけを読んでも判別できること。
+
+変更可能範囲は上記3fileと、このassignmentの`Result`節および冒頭のジョブ状態だけとする。
+`PROGRESS_OVERVIEW.md`、source、test、workflow、他の品質要求draftは変更しない。品質要求本文のQR-01〜QR-06、
+性能閾値、対応環境、release停止条件、工程仕様を新しく確定しない。commit、branch、pushは行わない。
+
+完了時は、冒頭を`返却待ち: RELEASE-077`へ変更し、下の`Result`へ変更file、構造上の判断、残った
+`UNVERIFIED`またはユーザー判断を記録する。ユーザーへの応答は`完了`だけとする。最終受入とRegistry更新は
+Codexが行う。
+
+### Result
+
+2026-10-11 Claude返却。
+
+- 変更file: `User/QUALITY_REQUIREMENTS_REFERENCE.md`だけ。Codex暫定案のV4の2か所のlinkと、V2冒頭の文書状態は
+  役割とlinkが妥当なので変更していない。
+- 確認1（要求の追加）: 暫定案の「洗練の手がかり」は「〜する」「〜できるようにする」の義務形で、読み方によっては
+  作業義務に見える。そこで位置づけに、手がかりは検討する論点で作業義務や受入条件ではない、と明記し、
+  見出しを変えずに読み方を固定した。各箇条の文言は維持した。
+- 確認2（全文複製）: 複製ではなく再編されている。ただし元V2の、日付つきの具体的な観察（C++比較の偏り、
+  外部比較が一部の型と一時点に限られること、`PERM-029`がmacOSローカルだけで見つかったこと、DocCが通るのに
+  コード例が壊れていたこと）が落ちていた。正本を洗練する根拠として有用なので、QR-01〜QR-04へ「観察」として
+  戻し、作成時点の事実で現在は`UNVERIFIED`と明記した。
+- 確認3／4: 「証拠を読むときの注意」で、資産の存在と適合の区別、自己比較と外部比較、VerificationとValidation
+  の区別が押さえられている。問題なし。
+- 確認5（役割とlink）: 参照資料から元ドラフトへの言及をlinkにした。本体→参照資料、元ドラフト→参照資料、
+  参照資料→本体・元ドラフトの各linkがそろった。
+- 暫定案が元V2にない資産（strict memory safety評価、runtime check記録、API matrix、task Registryと事故後原則）や
+  不足仕様候補（module別評価の集約、Validationの判断者）を足している点は、資産・候補の列挙として妥当と見て残した。
+  元V2由来ではないことはCodexの検収で判断してほしい。
+- 追加（2026-10-11、ユーザー指示「2」）: 発注は「V4を本体として維持」だけで正本化が抜けていたため、ユーザーの
+  選択に従い`User/QUALITY_REQUIREMENTS_CHAPPY_V4.md`を`User/QUALITY_REQUIREMENTS.md`へ`git mv`し、タイトルの
+  「V4 Draft」を外して冒頭に文書状態（正本、改名の経緯、参照資料と元ドラフトへのlink）を追加した。参照資料の
+  本体linkも付け替えた。`PROGRESS_OVERVIEW.md`の`RELEASE-077`行は旧名`CHAPPY_V4`を指したままで、変更範囲外の
+  ためCodexが更新してほしい。
+- ユーザー判断として残るもの: 本体V4の§6の表にある「コードスニペット」「利用者経路」は、現時点では既存資産として
+  存在しない（調査段階、smoke testなし）。本体の表に「候補」と示すかどうかは本体の文言変更になるので触れていない。
 
 ## Returned bounded assignment: product quality requirements same-level redraft
 

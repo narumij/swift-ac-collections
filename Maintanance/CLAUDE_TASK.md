@@ -7,9 +7,9 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（`RELEASE-077`はCodex検収済み）**
+**実行中ジョブ: `QUALITY-002`（品質プロファイル共通骨格の独立レビュー）**
 
-- 継続ジョブ: なし。
+- 継続ジョブ: `QUALITY-002`だけ。
 - 2026-10-11、ユーザーが2026-10-13 16:00 JSTまでの開始制限を解除し、この作業のClaudeへの
   正式登録を明示的に承認した。
 - `RELEASE-074`再作成版は`User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md`へ保存済みである。
@@ -19,6 +19,50 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: module quality profile independent review
+
+Registryの`QUALITY-002`として、Codexが再編した次の現行module品質profileを独立に反証レビューする。
+
+- `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`
+- `Sources/PermutationModule/Documentation/Quality-Profile.md`
+
+このreviewは、上位品質要求からmodule固有の要求、Test as Specification、その他の証拠へ接続する共通骨格が、
+内容の異なる二moduleで成立しているかを確認する。文章表現を同一にすることや、旧品質評価を復元することは
+目的ではない。現在の中間ゴールは未設定だが、ユーザーが両文書の整合確認を直接依頼したため、proximityは
+`DIRECT`とする。
+
+必須入力は次に限定する。
+
+- `Maintanance/User/QUALITY_REQUIREMENTS.md`
+- 上記二つの現行profile
+- `Sources/RedBlackTreeCollections/Documentation/Archived/Quality-Checklist_2026-10-06.md`
+- `Sources/PermutationModule/Documentation/Archived/QualityAssessment-ISO25010_2026-10-09.md`
+- 現行profileが正本または証拠として直接指すfile・test directory・benchmark設定
+
+次を確認する。
+
+1. QR-01〜QR-06の意味を勝手に追加・縮小せず、module固有の意味と証拠経路へ接続しているか。
+2. 要求、公開・設計契約、Test as Specification、CI・benchmark等の証拠、現在評価を混同していないか。
+3. Verificationの成功から、競技用途、C/C++級性能、一般Swift利用などのValidation成功を推定していないか。
+4. RedBlackTreeとPermutationで共通の読み方が成立しつつ、module固有の品質領域を不必要に同一化していないか。
+5. file名、相対link、test群、benchmark、Registry等への参照が現行repositoryに存在し、担当範囲の説明と矛盾しないか。
+6. archiveが当時の評価・調査記録として保存され、古い判定やtask状態が現行保証へ昇格していないか。
+7. Index、runtime check、strict memory safety、AtCoder実提出など、凍結中・ユーザー専任・未検証の領域を再開または確認済みとしていないか。
+
+reviewは読み取りだけとし、二つのprofile、archive、上位品質要求、source、test、benchmark、workflow、Registryを
+変更しない。新しい品質要求、公開契約、性能基準、受入条件、release条件を決定しない。既存taskを再開せず、
+新taskも登録しない。commit、branch、pushを行わない。
+
+問題は、現行profileの利用を止める`BLOCK`と、後続で改善可能な`NOTE`に分ける。各指摘には対象file・節、
+根拠、影響、最小修正方向を記録する。問題がない項目も、何を照合したか分かる証拠を残す。
+
+完了時は、冒頭の実行中ジョブを`返却待ち: QUALITY-002`へ変更し、下の`Result`へ結論、`BLOCK`、`NOTE`、
+照合証拠、未確認事項を記録する。ユーザーへの応答は`完了`だけとする。修正、最終受入、Registry更新はCodexが扱う。
+
+### Result
+
+Claude返却待ち。
 
 ## Active bounded assignment: separate quality requirements body and reference material
 

@@ -104,7 +104,7 @@ size、Swift Array・unsafe buffer・C配列等の比較対象、絶対性能と
 整理する。比較対象や採用閾値が公開上の約束または1.0採否を左右する場合は、Codexが結論を補わず、
 一判断ごとの`DECISION`候補として分離する。確定した測定設計と必要な判断を入力に`BARE-007`を実行する。
 
-OptionalArrayの品質評価は、PermutationModuleの`QualityAssessment-ISO25010.md`と同様に、仕様を再記述せず
+OptionalArrayの品質評価は、PermutationModuleの`Quality-Profile.md`と同様に、仕様を再記述せず
 Test as Specification、実装、CI、利用者向け文書を根拠としてISO/IEC 25010の品質特性ごとに整理する。
 体系監査完了時に初版を策定して文書作業と1.0準備の不足を発見し、ユーザードキュメント作業後に再評価する。
 後者で残った不足を独立task候補へ分離してから1.0採用判断へ進み、初版だけを品質ゲートの最終評価にしない。

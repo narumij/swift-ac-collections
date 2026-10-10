@@ -285,6 +285,6 @@ deployment構成だと判明した時点で再開する。標準ライブラリ�
 ## 関連文書
 
 - `Design-MemorySafety.md`: Indexの世代、storage同一性、detached検出の仕組み
-- `Quality-Checklist.md`: `-Ounchecked`を通常の品質保証と区別する方針
+- `Quality-Profile.md`: `-Ounchecked`を通常の品質保証と区別する方針
 - `Maintanance/Archived/RUNTIME_CHECK_POLICY.md`: 標準ライブラリの検査モデルの調査
 - `Implements/Index/index_stale_check.md`: 構成と状態ごとのIndex解決表

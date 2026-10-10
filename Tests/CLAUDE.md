@@ -50,7 +50,7 @@ removal of existing coverage is unclear.
   unclassified Swift Testing tests in `_97_*.swift`, and public precondition or
   invalid-index process tests in `_99_DeathTests.swift`.
 - Keep compatibility-only behavior in the compatibility tests. Check
-  `API-Matrix.md`, `API-Matrix-View.md`, and `Quality-Checklist.md` when working
+  `API-Matrix.md`, `API-Matrix-View.md`, and `Quality-Profile.md` when working
   on RedBlackTree public APIs or views.
 - Consult `Tests/RedBlackTreeFixture/Fixtures.md` before adding or changing
   RedBlackTree fixtures, and update it when fixture behavior changes.

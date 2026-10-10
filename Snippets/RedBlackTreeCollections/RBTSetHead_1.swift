@@ -11,4 +11,4 @@ let set = RedBlackTreeSet<Int>()
 
 // snippet.second
 
-let set = RedBlackTreeSet<Int>(minimumCapacity: 10)
+//let set = RedBlackTreeSet<Int>(minimumCapacity: 10)

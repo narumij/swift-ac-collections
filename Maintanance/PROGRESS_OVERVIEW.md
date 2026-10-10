@@ -128,6 +128,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-070` | `DONE` | User / Codex | [EXECUTION] 0.5.3 release実行 | candidate `5c22e2cf`のlocal build・DocC、remote CI、main merge・CIを確認し、merge commit `139ffef8`へannotated tag `0.5.3`を作成・push。remote到達確認後、`develop/misc/55`を作成 | `RELEASE_0_5_3.md` |
 | `RELEASE-071` | `DONE` | Codex | [EXECUTION] tag push工程のrelease Registry template反映 | 2026-10-10、0.5.3実行時にtemplateからtag push工程が欠落していた実績を受け、独立した判断・ユーザー専任push・remote tag確認を実release templateへ追加。今後の別テーマのrehearsalを維持しつつ二重管理を避けるため、訓練templateは本番templateを参照する薄いoverlayへ変更 | `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_REHEARSAL_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_0_5_3.md` |
 | `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | ユーザーがゴールを定め、人間だけでも現在位置、次の操作、完了証拠、停止点を追える一枚の工程表を作成する。0.5.xで実際に使って観測し、0.6.xで磨く。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `RELEASE_CHECKLIST.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` |
+| `RELEASE-073` | `USER_ONLY` | User | [DECISION] 人間向けリリース工程のコンセプト定義策定 | ユーザーが工程表作成に先立ち、リリース工程の目的、成立条件、人間とAIの役割、0.5.xで試す範囲と0.6.xで磨く範囲を定義する。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `User/RELEASE_PROCESS.md` |
+| `RELEASE-074` | `USER_ONLY` | User | [DECISION] リリース工程の品質要求定義策定 | ユーザーが、人間向けリリース工程のコンセプトを入力として、掃除後のrelease treeに要求する品質、必要な証拠、許容する残余risk、異常時の停止条件を定義する。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `User/RELEASE_PROCESS.md` |
+| `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | ユーザーが、定義した品質要求に対して不足する工程仕様、判定基準、証拠取得方法、停止・復旧手順を補い、V&V可能な状態にする。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `User/RELEASE_PROCESS.md` |
+| `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `User/RELEASE_PROCESS.md` |
 | `RELEASE-035` | `PROPOSED` | Codex | [EXECUTION] release checklistのRegistry templateへの移行 | checklist本文を読んで判断・操作・証拠へ分類する規則とtask骨格をtemplateへ移し、一判断ごとの必須依存、`REL-000`からの内部採番、任意task除去条件を検証する | `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-036` | `PROPOSED` | Codex | [EXECUTION] release専用Registryへの正本切替 | 移行後の旧checklistをArchivedへ移し、現行参照をtemplateとactive Registryへ切り替え、生成・startup precedence・完了／中止還元を一往復検証する | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
@@ -237,6 +241,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-034` | `RELEASE-069` | `GATE` | 日本語READMEのダミー編集を契機に中間ゲートを起動し、0.5.3のrelease作業開始を判断する |
 | `RELEASE-035` | `RELEASE-031` | `SEQUENCE` | 分離設計とtask骨格の確定後に旧checklistをtemplateへ移行する |
 | `RELEASE-036` | `RELEASE-035` | `SEQUENCE` | checklist移行を検証してから実行正本をactive Registryへ切り替える |
+| `RELEASE-072` | `RELEASE-073` | `SEQUENCE` | 人間向けリリース工程のコンセプトを定義してから、その目的と役割分担を一枚の工程表へ具体化する |
+| `RELEASE-074` | `RELEASE-073` | `SEQUENCE` | 人間向けリリース工程のコンセプトを定めてから、それを実現するための品質要求と証拠を具体化する |
+| `RELEASE-075` | `RELEASE-074` | `SEQUENCE` | リリース工程の品質要求を定義してから、その要求に対する不足仕様を充当する |
+| `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |
 | `RELEASE-029` | `RELEASE-027` | `PARALLEL_JOIN` | local一次検収の証拠を揃えてから独立確認へ渡す |
 | `RELEASE-029` | `RELEASE-028` | `PARALLEL_JOIN` | 同じ候補commitのremote CI証拠を揃えてから独立確認へ渡す |
 | `RELEASE-022` | `RELEASE-027` | `PARALLEL_JOIN` | release可否判断前に固定候補のlocal一次検収を完了する |

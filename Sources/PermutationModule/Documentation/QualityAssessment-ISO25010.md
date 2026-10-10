@@ -48,7 +48,7 @@
 | 資源効率性 | 部分 | 入力を1回bufferへコピーする。結果を保持しなければ追加のコピーは起きないこと、最後の結果を保持したまま終端に達しても終わりを知るためだけのコピーは起きないこと（`4eae63f9`）を、`_98_InternalTests`が`DEBUG`下でだけ確認 |
 | 容量 | 対象外 | 列挙数は入力に対して階乗的に増えるが、それは列挙の性質であり、このmoduleの上限ではない |
 
-懸念: CIの性能比較（`.github/workflows/swift.yml`のperformance job）が使う`Benchmarks/Libraries/CI.json`に、
+懸念: CIの性能比較（`.github/workflows/ci.yml`のperformance job）が使う`Benchmarks/Libraries/CI.json`に、
 Permutationの計測は入っていない。2026-10-07の`@inline(__always)`27件の全削除（`0ef177d3`）の影響は、
 どこでも測られていない。`next()`が共有中の終端でコピーしないようにした変更（`4eae63f9`）も未計測で、`PERM-013`で確かめる。
 
@@ -201,7 +201,7 @@ Releaseでの停止は2026-10-03にローカルのmacOSで5件とも確認した
 | L39 | `_1_EnumerationTests`、`_2_ValueSemanticsTests`。`CppBehaviorReference`との差分比較はない | test file、`Sources/CppBehaviorReference`・`Tests/CppBehaviorReferenceTests` | 一致（どちらにも`permutation`の語が無い） |
 | L46 | `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`に5件の計測 | 同file | 一致（`self.add(`が5件。表題は旧名`Permutations.SubSequenceN`のまま。旧名維持は`169401a0`の方針） |
 | L47 | 終端で不要なcopyをしない（`4eae63f9`）。`_98_InternalTests`が`DEBUG`下で確認 | commit、`_98_InternalTests.swift:8,25,67` | 一致 |
-| L50 | CIの性能比較が使う`Benchmarks/Libraries/CI.json`にPermutationは無い | `.github/workflows/swift.yml:102-`（performance job）、`CI.json` | 一致（`CI.json`に`perm`の語が無い） |
+| L50 | CIの性能比較が使う`Benchmarks/Libraries/CI.json`にPermutationは無い | `.github/workflows/ci.yml:102-`（performance job）、`CI.json` | 一致（`CI.json`に`perm`の語が無い） |
 | L51 | `@inline(__always)` 27件の全削除（`0ef177d3`） | `git show 0ef177d3 -- Sources` | 一致（削除行27、追加0） |
 | L52 | `4eae63f9`は未計測、`PERM-013`で確かめる | Registry | 一致（`PERM-013` FROZEN） |
 | L58 | swift-algorithms 1.2.1の型名`PermutationsSequence`・`UniquePermutationsSequence` | `Package.resolved`、`.build/checkouts/swift-algorithms/Sources/Algorithms/Permutations.swift:79,404` | 一致 |
@@ -301,7 +301,7 @@ swift-algorithmsとの同時import・主要入口の名前解決が仕様testで
 | --- | --- | --- | --- | --- | --- | --- |
 | CIの性能比較にPermutationを加える（§3.2） | performance jobはPRのときだけ、base / HEADの両方でPR側のlibrary定義を走らせて比較する。5件目だけ`size <= 10` | `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift`の5計測。libraryを2本に分け、64kの4件と10の1件を同じ結果fileへ`replace-all`、`append`の順で記録できる | `Benchmarks`は別package。結果はPRのCIで出るのでユーザーのpushが要る | 実行構成の判断後、`CI.json`、小size用library、performance workflowを変更 | `PERM-013`（ACTIVE）。`PERM-031`で構成調査済み、`PERM-032`判断後に`PERM-033`で実装 | 初回CIの所要時間増分とsize列は実行時に確認 |
 | C++ `std::next_permutation`との差分比較（§3.1） | Permutationの比較は無い（`CppBehaviorReference`にもそのtestにも`permutation`の語が無い） | `Sources/CppBehaviorReference`（C++。`extern "C"`の関数をheaderで公開、`Package.swift:274-277`）と`Tests/CppBehaviorReferenceTests`（赤黒木4型の比較、`SeededTraceSupport.swift`）。`CPP-001` DONE。実行実績はmacOS（libc++）のDebug・ReleaseとLinux（libstdc++）のDebug（`RED_BLACK_TREE_REMAINING_TASKS.md`の確認済み根拠） | `CppBehaviorReferenceTests`へ`PermutationModule`の依存を足す必要がある（現在の依存は`CppBehaviorReference`、`AcCollections`、`RedBlackTreeCollections`。`AcCollections`経由でも届く） | `Sources/CppBehaviorReference`へ`std::next_permutation`の`extern "C"` wrapperを追加し、`Tests/CppBehaviorReferenceTests`へ比較testを追加。依存を足すなら`Package.swift` | なし（`CPP-001`は「比較契約または対象環境を変更する場合だけ更新」、`CPP-002`はMSVCでEXCLUDED） | C++側は比較に`operator<`を使う。Swift側の`Comparable`と同じ結果になる入力の範囲（整数以外の要素型を比べるか）。libc++ / libstdc++の両方で同じ列挙になること |
-| Linux CIでDeath Testを有効にする（§3.6） | CIはLinuxの`swift test -c debug` / `-c release`だけで、`ENABLE_DEATH_TESTS`を指定していない（`swift.yml:79-100`、workflow内に`DEATH`の語が無い） | trait `ENABLE_DEATH_TESTS`で`DEATH_TEST`を定義する設定（`Package.swift:85`）。Permutationの`_99_DeathTests`は正確なsignal（Linuxでは`SIGILL`）を期待する（`DeathTestSignal.swift`）。Linuxでの手動実行の手順は`Tests/CLAUDE.md`（`swift test -c debug --traits ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`） | traitを有効にするとPermutation以外のDeath Testも全部走る（OptionalArray、BareArray、RedBlackTree）。`Tests/CLAUDE.md`は、Linuxでは`SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`との併用を指示している | `.github/workflows/swift.yml`へjobまたはstepを追加 | なし（Permutation専用のtaskも、全module共通のtaskも見つからない） | PermutationのDeath Testだけを走らせるか、全moduleで走らせるか（判断点の候補。Claudeは決めない）。Releaseでも走らせるか。Linuxで5件が`SIGILL`で止まることの最近の実行記録（RedBlackTree側の実績は文書にあるが、Permutationの記録は今回見つからない） |
+| Linux CIでDeath Testを有効にする（§3.6） | CIはLinuxの`swift test -c debug` / `-c release`だけで、`ENABLE_DEATH_TESTS`を指定していない（`ci.yml:35-56`、workflow内に`DEATH`の語が無い） | trait `ENABLE_DEATH_TESTS`で`DEATH_TEST`を定義する設定（`Package.swift:85`）。Permutationの`_99_DeathTests`は正確なsignal（Linuxでは`SIGILL`）を期待する（`DeathTestSignal.swift`）。Linuxでの手動実行の手順は`Tests/CLAUDE.md`（`swift test -c debug --traits ENABLE_DEATH_TESTS,SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`） | traitを有効にするとPermutation以外のDeath Testも全部走る（OptionalArray、BareArray、RedBlackTree）。`Tests/CLAUDE.md`は、Linuxでは`SKIP_DEBUG_LIFETIME_BALANCE_CHECKS`との併用を指示している | `.github/workflows/ci.yml`へjobまたはstepを追加 | なし（Permutation専用のtaskも、全module共通のtaskも見つからない） | PermutationのDeath Testだけを走らせるか、全moduleで走らせるか（判断点の候補。Claudeは決めない）。Releaseでも走らせるか。Linuxで5件が`SIGILL`で止まることの最近の実行記録（RedBlackTree側の実績は文書にあるが、Permutationの記録は今回見つからない） |
 
 停止事項: なし。新しいdefectは無い。上の表の「判断点の候補」（Linux Death Testの対象範囲）は、選択肢を書かずに位置だけを記録した。
 

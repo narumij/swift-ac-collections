@@ -90,7 +90,7 @@ testが証明する範囲だけを書く。「なし」は契約がsourceにあ�
 | 完全性（メモリ安全性） | storageは`UnsafeMutablePointer`。strict memory safetyは未適用で、一時適用時の残り診断は22箇所（unsafe型storage 7とその代入、`allocate` 8） | 恒久適用は公開7型への`@unsafe`伝播かstorage隔離が要る（§10）。`ARRAY-001`（凍結） | — | `BARE-014`・`BARE-015`後の診断数（§10は2026-10-03時点） |
 | 完全性（並行利用） | 所有4型は`Element: Sendable`のとき`@unchecked Sendable`（L85、L170、L272、L376）。View 3型は適合しない | 所有者を送る前に取ったViewが残れば同じstorageへ同時に触れ得る（Audit ledger C1の**推**）。View寿命と同じ根 | 導入理由（`9b100953`）と許す並行利用の範囲の記録が無い | 並行実行のtest |
 | 完全性（`let`所有者の変更） | `let`所有者から得たViewで要素を書き換えられ、testもこの形を使う（`3_View`） | 契約化は文書作業後の1.0判断（Audit 判断候補3） | — | — |
-| 検知 | CIにAddress Sanitizer jobがあり（`.github/workflows/swift.yml:253-270`）、package全体の`swift test`でBareArrayのtestも走る | ASanが見るのはtestが通る経路だけ | — | このjobの直近結果は見ていない |
+| 検知 | CIにAddress Sanitizer jobがあり（`.github/workflows/ci.yml`）、package全体の`swift test`でBareArrayのtestも走る | ASanが見るのはtestが通る経路だけ | — | このjobの直近結果は見ていない |
 
 ### 3.7 保守性
 

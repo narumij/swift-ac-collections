@@ -262,3 +262,56 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 成果・検証（2026-10-09 / Codex）: `OPS-010`の全指摘を生成scriptへ反映し、SVGとPNGを再生成して目視確認した。
 - Codex reconciliation: 2026-10-09、ユーザーの「Dおわらせて」を実行許可として`OPS-011`へ正式化・受入。
   当初のClaude反映taskは、Codexがreviewと反映を同一作業内で完結したため担当を統合した。
+
+### `CP-20261010-001` — Permutation `Buffer.copy()`非inlinable化のwitness table参照確認
+
+- queue状態: `RECONCILED`
+- 発見元・ユーザー指示: 2026-10-10、ユーザーが「採番待ち追加でいいので、これのwitness table参照確認して」と明示依頼。
+  対象は`Permutations.swift`の`copy()`に付いたTODO（`@usableFromInline`化に伴うwitness table参照チェック）。
+- 種別候補: `DISCOVERY`
+- 対象範囲: HEAD（`927cfd1a`）の`NextPermutationsSequence.Buffer.copy()`を、外部clientから`[Int]`で使ったときのRelease機械語。
+- 対象外: source/test/TODO文言の変更、性能測定、`PERM-029`の採否。
+- 完了条件: 呼出し側と`copy()`内部で、witness table・metadata・runtime呼出しが何を参照するかを事実で示す。
+- 前提・既存task候補: `PERM-029`への統合候補。
+- 担当候補・受入担当: Claude（調査）/ Codex（受入、TODO処理の判断）
+- 停止条件: 該当なし。
+- 成果・検証（2026-10-10 / Claude）:
+  - 方法: `mktemp -d`配下に`git archive HEAD`のcopyと、`AcCollections`へ依存する小さなexecutable clientを作り、
+    `swift build -c release`後にリンク済みバイナリを`objdump -d`と`objdump --macho --bind`で確認。一時directoryは削除済み。
+  - `PASS` 呼出し側: specializeされた`Iterator.next()`（`[Int]`）は、非一意のときだけ通る枝で`Buffer.copy()`
+    （unspecializedな汎用版）を直接`bl`する。渡すのは`self`（x20）だけで、metadataやwitness tableを引数として渡さず、
+    `witness_method`による動的dispatchもない（final classの直接呼出し）。一意なhot pathは`copy()`に触れない。
+  - `RISK`（軽微・cold path）`copy()`内部: `self`のisaからclass metadataを読み、そこからgeneric引数
+    （`Base`のmetadataと`Collection` witness table）を読み出す。closure内で`swift_getAssociatedTypeWitness`を
+    1回呼んで`Element`のmetadataを得て、unspecializedな`UnsafeMutablePointer.initialize(from:count:)`へ渡す。
+    要素copyはspecializeされず、value witness経由になる。ほかに`ManagedBuffer.create`（closure付き）、
+    `headerAddress`/`firstElementAddress`のgetter、`swift_beginAccess`（動的な排他チェック）がlibswiftCore経由で呼ばれる。
+  - `Comparable`のwitness tableは`copy()`では使われない。参照するwitness tableは`Collection`のものだけで、用途は
+    `Element`の関連型の解決に限られる。
+  - 判断材料: コストは「共有されたiteratorが進むとき1回」だけで、その時点で既にO(n)の確保とcopyが発生する経路なので、
+    相対的な上乗せは小さいと見込む。性能測定は未実施（`UNVERIFIED`）。TODOを消すかどうかはCodexが判断する。
+- Codex reconciliation: 2026-10-10、既存の`PERM-029`へ統合。呼出し側のhot pathは`copy()`に触れず、
+  共有時のcold pathだけが非specializeの`copy()`を直接呼ぶこと、内部の`Collection` witness table参照は
+  `Element` metadata解決に限られるという機械語確認を受け入れた。性能の推測自体は根拠にせず、
+  ユーザー報告の性能CI greenと回帰test成功を別証拠として完了判定した。新規stable IDは不要。
+
+### `CP-20261010-002` — 赤黒木の型コメント・Head文書の境界式例を現行APIへ修正
+
+- queue状態: `AWAITING_CODEX`
+- 発見元・ユーザー指示: `DOC-020`回答中にClaudeが発見。2026-10-10、ユーザーが「採番まちでやっていいよ」と明示許可。
+- 種別候補: `EXECUTION`
+- 対象範囲: 境界式の例で使われている、存在しない`.advance(by:)`と`.endIndex`（境界式としての）だけを、
+  `.advanced(by:)`と`.end`へ置き換える。対象は`RedBlackTreeSet`／`MultiSet`／`MultiMap`の型コメントと
+  `Sources/RedBlackTreeCollections/Documentation/Head/`の対応する`.md`／`.ja.md`。
+- 対象外: Index版の`x.lowerBound(4)..<x.endIndex`（現行APIで有効）、例の出力コメントの書き方、その他の文面。
+- 完了条件: 置換後の例を一時clientでコンパイルし、期待値どおり動くこと。
+- 担当候補・受入担当: Claude（実施）/ Codex（受入）
+- 停止条件: 置換で直らない例が見つかった場合（直さず報告）。
+- 成果・検証: 
+  - 2026-10-10 Claude: 9 file（型コメント3、Head文書6）で`.start.advance(by: 1)`→`.start.advanced(by: 1)`、
+    `.lowerBound(4) ..< .endIndex`→`.lowerBound(4) ..< .end`へ置換（15行）。
+  - 検証: 作業treeのcopyに一時clientを作り、Set／MultiSet／MultiMap／Dictionaryの境界式・Index範囲の例9件を
+    コンパイル・実行。全件通り、要素の結果は各コメントの期待値と一致した。一時directoryは削除済み。
+  - 残り（対象外）: `print(set[...])`の出力は`Optional(3)`になるが、コメントは`-> 3`と書いている。
+    同じ書き方は既存の`.lowerBound(5)`等の例にもあるので、直すかはCodex判断。
+- Codex reconciliation: 未処理

@@ -6,17 +6,17 @@ Source template commit: `4fa3d318`
 ## 起動方法
 
 - [x] 中間ゴール設定時に、このテンプレートから正本を作成し、必要項目を埋めてコミットする。
-- [ ] 中間ゴール達成時に、コミット済みの正本をGit管理対象外の`_ReleaseTask/ACTIVE.md`へコピーして起動する。
-- [ ] コピーによる起動ではコミットしない。起動後の実行は`ACTIVE.md`のTask Registryへ委譲する。
+- [x] 中間ゴール達成時に、コミット済みの正本をGit管理対象外の`_ReleaseTask/ACTIVE.md`へコピーして起動する。
+- [x] コピーによる起動ではコミットしない。起動後の実行は`ACTIVE.md`のTask Registryへ委譲する。
 
 ## Active release
 
 - Registry identity: `release-0.5.3`
-- Life cycle: `ACTIVE`
+- Life cycle: `COMPLETED`
 - Mode: `RELEASE / STEP EXECUTION`
 - Version: `0.5.3`
 - Current blocker: none
-- Next permitted operation: `REL-000のCHANGELOG対応を実行する`
+- Next permitted operation: none
 
 ## Release Task Registry
 
@@ -71,6 +71,19 @@ Task Registryを`REL-000`から順に一taskずつ実行する。`DECISION`で�
 
 ## Release終了時の共通cleanupチェックリスト
 
-- [ ] Registry全体を`COMPLETED`または`CANCELLED`へ移す。
-- [ ] 判断結果、release結果、外部副作用、残存物の所有者を通常Task Registryへ還元する。
-- [ ] リリースTask Registryの完了処理の最後に`_ReleaseTask/ACTIVE.md`を削除する。
+- [x] Registry全体を`COMPLETED`または`CANCELLED`へ移す。
+- [x] 判断結果、release結果、外部副作用、残存物の所有者を通常Task Registryへ還元する。
+- [x] リリースTask Registryの完了処理の最後に`_ReleaseTask/ACTIVE.md`を削除する。
+
+## 実行結果
+
+- Candidate: `5c22e2cf`
+- Debug build: Xcode BuildProject（test target込み）成功
+- Release build: `swift build -c release --disable-sandbox`成功
+- Documentation: RedBlackTreeCollectionsのRelease DocCを`--warnings-as-errors`で生成成功
+- Candidate branch: `develop/misc/54`をユーザーがpushし、CI greenを確認
+- Main: merge commit `139ffef8`への包含とCI greenを確認
+- Tag: annotated tag `0.5.3`（message `Release 0.5.3`）を`139ffef8`へ作成
+- Tag push: ユーザーが`refs/tags/0.5.3`だけをpush。remote tag object `a6f12ffd`、peeled target `139ffef8`を確認
+- Release後branch: tag `0.5.3`から`develop/misc/55`を作成
+- Template補正: 実行中に欠落していたtag push判断・ユーザー操作をactive Registryへ追加して完了

@@ -1,6 +1,6 @@
 # 開発・メンテナンス進捗一覧
 
-最終更新: 2026-10-10 / Codex
+最終更新: 2026-10-11 / Codex
 
 この文書のTask Registryを、CodexとClaudeが作業を再開するときの唯一の入口とする。まずRegistry
 だけを読み、選択したtask行が示す詳細正本だけを追加で読む。2026-10-07までの完了チェック、判断待ち、
@@ -15,16 +15,12 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **中間ゴールの取り扱い**
 
-**直近達成した中間ゴール:** 0.5.2を完成させる。全公開対象のコメントドック・ドラフトを揃えることは、0.5.2の
-到達範囲とrelease開始を判断するための前提であり、中間ゴールそのものではない。対象範囲と証拠の棚卸し、
-対象別ドラフト、到達範囲の判断、採用されたrelease工程の実行を、0.5.2へ至るtask graphとして扱う。
+**直近達成した中間ゴール:** 0.5.3を完成させる。
 
-2026-10-09、main merge commit `631cb59a`のCI greenを確認し、annotated tag `0.5.2`を同commitへ作成・pushして
-remote到達を確認した。
+2026-10-10、main merge commit `139ffef8`のCI greenを確認し、annotated tag `0.5.3`を同commitへ作成・pushして
+remote到達を確認した。release後の記録用branchとして、同tagから`develop/misc/55`を作成した。
 
-**現在の中間ゴール:** 0.5.3を完成させる。ユーザーによる`README.ja.md`のダミー編集を契機に中間ゲートを起動し、
-0.5.3のrelease作業を開始するか一問で判断する。編集自体をgate通過や0.5.3の製品scopeとは扱わない。
-Yesの場合は準備済みの`RELEASE_0_5_3.md`を`_ReleaseTask/ACTIVE.md`へコピーし、release実行を委譲する。
+**現在の中間ゴール:** 未設定。次の製品目標または運用taskは、ユーザー指示に基づいて選択する。
 
 **凍結中の中間ゴール（前任conversationの残存記録）:**
 
@@ -128,7 +124,15 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-032` | `DONE` | User / Codex | [EXECUTION] 0.5.2 annotated tag作成 | 2026-10-09、ユーザー承認後、main CI greenのmerge commit `631cb59a`へmessage `Release 0.5.2`のannotated tag `0.5.2`をlocal作成し、対象commitを読み戻した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-033` | `DONE` | User / Codex | [EXECUTION] 0.5.2 tag push | 2026-10-09、ユーザー承認後、`refs/tags/0.5.2`だけをoriginへpushし、remote tagが`631cb59a`を指すことを読み戻した | `RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-069` | `DONE` | User | [EXECUTION] 0.5.3中間ゲート起動 | 2026-10-10、ユーザーが`README.ja.md`をcommit `f7fcdd09`で編集し、中間ゲートを起動。AIは編集を代行していない | `README.ja.md` |
-| `RELEASE-034` | `READY` | User / Codex | [DECISION] 0.5.3 release作業開始 | 0.5.3のrelease作業を行うか一問で判断する。Yesなら準備済み正本を`ACTIVE.md`へコピーして実行を委譲する | `RELEASE_0_5_3.md` |
+| `RELEASE-034` | `DONE` | User / Codex | [DECISION] 0.5.3 release作業開始 | 2026-10-10、ユーザーが開始を承認し、release専用Registryを起動して実行へ委譲 | `RELEASE_0_5_3.md` |
+| `RELEASE-070` | `DONE` | User / Codex | [EXECUTION] 0.5.3 release実行 | candidate `5c22e2cf`のlocal build・DocC、remote CI、main merge・CIを確認し、merge commit `139ffef8`へannotated tag `0.5.3`を作成・push。remote到達確認後、`develop/misc/55`を作成 | `RELEASE_0_5_3.md` |
+| `RELEASE-071` | `DONE` | Codex | [EXECUTION] tag push工程のrelease Registry template反映 | 2026-10-10、0.5.3実行時にtemplateからtag push工程が欠落していた実績を受け、独立した判断・ユーザー専任push・remote tag確認を実release templateへ追加。今後の別テーマのrehearsalを維持しつつ二重管理を避けるため、訓練templateは本番templateを参照する薄いoverlayへ変更 | `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_REHEARSAL_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_0_5_3.md` |
+| `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | ユーザーがゴールを定め、人間だけでも現在位置、次の操作、完了証拠、停止点を追える一枚の工程表を作成する。0.5.xで実際に使って観測し、0.6.xで磨く。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `RELEASE_CHECKLIST.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` |
+| `RELEASE-073` | `DONE` | User / Codex | [DECISION] 人間向けリリース工程のコンセプト定義策定 | 2026-10-10、ユーザーが製品コンセプトを一文で定義し、Codexの軽いレビューで対象、性能上の強み、競技プログラミング起点、一般Swift開発への展開が品質要求定義へ渡せることを確認 | `User/CONCEPT_DEFINITION.md` |
+| `RELEASE-074` | `DONE` | User / Codex / Claude | [DISCOVERY] 製品品質要求定義の同抽象度ドラフト再作成 | 2026-10-10、コンセプトから上位品質要求を導き、既存のTest as Specification、品質評価、性能証拠、文書、CIへの接続、洗練の手がかり、V&V、不足仕様候補までを同じ抽象度で再作成。Claudeは他案未読、CodexはChappy版既読を明示し、具体的閾値・release停止条件・工程設計を確定せず完了 | `User/CONCEPT_DEFINITION.md` / `User/Archived/QUALITY_REQUIREMENTS_CODEX_V2.md` / `User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md` |
+| `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | ユーザーが、定義した品質要求に対して不足する工程仕様、判定基準、証拠取得方法、停止・復旧手順を補い、V&V可能な状態にする。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `User/RELEASE_PROCESS.md` |
+| `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `User/RELEASE_PROCESS.md` |
+| `RELEASE-077` | `DONE` | Claude / Codex | [EXECUTION] 製品品質要求の本体・参照資料分離 | 2026-10-11、Chappy V4を`QUALITY_REQUIREMENTS.md`へ改名して正本化し、Claude V2から非規範的な参照資料を抽出・再編。本体、参照資料、元ドラフトを相対linkで接続し、観察を作成時点の`UNVERIFIED`として隔離した構造をCodexがcommit `3c496eeb`で検収・受入 | `User/QUALITY_REQUIREMENTS.md` / `User/QUALITY_REQUIREMENTS_REFERENCE.md` / `User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md` / `CLAUDE_TASK.md` |
 | `RELEASE-035` | `PROPOSED` | Codex | [EXECUTION] release checklistのRegistry templateへの移行 | checklist本文を読んで判断・操作・証拠へ分類する規則とtask骨格をtemplateへ移し、一判断ごとの必須依存、`REL-000`からの内部採番、任意task除去条件を検証する | `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-036` | `PROPOSED` | Codex | [EXECUTION] release専用Registryへの正本切替 | 移行後の旧checklistをArchivedへ移し、現行参照をtemplateとactive Registryへ切り替え、生成・startup precedence・完了／中止還元を一往復検証する | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` |
 | `DOC-002` | `EXCLUDED` | Codex | [DISCOVERY] 0.5.2コメントドック対象・証拠・阻害判断の棚卸し | 2026-10-09、独立した事前棚卸しを完了させてから執筆する方式を取りやめ。対象別実行taskでTest as Specificationを確認しながら期待動作を直接コメントへ記載する | `RELEASE_0_5_2.md` |
@@ -141,6 +145,15 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `DOC-009` | `EXCLUDED` | Codex | [EXECUTION] BareArrayのView保持中Sendable注記 | 2026-10-09、`@unchecked Sendable`の妥当性を覆す指摘ではなく、一般的な並行アクセス規則を重ねる蛇足とCodexが判定。公開コメントへの追記は行わない | `RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
 | `DOC-010` | `FROZEN` | Codex | [DISCOVERY] BareArrayの定性的性能表現の再検討 | 2026-10-09、比較対象はSwiftの`[[Element]]`であり、COWと連鎖subscriptによる深刻な性能劣化を単一連続storageと非所有Viewで迂回する設計意図があると確認。アンカリングを避けるため、ユーザー指示による再訪まで文言判断を保留 | `RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
 | `DOC-011` | `DONE` | Codex | [EXECUTION] Permutation通常版の公開APIコメントドック・レビュー用ドラフト | 2026-10-09、通常版のTest as Specificationへ照合し、入力copy、iterator独立性、終端、zero-based index、値semantics、計算量をレビュー用ドラフトとして公開コメントへ記載。Debug 32件＋Death Test 5件、Release 28件＋Death Test 5件、documentation warning-as-error成功。0.5.2段階の成果としてユーザーへ引き渡し済みで、受入レビューとClaude独立レビューはこのtaskの完了条件に含めない。互換modeは未変更 | `RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `DOC-012` | `DONE` | Codex | [DISCOVERY] RedBlackTree以外の公開targetのコメントドック・セルフレビュー | 2026-10-10、4対象を実装と対応testへ照合。判断不要のコメント不一致はなし。PermutationのRelease構成におけるiterator copy独立性は未確認事項、OptionalArrayのView setter契約は製品判断候補として記録し、推定による修正は行わなかった | `NON_RBT_COMMENT_DOC_SELF_REVIEW.md` / `RELEASE_0_6_0.md` |
+| `DOC-013` | `DONE` | Claude / Codex | [DISCOVERY] 3モジュールのコメントドック独立ドラフト品質レビュー | 2026-10-10、Claudeのread-only証拠packageをCodexが検収。先行観測2件に加え、計算量1件・破棄説明1件・用語2件を受入れ、過剰な完成判定とtest不足だけによる未確認分類は採用しなかった。Claudeへの追加依頼なし | `CLAUDE_TASK.md` / `NON_RBT_COMMENT_DOC_SELF_REVIEW.md` / `AGENT_TASK_FIT_INTERVIEW.md` |
+| `DOC-014` | `DONE` | Codex | [EXECUTION] Permutation計算量コメント補正と横断確認 | 2026-10-10、`makeIterator()`、公開入口、index、等値比較、hash、descriptionへ実装に基づく計算量を補い、OptionalArrayとBareArrayの対象operationは記載済みで一致すると確認。Xcode buildと3 targetのdocumentation build成功 | `NON_RBT_COMMENT_DOC_SELF_REVIEW.md` |
+| `DOC-015` | `DONE` | Codex | [DISCOVERY] OptionalArray上書き破棄契約の重大課題調査 | 2026-10-10、所有1Dと1DViewの別実装および参照寿命testを確認。記載不能ではなく重要なcoverage不足と判定し、両subscriptへ非nil上書き時の旧要素破棄を追記。Xcode buildとdocumentation build成功 | `NON_RBT_COMMENT_DOC_SELF_REVIEW.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
+| `DOC-016` | `DONE` | Codex | [EXECUTION] OptionalArray4Dの軸表現補正 | 2026-10-10、`array[size3][size2][size1][size0]`を`array[w][z][y][x]`へ補正。file診断0件、Xcode buildとdocumentation build成功 | `NON_RBT_COMMENT_DOC_SELF_REVIEW.md` |
+| `DOC-017` | `DONE` | Codex | [EXECUTION] BareArray 1Dの多次元表現補正 | 2026-10-10、1D型本文の「多次元配列」を「配列」へ補正。file診断0件、Xcode buildとdocumentation build成功 | `NON_RBT_COMMENT_DOC_SELF_REVIEW.md` |
+| `DOC-018` | `DONE` | Codex | [EXECUTION] 3モジュール公開コメントのparameter欄補完 | 2026-10-10、parameterを持つ公開宣言29件（BareArray 15、OptionalArray 11、Permutation 3）へDocC parameter欄を追加。3 targetのdocumentation buildを`--warnings-as-errors`付きで実行して成功 | `NON_RBT_COMMENT_DOC_SELF_REVIEW.md` |
+| `DOC-019` | `DONE` | Codex / Claude | [DISCOVERY] 非RedBlackTreeコードスニペット候補TOP10アンケート | 2026-10-10、BareArray・OptionalArray・Permutationを対象に、編集先を分けて各TOP10を確定し、強い一致8観点と相違を統合TOP10へ整理 | `CODE_SNIPPET_SURVEY.md` / `CODE_SNIPPET_SURVEY_CODEX.md` / `CODE_SNIPPET_SURVEY_CLAUDE.md` |
+| `DOC-020` | `DONE` | Codex / Claude | [DISCOVERY] リポジトリ公開APIコードスニペット候補TOP10アンケート第2弾 | 2026-10-10、リポジトリ全体の公開APIから両者が各TOP10を選定し、共通5観点、各固有候補、既存RedBlackTreeスニペットの修正候補を整理。回答file分離は同時編集の競合回避だけに使用 | `PUBLIC_API_CODE_SNIPPET_SURVEY_2.md` / `PUBLIC_API_CODE_SNIPPET_SURVEY_2_CODEX.md` / `PUBLIC_API_CODE_SNIPPET_SURVEY_2_CLAUDE.md` |
 | `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | 全公開対象の利用者向けドキュメント初版完成後、0.6.0へ含める到達範囲を一つに定め、release checklistへ進むか判断 | `RELEASE_0_6_0.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -148,10 +161,12 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `PERM-002` | `USER_ONLY` | User | ABC328E実提出確認 | ユーザーが手作業で実施 | `PermutationModule/ImplementationPlan.md` |
 | `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
+| `PERM-029` | `DONE` | Codex | [DISCOVERY] Swift 6.4 Releaseでのiterator copy独立性再確認 | 2026-10-10、`Buffer.copy()`だけを非インライン化するとDebug／Release回帰testが成功し、再インライン化した一時copyではRelease再現することを独立確認。Release機械語でhot path分離とwitness参照範囲を確認し、ユーザー報告の性能CI greenを受け入れ、コメント補正まで完了。原因自体は未断定 | `Sources/PermutationModule/Permutations.swift` / `Tests/PermutationTests/NextPermutationsSequence/NextPermutationsSequence_2_ValueSemanticsTests.swift` / `CLAUDE_TASK.md` / `CLAUDE_PENDING_TASKS.md` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-043` | `DONE` | External AI / Codex | [DISCOVERY] OptionalArray命名体系のAI間再検討 | 2026-10-09、Claude初稿と第三者AI補完調査をCodexが独立評価し、1D所有型名と次元名を別々の判断へ渡せる材料として受入 | `ARRAY_NAMING_REVIEW.md` / `CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` |
 | `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | 0.6.0の到達範囲判断前に、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
+| `OPT-046` | `DONE` | Codex | [EXECUTION] OptionalArray View writeback setterの契約検査 | 2026-10-10、所有2D〜4DとView 2D〜3Dの5 setterへposition・`hasPayload`・`payload`・shape検査を追加。Debug／Release通常test各35件、Death Test各26件、documentation buildが成功 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `DONE` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | 2026-10-09、契約棚卸し、個別判断、Test as Specification、品質評価初版を受入れ、ユーザードキュメント作業へ引渡可能と判定 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-002` | `DONE` | Claude | [DISCOVERY] BareArray公開7型の契約棚卸し | 2026-10-09、公開29宣言と4適合のledger、新しい判断点、後続への振り分けをCodexが受入 | `BareArrayModule/BareArrayAudit.md` |
 | `BARE-003` | `DONE` | User | [DECISION] BareArrayを低レベル公開部品として維持するか | 2026-10-09、競技プログラミング向けの低レベル公開部品として維持すると決定 | `BareArrayModule/BareArrayAudit.md` |
@@ -227,6 +242,11 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-034` | `RELEASE-069` | `GATE` | 日本語READMEのダミー編集を契機に中間ゲートを起動し、0.5.3のrelease作業開始を判断する |
 | `RELEASE-035` | `RELEASE-031` | `SEQUENCE` | 分離設計とtask骨格の確定後に旧checklistをtemplateへ移行する |
 | `RELEASE-036` | `RELEASE-035` | `SEQUENCE` | checklist移行を検証してから実行正本をactive Registryへ切り替える |
+| `RELEASE-072` | `RELEASE-073` | `SEQUENCE` | 人間向けリリース工程のコンセプトを定義してから、その目的と役割分担を一枚の工程表へ具体化する |
+| `RELEASE-074` | `RELEASE-073` | `SEQUENCE` | 人間向けリリース工程のコンセプトを定めてから、それを実現するための品質要求と証拠を具体化する |
+| `RELEASE-075` | `RELEASE-074` | `SEQUENCE` | リリース工程の品質要求を定義してから、その要求に対する不足仕様を充当する |
+| `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |
+| `RELEASE-077` | `RELEASE-074` | `SEQUENCE` | 同抽象度の独立ドラフトと既存品質資産への接続候補を揃えてから、品質要求本体と非規範的な参照資料を分離する |
 | `RELEASE-029` | `RELEASE-027` | `PARALLEL_JOIN` | local一次検収の証拠を揃えてから独立確認へ渡す |
 | `RELEASE-029` | `RELEASE-028` | `PARALLEL_JOIN` | 同じ候補commitのremote CI証拠を揃えてから独立確認へ渡す |
 | `RELEASE-022` | `RELEASE-027` | `PARALLEL_JOIN` | release可否判断前に固定候補のlocal一次検収を完了する |

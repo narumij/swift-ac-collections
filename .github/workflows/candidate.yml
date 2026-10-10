@@ -1,0 +1,245 @@
+name: Release Candidate
+
+on:
+  push:
+    tags:
+      - "candidate-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: candidate-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  debug-all-tests:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run all Debug tests
+        run: >-
+          swift test -c debug
+          --traits SKIP_DEBUG_LIFETIME_BALANCE_CHECKS,ENABLE_DEATH_TESTS
+
+  release-all-tests:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Run all Release tests
+        run: swift test -c release --traits ENABLE_DEATH_TESTS
+
+  documentation:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Build documentation
+        run: >-
+          swift package -c release --allow-writing-to-directory .build/documentation
+          generate-documentation
+          --target RedBlackTreeCollections
+          --output-path .build/documentation
+          --transform-for-static-hosting
+          --hosting-base-path swift-ac-collections
+          --warnings-as-errors
+
+      - name: Archive documentation
+        run: >-
+          tar -czf .build/candidate-documentation.tar.gz
+          -C .build/documentation .
+
+      - name: Upload documentation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-documentation-${{ github.sha }}
+          path: .build/candidate-documentation.tar.gz
+          if-no-files-found: error
+
+  performance:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v4
+        with:
+          path: candidate
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Resolve previous release tag
+        id: baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BASELINE_TAG=""
+          while IFS= read -r TAG; do
+            if [[ "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              BASELINE_TAG="$TAG"
+              break
+            fi
+          done < <(git -C candidate tag --merged HEAD --sort=-version:refname)
+
+          test -n "$BASELINE_TAG"
+          echo "tag=$BASELINE_TAG" >> "$GITHUB_OUTPUT"
+          echo "Baseline tag: $BASELINE_TAG"
+
+      - name: Checkout baseline
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.baseline.outputs.tag }}
+          path: baseline
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Record runner environment
+        shell: bash
+        run: |
+          mkdir -p candidate/benchmark-results/environment
+          uname -a | tee candidate/benchmark-results/environment/uname.txt
+          lscpu | tee candidate/benchmark-results/environment/cpu.txt
+          swift --version | tee candidate/benchmark-results/environment/swift.txt
+          git -C baseline rev-parse HEAD \
+            | tee candidate/benchmark-results/environment/baseline-commit.txt
+          git -C candidate rev-parse HEAD \
+            | tee candidate/benchmark-results/environment/candidate-commit.txt
+
+      - name: Use candidate benchmark definitions for baseline
+        shell: bash
+        run: |
+          cp candidate/Benchmarks/Libraries/CI.json baseline/Benchmarks/Libraries/CI.json
+          cp candidate/Benchmarks/Libraries/CI-Small.json baseline/Benchmarks/Libraries/CI-Small.json
+
+      - name: Run candidate benchmarks
+        working-directory: candidate/Benchmarks
+        run: |
+          mkdir -p ../benchmark-results
+
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI.json \
+            ../benchmark-results/candidate.json \
+            --max-size 2M \
+            --cycles 1 \
+            --mode replace-all
+
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI-Small.json \
+            ../benchmark-results/candidate.json \
+            --max-size 10 \
+            --cycles 1 \
+            --mode append
+
+      - name: Run baseline benchmarks
+        working-directory: baseline/Benchmarks
+        run: |
+          mkdir -p ../benchmark-results
+
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI.json \
+            ../benchmark-results/baseline.json \
+            --max-size 2M \
+            --cycles 1 \
+            --mode replace-all
+
+          swift run -c release benchmark library run \
+            --library ./Libraries/CI-Small.json \
+            ../benchmark-results/baseline.json \
+            --max-size 10 \
+            --cycles 1 \
+            --mode append
+
+      - name: Check performance regression
+        working-directory: candidate/Benchmarks
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          OUTPUT="$(
+            swift run -c release benchmark results compare \
+              ../../baseline/benchmark-results/baseline.json \
+              ../benchmark-results/candidate.json
+          )"
+
+          printf '%s\n' "$OUTPUT" \
+            | tee ../benchmark-results/comparison.txt
+
+          printf '%s\n' "$OUTPUT" |
+          awk '
+            /^[[:space:]]*[0-9]/ {
+              regression = $4
+              sub(/\(.*/, "", regression)
+
+              # 30% slower:
+              # candidate / baseline >= 1.30
+              # => baseline / candidate <= 1 / 1.30
+              if ((regression + 0) <= 0.769231) {
+                print ""
+                print "Performance regression >= 30%: " $0
+                failed = 1
+              }
+            }
+
+            END {
+              exit failed ? 1 : 0
+            }
+          '
+
+      - name: Collect benchmark binaries and symbols
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for CHECKOUT in baseline candidate; do
+            OUTPUT="benchmark-binaries/$CHECKOUT"
+            mkdir -p "$OUTPUT"
+
+            BENCHMARK="$(
+              find "$CHECKOUT/Benchmarks/.build" \
+                -type f \
+                -name benchmark \
+                -perm -111 \
+                -print \
+                -quit
+            )"
+
+            if [ -z "$BENCHMARK" ]; then
+              echo "Benchmark binary not found for $CHECKOUT"
+              continue
+            fi
+
+            objdump -d "$BENCHMARK" > "$OUTPUT/benchmark.asm"
+            nm -n "$BENCHMARK" \
+              | swift demangle \
+              > "$OUTPUT/benchmark.nm"
+            file "$BENCHMARK" > "$OUTPUT/benchmark.file"
+            sha256sum "$BENCHMARK" > "$OUTPUT/benchmark.sha256"
+            cp "$BENCHMARK" "$OUTPUT/benchmark"
+          done
+
+      - name: Upload performance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-performance-${{ github.sha }}
+          path: |
+            candidate/benchmark-results
+            baseline/benchmark-results
+            benchmark-binaries
+          if-no-files-found: warn

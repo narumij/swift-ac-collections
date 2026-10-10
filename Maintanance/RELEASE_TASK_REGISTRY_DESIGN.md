@@ -69,6 +69,9 @@ release専用Registry全体に`FROZEN`状態を設けない。開始後は、完
 
 release訓練では、初期化時に訓練目的、到達するgate、実行しない操作、終了条件を記録する。実releaseの証拠や
 許可と混同しないよう、模擬入力と訓練中のユーザー回答には`REHEARSAL ONLY`を付け、後続releaseへ再利用しない。
+訓練の入口は`RELEASE_TASK_REGISTRY_REHEARSAL_TEMPLATE.md`へ残すが、実releaseのtaskとprecedenceは複製しない。
+同文書を薄いoverlayとして使い、`RELEASE_TASK_REGISTRY_TEMPLATE.md`から必要なtaskを生成して訓練目的、模擬入力、
+除外、境界だけを加える。これにより、今後も別テーマのrehearsalを実施でき、二重管理によるtask欠落や順序差も防ぐ。
 
 - 訓練対象にしたユーザー判断taskへ実際に一問を提示し、回答によって後続taskのready状態が変わるところまで確認する。
 - 訓練対象の判断へ到達する前に、その判断taskや必要な模擬前提taskを`EXCLUDED`にしない。

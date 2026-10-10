@@ -30,6 +30,7 @@ public struct OptionalArray1D<Element>: ~Copyable {
   ///
   /// `capacity`が0なら空の配列を作ります。
   ///
+  /// - Parameter capacity: slot数。
   /// - Precondition: `capacity`は0以上でなければなりません。
   /// - Complexity: O(`capacity`)
   @inlinable
@@ -70,8 +71,10 @@ public struct OptionalArray1D<Element>: ~Copyable {
   /// 指定位置の要素を取得または更新します。
   ///
   /// 未設定の位置からは`nil`を返します。非`nil`の値を代入するとその位置へ要素を構築し、
-  /// `nil`を代入すると既存要素をちょうど一度破棄します。
+  /// 設定済みの位置へ代入すると以前の要素を破棄して置き換えます。`nil`を代入すると
+  /// 既存要素をちょうど一度破棄します。
   ///
+  /// - Parameter position: 取得または更新するslotの位置。
   /// - Precondition: `position`が`indices`に含まれること。
   /// - Complexity: O(1)
   @inlinable
@@ -150,6 +153,9 @@ public struct OptionalArray2D<Element>: ~Copyable {
   ///
   /// いずれかの次元が0なら要素を持たない配列を作ります。
   ///
+  /// - Parameters:
+  ///   - width: 最内軸のslot数。
+  ///   - height: 最外軸のslot数。
   /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
   /// - Complexity: O(`width * height`)
   @inlinable
@@ -194,7 +200,10 @@ public struct OptionalArray2D<Element>: ~Copyable {
   /// `position`番目の行を参照する非所有Viewを返します。
   ///
   /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置から返された同一storage・同一shapeの
+  /// Viewだけを受け入れ、別のViewの代入は契約違反です。
   ///
+  /// - Parameter position: 参照する行の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
@@ -210,9 +219,11 @@ public struct OptionalArray2D<Element>: ~Copyable {
 
     @inline(__always)
     set {
-      // The mutation has already been applied through the pointer-backed View.
-      // This setter only completes writeback for a chained subscript expression.
-      /* NOP */
+      precondition(0 <= position && position < height)
+      let offset = width * position
+      precondition(newValue.hasPayload == hasPayload + offset)
+      precondition(newValue.payload == payload + offset)
+      precondition(newValue.count == width)
     }
   }
 }
@@ -249,6 +260,10 @@ public struct OptionalArray3D<Element>: ~Copyable {
   ///
   /// いずれかの次元が0なら要素を持たない配列を作ります。
   ///
+  /// - Parameters:
+  ///   - width: 最内軸のslot数。
+  ///   - height: 中間軸のslot数。
+  ///   - depth: 最外軸のslot数。
   /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
   /// - Complexity: O(`width * height * depth`)
   @inlinable
@@ -300,7 +315,10 @@ public struct OptionalArray3D<Element>: ~Copyable {
   /// `position`番目の2次元面を参照する非所有Viewを返します。
   ///
   /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを
+  /// 受け入れ、別のViewの代入は契約違反です。
   ///
+  /// - Parameter position: 参照する面の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
@@ -316,9 +334,11 @@ public struct OptionalArray3D<Element>: ~Copyable {
 
     @inline(__always)
     set {
-      // The mutation has already been applied through the pointer-backed View.
-      // This setter only completes writeback for a chained subscript expression.
-      /* NOP */
+      precondition(0 <= position && position < depth)
+      let offset = width * height * position
+      precondition(newValue.hasPayload == hasPayload + offset)
+      precondition(newValue.payload == payload + offset)
+      precondition(newValue.width == width && newValue.height == height)
     }
   }
 }
@@ -338,7 +358,7 @@ extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
 /// 配列ベースのメモ化に用いる配列です。
 /// 未初期化値の番兵を用意することなく利用できます。
 /// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
-/// 連鎖subscriptは`array[size3][size2][size1][size0]`の順で、`size0`が最内軸、
+/// 連鎖subscriptは`array[w][z][y][x]`の順で、`size0`が最内軸、
 /// `size3`が最外軸です。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
@@ -357,6 +377,11 @@ public struct OptionalArray4D<Element>: ~Copyable {
   ///
   /// いずれかの次元が0なら要素を持たない配列を作ります。
   ///
+  /// - Parameters:
+  ///   - size0: 最内軸のslot数。
+  ///   - size1: 内側から2番目の軸のslot数。
+  ///   - size2: 内側から3番目の軸のslot数。
+  ///   - size3: 最外軸のslot数。
   /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
   /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
@@ -410,7 +435,10 @@ public struct OptionalArray4D<Element>: ~Copyable {
   /// `position`番目の3次元領域を参照する非所有Viewを返します。
   ///
   /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを
+  /// 受け入れ、別のViewの代入は契約違反です。
   ///
+  /// - Parameter position: `size3`軸で参照する位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
@@ -430,9 +458,13 @@ public struct OptionalArray4D<Element>: ~Copyable {
 
     @inline(__always)
     set {
-      // The mutation has already been applied through the pointer-backed View.
-      // This setter only completes writeback for a chained subscript expression.
-      /* NOP */
+      precondition(0 <= position && position < size3)
+      let offset =
+        size0 == 0 || size1 == 0 || size2 == 0 ? 0 : size0 * size1 * size2 * position
+      precondition(newValue.hasPayload == hasPayload + offset)
+      precondition(newValue.payload == payload + offset)
+      precondition(
+        newValue.width == size0 && newValue.height == size1 && newValue.depth == size2)
     }
   }
 }
@@ -473,8 +505,10 @@ public struct OptionalArray1DView<Element> {
 
   /// 指定位置の要素を取得または更新します。
   ///
-  /// `nil`を代入すると親配列が所有する既存要素を破棄し、そのslotを未設定状態へ戻します。
+  /// 設定済みの位置へ非`nil`の値を代入すると、親配列が所有する以前の要素を破棄して
+  /// 置き換えます。`nil`を代入すると既存要素を破棄し、そのslotを未設定状態へ戻します。
   ///
+  /// - Parameter position: 取得または更新するslotの位置。
   /// - Precondition: `position`がこのViewの有効範囲に含まれること。
   /// - Complexity: O(1)
   @inlinable
@@ -543,7 +577,10 @@ public struct OptionalArray2DView<Element> {
   /// `position`番目の行を参照する非所有Viewを返します。
   ///
   /// 返されたViewからの変更は同じ親配列へ反映されます。Viewは親配列の生存中だけ使用してください。
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置から返された同一storage・同一shapeの
+  /// Viewだけを受け入れ、別のViewの代入は契約違反です。
   ///
+  /// - Parameter position: 参照する行の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
@@ -559,9 +596,11 @@ public struct OptionalArray2DView<Element> {
 
     @inline(__always)
     set {
-      // The mutation has already been applied through the pointer-backed View.
-      // This setter only completes writeback for a chained subscript expression.
-      /* NOP */
+      precondition(0 <= position && position < height)
+      let offset = width * position
+      precondition(newValue.hasPayload == hasPayload + offset)
+      precondition(newValue.payload == payload + offset)
+      precondition(newValue.count == width)
     }
   }
 }
@@ -603,7 +642,10 @@ public struct OptionalArray3DView<Element> {
   /// `position`番目の2次元面を参照する非所有Viewを返します。
   ///
   /// 返されたViewからの変更は同じ親配列へ反映されます。Viewは親配列の生存中だけ使用してください。
+  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを
+  /// 受け入れ、別のViewの代入は契約違反です。
   ///
+  /// - Parameter position: 参照する面の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
@@ -620,9 +662,11 @@ public struct OptionalArray3DView<Element> {
 
     @inline(__always)
     set {
-      // The mutation has already been applied through the pointer-backed View.
-      // This setter only completes writeback for a chained subscript expression.
-      /* NOP */
+      precondition(0 <= position && position < depth)
+      let offset = width * height * position
+      precondition(newValue.hasPayload == hasPayload + offset)
+      precondition(newValue.payload == payload + offset)
+      precondition(newValue.width == width && newValue.height == height)
     }
   }
 }
@@ -633,5 +677,3 @@ extension OptionalArray3DView {
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<depth }
 }
-
-// Bare Naked Ladies オマージュかもしれない

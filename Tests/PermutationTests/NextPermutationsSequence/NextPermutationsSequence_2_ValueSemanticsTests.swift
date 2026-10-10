@@ -36,15 +36,23 @@ final class NextPermutationsSequence_2_ValueSemanticsTests: XCTestCase {
     var original = [1, 2, 3].nextPermutations().makeIterator()
     _ = original.next()
     var copy = original
-    // `next()`はassertionの外で呼ぶ。Swift 6.4のReleaseでは、`original.next()`を
-    // XCTAssertEqualの中で呼んで結果を読むと、`copy`も進んだ状態になり失敗する(2026-10-07発見)。
-    // ライブラリなしの再現は作れず、原因は未確定(2026-10-08再調査、`Permutations.swift`のTODO参照)。
+    // assertion外で進める通常経路も確認する。Swift 6.4 Releaseで見つかったautoclosure内の
+    // 回帰は、下の専用testで確認する。
     let originalSecond = original.next().map { Array($0) }
     let originalThird = original.next().map { Array($0) }
     let copySecond = copy.next().map { Array($0) }
     XCTAssertEqual(originalSecond, [1, 3, 2])
     XCTAssertEqual(originalThird, [2, 1, 3])
     XCTAssertEqual(copySecond, [1, 3, 2])
+  }
+
+  func testIteratorCopiesAdvanceIndependentlyWhenAdvancedInsideAssertion() throws {
+    var original = [1, 2, 3].nextPermutations().makeIterator()
+    _ = original.next()
+    var copy = original
+
+    XCTAssertEqual(original.next().map { Array($0) }, [1, 3, 2])
+    XCTAssertEqual(copy.next().map { Array($0) }, [1, 3, 2])
   }
 
   func testYieldedValueRemainsStableAcrossTask() async throws {

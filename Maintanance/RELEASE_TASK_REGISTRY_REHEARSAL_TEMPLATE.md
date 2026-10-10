@@ -1,73 +1,33 @@
-# Release <version> 訓練実行task
+# Release Task Registry rehearsal overlay
 
-生成日時: <YYYY-MM-DD> / <生成者>
-Source template commit: `<commit>`
+この文書は独立したrelease工程の複製ではない。
+`RELEASE_TASK_REGISTRY_TEMPLATE.md`を唯一のtask骨格として使用し、別の観点を検証するrehearsalごとに
+以下の情報と境界を加えて`_ReleaseTask/ACTIVE.md`を生成する。
 
-## 起動方法
-
-- [ ] 中間ゴール設定時に、このテンプレートから正本を作成し、必要項目を埋めてコミットする。
-- [ ] 中間ゴール達成時に、コミット済みの正本をGit管理対象外の`_ReleaseTask/ACTIVE.md`へコピーして起動する。
-- [ ] コピーによる起動ではコミットしない。起動後の実行は`ACTIVE.md`のTask Registryへ委譲する。
-
-## Active release
+## Rehearsal setup
 
 - Registry identity: `<rehearsal identity>`
 - Life cycle: `ACTIVE`
-- Mode: `REHEARSAL ONLY / STEP EXECUTION`
-- Version: `<version>`
-- Current blocker: none
-- Next permitted operation: `REL-000のCHANGELOG対応を実行する`
+- Mode: `REHEARSAL / STEP EXECUTION`
+- Rehearsal objective: `<今回発見したい問題>`
+- Target gates: `<実際に判断まで通すgate>`
+- Simulated inputs: `<REHEARSAL ONLYと明記した入力>`
+- Forbidden external operations: branch作成、commit、merge、tag、push、公開
+- End condition: `<確認後にCANCELLEDへ移す条件>`
 
-## Release Task Registry
+## Generation rules
 
-| ID | 状態 | 担当 | 項目 | 再開・完了条件 | 証拠 |
-| --- | --- | --- | --- | --- | --- |
-| `REL-000` | `READY` | Codex | [EXECUTION] CHANGELOG対応 | 対象versionの変更内容をCHANGELOGへ反映し、内容を確認する | `<evidence>` |
-| `REL-001` | `BLOCKED` | Codex | [EXECUTION] candidate確定 | CHANGELOGを含むcandidateを確定する | `<candidate>` |
-| `REL-002` | `BLOCKED` | Codex | [EXECUTION] デバッグビルド | candidateのDebug build結果を記録する | `<evidence>` |
-| `REL-003` | `BLOCKED` | Codex | [EXECUTION] リリースビルド | candidateのRelease build結果を記録する | `<evidence>` |
-| `REL-004` | `BLOCKED` | Codex | [EXECUTION] ドキュメントビルド | candidateのdocumentation build結果を記録する | `<evidence>` |
-| `REL-005` | `BLOCKED` | User / Codex | [DECISION] プッシュ | ユーザーがプッシュについて一問で判断する | `<decision>` |
-| `REL-006` | `BLOCKED` | User / Codex | [DECISION] CI green | ユーザーがcandidate CI greenについて一問で判断する | `<decision>` |
-| `REL-007` | `BLOCKED` | User / Codex | [DECISION] マージ | ユーザーがマージについて一問で判断する | `<decision>` |
-| `REL-008` | `BLOCKED` | User / Codex | [DECISION] main green | ユーザーがmain CI greenについて一問で判断する | `<decision>` |
-| `REL-009` | `BLOCKED` | User / Codex | [DECISION] タグ打刻可否 | ユーザーがタグを打つか一問で判断する | `<decision>` |
-| `REL-010` | `BLOCKED` | Codex | [EXECUTION] タグ打刻 | 許可された対象へタグを打つ | `<tag>` |
-| `REL-011` | `BLOCKED` | User / Codex | [DECISION] 作業ブランチ作成可否 | ユーザーがrelease後の作業ブランチを作成するか一問で判断する | `<decision>` |
-| `REL-012` | `BLOCKED` | Codex | [EXECUTION] 作業ブランチ作成 | 許可されたrelease後の作業ブランチを作成する | `<branch>` |
-| `REL-013` | `BLOCKED` | Codex | [EXECUTION] 結果記録 | 全工程の判断、証拠、外部副作用を記録する | `<result>` |
+1. `RELEASE_TASK_REGISTRY_TEMPLATE.md`から、その時点の全taskとprecedenceを複製する。
+2. 検証対象のgateへ至る前提taskを残し、不要な後続taskだけを`EXCLUDED`にする。
+3. 実行しないbuild、remote CI、merge、tag、push、公開は成功扱いにせず、訓練境界または未実施として記録する。
+4. 対象のユーザー判断は実際に一問ずつ提示し、回答によるready状態の変化まで確認する。
+5. 模擬証拠と判断には`REHEARSAL ONLY`を付け、実releaseへ再利用しない。
+6. 発見した欠落、順序誤り、権限境界、証拠不足は本番templateまたは設計へ還元する。
+7. 予定したgate確認後はRegistryを`CANCELLED`へ移し、通常Registryへ結果を還元して`ACTIVE.md`を削除する。
 
-## Task precedence
+## Drift check
 
-| 後続task | 前提task | Flow | 制約 |
-| --- | --- | --- | --- |
-| `REL-001` | `REL-000` | `SEQUENCE` | CHANGELOG対応後にcandidateを確定する |
-| `REL-002` | `REL-001` | `SEQUENCE` | 確定したcandidateをDebug buildする |
-| `REL-003` | `REL-002` | `SEQUENCE` | Debug build後にRelease buildする |
-| `REL-004` | `REL-003` | `SEQUENCE` | Release build後にdocumentation buildする |
-| `REL-005` | `REL-004` | `GATE` | 三つのbuild完了後にプッシュをユーザー判断する |
-| `REL-006` | `REL-005` | `SEQUENCE` | プッシュ判断がYesの場合だけCI greenをユーザー判断する |
-| `REL-007` | `REL-006` | `SEQUENCE` | CI green判断がYesの場合だけマージをユーザー判断する |
-| `REL-008` | `REL-007` | `SEQUENCE` | マージ判断がYesの場合だけmain greenをユーザー判断する |
-| `REL-009` | `REL-008` | `SEQUENCE` | main green判断がYesの場合だけタグ打刻可否をユーザー判断する |
-| `REL-010` | `REL-009` | `SEQUENCE` | タグ打刻判断がYesの場合だけタグを打つ |
-| `REL-011` | `REL-010` | `SEQUENCE` | タグ打刻後に作業ブランチ作成可否をユーザー判断する |
-| `REL-012` | `REL-011` | `SEQUENCE` | 作業ブランチ作成判断がYesの場合だけ作業ブランチを作成する |
-| `REL-013` | `REL-012` | `SEQUENCE` | 作業ブランチ作成後に結果を記録する |
-| `REL-013` | `REL-011` | `CONDITIONAL` | 作業ブランチ作成判断がNoの場合は作成を飛ばし、中断結果を記録する |
-
-## Step execution
-
-Task Registryを`REL-000`から順に一taskずつ実行する。`DECISION`では一問だけ提示し、回答前に後続taskを実行しない。
-
-## Rehearsal boundary
-
-- 判断結果と模擬証拠を実releaseへ再利用しない。
-- 実際のbranch、commit、merge、tag、push、公開操作を行わない。
-- 終了時は`CANCELLED`としてcleanupする。
-
-## 訓練終了時の共通cleanupチェックリスト
-
-- [ ] Registry全体を`CANCELLED`へ移す。
-- [ ] 判断結果、訓練の達否、外部副作用の有無を通常Task Registryへ還元する。
-- [ ] リリースTask Registryの完了処理の最後に`_ReleaseTask/ACTIVE.md`を削除する。
+- [ ] 本番templateのtask IDとprecedenceを手書きで複製していない。
+- [ ] rehearsal開始時点の本番template commitを記録した。
+- [ ] rehearsal固有の変更は目的、入力、除外、境界だけである。
+- [ ] 本番templateへ還元すべき発見を記録した。

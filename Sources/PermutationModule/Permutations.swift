@@ -16,6 +16,8 @@ extension Collection {
   ///
   /// If you need every permutation rather than only the lexicographic successors of the
   /// current order, use `swift-algorithms`'s `permutations()` instead.
+  ///
+  /// - Complexity: O(1). Creating an iterator copies the elements in O(n) time.
   @inlinable
   public func nextPermutations() -> NextPermutationsSequence<Self>
   where Element: Comparable {
@@ -46,6 +48,8 @@ where Base: Collection, Base.Element: Comparable {
   }
 
   /// Creates an iterator that starts at the source collection's current element order.
+  ///
+  /// - Complexity: O(n), where n is the number of elements.
   @inlinable
   public func makeIterator() -> Iterator {
     .init(elementBuffer: .prepare(source: base))
@@ -83,10 +87,11 @@ extension NextPermutationsSequence {
     @usableFromInline
     var state = State.initial
 
-    // TODO: Swift 6.4の`swift test -c release`では、コピーしたiteratorの元の側をクロージャ内で
-    // 進めて結果を読むと、コピー側も進んだ状態になる(2026-10-07発見)。2026-10-08の再調査では
-    // このiteratorでだけ再現し、ライブラリなしの再現は作れなかった。原因(コンパイラか本実装か)は
-    // 未確定。1.0直前に、まだ起きるかを確認する。
+    // TODO: しばらく様子を見て再現しない場合メモを削除すること
+    // Swift 6.4のRelease最適化では、assertionのautoclosure内で元iteratorを進めた後にcopy側も
+    // 1要素余分に進む事象を確認した。原因は未確定のため、共有時だけ通る`Buffer.copy()`の
+    // インライン化を抑止し、`next()`と未保持時の無コピー経路はインライン化可能なまま維持する。
+    // (2026-10-10回帰test追加、Debug／Release／性能CI成功)
     /// Makes the buffer unique before advancing. Returns `false` without copying when the
     /// buffer is shared and has no successor, because such a copy would only be discarded.
     @inlinable
@@ -154,7 +159,7 @@ struct NextPermutationsBufferHeader {
     nonisolated(unsafe) package static var deinitCount = 0
     @inlinable
     init() {}
-    deinit { Self.deinitCount += 1 }
+    deinit { unsafe Self.deinitCount += 1 }
   }
 #endif
 
@@ -168,7 +173,7 @@ extension NextPermutationsSequence {
     @inlinable
     deinit {
       unsafe self.withUnsafeMutablePointers { header, elements in
-        unsafe elements.deinitialize(count: header.pointee.count)
+        _ = unsafe elements.deinitialize(count: header.pointee.count)
       }
     }
   }
@@ -199,9 +204,13 @@ extension NextPermutationsSequence.Permutation: @unchecked Sendable where Base.E
 
 extension NextPermutationsSequence.Permutation: RandomAccessCollection {
   /// The position of the first element, always zero.
+  ///
+  /// - Complexity: O(1).
   @inlinable
   public var startIndex: Int { elementBuffer.startIndex }
   /// The position one past the last element.
+  ///
+  /// - Complexity: O(1).
   @inlinable
   public var endIndex: Int { elementBuffer.endIndex }
   /// The integer type used to index a permutation.
@@ -210,6 +219,7 @@ extension NextPermutationsSequence.Permutation: RandomAccessCollection {
   public typealias Element = Base.Element
   /// Accesses the element at `position`.
   ///
+  /// - Parameter position: The zero-based position of the element to access.
   /// - Precondition: `position` is in `startIndex..<endIndex`. An out-of-range position stops
   ///   execution in Debug and Release builds; `-Ounchecked` builds may omit this check.
   /// - Complexity: O(1).
@@ -226,6 +236,11 @@ extension NextPermutationsSequence.Permutation: RandomAccessCollection {
 // Equality, hashing, and description depend only on the element order.
 extension NextPermutationsSequence.Permutation: Equatable {
   /// Returns whether two permutations contain equal elements in the same order.
+  ///
+  /// - Parameters:
+  ///   - lhs: A permutation to compare.
+  ///   - rhs: Another permutation to compare.
+  /// - Complexity: O(n) in the worst case, where n is the number of elements.
   @inlinable
   public static func == (lhs: Self, rhs: Self) -> Bool {
     lhs.elementBuffer === rhs.elementBuffer || lhs.elementsEqual(rhs)
@@ -234,6 +249,9 @@ extension NextPermutationsSequence.Permutation: Equatable {
 
 extension NextPermutationsSequence.Permutation: Hashable where Base.Element: Hashable {
   /// Hashes the number and order of the permutation's elements.
+  ///
+  /// - Parameter hasher: The hasher to use when combining the elements.
+  /// - Complexity: O(n), where n is the number of elements.
   @inlinable
   public func hash(into hasher: inout Hasher) {
     hasher.combine(count)
@@ -245,6 +263,9 @@ extension NextPermutationsSequence.Permutation: Hashable where Base.Element: Has
 
 extension NextPermutationsSequence.Permutation: CustomStringConvertible {
   /// A representation of the elements using array syntax.
+  ///
+  /// - Complexity: O(n), where n is the number of elements, excluding the cost of each
+  ///   element's description.
   public var description: String { Array(self).description }
 }
 
@@ -303,7 +324,10 @@ extension NextPermutationsSequence.Buffer {
     return unsafe unsafeDowncast(storage, to: NextPermutationsSequence.Buffer.self)
   }
 
-  @inlinable
+  // Swift 6.4 ReleaseのCOW回帰を避けるため、共有時だけ通るcopy処理をインライン化しない。
+  // Release機械語ではhot pathから分離され、内部のCollection witness table参照はElement metadataの
+  // 解決に限られる。回帰testと性能CIの成功も2026-10-10に確認済み。
+  @usableFromInline
   internal func copy() -> NextPermutationsSequence.Buffer {
     let count = header.count
     let newStorage = NextPermutationsSequence.Buffer.create(count: count)

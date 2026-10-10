@@ -7,21 +7,308 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: なし（`DOC-008` BareArrayコメントドック独立レビューはCodex受入済み）**
+**実行中ジョブ: なし（`RELEASE-077`はCodex検収済み）**
 
 - 継続ジョブ: なし。
-- 新規bounded assignment: なし。
-- 一時制限: Claudeの週間利用量が93%に達しているため、2026-10-13 16:00 JSTまではessential-onlyとする。
-  Codex、第三者AI、または延期で代替できる仕事は割り当てない。Claudeでなければ現在の直接ゴールが
-  停止し、かつ火曜16:00まで待てない仕事だけ、範囲を最小化して例外的に割り当てられる。今回の一件は、
-  ユーザーがClaudeによるレビューを明示指定したため、その指定範囲に限る例外として割り当てる。
-  時刻到達だけで自動的に通常運用へ戻さず、その時点のゴールへの必要性と利用量を再確認する。
+- 2026-10-11、ユーザーが2026-10-13 16:00 JSTまでの開始制限を解除し、この作業のClaudeへの
+  正式登録を明示的に承認した。
+- `RELEASE-074`再作成版は`User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md`へ保存済みである。
 - 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
   `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
   受け入れた。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持する。
 
 この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
 読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+
+## Active bounded assignment: separate quality requirements body and reference material
+
+Registryの`RELEASE-077`として、製品品質要求を「本体」と「非規範的な参照資料」に分離する。
+ユーザーが求めているのは三案を統合した新しい正本の作成ではない。次の構造を成立させることが目的である。
+
+- `Maintanance/User/QUALITY_REQUIREMENTS_CHAPPY_V4.md`を品質要求の本体として維持する。
+- `Maintanance/User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md`から、既存品質資産との接続、洗練の手がかり、
+  Verification／Validationの例、不足仕様候補など、本体から参照するのに有用な内容だけを抽出・再編する。
+- 抽出先を`Maintanance/User/QUALITY_REQUIREMENTS_REFERENCE.md`とし、本体から相対linkで参照可能にする。
+- Claude V2そのものは独立ドラフトと由来の記録として保存し、抽出先を明示する。
+
+Codexが先に同3fileへ未commitの暫定案を作成している。これは確定済みの成果ではなく、Claudeはユーザー意図に
+照らして反証・修正してよい。特に次を確認する。
+
+1. 参照資料が品質要求、達成水準、受入条件を勝手に追加していないこと。
+2. Claude V2の全文を別名で複製せず、正本の具体化や評価に役立つ材料へ整理されていること。
+3. 既存資産の存在を、要求適合の証明として扱っていないこと。
+4. VerificationとValidation、自己比較とC/C++外部比較、確認済みと未確認を混同していないこと。
+5. 本体、参照資料、元ドラフトの役割とlinkが、各fileだけを読んでも判別できること。
+
+変更可能範囲は上記3fileと、このassignmentの`Result`節および冒頭のジョブ状態だけとする。
+`PROGRESS_OVERVIEW.md`、source、test、workflow、他の品質要求draftは変更しない。品質要求本文のQR-01〜QR-06、
+性能閾値、対応環境、release停止条件、工程仕様を新しく確定しない。commit、branch、pushは行わない。
+
+完了時は、冒頭を`返却待ち: RELEASE-077`へ変更し、下の`Result`へ変更file、構造上の判断、残った
+`UNVERIFIED`またはユーザー判断を記録する。ユーザーへの応答は`完了`だけとする。最終受入とRegistry更新は
+Codexが行う。
+
+### Result
+
+2026-10-11 Claude返却。
+
+- 変更file: `User/QUALITY_REQUIREMENTS_REFERENCE.md`だけ。Codex暫定案のV4の2か所のlinkと、V2冒頭の文書状態は
+  役割とlinkが妥当なので変更していない。
+- 確認1（要求の追加）: 暫定案の「洗練の手がかり」は「〜する」「〜できるようにする」の義務形で、読み方によっては
+  作業義務に見える。そこで位置づけに、手がかりは検討する論点で作業義務や受入条件ではない、と明記し、
+  見出しを変えずに読み方を固定した。各箇条の文言は維持した。
+- 確認2（全文複製）: 複製ではなく再編されている。ただし元V2の、日付つきの具体的な観察（C++比較の偏り、
+  外部比較が一部の型と一時点に限られること、`PERM-029`がmacOSローカルだけで見つかったこと、DocCが通るのに
+  コード例が壊れていたこと）が落ちていた。正本を洗練する根拠として有用なので、QR-01〜QR-04へ「観察」として
+  戻し、作成時点の事実で現在は`UNVERIFIED`と明記した。
+- 確認3／4: 「証拠を読むときの注意」で、資産の存在と適合の区別、自己比較と外部比較、VerificationとValidation
+  の区別が押さえられている。問題なし。
+- 確認5（役割とlink）: 参照資料から元ドラフトへの言及をlinkにした。本体→参照資料、元ドラフト→参照資料、
+  参照資料→本体・元ドラフトの各linkがそろった。
+- 暫定案が元V2にない資産（strict memory safety評価、runtime check記録、API matrix、task Registryと事故後原則）や
+  不足仕様候補（module別評価の集約、Validationの判断者）を足している点は、資産・候補の列挙として妥当と見て残した。
+  元V2由来ではないことはCodexの検収で判断してほしい。
+- 追加（2026-10-11、ユーザー指示「2」）: 発注は「V4を本体として維持」だけで正本化が抜けていたため、ユーザーの
+  選択に従い`User/QUALITY_REQUIREMENTS_CHAPPY_V4.md`を`User/QUALITY_REQUIREMENTS.md`へ`git mv`し、タイトルの
+  「V4 Draft」を外して冒頭に文書状態（正本、改名の経緯、参照資料と元ドラフトへのlink）を追加した。参照資料の
+  本体linkも付け替えた。`PROGRESS_OVERVIEW.md`の`RELEASE-077`行は旧名`CHAPPY_V4`を指したままで、変更範囲外の
+  ためCodexが更新してほしい。
+- ユーザー判断として残るもの: 本体V4の§6の表にある「コードスニペット」「利用者経路」は、現時点では既存資産として
+  存在しない（調査段階、smoke testなし）。本体の表に「候補」と示すかどうかは本体の文言変更になるので触れていない。
+
+Codex acceptance（2026-10-11）: commit `3c496eeb`を検収し、ユーザーがClaudeへ直接commitを許可していたことを
+確認した。本体を`QUALITY_REQUIREMENTS.md`へ正本化し、非規範的な参照資料と元ドラフトを相対linkで相互に
+識別できる構造を受け入れた。追加された観察は作成時点の`UNVERIFIED`として隔離され、要求、達成水準、受入条件を
+追加していない。§6の「コードスニペット」「利用者経路」の現状表現は本taskの阻害条件とはせず、後続の品質資産
+具体化で再評価する。
+
+## Returned bounded assignment: product quality requirements same-level redraft
+
+Registryの`RELEASE-074`として、`Maintanance/User/CONCEPT_DEFINITION.md`を唯一の上位入力に、製品品質要求の
+独立ドラフトを再作成する。前回はrelease tree、CI、停止条件へ具体化しすぎたため、今回は次の抽象度を守る。
+
+1. 製品コンセプトから、製品全体に共通する上位品質要求を導く。
+2. 各要求が必要な理由と、コンセプトのどの部分へ接続するかを示す。
+3. Test as Specification、既存のモジュール別品質評価、C/C++比較とperformance evidence、DocC・利用者向け文書、
+   CI・release検証など、既にある資産が各要求へどう接続するかを示す。
+4. 既存資産を置換せず、それらを洗練・再利用できる手がかりと、不足仕様候補を示す。
+5. VerificationとValidationを区別し、要求、既存証拠、未確認事項を混同しない。
+
+回答先は現在の`Maintanance/User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md`だけとする。
+同じ`Archived/`にある`QUALITY_REQUIREMENTS_CHAPPY.md`、`QUALITY_REQUIREMENTS_CODEX.md`、
+`QUALITY_REQUIREMENTS_CODEX_V2.md`、前回の`QUALITY_REQUIREMENTS_CLAUDE.md`は読まない。
+ISO/IEC 25010など既知の品質モデルを参照してよいが、全特性を
+機械的に採用せず、コンセプトとの関係を示す。
+
+性能閾値、具体的なCI job、release停止条件、工程表、実装案、個別仕様の確定へは進まない。source、test、
+workflow、Registry、既存文書を変更しない。完了時は回答fileへドラフトを記録し、冒頭のジョブ状態を返却待ちへ
+変更する。commit、branch、pushは行わない。
+
+Codex acceptance（2026-10-10）: Claude版は他の品質要求案を未読のまま、コンセプトを四つの含意へ分け、
+上位要求6件を必要理由、コンセプト接続、既存資産、洗練の手がかりとともに提示した。Verification／Validation、
+不足仕様候補、採用しないISO特性の理由も分離され、性能閾値、CI job、停止条件、工程へ降りていない。
+Codex版V2も同じ抽象度で、要求7件と既存資産の横断的な再接続を提示したため、同抽象度の再作成を完了として
+受け入れた。両案の統合と品質要求の確定は行わず、ユーザーの比較・判断へ渡す。
+
+## Returned bounded assignment: release quality requirements independent draft
+
+Registryの`RELEASE-074`として、`Maintanance/User/CONCEPT_DEFINITION.md`を入力に、製品コンセプトを
+実現するリリース品質要求の独立ドラフトを作成する。回答先は
+現在の`Maintanance/User/Archived/QUALITY_REQUIREMENTS_CLAUDE.md`だけとし、Codex版
+`Maintanance/User/Archived/QUALITY_REQUIREMENTS_CODEX.md`は回答確定まで読まない。
+
+次を要求候補として整理する。
+
+1. 掃除後のrelease treeが保持すべき製品品質と公開契約。
+2. Test as Specification、Debug／Release test、DocC、性能回帰、利用者経路のsmoke testなど、
+   各要求を受け入れるために必要な証拠。
+3. リリースを停止する条件と、0.5.xの実験として受容できる残余risk。
+4. Verification（要求どおり作られたか）とValidation（コンセプトの用途に適合するか）の区別。
+5. 要求から見つかる不足仕様候補。実装案や工程表そのものへは進まない。
+
+既存のrelease Registryやchecklistを完成形として追認せず、コンセプトから必要性を判断する。
+source、test、workflow、Registry、既存release文書を変更しない。新しい製品仕様、性能閾値、公開契約を
+確定しない。不明点は`UNVERIFIED`、ユーザー判断が必要な候補は一問ずつ分離する。commit、branch、pushを
+行わない。完了時は回答fileへドラフトと参照した証拠を記録し、冒頭のジョブ状態を返却待ちへ変更する。
+
+Codex acceptance（2026-10-10）: Claude版がCodex版を未読のまま専用fileへ確定され、性能、競技用途、
+一般Swift利用の三軸から、品質要求、必要証拠、停止条件、残余risk、Verification／Validation、不足仕様候補を
+提示したことを確認した。両案は、Test as Specification、前release比較、利用者経路のsmoke test、DocC、
+由来追跡を主要証拠とする点で一致する。ASanをrelease停止条件にするか、対応platform、C/C++比較の対象範囲、
+コード例compile保証は未決のまま後続のユーザー判断へ渡し、独立ドラフト作成を完了として受け入れた。
+
+## Active bounded assignment: repository public API code snippet candidate TOP10 survey
+
+`DOC-020`として、`PUBLIC_API_CODE_SNIPPET_SURVEY_2.md`の共通設問に回答する。このリポジトリの
+公開API全体から、公開APIのコメントドックへコードスニペットがあると特に有効な箇所を最大10件
+順位付けし、`PUBLIC_API_CODE_SNIPPET_SURVEY_2_CLAUDE.md`だけへ書く。第1弾の回答は変更しない。
+
+公開宣言と現在のコメントドックを中心に判断し、不明な挙動だけtestで確認する。
+`PUBLIC_API_CODE_SNIPPET_SURVEY_2_CODEX.md`は同時編集しない。各候補にはsymbol、利用者の疑問、
+示すべき最小の振る舞い、既存説明だけでは不足する理由を記載する。source、test、Registry、共通正本は
+変更しない。完了時は冒頭のジョブ状態を返却待ちへ変える。
+
+## Active bounded assignment: code snippet candidate TOP10 survey
+
+Registryの`DOC-019`として、`Maintanance/CODE_SNIPPET_SURVEY.md`の共通設問に回答する。
+対象はBareArray、OptionalArray、Permutationの公開APIだけ。回答先は
+`Maintanance/CODE_SNIPPET_SURVEY_CLAUDE.md`だけとし、回答確定までは
+`Maintanance/CODE_SNIPPET_SURVEY_CODEX.md`を読まない。
+
+公開宣言と生成済みの公開コメントを中心に読み、最大10件を順位付けする。不明な挙動だけ対応testで
+事実確認する。各候補にはsymbol、順位、
+利用者の疑問、スニペットで示すべき最小の振る舞い、既存説明だけでは不足する理由を記載する。
+同一パターンの次元違いを重複させる場合は理由を示す。source、test、Registry、共通設問正本、Codex回答を
+変更しない。コードスニペット自体の実装、掲載場所の決定、統合順位の作成は行わない。
+
+完了時はClaude回答fileの回答状態を完了へ変更し、冒頭のジョブ状態を返却待ちへ変える。commit、受入、
+Registry更新はCodexが扱う。
+
+Codex acceptance（2026-10-10）: Claude回答がCodex回答を未読のまま専用fileへ確定されたことを確認した。
+両回答の強い一致8観点と相違を共通正本へ統合し、メソッドTOP10として受け入れた。候補選定にtest読解を
+必須とした当初の発注は広すぎたため、公開宣言・コメント中心、不明点だけtest確認へ補正した。
+
+## Active bounded assignment: Swift 6.4 Release iterator copy fix independent review
+
+Registryの`PERM-029`について、commit `a7663bbb`の修正を独立に反証レビューする。問題は、
+`XCTAssertEqual`のautoclosure内で元iteratorの`next()`を呼ぶと、Swift 6.4 Releaseでコピー側も
+1要素余分に進むこと。Codexは回帰testを追加し、`next()`へ`@inline(never)`を付けるとDebug／Releaseの
+Permutation testが成功することを確認した。一方、ユーザーの性能testでは赤となり、元実装が非常に
+短いため僅かな命令差でも約30%悪化し得る。正しさと性能のどちらかを捨てる結論を前提にしないこと。
+
+入力は次に限定する。
+
+- `Sources/PermutationModule/Permutations.swift`
+- `Tests/PermutationTests/NextPermutationsSequence/NextPermutationsSequence_2_ValueSemanticsTests.swift`
+- `Tests/PermutationTests/NextPermutationsSequence/NextPermutationsSequence_98_InternalTests.swift`
+- Permutationの性能test／benchmarkと、その実行方法を直接定義するファイル
+- `Maintanance/PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md`
+- `Maintanance/PERFORMANCE_REGRESSION_BISECTION.md`
+- commit `a7663bbb`の差分と、その直前commitとの差分
+
+次だけを確認する。
+
+1. 回帰testが実際の公開契約違反を捕捉しているか。test自身のautoclosure、最適化、寿命短縮による
+   観測上の問題にすぎない可能性も反証する。
+2. `@inline(never)`が正しさを回復する理由について、確認できた事実と推測を分離する。
+3. 性能testの赤が同変更によるものかを、既存の正式な実行方法で確認する。可能なら変更前後を同条件で
+   複数回測り、分散と中央値を示す。約30%というユーザー報告を無条件に追認しない。
+4. `next()`全体のインライン化を止めずに、公開契約と既存の未保持時無コピー経路を維持できる最小候補を
+   2件以内で調べる。候補ごとにDebug／Release回帰testと性能testで反証する。
+5. compiler問題か実装問題か断定できない場合は`UNVERIFIED`とし、Swift bug報告用の最小再現へ
+   切り出せる事実だけを整理する。
+
+source、test、Registry、性能基準を変更しない。実験的変更が必要ならtask専用の一時directoryまたは
+作業tree外の一時copyで行い、repositoryのworktreeへ残さない。commit、branch、pushを行わない。
+結果は`PASS`、`RISK`、`BLOCK`、`UNVERIFIED`で分類し、実行command、構成、測定値、反証結果、
+推奨候補をこのassignmentの`Result`へ記録する。採用、実装修正、Registry更新、完了判定はCodexが行う。
+完了時は冒頭のジョブ状態を返却待ちへ変更する。
+
+### Result
+
+2026-10-10 Claude返却（ユーザー指示「低燃費で」により絞り込み実施）。
+
+- 前提ずれ: 発注後にユーザーがcommit `b71d490a`／`74f391cf`／`927cfd1a`で`next()`の
+  `@inline(never)`を外し、代わりに`Buffer.copy()`を`@inlinable`→`@usableFromInline`へ変更済み。
+  これは項目4の「`next()`のインライン化を維持する最小候補」そのものなので、HEADを候補1として確認した。
+- 1. `PASS`: 回帰testは公開契約違反を捕捉している。autoclosureは非escapingで、その中で`original`を
+  進めても`copy`は値として独立でなければならない。`copy.next()`が`[2, 1, 3]`(3番目)を返すのは観測上の
+  問題ではなく、値セマンティクスの破れそのもの。
+- 2/4. `PASS`(事実): HEADでRelease・Debugとも`NextPermutationsSequence_2_ValueSemanticsTests` 6件0失敗。
+  一時copyで`copy()`だけ`@inlinable`へ戻すとRelease回帰testが`("[2, 1, 3]") != ("[1, 3, 2]")`で失敗。
+  よって効いているのは`copy()`の非インライン化。理由(推測): `copy()`展開後の最適化で、uniqueness検査と
+  新buffer代入の順序または`copy`側との別名解析が崩れる。未検証。
+- 3. `UNVERIFIED`: 性能testは未実施（低燃費指示、性能はCI確認の運用）。HEADでは`next()`は再び
+  inlinableで、外へ出たのは共有時だけ通るcold pathの`copy()`なので、`@inline(never)`版より影響は
+  小さいはず。CIの性能結果で確認すること。
+- 5. `UNVERIFIED`: compiler問題か実装問題かは未断定。最小再現の材料は「ManagedBuffer + 
+  `isKnownUniquelyReferenced` + inlinableな`copy()`、XCTAssertEqualのautoclosure内で`mutating next()`」。
+- 残課題: HEADの`copy()`のTODO(witness table参照チェック)と`Permutations.swift`冒頭コメントが
+  まだ「`next()`のインライン化だけを抑止」と書いており、現実装と食い違う。修正はCodex判断。
+- 実行command: `swift test [-c release] --filter 'PermutationTests.NextPermutationsSequence_2_ValueSemanticsTests'`。
+  一時copyは`mktemp -d`配下で実施し削除済み。repositoryのsource/testは無変更。
+
+Codex acceptance（2026-10-10）: HEADとcommit差分を照合し、回帰testが値semanticsの公開契約違反を
+捕捉すること、`Buffer.copy()`だけを非インライン化したHEADでDebug 6件が成功すること、Claudeが
+一時copyで`copy()`を再び`@inlinable`にするとReleaseで再現したという反証結果を受け入れた。
+原因の説明と性能影響はClaude自身が`UNVERIFIED`としており、確定事実としては受け入れない。
+その後ユーザー報告のCI greenを確認証拠として受け入れ、現実装に合わせて内部コメントを補正し、
+`PERM-029`を完了とした。
+
+## Returned bounded assignment: three-module documentation-comment draft review
+
+Registryの`DOC-013`として、次の通常版公開コメントが公開初版へ進めるドラフト品質かを独立に反証レビューする。
+
+- `Sources/BareArrayModule/BareArray.swift`
+- `Sources/OptionalArrayModule/OptinalArray.swift`
+- `Sources/PermutationModule/Permutations.swift`
+
+対応する`Tests/BareArrayModuleTests`、`Tests/OptionalArrayModuleTests`、
+`Tests/PermutationTests/NextPermutationsSequence`をTest as Specificationとして読む。実装だけで契約が
+分からない箇所は推定せずtestを確認し、それでも確定できなければ`UNVERIFIED`とする。
+`Maintanance/NON_RBT_COMMENT_DOC_SELF_REVIEW.md`はCodexの先行観測として読んでよいが、結論を追認せず反証する。
+AtCoder 2025互換mode、RedBlackTree系、利用者向けMarkdown、命名変更、性能方針、1.0方針は対象外。
+
+各moduleについて次を確認する。
+
+1. 公開宣言のコメントcoverageと、説明の正確さ、用語、軸順、ownership、View寿命、値semantics。
+2. 初期化、空／zero次元、境界・事前条件、writeback、要素寿命、計算量が実装とtestに一致するか。
+3. testが示さない保証や、未解決事項を確定事項として書いていないか。
+4. 利用者が誤用を避けるために必要な重要制約が欠けていないか。
+5. 全面的な書き直しではなく、公開初版へ進むドラフトとして阻害する問題があるか。
+
+指摘はmodule・symbol単位に分け、`PASS`、`RISK`、`BLOCK`、`UNVERIFIED`のいずれか、根拠となるsource／test、
+最も強い反証、最小の修正案、製品判断が必要かを記載する。単なる好みは除外する。特にCodexが記録した
+Permutationのiterator copy独立性とOptionalArrayのView setter契約は、対応testを読んだうえで独立評価する。
+
+source、test、Registry、既存監査文書を変更しない。変更可能範囲はこのassignmentの`Result`節と冒頭の
+ジョブ状態だけ。buildやtestの再実行は必須ではなく、read-only照合でよい。完了時はジョブ状態を返却待ちへ
+変え、下の`Result`へ結果を追記する。commit、push、修正採否、受入、Registry完了はCodexが扱う。
+
+### Result
+
+2026-10-10 / Claude Opus 5.5（`claude-opus-5-5`）。`develop/misc/55` HEAD `6b56cb61`。read-onlyの照合だけ（build・test再実行なし）。
+**結論: 3 moduleとも、公開初版へ進むのを止めるBLOCKは無い。** 判断が要るのは2件（Permutationのiterator copy、OptionalArrayのView setter）。
+
+**Permutation（`Permutations.swift`）**
+
+- P1 `RISK`・**判断候補1**: `NextPermutationsSequence`（L31）と`Iterator`（L59）は「copyは独立に進む」を無条件の保証として書く。
+  対応test `testIteratorCopiesAdvanceIndependently`（`2_ValueSemanticsTests.swift:35-48`）は、Release構成で壊れる呼び方（`XCTAssertEqual`の中で`original.next()`を呼ぶ）を**わざと避けて**書かれている（同L39-41のコメント）。
+  つまり、testが示すのは「その書き方なら独立」までで、Release構成には既知の反例がある（L86-89のTODO、原因未確定）。
+  最強の反証: 原因がcompilerなら、ライブラリの契約としては正しい。修正案: 「Swift 6.4のRelease構成で、特定の書き方だとcopyが連動する未解決の事象がある」を1文足すか、現状のまま1.0前の再現確認に任せるか。製品判断が必要。
+  Codexの先行観測（「コメント修正とは推定しない」）とは、testが反例を避けている点を加えた分だけ評価が違う。
+- P2 `RISK`（軽微）: `makeIterator()`は元の要素をbufferへcopyするのでO(n)だが、計算量の記載が無い（L48-52）。`nextPermutations()`の「1 stepはO(n)」だけでは、iterator作成の費用が読めない。修正案: `makeIterator()`に`- Complexity: O(n)`。製品判断不要。
+- P3 `UNVERIFIED`: `next()`の「終わった後の呼び出しもnilを返す」（L103-104）は、実装（`.finished`）では成り立つが、公開仕様test（`1_`〜`4_`）には無く、内部test（`98_InternalTests.swift:34`）にだけある。
+- P4 `PASS`: 現在の順から始めること、辞書順の後続だけ、等しい要素で重複しない、降順・全要素同値・1要素・空は1回、元のcollectionを変えない、返した値が後で変わらない、0始まりのindex、`==`・`hash`・`description`、範囲外の事前条件と`-Ounchecked`。いずれも`1_`・`2_`・`3_`・`99_`と一致。
+  条件付き`Sendable`（L125・L129・L198）には公開コメントが無い（実装側のコメントだけ）が、`0_PublicSurfaceTests.testSendableConformances`で固定されており、阻害ではない。
+
+**OptionalArray（`OptinalArray.swift`）**
+
+- O1 `RISK`・**判断候補2**: 所有2D〜4DとView 2D・3Dの外側subscriptのsetterは何もしない（L212-216、L318-、L432-436、L561-、L622-）。範囲検査もしない。
+  コメントは「返されたViewからの変更はこの配列へ反映されます」とだけ書くので、`a[0] = b[1]`のような代入が黙って無視されること、範囲外のpositionでも止まらないことが読み取れない。testにもView代入の契約は無い（`grep`で該当なし）。
+  最強の反証: 連鎖書き込み`a[y][x] = v`は正しく動き、普通の使い方では問題が出ない。
+  修正案: 「setterは連鎖書き込みの書き戻し専用で、Viewそのものの代入には意味がない」を1文。BareArray監査のledger #9に「OptionalArrayでは連鎖writeback用と確定（2026-10-08）」とあるので、**既に決まっている可能性がある**。
+  決まっていればコメントに反映するだけ、決まっていなければ「BareArrayと同じく検査してtrapさせるか、黙って無視するのを契約にするか」の判断になる。Codexの先行観測と同じ結論で、既決かどうかの確認を足した。
+- O2 `RISK`（軽微）: 要素subscriptのコメント（1D L70-73、View 1D L474-476）は「非nilの代入で構築、nilの代入で破棄」だけで、**設定済みの位置へ非nilを上書きすると以前の要素が破棄される**ことを書いていない。
+  testはこれを固定している（`6_ReferenceLifetimeTests.swift`の上書きtest 2件）。修正案: 1句足す。製品判断不要。
+- O3 `RISK`（軽微）: `removeAll()`は`mutating`でない`func`（L61ほか）なので、`let`で持った配列にも呼べる。コメントはこの点を書かない。testはすべて`var`で呼んでいる（`5_RemoveAllTests.swift`）。
+  BareArrayの「`let`所有者からの変更」と同じ性質の論点。今は修正不要だが、1.0判断の入力に含めるとよい。
+- O4 `UNVERIFIED`: 所有2D〜4Dの外側subscriptの範囲外、1Dの上限書き込み、View 1Dの上限は、事前条件として書かれ、sourceにも検査があるが、Death Testが無い（`99_DeathTests.swift`の21件に含まれない）。コメントは「trapする」とは書いていないので過大表示ではない。
+- O5 `RISK`（軽微）: 4Dの軸順を`array[size3][size2][size1][size0]`と書く（L341）。寸法名を添字の位置に置いているため、添字の値と寸法を取り違えやすい。BareArrayは`array[w][z][y][x]`。修正案: 添字は別の記号にする。製品判断不要。
+- O6 `PASS`: 初期化（未設定slot、capacity 0、zero次元、非負・積overflow）、`indices`の軸、`removeAll()`でshapeとstorageを保持して再利用できること、所有と破棄、View共有と寿命、`-Ounchecked`の注意。いずれも`1_`・`3_`・`4_`・`5_`・`6_`・`99_`と一致。
+
+**BareArray（`BareArray.swift`）**
+
+- B1 `RISK`（軽微）: 1Dの型コメントは見出しが「1次元配列」に直ったが、2行目が「ヒープ領域に確保される軽量な**多次元**配列です。」のまま（L17）。修正案: 「配列」に。
+- B2: DOC-008で返した判断候補（Viewを残したまま所有者を送る使い方の注記、「C言語の配列に近いアクセス性能」の表現）は未反映のまま。判断が出ていなければ、そのままの扱いで問題ない。
+- B3 `PASS`: DOC-008以後に揃えられた点（4Dの変更反映の文、「別のViewの代入は契約違反」の統一、`BareArray1DView.indices`の範囲）を確認した。そのほかはDOC-008の結果どおり。
+
+**3 module共通**: 所有型の「`Element`が`Sendable`なら配列も`Sendable`」（BareArray・OptionalArray）は、Viewを残したまま所有者を送る使い方に触れない。DOC-008の判断候補1と同じ論点で、OptionalArrayにも同じ形で当てはまる。
+
+Codex acceptance（2026-10-10）: 本結果を完成判定ではなくread-only証拠packageとして検収した。
+先行観測2件と、計算量1件・破棄説明1件・用語2件を受入。test不足だけを理由にした`UNVERIFIED`2件、
+`removeAll()`の`let`呼出し説明要求、共通`Sendable`注記は採用しない。詳細は
+`NON_RBT_COMMENT_DOC_SELF_REVIEW.md`へ統合した。Claudeへの追加依頼は行わない。
 
 ## Active bounded assignment: BareArray documentation-comment independent review
 

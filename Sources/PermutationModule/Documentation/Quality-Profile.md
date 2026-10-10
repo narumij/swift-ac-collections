@@ -31,7 +31,7 @@ AtCoder 2025互換modeは同じ製品目的へ関係するが、公開表面、�
 | QR-02 性能効率性 | 1ステップの計算量、入力buffer、Copy on Write、結果アクセス、allocation、および列挙全体の特性が目的に適する | sourceの計算量契約、内部検査、`PermutationBenchmarks.swift`、benchmark library、CI performance job |
 | QR-03 安全性 | iterator copyと結果値の独立性、bufferの所有権と寿命、範囲検査、破棄、および最適化構成ごとの保証境界を維持する | `_2_ValueSemanticsTests`、`_98_InternalTests`、`_99_DeathTests`、strict memory safety診断、Sanitizer等 |
 | QR-04 理解可能性 | 後続順列と全順列の違い、列挙開始位置、重複要素、結果Index、失敗条件、計算量を利用者が理解できる | 公開APIのdocumentation comment、利用者向け文書、Test as Specification |
-| QR-05 利用可能性 | SwiftPMと一般Swift開発で導入・共存でき、競技用途では互換modeと単一file経路を利用できる | `_0_PublicSurfaceTests`、`_4_CoexistenceTests`、`AcCollections`再公開test、互換modeのspecification test、実提出記録 |
+| QR-05 利用可能性 | SwiftPMと一般Swift開発で導入・共存でき、競技用途では互換modeと単一file経路を利用できる | `_0_PublicSurfaceTests`、`_4_CoexistenceTests`、`AcCollections`再公開test、互換modeのspecification test、実提出記録（ユーザー専任・未実施） |
 | QR-06 持続可能性 | 公開表面、列挙、値セマンティクス、Collection適合、共存性、安全性、性能を変更後に再確認できる | 番号付きTest as Specification、benchmark、CI、設計・調査記録 |
 
 この表は網羅的な個別テスト対応表ではない。各性質の詳細は、担当するTest as Specification、公開契約、または測定記録で扱う。
@@ -72,7 +72,7 @@ documentation commentと利用者向け文書は、利用者が契約、用途�
 
 ### CIと検証記録
 
-CI設定は、実際に検証するtoolchain、platform、build configuration、trait、通常test、Death Test、strict memory safety、およびperformance jobの範囲を定める。jobの存在と、特定候補commitでの成功記録は区別する。
+CI設定は、実際に検証するtoolchain、platform、build configuration、trait、通常test、Death Test、およびperformance jobの範囲を定める。strict memory safetyは`Package.swift`のtarget設定によるbuild時診断であり、専用のCI jobが存在することを意味しない。jobや設定の存在と、特定候補commitでの成功記録は区別する。
 
 ## 品質領域
 
@@ -108,7 +108,7 @@ Swift標準protocolの契約へ違反する入力型に対する防御を要求�
 - iterator copyと結果保持によって共有値を意図せず変更しないこと。
 - 範囲外Indexを公開契約どおり拒否すること。
 - Debug、Release、`-Ounchecked`、traitなどによって保証が変わる場合、その境界を明示すること。
-- strict memory safetyの適用と、scoped `unsafe`が覆う範囲を確認できること。
+- 現在のstrict memory safety設定と、scoped `unsafe`が覆う範囲を確認できること。この確認だけで、凍結中の再検討を再開したとは扱わない。
 
 toolchain固有の最適化事象や未再現の性能事象は、原因と適用範囲が確認されるまで製品契約へ取り込まない。
 

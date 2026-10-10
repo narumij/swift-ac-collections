@@ -25,8 +25,8 @@
 | QR-02 性能効率性 | 赤黒木とCopy on Writeを採用する目的を損なう計算量、allocation、走査特性の退行を防ぐ | `Design/*`の計算量・構造上の契約、性能テスト、CIのperformance job |
 | QR-03 安全性 | raw memory、node、payload、Index、所有権、寿命、Copy on Writeの境界を壊さない | メモリ・Index関連の設計文書、通常テスト、Death Test、Sanitizer、runtime-check関連テスト |
 | QR-04 理解可能性 | 公開契約、保証しない範囲、設計理由、内部契約の境界を追跡できる | API文書、`API-Matrix*.md`、`Design/*`、Test as Specificationの名称と構造 |
-| QR-05 利用可能性・展開可能性 | 対象toolchain、platform、build configuration、互換構成で利用・検証できる | `Package.swift`、公開文書、GitHub Actions、互換構成のテスト |
-| QR-06 持続可能性・変更可能性 | 変更時に影響範囲を特定し、契約違反と性能・安全性の退行を再検出できる | Test as Specification、内部契約テスト、設計文書、CI、release時の検証記録 |
+| QR-05 利用可能性 | 対象toolchain、platform、build configuration、互換構成で利用・検証できる | `Package.swift`、公開文書、GitHub Actions、互換構成のテスト |
+| QR-06 持続可能性 | 変更時に影響範囲を特定し、契約違反と性能・安全性の退行を再検出できる | Test as Specification、内部契約テスト、設計文書、CI、release時の検証記録 |
 
 この表は網羅的なテスト対応表ではない。個別の性質は、担当する仕様テストまたは設計文書で表現する。
 
@@ -98,6 +98,8 @@ Indexの公開表現、`Comparable`採否、異なる木の間でのIndex利用�
 
 有限回の測定だけで計算量を証明したとはみなさない。実時間を比較する場合は、toolchain、build configuration、trait、入力、および実行環境を揃え、測定条件と結果を残す。具体的な計算量契約は、現在の実装と照合された設計文書を正とする。
 
+自己比較による相対的な性能退行の検出と、C/C++標準との外部比較も区別する。RedBlackTreeのbenchmark、`Tests/CppBehaviorReferenceTests/`、および関連する比較記録は外部比較の証拠候補であるが、それらの存在や限定された測定結果だけでQR-02への適合を証明したとはみなさない。対象実装、操作、入力、toolchain、最適化構成、および測定方法を揃えて評価する。
+
 ### 4. 理解可能性、利用可能性、および変更可能性
 
 - 公開API、保証しない範囲、互換構成、およびunderscored declarationの扱いを利用者向け文書から確認できるようにする。
@@ -130,6 +132,14 @@ Fixtureは契約を観測するための参照実装であり、製品ストレ�
 この文書の作成時点では、旧品質方針を現行実装と一項目ずつ再照合した完全な現在評価は行っていない。そのため、旧文書に記載されていた保証、構成、計算量、および検証状態を一括して「確認済み」とは扱わない。
 
 現在評価を行う場合は、各品質主張について次を区別する。
+
+- 確認済み
+- 未達
+- 未検証
+- 対象外
+- 受容済みの残余リスク
+
+各判定では、次の情報を対応づける。
 
 - 上位要求およびモジュール固有の要求
 - 公開契約または設計契約

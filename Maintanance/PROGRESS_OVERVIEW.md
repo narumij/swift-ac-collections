@@ -119,7 +119,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `HIST-001` | `FROZEN` | Codex | unsafe移行史の追加調査 | ユーザーが明示的に再開 | `REFACTORING_FROM_ATCODER_2025.md` |
 | `RBT-009` | `FROZEN` | User / Codex | [DECISION] runtime-check実装の再審査 | ユーザードキュメント作業後、1.0中間ゴールへ移行した時点、または`-Ounchecked`が主要構成と判明した時点で再開し、現行実装を1.0へ採用するか一つだけ判断 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
 | `QUALITY-001` | `FROZEN` | User / Codex | 汎用基盤ライブラリとしての1.0採用品質ゲート | Index契約確定後、ユーザーが明示的に再開 | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
-| `QUALITY-002` | `READY` | Claude | [DISCOVERY] 品質プロファイル共通骨格の独立レビュー（DIRECT） | RedBlackTreeとPermutationの現行profileを上位品質要求、Test as Specification、旧版archive、正本境界と照合し、BLOCKまたは受入可能との根拠を変更なしで返却 | `CLAUDE_TASK.md` |
 
 ## Task precedence
 

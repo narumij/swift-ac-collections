@@ -7,9 +7,9 @@ integration, decisions, acceptance, Registry updates, and public-document owners
 
 ## Current job status
 
-**実行中ジョブ: `QUALITY-002`（品質プロファイル共通骨格の独立レビュー）**
+**実行中ジョブ: なし（`QUALITY-002`はCodex検収済み）**
 
-- 継続ジョブ: `QUALITY-002`だけ。
+- 継続ジョブ: なし。
 - 2026-10-11、ユーザーが2026-10-13 16:00 JSTまでの開始制限を解除し、この作業のClaudeへの
   正式登録を明示的に承認した。
 - `RELEASE-074`再作成版は`User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md`へ保存済みである。
@@ -62,7 +62,51 @@ reviewは読み取りだけとし、二つのprofile、archive、上位品質要
 
 ### Result
 
-Claude返却待ち。
+2026-10-11 Claude返却。結論: `BLOCK`なし。共通骨格（目的と適用範囲 → 位置づけ → QR-01〜06の接続表 → 仕様と証拠の境界 →
+品質領域 → 変更時の確認 → 現在評価の扱い → 関連する正本）は両moduleで成立しており、現行profileとして利用できる。
+改善可能な`NOTE`を5件記録する。
+
+#### NOTE
+
+- **N-1**（RBT「上位品質要求との接続」表、確認1）: QR-05を「利用可能性・展開可能性」、QR-06を「持続可能性・変更可能性」と
+  上位文書にない語を足して表記している。意味の追加と読まれ得る。最小修正: 上位文書の名称に揃えるか、言い換えであると注記する。
+- **N-2**（RBT QR-01／QR-02と「3. 性能効率性」、確認3・4）: 自己比較による回帰検出と、C/C++標準との外部比較を区別していない。
+  コンセプトC2の外部比較の証拠（`Benchmarks/`の`std::set`比較、`Tests/CppBehaviorReferenceTests/`）が実際にあるのは
+  このmoduleなのに、接続先に挙がっていない。Permutation側は区別できている。最小修正: Permutationの「性能証拠」節と同じ区別を入れ、
+  既存のC++比較資産を接続先に加える（外部比較の結果を適合の証明とはしない旨も添える）。
+- **N-3**（RBT「現在評価の扱い」、確認4）: 上位文書§5のアセスメント状態（確認済み／未達／未検証／対象外／受容済みの残余リスク）を
+  使っていない。Permutation側は使っている。共通骨格として読み方がずれる。最小修正: 同じ5分類をRBT側にも置く。
+- **N-4**（Permutation接続表QR-05、確認7）: 証拠の接続先に「実提出記録」がある。`PERM-002`はユーザー専任で未実施なので、
+  記録はまだ存在しない。「5. 利用可能性」でValidationを推定しない旨は正しく書かれているが、表だけ読むと既存の証拠に見える。
+  最小修正: 「（ユーザー専任・未実施）」を添える。
+- **N-5**（Permutation「CIと検証記録」節、確認5・7）: CI設定が「strict memory safety」の範囲を定めると書いているが、workflowに
+  strict memory safety専用のjobはない。実態は`Package.swift`のPermutationModule targetに付いた`.strictMemorySafety()`による
+  build時診断で、CIのbuildに付随して効く。「3. 安全性」の「strict memory safetyの適用…を確認できること」も、凍結中の`PERM-028`
+  （再検討）を再開する意味に読まれないよう、現在の設定の確認にとどまると分かる書き方が望ましい。
+
+#### 照合証拠（問題なし）
+
+- 確認5（参照の実在）: RBTの`API-Matrix.md`、`API-Matrix-View.md`、`Design/`の8文書、`Tests/RedBlackTreeTreeTests/Foundamental/`、
+  `Tests/RedBlackTreeFixture/Fixtures.md`、archive、上位文書への相対link、Permutationの番号付きtest 7群（`_0`〜`_4`、`_98`、`_99`）、
+  `AtCoder2025Compatibility/`、`PermutationBenchmarks.swift`、`Benchmarks/Libraries/CI.json`と`CI-Small.json`、archiveが全て実在。
+  `CI.json`はPermutationのbenchmarkを含み、測定対象は通常版`NextPermutationsSequence`（titleは旧名`Permutations.SubSequenceN`を
+  結果の継続性のため維持、とsourceに明記）。`AcCollectionsTests`に通常版と互換版の再公開testがある。
+- 確認6（archive）: 両archiveの冒頭に「履歴であり、現行の品質要求、契約、検証状態の判断には使用しない」「現行は`../Quality-Profile.md`」
+  とあり、両profileとも「旧判定を現行へ引き継がない」と明記している。
+- 確認7（凍結・未検証領域）: RBTはIndexの公開表現、`Comparable`、異なる木の間のIndex、runtime check、構成ごとの保証を
+  「未確定・再審査待ち、この文書から新しい公開保証を導かない」と明記。Permutationはtoolchain固有の最適化事象を製品契約へ
+  取り込まないとし、単一file生成やsample成功から実提出のValidationを推定しないと明記。
+- 確認2・3: 両profileとも、testの存在と要求適合、CI jobの存在と特定commitでの成功、有限回の測定と計算量の証明を区別している。
+- 確認1: 両profileとも冒頭で「この文書だけで品質要求を新設または変更しない」と明記（N-1の語の追加を除く）。
+
+#### 未確認事項
+
+- RBT接続表の「runtime-check関連テスト」「参照モデルを用いるテスト」が具体的にどのtestかは、名前での検索では特定していない（`UNVERIFIED`）。
+- 各`Design/*`の内容が現行実装と一致しているかは、このreviewの範囲外として読んでいない。
+
+Codex acceptance（2026-10-11）: `BLOCK`なしの結論と5件の`NOTE`を受け入れた。N-1〜N-5は、上位要求の名称、
+自己比較と外部比較、評価状態、未実施の実提出、strict memory safetyの実際の適用経路を正確にする最小修正として
+両profileへ反映した。未確認事項は現行profileの利用を止めるものではなく、推定で確認済みにせず残す。
 
 ## Active bounded assignment: separate quality requirements body and reference material
 

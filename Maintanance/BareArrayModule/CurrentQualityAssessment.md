@@ -255,6 +255,11 @@ checksum検証を含め成功した。さらに12 workloadをsize 1から64kま�
 `Benchmarks/QualityAssessment/macOS/BareArray/`へ暫定証拠として保存した。この結果は比較経路と
 可視化の成立確認であり、性能比の受入判断または正式assessmentではない。
 
+`Benchmarks/run-bare-array-assessment.sh`を追加し、正式測定時にはtimestampとcommitから作る同一の
+測定IDで、生JSON、4枚のPNG、およびcommit・macOS・hardware・Swift・Clangの環境記録を保存する
+構成を整えた。scriptのshell構文と、既存の暫定JSONから生成される4つのchart入力pathを確認した。
+正式測定の実行と性能比の判定は、後続のユーザー判断および実行taskへ残す。
+
 ## Viewノンエスケーパブル化
 
 - ID: `BARE-018`

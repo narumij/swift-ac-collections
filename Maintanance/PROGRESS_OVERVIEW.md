@@ -35,11 +35,11 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 2026-10-10、main merge commit `139ffef8`のCI greenを確認し、annotated tag `0.5.3`を同commitへ作成・pushして
 remote到達を確認した。release後の記録用branchとして、同tagから`develop/misc/55`を作成した。
 
-**現在の中間ゴール:** BareArrayとOptionalArrayの多次元access workloadを同じPRで
-Benchmarkと通常CI libraryへ揃え、そのmerge commitを後続回帰比較の初回baselineにできる状態にする。
-0.5.3に存在しないworkloadのbase / current比較は成立しないため、このPRの性能jobのみ既知の赤を
-初回基準導入として分離する。C++とのmacOS外部assessmentは後続とし、性能比の受入判断は
-暫定実測後まで発生させない。
+**今回達成した中間ゴール:** BareArrayとOptionalArrayの多次元access workloadをBenchmarkへ追加し、
+実装を先にmergeした後、通常CI libraryへの登録だけを独立PRで合流した。登録PR #190と、その次の
+PR #191でperformance jobがgreenとなり、merge commitをbaselineとする通常のbase / current回帰比較が
+成立することを確認した。C++とのmacOS外部assessmentは後続とし、性能比の受入判断は暫定実測後まで
+発生させない。
 
 **凍結中の中間ゴール（前任conversationの残存記録）:**
 
@@ -156,12 +156,12 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray外部性能アセスメントの実測・判定 | 性能比の受入判断後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-029` | `DONE` | Codex | [EXECUTION] BareArray access性能のCI回帰Benchmark登録 | 2D・3D sequential read / writeの4 workloadをbenchmark toolと通常CI libraryへ登録。Release build、size 1・3・16の直接実行、`CI.json`の26 task・60 size・64kまでのcurrent実行が成功 | `BareArrayModule/CurrentQualityAssessment.md` |
 | `BARE-030` | `DONE` | Codex | [EXECUTION] BareArrayアセスメント用C++ nested vector workload登録 | Swift版と同じexact-product shape・連続走査・checksumの2D・3D read / write 4件をnested `vector<intptr_t>`で実装。Release buildとsize 1・3・16の3反復が成功し、通常CIには未登録 | `BareArrayModule/CurrentQualityAssessment.md` |
-| `BARE-031` | `ACTIVE` | Codex | [DISCOVERY] BareArray macOS外部性能アセスメントへのアレンジ | BareArray・Swift nested Array・C++ nested vectorの3系列を含む専用library、生JSON、4枚のPNG chartによる暫定比較は成立。Permutationと同等の保存scriptと環境記録を整え、正式測定へ渡せる構成を閉じる | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
+| `BARE-031` | `DONE` | Codex | [DISCOVERY] BareArray macOS外部性能アセスメントへのアレンジ | 3系列を含む専用library、生JSON、4枚のPNG chartに加え、commit・macOS・hardware・Swift・Clangを同一測定IDで保存するscriptを整え、正式測定へ渡せる構成を閉じた | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-032` | `FROZEN` | User | [DECISION] BareArrayがC++ nested vectorに匹敵すると判定する性能比の上限 | `BARE-031`の暫定実測後、代表多次元access workloadで許容する性能比を一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-033` | `EXCLUDED` | Codex | [EXECUTION] 新BareArray workloadの0.5.3 baseline比較経路 | harness全体の同期は0.5.3にないPermutation APIへ依存してCI失敗し、BareArrayだけの移植も初回基準のために過去harnessを特別扱いする複雑性を生むため除外。merge commitを新baselineとする | `Tests/TESTING.md` / `.github/workflows/ci.yml` / `.github/workflows/candidate.yml` |
 | `PERF-001` | `DONE` | Codex | [EXECUTION] baseline harness同期の取り消し | commit `1027a154`のSources・manifest・resolved同期をPR用とcandidate用の両workflowから取り消し、従来のlibrary定義の同期だけに戻した | `Tests/TESTING.md` / `.github/workflows/ci.yml` / `.github/workflows/candidate.yml` |
-| `PERF-002` | `DONE` | Codex | [EXECUTION] BareArray・OptionalArray初回性能baseline候補の完了ゲート | 両module合4件のSwift workload、通常CI library登録、current側実行を合流。0.5.3側に8件がないため導入PRの性能jobだけを既知の赤とし、merge commitを後続回帰の初回baselineとする境界を記録 | `Tests/TESTING.md` / `BareArrayModule/CurrentQualityAssessment.md` / `OptionalArrayModule/CurrentQualityAssessment.md` |
-| `PERF-003` | `FROZEN` | Codex | [EXECUTION] Array性能baseline確立後の回帰CI確認 | 初回baseline候補がmergeされた後、両moduleのworkloadがbase / currentの双方で実行され、性能jobが通常の回帰比較として機能することを確認する | `Tests/TESTING.md` / `.github/workflows/ci.yml` |
+| `PERF-002` | `DONE` | Codex | [EXECUTION] BareArray・OptionalArray初回性能baseline候補の完了ゲート | 両module合計8件のSwift workloadをPR #189で先にmergeし、そのmerge commitを初回baselineとした。通常CI library登録は後続PRへ分離し、0.5.3へ存在しないworkloadとの比較を要求しない境界を成立させた | `Tests/TESTING.md` / `BareArrayModule/CurrentQualityAssessment.md` / `OptionalArrayModule/CurrentQualityAssessment.md` |
+| `PERF-003` | `DONE` | Codex | [EXECUTION] Array性能baseline確立後の回帰CI確認 | workload実装を含むPR #189のmerge後、CI library登録だけのPR #190と後続PR #191で、両moduleのworkloadを含むperformance jobがgreenとなり、通常のbase / current回帰比較が機能することを確認 | `Tests/TESTING.md` / `.github/workflows/ci.yml` |
 | `BARE-016` | `DONE` | Codex | [DISCOVERY] BareArray現行品質アセスメント | Quality Profileの現在性監査、QR-01〜QR-06の現行評価、実行記録、既存課題と新規Validation候補への不足分離を完了 | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-017` | `PROPOSED` | Codex | [DISCOVERY] BareArray利用Validation scenario設計 | 一般Swift利用と競技利用について、代表利用者、導入経路、利用課題、観測方法を整理し、異なる判断・実行境界を後続task候補へ分離する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-018` | `FROZEN` | Codex | [EXECUTION] BareArray Viewノンエスケーパブル化の完了ゲート | 実装と局所検証の途中証拠を保存したまま凍結。storage、公開型の安全性分類、strict memory safetyの3系統を閉じ、品質検証を再開・完了した後に受入可否を判定する | `BareArrayModule/CurrentQualityAssessment.md` |

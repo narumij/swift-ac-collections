@@ -9,7 +9,7 @@
 
 ## Task
 
-- ID: `PERM-029`
+- ID: `PERM-039`
 - 種別: `DISCOVERY`
 - 担当: Codex
 - 現在の中間ゴールへの近さ: `DIRECT`

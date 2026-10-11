@@ -51,6 +51,8 @@ extensionや同じ責務の分割ファイルは一行へまとめる。名前�
 [`unsafe-tree-live-migration.png`](Images/unsafe-tree-live-migration.png)は、以下の転換点とKeystone testの
 記録を「稼働経路を残した段階移管」として要約したものである。編集可能なSVGは
 [`unsafe-tree-live-migration.svg`](Images/unsafe-tree-live-migration.svg)に置く。
+ここでいう動作の維持は、全機能、全構成、全testが常時成立したという主張ではない。部分的な破損や
+検証範囲の縮小を含みながらも、実行・比較・検査から次の変更に使える観測を得られたことを指す。
 
 | 段階 | Index | Node | Storage / `ManagedBuffer` | CoW | 主な証拠 |
 |---|---|---|---|---|---|

@@ -28,12 +28,12 @@
 
   <rect width="1800" height="1050" fill="#fbfaf7"/>
   <text x="90" y="70" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="42" font-weight="750" fill="#102a4f">木を動かしたまま、内部を架け替える</text>
-  <text x="90" y="110" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="22" fill="#52657b">整数Indexからpointer Indexへ — 単独では交換できない4層を、旧木を足場に別々の速度で移す</text>
+  <text x="90" y="110" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="22" fill="#52657b">整数Indexからpointer Indexへ — 動く仮設から手掛かりを得て、単独交換できない4層を直す</text>
 
   <rect x="90" y="145" width="1620" height="92" rx="18" fill="#102f5b"/>
-  <text x="125" y="183" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="700" fill="#ffffff">稼働線：公開コレクションと旧Treeを止めない</text>
+  <text x="125" y="183" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="700" fill="#ffffff">観測可能な生命線：部分的に壊れても、実行・比較・検査を切らさない</text>
   <line x1="125" y1="207" x2="1665" y2="207" stroke="#7fc4ff" stroke-width="8" marker-end="url(#arrowBlue)"/>
-  <text x="1325" y="188" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#d9edff">旧経路を足場に、新経路が成立した範囲から移管</text>
+  <text x="1340" y="188" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#d9edff">動作 → 観測 → 修正 → 再実行</text>
 
   <text x="245" y="278" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="22" font-weight="700" fill="#284a73">旧構造</text>
   <text x="600" y="278" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="22" font-weight="700" fill="#8a5b05">並設開始</text>
@@ -99,5 +99,5 @@
   <text x="455" y="966" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#8a520c">旧Fixture</text>
   <text x="865" y="966" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#8a520c">Keystoneを分岐保存・一部 #if false</text>
   <text x="1390" y="966" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" fill="#8a520c">新しい内部境界へ検証を再接続</text>
-  <text x="900" y="1025" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="19" font-weight="700" fill="#b7470c">一括置換ではない：稼働経路を残したまま、成立した層から順に荷重を移した</text>
+  <text x="900" y="1025" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="19" font-weight="700" fill="#b7470c">動作は完成の証明ではない：次の改善を可能にする観測基盤だった</text>
 </svg>

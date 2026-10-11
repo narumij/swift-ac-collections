@@ -3,6 +3,10 @@
 > 状態(2026-10-06): 移行史の主要記録は完了。末尾の未追跡事項と、P10で必要になる
 > Index統合前の残存記述確認があるため、現時点では継続文書として保持する。
 
+> 調査中(2026-10-11): V3オーサーがUnsafe系統の移行史を担当する。
+> `release/AtCoder/2025`から現行`HEAD`までを対象に、名前の連続と実装責務の連続を分けた
+> 系統別索引を作成した。現行`HEAD`外の試作は現行系譜へ混ぜず、別の未確認範囲とする。
+
 この文書は、`release/AtCoder/2025`で稼働した赤黒木実装から現在の構成へ移行した際の
 手法と段階を、後から追跡できるように記録する。
 
@@ -15,6 +19,50 @@
 - **[解釈]** 事実からの推測。リネーム類似度(`-M`のパーセンテージ)は「同一ファイルだと
   判定されたかどうか」という事実としてのみ扱い、そこから契約が変わっていない、または
   作者の意図がこうだった、という結論を直接導かない。
+
+## Unsafe系統の移行表(2026-10-11)
+
+`release/AtCoder/2025`の先端`b2580703`から現行`HEAD`までを対象に、リポジトリが付けた
+`Unsafe`型名・protocol名・責務を系統単位で追跡する。標準ライブラリの
+`UnsafeMutablePointer`等は、それ自体を一系統として数えない。同じ型に対するextensionや、
+同じ責務の分割ファイルは一行へまとめる。
+
+テストクラスやfixtureが製品型と同じ`Unsafe`名を含む場合は、その製品系統の検証資産として扱う。
+製品ソースからテストへ移されたdebug access protocolだけは、移管そのものが移行史を示すため
+独立行にした。
+
+「名前の連続」は同じ識別子がいつ存在したかを表し、「責務の連続」は異なる名前や一度消えた
+名前の間に実装上の継承があるかを表す。両者は同一とは限らない。
+
+| 系統 | 名前が生まれた場所 | 名前が消えた、または役割が変わった場所 | 現行の到達点 | 関係の判定 | 主な証拠 |
+|---|---|---|---|---|---|
+| `UnsafeTree` → `UnsafeTreeV2` | `UnsafeTree`は`add37b4b`(2026-01-01)で新設。`UnsafeTreeV2`は`7964713d`(2026-01-05)で別型として新設 | `55ccdb3d`(2026-01-05)で旧`UnsafeTree`の大半を削除。ただしV2は当初から旧`UnsafeTree<Base>.Header`と`UnsafeNode`を利用 | `Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/` | **並行新設後の責務吸収**。単純改名ではない | `git show --summary -M -C add37b4b 7964713d 55ccdb3d`、各時点の型宣言 |
+| `UnsafeIndex` → `UnsafeIndexV2` → `UnsafeIndexV3` | 無印は`add37b4b`、V2は`7964713d`、V3は`357335f7`(2026-02-11)でそれぞれ新設 | 無印は`55ccdb3d`で旧`UnsafeTree`群と共に削除。V2の元パスは`a53d9a5b`(2026-01-24)で削除され、`fd6559ac`(2026-02-12)から`Deprecated/Index`に再配置 | `UnsafeIndexV3`は現行で`_LazyTiedPtr`へのtypealias。V2は互換実装として`Deprecated/Index`に残る | **世代交代。ただし同名V3内部でも実装差し替えあり**。型名だけでは実装同一性を示さない | `git log --diff-filter=A/D -- '*UnsafeIndexV*.swift'`、`005a7bb3`(V3のalias先変更) |
+| `UnsafeNode` | `add37b4b`で`UnsafeTree/UnsafeNode.swift`として新設 | `1c745eef`でV2側へ移動後、2026-01-18〜19に一度削除を挟み、`364c203d`で`__tree/Unsafe/UnsafeNode.swift`から`__tree/unsafe_tree/UnsafeNode.swift`へ100% rename | `Sources/RedBlackTreeCollections/Implements/__tree/unsafe_node/unsafe_node.swift`の`UnsafeNode` | **名称再出現を含む責務継承候補**。同じ生メモリノード責務は確認できるが、削除前後を単一の連続実装とはまだ断定しない | `git log --name-status -M`、旧版と現行版の`UnsafeNode`宣言・メモリ配置コメント |
+| `UnsafeIterator`系 | `add37b4b`で旧Tree用の具象iterator群と補助型を新設。現行のnamespace型`public enum UnsafeIterator`は`5fd598b4`(2026-01-17)で新設 | 旧具象iterator群とV2初期案は`1c745eef`で削除。その後も同名namespace内でObverse/Reverse、tie、remove-aware等を反復改稿し、一部を`Deprecated/Iterator`へ隔離 | `Implements/Iterator/UnsafeIterator/`と`Implements/Deprecated/Iterator/` | **旧具象型群からnamespace型への再構成**。同じ名前でも初期の単一補助型と現行enumは同一実装ではない | `git log --name-status -M -- '*UnsafeIterator*'`、`5fd598b4`の型宣言、`14605f08`(legacy protocol隔離) |
+| `UnsafeSlice`パス → `RedBlackTreeSliceV2` → sealed range系 | `add37b4b`で`UnsafeSlice/`、`7964713d`でV2版を新設。ただし宣言型名は`RedBlackTreeSlice_`/`RedBlackTreeSliceV2` | 旧`UnsafeSlice`は`1c745eef`で削除。V2は同コミットで`Slice/`へ移り、`a53d9a5b`でTree外へ移動。2026-02-05に`UnsafeTreeSealedRange`系が導入され、具象rangeは同日中に削除してprotocolへ分解 | 現行ではV2 Slice型はなく、Index rangeとViewが範囲責務を担う。旧sealed range protocol群は`Deprecated/Protocol`に残る | **パス名だけがUnsafeだった系列から、range protocol/Viewへの責務分解** | `git log --name-status -M -- '*UnsafeSlice*' '*RedBlackTreeSliceV2*' '*UnsafeTreeSealedRange*'`、`c9bd428e`、`3c5f1aae` |
+| `UnsafeStorage` / `UnsafePair` / `UnsafeNodeFreshPool` → `UnsafeTreeV2Buffer` | `UnsafeStorage`とstorage protocolは`add37b4b`前後、`UnsafePair`は`add37b4b`、FreshPool群は`add37b4b`以降、`UnsafeTreeV2Buffer`は`4a86c72d`(2026-01-06)で導入 | 旧Storageは`55ccdb3d`で削除。Pool V1/V2は`4dad3c9c`(2026-01-17)で削除。`UnsafePair`も2026-01-23までに消滅し、ノード直後のpayload操作とbufferへ責務が分解 | `UnsafeTreeV2Buffer`/`UnsafeTreeV2BufferHeader`、`UnsafeNode`、`RawBuffer` | **一対一の改名ではなく、allocation・header・node/payload責務への分解と統合** | `git log --name-status -M -- '*UnsafeStorage*' '*UnsafePair*' '*UnsafeNodeFreshPool*'`、`4a86c72d`、`4dad3c9c` |
+| `_UnsafeNodePtrType`と`Unsafe*Protocol`群 | `_UnsafeNodePtrType`は`aba7c6c0`(2026-01-18)、Index/Tree/Range系protocolは主に2026-02〜04に導入 | Index V2やsealed rangeに密着したprotocolの多くは後に`Deprecated/Protocol`へ隔離。`UnsafeTreeBindingV2`等の共通境界は現役 | `_UnsafeNodePtrType`、`UnsafeTreeBindingV2`等と、Deprecated内の互換protocol | **実装型から能力境界を抽出した後、現役基盤と旧世代契約へ分岐** | `aba7c6c0`、`2b7fea27`、`bf1350f4`、`dff90498`、現行の`Implements/Protocol`と`Deprecated/Protocol` |
+| `UnsafeMutableRawPointer+malloc` | `fddc804b`(2026-01-17)でV2 allocation補助として新設 | 型名は変えず、Tree内部→Buffer/RawBuffer→共通`RawBuffer`へ100% renameで移動 | `Implements/RawBuffer/UnsafeMutableRawPointer+malloc.swift` | **責務の共通基盤化**。プロジェクト独自型ではなく標準型へのextension | `e3f1eeb5`、`de3eff3e`、`974d21c4`、`28a1a5fb`、`0ada7b35`の100% rename |
+| `UnsafeTreeAccessHandleBase` / `UnsafeTreeNode*AccessProtocol` | `090d7768`〜`9189f2c6`(2026-01-24〜25)に旧debug access補助として新設 | `3b14a466`と`c7a6a8c5`で製品ソースからテストへ移管。その後はLegacy区分を経て`TransitionFromLegacy`へ100% rename | `Tests/RedBlackTreeTests/DebugAdditionals/TransitionFromLegacy/` | **製品実装の後継ではなく、移行観察用テスト補助として保存** | `git log --name-status -M -- '*UnsafeTreeAccessHandleBase*' '*UnsafeTreeNodeAccessProtocol*'` |
+
+**[事実]** `release/AtCoder/2025`時点には、上表の型名としての`UnsafeTree`、`UnsafeIndexV2`、
+`UnsafeIndexV3`、`UnsafeNode`は存在しない。一方、`___Tree`、整数ベースの`_NodePtr`、
+`__left_unsafe`等のunsafe操作は既に存在する。したがって「Unsafeという名前の誕生」と
+「unsafeな責務の誕生」は同じ時点ではない。
+
+**[解釈]** 全系統には、(1)並行実装からの吸収、(2)世代名を変えた交代、(3)名前を保ったままの
+分解・再配置、(4)製品ソースからテスト資料への移管が混在する。したがって各行を一律な
+`旧名 → 新名`とせず、`rename`、`parallel introduction`、`responsibility transfer`、
+`name reuse`、`test-only preservation`、`unrelated`を区別する。
+
+**[事実]** `UnsafeIndexV4`を追加するコミット`77095c38`等は全参照を対象にした`git log --all`では
+見つかるが、現行`HEAD`へ至る履歴には含まれない。この表では現行系譜へ直列に接続せず、
+**非採用または未統合の試作**として扱う。
+
+**[未確認]** `UnsafeNode`の2026-01-18〜22の削除・再導入区間について、責務の連続は確認できるが、
+どの差分を同一実装の継続とみなすかは確定していない。また、現行`HEAD`外のUnsafe系試作を
+網羅的に分類する作業は、この表の対象外である。
 
 ## Keystone test
 

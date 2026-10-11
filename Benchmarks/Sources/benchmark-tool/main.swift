@@ -14,6 +14,7 @@ benchmark.addCombiningAPIBenchmarks()
 benchmark.addPermutationBenchmarks()
 benchmark.addBareArrayBenchmarks()
 benchmark.addOptionalArrayBenchmarks()
+benchmark.addStandardArrayMultidimensionalBenchmarks()
 benchmark.main()
 
 // swift run -c release benchmark library run --library ./Libraries/RedBlackTreeSet.json results.json --max-size 2M --cycles 1  --mode replace-all

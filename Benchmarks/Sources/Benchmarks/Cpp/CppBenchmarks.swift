@@ -23,5 +23,6 @@ extension Benchmark {
     _addCppMapBenchmarks()
     _addCppPermutationBenchmarks()
     _addCppBareArrayBenchmarks()
+    _addCppOptionalArrayBenchmarks()
   }
 }

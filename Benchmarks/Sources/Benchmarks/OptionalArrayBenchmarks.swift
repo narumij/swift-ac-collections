@@ -10,6 +10,7 @@
 //===----------------------------------------------------------------------===//
 
 import CollectionsBenchmark
+import BasicContainers
 import OptionalArrayModule
 
 private func balancedOptionalArrayShape(for size: Int, dimensions: Int) -> [Int] {
@@ -54,6 +55,236 @@ private func optionalArrayExpectedChecksum(for size: Int) -> Int {
 
 extension Benchmark {
   public mutating func addOptionalArrayBenchmarks() {
+    self.add(
+      title: "OptionalArray2D<Int> initialization",
+      input: Int.self
+    ) { size in
+      let shape = optionalArray2DShape(for: size)
+      return { timer in
+        var initialized = false
+        timer.measure {
+          let array = OptionalArray2D<Int>(width: shape.width, height: shape.height)
+          initialized = array[0][0] == nil
+        }
+        blackHole(initialized)
+        precondition(initialized)
+      }
+    }
+
+    self.add(
+      title: "RigidArray<OptionalArray1D<Int>> 2D initialization",
+      input: Int.self
+    ) { size in
+      let shape = optionalArray2DShape(for: size)
+      return { timer in
+        var initialized = false
+        timer.measure {
+          var array = RigidArray<OptionalArray1D<Int>>(capacity: shape.height)
+          for _ in 0..<shape.height {
+            array.append(OptionalArray1D<Int>(capacity: shape.width))
+          }
+          initialized = array[0][0] == nil
+        }
+        blackHole(initialized)
+        precondition(initialized)
+      }
+    }
+
+    self.add(
+      title: "RigidArray<RigidArray<Int?>> 2D initialization",
+      input: Int.self
+    ) { size in
+      let shape = optionalArray2DShape(for: size)
+      return { timer in
+        var initialized = false
+        timer.measure {
+          var array = RigidArray<RigidArray<Int?>>(capacity: shape.height)
+          for _ in 0..<shape.height {
+            var row = RigidArray<Int?>(capacity: shape.width)
+            for _ in 0..<shape.width {
+              row.append(nil)
+            }
+            array.append(row)
+          }
+          initialized = array[0][0] == nil
+        }
+        blackHole(initialized)
+        precondition(initialized)
+      }
+    }
+
+    self.add(
+      title: "RigidArray<OptionalArray1D<Int>> 2D cold memoization checksum",
+      input: Int.self
+    ) { size in
+      let shape = optionalArray2DShape(for: size)
+      return { timer in
+        var array = RigidArray<OptionalArray1D<Int>>(capacity: shape.height)
+        for _ in 0..<shape.height {
+          array.append(OptionalArray1D<Int>(capacity: shape.width))
+        }
+        var checksum = 0
+        timer.measure {
+          var value = 0
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              if let cached = array[y][x] {
+                checksum &+= cached
+              } else {
+                array[y][x] = value
+                checksum &+= array[y][x]!
+              }
+              value += 1
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == optionalArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "RigidArray<OptionalArray1D<Int>> 2D warm memoization checksum",
+      input: Int.self
+    ) { size in
+      let shape = optionalArray2DShape(for: size)
+      return { timer in
+        var array = RigidArray<OptionalArray1D<Int>>(capacity: shape.height)
+        for _ in 0..<shape.height {
+          array.append(OptionalArray1D<Int>(capacity: shape.width))
+        }
+        var value = 0
+        for y in 0..<shape.height {
+          for x in 0..<shape.width {
+            array[y][x] = value
+            value += 1
+          }
+        }
+        var checksum = 0
+        timer.measure {
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              if let cached = array[y][x] {
+                checksum &+= cached
+              }
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == optionalArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "RigidArray<RigidArray<Int?>> 2D cold memoization checksum",
+      input: Int.self
+    ) { size in
+      let shape = optionalArray2DShape(for: size)
+      return { timer in
+        var array = RigidArray<RigidArray<Int?>>(capacity: shape.height)
+        for _ in 0..<shape.height {
+          var row = RigidArray<Int?>(capacity: shape.width)
+          for _ in 0..<shape.width {
+            row.append(nil)
+          }
+          array.append(row)
+        }
+        var checksum = 0
+        timer.measure {
+          var value = 0
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              if let cached = array[y][x] {
+                checksum &+= cached
+              } else {
+                array[y][x] = value
+                checksum &+= array[y][x]!
+              }
+              value += 1
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == optionalArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "RigidArray<RigidArray<Int?>> 2D warm memoization checksum",
+      input: Int.self
+    ) { size in
+      let shape = optionalArray2DShape(for: size)
+      return { timer in
+        var value = 0
+        var array = RigidArray<RigidArray<Int?>>(capacity: shape.height)
+        for _ in 0..<shape.height {
+          var row = RigidArray<Int?>(capacity: shape.width)
+          for _ in 0..<shape.width {
+            row.append(value)
+            value += 1
+          }
+          array.append(row)
+        }
+        var checksum = 0
+        timer.measure {
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              if let cached = array[y][x] {
+                checksum &+= cached
+              }
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == optionalArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "OptionalArray1D<Int> cold memoization checksum",
+      input: Int.self
+    ) { size in
+      var array = OptionalArray1D<Int>(capacity: size)
+      return { timer in
+        array.removeAll()
+        var checksum = 0
+        timer.measure {
+          for i in 0..<size {
+            if let cached = array[i] {
+              checksum &+= cached
+            } else {
+              array[i] = i
+              checksum &+= array[i]!
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == optionalArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "OptionalArray1D<Int> warm memoization checksum",
+      input: Int.self
+    ) { size in
+      var array = OptionalArray1D<Int>(capacity: size)
+      for i in 0..<size {
+        array[i] = i
+      }
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          for i in 0..<size {
+            if let cached = array[i] {
+              checksum &+= cached
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == optionalArrayExpectedChecksum(for: size))
+      }
+    }
+
     self.add(
       title: "OptionalArray2D<Int> cold memoization checksum",
       input: Int.self

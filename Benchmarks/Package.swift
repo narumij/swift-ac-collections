@@ -34,6 +34,7 @@ let package = Package(
       name: "Benchmarks",
       dependencies: [
         .product(name: "AcCollections", package: "swift-ac-collections"),
+        .product(name: "BasicContainers", package: "swift-collections"),
         .product(name: "SortedCollections", package: "swift-collections"),
         .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
         "CppBenchmarks",
@@ -54,5 +55,6 @@ let package = Package(
     ),
 
   ],
-  swiftLanguageModes: [.v6]
+  swiftLanguageModes: [.v6],
+  cxxLanguageStandard: .cxx17
 )

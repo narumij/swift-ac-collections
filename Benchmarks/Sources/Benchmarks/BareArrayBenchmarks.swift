@@ -84,9 +84,10 @@ extension Benchmark {
       input: Int.self
     ) { size in
       let shape = bareArray2DShape(for: size)
-      var array = BareArray2D<Int>(repeating: 0, width: shape.width, height: shape.height)
 
       return { timer in
+        var array = BareArray2D<Int>(
+          repeating: 0, width: shape.width, height: shape.height)
         timer.measure {
           var value = 0
           for y in 0..<shape.height {

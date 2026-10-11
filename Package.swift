@@ -291,6 +291,9 @@ let package = Package(
       exclude: [
         "Documentation"
       ],
+      swiftSettings: [
+        .enableExperimentalFeature("Lifetimes")
+      ]
     ),
     .testTarget(
       name: "OptionalArrayModuleTests",

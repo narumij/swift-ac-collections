@@ -130,7 +130,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `ARRAY-001` | `FROZEN` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのTest as Specification前に必要な振り分けは`BARE-002`受入へ移管済み。全体再分解はユーザードキュメント作業後、再開時点の契約・品質評価を入力に行う | `StrictMemorySafetyReadiness.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] Unsafe系統移行史の全件索引 | 現行`HEAD`へ至るUnsafe系統を名前と責務に分けて記録し、現行外の試作と未確定区間を混同せず検収可能にする | `REFACTORING_FROM_ATCODER_2025.md` |
+| `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] UnsafeTree内部構造史 | Unsafe系統索引を入力に、Index・Node・Storage・CoWの転換点を証拠つきで記録し、安全に縮約可能なら横長画像を配置する。複雑度が過大なら画像生成前に中断 | `REFACTORING_FROM_ATCODER_2025.md` |
 | `RBT-009` | `FROZEN` | User / Codex | [DECISION] runtime-check実装の再審査 | ユーザードキュメント作業後、1.0中間ゴールへ移行した時点、または`-Ounchecked`が主要構成と判明した時点で再開し、現行実装を1.0へ採用するか一つだけ判断 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
 | `QUALITY-001` | `FROZEN` | User / Codex | 汎用基盤ライブラリとしての1.0採用品質ゲート | Index契約確定後、ユーザーが明示的に再開 | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
 

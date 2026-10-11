@@ -6,6 +6,10 @@
 > 調査中(2026-10-11): V3オーサーがUnsafe系統の移行史を担当する。
 > `release/AtCoder/2025`から現行`HEAD`までを対象に、名前の連続と実装責務の連続を分けた
 > 系統別索引を作成した。現行`HEAD`外の試作は現行系譜へ混ぜず、別の未確認範囲とする。
+>
+> 追加調査中(2026-10-11): `UnsafeTree`から`UnsafeTreeV2`への内部構造変化を、Index、Node、
+> Storage、CoWの四線で追跡する。CoWは構造変化に関係する転換点だけを含め、意味論・安全性・
+> 性能の全評価は含めない。証拠関係を一枚の図へ安全に縮約できない場合は画像生成前に中断する。
 
 この文書は、`release/AtCoder/2025`で稼働した赤黒木実装から現在の構成へ移行した際の
 手法と段階を、後から追跡できるように記録する。
@@ -63,6 +67,48 @@
 **[未確認]** `UnsafeNode`の2026-01-18〜22の削除・再導入区間について、責務の連続は確認できるが、
 どの差分を同一実装の継続とみなすかは確定していない。また、現行`HEAD`外のUnsafe系試作を
 網羅的に分類する作業は、この表の対象外である。
+
+## `UnsafeTree`内部構造の変化
+
+![UnsafeTree内部構造の変化](UNSAFE_TREE_INTERNAL_EVOLUTION.png)
+
+次の表は、Index、Node、Storage、CoWを同じ時系列で追う。各段階には多数の中間コミットが
+存在するが、ここでは後続構造へ残った転換点と、短期間でも設計上の試行を示す転換点に絞る。
+
+| 段階 | Index | Node | Storage / `ManagedBuffer` | CoW | 主な証拠 |
+|---|---|---|---|---|---|
+| AtCoder 2025 (`b2580703`) | `rawValue: Int`。Index自身が`___Tree`を保持 | `___Tree.Node`を連続要素として格納し、左右親リンクも整数`_NodePtr` | `___Tree`が`ManagedBuffer<Header, Node>`を直接継承。Headerと連続Node領域が一体 | 非一意または容量不足なら、容量を拡張した新しいTreeへ全体copy | `_Tree/___Tree.swift`、`___Tree+Iterator.swift`、`___Tree+CopyOnWrite.swift` |
+| 初代`UnsafeTree` (`add37b4b`、2026-01-01) | `rawValue`が`UnsafeMutablePointer<UnsafeNode>?`へ変化。Tree参照とCoW再構築用`___node_id_`も保持 | 左右親リンクが実ポインタになる。Node直後へpayloadを置き、`___node_id_`と初期化状態をNodeへ追加 | `UnsafeTree`は`ManagedBuffer<Header, UnsafeNode>`。Headerのpoolがノード領域を管理 | 共有時はcopyするが、一意で容量だけ不足した場合はpoolを成長できる経路が現れる | `UnsafeTree.swift`、`UnsafeNode.swift`、`UnsafeIndex.swift`、`UnsafeTree+CopyOnWrite.swift` |
+| V2の並行導入 (`7964713d`、2026-01-05) | `UnsafeIndexV2`もpointer＋`___node_id_`。V2値がTreeを保持 | 初代`UnsafeNode`を共有 | `UnsafeTreeV2`は値型だが、当初は`ManagedBufferPointer<UnsafeTree.Header, UnsafeNode>`で初代Treeのstorageを包む | V2のcopyは新bufferへNodeとリンクを再構築。初代TreeのHeader・Node責務をまだ借用 | `UnsafeTreeV2.swift`、`UnsafeIndexV2.swift`、`UnsafeTreeV2+CopyOnWrite.swift` |
+| 専用Bufferとbucket化 (`4a86c72d`〜`4591b20f`、2026-01-06〜17) | pointer Indexを維持し、Node番号をcopy後の再解決に利用 | Node＋payloadをbucket側へ配置。end、nullptr、recycle/fresh状態を分離 | `UnsafeTreeV2Buffer`を新設。最初は`ManagedBuffer<Header, UnsafeNode>`で要素領域をend専用にし、後に`UnsafeTreeV2Origin`を経て`ManagedBuffer<Header, Void>`へ移行。実Nodeはraw bucket群が所有 | bucket追加は一意なstorageを保ったまま可能。2026-01-12〜13には参照countやpoolまで含むstrong uniquenessを試し、短期間で撤去・単純化 | `4a86c72d`、`f86dbd3b`、`c6cd93a6`、`c55c951c`、`246ec1be`、`4591b20f` |
+| identityと安全柵の形成 (2026-01-22〜02-11) | `_TiedRawBuffer`がstorage寿命を受け持ち、V2からV3へ移行。pointerをsealして時間差の無効化を検査 | `___node_id_`は`86ab5952`で`___tracking_tag`へ改名。`___recycle_count`と組み合わせ、Nodeの再利用世代を識別 | Headerがbucket列、begin/root参照、allocator、tied bufferを接続。Nodeの物理アドレスと論理追跡tagを分離 | copy先はtracking tagから新pointerを解決する。`b9b70ada`でsealingを導入し、pointerだけでは検出できない再利用を世代で扱う | `1dc91bf1`、`86ab5952`、`b9b70ada`、`170679d5`、`357335f7` |
+| 現行構造 (2026-05〜`HEAD`) | `UnsafeIndexV3 = _LazyTiedPtr`。生pointer、sealed、tiedの三層を用途分離 | `___tracking_tag`、`___recycle_count`、payload有無を保持。payloadはNode直後のraw領域 | `UnsafeTreeV2`は`ManagedBufferPointer<UnsafeTreeV2BufferHeader, Void>`を保持。Headerからraw bucket、`_TiedRawBuffer`、`_LazyTie`へ接続 | `ManagedBufferPointer.isUniqueReference()`を入口に、共有時だけtracking tag順で再構築。copy先へ`_tied`/`_lazyDetach`を持ち越さない | `fa3f3fb0`、`ff5d0bfc`、`005a7bb3`、`09ea07bd`、`Design-CopyOnWrite.md` |
+
+**[事実]** AtCoder 2025版の`_NodePtr`は`Int`であり、Indexの`rawValue`も整数だった。
+`add37b4b`ではNodeの左右親リンクとIndexの`rawValue`が実ポインタへ変わり、Nodeへ
+`___node_id_`が追加されている。そのコメントは、この番号を論理IndexではなくCoW再構築専用の
+一時識別子としている。
+
+**[事実]** `UnsafeTreeV2`の初版は初代`UnsafeTree`のHeaderを利用していた。その後、専用の
+`UnsafeTreeV2Buffer`とHeaderを導入し、`ManagedBuffer`のelement領域はNode本体の連続格納から、
+endまたはoriginだけを置く段階を経て、現行では`Void`になった。実Nodeとpayloadの所有は
+Headerから到達するraw bucket群へ移っている。
+
+**[事実]** CoW方式は一直線には変化していない。2026-01-12〜13には明示的な参照count、
+pool deallocatorまで含むstrong uniqueness、単純CoWへの強制と撤去が短期間に続いた。
+現行の`_strongEnsureUnique()`は非互換modeでは`ensureUnique()`と同じであり、storage本体の
+一意性は`ManagedBufferPointer.isUniqueReference()`で判定する。
+
+**[解釈]** 整数Indexからpointer Indexへの変更により、容量拡張で全Nodeを移動する一体型storageを
+そのまま維持しにくくなった。Nodeをbucketへ分離するとアドレスを保った容量追加が可能になる一方、
+CoWでは別storageへNodeを再構築するためpointerが変わる。この差を埋める責務が、
+`___node_id_`/tracking tag、recycle count、sealed pointer、tied storageへ段階的に外在化したと読める。
+ただし、各変更が次の変更を直接の目的として行われたという作者意図までは、コミット差分だけでは
+確定しない。
+
+**[解釈]** 画像では、上の六段階を横軸、Index・Node・Storage・CoWを縦の四線として示せる。
+短命なCoW試行は個別branchとして全部描かず「参照count／strong uniquenessの試行」とまとめても、
+現行構造へ至る主要な関係は失われない。この粒度なら、一枚への縮約は可能と判断する。
 
 ## Keystone test
 

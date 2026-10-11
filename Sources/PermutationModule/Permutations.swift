@@ -425,6 +425,7 @@ extension Collection where Element: Comparable {
 ///
 /// This is intentionally not a `Sequence`: `Sequence.Iterator.next()` cannot express that its
 /// result borrows the iterator and must not survive the next mutation.
+@safe
 public struct NextPermutations<Element: Comparable>: ~Copyable {
 
   @usableFromInline
@@ -442,19 +443,19 @@ public struct NextPermutations<Element: Comparable>: ~Copyable {
   @inlinable
   init<Base: Collection>(copying source: Base) where Base.Element == Element {
     count = source.count
-    elements = .allocate(capacity: Swift.max(count, 1))
+    unsafe elements = .allocate(capacity: Swift.max(count, 1))
 
-    var destination = elements
+    var destination = unsafe elements
     for element in source {
-      destination.initialize(to: element)
-      destination += 1
+      unsafe destination.initialize(to: element)
+      unsafe destination += 1
     }
   }
 
   @inlinable
   deinit {
-    elements.deinitialize(count: count)
-    elements.deallocate()
+    unsafe elements.deinitialize(count: count)
+    unsafe elements.deallocate()
   }
 
   /// Returns the current order, then advances through its lexicographic successors in place.
@@ -478,7 +479,7 @@ public struct NextPermutations<Element: Comparable>: ~Copyable {
     }
 
     var i = count - 2
-    while elements[i] >= elements[i + 1] {
+    while unsafe elements[i] >= elements[i + 1] {
       if i == 0 {
         finished = true
         return nil
@@ -487,17 +488,17 @@ public struct NextPermutations<Element: Comparable>: ~Copyable {
     }
 
     var j = count - 1
-    while elements[j] <= elements[i] {
+    while unsafe elements[j] <= elements[i] {
       j -= 1
     }
 
-    let buffer = UnsafeMutableBufferPointer(start: elements, count: count)
-    buffer.swapAt(i, j)
+    let buffer = unsafe UnsafeMutableBufferPointer(start: elements, count: count)
+    unsafe buffer.swapAt(i, j)
 
     var lower = i + 1
     var upper = count - 1
     while lower < upper {
-      buffer.swapAt(lower, upper)
+      unsafe buffer.swapAt(lower, upper)
       lower += 1
       upper -= 1
     }

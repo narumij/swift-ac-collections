@@ -7,6 +7,17 @@
 証拠境界は`Sources/PermutationModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、現在評価の作業範囲、完了条件、結果を管理する。
 
+## 借用契約への変更後の現在性
+
+2026-10-11、通常版は旧`NextPermutationsSequence`のCOW・値セマンティクス契約から、Swift 6.4の
+Lifetimesと`Span`を用いる`NextPermutations`の借用契約へ変更された。旧通常版testは`#if false`で
+退避され、新契約のTest as Specificationは再構築前である。
+
+この変更より前に記録した本書の「現行評価」、実行記録、およびPERM-040〜PERM-044の旧通常版に対する
+結論は、移行前実装の評価・調査記録として保持する。借用版の現在評価として流用せず、再評価が完了する
+まではQR-01、QR-03〜QR-06の旧判定を現在の適合主張に用いない。性能記録も、測定対象の実装と契約を
+区別して扱う。
+
 ## Task
 
 - ID: `PERM-039`

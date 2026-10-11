@@ -19,7 +19,13 @@
 
 ## 対象
 
-通常版の主な対象は、`Collection.nextPermutations()`、`NextPermutationsSequence`、その`Iterator`と`Permutation`である。
+通常版の主な対象は、`Collection.nextPermutations()`と、要素bufferを所有して各順列を一時的な
+`Span`として貸し出す`NextPermutations`である。`NextPermutations`は`~Copyable`であり、
+`Sequence`には適合しない。返された`Span`はiteratorを借用し、次のmutating accessを越えて保持できない。
+
+旧`NextPermutationsSequence`、その`Iterator`と`Permutation`、Copy on Write、および結果値の
+永続的な値セマンティクスは、現行通常版の契約として扱わない。source内の`#if false`と旧testは、
+契約移行の棚卸し資料であり、現行仕様または成功証拠ではない。
 
 AtCoder 2025互換modeは同じ製品目的へ関係するが、公開表面、実装、build条件、および検証経路が通常版と異なる。通常版の証拠を互換modeへ、互換modeの証拠を通常版へ自動的に適用しない。
 
@@ -27,12 +33,12 @@ AtCoder 2025互換modeは同じ製品目的へ関係するが、公開表面、�
 
 | 上位要求 | PermutationModuleでの主な意味 | 主な仕様・証拠の接続先 |
 | --- | --- | --- |
-| QR-01 正確性 | 入力自身を含む後続順列を契約どおり列挙し、境界、重複要素、終了、値セマンティクス、結果Collectionの振る舞いが正しい | `NextPermutationsSequence_0`〜`_3`、`_98`、`_99`のTest as Specification |
-| QR-02 性能効率性 | 1ステップの計算量、入力buffer、Copy on Write、結果アクセス、allocation、および列挙全体の特性が目的に適する | sourceの計算量契約、内部検査、`PermutationBenchmarks.swift`、benchmark library、CI performance job |
-| QR-03 安全性 | iterator copyと結果値の独立性、bufferの所有権と寿命、範囲検査、破棄、および最適化構成ごとの保証境界を維持する | `_2_ValueSemanticsTests`、`_98_InternalTests`、`_99_DeathTests`、strict memory safety診断、Sanitizer等 |
-| QR-04 理解可能性 | 後続順列と全順列の違い、列挙開始位置、重複要素、結果Index、失敗条件、計算量を利用者が理解できる | 公開APIのdocumentation comment、利用者向け文書、Test as Specification |
-| QR-05 利用可能性 | SwiftPMと一般Swift開発で導入・共存でき、競技用途では互換modeと単一file経路を利用できる | `_0_PublicSurfaceTests`、`_4_CoexistenceTests`、`AcCollections`再公開test、互換modeのspecification test、実提出記録（ユーザー専任・未実施） |
-| QR-06 持続可能性 | 公開表面、列挙、値セマンティクス、Collection適合、共存性、安全性、性能を変更後に再確認できる | 番号付きTest as Specification、benchmark、CI、設計・調査記録 |
+| QR-01 正確性 | 入力自身を含む後続順列を契約どおり列挙し、境界、重複要素、終了、および借用中の要素順が正しい | 借用契約に対応するTest as Specification、件数・checksum検査 |
+| QR-02 性能効率性 | 入力bufferの準備、in-placeの1 step、借用`Span`のアクセス、allocation、および列挙全体の特性が目的に適する | sourceの計算量契約、`PermutationBenchmarks.swift`、benchmark library、CI performance job、外部比較記録 |
+| QR-03 安全性 | bufferの単独所有、要素寿命、借用範囲、破棄、scoped `unsafe`、および最適化構成ごとの保証境界を維持する | compilerのLifetimes診断、strict memory safety診断、所有・破棄test、Sanitizer等 |
+| QR-04 理解可能性 | 後続順列と全順列の違い、手動反復、重複要素、借用結果を保持できないこと、計算量を利用者が理解できる | 公開APIのdocumentation comment、利用者向け文書、Test as Specification |
+| QR-05 利用可能性 | Swift 6.4以降の一般Swift開発で導入・共存でき、対応toolchain別の提供範囲を識別できる | SwiftPM manifest、公開surface test、`AcCollections`再公開test、共存test、一般利用Validation scenario |
+| QR-06 持続可能性 | 公開表面、列挙、借用・所有権、安全性、toolchain別提供範囲、および性能を変更後に再確認できる | 現行契約のTest as Specification、compile-pass／compile-fail fixture、benchmark、CI、設計・調査記録 |
 
 この表は網羅的な個別テスト対応表ではない。各性質の詳細は、担当するTest as Specification、公開契約、または測定記録で扱う。
 
@@ -40,17 +46,26 @@ AtCoder 2025互換modeは同じ製品目的へ関係するが、公開表面、�
 
 ### Test as Specification
 
-通常版の外部または内部から観察可能な契約について、実行可能な正本は`Tests/PermutationTests/NextPermutationsSequence/`の番号付きテスト群とする。
+通常版の外部または内部から観察可能な契約について、実行可能な正本は、借用型
+`NextPermutations`へ対応するTest as Specificationとする。
 
-| テスト群 | 主な担当領域 |
+`Tests/PermutationTests/NextPermutationsSequence/`の番号付きテスト群は旧COW契約を対象としており、
+現在は`#if false`で退避されている。これらは新契約へ維持、置換、廃止する性質を棚卸しする入力であり、
+現行通常版のTest as Specificationまたは成功証拠ではない。
+
+新しいTest as Specificationは、少なくとも次の担当領域を分離する。file名と番号は棚卸し時に確定する。
+
+| 担当領域 | 主な検証対象 |
 | --- | --- |
-| `_0_PublicSurfaceTests` | 公開入口、公開・非公開の表面 |
-| `_1_EnumerationTests` | 列挙順、境界、重複要素、入力Collection |
-| `_2_ValueSemanticsTests` | iteratorと結果の値セマンティクス |
-| `_3_PermutationCollectionTests` | 結果Collection、Index、等値性、hash、表示 |
-| `_4_CoexistenceTests` | 他moduleとの共存と名前解決 |
-| `_98_InternalTests` | 公開契約ではない内部のCopy on Write・破棄等の検査 |
-| `_99_DeathTests` | 事前条件違反時の停止契約 |
+| 公開表面 | `nextPermutations()`、`NextPermutations`、公開・非公開の宣言、`~Copyable`境界 |
+| 列挙 | 列挙順、空・単要素・最終順、重複要素、入力Collection、終了後の反復 |
+| 借用 | `Span`を借用中に読み取れることと、次のmutating accessやescapeがcompilerに拒否されること |
+| 所有と破棄 | 入力からの初期copy、要素の初期化・破棄対応、iterator破棄時の全要素解放 |
+| 共存 | `AcCollections`再公開、他moduleとの名前解決、toolchain別manifestの公開範囲 |
+| 境界 | 公開契約が持つ事前条件と、`Span`側が担当する範囲検査の境界 |
+
+借用違反の拒否は通常のruntime testだけでは検証できない。成功すべき利用例と失敗すべき利用例を分け、
+必要に応じてcompiler診断を確認するcompile-pass／compile-fail fixtureを用いる。
 
 AtCoder 2025互換modeの観察可能な契約は、`Tests/PermutationTests/AtCoder2025Compatibility/`のTest as Specificationが担当する。
 
@@ -76,15 +91,16 @@ CI設定は、実際に検証するtoolchain、platform、build configuration、
 
 ## 品質領域
 
-### 1. 正確性と値セマンティクス
+### 1. 正確性と借用反復
 
 少なくとも次の性質を、担当するTest as Specificationで扱う。
 
 - 入力自身から始まり、辞書順で後続する順列を列挙すること。
 - 空、単一要素、最終順列、重複要素、および非Int Indexの入力を契約どおり扱うこと。
-- iteratorのコピーと、列挙結果として保持した値が契約どおり独立すること。
-- `Permutation`が0始まりのIndexを持つCollectionとして振る舞うこと。
-- 終了後のiterator、範囲外subscript、および直接初期化などの境界を契約どおり扱うこと。
+- 入力Collectionの要素をiterator所有bufferへ一度copyし、入力自身を変更しないこと。
+- 各`next()`が現在の要素順を0始まりの`Span`として貸し出すこと。
+- 返された`Span`が有効な間はその要素順を読み取れ、次のmutating accessを越えて保持できないこと。
+- `NextPermutations`をcopyできず、終了後の`next()`が一貫して`nil`を返すこと。
 
 Swift標準protocolの契約へ違反する入力型に対する防御を要求する場合は、通常の適合型に対する契約と分けて明示する。
 
@@ -94,8 +110,8 @@ Swift標準protocolの契約へ違反する入力型に対する防御を要求�
 
 - 一つの後続順列を生成する計算量。
 - 入力から内部bufferを準備するコスト。
-- iteratorまたは結果をコピーした場合のCopy on Write。
-- `Permutation`の走査とsubscriptの特性。
+- 反復中に順列ごとのallocationまたは全要素copyを行わないこと。
+- 借用`Span`の走査とsubscriptの特性。
 - 全列挙に固有の階乗的な出力数。
 
 有限回のbenchmarkだけで計算量やC/C++級の性能を証明したとはみなさない。回帰判定ではbaseとHEADの条件を揃え、外部比較では対象実装、入力、toolchain、最適化構成、測定方法を明示する。
@@ -104,9 +120,10 @@ Swift標準protocolの契約へ違反する入力型に対する防御を要求�
 
 少なくとも次の領域を、通常テスト、内部テスト、Death Test、compiler診断、および必要な動的検査で分担する。
 
-- bufferとheaderの構築・破棄が対応すること。
-- iterator copyと結果保持によって共有値を意図せず変更しないこと。
-- 範囲外Indexを公開契約どおり拒否すること。
+- iteratorがbufferを単独所有し、全初期化済み要素を一度だけ破棄すること。
+- 借用`Span`がiteratorより長く生存せず、次のmutating accessと重ならないこと。
+- `~Copyable`によってiterator所有権を暗黙に複製できないこと。
+- 範囲外位置を`Span`と公開契約の境界に従って拒否すること。
 - Debug、Release、`-Ounchecked`、traitなどによって保証が変わる場合、その境界を明示すること。
 - 通常版targetへのstrict memory safety適用と、scoped `unsafe`が覆う範囲を確認できること。適用済みであることだけから、個々の危険操作の妥当性まで推定しない。
 
@@ -118,20 +135,26 @@ toolchain固有の最適化事象や未再現の性能事象は、原因と適�
 
 - 全順列ではなく、入力自身を含む後続順列を列挙するAPIであること。
 - 重複要素を含む場合の列挙結果。
-- iteratorと結果値の保持・コピーの意味。
-- 結果のIndex体系、計算量、終了、および失敗条件。
+- `Sequence`や永続的な結果値ではなく、`next()`で借用`Span`を逐次処理するAPIであること。
+- iteratorをcopyできず、結果を次のmutating accessやiterator寿命の外へ保持できないこと。
+- 結果の0始まり位置、計算量、終了、および失敗条件。
 - swift-algorithms等の類似APIとの用途上の違い。
 - 通常版とAtCoder 2025互換modeの境界。
 
 ### 5. 利用可能性
 
-一般Swift開発については、SwiftPMによる導入、`AcCollections`からの再公開、他moduleとの共存、対象toolchainとplatformを扱う。
+一般Swift開発については、Swift 6.4以降を通常版の基準とし、SwiftPMによる導入、
+`AcCollections`からの再公開、他moduleとの共存、Lifetimes機能、対象toolchainとplatformを扱う。
+
+Swift 6.2向けにはversion-specific manifestからPermutationModuleを除く縮小提供を方針としている。
+その実装・検証が完了するまでは、Swift 6.2で他moduleを継続利用できることを確認済みとしない。
 
 競技用途については、互換modeのbuild、公開表面、単一file生成、および実際の提出環境での利用を区別する。単一fileの生成やsample成功だけから、実提出によるValidationの成功を推定しない。
 
 ### 6. 持続可能性
 
-公開表面、列挙、値セマンティクス、Collection適合、共存性、停止契約、および性能を、変更範囲に応じて再確認できる構造を維持する。
+公開表面、列挙、借用・所有権、要素寿命、共存性、toolchain別提供範囲、停止契約、および性能を、
+変更範囲に応じて再確認できる構造を維持する。
 
 調査記録は証拠として保存するが、時点の異なる評価やtask進行を現行プロファイルへ追記し続けない。現在評価と長い調査履歴を分離し、過去の結論を現行の事実として自動的に流用しない。
 
@@ -140,8 +163,8 @@ toolchain固有の最適化事象や未再現の性能事象は、原因と適�
 変更範囲に応じて、少なくとも次を確認する。
 
 1. 関連する通常版または互換modeのTest as Specificationが成功する。
-2. iterator、buffer、Permutation、subscript、または終了処理を変更した場合、値セマンティクス、寿命、範囲検査、および破棄を確認する。
-3. hot path、Copy on Write、allocation、または計算量に影響する変更では、benchmark構成と測定結果への影響を確認する。
+2. iterator、buffer、借用`Span`、subscript、または終了処理を変更した場合、所有権、借用寿命、範囲検査、および破棄を確認する。
+3. hot path、in-place更新、allocation、または計算量に影響する変更では、benchmark構成と測定結果への影響を確認する。
 4. 公開API、文書、再公開、依存、trait、またはbuild条件を変更した場合、利用者が到達する各経路を確認する。
 5. 競技用途の互換経路を変更した場合、一般用途の通常版へ影響がないことを別に確認する。
 
@@ -167,7 +190,7 @@ toolchain固有の最適化事象や未再現の性能事象は、原因と適�
 | --- | --- |
 | リポジトリ全体の上位品質要求 | `Maintanance/User/QUALITY_REQUIREMENTS.md` |
 | 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
-| 通常版の観察可能な仕様 | `Tests/PermutationTests/NextPermutationsSequence/` |
+| 通常版の観察可能な仕様 | 借用契約のTest as Specification（再構築前）。現在は`Sources/PermutationModule/Permutations.swift`の公開契約を参照し、退避中の旧testを現行仕様と扱わない |
 | AtCoder 2025互換modeの観察可能な仕様 | `Tests/PermutationTests/AtCoder2025Compatibility/` |
 | 公開APIとdocumentation comment | `Sources/PermutationModule/Permutations.swift`および互換modeのsource |
 | 性能測定対象 | `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift` |

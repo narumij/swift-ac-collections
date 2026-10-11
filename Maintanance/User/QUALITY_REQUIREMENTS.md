@@ -65,6 +65,23 @@ Swift利用者が期待する言語特性や安全性を
 今後の開発または品質アセスメントで新しい問題、反証、前提の変化が見つかった場合は、現在の位置づけを
 結論として固定せず、影響範囲を確認して再評価する。
 
+### 1.0の提供環境（暫定）
+
+1.0の提供対象は、Apple platforms 27以降およびLinuxの64-bit環境とする。32-bit環境は提供および
+品質保証の対象外とする。
+
+Apple platformsについては、`Package.swift`で対象platformごとの最低deployment versionを宣言し、
+macOS以外も対象platform別のbuild・導入経路を確認する。platformsの宣言だけで、各platformにおける
+実行時品質が確認済みであるとはみなさない。
+
+代表品質評価環境は、macOS 27 / arm64およびUbuntu 24.04 LTS / x86_64とする。Ubuntuの評価は
+GitHub-hosted runnerで行い、commit、workflow run、runner image、kernel、architecture、CPU、Swift、
+依存解決、選択試験、完全log、および終了statusを実行ごとの証拠として残す。物理環境を固定できない
+runner上の結果は、絶対性能またはC/C++との厳密な性能判定には用いない。
+
+この提供環境と代表評価環境は現時点の方針であり、manifest実装、platform別build、品質アセスメント、
+利用環境、および新しい反証を踏まえて1.0品質ゲートまでに再評価できる。
+
 ## 3. 上位品質要求
 
 ### QR-01 正確性 — データ構造として正しく振る舞う

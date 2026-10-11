@@ -142,19 +142,19 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   `PERM-036`へ正式統合した。macOS・Linuxとも修正前後のregressed hot loop自体は同じ命令列で、
   Linuxでは遅い側だけ64 byte境界をまたぐ。これは第三者AIによるassembly review（`PERM-038`）が示す
   generic getterの非inline化仮説を否定するものとして扱わず、別の観測として
-  `PERFORMANCE_REGRESSION_BISECTION.md`へ分離して受入。
+  `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`へ分離して受入。
 
 ### `CP-20261009-002` — 連絡: 第三者AI assembly review（`PERM-038`）の原因説明としての不採用をCodexへ依頼
 
 - queue状態: `RECONCILED`
-- 発見元・ユーザー指示: 2026-10-09、`PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md`（ちゃっぴー分析）をClaudeが照合した後、ユーザー:
+- 発見元・ユーザー指示: 2026-10-09、`Archived/Canonical/PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md`（ちゃっぴー分析）をClaudeが照合した後、ユーザー:
   「採番待ちタスク、ユーザー承認でチャッピー資料の不採用をCodexに依頼」。Claudeが実行するのは、この連絡を書くことだけ。
 - 種別候補: 連絡（Claude）。依頼先は`DECISION`の反映（Codex）
 - 対象範囲: 下の「Codexへの連絡」を書き、Codexの整理時に渡す。
-- 対象外: `PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md`本文の書き換え、Registryの状態変更、文書の削除や移動（いずれもCodex）。
+- 対象外: `Archived/Canonical/PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md`本文の書き換え、Registryの状態変更、文書の削除や移動（いずれもCodex）。
 - 完了条件: Codexが、資料の扱い（不採用の範囲、冒頭の「Accepted」表記、`PERM-038`の状態）を決めて反映する。
 - 前提・既存task候補: `PERM-038`、`3e6d6ec6`（Accept independent assembly review）、`CP-20261009-001`、
-  `PERFORMANCE_REGRESSION_BISECTION.md`の「事例記録: Permutation sequential accessの配置依存」。
+  `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`の「事例記録: Permutation sequential accessの配置依存」。
 - 担当候補・受入担当: Claude（連絡）/ Codex（反映・受入）
 - 停止条件: なし（連絡を書いたら終わる）。
 - Codexへの連絡（ユーザー承認済み）:

@@ -67,7 +67,7 @@ testが証明する範囲だけを書く。「なし」は契約がsourceにあ�
 
 | 副特性 | 確認済み | 制約 | 不足 | 未確認 |
 | --- | --- | --- | --- | --- |
-| 共存性 | `AcCollections`が`@_exported import BareArrayModule`で再公開し（`Sources/AcCollections/AcCollections.swift:4`）、facade経由の利用をtestで確認（`AcCollectionsTests.swift:96`） | 名称は現行体系を維持（`BARE-004`）。命名検討で標準・`swift-collections`との衝突は確認済み（`ARRAY_NAMING_REVIEW.md`） | — | 外部packageと同時importした場合の実際の名前解決 |
+| 共存性 | `AcCollections`が`@_exported import BareArrayModule`で再公開し（`Sources/AcCollections/AcCollections.swift:4`）、facade経由の利用をtestで確認（`AcCollectionsTests.swift:96`） | 名称は現行体系を維持（`BARE-004`）。命名検討で標準・`swift-collections`との衝突は確認済み（`Archived/Canonical/ARRAY_NAMING_REVIEW.md`） | — | 外部packageと同時importした場合の実際の名前解決 |
 | 相互運用性 | 標準protocol（`Sequence`、`Collection`）へ適合しない。`indices`は`Range<Int>`（Audit ledger、適合は`Sendable`の4件だけ） | — | — | — |
 
 ### 3.4 インタラクション能力

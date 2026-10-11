@@ -23,7 +23,7 @@
 | --- | --- |
 | `PROGRESS_OVERVIEW.md` | Task Registryと現在状態の唯一の入口 |
 | `MAINTENANCE.md` | 文書整備の恒久ルールと現在handoff |
-| `RED_BLACK_TREE_REMAINING_TASKS.md` | RedBlackTree残taskの設計正本 |
+| `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | RedBlackTree残taskの設計正本 |
 | `Tests/TESTING.md` | テスト基盤とテスト整理の正本 |
 | `Sources/RedBlackTreeCollections/Documentation/` | 利用者・実装者向けの現行設計資料 |
 | `Archived/` | 完了した調査、旧handoff、履歴スナップショット |

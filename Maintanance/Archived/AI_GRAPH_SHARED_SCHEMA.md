@@ -200,7 +200,7 @@ CodexがClaudeのlocal DBなしで同じ期待結果を再構築するために�
 
 1. test: spec 1件 `Tests/RedBlackTreeTests/RedBlackTreeView/RedBlackTreeView_0_MappedValuesViewTests.swift`、spec以外1件 `Tests/RedBlackTreeTests/RedBlackTreeDictionary/RedBlackTreeDictionary_99_DeathTests.swift`（`compiler_index` / `confirmed`）
 2. document 9件（`repo_text` / `candidate`）:
-   `Documentation/RedBlackTreeMultiMap.ja.md`、`Documentation/RedBlackTreeMultiMap.md`、`Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`、
+   `Documentation/RedBlackTreeMultiMap.ja.md`、`Documentation/RedBlackTreeMultiMap.md`、`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`、
    `Sources/RedBlackTreeCollections/Documentation/API-Matrix-View.md`、`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md`、
    `Sources/RedBlackTreeCollections/Documentation/Head/Outlines/RedBlackTreeMultiMap.outline.md`、
    `Sources/RedBlackTreeCollections/Documentation/Head/RedBlackTreeMultiMap.ja.md`、`Sources/RedBlackTreeCollections/Documentation/Head/RedBlackTreeMultiMap.md`、

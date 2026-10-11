@@ -164,7 +164,7 @@ Codex回答を参照せず、Claudeが独立に記入する。
 - 調査記録の公開範囲を決めた。
 
 **証拠の出どころ:** 二分探索とCI履歴の訂正には、Claudeは関わっていない。その部分は
-`PERFORMANCE_REGRESSION_BISECTION.md`、`Orientation/AGENT_TASK_FIT_INTERVIEW.md`、Gitから判断した
+`Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`、`Orientation/AGENT_TASK_FIT_INTERVIEW.md`、Gitから判断した
 (間接の証拠)。直接見たのは、Claudeとユーザーの会話と、Claudeが担当した監査とレビューである。
 
 ### 点数の変更
@@ -863,7 +863,7 @@ trait・仕様test・生成source、0.5.0を通常Permutationだけで出す判�
 - **問題発見の勘: 5のまま。** 性能回帰に対して、Claudeは2件の調査で「macOSでは命令列に差がない」
   「macOSでは再現しない」までしか返せなかった。ユーザーは約10分後に、buffer headerとprobeのinitializerを
   `@usableFromInline`から`@inlinable`へ、buffer subscriptのgetterを`@inline(__always)`へ変えた
-  （`f01c66a6`）。その後、PR #175でperformanceを含む全jobが成功した（`RELEASE_0_5_0.md`の記録）。
+  （`f01c66a6`）。その後、PR #175でperformanceを含む全jobが成功した（`Archived/Canonical/RELEASE_0_5_0.md`の記録）。
   3か所のどれが効いたかは、Claudeは確かめていない。
 - **scopeを止める力: 5のまま。** 互換modeを0.5.0に入れかけたところで、通常Permutationだけを公開する形へ戻した
   （`81dc5681`、`5cd66cd4`）。互換のCI分離と性能計測は、branch統合の後へ回した。

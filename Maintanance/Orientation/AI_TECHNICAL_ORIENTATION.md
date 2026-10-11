@@ -22,7 +22,7 @@ Task Registryと選択taskの詳細正本で確認する。
 - `../Package.swift`
 - `REFACTORING_FROM_ATCODER_2025.md`
 - `StrictMemorySafetyReadiness.md`
-- `PERFORMANCE_REGRESSION_BISECTION.md`
+- `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`
 - `../Tests/TESTING.md`
 - `RELEASE_CHECKLIST.md`
 - module別の品質評価、監査、Test as Specification
@@ -160,7 +160,7 @@ AIが誤りやすい点:
 - 「結果が空」と「入力Indexが契約上有効」を別に検証する。
 - cross-treeやstaleを許す／拒否する構成差を確認する。
 - upstream要件や公開契約が未確定なら、内部実装から結論を作らず停止する。
-- 現在状態は`RED_BLACK_TREE_REMAINING_TASKS.md`等の選択task正本で確認し、本書の一般説明から推定しない。
+- 現在状態は`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`等の選択task正本で確認し、本書の一般説明から推定しない。
 
 ### 5. tree algorithmは局所修正が全体不変条件へ波及する
 
@@ -390,6 +390,6 @@ AIが誤りやすい点:
 - `../Tests/TESTING.md`: testの現在地とTest as Specification
 - `REFACTORING_FROM_ATCODER_2025.md`: 技術的な変遷と証拠の継承
 - `StrictMemorySafetyReadiness.md`: unsafe、所有、strict memory safetyの調査と段階適用
-- `PERFORMANCE_REGRESSION_BISECTION.md`: 性能回帰の再現、二分探索、生成コード調査
+- `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`: 性能回帰の再現、二分探索、生成コード調査
 - `RELEASE_CHECKLIST.md`: release時の証拠と操作境界
 - module別の監査・品質評価: 個別APIの契約と未確認事項

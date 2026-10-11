@@ -4,7 +4,7 @@
 
 > 運用状態(2026-10-06): 担当を決めるための継続資料として使用する。表中の完了済みtaskや
 > X1の記述は当時の適性根拠であり、再開指示ではない。現在のtask状態は
-> `PROGRESS_OVERVIEW.md`と`RED_BLACK_TREE_REMAINING_TASKS.md`を正とする。
+> `PROGRESS_OVERVIEW.md`と`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`を正とする。
 >
 > 運用更新(2026-10-08): 初期表と過去の相互reviewは当時の証拠として保持する。本文末尾の
 > `2026-10-08 OptionalArray管理方式による更新`とCodex consensus reviewを現在の割り当てへ適用する。
@@ -129,7 +129,7 @@ memory safety・storage・concurrencyは、Codex主担当であっても、Claud
 
 The main evidence base is the three Codex-authored planning documents Claude reviewed on
 2026-10-04 (`CLAUDE_TASK.md` review results): `EXTERNAL_TYPE_EXTENSION_AUDIT.md`,
-`RED_BLACK_TREE_REMAINING_TASKS.md`, and `PROGRESS_OVERVIEW.md`. Each one had blocking factual
+`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`, and `PROGRESS_OVERVIEW.md`. Each one had blocking factual
 corrections. These are the same failure mode the hearing names as a Codex risk: a plausible
 structure recorded as verified state.
 
@@ -445,7 +445,7 @@ visibility監査を対象とする。既存の点数は変更しない。
 5. **公開記録と私的メモの区別について。**
    - 区別の方針自体には同意する。私的メモの`SPECIALIZATION_POLICY.md`は、現在のworktreeにも
      Git管理下にも見当たらない。
-   - ただし、公開済みの`PERFORMANCE_REGRESSION_BISECTION.md`(`7d90490a`、
+   - ただし、公開済みの`Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`(`7d90490a`、
      `origin/try/index/1`にpush済み)の「最小差分の確認」節には、「`package`のまま両プロトコルへ
      `@usableFromInline`を付けると回復した」という結論そのものが書かれている。
    - 手順書としては適切だが、ユーザーが非公開にしたい知見と重なる可能性がある。
@@ -470,7 +470,7 @@ visibility監査を対象とする。既存の点数は変更しない。
   暗黙に拡張しない。
 - 非public protocolへの`@usableFromInline`一律付与は、ユーザーが確定した運用として維持する。
 
-公開範囲についてはユーザーと会話し、`PERFORMANCE_REGRESSION_BISECTION.md`の具体的な属性方針を
+公開範囲についてはユーザーと会話し、`Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`の具体的な属性方針を
 後続commitでぼかすことに決定した。既に公開済みの過去commitまでは書き換えない。今後の私的な
 チューニング方針を追加公開する判断とも分離する。
 

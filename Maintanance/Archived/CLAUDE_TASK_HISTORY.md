@@ -9,11 +9,11 @@ position in the original file at the time they were written.
 
 The chronological handoff log for 2026-10-05/06 was removed from `Maintanance/CLAUDE_TASK.md`.
 Most of it is already recorded in the canonical documents (`Design-RuntimeChecks.md`,
-`Design-MemorySafety.md`, `RED_BLACK_TREE_REMAINING_TASKS.md`, `Tests/TESTING.md`,
+`Design-MemorySafety.md`, `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`, `Tests/TESTING.md`,
 `Archived/CROSS_TREE_INDEX_TEST_AUDIT.md`, `Archived/INDEX_POC_VALIDATION.md`). Only the items
 not recorded elsewhere are kept here:
 
-- User decision (2026-10-05): `PERFORMANCE_REGRESSION_BISECTION.md` publication level is closed
+- User decision (2026-10-05): `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md` publication level is closed
   with no edit. The mechanism may be partly inferable from public records, as long as the correct
   answer is not trivially obtainable.
 - Observation, no action: the package-only tree-free `_LazyTieWrap.isValid` checks
@@ -301,7 +301,7 @@ the draft's own IDs as the practical test; the IDs below belong to this section.
   > ID付き項目の中の補足には番号付きリストを使わず、箇条書き(`-`)にする。
 
 - (3) **Generalize the table-cell rule.** Single-letter names exist outside tables too: `案S` / `案E`
-  in the runtime-check policy and items E / K in `RED_BLACK_TREE_REMAINING_TASKS.md`. Append to
+  in the runtime-check policy and items E / K in `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`. Append to
   「表の座標との区別」:
 
   > 表以外でも、既存文書で英字1文字が名前になっているもの(`案S`、残タスクの`項目K`など)は、
@@ -729,7 +729,7 @@ I appended `## Claude review of performance regression evidence update (2026-10-
   - Claude's `approve` covers API, compile, and function only. A narrowing batch is not complete
     until the performance job is green.
 
-**User decision needed:** `PERFORMANCE_REGRESSION_BISECTION.md`, pushed to
+**User decision needed:** `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`, pushed to
 `origin/try/index/1`, states the `package` + `@usableFromInline` recovery result itself. That may
 overlap the knowledge the user wants to keep private. Not edited.
 
@@ -1615,7 +1615,7 @@ be exactly one of:
 3. explicitly frozen until the user requests restart or makes the required product decision.
 
 Inspect at least `Maintanance/PROGRESS_OVERVIEW.md`,
-`Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`, `Tests/TESTING.md`, and the unchecked items in the
+`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`, `Tests/TESTING.md`, and the unchecked items in the
 RedBlackTree API matrices. Identify any item whose current wording still appears to authorize an
 unfrozen non-Index implementation task, any duplicate with inconsistent status, and any completed
 item still presented as pending.
@@ -1648,7 +1648,7 @@ allowed. Run `git diff --check` and inspect `git status --short` at the end.
 No product-owner decision is required. Every item already fits one of the three classes. The
 problem is wording: a few entries still read as active, non-Index implementation work, and two
 pairs are duplicated with inconsistent status. Read-only inspection covered
-`PROGRESS_OVERVIEW.md`, `RED_BLACK_TREE_REMAINING_TASKS.md`, `Tests/TESTING.md`, `API-Matrix.md`,
+`PROGRESS_OVERVIEW.md`, `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`, `Tests/TESTING.md`, `API-Matrix.md`,
 and `API-Matrix-View.md`.
 
 #### Items that need corrections
@@ -2758,7 +2758,7 @@ Two mechanical facts are missing from the anchor table:
   "Last pre-sync PoC commit" is ambiguous, because there are three sync merges, not one.
 - **Where the PoC starts.** It has 24 branch-unique first-parent commits (`try/index/1 --not
   develop/misc/48`). The earliest is `21bdd758` (09-24 19:40, `memo`). The commits from 15:44 to
-  15:56 that `RED_BLACK_TREE_REMAINING_TASKS.md` dates as the start of the work are reachable from
+  15:56 that `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` dates as the start of the work are reachable from
   `develop/misc/48`, so they are not branch-unique.
 
 #### 2. Path inventory: verified, with one gap
@@ -2977,7 +2977,7 @@ This interview must not start the PoC validation.
 
 2026-10-05, Claude Opus 5.5. Interview only. I did not inspect, compare, or switch to
 `try/index/1`. The evidence comes from repository records (`CLAUDE_TASK_HISTORY.md`,
-`RED_BLACK_TREE_REMAINING_TASKS.md` §`try/index/1`, `MAINTENANCE.md`) and my own observed
+`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` §`try/index/1`, `MAINTENANCE.md`) and my own observed
 failure modes.
 
 **Final label: `見本またはレビュー必須`. Overall rating: 3.**
@@ -3766,7 +3766,7 @@ Only these files may be edited:
 - `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
 - `Maintanance/CLAUDE_TASK.md`
 - `Maintanance/PROGRESS_OVERVIEW.md`
-- `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
+- `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`
 
 Do not edit source, tests, Package.swift, CHANGELOG, workflows, benchmarks, or DocC.
 Do not stage, commit, switch branches, use network access, inspect `try/index/1`, or
@@ -3816,7 +3816,7 @@ Evidence:
   protocol refining a non-UFI package protocol is an error; inferred associated types
   through a `@usableFromInline package` protocol work in public conditional conformances
   and from a client. No repository source was edited and no package build was run.
-- `PROGRESS_OVERVIEW.md` / `RED_BLACK_TREE_REMAINING_TASKS.md`: no demonstrably stale
+- `PROGRESS_OVERVIEW.md` / `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`: no demonstrably stale
   statement found for this scope; unchanged.
 - `git diff --check`: clean. Nothing staged.
 
@@ -3959,7 +3959,7 @@ Do not re-propose these as immediate work:
    not the pre-cleanup snapshot. Cover public `_` / `__`, `Unsafe*`, public typealiases,
    external-type extensions, conditional conformances, and Debug/Release differences.
 2. Reconcile every residual item with `EXTERNAL_TYPE_EXTENSION_AUDIT.md` and
-   `RED_BLACK_TREE_REMAINING_TASKS.md` as one of:
+   `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` as one of:
    - intended product/API-matrix surface;
    - known deferred cluster listed above;
    - compatibility-only and correctly guarded;
@@ -3988,7 +3988,7 @@ accounting corrections, remaining gates, and one verdict:
 - `independent cleanup complete; deferred gates only`
 - `inventory inconsistency blocks closure`
 
-Update `PROGRESS_OVERVIEW.md` and `RED_BLACK_TREE_REMAINING_TASKS.md` only if a stale
+Update `PROGRESS_OVERVIEW.md` and `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` only if a stale
 statement can be corrected without marking deferred work complete. Update this task
 with concise evidence and set it to `Completed`.
 
@@ -3998,7 +3998,7 @@ Only these files may be edited:
 
 - `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
 - `Maintanance/PROGRESS_OVERVIEW.md`
-- `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
+- `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`
 - `Maintanance/CLAUDE_TASK.md`
 
 Do not edit source, tests, Package.swift, CHANGELOG, workflows, benchmarks, or DocC.
@@ -4427,7 +4427,7 @@ relocation, or continued deferral. Do not implement the disposition in this task
    replacement evidence, validation matrix, and source-compatibility impact.
 
 Use `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md` and
-`Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md` as current records. Preserve the user's
+`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` as current records. Preserve the user's
 existing iterator design intent where source/history in the repository establishes it;
 do not classify by reference count alone.
 
@@ -4612,7 +4612,7 @@ as unused abstraction merely because production algorithms do not consume them.
 Use these records as the starting point:
 
 - `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
-- `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
+- `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`
 - `Maintanance/PROGRESS_OVERVIEW.md`
 - `Tests/TESTING.md`
 
@@ -4860,7 +4860,7 @@ found, or if a product-owner decision is required.
 
 Perform a read-only review of `### C〜F 調査結果と暫定推奨` in:
 
-- `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
+- `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`
 
 The product owner uses apple/swift-collections' `Sources/ContainersPreview` as the
 upstream design reference. We should track and learn from the experimental protocol as
@@ -5000,7 +5000,7 @@ was published in 0.1.33 as a feature.
 ## Completed assignment: close RedBlackTree public-surface inventory gate A
 
 Perform the final read-only mechanical extraction for gate A of
-`Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`.
+`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`.
 
 Primary record:
 
@@ -5331,7 +5331,7 @@ Line numbers refer to `Maintanance/PROGRESS_OVERVIEW.md` (abbreviated `PO`) unle
 
 - Stale claims in documents that PO marks complete or canonical:
   - `Tests/TESTING.md:15` still says `CppBehaviorReferenceTests` 17件 (actual 35). PO:209 names
-    `TESTING.md` as canonical. The update task exists only in `RED_BLACK_TREE_REMAINING_TASKS.md`.
+    `TESTING.md` as canonical. The update task exists only in `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`.
   - `AdoptionReadinessAssessment.md:189-190,221` and `.ja.md:173-174,200` still list Linux
     validation as unmeasured or as a gate, and do not state the libc++-normative / libstdc++-reference
     split. This conflicts with PO:27 and PO:31 「完了・更新継続」.
@@ -5385,7 +5385,7 @@ RBT main-path content and the C++ comparison representation are accurate.
 
 Perform a read-only review of these two new planning documents:
 
-- `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
+- `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`
 - `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
 
 The purpose is to check whether the remaining work is ordered by real dependencies and
@@ -7375,7 +7375,7 @@ Status: Completed (2026-10-04, Claude Opus 5.5)
   - `RBT-011`のupstream確認（2026-10-07）: swift-collections `main`の`Container.swift`は`associatedtype Index: Equatable,
     Comparable, Hashable`のまま。最終変更は2026-09-21 `b2424210`「Reinstate requirement for Comparable indices」で、
     その後の変更なし。Comparableを外す検討のFIXMEも残る。外部待ちのまま。なおPR #158でIndexが独自型になったので、
-    `RED_BLACK_TREE_REMAINING_TASKS.md`の「Indexが`Result`のtypealiasなのでComparableにできない」という記述は古い（Codexへ）。
+    `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`の「Indexが`Result`のtypealiasなのでComparableにできない」という記述は古い（Codexへ）。
 - `GRAPH-001`初期合格・試験運用継続（2026-10-07、ユーザー確認）: Claude DBの`ready`はRegistry表示と一致
   （初期試験時点では`GRAPH-001`のみ）。local DBを通常作業で継続利用し、統合議論まで観測を蓄積する。
   2026-10-07の観測: 赤黒木以外（`OPT-001` / `BARE-001` / `ARRAY-001` / `PERM-001` / `RBT-005` / `RBT-008`）も対象コードを登録した。
@@ -7460,7 +7460,7 @@ Status: Completed (2026-10-04, Claude Opus 5.5)
   事前条件、必要なら`isElement(at:)`を明示的に使う」と確定済みで、仕様test`test_subrangeValuesSingleIndexOperations_doNotCompareKeys`
   が固定している。発端の`RBT-013`報告「文書は範囲内前提なのに実装が検査しない＝不一致」はClaudeの誤認（事前条件を実装で検査しない
   のは不一致ではない）で、`RBT-018`も履歴・仕様test・API Matrixを見ずに判断点なしとした調査不足。F-1〜F-4の判断は無効。
-  コード変更なし（`RBT-024`の試行は元に戻した）。`RED_BLACK_TREE_REMAINING_TASKS.md`の「文書を緩めず、実装側へ範囲検査を追加して
+  コード変更なし（`RBT-024`の試行は元に戻した）。`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`の「文書を緩めず、実装側へ範囲検査を追加して
   解消する」節と`RBT-014` ← `RBT-024`の依存も外す。
 
 # Archive (2026-10-11): moved from `Maintanance/CLAUDE_TASK.md`
@@ -7676,21 +7676,21 @@ Codex acceptance（2026-10-10）: Claude版がCodex版を未読のまま専用fi
 
 ## Active bounded assignment: repository public API code snippet candidate TOP10 survey
 
-`DOC-020`として、`PUBLIC_API_CODE_SNIPPET_SURVEY_2.md`の共通設問に回答する。このリポジトリの
+`DOC-020`として、`Archived/Canonical/PUBLIC_API_CODE_SNIPPET_SURVEY_2.md`の共通設問に回答する。このリポジトリの
 公開API全体から、公開APIのコメントドックへコードスニペットがあると特に有効な箇所を最大10件
-順位付けし、`PUBLIC_API_CODE_SNIPPET_SURVEY_2_CLAUDE.md`だけへ書く。第1弾の回答は変更しない。
+順位付けし、`Archived/Canonical/PUBLIC_API_CODE_SNIPPET_SURVEY_2_CLAUDE.md`だけへ書く。第1弾の回答は変更しない。
 
 公開宣言と現在のコメントドックを中心に判断し、不明な挙動だけtestで確認する。
-`PUBLIC_API_CODE_SNIPPET_SURVEY_2_CODEX.md`は同時編集しない。各候補にはsymbol、利用者の疑問、
+`Archived/Canonical/PUBLIC_API_CODE_SNIPPET_SURVEY_2_CODEX.md`は同時編集しない。各候補にはsymbol、利用者の疑問、
 示すべき最小の振る舞い、既存説明だけでは不足する理由を記載する。source、test、Registry、共通正本は
 変更しない。完了時は冒頭のジョブ状態を返却待ちへ変える。
 
 ## Active bounded assignment: code snippet candidate TOP10 survey
 
-Registryの`DOC-019`として、`Maintanance/CODE_SNIPPET_SURVEY.md`の共通設問に回答する。
+Registryの`DOC-019`として、`Maintanance/Archived/Canonical/CODE_SNIPPET_SURVEY.md`の共通設問に回答する。
 対象はBareArray、OptionalArray、Permutationの公開APIだけ。回答先は
-`Maintanance/CODE_SNIPPET_SURVEY_CLAUDE.md`だけとし、回答確定までは
-`Maintanance/CODE_SNIPPET_SURVEY_CODEX.md`を読まない。
+`Maintanance/Archived/Canonical/CODE_SNIPPET_SURVEY_CLAUDE.md`だけとし、回答確定までは
+`Maintanance/Archived/Canonical/CODE_SNIPPET_SURVEY_CODEX.md`を読まない。
 
 公開宣言と生成済みの公開コメントを中心に読み、最大10件を順位付けする。不明な挙動だけ対応testで
 事実確認する。各候補にはsymbol、順位、
@@ -7719,8 +7719,8 @@ Permutation testが成功することを確認した。一方、ユーザーの�
 - `Tests/PermutationTests/NextPermutationsSequence/NextPermutationsSequence_2_ValueSemanticsTests.swift`
 - `Tests/PermutationTests/NextPermutationsSequence/NextPermutationsSequence_98_InternalTests.swift`
 - Permutationの性能test／benchmarkと、その実行方法を直接定義するファイル
-- `Maintanance/PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md`
-- `Maintanance/PERFORMANCE_REGRESSION_BISECTION.md`
+- `Maintanance/Archived/Canonical/PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md`
+- `Maintanance/Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`
 - commit `a7663bbb`の差分と、その直前commitとの差分
 
 次だけを確認する。
@@ -7783,7 +7783,7 @@ Registryの`DOC-013`として、次の通常版公開コメントが公開初版
 対応する`Tests/BareArrayModuleTests`、`Tests/OptionalArrayModuleTests`、
 `Tests/PermutationTests/NextPermutationsSequence`をTest as Specificationとして読む。実装だけで契約が
 分からない箇所は推定せずtestを確認し、それでも確定できなければ`UNVERIFIED`とする。
-`Maintanance/NON_RBT_COMMENT_DOC_SELF_REVIEW.md`はCodexの先行観測として読んでよいが、結論を追認せず反証する。
+`Maintanance/Archived/Canonical/NON_RBT_COMMENT_DOC_SELF_REVIEW.md`はCodexの先行観測として読んでよいが、結論を追認せず反証する。
 AtCoder 2025互換mode、RedBlackTree系、利用者向けMarkdown、命名変更、性能方針、1.0方針は対象外。
 
 各moduleについて次を確認する。
@@ -7845,7 +7845,7 @@ source、test、Registry、既存監査文書を変更しない。変更可能�
 Codex acceptance（2026-10-10）: 本結果を完成判定ではなくread-only証拠packageとして検収した。
 先行観測2件と、計算量1件・破棄説明1件・用語2件を受入。test不足だけを理由にした`UNVERIFIED`2件、
 `removeAll()`の`let`呼出し説明要求、共通`Sendable`注記は採用しない。詳細は
-`NON_RBT_COMMENT_DOC_SELF_REVIEW.md`へ統合した。Claudeへの追加依頼は行わない。
+`Archived/Canonical/NON_RBT_COMMENT_DOC_SELF_REVIEW.md`へ統合した。Claudeへの追加依頼は行わない。
 
 ## Active bounded assignment: BareArray documentation-comment independent review
 
@@ -7864,7 +7864,7 @@ Registryの`DOC-008`として、`DOC-005`で追加した`Sources/BareArrayModule
 - `Tests/BareArrayModuleTests/BareArray_5_ReferenceLifetimeTests.swift`
 - `Tests/BareArrayModuleTests/BareArray_99_DeathTests.swift`
 - `Maintanance/BareArrayModule/BareArrayAudit.md`の公開契約、`BARE-014`、`BARE-015`、`DOC-005`の節
-- `Maintanance/RELEASE_0_5_2.md`の`DOC-005`と`DOC-008`に関する節
+- `Maintanance/Archived/Canonical/RELEASE_0_5_2.md`の`DOC-005`と`DOC-008`に関する節
 
 次の観点だけを確認する。
 
@@ -8103,7 +8103,7 @@ Codexが本文統合時に調整する。OPS-002全体の完成判定とRegistry
 
 ## Completed bounded assignment: 0.5.1 independent release check (first pass)
 
-`Maintanance/RELEASE_CHECKLIST.md` §3と`Maintanance/RELEASE_0_5_1.md`に従い、0.5.1の最終候補を独立確認する。
+`Maintanance/RELEASE_CHECKLIST.md` §3と`Maintanance/Archived/Canonical/RELEASE_0_5_1.md`に従い、0.5.1の最終候補を独立確認する。
 
 - 候補branch: `develop/misc/52`
 - 候補commit: `4d5ce7b8378aff803a327df72a73722d33141140`
@@ -8131,7 +8131,7 @@ CIを確認できない場合は推測でPASSにせず`UNVERIFIED`とする。�
 2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。変更なし（この節とジョブ状態だけ）。build・testの再実行はしていない。
 
 **1. 対象と証拠**: HEAD = `origin/develop/misc/52`（local tracking ref）= `4d5ce7b8`、tree `aad90875`、branch `develop/misc/52`。
-`0.5.0`（`0dc1bd26`）は祖先で、86 commit・merge commitなし。`7884ecb4..4d5ce7b8`は`RELEASE_0_5_1.md`の+19行だけ（gate実行commitとの差はrelease記録のみ）。
+`0.5.0`（`0dc1bd26`）は祖先で、86 commit・merge commitなし。`7884ecb4..4d5ce7b8`は`Archived/Canonical/RELEASE_0_5_1.md`の+19行だけ（gate実行commitとの差はrelease記録のみ）。
 `0.5.0..4d5ce7b8`のsource差分は`BareArray.swift`と品質評価文書だけ。BareArrayの`public`／`extension`行は0.5.0と同一（公開面の追加・削除なし）。
 gh CLIが無く、remote CIは見ていない。
 
@@ -8244,7 +8244,7 @@ Codex acceptance: 2026-10-09、8個の番号付き仕様群、公開29宣言・4
 
 ## Completed bounded assignment: Array module naming review
 
-[`ARRAY_NAMING_REVIEW.md`](ARRAY_NAMING_REVIEW.md)に従い、BareArrayとOptionalArrayの命名体系を調査する。
+[`Archived/Canonical/ARRAY_NAMING_REVIEW.md`](Canonical/ARRAY_NAMING_REVIEW.md)に従い、BareArrayとOptionalArrayの命名体系を調査する。
 
 必須条件は、Swift標準ライブラリおよび`swift-collections`の公開型名・主要用語・命名規則と衝突せず、
 それらの型だと誤認されにくいこと。両moduleは正式公開前なので、既存名とのsource compatibilityより、
@@ -8254,7 +8254,7 @@ Codex acceptance: 2026-10-09、8個の番号付き仕様群、公開29宣言・4
 反証を含める。判断単位はBareArray体系、OptionalArray 1D型名、OptionalArray次元名体系の三つに分ける。
 
 source、test、利用例、コメントドック、Registryを変更せず、renameや互換aliasを実装せず、命名を決定
-しない。性能、安全性、storage設計へ広げない。結果を`ARRAY_NAMING_REVIEW.md`へ追記し、このhandoffを
+しない。性能、安全性、storage設計へ広げない。結果を`Archived/Canonical/ARRAY_NAMING_REVIEW.md`へ追記し、このhandoffを
 返却待ちへ更新してgit addまで行う。Codexが独立評価、統合、ユーザー判断への引き渡しを担当する。
 
 ## Cancelled before start: Array naming review supplement

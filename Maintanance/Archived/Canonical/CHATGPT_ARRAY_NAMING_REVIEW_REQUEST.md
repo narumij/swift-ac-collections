@@ -6,7 +6,7 @@ Swift package `swift-ac-collections`で正式公開前のBareArrayとOptionalArr
 命名体系を選ぶための不足調査をしてください。名称の決定やsource修正は行わず、ユーザーが判断できる比較を
 返してください。
 
-先行調査とCodexの予備評価は、添付または提示する`Maintanance/ARRAY_NAMING_REVIEW.md`にあります。
+先行調査とCodexの予備評価は、添付または提示する`Maintanance/Archived/Canonical/ARRAY_NAMING_REVIEW.md`にあります。
 既存のsurface表、local toolchainでの完全一致確認、repository内の移行件数は再調査せず、その内容を入力と
 してください。
 

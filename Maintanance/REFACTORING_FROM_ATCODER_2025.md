@@ -53,20 +53,21 @@ recycle count、sealed pointer、tied storageへ段階的に外在化した。
 
 ## 変化とテストの緊張関係
 
-![テスト宣言総数と通常Debug構成の静的有効件数](REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.svg)
+![テスト宣言総数・静的有効件数・runner列挙数](REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.png)
 
-この図は代表25 commitについて、XCTestの`test...` methodとSwift Testingの`@Test`宣言を数えた
-ものである。青は条件コンパイル内を含む総宣言数、橙は通常Debug構成で静的に有効と判定した宣言数を
-表す。parameterized testの実行例数、runtime skip、build成否は含まないため、実行成功件数ではない。
+この図は代表25 commitについて、XCTestの`test...` methodとSwift Testingの`@Test`宣言を数え、
+同じcommitを現行toolchainのtest runnerでも列挙したものである。青は条件コンパイル内を含む総宣言数、
+橙は通常Debug構成で静的に有効と判定した宣言数、緑はrunnerが発見した実行単位数を表す。緑の空白は
+当時のPackage manifestを現行toolchainが受理できず、原文のままではbuildできなかった期間である。
 
 全体としてテスト宣言は918件から1739件へ増えたが、単調には増えていない。特に2026年9月25日から
 29日の再編では、総宣言数が1551件から1140件、静的有効件数が1007件から719件へ同時に縮退した。
 10月2日には1380件・948件、10月10日には1733件・1144件へ戻っており、旧test群の削除と新しい
 Fixture・仕様testへの再建が、内部構造の交換より遅れて追いついた期間を可視化している。
 
-静的有効件数とrunner discoveryは一致しない。9月29日のcommitを現行toolchainで再buildしたところ、
-静的719宣言に対して844 testが列挙された。現行では静的1145宣言に対して1438 testが列挙される。
-Swift Testingのparameterized case等で一宣言が複数testになるためであり、両尺度は別に保持する。
+静的有効件数とrunner discoveryは一致しない。9月25日から29日にrunner列挙数も1084件から844件へ
+落ち、9月30日に1005件、10月2日に1101件へ戻った。現行では静的1145宣言に対して1438 testが
+列挙される。Swift Testingのparameterized case等で一宣言が複数testになるため、両尺度は別に保持する。
 
 移行の要石として保存されているテストは次である。
 

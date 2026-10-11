@@ -79,7 +79,9 @@ node ID/tag、世代、seal、tieが段階的に担ったと読める。ただ�
 [`REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.csv`](REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.csv)、
 図は
 [`REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.svg`](REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.svg)を
-正本とする。再集計には`Utilities/Maintenance/CountHistoricalTests.rb`、描画には
+正本とする。閲覧用PNGは
+[`REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.png`](REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.png)である。
+再集計には`Utilities/Maintenance/CountHistoricalTests.rb`、描画には
 `Utilities/Maintenance/RenderHistoricalTestCounts.rb`を使う。
 
 #### 件数の定義
@@ -94,13 +96,24 @@ node ID/tag、世代、seal、tieが段階的に担ったと読める。ただ�
 (2026-09-25)が総1551・有効1007、`43656817`(2026-09-29)が総1140・有効719、
 `139ffef8`(2026-10-10)が総1733・有効1144、調査時HEAD `5a177ed6`が総1739・有効1145だった。
 
-**[事実]** `43656817`をdetached worktreeへ展開し、現行Xcode toolchainで
-`swift test --disable-sandbox list`を実行した。buildはwarningを伴って成功し、844 testを列挙した。
-同じcommandによる調査時HEADの列挙数は1438だった。
+**[事実]** 各commitを一時directoryへarchive展開し、現行Xcode toolchainで
+`swift test --disable-sandbox list`を実行した。25地点中16地点はbuildがwarningを伴って成功した。
+基点は821、互換mode導入点は1000、UnsafeTree導入点は858 testを列挙した。2026-09-25から
+09-29には1084から844へ縮退し、09-30は1005、10-02は1101、調査時点は1438まで再建された。
 
-**[解釈]** 9月29日の縮退は総宣言と静的有効宣言の双方に現れ、その後のFixture targetと仕様testの
-再建で回復している。したがって単なる`#if`切替だけではなく、test source集合そのものを縮小して
-架け替えた谷と読める。ただし件数は契約coverageやassertionの強さを直接表さない。
+**[事実]** `7964713d`から`765abe94`までの9代表地点は、現行toolchainがPackage manifestにある
+未定義の`BENCHMARK` trait参照を拒否したためbuild前に失敗した。test失敗やtest不在を意味しないため、
+runner系列では0件とせず欠測にした。
+
+**[事実]** 同区間の`7964713d`をSwiftlyのSwift 6.2.0でも再試行した。このtoolchainは上のmanifest
+拒否を越えたが、現在利用可能なmacOS 27 SDKとの組合せではcompilerがSDK由来の
+`-target-arch-variant`を解釈できず、依存pluginのcompileで停止した。手元にはmacOS 27 SDKしかなく、
+当時と互換するSDKとの組合せは再現できない。原文やmanifestを一時補正した参考値は本系列へ混ぜない。
+
+**[解釈]** 9月29日の縮退は総宣言、静的有効宣言、runner列挙の三系列すべてに現れ、その後の
+Fixture targetと仕様testの再建で回復している。したがって単なる`#if`切替や静的集計器の誤差ではなく、
+test source集合と実行可能な検証面をともに縮小して架け替えた谷と読める。ただし件数は契約coverageや
+assertionの強さ、実際のpassを直接表さない。
 
 | 時期 | 実装側の変化 | テスト側の状態 | 保証上の意味 | 主な証拠 |
 |---|---|---|---|---|

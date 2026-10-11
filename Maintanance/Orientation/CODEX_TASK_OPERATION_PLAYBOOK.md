@@ -2,6 +2,9 @@
 
 最終更新: 2026-10-10 / Codex
 
+> **文書状態:** 旧版。2026-10-12に`CODEX_TASK_OPERATION_PLAYBOOK_V2.md`が現行正本として採用された。
+> 本書はアーカイブ判断まで現在位置に保持する。
+
 ## 目的
 
 この文書は、このrepositoryで得たtask運用の知見を、別projectでもCodexが同程度の品質で

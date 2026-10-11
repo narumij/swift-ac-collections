@@ -23,6 +23,36 @@
 | `CODEX_OBSERVATIONS.md` | Codex本人の任意の観察を本人の声のまま保持する場所 |
 | `PROGRESS_OVERVIEW_TEMPLATE.md` | 他projectへのtask運用移植を初めて試みた痕跡として現在位置を保持する |
 
+## 文書ランクと変更権限
+
+文書を読めること、編集へ参加できること、正本として採用できること、および配置を変更できることを
+同じ権限として扱わない。上位文書の変更統制は、下位taskの実行権限から自動的には導かれない。
+
+### `AGENTS.md`
+
+`AGENTS.md`はrepository内で最上位の統治文書であり、AIの編集対象外とする。下位文書、task、または
+実装上の都合によって変更、迂回、失効、移動、改名、またはアーカイブしない。
+
+### `Maintanance/Orientation/`
+
+Orientation文書は、AIがrepositoryの目的、責任境界、および実務へ入るための上位正本群である。
+ユーザーから委任された範囲では、AIも草案作成、レビュー、および内容編集へ参加できる。
+
+ただし、次の操作はそれぞれ独立した境界として扱い、ユーザーの明示的な承認なしに実行しない。
+
+- 新版または草案を現行正本として採用する。
+- 現行版を失効させる、または参照先を新版へ切り替える。
+- 文書を移動、改名、またはArchivedへ送る。
+
+新版候補の作成や内容上の完成は、採用、正本切替、または旧版のアーカイブを意味しない。必要な場合は、
+完成候補の作成、採用判断、配置判断、および移動・参照切替の実行を別taskまたは別受入境界として扱う。
+
+### 下位の正本と記録
+
+各moduleの品質プロファイル、設計文書、task詳細正本、および評価記録は、担当する上位正本とTask Registryに
+従い、委任されたtaskの範囲で更新する。評価、観察、作業記録、およびArchived資料は、現行の上位規則や
+製品判断を独自に上書きしない。
+
 ## Task Registry
 
 **現在の律速:** 外部（`swift-collections` ContainersPreviewの`Container.Index`要件）。
@@ -114,8 +144,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-010` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲートのうち公開Index表現と完了範囲 | Container要件の安定後、公開Indexと内部`SealError`の分離、1.0での完了範囲を決定 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | ready判定を維持する常設nodeとして`ACTIVE`を保つ。個別assignmentや実行中ジョブを意味せず、必要なときだけ現行Registryとの一致を確認 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
-| `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、別projectでの再現性検証へ進む | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
-| `OPS-002` | `USER_ONLY` | User | [DISCOVERY] Codex task運用playbookの改訂 | 分解に長けたconversationの喪失後に生じた再分解・復旧の失敗経験を踏まえ、分解理由、依存、停止点、継承、復元、再構成について本書へ残す内容と表現をユーザーが整理する。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビュー・文書反映を補助する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、V2を別projectへ適用して再現性検証へ進む | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
+| `OPS-002` | `DONE` | User / Codex | [DISCOVERY] Codex task運用playbookの改訂 | task分解、必須依存の発見、runtime停止、判断削減、受入境界をV2へ再構成し、レビュー後、2026-10-12にユーザーが現行正本として採用 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` |
+| `OPS-008` | `WAITING_USER` | User | [DECISION] 旧Codex task運用playbookのアーカイブ判断 | V2採用後、旧版を現在位置に保持するか、Archivedへ移すかを一つだけ判断する。採用済みV2の正本性はこの判断に依存しない | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` / `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` |
 | `OPS-003` | `DONE` | Codex | [EXECUTION] タスク依存変化による作業中停止の明文化 | 実行中も依存関係とreadyを再評価し、新しい必須前提、Flow、完了条件、および委任権限に応じて停止範囲を導く原則を独立文書へ記録 | `Orientation/TASK_DEPENDENCY_RUNTIME_STOP.md` |
 | `OPS-004` | `DONE` | Codex | [EXECUTION] タスク分解と再構成の明文化 | 見えない作業から本質的判断を抽出し、task境界、依存、Flow、ready集合、優先順を再構成する原則を独立文書へ記録し、ユーザー指示により完了 | `Orientation/TASK_DECOMPOSITION_AND_REORGANIZATION.md` |
 | `OPS-005` | `DONE` | Codex | [EXECUTION] AI task process posterの更新 | 完了した分解・再構成文書と作業中停止文書を入力に、判断整理、task境界、graph再構成、ready、委任を中心とするV2へ生成script、SVG、PNGを更新し、ユーザーが受入 | `AI_TASK_PROCESS_POSTER.png` / `Utilities/Maintenance/GenerateAITaskProcessPoster.py` |
@@ -193,6 +224,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
+| `OPS-008` | `OPS-002` | `SEQUENCE` | V2を現行正本として採用した後にだけ、旧版の配置を判断する |
 | `RBT-001` | `RBT-010` | `PARALLEL_JOIN` | 公開Index表現・完了範囲の判断は、Comparable採否と分離したまま親ゲートの完了前に合流する |
 | `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |
 | `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |

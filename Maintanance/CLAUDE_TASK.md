@@ -2,9 +2,9 @@
 
 Status: Bounded assignments only. Temporary primary-user-support delegation ended 2026-10-08 by user direction.
 
-Claude works only on an explicit user request or a ready Claude-owned Registry task selected by the
-user or Codex. Codex integrates the results, performs Registry acceptance and state updates, and
-owns public-document completion.
+Task selection and start authority are defined in the root `CLAUDE.md`. This document records the
+current job and bounded-task execution constraints. Codex integrates the results, performs Registry
+acceptance and state updates, and owns public-document completion.
 Repository evidence establishes factual correctness; product decisions remain with the user.
 
 ## Current job status
@@ -18,13 +18,12 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Operating mode: bounded assignments only
 
-Work only on an explicit user request or a ready Claude-owned Registry task selected by the user or
-Codex. Readiness alone does not authorize Claude to select or start a task. Codex integrates the
+Apply the task-selection and start-authority rule in the root `CLAUDE.md`. Codex integrates the
 result, performs Registry acceptance and state changes, and owns public-document completion. These
 coordination responsibilities do not make Codex's agreement evidence of factual correctness.
 
-The rules below remain as bounded-task execution constraints. They do not grant standing authority
-to select the next task, restart frozen work, or act on behalf of Codex.
+The rules below remain as bounded-task execution constraints. They do not grant authority to restart
+frozen work or act on behalf of Codex.
 
 Verify the current branch from the repository before editing; do not preserve a branch name here as
 current state.

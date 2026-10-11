@@ -199,10 +199,10 @@ allocation、初期化、shape構築、および事後検証は計測時間に�
 
 ### inputとshape
 
-Benchmarkの正の2のべき乗である`size`を総要素数とし、指数を軸へできるだけ均等に配分する。
-2Dは最内軸から順に大きくなる2軸、3Dは同様の3軸とし、各軸の積を常に`size`と
-一致させる。これにより同一の要素数で次元だけが異なる経路を比較でき、CIの入力上限を
-三乗で超えない。実装は不正な`size`を黙って丸めず、前提条件として拒否する。
+Benchmarkの正の`size`を総要素数とし、素因数を軸へできるだけ均等に配分する。2Dは最内軸から
+順に大きくなる2軸、3Dは同様の3軸とし、各軸の積を常に`size`と一致させる。素数の
+`size`では一部の軸が1になるが、入力は丸めない。これにより同一の要素数で次元だけが
+異なる経路を比較でき、CIの入力上限を三乗で超えない。
 
 checksumは要素数`n`に対する`0 ..< n`の和とし、SwiftとC++の両方で同一の結果を検証する。
 C++側の要素型はSwift `Int`とword widthを合わせた`std::intptr_t`とする。
@@ -221,6 +221,27 @@ C++側の要素型はSwift `Int`とword widthを合わせた`std::intptr_t`と�
 
 対象操作、shape、計測内外、checksum、Swift / C++の対応、CI回帰と外部assessmentの境界を
 確定した。本設計でユーザー判断は必要なく、次はSwift workloadのCI回帰登録とする。
+
+### CI回帰Benchmark登録結果
+
+- ID: `BARE-029`
+- 種別: `EXECUTION`
+- 担当: Codex
+- 現在の中間ゴールへの近さ: `DIRECT`
+
+`BareArrayBenchmarks.swift`に2D・3Dのsequential read checksumとsequential writeの4 workloadを
+追加し、benchmark toolと`CI.json`へ登録した。Benchmarkが生成する2のべき乗間のsizeも総要素数と
+一致させるため、正のsizeを素因数分解し、各軸へできるだけ均等に配分する。
+
+次の実行証拠を確認した。
+
+- Benchmarks packageのRelease buildが成功した。
+- 4 workloadをsize 1、3、16で直接実行し、checksumを含めて成功した。
+- `CI.json`の26 taskをsize 1から64kまで60 size実行し、失敗0で完走した。
+- 出力JSONに4 workloadがそれぞれ一意に記録された。
+
+0.5.3にこのworkloadが存在しないため、導入PRでのbase / current比較は成立条件にしない。
+BareArrayとOptionalArrayのworkloadを揃えたmerge commitを初回baselineとし、後続PRから回帰比較する。
 
 ## Viewノンエスケーパブル化
 

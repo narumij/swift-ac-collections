@@ -16,6 +16,15 @@
 
 現在の状態、担当、および再開条件はTask Registryを正本とする。
 
+### 実行内訳
+
+| 内訳 | 内容 | 状態 |
+| --- | --- | --- |
+| A | 公開契約・実装・Test as Specificationの照合 | 完了 |
+| B | 通常版test・buildによる現在証拠の取得 | 完了 |
+| C | 性能証拠・CI構成・利用経路の照合 | 完了 |
+| D | QR-01〜QR-06の評価と後続task候補の分離 | 完了 |
+
 ## 目的
 
 PermutationModuleを最初の適用対象として、上位品質要求QR-01〜QR-06に対する
@@ -94,3 +103,42 @@ PermutationModuleを最初の適用対象として、上位品質要求QR-01〜Q
 - `PERM-002`を開始または代行していない。
 - 未達・未検証・判断待ち・実行不足が区別され、一判断一taskの規則で後続候補へ分離されている。
 - ユーザーが評価結果と後続候補をレビューできる。
+
+## 現行評価
+
+評価日は2026-10-11。旧品質評価の判定は継承せず、現行source、Test as Specification、
+Package設定、benchmark、workflow、および今回の実行結果から評価した。
+
+| 上位要求 | 品質主張 | 評価 | 現在の証拠 | 未確認範囲・残余リスク |
+| --- | --- | --- | --- | --- |
+| QR-01 正確性 | 現在順からの辞書順列挙、境界、重複、非Int Index、入力不変、結果Collectionが契約どおり動く | 確認済み | 通常版Test as Specification 38件中、列挙・公開面・Collection・値セマンティクス・内部・Death Testを含む全38件成功 | 有限な例と構成に対する確認であり、任意入力の数学的証明ではない |
+| QR-02 性能効率性 | APIと1 stepの計算量契約、および自己回帰を検出する測定経路が存在する | 確認済み | sourceのO(1)生成、O(n) iterator生成・step、O(1) subscript契約。subscript 4件とend-to-end 1件のbenchmark、CI/CI-Small構成、PR・candidate performance workflow | 今回はbenchmarkを再計測していない |
+| QR-02 性能効率性 | C/C++標準に匹敵する性能を持つ | 未検証 | `std::next_permutation`との独立した比較実装・条件・結果は見つからない | 上位コンセプトの中心主張へ直接残る証拠不足 |
+| QR-03 安全性 | 値セマンティクス、要素寿命、範囲拒否、通常版strict memory safetyが成立する | 確認済み | 値セマンティクス6件、内部寿命・CoW 4件、Death Test 5件が成功。`.strictMemorySafety()`適用下のtesting build成功。危険操作はscoped `unsafe` | `@unchecked Sendable`と個々のunsafe操作はテストと設計根拠による確認であり、あらゆる並行実行の証明ではない |
+| QR-04 理解可能性 | 後続順列と全順列、開始位置、重複、値保持、Index、失敗条件、計算量、類似APIとの差を確認できる | 確認済み | 公開documentation commentとコード例が各項目を説明し、対応するTest as Specificationが成功 | 一般Swift利用者による理解のValidationは未実施。独立した利用者向けPermutation文書は存在しない |
+| QR-05 利用可能性 | 通常版をSwiftPMと`AcCollections` facadeから利用し、swift-algorithmsと共存できる | 確認済み | project build成功、facade再公開test 1件成功、共存test 2件成功 | 今回のローカルRelease再実行は環境sandboxに阻まれ未取得。CI設定の存在とremote成功記録は区別する |
+| QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | 通常版・互換modeの仕様testと単一file経路は候補証拠だが、実提出は未実施 | `PERM-002`はユーザー専任。今回の通常構成では互換mode 5件は条件外で未実行 |
+| QR-06 持続可能性 | 公開面、列挙、値セマンティクス、Collection、共存、安全性、性能を変更後に再確認できる | 確認済み | 番号付きTest as Specification、benchmark library、Debug・Release・ASan・performanceを含むworkflow分担 | workflowの存在だけで特定commitのremote成功を推定しない |
+
+## 実行記録
+
+- Xcodeのtesting build: 成功、警告・errorなし。
+- 通常版Permutation test: 38件成功、失敗0件。
+- AtCoder 2025互換mode test: 通常構成では5件とも条件外で未実行。
+- `AcCollections`からの通常版Permutation再公開test: 1件成功。
+- Release絞り込みtest: SwiftPM起動時に環境の` sandbox-exec: sandbox_apply: Operation not permitted`
+  で実行不能。製品test失敗とは分類しない。
+
+## 後続task候補
+
+| ID | 種別 | 近さ | 内容 | 必要性 |
+| --- | --- | --- | --- | --- |
+| `PERM-040` | `EXECUTION` | `DIRECT` | 既存Permutation CI回帰benchmarkへのC++対応workload追加 | Swift側のsubscript 4件と`nextPermutations()` end-to-end 1件、および既存のCI回帰経路は維持し、`CppBenchmarks`へC++ `std::next_permutation`の対応workloadを追加して同じBenchmark基盤から継続観測可能にする。独自runnerや品質判定基準は作らない |
+| `PERM-041` | `DISCOVERY` | `NEAR` | 一般Swift利用Validation scenarioの設計 | QR-04・QR-05について、文書とtestのVerificationから実利用適合を推定しないために必要。代表利用者、導入経路、利用課題、観測方法を整理する |
+| `PERM-042` | `DISCOVERY` | `DIRECT` | CI benchmarkのアセスメント用外部比較へのアレンジ | `PERM-040`で継続観測可能になった同一workloadを入力に、比較対象、入力範囲、toolchain、最適化、統計、環境差、再現証拠を整理し、比較水準など必要なユーザー判断を分離する |
+| `PERM-002` | 既存`USER_ONLY` | `DIRECT` | ABC328E実提出確認 | 競技利用Validationに必要。agentは開始、代行、催促を行わない |
+
+`PERM-041`と`PERM-042`は判断を確定せず、後続の一判断ごとの`DECISION`を発見する。
+`PERM-042`は`PERM-040`を必須前提とし、既存CI回帰benchmarkと追加するC++対応workloadを
+アセスメント結果そのものとは扱わない。独立した利用者向け文書の形は上位の未確定事項なので、この評価から
+Markdown、DocC、documentation commentのいずれかへ固定しない。

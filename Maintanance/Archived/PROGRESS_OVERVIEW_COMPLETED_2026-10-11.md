@@ -8,6 +8,7 @@ IDs remain permanent and must not be reused. Earlier snapshots and completed his
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
+| `PERM-040` | `DONE` | Codex | [EXECUTION] アセスメント用C++対応workloadのBenchmark登録 | 2026-10-11、Swift版と同じ入力・全順列・checksum条件の`std::next_permutation` workloadを登録し、release buildとsize 1...10の実行を確認。通常CI回帰には含めず後続アセスメント専用とした | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `OPS-002` | `DONE` | Codex / Claude | [EXECUTION] 司令塔オリエンテーションMDの作成 | 2026-10-09、責任分担、証拠基準、技術的難所への入口、文書境界、事故時の復帰経路を統合し、新しい会話による実読確認とユーザー確認を完了 | `Orientation/CODEX_ORIENTATION.md` |
 | `OPS-003` | `DONE` | Codex | [EXECUTION] AI向け技術オリエンテーションの作成 | 2026-10-09、AIが誤認しやすい技術構造、既存中核の由来、証拠経路、停止点を整理し、ユーザー確認を完了 | `Orientation/AI_TECHNICAL_ORIENTATION.md` |
 | `OPS-004` | `DONE` | Claude / Codex | [DISCOVERY] Codex司令塔オリエンテーションの独立レビュー | 2026-10-09、指定6観点のレビュー報告をもって作業完了。指摘と修正案は採用せず参考資料として保存し、本文へ反映しない | `Orientation/CODEX_ORIENTATION.md` / `CLAUDE_TASK.md` |
@@ -142,6 +143,7 @@ IDs remain permanent and must not be reused. Earlier snapshots and completed his
 
 | 後続task | 完了・除外済み前提task | Flow | 制約 |
 | --- | --- | --- | --- |
+| `PERM-042` | `PERM-040` | `SEQUENCE` | C++対応workloadを同じBenchmark基盤から実行可能にしてから、アセスメント用の外部比較条件と証拠へアレンジする |
 | `OPT-044` | `OPT-043` | `SEQUENCE` | AI同士で1D型名の案、BareArrayとの一貫性、互換性、移行コストを整理してからユーザー判断へ渡す |
 | `OPT-045` | `OPT-043` | `SEQUENCE` | AI同士で次元名の案、BareArrayとの一貫性、互換性、移行コストを整理してからユーザー判断へ渡す |
 | `RELEASE-009` | `RELEASE-008` | `SEQUENCE` | 0.5.1の実際のrelease完了までを観測してから、汎用checklistとの差を見直す |

@@ -121,8 +121,8 @@ benchmarkの実行環境、toolchain、最適化構成、およびmachine条件�
 | 上位要求 | 品質主張 | 評価 | 現在の証拠 | 未確認範囲・残余リスク |
 | --- | --- | --- | --- | --- |
 | QR-01 正確性 | 現在順からの辞書順列挙、境界、重複、非Int Index、入力不変、結果Collectionが契約どおり動く | 確認済み | 通常版Test as Specification 38件中、列挙・公開面・Collection・値セマンティクス・内部・Death Testを含む全38件成功 | 有限な例と構成に対する確認であり、任意入力の数学的証明ではない |
-| QR-02 性能効率性 | APIと1 stepの計算量契約、および自己回帰を検出する測定経路が存在する | 確認済み | sourceのO(1)生成、O(n) iterator生成・step、O(1) subscript契約。subscript 4件とend-to-end 1件のbenchmark、CI/CI-Small構成、PR・candidate performance workflow | 今回はbenchmarkを再計測していない |
-| QR-02 性能効率性 | C/C++標準に匹敵する性能を持つ | 未検証 | `std::next_permutation`との独立した比較実装・条件・結果は見つからない | 上位コンセプトの中心主張へ直接残る証拠不足 |
+| QR-02 性能効率性 | APIと1 stepの計算量契約、および自己回帰を検出する測定経路が存在する | 確認済み | sourceのO(1)生成、O(n) iterator生成・step、O(1) subscript契約。Swift側のsubscript 4件とend-to-end 1件、CI/CI-Small構成、PR・candidate performance workflow | C++ workloadは通常CIへ含めず、外部比較アセスメント専用とする |
+| QR-02 性能効率性 | C/C++標準に匹敵する性能を持つ | 未検証 | 同一Benchmark基盤に`std::next_permutation`対応workloadを追加済み | macOS上の比較条件、統計、machine記録、測定結果、比較水準が未確定であり、上位コンセプトの中心主張へ直接残る証拠不足 |
 | QR-03 安全性 | 値セマンティクス、要素寿命、範囲拒否、通常版strict memory safetyが成立する | 確認済み | 値セマンティクス6件、内部寿命・CoW 4件、Death Test 5件が成功。`.strictMemorySafety()`適用下のtesting build成功。危険操作はscoped `unsafe` | `@unchecked Sendable`と個々のunsafe操作はテストと設計根拠による確認であり、あらゆる並行実行の証明ではない |
 | QR-04 理解可能性 | 後続順列と全順列、開始位置、重複、値保持、Index、失敗条件、計算量、類似APIとの差を確認できる | 確認済み | 公開documentation commentとコード例が各項目を説明し、対応するTest as Specificationが成功 | 一般Swift利用者による理解のValidationは未実施。独立した利用者向けPermutation文書は存在しない |
 | QR-05 利用可能性 | 通常版をSwiftPMと`AcCollections` facadeから利用し、swift-algorithmsと共存できる | 確認済み | project build成功、facade再公開test 1件成功、共存test 2件成功 | 今回のローカルRelease再実行は環境sandboxに阻まれ未取得。CI設定の存在とremote成功記録は区別する |
@@ -142,7 +142,7 @@ benchmarkの実行環境、toolchain、最適化構成、およびmachine条件�
 
 | ID | 種別 | 近さ | 内容 | 必要性 |
 | --- | --- | --- | --- | --- |
-| `PERM-040` | `EXECUTION` | `DIRECT` | 既存Permutation CI回帰benchmarkへのC++対応workload追加 | Swift側のsubscript 4件と`nextPermutations()` end-to-end 1件、および既存のCI回帰経路は維持し、`CppBenchmarks`へC++ `std::next_permutation`の対応workloadを追加して同じBenchmark基盤から継続観測可能にする。0.5.xの評価対象環境はmacOSとし、独自runnerや品質判定基準は作らない |
+| `PERM-040` | `EXECUTION` | `DIRECT` | アセスメント用C++対応workloadのBenchmark登録 | Swift側の既存CI回帰benchmarkは変更せず、`CppBenchmarks`へC++ `std::next_permutation`の対応workloadを追加し、後続の外部比較アセスメントから利用可能にする。0.5.xの評価対象環境はmacOSとし、独自runnerや品質判定基準は作らない |
 | `PERM-041` | `DISCOVERY` | `NEAR` | 一般Swift利用Validation scenarioの設計 | QR-04・QR-05について、文書とtestのVerificationから実利用適合を推定しないために必要。代表利用者、導入経路、利用課題、観測方法を整理する |
 | `PERM-042` | `DISCOVERY` | `DIRECT` | CI benchmarkのアセスメント用外部比較へのアレンジ | `PERM-040`で継続観測可能になった同一workloadを入力に、macOS上の比較対象、入力範囲、toolchain、最適化、統計、machine条件、再現証拠、測定JSONとchart画像を整理し、比較水準など必要なユーザー判断を分離する |
 | `PERM-002` | 既存`USER_ONLY` | `DIRECT` | ABC328E実提出確認 | 競技利用Validationに必要。agentは開始、代行、催促を行わない |
@@ -151,3 +151,19 @@ benchmarkの実行環境、toolchain、最適化構成、およびmachine条件�
 `PERM-042`は`PERM-040`を必須前提とし、既存CI回帰benchmarkと追加するC++対応workloadを
 アセスメント結果そのものとは扱わない。独立した利用者向け文書の形は上位の未確定事項なので、この評価から
 Markdown、DocC、documentation commentのいずれかへ固定しない。
+
+## PERM-040 実施結果
+
+2026-10-11、既存のSwift end-to-end workloadと同じ昇順整数入力、全順列列挙、
+位置加重checksumを使う`std::next_permutation` workloadを`CppBenchmarks`へ追加し、
+後続の外部比較アセスメントから利用可能にした。入力の準備は測定外とし、測定内では双方とも入力copy、
+全順列の生成、checksum計算を行う。C++標準ライブラリはこのrepositoryの変更対象ではないため、
+通常の`CI-Small`には登録せず、Swift実装の自己回帰監視と外部比較アセスメントを分離する。
+
+release buildと一時的な比較libraryによるsize 1...10・1 cycle実行が成功し、
+Swift／C++両workloadの件数とchecksum検査も成功した。既存のPR・candidate workflowと
+`CI-Small.json`には変更を加えていない。
+
+この結果はC++対応workloadを同じBenchmark基盤から実行可能にしたことだけを示す。
+macOS上の評価条件、統計、machine記録、比較水準、測定JSONとchart画像は`PERM-042`で扱い、
+現時点では「C/C++標準に匹敵する」という品質主張を未検証のまま維持する。

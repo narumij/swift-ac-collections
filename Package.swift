@@ -1,4 +1,4 @@
-// swift-tools-version: 6.2
+// swift-tools-version: 6.4
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import Foundation
@@ -305,6 +305,10 @@ let package = Package(
       exclude: [
         "Documentation"
       ],
+      swiftSettings: [
+        .enableExperimentalFeature("Lifetimes"),
+        .strictMemorySafety()
+      ]
     ),
     .testTarget(
       name: "BareArrayModuleTests",
@@ -321,6 +325,7 @@ let package = Package(
         "Documentation"
       ],
       swiftSettings: _settings + [
+        .enableExperimentalFeature("Lifetimes"),
         .strictMemorySafety()
       ]
     ),
@@ -330,7 +335,9 @@ let package = Package(
         .product(name: "Algorithms", package: "swift-algorithms"),
         "PermutationModule"
       ],
-      swiftSettings: _settings
+      swiftSettings: _settings + [
+        .enableExperimentalFeature("Lifetimes")
+      ]
     ),
   ]
 )

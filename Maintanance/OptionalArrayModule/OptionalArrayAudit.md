@@ -667,7 +667,7 @@ OptionalArray監査で実際に有効だった方式を、別の低レベルcoll
 
 ユーザー判断により、OptionalArray監査から抽出した委任規則のために独立文書を追加しない。
 必要な責任境界、成果物、停止条件は`AGENTS.md`、`CLAUDE.md`、
-`Maintanance/CODEX_TASK_OPERATION_PLAYBOOK.md`へ既に吸収され、BareArray監査の正本にも適用済みである。
+`Maintanance/Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md`へ既に吸収され、BareArray監査の正本にも適用済みである。
 このため判断taskを完了し、独立した反映taskは不要として除外する。
 
 ## Claude証拠表（2026-10-08）
@@ -849,7 +849,8 @@ compileできる形。NOP setterのwriteback（本文90行目）がこの形を�
 ### OPT-024 コメントドックcoverage
 
 判定基準: 明示した文がある場合だけ「あり」とした。`precondition`の本体や型名から読み取れるだけなら「なし」
-（基準は`AGENT_TASK_FIT_INTERVIEW.md`のClaude回答で提案したもので、未合意）。
+（基準は`Archived/Orientation/AGENT_TASK_FIT_INTERVIEW_2026-10-11.md`に退避したClaude回答で
+提案したもので、未合意）。
 
 | # | 宣言 | 境界 | 所有 | 寿命 | 破棄 | 変更 | 計算量 |
 | ---: | --- | --- | --- | --- | --- | --- | --- |
@@ -935,3 +936,15 @@ storage保持、要素破棄、非所有Viewの親寿命依存、変更共有、
 - 最初のsandbox付きtestは既知のSwiftPM manifest sandbox制約で開始前に失敗し、`--disable-sandbox`付きで再実行した。
 - build中に今回変更していないPermutationModule 2件とOptionalArray test 1件の既存warningが出たが、
   OptionalArrayModuleの変更箇所に新しいcompiler warningはない。
+## OPT-046: View writeback setterの契約検査
+
+所有2D〜4DとView 2D〜3Dの外側subscript setterは、連鎖要素書き込みのwritebackだけを
+受け入れる。BareArrayと同様にposition、storage、shapeを検査する。OptionalArrayでは値storageの
+`payload`に加えて設定状態storageの`hasPayload`も一致させる。通常の連鎖書き込みを維持し、
+別storageのView代入がDeath Testで停止することを完了条件とする。
+
+2026-10-10完了。5 setterすべてへposition、`hasPayload`、`payload`、shapeの検査を追加した。
+既存の連鎖書き込みを含む通常testはDebug／Releaseとも35件成功し、別storage代入5件を追加した
+Death Testは両構成とも26件成功した。OptionalArrayModuleのdocumentation buildも
+`--warnings-as-errors`付きで成功した。内側に0次元がある4Dではgetterと同じoffset計算を用い、
+許可済みのzero-volume shapeを維持した。

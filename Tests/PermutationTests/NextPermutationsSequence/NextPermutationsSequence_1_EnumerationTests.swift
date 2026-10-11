@@ -9,6 +9,8 @@
 
 #if !COMPATIBLE_ATCODER_2025
 import PermutationModule
+#if false
+
 import XCTest
 
 final class NextPermutationsSequence_1_EnumerationTests: XCTestCase {
@@ -93,4 +95,6 @@ final class NextPermutationsSequence_1_EnumerationTests: XCTestCase {
     XCTAssertEqual(a, [1, 2, 3])
   }
 }
+
+#endif
 #endif

@@ -161,7 +161,7 @@ index は木のノードと密接に結び付いているため、
 ```swift
 var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
 
-set[.lowerBound(4) ..< .endIndex].erase()
+set[.lowerBound(4) ..< .end].erase()
 // [1, 3]
 ```
 
@@ -170,7 +170,7 @@ set[.lowerBound(4) ..< .endIndex].erase()
 ```swift
 var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
 
-set.erase(.lowerBound(4) ..< .endIndex)
+set.erase(.lowerBound(4) ..< .end)
 // [1, 3]
 ```
 
@@ -224,7 +224,7 @@ index からその位置を特定できます。
 ```swift
 var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
 
-print(set[.start.advance(by: 1)])
+print(set[.start.advanced(by: 1)])
 // 3
 ```
 

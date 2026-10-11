@@ -13,7 +13,7 @@ IDs remain permanent and must not be reused.
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `RBT-002` | `DONE` | User / Codex / Claude | Index-range `erase`の空guard | 2026-10-06、範囲検査を維持して空での不要なCoWを回避（`11817dfe`） | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-002` | `DONE` | User / Codex / Claude | Index-range `erase`の空guard | 2026-10-06、範囲検査を維持して空での不要なCoWを回避（`11817dfe`） | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `DOC-001` | `DONE` | Codex / Claude | P10残存記述確認 | 2026-10-06、監査と必要箇所の同期を完了（`9b0f42d5`） | `MAINTENANCE.md` |
 | `GRAPH-003` | `EXCLUDED` | — | 二つのtask graph DBの統合議論 | 2026-10-07、統合方針をdrop。再開候補にしない | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-006` | `DONE` | Claude / Codex | [DISCOVERY] smell判定共有スキームの最小fixture | 2026-10-08、local DB非依存の共有schema候補とRBT-017 fixtureを作成。Codexが文書件数とO(1)契約への3経路を再構築し、task→symbol辺の入力不在と自己参照除外を既知制約として受入 | `AI_GRAPH_SHARED_SCHEMA.md` |
@@ -33,34 +33,34 @@ IDs remain permanent and must not be reused.
 | `GRAPH-017` | `EXCLUDED` | — | [EXECUTION] RP-19 readiness fixture | 親目的の共有スキーム試験を終了したため、未実施のfixtureを不要として除外 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-018` | `EXCLUDED` | — | [EXECUTION] Task precedence Gateの段階移行完成判定 | Codex用DBと共有スキームの継続を終了し、DB向けGate移行の完成判定を不要として除外 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-019` | `DONE` | Codex | [EXECUTION] Task Registry構造lintの最小実装 | 2026-10-09、現行MarkdownをSQLiteインメモリDBへ読み込み、cycle・参照切れ・自己依存・重複edge・Gate・条件付き前提をread-only検査する入口を追加 | `Graph/TASK_GRAPH_LINT.md` |
-| `OPS-002` | `DONE` | Codex | [DISCOVERY] task分解・インライン化・割当の三段階運用検討 | 2026-10-09、stable ID・依存・履歴は維持し、条件の揃った連続`EXECUTION`だけを一時assignment packageへまとめる方式を採用。判断・凍結・待機taskは対象外とし、新判断や失敗時は元taskへ戻す | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-002` | `DONE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08、責任境界、現行補正、OptionalArray 10 package、追加skillについて項目別回答を記録 | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-003` | `DONE` | Codex | [DISCOVERY] agent task適性表の合意・不一致整理 | 2026-10-08、実質的不一致なし。修正提案を条件付き合意へ整理し、OptionalArray固有の疑義は監査packageへ移管 | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-004` | `EXCLUDED` | — | [EXECUTION] agent task適性表の不一致decision登録 | `FIT-003`でユーザー判断を要する実質的不一致が無かったため登録不要 | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-005` | `DONE` | Codex | [EXECUTION] agent task適性表の合意済み最終反映 | 2026-10-08、合意済み責任境界とsmell 4・tuning確認3を現行運用へ反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-006` | `DONE` | Claude | [DISCOVERY] agent task適性表の最終差分確認 | 2026-10-08、3項目を合意どおり、2項目を文言上の留保として記録。能力点・責任境界の異論なし | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-007` | `DONE` | Codex | [EXECUTION] agent task適性表更新の完成判定 | 2026-10-08、2件の留保を合意済み文言の欠落として補正し、新しい不一致なく更新全体を完了 | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `OPS-002` | `DONE` | Codex | [DISCOVERY] task分解・インライン化・割当の三段階運用検討 | 2026-10-09、stable ID・依存・履歴は維持し、条件の揃った連続`EXECUTION`だけを一時assignment packageへまとめる方式を採用。判断・凍結・待機taskは対象外とし、新判断や失敗時は元taskへ戻す | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-002` | `DONE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08、責任境界、現行補正、OptionalArray 10 package、追加skillについて項目別回答を記録 | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-003` | `DONE` | Codex | [DISCOVERY] agent task適性表の合意・不一致整理 | 2026-10-08、実質的不一致なし。修正提案を条件付き合意へ整理し、OptionalArray固有の疑義は監査packageへ移管 | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-004` | `EXCLUDED` | — | [EXECUTION] agent task適性表の不一致decision登録 | `FIT-003`でユーザー判断を要する実質的不一致が無かったため登録不要 | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-005` | `DONE` | Codex | [EXECUTION] agent task適性表の合意済み最終反映 | 2026-10-08、合意済み責任境界とsmell 4・tuning確認3を現行運用へ反映 | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-006` | `DONE` | Claude | [DISCOVERY] agent task適性表の最終差分確認 | 2026-10-08、3項目を合意どおり、2項目を文言上の留保として記録。能力点・責任境界の異論なし | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-007` | `DONE` | Codex | [EXECUTION] agent task適性表更新の完成判定 | 2026-10-08、2件の留保を合意済み文言の欠落として補正し、新しい不一致なく更新全体を完了 | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-012` | `DONE` | Claude | Swift 6.4 `-O`のCoW誤コンパイルに対する値セマンティクスのTest as Spec拡充 | 2026-10-07、closure-captured mutation形状を4型へ追加し、Debug / Releaseで値セマンティクス維持を確認（`4249ed8c`） | `Tests/RedBlackTreeTests/` |
-| `RBT-013` | `DONE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 2026-10-07、27件を分類。文書へ影響するRange View検査と公開API名、古いコメント2件を判断候補として報告 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-013` | `DONE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 2026-10-07、27件を分類。文書へ影響するRange View検査と公開API名、古いコメント2件を判断候補として報告 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `PERM-016` | `DONE` | Claude | [EXECUTION] Permutation品質評価の事実更新 | 2026-10-07、解消済み`swapAt`懸念を除き、header二重破棄、終端の不要copy、走査共有、Debug限定検査member、行数を反映（`127a0d5b`） | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-017` | `DONE` | Codex | Permutation品質評価R-1〜R-4 review | 2026-10-08、品質特性の読み替え、1.0前改善候補、文書形式の選択肢、事実参照をreviewし初版を完成 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
-| `RBT-015` | `DONE` | Codex | RedBlackTree残task文書の事実更新 | 2026-10-08、PR #158前後の時制、success-only Index分離済みと外部待ちgate、削除済みTODOの表現を現状へ同期 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-017` | `EXCLUDED` | — | [EXECUTION] Mapped Values Range Viewの範囲外更新防止ゲート | 2026-10-08、範囲所属は呼び出し側の事前条件、単一Index操作はO(1)と`211ca2fc`で確定済みのため変更不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-018` | `EXCLUDED` | — | [DISCOVERY] Mapped Values ViewのIndex検査条件調査 | 2026-10-08、調査は既存のAPI Matrix・仕様testを見落としており、追加判断が必要という前提を撤回 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-019` | `EXCLUDED` | — | [DECISION] 全体Mapped Values Viewの範囲検査 | 既存のO(1)契約を維持するため判断不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-020` | `EXCLUDED` | — | [DECISION] 部分Mapped Values Viewの更新計算量 | O(1)を維持する契約が確定済みのため判断不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-021` | `EXCLUDED` | — | [DECISION] Mapped Values View範囲外停止メッセージ | 範囲所属を操作内で検査しないため判断不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-022` | `EXCLUDED` | — | [DECISION] Mapped Values View getterの範囲検査 | getterもO(1)契約を維持するため判断不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-023` | `EXCLUDED` | — | [DECISION] Mapped Values View範囲判定helperのinline境界 | 新helperを追加しないため判断不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-024` | `EXCLUDED` | — | [EXECUTION] Mapped Values View範囲検査の実装と機能検証 | 既存契約に反する実装となるため実施しない。試行差分は破棄済み | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-025` | `EXCLUDED` | — | [EXECUTION] Mapped Values View範囲検査の性能確認 | 実装を行わないため性能確認も不要 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-027` | `DONE` | Claude | [DISCOVERY] RedBlackTree残task文書のbranch・commit時制ledger | 2026-10-08、PR #158前後と現行HEADの記述を現行／履歴／曖昧へ分類し、commit根拠を記録 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-028` | `DONE` | Claude | [DISCOVERY] RedBlackTree残task文書とRegistryの状態対応表 | 2026-10-08、checkbox・状態語・task IDをRegistryへ対応し、一致・履歴説明・対応なし・不一致を表化 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-029` | `DONE` | Claude | [DISCOVERY] RedBlackTree残task文書のpath・symbol現存ledger | 2026-10-08、現在形のpath・symbol・flagを存在・移動・削除・構成限定・未確認へ分類 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-030` | `DONE` | Claude | [EXECUTION] RedBlackTree merge前PoC節の時制補正 | 2026-10-08、PR #158前の判断を過去形へ直し、merge後の現行事実と検証正本を明記 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-031` | `DONE` | Claude | [EXECUTION] RedBlackTree完了済みIndex分離と未確定gateの表現補正 | 2026-10-08、success-only分離済みと公開Index最終形・Comparable等の外部待ちを分離して表現 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-015` | `DONE` | Codex | RedBlackTree残task文書の事実更新 | 2026-10-08、PR #158前後の時制、success-only Index分離済みと外部待ちgate、削除済みTODOの表現を現状へ同期 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-017` | `EXCLUDED` | — | [EXECUTION] Mapped Values Range Viewの範囲外更新防止ゲート | 2026-10-08、範囲所属は呼び出し側の事前条件、単一Index操作はO(1)と`211ca2fc`で確定済みのため変更不要 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-018` | `EXCLUDED` | — | [DISCOVERY] Mapped Values ViewのIndex検査条件調査 | 2026-10-08、調査は既存のAPI Matrix・仕様testを見落としており、追加判断が必要という前提を撤回 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-019` | `EXCLUDED` | — | [DECISION] 全体Mapped Values Viewの範囲検査 | 既存のO(1)契約を維持するため判断不要 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-020` | `EXCLUDED` | — | [DECISION] 部分Mapped Values Viewの更新計算量 | O(1)を維持する契約が確定済みのため判断不要 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-021` | `EXCLUDED` | — | [DECISION] Mapped Values View範囲外停止メッセージ | 範囲所属を操作内で検査しないため判断不要 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-022` | `EXCLUDED` | — | [DECISION] Mapped Values View getterの範囲検査 | getterもO(1)契約を維持するため判断不要 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-023` | `EXCLUDED` | — | [DECISION] Mapped Values View範囲判定helperのinline境界 | 新helperを追加しないため判断不要 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-024` | `EXCLUDED` | — | [EXECUTION] Mapped Values View範囲検査の実装と機能検証 | 既存契約に反する実装となるため実施しない。試行差分は破棄済み | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-025` | `EXCLUDED` | — | [EXECUTION] Mapped Values View範囲検査の性能確認 | 実装を行わないため性能確認も不要 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-027` | `DONE` | Claude | [DISCOVERY] RedBlackTree残task文書のbranch・commit時制ledger | 2026-10-08、PR #158前後と現行HEADの記述を現行／履歴／曖昧へ分類し、commit根拠を記録 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-028` | `DONE` | Claude | [DISCOVERY] RedBlackTree残task文書とRegistryの状態対応表 | 2026-10-08、checkbox・状態語・task IDをRegistryへ対応し、一致・履歴説明・対応なし・不一致を表化 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-029` | `DONE` | Claude | [DISCOVERY] RedBlackTree残task文書のpath・symbol現存ledger | 2026-10-08、現在形のpath・symbol・flagを存在・移動・削除・構成限定・未確認へ分類 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-030` | `DONE` | Claude | [EXECUTION] RedBlackTree merge前PoC節の時制補正 | 2026-10-08、PR #158前の判断を過去形へ直し、merge後の現行事実と検証正本を明記 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-031` | `DONE` | Claude | [EXECUTION] RedBlackTree完了済みIndex分離と未確定gateの表現補正 | 2026-10-08、success-only分離済みと公開Index最終形・Comparable等の外部待ちを分離して表現 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `PERM-018` | `DONE` | Claude | [EXECUTION] swift-algorithms同時import時のPermutation名前衝突test | 2026-10-07、両moduleの同時import、名前解決、successor列と全順列の使い分けを仕様testで固定（`0ff5fd84`） | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-019` | `EXCLUDED` | — | [EXECUTION] 利用者向けPermutation使用例の仕様test化 | 2026-10-08、使用例の選定は利用者向け文書作業そのものとして文書フェーズへ移し、独立taskから除外 | `Tests/PermutationTests/NextPermutationsSequence/` |
 | `PERM-020` | `DONE` | Claude | [DISCOVERY] Permutation公開API・コメントledger | 2026-10-08、公開宣言14件と別枠の公開適合9件をsource位置・制約・属性・コメントへ対応 | `PermutationModule/DocumentationHandoffAudit.md` |
@@ -86,11 +86,11 @@ IDs remain permanent and must not be reused.
 | `PERM-033` | `DONE` | Claude / Codex | [EXECUTION] Permutation CI計測構成の実装 | 2026-10-08、4件・1件の二library、同一結果file追記、base / HEAD対称性を実装し、構文とtitle集合を検収 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-034` | `DONE` | Claude / Codex | [DISCOVERY] Permutation sequential subscriptのwitness table参照比較 | 2026-10-09、macOS arm64の同一Release条件で三版のhot path命令列が一致し、witness table参照・特殊化失敗がないことを確認。後続のLinux実CI確認は`PERM-036`で完了 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
 | `PERM-035` | `DONE` | Claude / Codex | [DISCOVERY] Permutation sequential subscript性能回帰のbenchmark二分探索 | 2026-10-09、実benchmarkを交互に各3回測定し中央値1.0053で回帰を再現せず、規定どおり探索を停止。Linux CI候補列を記録 | `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` |
-| `PERM-036` | `DONE` | Claude / Codex | [DISCOVERY] Permutation sequential subscriptの実benchmark hot path比較 | 2026-10-09、macOS arm64とLinux x86-64で修正前後の実benchmark binaryを比較。regressed hot loopの命令列は同一で、Linuxでは遅い側だけ64 byte境界をまたぐ配置差を確認。第三者assembly reviewのgetter非inline化仮説とは独立した観測として保持 | `PERFORMANCE_REGRESSION_BISECTION.md` |
-| `PERM-037` | `DONE` | User / Codex / Claude | [EXECUTION] performance失敗時の診断artifact拡充 | 2026-10-09、base / HEADの実行済みbenchmark binary、逆アセンブル、symbol、hash、測定JSON、比較結果、runner CPUを失敗時に保存するworkflowへ更新し、引用符不備も補正 | `PERFORMANCE_REGRESSION_BISECTION.md` |
-| `PERM-038` | `DONE` | User / Codex | [DISCOVERY] 第三者AIによるPermutation assembly reviewの採用 | 2026-10-09、binary全体の独立比較を構造上の観測として採用。後続のhot-path検証によりgetter非inline化は実測回帰の原因説明として不採用とし、元の仮説は履歴として保持 | `PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md` |
+| `PERM-036` | `DONE` | Claude / Codex | [DISCOVERY] Permutation sequential subscriptの実benchmark hot path比較 | 2026-10-09、macOS arm64とLinux x86-64で修正前後の実benchmark binaryを比較。regressed hot loopの命令列は同一で、Linuxでは遅い側だけ64 byte境界をまたぐ配置差を確認。第三者assembly reviewのgetter非inline化仮説とは独立した観測として保持 | `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md` |
+| `PERM-037` | `DONE` | User / Codex / Claude | [EXECUTION] performance失敗時の診断artifact拡充 | 2026-10-09、base / HEADの実行済みbenchmark binary、逆アセンブル、symbol、hash、測定JSON、比較結果、runner CPUを失敗時に保存するworkflowへ更新し、引用符不備も補正 | `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md` |
+| `PERM-038` | `DONE` | User / Codex | [DISCOVERY] 第三者AIによるPermutation assembly reviewの採用 | 2026-10-09、binary全体の独立比較を構造上の観測として採用。後続のhot-path検証によりgetter非inline化は実測回帰の原因説明として不採用とし、元の仮説は履歴として保持 | `Archived/Canonical/PERFORMANCE_REGRESSION_ASSEMBLY_ANALYSIS.md` |
 | `BARE-008` | `DONE` | User / Codex | [DECISION] BareArray監査を再開するか | 2026-10-09、OptionalArrayで検証した管理方式を用いて監査を再開。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持 | `Tests/TESTING.md` |
-| `RELEASE-004` | `DONE` | User / Codex | [EXECUTION] 0.5.0の互換準備branch統合 | 2026-10-09、`main`を`prepare/compatible/2`へmergeし、競合解消、Debug・Release全test、互換branch資料整理、remote pushまで完了 | `RELEASE_0_5_0.md` |
+| `RELEASE-004` | `DONE` | User / Codex | [EXECUTION] 0.5.0の互換準備branch統合 | 2026-10-09、`main`を`prepare/compatible/2`へmergeし、競合解消、Debug・Release全test、互換branch資料整理、remote pushまで完了 | `Archived/Canonical/RELEASE_0_5_0.md` |
 | `PERM-008` | `DONE` | Codex | [EXECUTION] Permutation互換branchの有効化とCI分離 | 2026-10-09、branch defineと通常source排他を有効化。互換機能testを維持し、対象外のdocumentation・performance jobを互換branchで停止 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-004` | `DONE` | Codex | [EXECUTION] AtCoder 2025互換ソースの隔離 | 2026-10-09、基準2 fileを条件付き専用fileへ隔離。0.5.0の通常sourceは無条件compileへ戻し、排他切替は後続branch統合時へ移管 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-005` | `EXCLUDED` | — | Permutation互換traitのPackage設定 | 2026-10-09、0.5.0は通常Permutationだけを公開するためtraitを撤回。互換切替は`prepare/compatible/2`統合後のbranch defineで扱う | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
@@ -141,9 +141,9 @@ IDs remain permanent and must not be reused.
 | `OPT-004` | `EXCLUDED` | — | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で独立文書を作らないと決定し、必要事項は既存規則へ吸収済みのため独立実行を除外 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
-| `RELEASE-001` | `DONE` | User / Codex | [DECISION] 0.5.0のtag地点 | 2026-10-08、PermutationのAtCoder 2025互換mode完成を含む状態と決定 | `RELEASE_0_5_0.md` |
-| `RELEASE-002` | `DONE` | Codex | [EXECUTION] 0.5.0 release gateの実施 | 2026-10-09、互換trait撤回とinline安定化後、PR #175のDebug・Release・documentation・ASan・performance全成功を確認 | `RELEASE_0_5_0.md` |
-| `RELEASE-003` | `DONE` | User / Codex | [EXECUTION] 0.5.0 tag作成 | 2026-10-09、ユーザー確認後、`main`のmerge commit `0dc1bd26`へannotated tag `0.5.0`を作成 | `RELEASE_0_5_0.md` |
+| `RELEASE-001` | `DONE` | User / Codex | [DECISION] 0.5.0のtag地点 | 2026-10-08、PermutationのAtCoder 2025互換mode完成を含む状態と決定 | `Archived/Canonical/RELEASE_0_5_0.md` |
+| `RELEASE-002` | `DONE` | Codex | [EXECUTION] 0.5.0 release gateの実施 | 2026-10-09、互換trait撤回とinline安定化後、PR #175のDebug・Release・documentation・ASan・performance全成功を確認 | `Archived/Canonical/RELEASE_0_5_0.md` |
+| `RELEASE-003` | `DONE` | User / Codex | [EXECUTION] 0.5.0 tag作成 | 2026-10-09、ユーザー確認後、`main`のmerge commit `0dc1bd26`へannotated tag `0.5.0`を作成 | `Archived/Canonical/RELEASE_0_5_0.md` |
 
 ## Completed precedence history
 
@@ -277,28 +277,28 @@ IDs remain permanent and must not be reused.
 | `OPS-006` | `DONE` | Codex | [DECISION] 評価・observation文書を待避するか | 旧統合評価1件だけ待避 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
 | `OPS-007` | `DONE` | Codex | [DECISION] 技術調査・release文書を待避するか | 未完・凍結・後続作業の正本として直下維持 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
 | `OPS-008` | `DONE` | Codex | [EXECUTION] 採用済み文書の待避と参照更新 | 3文書を待避し索引・参照を更新 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
-| `OPS-009` | `DONE` | Claude / Codex | [EXECUTION] AI task process posterの作成と正式配置 | 2026-10-09、AIによるtask処理と責任境界を1枚にまとめ、生成scriptとSVGを追跡対象へ移した | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-010` | `DONE` | Codex | [DISCOVERY] AI task process posterの内容照合 | Registryの全9状態、第三者AIの役割、関係性の記述を正本と照合し、修正点を確定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-011` | `DONE` | Codex | [EXECUTION] AI task process posterへのreview反映 | 内容照合の指摘を生成scriptと成果物へ反映し、再生成と画像確認を完了 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-012` | `DONE` | User / Codex | [DECISION] 終了済みGRAPH-004 fallback規則を削除するか | 2026-10-09、削除を決定。ルーティーンから終了済み共有smell試験へのfallbackを除き、割当を無理に作らない原則は維持 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-016` | `DONE` | User / Codex | [DECISION] Index完了ゲート←公開Index判断のFlow分類 | `PARALLEL_JOIN`。Comparable採否の外部依存を巻き込まず、公開Index表現・完了範囲の判断と親ゲートを並行可能にする | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-017` | `DONE` | User / Codex | [DECISION] Index完了ゲート←Comparable判断のFlow分類 | `PARALLEL_JOIN`。外部依存はComparable判断taskに残し、他のIndex作業と並行して親ゲートの完了前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-024` | `DONE` | User / Codex | [DECISION] Task precedence同期位置の名称 | 2026-10-09、`Barrier: HEAD / LAST`を中間案として採用。直後に実行関係を直接表す`Flow`へ洗練したため、現行名称は`OPS-025`を参照 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-018` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←Index完了のFlow分類 | `PARALLEL_JOIN`。品質調査とIndex契約を並行可能とし、1.0品質判定の確定前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-019` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←runtime-check再審査のFlow分類 | `PARALLEL_JOIN`。他の1.0品質作業と並行し、最終判定前にruntime-check実装の採否と合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-020` | `DONE` | User / Codex | [DECISION] Mapped Values判断←API照合のFlow分類 | `SEQUENCE`。現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-021` | `EXCLUDED` | User / Codex | [DECISION] BareArray性能計測←性能基準のFlow分類 | Flow自体は`SEQUENCE`で判断不要。BareArray固有の測定設計はCodexの`DISCOVERY`とし、そこで見つかった製品判断だけを別taskへ分離する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-022` | `DONE` | User / Codex | [DECISION] BareArray親監査←契約棚卸しのFlow分類 | `PARALLEL_JOIN`。親監査と契約棚卸しを並行可能とし、親監査の完了前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-025` | `DONE` | User / Codex | [DECISION] Task precedence実行関係の名称 | 2026-10-09、列名を`Flow`、直列を`SEQUENCE`、並行可能で完了前に合流する関係を`PARALLEL_JOIN`とした | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-023` | `DONE` | User / Codex | [DECISION] BareArray親監査←Test as Specification整理のFlow分類 | `PARALLEL_JOIN`。親監査を先行可能とし、完了前にTest as Specification整理と合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-013` | `DONE` | User / Codex | [DECISION] Task precedenceの`UNCLASSIFIED` Flowを廃止するか | 2026-10-09、現行辺をすべて`SEQUENCE`または`PARALLEL_JOIN`へ個別分類した後、移行用の`UNCLASSIFIED`を現行規則とlintから廃止 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-014` | `DONE` | User / Codex | [DECISION] 採番済み条件付きtaskの整理方針 | 上流結果まで必須依存を持たない凍結状態で保持し、必要なら再開、決定済みまたは不要なら`EXCLUDED`へ送る | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `BareArrayModule/BareArrayAudit.md` |
-| `OPS-015` | `DONE` | User / Codex | [DECISION] 期限後のCodex低燃費運用規則の処遇 | 2026-10-09、ユーザー判断により予定期限前に低燃費運用を終了し、現行Registryから一時運用規則を削除 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-009` | `DONE` | Claude / Codex | [EXECUTION] AI task process posterの作成と正式配置 | 2026-10-09、AIによるtask処理と責任境界を1枚にまとめ、生成scriptとSVGを追跡対象へ移した | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-010` | `DONE` | Codex | [DISCOVERY] AI task process posterの内容照合 | Registryの全9状態、第三者AIの役割、関係性の記述を正本と照合し、修正点を確定 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-011` | `DONE` | Codex | [EXECUTION] AI task process posterへのreview反映 | 内容照合の指摘を生成scriptと成果物へ反映し、再生成と画像確認を完了 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-012` | `DONE` | User / Codex | [DECISION] 終了済みGRAPH-004 fallback規則を削除するか | 2026-10-09、削除を決定。ルーティーンから終了済み共有smell試験へのfallbackを除き、割当を無理に作らない原則は維持 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-016` | `DONE` | User / Codex | [DECISION] Index完了ゲート←公開Index判断のFlow分類 | `PARALLEL_JOIN`。Comparable採否の外部依存を巻き込まず、公開Index表現・完了範囲の判断と親ゲートを並行可能にする | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-017` | `DONE` | User / Codex | [DECISION] Index完了ゲート←Comparable判断のFlow分類 | `PARALLEL_JOIN`。外部依存はComparable判断taskに残し、他のIndex作業と並行して親ゲートの完了前に合流する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-024` | `DONE` | User / Codex | [DECISION] Task precedence同期位置の名称 | 2026-10-09、`Barrier: HEAD / LAST`を中間案として採用。直後に実行関係を直接表す`Flow`へ洗練したため、現行名称は`OPS-025`を参照 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-018` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←Index完了のFlow分類 | `PARALLEL_JOIN`。品質調査とIndex契約を並行可能とし、1.0品質判定の確定前に合流する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-019` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←runtime-check再審査のFlow分類 | `PARALLEL_JOIN`。他の1.0品質作業と並行し、最終判定前にruntime-check実装の採否と合流する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-020` | `DONE` | User / Codex | [DECISION] Mapped Values判断←API照合のFlow分類 | `SEQUENCE`。現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-021` | `EXCLUDED` | User / Codex | [DECISION] BareArray性能計測←性能基準のFlow分類 | Flow自体は`SEQUENCE`で判断不要。BareArray固有の測定設計はCodexの`DISCOVERY`とし、そこで見つかった製品判断だけを別taskへ分離する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-022` | `DONE` | User / Codex | [DECISION] BareArray親監査←契約棚卸しのFlow分類 | `PARALLEL_JOIN`。親監査と契約棚卸しを並行可能とし、親監査の完了前に合流する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-025` | `DONE` | User / Codex | [DECISION] Task precedence実行関係の名称 | 2026-10-09、列名を`Flow`、直列を`SEQUENCE`、並行可能で完了前に合流する関係を`PARALLEL_JOIN`とした | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-023` | `DONE` | User / Codex | [DECISION] BareArray親監査←Test as Specification整理のFlow分類 | `PARALLEL_JOIN`。親監査を先行可能とし、完了前にTest as Specification整理と合流する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-013` | `DONE` | User / Codex | [DECISION] Task precedenceの`UNCLASSIFIED` Flowを廃止するか | 2026-10-09、現行辺をすべて`SEQUENCE`または`PARALLEL_JOIN`へ個別分類した後、移行用の`UNCLASSIFIED`を現行規則とlintから廃止 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-014` | `DONE` | User / Codex | [DECISION] 採番済み条件付きtaskの整理方針 | 上流結果まで必須依存を持たない凍結状態で保持し、必要なら再開、決定済みまたは不要なら`EXCLUDED`へ送る | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` / `BareArrayModule/BareArrayAudit.md` |
+| `OPS-015` | `DONE` | User / Codex | [DECISION] 期限後のCodex低燃費運用規則の処遇 | 2026-10-09、ユーザー判断により予定期限前に低燃費運用を終了し、現行Registryから一時運用規則を削除 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `EVAL-001` | `EXCLUDED` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | 反復して再開する常設運用であり完了可能なtaskではないためRegistryから除外。明示依頼時の記録規則と既存文書は維持 | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
-| `RBT-006` | `EXCLUDED` | User / Codex | 未結線コードの個別削除 | 対象未指定の待機枠を閉じた。必要時は具体的な対象と完了条件を持つ新taskを作る | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-006` | `EXCLUDED` | User / Codex | 未結線コードの個別削除 | 対象未指定の待機枠を閉じた。必要時は具体的な対象と完了条件を持つ新taskを作る | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `TEST-001` | `EXCLUDED` | User / Codex | 無効化・歴史的テストコードの処遇 | 対象未指定の待機枠を閉じた。必要時は具体的な対象と完了条件を持つ新taskを作る | `Tests/TESTING.md` |
 | `TEST-002` | `EXCLUDED` | Codex | stride assertion／fixture alignmentの任意改善 | 実害のない任意改善taskを閉じた。問題発生時は現状に基づく新taskを作る | `Tests/TESTING.md` |
 | `TEST-003` | `EXCLUDED` | Codex | randomized trace失敗時の自動縮小 | 実害待ちの機能候補を閉じた。必要時は具体的な失敗事例を入力に新taskを作る | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `TEST-004` | `EXCLUDED` | Codex | 原木Fixtureの追加portable化 | 実害のない任意portable化taskを閉じた。問題発生時は対象環境を持つ新taskを作る | `Tests/TESTING.md` |
-| `PERF-001` | `EXCLUDED` | Codex | Swift更新後のCoWコード生成再計測 | 将来eventへの常設待機枠を閉じた。Swift更新時はtoolchainと測定範囲を持つ新taskを作る | `PERFORMANCE_REGRESSION_BISECTION.md` |
+| `PERF-001` | `EXCLUDED` | Codex | Swift更新後のCoWコード生成再計測 | 将来eventへの常設待機枠を閉じた。Swift更新時はtoolchainと測定範囲を持つ新taskを作る | `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md` |
 | `BENCH-001` | `EXCLUDED` | Codex | SortedCollectionsとのpublishableな大規模比較 | 現行goalへ接続しない任意研究候補を閉じた。公開比較が必要になった時点で新taskを作る | `Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md` |

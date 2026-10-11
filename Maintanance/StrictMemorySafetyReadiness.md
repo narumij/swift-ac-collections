@@ -412,7 +412,17 @@ pointer initializerでそのstorageへ代入する診断6件、strict有効時�
 `BareArrayModule`と同じ理由で、警告を消すためだけに公開型を`@unsafe`へ変更せず、
 `OptionalArrayModule`のstrict設定は無効のままとする。
 
-`ARRAY-001`は、storage再設計、View寿命、公開unsafe境界、strict恒久適用を現在の粒度のまま実行するtaskではない。
-ユーザードキュメント作業後、再開時点で得られている公開契約、品質評価、task分解方式を入力に、BareArrayと
-OptionalArrayそれぞれの事実確認、一判断ごとの`DECISION`、判断済み方針の`EXECUTION`へ分解する。
-将来の方が適切な境界を見つけられる可能性を残すため、現時点では子taskを先行登録しない。
+旧`ARRAY-001`は、storage再設計、View寿命、公開unsafe境界、strict恒久適用をまとめて再分解する
+包括taskとしていた。2026-10-11、BareArrayについてはView寿命をノンエスケーパブル化へ統合し、
+storage境界、公開7型の`@safe`／`@unsafe`分類、strict memory safety採否を独立した並行taskへ分けたため、
+包括taskを除外した。OptionalArrayはこの分解によって暗黙に再開せず、必要になった時点で別途整理する。
+
+2026-10-11、BareArrayの所有型4種とノンエスケーパブルView型3種を`@safe`に分類して実装した。
+適用後のstrict buildでは公開7型のwarningが解消し、Debug・Releaseの通常testとDeath Test、および
+View寿命escape・所有配列writebackのcompiler診断fixtureが成功した。個別memberやconformanceの分類は
+この判断で先取りせず、必要になった時点で扱う。
+
+同日、公開7型の分類完了によって`.strictMemorySafety()`採否を左右していた不確実性が解消した。
+設定有効時にwarningは残らず既存検証も成功し、設定を外す反証もないため、BareArrayModuleでは
+`.strictMemorySafety()`を品質検証の対象として維持する。これは新しい製品判断ではなく、既存品質要求と
+確認済み事実から導かれた結論である。

@@ -104,7 +104,7 @@ size、Swift Array・unsafe buffer・C配列等の比較対象、絶対性能と
 整理する。比較対象や採用閾値が公開上の約束または1.0採否を左右する場合は、Codexが結論を補わず、
 一判断ごとの`DECISION`候補として分離する。確定した測定設計と必要な判断を入力に`BARE-007`を実行する。
 
-OptionalArrayの品質評価は、PermutationModuleの`QualityAssessment-ISO25010.md`と同様に、仕様を再記述せず
+OptionalArrayの品質評価は、PermutationModuleの`Quality-Profile.md`と同様に、仕様を再記述せず
 Test as Specification、実装、CI、利用者向け文書を根拠としてISO/IEC 25010の品質特性ごとに整理する。
 体系監査完了時に初版を策定して文書作業と1.0準備の不足を発見し、ユーザードキュメント作業後に再評価する。
 後者で残った不足を独立task候補へ分離してから1.0採用判断へ進み、初版だけを品質ゲートの最終評価にしない。
@@ -140,7 +140,7 @@ Test as Specification、実装、CI、利用者向け文書を根拠としてISO
   (`Specification.md`/`ImplementationPlan.md`/`ProductReadinessAssessment.md`)を
   実装済みAPIへ合わせて書き直し済み。通常/`COMPATIBLE_ATCODER_2025`両方で
   `swift test`成功、`Package.swift`は元の状態へ復元済み。
-- REFACTORING_FROM_ATCODER_2025.md: `CLAUDE_TASK.md`の8項目の訂正要件を`git`で
+- `Maintanance/RefactoringFromAtCoder2025/README.md`: `CLAUDE_TASK.md`の8項目の訂正要件を`git`で
   再検証(全コミットのハッシュ・日付・`-M`判定・`diff`行数・`merge-base`を再確認)し、
   いずれも既に正確であることを確認済み(今回の文書自体への追加修正なし)。
 - RedBlackTree: 4型、共有View、BoundExpressionの連番Test as Specification整理済み。

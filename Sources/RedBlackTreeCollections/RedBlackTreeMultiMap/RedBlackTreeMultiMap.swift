@@ -85,7 +85,7 @@
 /// ```swift
 /// var map: RedBlackTreeMultiMap<Int, String> =
 ///   [1: "b", 1: "d", 3: "a", 4: "c", 5: "e"]
-/// print(map[.start.advance(by: 1)]) // -> (1, "d")
+/// print(map[.start.advanced(by: 1)]) // -> (1, "d")
 /// ```
 ///
 /// ```swift

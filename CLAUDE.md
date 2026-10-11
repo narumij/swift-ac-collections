@@ -7,6 +7,12 @@ default.
 
 For work under `Tests/`, read `Tests/CLAUDE.md` after the Task Registry and follow its instructions.
 
+# Task selection and start authority
+
+Readiness and Claude ownership do not authorize autonomous task selection or start. Begin work only
+after the user or Codex selects the task for Claude. A direct user request before stable Registry ID
+assignment is governed by the bounded exception below.
+
 # Work awaiting a Registry ID
 
 `Maintanance/CLAUDE_PENDING_TASKS.md` is a temporary handoff queue for work discussed while Codex is

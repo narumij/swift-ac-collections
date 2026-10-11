@@ -187,7 +187,7 @@ IteratorのCoWスナップショット、失敗の表現を説明する。
 通常構成で利用できる現行APIを、Set、MultiSet、MultiMap、Dictionaryで横断して
 確認するための一覧。DeprecatedおよびAtCoder 2025互換APIは含まない。
 
-### [品質方針](../Quality-Checklist.md)
+### [品質プロファイル](../Quality-Profile.md)
 
 公開APIと原木内部のTest as Specification、メモリ・Index寿命、性能退行、および
 変更時の最小品質ゲートを定める。設計上の契約をどの種類のテストで観測するかを確認する。
@@ -200,7 +200,7 @@ IteratorのCoWスナップショット、失敗の表現を説明する。
 4. Design-CopyOnWrite.mdで値型としての分離方法を確認する。
 5. Design-MemorySafety.mdでIndexへ追加される保証を確認する。
 6. Design-InternalArchitecture.mdでコード上の各層へ対応付ける。
-7. Quality-Checklist.mdで設計契約と実行可能な検証の境界を確認する。
+7. Quality-Profile.mdで設計契約と実行可能な検証の境界を確認する。
 8. Rangeなど実験中の領域は、必要に応じて個別文書を読む。
 
 ## この設計の性格

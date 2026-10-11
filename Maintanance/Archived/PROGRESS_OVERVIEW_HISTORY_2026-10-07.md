@@ -1,3 +1,5 @@
+<!-- ユーザーにとって思い出なので変更禁止 -->
+
 # 開発・メンテナンス進捗一覧（2026-10-07アーカイブ前スナップショット）
 
 最終更新: 2026-10-07 / Codex
@@ -24,10 +26,10 @@ Index契約とそれに関わる残taskは、この外部条件が安定する�
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-010` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲートのうち公開Index表現と完了範囲 | Container要件の安定後、公開Indexと内部`SealError`の分離、1.0での完了範囲を決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-002` | `DONE` | User / Codex / Claude | Index-range `erase`の空guard | 2026-10-06、範囲検査を維持して空での不要なCoWを回避（`11817dfe`） | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-010` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲートのうち公開Index表現と完了範囲 | Container要件の安定後、公開Indexと内部`SealError`の分離、1.0での完了範囲を決定 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-002` | `DONE` | User / Codex / Claude | Index-range `erase`の空guard | 2026-10-06、範囲検査を維持して空での不要なCoWを回避（`11817dfe`） | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `DOC-001` | `DONE` | Codex / Claude | P10残存記述確認 | 2026-10-06、監査と必要箇所の同期を完了（`9b0f42d5`） | `MAINTENANCE.md` |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | 現行Registryとのready判定一致を確認しながら試験運用を継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-002` | `FROZEN` | Codex | Codex用task graph DBの独立試験 | Codexのcontext reset後、ユーザーが明示的に再開 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
@@ -36,7 +38,7 @@ Index契約とそれに関わる残taskは、この外部条件が安定する�
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認（run 37502938888、job 112404281751） | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
-| `RBT-006` | `FROZEN` | User / Codex | 未結線コードの個別削除 | ユーザーが対象を個別指定 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `RBT-006` | `FROZEN` | User / Codex | 未結線コードの個別削除 | ユーザーが対象を個別指定 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `TEST-001` | `FROZEN` | User / Codex | 無効化・歴史的テストコードの処遇 | ユーザーが対象を個別指定 | `Tests/TESTING.md` |
 | `TEST-002` | `FROZEN` | Codex | stride assertion／fixture alignmentの任意改善 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
 | `PERM-001` | `FROZEN` | Codex | AtCoder 2025互換mode | ユーザーが明示的に再開 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
@@ -55,8 +57,8 @@ Index契約とそれに関わる残taskは、この外部条件が安定する�
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `BENCH-001` | `FROZEN` | Codex | SortedCollectionsとのpublishableな大規模比較 | ユーザーが明示的に再開 | `Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md` |
 | `TEST-003` | `FROZEN` | Codex | randomized trace失敗時の自動縮小 | 実害または明示的な再開指示 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
-| `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `PERF-001` | `FROZEN` | Codex | Swift更新後のCoWコード生成再計測 | Swift更新または明示的な再計測指示 | `PERFORMANCE_REGRESSION_BISECTION.md` |
+| `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
+| `PERF-001` | `FROZEN` | Codex | Swift更新後のCoWコード生成再計測 | Swift更新または明示的な再計測指示 | `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md` |
 | `HIST-001` | `FROZEN` | Codex | unsafe移行史の追加調査 | ユーザーが明示的に再開 | `REFACTORING_FROM_ATCODER_2025.md` |
 | `TEST-004` | `FROZEN` | Codex | 原木Fixtureの追加portable化 | 実害または明示的な再開指示 | `Tests/TESTING.md` |
 | `RBT-009` | `FROZEN` | User / Codex | runtime-check実装の再審査 | 1.0判断直前、または`-Ounchecked`が主要構成と判明 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
@@ -298,7 +300,7 @@ ThreeWay比較宣言群は縮小済みで、B4-cのSortedSequence実験経路は
 - [x] Kで（Index移行後）`erase(exactly:)`をMultiSet / Dictionaryへ横展開する（4コンテナ提供は決定済み。2026-10-05実装・テスト済み。Setの空でのCoW回避漏れも同時に修正）
 - [x] KeyValue Range Viewの範囲外Indexは標準Collection同様のprecondition違反とし、単一Index操作ではO(log N)の範囲内検査や停止保証を公開契約に含めない。独自のBound / range操作は処理内で入力を検査するsafe動作とする
 
-依存順と完成条件は`RED_BLACK_TREE_REMAINING_TASKS.md`を正本とする。
+依存順と完成条件は`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`を正本とする。
 
 ### 3. 非RedBlackTreeのコメントドック監査
 
@@ -382,7 +384,7 @@ Compatibility文書4本の包括監査は凍結taskから削除した。公開�
 - 詳細履歴: `Tests/Archived/TESTING_REFERENCE.md`
 - 変更履歴: `CHANGELOG.md`
 - 文書管理: `Maintanance/MAINTENANCE.md`
-- RedBlackTree残タスク: `Maintanance/RED_BLACK_TREE_REMAINING_TASKS.md`
+- RedBlackTree残タスク: `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md`
 - 外部所有型extension監査: `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md`
 - C++比較: `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md`
 - SortedCollections比較: `Maintanance/Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md`

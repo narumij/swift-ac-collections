@@ -16,7 +16,7 @@ swift-ac-collections は、
 [AtCoder][atcoder] の問題を、Swift でも実用的な性能で解けるようにする」**
 ことを目的として設計されています。
 
-[![Swift](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml/badge.svg?branch=main)](https://github.com/narumij/swift-ac-collections/actions/workflows/swift.yml)  
+[![CI](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml/badge.svg)](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## 利用方法
@@ -46,6 +46,8 @@ dependencies: [
 ```swift
 import AcCollections
 ```
+
+@Snippet(path: "swift-ac-collections/Snippets/RBTSetHead_1", slice: "first")
 
 <!-- 英訳: Branch Strategy -->
 ## ブランチ運用方針

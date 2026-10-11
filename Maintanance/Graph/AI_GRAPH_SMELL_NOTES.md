@@ -363,7 +363,7 @@ graphの指摘を退けていた。
   アルゴリズム側を`unsafe`なしで書けるようにしている（`.strictMemorySafety()`下で意味がある）。どれを畳んでも、
   境界のどれかが消えるか、`unsafe`がアルゴリズム側へ広がる。
 - H-aへの反証: 2026-10-09のLinux artifactでは、計測ループの命令列はgetterの属性の有無で変わらなかった
-  （`PERFORMANCE_REGRESSION_BISECTION.md`の事例記録）。属性が効いたのは汎用版の大きさと配置で、経路の多さそのものが
+  （`Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`の事例記録）。属性が効いたのは汎用版の大きさと配置で、経路の多さそのものが
   hot pathを悪くした証拠はない。散弾銃的変更は、構造よりも「属性を付け外しした理由が残っていない」ことのほうに由来する。
 - H-bへの反証: `ManagedBuffer`の要素領域はobjectが生きている間は動かない。`__storage_ptr`は`Buffer`のmethod内でだけ使われ、
   `@unsafe`で明示されている。2026-10-08に`Buffer.subscript`をclosure内完結に書き換えても、Releaseの値semanticsの失敗は

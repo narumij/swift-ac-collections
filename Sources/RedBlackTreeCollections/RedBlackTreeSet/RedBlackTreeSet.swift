@@ -52,12 +52,12 @@
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// set[.lowerBound(4) ..< .endIndex].erase() // -> [1, 3]
+/// set[.lowerBound(4) ..< .end].erase() // -> [1, 3]
 /// ```
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// set.erase(.lowerBound(4) ..< .endIndex) // -> [1, 3]
+/// set.erase(.lowerBound(4) ..< .end) // -> [1, 3]
 /// ```
 ///
 /// As in C++, sequential removal using `erase(_:) -> Index` is also supported.
@@ -78,7 +78,7 @@
 ///
 /// ```swift
 /// var set: RedBlackTreeSet<Int> = [1, 3, 4, 5]
-/// print(set[.start.advance(by: 1)]) // -> 3
+/// print(set[.start.advanced(by: 1)]) // -> 3
 /// ```
 ///
 /// ```swift

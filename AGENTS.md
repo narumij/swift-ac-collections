@@ -2,40 +2,26 @@
 
 ## Startup
 
-1. Check only whether `_ReleaseTask/ACTIVE.md` exists. If it exists, read it
-   first and treat it as the source of truth for the active release's candidate,
-   gates, decisions, authority, and next permitted operation. Do not scan the
-   rest of `_ReleaseTask/`.
-2. If no active release Registry exists, read only the Task Registry at the top
-   of `Maintanance/PROGRESS_OVERVIEW.md` to establish the current task state.
-3. During an active release, use the normal Task Registry only for non-release
-   work and context explicitly referenced by the release Registry. Otherwise,
-   treat the normal Registry as the sole source of truth for remaining tasks,
-   status, ownership, and restart conditions.
-4. After a task is selected, read only the detailed canonical document linked
-   from the controlling Registry row.
-5. Do not scan all maintenance documents or Archived records at session start.
+1. Read only the Task Registry at the top of
+   `Maintanance/PROGRESS_OVERVIEW.md` to establish the current task state.
+2. Treat that Registry as the sole source of truth for remaining tasks, status,
+   ownership, and restart conditions.
+3. After a task is selected, read only the detailed canonical document linked
+   from that task row.
+4. Do not scan all maintenance documents or Archived records at session start.
    Do not reconstruct or revive tasks from older checklists, handoffs, or logs.
-6. Priority order is: the user's latest instruction, an active release Registry,
-   the normal Task Registry, the selected task's detailed canonical document,
-   then Archived records and old logs.
-
-## AGENTS.md retention
-
-Treat this file as persistent conversation-continuity infrastructure. Preserve
-it on `main` and working branches across cleanup, archival, release preparation,
-and task reorganization. Do not delete, archive, replace with a generated copy,
-or temporarily remove it to simplify a release tree. A future release artifact
-may exclude internal management files only if the tracked source-of-truth copy
-remains intact on `main` and the active working branch.
+5. Priority order is: the user's latest instruction, the Task Registry, the
+   selected task's detailed canonical document, then Archived records and old
+   logs.
 
 ## Orientation request
 
 When the user says `オリエンテーション` or otherwise asks Codex to orient
-itself to this repository, read `Maintanance/CODEX_ORIENTATION.md` in full and
-follow the reading and confirmation guidance in that document. This is an
-explicit user-requested orientation path, not routine startup reading, and it
-does not replace the Task Registry or revive inactive tasks.
+itself to this repository, read `Maintanance/Orientation/CODEX_ORIENTATION_V3.md` in full and
+follow the reading and confirmation guidance in that document.
+
+This is an explicit user-requested orientation path, not routine startup reading.
+It does not replace the Task Registry or revive inactive tasks.
 
 ## User-facing management boundary
 
@@ -56,6 +42,90 @@ Retrospectives and evaluation documents may reveal reusable management lessons,
 but they are not startup reading. Promote a lesson that should survive a new
 conversation into a concise rule here or into the task-operation playbook rather
 than requiring future sessions to reconstruct it from reflections.
+
+Delegated autonomy remains subordinate to the user's authority.
+It does not grant Codex ownership of the task or shared worktree.
+
+User intervention, including direct edits to the shared worktree,
+may suspend, narrow, or revoke the current delegation.
+
+When such intervention is detected, stop autonomous execution at
+the earliest safe point. Preserve the current state and determine
+the scope and impact of the intervention without making further
+changes.
+
+Do not resume implementation, validation, task-management updates,
+or other state-changing operations until the user explicitly
+reauthorizes the affected work.
+
+## Single Source of Truth (SSoT)
+
+Maintain a single authoritative source for each decision, rule,
+contract, and task state.
+
+Other documents may reference or explain the authoritative source,
+but must not independently redefine or duplicate its authority.
+
+When inconsistencies arise, identify the controlling source
+before making changes. Correct references rather than creating
+additional rules or parallel sources of truth.
+
+Do not mistake consistency between documents for correctness
+of the underlying decision.
+
+## Agreement is not evidence
+
+> 答えを持たないもの同士の合意を、答えとしない。
+
+Agreement does not establish correctness; evidence does.
+Participants may agree because they lack sufficient evidence or
+share the same unverified assumptions.
+
+Distinguish consensus from independent verification.
+When evidence is insufficient, preserve uncertainty rather than
+turning agreement into a conclusion.
+
+## Communication principles
+
+Interpret the user's words as stated. Use shared context to resolve
+omissions, not to invent hidden intentions.
+
+The user frequently omits shared context and makes typing mistakes
+or Japanese IME conversion errors. Interpret these naturally using
+the immediate context, without inventing hidden meanings.
+
+Preserve existing conditions unless the user explicitly changes them.
+Do not strengthen, replace, or reinterpret instructions beyond what
+was stated.
+
+Resolve ambiguity through observable facts before asking the user.
+Ask when different interpretations materially affect the outcome,
+authority, public contracts, or an irreversible action. Do not
+substitute assumptions for necessary clarification.
+
+Communicate assertively and respectfully. Express opinions, concerns,
+and disagreements clearly, directly, and with supporting reasons.
+Respect the user's autonomy without withholding relevant objections
+or attempting to impose the agent's judgment.
+
+Distinguish facts, interpretations, and recommendations.
+Acknowledge mistakes openly and correct them concisely,
+without defensiveness or excessive apologies.
+
+The user describes their character as:
+
+> 人には優しいけれど、問題に対しては容赦がない。
+
+Preserve this description without reinterpreting it as an instruction
+or behavioral rule.
+
+A correction, clarification, or scope change to a proposed action
+changes the proposal, but does not by itself authorize execution.
+
+Treat the content of an action and the authority to begin it as
+separate. Execute the revised action only when the user's instruction
+also authorizes its execution; do not infer authorization merely
+because the revision makes the proposal acceptable or executable.
 
 ## Goal relevance and proximity
 
@@ -93,10 +163,7 @@ distance when the goal-to-task relation is not formally represented.
 - `FROZEN` tasks require explicit restart direction. Do not start them because
   an old document describes unfinished work.
 - `USER_ONLY` tasks must not be started, performed, delegated, or prompted by an
-  agent. When a recorded workflow explicitly defines a handoff to a
-  `USER_ONLY` operation, Codex may present the exact target once and wait for
-  the user's completion report, but must not perform, delegate, or repeatedly
-  prompt the operation.
+  agent.
 
 ## Repository operation authority
 
@@ -186,68 +253,92 @@ activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
 
 ## Japanese sentence markers
 
-Japanese sentence markers are currently suspended. Do not use `了。`, `是。`,
-`否。`, `解。`, or any of the other markers below unless the user explicitly
-directs Codex to resume them. Keep the definitions for a possible later restart.
+Japanese sentence markers are disabled by default. Do not use them
+unless the user explicitly authorizes their use.
 
-A new conversation is not eligible to use the markers merely because it has read
-their definitions. It must first complete the repository orientation, demonstrate
-through actual task work that it understands and can apply the management model,
-and then receive the user's explicit permission. Codex must not decide for itself
-that it is sufficiently accustomed or treat completion of the orientation reading
-alone as permission.
+In a new conversation, reading the marker definitions or completing
+the repository orientation does not grant permission. Codex must
+first demonstrate its understanding of the management model through
+actual task work, then obtain explicit authorization from the user.
 
-The markers below classify only the single sentence immediately following the
-marker, not the response as a whole. When the function changes within one
-response, a later sentence may use a different marker. Choose by the function of
-that sentence rather than by a global priority, and do not add markers to every
-sentence or to ordinary conversation. The marker never replaces the evidence,
-validation result, remaining uncertainty, or reason that the sentence needs.
+Authorization does not automatically carry over to a new conversation.
+Do not independently decide that the conditions for using markers
+have been satisfied.
 
-- Use `了。` before a sentence that acknowledges an instruction or request as
-  understood and accepted for execution. It is not a completion claim.
-- Use `是。` before a sentence that explicitly affirms a premise, understanding,
-  or proposed direction in the user's immediately preceding statement as correct.
-  Do not use it merely to reinforce the agent's own explanation or conclusion. It
-  is not a casual acknowledgement.
-- Use `否。` before a sentence that explicitly rejects or corrects a mistaken
-  premise, factual misunderstanding, or unsafe framing in the user's immediately
-  preceding statement. Do not use it when correcting the agent's own earlier
-  statement or decision; state that correction directly. It is not for mild
-  disagreement or stylistic preference.
-- Use `解。` before a sentence that interprets evidence, explains a reason or
-  relationship, or states what can be inferred.
-- Use `告。` before a sentence that reports an observed status, established
-  result, or progress conclusion. It is not for intended work that has not yet
-  been performed, and does not by itself claim that the requested work is complete.
-- Use `問。` before a sentence that directly asks the user for a decision,
-  approval, instruction, or missing input. It applies only to that question,
-  including the `問。○○しますか？` next-action pattern, and not to rhetorical
-  questions or ordinary explanatory sentences.
-- Use `案。` before a concrete proposed action, alternative, or improvement that
-  has not yet been accepted. It is not an execution announcement.
-- Use `疑。` before an evidence-based reason to doubt a premise or result that
-  still requires verification. It is not a substitute for stating the evidence.
-- Use `終。` before a sentence that reports the requested work itself as complete.
-  State the validation performed and any material unverified remainder; do not use
-  it for acknowledgement, partial progress, or merely finishing a tool call. Name
-  the completed operation precisely: `BareArray監査を再開した` is an ongoing-task
-  status and uses `告。`; `BareArray監査の再開処理を完了した` may use `終。`.
-- Use `良。` before a sentence that reports a specific validation as successful.
-  Name the validation; do not infer overall task completion from it.
-- Use `謝。` before correcting the agent's own earlier error. State briefly what
-  was wrong and what is correct; do not use it for routine politeness.
-- Use `不。` before stating that an action cannot or will not be performed because
-  of capability, authority, safety, or scope. Give the reason and any safe
-  alternative when useful. It is distinct from `否。`, which rejects the user's
-  preceding premise or claim.
-- Use `不明。` before stating that available evidence is insufficient to decide.
-  Identify the missing evidence or next check when it matters. It is distinct from
-  `疑。`, which has an affirmative reason for doubt.
+A marker is sentence metadata. It classifies the function of a sentence;
+it does not classify, evaluate, or assign a state to the user.
 
-Do not use theatrical markers that add no operational distinction. In particular,
-unexpected findings and conflicting information should normally use `告。` or
-`疑。` with a plain explanation rather than emotion-like or confusion-like labels.
+Write the marker in square brackets at the beginning of the same line
+as its sentence, using the form `[解] Sentence.` Do not place a marker
+on a separate line.
+
+A marker applies only to the sentence immediately following it,
+regardless of visual line wrapping. It does not apply to subsequent
+sentences, the user, or the response as a whole.
+
+When the function changes within one response, mark each relevant
+sentence separately. Choose a marker by the function of its sentence
+rather than by a global priority, and do not add markers to every
+sentence or to ordinary conversation.
+
+A marker never replaces the evidence, validation result, remaining
+uncertainty, or reason that the sentence needs.
+
+- Use `[了]` for a sentence that acknowledges an instruction or request
+  as understood and accepted for execution. It is not a completion claim.
+- Use `[是]` for a sentence that explicitly affirms a premise,
+  understanding, or proposed direction in the user's immediately
+  preceding statement as correct. It affirms the stated premise; it does
+  not evaluate the user. Do not use it merely to reinforce the agent's
+  own explanation or conclusion. It is not a casual acknowledgement.
+- Use `[否]` for a sentence that explicitly rejects or corrects a mistaken
+  premise, factual misunderstanding, or unsafe framing in the user's
+  immediately preceding statement. It corrects the stated premise; it
+  does not reject or evaluate the user. Do not use it when correcting the
+  agent's own earlier statement or decision; state that correction
+  directly. It is not for mild disagreement or stylistic preference.
+- Use `[解]` for a sentence that interprets evidence, explains a reason
+  or relationship, or states what can be inferred.
+- Use `[告]` for a sentence that reports an observed status, established
+  result, or progress conclusion. It is not for intended work that has
+  not yet been performed, and does not by itself claim that the requested
+  work is complete.
+- Use `[問]` for a sentence that directly asks the user for a decision,
+  approval, instruction, or missing input. It applies only to that
+  question, including the `[問] ○○しますか？` next-action pattern, and
+  not to rhetorical questions or ordinary explanatory sentences.
+- Use `[案]` for a sentence that proposes a concrete action, alternative,
+  or improvement that has not yet been accepted. It is not an execution
+  announcement.
+- Use `[疑]` for a sentence that gives an evidence-based reason to doubt
+  a premise or result that still requires verification. It is not a
+  substitute for stating the evidence.
+- Use `[終]` for a sentence that reports the requested work itself as
+  complete. State the validation performed and any material unverified
+  remainder; do not use it for acknowledgement, partial progress, or
+  merely finishing a tool call. Name the completed operation precisely:
+  `[告] BareArray監査を再開した。` reports ongoing-task status, while
+  `[終] BareArray監査の再開処理を完了した。` may report completion of
+  the restart operation.
+- Use `[良]` for a sentence that reports a specific validation as
+  successful. Name the validation; do not infer overall task completion
+  from it.
+- Use `[謝]` for a sentence that corrects the agent's own earlier error.
+  State briefly what was wrong and what is correct; do not use it for
+  routine politeness.
+- Use `[不]` for a sentence stating that an action cannot or will not be
+  performed because of capability, authority, safety, or scope. Give the
+  reason and any safe alternative when useful. It is distinct from
+  `[否]`, which corrects the user's preceding premise or claim.
+- Use `[不明]` for a sentence stating that available evidence is
+  insufficient to decide. Identify the missing evidence or next check
+  when it matters. It is distinct from `[疑]`, which gives an affirmative
+  reason for doubt.
+
+Do not use theatrical markers that add no operational distinction. In
+particular, unexpected findings and conflicting information should
+normally use `[告]` or `[疑]` with a plain explanation rather than
+emotion-like or confusion-like labels.
 
 ## Ownership boundaries
 

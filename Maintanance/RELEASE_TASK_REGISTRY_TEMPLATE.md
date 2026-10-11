@@ -33,9 +33,11 @@ Source template commit: `<commit>`
 | `REL-008` | `BLOCKED` | User / Codex | [DECISION] main green | ユーザーがmain CI greenについて一問で判断する | `<decision>` |
 | `REL-009` | `BLOCKED` | User / Codex | [DECISION] タグ打刻可否 | ユーザーがタグを打つか一問で判断する | `<decision>` |
 | `REL-010` | `BLOCKED` | Codex | [EXECUTION] タグ打刻 | 許可された対象へタグを打つ | `<tag>` |
-| `REL-011` | `BLOCKED` | User / Codex | [DECISION] 作業ブランチ作成可否 | ユーザーがrelease後の作業ブランチを作成するか一問で判断する | `<decision>` |
-| `REL-012` | `BLOCKED` | Codex | [EXECUTION] 作業ブランチ作成 | 許可されたrelease後の作業ブランチを作成する | `<branch>` |
-| `REL-013` | `BLOCKED` | Codex | [EXECUTION] 結果記録 | 全工程の判断、証拠、外部副作用を記録する | `<result>` |
+| `REL-011` | `BLOCKED` | User / Codex | [DECISION] tag push可否 | 正確なtag refを提示し、ユーザーがpushするか一問で判断する | `<decision>` |
+| `REL-012` | `BLOCKED` | User | [EXECUTION] tag push | ユーザーが許可したtag refだけをpushし、Codexがremote tag objectとpeeled targetを確認する | `<remote-tag>` |
+| `REL-013` | `BLOCKED` | User / Codex | [DECISION] 作業ブランチ作成可否 | ユーザーがrelease後の作業ブランチを作成するか一問で判断する | `<decision>` |
+| `REL-014` | `BLOCKED` | Codex | [EXECUTION] 作業ブランチ作成 | 許可されたrelease後の作業ブランチを作成する | `<branch>` |
+| `REL-015` | `BLOCKED` | Codex | [EXECUTION] 結果記録 | 全工程の判断、証拠、外部副作用を記録する | `<result>` |
 
 ## Task precedence
 
@@ -51,10 +53,12 @@ Source template commit: `<commit>`
 | `REL-008` | `REL-007` | `SEQUENCE` | マージ判断がYesの場合だけmain greenをユーザー判断する |
 | `REL-009` | `REL-008` | `SEQUENCE` | main green判断がYesの場合だけタグ打刻可否をユーザー判断する |
 | `REL-010` | `REL-009` | `SEQUENCE` | タグ打刻判断がYesの場合だけタグを打つ |
-| `REL-011` | `REL-010` | `SEQUENCE` | タグ打刻後に作業ブランチ作成可否をユーザー判断する |
-| `REL-012` | `REL-011` | `SEQUENCE` | 作業ブランチ作成判断がYesの場合だけ作業ブランチを作成する |
-| `REL-013` | `REL-012` | `SEQUENCE` | 作業ブランチ作成後に結果を記録する |
-| `REL-013` | `REL-011` | `CONDITIONAL` | 作業ブランチ作成判断がNoの場合は作成を飛ばし、中断結果を記録する |
+| `REL-011` | `REL-010` | `GATE` | タグ打刻後にtag pushを別判断として確認する |
+| `REL-012` | `REL-011` | `SEQUENCE` | tag push判断がYesの場合だけユーザーが正確なrefをpushし、remote到達を確認する |
+| `REL-013` | `REL-012` | `SEQUENCE` | tagのremote到達確認後に作業ブランチ作成可否をユーザー判断する |
+| `REL-014` | `REL-013` | `SEQUENCE` | 作業ブランチ作成判断がYesの場合だけ作業ブランチを作成する |
+| `REL-015` | `REL-014` | `SEQUENCE` | 作業ブランチ作成後に結果を記録する |
+| `REL-015` | `REL-013` | `CONDITIONAL` | 作業ブランチ作成判断がNoの場合は作成を飛ばし、中断結果を記録する |
 
 ## Step execution
 
@@ -65,7 +69,7 @@ Task Registryを`REL-000`から順に一taskずつ実行する。`DECISION`で�
 ## Release boundary
 
 - 実際のbranch作成、commit、pushは、それぞれ直前に一問でユーザー許可を得る。
-- candidate branch pushとGitHub mergeはユーザーが実行し、完了報告後に後続へ進む。
+- candidate branch push、GitHub merge、tag pushはユーザーが実行し、完了報告とremote確認後に後続へ進む。
 - candidate確定後はtracked fileを変更せず、進行中の証拠を`ACTIVE.md`へ記録する。
 - 終了時は`COMPLETED`または`CANCELLED`としてcleanupする。
 

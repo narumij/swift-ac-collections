@@ -14,41 +14,48 @@
 
 /// 競技プログラミング用1次元配列
 ///
-/// ヒープ領域に確保される軽量な多次元配列です。
+/// ヒープ領域に確保される軽量な配列です。
 /// 動的計画法などで利用する大きな配列を簡潔に記述できます。
 ///
 /// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
 /// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
-/// `Element`が`Sendable`なら、配列も`Sendable`です。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray<Element>: ~Copyable {
+// MEMO: 以下の記述は冗長に感じるので使用しないことにした
+// `Element`が`Sendable`なら、配列も`Sendable`です。
+// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@safe public struct BareArray<Element>: ~Copyable {
 
   /// `count`個の要素を`value`で初期化します。
   ///
+  /// - Parameters:
+  ///   - value: 各位置へ格納する値。
+  ///   - count: 要素数。
   /// - Precondition: `count`は0以上でなければなりません。
   /// - Complexity: O(`count`)
   @inlinable
   public init(repeating value: Element, count: Int) {
     precondition(count >= 0)
     let capacity = count
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     unsafe self.payload.initialize(repeating: value, count: capacity)
     self.count = count
   }
 
-  /// `f`を`count`回呼び、その返り値を添字順に格納します。
+  /// `value`を`count`回呼び、その返り値を添字順に格納します。
   ///
   /// `count`が0のとき、`f`は呼ばれません。
   ///
+  /// - Parameters:
+  ///   - count: 要素数。
+  ///   - value: 各要素を添字順に生成するクロージャ。
   /// - Precondition: `count`は0以上でなければなりません。
   /// - Complexity: O(`count`)
   @inlinable
-  public init(count: Int, _ f: () -> Element) {
+  public init(count: Int, _ value: () -> Element) {
     precondition(count >= 0)
     let capacity = count
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     for i in 0..<count {
-      unsafe (payload + i).initialize(to: f())
+      unsafe (payload + i).initialize(to: value())
     }
     self.count = count
   }
@@ -56,7 +63,7 @@ public struct BareArray<Element>: ~Copyable {
   @inlinable
   @unsafe internal init(payload: UnsafeMutablePointer<Element>, count: Int) {
     self.count = count
-    self.payload = unsafe payload
+    unsafe self.payload = payload
   }
 
   @usableFromInline let count: Int
@@ -66,6 +73,7 @@ public struct BareArray<Element>: ~Copyable {
   ///
   /// 値を置き換えると、以前の要素は破棄されます。
   ///
+  /// - Parameter position: アクセスする要素の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
@@ -114,14 +122,19 @@ extension BareArray: @unchecked Sendable where Element: Sendable { }
 /// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
 /// 連鎖subscriptは`array[y][x]`の順で、`width`が最内軸、`height`が最外軸です。
 /// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
-/// `Element`が`Sendable`なら、配列も`Sendable`です。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray2D<Element>: ~Copyable {
+// MEMO: 以下の記述は冗長に感じるので使用しないことにした
+// `Element`が`Sendable`なら、配列も`Sendable`です。
+// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@safe public struct BareArray2D<Element>: ~Copyable {
 
   /// `width * height`個の要素を`value`で初期化します。
   ///
   /// いずれかの次元が0なら空のstorageを作ります。
   ///
+  /// - Parameters:
+  ///   - value: 各位置へ格納する値。
+  ///   - width: 最内軸の要素数。
+  ///   - height: 最外軸の要素数。
   /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
   /// - Complexity: O(`width * height`)
   @inlinable
@@ -130,7 +143,7 @@ public struct BareArray2D<Element>: ~Copyable {
     let (capacity, overflow) = height.multipliedReportingOverflow(by: width)
     precondition(!overflow)
     self.capacity = capacity
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     unsafe self.payload.initialize(repeating: value, count: capacity)
     self.width = width
     self.height = height
@@ -140,6 +153,10 @@ public struct BareArray2D<Element>: ~Copyable {
   ///
   /// いずれかの次元が0なら`f`は呼ばれません。
   ///
+  /// - Parameters:
+  ///   - width: 最内軸の要素数。
+  ///   - height: 最外軸の要素数。
+  ///   - f: 各要素をstorage順に生成するクロージャ。
   /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
   /// - Complexity: O(`width * height`)
   @inlinable
@@ -148,7 +165,7 @@ public struct BareArray2D<Element>: ~Copyable {
     let (capacity, overflow) = height.multipliedReportingOverflow(by: width)
     precondition(!overflow)
     self.capacity = capacity
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     for i in 0..<capacity {
       unsafe (payload + i).initialize(to: f())
     }
@@ -159,7 +176,7 @@ public struct BareArray2D<Element>: ~Copyable {
   @inlinable
   @unsafe internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int) {
     self.capacity = height * width
-    self.payload = unsafe payload
+    unsafe self.payload = payload
     self.width = width
     self.height = height
   }
@@ -175,21 +192,23 @@ public struct BareArray2D<Element>: ~Copyable {
   /// setterは連鎖要素書き込みのwriteback専用です。同じ位置から返された同一storage・同一shapeの
   /// Viewだけを受け入れ、別のViewの代入は契約違反です。
   ///
+  /// - Parameter position: 参照する行の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> BareArray1DView<Element> {
 
     @inline(__always)
+    @_lifetime(borrow self)
     get {
       precondition(0 <= position && position < height)
-      return unsafe .init(payload: payload + width * position, count: width)
+      return unsafe .init(payload: payload + width * position, count: width, borrowing: self)
     }
 
     @inline(__always)
     set {
       precondition(0 <= position && position < height)
-      precondition(newValue.payload == payload + width * position)
+      unsafe precondition(newValue.payload == payload + width * position)
       precondition(newValue.count == width)
     }
   }
@@ -226,14 +245,20 @@ extension BareArray2D: @unchecked Sendable where Element: Sendable { }
 /// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
 /// 連鎖subscriptは`array[z][y][x]`の順で、`width`が最内軸、`depth`が最外軸です。
 /// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
-/// `Element`が`Sendable`なら、配列も`Sendable`です。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray3D<Element>: ~Copyable {
+// MEMO: 以下の記述は冗長に感じるので使用しないことにした
+// `Element`が`Sendable`なら、配列も`Sendable`です。
+// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@safe public struct BareArray3D<Element>: ~Copyable {
 
   /// `width * height * depth`個の要素を`value`で初期化します。
   ///
   /// いずれかの次元が0なら空のstorageを作ります。
   ///
+  /// - Parameters:
+  ///   - value: 各位置へ格納する値。
+  ///   - width: 最内軸の要素数。
+  ///   - height: 中間軸の要素数。
+  ///   - depth: 最外軸の要素数。
   /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
   /// - Complexity: O(`width * height * depth`)
   @inlinable
@@ -247,7 +272,7 @@ public struct BareArray3D<Element>: ~Copyable {
       precondition(!overflow0 && !overflow1)
       self.capacity = capacity
     }
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     unsafe self.payload.initialize(repeating: value, count: capacity)
     self.width = width
     self.height = height
@@ -258,6 +283,11 @@ public struct BareArray3D<Element>: ~Copyable {
   ///
   /// いずれかの次元が0なら`f`は呼ばれません。
   ///
+  /// - Parameters:
+  ///   - width: 最内軸の要素数。
+  ///   - height: 中間軸の要素数。
+  ///   - depth: 最外軸の要素数。
+  ///   - f: 各要素をstorage順に生成するクロージャ。
   /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
   /// - Complexity: O(`width * height * depth`)
   @inlinable
@@ -271,7 +301,7 @@ public struct BareArray3D<Element>: ~Copyable {
       precondition(!overflow0 && !overflow1)
       self.capacity = capacity
     }
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     for i in 0..<capacity {
       unsafe (payload + i).initialize(to: f())
     }
@@ -285,7 +315,7 @@ public struct BareArray3D<Element>: ~Copyable {
     payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int
   ) {
     self.capacity = width * height * depth
-    self.payload = unsafe payload
+    unsafe self.payload = payload
     self.width = width
     self.height = height
     self.depth = depth
@@ -303,22 +333,25 @@ public struct BareArray3D<Element>: ~Copyable {
   /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを受け入れ、
   /// 別のViewの代入は契約違反です。
   ///
+  /// - Parameter position: 参照する面の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> BareArray2DView<Element> {
 
     @inline(__always)
+    @_lifetime(borrow self)
     get {
       precondition(0 <= position && position < depth)
       return unsafe .init(
-        payload: payload + width * height * position, width: width, height: height)
+        payload: payload + width * height * position, width: width, height: height,
+        borrowing: self)
     }
 
     @inline(__always)
     set {
       precondition(0 <= position && position < depth)
-      precondition(newValue.payload == payload + width * height * position)
+      unsafe precondition(newValue.payload == payload + width * height * position)
       precondition(newValue.width == width && newValue.height == height)
     }
   }
@@ -352,14 +385,21 @@ extension BareArray3D: @unchecked Sendable where Element: Sendable { }
 /// 連鎖subscriptは`array[w][z][y][x]`の順です。`size0`が最内軸、`size3`が最外軸で、
 /// storage上では`size0`の軸が最も速く進みます。
 /// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
-/// `Element`が`Sendable`なら、配列も`Sendable`です。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray4D<Element>: ~Copyable {
+// MEMO: 以下の記述は冗長に感じるので使用しないことにした
+// `Element`が`Sendable`なら、配列も`Sendable`です。
+// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@safe public struct BareArray4D<Element>: ~Copyable {
 
   /// 全要素を`value`で初期化します。
   ///
   /// いずれかの次元が0なら空のstorageを作ります。
   ///
+  /// - Parameters:
+  ///   - value: 各位置へ格納する値。
+  ///   - size0: 最内軸の要素数。
+  ///   - size1: 内側から2番目の軸の要素数。
+  ///   - size2: 内側から3番目の軸の要素数。
+  ///   - size3: 最外軸の要素数。
   /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
   /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
@@ -374,7 +414,7 @@ public struct BareArray4D<Element>: ~Copyable {
       precondition(!overflow0 && !overflow1 && !overflow2)
       self.capacity = capacity
     }
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     unsafe self.payload.initialize(repeating: value, count: capacity)
     self.size0 = size0
     self.size1 = size1
@@ -386,6 +426,12 @@ public struct BareArray4D<Element>: ~Copyable {
   ///
   /// いずれかの次元が0なら`f`は呼ばれません。
   ///
+  /// - Parameters:
+  ///   - size0: 最内軸の要素数。
+  ///   - size1: 内側から2番目の軸の要素数。
+  ///   - size2: 内側から3番目の軸の要素数。
+  ///   - size3: 最外軸の要素数。
+  ///   - f: 各要素をstorage順に生成するクロージャ。
   /// - Precondition: 各次元は0以上で、その積を`Int`で表現できなければなりません。
   /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
@@ -400,7 +446,7 @@ public struct BareArray4D<Element>: ~Copyable {
       precondition(!overflow0 && !overflow1 && !overflow2)
       self.capacity = capacity
     }
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     for i in 0..<capacity {
       unsafe (payload + i).initialize(to: f())
     }
@@ -415,7 +461,7 @@ public struct BareArray4D<Element>: ~Copyable {
     payload: UnsafeMutablePointer<Element>, size0: Int, size1: Int, size2: Int, size3: Int
   ) {
     self.capacity = size0 * size1 * size2 * size3
-    self.payload = unsafe payload
+    unsafe self.payload = payload
     self.size0 = size0
     self.size1 = size1
     self.size2 = size2
@@ -435,6 +481,7 @@ public struct BareArray4D<Element>: ~Copyable {
   /// Viewはこの配列の生存中だけ使用してください。setterは連鎖要素書き込みのwriteback専用です。
   /// 同じ位置の同一storage・同一shapeのViewだけを受け入れ、別のViewの代入は契約違反です。
   ///
+  /// - Parameter position: `size3`軸で参照する位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
@@ -445,13 +492,13 @@ public struct BareArray4D<Element>: ~Copyable {
       precondition(0 <= position && position < size3)
       return unsafe .init(
         payload: payload + size0 * size1 * size2 * position, width: size0, height: size1,
-        depth: size2)
+        depth: size2, borrowing: self)
     }
 
     @inline(__always)
     set {
       precondition(0 <= position && position < size3)
-      precondition(newValue.payload == payload + size0 * size1 * size2 * position)
+      unsafe precondition(newValue.payload == payload + size0 * size1 * size2 * position)
       precondition(
         newValue.width == size0 && newValue.height == size1 && newValue.depth == size2)
     }
@@ -487,13 +534,26 @@ extension BareArray4D: @unchecked Sendable where Element: Sendable { }
 ///
 /// Viewからの変更は所有配列の同じ要素へ反映されます。Viewはstorageの寿命を延長しないため、
 /// 元の所有配列の生存中だけ使用してください。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray1DView<Element> {
+// MEMO: 以下の記述は冗長に感じるので使用しないことにした
+// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@safe public struct BareArray1DView<Element>: ~Escapable {
 
   @inlinable
-  @unsafe internal init(payload: UnsafeMutablePointer<Element>, count: Int) {
+  @_lifetime(borrow source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
+    payload: UnsafeMutablePointer<Element>, count: Int, borrowing source: borrowing Source
+  ) {
     self.count = count
-    self.payload = unsafe payload
+    unsafe self.payload = payload
+  }
+
+  @inlinable
+  @_lifetime(copy source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
+    payload: UnsafeMutablePointer<Element>, count: Int, copying source: borrowing Source
+  ) {
+    self.count = count
+    unsafe self.payload = payload
   }
 
   @usableFromInline let count: Int
@@ -503,6 +563,7 @@ public struct BareArray1DView<Element> {
   ///
   /// 値を置き換えると、所有配列のstorageにあった以前の要素は破棄されます。
   ///
+  /// - Parameter position: アクセスする要素の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
@@ -533,13 +594,30 @@ extension BareArray1DView {
 ///
 /// 連鎖subscriptは`view[y][x]`の順です。Viewからの変更は所有配列へ反映されます。
 /// Viewはstorageの寿命を延長しないため、元の所有配列の生存中だけ使用してください。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray2DView<Element> {
+// MEMO: 以下の記述は冗長に感じるので使用しないことにした
+// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@safe public struct BareArray2DView<Element>: ~Escapable {
 
   @inlinable
-  @unsafe internal init(payload: UnsafeMutablePointer<Element>, width: Int, height: Int) {
+  @_lifetime(borrow source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
+    payload: UnsafeMutablePointer<Element>, width: Int, height: Int,
+    borrowing source: borrowing Source
+  ) {
     self.capacity = height * width
-    self.payload = unsafe payload
+    unsafe self.payload = payload
+    self.width = width
+    self.height = height
+  }
+
+  @inlinable
+  @_lifetime(copy source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
+    payload: UnsafeMutablePointer<Element>, width: Int, height: Int,
+    copying source: borrowing Source
+  ) {
+    self.capacity = height * width
+    unsafe self.payload = payload
     self.width = width
     self.height = height
   }
@@ -554,21 +632,24 @@ public struct BareArray2DView<Element> {
   /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを受け入れ、
   /// 別のViewの代入は契約違反です。
   ///
+  /// - Parameter position: 参照する行の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> BareArray1DView<Element> {
 
     @inline(__always)
+    @_lifetime(copy self)
     get {
       precondition(0 <= position && position < height)
-      return unsafe .init(payload: payload + width * position, count: width)
+      return unsafe .init(
+        payload: payload + width * position, count: width, copying: self)
     }
 
     @inline(__always)
     set {
       precondition(0 <= position && position < height)
-      precondition(newValue.payload == payload + width * position)
+      unsafe precondition(newValue.payload == payload + width * position)
       precondition(newValue.count == width)
     }
   }
@@ -587,15 +668,31 @@ extension BareArray2DView {
 ///
 /// 連鎖subscriptは`view[z][y][x]`の順です。Viewからの変更は所有配列へ反映されます。
 /// Viewはstorageの寿命を延長しないため、元の所有配列の生存中だけ使用してください。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray3DView<Element> {
+// MEMO: 以下の記述は冗長に感じるので使用しないことにした
+// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@safe public struct BareArray3DView<Element>: ~Escapable {
 
   @inlinable
-  @unsafe internal init(
-    payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int
+  @_lifetime(borrow source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
+    payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int,
+    borrowing source: borrowing Source
   ) {
     self.capacity = height * width
-    self.payload = unsafe payload
+    unsafe self.payload = payload
+    self.width = width
+    self.height = height
+    self.depth = depth
+  }
+
+  @inlinable
+  @_lifetime(copy source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
+    payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int,
+    copying source: borrowing Source
+  ) {
+    self.capacity = height * width
+    unsafe self.payload = payload
     self.width = width
     self.height = height
     self.depth = depth
@@ -612,22 +709,25 @@ public struct BareArray3DView<Element> {
   /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを受け入れ、
   /// 別のViewの代入は契約違反です。
   ///
+  /// - Parameter position: 参照する面の位置。
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
   public subscript(position: Int) -> BareArray2DView<Element> {
 
     @inline(__always)
+    @_lifetime(copy self)
     get {
       precondition(0 <= position && position < depth)
       return unsafe .init(
-        payload: payload + width * height * position, width: width, height: height)
+        payload: payload + width * height * position, width: width, height: height,
+        copying: self)
     }
 
     @inline(__always)
     set {
       precondition(0 <= position && position < depth)
-      precondition(newValue.payload == payload + width * height * position)
+      unsafe precondition(newValue.payload == payload + width * height * position)
       precondition(newValue.width == width && newValue.height == height)
     }
   }

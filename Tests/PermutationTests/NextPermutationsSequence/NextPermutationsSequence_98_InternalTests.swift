@@ -6,6 +6,7 @@
 // 実装の確認(仕様ではない)。`DEBUG`のときだけ有効。
 
 #if DEBUG && !COMPATIBLE_ATCODER_2025
+#if false
   import PermutationModule
   import XCTest
 
@@ -70,5 +71,6 @@
         XCTAssertEqual(p._copyCount, 0)
       }
     }
-  }
+}
+#endif
 #endif

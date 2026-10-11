@@ -21,5 +21,6 @@ extension Benchmark {
 
     _addCppSetBenchmarks()
     _addCppMapBenchmarks()
+    _addCppPermutationBenchmarks()
   }
 }

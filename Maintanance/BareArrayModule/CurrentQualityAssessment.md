@@ -253,6 +253,16 @@ storage、安全性分類、strict memory safetyの3系統を`PARALLEL_JOIN`で�
 compiler診断fixtureも、View寿命escape 3件と所有配列writeback exclusivity 3件を引き続き拒否した。
 この完了は公開7型の分類だけを対象とし、個別memberやconformanceの分類を先取りしない。
 
+### strict memory safety適用
+
+公開7型の分類完了後、BareArrayModuleへ`.strictMemorySafety()`を適用した状態では未承認のunsafe利用を
+示すwarningが残らず、既存のDebug・Release・compiler診断fixtureも成功する。設定を外す必要を示す
+反証はなく、上位品質要求が求めるunsafe境界の継続確認にも寄与するため、この設定を品質検証の対象として
+維持する。
+
+この結論は、公開7型の分類未確定によって採否が判断に見えていた前提が解消した結果である。独立した
+ユーザー判断は残らず、事実確認と既存品質要求の適用によって完了した。
+
 2026-10-11、`BARE-020`、`BARE-021`、`BARE-022`には実装・診断・回帰確認の途中証拠が揃ったが、
 成果の受入と`BARE-018`への合流は確定していない。storage、安全性分類、strict memory safetyの
 3系統と品質検証の再開判断を経るまで、関連taskを凍結する。

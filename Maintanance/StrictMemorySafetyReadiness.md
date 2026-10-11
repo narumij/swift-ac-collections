@@ -421,3 +421,8 @@ storage境界、公開7型の`@safe`／`@unsafe`分類、strict memory safety採
 適用後のstrict buildでは公開7型のwarningが解消し、Debug・Releaseの通常testとDeath Test、および
 View寿命escape・所有配列writebackのcompiler診断fixtureが成功した。個別memberやconformanceの分類は
 この判断で先取りせず、必要になった時点で扱う。
+
+同日、公開7型の分類完了によって`.strictMemorySafety()`採否を左右していた不確実性が解消した。
+設定有効時にwarningは残らず既存検証も成功し、設定を外す反証もないため、BareArrayModuleでは
+`.strictMemorySafety()`を品質検証の対象として維持する。これは新しい製品判断ではなく、既存品質要求と
+確認済み事実から導かれた結論である。

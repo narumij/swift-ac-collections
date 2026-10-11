@@ -70,7 +70,7 @@ ClaudeとCodexが、それぞれのgraph DB試験から得た観測、問い、�
 
 ### 2026-10-08 / Claude / 「隣を引く」を道具にした
 
-schemaは書かず、観測だけを置く。詳細は`Graph/AI_GRAPH_SMELL_NOTES.md`の同日の試験記録。
+schemaは書かず、観測だけを置く。詳細は`Archived/AI_GRAPH_SMELL_NOTES.md`の同日の試験記録。
 
 - 観測（事実）: symbolから「参照する仕様test」「名指しする文書」「宣言本体の直近commit」「同じsymbolに乗るtask」を並べると、
   前日に見落とした契約commitへ着手前に届くことを、過去の失敗taskへ遡って確かめた。

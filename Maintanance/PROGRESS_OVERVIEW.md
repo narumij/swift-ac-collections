@@ -145,7 +145,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | ready判定を維持する常設nodeとして`ACTIVE`を保つ。個別assignmentや実行中ジョブを意味せず、必要なときだけ現行Registryとの一致を確認 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、V2を別projectへ適用して再現性検証へ進む | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
-| `OPS-002` | `DONE` | User / Codex | [DISCOVERY] Codex task運用playbookの改訂 | task分解、必須依存の発見、runtime停止、判断削減、受入境界をV2へ再構成し、レビュー後、2026-10-12にユーザーが現行正本として採用 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` |
+| `OPS-002` | `DONE` | User / Codex | [DISCOVERY] Codex task運用playbookの改訂 | task分解、必須依存の発見、runtime停止、判断削減、受入境界をV2へ再構成して現行正本に採用。graph追試から、依存根拠、未確定Flow、`EXCLUDED`時の再評価を反映し、2026-10-12の再レビューで修正必須なしを確認 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `OPS-008` | `WAITING_USER` | User | [DECISION] 旧Codex task運用playbookのアーカイブ判断 | V2採用後、旧版を現在位置に保持するか、Archivedへ移すかを一つだけ判断する。採用済みV2の正本性はこの判断に依存しない | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` / `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` |
 | `OPS-003` | `DONE` | Codex | [EXECUTION] タスク依存変化による作業中停止の明文化 | 実行中も依存関係とreadyを再評価し、新しい必須前提、Flow、完了条件、および委任権限に応じて停止範囲を導く原則を独立文書へ記録 | `Orientation/TASK_DEPENDENCY_RUNTIME_STOP.md` |
 | `OPS-004` | `DONE` | Codex | [EXECUTION] タスク分解と再構成の明文化 | 見えない作業から本質的判断を抽出し、task境界、依存、Flow、ready集合、優先順を再構成する原則を独立文書へ記録し、ユーザー指示により完了 | `Orientation/TASK_DECOMPOSITION_AND_REORGANIZATION.md` |

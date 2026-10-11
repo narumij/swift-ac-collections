@@ -99,6 +99,17 @@ Registry、task ID、状態、依存表、handoffはagentが仕事を扱うた�
 - 独立部分は進められるが、完了前に合流が必要な関係は`PARALLEL_JOIN`とする。
 - 効率、risk、critical path、受入可能量による推奨順はsoft orderとして扱う。
 
+task番号の連続、名前の類似、同じsymbolやfileを扱うことは、依存を調べる手掛かりにはなるが、
+それだけで依存辺の根拠にはしない。目的、成果、受入条件、またはrepository上の記録から、後続の成立に
+必要であることを確認してから辺を確定する。
+
+依存関係の有無またはFlowを確定できない場合は、文言や既存配置から推測して`SEQUENCE`または
+`PARALLEL_JOIN`へ分類しない。影響するreadyまたは完成判定を保留し、必要な範囲だけ調査して確定する。
+多数の既存辺を見直す場合は、小さい範囲から分類し、実際のready集合と照合しながら進める。
+
+前提taskが`EXCLUDED`になっても、そのtaskに向かう依存が自動的に充足されたとは扱わない。後続taskが
+不要になったのか、別の前提が必要なのか、または依存辺を除去できるのかを再評価する。
+
 必須依存を満たすtaskからready集合を求める。readyは依存上の着手可能性であると同時に、実行中も
 維持される必要がある継続条件であり、必要性や優先順位そのものではない。現在のgoalへの寄与、
 critical path、risk、および受入可能量から、次に扱うtaskを選ぶ。
@@ -174,7 +185,7 @@ sessionをまたいで再開できるか、判断を増やしていないか、�
 
 ## 詳細資料
 
-V2は通常のtask運用を一周するための正本候補である。次の文書は、原理の導出、詳しい分類、および
+V2は通常のtask運用を一周するための現行正本である。次の文書は、原理の導出、詳しい分類、および
 特殊な停止場面を理解する必要がある場合にだけ参照する。
 
 - [`TASK_DECOMPOSITION_AND_REORGANIZATION.md`](TASK_DECOMPOSITION_AND_REORGANIZATION.md):
@@ -183,12 +194,14 @@ V2は通常のtask運用を一周するための正本候補である。次の�
   後続taskに欠けた必須前提を発見するための観察メモ。
 - [`TASK_DEPENDENCY_RUNTIME_STOP.md`](TASK_DEPENDENCY_RUNTIME_STOP.md):
   実行中に成立条件が疑わしくなった場合の停止、依存確定、および再開の詳しい説明。
+- [`../Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md`](../Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md):
+  Task precedenceの着手条件と完了条件を分離し、`SEQUENCE`と`PARALLEL_JOIN`へ整理した導出・追試記録。
 
 これらの詳細資料を通常作業の開始時に読む必要はない。V2と表現が重なる場合、V2採用後の運用規則は
 V2を基準とし、詳細資料は背景、導出、および説明として扱う。
 
 ## 現在の境界
 
-この文書は`swift-ac-collections`で得た知見から作成した完成候補であり、別projectで同じ品質を再現できるかは
+この文書は`swift-ac-collections`で得た知見から作成した現行playbookであり、別projectで同じ品質を再現できるかは
 未検証である。採用後も、未知の作業でtask境界と依存を正しく導けるか、不要な判断を減らせるか、管理負荷を
 成果より小さく保てるかを観測し、反証があれば改訂する。

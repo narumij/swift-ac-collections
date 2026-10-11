@@ -407,7 +407,7 @@ storageでもあり、Codexの構造lintとは役割が異なる。
 
 ## AI task process poster
 
-このplaybookの主要な流れ、状態、責任境界を1枚に要約した図を
+このplaybookの主要な流れ、品質主張と証拠の変更影響、および責任境界を1枚に要約したV2を
 [`AI_TASK_PROCESS_POSTER.png`](../AI_TASK_PROCESS_POSTER.png)に置く。編集可能な正本は
 `AI_TASK_PROCESS_POSTER.svg`ではなく、`Utilities/Maintenance/GenerateAITaskProcessPoster.py`である。
 
@@ -421,9 +421,17 @@ Utilities/Maintenance/RenderSVGToPNG.sh \
   2400
 ```
 
-ポスターは説明用の要約であり、Registryや本playbookを置き換えない。2026-10-09の内容照合では、
-Registryの9状態、第三者AIの役割を独立した観点からのreviewと反証に限定すること、関係性の効果を
-観察中の仮説として示すことを確認した。
+ポスターは説明用の要約であり、Registry、本playbook、品質要求、またはTest as Specificationを
+置き換えない。2026-10-11のV2では、個別のRegistry状態やCI閾値の写しを外し、変更時に品質主張を
+`残る / 失効 / 置換 / 新規`へ分け、対応する証拠の現在性を確認する流れを中心にした。委任では目的、
+権限境界、停止条件、受入条件を固定しつつ、得意領域の調査方法、分類、局所構成には担当者の自主性を
+残す。また、taskを一度作って固定するのではなく、観測と受入結果に応じて、分解、依存整理、境界再設定、
+再構成を繰り返せることを明示する。関係性の効果は観察中の仮説ではなく、対話と受入によって委任精度を
+補正する品質基盤として扱う。
+
+2026-10-09時点のV1とその生成scriptは、
+[`Archived/Orientation/AI_TASK_PROCESS_POSTER_V1`](../Archived/Orientation/AI_TASK_PROCESS_POSTER_V1/README.md)
+へ保存する。
 
 ## 再現性の評価
 

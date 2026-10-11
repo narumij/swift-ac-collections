@@ -75,6 +75,33 @@ node ID/tag、世代、seal、tieが段階的に担ったと読める。ただ�
 
 ### 保証範囲の縮退と再建
 
+集計データは
+[`REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.csv`](REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.csv)、
+図は
+[`REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.svg`](REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.svg)を
+正本とする。再集計には`Utilities/Maintenance/CountHistoricalTests.rb`、描画には
+`Utilities/Maintenance/RenderHistoricalTestCounts.rb`を使う。
+
+#### 件数の定義
+
+| 系列 | 数え方 | 含まないもの | 証拠として言えること |
+|---|---|---|---|
+| 総test宣言数 | `Tests/**/*.swift`にあるXCTestの`test...` methodとSwift Testingの`@Test`宣言を各1件とする | parameterized testの展開数 | repositoryに保持されたtest宣言の規模 |
+| 静的有効宣言数 | 通常Debugとして`DEBUG=true`、`COMPATIBLE_ATCODER_2025=false`、`DEATH_TEST=false`を評価 | runtime skip、build失敗、parameterized展開 | 通常構成でcompile対象になる宣言規模の推定 |
+| runner列挙数 | 対象commitを一時worktreeでbuildし、`swift test --disable-sandbox list`の出力を数える | 実際のpass/fail、runtime skip後の完遂 | 現行toolchainが発見した実行単位数 |
+
+**[事実]** 代表25 commitの静的集計では、基点`b2580703`が総918・有効786、`7341cadc`
+(2026-09-25)が総1551・有効1007、`43656817`(2026-09-29)が総1140・有効719、
+`139ffef8`(2026-10-10)が総1733・有効1144、調査時HEAD `5a177ed6`が総1739・有効1145だった。
+
+**[事実]** `43656817`をdetached worktreeへ展開し、現行Xcode toolchainで
+`swift test --disable-sandbox list`を実行した。buildはwarningを伴って成功し、844 testを列挙した。
+同じcommandによる調査時HEADの列挙数は1438だった。
+
+**[解釈]** 9月29日の縮退は総宣言と静的有効宣言の双方に現れ、その後のFixture targetと仕様testの
+再建で回復している。したがって単なる`#if`切替だけではなく、test source集合そのものを縮小して
+架け替えた谷と読める。ただし件数は契約coverageやassertionの強さを直接表さない。
+
 | 時期 | 実装側の変化 | テスト側の状態 | 保証上の意味 | 主な証拠 |
 |---|---|---|---|---|
 | AtCoder 2025以前 | 整数Index・配列型Nodeを前提とするTree | 公開Setの番号付き仕様テストと旧Fixtureテストが存在 | 公開挙動と旧内部表現の双方を検証 | `f4e9f69e`、`63b5699a` |

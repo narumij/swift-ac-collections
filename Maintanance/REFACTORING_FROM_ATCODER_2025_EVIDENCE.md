@@ -122,6 +122,49 @@ unsafe実装向け分岐コピーを、内部構造へ追従させた派生・�
 **[証言]** 既存テストをゼロから作り直さず、そのままブートストラップへ利用することが
 `Maintanance/MAINTENANCE.md`のユーザー要望に明記されている。
 
+## `COMPATIBLE_ATCODER_2025`の境界変化
+
+RedBlackTreeとPermutationは同じcompile defineを使うが、導入時期と隔離方法が異なる。
+
+| 時期 | 対象 | 互換性の置き場所 | 通常版との関係 | 主な証拠 |
+|---|---|---|---|---|
+| 2025-10-20 | RedBlackTree公開型 | `Package.swift`で既定有効にし、製品source内の`#if`で型・APIを切替 | 互換版が既定。新旧契約が同じfileに併存 | `c48eb56b` |
+| 2025-12〜2026-02 | RedBlackTree全体 | 4公開型、Index、Slice、UnsafeTreeV2へ条件分岐とDeprecatedを拡張 | 新内部構造を共用しつつ旧外形を維持 | `302d9814`、`08b5fab5`、`11b0bbde`、`5682e605` |
+| 2026-09-25〜10-02 | RedBlackTreeの構成切替 | Package defineを複数回on/offし、両modeの実装・testを調整 | 一時的な既定変更を反復し、10月2日に通常版へ戻す | `122a2dac`、`8d7457e3`、`a50f4324`、`2df170e5`、`8472d930`、`0a650907` |
+| 2026-10-04 | RedBlackTree旧iterator | 旧iterator群を互換条件へ隔離 | 通常版から旧経路を外し、互換選択時だけ有効 | `347e7500` |
+| 2026-10-08 | Permutation | 基準refの2 sourceを専用directoryへコピーし、defineで囲む | 現行sourceとの排他構成を準備 | `618786e6` |
+| 2026-10-09前半 | Permutation | Package trait、専用仕様test、facade test、生成utilityを追加 | 通常・互換を別契約として検証 | `8ef8f3ed`、`5deac542`、`f2901805`、`63090c46` |
+| 2026-10-09後半 | releaseと専用branch | 公開traitを撤回し、通常sourceをmainで無条件化。専用branchだけdefineを有効化 | main/releaseは通常版、`prepare/compatible/2`は互換版 | `81dc5681`、`5cd66cd4`、`0b9de44e`、`24dfb40f` |
+
+**[事実]** `c48eb56b`は`Package.swift`のdefinesへ`COMPATIBLE_ATCODER_2025`を有効な値として追加し、
+`RedBlackTreeMultiMap`の`KeyValue`を`Pair`とlabel付きtupleで切り替えるなど、既存製品source内へ
+互換分岐を置いた。後続commitはDictionary、MultiMap、MultiSet、Set、Indexへ分岐を広げた。
+
+**[事実]** `11b0bbde`は4公開型と`UnsafeTreeV2`のCoWへ互換分岐を追加した。したがって互換modeは
+公開名だけを残すskinではなく、新しいpointer/bucket内部構造の上で旧CoW挙動も選択する境界だった。
+
+**[事実]** 2026-09-25〜10-02にはPackage defineの有効化と無効化が複数回反復された。
+`8472d930`は件名が`non compatible`だが、実差分ではdefineを有効化している。`0a650907`が再び
+コメントアウトし、現行通常構成へつながる。`347e7500`はその後、旧iterator群を
+`COMPATIBLE_ATCODER_2025`内へ隔離し、通常modeの比較testと内部testからその経路を外した。
+
+**[事実]** Permutation互換sourceは`618786e6`で追加された。`8ef8f3ed`のPackage traitは
+`81dc5681`で撤回され、`5cd66cd4`は通常sourceの排他条件もmainから外した。互換構成はmainの祖先ではない
+`prepare/compatible/2`上で有効化され、merge commit `0b9de44e`と整理commit `24dfb40f`は同branchと
+remote追跡branchに含まれる。
+
+**[事実]** Permutation互換testは、safe経路の保持済み結果が変化しないCoWと、unsafe経路の結果が
+iterator bufferを共有するaliasingを別々に固定する。通常版Test as Specificationは反対条件であり、
+二つの所有契約を同一実行の期待値へ混ぜない。
+
+**[解釈]** RedBlackTreeでは互換条件が新内部構造へ渡るための足場として内側から始まり、収束後に
+外側へ押し出された。Permutationでは既に収束した通常版を汚染しないため、旧sourceを外側から専用branchへ
+戻した。同じdefineの再利用は同じ移行方法を意味せず、互換責任の配置が逆方向だったと読める。
+
+**[解釈]** 互換modeは永続的に二契約を同格維持する機能ではなく、通常設計の自由と旧挙動の再現性を
+両立させる可動境界として変化した。source内分岐、Deprecated、専用test、branch、生成fileへの移動は、
+互換性を削除せずに中心設計から遠ざける段階だった。
+
 ## ソース配置とmodule境界
 
 **[事実]** 基点では公開4型が`Sources/RedBlackTreeModule`直下、内部実装は`_Tree/`にあった。
@@ -153,4 +196,6 @@ unsafe実装向け分岐コピーを、内部構造へ追従させた派生・�
 - MultiSet/Dictionary/MultiMapの仕様テストが現行の分割数へ至った個別commitは未追跡。
 - 2026-01月の各commit時点で実行されたtest commandとgreen範囲は、commit messageだけでは確定しない。
 - Keystoneから現行Foundamental test群へ、個々のassertionが一対一で移管されたかは未照合。
+- RedBlackTree互換分岐を追加した全commitと、各分岐が守った公開契約の一対一対応は未追跡。
+- `prepare/compatible/2`は現行HEADの祖先ではないため、同branchの将来の統合・廃止状態は本紙で確定しない。
 - 基点と現行の同条件性能比較は未実施。

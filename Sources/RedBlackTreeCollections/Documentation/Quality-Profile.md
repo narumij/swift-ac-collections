@@ -173,4 +173,4 @@ Fixtureは契約を観測するための参照実装であり、製品ストレ�
 - [Copy on Writeの設計](Design/Design-CopyOnWrite.md)
 - [RangeとIndex反復の設計](Design/Design-Range.md)
 - [runtime checkの設計](Design/Design-RuntimeChecks.md)
-- [旧品質方針（2026-10-06時点）](Archived/Quality-Checklist_2026-10-06.md)
+- [旧品質方針（2026-10-06時点）](../../../Maintanance/Archived/Quality/RedBlackTree_Quality-Checklist_2026-10-06.md)

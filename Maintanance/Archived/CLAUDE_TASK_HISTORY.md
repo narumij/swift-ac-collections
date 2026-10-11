@@ -7485,8 +7485,8 @@ Registryの`QUALITY-002`として、Codexが再編した次の現行module品質
 
 - `Maintanance/User/QUALITY_REQUIREMENTS.md`
 - 上記二つの現行profile
-- `Sources/RedBlackTreeCollections/Documentation/Archived/Quality-Checklist_2026-10-06.md`
-- `Sources/PermutationModule/Documentation/Archived/QualityAssessment-ISO25010_2026-10-09.md`
+- `Maintanance/Archived/Quality/RedBlackTree_Quality-Checklist_2026-10-06.md`
+- `Maintanance/Archived/Quality/Permutation_QualityAssessment-ISO25010_2026-10-09.md`
 - 現行profileが正本または証拠として直接指すfile・test directory・benchmark設定
 
 次を確認する。

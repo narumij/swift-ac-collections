@@ -2,7 +2,7 @@
 
 > この文書は、2026-10-06時点のリポジトリ状態を前提として作成された品質方針の履歴である。
 > 現行の品質要求、契約、検証状態の判断には使用しない。
-> 現行文書は`../Quality-Profile.md`を参照する。
+> 現行文書は`../../../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`を参照する。
 >
 > おもいで。
 
@@ -216,13 +216,13 @@ Copy on Writeによって分岐したコレクションは、Indexの所属判�
 
 ## 関連文書
 
-- [設計Overview](../Design/Design-Overview.md)
-- [内部アーキテクチャ](../Design/Design-InternalArchitecture.md)
-- [ノードストレージの設計](../Design/Design-NodeStorage.md)
-- [メモリレイアウトの設計](../Design/Design-MemoryLayout.md)
-- [メモリ安全性の設計](../Design/Design-MemorySafety.md)
-- [Copy on Writeの設計](../Design/Design-CopyOnWrite.md)
-- [RangeとIndex反復の設計](../Design/Design-Range.md)
+- [設計Overview](../../../Sources/RedBlackTreeCollections/Documentation/Design/Design-Overview.md)
+- [内部アーキテクチャ](../../../Sources/RedBlackTreeCollections/Documentation/Design/Design-InternalArchitecture.md)
+- [ノードストレージの設計](../../../Sources/RedBlackTreeCollections/Documentation/Design/Design-NodeStorage.md)
+- [メモリレイアウトの設計](../../../Sources/RedBlackTreeCollections/Documentation/Design/Design-MemoryLayout.md)
+- [メモリ安全性の設計](../../../Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md)
+- [Copy on Writeの設計](../../../Sources/RedBlackTreeCollections/Documentation/Design/Design-CopyOnWrite.md)
+- [RangeとIndex反復の設計](../../../Sources/RedBlackTreeCollections/Documentation/Design/Design-Range.md)
 
 ## 参考
 

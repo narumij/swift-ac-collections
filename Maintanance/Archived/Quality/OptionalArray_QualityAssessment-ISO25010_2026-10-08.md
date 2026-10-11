@@ -1,4 +1,8 @@
-# OptionalArrayModule 品質評価（ISO/IEC 25000シリーズ観点）
+# OptionalArrayModule 品質評価（2026-10-08時点・Archived）
+
+> この文書は、2026-10-08までに行われた品質評価、証拠収集、および作業記録の履歴である。
+> 現行の品質要求、契約、検証状態の判断には使用しない。
+> 現行文書は`../../../Sources/OptionalArrayModule/Documentation/Quality-Profile.md`を参照する。
 
 > 状態: 初版完成（2026-10-08）。利用者向け文書作業後に再評価する。
 > 評価対象: `Sources/OptionalArrayModule/OptinalArray.swift`の公開7型・公開宣言29件と公開適合4件。

@@ -214,6 +214,25 @@ AI同士の評価が一致したことを、
 既存の検証手段が存在することを理由に、
 品質要求を逆算して確定してはならない。
 
+### モジュール品質プロファイル
+
+上位品質要求を各モジュールへ適用する文書として、
+次の品質プロファイルを置く。
+
+| モジュール | 品質プロファイル |
+|---|---|
+| RedBlackTreeCollections | [`Quality-Profile.md`](../../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md) |
+| PermutationModule | [`Quality-Profile.md`](../../Sources/PermutationModule/Documentation/Quality-Profile.md) |
+| OptionalArrayModule | [`Quality-Profile.md`](../../Sources/OptionalArrayModule/Documentation/Quality-Profile.md) |
+| BareArrayModule | [`Quality-Profile.md`](../../Sources/BareArrayModule/Documentation/Quality-Profile.md) |
+
+各品質プロファイルは、上位品質要求を変更または複製せず、
+対象モジュールにおける意味、重点領域、仕様、証拠、および
+未確定領域への接続を定める。
+
+この一覧は品質プロファイルの存在と接続先を示すものであり、
+各モジュールの達成状態や適合を示すものではない。
+
 ## 7. 今後具体化する事項
 
 以下は本書では確定しない。

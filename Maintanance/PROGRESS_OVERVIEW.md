@@ -35,7 +35,8 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 2026-10-10、main merge commit `139ffef8`のCI greenを確認し、annotated tag `0.5.3`を同commitへ作成・pushして
 remote到達を確認した。release後の記録用branchとして、同tagから`develop/misc/55`を作成した。
 
-**現在の中間ゴール:** 未設定。次の製品目標または運用taskは、ユーザー指示に基づいて選択する。
+**現在の中間ゴール:** PermutationModuleを最初の適用対象として、上位品質要求に対する現行品質を
+証拠付きで評価し、未達、未検証、判断事項、および実行不足を後続taskへ分離できる状態にする。
 
 **凍結中の中間ゴール（前任conversationの残存記録）:**
 
@@ -121,6 +122,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `PERM-002` | `USER_ONLY` | User | ABC328E実提出確認 | ユーザーが手作業で実施 | `PermutationModule/ImplementationPlan.md` |
 | `PERM-028` | `FROZEN` | User / Codex | [DISCOVERY] Permutation strict memory safetyの再検討 | ユーザーが後日明示的に再開したとき、互換modeとは独立に前提、対象構成、警告、完了条件から設計し直す | `Sources/PermutationModule/Documentation/Quality-Profile.md` |
+| `PERM-029` | `WAITING_USER` | Codex | [DISCOVERY] Permutation現行品質アセスメント | ユーザーの開始指示後、QR-01〜QR-06を現行仕様と独立した証拠へ接続して評価し、未達・未検証・判断事項・実行不足を後続task候補へ分離する。`PERM-002`と`PERM-028`は開始しない | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | 0.6.0の到達範囲判断前に、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |

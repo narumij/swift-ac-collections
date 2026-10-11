@@ -19,10 +19,10 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 
 ## 現在地
 
-- 性能CIのbase / current比較は、現行側の`Benchmarks/Sources`、`Libraries`、
-  `Package.swift`、`Package.resolved`をbaseline checkoutへ同期し、製品codeだけを比較対象にする。
-  これにより、現行側で追加した新workloadも初回導入時からbaselineで実行できる。
-  PR用とrelease candidate用の両workflowに同じ境界を適用する。
+- 性能CIのbase / current比較は、それぞれのcommitにあるBenchmark harnessを使い、
+  現行側のCI library定義だけをbaselineへ同期する。初めて追加するworkloadは過去のbaselineに
+  存在しないため、導入PRでは回帰比較を成立させない。merge commitを初回baselineとし、
+  後続PRから通常のbase / current比較を始める。
 - RedBlackTree 4型の空コレクション用シングルトン(`_emptyTreeStorage`、型消去済み
   capacity 0)の生存条件を4型すべてで確認し、
   `RedBlackTreeInternal_EmptySingletonTests.swift`へ記録済み。通常初期化・

@@ -120,16 +120,11 @@ jobs:
           git -C candidate rev-parse HEAD \
             | tee candidate/benchmark-results/environment/candidate-commit.txt
 
-      - name: Use candidate benchmark harness for baseline
+      - name: Use candidate benchmark definitions for baseline
         shell: bash
         run: |
-          set -euo pipefail
-
-          # 製品codeだけをbaseline / candidateで変え、測定workloadと依存版は揃える。
-          rsync -a --delete candidate/Benchmarks/Sources/ baseline/Benchmarks/Sources/
-          rsync -a --delete candidate/Benchmarks/Libraries/ baseline/Benchmarks/Libraries/
-          cp candidate/Benchmarks/Package.swift baseline/Benchmarks/Package.swift
-          cp candidate/Benchmarks/Package.resolved baseline/Benchmarks/Package.resolved
+          cp candidate/Benchmarks/Libraries/CI.json baseline/Benchmarks/Libraries/CI.json
+          cp candidate/Benchmarks/Libraries/CI-Small.json baseline/Benchmarks/Libraries/CI-Small.json
 
       - name: Run candidate benchmarks
         working-directory: candidate/Benchmarks

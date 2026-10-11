@@ -8,7 +8,7 @@
 詳細な運用規則は`CODEX_TASK_OPERATION_PLAYBOOK.md`を正とする。本書は規則の要約ではなく、会話から
 中間ゴール、task、依存、判断、実行、受入へ変換する際の思考順序と、初回確認に使う事例を示す。
 
-![品質をAIに任せる仕組み — Codexのtask処理](AI_TASK_PROCESS_POSTER.png)
+![品質をAIに任せる仕組み — Codexのtask処理](../AI_TASK_PROCESS_POSTER.png)
 
 ## task管理が解く問題
 

@@ -33,14 +33,14 @@ IDs remain permanent and must not be reused.
 | `GRAPH-017` | `EXCLUDED` | — | [EXECUTION] RP-19 readiness fixture | 親目的の共有スキーム試験を終了したため、未実施のfixtureを不要として除外 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-018` | `EXCLUDED` | — | [EXECUTION] Task precedence Gateの段階移行完成判定 | Codex用DBと共有スキームの継続を終了し、DB向けGate移行の完成判定を不要として除外 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-019` | `DONE` | Codex | [EXECUTION] Task Registry構造lintの最小実装 | 2026-10-09、現行MarkdownをSQLiteインメモリDBへ読み込み、cycle・参照切れ・自己依存・重複edge・Gate・条件付き前提をread-only検査する入口を追加 | `Graph/TASK_GRAPH_LINT.md` |
-| `OPS-002` | `DONE` | Codex | [DISCOVERY] task分解・インライン化・割当の三段階運用検討 | 2026-10-09、stable ID・依存・履歴は維持し、条件の揃った連続`EXECUTION`だけを一時assignment packageへまとめる方式を採用。判断・凍結・待機taskは対象外とし、新判断や失敗時は元taskへ戻す | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-002` | `DONE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08、責任境界、現行補正、OptionalArray 10 package、追加skillについて項目別回答を記録 | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-003` | `DONE` | Codex | [DISCOVERY] agent task適性表の合意・不一致整理 | 2026-10-08、実質的不一致なし。修正提案を条件付き合意へ整理し、OptionalArray固有の疑義は監査packageへ移管 | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-004` | `EXCLUDED` | — | [EXECUTION] agent task適性表の不一致decision登録 | `FIT-003`でユーザー判断を要する実質的不一致が無かったため登録不要 | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-005` | `DONE` | Codex | [EXECUTION] agent task適性表の合意済み最終反映 | 2026-10-08、合意済み責任境界とsmell 4・tuning確認3を現行運用へ反映 | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-006` | `DONE` | Claude | [DISCOVERY] agent task適性表の最終差分確認 | 2026-10-08、3項目を合意どおり、2項目を文言上の留保として記録。能力点・責任境界の異論なし | `AGENT_TASK_FIT_INTERVIEW.md` |
-| `FIT-007` | `DONE` | Codex | [EXECUTION] agent task適性表更新の完成判定 | 2026-10-08、2件の留保を合意済み文言の欠落として補正し、新しい不一致なく更新全体を完了 | `AGENT_TASK_FIT_INTERVIEW.md` |
+| `OPS-002` | `DONE` | Codex | [DISCOVERY] task分解・インライン化・割当の三段階運用検討 | 2026-10-09、stable ID・依存・履歴は維持し、条件の揃った連続`EXECUTION`だけを一時assignment packageへまとめる方式を採用。判断・凍結・待機taskは対象外とし、新判断や失敗時は元taskへ戻す | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `FIT-001` | `DONE` | Codex | [EXECUTION] agent task適性表の現行責任境界の暫定更新 | 2026-10-08、OptionalArray管理方式、全面委譲解除、Codexの統合・受入責任を暫定案として反映 | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-002` | `DONE` | Claude | [DISCOVERY] agent task適性表の暫定更新reviewと自己評価 | 2026-10-08、責任境界、現行補正、OptionalArray 10 package、追加skillについて項目別回答を記録 | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-003` | `DONE` | Codex | [DISCOVERY] agent task適性表の合意・不一致整理 | 2026-10-08、実質的不一致なし。修正提案を条件付き合意へ整理し、OptionalArray固有の疑義は監査packageへ移管 | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-004` | `EXCLUDED` | — | [EXECUTION] agent task適性表の不一致decision登録 | `FIT-003`でユーザー判断を要する実質的不一致が無かったため登録不要 | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-005` | `DONE` | Codex | [EXECUTION] agent task適性表の合意済み最終反映 | 2026-10-08、合意済み責任境界とsmell 4・tuning確認3を現行運用へ反映 | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-006` | `DONE` | Claude | [DISCOVERY] agent task適性表の最終差分確認 | 2026-10-08、3項目を合意どおり、2項目を文言上の留保として記録。能力点・責任境界の異論なし | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
+| `FIT-007` | `DONE` | Codex | [EXECUTION] agent task適性表更新の完成判定 | 2026-10-08、2件の留保を合意済み文言の欠落として補正し、新しい不一致なく更新全体を完了 | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` |
 | `RBT-003` | `DONE` | Codex / Claude | `Result`のpublic比較overloadとpublic `_NodePtr` | 2026-10-07、公開面縮小と検証を完了。performance job成功を確認 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-012` | `DONE` | Claude | Swift 6.4 `-O`のCoW誤コンパイルに対する値セマンティクスのTest as Spec拡充 | 2026-10-07、closure-captured mutation形状を4型へ追加し、Debug / Releaseで値セマンティクス維持を確認（`4249ed8c`） | `Tests/RedBlackTreeTests/` |
 | `RBT-013` | `DONE` | Claude | RedBlackTree sourceのTODO/FIXME棚卸し | 2026-10-07、27件を分類。文書へ影響するRange View検査と公開API名、古いコメント2件を判断候補として報告 | `RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -277,23 +277,23 @@ IDs remain permanent and must not be reused.
 | `OPS-006` | `DONE` | Codex | [DECISION] 評価・observation文書を待避するか | 旧統合評価1件だけ待避 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
 | `OPS-007` | `DONE` | Codex | [DECISION] 技術調査・release文書を待避するか | 未完・凍結・後続作業の正本として直下維持 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
 | `OPS-008` | `DONE` | Codex | [EXECUTION] 採用済み文書の待避と参照更新 | 3文書を待避し索引・参照を更新 | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md` |
-| `OPS-009` | `DONE` | Claude / Codex | [EXECUTION] AI task process posterの作成と正式配置 | 2026-10-09、AIによるtask処理と責任境界を1枚にまとめ、生成scriptとSVGを追跡対象へ移した | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-010` | `DONE` | Codex | [DISCOVERY] AI task process posterの内容照合 | Registryの全9状態、第三者AIの役割、関係性の記述を正本と照合し、修正点を確定 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-011` | `DONE` | Codex | [EXECUTION] AI task process posterへのreview反映 | 内容照合の指摘を生成scriptと成果物へ反映し、再生成と画像確認を完了 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-012` | `DONE` | User / Codex | [DECISION] 終了済みGRAPH-004 fallback規則を削除するか | 2026-10-09、削除を決定。ルーティーンから終了済み共有smell試験へのfallbackを除き、割当を無理に作らない原則は維持 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-016` | `DONE` | User / Codex | [DECISION] Index完了ゲート←公開Index判断のFlow分類 | `PARALLEL_JOIN`。Comparable採否の外部依存を巻き込まず、公開Index表現・完了範囲の判断と親ゲートを並行可能にする | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-017` | `DONE` | User / Codex | [DECISION] Index完了ゲート←Comparable判断のFlow分類 | `PARALLEL_JOIN`。外部依存はComparable判断taskに残し、他のIndex作業と並行して親ゲートの完了前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-024` | `DONE` | User / Codex | [DECISION] Task precedence同期位置の名称 | 2026-10-09、`Barrier: HEAD / LAST`を中間案として採用。直後に実行関係を直接表す`Flow`へ洗練したため、現行名称は`OPS-025`を参照 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-018` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←Index完了のFlow分類 | `PARALLEL_JOIN`。品質調査とIndex契約を並行可能とし、1.0品質判定の確定前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-019` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←runtime-check再審査のFlow分類 | `PARALLEL_JOIN`。他の1.0品質作業と並行し、最終判定前にruntime-check実装の採否と合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-020` | `DONE` | User / Codex | [DECISION] Mapped Values判断←API照合のFlow分類 | `SEQUENCE`。現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-021` | `EXCLUDED` | User / Codex | [DECISION] BareArray性能計測←性能基準のFlow分類 | Flow自体は`SEQUENCE`で判断不要。BareArray固有の測定設計はCodexの`DISCOVERY`とし、そこで見つかった製品判断だけを別taskへ分離する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-022` | `DONE` | User / Codex | [DECISION] BareArray親監査←契約棚卸しのFlow分類 | `PARALLEL_JOIN`。親監査と契約棚卸しを並行可能とし、親監査の完了前に合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-025` | `DONE` | User / Codex | [DECISION] Task precedence実行関係の名称 | 2026-10-09、列名を`Flow`、直列を`SEQUENCE`、並行可能で完了前に合流する関係を`PARALLEL_JOIN`とした | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-023` | `DONE` | User / Codex | [DECISION] BareArray親監査←Test as Specification整理のFlow分類 | `PARALLEL_JOIN`。親監査を先行可能とし、完了前にTest as Specification整理と合流する | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-013` | `DONE` | User / Codex | [DECISION] Task precedenceの`UNCLASSIFIED` Flowを廃止するか | 2026-10-09、現行辺をすべて`SEQUENCE`または`PARALLEL_JOIN`へ個別分類した後、移行用の`UNCLASSIFIED`を現行規則とlintから廃止 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-014` | `DONE` | User / Codex | [DECISION] 採番済み条件付きtaskの整理方針 | 上流結果まで必須依存を持たない凍結状態で保持し、必要なら再開、決定済みまたは不要なら`EXCLUDED`へ送る | `CODEX_TASK_OPERATION_PLAYBOOK.md` / `BareArrayModule/BareArrayAudit.md` |
-| `OPS-015` | `DONE` | User / Codex | [DECISION] 期限後のCodex低燃費運用規則の処遇 | 2026-10-09、ユーザー判断により予定期限前に低燃費運用を終了し、現行Registryから一時運用規則を削除 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-009` | `DONE` | Claude / Codex | [EXECUTION] AI task process posterの作成と正式配置 | 2026-10-09、AIによるtask処理と責任境界を1枚にまとめ、生成scriptとSVGを追跡対象へ移した | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-010` | `DONE` | Codex | [DISCOVERY] AI task process posterの内容照合 | Registryの全9状態、第三者AIの役割、関係性の記述を正本と照合し、修正点を確定 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-011` | `DONE` | Codex | [EXECUTION] AI task process posterへのreview反映 | 内容照合の指摘を生成scriptと成果物へ反映し、再生成と画像確認を完了 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-012` | `DONE` | User / Codex | [DECISION] 終了済みGRAPH-004 fallback規則を削除するか | 2026-10-09、削除を決定。ルーティーンから終了済み共有smell試験へのfallbackを除き、割当を無理に作らない原則は維持 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-016` | `DONE` | User / Codex | [DECISION] Index完了ゲート←公開Index判断のFlow分類 | `PARALLEL_JOIN`。Comparable採否の外部依存を巻き込まず、公開Index表現・完了範囲の判断と親ゲートを並行可能にする | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-017` | `DONE` | User / Codex | [DECISION] Index完了ゲート←Comparable判断のFlow分類 | `PARALLEL_JOIN`。外部依存はComparable判断taskに残し、他のIndex作業と並行して親ゲートの完了前に合流する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-024` | `DONE` | User / Codex | [DECISION] Task precedence同期位置の名称 | 2026-10-09、`Barrier: HEAD / LAST`を中間案として採用。直後に実行関係を直接表す`Flow`へ洗練したため、現行名称は`OPS-025`を参照 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-018` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←Index完了のFlow分類 | `PARALLEL_JOIN`。品質調査とIndex契約を並行可能とし、1.0品質判定の確定前に合流する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-019` | `DONE` | User / Codex | [DECISION] 1.0品質ゲート←runtime-check再審査のFlow分類 | `PARALLEL_JOIN`。他の1.0品質作業と並行し、最終判定前にruntime-check実装の採否と合流する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-020` | `DONE` | User / Codex | [DECISION] Mapped Values判断←API照合のFlow分類 | `SEQUENCE`。現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-021` | `EXCLUDED` | User / Codex | [DECISION] BareArray性能計測←性能基準のFlow分類 | Flow自体は`SEQUENCE`で判断不要。BareArray固有の測定設計はCodexの`DISCOVERY`とし、そこで見つかった製品判断だけを別taskへ分離する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-022` | `DONE` | User / Codex | [DECISION] BareArray親監査←契約棚卸しのFlow分類 | `PARALLEL_JOIN`。親監査と契約棚卸しを並行可能とし、親監査の完了前に合流する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-025` | `DONE` | User / Codex | [DECISION] Task precedence実行関係の名称 | 2026-10-09、列名を`Flow`、直列を`SEQUENCE`、並行可能で完了前に合流する関係を`PARALLEL_JOIN`とした | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-023` | `DONE` | User / Codex | [DECISION] BareArray親監査←Test as Specification整理のFlow分類 | `PARALLEL_JOIN`。親監査を先行可能とし、完了前にTest as Specification整理と合流する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-013` | `DONE` | User / Codex | [DECISION] Task precedenceの`UNCLASSIFIED` Flowを廃止するか | 2026-10-09、現行辺をすべて`SEQUENCE`または`PARALLEL_JOIN`へ個別分類した後、移行用の`UNCLASSIFIED`を現行規則とlintから廃止 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| `OPS-014` | `DONE` | User / Codex | [DECISION] 採番済み条件付きtaskの整理方針 | 上流結果まで必須依存を持たない凍結状態で保持し、必要なら再開、決定済みまたは不要なら`EXCLUDED`へ送る | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` / `BareArrayModule/BareArrayAudit.md` |
+| `OPS-015` | `DONE` | User / Codex | [DECISION] 期限後のCodex低燃費運用規則の処遇 | 2026-10-09、ユーザー判断により予定期限前に低燃費運用を終了し、現行Registryから一時運用規則を削除 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `EVAL-001` | `EXCLUDED` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | 反復して再開する常設運用であり完了可能なtaskではないためRegistryから除外。明示依頼時の記録規則と既存文書は維持 | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `RBT-006` | `EXCLUDED` | User / Codex | 未結線コードの個別削除 | 対象未指定の待機枠を閉じた。必要時は具体的な対象と完了条件を持つ新taskを作る | `RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `TEST-001` | `EXCLUDED` | User / Codex | 無効化・歴史的テストコードの処遇 | 対象未指定の待機枠を閉じた。必要時は具体的な対象と完了条件を持つ新taskを作る | `Tests/TESTING.md` |

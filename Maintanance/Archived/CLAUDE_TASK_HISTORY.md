@@ -656,7 +656,7 @@ result. Other modified files are Codex's and are untouched. `git status --short`
 
 Perform a read-only factual and role-assessment review of Codex's newly appended
 `## Performance regression evidence update (2026-10-05)` in
-`Maintanance/AGENT_TASK_FIT_INTERVIEW.md`.
+`Maintanance/Orientation/AGENT_TASK_FIT_INTERVIEW.md`.
 
 Review the period covering the performance CI failure, local reproduction and bisection,
 `@usableFromInline` correction, the non-public protocol and generic nominal visibility audits,
@@ -689,7 +689,7 @@ Return one verdict: `retrospective agreed`, `retrospective needs factual correct
 
 You may edit only:
 
-- `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`
+- `Maintanance/Orientation/AGENT_TASK_FIT_INTERVIEW.md`
 - `Maintanance/CLAUDE_OBSERVATIONS.md` (optional)
 - `Maintanance/CLAUDE_TASK.md`
 
@@ -703,7 +703,7 @@ or alter Git history. Preserve Codex's existing edits and append your review sep
 2026-10-05, Claude Opus 5.5, on `try/index/1`. Verdict: `retrospective needs role/score changes`.
 
 I appended `## Claude review of performance regression evidence update (2026-10-05)` to
-`AGENT_TASK_FIT_INTERVIEW.md`. Codex's section is unchanged.
+`Orientation/AGENT_TASK_FIT_INTERVIEW.md`. Codex's section is unchanged.
 
 **Factual corrections:**
 
@@ -2716,7 +2716,7 @@ Check the following:
 5. Check that the user-intent questions ask only for intent that source/history cannot establish;
    flag questions that unnecessarily ask the user to reconstruct mechanical facts.
 6. Check that the mandatory stops and review sequence faithfully implement the agreed X1 row in
-   `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`.
+   `Maintanance/Orientation/AGENT_TASK_FIT_INTERVIEW.md`.
 7. Identify any wording that accidentally treats the PoC as obsolete, treats current HEAD as
    authoritative by default, or implies semantic identity from a shared name or path.
 
@@ -2859,7 +2859,7 @@ faithfully represents the interview.
 
 Review:
 
-- the new `X1` row in `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`;
+- the new `X1` row in `Maintanance/Orientation/AGENT_TASK_FIT_INTERVIEW.md`;
 - the new X1 identity-table prerequisite in `Maintanance/PROGRESS_OVERVIEW.md`.
 
 Confirm only these points:
@@ -2943,7 +2943,7 @@ The proposed new task category is:
 
 Answer the following based on your observed strengths and failure modes in this repository:
 
-1. Does an existing task-fit category in `Maintanance/AGENT_TASK_FIT_INTERVIEW.md` adequately cover
+1. Does an existing task-fit category in `Maintanance/Orientation/AGENT_TASK_FIT_INTERVIEW.md` adequately cover
    this work? If not, propose a new ID and short task name.
 2. Rate your suitability from 1 to 5. Use the existing scale; do not raise the score because the
    task is important.
@@ -3243,7 +3243,7 @@ request to revise, defend, or add to your personal reflection, and agreement is 
 1. Review Codex's appended section in `USER_MANAGEMENT_INTERVIEW_CODEX.md` and the updated table
    plus `## 2026-10-05 統合更新` in `USER_MANAGEMENT_ASSESSMENT.md`.
 2. Review Codex's `## Codex evidence update (2026-10-05)` and the revised assignment rule 6 in
-   `AGENT_TASK_FIT_INTERVIEW.md`.
+   `Orientation/AGENT_TASK_FIT_INTERVIEW.md`.
 3. Confirm that:
    - Codex's score changes are supported by the recent G2–G4/G3 and task-log rotation workflow;
    - your own score change and reasoning are represented accurately without being overwritten;
@@ -3337,7 +3337,7 @@ its own response and consolidate the factual differences after your independent 
 
 ### Required updates
 
-1. In `AGENT_TASK_FIT_INTERVIEW.md`, append a dated evidence update. State which existing scores,
+1. In `Orientation/AGENT_TASK_FIT_INTERVIEW.md`, append a dated evidence update. State which existing scores,
    role assignments, or safeguards are confirmed, improved, or should change. Do not rewrite the
    full historical interview and do not raise scores merely because tasks passed.
 2. In `USER_MANAGEMENT_INTERVIEW_CLAUDE.md`, append your independent 2026-10-05 reassessment.
@@ -3352,7 +3352,7 @@ its own response and consolidate the factual differences after your independent 
 
 ### Boundaries
 
-Only edit `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`,
+Only edit `Maintanance/Orientation/AGENT_TASK_FIT_INTERVIEW.md`,
 `Maintanance/USER_MANAGEMENT_INTERVIEW_CLAUDE.md`,
 `Maintanance/USER_MANAGEMENT_ASSESSMENT.md`, `Maintanance/CLAUDE_OBSERVATIONS.md`, and this task
 file. Do not edit Codex's interview or observation log, history, maintenance rules, source, tests,
@@ -3365,7 +3365,7 @@ product-owner decisions should still be stated clearly.
 
 ### Result (2026-10-05, Claude Opus 5.5)
 
-- `AGENT_TASK_FIT_INTERVIEW.md`: appended `## Claude evidence update (2026-10-05)`. No score
+- `Orientation/AGENT_TASK_FIT_INTERVIEW.md`: appended `## Claude evidence update (2026-10-05)`. No score
   changes.
   - Claude's B rating stays 3. Claude's B3 classification had a self-caught error.
   - Independent review and rule 9 are confirmed by the G4 rationale correction and the G2
@@ -5092,7 +5092,7 @@ Result (2026-10-04, Claude Opus 5.5): `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` is f
 
 Read the final applied corrections and `## Codex response to Claude review` in:
 
-- `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`
+- `Maintanance/Orientation/AGENT_TASK_FIT_INTERVIEW.md`
 
 This is a final agreement check, not another open-ended review. Confirm only whether:
 
@@ -5113,13 +5113,13 @@ your prior review and the applied text; do not reopen settled subjects.
 Then change this file's status to `Completed` and append a one-sentence result under
 this assignment. Report only `完了` to the user.
 
-Result (2026-10-04, Claude Opus 5.5): I agreed to the applied task-fit policy in `AGENT_TASK_FIT_INTERVIEW.md` (`### Claude final agreement`); the per-row conditions already recorded remain binding.
+Result (2026-10-04, Claude Opus 5.5): I agreed to the applied task-fit policy in `Orientation/AGENT_TASK_FIT_INTERVIEW.md` (`### Claude final agreement`); the per-row conditions already recorded remain binding.
 
 ## Completed assignment: adversarial review of Codex self-assessment
 
 Perform a read-only adversarial review of the Codex side of:
 
-- `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`
+- `Maintanance/Orientation/AGENT_TASK_FIT_INTERVIEW.md`
 
 Review the newly filled `Codex自己評価・懸念`, the Codex ratings, assignment proposals,
 and `## Codexヒアリング回答`. The purpose is to detect overconfidence and weak task
@@ -5146,7 +5146,7 @@ would make the proposed ownership unsafe or inefficient in this repository.
 Do not edit the interview table, either self-assessment column, source, tests, or any
 other maintenance document. Do not implement residual work or run tests. Append only a
 compact `## Claude review of Codex self-assessment` section to
-`AGENT_TASK_FIT_INTERVIEW.md`, containing:
+`Orientation/AGENT_TASK_FIT_INTERVIEW.md`, containing:
 
 - required rating/assignment corrections;
 - recommended safeguards that do not require a rating change;
@@ -5158,7 +5158,7 @@ under this assignment. Report only `完了` to the user; the review belongs in t
 
 ### Result (2026-10-04, Claude Opus 5.5)
 
-I appended `## Claude review of Codex self-assessment` to `AGENT_TASK_FIT_INTERVIEW.md`. The table,
+I appended `## Claude review of Codex self-assessment` to `Orientation/AGENT_TASK_FIT_INTERVIEW.md`. The table,
 both self-assessment columns, and every other file are unchanged, and no test was run. The review
 recommends lowering B, G, H, J, V1, V3, and V4 from 5 to 4, and V5 from 4 to 3 for both agents. It
 recommends relabeling D, E, F, I, P1, and P2 as draft ownership with the decision going to the user,
@@ -5172,7 +5172,7 @@ preservation on Linux, evidence restraint, and audit-driven bug discovery.
 
 Read and answer the Claude side of:
 
-- `Maintanance/AGENT_TASK_FIT_INTERVIEW.md`
+- `Maintanance/Orientation/AGENT_TASK_FIT_INTERVIEW.md`
 
 This is a self-assessment and assignment-design interview, not an implementation task.
 Evaluate your fit based on how you actually work in this repository, including both
@@ -5208,12 +5208,12 @@ cell or response section; Codex will decide whether to apply them.
 Keep each table response short. This is not an invitation to produce an essay for each
 row. When finished, change this file's status to `Completed` and append a one-paragraph
 result note immediately below this assignment. Report only `完了` to the user; the
-substantive answer belongs in `AGENT_TASK_FIT_INTERVIEW.md`.
+substantive answer belongs in `Orientation/AGENT_TASK_FIT_INTERVIEW.md`.
 
 ### Result (2026-10-04, Claude Opus 5.5)
 
 I filled only the `Claude自己評価・懸念` column for all 28 rows and added a `## Claudeヒアリング回答`
-section in `AGENT_TASK_FIT_INTERVIEW.md`. The Codex column, the ratings, and every other file are
+section in `Orientation/AGENT_TASK_FIT_INTERVIEW.md`. The Codex column, the ratings, and every other file are
 unchanged, and no test was run. Rows rated `主担当可`: A, K, L, T1, U1, D1, D2, V6, V7. Each assumes
 a Codex example or boundary where noted, and Codex keeps final judgment for L. Suggested score
 changes appear in my cells and only cover my role in the judgment itself: D 4→3, I 3→2,
@@ -7924,9 +7924,9 @@ Codex acceptance（2026-10-09）: 公開29宣言のcoverage、Test as Specificat
 
 ## Completed bounded assignment: Codex commander orientation independent review
 
-Registryの`OPS-004`として、現行`Maintanance/CODEX_ORIENTATION.md`を独立に反証レビューする。
+Registryの`OPS-004`として、現行`Maintanance/Orientation/CODEX_ORIENTATION.md`を独立に反証レビューする。
 初稿作成時の意図やCodexの完成判定を前提にせず、必要な根拠として`AGENTS.md`、
-`Maintanance/AI_COLLABORATION_PHILOSOPHY.md`、`Maintanance/Graph/TASK_GRAPH_LINT.md`を照合する。
+`Maintanance/Orientation/AI_COLLABORATION_PHILOSOPHY.md`、`Maintanance/Graph/TASK_GRAPH_LINT.md`を照合する。
 現在の個別task内容を再調査したり、ArchivedやMaintanance全体を走査したりしない。
 
 次の観点だけを確認する。
@@ -7942,7 +7942,7 @@ Registryの`OPS-004`として、現行`Maintanance/CODEX_ORIENTATION.md`を独�
 単なる好みや全面的な書き直し案は出さず、修正不要ならその理由を明記する。新しい製品方針、公開契約、
 agent権限を決定しない。レビューによって判断点が見つかった場合は、一判断ずつ分離してCodexへ返す。
 
-`CODEX_ORIENTATION.md`、Registry、AGENTS.md、思想文書、lint文書、source、test、workflowを変更しない。
+`Orientation/CODEX_ORIENTATION.md`、Registry、AGENTS.md、思想文書、lint文書、source、test、workflowを変更しない。
 変更可能範囲はこのassignmentの`Result`節と冒頭のジョブ状態だけ。完了時はジョブ状態を返却待ちへ変え、
 結果を下へ追記する。commit、push、branch操作、受入、Registry更新は行わない。Codexが原資料と照合し、
 指摘の採否、本文修正、受入、task完了を扱う。
@@ -7950,11 +7950,11 @@ agent権限を決定しない。レビューによって判断点が見つかっ
 ### Result
 
 2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`develop/misc/53` HEAD `dca1d939`、未commitのOPS-004割当を含むworktree。
-読んだのは`CODEX_ORIENTATION.md`、`AGENTS.md`、`AI_COLLABORATION_PHILOSOPHY.md`の該当節、`Graph/TASK_GRAPH_LINT.md`だけ。
+読んだのは`Orientation/CODEX_ORIENTATION.md`、`AGENTS.md`、`Orientation/AI_COLLABORATION_PHILOSOPHY.md`の該当節、`Graph/TASK_GRAPH_LINT.md`だけ。
 追加の事実確認は、3 branchのRegistry行の比較（git show）と、read-onlyのlint実行だけ。文書は変更していない。
 
 **独立性の限界（`UNVERIFIED`）**: 本文の「証拠を混同しない」の表と「復帰手順」は、Claudeの初稿（OPS-002）から引き継がれている。
-`AGENT_TASK_FIT_INTERVIEW.md`の合意どおり、この2節へのClaudeの`PASS`は独立reviewに数えないこと。必要なら第三者AIかCodex自身で確認する。
+`Orientation/AGENT_TASK_FIT_INTERVIEW.md`の合意どおり、この2節へのClaudeの`PASS`は独立reviewに数えないこと。必要なら第三者AIかCodex自身で確認する。
 
 1. **責任・判断・検収の境界: `RISK`**。表（L30-35）と原則（L18-26）は思想文書§1・§2・§8と一致し、Claudeを責任主体に置かない点も一致する。
    - 最強の反証: ユーザー欄（L32）は「マネジメント設計、最終accountability」だけで、tag・push・merge・外部公開などの不可逆操作の承認を書いていない。
@@ -7969,7 +7969,7 @@ agent権限を決定しない。レビューによって判断点が見つかっ
      あわせて手順4へ`git stash list`を加える（本日、OPS-002の未commit変更はstashに退避された。また、Claudeの`Result`2件が未commitのまま、どのrefにも残らなかった）。
 3. **証拠範囲の区別: `RISK`（軽微）**。表（L118-127）は種類ごとの限界を正しく分けている。
    - 最強の反証: Release testの行は`-Ounchecked`（事前条件が消える構成）を区別しない。independent reviewの行は「作成者自身の再確認は独立でない」を落としている（上の限界と同じ根）。
-   - 修正案: 2行とも1句ずつ足す。詳細は`AI_TECHNICAL_ORIENTATION.md`へ委ねてよい（この文書は今回の範囲外で、読んでいない）。
+   - 修正案: 2行とも1句ずつ足す。詳細は`Orientation/AI_TECHNICAL_ORIENTATION.md`へ委ねてよい（この文書は今回の範囲外で、読んでいない）。
 4. **変動情報の分離: `PASS`**。task状態・release境界・個別契約はRegistryと正本へ戻している（L109-110、L138-140）。
    L47-58のRedBlackTree差し替えの分担は現在の局面の記述だが、「固定的な評価ではない」（L56）と明記されており修正不要。
 5. **lint例の確認力: `RISK`**。
@@ -7986,7 +7986,7 @@ agent権限を決定しない。レビューによって判断点が見つかっ
 Codex completion record: 2026-10-09、指定した6観点について根拠、反証、最小修正案、独立性の限界を
 報告したため、レビュー作業自体は完了とする。ただし、報告された`BLOCK`、`RISK`、修正案はCodexの評価や
 方針として採用せず、参考資料としてのみ保存する。Claude自身の初稿を含む本文への自己レビューでもあり、
-内容を鵜呑みにして`CODEX_ORIENTATION.md`へ反映しない。本文は変更せず、このレビューから後続taskを
+内容を鵜呑みにして`Orientation/CODEX_ORIENTATION.md`へ反映しない。本文は変更せず、このレビューから後続taskを
 作成しない。オリエンテーションの作成・確認・レビューに関する一連の作業はここで終了する。
 
 ## Completed bounded assignment: release template branch design review
@@ -8064,12 +8064,12 @@ workflowを別file化し、version別branchのremote pushをユーザー操作�
 tag作成をbranch完成条件とした。上記Result中の`/0`・`/x`はレビュー時点の名称として保持する。
 ## Completed bounded assignment: Codex commander orientation draft
 
-Task Registryの`OPS-002`と、その詳細正本`Maintanance/CODEX_ORIENTATION.md`に従い、新しいCodex会話へ渡す
+Task Registryの`OPS-002`と、その詳細正本`Maintanance/Orientation/CODEX_ORIENTATION.md`に従い、新しいCodex会話へ渡す
 司令塔orientationの初稿を作成する。これは他taskから独立した運用基盤taskであり、0.5.1 release作業の
 一部または前提として扱わない。
 
 正本の`入力資料`に列挙された文書だけを、このassignmentの追加資料として必要な範囲で読む。内容は
-`CODEX_ORIENTATION.md`の`## Claude draft`節だけへ記録し、次を短く、実際の行動へつながる順序で含める。
+`Orientation/CODEX_ORIENTATION.md`の`## Claude draft`節だけへ記録し、次を短く、実際の行動へつながる順序で含める。
 
 1. 最初に理解すべき責任分担: ユーザー、Codex、Claude、第三者AIが何を持つか。
 2. 能力と決定権・完了承認を分け、AI同士の一致を証拠とみなさない原則。
@@ -8089,7 +8089,7 @@ branch操作は行わない。
 
 ### Result
 
-2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`CODEX_ORIENTATION.md`の`## Claude draft`節だけへ初稿を追記した。他の節・文書は変更していない。
+2026-10-09 / Claude Opus 5.5（`claude-opus-5-5`）。`Orientation/CODEX_ORIENTATION.md`の`## Claude draft`節だけへ初稿を追記した。他の節・文書は変更していない。
 commit・branch操作なし（git addもしていない。指示に無いため）。
 
 - 構成: 指定6項目を順に（責任分担表、能力と決定権、難所5種、証拠種類の表、main／release境界、復帰手順7段）。各項末尾に出典を付けた。
@@ -8550,7 +8550,7 @@ commit、pushは行わない。base側に計測がない比較の扱いなど、
 ## Completed bounded assignment: playbook portability consistency review
 
 Independently review the current worktree versions of
-`Maintanance/CODEX_TASK_OPERATION_PLAYBOOK.md` and
+`Maintanance/Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` and
 `Maintanance/PROGRESS_OVERVIEW_TEMPLATE.md` for internal consistency and portability to another
 project. This is a decision-free factual review supporting the Codex-owned task-operation playbook.
 

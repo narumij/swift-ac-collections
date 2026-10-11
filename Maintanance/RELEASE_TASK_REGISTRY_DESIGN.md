@@ -153,7 +153,7 @@ version別のrelease実行taskには、チェック項目だけでなく、少�
 - pushまたはmerge完了と後続CI greenを同時に閉じず、CIを外部待機にして同一commitの完了結果を別taskで確認する。
 - tag確認後、trackedな結果記録より先にmainからrelease後の作業branchへ移り、bookkeepingをmainへ直接積まない。
 
-このsummaryは`TASK_ORIENTATION.md`全体の複製ではなく、release中に停止・再開・権限判断を誤らないための
+このsummaryは`Orientation/TASK_ORIENTATION.md`全体の複製ではなく、release中に停止・再開・権限判断を誤らないための
 最小版とする。
 
 ## 現在の案

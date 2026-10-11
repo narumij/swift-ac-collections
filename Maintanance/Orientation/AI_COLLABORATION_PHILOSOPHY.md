@@ -345,7 +345,7 @@ Codexが情報処理、管理、マネジメント、技術的な品質評価、
 | 文書 | 役割 |
 |---|---|
 | `AI_COLLABORATION_PHILOSOPHY.md` | 協働体制の思想と設計理由 |
-| `CODEX_ORIENTATION.md` | 新しいCodexの初期理解と復帰経路 |
+| `Orientation/CODEX_ORIENTATION.md` | 新しいCodexの初期理解と復帰経路 |
 | `AGENTS.md` | 起動規則と運用境界 |
 | `CODEX_TASK_OPERATION_PLAYBOOK.md` | タスク運用の具体的な手順 |
 | `PROGRESS_OVERVIEW.md` | タスクと進捗の正本 |

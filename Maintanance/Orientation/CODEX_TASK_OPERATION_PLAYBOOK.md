@@ -394,7 +394,7 @@ storageでもあり、Codexの構造lintとは役割が異なる。
 
 最初から大きな管理体系を作らない。次の順で導入する。
 
-開始時は[`PROGRESS_OVERVIEW_TEMPLATE.md`](PROGRESS_OVERVIEW_TEMPLATE.md)をコピーし、placeholderと
+開始時は[`PROGRESS_OVERVIEW_TEMPLATE.md`](../PROGRESS_OVERVIEW_TEMPLATE.md)をコピーし、placeholderと
 例示taskを実projectの内容へ置き換える。
 
 1. 一つのRegistryと状態語を作る。
@@ -408,7 +408,7 @@ storageでもあり、Codexの構造lintとは役割が異なる。
 ## AI task process poster
 
 このplaybookの主要な流れ、状態、責任境界を1枚に要約した図を
-[`AI_TASK_PROCESS_POSTER.png`](AI_TASK_PROCESS_POSTER.png)に置く。編集可能な正本は
+[`AI_TASK_PROCESS_POSTER.png`](../AI_TASK_PROCESS_POSTER.png)に置く。編集可能な正本は
 `AI_TASK_PROCESS_POSTER.svg`ではなく、`Utilities/Maintenance/GenerateAITaskProcessPoster.py`である。
 
 再生成手順:

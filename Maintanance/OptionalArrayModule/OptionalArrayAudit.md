@@ -667,7 +667,7 @@ OptionalArray監査で実際に有効だった方式を、別の低レベルcoll
 
 ユーザー判断により、OptionalArray監査から抽出した委任規則のために独立文書を追加しない。
 必要な責任境界、成果物、停止条件は`AGENTS.md`、`CLAUDE.md`、
-`Maintanance/CODEX_TASK_OPERATION_PLAYBOOK.md`へ既に吸収され、BareArray監査の正本にも適用済みである。
+`Maintanance/Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md`へ既に吸収され、BareArray監査の正本にも適用済みである。
 このため判断taskを完了し、独立した反映taskは不要として除外する。
 
 ## Claude証拠表（2026-10-08）
@@ -849,7 +849,7 @@ compileできる形。NOP setterのwriteback（本文90行目）がこの形を�
 ### OPT-024 コメントドックcoverage
 
 判定基準: 明示した文がある場合だけ「あり」とした。`precondition`の本体や型名から読み取れるだけなら「なし」
-（基準は`AGENT_TASK_FIT_INTERVIEW.md`のClaude回答で提案したもので、未合意）。
+（基準は`Orientation/AGENT_TASK_FIT_INTERVIEW.md`のClaude回答で提案したもので、未合意）。
 
 | # | 宣言 | 境界 | 所有 | 寿命 | 破棄 | 変更 | 計算量 |
 | ---: | --- | --- | --- | --- | --- | --- | --- |

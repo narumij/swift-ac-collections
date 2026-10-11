@@ -101,14 +101,21 @@ jobs:
             --cycles 1 \
             --mode append
 
+      - name: Use current benchmark harness for baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # 製品codeだけをbase / currentで変え、測定workloadと依存版は揃える。
+          rsync -a --delete head/Benchmarks/Sources/ base/Benchmarks/Sources/
+          rsync -a --delete head/Benchmarks/Libraries/ base/Benchmarks/Libraries/
+          cp head/Benchmarks/Package.swift base/Benchmarks/Package.swift
+          cp head/Benchmarks/Package.resolved base/Benchmarks/Package.resolved
+
       - name: Run baseline benchmarks
         working-directory: base/Benchmarks
         run: |
           mkdir -p ../benchmark-results
-
-          # CI.json は PR 側の定義を両方の測定に使用する
-          cp ../../head/Benchmarks/Libraries/CI.json ./Libraries/CI.json
-          cp ../../head/Benchmarks/Libraries/CI-Small.json ./Libraries/CI-Small.json
 
           swift run -c release benchmark library run \
             --library ./Libraries/CI.json \

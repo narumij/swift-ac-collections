@@ -157,6 +157,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-030` | `FROZEN` | Codex | [EXECUTION] BareArrayアセスメント用C++ nested vector workload登録 | CI回帰経路の成立後、Swift版と同じ多次元access・形状・checksumをnested `vector<T>`で実装し、通常CIには含めない | `BareArrayModule/CurrentQualityAssessment.md` |
 | `BARE-031` | `FROZEN` | Codex | [DISCOVERY] BareArray macOS外部性能アセスメントへのアレンジ | Swift／C++対応workload、専用library、保存script、環境情報、生JSON、PNG chartをPermutationと同じ構成へ整え、暫定実測を保存する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-032` | `FROZEN` | User | [DECISION] BareArrayがC++ nested vectorに匹敵すると判定する性能比の上限 | `BARE-031`の暫定実測後、代表多次元access workloadで許容する性能比を一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
+| `BARE-033` | `DONE` | Codex | [EXECUTION] 性能CIのbaseline / current間Benchmark harness統一 | PRとcandidateの両性能CIでSources、Libraries、manifest、resolved依存を現行側からbaselineへ同期し、新BareArray workloadを含む現行harnessがコミット前のbaseline製品codeに対してbuild・小規模実行できることを確認 | `Tests/TESTING.md` / `.github/workflows/ci.yml` / `.github/workflows/candidate.yml` |
 | `BARE-016` | `DONE` | Codex | [DISCOVERY] BareArray現行品質アセスメント | Quality Profileの現在性監査、QR-01〜QR-06の現行評価、実行記録、既存課題と新規Validation候補への不足分離を完了 | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-017` | `PROPOSED` | Codex | [DISCOVERY] BareArray利用Validation scenario設計 | 一般Swift利用と競技利用について、代表利用者、導入経路、利用課題、観測方法を整理し、異なる判断・実行境界を後続task候補へ分離する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-018` | `FROZEN` | Codex | [EXECUTION] BareArray Viewノンエスケーパブル化の完了ゲート | 実装と局所検証の途中証拠を保存したまま凍結。storage、公開型の安全性分類、strict memory safetyの3系統を閉じ、品質検証を再開・完了した後に受入可否を判定する | `BareArrayModule/CurrentQualityAssessment.md` |
@@ -186,6 +187,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |
 | `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |
 | `RBT-026` | `RBT-014` | `SEQUENCE` | 現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する |
+| `BARE-029` | `BARE-033` | `SEQUENCE` | 現行側にしかない新workloadも同一harnessでbase / current比較できるCI経路を先に成立させる |
 | `BARE-029` | `BARE-006` | `SEQUENCE` | workload設計後、まずSwift側を通常CIの回帰検知へ追加する |
 | `BARE-030` | `BARE-029` | `SEQUENCE` | CI回帰経路の成立後、外部比較専用のC++対応workloadを追加する |
 | `BARE-031` | `BARE-030` | `SEQUENCE` | Swift／C++両workloadの成立後、macOSアセスメント用にアレンジして暫定実測する |

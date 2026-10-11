@@ -19,6 +19,10 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 
 ## 現在地
 
+- 性能CIのbase / current比較は、現行側の`Benchmarks/Sources`、`Libraries`、
+  `Package.swift`、`Package.resolved`をbaseline checkoutへ同期し、製品codeだけを比較対象にする。
+  これにより、現行側で追加した新workloadも初回導入時からbaselineで実行できる。
+  PR用とrelease candidate用の両workflowに同じ境界を適用する。
 - RedBlackTree 4型の空コレクション用シングルトン(`_emptyTreeStorage`、型消去済み
   capacity 0)の生存条件を4型すべてで確認し、
   `RedBlackTreeInternal_EmptySingletonTests.swift`へ記録済み。通常初期化・
@@ -98,11 +102,8 @@ BareArrayについて既に登録した公開7型の契約棚卸し、位置づ�
 - 2026-10-09 11:40 JSTまではClaudeへのassignmentを停止する。`BARE-002`が`ACTIVE`でも、それ以前には
   割り当てない。
 
-`BARE-006`では、Permutation等で確立したRelease、同一環境、base / HEAD比較、回帰判定、artifact保存を
-共通基盤として再利用する。一方、BareArrayには既存benchmarkがないため、対象操作、1D〜4DとViewの範囲、
-size、Swift Array・unsafe buffer・C配列等の比較対象、絶対性能と回帰性能のどちらを評価するかを新たに
-整理する。比較対象や採用閾値が公開上の約束または1.0採否を左右する場合は、Codexが結論を補わず、
-一判断ごとの`DECISION`候補として分離する。確定した測定設計と必要な判断を入力に`BARE-007`を実行する。
+`BARE-006`の現行設計と後続taskは
+`Maintanance/BareArrayModule/CurrentQualityAssessment.md`を正本とする。
 
 OptionalArrayの品質評価は、PermutationModuleの`Quality-Profile.md`と同様に、仕様を再記述せず
 Test as Specification、実装、CI、利用者向け文書を根拠としてISO/IEC 25010の品質特性ごとに整理する。

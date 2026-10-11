@@ -119,8 +119,10 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
 | QR-01 正確性 | 初期化、次元、offset、subscript、View、writeback、破棄が公開契約どおり動作する | 確認済み | Debug 35件、Release 28件、両構成のDeath Test 39件が現行環境で成功。実行不能となった3件はcompiler診断fixtureへ移行 | 有限な入力と構成による確認であり、任意の次元・要素型の数学的証明ではない |
 | QR-02 性能効率性 | 実装上の計算量と連続storageの設計根拠が公開契約と一致する | 確認済み | 所有4型は要素数分を一括allocateし、subscriptとView生成は定数回のoffset計算、初期化と破棄は要素数に比例する。公開documentation commentの計算量と一致 | 実装構造から確認した計算量であり、実行時間、allocation cost、最適化結果を証明しない |
 | QR-02 性能効率性 | C/C++標準に匹敵する性能を持つ | 未検証 | BareArray固有のbenchmarkと外部比較結果は未確認 | 比較対象、利用scenario、測定条件、判定水準が未確定 |
-| QR-03 安全性 | 所有storage、要素寿命、範囲拒否、writeback拒否が契約どおり動く | 確認済み | 参照寿命test、通常test、Death TestがDebug・Releaseで成功し、Address Sanitizer構成でも通常35件・Death Test 42件が成功 | testが通る有限経路の証拠であり、非所有Viewの寿命全体は含まない |
-| QR-03 安全性 | View寿命、Sendableとの交差、strict memory safety、`-Ounchecked`の境界が受入可能である | 未検証 | 非所有Viewの責務と未確定範囲はProfile・公開コメント・監査に明示される。BareArray targetへ`.strictMemorySafety()`を追加して観測中で、buildとtestは成功するが公開7型の警告が残る | 型システムで防げないdangling Viewと並行access、公開7型の`@safe`／`@unsafe`分類、検査省略時の扱いは未評価 |
+| QR-03 安全性 | 所有storage、要素寿命、範囲拒否、writeback拒否が契約どおり動く | 確認済み | 参照寿命test、通常test、Death TestがDebug・Releaseで成功し、Address Sanitizer構成でも通常35件・Death Test 39件が成功 | testが通る有限経路の証拠であり、任意の要素型・寸法・操作列の証明ではない |
+| QR-03 安全性 | 非所有Viewが所有元を越えず、有効な連鎖accessとwritebackが成立する | 確認済み | View 3種を`~Escapable`化し、Debug 35件・Release 28件と両構成のDeath Test 39件が成功。compiler診断fixtureはView寿命escape 3件と所有配列writeback exclusivity 3件を拒否した | Swift 6.4のLifetimes実験機能と、fixtureが表す利用形に対するVerificationである |
+| QR-03 安全性 | strict memory safety下で公開APIの安全性境界が成立する | 確認済み | 所有型4種とView型3種を`@safe`に分類し、BareArrayModuleへ`.strictMemorySafety()`を適用した状態で未承認のunsafe利用warningがなく、build・test・compiler診断fixtureが成功 | compiler診断と有限の実行経路による確認であり、並行利用の意味的安全性までは証明しない |
+| QR-03 安全性 | `@unchecked Sendable`を含む並行利用と`-Ounchecked`の保証境界が受入可能である | 未検証 | 未確定範囲はQuality Profileと公開コメントに分離されている | data raceを含む並行利用のValidationと、事前条件検査を省略する構成の扱いは未評価 |
 | QR-04 理解可能性 | 所有・非所有、軸順、初期化、連鎖subscript、writeback、失敗条件を公開文書から理解できる | 確認済み | 現行公開宣言のdocumentation commentをsourceと照合し、BareArrayModuleのDocC生成が成功 | 文書が存在し整合するVerificationであり、一般利用者による理解のValidationは未実施 |
 | QR-05 利用可能性 | SwiftPMと`AcCollections`から導入し、対象環境で利用できる | 確認済み | Debug・Release build、facade再公開test 1件、BareArray.swift単独typecheck、DocC生成が成功 | macOSの現行環境における確認。他platform、外部packageとの共存、実利用のValidationは未確認 |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | copy & paste許諾と単一file候補はsourceに存在する | 実問題、実提出、実行時間、メモリ使用量のValidation証拠を未確認 |
@@ -146,6 +148,15 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
   解消した。strict typecheckとPackage経路のDebug buildには公開7型の警告だけが残る。
 - この変更後も通常test 35件とDeath Test 42件が成功した。
 - `Benchmarks/`にBareArray固有のworkloadまたはlibrary登録は見つからなかった。
+- 0.6.0品質として再開後、現行実装を対象にDebug通常test 35件、Release通常test 28件、両構成の
+  Death Test 39件、View寿命escape 3件と所有配列writeback exclusivity 3件のcompiler診断fixtureが
+  成功した。
+- Address Sanitizer構成では通常test 35件とDeath Test 39件が成功し、BareArrayに由来するSanitizer
+  failureはなかった。
+- facade再公開test 1件とBareArrayModuleのDocC生成が成功した。
+- Swift 6.4のLifetimes実験機能下でのView寿命とstrict memory safetyは確認済みとした。一方、
+  `@unchecked Sendable`を含む並行利用、`-Ounchecked`、一般Swift利用、競技利用、外部性能は、この
+  Verificationから成功を推定せず未検証として維持する。
 
 ## 後続task候補
 
@@ -153,14 +164,13 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
 | --- | --- | --- | --- | --- |
 | `BARE-006` | 既存`DISCOVERY` | `DIRECT` | BareArray 1.0の性能測定設計 | QR-02の外部性能を推定せず、対象操作、size、比較対象、評価方法と必要な判断を整理する |
 | `BARE-007` | 既存`EXECUTION` | `DIRECT` | BareArray 1.0の性能計測 | `BARE-006`で確定した構成に従い測定証拠を取得する |
-| `BARE-023` | `DECISION` | `DIRECT` | storage境界の扱い | 現行の生ポインタstorage境界を品質検証の前提として維持するか一つだけ決定する |
-| `BARE-024` | `DECISION` | `DIRECT` | 公開7型の安全性分類 | 公開所有型4・View型3を`@safe`または`@unsafe`のどちらとして扱うか一つだけ決定する |
-| `BARE-025` | `DECISION` | `DIRECT` | strict memory safety採否 | `.strictMemorySafety()`適用状態を品質検証の対象とするか一つだけ決定する |
 | `DOC-010` | 既存`DISCOVERY` | `NEAR` | BareArrayの定性的性能表現の再検討 | 実装意図と未測定の外部性能を混同せず、利用者向け表現を再検討する |
 | `BARE-017` | `DISCOVERY` | `DIRECT` | BareArray利用Validation scenario設計 | QR-04・QR-05について、一般Swift利用と競技利用の代表scenario、導入経路、観測方法、必要な後続判断を整理する |
+| `BARE-028` | `EXECUTION` | `DIRECT` | Claude手直し後の差分再検証 | Claudeのレビューと手直しが受け入れられた後、変更影響範囲の検証を再実行して完了ゲートへ渡す |
 
-`BARE-006`、`BARE-007`、`BARE-023`、`BARE-024`、`BARE-025`、`DOC-010`の凍結は本評価によって解除しない。
+`BARE-006`、`BARE-007`、`DOC-010`の凍結は本評価によって解除しない。
 `BARE-017`は判断を確定せず、一般利用と競技利用で実行・判断境界が異なる場合は後続taskへ分離する。
+`BARE-028`は、Claudeのレビューと手直しが受け入れられるまで凍結する。
 
 ## Viewノンエスケーパブル化
 
@@ -235,6 +245,7 @@ View寿命はノンエスケーパブル化と同一の論点であり、独立t
 | `BARE-025` | `DECISION` | strict memory safety採否 | `.strictMemorySafety()`適用状態を品質検証の対象とするか一つだけ決定する |
 | `BARE-026` | `DECISION` | 品質検証の再開判断 | 3系統の決定後、保存した途中成果を対象として品質検証を再開するか一つだけ決定する |
 | `BARE-027` | `EXECUTION` | ノンエスケーパブル化の品質検証 | 確定した前提でVerification、Validation、残余リスク、未検証領域を評価する |
+| `BARE-028` | `EXECUTION` | Claude手直し後の差分再検証 | 受け入れた変更の影響範囲を再検証し、現行証拠との差分を確認する |
 | `BARE-018` | `EXECUTION` | 完了ゲート | 分割成果を受け入れ、既存契約への影響と未確認範囲を本書へ記録する |
 
 storage、安全性分類、strict memory safetyの3系統を`PARALLEL_JOIN`で品質検証の再開判断へ合流させる。
@@ -266,3 +277,22 @@ compiler診断fixtureも、View寿命escape 3件と所有配列writeback exclusi
 2026-10-11、`BARE-020`、`BARE-021`、`BARE-022`には実装・診断・回帰確認の途中証拠が揃ったが、
 成果の受入と`BARE-018`への合流は確定していない。storage、安全性分類、strict memory safetyの
 3系統と品質検証の再開判断を経るまで、関連taskを凍結する。
+
+### 0.6.0品質検証の結果
+
+2026-10-11、storage境界、公開7型の`@safe`分類、strict memory safety適用を確定した前提として、
+ノンエスケーパブル化の品質検証を再開した。
+
+- Verificationでは、Debug・Releaseの有効利用経路、両構成のDeath Test、無効な寿命escapeと
+  overlapping accessのcompiler診断fixture、Address Sanitizer、facade再公開、DocC生成が成功した。
+- View 3種の`~Escapable`化により、所有元越えを型システムで拒否しながら、連鎖subscriptと
+  writebackをノンコピーで維持する実装目的は、検証したSwift 6.4構成で成立した。
+- strict memory safetyでは、公開7型の分類後に未承認のunsafe利用warningは残らなかった。
+- Validationについて、一般Swift利用者の理解・採用、競技での実問題・実提出、外部性能は確認して
+  いない。これらを今回のVerificationから推定しない。
+- `@unchecked Sendable`を含む並行利用の意味的安全性、`-Ounchecked`、任意の要素型・寸法・操作列は
+  未検証として残す。Swift 6.4のLifetimesが実験機能であることもtoolchain依存の残余リスクである。
+
+以上により、0.6.0品質として要求されたノンエスケーパブル化の現行品質検証は完了した。Claudeの
+レビューと手直しが受け入れられた場合は、別taskで変更影響範囲を再検証してから`BARE-018`の完了を
+判定する。

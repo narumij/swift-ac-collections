@@ -153,8 +153,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-023` | `DONE` | Codex | [DISCOVERY] BareArray storage境界の成立確認 | `@safe`分類とノンエスケーパブルViewにより再設計候補の前提が解消し、連続配置・O(1) access・ノンコピーViewを担う現行storage境界を維持すると確認 | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
 | `BARE-024` | `DONE` | User / Codex | [DECISION] BareArray公開7型の`@safe`／`@unsafe`分類 | 所有型4・ノンエスケーパブルView型3を`@safe`に分類して実装し、strict warning解消とDebug・Release・compiler診断fixtureの回帰成功を確認 | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
 | `BARE-025` | `DONE` | Codex | [DISCOVERY] BareArray strict memory safety適用の成立確認 | 公開7型の`@safe`分類後、`.strictMemorySafety()`有効状態でwarningがなく、既存検証も成功するため、採否をユーザーへ返す本質的判断は残らず、品質検証の対象として維持すると確認 | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
-| `BARE-026` | `FROZEN` | User | [DECISION] BareArray品質検証の再開判断 | storage、安全性分類、strict memory safetyの3系統は完了済み。保存した途中成果を対象として品質検証を再開するか一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` |
-| `BARE-027` | `FROZEN` | Codex | [EXECUTION] BareArrayノンエスケーパブル化の品質検証 | ユーザーが品質検証の再開を決定した後、確定した3系統の前提に従ってVerification、Validation、残余リスク、未検証領域を評価する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
+| `BARE-026` | `DONE` | User | [DECISION] BareArray品質検証の再開判断 | 2026-10-11、0.6.0品質として、完了したstorage、安全性分類、strict memory safetyの3系統を前提に品質検証を再開すると決定 | `BareArrayModule/CurrentQualityAssessment.md` |
+| `BARE-027` | `DONE` | Codex | [EXECUTION] BareArrayノンエスケーパブル化の品質検証 | 0.6.0品質としてDebug・Release・ASan・compiler診断fixture・facade・DocCを検証し、View寿命とstrict memory safetyを確認済み、並行利用・`-Ounchecked`・利用Validation・外部性能を未検証として分離 | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
+| `BARE-028` | `FROZEN` | Codex | [EXECUTION] BareArray Claude手直し後の差分再検証 | Claudeのレビューと手直しが受け入れられた後に再開し、変更影響範囲のbuild、test、compiler診断fixture、安全性診断を再実行して現行証拠との差分を確認する | `BareArrayModule/CurrentQualityAssessment.md` |
 | `ARRAY-001` | `EXCLUDED` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのView寿命はノンエスケーパブル化へ統合し、残るstorage、公開安全性分類、strict memory safetyを独立taskへ分解したため、包括taskとしては除外。OptionalArrayは必要時に別途再分解する | `StrictMemorySafetyReadiness.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -179,6 +180,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-026` | `BARE-025` | `PARALLEL_JOIN` | strict memory safety適用の成立確認後に品質検証の再開を判断する |
 | `BARE-027` | `BARE-026` | `SEQUENCE` | ユーザーが再開を決定した場合だけ、確定した前提で品質検証を実行する |
 | `BARE-018` | `BARE-027` | `SEQUENCE` | 品質検証の結果を受け入れてからノンエスケーパブル化の完了を判定する |
+| `BARE-028` | `BARE-027` | `SEQUENCE` | 現行品質検証を基準に、Claudeの手直し受入後の変更影響を再検証する |
+| `BARE-018` | `BARE-028` | `PARALLEL_JOIN` | Claudeの手直し後に必要となる差分再検証も完了ゲートへ合流する |
 | `BARE-017` | `BARE-018` | `SEQUENCE` | 完成したView契約を入力に一般Swift利用と競技利用のValidation scenarioを設計する |
 | `PERM-044` | `PERM-043` | `SEQUENCE` | C++標準に匹敵すると判定する性能比上限を確定してから、保存したmacOS測定証拠へ適用する |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |

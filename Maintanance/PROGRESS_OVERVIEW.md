@@ -150,10 +150,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-020` | `FROZEN` | Codex | [EXECUTION] BareArray Viewノンエスケーパブル実装の整合化 | compile成功までの途中差分を保存。ユーザーの明示的な再開指示後、正式実装として受け入れる範囲を再確認する | `BareArrayModule/CurrentQualityAssessment.md` |
 | `BARE-021` | `FROZEN` | Codex | [EXECUTION] BareArray compiler診断Verificationへの移行 | compile-fail fixtureとDeath Test棚卸しの途中差分を保存。ユーザーの明示的な再開指示後、Verification方法としての受入可否を再確認する | `BareArrayModule/CurrentQualityAssessment.md` |
 | `BARE-022` | `FROZEN` | Codex | [EXECUTION] BareArray有効利用経路の回帰確認 | Debug・Releaseの実行結果を途中証拠として保存。ユーザーの明示的な再開指示後、必要な回帰範囲と受入可否を再確認する | `BareArrayModule/CurrentQualityAssessment.md` |
-| `BARE-023` | `FROZEN` | User / Codex | [DECISION] BareArray storage境界の扱い | 現行の生ポインタstorageとノンエスケーパブルViewの途中実装を入力に、品質検証を再開する前提として現行storage境界を維持するか一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
+| `BARE-023` | `DONE` | Codex | [DISCOVERY] BareArray storage境界の成立確認 | `@safe`分類とノンエスケーパブルViewにより再設計候補の前提が解消し、連続配置・O(1) access・ノンコピーViewを担う現行storage境界を維持すると確認 | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
 | `BARE-024` | `DONE` | User / Codex | [DECISION] BareArray公開7型の`@safe`／`@unsafe`分類 | 所有型4・ノンエスケーパブルView型3を`@safe`に分類して実装し、strict warning解消とDebug・Release・compiler診断fixtureの回帰成功を確認 | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
 | `BARE-025` | `DONE` | Codex | [DISCOVERY] BareArray strict memory safety適用の成立確認 | 公開7型の`@safe`分類後、`.strictMemorySafety()`有効状態でwarningがなく、既存検証も成功するため、採否をユーザーへ返す本質的判断は残らず、品質検証の対象として維持すると確認 | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
-| `BARE-026` | `FROZEN` | User | [DECISION] BareArray品質検証の再開判断 | storage、安全性分類、strict memory safetyの3判断完了後、保存した途中成果を対象として品質検証を再開するか一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` |
+| `BARE-026` | `FROZEN` | User | [DECISION] BareArray品質検証の再開判断 | storage、安全性分類、strict memory safetyの3系統は完了済み。保存した途中成果を対象として品質検証を再開するか一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` |
 | `BARE-027` | `FROZEN` | Codex | [EXECUTION] BareArrayノンエスケーパブル化の品質検証 | ユーザーが品質検証の再開を決定した後、確定した3系統の前提に従ってVerification、Validation、残余リスク、未検証領域を評価する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `ARRAY-001` | `EXCLUDED` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのView寿命はノンエスケーパブル化へ統合し、残るstorage、公開安全性分類、strict memory safetyを独立taskへ分解したため、包括taskとしては除外。OptionalArrayは必要時に別途再分解する | `StrictMemorySafetyReadiness.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
@@ -174,9 +174,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-007` | `BARE-006` | `SEQUENCE` | BareArray固有の測定設計と、必要なら分離した製品判断の完了後に計測する |
 | `BARE-021` | `BARE-020` | `SEQUENCE` | 正式実装のcompile成立後に、拒否される利用をcompiler診断のVerificationへ移す |
 | `BARE-022` | `BARE-020` | `SEQUENCE` | 正式実装のcompile成立後に、有効な利用経路をDebug・Releaseで回帰確認する |
-| `BARE-026` | `BARE-023` | `PARALLEL_JOIN` | 現行storage境界の扱いを決定してから品質検証の再開を判断する |
+| `BARE-026` | `BARE-023` | `PARALLEL_JOIN` | 現行storage境界の成立確認後に品質検証の再開を判断する |
 | `BARE-026` | `BARE-024` | `PARALLEL_JOIN` | 公開7型の安全性分類を決定してから品質検証の再開を判断する |
-| `BARE-026` | `BARE-025` | `PARALLEL_JOIN` | strict memory safetyの採否を決定してから品質検証の再開を判断する |
+| `BARE-026` | `BARE-025` | `PARALLEL_JOIN` | strict memory safety適用の成立確認後に品質検証の再開を判断する |
 | `BARE-027` | `BARE-026` | `SEQUENCE` | ユーザーが再開を決定した場合だけ、確定した前提で品質検証を実行する |
 | `BARE-018` | `BARE-027` | `SEQUENCE` | 品質検証の結果を受け入れてからノンエスケーパブル化の完了を判定する |
 | `BARE-017` | `BARE-018` | `SEQUENCE` | 完成したView契約を入力に一般Swift利用と競技利用のValidation scenarioを設計する |

@@ -108,7 +108,7 @@ Swift標準protocolの契約へ違反する入力型に対する防御を要求�
 - iterator copyと結果保持によって共有値を意図せず変更しないこと。
 - 範囲外Indexを公開契約どおり拒否すること。
 - Debug、Release、`-Ounchecked`、traitなどによって保証が変わる場合、その境界を明示すること。
-- 現在のstrict memory safety設定と、scoped `unsafe`が覆う範囲を確認できること。この確認だけで、凍結中の再検討を再開したとは扱わない。
+- 通常版targetへのstrict memory safety適用と、scoped `unsafe`が覆う範囲を確認できること。適用済みであることだけから、個々の危険操作の妥当性まで推定しない。
 
 toolchain固有の最適化事象や未再現の性能事象は、原因と適用範囲が確認されるまで製品契約へ取り込まない。
 

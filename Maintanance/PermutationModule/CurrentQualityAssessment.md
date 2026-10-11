@@ -43,9 +43,17 @@ PermutationModuleを最初の適用対象として、上位品質要求QR-01〜Q
 - 公開契約、性能目標、比較水準、残余リスク許容条件の新規決定
 - 未確定事項をagent判断で製品契約へ取り込むこと
 - `PERM-002`の実提出確認またはその代行
-- `PERM-028`のstrict memory safety再検討の再開
 - 発見した不足の実装修正
 - Permutation以外のモジュールの品質評価
+
+## 確認済みの開始時点
+
+- 通常版の`PermutationModule` targetには`.strictMemorySafety()`が恒久適用されている。
+- 2026-10-11、testingを含むproject buildが警告・errorなしで成功した。
+- 通常版実装のポインタ操作は明示的なscoped `unsafe`に置かれている。
+- `PermutationTests` target自体には`.strictMemorySafety()`が設定されていない。
+- `Iterator`と`Permutation`の`@unchecked Sendable`、scoped `unsafe`の個別の妥当性は、
+  strict memory safety適用の完了だけから推定せず、品質主張ごとの証拠で評価する。
 
 ## 作業
 
@@ -83,6 +91,6 @@ PermutationModuleを最初の適用対象として、上位品質要求QR-01〜Q
 - QR-01〜QR-06の各領域について、少なくとも一つの現行評価が記録されている。
 - 通常版とAtCoder 2025互換modeの証拠が混同されていない。
 - Verificationの結果から競技提出、C/C++級性能、一般Swift採用のValidationを推定していない。
-- `PERM-002`と`PERM-028`を開始または代行していない。
+- `PERM-002`を開始または代行していない。
 - 未達・未検証・判断待ち・実行不足が区別され、一判断一taskの規則で後続候補へ分離されている。
 - ユーザーが評価結果と後続候補をレビューできる。

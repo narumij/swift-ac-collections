@@ -849,7 +849,8 @@ compileできる形。NOP setterのwriteback（本文90行目）がこの形を�
 ### OPT-024 コメントドックcoverage
 
 判定基準: 明示した文がある場合だけ「あり」とした。`precondition`の本体や型名から読み取れるだけなら「なし」
-（基準は`Orientation/AGENT_TASK_FIT_INTERVIEW.md`のClaude回答で提案したもので、未合意）。
+（基準は`Archived/Orientation/AGENT_TASK_FIT_INTERVIEW_2026-10-11.md`に退避したClaude回答で
+提案したもので、未合意）。
 
 | # | 宣言 | 境界 | 所有 | 寿命 | 破棄 | 変更 | 計算量 |
 | ---: | --- | --- | --- | --- | --- | --- | --- |

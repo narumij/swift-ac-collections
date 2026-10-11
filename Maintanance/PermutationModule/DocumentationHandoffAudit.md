@@ -142,13 +142,13 @@ facade経由の利用: `Tests/AcCollectionsTests/AcCollectionsTests.swift:73`（
 | `Sendable` | 決定済み | Swift 6以降で必須とし、3公開型すべてに適合 | `StrictMemorySafetyReadiness.md:252`（ユーザー決定）、`ImplementationPlan.md:72-75`。どちらの文書も旧名（`IteratorN` / `SubSequenceN`）のまま |
 | swift-algorithmsとの共存・使い分け | 履歴上の事実（Registry DONE） | 全順列はswift-algorithmsの`permutations()`、とdoc comment（L17-18）とF4で固定 | Registry `PERM-018`、`0ff5fd84` |
 | 互換modeの境界 | 未決定 | 互換modeは`PERM-001`がFROZEN、`PERM-014`がACTIVE（`R-1` / `R-2`が未決）。基準ref `release/AtCoder/2025`は旧名と削除済みAPIを持つ。構成案（file単位の排他`#if`、trait化）は計画だけで未実施。通常版testは`COMPATIBLE_ATCODER_2025`のときF0の非露出検査を外す（F0:44） | `AtCoder2025CompatibilityPlan.md:5-25,45-72,98-123,193-199` |
-| facade（`AcCollections`）の再公開 | 履歴上の事実。方針は未決定 | 現在は`PermutationModule`を無条件に`@_exported`（`d421972b`、2026-10-05）。`ImplementationPlan.md:55-57`（2026-10-03）は「互換モードで再公開する経路」と書いており、当時の状態。再公開方針は`Orientation/AGENT_TASK_FIT_INTERVIEW.md`のD3でユーザー判断待ちとされている | `Sources/AcCollections/AcCollections.swift:1-4` |
+| facade（`AcCollections`）の再公開 | 履歴上の事実。方針は未決定 | 現在は`PermutationModule`を無条件に`@_exported`（`d421972b`、2026-10-05）。`ImplementationPlan.md:55-57`（2026-10-03）は「互換モードで再公開する経路」と書いており、当時の状態。再公開方針は`Archived/Orientation/AGENT_TASK_FIT_INTERVIEW_2026-10-11.md`へ退避したD3でユーザー判断待ちとされている | `Sources/AcCollections/AcCollections.swift:1-4` |
 
 旧名・旧構成が残る記述（履歴記録として正しい可能性があり、訂正の要否はCodexが判断する）:
 
 - `ImplementationPlan.md:67-68`は`NextPermutationProtocol.swift`経由の1経路と書いている。このprotocolは`0ef177d3`でBufferへ統合された。
 - `ImplementationPlan.md:72-75`と`StrictMemorySafetyReadiness.md` §9は`IteratorN` / `SubSequenceN`の旧名で書かれている。
-- `Orientation/AGENT_TASK_FIT_INTERVIEW.md`のD3（2026-10-04 review）は「互換modeでだけPermutationを再公開」と書いているが、`d421972b`以後の現状と合わない。この監査の対象外の文書なので、記録だけにする。
+- `Archived/Orientation/AGENT_TASK_FIT_INTERVIEW_2026-10-11.md`へ退避したD3（2026-10-04 review）は「互換modeでだけPermutationを再公開」と書いているが、`d421972b`以後の現状と合わない。この監査の対象外の文書なので、記録だけにする。
 
 ## Codex evidence intake（2026-10-08）
 

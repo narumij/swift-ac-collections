@@ -2,7 +2,7 @@
 
 ## この別紙の責任
 
-この別紙は、[本紙](REFACTORING_FROM_ATCODER_2025.md)が説明する移行史について、コミット、
+この別紙は、[本紙](README.md)が説明する移行史について、コミット、
 旧新パス、中間形、短命な試行、未確定事項を保持する事実・証拠の正本である。
 
 調査の途中経過を追記できることを優先し、読み物としての洗練は本紙が担う。本紙はここにある
@@ -76,11 +76,16 @@ node ID/tag、世代、seal、tieが段階的に担ったと読める。ただ�
 ### 保証範囲の縮退と再建
 
 集計データは
-[`REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.csv`](REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.csv)、
+[`repository-test-counts.csv`](Data/repository-test-counts.csv)、
 図は
-[`REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.svg`](REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.svg)を
-正本とする。閲覧用PNGは
-[`REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.png`](REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.png)である。
+[`repository-test-counts.svg`](Images/repository-test-counts.svg)を
+repository全体の参考系列とする。RedBlackTree限定・構造転換点軸の正本は
+[`rbt-test-counts.csv`](Data/rbt-test-counts.csv)と
+[`rbt-test-counts.svg`](Images/rbt-test-counts.svg)で、
+閲覧用PNGは
+[`rbt-test-counts.png`](Images/rbt-test-counts.png)である。
+repository全体版の閲覧用PNGは
+[`repository-test-counts.png`](Images/repository-test-counts.png)である。
 再集計には`Utilities/Maintenance/CountHistoricalTests.rb`、描画には
 `Utilities/Maintenance/RenderHistoricalTestCounts.rb`を使う。
 
@@ -90,18 +95,19 @@ node ID/tag、世代、seal、tieが段階的に担ったと読める。ただ�
 |---|---|---|---|
 | 総test宣言数 | `Tests/**/*.swift`にあるXCTestの`test...` methodとSwift Testingの`@Test`宣言を各1件とする | parameterized testの展開数 | repositoryに保持されたtest宣言の規模 |
 | 静的有効宣言数 | 通常Debugとして`DEBUG=true`、`COMPATIBLE_ATCODER_2025=false`、`DEATH_TEST=false`を評価 | runtime skip、build失敗、parameterized展開 | 通常構成でcompile対象になる宣言規模の推定 |
-| runner列挙数 | 対象commitを一時worktreeでbuildし、`swift test --disable-sandbox list`の出力を数える | 実際のpass/fail、runtime skip後の完遂 | 現行toolchainが発見した実行単位数 |
+| runner列挙数 | 対象commitを一時directoryへarchive展開してbuildし、`swift test --disable-sandbox list`の出力を数える | 実際のpass/fail、runtime skip後の完遂 | 現行toolchainが発見した実行単位数 |
 
 **[事実]** 代表25 commitの静的集計では、基点`b2580703`が総918・有効786、`7341cadc`
 (2026-09-25)が総1551・有効1007、`43656817`(2026-09-29)が総1140・有効719、
-`139ffef8`(2026-10-10)が総1733・有効1144、調査時HEAD `5a177ed6`が総1739・有効1145だった。
+`139ffef8`(2026-10-10)が総1733・有効1144、現行図の最終地点`165c81aa`が総1739・有効1145だった。
 
-**[事実]** 各commitを一時directoryへarchive展開し、現行Xcode toolchainで
-`swift test --disable-sandbox list`を実行した。25地点中16地点はbuildがwarningを伴って成功した。
-基点は821、互換mode導入点は1000、UnsafeTree導入点は858 testを列挙した。2026-09-25から
-09-29には1084から844へ縮退し、09-30は1005、10-02は1101、調査時点は1438まで再建された。
+**[事実]** 各commitを一時directoryへarchive展開し、commitごとに独立したscratchを使って
+`swift test --disable-sandbox list`を実行した。RedBlackTree限定15地点中10地点はbuildがwarningを
+伴って成功した。基点は818、互換mode導入点は997、UnsafeTree導入点は855 testを列挙した。
+2026-09-25から09-29には1110から803へ縮退し、Keystone移動後は864、Fixture target成立後は1064、
+現行図の最終地点は1221まで再建された。全targetの同時点列挙数はCSVにも併記した。
 
-**[事実]** `7964713d`から`765abe94`までの9代表地点は、現行toolchainがPackage manifestにある
+**[事実]** RedBlackTree図の`7964713d`から`28a1a5fb`までの5代表地点は、現行toolchainがPackage manifestにある
 未定義の`BENCHMARK` trait参照を拒否したためbuild前に失敗した。test失敗やtest不在を意味しないため、
 runner系列では0件とせず欠測にした。
 
@@ -110,8 +116,8 @@ runner系列では0件とせず欠測にした。
 `-target-arch-variant`を解釈できず、依存pluginのcompileで停止した。手元にはmacOS 27 SDKしかなく、
 当時と互換するSDKとの組合せは再現できない。原文やmanifestを一時補正した参考値は本系列へ混ぜない。
 
-**[解釈]** 9月29日の縮退は総宣言、静的有効宣言、runner列挙の三系列すべてに現れ、その後の
-Fixture targetと仕様testの再建で回復している。したがって単なる`#if`切替や静的集計器の誤差ではなく、
+**[解釈]** RedBlackTreeに限定しても9月29日の縮退は総宣言、静的有効宣言、runner列挙の三系列
+すべてに現れ、その後のFixture targetと仕様testの再建で回復している。したがって単なる`#if`切替や静的集計器の誤差ではなく、
 test source集合と実行可能な検証面をともに縮小して架け替えた谷と読める。ただし件数は契約coverageや
 assertionの強さ、実際のpassを直接表さない。
 

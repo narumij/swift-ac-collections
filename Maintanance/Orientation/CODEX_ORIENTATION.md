@@ -247,7 +247,7 @@ taskリファクタリング事例を一つ使い、新しいCodexが次を説�
 - `AI_TECHNICAL_ORIENTATION.md`: AIにとっての技術的難所、誤認、証拠、停止点
 - `AGENT_TASK_FIT_INTERVIEW.md`: repository固有のagent適性と独立確認
 - `CODEX_OBSERVATIONS.md`: 運用から得た観察。判断の正本ではない
-- `REFACTORING_FROM_ATCODER_2025.md`: 技術的な変遷と証拠の継承
+- `RefactoringFromAtCoder2025/README.md`: 技術的な変遷と証拠の継承
 - `RELEASE_CHECKLIST.md`: release工程の汎用正本
 
 ## 作成記録

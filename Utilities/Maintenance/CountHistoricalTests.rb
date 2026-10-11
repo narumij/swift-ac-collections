@@ -63,8 +63,10 @@ puts "commit,date,total_declarations,statically_active_normal_debug"
 ARGV.each do |revision|
   commit = git("rev-parse", "--verify", "#{revision}^{commit}").strip
   date = git("show", "-s", "--format=%as", commit).strip
+  path_prefix = ENV.fetch("HISTORICAL_TEST_PATH_PREFIX", "Tests")
   paths = git("ls-tree", "-r", "--name-only", commit, "--", "Tests")
-    .lines.map(&:strip).select { |path| path.end_with?(".swift") }
+    .lines.map(&:strip)
+    .select { |path| path.end_with?(".swift") && path.start_with?(path_prefix) }
   total = 0
   active = 0
   paths.each do |path|

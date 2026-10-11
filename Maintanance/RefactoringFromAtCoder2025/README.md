@@ -15,12 +15,12 @@
 第三者がGit履歴と保存されたテストから確認できる形で示すことである。
 
 コミット、旧新パス、中間形、短命な試行、未確定事項は、事実・証拠の正本である
-[別紙](REFACTORING_FROM_ATCODER_2025_EVIDENCE.md)に置く。本紙は、その証拠から成立する説明の
+[別紙](EVIDENCE.md)に置く。本紙は、その証拠から成立する説明の
 正本とする。
 
 ## 一枚で見る移行
 
-![Unsafe系統の移行史](UNSAFE_LINEAGE_TIMELINE.png)
+![Unsafe系統の移行史](Images/unsafe-lineage-timeline.png)
 
 全体は単純な`UnsafeTree`から`UnsafeTreeV2`へのrenameではない。旧実装を残した並行導入、
 Node・Index・Iterator・Storageの責務分解、Deprecatedへの隔離、製品ソースからテスト資料への
@@ -31,7 +31,7 @@ Node・Index・Iterator・Storageの責務分解、Deprecatedへの隔離、製�
 
 ## 内部構造の交換
 
-![UnsafeTree内部構造の変化](UNSAFE_TREE_INTERNAL_EVOLUTION.png)
+![UnsafeTree内部構造の変化](Images/unsafe-tree-internal-evolution.png)
 
 内部構造の中心には、相互に依存する四つの変化がある。
 
@@ -53,21 +53,21 @@ recycle count、sealed pointer、tied storageへ段階的に外在化した。
 
 ## 変化とテストの緊張関係
 
-![テスト宣言総数・静的有効件数・runner列挙数](REFACTORING_FROM_ATCODER_2025_TEST_COUNTS.png)
+![RedBlackTreeの構造転換点ごとのテスト宣言総数・静的有効件数・runner列挙数](Images/rbt-test-counts.png)
 
-この図は代表25 commitについて、XCTestの`test...` methodとSwift Testingの`@Test`宣言を数え、
-同じcommitを現行toolchainのtest runnerでも列挙したものである。青は条件コンパイル内を含む総宣言数、
-橙は通常Debug構成で静的に有効と判定した宣言数、緑はrunnerが発見した実行単位数を表す。緑の空白は
-当時のPackage manifestを現行toolchainが受理できず、原文のままではbuildできなかった期間である。
+この図はRedBlackTreeに関係するtestだけを対象に、内部構造上の代表15転換点を等間隔に並べたものである。
+横幅は経過時間を表さない。青は条件コンパイル内を含む総宣言数、橙は通常Debug構成で静的に有効と
+判定した宣言数、緑は独立scratchでrunnerが発見したRedBlackTree実行単位数を表す。緑の空白は当時の
+Package manifestと現在利用可能なtoolchain・SDKの組合せでは、原文のままbuildできなかった期間である。
 
-全体としてテスト宣言は918件から1739件へ増えたが、単調には増えていない。特に2026年9月25日から
-29日の再編では、総宣言数が1551件から1140件、静的有効件数が1007件から719件へ同時に縮退した。
-10月2日には1380件・948件、10月10日には1733件・1144件へ戻っており、旧test群の削除と新しい
-Fixture・仕様testへの再建が、内部構造の交換より遅れて追いついた期間を可視化している。
+RedBlackTreeのtest宣言は基点の911件から現在1516件へ増えたが、単調には増えていない。UnsafeTree
+導入時には互換mode導入点の1102件から989件へ落ち、Index V3では総数1104件に対して静的有効数が
+813件まで開いた。さらに2026年9月25日から29日の再編では、総宣言数が1506件から1095件、静的有効
+件数が966件から678件、runner列挙数が1110件から803件へ同時に縮退した。
 
-静的有効件数とrunner discoveryは一致しない。9月25日から29日にrunner列挙数も1084件から844件へ
-落ち、9月30日に1005件、10月2日に1101件へ戻った。現行では静的1145宣言に対して1438 testが
-列挙される。Swift Testingのparameterized case等で一宣言が複数testになるため、両尺度は別に保持する。
+Keystone移動後のrunner列挙数は864件、Fixture target成立後は1064件、現在は1221件である。
+旧test群の撤去によって検証網をいったん狭め、KeystoneとFixtureを新しい内部境界へ移して張り直した
+過程が、構造転換と同じ横軸で確認できる。
 
 移行の要石として保存されているテストは次である。
 

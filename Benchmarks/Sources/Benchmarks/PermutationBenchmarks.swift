@@ -165,12 +165,6 @@ private struct BorrowedNextPermutationsIterator<Element: Comparable>: ~Copyable 
   }
 }
 
-/// Returns the first permutation yielded for `0..<size`, i.e. `0, 1, ..., size - 1`.
-private func firstPermutation(_ size: Int) -> NextPermutationsSequence<[Int]>.Permutation {
-  var iterator = Array(0..<size).nextPermutations().makeIterator()
-  return iterator.next()!
-}
-
 /// Validates the accessed sum outside the timed region.
 private func validate(_ sum: Int, size: Int) {
   precondition(
@@ -185,12 +179,13 @@ extension Benchmark {
       title: "Permutations.SubSequenceN subscript sequential access",
       input: Int.self
     ) { size in
-      let p = firstPermutation(size)
       return { timer in
+        var permutations = Array(0..<size).nextPermutations()
+        let p = permutations.next()!
         var sum = 0
         timer.measure {
-          var i = p.startIndex
-          while i < p.endIndex {
+          var i = 0
+          while i < p.count {
             sum &+= p[i]
             i += 1
           }
@@ -204,10 +199,11 @@ extension Benchmark {
       title: "Permutations.SubSequenceN subscript shuffled access",
       input: Int.self
     ) { size in
-      let p = firstPermutation(size)
       var rng = PermutationBenchmarkRNG(seed: 0x5EED_0000 &+ UInt64(size))
-      let indices = Array(p.indices).shuffled(using: &rng)
+      let indices = Array(0..<size).shuffled(using: &rng)
       return { timer in
+        var permutations = Array(0..<size).nextPermutations()
+        let p = permutations.next()!
         var sum = 0
         timer.measure {
           for i in indices {
@@ -235,18 +231,18 @@ extension Benchmark {
       title: "Permutations.SubSequenceN subscript sequential access (batched)",
       input: Int.self
     ) { size in
-      let p = firstPermutation(size)
       let reps = repetitions(size)
       return { timer in
+        var permutations = Array(0..<size).nextPermutations()
+        let p = permutations.next()!
         var sum = 0
         timer.measure {
           var total = 0
           for _ in 0..<reps {
-            let q = identity(p)
             var s = 0
-            var i = q.startIndex
-            while i < q.endIndex {
-              s &+= q[i]
+            var i = 0
+            while i < p.count {
+              s &+= p[i]
               i += 1
             }
             total &+= s
@@ -262,19 +258,19 @@ extension Benchmark {
       title: "Permutations.SubSequenceN subscript shuffled access (batched)",
       input: Int.self
     ) { size in
-      let p = firstPermutation(size)
       let reps = repetitions(size)
       var rng = PermutationBenchmarkRNG(seed: 0x5EED_0000 &+ UInt64(size))
-      let indices = Array(p.indices).shuffled(using: &rng)
+      let indices = Array(0..<size).shuffled(using: &rng)
       return { timer in
+        var permutations = Array(0..<size).nextPermutations()
+        let p = permutations.next()!
         var sum = 0
         timer.measure {
           var total = 0
           for _ in 0..<reps {
-            let q = identity(p)
             var s = 0
             for i in indices {
-              s &+= q[i]
+              s &+= p[i]
             }
             total &+= s
           }
@@ -305,8 +301,9 @@ extension Benchmark {
         timer.measure {
           var c = 0
           var s = 0
-          for p in identity(source).nextPermutations() {
-            for i in p.indices {
+          var permutations = identity(source).nextPermutations()
+          while let p = permutations.next() {
+            for i in 0..<p.count {
               s &+= p[i] &* (i &+ 1)
             }
             c &+= 1
@@ -336,8 +333,9 @@ extension Benchmark {
         timer.measure {
           var c = 0
           var s = 0
-          for p in identity(source).nextPermutations() {
-            for i in p.indices {
+          var permutations = identity(source).nextPermutations()
+          while let p = permutations.next() {
+            for i in 0..<p.count {
               s &+= p[i] &* (i &+ 1)
             }
             c &+= 1
@@ -438,8 +436,9 @@ extension Benchmark {
         timer.measure {
           var c = 0
           var s = 0
-          for permutation in identity(source).nextPermutations() {
-            for i in permutation.indices where permutation[i] {
+          var permutations = identity(source).nextPermutations()
+          while let permutation = permutations.next() {
+            for i in 0..<permutation.count where permutation[i] {
               s &+= i &+ 1
             }
             c &+= 1

@@ -68,26 +68,26 @@ out.append(
 )
 
 # Header
-text(W / 2, 82, "品質をAIと育てる仕組み", size=64, weight=800, anchor="middle")
+text(W / 2, 82, "判断を減らし、正しく止まるtask管理", size=60, weight=800, anchor="middle")
 text(
     W / 2,
     136,
-    "主張と証拠を対応づけ、変更で失効した範囲だけを再検証する — V2（2026-10-11）",
+    "偶有的な判断を消し、本質的な判断だけを残す — V2（2026-10-11）",
     size=29,
     weight=550,
     fill=SUB,
     anchor="middle",
 )
 
-# Top lifecycle
+# Top lifecycle: the three principles and their execution consequences
 step_y, step_h, step_w, gap = 185, 300, 350, 30
 steps = [
-    ("1", "目的と権限", BLUE, ["どこまで行きたいか", "今回どこまで許すか", "人が決めることを分離"]),
-    ("2", "主張を置く", PURPLE, ["何が正しいと言うのか", "誰に・どの環境で", "要求と公開契約へ接続"]),
-    ("3", "証拠を結ぶ", TEAL, ["test・compiler・測定", "利用scenario・履歴", "一致ではなく独立検証"]),
-    ("4", "変更を見る", ORANGE, ["残る主張", "失効した主張と証拠", "新しく必要な証拠"]),
-    ("5", "再検証する", BLUE, ["影響範囲だけ確認", "VerificationとValidation", "残余リスクを分離"]),
-    ("6", "受け入れる", TEAL, ["根拠と正本を照合", "DONEか、次taskへ分離", "意味の単位で記録"]),
+    ("1", "疑義を検知", TEAL, ["新しい判断・依存", "前提・証拠の変化", "継続条件への影響"]),
+    ("2", "先に保留", RED, ["影響範囲だけ止める", "確証を待たない", "graph更新より先"]),
+    ("3", "判断を整理", ORANGE, ["偶有的判断を消す", "本質的判断を残す", "判断不要を見分ける"]),
+    ("4", "境界を分ける", PURPLE, ["taskかsubstepか", "成果・状態・受入", "一判断を一つにする"]),
+    ("5", "graphを再構成", BLUE, ["前提と後続を探す", "Flowを分類する", "readyを再計算"]),
+    ("6", "再開を確認", PINK, ["readyは成立したか", "委任は有効か", "成立範囲だけ再開"]),
 ]
 for index, (number, title, color, body) in enumerate(steps):
     x = 60 + index * (step_w + gap)
@@ -101,112 +101,101 @@ for index, (number, title, color, body) in enumerate(steps):
 
 # Core thesis
 box(60, 525, 2280, 130, PURPLE, fill="#f4f0ff", width=4)
-text(1200, 579, "工程へ戻すのではなく、どの主張と証拠が失効したかを問う", size=39, weight=800, fill=PURPLE, anchor="middle")
-text(1200, 625, "全部やり直さない。古いtestが通るだけで済ませない。", size=27, weight=600, fill=INK, anchor="middle")
+text(1200, 579, "判断を増やさない。taskを増やす前に、判断が本当に残るかを問う。", size=39, weight=800, fill=PURPLE, anchor="middle")
+text(1200, 625, "細かな規則ではなく、判断整理・task境界・graph再構成から行動を導く。", size=27, weight=600, fill=INK, anchor="middle")
 
-# Claim/evidence impact map
-box(60, 700, 1100, 650, PURPLE)
-heading(95, 760, "主張と証拠の変更影響", PURPLE)
+# Judgment classification
+box(60, 700, 1100, 650, ORANGE)
+heading(95, 760, "1. 何を判断する必要があるか", ORANGE)
 
-box(100, 805, 430, 175, BLUE, fill="#edf4ff", width=3, radius=18)
-text(125, 850, "品質主張", size=30, weight=750, fill=BLUE)
-lines(125, 895, ["例: 辞書順で列挙する", "例: 借用期間を越えない"], size=23, gap=38)
-
-box(650, 805, 450, 175, TEAL, fill="#eaf8f4", width=3, radius=18)
-text(675, 850, "対応する証拠", size=30, weight=750, fill=TEAL)
-lines(675, 895, ["runtime / compile-pass", "compile-fail / lifetime / 測定"], size=23, gap=38)
-line(535, 892, 640, 892, PURPLE)
-
-text(95, 1035, "変更後の仕分け", size=29, weight=750, fill=INK)
-impact = [
-    ("残る", TEAL, "同じ意味の主張。証拠の現在性を確認"),
-    ("失効", RED, "旧契約だけの主張・現在を証明しないtest"),
-    ("置換", ORANGE, "要求は残るが、証拠形式を変える"),
-    ("新規", PURPLE, "新しい契約に必要な主張と証拠"),
+judgments = [
+    ("本質的な判断", RED, ["整理しても消えない", "権限を持つ者が決める"]),
+    ("偶有的な判断", ORANGE, ["未整理だから判断に見える", "整理で自明になれば消える"]),
+    ("判断不要", TEAL, ["前提と方針が閉じている", "実行・検証へ渡せる"]),
 ]
-for index, (label, color, description) in enumerate(impact):
-    y = 1075 + index * 60
-    out.append(f'<rect x="100" y="{y - 30}" width="110" height="44" rx="12" fill="{color}"/>')
-    text(155, y, label, size=22, weight=750, fill=WHITE, anchor="middle")
-    text(235, y, description, size=23)
+for index, (name, color, body) in enumerate(judgments):
+    y = 810 + index * 165
+    box(100, y, 1015, 135, color, fill=WHITE, width=3, radius=18)
+    text(135, y + 48, name, size=29, weight=800, fill=color)
+    lines(470, y + 42, ["・" + item for item in body], size=22, gap=38)
 
-text(95, 1320, "主張・証拠・対象環境・時点を一組で扱う", size=25, weight=750, fill=PURPLE)
+box(100, 1290, 1015, 40, PURPLE, fill="#f4efff", width=2, radius=12)
+text(607, 1318, "偶有的判断を消し、本質的判断だけを露出させる", size=23, weight=800, fill=PURPLE, anchor="middle")
 
-# Task handling and delegation
+# Task boundary and graph reconstruction
 box(1200, 700, 1140, 650, BLUE)
-heading(1235, 760, "taskへ変換して、安全に動かす", BLUE)
+heading(1235, 760, "2. 何を独立したtaskにするか", BLUE)
 
-task_boxes = [
-    ("DISCOVERY", "事実と選択肢を集める", TEAL),
-    ("DECISION", "人の判断を一つだけ閉じる", ORANGE),
-    ("EXECUTION", "判断ゼロで実装・検証する", BLUE),
+boundary = [
+    ("task", "独立した成果・状態・依存・判断・証拠・受入", BLUE),
+    ("substep", "独立した状態や受入を持たない実行手順", TEAL),
 ]
-for index, (name, description, color) in enumerate(task_boxes):
-    x = 1240 + index * 355
-    box(x, 805, 320, 125, color, fill=WHITE, width=3, radius=18)
-    text(x + 160, 850, name, size=25, weight=800, fill=color, anchor="middle")
-    text(x + 160, 895, description, size=20, anchor="middle")
+for index, (name, description, color) in enumerate(boundary):
+    y = 810 + index * 125
+    box(1240, y, 1065, 95, color, fill=WHITE, width=3, radius=18)
+    text(1270, y + 58, name, size=27, weight=800, fill=color)
+    text(1480, y + 58, description, size=22)
 
-box(1240, 955, 1065, 72, PURPLE, fill="#f4efff", width=3, radius=18)
-text(1772, 984, "分解  ↔  依存整理  ↔  境界再設定  ↔  再構成", size=25, weight=800, fill=PURPLE, anchor="middle")
-text(1772, 1013, "観測と受入結果に応じて、taskの形そのものを更新する", size=20, fill=INK, anchor="middle")
-
-text(1235, 1070, "委任で固定するもの", size=28, weight=750, fill=INK)
-lines(1250, 1115, ["・目的と対象", "・権限境界と正本", "・停止条件と受入条件"], size=23, gap=36)
-
-text(1770, 1070, "担当へ任せるもの", size=28, weight=750, fill=PURPLE)
-lines(1785, 1115, ["・得意領域の調査方法", "・分類と局所構成", "・反例と追加観測"], size=23, gap=36)
-
-box(1235, 1235, 1070, 85, RED, fill="#fff2f2", width=3, radius=18)
-text(1265, 1286, "STOP", size=27, weight=800, fill=RED)
-text(1360, 1286, "公開判断・trade-off・権限外変更は推測で埋めず、分解へ戻す", size=21)
-
-# Evidence and roles
-box(60, 1390, 1050, 520, TEAL)
-heading(95, 1450, "証拠は違う問いに答える", TEAL)
-evidence = [
-    ("仕様", "Test as Specification / 公開契約"),
-    ("言語", "compiler診断 / lifetime / strict safety"),
-    ("実行", "Debug / Release / Sanitizer / 回帰test"),
-    ("性能", "自己回帰と外部比較を分離した測定"),
-    ("利用", "導入・理解・実提出などのValidation"),
-    ("履歴", "過去の決定は現在性を確認して使う"),
+text(1235, 1085, "3. graphへ組み込み、readyを再計算", size=30, weight=800, fill=PURPLE)
+graph_steps = [
+    ("前提", "新taskが必要とするもの"),
+    ("後続", "新taskの成果を待つもの"),
+    ("Flow", "SEQUENCE / PARALLEL_JOIN / soft order"),
+    ("再計算", "cycle・critical path・ready集合"),
 ]
-for index, (kind, description) in enumerate(evidence):
-    y = 1510 + index * 62
-    out.append(f'<rect x="95" y="{y - 31}" width="120" height="45" rx="12" fill="{TEAL}"/>')
-    text(155, y, kind, size=22, weight=750, fill=WHITE, anchor="middle")
-    text(245, y, description, size=24)
-text(95, 1880, "AIどうしの合意を、独立した証拠の代わりにしない", size=25, weight=800, fill=TEAL)
+for index, (label, description) in enumerate(graph_steps):
+    y = 1135 + index * 47
+    text(1260, y, label, size=22, weight=800, fill=PURPLE)
+    text(1400, y, description, size=22)
 
-box(1150, 1390, 1190, 520, "#7a8492", dash="14 10", width=4)
-heading(1185, 1450, "だれが何を持つか", INK)
-roles = [
-    ("ユーザー", ORANGE, "方向・優先度・公開の約束・中止と再開"),
-    ("Codex", BLUE, "会話の翻訳・task設計・統合・受入・Registry"),
-    ("Claude", PURPLE, "得意領域の棚卸し・証拠収集・反例・限定実行"),
-    ("第三者AI", TEAL, "独立した観点からのreviewと反証"),
+# Ready and flow
+box(60, 1390, 1100, 520, TEAL)
+heading(95, 1450, "継続条件は実行中も評価する", TEAL)
+
+flows = [
+    ("SEQUENCE", RED, "新しい必須前提ならreadyを失い、停止"),
+    ("PARALLEL_JOIN", BLUE, "独立部分は進める。合流前に完了しない"),
+    ("soft order", GOLD, "readyは保つ。優先順だけを見直す"),
 ]
-for index, (name, color, description) in enumerate(roles):
-    y = 1510 + index * 88
-    out.append(f'<rect x="1185" y="{y - 38}" width="18" height="62" rx="7" fill="{color}"/>')
-    text(1230, y - 6, name, size=27, weight=800, fill=color)
-    text(1450, y - 6, description, size=23)
+for index, (name, color, description) in enumerate(flows):
+    y = 1530 + index * 95
+    box(95, y - 50, 250, 65, color, fill=WHITE, width=3, radius=15)
+    text(220, y - 8, name, size=22, weight=800, fill=color, anchor="middle")
+    text(385, y - 8, description, size=22)
 
-box(1185, 1840, 1120, 48, PINK, fill="#fdf0f6", width=2, radius=12)
-text(1745, 1873, "作業担当と完成責任は分ける", size=25, weight=800, fill=PINK, anchor="middle")
+box(95, 1820, 1020, 62, RED, fill="#fff2f2", width=3, radius=16)
+text(605, 1860, "疑義が生じたら先に保留。graph更新は停止後に行う。", size=24, weight=800, fill=RED, anchor="middle")
 
-# Relationship lesson
+# Authority gate
+box(1200, 1390, 1140, 520, "#7a8492", dash="14 10", width=4)
+heading(1235, 1450, "実行には二つの成立条件が要る", INK)
+
+box(1240, 1495, 500, 165, BLUE, fill="#edf4ff", width=4, radius=20)
+text(1490, 1550, "task graph", size=31, weight=800, fill=BLUE, anchor="middle")
+text(1490, 1600, "依存上、今もreadyか", size=23, anchor="middle")
+
+box(1800, 1495, 500, 165, PINK, fill="#fdf0f6", width=4, radius=20)
+text(2050, 1550, "委任", size=31, weight=800, fill=PINK, anchor="middle")
+text(2050, 1600, "実行権限は今も有効か", size=23, anchor="middle")
+
+text(1770, 1705, "両方が成立した範囲だけ実行・再開する", size=30, weight=800, fill=INK, anchor="middle")
+text(1770, 1755, "readyでも委任がなければ止まる", size=23, fill=PINK, anchor="middle")
+text(1770, 1795, "委任があってもreadyでなければ止まる", size=23, fill=RED, anchor="middle")
+
+box(1240, 1830, 1060, 55, PURPLE, fill="#f4efff", width=2, radius=14)
+text(1770, 1866, "停止は失敗ではなく、成立条件を復元するための保留", size=23, weight=800, fill=PURPLE, anchor="middle")
+
+# Return path
 box(60, 1950, 2280, 245, PINK, fill="#fdf0f6", width=5)
-text(95, 2010, "関係性は品質基盤の一部", size=38, weight=800, fill=PINK)
-text(95, 2060, "規則だけでは、文脈の重みづけ・任せ方・合図の意味までは再現されない。", size=27, weight=500)
-text(95, 2105, "対話 → 小さな実作業 → 受入 → 補正を重ねると、境界を減らしても適切に動ける領域が広がる。", size=27, weight=500)
-text(95, 2150, "相手の自主性を残しながら、必要な停止点だけを共有する。", size=27, weight=750, fill=PINK)
+text(95, 2010, "疎でも漏らさない戻り道", size=38, weight=800, fill=PINK)
+text(95, 2060, "新しい判断や依存によって継続条件を信頼できなくなったら、影響範囲を保留して分解へ戻る。", size=27, weight=500)
+text(95, 2105, "疑義検知 → 先に保留 → 判断整理 → task分解 → graph再構成 → ready・委任確認 → 再開", size=27, weight=750, fill=PURPLE)
+text(95, 2150, "原理から停止と再開を導き、本質的な判断だけを人へ返す。", size=27, weight=750, fill=PINK)
 
 # Footer
 out.append(f'<rect x="60" y="2230" width="2280" height="120" rx="24" fill="{INK}"/>')
-text(1200, 2282, "品質管理 = 主張と証拠の対応を、変更後も説明できること", size=38, weight=800, fill=WHITE, anchor="middle")
-text(1200, 2325, "全工程を戻すのではなく、失効した証拠から再開する", size=26, weight=550, fill="#d7dce4", anchor="middle")
+text(1200, 2282, "task管理 = 偶有的判断を消し、本質的判断だけを残すこと", size=38, weight=800, fill=WHITE, anchor="middle")
+text(1200, 2325, "実行・停止・再開は、継続条件と委任から導く", size=26, weight=550, fill="#d7dce4", anchor="middle")
 
 svg = f'<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 {W} {H}">' + "".join(out) + "</svg>"
 path = Path(__file__).resolve().parents[2] / "Maintanance" / "AI_TASK_PROCESS_POSTER.svg"

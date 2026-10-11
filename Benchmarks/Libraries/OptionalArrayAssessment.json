@@ -1,0 +1,50 @@
+{
+  "kind": "group",
+  "title": "OptionalArray Performance Assessment",
+  "directory": "OptionalArrayAssessment",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "Sentinel comparison",
+      "directory": "sentinel",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "2D cold memoization checksum",
+          "tasks": [
+            "OptionalArray2D<Int> cold memoization checksum",
+            "Array sentinel 2D cold memoization checksum",
+            "std::vector sentinel 2D cold memoization checksum"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "2D warm memoization checksum",
+          "tasks": [
+            "OptionalArray2D<Int> warm memoization checksum",
+            "Array sentinel 2D warm memoization checksum",
+            "std::vector sentinel 2D warm memoization checksum"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "3D cold memoization checksum",
+          "tasks": [
+            "OptionalArray3D<Int> cold memoization checksum",
+            "Array sentinel 3D cold memoization checksum",
+            "std::vector sentinel 3D cold memoization checksum"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "3D warm memoization checksum",
+          "tasks": [
+            "OptionalArray3D<Int> warm memoization checksum",
+            "Array sentinel 3D warm memoization checksum",
+            "std::vector sentinel 3D warm memoization checksum"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -118,7 +118,7 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
 | --- | --- | --- | --- | --- |
 | QR-01 正確性 | 初期化、次元、offset、subscript、View、writeback、破棄が公開契約どおり動作する | 確認済み | Debug 35件、Release 28件、両構成のDeath Test 39件が現行環境で成功。実行不能となった3件はcompiler診断fixtureへ移行 | 有限な入力と構成による確認であり、任意の次元・要素型の数学的証明ではない |
 | QR-02 性能効率性 | 実装上の計算量と連続storageの設計根拠が公開契約と一致する | 確認済み | 所有4型は要素数分を一括allocateし、subscriptとView生成は定数回のoffset計算、初期化と破棄は要素数に比例する。公開documentation commentの計算量と一致 | 実装構造から確認した計算量であり、実行時間、allocation cost、最適化結果を証明しない |
-| QR-02 性能効率性 | C/C++標準に匹敵する性能を持つ | 未検証 | BareArray固有のbenchmarkと外部比較結果は未確認 | 比較対象、利用scenario、測定条件、判定水準が未確定 |
+| QR-02 性能効率性 | C/C++標準に匹敵する性能を持つ | 未検証 | BareArray固有の2D・3D sequential access benchmarkはCIへ登録済み | C++ nested vectorとの外部比較結果と性能比の受入水準は未確定 |
 | QR-03 安全性 | 所有storage、要素寿命、範囲拒否、writeback拒否が契約どおり動く | 確認済み | 参照寿命test、通常test、Death TestがDebug・Releaseで成功し、Address Sanitizer構成でも通常35件・Death Test 39件が成功 | testが通る有限経路の証拠であり、任意の要素型・寸法・操作列の証明ではない |
 | QR-03 安全性 | 非所有Viewが所有元を越えず、有効な連鎖accessとwritebackが成立する | 確認済み | View 3種を`~Escapable`化し、Debug 35件・Release 28件と両構成のDeath Test 39件が成功。compiler診断fixtureはView寿命escape 3件と所有配列writeback exclusivity 3件を拒否した | Swift 6.4のLifetimes実験機能と、fixtureが表す利用形に対するVerificationである |
 | QR-03 安全性 | strict memory safety下で公開APIの安全性境界が成立する | 確認済み | 所有型4種とView型3種を`@safe`に分類し、BareArrayModuleへ`.strictMemorySafety()`を適用した状態で未承認のunsafe利用warningがなく、build・test・compiler診断fixtureが成功 | compiler診断と有限の実行経路による確認であり、並行利用の意味的安全性までは証明しない |
@@ -126,7 +126,7 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
 | QR-04 理解可能性 | 所有・非所有、軸順、初期化、連鎖subscript、writeback、失敗条件を公開文書から理解できる | 確認済み | 現行公開宣言のdocumentation commentをsourceと照合し、BareArrayModuleのDocC生成が成功 | 文書が存在し整合するVerificationであり、一般利用者による理解のValidationは未実施 |
 | QR-05 利用可能性 | SwiftPMと`AcCollections`から導入し、対象環境で利用できる | 確認済み | Debug・Release build、facade再公開test 1件、BareArray.swift単独typecheck、DocC生成が成功 | macOSの現行環境における確認。他platform、外部packageとの共存、実利用のValidationは未確認 |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | copy & paste許諾と単一file候補はsourceに存在する | 実問題、実提出、実行時間、メモリ使用量のValidation証拠を未確認 |
-| QR-06 持続可能性 | 公開面、正確性、寿命、停止契約を変更後に再確認できる | 確認済み | 番号付きTest as Specification 8群、監査記録、Debug・Release・ASan・documentation・performanceを分担するworkflowがある。現行ローカルDebug・Release・ASan・DocCが成功 | workflowの存在とローカル成功から、特定commitのremote CI成功は推定しない。BareArray性能workloadは未登録 |
+| QR-06 持続可能性 | 公開面、正確性、寿命、停止契約を変更後に再確認できる | 確認済み | 番号付きTest as Specification 8群、監査記録、Debug・Release・ASan・documentation・performanceを分担するworkflowがある。BareArray性能workload 4件は通常CI libraryへ登録済み | workflowの存在とローカル成功から、特定commitのremote CI成功は推定しない |
 
 ## 実行記録
 
@@ -199,10 +199,10 @@ allocation、初期化、shape構築、および事後検証は計測時間に�
 
 ### inputとshape
 
-Benchmarkの正の2のべき乗である`size`を総要素数とし、指数を軸へできるだけ均等に配分する。
-2Dは最内軸から順に大きくなる2軸、3Dは同様の3軸とし、各軸の積を常に`size`と
-一致させる。これにより同一の要素数で次元だけが異なる経路を比較でき、CIの入力上限を
-三乗で超えない。実装は不正な`size`を黙って丸めず、前提条件として拒否する。
+Benchmarkの正の`size`を総要素数とし、素因数を軸へできるだけ均等に配分する。2Dは最内軸から
+順に大きくなる2軸、3Dは同様の3軸とし、各軸の積を常に`size`と一致させる。素数の
+`size`では一部の軸が1になるが、入力は丸めない。これにより同一の要素数で次元だけが
+異なる経路を比較でき、CIの入力上限を三乗で超えない。
 
 checksumは要素数`n`に対する`0 ..< n`の和とし、SwiftとC++の両方で同一の結果を検証する。
 C++側の要素型はSwift `Int`とword widthを合わせた`std::intptr_t`とする。
@@ -221,6 +221,39 @@ C++側の要素型はSwift `Int`とword widthを合わせた`std::intptr_t`と�
 
 対象操作、shape、計測内外、checksum、Swift / C++の対応、CI回帰と外部assessmentの境界を
 確定した。本設計でユーザー判断は必要なく、次はSwift workloadのCI回帰登録とする。
+
+### CI回帰Benchmark登録結果
+
+- ID: `BARE-029`
+- 種別: `EXECUTION`
+- 担当: Codex
+- 現在の中間ゴールへの近さ: `DIRECT`
+
+`BareArrayBenchmarks.swift`に2D・3Dのsequential read checksumとsequential writeの4 workloadを
+追加し、benchmark toolと`CI.json`へ登録した。Benchmarkが生成する2のべき乗間のsizeも総要素数と
+一致させるため、正のsizeを素因数分解し、各軸へできるだけ均等に配分する。
+
+次の実行証拠を確認した。
+
+- Benchmarks packageのRelease buildが成功した。
+- 4 workloadをsize 1、3、16で直接実行し、checksumを含めて成功した。
+- `CI.json`の26 taskをsize 1から64kまで60 size実行し、失敗0で完走した。
+- 出力JSONに4 workloadがそれぞれ一意に記録された。
+
+0.5.3にこのworkloadが存在しないため、導入PRでのbase / current比較は成立条件にしない。
+BareArrayとOptionalArrayのworkloadを揃えたmerge commitを初回baselineとし、後続PRから回帰比較する。
+
+### C++ nested vector workloadと暫定チャート
+
+Swift版と同じexact-productの2D・3D shape、最内軸からの連続走査、checksumに対応する
+C++ nested `std::vector<intptr_t>` workloadを4件追加した。通常CI libraryには含めず、
+`BareArrayAssessment.json`の専用libraryからだけ選択する。
+
+Release build後、BareArray / Swift nested Array / C++ nested vectorの合4件をsize 1・3・16で3反復し、
+checksum検証を含め成功した。さらに12 workloadをsize 1から64kまで60 size・5 cycle実行し、生JSONと
+3系列を含む4枚のPNGを
+`Benchmarks/QualityAssessment/macOS/BareArray/`へ暫定証拠として保存した。この結果は比較経路と
+可視化の成立確認であり、性能比の受入判断または正式assessmentではない。
 
 ## Viewノンエスケーパブル化
 

@@ -416,3 +416,8 @@ pointer initializerでそのstorageへ代入する診断6件、strict有効時�
 包括taskとしていた。2026-10-11、BareArrayについてはView寿命をノンエスケーパブル化へ統合し、
 storage境界、公開7型の`@safe`／`@unsafe`分類、strict memory safety採否を独立した並行taskへ分けたため、
 包括taskを除外した。OptionalArrayはこの分解によって暗黙に再開せず、必要になった時点で別途整理する。
+
+2026-10-11、BareArrayの所有型4種とノンエスケーパブルView型3種を`@safe`に分類して実装した。
+適用後のstrict buildでは公開7型のwarningが解消し、Debug・Releaseの通常testとDeath Test、および
+View寿命escape・所有配列writebackのcompiler診断fixtureが成功した。個別memberやconformanceの分類は
+この判断で先取りせず、必要になった時点で扱う。

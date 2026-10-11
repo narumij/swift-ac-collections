@@ -241,6 +241,18 @@ storage、安全性分類、strict memory safetyの3系統を`PARALLEL_JOIN`で�
 再開が決定した場合だけ品質検証を実行し、その結果を`BARE-018`の完了判定へ渡す。storage再設計などの
 後続作業は現在の必須経路へ置かず、必要性が実際に発見された時点で別taskとして整理する。
 
+### 公開7型の安全性分類
+
+2026-10-11、所有型4種とノンエスケーパブルView型3種を`@safe`に分類した。生ポインタは実装内部へ
+閉じ込め、所有型は初期化・範囲・破棄を管理し、View型は`~Escapable`とlifetime dependencyによって
+所有元を越える利用を拒否する安全な抽象として扱う。公開型を利用するだけの呼び出し側へ`unsafe`の承認を
+伝播させる`@unsafe`分類は採用しなかった。
+
+7宣言への`@safe`付与後、Xcodeのテスト用buildが成功し、公開7型のstrict memory safety warningは
+解消した。BareArrayの通常testはDebug 35件・Release 28件、Death Testは両構成39件が成功した。
+compiler診断fixtureも、View寿命escape 3件と所有配列writeback exclusivity 3件を引き続き拒否した。
+この完了は公開7型の分類だけを対象とし、個別memberやconformanceの分類を先取りしない。
+
 2026-10-11、`BARE-020`、`BARE-021`、`BARE-022`には実装・診断・回帰確認の途中証拠が揃ったが、
 成果の受入と`BARE-018`への合流は確定していない。storage、安全性分類、strict memory safetyの
 3系統と品質検証の再開判断を経るまで、関連taskを凍結する。

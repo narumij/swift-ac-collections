@@ -1,0 +1,46 @@
+{
+  "kind": "group",
+  "title": "BareArray Performance Assessment",
+  "directory": "BareArrayAssessment",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "Nested vector comparison",
+      "directory": "nested-vector",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "2D sequential read checksum",
+          "tasks": [
+            "BareArray2D<Int> sequential read checksum",
+            "std::vector<std::vector<intptr_t>> 2D sequential read checksum"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "2D sequential write",
+          "tasks": [
+            "BareArray2D<Int> sequential write",
+            "std::vector<std::vector<intptr_t>> 2D sequential write"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "3D sequential read checksum",
+          "tasks": [
+            "BareArray3D<Int> sequential read checksum",
+            "std::vector<std::vector<std::vector<intptr_t>>> 3D sequential read checksum"
+          ]
+        },
+        {
+          "kind": "chart",
+          "title": "3D sequential write",
+          "tasks": [
+            "BareArray3D<Int> sequential write",
+            "std::vector<std::vector<std::vector<intptr_t>>> 3D sequential write"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -109,6 +109,15 @@ PermutationModuleを最初の適用対象として、上位品質要求QR-01〜Q
 評価日は2026-10-11。旧品質評価の判定は継承せず、現行source、Test as Specification、
 Package設定、benchmark、workflow、および今回の実行結果から評価した。
 
+### 0.5.xの対象環境
+
+0.5.xの品質アセスメントでVerificationとValidationの証拠を要求する対象環境はmacOSに限定する。
+benchmarkの実行環境、toolchain、最適化構成、およびmachine条件は、macOS上の再現条件として記録する。
+
+この限定は品質アセスメントの対象境界であり、`Package.swift`に宣言された他platformの対応削除、
+非対応宣言、または1.0以降の対象環境を決定するものではない。他platformの結果を利用する場合は
+補足証拠とし、0.5.xの適合判定に必須の証拠とは扱わない。
+
 | 上位要求 | 品質主張 | 評価 | 現在の証拠 | 未確認範囲・残余リスク |
 | --- | --- | --- | --- | --- |
 | QR-01 正確性 | 現在順からの辞書順列挙、境界、重複、非Int Index、入力不変、結果Collectionが契約どおり動く | 確認済み | 通常版Test as Specification 38件中、列挙・公開面・Collection・値セマンティクス・内部・Death Testを含む全38件成功 | 有限な例と構成に対する確認であり、任意入力の数学的証明ではない |
@@ -133,9 +142,9 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
 
 | ID | 種別 | 近さ | 内容 | 必要性 |
 | --- | --- | --- | --- | --- |
-| `PERM-040` | `EXECUTION` | `DIRECT` | 既存Permutation CI回帰benchmarkへのC++対応workload追加 | Swift側のsubscript 4件と`nextPermutations()` end-to-end 1件、および既存のCI回帰経路は維持し、`CppBenchmarks`へC++ `std::next_permutation`の対応workloadを追加して同じBenchmark基盤から継続観測可能にする。独自runnerや品質判定基準は作らない |
+| `PERM-040` | `EXECUTION` | `DIRECT` | 既存Permutation CI回帰benchmarkへのC++対応workload追加 | Swift側のsubscript 4件と`nextPermutations()` end-to-end 1件、および既存のCI回帰経路は維持し、`CppBenchmarks`へC++ `std::next_permutation`の対応workloadを追加して同じBenchmark基盤から継続観測可能にする。0.5.xの評価対象環境はmacOSとし、独自runnerや品質判定基準は作らない |
 | `PERM-041` | `DISCOVERY` | `NEAR` | 一般Swift利用Validation scenarioの設計 | QR-04・QR-05について、文書とtestのVerificationから実利用適合を推定しないために必要。代表利用者、導入経路、利用課題、観測方法を整理する |
-| `PERM-042` | `DISCOVERY` | `DIRECT` | CI benchmarkのアセスメント用外部比較へのアレンジ | `PERM-040`で継続観測可能になった同一workloadを入力に、比較対象、入力範囲、toolchain、最適化、統計、環境差、再現証拠を整理し、比較水準など必要なユーザー判断を分離する |
+| `PERM-042` | `DISCOVERY` | `DIRECT` | CI benchmarkのアセスメント用外部比較へのアレンジ | `PERM-040`で継続観測可能になった同一workloadを入力に、macOS上の比較対象、入力範囲、toolchain、最適化、統計、machine条件、再現証拠、測定JSONとchart画像を整理し、比較水準など必要なユーザー判断を分離する |
 | `PERM-002` | 既存`USER_ONLY` | `DIRECT` | ABC328E実提出確認 | 競技利用Validationに必要。agentは開始、代行、催促を行わない |
 
 `PERM-041`と`PERM-042`は判断を確定せず、後続の一判断ごとの`DECISION`を発見する。

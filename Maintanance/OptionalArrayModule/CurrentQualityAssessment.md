@@ -89,6 +89,20 @@ CIにはSwift版の4 workloadだけを通常libraryへ登録する。後続のC+
 nested `vector<Int>`を同じshapeで確保し、未設定を表す番兵値をpresence判定に用いて、
 同じcold / warm操作、走査順、checksumに対応させる。C++ workloadは通常CIには含めない。
 
+### C++番兵workloadと暫定チャート
+
+Swift版と同じexact-productの2D・3D shape、最内軸からの連続走査、cold / warm状態、
+checksumに対応するC++ nested `std::vector<intptr_t>` workloadを4件追加した。C++側は`-1`を
+未設定slotの番兵とし、coldでは計測前に全slotを番兵へ戻し、warmでは計測前に線形index値を
+全slotへ設定する。通常CI libraryには含めず、`OptionalArrayAssessment.json`の専用libraryから
+だけ選択する。
+
+Release build後、OptionalArray / Swift nested Array番兵 / C++ nested vector番兵の合4件をsize 1・3・16で
+3反復し、checksum検証を含め成功した。さらに12 workloadをsize 1から64kまで60 size・5 cycle実行し、
+生JSONと3系列を含む4枚のPNGを
+`Benchmarks/QualityAssessment/macOS/OptionalArray/`へ暫定証拠として保存した。この結果は
+比較経路と可視化の成立確認であり、性能比の受入判断または正式assessmentではない。
+
 ## 判断の整理
 
 - 1D所有型名と次元名体系は、0.6.0到達範囲判断の前に残る製品上の判断である。ただし現行名での

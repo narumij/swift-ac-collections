@@ -13,6 +13,7 @@
           "title": "2D sequential read checksum",
           "tasks": [
             "BareArray2D<Int> sequential read checksum",
+            "Array<Array<Int>> 2D sequential read checksum",
             "std::vector<std::vector<intptr_t>> 2D sequential read checksum"
           ]
         },
@@ -21,6 +22,7 @@
           "title": "2D sequential write",
           "tasks": [
             "BareArray2D<Int> sequential write",
+            "Array<Array<Int>> 2D sequential write",
             "std::vector<std::vector<intptr_t>> 2D sequential write"
           ]
         },
@@ -29,6 +31,7 @@
           "title": "3D sequential read checksum",
           "tasks": [
             "BareArray3D<Int> sequential read checksum",
+            "Array<Array<Array<Int>>> 3D sequential read checksum",
             "std::vector<std::vector<std::vector<intptr_t>>> 3D sequential read checksum"
           ]
         },
@@ -37,6 +40,7 @@
           "title": "3D sequential write",
           "tasks": [
             "BareArray3D<Int> sequential write",
+            "Array<Array<Array<Int>>> 3D sequential write",
             "std::vector<std::vector<std::vector<intptr_t>>> 3D sequential write"
           ]
         }

@@ -249,8 +249,9 @@ Swift版と同じexact-productの2D・3D shape、最内軸からの連続走査�
 C++ nested `std::vector<intptr_t>` workloadを4件追加した。通常CI libraryには含めず、
 `BareArrayAssessment.json`の専用libraryからだけ選択する。
 
-Release build後、Swift / C++合4件をsize 1・3・16で3反復し、checksum検証を含め成功した。
-さらに8 workloadをsize 1から64kまで60 size・5 cycle実行し、生JSONと4枚のPNGを
+Release build後、BareArray / Swift nested Array / C++ nested vectorの合4件をsize 1・3・16で3反復し、
+checksum検証を含め成功した。さらに12 workloadをsize 1から64kまで60 size・5 cycle実行し、生JSONと
+3系列を含む4枚のPNGを
 `Benchmarks/QualityAssessment/macOS/BareArray/`へ暫定証拠として保存した。この結果は比較経路と
 可視化の成立確認であり、性能比の受入判断または正式assessmentではない。
 

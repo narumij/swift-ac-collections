@@ -16,5 +16,5 @@ not formal assessment evidence.
 
 The provisional comparison uses equal-product balanced 2D and 3D shapes and
 sequential innermost-axis traversal. Allocation and construction are outside
-the measured region. Swift `BareArray` is compared with C++ nested
-`std::vector<intptr_t>` for read-checksum and write workloads.
+the measured region. Swift `BareArray` is compared with Swift nested `Array`
+and C++ nested `std::vector<intptr_t>` for read-checksum and write workloads.

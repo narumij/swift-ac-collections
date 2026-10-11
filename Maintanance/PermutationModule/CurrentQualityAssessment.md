@@ -226,3 +226,22 @@ Permutation実装だけへ帰属できない。統合コード、DSU、データ
 5 cyclesの試走平均では、28要素でInt版約27.0msに対してBool版約27.9ms、32要素で
 Int版約81.5msに対してBool版約83.8msだった。Bool版は約3%遅いが、統合提出で観測された差を
 単独で説明する規模ではない。
+
+## Swift 6.4基準化後のSwift 6.2提供方針
+
+Swift 6.4のLifetimes、`Span`、`~Copyable`を用いる借用型Permutationを通常版の次期実装候補として
+組み込み、packageの最低toolchainもSwift 6.4へ変更した。これにより、通常版をまず一般Swift開発へ
+提供し、その後に対応toolchainを採用した競技judgeへの搭載を目指す段階構成が具体化した。
+
+SwiftPMはversion-specific manifestを選択できるため、同一releaseにSwift 6.4向けmanifestと
+Swift 6.2向けmanifestを置き、6.2側だけPermutationModuleを製品・target・依存関係から外す構成も
+候補になる。これにより、6.2利用者へ他moduleを提供しながら、Lifetimesを必要とする通常版Permutationを
+6.4以降だけへ公開できる。ただし、6.2でPermutationを提供しないのか、旧tag・互換branch、単一file、
+別の保守線などから提供するのかは、既存の品質要求から一意に決まらない。
+
+`PERM-045`で、無印`Package.swift`をSwift 6.4の完全版とし、`Package@swift-6.2.swift`では
+PermutationModuleを提供しない縮小構成を採用すると決定した。Swift 6.2向けの他module提供は維持し、
+Lifetimesを必要とする通常版PermutationだけをSwift 6.4以降へ限定する。
+
+version-specific manifest、`AcCollections` facade、test、CIの実装と両toolchainでの検証は`PERM-046`へ
+分離し、ユーザー指示により凍結する。明示的な再開指示までは現在の単一manifest構成を変更しない。

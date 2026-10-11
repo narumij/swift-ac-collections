@@ -72,6 +72,7 @@ IDs remain permanent and must not be reused. Earlier snapshots and completed his
 | `DOC-021` | `DONE` | Claude / Codex | [EXECUTION] RedBlackTree境界式例の現行API修正 | 2026-10-11、型コメント3 fileとHead文書6 fileの存在しない`.advance(by:)`および境界式の`.endIndex`を`.advanced(by:)`と`.end`へ限定修正。Claudeの一時clientによる9例のcompile・実行成功、旧表記0件、CodexのHEAD build成功を確認して受入 | `Archived/Canonical/PUBLIC_API_CODE_SNIPPET_SURVEY_2.md` / `CLAUDE_PENDING_TASKS.md` |
 | `DOC-022` | `DONE` | Codex | [EXECUTION] OptionalArray品質評価参照の現状同期 | 2026-10-11、OptionalArrayの旧品質評価をアーカイブし、現行`Quality-Profile.md`へ移行したことで、`Tests/TESTING.md`のPermutationと同形式という記述が現在事実と一致。本文変更なしで不一致を解消 | `Tests/TESTING.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `PERM-029` | `DONE` | Codex | [DISCOVERY] Swift 6.4 Releaseでのiterator copy独立性再確認 | 2026-10-10、`Buffer.copy()`だけを非インライン化するとDebug／Release回帰testが成功し、再インライン化した一時copyではRelease再現することを独立確認。Release機械語でhot path分離とwitness参照範囲を確認し、ユーザー報告の性能CI greenを受け入れ、コメント補正まで完了。原因自体は未断定 | `Sources/PermutationModule/Permutations.swift` / `Tests/PermutationTests/NextPermutationsSequence/NextPermutationsSequence_2_ValueSemanticsTests.swift` / `CLAUDE_TASK.md` / `CLAUDE_PENDING_TASKS.md` |
+| `PERM-045` | `DONE` | User | [DECISION] Swift 6.4基準化後のSwift 6.2提供方針 | 2026-10-11、無印`Package.swift`をSwift 6.4完全版とし、`Package@swift-6.2.swift`ではPermutationModuleを提供しない縮小構成を採用すると決定。実装は凍結中の`PERM-046`へ分離 | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `OPT-043` | `DONE` | External AI / Codex | [DISCOVERY] OptionalArray命名体系のAI間再検討 | 2026-10-09、Claude初稿と第三者AI補完調査をCodexが独立評価し、1D所有型名と次元名を別々の判断へ渡せる材料として受入 | `Archived/Canonical/ARRAY_NAMING_REVIEW.md` / `Archived/Canonical/CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` |
 | `OPT-046` | `DONE` | Codex | [EXECUTION] OptionalArray View writeback setterの契約検査 | 2026-10-10、所有2D〜4DとView 2D〜3Dの5 setterへposition・`hasPayload`・`payload`・shape検査を追加。Debug／Release通常test各35件、Death Test各26件、documentation buildが成功 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `BARE-001` | `DONE` | Codex | [DISCOVERY] BareArrayの体系監査・名称再検討 | 2026-10-09、契約棚卸し、個別判断、Test as Specification、品質評価初版を受入れ、ユーザードキュメント作業へ引渡可能と判定 | `BareArrayModule/BareArrayAudit.md` |
@@ -145,6 +146,7 @@ IDs remain permanent and must not be reused. Earlier snapshots and completed his
 | 後続task | 完了・除外済み前提task | Flow | 制約 |
 | --- | --- | --- | --- |
 | `PERM-042` | `PERM-040` | `SEQUENCE` | C++対応workloadを同じBenchmark基盤から実行可能にしてから、アセスメント用の外部比較条件と証拠へアレンジする |
+| `PERM-041` | `PERM-045` | `SEQUENCE` | 通常版の基準toolchainとSwift 6.2利用者への提供境界を確定してから、一般Swift利用Validation scenarioを設計する |
 | `OPT-044` | `OPT-043` | `SEQUENCE` | AI同士で1D型名の案、BareArrayとの一貫性、互換性、移行コストを整理してからユーザー判断へ渡す |
 | `OPT-045` | `OPT-043` | `SEQUENCE` | AI同士で次元名の案、BareArrayとの一貫性、互換性、移行コストを整理してからユーザー判断へ渡す |
 | `RELEASE-009` | `RELEASE-008` | `SEQUENCE` | 0.5.1の実際のrelease完了までを観測してから、汎用checklistとの差を見直す |

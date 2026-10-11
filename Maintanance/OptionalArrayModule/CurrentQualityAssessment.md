@@ -42,7 +42,7 @@ View寿命、`Sendable`、strict memory safety、`-Ounchecked`の境界を現行
 | --- | --- | --- | --- | --- |
 | QR-01 正確性 | 初期化、nil状態、次元、offset、subscript、View、writeback、`removeAll()`、破棄が公開契約どおり動作する | 確認済み | Debug・Releaseで通常test 35件とDeath Test 26件が成功。非対称次元、zero dimension、積overflow、別storage View代入、参照要素寿命を含む | 有限な型、寸法、操作列によるVerificationであり、任意入力の証明ではない |
 | QR-02 性能効率性 | presence mapとpayloadの連続storage、O(1) access、線形初期化・破棄という実装特性が公開説明と一致する | 確認済み | sourceとdocumentation commentを照合。要素accessとView生成は定数回のoffset計算、初期化・`removeAll()`・破棄はcapacityに比例する | 実装構造上の計算量であり、実行時間、allocation cost、最適化結果を証明しない |
-| QR-02 性能効率性 | 利用目的に対する外部性能が十分である | 未検証 | OptionalArray固有のbenchmark登録と比較結果はない | 比較対象、scenario、入力形状、判定水準が未確定 |
+| QR-02 性能効率性 | 利用目的に対する外部性能が十分である | 未検証 | 2D・3Dのcold / warm memoization benchmarkはCIへ登録済み | C++ nested vector番兵版との外部比較結果と性能比の受入水準は未確定 |
 | QR-03 安全性 | storage確保・要素寿命・範囲・次元・writeback拒否が検証した経路で成立する | 確認済み | Debug・Releaseに加え、ASanで通常test 35件とDeath Test 26件が成功し、OptionalArray由来のSanitizer failureはなかった | ASanと有限のtest経路で観測できないunsafe操作の正しさまでは証明しない |
 | QR-03 安全性 | 非所有Viewを所有元より長く保持できない | 未達 | 公開文書は親の生存中だけ使う責任を明示するが、View 3型は通常の`Escapable`な値で、生ポインタを保持する | 現行型システムはdangling Viewを拒否しない。Swift 6.4 Lifetimesの適用可能性は未評価 |
 | QR-03 安全性 | strict memory safety下で公開APIとunsafe境界が成立する | 未達 | OptionalArrayModule targetには`.strictMemorySafety()`がない。単独typecheckは成功するが、公開7型のunsafe storage 7件を含む31診断を報告した | 公開型分類、View寿命との依存、scoped `unsafe`不足を整理する前に採否を判断できない |

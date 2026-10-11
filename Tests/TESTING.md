@@ -19,6 +19,14 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 
 ## 現在地
 
+- 性能CIのbase / current比較は、それぞれのcommitにあるBenchmark harnessを使い、
+  現行側のCI library定義だけをbaselineへ同期する。初めて追加するworkloadは過去のbaselineに
+  存在しないため、導入PRでは回帰比較を成立させない。merge commitを初回baselineとし、
+  後続PRから通常のbase / current比較を始める。
+- 初回baseline候補にはBareArrayの2D・3D sequential read / write 4件と、OptionalArrayの
+  2D・3D cold / warm memoization 4件を含めた。現行側のRelease build、小規模実行、
+  通常`CI.json`の最大64kまでの実行は成功済み。0.5.3側に8 workloadが存在しないため、
+  導入PRの性能jobは既知の赤として分離し、他の失敗を同じ理由で受け入れない。
 - RedBlackTree 4型の空コレクション用シングルトン(`_emptyTreeStorage`、型消去済み
   capacity 0)の生存条件を4型すべてで確認し、
   `RedBlackTreeInternal_EmptySingletonTests.swift`へ記録済み。通常初期化・

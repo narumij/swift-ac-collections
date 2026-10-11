@@ -72,7 +72,7 @@ text(W / 2, 82, "判断を減らし、正しく止まるtask管理", size=60, we
 text(
     W / 2,
     136,
-    "偶有的な判断を消し、本質的な判断だけを残す — V2（2026-10-11）",
+    "欠けた必須前提を見つけ、偶有的な判断を消す — V2（2026-10-11）",
     size=29,
     weight=550,
     fill=SUB,
@@ -82,11 +82,11 @@ text(
 # Top lifecycle: the three principles and their execution consequences
 step_y, step_h, step_w, gap = 185, 300, 350, 30
 steps = [
-    ("1", "疑義を検知", TEAL, ["新しい判断・依存", "前提・証拠の変化", "継続条件への影響"]),
-    ("2", "先に保留", RED, ["影響範囲だけ止める", "確証を待たない", "graph更新より先"]),
-    ("3", "判断を整理", ORANGE, ["偶有的判断を消す", "本質的判断を残す", "判断不要を見分ける"]),
-    ("4", "境界を分ける", PURPLE, ["taskかsubstepか", "成果・状態・受入", "一判断を一つにする"]),
-    ("5", "graphを再構成", BLUE, ["前提と後続を探す", "Flowを分類する", "readyを再計算"]),
+    ("1", "成立条件を見る", TEAL, ["後続の成果・検証・受入", "成立に必要な前提", "既存graphを正当化しない"]),
+    ("2", "依存を発見", GOLD, ["飛ばすと成立しないもの", "並行前提を直線にしない", "候補を必須にしない"]),
+    ("3", "先に保留", RED, ["影響範囲だけ止める", "確証を待たない", "graph更新より先"]),
+    ("4", "判断を整理", ORANGE, ["偶有的判断を消す", "本質的判断を残す", "判断不要を見分ける"]),
+    ("5", "graphを再構成", BLUE, ["task境界を分ける", "Flowを分類する", "readyを再計算"]),
     ("6", "再開を確認", PINK, ["readyは成立したか", "委任は有効か", "成立範囲だけ再開"]),
 ]
 for index, (number, title, color, body) in enumerate(steps):
@@ -101,12 +101,12 @@ for index, (number, title, color, body) in enumerate(steps):
 
 # Core thesis
 box(60, 525, 2280, 130, PURPLE, fill="#f4f0ff", width=4)
-text(1200, 579, "判断を増やさない。taskを増やす前に、判断が本当に残るかを問う。", size=39, weight=800, fill=PURPLE, anchor="middle")
-text(1200, 625, "細かな規則ではなく、判断整理・task境界・graph再構成から行動を導く。", size=27, weight=600, fill=INK, anchor="middle")
+text(1200, 579, "後続を成立させるために、いま何が欠けているかを問う。", size=39, weight=800, fill=PURPLE, anchor="middle")
+text(1200, 625, "依存発見 → 判断整理 → task再構成 → 実行制御を、一つのmodelとしてつなぐ。", size=27, weight=600, fill=INK, anchor="middle")
 
 # Judgment classification
 box(60, 700, 1100, 650, ORANGE)
-heading(95, 760, "1. 何を判断する必要があるか", ORANGE)
+heading(95, 760, "1. 依存の先で、何を判断するか", ORANGE)
 
 judgments = [
     ("本質的な判断", RED, ["整理しても消えない", "権限を持つ者が決める"]),
@@ -124,7 +124,7 @@ text(607, 1318, "偶有的判断を消し、本質的判断だけを露出させ
 
 # Task boundary and graph reconstruction
 box(1200, 700, 1140, 650, BLUE)
-heading(1235, 760, "2. 何を独立したtaskにするか", BLUE)
+heading(1235, 760, "2. 発見した依存をtask graphへ写す", BLUE)
 
 boundary = [
     ("task", "独立した成果・状態・依存・判断・証拠・受入", BLUE),
@@ -136,10 +136,10 @@ for index, (name, description, color) in enumerate(boundary):
     text(1270, y + 58, name, size=27, weight=800, fill=color)
     text(1480, y + 58, description, size=22)
 
-text(1235, 1085, "3. graphへ組み込み、readyを再計算", size=30, weight=800, fill=PURPLE)
+text(1235, 1085, "必須依存 = 飛ばすと後続が成立しない関係", size=28, weight=800, fill=PURPLE)
 graph_steps = [
-    ("前提", "新taskが必要とするもの"),
-    ("後続", "新taskの成果を待つもの"),
+    ("前提", "後続の成立に現在欠けているもの"),
+    ("後続", "その成果・検証・受入を待つもの"),
     ("Flow", "SEQUENCE / PARALLEL_JOIN / soft order"),
     ("再計算", "cycle・critical path・ready集合"),
 ]
@@ -188,14 +188,14 @@ text(1770, 1866, "停止は失敗ではなく、成立条件を復元するた�
 # Return path
 box(60, 1950, 2280, 245, PINK, fill="#fdf0f6", width=5)
 text(95, 2010, "疎でも漏らさない戻り道", size=38, weight=800, fill=PINK)
-text(95, 2060, "新しい判断や依存によって継続条件を信頼できなくなったら、影響範囲を保留して分解へ戻る。", size=27, weight=500)
-text(95, 2105, "疑義検知 → 先に保留 → 判断整理 → task分解 → graph再構成 → ready・委任確認 → 再開", size=27, weight=750, fill=PURPLE)
+text(95, 2060, "後続の成立に欠けた前提を見つけたら、影響範囲を保留して依存と判断の整理へ戻る。", size=27, weight=500)
+text(95, 2105, "成立条件 → 依存発見 → 先に保留 → 判断整理 → graph再構成 → ready・委任確認 → 再開", size=27, weight=750, fill=PURPLE)
 text(95, 2150, "原理から停止と再開を導き、本質的な判断だけを人へ返す。", size=27, weight=750, fill=PINK)
 
 # Footer
 out.append(f'<rect x="60" y="2230" width="2280" height="120" rx="24" fill="{INK}"/>')
-text(1200, 2282, "task管理 = 偶有的判断を消し、本質的判断だけを残すこと", size=38, weight=800, fill=WHITE, anchor="middle")
-text(1200, 2325, "実行・停止・再開は、継続条件と委任から導く", size=26, weight=550, fill="#d7dce4", anchor="middle")
+text(1200, 2282, "task管理 = 欠けた前提を見つけ、偶有的判断を消すこと", size=38, weight=800, fill=WHITE, anchor="middle")
+text(1200, 2325, "本質的判断だけを残し、実行・停止・再開を継続条件と委任から導く", size=26, weight=550, fill="#d7dce4", anchor="middle")
 
 svg = f'<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 {W} {H}">' + "".join(out) + "</svg>"
 path = Path(__file__).resolve().parents[2] / "Maintanance" / "AI_TASK_PROCESS_POSTER.svg"

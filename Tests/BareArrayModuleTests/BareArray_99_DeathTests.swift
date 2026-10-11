@@ -193,26 +193,9 @@
       }
     }
 
-    @Test func outOfRangeWritebackPosition_traps_owned2D() async throws {
-      await #expect(processExitsWith: .failure) {
-        var array = BareArray2D<Int>(repeating: 0, width: 2, height: 2)
-        array[2] = array[1]
-      }
-    }
-
-    @Test func outOfRangeWritebackPosition_traps_owned3D() async throws {
-      await #expect(processExitsWith: .failure) {
-        var array = BareArray3D<Int>(repeating: 0, width: 2, height: 2, depth: 2)
-        array[2] = array[1]
-      }
-    }
-
-    @Test func outOfRangeWritebackPosition_traps_owned4D() async throws {
-      await #expect(processExitsWith: .failure) {
-        var array = BareArray4D<Int>(repeating: 0, size0: 2, size1: 2, size2: 2, size3: 2)
-        array[2] = array[1]
-      }
-    }
+    // The three equivalent owned-array cases are compiler-diagnostic fixtures now that their
+    // simultaneous read/write access is rejected statically. See
+    // Utilities/Maintenance/CompilerDiagnostics/BareArrayOwnedWriteback.
 
     @Test func outOfRangeWritebackPosition_traps_view2D() async throws {
       await #expect(processExitsWith: .failure) {

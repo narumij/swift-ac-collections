@@ -305,6 +305,10 @@ let package = Package(
       exclude: [
         "Documentation"
       ],
+      swiftSettings: [
+        .enableExperimentalFeature("Lifetimes"),
+        .strictMemorySafety()
+      ]
     ),
     .testTarget(
       name: "BareArrayModuleTests",

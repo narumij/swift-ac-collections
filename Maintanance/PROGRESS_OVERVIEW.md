@@ -116,6 +116,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPS-003` | `DONE` | Codex | [EXECUTION] タスク依存変化による作業中停止の明文化 | 実行中も依存関係とreadyを再評価し、新しい必須前提、Flow、完了条件、および委任権限に応じて停止範囲を導く原則を独立文書へ記録 | `Orientation/TASK_DEPENDENCY_RUNTIME_STOP.md` |
 | `OPS-004` | `DONE` | Codex | [EXECUTION] タスク分解と再構成の明文化 | 見えない作業から本質的判断を抽出し、task境界、依存、Flow、ready集合、優先順を再構成する原則を独立文書へ記録し、ユーザー指示により完了 | `Orientation/TASK_DECOMPOSITION_AND_REORGANIZATION.md` |
 | `OPS-005` | `DONE` | Codex | [EXECUTION] AI task process posterの更新 | 完了した分解・再構成文書と作業中停止文書を入力に、判断整理、task境界、graph再構成、ready、委任を中心とするV2へ生成script、SVG、PNGを更新し、ユーザーが受入 | `AI_TASK_PROCESS_POSTER.png` / `Utilities/Maintenance/GenerateAITaskProcessPoster.py` |
+| `OPS-006` | `DONE` | Codex | [EXECUTION] task依存判断の軽量draft | 後続taskの成立に現在欠けている前提を探し、依存の見落としによる破綻・片手落ち・手戻りを避けるための短い観点整理を独立文書へ記録し、ユーザーレビューで修正必須なしを確認。文書はdraftのまま維持 | `Orientation/TASK_DEPENDENCY_IDENTIFICATION_DRAFT.md` |
+| `OPS-007` | `DONE` | Codex | [EXECUTION] AI task process poster V2への依存発見反映 | V2の構造を維持したまま、後続の成立条件、欠けた必須前提、並行依存、未確定候補を入口へ追加し、生成script、SVG、PNGを上書き。ユーザーが受入 | `AI_TASK_PROCESS_POSTER.png` / `Utilities/Maintenance/GenerateAITaskProcessPoster.py` |
 | `RELEASE-009` | `FROZEN` | Codex | [DISCOVERY] 0.5.1実績に基づくrelease checklist見直し | 2026-10-09、前任conversationの意図と途中経過の喪失により再開困難なため凍結。明示的な再開指示後、残存記録を参考資料として目的と境界から再確認 | `RELEASE_CHECKLIST.md` / `Archived/Canonical/RELEASE_0_5_1.md` |
 | `RELEASE-011` | `FROZEN` | Codex | [DISCOVERY] `prepare/release/template`の構成設計と試行 | 2026-10-09、前任conversationの意図と途中経過の喪失により再開困難なため凍結。残存ドラフトは当面保存するが既決事項とは扱わず、明示的な再開指示後に目的と境界を再確認 | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-020` | `FROZEN` | Codex | [EXECUTION] 0.6.0でGitHub Pages更新元をrelease tagへ一本化 | 0.5.xではmain pushとrelease tag pushの双方によるdeploy競合を許容。0.6.0のrelease工程でmain由来のdeployを停止し、tag commitから生成・検証した利用者向け文書だけがPagesを更新することを確認 | `RELEASE_0_6_0.md` / `RELEASE_TEMPLATE_BRANCH_DESIGN.md` |
@@ -141,7 +143,19 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
 | `BARE-006` | `FROZEN` | Codex | [DISCOVERY] BareArray 1.0の性能測定設計 | ユーザードキュメント作業後、共通の測定基盤を入力に対象操作・size・比較対象・評価方法を設計し、BareArray固有の製品判断候補を分離 | `Tests/TESTING.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray 1.0の性能計測 | `BARE-006`で整理した対象操作・size・比較対象と既存の測定方式に従って計測し、1.0判断へ渡す | `Tests/TESTING.md` |
-| `ARRAY-001` | `FROZEN` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのTest as Specification前に必要な振り分けは`BARE-002`受入へ移管済み。全体再分解はユーザードキュメント作業後、再開時点の契約・品質評価を入力に行う | `StrictMemorySafetyReadiness.md` |
+| `BARE-016` | `DONE` | Codex | [DISCOVERY] BareArray現行品質アセスメント | Quality Profileの現在性監査、QR-01〜QR-06の現行評価、実行記録、既存課題と新規Validation候補への不足分離を完了 | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
+| `BARE-017` | `PROPOSED` | Codex | [DISCOVERY] BareArray利用Validation scenario設計 | 一般Swift利用と競技利用について、代表利用者、導入経路、利用課題、観測方法を整理し、異なる判断・実行境界を後続task候補へ分離する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
+| `BARE-018` | `FROZEN` | Codex | [EXECUTION] BareArray Viewノンエスケーパブル化の完了ゲート | 実装と局所検証の途中証拠を保存したまま凍結。storage、公開型の安全性分類、strict memory safetyの3系統を閉じ、品質検証を再開・完了した後に受入可否を判定する | `BareArrayModule/CurrentQualityAssessment.md` |
+| `BARE-019` | `EXCLUDED` | User / Codex | [DECISION] 同一BareArray間writebackのコンパイル時拒否採否 | 2026-10-11、拒否契約自体は従来から不変で、実行時Death Testからコンパイル時診断へVerification手段だけが移ったと確認。製品判断ではなかったため除外 | `BareArrayModule/CurrentQualityAssessment.md` |
+| `BARE-020` | `FROZEN` | Codex | [EXECUTION] BareArray Viewノンエスケーパブル実装の整合化 | compile成功までの途中差分を保存。ユーザーの明示的な再開指示後、正式実装として受け入れる範囲を再確認する | `BareArrayModule/CurrentQualityAssessment.md` |
+| `BARE-021` | `FROZEN` | Codex | [EXECUTION] BareArray compiler診断Verificationへの移行 | compile-fail fixtureとDeath Test棚卸しの途中差分を保存。ユーザーの明示的な再開指示後、Verification方法としての受入可否を再確認する | `BareArrayModule/CurrentQualityAssessment.md` |
+| `BARE-022` | `FROZEN` | Codex | [EXECUTION] BareArray有効利用経路の回帰確認 | Debug・Releaseの実行結果を途中証拠として保存。ユーザーの明示的な再開指示後、必要な回帰範囲と受入可否を再確認する | `BareArrayModule/CurrentQualityAssessment.md` |
+| `BARE-023` | `FROZEN` | User / Codex | [DECISION] BareArray storage境界の扱い | 現行の生ポインタstorageとノンエスケーパブルViewの途中実装を入力に、品質検証を再開する前提として現行storage境界を維持するか一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
+| `BARE-024` | `FROZEN` | User / Codex | [DECISION] BareArray公開7型の`@safe`／`@unsafe`分類 | strict診断で残る公開所有型4・View型3について、品質検証に用いる安全性分類を一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
+| `BARE-025` | `FROZEN` | User / Codex | [DECISION] BareArray strict memory safety採否 | 現行実装と公開7型の診断を入力に、BareArrayModuleへ`.strictMemorySafety()`を適用した状態を品質検証の対象とするか一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
+| `BARE-026` | `FROZEN` | User | [DECISION] BareArray品質検証の再開判断 | storage、安全性分類、strict memory safetyの3判断完了後、保存した途中成果を対象として品質検証を再開するか一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` |
+| `BARE-027` | `FROZEN` | Codex | [EXECUTION] BareArrayノンエスケーパブル化の品質検証 | ユーザーが品質検証の再開を決定した後、確定した3系統の前提に従ってVerification、Validation、残余リスク、未検証領域を評価する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
+| `ARRAY-001` | `EXCLUDED` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのView寿命はノンエスケーパブル化へ統合し、残るstorage、公開安全性分類、strict memory safetyを独立taskへ分解したため、包括taskとしては除外。OptionalArrayは必要時に別途再分解する | `StrictMemorySafetyReadiness.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 本紙をアクロバット的なリファクタリングの説明として洗練し、追加調査は証拠別紙へ蓄積する。本紙と別紙で同じ詳細事実を重複定義しない | `RefactoringFromAtCoder2025/README.md` / `RefactoringFromAtCoder2025/EVIDENCE.md` |
@@ -158,6 +172,14 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |
 | `RBT-026` | `RBT-014` | `SEQUENCE` | 現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する |
 | `BARE-007` | `BARE-006` | `SEQUENCE` | BareArray固有の測定設計と、必要なら分離した製品判断の完了後に計測する |
+| `BARE-021` | `BARE-020` | `SEQUENCE` | 正式実装のcompile成立後に、拒否される利用をcompiler診断のVerificationへ移す |
+| `BARE-022` | `BARE-020` | `SEQUENCE` | 正式実装のcompile成立後に、有効な利用経路をDebug・Releaseで回帰確認する |
+| `BARE-026` | `BARE-023` | `PARALLEL_JOIN` | 現行storage境界の扱いを決定してから品質検証の再開を判断する |
+| `BARE-026` | `BARE-024` | `PARALLEL_JOIN` | 公開7型の安全性分類を決定してから品質検証の再開を判断する |
+| `BARE-026` | `BARE-025` | `PARALLEL_JOIN` | strict memory safetyの採否を決定してから品質検証の再開を判断する |
+| `BARE-027` | `BARE-026` | `SEQUENCE` | ユーザーが再開を決定した場合だけ、確定した前提で品質検証を実行する |
+| `BARE-018` | `BARE-027` | `SEQUENCE` | 品質検証の結果を受け入れてからノンエスケーパブル化の完了を判定する |
+| `BARE-017` | `BARE-018` | `SEQUENCE` | 完成したView契約を入力に一般Swift利用と競技利用のValidation scenarioを設計する |
 | `PERM-044` | `PERM-043` | `SEQUENCE` | C++標準に匹敵すると判定する性能比上限を確定してから、保存したmacOS測定証拠へ適用する |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |
 | `RELEASE-036` | `RELEASE-035` | `SEQUENCE` | checklist移行を検証してから実行正本をactive Registryへ切り替える |

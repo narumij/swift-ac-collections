@@ -42,7 +42,7 @@ View寿命、`Sendable`、strict memory safety、`-Ounchecked`の境界を現行
 | --- | --- | --- | --- | --- |
 | QR-01 正確性 | 初期化、nil状態、次元、offset、subscript、View、writeback、`removeAll()`、破棄が公開契約どおり動作する | 確認済み | Debug・Releaseで通常test 35件とDeath Test 26件が成功。非対称次元、zero dimension、積overflow、別storage View代入、参照要素寿命を含む | 有限な型、寸法、操作列によるVerificationであり、任意入力の証明ではない |
 | QR-02 性能効率性 | presence mapとpayloadの連続storage、O(1) access、線形初期化・破棄という実装特性が公開説明と一致する | 確認済み | sourceとdocumentation commentを照合。要素accessとView生成は定数回のoffset計算、初期化・`removeAll()`・破棄はcapacityに比例する | 実装構造上の計算量であり、実行時間、allocation cost、最適化結果を証明しない |
-| QR-02 性能効率性 | 利用目的に対する外部性能が十分である | 未検証 | OptionalArray固有のbenchmark登録と比較結果はない | 比較対象、scenario、入力形状、判定水準が未確定 |
+| QR-02 性能効率性 | 利用目的に対する外部性能が十分である | 未検証 | 2D・3Dのcold / warm memoization benchmarkはCIへ登録済み | C++ nested vector番兵版との外部比較結果と性能比の受入水準は未確定 |
 | QR-03 安全性 | storage確保・要素寿命・範囲・次元・writeback拒否が検証した経路で成立する | 確認済み | Debug・Releaseに加え、ASanで通常test 35件とDeath Test 26件が成功し、OptionalArray由来のSanitizer failureはなかった | ASanと有限のtest経路で観測できないunsafe操作の正しさまでは証明しない |
 | QR-03 安全性 | 非所有Viewを所有元より長く保持できない | 未達 | 公開文書は親の生存中だけ使う責任を明示するが、View 3型は通常の`Escapable`な値で、生ポインタを保持する | 現行型システムはdangling Viewを拒否しない。Swift 6.4 Lifetimesの適用可能性は未評価 |
 | QR-03 安全性 | strict memory safety下で公開APIとunsafe境界が成立する | 未達 | OptionalArrayModule targetには`.strictMemorySafety()`がない。単独typecheckは成功するが、公開7型のunsafe storage 7件を含む31診断を報告した | 公開型分類、View寿命との依存、scoped `unsafe`不足を整理する前に採否を判断できない |
@@ -51,7 +51,7 @@ View寿命、`Sendable`、strict memory safety、`-Ounchecked`の境界を現行
 | QR-04 理解可能性 | nil状態、所有と非所有、軸順、`removeAll()`、失敗条件を公開文書から確認できる | 確認済み | 公開29宣言のdocumentation commentを監査済みで、DocCをwarnings-as-errors付きで生成できた | 文書と実装のVerificationであり、一般利用者が誤解なく使えることのValidationではない |
 | QR-05 利用可能性 | SwiftPMと`AcCollections`再公開経路で利用できる | 確認済み | OptionalArrayModule build、facade再公開test 1件、DocC生成が現行macOS環境で成功 | 他platform、外部packageとの共存、実利用は未確認 |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | EDPC-J・EDPC-Lはtest targetのcompile evidenceであり、単一file利用許諾もsourceにある | 正答、実提出、実行時間、メモリ使用量は確認していない |
-| QR-06 持続可能性 | 変更後に公開面、状態、寿命、次元、停止契約を再確認できる | 確認済み | 番号付きTest as Specification 8群とDebug・Release・ASanのCI jobがある | 現行commitのremote CI成功は未確認。CIのDocC対象とperformance workloadにOptionalArrayは含まれない |
+| QR-06 持続可能性 | 変更後に公開面、状態、寿命、次元、停止契約を再確認できる | 確認済み | 番号付きTest as Specification 8群、Debug・Release・ASanのCI job、および2D・3D memoization accessの回帰workloadがある | 現行commitのremote CI成功は未確認。CIのDocC対象にOptionalArrayは含まれない |
 
 ## 実行記録
 
@@ -62,9 +62,46 @@ View寿命、`Sendable`、strict memory safety、`-Ounchecked`の境界を現行
 - `swift package --disable-sandbox generate-documentation --target OptionalArrayModule --warnings-as-errors`: 成功。
 - `swift build --disable-sandbox --target OptionalArrayModule`: 成功。
 - `swiftc -typecheck -swift-version 6 -strict-memory-safety`による単独typecheck: error 0、strict memory safety診断31件。
+- BenchmarkのRelease buildに成功。2D・3Dのcold / warm memoization checksum 4件をsize 1・3・16で
+  3反復し、全件のchecksum検証に成功。
+- `Benchmarks/Libraries/CI.json`は30 task・60 size・最大64kを70.4秒で完走。OptionalArray 4件を
+  通常CI libraryの選択対象として実行した。
 
 SwiftPM user cacheが書込み不可である環境警告と、ASan build時にOptionalArray testの`var` 1件、
 RedBlackTree testの未使用値2件のwarningが出た。製品OptionalArrayModuleの通常buildにはwarningがない。
+
+## 多次元access性能測定設計
+
+OptionalArrayの競技用途であるmemoizationを表すため、2Dと3Dのそれぞれで次の2状態を測定する。
+
+- cold access: 未設定slotを読み、未設定なら線形indexと同じ値を保存し、保存値をchecksumへ加える。
+- warm access: 同じ値で事前に全slotを設定し、設定済み値の読み取りだけをchecksumへ加える。
+
+shapeはBareArray測定と同じ総要素数の素因数を各軸へ均衡に割り当て、積が入力sizeと完全に
+一致する2D・3D shapeを用いる。走査は最内軸から連続する順序とし、期待checksumは
+`size * (size - 1) / 2`とする。
+
+配列の確保、shape計算、warm状態の事前設定は計測外に置く。計測内には連鎖subscriptによる
+presence確認、cold時の値保存、値取得、checksum更新だけを含める。checksumは計測後に
+`blackHole`と`precondition`へ渡し、最適化による消去と誤った走査を検出する。
+
+CIにはSwift版の4 workloadだけを通常libraryへ登録する。後続のC++外部assessmentでは、
+nested `vector<Int>`を同じshapeで確保し、未設定を表す番兵値をpresence判定に用いて、
+同じcold / warm操作、走査順、checksumに対応させる。C++ workloadは通常CIには含めない。
+
+### C++番兵workloadと暫定チャート
+
+Swift版と同じexact-productの2D・3D shape、最内軸からの連続走査、cold / warm状態、
+checksumに対応するC++ nested `std::vector<intptr_t>` workloadを4件追加した。C++側は`-1`を
+未設定slotの番兵とし、coldでは計測前に全slotを番兵へ戻し、warmでは計測前に線形index値を
+全slotへ設定する。通常CI libraryには含めず、`OptionalArrayAssessment.json`の専用libraryから
+だけ選択する。
+
+Release build後、OptionalArray / Swift nested Array番兵 / C++ nested vector番兵の合4件をsize 1・3・16で
+3反復し、checksum検証を含め成功した。さらに12 workloadをsize 1から64kまで60 size・5 cycle実行し、
+生JSONと3系列を含む4枚のPNGを
+`Benchmarks/QualityAssessment/macOS/OptionalArray/`へ暫定証拠として保存した。この結果は
+比較経路と可視化の成立確認であり、性能比の受入判断または正式assessmentではない。
 
 ## 判断の整理
 
@@ -75,6 +112,8 @@ RedBlackTree testの未使用値2件のwarningが出た。製品OptionalArrayMod
 - View寿命の既存契約は「親より長く保持しない」であり、その契約を変える判断は現時点で見つかって
   いない。まずSwift 6.4 Lifetimesで既存契約を型へ移せるかを調べる。
 - 性能、一般利用、競技利用、`Sendable`、`-Ounchecked`は証拠不足であり、成功とも失敗とも判断しない。
+- 多次元accessの測定条件は、OptionalArrayの既存用途とBareArrayで確定済みのshape・計測境界から
+  導ける。新しい製品仕様や性能比の受入水準を決めないため、設計時のユーザー判断は発生しない。
 
 ## 後続task候補
 

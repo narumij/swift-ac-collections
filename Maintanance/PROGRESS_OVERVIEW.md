@@ -35,9 +35,10 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 2026-10-10、main merge commit `139ffef8`のCI greenを確認し、annotated tag `0.5.3`を同commitへ作成・pushして
 remote到達を確認した。release後の記録用branchとして、同tagから`develop/misc/55`を作成した。
 
-**現在の中間ゴール:** BareArrayとOptionalArrayの競技用途における多次元access性能を、Permutationと
-同じBenchmark・CI回帰・macOS外部アセスメントの二層構造で評価可能にする。BareArrayはC++ nested
-`vector<T>`、OptionalArrayはC++ nested `vector<T>`の番兵手法を比較対象とし、性能比の受入判断は
+**現在の中間ゴール:** BareArrayとOptionalArrayの多次元access workloadを同じPRで
+Benchmarkと通常CI libraryへ揃え、そのmerge commitを後続回帰比較の初回baselineにできる状態にする。
+0.5.3に存在しないworkloadのbase / current比較は成立しないため、このPRの性能jobのみ既知の赤を
+初回基準導入として分離する。C++とのmacOS外部assessmentは後続とし、性能比の受入判断は
 暫定実測後まで発生させない。
 
 **凍結中の中間ゴール（前任conversationの残存記録）:**
@@ -145,18 +146,22 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
 | `OPT-047` | `DONE` | Codex | [DISCOVERY] OptionalArray 0.6.0現行品質アセスメント | Debug・Release・ASan各通常35件・Death Test 26件、facade、DocC、buildを確認。View寿命とstrict memory safetyを未達、`Sendable`・`-Ounchecked`・性能・利用Validationを未検証として分離し、品質評価から新しいユーザー判断は発生しないと確認 | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-048` | `PROPOSED` | Codex | [DISCOVERY] OptionalArray View寿命・公開安全性分類・strict安全性の依存分解 | 現行View寿命契約、Swift 6.4 Lifetimes、公開7型の分類、strict診断31件を照合し、事実と既存原則で閉じる偶有的判断を除去して、本質的判断が残る場合だけ独立taskへ分離する | `OptionalArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
-| `OPT-049` | `FROZEN` | Codex | [DISCOVERY] OptionalArray多次元access性能測定設計 | BareArrayのアセスメント構成確立後、競技用途のmemoization accessを対象に、Swift OptionalArrayとC++ nested `vector<T>`の番兵手法で同じ操作・形状・checksumを定める | `OptionalArrayModule/CurrentQualityAssessment.md` |
-| `OPT-050` | `FROZEN` | Codex | [EXECUTION] OptionalArray access性能のCI回帰Benchmark登録 | `OPT-049`の設計に従いSwift workloadを通常CIの既存Benchmark libraryへ追加し、base／current比較で退行検知できることを確認 | `OptionalArrayModule/CurrentQualityAssessment.md` |
-| `OPT-051` | `FROZEN` | Codex | [EXECUTION] OptionalArrayアセスメント用C++番兵workload登録 | CI回帰経路の成立後、Swift版と同じmemoization access・形状・checksumをnested `vector<T>`と番兵値で実装し、通常CIには含めない | `OptionalArrayModule/CurrentQualityAssessment.md` |
-| `OPT-052` | `FROZEN` | Codex | [DISCOVERY] OptionalArray macOS外部性能アセスメントへのアレンジ | Swift／C++対応workload、専用library、保存script、環境情報、生JSON、PNG chartをPermutationと同じ構成へ整え、暫定実測を保存する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
+| `OPT-049` | `DONE` | Codex | [DISCOVERY] OptionalArray多次元access性能測定設計 | 2D・3Dのcold miss/storeとwarm hit、BareArrayと共通のexact-product shape・連続走査・checksum、計測境界、後続のC++ nested vector番兵版への対応を確定 | `OptionalArrayModule/CurrentQualityAssessment.md` |
+| `OPT-050` | `DONE` | Codex | [EXECUTION] OptionalArray access性能のCI回帰Benchmark登録 | 2D・3Dのcold / warm memoization checksum 4件をbenchmark toolと通常CI libraryへ登録。Release build、size 1・3・16の3反復、`CI.json`の30 task・60 size・64kまでのcurrent実行が成功 | `OptionalArrayModule/CurrentQualityAssessment.md` |
+| `OPT-051` | `DONE` | Codex | [EXECUTION] OptionalArrayアセスメント用C++番兵workload登録 | Swift版と同じexact-product shape・cold / warm memoization・checksumの2D・3D 4件をnested `vector<intptr_t>`と`-1`番兵で実装。Release buildとsize 1・3・16の3反復が成功し、通常CIには未登録 | `OptionalArrayModule/CurrentQualityAssessment.md` |
+| `OPT-052` | `ACTIVE` | Codex | [DISCOVERY] OptionalArray macOS外部性能アセスメントへのアレンジ | OptionalArray・Swift nested Array番兵・C++ nested vector番兵の3系列を含む専用library、生JSON、4枚のPNG chartによる暫定比較は成立。Permutationと同等の保存scriptと環境記録を整え、正式測定へ渡せる構成を閉じる | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-053` | `FROZEN` | User | [DECISION] OptionalArrayがC++番兵手法に匹敵すると判定する性能比の上限 | `OPT-052`の暫定実測後、代表memoization workloadで許容する性能比を一つだけ決定する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-054` | `FROZEN` | Codex | [EXECUTION] OptionalArray外部性能アセスメントの実測・判定 | `OPT-053`完了後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-006` | `DONE` | Codex | [DISCOVERY] BareArray多次元access性能測定設計 | 2D・3Dのsequential read / write、総要素数が等しいshape、計測内外、checksum、C++ nested `vector<intptr_t>`との対応、CI回帰とmacOS外部assessmentの境界を確定 | `BareArrayModule/CurrentQualityAssessment.md` / `Tests/TESTING.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray外部性能アセスメントの実測・判定 | 性能比の受入判断後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
-| `BARE-029` | `ACTIVE` | Codex | [EXECUTION] BareArray access性能のCI回帰Benchmark登録 | `BARE-006`の設計に従い2D・3D sequential read / writeを通常CIの既存Benchmark libraryへ追加し、base／current比較で退行検知できることを確認 | `BareArrayModule/CurrentQualityAssessment.md` |
-| `BARE-030` | `FROZEN` | Codex | [EXECUTION] BareArrayアセスメント用C++ nested vector workload登録 | CI回帰経路の成立後、Swift版と同じ多次元access・形状・checksumをnested `vector<T>`で実装し、通常CIには含めない | `BareArrayModule/CurrentQualityAssessment.md` |
-| `BARE-031` | `FROZEN` | Codex | [DISCOVERY] BareArray macOS外部性能アセスメントへのアレンジ | Swift／C++対応workload、専用library、保存script、環境情報、生JSON、PNG chartをPermutationと同じ構成へ整え、暫定実測を保存する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
+| `BARE-029` | `DONE` | Codex | [EXECUTION] BareArray access性能のCI回帰Benchmark登録 | 2D・3D sequential read / writeの4 workloadをbenchmark toolと通常CI libraryへ登録。Release build、size 1・3・16の直接実行、`CI.json`の26 task・60 size・64kまでのcurrent実行が成功 | `BareArrayModule/CurrentQualityAssessment.md` |
+| `BARE-030` | `DONE` | Codex | [EXECUTION] BareArrayアセスメント用C++ nested vector workload登録 | Swift版と同じexact-product shape・連続走査・checksumの2D・3D read / write 4件をnested `vector<intptr_t>`で実装。Release buildとsize 1・3・16の3反復が成功し、通常CIには未登録 | `BareArrayModule/CurrentQualityAssessment.md` |
+| `BARE-031` | `ACTIVE` | Codex | [DISCOVERY] BareArray macOS外部性能アセスメントへのアレンジ | BareArray・Swift nested Array・C++ nested vectorの3系列を含む専用library、生JSON、4枚のPNG chartによる暫定比較は成立。Permutationと同等の保存scriptと環境記録を整え、正式測定へ渡せる構成を閉じる | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-032` | `FROZEN` | User | [DECISION] BareArrayがC++ nested vectorに匹敵すると判定する性能比の上限 | `BARE-031`の暫定実測後、代表多次元access workloadで許容する性能比を一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
+| `BARE-033` | `EXCLUDED` | Codex | [EXECUTION] 新BareArray workloadの0.5.3 baseline比較経路 | harness全体の同期は0.5.3にないPermutation APIへ依存してCI失敗し、BareArrayだけの移植も初回基準のために過去harnessを特別扱いする複雑性を生むため除外。merge commitを新baselineとする | `Tests/TESTING.md` / `.github/workflows/ci.yml` / `.github/workflows/candidate.yml` |
+| `PERF-001` | `DONE` | Codex | [EXECUTION] baseline harness同期の取り消し | commit `1027a154`のSources・manifest・resolved同期をPR用とcandidate用の両workflowから取り消し、従来のlibrary定義の同期だけに戻した | `Tests/TESTING.md` / `.github/workflows/ci.yml` / `.github/workflows/candidate.yml` |
+| `PERF-002` | `DONE` | Codex | [EXECUTION] BareArray・OptionalArray初回性能baseline候補の完了ゲート | 両module合4件のSwift workload、通常CI library登録、current側実行を合流。0.5.3側に8件がないため導入PRの性能jobだけを既知の赤とし、merge commitを後続回帰の初回baselineとする境界を記録 | `Tests/TESTING.md` / `BareArrayModule/CurrentQualityAssessment.md` / `OptionalArrayModule/CurrentQualityAssessment.md` |
+| `PERF-003` | `FROZEN` | Codex | [EXECUTION] Array性能baseline確立後の回帰CI確認 | 初回baseline候補がmergeされた後、両moduleのworkloadがbase / currentの双方で実行され、性能jobが通常の回帰比較として機能することを確認する | `Tests/TESTING.md` / `.github/workflows/ci.yml` |
 | `BARE-016` | `DONE` | Codex | [DISCOVERY] BareArray現行品質アセスメント | Quality Profileの現在性監査、QR-01〜QR-06の現行評価、実行記録、既存課題と新規Validation候補への不足分離を完了 | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-017` | `PROPOSED` | Codex | [DISCOVERY] BareArray利用Validation scenario設計 | 一般Swift利用と競技利用について、代表利用者、導入経路、利用課題、観測方法を整理し、異なる判断・実行境界を後続task候補へ分離する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-018` | `FROZEN` | Codex | [EXECUTION] BareArray Viewノンエスケーパブル化の完了ゲート | 実装と局所検証の途中証拠を保存したまま凍結。storage、公開型の安全性分類、strict memory safetyの3系統を閉じ、品質検証を再開・完了した後に受入可否を判定する | `BareArrayModule/CurrentQualityAssessment.md` |
@@ -187,13 +192,17 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `RBT-009` | `PARALLEL_JOIN` | 他の1.0品質作業は並行できるが、最終判定前にruntime-check実装の採否と合流する |
 | `RBT-026` | `RBT-014` | `SEQUENCE` | 現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する |
 | `BARE-029` | `BARE-006` | `SEQUENCE` | workload設計後、まずSwift側を通常CIの回帰検知へ追加する |
-| `BARE-030` | `BARE-029` | `SEQUENCE` | CI回帰経路の成立後、外部比較専用のC++対応workloadを追加する |
+| `OPT-049` | `BARE-006` | `SEQUENCE` | BareArrayで確定したshape・計測境界を再利用し、外部assessmentの完了を待たずOptionalArray固有のmemoization accessを設計する |
 | `BARE-031` | `BARE-030` | `SEQUENCE` | Swift／C++両workloadの成立後、macOSアセスメント用にアレンジして暫定実測する |
 | `BARE-032` | `BARE-031` | `SEQUENCE` | 暫定結果を確認してから、必要な性能比上限を判断する |
 | `BARE-007` | `BARE-032` | `SEQUENCE` | 性能比上限の決定後、正式測定結果へ適用して判定する |
-| `OPT-049` | `BARE-031` | `SEQUENCE` | BareArrayで確立した二層構造を入力に、OptionalArray固有の番兵比較を設計する |
 | `OPT-050` | `OPT-049` | `SEQUENCE` | workload設計後、まずSwift側を通常CIの回帰検知へ追加する |
-| `OPT-051` | `OPT-050` | `SEQUENCE` | CI回帰経路の成立後、外部比較専用のC++番兵workloadを追加する |
+| `PERF-002` | `PERF-001` | `PARALLEL_JOIN` | baseline harness移植を取り消し、意図した初回導入の赤と実装不具合を区別できる状態で合流する |
+| `PERF-002` | `BARE-029` | `PARALLEL_JOIN` | BareArrayのSwift workloadとCI library登録を初回baseline候補へ合流する |
+| `PERF-002` | `OPT-050` | `PARALLEL_JOIN` | OptionalArrayのSwift workloadとCI library登録を初回baseline候補へ合流する |
+| `PERF-003` | `PERF-002` | `SEQUENCE` | 初回baseline候補のmerge後に、後続PRで通常のbase / current回帰比較を確認する |
+| `BARE-030` | `BARE-029` | `SEQUENCE` | BareArrayのCI workload成立後、同じ条件のC++対応workloadを外部比較用に追加する |
+| `OPT-051` | `OPT-050` | `SEQUENCE` | OptionalArrayのCI workload成立後、同じ条件のC++番兵workloadを外部比較用に追加する |
 | `OPT-052` | `OPT-051` | `SEQUENCE` | Swift／C++両workloadの成立後、macOSアセスメント用にアレンジして暫定実測する |
 | `OPT-053` | `OPT-052` | `SEQUENCE` | 暫定結果を確認してから、必要な性能比上限を判断する |
 | `OPT-054` | `OPT-053` | `SEQUENCE` | 性能比上限の決定後、正式測定結果へ適用して判定する |

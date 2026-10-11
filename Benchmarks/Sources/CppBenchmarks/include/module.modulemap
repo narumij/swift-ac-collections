@@ -3,5 +3,6 @@ module CppBenchmarks {
   header "SetBenchmarks.h"
   header "MapBenchmarks.h"
   header "PermutationBenchmarks.h"
+  header "BareArrayBenchmarks.h"
   export *
 }

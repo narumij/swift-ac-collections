@@ -331,7 +331,9 @@ let package = Package(
         .product(name: "Algorithms", package: "swift-algorithms"),
         "PermutationModule"
       ],
-      swiftSettings: _settings
+      swiftSettings: _settings + [
+        .enableExperimentalFeature("Lifetimes")
+      ]
     ),
   ]
 )

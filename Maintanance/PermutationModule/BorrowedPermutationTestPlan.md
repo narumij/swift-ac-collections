@@ -12,8 +12,9 @@ Current state, ownership, and restart conditions are controlled by the Task Regi
 ## Objective
 
 Inspect the seven disabled legacy test files under
-`Tests/PermutationTests/NextPermutationsSequence/` and produce a function-level ledger that can be
-used to reconstruct Test as Specification for the Swift 6.4 borrowed `NextPermutations` contract.
+`Tests/PermutationTests/NextPermutationsSequence/` and the compiler-backed experiments in
+`Tests/PermutationTests/EtcTests.swift`, then produce a function-level ledger that can be used to
+reconstruct Test as Specification for the Swift 6.4 borrowed `NextPermutations` contract.
 
 The ledger must distinguish behavior that remains required from behavior that belonged only to the
 retired `NextPermutationsSequence` value-semantic and Copy on Write contract.
@@ -21,8 +22,12 @@ retired `NextPermutationsSequence` value-semantic and Copy on Write contract.
 ## Authoritative inputs
 
 - `Sources/PermutationModule/Documentation/Quality-Profile.md`
-- The active implementation after `#endif` in `Sources/PermutationModule/Permutations.swift`
+- The active Swift 6.4 implementation in `Sources/PermutationModule/Permutations.swift`
+- The disabled Swift 6.2 implementation in
+  `Sources/PermutationModule/PermutationsSwift62.swift`, used only to identify retired-contract tests
 - The seven disabled files in `Tests/PermutationTests/NextPermutationsSequence/`
+- `Tests/PermutationTests/EtcTests.swift`, which is a persistent scratchpad whose individual checks
+  must be inventoried rather than silently treated as finished specification tests
 - The test-specific instructions in `Tests/CLAUDE.md`
 
 Do not treat the disabled implementation or disabled tests as the current contract.
@@ -41,6 +46,11 @@ Record every legacy test function exactly once using one of these outcomes:
 For each function, record the source file and function name, classification, reason, corresponding
 new-contract requirement, and proposed destination test group. Do not write replacement test code in
 this task.
+
+Record every function in `EtcTests.swift` separately as an experimental check. For each one, state
+what compiler or runtime fact it established, whether that fact belongs in a successor runtime,
+compile-pass, compile-fail, or availability test, and whether the scratch check should remain after
+that successor exists. Do not force these experiments into the legacy-test classifications above.
 
 ## Boundaries
 
@@ -64,6 +74,7 @@ Append these sections to this file:
 ## Completion conditions
 
 - Every legacy test function in all seven files appears exactly once in the ledger.
+- Every test function in `EtcTests.swift` appears exactly once in the experimental-check ledger.
 - Each proposed successor test group is bounded to runtime behavior, compile-pass, compile-fail, or ownership/destruction.
 - Retired COW and persistent-value requirements are not silently carried into the borrowed contract.
 - No product or test implementation file is changed.

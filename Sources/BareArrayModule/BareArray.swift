@@ -22,7 +22,7 @@
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray<Element>: ~Copyable {
+@safe public struct BareArray<Element>: ~Copyable {
 
   /// `count`個の要素を`value`で初期化します。
   ///
@@ -125,7 +125,7 @@ extension BareArray: @unchecked Sendable where Element: Sendable { }
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray2D<Element>: ~Copyable {
+@safe public struct BareArray2D<Element>: ~Copyable {
 
   /// `width * height`個の要素を`value`で初期化します。
   ///
@@ -248,7 +248,7 @@ extension BareArray2D: @unchecked Sendable where Element: Sendable { }
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray3D<Element>: ~Copyable {
+@safe public struct BareArray3D<Element>: ~Copyable {
 
   /// `width * height * depth`個の要素を`value`で初期化します。
   ///
@@ -388,7 +388,7 @@ extension BareArray3D: @unchecked Sendable where Element: Sendable { }
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray4D<Element>: ~Copyable {
+@safe public struct BareArray4D<Element>: ~Copyable {
 
   /// 全要素を`value`で初期化します。
   ///
@@ -536,7 +536,7 @@ extension BareArray4D: @unchecked Sendable where Element: Sendable { }
 /// 元の所有配列の生存中だけ使用してください。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray1DView<Element>: ~Escapable {
+@safe public struct BareArray1DView<Element>: ~Escapable {
 
   @inlinable
   @_lifetime(borrow source)
@@ -596,7 +596,7 @@ extension BareArray1DView {
 /// Viewはstorageの寿命を延長しないため、元の所有配列の生存中だけ使用してください。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray2DView<Element>: ~Escapable {
+@safe public struct BareArray2DView<Element>: ~Escapable {
 
   @inlinable
   @_lifetime(borrow source)
@@ -670,7 +670,7 @@ extension BareArray2DView {
 /// Viewはstorageの寿命を延長しないため、元の所有配列の生存中だけ使用してください。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct BareArray3DView<Element>: ~Escapable {
+@safe public struct BareArray3DView<Element>: ~Escapable {
 
   @inlinable
   @_lifetime(borrow source)

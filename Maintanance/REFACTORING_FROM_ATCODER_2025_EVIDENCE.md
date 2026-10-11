@@ -73,6 +73,40 @@ node ID/tag、世代、seal、tieが段階的に担ったと読める。ただ�
 
 ## Keystone testとTest as Specification
 
+### 保証範囲の縮退と再建
+
+| 時期 | 実装側の変化 | テスト側の状態 | 保証上の意味 | 主な証拠 |
+|---|---|---|---|---|
+| AtCoder 2025以前 | 整数Index・配列型Nodeを前提とするTree | 公開Setの番号付き仕様テストと旧Fixtureテストが存在 | 公開挙動と旧内部表現の双方を検証 | `f4e9f69e`、`63b5699a` |
+| 2026-01-03 | `UnsafeTreeV2`を旧系列と並行導入 | 旧Fixtureを残してunsafe版Keystoneを分岐コピー。ただし追加時点では`#if false` | 検証方法を保存したが、まだ実行保証には組み込まれていない | `cc0ca3ad` |
+| 2026-01-05〜28 | pool、bucket、pointer Index、CoWを反復変更 | 多数の既存テストについて条件、期待値、CoW検査、共通TestCaseを変更。旧実装固有の検査も削減 | 全保証を固定せず、新構造へ追従できる範囲に検証面を調整 | `f4ef9301`、`928215c6`、`8c334f60`、`94d13f98` |
+| 2026-09-29〜30 | 旧array treeと現行unsafe treeの責務を整理 | 旧Keystoneを削除し、unsafe版を現行Fixtureへ移して実行対象化 | 旧内部表現の保証を捨て、木の不変条件を新構造側へ架け替え | `1357bd3c`、`ecb3085d` |
+| 2026-10-02〜03 | Fixtureを独立targetへ分離し、現行内部テスト群を整備 | Keystoneへ`#if false`を再導入。新しいFoundamental test群とFixture targetを成立させる | 深いブートストラップ検査を保存資料へ退け、日常の実行保証を新しい検証系へ移管 | `64118cd6`、`60604ff6`、`2b5ff728`、`0483012f` |
+| 現行 | pointer identity、bucket Storage、CoW、公開4型が収束 | Keystoneは保存中。公開仕様、内部構造、互換性のテスト群は役割別に存在 | 一つの旧テストを復活させるのでなく、保証を公開契約と現行内部境界へ再配置 | 現行`Tests/RedBlackTreeTests/`、`Tests/TESTING.md` |
+
+**[事実]** `cc0ca3ad`で追加されたunsafe版Keystoneの外側には`#if false`があり、当初は実行対象では
+なかった。`ecb3085d`で現行の`UnsafeTreeV2/Instance/`へ再構成された版には外側の`#if false`がなく、
+`#if DEBUG`下で実行可能だった。`64118cd6`で同じ系譜のファイルへ`#if false`が再導入され、現在まで残る。
+
+**[事実]** 2026-01-05の`f4ef9301`は`USE_UNSAFE_TREE`切替を整理すると同時に、CoW testの一部と
+旧実装固有のtest helperを削除し、旧TreeのContainer testを大幅に書き換えた。翌日の`928215c6`は
+75 test fileを変更して共通TestCaseを導入した。これは内部交換中もtest集合が不変だった、という
+説明とは両立しない。
+
+**[事実]** 2026-09-29の`1357bd3c`は旧array-tree版Container testを削除した。翌日の
+`ecb3085d`は移行用unsafe版を現行`UnsafeTreeV2`側へ移し、同時にdebug helper群を再配置した。
+2026-10-02の`60604ff6`は内部Fixtureを独立targetへ移し、`2b5ff728`は新しいFoundamental testの
+区切りを記録した。
+
+**[解釈]** Keystone testの役割は継続的なgreenを単独で保証することではなく、旧Fixtureが表していた
+木の構築・不変条件・操作検査を、新しいpointer/bucket構造へ翻訳可能な形で保持することだったと読める。
+実行対象から外れた期間は保証が同一のまま維持された証拠ではなく、その保証が薄くなった、または別の
+test群へ移管された期間として区別する必要がある。
+
+**[解釈]** この履歴では、旧テストへの適合と新構造の成立が常に同じ方向を向いていない。旧表現を
+固定する検査を緩めなければ構造交換が進まず、すべてを緩めれば赤黒木としての同一性を失う。
+公開Test as Specification、Keystone、現行内部testは、この緊張の異なる時期と境界を受け持った。
+
 **[事実]** 保存中のkeystone testは
 `Tests/RedBlackTreeTests/UnsafeTreeV2/Instance/___RedBlackTreeContainerTests_unsafe.swift`である。
 これは基点の原本ではなく、2026-01-03の`cc0ca3ad`で旧Fixtureテストを残したまま追加した
@@ -117,4 +151,6 @@ unsafe実装向け分岐コピーを、内部構造へ追従させた派生・�
 - `UnsafeNode`の2026-01-18〜22の削除・再導入区間は責務の連続を確認したが、同一実装の継続範囲は未確定。
 - 現行`HEAD`外のUnsafe系試作は網羅分類していない。
 - MultiSet/Dictionary/MultiMapの仕様テストが現行の分割数へ至った個別commitは未追跡。
+- 2026-01月の各commit時点で実行されたtest commandとgreen範囲は、commit messageだけでは確定しない。
+- Keystoneから現行Foundamental test群へ、個々のassertionが一対一で移管されたかは未照合。
 - 基点と現行の同条件性能比較は未実施。

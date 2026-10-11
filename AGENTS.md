@@ -43,6 +43,21 @@ but they are not startup reading. Promote a lesson that should survive a new
 conversation into a concise rule here or into the task-operation playbook rather
 than requiring future sessions to reconstruct it from reflections.
 
+Delegated autonomy remains subordinate to the user's authority.
+It does not grant Codex ownership of the task or shared worktree.
+
+User intervention, including direct edits to the shared worktree,
+may suspend, narrow, or revoke the current delegation.
+
+When such intervention is detected, stop autonomous execution at
+the earliest safe point. Preserve the current state and determine
+the scope and impact of the intervention without making further
+changes.
+
+Do not resume implementation, validation, task-management updates,
+or other state-changing operations until the user explicitly
+reauthorizes the affected work.
+
 ## Single Source of Truth (SSoT)
 
 Maintain a single authoritative source for each decision, rule,

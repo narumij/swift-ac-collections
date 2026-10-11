@@ -51,7 +51,7 @@ View寿命、`Sendable`、strict memory safety、`-Ounchecked`の境界を現行
 | QR-04 理解可能性 | nil状態、所有と非所有、軸順、`removeAll()`、失敗条件を公開文書から確認できる | 確認済み | 公開29宣言のdocumentation commentを監査済みで、DocCをwarnings-as-errors付きで生成できた | 文書と実装のVerificationであり、一般利用者が誤解なく使えることのValidationではない |
 | QR-05 利用可能性 | SwiftPMと`AcCollections`再公開経路で利用できる | 確認済み | OptionalArrayModule build、facade再公開test 1件、DocC生成が現行macOS環境で成功 | 他platform、外部packageとの共存、実利用は未確認 |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | EDPC-J・EDPC-Lはtest targetのcompile evidenceであり、単一file利用許諾もsourceにある | 正答、実提出、実行時間、メモリ使用量は確認していない |
-| QR-06 持続可能性 | 変更後に公開面、状態、寿命、次元、停止契約を再確認できる | 確認済み | 番号付きTest as Specification 8群とDebug・Release・ASanのCI jobがある | 現行commitのremote CI成功は未確認。CIのDocC対象とperformance workloadにOptionalArrayは含まれない |
+| QR-06 持続可能性 | 変更後に公開面、状態、寿命、次元、停止契約を再確認できる | 確認済み | 番号付きTest as Specification 8群、Debug・Release・ASanのCI job、および2D・3D memoization accessの回帰workloadがある | 現行commitのremote CI成功は未確認。CIのDocC対象にOptionalArrayは含まれない |
 
 ## 実行記録
 
@@ -62,6 +62,10 @@ View寿命、`Sendable`、strict memory safety、`-Ounchecked`の境界を現行
 - `swift package --disable-sandbox generate-documentation --target OptionalArrayModule --warnings-as-errors`: 成功。
 - `swift build --disable-sandbox --target OptionalArrayModule`: 成功。
 - `swiftc -typecheck -swift-version 6 -strict-memory-safety`による単独typecheck: error 0、strict memory safety診断31件。
+- BenchmarkのRelease buildに成功。2D・3Dのcold / warm memoization checksum 4件をsize 1・3・16で
+  3反復し、全件のchecksum検証に成功。
+- `Benchmarks/Libraries/CI.json`は30 task・60 size・最大64kを70.4秒で完走。OptionalArray 4件を
+  通常CI libraryの選択対象として実行した。
 
 SwiftPM user cacheが書込み不可である環境警告と、ASan build時にOptionalArray testの`var` 1件、
 RedBlackTree testの未使用値2件のwarningが出た。製品OptionalArrayModuleの通常buildにはwarningがない。

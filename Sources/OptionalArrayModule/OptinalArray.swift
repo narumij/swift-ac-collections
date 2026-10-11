@@ -209,21 +209,29 @@ public struct OptionalArray2D<Element>: ~Copyable {
   @inlinable
   public subscript(position: Int) -> OptionalArray1DView<Element> {
     @inline(__always)
+    @_lifetime(borrow self)
     get {
       precondition(0 <= position && position < height)
       return unsafe .init(
         hasPayload: hasPayload + width * position,
         payload: payload + width * position,
-        count: width)
+        count: width,
+        borrowing: self)
     }
 
     @inline(__always)
-    set {
+    _modify {
       precondition(0 <= position && position < height)
       let offset = width * position
-      precondition(newValue.hasPayload == hasPayload + offset)
-      precondition(newValue.payload == payload + offset)
-      precondition(newValue.count == width)
+      let expectedHasPayload = hasPayload + offset
+      let expectedPayload = payload + offset
+      var view = unsafe OptionalArray1DView(
+        hasPayload: expectedHasPayload, payload: expectedPayload, count: width,
+        borrowing: self)
+      yield &view
+      precondition(view.hasPayload == expectedHasPayload)
+      precondition(view.payload == expectedPayload)
+      precondition(view.count == width)
     }
   }
 }
@@ -324,21 +332,32 @@ public struct OptionalArray3D<Element>: ~Copyable {
   @inlinable
   public subscript(position: Int) -> OptionalArray2DView<Element> {
     @inline(__always)
+    @_lifetime(borrow self)
     get {
       precondition(0 <= position && position < depth)
       return unsafe .init(
         hasPayload: hasPayload + width * height * position,
         payload: payload + width * height * position,
-        width: width, height: height)
+        width: width, height: height,
+        borrowing: self)
     }
 
     @inline(__always)
-    set {
+    _modify {
       precondition(0 <= position && position < depth)
       let offset = width * height * position
-      precondition(newValue.hasPayload == hasPayload + offset)
-      precondition(newValue.payload == payload + offset)
-      precondition(newValue.width == width && newValue.height == height)
+      let expectedHasPayload = hasPayload + offset
+      let expectedPayload = payload + offset
+      var view = unsafe OptionalArray2DView(
+        hasPayload: expectedHasPayload,
+        payload: expectedPayload,
+        width: width,
+        height: height,
+        borrowing: self)
+      yield &view
+      precondition(view.hasPayload == expectedHasPayload)
+      precondition(view.payload == expectedPayload)
+      precondition(view.width == width && view.height == height)
     }
   }
 }
@@ -444,6 +463,7 @@ public struct OptionalArray4D<Element>: ~Copyable {
   @inlinable
   public subscript(position: Int) -> OptionalArray3DView<Element> {
     @inline(__always)
+    @_lifetime(borrow self)
     get {
       precondition(0 <= position && position < size3)
       // 内側に0の次元があれば要素は無い。途中の積はoverflowし得るので評価しない。
@@ -453,7 +473,8 @@ public struct OptionalArray4D<Element>: ~Copyable {
         payload: payload + offset,
         width: size0,
         height: size1,
-        depth: size2)
+        depth: size2,
+        borrowing: self)
     }
 
     @inline(__always)
@@ -487,13 +508,28 @@ extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
 /// 親配列の生存中だけ使用でき、Viewを親配列より長く保持してはいけません。
 /// Viewを通じた変更は親配列の同じ要素へ反映されます。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct OptionalArray1DView<Element> {
+@safe public struct OptionalArray1DView<Element>: ~Escapable {
 
   @inlinable
-  @unsafe internal init(
+  @_lifetime(borrow source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
     hasPayload: UnsafeMutablePointer<Bool>,
     payload: UnsafeMutablePointer<Element>,
-    count: Int
+    count: Int,
+    borrowing source: borrowing Source
+  ) {
+    self.count = count
+    self.hasPayload = unsafe hasPayload
+    self.payload = unsafe payload
+  }
+
+  @inlinable
+  @_lifetime(copy source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
+    hasPayload: UnsafeMutablePointer<Bool>,
+    payload: UnsafeMutablePointer<Element>,
+    count: Int,
+    copying source: borrowing Source
   ) {
     self.count = count
     self.hasPayload = unsafe hasPayload
@@ -555,13 +591,29 @@ extension OptionalArray1DView {
 /// 親配列の生存中だけ使用でき、Viewを通じた変更は親配列へ反映されます。
 /// 連鎖subscriptは`view[y][x]`の順で、`width`が最内軸、`height`が最外軸です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct OptionalArray2DView<Element> {
+@safe public struct OptionalArray2DView<Element>: ~Escapable {
 
   @inlinable
-  @unsafe internal init(
+  @_lifetime(borrow source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
     hasPayload: UnsafeMutablePointer<Bool>,
     payload: UnsafeMutablePointer<Element>,
-    width: Int, height: Int
+    width: Int, height: Int,
+    borrowing source: borrowing Source
+  ) {
+    self.hasPayload = unsafe hasPayload
+    self.payload = unsafe payload
+    self.width = width
+    self.height = height
+  }
+
+  @inlinable
+  @_lifetime(copy source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
+    hasPayload: UnsafeMutablePointer<Bool>,
+    payload: UnsafeMutablePointer<Element>,
+    width: Int, height: Int,
+    copying source: borrowing Source
   ) {
     self.hasPayload = unsafe hasPayload
     self.payload = unsafe payload
@@ -586,21 +638,30 @@ public struct OptionalArray2DView<Element> {
   @inlinable
   public subscript(position: Int) -> OptionalArray1DView<Element> {
     @inline(__always)
+    @_lifetime(copy self)
     get {
       precondition(0 <= position && position < height)
       return unsafe .init(
         hasPayload: hasPayload + width * position,
         payload: payload + width * position,
-        count: width)
+        count: width,
+        copying: self)
     }
 
     @inline(__always)
-    set {
+    @_lifetime(copy self)
+    _modify {
       precondition(0 <= position && position < height)
       let offset = width * position
-      precondition(newValue.hasPayload == hasPayload + offset)
-      precondition(newValue.payload == payload + offset)
-      precondition(newValue.count == width)
+      let expectedHasPayload = hasPayload + offset
+      let expectedPayload = payload + offset
+      var view = unsafe OptionalArray1DView(
+        hasPayload: expectedHasPayload, payload: expectedPayload, count: width,
+        copying: self)
+      yield &view
+      precondition(view.hasPayload == expectedHasPayload)
+      precondition(view.payload == expectedPayload)
+      precondition(view.count == width)
     }
   }
 }
@@ -618,13 +679,30 @@ extension OptionalArray2DView {
 /// 親配列の生存中だけ使用でき、Viewを通じた変更は親配列へ反映されます。
 /// 連鎖subscriptは`view[z][y][x]`の順で、`width`が最内軸、`depth`が最外軸です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct OptionalArray3DView<Element> {
+@safe public struct OptionalArray3DView<Element>: ~Escapable {
 
   @inlinable
-  @unsafe internal init(
+  @_lifetime(borrow source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
     hasPayload: UnsafeMutablePointer<Bool>,
     payload: UnsafeMutablePointer<Element>,
-    width: Int, height: Int, depth: Int
+    width: Int, height: Int, depth: Int,
+    borrowing source: borrowing Source
+  ) {
+    self.hasPayload = unsafe hasPayload
+    self.payload = unsafe payload
+    self.width = width
+    self.height = height
+    self.depth = depth
+  }
+
+  @inlinable
+  @_lifetime(copy source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
+    hasPayload: UnsafeMutablePointer<Bool>,
+    payload: UnsafeMutablePointer<Element>,
+    width: Int, height: Int, depth: Int,
+    copying source: borrowing Source
   ) {
     self.hasPayload = unsafe hasPayload
     self.payload = unsafe payload
@@ -651,13 +729,15 @@ public struct OptionalArray3DView<Element> {
   @inlinable
   public subscript(position: Int) -> OptionalArray2DView<Element> {
     @inline(__always)
+    @_lifetime(copy self)
     get {
       precondition(0 <= position && position < depth)
       return unsafe .init(
         hasPayload: hasPayload + width * height * position,
         payload: payload + width * height * position,
         width: width,
-        height: height)
+        height: height,
+        copying: self)
     }
 
     @inline(__always)

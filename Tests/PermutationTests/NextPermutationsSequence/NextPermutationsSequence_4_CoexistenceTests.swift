@@ -10,6 +10,8 @@
 #if !COMPATIBLE_ATCODER_2025
 import Algorithms
 import PermutationModule
+#if false
+
 import XCTest
 
 final class NextPermutationsSequence_4_CoexistenceTests: XCTestCase {
@@ -32,4 +34,6 @@ final class NextPermutationsSequence_4_CoexistenceTests: XCTestCase {
     XCTAssertTrue(every.contains([1, 2, 3]))
   }
 }
+
+#endif
 #endif

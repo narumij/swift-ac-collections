@@ -25,6 +25,12 @@
 import CollectionsBenchmark
 import PermutationModule
 
+extension Bool: @retroactive Comparable {
+  public static func < (lhs: Bool, rhs: Bool) -> Bool {
+    lhs != rhs && !lhs
+  }
+}
+
 /// SplitMix64. Deterministic generator for reproducible shuffled indices.
 private struct PermutationBenchmarkRNG: RandomNumberGenerator {
   var state: UInt64
@@ -37,6 +43,125 @@ private struct PermutationBenchmarkRNG: RandomNumberGenerator {
     z = (z ^ (z &>> 30)) &* 0xBF58_476D_1CE4_E5B9
     z = (z ^ (z &>> 27)) &* 0x94D0_49BB_1331_11EB
     return z ^ (z &>> 31)
+  }
+}
+
+/// Direct `Array` implementation retained as a performance peer. Returning an
+/// `Array` lets the standard library's COW storage and optimizer handle the
+/// yielded value's lifetime without a custom buffer wrapper.
+private struct ArrayNextPermutationsSequence<Element: Comparable>: Sequence {
+  let elements: [Element]
+
+  func makeIterator() -> Iterator {
+    Iterator(elements: elements)
+  }
+
+  struct Iterator: IteratorProtocol {
+    var elements: [Element]
+    var initial = true
+    var finished = false
+
+    mutating func next() -> [Element]? {
+      if finished { return nil }
+      if initial {
+        initial = false
+        return elements
+      }
+      guard elements.count >= 2 else {
+        finished = true
+        return nil
+      }
+
+      var i = elements.count - 2
+      while elements[i] >= elements[i + 1] {
+        if i == 0 {
+          finished = true
+          return nil
+        }
+        i -= 1
+      }
+
+      var j = elements.count - 1
+      while elements[j] <= elements[i] {
+        j -= 1
+      }
+      elements.swapAt(i, j)
+
+      var lower = i + 1
+      var upper = elements.count - 1
+      while lower < upper {
+        elements.swapAt(lower, upper)
+        lower += 1
+        upper -= 1
+      }
+      return elements
+    }
+  }
+}
+
+/// Experimental borrowing implementation for Swift 6.4's lifetime model.
+///
+/// The returned span borrows the iterator's current permutation. Calling
+/// `next()` again requires exclusive access to the iterator, so the compiler
+/// prevents the previous permutation from remaining live across the mutation.
+/// Unlike a `Sequence` iterator, this can reuse one buffer without returning a
+/// reference-counted value for every permutation.
+@available(macOS 26.0, *)
+private struct BorrowedNextPermutationsIterator<Element: Comparable>: ~Copyable {
+  let elements: UnsafeMutablePointer<Element>
+  let count: Int
+  var initial = true
+  var finished = false
+
+  init(copying elements: Span<Element>) {
+    count = elements.count
+    self.elements = .allocate(capacity: count)
+    for i in 0..<count {
+      self.elements.advanced(by: i).initialize(to: elements[i])
+    }
+  }
+
+  deinit {
+    elements.deinitialize(count: count)
+    elements.deallocate()
+  }
+
+  @_lifetime(&self)
+  mutating func next() -> Span<Element>? {
+    if finished { return nil }
+    if initial {
+      initial = false
+      return unsafe Span(_unsafeStart: elements, count: count)
+    }
+    guard count >= 2 else {
+      finished = true
+      return nil
+    }
+
+    var i = count - 2
+    while elements[i] >= elements[i + 1] {
+      if i == 0 {
+        finished = true
+        return nil
+      }
+      i -= 1
+    }
+
+    var j = count - 1
+    while elements[j] <= elements[i] {
+      j -= 1
+    }
+    let buffer = UnsafeMutableBufferPointer(start: elements, count: count)
+    buffer.swapAt(i, j)
+
+    var lower = i + 1
+    var upper = count - 1
+    while lower < upper {
+      buffer.swapAt(lower, upper)
+      lower += 1
+      upper -= 1
+    }
+    return unsafe Span(_unsafeStart: elements, count: count)
   }
 }
 
@@ -193,6 +318,143 @@ extension Benchmark {
         validateEndToEnd(count: count, checksum: checksum, size: size)
       }
     }
+
+    // Representative binary-selection workload: choose 7 positions from 28
+    // by enumerating the distinct permutations of 21 zeroes and 7 ones.
+    // Downstream processing is deliberately outside this benchmark.
+    self.add(
+      title: "Permutations binary selection checksum",
+      input: Int.self
+    ) { size in
+      let selectedCount = 7
+      precondition(7 <= size && size <= 32, "binary selection size must be in 7...32")
+      let source = Array(repeating: 0, count: size - selectedCount)
+        + Array(repeating: 1, count: selectedCount)
+      return { timer in
+        var count = 0
+        var checksum = 0
+        timer.measure {
+          var c = 0
+          var s = 0
+          for p in identity(source).nextPermutations() {
+            for i in p.indices {
+              s &+= p[i] &* (i &+ 1)
+            }
+            c &+= 1
+          }
+          count = c
+          checksum = s
+        }
+        blackHole(checksum)
+        validateBinarySelection(
+          count: count,
+          checksum: checksum,
+          size: size,
+          selectedCount: selectedCount)
+      }
+    }
+
+    self.add(
+      title: "Array iterator binary selection checksum",
+      input: Int.self
+    ) { size in
+      let selectedCount = 7
+      precondition(7 <= size && size <= 32, "binary selection size must be in 7...32")
+      let source = Array(repeating: 0, count: size - selectedCount)
+        + Array(repeating: 1, count: selectedCount)
+      return { timer in
+        var count = 0
+        var checksum = 0
+        timer.measure {
+          var c = 0
+          var s = 0
+          for permutation in ArrayNextPermutationsSequence(elements: identity(source)) {
+            for i in permutation.indices {
+              s &+= permutation[i] &* (i &+ 1)
+            }
+            c &+= 1
+          }
+          count = c
+          checksum = s
+        }
+        blackHole(checksum)
+        validateBinarySelection(
+          count: count,
+          checksum: checksum,
+          size: size,
+          selectedCount: selectedCount)
+      }
+    }
+
+    if #available(macOS 26.0, *) {
+      self.add(
+        title: "Borrowed Span iterator binary selection checksum",
+        input: Int.self
+      ) { size in
+        let selectedCount = 7
+        precondition(7 <= size && size <= 32, "binary selection size must be in 7...32")
+        let source = Array(repeating: 0, count: size - selectedCount)
+          + Array(repeating: 1, count: selectedCount)
+        return { timer in
+          var count = 0
+          var checksum = 0
+          timer.measure {
+            var c = 0
+            var s = 0
+            let input = identity(source)
+            var iterator = BorrowedNextPermutationsIterator(copying: input.span)
+            while let permutation = iterator.next() {
+              var i = 0
+              while i < permutation.count {
+                s &+= permutation[i] &* (i &+ 1)
+                i &+= 1
+              }
+              c &+= 1
+            }
+            count = c
+            checksum = s
+          }
+          blackHole(checksum)
+          validateBinarySelection(
+            count: count,
+            checksum: checksum,
+            size: size,
+            selectedCount: selectedCount)
+        }
+      }
+    }
+
+    self.add(
+      title: "Permutations Bool binary selection checksum",
+      input: Int.self
+    ) { size in
+      let selectedCount = 7
+      precondition(7 <= size && size <= 32, "binary selection size must be in 7...32")
+      let source = Array(repeating: false, count: size - selectedCount)
+        + Array(repeating: true, count: selectedCount)
+      return { timer in
+        var count = 0
+        var checksum = 0
+        timer.measure {
+          var c = 0
+          var s = 0
+          for permutation in identity(source).nextPermutations() {
+            for i in permutation.indices where permutation[i] {
+              s &+= i &+ 1
+            }
+            c &+= 1
+          }
+          count = c
+          checksum = s
+        }
+        blackHole(checksum)
+        validateBinarySelection(
+          count: count,
+          checksum: checksum,
+          size: size,
+          selectedCount: selectedCount)
+      }
+    }
   }
 }
 
@@ -218,4 +480,24 @@ private func validateEndToEnd(count: Int, checksum: Int, size n: Int) {
   precondition(
     checksum == factorialNMinus1 * (n * (n - 1) / 2) * (n * (n + 1) / 2),
     "unexpected permutation checksum")
+}
+
+/// Validates distinct binary permutations against closed-form combinations.
+private func validateBinarySelection(
+  count: Int,
+  checksum: Int,
+  size n: Int,
+  selectedCount k: Int
+) {
+  precondition(count == binomial(n, k), "unexpected binary permutation count")
+  precondition(
+    checksum == binomial(n - 1, k - 1) * (n * (n + 1) / 2),
+    "unexpected binary permutation checksum")
+}
+
+private func binomial(_ n: Int, _ k: Int) -> Int {
+  let k = min(k, n - k)
+  return (1...k).reduce(1) { result, i in
+    result * (n - k + i) / i
+  }
 }

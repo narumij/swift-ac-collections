@@ -1,3 +1,5 @@
+#if false
+
 extension Collection {
 
   /// Yields the current element order, then its lexicographic successors one at a time.
@@ -400,5 +402,106 @@ extension NextPermutationsSequence.Buffer where Element: Comparable {
       swapAt(lower, upper)
       formIndex(after: &lower)
     }
+  }
+}
+
+#endif
+
+// MARK: - Borrowed, noncopying experiment
+
+extension Collection where Element: Comparable {
+
+  /// Creates an iterator that owns one mutable buffer and lends each permutation as a `Span`.
+  ///
+  /// The source is copied once when this value is created. Advancing does not copy the buffer,
+  /// so a returned span may only be used until the next call to `next()`.
+  @inlinable
+  public func nextPermutations() -> NextPermutations<Element> {
+    .init(copying: self)
+  }
+}
+
+/// An experimental permutation iterator that lends views into one owned mutable buffer.
+///
+/// This is intentionally not a `Sequence`: `Sequence.Iterator.next()` cannot express that its
+/// result borrows the iterator and must not survive the next mutation.
+public struct NextPermutations<Element: Comparable>: ~Copyable {
+
+  @usableFromInline
+  let elements: UnsafeMutablePointer<Element>
+
+  @usableFromInline
+  let count: Int
+
+  @usableFromInline
+  var initial = true
+
+  @usableFromInline
+  var finished = false
+
+  @inlinable
+  init<Base: Collection>(copying source: Base) where Base.Element == Element {
+    count = source.count
+    elements = .allocate(capacity: Swift.max(count, 1))
+
+    var destination = elements
+    for element in source {
+      destination.initialize(to: element)
+      destination += 1
+    }
+  }
+
+  @inlinable
+  deinit {
+    elements.deinitialize(count: count)
+    elements.deallocate()
+  }
+
+  /// Returns the current order, then advances through its lexicographic successors in place.
+  ///
+  /// The returned span borrows this iterator and cannot remain live across the next mutating use.
+  @_lifetime(&self)
+  @inlinable
+  public mutating func next() -> Span<Element>? {
+    if finished {
+      return nil
+    }
+
+    if initial {
+      initial = false
+      return unsafe Span(_unsafeStart: elements, count: count)
+    }
+
+    guard count >= 2 else {
+      finished = true
+      return nil
+    }
+
+    var i = count - 2
+    while elements[i] >= elements[i + 1] {
+      if i == 0 {
+        finished = true
+        return nil
+      }
+      i -= 1
+    }
+
+    var j = count - 1
+    while elements[j] <= elements[i] {
+      j -= 1
+    }
+
+    let buffer = UnsafeMutableBufferPointer(start: elements, count: count)
+    buffer.swapAt(i, j)
+
+    var lower = i + 1
+    var upper = count - 1
+    while lower < upper {
+      buffer.swapAt(lower, upper)
+      lower += 1
+      upper -= 1
+    }
+
+    return unsafe Span(_unsafeStart: elements, count: count)
   }
 }

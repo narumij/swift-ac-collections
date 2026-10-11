@@ -11,6 +11,11 @@ extern "C" {
 /// Creates the ascending integer source used by the permutation benchmark.
 extern void *cpp_permutation_create(size_t count);
 
+/// Creates an ascending binary source with `selected_count` trailing ones.
+extern void *cpp_permutation_create_binary(
+  size_t count,
+  size_t selected_count);
+
 /// Destroys a source previously returned by `cpp_permutation_create`.
 extern void cpp_permutation_destroy(void *ptr);
 

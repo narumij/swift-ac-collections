@@ -1,0 +1,25 @@
+{
+  "kind": "group",
+  "title": "Permutation Performance Assessment",
+  "directory": "PermutationAssessment",
+  "contents": [
+    {
+      "kind": "group",
+      "title": "Binary selection workload",
+      "directory": "binary-selection",
+      "contents": [
+        {
+          "kind": "chart",
+          "title": "Binary selections ending at 32 choose 7",
+          "tasks": [
+            "Permutations binary selection checksum",
+            "Array iterator binary selection checksum",
+            "Borrowed Span iterator binary selection checksum",
+            "Permutations Bool binary selection checksum",
+            "std::next_permutation binary selection checksum"
+          ]
+        }
+      ]
+    }
+  ]
+}

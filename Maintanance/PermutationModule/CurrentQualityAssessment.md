@@ -167,3 +167,62 @@ Swift／C++両workloadの件数とchecksum検査も成功した。既存のPR・
 この結果はC++対応workloadを同じBenchmark基盤から実行可能にしたことだけを示す。
 macOS上の評価条件、統計、machine記録、比較水準、測定JSONとchart画像は`PERM-042`で扱い、
 現時点では「C/C++標準に匹敵する」という品質主張を未検証のまま維持する。
+
+## PERM-042 実施結果
+
+2026-10-11、28要素中7要素を選ぶ最大条件から、PermutationModuleの主評価scenarioを次のように確定した。
+
+- 長さ28の昇順二値列を使い、`0`を21個、`1`を7個とする。
+- 重複しない`C(28, 7) = 1,184,040`候補を最後まで列挙する。
+- 列挙件数と位置加重checksumを閉形式で検査する。
+- Union-Findによる全域木判定と問題固有計算は別libraryの責務として対象外にする。
+- Swiftと`std::next_permutation`で入力準備を測定外、入力copy・列挙・checksumを測定内に置く。
+
+28要素の条件を主評価としつつ、PNG chartで性能の伸びと余裕を確認できるよう、7個の`1`を固定して
+長さ8、12、16、20、24、28、32を測定点とする。32要素の`C(32, 7) = 3,365,856`候補は
+主評価を置き換えない補助点とする。専用library
+`Benchmarks/Libraries/PermutationAssessment.json`と実行script
+`Benchmarks/run-permutation-assessment.sh`を追加した。scriptはrelease buildで5 cycles測定し、
+commit、macOS、hardware、Swift、Clangの情報、生JSON、および総処理時間のPNG chartを
+`Benchmarks/QualityAssessment/macOS/Permutations`配下へ測定IDで対応づけて保存する。
+通常のPR・candidate性能CIには接続しない。
+
+release build、全6入力でのSwift/C++件数・checksum検査、5 cyclesのJSON生成、PNG生成に成功した。
+保存用scriptと同じ測定条件による一時試走では、最大ケースの5標本平均がSwift約28.2ms、
+C++約20.2msで、Swift/C++比は約1.40だった。この試走は実行経路の検証値であり、比較水準を
+適用した品質判定ではない。
+
+「C/C++標準に匹敵する」と判定する性能比上限は既存契約から決まらないため、`PERM-043`へ分離した。
+確定後、`PERM-044`でmacOS環境情報と測定成果物を保存し、性能主張を判定する。
+
+### PERM-043 判断候補
+
+判断対象は、28要素中7要素を選ぶ最大ケースにおけるSwift/C++総処理時間比の上限だけとする。
+
+1. `1.5倍以内`: C++より遅いことは許容しつつ、同じ実用帯にあることを要求する。今回の試走は通過する。
+2. `2.0倍以内`: Swift実装上の抽象化コストを広く許容する。今回の試走は余裕をもって通過する。
+3. `1.0倍以内`: C++と同等以上だけを「匹敵」とする。今回の試走は通過しない。
+
+現行のコンセプトが要求する「匹敵」と、競技用途で約118万候補を処理する実用性の双方を反映する候補として、
+`1.5倍以内`を推奨する。これは未決定の製品判断であり、試走結果だけから確定しない。
+
+2026-10-11、ユーザー指示により、比較水準の判断と、その基準を使う正式な実測・判定をともに保留した。
+測定基盤と試走証拠は維持するが、明示的な再開指示までは`PERM-043`と`PERM-044`を開始しない。
+
+保留中の暫定比較には、現行公開実装とC++に加え、標準`Array`をiterator内で直接更新して
+`[Element]`を返す単純なSwift実装を性能peerとして追加した。これは公開実装の変更ではなく、
+独自buffer・公開Permutation viewと、標準Array COW最適化の差を観測するための比較対象である。
+
+同一release build・5 cyclesの試走平均では、28要素で現行版約26.7ms、Array版約28.0ms、
+C++版約19.7ms、32要素で現行版約80.8ms、Array版約85.9ms、C++版約62.4msだった。
+この単体比較ではArray版が現行版より約5〜6%遅く、提出全体で観測された実行時間差を
+Permutation実装だけへ帰属できない。統合コード、DSU、データ表現、module境界、toolchainの差を
+含む結果として分離する。
+
+実提出で使われた`[Bool]`と`false < true`のretroactive `Comparable`実装による影響を分離するため、
+同じ現行公開Permutationsを使うBool版peerも暫定比較へ追加した。Bool版のchecksumは選択位置だけを
+加算し、実利用と同じ真偽分岐を測定内に含める。
+
+5 cyclesの試走平均では、28要素でInt版約27.0msに対してBool版約27.9ms、32要素で
+Int版約81.5msに対してBool版約83.8msだった。Bool版は約3%遅いが、統合提出で観測された差を
+単独で説明する規模ではない。

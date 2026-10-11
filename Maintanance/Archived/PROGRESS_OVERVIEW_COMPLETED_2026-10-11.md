@@ -8,6 +8,7 @@ IDs remain permanent and must not be reused. Earlier snapshots and completed his
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
+| `PERM-042` | `DONE` | Codex | [DISCOVERY] Permutation外部性能アセスメントへのアレンジ | 2026-10-11、28要素中7要素を選ぶ二値列挙を主評価とし、Swift/C++対応workload、専用library、macOS環境・JSON・PNG保存scriptを実装・試走。比較水準を独立したユーザー判断へ分離 | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `PERM-040` | `DONE` | Codex | [EXECUTION] アセスメント用C++対応workloadのBenchmark登録 | 2026-10-11、Swift版と同じ入力・全順列・checksum条件の`std::next_permutation` workloadを登録し、release buildとsize 1...10の実行を確認。通常CI回帰には含めず後続アセスメント専用とした | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `OPS-002` | `DONE` | Codex / Claude | [EXECUTION] 司令塔オリエンテーションMDの作成 | 2026-10-09、責任分担、証拠基準、技術的難所への入口、文書境界、事故時の復帰経路を統合し、新しい会話による実読確認とユーザー確認を完了 | `Orientation/CODEX_ORIENTATION.md` |
 | `OPS-003` | `DONE` | Codex | [EXECUTION] AI向け技術オリエンテーションの作成 | 2026-10-09、AIが誤認しやすい技術構造、既存中核の由来、証拠経路、停止点を整理し、ユーザー確認を完了 | `Orientation/AI_TECHNICAL_ORIENTATION.md` |

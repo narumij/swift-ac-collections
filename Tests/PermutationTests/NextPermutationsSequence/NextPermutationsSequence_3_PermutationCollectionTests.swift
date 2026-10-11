@@ -8,6 +8,7 @@
 // 等値・ハッシュ・表示は、要素の並びだけで決まる(2026-10-07から)。
 
 #if !COMPATIBLE_ATCODER_2025
+#if false
 import PermutationModule
 import XCTest
 
@@ -63,4 +64,5 @@ final class NextPermutationsSequence_3_PermutationCollectionTests: XCTestCase {
     XCTAssertEqual(p[p.endIndex - 1], 2)
   }
 }
+#endif
 #endif

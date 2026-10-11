@@ -38,6 +38,9 @@ let package = Package(
         .product(name: "CollectionsBenchmark", package: "swift-collections-benchmark"),
         "CppBenchmarks",
       ],
+      swiftSettings: [
+        .enableExperimentalFeature("Lifetimes"),
+      ],
     ),
     .target(
       name: "CppBenchmarks",

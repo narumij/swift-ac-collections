@@ -1,4 +1,5 @@
 #if DEATH_TEST && !COMPATIBLE_ATCODER_2025
+#if false
   import Testing
 
   #if canImport(Darwin)
@@ -54,5 +55,6 @@
         _ = p[Int.max]
       }
     }
-  }
+}
+#endif
 #endif

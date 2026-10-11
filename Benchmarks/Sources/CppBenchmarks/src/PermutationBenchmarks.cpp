@@ -13,6 +13,14 @@ cpp_permutation_create(size_t count)
   return source;
 }
 
+void *
+cpp_permutation_create_binary(size_t count, size_t selected_count)
+{
+  auto source = new std::vector<intptr_t>(count, 0);
+  std::fill(source->end() - selected_count, source->end(), 1);
+  return source;
+}
+
 void
 cpp_permutation_destroy(void *ptr)
 {

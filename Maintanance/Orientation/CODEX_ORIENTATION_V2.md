@@ -128,7 +128,7 @@ Task Registryは、この蓄積を捨てて導入した帳票ではない。長�
 
 中間ゴールから必要な事実、判断、実行を分け、必須依存とgoal proximityからnextを選ぶ。readyはnextを意味せず、
 `LATER`や`OUTSIDE`を惰性で進めない。新しい判断点やcycleを見つけたら停止して分解し直す。詳細は
-`TASK_ORIENTATION.md`と`CODEX_TASK_OPERATION_PLAYBOOK.md`を正とする。
+`TASK_ORIENTATION.md`と`Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`を正としていた。
 
 ## このrepositoryで特に慎重に扱うもの
 
@@ -227,7 +227,7 @@ task graph lintを例にする場合、詳細は`Graph/TASK_GRAPH_LINT.md`を読
 
 選択taskまたは具体的な問題が要求した場合だけ読む:
 
-- `CODEX_TASK_OPERATION_PLAYBOOK.md`: task運用の詳細手順
+- `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`: 当時のtask運用の詳細手順
 - `AI_TECHNICAL_ORIENTATION.md`: 技術的難所、誤認、証拠、停止点
 - `AGENT_TASK_FIT_INTERVIEW.md`: 具体的な担当、委譲範囲、停止条件を決める際に確認する、repository固有の合意記録
 - `Graph/TASK_GRAPH_LINT.md`: 機械検査と意味判断の境界

@@ -47,3 +47,7 @@ Archived全体を探索しない。
 - `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md`: `Maintanance/`直下27文書の待避判断と再確認条件
 - `AI_GRAPH_SMELL_NOTES.md`: 完了したsmell観測と試験記録
 - `USER_MANAGEMENT_ASSESSMENT.md`: 2026-10-05時点の統合評価
+
+## 2026-10-12移動分
+
+- `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`: V2採用後に退役した旧Codex task運用playbook

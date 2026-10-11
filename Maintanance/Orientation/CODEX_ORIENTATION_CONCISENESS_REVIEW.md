@@ -22,7 +22,7 @@
 - 現在のTask Registry、個別task、Archived記録を調査して内容を補強しない。
 - 文書の思想、責任境界、復帰経路、停止条件を新しく設計しない。
 - 単に文章が長いという理由だけで削除候補にしない。削った場合に失われる理解を確認する。
-- `AGENTS.md`、`TASK_ORIENTATION.md`、`CODEX_TASK_OPERATION_PLAYBOOK.md`などへの委譲を提案する場合は、
+- `AGENTS.md`、`TASK_ORIENTATION.md`、`Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`などへの委譲を提案する場合は、
   参照先に必要な内容が実在するか確認する。
 - 現在状態や履歴をOrientationへ追加する提案はしない。
 
@@ -71,7 +71,7 @@
 - **分類:** `移管`
 - **冗長だと判断した範囲:** 中間ゴール、task分類、依存辺、goal proximity、cycle時の停止を説明する本文129〜139行
 - **理由:** `TASK_ORIENTATION.md`には中間ゴール、`DISCOVERY`・`DECISION`・`EXECUTION`、`SEQUENCE`・`PARALLEL_JOIN`、readyとnext、`DIRECT`〜`OUTSIDE`、cycle時の停止が実在し、より体系的に説明されている。Orientation本文では判断原理への入口があれば足りる。
-- **最小修正案:** ポスター画像は維持し、説明を「中間ゴールから必要なtaskを分け、必須依存とgoal proximityからnextを選び、新しい判断点やcycleでは停止して分解し直す」という一段落に短縮する。詳細は`TASK_ORIENTATION.md`と`CODEX_TASK_OPERATION_PLAYBOOK.md`へ委ねる。
+- **最小修正案:** ポスター画像は維持し、説明を「中間ゴールから必要なtaskを分け、必須依存とgoal proximityからnextを選び、新しい判断点やcycleでは停止して分解し直す」という一段落に短縮する。詳細は`TASK_ORIENTATION.md`と`Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`へ委ねる。
 - **失われ得る理解:** readyはnextを意味せず、`LATER`・`OUTSIDE`を惰性で進めないこと、およびcycleを辺の無視で解消しないこと。
 - **確信度:** `HIGH`
 
@@ -126,7 +126,7 @@
 ### 安全に削減できる箇所
 
 - Registry成立史のうち、同じ分離理由を重ねる説明と約30%という個別事例
-- Task処理ポスター周辺の詳細手順。`TASK_ORIENTATION.md`と`CODEX_TASK_OPERATION_PLAYBOOK.md`に実在する
+- Task処理ポスター周辺の詳細手順。`TASK_ORIENTATION.md`と`Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`に実在する
 - task graph lintの5問を、一つの受入観点と参照へまとめた部分
 - 読書一覧のうち、選択taskから辿るべき個別・歴史資料
 

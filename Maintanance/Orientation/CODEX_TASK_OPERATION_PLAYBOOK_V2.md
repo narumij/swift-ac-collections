@@ -1,7 +1,7 @@
 # Codex Task Operation Playbook V2
 
 > **文書状態:** 2026-10-12、ユーザー判断により現行playbookの正本として採用。
-> 旧版のアーカイブは別の判断と実行を経て行う。
+> 旧版はユーザー判断を経て`Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`へ保存した。
 
 ## 目的
 

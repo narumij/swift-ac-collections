@@ -5,7 +5,7 @@
 この文書は、新しいCodexがTask Registryの形式を読むだけでなく、このrepositoryでtaskをどう考え、
 なぜその分け方から次の行動が決まるのかを理解するための実践的な入口である。
 
-詳細な運用規則は`CODEX_TASK_OPERATION_PLAYBOOK.md`を正とする。本書は規則の要約ではなく、会話から
+詳細な運用規則は`Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`を正としていた。本書は規則の要約ではなく、会話から
 中間ゴール、task、依存、判断、実行、受入へ変換する際の思考順序と、初回確認に使う事例を示す。
 
 ![品質をAIに任せる仕組み — Codexのtask処理](../AI_TASK_PROCESS_POSTER.png)
@@ -191,7 +191,7 @@ Registryと正本を読み、現在の結果、その意味、次の作業、必
 ## 詳細な参照先
 
 - `CODEX_ORIENTATION.md`: 司令塔としての責任、証拠、復帰の全体像
-- `CODEX_TASK_OPERATION_PLAYBOOK.md`: task作成、依存、状態、委任、受入の詳細規則
+- `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`: 当時のtask作成、依存、状態、委任、受入の詳細規則
 - `PROGRESS_OVERVIEW.md`: 現在の中間ゴール、task、状態、必須依存の正本
 - `PROGRESS_OVERVIEW_TEMPLATE.md`: 別projectへ移植するときのRegistry雛形
 - `Graph/TASK_GRAPH_LINT.md`: graphが機械的に検査できる範囲と、判断を代行しない境界

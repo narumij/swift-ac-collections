@@ -663,7 +663,7 @@ Codexが管理メモを実作業より重いworkflow engineとして扱い、現
   conversation喪失、release工程の欠落、過剰な管理、branch誤認を、再開正本、候補検収、権限境界、切替前確認へ
   変えてきた。失敗の存在を隠さず、それ以上に学びを再利用可能な仕組みへ変えたことを評価している。
 - **一般原理を発見したら、実作業から正本へ昇格できる。** 会話で得た抽象度、対称性、関心の分離、AIの余力を、
-  `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md`へ「管理構造の分かりやすさを保つ」原則として記録するよう提案した。
+  `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`へ「管理構造の分かりやすさを保つ」原則として記録するよう提案した。
 
 ### 残る注意点
 

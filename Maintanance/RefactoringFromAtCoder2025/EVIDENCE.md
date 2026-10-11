@@ -47,6 +47,11 @@ extensionや同じ責務の分割ファイルは一行へまとめる。名前�
 
 ## `UnsafeTree`内部構造の転換点
 
+本紙の概念図
+[`unsafe-tree-live-migration.png`](Images/unsafe-tree-live-migration.png)は、以下の転換点とKeystone testの
+記録を「稼働経路を残した段階移管」として要約したものである。編集可能なSVGは
+[`unsafe-tree-live-migration.svg`](Images/unsafe-tree-live-migration.svg)に置く。
+
 | 段階 | Index | Node | Storage / `ManagedBuffer` | CoW | 主な証拠 |
 |---|---|---|---|---|---|
 | AtCoder 2025 (`b2580703`) | `rawValue: Int`、Indexが`___Tree`を保持 | 連続要素、整数リンク | `ManagedBuffer<Header, Node>` | 非一意または容量不足で全体copy | `_Tree/___Tree*.swift` |

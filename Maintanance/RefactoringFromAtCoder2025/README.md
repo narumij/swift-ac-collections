@@ -18,6 +18,16 @@
 [別紙](EVIDENCE.md)に置く。本紙は、その証拠から成立する説明の
 正本とする。
 
+## 架け替えの成立構造
+
+![旧Treeを稼働させたままIndex、Node、Storage、CoWを別々の速度で移管した構造](Images/unsafe-tree-live-migration.png)
+
+整数Indexだけをpointerへ置換することはできなかった。pointerはNodeの固定アドレスを要求する一方、
+従来の連続StorageとCoW copyはNodeを移動する。そこで公開挙動と旧Treeを足場として残し、pointer
+IndexとUnsafeNodeを先行して並設した後、Storageを専用Bufferとraw bucketへ移し、Nodeの同一性と
+Indexの寿命を後から安全柵へ分離した。検証網も完成形のまま固定せず、公開挙動のテストを残しながら、
+内部FixtureとKeystoneを新しい境界へ追従させた。
+
 ## 一枚で見る移行
 
 ![Unsafe系統の移行史](Images/unsafe-lineage-timeline.png)
@@ -52,22 +62,6 @@ recycle count、sealed pointer、tied storageへ段階的に外在化した。
 それぞれの境界で扱う構造へ収束している。
 
 ## 変化とテストの緊張関係
-
-![RedBlackTreeの構造転換点ごとのテスト宣言総数・静的有効件数・runner列挙数](Images/rbt-test-counts.png)
-
-この図はRedBlackTreeに関係するtestだけを対象に、内部構造上の代表15転換点を等間隔に並べたものである。
-横幅は経過時間を表さない。青は条件コンパイル内を含む総宣言数、橙は通常Debug構成で静的に有効と
-判定した宣言数、緑は独立scratchでrunnerが発見したRedBlackTree実行単位数を表す。緑の空白は当時の
-Package manifestと現在利用可能なtoolchain・SDKの組合せでは、原文のままbuildできなかった期間である。
-
-RedBlackTreeのtest宣言は基点の911件から現在1516件へ増えたが、単調には増えていない。UnsafeTree
-導入時には互換mode導入点の1102件から989件へ落ち、Index V3では総数1104件に対して静的有効数が
-813件まで開いた。さらに2026年9月25日から29日の再編では、総宣言数が1506件から1095件、静的有効
-件数が966件から678件、runner列挙数が1110件から803件へ同時に縮退した。
-
-Keystone移動後のrunner列挙数は864件、Fixture target成立後は1064件、現在は1221件である。
-旧test群の撤去によって検証網をいったん狭め、KeystoneとFixtureを新しい内部境界へ移して張り直した
-過程が、構造転換と同じ横軸で確認できる。
 
 移行の要石として保存されているテストは次である。
 

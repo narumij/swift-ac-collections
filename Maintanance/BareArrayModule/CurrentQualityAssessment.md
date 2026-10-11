@@ -162,15 +162,65 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
 
 | ID | 種別 | 近さ | 内容 | 必要性 |
 | --- | --- | --- | --- | --- |
-| `BARE-006` | 既存`DISCOVERY` | `DIRECT` | BareArray 1.0の性能測定設計 | QR-02の外部性能を推定せず、対象操作、size、比較対象、評価方法と必要な判断を整理する |
+| `BARE-006` | 既存`DISCOVERY` | `DIRECT` | BareArray多次元access性能測定設計 | 2D・3Dの連鎖accessをC++ nested vectorと同一条件で測るworkloadと、CI回帰・外部assessmentの境界を確定済み |
 | `BARE-007` | 既存`EXECUTION` | `DIRECT` | BareArray 1.0の性能計測 | `BARE-006`で確定した構成に従い測定証拠を取得する |
 | `DOC-010` | 既存`DISCOVERY` | `NEAR` | BareArrayの定性的性能表現の再検討 | 実装意図と未測定の外部性能を混同せず、利用者向け表現を再検討する |
 | `BARE-017` | `DISCOVERY` | `DIRECT` | BareArray利用Validation scenario設計 | QR-04・QR-05について、一般Swift利用と競技利用の代表scenario、導入経路、観測方法、必要な後続判断を整理する |
 | `BARE-028` | `EXECUTION` | `DIRECT` | Claude手直し後の差分再検証 | Claudeのレビューと手直しが受け入れられた後、変更影響範囲の検証を再実行して完了ゲートへ渡す |
 
-`BARE-006`、`BARE-007`、`DOC-010`の凍結は本評価によって解除しない。
+`BARE-006`は後続のユーザー指示で再開し、下記の設計を確定した。`BARE-007`と
+`DOC-010`の凍結は本評価によって解除しない。
 `BARE-017`は判断を確定せず、一般利用と競技利用で実行・判断境界が異なる場合は後続taskへ分離する。
 `BARE-028`は、Claudeのレビューと手直しが受け入れられるまで凍結する。
+
+## 多次元access性能測定設計
+
+- ID: `BARE-006`
+- 種別: `DISCOVERY`
+- 担当: Codex
+- 現在の中間ゴールへの近さ: `DIRECT`
+
+### 測定対象
+
+競技プログラミングの動的計画法で一般的な、2Dと3Dの全要素をstorage順に読み書きする
+連鎖subscript accessを対象とする。BareArrayの公開access路として非所有Viewを経由する
+`array[y][x]`と`array[z][y][x]`を測定する。1Dはnested containerとしての差が現れず、4Dは
+代表的利用scenarioを追加せず測定次元だけを増やすため、この評価には含めない。
+
+各次元に次の2 workloadを設ける。
+
+| workload | 計測内の操作 | 計測外の処理 |
+| --- | --- | --- |
+| sequential read checksum | storage順に全要素を連鎖subscriptで読み、`Int`へ加算 | shape生成、0からの連番値で初期化、checksum検証 |
+| sequential write | storage順に連鎖subscriptで0からの連番値を書き込む | shape生成、0初期化、全要素のchecksum検証 |
+
+allocation、初期化、shape構築、および事後検証は計測時間に含めない。readとwriteを分けることで、
+回帰時にどちらのaccess路が変化したかを局所化する。
+
+### inputとshape
+
+Benchmarkの正の2のべき乗である`size`を総要素数とし、指数を軸へできるだけ均等に配分する。
+2Dは最内軸から順に大きくなる2軸、3Dは同様の3軸とし、各軸の積を常に`size`と
+一致させる。これにより同一の要素数で次元だけが異なる経路を比較でき、CIの入力上限を
+三乗で超えない。実装は不正な`size`を黙って丸めず、前提条件として拒否する。
+
+checksumは要素数`n`に対する`0 ..< n`の和とし、SwiftとC++の両方で同一の結果を検証する。
+C++側の要素型はSwift `Int`とword widthを合わせた`std::intptr_t`とする。
+
+### 比較境界
+
+- CI回帰層はSwift BareArrayの4 workloadのみを既存`CI.json`へ登録し、base / currentの退行を検出する。
+- 外部assessment層では、Swiftと同じshape・要素値・走査順・checksumのC++ nested
+  `std::vector`を対応workloadとして追加する。C++ workloadは通常CIには含めない。
+- assessmentはmacOS限定とし、専用library、環境情報、生JSON、PNG chartを
+  `Benchmarks/QualityAssessment/macOS/BareArray/`以下へ保存する。
+- 「C++標準に匹敵」と判定する性能比は測定設計の入力にしない。対応workloadの暫定実測後に、
+  実際の差とばらつきを証拠としてユーザー判断taskへ渡す。
+
+### 完了結果
+
+対象操作、shape、計測内外、checksum、Swift / C++の対応、CI回帰と外部assessmentの境界を
+確定した。本設計でユーザー判断は必要なく、次はSwift workloadのCI回帰登録とする。
 
 ## Viewノンエスケーパブル化
 

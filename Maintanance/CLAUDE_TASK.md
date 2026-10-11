@@ -2,35 +2,32 @@
 
 Status: Bounded assignments only. Temporary primary-user-support delegation ended 2026-10-08 by user direction.
 
-Claude remains limited to explicit requests and ready Claude-owned Registry tasks, while Codex keeps
-integration, decisions, acceptance, Registry updates, and public-document ownership.
+Claude works only on an explicit user request or a ready Claude-owned Registry task selected by the
+user or Codex. Codex integrates the results, performs Registry acceptance and state updates, and
+owns public-document completion.
+Repository evidence establishes factual correctness; product decisions remain with the user.
 
 ## Current job status
 
-**実行中ジョブ: なし（`QUALITY-002`はCodex検収済み）**
+**実行中ジョブ: なし**
 
 - 継続ジョブ: なし。
-- 2026-10-11、ユーザーが2026-10-13 16:00 JSTまでの開始制限を解除し、この作業のClaudeへの
-  正式登録を明示的に承認した。
-- `RELEASE-074`再作成版は`User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md`へ保存済みである。
-- 本線の現在状態: `BARE-002`は2026-10-09 11:44に着手し、ledgerを
-  `BareArrayModule/BareArrayAudit.md`へ追記して返却した。Codexは29宣言・4適合と証拠区分を検収して
-  受け入れた。性能、View寿命、strict memory safetyは後続の1.0判断まで凍結を維持する。
 
-この節だけでジョブの有無を判断する。下の完了済みassignmentやhistorical snapshotを現行ジョブとして
-読み替えない。状態が変わったときは、assignment本文より先にこの節を更新する。
+この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
+ときは、assignment本文より先にこの節を更新する。
 
 ## Operating mode: bounded assignments only
 
-Claude is no longer the primary repository assistant or a substitute for Codex. Work only on an
-explicit user request or a Claude-owned Registry task whose prerequisites are satisfied. Codex owns
-integration, acceptance, Registry state changes, and public-document completion.
+Work only on an explicit user request or a ready Claude-owned Registry task selected by the user or
+Codex. Readiness alone does not authorize Claude to select or start a task. Codex integrates the
+result, performs Registry acceptance and state changes, and owns public-document completion. These
+coordination responsibilities do not make Codex's agreement evidence of factual correctness.
 
 The rules below remain as bounded-task execution constraints. They do not grant standing authority
 to select the next task, restart frozen work, or act on behalf of Codex.
 
-The current branch is `devleop/misc/51`. `develop/misc/50` was merged by PR #174 at `046c5359`.
-Verify the current branch before editing; do not rely on this line alone.
+Verify the current branch from the repository before editing; do not preserve a branch name here as
+current state.
 
 ### Communication
 
@@ -94,7 +91,8 @@ permission.
   Do not turn backlog discovery into authorization to implement it.
 - Preserve unrelated worktree changes. Never reset or discard user work to make a task clean.
 - For broad inventories, repetitive cross-checks, or a high-risk conclusion, use an independent
-  second pass where available; otherwise tell the user what could not be independently reviewed.
+  evidence-oriented second pass where available; otherwise tell the user what could not be
+  independently reviewed. Agreement between agents is not evidence by itself.
 - For performance work, fix the environment and baseline, reproduce first, and distinguish CI
   history from new local measurements.
 - For cross-branch work, identify symbols by branch, path, configuration, and meaning. Verify the
@@ -115,40 +113,3 @@ curate the overall backlog. Registry acceptance and state changes remain Codex-o
 
 If a task reveals a defect or decision point outside its boundary, report and stop. Do not turn the
 finding into implementation authority.
-
-### Superseded primary-role handoff
-
-The following handoff predates the 2026-10-08 delegation-mode cancellation and is not an active
-task list or authority source.
-
-#### Historical snapshot (2026-10-08)
-
-完了済みの項目は`Archived/CLAUDE_TASK_HISTORY.md`末尾（2026-10-06〜07の圧縮前全文と、2026-10-07〜08の完了分）にある。
-
-- 現在の律速は外部（swift-collections `Container.Index`の`Comparable`要件）。2026-10-07のupstream確認でも
-  `Equatable, Comparable, Hashable`のまま（最終変更`b2424210`、削除検討のFIXMEあり）。`RBT-001` / `010` / `011`は外部待ち。
-- Index完了ゲートは、Comparable依存（`RBT-011`、`RedBlackTreeSet_9`の`test_index_comparable`、`==` / `<` / hashの意味）と
-  ドキュメントを除き、検証で閉じられることを確認した（根拠は履歴の圧縮前全文）。ゲートのチェック付け替えはCodex。
-- push / worktree: `develop/misc/50`には未pushのmaintenance更新があるため、push前にupstreamとの差分を確認する。
-  `RBT-017`系の終了反映は`9390433f`。性能jobの未確認: Permutation `next()`の変更（`4eae63f9`、`PERM-013`で確認する
-  ユーザー判断）と`__construct_node`への`@inlinable`（`19a894c3`）。
-- `RBT-008`: ユーザー判断で現行3案は不採用。超ホットパスなので、再提案は性能試験の結果を添えて判断が冴えているときに行う。
-  完了条件は「ユーザーが納得できるコードの提示」。
-- 文書・整理の残依頼（Codex）: `RED_BLACK_TREE_REMAINING_TASKS.md`の「Indexが`Result`のtypealiasなのでComparableにできない」は
-  PR #158で古い。`OPT-001` / `BARE-001`（体系・名称）と`ARRAY-001`（storage再設計）はレベルが違うので整理を見直す。
-  `RBT-013`由来で未処理: 「名前の再検討」4件は残task文書で現名確定と記載済みだが、TODOコメントは残っている。
-  古いコメント2件（`RedBlackTreeMappedValuesView.swift:23`「Implement This」、`RedBlackTreeMultiMap+Sequence.swift:181`）はユーザーの「消して」待ち。
-- `GRAPH-001`（試験運用継続）: Registryのprojectionとコード依存graphに、taskと対象コードの対応を加え、手書きの辺を
-  コード上の結合で検査できるようにした。古い辺（`RBT-003` ← `RBT-001`）と未使用コードの発見に効いた。
-  観測: 対象を型・ファイル単位で登録すると結合が過大に出る（`RBT-008`の誤結合）。「そのtaskが実際に変えるもの」で登録する。
-  確定判定は常にコンパイラ（無効化して多構成ビルド）で行い、DBは候補出しに使う。中間ゴール → 作業taskだけを出す →
-  必須依存とsoft orderに分けて仮組みする使い方で、DBの着手判定はRegistryと一致。soft orderは文章なのでDBには見えない。
-  2026-10-08の観測: Registryの状態更新が遅れると、DBも完了済みtask（`PERM-016` / `PERM-018`）を着手可能と出す。
-  2026-10-08夜: 待ちtaskに「どの段階で起きるか」（今のゴール / 文書フェーズ / 1.0 / 契機待ち / 外部待ち）をローカルで付け、
-  要約では今のゴール外を件数1行に畳むようにした。34件の待ちが「今は見なくてよい」1行になり、着手可能の判定はRegistryと一致。
-  段階はRegistryの再開条件からのClaudeの読みで、正本ではない。観測: 契機待ちが27件と最大で、中身は「ユーザー指定」「実害」
-  「明示再開」の混在。互換mode系（`PERM-004`〜`PERM-010`）を契機待ちに置いたのは読みが割れうる点。
-  2026-10-08夜、ユーザー判断: 当面、分解はClaudeが行い、枝番を付けた子taskの登録はCodexへ依頼する（今日の`RBT-017`と同じ流れ）。
-  graph DBで子taskを持つ案は、Codexへ伝えられないので見送り。
-- `GRAPH-005`: 共有面はtrackedな`Graph/GRAPH_DB_EXCHANGE.md`を使った。2026-10-09、ユーザー判断で交流会を終了。
-- 10/10以降: task fit協議を予定（ユーザー）。この一時的な主担当の役割はその時点で見直す。

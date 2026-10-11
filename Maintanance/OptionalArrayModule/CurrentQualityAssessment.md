@@ -66,6 +66,25 @@ View寿命、`Sendable`、strict memory safety、`-Ounchecked`の境界を現行
 SwiftPM user cacheが書込み不可である環境警告と、ASan build時にOptionalArray testの`var` 1件、
 RedBlackTree testの未使用値2件のwarningが出た。製品OptionalArrayModuleの通常buildにはwarningがない。
 
+## 多次元access性能測定設計
+
+OptionalArrayの競技用途であるmemoizationを表すため、2Dと3Dのそれぞれで次の2状態を測定する。
+
+- cold access: 未設定slotを読み、未設定なら線形indexと同じ値を保存し、保存値をchecksumへ加える。
+- warm access: 同じ値で事前に全slotを設定し、設定済み値の読み取りだけをchecksumへ加える。
+
+shapeはBareArray測定と同じ総要素数の素因数を各軸へ均衡に割り当て、積が入力sizeと完全に
+一致する2D・3D shapeを用いる。走査は最内軸から連続する順序とし、期待checksumは
+`size * (size - 1) / 2`とする。
+
+配列の確保、shape計算、warm状態の事前設定は計測外に置く。計測内には連鎖subscriptによる
+presence確認、cold時の値保存、値取得、checksum更新だけを含める。checksumは計測後に
+`blackHole`と`precondition`へ渡し、最適化による消去と誤った走査を検出する。
+
+CIにはSwift版の4 workloadだけを通常libraryへ登録する。後続のC++外部assessmentでは、
+nested `vector<Int>`を同じshapeで確保し、未設定を表す番兵値をpresence判定に用いて、
+同じcold / warm操作、走査順、checksumに対応させる。C++ workloadは通常CIには含めない。
+
 ## 判断の整理
 
 - 1D所有型名と次元名体系は、0.6.0到達範囲判断の前に残る製品上の判断である。ただし現行名での
@@ -75,6 +94,8 @@ RedBlackTree testの未使用値2件のwarningが出た。製品OptionalArrayMod
 - View寿命の既存契約は「親より長く保持しない」であり、その契約を変える判断は現時点で見つかって
   いない。まずSwift 6.4 Lifetimesで既存契約を型へ移せるかを調べる。
 - 性能、一般利用、競技利用、`Sendable`、`-Ounchecked`は証拠不足であり、成功とも失敗とも判断しない。
+- 多次元accessの測定条件は、OptionalArrayの既存用途とBareArrayで確定済みのshape・計測境界から
+  導ける。新しい製品仕様や性能比の受入水準を決めないため、設計時のユーザー判断は発生しない。
 
 ## 後続task候補
 

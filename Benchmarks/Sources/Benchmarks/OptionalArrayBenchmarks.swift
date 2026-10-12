@@ -286,6 +286,51 @@ extension Benchmark {
     }
 
     self.add(
+      title: "OptionalArray1D<Int> direct methods cold memoization checksum",
+      input: Int.self
+    ) { size in
+      let array = OptionalArray1D<Int>(capacity: size)
+      return { timer in
+        array.removeAll()
+        var checksum = 0
+        timer.measure {
+          for i in 0..<size {
+            if let cached = array.element(at: i) {
+              checksum &+= cached
+            } else {
+              array.setElement(i, at: i)
+              checksum &+= array.element(at: i)!
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == optionalArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "OptionalArray1D<Int> direct methods warm memoization checksum",
+      input: Int.self
+    ) { size in
+      let array = OptionalArray1D<Int>(capacity: size)
+      for i in 0..<size {
+        array.setElement(i, at: i)
+      }
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          for i in 0..<size {
+            if let cached = array.element(at: i) {
+              checksum &+= cached
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == optionalArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
       title: "OptionalArray2D<Int> cold memoization checksum",
       input: Int.self
     ) { size in
@@ -334,6 +379,65 @@ extension Benchmark {
           for y in 0..<shape.height {
             for x in 0..<shape.width {
               if let cached = array[y][x] {
+                checksum &+= cached
+              }
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == optionalArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "OptionalArray2D<Int> direct methods cold memoization checksum",
+      input: Int.self
+    ) { size in
+      let shape = optionalArray2DShape(for: size)
+      let array = OptionalArray2D<Int>(width: shape.width, height: shape.height)
+
+      return { timer in
+        array.removeAll()
+        var checksum = 0
+        timer.measure {
+          var value = 0
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              if let cached = array.element(at: x, y) {
+                checksum &+= cached
+              } else {
+                array.setElement(value, at: x, y)
+                checksum &+= array.element(at: x, y)!
+              }
+              value += 1
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == optionalArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "OptionalArray2D<Int> direct methods warm memoization checksum",
+      input: Int.self
+    ) { size in
+      let shape = optionalArray2DShape(for: size)
+      let array = OptionalArray2D<Int>(width: shape.width, height: shape.height)
+      var value = 0
+      for y in 0..<shape.height {
+        for x in 0..<shape.width {
+          array.setElement(value, at: x, y)
+          value += 1
+        }
+      }
+
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              if let cached = array.element(at: x, y) {
                 checksum &+= cached
               }
             }
@@ -400,6 +504,73 @@ extension Benchmark {
             for y in 0..<shape.height {
               for x in 0..<shape.width {
                 if let cached = array[z][y][x] {
+                  checksum &+= cached
+                }
+              }
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == optionalArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "OptionalArray3D<Int> direct methods cold memoization checksum",
+      input: Int.self
+    ) { size in
+      let shape = optionalArray3DShape(for: size)
+      let array = OptionalArray3D<Int>(
+        width: shape.width, height: shape.height, depth: shape.depth)
+
+      return { timer in
+        array.removeAll()
+        var checksum = 0
+        timer.measure {
+          var value = 0
+          for z in 0..<shape.depth {
+            for y in 0..<shape.height {
+              for x in 0..<shape.width {
+                if let cached = array.element(at: x, y, z) {
+                  checksum &+= cached
+                } else {
+                  array.setElement(value, at: x, y, z)
+                  checksum &+= array.element(at: x, y, z)!
+                }
+                value += 1
+              }
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == optionalArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "OptionalArray3D<Int> direct methods warm memoization checksum",
+      input: Int.self
+    ) { size in
+      let shape = optionalArray3DShape(for: size)
+      let array = OptionalArray3D<Int>(
+        width: shape.width, height: shape.height, depth: shape.depth)
+      var value = 0
+      for z in 0..<shape.depth {
+        for y in 0..<shape.height {
+          for x in 0..<shape.width {
+            array.setElement(value, at: x, y, z)
+            value += 1
+          }
+        }
+      }
+
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          for z in 0..<shape.depth {
+            for y in 0..<shape.height {
+              for x in 0..<shape.width {
+                if let cached = array.element(at: x, y, z) {
                   checksum &+= cached
                 }
               }

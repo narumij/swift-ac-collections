@@ -114,6 +114,29 @@ extension OptionalArray1D {
   ///
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<count }
+
+  /// `position`の要素を返します。未設定なら`nil`を返します。
+  @inlinable
+  public func element(at position: Int) -> Element? {
+    precondition(0 <= position && position < count)
+    guard unsafe hasPayload[position] else { return nil }
+    return unsafe payload[position]
+  }
+
+  /// `position`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  @inlinable
+  public func setElement(_ newValue: consuming Element?, at position: Int) {
+    precondition(0 <= position && position < count)
+    if unsafe hasPayload[position] {
+      unsafe (payload + position).deinitialize(count: 1)
+    }
+    if let newValue = consume newValue {
+      unsafe (payload + position).initialize(to: newValue)
+      unsafe hasPayload[position] = true
+    } else {
+      unsafe hasPayload[position] = false
+    }
+  }
 }
 
 extension OptionalArray1D: @unchecked Sendable where Element: Sendable { }
@@ -242,6 +265,33 @@ extension OptionalArray2D {
   ///
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<height }
+
+  /// `(x, y)`の要素を返します。未設定なら`nil`を返します。
+  @inlinable
+  public func element(at x: Int, _ y: Int) -> Element? {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    let offset = y * width + x
+    guard unsafe hasPayload[offset] else { return nil }
+    return unsafe payload[offset]
+  }
+
+  /// `(x, y)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  @inlinable
+  public func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int) {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    let offset = y * width + x
+    if unsafe hasPayload[offset] {
+      unsafe (payload + offset).deinitialize(count: 1)
+    }
+    if let newValue = consume newValue {
+      unsafe (payload + offset).initialize(to: newValue)
+      unsafe hasPayload[offset] = true
+    } else {
+      unsafe hasPayload[offset] = false
+    }
+  }
 }
 
 extension OptionalArray2D: @unchecked Sendable where Element: Sendable { }
@@ -370,6 +420,38 @@ extension OptionalArray3D {
   public var indices: Range<Int> { 0..<depth }
 }
 
+extension OptionalArray3D {
+
+  /// `(x, y, z)`の要素を返します。未設定なら`nil`を返します。
+  @inlinable
+  public func element(at x: Int, _ y: Int, _ z: Int) -> Element? {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    precondition(0 <= z && z < depth)
+    let offset = (z * height + y) * width + x
+    guard unsafe hasPayload[offset] else { return nil }
+    return unsafe payload[offset]
+  }
+
+  /// `(x, y, z)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  @inlinable
+  public func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int, _ z: Int) {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    precondition(0 <= z && z < depth)
+    let offset = (z * height + y) * width + x
+    if unsafe hasPayload[offset] {
+      unsafe (payload + offset).deinitialize(count: 1)
+    }
+    if let newValue = consume newValue {
+      unsafe (payload + offset).initialize(to: newValue)
+      unsafe hasPayload[offset] = true
+    } else {
+      unsafe hasPayload[offset] = false
+    }
+  }
+}
+
 extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
 
 /// メモ化用配列
@@ -496,6 +578,39 @@ extension OptionalArray4D {
   ///
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<size3 }
+
+  /// `(x, y, z, w)`の要素を返します。未設定なら`nil`を返します。
+  @inlinable
+  public func element(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> Element? {
+    precondition(0 <= x && x < size0)
+    precondition(0 <= y && y < size1)
+    precondition(0 <= z && z < size2)
+    precondition(0 <= w && w < size3)
+    let offset = ((w * size2 + z) * size1 + y) * size0 + x
+    guard unsafe hasPayload[offset] else { return nil }
+    return unsafe payload[offset]
+  }
+
+  /// `(x, y, z, w)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  @inlinable
+  public func setElement(
+    _ newValue: consuming Element?, at x: Int, _ y: Int, _ z: Int, _ w: Int
+  ) {
+    precondition(0 <= x && x < size0)
+    precondition(0 <= y && y < size1)
+    precondition(0 <= z && z < size2)
+    precondition(0 <= w && w < size3)
+    let offset = ((w * size2 + z) * size1 + y) * size0 + x
+    if unsafe hasPayload[offset] {
+      unsafe (payload + offset).deinitialize(count: 1)
+    }
+    if let newValue = consume newValue {
+      unsafe (payload + offset).initialize(to: newValue)
+      unsafe hasPayload[offset] = true
+    } else {
+      unsafe hasPayload[offset] = false
+    }
+  }
 }
 
 extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }

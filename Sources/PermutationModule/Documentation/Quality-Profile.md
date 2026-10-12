@@ -192,9 +192,9 @@ Swift 6.2向けにはversion-specific manifestからPermutationModuleを除く�
 | --- | --- |
 | リポジトリ全体の上位品質要求 | `Maintanance/User/QUALITY_REQUIREMENTS.md` |
 | 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
-| 通常版の観察可能な仕様 | 借用契約のTest as Specification（再構築前）。現在は`Sources/PermutationModule/Permutations.swift`の公開契約を参照し、退避中の旧testを現行仕様と扱わない |
+| 通常版の観察可能な仕様 | 借用契約のTest as Specification（再構築前）。現在は`Sources/PermutationModule/NextPermutations.swift`の公開契約を参照し、退避中の旧testを現行仕様と扱わない |
 | AtCoder 2025互換modeの観察可能な仕様 | `Tests/PermutationTests/AtCoder2025Compatibility/` |
-| 公開APIとdocumentation comment | `Sources/PermutationModule/Permutations.swift`および互換modeのsource |
+| 公開APIとdocumentation comment | `Sources/PermutationModule/NextPermutations.swift`および互換modeのsource |
 | 性能測定対象 | `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift` |
 | 継続測定の対象と構成 | `Benchmarks/Libraries/*.json`およびGitHub Actions |
 | 特定commit・環境での調査結果 | 対象調査またはreleaseの記録 |

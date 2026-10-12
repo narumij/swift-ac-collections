@@ -22,7 +22,7 @@ retired `NextPermutationsSequence` value-semantic and Copy on Write contract.
 ## Authoritative inputs
 
 - `Sources/PermutationModule/Documentation/Quality-Profile.md`
-- The active Swift 6.4 implementation in `Sources/PermutationModule/Permutations.swift`
+- The active runtime-checked implementation in `Sources/PermutationModule/NextPermutations.swift`
 - The seven disabled files in `Tests/PermutationTests/NextPermutationsSequence/`
 - Git history for the removed Swift 6.2 COW implementation, when implementation details are needed
 - `Tests/PermutationTests/EtcTests.swift`, which is a persistent scratchpad whose individual checks

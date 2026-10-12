@@ -229,7 +229,7 @@ unsafeな結果共有を、現行APIとして再推奨もしない。
 ## 確認した基準点
 
 - 基準ref: `remotes/origin/release/AtCoder/2025`
-- 基準ソース: `Sources/PermutationModule/Permutations.swift`
+- 基準ソース: `Sources/PermutationModule/NextPermutations.swift`
 - 共有しない（2026-10-07変更）: 基準refの`NextPermutationProtocol.swift`。通常版はこのprotocolを
   廃止し、アルゴリズムを`Permutations.swift`の`Buffer`拡張へまとめた（ファイル頭の長いヘッダーは削除、関数ごとのswift-algorithms出典コメントは維持）。互換版は基準refの
   protocolファイルを互換ディレクトリへ自分で持つ。

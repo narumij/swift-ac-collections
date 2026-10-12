@@ -31,7 +31,7 @@
    (`Tests/PermutationTests/PermutationTests.swift`):
    空コレクション・単一要素・降順先頭ではない開始位置からの継続・CoWによる
    既取得結果の不変性(`testNextPermutationsRetainedResultsRemainStable`)。
-2. `Sources/PermutationModule/Permutations.swift`から次を削除:
+2. `Sources/PermutationModule/NextPermutations.swift`から次を削除:
    - `unsafePermutations()`(Collection拡張メソッド)
    - `Permutations.All`、`.init(safe:)`/`.init(unsafe:)`、`IteratorA`、`SubSequenceA`
    - `unsafeNextPermutations()`(Collection拡張メソッド)

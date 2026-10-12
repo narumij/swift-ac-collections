@@ -21,7 +21,7 @@ PermutationをCodexの利用者向け文書作業へ渡す前に、現在の公�
 
 ### Public API and documentation ledger
 
-対象は`Sources/PermutationModule/Permutations.swift`。`public`宣言を一件ずつ、型、member種別、source位置、
+対象は`Sources/PermutationModule/NextPermutations.swift`。`public`宣言を一件ずつ、型、member種別、source位置、
 宣言上のgeneric制約、ドキュメントコメントの有無へ対応付ける。`@inlinable`など性能属性は事実列として
 記録してよいが、要否を評価しない。成果物は`## Public API ledger`節の表。全宣言の件数を再集計して停止する。
 
@@ -52,7 +52,7 @@ test追加や改名は行わない。
 
 ## Public API ledger
 
-2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`PERM-020`。`L<n>`は`Sources/PermutationModule/Permutations.swift`の行
+2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。`PERM-020`。`L<n>`は`Sources/PermutationModule/NextPermutations.swift`の行
 （`15c8f965`時点）。属性列は事実だけを記録し、要否は評価しない。
 
 | # | 宣言 | 種別 | 位置 | 宣言上のgeneric制約 | 属性 | ドキュメントコメント |

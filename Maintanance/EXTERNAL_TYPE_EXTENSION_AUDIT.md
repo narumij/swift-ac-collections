@@ -60,7 +60,7 @@ executable API MatrixまたはIndex契約の方針と合わせて決める。
 
 ## Main sources
 
-- `Sources/PermutationModule/Permutations.swift`
+- `Sources/PermutationModule/NextPermutations.swift`
 - `Sources/RedBlackTreeCollections/Implements/RawBuffer/`
 - `Sources/RedBlackTreeCollections/Implements/__tree/`
 - `Sources/RedBlackTreeCollections/Implements/Protocol/BalancedSequence.swift`

@@ -1,62 +1,36 @@
-// MARK: - Borrowed, noncopying implementation
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the swift-ac-collections project.
+//
+// Copyright (c) 2024-2026 narumij.
+// Licensed under the Apache License v2.0.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+//===----------------------------------------------------------------------===//
+
+// The iterator owns one mutable element buffer. Each yielded permutation is a view into that
+// buffer and remains valid only until the iterator advances or is destroyed.
 
 extension Collection where Element: Comparable {
 
-  /// Creates an iterator over this order and its lexicographic successors.
-  ///
-  /// The first call to ``NextPermutations/next()`` returns the collection's current element order.
-  /// Later calls return only its lexicographic successors. This does not enumerate orders that
-  /// precede the collection's starting order. Elements that compare equal do not produce duplicate
-  /// value orderings.
-  ///
-  /// The iterator copies the elements into one owned buffer when it is created. Advancing mutates
-  /// that buffer in place and lends its current contents as a `Span`; it does not allocate or copy
-  /// all elements for every result.
-  ///
-  /// Consume each returned span before calling `next()` again. A span cannot escape the iterator's
-  /// lifetime or remain live across its next mutating access.
-  ///
-  /// ```swift
-  /// var permutations = [2, 1, 3].nextPermutations()
-  /// while let permutation = permutations.next() {
-  ///   print(Array(permutation))
-  /// }
-  /// // [2, 1, 3]
-  /// // [2, 3, 1]
-  /// // [3, 1, 2]
-  /// // [3, 2, 1]
-  /// ```
-  ///
-  /// - Returns: A noncopyable iterator that owns a copy of this collection's elements.
-  /// - Complexity: O(n), where n is the number of elements in the collection.
   @inlinable
   public func nextPermutations() -> NextPermutations<Element> {
     .init(copying: self)
   }
 }
 
-/// An iterator that lends the current element order and its lexicographic successors.
-///
-/// `NextPermutations` owns a single mutable buffer initialized from its source collection. The
-/// first result is the source's current order; each later result is the next lexicographic order.
-/// An empty collection, a single element, an all-equal order, and an order with no successor each
-/// produce their current order once.
-///
-/// This type is noncopyable and intentionally does not conform to `Sequence`.
-/// `Sequence.Iterator.next()` cannot express that a result borrows the iterator and must not
-/// survive its next mutation. Iterate manually with ``next()`` and finish using each returned
-/// `Span` before advancing again.
-///
-/// Advancing by one step mutates the owned buffer in place. It performs no per-result allocation or
-/// full-buffer copy.
 @safe
-public struct NextPermutations<Element: Comparable>: ~Copyable {
+public struct NextPermutations<Value: Comparable>: ~Copyable {
 
   @usableFromInline
-  let elements: UnsafeMutablePointer<Element>
+  let elements: UnsafeMutablePointer<Value>
 
   @usableFromInline
   let count: Int
+
+  @usableFromInline
+  let gateKeeper: GateKeeper
 
   @usableFromInline
   var initial = true
@@ -65,9 +39,10 @@ public struct NextPermutations<Element: Comparable>: ~Copyable {
   var finished = false
 
   @inlinable
-  init<Base: Collection>(copying source: Base) where Base.Element == Element {
+  init<Base: Collection>(copying source: Base) where Base.Element == Value {
     count = source.count
     unsafe elements = .allocate(capacity: Swift.max(count, 1))
+    gateKeeper = GateKeeper.create()
 
     var destination = unsafe elements
     for element in source {
@@ -78,33 +53,22 @@ public struct NextPermutations<Element: Comparable>: ~Copyable {
 
   @inlinable
   deinit {
+    gateKeeper.closeCurrentView()
     unsafe elements.deinitialize(count: count)
     unsafe elements.deallocate()
   }
 
-  /// Lends the current element order, then advances through its lexicographic successors.
-  ///
-  /// On the first call, this method returns the order copied from the source collection. On each
-  /// subsequent call, it rearranges the same buffer to its next lexicographic order before returning
-  /// it. After the last order has been returned, this method returns `nil`; later calls also return
-  /// `nil`.
-  ///
-  /// The returned `Span` uses zero-based indices and borrows this iterator. Read or otherwise
-  /// consume it before calling `next()` again. The compiler prevents it from escaping the iterator's
-  /// lifetime or overlapping a later mutating access.
-  ///
-  /// - Returns: A borrowed view of the current order, or `nil` after the final order.
-  /// - Complexity: O(n) in the worst case, where n is the number of elements.
-  @_lifetime(&self)
   @inlinable
-  public mutating func next() -> Span<Element>? {
+  public mutating func next() -> Permutation? {
+    gateKeeper.closeCurrentView()
+
     if finished {
       return nil
     }
 
     if initial {
       initial = false
-      return unsafe Span(_unsafeStart: elements, count: count)
+      return makePermutation()
     }
 
     guard count >= 2 else {
@@ -137,6 +101,69 @@ public struct NextPermutations<Element: Comparable>: ~Copyable {
       upper -= 1
     }
 
-    return unsafe Span(_unsafeStart: elements, count: count)
+    return makePermutation()
+  }
+
+  @inlinable
+  mutating func makePermutation() -> Permutation {
+    return unsafe Permutation(
+      elements: elements,
+      count: count,
+      gateKeeper: gateKeeper,
+      generation: gateKeeper.generation)
+  }
+
+}
+
+extension NextPermutations {
+
+  @safe
+  public struct Permutation: RandomAccessCollection {
+    public typealias Element = Value
+    public typealias Index = Int
+
+    @usableFromInline
+    let elements: UnsafeMutablePointer<Element>
+
+    @usableFromInline
+    let _count: Int
+
+    @usableFromInline
+    let gateKeeper: GateKeeper
+
+    @usableFromInline
+    let generation: UInt
+
+    @inlinable
+    init(
+      elements: UnsafeMutablePointer<Element>,
+      count: Int,
+      gateKeeper: GateKeeper,
+      generation: UInt
+    ) {
+      unsafe self.elements = elements
+      self._count = count
+      self.gateKeeper = gateKeeper
+      self.generation = generation
+    }
+
+    @inlinable
+    public var startIndex: Int {
+      precondition(!gateKeeper.isClosed(generation: generation), "Permutation view is no longer valid")
+      return 0
+    }
+
+    @inlinable
+    public var endIndex: Int {
+      precondition(!gateKeeper.isClosed(generation: generation), "Permutation view is no longer valid")
+      return _count
+    }
+
+    @inlinable
+    public subscript(position: Int) -> Element {
+      precondition(!gateKeeper.isClosed(generation: generation), "Permutation view is no longer valid")
+      precondition(position >= 0 && position < _count, "Index out of range")
+      return unsafe elements[position]
+    }
   }
 }

@@ -7,11 +7,12 @@
 証拠境界は`Sources/PermutationModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、現在評価の作業範囲、完了条件、結果を管理する。
 
-## 借用契約への変更後の現在性
+## 一時View契約への変更後の現在性
 
-2026-10-11、通常版は旧`NextPermutationsSequence`のCOW・値セマンティクス契約から、Swift 6.4の
-Lifetimesと`Span`を用いる`NextPermutations`の借用契約へ変更された。旧通常版testは`#if false`で
-退避され、新契約のTest as Specificationは再構築前である。
+通常版は旧`NextPermutationsSequence`のCOW・値セマンティクス契約から、単一bufferを破壊的に進める
+`NextPermutations`とruntime-check付き`Permutation` Viewの契約へ変更された。旧通常版testは`#if false`で
+退避され、新契約のTest as Specificationは再構築前である。Swift 6.4のLifetimesと`Span`を使う版は、
+View省略と性能を調べた特殊経路として無効化し、通常提供から分離した。
 
 この変更より前に記録した本書の「現行評価」、実行記録、およびPERM-040〜PERM-044の旧通常版に対する
 結論は、移行前実装の評価・調査記録として保持する。借用版の現在評価として流用せず、再評価が完了する
@@ -256,3 +257,25 @@ Lifetimesを必要とする通常版PermutationだけをSwift 6.4以降へ限定
 
 version-specific manifest、`AcCollections` facade、test、CIの実装と両toolchainでの検証は`PERM-046`へ
 分離し、ユーザー指示により凍結する。明示的な再開指示までは現在の単一manifest構成を変更しない。
+
+### Swift 6.2互換runtime-check View通常経路
+
+通常版は外側を手動の`while let`で進め、各`next()`が現在順列の`Permutation` Viewを返す。iteratorは
+単一bufferと一つの`GateKeeper`を所有し、全Viewがその門番を共有する。次の`next()`またはiterator破棄時に
+門番の世代番号を進め、発行時の世代と一致しないViewへのcollection操作をpreconditionで拒否する。
+
+Swift 6.2 toolchainで、strict memory safetyを有効にした通常sourceのtypecheck、重複要素を含む順列列挙、
+次の順列へ進んだ後の旧View参照が`Permutation view is no longer valid`で停止することを確認した。
+所有者破棄後の旧Viewも同じpreconditionで停止する。Swift 6.4の`EtcTests`でも通常列挙と両失効trapが
+成功し、Debug／Release buildも成立した。
+
+binary-selection workloadを5 cycles測定した平均は、28要素で通常View 21.61ms、C++ 19.24ms、特殊Span
+16.01ms、32要素で通常View 66.39ms、C++ 61.24ms、特殊Span 51.37msだった。通常ViewはC++比で
+約1.12倍・約1.08倍となり、実行時寿命検査を維持した通常経路として採用した。
+
+この成立により、既決だった「Swift 6.2 manifestからPermutationModuleを除く」実装案の前提は失われた。
+version-specific manifestの必要性とpackage全体の6.2提供方針は、凍結中の`PERM-046`を再開するときに
+必要性から再評価する。現時点ではmanifestを変更しない。
+
+各候補の成立条件、反証、暫定性能値、および不採用理由は
+`NextPermutationsImplementationExploration.md`へ探索証拠として分離した。

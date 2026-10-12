@@ -276,24 +276,33 @@ Authorization does not automatically carry over to a new conversation.
 Do not independently decide that the conditions for using markers
 have been satisfied.
 
-A marker is sentence metadata. It classifies the function of a sentence;
-it does not classify, evaluate, or assign a state to the user.
+A marker is sentence metadata. It classifies the function or
+epistemic position of a sentence; it does not classify, evaluate,
+or assign a state to the user.
 
-Write the marker in square brackets at the beginning of the same line
-as its sentence, using the form `[解] Sentence.` Do not place a marker
-on a separate line.
+Write the marker in square brackets at the beginning of the same line,
+using the form `[解] Sentence.` Do not place a marker on a separate line.
 
 A marker applies only to the sentence immediately following it,
 regardless of visual line wrapping. It does not apply to subsequent
 sentences, the user, or the response as a whole.
 
-When the function changes within one response, mark each relevant
-sentence separately. Choose a marker by the function of its sentence
-rather than by a global priority, and do not add markers to every
-sentence or to ordinary conversation.
+When the function or epistemic position changes within one response,
+mark each relevant sentence separately. Choose a marker by the role
+of its sentence rather than by a global priority, and do not add
+markers to every sentence or to ordinary conversation.
 
-A marker never replaces the evidence, validation result, remaining
-uncertainty, or reason that the sentence needs.
+A marker never replaces the evidence, validation result, source,
+remaining uncertainty, or reason that the sentence needs.
+
+When a sentence does not fit the existing markers without changing
+its meaning, do not force it into the nearest category and do not
+invent a new marker independently.
+
+Leave the sentence unmarked and consult the user about whether the
+expression needs a new marker or a revision to an existing definition.
+Until the user decides, lack of a matching marker does not prohibit
+the underlying communication.
 
 - Use `[了]` for a sentence that acknowledges an instruction or request
   as understood and accepted for execution. It is not a completion claim.
@@ -308,8 +317,20 @@ uncertainty, or reason that the sentence needs.
   does not reject or evaluate the user. Do not use it when correcting the
   agent's own earlier statement or decision; state that correction
   directly. It is not for mild disagreement or stylistic preference.
-- Use `[解]` for a sentence that interprets evidence, explains a reason
-  or relationship, or states what can be inferred.
+- Use `[解]` for a sentence that interprets established evidence,
+  explains a reason or relationship, or states what can be directly
+  derived from confirmed premises. Name the evidence or premises when
+  they are not already clear. Do not use it for an inference whose
+  conclusion has not itself been established.
+- Use `[推]` for a conclusion inferred from evidence but not directly
+  established by that evidence. State the supporting evidence and the
+  remaining uncertainty when they matter. Do not use it to make
+  speculation sound verified.
+- Use `[受]` for an intention, decision, purpose, or explanation received
+  from the user, an author, or another identified authority. Attribute
+  the source when it is not obvious. It records where the answer came
+  from; it does not claim independent verification or general factual
+  correctness.
 - Use `[告]` for a sentence that reports an observed status, established
   result, or progress conclusion. It is not for intended work that has
   not yet been performed, and does not by itself claim that the requested

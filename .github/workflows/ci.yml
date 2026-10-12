@@ -23,14 +23,42 @@ jobs:
         uses: SwiftyLab/setup-swift@latest
 
       - name: Build documentation
-        run: >-
-          swift package -c release --allow-writing-to-directory .build/documentation
-          generate-documentation
-          --target RedBlackTreeCollections
-          --output-path .build/documentation
-          --transform-for-static-hosting
-          --hosting-base-path swift-ac-collections
-          --warnings-as-errors
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p documentation-diagnostics
+
+          {
+            swift --version
+            uname -a
+            printf 'core limit: '
+            ulimit -c
+            printf 'core pattern: '
+            cat /proc/sys/kernel/core_pattern
+          } | tee documentation-diagnostics/environment.txt
+
+          ulimit -c unlimited
+          sudo sysctl -w \
+            "kernel.core_pattern=$PWD/documentation-diagnostics/core.%e.%p" \
+            | tee documentation-diagnostics/core-pattern.txt \
+            || true
+
+          swift package -c release --allow-writing-to-directory .build/documentation \
+            generate-documentation \
+            --target RedBlackTreeCollections \
+            --output-path .build/documentation \
+            --transform-for-static-hosting \
+            --hosting-base-path swift-ac-collections \
+            --warnings-as-errors \
+            2>&1 | tee documentation-diagnostics/full-console.log
+
+      - name: Upload documentation diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-diagnostics
+          path: documentation-diagnostics
+          if-no-files-found: warn
 
   debug:
     runs-on: ubuntu-24.04

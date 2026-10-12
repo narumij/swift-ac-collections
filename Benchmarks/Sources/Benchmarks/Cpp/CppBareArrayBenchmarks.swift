@@ -1,6 +1,18 @@
 import CollectionsBenchmark
 import CppBenchmarks
 
+private final class CppVector1D {
+  let pointer: UnsafeMutableRawPointer
+
+  init(count: Int) {
+    pointer = cpp_vector_1d_create(count)
+  }
+
+  deinit {
+    cpp_vector_1d_destroy(pointer)
+  }
+}
+
 private final class CppNestedVector2D {
   let pointer: UnsafeMutableRawPointer
 
@@ -57,6 +69,36 @@ private func cppBareArrayExpectedChecksum(for size: Int) -> Int {
 
 extension Benchmark {
   mutating func _addCppBareArrayBenchmarks() {
+    self.add(
+      title: "std::vector<intptr_t> 1D sequential read checksum",
+      input: Int.self
+    ) { size in
+      let array = CppVector1D(count: size)
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          checksum = cpp_vector_1d_checksum(array.pointer)
+        }
+        blackHole(checksum)
+        precondition(checksum == cppBareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "std::vector<intptr_t> 1D sequential write",
+      input: Int.self
+    ) { size in
+      let array = CppVector1D(count: size)
+      return { timer in
+        timer.measure {
+          cpp_vector_1d_write(array.pointer)
+        }
+        let checksum = cpp_vector_1d_checksum(array.pointer)
+        blackHole(checksum)
+        precondition(checksum == cppBareArrayExpectedChecksum(for: size))
+      }
+    }
+
     self.add(
       title: "std::vector<std::vector<intptr_t>> 2D sequential read checksum",
       input: Int.self

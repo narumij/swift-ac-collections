@@ -3,15 +3,49 @@
 ## 文書の役割
 
 この文書は、PermutationModuleの現行品質評価taskの詳細正本である。
-上位品質要求は`Maintanance/User/QUALITY_REQUIREMENTS.md`、モジュールへの適用と
+上位品質要求は`Maintanance/QUALITY_REQUIREMENTS.md`、モジュールへの適用と
 証拠境界は`Sources/PermutationModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、現在評価の作業範囲、完了条件、結果を管理する。
 
-## 借用契約への変更後の現在性
+## Test as Specification原状回復確認（2026-10-13）
 
-2026-10-11、通常版は旧`NextPermutationsSequence`のCOW・値セマンティクス契約から、Swift 6.4の
-Lifetimesと`Span`を用いる`NextPermutations`の借用契約へ変更された。旧通常版testは`#if false`で
-退避され、新契約のTest as Specificationは再構築前である。
+現行Permutationには、証拠の役割が異なる三つの系統がある。
+
+- runtime-check View通常版は、手動列挙の通常runtime test 1件と失効Death Test 2件だけが現行契約を
+  直接確認する。同じscratch fileのSpan反復1件はPermutationの仕様testではない。旧COW版の番号付き38件は
+  `#if false`の履歴資料であり、現行適合へ流用しない。
+- borrowed Span版は番号付き5群のruntime仕様test 25件があり、2026-10-13の再実行でも全件成功した。
+  借用寿命のcompile-pass／compile-fail結果は一時clientによる返却記録にあるが、repository内で再実行できる
+  fixtureにはなっていないため、Test as Specification全体の完了とは扱わない。
+- AtCoder 2025互換modeは互換限定5件を持ち、通常版・borrowed版の証拠と相互に代用しない。
+
+この確認では新しい仕様testを追加しない。runtime-check View通常版の正式な再構成と、borrowed版の
+compiler-backed fixture化を別の残作業として維持する。
+
+### runtime-check View通常版の再構成着手
+
+`PERM-052`で現行source、Quality Profile、旧38件、現在有効なscratch testを照合し、
+`RuntimeCheckedPermutationTestPlan.md`へ後継仕様群の骨格を分離した。
+
+照合の結果、Quality Profileの`対象`節はruntime-check付き`Permutation` Viewを正しく記述する一方、
+後半のTest as Specificationと品質領域には、通常版が借用`Span`を返しcompilerが寿命違反を拒否するという
+旧実験の記述が残っている。現行sourceは`Span`を返さず、`GateKeeper` generationによって次の`next()`または
+owner破棄後のaccessをruntimeで拒否する。この不整合をtest実装で暗黙に埋めず、Profile訂正と後継test実装を
+別の受入境界として扱う。
+
+CodexはProfileの旧`Span`記述を現行runtime-check契約へ整合させた。新しい公開保証は追加せず、
+後継test台帳との照合後にこのProfile訂正を受け入れる。
+
+同日、Xcode build-for-testingが成功し、`swift test --disable-sandbox --filter PermutationTests`で
+XCTest 27件とSwift Testingの失効Death Test 2件が成功した。XCTest 27件のうち25件はborrowed版、
+2件はscratchであり、runtime-check通常版を直接確認する通常testは手動列挙1件だけという不足は変わらない。
+
+## 一時View契約への変更後の現在性
+
+通常版は旧`NextPermutationsSequence`のCOW・値セマンティクス契約から、単一bufferを破壊的に進める
+`NextPermutations`とruntime-check付き`Permutation` Viewの契約へ変更された。旧通常版testは`#if false`で
+退避され、新契約のTest as Specificationは再構築前である。Swift 6.4のLifetimesと`Span`を使う版は、
+View省略と性能を調べた特殊経路として無効化し、通常提供から分離した。
 
 この変更より前に記録した本書の「現行評価」、実行記録、およびPERM-040〜PERM-044の旧通常版に対する
 結論は、移行前実装の評価・調査記録として保持する。借用版の現在評価として流用せず、再評価が完了する
@@ -238,6 +272,28 @@ Permutation実装だけへ帰属できない。統合コード、DSU、データ
 Int版約81.5msに対してBool版約83.8msだった。Bool版は約3%遅いが、統合提出で観測された差を
 単独で説明する規模ではない。
 
+## PERM-049 実施結果
+
+2026-10-12、実提出で最速80msへ到達した実験を、Permutation製品候補と提出固有最適化へ分離した。
+大幅な短縮へ寄与したDSU storage再利用、閉路判定と結合を一度のleader探索で行う`unite`、および反復leaderは、
+提出コード側の処理構造をC++版へ揃える変更であり、PermutationModuleの製品変更には含めない。
+
+ViewからGateKeeper所有を除く変更と、選択状態をpointerから直接取得する変更は、一時Viewの失効検査または
+安全なCollection accessを迂回する。前者は実提出で効果がなく、後者は88msから80msへ短縮したが、いずれも
+現行の安全性契約を維持する製品候補から除外した。
+
+実験sourceをruntime-check付きView、公開subscript、および製品版と同じGateKeeperのinline境界へ戻し、
+Swift 6.4 Release、36辺の固定入力で各7回測定した。unsafe枝、安全なView、`next()`の強制inlineなし、
+製品版GateKeeper境界の各構成はいずれも中央値0.46秒で、出力も一致した。DSUの宣言順をac-libraryに近い順へ
+戻した前後でも同じ範囲だった。
+
+この証拠から、今回の探索を理由とするPermutation製品sourceの追加変更は行わない。現行runtime-check View実装を
+維持し、80ms枝は安全性を外した性能上限の反証として作業報告と履歴へ残す。
+
+ユーザー判断により、旧test群の詳細棚卸しは今回行わない。現行の有効testだけをDebug・Releaseで実行し、
+手動列挙2件と、次の`next()`および所有者破棄による失効Death Test 2件が両構成で成功した。これは正式な
+Test as Specification再構築や品質再評価の代替ではなく、現行実装を継続するための暫定的な回帰確認とする。
+
 ## Swift 6.4基準化後のSwift 6.2提供方針
 
 Swift 6.4のLifetimes、`Span`、`~Copyable`を用いる借用型Permutationを通常版の次期実装候補として
@@ -256,3 +312,25 @@ Lifetimesを必要とする通常版PermutationだけをSwift 6.4以降へ限定
 
 version-specific manifest、`AcCollections` facade、test、CIの実装と両toolchainでの検証は`PERM-046`へ
 分離し、ユーザー指示により凍結する。明示的な再開指示までは現在の単一manifest構成を変更しない。
+
+### Swift 6.2互換runtime-check View通常経路
+
+通常版は外側を手動の`while let`で進め、各`next()`が現在順列の`Permutation` Viewを返す。iteratorは
+単一bufferと一つの`GateKeeper`を所有し、全Viewがその門番を共有する。次の`next()`またはiterator破棄時に
+門番の世代番号を進め、発行時の世代と一致しないViewへのcollection操作をpreconditionで拒否する。
+
+Swift 6.2 toolchainで、strict memory safetyを有効にした通常sourceのtypecheck、重複要素を含む順列列挙、
+次の順列へ進んだ後の旧View参照が`Permutation view is no longer valid`で停止することを確認した。
+所有者破棄後の旧Viewも同じpreconditionで停止する。Swift 6.4の`EtcTests`でも通常列挙と両失効trapが
+成功し、Debug／Release buildも成立した。
+
+binary-selection workloadを5 cycles測定した平均は、28要素で通常View 21.61ms、C++ 19.24ms、特殊Span
+16.01ms、32要素で通常View 66.39ms、C++ 61.24ms、特殊Span 51.37msだった。通常ViewはC++比で
+約1.12倍・約1.08倍となり、実行時寿命検査を維持した通常経路として採用した。
+
+この成立により、既決だった「Swift 6.2 manifestからPermutationModuleを除く」実装案の前提は失われた。
+version-specific manifestの必要性とpackage全体の6.2提供方針は、凍結中の`PERM-046`を再開するときに
+必要性から再評価する。現時点ではmanifestを変更しない。
+
+各候補の成立条件、反証、暫定性能値、および不採用理由は
+`NextPermutationsImplementationExploration.md`へ探索証拠として分離した。

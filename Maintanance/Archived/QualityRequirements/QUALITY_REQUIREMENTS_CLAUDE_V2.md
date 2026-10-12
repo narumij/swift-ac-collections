@@ -1,5 +1,5 @@
 > **文書状態:** 独立ドラフトとして保存する。正本から参照する非規範的な内容は
-> [`QUALITY_REQUIREMENTS_REFERENCE.md`](QUALITY_REQUIREMENTS_REFERENCE.md)へ抽出・再編した。
+> [`QUALITY_REQUIREMENTS_REFERENCE.md`](../../QUALITY_REQUIREMENTS_REFERENCE.md)へ抽出・再編した。
 
 # 製品品質要求 独立ドラフト（同抽象度の再作成） — Claude
 

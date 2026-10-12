@@ -2,6 +2,9 @@
 
 最終更新: 2026-10-10 / Codex
 
+> **文書状態:** 旧版。2026-10-12に`CODEX_TASK_OPERATION_PLAYBOOK_V2.md`が現行正本として採用され、
+> ユーザー判断により本書をアーカイブした。
+
 ## 目的
 
 この文書は、このrepositoryで得たtask運用の知見を、別projectでもCodexが同程度の品質で
@@ -394,7 +397,7 @@ storageでもあり、Codexの構造lintとは役割が異なる。
 
 最初から大きな管理体系を作らない。次の順で導入する。
 
-開始時は[`PROGRESS_OVERVIEW_TEMPLATE.md`](../PROGRESS_OVERVIEW_TEMPLATE.md)をコピーし、placeholderと
+開始時は[`PROGRESS_OVERVIEW_TEMPLATE.md`](../../PROGRESS_OVERVIEW_TEMPLATE.md)をコピーし、placeholderと
 例示taskを実projectの内容へ置き換える。
 
 1. 一つのRegistryと状態語を作る。
@@ -408,7 +411,7 @@ storageでもあり、Codexの構造lintとは役割が異なる。
 ## AI task process poster
 
 このplaybookの主要な流れ、品質主張と証拠の変更影響、および責任境界を1枚に要約したV2を
-[`AI_TASK_PROCESS_POSTER.png`](../AI_TASK_PROCESS_POSTER.png)に置く。編集可能な正本は
+[`AI_TASK_PROCESS_POSTER.png`](../../AI_TASK_PROCESS_POSTER.png)に置く。編集可能な正本は
 `AI_TASK_PROCESS_POSTER.svg`ではなく、`Utilities/Maintenance/GenerateAITaskProcessPoster.py`である。
 
 再生成手順:
@@ -430,7 +433,7 @@ Utilities/Maintenance/RenderSVGToPNG.sh \
 補正する品質基盤として扱う。
 
 2026-10-09時点のV1とその生成scriptは、
-[`Archived/Orientation/AI_TASK_PROCESS_POSTER_V1`](../Archived/Orientation/AI_TASK_PROCESS_POSTER_V1/README.md)
+[`AI_TASK_PROCESS_POSTER_V1`](AI_TASK_PROCESS_POSTER_V1/README.md)
 へ保存する。
 
 ## 再現性の評価

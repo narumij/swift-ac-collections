@@ -12,11 +12,11 @@ SQLite `:memory:` fixture方式で追試可能な範囲を分類し、再実行�
 
 ## 対象文書
 
-- `Graph/AI_GRAPH_SMELL_NOTES.md`
+- `Archived/AI_GRAPH_SMELL_NOTES.md`
 - `Graph/GRAPH_DB_EXCHANGE.md`
 - `Graph/TASK_GRAPH_DB_EXPERIMENT.md`
 
-`Archived/AI_GRAPH_SHARED_SCHEMA.md`と`Archived/AI_GRAPH_IN_MEMORY_FIXTURE.md`は追試方式の入力であり、過去知見の
+`Graph/AI_GRAPH_SHARED_SCHEMA.md`と`Graph/AI_GRAPH_IN_MEMORY_FIXTURE.md`は追試方式の入力であり、過去知見の
 棚卸し対象には数えない。Archived文書は、上の3文書から具体的根拠として参照される場合だけ読む。
 
 ## GRAPH-008: 追試可能性台帳
@@ -85,7 +85,7 @@ SQLite `:memory:` fixture方式で追試可能な範囲を分類し、再実行�
 
 ### 台帳（2026-10-08 / Claude）
 
-観測時点: HEAD `ce97783d`。略記: SN = `Graph/AI_GRAPH_SMELL_NOTES.md`、EX = `Graph/GRAPH_DB_EXCHANGE.md`、TE = `Graph/TASK_GRAPH_DB_EXPERIMENT.md`、
+観測時点: HEAD `ce97783d`。略記: SN = `Archived/AI_GRAPH_SMELL_NOTES.md`、EX = `Graph/GRAPH_DB_EXCHANGE.md`、TE = `Graph/TASK_GRAPH_DB_EXPERIMENT.md`、
 G7 = GRAPH-007のfixture。「task→symbol」はrepositoryに入力が無い関係を指す（GRAPH-006 A-1）。
 
 | replay ID | source | original claim | expected result | required input | query shape | class | reason | overlap |
@@ -224,7 +224,7 @@ done
 
 **決めずに記録した前提**
 
-- RP-05の旧規則: `Graph/AI_GRAPH_SMELL_NOTES.md`に「`RedBlackTree*_NN_*`」とだけあり、番号の上限（`< 90`）があったかは記録が無い。対照用のRedBlackTree fileは番号16の1件だけにして、上限の有無で結果が変わらないようにした。
+- RP-05の旧規則: `Archived/AI_GRAPH_SMELL_NOTES.md`に「`RedBlackTree*_NN_*`」とだけあり、番号の上限（`< 90`）があったかは記録が無い。対照用のRedBlackTree fileは番号16の1件だけにして、上限の有無で結果が変わらないようにした。
 - RP-08の「DEBUG限定」の判定: `#if`条件に`DEBUG`を含み、`!DEBUG`を含まないもの。`freeCapacity`の条件は`DEBUG && !COMPATIBLE_ATCODER_2025`（`BalancedSequence.swift:188`）。条件式の一般的な評価はしていない。
 - RP-08の`58aab943`より前: 仕様testから`find(_:)`への参照が無いことは、当時の`spec-gaps`の記録に基づく。index storeを再構築して確かめてはいない。
 

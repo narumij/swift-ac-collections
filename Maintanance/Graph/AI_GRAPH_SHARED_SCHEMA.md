@@ -7,7 +7,7 @@
 この文書は、Claude専用graph DBに依存せず、CodexとClaudeが同じ意味でrepositoryの関係を
 再構築・照会するための共有スキーム候補を作る`GRAPH-006`の正本である。
 
-`Graph/AI_GRAPH_SMELL_NOTES.md`と`Graph/GRAPH_DB_EXCHANGE.md`の既存記録は、過去の観測と入力資料であって、
+`Archived/AI_GRAPH_SMELL_NOTES.md`と`Graph/GRAPH_DB_EXCHANGE.md`の既存記録は、過去の観測と入力資料であって、
 そこに書かれた未完了項目や「次に試すこと」はこのtaskの指示ではない。
 
 ## 目的
@@ -238,7 +238,7 @@ CodexがClaudeのlocal DBなしで同じ期待結果を再構築するために�
 | symbol | できる | `swift package dump-symbol-graph --minimum-access-level private`の`RedBlackTreeCollections`出力から`identifier.precise`と`location` |
 | span | できる | 宣言行から波括弧を数える（行コメント`//`以降は除外）。上限200行 |
 | test | index store readerがあればできる | `swift build --build-tests --build-system native --enable-index-store`後、`.build/<triple>/debug/index/store`のoccurrence。readerが無い場合、`git grep`での代替は一般名で過剰一致するため同じ結果にならない |
-| document | できる | `git grep -l -w -F <member> -- 'Sources/*.md' 'Documentation/*.md' 'Maintanance/*.md' README.md ':!Maintanance/Archived' ':!Maintanance/AI_GRAPH_SHARED_SCHEMA.md'`と`git grep -l -F <Owner> --`（同じpathspec）の積集合 |
+| document | できる | `git grep -l -w -F <member> -- 'Sources/*.md' 'Documentation/*.md' 'Maintanance/*.md' README.md ':!Maintanance/Archived' ':!Maintanance/Graph/AI_GRAPH_SHARED_SCHEMA.md'`と`git grep -l -F <Owner> --`（同じpathspec）の積集合 |
 | commit | できる | `git log -L<a>,<b>:<file> --no-patch --date=short --format='%h %ad %s' -n 8` |
 | task | できない | 6節下の追加fieldが必要 |
 

@@ -16,8 +16,8 @@ IDs remain permanent and must not be reused.
 | `RBT-002` | `DONE` | User / Codex / Claude | Index-range `erase`の空guard | 2026-10-06、範囲検査を維持して空での不要なCoWを回避（`11817dfe`） | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `DOC-001` | `DONE` | Codex / Claude | P10残存記述確認 | 2026-10-06、監査と必要箇所の同期を完了（`9b0f42d5`） | `MAINTENANCE.md` |
 | `GRAPH-003` | `EXCLUDED` | — | 二つのtask graph DBの統合議論 | 2026-10-07、統合方針をdrop。再開候補にしない | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
-| `GRAPH-006` | `DONE` | Claude / Codex | [DISCOVERY] smell判定共有スキームの最小fixture | 2026-10-08、local DB非依存の共有schema候補とRBT-017 fixtureを作成。Codexが文書件数とO(1)契約への3経路を再構築し、task→symbol辺の入力不在と自己参照除外を既知制約として受入 | `AI_GRAPH_SHARED_SCHEMA.md` |
-| `GRAPH-007` | `DONE` | Claude / Codex | [EXECUTION] SQLiteインメモリ共有schema fixture | 2026-10-08、tracked SQL 4 fileで空のSQLite `:memory:`から2 symbol・8区分を再現。Codexが一発command、期待件数、外部キー違反なし、local DB非依存を確認 | `AI_GRAPH_IN_MEMORY_FIXTURE.md` |
+| `GRAPH-006` | `DONE` | Claude / Codex | [DISCOVERY] smell判定共有スキームの最小fixture | 2026-10-08、local DB非依存の共有schema候補とRBT-017 fixtureを作成。Codexが文書件数とO(1)契約への3経路を再構築し、task→symbol辺の入力不在と自己参照除外を既知制約として受入 | `Graph/AI_GRAPH_SHARED_SCHEMA.md` |
+| `GRAPH-007` | `DONE` | Claude / Codex | [EXECUTION] SQLiteインメモリ共有schema fixture | 2026-10-08、tracked SQL 4 fileで空のSQLite `:memory:`から2 symbol・8区分を再現。Codexが一発command、期待件数、外部キー違反なし、local DB非依存を確認 | `Graph/AI_GRAPH_IN_MEMORY_FIXTURE.md` |
 | `GRAPH-008` | `DONE` | Claude / Codex | [DISCOVERY] 過去graph知見のインメモリ追試可能性台帳 | 2026-10-08、graph系3文書を23項目へ整理しA〜D分類。CodexがRP-01・05・08・15・17を実装対象として受入 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-009` | `DONE` | Claude / Codex | [EXECUTION] 受入済み過去graph知見のSQLite追試完成判定 | 2026-10-08、GRAPH-007とRP-01・05・08・15・17を一つのcommandで実行し、6件全PASS・exit 0・local DB非依存をCodexが確認 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-010` | `DONE` | Claude / Codex | [EXECUTION] precedence missing-pair fixture | 2026-10-08、task 4件・既存辺2件から辺のない4組を再現しCodexがPASSを確認 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
@@ -29,7 +29,7 @@ IDs remain permanent and must not be reused.
 | `GRAPH-016` | `DONE` | Codex | [EXECUTION] Task precedence Gate列のpilot導入 | 2026-10-08、Gate列を追加し、現行`ACTIVE` taskに接続する6辺を`START` 4件・`COMPLETE` 2件へ分類。他の既存辺は`UNCLASSIFIED`のまま保持 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-005` | `DONE` | User / Codex / Claude | ClaudeとCodexのgraph DB交流会 | 2026-10-09、必要な観測交換を終え、ユーザー判断で終了。後続判断によりClaude専用DBだけを継続 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `GRAPH-002` | `EXCLUDED` | User / Codex | Codex用task graph DBの独立試験 | 2026-10-09、Registryと意味判断で十分であり、Codex用DBを再開しないと決定 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
-| `GRAPH-004` | `EXCLUDED` | User / Codex / Claude | [DISCOVERY] AIとインメモリ関係モデルによるsmell判定スキーム共有試験 | 2026-10-09、継続taskとしては終了。既存schema・fixture・観測を保存し、必要時だけその場の関係整理として再利用する | `Graph/AI_GRAPH_SMELL_NOTES.md` |
+| `GRAPH-004` | `EXCLUDED` | User / Codex / Claude | [DISCOVERY] AIとインメモリ関係モデルによるsmell判定スキーム共有試験 | 2026-10-09、継続taskとしては終了。既存schema・fixture・観測を保存し、必要時だけその場の関係整理として再利用する | `Archived/AI_GRAPH_SMELL_NOTES.md` |
 | `GRAPH-017` | `EXCLUDED` | — | [EXECUTION] RP-19 readiness fixture | 親目的の共有スキーム試験を終了したため、未実施のfixtureを不要として除外 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-018` | `EXCLUDED` | — | [EXECUTION] Task precedence Gateの段階移行完成判定 | Codex用DBと共有スキームの継続を終了し、DB向けGate移行の完成判定を不要として除外 | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
 | `GRAPH-019` | `DONE` | Codex | [EXECUTION] Task Registry構造lintの最小実装 | 2026-10-09、現行MarkdownをSQLiteインメモリDBへ読み込み、cycle・参照切れ・自己依存・重複edge・Gate・条件付き前提をread-only検査する入口を追加 | `Graph/TASK_GRAPH_LINT.md` |

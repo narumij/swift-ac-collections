@@ -101,7 +101,7 @@ Codexは、既存方針と委譲境界の内側で、依存変更、不要作業
 | 起動、権限、commit・branch・push境界 | `AGENTS.md` |
 | 現在の目標、task、担当、状態、再開条件 | `PROGRESS_OVERVIEW.md`のTask Registry |
 | task分解、依存、ready、goal proximity、受入 | `TASK_ORIENTATION_V3.md` |
-| task運用の詳細手順 | `CODEX_TASK_OPERATION_PLAYBOOK.md` |
+| task運用の詳細手順 | `CODEX_TASK_OPERATION_PLAYBOOK_V3.md` |
 | unsafe storage、CoW、Index、性能などの技術的難所 | 関係するtaskでだけ`AI_TECHNICAL_ORIENTATION.md` |
 | 担当、委譲範囲、停止条件の変更 | 必要な場合だけ`AGENT_TASK_FIT_INTERVIEW.md` |
 | release成果物と工程 | 選択したrelease taskの詳細正本 |

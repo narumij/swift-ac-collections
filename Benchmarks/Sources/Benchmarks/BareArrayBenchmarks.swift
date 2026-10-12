@@ -52,8 +52,259 @@ private func bareArrayExpectedChecksum(for size: Int) -> Int {
   size * (size - 1) / 2
 }
 
+@inline(never)
+private func bareArray1DElementChecksum(
+  _ array: borrowing BareArray<Int>, count: Int
+) -> Int {
+  var checksum = 0
+  for position in 0..<count {
+    checksum &+= array.element(at: position)
+  }
+  return checksum
+}
+
+@inline(never)
+private func bareArray1DReferenceChecksum(
+  _ array: borrowing BareArray<Int>, count: Int
+) -> Int {
+  var checksum = 0
+  for position in 0..<count {
+    checksum &+= array.reference(at: position).pointee
+  }
+  return checksum
+}
+
+@inline(never)
+private func bareArray1DSetElements(
+  _ array: borrowing BareArray<Int>, count: Int
+) {
+  for position in 0..<count {
+    array.setElement(position, at: position)
+  }
+}
+
+@inline(never)
+private func bareArray1DSetReferences(
+  _ array: borrowing BareArray<Int>, count: Int
+) {
+  for position in 0..<count {
+    array.reference(at: position).pointee = position
+  }
+}
+
+@inline(never)
+private func bareArray2DSubscriptChecksum(
+  _ array: borrowing BareArray2D<Int>, width: Int, height: Int
+) -> Int {
+  var checksum = 0
+  for y in 0..<height {
+    for x in 0..<width {
+      checksum &+= array[y][x]
+    }
+  }
+  return checksum
+}
+
+@inline(never)
+private func bareArray2DSubscriptWrite(
+  _ array: inout BareArray2D<Int>, width: Int, height: Int
+) {
+  var value = 0
+  for y in 0..<height {
+    for x in 0..<width {
+      array[y][x] = value
+      value += 1
+    }
+  }
+}
+
+@inline(never)
+private func bareArray3DSubscriptChecksum(
+  _ array: borrowing BareArray3D<Int>, width: Int, height: Int, depth: Int
+) -> Int {
+  var checksum = 0
+  for z in 0..<depth {
+    for y in 0..<height {
+      for x in 0..<width {
+        checksum &+= array[z][y][x]
+      }
+    }
+  }
+  return checksum
+}
+
+@inline(never)
+private func bareArray3DSubscriptWrite(
+  _ array: inout BareArray3D<Int>, width: Int, height: Int, depth: Int
+) {
+  var value = 0
+  for z in 0..<depth {
+    for y in 0..<height {
+      for x in 0..<width {
+        array[z][y][x] = value
+        value += 1
+      }
+    }
+  }
+}
+
 extension Benchmark {
   public mutating func addBareArrayBenchmarks() {
+    self.add(
+      title: "BareArray<Int> element(at:) sequential read checksum",
+      input: Int.self
+    ) { size in
+      var value = 0
+      let array = BareArray<Int>(count: size) {
+        defer { value += 1 }
+        return value
+      }
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          checksum = bareArray1DElementChecksum(array, count: size)
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray<Int> Reference sequential read checksum",
+      input: Int.self
+    ) { size in
+      var value = 0
+      let array = BareArray<Int>(count: size) {
+        defer { value += 1 }
+        return value
+      }
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          checksum = bareArray1DReferenceChecksum(array, count: size)
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray<Int> setElement(_:at:) sequential write",
+      input: Int.self
+    ) { size in
+      return { timer in
+        let array = BareArray<Int>(repeating: 0, count: size)
+        timer.measure {
+          bareArray1DSetElements(array, count: size)
+        }
+        var checksum = 0
+        for position in 0..<size {
+          checksum &+= array.element(at: position)
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray<Int> Reference sequential write",
+      input: Int.self
+    ) { size in
+      return { timer in
+        let array = BareArray<Int>(repeating: 0, count: size)
+        timer.measure {
+          bareArray1DSetReferences(array, count: size)
+        }
+        var checksum = 0
+        for position in 0..<size {
+          checksum &+= array.reference(at: position).pointee
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray2D<Int> isolated subscript sequential read checksum",
+      input: Int.self
+    ) { size in
+      let shape = bareArray2DShape(for: size)
+      var value = 0
+      let array = BareArray2D<Int>(width: shape.width, height: shape.height) {
+        defer { value += 1 }
+        return value
+      }
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          checksum = bareArray2DSubscriptChecksum(
+            array, width: shape.width, height: shape.height)
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray2D<Int> isolated subscript sequential write",
+      input: Int.self
+    ) { size in
+      let shape = bareArray2DShape(for: size)
+      return { timer in
+        var array = BareArray2D<Int>(
+          repeating: 0, width: shape.width, height: shape.height)
+        timer.measure {
+          bareArray2DSubscriptWrite(&array, width: shape.width, height: shape.height)
+        }
+        let checksum = bareArray2DSubscriptChecksum(
+          array, width: shape.width, height: shape.height)
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray3D<Int> isolated subscript sequential read checksum",
+      input: Int.self
+    ) { size in
+      let shape = bareArray3DShape(for: size)
+      var value = 0
+      let array = BareArray3D<Int>(
+        width: shape.width, height: shape.height, depth: shape.depth
+      ) {
+        defer { value += 1 }
+        return value
+      }
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          checksum = bareArray3DSubscriptChecksum(
+            array, width: shape.width, height: shape.height, depth: shape.depth)
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray3D<Int> isolated subscript sequential write",
+      input: Int.self
+    ) { size in
+      let shape = bareArray3DShape(for: size)
+      return { timer in
+        var array = BareArray3D<Int>(
+          repeating: 0, width: shape.width, height: shape.height, depth: shape.depth)
+        timer.measure {
+          bareArray3DSubscriptWrite(
+            &array, width: shape.width, height: shape.height, depth: shape.depth)
+        }
+        let checksum = bareArray3DSubscriptChecksum(
+          array, width: shape.width, height: shape.height, depth: shape.depth)
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
     self.add(
       title: "BareArray2D<Int> sequential read checksum",
       input: Int.self
@@ -84,9 +335,10 @@ extension Benchmark {
       input: Int.self
     ) { size in
       let shape = bareArray2DShape(for: size)
-      var array = BareArray2D<Int>(repeating: 0, width: shape.width, height: shape.height)
 
       return { timer in
+        var array = BareArray2D<Int>(
+          repeating: 0, width: shape.width, height: shape.height)
         timer.measure {
           var value = 0
           for y in 0..<shape.height {
@@ -163,6 +415,232 @@ extension Benchmark {
           for y in 0..<shape.height {
             for x in 0..<shape.width {
               checksum &+= array[z][y][x]
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray2D<Int> Reference sequential read checksum",
+      input: Int.self
+    ) { size in
+      let shape = bareArray2DShape(for: size)
+      var value = 0
+      let array = BareArray2D<Int>(width: shape.width, height: shape.height) {
+        defer { value += 1 }
+        return value
+      }
+
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              checksum &+= array.reference(at: x, y).pointee
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray2D<Int> element(at:) sequential read checksum",
+      input: Int.self
+    ) { size in
+      let shape = bareArray2DShape(for: size)
+      var value = 0
+      let array = BareArray2D<Int>(width: shape.width, height: shape.height) {
+        defer { value += 1 }
+        return value
+      }
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              checksum &+= array.element(at: x, y)
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray2D<Int> Reference sequential write",
+      input: Int.self
+    ) { size in
+      let shape = bareArray2DShape(for: size)
+      return { timer in
+        let array = BareArray2D<Int>(
+          repeating: 0, width: shape.width, height: shape.height)
+        timer.measure {
+          var value = 0
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              array.reference(at: x, y).pointee = value
+              value += 1
+            }
+          }
+        }
+        var checksum = 0
+        for y in 0..<shape.height {
+          for x in 0..<shape.width {
+            checksum &+= array.reference(at: x, y).pointee
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray2D<Int> setElement(_:at:) sequential write",
+      input: Int.self
+    ) { size in
+      let shape = bareArray2DShape(for: size)
+      return { timer in
+        let array = BareArray2D<Int>(
+          repeating: 0, width: shape.width, height: shape.height)
+        timer.measure {
+          var value = 0
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              array.setElement(value, at: x, y)
+              value += 1
+            }
+          }
+        }
+        var checksum = 0
+        for y in 0..<shape.height {
+          for x in 0..<shape.width {
+            checksum &+= array.element(at: x, y)
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray3D<Int> Reference sequential read checksum",
+      input: Int.self
+    ) { size in
+      let shape = bareArray3DShape(for: size)
+      var value = 0
+      let array = BareArray3D<Int>(
+        width: shape.width, height: shape.height, depth: shape.depth
+      ) {
+        defer { value += 1 }
+        return value
+      }
+
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          for z in 0..<shape.depth {
+            for y in 0..<shape.height {
+              for x in 0..<shape.width {
+                checksum &+= array.reference(at: x, y, z).pointee
+              }
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray3D<Int> element(at:) sequential read checksum",
+      input: Int.self
+    ) { size in
+      let shape = bareArray3DShape(for: size)
+      var value = 0
+      let array = BareArray3D<Int>(
+        width: shape.width, height: shape.height, depth: shape.depth
+      ) {
+        defer { value += 1 }
+        return value
+      }
+      return { timer in
+        var checksum = 0
+        timer.measure {
+          for z in 0..<shape.depth {
+            for y in 0..<shape.height {
+              for x in 0..<shape.width {
+                checksum &+= array.element(at: x, y, z)
+              }
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray3D<Int> Reference sequential write",
+      input: Int.self
+    ) { size in
+      let shape = bareArray3DShape(for: size)
+      let array = BareArray3D<Int>(
+        repeating: 0, width: shape.width, height: shape.height, depth: shape.depth)
+      return { timer in
+        timer.measure {
+          var value = 0
+          for z in 0..<shape.depth {
+            for y in 0..<shape.height {
+              for x in 0..<shape.width {
+                array.reference(at: x, y, z).pointee = value
+                value += 1
+              }
+            }
+          }
+        }
+        var checksum = 0
+        for z in 0..<shape.depth {
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              checksum &+= array.reference(at: x, y, z).pointee
+            }
+          }
+        }
+        blackHole(checksum)
+        precondition(checksum == bareArrayExpectedChecksum(for: size))
+      }
+    }
+
+    self.add(
+      title: "BareArray3D<Int> setElement(_:at:) sequential write",
+      input: Int.self
+    ) { size in
+      let shape = bareArray3DShape(for: size)
+      let array = BareArray3D<Int>(
+        repeating: 0, width: shape.width, height: shape.height, depth: shape.depth)
+      return { timer in
+        timer.measure {
+          var value = 0
+          for z in 0..<shape.depth {
+            for y in 0..<shape.height {
+              for x in 0..<shape.width {
+                array.setElement(value, at: x, y, z)
+                value += 1
+              }
+            }
+          }
+        }
+        var checksum = 0
+        for z in 0..<shape.depth {
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              checksum &+= array.element(at: x, y, z)
             }
           }
         }

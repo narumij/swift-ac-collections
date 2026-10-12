@@ -1,10 +1,13 @@
+#if compiler(>=6.4)
+
 // MARK: - Borrowed, noncopying implementation
 
 extension Collection where Element: Comparable {
 
   /// Creates an iterator over this order and its lexicographic successors.
   ///
-  /// The first call to ``NextPermutations/next()`` returns the collection's current element order.
+  /// The first call to ``BorrowedNextPermutations/next()`` returns the collection's current
+  /// element order.
   /// Later calls return only its lexicographic successors. This does not enumerate orders that
   /// precede the collection's starting order. Elements that compare equal do not produce duplicate
   /// value orderings.
@@ -17,7 +20,7 @@ extension Collection where Element: Comparable {
   /// lifetime or remain live across its next mutating access.
   ///
   /// ```swift
-  /// var permutations = [2, 1, 3].nextPermutations()
+  /// var permutations = [2, 1, 3].borrowedNextPermutations()
   /// while let permutation = permutations.next() {
   ///   print(Array(permutation))
   /// }
@@ -30,14 +33,14 @@ extension Collection where Element: Comparable {
   /// - Returns: A noncopyable iterator that owns a copy of this collection's elements.
   /// - Complexity: O(n), where n is the number of elements in the collection.
   @inlinable
-  public func nextPermutations() -> NextPermutations<Element> {
+  public func borrowedNextPermutations() -> BorrowedNextPermutations<Element> {
     .init(copying: self)
   }
 }
 
 /// An iterator that lends the current element order and its lexicographic successors.
 ///
-/// `NextPermutations` owns a single mutable buffer initialized from its source collection. The
+/// `BorrowedNextPermutations` owns a single mutable buffer initialized from its source collection. The
 /// first result is the source's current order; each later result is the next lexicographic order.
 /// An empty collection, a single element, an all-equal order, and an order with no successor each
 /// produce their current order once.
@@ -50,7 +53,7 @@ extension Collection where Element: Comparable {
 /// Advancing by one step mutates the owned buffer in place. It performs no per-result allocation or
 /// full-buffer copy.
 @safe
-public struct NextPermutations<Element: Comparable>: ~Copyable {
+public struct BorrowedNextPermutations<Element: Comparable>: ~Copyable {
 
   @usableFromInline
   let elements: UnsafeMutablePointer<Element>
@@ -140,3 +143,5 @@ public struct NextPermutations<Element: Comparable>: ~Copyable {
     return unsafe Span(_unsafeStart: elements, count: count)
   }
 }
+
+#endif

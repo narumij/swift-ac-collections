@@ -23,10 +23,10 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   現行側のCI library定義だけをbaselineへ同期する。初めて追加するworkloadは過去のbaselineに
   存在しないため、導入PRでは回帰比較を成立させない。merge commitを初回baselineとし、
   後続PRから通常のbase / current比較を始める。
-- 初回baseline候補にはBareArrayの2D・3D sequential read / write 4件と、OptionalArrayの
-  2D・3D cold / warm memoization 4件を含めた。現行側のRelease build、小規模実行、
-  通常`CI.json`の最大64kまでの実行は成功済み。0.5.3側に8 workloadが存在しないため、
-  導入PRの性能jobは既知の赤として分離し、他の失敗を同じ理由で受け入れない。
+- BareArrayの2D・3D sequential read / write 4件と、OptionalArrayの2D・3D cold / warm
+  memoization 4件は、workload実装を含むPR #189を先にmergeし、CI library登録だけをPR #190へ
+  分離した。PR #190と後続PR #191のperformance jobはともにgreenとなり、新8 workloadを含む
+  通常のbase / current回帰比較が成立することを確認済み。
 - RedBlackTree 4型の空コレクション用シングルトン(`_emptyTreeStorage`、型消去済み
   capacity 0)の生存条件を4型すべてで確認し、
   `RedBlackTreeInternal_EmptySingletonTests.swift`へ記録済み。通常初期化・
@@ -56,19 +56,17 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   テストビルドは成功した。`ALLOW_CROSS_TREE_INDEX`なしでは予測どおり3件が失敗し、
   CROSS=OFFは実質deprecatedとして扱う。標準構成のテスト不足ではない。
 
-- OptionalArrayModule: Release実行、Death Test、参照型寿命、公開API化漏れを対応済み。
-  strict memory safetyの4バッチで所有型の破棄・変更・初期化とView境界を整理し、
-  一意な診断を82→62→44→40→21へ削減。参照型寿命は2D〜4Dの破棄と3D/4Dの
-  `removeAll()`後の再利用までテスト済み。残りは公開7型のunsafe storage・Viewでの
-  storage代入・8つの`allocate`。
-  公開APIへunsafeを伝播させずstorageを隔離できる設計までstrict恒久適用を保留する。
-- BareArrayModule: Debug/Release、境界Death Test、参照型寿命をレビュー済み。
-  3D cloneのcapacity不足による参照解放漏れを修正し、1D〜4D cloneの参照所有を
-  テスト済み。strict memory safetyの第1バッチとして
-  4つの所有型の`deinit`、初期化済み要素への書き込み、cloneをscoped `unsafe`化し、
-  所有型・View型のpointer initializerと添字境界も整理して、一意な診断を
-  約64→54→38→28→22へ削減した。残りは公開7型を`@unsafe`にするAPI判断とallocate。
-  公開API全体へunsafeを伝播させる変更は採らず、storage再設計までstrict恒久適用を保留する。
+- OptionalArrayModule: 番号付き8仕様群を維持し、通常35件・Death Test 26件がDebug、Release、ASanで
+  成功した現行記録がある。View寿命とstrict memory safetyは未達、`Sendable`、`-Ounchecked`、外部性能、
+  一般利用・競技利用のValidationは未検証として品質評価へ分離している。
+- BareArrayModule: 番号付き8仕様群、Debug通常35件・Release通常28件、両構成のDeath Test 39件、
+  View寿命escape 3件と所有配列writeback exclusivity 3件のcompiler診断fixtureを2026-10-13に再確認した。
+  旧ノンエスケーパブルView契約は受入済みだが、後発の座標access APIと旧subscript・Viewのdeprecated指定は
+  仕様群へ未反映で、現行buildにdeprecated warningが多数ある。旧成果と後発差分を分けて扱う。
+- PermutationModule: runtime-check View通常版は有効な通常runtime test 2件（Span反復1件・手動列挙1件）と
+  失効Death Test 2件だけが現行契約を直接確認し、旧COW版38件は`#if false`の履歴資料である。
+  borrowed Span版は番号付き5群・runtime 25件が成功しているが、借用寿命のcompile-pass／compile-failは
+  再実行可能なfixtureになっていない。AtCoder 2025互換modeの5件は独立した仕様として維持する。
 
 ### OptionalArray体系監査と管理方式の検証
 

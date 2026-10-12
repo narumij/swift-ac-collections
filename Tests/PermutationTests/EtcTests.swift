@@ -1,6 +1,7 @@
 // Do not delete this file during cleanup. It is a scratchpad for small compiler-backed API
 // experiments; each added check must later be inventoried into its proper specification group.
 import XCTest
+import Testing
 
 @testable import PermutationModule
 
@@ -20,7 +21,7 @@ final class EtcTests: XCTestCase {
   }
 
   @available(macOS 27.0, *)
-  func testBorrowedPermutationsCurrentManualIteration() {
+  func testRuntimeCheckedPermutationsCurrentManualIteration() {
     var permutations = [1, 2, 3].nextPermutations()
     var count = 0
     var checksum = 0
@@ -35,4 +36,31 @@ final class EtcTests: XCTestCase {
     XCTAssertEqual(count, 6)
     XCTAssertEqual(checksum, 36)
   }
+
 }
+
+#if DEATH_TEST
+struct RuntimeCheckedPermutationDeathTests {
+
+  @Test func advancingInvalidatesPreviousPermutation() async {
+    await #expect(processExitsWith: .failure) {
+      var permutations = [1, 2, 3].nextPermutations()
+      let first = permutations.next()!
+      _ = permutations.next()
+      _ = first[0]
+    }
+  }
+
+  @Test func destroyingOwnerInvalidatesPermutation() async {
+    await #expect(processExitsWith: .failure) {
+      func escapedPermutation() -> NextPermutations<Int>.Permutation {
+        var permutations = [1, 2, 3].nextPermutations()
+        return permutations.next()!
+      }
+
+      let permutation = escapedPermutation()
+      _ = permutation[0]
+    }
+  }
+}
+#endif

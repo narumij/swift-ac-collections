@@ -3,9 +3,109 @@
 ## 文書の役割
 
 この文書は、BareArrayModuleの現行品質評価taskの詳細正本である。
-上位品質要求は`Maintanance/User/QUALITY_REQUIREMENTS.md`、モジュールへの適用と証拠境界は
+上位品質要求は`Maintanance/QUALITY_REQUIREMENTS.md`、モジュールへの適用と証拠境界は
 `Sources/BareArrayModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、Quality Profileの現在性確認、現在評価の作業範囲、完了条件、結果を管理する。
+
+## Test as Specification原状回復確認（2026-10-13）
+
+ノンエスケーパブルView導入時に途中扱いのまま残った実行taskを、commit履歴、現行source、fixture、
+番号付き仕様test、および現在の再実行結果で照合した。Xcodeのbuild-for-testing、Debug通常35件・Death Test
+39件、Release通常28件・Death Test 39件、View寿命escape 3件と所有配列writeback exclusivity 3件の
+compiler診断fixtureが成功した。これにより、View 3型のlifetime dependency、実行可能なView経路、
+実行時Death Testからcompiler診断へ移した拒否契約を、旧ノンエスケーパブル化の成果として受け入れる。
+
+この受入後、`element(at:)`、`setElement(_:at:)`、Swift 6.4以降の`reference(at:)`と多次元版、および
+旧subscript・Viewのdeprecated指定が別commitで追加された。現行の番号付き8仕様群は旧subscript・View経路を
+通して成功する一方、新しい座標access APIを直接仕様化しておらず、buildではdeprecated warningが多数発生する。
+この後発差分を旧View契約の未完了へ混ぜず、採用・撤回の判断も先取りせず、別の差分監査として扱う。
+
+### 座標access API差分監査（BARE-036）
+
+2026-10-13、現行source、番号付き8仕様群、compiler診断fixture、benchmark、および追加commit
+`4b023333`を照合した。旧Viewと連鎖subscriptはdeprecatedであり、新しい座標access APIの間接coverageとして
+扱わない。既存testは旧契約の退役までの回帰証拠として維持し、新APIの仕様testは別群へ置換する。
+
+#### 直接coverage
+
+| 対象 | production宣言 | 現行Test as Specification | 判定 |
+| --- | ---: | --- | --- |
+| `element(at:)` | 所有1D〜4Dの4件 | 直接呼出し0件 | 未検証 |
+| `setElement(_:at:)` | 所有1D〜4Dの4件 | 直接呼出し0件 | 未検証 |
+| `reference(at:)`（Swift 6.4以降） | 所有1D〜4Dの4件 | 直接呼出し0件 | 未検証 |
+| `MutableRef.pointee`（Swift 6.4以降） | read / nonmutating write | 直接呼出し0件 | 未検証 |
+| 座標ごとの範囲外停止 | 1D〜4Dの各軸 | Death Test 0件 | 未検証 |
+| `MutableRef`のowner依存寿命（Swift 6.4以降） | `~Escapable`と`@_lifetime(borrow self)` | compile-pass／compile-fail fixture 0件 | 未検証 |
+
+benchmarkは1D〜3Dの一部経路を実行し、性能探索とchecksum確認を行うが、有限のworkloadであり、
+公開契約、全次元、全軸のbounds、要素寿命、およびcompiler拒否を仕様化する証拠にはしない。
+
+#### 後継仕様群
+
+新APIを現在名のまま実装へ固定する判断はこの監査で行わない。命名が変わっても保持すべき仕様意図として、
+次を後継Test as Specificationの単位にする。
+
+1. Swift 6.2以降の値access群として、所有1D〜4Dの非対称shapeで、`element(at:)`が全座標を正しい線形位置へ
+   写像する。
+2. Swift 6.2以降の値access群として、`setElement(_:at:)`による変更を`element(at:)`と独立したstorage確認経路で
+   観測し、参照要素の置換時に
+   旧要素がちょうど1回破棄される。
+3. Swift 6.4以降だけの借用参照群として、`reference(at:)`の`pointee` read / writeが同じowner storageへ反映され、
+   参照要素の置換寿命も保つ。
+4. 1D〜4Dの各座標について、負値と上限値をreadとsetで拒否し、Swift 6.4以降ではreferenceも拒否する。
+5. Swift 6.4以降で、`MutableRef`をownerより長くescapeできず、有効scope内では利用できることをcompiler fixtureで
+   確認する。
+6. `AcCollections`再公開経路から新しい公開面へ到達できることを確認する。
+
+旧View・連鎖subscriptのtestへ新API assertionを追加しない。置換coverageが受け入れられる前に旧testを削除せず、
+置換後のdeprecated表面の削除時期はrelease・移行判断と分ける。
+
+#### 付随して見つかった文書不整合
+
+`BareArray2DView`と`BareArray3DView`のdeprecated extension messageは、現行sourceに存在しない
+`mutable(at:...)`を案内する。Swift 6.4以降の実際の置換候補は`reference(at:)`であるが、公開名判断と
+toolchain別の移行案内を先取りせず、命名反映時の修正対象として残す。
+
+#### 現行suiteの基準点
+
+`swift test --disable-sandbox --filter BareArrayModuleTests`を実行し、XCTest 35件とSwift Testing Death Test
+39件が成功した。これらは旧View・連鎖subscriptを中心とする現行suiteの成功であり、上表の座標access API
+未検証を解消しない。user-level SwiftPM cacheがread-onlyというenvironment warningは結果へ影響しなかった。
+
+#### 後続task境界
+
+- `BARE-037`: `element(at:)`と`setElement(_:at:)`の値access群を直接仕様化する。現在の中間ゴールに`DIRECT`。
+- `BARE-038`: Swift 6.4以降の`reference(at:)`と`MutableRef`借用参照群を、runtime testとcompiler fixtureで
+  直接仕様化する。値access群から独立して実行・受入でき、現在の中間ゴールに`DIRECT`。
+
+両taskとも現在名の採用判断は行わず、命名変更時にも保持される振る舞いを仕様化する。旧Viewの削除、移行時期、
+deprecated messageの確定は含めない。
+
+#### 値access群の受入結果（BARE-037）
+
+`BareArray_6_CoordinateValueAccessTests.swift`に、1D〜4Dの非対称shapeによる全座標写像、選択位置だけの
+書換え、および参照要素置換時の破棄回数を追加した。`BareArray_97_CoordinateValueAccessDeathTests.swift`では、
+read / setそれぞれについて全次元・全軸の負値と上限値、合計40 caseを正確なSwift trap signalで確認する。
+`AcCollectionsTests`のfacade到達確認もdeprecated subscriptから値access群へ移した。
+
+Debugは通常38件とDeath Test 47件、Releaseは通常31件とDeath Test 47件が成功した。Releaseの通常件数が
+Debugより7件少ないのは、既存のinternal `clone()` testが`#if DEBUG`であるため。旧View由来のdeprecated warningは
+残るが、置換coverage受入前に旧testを削除しない方針どおりであり、値access群の失敗ではない。現branchは
+Swift tools version 6.4であるため、この実行結果をSwift 6.2構成そのもののbuild証拠とは扱わない。
+
+#### 借用参照群の受入結果（BARE-038）
+
+Swift 6.4以降の`reference(at:)`と`MutableRef.pointee`について、1D〜4Dのowner storageへのread / write、
+参照要素置換時の破棄回数、全次元・全軸の負値と上限値20 case、および`AcCollections` facade経路を
+直接仕様化した。Death Testは値access群と同じ正確なSwift trap signalを要求する。
+
+`Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/`には、有効なowner scope内の
+compile-pass 1件と、1D〜4Dの参照をowner外へ返すcompile-fail 4件を置いた。既存の診断scriptへ統合し、
+4件すべてが`lifetime-dependent value escapes its scope`で拒否されること、既存View escape 3件と
+owned writeback exclusivity 3件も引き続き成立することを確認した。
+
+Debugは通常40件とDeath Test 51件、Releaseは通常33件とDeath Test 51件が成功した。facade到達確認も成功した。
+これにより、監査で分離した値access群とSwift 6.4借用参照群の直接Test as Specificationは揃った。
 
 ## Task
 
@@ -254,6 +354,11 @@ checksum検証を含め成功した。さらに12 workloadをsize 1から64kま�
 3系列を含む4枚のPNGを
 `Benchmarks/QualityAssessment/macOS/BareArray/`へ暫定証拠として保存した。この結果は比較経路と
 可視化の成立確認であり、性能比の受入判断または正式assessmentではない。
+
+`Benchmarks/run-bare-array-assessment.sh`を追加し、正式測定時にはtimestampとcommitから作る同一の
+測定IDで、生JSON、4枚のPNG、およびcommit・macOS・hardware・Swift・Clangの環境記録を保存する
+構成を整えた。scriptのshell構文と、既存の暫定JSONから生成される4つのchart入力pathを確認した。
+正式測定の実行と性能比の判定は、後続のユーザー判断および実行taskへ残す。
 
 ## Viewノンエスケーパブル化
 

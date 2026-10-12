@@ -667,7 +667,7 @@ OptionalArray監査で実際に有効だった方式を、別の低レベルcoll
 
 ユーザー判断により、OptionalArray監査から抽出した委任規則のために独立文書を追加しない。
 必要な責任境界、成果物、停止条件は`AGENTS.md`、`CLAUDE.md`、
-`Maintanance/Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md`へ既に吸収され、BareArray監査の正本にも適用済みである。
+`Maintanance/Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`へ既に吸収され、BareArray監査の正本にも適用済みである。
 このため判断taskを完了し、独立した反映taskは不要として除外する。
 
 ## Claude証拠表（2026-10-08）

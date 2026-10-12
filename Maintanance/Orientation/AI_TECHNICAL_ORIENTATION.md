@@ -24,7 +24,8 @@ Task Registryと選択taskの詳細正本で確認する。
 - `StrictMemorySafetyReadiness.md`
 - `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`
 - `../Tests/TESTING.md`
-- `RELEASE_CHECKLIST.md`
+- `User/RELEASE_PROCESS.md`
+- version固有のrelease正本
 - module別の品質評価、監査、Test as Specification
 
 ## 最初に持つべき難易度の見取り図
@@ -331,8 +332,8 @@ AIが誤りやすい点:
 - branch名、worktree、HEAD、remote ref、tag対象commitを取り違える。
 
 branchを跨ぐ作業では、symbolをbranch、path、configuration、意味と組にして扱う。編集前、検証前、commit前に
-現在branchと差分を確認する。release treeの境界は`RELEASE_CHECKLIST.md`とversion固有正本を読み、本書や古い
-rehearsalから推定しない。
+現在branchと差分を確認する。release作業は`User/RELEASE_PROCESS.md`とversion固有正本を読み、未記載の境界を
+本書や古いrehearsalから推定しない。
 
 ### 9. 文書にも正本と証拠の階層がある
 
@@ -391,5 +392,5 @@ AIが誤りやすい点:
 - `RefactoringFromAtCoder2025/README.md`: 技術的な変遷と証拠の継承
 - `StrictMemorySafetyReadiness.md`: unsafe、所有、strict memory safetyの調査と段階適用
 - `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`: 性能回帰の再現、二分探索、生成コード調査
-- `RELEASE_CHECKLIST.md`: release時の証拠と操作境界
+- `User/RELEASE_PROCESS.md`: 人間が実行する現在のrelease工程。未充当の仕様はTask Registryで別に管理する
 - module別の監査・品質評価: 個別APIの契約と未確認事項

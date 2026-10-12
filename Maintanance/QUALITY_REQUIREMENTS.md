@@ -3,11 +3,11 @@
 > **文書状態:** 製品品質要求の正本（2026-10-11、ユーザーがChappy V4を正本として採用し、版・作者を含まない名前へ改名）。
 > 非規範的な参照資料は[`QUALITY_REQUIREMENTS_REFERENCE.md`](QUALITY_REQUIREMENTS_REFERENCE.md)、
 > 元になった独立ドラフトは
-> [`Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md`](Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md)等を参照する。
+> [`Archived/QualityRequirements/QUALITY_REQUIREMENTS_CLAUDE_V2.md`](Archived/QualityRequirements/QUALITY_REQUIREMENTS_CLAUDE_V2.md)等を参照する。
 
 ## 1. 位置づけ
 
-本書は、`CONCEPT_DEFINITION.md`を上位概念として、
+本書は、[`User/CONCEPT_DEFINITION.md`](User/CONCEPT_DEFINITION.md)を上位概念として、
 ISO/IEC 25010:2023を参照し、
 swift-ac-collectionsの製品品質要求を定義する。
 
@@ -44,6 +44,50 @@ Swift利用者が期待する言語特性や安全性を
 
 この両立が、本製品の品質設計における重要な課題となる。
 
+### 1.0に向けた開発対象
+
+1.0に向けた現時点の開発対象を次のように定める。
+
+| モジュール | 位置づけ |
+|---|---|
+| RedBlackTreeCollections | 1.0提供対象として品質成立を目指す。 |
+| PermutationModule | Swift 6.4以降の1.0提供対象として品質成立を目指す。 |
+| OptionalArrayModule | 明示的なpackage traitで有効化する実験的データ構造として、留保付きで1.0の対象に残す。安定APIと同じ保証を既成事実とせず、実験提供に必要な品質境界を別途成立させる。 |
+| BareArrayModule | 1.0提供対象から除外する。実装を放棄せず、source、仕様、test、benchmark、安全性、および既存利用への影響を保守する。 |
+
+留保付きまたは提供対象外という位置づけは、有効化または保守する範囲の正確性、メモリ安全性、要素寿命、
+初期化と破棄、およびbuild・test可能性を自動的に軽減しない。package traitも、性能上の未達や未検証を
+解消済みとする根拠にはならない。
+
+この位置づけは、各モジュールが1.0品質を達成済みであることを意味しない。品質アセスメントと
+1.0品質ゲートによって、要求、証拠、反証、未検証領域、および残余リスクを確認する。
+
+上位品質要求を各モジュールへどの強度で適用するかは、提供区分、用途、および比較可能な対象に応じて
+モジュール品質プロファイルで具体化する。ただし、実験提供または1.0提供対象外であることを理由に、
+実際に有効化または保守する範囲の正確性、安全性、要素寿命、およびbuild・test可能性を軽減しない。
+一方、外部性能比較、一般利用Validation、および互換性保証は、安定提供と同じ受入水準を自動的には課さない。
+
+今後の開発または品質アセスメントで新しい問題、反証、前提の変化が見つかった場合は、現在の位置づけを
+結論として固定せず、影響範囲を確認して再評価する。
+
+### 1.0の提供環境（暫定）
+
+1.0の提供対象候補は、Apple platforms 27以降およびLinuxの64-bit環境とする。32-bit環境は提供および
+品質保証の対象外とする。この記述はmanifestと検証計画を具体化するための現時点の基準であり、
+1.0で保証する環境の最終確定ではない。
+
+Apple platformsについては、`Package.swift`で対象platformごとの最低deployment versionを宣言し、
+macOS以外も対象platform別のbuild・導入経路を確認する。platformsの宣言だけで、各platformにおける
+実行時品質が確認済みであるとはみなさない。
+
+代表品質評価環境は、macOS 27 / arm64およびUbuntu 24.04 LTS / x86_64とする。Ubuntuの評価は
+GitHub-hosted runnerで行い、commit、workflow run、runner image、kernel、architecture、CPU、Swift、
+依存解決、選択試験、完全log、および終了statusを実行ごとの証拠として残す。物理環境を固定できない
+runner上の結果は、絶対性能またはC/C++との厳密な性能判定には用いない。
+
+この提供環境と代表評価環境は現時点の方針であり、manifest実装、platform別build、品質アセスメント、
+利用環境、および新しい反証を踏まえて1.0品質ゲートまでに再評価できる。
+
 ## 3. 上位品質要求
 
 ### QR-01 正確性 — データ構造として正しく振る舞う
@@ -58,14 +102,18 @@ Swift利用者が期待する言語特性や安全性を
 
 ### QR-02 性能効率性 — C/C++標準に匹敵する性能を持つ
 
-各データ構造は、対象操作と利用文脈において、
-C/C++の標準的な実装に匹敵する性能を備えること。
+性能を製品価値として提供する各データ構造は、対象操作と利用文脈において、
+C/C++の標準ライブラリ、または比較対象として定めた同等実装に匹敵する性能を備えること。
 
 計算量、実行時間、メモリ使用量、allocation、
 入力規模に対する特性を含む。
 
 性能の評価では、既存製品との相対的な回帰防止と、
 C/C++標準との外部比較を区別する。
+
+比較対象、workload、入力規模、環境、および「匹敵」の受入水準は、モジュール品質プロファイルと
+独立した評価で具体化する。安全な公開契約を外した上限実験や、利用側アルゴリズムを含むend-to-end測定を、
+その境界を示さずに製品実装単体の適合証拠として扱わない。
 
 - コンセプト: C2、C3
 - ISO 25010: 性能効率性
@@ -202,28 +250,9 @@ AI同士の評価が一致したことを、
 既存の品質資産は、品質要求そのものではなく、
 品質要求を具体化し、その成立を検証・評価するために利用する。
 
-### 品質要求と既存資産の対応
-
-| 品質要求 | 主な既存資産 |
-|---|---|
-| QR-01 正確性 | Test as Specification、C++挙動比較 |
-| QR-02 性能効率性 | Benchmark、性能回帰分析 |
-| QR-03 安全性 | 値セマンティクス、寿命テスト、Death Test、Sanitizer、設計文書 |
-| QR-04 理解可能性 | DocC、利用者向け文書、コードスニペット |
-| QR-05 利用可能性 | Package構成、互換文書、利用者経路 |
-| QR-06 持続可能性 | CI、品質評価、Git履歴、Release Checklist |
-
-この対応表は非規範的な参照情報であり、
-既存資産を調査・洗練する際の案内として利用する。
-
-個別資産との接続や洗練の手がかりは、
-[`QUALITY_REQUIREMENTS_REFERENCE.md`](QUALITY_REQUIREMENTS_REFERENCE.md)を参照する。
-
-品質要求と既存資産の対応は一対一ではなく、
-この表は網羅性や品質要求への適合を保証しない。
-
-また、表への記載によって新たな検証義務や
-受入条件を追加するものではない。
+品質要求と既存資産の具体的な対応、VerificationとValidationの例、および洗練の手がかりは、
+非規範的な[`QUALITY_REQUIREMENTS_REFERENCE.md`](QUALITY_REQUIREMENTS_REFERENCE.md)だけに置く。
+同資料への記載は、網羅性、品質要求への適合、新たな検証義務、または受入条件を意味しない。
 
 既存の検証手段が存在することを理由に、
 品質要求を逆算して確定してはならない。
@@ -235,10 +264,10 @@ AI同士の評価が一致したことを、
 
 | モジュール | 品質プロファイル |
 |---|---|
-| RedBlackTreeCollections | [`Quality-Profile.md`](../../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md) |
-| PermutationModule | [`Quality-Profile.md`](../../Sources/PermutationModule/Documentation/Quality-Profile.md) |
-| OptionalArrayModule | [`Quality-Profile.md`](../../Sources/OptionalArrayModule/Documentation/Quality-Profile.md) |
-| BareArrayModule | [`Quality-Profile.md`](../../Sources/BareArrayModule/Documentation/Quality-Profile.md) |
+| RedBlackTreeCollections | [`Quality-Profile.md`](../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md) |
+| PermutationModule | [`Quality-Profile.md`](../Sources/PermutationModule/Documentation/Quality-Profile.md) |
+| OptionalArrayModule | [`Quality-Profile.md`](../Sources/OptionalArrayModule/Documentation/Quality-Profile.md) |
+| BareArrayModule | [`Quality-Profile.md`](../Sources/BareArrayModule/Documentation/Quality-Profile.md) |
 
 各品質プロファイルは、上位品質要求を変更または複製せず、
 対象モジュールにおける意味、重点領域、仕様、証拠、および
@@ -256,7 +285,7 @@ AI同士の評価が一致したことを、
 - C/C++標準との比較対象と判定水準
 - 競技用途を代表するValidation scenario
 - 一般Swift開発を代表するValidation scenario
-- 対応環境と公開契約の保証範囲
+- 1.0で最終的に保証する対応環境と公開契約の範囲
 - 品質要求と検証証拠の対応範囲
 - 残余リスクの許容条件
 

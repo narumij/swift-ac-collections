@@ -45,6 +45,19 @@ Archived全体を探索しない。
 
 - `PROGRESS_OVERVIEW_COMPLETED_2026-10-09.md`: 現行Registryから退避した`DONE`・`EXCLUDED` task行と、完了taskだけに向かうprecedence履歴
 - `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md`: `Maintanance/`直下27文書の待避判断と再確認条件
-- `AI_GRAPH_SHARED_SCHEMA.md`: 完了した共有schema最小fixtureの正本
-- `AI_GRAPH_IN_MEMORY_FIXTURE.md`: 完了したSQLiteインメモリfixtureの正本
+- `AI_GRAPH_SMELL_NOTES.md`: 完了したsmell観測と試験記録
 - `USER_MANAGEMENT_ASSESSMENT.md`: 2026-10-05時点の統合評価
+
+## 2026-10-12移動分
+
+- `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`: V2採用後に退役した旧Codex task運用playbook
+
+## 2026-10-13移動分
+
+- `PROGRESS_OVERVIEW_COMPLETED_2026-10-13.md`: 2026-10-13に完了・除外したtask行と充足済みprecedence履歴
+- `QualityRequirements/`: 現行の製品品質要求を作る過程で提出・改訂されたCodex、Claude、Chappyの独立ドラフト群
+- `RELEASE_CHECKLIST.md`: 今後の正本としては採用しなかった旧release checklist
+- `RELEASE_TEMPLATE_BRANCH_DESIGN.md`: 採用しなかったtemplate branch方式の設計資料
+- `RELEASE_TASK_REGISTRY_DESIGN.md`: 採用しなかったrelease専用Task Registry方式の設計資料
+- `RELEASE_TASK_REGISTRY_TEMPLATE.md`: 採用しなかったrelease専用Registry template
+- `RELEASE_TASK_REGISTRY_REHEARSAL_TEMPLATE.md`: 採用しなかったrehearsal overlay

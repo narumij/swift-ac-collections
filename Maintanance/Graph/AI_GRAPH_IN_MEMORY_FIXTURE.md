@@ -19,7 +19,7 @@
 ## 目的
 
 空のSQLiteインメモリDBへ共有schemaとRBT-017 fixtureを投入し、「隣を引く」queryが
-`AI_GRAPH_SHARED_SCHEMA.md`の期待結果を返すことを、Claude専用DBなしで再現可能にする。
+`Graph/AI_GRAPH_SHARED_SCHEMA.md`の期待結果を返すことを、Claude専用DBなしで再現可能にする。
 
 ## 必須成果物
 
@@ -109,7 +109,7 @@ sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/run.sql
 | `AIGraphInMemoryFixture/rbt017_fixture.sql` | RBT-017 fixtureの`INSERT`。symbol 2、test 4、document 9、commit 8、task 3のnodeと、test 6・document 17・commit 13のedge |
 | `AIGraphInMemoryFixture/neighbors.sql` | 「隣を引く」。入力table `query_input`、一覧view `neighbors`、区分別件数view `neighbor_counts` |
 
-### `AI_GRAPH_SHARED_SCHEMA.md`の候補から足したもの
+### `Graph/AI_GRAPH_SHARED_SCHEMA.md`の候補から足したもの
 
 - `derivation` table: relationごとに導出元があるかを持つ。`task_scopes`は`available = 0`。件数0のとき、`neighbor_counts.status`が`derived`（導出元はあり、本当に0件）か`nothing to derive from`（導出元なし）かを返す。schema候補の「0件と未作成の区別」をSQLで表すために追加した。
 - `edge.rank`: 導出元自身が与える順序。`commit_changes`は`git log`の順（1が最新）。同じ日のcommitが複数あり、日付だけでは「新しい順」を再現できないため追加した。
@@ -117,7 +117,7 @@ sqlite3 :memory: < Maintanance/Graph/InMemoryFixture/run.sql
 ### A-1とA-2の扱い（実装上の事実）
 
 - task: `RBT-017`・`RBT-018`・`RBT-026`はtask nodeとして入れたが、`task_scopes` edgeは作っていない。task区分は両symbolとも`0 / nothing to derive from`。
-- 自己参照: 手作業のfixtureなので、document nodeは`AI_GRAPH_SHARED_SCHEMA.md` 5節の9件を明示的に列挙している。fixtureのfile群、`AI_GRAPH_SHARED_SCHEMA.md`、この文書はdocument nodeに入れていないので、件数は増えない。自動抽出にする場合は、この除外を抽出規則として別に持つ必要がある。
+- 自己参照: 手作業のfixtureなので、document nodeは`Graph/AI_GRAPH_SHARED_SCHEMA.md` 5節の9件を明示的に列挙している。fixtureのfile群、`Graph/AI_GRAPH_SHARED_SCHEMA.md`、この文書はdocument nodeに入れていないので、件数は増えない。自動抽出にする場合は、この除外を抽出規則として別に持つ必要がある。
 
 ### 確認したこと
 

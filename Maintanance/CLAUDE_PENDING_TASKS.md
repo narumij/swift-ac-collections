@@ -184,7 +184,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 対象範囲（案）: ユーザー・Codex・Claude・第三者AI（ChatGPT／ちゃっぴー）の役割、責任境界、受け渡しの流れ
   （Registry・`CLAUDE_TASK.md`・採番待ちqueue・感想ログなど）を、1枚のポスター風の絵にまとめる。
 - 対象外（案）: 体制そのものの変更、`AGENTS.md`・`CLAUDE.md`・Registryの書き換え。
-- 完了条件（案）: 現在の正本（`AGENTS.md`、`CLAUDE.md`、`Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md`、Registry）と食い違わない1枚ができ、
+- 完了条件（案）: 現在の正本（`AGENTS.md`、`CLAUDE.md`、`Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md`、Registry）と食い違わない1枚ができ、
   ユーザーが見え方を確かめる。
 - 決定（2026-10-09、ユーザー）: 出力はPNG。置き場所はGit対象外の隠しフォルダ（`.task-graphs/`）。まだ実験段階で、ユーザー自身が見るためのもの。
 - 前提・既存task候補: `CP-20261008-001` / `002`（task graphの絵、Python標準libraryとmacOSの`qlmanage`で描いた方式）。
@@ -200,7 +200,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   - 2枚目（主）: ユーザー「Codexが行ってるタスク処理について、分かる範囲で書いて欲しい。そっちが主。品質に関することをAIにここまで
     委譲できてるのが結構レア」を受け、`.task-graphs/claude-viz-codex.py` → `.svg` / `.png`（2400×1600）を追加。
     内容: ルーティーン1周の6段（受け取る・分ける・つなぐ・渡す・受け入れる・記録する）、Registryの状態8つ、品質の証拠の経路、
-    止まって分け直す条件、担当、「委任は責任の放棄ではない」。正本は`Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md`、Registry rules、
+    止まって分け直す条件、担当、「委任は責任の放棄ではない」。正本は`Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md`、Registry rules、
     `AGENTS.md`、`.github/workflows/swift.yml`。画像で目視して、段の文字のはみ出しと点線との重なりを直した。
     1枚目（体制図）は残してある。
   - 追記（ユーザー:「タスク分解、トポロジカルソート、無駄の削除、タスクアサイン、らへんとか追加してほしい」）: 2枚目に4つの欄を足した
@@ -235,7 +235,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 担当候補・受入担当: Claude（連絡）/ Codex（レビュー）/ ユーザー（採否）
 - 停止条件: なし（連絡を書いたら終わる）。
 - Codexへの連絡（ユーザー承認済み）:
-  - ポスターは、Claudeが`Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md`、`PROGRESS_OVERVIEW.md`のRegistry rules、`AGENTS.md`
+  - ポスターは、Claudeが`Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md`、`PROGRESS_OVERVIEW.md`のRegistry rules、`AGENTS.md`
     （User-facing management boundary、Goal relevance、Routine shorthand、Ownership）、`.github/workflows/swift.yml`から要約した。
     Codex本人の確認を通っていない。
   - 見てほしい点: ①6段の流れ（受け取る・分ける・つなぐ・渡す・受け入れる・記録する）が実際のルーティーンと合っているか、

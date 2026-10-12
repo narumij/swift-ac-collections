@@ -20,7 +20,7 @@
 /// subscriptへ`nil`を代入すると、設定済みの要素を破棄して未設定状態へ戻します。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct OptionalArray1D<Element>: ~Copyable {
+@safe public struct OptionalArray1D<Element>: ~Copyable {
 
   @usableFromInline let count: Int
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
@@ -37,9 +37,9 @@ public struct OptionalArray1D<Element>: ~Copyable {
   public init(capacity: Int) {
     precondition(capacity >= 0)
     self.count = capacity
-    self.hasPayload = .allocate(capacity: capacity)
+    unsafe self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
   }
 
   deinit {
@@ -78,6 +78,7 @@ public struct OptionalArray1D<Element>: ~Copyable {
   /// - Precondition: `position`が`indices`に含まれること。
   /// - Complexity: O(1)
   @inlinable
+  @available(*, deprecated, message: "Use element(at:) or setElement(_:at:) instead.")
   public subscript(position: Int) -> Element? {
 
     @inline(__always)
@@ -114,6 +115,29 @@ extension OptionalArray1D {
   ///
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<count }
+
+  /// `position`の要素を返します。未設定なら`nil`を返します。
+  @inlinable
+  public func element(at position: Int) -> Element? {
+    precondition(0 <= position && position < count)
+    guard unsafe hasPayload[position] else { return nil }
+    return unsafe payload[position]
+  }
+
+  /// `position`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  @inlinable
+  public func setElement(_ newValue: consuming Element?, at position: Int) {
+    precondition(0 <= position && position < count)
+    if unsafe hasPayload[position] {
+      unsafe (payload + position).deinitialize(count: 1)
+    }
+    if let newValue = consume newValue {
+      unsafe (payload + position).initialize(to: newValue)
+      unsafe hasPayload[position] = true
+    } else {
+      unsafe hasPayload[position] = false
+    }
+  }
 }
 
 extension OptionalArray1D: @unchecked Sendable where Element: Sendable { }
@@ -141,7 +165,7 @@ extension OptionalArray1D {
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
-public struct OptionalArray2D<Element>: ~Copyable {
+@safe public struct OptionalArray2D<Element>: ~Copyable {
 
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
@@ -164,9 +188,9 @@ public struct OptionalArray2D<Element>: ~Copyable {
     let (capacity, overflow) = height.multipliedReportingOverflow(by: width)
     precondition(!overflow)
     self.capacity = capacity
-    self.hasPayload = .allocate(capacity: capacity)
+    unsafe self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     self.width = width
     self.height = height
   }
@@ -207,23 +231,32 @@ public struct OptionalArray2D<Element>: ~Copyable {
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
+  @available(*, deprecated, message: "Use element(at:_:) or setElement(_:at:_:) instead.")
   public subscript(position: Int) -> OptionalArray1DView<Element> {
     @inline(__always)
+    @_lifetime(borrow self)
     get {
       precondition(0 <= position && position < height)
       return unsafe .init(
         hasPayload: hasPayload + width * position,
         payload: payload + width * position,
-        count: width)
+        count: width,
+        borrowing: self)
     }
 
     @inline(__always)
-    set {
+    _modify {
       precondition(0 <= position && position < height)
       let offset = width * position
-      precondition(newValue.hasPayload == hasPayload + offset)
-      precondition(newValue.payload == payload + offset)
-      precondition(newValue.count == width)
+      let expectedHasPayload = unsafe hasPayload + offset
+      let expectedPayload = unsafe payload + offset
+      var view = unsafe OptionalArray1DView(
+        hasPayload: expectedHasPayload, payload: expectedPayload, count: width,
+        borrowing: self)
+      yield &view
+      unsafe precondition(view.hasPayload == expectedHasPayload)
+      unsafe precondition(view.payload == expectedPayload)
+      precondition(view.count == width)
     }
   }
 }
@@ -234,6 +267,33 @@ extension OptionalArray2D {
   ///
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<height }
+
+  /// `(x, y)`の要素を返します。未設定なら`nil`を返します。
+  @inlinable
+  public func element(at x: Int, _ y: Int) -> Element? {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    let offset = y * width + x
+    guard unsafe hasPayload[offset] else { return nil }
+    return unsafe payload[offset]
+  }
+
+  /// `(x, y)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  @inlinable
+  public func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int) {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    let offset = y * width + x
+    if unsafe hasPayload[offset] {
+      unsafe (payload + offset).deinitialize(count: 1)
+    }
+    if let newValue = consume newValue {
+      unsafe (payload + offset).initialize(to: newValue)
+      unsafe hasPayload[offset] = true
+    } else {
+      unsafe hasPayload[offset] = false
+    }
+  }
 }
 
 extension OptionalArray2D: @unchecked Sendable where Element: Sendable { }
@@ -247,7 +307,7 @@ extension OptionalArray2D: @unchecked Sendable where Element: Sendable { }
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
-public struct OptionalArray3D<Element>: ~Copyable {
+@safe public struct OptionalArray3D<Element>: ~Copyable {
 
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
@@ -278,9 +338,9 @@ public struct OptionalArray3D<Element>: ~Copyable {
       precondition(!overflow0 && !overflow1)
       self.capacity = capacity
     }
-    self.hasPayload = .allocate(capacity: capacity)
+    unsafe self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     self.width = width
     self.height = height
     self.depth = depth
@@ -322,23 +382,35 @@ public struct OptionalArray3D<Element>: ~Copyable {
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
+  @available(*, deprecated, message: "Use element(at:_:_:) or setElement(_:at:_:_:) instead.")
   public subscript(position: Int) -> OptionalArray2DView<Element> {
     @inline(__always)
+    @_lifetime(borrow self)
     get {
       precondition(0 <= position && position < depth)
       return unsafe .init(
         hasPayload: hasPayload + width * height * position,
         payload: payload + width * height * position,
-        width: width, height: height)
+        width: width, height: height,
+        borrowing: self)
     }
 
     @inline(__always)
-    set {
+    _modify {
       precondition(0 <= position && position < depth)
       let offset = width * height * position
-      precondition(newValue.hasPayload == hasPayload + offset)
-      precondition(newValue.payload == payload + offset)
-      precondition(newValue.width == width && newValue.height == height)
+      let expectedHasPayload = unsafe hasPayload + offset
+      let expectedPayload = unsafe payload + offset
+      var view = unsafe OptionalArray2DView(
+        hasPayload: expectedHasPayload,
+        payload: expectedPayload,
+        width: width,
+        height: height,
+        borrowing: self)
+      yield &view
+      unsafe precondition(view.hasPayload == expectedHasPayload)
+      unsafe precondition(view.payload == expectedPayload)
+      precondition(view.width == width && view.height == height)
     }
   }
 }
@@ -349,6 +421,38 @@ extension OptionalArray3D {
   ///
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<depth }
+}
+
+extension OptionalArray3D {
+
+  /// `(x, y, z)`の要素を返します。未設定なら`nil`を返します。
+  @inlinable
+  public func element(at x: Int, _ y: Int, _ z: Int) -> Element? {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    precondition(0 <= z && z < depth)
+    let offset = (z * height + y) * width + x
+    guard unsafe hasPayload[offset] else { return nil }
+    return unsafe payload[offset]
+  }
+
+  /// `(x, y, z)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  @inlinable
+  public func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int, _ z: Int) {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    precondition(0 <= z && z < depth)
+    let offset = (z * height + y) * width + x
+    if unsafe hasPayload[offset] {
+      unsafe (payload + offset).deinitialize(count: 1)
+    }
+    if let newValue = consume newValue {
+      unsafe (payload + offset).initialize(to: newValue)
+      unsafe hasPayload[offset] = true
+    } else {
+      unsafe hasPayload[offset] = false
+    }
+  }
 }
 
 extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
@@ -363,7 +467,7 @@ extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
-public struct OptionalArray4D<Element>: ~Copyable {
+@safe public struct OptionalArray4D<Element>: ~Copyable {
 
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
@@ -397,9 +501,9 @@ public struct OptionalArray4D<Element>: ~Copyable {
       precondition(!overflow0 && !overflow1 && !overflow2)
       self.capacity = capacity
     }
-    self.hasPayload = .allocate(capacity: capacity)
+    unsafe self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     self.size0 = size0
     self.size1 = size1
     self.size2 = size2
@@ -442,8 +546,10 @@ public struct OptionalArray4D<Element>: ~Copyable {
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
+  @available(*, deprecated, message: "Use element(at:_:_:_:) or setElement(_:at:_:_:_:) instead.")
   public subscript(position: Int) -> OptionalArray3DView<Element> {
     @inline(__always)
+    @_lifetime(borrow self)
     get {
       precondition(0 <= position && position < size3)
       // 内側に0の次元があれば要素は無い。途中の積はoverflowし得るので評価しない。
@@ -453,7 +559,8 @@ public struct OptionalArray4D<Element>: ~Copyable {
         payload: payload + offset,
         width: size0,
         height: size1,
-        depth: size2)
+        depth: size2,
+        borrowing: self)
     }
 
     @inline(__always)
@@ -461,8 +568,8 @@ public struct OptionalArray4D<Element>: ~Copyable {
       precondition(0 <= position && position < size3)
       let offset =
         size0 == 0 || size1 == 0 || size2 == 0 ? 0 : size0 * size1 * size2 * position
-      precondition(newValue.hasPayload == hasPayload + offset)
-      precondition(newValue.payload == payload + offset)
+      unsafe precondition(newValue.hasPayload == hasPayload + offset)
+      unsafe precondition(newValue.payload == payload + offset)
       precondition(
         newValue.width == size0 && newValue.height == size1 && newValue.depth == size2)
     }
@@ -475,6 +582,39 @@ extension OptionalArray4D {
   ///
   /// - Complexity: O(1)
   public var indices: Range<Int> { 0..<size3 }
+
+  /// `(x, y, z, w)`の要素を返します。未設定なら`nil`を返します。
+  @inlinable
+  public func element(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> Element? {
+    precondition(0 <= x && x < size0)
+    precondition(0 <= y && y < size1)
+    precondition(0 <= z && z < size2)
+    precondition(0 <= w && w < size3)
+    let offset = ((w * size2 + z) * size1 + y) * size0 + x
+    guard unsafe hasPayload[offset] else { return nil }
+    return unsafe payload[offset]
+  }
+
+  /// `(x, y, z, w)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  @inlinable
+  public func setElement(
+    _ newValue: consuming Element?, at x: Int, _ y: Int, _ z: Int, _ w: Int
+  ) {
+    precondition(0 <= x && x < size0)
+    precondition(0 <= y && y < size1)
+    precondition(0 <= z && z < size2)
+    precondition(0 <= w && w < size3)
+    let offset = ((w * size2 + z) * size1 + y) * size0 + x
+    if unsafe hasPayload[offset] {
+      unsafe (payload + offset).deinitialize(count: 1)
+    }
+    if let newValue = consume newValue {
+      unsafe (payload + offset).initialize(to: newValue)
+      unsafe hasPayload[offset] = true
+    } else {
+      unsafe hasPayload[offset] = false
+    }
+  }
 }
 
 extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
@@ -487,17 +627,33 @@ extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
 /// 親配列の生存中だけ使用でき、Viewを親配列より長く保持してはいけません。
 /// Viewを通じた変更は親配列の同じ要素へ反映されます。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct OptionalArray1DView<Element> {
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
+@safe public struct OptionalArray1DView<Element>: ~Escapable {
 
   @inlinable
-  @unsafe internal init(
+  @_lifetime(borrow source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
     hasPayload: UnsafeMutablePointer<Bool>,
     payload: UnsafeMutablePointer<Element>,
-    count: Int
+    count: Int,
+    borrowing source: borrowing Source
   ) {
     self.count = count
-    self.hasPayload = unsafe hasPayload
-    self.payload = unsafe payload
+    unsafe self.hasPayload = hasPayload
+    unsafe self.payload = payload
+  }
+
+  @inlinable
+  @_lifetime(copy source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
+    hasPayload: UnsafeMutablePointer<Bool>,
+    payload: UnsafeMutablePointer<Element>,
+    count: Int,
+    copying source: borrowing Source
+  ) {
+    self.count = count
+    unsafe self.hasPayload = hasPayload
+    unsafe self.payload = payload
   }
   @usableFromInline var count: Int
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
@@ -542,6 +698,7 @@ public struct OptionalArray1DView<Element> {
   }
 }
 
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
 extension OptionalArray1DView {
   /// このViewに有効なslot位置である`0..<count`を返します。
   ///
@@ -555,16 +712,33 @@ extension OptionalArray1DView {
 /// 親配列の生存中だけ使用でき、Viewを通じた変更は親配列へ反映されます。
 /// 連鎖subscriptは`view[y][x]`の順で、`width`が最内軸、`height`が最外軸です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct OptionalArray2DView<Element> {
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
+@safe public struct OptionalArray2DView<Element>: ~Escapable {
 
   @inlinable
-  @unsafe internal init(
+  @_lifetime(borrow source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
     hasPayload: UnsafeMutablePointer<Bool>,
     payload: UnsafeMutablePointer<Element>,
-    width: Int, height: Int
+    width: Int, height: Int,
+    borrowing source: borrowing Source
   ) {
-    self.hasPayload = unsafe hasPayload
-    self.payload = unsafe payload
+    unsafe self.hasPayload = hasPayload
+    unsafe self.payload = payload
+    self.width = width
+    self.height = height
+  }
+
+  @inlinable
+  @_lifetime(copy source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
+    hasPayload: UnsafeMutablePointer<Bool>,
+    payload: UnsafeMutablePointer<Element>,
+    width: Int, height: Int,
+    copying source: borrowing Source
+  ) {
+    unsafe self.hasPayload = hasPayload
+    unsafe self.payload = payload
     self.width = width
     self.height = height
   }
@@ -586,25 +760,35 @@ public struct OptionalArray2DView<Element> {
   @inlinable
   public subscript(position: Int) -> OptionalArray1DView<Element> {
     @inline(__always)
+    @_lifetime(copy self)
     get {
       precondition(0 <= position && position < height)
       return unsafe .init(
         hasPayload: hasPayload + width * position,
         payload: payload + width * position,
-        count: width)
+        count: width,
+        copying: self)
     }
 
     @inline(__always)
-    set {
+    @_lifetime(copy self)
+    _modify {
       precondition(0 <= position && position < height)
       let offset = width * position
-      precondition(newValue.hasPayload == hasPayload + offset)
-      precondition(newValue.payload == payload + offset)
-      precondition(newValue.count == width)
+      let expectedHasPayload = unsafe hasPayload + offset
+      let expectedPayload = unsafe payload + offset
+      var view = unsafe OptionalArray1DView(
+        hasPayload: expectedHasPayload, payload: expectedPayload, count: width,
+        copying: self)
+      yield &view
+      unsafe precondition(view.hasPayload == expectedHasPayload)
+      unsafe precondition(view.payload == expectedPayload)
+      precondition(view.count == width)
     }
   }
 }
 
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
 extension OptionalArray2DView {
   /// 外側の軸に有効な位置である`0..<height`を返します。
   ///
@@ -618,16 +802,34 @@ extension OptionalArray2DView {
 /// 親配列の生存中だけ使用でき、Viewを通じた変更は親配列へ反映されます。
 /// 連鎖subscriptは`view[z][y][x]`の順で、`width`が最内軸、`depth`が最外軸です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct OptionalArray3DView<Element> {
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
+@safe public struct OptionalArray3DView<Element>: ~Escapable {
 
   @inlinable
-  @unsafe internal init(
+  @_lifetime(borrow source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
     hasPayload: UnsafeMutablePointer<Bool>,
     payload: UnsafeMutablePointer<Element>,
-    width: Int, height: Int, depth: Int
+    width: Int, height: Int, depth: Int,
+    borrowing source: borrowing Source
   ) {
-    self.hasPayload = unsafe hasPayload
-    self.payload = unsafe payload
+    unsafe self.hasPayload = hasPayload
+    unsafe self.payload = payload
+    self.width = width
+    self.height = height
+    self.depth = depth
+  }
+
+  @inlinable
+  @_lifetime(copy source)
+  @unsafe internal init<Source: ~Copyable & ~Escapable>(
+    hasPayload: UnsafeMutablePointer<Bool>,
+    payload: UnsafeMutablePointer<Element>,
+    width: Int, height: Int, depth: Int,
+    copying source: borrowing Source
+  ) {
+    unsafe self.hasPayload = hasPayload
+    unsafe self.payload = payload
     self.width = width
     self.height = height
     self.depth = depth
@@ -651,26 +853,29 @@ public struct OptionalArray3DView<Element> {
   @inlinable
   public subscript(position: Int) -> OptionalArray2DView<Element> {
     @inline(__always)
+    @_lifetime(copy self)
     get {
       precondition(0 <= position && position < depth)
       return unsafe .init(
         hasPayload: hasPayload + width * height * position,
         payload: payload + width * height * position,
         width: width,
-        height: height)
+        height: height,
+        copying: self)
     }
 
     @inline(__always)
     set {
       precondition(0 <= position && position < depth)
       let offset = width * height * position
-      precondition(newValue.hasPayload == hasPayload + offset)
-      precondition(newValue.payload == payload + offset)
+      unsafe precondition(newValue.hasPayload == hasPayload + offset)
+      unsafe precondition(newValue.payload == payload + offset)
       precondition(newValue.width == width && newValue.height == height)
     }
   }
 }
 
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
 extension OptionalArray3DView {
   /// 外側の軸に有効な位置である`0..<depth`を返します。
   ///

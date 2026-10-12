@@ -136,7 +136,7 @@ orientationへ現在状態や履歴を再び集積し、この分離を元の長
 
 taskを分けることで判断がどう構造化されるか、分からないことをいつユーザー判断へ変えるか、readyとnextを
 どう区別するかは`TASK_ORIENTATION.md`を初回の実践的な入口とする。詳細規則は
-`CODEX_TASK_OPERATION_PLAYBOOK.md`を正とする。
+`Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`を正としていた。
 
 ## このrepositoryで特に慎重に扱うもの
 
@@ -180,7 +180,7 @@ mainは、製品sourceだけでなく、Task Registry、詳細正本、品質評
 release成果物はmainの複製ではなく、利用者が必要とするsource、test、文書、再現手段だけを残す。
 
 このorientationを含む管理文書をreleaseへ残すか、いつ除外するかを本書だけで決めない。現在の境界と工程は
-`RELEASE_CHECKLIST.md`およびversion固有のrelease正本を確認する。製品上の修正をrelease branchだけへ
+`User/RELEASE_PROCESS.md`およびversion固有のrelease正本を確認する。製品上の修正をrelease branchだけへ
 閉じ込めず、mainへ戻して候補を作り直す。
 
 ## 復帰手順
@@ -241,14 +241,14 @@ taskリファクタリング事例を一つ使い、新しいCodexが次を説�
 - `AGENTS.md`: 起動規則、権限、管理境界
 - `PROGRESS_OVERVIEW.md`: 現在のtaskと進捗の正本
 - `TASK_ORIENTATION.md`: task分解によって判断と次の行動を導くための初回実践ガイド
-- `CODEX_TASK_OPERATION_PLAYBOOK.md`: task運用の具体的手順
+- `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`: 当時のtask運用の具体的手順
 - `AI_TASK_PROCESS_POSTER.png`: 中間ゴールからtask分解、依存、ready判定、受入へつなぐ実務の要約
 - `Graph/TASK_GRAPH_LINT.md`: 管理面が判断を代行しない設計の具体例
 - `AI_TECHNICAL_ORIENTATION.md`: AIにとっての技術的難所、誤認、証拠、停止点
 - `AGENT_TASK_FIT_INTERVIEW.md`: repository固有のagent適性と独立確認
 - `CODEX_OBSERVATIONS.md`: 運用から得た観察。判断の正本ではない
 - `RefactoringFromAtCoder2025/README.md`: 技術的な変遷と証拠の継承
-- `RELEASE_CHECKLIST.md`: release工程の汎用正本
+- `User/RELEASE_PROCESS.md`: 人間が実行するrelease工程の正本
 
 ## 作成記録
 

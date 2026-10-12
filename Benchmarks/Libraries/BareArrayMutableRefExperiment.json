@@ -1,0 +1,67 @@
+{
+  "kind": "group",
+  "title": "BareArray MutableRef Experiment",
+  "directory": "BareArrayMutableRefExperiment",
+  "contents": [
+    {
+      "kind": "chart",
+      "title": "1D sequential read checksum",
+      "tasks": [
+        "std::vector<intptr_t> 1D sequential read checksum",
+        "BareArray<Int> element(at:) sequential read checksum",
+        "BareArray<Int> Reference sequential read checksum",
+        "Array<Int> 1D sequential read checksum"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "1D sequential write",
+      "tasks": [
+        "std::vector<intptr_t> 1D sequential write",
+        "BareArray<Int> setElement(_:at:) sequential write",
+        "BareArray<Int> Reference sequential write",
+        "Array<Int> 1D sequential write"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "2D sequential read checksum",
+      "tasks": [
+        "std::vector<std::vector<intptr_t>> 2D sequential read checksum",
+        "BareArray2D<Int> element(at:) sequential read checksum",
+        "BareArray2D<Int> Reference sequential read checksum",
+        "Array<Array<Int>> 2D sequential read checksum"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "2D sequential write",
+      "tasks": [
+        "std::vector<std::vector<intptr_t>> 2D sequential write",
+        "BareArray2D<Int> setElement(_:at:) sequential write",
+        "BareArray2D<Int> Reference sequential write",
+        "Array<Array<Int>> 2D sequential write"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "3D sequential read checksum",
+      "tasks": [
+        "std::vector<std::vector<std::vector<intptr_t>>> 3D sequential read checksum",
+        "BareArray3D<Int> element(at:) sequential read checksum",
+        "BareArray3D<Int> Reference sequential read checksum",
+        "Array<Array<Array<Int>>> 3D sequential read checksum"
+      ]
+    },
+    {
+      "kind": "chart",
+      "title": "3D sequential write",
+      "tasks": [
+        "std::vector<std::vector<std::vector<intptr_t>>> 3D sequential write",
+        "BareArray3D<Int> setElement(_:at:) sequential write",
+        "BareArray3D<Int> Reference sequential write",
+        "Array<Array<Array<Int>>> 3D sequential write"
+      ]
+    }
+  ]
+}

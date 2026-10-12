@@ -45,11 +45,13 @@ Earlier snapshots and completed-history files remain unchanged.
 | `BARE-027` | `DONE` | Codex | [EXECUTION] BareArrayノンエスケーパブル化の品質検証 | 0.6.0品質としてDebug・Release・ASan・compiler診断fixture・facade・DocCを検証し、View寿命とstrict memory safetyを確認済み、並行利用・`-Ounchecked`・利用Validation・外部性能を未検証として分離 | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `ARRAY-001` | `EXCLUDED` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのView寿命はノンエスケーパブル化へ統合し、残るstorage、公開安全性分類、strict memory safetyを独立taskへ分解したため、包括taskとしては除外。OptionalArrayは必要時に別途再分解する | `StrictMemorySafetyReadiness.md` |
 | `API-003` | `EXCLUDED` | User | [DECISION] Public API名ballotの採点開始判断 | 2026-10-12、全体段取りの確定後にユーザーへ中間成果の審査判断を要求する必要はなく、ballotの完全性確認はCodexの編成taskの受入条件で閉じられると確認したため除外 | `PUBLIC_API_NAMING_BALLOT.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `API-001` | `DONE` | Claude | [DISCOVERY] Public API名のClaude独立候補出し | Array access、その他Array公開名、Permutation通常・borrowed family、その他Permutation公開名について、他者候補を読まず候補、意図、懸念を提出し、契約判断が必要な2論点を未解決事項へ分離。2026-10-13、Codexが割当範囲の完了を受け入れた | `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
 
 ## Completed precedence edges
 
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
+| `API-002` | `API-001` | `SEQUENCE` | Claudeの独立候補提出後に、採点せず共通ballotを編成する |
 | `OPS-008` | `OPS-002` | `SEQUENCE` | V2を現行正本として採用した後にだけ、旧版の配置を判断する |
 | `BARE-029` | `BARE-006` | `SEQUENCE` | workload設計後、まずSwift側を通常CIの回帰検知へ追加する |
 | `OPT-049` | `BARE-006` | `SEQUENCE` | BareArrayで確定したshape・計測境界を再利用し、外部assessmentの完了を待たずOptionalArray固有のmemoization accessを設計する |

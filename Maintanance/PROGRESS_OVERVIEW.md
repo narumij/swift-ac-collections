@@ -179,7 +179,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `ARRAY-005` | `FROZEN` | User | [DECISION] Array系object名の合意 | 三者の独立採点を統合した報告の受入後、ユーザーが明示的に再開し、その後の議論を入力にBareArray／OptionalArray両familyの公開名と次元・View派生体系を一つに決定して判断正本へ記録する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
 | `ARRAY-006` | `FROZEN` | User | [DECISION] Array系element access method名の確定 | 三者の独立採点を統合した報告の受入後、ユーザーが明示的に再開し、その後の議論を入力にArray access API familyを一つに決定して判断正本へ記録する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
 | `ARRAY-007` | `FROZEN` | Codex | [EXECUTION] Array系object・API命名の実装反映 | object名とmethod名の判断完了後、ユーザーが明示的に再開し、判断正本を入力にproduction、test、benchmark、文書を決定どおりに更新してTest as SpecificationとCI baseline準備へ渡す | `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
-| `API-001` | `ACTIVE` | Claude | [DISCOVERY] Public API名のClaude独立候補出し | Array系の未提出公開API名とPermutation通常・borrowed経路について、他者候補を読む前に候補、意図、懸念を提出する。順位付け、採点、決定、実装は行わない | `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
 | `API-002` | `FROZEN` | Codex | [EXECUTION] Public API名ballotの編成・検証 | Claudeの独立候補提出後、ユーザーの明示的な再開指示を受けて、三者候補を省略せず統合し、異なる意味を保った固定ID付きballotを作る。候補網羅、意味分離、重複処理、IDをCodexが検証し、順位付け、採点、推奨、採用は行わない | `PUBLIC_API_NAMING_BALLOT.md` / `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
 | `API-004` | `FROZEN` | User | [EXECUTION] Public API名ballotのユーザー独立採点 | Codexがballotの編成・検証を完了した後、ユーザーが明示的に再開し、全候補へ1〜10の総合点だけを記録する。他者の採点は提出完了まで読まない | `PUBLIC_API_NAMING_SCORE_USER.md` / `PUBLIC_API_NAMING_BALLOT.md` |
 | `API-005` | `FROZEN` | Codex | [EXECUTION] Public API名ballotのCodex独立採点 | Codexがballotの編成・検証を完了した後、ユーザーが明示的に再開し、全候補へ1〜10の総合点、理由、重要な懸念を記録する。他者の採点は提出完了まで読まない | `PUBLIC_API_NAMING_SCORE_CODEX.md` / `PUBLIC_API_NAMING_BALLOT.md` |
@@ -223,7 +222,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-018` | `BARE-028` | `PARALLEL_JOIN` | Claudeの手直し後に必要となる差分再検証も完了ゲートへ合流する |
 | `BARE-017` | `BARE-018` | `SEQUENCE` | 完成したView契約を入力に一般Swift利用と競技利用のValidation scenarioを設計する |
 | `PERM-044` | `PERM-043` | `SEQUENCE` | C++標準に匹敵すると判定する性能比上限を確定してから、保存したmacOS測定証拠へ適用する |
-| `API-002` | `API-001` | `SEQUENCE` | Claudeの独立候補提出後に、採点せず共通ballotを編成する |
 | `API-004` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、ユーザーが他者から独立して採点する |
 | `API-005` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、Codexが他者から独立して採点する |
 | `API-006` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、Claudeが他者から独立して採点する |

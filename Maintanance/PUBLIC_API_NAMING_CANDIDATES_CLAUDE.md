@@ -1,6 +1,6 @@
 # Public API naming candidates — Claude assignment and submission
 
-Status: assigned by explicit user direction on 2026-10-12. Candidate submission not yet completed.
+Status: assigned by explicit user direction on 2026-10-12. Claude candidate submission completed 2026-10-13 (other submissions not read).
 
 ## Goal
 
@@ -109,7 +109,10 @@ Array object名については、Claudeが既に
 
 | Candidate family | Read | Write | Mutable reference | Reference type | Intent | Concern |
 | --- | --- | --- | --- | --- | --- | --- |
-| _Claude fills_ |  |  |  |  |  |  |
+| A-1 現行維持 | `element(at:)` | `setElement(_:at:)` | `reference(at:)` | `Reference = MutableRef<Element>` | 読む・書く・参照を取る、の三動詞を明示する。OptionalArrayは読み`Element?`、書き`Element?`（`nil`で未設定へ戻す） | `setElement`は`Element?`を受けるOptionalArrayで「nilを入れる＝削除」が名前から読めない。`reference`は寿命を持つ借用（`~Escapable`）であることが伝わらない |
+| A-2 値と位置 | `value(at:)` | `setValue(_:at:)` | `withMutableValue(at:_:)`（closureで渡す） | （型を公開しない） | Swiftの`withUnsafe…`系に倣い、可変参照の寿命をclosureの範囲に閉じる | closure形はnoncopyable・`~Escapable`の扱いと相性を確かめていない。`value`はKVCの`value(forKey:)`を連想させうる |
+| A-3 OptionalArray専用の状態動詞 | `element(at:)` | `setElement(_:at:)`＋`removeElement(at:)` | 提供しない | 提供しない | OptionalArrayだけ「未設定へ戻す」を独立の動詞にし、`nil`代入の意味を名前で示す | 二つの経路（`setElement(nil, at:)`と`removeElement(at:)`）が同じ意味になる。BareArrayとfamilyがずれる |
+| A-4 subscript中心 | `array[x, y]`（多引数subscript） | `array[x, y] = v` | （BareArrayだけ`_modify`で提供） | 提供しない | 連鎖`[y][x]`をやめ、座標順を一つにする。C++の`a[y][x]`経験者にも読める | 多引数subscriptは連鎖subscriptと座標順が逆（`[x, y]`対`[y][x]`）になり、どちらを正にするかの判断が要る。現行の座標labelの順（最内軸から）を引き継ぐ |
 
 ### B. Other Array public names
 
@@ -118,7 +121,15 @@ Claudeが候補を提出する公開名を記録する。
 
 | Current public name or role | Candidate | Intent | Concern |
 | --- | --- | --- | --- |
-| _Claude fills_ |  |  |  |
+| `BareArray.init(repeating:count:)` / `init(count:_:)` | 現行名を候補として維持 | `Array(repeating:count:)`と同じ形で、競技利用者もSwift利用者も推測できる | `init(count:_:)`のclosureは呼ばれる順（添字順）が名前から読めない |
+| `OptionalArray1D.init(capacity:)` | `init(count:)` | 作った時点で全slotが存在し、数が変わらないことを示す | 現行の`capacity`は「予約容量（あとで伸ばせる）」と読まれうる。BareArrayの`count`とも揃っていない |
+| 2D〜3Dのshape label `width:height:depth:` | 現行名を候補として維持 | 画像・grid的な読みで直感的 | 連鎖subscript`[y][x]`の順と、引数の並び（最内軸から）が逆。4Dだけ`size0`〜`size3`になり体系が切れる |
+| 4Dのshape label `size0:...size3:` | `extent0:`〜`extent3:`、または2D〜3Dも含めて`size0:`系に統一 | 4D以上で日常語が尽きることを受け入れ、番号付きlabelに揃える | 番号の向き（0が最内軸）を誤読しやすい。2D〜3Dを変えると移行費用が出る |
+| 座標label（`element(at: x, _ y:)`等） | 現行名を候補として維持（最内軸から並べる） | storage順と一致する | `[y][x]`の連鎖subscriptと逆順。どちらか一方を正とする判断が要る（E-2） |
+| `removeAll()`（OptionalArray） | 現行名を候補として維持 | `Array.removeAll()`と同じ動詞で、全slotを未設定へ戻す | `Array.removeAll()`はcountが0になるが、こちらはslot数を保つ。`resetAll()`／`clear()`も候補 |
+| `indices` | 現行名を候補として維持 | 外側の軸の有効範囲 | 多次元では「どの軸のindicesか」が読めない（外側の軸だけ）。`Collection`ではないのにCollection風の名前 |
+| View型`…1DView`〜`…3DView` | 現行名を候補として維持 | 非所有であることを示す | 寿命を延ばさない借用であることは伝わらない。`Span`は寿命検査のある型を連想させるので避ける |
+| `MutableRef<Element>` / `pointee` | `MutableRef`を維持、`pointee`を`value`へ | `pointee`はpointerの語で、安全な参照型の名前としてはunsafe寄りに読まれる | 標準の`Mutable…`系と名前が近いものが将来入ると衝突しうる（未確認） |
 
 ### C. Permutation public API families
 
@@ -126,7 +137,10 @@ Claudeが候補を提出する公開名を記録する。
 
 | Candidate family | Normal factory | Normal owner/iterator | Normal yielded view | Borrowed factory | Borrowed owner/iterator | Intent | Concern |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| _Claude fills_ |  |  |  |  |  |  |  |
+| C-1 現行維持 | `nextPermutations()` | `NextPermutations<Value>` | `NextPermutations.Permutation` | `borrowedNextPermutations()` | `BorrowedNextPermutations<Element>` | 「現在の並びとその後続」という`next_permutation`の意味を両経路で共有し、借用版だけprefixで区別する | 通常版の`Permutation`も「次の`next()`まで」しか有効でないのに、名前には一時的な参照であることが出ない（実行時trapで守る）。generic引数名が`Value`と`Element`で揃っていない |
+| C-2 寿命の差を名前に出す | `nextPermutations()` | `NextPermutations<Element>` | `NextPermutations.CurrentView` | `borrowedNextPermutations()` | `BorrowedNextPermutations<Element>` | yieldされるものが値ではなく現在状態へのviewであることを型名で示す | `CurrentView`は長い。Collection適合を持つので「View」が弱すぎるとも読める |
+| C-3 「successors」を明示 | `permutationSuccessors()` | `PermutationSuccessors<Element>` | `.Permutation` | `borrowedPermutationSuccessors()` | `BorrowedPermutationSuccessors<Element>` | 全順列ではなく後続だけであることを入口の名前で示し、swift-algorithmsの`permutations()`との誤用を防ぐ | C++の`next_permutation`経験者には検索で見つけにくくなる |
+| C-4 借用版を既定にする | `nextPermutations()`（6.4以降はborrowed） | `NextPermutations<Element>` | `Span<Element>` | （通常版を`checkedNextPermutations()`へ） | — | 6.4以降を提供対象とするなら、compilerが寿命を検査する経路を既定名にする | toolchainで既定の意味が変わり、持続可能性と互換性の判断が先に要る（E-1） |
 
 ### D. Other Permutation public names
 
@@ -134,13 +148,15 @@ Claudeが候補を提出する公開名を記録する。
 
 | Current public name or role | Candidate | Intent | Concern |
 | --- | --- | --- | --- |
-| _Claude fills_ |  |  |  |
+| `NextPermutations.next()` / `BorrowedNextPermutations.next()` | 現行名を候補として維持 | `IteratorProtocol`風の手動反復で、利用者が推測できる | `Sequence`ではないのに`next()`があり、`for-in`できると期待されうる（borrowed版はcompilerが拒否、通常版も`Sequence`ではない） |
+| `Permutation`の`startIndex`／`endIndex`／`subscript` | 現行名を候補として維持（Collection要件） | `RandomAccessCollection`の要件名 | 無効化後のアクセスがtrapすることは名前から読めない |
 
 ### E. Unresolved findings
 
 | Finding | Why candidate submission cannot resolve it | Needed next input |
 | --- | --- | --- |
-| _Claude fills only when needed_ |  |  |
+| E-1 通常版とborrowed版のどちらを1.0の既定経路にするか | 既定名（prefixなし）をどちらに与えるかで、C-1とC-4のどちらが成り立つかが変わる | ユーザーの製品判断（6.4以降の提供方針） |
+| E-2 多次元arrayの座標の正の順 | 連鎖subscript`[y][x]`（外側から）と、`element(at: x, y)`（内側から）が逆順で共存している。どちらを正とするかで、labelとsubscriptの候補が変わる | ユーザーの判断 |
 
 ## Completion condition
 

@@ -36,6 +36,10 @@ owner破棄後のaccessをruntimeで拒否する。この不整合をtest実装�
 CodexはProfileの旧`Span`記述を現行runtime-check契約へ整合させた。新しい公開保証は追加せず、
 後継test台帳との照合後にこのProfile訂正を受け入れる。
 
+同日、Xcode build-for-testingが成功し、`swift test --disable-sandbox --filter PermutationTests`で
+XCTest 27件とSwift Testingの失効Death Test 2件が成功した。XCTest 27件のうち25件はborrowed版、
+2件はscratchであり、runtime-check通常版を直接確認する通常testは手動列挙1件だけという不足は変わらない。
+
 ## 一時View契約への変更後の現在性
 
 通常版は旧`NextPermutationsSequence`のCOW・値セマンティクス契約から、単一bufferを破壊的に進める

@@ -169,3 +169,14 @@ are returned evidence; Codex performs acceptance and Registry updates.
 - Runtime, compiler-surface, ownership/destruction, and coexistence evidence are separated.
 - Remaining product ambiguities are visible and are not decided by test implementation.
 - Claude assignments contain no product-policy decision.
+
+## Codex baseline validation（2026-10-13）
+
+- Xcode build-for-testing: success、error 0。
+- `swift test --disable-sandbox --filter PermutationTests`: success。
+- XCTestは27件成功した。内訳はborrowed版25件と`EtcTests` 2件であり、runtime-check通常版を直接扱う
+  通常testは手動列挙1件だけである。
+- Swift Testingは`RuntimeCheckedPermutationDeathTests` 2件が成功した。
+- user-level SwiftPM cacheがread-onlyというenvironment warningは出たが、buildとtest結果には影響しなかった。
+
+この成功は現行scratch checksの基準点であり、後継Test as Specificationが揃ったことを意味しない。

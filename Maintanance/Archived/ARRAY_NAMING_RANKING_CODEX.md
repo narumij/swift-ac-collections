@@ -1,11 +1,14 @@
 # Array object naming — Codex ranking draft
 
-Status: review draft. This ranking does not adopt a public name.
+Status: superseded historical draft. This ranking did not adopt a public name.
 
 The user, Codex, and Claude candidate sets were combined after independent submission. Base names
-are ranked separately because the objects have different roles; submitted pairs do not bind the
-final pair. Criteria are role accuracy, call-site readability, family coherence, compatibility
+were ranked separately because the objects have different roles; submitted pairs did not bind the
+final pair. Criteria were role accuracy, call-site readability, family coherence, compatibility
 cost, and avoidance of unsupported semantic promises.
+
+This draft was later superseded by the `PUBLIC_API_NAMING_BALLOT.md` and independent-scoring workflow.
+It must not be used as an accepted ballot, score record, recommendation, or decision.
 
 ## Always-initialized contiguous family
 
@@ -34,17 +37,11 @@ cost, and avoidance of unsupported semantic promises.
 
 ## Suffix draft
 
-The draft preference is an unsuffixed 1D owning type and `2D` through `4D` suffixes. Derived
-non-owning types retain `1DView` through `3DView`, because an unsuffixed `View` does not state which
-lower-dimensional result a chained access returns.
+The draft preference was an unsuffixed 1D owning type and `2D` through `4D` suffixes. Derived
+non-owning types retained `1DView` through `3DView`, because an unsuffixed `View` does not state
+which lower-dimensional result a chained access returns.
 
 ## Method-name boundary
 
-No method synonyms are ranked. The sole candidate remains `element(at:)`,
+No method synonyms were ranked. The sole candidate remained `element(at:)`,
 `setElement(_:at:)`, and, for the always-initialized family, `reference(at:)` with `Reference`.
-
-## Review request
-
-Claude reviews candidate coverage, the ordering against the criteria, and whether any assessment
-attributes semantics not established by source. Claude may reorder existing candidates with
-reasons, but does not choose the product name or introduce method-name alternatives.

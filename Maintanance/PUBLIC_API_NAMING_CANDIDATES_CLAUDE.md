@@ -52,15 +52,49 @@ Verificationは、具体化した要求を実装やTest as Specification等が�
 責任はユーザーが持つ。Claudeは候補提出によって公開契約を決定せず、他者との合意を証拠または採用と
 みなさない。
 
-## Existing submission
+## Previously submitted Array object names
 
-Array object名については、Claudeが既に
-`User/ARRAY_NAMING_CANDIDATES_CLAUDE.md`へ独立候補を提出済みである。作り直さない。
+次の候補は2026-10-12、Claude（Opus 5.5）が他者候補と過去の命名レビューを読まずに独立提出した。
+後続の公開名候補を同じ正本へ集約するため、内容を失わず本書へ統合した。並び順に順位の意味はない。
 
-今回提出するのは次の二群である。
+### C-1 現行名を維持: `BareArray` / `OptionalArray`
 
-1. BareArray／OptionalArray familyの未提出の公開API名候補
-2. Permutation通常経路とSwift 6.4 borrowed `Span`経路の公開API名候補
+- 1D〜4D: 現行のまま。ただし、両方suffixなし、または両方`1D`付きへ揃える案を含む。
+- View: 現行の`BareArray1DView`〜`3DView` / `OptionalArray1DView`〜`3DView`。
+- Intent: 移行費用を抑え、現在の語彙を維持する。
+- Concern: `Bare`が何を省いたのか読めず、`OptionalArray`は`Array<Optional<Element>>`と誤読されうる。
+
+### C-2 固定長を前面に: `FixedArray` / `FixedOptionalArray`
+
+- 1Dはsuffixなし、2D〜4Dは次元suffixを付ける。Viewは`1DView`〜`3DView`。
+- Intent: 作成時に要素数が決まり、伸縮しない所有配列であることを示す。
+- Concern: 型レベル固定長やinline storageと混同され、`FixedOptionalArray`も長い。
+
+### C-3 storage位置を前面に: `HeapArray` / `HeapOptionalArray`
+
+- 1Dはsuffixなし、2D〜4Dは次元suffixを付ける。Viewは`1DView`〜`3DView`。
+- Intent: heap上の連続storageを所有することを示し、`InlineArray`と区別する。
+- Concern: allocation場所は役割を十分に説明せず、Swift `Array`との差も伝わりにくい。
+
+### C-4 Optional側をslotとして区別: `BareArray` / `SlotArray`
+
+- 1Dはsuffixなし、2D〜4Dは次元suffixを付ける。Viewは`1DView`〜`3DView`。
+- Intent: Optional側の各位置が空または1要素を持つslotであることを表す。
+- Concern: `slot`はhash tableやobject pool、疎なstorageを連想させうる。
+
+### C-5 用途を前面に: `BareArray` / `MemoTable`
+
+- `MemoTable`は1Dをsuffixなし、2D〜4Dは次元suffix、Viewは`1DView`〜`3DView`とする。
+- Intent: Optional側の主要用途である配列ベースのメモ化を表す。
+- Concern: 自動計算やevictionなどのcache policyを連想させ、メモ化以外の用途を狭く見せうる。
+
+### Array object familyに共通する観察
+
+- 1D所有型のsuffixは現行で非対称であり、どの候補でも別途判断が必要。
+- Viewは非所有性を示すが、ownerより先に使い終える寿命条件までは名前から伝わらない。
+- `Span`系の名前はcompilerによる寿命検査を連想させるため、寿命検査のないViewには用いない。
+- `Rigid` / `Unique`は`swift-collections`の型との混同可能性が未確認だったため候補から外した。
+- 座標引数は最内軸から、連鎖subscriptは最外軸から並び、object名とは別の誤読点が残る。
 
 ## Independence boundary
 
@@ -68,9 +102,8 @@ Array object名については、Claudeが既に
 
 - `PUBLIC_API_NAMING_CANDIDATES_USER.md`
 - `PUBLIC_API_NAMING_CANDIDATES_CODEX.md`
-- `User/ARRAY_NAMING_CANDIDATES_USER.md`
-- `User/ARRAY_NAMING_CANDIDATES_CODEX.md`
-- `User/ARRAY_NAMING_RANKING_CODEX.md`
+
+上記のArray object候補は、この独立性境界を保った既提出内容として本書内に固定する。
 
 事実確認には、次のproduction sourceを使う。
 

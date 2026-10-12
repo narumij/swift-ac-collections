@@ -1,7 +1,8 @@
 # BareArray / OptionalArray object and API naming draft
 
-Status: object-name candidate collection and initial ranking completed; broader public API candidate
-collection is in progress. No public name or API in this document is adopted.
+Status: public API candidate collection completed; the legacy object-name ranking was superseded by
+the fixed-ballot and independent-scoring workflow. Ballot compilation has not started. No public name
+or API in this document is adopted.
 
 ## Purpose
 
@@ -34,6 +35,11 @@ cross-review. Current names remain candidates; their presence in production does
 
 Agreement during candidate generation is not a result. Candidate overlap becomes useful evidence
 only after the independent submissions are visible and their reasoning can be compared.
+
+On 2026-10-13, the user asked Codex to replace its first submission after Codex had already read the
+other records. The replacement is therefore explicitly review-informed rather than independent. It
+replaces the earlier Codex submission instead of adding another participant or vote. Candidate overlap
+does not receive ballot weight, and the later three scoring records retain their independent boundary.
 
 ## Current public objects
 

@@ -66,10 +66,8 @@
       "contents": [
         {
           "kind": "chart",
-          "title": "subscript access",
+          "title": "subscript access (batched)",
           "tasks": [
-            "Permutations.SubSequenceN subscript sequential access",
-            "Permutations.SubSequenceN subscript shuffled access",
             "Permutations.SubSequenceN subscript sequential access (batched)",
             "Permutations.SubSequenceN subscript shuffled access (batched)"
           ]

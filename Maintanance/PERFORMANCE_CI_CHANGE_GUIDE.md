@@ -38,8 +38,9 @@ CI harness変更の境界が崩れた。この同期はcommit `a5662f7d`で取�
 ### 成功例: workloadとCI登録の分離
 
 BareArrayとOptionalArrayの多次元access workloadは、PR #189で実装を先にmergeした。そのmerge commitを
-baselineとしてから、PR #190で通常CI libraryへの登録だけを合流し、PR #191でもperformance jobのgreenを
-確認した。これにより、初回導入と通常のbase / current回帰比較を別の受入境界にできた。
+baselineとしてから、PR #190で通常CI libraryへの登録だけを合流し、performance jobのgreenを確認した。
+PR #191でも両moduleのbase / current測定は成立したが、job全体は別件のPermutation実装方式切替を検出して
+赤となった。これにより、Array workloadの初回導入と通常のbase / current回帰比較を別の受入境界にできた。
 
 ## 変更前に確認すること
 
@@ -57,3 +58,23 @@ baselineとしてから、PR #190で通常CI libraryへの登録だけを合流�
 OptionalArrayのdirect access workloadはcommit `bf0259a0`で実装、専用library、暫定結果、chartまでを
 独立して保存した。通常CI libraryへの登録は同commitを含むmerge commitがbaselineへ到達した後、
 別taskとして実施する。外部性能アセスメントの正式化とは別の受入境界を維持する。
+
+## Permutation実装方式の切替
+
+2026-10-13、runtime-check付き`Permutation` Viewを導入したPR #191のperformance jobは、baseのborrowed
+実装とcurrentのruntime-check実装を比較したため赤となった。これは同じ実装系列内の回帰ではなく、Swift 6.2
+互換性とView失効検査を持つ標準経路へ切り替えた際の方式差である。PR #191のmerge commitを以後の
+runtime-check版baselineとする。
+
+通常のLinux CIでは、runtime-check版について次を継続監視する。
+
+- local accumulatorと反復回数を持つbatched subscript workload 2件。
+- 公開`nextPermutations()`を通るend-to-end workload。
+
+旧unbatched subscript workload 2件は、captured accumulatorのheap boxと短すぎるsampleにより、世代確認が
+vectorizationへ与える影響を過大に観測することが実装コメントとassemblyで確認された。診断用taskとして
+benchmark sourceには残すが、通常CIの合否対象には含めない。
+
+Swift 6.4のborrowed版はruntime-check版の回帰baselineにしない。lifetimeによって安全性を表現し、要素ごとの
+世代確認を必要としない別の性能契約だからである。borrowed版とC++の比較はmacOS品質評価の独立系列として
+保存し、Linux CIへ異なる契約を混在させない。

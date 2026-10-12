@@ -7,6 +7,19 @@
 `Sources/BareArrayModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、Quality Profileの現在性確認、現在評価の作業範囲、完了条件、結果を管理する。
 
+## Test as Specification原状回復確認（2026-10-13）
+
+ノンエスケーパブルView導入時に途中扱いのまま残った実行taskを、commit履歴、現行source、fixture、
+番号付き仕様test、および現在の再実行結果で照合した。Xcodeのbuild-for-testing、Debug通常35件・Death Test
+39件、Release通常28件・Death Test 39件、View寿命escape 3件と所有配列writeback exclusivity 3件の
+compiler診断fixtureが成功した。これにより、View 3型のlifetime dependency、実行可能なView経路、
+実行時Death Testからcompiler診断へ移した拒否契約を、旧ノンエスケーパブル化の成果として受け入れる。
+
+この受入後、`element(at:)`、`setElement(_:at:)`、`reference(at:)`と多次元版、および旧subscript・Viewの
+deprecated指定が別commitで追加された。現行の番号付き8仕様群は旧subscript・View経路を通して成功する一方、
+新しい座標access APIを直接仕様化しておらず、buildではdeprecated warningが多数発生する。この後発差分を
+旧View契約の未完了へ混ぜず、採用・撤回の判断も先取りせず、別の差分監査として扱う。
+
 ## Task
 
 - ID: `BARE-016`

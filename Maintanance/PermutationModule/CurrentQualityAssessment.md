@@ -7,6 +7,20 @@
 証拠境界は`Sources/PermutationModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、現在評価の作業範囲、完了条件、結果を管理する。
 
+## Test as Specification原状回復確認（2026-10-13）
+
+現行Permutationには、証拠の役割が異なる三つの系統がある。
+
+- runtime-check View通常版は、有効な通常runtime test 2件（Span反復1件・手動列挙1件）と失効Death Test
+  2件だけが現行契約を直接確認する。旧COW版の番号付き38件は`#if false`の履歴資料であり、現行適合へ流用しない。
+- borrowed Span版は番号付き5群のruntime仕様test 25件があり、2026-10-13の再実行でも全件成功した。
+  借用寿命のcompile-pass／compile-fail結果は一時clientによる返却記録にあるが、repository内で再実行できる
+  fixtureにはなっていないため、Test as Specification全体の完了とは扱わない。
+- AtCoder 2025互換modeは互換限定5件を持ち、通常版・borrowed版の証拠と相互に代用しない。
+
+この確認では新しい仕様testを追加しない。runtime-check View通常版の正式な再構成と、borrowed版の
+compiler-backed fixture化を別の残作業として維持する。
+
 ## 一時View契約への変更後の現在性
 
 通常版は旧`NextPermutationsSequence`のCOW・値セマンティクス契約から、単一bufferを破壊的に進める

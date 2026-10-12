@@ -1,6 +1,6 @@
 # 開発・メンテナンス進捗一覧
 
-最終更新: 2026-10-11 / Codex
+最終更新: 2026-10-12 / Codex
 
 この文書のTask Registryを、CodexとClaudeが作業を再開するときの唯一の入口とする。まずRegistry
 だけを読み、選択したtask行が示す詳細正本だけを追加で読む。2026-10-07までの完了チェック、判断待ち、
@@ -198,6 +198,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERF-001` | `DONE` | Codex | [EXECUTION] baseline harness同期の取り消し | commit `1027a154`のSources・manifest・resolved同期をPR用とcandidate用の両workflowから取り消し、従来のlibrary定義の同期だけに戻した | `Tests/TESTING.md` / `.github/workflows/ci.yml` / `.github/workflows/candidate.yml` |
 | `PERF-002` | `DONE` | Codex | [EXECUTION] BareArray・OptionalArray初回性能baseline候補の完了ゲート | 両module合計8件のSwift workloadをPR #189で先にmergeし、そのmerge commitを初回baselineとした。通常CI library登録は後続PRへ分離し、0.5.3へ存在しないworkloadとの比較を要求しない境界を成立させた | `Tests/TESTING.md` / `BareArrayModule/CurrentQualityAssessment.md` / `OptionalArrayModule/CurrentQualityAssessment.md` |
 | `PERF-003` | `DONE` | Codex | [EXECUTION] Array性能baseline確立後の回帰CI確認 | workload実装を含むPR #189のmerge後、CI library登録だけのPR #190と後続PR #191で、両moduleのworkloadを含むperformance jobがgreenとなり、通常のbase / current回帰比較が機能することを確認 | `Tests/TESTING.md` / `.github/workflows/ci.yml` |
+| `PERF-004` | `PROPOSED` | Codex | [EXECUTION] OptionalArray direct access workloadのCI回帰登録 | commit `bf0259a0`のworkload実装を含むmerge commitがbaselineへ到達した後、CI library登録だけを独立して追加し、base / currentの双方でtask解決と回帰比較の完走を確認 | `PERFORMANCE_CI_CHANGE_GUIDE.md` / `Benchmarks/Libraries/CI.json` / `.github/workflows/ci.yml` |
 | `BARE-016` | `DONE` | Codex | [DISCOVERY] BareArray現行品質アセスメント | Quality Profileの現在性監査、QR-01〜QR-06の現行評価、実行記録、既存課題と新規Validation候補への不足分離を完了 | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-017` | `PROPOSED` | Codex | [DISCOVERY] BareArray利用Validation scenario設計 | 一般Swift利用と競技利用について、代表利用者、導入経路、利用課題、観測方法を整理し、異なる判断・実行境界を後続task候補へ分離する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-018` | `FROZEN` | Codex | [EXECUTION] BareArray Viewノンエスケーパブル化の完了ゲート | 実装と局所検証の途中証拠を保存したまま凍結。storage、公開型の安全性分類、strict memory safetyの3系統を閉じ、品質検証を再開・完了した後に受入可否を判定する | `BareArrayModule/CurrentQualityAssessment.md` |

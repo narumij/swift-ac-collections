@@ -16,6 +16,8 @@ import XCTest
 
 final class BorrowedNextPermutations_4_CoexistenceTests: XCTestCase {
 
+  // 互換modeでは`nextPermutations()`がAtCoder 2025版のAPIを指すため、現行版との比較は通常版だけで行う
+  #if !COMPATIBLE_ATCODER_2025
   func testBorrowedAndRuntimeCheckedVersionsYieldTheSameOrders() throws {
     let source = [2, 1, 1, 3]
 
@@ -46,6 +48,7 @@ final class BorrowedNextPermutations_4_CoexistenceTests: XCTestCase {
     XCTAssertEqual(borrowedOrders.first, [2, 1, 1, 3])
     XCTAssertEqual(borrowedOrders.last, [3, 2, 1, 1])
   }
+  #endif
 
   func testResolvesAlongsideSwiftAlgorithms() throws {
     var borrowed = [1, 2, 3].borrowedNextPermutations()

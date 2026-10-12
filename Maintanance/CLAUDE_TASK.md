@@ -9,27 +9,16 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行中ジョブ: PERM-051 borrowed Span版PermutationのTest as Specification**
+**実行中ジョブ: なし**
 
-- 前提: `PERM-050`完了済み。
-- 対象: `borrowedNextPermutations()` / `BorrowedNextPermutations`のSwift 6.4借用契約。
-- 成果: 列挙順、境界、重複、`Span`要素access、借用寿命のcompiler診断、現行runtime-check版との
-  共存、およびSwift 6.4限定の公開面を固定するtest。
-- 境界: 公開名、アルゴリズム、実装、製品方針を変更しない。新しい判断点または実装不具合を見つけたら
-  証拠を報告して停止する。
-- 完了条件: Debug・Releaseで対象testが成功し、追加testと観測事実をCodexがレビューできる。
+`ARRAY-004`の順位レビューは2026-10-12にユーザー指示で受入済み。次のobject名合意はユーザー判断であり、
+Claudeへ新しいジョブは割り当てていない。
 
-**次ジョブ: ARRAY-003 BareArray／OptionalArrayのobject名独立候補出し**
+**凍結中: PERM-051 borrowed Span版PermutationのTest as Specification**
 
-- 開始条件: `PERM-051`を完了し、Codexが現行ジョブ節を切り替えた後に開始する。
-- 対象: `Maintanance/ArrayObjectAndAPINamingDraft.md`のcandidate-submission contractと、二つの現行source。
-- 独立性: 候補提出が終わるまで、`Maintanance/User/ARRAY_NAMING_CANDIDATES_CODEX.md`、会話上の
-  ユーザー候補、他者の順位や推薦を入力にしない。
-- 成果: 両familyのbase名候補、1D〜4D spelling、View派生名、意図、互換性・発見性の懸念。
-  候補の順位付けは行わない。
-- 境界: method名候補を増やさない。production source、test、benchmark、公開文書を変更しない。
-  名称や製品方針を決定しない。
-- 完了条件: Claude自身の独立候補が提出され、後続の三者候補統合へ渡せる。
+- runtime仕様test 25件はCodexが受け入れ、Xcode build-for-testingと対象25件成功を確認した。
+- 借用寿命のcompiler診断証拠が未完了のため、task全体は完了扱いにしない。
+- ユーザーが明示的に再開するまで着手しない。
 
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。

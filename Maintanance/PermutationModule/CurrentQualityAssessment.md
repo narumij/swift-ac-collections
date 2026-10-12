@@ -239,6 +239,28 @@ Permutation実装だけへ帰属できない。統合コード、DSU、データ
 Int版約81.5msに対してBool版約83.8msだった。Bool版は約3%遅いが、統合提出で観測された差を
 単独で説明する規模ではない。
 
+## PERM-049 実施結果
+
+2026-10-12、実提出で最速80msへ到達した実験を、Permutation製品候補と提出固有最適化へ分離した。
+大幅な短縮へ寄与したDSU storage再利用、閉路判定と結合を一度のleader探索で行う`unite`、および反復leaderは、
+提出コード側の処理構造をC++版へ揃える変更であり、PermutationModuleの製品変更には含めない。
+
+ViewからGateKeeper所有を除く変更と、選択状態をpointerから直接取得する変更は、一時Viewの失効検査または
+安全なCollection accessを迂回する。前者は実提出で効果がなく、後者は88msから80msへ短縮したが、いずれも
+現行の安全性契約を維持する製品候補から除外した。
+
+実験sourceをruntime-check付きView、公開subscript、および製品版と同じGateKeeperのinline境界へ戻し、
+Swift 6.4 Release、36辺の固定入力で各7回測定した。unsafe枝、安全なView、`next()`の強制inlineなし、
+製品版GateKeeper境界の各構成はいずれも中央値0.46秒で、出力も一致した。DSUの宣言順をac-libraryに近い順へ
+戻した前後でも同じ範囲だった。
+
+この証拠から、今回の探索を理由とするPermutation製品sourceの追加変更は行わない。現行runtime-check View実装を
+維持し、80ms枝は安全性を外した性能上限の反証として作業報告と履歴へ残す。
+
+ユーザー判断により、旧test群の詳細棚卸しは今回行わない。現行の有効testだけをDebug・Releaseで実行し、
+手動列挙2件と、次の`next()`および所有者破棄による失効Death Test 2件が両構成で成功した。これは正式な
+Test as Specification再構築や品質再評価の代替ではなく、現行実装を継続するための暫定的な回帰確認とする。
+
 ## Swift 6.4基準化後のSwift 6.2提供方針
 
 Swift 6.4のLifetimes、`Span`、`~Copyable`を用いる借用型Permutationを通常版の次期実装候補として

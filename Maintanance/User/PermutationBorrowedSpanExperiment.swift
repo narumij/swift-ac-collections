@@ -161,9 +161,9 @@ final class GateKeeper: ManagedBuffer<UInt, Void> {
     }
   }
 
-  @inlinable // ちょっと試し
-//  @inline(never)
-  func closeCurrentView() {
+  @usableFromInline
+  @inline(never)
+  internal func closeCurrentView() {
     withUnsafeMutablePointerToHeader { generation in
       precondition(generation.pointee != .max, "Permutation view generation exhausted")
       generation.pointee += 1
@@ -175,8 +175,8 @@ final class GateKeeper: ManagedBuffer<UInt, Void> {
     self.generation != generation
   }
 
-  @inlinable
-  static func make() -> GateKeeper {
+  @usableFromInline
+  internal static func create() -> GateKeeper {
     let storage = GateKeeper.create(minimumCapacity: 0) { _ in 0 }
     return unsafeDowncast(storage, to: GateKeeper.self)
   }
@@ -203,7 +203,7 @@ struct NextPermutations<Element: Comparable>: ~Copyable {
   init<Base: Collection>(copying source: Base) where Base.Element == Element {
     count = source.count
     elements = .allocate(capacity: max(count, 1))
-    gateKeeper = GateKeeper.make()
+    gateKeeper = GateKeeper.create()
 
     var destination = elements
     for element in source {
@@ -219,7 +219,6 @@ struct NextPermutations<Element: Comparable>: ~Copyable {
   }
 
   @inlinable
-  @inline(__always)
   mutating func next() -> Permutation? {
     gateKeeper.closeCurrentView()
 
@@ -269,36 +268,50 @@ struct NextPermutations<Element: Comparable>: ~Copyable {
   mutating func makePermutation() -> Permutation {
     Permutation(
       elements: elements,
-      count: count)
+      count: count,
+      gateKeeper: gateKeeper,
+      generation: gateKeeper.generation)
   }
 
   @usableFromInline
   struct Permutation: RandomAccessCollection {
 
     @inlinable
-    init(elements: UnsafeMutablePointer<Element>, count: Int) {
+    init(
+      elements: UnsafeMutablePointer<Element>,
+      count: Int,
+      gateKeeper: GateKeeper,
+      generation: UInt
+    ) {
       self.elements = elements
-      self.count = count
+      self._count = count
+      self.gateKeeper = gateKeeper
+      self.generation = generation
     }
 
     @usableFromInline typealias Index = Int
 
     @usableFromInline let elements: UnsafeMutablePointer<Element>
-    @usableFromInline let count: Int
+    @usableFromInline let _count: Int
+    @usableFromInline let gateKeeper: GateKeeper
+    @usableFromInline let generation: UInt
 
     @inlinable
     var startIndex: Int {
+      precondition(!gateKeeper.isClosed(generation: generation), "Permutation view is no longer valid")
       return 0
     }
 
     @inlinable
     var endIndex: Int {
-      return count
+      precondition(!gateKeeper.isClosed(generation: generation), "Permutation view is no longer valid")
+      return _count
     }
 
     @inlinable
     subscript(position: Int) -> Element {
-      precondition(position >= 0 && position < count)
+      precondition(!gateKeeper.isClosed(generation: generation), "Permutation view is no longer valid")
+      precondition(position >= 0 && position < _count, "Index out of range")
       return elements[position]
     }
 
@@ -332,7 +345,7 @@ func main() {
     var valid = true
 
     for i in 0..<M {
-      guard selected.elements[i] == 1 else {
+      guard selected[i] == 1 else {
         continue
       }
 

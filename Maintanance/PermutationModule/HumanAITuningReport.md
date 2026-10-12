@@ -212,9 +212,17 @@ Linux x86_64で改善しなかった枝を採用する根拠にはしなかっ�
 
 ## 現在の実験sourceの扱い
 
-`Maintanance/User/PermutationBorrowedSpanExperiment.swift`には、80msへ到達した探索状態が残っている。
-このsourceには、DSU再利用、単一`unite`、反復leader、および選択状態のpointer直接取得が含まれる。
+`Maintanance/User/PermutationBorrowedSpanExperiment.swift`は、80msへ到達したunsafeな上限実験をそのまま
+製品候補にせず、runtime-check付き一時Viewへ戻した収束後の状態を保持する。DSU再利用、単一`unite`、
+反復leaderは提出側の最適化として残す一方、ViewはGateKeeperとgenerationを保持し、要素accessも公開subscriptを
+経由する。80ms枝の内容と結果は本書およびcommit履歴に保存する。
 
-これは製品版sourceではない。特にViewからGateKeeper所有を除いた経路とpointer直接取得は、一時Viewの失効検査と
-安全なCollection accessを迂回する。製品版へ反映する場合は、性能結果だけでなく、公開契約、寿命、安全性、
-Test as Specification、および対象toolchainを改めて評価する必要がある。
+Swift 6.4 Releaseで36辺の固定入力を7回実行したところ、unsafeな80ms枝相当、安全なViewへ戻した版、
+`next()`から`@inline(__always)`を外した版、GateKeeperの`closeCurrentView()`を製品版と同じ
+`@inline(never)`へ戻した版は、いずれも中央値0.46秒だった。出力もすべて一致した。ARM64ローカル測定の
+分解能では追加inline指定、安全検査の除去、およびDSU宣言順に差を確認できなかった。
+
+したがって、製品版Permutationには今回の探索を理由とする変更を追加しない。大幅な短縮は、DSU再利用、
+単一`unite`、反復leaderによってC++版との周辺処理構造を揃えた成果として分離する。選択状態のpointer直接取得で
+AtCoder実提出が88msから80msへ短縮した事実は、安全な公開契約を迂回した上限値であり、製品実装の採用根拠には
+しない。

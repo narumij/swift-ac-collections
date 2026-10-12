@@ -296,39 +296,39 @@
 | `RELEASE-005` | `Archived/Canonical/RELEASE_0_5_1.md` | 2026-10-11 |  |
 | `RELEASE-006` | `Archived/Canonical/RELEASE_0_5_2.md` | 2026-10-11 |  |
 | `RELEASE-007` | `RELEASE_0_6_0.md` | 現行 |  |
-| `RELEASE-008` | `Archived/Canonical/RELEASE_0_5_1.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-009` | `RELEASE_CHECKLIST.md` / `Archived/Canonical/RELEASE_0_5_1.md` | 現行 |  |
-| `RELEASE-010` | `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-011` | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` / `RELEASE_CHECKLIST.md` | 現行 |  |
-| `RELEASE-012` | `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-013` | `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-014` | `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-015` | `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-016` | `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-017` | `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-018` | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` | 2026-10-11 |  |
-| `RELEASE-019` | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` | 2026-10-11 |  |
-| `RELEASE-020` | `RELEASE_0_6_0.md` / `RELEASE_TEMPLATE_BRANCH_DESIGN.md` | 現行 |  |
-| `RELEASE-021` | `Archived/Canonical/RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-022` | `Archived/Canonical/RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-023` | `Archived/Canonical/RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-008` | `Archived/Canonical/RELEASE_0_5_1.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-009` | `Archived/RELEASE_CHECKLIST.md` / `Archived/Canonical/RELEASE_0_5_1.md` / `User/RELEASE_PROCESS.md` | 2026-10-13 |  |
+| `RELEASE-010` | `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-011` | `Archived/RELEASE_TEMPLATE_BRANCH_DESIGN.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-13 |  |
+| `RELEASE-012` | `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-013` | `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-014` | `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-015` | `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-016` | `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-017` | `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-018` | `Archived/RELEASE_TEMPLATE_BRANCH_DESIGN.md` | 2026-10-11 |  |
+| `RELEASE-019` | `Archived/RELEASE_TEMPLATE_BRANCH_DESIGN.md` | 2026-10-11 |  |
+| `RELEASE-020` | `RELEASE_0_6_0.md` | 現行 |  |
+| `RELEASE-021` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-022` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-023` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
 | `RELEASE-024` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/Canonical/RELEASE_0_5_1.md` | 2026-10-11 |  |
-| `RELEASE-025` | `Archived/Canonical/RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-026` | `Archived/Canonical/RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-027` | `Archived/Canonical/RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-028` | `Archived/Canonical/RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-029` | `Archived/Canonical/RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-030` | `Archived/Canonical/RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-031` | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-032` | `Archived/Canonical/RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
-| `RELEASE-033` | `Archived/Canonical/RELEASE_0_5_2.md` / `RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-025` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-026` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-027` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-028` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-029` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-030` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-031` | `Archived/RELEASE_TASK_REGISTRY_DESIGN.md` / `Archived/RELEASE_TASK_REGISTRY_TEMPLATE.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-032` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
+| `RELEASE-033` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
 | `RELEASE-034` | `Archived/Canonical/RELEASE_0_5_3.md` | 2026-10-11 |  |
-| `RELEASE-035` | `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_CHECKLIST.md` | 現行 |  |
-| `RELEASE-036` | `RELEASE_TASK_REGISTRY_DESIGN.md` / `RELEASE_TASK_REGISTRY_TEMPLATE.md` | 現行 |  |
+| `RELEASE-035` | `Archived/RELEASE_TASK_REGISTRY_TEMPLATE.md` / `Archived/RELEASE_TASK_REGISTRY_DESIGN.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-13 |  |
+| `RELEASE-036` | `Archived/RELEASE_TASK_REGISTRY_DESIGN.md` / `Archived/RELEASE_TASK_REGISTRY_TEMPLATE.md` | 2026-10-13 |  |
 | `RELEASE-069` | `README.ja.md` | 2026-10-11 |  |
 | `RELEASE-070` | `Archived/Canonical/RELEASE_0_5_3.md` | 2026-10-11 |  |
-| `RELEASE-071` | `RELEASE_TASK_REGISTRY_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_REHEARSAL_TEMPLATE.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` / `Archived/Canonical/RELEASE_0_5_3.md` | 2026-10-11 |  |
-| `RELEASE-072` | `RELEASE_CHECKLIST.md` / `RELEASE_TASK_REGISTRY_DESIGN.md` | 現行 |  |
+| `RELEASE-071` | `Archived/RELEASE_TASK_REGISTRY_TEMPLATE.md` / `Archived/RELEASE_TASK_REGISTRY_REHEARSAL_TEMPLATE.md` / `Archived/RELEASE_TASK_REGISTRY_DESIGN.md` / `Archived/Canonical/RELEASE_0_5_3.md` | 2026-10-11 |  |
+| `RELEASE-072` | `User/RELEASE_PROCESS.md` | 現行 |  |
 | `RELEASE-073` | `User/CONCEPT_DEFINITION.md` | 2026-10-11 |  |
 | `RELEASE-074` | `User/CONCEPT_DEFINITION.md` / `User/Archived/QUALITY_REQUIREMENTS_CODEX_V2.md` / `User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md` | 2026-10-11 |  |
 | `RELEASE-075` | `User/RELEASE_PROCESS.md` | 現行 |  |

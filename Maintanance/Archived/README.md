@@ -51,3 +51,12 @@ Archived全体を探索しない。
 ## 2026-10-12移動分
 
 - `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`: V2採用後に退役した旧Codex task運用playbook
+
+## 2026-10-13移動分
+
+- `PROGRESS_OVERVIEW_COMPLETED_2026-10-13.md`: 2026-10-13に完了・除外したtask行と充足済みprecedence履歴
+- `RELEASE_CHECKLIST.md`: 今後の正本としては採用しなかった旧release checklist
+- `RELEASE_TEMPLATE_BRANCH_DESIGN.md`: 採用しなかったtemplate branch方式の設計資料
+- `RELEASE_TASK_REGISTRY_DESIGN.md`: 採用しなかったrelease専用Task Registry方式の設計資料
+- `RELEASE_TASK_REGISTRY_TEMPLATE.md`: 採用しなかったrelease専用Registry template
+- `RELEASE_TASK_REGISTRY_REHEARSAL_TEMPLATE.md`: 採用しなかったrehearsal overlay

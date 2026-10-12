@@ -180,7 +180,7 @@ mainは、製品sourceだけでなく、Task Registry、詳細正本、品質評
 release成果物はmainの複製ではなく、利用者が必要とするsource、test、文書、再現手段だけを残す。
 
 このorientationを含む管理文書をreleaseへ残すか、いつ除外するかを本書だけで決めない。現在の境界と工程は
-`RELEASE_CHECKLIST.md`およびversion固有のrelease正本を確認する。製品上の修正をrelease branchだけへ
+`User/RELEASE_PROCESS.md`およびversion固有のrelease正本を確認する。製品上の修正をrelease branchだけへ
 閉じ込めず、mainへ戻して候補を作り直す。
 
 ## 復帰手順
@@ -248,7 +248,7 @@ taskリファクタリング事例を一つ使い、新しいCodexが次を説�
 - `AGENT_TASK_FIT_INTERVIEW.md`: repository固有のagent適性と独立確認
 - `CODEX_OBSERVATIONS.md`: 運用から得た観察。判断の正本ではない
 - `RefactoringFromAtCoder2025/README.md`: 技術的な変遷と証拠の継承
-- `RELEASE_CHECKLIST.md`: release工程の汎用正本
+- `User/RELEASE_PROCESS.md`: 人間が実行するrelease工程の正本
 
 ## 作成記録
 

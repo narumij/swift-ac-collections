@@ -10,7 +10,7 @@
 
 ## 事前状態チェック
 
-- [ ] 品質剽悍試験をパス
+- [ ] 必要な品質評価・品質試験をパス
 - [ ] CHANGELOGが<VersionNumber>まで反映
 - [ ] 直前のCIが全てグリーン
 
@@ -30,7 +30,7 @@
 
 ## 候補確定作業
 
-- [ ] AGENTS.mdを削除ること
+- [ ] AGENTS.mdを削除
 - [ ] candidate-<VersionNumber> Tagを付与
 - [ ] candidate-<VersionNumber> Tagをプッシュ
 - [ ] リリースCI実行確認

@@ -12,6 +12,7 @@ Detailed evidence remains in each row's archived document. IDs remain permanent 
 | `RELEASE-035` | `EXCLUDED` | Codex | [EXECUTION] release checklistのRegistry templateへの移行 | 2026-10-13、release専用Task Registry方式を採用せず、templateと設計をArchivedへ移動したため除外 | `Archived/RELEASE_TASK_REGISTRY_TEMPLATE.md` / `Archived/RELEASE_TASK_REGISTRY_DESIGN.md` / `Archived/RELEASE_CHECKLIST.md` |
 | `RELEASE-036` | `EXCLUDED` | Codex | [EXECUTION] release専用Registryへの正本切替 | 2026-10-13、移行元方式を採用しない判断により後続切替も不要となったため除外 | `Archived/RELEASE_TASK_REGISTRY_DESIGN.md` / `Archived/RELEASE_TASK_REGISTRY_TEMPLATE.md` |
 | `OPT-052` | `DONE` | Codex | [DISCOVERY] OptionalArray macOS外部性能アセスメントへのアレンジ | 2026-10-12、専用library、生JSON、macOS環境記録、比較chartを保存し、後続のdirect method CI登録とは別の性能アセスメント成果として成立 | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
+| `PERM-002` | `DONE` | User | ABC328E実提出確認 | 2026-10-13、AtCoderへの手作業による実提出探索を完了。203msから最速80msまでの推移を確認し、80ms枝は製品候補ではないunsafeな上限実験として分離 | `PermutationModule/ImplementationPlan.md` / `PermutationModule/HumanAITuningReport.md` / `User/PermutationBorrowedSpanExperiment.swift` |
 
 ## Satisfied precedence removed from the active Registry
 

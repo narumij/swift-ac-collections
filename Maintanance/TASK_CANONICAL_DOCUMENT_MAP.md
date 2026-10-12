@@ -202,7 +202,7 @@
 | `PERF-003` | `Tests/TESTING.md` / `.github/workflows/ci.yml` | 2026-10-12 |  |
 | `PERF-004` | `PERFORMANCE_CI_CHANGE_GUIDE.md` / `Benchmarks/Libraries/CI.json` / `.github/workflows/ci.yml` | 現行 |  |
 | `PERM-001` | `PermutationModule/AtCoder2025CompatibilityPlan.md` | 2026-10-09 |  |
-| `PERM-002` | `PermutationModule/ImplementationPlan.md` | 現行 |  |
+| `PERM-002` | `PermutationModule/ImplementationPlan.md` | 2026-10-13 |  |
 | `PERM-003` | `PermutationModule/AtCoder2025CompatibilityPlan.md` | 2026-10-09 |  |
 | `PERM-004` | `PermutationModule/AtCoder2025CompatibilityPlan.md` | 2026-10-09 |  |
 | `PERM-005` | `PermutationModule/AtCoder2025CompatibilityPlan.md` | 2026-10-09 |  |

@@ -177,3 +177,46 @@ OptionalArrayの判断4件、0.5.0到達範囲、BareArray公開API判断など�
 この一覧は、分解を正当化する規則を後から当てはめたものではない。まずGit snapshotから同時追加、状態、
 依存辺、離脱先を抽出し、その反復形を記述した段階である。各形が意図的な設計だったか、会話から偶然
 形成されたか、後から採用された原則とどこまで対応するかは、次の履歴照合で重ねる。
+
+## 状態遷移に現れない整理
+
+連続するRegistry snapshot間で、task行が状態変更なしに消えたcommitも抽出した。
+
+### 完了履歴の圧縮
+
+`7ead1703`では、`DONE` 105件と`EXCLUDED` 15件が現行Registryから一括で外れ、完了履歴へ移された。
+これはtaskの消滅ではなく、現行Registryを圧縮する`ARCHIVED`相当の操作として区別できる。
+
+### 分解後の吸収・終了・枝刈り
+
+一括アーカイブ後には、別の理由で行を直接外す操作が続いた。
+
+| Commit | 外れたtask | 直前状態 | commitに記録された扱い |
+| --- | --- | --- | --- |
+| `97d8d004` | `PERM-008`、`RELEASE-004` | `FROZEN` | compatibility branch統合taskを終了 |
+| `ec0a4e25` | `GRAPH-005` | `ACTIVE` | graph DB交流taskを終了 |
+| `cf8a5dea` | `GRAPH-002`、`GRAPH-004`、`GRAPH-017`、`GRAPH-018` | `ACTIVE`／`FROZEN` | Codex側graph DB実験を終了 |
+| `1a4f9878` | `OPT-003`、`OPT-004` | `FROZEN` | 委譲規則へ吸収されたtaskを終了 |
+| `ea7b42f4`〜`ec5ef8c9` | `OPS-012`、`OPS-016`〜`OPS-023`、`OPS-013` | `WAITING_USER` | 一時的な判断・分類taskを一件ずつ閉じる |
+| `bc3a092f` | `OPS-014` | `WAITING_USER` | 条件付きtask保持方針の決定後に閉じる |
+| `e5ebc35a` | `OPS-015` | `FROZEN` | 一時的な低燃費運用を終了 |
+| `afeb3ee0` | `BENCH-001`、`EVAL-001`、`PERF-001`、`RBT-006`、`TEST-001`〜`TEST-004` | `FROZEN` | speculative frozen taskを整理 |
+
+これらは`DONE`または`EXCLUDED`への状態遷移としては数えられない。分解した断片が別の規則や成果へ
+吸収された場合、移行のためだけに作った判断taskが役目を終えた場合、将来候補を枝刈りした場合に、行と
+関連辺をRegistryから直接除去していた。
+
+したがって、状態遷移だけからtask分解の履歴を復元すると、インライン化、責務吸収、一時taskの終了を
+取り落とす。commit差分、行消失、依存辺の消失を併せて見る必要がある。
+
+### `BARE-008`のID再利用
+
+行消失後に同じIDが再登場した例は、基準点までに`BARE-008`の1件だけ確認できた。
+
+1. `d23cf6a8`で、`[DECISION] BareArray監査を再開するか`として追加された。
+2. `3c3a4103`でRegistryから外れた。
+3. 28回目のRegistry更新に当たる`45d6d27b`で、`[DISCOVERY] BareArray品質評価初版`という別taskとして
+   同じIDが再登場した。
+
+これは同じtaskの再開ではなく、項目と役割が異なるID再利用である。現在のstable ID規則との関係や、
+この事例が後の規則化を直接引き起こしたかは、Git記録だけでは確定しない。

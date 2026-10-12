@@ -21,6 +21,17 @@
 この確認では新しい仕様testを追加しない。runtime-check View通常版の正式な再構成と、borrowed版の
 compiler-backed fixture化を別の残作業として維持する。
 
+### runtime-check View通常版の再構成着手
+
+`PERM-052`で現行source、Quality Profile、旧38件、現在有効なscratch testを照合し、
+`RuntimeCheckedPermutationTestPlan.md`へ後継仕様群の骨格を分離した。
+
+照合の結果、Quality Profileの`対象`節はruntime-check付き`Permutation` Viewを正しく記述する一方、
+後半のTest as Specificationと品質領域には、通常版が借用`Span`を返しcompilerが寿命違反を拒否するという
+旧実験の記述が残っている。現行sourceは`Span`を返さず、`GateKeeper` generationによって次の`next()`または
+owner破棄後のaccessをruntimeで拒否する。この不整合をtest実装で暗黙に埋めず、Profile訂正と後継test実装を
+別の受入境界として扱う。
+
 ## 一時View契約への変更後の現在性
 
 通常版は旧`NextPermutationsSequence`のCOW・値セマンティクス契約から、単一bufferを破壊的に進める

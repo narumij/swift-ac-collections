@@ -9,10 +9,11 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行中ジョブなし**
+**実行中: PERM-052 runtime-check View版Permutation旧test台帳化**
 
-2026-10-13、API-001の独立候補提出をCodexが受け入れた。後続のballot編成と三者採点は凍結中であり、
-ユーザーが明示的に再開・割当するまでClaudeは着手しない。
+Codex has fixed the coarse contract boundary and successor-group structure in
+`PermutationModule/RuntimeCheckedPermutationTestPlan.md`. Claude is assigned only the
+function-level legacy-test ledger described below. Do not implement tests in this assignment.
 
 **凍結中: PERM-051 borrowed Span版PermutationのTest as Specification**
 
@@ -22,6 +23,63 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
+
+## Active assignment: PERM-052 legacy function ledger
+
+### Objective
+
+Classify all 38 disabled legacy test functions under
+`Tests/PermutationTests/NextPermutationsSequence/` against the accepted runtime-checked contract
+structure in `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`.
+
+### Inputs
+
+Read only:
+
+- the `PERM-052` Registry row;
+- `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`;
+- `Sources/PermutationModule/NextPermutations.swift` and `GateKeeper.swift`;
+- the seven disabled legacy test files under
+  `Tests/PermutationTests/NextPermutationsSequence/`;
+- `Tests/PermutationTests/EtcTests.swift`;
+- the task-relevant instructions in `Tests/CLAUDE.md` and sections of `Tests/TESTING.md`.
+
+The Quality Profile contains known stale borrowed-`Span` language. Do not use that language to
+override the runtime-check boundary fixed in the plan.
+
+### Required classification
+
+Append a `Claude function ledger` section to
+`Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`. Record every legacy test
+function exactly once with:
+
+- source file and function name;
+- `KEEP_INTENT_REWRITE`, `REVERSE_AS_RUNTIME_INVALIDATION`, or `RETIRED`;
+- successor group number from the plan, when applicable;
+- one concise reason tied to the current observable contract.
+
+Then append an `EtcTests inventory` that records each of its four current test functions exactly
+once and says whether it should be promoted into a numbered runtime/death group or remains unrelated
+scratch evidence.
+
+### Boundaries
+
+- Do not modify production source, tests, Quality Profile, Current Quality Assessment, Package.swift,
+  CI, Registry, or any public documentation.
+- Do not implement successor tests.
+- Do not decide new public API, `Sendable`, `Equatable`, `Hashable`, description, availability,
+  compatibility, or lifetime policy.
+- Do not revive COW, persistent-result, iterator-copy, `Sequence`, or borrowed-`Span` requirements.
+- If the current contract is insufficient to classify one function, mark only that row
+  `UNRESOLVED` with the missing authority; do not infer the answer.
+
+### Validation and return
+
+- Confirm that the legacy ledger contains exactly 38 unique functions.
+- Confirm that the `EtcTests` inventory contains exactly four unique functions.
+- Record the counts, duplicate check, unresolved rows, and changed file in the plan.
+- Do not mark `PERM-052` complete. Codex will review the ledger and decide the next bounded
+  implementation assignment.
 
 ## Operating mode: bounded assignments only
 

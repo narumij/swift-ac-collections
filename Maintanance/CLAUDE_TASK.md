@@ -19,6 +19,18 @@ Repository evidence establishes factual correctness; product decisions remain wi
   証拠を報告して停止する。
 - 完了条件: Debug・Releaseで対象testが成功し、追加testと観測事実をCodexがレビューできる。
 
+**次ジョブ: ARRAY-003 BareArray／OptionalArrayのobject名独立候補出し**
+
+- 開始条件: `PERM-051`を完了し、Codexが現行ジョブ節を切り替えた後に開始する。
+- 対象: `Maintanance/ArrayObjectAndAPINamingDraft.md`のcandidate-submission contractと、二つの現行source。
+- 独立性: 候補提出が終わるまで、`Maintanance/User/ARRAY_NAMING_CANDIDATES_CODEX.md`、会話上の
+  ユーザー候補、他者の順位や推薦を入力にしない。
+- 成果: 両familyのbase名候補、1D〜4D spelling、View派生名、意図、互換性・発見性の懸念。
+  候補の順位付けは行わない。
+- 境界: method名候補を増やさない。production source、test、benchmark、公開文書を変更しない。
+  名称や製品方針を決定しない。
+- 完了条件: Claude自身の独立候補が提出され、後続の三者候補統合へ渡せる。
+
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 

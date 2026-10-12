@@ -190,6 +190,13 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-052` | `ACTIVE` | Codex | [DISCOVERY] OptionalArray macOS外部性能アセスメントへのアレンジ | OptionalArray・Swift nested Array番兵・C++ nested vector番兵の3系列を含む専用library、生JSON、4枚のPNG chartによる暫定比較は成立。Permutationと同等の保存scriptと環境記録を整え、正式測定へ渡せる構成を閉じる | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-053` | `FROZEN` | User | [DECISION] OptionalArrayがC++番兵手法に匹敵すると判定する性能比の上限 | `OPT-052`の暫定実測後、代表memoization workloadで許容する性能比を一つだけ決定する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-054` | `FROZEN` | Codex | [EXECUTION] OptionalArray外部性能アセスメントの実測・判定 | `OPT-053`完了後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
+| `ARRAY-002` | `DONE` | Codex | [DISCOVERY] Array系object名のCodex独立候補出し | BareArray／OptionalArrayの役割から3組のbase名、次元suffix、View派生名、懸念を順位付けせず提出 | `User/ARRAY_NAMING_CANDIDATES_CODEX.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-008` | `DONE` | User | [DISCOVERY] Array系object名のユーザー独立候補出し | `BareElements`／`OptionalCache`を順位付け前の候補として提出。method名は現行familyだけを候補とする | `User/ARRAY_NAMING_CANDIDATES_USER.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-003` | `WAITING` | Claude | [DISCOVERY] Array系object名のClaude独立候補出し | `PERM-051`完了後、ユーザー案・Codex案を読む前に、両familyのbase名、次元suffix、View派生名、意図、懸念を順位付けせず提出。method名候補は増やさない | `ArrayObjectAndAPINamingDraft.md` / `Sources/BareArrayModule/BareArray.swift` / `Sources/OptionalArrayModule/OptinalArray.swift` |
+| `ARRAY-004` | `WAITING` | Codex / Claude | [DISCOVERY] Array系object名候補の統合・順位付け | ユーザー・Codex・Claudeの独立候補が揃った後、意味を潰さず統合し、役割、call-site、体系、互換性で順位付けする | `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-005` | `FROZEN` | User | [DECISION] Array系object名の合意 | 統合順位表を入力に、BareArray／OptionalArray両familyの公開名と次元・View派生体系を一つに決定する | `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-006` | `FROZEN` | User | [DECISION] Array系element access method名の確定 | object名決定後、代案を増やさず、現行の`element(at:)`・`setElement(_:at:)`・BareArrayの`reference(at:)`／`Reference`を公開APIとして受け入れるか一つに決定する | `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-007` | `WAITING` | Codex | [EXECUTION] Array系object・API命名の実装反映 | object名とmethod名の決定後、production、test、benchmark、文書を決定どおりに更新し、Test as SpecificationとCI baseline準備へ渡す | `ArrayObjectAndAPINamingDraft.md` |
 | `BARE-006` | `DONE` | Codex | [DISCOVERY] BareArray多次元access性能測定設計 | 2D・3Dのsequential read / write、総要素数が等しいshape、計測内外、checksum、C++ nested `vector<intptr_t>`との対応、CI回帰とmacOS外部assessmentの境界を確定 | `BareArrayModule/CurrentQualityAssessment.md` / `Tests/TESTING.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray外部性能アセスメントの実測・判定 | 性能比の受入判断後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-029` | `DONE` | Codex | [EXECUTION] BareArray access性能のCI回帰Benchmark登録 | 2D・3D sequential read / writeの4 workloadをbenchmark toolと通常CI libraryへ登録。Release build、size 1・3・16の直接実行、`CI.json`の26 task・60 size・64kまでのcurrent実行が成功 | `BareArrayModule/CurrentQualityAssessment.md` |
@@ -266,6 +273,14 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-044` | `PERM-043` | `SEQUENCE` | C++標準に匹敵すると判定する性能比上限を確定してから、保存したmacOS測定証拠へ適用する |
 | `PERM-047` | `PERM-049` | `SEQUENCE` | 製品候補の実装境界を定めてから、その契約と実装を対象に旧Test as Specificationと実験testを棚卸しする |
 | `PERM-051` | `PERM-050` | `SEQUENCE` | Span版の公開名、compiler条件、および現行版との共存を成立させてから、新しい借用契約をTest as Specificationへ固定する |
+| `ARRAY-003` | `PERM-051` | `SEQUENCE` | Claudeの実行中Permutation試験を完了してから、独立候補出しへ担当を移す |
+| `ARRAY-004` | `ARRAY-002` | `PARALLEL_JOIN` | Codexの独立候補を統合・順位付けの入力にする |
+| `ARRAY-004` | `ARRAY-008` | `PARALLEL_JOIN` | ユーザーの独立候補を統合・順位付けの入力にする |
+| `ARRAY-004` | `ARRAY-003` | `PARALLEL_JOIN` | Claudeの独立候補を統合・順位付けの入力にする。ユーザー候補も揃うまで開始しない |
+| `ARRAY-005` | `ARRAY-004` | `SEQUENCE` | 独立候補の統合・順位付け後にobject名を決定する |
+| `ARRAY-006` | `ARRAY-005` | `SEQUENCE` | object名確定後、そのcall-siteで現行method名だけを評価する |
+| `ARRAY-007` | `ARRAY-005` | `PARALLEL_JOIN` | object名の決定を実装入力にする |
+| `ARRAY-007` | `ARRAY-006` | `PARALLEL_JOIN` | method名の決定を実装入力にする |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |
 | `RELEASE-036` | `RELEASE-035` | `SEQUENCE` | checklist移行を検証してから実行正本をactive Registryへ切り替える |
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |

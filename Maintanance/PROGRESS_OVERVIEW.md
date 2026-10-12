@@ -176,6 +176,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-046` | `FROZEN` | Codex | [DISCOVERY] Swift 6.2向けmanifest構成の必要性再評価 | runtime-check View通常版がSwift 6.2で成立したため、旧「PermutationModuleなしの縮小manifest」案はそのまま実行しない。ユーザーの明示的な再開指示後、package全体の6.2成立条件を調べ、version-specific manifest自体が必要かから再評価する | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `PERM-047` | `FROZEN` | Claude | [DISCOVERY] runtime-check View版Permutationの旧Test as Specification・実験test棚卸し | Claudeのcontext reset後、ユーザーが明示的に再開。退避中の通常版7テスト群と`PermutationTests/EtcTests.swift`をtest function単位で確認し、新しい一時View契約に対して維持・置換・失効、または実験から後続testへ昇格すべき事実へ分類し、通常test、失効Death Test、所有・破棄testへ分割可能な実装入力を作る。production code、公開契約、testは変更しない | `PermutationModule/BorrowedPermutationTestPlan.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `PERM-048` | `DONE` | Codex | [EXECUTION] Swift 6.2互換runtime-check View通常経路の成立確認 | 単一bufferと共有`GateKeeper`の世代番号で旧Viewを失効させる通常実装へ切替。Swift 6.2 strict typecheck・列挙実行、Swift 6.4 Debug／Release build、次回`next()`後・所有者破棄後のtrapを確認。5-cycle測定は28要素で21.61ms対C++ 19.24ms、32要素で66.39ms対61.24ms。Span版は無効化した特殊経路へ退避 | `PermutationModule/CurrentQualityAssessment.md` / `PermutationModule/NextPermutationsImplementationExploration.md` / `Sources/PermutationModule/Permutations.swift` / `Sources/PermutationModule/PermutationsBorrowedSpan.swift` |
+| `PERM-049` | `PROPOSED` | Codex | [DISCOVERY] 実提出チューニング成果の製品候補への収束 | 80msへ到達した実験からPermutation本体に寄与した変更を切り分け、runtime-check付き一時View契約と安全性を維持した製品候補で再測定する。DSU等の提出固有最適化とGateKeeperを外したunsafe経路は製品変更へ混入させず、採用可能な実装差分と未解消の性能差を後続test棚卸しへ渡す | `PermutationModule/HumanAITuningReport.md` / `PermutationModule/CurrentQualityAssessment.md` / `Maintanance/User/PermutationBorrowedSpanExperiment.swift` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | 0.6.0の到達範囲判断前に、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
@@ -261,6 +262,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-018` | `BARE-028` | `PARALLEL_JOIN` | Claudeの手直し後に必要となる差分再検証も完了ゲートへ合流する |
 | `BARE-017` | `BARE-018` | `SEQUENCE` | 完成したView契約を入力に一般Swift利用と競技利用のValidation scenarioを設計する |
 | `PERM-044` | `PERM-043` | `SEQUENCE` | C++標準に匹敵すると判定する性能比上限を確定してから、保存したmacOS測定証拠へ適用する |
+| `PERM-047` | `PERM-049` | `SEQUENCE` | 製品候補の実装境界を定めてから、その契約と実装を対象に旧Test as Specificationと実験testを棚卸しする |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |
 | `RELEASE-036` | `RELEASE-035` | `SEQUENCE` | checklist移行を検証してから実行正本をactive Registryへ切り替える |
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |

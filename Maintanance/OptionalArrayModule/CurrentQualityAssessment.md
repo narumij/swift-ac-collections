@@ -51,7 +51,7 @@
 | QR-04 理解可能性 | nil状態、所有と非所有、軸順、`removeAll()`、失敗条件を公開文書から確認できる | 確認済み | 公開29宣言のdocumentation commentを監査済みで、DocCをwarnings-as-errors付きで生成できた | 文書と実装のVerificationであり、一般利用者が誤解なく使えることのValidationではない |
 | QR-05 利用可能性 | SwiftPMと`AcCollections`再公開経路で利用できる | 確認済み | OptionalArrayModule build、facade再公開test 1件、DocC生成が現行macOS環境で成功 | 他platform、外部packageとの共存、実利用は未確認 |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | EDPC-J・EDPC-Lはtest targetのcompile evidenceであり、単一file利用許諾もsourceにある | 正答、実提出、実行時間、メモリ使用量は確認していない |
-| QR-06 持続可能性 | 変更後に公開面、状態、寿命、次元、停止契約を再確認できる | 確認済み | 番号付きTest as Specification 8群、Debug・Release・ASanのCI job、および2D・3D memoization accessの回帰workloadがある | 現行commitのremote CI成功は未確認。CIのDocC対象にOptionalArrayは含まれない |
+| QR-06 持続可能性 | 変更後に公開面、状態、寿命、次元、停止契約を再確認できる | 部分確認 | 番号付きTest as Specification 8群、Debug・Release・ASanのCI job、および2D・3D memoization accessの回帰workloadがある。評価時にはOptionalArrayModuleのDocC生成も個別に成功した | 現行commitのremote CI成功は未確認。CIのDocC対象にOptionalArrayは含まれず、documentation commentの変更後もDocC生成を継続して再確認できる自動経路はない |
 
 ## 実行記録
 

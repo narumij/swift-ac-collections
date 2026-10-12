@@ -172,7 +172,7 @@ benchmarkの実行環境、toolchain、最適化構成、およびmachine条件�
 | QR-04 理解可能性 | 後続順列と全順列、開始位置、重複、値保持、Index、失敗条件、計算量、類似APIとの差を確認できる | 確認済み | 公開documentation commentとコード例が各項目を説明し、対応するTest as Specificationが成功 | 一般Swift利用者による理解のValidationは未実施。独立した利用者向けPermutation文書は存在しない |
 | QR-05 利用可能性 | 通常版をSwiftPMと`AcCollections` facadeから利用し、swift-algorithmsと共存できる | 確認済み | project build成功、facade再公開test 1件成功、共存test 2件成功 | 今回のローカルRelease再実行は環境sandboxに阻まれ未取得。CI設定の存在とremote成功記録は区別する |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | 通常版・互換modeの仕様testと単一file経路は候補証拠だが、実提出は未実施 | `PERM-002`はユーザー専任。今回の通常構成では互換mode 5件は条件外で未実行 |
-| QR-06 持続可能性 | 公開面、列挙、値セマンティクス、Collection、共存、安全性、性能を変更後に再確認できる | 確認済み | 番号付きTest as Specification、benchmark library、Debug・Release・ASan・performanceを含むworkflow分担 | workflowの存在だけで特定commitのremote成功を推定しない |
+| QR-06 持続可能性 | 公開面、列挙、値セマンティクス、Collection、共存、安全性、性能を変更後に再確認できる | 部分確認 | 番号付きTest as Specification、benchmark library、Debug・Release・ASan・performanceを含むworkflow分担があり、評価前の文書整備ではPermutationModuleのDocC生成が個別に成功した | CIのdocumentation jobはRedBlackTreeCollectionsだけを対象とし、Permutationのdocumentation commentを変更後もDocC生成で継続確認する自動経路はない。workflowの存在だけで特定commitのremote成功を推定しない |
 
 ## 実行記録
 

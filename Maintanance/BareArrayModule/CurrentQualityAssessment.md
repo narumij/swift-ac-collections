@@ -226,7 +226,7 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
 | QR-04 理解可能性 | 所有・非所有、軸順、初期化、連鎖subscript、writeback、失敗条件を公開文書から理解できる | 確認済み | 現行公開宣言のdocumentation commentをsourceと照合し、BareArrayModuleのDocC生成が成功 | 文書が存在し整合するVerificationであり、一般利用者による理解のValidationは未実施 |
 | QR-05 利用可能性 | SwiftPMと`AcCollections`から導入し、対象環境で利用できる | 確認済み | Debug・Release build、facade再公開test 1件、BareArray.swift単独typecheck、DocC生成が成功 | macOSの現行環境における確認。他platform、外部packageとの共存、実利用のValidationは未確認 |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | copy & paste許諾と単一file候補はsourceに存在する | 実問題、実提出、実行時間、メモリ使用量のValidation証拠を未確認 |
-| QR-06 持続可能性 | 公開面、正確性、寿命、停止契約を変更後に再確認できる | 確認済み | 番号付きTest as Specification 8群、監査記録、Debug・Release・ASan・documentation・performanceを分担するworkflowがある。BareArray性能workload 4件は通常CI libraryへ登録済み | workflowの存在とローカル成功から、特定commitのremote CI成功は推定しない |
+| QR-06 持続可能性 | 公開面、正確性、寿命、停止契約を変更後に再確認できる | 部分確認 | 番号付きTest as Specification 8群、監査記録、Debug・Release・ASanのCI jobがあり、BareArray性能workload 4件は通常CI libraryへ登録済み。評価時にはBareArrayModuleのDocC生成も個別に成功した | CIのdocumentation jobはRedBlackTreeCollectionsだけを対象とし、BareArrayのdocumentation commentを変更後もDocC生成で継続確認する自動経路はない。workflowの存在とローカル成功から、特定commitのremote CI成功は推定しない |
 
 ## 実行記録
 

@@ -9,15 +9,19 @@ extern "C" {
 #endif
 
 extern void *cpp_nested_vector_2d_create(size_t width, size_t height);
+extern void *cpp_vector_1d_create(size_t count);
 extern void *cpp_nested_vector_3d_create(
   size_t width,
   size_t height,
   size_t depth);
 extern void cpp_nested_vector_2d_destroy(void *ptr);
+extern void cpp_vector_1d_destroy(void *ptr);
 extern void cpp_nested_vector_3d_destroy(void *ptr);
 extern intptr_t cpp_nested_vector_2d_checksum(void *ptr);
+extern intptr_t cpp_vector_1d_checksum(void *ptr);
 extern intptr_t cpp_nested_vector_3d_checksum(void *ptr);
 extern void cpp_nested_vector_2d_write(void *ptr);
+extern void cpp_vector_1d_write(void *ptr);
 extern void cpp_nested_vector_3d_write(void *ptr);
 
 #ifdef __cplusplus

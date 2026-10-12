@@ -77,6 +77,7 @@
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
+  @available(*, deprecated, message: "Use element(at:), setElement(_:at:), or reference(at:) instead.")
   public subscript(position: Int) -> Element {
     @inline(__always)
     unsafeAddress {
@@ -196,6 +197,7 @@ extension BareArray: @unchecked Sendable where Element: Sendable { }
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
+  @available(*, deprecated, message: "Use element(at:_:), setElement(_:at:_:), or reference(at:_:) instead.")
   public subscript(position: Int) -> BareArray1DView<Element> {
 
     @inline(__always)
@@ -337,6 +339,7 @@ extension BareArray2D: @unchecked Sendable where Element: Sendable { }
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
+  @available(*, deprecated, message: "Use element(at:_:_:), setElement(_:at:_:_:), or reference(at:_:_:) instead.")
   public subscript(position: Int) -> BareArray2DView<Element> {
 
     @inline(__always)
@@ -485,6 +488,7 @@ extension BareArray3D: @unchecked Sendable where Element: Sendable { }
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
+  @available(*, deprecated, message: "Use element(at:_:_:_:), setElement(_:at:_:_:_:), or reference(at:_:_:_:) instead.")
   public subscript(position: Int) -> BareArray3DView<Element> {
 
     @inline(__always)
@@ -528,6 +532,141 @@ extension BareArray4D {
 
 extension BareArray4D: @unchecked Sendable where Element: Sendable { }
 
+  /// A mutable reference to one element in a `BareArray` storage.
+  @safe public struct MutableRef<Element>: ~Escapable {
+    @usableFromInline let pointer: UnsafeMutablePointer<Element>
+
+    @inlinable
+    @_lifetime(borrow source)
+    @unsafe internal init<Source: ~Copyable & ~Escapable>(
+      _ pointer: UnsafeMutablePointer<Element>, borrowing source: borrowing Source
+    ) {
+      unsafe self.pointer = pointer
+    }
+
+    @inlinable
+    public var pointee: Element {
+      @inline(__always)
+      unsafeAddress { unsafe UnsafePointer(pointer) }
+      @inline(__always)
+      nonmutating unsafeMutableAddress { unsafe pointer }
+    }
+  }
+
+  extension BareArray {
+    public typealias Reference = MutableRef<Element>
+
+    @inlinable
+    @_lifetime(borrow self)
+    public func reference(at position: Int) -> Reference {
+      precondition(0 <= position && position < count)
+      return unsafe .init(payload + position, borrowing: self)
+    }
+
+    @inlinable
+    public func element(at position: Int) -> Element {
+      precondition(0 <= position && position < count)
+      return unsafe payload[position]
+    }
+
+    @inlinable
+    public func setElement(_ newValue: consuming Element, at position: Int) {
+      precondition(0 <= position && position < count)
+      unsafe payload[position] = newValue
+    }
+  }
+
+  extension BareArray2D {
+    public typealias Reference = MutableRef<Element>
+
+    @inlinable
+    @_lifetime(borrow self)
+    public func reference(at x: Int, _ y: Int) -> Reference {
+      precondition(0 <= x && x < width)
+      precondition(0 <= y && y < height)
+      return unsafe .init(payload + y * width + x, borrowing: self)
+    }
+
+    @inlinable
+    public func element(at x: Int, _ y: Int) -> Element {
+      precondition(0 <= x && x < width)
+      precondition(0 <= y && y < height)
+      return unsafe payload[y * width + x]
+    }
+
+    @inlinable
+    public func setElement(_ newValue: consuming Element, at x: Int, _ y: Int) {
+      precondition(0 <= x && x < width)
+      precondition(0 <= y && y < height)
+      unsafe payload[y * width + x] = newValue
+    }
+  }
+
+  extension BareArray3D {
+    public typealias Reference = MutableRef<Element>
+
+    @inlinable
+    @_lifetime(borrow self)
+    public func reference(at x: Int, _ y: Int, _ z: Int) -> Reference {
+      precondition(0 <= x && x < width)
+      precondition(0 <= y && y < height)
+      precondition(0 <= z && z < depth)
+      return unsafe .init(payload + (z * height + y) * width + x, borrowing: self)
+    }
+
+    @inlinable
+    public func element(at x: Int, _ y: Int, _ z: Int) -> Element {
+      precondition(0 <= x && x < width)
+      precondition(0 <= y && y < height)
+      precondition(0 <= z && z < depth)
+      return unsafe payload[(z * height + y) * width + x]
+    }
+
+    @inlinable
+    public func setElement(_ newValue: consuming Element, at x: Int, _ y: Int, _ z: Int) {
+      precondition(0 <= x && x < width)
+      precondition(0 <= y && y < height)
+      precondition(0 <= z && z < depth)
+      unsafe payload[(z * height + y) * width + x] = newValue
+    }
+  }
+
+  extension BareArray4D {
+    public typealias Reference = MutableRef<Element>
+
+    @inlinable
+    @_lifetime(borrow self)
+    public func reference(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> Reference {
+      precondition(0 <= x && x < size0)
+      precondition(0 <= y && y < size1)
+      precondition(0 <= z && z < size2)
+      precondition(0 <= w && w < size3)
+      return unsafe .init(
+        payload + ((w * size2 + z) * size1 + y) * size0 + x,
+        borrowing: self)
+    }
+
+    @inlinable
+    public func element(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> Element {
+      precondition(0 <= x && x < size0)
+      precondition(0 <= y && y < size1)
+      precondition(0 <= z && z < size2)
+      precondition(0 <= w && w < size3)
+      return unsafe payload[((w * size2 + z) * size1 + y) * size0 + x]
+    }
+
+    @inlinable
+    public func setElement(
+      _ newValue: consuming Element, at x: Int, _ y: Int, _ z: Int, _ w: Int
+    ) {
+      precondition(0 <= x && x < size0)
+      precondition(0 <= y && y < size1)
+      precondition(0 <= z && z < size2)
+      precondition(0 <= w && w < size3)
+      unsafe payload[((w * size2 + z) * size1 + y) * size0 + x] = newValue
+    }
+  }
+
 // MARK: -
 
 /// 所有配列の連続する1次元領域を参照する非所有Viewです。
@@ -536,6 +675,7 @@ extension BareArray4D: @unchecked Sendable where Element: Sendable { }
 /// 元の所有配列の生存中だけ使用してください。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
 @safe public struct BareArray1DView<Element>: ~Escapable {
 
   @inlinable
@@ -581,6 +721,7 @@ extension BareArray4D: @unchecked Sendable where Element: Sendable { }
   }
 }
 
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
 extension BareArray1DView {
 
   /// このViewで有効な位置である`0..<count`を返します。
@@ -596,6 +737,7 @@ extension BareArray1DView {
 /// Viewはstorageの寿命を延長しないため、元の所有配列の生存中だけ使用してください。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
 @safe public struct BareArray2DView<Element>: ~Escapable {
 
   @inlinable
@@ -655,6 +797,7 @@ extension BareArray1DView {
   }
 }
 
+@available(*, deprecated, message: "Use the owning array's mutable(at:...) method instead.")
 extension BareArray2DView {
 
   /// 外側の軸に有効な位置である`0..<height`を返します。
@@ -670,6 +813,7 @@ extension BareArray2DView {
 /// Viewはstorageの寿命を延長しないため、元の所有配列の生存中だけ使用してください。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@available(*, deprecated, message: "Use the owning array's mutable(at:...) method instead.")
 @safe public struct BareArray3DView<Element>: ~Escapable {
 
   @inlinable
@@ -733,6 +877,7 @@ extension BareArray2DView {
   }
 }
 
+@available(*, deprecated, message: "Use the owning array's mutable(at:...) method instead.")
 extension BareArray3DView {
 
   /// 外側の軸に有効な位置である`0..<depth`を返します。

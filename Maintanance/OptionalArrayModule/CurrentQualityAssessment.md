@@ -111,7 +111,7 @@ deprecated Viewの寿命・writeback仕様は互換testへ残し、現行座標a
 各軸の近傍が未設定のままであること、参照要素の置換とnil化が各値をexactly onceで破棄することを確認する。
 Death Testは1D〜4Dの全軸について、負値と上限値をread・writeの双方で与え、Darwinでは`SIGTRAP`、
 Linuxでは`SIGILL`というSwift preconditionのsignalまで固定した。2026-10-13にBuild for Testingが成功し、
-追加した通常test 3件とDeath Test 8件は11件すべて成功した。
+追加した通常test 3件とDeath Test 8件を含むOptionalArray全76件が成功した。
 
 ### C++番兵workloadと暫定チャート
 

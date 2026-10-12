@@ -7,7 +7,7 @@ this is not independent of the User and Claude records: Codex had already read t
 therefore records Codex's own present judgment without claiming an independence that no longer exists.
 The earlier Codex submission is withdrawn and must not be added to the ballot as a separate vote.
 
-The proposal follows `User/CONCEPT_DEFINITION.md`, `User/QUALITY_REQUIREMENTS.md`, the current public
+The proposal follows `User/CONCEPT_DEFINITION.md`, `QUALITY_REQUIREMENTS.md`, the current public
 declarations, and `ArrayObjectAndAPINamingDraft.md`. It does not decide product inclusion, migration,
 deprecation, lifetime policy, or the final public contract.
 

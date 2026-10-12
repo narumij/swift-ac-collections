@@ -55,6 +55,7 @@ Archived全体を探索しない。
 ## 2026-10-13移動分
 
 - `PROGRESS_OVERVIEW_COMPLETED_2026-10-13.md`: 2026-10-13に完了・除外したtask行と充足済みprecedence履歴
+- `QualityRequirements/`: 現行の製品品質要求を作る過程で提出・改訂されたCodex、Claude、Chappyの独立ドラフト群
 - `RELEASE_CHECKLIST.md`: 今後の正本としては採用しなかった旧release checklist
 - `RELEASE_TEMPLATE_BRANCH_DESIGN.md`: 採用しなかったtemplate branch方式の設計資料
 - `RELEASE_TASK_REGISTRY_DESIGN.md`: 採用しなかったrelease専用Task Registry方式の設計資料

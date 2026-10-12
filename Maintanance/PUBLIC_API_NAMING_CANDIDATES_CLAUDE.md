@@ -13,7 +13,7 @@ Array系とPermutation系の公開名候補を独立に提出する。
 
 この節は、製品コンセプトの正本
 [`User/CONCEPT_DEFINITION.md`](User/CONCEPT_DEFINITION.md)と、製品品質要求の正本
-[`User/QUALITY_REQUIREMENTS.md`](User/QUALITY_REQUIREMENTS.md)から、今回の候補出しに必要な文脈を
+[`QUALITY_REQUIREMENTS.md`](QUALITY_REQUIREMENTS.md)から、今回の候補出しに必要な文脈を
 作業用に展開したものである。新しい品質要求を追加せず、両正本を置き換えない。
 
 製品コンセプトは、CやC++標準に匹敵する性能を持ち、競技プログラミングで利用可能なデータ構造を、

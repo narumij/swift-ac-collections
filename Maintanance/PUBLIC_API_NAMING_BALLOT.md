@@ -15,7 +15,7 @@ records; it does not score or adopt a name.
 - `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`
 - `ArrayObjectAndAPINamingDraft.md`
 - `User/CONCEPT_DEFINITION.md`
-- `User/QUALITY_REQUIREMENTS.md`
+- `QUALITY_REQUIREMENTS.md`
 
 ## Compilation rules
 

@@ -253,8 +253,8 @@
 | `PERM-050` | `Sources/PermutationModule/BorrowedNextPermutations.swift` / `PermutationModule/NextPermutationsImplementationExploration.md` | 2026-10-12 |  |
 | `PERM-051` | `Sources/PermutationModule/BorrowedNextPermutations.swift` / `Tests/PermutationTests/BorrowedNextPermutations/` / `Sources/PermutationModule/Documentation/Quality-Profile.md` | 現行 |  |
 | `QUALITY-001` | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` | 現行 |  |
-| `QUALITY-002` | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` / `CLAUDE_TASK.md`<br>`User/QUALITY_REQUIREMENTS.md` / `Tests/TESTING.md` / `.github/workflows/candidate.yml` | 2026-10-11<br>現行 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
-| `QUALITY-003` | `PermutationModule/CurrentQualityAssessment.md` / `User/QUALITY_REQUIREMENTS.md`<br>`User/QUALITY_REQUIREMENTS.md` / `Package.swift` | 2026-10-11<br>現行 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
+| `QUALITY-002` | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` / `CLAUDE_TASK.md`<br>`QUALITY_REQUIREMENTS.md` / `Tests/TESTING.md` / `.github/workflows/candidate.yml` | 2026-10-11<br>現行 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
+| `QUALITY-003` | `PermutationModule/CurrentQualityAssessment.md` / `QUALITY_REQUIREMENTS.md`<br>`QUALITY_REQUIREMENTS.md` / `Package.swift` | 2026-10-11<br>現行 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
 | `RBT-001` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行 |  |
 | `RBT-002` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 2026-10-09 |  |
 | `RBT-003` | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` | 2026-10-09 |  |
@@ -330,10 +330,10 @@
 | `RELEASE-071` | `Archived/RELEASE_TASK_REGISTRY_TEMPLATE.md` / `Archived/RELEASE_TASK_REGISTRY_REHEARSAL_TEMPLATE.md` / `Archived/RELEASE_TASK_REGISTRY_DESIGN.md` / `Archived/Canonical/RELEASE_0_5_3.md` | 2026-10-11 |  |
 | `RELEASE-072` | `User/RELEASE_PROCESS.md` | 現行 |  |
 | `RELEASE-073` | `User/CONCEPT_DEFINITION.md` | 2026-10-11 |  |
-| `RELEASE-074` | `User/CONCEPT_DEFINITION.md` / `User/Archived/QUALITY_REQUIREMENTS_CODEX_V2.md` / `User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md` | 2026-10-11 |  |
+| `RELEASE-074` | `User/CONCEPT_DEFINITION.md` / `Archived/QualityRequirements/QUALITY_REQUIREMENTS_CODEX_V2.md` / `Archived/QualityRequirements/QUALITY_REQUIREMENTS_CLAUDE_V2.md` | 2026-10-11 |  |
 | `RELEASE-075` | `User/RELEASE_PROCESS.md` | 現行 |  |
 | `RELEASE-076` | `User/RELEASE_PROCESS.md` | 現行 |  |
-| `RELEASE-077` | `User/QUALITY_REQUIREMENTS.md` / `User/QUALITY_REQUIREMENTS_REFERENCE.md` / `User/Archived/QUALITY_REQUIREMENTS_CLAUDE_V2.md` / `CLAUDE_TASK.md` | 2026-10-11 |  |
+| `RELEASE-077` | `QUALITY_REQUIREMENTS.md` / `QUALITY_REQUIREMENTS_REFERENCE.md` / `Archived/QualityRequirements/QUALITY_REQUIREMENTS_CLAUDE_V2.md` / `CLAUDE_TASK.md` | 2026-10-11 |  |
 | `TEST-001` | `Tests/TESTING.md` | 2026-10-09 |  |
 | `TEST-002` | `Tests/TESTING.md` | 2026-10-09 |  |
 | `TEST-003` | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` | 2026-10-09 |  |

@@ -7,7 +7,7 @@ Status: submitted candidates. This document does not rank or adopt a public API 
 
 目的と品質上の位置づけは、製品コンセプトの正本
 [`User/CONCEPT_DEFINITION.md`](User/CONCEPT_DEFINITION.md)と、製品品質要求の正本
-[`User/QUALITY_REQUIREMENTS.md`](User/QUALITY_REQUIREMENTS.md)に従う。この候補記録は両正本を
+[`QUALITY_REQUIREMENTS.md`](QUALITY_REQUIREMENTS.md)に従う。この候補記録は両正本を
 再定義しない。
 
 ## Array object names

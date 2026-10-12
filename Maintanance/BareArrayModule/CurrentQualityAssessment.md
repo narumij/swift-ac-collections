@@ -3,7 +3,7 @@
 ## 文書の役割
 
 この文書は、BareArrayModuleの現行品質評価taskの詳細正本である。
-上位品質要求は`Maintanance/User/QUALITY_REQUIREMENTS.md`、モジュールへの適用と証拠境界は
+上位品質要求は`Maintanance/QUALITY_REQUIREMENTS.md`、モジュールへの適用と証拠境界は
 `Sources/BareArrayModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、Quality Profileの現在性確認、現在評価の作業範囲、完了条件、結果を管理する。
 

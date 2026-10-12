@@ -78,6 +78,7 @@ public struct OptionalArray1D<Element>: ~Copyable {
   /// - Precondition: `position`が`indices`に含まれること。
   /// - Complexity: O(1)
   @inlinable
+  @available(*, deprecated, message: "Use element(at:) or setElement(_:at:) instead.")
   public subscript(position: Int) -> Element? {
 
     @inline(__always)
@@ -230,6 +231,7 @@ public struct OptionalArray2D<Element>: ~Copyable {
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
+  @available(*, deprecated, message: "Use element(at:_:) or setElement(_:at:_:) instead.")
   public subscript(position: Int) -> OptionalArray1DView<Element> {
     @inline(__always)
     @_lifetime(borrow self)
@@ -380,6 +382,7 @@ public struct OptionalArray3D<Element>: ~Copyable {
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
+  @available(*, deprecated, message: "Use element(at:_:_:) or setElement(_:at:_:_:) instead.")
   public subscript(position: Int) -> OptionalArray2DView<Element> {
     @inline(__always)
     @_lifetime(borrow self)
@@ -543,6 +546,7 @@ public struct OptionalArray4D<Element>: ~Copyable {
   /// - Precondition: `position`は`indices`に含まれなければなりません。
   /// - Complexity: O(1)
   @inlinable
+  @available(*, deprecated, message: "Use element(at:_:_:_:) or setElement(_:at:_:_:_:) instead.")
   public subscript(position: Int) -> OptionalArray3DView<Element> {
     @inline(__always)
     @_lifetime(borrow self)
@@ -623,6 +627,7 @@ extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
 /// 親配列の生存中だけ使用でき、Viewを親配列より長く保持してはいけません。
 /// Viewを通じた変更は親配列の同じ要素へ反映されます。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
 @safe public struct OptionalArray1DView<Element>: ~Escapable {
 
   @inlinable
@@ -693,6 +698,7 @@ extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
   }
 }
 
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
 extension OptionalArray1DView {
   /// このViewに有効なslot位置である`0..<count`を返します。
   ///
@@ -706,6 +712,7 @@ extension OptionalArray1DView {
 /// 親配列の生存中だけ使用でき、Viewを通じた変更は親配列へ反映されます。
 /// 連鎖subscriptは`view[y][x]`の順で、`width`が最内軸、`height`が最外軸です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
 @safe public struct OptionalArray2DView<Element>: ~Escapable {
 
   @inlinable
@@ -781,6 +788,7 @@ extension OptionalArray1DView {
   }
 }
 
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
 extension OptionalArray2DView {
   /// 外側の軸に有効な位置である`0..<height`を返します。
   ///
@@ -794,6 +802,7 @@ extension OptionalArray2DView {
 /// 親配列の生存中だけ使用でき、Viewを通じた変更は親配列へ反映されます。
 /// 連鎖subscriptは`view[z][y][x]`の順で、`width`が最内軸、`depth`が最外軸です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
 @safe public struct OptionalArray3DView<Element>: ~Escapable {
 
   @inlinable
@@ -866,6 +875,7 @@ extension OptionalArray2DView {
   }
 }
 
+@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
 extension OptionalArray3DView {
   /// 外側の軸に有効な位置である`0..<depth`を返します。
   ///

@@ -46,6 +46,12 @@ than requiring future sessions to reconstruct it from reflections.
 Delegated autonomy remains subordinate to the user's authority.
 It does not grant Codex ownership of the task or shared worktree.
 
+Operational judgment may be delegated without delegating policy authority.
+
+Codex may determine how to achieve an authorized goal, but must not
+independently change the goal, priorities, public contracts, or
+explicitly reserved decisions.
+
 User intervention, including direct edits to the shared worktree,
 may suspend, narrow, or revoke the current delegation.
 

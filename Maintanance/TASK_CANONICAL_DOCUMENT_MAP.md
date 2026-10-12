@@ -141,6 +141,8 @@
 | `OPS-023` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
 | `OPS-024` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
 | `OPS-025` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
+| `OPS-026` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V3.md` / `Orientation/TASK_REGISTRY_STATE_HISTORY.md` / `TASK_CANONICAL_DOCUMENT_MAP.md` | 現行 |  |
+| `OPS-027` | `AI_TASK_PROCESS_POSTER.svg` / `AI_TASK_PROCESS_POSTER.png` / `Utilities/Maintenance/GenerateAITaskProcessPoster.py` / `Archived/Orientation/AI_TASK_PROCESS_POSTER_V2/` | 現行 | V3を現行ポスターへ採用。旧V2一式は版名付きで保存。 |
 | `OPT-001` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |
 | `OPT-002` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |
 | `OPT-003` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |
@@ -352,4 +354,3 @@
 
 これらは`TASK_REGISTRY_STATE_HISTORY.md`と同じ基準commitまでGit履歴を追い、初出commit、
 正本表記の変更commit、基準点の表記を追加して確認する。
-

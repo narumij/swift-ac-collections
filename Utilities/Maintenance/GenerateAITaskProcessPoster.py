@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Generate the current AI task process poster (V2).
+"""Generate the current AI task process poster (V3).
 
 The poster is a visual summary, not an authoritative process definition.
 Output: Maintanance/AI_TASK_PROCESS_POSTER.svg
-PNG conversion: Utilities/Maintenance/RenderSVGToPNG.sh
 """
 
 from html import escape
@@ -12,18 +11,9 @@ from pathlib import Path
 
 W, H = 2400, 2400
 FONT = "Hiragino Sans, Hiragino Kaku Gothic ProN, sans-serif"
-INK = "#172033"
-SUB = "#526071"
-BG = "#f5f4ef"
-BLUE = "#2255a4"
-TEAL = "#087f72"
-ORANGE = "#c45b18"
-PURPLE = "#7352b8"
-RED = "#b73535"
-GOLD = "#a97812"
-PINK = "#b42368"
-WHITE = "#ffffff"
-
+INK, SUB, BG, WHITE = "#172033", "#526071", "#f5f4ef", "#ffffff"
+BLUE, TEAL, ORANGE = "#2255a4", "#087f72", "#c45b18"
+PURPLE, RED, GOLD, PINK = "#7352b8", "#b73535", "#a97812", "#b42368"
 out: list[str] = []
 
 
@@ -68,134 +58,108 @@ out.append(
 )
 
 # Header
-text(W / 2, 82, "判断を減らし、正しく止まるtask管理", size=60, weight=800, anchor="middle")
-text(
-    W / 2,
-    136,
-    "欠けた必須前提を見つけ、偶有的な判断を消す — V2（2026-10-11）",
-    size=29,
-    weight=550,
-    fill=SUB,
-    anchor="middle",
-)
+text(W / 2, 76, "事実へ接続し、次の仕事を成立させる", 58, 800, anchor="middle")
+text(W / 2, 127, "協働を自走させるtask運用 — V3（2026-10-12）", 29, 600, SUB, "middle")
 
-# Top lifecycle: the three principles and their execution consequences
-step_y, step_h, step_w, gap = 185, 300, 350, 30
+# The full collaboration cycle
+step_y, step_h, step_w, gap = 175, 270, 260, 25
 steps = [
-    ("1", "成立条件を見る", TEAL, ["後続の成果・検証・受入", "成立に必要な前提", "既存graphを正当化しない"]),
-    ("2", "依存を発見", GOLD, ["飛ばすと成立しないもの", "並行前提を直線にしない", "候補を必須にしない"]),
-    ("3", "先に保留", RED, ["影響範囲だけ止める", "確証を待たない", "graph更新より先"]),
-    ("4", "判断を整理", ORANGE, ["偶有的判断を消す", "本質的判断を残す", "判断不要を見分ける"]),
-    ("5", "graphを再構成", BLUE, ["task境界を分ける", "Flowを分類する", "readyを再計算"]),
-    ("6", "再開を確認", PINK, ["readyは成立したか", "委任は有効か", "成立範囲だけ再開"]),
+    ("1", "現在地", TEAL, ["Registryから復元", "正本へ接続"]),
+    ("2", "答えの所在", GOLD, ["誰・何が答えるか", "推測を分離"]),
+    ("3", "必須前提", RED, ["欠けた条件を発見", "疑義なら先に保留"]),
+    ("4", "判断整理", ORANGE, ["偶有的判断を消す", "本質だけ残す"]),
+    ("5", "task / graph", BLUE, ["境界と依存を作る", "readyを再計算"]),
+    ("6", "実行・委譲", PINK, ["一つの受入境界", "権限内で進める"]),
+    ("7", "証拠・受入", PURPLE, ["成立を確かめる", "反証も保存"]),
+    ("8", "次を成立", TEAL, ["必要性を再評価", "次の一周へ"]),
 ]
 for index, (number, title, color, body) in enumerate(steps):
-    x = 60 + index * (step_w + gap)
-    box(x, step_y, step_w, step_h, color)
-    out.append(f'<circle cx="{x + 45}" cy="{step_y + 48}" r="28" fill="{color}"/>')
-    text(x + 45, step_y + 59, number, size=31, weight=800, fill=WHITE, anchor="middle")
-    text(x + 84, step_y + 59, title, size=32, weight=750, fill=color)
-    lines(x + 25, step_y + 125, ["・" + item for item in body], size=23, gap=45)
+    x = 55 + index * (step_w + gap)
+    box(x, step_y, step_w, step_h, color, width=4, radius=20)
+    out.append(f'<circle cx="{x + 38}" cy="{step_y + 42}" r="25" fill="{color}"/>')
+    text(x + 38, step_y + 52, number, 27, 800, WHITE, "middle")
+    text(x + 74, step_y + 53, title, 27, 750, color)
+    lines(x + 18, step_y + 120, ["・" + item for item in body], 20, 43)
     if index < len(steps) - 1:
-        line(x + step_w + 5, step_y + step_h / 2, x + step_w + gap - 7, step_y + step_h / 2, BLUE)
+        line(x + step_w + 4, step_y + step_h / 2, x + step_w + gap - 6, step_y + step_h / 2, BLUE, 4)
 
-# Core thesis
-box(60, 525, 2280, 130, PURPLE, fill="#f4f0ff", width=4)
-text(1200, 579, "後続を成立させるために、いま何が欠けているかを問う。", size=39, weight=800, fill=PURPLE, anchor="middle")
-text(1200, 625, "依存発見 → 判断整理 → task再構成 → 実行制御を、一つのmodelとしてつなぐ。", size=27, weight=600, fill=INK, anchor="middle")
+box(55, 475, 2290, 120, PURPLE, "#f4f0ff", 4)
+text(1200, 523, "Routine = 受入から次の仕事の成立までを、自律的につなぐinterface", 35, 800, PURPLE, "middle")
+text(1200, 565, "手順の短縮ではない。現在地・成立条件・権限を保ちながら協働を前進させる。", 25, 600, INK, "middle")
 
-# Judgment classification
-box(60, 700, 1100, 650, ORANGE)
-heading(95, 760, "1. 依存の先で、何を判断するか", ORANGE)
-
-judgments = [
-    ("本質的な判断", RED, ["整理しても消えない", "権限を持つ者が決める"]),
-    ("偶有的な判断", ORANGE, ["未整理だから判断に見える", "整理で自明になれば消える"]),
-    ("判断不要", TEAL, ["前提と方針が閉じている", "実行・検証へ渡せる"]),
+# Answer sources
+box(55, 640, 1110, 610, GOLD)
+heading(90, 700, "答えの所在を先に捉える", GOLD)
+sources = [
+    ("repository / Git", "何が存在し、何が起きたか"),
+    ("compiler / test / benchmark", "実際に成立し、どう振る舞うか"),
+    ("一次仕様・外部正本", "外部契約が何を要求するか"),
+    ("作者・権限者", "意図、優先、公開判断は何か"),
+    ("まだ誰も持たない", "仮説として残し、観測方法を作る"),
 ]
-for index, (name, color, body) in enumerate(judgments):
-    y = 810 + index * 165
-    box(100, y, 1015, 135, color, fill=WHITE, width=3, radius=18)
-    text(135, y + 48, name, size=29, weight=800, fill=color)
-    lines(470, y + 42, ["・" + item for item in body], size=22, gap=38)
+for index, (source, answer) in enumerate(sources):
+    y = 755 + index * 88
+    box(90, y, 1035, 68, GOLD if index != 4 else RED, width=2, radius=14)
+    text(115, y + 43, source, 19, 800, GOLD if index != 4 else RED)
+    text(535, y + 43, answer, 20)
+text(607, 1218, "答えを持たない者同士の合意を、答えとしない。", 25, 800, RED, "middle")
 
-box(100, 1290, 1015, 40, PURPLE, fill="#f4efff", width=2, radius=12)
-text(607, 1318, "偶有的判断を消し、本質的判断だけを露出させる", size=23, weight=800, fill=PURPLE, anchor="middle")
-
-# Task boundary and graph reconstruction
-box(1200, 700, 1140, 650, BLUE)
-heading(1235, 760, "2. 発見した依存をtask graphへ写す", BLUE)
-
-boundary = [
-    ("task", "独立した成果・状態・依存・判断・証拠・受入", BLUE),
-    ("substep", "独立した状態や受入を持たない実行手順", TEAL),
+# Registry as index
+box(1200, 640, 1145, 610, BLUE)
+heading(1235, 700, "Task Registryは協働の索引", BLUE)
+text(1235, 746, "台帳を埋めること自体が目的ではない。", 24, 650, SUB)
+index_items = [
+    ("現在地", "何が進行中で、何が止まっているか"),
+    ("前提", "何が成立すれば着手・継続できるか"),
+    ("証拠", "どの正本・結果へ辿れば確かめられるか"),
+    ("権限", "誰が決め、誰が実行できるか"),
+    ("次の仕事", "いま必要な作業を導けるか"),
 ]
-for index, (name, description, color) in enumerate(boundary):
-    y = 810 + index * 125
-    box(1240, y, 1065, 95, color, fill=WHITE, width=3, radius=18)
-    text(1270, y + 58, name, size=27, weight=800, fill=color)
-    text(1480, y + 58, description, size=22)
+for index, (label, description) in enumerate(index_items):
+    y = 800 + index * 76
+    text(1260, y, label, 23, 800, BLUE)
+    text(1435, y, description, 22)
+box(1240, 1175, 1060, 48, RED, "#fff2f2", 2, radius=12)
+text(1770, 1207, "圧縮後に次を導けないなら、履歴が残っていても失敗", 22, 800, RED, "middle")
 
-text(1235, 1085, "必須依存 = 飛ばすと後続が成立しない関係", size=28, weight=800, fill=PURPLE)
-graph_steps = [
-    ("前提", "後続の成立に現在欠けているもの"),
-    ("後続", "その成果・検証・受入を待つもの"),
-    ("Flow", "SEQUENCE / PARALLEL_JOIN / soft order"),
-    ("再計算", "cycle・critical path・ready集合"),
-]
-for index, (label, description) in enumerate(graph_steps):
-    y = 1135 + index * 47
-    text(1260, y, label, size=22, weight=800, fill=PURPLE)
-    text(1400, y, description, size=22)
+# Core model
+box(55, 1300, 1110, 500, ORANGE)
+heading(90, 1360, "中心モデル（運用しながら検証中）", ORANGE)
+box(90, 1410, 1035, 135, BLUE, "#edf4ff", 3, radius=18)
+text(120, 1458, "依存の最小性", 28, 800, BLUE)
+lines(120, 1500, ["後続の成果・検証・受入に必要な前提だけへ依存する"], 21)
+box(90, 1570, 1035, 135, TEAL, "#edfaf7", 3, radius=18)
+text(120, 1618, "受入境界の局所性", 28, 800, TEAL)
+lines(120, 1660, ["何を成立させ、何で受け入れ、失敗時どこへ戻るかを閉じる"], 21)
+text(607, 1760, "分解で観測し、整理後は削除・移動・inlineで境界を回復する", 22, 750, PURPLE, "middle")
 
-# Ready and flow
-box(60, 1390, 1100, 520, TEAL)
-heading(95, 1450, "継続条件は実行中も評価する", TEAL)
+# Execution gate and return path
+box(1200, 1300, 1145, 500, PINK)
+heading(1235, 1360, "実行と再開は、二条件で決まる", PINK)
+box(1240, 1415, 490, 135, BLUE, "#edf4ff", 3, radius=18)
+text(1485, 1468, "ready", 30, 800, BLUE, "middle")
+text(1485, 1512, "依存上、今も成立する", 21, anchor="middle")
+box(1810, 1415, 490, 135, PINK, "#fdf0f6", 3, radius=18)
+text(2055, 1468, "委任", 30, 800, PINK, "middle")
+text(2055, 1512, "実行権限が今も有効", 21, anchor="middle")
+text(1770, 1605, "両方が成立する範囲だけ実行する", 29, 800, INK, "middle")
+text(1770, 1653, "前提が疑わしければ先に保留し、答えの所在へ戻る", 23, 750, RED, "middle")
+text(1770, 1700, "訂正は会話だけでなく、正本・task・依頼・受入へ反映する", 22, 650, PURPLE, "middle")
+text(1770, 1750, "停止は失敗ではなく、成立条件と主導権を守る動作", 22, 750, PINK, "middle")
 
-flows = [
-    ("SEQUENCE", RED, "新しい必須前提ならreadyを失い、停止"),
-    ("PARALLEL_JOIN", BLUE, "独立部分は進める。合流前に完了しない"),
-    ("soft order", GOLD, "readyは保つ。優先順だけを見直す"),
-]
-for index, (name, color, description) in enumerate(flows):
-    y = 1530 + index * 95
-    box(95, y - 50, 250, 65, color, fill=WHITE, width=3, radius=15)
-    text(220, y - 8, name, size=22, weight=800, fill=color, anchor="middle")
-    text(385, y - 8, description, size=22)
+# Compression check and footer
+box(55, 1845, 2290, 300, PURPLE, "#f4f0ff", 5)
+text(90, 1905, "圧縮・アーカイブ後も復元できるか", 35, 800, PURPLE)
+checks = ["現在地", "必須前提", "証拠への経路", "判断・実行権限", "次に必要な仕事"]
+for index, item in enumerate(checks):
+    x = 105 + index * 445
+    box(x, 1950, 380, 80, TEAL, WHITE, 3, radius=16)
+    text(x + 190, 2001, item, 22, 800, TEAL, "middle")
+text(1200, 2090, "全部を保存するのではなく、協働を再開し次へ進める経路を保存する。", 27, 750, INK, "middle")
 
-box(95, 1820, 1020, 62, RED, fill="#fff2f2", width=3, radius=16)
-text(605, 1860, "疑義が生じたら先に保留。graph更新は停止後に行う。", size=24, weight=800, fill=RED, anchor="middle")
-
-# Authority gate
-box(1200, 1390, 1140, 520, "#7a8492", dash="14 10", width=4)
-heading(1235, 1450, "実行には二つの成立条件が要る", INK)
-
-box(1240, 1495, 500, 165, BLUE, fill="#edf4ff", width=4, radius=20)
-text(1490, 1550, "task graph", size=31, weight=800, fill=BLUE, anchor="middle")
-text(1490, 1600, "依存上、今もreadyか", size=23, anchor="middle")
-
-box(1800, 1495, 500, 165, PINK, fill="#fdf0f6", width=4, radius=20)
-text(2050, 1550, "委任", size=31, weight=800, fill=PINK, anchor="middle")
-text(2050, 1600, "実行権限は今も有効か", size=23, anchor="middle")
-
-text(1770, 1705, "両方が成立した範囲だけ実行・再開する", size=30, weight=800, fill=INK, anchor="middle")
-text(1770, 1755, "readyでも委任がなければ止まる", size=23, fill=PINK, anchor="middle")
-text(1770, 1795, "委任があってもreadyでなければ止まる", size=23, fill=RED, anchor="middle")
-
-box(1240, 1830, 1060, 55, PURPLE, fill="#f4efff", width=2, radius=14)
-text(1770, 1866, "停止は失敗ではなく、成立条件を復元するための保留", size=23, weight=800, fill=PURPLE, anchor="middle")
-
-# Return path
-box(60, 1950, 2280, 245, PINK, fill="#fdf0f6", width=5)
-text(95, 2010, "疎でも漏らさない戻り道", size=38, weight=800, fill=PINK)
-text(95, 2060, "後続の成立に欠けた前提を見つけたら、影響範囲を保留して依存と判断の整理へ戻る。", size=27, weight=500)
-text(95, 2105, "成立条件 → 依存発見 → 先に保留 → 判断整理 → graph再構成 → ready・委任確認 → 再開", size=27, weight=750, fill=PURPLE)
-text(95, 2150, "原理から停止と再開を導き、本質的な判断だけを人へ返す。", size=27, weight=750, fill=PINK)
-
-# Footer
-out.append(f'<rect x="60" y="2230" width="2280" height="120" rx="24" fill="{INK}"/>')
-text(1200, 2282, "task管理 = 欠けた前提を見つけ、偶有的判断を消すこと", size=38, weight=800, fill=WHITE, anchor="middle")
-text(1200, 2325, "本質的判断だけを残し、実行・停止・再開を継続条件と委任から導く", size=26, weight=550, fill="#d7dce4", anchor="middle")
+out.append(f'<rect x="55" y="2190" width="2290" height="150" rx="24" fill="{INK}"/>')
+text(1200, 2250, "task運用 = 事実へ接続し、欠けた前提と判断を整理し、次の仕事を成立させること", 32, 800, WHITE, "middle")
+text(1200, 2298, "Registryはそのための索引。Routineは一周を呼び出すinterface。", 25, 600, "#d7dce4", "middle")
 
 svg = f'<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 {W} {H}">' + "".join(out) + "</svg>"
 path = Path(__file__).resolve().parents[2] / "Maintanance" / "AI_TASK_PROCESS_POSTER.svg"

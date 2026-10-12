@@ -44,8 +44,9 @@ Read only:
 - `Tests/PermutationTests/EtcTests.swift`;
 - the task-relevant instructions in `Tests/CLAUDE.md` and sections of `Tests/TESTING.md`.
 
-The Quality Profile contains known stale borrowed-`Span` language. Do not use that language to
-override the runtime-check boundary fixed in the plan.
+Codex has aligned the Quality Profile with the runtime-check implementation. Use the more specific
+successor grouping and classification boundaries in the plan; do not import requirements from the
+separate borrowed implementation.
 
 ### Required classification
 

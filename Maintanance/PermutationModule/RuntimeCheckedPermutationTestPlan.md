@@ -33,16 +33,22 @@ The active implementation in `Sources/PermutationModule/NextPermutations.swift` 
 The current implementation does not return `Span`. Compile-time lifetime rejection belongs to the
 separate borrowed implementation and must not be used as evidence for this runtime-checked type.
 
-## Canonical inconsistency found
+## Quality Profile alignment
 
 `Sources/PermutationModule/Documentation/Quality-Profile.md` correctly describes the active type in
 its `対象` section, but later Test as Specification and quality sections still describe the normal
 implementation as returning borrowed `Span` values whose invalid uses are rejected by the compiler.
 Those statements were inherited from the borrowed experiment and do not match the current source.
 
-Until the profile is corrected, use the active public source, commit `9ff515c9` that adopted
-runtime-checked views, the current quality assessment, and the boundaries in this plan to classify
-tests. Do not convert the stale `Span` wording into runtime-check product requirements.
+Codex aligned those later sections with the already-recorded runtime-check contract: a yielded
+`Permutation` View remains readable until the next mutating access or owner destruction, after which
+runtime checks reject access. The correction also removes the obsolete Swift 6.2 package-exclusion
+plan without asserting that the current Swift 6.4 package supports Swift 6.2.
+
+Use the corrected profile, the active public source, commit `9ff515c9` that adopted runtime-checked
+views, the current quality assessment, and the boundaries in this plan to classify tests. The
+alignment does not add `Sendable`, value semantics, compiler-enforced View lifetimes, or other new
+public guarantees.
 
 ## Legacy group disposition
 
@@ -148,8 +154,9 @@ are returned evidence; Codex performs acceptance and Registry updates.
 - The public source currently has only a plain implementation comment rather than complete
   documentation comments for the entry point, owner, view, and invalidation behavior. Test
   reconstruction must not silently make undocumented behavior a new public promise.
-- The Quality Profile must be corrected from borrowed-`Span` language to runtime invalidation before
-  it can again serve as a consistent specification map.
+- The Quality Profile alignment must be reviewed with the successor ledger before accepting the
+  discovery result; agreement between the plan and profile alone is not evidence that every required
+  test has been identified.
 - Whether direct initialization and specific negative public-surface checks should be permanently
   fixed remains subject to the current public API contract, not merely the old test technique.
 - Exact process termination matching for runtime invalidation and bounds failures should follow the

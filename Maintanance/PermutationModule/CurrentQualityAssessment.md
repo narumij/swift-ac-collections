@@ -11,8 +11,9 @@
 
 現行Permutationには、証拠の役割が異なる三つの系統がある。
 
-- runtime-check View通常版は、有効な通常runtime test 2件（Span反復1件・手動列挙1件）と失効Death Test
-  2件だけが現行契約を直接確認する。旧COW版の番号付き38件は`#if false`の履歴資料であり、現行適合へ流用しない。
+- runtime-check View通常版は、手動列挙の通常runtime test 1件と失効Death Test 2件だけが現行契約を
+  直接確認する。同じscratch fileのSpan反復1件はPermutationの仕様testではない。旧COW版の番号付き38件は
+  `#if false`の履歴資料であり、現行適合へ流用しない。
 - borrowed Span版は番号付き5群のruntime仕様test 25件があり、2026-10-13の再実行でも全件成功した。
   借用寿命のcompile-pass／compile-fail結果は一時clientによる返却記録にあるが、repository内で再実行できる
   fixtureにはなっていないため、Test as Specification全体の完了とは扱わない。
@@ -31,6 +32,9 @@ compiler-backed fixture化を別の残作業として維持する。
 旧実験の記述が残っている。現行sourceは`Span`を返さず、`GateKeeper` generationによって次の`next()`または
 owner破棄後のaccessをruntimeで拒否する。この不整合をtest実装で暗黙に埋めず、Profile訂正と後継test実装を
 別の受入境界として扱う。
+
+CodexはProfileの旧`Span`記述を現行runtime-check契約へ整合させた。新しい公開保証は追加せず、
+後継test台帳との照合後にこのProfile訂正を受け入れる。
 
 ## 一時View契約への変更後の現在性
 

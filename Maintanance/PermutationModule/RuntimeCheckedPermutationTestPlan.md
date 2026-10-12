@@ -68,6 +68,58 @@ The two current runtime death checks and the manual-iteration scratch test in `E
 experiments to promote into numbered successor groups. The unrelated `Span` iteration scratch test
 does not specify the runtime-checked permutation API.
 
+## Legacy function ledger
+
+Each of the 38 disabled legacy functions appears exactly once below. `G0` through `G5` refer to the
+successor groups in this plan. `RETIRED` means that the old assertion is not a contract of the
+runtime-checked implementation; an inverse runtime-invalidity test may still exist in `G2` without
+reviving the retired value-semantics guarantee.
+
+| Legacy file | Function | Destination | Current disposition |
+| --- | --- | --- | --- |
+| `_0_PublicSurfaceTests` | `testPublicTypeNames` | `G0` | Replace old sequence/iterator names with `NextPermutations` and nested `Permutation`; use manual `next()` |
+| `_0_PublicSurfaceTests` | `testSendableConformances` | `RETIRED` | No current authoritative `Sendable` contract |
+| `_0_PublicSurfaceTests` | `testRemovedMethodsAreNotExposed` | `G0` | Preserve absence of retired unsafe entry points with a compiler-backed surface check |
+| `_0_PublicSurfaceTests` | `testSequenceIsNotPubliclyInitializable` | `G0` | Preserve the source-established entry boundary: construction through `nextPermutations()` |
+| `_1_EnumerationTests` | `testTwoElements` | `G1` | Rewrite with manual `next()` and immediate View consumption |
+| `_1_EnumerationTests` | `testFromAscendingOrderEnumeratesAll` | `G1` | Preserve lexicographic successor order |
+| `_1_EnumerationTests` | `testStartsFromCurrentOrder` | `G1` | Preserve successor-only enumeration from the current order |
+| `_1_EnumerationTests` | `testDescendingYieldsOnce` | `G1` | Preserve terminal input behavior |
+| `_1_EnumerationTests` | `testAllEqualYieldsOnce` | `G1` | Preserve equal-element terminal behavior |
+| `_1_EnumerationTests` | `testEmptyYieldsOnce` | `G1` | Preserve one empty result |
+| `_1_EnumerationTests` | `testSingleElementYieldsOnce` | `G1` | Preserve one single-element result |
+| `_1_EnumerationTests` | `testEqualElementsAreNotDuplicated` | `G1` | Preserve value-order deduplication |
+| `_1_EnumerationTests` | `testAcceptsNonArrayIntIndexedSources` | `G1` | Preserve Range and nonzero-start Slice inputs |
+| `_1_EnumerationTests` | `testAcceptsNonIntIndexedSources` | `G1` | Preserve non-`Int` source indices |
+| `_1_EnumerationTests` | `testSourceIsNotModified` | `G1` | Preserve source independence; consume each View before advancing |
+| `_2_ValueSemanticsTests` | `testRetainedResultsRemainStable` | `RETIRED` | Persistent results contradict generation invalidation; inverse behavior belongs to `G2` |
+| `_2_ValueSemanticsTests` | `testCollectedResultsCanBeReadLater` | `RETIRED` | Views must not be collected for later access |
+| `_2_ValueSemanticsTests` | `testIteratorCopiesAdvanceIndependently` | `RETIRED` | Owner is `~Copyable` |
+| `_2_ValueSemanticsTests` | `testIteratorCopiesAdvanceIndependentlyWhenAdvancedInsideAssertion` | `RETIRED` | Old copied-iterator regression is inapplicable |
+| `_2_ValueSemanticsTests` | `testYieldedValueRemainsStableAcrossTask` | `RETIRED` | No persistent cross-task View or `Sendable` guarantee |
+| `_2_ValueSemanticsTests` | `testIteratorCopiesAdvanceIndependentlyAcrossTasks` | `RETIRED` | Owner copying and cross-task independence are not current contracts |
+| `_3_PermutationCollectionTests` | `testIndicesStartAtZeroForArraySource` | `G3` | Preserve zero-based `Int` indices for Array input |
+| `_3_PermutationCollectionTests` | `testIndicesStartAtZeroForAnySource` | `G3` | Preserve result indices independently of source index type and origin |
+| `_3_PermutationCollectionTests` | `testEquatableComparesElementOrder` | `RETIRED` | Current View has no adopted `Equatable` guarantee |
+| `_3_PermutationCollectionTests` | `testHashableFollowsElementOrder` | `RETIRED` | Current View has no adopted `Hashable` guarantee |
+| `_3_PermutationCollectionTests` | `testDescriptionLooksLikeArray` | `RETIRED` | Presentation is not an adopted contract |
+| `_3_PermutationCollectionTests` | `testSubscriptAtValidBoundaries` | `G3` | Preserve valid first and last element access |
+| `_4_CoexistenceTests` | `testBothPermutationAPIsResolveWithoutQualification` | `G5` | Rewrite current API side with manual iteration |
+| `_4_CoexistenceTests` | `testNextPermutationsYieldsOnlySuccessorsWhileAlgorithmsYieldsEveryOrder` | `G5` | Preserve semantic distinction from swift-algorithms |
+| `_98_InternalTests` | `testBufferDestroysHeaderOnce` | `G4` | Replace legacy header probe with current owned-buffer destruction evidence |
+| `_98_InternalTests` | `testNoCopyWhenFinishingWhileLastResultIsRetained` | `RETIRED` | Retaining a result across `next()` is invalid; old COW copy count is inapplicable |
+| `_98_InternalTests` | `testOddLengthReverseKeepsElementLifetimes` | `G4` | Preserve identity and exactly-once destruction through odd-length reversal |
+| `_98_InternalTests` | `testNoCopyWhenResultsAreNotRetained` | `RETIRED` | Legacy `_copyCount` and COW implementation detail no longer exist |
+| `_99_DeathTests` | `endIndexRead_traps` | `G3` | Rewrite against current nested `Permutation` and exact trap convention |
+| `_99_DeathTests` | `negativeIndexRead_traps` | `G3` | Rewrite against current nested `Permutation` and exact trap convention |
+| `_99_DeathTests` | `pastEndIndexRead_traps` | `G3` | Rewrite against current nested `Permutation` and exact trap convention |
+| `_99_DeathTests` | `intMinIndexRead_traps` | `G3` | Rewrite against current nested `Permutation` and exact trap convention |
+| `_99_DeathTests` | `intMaxIndexRead_traps` | `G3` | Rewrite against current nested `Permutation` and exact trap convention |
+
+Ledger totals: `G0` 3、`G1` 11、`G3` 8、`G4` 2、`G5` 2、`RETIRED` 12、total 38。
+`G2` has no legacy positive counterpart because runtime invalidation replaces, rather than preserves,
+the old persistent-value contract. Its initial inputs are the two current scratch Death Tests.
+
 ## Proposed successor test groups
 
 ### 0. Public surface and construction

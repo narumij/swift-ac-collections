@@ -178,7 +178,11 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-044` | `FROZEN` | Codex | [EXECUTION] Permutation外部性能アセスメントの実測・判定 | 2026-10-11、比較水準の判断とともにユーザー指示で保留。`PERM-043`の明示的な再開・完了後、macOS上で専用scriptを実行し、環境情報、生JSON、PNG chartを保存して判定する | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `PERM-046` | `FROZEN` | Codex | [DISCOVERY] Swift 6.2向けmanifest構成の必要性再評価 | runtime-check View通常版がSwift 6.2で成立したため、旧「PermutationModuleなしの縮小manifest」案はそのまま実行しない。ユーザーの明示的な再開指示後、package全体の6.2成立条件を調べ、version-specific manifest自体が必要かから再評価する | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `PERM-051` | `FROZEN` | Claude | [EXECUTION] borrowed Span版PermutationのTest as Specification | runtime仕様test 25件を受け入れ、2026-10-13にも対象25件成功を再確認。一時clientによるcompile-pass／compile-fail結果は返却記録にあるが、repository内の再実行可能なfixtureではないため、ユーザーの明示的な再開まで残作業を凍結 | `PermutationModule/BorrowedPermutationTestPlan.md` / `Sources/PermutationModule/BorrowedNextPermutations.swift` / `Tests/PermutationTests/BorrowedNextPermutations/` |
-| `PERM-052` | `ACTIVE` | Codex / Claude | [DISCOVERY] runtime-check View版Permutationの現行Test as Specification再構成 | Codexが現行runtime-check契約、旧38件の群別処遇、後継仕様群、Profile不整合を粗く分離済み。次に全38関数の台帳化と、判断不要な後継test実装単位を確定してClaudeへ渡す | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` / `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` / `Tests/PermutationTests/EtcTests.swift` |
+| `PERM-052` | `DONE` | Codex / Claude | [DISCOVERY] runtime-check View版Permutationの現行Test as Specification再構成 | 現行runtime-check契約とborrowed版を分離し、旧38関数をG0〜G5またはRETIREDへ一度ずつ分類。判断不要な後続4単位と受入境界を確定 | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` / `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` / `Tests/PermutationTests/EtcTests.swift` |
+| `PERM-053` | `PROPOSED` | Claude | [EXECUTION] runtime-check Permutation列挙・Collection仕様test | ユーザーまたはCodexの具体的なassignment後、確定台帳のG1とG3を実装する。各Viewを次の`next()`前に値へ変換し、列挙規則、0始まりIndex、有効境界、5種の範囲外trapを固定する | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` |
+| `PERM-054` | `PROPOSED` | Claude | [EXECUTION] runtime-check Permutation View失効Death Test | ユーザーまたはCodexの具体的なassignment後、G2を実装する。次のmutating access、終了を返す`next()`、owner破棄、index表面、View copyの失効をrepository標準の正確なsignal期待で固定する | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` |
+| `PERM-055` | `PROPOSED` | Claude | [EXECUTION] runtime-check Permutation所有・破棄仕様test | ユーザーまたはCodexの具体的なassignment後、G4を実装する。source copy独立性、未開始・途中・完走・空の破棄、奇数suffix反転、escaped Viewがstorageを延命しない境界を検証する | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` |
+| `PERM-056` | `PROPOSED` | Claude | [EXECUTION] runtime-check Permutation公開表面・共存仕様test | ユーザーまたはCodexの具体的なassignment後、G0とG5を実装する。現行型名、構築可能source、非copy・非Sequenceと直接初期化不可のcompiler表面、swift-algorithms共存、AcCollections再公開を検証する | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | 0.6.0の到達範囲判断前に、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
@@ -222,6 +226,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-007` | `BARE-032` | `SEQUENCE` | 性能比上限の決定後、正式測定結果へ適用して判定する |
 | `OPT-054` | `OPT-053` | `SEQUENCE` | 性能比上限の決定後、正式測定結果へ適用して判定する |
 | `PERM-044` | `PERM-043` | `SEQUENCE` | C++標準に匹敵すると判定する性能比上限を確定してから、保存したmacOS測定証拠へ適用する |
+| `PERM-053` | `PERM-052` | `SEQUENCE` | 旧38関数の台帳と現行契約の分類確定後、列挙・Collection仕様testを実装する |
+| `PERM-054` | `PERM-052` | `SEQUENCE` | runtime失効契約とborrowed契約の分離確定後、View失効Death Testを実装する |
+| `PERM-055` | `PERM-052` | `SEQUENCE` | 旧COW内部probeの処遇確定後、現行owned bufferの所有・破棄仕様testを実装する |
+| `PERM-056` | `PERM-052` | `SEQUENCE` | 現行公開表面とretired表面の分類確定後、compiler表面・共存・再公開testを実装する |
 | `API-004` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、ユーザーが他者から独立して採点する |
 | `API-005` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、Codexが他者から独立して採点する |
 | `API-006` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、Claudeが他者から独立して採点する |

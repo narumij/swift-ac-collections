@@ -9,11 +9,11 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行中: PERM-052 runtime-check View版Permutation旧test台帳化**
+**実行中: PERM-053 runtime-check Permutation列挙・Collection仕様test**
 
-Codex has fixed the coarse contract boundary and successor-group structure in
-`PermutationModule/RuntimeCheckedPermutationTestPlan.md`. Claude is assigned only the
-function-level legacy-test ledger described below. Do not implement tests in this assignment.
+Codex accepted the 38-function legacy ledger and fixed the successor groups in
+`PermutationModule/RuntimeCheckedPermutationTestPlan.md`. Claude is assigned only G1 and G3.
+Do not start G0、G2、G4、G5 or any other Registry task.
 
 **凍結中: PERM-051 borrowed Span版PermutationのTest as Specification**
 
@@ -24,63 +24,63 @@ function-level legacy-test ledger described below. Do not implement tests in thi
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Active assignment: PERM-052 legacy function ledger
+## Active assignment: PERM-053 enumeration and collection specification tests
 
 ### Objective
 
-Classify all 38 disabled legacy test functions under
-`Tests/PermutationTests/NextPermutationsSequence/` against the accepted runtime-checked contract
-structure in `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`.
+Implement the accepted G1 enumeration and G3 `Permutation` collection requirements for the current
+runtime-checked `NextPermutations` implementation.
 
 ### Inputs
 
 Read only:
 
-- the `PERM-052` Registry row;
+- the `PERM-053` Registry row;
 - `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`;
 - `Sources/PermutationModule/NextPermutations.swift` and `GateKeeper.swift`;
-- the seven disabled legacy test files under
-  `Tests/PermutationTests/NextPermutationsSequence/`;
+- legacy `_1_EnumerationTests.swift`, `_3_PermutationCollectionTests.swift`, and
+  `_99_DeathTests.swift` under `Tests/PermutationTests/NextPermutationsSequence/`;
 - `Tests/PermutationTests/EtcTests.swift`;
 - the task-relevant instructions in `Tests/CLAUDE.md` and sections of `Tests/TESTING.md`.
 
-Codex has aligned the Quality Profile with the runtime-check implementation. Use the more specific
-successor grouping and classification boundaries in the plan; do not import requirements from the
-separate borrowed implementation.
+Use the ledger and successor-group boundaries in the plan. Do not import requirements from the
+separate borrowed implementation or from retired COW/value-semantics tests.
 
-### Required classification
+### Required implementation
 
-Append a `Claude function ledger` section to
-`Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`. Record every legacy test
-function exactly once with:
-
-- source file and function name;
-- `KEEP_INTENT_REWRITE`, `REVERSE_AS_RUNTIME_INVALIDATION`, or `RETIRED`;
-- successor group number from the plan, when applicable;
-- one concise reason tied to the current observable contract.
-
-Then append an `EtcTests inventory` that records each of its four current test functions exactly
-once and says whether it should be promoted into a numbered runtime/death group or remains unrelated
-scratch evidence.
+- Add numbered successor test files for G1 and G3 under `Tests/PermutationTests/`.
+- Use a test-only helper that converts each live `Permutation` to an owned value before the next
+  mutating `next()` call. Never retain a View across `next()` in ordinary tests.
+- Cover all 11 G1 ledger rows: two elements, ascending order, non-first order, descending, all equal,
+  empty, single element, duplicate values, Range and nonzero-start Slice, non-`Int` indices, source
+  unchanged, and repeated `nil` after completion where the successor plan adds it.
+- Cover G3 collection behavior: zero-based `Int` indices for Array、Slice and non-`Int` indexed
+  sources; `startIndex`、`endIndex`、`count`、iteration、valid first/last access and empty View.
+- Add exact-signal Death Tests for `-1`、`endIndex`、past-end、`Int.min`、`Int.max` against the current
+  nested `NextPermutations<Value>.Permutation`.
+- Promote the manual runtime iteration scratch test only if its assertions are fully subsumed by the
+  numbered G1 tests; if so, remove that one scratch function. Leave the unrelated Span scratch test
+  and the two G2 invalidation scratch Death Tests unchanged.
 
 ### Boundaries
 
-- Do not modify production source, tests, Quality Profile, Current Quality Assessment, Package.swift,
-  CI, Registry, or any public documentation.
-- Do not implement successor tests.
+- Do not modify production source, Quality Profile, Current Quality Assessment, Package.swift, CI,
+  Registry, public documentation, or disabled legacy test files.
+- Do not implement G0、G2、G4、G5.
 - Do not decide new public API, `Sendable`, `Equatable`, `Hashable`, description, availability,
   compatibility, or lifetime policy.
 - Do not revive COW, persistent-result, iterator-copy, `Sequence`, or borrowed-`Span` requirements.
-- If the current contract is insufficient to classify one function, mark only that row
-  `UNRESOLVED` with the missing authority; do not infer the answer.
+- Do not retain runtime Views to make expected arrays; copy their elements while valid.
+- If a listed requirement cannot be implemented from the accepted contract, report that exact item
+  and stop rather than deciding a new contract.
 
 ### Validation and return
 
-- Confirm that the legacy ledger contains exactly 38 unique functions.
-- Confirm that the `EtcTests` inventory contains exactly four unique functions.
-- Record the counts, duplicate check, unresolved rows, and changed file in the plan.
-- Do not mark `PERM-052` complete. Codex will review the ledger and decide the next bounded
-  implementation assignment.
+- Run the new ordinary tests and the new Death Tests using the repository's separated test paths.
+- Report exact files changed, test counts, commands or Xcode actions, and results in
+  `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md` under a `PERM-053 return`
+  section.
+- Do not mark `PERM-053` complete and do not update Registry. Codex performs acceptance.
 
 ## Operating mode: bounded assignments only
 

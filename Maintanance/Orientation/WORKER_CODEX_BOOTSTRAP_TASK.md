@@ -61,3 +61,26 @@ orientationを作業者へ一律に読ませることも、認知負荷を増や
 現在の中間ゴールへは直接寄与しない独立した将来課題である。作業分担が必要になった場面で
 再開する。司令塔・作業Codex・受入Codexを分ける実運用試験は製品作業から分離した別projectで行い、
 その結果を確認してから、このrepositoryへ採用するかを別途判断する。
+
+## 初稿とレビュー待ち（2026-10-13）
+
+固定部分の候補を`WORKER_CODEX_BOOTSTRAP.md`、task固有部分の候補を
+`WORKER_CODEX_TASK_CONTRACT_TEMPLATE.md`へ作成した。いずれも未採用であり、現行operationの参照先ではない。
+
+初回の独立レビューでは、次を採用候補の修正点として抽出した。
+
+- 読み取りは指定fileを起点としつつ、作業成立に必要なcode・test・定義の依存追跡を許す。管理文書や別taskの
+  探索禁止と、技術上必要な読み取りを分ける。
+- task契約の記載だけでrepository operation権限が生じないようにする。特に現行repositoryのbranch、commit、
+  pushは、それぞれ操作直前のユーザー許可を必要とする。
+- shared worktree、専用worktree、patch返却などのworkspace方式、開始ref、既存変更、変更所有範囲を契約する。
+- agent間通信、handoff file、patch、branchなど手段を固定せず、成果と証拠がPrime Codexへ到達する返却経路を
+  taskごとに指定する。
+- 一回の委任成立とWorkerの能力向上を別の評価対象にする。最初の実運用試験では、境界内での作業成立、
+  Prime Codexによる独立検収、ユーザーの仲介負荷を観測する。
+
+委任cycleは、`task契約 → workspace確定 → Worker実行 → 成果・証拠の返却 → Prime検収 → 統合・完了判定`
+として扱う。Workerの作業終了とPrimeによるtask受入は別状態である。
+
+次はユーザー専用レビューで、初稿と上記修正点を確認する。その判断後にCodexが候補を再構成する。
+候補の完成、現行正本への採用、参照切替、実運用試験は引き続き別の受入境界とする。

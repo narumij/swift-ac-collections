@@ -292,7 +292,8 @@ let package = Package(
         "Documentation"
       ],
       swiftSettings: [
-        .enableExperimentalFeature("Lifetimes")
+        .enableExperimentalFeature("Lifetimes"),
+        .strictMemorySafety()
       ]
     ),
     .testTarget(

@@ -20,7 +20,7 @@
 /// subscriptへ`nil`を代入すると、設定済みの要素を破棄して未設定状態へ戻します。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-public struct OptionalArray1D<Element>: ~Copyable {
+@safe public struct OptionalArray1D<Element>: ~Copyable {
 
   @usableFromInline let count: Int
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
@@ -37,9 +37,9 @@ public struct OptionalArray1D<Element>: ~Copyable {
   public init(capacity: Int) {
     precondition(capacity >= 0)
     self.count = capacity
-    self.hasPayload = .allocate(capacity: capacity)
+    unsafe self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
   }
 
   deinit {
@@ -165,7 +165,7 @@ extension OptionalArray1D {
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
-public struct OptionalArray2D<Element>: ~Copyable {
+@safe public struct OptionalArray2D<Element>: ~Copyable {
 
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
@@ -188,9 +188,9 @@ public struct OptionalArray2D<Element>: ~Copyable {
     let (capacity, overflow) = height.multipliedReportingOverflow(by: width)
     precondition(!overflow)
     self.capacity = capacity
-    self.hasPayload = .allocate(capacity: capacity)
+    unsafe self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     self.width = width
     self.height = height
   }
@@ -248,14 +248,14 @@ public struct OptionalArray2D<Element>: ~Copyable {
     _modify {
       precondition(0 <= position && position < height)
       let offset = width * position
-      let expectedHasPayload = hasPayload + offset
-      let expectedPayload = payload + offset
+      let expectedHasPayload = unsafe hasPayload + offset
+      let expectedPayload = unsafe payload + offset
       var view = unsafe OptionalArray1DView(
         hasPayload: expectedHasPayload, payload: expectedPayload, count: width,
         borrowing: self)
       yield &view
-      precondition(view.hasPayload == expectedHasPayload)
-      precondition(view.payload == expectedPayload)
+      unsafe precondition(view.hasPayload == expectedHasPayload)
+      unsafe precondition(view.payload == expectedPayload)
       precondition(view.count == width)
     }
   }
@@ -307,7 +307,7 @@ extension OptionalArray2D: @unchecked Sendable where Element: Sendable { }
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
-public struct OptionalArray3D<Element>: ~Copyable {
+@safe public struct OptionalArray3D<Element>: ~Copyable {
 
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
@@ -338,9 +338,9 @@ public struct OptionalArray3D<Element>: ~Copyable {
       precondition(!overflow0 && !overflow1)
       self.capacity = capacity
     }
-    self.hasPayload = .allocate(capacity: capacity)
+    unsafe self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     self.width = width
     self.height = height
     self.depth = depth
@@ -399,8 +399,8 @@ public struct OptionalArray3D<Element>: ~Copyable {
     _modify {
       precondition(0 <= position && position < depth)
       let offset = width * height * position
-      let expectedHasPayload = hasPayload + offset
-      let expectedPayload = payload + offset
+      let expectedHasPayload = unsafe hasPayload + offset
+      let expectedPayload = unsafe payload + offset
       var view = unsafe OptionalArray2DView(
         hasPayload: expectedHasPayload,
         payload: expectedPayload,
@@ -408,8 +408,8 @@ public struct OptionalArray3D<Element>: ~Copyable {
         height: height,
         borrowing: self)
       yield &view
-      precondition(view.hasPayload == expectedHasPayload)
-      precondition(view.payload == expectedPayload)
+      unsafe precondition(view.hasPayload == expectedHasPayload)
+      unsafe precondition(view.payload == expectedPayload)
       precondition(view.width == width && view.height == height)
     }
   }
@@ -467,7 +467,7 @@ extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
-public struct OptionalArray4D<Element>: ~Copyable {
+@safe public struct OptionalArray4D<Element>: ~Copyable {
 
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
@@ -501,9 +501,9 @@ public struct OptionalArray4D<Element>: ~Copyable {
       precondition(!overflow0 && !overflow1 && !overflow2)
       self.capacity = capacity
     }
-    self.hasPayload = .allocate(capacity: capacity)
+    unsafe self.hasPayload = .allocate(capacity: capacity)
     unsafe self.hasPayload.initialize(repeating: false, count: capacity)
-    self.payload = .allocate(capacity: capacity)
+    unsafe self.payload = .allocate(capacity: capacity)
     self.size0 = size0
     self.size1 = size1
     self.size2 = size2
@@ -568,8 +568,8 @@ public struct OptionalArray4D<Element>: ~Copyable {
       precondition(0 <= position && position < size3)
       let offset =
         size0 == 0 || size1 == 0 || size2 == 0 ? 0 : size0 * size1 * size2 * position
-      precondition(newValue.hasPayload == hasPayload + offset)
-      precondition(newValue.payload == payload + offset)
+      unsafe precondition(newValue.hasPayload == hasPayload + offset)
+      unsafe precondition(newValue.payload == payload + offset)
       precondition(
         newValue.width == size0 && newValue.height == size1 && newValue.depth == size2)
     }
@@ -639,8 +639,8 @@ extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
     borrowing source: borrowing Source
   ) {
     self.count = count
-    self.hasPayload = unsafe hasPayload
-    self.payload = unsafe payload
+    unsafe self.hasPayload = hasPayload
+    unsafe self.payload = payload
   }
 
   @inlinable
@@ -652,8 +652,8 @@ extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
     copying source: borrowing Source
   ) {
     self.count = count
-    self.hasPayload = unsafe hasPayload
-    self.payload = unsafe payload
+    unsafe self.hasPayload = hasPayload
+    unsafe self.payload = payload
   }
   @usableFromInline var count: Int
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
@@ -723,8 +723,8 @@ extension OptionalArray1DView {
     width: Int, height: Int,
     borrowing source: borrowing Source
   ) {
-    self.hasPayload = unsafe hasPayload
-    self.payload = unsafe payload
+    unsafe self.hasPayload = hasPayload
+    unsafe self.payload = payload
     self.width = width
     self.height = height
   }
@@ -737,8 +737,8 @@ extension OptionalArray1DView {
     width: Int, height: Int,
     copying source: borrowing Source
   ) {
-    self.hasPayload = unsafe hasPayload
-    self.payload = unsafe payload
+    unsafe self.hasPayload = hasPayload
+    unsafe self.payload = payload
     self.width = width
     self.height = height
   }
@@ -775,14 +775,14 @@ extension OptionalArray1DView {
     _modify {
       precondition(0 <= position && position < height)
       let offset = width * position
-      let expectedHasPayload = hasPayload + offset
-      let expectedPayload = payload + offset
+      let expectedHasPayload = unsafe hasPayload + offset
+      let expectedPayload = unsafe payload + offset
       var view = unsafe OptionalArray1DView(
         hasPayload: expectedHasPayload, payload: expectedPayload, count: width,
         copying: self)
       yield &view
-      precondition(view.hasPayload == expectedHasPayload)
-      precondition(view.payload == expectedPayload)
+      unsafe precondition(view.hasPayload == expectedHasPayload)
+      unsafe precondition(view.payload == expectedPayload)
       precondition(view.count == width)
     }
   }
@@ -813,8 +813,8 @@ extension OptionalArray2DView {
     width: Int, height: Int, depth: Int,
     borrowing source: borrowing Source
   ) {
-    self.hasPayload = unsafe hasPayload
-    self.payload = unsafe payload
+    unsafe self.hasPayload = hasPayload
+    unsafe self.payload = payload
     self.width = width
     self.height = height
     self.depth = depth
@@ -828,8 +828,8 @@ extension OptionalArray2DView {
     width: Int, height: Int, depth: Int,
     copying source: borrowing Source
   ) {
-    self.hasPayload = unsafe hasPayload
-    self.payload = unsafe payload
+    unsafe self.hasPayload = hasPayload
+    unsafe self.payload = payload
     self.width = width
     self.height = height
     self.depth = depth
@@ -868,8 +868,8 @@ extension OptionalArray2DView {
     set {
       precondition(0 <= position && position < depth)
       let offset = width * height * position
-      precondition(newValue.hasPayload == hasPayload + offset)
-      precondition(newValue.payload == payload + offset)
+      unsafe precondition(newValue.hasPayload == hasPayload + offset)
+      unsafe precondition(newValue.payload == payload + offset)
       precondition(newValue.width == width && newValue.height == height)
     }
   }

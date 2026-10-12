@@ -3,7 +3,8 @@
 # `.strictMemorySafety()` 採用レディネス調査 (CLAUDE_TASK.md Task 1)
 
 > 状態(2026-10-06): `AcCollections`、`RedBlackTreeModule`、`PermutationModule`への採用は完了。
-> `BareArrayModule`、`OptionalArrayModule`、`RedBlackTreeCollections`への全面適用は保留中で、
+> `BareArrayModule`と`OptionalArrayModule`への採用も完了した。
+> `RedBlackTreeCollections`への全面適用は保留中で、
 > 明示的な再開判断なしに次段階へ進めない。
 
 `.strictMemorySafety()`を各ターゲットへ一時的に適用して診断を収集した初回調査と、
@@ -17,7 +18,8 @@
 | --- | --- | --- |
 | 第1段階 | `AcCollections`、`RedBlackTreeModule` | **採用済み**(`Package.swift`に恒久適用) |
 | 第2段階 | `PermutationModule` | **採用済み**。全診断を局所unsafe境界へ整理し、警告0件(§8) |
-| 第2段階 | `BareArrayModule`、`OptionalArrayModule` | 未採用(保留) |
+| 第2段階 | `OptionalArrayModule` | **採用済み**。全診断を監査境界へ整理し、警告0件（§12） |
+| 第2段階 | `BareArrayModule` | **採用済み**。公開7型の分類後、警告0件（§10後段） |
 | 第3段階 | `RedBlackTreeCollections` | 未採用(保留) |
 
 第1段階の検証:
@@ -426,3 +428,20 @@ View寿命escape・所有配列writebackのcompiler診断fixtureが成功した�
 設定有効時にwarningは残らず既存検証も成功し、設定を外す反証もないため、BareArrayModuleでは
 `.strictMemorySafety()`を品質検証の対象として維持する。これは新しい製品判断ではなく、既存品質要求と
 確認済み事実から導かれた結論である。
+
+## 12. `OptionalArrayModule` 恒久適用（2026-10-13）
+
+連鎖subscriptと非所有View 3型をdeprecatedとした後、現行sourceを単独strict typecheckして40診断を
+再取得した。内訳は、所有4型のunsafe storage分類4件、initializerのallocation境界8件、deprecated
+View経路28件だった。
+
+所有4型を`@safe`に分類し、8 allocationをscoped `unsafe`へ限定した時点で、現行座標access API側の
+診断は0件となった。deprecated Viewについては設計や寿命を変更せず、既存pointer arithmetic、内部
+initializer、writeback確認をscoped `unsafe`へ限定した。最終的に単独strict typecheckはwarning 0、
+error 0となったため、`OptionalArrayModule` targetへ`.strictMemorySafety()`を恒久適用した。
+
+- Xcode Build for Testing: 成功。
+- `OptionalArrayModuleTests` 9 suite、65件: 全件成功。通常仕様、deprecated View互換仕様、Death Testを含む。
+- 公開APIの挙動、layout、計算式は変更していない。
+- strict設定はunsafe実装の正しさそのものを証明するものではなく、監査境界を明示し、未注釈のunsafe操作を
+  今後のbuildで検出するために維持する。

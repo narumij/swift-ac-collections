@@ -1,16 +1,16 @@
 # BareArray / OptionalArray object and API naming draft
 
-Status: candidate collection in progress. No public name or API in this document is adopted.
+Status: object-name candidate collection and initial ranking completed; broader public API candidate
+collection is in progress. No public name or API in this document is adopted.
 
 ## Purpose
 
 Before fixing benchmark names or switching CI regression workloads, determine the public object
 names and element-access API of BareArray and OptionalArray as one public surface.
 
-Object-name exploration and method-name confirmation are deliberately asymmetric:
-
-- Object names are explored independently by the user, Codex, and Claude.
-- Method names do not branch into new candidates. The current method family alone is reviewed.
+Object names and public API names are explored independently by the user, Codex, and Claude before
+cross-review. Current names remain candidates; their presence in production does not adopt them for
+0.6 or 1.0.
 
 ## Process
 
@@ -19,10 +19,11 @@ Object-name exploration and method-name confirmation are deliberately asymmetric
 3. The three candidate sets are combined without silently merging distinct meanings.
 4. The combined candidates are ranked by role accuracy, call-site readability, family coherence,
    and compatibility cost.
-5. The user, Codex, and Claude discuss the ranked result; the user makes the public-name decision.
-6. The current method family is confirmed or rejected as one API decision without generating new
-   method-name alternatives.
-7. Only after those decisions are implementation, Test as Specification, benchmark stabilization,
+5. Missing public API candidates are collected independently in the three
+   `PUBLIC_API_NAMING_CANDIDATES_*.md` records.
+6. The complete candidate set is integrated and scored without adopting a name.
+7. The user, Codex, and Claude discuss the scored result; the user makes each public-name decision.
+8. Only after those decisions are implementation, Test as Specification, benchmark stabilization,
    baseline merge, and CI registration performed.
 
 Agreement during candidate generation is not a result. Candidate overlap becomes useful evidence
@@ -44,7 +45,7 @@ The review includes the family base names, dimension suffix convention, and deri
 Coordinate labels are recorded as a related naming consequence but do not need to be decided in
 the same decision unless ranking reveals that they change the meaning of the object name.
 
-## Sole method-name candidate
+## User-submitted current method-name candidate
 
 | Operation | BareArray | OptionalArray |
 | --- | --- | --- |
@@ -53,9 +54,10 @@ the same decision unless ranking reveals that they change the meaning of the obj
 | Mutable reference | `reference(at: ...) -> Reference` | not provided |
 | Reference type | `typealias Reference = MutableRef<Element>` | not provided |
 
-The method review asks whether this existing family is acceptable as a whole. It does not solicit
-synonyms or alternative spellings. Subscript and View deprecation or retention is a consequence to
-inventory after the preferred API is fixed, not another method-naming branch.
+This table records the user's submitted candidate. It is not the sole candidate: Codex and Claude
+submit independent alternatives in their respective `PUBLIC_API_NAMING_CANDIDATES_*.md` records.
+Subscript and View deprecation or retention remains a separate contract and product-positioning
+question; candidate submission does not decide it.
 
 ## Candidate-submission contract
 
@@ -88,10 +90,11 @@ Ranking occurs only after all submissions are present.
 - Do not change availability, deprecation, safety, ownership, lifetime, or product-positioning
   policy.
 - Do not treat benchmark performance as proof of a preferred spelling.
-- Do not begin ranking before all three independent submissions are complete.
+- Do not begin the broader public API scoring before all three independent submissions are complete.
 - Do not turn reviewer agreement into adoption; the public decision remains with the user.
 
 ## Completion condition
 
-The naming work is ready for implementation only after independent candidate collection, combined
-ranking, the user's object-name decision, and the current method-family decision are complete.
+The Array naming work is ready for implementation only after independent candidate collection,
+combined scoring and discussion, the user's object-name decision, and the user's access-API decision
+are complete.

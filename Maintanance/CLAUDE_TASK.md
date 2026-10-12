@@ -9,10 +9,16 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行中ジョブ: なし**
+**実行中ジョブ: API-001 Public API naming candidates**
 
-`ARRAY-004`の順位レビューは2026-10-12にユーザー指示で受入済み。次のobject名合意はユーザー判断であり、
-Claudeへ新しいジョブは割り当てていない。
+2026-10-12、ユーザーの明示指示により、
+`PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の候補提出だけをClaudeへ割り当てた。同文書を作業指示兼
+提出表として使い、Array系の未提出公開API名とPermutation通常・borrowed経路の公開名について、
+他者候補を読む前の独立候補、意図、懸念を記入する。
+
+順位付け、採点、統合、公開APIの採用判断、実装、test、文書反映、Registry更新は行わない。既提出の
+Array object名候補を作り直さず、凍結中の`PERM-051`を再開しない。完了時は候補提出ファイルだけを
+更新してユーザーへ報告し、Codexの受入を待つ。
 
 **凍結中: PERM-051 borrowed Span版PermutationのTest as Specification**
 

@@ -8,7 +8,8 @@
 2026-10-09までの`DONE`・`EXCLUDED` task行と、それらだけに向かう完了済みprecedence辺は
 `Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-09.md`へ移した。以後2026-10-11までに完了・除外した行と
 充足済みprecedence辺は`Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-11.md`へ移した。
-現行Registryには状態が変わり得るtaskだけを残す。
+現行Registryには状態が変わり得るtaskだけを残す。2026-10-12までに完了・除外した行と
+充足済みprecedence辺は`Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-12.md`へ移した。
 
 ## 正本整理時の配置維持例外
 
@@ -145,13 +146,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | ready判定を維持する常設nodeとして`ACTIVE`を保つ。個別assignmentや実行中ジョブを意味せず、必要なときだけ現行Registryとの一致を確認 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
 | `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、V2を別projectへ適用して再現性検証へ進む | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
-| `OPS-002` | `DONE` | User / Codex | [DISCOVERY] Codex task運用playbookの改訂 | task分解、必須依存の発見、runtime停止、判断削減、受入境界をV2へ再構成して現行正本に採用。graph追試から、依存根拠、未確定Flow、`EXCLUDED`時の再評価を反映し、2026-10-12の再レビューで修正必須なしを確認 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` |
-| `OPS-008` | `DONE` | User / Codex | [DECISION] 旧Codex task運用playbookのアーカイブ判断 | 2026-10-12、現行正本V2への参照切替を維持したまま、ユーザー判断により旧版をArchivedへ移動 | `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md` / `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` |
-| `OPS-003` | `DONE` | Codex | [EXECUTION] タスク依存変化による作業中停止の明文化 | 実行中も依存関係とreadyを再評価し、新しい必須前提、Flow、完了条件、および委任権限に応じて停止範囲を導く原則を独立文書へ記録 | `Orientation/TASK_DEPENDENCY_RUNTIME_STOP.md` |
-| `OPS-004` | `DONE` | Codex | [EXECUTION] タスク分解と再構成の明文化 | 見えない作業から本質的判断を抽出し、task境界、依存、Flow、ready集合、優先順を再構成する原則を独立文書へ記録し、ユーザー指示により完了 | `Orientation/TASK_DECOMPOSITION_AND_REORGANIZATION.md` |
-| `OPS-005` | `DONE` | Codex | [EXECUTION] AI task process posterの更新 | 完了した分解・再構成文書と作業中停止文書を入力に、判断整理、task境界、graph再構成、ready、委任を中心とするV2へ生成script、SVG、PNGを更新し、ユーザーが受入 | `AI_TASK_PROCESS_POSTER.png` / `Utilities/Maintenance/GenerateAITaskProcessPoster.py` |
-| `OPS-006` | `DONE` | Codex | [EXECUTION] task依存判断の軽量draft | 後続taskの成立に現在欠けている前提を探し、依存の見落としによる破綻・片手落ち・手戻りを避けるための短い観点整理を独立文書へ記録し、ユーザーレビューで修正必須なしを確認。文書はdraftのまま維持 | `Orientation/TASK_DEPENDENCY_IDENTIFICATION_DRAFT.md` |
-| `OPS-007` | `DONE` | Codex | [EXECUTION] AI task process poster V2への依存発見反映 | V2の構造を維持したまま、後続の成立条件、欠けた必須前提、並行依存、未確定候補を入口へ追加し、生成script、SVG、PNGを上書き。ユーザーが受入 | `AI_TASK_PROCESS_POSTER.png` / `Utilities/Maintenance/GenerateAITaskProcessPoster.py` |
 | `RELEASE-009` | `FROZEN` | Codex | [DISCOVERY] 0.5.1実績に基づくrelease checklist見直し | 2026-10-09、前任conversationの意図と途中経過の喪失により再開困難なため凍結。明示的な再開指示後、残存記録を参考資料として目的と境界から再確認 | `RELEASE_CHECKLIST.md` / `Archived/Canonical/RELEASE_0_5_1.md` |
 | `RELEASE-011` | `FROZEN` | Codex | [DISCOVERY] `prepare/release/template`の構成設計と試行 | 2026-10-09、前任conversationの意図と途中経過の喪失により再開困難なため凍結。残存ドラフトは当面保存するが既決事項とは扱わず、明示的な再開指示後に目的と境界を再確認 | `RELEASE_TEMPLATE_BRANCH_DESIGN.md` / `RELEASE_CHECKLIST.md` |
 | `RELEASE-020` | `FROZEN` | Codex | [EXECUTION] 0.6.0でGitHub Pages更新元をrelease tagへ一本化 | 0.5.xではmain pushとrelease tag pushの双方によるdeploy競合を許容。0.6.0のrelease工程でmain由来のdeployを停止し、tag commitから生成・検証した利用者向け文書だけがPagesを更新することを確認 | `RELEASE_0_6_0.md` / `RELEASE_TEMPLATE_BRANCH_DESIGN.md` |
@@ -174,56 +168,29 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-043` | `FROZEN` | User | [DECISION] C++標準に匹敵すると判定する性能比の上限 | 2026-10-11、ユーザー指示により比較水準の判断を保留。明示的な再開指示後、28要素中7要素を選ぶ最大ケースでSwiftの全体処理時間を`std::next_permutation`の何倍以内なら「匹敵」と受け入れるか一つだけ決定する | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `PERM-044` | `FROZEN` | Codex | [EXECUTION] Permutation外部性能アセスメントの実測・判定 | 2026-10-11、比較水準の判断とともにユーザー指示で保留。`PERM-043`の明示的な再開・完了後、macOS上で専用scriptを実行し、環境情報、生JSON、PNG chartを保存して判定する | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `PERM-046` | `FROZEN` | Codex | [DISCOVERY] Swift 6.2向けmanifest構成の必要性再評価 | runtime-check View通常版がSwift 6.2で成立したため、旧「PermutationModuleなしの縮小manifest」案はそのまま実行しない。ユーザーの明示的な再開指示後、package全体の6.2成立条件を調べ、version-specific manifest自体が必要かから再評価する | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
-| `PERM-047` | `EXCLUDED` | Claude | [DISCOVERY] runtime-check View版Permutationの旧Test as Specification・実験test棚卸し | 2026-10-12、ユーザー判断により詳細棚卸しは行わず、現行の有効testが通ることだけを暫定確認。Debug・Releaseとも手動列挙2件と失効Death Test 2件が成功した。将来の正式品質再評価で必要になった場合は、その時点の契約から別途task化する | `PermutationModule/BorrowedPermutationTestPlan.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
-| `PERM-048` | `DONE` | Codex | [EXECUTION] Swift 6.2互換runtime-check View通常経路の成立確認 | 単一bufferと共有`GateKeeper`の世代番号で旧Viewを失効させる通常実装へ切替。Swift 6.2 strict typecheck・列挙実行、Swift 6.4 Debug／Release build、次回`next()`後・所有者破棄後のtrapを確認。5-cycle測定は28要素で21.61ms対C++ 19.24ms、32要素で66.39ms対61.24ms。Span版は無効化した特殊経路へ退避 | `PermutationModule/CurrentQualityAssessment.md` / `PermutationModule/NextPermutationsImplementationExploration.md` / `Sources/PermutationModule/NextPermutations.swift` / `Sources/PermutationModule/BorrowedNextPermutations.swift` |
-| `PERM-049` | `DONE` | Codex | [DISCOVERY] 実提出チューニング成果の製品候補への収束 | DSU再利用・単一`unite`・反復leaderを提出固有最適化へ分離し、GateKeeper除去とpointer直接取得をunsafeな上限実験として製品候補から除外。runtime-check付きViewへ戻したSwift 6.4 Releaseの7回測定は各構成とも中央値0.46秒で、今回の探索を理由とする製品source変更なしと確定 | `PermutationModule/HumanAITuningReport.md` / `PermutationModule/CurrentQualityAssessment.md` / `Maintanance/User/PermutationBorrowedSpanExperiment.swift` |
-| `PERM-050` | `DONE` | Codex | [EXECUTION] Swift 6.4 borrowed Span版の別名有効化 | `#if compiler(>=6.4)`で有効化し、一般向け`nextPermutations()`と競合しない`borrowedNextPermutations()`／`BorrowedNextPermutations`へ改名。アルゴリズムと借用契約は変更せず、現行runtime-check版と同時のRelease build成功を確認 | `Sources/PermutationModule/BorrowedNextPermutations.swift` / `PermutationModule/NextPermutationsImplementationExploration.md` |
 | `PERM-051` | `FROZEN` | Claude | [EXECUTION] borrowed Span版PermutationのTest as Specification | runtime仕様test 25件を受け入れ、Xcode build-for-testingと対象25件成功を確認。借用寿命のcompile-pass／compile-fail証拠が未提出のため完了とはせず、ユーザーの明示的な再開まで残作業を凍結 | `Sources/PermutationModule/BorrowedNextPermutations.swift` / `Tests/PermutationTests/BorrowedNextPermutations/` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | 0.6.0の到達範囲判断前に、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
-| `OPT-047` | `DONE` | Codex | [DISCOVERY] OptionalArray 0.6.0現行品質アセスメント | Debug・Release・ASan各通常35件・Death Test 26件、facade、DocC、buildを確認。View寿命とstrict memory safetyを未達、`Sendable`・`-Ounchecked`・性能・利用Validationを未検証として分離し、品質評価から新しいユーザー判断は発生しないと確認 | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-048` | `PROPOSED` | Codex | [DISCOVERY] OptionalArray View寿命・公開安全性分類・strict安全性の依存分解 | 現行View寿命契約、Swift 6.4 Lifetimes、公開7型の分類、strict診断31件を照合し、事実と既存原則で閉じる偶有的判断を除去して、本質的判断が残る場合だけ独立taskへ分離する | `OptionalArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
-| `OPT-049` | `DONE` | Codex | [DISCOVERY] OptionalArray多次元access性能測定設計 | 2D・3Dのcold miss/storeとwarm hit、BareArrayと共通のexact-product shape・連続走査・checksum、計測境界、後続のC++ nested vector番兵版への対応を確定 | `OptionalArrayModule/CurrentQualityAssessment.md` |
-| `OPT-050` | `DONE` | Codex | [EXECUTION] OptionalArray access性能のCI回帰Benchmark登録 | 2D・3Dのcold / warm memoization checksum 4件をbenchmark toolと通常CI libraryへ登録。Release build、size 1・3・16の3反復、`CI.json`の30 task・60 size・64kまでのcurrent実行が成功 | `OptionalArrayModule/CurrentQualityAssessment.md` |
-| `OPT-051` | `DONE` | Codex | [EXECUTION] OptionalArrayアセスメント用C++番兵workload登録 | Swift版と同じexact-product shape・cold / warm memoization・checksumの2D・3D 4件をnested `vector<intptr_t>`と`-1`番兵で実装。Release buildとsize 1・3・16の3反復が成功し、通常CIには未登録 | `OptionalArrayModule/CurrentQualityAssessment.md` |
 | `OPT-052` | `ACTIVE` | Codex | [DISCOVERY] OptionalArray macOS外部性能アセスメントへのアレンジ | OptionalArray・Swift nested Array番兵・C++ nested vector番兵の3系列を含む専用library、生JSON、4枚のPNG chartによる暫定比較は成立。Permutationと同等の保存scriptと環境記録を整え、正式測定へ渡せる構成を閉じる | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-053` | `FROZEN` | User | [DECISION] OptionalArrayがC++番兵手法に匹敵すると判定する性能比の上限 | `OPT-052`の暫定実測後、代表memoization workloadで許容する性能比を一つだけ決定する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-054` | `FROZEN` | Codex | [EXECUTION] OptionalArray外部性能アセスメントの実測・判定 | `OPT-053`完了後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
-| `ARRAY-002` | `DONE` | Codex | [DISCOVERY] Array系object名のCodex独立候補出し | BareArray／OptionalArrayの役割から3組のbase名、次元suffix、View派生名、懸念を順位付けせず提出 | `User/ARRAY_NAMING_CANDIDATES_CODEX.md` / `ArrayObjectAndAPINamingDraft.md` |
-| `ARRAY-008` | `DONE` | User | [DISCOVERY] Array系object名のユーザー独立候補出し | `BareElements`／`OptionalCache`を順位付け前の候補として提出。method名は現行familyだけを候補とする | `User/ARRAY_NAMING_CANDIDATES_USER.md` / `ArrayObjectAndAPINamingDraft.md` |
-| `ARRAY-003` | `DONE` | Claude | [DISCOVERY] Array系object名のClaude独立候補出し | 他者候補を読む前に5組のbase名、次元suffix、View派生名、意図、懸念を順位付けせず提出 | `User/ARRAY_NAMING_CANDIDATES_CLAUDE.md` / `ArrayObjectAndAPINamingDraft.md` |
-| `ARRAY-004` | `DONE` | Codex / Claude | [DISCOVERY] Array系object名候補の統合・順位付け | 三者の独立候補を統合し、役割、call-site、体系、互換性、過剰な意味付けを基準に順位draftを作成。2026-10-12、ユーザー指示によりレビューを受け入れた | `User/ARRAY_NAMING_RANKING_CODEX.md` / `ArrayObjectAndAPINamingDraft.md` |
-| `ARRAY-005` | `READY` | User | [DECISION] Array系object名の合意 | 統合順位表を入力に、BareArray／OptionalArray両familyの公開名と次元・View派生体系を一つに決定する | `ArrayObjectAndAPINamingDraft.md` / `User/ARRAY_NAMING_RANKING_CODEX.md` |
-| `ARRAY-006` | `FROZEN` | User | [DECISION] Array系element access method名の確定 | object名決定後、代案を増やさず、現行の`element(at:)`・`setElement(_:at:)`・BareArrayの`reference(at:)`／`Reference`を公開APIとして受け入れるか一つに決定する | `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-005` | `WAITING` | User | [DECISION] Array系object名の合意 | 三者の公開API名候補を統合・採点してユーザーへ報告した後、BareArray／OptionalArray両familyの公開名と次元・View派生体系を一つに決定する | `ArrayObjectAndAPINamingDraft.md` / `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
+| `ARRAY-006` | `WAITING` | User | [DECISION] Array系element access method名の確定 | 三者の公開API名候補を統合・採点してユーザーへ報告した後、Array access API familyを一つに決定する | `ArrayObjectAndAPINamingDraft.md` / `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
 | `ARRAY-007` | `WAITING` | Codex | [EXECUTION] Array系object・API命名の実装反映 | object名とmethod名の決定後、production、test、benchmark、文書を決定どおりに更新し、Test as SpecificationとCI baseline準備へ渡す | `ArrayObjectAndAPINamingDraft.md` |
-| `BARE-006` | `DONE` | Codex | [DISCOVERY] BareArray多次元access性能測定設計 | 2D・3Dのsequential read / write、総要素数が等しいshape、計測内外、checksum、C++ nested `vector<intptr_t>`との対応、CI回帰とmacOS外部assessmentの境界を確定 | `BareArrayModule/CurrentQualityAssessment.md` / `Tests/TESTING.md` |
+| `API-001` | `ACTIVE` | Claude | [DISCOVERY] Public API名のClaude独立候補出し | Array系の未提出公開API名とPermutation通常・borrowed経路について、他者候補を読む前に候補、意図、懸念を提出する。順位付け、採点、決定、実装は行わない | `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
+| `API-002` | `WAITING` | Codex / Claude | [DISCOVERY] Public API名候補の統合・採点・報告 | Claudeの独立候補提出後、三者の候補を省略せず統合し、公開品質要求に照らしたCodex・Claudeの採点、合意点、相違点、未解決事項をユーザーへ報告する。採用判断と実装は行わず、Permutation側に残る本質的判断は一判断ごとのtask候補へ分離する | `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray外部性能アセスメントの実測・判定 | 性能比の受入判断後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
-| `BARE-029` | `DONE` | Codex | [EXECUTION] BareArray access性能のCI回帰Benchmark登録 | 2D・3D sequential read / writeの4 workloadをbenchmark toolと通常CI libraryへ登録。Release build、size 1・3・16の直接実行、`CI.json`の26 task・60 size・64kまでのcurrent実行が成功 | `BareArrayModule/CurrentQualityAssessment.md` |
-| `BARE-030` | `DONE` | Codex | [EXECUTION] BareArrayアセスメント用C++ nested vector workload登録 | Swift版と同じexact-product shape・連続走査・checksumの2D・3D read / write 4件をnested `vector<intptr_t>`で実装。Release buildとsize 1・3・16の3反復が成功し、通常CIには未登録 | `BareArrayModule/CurrentQualityAssessment.md` |
-| `BARE-031` | `DONE` | Codex | [DISCOVERY] BareArray macOS外部性能アセスメントへのアレンジ | 3系列を含む専用library、生JSON、4枚のPNG chartに加え、commit・macOS・hardware・Swift・Clangを同一測定IDで保存するscriptを整え、正式測定へ渡せる構成を閉じた | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-032` | `FROZEN` | User | [DECISION] BareArrayがC++ nested vectorに匹敵すると判定する性能比の上限 | `BARE-031`の暫定実測後、代表多次元access workloadで許容する性能比を一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
-| `BARE-033` | `EXCLUDED` | Codex | [EXECUTION] 新BareArray workloadの0.5.3 baseline比較経路 | harness全体の同期は0.5.3にないPermutation APIへ依存してCI失敗し、BareArrayだけの移植も初回基準のために過去harnessを特別扱いする複雑性を生むため除外。merge commitを新baselineとする | `Tests/TESTING.md` / `.github/workflows/ci.yml` / `.github/workflows/candidate.yml` |
-| `BARE-034` | `DONE` | User | [DECISION] BareArrayの提供停止と保守継続 | 利用者への提供を停止する一方、実装・仕様・test・benchmark・安全性を保守対象として残す方針を決定 | `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-035` | `PROPOSED` | Codex | [DISCOVERY] BareArray提供停止の実施境界整理 | package、facade、文書、移行、release、既存利用への影響を確認し、提供停止を局所的に実施できるtaskへ分解する | `Sources/BareArrayModule/Documentation/Quality-Profile.md` / `Package.swift` |
-| `PERF-001` | `DONE` | Codex | [EXECUTION] baseline harness同期の取り消し | commit `1027a154`のSources・manifest・resolved同期をPR用とcandidate用の両workflowから取り消し、従来のlibrary定義の同期だけに戻した | `Tests/TESTING.md` / `.github/workflows/ci.yml` / `.github/workflows/candidate.yml` |
-| `PERF-002` | `DONE` | Codex | [EXECUTION] BareArray・OptionalArray初回性能baseline候補の完了ゲート | 両module合計8件のSwift workloadをPR #189で先にmergeし、そのmerge commitを初回baselineとした。通常CI library登録は後続PRへ分離し、0.5.3へ存在しないworkloadとの比較を要求しない境界を成立させた | `Tests/TESTING.md` / `BareArrayModule/CurrentQualityAssessment.md` / `OptionalArrayModule/CurrentQualityAssessment.md` |
-| `PERF-003` | `DONE` | Codex | [EXECUTION] Array性能baseline確立後の回帰CI確認 | workload実装を含むPR #189のmerge後、CI library登録だけのPR #190と後続PR #191で、両moduleのworkloadを含むperformance jobがgreenとなり、通常のbase / current回帰比較が機能することを確認 | `Tests/TESTING.md` / `.github/workflows/ci.yml` |
 | `PERF-004` | `PROPOSED` | Codex | [EXECUTION] OptionalArray direct access workloadのCI回帰登録 | commit `bf0259a0`のworkload実装を含むmerge commitがbaselineへ到達した後、CI library登録だけを独立して追加し、base / currentの双方でtask解決と回帰比較の完走を確認 | `PERFORMANCE_CI_CHANGE_GUIDE.md` / `Benchmarks/Libraries/CI.json` / `.github/workflows/ci.yml` |
-| `BARE-016` | `DONE` | Codex | [DISCOVERY] BareArray現行品質アセスメント | Quality Profileの現在性監査、QR-01〜QR-06の現行評価、実行記録、既存課題と新規Validation候補への不足分離を完了 | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-017` | `PROPOSED` | Codex | [DISCOVERY] BareArray利用Validation scenario設計 | 一般Swift利用と競技利用について、代表利用者、導入経路、利用課題、観測方法を整理し、異なる判断・実行境界を後続task候補へ分離する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-018` | `FROZEN` | Codex | [EXECUTION] BareArray Viewノンエスケーパブル化の完了ゲート | 実装と局所検証の途中証拠を保存したまま凍結。storage、公開型の安全性分類、strict memory safetyの3系統を閉じ、品質検証を再開・完了した後に受入可否を判定する | `BareArrayModule/CurrentQualityAssessment.md` |
-| `BARE-019` | `EXCLUDED` | User / Codex | [DECISION] 同一BareArray間writebackのコンパイル時拒否採否 | 2026-10-11、拒否契約自体は従来から不変で、実行時Death Testからコンパイル時診断へVerification手段だけが移ったと確認。製品判断ではなかったため除外 | `BareArrayModule/CurrentQualityAssessment.md` |
 | `BARE-020` | `FROZEN` | Codex | [EXECUTION] BareArray Viewノンエスケーパブル実装の整合化 | compile成功までの途中差分を保存。ユーザーの明示的な再開指示後、正式実装として受け入れる範囲を再確認する | `BareArrayModule/CurrentQualityAssessment.md` |
 | `BARE-021` | `FROZEN` | Codex | [EXECUTION] BareArray compiler診断Verificationへの移行 | compile-fail fixtureとDeath Test棚卸しの途中差分を保存。ユーザーの明示的な再開指示後、Verification方法としての受入可否を再確認する | `BareArrayModule/CurrentQualityAssessment.md` |
 | `BARE-022` | `FROZEN` | Codex | [EXECUTION] BareArray有効利用経路の回帰確認 | Debug・Releaseの実行結果を途中証拠として保存。ユーザーの明示的な再開指示後、必要な回帰範囲と受入可否を再確認する | `BareArrayModule/CurrentQualityAssessment.md` |
-| `BARE-023` | `DONE` | Codex | [DISCOVERY] BareArray storage境界の成立確認 | `@safe`分類とノンエスケーパブルViewにより再設計候補の前提が解消し、連続配置・O(1) access・ノンコピーViewを担う現行storage境界を維持すると確認 | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
-| `BARE-024` | `DONE` | User / Codex | [DECISION] BareArray公開7型の`@safe`／`@unsafe`分類 | 所有型4・ノンエスケーパブルView型3を`@safe`に分類して実装し、strict warning解消とDebug・Release・compiler診断fixtureの回帰成功を確認 | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
-| `BARE-025` | `DONE` | Codex | [DISCOVERY] BareArray strict memory safety適用の成立確認 | 公開7型の`@safe`分類後、`.strictMemorySafety()`有効状態でwarningがなく、既存検証も成功するため、採否をユーザーへ返す本質的判断は残らず、品質検証の対象として維持すると確認 | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
-| `BARE-026` | `DONE` | User | [DECISION] BareArray品質検証の再開判断 | 2026-10-11、0.6.0品質として、完了したstorage、安全性分類、strict memory safetyの3系統を前提に品質検証を再開すると決定 | `BareArrayModule/CurrentQualityAssessment.md` |
-| `BARE-027` | `DONE` | Codex | [EXECUTION] BareArrayノンエスケーパブル化の品質検証 | 0.6.0品質としてDebug・Release・ASan・compiler診断fixture・facade・DocCを検証し、View寿命とstrict memory safetyを確認済み、並行利用・`-Ounchecked`・利用Validation・外部性能を未検証として分離 | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-028` | `FROZEN` | Codex | [EXECUTION] BareArray Claude手直し後の差分再検証 | Claudeのレビューと手直しが受け入れられた後に再開し、変更影響範囲のbuild、test、compiler診断fixture、安全性診断を再実行して現行証拠との差分を確認する | `BareArrayModule/CurrentQualityAssessment.md` |
-| `ARRAY-001` | `EXCLUDED` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのView寿命はノンエスケーパブル化へ統合し、残るstorage、公開安全性分類、strict memory safetyを独立taskへ分解したため、包括taskとしては除外。OptionalArrayは必要時に別途再分解する | `StrictMemorySafetyReadiness.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 本紙をアクロバット的なリファクタリングの説明として洗練し、追加調査は証拠別紙へ蓄積する。本紙と別紙で同じ詳細事実を重複定義しない | `RefactoringFromAtCoder2025/README.md` / `RefactoringFromAtCoder2025/EVIDENCE.md` |
@@ -236,7 +203,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
-| `OPS-008` | `OPS-002` | `SEQUENCE` | V2を現行正本として採用した後にだけ、旧版の配置を判断する |
 | `RBT-001` | `RBT-010` | `PARALLEL_JOIN` | 公開Index表現・完了範囲の判断は、Comparable採否と分離したまま親ゲートの完了前に合流する |
 | `RBT-001` | `RBT-011` | `PARALLEL_JOIN` | Comparable採否の外部依存は判断task側に残し、親ゲートの完了前に合流する |
 | `QUALITY-001` | `RBT-001` | `PARALLEL_JOIN` | 品質調査は並行できるが、1.0品質判定を確定する前にIndex契約完了と合流する |
@@ -245,39 +211,17 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `QUALITY-002` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Linux代表環境の品質保証CIと再現可能な実行証拠を合流する |
 | `QUALITY-001` | `QUALITY-003` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |
 | `RBT-026` | `RBT-014` | `SEQUENCE` | 現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する |
-| `BARE-029` | `BARE-006` | `SEQUENCE` | workload設計後、まずSwift側を通常CIの回帰検知へ追加する |
-| `OPT-049` | `BARE-006` | `SEQUENCE` | BareArrayで確定したshape・計測境界を再利用し、外部assessmentの完了を待たずOptionalArray固有のmemoization accessを設計する |
-| `BARE-031` | `BARE-030` | `SEQUENCE` | Swift／C++両workloadの成立後、macOSアセスメント用にアレンジして暫定実測する |
-| `BARE-032` | `BARE-031` | `SEQUENCE` | 暫定結果を確認してから、必要な性能比上限を判断する |
 | `BARE-007` | `BARE-032` | `SEQUENCE` | 性能比上限の決定後、正式測定結果へ適用して判定する |
-| `OPT-050` | `OPT-049` | `SEQUENCE` | workload設計後、まずSwift側を通常CIの回帰検知へ追加する |
-| `PERF-002` | `PERF-001` | `PARALLEL_JOIN` | baseline harness移植を取り消し、意図した初回導入の赤と実装不具合を区別できる状態で合流する |
-| `PERF-002` | `BARE-029` | `PARALLEL_JOIN` | BareArrayのSwift workloadとCI library登録を初回baseline候補へ合流する |
-| `PERF-002` | `OPT-050` | `PARALLEL_JOIN` | OptionalArrayのSwift workloadとCI library登録を初回baseline候補へ合流する |
-| `PERF-003` | `PERF-002` | `SEQUENCE` | 初回baseline候補のmerge後に、後続PRで通常のbase / current回帰比較を確認する |
-| `BARE-030` | `BARE-029` | `SEQUENCE` | BareArrayのCI workload成立後、同じ条件のC++対応workloadを外部比較用に追加する |
-| `OPT-051` | `OPT-050` | `SEQUENCE` | OptionalArrayのCI workload成立後、同じ条件のC++番兵workloadを外部比較用に追加する |
-| `OPT-052` | `OPT-051` | `SEQUENCE` | Swift／C++両workloadの成立後、macOSアセスメント用にアレンジして暫定実測する |
 | `OPT-053` | `OPT-052` | `SEQUENCE` | 暫定結果を確認してから、必要な性能比上限を判断する |
 | `OPT-054` | `OPT-053` | `SEQUENCE` | 性能比上限の決定後、正式測定結果へ適用して判定する |
 | `BARE-021` | `BARE-020` | `SEQUENCE` | 正式実装のcompile成立後に、拒否される利用をcompiler診断のVerificationへ移す |
 | `BARE-022` | `BARE-020` | `SEQUENCE` | 正式実装のcompile成立後に、有効な利用経路をDebug・Releaseで回帰確認する |
-| `BARE-026` | `BARE-023` | `PARALLEL_JOIN` | 現行storage境界の成立確認後に品質検証の再開を判断する |
-| `BARE-026` | `BARE-024` | `PARALLEL_JOIN` | 公開7型の安全性分類を決定してから品質検証の再開を判断する |
-| `BARE-026` | `BARE-025` | `PARALLEL_JOIN` | strict memory safety適用の成立確認後に品質検証の再開を判断する |
-| `BARE-027` | `BARE-026` | `SEQUENCE` | ユーザーが再開を決定した場合だけ、確定した前提で品質検証を実行する |
-| `BARE-018` | `BARE-027` | `SEQUENCE` | 品質検証の結果を受け入れてからノンエスケーパブル化の完了を判定する |
-| `BARE-028` | `BARE-027` | `SEQUENCE` | 現行品質検証を基準に、Claudeの手直し受入後の変更影響を再検証する |
 | `BARE-018` | `BARE-028` | `PARALLEL_JOIN` | Claudeの手直し後に必要となる差分再検証も完了ゲートへ合流する |
 | `BARE-017` | `BARE-018` | `SEQUENCE` | 完成したView契約を入力に一般Swift利用と競技利用のValidation scenarioを設計する |
 | `PERM-044` | `PERM-043` | `SEQUENCE` | C++標準に匹敵すると判定する性能比上限を確定してから、保存したmacOS測定証拠へ適用する |
-| `PERM-047` | `PERM-049` | `SEQUENCE` | 製品候補の実装境界を定めてから、その契約と実装を対象に旧Test as Specificationと実験testを棚卸しする |
-| `PERM-051` | `PERM-050` | `SEQUENCE` | Span版の公開名、compiler条件、および現行版との共存を成立させてから、新しい借用契約をTest as Specificationへ固定する |
-| `ARRAY-004` | `ARRAY-002` | `PARALLEL_JOIN` | Codexの独立候補を統合・順位付けの入力にする |
-| `ARRAY-004` | `ARRAY-008` | `PARALLEL_JOIN` | ユーザーの独立候補を統合・順位付けの入力にする |
-| `ARRAY-004` | `ARRAY-003` | `PARALLEL_JOIN` | Claudeの独立候補を統合・順位付けの入力にする。ユーザー候補も揃うまで開始しない |
-| `ARRAY-005` | `ARRAY-004` | `SEQUENCE` | 独立候補の統合・順位付け後にobject名を決定する |
-| `ARRAY-006` | `ARRAY-005` | `SEQUENCE` | object名確定後、そのcall-siteで現行method名だけを評価する |
+| `API-002` | `API-001` | `SEQUENCE` | Claudeの独立候補提出後に三者候補を統合・採点する |
+| `ARRAY-005` | `API-002` | `SEQUENCE` | 三者候補の採点報告後にobject名を決定する |
+| `ARRAY-006` | `API-002` | `SEQUENCE` | 三者候補の採点報告後にArray access API familyを決定する |
 | `ARRAY-007` | `ARRAY-005` | `PARALLEL_JOIN` | object名の決定を実装入力にする |
 | `ARRAY-007` | `ARRAY-006` | `PARALLEL_JOIN` | method名の決定を実装入力にする |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |

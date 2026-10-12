@@ -9,9 +9,15 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行中ジョブ: なし**
+**実行中ジョブ: PERM-051 borrowed Span版PermutationのTest as Specification**
 
-- 継続ジョブ: なし。
+- 前提: `PERM-050`完了済み。
+- 対象: `borrowedNextPermutations()` / `BorrowedNextPermutations`のSwift 6.4借用契約。
+- 成果: 列挙順、境界、重複、`Span`要素access、借用寿命のcompiler診断、現行runtime-check版との
+  共存、およびSwift 6.4限定の公開面を固定するtest。
+- 境界: 公開名、アルゴリズム、実装、製品方針を変更しない。新しい判断点または実装不具合を見つけたら
+  証拠を報告して停止する。
+- 完了条件: Debug・Releaseで対象testが成功し、追加testと観測事実をCodexがレビューできる。
 
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。

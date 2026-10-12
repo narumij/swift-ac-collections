@@ -18,6 +18,9 @@ Detailed evidence remains in each row's archived document. IDs remain permanent 
 | `BARE-022` | `DONE` | Codex | [EXECUTION] BareArray有効利用経路の回帰確認 | 2026-10-13、現行sourceでDebug通常35件・Death Test 39件、Release通常28件・Death Test 39件が成功 | `BareArrayModule/CurrentQualityAssessment.md` / `Tests/BareArrayModuleTests/` |
 | `BARE-028` | `EXCLUDED` | Codex | [EXECUTION] BareArray Claude手直し後の差分再検証 | 前提としていたClaudeの手直しを受け入れた事実がなく、後発の座標access API追加は別変更であるため、この条件付きtaskを実行せず除外 | `BareArrayModule/CurrentQualityAssessment.md` |
 | `BARE-018` | `DONE` | Codex | [EXECUTION] BareArray Viewノンエスケーパブル化の完了ゲート | storage境界、安全性分類、strict memory safety、品質検証と分割実行を履歴・現物・2026-10-13再検証で照合し、旧View契約の完了を受入。後発の座標access APIとdeprecated指定は別taskへ分離 | `BareArrayModule/CurrentQualityAssessment.md` |
+| `BARE-036` | `DONE` | Codex / 80ms | [DISCOVERY] BareArray座標access API追加後のTest as Specification差分監査 | 2026-10-13、旧Viewを新APIのcoverageに数えず、値access群とSwift 6.4以降の借用参照群に分けて未検証契約と後続実行taskを確定 | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/BareArray.swift` / `Tests/BareArrayModuleTests/` |
+| `BARE-037` | `DONE` | Codex | [EXECUTION] BareArray値access群のTest as Specification | 2026-10-13、1D〜4Dの座標写像、書換え、要素寿命、全軸bounds 40 case、facade経路を直接仕様化。Debug通常38件・Death Test 47件、Release通常31件・Death Test 47件が成功 | `BareArrayModule/CurrentQualityAssessment.md` / `Tests/BareArrayModuleTests/BareArray_6_CoordinateValueAccessTests.swift` / `Tests/BareArrayModuleTests/BareArray_97_CoordinateValueAccessDeathTests.swift` |
+| `BARE-038` | `DONE` | Codex / Claude | [EXECUTION] Swift 6.4以降のBareArray借用参照Test as Specification | 2026-10-13、1D〜4Dのread / write、要素寿命、全軸bounds 20 case、facade、compile-pass 1件とescape拒否4件を直接仕様化。Debug通常40件・Death Test 51件、Release通常33件・Death Test 51件が成功 | `BareArrayModule/CurrentQualityAssessment.md` / `Tests/BareArrayModuleTests/BareArray_7_BorrowedReferenceTests.swift` / `Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/` |
 
 ## Satisfied precedence removed from the active Registry
 
@@ -28,3 +31,5 @@ Detailed evidence remains in each row's archived document. IDs remain permanent 
 | `BARE-021` | `BARE-020` | `SEQUENCE` | 正式実装のcompile成立後に、拒否される利用をcompiler診断のVerificationへ移す |
 | `BARE-022` | `BARE-020` | `SEQUENCE` | 正式実装のcompile成立後に、有効な利用経路をDebug・Releaseで回帰確認する |
 | `BARE-018` | `BARE-022` | `PARALLEL_JOIN` | 有効利用経路の回帰結果を完了ゲートへ合流する |
+| `BARE-037` | `BARE-036` | `SEQUENCE` | 座標access差分監査で値access群の未検証契約を確定してから直接仕様化する |
+| `BARE-038` | `BARE-036` | `SEQUENCE` | 座標access差分監査でSwift 6.4以降の借用参照群を分離してから直接仕様化する |

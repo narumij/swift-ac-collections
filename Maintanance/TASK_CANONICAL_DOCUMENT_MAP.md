@@ -200,7 +200,8 @@
 | `PERF-001` | `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`<br>`Tests/TESTING.md` / `.github/workflows/ci.yml` / `.github/workflows/candidate.yml` | 2026-10-09<br>2026-10-12 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
 | `PERF-002` | `Tests/TESTING.md` / `BareArrayModule/CurrentQualityAssessment.md` / `OptionalArrayModule/CurrentQualityAssessment.md` | 2026-10-12 |  |
 | `PERF-003` | `Tests/TESTING.md` / `.github/workflows/ci.yml` | 2026-10-12 |  |
-| `PERF-004` | `PERFORMANCE_CI_CHANGE_GUIDE.md` / `Benchmarks/Libraries/CI.json` / `.github/workflows/ci.yml` | 現行 |  |
+| `PERF-004` | `PERFORMANCE_CI_CHANGE_GUIDE.md` / `Benchmarks/Libraries/CI.json` / `.github/workflows/ci.yml` | 2026-10-13 |  |
+| `PERF-005` | `PERFORMANCE_CI_CHANGE_GUIDE.md` / `Benchmarks/Libraries/CI.json` / `Benchmarks/Libraries/CI-Small.json` | 2026-10-13 |  |
 | `PERM-001` | `PermutationModule/AtCoder2025CompatibilityPlan.md` | 2026-10-09 |  |
 | `PERM-002` | `PermutationModule/ImplementationPlan.md` | 2026-10-13 |  |
 | `PERM-003` | `PermutationModule/AtCoder2025CompatibilityPlan.md` | 2026-10-09 |  |

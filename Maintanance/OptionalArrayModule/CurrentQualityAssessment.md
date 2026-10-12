@@ -93,6 +93,26 @@ CIにはSwift版の4 workloadだけを通常libraryへ登録する。後続のC+
 nested `vector<Int>`を同じshapeで確保し、未設定を表す番兵値をpresence判定に用いて、
 同じcold / warm操作、走査順、checksumに対応させる。C++ workloadは通常CIには含めない。
 
+## 現行座標access Test as Specification監査（2026-10-13）
+
+deprecatedとなった連鎖subscript・非所有Viewの互換testと、現行`element`／`setElement`の仕様証拠を
+分離して確認した。direct methodの既存testは1D〜4Dで各1座標のnil→value→nilと近傍1点を確認するが、
+次は未検証だった。
+
+- 非対称shapeの全座標を通した軸順・stride。
+- 選択座標だけが変更され、各軸の近傍が変化しないこと。
+- direct `setElement`による参照要素の上書きとnil遷移で、旧要素がちょうど一度破棄されること。
+- 1D〜4Dの各軸について、`element`と`setElement`が負値と上限値をSwift trapで拒否すること。
+
+これらは既存の次元、座標順、範囲、要素所有契約から直接導け、新しい製品判断を要しない。
+deprecated Viewの寿命・writeback仕様は互換testへ残し、現行座標accessの受入証拠には数えない。
+
+上記不足を現行API専用のtestへ実装した。非対称shapeの全座標を1D〜4Dで読み書きして軸順とstrideを固定し、
+各軸の近傍が未設定のままであること、参照要素の置換とnil化が各値をexactly onceで破棄することを確認する。
+Death Testは1D〜4Dの全軸について、負値と上限値をread・writeの双方で与え、Darwinでは`SIGTRAP`、
+Linuxでは`SIGILL`というSwift preconditionのsignalまで固定した。2026-10-13にBuild for Testingが成功し、
+追加した通常test 3件とDeath Test 8件は11件すべて成功した。
+
 ### C++番兵workloadと暫定チャート
 
 Swift版と同じexact-productの2D・3D shape、最内軸からの連続走査、cold / warm状態、

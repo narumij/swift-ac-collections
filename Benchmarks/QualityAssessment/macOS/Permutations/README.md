@@ -14,6 +14,10 @@ The `provisional-2026-10-11` JSON and PNG are retained for visual inspection
 while the formal performance threshold and assessment remain on hold. They do
 not include the complete environment record required for a formal assessment.
 
+The `provisional-current-runtime-view-vs-cpp` JSON and PNG compare the current
+public runtime-view implementation directly with C++ `std::next_permutation`.
+They are also provisional and do not replace the formal assessment run.
+
 Scenario:
 
 - Seven `1` values in an otherwise zero-filled ascending binary sequence

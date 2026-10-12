@@ -4,7 +4,7 @@
 
 この文書は、会話と中間ゴールを、事実確認、製品判断、実行、依存、受入へ変換する方法を示す。
 現在のtask状態は複製せず、Task Registryを正とする。状態遷移や記録形式の詳細は
-`CODEX_TASK_OPERATION_PLAYBOOK_V2.md`を正とする。
+`CODEX_TASK_OPERATION_PLAYBOOK_V3.md`を正とする。
 
 本書は、task処理に必要な具体性だけを扱う。協業体制の設計理由は`AI_COLLABORATION_PHILOSOPHY_V3.md`、
 司令塔としての行動原理と参照先は`CODEX_ORIENTATION_V3.md`で扱う。

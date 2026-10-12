@@ -116,7 +116,7 @@
 | `GRAPH-018` | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` | 2026-10-09 |  |
 | `GRAPH-019` | `Graph/TASK_GRAPH_LINT.md` | 2026-10-09 |  |
 | `HIST-001` | `RefactoringFromAtCoder2025/README.md` / `RefactoringFromAtCoder2025/EVIDENCE.md` | 現行 |  |
-| `OPS-001` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` | 現行 |  |
+| `OPS-001` | `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V3.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` | 現行 | V2時点で凍結。再開時に現行V3への更新要否を確認する。 |
 | `OPS-002` | `Orientation/CODEX_ORIENTATION.md`<br>`Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md`<br>`Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-11<br>2026-10-12<br>2026-10-09 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
 | `OPS-003` | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md`<br>`Orientation/AI_TECHNICAL_ORIENTATION.md`<br>`Orientation/TASK_DEPENDENCY_RUNTIME_STOP.md` | 2026-10-09<br>2026-10-11<br>2026-10-12 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
 | `OPS-004` | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md`<br>`Orientation/CODEX_ORIENTATION.md` / `CLAUDE_TASK.md`<br>`Orientation/TASK_DECOMPOSITION_AND_REORGANIZATION.md` | 2026-10-09<br>2026-10-11<br>2026-10-12 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
@@ -141,7 +141,7 @@
 | `OPS-023` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
 | `OPS-024` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
 | `OPS-025` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
-| `OPS-026` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V3.md` / `Orientation/TASK_REGISTRY_STATE_HISTORY.md` / `TASK_CANONICAL_DOCUMENT_MAP.md` | 現行 |  |
+| `OPS-026` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V3.md` / `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Orientation/TASK_REGISTRY_STATE_HISTORY.md` / `TASK_CANONICAL_DOCUMENT_MAP.md` | 現行 | V3を現行正本へ採用し、V2を版名付きで保存。 |
 | `OPS-027` | `AI_TASK_PROCESS_POSTER.svg` / `AI_TASK_PROCESS_POSTER.png` / `Utilities/Maintenance/GenerateAITaskProcessPoster.py` / `Archived/Orientation/AI_TASK_PROCESS_POSTER_V2/` | 現行 | V3を現行ポスターへ採用。旧V2一式は版名付きで保存。 |
 | `OPT-001` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |
 | `OPT-002` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |

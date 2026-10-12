@@ -14,10 +14,16 @@ public struct DSU: ~Copyable {
   @usableFromInline
   let _n: Int
 
+  @inlinable
   public init(_ n: Int) {
     _n = n
     payload = .allocate(capacity: n)
     payload.initialize(repeating: -1, count: n)
+  }
+
+  @inlinable
+  public mutating func reset() {
+    parent_or_size.update(repeating: -1)
   }
 
   deinit {
@@ -38,11 +44,15 @@ public struct DSU: ~Copyable {
 
   @inlinable
   mutating func _leader(_ a: Int) -> Int {
-    if parent_or_size[a] < 0 {
-      return a
+    var current = a
+    while parent_or_size[current] >= 0 {
+      let parent = parent_or_size[current]
+      if parent_or_size[parent] >= 0 {
+        parent_or_size[current] = parent_or_size[parent]
+      }
+      current = parent
     }
-    parent_or_size[a] = _leader(parent_or_size[a])
-    return parent_or_size[a]
+    return current
   }
 
   @inlinable
@@ -67,41 +77,111 @@ public struct DSU: ~Copyable {
 
     return x
   }
+
+  @inlinable
+  public mutating func unite(_ a: Int, _ b: Int) -> Bool {
+    var (x, y) = (leader(a), leader(b))
+
+    if x == y {
+      return false
+    }
+
+    if -parent_or_size[x] < -parent_or_size[y] {
+      swap(&x, &y)
+    }
+
+    parent_or_size[x] += parent_or_size[y]
+    parent_or_size[y] = x
+    return true
+  }
 }
 
-// MARK: - Borrowed Next Permutations Experiment
+// MARK: - Runtime-checked Next Permutations
 
-/// Owns one mutable permutation buffer and lends each order as a temporary span.
-/// The returned span cannot remain live across the next mutating call.
-struct BorrowedNextPermutationsIterator<Element: Comparable>: ~Copyable {
+@usableFromInline
+final class GateKeeper: ManagedBuffer<UInt, Void> {
 
-  let elements: UnsafeMutablePointer<Element>
-  let count: Int
-  var initial = true
-  var finished = false
+  // TODO: 終了処理がない
 
-  init(copying source: Span<Element>) {
+  @inlinable
+  var generation: UInt {
+    unsafeAddress {
+      UnsafePointer(withUnsafeMutablePointerToHeader { $0 })
+    }
+    unsafeMutableAddress {
+      withUnsafeMutablePointerToHeader { $0 }
+    }
+  }
+
+  @inlinable // ちょっと試し
+//  @inline(never)
+  func closeCurrentView() {
+    withUnsafeMutablePointerToHeader { generation in
+      precondition(generation.pointee != .max, "Permutation view generation exhausted")
+      generation.pointee += 1
+    }
+  }
+
+  @inlinable
+  func isClosed(generation: UInt) -> Bool {
+    self.generation != generation
+  }
+
+  @inlinable
+  static func make() -> GateKeeper {
+    let storage = GateKeeper.create(minimumCapacity: 0) { _ in 0 }
+    return unsafeDowncast(storage, to: GateKeeper.self)
+  }
+}
+
+extension Collection where Element: Comparable {
+
+  @inlinable
+  func nextPermutations() -> NextPermutations<Element> {
+    .init(copying: self)
+  }
+}
+
+@usableFromInline
+struct NextPermutations<Element: Comparable>: ~Copyable {
+
+  @usableFromInline let elements: UnsafeMutablePointer<Element>
+  @usableFromInline let count: Int
+  @usableFromInline let gateKeeper: GateKeeper
+  @usableFromInline var initial = true
+  @usableFromInline var finished = false
+
+  @inlinable
+  init<Base: Collection>(copying source: Base) where Base.Element == Element {
     count = source.count
-    elements = .allocate(capacity: count)
-    for i in 0..<count {
-      elements.advanced(by: i).initialize(to: source[i])
+    elements = .allocate(capacity: max(count, 1))
+    gateKeeper = GateKeeper.make()
+
+    var destination = elements
+    for element in source {
+      destination.initialize(to: element)
+      destination += 1
     }
   }
 
   deinit {
+    gateKeeper.closeCurrentView()
     elements.deinitialize(count: count)
     elements.deallocate()
   }
 
-  @_lifetime(&self)
-  mutating func next() -> Span<Element>? {
+  @inlinable
+  @inline(__always)
+  mutating func next() -> Permutation? {
+    gateKeeper.closeCurrentView()
+
     if finished {
       return nil
     }
 
     if initial {
       initial = false
-      return unsafe Span(_unsafeStart: elements, count: count)
+      return makePermutation()
     }
 
     guard count >= 2 else {
@@ -134,7 +214,46 @@ struct BorrowedNextPermutationsIterator<Element: Comparable>: ~Copyable {
       upper -= 1
     }
 
-    return unsafe Span(_unsafeStart: elements, count: count)
+    return makePermutation()
+  }
+
+  @inlinable
+  mutating func makePermutation() -> Permutation {
+    Permutation(
+      elements: elements,
+      count: count)
+  }
+
+  @usableFromInline
+  struct Permutation: RandomAccessCollection {
+
+    @inlinable
+    init(elements: UnsafeMutablePointer<Element>, count: Int) {
+      self.elements = elements
+      self.count = count
+    }
+
+    @usableFromInline typealias Index = Int
+
+    @usableFromInline let elements: UnsafeMutablePointer<Element>
+    @usableFromInline let count: Int
+
+    @inlinable
+    var startIndex: Int {
+      return 0
+    }
+
+    @inlinable
+    var endIndex: Int {
+      return count
+    }
+
+    @inlinable
+    subscript(position: Int) -> Element {
+      precondition(position >= 0 && position < count)
+      return elements[position]
+    }
+
   }
 }
 
@@ -156,26 +275,25 @@ func main() {
   }
 
   var ans = K
-  var iterator = BorrowedNextPermutationsIterator(copying: useEdges.span)
+  var iterator = useEdges.nextPermutations()
+  var uf = DSU(N)
 
   while let selected = iterator.next() {
-    var uf = DSU(N)
+    uf.reset()
     var costSum = 0
     var valid = true
 
     for i in 0..<M {
-      guard selected[i] == 1 else {
+      guard selected.elements[i] == 1 else {
         continue
       }
 
       let (u, v, cost) = (edges[i].first, edges[i].second, edges[i].third)
 
-      if uf.same(u, v) {
+      if !uf.unite(u, v) {
         valid = false
         break
       }
-
-      _ = uf.merge(u, v)
       costSum += cost
     }
 

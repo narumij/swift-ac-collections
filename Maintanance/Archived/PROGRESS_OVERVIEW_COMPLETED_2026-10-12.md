@@ -44,6 +44,7 @@ Earlier snapshots and completed-history files remain unchanged.
 | `BARE-026` | `DONE` | User | [DECISION] BareArray品質検証の再開判断 | 2026-10-11、0.6.0品質として、完了したstorage、安全性分類、strict memory safetyの3系統を前提に品質検証を再開すると決定 | `BareArrayModule/CurrentQualityAssessment.md` |
 | `BARE-027` | `DONE` | Codex | [EXECUTION] BareArrayノンエスケーパブル化の品質検証 | 0.6.0品質としてDebug・Release・ASan・compiler診断fixture・facade・DocCを検証し、View寿命とstrict memory safetyを確認済み、並行利用・`-Ounchecked`・利用Validation・外部性能を未検証として分離 | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `ARRAY-001` | `EXCLUDED` | Codex | [DISCOVERY] Array系storage・View寿命・strict安全性の再分解 | BareArrayのView寿命はノンエスケーパブル化へ統合し、残るstorage、公開安全性分類、strict memory safetyを独立taskへ分解したため、包括taskとしては除外。OptionalArrayは必要時に別途再分解する | `StrictMemorySafetyReadiness.md` |
+| `API-003` | `EXCLUDED` | User | [DECISION] Public API名ballotの採点開始判断 | 2026-10-12、全体段取りの確定後にユーザーへ中間成果の審査判断を要求する必要はなく、ballotの完全性確認はCodexの編成taskの受入条件で閉じられると確認したため除外 | `PUBLIC_API_NAMING_BALLOT.md` / `ArrayObjectAndAPINamingDraft.md` |
 
 ## Completed precedence edges
 

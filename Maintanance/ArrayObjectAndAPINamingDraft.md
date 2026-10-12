@@ -21,9 +21,15 @@ cross-review. Current names remain candidates; their presence in production does
    and compatibility cost.
 5. Missing public API candidates are collected independently in the three
    `PUBLIC_API_NAMING_CANDIDATES_*.md` records.
-6. The complete candidate set is integrated and scored without adopting a name.
-7. The user, Codex, and Claude discuss the scored result; the user makes each public-name decision.
-8. Only after those decisions are implementation, Test as Specification, benchmark stabilization,
+6. Codex compiles all distinct candidates into `PUBLIC_API_NAMING_BALLOT.md`, verifies the ballot's
+   completeness and separation, and hands the fixed ballot to the scorers without scoring it.
+7. The user, Codex, and Claude independently score the completed ballot in their separate score
+   records. The user supplies a 1–10 score only; Codex and Claude also record reasons and concerns.
+8. After all three submissions, Codex combines them in `PUBLIC_API_NAMING_SCORE_REPORT.md` without
+   treating totals, averages, or agreement as adoption.
+9. The scored result is discussed. The user makes each public-name decision, and the conclusion is
+   recorded in `PUBLIC_API_NAMING_DECISIONS.md`.
+10. Only after those decisions are implementation, Test as Specification, benchmark stabilization,
    baseline merge, and CI registration performed.
 
 Agreement during candidate generation is not a result. Candidate overlap becomes useful evidence

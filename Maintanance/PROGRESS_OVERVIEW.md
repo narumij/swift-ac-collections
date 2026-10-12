@@ -176,11 +176,15 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-052` | `ACTIVE` | Codex | [DISCOVERY] OptionalArray macOS外部性能アセスメントへのアレンジ | OptionalArray・Swift nested Array番兵・C++ nested vector番兵の3系列を含む専用library、生JSON、4枚のPNG chartによる暫定比較は成立。Permutationと同等の保存scriptと環境記録を整え、正式測定へ渡せる構成を閉じる | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-053` | `FROZEN` | User | [DECISION] OptionalArrayがC++番兵手法に匹敵すると判定する性能比の上限 | `OPT-052`の暫定実測後、代表memoization workloadで許容する性能比を一つだけ決定する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-054` | `FROZEN` | Codex | [EXECUTION] OptionalArray外部性能アセスメントの実測・判定 | `OPT-053`完了後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
-| `ARRAY-005` | `WAITING` | User | [DECISION] Array系object名の合意 | 三者の公開API名候補を統合・採点してユーザーへ報告した後、BareArray／OptionalArray両familyの公開名と次元・View派生体系を一つに決定する | `ArrayObjectAndAPINamingDraft.md` / `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
-| `ARRAY-006` | `WAITING` | User | [DECISION] Array系element access method名の確定 | 三者の公開API名候補を統合・採点してユーザーへ報告した後、Array access API familyを一つに決定する | `ArrayObjectAndAPINamingDraft.md` / `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
-| `ARRAY-007` | `WAITING` | Codex | [EXECUTION] Array系object・API命名の実装反映 | object名とmethod名の決定後、production、test、benchmark、文書を決定どおりに更新し、Test as SpecificationとCI baseline準備へ渡す | `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-005` | `FROZEN` | User | [DECISION] Array系object名の合意 | 三者の独立採点を統合した報告の受入後、ユーザーが明示的に再開し、その後の議論を入力にBareArray／OptionalArray両familyの公開名と次元・View派生体系を一つに決定して判断正本へ記録する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-006` | `FROZEN` | User | [DECISION] Array系element access method名の確定 | 三者の独立採点を統合した報告の受入後、ユーザーが明示的に再開し、その後の議論を入力にArray access API familyを一つに決定して判断正本へ記録する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-007` | `FROZEN` | Codex | [EXECUTION] Array系object・API命名の実装反映 | object名とmethod名の判断完了後、ユーザーが明示的に再開し、判断正本を入力にproduction、test、benchmark、文書を決定どおりに更新してTest as SpecificationとCI baseline準備へ渡す | `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
 | `API-001` | `ACTIVE` | Claude | [DISCOVERY] Public API名のClaude独立候補出し | Array系の未提出公開API名とPermutation通常・borrowed経路について、他者候補を読む前に候補、意図、懸念を提出する。順位付け、採点、決定、実装は行わない | `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
-| `API-002` | `WAITING` | Codex / Claude | [DISCOVERY] Public API名候補の統合・採点・報告 | Claudeの独立候補提出後、三者の候補を省略せず統合し、公開品質要求に照らしたCodex・Claudeの採点、合意点、相違点、未解決事項をユーザーへ報告する。採用判断と実装は行わず、Permutation側に残る本質的判断は一判断ごとのtask候補へ分離する | `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
+| `API-002` | `FROZEN` | Codex | [EXECUTION] Public API名ballotの編成・検証 | Claudeの独立候補提出後、ユーザーの明示的な再開指示を受けて、三者候補を省略せず統合し、異なる意味を保った固定ID付きballotを作る。候補網羅、意味分離、重複処理、IDをCodexが検証し、順位付け、採点、推奨、採用は行わない | `PUBLIC_API_NAMING_BALLOT.md` / `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
+| `API-004` | `FROZEN` | User | [EXECUTION] Public API名ballotのユーザー独立採点 | Codexがballotの編成・検証を完了した後、ユーザーが明示的に再開し、全候補へ1〜10の総合点だけを記録する。他者の採点は提出完了まで読まない | `PUBLIC_API_NAMING_SCORE_USER.md` / `PUBLIC_API_NAMING_BALLOT.md` |
+| `API-005` | `FROZEN` | Codex | [EXECUTION] Public API名ballotのCodex独立採点 | Codexがballotの編成・検証を完了した後、ユーザーが明示的に再開し、全候補へ1〜10の総合点、理由、重要な懸念を記録する。他者の採点は提出完了まで読まない | `PUBLIC_API_NAMING_SCORE_CODEX.md` / `PUBLIC_API_NAMING_BALLOT.md` |
+| `API-006` | `FROZEN` | Claude | [EXECUTION] Public API名ballotのClaude独立採点 | Codexがballotの編成・検証を完了した後、ユーザーが明示的に再開し、全候補へ1〜10の総合点、理由、重要な懸念を記録する。他者の採点は提出完了まで読まない | `PUBLIC_API_NAMING_SCORE_CLAUDE.md` / `PUBLIC_API_NAMING_BALLOT.md` |
+| `API-007` | `FROZEN` | Codex | [DISCOVERY] Public API名採点の統合報告と判断task分解 | 三者全員の独立採点完了後、ユーザーが明示的に再開し、点数を改変せず統合して点差、AIの理由、反証、未解決事項を報告する。平均・多数決・合意を採用判断にせず、残る公開判断を一判断ごとのtaskへ分離する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `PUBLIC_API_NAMING_SCORE_USER.md` / `PUBLIC_API_NAMING_SCORE_CODEX.md` / `PUBLIC_API_NAMING_SCORE_CLAUDE.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray外部性能アセスメントの実測・判定 | 性能比の受入判断後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-032` | `FROZEN` | User | [DECISION] BareArrayがC++ nested vectorに匹敵すると判定する性能比の上限 | `BARE-031`の暫定実測後、代表多次元access workloadで許容する性能比を一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-035` | `PROPOSED` | Codex | [DISCOVERY] BareArray提供停止の実施境界整理 | package、facade、文書、移行、release、既存利用への影響を確認し、提供停止を局所的に実施できるtaskへ分解する | `Sources/BareArrayModule/Documentation/Quality-Profile.md` / `Package.swift` |
@@ -219,9 +223,15 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-018` | `BARE-028` | `PARALLEL_JOIN` | Claudeの手直し後に必要となる差分再検証も完了ゲートへ合流する |
 | `BARE-017` | `BARE-018` | `SEQUENCE` | 完成したView契約を入力に一般Swift利用と競技利用のValidation scenarioを設計する |
 | `PERM-044` | `PERM-043` | `SEQUENCE` | C++標準に匹敵すると判定する性能比上限を確定してから、保存したmacOS測定証拠へ適用する |
-| `API-002` | `API-001` | `SEQUENCE` | Claudeの独立候補提出後に三者候補を統合・採点する |
-| `ARRAY-005` | `API-002` | `SEQUENCE` | 三者候補の採点報告後にobject名を決定する |
-| `ARRAY-006` | `API-002` | `SEQUENCE` | 三者候補の採点報告後にArray access API familyを決定する |
+| `API-002` | `API-001` | `SEQUENCE` | Claudeの独立候補提出後に、採点せず共通ballotを編成する |
+| `API-004` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、ユーザーが他者から独立して採点する |
+| `API-005` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、Codexが他者から独立して採点する |
+| `API-006` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、Claudeが他者から独立して採点する |
+| `API-007` | `API-004` | `PARALLEL_JOIN` | ユーザー採点の提出後に統合報告へ合流する |
+| `API-007` | `API-005` | `PARALLEL_JOIN` | Codex採点の提出後に統合報告へ合流する |
+| `API-007` | `API-006` | `PARALLEL_JOIN` | Claude採点の提出後に統合報告へ合流する |
+| `ARRAY-005` | `API-007` | `SEQUENCE` | 三者採点の統合報告後にobject名を決定し、判断正本へ記録する |
+| `ARRAY-006` | `API-007` | `SEQUENCE` | 三者採点の統合報告後にArray access API familyを決定し、判断正本へ記録する |
 | `ARRAY-007` | `ARRAY-005` | `PARALLEL_JOIN` | object名の決定を実装入力にする |
 | `ARRAY-007` | `ARRAY-006` | `PARALLEL_JOIN` | method名の決定を実装入力にする |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |

@@ -30,7 +30,6 @@
 
 ## 候補確定作業
 
-- [ ] AGENTS.mdを削除
 - [ ] candidate-<VersionNumber> Tagを付与
 - [ ] candidate-<VersionNumber> Tagをプッシュ
 - [ ] リリースCI実行確認
@@ -39,5 +38,7 @@
 
 ## 最終作業
 
+- [ ] AGENTS.mdを削除
+- [ ] AGENTS.md削除後はAI作業へ戻らず、残る最終作業だけをユーザーが行う
 - [ ] <VersionNumber> Tagを付与
 - [ ] <VersionNumber> Tagをプッシュ

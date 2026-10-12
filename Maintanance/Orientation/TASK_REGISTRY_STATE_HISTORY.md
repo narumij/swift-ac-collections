@@ -12,9 +12,23 @@
 調査の終点は、commit `5c88335d`（`best codex was gone`）の直前にあるcommit `1b1505d3`
 （2026-10-09 15:08:14 +0900）とする。それ以後の変更や解釈を、当時の履歴へ混ぜない。
 
+## 現時点で見える進化の骨格
+
+初期履歴からは、task管理が暫定的に次の順で発展したように見える。
+
+> handoffを残す
+> → 要望と停止を区別する
+> → 現在地と履歴を分ける
+> → 分野別作業面を横断する
+> → ID・状態・依存として形式化する
+
+これは調査途中の要約であり、確定した歴史解釈ではない。後続commitの調査や作者の記憶との照合により、
+段階の追加、統合、順序の修正があり得る。
+
 ## 調査方法
 
-`Maintanance/PROGRESS_OVERVIEW.md`を変更したcommitを古い順に追い、各時点について次を記録する。
+`Tests/TESTING.md`、`Maintanance/MAINTENANCE.md`、`Maintanance/PROGRESS_OVERVIEW.md`を変更したcommitを
+古い順に追い、各時点について次を記録する。
 
 - 状態一覧と定義
 - 直前の版から追加、削除、改名された状態
@@ -24,6 +38,212 @@
 - Gitの記録だけでは確定できない点
 
 単語の初出検索だけで変更理由を確定しない。状態一覧が変わらないcommitも確認対象に含める。
+
+## 2026-09-28〜2026-10-03: `TESTING.md`が担った最初の作業面
+
+### `7e7f10f5` `refactoring tests?`: 最初の運用記録
+
+現在確認できる最初のtask管理文書は、`Tests/RedBlackTreeTests/TESTING.md`である。初版には状態一覧や
+task IDはなく、次の三つが同居していた。
+
+- `Test as Spec`などの作業規則。
+- `Safe migration workflow`という実行・検証・commit可能状態までの手順。
+- `Current handoff`という、完了範囲、残件、次の開始地点の引き継ぎ。
+
+この段階では、独立したtask台帳というより、テスト整理作業を壊さず継続するための規則と現在地の記録
+だった。ただし、後のtask管理を構成する「何を守るか」「どこまで済んだか」「次に何をするか」は、
+すでに同じ文書に存在した。
+
+### `34f0e422` `refactoring tests?`: ユーザー要望をhandoffより上位へ置く
+
+`User requests for the next session`が追加された。ここには、次回の優先対象、残すものと削除してよいもの、
+配置方針、停止条件、保留判断をユーザーが記入できた。文書は、この欄を`Current handoff`より先に読み、
+完了項目もagentが勝手に削除しないよう定めた。
+
+したがって、後のtask管理にあるユーザー指示の優先、停止、保留、受入後の整理は、Registry導入より前に、
+テスト作業の継続方法として現れていた。
+
+### `676b6bd9` `codex memo`: 自然文による状態区分
+
+ユーザー記入欄が次の区分へ分かれた。
+
+| 節 | 当時の役割 |
+| --- | --- |
+| `優先事項` | 次回に進める作業 |
+| `連絡事項` | 条件、注意、利用可能時間などの実行文脈 |
+| `停止条件` | 新規着手を止め、検証・記録・振り返りへ移る条件 |
+| `保留中の判断・懸念` | 未確定事項、破損、後で判断する論点 |
+| `完了済みの要望` | 対応が済んだユーザー要望 |
+
+まだ状態値はないが、taskは文書内の位置を移ることで、優先、保留、完了を表せるようになった。
+
+### `6d8551a3` `memo`: 目的、担当、禁止境界までを同じ面で管理
+
+`ビジョン`が加わり、CodexとClaudeの担当差、勝手に判断してはいけない内部区分、検証基準、保留中の
+設計論点も同じ文書へ蓄積された。`TESTING.md`は、テスト規則だけでなく、目的、優先、担当、停止、判断、
+完了、handoffを扱う作業面へ成長した。
+
+この構造は後のRegistryより疎である一方、ユーザーの意図と作業の詳細が近接していた。状態遷移は
+列値ではなく、見出し間の移動、本文への追記、`Current handoff`の更新として行われた。
+
+### `c08af11f` `some`: RedBlackTree専用からTests全体へ
+
+文書は`Tests/RedBlackTreeTests/TESTING.md`から`Tests/TESTING.md`へ移動された。本文は99%維持され、
+BareArray、OptionalArray、Permutationなど他のtest targetも将来扱う配置であることが追記された。
+
+これは管理対象の拡張であり、まだproject全体のtask管理への分離ではない。公開ドキュメント作業には、
+同日の`a5d6ad36`で別の`Documentation/MAINTENANCE.md`が作られていた。
+
+### `5add4655` `doc`: 詳細ログを分離し、dashboardへ圧縮
+
+膨張した`TESTING.md`は52行の「テストメンテナンス・ダッシュボード」へ再構成された。
+
+- 詳細履歴を`Tests/TESTING_REFERENCE.md`へ退避した。
+- 現在情報を`目的`、`優先事項`、`現在地`、`判断待ち`、`直近の引き継ぎ`へ圧縮した。
+- 現在地は上書きし、長文報告や年代順ログを追加しないと定めた。
+
+これは後のRegistryと同じく、現役の判断面と詳細履歴を分ける動きである。ただし対象はまだテスト領域で、
+task ID、統一状態、依存関係はなかった。
+
+## 2026-10-01〜2026-10-04: `MAINTENANCE.md`内のtask管理
+
+### `a5d6ad36` `doc`: 文書作業用の姉妹作業面
+
+`Documentation/MAINTENANCE.md`が追加された。これは`TESTING.md`から全taskを移した文書ではなく、公開文書、
+コメントドック、DocC、CHANGELOGを扱う姉妹の作業面だった。Task Registry、永続ID、統一された状態tableは
+まだ存在しない。一方、`TESTING.md`で育った管理構造は、最初の版からほぼ同じ形で採用された。
+
+| 節 | 当時の役割 |
+| --- | --- |
+| `ビジョン` | 到達させたい継続的な状態 |
+| `優先事項` | 次に進めるユーザー要望と作業順 |
+| `相談事項` | 方針を決める必要がある論点 |
+| `連絡事項` | 運用規則と、別文書で見つけた不足の伝達 |
+| `停止条件` | 推測で進めず停止する条件と、全体完了の上位条件 |
+| `保留中の判断・懸念` | 未確定の仕様、反証、後続候補 |
+| `完了済みの要望` | 判断・実装・検証が済んだ要求 |
+| `Current handoff` | 直近の実績、残件、次作業を次のagentへ渡す追記型記録 |
+
+文書は`User requests for the next session`を`Current handoff`より先に読むよう定めていた。ユーザー要望を
+優先し、完了した項目を勝手に削除せず、完了済みへ移すかユーザー確認後に整理する運用だった。
+
+この時点のtaskは、個別IDを持つrowではない。ユーザー要望、作業項目、判断待ち、証拠、完了報告が、
+見出しによる分類と自然文の更新・移動によって管理されていた。
+
+### `877eac14` `many`: `Maintanance/`への移動
+
+`Documentation/MAINTENANCE.md`は内容を変えず`Maintanance/MAINTENANCE.md`へ移された。同じcommitでは
+`TESTING.md`も更新されているが、両者は引き続きテスト領域と文書領域の別dashboardだった。
+
+### 2026-10-01〜2026-10-04: 同じ文書内でtaskと結果を更新
+
+`MAINTENANCE.md`は、追加後から`PROGRESS_OVERVIEW.md`初版まで繰り返し更新された。
+
+- `c80d83c5`では、C++標準ライブラリとの継続的な挙動照合が`優先事項`へ追加された。
+- 後続commitでは、Permutation改修、strict memory safety、テスト基盤、履歴調査などの要望と結果が
+  同じ各節へ追加・更新された。
+- 調査済みだが採用未決定、根拠確認済みだが公開コメント変更はユーザー判断待ち、という中間状態も
+  項目本文の注記で表現された。
+- 完了実績は`Current handoff`へ時系列に蓄積され、未確定事項は`保留中の判断・懸念`へ残された。
+
+したがって、最初の管理方式は単純なtodo listではなかった。優先、判断、停止、保留、完了、handoffを
+区別していたが、その区別はtaskの属性や状態値ではなく、文書内の配置と文章に埋め込まれていた。
+
+## 2026-10-04〜2026-10-06: 二つの文書が併存した移行期
+
+### `1a235c31` `interview?`: 全体進捗の分離
+
+`PROGRESS_OVERVIEW.md`が新設され、`MAINTENANCE.md`に混在していた作業のうち、project全体の主要taskを
+成果単位で横断表示する文書が分離された。
+
+新しい文書には6状態が定義され、taskは次の節へ整理された。
+
+- 完了した主要task。
+- 現在進行中の主経路。
+- 判断待ち。
+- 保留・完成を止めない追加検証。
+- 中止・再開禁止。
+
+一方、同じcommit時点の`MAINTENANCE.md`には、`User requests for the next session`、優先事項、相談事項、
+停止条件、保留中の判断、完了済み要望、`Current handoff`が残っていた。`PROGRESS_OVERVIEW.md`へ全task管理が
+一度に移されたわけではなく、文書整備の作業面と全体進捗の集約面が併存した。
+
+初版`PROGRESS_OVERVIEW.md`の項目は、旧文書の単純な転記でもなかった。C++比較、Permutation、
+BareArray／OptionalArray、strict memory safety、履歴調査などをmodule横断で再分類し、完了実績も含む
+project snapshotへ再構成していた。
+
+### `3fe9f719` `refresh documentation maintenance dashboard`: 役割移管の明示
+
+`MAINTENANCE.md`が大きく再構成された。
+
+- 追記型だった`User requests for the next session`を、`Current dashboard`と履歴節へ再編した。
+- 現在状態、文書に関係する未決事項、文書管理の運用をdashboardとして先頭へ置いた。
+- 古い要望とhandoffを「現在のtask queueとして解釈しない」履歴へ分離した。
+- 個別taskの長文結果を詳細正本へ置き、本書へ重複させない方針を明記した。
+- 「テストの現在地は`Tests/TESTING.md`、全体進捗は`PROGRESS_OVERVIEW.md`を正とする」と明記した。
+
+このcommitで、`MAINTENANCE.md`はproject全体のtask queueから、文書領域のdashboard、恒久規則、handoffへ
+責務を狭めた。ただし、文書に関係する未決事項と現在handoffはまだ保持しており、役割移管の途中だった。
+
+### `9f21c6e2`〜`50273dfe`: 正本分離と担当境界の整理
+
+Registry導入までの間に、完了した調査・比較記録は`Archived/`や利用者向けDocumentationへ移され、
+`MAINTENANCE.md`と`PROGRESS_OVERVIEW.md`の参照先が同期された。
+
+`50273dfe`では、公開ドキュメントの第一担当をCodexとし、Claudeへ委譲できる範囲を事実確認、独立review、
+限定修正へ狭めた。同じcommitで、Compatibility文書の包括監査を現行taskから外す変更が
+`PROGRESS_OVERVIEW.md`にも反映された。
+
+この期間には、taskの状態だけでなく、成果を置く正本、現役と履歴の境界、担当範囲も二文書をまたいで
+整理されていた。
+
+## 2026-10-06〜2026-10-07: Registryへの集約と旧文書の縮小
+
+### `e4aa207d` `Use task registry as the project entry point`
+
+`PROGRESS_OVERVIEW.md`へ永続ID付きTask Registryが導入された。同じcommitで`MAINTENANCE.md`には、
+project作業の入口ではなく、Registryの文書taskから参照された場合だけ読む、と明記された。
+
+この変更により、移行期に残っていた役割分担が次の形で確定した。
+
+- Task Registry: 状態、担当、再開・完了条件、詳細正本を持つ唯一の作業入口。
+- `PROGRESS_OVERVIEW.md`の後続section: 完了実績、詳細内訳、全体説明。
+- `MAINTENANCE.md`: 文書整備の規則、文書dashboard、文書handoff。
+- 個別正本: taskの長文結果、設計、監査、証拠。
+- Archived: 現在の再開判断に使わない完了履歴。
+
+Registry導入時の24行は、新規taskを一から発見したものではない。移行期の`PROGRESS_OVERVIEW.md`と
+`MAINTENANCE.md`、各詳細正本に存在した主経路、未決事項、保留、禁止、完了実績へID、担当、再開条件を
+与えて集約したものだった。
+
+導入直前の`60ded377`とRegistry導入後を照合すると、旧sectionから新状態への移行は一対一の名称変更では
+なかった。
+
+| 旧section・扱い | Registryでの主な扱い | 例 |
+| --- | --- | --- |
+| 現在進行中の主経路 | `ACTIVE`または、既に閉じたものは`DONE` | P10残存記述確認、C++挙動比較 |
+| 判断待ち | `WAITING_USER`または、再開自体が必要なら`FROZEN` | Index完了ゲート、`Result`比較overload |
+| 保留・完成を止めない追加検証 | 主に`FROZEN` | OptionalArray／BareArray監査、性能比較、strict安全性 |
+| 中止・再開禁止 | 理由に応じて`USER_ONLY`、`EXCLUDED`、または行を作らない | ABC328E実提出、MSVC比較、Compatibility包括監査 |
+| 完了実績 | 継続参照するものだけ`DONE` | C++挙動比較 |
+
+特に旧`中止・再開禁止`は一状態へ移されなかった。人間専任、実施対象外、task自体の撤回を区別した。
+また旧`判断待ち`も、ユーザーが今決められるものと、明示的再開や別条件が先に必要なものへ分かれた。
+Task Registry導入は、旧6状態の英訳ではなく、配置と自然文に埋め込まれていた待機理由、所有権、採否を
+task行へ外在化する再分類だった。
+
+### `236434ff` `Archive completed maintenance document history`
+
+Registry導入翌日、`MAINTENANCE.md`と`PROGRESS_OVERVIEW.md`の古い要望、handoff、完了チェック、詳細履歴が
+Archivedへ移された。
+
+`MAINTENANCE.md`は、文書整備の恒久ルール、短いdashboard、現在handoff、文書の役割表を中心とする形へ
+縮小された。役割表では`PROGRESS_OVERVIEW.md`を「Task Registryと現在状態の唯一の入口」、
+`MAINTENANCE.md`を「文書整備の恒久ルールと現在handoff」と明記した。
+
+したがって、現在の形はTask Registry導入commitだけで一度に完成したのではない。旧作業面から全体進捗を
+分離し、正本と履歴を外へ出し、入口をRegistryへ一本化し、最後に旧handoffをアーカイブする段階移行で
+成立した。
 
 ## 2026-10-04: `PROGRESS_OVERVIEW.md`初版
 
@@ -310,7 +530,8 @@ taskを削除・統合せず、複数の判断不要な`EXECUTION` taskを一つ
 ## ここまでで未調査のこと
 
 - 状態集合を変えずに、状態の意味または使い方を変えたcommit。
-- 日本語6状態から英語7状態へ移る際の、task単位の対応関係。
+- 日本語6状態から英語7状態へ移る際の対応はsection単位で確認した。個々の旧checklist項目が、独立task、
+  親taskの内訳、完了履歴、または非登録のどれへ移ったかという全件対応は未調査。
 - どの介入、失敗、再開上の問題が各区別を必要としたか。
 - 「最初の3状態」という記憶が指す対象。
 

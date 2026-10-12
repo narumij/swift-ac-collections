@@ -20,13 +20,14 @@
 ## 対象
 
 通常版の主な対象は、`Collection.nextPermutations()`と、要素bufferを所有して各順列を一時的な
-`Span`として貸し出す`NextPermutations`である。`NextPermutations`は`~Copyable`であり、
-`Sequence`には適合しない。返された`Span`はiteratorを借用し、次のmutating accessを越えて保持できない。
+`Permutation` Viewとして貸し出す`NextPermutations`である。`NextPermutations`は`~Copyable`であり、
+`Sequence`には適合しない。返されたViewは次のmutating accessまたは所有者の破棄で失効し、以後のaccessを
+runtime checkで拒否する。
 
 旧`NextPermutationsSequence`、その`Iterator`と`Permutation`、Copy on Write、および結果値の
-永続的な値セマンティクスは、現行通常版の契約として扱わない。Swift 6.2向けに退避した
-`PermutationsSwift62.swift`内の`#if false`と旧testは、
-契約移行の棚卸し資料であり、現行仕様または成功証拠ではない。
+永続的な値セマンティクスは、現行通常版の契約として扱わない。旧testは契約移行の履歴資料であり、
+現行仕様または成功証拠ではない。無効化されていた旧Swift 6.2実装は、現行runtime-check View版が
+Swift 6.2で成立したため削除した。
 
 AtCoder 2025互換modeは同じ製品目的へ関係するが、公開表面、実装、build条件、および検証経路が通常版と異なる。通常版の証拠を互換modeへ、互換modeの証拠を通常版へ自動的に適用しない。
 

@@ -23,9 +23,8 @@ retired `NextPermutationsSequence` value-semantic and Copy on Write contract.
 
 - `Sources/PermutationModule/Documentation/Quality-Profile.md`
 - The active Swift 6.4 implementation in `Sources/PermutationModule/Permutations.swift`
-- The disabled Swift 6.2 implementation in
-  `Sources/PermutationModule/PermutationsSwift62.swift`, used only to identify retired-contract tests
 - The seven disabled files in `Tests/PermutationTests/NextPermutationsSequence/`
+- Git history for the removed Swift 6.2 COW implementation, when implementation details are needed
 - `Tests/PermutationTests/EtcTests.swift`, which is a persistent scratchpad whose individual checks
   must be inventoried rather than silently treated as finished specification tests
 - The test-specific instructions in `Tests/CLAUDE.md`

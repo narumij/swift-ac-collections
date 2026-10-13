@@ -4,7 +4,7 @@
 
 - ID: `ARRAY-018`
 - 種別: `EXECUTION`
-- 状態: `ACTIVE`
+- 状態: `DONE`
 - 担当: Codex
 - 現在の中間ゴールへの近さ: `DIRECT`
 - 前提: `ARRAY-016`
@@ -56,3 +56,5 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
 - Claudeの独立目視検査で、`Utilities`配下のcompiler fixture 2件に旧名importが残ることと、`Tests/TESTING.md`の
   compatibility test記述が古いことを検出した。両方を修正し、fixtureのcompile-pass 1件と期待する
   escape diagnostic 4件をscriptで再確認した。目視検査はCodexが受け入れた。
+- commit `7377b76d`のPR #196 CI run `38465709778`で、performanceを含む10 jobsすべてのsuccessを確認した。
+  DocC matrixは旧名2 targetを除いた5 targetで完走し、旧名facade終了後のremote構成を受け入れた。

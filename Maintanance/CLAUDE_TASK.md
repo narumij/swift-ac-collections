@@ -9,10 +9,11 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行待ち: OptionalArray更新methodの`mutating`化によるsource影響棚卸し**
+**完了（Codex検収待ち）: OptionalArray更新methodの`mutating`化によるsource影響棚卸し**
 
-repository内の現行呼出側だけを検索し、機械的な`let`→`var`で済む箇所と、所有権または設計判断を要する
-箇所を分離する。source・test・文書は変更しない。
+repository内の影響は、`let`→`var`が23箇所、一時値receiverの書き換えが20箇所。
+repository外では、Swift 6 modeの`main.swift`で、top-levelの`let memo`を使う形が`nonisolated(unsafe) var`を要するようになる。
+詳細はReturn節。
 
 **完了: OptionalArrayのdomain間移送と並行更新排除の独立検証**
 
@@ -75,7 +76,7 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Current assignment: OptionalArray更新methodの`mutating`化によるsource影響棚卸し
+## Completed assignment: OptionalArray更新methodの`mutating`化によるsource影響棚卸し
 
 ### Objective
 
@@ -108,7 +109,54 @@ Archived、RedBlackTree、Permutation、Git履歴、過去conversationは調査�
 
 ### Return
 
-未実施。
+2026-10-13 Claude（Opus 5.5）。repository内をgrepで検索し、呼出し形状をSwift 6.4の一時probe
+（`-swift-version 6 -strict-concurrency=complete -wmo -emit-sil`）で確かめた。一時directoryは削除済み。
+repositoryの変更、build、testはしていない。
+
+probeの型は、`mutating`化した1D模型。2D〜4Dは同じmethod形なので同じ結果と推定する。
+対象外: `Maintanance/`配下のMarkdownにあるコード例（public documentationではないため）。
+
+#### A. `let`→`var`だけで済む（23箇所）
+
+- `Tests/OptionalArrayModuleTests/OptionalArray_2_ElementAccessTests.swift`の30、54、78、103行（`*DirectMethods`の4 test）。
+- `Tests/OptionalArrayModuleTests/OptionalArray_7_CoordinateValueAccessTests.swift`の9、13、23、39、63、69、75、82、106、116、126、136行（12箇所）。
+- `Tests/AcCollectionsTests/AcCollectionsTests.swift`の93行。
+- `Benchmarks/Sources/Benchmarks/OptionalArrayBenchmarks.swift`の247、270、293、322、352、384行（direct methodsの6 benchmark）。
+  いずれも外側closureで宣言した値を、返す`@escaping (inout Timer) -> Void`がcaptureし、その中と`timer.measure {}`の中で更新している。
+  `var`にするとこの形はcompileする（probe B1で確認）。ただし性能面はCに書く。
+
+#### B. `let`→`var`ではない機械的な書き換え（20箇所）
+
+- `Tests/OptionalArrayModuleTests/OptionalArray_97_CoordinateValueAccessDeathTests.swift`の14〜15、26〜29、42〜47、62〜69行。
+  一時値を受け手にした`OptionalElementBuffer…(…).setElement(…)`は、「function call returns immutable value」で拒否される。
+  closure内でlocalの`var`へ受けてから呼ぶ形にすれば、`@Sendable` closure内でもcompileする（probe D1・D2）。
+
+#### C. 追加確認が必要
+
+- **benchmarkの計測値（A節の6件）:** escaping closureがcaptureする`var`は、box化と動的なexclusivity検査の対象になりうる。
+  計測loop内のaccessのコストが変わる可能性がある。compileは確認したが、機械語や計測は見ていない。
+  baselineとの比較は、この差を製品の性能回帰と区別して扱う必要がある。
+- **`RigidArray<OptionalElementBuffer<Int>>`の要素更新（同じbenchmark fileの134、159行）:** 既に`var array`で、
+  `array[y].setElement`はRigidArrayのmutable accessor（Swift 6.4ではmutate、それ以外ではunsafeMutableAddress）を通る。
+  unsafeMutableAddress型の模型ではcompileした（probe B2）。実際のRigidArrayでの確認はbuild禁止のため未実施。
+
+#### D. 既に`var`、または更新していないため影響なし
+
+- 既に`var`: `_2`の9、20、41、66、90行。`_5`の4箇所全部。`_6`の7箇所全部。benchmarkのRigidArray 3件（82、122、152行）。
+- `EDPC-J.swift`と`EDPC-L.swift`: `nonisolated(unsafe) var`のlocalを入れ子の関数がcaptureして更新する形。
+  `mutating`でもcompileする（probe E1）。
+- `let`だが更新しない: `_0`、`_1`、`_4`、`_99`の全箇所、benchmarkの66行（初期化だけ）。
+- `Sources/`の他module、`Snippets/`、Quality Profile、documentation comment: 呼出しもコード例もない。
+
+#### E. repository外の利用者にだけ残る影響
+
+- `let`に束縛した値、`borrowing`引数、一時値receiverからの更新は、すべてcompile errorになる（probe L1・G1・D1）。
+- **Swift 6 modeの`main.swift`（競技用途に多い形）:** 現行は、top-levelの`let memo`をtop-levelの`func`から更新するコードがcompileする（型がSendableのため）。
+  `mutating`化後は`var memo`が必要になる。Swift 6 modeでは、top-levelの`var`はMainActor隔離になるため、
+  nonisolatedな`func`からの参照・更新が拒否される。通すには`nonisolated(unsafe) var`が要る。
+  Swift 5 modeでは、`var`にするだけで診断なしで通った。
+  この点は、並行更新を型で拒否するという`mutating`化の目的と、明示的なunsafe注釈を利用者へ求めることとの間の判断材料になる。
+- 推論（未検証）: source packageとして配布しているので、影響はsource互換に限られ、binary互換の問題は生じないと考える。
 
 ## Completed assignment: OptionalArrayのdomain間移送と並行更新排除の独立検証
 

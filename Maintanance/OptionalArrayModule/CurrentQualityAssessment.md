@@ -175,6 +175,26 @@ consuming transferは成立した。しかしactorのstored propertyからの再
 「pointeeへの書込みはmutating methodとdeinitだけで、pointerは非公開」という不変条件を現行4型で
 照合し、既存呼出側へのsource影響を棚卸ししてから、適合維持方法を一判断へ分離する。
 
+### `mutating`候補のsource影響棚卸し
+
+Claudeが1D〜4Dの`setElement`と`removeAll()`を`mutating`にした模型をSwift 6.4のSIL生成まで確認し、
+repository内の呼出しを棚卸しした。既存sourceを変更せず、次を確認した。
+
+- test・facade test・benchmarkの23箇所は、receiverを`let`から`var`へ変える機械的影響である。
+- death testの一時値receiver 20箇所は、localの`var`へ受けてから呼ぶ形への書換えを要する。
+- 既に`var`の呼出し、更新しない`let`、EDPC例の`nonisolated(unsafe) var` captureは、確認した模型では
+  `mutating`化後も成立する。
+- benchmarkのescaping closureがcaptureする`var`はbox化・exclusivity検査により計測値へ影響し得るため、
+  実装時には性能回帰と計測形変更を分離して確認する必要がある。
+- repository外では、`let`、`borrowing`引数、一時値receiverからの更新がsource incompatibilityになる。
+- Swift 6 modeのトップレベルでは、現行の`let`をトップレベル関数から更新する形が成立しても、
+  `mutating`化に伴う`var`はMainActor隔離となり得る。nonisolated関数から更新するには
+  `nonisolated(unsafe) var`が必要になることを最小probeで確認した。Swift 5 modeでは`var`化だけで通った。
+
+したがって、repository内の修正量だけを根拠に機械的変更とは扱わない。domain間移送と並行更新拒否を
+両立する利点に対し、Swift 6の競技用トップレベルコードを含むsource compatibilityを受容するかを、
+実装とは別の製品判断とする。
+
 ## 判断の整理
 
 - 1D所有型名は横断命名判断でunsuffixedの`OptionalElementBuffer`に確定し、実装反映も完了した。

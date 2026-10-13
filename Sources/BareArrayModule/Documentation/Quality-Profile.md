@@ -80,7 +80,7 @@ CI設定は、実際に検証するtoolchain、platform、build configuration、
 
 - 1D〜4Dの寸法とoffsetが契約どおり対応すること。
 - 非対称寸法、zero dimension、境界位置、および次元積overflowを契約どおり扱うこと。
-- `element`、`setElement`、`reference`、`mutable`が指定座標だけを読み書きすること。
+- `element`、`setElement`、`reference(at:)`、`MutableRef.pointee`が指定座標だけを読み書きすること。
 - 参照型要素の構築、上書き、再代入、および破棄が対応すること。
 - `indices`が各型の外側の軸を表すこと。
 

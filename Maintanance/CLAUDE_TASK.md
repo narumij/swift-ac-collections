@@ -9,11 +9,15 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行待ち: OptionalArray／BareArray deprecated公開面削除後の独立目視検査**
+**完了: OptionalArray／BareArray deprecated公開面削除後の独立目視検査**
 
 CodexがOptionalArrayとBareArrayの旧連鎖subscript・非所有Viewを削除し、現行の座標accessへtest・
 benchmark・文書を移行した作業について、下記のbounded assignmentだけを独立に検査する。実装や文書を
 修正せず、観測結果をこの文書のreturn節へ記録する。RedBlackTreeへは触れない。
+
+- Claudeが旧公開面の残存と現行座標access・借用参照経路を横断確認した。
+- 指摘されたQuality Profileの存在しない`mutable`表記をCodexが`reference(at:)`／`MutableRef.pointee`へ修正した。
+- 追跡外の旧fixture空directoryを除去し、検査結果を受け入れた。
 
 **凍結中: PERM-051 borrowed Span版PermutationのTest as Specification**
 
@@ -74,7 +78,43 @@ Read only:
 
 ### Claude return
 
-未記入。
+2026-10-13 Claude（Opus 5.5）。検索と目視照合だけで、build・testは実行していない。
+
+#### 指摘
+
+- `Sources/BareArrayModule/Documentation/Quality-Profile.md:83` — 「`element`、`setElement`、`reference`、`mutable`が
+  指定座標だけを読み書きすること」。`mutable`という公開APIは現行`BareArray.swift`に存在しない（`func mutable`／
+  `mutable(at:`の検索0件）。現行の借用参照経路は`reference(at:)`だけ。旧Viewのdeprecated messageが存在しない
+  `mutable(at:...)`を案内していた件（CurrentQualityAssessment「付随して見つかった文書不整合」）と同根の残りと見られる。
+- `Utilities/Maintenance/CompilerDiagnostics/BareArrayOwnedWriteback/`と`BareArrayViewEscape/`が、中身のない
+  directory（`Tests`／`Sources`の空subdirectoryだけ）として作業treeに残っている。gitの追跡対象ではなく
+  （`git ls-files`で0件）、検証scriptからも参照されていないので契約上の問題ではないが、旧fixtureが残っているように
+  見える。（Inputs外の`Utilities/`だが、問いの「削除された契約だけを観測するcompiler fixture」に関わるので記録）
+
+#### 問題なし（確認した範囲）
+
+- production source: `Sources/OptionalArrayModule/`、`Sources/BareArrayModule/`に`*1DView`〜`*3DView`型と
+  `subscript(`は残っていない。
+- test: `Tests/OptionalArrayModuleTests/`、`Tests/BareArrayModuleTests/`、`Tests/AcCollectionsTests/`に旧View型・連鎖
+  subscriptは残っていない。`EDPC-J.swift`／`EDPC-L.swift`の利用例も`element(at:)`／`setElement(_:at:)`へ移行済み。
+- benchmark: `Benchmarks/Sources/Benchmarks/`の`[y][x]`形は、`OptionalArrayBenchmarks.swift`のRigidArray比較、
+  `RigidArrayOptimizationBenchmarks.swift`、`StandardArrayMultidimensionalBenchmarks.swift`だけで、どれも比較対象の
+  標準Array／RigidArrayのsubscript。OptionalArray／BareArrayへの連鎖subscriptではない。
+- 公開Quality Profile: OptionalArray（23行）、BareArray（22行）とも「旧連鎖subscriptと非所有View 1D〜3Dは削除済みで
+  現行契約に含めない」と明記。
+- CurrentQualityAssessment: OptionalArrayは削除を現在状態として記述。BareArrayは冒頭の「Deprecated公開面の削除」節で
+  現在状態を述べ、21行で「以下の旧View導入・監査・受入記録は履歴として保持」と境界を明示している。以降の旧View記述は
+  履歴として読める。
+- 現行経路: OptionalArray・BareArrayとも`element`／`setElement`が残り、`indices`も4型ずつ公開されたまま。
+  BareArrayの`MutableRef`（`BareArray.swift:426`）と`reference(at:)`は、Test as Specification（`_7_BorrowedReferenceTests`、
+  `_96_BorrowedReferenceDeathTests`）、compiler fixture（`BareArrayMutableRefLifetime`、検証scriptはこのfixtureだけを参照）、
+  benchmark（`BareArrayBenchmarks.swift`）に揃って存在する。
+
+#### 限界
+
+- 検索pattern（View型名、`subscript(`、`][…]`、`writeback`、`連鎖`）に合わない書き方の旧記述は見落としうる。
+- `Benchmarks/Libraries/*.json`のbenchmark名、DocC、README、`Documentation/`の利用者向け文書は見ていない。
+- auditの歴史記述は、現在状態との境界が読めるかだけを見た。
 
 ## Last completed assignment: PERM-056 public surface, coexistence, and reexport tests
 

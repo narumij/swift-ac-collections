@@ -82,3 +82,18 @@ Swift 6.4のborrowed版はruntime-check版の回帰baselineにしない。lifeti
 この分離を反映したPR #193では、PR #191のmerge commitをbaseとしてperformance jobを実行し、batched
 subscript 2件とend-to-endを含む新しい比較契約でall greenを確認した。以後の赤は、borrowed版からの方式差では
 なく、runtime-check版baselineに対する回帰として扱う。
+
+## benchmark task名のrename境界
+
+2026-10-13、BareArray／OptionalArrayの公開型rename後、HEADの`CI.json`をrename前のbaselineへ
+そのまま渡したため、baseline build成功後に新しい8 task名を解決できず`unknown tasks`で停止した。
+これは性能回帰ではなく、同じworkloadを指すtask名の世代差による比較構成不成立である。
+
+PRおよびrelease candidateのperformance workflowでは、比較対象のbenchmark sourceが新しい型名を
+まだ持たない場合だけ、HEADのlibrary定義を旧task名へ変換してbaselineを測定する。測定後、baselineの
+結果JSONにある旧名を新名へ戻し、HEAD結果と同じworkload名で比較する。BareArrayとOptionalArrayは
+個別に検出し、rename commitの途中をbaselineにした場合も一方だけを変換する。
+
+この互換処理はbenchmark実装や測定値をbaselineへ移植しない。baselineがrenameを含むようになれば
+自動的にno-opとなる。今後のtask renameでも、旧実装と新実装が同じworkloadであることを先に確認し、
+library入力と結果名の両方を対応付ける。意味や測定境界が変わる場合はrename互換として扱わない。

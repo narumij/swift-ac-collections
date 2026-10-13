@@ -91,7 +91,7 @@ extension BareArray {
   public var indices: Range<Int> { 0..<count }
 }
 
-extension BareArray: @unchecked Sendable where Element: Sendable { }
+extension BareArray: @unchecked Sendable where Element: Sendable {}
 
 /// 競技プログラミング用多次元配列
 ///
@@ -187,7 +187,7 @@ extension BareArray2D {
   public var indices: Range<Int> { 0..<height }
 }
 
-extension BareArray2D: @unchecked Sendable where Element: Sendable { }
+extension BareArray2D: @unchecked Sendable where Element: Sendable {}
 
 /// 競技プログラミング用多次元配列
 ///
@@ -301,7 +301,7 @@ extension BareArray3D {
   public var indices: Range<Int> { 0..<depth }
 }
 
-extension BareArray3D: @unchecked Sendable where Element: Sendable { }
+extension BareArray3D: @unchecked Sendable where Element: Sendable {}
 
 /// 連続したメモリ領域に要素を所有する4次元配列です。
 ///
@@ -378,7 +378,7 @@ extension BareArray3D: @unchecked Sendable where Element: Sendable { }
     self.size2 = size2
     self.size3 = size3
   }
-  
+
   @inlinable
   @unsafe internal init(
     payload: UnsafeMutablePointer<Element>, size0: Int, size1: Int, size2: Int, size3: Int
@@ -402,7 +402,7 @@ extension BareArray3D: @unchecked Sendable where Element: Sendable { }
     unsafe self.payload.deinitialize(count: capacity)
     unsafe self.payload.deallocate()
   }
-  
+
   @inlinable
   func clone() -> Self {
     let payload = UnsafeMutablePointer<Element>.allocate(capacity: capacity)
@@ -420,139 +420,121 @@ extension BareArray4D {
   public var indices: Range<Int> { 0..<size3 }
 }
 
-extension BareArray4D: @unchecked Sendable where Element: Sendable { }
+extension BareArray4D: @unchecked Sendable where Element: Sendable {}
 
-  /// A mutable reference to one element in a `BareArray` storage.
-  @safe public struct MutableRef<Element>: ~Escapable {
-    @usableFromInline let pointer: UnsafeMutablePointer<Element>
+// MARK: -
 
-    @inlinable
-    @_lifetime(borrow source)
-    @unsafe internal init<Source: ~Copyable & ~Escapable>(
-      _ pointer: UnsafeMutablePointer<Element>, borrowing source: borrowing Source
-    ) {
-      unsafe self.pointer = pointer
-    }
+extension BareArray {
 
-    @inlinable
-    public var pointee: Element {
-      @inline(__always)
-      unsafeAddress { unsafe UnsafePointer(pointer) }
-      @inline(__always)
-      nonmutating unsafeMutableAddress { unsafe pointer }
-    }
+  @available(anyAppleOS 27.0, *)
+  @inlinable
+  @_lifetime(&self)
+  public mutating func reference(at position: Int) -> MutableRef<Element> {
+    precondition(0 <= position && position < count)
+    return unsafe .init(unsafeAddress: payload + position, mutating: &self)
   }
 
-  extension BareArray {
-    public typealias Reference = MutableRef<Element>
-
-    @inlinable
-    @_lifetime(borrow self)
-    public func reference(at position: Int) -> Reference {
-      precondition(0 <= position && position < count)
-      return unsafe .init(payload + position, borrowing: self)
-    }
-
-    @inlinable
-    public func element(at position: Int) -> Element {
-      precondition(0 <= position && position < count)
-      return unsafe payload[position]
-    }
-
-    @inlinable
-    public func setElement(_ newValue: consuming Element, at position: Int) {
-      precondition(0 <= position && position < count)
-      unsafe payload[position] = newValue
-    }
+  @inlinable
+  public func element(at position: Int) -> Element {
+    precondition(0 <= position && position < count)
+    return unsafe payload[position]
   }
 
-  extension BareArray2D {
-    public typealias Reference = MutableRef<Element>
+  @inlinable
+  public func setElement(_ newValue: consuming Element, at position: Int) {
+    precondition(0 <= position && position < count)
+    unsafe payload[position] = newValue
+  }
+}
 
-    @inlinable
-    @_lifetime(borrow self)
-    public func reference(at x: Int, _ y: Int) -> Reference {
-      precondition(0 <= x && x < width)
-      precondition(0 <= y && y < height)
-      return unsafe .init(payload + y * width + x, borrowing: self)
-    }
+extension BareArray2D {
 
-    @inlinable
-    public func element(at x: Int, _ y: Int) -> Element {
-      precondition(0 <= x && x < width)
-      precondition(0 <= y && y < height)
-      return unsafe payload[y * width + x]
-    }
-
-    @inlinable
-    public func setElement(_ newValue: consuming Element, at x: Int, _ y: Int) {
-      precondition(0 <= x && x < width)
-      precondition(0 <= y && y < height)
-      unsafe payload[y * width + x] = newValue
-    }
+  @available(anyAppleOS 27.0, *)
+  @inlinable
+  @_lifetime(&self)
+  public mutating func reference(at x: Int, _ y: Int) -> MutableRef<Element> {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    return unsafe .init(unsafeAddress: payload + y * width + x, mutating: &self)
   }
 
-  extension BareArray3D {
-    public typealias Reference = MutableRef<Element>
-
-    @inlinable
-    @_lifetime(borrow self)
-    public func reference(at x: Int, _ y: Int, _ z: Int) -> Reference {
-      precondition(0 <= x && x < width)
-      precondition(0 <= y && y < height)
-      precondition(0 <= z && z < depth)
-      return unsafe .init(payload + (z * height + y) * width + x, borrowing: self)
-    }
-
-    @inlinable
-    public func element(at x: Int, _ y: Int, _ z: Int) -> Element {
-      precondition(0 <= x && x < width)
-      precondition(0 <= y && y < height)
-      precondition(0 <= z && z < depth)
-      return unsafe payload[(z * height + y) * width + x]
-    }
-
-    @inlinable
-    public func setElement(_ newValue: consuming Element, at x: Int, _ y: Int, _ z: Int) {
-      precondition(0 <= x && x < width)
-      precondition(0 <= y && y < height)
-      precondition(0 <= z && z < depth)
-      unsafe payload[(z * height + y) * width + x] = newValue
-    }
+  @inlinable
+  public func element(at x: Int, _ y: Int) -> Element {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    return unsafe payload[y * width + x]
   }
 
-  extension BareArray4D {
-    public typealias Reference = MutableRef<Element>
+  @inlinable
+  public func setElement(_ newValue: consuming Element, at x: Int, _ y: Int) {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    unsafe payload[y * width + x] = newValue
+  }
+}
 
-    @inlinable
-    @_lifetime(borrow self)
-    public func reference(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> Reference {
-      precondition(0 <= x && x < size0)
-      precondition(0 <= y && y < size1)
-      precondition(0 <= z && z < size2)
-      precondition(0 <= w && w < size3)
-      return unsafe .init(
+extension BareArray3D {
+
+  @available(anyAppleOS 27.0, *)
+  @inlinable
+  @_lifetime(&self)
+  public mutating func reference(at x: Int, _ y: Int, _ z: Int) -> MutableRef<Element> {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    precondition(0 <= z && z < depth)
+    return unsafe .init(unsafeAddress: payload + (z * height + y) * width + x, mutating: &self)
+  }
+
+  @inlinable
+  public func element(at x: Int, _ y: Int, _ z: Int) -> Element {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    precondition(0 <= z && z < depth)
+    return unsafe payload[(z * height + y) * width + x]
+  }
+
+  @inlinable
+  public func setElement(_ newValue: consuming Element, at x: Int, _ y: Int, _ z: Int) {
+    precondition(0 <= x && x < width)
+    precondition(0 <= y && y < height)
+    precondition(0 <= z && z < depth)
+    unsafe payload[(z * height + y) * width + x] = newValue
+  }
+}
+
+extension BareArray4D {
+
+  @available(anyAppleOS 27.0, *)
+  @inlinable
+  @_lifetime(&self)
+  public mutating func reference(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> MutableRef<Element> {
+    precondition(0 <= x && x < size0)
+    precondition(0 <= y && y < size1)
+    precondition(0 <= z && z < size2)
+    precondition(0 <= w && w < size3)
+    return unsafe .init(
+      unsafeAddress:
         payload + ((w * size2 + z) * size1 + y) * size0 + x,
-        borrowing: self)
-    }
-
-    @inlinable
-    public func element(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> Element {
-      precondition(0 <= x && x < size0)
-      precondition(0 <= y && y < size1)
-      precondition(0 <= z && z < size2)
-      precondition(0 <= w && w < size3)
-      return unsafe payload[((w * size2 + z) * size1 + y) * size0 + x]
-    }
-
-    @inlinable
-    public func setElement(
-      _ newValue: consuming Element, at x: Int, _ y: Int, _ z: Int, _ w: Int
-    ) {
-      precondition(0 <= x && x < size0)
-      precondition(0 <= y && y < size1)
-      precondition(0 <= z && z < size2)
-      precondition(0 <= w && w < size3)
-      unsafe payload[((w * size2 + z) * size1 + y) * size0 + x] = newValue
-    }
+      mutating: &self)
   }
+
+  @inlinable
+  public func element(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> Element {
+    precondition(0 <= x && x < size0)
+    precondition(0 <= y && y < size1)
+    precondition(0 <= z && z < size2)
+    precondition(0 <= w && w < size3)
+    return unsafe payload[((w * size2 + z) * size1 + y) * size0 + x]
+  }
+
+  @inlinable
+  public func setElement(
+    _ newValue: consuming Element, at x: Int, _ y: Int, _ z: Int, _ w: Int
+  ) {
+    precondition(0 <= x && x < size0)
+    precondition(0 <= y && y < size1)
+    precondition(0 <= z && z < size2)
+    precondition(0 <= w && w < size3)
+    unsafe payload[((w * size2 + z) * size1 + y) * size0 + x] = newValue
+  }
+}

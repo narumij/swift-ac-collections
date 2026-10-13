@@ -28,4 +28,3 @@ Already adopted scopes are excluded.
 | `BR-03` | `elementReference` | 8 | 6 | More explicit than `reference`, but direct `MutableRef` already supplies the missing result-kind context. |
 | `RP-01` | `pointee` | 8 | 7 | Still accurately distinguishes projected owner storage from a copied value; Claude's unsafe-sounding concern is valid. |
 | `RP-02` | `value` | 6 | 6 | More approachable, but the copied-value ambiguity remains important beside `element(at:)`. |
-

@@ -13,21 +13,21 @@
 
 | Task ID | 観測された詳細正本 | 観測先 | 注記 |
 | --- | --- | --- | --- |
-| `API-001` | `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` | 2026-10-12 |  |
-| `API-002` | `PUBLIC_API_NAMING_BALLOT.md` / `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` | 現行 |  |
-| `API-003` | `PUBLIC_API_NAMING_BALLOT.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
-| `API-004` | `PUBLIC_API_NAMING_SCORE_USER.md` / `PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
-| `API-005` | `PUBLIC_API_NAMING_SCORE_CODEX.md` / `PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
-| `API-006` | `PUBLIC_API_NAMING_SCORE_CLAUDE.md` / `PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
-| `API-007` | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `PUBLIC_API_NAMING_SCORE_USER.md` / `PUBLIC_API_NAMING_SCORE_CODEX.md` / `PUBLIC_API_NAMING_SCORE_CLAUDE.md` | 現行 |  |
+| `API-001` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` | 2026-10-12 |  |
+| `API-002` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_USER.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` | 現行 |  |
+| `API-003` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
+| `API-004` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_USER.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
+| `API-005` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CODEX.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
+| `API-006` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CLAUDE.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
+| `API-007` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_USER.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CODEX.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CLAUDE.md` | 現行 |  |
 | `ARRAY-001` | `StrictMemorySafetyReadiness.md` | 2026-10-12 |  |
-| `ARRAY-002` | `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
-| `ARRAY-003` | `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
+| `ARRAY-002` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
+| `ARRAY-003` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
 | `ARRAY-004` | `Archived/ARRAY_NAMING_RANKING_CODEX.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 | 旧ranking draftを独立採点方式で置換。 |
-| `ARRAY-005` | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
-| `ARRAY-006` | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
+| `ARRAY-005` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
+| `ARRAY-006` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
 | `ARRAY-007` | `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
-| `ARRAY-008` | `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
+| `ARRAY-008` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_USER.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
 | `BARE-001` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |
 | `BARE-002` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |
 | `BARE-003` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |

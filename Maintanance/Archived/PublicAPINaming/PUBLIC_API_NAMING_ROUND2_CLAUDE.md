@@ -29,4 +29,3 @@ score report, and the adopted decisions before scoring. Score only the unresolve
 | `BR-03` | `elementReference` | 5 | 6 | 1点上げた。Codexの「copied accessと参照の射影を分ける」という理由が、採用済みの`element(at:)`／`setElement`と並べたときに効く（element / setElement / elementReference）。可変と寿命は名前に出ない |
 | `RP-01` | `pointee` | 5 | 6 | 1点上げた。Codexの理由（参照としてのaccessを正しく示す）に加え、`MutableRef.pointee`は`UnsafeMutablePointer.pointee`と同じく、copyではなくstorageの射影だと読める。unsafe寄りの響きは残る |
 | `RP-02` | `value` | 5 | 4 | 1点下げた。copied accessの語彙で`value`が退けられ`element`が採用されたので、ここで`value`を「copyではない参照先」の意味に使うと、同じ語が退けた意味と逆の意味で現れて混乱しうる |
-

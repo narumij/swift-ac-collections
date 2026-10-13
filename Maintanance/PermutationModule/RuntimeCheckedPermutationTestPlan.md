@@ -276,7 +276,7 @@ G0、G2、G4、G5、production source、Registry、Quality Profileには触れ�
   24件成功、失敗・skip・not run各0件を確認した。
 - CLIによる同じ再実行はXcode環境のsandboxがmanifest起動を拒否したため成立しなかった。これはtest失敗の
   証拠ではなく、Claudeが記録したDebug／Release CLI各24件成功を置き換えるものでもない。
-- `Maintanance/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
 
 これにより`PERM-053`は完了とする。G2、G4、G0／G5は、それぞれ独立した後続taskとして残る。
 
@@ -323,7 +323,7 @@ G0、G1、G3、G4、G5、production source、Registry、Quality Profileには触
   昇格されている。無関係なSpan scratchは維持されている。
 - Xcodeの現行scheme／test planで、受入済みG1・G3・範囲外Death Testと新G2を合わせた33件を
   Codexが独立再実行し、33件成功、失敗・skip・not run各0件を確認した。
-- `Maintanance/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
 
 これにより`PERM-054`は完了とする。G4とG0／G5は、それぞれ独立した後続taskとして残る。
 
@@ -369,7 +369,7 @@ G0、G1、G2、G3、G5、production source、Registry、Quality Profileには触
   失効ViewへアクセスしないことでG2との責務も分離されている。
 - Xcodeの現行scheme／test planで、受入済みG1・G2・G3と新G4を合わせた40件をCodexが独立再実行し、
   40件成功、失敗・skip・not run各0件を確認した。
-- `Maintanance/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
 
 これにより`PERM-055`は完了とする。G0／G5は独立した最後の後続taskとして残る。
 
@@ -425,6 +425,6 @@ compile fixture scriptはCIへ登録していない。
 - `Utilities/Maintenance/VerifyPermutationCompilerDiagnostics.sh`をCodexが再実行し、公開入口のcompile-pass
   1件と、直接初期化、owner copy、`Sequence`利用のcompile-fail各1件が期待diagnosticで失敗することを確認した。
 - compiler fixtureはrepository内で再実行可能だが、CIへの登録は本taskの範囲外として残っている。
-- `Maintanance/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
 
 これにより`PERM-056`は完了し、runtime-check版PermutationのG0〜G5 Test as Specification再構成は一巡した。

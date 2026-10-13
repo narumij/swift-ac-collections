@@ -399,10 +399,10 @@ Verification／Validation分離、結果分類）は維持できる。
 Read:
 
 - Registryの`API-010`行;
-- `PUBLIC_API_NAMING_BALLOT.md`;
-- `PUBLIC_API_NAMING_SCORE_REPORT.md`;
-- `PUBLIC_API_NAMING_ROUND2_REPORT.md`;
-- `PUBLIC_API_NAMING_ROUND3_REPORT.md`;
+- `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md`;
+- `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md`;
+- `Archived/PublicAPINaming/PUBLIC_API_NAMING_ROUND2_REPORT.md`;
+- `Archived/PublicAPINaming/PUBLIC_API_NAMING_ROUND3_REPORT.md`;
 - `PUBLIC_API_NAMING_DECISIONS.md`;
 - 必要な場合だけ、各roundのUser・Codex・Claude raw score;
 - 現行公開面の照合に必要な範囲の`Sources/BareArrayModule/BareArray.swift`と
@@ -489,14 +489,14 @@ borrowed-reference propertyの`pointee`、`value`だけを、公開promiseを明
 Read:
 
 - Registryの`API-009`行;
-- 三者の`PUBLIC_API_NAMING_ROUND2_*.md`;
-- `PUBLIC_API_NAMING_ROUND2_REPORT.md`;
+- 三者の`Archived/PublicAPINaming/PUBLIC_API_NAMING_ROUND2_*.md`;
+- `Archived/PublicAPINaming/PUBLIC_API_NAMING_ROUND2_REPORT.md`;
 - `PUBLIC_API_NAMING_DECISIONS.md`;
-- `PUBLIC_API_NAMING_ROUND3_CLAUDE.md`。
+- `Archived/PublicAPINaming/PUBLIC_API_NAMING_ROUND3_CLAUDE.md`。
 
 ### Boundaries
 
-- 変更できるのは`PUBLIC_API_NAMING_ROUND3_CLAUDE.md`だけ。
+- 変更できるのは`Archived/PublicAPINaming/PUBLIC_API_NAMING_ROUND3_CLAUDE.md`だけ。
 - 新候補、採用判断、統合、source・test・Registry変更を行わない。
 - build、test、benchmark、commitは行わない。
 
@@ -517,15 +517,15 @@ borrowed-reference method、borrowed-reference propertyを再採点する。
 Read:
 
 - Registryの`API-008`行;
-- `PUBLIC_API_NAMING_SCORE_USER.md`、`PUBLIC_API_NAMING_SCORE_CODEX.md`、
-  `PUBLIC_API_NAMING_SCORE_CLAUDE.md`;
-- `PUBLIC_API_NAMING_SCORE_REPORT.md`;
+- `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_USER.md`、`Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CODEX.md`、
+  `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CLAUDE.md`;
+- `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md`;
 - `PUBLIC_API_NAMING_DECISIONS.md`;
-- `PUBLIC_API_NAMING_ROUND2_CLAUDE.md`。
+- `Archived/PublicAPINaming/PUBLIC_API_NAMING_ROUND2_CLAUDE.md`。
 
 ### Boundaries
 
-- 変更できるのは`PUBLIC_API_NAMING_ROUND2_CLAUDE.md`だけ。
+- 変更できるのは`Archived/PublicAPINaming/PUBLIC_API_NAMING_ROUND2_CLAUDE.md`だけ。
 - 採用済みのcopied access、1D suffix、`MutableRef`を再採点しない。
 - 新候補、採用判断、統合報告、source・test・Registry変更を行わない。
 - build、test、benchmark、commitは行わない。
@@ -539,7 +539,7 @@ Read:
 
 ### Objective
 
-`PUBLIC_API_NAMING_BALLOT.md`の全候補を独立に評価し、`PUBLIC_API_NAMING_SCORE_CLAUDE.md`へ
+`Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md`の全候補を独立に評価し、`Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CLAUDE.md`へ
 1〜10の整数点、短い理由、重要な懸念を記録する。
 
 ### Inputs
@@ -547,12 +547,12 @@ Read:
 Read only:
 
 - Registryの`API-006`行;
-- `Maintanance/PUBLIC_API_NAMING_BALLOT.md`;
+- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md`;
 - 現行の`Sources/BareArrayModule/BareArray.swift`;
 - 現行の`Sources/OptionalArrayModule/OptinalArray.swift`;
 - 両moduleの公開Quality Profile。
 
-`PUBLIC_API_NAMING_SCORE_USER.md`と`PUBLIC_API_NAMING_SCORE_CODEX.md`は読まない。
+`Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_USER.md`と`Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CODEX.md`は読まない。
 
 ### Evaluation
 
@@ -562,7 +562,7 @@ promise accuracy、Validation fitnessを総合的な観点として使う。機�
 
 ### Boundaries
 
-- 変更できるのは`Maintanance/PUBLIC_API_NAMING_SCORE_CLAUDE.md`だけ。
+- 変更できるのは`Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CLAUDE.md`だけ。
 - 候補、ballot、source、test、Registry、User・Codex scoreを変更しない。
 - 推奨winner、採用、平均、統合結果を作らない。
 - build、test、benchmark、commitは行わない。
@@ -575,7 +575,7 @@ promise accuracy、Validation fitnessを総合的な観点として使う。機�
 
 ### Objective
 
-`PUBLIC_API_NAMING_BALLOT.md`のArray部分が、現行公開面について一つの採点項目へ一つの命名判断だけを
+`Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md`のArray部分が、現行公開面について一つの採点項目へ一つの命名判断だけを
 置き、三者の候補を失わず、削除済み表面や契約変更を候補へ混入させていないか確認する。
 
 ### Inputs
@@ -583,9 +583,9 @@ promise accuracy、Validation fitnessを総合的な観点として使う。機�
 Read only:
 
 - Registryの`ARRAY-008`と`API-002`の行;
-- `Maintanance/PUBLIC_API_NAMING_BALLOT.md`;
+- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md`;
 - `Maintanance/ArrayObjectAndAPINamingDraft.md`;
-- 三者の`PUBLIC_API_NAMING_CANDIDATES_*.md`;
+- 三者の`Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_*.md`;
 - `Sources/BareArrayModule/BareArray.swift`;
 - `Sources/OptionalArrayModule/OptinalArray.swift`;
 - 両moduleの公開Quality Profile。
@@ -622,7 +622,7 @@ Read only:
 #### 指摘
 
 - **RP-01（帰属の誤り）:** Sourceが「Current, Claude retention」だが、Claudeは`pointee`の維持を提出していない。
-  `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`のB表は「`MutableRef`を維持、`pointee`を`value`へ」で、Claudeの案はRP-02だけ。
+  `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`のB表は「`MutableRef`を維持、`pointee`を`value`へ」で、Claudeの案はRP-02だけ。
   RP-01のSourceは「Current」だけにするのが正しい。
 - **RT-03（帰属の欠落）:** Sourceが「Codex supplement, current concrete type」だが、Claudeも同じB表で`MutableRef`の
   維持を提出している。exact duplicateとしてClaudeを加えるべき（票数は増やさない）。

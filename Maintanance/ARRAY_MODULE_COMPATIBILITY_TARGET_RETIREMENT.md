@@ -30,6 +30,7 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
 3. 旧名だけをimportするcompatibility smoke testを削除する。
 4. PR DocC matrixから旧名2 targetを削除し、新moduleを含む5 target構成へ戻す。
 5. 現行の移行正本とCI計画へ、旧名facade終了後の構成を反映する。
+6. 旧名facadeのDocC入口を削除するだけで終えず、新module名のDocC入口をそれぞれのtargetへ配置する。
 
 ## 検証
 
@@ -37,6 +38,7 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
 - `ENABLE_OPTIONAL_ELEMENT_BUFFER`有効時の対象testが成功する。
 - benchmark packageのrelease buildとCI libraryのtask解決が成功する。
 - `ElementBufferModule`と`OptionalElementBufferModule`のDocC生成が成功する。
+- 両新moduleの生成済みDocCに、新module名のmodule landing pageが含まれる。
 - 実行系に旧名targetへの依存またはimportが残らない。
 - remote PR CIでperformanceを含む全jobが完走する。
 
@@ -58,3 +60,8 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
   escape diagnostic 4件をscriptで再確認した。目視検査はCodexが受け入れた。
 - commit `7377b76d`のPR #196 CI run `38465709778`で、performanceを含む10 jobsすべてのsuccessを確認した。
   DocC matrixは旧名2 targetを除いた5 targetで完走し、旧名facade終了後のremote構成を受け入れた。
+- 完了記録後、旧名facadeのDocC landing pageだけを削除し、新module側へ対応するlanding pageを配置していない
+  不足を確認した。`ElementBufferModule.docc/ElementBufferModule.md`と
+  `OptionalElementBufferModule.docc/OptionalElementBufferModule.md`を追加し、両targetを
+  `--warnings-as-errors`付きで生成して成功した。生成済みJSONでも新module名のoverviewと4公開型への
+  symbol linkが採用されたことを確認した。

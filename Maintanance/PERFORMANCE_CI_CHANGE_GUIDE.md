@@ -53,11 +53,11 @@ PR #191でも両moduleのbase / current測定は成立したが、job全体は�
 - performance runnerの揺れと構成不成立を混同しない。測定値の調査が必要な場合は、Archivedの
   `Canonical/PERFORMANCE_REGRESSION_BISECTION.md`を参照する。
 
-## 今回への適用
+## OptionalArray direct access workloadの適用結果
 
 OptionalArrayのdirect access workloadはcommit `bf0259a0`で実装、専用library、暫定結果、chartまでを
-独立して保存した。通常CI libraryへの登録は同commitを含むmerge commitがbaselineへ到達した後、
-別taskとして実施する。外部性能アセスメントの正式化とは別の受入境界を維持する。
+独立して保存した。同commitを含むPR #189のmerge後、PR #190で通常CI libraryへの登録だけを実施し、
+performance jobのgreenを確認した。外部性能アセスメントの正式化とは別の受入境界を維持する。
 
 ## Permutation実装方式の切替
 

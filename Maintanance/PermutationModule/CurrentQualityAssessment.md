@@ -45,12 +45,12 @@ XCTest 27件とSwift Testingの失効Death Test 2件が成功した。XCTest 27�
 通常版は旧`NextPermutationsSequence`のCOW・値セマンティクス契約から、単一bufferを破壊的に進める
 `NextPermutations`とruntime-check付き`Permutation` Viewの契約へ変更された。旧通常版testは`#if false`で
 退避され、新契約のTest as Specificationは再構築前である。Swift 6.4のLifetimesと`Span`を使う版は、
-View省略と性能を調べた特殊経路として無効化し、通常提供から分離した。
+View省略と性能を活かす`borrowedNextPermutations()`として、runtime-check付き通常経路から分離している。
 
 この変更より前に記録した本書の「現行評価」、実行記録、およびPERM-040〜PERM-044の旧通常版に対する
-結論は、移行前実装の評価・調査記録として保持する。借用版の現在評価として流用せず、再評価が完了する
-まではQR-01、QR-03〜QR-06の旧判定を現在の適合主張に用いない。性能記録も、測定対象の実装と契約を
-区別して扱う。
+結論は、移行前実装の評価・調査記録として保持する。runtime-check版またはborrowed版の現在評価として
+流用せず、再評価が完了するまではQR-01、QR-03〜QR-06の旧判定を現在の適合主張に用いない。性能記録も、
+測定対象の実装と契約を区別して扱う。
 
 ## Task
 

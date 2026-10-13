@@ -128,8 +128,9 @@ Release build後、OptionalArray / Swift nested Array番兵 / C++ nested vector�
 
 ## 判断の整理
 
-- 1D所有型名と次元名体系は、0.6.0到達範囲判断の前に残る製品上の判断である。ただし現行名での
-  Verificationを妨げないため、今回の品質評価の前提にはしない。
+- 1D所有型名は横断命名判断でunsuffixedの`OptionalElementBuffer`に確定し、実装反映も完了した。
+  次元名体系の再判断は0.6.0到達範囲判断の前に残るが、現行APIのVerificationを妨げないため、
+  今回の品質評価の前提にはしない。
 - 旧31診断という評価は現行sourceに対して失効した。再取得した40件は、所有型分類4件、allocation
   境界8件、deprecated View経路28件へ分離でき、製品判断を追加せず警告0件へ整理できた。
 - deprecatedだった連鎖subscriptとViewを削除し、利用例・test・benchmarkを座標accessへ移行した。
@@ -141,7 +142,6 @@ Release build後、OptionalArray / Swift nested Array番兵 / C++ nested vector�
 
 | 種別 | 近さ | 内容 | 境界 |
 | --- | --- | --- | --- |
-| 既存`DECISION` | `DIRECT` | 1D所有型名 | 品質評価とは独立した公開名称だけを扱う |
 | 既存`DECISION` | `DIRECT` | 次元名体系 | 品質評価とは独立した公開名称だけを扱う |
 | 既存`DISCOVERY` | `LATER` | 1.0前の品質再評価 | ユーザードキュメント完了後、性能と利用Validationを含む1.0不足を再評価する |
 

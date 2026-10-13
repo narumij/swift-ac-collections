@@ -8,100 +8,103 @@ return and owns every correction, Registry update, and completion decision.
 
 ## Current job status
 
-**受入完了: Array owner rename残存の独立監査**
+**受入完了: OptionalArray利用者向け本文の独立読者レビュー**
 
 The user may start this assignment by opening the existing Worker Xcode conversation and saying
 `やって`. The Worker must reread this file and execute only the assignment below.
 
-Prime acceptance (2026-10-13): Workerの分類と変更範囲を独立に照合し、唯一の
-`CURRENT-DEFECT`を受け入れた。旧`OPT-044`は`ARRAY-009`の判断に吸収済みとし、Registry、
-0.6.0 release計画、OptionalArray監査記録から未解決判断としての残留を解消した。
+Prime acceptance (2026-10-13): Workerの唯一の`MUST-FIX`をsourceと品質正本へ照合し、
+条件付き適合を`Sendable`ではなく`@unchecked Sendable`と明記する必要があると受け入れた。
+本文を最小修正し、その他のAPI・座標・所有・寿命・性能・提供境界の独立レビューを受け入れた。
 
-## Active assignment: Array owner rename residue audit
+## Active assignment: OptionalArray user-document draft review
 
 ### Objective
 
-Independently audit the accepted owner-family rename from `BareArray*` and `OptionalArray*` to
-`ElementBuffer*` and `OptionalElementBuffer*`. Identify current executable surfaces or current
-authoritative records that still use an obsolete type name or obsolete source path. Distinguish them
-from legitimate module names, test-file grouping names, benchmark evidence directories, and
-historical records that must retain the vocabulary they actually observed.
+Read the new OptionalArray user-document draft as an independent first-time reader and compare its
+claims with the current public source and the two current quality records. Find factual
+disagreements, promises stronger than the evidence, missing constraints that would materially
+mislead a user, and explanations or examples likely to create the wrong usage model.
 
-This is a read-only audit. Do not fix any finding.
+This is a read-only review. Do not rewrite the draft and do not decide its public medium or product
+policy.
 
 ### Workspace and start state
 
 - Workspace: the existing Xcode workspace for this repository.
 - Expected branch: `develop/misc/64`.
-- Expected HEAD: `c00e79ff` (`Rename OptionalArray owners to OptionalElementBuffer`).
-- Expected worktree changes: this assignment in `Maintanance/WORKER_TASK.md`; Prime Codex may
-  concurrently correct already-known obsolete source paths in `Maintanance/PROGRESS_OVERVIEW.md`.
+- Expected HEAD: `3b343caa` (`Record Claude management evaluation for 2026-10-13`).
+- Expected worktree changes before Worker starts:
+  - `Maintanance/OptionalArrayModule/UserDocumentationDraft.md` added;
+  - `Maintanance/OptionalArrayModule/CurrentQualityAssessment.md` modified;
+  - `Maintanance/PROGRESS_OVERVIEW.md` modified;
+  - this assignment in `Maintanance/WORKER_TASK.md` modified.
+- The commit after the original assignment changes only `Maintanance/CLAUDE_OBSERVATIONS.md` and
+  `Maintanance/USER_MANAGEMENT_INTERVIEW_CLAUDE.md`. Prime verified that neither is a review input;
+  `3b343caa` is therefore the reauthorized start point.
 - Prime Codex and the user retain ownership of the shared worktree.
 
-Verify branch, HEAD, and worktree before auditing. The two expected files above are not a stop
-condition. If another difference exists, record it in the return section and stop. Commits ahead of
-the remote are not a stop condition.
+Verify branch, HEAD, and worktree before reviewing. If another difference exists, record it in the
+return section and stop. Commits ahead of the remote are not a stop condition.
 
-### First reading
+### Required reading
 
-Read in this order:
+Read only these files, in this order:
 
 1. `Orientation/WORKER_CODEX_BOOTSTRAP.md` in full.
 2. This assignment in full.
-3. The decisions table in `PUBLIC_API_NAMING_DECISIONS.md`.
-4. Only the `ARRAY-007`, `ARRAY-014`, `BARE-036`, `OPT-060`, and `OPT-058` Registry rows in
-   `PROGRESS_OVERVIEW.md`.
-5. Current files needed to test the search categories below.
+3. `OptionalArrayModule/UserDocumentationDraft.md`.
+4. `Sources/OptionalArrayModule/OptionalElementBuffer.swift`.
+5. `Sources/OptionalArrayModule/Documentation/Quality-Profile.md`.
+6. `OptionalArrayModule/CurrentQualityAssessment.md`.
+7. Only the `OPT-059` row in `PROGRESS_OVERVIEW.md`.
 
-Do not read Archived records merely because a search finds an old name there. Do not reconstruct an
-older task from history.
+Do not scan the repository, Archived records, tests, benchmarks, or Git history. If the listed
+sources cannot resolve a claim, classify it as needing evidence rather than widening the search.
 
-### Audit scope
+### Review questions
 
-Check these current surfaces:
+Evaluate the draft against these questions:
 
-- production declarations and references under `Sources/`;
-- active tests under `Tests/`, excluding `Tests/Archived/`;
-- benchmark source and active library configuration under `Benchmarks/Sources/` and
-  `Benchmarks/Libraries/`;
-- active compiler fixtures under `Utilities/Maintenance/CompilerDiagnostics/`;
-- public Quality Profiles under `Sources/*/Documentation/`;
-- the current Task Registry and naming decision/handoff documents.
+1. Does every API spelling, signature, coordinate order, ownership statement, complexity statement,
+   and availability path agree with the current public source?
+2. Does the draft distinguish verified behavior, implementation-derived complexity, and unverified
+   Validation or performance claims at least as carefully as the quality records?
+3. Could a first-time user mistakenly infer Collection conformance, retained Views, implicit copy,
+   thread-safe shared mutation, or guaranteed competitive-programming performance?
+4. Do examples teach only current APIs and valid lifetimes?
+5. Is a constraint omitted whose absence would materially change correct use?
+6. Is any passage technically correct but unnecessarily hard to understand or likely to produce a
+   wrong mental model?
 
-Search for at least:
+Do not treat writing preference alone as a defect. Preserve uncertainty where the source and
+quality records do not answer a question.
 
-- `BareArray`, `BareArray2D`, `BareArray3D`, `BareArray4D`;
-- `OptionalArray1D`, `OptionalArray2D`, `OptionalArray3D`, `OptionalArray4D`;
-- `Sources/BareArrayModule/BareArray.swift`;
-- `Sources/OptionalArrayModule/OptinalArray.swift`.
+### Finding classes
 
-Classify every reported finding as exactly one of:
+Classify each finding as exactly one of:
 
-1. `CURRENT-DEFECT`: current executable surface, current public documentation, current selector, or
-   current authoritative reference that should use the adopted name/path;
-2. `LEGITIMATE-CURRENT`: module/product-area name, test grouping/file name, script or evidence
-   directory whose identity was not part of the owner-type rename;
-3. `HISTORICAL`: deliberation, score, audit snapshot, past evidence, or archived material that must
-   keep the old name to remain truthful;
-4. `UNCERTAIN`: classification needs a product or maintenance decision.
+- `MUST-FIX`: factual error, stale API, unsupported guarantee, unsafe omission, or example that
+  teaches invalid use;
+- `SHOULD-FIX`: materially confusing wording or structure that is likely to mislead a normal reader;
+- `OPTIONAL`: a useful improvement whose absence does not make the draft incorrect or misleading;
+- `QUESTION`: the allowed evidence cannot resolve the point or a product decision is required.
 
-Do not report raw search output without classification. For each `CURRENT-DEFECT` or `UNCERTAIN`
-finding, provide file, line, exact text, and why it belongs in that category. Summarize
-`LEGITIMATE-CURRENT` and `HISTORICAL` by pattern unless an individual example is needed to establish
-the distinction.
+For every `MUST-FIX`, `SHOULD-FIX`, or `QUESTION`, give the draft line or heading, the exact claim,
+the conflicting or missing evidence, and the smallest correction direction. Do not write replacement
+prose. Summarize `OPTIONAL` findings briefly and keep them separate from acceptance blockers.
 
 ### Allowed changes
 
 - Only the `Worker return` section of this file.
 
-No source, test, benchmark, fixture, documentation, Registry, or decision record may be changed by
-Worker. Prime's permitted concurrent Registry path correction does not authorize Worker edits.
+No source, test, quality record, draft, Registry, or other file may be changed by Worker.
 
 ### Validation boundary
 
-This assignment does not rerun builds or tests. Prime already has build and test evidence and will
-decide whether a finding requires revalidation. Do not claim semantic correctness from search
-results alone.
+No build or test is authorized. This review checks the draft against already recorded source and
+quality evidence. Passing prior tests does not establish prose correctness, and textual agreement
+does not establish product quality.
 
 ### Repository operation authority
 
@@ -111,89 +114,88 @@ results alone.
 
 ### Stop conditions
 
-Stop and return observed facts if the branch, HEAD, or initial worktree differs beyond the two
-expected files; another participant changes a file other than Prime's permitted Registry path
-correction; classification requires reading broad Archived history; or a finding cannot be classified
-without changing the accepted public naming decision. Re-read the five assigned Registry rows before
-returning so a path already corrected by Prime is not reported as an unresolved defect.
+Stop and return observed facts if the branch, HEAD, or initial worktree differs beyond the expected
+files; another participant changes a review input while it is being read; the review requires broad
+repository or Archived exploration; or resolving a finding requires a new product decision.
 
 ### Return requirements
 
-Write the result below. Include the checked scope, exact `CURRENT-DEFECT` and `UNCERTAIN` findings,
-summaries of legitimate and historical residue, limitations, and the exact files changed by Worker.
-Do not update the Task Registry or mark the rename task complete.
+Write the result below. Include the start state, checked files, findings grouped by class, an explicit
+acceptance recommendation (`accept`, `accept after MUST-FIX`, or `revise and review again`),
+limitations, and the exact files changed by Worker. Do not update the Task Registry or accept the
+draft.
 
 ## Worker return
 
-Status: audit executed; one `CURRENT-DEFECT`, no `UNCERTAIN` findings.
+Status: review completed; awaiting Prime review.
 
 ### Start state
 
 - Branch: `develop/misc/64`.
-- HEAD: `c00e79ff`.
-- Initial worktree: only `Maintanance/WORKER_TASK.md` was modified. During the audit,
-  `Maintanance/PROGRESS_OVERVIEW.md` acquired the explicitly permitted Prime corrections to the
-  `OPT-060`, `ARRAY-014`, and `BARE-036` source paths. No other concurrent difference was observed.
+- HEAD: `3b343caa` (`Record Claude management evaluation for 2026-10-13`).
+- Observed worktree changes matched the expected set:
+  - `Maintanance/OptionalArrayModule/UserDocumentationDraft.md` added;
+  - `Maintanance/OptionalArrayModule/CurrentQualityAssessment.md` modified;
+  - `Maintanance/PROGRESS_OVERVIEW.md` modified;
+  - `Maintanance/WORKER_TASK.md` modified.
 
-### Checked scope
+### Checked files
 
-- Production declarations and references under `Sources/`.
-- Active tests under `Tests/`, excluding `Tests/Archived/`.
-- `Benchmarks/Sources/`, `Benchmarks/Libraries/`, and
-  `Utilities/Maintenance/CompilerDiagnostics/`.
-- Public Quality Profiles under `Sources/*/Documentation/`.
-- The current Task Registry, `PUBLIC_API_NAMING_DECISIONS.md`, the current naming handoff, current
-  quality assessments, and residue in current maintenance records needed to classify the required
-  search terms and paths.
-- The assigned five Registry rows were re-read after Prime's permitted corrections. Their source
-  paths now use `ElementBuffer.swift` or `OptionalElementBuffer.swift` where applicable.
+- `Maintanance/Orientation/WORKER_CODEX_BOOTSTRAP.md`
+- `Maintanance/WORKER_TASK.md`
+- `Maintanance/OptionalArrayModule/UserDocumentationDraft.md`
+- `Sources/OptionalArrayModule/OptionalElementBuffer.swift`
+- `Sources/OptionalArrayModule/Documentation/Quality-Profile.md`
+- `Maintanance/OptionalArrayModule/CurrentQualityAssessment.md`
+- The `OPT-059` task row in `Maintanance/PROGRESS_OVERVIEW.md`
 
-### CURRENT-DEFECT
+### Findings
 
-- `Maintanance/PROGRESS_OVERVIEW.md:195`: ``| `OPT-044` | `FROZEN` | User | [DECISION]
-  OptionalArray 1D所有型名の再判断 | 0.6.0の到達範囲判断前に、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | ... |``
-  is a current authoritative Registry row that still presents the old 1D owner-name choice as an
-  unresolved frozen decision. The authoritative naming decision has since adopted unsuffixed
-  `OptionalElementBuffer`, and the implementation row records that rename as done. This is not a
-  historical quotation or a grouping identity; the current task state and text are stale.
+#### MUST-FIX
 
-### UNCERTAIN
+1. Draft lines 69–70, heading `所有権と要素寿命`.
+   - Exact claim: ``Element: Sendable`のとき所有型も`Sendable`である。` The following
+     caveat says this does not permit unsynchronized concurrent access and that the semantic guarantee
+     for concurrent use is unverified.
+   - Conflicting or missing evidence: all four source conformances are explicitly
+     `@unchecked Sendable`, for example source line 104 for 1D and lines 222, 340, and 464 for 2D–4D.
+     Quality Profile lines 111 and 125 require the `@unchecked Sendable` boundary to remain visible.
+     Current Quality Assessment line 48 classifies the conformance's transfer/sharing scope as
+     unverified. Omitting `@unchecked` can lead a reader to infer compiler-checked Sendable safety;
+     the later concurrency caveat does not identify that the conformance itself is unchecked.
+   - Smallest correction direction: identify the conditional conformance as `@unchecked Sendable`
+     before the existing caveat, without adding any new concurrency guarantee.
 
-- None.
+#### SHOULD-FIX
 
-### LEGITIMATE-CURRENT
+None.
 
-- `BareArrayModule` / `OptionalArrayModule` module and product-area names, their imports, and paths
-  remain current identities outside the owner-type rename.
-- Active test file names, test-suite type names, and test method names retain `BareArray` or
-  `OptionalArray` as grouping vocabulary; their executable owner-type expressions use the adopted
-  names.
-- Benchmark source names, workload/display grouping, and
-  `Benchmarks/QualityAssessment/macOS/BareArray/` evidence paths are stable identities rather than
-  owner declarations.
-- `Maintanance/Graph/InMemoryFixture/rp17_staleness.sql` intentionally uses the old
-  `OptionalArray4D` symbol and `OptinalArray.swift` path as data for a staleness-detection fixture.
+#### OPTIONAL
 
-### HISTORICAL
+None. No writing-preference-only changes are needed for acceptance.
 
-- Candidate, ballot, scoring, round reports, and the pre-implementation sections of the naming
-  handoff retain the names that were actually evaluated. The handoff's explicit old-to-new mapping
-  also requires both spellings to document the completed rename.
-- Completed Claude handoffs, audit inventories, strict-memory-safety batch records, and dated quality
-  evidence retain old declarations or source filenames where those were the observed subjects. In
-  particular, the `BareArray.swift` mentions in the dated evidence sections of
-  `BareArrayModule/CurrentQualityAssessment.md` describe the file that was actually typechecked; they
-  do not identify the current source path.
-- Archived records were not opened or reconstructed; archive search hits were excluded from the
-  active-test audit as required.
+#### QUESTION
+
+None.
+
+### Acceptance recommendation
+
+`accept after MUST-FIX`
+
+The API spellings, signatures shown or described, coordinate order, outer-axis `indices`, ownership
+model, element-lifetime statements, preconditions, zero-dimension behavior, complexity boundaries,
+availability paths, examples, Collection exclusion, removed-View boundary, and competitive-programming
+evidence limits otherwise agree with the allowed source and quality records.
 
 ### Limitations
 
-- This was a classified residue search, not a semantic proof. No build, test, DocC generation, or
-  compiler fixture was rerun.
-- No finding was fixed, and no Task Registry state was changed.
+- This was a textual review against only the assignment's allowed inputs.
+- Tests, benchmarks, package configuration, facade source, Archived records, and Git history were not
+  inspected. Their claims were assessed only through the two allowed current quality records.
+- No build or test was run, as required by the validation boundary.
+- The review does not decide public medium, naming policy, concurrency policy, performance acceptance,
+  or task acceptance.
 
 ### Files changed by Worker
 
-- `Maintanance/WORKER_TASK.md` only (this return section).
-- No commit or other repository operation was performed.
+- `Maintanance/WORKER_TASK.md` — only this `Worker return` section.

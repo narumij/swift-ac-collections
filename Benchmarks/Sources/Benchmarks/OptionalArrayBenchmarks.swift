@@ -244,9 +244,8 @@ extension Benchmark {
       title: "OptionalElementBuffer<Int> direct methods cold memoization checksum",
       input: Int.self
     ) { size in
-      var array = OptionalElementBuffer<Int>(capacity: size)
       return { timer in
-        array.removeAll()
+        var array = OptionalElementBuffer<Int>(capacity: size)
         var checksum = 0
         timer.measure {
           for i in 0..<size {
@@ -267,11 +266,11 @@ extension Benchmark {
       title: "OptionalElementBuffer<Int> direct methods warm memoization checksum",
       input: Int.self
     ) { size in
-      var array = OptionalElementBuffer<Int>(capacity: size)
-      for i in 0..<size {
-        array.setElement(i, at: i)
-      }
       return { timer in
+        var array = OptionalElementBuffer<Int>(capacity: size)
+        for i in 0..<size {
+          array.setElement(i, at: i)
+        }
         var checksum = 0
         timer.measure {
           for i in 0..<size {
@@ -290,10 +289,8 @@ extension Benchmark {
       input: Int.self
     ) { size in
       let shape = optionalArray2DShape(for: size)
-      var array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
-
       return { timer in
-        array.removeAll()
+        var array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
         var checksum = 0
         timer.measure {
           var value = 0
@@ -319,16 +316,15 @@ extension Benchmark {
       input: Int.self
     ) { size in
       let shape = optionalArray2DShape(for: size)
-      var array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
-      var value = 0
-      for y in 0..<shape.height {
-        for x in 0..<shape.width {
-          array.setElement(value, at: x, y)
-          value += 1
-        }
-      }
-
       return { timer in
+        var array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
+        var value = 0
+        for y in 0..<shape.height {
+          for x in 0..<shape.width {
+            array.setElement(value, at: x, y)
+            value += 1
+          }
+        }
         var checksum = 0
         timer.measure {
           for y in 0..<shape.height {
@@ -349,11 +345,9 @@ extension Benchmark {
       input: Int.self
     ) { size in
       let shape = optionalArray3DShape(for: size)
-      var array = OptionalElementBuffer3D<Int>(
-        width: shape.width, height: shape.height, depth: shape.depth)
-
       return { timer in
-        array.removeAll()
+        var array = OptionalElementBuffer3D<Int>(
+          width: shape.width, height: shape.height, depth: shape.depth)
         var checksum = 0
         timer.measure {
           var value = 0
@@ -381,19 +375,18 @@ extension Benchmark {
       input: Int.self
     ) { size in
       let shape = optionalArray3DShape(for: size)
-      var array = OptionalElementBuffer3D<Int>(
-        width: shape.width, height: shape.height, depth: shape.depth)
-      var value = 0
-      for z in 0..<shape.depth {
-        for y in 0..<shape.height {
-          for x in 0..<shape.width {
-            array.setElement(value, at: x, y, z)
-            value += 1
+      return { timer in
+        var array = OptionalElementBuffer3D<Int>(
+          width: shape.width, height: shape.height, depth: shape.depth)
+        var value = 0
+        for z in 0..<shape.depth {
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              array.setElement(value, at: x, y, z)
+              value += 1
+            }
           }
         }
-      }
-
-      return { timer in
         var checksum = 0
         timer.measure {
           for z in 0..<shape.depth {

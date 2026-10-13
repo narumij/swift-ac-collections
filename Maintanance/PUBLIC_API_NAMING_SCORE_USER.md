@@ -1,6 +1,6 @@
 # Public API naming score — User
 
-Status: user scoring authorized and in progress. No scores recorded yet.
+Status: completed independently on 2026-10-13. Codex and Claude scores were not read before submission.
 
 Copy the accepted candidate IDs and concise spellings from `PUBLIC_API_NAMING_BALLOT.md`. The user
 records a whole-number score from 1 through 10. No written reason is required.
@@ -9,32 +9,32 @@ Do not read the Codex or Claude score records before submitting this score recor
 
 | Candidate ID | Candidate | User score (1–10) |
 | --- | --- | --- |
-| `BO-01` | `BareElements` |  |
-| `BO-02` | `ElementBuffer` |  |
-| `BO-03` | `FixedShapeElements` |  |
-| `BO-04` | `BareArray` |  |
-| `BO-05` | `FixedArray` |  |
-| `BO-06` | `HeapArray` |  |
-| `PO-01` | `OptionalCache` |  |
-| `PO-02` | `OptionalElementBuffer` |  |
-| `PO-03` | `OptionalFixedShapeElements` |  |
-| `PO-04` | `OptionalArray` |  |
-| `PO-05` | `FixedOptionalArray` |  |
-| `PO-06` | `HeapOptionalArray` |  |
-| `PO-07` | `SlotArray` |  |
-| `PO-08` | `MemoTable` |  |
-| `PO-09` | `PresenceBuffer` |  |
-| `PO-10` | `MemoizationTable` |  |
-| `DS-01` | Unsuffixed 1D for both families |  |
-| `DS-02` | Explicit rank for every family |  |
-| `DS-03` | Preserve current asymmetry |  |
-| `VA-01` | `element` / `setElement` |  |
-| `VA-02` | `value` / `setValue` |  |
-| `BR-01` | `reference` |  |
-| `BR-02` | `mutableElement` |  |
-| `BR-03` | `elementReference` |  |
-| `RT-01` | `Reference` alias backed by `MutableRef` |  |
-| `RT-02` | `MutableElementReference` |  |
-| `RT-03` | `MutableRef` directly |  |
-| `RP-01` | `pointee` |  |
-| `RP-02` | `value` |  |
+| `BO-01` | `BareElements` | 5 |
+| `BO-02` | `ElementBuffer` | 4 |
+| `BO-03` | `FixedShapeElements` | 4 |
+| `BO-04` | `BareArray` | 4 |
+| `BO-05` | `FixedArray` | 4 |
+| `BO-06` | `HeapArray` |1  |
+| `PO-01` | `OptionalCache` | 5 |
+| `PO-02` | `OptionalElementBuffer` | 4 |
+| `PO-03` | `OptionalFixedShapeElements` | 4 |
+| `PO-04` | `OptionalArray` | 1 |
+| `PO-05` | `FixedOptionalArray` | 1 |
+| `PO-06` | `HeapOptionalArray` | 1 |
+| `PO-07` | `SlotArray` | 1 |
+| `PO-08` | `MemoTable` | 1 |
+| `PO-09` | `PresenceBuffer` | 1 |
+| `PO-10` | `MemoizationTable` | 3 |
+| `DS-01` | Unsuffixed 1D for both families | 1 |
+| `DS-02` | Explicit rank for every family |5  |
+| `DS-03` | Preserve current asymmetry |5  |
+| `VA-01` | `element` / `setElement` | 4 |
+| `VA-02` | `value` / `setValue` | 5 |
+| `BR-01` | `reference` | 5 |
+| `BR-02` | `mutableElement` | 5 |
+| `BR-03` | `elementReference` |5 |
+| `RT-01` | `Reference` alias backed by `MutableRef` | 1 |
+| `RT-02` | `MutableElementReference` |  1|
+| `RT-03` | `MutableRef` directly | 4 |
+| `RP-01` | `pointee` | 4 |
+| `RP-02` | `value` | 4 |

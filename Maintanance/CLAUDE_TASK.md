@@ -9,10 +9,10 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行待ち: Public API名ballotのClaude独立採点**
+**完了: Public API名ballotのClaude独立採点**
 
-固定済みArray命名ballotを、User・Codexの採点を読まず独立採点する。候補生成、ballot修正、採用判断、
-統合は行わない。
+ClaudeがUser・Codexの採点を読まず、固定済みArray命名ballot全29候補へ点数、理由、懸念を記録した。
+Codexが件数、点数範囲、説明欄を検収した。候補生成、ballot修正、採用判断、統合は行っていない。
 
 **完了: Array命名ballot draftの独立検査**
 

@@ -29,7 +29,7 @@
 | --- | --- | --- |
 | 外部性能 | Swift・C++番兵workloadと暫定chartは成立しているが、受入可能な性能比は未決 | 既存の`OPT-053`と`OPT-054`を正本とし、重複taskを作らない |
 | 次元名体系 | 現行名で実装、仕様test、本文は整合するが、0.6.0到達範囲判断前の再判断が残る | 既存の`OPT-045`を正本とし、品質評価から結論を先取りしない |
-| `@unchecked Sendable` | 所有4型が条件付き適合し、1Dのcompile testと「同一instanceへの無同期並行accessを許可しない」説明がある | 適合の根拠、2D〜4Dの表面、移送・共有・data race境界を事実調査する独立task候補へ分ける |
+| `@unchecked Sendable` | domain間移送の必要性と4型の条件付き適合を確認した一方、共有borrowからnonmutatingなstorage更新を並行に呼べる | 移送の利便性を維持しながら同一storageの並行更新を型・所有権で拒否できるか、独立した後続調査へ分ける |
 | 一般Swift利用 | SwiftPM build、module直接利用、`AcCollections`再公開はrepository内で確認済み | repository外consumerでのVerificationと、利用者が本文から正しく使えるかのValidationを分ける前段scenarioが必要 |
 | 競技利用 | EDPC-J / EDPC-Lはcompile evidenceで、実提出・正答・時間・memoryの証拠ではない | 一般利用と混ぜず、scenario設計で対象環境、課題、証拠、実行時期を分ける |
 | `-Ounchecked` | 事前条件検査が省略され得ることをsourceと本文が明示する | OptionalArray単独で安全回復を保証しない。1.0が保証するbuild configurationの横断判断へ渡し、新しいmodule taskは作らない |
@@ -37,7 +37,8 @@
 
 ### 分離する後続候補
 
-1. `Sendable`契約の事実調査。現在の適合を維持・変更する判断は調査結果から必要になった場合だけ分離する。
+1. `Sendable`契約の事実調査は完了した。適合を維持・変更する前に、domain間移送と並行更新排除の
+   両立可能性を最小probeで調査する。
 2. 一般Swift利用と競技利用のValidation scenario設計。利用者像、導入経路、課題、観測項目、
    Verificationとの境界を先に定める。
 3. scenario確定後のrepository外SwiftPM consumer Verification。
@@ -93,7 +94,7 @@ OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ
 | View型1D〜3D | 3 | storageを所有せず親のbufferを参照。親より長く保持できない | storage共有、コメントドック | 寿命は型システムで拘束されず、恒久対応は凍結中のstorage再設計範囲 |
 | View subscript | 3 | 1Dはoptional値を変更。2D/3Dは一段低いViewを返す | View上書き寿命、View境界Death Test、full-plane stride回帰test | 3D Viewの2D面stride不足を修正済み。NOP setterの位置づけは所有型と同じ |
 | View `indices` | 3 | count、height、depthを外側範囲として返す | `testViewIndices`、4D次元回帰test | 3D Viewのdepth境界と非対称な面strideを回帰testで固定済み |
-| `@unchecked Sendable` | 4適合 | move-only所有型を、ElementがSendableならTask間移送可能と宣言 | 1Dだけのcompile test（`testSendable_compiles`）。2D〜4Dのcompile testはない | 並行共有を許す契約ではないことの明文化と根拠確認が必要 |
+| `@unchecked Sendable` | 4適合 | move-only所有型を、ElementがSendableならdomain間移送可能と宣言 | 1Dだけの既存compile testに加え、一時probeで4型の制約適合とactorへのconsuming transferを確認 | 共有borrowから同一storageの並行更新を型が拒否しない。移送を維持した成立方法は未決 |
 
 ## test対応の現在地
 
@@ -120,7 +121,7 @@ OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ
 - 多次元Viewの未網羅な各軸について、非対称な次元を使ったoffsetと境界。
 - 1D所有型の、設定済み参照要素を残したままのdeinit。
 - 1D/2Dの`removeAll()`後の参照型slot再利用。
-- `@unchecked Sendable`の採用理由と、許される並行利用の境界。
+- `@unchecked Sendable`でdomain間移送を維持しながら、同一storageの並行更新を排除する成立方法。
 
 ## 履歴から確認できること
 

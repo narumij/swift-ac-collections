@@ -9,11 +9,15 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**待機中（21:00以降にユーザーが起動）: Permutation一般Swift利用Validation scenarioの限定レビュー**
+**実行待ち: OptionalArrayのdomain間移送と並行更新排除の独立検証**
 
-Codexが作成したscenario設計について、課題の誘導性、実行可能性、VerificationとValidationの証拠境界、
-観測漏れだけを独立レビューする。scenarioの実行、製品API判断、本文の書き換え、source・testの再調査は
-行わない。21:00より前には開始しない。
+Codexが確認した`Sendable`、`sending consuming`、共有borrowの事実について、現行4型とSwift 6.4の
+compiler behaviorを独立に照合する。適合維持・削除、公開契約、実装方式は判断せず、選択肢と反証を返す。
+
+**完了: Permutation一般Swift利用Validation scenarioの限定レビュー**
+
+2026-10-13 21:0x、ユーザーの「やって」で開始。指定入力だけを読み、必須修正5件・改善候補6件・製品判断4件を
+下のReturn節へ記録した。scenario等の対象文書は変更していない。
 
 **完了: Public API命名決定の最終整合監査**
 
@@ -66,7 +70,60 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Current assignment: Permutation一般Swift利用Validation scenarioの限定レビュー
+## Current assignment: OptionalArrayのdomain間移送と並行更新排除の独立検証
+
+### Objective
+
+`OptionalElementBuffer` 1D〜4Dについて、TopLevelやMainActor等のconcurrency domain境界を越えて
+所有値を扱える利便性を維持しながら、同一storageへの無同期な並行更新を型・所有権で排除できる候補が
+あるか独立に調査する。
+
+### Inputs
+
+Read only:
+
+- Registryの`OPT-061`と`OPT-066`行;
+- `OptionalArrayModule/CurrentQualityAssessment.md`の`Sendable`契約節;
+- `Sources/OptionalArrayModule/OptionalElementBuffer.swift`;
+- `Tests/OptionalArrayModuleTests/OptionalArray_0_PublicSurfaceTests.swift`;
+- Apple Swift 6.4の`Sendable`、`sending`、ownershipに関する公式文書とcompiler diagnostics。
+
+他module、Archived資料、過去conversation、Codexの一時probe fileは読まない。必要なprobeは独立に
+最小構成で作る。
+
+### Questions
+
+1. 現行4型の条件付き`@unchecked Sendable`は、どの公開操作とstorage構造についてcompiler検査を
+   実装側へ移しているか。
+2. actor method等へのconsuming transferは、現行適合で成立するか。
+3. 同じinstanceを複数child taskへborrowし、`setElement`または`removeAll()`を並行に呼ぶ形を、
+   Swift 6.4 strict concurrencyが拒否するか。
+4. 更新methodの`mutating`化だけで、consuming transferを維持しつつ上の共有更新を拒否できるか。
+5. 型を`Sendable`にせず`consuming sending` parameterで移送する候補は成立するか。その場合、呼出側や
+   public APIに必要な条件と、なお拒否できない共有経路は何か。
+6. 上記以外に、thread-safe storageへ変更せず「移送は可能、同一storageの無同期並行更新は不可」を
+   型で表す候補があるか。
+
+### Boundaries
+
+- production source、test、文書、Registryを変更しない。
+- `Sendable`適合の維持・削除、API変更、互換性、対応toolchainを決めない。
+- thread-safe container化を要件として追加しない。
+- compilerが受理したことを意味上の安全性の証明にしない。
+- probeは一時directoryだけで実施し、repositoryへ追加しない。
+- build、既存test、benchmark、commitは行わない。
+- 結果は下のReturn節だけへ記録する。
+
+### Completion
+
+各候補について、domain間移送、共有borrow、並行更新拒否、現行呼出側への影響を表で返す。確認した
+compiler behaviorと公式契約からの解釈を分離し、判断が必要な選択肢と、技術的に成立しない候補を示す。
+
+### Return
+
+未実施。
+
+## Completed assignment: Permutation一般Swift利用Validation scenarioの限定レビュー
 
 ### Objective
 
@@ -124,7 +181,57 @@ source、tests、Git履歴、他module、Archived資料は再調査しない。�
 
 ### Return
 
-21:00以降の実行待ち。未実施。
+2026-10-13 Claude（Opus 5.5）。指定入力5点の文書照合だけ。source・test・Git履歴は見ていない。build、test、scenario実行なし。
+結論: **必須修正があるため、このままでは限定試行へ進めない。** いずれも文言・手順の小修正で済み、設計の骨格（3 path、
+Verification／Validation分離、結果分類）は維持できる。
+
+#### 必須修正
+
+- **M-1 Path 2 task 1〜3の課題文が答えを含む（Q1）。** task 1の「each distinct value order at or after the current order」は、
+  利用者文書が二つのAPIを区別する基準（重複除去・現在位置から）そのもので、選択が文言照合で済む。task 2の
+  「without retaining Views」はView寿命の答え、task 3の「explain where the element copy occurs」はelement copyが要ることを先に教える。
+  分類表のSimilar-API selection、Immediate View use、Persistent resultsが誘導下の成功になる。
+  最小修正: 課題は目的だけにする（例: 「`[0, 0, 1]`から始めて、題意に合う並びを全部処理する」「全結果を`[[Int]]`で返して後で使う」）。
+  copy位置の説明は、回答を記録した後の追問へ移す。
+- **M-2 participantへ渡す資料が特定されていない（Q1・Q4）。** `UserDocumentationDraft.md`をそのまま渡すと、
+  「ユーザーレビューで確認する点」（113行が`Array(permutation)`による保存へ注意を向ける）と、`Tests/`・Quality Profileを
+  指す「根拠」節が含まれる。これはPath 2の「Tests/やQuality Profileを渡さない」と矛盾する。「public package surface」も
+  documentation comment、生成interface、source本文のどれかが決まっておらず、source本文なら実装まで見える。
+  最小修正: 渡す範囲を「概要〜提供境界」節と、指定した形の公開interfaceに固定し、試行記録へ添付する。
+- **M-3 participantの区分（User A／B）を記録する欄がない（Q2）。** 45〜46行は「AとBの結果を相互に流用しない」としているが、
+  観測項目と分類表に区分の欄がなく、結果を分けられない。最小修正: 試行ごとに、想定区分、`std::next_permutation`や
+  swift-algorithmsの経験の有無、資料の言語を記録する。
+- **M-4 「補助後の成功」を分類できない（Q5）。** 分類表の列はConfirmed／Needs revision／Not observedの3つだけで、
+  94行は助言要求を合否にしないとしている。この形だと、助言や明確化を受けた後の成功がConfirmedに入る。
+  最小修正: 領域ごとに「無補助／補助後」と補助の内容を記録する。または`Confirmed after assistance`の列を足す。
+- **M-5 AI proxyに非参加の条件がない（Q3）。** 155〜157行はAI proxyの使用を許しているが、
+  repositoryや会話の文脈を持つAI（Codex、Claudeを含む）が担当すると、「設計非参加者」の前提が崩れる。
+  最小修正: proxyはM-2の資料だけを持つ新しい文脈で動かすことを条件にし、modelと文脈条件を記録する。
+  分類表とは別に、human／AI proxyの区別を結果へ必ず付ける。
+
+#### 改善候補
+
+- **I-1 owner破棄による失効を引き出すtaskがない（Q5）。** 観測項目（92行）と分類表のFailure understandingは
+  「owner破棄」を含むが、task 4はnext()による失効だけを示している。owner破棄の変種を足すか、その点は自発的に述べた場合だけ記録すると明記する。
+- **I-2 User A固有の誤認を測るprobeがない（Q2）。** 36行の「in-place・Bool返却を期待する」は、どのtaskでも観測されない。
+  User Bの「全順列と誤認する」は、`permutations()`が正解になる対照課題（位置の全順列が要る例）を一つ足すと、
+  名前だけで選んでいないかを判別できる。
+- **I-3 Path 3の文言はtests-only adapterに限定して書く（Q6）。** 109〜110行の「not safely recoverable from `Array(...)` syntax alone」は、
+  文脈がないと現行APIの誤用事実と読める。adapterでは`Array(sequence)`がViewを集め、現行APIでは`Array(permutation)`が要素を集める、
+  という対比として書き直す。137行の「rejected-or-deferred」も、未決（`PERM-060`凍結）と書く。
+  なお、101行「`Array(owner)`はcompileしない」は、利用者文書の「Sequenceではない」と整合している。誇張はない。
+- **I-4 Path 3は二択を並べて聞くこと自体が区別を示唆する。** Path 2の回答を記録した後に行う、と順序を明記する。
+- **I-5 Path 1の期待値と実行条件を補う。** step 5の期待出力（`[2,1,3]`、`[2,3,1]`、`[3,1,2]`、`[3,2,1]`）を明記する。
+  swift-algorithmsの取得にnetworkが必要なこと、未pushのrevisionを使う場合の参照方法（local git URLなど）、
+  `PERM-059`で記録されたSwiftPM `sandbox-exec`の拒否が起きたときは環境失敗として別記録にすること、を実行前提に書く。
+- **I-6 「Not observed」を二つに分ける。** 未実施と、実施したが回答が曖昧・途中放棄で判定できないものを、同じ列に入れない。
+
+#### 製品判断（ユーザーへ残す）
+
+- 参加者の選定、人数、外部接触（`PERM-062`の記録どおりユーザーの権限）。
+- 渡す資料の言語。草案は日本語なので、非日本語話者向けに翻訳するかどうかは文書判断になる。
+- AI proxyの結果を、公開前の参考としてどこまで扱うか。
+- 試行で失敗が出たときに、文書の修正、命名、API契約のどれへ振り分けるか（scenarioは区別の手順だけを定めている。`PERM-060`は凍結のまま）。
 
 
 ## Completed assignment: Public API命名決定の最終整合監査

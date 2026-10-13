@@ -126,6 +126,35 @@ Release build後、OptionalArray / Swift nested Array番兵 / C++ nested vector�
 `Benchmarks/QualityAssessment/macOS/OptionalArray/`へ暫定証拠として保存した。この結果は
 比較経路と可視化の成立確認であり、性能比の受入判断または正式assessmentではない。
 
+## `Sendable`契約の根拠確認（2026-10-13）
+
+所有4型は`Element: Sendable`のとき条件付き`@unchecked Sendable`へ適合する。適合はcommit
+`9b100953`（2026-06-10）で追加されたが、commit messageは`sendable`だけで、採用理由、
+安全性を成立させる不変条件、および許可する並行利用境界は履歴に記録されていない。
+
+今回ユーザーへ確認した製品上の目的は、これらをthread-safeな共有containerにすることではない。
+TopLevelを実利用のentry pointとしたときにMainActor等のconcurrency domain境界が生じるため、
+所有値をその境界越しに扱えない不便を解消することである。同一instanceへの無同期な並行accessは
+保証対象にせず、利用者が避ける範囲とする意図である。
+
+一方、Apple Swift 6.4の`Sendable`文書は、値を任意の並行contextで共有してもdata raceの危険を
+導入しないtypeと定義し、共有mutable stateを持たないか、lockまたはactor isolationで保護することを
+求めている。`@unchecked Sendable`はcompiler検査を省略するが、この意味上の要求を弱めるものではなく、
+適合の正しさは実装側の責任になる。
+
+現行4型は`~Copyable`であるためcopyによるstorage aliasは作らない。しかし`setElement`と
+`removeAll()`は、wrapper自身のstored propertyを変更せずraw pointerのpointeeを変更する
+nonmutating methodである。Swift 6.4のstrict concurrencyによる一時compile probeでは、4型が
+`Sendable & ~Copyable`制約を満たし、actorへのconsuming transferがcompileすることを確認した。
+同時に、同じ1D instanceを二つの`async let`へborrowし、双方から`setElement`を呼ぶコードも診断なしで
+compileした。これはdata raceの実行を確認した結果ではないが、`~Copyable`と現行method表面だけでは
+共有borrowからの並行更新を型システムが拒否しないという反証である。
+
+したがって、現在の証拠から`Sendable`適合を削除するとも、現状のまま正当化できるとも判断しない。
+製品上必要なdomain間移送を維持しつつ、同一storageの並行更新を型・所有権で禁止できるか、または
+別の成立条件が必要かを先に調査する。単に「thread-safeではない」「並行accessは利用者責任」と
+説明するだけで、Swiftの`Sendable`が持つ意味上の要求を満たしたとは扱わない。
+
 ## 判断の整理
 
 - 1D所有型名は横断命名判断でunsuffixedの`OptionalElementBuffer`に確定し、実装反映も完了した。
@@ -134,7 +163,9 @@ Release build後、OptionalArray / Swift nested Array番兵 / C++ nested vector�
 - 旧31診断という評価は現行sourceに対して失効した。再取得した40件は、所有型分類4件、allocation
   境界8件、deprecated View経路28件へ分離でき、製品判断を追加せず警告0件へ整理できた。
 - deprecatedだった連鎖subscriptとViewを削除し、利用例・test・benchmarkを座標accessへ移行した。
-- 性能、一般利用、競技利用、`Sendable`、`-Ounchecked`は証拠不足であり、成功とも失敗とも判断しない。
+- 性能、一般利用、競技利用、`-Ounchecked`は証拠不足であり、成功とも失敗とも判断しない。
+- `Sendable`は、domain間移送という製品上の必要性を確認した一方、現行の共有borrowとnonmutatingな
+  storage更新が並行更新を型で拒否しないことを確認した。適合維持・変更は後続調査まで判断しない。
 - 多次元accessの測定条件は、OptionalArrayの既存用途とBareArrayで確定済みのshape・計測境界から
   導ける。新しい製品仕様や性能比の受入水準を決めないため、設計時のユーザー判断は発生しない。
 
@@ -148,5 +179,6 @@ Release build後、OptionalArray / Swift nested Array番兵 / C++ nested vector�
 ## 結論
 
 0.6.0時点の現行品質アセスメントは完了した。正確性、検証したメモリ経路、公開説明、package利用経路、
-回帰構造とstrict memory safetyには現行証拠がある。一方、`Sendable`、`-Ounchecked`、外部性能、
-一般利用・競技利用のValidationは未検証である。
+回帰構造とstrict memory safetyには現行証拠がある。一方、`Sendable`にはdomain間移送の必要性と
+共有borrowからの並行更新を拒否できない反証の双方があり、成立方法は未決である。`-Ounchecked`、
+外部性能、一般利用・競技利用のValidationも未検証である。

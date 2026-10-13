@@ -61,6 +61,7 @@ The consumer must perform these checks without `@testable import` or repository 
 4. Execute the following successor task from `[0, 0, 1]` and obtain exactly three value orders:
    `[0,0,1]`, `[0,1,0]`, `[1,0,0]`.
 5. Start from `[2, 1, 3]` and confirm that earlier lexicographic orders are not produced.
+   The expected orders are `[2,1,3]`, `[2,3,1]`, `[3,1,2]`, and `[3,2,1]`.
 6. Save all results by copying each current View with `Array(permutation)` before calling `next()`
    again, then read the saved arrays after owner destruction.
 
@@ -68,22 +69,29 @@ Record the package revision, consumer source, resolved dependencies, Swift versi
 architecture, build configuration, commands, stdout, and exit status. This is installation and
 external-use Verification, not yet human comprehension Validation.
 
+Record network availability for resolving swift-algorithms and how the candidate revision was made
+reachable. If a local Git URL is used for an unpushed revision, record that fact. A SwiftPM
+`sandbox-exec` denial or other host restriction is an environment failure, not a product failure.
+
 ### Path 2 — task-based comprehension Validation
 
-Give a participant only the candidate user-facing Permutation text and the public package surface.
-Do not provide `Tests/`, the Quality Profile, this scenario, or verbal corrections before the tasks.
+Give a participant only the `概要` through `提供境界` sections of the candidate
+user-facing Permutation text and a generated or manually transcribed public interface that contains
+declarations and documentation comments but no implementation. Attach the exact material to the
+trial record. Do not provide `Tests/`, the Quality Profile, this scenario, the draft's review notes or
+evidence links, source implementations, or verbal corrections before the tasks.
 
 Ask the participant to complete four small tasks:
 
-1. **Choose an API.** Given `[0, 0, 1]`, request each distinct value order at or after the current
-   order. Ask whether this API or swift-algorithms `permutations()` fits and why.
-2. **Consume immediately.** Compute one checksum for every yielded order without retaining Views.
-3. **Retain results.** Return `[[Int]]` containing all yielded orders and explain where the element
-   copy occurs.
+1. **Choose an API.** Given `[0, 0, 1]`, ask the participant to produce the value orders required by
+   a stated successor-enumeration problem and explain their API choice.
+2. **Process results.** Compute one checksum for every produced order.
+3. **Retain results.** Return `[[Int]]` containing the produced orders for later use.
 4. **Explain a failure.** Show code that retains a `Permutation`, calls `next()` again, and then reads
    the old View. Ask what happens and how to correct the program.
 
-The observer records:
+After the first answers are fixed, ask where any element copy occurs and then run Path 3. The
+observer records:
 
 - whether the participant selected the intended API without prompting;
 - whether they used manual mutating `next()` rather than assuming Sequence conformance;
@@ -92,6 +100,10 @@ The observer records:
 - whether they distinguished the next `next()` call and owner destruction as invalidation points;
 - where the user-facing text caused hesitation, a wrong prediction, or a need for clarification;
 - elapsed time and requests for help as contextual observations, not automatic pass/fail thresholds.
+- the intended User A or User B category, prior `std::next_permutation` and swift-algorithms
+  experience, material language, and whether the participant is human or an AI proxy;
+- whether each outcome was reached without assistance or only after assistance, including the exact
+  clarification or hint that was supplied.
 
 Do not teach the answer during the attempt. After the observation is recorded, corrections may be
 given and the participant may explain which wording would have prevented the error.
@@ -106,22 +118,24 @@ participant what they expect the following two conceptual operations to copy:
 
 The required distinction is that the first copies the View handle and does not create independent
 element storage, while the second reads the elements into owned Array storage. The tests-only
-Sequence experiment showed that this distinction is not safely recoverable from `Array(...)` syntax
-alone. This probe evaluates whether the documentation explains the current API; it does not reopen
-the frozen Sequence-adoption decision.
+Sequence adapter experiment showed that `Array(sequence)` collected View handles, whereas the
+current API's `Array(permutation)` reads elements into owned storage. Path 3 runs only after the
+participant's Path 2 answers are recorded, because presenting this contrast itself reveals the
+distinction. This probe evaluates whether the documentation explains the current API; it does not
+reopen the Sequence-adoption decision, which remains frozen and undecided.
 
 ## Result classification
 
 Record each observation separately rather than reducing the trial to one score.
 
-| Area | Confirmed for this trial | Needs revision | Not observed |
-| --- | --- | --- | --- |
-| Package installation and direct import | Independent consumer builds and runs | Consumer cannot resolve, build, or reach the API | Path not run |
-| Facade reachability | `AcCollections` consumer builds and runs | Reexport is unavailable or unclear | Path not run |
-| Similar-API selection | Participant selects successor semantics for the stated task and explains the duplicate/current-order difference | Participant selects by name alone or confuses positional all-permutations with successors | Task not attempted |
-| Immediate View use | Participant completes processing before the next mutation | Participant retains and later reads a stale View | Task not attempted |
-| Persistent results | Participant copies elements with `Array(permutation)` while valid | Participant expects a copied View to own elements | Task not attempted |
-| Failure understanding | Participant predicts runtime rejection after advance or owner destruction and can correct the code | Participant predicts stable value semantics or an unexplained memory failure | Task not attempted |
+| Area | Confirmed without assistance | Confirmed after assistance | Needs revision | Not run | Inconclusive |
+| --- | --- | --- | --- | --- | --- |
+| Package installation and direct import | Independent consumer builds and runs | Build succeeds after recorded environment help | Consumer cannot resolve, build, or reach the API | Path not run | Attempted, but environment or evidence prevents a product conclusion |
+| Facade reachability | `AcCollections` consumer builds and runs | Reexport is reached after recorded clarification | Reexport is unavailable or unclear | Path not run | Attempted, but result is ambiguous |
+| Similar-API selection | Participant selects successor semantics and explains the distinction | Correct choice follows a recorded hint | Participant selects by name alone or confuses positional all-permutations with successors | Task not attempted | Participant stops or gives an answer that cannot be classified |
+| Immediate View use | Participant completes processing before the next mutation | Correct lifetime use follows a recorded hint | Participant retains and later reads a stale View | Task not attempted | Participant stops or behavior cannot be classified |
+| Persistent results | Participant independently creates owned element storage | Element ownership is corrected after a recorded hint | Participant expects a copied View to own elements | Task not attempted | Participant stops or ownership cannot be classified |
+| Failure understanding | Participant predicts runtime rejection after advance or owner destruction and can correct the code | Correct explanation follows a recorded hint | Participant predicts stable value semantics or an unexplained memory failure | Task not attempted | Participant stops or explanation remains ambiguous |
 
 One failure does not automatically prescribe an API change. First distinguish missing documentation,
 misleading naming, an unsafe or surprising contract, package integration failure, and observer/task
@@ -134,7 +148,7 @@ bias. Preserve the original attempt as evidence before revising the task or text
   existence is not proof that it communicates successfully.
 - Coexistence and facade tests establish compile-time paths inside this repository, not independent
   consumer installation.
-- The Sequence experiment is evidence about one rejected-or-deferred wrapper shape, not proof that
+- The Sequence experiment is evidence about one undecided, frozen wrapper shape, not proof that
   ordinary users understand the current manual API.
 - An actual AtCoder submission answers a different competitive-use Validation question and remains
   user-only work.
@@ -153,8 +167,9 @@ repository infrastructure is a separate decision.
 Select a participant who was not involved in designing the API, provide only the allowed material,
 run Paths 2 and 3 without coaching, and preserve their first answers. Participant selection and the
 authority to contact or involve another person remain with the user. An AI proxy may be used as a
-pre-publication heuristic only if it is identified as an AI proxy rather than a representative human
-Validation result.
+pre-publication heuristic only in a fresh context that receives exactly the allowed trial material.
+Record the model and context condition, and identify its result as an AI proxy rather than a
+representative human Validation result.
 
 ## Completion of this design task
 

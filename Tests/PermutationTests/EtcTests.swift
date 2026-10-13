@@ -21,29 +21,3 @@ final class EtcTests: XCTestCase {
   }
 
 }
-
-#if DEATH_TEST
-struct RuntimeCheckedPermutationDeathTests {
-
-  @Test func advancingInvalidatesPreviousPermutation() async {
-    await #expect(processExitsWith: .failure) {
-      var permutations = [1, 2, 3].nextPermutations()
-      let first = permutations.next()!
-      _ = permutations.next()
-      _ = first[0]
-    }
-  }
-
-  @Test func destroyingOwnerInvalidatesPermutation() async {
-    await #expect(processExitsWith: .failure) {
-      func escapedPermutation() -> NextPermutations<Int>.Permutation {
-        var permutations = [1, 2, 3].nextPermutations()
-        return permutations.next()!
-      }
-
-      let permutation = escapedPermutation()
-      _ = permutation[0]
-    }
-  }
-}
-#endif

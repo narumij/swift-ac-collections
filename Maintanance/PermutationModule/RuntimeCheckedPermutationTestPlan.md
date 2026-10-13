@@ -279,3 +279,50 @@ G0、G2、G4、G5、production source、Registry、Quality Profileには触れ�
 - `Maintanance/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
 
 これにより`PERM-053`は完了とする。G2、G4、G0／G5は、それぞれ独立した後続taskとして残る。
+
+## PERM-054 return（2026-10-13 Claude）
+
+### Changed files
+
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_99_ViewInvalidationDeathTests.swift`
+  （G2、Swift Testing 10件: positive control 1、Death Test 9）
+- 変更: `Tests/PermutationTests/EtcTests.swift`から、G2のscratch Death Test 2件（`RuntimeCheckedPermutationDeathTests`の
+  `advancingInvalidatesPreviousPermutation`、`destroyingOwnerInvalidatesPermutation`）を含む`#if DEATH_TEST`blockを削除。
+  どちらも`.failure`の広い判定だったが、新fileで`expectedSwiftTrapSignal`への完全一致として包含した。
+  Spanのscratch testは変更していない。
+
+### Coverage
+
+| 要求 | test |
+|---|---|
+| 新しいViewを返す`next()`の後に失効 | `startIndex`／`endIndex`／subscriptの3件 |
+| `nil`を返す終端の`next()`の後に失効 | subscript（`[7]`）、`startIndex`（`[2, 1]`）の2件。終端が`nil`であることを`precondition`で前提確認 |
+| ownerの破棄後に持ち出したViewが失効 | `startIndex`／`endIndex`／subscriptの3件（関数からViewを返してownerを破棄） |
+| 同じViewのcopyが同じ世代で失効 | `copyOfViewTrapsAfterNext` |
+| 失効前は読める（positive control） | `currentViewAndItsCopyAreReadableBeforeAdvancing` |
+
+全てのDeath Testは、要素storageへ触れる前にGateKeeperを検査する公開アクセス（`startIndex`、`endIndex`、subscript）だけを使う。
+
+### Validation（macOS、Swift 6.4）
+
+- `swift test -c debug --filter 'PermutationTests.NextPermutations_'`: XCTest 18件（G1 12、G3 6）0 failures、
+  Swift Testing 15件（G3範囲外5、G2 10）passed。
+- 同`-c release`: 同じ件数で0 failures／passed。
+- 互換modeのbuildは実行していない。
+
+### Not done
+
+G0、G1、G3、G4、G5、production source、Registry、Quality Profileには触れていない。
+
+## PERM-054 acceptance（2026-10-13 Codex）
+
+- G2のpositive control 1件とDeath Test 9件を、確定したruntime view失効契約へ照合して受け入れた。
+- 新しいViewを返す`next()`、終端で`nil`を返す`next()`、owner破棄、View copyについて、
+  `startIndex`、`endIndex`、subscriptからGateKeeperが失効を検出することを確認した。
+- `EtcTests.swift`から削除されたscratch 2件は、広い`.failure`から正確な`expectedSwiftTrapSignal`契約へ
+  昇格されている。無関係なSpan scratchは維持されている。
+- Xcodeの現行scheme／test planで、受入済みG1・G3・範囲外Death Testと新G2を合わせた33件を
+  Codexが独立再実行し、33件成功、失敗・skip・not run各0件を確認した。
+- `Maintanance/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+
+これにより`PERM-054`は完了とする。G4とG0／G5は、それぞれ独立した後続taskとして残る。

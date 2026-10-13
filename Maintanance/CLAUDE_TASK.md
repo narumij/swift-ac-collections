@@ -9,11 +9,11 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行中: PERM-054 runtime-check Permutation View失効Death Test**
+**実行中: PERM-055 runtime-check Permutation所有・破棄仕様test**
 
-Codex accepted PERM-053 and independently confirmed its 24 selected tests in Xcode. Claude is now
-assigned only G2 from `PermutationModule/RuntimeCheckedPermutationTestPlan.md`. Do not start G0、G4、
-G5 or any other Registry task.
+Codex accepted PERM-054 and independently confirmed the accumulated 33 selected tests in Xcode.
+Claude is now assigned only G4 from `PermutationModule/RuntimeCheckedPermutationTestPlan.md`. Do not
+start G0、G5 or any other Registry task.
 
 **凍結中: PERM-051 borrowed Span版PermutationのTest as Specification**
 
@@ -24,66 +24,68 @@ G5 or any other Registry task.
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Active assignment: PERM-054 runtime view invalidation Death Tests
+## Active assignment: PERM-055 ownership and destruction specification tests
 
 ### Objective
 
-Implement the accepted G2 runtime-invalidity requirements for views returned by the current
-runtime-checked `NextPermutations` implementation.
+Implement the accepted G4 ownership and destruction requirements for the current runtime-checked
+`NextPermutations` owned buffer.
 
 ### Inputs
 
 Read only:
 
-- the `PERM-054` Registry row;
+- the `PERM-055` Registry row;
 - `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`;
 - `Sources/PermutationModule/NextPermutations.swift` and `GateKeeper.swift`;
-- `Tests/PermutationTests/EtcTests.swift`, especially the two current runtime-invalidity scratch
-  Death Tests;
-- the accepted numbered G1、G3 and bounds Death Tests under `Tests/PermutationTests/NextPermutations/`
-  only as naming and exact-signal conventions;
+- legacy `_98_InternalTests.swift` under `Tests/PermutationTests/NextPermutationsSequence/` only for
+  the two G4 ledger inputs and test technique, not for its retired COW contract;
+- existing lifetime-tracking test helpers in the Permutation test target, only as needed to reuse the
+  repository's established exactly-once destruction evidence;
+- the accepted numbered runtime-check tests under `Tests/PermutationTests/NextPermutations/` only as
+  naming and current-contract context;
 - the task-relevant instructions in `Tests/CLAUDE.md` and sections of `Tests/TESTING.md`.
 
-Use the G2 boundary in the plan. Do not import compile-time lifetime requirements from the separate
-borrowed implementation or revive the retired persistent-value／COW contract.
+Use the G4 boundary in the plan. Do not import compile-time lifetime requirements from the separate
+borrowed implementation or revive retired header／copy-count／COW guarantees.
 
 ### Required implementation
 
-- Add a numbered G2 Death Test file under `Tests/PermutationTests/NextPermutations/`.
-- Promote and remove the two G2 scratch Death Tests from `EtcTests.swift` only after their behavior is
-  covered with the repository's exact `expectedSwiftTrapSignal` convention.
-- Prove that a previously returned View traps after a subsequent mutating `next()` that returns a new
-  View and after the terminal `next()` that returns `nil`.
-- Prove that an escaped View traps after its owner is destroyed, before dereferencing freed element
-  storage.
-- Exercise invalidation through `startIndex`、`endIndex` and subscript, rather than demonstrating only
-  one access surface.
-- Prove that copies of the same current View observe the same generation invalidation.
-- Keep at least one positive control showing that the current View is readable before invalidation if
-  the numbered G1／G3 tests do not make that boundary sufficiently explicit for this Death Test group.
+- Add a numbered G4 internal specification test file under
+  `Tests/PermutationTests/NextPermutations/`.
+- Prove that the owner copies source elements into independent storage and that later source changes
+  do not alter the current permutation.
+- Prove exactly-once destruction for owners that are never started, partially consumed, fully
+  consumed, and constructed from an empty source.
+- Cover odd-length suffix reversal with reference elements so identity and element lifetime remain
+  observable through the permutation operation.
+- Prove that an escaped invalid View may keep the GateKeeper alive but does not keep the owner's
+  element storage alive. Use lifetime counters or deinit probes without dereferencing the invalid
+  View; G2 already specifies the access trap.
+- Reuse or add test-only reference probes locally. Do not add production observability merely to make
+  the tests possible.
 
 ### Boundaries
 
 - Do not modify production source, Quality Profile, Current Quality Assessment, Package.swift, CI,
   Registry, public documentation, or disabled legacy test files.
-- Do not implement G0、G1、G3、G4、G5.
+- Do not implement G0、G1、G2、G3、G5.
 - Do not decide new public API, `Sendable`, `Equatable`, `Hashable`, description, availability,
   compatibility, or lifetime policy.
 - Do not revive COW, persistent-result, iterator-copy, `Sequence`, or borrowed-`Span` requirements.
-- Retaining a View is allowed only inside the specific G2 invalidation test that immediately proves
-  the documented runtime trap. Do not read invalidated element storage without first passing through
-  a GateKeeper-checked public access.
+- An escaped View may be retained only to observe ownership and destruction without accessing its
+  invalid storage. Do not add a second invalid-access assertion to G4.
 - If a listed requirement cannot be implemented from the accepted contract, report that exact item
   and stop rather than deciding a new contract.
 
 ### Validation and return
 
-- Run the new Death Tests and the already-accepted numbered runtime-check tests using the repository's
-  separated test paths in Debug and Release.
+- Run the new internal tests and the already-accepted numbered runtime-check tests in Debug and
+  Release. Report lifetime counts separately from ordinary behavioral assertions.
 - Report exact files changed, test counts, commands or Xcode actions, and results in
-  `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md` under a `PERM-054 return`
+  `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md` under a `PERM-055 return`
   section.
-- Do not mark `PERM-054` complete and do not update Registry. Codex performs acceptance.
+- Do not mark `PERM-055` complete and do not update Registry. Codex performs acceptance.
 
 ## Operating mode: bounded assignments only
 

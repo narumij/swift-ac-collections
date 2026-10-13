@@ -231,29 +231,6 @@ jobs:
           cp ../../head/Benchmarks/Libraries/CI.json ./Libraries/CI.json
           cp ../../head/Benchmarks/Libraries/CI-Small.json ./Libraries/CI-Small.json
 
-          # 公開型のrenameをまたぐ比較では、baselineが知る旧task名で測定し、
-          # 結果だけをHEAD側の名称へ正規化して同じworkloadとして比較する。
-          # baselineがrenameを含むようになれば、各分岐は自動的にno-opになる。
-          OPTIONAL_ARRAY_RENAMED=1
-          if ! grep -qF 'title: "OptionalElementBuffer2D<Int>' \
-            Sources/Benchmarks/OptionalArrayBenchmarks.swift; then
-            OPTIONAL_ARRAY_RENAMED=0
-            sed -i \
-              -e 's/OptionalElementBuffer2D<Int>/OptionalArray2D<Int>/g' \
-              -e 's/OptionalElementBuffer3D<Int>/OptionalArray3D<Int>/g' \
-              ./Libraries/CI.json
-          fi
-
-          BARE_ARRAY_RENAMED=1
-          if ! grep -qF 'title: "ElementBuffer2D<Int>' \
-            Sources/Benchmarks/BareArrayBenchmarks.swift; then
-            BARE_ARRAY_RENAMED=0
-            sed -i \
-              -e 's/ElementBuffer2D<Int>/BareArray2D<Int>/g' \
-              -e 's/ElementBuffer3D<Int>/BareArray3D<Int>/g' \
-              ./Libraries/CI.json
-          fi
-
           swift run -c release benchmark library run \
             --library ./Libraries/CI.json \
             ../benchmark-results/base.json \
@@ -268,20 +245,6 @@ jobs:
             --max-size 10 \
             --cycles 1 \
             --mode append
-
-          if [ "$BARE_ARRAY_RENAMED" -eq 0 ]; then
-            sed -i \
-              -e 's/BareArray2D<Int>/ElementBuffer2D<Int>/g' \
-              -e 's/BareArray3D<Int>/ElementBuffer3D<Int>/g' \
-              ../benchmark-results/base.json
-          fi
-
-          if [ "$OPTIONAL_ARRAY_RENAMED" -eq 0 ]; then
-            sed -i \
-              -e 's/OptionalArray2D<Int>/OptionalElementBuffer2D<Int>/g' \
-              -e 's/OptionalArray3D<Int>/OptionalElementBuffer3D<Int>/g' \
-              ../benchmark-results/base.json
-          fi
 
       - name: Check performance regression
         working-directory: head/Benchmarks

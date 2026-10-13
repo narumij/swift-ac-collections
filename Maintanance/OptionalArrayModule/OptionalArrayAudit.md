@@ -16,6 +16,38 @@
 この追補は旧29宣言の履歴や当時の判断を消さない。型名と次元名体系の再判断、および性能比の
 受入水準も決定しない。
 
+## 文書作業後の品質再評価（2026-10-13）
+
+現行source、番号付きTest as Specification、Quality Profile、Current Quality Assessment、
+ユーザー受入済みの利用者向け本文ドラフトを照合した。旧連鎖subscriptと非所有Viewの削除、
+座標accessの仕様化、strict memory safetyの恒久適用、公開面と品質正本の同期は完了している。
+したがって、旧29宣言監査の不足を現行APIの未完了taskとして復活させない。
+
+### 1.0判断前に残る独立論点
+
+| 論点 | 現在の証拠 | 今回の扱い |
+| --- | --- | --- |
+| 外部性能 | Swift・C++番兵workloadと暫定chartは成立しているが、受入可能な性能比は未決 | 既存の`OPT-053`と`OPT-054`を正本とし、重複taskを作らない |
+| 次元名体系 | 現行名で実装、仕様test、本文は整合するが、0.6.0到達範囲判断前の再判断が残る | 既存の`OPT-045`を正本とし、品質評価から結論を先取りしない |
+| `@unchecked Sendable` | 所有4型が条件付き適合し、1Dのcompile testと「同一instanceへの無同期並行accessを許可しない」説明がある | 適合の根拠、2D〜4Dの表面、移送・共有・data race境界を事実調査する独立task候補へ分ける |
+| 一般Swift利用 | SwiftPM build、module直接利用、`AcCollections`再公開はrepository内で確認済み | repository外consumerでのVerificationと、利用者が本文から正しく使えるかのValidationを分ける前段scenarioが必要 |
+| 競技利用 | EDPC-J / EDPC-Lはcompile evidenceで、実提出・正答・時間・memoryの証拠ではない | 一般利用と混ぜず、scenario設計で対象環境、課題、証拠、実行時期を分ける |
+| `-Ounchecked` | 事前条件検査が省略され得ることをsourceと本文が明示する | OptionalArray単独で安全回復を保証しない。1.0が保証するbuild configurationの横断判断へ渡し、新しいmodule taskは作らない |
+| DocC継続確認 | 現行targetの個別DocC生成は成功済みだが、repository CIはOptionalArray DocCを継続生成しない | 公開媒体と全moduleのdocumentation CI設計で扱い、OptionalArray固有taskを重複登録しない |
+
+### 分離する後続候補
+
+1. `Sendable`契約の事実調査。現在の適合を維持・変更する判断は調査結果から必要になった場合だけ分離する。
+2. 一般Swift利用と競技利用のValidation scenario設計。利用者像、導入経路、課題、観測項目、
+   Verificationとの境界を先に定める。
+3. scenario確定後のrepository外SwiftPM consumer Verification。
+4. scenario確定後の利用理解Validation試行。参加者選定と外部接触はユーザーが持つ。
+
+性能、次元名、公開媒体、対応build configurationは既存の判断境界を維持する。上の候補登録は、
+それらの凍結taskを再開せず、OptionalArrayの1.0採否も決定しない。
+
+この再評価により、文書作業後に残る不足を重複なく分離できたため、親の品質再評価を完了とする。
+
 ## 目的
 
 OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ、Codexのユーザードキュメント

@@ -8,7 +8,7 @@ final class BareArray_1_InitializationTests: XCTestCase {
   // MARK: - init(repeating:)
 
   func testBareArrayRepeatingFillsEveryElement() {
-    let array = BareArray<Int>(repeating: 42, count: 5)
+    let array = ElementBuffer<Int>(repeating: 42, count: 5)
 
     XCTAssertEqual(Array(array.indices), [0, 1, 2, 3, 4])
 
@@ -18,7 +18,7 @@ final class BareArray_1_InitializationTests: XCTestCase {
   }
 
   func testBareArray2DRepeatingFillsEveryElement() {
-    let array = BareArray2D<Int>(
+    let array = ElementBuffer2D<Int>(
       repeating: 7,
       width: 3,
       height: 2)
@@ -31,7 +31,7 @@ final class BareArray_1_InitializationTests: XCTestCase {
   }
 
   func testBareArray3DRepeatingFillsEveryElement() {
-    let array = BareArray3D<Int>(repeating: 7, width: 2, height: 3, depth: 4)
+    let array = ElementBuffer3D<Int>(repeating: 7, width: 2, height: 3, depth: 4)
 
     for z in array.indices {
       for y in 0..<3 {
@@ -43,7 +43,7 @@ final class BareArray_1_InitializationTests: XCTestCase {
   }
 
   func testBareArray4DRepeatingFillsEveryElement() {
-    let array = BareArray4D<Int>(repeating: 7, size0: 2, size1: 3, size2: 2, size3: 2)
+    let array = ElementBuffer4D<Int>(repeating: 7, size0: 2, size1: 3, size2: 2, size3: 2)
 
     for w in array.indices {
       for z in 0..<2 {
@@ -64,7 +64,7 @@ final class BareArray_1_InitializationTests: XCTestCase {
   func testBareArrayClosureFillsStorageInOrder() {
     var value = 0
 
-    let array = BareArray<Int>(count: 5) {
+    let array = ElementBuffer<Int>(count: 5) {
       defer { value += 1 }
       return value
     }
@@ -79,7 +79,7 @@ final class BareArray_1_InitializationTests: XCTestCase {
   func testBareArray2DClosureFillsStorageInOrder() {
     var value = 0
 
-    let array = BareArray2D<Int>(
+    let array = ElementBuffer2D<Int>(
       width: 2,
       height: 2
     ) {
@@ -96,7 +96,7 @@ final class BareArray_1_InitializationTests: XCTestCase {
   func testBareArray3DClosureFillsStorageInOrder() {
     var value = 0
 
-    let array = BareArray3D<Int>(
+    let array = ElementBuffer3D<Int>(
       width: 2,
       height: 2,
       depth: 2
@@ -118,7 +118,7 @@ final class BareArray_1_InitializationTests: XCTestCase {
   func testBareArray4DClosureFillsStorageInOrder() {
     var value = 0
 
-    let array = BareArray4D<Int>(
+    let array = ElementBuffer4D<Int>(
       size0: 2,
       size1: 2,
       size2: 2,
@@ -138,20 +138,20 @@ final class BareArray_1_InitializationTests: XCTestCase {
   func testZeroDimensionsCreateEmptyStorageWithoutCallingInitializerClosure() {
     var calls = 0
 
-    let one = BareArray<Int>(count: 0) {
+    let one = ElementBuffer<Int>(count: 0) {
       calls += 1
       return 0
     }
-    let two = BareArray2D<Int>(width: 0, height: 3) {
+    let two = ElementBuffer2D<Int>(width: 0, height: 3) {
       calls += 1
       return 0
     }
     // 途中積はoverflowしても、数学的な積がzeroなら許される
-    let three = BareArray3D<Int>(width: .max, height: .max, depth: 0) {
+    let three = ElementBuffer3D<Int>(width: .max, height: .max, depth: 0) {
       calls += 1
       return 0
     }
-    let four = BareArray4D<Int>(size0: .max, size1: .max, size2: .max, size3: 0) {
+    let four = ElementBuffer4D<Int>(size0: .max, size1: .max, size2: .max, size3: 0) {
       calls += 1
       return 0
     }

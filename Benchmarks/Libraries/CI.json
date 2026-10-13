@@ -76,17 +76,17 @@
     },
     {
       "kind": "group",
-      "title": "BareArray",
+      "title": "ElementBuffer",
       "directory": "bare-array",
       "contents": [
         {
           "kind": "chart",
           "title": "multidimensional sequential access",
           "tasks": [
-            "BareArray2D<Int> sequential read checksum",
-            "BareArray2D<Int> sequential write",
-            "BareArray3D<Int> sequential read checksum",
-            "BareArray3D<Int> sequential write"
+            "ElementBuffer2D<Int> sequential read checksum",
+            "ElementBuffer2D<Int> sequential write",
+            "ElementBuffer3D<Int> sequential read checksum",
+            "ElementBuffer3D<Int> sequential write"
           ]
         }
       ]

@@ -83,25 +83,25 @@
 
     @available(macOS 27.0, *)
     private static func reference1D(_ position: Int) {
-      var array = BareArray<Int>(repeating: 0, count: 3)
+      var array = ElementBuffer<Int>(repeating: 0, count: 3)
       _ = array.reference(at: position)
     }
 
     @available(macOS 27.0, *)
     private static func reference2D(_ x: Int, _ y: Int) {
-      var array = BareArray2D<Int>(repeating: 0, width: 2, height: 3)
+      var array = ElementBuffer2D<Int>(repeating: 0, width: 2, height: 3)
       _ = array.reference(at: x, y)
     }
 
     @available(macOS 27.0, *)
     private static func reference3D(_ x: Int, _ y: Int, _ z: Int) {
-      var array = BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4)
+      var array = ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4)
       _ = array.reference(at: x, y, z)
     }
 
     @available(macOS 27.0, *)
     private static func reference4D(_ x: Int, _ y: Int, _ z: Int, _ w: Int) {
-      var array = BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5)
+      var array = ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5)
       _ = array.reference(at: x, y, z, w)
     }
   }

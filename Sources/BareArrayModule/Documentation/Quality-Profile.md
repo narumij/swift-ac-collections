@@ -19,9 +19,9 @@
 
 ## 対象
 
-主な対象は、`Sources/BareArrayModule/BareArray.swift`の所有1D〜4D型、座標value access、およびSwift 6.4向け借用参照APIと、それらの公開宣言・適合である。旧連鎖subscriptと非所有View 1D〜3Dは削除済みであり、現行公開契約には含めない。
+主な対象は、`Sources/BareArrayModule/ElementBuffer.swift`の所有1D〜4D型、座標value access、およびSwift 6.4向け借用参照APIと、それらの公開宣言・適合である。旧連鎖subscriptと非所有View 1D〜3Dは削除済みであり、現行公開契約には含めない。
 
-BareArrayは、単一の連続storageを使う低レベル配列部品である。標準`Collection`への適合、一般的な配列API、任意の所有権管理を暗黙に要求へ含めない。
+ElementBufferは、単一の連続storageを使う低レベル配列部品である。標準`Collection`への適合、一般的な配列API、任意の所有権管理を暗黙に要求へ含めない。
 
 ## 上位品質要求との接続
 
@@ -164,7 +164,7 @@ CI設定は、実際に検証するtoolchain、platform、build configuration、
 | リポジトリ全体の上位品質要求 | `Maintanance/QUALITY_REQUIREMENTS.md` |
 | 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
 | 観察可能な仕様 | `Tests/BareArrayModuleTests/`の番号付きTest as Specification |
-| 公開APIとdocumentation comment | `Sources/BareArrayModule/BareArray.swift` |
+| 公開APIとdocumentation comment | `Sources/BareArrayModule/ElementBuffer.swift` |
 | 公開面の棚卸し、判断、証拠の所在 | `Maintanance/BareArrayModule/BareArrayAudit.md` |
 | 性能測定対象と継続測定構成 | `Benchmarks/`およびGitHub Actions（対象が存在する場合） |
 | 特定commit・環境での調査結果 | 対象調査またはreleaseの記録 |

@@ -22,7 +22,7 @@
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@safe public struct BareArray<Element>: ~Copyable {
+@safe public struct ElementBuffer<Element>: ~Copyable {
 
   /// `count`個の要素を`value`で初期化します。
   ///
@@ -82,7 +82,7 @@
   }
 }
 
-extension BareArray {
+extension ElementBuffer {
 
   /// 有効な要素位置である`0..<count`を返します。
   ///
@@ -91,7 +91,7 @@ extension BareArray {
   public var indices: Range<Int> { 0..<count }
 }
 
-extension BareArray: @unchecked Sendable where Element: Sendable {}
+extension ElementBuffer: @unchecked Sendable where Element: Sendable {}
 
 /// 競技プログラミング用多次元配列
 ///
@@ -104,7 +104,7 @@ extension BareArray: @unchecked Sendable where Element: Sendable {}
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@safe public struct BareArray2D<Element>: ~Copyable {
+@safe public struct ElementBuffer2D<Element>: ~Copyable {
 
   /// `width * height`個の要素を`value`で初期化します。
   ///
@@ -178,7 +178,7 @@ extension BareArray: @unchecked Sendable where Element: Sendable {}
   }
 }
 
-extension BareArray2D {
+extension ElementBuffer2D {
 
   /// 外側の軸に有効な位置である`0..<height`を返します。
   ///
@@ -187,7 +187,7 @@ extension BareArray2D {
   public var indices: Range<Int> { 0..<height }
 }
 
-extension BareArray2D: @unchecked Sendable where Element: Sendable {}
+extension ElementBuffer2D: @unchecked Sendable where Element: Sendable {}
 
 /// 競技プログラミング用多次元配列
 ///
@@ -200,7 +200,7 @@ extension BareArray2D: @unchecked Sendable where Element: Sendable {}
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@safe public struct BareArray3D<Element>: ~Copyable {
+@safe public struct ElementBuffer3D<Element>: ~Copyable {
 
   /// `width * height * depth`個の要素を`value`で初期化します。
   ///
@@ -292,7 +292,7 @@ extension BareArray2D: @unchecked Sendable where Element: Sendable {}
   }
 }
 
-extension BareArray3D {
+extension ElementBuffer3D {
 
   /// 外側の軸に有効な位置である`0..<depth`を返します。
   ///
@@ -301,7 +301,7 @@ extension BareArray3D {
   public var indices: Range<Int> { 0..<depth }
 }
 
-extension BareArray3D: @unchecked Sendable where Element: Sendable {}
+extension ElementBuffer3D: @unchecked Sendable where Element: Sendable {}
 
 /// 連続したメモリ領域に要素を所有する4次元配列です。
 ///
@@ -311,7 +311,7 @@ extension BareArray3D: @unchecked Sendable where Element: Sendable {}
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
 // `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@safe public struct BareArray4D<Element>: ~Copyable {
+@safe public struct ElementBuffer4D<Element>: ~Copyable {
 
   /// 全要素を`value`で初期化します。
   ///
@@ -411,7 +411,7 @@ extension BareArray3D: @unchecked Sendable where Element: Sendable {}
   }
 }
 
-extension BareArray4D {
+extension ElementBuffer4D {
 
   /// 外側の軸に有効な位置である`0..<size3`を返します。
   ///
@@ -420,11 +420,11 @@ extension BareArray4D {
   public var indices: Range<Int> { 0..<size3 }
 }
 
-extension BareArray4D: @unchecked Sendable where Element: Sendable {}
+extension ElementBuffer4D: @unchecked Sendable where Element: Sendable {}
 
 // MARK: -
 
-extension BareArray {
+extension ElementBuffer {
 
   @available(anyAppleOS 27.0, *)
   @inlinable
@@ -447,7 +447,7 @@ extension BareArray {
   }
 }
 
-extension BareArray2D {
+extension ElementBuffer2D {
 
   @available(anyAppleOS 27.0, *)
   @inlinable
@@ -473,7 +473,7 @@ extension BareArray2D {
   }
 }
 
-extension BareArray3D {
+extension ElementBuffer3D {
 
   @available(anyAppleOS 27.0, *)
   @inlinable
@@ -502,7 +502,7 @@ extension BareArray3D {
   }
 }
 
-extension BareArray4D {
+extension ElementBuffer4D {
 
   @available(anyAppleOS 27.0, *)
   @inlinable

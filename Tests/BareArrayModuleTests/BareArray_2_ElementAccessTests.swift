@@ -7,7 +7,7 @@ final class BareArray_2_ElementAccessTests: XCTestCase {
   // MARK: - Mutation
 
   func testBareArrayMutation() {
-    let array = BareArray<Int>(repeating: 0, count: 3)
+    let array = ElementBuffer<Int>(repeating: 0, count: 3)
 
     array.setElement(10, at: 0)
     array.setElement(20, at: 1)
@@ -19,7 +19,7 @@ final class BareArray_2_ElementAccessTests: XCTestCase {
   }
 
   func testBareArray2DCoordinateMutation() {
-    let array = BareArray2D<Int>(
+    let array = ElementBuffer2D<Int>(
       repeating: 0,
       width: 3,
       height: 2)
@@ -34,7 +34,7 @@ final class BareArray_2_ElementAccessTests: XCTestCase {
   }
 
   func testBareArray3DCoordinateMutation() {
-    let array = BareArray3D<Int>(
+    let array = ElementBuffer3D<Int>(
       repeating: 0,
       width: 2,
       height: 2,
@@ -50,7 +50,7 @@ final class BareArray_2_ElementAccessTests: XCTestCase {
   }
 
   func testBareArray4DCoordinateMutation() {
-    let array = BareArray4D<Int>(
+    let array = ElementBuffer4D<Int>(
       repeating: 0,
       size0: 2,
       size1: 2,
@@ -70,7 +70,7 @@ final class BareArray_2_ElementAccessTests: XCTestCase {
   func testBareArray2DCoordinateAccessReachesEveryPositionWithAsymmetricDimensions() {
     let (width, height) = (3, 2)
     var next = 0
-    let array = BareArray2D<Int>(width: width, height: height) {
+    let array = ElementBuffer2D<Int>(width: width, height: height) {
       defer { next += 1 }
       return next
     }
@@ -85,7 +85,7 @@ final class BareArray_2_ElementAccessTests: XCTestCase {
   func testBareArray3DCoordinateAccessReachesEveryPositionWithAsymmetricDimensions() {
     let (width, height, depth) = (2, 3, 4)
     var next = 0
-    let array = BareArray3D<Int>(width: width, height: height, depth: depth) {
+    let array = ElementBuffer3D<Int>(width: width, height: height, depth: depth) {
       defer { next += 1 }
       return next
     }
@@ -103,7 +103,7 @@ final class BareArray_2_ElementAccessTests: XCTestCase {
   func testBareArray4DCoordinateAccessReachesEveryPositionWithAsymmetricDimensions() {
     let (size0, size1, size2, size3) = (2, 3, 4, 5)
     var next = 0
-    let array = BareArray4D<Int>(size0: size0, size1: size1, size2: size2, size3: size3) {
+    let array = ElementBuffer4D<Int>(size0: size0, size1: size1, size2: size2, size3: size3) {
       defer { next += 1 }
       return next
     }

@@ -13,13 +13,13 @@ final class BareArray_5_ReferenceLifetimeTests: XCTestCase {
 
   func testBareArrayOverwriteDeinitializesPreviousReferenceElement() {
     var deinitCount = 0
-    var array = BareArray<Box>(repeating: Box({ deinitCount += 1 }), count: 1)
+    var array = ElementBuffer<Box>(repeating: Box({ deinitCount += 1 }), count: 1)
     XCTAssertEqual(deinitCount, 0)
 
     array.setElement(Box({ deinitCount += 1 }), at: 0)
     XCTAssertEqual(deinitCount, 1, "上書き時に古い要素がdeinitされること")
 
-    array = BareArray<Box>(repeating: Box({ deinitCount += 1 }), count: 1)
+    array = ElementBuffer<Box>(repeating: Box({ deinitCount += 1 }), count: 1)
     XCTAssertEqual(deinitCount, 2, "再代入直前に、直前のarrayのdeinitで要素も解放されること")
   }
 
@@ -27,19 +27,19 @@ final class BareArray_5_ReferenceLifetimeTests: XCTestCase {
     var deinitCount = 0
 
     do {
-      let array = BareArray2D<Box>(width: 2, height: 3) { Box { deinitCount += 1 } }
+      let array = ElementBuffer2D<Box>(width: 2, height: 3) { Box { deinitCount += 1 } }
       withExtendedLifetime(array) {}
     }
     XCTAssertEqual(deinitCount, 6)
 
     do {
-      let array = BareArray3D<Box>(width: 2, height: 2, depth: 2) { Box { deinitCount += 1 } }
+      let array = ElementBuffer3D<Box>(width: 2, height: 2, depth: 2) { Box { deinitCount += 1 } }
       withExtendedLifetime(array) {}
     }
     XCTAssertEqual(deinitCount, 14)
 
     do {
-      let array = BareArray4D<Box>(size0: 2, size1: 2, size2: 2, size3: 2) {
+      let array = ElementBuffer4D<Box>(size0: 2, size1: 2, size2: 2, size3: 2) {
         Box { deinitCount += 1 }
       }
       withExtendedLifetime(array) {}
@@ -49,7 +49,7 @@ final class BareArray_5_ReferenceLifetimeTests: XCTestCase {
 
   func testCoordinateOverwriteDeinitializesPreviousReferenceElement() {
     var deinitCount = 0
-    let array = BareArray4D<Box>(size0: 1, size1: 1, size2: 1, size3: 1) {
+    let array = ElementBuffer4D<Box>(size0: 1, size1: 1, size2: 1, size3: 1) {
       Box { deinitCount += 1 }
     }
 

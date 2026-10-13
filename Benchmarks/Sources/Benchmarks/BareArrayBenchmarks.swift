@@ -54,7 +54,7 @@ private func bareArrayExpectedChecksum(for size: Int) -> Int {
 
 @inline(never)
 private func bareArray1DElementChecksum(
-  _ array: borrowing BareArray<Int>, count: Int
+  _ array: borrowing ElementBuffer<Int>, count: Int
 ) -> Int {
   var checksum = 0
   for position in 0..<count {
@@ -66,7 +66,7 @@ private func bareArray1DElementChecksum(
 @inline(never)
 @available(macOS 27.0, *)
 private func bareArray1DReferenceChecksum(
-  _ array: inout BareArray<Int>, count: Int
+  _ array: inout ElementBuffer<Int>, count: Int
 ) -> Int {
   var checksum = 0
   for position in 0..<count {
@@ -77,7 +77,7 @@ private func bareArray1DReferenceChecksum(
 
 @inline(never)
 private func bareArray1DSetElements(
-  _ array: borrowing BareArray<Int>, count: Int
+  _ array: borrowing ElementBuffer<Int>, count: Int
 ) {
   for position in 0..<count {
     array.setElement(position, at: position)
@@ -87,7 +87,7 @@ private func bareArray1DSetElements(
 @inline(never)
 @available(macOS 27.0, *)
 private func bareArray1DSetReferences(
-  _ array: inout BareArray<Int>, count: Int
+  _ array: inout ElementBuffer<Int>, count: Int
 ) {
   for position in 0..<count {
     var reference = array.reference(at: position)
@@ -98,11 +98,11 @@ private func bareArray1DSetReferences(
 extension Benchmark {
   public mutating func addBareArrayBenchmarks() {
     self.add(
-      title: "BareArray<Int> element(at:) sequential read checksum",
+      title: "ElementBuffer<Int> element(at:) sequential read checksum",
       input: Int.self
     ) { size in
       var value = 0
-      let array = BareArray<Int>(count: size) {
+      let array = ElementBuffer<Int>(count: size) {
         defer { value += 1 }
         return value
       }
@@ -118,11 +118,11 @@ extension Benchmark {
 
     if #available(macOS 27.0, *) {
       self.add(
-        title: "BareArray<Int> Reference sequential read checksum",
+        title: "ElementBuffer<Int> Reference sequential read checksum",
         input: Int.self
       ) { size in
         var value = 0
-        var array = BareArray<Int>(count: size) {
+        var array = ElementBuffer<Int>(count: size) {
           defer { value += 1 }
           return value
         }
@@ -138,11 +138,11 @@ extension Benchmark {
     }
 
     self.add(
-      title: "BareArray<Int> setElement(_:at:) sequential write",
+      title: "ElementBuffer<Int> setElement(_:at:) sequential write",
       input: Int.self
     ) { size in
       return { timer in
-        let array = BareArray<Int>(repeating: 0, count: size)
+        let array = ElementBuffer<Int>(repeating: 0, count: size)
         timer.measure {
           bareArray1DSetElements(array, count: size)
         }
@@ -157,11 +157,11 @@ extension Benchmark {
 
     if #available(macOS 27.0, *) {
       self.add(
-        title: "BareArray<Int> Reference sequential write",
+        title: "ElementBuffer<Int> Reference sequential write",
         input: Int.self
       ) { size in
         return { timer in
-          var array = BareArray<Int>(repeating: 0, count: size)
+          var array = ElementBuffer<Int>(repeating: 0, count: size)
           timer.measure {
             bareArray1DSetReferences(&array, count: size)
           }
@@ -177,12 +177,12 @@ extension Benchmark {
 
     if #available(macOS 27.0, *) {
       self.add(
-        title: "BareArray2D<Int> Reference sequential read checksum",
+        title: "ElementBuffer2D<Int> Reference sequential read checksum",
         input: Int.self
       ) { size in
         let shape = bareArray2DShape(for: size)
         var value = 0
-        var array = BareArray2D<Int>(width: shape.width, height: shape.height) {
+        var array = ElementBuffer2D<Int>(width: shape.width, height: shape.height) {
           defer { value += 1 }
           return value
         }
@@ -203,12 +203,12 @@ extension Benchmark {
     }
 
     self.add(
-      title: "BareArray2D<Int> element(at:) sequential read checksum",
+      title: "ElementBuffer2D<Int> element(at:) sequential read checksum",
       input: Int.self
     ) { size in
       let shape = bareArray2DShape(for: size)
       var value = 0
-      let array = BareArray2D<Int>(width: shape.width, height: shape.height) {
+      let array = ElementBuffer2D<Int>(width: shape.width, height: shape.height) {
         defer { value += 1 }
         return value
       }
@@ -228,12 +228,12 @@ extension Benchmark {
 
     if #available(macOS 27.0, *) {
       self.add(
-        title: "BareArray2D<Int> Reference sequential write",
+        title: "ElementBuffer2D<Int> Reference sequential write",
         input: Int.self
       ) { size in
         let shape = bareArray2DShape(for: size)
         return { timer in
-          var array = BareArray2D<Int>(
+          var array = ElementBuffer2D<Int>(
             repeating: 0, width: shape.width, height: shape.height)
           timer.measure {
             var value = 0
@@ -258,12 +258,12 @@ extension Benchmark {
     }
 
     self.add(
-      title: "BareArray2D<Int> setElement(_:at:) sequential write",
+      title: "ElementBuffer2D<Int> setElement(_:at:) sequential write",
       input: Int.self
     ) { size in
       let shape = bareArray2DShape(for: size)
       return { timer in
-        let array = BareArray2D<Int>(
+        let array = ElementBuffer2D<Int>(
           repeating: 0, width: shape.width, height: shape.height)
         timer.measure {
           var value = 0
@@ -287,12 +287,12 @@ extension Benchmark {
 
     if #available(macOS 27.0, *) {
       self.add(
-        title: "BareArray3D<Int> Reference sequential read checksum",
+        title: "ElementBuffer3D<Int> Reference sequential read checksum",
         input: Int.self
       ) { size in
         let shape = bareArray3DShape(for: size)
         var value = 0
-        var array = BareArray3D<Int>(
+        var array = ElementBuffer3D<Int>(
           width: shape.width, height: shape.height, depth: shape.depth
         ) {
           defer { value += 1 }
@@ -317,12 +317,12 @@ extension Benchmark {
     }
 
     self.add(
-      title: "BareArray3D<Int> element(at:) sequential read checksum",
+      title: "ElementBuffer3D<Int> element(at:) sequential read checksum",
       input: Int.self
     ) { size in
       let shape = bareArray3DShape(for: size)
       var value = 0
-      let array = BareArray3D<Int>(
+      let array = ElementBuffer3D<Int>(
         width: shape.width, height: shape.height, depth: shape.depth
       ) {
         defer { value += 1 }
@@ -346,11 +346,11 @@ extension Benchmark {
 
     if #available(macOS 27.0, *) {
       self.add(
-        title: "BareArray3D<Int> Reference sequential write",
+        title: "ElementBuffer3D<Int> Reference sequential write",
         input: Int.self
       ) { size in
         let shape = bareArray3DShape(for: size)
-        var array = BareArray3D<Int>(
+        var array = ElementBuffer3D<Int>(
           repeating: 0, width: shape.width, height: shape.height, depth: shape.depth)
         return { timer in
           timer.measure {
@@ -380,11 +380,11 @@ extension Benchmark {
     }
 
     self.add(
-      title: "BareArray3D<Int> setElement(_:at:) sequential write",
+      title: "ElementBuffer3D<Int> setElement(_:at:) sequential write",
       input: Int.self
     ) { size in
       let shape = bareArray3DShape(for: size)
-      let array = BareArray3D<Int>(
+      let array = ElementBuffer3D<Int>(
         repeating: 0, width: shape.width, height: shape.height, depth: shape.depth)
       return { timer in
         timer.measure {

@@ -24,6 +24,7 @@ WorkerとReceiverが、最小限の共通境界から協働を始め、実際の
 ## 初期構成
 
 - `AGENTS_CANDIDATE.md`: WorkerとReceiverに共通する最小限の権限境界。
+- `Receiver/README.md`: Receiver folderを単体で移植・参照するときの入口とfile map。
 - `Receiver/RECEIVER_CODEX_BOOTSTRAP.md`: Receiverの固定役割候補。
 - `Receiver/RECEIVER_CODEX_INTAKE_CONTRACT_TEMPLATE.md`: 一回の仕事の切り出しと受入に使う局所契約候補。
 - `Receiver/PRIME_CONSULTATION_TEMPLATE.md`: Receiverがユーザーの選んだPrime Codexへ助言を求め、回答を

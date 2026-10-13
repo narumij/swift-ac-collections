@@ -12,37 +12,35 @@ the returned result, integrates accepted work, and owns Task Registry updates an
 
 ## Current job status
 
-**実行待ち: 未push文書整理2 commitの独立検収**
+**終了: 全公開targetのDocC個別生成と診断採取**
 
 The user may start this experiment by opening a separate Xcode Codex conversation and instructing it
-to read this file. Do not infer a different assignment from the Task Registry, old handoffs, or
-Archived records.
+to read this file. Do not infer a different assignment from old handoffs or Archived records.
 
 This section alone determines whether this Worker handoff has a current job. Prime Codex updates it
 before replacing or closing the assignment.
 
-## Active assignment: independent validation of two documentation commits
+## Active assignment: public-target DocC evidence acquisition
 
 ### Objective
 
-Independently validate the two commits currently ahead of `origin/develop/misc/64` and report any
-factual error, internal contradiction, overstatement, or missed reconciliation to Prime Codex.
+Generate DocC separately for every public library target named below and return reproducible factual
+evidence for each target: success or failure, diagnostics, command, and output location.
 
-The expected commits are:
-
-- `0a8488f4 docs: reconnect permutation history to current state`
-- `524fffb6 docs: refresh array quality assessments`
+This assignment gathers evidence only. Do not decide which targets CI should enforce, their rollout
+order, whether a warning is acceptable, or whether public documentation is complete.
 
 ### Workspace and start state
 
 - Workspace: the existing Xcode workspace for this repository.
 - Expected branch: `develop/misc/64`.
-- Expected range: `origin/develop/misc/64..HEAD` contains exactly the two commits above.
-- Expected worktree: clean apart from this uncommitted handoff file.
+- The branch may contain commits ahead of its remote; their number is not a stop condition.
+- Expected existing changes: Prime Codex may have uncommitted changes to
+  `Maintanance/WORKER_TASK.md` and `Maintanance/PROGRESS_OVERVIEW.md` that prepare this assignment.
 - Change ownership: Prime Codex and the user retain ownership of the shared worktree.
 
-Verify these facts before reviewing. If the branch, commit range, or existing changes differ, do not
-edit or normalize the workspace. Record the observed difference in the return section and stop.
+Verify the branch before work. Preserve every existing change. Stop only when the branch differs or
+when an unexpected change overlaps a command input or the permitted return section.
 
 ### First reading
 
@@ -50,35 +48,48 @@ Read in this order:
 
 1. `Orientation/WORKER_CODEX_BOOTSTRAP.md` in full.
 2. This assignment in full.
-3. `git diff origin/develop/misc/64..HEAD` and the files changed by that range.
+3. Only the `DOC-023` row in `PROGRESS_OVERVIEW.md`.
+4. `Package.swift` only as needed to verify exact target names and DocC plugin availability.
 
-For factual verification, begin from the changed documents and follow only their directly relevant
-references into current source, tests, workflows, the matching Task Registry rows, and the matching
-completed-task record. Technical dependency reading is allowed when needed to decide a finding.
+Do not scan other Registry rows, maintenance documents, or Archived records.
 
-Do not scan the full Registry, all maintenance documents, or Archived records for additional work.
+### Targets
 
-### Validation questions
+Run a separate DocC generation for each target:
 
-1. Does `0a8488f4` connect historical Permutation plans to the current implementation and accepted
-   state without presenting an old plan as current authority?
-2. Does `524fffb6` describe the accepted BareArray and OptionalArray test evidence accurately,
-   including current test counts and the distinction between an audit snapshot and current state?
-3. Are statements about PR #192 remote CI supported by the current repository record, without
-   inferring more than the recorded evidence establishes?
-4. Did either commit rewrite a historical execution record as though the newer result had existed at
-   the earlier time?
-5. Is any current-state statement still contradicted by a directly controlling source?
+1. `AcCollections`
+2. `RedBlackTreeModule`
+3. `PermutationModule`
+4. `OptionalArrayModule`
+5. `BareArrayModule`
+
+Use a distinct output directory and captured log for each target under `.build/worker-docc/`. Do not
+reuse one target's output directory for another target. Include warnings in the captured evidence;
+do not suppress or repair them.
 
 ### Allowed operations
 
-- Read repository files and Git history needed for this validation.
-- Run read-only searches and diff inspection.
+- Read the files listed above and technical files directly named by a diagnostic.
+- Run `swift package generate-documentation` separately for the five named targets.
+- Create or replace generated evidence only below `.build/worker-docc/`.
 - Write only the `Worker return` section of this file.
 
-Do not modify product source, tests, workflows, other maintenance documents, the Task Registry, or
-Git history. Do not build or run tests for this documentation-only validation unless Prime Codex
-issues a replacement assignment that explicitly requires it.
+Do not modify source, tests, workflows, Package.swift, other maintenance documents, the Task
+Registry, or public documentation. Do not run unrelated builds, tests, benchmarks, or formatters.
+
+### Validation requirements
+
+For each target, return:
+
+- the exact command and exit status;
+- whether DocC completed;
+- warning and error counts, with the diagnostic text or log path;
+- the target-specific output and log paths;
+- any crash or environmental failure distinguished from a documentation diagnostic.
+
+After all five attempts, verify that the five output and log locations are distinct. A failed target
+does not authorize source repair and does not prevent attempting later targets unless the shared
+environment itself is no longer usable.
 
 ### Repository operation authority
 
@@ -95,74 +106,110 @@ to the repository's user-authorization rules.
 
 Stop and return the observed facts when:
 
-- the workspace or expected commit range does not match this assignment;
-- controlling sources conflict and their authority cannot be resolved from the specified inputs;
-- a conclusion requires broad exploration outside the assignment;
-- validation would require a product, public-contract, quality-policy, or task-priority decision;
-- another participant changes the shared worktree in a way that may affect this review.
+- the current branch is not `develop/misc/64`;
+- an unexpected shared-worktree change overlaps this assignment;
+- the command would need to modify a tracked file;
+- continuing requires a product, documentation-policy, CI-policy, or task-priority decision;
+- the build environment becomes unusable for later independent attempts.
+
+Do not stop merely because one target reports warnings, fails, or crashes. Preserve that result and
+continue with the next independent target when the environment remains usable.
 
 ### Return requirements
 
-Write the result below. List findings in severity order with file and line references, the supporting
-evidence, and the smallest recommended correction. If no defect is found, state what was checked and
-the remaining evidence limits. Do not apply the correction.
+Write the result below. Report the five targets in the assigned order and distinguish observed facts
+from interpretation. Do not recommend CI scope or edit a diagnostic source.
 
 The Worker must also state:
 
-- changed files: `Maintanance/WORKER_TASK.md` only;
-- validation commands or Xcode actions performed;
-- unverified areas;
+- changed tracked files: `Maintanance/WORKER_TASK.md` only;
+- generated untracked or ignored evidence paths below `.build/worker-docc/`;
+- commands and exit statuses;
+- unverified areas and environmental limits;
 - out-of-scope observations, if any.
 
 ## Worker return
 
-Status: Stopped — workspace start state did not match the assignment.
+Status: Accepted by Prime Codex as evidence acquisition. Repository task completion is recorded separately.
 
-### Observed difference
+### Observed facts
 
-The expected branch matched: `develop/misc/64`.
+All five assigned targets completed DocC generation with exit status 0 when SwiftPM was invoked with
+`--disable-sandbox`. Each final log contains 8 warnings and 0 errors. The warnings are environmental
+SwiftPM cache warnings, not DocC documentation diagnostics:
 
-The expected commit range did not match. `git log --oneline --decorate
-origin/develop/misc/64..HEAD` showed four commits, not exactly the two commits assigned for review:
+- the user-level configuration, security, and cache directories are not accessible or writable;
+- the manifests for `swift-ac-collections`, `swift-algorithms`, `swift-docc-plugin`,
+  `swift-numerics`, and `swift-docc-symbolkit` could not be stored in the read-only cache database.
 
-- `97159cb2 docs: add Xcode Worker Codex handoff`
-- `d1b5e933 agents`
-- `524fffb6 docs: refresh array quality assessments`
-- `0a8488f4 docs: reconnect permutation history to current state`
+The complete diagnostic text is preserved in each target-specific `generate.log` listed below.
 
-The expected worktree state also did not match: `git status --short` was empty. In particular,
-`Maintanance/WORKER_TASK.md` was not an uncommitted handoff file; it was included in the changed-file
-range and appears to have been committed by `97159cb2`.
+1. `AcCollections`
+   - Command: `swift package --disable-sandbox --allow-writing-to-directory .build/worker-docc/AcCollections/output generate-documentation --target AcCollections --output-path .build/worker-docc/AcCollections/output > .build/worker-docc/AcCollections/generate.log 2>&1`
+   - Exit status: 0.
+   - DocC completed: yes; the log reports `Finished building documentation for 'AcCollections'`.
+   - Diagnostics: 8 warnings, 0 errors.
+   - Output: `.build/worker-docc/AcCollections/output`
+   - Log: `.build/worker-docc/AcCollections/generate.log`
+2. `RedBlackTreeModule`
+   - Command: `swift package --disable-sandbox --allow-writing-to-directory .build/worker-docc/RedBlackTreeModule/output generate-documentation --target RedBlackTreeModule --output-path .build/worker-docc/RedBlackTreeModule/output > .build/worker-docc/RedBlackTreeModule/generate.log 2>&1`
+   - Exit status: 0.
+   - DocC completed: yes; the log reports `Finished building documentation for 'RedBlackTreeModule'`.
+   - Diagnostics: 8 warnings, 0 errors.
+   - Output: `.build/worker-docc/RedBlackTreeModule/output`
+   - Log: `.build/worker-docc/RedBlackTreeModule/generate.log`
+3. `PermutationModule`
+   - Command: `swift package --disable-sandbox --allow-writing-to-directory .build/worker-docc/PermutationModule/output generate-documentation --target PermutationModule --output-path .build/worker-docc/PermutationModule/output > .build/worker-docc/PermutationModule/generate.log 2>&1`
+   - Exit status: 0.
+   - DocC completed: yes; the log reports `Finished building documentation for 'PermutationModule'`.
+   - Diagnostics: 8 warnings, 0 errors.
+   - Output: `.build/worker-docc/PermutationModule/output`
+   - Log: `.build/worker-docc/PermutationModule/generate.log`
+4. `OptionalArrayModule`
+   - Command: `swift package --disable-sandbox --allow-writing-to-directory .build/worker-docc/OptionalArrayModule/output generate-documentation --target OptionalArrayModule --output-path .build/worker-docc/OptionalArrayModule/output > .build/worker-docc/OptionalArrayModule/generate.log 2>&1`
+   - Exit status: 0.
+   - DocC completed: yes; the log reports `Finished building documentation for 'OptionalArrayModule'`.
+   - Diagnostics: 8 warnings, 0 errors.
+   - Output: `.build/worker-docc/OptionalArrayModule/output`
+   - Log: `.build/worker-docc/OptionalArrayModule/generate.log`
+5. `BareArrayModule`
+   - Command: `swift package --disable-sandbox --allow-writing-to-directory .build/worker-docc/BareArrayModule/output generate-documentation --target BareArrayModule --output-path .build/worker-docc/BareArrayModule/output > .build/worker-docc/BareArrayModule/generate.log 2>&1`
+   - Exit status: 0.
+   - DocC completed: yes; the log reports `Finished building documentation for 'BareArrayModule'`.
+   - Diagnostics: 8 warnings, 0 errors.
+   - Output: `.build/worker-docc/BareArrayModule/output`
+   - Log: `.build/worker-docc/BareArrayModule/generate.log`
 
-Per the assignment's start-state check and stop conditions, no review of the two documentation commits
-was performed and no workspace normalization was attempted.
+### Environmental failure distinguished from documentation diagnostics
 
-### Validation performed
+The first `AcCollections` attempt omitted `--disable-sandbox`:
 
-- Read `Maintanance/Orientation/WORKER_CODEX_BOOTSTRAP.md` in full.
-- Read this assignment in full.
-- Ran `git branch --show-current`.
-- Ran `git log --oneline --decorate origin/develop/misc/64..HEAD`.
-- Ran `git status --short`.
-- Ran `git diff --name-only origin/develop/misc/64..HEAD`.
-- Ran `git diff --stat origin/develop/misc/64..HEAD`.
+`swift package --allow-writing-to-directory .build/worker-docc/AcCollections/output generate-documentation --target AcCollections --output-path .build/worker-docc/AcCollections/output > .build/worker-docc/AcCollections/environment-failure.log 2>&1`
 
-### Changed files
+It exited 1 during manifest evaluation with 3 cache-access warnings, 1 invalid-manifest error, and
+`sandbox-exec: sandbox_apply: Operation not permitted`. DocC did not start. This was an execution
+environment failure caused by nested sandboxing, not a documentation diagnostic. The evidence is at
+`.build/worker-docc/AcCollections/environment-failure.log`. Adding SwiftPM's `--disable-sandbox`
+allowed all five independent attempts above to complete.
 
-- `Maintanance/WORKER_TASK.md` only, limited to this Worker return section.
+### Location and change verification
 
-### Unverified areas
+- The five output directories and five final log paths resolve to distinct absolute locations under
+  `.build/worker-docc/<target>/` and existed after generation.
+- Generated ignored evidence paths: `.build/worker-docc/AcCollections/`,
+  `.build/worker-docc/RedBlackTreeModule/`, `.build/worker-docc/PermutationModule/`,
+  `.build/worker-docc/OptionalArrayModule/`, and `.build/worker-docc/BareArrayModule/`.
+- Worker-changed tracked files: `Maintanance/WORKER_TASK.md` only. The pre-existing tracked change to
+  `Maintanance/PROGRESS_OVERVIEW.md` was preserved without modification by the Worker.
+- No branch creation or switching, commit, push, merge, rebase, reset, restoration, deletion, source
+  repair, or other-agent delegation was performed.
 
-- The content and factual accuracy of `0a8488f4` and `524fffb6` were not reviewed because the required
-  start state did not hold.
-- No source, tests, workflows, matching Registry rows, or completed-task records were inspected.
-- No build or tests were run, as prohibited for this assignment.
+### Evidence limits and out-of-scope observations
 
-### Out-of-scope observations
-
-- None beyond the two additional commits and the clean worktree recorded above.
-
-### Required next evidence
-
-Prime Codex must reconcile the assignment with the observed four-commit range and issue a replacement
-assignment or restore a start state that explicitly accounts for `d1b5e933` and `97159cb2`.
+- Warning and error counts are literal counts of lines containing `warning:` and `error:` in each
+  captured log. No policy judgment about warning acceptability or CI scope was made.
+- No source, test, workflow, package-manifest, Registry, or public-documentation file was modified.
+- No unrelated build, test, benchmark, or formatter was run.
+- Documentation completeness and rendered-content quality were not inspected; the assignment verifies
+  target-specific generation and captured diagnostics only.
+- No additional out-of-scope product or documentation issue was observed.

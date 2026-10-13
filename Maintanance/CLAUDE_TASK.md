@@ -9,6 +9,11 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
+**依頼済み: ElementBuffer系Maintenance管理座標の置換漏れ独立検査**
+
+2つのMaintenance folderと監査文書名を現行module名へ統一し、現行・Archivedを含む参照を一括更新した。
+Claudeは旧管理pathの残存、存在しない新path、機械置換による履歴事実の破損だけをread-onlyで検査する。
+
 **完了（Codex受入済み）: ElementBuffer系名称移行と利用者向け文書の独立目視検査（第2回）**
 
 旧facade削除後に新module側のDocC landing pageが欠落していた問題を補修した。Claudeは今回、実行系だけでなく
@@ -98,6 +103,143 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
+
+## Active assignment: ElementBuffer系Maintenance管理座標の置換漏れ独立検査
+
+### Objective
+
+commit `280ef96a`と`cc8d74e9`によるMaintenance管理座標の名称統一を独立に検査する。旧folder名・旧監査文書名を
+指す参照が残っていないこと、新しい参照先が実在すること、および一括置換が歴史上の型名・target名・source path・
+安定task IDを誤って変更していないことを確認する。
+
+これはread-only reviewである。追加rename、本文の現代化、task完了判定はCodexが担当する。
+
+### Start state
+
+- Branch: `develop/misc/66`。
+- HEAD: `cc8d74e9` (`Align ElementBuffer audit document names`)。
+- 比較基準: `a1559ce2` (`Accept ElementBuffer documentation review`)。
+- worktreeはclean。検査開始後にshared worktreeが変化した場合は停止する。
+
+### Required inspection
+
+1. root `CLAUDE.md`。
+2. `git diff --find-renames a1559ce2..HEAD --`。
+3. 現在の次の2 directoryと、その8 Markdown。
+   - `Maintanance/ElementBufferModule/`
+   - `Maintanance/OptionalElementBufferModule/`
+4. `PROGRESS_OVERVIEW.md`の`ARRAY-015`〜`ARRAY-018`、`OPT-*`、`BARE-*`の現行行。
+5. `TASK_CANONICAL_DOCUMENT_MAP.md`。
+6. 旧・新管理pathを参照するMarkdownの検索結果。現行・Archivedの両方を対象にする。
+
+production source、test、benchmarkの内容は読まない。Markdown中の参照先としてpath文字列を確認するだけにする。
+
+### Review questions
+
+1. 次の旧管理座標が、現行・Archivedを含むMarkdownに参照として残っていないか。
+   - `Maintanance/BareArrayModule`、`Maintanance/OptionalArrayModule`
+   - `BareArrayAudit.md`、`OptionalArrayAudit.md`
+   - 上記folderを前提にした相対path
+2. 新folder内に8文書が揃い、旧folderが消えているか。
+3. 新しい`ElementBufferAudit.md`／`OptionalElementBufferAudit.md`への参照先が実在し、Registry、正本map、
+   Quality Profile、TESTING、handoff記録でpathが一貫しているか。
+4. 一括置換が`Sources/BareArrayModule`、`Sources/OptionalArrayModule`等の当時の実装path、旧target名、test名、
+   公開型名、文章上の歴史的名称まで誤って新名称へ変えていないか。
+5. `BARE-*`／`OPT-*`の安定task IDがrename・renumber・再利用されていないか。
+6. rename後の正本性、task状態、依存、所有者、再開条件が内容上変化していないか。
+
+### Return
+
+このassignment直下へ次を記録する。
+
+- 検査したbranch、HEAD、比較基準。
+- `MUST-FIX`、`SHOULD-FIX`、`QUESTION`に分けた指摘。なければ明記する。
+- 旧管理座標の残存件数と分類。
+- 新pathの存在・参照整合の結果。
+- 歴史事実と安定task IDが保持されたか。
+- `accept`、`accept after MUST-FIX`、`revise and review again`のいずれか一つ。
+- 検査の限界とClaudeが変更したfile。
+
+### Boundaries
+
+- build、test、DocC、benchmarkを実行しない。
+- source、文書、Registry、正本mapを修正しない。
+- 旧名称が歴史上の型名・target名・test名・task本文として現れるだけで置換漏れと判定しない。
+- 新しい命名判断や追加renameを提案scopeへ混ぜない。
+- commit、push、branch操作、PR操作、他agentへの委任を行わない。
+- 変更してよいのは、このassignmentのReturn節だけ。
+
+### Completion
+
+6観点を照合し、管理pathの置換漏れと意図して保持した歴史名称を分離してReturnを書いたら完了。
+
+### Return
+
+2026-10-14 Claude（Opus 5.5）。read-onlyの検査。
+
+- **検査した状態:** branch `develop/misc/66`、HEAD `cc8d74e9`。比較基準は`a1559ce2`。
+- worktreeの変更は、このassignmentの本文が入った`CLAUDE_TASK.md`だけ。検査中に変化はなかった。
+
+#### MUST-FIX
+
+なし。
+
+#### SHOULD-FIX
+
+- **S-1 Archivedの品質評価2文書が、存在しない「現行文書」を指している。**
+  - `Archived/Quality/BareArray_QualityAssessment-ISO25010_2026-10-09.md`の5行: 「現行文書は`../../../Sources/BareArrayModule/Documentation/Quality-Profile.md`を参照する」
+  - `Archived/Quality/OptionalArray_QualityAssessment-ISO25010_2026-10-08.md`の5行: 同じく`../../../Sources/OptionalArrayModule/…`
+  - どちらも、履歴ではなく「現在の正本への案内」として書かれている。現行は`Sources/ElementBufferModule/…`と`Sources/OptionalElementBufferModule/…`。
+  - 管理path（Maintenance folder）ではなくsource pathなので、今回の置換の対象外として残った。原因は`ARRAY-016`のsource移動の側にある。
+
+#### QUESTION
+
+- **Q-1 Claudeの過去のReturn節が、その場で書き換えられている。** `CLAUDE_TASK.md`の第2回検査のReturnで、次の3行の意味が変わった。
+  - 「folder名は管理座標なので、変えなくてよい」
+  - 「管理座標で、問題ない」
+  - 「計画書の境界どおり、改名の対象外」
+
+  事実としては「検査時点の判定」の注記になっており、誤りではない。ただ、検査記録の原文は残っていない。
+  後日の注記として追記する形にしたほうが、検査の時点で何を判定したかが残る。どちらの扱いにするかはCodexに任せる。
+- **Q-2 commitに紐づいた参照が、新しいfile名になった。** `Archived/Quality/OptionalArray_QualityAssessment-ISO25010_2026-10-08.md`の46行は、
+  「`Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md`の同名節（行番号は`85e60200`時点のもの）」。
+  `85e60200`の時点では、そのpathにfileは存在しない。「新しいpathの、当時の版」と読めば辿れるが、`git show 85e60200:<path>`ではそのまま開けない。
+  この1件だけ旧pathを残すかどうかの判断を仰ぎたい。
+
+#### 旧管理座標の残存（Markdown全体、Archivedを含む）
+
+- `Maintanance/BareArrayModule`、`Maintanance/OptionalArrayModule`、`BareArrayAudit.md`、`OptionalArrayAudit.md`、およびfolderを前提にした相対path:
+  **参照としての残存は0件。** 一致するのは、このassignment自身の問いの文（140・141行）だけ。
+- Markdown以外: `Maintanance/Graph/InMemoryFixture/rp15_document_match.sql`の30・68行に`Maintanance/OptionalArrayModule/OptionalArrayAudit.md`がある。
+  commit `bb77fafc`／`f6f84d6c`のsnapshotを表す固定データなので、履歴として保持されるべきもの（置換しなかったのは正しい）。
+
+#### 新pathの存在と参照の整合
+
+- 新folder 2つに、各4文書（計8文書）がある。旧folderは2つとも存在しない。renameは内容を変えずに検出された（監査2文書のH1だけ新しい名前）。
+- 現行・Archivedから参照されている新pathは8種類・計246件。すべて実在する。
+- Registry、正本map、両Quality Profile、`Tests/TESTING.md`、handoff記録（`CLAUDE_TASK.md`、`WORKER_TASK.md`）で、pathは一貫している。
+- 移動した8文書には相対linkがなく、移動で壊れたlinkはない。
+
+#### 歴史事実と安定task ID
+
+- word-diffで変わった語は、管理pathの置き換え、監査2文書のH1、移行記録の追記、Registryの`ARRAY-018`の要約、Q-1の3行だけ。
+- 当時のsource path（`Sources/BareArrayModule/BareArray.swift`、`Sources/OptionalArrayModule/OptinalArray.swift`、`…/ElementBuffer.swift`、
+  `…/OptionalElementBuffer.swift`、`…/Documentation/QualityAssessment-ISO25010.md`ほか）は、置き換えられずに残っている。
+  `git log --all`で、どのpathも過去に実在したことを確かめた。前回のQ-1で「合成path」と書いた`Sources/ElementBufferModule/BareArray.swift`等の形は、今回の差分の対象外。
+- 旧target名、test名（`--filter BareArrayModuleTests`等）、公開型名、本文中の歴史的な名称（「OptionalArrayの体系監査」等の行の題名）は変わっていない。
+- 変化したtokenに含まれるtask IDは`BARE-002`、`BARE-008`、`BARE-009`、`BARE-014`、`BARE-015`、`OPT-028`、`OPT-0xx`。
+  すべて削除と追加が同数で、path部分だけが変わっている。rename、renumber、再利用は0件。
+- Registryで内容が変わったのは`ARRAY-018`の要約文だけ。状態、依存、所有者、再開条件の変化はない。
+
+#### 判定
+
+**`accept`。** S-1は今回の置換範囲の外。Q-1とQ-2は記録の扱い方の問題で、受入を妨げない。
+
+#### 限界・変更したfile
+
+- path文字列の照合だけで、production source、test、benchmarkは読んでいない。build等も実行していない。
+- 検索は`git grep`による。
+- 変更したfileは、`Maintanance/CLAUDE_TASK.md`のこのReturn節だけ。
 
 ## Completed assignment: ElementBuffer系名称移行と利用者向け文書の独立目視検査（第2回）
 

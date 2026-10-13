@@ -25,6 +25,7 @@ Detailed evidence remains in each row's archived document. IDs remain permanent 
 | `PERF-005` | `DONE` | Codex | [EXECUTION] Permutation性能CIの実装系列分離 | PR #191でruntime-check版への方式切替を受け入れ、旧unbatched subscript 2件を合否対象から除外。batched 2件とend-to-endをruntime-check版baselineで継続監視し、borrowed版はmacOS独立評価へ分離。PR #193のperformance jobで新しい比較契約のall greenを確認 | `PERFORMANCE_CI_CHANGE_GUIDE.md` / `Benchmarks/Libraries/CI.json` / `Benchmarks/Libraries/CI-Small.json` |
 | `DOC-023` | `DONE` | Codex / Worker Codex | [DISCOVERY] 全公開targetのDocC継続検証範囲の確定 | Workerが5公開targetをmacOSで個別生成し、Prime Codexがexit 0、target別log・output、環境warningとDocC diagnosticの分離を再検収。PR CIでは5 targetを個別生成し、Ubuntu安定性の観測後にrequired化、warnings-as-errorsは文書品質gateと分離する段階導入を確定 | `DOCUMENTATION_CI_PLAN.md` / `WORKER_TASK.md` / `.github/workflows/ci.yml` |
 | `DOC-024` | `DONE` | Codex / Worker Codex | [EXECUTION] 全公開targetのDocC継続検証をPR CIへ追加 | 5 targetのPR限定matrixを、target別output・diagnostic・artifact、`fail-fast: false`、non-blocking job、実status伝播、常時artifact uploadで実装。Prime CodexがYAML parseと構造条件を再検証し、既存publication jobとwarnings-as-errors方針が無変更であることを受け入れた | `DOCUMENTATION_CI_PLAN.md` / `WORKER_TASK.md` / `.github/workflows/ci.yml` |
+| `DOC-025` | `DONE` | User / Codex | [EXECUTION] 公開target DocC observation jobのremote確認 | 2026-10-13、commit `83ce31a2`のGitHub Actions run `38346360223`でUbuntu 24.04 matrix 5件のDocC生成stepがすべて成功し、target別diagnostic artifact 5件を確認。run全体もsuccessで、初回remote observationを受け入れた | `DOCUMENTATION_CI_PLAN.md` / `.github/workflows/ci.yml` |
 
 ## Satisfied precedence removed from the active Registry
 

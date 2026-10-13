@@ -74,3 +74,11 @@ Prime CodexはYAML parse、matrix 5件、non-blocking設定、target別path、ar
 
 remote Ubuntu上のjob実行、artifact upload、およびtoolchain安定性は、このlocal受入から推定しない。
 実装commitのuser push後に別の受入境界で確認する。
+
+2026-10-13、commit `83ce31a2`に対するGitHub Actions run `38346360223`をremote受入した。
+Ubuntu 24.04上で5 targetすべてのDocC生成stepがsuccessとなり、target別diagnostic artifactも5件保存された。
+既存の`documentation`、Debug、Release、Address Sanitizer、performanceを含むrun全体もsuccessだった。
+これにより、初回のremote observationはtoolchain crashおよびrepository diagnosticなしで成立した。
+
+ただし、1回の成功だけを継続的安定性やrequired化の根拠とはしない。matrixは引き続きnon-blockingで観測し、
+required化は複数回の実測を得てから別途判断する。

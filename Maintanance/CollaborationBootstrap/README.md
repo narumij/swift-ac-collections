@@ -28,6 +28,9 @@ WorkerとReceiverが、最小限の共通境界から協働を始め、実際の
 - `RECEIVER_CODEX_INTAKE_CONTRACT_TEMPLATE.md`: 一回の仕事の切り出しと受入に使う局所契約候補。
 - `PRIME_CONSULTATION_TEMPLATE.md`: Receiverがユーザーの選んだPrime Codexへ助言を求め、回答を
   対象projectで再検証するための質問・回答表。
+- `COLLABORATION_INTERVIEW_TASK.md`: Receiverの変化と協働負荷を縦断観測する中立的なinterview task。
+- `COLLABORATION_INTERVIEW_TEMPLATE.md`: Receiver本人、ユーザー、現物、Prime・第三者の評価を分けて
+  記録するtemplate。
 
 Worker用bootstrapと作業契約は、別projectでの試行範囲が定まったときに、このfolder向けの候補を作る。
 現行repositoryの`Orientation/WORKER_CODEX_*`を自動的に正本または移植元としない。
@@ -88,3 +91,12 @@ ReceiverはPrimeの回答を助言として受け取り、対象projectの現物
 - 管理上の問題を発見したとき、既存方式のコピーではなく、そのprojectに合う構造を育てられるか。
 
 一回の成功だけで、役割設計の妥当性、能力獲得、能力定着を証明したとは扱わない。
+
+## Interview
+
+初回作業後、Worker受入後、異なる協働者の追加後などに、`COLLABORATION_INTERVIEW_TASK.md`を使って
+変化を観測する。詳細な成功例を先に読ませて望ましい回答を教えず、Receiver本人の自己評価、ユーザーの
+評価、repository上の事実、Prime・第三者の助言を分離する。
+
+ユーザーの評価は付加情報ではない。相談のしやすさ、不要な判断要求、認知負荷、責務の引受け方、信頼の
+変化を知る一次資料として、ユーザー自身の表現と具体的な出来事を残す。

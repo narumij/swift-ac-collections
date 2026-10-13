@@ -22,6 +22,7 @@ on:
 
 jobs:
   documentation:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -137,6 +138,7 @@ jobs:
           if-no-files-found: warn
 
   debug:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-24.04
 
     steps:
@@ -149,6 +151,7 @@ jobs:
         run: swift test -c debug
 
   release:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-24.04
 
     steps:
@@ -360,6 +363,7 @@ jobs:
           if-no-files-found: warn
 
   address-sanitizer:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-24.04
 
     steps:

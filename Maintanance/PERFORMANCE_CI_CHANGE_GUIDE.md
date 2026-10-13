@@ -14,6 +14,10 @@ benchmark自体の試験方法やtest suiteの運用は扱わない。taskの状
 GitHubのActionsから`CI`を選び、`Run workflow`で次を指定すると、pushやPR更新を伴わずに
 performance比較を実行できる。
 
+手動実行はperformance比較専用である。documentation、Debug・Release test、および
+Address Sanitizerは起動せず、通常のPR検証で実行する。手動performance調査のたびに
+通常検証の一部だけを重複実行しない。
+
 - `Use workflow from`: workflowを実行するbranch。比較先を空欄にした場合は、このbranchのcommitを使う。
 - `performance_base_ref`: 比較元のbranch、tag、またはcommit SHA。既定値は`main`。
 - `performance_head_ref`: 比較先のbranch、tag、またはcommit SHA。空欄なら選択したworkflow branchを使う。

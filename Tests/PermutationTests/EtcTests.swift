@@ -20,23 +20,6 @@ final class EtcTests: XCTestCase {
     XCTAssertEqual(result, 6)
   }
 
-  @available(macOS 27.0, *)
-  func testRuntimeCheckedPermutationsCurrentManualIteration() {
-    var permutations = [1, 2, 3].nextPermutations()
-    var count = 0
-    var checksum = 0
-
-    while let permutation = permutations.next() {
-      for element in permutation {
-        checksum += element
-      }
-      count += 1
-    }
-
-    XCTAssertEqual(count, 6)
-    XCTAssertEqual(checksum, 36)
-  }
-
 }
 
 #if DEATH_TEST

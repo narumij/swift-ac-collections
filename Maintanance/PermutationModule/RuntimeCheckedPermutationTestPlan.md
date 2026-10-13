@@ -232,3 +232,50 @@ are returned evidence; Codex performs acceptance and Registry updates.
 - user-level SwiftPM cacheがread-onlyというenvironment warningは出たが、buildとtest結果には影響しなかった。
 
 この成功は現行scratch checksの基準点であり、後継Test as Specificationが揃ったことを意味しない。
+
+## PERM-053 return（2026-10-13 Claude）
+
+### Changed files
+
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_1_EnumerationTests.swift`（G1、XCTest 12件）
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_3_PermutationCollectionTests.swift`（G3、XCTest 6件）
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_99_DeathTests.swift`（G3、Swift Testing 5件）
+- 変更: `Tests/PermutationTests/EtcTests.swift`から`testRuntimeCheckedPermutationsCurrentManualIteration`だけを削除
+  （6通り・合計36の確認は、G1の`testFromAscendingOrderEnumeratesAll`が並び順まで含めて包含する）。
+  Spanのscratch testとG2のscratch Death Test 2件は変更していない。
+
+### Coverage
+
+- G1: ledgerの11行（two elements、ascending、non-first、descending、all equal、empty、single、duplicates、
+  Range＋nonzero-start Slice、non-`Int` indices、source unchanged）に、successor planの「終了後の`nil`継続」
+  （`testReturnsNilRepeatedlyAfterCompletion`）を加えた12件。各Viewは次の`next()`前に`Array(_:)`へ写すhelperで集め、
+  View自体は保持しない。
+- G3: Array、Slice、non-`Int` indexed sourceでの0始まり`Int`添字、`startIndex`／`endIndex`／`count`、反復、
+  先頭・末尾の有効な読み取り、空View。範囲外は`-1`、`endIndex`、`endIndex + 1`、`Int.min`、`Int.max`の5件を
+  `expectedSwiftTrapSignal`に完全一致させるDeath Test。
+- 新testは`#if !COMPATIBLE_ATCODER_2025`（Death Testは`#if DEATH_TEST && !COMPATIBLE_ATCODER_2025`）で囲んだ。
+  互換modeの`nextPermutations()`は別APIのため。
+
+### Validation（macOS、Swift 6.4）
+
+- `swift test -c debug --filter 'PermutationTests.NextPermutations_|PermutationTests.EtcTests'`:
+  XCTest 19件（G1 12、G3 6、EtcTestsのSpan scratch 1）0 failures、Swift Testing 5件（Death Test）passed。
+- 同`-c release`: 同じ件数で0 failures／passed。
+- 互換modeのbuildは実行していない。
+
+### Not done
+
+G0、G2、G4、G5、production source、Registry、Quality Profileには触れていない。
+
+## PERM-053 acceptance（2026-10-13 Codex）
+
+- G1、G3、範囲外Death Testを、確定台帳と現行runtime-check契約へ照合して受け入れた。
+- `EtcTests.swift`から削除された手動列挙scratchは、G1の列挙順testに包含されている。Span scratchとG2の
+  失効scratch 2件が維持されていることも確認した。
+- Xcodeの現行scheme／test planで、追加23件と残存Span scratch 1件の計24件をCodexが独立再実行し、
+  24件成功、失敗・skip・not run各0件を確認した。
+- CLIによる同じ再実行はXcode環境のsandboxがmanifest起動を拒否したため成立しなかった。これはtest失敗の
+  証拠ではなく、Claudeが記録したDebug／Release CLI各24件成功を置き換えるものでもない。
+- `Maintanance/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+
+これにより`PERM-053`は完了とする。G2、G4、G0／G5は、それぞれ独立した後続taskとして残る。

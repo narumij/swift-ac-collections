@@ -107,3 +107,6 @@ rename後もcurrent測定、baseline測定、比較まで完走してgreenにな
 今回の復旧では型renameだけを追い、以前から残っていた旧い総称名を見落としたため、current側でも
 `unknown tasks`になった。rename互換の検証では、currentの完全なtask名、旧baselineへ変換した完全なtask名、
 結果を正規化した完全なtask名の三点を確認する。
+
+commit `0330e7b5`のPR CI run `38390402753`では、current測定、rename前baselineの測定、結果名の正規化、
+性能比較まで完走し、performanceを含む全jobのgreenを確認した。

@@ -9,11 +9,16 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**割当済み（開始待ち）: OptionalArray performance CI artifact解析とSwift 6.4.1限定追試**
+**実行待ち: benchmark harnessの基本操作とchartアレンジの確認実習**
 
-Linux CIで赤になったbase / headの実測artifactを使い、4件のOptionalElementBuffer direct benchmarkについて
-raw sample、chart、実測binaryのassemblyを比較する。その観測で絞った箇所だけを、swiftlyで導入済みの
-Swift 6.4.1により再コンパイル・再計測する。原因判断、bisect、source修正は行わず、下のReturn節へ証拠を返す。
+`BENCHMARK_USAGE_GUIDE.md`を入口に、既存の境界比較artifactだけを使って、標準renderで得られるchartと
+base/head診断用のアレンジを区別する。再測定、製品変更、性能判定は行わない。詳細は直下のActive assignment。
+
+**完了（Codex検収待ち）: OptionalArray performance CI artifact解析とSwift 6.4.1限定追試**
+
+CIのbaseは`01120025`ではなくPR base（`main` = `1f531c23`と整合）だった。4件とも、実測binaryの
+hot loopに命令列の差がある（head側でloop不変量のhoistが失われている）。CIのbase / headはどちらもSwift 6.4.0でbuildされていた。
+推薦は「bisectへ進める」。詳細はReturn節と`claude-analysis/`。
 
 **完了（Codex検収待ち）: OptionalArray更新methodの`mutating`化によるsource影響棚卸し**
 
@@ -82,7 +87,62 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Active assignment: OptionalArray performance CI artifact解析とSwift 6.4.1限定追試
+## Active assignment: benchmark harnessの基本操作とchartアレンジの確認実習
+
+### Objective
+
+このrepositoryのbenchmark harnessの基本操作を理解した上で、既存のbase/head artifactから標準toolで
+何を再現できるか、今回の診断目的には何をアレンジする必要があるかを確認する。独自chartを作る能力ではなく、
+既存tool、library JSON、生JSON、生成chartの対応を説明・検証できることを目的とする。
+
+### Inputs
+
+- `Maintanance/BENCHMARK_USAGE_GUIDE.md`;
+- `Benchmarks/Sources/benchmark-tool/main.swift`;
+- `Benchmarks/Libraries/CI.json`;
+- `Benchmarks/_Artifacts/PerformanceCI/215be94b-vs-13f23f0b/`（Git管理外、既存artifact）;
+- 必要な範囲のbenchmark CLI help。
+
+他のMaintenance文書、過去のartifact、production source、RedBlackTreeの実装は読まない。
+
+### Work
+
+1. ガイドとCLI helpを照合し、`benchmark run`、`benchmark library run`、`benchmark library render`、
+   `benchmark results compare`の役割を短く整理する。
+2. 再測定せず、artifact内の`base.json`と`current.json`を確認する。使用可能なら既存`CI.json`と
+   `benchmark library render`で標準chartを一時出力する。成立しなければ、推測で修正せず理由を記録する。
+3. 標準chartが表すtask、軸、中心線、bandを、生JSONとlibrary JSONへ照合する。
+4. 今回のbase/head回帰診断に標準chartをそのまま使えるか判断する。不足する場合は、必要なアレンジを
+   task対応、比較方向、集約、表示の観点で説明する。
+5. アレンジしたchartを作る場合は、元JSONを変更せず、各線・点・集約値がどの入力に対応するかを
+   機械的または表で検証する。既存のClaude作成chartを正しいと前提にしない。
+
+### Outputs
+
+- 生成物がある場合は
+  `Benchmarks/_Artifacts/PerformanceCI/215be94b-vs-13f23f0b/claude-benchmark-exercise/`へ置く。
+- このassignment直下へ`### Return`を追加し、次を分けて返す。
+  - 基本操作について確認できたこと;
+  - 標準renderでできたこと／できなかったこと;
+  - 診断目的に必要なアレンジと理由;
+  - 生JSON・library・chartの対応確認;
+  - ガイドの不足または誤り。
+
+### Boundaries
+
+- benchmarkを再測定しない。
+- production source、test、benchmark source、library JSON、workflow、品質文書、Registryを変更しない。
+- 性能回帰の原因、製品品質、修正方針を判断しない。
+- RedBlackTreeの結果はartifact中の別系列として扱い、調査しない。
+- commit、push、branch操作、package更新を行わない。
+- 一時出力と成果物以外を変更しない。
+
+### Completion
+
+既存toolの基本機能を説明でき、標準renderと診断用アレンジの境界が示され、生JSONからchartまでの対応を
+検証できたら完了。見栄えの良いchartを作ること自体は完了条件ではない。
+
+## Completed assignment pending acceptance: OptionalArray performance CI artifact解析とSwift 6.4.1限定追試
 
 ### Objective
 
@@ -148,7 +208,64 @@ Swift 6.4.1追試は、実施できた範囲とできなかった範囲、6.4.0�
 
 ### Return
 
-未実施。
+2026-10-14 Claude（Opus 5.5）。生成物は`Benchmarks/_Artifacts/PerformanceCI/215be94b-vs-01120025/claude-analysis/`
+（Git管理外。`README.md`に各fileの説明と再現commandがある）。CI artifactの元fileは読んだだけで、変更していない。
+repositoryへの変更はこのReturn節と状態欄だけ。
+
+#### 観測事実
+
+1. **CIのbaseは`01120025`ではない。** workflowのbaseは`github.event.pull_request.base.sha`。
+   base binaryには、rename前の名前（`OptionalArray2D<Int> direct methods …`）しかなく、`OptionalElementBuffer`は0件だった。
+   factory closureの数（OptionalArray 19、BareArray 20）は`main` = `1f531c23`と一致し、`01120025`（13、12）とは一致しない。
+   `1f531c23`から`215be94b`までは57 commit。base側の当該benchmarkは`let array = OptionalArray2D…`をescaping closureがcaptureし、
+   更新はnonmutatingの形。
+2. **数値（`summary.md`、`samples.csv`、`ci_base_vs_head.svg`）:** sizeごとのsampleは1件だけ（`--cycles 1`）なので、分散は出せない。
+   head/baseの幾何平均（size>=256）は、2D cold 1.97、2D warm 1.52、3D cold 2.67、3D warm 1.63。
+   5%を超えて遅いsizeは、60中50、48、53、52。chartでは、size 100前後から上で、ns/elementがほぼ一定の比のまま離れている。
+3. **toolchain:** CIのbaseとheadは、どちらも`swift-6.4.0-RELEASE`（ubuntu24.04、x86_64）でbuildされていた。
+   CPUはAMD EPYC 9V45（Hyper-V、4 vCPU）。
+4. **実測binaryのhot loop（`asm/`、`asm_stats.md`）:** 4件とも、measure本体へ`element(at:)`と`setElement`が完全にinlineされ、call命令は0。
+   `swift_beginAccess`／`swift_endAccess`、retain・release・allocのcallは、どちらの側のmeasure本体にもない。
+   - base: 幅のload、行offsetの`imul`、`x < width`の検査（`cmovle`による上限）をinner loopの外へhoistしている。
+     cold側は、書き込んだ値をregisterから再利用し、直後の`element(at:)!`の読み直しを消去している。
+   - head: 要素ごとに`0x10(%rdx)`／`0x18(%rdx)`（幅・高さ）をmemoryから読み直し、x・y両方の範囲検査と`imul`をやり直している。
+     coldでは、`setElement`の後に`element(at:)`をもう一度実行する（範囲検査、`imul`、`cmpb $0x1`によるunwrap検査、payloadのload）。
+   - 命令列そのものが違うため、配置・alignmentだけの差ではない。関数先頭の64byte境界からのoffsetは表に記録した。
+5. **Swift 6.4.0と6.4.1の限定比較（`toolchain-model/`）:** headの実sourceの`OptionalElementBuffer2D`と、Timerを別moduleに置いたharnessで、
+   x86_64とarm64のassemblyを出した。
+   - head形の最小模型は、CI headのinner loop（`16(%rdx)`の再load、2回の範囲検査と`imul`、`cmpb $1`）をそのまま再現した。base形はhoistされた。
+   - hot loopの命令列は、6.4.0と6.4.1で同じだった。差は、cleanup経路の型metadata取得
+     （`swift_instantiateConcreteTypeFromMangledNameV2` → `…MangledName`）と周辺の分岐だけで、loopの外にある。
+   - **同じ`var`束縛のままnonmutatingのmethodにした型（`BufN`）は、`mutating`版（`BufM`）と同じ関数としてmergeされた（`TATm`）。**
+     模型の上では、差を生んでいるのは`mutating`ではなく、benchmark側の束縛の形
+     （escaping closureがcaptureする`let`か、measure closureがcaptureする局所`var`か）だった。
+   - 実benchmarkの再計測はしていない。理由: 模型でhot loopが両toolchainで同一だったため、toolchain差を見るための計測が要らなくなった。
+     実packageを一時directoryへ複製して取得・buildし直すコストに見合わないと判断した。
+
+#### 解釈（未確定）
+
+- headでは、measure closureへ渡る`array`（局所`var`）と`checksum`のアドレスが、別の書き込み（`checksum`への加算やpayloadへの書き込み）と
+  aliasしないことをcompilerが証明できず、bufferのstored propertyをloop不変量として扱えなかった、と考えられる。
+  baseでは、captureされた`let`は不変なのでhoistできた。
+- これは製品の`OptionalElementBuffer`の性能回帰というより、benchmark側の束縛の形による差である可能性が高い。
+  ただし、利用者のコードでも`var`を非escaping closureでcaptureすれば同じ形になりうる。
+- macOSで「再現しなかった」比較は`01120025`対`215be94b`で、どちらも`var`束縛だった。CIの比較（`main`対`215be94b`）とは別の対である。
+
+#### 未確認
+
+- 実benchmarkでの6.4.1再計測と、macOS arm64での`1f531c23`対`215be94b`の実測。
+- 57 commitのうち、どれで命令列が変わったか（束縛を変えたcommitが最有力の候補だが、未特定）。
+- 3D側の模型（2Dだけ作った）。
+
+#### 次に必要な最小実験
+
+- 同じmachineで`1f531c23`と`215be94b`を、対象4 taskだけ交互に計測し、measure本体の命令列を照合する（CIと同じ対を使う）。
+- benchmark sourceだけを変えた3形（`let`のcapture、局所`var`、`withUnsafe…`等でbufferを借用束縛する形）の命令列比較。製品sourceは変えない。
+
+#### 推薦
+
+**`bisectへ進める`。** 命令列の差が実在し、CIのbase / headは同じtoolchainで、6.4.1でもhot loopは変わらないため、
+toolchain差と配置差は第一候補から外れる。比較の対を`1f531c23`対`215be94b`に直したうえで、命令列が変わったcommitを特定する。
 
 ## Completed assignment: OptionalArray更新methodの`mutating`化によるsource影響棚卸し
 

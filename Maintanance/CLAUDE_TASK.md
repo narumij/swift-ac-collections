@@ -9,6 +9,12 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
+**完了: Array命名ballot draftの独立検査**
+
+Claudeが候補網羅、意味分離、重複処理、契約変更の混入、現行sourceとの一致を独立検査した。
+Codexは帰属、BareArray限定scope、後続候補の所在を修正した。review-informed Codex supplementを
+独立提出と同じballotへ含めるかだけはユーザー判断として残す。
+
 **完了: OptionalArray／BareArray deprecated公開面削除後の独立目視検査**
 
 CodexがOptionalArrayとBareArrayの旧連鎖subscript・非所有Viewを削除し、現行の座標accessへtest・
@@ -27,6 +33,97 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
+
+## Current assignment: Array命名ballot draftの独立検査
+
+### Objective
+
+`PUBLIC_API_NAMING_BALLOT.md`のArray部分が、現行公開面について一つの採点項目へ一つの命名判断だけを
+置き、三者の候補を失わず、削除済み表面や契約変更を候補へ混入させていないか確認する。
+
+### Inputs
+
+Read only:
+
+- Registryの`ARRAY-008`と`API-002`の行;
+- `Maintanance/PUBLIC_API_NAMING_BALLOT.md`;
+- `Maintanance/ArrayObjectAndAPINamingDraft.md`;
+- 三者の`PUBLIC_API_NAMING_CANDIDATES_*.md`;
+- `Sources/BareArrayModule/BareArray.swift`;
+- `Sources/OptionalArrayModule/OptinalArray.swift`;
+- 両moduleの公開Quality Profile。
+
+### Inspection questions
+
+- submit済みの命名だけの候補が、意味を変えず対応するballot sectionへ入っているか。
+- exact duplicateが票数を増やさず、異なる意味が黙って統合されていないか。
+- owner二family、1D suffix、copied value access、borrowed referenceのmethod・result・propertyが
+  互いを不必要に決めない単位へ分かれているか。
+- View、subscript、closure mutation、operation追加、BareArray製品除外、Permutationが正しく対象外か。
+- 現行sourceに存在しないsurfaceや、現在の所有権・寿命契約を変える候補が命名だけの候補として
+  紛れ込んでいないか。
+- 候補不足があるなら、既存提出から機械的に導ける不足か、新しい候補提出を要する不足かを区別する。
+
+### Boundaries
+
+- ballot、候補文書、source、test、Registryを変更しない。
+- 候補を採点、順位付け、推奨、採用しない。
+- 新しい公開契約または製品範囲を決めない。
+- PermutationとRedBlackTreeを調査しない。
+
+### Validation and return
+
+検索と目視照合だけを行い、build、test、commitは行わない。問題があればballot IDまたはsection、元の提出、
+問題の種類、修正に必要な境界を列挙する。問題がなければ確認した範囲と残る限界を短く記録する。
+
+結果はこのassignment末尾の`Claude return`へ追記する。受入と修正はCodexが行う。
+
+### Claude return
+
+2026-10-13 Claude（Opus 5.5）。検索と目視照合だけ。採点・推奨はしていない。
+
+#### 指摘
+
+- **RP-01（帰属の誤り）:** Sourceが「Current, Claude retention」だが、Claudeは`pointee`の維持を提出していない。
+  `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`のB表は「`MutableRef`を維持、`pointee`を`value`へ」で、Claudeの案はRP-02だけ。
+  RP-01のSourceは「Current」だけにするのが正しい。
+- **RT-03（帰属の欠落）:** Sourceが「Codex supplement, current concrete type」だが、Claudeも同じB表で`MutableRef`の
+  維持を提出している。exact duplicateとしてClaudeを加えるべき（票数は増やさない）。
+- **C節（帰属の欠落）:** DS-01〜DS-03にSource列がない。DS-01／DS-02はClaudeの`ARRAY_NAMING_CANDIDATES_CLAUDE.md`
+  C-1a／C-1b（両方suffixなし／両方suffixあり）と同じ意味で、他者の提出にもあるかは未確認。提出元を残すと他節と揃う。
+- **Codex supplementの扱い:** PO-09、PO-10、BR-03、RT-03は、Codex候補文書のF節で「review-informed supplement、
+  他の候補とdeprecated削除の後に追加」と明記されている。ballotでも「Codex supplement」と表示されており隠れてはいない。
+  ただし`ArrayObjectAndAPINamingDraft.md`の「候補生成は相互レビュー前に終える」という手順とは時点が違うので、
+  独立提出の候補と同列に採点してよいかはユーザー判断（修正には候補の採否を決める境界が要る）。
+- **E〜G節の適用範囲が書かれていない:** 借用参照（`reference(at:)`、`Reference`／`MutableRef`、`pointee`）は
+  現行sourceでBareArrayにだけ存在し、OptionalArrayにはない。BareArrayは製品除外の判断が別にあるが、E〜Gがどちらのfamilyに
+  適用されるかballotに一言ない。命名判断としての独立性は保たれているので、適用範囲の注記だけで足りる。
+
+#### 候補不足（既存提出から機械的に導ける）
+
+- Claudeの`OptionalArray1D.init(capacity:)`→`init(count:)`、`removeAll()`の`resetAll()`／`clear()`は命名だけの候補だが、
+  Excluded表の「Initializer, `removeAll`, `indices`, shape labels — 後の命名scope」で一括除外されている。除外理由自体は
+  妥当（owner名と要素accessの判断に不要）。後のscopeで拾えるよう、どこで扱うかの行き先があると取りこぼしにならない。
+  新しい候補提出は要らない。
+
+#### 問題なし（確認した範囲）
+
+- 網羅: Userの`BareElements`／`OptionalCache`／現行4語、Codexの`ElementBuffer`系・`FixedShapeElements`系・現行・
+  `mutableElement`／`MutableElementReference`、Claudeの`FixedArray`・`HeapArray`・`SlotArray`・`MemoTable`・現行・
+  `value`／`setValue`・`value`（property）が、いずれかの行に意味を変えずに入っている。
+- 重複: `element`／`setElement`、`reference`、`Reference`、`BareArray`、`OptionalArray`は1行に統合され、Sourceの併記で
+  票数を増やしていない。
+- 意味の分離: owner二family（A／B）、1D suffix（C）、copied value access（D）、借用参照のmethod・result・property（E〜G）が
+  互いを決めない単位に分かれている。ClaudeのA-2は`value`／`setValue`（D）とclosure案（Excluded）に正しく分けられている。
+- 対象外: View型名、多引数subscript（取り下げ済み）、`withMutableValue`、`removeElement`、参照resultの削除、BareArray製品除外、
+  Permutationが、それぞれ理由付きでExcludedにある。
+- 現行sourceとの一致: `element(at:)`、`setElement(_:at:)`（両family）、`reference(at:)`、`typealias Reference = MutableRef`、
+  `MutableRef.pointee`（BareArrayだけ）が存在し、View型と`subscript`は存在しない。所有権・寿命契約を変える候補が
+  命名候補の行に紛れ込んではいない（E節冒頭で`~Escapable`の寿命は変えないと明記）。
+
+#### 限界
+
+- `ARRAY_NAMING_CANDIDATES_USER.md`／`_CODEX.md`（object名の初回提出）はInputs外のため照合していない。DS節の提出元は未確認。
 
 ## Current assignment: OptionalArray／BareArray deprecated公開面削除後の独立目視検査
 

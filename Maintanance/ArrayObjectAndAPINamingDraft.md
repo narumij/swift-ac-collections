@@ -1,7 +1,8 @@
 # BareArray / OptionalArray object and API naming draft
 
-Status: public API candidate collection completed; the legacy object-name ranking was superseded by
-the fixed-ballot and independent-scoring workflow. Ballot compilation has not started. No public name
+Status: the three candidate submissions have been reconciled with the current public surface and an
+independently inspected ballot draft exists. The ballot is not fixed until the user decides whether
+the marked review-informed Codex supplements are eligible for the same scoring round. No public name
 or API in this document is adopted.
 
 ## Purpose
@@ -49,13 +50,11 @@ does not receive ballot weight, and the later three scoring records retain their
 | Owning 2D | `BareArray2D<Element>` | `OptionalArray2D<Element>` |
 | Owning 3D | `BareArray3D<Element>` | `OptionalArray3D<Element>` |
 | Owning 4D | `BareArray4D<Element>` | `OptionalArray4D<Element>` |
-| Non-owning 1D | `BareArray1DView<Element>` | `OptionalArray1DView<Element>` |
-| Non-owning 2D | `BareArray2DView<Element>` | `OptionalArray2DView<Element>` |
-| Non-owning 3D | `BareArray3DView<Element>` | `OptionalArray3DView<Element>` |
 
-The review includes the family base names, dimension suffix convention, and derived View names.
-Coordinate labels are recorded as a related naming consequence but do not need to be decided in
-the same decision unless ranking reveals that they change the meaning of the object name.
+The old non-owning View types and chained subscripts were deleted in `2f4e5729`; their names are no
+longer decision candidates. The review includes the owner-family base names and dimension suffix
+convention. Coordinate methods use the innermost-axis-first order and no longer compete with an
+oppositely ordered chained-subscript surface.
 
 ## User-submitted current method-name candidate
 
@@ -67,9 +66,99 @@ the same decision unless ranking reveals that they change the meaning of the obj
 | Reference type | `typealias Reference = MutableRef<Element>` | not provided |
 
 This table records the user's submitted candidate. It is not the sole candidate: Codex and Claude
-submit independent alternatives in their respective `PUBLIC_API_NAMING_CANDIDATES_*.md` records.
-Subscript and View deprecation or retention remains a separate contract and product-positioning
-question; candidate submission does not decide it.
+record alternatives in their respective `PUBLIC_API_NAMING_CANDIDATES_*.md` records.
+The deleted subscript and View surfaces are not revived by candidate submission.
+
+## Current-surface reconciliation before ballot compilation
+
+The submitted records are preserved as candidate-generation evidence, but they do not yet define a
+sound ballot. They mix several independently decidable questions and include candidates whose meaning
+requires a contract change rather than a spelling choice.
+
+### Naming-only comparison units
+
+The ballot must separate at least these units:
+
+1. The always-initialized owner-family base name.
+2. The presence-tracked owner-family base name.
+3. The 1D suffix convention; the current families are asymmetric.
+4. Copied value access: `element` / `setElement` versus another naming-only vocabulary.
+5. BareArray borrowed mutation: method name, public reference name, concrete `MutableRef` name, and
+   its `pointee` property.
+
+Names originally submitted as a pair do not have to be adopted as an inseparable pair. Splitting the
+two owner roles prevents a preference about `BareArray` from deciding `OptionalArray`, or vice versa.
+It also avoids making a possible future BareArray product-exclusion decision block the maintained
+OptionalArray name.
+
+### Contract-dependent submissions
+
+The following are not ordinary spelling candidates and must not be scored against naming-only entries
+without a prior contract decision:
+
+- `withMutableValue(at:_:)`, because it replaces the public borrowed-reference model with a closure API.
+- `removeElement(at:)`, because it adds an OptionalArray operation rather than renaming one.
+- Removing the public reference type, because it changes the exposed access model.
+- Excluding BareArray from the product, because that decides whether its renaming has product value.
+
+These remain useful findings but are not ballot entries until their corresponding contract is selected.
+
+### Retired or withdrawn submissions
+
+- All View-name spellings are retired with the deleted View types.
+- The multi-index subscript candidate is withdrawn; the subscript surface has been deleted.
+- Claude's borrowed-Permutation-as-default candidate was withdrawn by the user's recorded decision and
+  is unrelated to the Array ballot.
+
+### Candidate material that remains usable
+
+For owner names, the submitted vocabulary remains available after separating the two roles:
+
+- Always-initialized: `BareElements`, `ElementBuffer`, `FixedShapeElements`, `BareArray`, `FixedArray`,
+  and `HeapArray`.
+- Presence-tracked: `OptionalCache`, `OptionalElementBuffer`, `OptionalFixedShapeElements`,
+  `OptionalArray`, `FixedOptionalArray`, `HeapOptionalArray`, `SlotArray`, and `MemoTable`.
+
+For current operations, `element` / `setElement` and `reference` / `Reference` remain a complete
+compatibility candidate. `mutableElement` / `MutableElementReference` remains a naming-only alternative
+for the borrowed-reference portion. Claude's `value` / `setValue` vocabulary may be considered
+independently of its contract-changing closure proposal; that separation must be explicit in the fixed
+ballot rather than inferred from the original bundled submission.
+
+Before ballot compilation, the candidate set must be checked for missing naming-only alternatives and
+for misleading promises against the current source and quality profiles. Completion means that every
+entry compares one naming decision, not that every submitted phrase is forced onto the ballot.
+
+Codex later added `PresenceBuffer`, `MemoizationTable`, `elementReference`, and direct `MutableRef`
+alternatives while reconciling the submissions with the current surface. Those entries are explicitly
+marked as review-informed supplements. Their meanings survived independent inspection, but their
+eligibility alongside the original submissions remains a separate user decision before scoring.
+
+### Current semantic screen
+
+The current source and quality profiles support the following cautions when the ballot is compiled.
+They are comparison information, not rankings or adoption.
+
+- `BareArray` preserves compatibility but leaves “bare” unexplained. `BareElements` retains the same
+  ambiguity while making the type name plural. `ElementBuffer` describes the low-level owner role;
+  `FixedShapeElements` describes its invariant but is long. `FixedArray` may imply a type-level count
+  or inline storage, and `HeapArray` promotes a representation detail into the product name.
+- `OptionalArray` resembles `Array<Optional<Element>>`, although the implementation separately owns a
+  presence map and conditionally initialized payload. `OptionalCache` and `MemoTable` express the
+  documented memoization use but may imply policy or narrow other uses. `SlotArray` and
+  `PresenceBuffer` express the state model; the former is broad and the latter is unfamiliar.
+  `MemoizationTable` is explicit about the intended use without claiming eviction.
+- `element` / `setElement` matches the current contract and speaks about stored elements. `value` /
+  `setValue` is shorter semantically but may make reference-element identity and ownership less clear.
+- `reference` / `Reference` is compact but omits mutability and lifetime. `mutableElement` /
+  `MutableElementReference` is explicit but long. `elementReference` keeps the projected object visible
+  without stating mutability. The existing concrete `MutableRef` is short but abbreviated.
+- `pointee` matches pointer vocabulary and the addressor implementation. `value` reads more safely at
+  the call site but can sound like a copied value rather than mutable access to owner storage.
+
+No candidate can encode noncopyability, borrowed lifetime, fixed shape, contiguity, memoization use,
+and competitive brevity at once. The ballot therefore preserves known tradeoffs rather than treating
+the most descriptive or shortest spelling as automatically correct.
 
 ## Candidate-submission contract
 

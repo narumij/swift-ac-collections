@@ -186,3 +186,37 @@ alone. It requires a product decision about the default route, migration, and so
 | BareArray product exclusion | Determines whether renaming it creates useful maintained vocabulary or unnecessary migration work. |
 
 These decisions are inputs to later decision tasks. They are not resolved by this candidate submission.
+
+## F. Current-surface supplement after deprecated removal
+
+Status: review-informed supplement, added after the old View and chained-subscript surfaces were
+deleted. It does not restore the withdrawn first submission and does not claim independence from the
+other records.
+
+The original pair-oriented candidates forced two owner roles and several access decisions into one
+choice. For ballot construction, Codex submits the following missing naming-only alternatives as
+independent components.
+
+### Presence-tracked owner names
+
+- `PresenceBuffer`: describes fixed slots whose payload presence is tracked independently, without
+  promising memoization or cache policy. Concern: “presence” is precise but unfamiliar at call sites.
+- `MemoizationTable`: describes the documented primary use more explicitly than `MemoTable` or
+  `OptionalCache`, without claiming eviction or automatic calculation. Concern: it intentionally
+  narrows the apparent use to memoization.
+
+### Borrowed-reference names
+
+The method, exposed reference name, concrete type name, and value property are separate spelling
+questions. Codex submits these components without changing the existing borrowed lifetime contract.
+
+| Role | Candidate spellings |
+| --- | --- |
+| Method | `reference(at:)`, `mutableElement(at:)`, `elementReference(at:)` |
+| Exposed result name | `Reference`, `MutableElementReference`, direct `MutableRef` |
+| Concrete type | `MutableRef`, `MutableElementReference` |
+| Referenced value property | `pointee`, `value` |
+
+`withMutableValue(at:_:)` is not included here because it changes the access contract to a closure.
+`removeElement(at:)` is not included because it adds an operation. Those remain contract findings,
+not spelling alternatives.

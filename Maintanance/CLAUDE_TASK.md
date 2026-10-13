@@ -9,6 +9,12 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
+**割当済み（開始待ち）: OptionalArray performance CI artifact解析とSwift 6.4.1限定追試**
+
+Linux CIで赤になったbase / headの実測artifactを使い、4件のOptionalElementBuffer direct benchmarkについて
+raw sample、chart、実測binaryのassemblyを比較する。その観測で絞った箇所だけを、swiftlyで導入済みの
+Swift 6.4.1により再コンパイル・再計測する。原因判断、bisect、source修正は行わず、下のReturn節へ証拠を返す。
+
 **完了（Codex検収待ち）: OptionalArray更新methodの`mutating`化によるsource影響棚卸し**
 
 repository内の影響は、`let`→`var`が23箇所、一時値receiverの書き換えが20箇所。
@@ -75,6 +81,74 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
+
+## Active assignment: OptionalArray performance CI artifact解析とSwift 6.4.1限定追試
+
+### Objective
+
+`OPT-070`について、Linux CIの実測artifactを最優先の証拠としてbase / headの差を可視化し、実際に測定された
+binaryのhot pathを比較する。その観測に基づいて対象を絞り、Swift 6.4.0と6.4.1の限定比較から、toolchain差を
+原因候補として残せるかを調べる。
+
+### Inputs
+
+- `Benchmarks/_Artifacts/PerformanceCI/215be94b-vs-01120025/`（Git管理外のCI artifact）;
+- `Benchmarks/Sources/Benchmarks/OptionalArrayBenchmarks.swift`のOptionalElementBuffer direct benchmark;
+- `Sources/OptionalArrayModule/OptionalElementBuffer.swift`の対象accessorと更新method;
+- `OptionalArrayModule/CurrentQualityAssessment.md`の現行performance CI regression節;
+- `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`の再現条件、実測binary、assembly比較に関する手順;
+- `git show`による`01120025`と`215be94b`の上記対象file差分;
+- `swiftly`で利用可能なSwift 6.4.0と、ユーザーが導入済みのSwift 6.4.1。
+
+RedBlackTree、他module、Archivedの他文書、過去conversationは読まない。
+
+### Work
+
+1. artifact内のCPU、binary hash、binary情報、base / head JSON、comparisonを対応付け、4件の対象taskの
+   全sampleと集約値を抽出する。
+2. 4件についてbase / headを同じ軸で比較できるchartを作る。min、代表値、分散またはsample分布が失われない
+   表現を選び、chartから読み取れない情報は表または短い注記で補う。
+3. artifactに保存された、実際に測定されたbase / head binaryの`.nm`と`.asm`を使う。別buildのassemblyを
+   CI実物の代用にしない。対象benchmarkのhot loopと到達するOptionalElementBuffer操作を特定し、addressを
+   正規化した命令列、call、load/store、access scope、box化の痕跡、loop開始位置とalignmentを比較する。
+4. 次を観察する。ただし存在を前提にしない。
+   - `swift_beginAccess` / `swift_endAccess`または相当するexclusivity処理;
+   - escaping captureのbox、ownerまたはstorageの追加load/store;
+   - `setElement`、`element(at:)`、checksum loopのinline / outline差;
+   - 命令列が同一または実質同一の場合のbinary配置・alignment差。
+5. CI実物の観測後、その差に関係する最小範囲だけをSwift 6.4.0と6.4.1で比較する。可能なら同一machine、
+   同一source、同一commandで対象4taskを再計測しchart化する。全CIや全benchmarkを実行しない。
+   full benchmarkが不要または成立しない場合は、対象symbolのコンパイルとassembly比較へ縮小し、その理由を残す。
+6. CI実物、macOS 6.4.0、macOS 6.4.1を別の証拠として扱い、OS・architecture・CPU・toolchain差を越えて
+   因果を断定しない。
+
+### Outputs
+
+- 生成物はGit管理外の
+  `Benchmarks/_Artifacts/PerformanceCI/215be94b-vs-01120025/claude-analysis/`へ置く。
+- 少なくとも、chart、抽出した数値表、正規化したassembly差分または比較メモ、実行command、toolchain情報、
+  各生成物の説明を置く。
+- この節のReturnへ、観測事実、解釈、未確認事項、次に必要な最小実験を分けて記録する。
+
+### Boundaries
+
+- production source、test、benchmark定義、workflow、品質文書、Registryを変更しない。
+- RedBlackTreeの回帰を調査・修正しない。comparisonに含まれる事実として分離して記録するだけにする。
+- 原因を確定しない。bisect、修正、benchmark受入条件の変更、baseline更新を行わない。
+- CI artifact内の元fileを上書きしない。
+- repository内でcommit、push、branch操作を行わない。
+- 6.4.1の追試に追加package取得が必要なら、既存workspaceを変更せず一時build directoryを使う。
+
+### Completion
+
+4件すべてについてCI base / headの数値とchartが対応し、実測binaryのhot path比較結果があること。
+Swift 6.4.1追試は、実施できた範囲とできなかった範囲、6.4.0との差を再現command付きで返すこと。
+最後に、`bisectへ進める`、`toolchain差の追加検証が先`、`配置実験が先`、`証拠不足`のいずれが
+観測に整合するかを推薦として一つ示す。ただし実行や原因確定はCodexへ返す。
+
+### Return
+
+未実施。
 
 ## Completed assignment: OptionalArray更新methodの`mutating`化によるsource影響棚卸し
 

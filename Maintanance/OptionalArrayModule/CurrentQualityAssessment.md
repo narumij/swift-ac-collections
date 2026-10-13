@@ -204,12 +204,12 @@ repository内の呼出しを棚卸しした。既存sourceを変更せず、次�
 mutable bindingへ追従させた。条件付き`@unchecked Sendable`は維持する。Xcode Build for Testing、
 全test（1475 passed、0 failed、256 not run）、Benchmark packageのrelease buildが成功した。
 
-### `mutating`追従後のbenchmark capture回帰
+### `mutating`追従後のperformance CI回帰
 
 上記変更後のremote performance CIで、OptionalArrayの2D・3D direct cold / warm 4 workloadに
 54〜64%の見かけ上の性能低下が生じた。製品実装の性能回帰と即断せず、事前棚卸しでClaudeが記録した
 「escaping closureがcaptureする`var`はbox化・exclusivity検査により計測値へ影響し得る」という
-予測とbenchmark sourceを照合した。
+予測とbenchmark sourceを照合し、最初の原因仮説とした。
 
 `mutating`追従時にbufferのbindingを外側のbenchmark factory closureで`var`へ変更したため、返却する
 計測closureからescaping captureされていた。buffer生成を返却closure内へ移し、cold / warmの準備は
@@ -217,9 +217,14 @@ mutable bindingへ追従させた。条件付き`@unchecked Sendable`は維持�
 いた計測前の`removeAll()`は不要として除いた。これにより計測対象のaccess操作は変更していない。
 
 修正後、Benchmark packageのrelease buildに成功した。専用libraryの全workloadをsize 1〜64k、1 cycleで
-実行し、checksumを含め完走した。生成結果の自己比較ではdifference score 1.05超が0件だった。
-remote CIのbase / head比較による回復確認は、次回CI結果を最終証拠とする。この事象は製品bufferの
-性能回帰ではなくbenchmark harnessのcapture形による測定回帰として扱う。
+実行し、checksumを含め完走した。しかしremote CIでは4件に31〜49%の回帰が再び出たため、escaping captureを
+原因として確定した判断を撤回する。
+
+同じmacOS machine・Apple Swift 6.4・Release・専用library・最大64k・1 cycle・`replace-all`で、変更前
+`01120025`と修正後を別buildして比較した。修正後は4件すべて約10〜25%改善し、30%回帰は0件だった。
+したがってmacOSではCIの回帰を再現できず、履歴bisectの前提を満たさない。Linux CI artifactに保存された
+実測binary、assembly、CPU、toolchain、base / head JSONを照合し、命令列差、配置差、環境差を切り分けるまで、
+製品実装またはbenchmark harnessのいずれを原因とも確定しない。
 
 ## 判断の整理
 

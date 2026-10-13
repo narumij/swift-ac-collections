@@ -56,3 +56,6 @@
 - benchmark packageのrelease buildが成功し、dry-runで既存のElementBuffer系task title 22件が維持されている
   ことを確認した。
 - 新旧4 moduleのDocC generationが`--warnings-as-errors`付きで成功した。
+
+旧名facadeは移行中間状態としてPR #195でmainへ固定した。最終的な移行ゴールは`ARRAY-018`で旧名2 targetを
+削除し、新moduleだけをpackageと継続CIへ残すこととする。

@@ -9,6 +9,12 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
+**依頼中: ElementBuffer系旧名互換target削除後の独立目視検査**
+
+Codexが`BareArrayModule`と`OptionalArrayModule`のfacade targetを削除し、新moduleだけをpackageとDocC CIへ
+残した差分について、下記のbounded assignmentで目視検査する。実装・文書・Registryは変更せず、結果だけを
+Return節へ記録する。
+
 **完了（Codex受入済み）: benchmark harnessの基本操作とchartアレンジの確認実習**
 
 標準toolの`results compare --output`で、base/headの重ね描きchartが出せることを確認した。不足は「sizeごとの比」と「size帯別の集約」。
@@ -86,6 +92,74 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
+
+## Active assignment: ElementBuffer系旧名互換target削除後の独立目視検査
+
+### Objective
+
+`ARRAY-018`の差分を独立に読み、旧名facade targetの削除が意図した範囲に閉じていること、新moduleの提供・test・
+benchmark・DocC CI経路を誤って削っていないこと、および不要と判明したperformance rename互換削除が取り消されて
+いることを確認する。これはread-only reviewであり、実装受入やtask完了判定はCodexが行う。
+
+### Start state
+
+- Branch: `develop/misc/66`。
+- HEAD: `d31f6b73` (`Retire benchmark rename compatibility`)。
+- HEAD自体は不要と判明した試行commitであり、worktreeの差分がそのworkflow変更を取り消した上で、旧名facade
+  target削除へ置き換えている。HEADだけを完成形として検査しない。
+- Prime Codexとユーザーがshared worktreeを所有する。検査入力が途中で変化した場合は停止する。
+
+### Required reading and inspection
+
+次だけを読む。
+
+1. root `CLAUDE.md`。
+2. `PROGRESS_OVERVIEW.md`の`ARRAY-016`〜`ARRAY-018`行と対応するprecedence行。
+3. `ARRAY_MODULE_COMPATIBILITY_TARGET_RETIREMENT.md`。
+4. `git diff origin/main --`による現在の統合差分。ただし次の対象だけを検査する。
+   - `Package.swift`
+   - `.github/workflows/ci.yml`
+   - `Sources/AcCollections/AcCollections.swift`
+   - `Sources/_BareArrayModule/`と`Sources/_OptionalArrayModule/`の削除
+   - 両ElementBuffer test directoryのcompatibility test削除
+   - `ARRAY_MODULE_TARGET_MIGRATION_EXECUTION.md`
+   - `DOCUMENTATION_CI_PLAN.md`
+   - `PERFORMANCE_CI_CHANGE_GUIDE.md`
+5. 必要な場合だけ、`Benchmarks/Package.swift`とbenchmark sourceのimport行。
+
+Archived、Git履歴、RedBlackTree実装、品質評価本文、他のtaskは読まない。
+
+### Review questions
+
+1. manifestから旧名2 targetと全内部依存が削除され、新module・test target・trait条件が維持されているか。
+2. `AcCollections`が新moduleを直接再公開する経路を維持しているか。
+3. production source、test、benchmark、workflowに旧名moduleの実行系import・target参照が残っていないか。
+4. DocC matrixが旧名2件だけを外した5 target構成になり、他targetを落としていないか。
+5. benchmark task名rename互換が元どおり維持され、今回のmodule target削除と混同されていないか。
+6. 削除対象外の公開型、test、benchmark workload、performance比較条件、trait、library productを変更していないか。
+7. 正本文書が中間状態と最終ゴールを矛盾なく区別しているか。
+
+### Return
+
+このassignment直下へ、次を記録する。
+
+- 検査したbranch、HEAD、統合差分の基準。
+- `MUST-FIX`、`SHOULD-FIX`、`QUESTION`に分けた指摘。なければ明記する。
+- 旧名target残存箇所を、実行系、現行説明、履歴・管理座標へ分類した結果。
+- `accept`、`accept after MUST-FIX`、`revise and review again`のいずれか一つ。
+- 検査の限界と、Claudeが変更したfile。
+
+### Boundaries
+
+- build、test、DocC、benchmarkを実行しない。Codexの実行結果を独立検証済みとはみなさない。
+- source、test、workflow、manifest、正本文書、Registryを変更しない。
+- 旧名targetを再導入しない。追加のrenameやcleanupを提案scopeへ混ぜない。
+- commit、push、branch操作、PR操作、他agentへの委任を行わない。
+- 変更してよいのは、このassignmentのReturn節だけ。
+
+### Completion
+
+上記7観点を現在の統合差分へ照合し、受入阻害点と非阻害の旧名残存を分離してReturnを書いたら完了。
 
 ## Completed assignment: benchmark harnessの基本操作とchartアレンジの確認実習
 

@@ -28,9 +28,10 @@ rendered contentの完全性、利用者による理解、および将来のwarn
 
 ## 継続検証範囲
 
-2026-10-14のmodule名移行後、PR CIで継続生成する対象は、上記5 targetのうち旧名2 targetを互換facadeとして
-維持し、新しい`ElementBufferModule`と`OptionalElementBufferModule`を加えた7 targetとする。targetごとに
-command、output、log、終了statusを分離し、
+2026-10-14のmodule名移行後、PR #195では旧名2 targetを互換facadeとして維持し、新しい
+`ElementBufferModule`と`OptionalElementBufferModule`を加えた7 targetを生成した。後続で旧名facadeを終了し、
+継続生成対象を`AcCollections`、`RedBlackTreeModule`、`PermutationModule`、`ElementBufferModule`、
+`OptionalElementBufferModule`の5 targetへ切り替える。targetごとにcommand、output、log、終了statusを分離し、
 一つのtargetの結果で他targetの成否を推定しない。
 
 既存の`RedBlackTreeCollections` documentation jobとGitHub Pages公開は、利用者向け公開物を生成する別責務である。

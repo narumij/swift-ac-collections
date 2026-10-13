@@ -127,7 +127,6 @@ rename後もcurrent測定、baseline測定、比較まで完走してgreenにな
 commit `0330e7b5`のPR CI run `38390402753`では、current測定、rename前baselineの測定、結果名の正規化、
 性能比較まで完走し、performanceを含む全jobのgreenを確認した。
 
-2026-10-14、target・module名移行を含むPR #195がmainへ到達し、旧名から新名へのtask名移行を必要とする
-baselineが通常PR比較から外れた。このmergeを境界として、旧task名へのlibrary変換とbaseline結果名の
-正規化を後続変更で削除する。以後の通常PR比較は、baseとcurrentの双方が新task名を直接解決する構成とする。
-過去commitを指定する手動比較にrename互換は提供しない。
+2026-10-14、PR #195のmain到達後にrename互換の削除を試したが、通常baselineでは自動的にno-opとなるだけで、
+削除はmodule target移行の完了条件ではなかった。また、この処理は過去commitとの手動比較や将来のtask renameにも
+利用できるため、PR #196で得たgreenを削除採用の根拠とはせず、workflowへ維持する。

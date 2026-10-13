@@ -199,11 +199,7 @@ let package = Package(
         .target(
           name: "OptionalElementBufferModule",
           condition: .when(traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"])),
-        .target(
-          name: "OptionalArrayModule",
-          condition: .when(traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"])),
         "ElementBufferModule",
-        "BareArrayModule",
       ],
       swiftSettings: _settings + [
         .strictMemorySafety()
@@ -311,19 +307,10 @@ let package = Package(
         .strictMemorySafety()
       ]
     ),
-    .target(
-      name: "OptionalArrayModule",
-      dependencies: ["OptionalElementBufferModule"],
-      path: "Sources/_OptionalArrayModule",
-      swiftSettings: [
-        .strictMemorySafety()
-      ]
-    ),
     .testTarget(
       name: "OptionalElementBufferModuleTests",
       dependencies: [
-        "OptionalElementBufferModule",
-        "OptionalArrayModule"
+        "OptionalElementBufferModule"
       ],
       swiftSettings: _settings
     ),
@@ -338,19 +325,10 @@ let package = Package(
         .strictMemorySafety()
       ]
     ),
-    .target(
-      name: "BareArrayModule",
-      dependencies: ["ElementBufferModule"],
-      path: "Sources/_BareArrayModule",
-      swiftSettings: [
-        .strictMemorySafety()
-      ]
-    ),
     .testTarget(
       name: "ElementBufferModuleTests",
       dependencies: [
-        "ElementBufferModule",
-        "BareArrayModule"
+        "ElementBufferModule"
       ],
       swiftSettings: _settings
     ),

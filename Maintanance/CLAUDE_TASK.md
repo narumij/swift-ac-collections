@@ -9,11 +9,11 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行中: PERM-055 runtime-check Permutation所有・破棄仕様test**
+**実行中: PERM-056 runtime-check Permutation公開表面・共存仕様test**
 
-Codex accepted PERM-054 and independently confirmed the accumulated 33 selected tests in Xcode.
-Claude is now assigned only G4 from `PermutationModule/RuntimeCheckedPermutationTestPlan.md`. Do not
-start G0、G5 or any other Registry task.
+Codex accepted PERM-055 and independently confirmed the accumulated 40 selected tests in Xcode.
+Claude is now assigned only G0 and G5 from `PermutationModule/RuntimeCheckedPermutationTestPlan.md`.
+Do not start any other Registry task.
 
 **凍結中: PERM-051 borrowed Span版PermutationのTest as Specification**
 
@@ -24,68 +24,68 @@ start G0、G5 or any other Registry task.
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Active assignment: PERM-055 ownership and destruction specification tests
+## Active assignment: PERM-056 public surface, coexistence, and reexport tests
 
 ### Objective
 
-Implement the accepted G4 ownership and destruction requirements for the current runtime-checked
-`NextPermutations` owned buffer.
+Implement the accepted G0 public-surface and G5 coexistence／exposure requirements for the current
+runtime-checked `NextPermutations` implementation.
 
 ### Inputs
 
 Read only:
 
-- the `PERM-055` Registry row;
+- the `PERM-056` Registry row;
 - `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`;
 - `Sources/PermutationModule/NextPermutations.swift` and `GateKeeper.swift`;
-- legacy `_98_InternalTests.swift` under `Tests/PermutationTests/NextPermutationsSequence/` only for
-  the two G4 ledger inputs and test technique, not for its retired COW contract;
-- existing lifetime-tracking test helpers in the Permutation test target, only as needed to reuse the
-  repository's established exactly-once destruction evidence;
-- the accepted numbered runtime-check tests under `Tests/PermutationTests/NextPermutations/` only as
-  naming and current-contract context;
+- legacy `_0_PublicSurfaceTests.swift` and `_4_CoexistenceTests.swift` under
+  `Tests/PermutationTests/NextPermutationsSequence/` only for G0／G5 inputs;
+- accepted borrowed coexistence tests only as a test-technique reference, not as the runtime-check
+  contract;
+- the current package targets and any existing repository-local compiler-surface fixture mechanism
+  needed to test negative compile requirements;
 - the task-relevant instructions in `Tests/CLAUDE.md` and sections of `Tests/TESTING.md`.
 
-Use the G4 boundary in the plan. Do not import compile-time lifetime requirements from the separate
-borrowed implementation or revive retired header／copy-count／COW guarantees.
+Use the G0／G5 boundaries in the plan. Do not revive retired `Sendable`、value-semantics、COW、
+`Equatable`、`Hashable` or presentation guarantees.
 
 ### Required implementation
 
-- Add a numbered G4 internal specification test file under
-  `Tests/PermutationTests/NextPermutations/`.
-- Prove that the owner copies source elements into independent storage and that later source changes
-  do not alter the current permutation.
-- Prove exactly-once destruction for owners that are never started, partially consumed, fully
-  consumed, and constructed from an empty source.
-- Cover odd-length suffix reversal with reference elements so identity and element lifetime remain
-  observable through the permutation operation.
-- Prove that an escaped invalid View may keep the GateKeeper alive but does not keep the owner's
-  element storage alive. Use lifetime counters or deinit probes without dereferencing the invalid
-  View; G2 already specifies the access trap.
-- Reuse or add test-only reference probes locally. Do not add production observability merely to make
-  the tests possible.
+- Add numbered G0 and G5 tests under `Tests/PermutationTests/NextPermutations/`.
+- Fix the current public owner and nested View type names and construction through
+  `Collection.nextPermutations()` for Array、Range、nonzero-start Slice and non-`Int` indexed input.
+- Verify with compiler-backed evidence that direct public initialization remains unavailable, the
+  owner is noncopyable, and it does not conform to `Sequence`. Preserve the repository's existing
+  fixture style if one exists; do not treat commented-out source as evidence.
+- Verify that importing `PermutationModule` and `Algorithms` together is unambiguous and that
+  `nextPermutations()` yields only the current order and its lexicographic successors while
+  `permutations()` yields every positional ordering.
+- Verify that importing `AcCollections` exposes the intended runtime-check entry point without a
+  direct `PermutationModule` import.
+- Keep AtCoder 2025 compatibility mode outside this evidence path; it has a separate API and tests.
 
 ### Boundaries
 
 - Do not modify production source, Quality Profile, Current Quality Assessment, Package.swift, CI,
   Registry, public documentation, or disabled legacy test files.
-- Do not implement G0、G1、G2、G3、G5.
+- Do not change G1、G2、G3、G4.
 - Do not decide new public API, `Sendable`, `Equatable`, `Hashable`, description, availability,
   compatibility, or lifetime policy.
 - Do not revive COW, persistent-result, iterator-copy, `Sequence`, or borrowed-`Span` requirements.
-- An escaped View may be retained only to observe ownership and destruction without accessing its
-  invalid storage. Do not add a second invalid-access assertion to G4.
+- If the repository has no durable negative compiler-fixture mechanism, report the exact unmet G0
+  checks and stop instead of inventing a claim from runtime reflection or comments.
 - If a listed requirement cannot be implemented from the accepted contract, report that exact item
   and stop rather than deciding a new contract.
 
 ### Validation and return
 
-- Run the new internal tests and the already-accepted numbered runtime-check tests in Debug and
-  Release. Report lifetime counts separately from ordinary behavioral assertions.
+- Run the new runtime tests and the already-accepted numbered runtime-check tests in Debug and
+  Release. Run compiler fixtures through their actual repository execution path and record both
+  expected-success and expected-failure outcomes.
 - Report exact files changed, test counts, commands or Xcode actions, and results in
-  `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md` under a `PERM-055 return`
+  `Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md` under a `PERM-056 return`
   section.
-- Do not mark `PERM-055` complete and do not update Registry. Codex performs acceptance.
+- Do not mark `PERM-056` complete and do not update Registry. Codex performs acceptance.
 
 ## Operating mode: bounded assignments only
 

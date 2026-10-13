@@ -326,3 +326,49 @@ G0、G1、G3、G4、G5、production source、Registry、Quality Profileには触
 - `Maintanance/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
 
 これにより`PERM-054`は完了とする。G4とG0／G5は、それぞれ独立した後続taskとして残る。
+
+## PERM-055 return（2026-10-13 Claude）
+
+### Changed files
+
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_98_OwnershipTests.swift`（G4、XCTest 7件）。
+  test専用のprobe（`Probe`、`ReleaseCounter`）をfile内に置いた。production sourceへの観測用追加はない。
+
+### Coverage
+
+| 要求 | test | 寿命の観測 |
+|---|---|---|
+| 元からの独立 | `testLaterSourceChangesDoNotAlterTheCurrentPermutation` | 対象外（値の比較だけ） |
+| 一度も進めないowner | `testNeverStartedOwnerReleasesEachElementOnce` | 破棄後の解放数3 |
+| 途中まで進めたowner | `testPartiallyConsumedOwnerReleasesEachElementOnce` | 進行中0、破棄後3 |
+| 最後まで進めたowner | `testFullyConsumedOwnerReleasesEachElementOnce` | 6通り完走時0、破棄後3 |
+| 空のowner | `testEmptyOwnerIsDestroyedSafely` | 解放対象なし。開始済み／未開始の両方を破棄 |
+| 奇数長の後半反転 | `testOddLengthSuffixReversalPreservesIdentityAndLifetime` | `[1, 4, 3, 2]`→`[2, 1, 3, 4]`（長さ3の反転）で要素が元のobjectと同一（`===`）かつ重複なし。進行中0、破棄後4 |
+| 失効Viewが要素storageを生かさない | `testEscapedInvalidViewDoesNotKeepElementStorageAlive` | 関数から持ち出したViewが生きている間に解放数3。Viewにはアクセスしない |
+
+GateKeeperがViewにより生かされることは、production側に観測点を足さない限り直接は数えられないため、
+「要素storageは生かさない」側だけを検証した（要求は「may keep alive」で、生存の断定は求めていない）。
+
+### Validation（macOS、Swift 6.4）
+
+- `swift test -c debug --filter 'PermutationTests.NextPermutations_'`: XCTest 25件（G1 12、G3 6、G4 7）0 failures、
+  Swift Testing 15件（G3範囲外5、G2 10）passed。
+- 同`-c release`: 同じ件数で0 failures／passed。G4の解放数の検査もReleaseで成立した。
+- 互換modeのbuildは実行していない。
+
+### Not done
+
+G0、G1、G2、G3、G5、production source、Registry、Quality Profileには触れていない。
+
+## PERM-055 acceptance（2026-10-13 Codex）
+
+- G4の内部仕様test 7件を、現行owned bufferの所有・破棄境界へ照合して受け入れた。
+- source変更からの独立、未開始・途中・完走・空の各破棄経路、奇数長suffix反転におけるobject identityと
+  exactly-once解放、escaped invalid Viewがelement storageを延命しないことを確認した。
+- GateKeeper自体の寿命はproductionへ観測点を足さず、契約が要求するstorage側だけを観測している。
+  失効ViewへアクセスしないことでG2との責務も分離されている。
+- Xcodeの現行scheme／test planで、受入済みG1・G2・G3と新G4を合わせた40件をCodexが独立再実行し、
+  40件成功、失敗・skip・not run各0件を確認した。
+- `Maintanance/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+
+これにより`PERM-055`は完了とする。G0／G5は独立した最後の後続taskとして残る。

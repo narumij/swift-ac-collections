@@ -9,7 +9,7 @@ import OptionalArrayModule
 
 func hoge(N: Int, A: [Int]) {
 
-  nonisolated(unsafe) var ___dfs_cache: OptionalArray2D<Int> = .init(width: 3001, height: 3001)
+  nonisolated(unsafe) var ___dfs_cache: OptionalElementBuffer2D<Int> = .init(width: 3001, height: 3001)
 
   func dfs(_ l: Int, _ r: Int) -> Int {
     func dfs(_ l: Int, _ r: Int) -> Int {

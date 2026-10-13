@@ -229,3 +229,12 @@ new API.
 Final acceptance requires the renamed production surface, Test as Specification, compiler fixtures,
 benchmark package, and current documentation to agree. The rename does not begin until the user
 explicitly restarts the frozen implementation task.
+
+### Implementation result
+
+On 2026-10-13, the user performed both owner-family renames with Xcode. Codex completed the
+non-indexed benchmark, compiler-fixture, display-name, source-path, and current-documentation updates.
+The resulting public owner families are `ElementBuffer` through `ElementBuffer4D` and
+`OptionalElementBuffer` through `OptionalElementBuffer4D`. Build for Testing, both module suites,
+the `AcCollections` facade tests, the borrowed-reference compiler fixtures, and the benchmark package
+build succeeded. Historical records retain the names they evaluated.

@@ -56,14 +56,14 @@ private func optionalArrayExpectedChecksum(for size: Int) -> Int {
 extension Benchmark {
   public mutating func addOptionalArrayBenchmarks() {
     self.add(
-      title: "OptionalArray2D<Int> initialization",
+      title: "OptionalElementBuffer2D<Int> initialization",
       input: Int.self
     ) { size in
       let shape = optionalArray2DShape(for: size)
       return { timer in
         var initialized = false
         timer.measure {
-          let array = OptionalArray2D<Int>(width: shape.width, height: shape.height)
+          let array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
           initialized = array.element(at: 0, 0) == nil
         }
         blackHole(initialized)
@@ -72,16 +72,16 @@ extension Benchmark {
     }
 
     self.add(
-      title: "RigidArray<OptionalArray1D<Int>> 2D initialization",
+      title: "RigidArray<OptionalElementBuffer<Int>> 2D initialization",
       input: Int.self
     ) { size in
       let shape = optionalArray2DShape(for: size)
       return { timer in
         var initialized = false
         timer.measure {
-          var array = RigidArray<OptionalArray1D<Int>>(capacity: shape.height)
+          var array = RigidArray<OptionalElementBuffer<Int>>(capacity: shape.height)
           for _ in 0..<shape.height {
-            array.append(OptionalArray1D<Int>(capacity: shape.width))
+            array.append(OptionalElementBuffer<Int>(capacity: shape.width))
           }
           initialized = array[0].element(at: 0) == nil
         }
@@ -114,14 +114,14 @@ extension Benchmark {
     }
 
     self.add(
-      title: "RigidArray<OptionalArray1D<Int>> 2D cold memoization checksum",
+      title: "RigidArray<OptionalElementBuffer<Int>> 2D cold memoization checksum",
       input: Int.self
     ) { size in
       let shape = optionalArray2DShape(for: size)
       return { timer in
-        var array = RigidArray<OptionalArray1D<Int>>(capacity: shape.height)
+        var array = RigidArray<OptionalElementBuffer<Int>>(capacity: shape.height)
         for _ in 0..<shape.height {
-          array.append(OptionalArray1D<Int>(capacity: shape.width))
+          array.append(OptionalElementBuffer<Int>(capacity: shape.width))
         }
         var checksum = 0
         timer.measure {
@@ -144,14 +144,14 @@ extension Benchmark {
     }
 
     self.add(
-      title: "RigidArray<OptionalArray1D<Int>> 2D warm memoization checksum",
+      title: "RigidArray<OptionalElementBuffer<Int>> 2D warm memoization checksum",
       input: Int.self
     ) { size in
       let shape = optionalArray2DShape(for: size)
       return { timer in
-        var array = RigidArray<OptionalArray1D<Int>>(capacity: shape.height)
+        var array = RigidArray<OptionalElementBuffer<Int>>(capacity: shape.height)
         for _ in 0..<shape.height {
-          array.append(OptionalArray1D<Int>(capacity: shape.width))
+          array.append(OptionalElementBuffer<Int>(capacity: shape.width))
         }
         var value = 0
         for y in 0..<shape.height {
@@ -241,10 +241,10 @@ extension Benchmark {
     }
 
     self.add(
-      title: "OptionalArray1D<Int> direct methods cold memoization checksum",
+      title: "OptionalElementBuffer<Int> direct methods cold memoization checksum",
       input: Int.self
     ) { size in
-      let array = OptionalArray1D<Int>(capacity: size)
+      let array = OptionalElementBuffer<Int>(capacity: size)
       return { timer in
         array.removeAll()
         var checksum = 0
@@ -264,10 +264,10 @@ extension Benchmark {
     }
 
     self.add(
-      title: "OptionalArray1D<Int> direct methods warm memoization checksum",
+      title: "OptionalElementBuffer<Int> direct methods warm memoization checksum",
       input: Int.self
     ) { size in
-      let array = OptionalArray1D<Int>(capacity: size)
+      let array = OptionalElementBuffer<Int>(capacity: size)
       for i in 0..<size {
         array.setElement(i, at: i)
       }
@@ -286,11 +286,11 @@ extension Benchmark {
     }
 
     self.add(
-      title: "OptionalArray2D<Int> direct methods cold memoization checksum",
+      title: "OptionalElementBuffer2D<Int> direct methods cold memoization checksum",
       input: Int.self
     ) { size in
       let shape = optionalArray2DShape(for: size)
-      let array = OptionalArray2D<Int>(width: shape.width, height: shape.height)
+      let array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
 
       return { timer in
         array.removeAll()
@@ -315,11 +315,11 @@ extension Benchmark {
     }
 
     self.add(
-      title: "OptionalArray2D<Int> direct methods warm memoization checksum",
+      title: "OptionalElementBuffer2D<Int> direct methods warm memoization checksum",
       input: Int.self
     ) { size in
       let shape = optionalArray2DShape(for: size)
-      let array = OptionalArray2D<Int>(width: shape.width, height: shape.height)
+      let array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
       var value = 0
       for y in 0..<shape.height {
         for x in 0..<shape.width {
@@ -345,11 +345,11 @@ extension Benchmark {
     }
 
     self.add(
-      title: "OptionalArray3D<Int> direct methods cold memoization checksum",
+      title: "OptionalElementBuffer3D<Int> direct methods cold memoization checksum",
       input: Int.self
     ) { size in
       let shape = optionalArray3DShape(for: size)
-      let array = OptionalArray3D<Int>(
+      let array = OptionalElementBuffer3D<Int>(
         width: shape.width, height: shape.height, depth: shape.depth)
 
       return { timer in
@@ -377,11 +377,11 @@ extension Benchmark {
     }
 
     self.add(
-      title: "OptionalArray3D<Int> direct methods warm memoization checksum",
+      title: "OptionalElementBuffer3D<Int> direct methods warm memoization checksum",
       input: Int.self
     ) { size in
       let shape = optionalArray3DShape(for: size)
-      let array = OptionalArray3D<Int>(
+      let array = OptionalElementBuffer3D<Int>(
         width: shape.width, height: shape.height, depth: shape.depth)
       var value = 0
       for z in 0..<shape.depth {

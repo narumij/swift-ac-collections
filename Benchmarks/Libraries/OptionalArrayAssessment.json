@@ -1,6 +1,6 @@
 {
   "kind": "group",
-  "title": "OptionalArray Performance Assessment",
+  "title": "OptionalElementBuffer Performance Assessment",
   "directory": "OptionalArrayAssessment",
   "contents": [
     {
@@ -12,7 +12,7 @@
           "kind": "chart",
           "title": "2D cold memoization checksum",
           "tasks": [
-            "OptionalArray2D<Int> cold memoization checksum",
+            "OptionalElementBuffer2D<Int> cold memoization checksum",
             "Array sentinel 2D cold memoization checksum",
             "std::vector sentinel 2D cold memoization checksum"
           ]
@@ -21,7 +21,7 @@
           "kind": "chart",
           "title": "2D warm memoization checksum",
           "tasks": [
-            "OptionalArray2D<Int> warm memoization checksum",
+            "OptionalElementBuffer2D<Int> warm memoization checksum",
             "Array sentinel 2D warm memoization checksum",
             "std::vector sentinel 2D warm memoization checksum"
           ]
@@ -30,7 +30,7 @@
           "kind": "chart",
           "title": "3D cold memoization checksum",
           "tasks": [
-            "OptionalArray3D<Int> cold memoization checksum",
+            "OptionalElementBuffer3D<Int> cold memoization checksum",
             "Array sentinel 3D cold memoization checksum",
             "std::vector sentinel 3D cold memoization checksum"
           ]
@@ -39,7 +39,7 @@
           "kind": "chart",
           "title": "3D warm memoization checksum",
           "tasks": [
-            "OptionalArray3D<Int> warm memoization checksum",
+            "OptionalElementBuffer3D<Int> warm memoization checksum",
             "Array sentinel 3D warm memoization checksum",
             "std::vector sentinel 3D warm memoization checksum"
           ]

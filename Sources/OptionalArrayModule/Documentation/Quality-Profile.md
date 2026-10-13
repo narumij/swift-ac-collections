@@ -19,7 +19,7 @@
 
 ## 対象
 
-主な対象は、`Sources/OptionalArrayModule/OptinalArray.swift`の所有1D〜4D型とその座標accessである。
+主な対象は、`Sources/OptionalArrayModule/OptionalElementBuffer.swift`の所有1D〜4D型とその座標accessである。
 旧連鎖subscriptと非所有View 1D〜3Dは削除済みであり、品質保証対象に含めない。
 
 OptionalArrayは、要素ごとの有無を保持し、単一の連続storage上でoptional要素を扱う低レベル配列部品である。標準`Collection`への適合、一般的な配列API、任意の所有権管理を暗黙に要求へ含めない。
@@ -169,7 +169,7 @@ CI設定は、実際に検証するtoolchain、platform、build configuration、
 | リポジトリ全体の上位品質要求 | `Maintanance/QUALITY_REQUIREMENTS.md` |
 | 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
 | 観察可能な仕様 | `Tests/OptionalArrayModuleTests/`の番号付きTest as Specification |
-| 公開APIとdocumentation comment | `Sources/OptionalArrayModule/OptinalArray.swift` |
+| 公開APIとdocumentation comment | `Sources/OptionalArrayModule/OptionalElementBuffer.swift` |
 | 公開面の棚卸し、判断、証拠の所在 | `Maintanance/OptionalArrayModule/OptionalArrayAudit.md` |
 | 競技用途のcompile evidence | `Tests/OptionalArrayModuleTests/EDPC-J.swift` / `EDPC-L.swift` |
 | 性能測定対象と継続測定構成 | `Benchmarks/`およびGitHub Actions（対象が存在する場合） |

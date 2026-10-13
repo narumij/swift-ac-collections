@@ -20,7 +20,7 @@
 /// `setElement(_:at:)`へ`nil`を渡すと、設定済みの要素を破棄して未設定状態へ戻します。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@safe public struct OptionalArray1D<Element>: ~Copyable {
+@safe public struct OptionalElementBuffer<Element>: ~Copyable {
 
   @usableFromInline let count: Int
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
@@ -70,7 +70,7 @@
 
 }
 
-extension OptionalArray1D {
+extension OptionalElementBuffer {
 
   /// 有効なslot位置である`0..<capacity`を返します。
   ///
@@ -101,9 +101,9 @@ extension OptionalArray1D {
   }
 }
 
-extension OptionalArray1D: @unchecked Sendable where Element: Sendable { }
+extension OptionalElementBuffer: @unchecked Sendable where Element: Sendable { }
 
-extension OptionalArray1D {
+extension OptionalElementBuffer {
 
   @inlinable
   var description: String {
@@ -126,7 +126,7 @@ extension OptionalArray1D {
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
-@safe public struct OptionalArray2D<Element>: ~Copyable {
+@safe public struct OptionalElementBuffer2D<Element>: ~Copyable {
 
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
@@ -184,7 +184,7 @@ extension OptionalArray1D {
 
 }
 
-extension OptionalArray2D {
+extension OptionalElementBuffer2D {
 
   /// 外側の軸に有効な位置である`0..<height`を返します。
   ///
@@ -219,7 +219,7 @@ extension OptionalArray2D {
   }
 }
 
-extension OptionalArray2D: @unchecked Sendable where Element: Sendable { }
+extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable { }
 
 /// メモ化用配列
 ///
@@ -230,7 +230,7 @@ extension OptionalArray2D: @unchecked Sendable where Element: Sendable { }
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
-@safe public struct OptionalArray3D<Element>: ~Copyable {
+@safe public struct OptionalElementBuffer3D<Element>: ~Copyable {
 
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
@@ -297,7 +297,7 @@ extension OptionalArray2D: @unchecked Sendable where Element: Sendable { }
 
 }
 
-extension OptionalArray3D {
+extension OptionalElementBuffer3D {
 
   /// 外側の軸に有効な位置である`0..<depth`を返します。
   ///
@@ -305,7 +305,7 @@ extension OptionalArray3D {
   public var indices: Range<Int> { 0..<depth }
 }
 
-extension OptionalArray3D {
+extension OptionalElementBuffer3D {
 
   /// `(x, y, z)`の要素を返します。未設定なら`nil`を返します。
   @inlinable
@@ -337,7 +337,7 @@ extension OptionalArray3D {
   }
 }
 
-extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
+extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable { }
 
 /// メモ化用配列
 ///
@@ -349,7 +349,7 @@ extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
-@safe public struct OptionalArray4D<Element>: ~Copyable {
+@safe public struct OptionalElementBuffer4D<Element>: ~Copyable {
 
   @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
   @usableFromInline let payload: UnsafeMutablePointer<Element>
@@ -420,7 +420,7 @@ extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
 
 }
 
-extension OptionalArray4D {
+extension OptionalElementBuffer4D {
 
   /// 外側の軸に有効な位置である`0..<size3`を返します。
   ///
@@ -461,4 +461,4 @@ extension OptionalArray4D {
   }
 }
 
-extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
+extension OptionalElementBuffer4D: @unchecked Sendable where Element: Sendable { }

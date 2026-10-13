@@ -13,7 +13,7 @@ final class OptionalArray_6_ReferenceLifetimeTests: XCTestCase {
     }
 
     var deinitCount = 0
-    var array = OptionalArray1D<Box>(capacity: 1)
+    var array = OptionalElementBuffer<Box>(capacity: 1)
 
     array.setElement(Box({ deinitCount += 1 }), at: 0)
     XCTAssertEqual(deinitCount, 0)
@@ -29,7 +29,7 @@ final class OptionalArray_6_ReferenceLifetimeTests: XCTestCase {
     XCTAssertEqual(deinitCount, 3, "removeAllで保持中の要素がdeinitされること")
   }
 
-  /// `OptionalArray2D`/`3D`/`4D`自身の`removeAll()`/`deinit`は、1Dとは別のコード
+  /// `OptionalElementBuffer2D`/`3D`/`4D`自身の`removeAll()`/`deinit`は、1Dとは別のコード
   /// (同じ`capacity`回ループする構築)のため、参照型要素での検証を個別に行う。
   func testOptionalArray2DRemoveAllDeinitializesReferenceElements() {
     final class Box {
@@ -40,7 +40,7 @@ final class OptionalArray_6_ReferenceLifetimeTests: XCTestCase {
 
     var deinitCount = 0
     do {
-      var array = OptionalArray2D<Box>(width: 2, height: 2)
+      var array = OptionalElementBuffer2D<Box>(width: 2, height: 2)
       array.setElement(Box({ deinitCount += 1 }), at: 0, 0)
       array.setElement(Box({ deinitCount += 1 }), at: 1, 1)
       array.removeAll()
@@ -58,7 +58,7 @@ final class OptionalArray_6_ReferenceLifetimeTests: XCTestCase {
 
     var deinitCount = 0
     do {
-      var array = OptionalArray3D<Box>(width: 2, height: 2, depth: 2)
+      var array = OptionalElementBuffer3D<Box>(width: 2, height: 2, depth: 2)
       array.setElement(Box({ deinitCount += 1 }), at: 0, 0, 0)
       array.setElement(Box({ deinitCount += 1 }), at: 1, 1, 1)
       XCTAssertEqual(deinitCount, 0)
@@ -75,7 +75,7 @@ final class OptionalArray_6_ReferenceLifetimeTests: XCTestCase {
 
     var deinitCount = 0
     do {
-      var array = OptionalArray2D<Box>(width: 2, height: 2)
+      var array = OptionalElementBuffer2D<Box>(width: 2, height: 2)
       array.setElement(Box({ deinitCount += 1 }), at: 0, 0)
       array.setElement(Box({ deinitCount += 1 }), at: 1, 1)
       XCTAssertEqual(deinitCount, 0)
@@ -92,7 +92,7 @@ final class OptionalArray_6_ReferenceLifetimeTests: XCTestCase {
 
     var deinitCount = 0
     do {
-      var array = OptionalArray4D<Box>(size0: 2, size1: 2, size2: 2, size3: 2)
+      var array = OptionalElementBuffer4D<Box>(size0: 2, size1: 2, size2: 2, size3: 2)
       array.setElement(Box({ deinitCount += 1 }), at: 0, 0, 0, 0)
       array.setElement(Box({ deinitCount += 1 }), at: 1, 1, 1, 1)
       XCTAssertEqual(deinitCount, 0)
@@ -111,7 +111,7 @@ final class OptionalArray_6_ReferenceLifetimeTests: XCTestCase {
 
     var deinitCount = 0
     do {
-      var array = OptionalArray3D<Box>(width: 2, height: 2, depth: 2)
+      var array = OptionalElementBuffer3D<Box>(width: 2, height: 2, depth: 2)
       array.setElement(Box({ deinitCount += 1 }), at: 0, 0, 0)
       array.setElement(Box({ deinitCount += 1 }), at: 1, 1, 1)
       array.removeAll()
@@ -136,7 +136,7 @@ final class OptionalArray_6_ReferenceLifetimeTests: XCTestCase {
 
     var deinitCount = 0
     do {
-      var array = OptionalArray4D<Box>(size0: 2, size1: 2, size2: 2, size3: 2)
+      var array = OptionalElementBuffer4D<Box>(size0: 2, size1: 2, size2: 2, size3: 2)
       array.setElement(Box({ deinitCount += 1 }), at: 0, 0, 0, 0)
       array.setElement(Box({ deinitCount += 1 }), at: 1, 1, 1, 1)
       array.removeAll()

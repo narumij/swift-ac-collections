@@ -90,6 +90,27 @@ swift run -c release benchmark results compare \
   <head.json>
 ```
 
+標準toolでbase/headの重ね描きchartも生成できる。
+
+```sh
+swift run -c release benchmark results compare \
+  <base.json> \
+  <head.json> \
+  --chart-labels base head \
+  --chart-cutoff 0 \
+  --format png \
+  --multifile \
+  --output <chart-directory>
+```
+
+`--chart-labels`は空白区切りで2値を渡す。`--chart-cutoff`の既定値は1.10で、差が小さいtaskのchartは
+生成されない。全対象を観察する場合は0を明示する。
+
+compareのsizeごとの係数は`min(base) / min(head)`で、1より大きければheadが速い。表示される`Sum`は
+全sizeの係数の算術平均であり、幾何平均ではない。`Score`は、`Sum`が1以上ならそのまま、1未満なら
+`1 / Sum`として方向を畳んだ値である。`Improvements`と`Regressions`は各方向の係数だけを合計し、
+反対側のsizeを1として数えた平均で、括弧内の`#`はその方向に分類されたsize数を示す。
+
 引数順を固定し、比較方向を結果と一緒に記録する。task名が同じでもworkload、入力生成、timed region、
 build構成が違えば、同じ性能を比較したことにはならない。
 
@@ -134,10 +155,15 @@ directory名は、この解決済みSHAを確認して`<head-short-sha>-vs-<base
 CI artifactに実測binary、symbol table、assemblyが含まれる場合、hot pathの議論ではそれを優先する。
 別machineや別buildのassemblyを、CIで実際に測定されたbinaryの代用にしない。
 
+既存のbenchmark executableで`render`または`compare`だけを行う場合は、再測定とは分けてよい。ただし、
+executableのbuild元が対象sourceと一致するかを確認し、確認できなければ由来不明として記録する。
+`swift run`は必要に応じて再buildするため、既存結果を読むだけの操作でも実行経路を記録する。
+
 ## 解釈上の境界
 
 - chartの見た目だけで合否や原因を決めない。
-- 一回のcycleではsample分散を評価できない。
+- 一回のcycleではsample分散を評価できない。chartにmin、mean、mean+2σのband表記があっても、1 sampleなら
+  三者は一致して帯が一本の線になる。
 - Debug、Release、`-Ounchecked`を互いの適合証拠として読み替えない。
 - toolchain、OS、architecture、CPUが異なる測定から、source変更の因果を直接断定しない。
 - benchmark harnessの変更とproduction sourceの変更を分離する。

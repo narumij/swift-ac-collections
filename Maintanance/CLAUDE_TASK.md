@@ -9,10 +9,10 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行待ち: benchmark harnessの基本操作とchartアレンジの確認実習**
+**完了（Codex受入済み）: benchmark harnessの基本操作とchartアレンジの確認実習**
 
-`BENCHMARK_USAGE_GUIDE.md`を入口に、既存の境界比較artifactだけを使って、標準renderで得られるchartと
-base/head診断用のアレンジを区別する。再測定、製品変更、性能判定は行わない。詳細は直下のActive assignment。
+標準toolの`results compare --output`で、base/headの重ね描きchartが出せることを確認した。不足は「sizeごとの比」と「size帯別の集約」。
+compareのScoreは、生JSONから再計算した値と一致した。ガイドの不足4点をReturn節に記録した。
 
 **完了（Codex検収待ち）: OptionalArray performance CI artifact解析とSwift 6.4.1限定追試**
 
@@ -87,7 +87,7 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Active assignment: benchmark harnessの基本操作とchartアレンジの確認実習
+## Completed assignment: benchmark harnessの基本操作とchartアレンジの確認実習
 
 ### Objective
 
@@ -141,6 +141,61 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 
 既存toolの基本機能を説明でき、標準renderと診断用アレンジの境界が示され、生JSONからchartまでの対応を
 検証できたら完了。見栄えの良いchartを作ること自体は完了条件ではない。
+
+### Return
+
+2026-10-14 Claude（Opus 5.5）。再測定なし。生成物は`Benchmarks/_Artifacts/PerformanceCI/215be94b-vs-13f23f0b/claude-benchmark-exercise/`
+（`README.md`に各fileとcommandの説明がある）。実行には既存の`Benchmarks/.build/release/benchmark`を使った
+（2026-10-13 23:33のbuild。build元のsourceは記録がない）。`render`と`compare`は、library JSONと結果JSONを読むだけ。
+`CI.json`は`215be94b`と差分なし。artifactの比較refは`comparison-refs.txt`で、base `13f23f0b…`、head `215be94b…`。
+
+#### 基本操作について確認できたこと
+
+- `benchmark run`: 登録済みtaskを`--tasks`／`--filter`／`--sizes`等で選んで測り、結果JSONへ書く。
+- `benchmark library run`: library JSONに並んだtaskを測る。optionは`run`とほぼ同じで、task選択はlibraryが持つ。
+- `benchmark library render`: 既存の結果JSON 1件を、libraryの構造（group／chart／`directory`）どおりに描く。
+  chartごとにfileを分けて出し、`Results.md`（一覧）も生成する。測定はしない。
+- `benchmark results compare <first> <second>`: 二つの結果JSONを比べる。toolのsource（`BenchmarkCLI+Results+Compare.swift`）での定義は次のとおり。
+  - sizeごとの係数 = `min(first) / min(second)`。1より大きければsecond（head）が速い。
+  - `Sum` = 係数の**算術平均**（幾何平均ではない）。`Score` = `Sum`が1以上ならそのまま、1未満なら`1/Sum`（方向を畳む）。
+  - `Improvements`／`Regressions` = 係数を片側だけ合計し、残りのsizeを1として数えたn平均。`#`はsize数。
+  - `--output`を指定すると、task別にbase/headを重ねたchartも出す（`--chart-labels`は空白区切りで2値。`--chart-cutoff`の既定は1.10）。
+
+#### 標準renderでできたこと／できなかったこと
+
+- できた: `library render`で、base／headそれぞれ7 chartを出せた（`render-base/`、`render-head/`）。
+  1 chartに、libraryが定めた4 taskが別色の線として載る。x軸はsize（log）、y軸はns/element（`--amortized`既定on、log）。
+- できた: `results compare --output`で、task別のbase/head重ね描きchart 4枚を出せた（`compare-overlay/`）。base/headの診断に必要な基本形は、標準toolで足りる。
+- できない: `library render`は1 JSONしか入力にとらないので、base/headを一枚に重ねられない。
+- できない: 標準のどのchartも、sizeごとの係数（比）を描かない。
+- bandについて: 各sizeのsampleは1件（`--cycles 1`）なので、bottom（min）、center（mean）、top（mean+2σ）が一致し、帯は線になる。chartの注記と異なり、分散の情報はない。
+
+#### 診断目的に必要なアレンジと理由
+
+- **比較方向:** `compare`の係数は「base/head」で、1より大きければheadが速い。前回自分が作った`215be94b-vs-01120025`のchartとsummaryは「head/base」の幾何平均だった。方向も集約も違うので、並べる際は換算が要る。
+- **集約:** `Sum`は全sizeの算術平均で、size 1〜16付近の点を他と同じ重みで数える。この帯の生値は20〜70nsで、ほぼ10ns刻み（例外: 21ns、41ns）。
+  係数は粗く、1.0〜1.75の間で跳ぶ。size帯（例: 256以上）に分けた集約か、sizeごとの係数の表（`factor_per_size.csv`）を併用すべき。
+- **表示:** 比のchartか表が一つあれば、どのsize帯で差が出ているかが読める。標準の重ね描きでも視認はできるので、独自chartは必須ではない。
+- **task対応:** rename前後をまたぐ場合、名前の一致はworkflowのsed正規化による。chartのtask名だけでは、同じworkloadかどうかはわからない（ガイドの境界に既出）。
+- **色:** compareのchartは、baseが赤、headが青（themeの系列順）。前回の自作chart（base青・head橙）とは逆なので、併置するときは凡例で確認する。
+
+#### 生JSON・library・chartの対応確認（`verification.md`）
+
+- `CI.json`の全28 taskは、base／headの両JSONに存在する（size数は60、またはCOW系で53・51。sampleは全て1件）。
+- 生JSONから再計算したOptionalElementBuffer 4件のSum／Score／Improvements／Regressions／件数は、`compare`の出力と一致した。
+  2D cold 1.250（#55／#5）、2D warm 1.189（#54／#6）、3D cold 1.372（#60／#0）、3D warm 1.313（#60／#0）。
+- chartの線の値: 例として3D cold size 64は、base 3.906、head 2.031 ns/element。重ね描きchartの読みと一致した（目視）。
+- 既存のClaude作成chart（`215be94b-vs-01120025/claude-analysis/`）は前提にしていない。ただしそのchartの副題「base 01120025」は誤りで、
+  実際のbaseはPR base（前回のReturn節に記録済み）。その生成物は今回の境界外なので、修正していない。
+
+#### ガイドの不足または誤り
+
+- `results compare`が`--output`で重ね描きchartを出せることが書かれていない。base/head診断の標準手段なので、記載があるとよい。
+  あわせて、`--chart-cutoff`の既定1.10で一部のchartが出ないこと、`--chart-labels`が空白区切りの2値であることも。
+- `compare`のScoreの定義（係数の向き、算術平均、方向を畳むこと）が書かれていない。「引数順を固定」の理由として必要。
+- 1 cycleでは、chartの注記（min、mean、mean+2σ）があっても帯が線になることを、明示した方がよい（「分散を評価できない」の一文はある）。
+- 既存binaryで`render`／`compare`を実行してよいかについての記載がない。`swift run`は再buildを伴いうる。読むだけの操作なら、buildの由来を記録すれば既存binaryで足りた。
+- 誤りは見つからなかった。「5-cycle・percentile 50」の説明は、このartifact（1 cycle）では検証できない。
 
 ## Completed assignment pending acceptance: OptionalArray performance CI artifact解析とSwift 6.4.1限定追試
 

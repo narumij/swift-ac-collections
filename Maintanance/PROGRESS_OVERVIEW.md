@@ -115,6 +115,8 @@ all greenを確認した。C++とのmacOS外部assessmentは後続とし、性�
   再評価し、BareArrayを1.0として採用できるか判断可能な状態にする。
 - RedBlackTreeのユーザードキュメント作業後、汎用基盤ライブラリの1.0として採用できるか判断可能な
   状態にする。この段階でruntime-check実装を再審査し、その結論とIndex契約を1.0品質ゲートへ渡す。
+- 1.0 release後、Swift Package Indexへpackageを登録し、module別DocCの生成を確認する。登録後にSPIが提供する
+  互換性badgeとmodule別API referenceへの導線をREADMEまたはPagesへ接続する。
 - 保留中の運用playbookをユーザー指示で再開した後、このrepositoryで得たtask運用知見を、
   別projectでもCodexが同程度の管理品質を再現できる移植可能な形へ整理する。
 
@@ -167,7 +169,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | ユーザーが、定義した品質要求に対して不足する工程仕様、判定基準、証拠取得方法、停止・復旧手順を補い、V&V可能な状態にする。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `User/RELEASE_PROCESS.md` |
 | `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `User/RELEASE_PROCESS.md` |
 | `DOC-010` | `FROZEN` | Codex | [DISCOVERY] BareArrayの定性的性能表現の再検討 | 2026-10-09、比較対象はSwiftの`[[Element]]`であり、COWと連鎖subscriptによる深刻な性能劣化を単一連続storageと非所有Viewで迂回する設計意図があると確認。アンカリングを避けるため、ユーザー指示による再訪まで文言判断を保留 | `Archived/Canonical/RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
-| `DOC-025` | `WAITING_USER` | User / Codex | [EXECUTION] 公開target DocC observation jobのremote確認 | 実装commitをユーザーがpushした後、PRのUbuntu 24.04 matrix 5件、target別終了status、diagnostic artifactを確認し、toolchain failureとrepository diagnosticを分離して受け入れる | `DOCUMENTATION_CI_PLAN.md` / `.github/workflows/ci.yml` |
+| `DOC-025` | `WAITING_EXTERNAL` | User / Codex | [EXECUTION] 公開target DocC observation jobのremote確認 | `83ce31a2`のpushを確認済み。PRのUbuntu 24.04 matrix 5件、target別終了status、diagnostic artifactを確認し、toolchain failureとrepository diagnosticを分離して受け入れる | `DOCUMENTATION_CI_PLAN.md` / `.github/workflows/ci.yml` |
+| `DOC-026` | `FROZEN` | User / Codex | [EXECUTION] Swift Package Indexへのpackage登録 | 1.0 release後にユーザーが明示的に再開し、公式PackageListへ`https://github.com/narumij/swift-ac-collections.git`を追加する外部PRを準備・提出して、package pageとmodule別DocC build結果を確認する | `DOCUMENTATION_CI_PLAN.md` / `Package.swift` |
+| `DOC-027` | `FROZEN` | Codex | [EXECUTION] Swift Package Index公開導線のREADME・Pages反映 | `DOC-026`完了後、SPI package pageの`Do you maintain this package?`が提示するMarkdownを正として互換性badgeをREADMEへ追加し、確認できたmodule別DocC URLへの導線をREADMEまたはPagesへ接続する | `DOCUMENTATION_CI_PLAN.md` / `README.md` |
 | `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | 全公開対象の利用者向けドキュメント初版完成後、0.6.0へ含める到達範囲を一つに定め、release工程へ進むか判断 | `RELEASE_0_6_0.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-032` | `FROZEN` | Codex | [DISCOVERY] RedBlackTree 0.6.0現行品質アセスメント | 2026-10-13、Codex復旧中の中断taskとして凍結。ユーザーの明示的な再開指示後、既存の試験結果と不足する再現証拠を照合してから継続する | `RedBlackTreeModule/CurrentQualityAssessment.md` |
@@ -249,6 +253,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |
 | `RELEASE-007` | `OPT-044` | `PARALLEL_JOIN` | 利用者向け文書作業は現行名で先行できるが、0.6.0の到達範囲判断前に1D所有型名を確定する |
 | `RELEASE-007` | `OPT-045` | `PARALLEL_JOIN` | 利用者向け文書作業は現行名で先行できるが、0.6.0の到達範囲判断前に次元名体系を確定する |
+| `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |
 
 ## Registry rules
 

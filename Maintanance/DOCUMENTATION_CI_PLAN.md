@@ -34,6 +34,23 @@ PR CIで継続生成する対象は、上記5 targetすべてとする。target�
 既存の`RedBlackTreeCollections` documentation jobとGitHub Pages公開は、利用者向け公開物を生成する別責務である。
 この計画によって公開target、hosting base path、Pages更新元、またはrelease時の公開判断を変更しない。
 
+## 公開構成
+
+公開moduleのAPI referenceは、Swift Package Indexが生成するtarget別DocCを正本の公開先とする。
+GitHub Pages上でexperimental combined documentationを用いて複数targetを一つのDocC archiveへ束ねる方式は
+採用しない。
+
+GitHub Pagesは既存の利用者向け文書とpackageの入口を担い、READMEまたはPagesからSwift Package Index上の
+各moduleへ導線を置く。API referenceの生成・hostingと、repositoryが編集する利用者向け説明を分離する。
+
+2026-10-13時点で、`https://github.com/narumij/swift-ac-collections.git`はSwift Package Indexのcanonical
+`packages.json`に見つからず、package pageとmodule別documentation URLも確認できなかった。登録は1.0 release後の
+中間ゴールとし、それまではrepository CIで各targetのDocC生成可能性を維持する。
+
+1.0 release後、Swift Package Indexへのpackage登録とDocC build成立を確認する。登録後にpackage pageの
+`Do you maintain this package?`から提供されるMarkdownを正として互換性badgeをREADMEへ追加し、READMEまたは
+Pagesからmodule別API referenceへの導線を接続する。badge URLやdocumentation URLを登録前に推測して固定しない。
+
 ## 段階導入
 
 1. PR CIに5 targetの個別生成とdiagnostic artifact採取を追加する。生成commandの非zero終了はtargetごとのfailureとして

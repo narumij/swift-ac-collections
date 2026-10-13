@@ -9,10 +9,15 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行待ち: Public API名の熟議採点第2巡**
+**実行待ち: Public API名の熟議採点第3巡**
 
-第1巡のUser・Codex・Claude scoreと統合報告をすべて読み、未決4領域だけを再採点する。今回は独立性を
-要求せず、他者の理由による評価変化を記録する。採用と統合は行わない。
+第2巡で残った5候補について、名前が利用者へ約束するbehavior・mental modelを明記して再採点する。
+新候補、採用、統合は行わない。
+
+**完了: Public API名の熟議採点第2巡**
+
+Claudeが第1巡のUser・Codex・Claude scoreと統合報告をすべて読み、未決4領域21候補を再採点した。
+他者の理由による維持・変更を記録し、採用と統合は行っていない。
 
 **完了: Public API名ballotのClaude独立採点**
 
@@ -46,6 +51,34 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
+
+## Current assignment: Public API名の熟議採点第3巡
+
+### Objective
+
+presence-tracked ownerの`OptionalCache`、`OptionalElementBuffer`、`MemoizationTable`と、
+borrowed-reference propertyの`pointee`、`value`だけを、公開promiseを明記して再採点する。
+
+### Inputs
+
+Read:
+
+- Registryの`API-009`行;
+- 三者の`PUBLIC_API_NAMING_ROUND2_*.md`;
+- `PUBLIC_API_NAMING_ROUND2_REPORT.md`;
+- `PUBLIC_API_NAMING_DECISIONS.md`;
+- `PUBLIC_API_NAMING_ROUND3_CLAUDE.md`。
+
+### Boundaries
+
+- 変更できるのは`PUBLIC_API_NAMING_ROUND3_CLAUDE.md`だけ。
+- 新候補、採用判断、統合、source・test・Registry変更を行わない。
+- build、test、benchmark、commitは行わない。
+
+### Completion
+
+5候補へ1〜10の整数点と、利用者へ約束するbehavior・mental model、round-2 User responseをどう評価へ
+反映したかを記録し、statusを完了へ変更する。受入と統合はCodexが行う。
 
 ## Current assignment: Public API名の熟議採点第2巡
 

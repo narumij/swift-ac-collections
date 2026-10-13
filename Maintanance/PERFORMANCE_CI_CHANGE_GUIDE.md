@@ -97,3 +97,13 @@ PRおよびrelease candidateのperformance workflowでは、比較対象のbench
 この互換処理はbenchmark実装や測定値をbaselineへ移植しない。baselineがrenameを含むようになれば
 自動的にno-opとなる。今後のtask renameでも、旧実装と新実装が同じworkloadであることを先に確認し、
 library入力と結果名の両方を対応付ける。意味や測定境界が変わる場合はrename互換として扱わない。
+
+task名を変更する場合は、renameを先にmergeしてから互換処理を足さない。旧名と新名を対応付ける
+workflow変更を先にmergeし、その時点のperformance CIがgreenであることを確認してからrenameをmergeする。
+rename後もcurrent測定、baseline測定、比較まで完走してgreenになることを確認する。各段階の直前のgreenを
+次段階の開始条件とし、移行途中の赤を後続変更で回収する計画にしない。
+
+また、libraryのtask名は公開型名だけで組み立てず、benchmark sourceへ登録された完全なtitleと照合する。
+今回の復旧では型renameだけを追い、以前から残っていた旧い総称名を見落としたため、current側でも
+`unknown tasks`になった。rename互換の検証では、currentの完全なtask名、旧baselineへ変換した完全なtask名、
+結果を正規化した完全なtask名の三点を確認する。

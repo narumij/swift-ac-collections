@@ -2,8 +2,10 @@
 
 本書は `Maintanance/CLAUDE_TASK.md` のユーザー最終決定(バリアント削減、2026-10-03)に
 基づき実施した `PermutationModule` の公開API削除の記録である。削除前の調査所見は
-`Maintanance/PermutationModule/ProductReadinessAssessment.md`、現行の公開API仕様は
-`Tests/PermutationTests/NextPermutationsSequence/`のTest as Specification（2026-10-07に`Specification.md`から切り替え）である。
+`Maintanance/PermutationModule/ProductReadinessAssessment.md`に残す。現行の公開契約は
+`Sources/PermutationModule/Documentation/Quality-Profile.md`、Test as Specificationの再構成状態は
+`RuntimeCheckedPermutationTestPlan.md`と`BorrowedPermutationTestPlan.md`を正本とする。旧COW契約の
+`Tests/PermutationTests/NextPermutationsSequence/`は履歴資料であり、現行適合の根拠には用いない。
 
 ## 実施したこと(2026-10-03、完了)
 

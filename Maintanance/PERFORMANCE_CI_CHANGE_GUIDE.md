@@ -78,3 +78,7 @@ benchmark sourceには残すが、通常CIの合否対象には含めない。
 Swift 6.4のborrowed版はruntime-check版の回帰baselineにしない。lifetimeによって安全性を表現し、要素ごとの
 世代確認を必要としない別の性能契約だからである。borrowed版とC++の比較はmacOS品質評価の独立系列として
 保存し、Linux CIへ異なる契約を混在させない。
+
+この分離を反映したPR #193では、PR #191のmerge commitをbaseとしてperformance jobを実行し、batched
+subscript 2件とend-to-endを含む新しい比較契約でall greenを確認した。以後の赤は、borrowed版からの方式差では
+なく、runtime-check版baselineに対する回帰として扱う。

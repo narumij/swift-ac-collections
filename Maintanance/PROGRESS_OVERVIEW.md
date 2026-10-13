@@ -86,8 +86,8 @@ remote到達を確認した。release後の記録用branchとして、同tagか�
 実装を先にmergeした後、通常CI libraryへの登録だけを独立PRで合流した。登録PR #190でperformance jobの
 greenを確認し、PR #191でも両moduleのbase / current測定自体は成立した。PR #191のjob全体はPermutationの
 borrowed版からruntime-check版への方式切替を回帰として検出して赤となったため、同PRのmerge commitを
-方式切替後のbaselineとした。C++とのmacOS外部assessmentは後続とし、性能比の受入判断は暫定実測後まで
-発生させない。
+方式切替後のbaselineとした。PR #193では方式差を通常回帰から分離した比較契約でperformance jobの
+all greenを確認した。C++とのmacOS外部assessmentは後続とし、性能比の受入判断は暫定実測後まで発生させない。
 
 **凍結中の中間ゴール（前任conversationの残存記録）:**
 

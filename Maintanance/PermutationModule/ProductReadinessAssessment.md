@@ -3,8 +3,9 @@
 この文書は、`PermutationModule`の公開APIを調査した所見の記録である。2026-10-03、
 `Maintanance/CLAUDE_TASK.md`のユーザー最終決定に基づき、本書で削除候補として
 扱っていた`All`系・`unsafe`系の公開APIは実際に削除済み(実施記録は
-`ImplementationPlan.md`、現行APIは
-`Tests/PermutationTests/NextPermutationsSequence/`のTest as Specification（2026-10-07に`Specification.md`から切り替え）を参照)。本書は調査結果・判断根拠の記録として残す。
+`ImplementationPlan.md`を参照)。本書は当時の調査結果・判断根拠の記録として残し、現行APIの契約と
+検証状態は`Sources/PermutationModule/Documentation/Quality-Profile.md`、
+`RuntimeCheckedPermutationTestPlan.md`、`BorrowedPermutationTestPlan.md`を参照する。
 
 ## 存在理由(`release/AtCoder/2025`ブランチのREADME.mdより)
 
@@ -44,10 +45,10 @@
   いるので、要点に沿って整理しなおすか、廃止するか、いずれかを次回ジャッジ更新までに
   行うこと」というTODOが存在し、作者自身も状態を把握していた。
 
-## 現在も残る論点
+## 後続状況
 
-- ABC328Eの実提出による性能検証(ベースライン記録・削除後の再提出比較)は、ユーザーが
-  手作業で行う専任項目として凍結する。AIは着手・代行・催促しない。
+- ABC328Eの実提出による性能検証は2026-10-13にユーザーが完了した。結果、採用・棄却した枝、
+  および製品版との境界は`HumanAITuningReport.md`に記録する。
 
 `Sendable`対応と公開コメントドックは、その後の作業で実施済み。Sendableの安全性根拠は
 `Maintanance/StrictMemorySafetyReadiness.md` §9を参照。

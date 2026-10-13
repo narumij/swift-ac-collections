@@ -9,6 +9,11 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
+**実行待ち: Public API名の熟議採点第2巡**
+
+第1巡のUser・Codex・Claude scoreと統合報告をすべて読み、未決4領域だけを再採点する。今回は独立性を
+要求せず、他者の理由による評価変化を記録する。採用と統合は行わない。
+
 **完了: Public API名ballotのClaude独立採点**
 
 ClaudeがUser・Codexの採点を読まず、固定済みArray命名ballot全29候補へ点数、理由、懸念を記録した。
@@ -41,6 +46,36 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
+
+## Current assignment: Public API名の熟議採点第2巡
+
+### Objective
+
+相互に公開された第1巡のscoreと理由を検討し、未決のalways-initialized owner、presence-tracked owner、
+borrowed-reference method、borrowed-reference propertyを再採点する。
+
+### Inputs
+
+Read:
+
+- Registryの`API-008`行;
+- `PUBLIC_API_NAMING_SCORE_USER.md`、`PUBLIC_API_NAMING_SCORE_CODEX.md`、
+  `PUBLIC_API_NAMING_SCORE_CLAUDE.md`;
+- `PUBLIC_API_NAMING_SCORE_REPORT.md`;
+- `PUBLIC_API_NAMING_DECISIONS.md`;
+- `PUBLIC_API_NAMING_ROUND2_CLAUDE.md`。
+
+### Boundaries
+
+- 変更できるのは`PUBLIC_API_NAMING_ROUND2_CLAUDE.md`だけ。
+- 採用済みのcopied access、1D suffix、`MutableRef`を再採点しない。
+- 新候補、採用判断、統合報告、source・test・Registry変更を行わない。
+- build、test、benchmark、commitは行わない。
+
+### Completion
+
+全21候補へ1〜10の整数点と、相互閲覧で何を維持・変更したか分かる短い理由を記録し、statusを完了へ
+変更する。受入と統合はCodexが行う。
 
 ## Current assignment: Public API名ballotのClaude独立採点
 

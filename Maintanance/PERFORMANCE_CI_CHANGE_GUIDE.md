@@ -9,6 +9,18 @@ benchmark自体の試験方法やtest suiteの運用は扱わない。taskの状
 `PROGRESS_OVERVIEW.md`のTask Registry、実際のworkflowとlibrary構成は`.github/workflows/`と
 `Benchmarks/Libraries/`がそれぞれ正本である。
 
+## 手動実行
+
+GitHubのActionsから`CI`を選び、`Run workflow`で次を指定すると、pushやPR更新を伴わずに
+performance比較を実行できる。
+
+- `Use workflow from`: workflowを実行するbranch。比較先を空欄にした場合は、このbranchのcommitを使う。
+- `performance_base_ref`: 比較元のbranch、tag、またはcommit SHA。既定値は`main`。
+- `performance_head_ref`: 比較先のbranch、tag、またはcommit SHA。空欄なら選択したworkflow branchを使う。
+
+PRで起動した場合は入力値を使わず、従来どおりPRのbase SHAとhead SHAを比較する。
+再現調査ではbranch名の移動を避けるため、可能なら両方をcommit SHAで固定する。
+
 ## 基本境界
 
 base / current比較では、比較に使うworkload名と、そのworkloadを実装するbenchmark harnessが

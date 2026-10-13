@@ -2,6 +2,16 @@ name: CI
 
 on:
   workflow_dispatch:
+    inputs:
+      performance_base_ref:
+        description: Performance comparison base (branch, tag, or commit SHA)
+        required: true
+        default: main
+        type: string
+      performance_head_ref:
+        description: Performance comparison head (empty uses the selected workflow branch)
+        required: false
+        type: string
   push:
     branches:
       - compatible/AtCoder/2025
@@ -151,20 +161,23 @@ jobs:
         run: swift test -c release
 
   performance:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
+    env:
+      PERFORMANCE_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || inputs.performance_base_ref }}
+      PERFORMANCE_HEAD_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.performance_head_ref || github.sha }}
 
     steps:
       - name: Checkout base
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.base.sha }}
+          ref: ${{ env.PERFORMANCE_BASE_REF }}
           path: base
 
       - name: Checkout HEAD
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ env.PERFORMANCE_HEAD_REF }}
           path: head
 
       - name: Set up Swift
@@ -175,6 +188,13 @@ jobs:
         run: |
           mkdir -p head/benchmark-results
           lscpu | tee head/benchmark-results/cpu.txt
+
+          {
+            printf 'requested base ref: %s\n' "$PERFORMANCE_BASE_REF"
+            printf 'resolved base SHA: %s\n' "$(git -C base rev-parse HEAD)"
+            printf 'requested head ref: %s\n' "$PERFORMANCE_HEAD_REF"
+            printf 'resolved head SHA: %s\n' "$(git -C head rev-parse HEAD)"
+          } | tee head/benchmark-results/comparison-refs.txt
 
       - name: Run current benchmarks
         working-directory: head/Benchmarks

@@ -2,7 +2,7 @@
 
 > **現在状態（2026-10-13）:** 本文の29宣言ledgerとView・writebackに関する記録は、削除前の公開面を
 > 保存する履歴である。所有型の旧連鎖subscriptと`BareArray1DView`〜`BareArray3DView`は削除済み。
-> 現行公開面と品質境界は`Sources/BareArrayModule/Documentation/Quality-Profile.md`、現在の検証結果は
+> 現行公開面と品質境界は`Sources/ElementBufferModule/Documentation/Quality-Profile.md`、現在の検証結果は
 > `CurrentQualityAssessment.md`を正とする。
 
 最終更新: 2026-10-09 / Codex
@@ -16,11 +16,11 @@ BareArrayの公開契約をsource、test、git履歴、OptionalArrayとの対応
 
 ## 現在の対象
 
-- source: `Sources/BareArrayModule/BareArray.swift` 1ファイル、450行
+- source: `Sources/ElementBufferModule/BareArray.swift` 1ファイル、450行
 - 公開型: 所有型1D〜4DとView 1D〜3Dの7型
 - 公開宣言: 型7、所有型initializer 8、subscript 7、`indices` 7の計29件
 - 公開適合: 所有型4型の`@unchecked Sendable`
-- test: `Tests/BareArrayModuleTests`の3ファイル、38件
+- test: `Tests/ElementBufferModuleTests`の3ファイル、38件
 - 比較資料: `Maintanance/OptionalArrayModule/OptionalArrayAudit.md`
 - safety資料: `Maintanance/StrictMemorySafetyReadiness.md`
 
@@ -136,7 +136,7 @@ Codex acceptance（2026-10-09）: 公開surface、初期化、要素access、Vie
 ## `BARE-002` 結果 — 公開29宣言・4適合のledger（2026-10-09）
 
 2026-10-09 11:44 JST / Claude Opus 5.5（`claude-opus-5-5`）。HEAD `3b58769c`。source・test・コメントドック・Registryは変更していない。
-`B:L<n>`は`Sources/BareArrayModule/BareArray.swift`の行。testは`BT`=`BareArrayTests.swift`、`DT`=`BareArrayDeathTests.swift`
+`B:L<n>`は`Sources/ElementBufferModule/BareArray.swift`の行。testは`BT`=`BareArrayTests.swift`、`DT`=`BareArrayDeathTests.swift`
 （`DEATH_TEST`時のみ）、`IT`=`BareArrayInternalTests.swift`（`DEBUG`時のみ、`@testable`）。OptionalArrayとの対応は
 `OptionalArrayModule/OptionalArrayAudit.md`の`OPT-028`表を参照し、ここでは同一視しない。
 

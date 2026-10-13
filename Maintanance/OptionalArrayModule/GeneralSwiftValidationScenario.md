@@ -23,10 +23,10 @@
 
 ### 入力正本
 
-- 公開surfaceと実装: `Sources/OptionalArrayModule/OptionalElementBuffer.swift`
-- 観察可能な仕様: `Tests/OptionalArrayModuleTests/`
+- 公開surfaceと実装: `Sources/OptionalElementBufferModule/OptionalElementBuffer.swift`
+- 観察可能な仕様: `Tests/OptionalElementBufferModuleTests/`
 - 利用者への説明: `Maintanance/OptionalArrayModule/UserDocumentationDraft.md`
-- 品質と証拠の境界: `Sources/OptionalArrayModule/Documentation/Quality-Profile.md`
+- 品質と証拠の境界: `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md`
 - 現在評価: `Maintanance/OptionalArrayModule/CurrentQualityAssessment.md`
 
 ### 固定する情報

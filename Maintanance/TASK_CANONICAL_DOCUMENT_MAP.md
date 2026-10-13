@@ -34,7 +34,7 @@
 | `BARE-004` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |
 | `BARE-005` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |
 | `BARE-006` | `BareArrayModule/CurrentQualityAssessment.md` / `Tests/TESTING.md` | 2026-10-12 |  |
-| `BARE-007` | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` | 現行 |  |
+| `BARE-007` | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` | 現行 |  |
 | `BARE-008` | `BareArrayModule/BareArrayAudit.md`<br>`Tests/TESTING.md` | 2026-10-11<br>2026-10-09 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
 | `BARE-009` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |
 | `BARE-010` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |
@@ -43,8 +43,8 @@
 | `BARE-013` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |
 | `BARE-014` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |
 | `BARE-015` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |
-| `BARE-016` | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
-| `BARE-017` | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` | 現行 |  |
+| `BARE-016` | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
+| `BARE-017` | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` | 現行 |  |
 | `BARE-018` | `BareArrayModule/CurrentQualityAssessment.md` | 現行 |  |
 | `BARE-019` | `BareArrayModule/CurrentQualityAssessment.md` | 2026-10-12 |  |
 | `BARE-020` | `BareArrayModule/CurrentQualityAssessment.md` | 現行 |  |
@@ -54,15 +54,15 @@
 | `BARE-024` | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` | 2026-10-12 |  |
 | `BARE-025` | `BareArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` | 2026-10-12 |  |
 | `BARE-026` | `BareArrayModule/CurrentQualityAssessment.md` | 2026-10-12 |  |
-| `BARE-027` | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
+| `BARE-027` | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
 | `BARE-028` | `BareArrayModule/CurrentQualityAssessment.md` | 現行 |  |
 | `BARE-029` | `BareArrayModule/CurrentQualityAssessment.md` | 2026-10-12 |  |
 | `BARE-030` | `BareArrayModule/CurrentQualityAssessment.md` | 2026-10-12 |  |
-| `BARE-031` | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
-| `BARE-032` | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` | 現行 |  |
+| `BARE-031` | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
+| `BARE-032` | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` | 現行 |  |
 | `BARE-033` | `Tests/TESTING.md` / `.github/workflows/ci.yml` / `.github/workflows/candidate.yml` | 2026-10-12 |  |
-| `BARE-034` | `Sources/BareArrayModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
-| `BARE-035` | `Sources/BareArrayModule/Documentation/Quality-Profile.md` / `Package.swift` | 現行 |  |
+| `BARE-034` | `Sources/ElementBufferModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
+| `BARE-035` | `Sources/ElementBufferModule/Documentation/Quality-Profile.md` / `Package.swift` | 現行 |  |
 | `BENCH-001` | `Archived/SORTED_COLLECTIONS_BENCHMARK_TASK.md` | 2026-10-09 |  |
 | `CPP-001` | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` | 2026-10-09 |  |
 | `CPP-002` | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` | 2026-10-09 |  |
@@ -87,7 +87,7 @@
 | `DOC-019` | `Archived/Canonical/CODE_SNIPPET_SURVEY.md` / `Archived/Canonical/CODE_SNIPPET_SURVEY_CODEX.md` / `Archived/Canonical/CODE_SNIPPET_SURVEY_CLAUDE.md` | 2026-10-11 |  |
 | `DOC-020` | `Archived/Canonical/PUBLIC_API_CODE_SNIPPET_SURVEY_2.md` / `Archived/Canonical/PUBLIC_API_CODE_SNIPPET_SURVEY_2_CODEX.md` / `Archived/Canonical/PUBLIC_API_CODE_SNIPPET_SURVEY_2_CLAUDE.md` | 2026-10-11 |  |
 | `DOC-021` | `Archived/Canonical/PUBLIC_API_CODE_SNIPPET_SURVEY_2.md` / `CLAUDE_PENDING_TASKS.md` | 2026-10-11 |  |
-| `DOC-022` | `Tests/TESTING.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` | 2026-10-11 |  |
+| `DOC-022` | `Tests/TESTING.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` | 2026-10-11 |  |
 | `EVAL-001` | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` | 2026-10-09 |  |
 | `FIT-001` | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` | 2026-10-09 |  |
 | `FIT-002` | `Orientation/AGENT_TASK_FIT_INTERVIEW.md` | 2026-10-09 |  |
@@ -147,7 +147,7 @@
 | `OPT-002` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |
 | `OPT-003` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |
 | `OPT-004` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-005` | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
+| `OPT-005` | `Sources/OptionalElementBufferModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
 | `OPT-006` | `OptionalArrayModule/OptionalArrayAudit.md` | 現行 |  |
 | `OPT-007` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |
 | `OPT-008` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |
@@ -181,22 +181,22 @@
 | `OPT-036` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |
 | `OPT-037` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |
 | `OPT-038` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-039` | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
-| `OPT-040` | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
-| `OPT-041` | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
-| `OPT-042` | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
+| `OPT-039` | `Sources/OptionalElementBufferModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
+| `OPT-040` | `Sources/OptionalElementBufferModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
+| `OPT-041` | `Sources/OptionalElementBufferModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
+| `OPT-042` | `Sources/OptionalElementBufferModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
 | `OPT-043` | `Archived/Canonical/ARRAY_NAMING_REVIEW.md` / `Archived/Canonical/CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` | 2026-10-11 |  |
 | `OPT-044` | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` | 現行 |  |
 | `OPT-045` | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` | 現行 |  |
 | `OPT-046` | `OptionalArrayModule/OptionalArrayAudit.md` | 2026-10-11 |  |
-| `OPT-047` | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
+| `OPT-047` | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
 | `OPT-048` | `OptionalArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` | 現行 |  |
 | `OPT-049` | `OptionalArrayModule/CurrentQualityAssessment.md` | 2026-10-12 |  |
 | `OPT-050` | `OptionalArrayModule/CurrentQualityAssessment.md` | 2026-10-12 |  |
 | `OPT-051` | `OptionalArrayModule/CurrentQualityAssessment.md` | 2026-10-12 |  |
-| `OPT-052` | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` | 現行 |  |
-| `OPT-053` | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` | 現行 |  |
-| `OPT-054` | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` | 現行 |  |
+| `OPT-052` | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` | 現行 |  |
+| `OPT-053` | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` | 現行 |  |
+| `OPT-054` | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` | 現行 |  |
 | `PERF-001` | `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`<br>`Tests/TESTING.md` / `.github/workflows/ci.yml` / `.github/workflows/candidate.yml` | 2026-10-09<br>2026-10-12 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
 | `PERF-002` | `Tests/TESTING.md` / `BareArrayModule/CurrentQualityAssessment.md` / `OptionalArrayModule/CurrentQualityAssessment.md` | 2026-10-12 |  |
 | `PERF-003` | `Tests/TESTING.md` / `.github/workflows/ci.yml` | 2026-10-12 |  |

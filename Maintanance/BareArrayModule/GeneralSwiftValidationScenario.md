@@ -21,10 +21,10 @@
 
 ### 入力正本
 
-- 公開surfaceと実装: `Sources/BareArrayModule/ElementBuffer.swift`
-- 観察可能な仕様: `Tests/BareArrayModuleTests/`
+- 公開surfaceと実装: `Sources/ElementBufferModule/ElementBuffer.swift`
+- 観察可能な仕様: `Tests/ElementBufferModuleTests/`
 - 利用者への説明: `Maintanance/BareArrayModule/UserDocumentationDraft.md`
-- 品質と証拠の境界: `Sources/BareArrayModule/Documentation/Quality-Profile.md`
+- 品質と証拠の境界: `Sources/ElementBufferModule/Documentation/Quality-Profile.md`
 - 現在評価: `Maintanance/BareArrayModule/CurrentQualityAssessment.md`
 
 ### 固定する情報

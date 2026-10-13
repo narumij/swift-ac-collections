@@ -4,7 +4,7 @@
 
 - ID: `ARRAY-016`
 - 種別: `EXECUTION`
-- 状態: `PROPOSED`
+- 状態: `DONE`
 - 担当: Codex
 - 現在の中間ゴールへの近さ: `DIRECT`
 - 前提: `ARRAY-015`
@@ -44,3 +44,15 @@
 
 公開library product、trait名・提供条件、benchmark workload・task title、性能baseline、または旧互換targetの
 終了条件を変更する必要が生じた場合は、このtaskで決めずに停止して別taskへ分離する。
+
+## 実施結果（2026-10-14）
+
+- 実装・test targetとdirectoryを確定済みの新名称へ移し、旧名2 targetを1行の再公開facadeとして追加した。
+- `AcCollections`、test、benchmarkのimport、manifest依存、DocC CI target matrix、および現行正本のsource pathを
+  更新した。Archived記録とmaintenance directory名は履歴・管理座標として維持した。
+- Xcode Build for Testingと`swift test --disable-sandbox`が成功した。
+- trait有効時にOptional系通常test 36件、AcCollections再公開test 1件、Death Test 21件が成功した。
+- 旧名facadeから新moduleの公開型を利用するcompatibility smoke testを両test targetへ追加し、成功した。
+- benchmark packageのrelease buildが成功し、dry-runで既存のElementBuffer系task title 22件が維持されている
+  ことを確認した。
+- 新旧4 moduleのDocC generationが`--warnings-as-errors`付きで成功した。

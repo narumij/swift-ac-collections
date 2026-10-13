@@ -67,8 +67,8 @@ OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ
 
 ## 範囲と受入基準
 
-対象は `Sources/OptionalArrayModule/OptinalArray.swift` の公開7型・公開宣言29件、および
-`Tests/OptionalArrayModuleTests` の番号付き仕様test 8ファイルと利用例2ファイルである。
+対象は `Sources/OptionalElementBufferModule/OptinalArray.swift` の公開7型・公開宣言29件、および
+`Tests/OptionalElementBufferModuleTests` の番号付き仕様test 8ファイルと利用例2ファイルである。
 
 完了には次をすべて満たす。
 
@@ -437,16 +437,16 @@ safety、コメントドック全件整備、test file全体の番号整理へ�
 
 変更file:
 
-- `Sources/OptionalArrayModule/OptinalArray.swift`: 1D〜4Dのinitializerだけを変更した。
+- `Sources/OptionalElementBufferModule/OptinalArray.swift`: 1D〜4Dのinitializerだけを変更した。
   - 各次元の`>= 0`を、積の計算より前に`precondition`で検査する。
   - 2Dは`multipliedReportingOverflow`で積を求め、overflowを`precondition`で拒否する。
   - 3D / 4Dは、0の次元があれば積を0とする。無ければ`multipliedReportingOverflow`を順に適用し、
     いずれかのoverflowを`precondition`で拒否する（途中の積だけがoverflowする入力も0なら受け入れる）。
   - 停止messageは付けていない（既存のsubscriptの`precondition`と同じ形）。型名、label、storage、属性は変更していない。
     ドキュメントコメントも追加していない（利用者向け文書はCodexの担当）。
-- `Tests/OptionalArrayModuleTests/OptionalArrayTests.swift`: `// MARK: - Dimension contract`に5件を追加した。
+- `Tests/OptionalElementBufferModuleTests/OptionalArrayTests.swift`: `// MARK: - Dimension contract`に5件を追加した。
   1D〜4Dのzero dimensionで要素を1つも持たないこと、0の次元があれば他の次元が大きくても受け入れることを固定する。
-- `Tests/OptionalArrayModuleTests/OptionalArrayDeathTests.swift`: `OptionalArrayDimensionDeathTests`を追加した（13件）。
+- `Tests/OptionalElementBufferModuleTests/OptionalArrayDeathTests.swift`: `OptionalArrayDimensionDeathTests`を追加した（13件）。
   内訳は、各initializerの各軸の負値10件と、2D〜4Dの積overflow 3件。既存と同じ`processExitsWith: .failure`方式。
 
 test-first: 修正前に追加testを走らせ、次の失敗を確認した。
@@ -494,10 +494,10 @@ Debug／ReleaseのOptionalArray testを実行し、新しいdefectを見つけ�
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。未commit。
 
-- `Sources/OptionalArrayModule/OptinalArray.swift`: `OptionalArray4D.subscript`のgetterだけを変更した。
+- `Sources/OptionalElementBufferModule/OptinalArray.swift`: `OptionalArray4D.subscript`のgetterだけを変更した。
   `size0` / `size1` / `size2`のいずれかが0ならoffsetを0とし、途中の積を評価しない。すべて非zeroなら現行の
   `size0 * size1 * size2 * position`のまま。返すViewの次元（`width: size0, height: size1, depth: size2`）は変えていない。
-- `Tests/OptionalArrayModuleTests/OptionalArrayTests.swift`: `testOptionalArray4DZeroVolumeOuterSubscriptReachesEmptyViews`を追加した。
+- `Tests/OptionalElementBufferModuleTests/OptionalArrayTests.swift`: `testOptionalArray4DZeroVolumeOuterSubscriptReachesEmptyViews`を追加した。
   `size3 = 1`で`size0` / `size1` / `size2`のそれぞれを0にした3形状と、`(Int.max, 2, 0, 1)`の1形状を外側subscriptで辿る。
 - 解釈（記録）: 依頼の「返るViewの`indices`が空になる」は、0の軸に当たるViewまで辿って空になることとして固定した。
   `size0 == 0`や`size1 == 0`のとき、外側subscriptが直接返す3DViewの`indices`は`0..<size2`で、空ではない（既存の意味のまま）。
@@ -514,7 +514,7 @@ Codex acceptance（2026-10-08）: zero-volume時だけ途中積を避け、非ze
 
 ### OPT-035 Test as Specification配置・移行設計 assignment（2026-10-08）
 
-担当: Claude。`Tests/OptionalArrayModuleTests`の現行4ファイルを読み、各testを公開契約の仕様群へ分類する。
+担当: Claude。`Tests/OptionalElementBufferModuleTests`の現行4ファイルを読み、各testを公開契約の仕様群へ分類する。
 成果物は、仕様番号、提案file名、含める現行test、固定する契約、Swift Testingへ移行可能か、移行時の
 注意点を対応させた表とする。EDPC-J / EDPC-Lは実行testではない利用例として別枠に置く。
 

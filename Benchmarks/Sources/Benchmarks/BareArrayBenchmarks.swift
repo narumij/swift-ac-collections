@@ -9,7 +9,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-import BareArrayModule
+import ElementBufferModule
 import CollectionsBenchmark
 
 private func balancedBareArrayShape(for size: Int, dimensions: Int) -> [Int] {

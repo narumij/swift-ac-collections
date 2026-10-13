@@ -134,9 +134,9 @@ bufferが破棄されると、全要素の寿命も終了する。公開のcopy�
 
 ## 根拠
 
-- 公開実装: `Sources/BareArrayModule/ElementBuffer.swift`
-- 現行Test as Specification: `Tests/BareArrayModuleTests/`
+- 公開実装: `Sources/ElementBufferModule/ElementBuffer.swift`
+- 現行Test as Specification: `Tests/ElementBufferModuleTests/`
 - 借用寿命compiler fixture: `Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/`
-- 品質プロファイル: `Sources/BareArrayModule/Documentation/Quality-Profile.md`
+- 品質プロファイル: `Sources/ElementBufferModule/Documentation/Quality-Profile.md`
 - 現在評価: `Maintanance/BareArrayModule/CurrentQualityAssessment.md`
 - 体系監査と判断記録: `Maintanance/BareArrayModule/BareArrayAudit.md`

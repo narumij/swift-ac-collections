@@ -11,7 +11,7 @@
 
 import CollectionsBenchmark
 import BasicContainers
-import OptionalArrayModule
+import OptionalElementBufferModule
 
 private func balancedOptionalArrayShape(for size: Int, dimensions: Int) -> [Int] {
   precondition(size > 0 && dimensions > 0)

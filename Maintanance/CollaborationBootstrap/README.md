@@ -9,6 +9,10 @@ WorkerとReceiverが、最小限の共通境界から協働を始め、実際の
 このrepositoryのTask Registry、Routine、安定ID、Claude handoff、release規則は、特定の協働関係と
 問題へ応答して発達した。その完成形を模範解答として移植しない。
 
+旧方式の`Archived/Orientation/PROGRESS_OVERVIEW_TEMPLATE.md`は、完成済みのRegistry、状態、ID、依存、
+起動規則を一式で別projectへ移植する候補だった。現在の候補とは前提が異なるため履歴として参照し、
+このfolderの初期構成や導入手順には含めない。
+
 ## 初期構成
 
 - `AGENTS_CANDIDATE.md`: WorkerとReceiverに共通する最小限の権限境界。

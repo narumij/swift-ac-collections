@@ -193,7 +193,7 @@ Registryと正本を読み、現在の結果、その意味、次の作業、必
 - `CODEX_ORIENTATION.md`: 司令塔としての責任、証拠、復帰の全体像
 - `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V1.md`: 当時のtask作成、依存、状態、委任、受入の詳細規則
 - `PROGRESS_OVERVIEW.md`: 現在の中間ゴール、task、状態、必須依存の正本
-- `PROGRESS_OVERVIEW_TEMPLATE.md`: 別projectへ移植するときのRegistry雛形
+- `Archived/Orientation/PROGRESS_OVERVIEW_TEMPLATE.md`: 完成済みRegistryを別projectへ移植する旧方式の雛形
 - `Graph/TASK_GRAPH_LINT.md`: graphが機械的に検査できる範囲と、判断を代行しない境界
 - `AI_TASK_PROCESS_POSTER.png`: task処理全体の視覚的な要約
 

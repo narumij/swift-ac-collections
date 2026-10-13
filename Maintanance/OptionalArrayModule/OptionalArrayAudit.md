@@ -2,6 +2,64 @@
 
 最終更新: 2026-10-08 / Codex
 
+## 現行提供境界への追補（2026-10-14）
+
+Linux performance CIの境界比較により、更新APIの`mutating`化が2D・3D direct workloadの
+性能回帰境界であることを確認した。現行split storage実装は一般Swift向けの既定提供から外し、
+`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitを選んだ場合だけ`AcCollections`から再公開する。
+1D〜4Dの`setElement`と`removeAll()`はnonmutatingへ戻した。
+
+これは競技用途向け低レベル部品のopt-in提供を維持する判断であり、一般Swift向けの利用可能性、
+thread-safe containerとしての保証、またはSwift 6.4以降向けの最終storage方式を確定しない。
+一般提供方式と性能の再検討は独立した凍結taskへ分離した。
+
+## 現行公開面への追補（2026-10-13）
+
+本監査の公開29宣言ledgerは、連鎖subscriptと非所有Viewを主要経路としていた2026-10-08時点の
+証拠packageであり、現行公開面の一覧ではない。その後、所有1D〜4D型へ`element`／`setElement`の
+座標access 8宣言が追加され、2026-10-13にdeprecatedだった所有型の連鎖subscript 4件と
+非所有View 3型を削除した。旧ledgerは設計と移行の履歴入力として維持する。
+
+現行の要素accessは所有型の座標methodだけである。軸順、offset、範囲、値・nil遷移、
+参照要素寿命は、1D〜4Dの非対称shapeと全軸Death Testを含むTest as Specificationで固定する。
+旧View固有の共有・writeback・indices testとbenchmarkは、削除した公開契約とともに退役させた。
+
+この追補は旧29宣言の履歴や当時の判断を消さない。型名と次元名体系の再判断、および性能比の
+受入水準も決定しない。
+
+## 文書作業後の品質再評価（2026-10-13）
+
+現行source、番号付きTest as Specification、Quality Profile、Current Quality Assessment、
+ユーザー受入済みの利用者向け本文ドラフトを照合した。旧連鎖subscriptと非所有Viewの削除、
+座標accessの仕様化、strict memory safetyの恒久適用、公開面と品質正本の同期は完了している。
+したがって、旧29宣言監査の不足を現行APIの未完了taskとして復活させない。
+
+### 1.0判断前に残る独立論点
+
+| 論点 | 現在の証拠 | 今回の扱い |
+| --- | --- | --- |
+| 外部性能 | Swift・C++番兵workloadと暫定chartは成立しているが、受入可能な性能比は未決 | 既存の`OPT-053`と`OPT-054`を正本とし、重複taskを作らない |
+| 次元名体系 | 現行名で実装、仕様test、本文は整合するが、0.6.0到達範囲判断前の再判断が残る | 既存の`OPT-045`を正本とし、品質評価から結論を先取りしない |
+| `@unchecked Sendable` | domain間移送の必要性と4型の条件付き適合を確認した一方、共有borrowからnonmutatingなstorage更新を並行に呼べる | 移送の利便性を維持しながら同一storageの並行更新を型・所有権で拒否できるか、独立した後続調査へ分ける |
+| 一般Swift利用 | SwiftPM build、module直接利用、`AcCollections`再公開はrepository内で確認済み | repository外consumerでのVerificationと、利用者が本文から正しく使えるかのValidationを分ける前段scenarioが必要 |
+| 競技利用 | EDPC-J / EDPC-Lはcompile evidenceで、実提出・正答・時間・memoryの証拠ではない | 一般利用と混ぜず、scenario設計で対象環境、課題、証拠、実行時期を分ける |
+| `-Ounchecked` | 事前条件検査が省略され得ることをsourceと本文が明示する | OptionalArray単独で安全回復を保証しない。1.0が保証するbuild configurationの横断判断へ渡し、新しいmodule taskは作らない |
+| DocC継続確認 | 現行targetの個別DocC生成は成功済みだが、repository CIはOptionalArray DocCを継続生成しない | 公開媒体と全moduleのdocumentation CI設計で扱い、OptionalArray固有taskを重複登録しない |
+
+### 分離する後続候補
+
+1. `Sendable`契約の事実調査は完了した。適合を維持・変更する前に、domain間移送と並行更新排除の
+   両立可能性を最小probeで調査する。
+2. 一般Swift利用と競技利用のValidation scenario設計。利用者像、導入経路、課題、観測項目、
+   Verificationとの境界を先に定める。
+3. scenario確定後のrepository外SwiftPM consumer Verification。
+4. scenario確定後の利用理解Validation試行。参加者選定と外部接触はユーザーが持つ。
+
+性能、次元名、公開媒体、対応build configurationは既存の判断境界を維持する。上の候補登録は、
+それらの凍結taskを再開せず、OptionalArrayの1.0採否も決定しない。
+
+この再評価により、文書作業後に残る不足を重複なく分離できたため、親の品質再評価を完了とする。
+
 ## 目的
 
 OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ、Codexのユーザードキュメント
@@ -47,7 +105,7 @@ OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ
 | View型1D〜3D | 3 | storageを所有せず親のbufferを参照。親より長く保持できない | storage共有、コメントドック | 寿命は型システムで拘束されず、恒久対応は凍結中のstorage再設計範囲 |
 | View subscript | 3 | 1Dはoptional値を変更。2D/3Dは一段低いViewを返す | View上書き寿命、View境界Death Test、full-plane stride回帰test | 3D Viewの2D面stride不足を修正済み。NOP setterの位置づけは所有型と同じ |
 | View `indices` | 3 | count、height、depthを外側範囲として返す | `testViewIndices`、4D次元回帰test | 3D Viewのdepth境界と非対称な面strideを回帰testで固定済み |
-| `@unchecked Sendable` | 4適合 | move-only所有型を、ElementがSendableならTask間移送可能と宣言 | 1Dだけのcompile test（`testSendable_compiles`）。2D〜4Dのcompile testはない | 並行共有を許す契約ではないことの明文化と根拠確認が必要 |
+| `@unchecked Sendable` | 4適合 | move-only所有型を、ElementがSendableならdomain間移送可能と宣言 | 1Dだけの既存compile testに加え、一時probeで4型の制約適合とactorへのconsuming transferを確認 | 共有borrowから同一storageの並行更新を型が拒否しない。移送を維持した成立方法は未決 |
 
 ## test対応の現在地
 
@@ -74,7 +132,7 @@ OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ
 - 多次元Viewの未網羅な各軸について、非対称な次元を使ったoffsetと境界。
 - 1D所有型の、設定済み参照要素を残したままのdeinit。
 - 1D/2Dの`removeAll()`後の参照型slot再利用。
-- `@unchecked Sendable`の採用理由と、許される並行利用の境界。
+- `@unchecked Sendable`でdomain間移送を維持しながら、同一storageの並行更新を排除する成立方法。
 
 ## 履歴から確認できること
 
@@ -905,12 +963,12 @@ OptionalArrayは正式公開前であるため、既存名の維持やsource com
 
 ### 後続のユーザー判断
 
-- `OPT-044`: `OptionalArray1D`を維持するか、一つの1D所有型名を判断する。
+- `OPT-044`: 後発の横断命名判断`ARRAY-009`へ吸収。1Dはunsuffixedの
+  `OptionalElementBuffer`を採用し、`ARRAY-007`で実装反映まで完了した。
 - `OPT-045`: 2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、一つの次元名体系を判断する。
 
-両判断は`OPT-043`をCodexが受け入れた後、0.6.0の到達範囲判断前に一件ずつ行う。0.5.2のコメントドック・
-ドラフトは現行名で先行する。変更を選んだ場合のsource、互換措置、test、コメントドック更新は、判断taskへ
-混ぜず後続の実行taskへ分離する。
+`OPT-045`は、0.6.0の到達範囲判断前に行う。`OPT-044`は後発判断へ吸収済みであり、
+別の未解決判断として再開しない。
 
 Codex acceptance（2026-10-09）: Claude初稿と第三者AIの補完調査を独立評価し、1D所有型名と多次元labelを
 別々に判断できる材料が揃ったため受け入れた。第三者AIは`OptionalArray1D`と現行labelの維持を推奨した。

@@ -11,26 +11,26 @@
 この文書は、BareArrayModule固有の品質プロファイルであり、次を行う。
 
 - 上位品質要求がこのモジュールで何を意味するかを説明する。
-- 所有型と非所有View、次元、メモリ、性能の品質境界を示す。
+- 所有型、座標value access、借用参照、次元、メモリ、性能の品質境界を示す。
 - 要求、公開契約、Test as Specification、およびその他の証拠を分離する。
-- 未確定のView寿命、並行利用、性能基準、およびstrict memory safetyを確認済みの品質から分離する。
+- 未確定の借用参照の並行利用、性能基準、およびstrict memory safetyを確認済みの品質から分離する。
 
 この文書は、Task Registry、公開API、Test as Specification、監査記録、benchmark、CI設定、および実行結果の代わりにはならない。それらと食い違う場合は、対象事項を担当する正本を確認し、この文書の記述を訂正する。
 
 ## 対象
 
-主な対象は、`Sources/BareArrayModule/BareArray.swift`の所有1D〜4D型と非所有View 1D〜3D、およびそれらの公開宣言・適合である。
+主な対象は、`Sources/BareArrayModule/ElementBuffer.swift`の所有1D〜4D型、座標value access、およびSwift 6.4向け借用参照APIと、それらの公開宣言・適合である。旧連鎖subscriptと非所有View 1D〜3Dは削除済みであり、現行公開契約には含めない。
 
-BareArrayは、単一の連続storageを使う低レベル配列部品である。標準`Collection`への適合、一般的な配列API、任意の所有権管理を暗黙に要求へ含めない。
+ElementBufferは、単一の連続storageを使う低レベル配列部品である。標準`Collection`への適合、一般的な配列API、任意の所有権管理を暗黙に要求へ含めない。
 
 ## 上位品質要求との接続
 
 | 上位要求 | BareArrayModuleでの主な意味 | 主な仕様・証拠の接続先 |
 | --- | --- | --- |
-| QR-01 正確性 | 初期化、次元、offset、subscript、View、writeback、破棄が公開契約どおり動作する | `BareArray_0`〜`_5`、`_98`、`_99`のTest as Specification |
-| QR-02 性能効率性 | 連続storage、O(1)要素access、初期化・破棄・allocation、およびView利用の特性が目的に適する | sourceの計算量根拠、将来のbenchmark、CI performance evidence |
-| QR-03 安全性 | raw pointer、要素寿命、非所有View、`~Copyable`所有型、`@unchecked Sendable`、範囲・寸法検査の境界を維持する | 寿命test、Death Test、監査記録、Sanitizer、strict memory safety診断 |
-| QR-04 理解可能性 | 所有と非所有、View寿命、軸順、initializerと連鎖subscriptの順、writeback、失敗条件を理解できる | documentation comment、利用者向け文書、Test as Specification |
+| QR-01 正確性 | 初期化、次元、offset、座標value access、借用参照、破棄が公開契約どおり動作する | 番号付きTest as Specification |
+| QR-02 性能効率性 | 連続storage、O(1)の座標value accessと借用参照、初期化・破棄・allocationの特性が目的に適する | sourceの計算量根拠、benchmark、CI performance evidence |
+| QR-03 安全性 | raw pointer、要素寿命、借用参照、`~Copyable`所有型、`@unchecked Sendable`、範囲・寸法検査の境界を維持する | 寿命test、Death Test、compiler fixture、Sanitizer、strict memory safety診断 |
+| QR-04 理解可能性 | 所有、座標順、value accessと借用参照、initializer、失敗条件を理解できる | documentation comment、利用者向け文書、Test as Specification |
 | QR-05 利用可能性 | SwiftPM、`AcCollections`再公開、および競技用途の単一file経路で利用できる | facade test、package設定、単一file検証、CI、実利用記録 |
 | QR-06 持続可能性 | 次元別の重複実装を変更しても、契約・寿命・安全性・性能を再確認できる | 番号付きTest as Specification、監査記録、CI、将来の性能証拠 |
 
@@ -46,18 +46,18 @@ BareArrayは、単一の連続storageを使う低レベル配列部品である�
 | --- | --- |
 | `_0_PublicSurfaceTests` | 公開型、公開宣言、適合 |
 | `_1_InitializationTests` | 初期化、寸法、zero dimension |
-| `_2_ElementAccessTests` | 要素access、offset、連鎖書き込み、writeback |
-| `_3_ViewTests` | 所有型と非所有Viewの共有、View範囲 |
-| `_4_IndicesTests` | 各型の外側の軸を表す`indices` |
+| `_2_ElementAccessTests` | 座標value access、変更、offset |
+| `_4_IndicesTests` | 各所有型の最外軸を表す`indices` |
 | `_5_ReferenceLifetimeTests` | 参照型要素の構築・上書き・破棄 |
+| `_6_CoordinateValueAccessTests`以降 | 座標value access、借用参照、compilerで検査する寿命境界 |
 | `_98_CloneTests` | 公開契約ではない内部cloneの検査 |
-| `_99_DeathTests` | 寸法、範囲、writeback等の事前条件違反 |
+| `_99_DeathTests` | initializerの寸法・積に関する事前条件違反 |
 
 品質要求と個別test functionの対応表は原則として別に維持しない。仕様を追加または変更するときは、その性質を担当するテスト群へ反映する。
 
 ### 公開文書と監査記録
 
-documentation commentと利用者向け文書は、所有権、View寿命、軸、操作、制約、計算量、および失敗条件を利用者が理解するための入口である。`Maintanance/BareArrayModule/BareArrayAudit.md`は、公開面の棚卸し、過去の判断、および証拠の所在を記録する。監査記録の存在だけで現在の要求適合を証明したとはみなさない。
+documentation commentと利用者向け文書は、所有権、借用参照の寿命、軸、操作、制約、計算量、および失敗条件を利用者が理解するための入口である。`Maintanance/BareArrayModule/BareArrayAudit.md`は、削除済み公開面を含む棚卸し、過去の判断、および証拠の所在を記録する。監査記録の存在だけで現在の要求適合を証明したとはみなさない。
 
 ### 性能証拠
 
@@ -80,7 +80,7 @@ CI設定は、実際に検証するtoolchain、platform、build configuration、
 
 - 1D〜4Dの寸法とoffsetが契約どおり対応すること。
 - 非対称寸法、zero dimension、境界位置、および次元積overflowを契約どおり扱うこと。
-- 所有型とViewのsubscript・連鎖書き込み・writebackが対象位置だけを変更すること。
+- `element`、`setElement`、`reference(at:)`、`MutableRef.value`が指定座標だけを読み書きすること。
 - 参照型要素の構築、上書き、再代入、および破棄が対応すること。
 - `indices`が各型の外側の軸を表すこと。
 
@@ -89,9 +89,9 @@ CI設定は、実際に検証するtoolchain、platform、build configuration、
 少なくとも次を区別して評価する。
 
 - 単一連続storageによるallocationとメモリ局所性。
-- 要素subscriptと外側View生成の計算量。
+- 座標value accessと借用参照生成の計算量。
 - 初期化、clone、破棄、および次元積計算のコスト。
-- 検査付きwritebackと事前条件検査の最適化上の影響。
+- 座標計算と事前条件検査の最適化上の影響。
 - Swiftの多重配列、C/C++配列、または他の候補との外部比較。
 
 実装から読める計算量は、測定済みの実行性能ではない。性能基準と測定条件が確定するまで、性能要求への適合を主張しない。
@@ -101,21 +101,21 @@ CI設定は、実際に検証するtoolchain、platform、build configuration、
 少なくとも次の領域を、通常テスト、寿命テスト、Death Test、compiler診断、および必要な動的検査で分担する。
 
 - raw pointer storageの確保、初期化、deinitialize、deallocateが対応すること。
-- 所有型の`~Copyable`境界と、Viewがstorageを所有しないこと。
-- Viewを所有者より長く保持しない責任と、型システムで防げない範囲。
+- 所有型の`~Copyable`境界と、借用参照がstorageを所有しないこと。
+- 借用参照を所有者より長く保持できないことをcompiler fixtureで確認する範囲。
 - `@unchecked Sendable`が許す移送・共有の範囲。
 - Debug、Release、`-Ounchecked`等によって事前条件の保証が変わる境界。
 - strict memory safetyの現在設定と診断範囲。
 
-View寿命、並行利用、storage再設計、strict memory safety、および`-Ounchecked`の位置づけには未確定または再審査待ちの領域がある。担当するTask Registryと監査記録で再開されるまで、この文書から新しい公開保証を導かない。
+借用参照の並行利用、storage再設計、strict memory safety、および`-Ounchecked`の位置づけには未確定または再審査待ちの領域がある。担当するTask Registryと監査記録で再開されるまで、この文書から新しい公開保証を導かない。
 
 ### 4. 理解可能性
 
 利用者が少なくとも次を確認できるようにする。
 
-- 所有型と非所有Viewの違い、およびView寿命の責任。
-- 各次元の意味、initializerの引数順、連鎖subscriptの順、最内・最外の軸。
-- zero dimension、範囲外、次元積overflow、writeback違反の扱い。
+- value accessと借用参照の違い、および借用寿命の境界。
+- 各次元の意味、initializerと座標引数の順、最内・最外の軸。
+- zero dimension、範囲外、次元積overflowの扱い。
 - 標準`Collection`ではないことと、提供する操作の範囲。
 - `@unchecked Sendable`と`-Ounchecked`の保証境界。
 
@@ -127,7 +127,7 @@ View寿命、並行利用、storage再設計、strict memory safety、および`
 
 ### 6. 持続可能性
 
-公開表面、次元、offset、View、writeback、寿命、停止契約、および性能を、変更範囲に応じて再確認できる構造を維持する。
+公開表面、次元、offset、value access、借用参照、寿命、停止契約、および性能を、変更範囲に応じて再確認できる構造を維持する。
 
 調査記録は証拠として保存するが、時点の異なる評価やtask進行を現行プロファイルへ追記し続けない。現在評価と長い調査履歴を分離し、過去の結論を現行の事実として自動的に流用しない。
 
@@ -136,10 +136,10 @@ View寿命、並行利用、storage再設計、strict memory safety、および`
 変更範囲に応じて、少なくとも次を確認する。
 
 1. 関連するTest as Specificationが成功する。
-2. storage、initializer、subscript、View、writeback、または破棄を変更した場合、寸法、offset、寿命、および停止契約を確認する。
+2. storage、initializer、座標value access、借用参照、または破棄を変更した場合、寸法、offset、寿命、および停止契約を確認する。
 3. hot path、allocation、次元積、clone、または検査を変更した場合、計算量と性能証拠への影響を確認する。
 4. 公開API、文書、再公開、toolchain、platform、またはbuild条件を変更した場合、利用者が到達する各経路を確認する。
-5. View寿命、Sendable、strict memory safety等の凍結領域へ影響する場合、既存taskを勝手に再開せず停止する。
+5. 借用参照の並行利用、Sendable、strict memory safety等の凍結領域へ影響する場合、既存taskを勝手に再開せず停止する。
 
 具体的なrelease gateは、対象releaseの計画とCI設定で定める。この文書へ特定releaseやtaskの進行状態を記録しない。
 
@@ -164,7 +164,7 @@ View寿命、並行利用、storage再設計、strict memory safety、および`
 | リポジトリ全体の上位品質要求 | `Maintanance/QUALITY_REQUIREMENTS.md` |
 | 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
 | 観察可能な仕様 | `Tests/BareArrayModuleTests/`の番号付きTest as Specification |
-| 公開APIとdocumentation comment | `Sources/BareArrayModule/BareArray.swift` |
+| 公開APIとdocumentation comment | `Sources/BareArrayModule/ElementBuffer.swift` |
 | 公開面の棚卸し、判断、証拠の所在 | `Maintanance/BareArrayModule/BareArrayAudit.md` |
 | 性能測定対象と継続測定構成 | `Benchmarks/`およびGitHub Actions（対象が存在する場合） |
 | 特定commit・環境での調査結果 | 対象調査またはreleaseの記録 |

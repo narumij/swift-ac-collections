@@ -76,34 +76,34 @@
     },
     {
       "kind": "group",
-      "title": "BareArray",
+      "title": "ElementBuffer",
       "directory": "bare-array",
       "contents": [
         {
           "kind": "chart",
           "title": "multidimensional sequential access",
           "tasks": [
-            "BareArray2D<Int> sequential read checksum",
-            "BareArray2D<Int> sequential write",
-            "BareArray3D<Int> sequential read checksum",
-            "BareArray3D<Int> sequential write"
+            "ElementBuffer2D<Int> element(at:) sequential read checksum",
+            "ElementBuffer2D<Int> setElement(_:at:) sequential write",
+            "ElementBuffer3D<Int> element(at:) sequential read checksum",
+            "ElementBuffer3D<Int> setElement(_:at:) sequential write"
           ]
         }
       ]
     },
     {
       "kind": "group",
-      "title": "OptionalArray",
+      "title": "OptionalElementBuffer",
       "directory": "optional-array",
       "contents": [
         {
           "kind": "chart",
           "title": "multidimensional memoization access",
           "tasks": [
-            "OptionalArray2D<Int> cold memoization checksum",
-            "OptionalArray2D<Int> warm memoization checksum",
-            "OptionalArray3D<Int> cold memoization checksum",
-            "OptionalArray3D<Int> warm memoization checksum"
+            "OptionalElementBuffer2D<Int> direct methods cold memoization checksum",
+            "OptionalElementBuffer2D<Int> direct methods warm memoization checksum",
+            "OptionalElementBuffer3D<Int> direct methods cold memoization checksum",
+            "OptionalElementBuffer3D<Int> direct methods warm memoization checksum"
           ]
         }
       ]

@@ -1,6 +1,6 @@
 {
   "kind": "group",
-  "title": "OptionalArray Direct Access Experiment",
+  "title": "OptionalElementBuffer Direct Access Experiment",
   "directory": "OptionalArrayDirectAccessExperiment",
   "contents": [
     {
@@ -8,7 +8,7 @@
       "title": "1D cold memoization checksum",
       "tasks": [
         "std::vector sentinel 1D cold memoization checksum",
-        "OptionalArray1D<Int> direct methods cold memoization checksum",
+        "OptionalElementBuffer<Int> direct methods cold memoization checksum",
         "Array<Int?> 1D cold memoization checksum"
       ]
     },
@@ -17,7 +17,7 @@
       "title": "1D warm memoization checksum",
       "tasks": [
         "std::vector sentinel 1D warm memoization checksum",
-        "OptionalArray1D<Int> direct methods warm memoization checksum",
+        "OptionalElementBuffer<Int> direct methods warm memoization checksum",
         "Array<Int?> 1D warm memoization checksum"
       ]
     },
@@ -26,7 +26,7 @@
       "title": "2D cold memoization checksum",
       "tasks": [
         "std::vector sentinel 2D cold memoization checksum",
-        "OptionalArray2D<Int> direct methods cold memoization checksum",
+        "OptionalElementBuffer2D<Int> direct methods cold memoization checksum",
         "Array<Array<Int?>> 2D cold memoization checksum"
       ]
     },
@@ -35,7 +35,7 @@
       "title": "2D warm memoization checksum",
       "tasks": [
         "std::vector sentinel 2D warm memoization checksum",
-        "OptionalArray2D<Int> direct methods warm memoization checksum",
+        "OptionalElementBuffer2D<Int> direct methods warm memoization checksum",
         "Array<Array<Int?>> 2D warm memoization checksum"
       ]
     },
@@ -44,7 +44,7 @@
       "title": "3D cold memoization checksum",
       "tasks": [
         "std::vector sentinel 3D cold memoization checksum",
-        "OptionalArray3D<Int> direct methods cold memoization checksum",
+        "OptionalElementBuffer3D<Int> direct methods cold memoization checksum",
         "Array<Array<Array<Int?>>> 3D cold memoization checksum"
       ]
     },
@@ -53,7 +53,7 @@
       "title": "3D warm memoization checksum",
       "tasks": [
         "std::vector sentinel 3D warm memoization checksum",
-        "OptionalArray3D<Int> direct methods warm memoization checksum",
+        "OptionalElementBuffer3D<Int> direct methods warm memoization checksum",
         "Array<Array<Array<Int?>>> 3D warm memoization checksum"
       ]
     }

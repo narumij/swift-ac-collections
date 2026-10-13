@@ -17,7 +17,8 @@
 - Swift 6.2の`IteratorProtocol`適合は行わず、外側は`while let`で反復する。
 
 Swift 6.4のLifetimesと`Span`を用いる実装は、Viewを省略できるかと到達可能な性能を調べた特殊経路として
-`Sources/PermutationModule/BorrowedNextPermutations.swift`へ無効化して退避する。
+`Sources/PermutationModule/BorrowedNextPermutations.swift`の`borrowedNextPermutations()`として、
+runtime-check付き通常経路と分離して提供する。
 
 これは絶対的な最適性の証明ではない。下記候補の中で、所有権、Swift 6.2互換性、失効検査、および性能を
 最もよく両立したという結論である。

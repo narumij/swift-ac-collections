@@ -7,145 +7,145 @@
 
     @Test func elementAtRejectsInvalidCoordinates1D() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray<Int>(repeating: 0, count: 3).element(at: -1)
+        _ = ElementBuffer<Int>(repeating: 0, count: 3).element(at: -1)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray<Int>(repeating: 0, count: 3).element(at: 3)
+        _ = ElementBuffer<Int>(repeating: 0, count: 3).element(at: 3)
       }
     }
 
     @Test func setElementRejectsInvalidCoordinates1D() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray<Int>(repeating: 0, count: 3).setElement(1, at: -1)
+        ElementBuffer<Int>(repeating: 0, count: 3).setElement(1, at: -1)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray<Int>(repeating: 0, count: 3).setElement(1, at: 3)
+        ElementBuffer<Int>(repeating: 0, count: 3).setElement(1, at: 3)
       }
     }
 
     @Test func elementAtRejectsInvalidCoordinates2D() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray2D<Int>(repeating: 0, width: 2, height: 3).element(at: -1, 0)
+        _ = ElementBuffer2D<Int>(repeating: 0, width: 2, height: 3).element(at: -1, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray2D<Int>(repeating: 0, width: 2, height: 3).element(at: 2, 0)
+        _ = ElementBuffer2D<Int>(repeating: 0, width: 2, height: 3).element(at: 2, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray2D<Int>(repeating: 0, width: 2, height: 3).element(at: 0, -1)
+        _ = ElementBuffer2D<Int>(repeating: 0, width: 2, height: 3).element(at: 0, -1)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray2D<Int>(repeating: 0, width: 2, height: 3).element(at: 0, 3)
+        _ = ElementBuffer2D<Int>(repeating: 0, width: 2, height: 3).element(at: 0, 3)
       }
     }
 
     @Test func setElementRejectsInvalidCoordinates2D() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray2D<Int>(repeating: 0, width: 2, height: 3).setElement(1, at: -1, 0)
+        ElementBuffer2D<Int>(repeating: 0, width: 2, height: 3).setElement(1, at: -1, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray2D<Int>(repeating: 0, width: 2, height: 3).setElement(1, at: 2, 0)
+        ElementBuffer2D<Int>(repeating: 0, width: 2, height: 3).setElement(1, at: 2, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray2D<Int>(repeating: 0, width: 2, height: 3).setElement(1, at: 0, -1)
+        ElementBuffer2D<Int>(repeating: 0, width: 2, height: 3).setElement(1, at: 0, -1)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray2D<Int>(repeating: 0, width: 2, height: 3).setElement(1, at: 0, 3)
+        ElementBuffer2D<Int>(repeating: 0, width: 2, height: 3).setElement(1, at: 0, 3)
       }
     }
 
     @Test func elementAtRejectsInvalidCoordinates3D() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).element(at: -1, 0, 0)
+        _ = ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).element(at: -1, 0, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).element(at: 2, 0, 0)
+        _ = ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).element(at: 2, 0, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).element(at: 0, -1, 0)
+        _ = ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).element(at: 0, -1, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).element(at: 0, 3, 0)
+        _ = ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).element(at: 0, 3, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).element(at: 0, 0, -1)
+        _ = ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).element(at: 0, 0, -1)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).element(at: 0, 0, 4)
+        _ = ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).element(at: 0, 0, 4)
       }
     }
 
     @Test func setElementRejectsInvalidCoordinates3D() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).setElement(1, at: -1, 0, 0)
+        ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).setElement(1, at: -1, 0, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).setElement(1, at: 2, 0, 0)
+        ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).setElement(1, at: 2, 0, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).setElement(1, at: 0, -1, 0)
+        ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).setElement(1, at: 0, -1, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).setElement(1, at: 0, 3, 0)
+        ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).setElement(1, at: 0, 3, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).setElement(1, at: 0, 0, -1)
+        ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).setElement(1, at: 0, 0, -1)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).setElement(1, at: 0, 0, 4)
+        ElementBuffer3D<Int>(repeating: 0, width: 2, height: 3, depth: 4).setElement(1, at: 0, 0, 4)
       }
     }
 
     @Test func elementAtRejectsInvalidCoordinates4D() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: -1, 0, 0, 0)
+        _ = ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: -1, 0, 0, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 2, 0, 0, 0)
+        _ = ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 2, 0, 0, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 0, -1, 0, 0)
+        _ = ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 0, -1, 0, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 0, 3, 0, 0)
+        _ = ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 0, 3, 0, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 0, 0, -1, 0)
+        _ = ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 0, 0, -1, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 0, 0, 4, 0)
+        _ = ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 0, 0, 4, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 0, 0, 0, -1)
+        _ = ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 0, 0, 0, -1)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        _ = BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 0, 0, 0, 5)
+        _ = ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).element(at: 0, 0, 0, 5)
       }
     }
 
     @Test func setElementRejectsInvalidCoordinates4D() async {
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: -1, 0, 0, 0)
+        ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: -1, 0, 0, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 2, 0, 0, 0)
+        ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 2, 0, 0, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, -1, 0, 0)
+        ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, -1, 0, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 3, 0, 0)
+        ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 3, 0, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 0, -1, 0)
+        ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 0, -1, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 0, 4, 0)
+        ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 0, 4, 0)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 0, 0, -1)
+        ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 0, 0, -1)
       }
       await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) {
-        BareArray4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 0, 0, 5)
+        ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 0, 0, 5)
       }
     }
   }

@@ -13,21 +13,21 @@
 
 | Task ID | 観測された詳細正本 | 観測先 | 注記 |
 | --- | --- | --- | --- |
-| `API-001` | `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` | 2026-10-12 |  |
-| `API-002` | `PUBLIC_API_NAMING_BALLOT.md` / `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` | 現行 |  |
-| `API-003` | `PUBLIC_API_NAMING_BALLOT.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
-| `API-004` | `PUBLIC_API_NAMING_SCORE_USER.md` / `PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
-| `API-005` | `PUBLIC_API_NAMING_SCORE_CODEX.md` / `PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
-| `API-006` | `PUBLIC_API_NAMING_SCORE_CLAUDE.md` / `PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
-| `API-007` | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `PUBLIC_API_NAMING_SCORE_USER.md` / `PUBLIC_API_NAMING_SCORE_CODEX.md` / `PUBLIC_API_NAMING_SCORE_CLAUDE.md` | 現行 |  |
+| `API-001` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` | 2026-10-12 |  |
+| `API-002` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_USER.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` | 現行 |  |
+| `API-003` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
+| `API-004` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_USER.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
+| `API-005` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CODEX.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
+| `API-006` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CLAUDE.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
+| `API-007` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_USER.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CODEX.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CLAUDE.md` | 現行 |  |
 | `ARRAY-001` | `StrictMemorySafetyReadiness.md` | 2026-10-12 |  |
-| `ARRAY-002` | `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
-| `ARRAY-003` | `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
+| `ARRAY-002` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
+| `ARRAY-003` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
 | `ARRAY-004` | `Archived/ARRAY_NAMING_RANKING_CODEX.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 | 旧ranking draftを独立採点方式で置換。 |
-| `ARRAY-005` | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
-| `ARRAY-006` | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
+| `ARRAY-005` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
+| `ARRAY-006` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
 | `ARRAY-007` | `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
-| `ARRAY-008` | `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
+| `ARRAY-008` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_USER.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
 | `BARE-001` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |
 | `BARE-002` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |
 | `BARE-003` | `BareArrayModule/BareArrayAudit.md` | 2026-10-11 |  |
@@ -116,7 +116,7 @@
 | `GRAPH-018` | `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md` | 2026-10-09 |  |
 | `GRAPH-019` | `Graph/TASK_GRAPH_LINT.md` | 2026-10-09 |  |
 | `HIST-001` | `RefactoringFromAtCoder2025/README.md` / `RefactoringFromAtCoder2025/EVIDENCE.md` | 現行 |  |
-| `OPS-001` | `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V3.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` | 現行 | V2時点で凍結。再開時に現行V3への更新要否を確認する。 |
+| `OPS-001` | `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V3.md` / `Archived/Orientation/PROGRESS_OVERVIEW_TEMPLATE.md` | 現行 | V2時点で凍結。完成済みRegistryを別projectへ移植する旧templateは履歴化。再開時に現行V3への更新要否を確認する。 |
 | `OPS-002` | `Orientation/CODEX_ORIENTATION.md`<br>`Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md`<br>`Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-11<br>2026-10-12<br>2026-10-09 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
 | `OPS-003` | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md`<br>`Orientation/AI_TECHNICAL_ORIENTATION.md`<br>`Orientation/TASK_DEPENDENCY_RUNTIME_STOP.md` | 2026-10-09<br>2026-10-11<br>2026-10-12 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
 | `OPS-004` | `MAINTENANCE_ROOT_ARCHIVE_AUDIT_2026-10-09.md`<br>`Orientation/CODEX_ORIENTATION.md` / `CLAUDE_TASK.md`<br>`Orientation/TASK_DECOMPOSITION_AND_REORGANIZATION.md` | 2026-10-09<br>2026-10-11<br>2026-10-12 | 表記差あり。変更理由またはID再利用を履歴確認する。 |

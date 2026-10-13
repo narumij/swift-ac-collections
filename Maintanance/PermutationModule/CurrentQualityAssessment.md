@@ -7,50 +7,38 @@
 証拠境界は`Sources/PermutationModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、現在評価の作業範囲、完了条件、結果を管理する。
 
-## Test as Specification原状回復確認（2026-10-13）
+## 現行runtime-check版の証拠同期（2026-10-13）
 
 現行Permutationには、証拠の役割が異なる三つの系統がある。
 
-- runtime-check View通常版は、手動列挙の通常runtime test 1件と失効Death Test 2件だけが現行契約を
-  直接確認する。同じscratch fileのSpan反復1件はPermutationの仕様testではない。旧COW版の番号付き38件は
-  `#if false`の履歴資料であり、現行適合へ流用しない。
+- runtime-check View通常版は、`Tests/PermutationTests/NextPermutations/`のG0〜G5とrepository内の
+  compiler fixtureによって、公開表面、列挙、View失効、Collection、所有・破棄、共存・再公開を分担する。
+  旧COW版の番号付き38件は`#if false`の履歴資料であり、現行適合へ流用しない。
 - borrowed Span版は番号付き5群のruntime仕様test 25件があり、2026-10-13の再実行でも全件成功した。
   借用寿命のcompile-pass／compile-fail結果は一時clientによる返却記録にあるが、repository内で再実行できる
   fixtureにはなっていないため、Test as Specification全体の完了とは扱わない。
 - AtCoder 2025互換modeは互換限定5件を持ち、通常版・borrowed版の証拠と相互に代用しない。
 
-この確認では新しい仕様testを追加しない。runtime-check View通常版の正式な再構成と、borrowed版の
-compiler-backed fixture化を別の残作業として維持する。
+`PERM-052`で旧38関数をG0〜G5または`RETIRED`へ一度ずつ分類し、`PERM-053`〜`PERM-056`で現行契約の
+Test as Specificationを実装した。ClaudeはDebug／Releaseで各段階を実行し、CodexはXcodeで累積44件、
+`AcCollections`再公開1件、compiler fixtureのcompile-pass 1件・期待するcompile-fail 3件を独立確認した。
+ユーザーから同候補commitのCI greenも報告された。
 
-### runtime-check View通常版の再構成着手
-
-`PERM-052`で現行source、Quality Profile、旧38件、現在有効なscratch testを照合し、
-`RuntimeCheckedPermutationTestPlan.md`へ後継仕様群の骨格を分離した。
-
-照合の結果、Quality Profileの`対象`節はruntime-check付き`Permutation` Viewを正しく記述する一方、
-後半のTest as Specificationと品質領域には、通常版が借用`Span`を返しcompilerが寿命違反を拒否するという
-旧実験の記述が残っている。現行sourceは`Span`を返さず、`GateKeeper` generationによって次の`next()`または
-owner破棄後のaccessをruntimeで拒否する。この不整合をtest実装で暗黙に埋めず、Profile訂正と後継test実装を
-別の受入境界として扱う。
-
-CodexはProfileの旧`Span`記述を現行runtime-check契約へ整合させた。新しい公開保証は追加せず、
-後継test台帳との照合後にこのProfile訂正を受け入れる。
-
-同日、Xcode build-for-testingが成功し、`swift test --disable-sandbox --filter PermutationTests`で
-XCTest 27件とSwift Testingの失効Death Test 2件が成功した。XCTest 27件のうち25件はborrowed版、
-2件はscratchであり、runtime-check通常版を直接確認する通常testは手動列挙1件だけという不足は変わらない。
+この証拠は、対象となった有限の入力、失効経路、破棄経路、公開表面、および構成について現行契約を
+Verificationしたものである。任意入力の数学的証明、一般Swift利用のValidation、borrowed版の寿命fixture、
+AtCoder 2025互換mode、または性能水準の判定を代替しない。
 
 ## 一時View契約への変更後の現在性
 
 通常版は旧`NextPermutationsSequence`のCOW・値セマンティクス契約から、単一bufferを破壊的に進める
 `NextPermutations`とruntime-check付き`Permutation` Viewの契約へ変更された。旧通常版testは`#if false`で
-退避され、新契約のTest as Specificationは再構築前である。Swift 6.4のLifetimesと`Span`を使う版は、
-View省略と性能を調べた特殊経路として無効化し、通常提供から分離した。
+退避され、新契約のTest as SpecificationはG0〜G5として再構築済みである。Swift 6.4のLifetimesと`Span`を使う版は、
+View省略と性能を活かす`borrowedNextPermutations()`として、runtime-check付き通常経路から分離している。
 
 この変更より前に記録した本書の「現行評価」、実行記録、およびPERM-040〜PERM-044の旧通常版に対する
-結論は、移行前実装の評価・調査記録として保持する。借用版の現在評価として流用せず、再評価が完了する
-まではQR-01、QR-03〜QR-06の旧判定を現在の適合主張に用いない。性能記録も、測定対象の実装と契約を
-区別して扱う。
+結論は、移行前実装の評価・調査記録として保持する。runtime-check版またはborrowed版の現在評価として
+流用せず、下記2026-10-11評価の旧COW固有の証拠を現在の適合主張に用いない。性能記録も、
+測定対象の実装と契約を区別して扱う。
 
 ## Task
 
@@ -149,7 +137,30 @@ PermutationModuleを最初の適用対象として、上位品質要求QR-01〜Q
 - 未達・未検証・判断待ち・実行不足が区別され、一判断一taskの規則で後続候補へ分離されている。
 - ユーザーが評価結果と後続候補をレビューできる。
 
-## 現行評価
+## 現行runtime-check版の評価差分（2026-10-13）
+
+2026-10-11の評価後に通常版の契約が旧COW型からruntime-check付き一時Viewへ変わったため、
+変更の影響を受ける品質主張を次のように更新する。ここにない性能測定、競技利用Validation、互換mode、
+一般Swift利用Validationの判定は、この同期だけでは更新しない。
+
+| 上位要求 | 品質主張 | 評価 | 現在の証拠 | 未確認範囲・残余リスク |
+| --- | --- | --- | --- | --- |
+| QR-01 正確性 | 現在順からの辞書順列挙、境界、重複、非Int Index、入力不変、終了、および有効なViewのCollection契約が成立する | 確認済み | G1列挙12件、G3 Collection 6件、範囲外Death Test 5件を含む現行通常版Test as Specification。Codexが累積44件の成功を独立確認 | 有限な例と構成に対するVerificationであり、任意入力の数学的証明ではない |
+| QR-03 安全性 | 単一bufferの所有、要素寿命、View失効、範囲拒否、および`~Copyable`境界が現行契約どおり成立する | 確認済み | G2のpositive control 1件・失効Death Test 9件、G4所有・破棄7件、G0 compiler fixtureのcompile-pass 1件・期待するcompile-fail 3件、strict memory safety適用下のbuild | `-Ounchecked`での保証、全並行実行、borrowed版のcompile-time寿命契約を証明しない |
+| QR-04 理解可能性 | 後続順列、手動反復、一時View、失効条件、Index、失敗条件、計算量、類似APIとの差を利用者が確認できる | 部分確認 | 公開source、Quality Profile、G0〜G5が契約入力として揃った | 独立した利用者向け本文と一般Swift利用者によるValidationは未実施 |
+| QR-05 利用可能性 | 通常版をSwiftPMと`AcCollections` facadeから利用し、swift-algorithmsと共存できる | 確認済み | G5共存2件、`AcCollections`再公開1件、公開表面runtime test 3件、compiler fixture 4経路。repository外の一時SwiftPM consumerで直接module import、facade、swift-algorithms 1.2.1との実呼出し、View即時消費、所有配列保存をbuild・実行 | 現行packageの公開productは`AcCollections`だけで、直接module importはtransitive visibilityの証拠。一般利用者の無誘導理解とAtCoder 2025互換modeは別証拠 |
+| QR-06 持続可能性 | 公開面、列挙、View失効、Collection、所有・破棄、共存・再公開を変更後に再確認できる | 部分確認 | 現行契約をG0〜G5、compiler fixture、benchmark経路へ分離し、Debug／Release、Codex独立検収、CI greenを取得 | PermutationのDocC生成を継続確認する自動経路とborrowed版compiler fixtureは未整備 |
+
+candidate `fc2aaf86`をlocal path dependencyにしたrepository外SwiftPM consumerをApple Swift 6.4、
+macOS 27.0.1、arm64、debugで実行した。`[0,0,1]`の3順列、`[2,1,3]`からの4後続、Viewの即時checksum、
+`Array(permutation)`で所有化した結果のowner破棄後の読出し、`AcCollections` facade、およびconsumerが直接
+解決したswift-algorithms 1.2.1との同一source内の呼び分けが成功した。一時fixtureは恒久化していない。
+
+## 移行前評価・調査記録（2026-10-11）
+
+以下は旧COW通常版を対象に完了した評価と、その後の性能・実装探索の記録である。現在も有効な
+測定基盤や判断保留を含むが、旧38件、値セマンティクス、COW、旧`Sendable`を根拠とする行は、
+現行runtime-check版の適合主張には用いない。
 
 評価日は2026-10-11。旧品質評価の判定は継承せず、現行source、Test as Specification、
 Package設定、benchmark、workflow、および今回の実行結果から評価した。

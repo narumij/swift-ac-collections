@@ -7,53 +7,53 @@
   final class BareArray_98_CloneTests: XCTestCase {
 
     func testBareArrayCloneCreatesIndependentStorage() {
-      var array = BareArray<Int>(repeating: 0, count: 3)
-      array[1] = 123
-      var clone = array.clone()
-      clone[1] = 999
+      let array = ElementBuffer<Int>(repeating: 0, count: 3)
+      array.setElement(123, at: 1)
+      let clone = array.clone()
+      clone.setElement(999, at: 1)
 
-      XCTAssertEqual(array[1], 123)
-      XCTAssertEqual(clone[1], 999)
+      XCTAssertEqual(array.element(at: 1), 123)
+      XCTAssertEqual(clone.element(at: 1), 999)
     }
 
     func testBareArray2DCloneCreatesIndependentStorage() {
-      var array = BareArray2D<Int>(repeating: 0, width: 2, height: 2)
-      array[1][0] = 123
-      var clone = array.clone()
-      clone[1][0] = 999
+      let array = ElementBuffer2D<Int>(repeating: 0, width: 2, height: 2)
+      array.setElement(123, at: 0, 1)
+      let clone = array.clone()
+      clone.setElement(999, at: 0, 1)
 
-      XCTAssertEqual(array[1][0], 123)
-      XCTAssertEqual(clone[1][0], 999)
+      XCTAssertEqual(array.element(at: 0, 1), 123)
+      XCTAssertEqual(clone.element(at: 0, 1), 999)
     }
 
     func testBareArray3DCloneCreatesIndependentStorage() {
-      var array = BareArray3D<Int>(repeating: 0, width: 2, height: 2, depth: 2)
-      array[1][0][1] = 123
-      var clone = array.clone()
-      clone[1][0][1] = 999
+      let array = ElementBuffer3D<Int>(repeating: 0, width: 2, height: 2, depth: 2)
+      array.setElement(123, at: 1, 0, 1)
+      let clone = array.clone()
+      clone.setElement(999, at: 1, 0, 1)
 
-      XCTAssertEqual(array[1][0][1], 123)
-      XCTAssertEqual(clone[1][0][1], 999)
+      XCTAssertEqual(array.element(at: 1, 0, 1), 123)
+      XCTAssertEqual(clone.element(at: 1, 0, 1), 999)
     }
 
     func testBareArray4DCloneCreatesIndependentStorage() {
-      var array = BareArray4D<Int>(repeating: 0, size0: 2, size1: 2, size2: 2, size3: 2)
-      array[1][1][1][1] = 123
-      var clone = array.clone()
-      clone[1][1][1][1] = 999
+      let array = ElementBuffer4D<Int>(repeating: 0, size0: 2, size1: 2, size2: 2, size3: 2)
+      array.setElement(123, at: 1, 1, 1, 1)
+      let clone = array.clone()
+      clone.setElement(999, at: 1, 1, 1, 1)
 
-      XCTAssertEqual(array[1][1][1][1], 123)
-      XCTAssertEqual(clone[1][1][1][1], 999)
+      XCTAssertEqual(array.element(at: 1, 1, 1, 1), 123)
+      XCTAssertEqual(clone.element(at: 1, 1, 1, 1), 999)
     }
 
     func testBareArrayCloneWithString() {
-      var array = BareArray<String>(repeating: "", count: 2)
-      array[0] = "abc"
-      var clone = array.clone()
-      clone[0] = "xyz"
+      let array = ElementBuffer<String>(repeating: "", count: 2)
+      array.setElement("abc", at: 0)
+      let clone = array.clone()
+      clone.setElement("xyz", at: 0)
 
-      XCTAssertEqual(array[0], "abc")
-      XCTAssertEqual(clone[0], "xyz")
+      XCTAssertEqual(array.element(at: 0), "abc")
+      XCTAssertEqual(clone.element(at: 0), "xyz")
     }
 
     func testBareArray3DCloneDeinitializesEveryReferenceElement() {
@@ -65,7 +65,7 @@
 
       var deinitCount = 0
       do {
-        let array = BareArray3D<Box>(width: 2, height: 2, depth: 2) {
+        let array = ElementBuffer3D<Box>(width: 2, height: 2, depth: 2) {
           Box { deinitCount += 1 }
         }
         let clone = array.clone()
@@ -88,9 +88,9 @@
       var deinitCount = 0
 
       do {
-        let clone: BareArray<Box>
+        let clone: ElementBuffer<Box>
         do {
-          let array = BareArray<Box>(count: 3) { Box { deinitCount += 1 } }
+          let array = ElementBuffer<Box>(count: 3) { Box { deinitCount += 1 } }
           clone = array.clone()
           withExtendedLifetime(array) {}
         }
@@ -100,9 +100,9 @@
       XCTAssertEqual(deinitCount, 3)
 
       do {
-        let clone: BareArray2D<Box>
+        let clone: ElementBuffer2D<Box>
         do {
-          let array = BareArray2D<Box>(width: 2, height: 3) { Box { deinitCount += 1 } }
+          let array = ElementBuffer2D<Box>(width: 2, height: 3) { Box { deinitCount += 1 } }
           clone = array.clone()
           withExtendedLifetime(array) {}
         }
@@ -112,9 +112,9 @@
       XCTAssertEqual(deinitCount, 9)
 
       do {
-        let clone: BareArray4D<Box>
+        let clone: ElementBuffer4D<Box>
         do {
-          let array = BareArray4D<Box>(size0: 2, size1: 2, size2: 2, size3: 2) {
+          let array = ElementBuffer4D<Box>(size0: 2, size1: 2, size2: 2, size3: 2) {
             Box { deinitCount += 1 }
           }
           clone = array.clone()

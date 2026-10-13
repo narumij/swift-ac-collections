@@ -232,3 +232,199 @@ are returned evidence; Codex performs acceptance and Registry updates.
 - user-level SwiftPM cacheがread-onlyというenvironment warningは出たが、buildとtest結果には影響しなかった。
 
 この成功は現行scratch checksの基準点であり、後継Test as Specificationが揃ったことを意味しない。
+
+## PERM-053 return（2026-10-13 Claude）
+
+### Changed files
+
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_1_EnumerationTests.swift`（G1、XCTest 12件）
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_3_PermutationCollectionTests.swift`（G3、XCTest 6件）
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_99_DeathTests.swift`（G3、Swift Testing 5件）
+- 変更: `Tests/PermutationTests/EtcTests.swift`から`testRuntimeCheckedPermutationsCurrentManualIteration`だけを削除
+  （6通り・合計36の確認は、G1の`testFromAscendingOrderEnumeratesAll`が並び順まで含めて包含する）。
+  Spanのscratch testとG2のscratch Death Test 2件は変更していない。
+
+### Coverage
+
+- G1: ledgerの11行（two elements、ascending、non-first、descending、all equal、empty、single、duplicates、
+  Range＋nonzero-start Slice、non-`Int` indices、source unchanged）に、successor planの「終了後の`nil`継続」
+  （`testReturnsNilRepeatedlyAfterCompletion`）を加えた12件。各Viewは次の`next()`前に`Array(_:)`へ写すhelperで集め、
+  View自体は保持しない。
+- G3: Array、Slice、non-`Int` indexed sourceでの0始まり`Int`添字、`startIndex`／`endIndex`／`count`、反復、
+  先頭・末尾の有効な読み取り、空View。範囲外は`-1`、`endIndex`、`endIndex + 1`、`Int.min`、`Int.max`の5件を
+  `expectedSwiftTrapSignal`に完全一致させるDeath Test。
+- 新testは`#if !COMPATIBLE_ATCODER_2025`（Death Testは`#if DEATH_TEST && !COMPATIBLE_ATCODER_2025`）で囲んだ。
+  互換modeの`nextPermutations()`は別APIのため。
+
+### Validation（macOS、Swift 6.4）
+
+- `swift test -c debug --filter 'PermutationTests.NextPermutations_|PermutationTests.EtcTests'`:
+  XCTest 19件（G1 12、G3 6、EtcTestsのSpan scratch 1）0 failures、Swift Testing 5件（Death Test）passed。
+- 同`-c release`: 同じ件数で0 failures／passed。
+- 互換modeのbuildは実行していない。
+
+### Not done
+
+G0、G2、G4、G5、production source、Registry、Quality Profileには触れていない。
+
+## PERM-053 acceptance（2026-10-13 Codex）
+
+- G1、G3、範囲外Death Testを、確定台帳と現行runtime-check契約へ照合して受け入れた。
+- `EtcTests.swift`から削除された手動列挙scratchは、G1の列挙順testに包含されている。Span scratchとG2の
+  失効scratch 2件が維持されていることも確認した。
+- Xcodeの現行scheme／test planで、追加23件と残存Span scratch 1件の計24件をCodexが独立再実行し、
+  24件成功、失敗・skip・not run各0件を確認した。
+- CLIによる同じ再実行はXcode環境のsandboxがmanifest起動を拒否したため成立しなかった。これはtest失敗の
+  証拠ではなく、Claudeが記録したDebug／Release CLI各24件成功を置き換えるものでもない。
+- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+
+これにより`PERM-053`は完了とする。G2、G4、G0／G5は、それぞれ独立した後続taskとして残る。
+
+## PERM-054 return（2026-10-13 Claude）
+
+### Changed files
+
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_99_ViewInvalidationDeathTests.swift`
+  （G2、Swift Testing 10件: positive control 1、Death Test 9）
+- 変更: `Tests/PermutationTests/EtcTests.swift`から、G2のscratch Death Test 2件（`RuntimeCheckedPermutationDeathTests`の
+  `advancingInvalidatesPreviousPermutation`、`destroyingOwnerInvalidatesPermutation`）を含む`#if DEATH_TEST`blockを削除。
+  どちらも`.failure`の広い判定だったが、新fileで`expectedSwiftTrapSignal`への完全一致として包含した。
+  Spanのscratch testは変更していない。
+
+### Coverage
+
+| 要求 | test |
+|---|---|
+| 新しいViewを返す`next()`の後に失効 | `startIndex`／`endIndex`／subscriptの3件 |
+| `nil`を返す終端の`next()`の後に失効 | subscript（`[7]`）、`startIndex`（`[2, 1]`）の2件。終端が`nil`であることを`precondition`で前提確認 |
+| ownerの破棄後に持ち出したViewが失効 | `startIndex`／`endIndex`／subscriptの3件（関数からViewを返してownerを破棄） |
+| 同じViewのcopyが同じ世代で失効 | `copyOfViewTrapsAfterNext` |
+| 失効前は読める（positive control） | `currentViewAndItsCopyAreReadableBeforeAdvancing` |
+
+全てのDeath Testは、要素storageへ触れる前にGateKeeperを検査する公開アクセス（`startIndex`、`endIndex`、subscript）だけを使う。
+
+### Validation（macOS、Swift 6.4）
+
+- `swift test -c debug --filter 'PermutationTests.NextPermutations_'`: XCTest 18件（G1 12、G3 6）0 failures、
+  Swift Testing 15件（G3範囲外5、G2 10）passed。
+- 同`-c release`: 同じ件数で0 failures／passed。
+- 互換modeのbuildは実行していない。
+
+### Not done
+
+G0、G1、G3、G4、G5、production source、Registry、Quality Profileには触れていない。
+
+## PERM-054 acceptance（2026-10-13 Codex）
+
+- G2のpositive control 1件とDeath Test 9件を、確定したruntime view失効契約へ照合して受け入れた。
+- 新しいViewを返す`next()`、終端で`nil`を返す`next()`、owner破棄、View copyについて、
+  `startIndex`、`endIndex`、subscriptからGateKeeperが失効を検出することを確認した。
+- `EtcTests.swift`から削除されたscratch 2件は、広い`.failure`から正確な`expectedSwiftTrapSignal`契約へ
+  昇格されている。無関係なSpan scratchは維持されている。
+- Xcodeの現行scheme／test planで、受入済みG1・G3・範囲外Death Testと新G2を合わせた33件を
+  Codexが独立再実行し、33件成功、失敗・skip・not run各0件を確認した。
+- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+
+これにより`PERM-054`は完了とする。G4とG0／G5は、それぞれ独立した後続taskとして残る。
+
+## PERM-055 return（2026-10-13 Claude）
+
+### Changed files
+
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_98_OwnershipTests.swift`（G4、XCTest 7件）。
+  test専用のprobe（`Probe`、`ReleaseCounter`）をfile内に置いた。production sourceへの観測用追加はない。
+
+### Coverage
+
+| 要求 | test | 寿命の観測 |
+|---|---|---|
+| 元からの独立 | `testLaterSourceChangesDoNotAlterTheCurrentPermutation` | 対象外（値の比較だけ） |
+| 一度も進めないowner | `testNeverStartedOwnerReleasesEachElementOnce` | 破棄後の解放数3 |
+| 途中まで進めたowner | `testPartiallyConsumedOwnerReleasesEachElementOnce` | 進行中0、破棄後3 |
+| 最後まで進めたowner | `testFullyConsumedOwnerReleasesEachElementOnce` | 6通り完走時0、破棄後3 |
+| 空のowner | `testEmptyOwnerIsDestroyedSafely` | 解放対象なし。開始済み／未開始の両方を破棄 |
+| 奇数長の後半反転 | `testOddLengthSuffixReversalPreservesIdentityAndLifetime` | `[1, 4, 3, 2]`→`[2, 1, 3, 4]`（長さ3の反転）で要素が元のobjectと同一（`===`）かつ重複なし。進行中0、破棄後4 |
+| 失効Viewが要素storageを生かさない | `testEscapedInvalidViewDoesNotKeepElementStorageAlive` | 関数から持ち出したViewが生きている間に解放数3。Viewにはアクセスしない |
+
+GateKeeperがViewにより生かされることは、production側に観測点を足さない限り直接は数えられないため、
+「要素storageは生かさない」側だけを検証した（要求は「may keep alive」で、生存の断定は求めていない）。
+
+### Validation（macOS、Swift 6.4）
+
+- `swift test -c debug --filter 'PermutationTests.NextPermutations_'`: XCTest 25件（G1 12、G3 6、G4 7）0 failures、
+  Swift Testing 15件（G3範囲外5、G2 10）passed。
+- 同`-c release`: 同じ件数で0 failures／passed。G4の解放数の検査もReleaseで成立した。
+- 互換modeのbuildは実行していない。
+
+### Not done
+
+G0、G1、G2、G3、G5、production source、Registry、Quality Profileには触れていない。
+
+## PERM-055 acceptance（2026-10-13 Codex）
+
+- G4の内部仕様test 7件を、現行owned bufferの所有・破棄境界へ照合して受け入れた。
+- source変更からの独立、未開始・途中・完走・空の各破棄経路、奇数長suffix反転におけるobject identityと
+  exactly-once解放、escaped invalid Viewがelement storageを延命しないことを確認した。
+- GateKeeper自体の寿命はproductionへ観測点を足さず、契約が要求するstorage側だけを観測している。
+  失効ViewへアクセスしないことでG2との責務も分離されている。
+- Xcodeの現行scheme／test planで、受入済みG1・G2・G3と新G4を合わせた40件をCodexが独立再実行し、
+  40件成功、失敗・skip・not run各0件を確認した。
+- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+
+これにより`PERM-055`は完了とする。G0／G5は独立した最後の後続taskとして残る。
+
+## PERM-056 return（2026-10-13 Claude）
+
+### Changed files
+
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_0_PublicSurfaceTests.swift`（G0、XCTest 2件）
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_4_CoexistenceTests.swift`（G5、XCTest 2件）
+- 追加: `Tests/AcCollectionsTests/AcCollections_NextPermutationsReexportTests.swift`（G5、XCTest 1件）。
+  `PermutationTests` targetは`AcCollections`に依存しておらず`Package.swift`は変更できないため、
+  `import AcCollections`だけで使えることの検査は、`PermutationModule`を直接importしない`AcCollectionsTests`側に置いた。
+- 追加: `Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`（compile fixture package、4 target）と
+  `Utilities/Maintenance/VerifyPermutationCompilerDiagnostics.sh`。既存の`VerifyBareArrayCompilerDiagnostics.sh`と
+  同じ形式（fixture package＋`.build/`配下のscratch path＋期待diagnosticの照合）にした。
+
+### Coverage
+
+- G0 runtime: 公開型名`NextPermutations<Element>`と`NextPermutations<Element>.Permutation`、Array、Range、
+  startIndexが0でないSlice、`String`（Int以外のIndex）からの構築。
+- G0 compiler（fixture）:
+  - compile-pass: `PermutationSurfaceValid`（公開入口から作り、手動`next()`で各Viewを使い終えてから進める）
+  - compile-fail: `PermutationDirectInit` → `'NextPermutations<Value>' initializer is inaccessible due to 'internal' protection level`
+  - compile-fail: `PermutationCopy` → `'original' used after consume`（`~Copyable`）
+  - compile-fail: `PermutationSequence` → `for-in loop requires 'NextPermutations<Int>' to conform to 'Sequence'`
+- G5: swift-algorithmsとの同時importで修飾なしに解決、`nextPermutations()`は後続だけ・`permutations()`は全6通り、
+  `import AcCollections`だけで`NextPermutations`と`.Permutation`が使えること。互換modeは対象外（`#if !COMPATIBLE_ATCODER_2025`）。
+
+### Validation（macOS、Swift 6.4）
+
+- `swift test -c debug --filter 'PermutationTests.NextPermutations_|AcCollectionsTests.AcCollections_NextPermutationsReexportTests'`:
+  PermutationTestsのXCTest 29件（G0 2、G1 12、G3 6、G4 7、G5 2）0 failures、Swift Testing 15件passed。
+- 同`-c release`: 同じ件数で0 failures／passed。
+- `swift test --filter AcCollectionsTests.AcCollections_NextPermutationsReexportTests`: 1件passed（実行を個別に確認）。
+- `Utilities/Maintenance/VerifyPermutationCompilerDiagnostics.sh`:
+  `verified 1 NextPermutations compile-pass and 3 compile-fail diagnostics (direct init, copy, Sequence)`。
+  初回はANSI色付きの出力に照合patternが一致せず失敗したため、照合前に色codeを除去する形に直した。
+- 互換modeのbuildは実行していない。
+
+### Not done
+
+G1〜G4、production source、Package.swift、CI、Registry、Quality Profileには触れていない。
+compile fixture scriptはCIへ登録していない。
+
+## PERM-056 acceptance（2026-10-13 Codex）
+
+- G0のruntime 2件、G5のPermutationModule共存2件、AcCollections再公開1件、およびG0のcompiler fixture
+  4経路を、確定した公開表面とexposure境界へ照合して受け入れた。
+- Xcodeの現行scheme／test planでG0〜G5のPermutationTests 44件をCodexが独立再実行し、44件成功、
+  失敗・skip・not run各0件を確認した。
+- `swift test --disable-sandbox --filter AcCollectionsTests.AcCollections_NextPermutationsReexportTests`を
+  Codexが再実行し、`import AcCollections`だけを使う再公開test 1件の成功を確認した。
+- `Utilities/Maintenance/VerifyPermutationCompilerDiagnostics.sh`をCodexが再実行し、公開入口のcompile-pass
+  1件と、直接初期化、owner copy、`Sequence`利用のcompile-fail各1件が期待diagnosticで失敗することを確認した。
+- compiler fixtureはrepository内で再実行可能だが、CIへの登録は本taskの範囲外として残っている。
+- `Maintanance/Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+
+これにより`PERM-056`は完了し、runtime-check版PermutationのG0〜G5 Test as Specification再構成は一巡した。

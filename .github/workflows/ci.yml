@@ -2,6 +2,16 @@ name: CI
 
 on:
   workflow_dispatch:
+    inputs:
+      performance_base_ref:
+        description: Performance comparison base (branch, tag, or commit SHA)
+        required: true
+        default: main
+        type: string
+      performance_head_ref:
+        description: Performance comparison head (empty uses the selected workflow branch)
+        required: false
+        type: string
   push:
     branches:
       - compatible/AtCoder/2025
@@ -12,6 +22,7 @@ on:
 
 jobs:
   documentation:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -60,7 +71,74 @@ jobs:
           path: documentation-diagnostics
           if-no-files-found: warn
 
+  public-target-documentation:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - AcCollections
+          - RedBlackTreeModule
+          - PermutationModule
+          - OptionalArrayModule
+          - BareArrayModule
+    env:
+      DOCUMENTATION_TARGET: ${{ matrix.target }}
+      DOCUMENTATION_OUTPUT: .build/public-target-documentation/${{ matrix.target }}
+      DOCUMENTATION_DIAGNOSTICS: documentation-diagnostics/${{ matrix.target }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+
+      - name: Record documentation environment
+        shell: bash
+        run: |
+          mkdir -p "$DOCUMENTATION_DIAGNOSTICS"
+
+          {
+            swift --version
+            uname -a
+          } | tee "$DOCUMENTATION_DIAGNOSTICS/environment.txt"
+
+      - name: Build documentation for ${{ matrix.target }}
+        shell: bash
+        run: |
+          mkdir -p "$DOCUMENTATION_OUTPUT" "$DOCUMENTATION_DIAGNOSTICS"
+
+          printf '%s\n' \
+            "swift package -c release --allow-writing-to-directory $DOCUMENTATION_OUTPUT generate-documentation --target $DOCUMENTATION_TARGET --output-path $DOCUMENTATION_OUTPUT" \
+            | tee "$DOCUMENTATION_DIAGNOSTICS/command.txt"
+
+          set +e
+          set -o pipefail
+          swift package -c release \
+            --allow-writing-to-directory "$DOCUMENTATION_OUTPUT" \
+            generate-documentation \
+            --target "$DOCUMENTATION_TARGET" \
+            --output-path "$DOCUMENTATION_OUTPUT" \
+            2>&1 | tee "$DOCUMENTATION_DIAGNOSTICS/full-console.log"
+          status=${PIPESTATUS[0]}
+          printf '%s\n' "$status" \
+            | tee "$DOCUMENTATION_DIAGNOSTICS/exit-status.txt"
+          exit "$status"
+
+      - name: Upload ${{ matrix.target }} documentation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-target-documentation-${{ matrix.target }}
+          path: documentation-diagnostics/${{ matrix.target }}
+          if-no-files-found: warn
+
   debug:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-24.04
 
     steps:
@@ -73,6 +151,7 @@ jobs:
         run: swift test -c debug
 
   release:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-24.04
 
     steps:
@@ -85,20 +164,23 @@ jobs:
         run: swift test -c release
 
   performance:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
+    env:
+      PERFORMANCE_BASE_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || inputs.performance_base_ref }}
+      PERFORMANCE_HEAD_REF: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.performance_head_ref || github.sha }}
 
     steps:
       - name: Checkout base
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.base.sha }}
+          ref: ${{ env.PERFORMANCE_BASE_REF }}
           path: base
 
       - name: Checkout HEAD
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ env.PERFORMANCE_HEAD_REF }}
           path: head
 
       - name: Set up Swift
@@ -109,6 +191,13 @@ jobs:
         run: |
           mkdir -p head/benchmark-results
           lscpu | tee head/benchmark-results/cpu.txt
+
+          {
+            printf 'requested base ref: %s\n' "$PERFORMANCE_BASE_REF"
+            printf 'resolved base SHA: %s\n' "$(git -C base rev-parse HEAD)"
+            printf 'requested head ref: %s\n' "$PERFORMANCE_HEAD_REF"
+            printf 'resolved head SHA: %s\n' "$(git -C head rev-parse HEAD)"
+          } | tee head/benchmark-results/comparison-refs.txt
 
       - name: Run current benchmarks
         working-directory: head/Benchmarks
@@ -133,11 +222,35 @@ jobs:
       - name: Run baseline benchmarks
         working-directory: base/Benchmarks
         run: |
+          set -euo pipefail
           mkdir -p ../benchmark-results
 
           # CI.json は PR 側の定義を両方の測定に使用する
           cp ../../head/Benchmarks/Libraries/CI.json ./Libraries/CI.json
           cp ../../head/Benchmarks/Libraries/CI-Small.json ./Libraries/CI-Small.json
+
+          # 公開型のrenameをまたぐ比較では、baselineが知る旧task名で測定し、
+          # 結果だけをHEAD側の名称へ正規化して同じworkloadとして比較する。
+          # baselineがrenameを含むようになれば、各分岐は自動的にno-opになる。
+          OPTIONAL_ARRAY_RENAMED=1
+          if ! grep -qF 'title: "OptionalElementBuffer2D<Int>' \
+            Sources/Benchmarks/OptionalArrayBenchmarks.swift; then
+            OPTIONAL_ARRAY_RENAMED=0
+            sed -i \
+              -e 's/OptionalElementBuffer2D<Int>/OptionalArray2D<Int>/g' \
+              -e 's/OptionalElementBuffer3D<Int>/OptionalArray3D<Int>/g' \
+              ./Libraries/CI.json
+          fi
+
+          BARE_ARRAY_RENAMED=1
+          if ! grep -qF 'title: "ElementBuffer2D<Int>' \
+            Sources/Benchmarks/BareArrayBenchmarks.swift; then
+            BARE_ARRAY_RENAMED=0
+            sed -i \
+              -e 's/ElementBuffer2D<Int>/BareArray2D<Int>/g' \
+              -e 's/ElementBuffer3D<Int>/BareArray3D<Int>/g' \
+              ./Libraries/CI.json
+          fi
 
           swift run -c release benchmark library run \
             --library ./Libraries/CI.json \
@@ -153,6 +266,20 @@ jobs:
             --max-size 10 \
             --cycles 1 \
             --mode append
+
+          if [ "$BARE_ARRAY_RENAMED" -eq 0 ]; then
+            sed -i \
+              -e 's/BareArray2D<Int>/ElementBuffer2D<Int>/g' \
+              -e 's/BareArray3D<Int>/ElementBuffer3D<Int>/g' \
+              ../benchmark-results/base.json
+          fi
+
+          if [ "$OPTIONAL_ARRAY_RENAMED" -eq 0 ]; then
+            sed -i \
+              -e 's/OptionalArray2D<Int>/OptionalElementBuffer2D<Int>/g' \
+              -e 's/OptionalArray3D<Int>/OptionalElementBuffer3D<Int>/g' \
+              ../benchmark-results/base.json
+          fi
 
       - name: Check performance regression
         working-directory: head/Benchmarks
@@ -236,6 +363,7 @@ jobs:
           if-no-files-found: warn
 
   address-sanitizer:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-24.04
 
     steps:

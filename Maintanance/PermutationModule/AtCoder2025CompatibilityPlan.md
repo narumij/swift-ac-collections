@@ -2,6 +2,10 @@
 
 最終更新: 2026-10-09 / Codex
 
+本書の通常版に関する記述は、互換modeを構成した時点の旧COW実装を基準とする履歴である。互換modeの
+実装・検証記録は維持するが、現行通常版の契約は`Sources/PermutationModule/Documentation/Quality-Profile.md`、
+検証状態は`CurrentQualityAssessment.md`を参照する。
+
 ## 実装タスク境界
 
 最初の「現行契約の基準固定」は互換modeから独立した先頭taskとし、その成果を後続するすべての

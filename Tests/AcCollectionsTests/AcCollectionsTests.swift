@@ -89,19 +89,22 @@ final class AcCollectionsTests: XCTestCase {
     }
   #endif
 
-  func test_importAcCollections_exposesOptionalArray() {
-    var array = OptionalArray1D<Int>(capacity: 2)
-    array[1] = 7
-    XCTAssertEqual(array[1], 7)
-  }
+  #if ENABLE_OPTIONAL_ELEMENT_BUFFER
+    func test_importAcCollections_exposesOptionalElementBuffer() {
+      let array = OptionalElementBuffer<Int>(capacity: 2)
+      array.setElement(7, at: 1)
+      XCTAssertEqual(array.element(at: 1), 7)
+    }
+  #endif
 
-  func test_importAcCollections_exposesBareArray() {
-    let array = BareArray(repeating: 0, count: 2)
+  @available(macOS 27.0, *)
+  func test_importAcCollections_exposesElementBuffer() {
+    var array = ElementBuffer(repeating: 0, count: 2)
     array.setElement(7, at: 1)
     XCTAssertEqual(array.element(at: 1), 7)
 
-    let reference = array.reference(at: 1)
-    reference.pointee = 8
+    var reference = array.reference(at: 1)
+    reference.value = 8
     XCTAssertEqual(array.element(at: 1), 8)
   }
 }

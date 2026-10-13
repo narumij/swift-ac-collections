@@ -275,3 +275,11 @@ activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
 - Claude-specific communication, authority, and handoff rules remain in
   `CLAUDE.md` and `Maintanance/CLAUDE_TASK.md`; do not duplicate or override them
   here.
+
+## Xcode agent boundary
+
+When Codex is running inside Xcode, do not start internal sub-agents or use background agent delegation. Xcode conversations do not provide a reliable handoff and return path for those agents, and attempting to use them may leave the Prime Codex conversation waiting without a usable response.
+
+To delegate work to another Codex in Xcode, Prime Codex must write a bounded assignment to `Maintanance/WORKER_TASK.md`. The user then opens a separate Xcode Codex conversation and directs it to read that file. Worker Codex performs only the recorded assignment and writes its result to the designated return section. Prime Codex independently reviews the returned evidence and decides whether to accept and integrate the work.
+
+This workflow is not fully autonomous because the user must open the separate Xcode conversation. Treat that step as an environment-imposed transport operation, not as delegation of task decomposition, evidence transfer, acceptance, or task management to the user. Do not treat an internal sub-agent invocation as a substitute for this file-based handoff.

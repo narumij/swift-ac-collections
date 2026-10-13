@@ -9,6 +9,22 @@ benchmark自体の試験方法やtest suiteの運用は扱わない。taskの状
 `PROGRESS_OVERVIEW.md`のTask Registry、実際のworkflowとlibrary構成は`.github/workflows/`と
 `Benchmarks/Libraries/`がそれぞれ正本である。
 
+## 手動実行
+
+GitHubのActionsから`CI`を選び、`Run workflow`で次を指定すると、pushやPR更新を伴わずに
+performance比較を実行できる。
+
+手動実行はperformance比較専用である。documentation、Debug・Release test、および
+Address Sanitizerは起動せず、通常のPR検証で実行する。手動performance調査のたびに
+通常検証の一部だけを重複実行しない。
+
+- `Use workflow from`: workflowを実行するbranch。比較先を空欄にした場合は、このbranchのcommitを使う。
+- `performance_base_ref`: 比較元のbranch、tag、またはcommit SHA。既定値は`main`。
+- `performance_head_ref`: 比較先のbranch、tag、またはcommit SHA。空欄なら選択したworkflow branchを使う。
+
+PRで起動した場合は入力値を使わず、従来どおりPRのbase SHAとhead SHAを比較する。
+再現調査ではbranch名の移動を避けるため、可能なら両方をcommit SHAで固定する。
+
 ## 基本境界
 
 base / current比較では、比較に使うworkload名と、そのworkloadを実装するbenchmark harnessが
@@ -53,11 +69,11 @@ PR #191でも両moduleのbase / current測定は成立したが、job全体は�
 - performance runnerの揺れと構成不成立を混同しない。測定値の調査が必要な場合は、Archivedの
   `Canonical/PERFORMANCE_REGRESSION_BISECTION.md`を参照する。
 
-## 今回への適用
+## OptionalArray direct access workloadの適用結果
 
 OptionalArrayのdirect access workloadはcommit `bf0259a0`で実装、専用library、暫定結果、chartまでを
-独立して保存した。通常CI libraryへの登録は同commitを含むmerge commitがbaselineへ到達した後、
-別taskとして実施する。外部性能アセスメントの正式化とは別の受入境界を維持する。
+独立して保存した。同commitを含むPR #189のmerge後、PR #190で通常CI libraryへの登録だけを実施し、
+performance jobのgreenを確認した。外部性能アセスメントの正式化とは別の受入境界を維持する。
 
 ## Permutation実装方式の切替
 
@@ -78,3 +94,35 @@ benchmark sourceには残すが、通常CIの合否対象には含めない。
 Swift 6.4のborrowed版はruntime-check版の回帰baselineにしない。lifetimeによって安全性を表現し、要素ごとの
 世代確認を必要としない別の性能契約だからである。borrowed版とC++の比較はmacOS品質評価の独立系列として
 保存し、Linux CIへ異なる契約を混在させない。
+
+この分離を反映したPR #193では、PR #191のmerge commitをbaseとしてperformance jobを実行し、batched
+subscript 2件とend-to-endを含む新しい比較契約でall greenを確認した。以後の赤は、borrowed版からの方式差では
+なく、runtime-check版baselineに対する回帰として扱う。
+
+## benchmark task名のrename境界
+
+2026-10-13、BareArray／OptionalArrayの公開型rename後、HEADの`CI.json`をrename前のbaselineへ
+そのまま渡したため、baseline build成功後に新しい8 task名を解決できず`unknown tasks`で停止した。
+これは性能回帰ではなく、同じworkloadを指すtask名の世代差による比較構成不成立である。
+
+PRおよびrelease candidateのperformance workflowでは、比較対象のbenchmark sourceが新しい型名を
+まだ持たない場合だけ、HEADのlibrary定義を旧task名へ変換してbaselineを測定する。測定後、baselineの
+結果JSONにある旧名を新名へ戻し、HEAD結果と同じworkload名で比較する。BareArrayとOptionalArrayは
+個別に検出し、rename commitの途中をbaselineにした場合も一方だけを変換する。
+
+この互換処理はbenchmark実装や測定値をbaselineへ移植しない。baselineがrenameを含むようになれば
+自動的にno-opとなる。今後のtask renameでも、旧実装と新実装が同じworkloadであることを先に確認し、
+library入力と結果名の両方を対応付ける。意味や測定境界が変わる場合はrename互換として扱わない。
+
+task名を変更する場合は、renameを先にmergeしてから互換処理を足さない。旧名と新名を対応付ける
+workflow変更を先にmergeし、その時点のperformance CIがgreenであることを確認してからrenameをmergeする。
+rename後もcurrent測定、baseline測定、比較まで完走してgreenになることを確認する。各段階の直前のgreenを
+次段階の開始条件とし、移行途中の赤を後続変更で回収する計画にしない。
+
+また、libraryのtask名は公開型名だけで組み立てず、benchmark sourceへ登録された完全なtitleと照合する。
+今回の復旧では型renameだけを追い、以前から残っていた旧い総称名を見落としたため、current側でも
+`unknown tasks`になった。rename互換の検証では、currentの完全なtask名、旧baselineへ変換した完全なtask名、
+結果を正規化した完全なtask名の三点を確認する。
+
+commit `0330e7b5`のPR CI run `38390402753`では、current測定、rename前baselineの測定、結果名の正規化、
+性能比較まで完走し、performanceを含む全jobのgreenを確認した。

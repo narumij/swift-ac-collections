@@ -24,7 +24,6 @@
 | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` | Claudeによる独立したマネジメント評価の記録 |
 | `CLAUDE_OBSERVATIONS.md` | Claude本人の任意の観察を本人の声のまま保持する場所 |
 | `CODEX_OBSERVATIONS.md` | Codex本人の任意の観察を本人の声のまま保持する場所 |
-| `PROGRESS_OVERVIEW_TEMPLATE.md` | 他projectへのtask運用移植を初めて試みた痕跡として現在位置を保持する |
 | `User/CONCEPT_DEFINITION.md` | ユーザーが定める製品目的の最上位正本であり、ユーザー専有の現在位置と権限境界を保持する |
 
 ## 文書ランクと変更権限
@@ -86,8 +85,8 @@ remote到達を確認した。release後の記録用branchとして、同tagか�
 実装を先にmergeした後、通常CI libraryへの登録だけを独立PRで合流した。登録PR #190でperformance jobの
 greenを確認し、PR #191でも両moduleのbase / current測定自体は成立した。PR #191のjob全体はPermutationの
 borrowed版からruntime-check版への方式切替を回帰として検出して赤となったため、同PRのmerge commitを
-方式切替後のbaselineとした。C++とのmacOS外部assessmentは後続とし、性能比の受入判断は暫定実測後まで
-発生させない。
+方式切替後のbaselineとした。PR #193では方式差を通常回帰から分離した比較契約でperformance jobの
+all greenを確認した。C++とのmacOS外部assessmentは後続とし、性能比の受入判断は暫定実測後まで発生させない。
 
 **凍結中の中間ゴール（前任conversationの残存記録）:**
 
@@ -115,6 +114,8 @@ borrowed版からruntime-check版への方式切替を回帰として検出し�
   再評価し、BareArrayを1.0として採用できるか判断可能な状態にする。
 - RedBlackTreeのユーザードキュメント作業後、汎用基盤ライブラリの1.0として採用できるか判断可能な
   状態にする。この段階でruntime-check実装を再審査し、その結論とIndex契約を1.0品質ゲートへ渡す。
+- 1.0 release後、Swift Package Indexへpackageを登録し、module別DocCの生成を確認する。登録後にSPIが提供する
+  互換性badgeとmodule別API referenceへの導線をREADMEまたはPagesへ接続する。
 - 保留中の運用playbookをユーザー指示で再開した後、このrepositoryで得たtask運用知見を、
   別projectでもCodexが同程度の管理品質を再現できる移植可能な形へ整理する。
 
@@ -158,55 +159,44 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-010` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲートのうち公開Index表現と完了範囲 | Container要件の安定後、公開Indexと内部`SealError`の分離、1.0での完了範囲を決定 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | ready判定を維持する常設nodeとして`ACTIVE`を保つ。個別assignmentや実行中ジョブを意味せず、必要なときだけ現行Registryとの一致を確認 | `Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
-| `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、当時のV2による試行目的と現行V3への更新要否を再確認して再現性検証へ進む | `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V3.md` / `PROGRESS_OVERVIEW_TEMPLATE.md` |
+| `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、当時のV2による試行目的と現行V3への更新要否を再確認して再現性検証へ進む。完成済みRegistryを移植する旧templateは2026-10-13に履歴化 | `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V3.md` / `Archived/Orientation/PROGRESS_OVERVIEW_TEMPLATE.md` |
 | `OPS-028` | `WAITING_USER` | Codex | [EXECUTION] 作業Codex用ブートストラップの作成 | 固定bootstrapとtask契約templateの未採用初稿を作成し、独立レビューで読み取り、operation権限、workspace、返却経路、実証境界の修正点を抽出。ユーザーレビュー後に候補を再構成する | `Orientation/WORKER_CODEX_BOOTSTRAP_TASK.md` / `Orientation/WORKER_CODEX_BOOTSTRAP.md` / `Orientation/WORKER_CODEX_TASK_CONTRACT_TEMPLATE.md` |
-| `OPS-029` | `PROPOSED` | Codex | [EXECUTION] 受入Codex用ブートストラップの作成 | ユーザーの明示的な着手指示後、作業者と司令塔から独立して成果・証拠・権限境界を再検収し、受入可否と不足だけを司令塔へ返す固定ブートストラップを作成する。三役の実運用試験は別projectで行う | `Orientation/ACCEPTANCE_CODEX_BOOTSTRAP_TASK.md` |
 | `OPS-030` | `USER_ONLY` | User | [DECISION] 作業Codex用ブートストラップ候補のレビュー | 任意の時点で未採用初稿とレビュー論点を読み、Codexが候補を再構成してよいか、追加または変更する設計意図があるかを一つのレビュー結果として返す。AIは着手・代行・催促しない | `Orientation/WORKER_CODEX_BOOTSTRAP_TASK.md` / `Orientation/WORKER_CODEX_BOOTSTRAP.md` / `Orientation/WORKER_CODEX_TASK_CONTRACT_TEMPLATE.md` |
 | `RELEASE-020` | `FROZEN` | Codex | [EXECUTION] 0.6.0でGitHub Pages更新元をrelease tagへ一本化 | 0.5.xではmain pushとrelease tag pushの双方によるdeploy競合を許容。0.6.0のrelease工程でmain由来のdeployを停止し、tag commitから生成・検証した利用者向け文書だけがPagesを更新することを確認 | `RELEASE_0_6_0.md` |
 | `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | ユーザーがゴールを定め、人間だけでも現在位置、次の操作、完了証拠、停止点を追える一枚の工程表を作成する。0.5.xで実際に使って観測し、0.6.xで磨く。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `User/RELEASE_PROCESS.md` |
 | `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | ユーザーが、定義した品質要求に対して不足する工程仕様、判定基準、証拠取得方法、停止・復旧手順を補い、V&V可能な状態にする。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `User/RELEASE_PROCESS.md` |
 | `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `User/RELEASE_PROCESS.md` |
 | `DOC-010` | `FROZEN` | Codex | [DISCOVERY] BareArrayの定性的性能表現の再検討 | 2026-10-09、比較対象はSwiftの`[[Element]]`であり、COWと連鎖subscriptによる深刻な性能劣化を単一連続storageと非所有Viewで迂回する設計意図があると確認。アンカリングを避けるため、ユーザー指示による再訪まで文言判断を保留 | `Archived/Canonical/RELEASE_0_5_2.md` / `BareArrayModule/BareArrayAudit.md` |
-| `DOC-023` | `PROPOSED` | Codex | [DISCOVERY] 全公開targetのDocC継続検証範囲の確定 | ユーザーの明示的な着手指示後、AcCollections、RedBlackTreeModule、PermutationModule、OptionalArrayModule、BareArrayModuleを警告収集付きで個別生成し、既知の未完成文書をCI failureへ変えずに継続検証できるtargetと導入順を提示する。現行CIがRedBlackTreeCollectionsだけを対象とする不足は三モジュールの現行品質評価へ反映済み | `.github/workflows/ci.yml` / `PermutationModule/CurrentQualityAssessment.md` / `OptionalArrayModule/CurrentQualityAssessment.md` / `BareArrayModule/CurrentQualityAssessment.md` |
+| `DOC-026` | `FROZEN` | User / Codex | [EXECUTION] Swift Package Indexへのpackage登録 | 1.0 release後にユーザーが明示的に再開し、公式PackageListへ`https://github.com/narumij/swift-ac-collections.git`を追加する外部PRを準備・提出して、package pageとmodule別DocC build結果を確認する | `DOCUMENTATION_CI_PLAN.md` / `Package.swift` |
+| `DOC-027` | `FROZEN` | Codex | [EXECUTION] Swift Package Index公開導線のREADME・Pages反映 | `DOC-026`完了後、SPI package pageの`Do you maintain this package?`が提示するMarkdownを正として互換性badgeをREADMEへ追加し、確認できたmodule別DocC URLへの導線をREADMEまたはPagesへ接続する | `DOCUMENTATION_CI_PLAN.md` / `README.md` |
 | `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | 全公開対象の利用者向けドキュメント初版完成後、0.6.0へ含める到達範囲を一つに定め、release工程へ進むか判断 | `RELEASE_0_6_0.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-032` | `FROZEN` | Codex | [DISCOVERY] RedBlackTree 0.6.0現行品質アセスメント | 2026-10-13、Codex復旧中の中断taskとして凍結。ユーザーの明示的な再開指示後、既存の試験結果と不足する再現証拠を照合してから継続する | `RedBlackTreeModule/CurrentQualityAssessment.md` |
 | `RBT-033` | `PROPOSED` | Codex | [DISCOVERY] macOS ASan＋Swift Testing Death Test実行経路の成立確認 | lifetime balance検査をtraitで除外しても子プロセスでASan runtimeが遅延ロードされる事象について、Swift Testing実行基盤、macOS環境、Linux CIとの差を切り分け、製品不具合と検証経路不成立を区別する | `RedBlackTreeModule/CurrentQualityAssessment.md` / `Package.swift` |
 | `RBT-034` | `FROZEN` | User / Codex | [EXECUTION] RedBlackTree 1.0品質アセスメント完成 | 1.0品質ゲートの再開後、再現可能な証拠一式を備え、要求・主張・反証・未検証領域・残余リスクを接続した品質アセスメントを完成させる | `RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
+| `RBT-035` | `FROZEN` | Claude / Codex | [DISCOVERY] RedBlackTreeチューニングの落ち穂拾い | ユーザーの明示的な再開指示後、過去の実装・benchmark・Git履歴・チューニング記録を現行コードと照合し、取りこぼした改善候補、未反映の知見、再検証が必要な仮説を発見する。性能変更は行わず、実測と判断が必要な後続taskへ分離する | `RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` / `Benchmarks/` |
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
-| `PERM-041` | `PROPOSED` | Codex | [DISCOVERY] Permutation一般Swift利用Validation scenario設計 | 代表利用者、SwiftPM・facade経路、利用課題、類似APIとの選択、観測方法を整理し、一般Swift開発への適合を判断できるscenarioと必要な後続候補を提示する | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
+| `PERM-062` | `PROPOSED` | User / Codex | [EXECUTION] Permutation利用理解Validation試行 | API設計非参加者に利用者向け本文と公開surfaceだけを渡し、類似API選択、即時消費、永続保存、失効説明、View copyと要素copyの区別を無誘導で観測する。参加者選定と外部接触はユーザーが行い、Codexは課題提示と記録整理を担う | `PermutationModule/GeneralSwiftValidationScenario.md` / `PermutationModule/UserDocumentationDraft.md` |
 | `PERM-043` | `FROZEN` | User | [DECISION] C++標準に匹敵すると判定する性能比の上限 | 2026-10-11、ユーザー指示により比較水準の判断を保留。明示的な再開指示後、28要素中7要素を選ぶ最大ケースでSwiftの全体処理時間を`std::next_permutation`の何倍以内なら「匹敵」と受け入れるか一つだけ決定する | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `PERM-044` | `FROZEN` | Codex | [EXECUTION] Permutation外部性能アセスメントの実測・判定 | 2026-10-11、比較水準の判断とともにユーザー指示で保留。`PERM-043`の明示的な再開・完了後、macOS上で専用scriptを実行し、環境情報、生JSON、PNG chartを保存して判定する | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `PERM-046` | `FROZEN` | Codex | [DISCOVERY] Swift 6.2向けmanifest構成の必要性再評価 | runtime-check View通常版がSwift 6.2で成立したため、旧「PermutationModuleなしの縮小manifest」案はそのまま実行しない。ユーザーの明示的な再開指示後、package全体の6.2成立条件を調べ、version-specific manifest自体が必要かから再評価する | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` |
 | `PERM-051` | `FROZEN` | Claude | [EXECUTION] borrowed Span版PermutationのTest as Specification | runtime仕様test 25件を受け入れ、2026-10-13にも対象25件成功を再確認。一時clientによるcompile-pass／compile-fail結果は返却記録にあるが、repository内の再実行可能なfixtureではないため、ユーザーの明示的な再開まで残作業を凍結 | `PermutationModule/BorrowedPermutationTestPlan.md` / `Sources/PermutationModule/BorrowedNextPermutations.swift` / `Tests/PermutationTests/BorrowedNextPermutations/` |
-| `PERM-052` | `DONE` | Codex / Claude | [DISCOVERY] runtime-check View版Permutationの現行Test as Specification再構成 | 現行runtime-check契約とborrowed版を分離し、旧38関数をG0〜G5またはRETIREDへ一度ずつ分類。判断不要な後続4単位と受入境界を確定 | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` / `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` / `Tests/PermutationTests/EtcTests.swift` |
-| `PERM-053` | `ACTIVE` | Claude | [EXECUTION] runtime-check Permutation列挙・Collection仕様test | 確定台帳のG1とG3を実装する。各Viewを次の`next()`前に値へ変換し、列挙規則、0始まりIndex、有効境界、5種の範囲外trapを固定してCodexへ返却する | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` |
-| `PERM-054` | `PROPOSED` | Claude | [EXECUTION] runtime-check Permutation View失効Death Test | ユーザーまたはCodexの具体的なassignment後、G2を実装する。次のmutating access、終了を返す`next()`、owner破棄、index表面、View copyの失効をrepository標準の正確なsignal期待で固定する | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` |
-| `PERM-055` | `PROPOSED` | Claude | [EXECUTION] runtime-check Permutation所有・破棄仕様test | ユーザーまたはCodexの具体的なassignment後、G4を実装する。source copy独立性、未開始・途中・完走・空の破棄、奇数suffix反転、escaped Viewがstorageを延命しない境界を検証する | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` |
-| `PERM-056` | `PROPOSED` | Claude | [EXECUTION] runtime-check Permutation公開表面・共存仕様test | ユーザーまたはCodexの具体的なassignment後、G0とG5を実装する。現行型名、構築可能source、非copy・非Sequenceと直接初期化不可のcompiler表面、swift-algorithms共存、AcCollections再公開を検証する | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` |
-| `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | 0.6.0の到達範囲判断前に、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
+| `PERM-060` | `FROZEN` | User | [DECISION] NextPermutationsのSequence表面を製品候補として検討するか | 2026-10-13、`Array(sequence)`が要素配列ではなく失効可能なViewを収集する事実を新しい判断材料として、採用・不採用を決めず延期。ユーザーの明示的な再開後、View Sequenceの有効な操作範囲と誤用防止、所有配列を返す別Sequence、copy・性能costを追試してから一つ選ぶ | `PermutationModule/NextPermutationsSequenceExperiment.md` |
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
-| `OPT-048` | `DONE` | Codex | [DISCOVERY] OptionalArray現行APIの公開安全性分類・strict安全性の依存分解 | 現行40診断を再取得し、所有4型の分類4件、allocation境界8件、deprecated View経路28件へ分離。現行API側12件は`@safe`分類とscoped `unsafe`で解消でき、製品判断を要しないと確定 | `OptionalArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
-| `OPT-055` | `DONE` | Codex | [EXECUTION] OptionalArray strict memory safety恒久適用 | 所有4型を`@safe`に分類し、現行APIとdeprecated Viewの低レベル操作をscoped `unsafe`へ限定して`.strictMemorySafety()`を恒久適用。単独strict診断0件、Build for Testing成功、全65 test成功 | `OptionalArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
-| `OPT-056` | `DONE` | Codex | [DISCOVERY] OptionalArray現行座標accessのTest as Specification監査 | 現行direct methodは各次元1座標の正常系だけで、非対称shape全座標、各軸の負値・上限trap、direct `setElement`の参照要素寿命が不足すると確定。deprecated互換testと分離した後続を登録 | `OptionalArrayModule/CurrentQualityAssessment.md` / `Tests/OptionalArrayModuleTests/` |
-| `OPT-057` | `DONE` | Codex | [EXECUTION] OptionalArray座標access Test as Specification | 1D〜4Dの非対称shape全座標、選択位置だけの更新、値・nil遷移と参照要素のexactly-once破棄、全軸の負値・上限に対するread/write trapを現行`element`／`setElement`で固定。Build for Testing成功、追加11件を含む全76 test成功 | `OptionalArrayModule/CurrentQualityAssessment.md` / `Tests/OptionalArrayModuleTests/` |
 | `OPT-053` | `FROZEN` | User | [DECISION] OptionalArrayがC++番兵手法に匹敵すると判定する性能比の上限 | `OPT-052`の暫定実測後、代表memoization workloadで許容する性能比を一つだけ決定する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-054` | `FROZEN` | Codex | [EXECUTION] OptionalArray外部性能アセスメントの実測・判定 | `OPT-053`完了後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
-| `ARRAY-005` | `FROZEN` | User | [DECISION] Array系object名の合意 | 三者の独立採点を統合した報告の受入後、ユーザーが明示的に再開し、その後の議論を入力にBareArray／OptionalArray両familyの公開名と次元・View派生体系を一つに決定して判断正本へ記録する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
-| `ARRAY-006` | `FROZEN` | User | [DECISION] Array系element access method名の確定 | 三者の独立採点を統合した報告の受入後、ユーザーが明示的に再開し、その後の議論を入力にArray access API familyを一つに決定して判断正本へ記録する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
-| `ARRAY-007` | `FROZEN` | Codex | [EXECUTION] Array系object・API命名の実装反映 | object名とmethod名の判断完了後、ユーザーが明示的に再開し、判断正本を入力にproduction、test、benchmark、文書を決定どおりに更新してTest as SpecificationとCI baseline準備へ渡す | `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
-| `API-002` | `FROZEN` | Codex | [EXECUTION] Public API名ballotの編成・検証 | Claudeの独立候補提出後、ユーザーの明示的な再開指示を受けて、三者候補を省略せず統合し、異なる意味を保った固定ID付きballotを作る。候補網羅、意味分離、重複処理、IDをCodexが検証し、順位付け、採点、推奨、採用は行わない | `PUBLIC_API_NAMING_BALLOT.md` / `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
-| `API-004` | `FROZEN` | User | [EXECUTION] Public API名ballotのユーザー独立採点 | Codexがballotの編成・検証を完了した後、ユーザーが明示的に再開し、全候補へ1〜10の総合点だけを記録する。他者の採点は提出完了まで読まない | `PUBLIC_API_NAMING_SCORE_USER.md` / `PUBLIC_API_NAMING_BALLOT.md` |
-| `API-005` | `FROZEN` | Codex | [EXECUTION] Public API名ballotのCodex独立採点 | Codexがballotの編成・検証を完了した後、ユーザーが明示的に再開し、全候補へ1〜10の総合点、理由、重要な懸念を記録する。他者の採点は提出完了まで読まない | `PUBLIC_API_NAMING_SCORE_CODEX.md` / `PUBLIC_API_NAMING_BALLOT.md` |
-| `API-006` | `FROZEN` | Claude | [EXECUTION] Public API名ballotのClaude独立採点 | Codexがballotの編成・検証を完了した後、ユーザーが明示的に再開し、全候補へ1〜10の総合点、理由、重要な懸念を記録する。他者の採点は提出完了まで読まない | `PUBLIC_API_NAMING_SCORE_CLAUDE.md` / `PUBLIC_API_NAMING_BALLOT.md` |
-| `API-007` | `FROZEN` | Codex | [DISCOVERY] Public API名採点の統合報告と判断task分解 | 三者全員の独立採点完了後、ユーザーが明示的に再開し、点数を改変せず統合して点差、AIの理由、反証、未解決事項を報告する。平均・多数決・合意を採用判断にせず、残る公開判断を一判断ごとのtaskへ分離する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `PUBLIC_API_NAMING_SCORE_USER.md` / `PUBLIC_API_NAMING_SCORE_CODEX.md` / `PUBLIC_API_NAMING_SCORE_CLAUDE.md` |
+| `OPT-070` | `DONE` | Codex / Claude | [DISCOVERY] OptionalArray mutating追従後のperformance CI回帰調査 | Linux CIの三境界比較により、`mutating`化を回帰境界、escaping capture除去を部分回復と確認。最終headは変更前より2D・3D direct cold / warmで35〜72%遅く、一般提供のまま性能回帰を受け入れる判断はしない | `OptionalArrayModule/CurrentQualityAssessment.md` / `Benchmarks/_Artifacts/PerformanceCI/` |
+| `OPT-071` | `DONE` | Codex | [EXECUTION] OptionalElementBufferのopt-in化とnonmutating復帰 | `ENABLE_OPTIONAL_ELEMENT_BUFFER` traitを有効にした場合だけ`AcCollections`から再公開し、1D〜4Dの更新APIをnonmutatingへ復帰。trait無効時のXcode Build for Testing、trait有効時のfacade test、専用test 56件、benchmark release buildと4 workload短縮実測が成功 | `Package.swift` / `Sources/OptionalArrayModule/OptionalElementBuffer.swift` / `OptionalArrayModule/CurrentQualityAssessment.md` |
+| `OPT-072` | `FROZEN` | User / Codex / Claude | [DISCOVERY] Swift 6.4以降向けOptionalElementBuffer一般提供方式 | split storageを維持するか、`Element?` storageと標準`MutableRef`を使うかを、性能測定を含めて再検討する。現在の競技用途向けopt-in提供を妨げず、ユーザーの明示再開まで着手しない | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
+| `OPT-064` | `FROZEN` | User / Codex | [EXECUTION] OptionalArray一般利用理解Validation試行 | 一般Swift向けの既定提供を再設計する`OPT-072`まで凍結。再開後、設計非参加者が本文と公開surfaceから用途、座標順、nil遷移、所有・並行利用境界を理解できるか観測する | `OptionalArrayModule/GeneralSwiftValidationScenario.md` / `OptionalArrayModule/UserDocumentationDraft.md` / `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-065` | `PROPOSED` | User / Codex | [EXECUTION] OptionalArray競技利用Validation試行 | ユーザーが問題・judge・提出可否を決めた後、未計算状態を持つ固定shapeの多次元メモ化問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない | `OptionalArrayModule/GeneralSwiftValidationScenario.md` / `Tests/OptionalArrayModuleTests/EDPC-J.swift` / `Tests/OptionalArrayModuleTests/EDPC-L.swift` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray外部性能アセスメントの実測・判定 | 性能比の受入判断後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-032` | `FROZEN` | User | [DECISION] BareArrayがC++ nested vectorに匹敵すると判定する性能比の上限 | `BARE-031`の暫定実測後、代表多次元access workloadで許容する性能比を一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-035` | `PROPOSED` | Codex | [DISCOVERY] BareArray提供停止の実施境界整理 | package、facade、文書、移行、release、既存利用への影響を確認し、提供停止を局所的に実施できるtaskへ分解する | `Sources/BareArrayModule/Documentation/Quality-Profile.md` / `Package.swift` |
-| `BARE-017` | `PROPOSED` | Codex | [DISCOVERY] BareArray利用Validation scenario設計 | 一般Swift利用と競技利用について、代表利用者、導入経路、利用課題、観測方法を整理し、異なる判断・実行境界を後続task候補へ分離する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
+| `BARE-042` | `PROPOSED` | User / Codex | [EXECUTION] ElementBuffer利用理解Validation試行 | 設計非参加者へ利用者向け本文と公開surfaceだけを提示し、座標順、`indices`、value accessと借用参照、提供環境、非Collection性、性能説明を無誘導で観測する。参加者選定と外部接触はユーザーが行う | `BareArrayModule/GeneralSwiftValidationScenario.md` / `BareArrayModule/UserDocumentationDraft.md` |
+| `BARE-043` | `PROPOSED` | User / Codex | [EXECUTION] ElementBuffer競技利用Validation試行 | ユーザーが問題・judge・提出可否を決めた後、固定shapeの多次元storageを必要とする実問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない | `BareArrayModule/GeneralSwiftValidationScenario.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `HIST-001` | `FROZEN` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 2026-10-13、現時点の整理を一段落として凍結。ユーザーの明示的な再開指示後、本紙の説明または証拠別紙へ追加する必要がある範囲だけを再開する | `RefactoringFromAtCoder2025/README.md` / `RefactoringFromAtCoder2025/EVIDENCE.md` |
@@ -230,25 +220,11 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-007` | `BARE-032` | `SEQUENCE` | 性能比上限の決定後、正式測定結果へ適用して判定する |
 | `OPT-054` | `OPT-053` | `SEQUENCE` | 性能比上限の決定後、正式測定結果へ適用して判定する |
 | `PERM-044` | `PERM-043` | `SEQUENCE` | C++標準に匹敵すると判定する性能比上限を確定してから、保存したmacOS測定証拠へ適用する |
-| `PERM-053` | `PERM-052` | `SEQUENCE` | 旧38関数の台帳と現行契約の分類確定後、列挙・Collection仕様testを実装する |
-| `PERM-054` | `PERM-052` | `SEQUENCE` | runtime失効契約とborrowed契約の分離確定後、View失効Death Testを実装する |
-| `PERM-055` | `PERM-052` | `SEQUENCE` | 旧COW内部probeの処遇確定後、現行owned bufferの所有・破棄仕様testを実装する |
-| `PERM-056` | `PERM-052` | `SEQUENCE` | 現行公開表面とretired表面の分類確定後、compiler表面・共存・再公開testを実装する |
 | `OPS-028` | `OPS-030` | `SEQUENCE` | ユーザーが未採用初稿とレビュー論点を確認してから、Codexが候補を再構成する |
-| `API-004` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、ユーザーが他者から独立して採点する |
-| `API-005` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、Codexが他者から独立して採点する |
-| `API-006` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、Claudeが他者から独立して採点する |
-| `API-007` | `API-004` | `PARALLEL_JOIN` | ユーザー採点の提出後に統合報告へ合流する |
-| `API-007` | `API-005` | `PARALLEL_JOIN` | Codex採点の提出後に統合報告へ合流する |
-| `API-007` | `API-006` | `PARALLEL_JOIN` | Claude採点の提出後に統合報告へ合流する |
-| `ARRAY-005` | `API-007` | `SEQUENCE` | 三者採点の統合報告後にobject名を決定し、判断正本へ記録する |
-| `ARRAY-006` | `API-007` | `SEQUENCE` | 三者採点の統合報告後にArray access API familyを決定し、判断正本へ記録する |
-| `ARRAY-007` | `ARRAY-005` | `PARALLEL_JOIN` | object名の決定を実装入力にする |
-| `ARRAY-007` | `ARRAY-006` | `PARALLEL_JOIN` | method名の決定を実装入力にする |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |
-| `RELEASE-007` | `OPT-044` | `PARALLEL_JOIN` | 利用者向け文書作業は現行名で先行できるが、0.6.0の到達範囲判断前に1D所有型名を確定する |
 | `RELEASE-007` | `OPT-045` | `PARALLEL_JOIN` | 利用者向け文書作業は現行名で先行できるが、0.6.0の到達範囲判断前に次元名体系を確定する |
+| `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |
 
 ## Registry rules
 

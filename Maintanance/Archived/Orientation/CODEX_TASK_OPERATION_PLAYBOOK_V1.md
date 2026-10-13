@@ -397,7 +397,7 @@ storageでもあり、Codexの構造lintとは役割が異なる。
 
 最初から大きな管理体系を作らない。次の順で導入する。
 
-開始時は[`PROGRESS_OVERVIEW_TEMPLATE.md`](../../PROGRESS_OVERVIEW_TEMPLATE.md)をコピーし、placeholderと
+開始時は[`PROGRESS_OVERVIEW_TEMPLATE.md`](PROGRESS_OVERVIEW_TEMPLATE.md)をコピーし、placeholderと
 例示taskを実projectの内容へ置き換える。
 
 1. 一つのRegistryと状態語を作る。

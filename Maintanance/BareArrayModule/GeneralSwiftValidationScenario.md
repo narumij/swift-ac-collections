@@ -1,6 +1,6 @@
 # ElementBuffer利用Validation scenario
 
-> **文書状態:** 実行前のscenario設計。Verification、Validation、製品品質判定、公開判断の実施記録ではない。
+> **文書状態:** scenario設計とScenario Aの実行記録。Scenario B・C、製品品質判定、公開判断の実施記録ではない。
 >
 > 本書は`ElementBuffer`の利用可能性と理解可能性を、既存の実装・仕様testとは異なる経路で観測するための
 > 実行候補を分離する。外部接触、fixtureの恒久化、性能水準、公開契約、および採否は決定しない。
@@ -192,3 +192,43 @@ TLE、MLEの場合は、利用誤り、アルゴリズム、導入経路、実�
 - 代表利用者、提示物、課題、観測分類、保存する証拠、非代替関係を示している。
 - 外部接触、提出、fixture恒久化、性能水準、公開契約を決定していない。
 - 後続候補が、それぞれ独立に実行・受入できる。
+
+## 9. Scenario A 実行記録（2026-10-13）
+
+### 固定条件
+
+- candidate commit: `693b1bab3ad78240a83a84fe90a4d53cf621cf88`
+- consumer: repository外の一時SwiftPM package（repository内fixtureには未保存）
+- Swift: Apple Swift 6.4 (`swiftlang-6.4.0.34.1`)
+- OS: macOS 27.0.1 (Build 26A434)
+- architecture: arm64
+- configuration: SwiftPM debug
+
+consumer packageはlocal path dependencyとしてcandidate worktreeを参照し、A-1〜A-4を別々のexecutable targetにした。
+現行packageが公開するlibrary productは`AcCollections`だけなので、全targetは同productへ依存した。
+A-1とA-3の直接module importは、独立productとしての提供ではなく、`AcCollections` productへの依存から
+transitive moduleが現在見えることの証拠である。
+
+### 実行結果
+
+- `swift run --disable-sandbox DirectConsumer`: 成功（`direct-ok`）
+- `swift run --disable-sandbox FacadeConsumer`: 成功（`facade-ok`）
+- `swift run --disable-sandbox CoexistConsumer`: 成功（`coexist-ok`）
+- `swift run --disable-sandbox MutableRefConsumer`: 成功（`mutable-ref-ok`）
+
+A-1では1D〜4Dの非対称shape、座標value access、隣接位置、2D checksum、zero dimensionで生成closureが
+呼ばれないことを公開surfaceだけで確認した。A-2では`AcCollections`だけをimportして2Dの設定・取得を確認した。
+A-3では`BareArrayModule`と`PermutationModule`を同時にimportし、名前解決・dependency解決・buildの共存だけを
+確認した。A-4では可変ownerから標準`MutableRef`を取得し、同一scopeで`value`を2回変更してowner storageへ
+最終値`12`が反映されることを確認した。
+
+多次元型の`indices`は最外軸だけを表し、内側寸法propertyはpublicではないため、consumerは初期化時のshapeを
+保持して反復した。OptionalArrayのconsumer Verificationでも同じ摩擦を観測しており、Scenario Bで本文と
+公開surfaceの理解可能性を観測する対象とする。SwiftPM user cacheが書込み不可という環境warningは出たが、
+dependency resolution、build、runはいずれも成功した。
+
+### 判定
+
+固定した環境とcandidateについて、repository外consumerによるA-1〜A-4の導入・build・実行を確認した。
+一般利用者が無誘導で理解できること、独立module productとして提供されること、他platform・toolchain、性能、
+並行利用安全性、競技利用は確認していない。一時fixtureのrepositoryへの恒久化も決定しない。

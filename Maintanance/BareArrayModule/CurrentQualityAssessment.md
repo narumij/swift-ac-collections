@@ -252,7 +252,7 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
 | QR-03 安全性 | strict memory safety下で公開APIの安全性境界が成立する | 確認済み | 所有型4種と`MutableRef`を`@safe`に分類し、BareArrayModuleへ`.strictMemorySafety()`を適用。build・runtime testが成功し、借用寿命compiler fixtureを保持 | compiler診断と有限の実行経路による確認であり、並行利用の意味的安全性までは証明しない |
 | QR-03 安全性 | `@unchecked Sendable`を含む並行利用と`-Ounchecked`の保証境界が受入可能である | 未検証 | 未確定範囲はQuality Profileと公開コメントに分離されている | data raceを含む並行利用のValidationと、事前条件検査を省略する構成の扱いは未評価 |
 | QR-04 理解可能性 | 座標順、初期化、value access、借用参照、失敗条件を公開文書から理解できる | 部分確認 | 公開Quality Profileとsource commentをdeprecated削除後の公開面へ同期した | DocC再生成と一般利用者による理解のValidationは未実施 |
-| QR-05 利用可能性 | SwiftPMと`AcCollections`から導入し、対象環境で利用できる | 確認済み | Debug・Release build、facade再公開test 1件、BareArray.swift単独typecheck、DocC生成が成功 | macOSの現行環境における確認。他platform、外部packageとの共存、実利用のValidationは未確認 |
+| QR-05 利用可能性 | SwiftPMと`AcCollections`から導入し、対象環境で利用できる | 確認済み | Debug・Release build、facade再公開test 1件、BareArray.swift単独typecheck、DocC生成が成功。repository外の一時SwiftPM consumerで直接module import、`AcCollections` import、`PermutationModule`との共存、標準`MutableRef`経路をbuild・実行 | 現行packageの公開productは`AcCollections`だけで、直接module importはtransitive visibilityの証拠。恒久fixture、他platform・toolchainは未確認 |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | copy & paste許諾と単一file候補はsourceに存在する | 実問題、実提出、実行時間、メモリ使用量のValidation証拠を未確認 |
 | QR-06 持続可能性 | 公開面、正確性、寿命、停止契約を変更後に再確認できる | 部分確認 | 番号付きTest as Specification、座標access直接仕様群、compiler診断fixture、Debug・Release・ASanのCI jobがあり、BareArray性能workload 4件は通常CI libraryへ登録済み。これらを含むPR #192のremote CIはall greenで、BareArrayModuleのDocC生成も個別に成功した | CIのdocumentation jobはRedBlackTreeCollectionsだけを対象とし、BareArrayのdocumentation commentを変更後もDocC生成で継続確認する自動経路はない |
 
@@ -282,6 +282,10 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
 - Address Sanitizer構成では通常test 35件とDeath Test 39件が成功し、BareArrayに由来するSanitizer
   failureはなかった。
 - facade再公開test 1件とBareArrayModuleのDocC生成が成功した。
+- candidate `693b1bab`をlocal path dependencyにしたrepository外SwiftPM consumerをApple Swift 6.4、
+  macOS 27.0.1、arm64、debugで実行。直接module import、`AcCollections`再公開、`PermutationModule`との共存、
+  標準`MutableRef.value`のscope内複数更新とowner storageへの反映を、4 executableで確認した。多次元の
+  内側寸法はpublic propertyから取得できず、consumerがshapeを保持する必要があることを理解可能性の候補へ残した。
 - Swift 6.4のLifetimes実験機能下でのView寿命とstrict memory safetyは確認済みとした。一方、
   `@unchecked Sendable`を含む並行利用、`-Ounchecked`、一般Swift利用、競技利用、外部性能は、この
   Verificationから成功を推定せず未検証として維持する。

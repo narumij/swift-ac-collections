@@ -9,11 +9,12 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行中: PERM-056 runtime-check Permutation公開表面・共存仕様test**
+**実行中なし**
 
-Codex accepted PERM-055 and independently confirmed the accumulated 40 selected tests in Xcode.
-Claude is now assigned only G0 and G5 from `PermutationModule/RuntimeCheckedPermutationTestPlan.md`.
-Do not start any other Registry task.
+Codex accepted PERM-056 after independently confirming the accumulated 44 PermutationTests in
+Xcode, the AcCollections reexport test, and all four compiler-fixture paths. The runtime-check
+Permutation G0〜G5 reconstruction has completed one full pass. No next bounded Claude assignment is
+recorded. Do not start another Registry task from the completed assignment below.
 
 **凍結中: PERM-051 borrowed Span版PermutationのTest as Specification**
 
@@ -24,7 +25,7 @@ Do not start any other Registry task.
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Active assignment: PERM-056 public surface, coexistence, and reexport tests
+## Last completed assignment: PERM-056 public surface, coexistence, and reexport tests
 
 ### Objective
 

@@ -372,3 +372,59 @@ G0、G1、G2、G3、G5、production source、Registry、Quality Profileには触
 - `Maintanance/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
 
 これにより`PERM-055`は完了とする。G0／G5は独立した最後の後続taskとして残る。
+
+## PERM-056 return（2026-10-13 Claude）
+
+### Changed files
+
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_0_PublicSurfaceTests.swift`（G0、XCTest 2件）
+- 追加: `Tests/PermutationTests/NextPermutations/NextPermutations_4_CoexistenceTests.swift`（G5、XCTest 2件）
+- 追加: `Tests/AcCollectionsTests/AcCollections_NextPermutationsReexportTests.swift`（G5、XCTest 1件）。
+  `PermutationTests` targetは`AcCollections`に依存しておらず`Package.swift`は変更できないため、
+  `import AcCollections`だけで使えることの検査は、`PermutationModule`を直接importしない`AcCollectionsTests`側に置いた。
+- 追加: `Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`（compile fixture package、4 target）と
+  `Utilities/Maintenance/VerifyPermutationCompilerDiagnostics.sh`。既存の`VerifyBareArrayCompilerDiagnostics.sh`と
+  同じ形式（fixture package＋`.build/`配下のscratch path＋期待diagnosticの照合）にした。
+
+### Coverage
+
+- G0 runtime: 公開型名`NextPermutations<Element>`と`NextPermutations<Element>.Permutation`、Array、Range、
+  startIndexが0でないSlice、`String`（Int以外のIndex）からの構築。
+- G0 compiler（fixture）:
+  - compile-pass: `PermutationSurfaceValid`（公開入口から作り、手動`next()`で各Viewを使い終えてから進める）
+  - compile-fail: `PermutationDirectInit` → `'NextPermutations<Value>' initializer is inaccessible due to 'internal' protection level`
+  - compile-fail: `PermutationCopy` → `'original' used after consume`（`~Copyable`）
+  - compile-fail: `PermutationSequence` → `for-in loop requires 'NextPermutations<Int>' to conform to 'Sequence'`
+- G5: swift-algorithmsとの同時importで修飾なしに解決、`nextPermutations()`は後続だけ・`permutations()`は全6通り、
+  `import AcCollections`だけで`NextPermutations`と`.Permutation`が使えること。互換modeは対象外（`#if !COMPATIBLE_ATCODER_2025`）。
+
+### Validation（macOS、Swift 6.4）
+
+- `swift test -c debug --filter 'PermutationTests.NextPermutations_|AcCollectionsTests.AcCollections_NextPermutationsReexportTests'`:
+  PermutationTestsのXCTest 29件（G0 2、G1 12、G3 6、G4 7、G5 2）0 failures、Swift Testing 15件passed。
+- 同`-c release`: 同じ件数で0 failures／passed。
+- `swift test --filter AcCollectionsTests.AcCollections_NextPermutationsReexportTests`: 1件passed（実行を個別に確認）。
+- `Utilities/Maintenance/VerifyPermutationCompilerDiagnostics.sh`:
+  `verified 1 NextPermutations compile-pass and 3 compile-fail diagnostics (direct init, copy, Sequence)`。
+  初回はANSI色付きの出力に照合patternが一致せず失敗したため、照合前に色codeを除去する形に直した。
+- 互換modeのbuildは実行していない。
+
+### Not done
+
+G1〜G4、production source、Package.swift、CI、Registry、Quality Profileには触れていない。
+compile fixture scriptはCIへ登録していない。
+
+## PERM-056 acceptance（2026-10-13 Codex）
+
+- G0のruntime 2件、G5のPermutationModule共存2件、AcCollections再公開1件、およびG0のcompiler fixture
+  4経路を、確定した公開表面とexposure境界へ照合して受け入れた。
+- Xcodeの現行scheme／test planでG0〜G5のPermutationTests 44件をCodexが独立再実行し、44件成功、
+  失敗・skip・not run各0件を確認した。
+- `swift test --disable-sandbox --filter AcCollectionsTests.AcCollections_NextPermutationsReexportTests`を
+  Codexが再実行し、`import AcCollections`だけを使う再公開test 1件の成功を確認した。
+- `Utilities/Maintenance/VerifyPermutationCompilerDiagnostics.sh`をCodexが再実行し、公開入口のcompile-pass
+  1件と、直接初期化、owner copy、`Sequence`利用のcompile-fail各1件が期待diagnosticで失敗することを確認した。
+- compiler fixtureはrepository内で再実行可能だが、CIへの登録は本taskの範囲外として残っている。
+- `Maintanance/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md`の既存変更は本taskの成果ではなく、受入範囲に含めない。
+
+これにより`PERM-056`は完了し、runtime-check版PermutationのG0〜G5 Test as Specification再構成は一巡した。

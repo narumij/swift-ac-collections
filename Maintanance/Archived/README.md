@@ -61,3 +61,8 @@ Archived全体を探索しない。
 - `RELEASE_TASK_REGISTRY_DESIGN.md`: 採用しなかったrelease専用Task Registry方式の設計資料
 - `RELEASE_TASK_REGISTRY_TEMPLATE.md`: 採用しなかったrelease専用Registry template
 - `RELEASE_TASK_REGISTRY_REHEARSAL_TEMPLATE.md`: 採用しなかったrehearsal overlay
+
+## 2026-10-14移動分
+
+- `CLAUDE_TASK_HISTORY_2026-10-14.md`: 2026-10-14までの完了assignment、Return、Codex受入記録
+- `PROGRESS_OVERVIEW_COMPLETED_2026-10-14.md`: 2026-10-14に完了・除外したtask行、充足済みprecedence、完了した中間ゴール

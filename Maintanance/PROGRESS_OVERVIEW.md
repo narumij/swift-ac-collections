@@ -12,6 +12,8 @@
 充足済みprecedence辺は`Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-12.md`へ移した。
 2026-10-13に完了・除外した行と充足済みprecedence辺は
 `Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-13.md`へ移した。
+2026-10-14に完了・除外した行、充足済みprecedence辺、および完了した中間ゴールの詳細は
+`Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-14.md`へ移した。
 
 ## 正本整理時の配置維持例外
 
@@ -76,24 +78,8 @@ Index契約と関連taskは、この外部条件が安定するまで最終確�
 
 **中間ゴールの取り扱い**
 
-**直近達成した中間ゴール:** 0.5.3を完成させる。
-
-2026-10-10、main merge commit `139ffef8`のCI greenを確認し、annotated tag `0.5.3`を同commitへ作成・pushして
-remote到達を確認した。release後の記録用branchとして、同tagから`develop/misc/55`を作成した。
-
-**今回達成した中間ゴール:** BareArrayとOptionalArrayの多次元access workloadをBenchmarkへ追加し、
-実装を先にmergeした後、通常CI libraryへの登録だけを独立PRで合流した。登録PR #190でperformance jobの
-greenを確認し、PR #191でも両moduleのbase / current測定自体は成立した。PR #191のjob全体はPermutationの
-borrowed版からruntime-check版への方式切替を回帰として検出して赤となったため、同PRのmerge commitを
-方式切替後のbaselineとした。PR #193では方式差を通常回帰から分離した比較契約でperformance jobの
-all greenを確認した。
-
-続くPR #194では、OptionalElementBufferの`mutating`追従によるLinux性能回帰を三境界比較で特定し、
-escaping capture除去だけでは変更前の性能へ戻らないことを確認した。一般提供のまま回帰を受け入れず、
-`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitによるopt-in提供へ限定して更新APIを`nonmutating`へ戻した。
-trait無効時と有効時のbuild、専用test、benchmark build、通常CIのall greenを確認し、同PRをmainへ合流した。
-Swift 6.4以降の一般提供方式とC++とのmacOS外部assessmentは後続とし、性能比の受入判断は暫定実測後まで
-発生させない。
+**直近達成した中間ゴール:** Array系benchmark・OptionalElementBuffer opt-in・ElementBuffer系名称移行を
+完了した。詳細は`Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-14.md`に保存した。
 
 **凍結中の中間ゴール（前任conversationの残存記録）:**
 
@@ -176,10 +162,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `DOC-010` | `FROZEN` | Codex | [DISCOVERY] BareArrayの定性的性能表現の再検討 | 2026-10-09、比較対象はSwiftの`[[Element]]`であり、COWと連鎖subscriptによる深刻な性能劣化を単一連続storageと非所有Viewで迂回する設計意図があると確認。アンカリングを避けるため、ユーザー指示による再訪まで文言判断を保留 | `Archived/Canonical/RELEASE_0_5_2.md` / `ElementBufferModule/ElementBufferAudit.md` |
 | `DOC-026` | `FROZEN` | User / Codex | [EXECUTION] Swift Package Indexへのpackage登録 | 0.9.x release後にユーザーが明示的に再開し、公式PackageListへ`https://github.com/narumij/swift-ac-collections.git`を追加する外部PRを準備・提出して、package page、互換性表示、module別DocC build結果を確認する | `DOCUMENTATION_CI_PLAN.md` / `Package.swift` |
 | `DOC-027` | `FROZEN` | Codex | [EXECUTION] Swift Package Index公開導線のREADME・Pages反映 | `DOC-026`完了後、SPI package pageの`Do you maintain this package?`が提示するMarkdownを正として互換性badgeをREADMEへ追加し、確認できたmodule別DocC URLへの導線をREADMEまたはPagesへ接続する | `DOCUMENTATION_CI_PLAN.md` / `README.md` |
-| `ARRAY-015` | `DONE` | Codex | [DISCOVERY] ElementBuffer系target・module名移行境界 | 新module名、旧名互換facade、移行対象を確定。性能CIの比較契約は変更不要で、実行系の追加対応はmanifest、import、test target、AcCollections再公開、DocC target matrixに限定されると確認 | `ARRAY_MODULE_TARGET_MIGRATION.md` / `PERFORMANCE_CI_CHANGE_GUIDE.md` / `Package.swift` / `Sources/_RedBlackTreeModule/` |
-| `ARRAY-016` | `DONE` | Codex | [EXECUTION] ElementBuffer系target・module名移行 | 新moduleへ実装・testを移し、旧名互換facade、AcCollections再公開、benchmark import、DocC CIを更新。既定・trait有効test、compatibility test、benchmark release build・task名、4 moduleのDocCを検証済み | `ARRAY_MODULE_TARGET_MIGRATION_EXECUTION.md` / `Package.swift` |
-| `ARRAY-017` | `EXCLUDED` | Codex | [EXECUTION] benchmark task名rename互換の終了 | PR #196で削除構成のgreenは得たが、互換処理は現行baselineで自動的にno-opとなり、module target移行の完了に不要。過去commit比較と将来renameへの利用可能性もあるため削除を採用しない | `PERFORMANCE_CI_CHANGE_GUIDE.md` / `.github/workflows/ci.yml` |
-| `ARRAY-018` | `DONE` | Codex | [EXECUTION] 旧ElementBuffer系互換targetの削除 | 旧名2 facade target、内部依存、compatibility test、DocC CI entryを削除。PR #196 CIと2回の独立目視検査を受け入れ、DocC・draft・trait説明を補修し、maintenance folderと全管理pathも新module名へ統一 | `ARRAY_MODULE_COMPATIBILITY_TARGET_RETIREMENT.md` / `Package.swift` / `.github/workflows/ci.yml` |
 | `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | 全公開対象の利用者向けドキュメント初版完成後、0.6.0へ含める到達範囲を一つに定め、release工程へ進むか判断 | `RELEASE_0_6_0.md` |
 | `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-032` | `FROZEN` | Codex | [DISCOVERY] RedBlackTree 0.6.0現行品質アセスメント | 2026-10-13、Codex復旧中の中断taskとして凍結。ユーザーの明示的な再開指示後、既存の試験結果と不足する再現証拠を照合してから継続する | `RedBlackTreeModule/CurrentQualityAssessment.md` |
@@ -198,15 +180,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-051` | `FROZEN` | Claude | [EXECUTION] borrowed Span版PermutationのTest as Specification | runtime仕様test 25件を受け入れ、2026-10-13にも対象25件成功を再確認。一時clientによるcompile-pass／compile-fail結果は返却記録にあるが、repository内の再実行可能なfixtureではないため、ユーザーの明示的な再開まで残作業を凍結 | `PermutationModule/BorrowedPermutationTestPlan.md` / `Sources/PermutationModule/BorrowedNextPermutations.swift` / `Tests/PermutationTests/BorrowedNextPermutations/` |
 | `PERM-060` | `FROZEN` | User | [DECISION] NextPermutationsのSequence表面を製品候補として検討するか | 2026-10-13、`Array(sequence)`が要素配列ではなく失効可能なViewを収集する事実を新しい判断材料として、採用・不採用を決めず延期。ユーザーの明示的な再開後、View Sequenceの有効な操作範囲と誤用防止、所有配列を返す別Sequence、copy・性能costを追試してから一つ選ぶ | `PermutationModule/NextPermutationsSequenceExperiment.md` |
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalElementBufferModule/OptionalElementBufferAudit.md` / `RELEASE_0_6_0.md` |
-| `OPT-053` | `EXCLUDED` | User | [DECISION] OptionalArrayがC++番兵手法に匹敵すると判定する性能比の上限 | 2026-10-14、現行split storageを一般提供から外してtraitによる実験的opt-inとしたため、1.0適合判定用の固定閾値を現在決める必要が消滅。将来の一般提供再検討では、その時点の実装・用途・比較対象から新しく評価する | `OptionalElementBufferModule/CurrentQualityAssessment.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` |
-| `OPT-054` | `EXCLUDED` | Codex | [EXECUTION] OptionalArray外部性能アセスメントの実測・判定 | 2026-10-14、前提の`OPT-053`を除外し、現行の実験的opt-in提供に1.0適合判定を課さないため除外。既存の暫定測定とCI回帰workloadは性能証拠として保持する | `OptionalElementBufferModule/CurrentQualityAssessment.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` |
-| `OPT-070` | `DONE` | Codex / Claude | [DISCOVERY] OptionalArray mutating追従後のperformance CI回帰調査 | Linux CIの三境界比較により、`mutating`化を回帰境界、escaping capture除去を部分回復と確認。最終headは変更前より2D・3D direct cold / warmで35〜72%遅く、一般提供のまま性能回帰を受け入れる判断はしない | `OptionalElementBufferModule/CurrentQualityAssessment.md` / `Benchmarks/_Artifacts/PerformanceCI/` |
-| `OPT-071` | `DONE` | Codex | [EXECUTION] OptionalElementBufferのopt-in化とnonmutating復帰 | `ENABLE_OPTIONAL_ELEMENT_BUFFER` traitを有効にした場合だけ`AcCollections`から再公開し、1D〜4Dの更新APIをnonmutatingへ復帰。trait無効時のXcode Build for Testing、trait有効時のfacade test、専用test 56件、benchmark release buildと4 workload短縮実測が成功 | `Package.swift` / `Sources/OptionalElementBufferModule/OptionalElementBuffer.swift` / `OptionalElementBufferModule/CurrentQualityAssessment.md` |
 | `OPT-072` | `FROZEN` | User / Codex / Claude | [DISCOVERY] Swift 6.4以降向けOptionalElementBuffer一般提供方式 | split storageを維持するか、`Element?` storageと標準`MutableRef`を使うかを、性能測定を含めて再検討する。現在の競技用途向けopt-in提供を妨げず、ユーザーの明示再開まで着手しない | `OptionalElementBufferModule/CurrentQualityAssessment.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` |
 | `OPT-064` | `FROZEN` | User / Codex | [EXECUTION] OptionalArray一般利用理解Validation試行 | 一般Swift向けの既定提供を再設計する`OPT-072`まで凍結。再開後、設計非参加者が本文と公開surfaceから用途、座標順、nil遷移、所有・並行利用境界を理解できるか観測する | `OptionalElementBufferModule/GeneralSwiftValidationScenario.md` / `OptionalElementBufferModule/UserDocumentationDraft.md` / `OptionalElementBufferModule/OptionalElementBufferAudit.md` |
 | `OPT-065` | `PROPOSED` | User / Codex | [EXECUTION] OptionalArray競技利用Validation試行 | ユーザーが問題・judge・提出可否を決めた後、未計算状態を持つ固定shapeの多次元メモ化問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない | `OptionalElementBufferModule/GeneralSwiftValidationScenario.md` / `Tests/OptionalElementBufferModuleTests/EDPC-J.swift` / `Tests/OptionalElementBufferModuleTests/EDPC-L.swift` |
-| `BARE-007` | `EXCLUDED` | Codex | [EXECUTION] BareArray外部性能アセスメントの実測・判定 | 2026-10-14、前提の`BARE-032`を除外し、1.0提供対象外の保守moduleに1.0適合判定を課さないため除外。既存benchmarkと回帰監視は保守証拠として保持する | `ElementBufferModule/CurrentQualityAssessment.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` |
-| `BARE-032` | `EXCLUDED` | User | [DECISION] BareArrayがC++ nested vectorに匹敵すると判定する性能比の上限 | 2026-10-14、BareArrayを1.0提供対象外の保守moduleとしたため、1.0適合判定用の固定閾値を現在決める必要が消滅。将来の提供再検討では、その時点の実装・用途・比較対象から新しく評価する | `ElementBufferModule/CurrentQualityAssessment.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` |
 | `BARE-035` | `PROPOSED` | Codex | [DISCOVERY] BareArray提供停止の実施境界整理 | package、facade、文書、移行、release、既存利用への影響を確認し、提供停止を局所的に実施できるtaskへ分解する | `Sources/ElementBufferModule/Documentation/Quality-Profile.md` / `Package.swift` |
 | `BARE-042` | `PROPOSED` | User / Codex | [EXECUTION] ElementBuffer利用理解Validation試行 | 設計非参加者へ利用者向け本文と公開surfaceだけを提示し、座標順、`indices`、value accessと借用参照、提供環境、非Collection性、性能説明を無誘導で観測する。参加者選定と外部接触はユーザーが行う | `ElementBufferModule/GeneralSwiftValidationScenario.md` / `ElementBufferModule/UserDocumentationDraft.md` |
 | `BARE-043` | `PROPOSED` | User / Codex | [EXECUTION] ElementBuffer競技利用Validation試行 | ユーザーが問題・judge・提出可否を決めた後、固定shapeの多次元storageを必要とする実問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない | `ElementBufferModule/GeneralSwiftValidationScenario.md` |
@@ -231,10 +207,6 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `QUALITY-001` | `QUALITY-003` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、Apple platforms 27のmanifest境界とplatform別build証拠を合流する |
 | `QUALITY-001` | `DOC-026` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、0.9.xをSwift Package Indexへ登録し、外部build・互換性表示・module別DocC生成の結果を合流する |
 | `QUALITY-001` | `DOC-027` | `PARALLEL_JOIN` | 1.0採用品質を判定する前に、SPIが生成した互換性badgeと確認済みmodule別API referenceへの公開導線を合流する |
-| `ARRAY-016` | `ARRAY-015` | `SEQUENCE` | 調査で確定した名称、互換facade、変更境界に従って機械的な移行を実行する |
-| `ARRAY-017` | `ARRAY-016` | `SEQUENCE` | target・module名移行をmainへ固定して新task名を通常baselineにしてから、rename互換を終了する |
-| `ARRAY-018` | `ARRAY-016` | `SEQUENCE` | 新moduleと旧名facadeの中間状態をmainへ固定してから、旧名2 targetを削除する |
-| `DOC-026` | `ARRAY-016` | `SEQUENCE` | SPIへmodule名とDocC pageを外部化する前に、新moduleと旧名互換targetへの移行と検証を完了する |
 | `RBT-026` | `RBT-014` | `SEQUENCE` | 現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する |
 | `OPT-064` | `OPT-072` | `SEQUENCE` | 一般Swift向けの既定提供方式を再設計してから、一般利用者による理解Validationを実施する |
 | `PERM-044` | `PERM-043` | `SEQUENCE` | C++標準に匹敵すると判定する性能比上限を確定してから、保存したmacOS測定証拠へ適用する |

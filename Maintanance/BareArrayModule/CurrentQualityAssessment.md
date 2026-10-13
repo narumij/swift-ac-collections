@@ -7,6 +7,20 @@
 `Sources/BareArrayModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、Quality Profileの現在性確認、現在評価の作業範囲、完了条件、結果を管理する。
 
+## Deprecated公開面の削除（2026-10-13）
+
+所有1D〜4D型の旧連鎖subscriptと`BareArray1DView`〜`BareArray3DView`をproduction sourceから削除した。
+旧View固有test、writeback Death Test、および旧compiler fixtureが表した退役済み契約は、現行の受入証拠には
+使用しない。既存の初期化、要素access、clone、要素寿命testは`element`／`setElement`へ移行し、Swift 6.4
+向けの`MutableRef`／`reference(at:)`とそのruntime test・compiler fixtureは現行契約として保持した。
+
+BareArrayModuleのXcode Build for Testing、現行通常test 34件、Death Test 26件、およびbenchmark package buildが
+成功した。Xcodeの初回選択実行には削除済みView test 5件がcached test listとして残りnot runになったため、
+SwiftPMで現在のtest discoveryをやり直し、34件＋26件の全60件が成功することを確認した。
+
+以下の旧View導入・監査・受入記録は履歴として保持する。現在評価、公開面、および変更時の確認事項については、
+この節と現行Quality Profileを優先する。
+
 ## Test as Specification原状回復確認（2026-10-13）
 
 ノンエスケーパブルView導入時に途中扱いのまま残った実行taskを、commit履歴、現行source、fixture、
@@ -103,9 +117,9 @@ Swift 6.4以降の`reference(at:)`と`MutableRef.pointee`について、1D〜4D�
 直接仕様化した。Death Testは値access群と同じ正確なSwift trap signalを要求する。
 
 `Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/`には、有効なowner scope内の
-compile-pass 1件と、1D〜4Dの参照をowner外へ返すcompile-fail 4件を置いた。既存の診断scriptへ統合し、
-4件すべてが`lifetime-dependent value escapes its scope`で拒否されること、既存View escape 3件と
-owned writeback exclusivity 3件も引き続き成立することを確認した。
+compile-pass 1件と、1D〜4Dの参照をowner外へ返すcompile-fail 4件を置いた。診断scriptへ統合し、
+4件すべてが`lifetime-dependent value escapes its scope`で拒否されることを確認した。旧View escape 3件と
+owned writeback exclusivity 3件のfixtureは、対応するdeprecated公開面の削除に伴って退役した。
 
 Debugは通常40件とDeath Test 51件、Releaseは通常33件とDeath Test 51件が成功した。facade到達確認も成功した。
 これにより、監査で分離した値access群とSwift 6.4借用参照群の直接Test as Specificationは揃った。
@@ -219,14 +233,13 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
 
 | 上位要求 | 品質主張 | 評価 | 現在の証拠 | 未確認範囲・残余リスク |
 | --- | --- | --- | --- | --- |
-| QR-01 正確性 | 初期化、次元、offset、subscript、View、writeback、破棄が公開契約どおり動作する | 確認済み | 座標値accessとSwift 6.4借用参照の直接仕様化後、Debug通常40件・Death Test 51件、Release通常33件・Death Test 51件が成功。compiler診断fixtureも成功 | 有限な入力と構成による確認であり、任意の次元・要素型の数学的証明ではない |
-| QR-02 性能効率性 | 実装上の計算量と連続storageの設計根拠が公開契約と一致する | 確認済み | 所有4型は要素数分を一括allocateし、subscriptとView生成は定数回のoffset計算、初期化と破棄は要素数に比例する。公開documentation commentの計算量と一致 | 実装構造から確認した計算量であり、実行時間、allocation cost、最適化結果を証明しない |
+| QR-01 正確性 | 初期化、次元、offset、座標value access、借用参照、破棄が公開契約どおり動作する | 確認済み | deprecated公開面削除後、現行通常test 34件・Death Test 26件が成功。座標value accessとSwift 6.4借用参照の直接仕様群を保持 | 有限な入力と構成による確認であり、任意の次元・要素型の数学的証明ではない |
+| QR-02 性能効率性 | 実装上の計算量と連続storageの設計根拠が公開契約と一致する | 確認済み | 所有4型は要素数分を一括allocateし、座標value accessと借用参照生成は定数回のoffset計算、初期化と破棄は要素数に比例する。benchmark package build成功 | 実装構造とbuildの確認であり、実行時間、allocation cost、最適化結果を証明しない |
 | QR-02 性能効率性 | C/C++標準に匹敵する性能を持つ | 未検証 | BareArray固有の2D・3D sequential access benchmarkはCIへ登録済み | C++ nested vectorとの外部比較結果と性能比の受入水準は未確定 |
-| QR-03 安全性 | 所有storage、要素寿命、範囲拒否、writeback拒否が契約どおり動く | 確認済み | 座標値accessと借用参照について要素寿命、全次元・全軸bounds、owner依存寿命を直接仕様化し、Debug・Releaseとremote CIが成功 | testが通る有限経路の証拠であり、任意の要素型・寸法・操作列の証明ではない |
-| QR-03 安全性 | 非所有Viewが所有元を越えず、有効な連鎖accessとwritebackが成立する | 確認済み | View 3種を`~Escapable`化し、Debug 35件・Release 28件と両構成のDeath Test 39件が成功。compiler診断fixtureはView寿命escape 3件と所有配列writeback exclusivity 3件を拒否した | Swift 6.4のLifetimes実験機能と、fixtureが表す利用形に対するVerificationである |
-| QR-03 安全性 | strict memory safety下で公開APIの安全性境界が成立する | 確認済み | 所有型4種とView型3種を`@safe`に分類し、BareArrayModuleへ`.strictMemorySafety()`を適用した状態で未承認のunsafe利用warningがなく、build・test・compiler診断fixtureが成功 | compiler診断と有限の実行経路による確認であり、並行利用の意味的安全性までは証明しない |
+| QR-03 安全性 | 所有storage、要素寿命、座標範囲拒否、借用寿命が契約どおり動く | 確認済み | 座標value accessと借用参照について要素寿命、全次元・全軸bounds、owner依存寿命を直接仕様化。deprecated削除後も現行60件が成功 | testが通る有限経路の証拠であり、任意の要素型・寸法・操作列の証明ではない |
+| QR-03 安全性 | strict memory safety下で公開APIの安全性境界が成立する | 確認済み | 所有型4種と`MutableRef`を`@safe`に分類し、BareArrayModuleへ`.strictMemorySafety()`を適用。build・runtime testが成功し、借用寿命compiler fixtureを保持 | compiler診断と有限の実行経路による確認であり、並行利用の意味的安全性までは証明しない |
 | QR-03 安全性 | `@unchecked Sendable`を含む並行利用と`-Ounchecked`の保証境界が受入可能である | 未検証 | 未確定範囲はQuality Profileと公開コメントに分離されている | data raceを含む並行利用のValidationと、事前条件検査を省略する構成の扱いは未評価 |
-| QR-04 理解可能性 | 所有・非所有、軸順、初期化、連鎖subscript、writeback、失敗条件を公開文書から理解できる | 確認済み | 現行公開宣言のdocumentation commentをsourceと照合し、BareArrayModuleのDocC生成が成功 | 文書が存在し整合するVerificationであり、一般利用者による理解のValidationは未実施 |
+| QR-04 理解可能性 | 座標順、初期化、value access、借用参照、失敗条件を公開文書から理解できる | 部分確認 | 公開Quality Profileとsource commentをdeprecated削除後の公開面へ同期した | DocC再生成と一般利用者による理解のValidationは未実施 |
 | QR-05 利用可能性 | SwiftPMと`AcCollections`から導入し、対象環境で利用できる | 確認済み | Debug・Release build、facade再公開test 1件、BareArray.swift単独typecheck、DocC生成が成功 | macOSの現行環境における確認。他platform、外部packageとの共存、実利用のValidationは未確認 |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | copy & paste許諾と単一file候補はsourceに存在する | 実問題、実提出、実行時間、メモリ使用量のValidation証拠を未確認 |
 | QR-06 持続可能性 | 公開面、正確性、寿命、停止契約を変更後に再確認できる | 部分確認 | 番号付きTest as Specification、座標access直接仕様群、compiler診断fixture、Debug・Release・ASanのCI jobがあり、BareArray性能workload 4件は通常CI libraryへ登録済み。これらを含むPR #192のremote CIはall greenで、BareArrayModuleのDocC生成も個別に成功した | CIのdocumentation jobはRedBlackTreeCollectionsだけを対象とし、BareArrayのdocumentation commentを変更後もDocC生成で継続確認する自動経路はない |

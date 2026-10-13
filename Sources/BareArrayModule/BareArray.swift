@@ -69,28 +69,6 @@
   @usableFromInline let count: Int
   @usableFromInline let payload: UnsafeMutablePointer<Element>
 
-  /// `position`の要素へアクセスします。
-  ///
-  /// 値を置き換えると、以前の要素は破棄されます。
-  ///
-  /// - Parameter position: アクセスする要素の位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
-  /// - Complexity: O(1)
-  @inlinable
-  @available(*, deprecated, message: "Use element(at:), setElement(_:at:), or reference(at:) instead.")
-  public subscript(position: Int) -> Element {
-    @inline(__always)
-    unsafeAddress {
-      precondition(0 <= position && position < count)
-      return unsafe UnsafePointer(payload + position)
-    }
-    @inline(__always)
-    unsafeMutableAddress {
-      precondition(0 <= position && position < count)
-      return unsafe payload + position
-    }
-  }
-
   deinit {
     unsafe self.payload.deinitialize(count: count)
     unsafe self.payload.deallocate()
@@ -121,7 +99,7 @@ extension BareArray: @unchecked Sendable where Element: Sendable { }
 /// 動的計画法などで利用する大きな配列を簡潔に記述できます。
 ///
 /// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
-/// 連鎖subscriptは`array[y][x]`の順で、`width`が最内軸、`height`が最外軸です。
+/// 座標accessでは`width`が最内軸、`height`が最外軸です。
 /// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
@@ -187,34 +165,6 @@ extension BareArray: @unchecked Sendable where Element: Sendable { }
   @usableFromInline let width: Int
   @usableFromInline let height: Int
 
-  /// `position`番目の行を参照する非所有Viewを返します。
-  ///
-  /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
-  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置から返された同一storage・同一shapeの
-  /// Viewだけを受け入れ、別のViewの代入は契約違反です。
-  ///
-  /// - Parameter position: 参照する行の位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
-  /// - Complexity: O(1)
-  @inlinable
-  @available(*, deprecated, message: "Use element(at:_:), setElement(_:at:_:), or reference(at:_:) instead.")
-  public subscript(position: Int) -> BareArray1DView<Element> {
-
-    @inline(__always)
-    @_lifetime(borrow self)
-    get {
-      precondition(0 <= position && position < height)
-      return unsafe .init(payload: payload + width * position, count: width, borrowing: self)
-    }
-
-    @inline(__always)
-    set {
-      precondition(0 <= position && position < height)
-      unsafe precondition(newValue.payload == payload + width * position)
-      precondition(newValue.count == width)
-    }
-  }
-
   deinit {
     unsafe self.payload.deinitialize(count: capacity)
     unsafe self.payload.deallocate()
@@ -245,7 +195,7 @@ extension BareArray2D: @unchecked Sendable where Element: Sendable { }
 /// 動的計画法などで利用する大きな配列を簡潔に記述できます。
 ///
 /// 要素は連続したメモリ領域に格納され、C言語の配列に近いアクセス性能を持ちます。
-/// 連鎖subscriptは`array[z][y][x]`の順で、`width`が最内軸、`depth`が最外軸です。
+/// 座標accessでは`width`が最内軸、`depth`が最外軸です。
 /// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
 // `Element`が`Sendable`なら、配列も`Sendable`です。
@@ -329,36 +279,6 @@ extension BareArray2D: @unchecked Sendable where Element: Sendable { }
   @usableFromInline let height: Int
   @usableFromInline let depth: Int
 
-  /// `position`番目の面を参照する非所有Viewを返します。
-  ///
-  /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
-  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを受け入れ、
-  /// 別のViewの代入は契約違反です。
-  ///
-  /// - Parameter position: 参照する面の位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
-  /// - Complexity: O(1)
-  @inlinable
-  @available(*, deprecated, message: "Use element(at:_:_:), setElement(_:at:_:_:), or reference(at:_:_:) instead.")
-  public subscript(position: Int) -> BareArray2DView<Element> {
-
-    @inline(__always)
-    @_lifetime(borrow self)
-    get {
-      precondition(0 <= position && position < depth)
-      return unsafe .init(
-        payload: payload + width * height * position, width: width, height: height,
-        borrowing: self)
-    }
-
-    @inline(__always)
-    set {
-      precondition(0 <= position && position < depth)
-      unsafe precondition(newValue.payload == payload + width * height * position)
-      precondition(newValue.width == width && newValue.height == height)
-    }
-  }
-
   deinit {
     unsafe self.payload.deinitialize(count: capacity)
     unsafe self.payload.deallocate()
@@ -385,7 +305,7 @@ extension BareArray3D: @unchecked Sendable where Element: Sendable { }
 
 /// 連続したメモリ領域に要素を所有する4次元配列です。
 ///
-/// 連鎖subscriptは`array[w][z][y][x]`の順です。`size0`が最内軸、`size3`が最外軸で、
+/// 座標accessでは`size0`が最内軸、`size3`が最外軸で、
 /// storage上では`size0`の軸が最も速く進みます。
 /// この型は要素を所有し、配列の破棄時にすべての要素を破棄します。
 // MEMO: 以下の記述は冗長に感じるので使用しないことにした
@@ -477,36 +397,6 @@ extension BareArray3D: @unchecked Sendable where Element: Sendable { }
   @usableFromInline let size1: Int
   @usableFromInline let size2: Int
   @usableFromInline let size3: Int
-
-  /// `position`番目の3次元領域を参照する非所有Viewを返します。
-  ///
-  /// `position`は`size3`の軸を選びます。返されたViewからの変更はこの配列へ反映されます。
-  /// Viewはこの配列の生存中だけ使用してください。setterは連鎖要素書き込みのwriteback専用です。
-  /// 同じ位置の同一storage・同一shapeのViewだけを受け入れ、別のViewの代入は契約違反です。
-  ///
-  /// - Parameter position: `size3`軸で参照する位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
-  /// - Complexity: O(1)
-  @inlinable
-  @available(*, deprecated, message: "Use element(at:_:_:_:), setElement(_:at:_:_:_:), or reference(at:_:_:_:) instead.")
-  public subscript(position: Int) -> BareArray3DView<Element> {
-
-    @inline(__always)
-    get {
-      precondition(0 <= position && position < size3)
-      return unsafe .init(
-        payload: payload + size0 * size1 * size2 * position, width: size0, height: size1,
-        depth: size2, borrowing: self)
-    }
-
-    @inline(__always)
-    set {
-      precondition(0 <= position && position < size3)
-      unsafe precondition(newValue.payload == payload + size0 * size1 * size2 * position)
-      precondition(
-        newValue.width == size0 && newValue.height == size1 && newValue.depth == size2)
-    }
-  }
 
   deinit {
     unsafe self.payload.deinitialize(count: capacity)
@@ -666,223 +556,3 @@ extension BareArray4D: @unchecked Sendable where Element: Sendable { }
       unsafe payload[((w * size2 + z) * size1 + y) * size0 + x] = newValue
     }
   }
-
-// MARK: -
-
-/// 所有配列の連続する1次元領域を参照する非所有Viewです。
-///
-/// Viewからの変更は所有配列の同じ要素へ反映されます。Viewはstorageの寿命を延長しないため、
-/// 元の所有配列の生存中だけ使用してください。
-// MEMO: 以下の記述は冗長に感じるので使用しないことにした
-// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
-@safe public struct BareArray1DView<Element>: ~Escapable {
-
-  @inlinable
-  @_lifetime(borrow source)
-  @unsafe internal init<Source: ~Copyable & ~Escapable>(
-    payload: UnsafeMutablePointer<Element>, count: Int, borrowing source: borrowing Source
-  ) {
-    self.count = count
-    unsafe self.payload = payload
-  }
-
-  @inlinable
-  @_lifetime(copy source)
-  @unsafe internal init<Source: ~Copyable & ~Escapable>(
-    payload: UnsafeMutablePointer<Element>, count: Int, copying source: borrowing Source
-  ) {
-    self.count = count
-    unsafe self.payload = payload
-  }
-
-  @usableFromInline let count: Int
-  @usableFromInline let payload: UnsafeMutablePointer<Element>
-
-  /// `position`の要素へアクセスします。
-  ///
-  /// 値を置き換えると、所有配列のstorageにあった以前の要素は破棄されます。
-  ///
-  /// - Parameter position: アクセスする要素の位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: Int) -> Element {
-    @inline(__always)
-    unsafeAddress {
-      precondition(0 <= position && position < count)
-      return unsafe UnsafePointer(payload + position)
-    }
-    @inline(__always)
-    unsafeMutableAddress {
-      precondition(0 <= position && position < count)
-      return unsafe payload + position
-    }
-  }
-}
-
-@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
-extension BareArray1DView {
-
-  /// このViewで有効な位置である`0..<count`を返します。
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  public var indices: Range<Int> { 0..<count }
-}
-
-/// 所有配列の連続する2次元領域を参照する非所有Viewです。
-///
-/// 連鎖subscriptは`view[y][x]`の順です。Viewからの変更は所有配列へ反映されます。
-/// Viewはstorageの寿命を延長しないため、元の所有配列の生存中だけ使用してください。
-// MEMO: 以下の記述は冗長に感じるので使用しないことにした
-// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
-@safe public struct BareArray2DView<Element>: ~Escapable {
-
-  @inlinable
-  @_lifetime(borrow source)
-  @unsafe internal init<Source: ~Copyable & ~Escapable>(
-    payload: UnsafeMutablePointer<Element>, width: Int, height: Int,
-    borrowing source: borrowing Source
-  ) {
-    self.capacity = height * width
-    unsafe self.payload = payload
-    self.width = width
-    self.height = height
-  }
-
-  @inlinable
-  @_lifetime(copy source)
-  @unsafe internal init<Source: ~Copyable & ~Escapable>(
-    payload: UnsafeMutablePointer<Element>, width: Int, height: Int,
-    copying source: borrowing Source
-  ) {
-    self.capacity = height * width
-    unsafe self.payload = payload
-    self.width = width
-    self.height = height
-  }
-
-  @usableFromInline let capacity: Int
-  @usableFromInline let payload: UnsafeMutablePointer<Element>
-  @usableFromInline let width: Int
-  @usableFromInline let height: Int
-
-  /// `position`番目の行を参照する非所有Viewを返します。
-  ///
-  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを受け入れ、
-  /// 別のViewの代入は契約違反です。
-  ///
-  /// - Parameter position: 参照する行の位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: Int) -> BareArray1DView<Element> {
-
-    @inline(__always)
-    @_lifetime(copy self)
-    get {
-      precondition(0 <= position && position < height)
-      return unsafe .init(
-        payload: payload + width * position, count: width, copying: self)
-    }
-
-    @inline(__always)
-    set {
-      precondition(0 <= position && position < height)
-      unsafe precondition(newValue.payload == payload + width * position)
-      precondition(newValue.count == width)
-    }
-  }
-}
-
-@available(*, deprecated, message: "Use the owning array's mutable(at:...) method instead.")
-extension BareArray2DView {
-
-  /// 外側の軸に有効な位置である`0..<height`を返します。
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  public var indices: Range<Int> { 0..<height }
-}
-
-/// 所有配列の連続する3次元領域を参照する非所有Viewです。
-///
-/// 連鎖subscriptは`view[z][y][x]`の順です。Viewからの変更は所有配列へ反映されます。
-/// Viewはstorageの寿命を延長しないため、元の所有配列の生存中だけ使用してください。
-// MEMO: 以下の記述は冗長に感じるので使用しないことにした
-// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@available(*, deprecated, message: "Use the owning array's mutable(at:...) method instead.")
-@safe public struct BareArray3DView<Element>: ~Escapable {
-
-  @inlinable
-  @_lifetime(borrow source)
-  @unsafe internal init<Source: ~Copyable & ~Escapable>(
-    payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int,
-    borrowing source: borrowing Source
-  ) {
-    self.capacity = height * width
-    unsafe self.payload = payload
-    self.width = width
-    self.height = height
-    self.depth = depth
-  }
-
-  @inlinable
-  @_lifetime(copy source)
-  @unsafe internal init<Source: ~Copyable & ~Escapable>(
-    payload: UnsafeMutablePointer<Element>, width: Int, height: Int, depth: Int,
-    copying source: borrowing Source
-  ) {
-    self.capacity = height * width
-    unsafe self.payload = payload
-    self.width = width
-    self.height = height
-    self.depth = depth
-  }
-
-  @usableFromInline let capacity: Int
-  @usableFromInline let payload: UnsafeMutablePointer<Element>
-  @usableFromInline let width: Int
-  @usableFromInline let height: Int
-  @usableFromInline let depth: Int
-
-  /// `position`番目の面を参照する非所有Viewを返します。
-  ///
-  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを受け入れ、
-  /// 別のViewの代入は契約違反です。
-  ///
-  /// - Parameter position: 参照する面の位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: Int) -> BareArray2DView<Element> {
-
-    @inline(__always)
-    @_lifetime(copy self)
-    get {
-      precondition(0 <= position && position < depth)
-      return unsafe .init(
-        payload: payload + width * height * position, width: width, height: height,
-        copying: self)
-    }
-
-    @inline(__always)
-    set {
-      precondition(0 <= position && position < depth)
-      unsafe precondition(newValue.payload == payload + width * height * position)
-      precondition(newValue.width == width && newValue.height == height)
-    }
-  }
-}
-
-@available(*, deprecated, message: "Use the owning array's mutable(at:...) method instead.")
-extension BareArray3DView {
-
-  /// 外側の軸に有効な位置である`0..<depth`を返します。
-  ///
-  /// - Complexity: O(1)
-  @inlinable
-  public var indices: Range<Int> { 0..<depth }
-}

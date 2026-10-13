@@ -1,5 +1,10 @@
 # BareArray documentation handoff audit
 
+> **現在状態（2026-10-13）:** 本文の29宣言ledgerとView・writebackに関する記録は、削除前の公開面を
+> 保存する履歴である。所有型の旧連鎖subscriptと`BareArray1DView`〜`BareArray3DView`は削除済み。
+> 現行公開面と品質境界は`Sources/BareArrayModule/Documentation/Quality-Profile.md`、現在の検証結果は
+> `CurrentQualityAssessment.md`を正とする。
+
 最終更新: 2026-10-09 / Codex
 
 ## 目的

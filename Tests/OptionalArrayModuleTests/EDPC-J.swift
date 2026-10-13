@@ -14,11 +14,11 @@ func EDPC_J(N: Int) {
 
   func rec(_ i: Int, _ j: Int, _ k: Int) -> Double {
     func rec(_ i: Int, _ j: Int, _ k: Int) -> Double {
-      if let value = ___rec_cache[i][j][k] {
+      if let value = ___rec_cache.element(at: k, j, i) {
         return value
       }
       let value = ___body(i, j, k)
-      ___rec_cache[i][j][k] = value
+      ___rec_cache.setElement(value, at: k, j, i)
       return value
     }
     func ___body(_ i: Int, _ j: Int, _ k: Int) -> Double {

@@ -32,23 +32,22 @@
 
 ## Quality Profile現在性
 
-現行Quality Profileは、所有4型、非所有View 3型、番号付きTest as Specification、性能証拠、
-`Sendable`、strict memory safety、`-Ounchecked`の境界を扱う。2026-10-13、連鎖subscriptと
-非所有View 3型はdeprecatedとなり、座標access methodが現行経路になった。
+現行Quality Profileは、所有4型、番号付きTest as Specification、性能証拠、`Sendable`、
+strict memory safety、`-Ounchecked`の境界を扱う。2026-10-13、deprecatedだった連鎖subscriptと
+非所有View 3型を削除し、座標access methodだけを現行要素accessとした。
 
 ## 現行評価
 
 | 上位要求 | 品質主張 | 評価 | 現在の証拠 | 未確認範囲・残余リスク |
 | --- | --- | --- | --- | --- |
-| QR-01 正確性 | 初期化、nil状態、次元、offset、subscript、View、writeback、`removeAll()`、破棄が公開契約どおり動作する | 確認済み | 既存契約に加え、1D〜4Dの座標accessを非対称shape全座標、選択位置だけの更新、値・nil遷移、参照要素のexactly-once破棄、全軸boundsで直接仕様化。追加11件を含む全76 testが成功 | 有限な型、寸法、操作列によるVerificationであり、任意入力の証明ではない |
-| QR-02 性能効率性 | presence mapとpayloadの連続storage、O(1) access、線形初期化・破棄という実装特性が公開説明と一致する | 確認済み | sourceとdocumentation commentを照合。要素accessとView生成は定数回のoffset計算、初期化・`removeAll()`・破棄はcapacityに比例する | 実装構造上の計算量であり、実行時間、allocation cost、最適化結果を証明しない |
+| QR-01 正確性 | 初期化、nil状態、次元、offset、座標access、`removeAll()`、破棄が公開契約どおり動作する | 確認済み | 1D〜4Dの座標accessを非対称shape全座標、選択位置だけの更新、値・nil遷移、参照要素のexactly-once破棄、全軸boundsで直接仕様化。削除後の56 testが成功 | 有限な型、寸法、操作列によるVerificationであり、任意入力の証明ではない |
+| QR-02 性能効率性 | presence mapとpayloadの連続storage、O(1) access、線形初期化・破棄という実装特性が公開説明と一致する | 確認済み | sourceとdocumentation commentを照合。要素accessは定数回のoffset計算、初期化・`removeAll()`・破棄はcapacityに比例する | 実装構造上の計算量であり、実行時間、allocation cost、最適化結果を証明しない |
 | QR-02 性能効率性 | 利用目的に対する外部性能が十分である | 未検証 | 2D・3Dのcold / warm memoization benchmarkはCIへ登録済み | C++ nested vector番兵版との外部比較結果と性能比の受入水準は未確定 |
-| QR-03 安全性 | storage確保・要素寿命・範囲・次元・writeback拒否が検証した経路で成立する | 確認済み | ASanを含むremote CIが成功。現行座標accessについて参照要素の置換・nil遷移と、1D〜4D全軸の負値・上限に対するread / write trapを直接仕様化した | ASanと有限のtest経路で観測できないunsafe操作の正しさまでは証明しない |
-| QR-03 安全性 | deprecated非所有Viewを所有元より長く保持できない | 部分確認 | View 3型は`~Escapable`で、所有元とView間の寿命依存を宣言している | compiler escape fixtureによる独立した反証確認はない。deprecated互換面であり、現行座標access APIの採用条件にはしない |
-| QR-03 安全性 | strict memory safety下で公開APIとunsafe境界が成立する | 確認済み | 所有4型とView 3型を`@safe`に分類し、低レベル操作をscoped `unsafe`へ限定。targetへ`.strictMemorySafety()`を恒久適用し、単独typecheck警告0・エラー0、Build for Testing成功、現行全76 test成功 | strict設定はunsafe実装自体の正しさを証明せず、境界の明示と未注釈操作の検出を提供する |
+| QR-03 安全性 | storage確保・要素寿命・範囲・次元が検証した経路で成立する | 確認済み | ASanを含むremote CIが成功。現行座標accessについて参照要素の置換・nil遷移と、1D〜4D全軸の負値・上限に対するread / write trapを直接仕様化した | ASanと有限のtest経路で観測できないunsafe操作の正しさまでは証明しない |
+| QR-03 安全性 | strict memory safety下で公開APIとunsafe境界が成立する | 確認済み | 所有4型を`@safe`に分類し、低レベル操作をscoped `unsafe`へ限定。targetへ`.strictMemorySafety()`を恒久適用し、Build for Testingと削除後の56 testが成功 | strict設定はunsafe実装自体の正しさを証明せず、境界の明示と未注釈操作の検出を提供する |
 | QR-03 安全性 | `@unchecked Sendable`が許す移送・共有の範囲が妥当である | 未検証 | 所有4型に条件付き適合がある。compile testは1Dのみ | 2D〜4Dの表面確認、移送後の所有、並行共有・data raceの意味的Validationは未実施 |
-| QR-03 安全性 | `-Ounchecked`で省略される事前条件との境界が受入可能である | 未検証 | 公開コメントは検査省略可能性を明示する | `-Ounchecked`構成の実行、範囲・次元・writeback違反時の扱いは評価していない |
-| QR-04 理解可能性 | nil状態、所有と非所有、軸順、`removeAll()`、失敗条件を公開文書から確認できる | 確認済み | 公開29宣言のdocumentation commentを監査済みで、DocCをwarnings-as-errors付きで生成できた | 文書と実装のVerificationであり、一般利用者が誤解なく使えることのValidationではない |
+| QR-03 安全性 | `-Ounchecked`で省略される事前条件との境界が受入可能である | 未検証 | 公開コメントは検査省略可能性を明示する | `-Ounchecked`構成の実行、範囲・次元違反時の扱いは評価していない |
+| QR-04 理解可能性 | nil状態、座標と軸順、`removeAll()`、失敗条件を公開文書から確認できる | 確認済み | 現行公開面のdocumentation commentを実装と照合済みで、過去にDocCをwarnings-as-errors付きで生成できた | 削除後のDocC再生成と、一般利用者が誤解なく使えることのValidationは未実施 |
 | QR-05 利用可能性 | SwiftPMと`AcCollections`再公開経路で利用できる | 確認済み | OptionalArrayModule build、facade再公開test 1件、DocC生成が現行macOS環境で成功 | 他platform、外部packageとの共存、実利用は未確認 |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | EDPC-J・EDPC-Lはtest targetのcompile evidenceであり、単一file利用許諾もsourceにある | 正答、実提出、実行時間、メモリ使用量は確認していない |
 | QR-06 持続可能性 | 変更後に公開面、状態、寿命、次元、停止契約を再確認できる | 部分確認 | 番号付きTest as Specification、座標access直接仕様群、Debug・Release・ASanのCI job、および2D・3D memoization accessの回帰workloadがある。これらを含むPR #192のremote CIはall greenで、OptionalArrayModuleのDocC生成も個別に成功した | CIのDocC対象にOptionalArrayは含まれず、documentation commentの変更後もDocC生成を継続して再確認できる自動経路はない |
@@ -64,8 +63,8 @@
 - `swiftc -typecheck -swift-version 6 -enable-experimental-feature Lifetimes -strict-memory-safety`による
   単独typecheck: warning 0、error 0。
 - `.strictMemorySafety()`恒久適用後のXcode Build for Testing: 成功。
-- Xcodeで`OptionalArrayModuleTests`の9 suiteを実行: 65件成功、失敗0件。deprecated View互換testと
-  Death Testを含む。
+- Xcode Build for Testing成功。削除後の`OptionalArrayModuleTests`は通常35件、Death Test 21件の
+  合計56件が成功し、失敗0件。
 - BenchmarkのRelease buildに成功。2D・3Dのcold / warm memoization checksum 4件をsize 1・3・16で
   3反復し、全件のchecksum検証に成功。
 - `Benchmarks/Libraries/CI.json`は30 task・60 size・最大64kを70.4秒で完走。OptionalArray 4件を
@@ -85,7 +84,7 @@ shapeはBareArray測定と同じ総要素数の素因数を各軸へ均衡に割
 一致する2D・3D shapeを用いる。走査は最内軸から連続する順序とし、期待checksumは
 `size * (size - 1) / 2`とする。
 
-配列の確保、shape計算、warm状態の事前設定は計測外に置く。計測内には連鎖subscriptによる
+配列の確保、shape計算、warm状態の事前設定は計測外に置く。計測内には座標accessによる
 presence確認、cold時の値保存、値取得、checksum更新だけを含める。checksumは計測後に
 `blackHole`と`precondition`へ渡し、最適化による消去と誤った走査を検出する。
 
@@ -95,8 +94,8 @@ nested `vector<Int>`を同じshapeで確保し、未設定を表す番兵値をp
 
 ## 現行座標access Test as Specification監査（2026-10-13）
 
-deprecatedとなった連鎖subscript・非所有Viewの互換testと、現行`element`／`setElement`の仕様証拠を
-分離して確認した。direct methodの既存testは1D〜4Dで各1座標のnil→value→nilと近傍1点を確認するが、
+削除前に連鎖subscript・非所有Viewの互換testと、現行`element`／`setElement`の仕様証拠を
+分離して確認した。座標methodの既存testは1D〜4Dで各1座標のnil→value→nilと近傍1点を確認するが、
 次は未検証だった。
 
 - 非対称shapeの全座標を通した軸順・stride。
@@ -105,13 +104,13 @@ deprecatedとなった連鎖subscript・非所有Viewの互換testと、現行`e
 - 1D〜4Dの各軸について、`element`と`setElement`が負値と上限値をSwift trapで拒否すること。
 
 これらは既存の次元、座標順、範囲、要素所有契約から直接導け、新しい製品判断を要しない。
-deprecated Viewの寿命・writeback仕様は互換testへ残し、現行座標accessの受入証拠には数えない。
+旧Viewの寿命・writeback仕様は削除した公開面だけの契約なので、現行座標accessの証拠へ転用せず退役させた。
 
 上記不足を現行API専用のtestへ実装した。非対称shapeの全座標を1D〜4Dで読み書きして軸順とstrideを固定し、
 各軸の近傍が未設定のままであること、参照要素の置換とnil化が各値をexactly onceで破棄することを確認する。
 Death Testは1D〜4Dの全軸について、負値と上限値をread・writeの双方で与え、Darwinでは`SIGTRAP`、
 Linuxでは`SIGILL`というSwift preconditionのsignalまで固定した。2026-10-13にBuild for Testingが成功し、
-追加した通常test 3件とDeath Test 8件を含むOptionalArray全76件が成功した。
+追加した通常test 3件とDeath Test 8件を含む削除後のOptionalArray全56件が成功した。
 
 ### C++番兵workloadと暫定チャート
 
@@ -133,8 +132,7 @@ Release build後、OptionalArray / Swift nested Array番兵 / C++ nested vector�
   Verificationを妨げないため、今回の品質評価の前提にはしない。
 - 旧31診断という評価は現行sourceに対して失効した。再取得した40件は、所有型分類4件、allocation
   境界8件、deprecated View経路28件へ分離でき、製品判断を追加せず警告0件へ整理できた。
-- Viewはdeprecated互換面として残す。寿命設計を現行APIとして磨かず、削除まで既存挙動とstrict境界を
-  維持する。
+- deprecatedだった連鎖subscriptとViewを削除し、利用例・test・benchmarkを座標accessへ移行した。
 - 性能、一般利用、競技利用、`Sendable`、`-Ounchecked`は証拠不足であり、成功とも失敗とも判断しない。
 - 多次元accessの測定条件は、OptionalArrayの既存用途とBareArrayで確定済みのshape・計測境界から
   導ける。新しい製品仕様や性能比の受入水準を決めないため、設計時のユーザー判断は発生しない。
@@ -151,5 +149,4 @@ Release build後、OptionalArray / Swift nested Array番兵 / C++ nested vector�
 
 0.6.0時点の現行品質アセスメントは完了した。正確性、検証したメモリ経路、公開説明、package利用経路、
 回帰構造とstrict memory safetyには現行証拠がある。一方、`Sendable`、`-Ounchecked`、外部性能、
-一般利用・競技利用のValidationは未検証である。deprecated Viewの独立したescape fixtureは無いが、
-現行座標access APIの採用条件にはしない。
+一般利用・競技利用のValidationは未検証である。

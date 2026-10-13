@@ -90,9 +90,9 @@ final class AcCollectionsTests: XCTestCase {
   #endif
 
   func test_importAcCollections_exposesOptionalArray() {
-    var array = OptionalArray1D<Int>(capacity: 2)
-    array[1] = 7
-    XCTAssertEqual(array[1], 7)
+    let array = OptionalArray1D<Int>(capacity: 2)
+    array.setElement(7, at: 1)
+    XCTAssertEqual(array.element(at: 1), 7)
   }
 
   func test_importAcCollections_exposesBareArray() {

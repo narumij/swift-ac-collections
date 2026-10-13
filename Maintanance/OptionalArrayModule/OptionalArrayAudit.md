@@ -2,6 +2,20 @@
 
 最終更新: 2026-10-08 / Codex
 
+## 現行公開面への追補（2026-10-13）
+
+本監査の公開29宣言ledgerは、連鎖subscriptと非所有Viewを主要経路としていた2026-10-08時点の
+証拠packageであり、現行公開面の一覧ではない。その後、所有1D〜4D型へ`element`／`setElement`の
+座標access 8宣言が追加され、2026-10-13にdeprecatedだった所有型の連鎖subscript 4件と
+非所有View 3型を削除した。旧ledgerは設計と移行の履歴入力として維持する。
+
+現行の要素accessは所有型の座標methodだけである。軸順、offset、範囲、値・nil遷移、
+参照要素寿命は、1D〜4Dの非対称shapeと全軸Death Testを含むTest as Specificationで固定する。
+旧View固有の共有・writeback・indices testとbenchmarkは、削除した公開契約とともに退役させた。
+
+この追補は旧29宣言の履歴や当時の判断を消さない。型名と次元名体系の再判断、および性能比の
+受入水準も決定しない。
+
 ## 目的
 
 OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ、Codexのユーザードキュメント

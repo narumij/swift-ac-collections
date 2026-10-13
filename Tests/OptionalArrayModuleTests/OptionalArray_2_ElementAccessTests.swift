@@ -8,22 +8,22 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
   func testOptionalArray1DSetAndGet() {
     var array = OptionalArray1D<Int>(capacity: 3)
 
-    array[0] = 10
-    array[2] = 30
+    array.setElement(10, at: 0)
+    array.setElement(30, at: 2)
 
-    XCTAssertEqual(array[0], 10)
-    XCTAssertNil(array[1])
-    XCTAssertEqual(array[2], 30)
+    XCTAssertEqual(array.element(at: 0), 10)
+    XCTAssertNil(array.element(at: 1))
+    XCTAssertEqual(array.element(at: 2), 30)
   }
 
   func testOptionalArray1DAssignNil() {
     var array = OptionalArray1D<Int>(capacity: 3)
 
-    array[1] = 123
-    XCTAssertEqual(array[1], 123)
+    array.setElement(123, at: 1)
+    XCTAssertEqual(array.element(at: 1), 123)
 
-    array[1] = nil
-    XCTAssertNil(array[1])
+    array.setElement(nil, at: 1)
+    XCTAssertNil(array.element(at: 1))
   }
 
   func testOptionalArray1DDirectMethods() {
@@ -42,12 +42,12 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
       width: 2,
       height: 2)
 
-    array[0][0] = 10
-    array[1][1] = 20
+    array.setElement(10, at: 0, 0)
+    array.setElement(20, at: 1, 1)
 
-    XCTAssertEqual(array[0][0], 10)
-    XCTAssertEqual(array[1][1], 20)
-    XCTAssertNil(array[0][1])
+    XCTAssertEqual(array.element(at: 0, 0), 10)
+    XCTAssertEqual(array.element(at: 1, 1), 20)
+    XCTAssertNil(array.element(at: 1, 0))
   }
 
   func testOptionalArray2DDirectMethods() {
@@ -68,10 +68,10 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
       height: 2,
       depth: 2)
 
-    array[1][0][1] = 999
+    array.setElement(999, at: 1, 0, 1)
 
-    XCTAssertEqual(array[1][0][1], 999)
-    XCTAssertNil(array[0][0][0])
+    XCTAssertEqual(array.element(at: 1, 0, 1), 999)
+    XCTAssertNil(array.element(at: 0, 0, 0))
   }
 
   func testOptionalArray3DDirectMethods() {
@@ -93,10 +93,10 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
       size2: 2,
       size3: 2)
 
-    array[1][0][1][0] = 1234
+    array.setElement(1234, at: 0, 1, 0, 1)
 
-    XCTAssertEqual(array[1][0][1][0], 1234)
-    XCTAssertNil(array[0][0][0][0])
+    XCTAssertEqual(array.element(at: 0, 1, 0, 1), 1234)
+    XCTAssertNil(array.element(at: 0, 0, 0, 0))
   }
 
   func testOptionalArray4DDirectMethods() {

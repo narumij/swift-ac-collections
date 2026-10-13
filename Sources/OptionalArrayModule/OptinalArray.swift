@@ -17,7 +17,7 @@
 /// 配列ベースのメモ化に用いる配列です。
 /// 未初期化値の番兵を用意することなく利用できます。
 /// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
-/// subscriptへ`nil`を代入すると、設定済みの要素を破棄して未設定状態へ戻します。
+/// `setElement(_:at:)`へ`nil`を渡すと、設定済みの要素を破棄して未設定状態へ戻します。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @safe public struct OptionalArray1D<Element>: ~Copyable {
@@ -68,45 +68,6 @@
     unsafe hasPayload.update(repeating: false, count: count)
   }
 
-  /// 指定位置の要素を取得または更新します。
-  ///
-  /// 未設定の位置からは`nil`を返します。非`nil`の値を代入するとその位置へ要素を構築し、
-  /// 設定済みの位置へ代入すると以前の要素を破棄して置き換えます。`nil`を代入すると
-  /// 既存要素をちょうど一度破棄します。
-  ///
-  /// - Parameter position: 取得または更新するslotの位置。
-  /// - Precondition: `position`が`indices`に含まれること。
-  /// - Complexity: O(1)
-  @inlinable
-  @available(*, deprecated, message: "Use element(at:) or setElement(_:at:) instead.")
-  public subscript(position: Int) -> Element? {
-
-    @inline(__always)
-    get {
-      precondition(0 <= position && position < count)
-      guard unsafe hasPayload[position] else {
-        return nil
-      }
-      return unsafe payload[position]
-    }
-
-    @inline(__always)
-    _modify {
-      precondition(0 <= position && position < count)
-      var value = unsafe hasPayload[position] ? (payload + position).move() : nil
-      defer {
-        if let value {
-          unsafe hasPayload[position] = true
-          unsafe (payload + position).initialize(to: value)
-        } else {
-          // `.move()`済み(または元々未初期化)のスロットはすでに未初期化状態なので、
-          // ここであらためて`deinitialize`してはいけない(二重解放になる)。
-          unsafe hasPayload[position] = false
-        }
-      }
-      yield &value
-    }
-  }
 }
 
 extension OptionalArray1D {
@@ -161,7 +122,7 @@ extension OptionalArray1D {
 /// 配列ベースのメモ化に用いる配列です。
 /// 未初期化値の番兵を用意することなく利用できます。
 /// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
-/// 連鎖subscriptは`array[y][x]`の順で、`width`が最内軸、`height`が最外軸です。
+/// 座標は`(x, y)`の順で、`width`が最内軸、`height`が最外軸です。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
@@ -221,44 +182,6 @@ extension OptionalArray1D {
     unsafe hasPayload.update(repeating: false, count: capacity)
   }
 
-  /// `position`番目の行を参照する非所有Viewを返します。
-  ///
-  /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
-  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置から返された同一storage・同一shapeの
-  /// Viewだけを受け入れ、別のViewの代入は契約違反です。
-  ///
-  /// - Parameter position: 参照する行の位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
-  /// - Complexity: O(1)
-  @inlinable
-  @available(*, deprecated, message: "Use element(at:_:) or setElement(_:at:_:) instead.")
-  public subscript(position: Int) -> OptionalArray1DView<Element> {
-    @inline(__always)
-    @_lifetime(borrow self)
-    get {
-      precondition(0 <= position && position < height)
-      return unsafe .init(
-        hasPayload: hasPayload + width * position,
-        payload: payload + width * position,
-        count: width,
-        borrowing: self)
-    }
-
-    @inline(__always)
-    _modify {
-      precondition(0 <= position && position < height)
-      let offset = width * position
-      let expectedHasPayload = unsafe hasPayload + offset
-      let expectedPayload = unsafe payload + offset
-      var view = unsafe OptionalArray1DView(
-        hasPayload: expectedHasPayload, payload: expectedPayload, count: width,
-        borrowing: self)
-      yield &view
-      unsafe precondition(view.hasPayload == expectedHasPayload)
-      unsafe precondition(view.payload == expectedPayload)
-      precondition(view.count == width)
-    }
-  }
 }
 
 extension OptionalArray2D {
@@ -303,7 +226,7 @@ extension OptionalArray2D: @unchecked Sendable where Element: Sendable { }
 /// 配列ベースのメモ化に用いる配列です。
 /// 未初期化値の番兵を用意することなく利用できます。
 /// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
-/// 連鎖subscriptは`array[z][y][x]`の順で、`width`が最内軸、`depth`が最外軸です。
+/// 座標は`(x, y, z)`の順で、`width`が最内軸、`depth`が最外軸です。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
@@ -372,47 +295,6 @@ extension OptionalArray2D: @unchecked Sendable where Element: Sendable { }
     unsafe hasPayload.update(repeating: false, count: capacity)
   }
 
-  /// `position`番目の2次元面を参照する非所有Viewを返します。
-  ///
-  /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
-  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを
-  /// 受け入れ、別のViewの代入は契約違反です。
-  ///
-  /// - Parameter position: 参照する面の位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
-  /// - Complexity: O(1)
-  @inlinable
-  @available(*, deprecated, message: "Use element(at:_:_:) or setElement(_:at:_:_:) instead.")
-  public subscript(position: Int) -> OptionalArray2DView<Element> {
-    @inline(__always)
-    @_lifetime(borrow self)
-    get {
-      precondition(0 <= position && position < depth)
-      return unsafe .init(
-        hasPayload: hasPayload + width * height * position,
-        payload: payload + width * height * position,
-        width: width, height: height,
-        borrowing: self)
-    }
-
-    @inline(__always)
-    _modify {
-      precondition(0 <= position && position < depth)
-      let offset = width * height * position
-      let expectedHasPayload = unsafe hasPayload + offset
-      let expectedPayload = unsafe payload + offset
-      var view = unsafe OptionalArray2DView(
-        hasPayload: expectedHasPayload,
-        payload: expectedPayload,
-        width: width,
-        height: height,
-        borrowing: self)
-      yield &view
-      unsafe precondition(view.hasPayload == expectedHasPayload)
-      unsafe precondition(view.payload == expectedPayload)
-      precondition(view.width == width && view.height == height)
-    }
-  }
 }
 
 extension OptionalArray3D {
@@ -462,7 +344,7 @@ extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
 /// 配列ベースのメモ化に用いる配列です。
 /// 未初期化値の番兵を用意することなく利用できます。
 /// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
-/// 連鎖subscriptは`array[w][z][y][x]`の順で、`size0`が最内軸、
+/// 座標は`(x, y, z, w)`の順で、`size0`が最内軸、
 /// `size3`が最外軸です。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
@@ -536,44 +418,6 @@ extension OptionalArray3D: @unchecked Sendable where Element: Sendable { }
     unsafe hasPayload.update(repeating: false, count: capacity)
   }
 
-  /// `position`番目の3次元領域を参照する非所有Viewを返します。
-  ///
-  /// 返されたViewからの変更はこの配列へ反映されます。Viewはこの配列の生存中だけ使用してください。
-  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを
-  /// 受け入れ、別のViewの代入は契約違反です。
-  ///
-  /// - Parameter position: `size3`軸で参照する位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
-  /// - Complexity: O(1)
-  @inlinable
-  @available(*, deprecated, message: "Use element(at:_:_:_:) or setElement(_:at:_:_:_:) instead.")
-  public subscript(position: Int) -> OptionalArray3DView<Element> {
-    @inline(__always)
-    @_lifetime(borrow self)
-    get {
-      precondition(0 <= position && position < size3)
-      // 内側に0の次元があれば要素は無い。途中の積はoverflowし得るので評価しない。
-      let offset = size0 == 0 || size1 == 0 || size2 == 0 ? 0 : size0 * size1 * size2 * position
-      return unsafe .init(
-        hasPayload: hasPayload + offset,
-        payload: payload + offset,
-        width: size0,
-        height: size1,
-        depth: size2,
-        borrowing: self)
-    }
-
-    @inline(__always)
-    set {
-      precondition(0 <= position && position < size3)
-      let offset =
-        size0 == 0 || size1 == 0 || size2 == 0 ? 0 : size0 * size1 * size2 * position
-      unsafe precondition(newValue.hasPayload == hasPayload + offset)
-      unsafe precondition(newValue.payload == payload + offset)
-      precondition(
-        newValue.width == size0 && newValue.height == size1 && newValue.depth == size2)
-    }
-  }
 }
 
 extension OptionalArray4D {
@@ -618,267 +462,3 @@ extension OptionalArray4D {
 }
 
 extension OptionalArray4D: @unchecked Sendable where Element: Sendable { }
-
-// MARK: -
-
-/// 要素アクセスの為の一時データ構造
-///
-/// 親の多次元配列が所有する一部分を参照します。View自身はstorageを所有しません。
-/// 親配列の生存中だけ使用でき、Viewを親配列より長く保持してはいけません。
-/// Viewを通じた変更は親配列の同じ要素へ反映されます。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
-@safe public struct OptionalArray1DView<Element>: ~Escapable {
-
-  @inlinable
-  @_lifetime(borrow source)
-  @unsafe internal init<Source: ~Copyable & ~Escapable>(
-    hasPayload: UnsafeMutablePointer<Bool>,
-    payload: UnsafeMutablePointer<Element>,
-    count: Int,
-    borrowing source: borrowing Source
-  ) {
-    self.count = count
-    unsafe self.hasPayload = hasPayload
-    unsafe self.payload = payload
-  }
-
-  @inlinable
-  @_lifetime(copy source)
-  @unsafe internal init<Source: ~Copyable & ~Escapable>(
-    hasPayload: UnsafeMutablePointer<Bool>,
-    payload: UnsafeMutablePointer<Element>,
-    count: Int,
-    copying source: borrowing Source
-  ) {
-    self.count = count
-    unsafe self.hasPayload = hasPayload
-    unsafe self.payload = payload
-  }
-  @usableFromInline var count: Int
-  @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
-  @usableFromInline let payload: UnsafeMutablePointer<Element>
-
-  /// 指定位置の要素を取得または更新します。
-  ///
-  /// 設定済みの位置へ非`nil`の値を代入すると、親配列が所有する以前の要素を破棄して
-  /// 置き換えます。`nil`を代入すると既存要素を破棄し、そのslotを未設定状態へ戻します。
-  ///
-  /// - Parameter position: 取得または更新するslotの位置。
-  /// - Precondition: `position`がこのViewの有効範囲に含まれること。
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: Int) -> Element? {
-
-    @inline(__always)
-    get {
-      precondition(0 <= position && position < count)
-      guard unsafe hasPayload[position] else {
-        return nil
-      }
-      return unsafe payload[position]
-    }
-
-    @inline(__always)
-    _modify {
-      precondition(0 <= position && position < count)
-      var value = unsafe hasPayload[position] ? (payload + position).move() : nil
-      defer {
-        if let value {
-          unsafe hasPayload[position] = true
-          unsafe (payload + position).initialize(to: value)
-        } else {
-          // `.move()`済み(または元々未初期化)のスロットはすでに未初期化状態なので、
-          // ここであらためて`deinitialize`してはいけない(二重解放になる)。
-          unsafe hasPayload[position] = false
-        }
-      }
-      yield &value
-    }
-  }
-}
-
-@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
-extension OptionalArray1DView {
-  /// このViewに有効なslot位置である`0..<count`を返します。
-  ///
-  /// - Complexity: O(1)
-  public var indices: Range<Int> { 0..<count }
-}
-
-/// 要素アクセスの為の一時データ構造
-///
-/// 親配列のstorageを所有せずに参照する2次元Viewです。
-/// 親配列の生存中だけ使用でき、Viewを通じた変更は親配列へ反映されます。
-/// 連鎖subscriptは`view[y][x]`の順で、`width`が最内軸、`height`が最外軸です。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
-@safe public struct OptionalArray2DView<Element>: ~Escapable {
-
-  @inlinable
-  @_lifetime(borrow source)
-  @unsafe internal init<Source: ~Copyable & ~Escapable>(
-    hasPayload: UnsafeMutablePointer<Bool>,
-    payload: UnsafeMutablePointer<Element>,
-    width: Int, height: Int,
-    borrowing source: borrowing Source
-  ) {
-    unsafe self.hasPayload = hasPayload
-    unsafe self.payload = payload
-    self.width = width
-    self.height = height
-  }
-
-  @inlinable
-  @_lifetime(copy source)
-  @unsafe internal init<Source: ~Copyable & ~Escapable>(
-    hasPayload: UnsafeMutablePointer<Bool>,
-    payload: UnsafeMutablePointer<Element>,
-    width: Int, height: Int,
-    copying source: borrowing Source
-  ) {
-    unsafe self.hasPayload = hasPayload
-    unsafe self.payload = payload
-    self.width = width
-    self.height = height
-  }
-
-  @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
-  @usableFromInline let payload: UnsafeMutablePointer<Element>
-  @usableFromInline let width: Int
-  @usableFromInline let height: Int
-
-  /// `position`番目の行を参照する非所有Viewを返します。
-  ///
-  /// 返されたViewからの変更は同じ親配列へ反映されます。Viewは親配列の生存中だけ使用してください。
-  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置から返された同一storage・同一shapeの
-  /// Viewだけを受け入れ、別のViewの代入は契約違反です。
-  ///
-  /// - Parameter position: 参照する行の位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: Int) -> OptionalArray1DView<Element> {
-    @inline(__always)
-    @_lifetime(copy self)
-    get {
-      precondition(0 <= position && position < height)
-      return unsafe .init(
-        hasPayload: hasPayload + width * position,
-        payload: payload + width * position,
-        count: width,
-        copying: self)
-    }
-
-    @inline(__always)
-    @_lifetime(copy self)
-    _modify {
-      precondition(0 <= position && position < height)
-      let offset = width * position
-      let expectedHasPayload = unsafe hasPayload + offset
-      let expectedPayload = unsafe payload + offset
-      var view = unsafe OptionalArray1DView(
-        hasPayload: expectedHasPayload, payload: expectedPayload, count: width,
-        copying: self)
-      yield &view
-      unsafe precondition(view.hasPayload == expectedHasPayload)
-      unsafe precondition(view.payload == expectedPayload)
-      precondition(view.count == width)
-    }
-  }
-}
-
-@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
-extension OptionalArray2DView {
-  /// 外側の軸に有効な位置である`0..<height`を返します。
-  ///
-  /// - Complexity: O(1)
-  public var indices: Range<Int> { 0..<height }
-}
-
-/// 要素アクセスの為の一時データ構造
-///
-/// 親配列のstorageを所有せずに参照する3次元Viewです。
-/// 親配列の生存中だけ使用でき、Viewを通じた変更は親配列へ反映されます。
-/// 連鎖subscriptは`view[z][y][x]`の順で、`width`が最内軸、`depth`が最外軸です。
-/// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
-@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
-@safe public struct OptionalArray3DView<Element>: ~Escapable {
-
-  @inlinable
-  @_lifetime(borrow source)
-  @unsafe internal init<Source: ~Copyable & ~Escapable>(
-    hasPayload: UnsafeMutablePointer<Bool>,
-    payload: UnsafeMutablePointer<Element>,
-    width: Int, height: Int, depth: Int,
-    borrowing source: borrowing Source
-  ) {
-    unsafe self.hasPayload = hasPayload
-    unsafe self.payload = payload
-    self.width = width
-    self.height = height
-    self.depth = depth
-  }
-
-  @inlinable
-  @_lifetime(copy source)
-  @unsafe internal init<Source: ~Copyable & ~Escapable>(
-    hasPayload: UnsafeMutablePointer<Bool>,
-    payload: UnsafeMutablePointer<Element>,
-    width: Int, height: Int, depth: Int,
-    copying source: borrowing Source
-  ) {
-    unsafe self.hasPayload = hasPayload
-    unsafe self.payload = payload
-    self.width = width
-    self.height = height
-    self.depth = depth
-  }
-
-  @usableFromInline let hasPayload: UnsafeMutablePointer<Bool>
-  @usableFromInline let payload: UnsafeMutablePointer<Element>
-  @usableFromInline let width: Int
-  @usableFromInline let height: Int
-  @usableFromInline let depth: Int
-
-  /// `position`番目の2次元面を参照する非所有Viewを返します。
-  ///
-  /// 返されたViewからの変更は同じ親配列へ反映されます。Viewは親配列の生存中だけ使用してください。
-  /// setterは連鎖要素書き込みのwriteback専用です。同じ位置の同一storage・同一shapeのViewだけを
-  /// 受け入れ、別のViewの代入は契約違反です。
-  ///
-  /// - Parameter position: 参照する面の位置。
-  /// - Precondition: `position`は`indices`に含まれなければなりません。
-  /// - Complexity: O(1)
-  @inlinable
-  public subscript(position: Int) -> OptionalArray2DView<Element> {
-    @inline(__always)
-    @_lifetime(copy self)
-    get {
-      precondition(0 <= position && position < depth)
-      return unsafe .init(
-        hasPayload: hasPayload + width * height * position,
-        payload: payload + width * height * position,
-        width: width,
-        height: height,
-        copying: self)
-    }
-
-    @inline(__always)
-    set {
-      precondition(0 <= position && position < depth)
-      let offset = width * height * position
-      unsafe precondition(newValue.hasPayload == hasPayload + offset)
-      unsafe precondition(newValue.payload == payload + offset)
-      precondition(newValue.width == width && newValue.height == height)
-    }
-  }
-}
-
-@available(*, deprecated, message: "Use the owning array's coordinate access methods instead.")
-extension OptionalArray3DView {
-  /// 外側の軸に有効な位置である`0..<depth`を返します。
-  ///
-  /// - Complexity: O(1)
-  public var indices: Range<Int> { 0..<depth }
-}

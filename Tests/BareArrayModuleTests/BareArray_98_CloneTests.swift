@@ -7,53 +7,53 @@
   final class BareArray_98_CloneTests: XCTestCase {
 
     func testBareArrayCloneCreatesIndependentStorage() {
-      var array = BareArray<Int>(repeating: 0, count: 3)
-      array[1] = 123
-      var clone = array.clone()
-      clone[1] = 999
+      let array = BareArray<Int>(repeating: 0, count: 3)
+      array.setElement(123, at: 1)
+      let clone = array.clone()
+      clone.setElement(999, at: 1)
 
-      XCTAssertEqual(array[1], 123)
-      XCTAssertEqual(clone[1], 999)
+      XCTAssertEqual(array.element(at: 1), 123)
+      XCTAssertEqual(clone.element(at: 1), 999)
     }
 
     func testBareArray2DCloneCreatesIndependentStorage() {
-      var array = BareArray2D<Int>(repeating: 0, width: 2, height: 2)
-      array[1][0] = 123
-      var clone = array.clone()
-      clone[1][0] = 999
+      let array = BareArray2D<Int>(repeating: 0, width: 2, height: 2)
+      array.setElement(123, at: 0, 1)
+      let clone = array.clone()
+      clone.setElement(999, at: 0, 1)
 
-      XCTAssertEqual(array[1][0], 123)
-      XCTAssertEqual(clone[1][0], 999)
+      XCTAssertEqual(array.element(at: 0, 1), 123)
+      XCTAssertEqual(clone.element(at: 0, 1), 999)
     }
 
     func testBareArray3DCloneCreatesIndependentStorage() {
-      var array = BareArray3D<Int>(repeating: 0, width: 2, height: 2, depth: 2)
-      array[1][0][1] = 123
-      var clone = array.clone()
-      clone[1][0][1] = 999
+      let array = BareArray3D<Int>(repeating: 0, width: 2, height: 2, depth: 2)
+      array.setElement(123, at: 1, 0, 1)
+      let clone = array.clone()
+      clone.setElement(999, at: 1, 0, 1)
 
-      XCTAssertEqual(array[1][0][1], 123)
-      XCTAssertEqual(clone[1][0][1], 999)
+      XCTAssertEqual(array.element(at: 1, 0, 1), 123)
+      XCTAssertEqual(clone.element(at: 1, 0, 1), 999)
     }
 
     func testBareArray4DCloneCreatesIndependentStorage() {
-      var array = BareArray4D<Int>(repeating: 0, size0: 2, size1: 2, size2: 2, size3: 2)
-      array[1][1][1][1] = 123
-      var clone = array.clone()
-      clone[1][1][1][1] = 999
+      let array = BareArray4D<Int>(repeating: 0, size0: 2, size1: 2, size2: 2, size3: 2)
+      array.setElement(123, at: 1, 1, 1, 1)
+      let clone = array.clone()
+      clone.setElement(999, at: 1, 1, 1, 1)
 
-      XCTAssertEqual(array[1][1][1][1], 123)
-      XCTAssertEqual(clone[1][1][1][1], 999)
+      XCTAssertEqual(array.element(at: 1, 1, 1, 1), 123)
+      XCTAssertEqual(clone.element(at: 1, 1, 1, 1), 999)
     }
 
     func testBareArrayCloneWithString() {
-      var array = BareArray<String>(repeating: "", count: 2)
-      array[0] = "abc"
-      var clone = array.clone()
-      clone[0] = "xyz"
+      let array = BareArray<String>(repeating: "", count: 2)
+      array.setElement("abc", at: 0)
+      let clone = array.clone()
+      clone.setElement("xyz", at: 0)
 
-      XCTAssertEqual(array[0], "abc")
-      XCTAssertEqual(clone[0], "xyz")
+      XCTAssertEqual(array.element(at: 0), "abc")
+      XCTAssertEqual(clone.element(at: 0), "xyz")
     }
 
     func testBareArray3DCloneDeinitializesEveryReferenceElement() {

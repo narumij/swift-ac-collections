@@ -198,6 +198,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-055` | `DONE` | Codex | [EXECUTION] OptionalArray strict memory safety恒久適用 | 所有4型を`@safe`に分類し、現行APIとdeprecated Viewの低レベル操作をscoped `unsafe`へ限定して`.strictMemorySafety()`を恒久適用。単独strict診断0件、Build for Testing成功、全65 test成功 | `OptionalArrayModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` |
 | `OPT-056` | `DONE` | Codex | [DISCOVERY] OptionalArray現行座標accessのTest as Specification監査 | 現行direct methodは各次元1座標の正常系だけで、非対称shape全座標、各軸の負値・上限trap、direct `setElement`の参照要素寿命が不足すると確定。deprecated互換testと分離した後続を登録 | `OptionalArrayModule/CurrentQualityAssessment.md` / `Tests/OptionalArrayModuleTests/` |
 | `OPT-057` | `DONE` | Codex | [EXECUTION] OptionalArray座標access Test as Specification | 1D〜4Dの非対称shape全座標、選択位置だけの更新、値・nil遷移と参照要素のexactly-once破棄、全軸の負値・上限に対するread/write trapを現行`element`／`setElement`で固定。Build for Testing成功、追加11件を含む全76 test成功 | `OptionalArrayModule/CurrentQualityAssessment.md` / `Tests/OptionalArrayModuleTests/` |
+| `OPT-060` | `DONE` | Codex | [EXECUTION] OptionalArray deprecated公開面の削除 | 所有1D〜4Dの連鎖subscriptと非所有View 3型を削除し、test・EDPC例・benchmark・facade testを座標accessへ移行。View固有仕様を退役。Xcode Build for Testing、OptionalArray全56 test、benchmark package build成功 | `Sources/OptionalArrayModule/OptinalArray.swift` / `Tests/OptionalArrayModuleTests/` / `Benchmarks/Sources/Benchmarks/OptionalArrayBenchmarks.swift` |
+| `OPT-058` | `DONE` | Codex | [EXECUTION] OptionalArray品質正本の現在性同期 | 座標accessだけになった公開面、strict memory safety、削除後の全56 testをQuality Profile・現行評価・監査へ反映し、旧29宣言監査を履歴入力として分離 | `OptionalArrayModule/OptionalArrayAudit.md` / `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
+| `OPT-059` | `PROPOSED` | Codex | [EXECUTION] OptionalArray利用者向け文書本文ドラフト | `OPT-058`完了後、現行名と座標accessだけを使う媒体未決定の本文をユーザーがレビューできる状態にする | `OptionalArrayModule/OptionalArrayAudit.md` / `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-053` | `FROZEN` | User | [DECISION] OptionalArrayがC++番兵手法に匹敵すると判定する性能比の上限 | `OPT-052`の暫定実測後、代表memoization workloadで許容する性能比を一つだけ決定する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-054` | `FROZEN` | Codex | [EXECUTION] OptionalArray外部性能アセスメントの実測・判定 | `OPT-053`完了後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `ARRAY-005` | `FROZEN` | User | [DECISION] Array系object名の合意 | 三者の独立採点を統合した報告の受入後、ユーザーが明示的に再開し、その後の議論を入力にBareArray／OptionalArray両familyの公開名と次元・View派生体系を一つに決定して判断正本へ記録する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
@@ -211,6 +214,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray外部性能アセスメントの実測・判定 | 性能比の受入判断後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-032` | `FROZEN` | User | [DECISION] BareArrayがC++ nested vectorに匹敵すると判定する性能比の上限 | `BARE-031`の暫定実測後、代表多次元access workloadで許容する性能比を一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-035` | `PROPOSED` | Codex | [DISCOVERY] BareArray提供停止の実施境界整理 | package、facade、文書、移行、release、既存利用への影響を確認し、提供停止を局所的に実施できるtaskへ分解する | `Sources/BareArrayModule/Documentation/Quality-Profile.md` / `Package.swift` |
+| `BARE-036` | `DONE` | Codex | [EXECUTION] BareArray deprecated公開面の削除 | 所有1D〜4Dの連鎖subscriptと非所有View 3型を削除し、test・benchmark・compiler fixture・品質文書を座標accessと`reference(at:)`／`MutableRef`へ移行。SwiftPMの現行60 test、MutableRef compiler diagnostics、benchmark package buildが成功 | `Sources/BareArrayModule/BareArray.swift` / `Tests/BareArrayModuleTests/` / `Benchmarks/Sources/Benchmarks/BareArrayBenchmarks.swift` |
+| `BARE-039` | `ACTIVE` | Claude | [DISCOVERY] OptionalArray／BareArray deprecated公開面削除後の独立目視検査 | 削除対象の宣言・利用・現行文書記述が残っていないことと、残す座標accessおよびBareArrayの`reference(at:)`／`MutableRef`が誤って削られていないことを独立確認する。変更は行わず所見を返す | `Maintanance/CLAUDE_TASK.md` |
 | `BARE-017` | `PROPOSED` | Codex | [DISCOVERY] BareArray利用Validation scenario設計 | 一般Swift利用と競技利用について、代表利用者、導入経路、利用課題、観測方法を整理し、異なる判断・実行境界を後続task候補へ分離する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -241,6 +246,10 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-056` | `PERM-052` | `SEQUENCE` | 現行公開表面とretired表面の分類確定後、compiler表面・共存・再公開testを実装する |
 | `PERM-057` | `PERM-056` | `SEQUENCE` | G0〜G5の実装と独立検収が完了してから、品質正本を現行証拠へ同期する |
 | `PERM-058` | `PERM-057` | `SEQUENCE` | 現行契約と証拠へ同期した品質正本を入力に、利用者向け本文を起草する |
+| `OPT-058` | `OPT-060` | `SEQUENCE` | deprecated公開面の削除と利用箇所移行を受け入れてから、品質正本を現行表面へ同期する |
+| `OPT-059` | `OPT-058` | `SEQUENCE` | 座標accessだけの現行公開面へ同期した品質正本を入力に、利用者向け本文を起草する |
+| `BARE-039` | `BARE-036` | `SEQUENCE` | BareArrayのdeprecated公開面削除と移行が完了してから、残存・誤削除を独立検査する |
+| `BARE-039` | `OPT-060` | `SEQUENCE` | OptionalArrayのdeprecated公開面削除と移行が完了してから、残存・誤削除を独立検査する |
 | `OPS-028` | `OPS-030` | `SEQUENCE` | ユーザーが未採用初稿とレビュー論点を確認してから、Codexが候補を再構成する |
 | `API-004` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、ユーザーが他者から独立して採点する |
 | `API-005` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、Codexが他者から独立して採点する |

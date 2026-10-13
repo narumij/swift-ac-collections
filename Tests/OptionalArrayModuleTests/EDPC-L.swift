@@ -13,11 +13,11 @@ func hoge(N: Int, A: [Int]) {
 
   func dfs(_ l: Int, _ r: Int) -> Int {
     func dfs(_ l: Int, _ r: Int) -> Int {
-      if let value = ___dfs_cache[l][r] {
+      if let value = ___dfs_cache.element(at: r, l) {
         return value
       }
       let value = ___body(l, r)
-      ___dfs_cache[l][r] = value
+      ___dfs_cache.setElement(value, at: r, l)
       return value
     }
     func ___body(_ l: Int, _ r: Int) -> Int {
@@ -32,4 +32,3 @@ func hoge(N: Int, A: [Int]) {
 
   print(dfs(0, N))
 }
-

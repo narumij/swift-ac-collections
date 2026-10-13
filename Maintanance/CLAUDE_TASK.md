@@ -9,12 +9,11 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行中なし**
+**実行待ち: OptionalArray／BareArray deprecated公開面削除後の独立目視検査**
 
-Codex accepted PERM-056 after independently confirming the accumulated 44 PermutationTests in
-Xcode, the AcCollections reexport test, and all four compiler-fixture paths. The runtime-check
-Permutation G0〜G5 reconstruction has completed one full pass. No next bounded Claude assignment is
-recorded. Do not start another Registry task from the completed assignment below.
+CodexがOptionalArrayとBareArrayの旧連鎖subscript・非所有Viewを削除し、現行の座標accessへtest・
+benchmark・文書を移行した作業について、下記のbounded assignmentだけを独立に検査する。実装や文書を
+修正せず、観測結果をこの文書のreturn節へ記録する。RedBlackTreeへは触れない。
 
 **凍結中: PERM-051 borrowed Span版PermutationのTest as Specification**
 
@@ -24,6 +23,58 @@ recorded. Do not start another Registry task from the completed assignment below
 
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
+
+## Current assignment: OptionalArray／BareArray deprecated公開面削除後の独立目視検査
+
+### Objective
+
+OptionalArrayとBareArrayについて、削除された旧連鎖subscript・非所有Viewが現行公開面、test、benchmark、
+利用例、および現在性を主張する文書へ残っていないかを横断的に検査する。同時に、削除後も残る座標value
+accessとBareArrayのSwift 6.4向け借用参照APIが、誤って削除・旧扱いされていないかを確認する。
+
+### Inputs
+
+Read only:
+
+- Registryの`OPT-060`と`BARE-036`の行;
+- `Sources/OptionalArrayModule/`と`Sources/BareArrayModule/`;
+- 対応する`Tests/`、`Benchmarks/Sources/Benchmarks/`、`Tests/AcCollectionsTests/`;
+- `Sources/OptionalArrayModule/Documentation/Quality-Profile.md`;
+- `Sources/BareArrayModule/Documentation/Quality-Profile.md`;
+- `Maintanance/OptionalArrayModule/OptionalArrayAudit.md`と`CurrentQualityAssessment.md`;
+- `Maintanance/BareArrayModule/BareArrayAudit.md`と`CurrentQualityAssessment.md`。
+
+### Inspection questions
+
+- 削除済み`OptionalArray*View`／`BareArray*View`型または所有型の旧連鎖subscriptが、production source、
+  実行対象test、benchmark、利用例、facade testへ残っていないか。
+- 旧View・連鎖subscriptを現行契約または現在評価として説明する記述が、公開Quality Profileまたは
+  Current Quality Assessmentへ残っていないか。
+- audit内の過去の棚卸し・判断・履歴は、削除漏れと誤認せず、現在状態との境界が読めるかだけ確認する。
+- OptionalArrayの`element`／`setElement`、BareArrayの`element`／`setElement`が現行経路として保たれているか。
+- BareArrayの`MutableRef`と`reference(at:)`というSwift 6.4向け借用参照経路が、現行APIとして
+  production source、Test as Specification、compiler fixture、benchmark、文書で矛盾なく扱われているか。
+- 削除された契約だけを観測するtest、Death Test、compiler fixture、benchmarkが残っていないか。
+
+### Boundaries
+
+- source、test、benchmark、公開文書、Current Quality Assessment、audit、Registryを変更しない。
+- public API、命名、性能、互換性、借用参照の採否を判断しない。
+- RedBlackTree、Permutation、およびUser folderを調査・変更しない。
+- Archived記録やauditの歴史記述を、現行契約へ残った旧記述として機械的に報告しない。
+- agreementや検索0件を完全性の証明にしない。確認した範囲と未確認範囲を分ける。
+
+### Validation and return
+
+検索と目視照合だけを行い、build、test、benchmark、commit、Registry更新は行わない。問題があれば、
+`path:line`、該当記述またはsymbol、現行契約と衝突する理由を列挙する。問題がなければ、確認した領域と
+残る限界を短く記録する。
+
+結果はこのassignment末尾の`Claude return`へ追記する。完了判定と修正はCodexが行う。
+
+### Claude return
+
+未記入。
 
 ## Last completed assignment: PERM-056 public surface, coexistence, and reexport tests
 

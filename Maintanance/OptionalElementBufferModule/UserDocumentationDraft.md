@@ -109,4 +109,4 @@ presence mapとpayloadを別々の連続storageに保持する。`element`と`se
 - 現行Test as Specification: `Tests/OptionalElementBufferModuleTests/`
 - 品質プロファイル: `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md`
 - 現在評価: `Maintanance/OptionalElementBufferModule/CurrentQualityAssessment.md`
-- 体系監査と判断記録: `Maintanance/OptionalElementBufferModule/OptionalArrayAudit.md`
+- 体系監査と判断記録: `Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md`

@@ -32,8 +32,8 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
 4. PR DocC matrixから旧名2 targetを削除し、新moduleを含む5 target構成へ戻す。
 5. 現行の移行正本とCI計画へ、旧名facade終了後の構成を反映する。
 6. 旧名facadeのDocC入口を削除するだけで終えず、新module名のDocC入口をそれぞれのtargetへ配置する。
-7. `Maintanance/BareArrayModule`と`Maintanance/OptionalArrayModule`を新module名のfolderへ移し、現行・Archivedを
-   含む管理path参照をすべて新座標へ統一する。本文中の歴史上の型名・target名・source pathは変更しない。
+7. 旧名2 maintenance folderを新module名のfolderへ移し、現行・Archivedを含む管理path参照をすべて
+   新座標へ統一する。本文中の歴史上の型名・target名・source pathは変更しない。
 
 ## 検証
 
@@ -77,3 +77,5 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
 - ユーザーの追加指示により、記憶上の例外だったmaintenance folder名も
   `ElementBufferModule`／`OptionalElementBufferModule`へ移した。8文書を移動し、現行・Archivedを含む管理path
   241件を新座標へ置換した。歴史上の型名、target名、および当時のsource pathは履歴事実として保持した。
+- 続くユーザー指示で監査文書名も`ElementBufferAudit.md`／`OptionalElementBufferAudit.md`へ統一し、全参照を
+  新しいfile名へ置換した。安定task IDと本文中の歴史上の名称は変更していない。

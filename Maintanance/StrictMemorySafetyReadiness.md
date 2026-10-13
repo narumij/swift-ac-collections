@@ -297,7 +297,7 @@ Array系全体のstorage、View寿命、strict memory safetyを実装単位へ�
 - View寿命、storage再設計、strict memory safetyの恒久適用など、現行契約の記録を超えて1.0採否へ
   影響する論点は、現時点で実装taskへ分けず、文書作業後の再分解へ残す。
 
-この振り分けは`ElementBufferModule/BareArrayAudit.md`のCodex受入工程で行う。棚卸し結果が出る前に
+この振り分けは`ElementBufferModule/ElementBufferAudit.md`のCodex受入工程で行う。棚卸し結果が出る前に
 条件付きの子taskを採番せず、必要性が確定したものだけをその時点で登録する。
 
 ## 10. `BareArrayModule` 段階対応(2026-10-03、バッチ4実施済み)

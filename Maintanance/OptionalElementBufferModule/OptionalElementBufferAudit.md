@@ -1,4 +1,4 @@
-# OptionalArray体系監査
+# OptionalElementBuffer体系監査
 
 最終更新: 2026-10-08 / Codex
 

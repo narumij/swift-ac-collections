@@ -28,21 +28,21 @@
 | `ARRAY-006` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
 | `ARRAY-007` | `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
 | `ARRAY-008` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_USER.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
-| `BARE-001` | `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
-| `BARE-002` | `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
-| `BARE-003` | `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
-| `BARE-004` | `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
-| `BARE-005` | `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
+| `BARE-001` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
+| `BARE-002` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
+| `BARE-003` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
+| `BARE-004` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
+| `BARE-005` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
 | `BARE-006` | `ElementBufferModule/CurrentQualityAssessment.md` / `Tests/TESTING.md` | 2026-10-12 |  |
 | `BARE-007` | `ElementBufferModule/CurrentQualityAssessment.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` | 現行 |  |
-| `BARE-008` | `ElementBufferModule/BareArrayAudit.md`<br>`Tests/TESTING.md` | 2026-10-11<br>2026-10-09 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
-| `BARE-009` | `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
-| `BARE-010` | `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
-| `BARE-011` | `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
+| `BARE-008` | `ElementBufferModule/ElementBufferAudit.md`<br>`Tests/TESTING.md` | 2026-10-11<br>2026-10-09 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
+| `BARE-009` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
+| `BARE-010` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
+| `BARE-011` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
 | `BARE-012` | `Archived/Canonical/ARRAY_NAMING_REVIEW.md` / `Archived/Canonical/CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` | 2026-10-11 |  |
-| `BARE-013` | `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
-| `BARE-014` | `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
-| `BARE-015` | `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
+| `BARE-013` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
+| `BARE-014` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
+| `BARE-015` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
 | `BARE-016` | `ElementBufferModule/CurrentQualityAssessment.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
 | `BARE-017` | `ElementBufferModule/CurrentQualityAssessment.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` | 現行 |  |
 | `BARE-018` | `ElementBufferModule/CurrentQualityAssessment.md` | 現行 |  |
@@ -69,18 +69,18 @@
 | `DOC-001` | `MAINTENANCE.md` | 2026-10-09 |  |
 | `DOC-002` | `Archived/Canonical/RELEASE_0_5_2.md` | 2026-10-11 |  |
 | `DOC-003` | `Archived/Canonical/RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-11 |  |
-| `DOC-004` | `Archived/Canonical/RELEASE_0_5_2.md` / `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-11 |  |
-| `DOC-005` | `Archived/Canonical/RELEASE_0_5_2.md` / `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
+| `DOC-004` | `Archived/Canonical/RELEASE_0_5_2.md` / `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-11 |  |
+| `DOC-005` | `Archived/Canonical/RELEASE_0_5_2.md` / `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
 | `DOC-006` | `Archived/Canonical/RELEASE_0_5_2.md` / `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` | 2026-10-11 |  |
 | `DOC-007` | `Archived/Canonical/RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-11 |  |
 | `DOC-008` | `Archived/Canonical/RELEASE_0_5_2.md` / `CLAUDE_TASK.md` | 2026-10-11 |  |
-| `DOC-009` | `Archived/Canonical/RELEASE_0_5_2.md` / `ElementBufferModule/BareArrayAudit.md` | 2026-10-11 |  |
-| `DOC-010` | `Archived/Canonical/RELEASE_0_5_2.md` / `ElementBufferModule/BareArrayAudit.md` | 現行 |  |
+| `DOC-009` | `Archived/Canonical/RELEASE_0_5_2.md` / `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
+| `DOC-010` | `Archived/Canonical/RELEASE_0_5_2.md` / `ElementBufferModule/ElementBufferAudit.md` | 現行 |  |
 | `DOC-011` | `Archived/Canonical/RELEASE_0_5_2.md` / `Sources/PermutationModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-11 |  |
 | `DOC-012` | `Archived/Canonical/NON_RBT_COMMENT_DOC_SELF_REVIEW.md` / `RELEASE_0_6_0.md` | 2026-10-11 |  |
 | `DOC-013` | `CLAUDE_TASK.md` / `Archived/Canonical/NON_RBT_COMMENT_DOC_SELF_REVIEW.md` / `Orientation/AGENT_TASK_FIT_INTERVIEW.md` | 2026-10-11 |  |
 | `DOC-014` | `Archived/Canonical/NON_RBT_COMMENT_DOC_SELF_REVIEW.md` | 2026-10-11 |  |
-| `DOC-015` | `Archived/Canonical/NON_RBT_COMMENT_DOC_SELF_REVIEW.md` / `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-11 |  |
+| `DOC-015` | `Archived/Canonical/NON_RBT_COMMENT_DOC_SELF_REVIEW.md` / `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-11 |  |
 | `DOC-016` | `Archived/Canonical/NON_RBT_COMMENT_DOC_SELF_REVIEW.md` | 2026-10-11 |  |
 | `DOC-017` | `Archived/Canonical/NON_RBT_COMMENT_DOC_SELF_REVIEW.md` | 2026-10-11 |  |
 | `DOC-018` | `Archived/Canonical/NON_RBT_COMMENT_DOC_SELF_REVIEW.md` | 2026-10-11 |  |
@@ -129,7 +129,7 @@
 | `OPS-011` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
 | `OPS-012` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
 | `OPS-013` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
-| `OPS-014` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` / `ElementBufferModule/BareArrayAudit.md` | 2026-10-09 |  |
+| `OPS-014` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` / `ElementBufferModule/ElementBufferAudit.md` | 2026-10-09 |  |
 | `OPS-015` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
 | `OPS-016` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
 | `OPS-017` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
@@ -143,52 +143,52 @@
 | `OPS-025` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` | 2026-10-09 |  |
 | `OPS-026` | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V3.md` / `Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Orientation/TASK_REGISTRY_STATE_HISTORY.md` / `TASK_CANONICAL_DOCUMENT_MAP.md` | 現行 | V3を現行正本へ採用し、V2を版名付きで保存。 |
 | `OPS-027` | `AI_TASK_PROCESS_POSTER.svg` / `AI_TASK_PROCESS_POSTER.png` / `Utilities/Maintenance/GenerateAITaskProcessPoster.py` / `Archived/Orientation/AI_TASK_PROCESS_POSTER_V2/` | 現行 | V3を現行ポスターへ採用。旧V2一式は版名付きで保存。 |
-| `OPT-001` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-002` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-003` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-004` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
+| `OPT-001` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-002` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-003` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-004` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
 | `OPT-005` | `Sources/OptionalElementBufferModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
-| `OPT-006` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 現行 |  |
-| `OPT-007` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-008` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-009` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-010` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-011` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-012` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-013` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-014` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-015` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-016` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-017` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-018` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-019` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-020` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-021` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-022` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-023` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-024` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-025` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-026` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-027` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-028` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-029` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-030` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-031` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-032` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-033` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-034` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-035` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-036` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-037` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
-| `OPT-038` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-09 |  |
+| `OPT-006` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 現行 |  |
+| `OPT-007` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-008` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-009` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-010` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-011` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-012` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-013` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-014` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-015` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-016` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-017` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-018` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-019` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-020` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-021` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-022` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-023` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-024` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-025` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-026` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-027` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-028` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-029` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-030` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-031` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-032` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-033` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-034` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-035` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-036` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-037` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
+| `OPT-038` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-09 |  |
 | `OPT-039` | `Sources/OptionalElementBufferModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
 | `OPT-040` | `Sources/OptionalElementBufferModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
 | `OPT-041` | `Sources/OptionalElementBufferModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
 | `OPT-042` | `Sources/OptionalElementBufferModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
 | `OPT-043` | `Archived/Canonical/ARRAY_NAMING_REVIEW.md` / `Archived/Canonical/CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` | 2026-10-11 |  |
-| `OPT-044` | `OptionalElementBufferModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` | 現行 |  |
-| `OPT-045` | `OptionalElementBufferModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` | 現行 |  |
-| `OPT-046` | `OptionalElementBufferModule/OptionalArrayAudit.md` | 2026-10-11 |  |
+| `OPT-044` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` / `RELEASE_0_6_0.md` | 現行 |  |
+| `OPT-045` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` / `RELEASE_0_6_0.md` | 現行 |  |
+| `OPT-046` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-11 |  |
 | `OPT-047` | `OptionalElementBufferModule/CurrentQualityAssessment.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
 | `OPT-048` | `OptionalElementBufferModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` | 現行 |  |
 | `OPT-049` | `OptionalElementBufferModule/CurrentQualityAssessment.md` | 2026-10-12 |  |

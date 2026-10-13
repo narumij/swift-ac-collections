@@ -7863,7 +7863,7 @@ Registryの`DOC-008`として、`DOC-005`で追加した`Sources/BareArrayModule
 - `Tests/BareArrayModuleTests/BareArray_4_IndicesTests.swift`
 - `Tests/BareArrayModuleTests/BareArray_5_ReferenceLifetimeTests.swift`
 - `Tests/BareArrayModuleTests/BareArray_99_DeathTests.swift`
-- `Maintanance/ElementBufferModule/BareArrayAudit.md`の公開契約、`BARE-014`、`BARE-015`、`DOC-005`の節
+- `Maintanance/ElementBufferModule/ElementBufferAudit.md`の公開契約、`BARE-014`、`BARE-015`、`DOC-005`の節
 - `Maintanance/Archived/Canonical/RELEASE_0_5_2.md`の`DOC-005`と`DOC-008`に関する節
 
 次の観点だけを確認する。
@@ -8160,7 +8160,7 @@ Codex acceptance: 2026-10-09、CHANGELOGの版境界BLOCKを妥当として受�
 
 ## Completed bounded assignment: BareArray quality assessment first edition
 
-`Maintanance/ElementBufferModule/BareArrayAudit.md`の`BARE-008`に従い、BareArrayのISO/IEC 25010観点の品質評価
+`Maintanance/ElementBufferModule/ElementBufferAudit.md`の`BARE-008`に従い、BareArrayのISO/IEC 25010観点の品質評価
 初版を作成する。入力は公開29宣言・4適合のledger、確定した契約判断、番号付きTest as Specification、
 `Sources/BareArrayModule/BareArray.swift`とする。Permutation版とOptionalArray版の品質評価は構成と証拠の
 粒度を学ぶ参考にしてよいが、評価内容や結論を転写しない。
@@ -8275,7 +8275,7 @@ source、test、利用例、コメントドック、Registryを変更せず、re
 
 ## Completed bounded assignment: BareArray existing-contract test gaps
 
-`Maintanance/ElementBufferModule/BareArrayAudit.md`の`BARE-009`に従い、次の不足testだけを追加する。
+`Maintanance/ElementBufferModule/ElementBufferAudit.md`の`BARE-009`に従い、次の不足testだけを追加する。
 
 1. 所有2D、3D、4Dの外側subscriptについて、負のindexと上限indexがtrapするDeath Test。
 2. 非対称寸法で、2D、3D、4D所有型の連鎖subscriptが正しいstorage位置へ到達する通常test。

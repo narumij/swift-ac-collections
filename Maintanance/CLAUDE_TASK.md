@@ -135,8 +135,8 @@ comment、Maintenance上の利用者向けドラフト、traitによる提供境
 5. 次の利用者向けドラフトと監査記録。
    - `ElementBufferModule/UserDocumentationDraft.md`
    - `OptionalElementBufferModule/UserDocumentationDraft.md`
-   - `ElementBufferModule/BareArrayAudit.md`
-   - `OptionalElementBufferModule/OptionalArrayAudit.md`
+   - `ElementBufferModule/ElementBufferAudit.md`
+   - `OptionalElementBufferModule/OptionalElementBufferAudit.md`
 6. `Package.swift`のproduct、trait、対象target定義と、`Sources/AcCollections/AcCollections.swift`。
 7. `git diff origin/develop/misc/66..HEAD --`のうち、上記対象と旧facade削除に直接関係する差分。
 
@@ -221,7 +221,7 @@ Archived、Git履歴、RedBlackTree、Permutation、benchmark、test実装、他
 - **L-1** ElementBufferの座標access 3種と`reference(at:)`のdocumentation comment（借用寿命、Apple OS 27の可用性）。
   draftの71・91行にはある説明で、公開sourceへ移すかどうかは文書taskの判断。
 - **L-2** landing pageは英語、型のdoc commentは日本語で、言語が混在している。公開媒体の判断（`DOC`系）で扱う。
-- **L-3** `OptionalElementBufferModule/OptionalArrayAudit.md`の47行「repository CIはOptionalArray DocCを継続生成しない」は、現在のCI（5 targetに`OptionalElementBufferModule`を含む）と食い違う。
+- **L-3** `OptionalElementBufferModule/OptionalElementBufferAudit.md`の47行「repository CIはOptionalArray DocCを継続生成しない」は、現在のCI（5 targetに`OptionalElementBufferModule`を含む）と食い違う。
   同じ表の「一般Swift利用 … `AcCollections`再公開は確認済み」も、opt-in化の前の記述。日付つき評価の表として読むなら履歴だが、現在形で書かれている。
 - **L-4（範囲外の観察）** `AcCollections.md`の「permutation sequence」。Permutationは今回の対象外なので、照合していない。
 - **L-5** 旧moduleをtransitiveにimportしていた外部利用者向けの移行説明（CHANGELOGやrelease note）は、まだない。
@@ -229,8 +229,8 @@ Archived、Git履歴、RedBlackTree、Permutation、benchmark、test実装、他
 
 #### QUESTION
 
-- **Q-1 両auditに、現存しない合成pathがある。** 例: `BareArrayAudit.md`の19・139行`Sources/ElementBufferModule/BareArray.swift`、
-  `OptionalArrayAudit.md`の70・295・440・497行`Sources/OptionalElementBufferModule/OptinalArray.swift`。
+- **Q-1 両auditに、現存しない合成pathがある。** 例: `ElementBufferAudit.md`の19・139行`Sources/ElementBufferModule/BareArray.swift`、
+  `OptionalElementBufferAudit.md`の70・295・440・497行`Sources/OptionalElementBufferModule/OptinalArray.swift`。
   どちらのfileも現在は存在しない。directory名だけが新しく、file名は当時のままの形に見える。
   移行時の一括置換で履歴のpathが書き換わった可能性がある（Git履歴は境界外なので未確認）。
   履歴として当時のpathへ戻すのか、現在のpathへ揃えるのかは、Codexの判断を仰ぎたい。
@@ -1259,8 +1259,8 @@ Read only:
 - 対応する`Tests/`、`Benchmarks/Sources/Benchmarks/`、`Tests/AcCollectionsTests/`;
 - `Sources/OptionalArrayModule/Documentation/Quality-Profile.md`;
 - `Sources/BareArrayModule/Documentation/Quality-Profile.md`;
-- `Maintanance/OptionalElementBufferModule/OptionalArrayAudit.md`と`CurrentQualityAssessment.md`;
-- `Maintanance/ElementBufferModule/BareArrayAudit.md`と`CurrentQualityAssessment.md`。
+- `Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md`と`CurrentQualityAssessment.md`;
+- `Maintanance/ElementBufferModule/ElementBufferAudit.md`と`CurrentQualityAssessment.md`。
 
 ### Inspection questions
 

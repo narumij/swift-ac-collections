@@ -18,7 +18,7 @@
    未解決事象が記録されている。実装由来かcompiler由来か確定していないため、コメントを
    修正すべきとは推定しない。1.0前の再現確認までは未確認事項として残す。
 2. `OptionalArrayModule`の多次元subscriptとView subscriptのsetterは任意の`newValue`を
-   黙って無視するが、`OptionalArrayAudit.md`を再確認すると、2026-10-08に「連鎖subscriptの
+   黙って無視するが、`OptionalElementBufferAudit.md`を再確認すると、2026-10-08に「連鎖subscriptの
    writeback用の実装手段で、View全体代入を提供する公開契約ではない」とユーザー確認済みだった。
    したがって新しい製品判断候補ではなく、公開コメントへsetterの実装詳細を追加しない現状を維持する。
 

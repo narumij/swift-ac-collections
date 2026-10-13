@@ -139,4 +139,4 @@ bufferが破棄されると、全要素の寿命も終了する。公開のcopy�
 - 借用寿命compiler fixture: `Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/`
 - 品質プロファイル: `Sources/ElementBufferModule/Documentation/Quality-Profile.md`
 - 現在評価: `Maintanance/ElementBufferModule/CurrentQualityAssessment.md`
-- 体系監査と判断記録: `Maintanance/ElementBufferModule/BareArrayAudit.md`
+- 体系監査と判断記録: `Maintanance/ElementBufferModule/ElementBufferAudit.md`

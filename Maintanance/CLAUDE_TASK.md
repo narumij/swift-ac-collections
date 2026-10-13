@@ -9,7 +9,7 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**依頼済み: ElementBuffer系Maintenance管理座標の置換漏れ独立検査**
+**完了（Codex受入済み）: ElementBuffer系Maintenance管理座標の置換漏れ独立検査**
 
 2つのMaintenance folderと監査文書名を現行module名へ統一し、現行・Archivedを含む参照を一括更新した。
 Claudeは旧管理pathの残存、存在しない新path、機械置換による履歴事実の破損だけをread-onlyで検査する。
@@ -104,7 +104,7 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Active assignment: ElementBuffer系Maintenance管理座標の置換漏れ独立検査
+## Completed assignment: ElementBuffer系Maintenance管理座標の置換漏れ独立検査
 
 ### Objective
 
@@ -240,6 +240,14 @@ production source、test、benchmarkの内容は読まない。Markdown中の参
 - path文字列の照合だけで、production source、test、benchmarkは読んでいない。build等も実行していない。
 - 検索は`git grep`による。
 - 変更したfileは、`Maintanance/CLAUDE_TASK.md`のこのReturn節だけ。
+
+#### Prime acceptance
+
+Codexは`accept`判定を受け入れた。SHOULD-FIXの現行Quality Profile案内2件を新source pathへ修正した。
+Q-1は、旧管理座標を現行文書からなくして記憶負担を減らすというユーザー目的に従い、Return内も検査時点の
+判断だと分かる表現へ統一した。変更前の原文はGit履歴に保持される。Q-2は旧pathを現行参照へ戻さず、
+現行監査文書のrename前版にあるcommit時点の節として表現した。
+安定task ID、task状態、依存、所有者、再開条件に変更がないことを確認し、置換漏れ検査を受け入れた。
 
 ## Completed assignment: ElementBuffer系名称移行と利用者向け文書の独立目視検査（第2回）
 

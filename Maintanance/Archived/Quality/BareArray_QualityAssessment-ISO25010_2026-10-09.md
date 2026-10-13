@@ -2,7 +2,7 @@
 
 > この文書は、2026-10-09までに行われた品質評価、監査、および作業記録の履歴である。
 > 現行の品質要求、契約、検証状態の判断には使用しない。
-> 現行文書は`../../../Sources/BareArrayModule/Documentation/Quality-Profile.md`を参照する。
+> 現行文書は`../../../Sources/ElementBufferModule/Documentation/Quality-Profile.md`を参照する。
 
 > 状態: 初版（2026-10-09 / Claude Opus 5.5、`claude-opus-5-5`）。Codex受入済み。
 > 評価対象: `Sources/BareArrayModule/BareArray.swift`の公開7型・公開宣言29件と公開適合4件。

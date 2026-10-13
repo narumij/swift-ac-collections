@@ -79,3 +79,7 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
   241件を新座標へ置換した。歴史上の型名、target名、および当時のsource pathは履歴事実として保持した。
 - 続くユーザー指示で監査文書名も`ElementBufferAudit.md`／`OptionalElementBufferAudit.md`へ統一し、全参照を
   新しいfile名へ置換した。安定task IDと本文中の歴史上の名称は変更していない。
+- Claudeの独立置換漏れ検査は`accept`。新path 8種類・246参照の実在と整合、旧管理座標のlive参照0件、
+  歴史上のsource pathと安定task IDの保持を確認した。指摘されたArchived品質評価2件の現行Quality Profile
+  案内を修正した。過去Return内の管理path表現も、旧座標を現行文書に残さず記憶負担を減らすというユーザー目的に
+  従って検査時点の判断と分かる表現へ統一し、変更前の原文はGit履歴に保持した。

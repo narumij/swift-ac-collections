@@ -155,6 +155,26 @@ compileした。これはdata raceの実行を確認した結果ではないが�
 別の成立条件が必要かを先に調査する。単に「thread-safeではない」「並行accessは利用者責任」と
 説明するだけで、Swiftの`Sendable`が持つ意味上の要求を満たしたとは扱わない。
 
+### 両立可能性の独立probe
+
+ClaudeがSwift 6.4で`-strict-concurrency=complete -wmo -emit-sil`を使い、現行相当の最小模型を
+独立検証した。`-typecheck`だけではownershipとregion isolationの拒否診断が出ないため、Codexの
+初回probeが「`mutating`化でも通る」とした観測は検証段階不足であり、撤回する。
+
+確認した範囲では、`@unchecked Sendable`を維持して`setElement`と`removeAll()`を`mutating`にする
+候補だけが、actor・MainActorへのconsuming transfer、actor storageからの再移送、並行読み取りを
+維持しながら、二つの`async let`または`Task`からの並行更新と、並行読み取り中の親側更新を拒否した。
+一方、呼出側は更新対象を`let`ではなく`var`で宣言する必要がある。
+
+`Sendable`を外してregion isolationまたは`consuming sending`に移送を委ねる候補も、actorへの単純な
+consuming transferは成立した。しかしactorのstored propertyからの再移送と並行読み取りを失い、
+`Sendable & ~Copyable`を要求するgeneric APIへ渡せなくなる。現行のままでは、同じlocalへの三つの
+共有更新経路が診断なしで成立する。
+
+この結果は最小模型のcompiler behaviorであり、実装採用判断ではない。`mutating`候補が依存する
+「pointeeへの書込みはmutating methodとdeinitだけで、pointerは非公開」という不変条件を現行4型で
+照合し、既存呼出側へのsource影響を棚卸ししてから、適合維持方法を一判断へ分離する。
+
 ## 判断の整理
 
 - 1D所有型名は横断命名判断でunsuffixedの`OptionalElementBuffer`に確定し、実装反映も完了した。

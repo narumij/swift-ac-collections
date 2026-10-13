@@ -9,10 +9,15 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行待ち: OptionalArrayのdomain間移送と並行更新排除の独立検証**
+**実行待ち: OptionalArray更新methodの`mutating`化によるsource影響棚卸し**
 
-Codexが確認した`Sendable`、`sending consuming`、共有borrowの事実について、現行4型とSwift 6.4の
-compiler behaviorを独立に照合する。適合維持・削除、公開契約、実装方式は判断せず、選択肢と反証を返す。
+repository内の現行呼出側だけを検索し、機械的な`let`→`var`で済む箇所と、所有権または設計判断を要する
+箇所を分離する。source・test・文書は変更しない。
+
+**完了: OptionalArrayのdomain間移送と並行更新排除の独立検証**
+
+Swift 6.4の一時probeで4候補を比較した。「更新methodの`mutating`化と`@unchecked Sendable`の維持」は、
+移送を維持したまま、試した共有更新経路をすべて拒否した。判断が要る点はReturn節に分離した。
 
 **完了: Permutation一般Swift利用Validation scenarioの限定レビュー**
 
@@ -70,7 +75,42 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Current assignment: OptionalArrayのdomain間移送と並行更新排除の独立検証
+## Current assignment: OptionalArray更新methodの`mutating`化によるsource影響棚卸し
+
+### Objective
+
+`OptionalElementBuffer` 1D〜4Dの`setElement`と`removeAll()`を`mutating`にした場合のrepository内
+source compatibility影響を、実装を変更せずに棚卸しする。
+
+### Inputs and scope
+
+- `Sources/OptionalArrayModule/OptionalElementBuffer.swift`の対象methodと全呼出し;
+- `Sources/`、`Tests/`、`Benchmarks/`、`Snippets/`、公開documentation内の現行型名による呼出し;
+- 必要なら一時directoryで、代表的な再帰closureまたは所有権形状の最小compiler probe。
+
+Archived、RedBlackTree、Permutation、Git履歴、過去conversationは調査しない。
+
+### Boundaries
+
+- repositoryのsource、test、benchmark、documentation、Registryを変更しない。
+- `mutating`化、`Sendable`維持・削除、公開契約、互換性を決めない。
+- build、既存test、benchmark、commitを行わない。
+- 結果は下のReturn節だけへ記録する。
+
+### Completion
+
+各影響箇所をpath、symbolまたは行、現在の宣言形、必要になる変更へ対応付ける。次を区別する。
+
+- `let`→`var`だけで済む機械的影響;
+- closure capture、ownership、generic制約等の追加確認が必要な影響;
+- 既に`var`で影響しない箇所;
+- repository外利用者にだけ残るsource compatibility影響。
+
+### Return
+
+未実施。
+
+## Completed assignment: OptionalArrayのdomain間移送と並行更新排除の独立検証
 
 ### Objective
 
@@ -121,7 +161,67 @@ compiler behaviorと公式契約からの解釈を分離し、判断が必要な
 
 ### Return
 
-未実施。
+2026-10-13 Claude（Opus 5.5）。Apple Swift 6.4（swiftlang-6.4.0.34.1、arm64 macOS）。
+`-swift-version 6 -strict-concurrency=complete -wmo -emit-sil`を使った。一時directoryは削除済み。
+probe型は、現行1Dと同じ形の最小模型（`~Copyable`、`let`のraw pointer、nonmutatingな`set`／`removeAll`）。
+2D〜4Dは同じstorage構造とmethod形なので同じ結果になると推定するが、個別には試していない。
+
+**注意（再現時）:** `-typecheck`では全probeが通った。ownership検査とregion isolationはSIL段階の診断で、
+`-typecheck`では出ない。拒否の確認には`-emit-sil`以上が必要。
+
+#### Q1 `@unchecked`が実装側へ移している検査
+
+- 確認済み: `@unchecked`を外して`Sendable where E: Sendable`にすると、「stored property 'p' has non-Sendable type
+  'UnsafeMutablePointer<E?>'」で拒否された。省略されている検査は、stored propertyのSendable性だけ。
+- 解釈: その結果、raw pointerの先のstorageへ、共有borrowから書き込めるnonmutating method（`setElement`、`removeAll`）が
+  あっても、compilerは検出しない。`element(at:)`の読み取りだけなら、共有されても競合は起きない。
+
+#### 候補比較
+
+V0は現行、V1は更新を`mutating`化して`@unchecked Sendable`を維持、V2は現行methodで`Sendable`なし、V3は`mutating`化して`Sendable`なし。
+
+| 経路 | V0 | V1 | V2 | V3 |
+| --- | --- | --- | --- | --- |
+| actorへconsuming transfer（`sending`の有無とも） | 通る | 通る | 通る | 通る |
+| MainActor関数へ渡す・worker経由で受け取り直す | 通る | 通る | 通る | 通る |
+| actorのstored propertyから取り出して`sending`で返す | 通る | 通る | **拒否** | **拒否** |
+| 同じlocalを2つの`async let`で更新 | **通る（反証）** | 拒否 | 拒否 | 拒否 |
+| 1つの`async let`で読み、親が更新 | **通る（反証）** | 拒否 | 拒否 | 拒否 |
+| 同じlocalを2つの`Task {}`がcaptureして更新 | **通る（反証）** | 拒否 | 拒否 | 拒否 |
+| 同じlocalを2つの`async let`で読むだけ | 通る | 通る | 拒否 | 拒否 |
+| actorが所有して、actor methodから更新 | 通る | 通る | 通る | 通る |
+| `let`宣言の呼出側から更新 | 通る | 拒否（要`var`） | 通る | 拒否（要`var`） |
+| local関数がcaptureしてメモ化再帰 | 通る | 通る（`var`） | 未確認 | 未確認 |
+
+#### Q2〜Q6
+
+- **Q2:** 現行の適合で、actorやMainActorへのconsuming transferは成立する。
+- **Q3:** 拒否しない。localの`let`を`async let`や`Task {}`で共有し、`setElement`／`removeAll`を並行に呼ぶ形は、診断なしで通る。
+  Codexの反証と一致し、`Task {}`経路も追加で確認した。一方、borrowed parameterは`async let`や`addTask`にcaptureできず、
+  どの候補でも拒否された（「cannot be captured by an escaping closure since it is a borrowed parameter」）。
+- **Q4:** `mutating`化だけで成立する（V1）。移送はすべて維持され、試した共有更新3経路は拒否された。並行読み取りは引き続き通る。
+  inout parameterを`async let`へcaptureする形は拒否されるが、その診断は「usage of a noncopyable type that compiler can't verify.
+  This is a compiler bug」だった。意図された診断ではなく、compiler実装に依存する拒否なので、根拠として弱い。
+- **Q5:** 成立する（V2）。`sending`なしのconsuming parameterでもregion推論で移送が通った。ただし、actorやMainActorの
+  stored propertyに入れた後は、取り出して他のdomainへ送れなくなる。並行読み取りも拒否される。
+  public APIへ`sending`を付ける必要はないが、呼出側の型にSendable制約を課すgeneric API（`Sendable & ~Copyable`）
+  へは渡せなくなる。現行のpublic surface testはこの制約を使っている。
+- **Q6:** 試した範囲では、V1以外に、thread-safe storageへ変えずに「移送は可能、無同期の並行更新は不可」を表せる候補は見つからなかった。
+  V3はV2より拒否が増えるだけで、利点は追加されない。
+
+#### 判断が必要な選択肢
+
+- V1を採るかどうか: 更新の`mutating`化はsource互換を壊す（`let`で宣言して更新している呼出側は`var`が必要）。
+  影響を受ける呼出側の数は数えていない（入力外のため）。
+- V2を採るかどうか: `Sendable`の削除は、actor内に保持した値の持ち出しと、並行読み取りを失う。
+- 現行のまま（V0）: 上記の反証3経路が残る。
+
+#### 残余リスク
+
+- compilerが受理したことは、意味上の安全性の証明ではない。V1の妥当性は、「pointeeへの書き込みは`mutating`とdeinitだけ、
+  pointerは非公開」という不変条件に依存する。この不変条件はprobe型では成り立つが、実sourceの全methodは照合していない
+  （1D〜4Dの公開methodを目視した範囲では成り立つ）。
+- `nonisolated(unsafe)`のglobalなど、明示的にunsafeな経路は試していない。
 
 ## Completed assignment: Permutation一般Swift利用Validation scenarioの限定レビュー
 

@@ -133,10 +133,10 @@ comment、Maintenance上の利用者向けドラフト、traitによる提供境
    - 両moduleの`Documentation/Quality-Profile.md`
    - 両moduleのSwift sourceにあるpublic declarationとdocumentation comment
 5. 次の利用者向けドラフトと監査記録。
-   - `BareArrayModule/UserDocumentationDraft.md`
-   - `OptionalArrayModule/UserDocumentationDraft.md`
-   - `BareArrayModule/BareArrayAudit.md`
-   - `OptionalArrayModule/OptionalArrayAudit.md`
+   - `ElementBufferModule/UserDocumentationDraft.md`
+   - `OptionalElementBufferModule/UserDocumentationDraft.md`
+   - `ElementBufferModule/BareArrayAudit.md`
+   - `OptionalElementBufferModule/OptionalArrayAudit.md`
 6. `Package.swift`のproduct、trait、対象target定義と、`Sources/AcCollections/AcCollections.swift`。
 7. `git diff origin/develop/misc/66..HEAD --`のうち、上記対象と旧facade削除に直接関係する差分。
 
@@ -192,7 +192,7 @@ Archived、Git履歴、RedBlackTree、Permutation、benchmark、test実装、他
 
 #### MUST-FIX
 
-- **M-1 `BareArrayModule/UserDocumentationDraft.md`の123行「SwiftPMの`BareArrayModule`から利用でき、`AcCollections`からも再公開される。」**
+- **M-1 `ElementBufferModule/UserDocumentationDraft.md`の123行「SwiftPMの`BareArrayModule`から利用でき、`AcCollections`からも再公開される。」**
   （移行taskの欠陥）
   - 旧名targetは`ARRAY-018`で削除されたので、現在は存在しない導入経路を書いている。
   - `ARRAY_MODULE_TARGET_MIGRATION_EXECUTION.md`の実行範囲7「現行の利用者向け正本文書にあるmodule名と現行source pathを更新する」の対象で、更新が漏れている。
@@ -202,9 +202,9 @@ Archived、Git履歴、RedBlackTree、Permutation、benchmark、test実装、他
 #### SHOULD-FIX
 
 - **S-1 両draftの本文の主語が旧module名のまま。**（移行taskの漏れ。ただし非公開draft）
-  - `BareArrayModule/UserDocumentationDraft.md`の1・10行（「BareArrayModuleは…」）。
-  - `OptionalArrayModule/UserDocumentationDraft.md`の1・10行（「OptionalArrayModuleは…」）。
-  - 実行範囲7の対象。folder名は管理座標なので、変えなくてよい。
+  - `ElementBufferModule/UserDocumentationDraft.md`の1・10行（「BareArrayModuleは…」）。
+  - `OptionalElementBufferModule/UserDocumentationDraft.md`の1・10行（「OptionalArrayModuleは…」）。
+  - 実行範囲7の対象。検査時点ではfolder名を管理座標として維持する境界だったが、後続のユーザー指示で変更した。
 - **S-2 `AcCollections.docc/AcCollections.md`の説明が、trait opt-inの提供境界と矛盾する。**（移行taskではなく、`314f45e0`のopt-in化に伴う追従漏れ）
   - 「re-exports … optional-slot arrays」を、条件なしで書いている。
   - 「The current policy is to include every collection module shipped by the package」と書いている。
@@ -221,7 +221,7 @@ Archived、Git履歴、RedBlackTree、Permutation、benchmark、test実装、他
 - **L-1** ElementBufferの座標access 3種と`reference(at:)`のdocumentation comment（借用寿命、Apple OS 27の可用性）。
   draftの71・91行にはある説明で、公開sourceへ移すかどうかは文書taskの判断。
 - **L-2** landing pageは英語、型のdoc commentは日本語で、言語が混在している。公開媒体の判断（`DOC`系）で扱う。
-- **L-3** `OptionalArrayModule/OptionalArrayAudit.md`の47行「repository CIはOptionalArray DocCを継続生成しない」は、現在のCI（5 targetに`OptionalElementBufferModule`を含む）と食い違う。
+- **L-3** `OptionalElementBufferModule/OptionalArrayAudit.md`の47行「repository CIはOptionalArray DocCを継続生成しない」は、現在のCI（5 targetに`OptionalElementBufferModule`を含む）と食い違う。
   同じ表の「一般Swift利用 … `AcCollections`再公開は確認済み」も、opt-in化の前の記述。日付つき評価の表として読むなら履歴だが、現在形で書かれている。
 - **L-4（範囲外の観察）** `AcCollections.md`の「permutation sequence」。Permutationは今回の対象外なので、照合していない。
 - **L-5** 旧moduleをtransitiveにimportしていた外部利用者向けの移行説明（CHANGELOGやrelease note）は、まだない。
@@ -256,7 +256,7 @@ Archived、Git履歴、RedBlackTree、Permutation、benchmark、test実装、他
 #### 旧名の残存の分類（対象範囲内）
 
 - **誤り:** Bare draftの123行（M-1）、両draftの1・10行（S-1）、両auditの合成path（Q-1、要判断）。
-- **意図した履歴・管理座標:** `Maintanance/BareArrayModule/`・`OptionalArrayModule/`のfolder名と、それを指す品質プロファイルの正本表。
+- **検査時点で意図した履歴・管理座標:** maintenance folder名と、それを指す品質プロファイルの正本表。
   audit内の当時のtest filter名（`--filter BareArrayModuleTests`等）と`generate-documentation --target BareArrayModule`。移行計画と実行記録。
 - **利用者向け移行説明:** 現在はない（L-5）。
 
@@ -399,10 +399,10 @@ Archived、Git履歴、RedBlackTree実装、品質評価本文、他のtaskは�
 
 - **実行系:** `Utilities/…/BareArrayMutableRefLifetime`の2 file（MUST-FIX）。
 - **現行の説明:** `Tests/TESTING.md`の61〜62・66〜67行（SHOULD-FIX）。
-  他に`Tests/TESTING.md`の76・110・120行と、両`Quality-Profile.md`のpath参照があるが、これらはmaintenance folder名を指す管理座標で、問題ない。
+  他に`Tests/TESTING.md`の76・110・120行と、両`Quality-Profile.md`のpath参照があるが、検査時点ではmaintenance folder名を指す管理座標で、問題ないと判定した。
 - **履歴・管理座標:** `CHANGELOG.md`、`DOCUMENTATION_CI_PLAN.md`の10-13の証拠、移行計画とその実行記録、
-  `Maintanance/BareArrayModule/`・`Maintanance/OptionalArrayModule/`配下、Registry、`TASK_CANONICAL_DOCUMENT_MAP.md`、`WORKER_TASK.md`、Graph fixture、`Tests/Archived/`。
-  計画書の境界どおり、改名の対象外。
+  `Maintanance/ElementBufferModule/`・`Maintanance/OptionalElementBufferModule/`配下、Registry、`TASK_CANONICAL_DOCUMENT_MAP.md`、`WORKER_TASK.md`、Graph fixture、`Tests/Archived/`。
+  検査時点の計画書の境界では改名対象外。後続のユーザー指示でmaintenance folderと管理pathは新名称へ統一した。
 
 #### 判定
 
@@ -544,7 +544,7 @@ binaryのhot pathを比較する。その観測に基づいて対象を絞り、
 - `Benchmarks/_Artifacts/PerformanceCI/215be94b-vs-01120025/`（Git管理外のCI artifact）;
 - `Benchmarks/Sources/Benchmarks/OptionalArrayBenchmarks.swift`のOptionalElementBuffer direct benchmark;
 - `Sources/OptionalArrayModule/OptionalElementBuffer.swift`の対象accessorと更新method;
-- `OptionalArrayModule/CurrentQualityAssessment.md`の現行performance CI regression節;
+- `OptionalElementBufferModule/CurrentQualityAssessment.md`の現行performance CI regression節;
 - `Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`の再現条件、実測binary、assembly比較に関する手順;
 - `git show`による`01120025`と`215be94b`の上記対象file差分;
 - `swiftly`で利用可能なSwift 6.4.0と、ユーザーが導入済みのSwift 6.4.1。
@@ -751,7 +751,7 @@ probeの型は、`mutating`化した1D模型。2D〜4Dは同じmethod形なの�
 Read only:
 
 - Registryの`OPT-061`と`OPT-066`行;
-- `OptionalArrayModule/CurrentQualityAssessment.md`の`Sendable`契約節;
+- `OptionalElementBufferModule/CurrentQualityAssessment.md`の`Sendable`契約節;
 - `Sources/OptionalArrayModule/OptionalElementBuffer.swift`;
 - `Tests/OptionalArrayModuleTests/OptionalArray_0_PublicSurfaceTests.swift`;
 - Apple Swift 6.4の`Sendable`、`sending`、ownershipに関する公式文書とcompiler diagnostics。
@@ -1259,8 +1259,8 @@ Read only:
 - 対応する`Tests/`、`Benchmarks/Sources/Benchmarks/`、`Tests/AcCollectionsTests/`;
 - `Sources/OptionalArrayModule/Documentation/Quality-Profile.md`;
 - `Sources/BareArrayModule/Documentation/Quality-Profile.md`;
-- `Maintanance/OptionalArrayModule/OptionalArrayAudit.md`と`CurrentQualityAssessment.md`;
-- `Maintanance/BareArrayModule/BareArrayAudit.md`と`CurrentQualityAssessment.md`。
+- `Maintanance/OptionalElementBufferModule/OptionalArrayAudit.md`と`CurrentQualityAssessment.md`;
+- `Maintanance/ElementBufferModule/BareArrayAudit.md`と`CurrentQualityAssessment.md`。
 
 ### Inspection questions
 

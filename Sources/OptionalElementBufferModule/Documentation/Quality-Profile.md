@@ -64,7 +64,7 @@ OptionalArrayは、要素ごとの有無を保持し、単一の連続storage上
 
 ### 公開文書と監査記録
 
-documentation commentと利用者向け文書は、nil状態、所有権、軸、操作、制約、計算量、および失敗条件を利用者が理解するための入口である。`Maintanance/OptionalArrayModule/OptionalArrayAudit.md`は、公開面の棚卸し、過去の判断、および証拠の所在を記録する。監査記録の存在だけで現在の要求適合を証明したとはみなさない。
+documentation commentと利用者向け文書は、nil状態、所有権、軸、操作、制約、計算量、および失敗条件を利用者が理解するための入口である。`Maintanance/OptionalElementBufferModule/OptionalArrayAudit.md`は、公開面の棚卸し、過去の判断、および証拠の所在を記録する。監査記録の存在だけで現在の要求適合を証明したとはみなさない。
 
 ### 性能証拠
 
@@ -175,7 +175,7 @@ trait無効時には`AcCollections`から公開しない。一般Swift向けの�
 | 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
 | 観察可能な仕様 | `Tests/OptionalElementBufferModuleTests/`の番号付きTest as Specification |
 | 公開APIとdocumentation comment | `Sources/OptionalElementBufferModule/OptionalElementBuffer.swift` |
-| 公開面の棚卸し、判断、証拠の所在 | `Maintanance/OptionalArrayModule/OptionalArrayAudit.md` |
+| 公開面の棚卸し、判断、証拠の所在 | `Maintanance/OptionalElementBufferModule/OptionalArrayAudit.md` |
 | 競技用途のcompile evidence | `Tests/OptionalElementBufferModuleTests/EDPC-J.swift` / `EDPC-L.swift` |
 | 性能測定対象と継続測定構成 | `Benchmarks/`およびGitHub Actions（対象が存在する場合） |
 | 特定commit・環境での調査結果 | 対象調査またはreleaseの記録 |

@@ -25,9 +25,9 @@
 
 - 公開surfaceと実装: `Sources/OptionalElementBufferModule/OptionalElementBuffer.swift`
 - 観察可能な仕様: `Tests/OptionalElementBufferModuleTests/`
-- 利用者への説明: `Maintanance/OptionalArrayModule/UserDocumentationDraft.md`
+- 利用者への説明: `Maintanance/OptionalElementBufferModule/UserDocumentationDraft.md`
 - 品質と証拠の境界: `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md`
-- 現在評価: `Maintanance/OptionalArrayModule/CurrentQualityAssessment.md`
+- 現在評価: `Maintanance/OptionalElementBufferModule/CurrentQualityAssessment.md`
 
 ### 固定する情報
 

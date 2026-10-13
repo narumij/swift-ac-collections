@@ -73,7 +73,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 ### OptionalArray体系監査と管理方式の検証
 
 詳細な契約表、test対応、履歴根拠、判断候補は
-`Maintanance/OptionalArrayModule/OptionalArrayAudit.md`を正本とする。
+`Maintanance/OptionalElementBufferModule/OptionalArrayAudit.md`を正本とする。
 
 現在の到達点は、OptionalArrayをCodexのユーザードキュメント作業フェーズへ渡せる状態にすることである。
 Codexが作業設計、調査範囲の閉鎖、網羅性確認、成果物の受入れ、完了判定を担う。Claudeへ作業を委任する
@@ -107,7 +107,7 @@ BareArrayについて既に登録した公開7型の契約棚卸し、位置づ�
   割り当てない。
 
 `BARE-006`の現行設計と後続taskは
-`Maintanance/BareArrayModule/CurrentQualityAssessment.md`を正本とする。
+`Maintanance/ElementBufferModule/CurrentQualityAssessment.md`を正本とする。
 
 OptionalArrayの品質評価は、PermutationModuleの`Quality-Profile.md`と同様に、仕様を再記述せず
 Test as Specification、実装、CI、利用者向け文書を根拠としてISO/IEC 25010の品質特性ごとに整理する。

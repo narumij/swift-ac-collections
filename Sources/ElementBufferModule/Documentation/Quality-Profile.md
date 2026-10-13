@@ -57,7 +57,7 @@ ElementBufferは、単一の連続storageを使う低レベル配列部品であ
 
 ### 公開文書と監査記録
 
-documentation commentと利用者向け文書は、所有権、借用参照の寿命、軸、操作、制約、計算量、および失敗条件を利用者が理解するための入口である。`Maintanance/BareArrayModule/BareArrayAudit.md`は、削除済み公開面を含む棚卸し、過去の判断、および証拠の所在を記録する。監査記録の存在だけで現在の要求適合を証明したとはみなさない。
+documentation commentと利用者向け文書は、所有権、借用参照の寿命、軸、操作、制約、計算量、および失敗条件を利用者が理解するための入口である。`Maintanance/ElementBufferModule/BareArrayAudit.md`は、削除済み公開面を含む棚卸し、過去の判断、および証拠の所在を記録する。監査記録の存在だけで現在の要求適合を証明したとはみなさない。
 
 ### 性能証拠
 
@@ -165,7 +165,7 @@ CI設定は、実際に検証するtoolchain、platform、build configuration、
 | 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
 | 観察可能な仕様 | `Tests/ElementBufferModuleTests/`の番号付きTest as Specification |
 | 公開APIとdocumentation comment | `Sources/ElementBufferModule/ElementBuffer.swift` |
-| 公開面の棚卸し、判断、証拠の所在 | `Maintanance/BareArrayModule/BareArrayAudit.md` |
+| 公開面の棚卸し、判断、証拠の所在 | `Maintanance/ElementBufferModule/BareArrayAudit.md` |
 | 性能測定対象と継続測定構成 | `Benchmarks/`およびGitHub Actions（対象が存在する場合） |
 | 特定commit・環境での調査結果 | 対象調査またはreleaseの記録 |
 

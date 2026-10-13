@@ -979,7 +979,7 @@ OptionalArrayの`Sendable`検証、`mutating`化とそのsource影響の棚卸�
 benchmark操作の実習、PR #194のmerge。Claudeは21:00からこの会話で作業し、ユーザーの「やって」で5つのassignmentを順に受けた。
 
 **証拠の出どころ:** Claudeが直接見たのは、この会話、`CLAUDE_TASK.md`、artifact、commitである。
-ユーザーとCodexの会話は見ていない。ユーザーの判断は`OptionalArrayModule/CurrentQualityAssessment.md`とcommitから読んだ。
+ユーザーとCodexの会話は見ていない。ユーザーの判断は`OptionalElementBufferModule/CurrentQualityAssessment.md`とcommitから読んだ。
 
 ### 点数の変更
 

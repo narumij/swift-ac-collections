@@ -49,7 +49,7 @@
 
 - 実装・test targetとdirectoryを確定済みの新名称へ移し、旧名2 targetを1行の再公開facadeとして追加した。
 - `AcCollections`、test、benchmarkのimport、manifest依存、DocC CI target matrix、および現行正本のsource pathを
-  更新した。Archived記録とmaintenance directory名は履歴・管理座標として維持した。
+  更新した。この段階ではArchived記録とmaintenance directory名を履歴・管理座標として維持した。
 - Xcode Build for Testingと`swift test --disable-sandbox`が成功した。
 - trait有効時にOptional系通常test 36件、AcCollections再公開test 1件、Death Test 21件が成功した。
 - 旧名facadeから新moduleの公開型を利用するcompatibility smoke testを両test targetへ追加し、成功した。
@@ -59,3 +59,6 @@
 
 旧名facadeは移行中間状態としてPR #195でmainへ固定した。最終的な移行ゴールは`ARRAY-018`で旧名2 targetを
 削除し、新moduleだけをpackageと継続CIへ残すこととする。
+
+後続の`ARRAY-018`では、ユーザーの追加指示によりmaintenance directoryも新module名へ統一し、現行・Archivedの
+管理path参照を更新した。本文中の歴史上の名称と当時のsource pathは置換対象に含めていない。

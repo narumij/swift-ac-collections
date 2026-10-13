@@ -40,7 +40,7 @@ performance acceptance, or compatibility policy.
 - Expected branch: `develop/misc/64`.
 - Expected HEAD: `9d264e0b` (`Draft OptionalArray user documentation`).
 - Expected worktree changes before Worker starts:
-  - `Maintanance/BareArrayModule/UserDocumentationDraft.md` added;
+  - `Maintanance/ElementBufferModule/UserDocumentationDraft.md` added;
   - `Maintanance/PROGRESS_OVERVIEW.md` modified;
   - this assignment in `Maintanance/WORKER_TASK.md` modified.
 - Prime Codex and the user retain ownership of the shared worktree.
@@ -54,10 +54,10 @@ Read only these files, in this order:
 
 1. `Orientation/WORKER_CODEX_BOOTSTRAP.md` in full.
 2. This assignment in full.
-3. `BareArrayModule/UserDocumentationDraft.md`.
+3. `ElementBufferModule/UserDocumentationDraft.md`.
 4. `Sources/BareArrayModule/ElementBuffer.swift`.
 5. `Sources/BareArrayModule/Documentation/Quality-Profile.md`.
-6. `BareArrayModule/CurrentQualityAssessment.md`.
+6. `ElementBufferModule/CurrentQualityAssessment.md`.
 7. Only the `BARE-040` row in `PROGRESS_OVERVIEW.md`.
 
 Do not scan the repository, Archived records, tests, benchmarks, Apple documentation, or Git
@@ -138,7 +138,7 @@ Status: review completed; awaiting Prime review.
 - Branch: `develop/misc/64`.
 - HEAD: `9d264e0b` (`Draft OptionalArray user documentation`).
 - Observed worktree changes matched the expected set:
-  - `Maintanance/BareArrayModule/UserDocumentationDraft.md` added;
+  - `Maintanance/ElementBufferModule/UserDocumentationDraft.md` added;
   - `Maintanance/PROGRESS_OVERVIEW.md` modified;
   - `Maintanance/WORKER_TASK.md` modified.
 
@@ -146,10 +146,10 @@ Status: review completed; awaiting Prime review.
 
 - `Maintanance/Orientation/WORKER_CODEX_BOOTSTRAP.md`
 - `Maintanance/WORKER_TASK.md`
-- `Maintanance/BareArrayModule/UserDocumentationDraft.md`
+- `Maintanance/ElementBufferModule/UserDocumentationDraft.md`
 - `Sources/BareArrayModule/ElementBuffer.swift`
 - `Sources/BareArrayModule/Documentation/Quality-Profile.md`
-- `Maintanance/BareArrayModule/CurrentQualityAssessment.md`
+- `Maintanance/ElementBufferModule/CurrentQualityAssessment.md`
 - The `BARE-040` task row in `Maintanance/PROGRESS_OVERVIEW.md`
 
 ### Findings

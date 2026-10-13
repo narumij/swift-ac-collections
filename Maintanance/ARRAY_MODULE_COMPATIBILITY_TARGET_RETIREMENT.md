@@ -20,7 +20,8 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
 - `AcCollections`は新moduleを直接再公開しており、旧名facadeの公開宣言には依存していない。
 - production sourceとbenchmarkは新moduleを直接importする。
 - 旧名facadeへの実行系依存は、manifest内の`AcCollections`・test target依存、互換smoke test、およびDocC CI entryに限定される。
-- maintenance folder名とArchived記録は履歴・管理座標であり、このtaskでは改名しない。
+- 当初はmaintenance folder名を履歴・管理座標として改名対象外にしたが、現行module名との対応を記憶し続ける
+  負担と誤認を避けるため、ユーザーの追加指示で現行正本folderも新module名へ統一する。
 - benchmark task名rename互換はmodule target削除とは独立しており、削除しない。
 
 ## 実行範囲
@@ -31,6 +32,8 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
 4. PR DocC matrixから旧名2 targetを削除し、新moduleを含む5 target構成へ戻す。
 5. 現行の移行正本とCI計画へ、旧名facade終了後の構成を反映する。
 6. 旧名facadeのDocC入口を削除するだけで終えず、新module名のDocC入口をそれぞれのtargetへ配置する。
+7. `Maintanance/BareArrayModule`と`Maintanance/OptionalArrayModule`を新module名のfolderへ移し、現行・Archivedを
+   含む管理path参照をすべて新座標へ統一する。本文中の歴史上の型名・target名・source pathは変更しない。
 
 ## 検証
 
@@ -39,6 +42,7 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
 - benchmark packageのrelease buildとCI libraryのtask解決が成功する。
 - `ElementBufferModule`と`OptionalElementBufferModule`のDocC生成が成功する。
 - 両新moduleの生成済みDocCに、新module名のmodule landing pageが含まれる。
+- 旧maintenance folderと、それを指す管理path参照が残らない。
 - 実行系に旧名targetへの依存またはimportが残らない。
 - remote PR CIでperformanceを含む全jobが完走する。
 
@@ -70,3 +74,6 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
   両auditの現行・履歴pathとOptionalのDocC CI記述を修正した。`AcCollections`と`ElementBufferModule`のDocCを
   `--warnings-as-errors`付きで再生成して成功し、指摘を受け入れた。公開コメント拡充、公開媒体の言語、
   release向け移行説明は後続ドキュメント作業として分離した。
+- ユーザーの追加指示により、記憶上の例外だったmaintenance folder名も
+  `ElementBufferModule`／`OptionalElementBufferModule`へ移した。8文書を移動し、現行・Archivedを含む管理path
+  241件を新座標へ置換した。歴史上の型名、target名、および当時のsource pathは履歴事実として保持した。

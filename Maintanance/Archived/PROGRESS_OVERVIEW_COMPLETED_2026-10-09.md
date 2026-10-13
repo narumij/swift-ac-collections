@@ -98,47 +98,47 @@ IDs remain permanent and must not be reused.
 | `PERM-007` | `DONE` | Codex | 両modeのAcCollections再公開検証 | 2026-10-09、AcCollectionsだけをimportした通常API・互換APIのcompileとtest成功を確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-009` | `DONE` | Codex | AtCoder単一file生成とローカル検証 | 2026-10-09、互換2 sourceから自己完結fileを生成し、ABC328E公式sampleでcompile・実行結果33を確認 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
 | `PERM-010` | `DONE` | Codex | Permutation互換mode文書同期 | 2026-10-09、現行文書は通常版だけを扱い、互換資料と品質評価は後続branch define・制限・検証結果へ同期 | `PermutationModule/AtCoder2025CompatibilityPlan.md` |
-| `OPT-001` | `DONE` | Codex | [DISCOVERY] OptionalArrayの体系監査・名称再検討 | 2026-10-08、公開7型・29宣言の契約、test、履歴、判断、Test as Specificationを検収し、ユーザードキュメント作業へ引き渡し | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-002` | `DONE` | Codex | [DISCOVERY] OptionalArray監査の管理方式と受入基準の抽出 | 2026-10-08、実績から段階構成、責任境界、受入基準、停止条件を再利用可能な監査方式として抽出 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-001` | `DONE` | Codex | [DISCOVERY] OptionalArrayの体系監査・名称再検討 | 2026-10-08、公開7型・29宣言の契約、test、履歴、判断、Test as Specificationを検収し、ユーザードキュメント作業へ引き渡し | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-002` | `DONE` | Codex | [DISCOVERY] OptionalArray監査の管理方式と受入基準の抽出 | 2026-10-08、実績から段階構成、責任境界、受入基準、停止条件を再利用可能な監査方式として抽出 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
 | `OPT-005` | `DONE` | Codex / Claude | [DISCOVERY] OptionalArray品質評価の初版策定 | 2026-10-08、9製品品質特性を評価し、既知の不足を利用者向け文書作業と1.0準備へ分離して初版を完成 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
-| `OPT-007` | `DONE` | Codex | [EXECUTION] OptionalArray監査の暫定受入基準策定 | 2026-10-08、公開宣言網羅、契約・test・履歴対応、判断分離、引き渡し成果物を監査開始前の基準として確定 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-008` | `DONE` | Codex | [DISCOVERY] OptionalArray公開7型の宣言・契約・履歴監査 | 2026-10-08、29宣言と4適合の契約・履歴を棚卸しし、決定記録のない4件を判断候補として分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-009` | `DONE` | Codex | [DISCOVERY] OptionalArray公開契約とtest根拠の対応監査 | 2026-10-08、実装・test・利用例・coverageを公開宣言へ対応し、未検証範囲と本文不一致を確定・同期 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-010` | `DONE` | Codex | [DISCOVERY] OptionalArrayの型名・次元API体系監査 | 2026-10-08、OptionalArrayとBareArrayの型名・View名・次元label・property・軸対応を比較し、不揃いを判断候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-011` | `DONE` | Codex | [EXECUTION] OptionalArray監査で見つかった判断taskの登録 | 2026-10-08、位置づけ、1D型名、次元名、不正次元契約を一判断ずつ4 taskへ分離登録 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-012` | `DONE` | Codex | [EXECUTION] OptionalArrayModuleTestsのTest as Specification整理 | 2026-10-08、通常35件とDeath Test 21件を番号付き仕様fileへ整理し、test集合・契約対応・実行結果を完成検収 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-013` | `DONE` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 2026-10-08、契約表、test対応、決定事項、既知の不足、文書入力を検収し、追加判断なしで引き渡し可能と判定 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-014` | `DONE` | Codex | [EXECUTION] OptionalArray3DViewの2D面stride修正 | 2026-10-08、非対称次元testで修正前のslice aliasを確認し、offsetを`width * height * position`へ修正。NOP setterは連鎖writeback用と明文化 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-015` | `DONE` | Claude | [DISCOVERY] OptionalArray公開宣言29件のledger作成 | 2026-10-08、型7・init 4・removeAll 4・subscript 7・indices 7をsource位置とコメントへ対応 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-016` | `DONE` | Claude | [DISCOVERY] OptionalArray所有4型のtest根拠表 | 2026-10-08、4型のinit、removeAll、subscript、indices、Sendable、deinitの根拠と不足を表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-017` | `DONE` | Claude | [DISCOVERY] OptionalArray View 3型のtest根拠表 | 2026-10-08、非所有性、storage共有、subscript、indicesの直接・間接証拠と不足を表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-018` | `DONE` | Claude | [DISCOVERY] OptionalArray境界test matrix | 2026-10-08、所有型・Viewの負値／上端、read／write、Debug／Release／`-Ounchecked`を表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-019` | `DONE` | Claude | [DISCOVERY] OptionalArray参照型寿命test matrix | 2026-10-08、構築、上書き、nil、removeAll、再利用、deinitの期待破棄数と既存testを表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-020` | `DONE` | Claude | [DISCOVERY] OptionalArray次元・offset式の独立照合 | 2026-10-08、非対称次元で2D〜4DとViewのoffset・indicesを机上および一時実行で照合 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-021` | `DONE` | Claude | [DISCOVERY] OptionalArray Sendable採用履歴の事実確認 | 2026-10-08、導入commit、後続変更、現行test、未記録の導入理由と利用範囲を分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-022` | `DONE` | Claude | [DISCOVERY] OptionalArray不正次元の現挙動確認 | 2026-10-08、zero・負値・overflowを構成別に確認し、`-Ounchecked`の安全性疑義で方針判断せず停止 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-023` | `DONE` | Claude | [DISCOVERY] OptionalArray EDPC利用例の責務分類 | 2026-10-08、使用公開面、capture・連鎖subscript形状、DP固有部分、未実行状態を分類 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-024` | `DONE` | Claude | [DISCOVERY] OptionalArrayコメントドックcoverage表 | 2026-10-08、29宣言の境界・所有・寿命・破棄・変更・計算量の明示記載を棚卸し | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-025` | `DONE` | Claude | [DISCOVERY] OptionalArray証拠packageの受入基準coverage照合 | 2026-10-08、10 packageを29宣言と受入基準へ再配置し、既知の本文不一致2件とcoverage不足を表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-026` | `DONE` | Claude | [EXECUTION] OptionalArray監査本文の証拠同期 | 2026-10-08、Sendable testは1Dのみ、EDPC利用例は未実行のcompile対象という事実へ本文を同期 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-027` | `DONE` | Claude | [DISCOVERY] OptionalArray判断候補4件の決定来歴確認 | 2026-10-08、4件とも明示決定なし。用途・名称・次元は実装事実、不正次元は履歴なしとして確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-028` | `DONE` | Claude | [DISCOVERY] OptionalArray・BareArray名称次元surface比較 | 2026-10-08、現行宣言の型名・View名・initializer・property・subscript軸・indices軸を対応表化 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-029` | `DONE` | User / Codex | [DECISION] OptionalArrayの公開位置づけ | 2026-10-08、競技プログラミング用の低レベル公開部品として1.0でも公開を継続すると決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-030` | `DONE` | User / Codex | [DECISION] OptionalArray 1D所有型の名称 | 2026-10-08、`OptionalArray1D`を維持。BareArray再開時または文書作業で具体的問題が判明した場合は再検討可能 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-031` | `DONE` | User / Codex | [DECISION] OptionalArray 2D〜4Dの次元名称体系 | 2026-10-08、2D／3Dの意味名と4Dの`size0`〜`size3`という現行体系を維持 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-032` | `DONE` | User / Codex | [DECISION] OptionalArray initializerの不正次元契約 | 2026-10-08、各次元は0以上、zeroは許可、次元積は`Int`で表現可能であることを事前条件に決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-033` | `DONE` | Claude | [EXECUTION] OptionalArray次元事前条件の実装と仕様test | 2026-10-08、非負・積overflow検査、zero成功、負値・overflow停止を実装しDebug／Releaseで固定 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-034` | `DONE` | Claude | [EXECUTION] OptionalArray4D zero-volume外側subscriptのoverflow回避 | 2026-10-08、内側zero軸では途中積を評価せず空Viewへ辿れるよう修正しDebug／Releaseで固定 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-035` | `DONE` | Claude | [DISCOVERY] OptionalArray Test as Specification配置・移行設計 | 2026-10-08、8仕様群と利用例へ分類し、段階移行可否、並列化・Death Test制約を整理 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-036` | `DONE` | Claude / Codex | [EXECUTION] OptionalArray通常testの番号付き仕様file分割 | 2026-10-08、通常35件をXCTestのまま`OptionalArray_0_`〜`_6_`へ一度ずつ移し、test名集合一致と成功をCodexが確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-037` | `DONE` | Claude / Codex | [EXECUTION] OptionalArray Death Testの番号付きfile改名 | 2026-10-08、Swift Testing 21件、構成、保存指示を維持した100% renameと成功をCodexが確認 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-038` | `DONE` | Codex | [EXECUTION] OptionalArray Test as Specification完成判定 | 2026-10-08、file番号、test名集合、契約対応、通常35件・Death Test 21件の結果と`Tests/TESTING.md`同期を検収 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-007` | `DONE` | Codex | [EXECUTION] OptionalArray監査の暫定受入基準策定 | 2026-10-08、公開宣言網羅、契約・test・履歴対応、判断分離、引き渡し成果物を監査開始前の基準として確定 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-008` | `DONE` | Codex | [DISCOVERY] OptionalArray公開7型の宣言・契約・履歴監査 | 2026-10-08、29宣言と4適合の契約・履歴を棚卸しし、決定記録のない4件を判断候補として分離 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-009` | `DONE` | Codex | [DISCOVERY] OptionalArray公開契約とtest根拠の対応監査 | 2026-10-08、実装・test・利用例・coverageを公開宣言へ対応し、未検証範囲と本文不一致を確定・同期 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-010` | `DONE` | Codex | [DISCOVERY] OptionalArrayの型名・次元API体系監査 | 2026-10-08、OptionalArrayとBareArrayの型名・View名・次元label・property・軸対応を比較し、不揃いを判断候補へ分離 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-011` | `DONE` | Codex | [EXECUTION] OptionalArray監査で見つかった判断taskの登録 | 2026-10-08、位置づけ、1D型名、次元名、不正次元契約を一判断ずつ4 taskへ分離登録 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-012` | `DONE` | Codex | [EXECUTION] OptionalArrayModuleTestsのTest as Specification整理 | 2026-10-08、通常35件とDeath Test 21件を番号付き仕様fileへ整理し、test集合・契約対応・実行結果を完成検収 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-013` | `DONE` | Codex | [EXECUTION] OptionalArrayのユーザードキュメント作業への引き渡し判定 | 2026-10-08、契約表、test対応、決定事項、既知の不足、文書入力を検収し、追加判断なしで引き渡し可能と判定 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-014` | `DONE` | Codex | [EXECUTION] OptionalArray3DViewの2D面stride修正 | 2026-10-08、非対称次元testで修正前のslice aliasを確認し、offsetを`width * height * position`へ修正。NOP setterは連鎖writeback用と明文化 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-015` | `DONE` | Claude | [DISCOVERY] OptionalArray公開宣言29件のledger作成 | 2026-10-08、型7・init 4・removeAll 4・subscript 7・indices 7をsource位置とコメントへ対応 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-016` | `DONE` | Claude | [DISCOVERY] OptionalArray所有4型のtest根拠表 | 2026-10-08、4型のinit、removeAll、subscript、indices、Sendable、deinitの根拠と不足を表化 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-017` | `DONE` | Claude | [DISCOVERY] OptionalArray View 3型のtest根拠表 | 2026-10-08、非所有性、storage共有、subscript、indicesの直接・間接証拠と不足を表化 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-018` | `DONE` | Claude | [DISCOVERY] OptionalArray境界test matrix | 2026-10-08、所有型・Viewの負値／上端、read／write、Debug／Release／`-Ounchecked`を表化 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-019` | `DONE` | Claude | [DISCOVERY] OptionalArray参照型寿命test matrix | 2026-10-08、構築、上書き、nil、removeAll、再利用、deinitの期待破棄数と既存testを表化 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-020` | `DONE` | Claude | [DISCOVERY] OptionalArray次元・offset式の独立照合 | 2026-10-08、非対称次元で2D〜4DとViewのoffset・indicesを机上および一時実行で照合 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-021` | `DONE` | Claude | [DISCOVERY] OptionalArray Sendable採用履歴の事実確認 | 2026-10-08、導入commit、後続変更、現行test、未記録の導入理由と利用範囲を分離 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-022` | `DONE` | Claude | [DISCOVERY] OptionalArray不正次元の現挙動確認 | 2026-10-08、zero・負値・overflowを構成別に確認し、`-Ounchecked`の安全性疑義で方針判断せず停止 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-023` | `DONE` | Claude | [DISCOVERY] OptionalArray EDPC利用例の責務分類 | 2026-10-08、使用公開面、capture・連鎖subscript形状、DP固有部分、未実行状態を分類 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-024` | `DONE` | Claude | [DISCOVERY] OptionalArrayコメントドックcoverage表 | 2026-10-08、29宣言の境界・所有・寿命・破棄・変更・計算量の明示記載を棚卸し | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-025` | `DONE` | Claude | [DISCOVERY] OptionalArray証拠packageの受入基準coverage照合 | 2026-10-08、10 packageを29宣言と受入基準へ再配置し、既知の本文不一致2件とcoverage不足を表化 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-026` | `DONE` | Claude | [EXECUTION] OptionalArray監査本文の証拠同期 | 2026-10-08、Sendable testは1Dのみ、EDPC利用例は未実行のcompile対象という事実へ本文を同期 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-027` | `DONE` | Claude | [DISCOVERY] OptionalArray判断候補4件の決定来歴確認 | 2026-10-08、4件とも明示決定なし。用途・名称・次元は実装事実、不正次元は履歴なしとして確認 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-028` | `DONE` | Claude | [DISCOVERY] OptionalArray・BareArray名称次元surface比較 | 2026-10-08、現行宣言の型名・View名・initializer・property・subscript軸・indices軸を対応表化 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-029` | `DONE` | User / Codex | [DECISION] OptionalArrayの公開位置づけ | 2026-10-08、競技プログラミング用の低レベル公開部品として1.0でも公開を継続すると決定 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-030` | `DONE` | User / Codex | [DECISION] OptionalArray 1D所有型の名称 | 2026-10-08、`OptionalArray1D`を維持。BareArray再開時または文書作業で具体的問題が判明した場合は再検討可能 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-031` | `DONE` | User / Codex | [DECISION] OptionalArray 2D〜4Dの次元名称体系 | 2026-10-08、2D／3Dの意味名と4Dの`size0`〜`size3`という現行体系を維持 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-032` | `DONE` | User / Codex | [DECISION] OptionalArray initializerの不正次元契約 | 2026-10-08、各次元は0以上、zeroは許可、次元積は`Int`で表現可能であることを事前条件に決定 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-033` | `DONE` | Claude | [EXECUTION] OptionalArray次元事前条件の実装と仕様test | 2026-10-08、非負・積overflow検査、zero成功、負値・overflow停止を実装しDebug／Releaseで固定 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-034` | `DONE` | Claude | [EXECUTION] OptionalArray4D zero-volume外側subscriptのoverflow回避 | 2026-10-08、内側zero軸では途中積を評価せず空Viewへ辿れるよう修正しDebug／Releaseで固定 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-035` | `DONE` | Claude | [DISCOVERY] OptionalArray Test as Specification配置・移行設計 | 2026-10-08、8仕様群と利用例へ分類し、段階移行可否、並列化・Death Test制約を整理 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-036` | `DONE` | Claude / Codex | [EXECUTION] OptionalArray通常testの番号付き仕様file分割 | 2026-10-08、通常35件をXCTestのまま`OptionalArray_0_`〜`_6_`へ一度ずつ移し、test名集合一致と成功をCodexが確認 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-037` | `DONE` | Claude / Codex | [EXECUTION] OptionalArray Death Testの番号付きfile改名 | 2026-10-08、Swift Testing 21件、構成、保存指示を維持した100% renameと成功をCodexが確認 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-038` | `DONE` | Codex | [EXECUTION] OptionalArray Test as Specification完成判定 | 2026-10-08、file番号、test名集合、契約対応、通常35件・Death Test 21件の結果と`Tests/TESTING.md`同期を検収 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
 | `OPT-039` | `DONE` | Claude / Codex | [DISCOVERY] OptionalArrayの機能適合性・信頼性・安全性の証拠表 | 2026-10-08、公開契約、仕様test、Death Test、境界・寿命・次元の事実・根拠・未検証範囲をCodexが受入 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
 | `OPT-040` | `DONE` | Claude / Codex | [DISCOVERY] OptionalArrayの性能効率性・互換性・柔軟性の証拠表 | 2026-10-08、benchmark、計算量、SwiftPM、platform、再公開・同時利用の既存根拠をCodexが受入 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
 | `OPT-041` | `DONE` | Claude / Codex | [DISCOVERY] OptionalArrayのインタラクション能力・セキュリティ・保守性・利用時品質の証拠表 | 2026-10-08、コメント、誤用、unsafe境界、View寿命、source・test構成、利用例の証拠をCodexが受入 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
 | `OPT-042` | `DONE` | Codex | [EXECUTION] OptionalArray品質評価初版の統合・完成判定 | 2026-10-08、証拠3 packageを統合し、評価語、既知の不足、文書作業と1.0準備への引き渡しを確定 | `Sources/OptionalArrayModule/Documentation/QualityAssessment-ISO25010.md` |
-| `OPT-003` | `DONE` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | 2026-10-09、独立文書は作らず、必要な責任境界・成果物・停止条件を既存のAGENTS規則とplaybookへ保持すると決定 | `OptionalArrayModule/OptionalArrayAudit.md` |
-| `OPT-004` | `EXCLUDED` | — | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で独立文書を作らないと決定し、必要事項は既存規則へ吸収済みのため独立実行を除外 | `OptionalArrayModule/OptionalArrayAudit.md` |
+| `OPT-003` | `DONE` | User / Codex | [DECISION] Claude向け委任規則を明文化するか | 2026-10-09、独立文書は作らず、必要な責任境界・成果物・停止条件を既存のAGENTS規則とplaybookへ保持すると決定 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
+| `OPT-004` | `EXCLUDED` | — | [EXECUTION] Claude向け委任規則の明文化 | `OPT-003`で独立文書を作らないと決定し、必要事項は既存規則へ吸収済みのため独立実行を除外 | `OptionalElementBufferModule/OptionalArrayAudit.md` |
 | `CPP-001` | `DONE` | Codex / Claude | C++挙動比較 | 比較契約または対象環境を変更する場合だけ更新 | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `CPP-002` | `EXCLUDED` | — | MSVC STLとのC++挙動比較 | 現行計画では実施しない | `Sources/RedBlackTreeCollections/Documentation/Cpp-Matrix.md` |
 | `RELEASE-001` | `DONE` | User / Codex | [DECISION] 0.5.0のtag地点 | 2026-10-08、PermutationのAtCoder 2025互換mode完成を含む状態と決定 | `Archived/Canonical/RELEASE_0_5_0.md` |
@@ -292,7 +292,7 @@ IDs remain permanent and must not be reused.
 | `OPS-025` | `DONE` | User / Codex | [DECISION] Task precedence実行関係の名称 | 2026-10-09、列名を`Flow`、直列を`SEQUENCE`、並行可能で完了前に合流する関係を`PARALLEL_JOIN`とした | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-023` | `DONE` | User / Codex | [DECISION] BareArray親監査←Test as Specification整理のFlow分類 | `PARALLEL_JOIN`。親監査を先行可能とし、完了前にTest as Specification整理と合流する | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `OPS-013` | `DONE` | User / Codex | [DECISION] Task precedenceの`UNCLASSIFIED` Flowを廃止するか | 2026-10-09、現行辺をすべて`SEQUENCE`または`PARALLEL_JOIN`へ個別分類した後、移行用の`UNCLASSIFIED`を現行規則とlintから廃止 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
-| `OPS-014` | `DONE` | User / Codex | [DECISION] 採番済み条件付きtaskの整理方針 | 上流結果まで必須依存を持たない凍結状態で保持し、必要なら再開、決定済みまたは不要なら`EXCLUDED`へ送る | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` / `BareArrayModule/BareArrayAudit.md` |
+| `OPS-014` | `DONE` | User / Codex | [DECISION] 採番済み条件付きtaskの整理方針 | 上流結果まで必須依存を持たない凍結状態で保持し、必要なら再開、決定済みまたは不要なら`EXCLUDED`へ送る | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` / `ElementBufferModule/BareArrayAudit.md` |
 | `OPS-015` | `DONE` | User / Codex | [DECISION] 期限後のCodex低燃費運用規則の処遇 | 2026-10-09、ユーザー判断により予定期限前に低燃費運用を終了し、現行Registryから一時運用規則を削除 | `Orientation/CODEX_TASK_OPERATION_PLAYBOOK.md` |
 | `EVAL-001` | `EXCLUDED` | Claude | Claudeによる正式なユーザー評価・依頼された感想の記録 | 反復して再開する常設運用であり完了可能なtaskではないためRegistryから除外。明示依頼時の記録規則と既存文書は維持 | `USER_MANAGEMENT_INTERVIEW_CLAUDE.md` / `CLAUDE_OBSERVATIONS.md` |
 | `RBT-006` | `EXCLUDED` | User / Codex | 未結線コードの個別削除 | 対象未指定の待機枠を閉じた。必要時は具体的な対象と完了条件を持つ新taskを作る | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |

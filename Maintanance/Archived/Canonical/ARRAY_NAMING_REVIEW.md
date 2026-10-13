@@ -61,7 +61,7 @@ git addまで行う。Codexはその後に独立評価を追記し、三つの�
 
 ### 1. 現行surface対応表（要約）
 
-詳細な行番号付きの表は`OptionalArrayModule/OptionalArrayAudit.md`の`OPT-028`にあり、その後source変更は無い（**事**）。ここでは
+詳細な行番号付きの表は`OptionalElementBufferModule/OptionalArrayAudit.md`の`OPT-028`にあり、その後source変更は無い（**事**）。ここでは
 判断に効く行だけを抜く。
 
 | 項目 | BareArray | OptionalArray | 一致 |

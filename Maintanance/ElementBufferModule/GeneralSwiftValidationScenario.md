@@ -23,9 +23,9 @@
 
 - 公開surfaceと実装: `Sources/ElementBufferModule/ElementBuffer.swift`
 - 観察可能な仕様: `Tests/ElementBufferModuleTests/`
-- 利用者への説明: `Maintanance/BareArrayModule/UserDocumentationDraft.md`
+- 利用者への説明: `Maintanance/ElementBufferModule/UserDocumentationDraft.md`
 - 品質と証拠の境界: `Sources/ElementBufferModule/Documentation/Quality-Profile.md`
-- 現在評価: `Maintanance/BareArrayModule/CurrentQualityAssessment.md`
+- 現在評価: `Maintanance/ElementBufferModule/CurrentQualityAssessment.md`
 
 ### 固定する情報
 

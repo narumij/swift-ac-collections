@@ -203,15 +203,20 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPT-059` | `PROPOSED` | Codex | [EXECUTION] OptionalArray利用者向け文書本文ドラフト | `OPT-058`完了後、現行名と座標accessだけを使う媒体未決定の本文をユーザーがレビューできる状態にする | `OptionalArrayModule/OptionalArrayAudit.md` / `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-053` | `FROZEN` | User | [DECISION] OptionalArrayがC++番兵手法に匹敵すると判定する性能比の上限 | `OPT-052`の暫定実測後、代表memoization workloadで許容する性能比を一つだけ決定する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
 | `OPT-054` | `FROZEN` | Codex | [EXECUTION] OptionalArray外部性能アセスメントの実測・判定 | `OPT-053`完了後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `OptionalArrayModule/CurrentQualityAssessment.md` / `Sources/OptionalArrayModule/Documentation/Quality-Profile.md` |
-| `ARRAY-005` | `PROPOSED` | User | [DECISION] Array系object名の合意 | 2026-10-13にユーザーが早期再開を指示。現在公開面へ再整理した候補の独立採点・統合後、always-initializedとpresence-trackedのowner名および1D suffixを判断正本へ記録する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
-| `ARRAY-006` | `PROPOSED` | User | [DECISION] Array系element access method名の確定 | 2026-10-13にユーザーが早期再開を指示。値accessとBareArray借用参照を契約変更候補から分離して採点・統合した後、公開名を判断正本へ記録する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-005` | `WAITING_USER` | User | [DECISION] Always-initialized Array owner base名 | 三者採点の相対的な首位が`BareElements`、`ElementBuffer`、`BareArray`へ分かれた。将来の製品包含とは分離し、互換性、役割精度、Arrayの値semantics期待を比較して一つを判断する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-006` | `WAITING_USER` | User | [DECISION] Array系copied value access名 | ユーザーは`value`系、両AIは現行`element`系を相対的に高く評価。reference elementの同一性、call-site、移行費用を比較してread/write語彙を判断する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-009` | `WAITING_USER` | User | [DECISION] Presence-tracked Array owner base名 | ユーザーは`OptionalCache`、Codexはstate-model名、Claudeは`OptionalArray`・`SlotArray`・`MemoTable`を相対的に高く評価。memoization用途、storage状態、互換性のどれを公開identityにするか判断する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-010` | `WAITING_USER` | User | [DECISION] Array owner 1D suffix規則 | ユーザーはunsuffixed統一を強く低評価し、explicit `1D`と現行非対称を同点評価。両AIはunsuffixed統一を高評価したため、ユーザーの命名原則を確認して判断する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-011` | `WAITING_USER` | User | [DECISION] BareArray borrowed-reference method名 | ユーザーは3候補を同点、Codexは明示的代替、Claudeは現行`reference`を相対的に高く評価。method名にmutabilityとresult kindのどちらを表すか判断する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-012` | `WAITING_USER` | User | [DECISION] BareArray borrowed-reference result type名 | 三者の相対評価ではdirect `MutableRef`が首位。`Reference` aliasの互換性費用と二重名を比較し、alias維持・deprecate・直接削除を含め判断する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-013` | `WAITING_USER` | User | [DECISION] BareArray borrowed-reference property名 | ユーザーとClaudeは`pointee`／`value`を同点、Codexは`pointee`を高評価。pointer/reference精度と親しみやすさのどちらを優先するか判断する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
 | `ARRAY-008` | `DONE` | Codex | [DISCOVERY] Array命名候補の現行公開面への再整理 | 三者の提出をowner二family、1D suffix、値access、借用参照へ分解。削除済みView・subscript、closure化、API追加、製品除外を命名ballotから分離し、現行source・品質正本に照合した補足候補を追加 | `ArrayObjectAndAPINamingDraft.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` |
-| `ARRAY-007` | `FROZEN` | Codex | [EXECUTION] Array系object・API命名の実装反映 | object名とmethod名の判断完了後、ユーザーが明示的に再開し、判断正本を入力にproduction、test、benchmark、文書を決定どおりに更新してTest as SpecificationとCI baseline準備へ渡す | `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
+| `ARRAY-007` | `FROZEN` | Codex | [EXECUTION] Array系object・API命名の実装反映 | 7つの公開名判断完了後、ユーザーが明示的に再開し、判断正本を入力にproduction、test、benchmark、文書を決定どおりに更新してTest as SpecificationとCI baseline準備へ渡す | `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` |
 | `API-002` | `DONE` | Codex / Claude / User | [DECISION] Public API名ballotの編成・検証 | Claudeの独立検査を受入れ、帰属、BareArray限定scope、後続候補の所在を修正。ユーザーがreview-informed Codex supplement 4件の同一ballotへの包含を承認し、採点用ballotを固定した | `PUBLIC_API_NAMING_BALLOT.md` / `PUBLIC_API_NAMING_CANDIDATES_USER.md` / `PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` |
 | `API-004` | `DONE` | User | [EXECUTION] Public API名ballotのユーザー独立採点 | ユーザーが固定ballot全29候補へ1〜10の総合点を記録。CodexとClaudeの採点を読む前の独立提出としてCodexが件数と点数範囲を検収した | `PUBLIC_API_NAMING_SCORE_USER.md` / `PUBLIC_API_NAMING_BALLOT.md` |
 | `API-005` | `DONE` | Codex | [EXECUTION] Public API名ballotのCodex独立採点 | ユーザーの開始承認後、CodexがUser・Claudeのscore recordを読まず、固定ballot全候補へ総合点、理由、重要な懸念を記録した | `PUBLIC_API_NAMING_SCORE_CODEX.md` / `PUBLIC_API_NAMING_BALLOT.md` |
 | `API-006` | `DONE` | Claude | [EXECUTION] Public API名ballotのClaude独立採点 | ClaudeがUser・Codexのscore recordを読まず、固定ballot全29候補へ総合点、理由、重要な懸念を記録。Codexが件数、点数範囲、説明欄を検収した | `PUBLIC_API_NAMING_SCORE_CLAUDE.md` / `PUBLIC_API_NAMING_BALLOT.md` |
-| `API-007` | `FROZEN` | Codex | [DISCOVERY] Public API名採点の統合報告と判断task分解 | 三者全員の独立採点完了後、ユーザーが明示的に再開し、点数を改変せず統合して点差、AIの理由、反証、未解決事項を報告する。平均・多数決・合意を採用判断にせず、残る公開判断を一判断ごとのtaskへ分離する | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `PUBLIC_API_NAMING_SCORE_USER.md` / `PUBLIC_API_NAMING_SCORE_CODEX.md` / `PUBLIC_API_NAMING_SCORE_CLAUDE.md` |
+| `API-007` | `DONE` | Codex | [DISCOVERY] Public API名採点の統合報告と判断task分解 | 三者29候補のraw scoreを改変せず統合。尺度差を明記し、平均・多数決を採用判断にせず、合意、衝突、未解決事実を7つの公開名判断へ分解した | `PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `PUBLIC_API_NAMING_SCORE_USER.md` / `PUBLIC_API_NAMING_SCORE_CODEX.md` / `PUBLIC_API_NAMING_SCORE_CLAUDE.md` |
 | `BARE-007` | `FROZEN` | Codex | [EXECUTION] BareArray外部性能アセスメントの実測・判定 | 性能比の受入判断後、macOS上で正式測定し、環境情報、生JSON、PNG chart、判定を保存する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-032` | `FROZEN` | User | [DECISION] BareArrayがC++ nested vectorに匹敵すると判定する性能比の上限 | `BARE-031`の暫定実測後、代表多次元access workloadで許容する性能比を一つだけ決定する | `BareArrayModule/CurrentQualityAssessment.md` / `Sources/BareArrayModule/Documentation/Quality-Profile.md` |
 | `BARE-035` | `PROPOSED` | Codex | [DISCOVERY] BareArray提供停止の実施境界整理 | package、facade、文書、移行、release、既存利用への影響を確認し、提供停止を局所的に実施できるtaskへ分解する | `Sources/BareArrayModule/Documentation/Quality-Profile.md` / `Package.swift` |
@@ -261,8 +266,18 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `API-007` | `API-006` | `PARALLEL_JOIN` | Claude採点の提出後に統合報告へ合流する |
 | `ARRAY-005` | `API-007` | `SEQUENCE` | 三者採点の統合報告後にobject名を決定し、判断正本へ記録する |
 | `ARRAY-006` | `API-007` | `SEQUENCE` | 三者採点の統合報告後にArray access API familyを決定し、判断正本へ記録する |
+| `ARRAY-009` | `API-007` | `SEQUENCE` | 三者採点の統合報告後にpresence-tracked owner名を決定する |
+| `ARRAY-010` | `API-007` | `SEQUENCE` | 三者採点の統合報告後に1D suffix規則を決定する |
+| `ARRAY-011` | `API-007` | `SEQUENCE` | 三者採点の統合報告後にborrowed-reference method名を決定する |
+| `ARRAY-012` | `API-007` | `SEQUENCE` | 三者採点の統合報告後にborrowed-reference result type名を決定する |
+| `ARRAY-013` | `API-007` | `SEQUENCE` | 三者採点の統合報告後にborrowed-reference property名を決定する |
 | `ARRAY-007` | `ARRAY-005` | `PARALLEL_JOIN` | object名の決定を実装入力にする |
 | `ARRAY-007` | `ARRAY-006` | `PARALLEL_JOIN` | method名の決定を実装入力にする |
+| `ARRAY-007` | `ARRAY-009` | `PARALLEL_JOIN` | presence-tracked owner名の決定を実装入力にする |
+| `ARRAY-007` | `ARRAY-010` | `PARALLEL_JOIN` | 1D suffix規則の決定を実装入力にする |
+| `ARRAY-007` | `ARRAY-011` | `PARALLEL_JOIN` | borrowed-reference method名の決定を実装入力にする |
+| `ARRAY-007` | `ARRAY-012` | `PARALLEL_JOIN` | borrowed-reference result type名の決定を実装入力にする |
+| `ARRAY-007` | `ARRAY-013` | `PARALLEL_JOIN` | borrowed-reference property名の決定を実装入力にする |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |
 | `RELEASE-007` | `OPT-044` | `PARALLEL_JOIN` | 利用者向け文書作業は現行名で先行できるが、0.6.0の到達範囲判断前に1D所有型名を確定する |

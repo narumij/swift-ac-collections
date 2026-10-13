@@ -9,7 +9,7 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**依頼中: ElementBuffer系旧名互換target削除後の独立目視検査**
+**完了（Codex受入済み）: ElementBuffer系旧名互換target削除後の独立目視検査**
 
 Codexが`BareArrayModule`と`OptionalArrayModule`のfacade targetを削除し、新moduleだけをpackageとDocC CIへ
 残した差分について、下記のbounded assignmentで目視検査する。実装・文書・Registryは変更せず、結果だけを
@@ -160,6 +160,79 @@ Archived、Git履歴、RedBlackTree実装、品質評価本文、他のtaskは�
 ### Completion
 
 上記7観点を現在の統合差分へ照合し、受入阻害点と非阻害の旧名残存を分離してReturnを書いたら完了。
+
+### Return
+
+2026-10-14 Claude（Opus 5.5）。read-onlyの目視検査。build、test、DocC、benchmarkは実行していない。
+
+- **検査した状態:** branch `develop/misc/66`、HEAD `f825b110`（`Remove legacy array module facades`）、worktreeはclean。
+  基準は`git diff origin/main`（`e3e14d89`）。
+- **開始状態との違い:** assignmentはHEAD `d31f6b73`と未commitの差分を想定していた。実際は、その差分がcommit済みの状態だった。
+  `git diff origin/main`は一意に定まり、`d31f6b73`→`f825b110`でworkflowのrename互換は元に戻っていたので、検査対象は変わらないと判断して続行した。
+
+#### MUST-FIX
+
+- **compiler fixtureに旧名importが残っている。** 次の2 fileが`import BareArrayModule`を含む。
+  - `Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/Sources/BareArrayMutableRefValid/BareArrayMutableRefValid.swift:1`
+  - 同`…/BareArrayMutableRefEscape/BareArrayMutableRefEscape.swift:1`
+
+  fixtureは`AcCollections` productへ依存する。これまでは`AcCollections` targetの依存に`BareArrayModule`があったので、transitiveにimportできていたと考えられる。
+  削除後は「no such module」になるはず（buildしていないので未確認）。
+  `Utilities/Maintenance/VerifyBareArrayCompilerDiagnostics.sh`は`set -e`なので、compile-pass側のbuild失敗で止まり、誤ってpassにはならない。
+  CIからは呼ばれていない。ただし、BareArrayの品質評価が引用する借用寿命の証拠経路が壊れる。
+  また、計画書の検証項目「実行系に旧名targetへの依存またはimportが残らない」と矛盾する。
+  計画書の「確認した境界」と検索範囲に`Utilities/`が入っていなかったのが原因とみられる。最小修正は、両fileのimportを`ElementBufferModule`へ置き換えること。
+
+#### SHOULD-FIX
+
+- **`Tests/TESTING.md`の61〜62行と66〜67行が、削除済みのcompatibility smoke testを「別に維持する」と書いたまま。** 現行の説明として誤りになる。
+  test文書はClaudeの担当範囲だが、このassignmentでは変更していない。
+
+#### QUESTION
+
+- `Sources/_BareArrayModule/BareArrayModule.docc`と`Sources/_OptionalArrayModule/OptionalArrayModule.docc`が、空のdirectoryとしてdisk上に残っている。
+  Gitが追跡するfileは0件なので、差分とCIには影響しない。手元で消すかどうかだけの問題。
+
+#### 7観点の照合
+
+1. manifest: 旧名2 target、`AcCollections`からの依存、両test targetからの依存を削除済み。
+   `OptionalElementBufferModule`のtrait条件（`ENABLE_OPTIONAL_ELEMENT_BUFFER`）と、新test target 2つは維持されている。
+2. `AcCollections.swift`はorigin/mainから差分なし。新moduleを直接`@_exported import`している（Optional側はtrait条件付き）。
+3. 実行系: `Package.swift`、`Sources`、`Tests`、`Benchmarks/Package.swift`、`Benchmarks/Sources`、`.github`には旧名の参照がない。
+   benchmarkのimportも新moduleだけ。残っているのは上記の`Utilities` fixture 2件だけ。
+4. DocC matrix: 5 target（`AcCollections`、`RedBlackTreeModule`、`PermutationModule`、`OptionalElementBufferModule`、`ElementBufferModule`）。外れたのは旧名2件だけ。
+5. rename互換: `ci.yml`の`OPTIONAL_ARRAY_RENAMED`／`BARE_ARRAY_RENAMED`は6箇所で、origin/mainと同数。
+   origin/mainとの差分はDocC matrixの2行だけなので、`ARRAY-017`の試行は残っていない。
+6. 削除対象外: 差分の対象はmanifest、workflow 2行、旧facade source／DocC 4 file、compatibility test 2 file、文書だけ。
+   公開型、test本体、benchmark workload、performance比較条件、trait、library productには差分がない。
+7. 正本文書: `ARRAY_MODULE_TARGET_MIGRATION_EXECUTION.md`（中間状態はPR #195で固定、最終ゴールは`ARRAY-018`）、
+   `DOCUMENTATION_CI_PLAN.md`（7 targetから5 targetへ）、`PERFORMANCE_CI_CHANGE_GUIDE.md`（rename互換は維持）、Registryの`ARRAY-017`／`ARRAY-018`は互いに矛盾しない。
+
+#### 旧名の残存の分類
+
+- **実行系:** `Utilities/…/BareArrayMutableRefLifetime`の2 file（MUST-FIX）。
+- **現行の説明:** `Tests/TESTING.md`の61〜62・66〜67行（SHOULD-FIX）。
+  他に`Tests/TESTING.md`の76・110・120行と、両`Quality-Profile.md`のpath参照があるが、これらはmaintenance folder名を指す管理座標で、問題ない。
+- **履歴・管理座標:** `CHANGELOG.md`、`DOCUMENTATION_CI_PLAN.md`の10-13の証拠、移行計画とその実行記録、
+  `Maintanance/BareArrayModule/`・`Maintanance/OptionalArrayModule/`配下、Registry、`TASK_CANONICAL_DOCUMENT_MAP.md`、`WORKER_TASK.md`、Graph fixture、`Tests/Archived/`。
+  計画書の境界どおり、改名の対象外。
+
+#### 判定
+
+**`accept after MUST-FIX`。**
+
+#### 限界・変更したfile
+
+- buildをしていないので、fixtureが実際に失敗するかは静的な推定。
+- 検索は`git grep`だけで、Archivedは対象外。
+- 変更したfileは、`Maintanance/CLAUDE_TASK.md`のこのReturn節だけ（状態欄は更新していない）。
+
+#### Prime acceptance
+
+CodexはMUST-FIXを受け入れ、compiler fixture 2件のimportを`ElementBufferModule`へ更新した。指摘された
+`Tests/TESTING.md`のcompatibility smoke test記述も、facade終了後の現行状態へ更新した。
+`VerifyBareArrayCompilerDiagnostics.sh`でcompile-pass 1件と期待するescape diagnostic 4件を再確認し、
+目視検査を受け入れた。Git管理外の空directoryは成果物と実行へ影響しないため受入阻害としない。
 
 ## Completed assignment: benchmark harnessの基本操作とchartアレンジの確認実習
 

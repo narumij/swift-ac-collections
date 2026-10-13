@@ -1,4 +1,4 @@
-import BareArrayModule
+import ElementBufferModule
 
 @available(macOS 27.0, *)
 public func mutateWithinOwnerScope() -> Int {

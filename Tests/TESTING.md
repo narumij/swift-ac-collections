@@ -58,13 +58,13 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 
 - OptionalElementBufferModule: 番号付き8仕様群を維持し、通常35件・Death Test 26件がDebug、Release、ASanで
   成功した現行記録がある。View寿命とstrict memory safetyは未達、`Sendable`、`-Ounchecked`、外部性能、
-  一般利用・競技利用のValidationは未検証として品質評価へ分離している。旧`OptionalArrayModule`からの
-  再公開を確認するcompatibility smoke test 1件を別に維持する。
+  一般利用・競技利用のValidationは未検証として品質評価へ分離している。旧`OptionalArrayModule`の
+  compatibility smoke testは、facade targetの終了に合わせて削除した。
 - ElementBufferModule: 番号付き8仕様群、Debug通常35件・Release通常28件、両構成のDeath Test 39件、
   View寿命escape 3件と所有配列writeback exclusivity 3件のcompiler診断fixtureを2026-10-13に再確認した。
   旧ノンエスケーパブルView契約は受入済みだが、後発の座標access APIと旧subscript・Viewのdeprecated指定は
   仕様群へ未反映で、現行buildにdeprecated warningが多数ある。旧成果と後発差分を分けて扱う。旧
-  `BareArrayModule`からの再公開を確認するcompatibility smoke test 1件を別に維持する。
+  `BareArrayModule`のcompatibility smoke testは、facade targetの終了に合わせて削除した。
 - PermutationModule: runtime-check View通常版は有効な通常runtime test 2件（Span反復1件・手動列挙1件）と
   失効Death Test 2件だけが現行契約を直接確認し、旧COW版38件は`#if false`の履歴資料である。
   borrowed Span版は番号付き5群・runtime 25件が成功しているが、借用寿命のcompile-pass／compile-failは

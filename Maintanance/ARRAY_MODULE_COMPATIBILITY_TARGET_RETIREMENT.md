@@ -53,3 +53,6 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
 - benchmark packageのrelease buildが成功した。
 - `ElementBufferModule`と`OptionalElementBufferModule`のDocC generationが`--warnings-as-errors`付きで成功した。
 - 実行系の旧名target定義、依存、import、およびDocC matrix entryが残っていないことを検索で確認した。
+- Claudeの独立目視検査で、`Utilities`配下のcompiler fixture 2件に旧名importが残ることと、`Tests/TESTING.md`の
+  compatibility test記述が古いことを検出した。両方を修正し、fixtureのcompile-pass 1件と期待する
+  escape diagnostic 4件をscriptで再確認した。目視検査はCodexが受け入れた。

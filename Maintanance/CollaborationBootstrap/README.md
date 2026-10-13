@@ -1,5 +1,13 @@
 # AI Collaboration Bootstrap
 
+## 適用範囲
+
+**このfolderの文書を`swift-ac-collections`のoperation、役割、権限、task管理へ適用しない。**
+
+このrepositoryは、root `AGENTS.md`、現行Task Registry、各taskの詳細正本による既存運用を維持する。
+このfolderは、ユーザーが明示的に指定した別projectでWorker / Receiver協働を試すための移植・伝授資料である。
+別projectからこのfolderを参照してもよいが、成果、契約、状態、変更を`swift-ac-collections`側へ混在させない。
+
 ## 目的
 
 このfolderは、このrepositoryで成立した管理文書を別projectへそのまま複製するためのものではない。
@@ -18,13 +26,53 @@ WorkerとReceiverが、最小限の共通境界から協働を始め、実際の
 - `AGENTS_CANDIDATE.md`: WorkerとReceiverに共通する最小限の権限境界。
 - `RECEIVER_CODEX_BOOTSTRAP.md`: Receiverの固定役割候補。
 - `RECEIVER_CODEX_INTAKE_CONTRACT_TEMPLATE.md`: 一回の仕事の切り出しと受入に使う局所契約候補。
+- `PRIME_CONSULTATION_TEMPLATE.md`: Receiverがユーザーの選んだPrime Codexへ助言を求め、回答を
+  対象projectで再検証するための質問・回答表。
 
 Worker用bootstrapと作業契約は、別projectでの試行範囲が定まったときに、このfolder向けの候補を作る。
 現行repositoryの`Orientation/WORKER_CODEX_*`を自動的に正本または移植元としない。
 
+ReceiverはWorkerとの委任cycleだけを担当するものではない。ユーザーの相談相手として、まだtaskになって
+いない問題、方向、違和感、観測、アイデアを一緒に考える。相談中は契約を要求せず、対話を急いでtask化しない。
+具体的な調査、変更、検証、委任、状態更新へ進む段階で、Receiverが会話を局所契約へ翻訳する。
+
+## 実験の開始指示
+
+`この文書を読んで`は読み取りまたはレビューの依頼であり、Receiverとしての役割開始、契約作成、検収、
+file変更を許可しない。実験を開始するときは、ユーザーが対象project、Receiverとして動くこと、今回の
+自然言語のゴール、または相談したいことを一つの依頼として伝える。
+
+例:
+
+> `RECEIVER_CODEX_BOOTSTRAP.md`に従ってReceiverとして起動し、このprojectで、次のWorker成果を独立検収して。
+> 対象は……、期待する結果は……。
+
+相談から始める場合:
+
+> `RECEIVER_CODEX_BOOTSTRAP.md`に従ってReceiverとして、このprojectの進め方を相談したい。
+> いま気になっているのは……。
+
+既存の受取契約があればそのpathも指定する。契約がなくても具体的なゴールが与えられていれば、Receiverが
+自然言語の依頼とprojectの事実から受取契約の原案を作る。ユーザーへ内部契約fileの作成や項目記入を要求しない。
+ゴール自体がなければ、Receiverは実行を始めず、何を任せたいかを普通の言葉で一問だけ確認する。
+
+## Prime Codexへの相談
+
+Receiverが対象projectの正本、実装、test、compiler、履歴、測定などを確認しても探索方針を定めにくく、
+Prime Codexの過去経験が助けになる場合は、`PRIME_CONSULTATION_TEMPLATE.md`へ質問を整理できる。
+
+Primeは役割名や上位承認者ではなく、ユーザーが相談先に選んだ個体である。ユーザーは別conversationへ
+質問表を渡し、回答をReceiverへ戻すtransportだけを担う。質問の分解、回答の転記、証拠との照合、採否判断を
+ユーザーへ負わせない。
+
+ReceiverはPrimeの回答を助言として受け取り、対象projectの現物へ独立に照合する。PrimeとReceiverの合意を
+正しさの証明にせず、製品方針、公開契約、リスク受容などユーザーに留保された判断をPrimeへ移さない。
+
 ## 境界
 
-- このfolderの文書は現行operationへ未採用である。
+- このfolderの文書は、`swift-ac-collections`の現行operationへは未採用かつ適用外である。
+- 別projectでユーザーが実験への使用を指示した場合、各文書はその実験のbootstrapまたは契約入力として
+  使用する。「現行operationへ未採用」を、指示された実験を開始しない理由にしない。
 - 候補の完成、別projectへの配置、試行開始、試行結果の受入は別の境界とする。
 - `Prime`や`Queen`は役割または権限ではなく、ユーザーが実績を見て個体へ与える称号である。
 - 初期状態では一回の契約だけを局所的な正本とする。

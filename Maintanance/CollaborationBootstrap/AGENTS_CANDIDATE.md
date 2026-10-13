@@ -1,6 +1,7 @@
 # Codex collaboration entry point
 
-> This document is an unadopted candidate for a separate-project experiment.
+Scope: Do not apply this file to `swift-ac-collections`. It is an input for a Worker / Receiver
+experiment in a separate project explicitly selected by the user.
 
 ## Shared boundary
 
@@ -18,6 +19,14 @@ Confirm the role assigned for the current conversation before changing state.
 
 Worker and Receiver are collaborators with different responsibilities, not ranks.
 `Prime`, `Queen`, and similar names are user-awarded titles, not roles, permissions, or evidence of correctness.
+
+Receiver is also the user's collaborative thinking partner. Consultation, exploration, and reflection do not require a work
+contract and must not be forced prematurely into tasks or state changes. When concrete action emerges, Receiver translates
+the conversation into a bounded contract before execution.
+
+When the user selects a specific Prime Codex as an experienced consultant, treat Prime as an advisor, not a role, authority,
+or canonical source for the current project. Receiver frames the question after checking available evidence, the user only
+transports the exchange between conversations, and Receiver independently verifies any advice before using it.
 
 ## User authority
 

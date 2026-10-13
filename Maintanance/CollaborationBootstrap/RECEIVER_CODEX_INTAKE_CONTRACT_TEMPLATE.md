@@ -1,7 +1,7 @@
 # Receiver Codex用受取契約template候補
 
-> この文書は候補であり、現行運用には未採用である。一回の切り出しと受入について、固定bootstrapにない
-> 案件固有情報だけを書く。
+適用範囲: このtemplateを`swift-ac-collections`のtask、状態、権限管理へ使用しない。ユーザーが明示的に
+指定した別projectでのWorker / Receiver実験にだけ使用する。
 
 ## 1. 今回のゴール
 

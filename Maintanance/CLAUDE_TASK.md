@@ -9,6 +9,12 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
+**待機中（21:00以降にユーザーが起動）: Permutation一般Swift利用Validation scenarioの限定レビュー**
+
+Codexが作成したscenario設計について、課題の誘導性、実行可能性、VerificationとValidationの証拠境界、
+観測漏れだけを独立レビューする。scenarioの実行、製品API判断、本文の書き換え、source・testの再調査は
+行わない。21:00より前には開始しない。
+
 **完了: Public API命名決定の最終整合監査**
 
 採用済みのArray系公開名と、borrowed-reference propertyを命名判断対象から除外したscope訂正を、
@@ -60,7 +66,68 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Current assignment: Public API命名決定の最終整合監査
+## Current assignment: Permutation一般Swift利用Validation scenarioの限定レビュー
+
+### Objective
+
+`PermutationModule/GeneralSwiftValidationScenario.md`が、一般Swift利用のValidation設計として、答えを
+課題文へ埋め込みすぎず、実際に実行でき、既存Verificationを実利用成功へ読み替えず、必要な観測を
+取りこぼしていないか独立にレビューする。
+
+### Start condition
+
+- 2026-10-13 21:00以降に、ユーザーがClaudeへこのassignmentの実行を指示した場合だけ開始する。
+- それ以前は待機し、ファイルを変更しない。
+
+### Inputs
+
+Read only:
+
+- Registryの`PERM-041`、`PERM-061`、`PERM-062`行;
+- `PermutationModule/GeneralSwiftValidationScenario.md`;
+- `PermutationModule/UserDocumentationDraft.md`;
+- `PermutationModule/NextPermutationsSequenceExperiment.md`;
+- `Sources/PermutationModule/Documentation/Quality-Profile.md`のQR-04・QR-05とValidation境界。
+
+source、tests、Git履歴、他module、Archived資料は再調査しない。上記文書内の事実に重大な疑義があり、
+レビュー不能な場合は、その疑義と必要な最小入力だけを返して停止する。
+
+### Review questions
+
+1. participantへ渡す情報または課題文が、確認したい答えを過剰に教えていないか。
+2. ACL志向利用者と一般Swift Algorithms利用者の分離は、異なる誤認を観測するために機能するか。
+3. 独立consumer Verificationと人間またはAI proxyによる理解Validationが混同されていないか。
+4. 各taskは、外部参加者、非公開情報、未確定製品判断へ暗黙に依存せず実行可能か。
+5. 成功だけでなく、誤選択、View保持、copy誤認、助言要求、観測不能を記録できるか。
+6. `Array(sequence)`でViewを収集するtests-only実験を、現行公開APIの誤用事実として誇張していないか。
+7. scenario実行前に修正しなければ観測を歪める欠落があるか。
+
+### Boundaries
+
+- scenario、利用者向け文書、Sequence実験記録、Quality Profile、Registry、source、testを変更しない。
+- scenarioを実行せず、participant役を演じない。
+- `NextPermutations`のSequence採用・不採用を判断しない。`PERM-060`は凍結のまま扱う。
+- public documentation媒体、API変更、性能水準、対応platformを決めない。
+- 網羅的なsource・test再監査、build、test、benchmark、commitを行わない。
+- 結果は下のReturn節だけへ記録する。
+
+### Completion
+
+指摘を次の三分類で返す。
+
+- **必須修正:** このまま実行するとValidation結果を歪める、実行不能になる、または証拠境界を誤る事項。
+- **改善候補:** 実行可能性を失わないが、観測の質を上げる事項。
+- **製品判断:** scenarioレビューでは決めず、ユーザーへ残す事項。
+
+各指摘には対象節、問題、理由、最小修正方向を含める。必須修正がなければ、その範囲を明示して
+「限定試行へ進める」と返す。
+
+### Return
+
+21:00以降の実行待ち。未実施。
+
+
+## Completed assignment: Public API命名決定の最終整合監査
 
 ### Objective
 

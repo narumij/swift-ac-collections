@@ -290,18 +290,26 @@ Package設定、benchmark、workflow、および今回の実行結果から評�
   `@unchecked Sendable`を含む並行利用、`-Ounchecked`、一般Swift利用、競技利用、外部性能は、この
   Verificationから成功を推定せず未検証として維持する。
 
+### 外部性能判定taskの見直し（2026-10-14）
+
+BareArrayは1.0提供対象外の保守moduleとなった。この提供区分では、1.0適合判定のためにC++ nested
+vectorとの固定性能比を先に決め、正式assessmentを実行する必要はない。このため`BARE-032`と
+`BARE-007`を`EXCLUDED`とする。
+
+外部性能が確認済みになったという意味ではない。既存benchmarkとCI回帰workloadは、保守する実装の
+性能変化を観測する証拠として保持する。将来、提供対象への復帰を検討する場合は、当時の実装、利用目的、
+workload、比較対象に基づいて新しい評価を設計し、今回の固定閾値taskを再利用しない。
+
 ## 後続task候補
 
 | ID | 種別 | 近さ | 内容 | 必要性 |
 | --- | --- | --- | --- | --- |
 | `BARE-006` | 既存`DISCOVERY` | `DIRECT` | BareArray多次元access性能測定設計 | 2D・3Dの連鎖accessをC++ nested vectorと同一条件で測るworkloadと、CI回帰・外部assessmentの境界を確定済み |
-| `BARE-007` | 既存`EXECUTION` | `DIRECT` | BareArray 1.0の性能計測 | `BARE-006`で確定した構成に従い測定証拠を取得する |
 | `DOC-010` | 既存`DISCOVERY` | `NEAR` | BareArrayの定性的性能表現の再検討 | 実装意図と未測定の外部性能を混同せず、利用者向け表現を再検討する |
 | `BARE-017` | `DISCOVERY` | `DIRECT` | BareArray利用Validation scenario設計 | QR-04・QR-05について、一般Swift利用と競技利用の代表scenario、導入経路、観測方法、必要な後続判断を整理する |
 | `BARE-028` | `EXECUTION` | `DIRECT` | Claude手直し後の差分再検証 | Claudeのレビューと手直しが受け入れられた後、変更影響範囲の検証を再実行して完了ゲートへ渡す |
 
-`BARE-006`は後続のユーザー指示で再開し、下記の設計を確定した。`BARE-007`と
-`DOC-010`の凍結は本評価によって解除しない。
+`BARE-006`は後続のユーザー指示で再開し、下記の設計を確定した。`DOC-010`の凍結は本評価によって解除しない。
 `BARE-017`は判断を確定せず、一般利用と競技利用で実行・判断境界が異なる場合は後続taskへ分離する。
 `BARE-028`は、Claudeのレビューと手直しが受け入れられるまで凍結する。
 

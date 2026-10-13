@@ -264,6 +264,16 @@ direct cold / warm 4 workloadもsize 16・256・4096、3 cyclesで完走した�
 - 多次元accessの測定条件は、OptionalArrayの既存用途とBareArrayで確定済みのshape・計測境界から
   導ける。新しい製品仕様や性能比の受入水準を決めないため、設計時のユーザー判断は発生しない。
 
+### 外部性能判定taskの見直し（2026-10-14）
+
+現行split storage実装は一般提供から外れ、`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitによる実験的な
+opt-in提供になった。この提供区分では、1.0適合判定のためにC++番兵workloadとの固定性能比を先に
+決め、正式assessmentを実行する必要はない。このため`OPT-053`と`OPT-054`を`EXCLUDED`とする。
+
+外部性能が確認済みになったという意味ではない。既存の暫定測定、保存artifact、CI回帰workloadは
+現行実装の性能証拠として保持する。将来、一般提供方式を再検討する場合は、当時の実装、利用目的、
+workload、比較対象に基づいて新しい評価を設計し、今回の固定閾値taskを再利用しない。
+
 ## 後続task候補
 
 | 種別 | 近さ | 内容 | 境界 |

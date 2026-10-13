@@ -95,13 +95,14 @@ final class AcCollectionsTests: XCTestCase {
     XCTAssertEqual(array.element(at: 1), 7)
   }
 
+  @available(macOS 27.0, *)
   func test_importAcCollections_exposesBareArray() {
-    let array = BareArray(repeating: 0, count: 2)
+    var array = BareArray(repeating: 0, count: 2)
     array.setElement(7, at: 1)
     XCTAssertEqual(array.element(at: 1), 7)
 
-    let reference = array.reference(at: 1)
-    reference.pointee = 8
+    var reference = array.reference(at: 1)
+    reference.value = 8
     XCTAssertEqual(array.element(at: 1), 8)
   }
 }

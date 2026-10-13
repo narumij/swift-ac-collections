@@ -64,12 +64,13 @@ private func bareArray1DElementChecksum(
 }
 
 @inline(never)
+@available(macOS 27.0, *)
 private func bareArray1DReferenceChecksum(
-  _ array: borrowing BareArray<Int>, count: Int
+  _ array: inout BareArray<Int>, count: Int
 ) -> Int {
   var checksum = 0
   for position in 0..<count {
-    checksum &+= array.reference(at: position).pointee
+    checksum &+= array.reference(at: position).value
   }
   return checksum
 }
@@ -84,11 +85,13 @@ private func bareArray1DSetElements(
 }
 
 @inline(never)
+@available(macOS 27.0, *)
 private func bareArray1DSetReferences(
-  _ array: borrowing BareArray<Int>, count: Int
+  _ array: inout BareArray<Int>, count: Int
 ) {
   for position in 0..<count {
-    array.reference(at: position).pointee = position
+    var reference = array.reference(at: position)
+    reference.value = position
   }
 }
 
@@ -113,22 +116,24 @@ extension Benchmark {
       }
     }
 
-    self.add(
-      title: "BareArray<Int> Reference sequential read checksum",
-      input: Int.self
-    ) { size in
-      var value = 0
-      let array = BareArray<Int>(count: size) {
-        defer { value += 1 }
-        return value
-      }
-      return { timer in
-        var checksum = 0
-        timer.measure {
-          checksum = bareArray1DReferenceChecksum(array, count: size)
+    if #available(macOS 27.0, *) {
+      self.add(
+        title: "BareArray<Int> Reference sequential read checksum",
+        input: Int.self
+      ) { size in
+        var value = 0
+        var array = BareArray<Int>(count: size) {
+          defer { value += 1 }
+          return value
         }
-        blackHole(checksum)
-        precondition(checksum == bareArrayExpectedChecksum(for: size))
+        return { timer in
+          var checksum = 0
+          timer.measure {
+            checksum = bareArray1DReferenceChecksum(&array, count: size)
+          }
+          blackHole(checksum)
+          precondition(checksum == bareArrayExpectedChecksum(for: size))
+        }
       }
     }
 
@@ -150,46 +155,50 @@ extension Benchmark {
       }
     }
 
-    self.add(
-      title: "BareArray<Int> Reference sequential write",
-      input: Int.self
-    ) { size in
-      return { timer in
-        let array = BareArray<Int>(repeating: 0, count: size)
-        timer.measure {
-          bareArray1DSetReferences(array, count: size)
+    if #available(macOS 27.0, *) {
+      self.add(
+        title: "BareArray<Int> Reference sequential write",
+        input: Int.self
+      ) { size in
+        return { timer in
+          var array = BareArray<Int>(repeating: 0, count: size)
+          timer.measure {
+            bareArray1DSetReferences(&array, count: size)
+          }
+          var checksum = 0
+          for position in 0..<size {
+            checksum &+= array.reference(at: position).value
+          }
+          blackHole(checksum)
+          precondition(checksum == bareArrayExpectedChecksum(for: size))
         }
-        var checksum = 0
-        for position in 0..<size {
-          checksum &+= array.reference(at: position).pointee
-        }
-        blackHole(checksum)
-        precondition(checksum == bareArrayExpectedChecksum(for: size))
       }
     }
 
-    self.add(
-      title: "BareArray2D<Int> Reference sequential read checksum",
-      input: Int.self
-    ) { size in
-      let shape = bareArray2DShape(for: size)
-      var value = 0
-      let array = BareArray2D<Int>(width: shape.width, height: shape.height) {
-        defer { value += 1 }
-        return value
-      }
+    if #available(macOS 27.0, *) {
+      self.add(
+        title: "BareArray2D<Int> Reference sequential read checksum",
+        input: Int.self
+      ) { size in
+        let shape = bareArray2DShape(for: size)
+        var value = 0
+        var array = BareArray2D<Int>(width: shape.width, height: shape.height) {
+          defer { value += 1 }
+          return value
+        }
 
-      return { timer in
-        var checksum = 0
-        timer.measure {
-          for y in 0..<shape.height {
-            for x in 0..<shape.width {
-              checksum &+= array.reference(at: x, y).pointee
+        return { timer in
+          var checksum = 0
+          timer.measure {
+            for y in 0..<shape.height {
+              for x in 0..<shape.width {
+                checksum &+= array.reference(at: x, y).value
+              }
             }
           }
+          blackHole(checksum)
+          precondition(checksum == bareArrayExpectedChecksum(for: size))
         }
-        blackHole(checksum)
-        precondition(checksum == bareArrayExpectedChecksum(for: size))
       }
     }
 
@@ -217,31 +226,34 @@ extension Benchmark {
       }
     }
 
-    self.add(
-      title: "BareArray2D<Int> Reference sequential write",
-      input: Int.self
-    ) { size in
-      let shape = bareArray2DShape(for: size)
-      return { timer in
-        let array = BareArray2D<Int>(
-          repeating: 0, width: shape.width, height: shape.height)
-        timer.measure {
-          var value = 0
-          for y in 0..<shape.height {
-            for x in 0..<shape.width {
-              array.reference(at: x, y).pointee = value
-              value += 1
+    if #available(macOS 27.0, *) {
+      self.add(
+        title: "BareArray2D<Int> Reference sequential write",
+        input: Int.self
+      ) { size in
+        let shape = bareArray2DShape(for: size)
+        return { timer in
+          var array = BareArray2D<Int>(
+            repeating: 0, width: shape.width, height: shape.height)
+          timer.measure {
+            var value = 0
+            for y in 0..<shape.height {
+              for x in 0..<shape.width {
+                var reference = array.reference(at: x, y)
+                reference.value = value
+                value += 1
+              }
             }
           }
-        }
-        var checksum = 0
-        for y in 0..<shape.height {
-          for x in 0..<shape.width {
-            checksum &+= array.reference(at: x, y).pointee
+          var checksum = 0
+          for y in 0..<shape.height {
+            for x in 0..<shape.width {
+              checksum &+= array.reference(at: x, y).value
+            }
           }
+          blackHole(checksum)
+          precondition(checksum == bareArrayExpectedChecksum(for: size))
         }
-        blackHole(checksum)
-        precondition(checksum == bareArrayExpectedChecksum(for: size))
       }
     }
 
@@ -273,32 +285,34 @@ extension Benchmark {
       }
     }
 
-    self.add(
-      title: "BareArray3D<Int> Reference sequential read checksum",
-      input: Int.self
-    ) { size in
-      let shape = bareArray3DShape(for: size)
-      var value = 0
-      let array = BareArray3D<Int>(
-        width: shape.width, height: shape.height, depth: shape.depth
-      ) {
-        defer { value += 1 }
-        return value
-      }
+    if #available(macOS 27.0, *) {
+      self.add(
+        title: "BareArray3D<Int> Reference sequential read checksum",
+        input: Int.self
+      ) { size in
+        let shape = bareArray3DShape(for: size)
+        var value = 0
+        var array = BareArray3D<Int>(
+          width: shape.width, height: shape.height, depth: shape.depth
+        ) {
+          defer { value += 1 }
+          return value
+        }
 
-      return { timer in
-        var checksum = 0
-        timer.measure {
-          for z in 0..<shape.depth {
-            for y in 0..<shape.height {
-              for x in 0..<shape.width {
-                checksum &+= array.reference(at: x, y, z).pointee
+        return { timer in
+          var checksum = 0
+          timer.measure {
+            for z in 0..<shape.depth {
+              for y in 0..<shape.height {
+                for x in 0..<shape.width {
+                  checksum &+= array.reference(at: x, y, z).value
+                }
               }
             }
           }
+          blackHole(checksum)
+          precondition(checksum == bareArrayExpectedChecksum(for: size))
         }
-        blackHole(checksum)
-        precondition(checksum == bareArrayExpectedChecksum(for: size))
       }
     }
 
@@ -330,35 +344,38 @@ extension Benchmark {
       }
     }
 
-    self.add(
-      title: "BareArray3D<Int> Reference sequential write",
-      input: Int.self
-    ) { size in
-      let shape = bareArray3DShape(for: size)
-      let array = BareArray3D<Int>(
-        repeating: 0, width: shape.width, height: shape.height, depth: shape.depth)
-      return { timer in
-        timer.measure {
-          var value = 0
-          for z in 0..<shape.depth {
-            for y in 0..<shape.height {
-              for x in 0..<shape.width {
-                array.reference(at: x, y, z).pointee = value
-                value += 1
+    if #available(macOS 27.0, *) {
+      self.add(
+        title: "BareArray3D<Int> Reference sequential write",
+        input: Int.self
+      ) { size in
+        let shape = bareArray3DShape(for: size)
+        var array = BareArray3D<Int>(
+          repeating: 0, width: shape.width, height: shape.height, depth: shape.depth)
+        return { timer in
+          timer.measure {
+            var value = 0
+            for z in 0..<shape.depth {
+              for y in 0..<shape.height {
+                for x in 0..<shape.width {
+                  var reference = array.reference(at: x, y, z)
+                  reference.value = value
+                  value += 1
+                }
               }
             }
           }
-        }
-        var checksum = 0
-        for z in 0..<shape.depth {
-          for y in 0..<shape.height {
-            for x in 0..<shape.width {
-              checksum &+= array.reference(at: x, y, z).pointee
+          var checksum = 0
+          for z in 0..<shape.depth {
+            for y in 0..<shape.height {
+              for x in 0..<shape.width {
+                checksum &+= array.reference(at: x, y, z).value
+              }
             }
           }
+          blackHole(checksum)
+          precondition(checksum == bareArrayExpectedChecksum(for: size))
         }
-        blackHole(checksum)
-        precondition(checksum == bareArrayExpectedChecksum(for: size))
       }
     }
 
@@ -395,4 +412,3 @@ extension Benchmark {
     }
   }
 }
-

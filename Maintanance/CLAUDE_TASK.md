@@ -9,10 +9,18 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
-**実行待ち: Public API名の熟議採点第3巡**
+**完了: Public API命名決定の最終整合監査**
 
-第2巡で残った5候補について、名前が利用者へ約束するbehavior・mental modelを明記して再採点する。
-新候補、採用、統合は行わない。
+採用済みのArray系公開名と、borrowed-reference propertyを命名判断対象から除外したscope訂正を、
+候補・採点・統合報告・ユーザー判断・現行sourceへ独立に照合した。公開名の判断記録は整合した。
+監査後の独立判断で、ユーザーは標準`MutableRef`の直接利用と旧環境向け互換型を提供しない境界を採用し、
+Codexがsource・test・compiler fixture・benchmarkを検収した。
+新たな採点や採用判断は行っていない。
+
+**完了: Public API名の熟議採点第3巡**
+
+Claudeが第2巡で残った5候補について、名前が利用者へ約束するbehavior・mental modelを明記して
+再採点した。新候補、採用、統合は行っていない。
 
 **完了: Public API名の熟議採点第2巡**
 
@@ -52,7 +60,102 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Current assignment: Public API名の熟議採点第3巡
+## Current assignment: Public API命名決定の最終整合監査
+
+### Objective
+
+`PUBLIC_API_NAMING_DECISIONS.md`に記録されたArray系命名判断について、候補、三者の採点、統合報告、
+ユーザー判断、現行sourceとの間に、実装反映を妨げる矛盾、未決事項の誤確定、対象外事項の混入が
+ないか独立に監査する。
+
+特に、borrowed-reference propertyの`pointee`／`value`は、Swift標準ライブラリの`MutableRef`が
+`value`を定義するためproject-owned naming decisionではない、というscope訂正を確認する。
+これは標準APIの採用判断でも、旧toolchain互換実装の変更判断でもない。
+
+### Inputs
+
+Read:
+
+- Registryの`API-010`行;
+- `PUBLIC_API_NAMING_BALLOT.md`;
+- `PUBLIC_API_NAMING_SCORE_REPORT.md`;
+- `PUBLIC_API_NAMING_ROUND2_REPORT.md`;
+- `PUBLIC_API_NAMING_ROUND3_REPORT.md`;
+- `PUBLIC_API_NAMING_DECISIONS.md`;
+- 必要な場合だけ、各roundのUser・Codex・Claude raw score;
+- 現行公開面の照合に必要な範囲の`Sources/BareArrayModule/BareArray.swift`と
+  `Sources/OptionalArrayModule/OptionalArray.swift`。
+
+### Boundaries
+
+- 監査対象文書、source、test、Registryを変更しない。
+- 新候補、再採点、採用判断、実装方針、互換性方針を追加しない。
+- Apple標準APIとの一致を、旧toolchain互換実装の変更承認へ読み替えない。
+- build、test、benchmark、commitを行わない。
+- 結果は下のreturn節だけへ記録する。
+
+### Completion
+
+次を区別して記録する。
+
+- 採用済み各判断と根拠・ユーザー判断の対応;
+- 未決、対象外、別taskへ残る事項;
+- 実装反映前に修正必須の矛盾;
+- 修正必須ではない観測または将来の互換性論点。
+
+必須修正がなければ、その範囲を明示して「命名判断記録は実装反映の入力として整合」と返す。
+
+### Return
+
+2026-10-13 Claude（Opus 5.5）。文書照合と、Swift 6.4での型検査1件（一時directory、削除済み）だけ。
+
+#### 採用済み判断と根拠の対応（整合）
+
+- Always-initialized owner `ElementBuffer`: round-2報告の収束（User 5、Codex 7、Claude 7）とUserの`BareArray`等の明示拒否に一致。
+- Presence-tracked owner `OptionalElementBuffer`: round-3報告の収束（User 5、Codex 5、Claude 6）と一致。DECISIONSの理由
+  （cache policyを約束しない、family一貫性）もround-3の「promise」記述と一致。
+- 1D suffix（unsuffixed）: score reportの`DS-01`（Codex 9、Claude 8）と、意味確認後のUser受諾に一致。
+- Copied access `element`／`setElement`: score report（Codex 9、Claude 8）とUser受諾に一致。現行sourceも両familyでこの名前。
+- Method `reference(at:)`: round-2報告の収束（User 5、Codex 8、Claude 7）と一致。現行sourceに存在。
+- Result type `MutableRef` directly: score reportで3者とも`RT-03`がresult type節の最高点。DECISIONSの記述と一致。
+
+#### 未決・対象外・別task
+
+- 未決: Permutation normal／borrowed family（DECISIONSで`Not decided`のまま、誤確定なし）。
+- 対象外: borrowed-reference property（`Excluded`。scoreは履歴として保持）。
+- 別task: `Reference` aliasの即時削除か移行期間か（DECISIONSで実装・release判断と明記）、旧toolchain互換実装と標準APIの関係。
+
+#### 実装反映前に修正必須の矛盾
+
+- **property除外の前提と、現行の自前`MutableRef`が食い違う。** Swift 6.4で`Swift.MutableRef<Int>`を型検査すると、
+  `value`は存在し、`pointee`は「has no member」になる（標準APIが`value`を持つという訂正の事実自体は確認できた）。
+  一方、現行の`Sources/BareArrayModule/BareArray.swift:426`は、条件なしで自前の`public struct MutableRef<Element>`を宣言し、
+  property名は`pointee`（438行）。つまり現在の公開型は標準の型ではなく、projectが所有する同名の型で、その値propertyの
+  名前もprojectが決めている。DECISIONSの「`MutableRef` directly」が、(a) 自前型の名前を`MutableRef`のまま正式名にする
+  のか、(b) 標準の`Swift.MutableRef`へ寄せる（自前型は旧toolchain互換だけにする）のかが書かれていない。(a)なら、自前型の
+  propertyは「標準が持つから対象外」とはならず、命名判断が残る。(b)なら、property除外は正しいが、result typeの採用記録が
+  標準型への移行という実装方針を含むことになる。どちらかを一文で明示しないと、実装者が`pointee`を残すべきか判断できない。
+  （修正には、result typeの採用がどちらを意味するかをUserが確認する境界が要る。互換方針そのものは決めなくてよい）
+
+#### 修正必須ではない観測・将来の互換性論点
+
+- 自前の`BareArrayModule.MutableRef`は標準の`Swift.MutableRef`（macOS 27以降）と同名。現行で名前解決が問題になるかは
+  確認していない（`UNVERIFIED`）が、両方が見える文脈では利用者が別の型と気づきにくい。上の(a)／(b)の判断に関わる。
+- Inputsの`Sources/OptionalArrayModule/OptionalArray.swift`は、実際のfile名が`OptinalArray.swift`（綴り違い）。照合には支障なし。
+- round-3報告でClaudeは`pointee`→`value`へ考えを改めたと要約されており、Claudeのround-3 raw score（4／6）と一致する。
+
+上の1件を除き、Array系の命名判断記録は実装反映の入力として整合している。
+
+追記（2026-10-13、ユーザー回答）: 自前の`MutableRef`宣言は削除対象とのこと（「それは削除対象だわ」）。
+上の(a)／(b)は(b)側、つまり自前型を正式名として残す意図はない、と読める。削除の実施、`reference(at:)`の
+返り値・test・compiler fixture・benchmarkの扱い、旧toolchain対応はClaudeでは決めず、Codexの実装task側で扱う。
+
+追記（2026-10-13、後続ユーザー確認）: 標準型を直接使うかは、availability、対応toolchain、現在の寿命契約を
+現物で再確認するため未確定へ戻した。上のユーザー回答を、標準型への即時置換または自前宣言の無条件削除承認とは
+扱わない。公開名の監査完了と実装方式の未決を分離する。
+
+
+## Completed assignment: Public API名の熟議採点第3巡
 
 ### Objective
 

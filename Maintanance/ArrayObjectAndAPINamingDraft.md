@@ -1,9 +1,8 @@
 # BareArray / OptionalArray object and API naming draft
 
-Status: the three candidate submissions have been reconciled with the current public surface. The
-independently inspected ballot was fixed after the user accepted the marked review-informed Codex
-supplements for the same scoring round. Independent scoring and product decisions remain incomplete.
-No public name or API in this document is adopted.
+Status: naming decisions are complete. `PUBLIC_API_NAMING_DECISIONS.md` is authoritative. This
+document preserves the deliberation and provides the bounded implementation handoff; it does not
+authorize the frozen production rename task by itself.
 
 ## Purpose
 
@@ -200,3 +199,33 @@ Ranking occurs only after all submissions are present.
 The Array naming work is ready for implementation only after independent candidate collection,
 combined scoring and discussion, the user's object-name decision, and the user's access-API decision
 are complete.
+
+## IDE-assisted owner rename handoff
+
+The user will perform the owner-type renames with Xcode's symbol-aware rename support. Codex does not
+perform a textual bulk replacement. The intended declaration mapping is:
+
+- `BareArray` → `ElementBuffer`
+- `BareArray2D` → `ElementBuffer2D`
+- `BareArray3D` → `ElementBuffer3D`
+- `BareArray4D` → `ElementBuffer4D`
+- `OptionalArray1D` → `OptionalElementBuffer`
+- `OptionalArray2D` → `OptionalElementBuffer2D`
+- `OptionalArray3D` → `OptionalElementBuffer3D`
+- `OptionalArray4D` → `OptionalElementBuffer4D`
+
+Rename one owning declaration at a time from its production declaration and let Xcode update indexed
+references. Complete one family before the other so a failed rename has a local boundary. Do not use
+the rename to change `element(at:)`, `setElement(_:at:)`, `reference(at:)`, or standard
+`MutableRef.value`; those decisions are already closed and are not part of the owner rename.
+
+After each family, build for testing before doing residual cleanup. Then inspect unresolved old names
+in production, tests, compiler-diagnostic fixtures, benchmarks, package facade tests, and current
+public documentation. Benchmark display titles, filenames, and prose may require intentional manual
+updates because they are not symbol references. Historical scoring, review, and archived records keep
+the names they actually evaluated unless a current-state sentence incorrectly presents them as the
+new API.
+
+Final acceptance requires the renamed production surface, Test as Specification, compiler fixtures,
+benchmark package, and current documentation to agree. The rename does not begin until the user
+explicitly restarts the frozen implementation task.

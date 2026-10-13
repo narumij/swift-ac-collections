@@ -18,6 +18,18 @@ BareArrayModuleのXcode Build for Testing、現行通常test 34件、Death Test 
 成功した。Xcodeの初回選択実行には削除済みView test 5件がcached test listとして残りnot runになったため、
 SwiftPMで現在のtest discoveryをやり直し、34件＋26件の全60件が成功することを確認した。
 
+## 標準MutableRefへの移行（2026-10-13）
+
+project所有の同名`MutableRef`と`Reference` aliasを削除し、Apple OS 27以降でSwift標準ライブラリの
+`MutableRef<Element>`を直接返す契約へ移行した。`reference(at:)`は標準initializerの所有者要件に合わせて
+`mutating`となり、呼出し側は可変ownerから参照を取得し、標準propertyの`value`でread / writeする。
+旧OS・旧toolchain向けに同名の互換型は提供しない。
+
+移行後、Xcode Build for Testing、runtime／Death Test／facadeの対象7件、compile-pass 1件と
+owner外escapeを拒否するcompile-fail 4件、およびbenchmark package buildが成功した。benchmarkの参照系
+workloadはmacOS 27以降だけ登録し、値access workloadは従来の対応環境で維持する。これらは標準型への移行で
+既存の借用寿命とowner storageへの反映が保たれた証拠であり、owner型の命名変更を開始する証拠ではない。
+
 以下の旧View導入・監査・受入記録は履歴として保持する。現在評価、公開面、および変更時の確認事項については、
 この節と現行Quality Profileを優先する。
 

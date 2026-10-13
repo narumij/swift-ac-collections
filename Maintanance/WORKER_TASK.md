@@ -12,23 +12,21 @@ the returned result, integrates accepted work, and owns Task Registry updates an
 
 ## Current job status
 
-**終了: 全公開targetのDocC個別生成と診断採取**
+**終了: 5公開targetのDocC継続検証をPR CIへ追加**
 
-The user may start this experiment by opening a separate Xcode Codex conversation and instructing it
+The user may start this assignment by opening a separate Xcode Codex conversation and instructing it
 to read this file. Do not infer a different assignment from old handoffs or Archived records.
 
 This section alone determines whether this Worker handoff has a current job. Prime Codex updates it
 before replacing or closing the assignment.
 
-## Active assignment: public-target DocC evidence acquisition
+## Active assignment: add public-target DocC verification to PR CI
 
 ### Objective
 
-Generate DocC separately for every public library target named below and return reproducible factual
-evidence for each target: success or failure, diagnostics, command, and output location.
-
-This assignment gathers evidence only. Do not decide which targets CI should enforce, their rollout
-order, whether a warning is acceptable, or whether public documentation is complete.
+Implement the accepted first stage of `DOCUMENTATION_CI_PLAN.md` in `.github/workflows/ci.yml` so an
+Ubuntu pull-request run attempts DocC generation independently for all five public library targets
+and preserves target-specific diagnostics without changing publication policy.
 
 ### Workspace and start state
 
@@ -40,7 +38,7 @@ order, whether a warning is acceptable, or whether public documentation is compl
 - Change ownership: Prime Codex and the user retain ownership of the shared worktree.
 
 Verify the branch before work. Preserve every existing change. Stop only when the branch differs or
-when an unexpected change overlaps a command input or the permitted return section.
+when an unexpected change overlaps `.github/workflows/ci.yml` or the permitted return section.
 
 ### First reading
 
@@ -48,48 +46,67 @@ Read in this order:
 
 1. `Orientation/WORKER_CODEX_BOOTSTRAP.md` in full.
 2. This assignment in full.
-3. Only the `DOC-023` row in `PROGRESS_OVERVIEW.md`.
-4. `Package.swift` only as needed to verify exact target names and DocC plugin availability.
+3. Only the `DOC-024` row in `PROGRESS_OVERVIEW.md`.
+4. `DOCUMENTATION_CI_PLAN.md` in full.
+5. `.github/workflows/ci.yml` in full.
 
-Do not scan other Registry rows, maintenance documents, or Archived records.
+Read `Package.swift` only if exact target spelling or plugin availability must be rechecked. Do not
+scan other Registry rows, maintenance documents, workflows, or Archived records.
 
-### Targets
+### Required implementation
 
-Run a separate DocC generation for each target:
+Add a distinct PR-CI verification job that uses a matrix containing exactly these targets:
 
-1. `AcCollections`
-2. `RedBlackTreeModule`
-3. `PermutationModule`
-4. `OptionalArrayModule`
-5. `BareArrayModule`
+- `AcCollections`
+- `RedBlackTreeModule`
+- `PermutationModule`
+- `OptionalArrayModule`
+- `BareArrayModule`
 
-Use a distinct output directory and captured log for each target under `.build/worker-docc/`. Do not
-reuse one target's output directory for another target. Include warnings in the captured evidence;
-do not suppress or repair them.
+For each matrix entry:
 
-### Allowed operations
+- run DocC generation for only that target;
+- use a target-specific output directory and diagnostic directory;
+- capture environment information, the exact command output, and exit status;
+- upload target-specific diagnostics with `if: always()` so failure evidence is retained;
+- keep one target failure independent from the evidence produced by other matrix entries;
+- make this first-stage observation job non-blocking while preserving each command's real exit status
+  and visible failure conclusion.
 
-- Read the files listed above and technical files directly named by a diagnostic.
-- Run `swift package generate-documentation` separately for the five named targets.
-- Create or replace generated evidence only below `.build/worker-docc/`.
-- Write only the `Worker return` section of this file.
+Use the existing CI setup style where applicable. Keep artifact names distinct across matrix entries.
 
-Do not modify source, tests, workflows, Package.swift, other maintenance documents, the Task
-Registry, or public documentation. Do not run unrelated builds, tests, benchmarks, or formatters.
+### Fixed decisions
+
+- This is diagnostic generation, not GitHub Pages publication.
+- Do not add `--warnings-as-errors`.
+- Do not add static-hosting transformation or a hosting base path.
+- Do not replace, rename, weaken, or otherwise modify the existing `documentation` job for
+  `RedBlackTreeCollections`.
+- Do not modify `.github/workflows/main.yml`, `.github/workflows/candidate.yml`, or another workflow.
+- Do not repair documentation warnings or source files.
+- Do not decide when the new job becomes required; first obtain Ubuntu evidence.
+
+### Allowed changes
+
+- `.github/workflows/ci.yml`
+- the `Worker return` section of this file
+
+No other tracked file may be modified. Generated temporary validation files must remain outside the
+repository or under ignored `.build/` paths.
 
 ### Validation requirements
 
-For each target, return:
+- Parse the resulting YAML with an available local parser when possible.
+- Verify from the final diff that the matrix has exactly five assigned targets.
+- Verify target-specific output, log, and artifact names derive from the matrix target.
+- Verify diagnostics upload uses `if: always()`.
+- Verify the new observation job is non-blocking, while the DocC command itself does not mask a
+  nonzero status.
+- Verify the existing `documentation` job is unchanged.
+- Do not run the GitHub-hosted Ubuntu job locally and do not claim remote success.
 
-- the exact command and exit status;
-- whether DocC completed;
-- warning and error counts, with the diagnostic text or log path;
-- the target-specific output and log paths;
-- any crash or environmental failure distinguished from a documentation diagnostic.
-
-After all five attempts, verify that the five output and log locations are distinct. A failed target
-does not authorize source repair and does not prevent attempting later targets unless the shared
-environment itself is no longer usable.
+If no trustworthy YAML parser is available, report that limitation and perform a structural diff
+check without installing a dependency.
 
 ### Repository operation authority
 
@@ -107,109 +124,63 @@ to the repository's user-authorization rules.
 Stop and return the observed facts when:
 
 - the current branch is not `develop/misc/64`;
-- an unexpected shared-worktree change overlaps this assignment;
-- the command would need to modify a tracked file;
-- continuing requires a product, documentation-policy, CI-policy, or task-priority decision;
-- the build environment becomes unusable for later independent attempts.
-
-Do not stop merely because one target reports warnings, fails, or crashes. Preserve that result and
-continue with the next independent target when the environment remains usable.
+- `.github/workflows/ci.yml` has an unexpected overlapping change;
+- implementation requires changing an existing publication job or warning policy;
+- GitHub Actions semantics cannot preserve both non-blocking observation and visible target failure
+  without a new policy decision;
+- another participant changes an overlapping file during the assignment.
 
 ### Return requirements
 
-Write the result below. Report the five targets in the assigned order and distinguish observed facts
-from interpretation. Do not recommend CI scope or edit a diagnostic source.
-
-The Worker must also state:
-
-- changed tracked files: `Maintanance/WORKER_TASK.md` only;
-- generated untracked or ignored evidence paths below `.build/worker-docc/`;
-- commands and exit statuses;
-- unverified areas and environmental limits;
-- out-of-scope observations, if any.
+Write the result below. Report the workflow structure added, validation performed and its result,
+the exact files changed, and any remote-only uncertainty. Do not update the Task Registry and do not
+mark the repository task complete.
 
 ## Worker return
 
-Status: Accepted by Prime Codex as evidence acquisition. Repository task completion is recorded separately.
+Status: Accepted by Prime Codex for local implementation and structural validation. Remote Ubuntu evidence is pending separately.
 
-### Observed facts
+### Implemented workflow structure
 
-All five assigned targets completed DocC generation with exit status 0 when SwiftPM was invoked with
-`--disable-sandbox`. Each final log contains 8 warnings and 0 errors. The warnings are environmental
-SwiftPM cache warnings, not DocC documentation diagnostics:
+Added the PR-only `public-target-documentation` job to `.github/workflows/ci.yml`.
 
-- the user-level configuration, security, and cache directories are not accessible or writable;
-- the manifests for `swift-ac-collections`, `swift-algorithms`, `swift-docc-plugin`,
-  `swift-numerics`, and `swift-docc-symbolkit` could not be stored in the read-only cache database.
+- The matrix contains exactly, and in the assigned order: `AcCollections`, `RedBlackTreeModule`,
+  `PermutationModule`, `OptionalArrayModule`, and `BareArrayModule`.
+- `strategy.fail-fast: false` keeps the other matrix entries running when one target fails.
+- Job-level `continue-on-error: true` makes this first-stage observation job non-blocking for the
+  workflow.
+- Each matrix entry derives its output directory, diagnostic directory, and artifact name from
+  `matrix.target`.
+- The environment step records `swift --version` and `uname -a` in the target-specific diagnostic
+  directory.
+- The DocC step records the displayed command in `command.txt`, captures combined command output in
+  `full-console.log`, records SwiftPM's actual pipeline status from `PIPESTATUS[0]` in
+  `exit-status.txt`, and exits with that same status. It does not use `--warnings-as-errors`, static
+  hosting transformation, or a hosting base path.
+- The target-specific artifact upload uses `if: always()` and therefore remains eligible after a
+  failed DocC step.
 
-The complete diagnostic text is preserved in each target-specific `generate.log` listed below.
+### Local validation performed
 
-1. `AcCollections`
-   - Command: `swift package --disable-sandbox --allow-writing-to-directory .build/worker-docc/AcCollections/output generate-documentation --target AcCollections --output-path .build/worker-docc/AcCollections/output > .build/worker-docc/AcCollections/generate.log 2>&1`
-   - Exit status: 0.
-   - DocC completed: yes; the log reports `Finished building documentation for 'AcCollections'`.
-   - Diagnostics: 8 warnings, 0 errors.
-   - Output: `.build/worker-docc/AcCollections/output`
-   - Log: `.build/worker-docc/AcCollections/generate.log`
-2. `RedBlackTreeModule`
-   - Command: `swift package --disable-sandbox --allow-writing-to-directory .build/worker-docc/RedBlackTreeModule/output generate-documentation --target RedBlackTreeModule --output-path .build/worker-docc/RedBlackTreeModule/output > .build/worker-docc/RedBlackTreeModule/generate.log 2>&1`
-   - Exit status: 0.
-   - DocC completed: yes; the log reports `Finished building documentation for 'RedBlackTreeModule'`.
-   - Diagnostics: 8 warnings, 0 errors.
-   - Output: `.build/worker-docc/RedBlackTreeModule/output`
-   - Log: `.build/worker-docc/RedBlackTreeModule/generate.log`
-3. `PermutationModule`
-   - Command: `swift package --disable-sandbox --allow-writing-to-directory .build/worker-docc/PermutationModule/output generate-documentation --target PermutationModule --output-path .build/worker-docc/PermutationModule/output > .build/worker-docc/PermutationModule/generate.log 2>&1`
-   - Exit status: 0.
-   - DocC completed: yes; the log reports `Finished building documentation for 'PermutationModule'`.
-   - Diagnostics: 8 warnings, 0 errors.
-   - Output: `.build/worker-docc/PermutationModule/output`
-   - Log: `.build/worker-docc/PermutationModule/generate.log`
-4. `OptionalArrayModule`
-   - Command: `swift package --disable-sandbox --allow-writing-to-directory .build/worker-docc/OptionalArrayModule/output generate-documentation --target OptionalArrayModule --output-path .build/worker-docc/OptionalArrayModule/output > .build/worker-docc/OptionalArrayModule/generate.log 2>&1`
-   - Exit status: 0.
-   - DocC completed: yes; the log reports `Finished building documentation for 'OptionalArrayModule'`.
-   - Diagnostics: 8 warnings, 0 errors.
-   - Output: `.build/worker-docc/OptionalArrayModule/output`
-   - Log: `.build/worker-docc/OptionalArrayModule/generate.log`
-5. `BareArrayModule`
-   - Command: `swift package --disable-sandbox --allow-writing-to-directory .build/worker-docc/BareArrayModule/output generate-documentation --target BareArrayModule --output-path .build/worker-docc/BareArrayModule/output > .build/worker-docc/BareArrayModule/generate.log 2>&1`
-   - Exit status: 0.
-   - DocC completed: yes; the log reports `Finished building documentation for 'BareArrayModule'`.
-   - Diagnostics: 8 warnings, 0 errors.
-   - Output: `.build/worker-docc/BareArrayModule/output`
-   - Log: `.build/worker-docc/BareArrayModule/generate.log`
+- Parsed `.github/workflows/ci.yml` successfully with the locally available Ruby YAML parser.
+- Ran structural assertions over the parsed result for the exact five-target matrix,
+  `fail-fast: false`, job-level `continue-on-error: true`, target-derived output and diagnostic
+  paths, target-derived artifact name, `if: always()`, and the preservation/re-emission of
+  `PIPESTATUS[0]`. All assertions passed.
+- `git diff --check -- .github/workflows/ci.yml` passed.
+- `git diff --numstat -- .github/workflows/ci.yml` reported 66 additions and 0 deletions. The full
+  diff contains only the new job inserted after the existing `documentation` job, so the existing
+  `RedBlackTreeCollections` documentation job is unchanged.
+- `actionlint` was not installed in the local environment, so no actionlint result is claimed and no
+  dependency was installed.
 
-### Environmental failure distinguished from documentation diagnostics
+### Changed files and evidence limits
 
-The first `AcCollections` attempt omitted `--disable-sandbox`:
-
-`swift package --allow-writing-to-directory .build/worker-docc/AcCollections/output generate-documentation --target AcCollections --output-path .build/worker-docc/AcCollections/output > .build/worker-docc/AcCollections/environment-failure.log 2>&1`
-
-It exited 1 during manifest evaluation with 3 cache-access warnings, 1 invalid-manifest error, and
-`sandbox-exec: sandbox_apply: Operation not permitted`. DocC did not start. This was an execution
-environment failure caused by nested sandboxing, not a documentation diagnostic. The evidence is at
-`.build/worker-docc/AcCollections/environment-failure.log`. Adding SwiftPM's `--disable-sandbox`
-allowed all five independent attempts above to complete.
-
-### Location and change verification
-
-- The five output directories and five final log paths resolve to distinct absolute locations under
-  `.build/worker-docc/<target>/` and existed after generation.
-- Generated ignored evidence paths: `.build/worker-docc/AcCollections/`,
-  `.build/worker-docc/RedBlackTreeModule/`, `.build/worker-docc/PermutationModule/`,
-  `.build/worker-docc/OptionalArrayModule/`, and `.build/worker-docc/BareArrayModule/`.
-- Worker-changed tracked files: `Maintanance/WORKER_TASK.md` only. The pre-existing tracked change to
-  `Maintanance/PROGRESS_OVERVIEW.md` was preserved without modification by the Worker.
-- No branch creation or switching, commit, push, merge, rebase, reset, restoration, deletion, source
-  repair, or other-agent delegation was performed.
-
-### Evidence limits and out-of-scope observations
-
-- Warning and error counts are literal counts of lines containing `warning:` and `error:` in each
-  captured log. No policy judgment about warning acceptability or CI scope was made.
-- No source, test, workflow, package-manifest, Registry, or public-documentation file was modified.
-- No unrelated build, test, benchmark, or formatter was run.
-- Documentation completeness and rendered-content quality were not inspected; the assignment verifies
-  target-specific generation and captured diagnostics only.
-- No additional out-of-scope product or documentation issue was observed.
+- Worker-changed tracked files: `.github/workflows/ci.yml` and the `Worker return` section of
+  `Maintanance/WORKER_TASK.md` only.
+- The pre-existing change to `Maintanance/PROGRESS_OVERVIEW.md` was preserved without Worker edits.
+- The GitHub-hosted Ubuntu matrix was not run locally. Runner behavior, artifact upload behavior, and
+  remote job conclusions remain to be verified by a pull-request run after an authorized push.
+- No source, documentation, package manifest, other workflow, or Task Registry update was made.
+- No branch operation, commit, push, merge, rebase, reset, restoration, deletion, or delegation was
+  performed.

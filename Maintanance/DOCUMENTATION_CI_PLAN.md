@@ -47,5 +47,13 @@ PR CIで継続生成する対象は、上記5 targetすべてとする。target�
 
 ## 後続境界
 
-このDiscoveryではworkflowを変更しない。CI実装は、Ubuntu上の証拠保存、target別failure、artifact名、既存の
-`RedBlackTreeCollections` jobとの重複を明示した別の`EXECUTION`として扱う。
+2026-10-13、PR限定の`public-target-documentation` matrix jobを`.github/workflows/ci.yml`へ実装した。
+5 targetは個別entryとなり、`fail-fast: false`、job単位の`continue-on-error: true`、target別output・diagnostic・
+artifact、および`if: always()`のartifact uploadを持つ。DocC commandはpipelineの実statusを記録して同じstatusで
+終了するため、job全体を非blockingにしてもtarget failure自体を隠さない。
+
+Prime CodexはYAML parse、matrix 5件、non-blocking設定、target別path、artifact upload、終了status伝播、
+`--warnings-as-errors`不使用、および既存`documentation` jobが無変更であることをlocalで再検証した。
+
+remote Ubuntu上のjob実行、artifact upload、およびtoolchain安定性は、このlocal受入から推定しない。
+実装commitのuser push後に別の受入境界で確認する。

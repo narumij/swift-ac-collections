@@ -19,6 +19,16 @@
 Task Registry、司令塔orientation、Archived資料、周辺の管理文書を独自に走査しない。今回の正本として
 作業契約に指定されていない文書から、別の仕事や権限を復活させない。
 
+## 継続conversationでの再実行
+
+一度このbootstrapと`Maintanance/WORKER_TASK.md`を読んだ同じXcode conversationで、ユーザーが
+`やって`などの短い再開指示を出した場合は、会話内に残る前回assignmentを再実行しない。
+`Maintanance/WORKER_TASK.md`を再読し、`Current job status`と現在のassignmentが前回から更新されていることを
+確認してから、新しいassignmentだけを実行する。
+
+同じassignmentが返却済みまたは終了状態のままなら再実行せず、その状態を短く報告する。新しいassignmentの
+開始状態、許可範囲、停止条件は、前回の記憶ではなく再読したfileを正とする。
+
 ## 作業中の境界
 
 - 許可された対象だけを変更し、既存の無関係な変更を保存する。

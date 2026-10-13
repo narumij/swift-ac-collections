@@ -59,7 +59,7 @@
   ///
   /// - Complexity: O(`indices.count`)
   @inlinable
-  public func removeAll() {
+  public mutating func removeAll() {
     for i in 0..<count {
       if unsafe hasPayload[i] {
         unsafe (payload + i).deinitialize(count: 1)
@@ -87,7 +87,7 @@ extension OptionalElementBuffer {
 
   /// `position`の要素を設定します。`nil`はslotを未設定状態へ戻します。
   @inlinable
-  public func setElement(_ newValue: consuming Element?, at position: Int) {
+  public mutating func setElement(_ newValue: consuming Element?, at position: Int) {
     precondition(0 <= position && position < count)
     if unsafe hasPayload[position] {
       unsafe (payload + position).deinitialize(count: 1)
@@ -173,7 +173,7 @@ extension OptionalElementBuffer {
   ///
   /// - Complexity: O(`width * height`)
   @inlinable
-  public func removeAll() {
+  public mutating func removeAll() {
     for i in 0..<capacity {
       if unsafe hasPayload[i] {
         unsafe (payload + i).deinitialize(count: 1)
@@ -203,7 +203,7 @@ extension OptionalElementBuffer2D {
 
   /// `(x, y)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
   @inlinable
-  public func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int) {
+  public mutating func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int) {
     precondition(0 <= x && x < width)
     precondition(0 <= y && y < height)
     let offset = y * width + x
@@ -286,7 +286,7 @@ extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable {
   ///
   /// - Complexity: O(`width * height * depth`)
   @inlinable
-  public func removeAll() {
+  public mutating func removeAll() {
     for i in 0..<capacity {
       if unsafe hasPayload[i] {
         unsafe (payload + i).deinitialize(count: 1)
@@ -320,7 +320,7 @@ extension OptionalElementBuffer3D {
 
   /// `(x, y, z)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
   @inlinable
-  public func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int, _ z: Int) {
+  public mutating func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int, _ z: Int) {
     precondition(0 <= x && x < width)
     precondition(0 <= y && y < height)
     precondition(0 <= z && z < depth)
@@ -409,7 +409,7 @@ extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable {
   ///
   /// - Complexity: O(`size0 * size1 * size2 * size3`)
   @inlinable
-  public func removeAll() {
+  public mutating func removeAll() {
     for i in 0..<capacity {
       if unsafe hasPayload[i] {
         unsafe (payload + i).deinitialize(count: 1)
@@ -441,7 +441,7 @@ extension OptionalElementBuffer4D {
 
   /// `(x, y, z, w)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
   @inlinable
-  public func setElement(
+  public mutating func setElement(
     _ newValue: consuming Element?, at x: Int, _ y: Int, _ z: Int, _ w: Int
   ) {
     precondition(0 <= x && x < size0)

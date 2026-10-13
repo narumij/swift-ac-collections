@@ -195,6 +195,11 @@ repository内の呼出しを棚卸しした。既存sourceを変更せず、次�
 両立する利点に対し、Swift 6の競技用トップレベルコードを含むsource compatibilityを受容するかを、
 実装とは別の製品判断とする。
 
+ユーザーは、この差異を新しい互換性方針の選択ではなく、更新methodへの`mutating`指定漏れの修正と
+判断した。1D〜4Dの`setElement`と`removeAll()`へ`mutating`を付与し、repository内の呼出側を
+mutable bindingへ追従させた。条件付き`@unchecked Sendable`は維持する。Xcode Build for Testing、
+全test（1475 passed、0 failed、256 not run）、Benchmark packageのrelease buildが成功した。
+
 ## 判断の整理
 
 - 1D所有型名は横断命名判断でunsuffixedの`OptionalElementBuffer`に確定し、実装反映も完了した。

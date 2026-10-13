@@ -244,7 +244,7 @@ extension Benchmark {
       title: "OptionalElementBuffer<Int> direct methods cold memoization checksum",
       input: Int.self
     ) { size in
-      let array = OptionalElementBuffer<Int>(capacity: size)
+      var array = OptionalElementBuffer<Int>(capacity: size)
       return { timer in
         array.removeAll()
         var checksum = 0
@@ -267,7 +267,7 @@ extension Benchmark {
       title: "OptionalElementBuffer<Int> direct methods warm memoization checksum",
       input: Int.self
     ) { size in
-      let array = OptionalElementBuffer<Int>(capacity: size)
+      var array = OptionalElementBuffer<Int>(capacity: size)
       for i in 0..<size {
         array.setElement(i, at: i)
       }
@@ -290,7 +290,7 @@ extension Benchmark {
       input: Int.self
     ) { size in
       let shape = optionalArray2DShape(for: size)
-      let array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
+      var array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
 
       return { timer in
         array.removeAll()
@@ -319,7 +319,7 @@ extension Benchmark {
       input: Int.self
     ) { size in
       let shape = optionalArray2DShape(for: size)
-      let array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
+      var array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
       var value = 0
       for y in 0..<shape.height {
         for x in 0..<shape.width {
@@ -349,7 +349,7 @@ extension Benchmark {
       input: Int.self
     ) { size in
       let shape = optionalArray3DShape(for: size)
-      let array = OptionalElementBuffer3D<Int>(
+      var array = OptionalElementBuffer3D<Int>(
         width: shape.width, height: shape.height, depth: shape.depth)
 
       return { timer in
@@ -381,7 +381,7 @@ extension Benchmark {
       input: Int.self
     ) { size in
       let shape = optionalArray3DShape(for: size)
-      let array = OptionalElementBuffer3D<Int>(
+      var array = OptionalElementBuffer3D<Int>(
         width: shape.width, height: shape.height, depth: shape.depth)
       var value = 0
       for z in 0..<shape.depth {

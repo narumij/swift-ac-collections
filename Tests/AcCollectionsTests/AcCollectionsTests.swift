@@ -90,7 +90,7 @@ final class AcCollectionsTests: XCTestCase {
   #endif
 
   func test_importAcCollections_exposesOptionalElementBuffer() {
-    let array = OptionalElementBuffer<Int>(capacity: 2)
+    var array = OptionalElementBuffer<Int>(capacity: 2)
     array.setElement(7, at: 1)
     XCTAssertEqual(array.element(at: 1), 7)
   }

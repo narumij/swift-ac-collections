@@ -11,8 +11,8 @@
     }
 
     @Test func setElementRejectsInvalidCoordinates1D() async {
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer<Int>(capacity: 3).setElement(1, at: -1) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer<Int>(capacity: 3).setElement(1, at: 3) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer<Int>(capacity: 3); array.setElement(1, at: -1) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer<Int>(capacity: 3); array.setElement(1, at: 3) }
     }
 
     @Test func elementAtRejectsInvalidCoordinates2D() async {
@@ -23,10 +23,10 @@
     }
 
     @Test func setElementRejectsInvalidCoordinates2D() async {
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer2D<Int>(width: 2, height: 3).setElement(1, at: -1, 0) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer2D<Int>(width: 2, height: 3).setElement(1, at: 2, 0) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer2D<Int>(width: 2, height: 3).setElement(1, at: 0, -1) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer2D<Int>(width: 2, height: 3).setElement(1, at: 0, 3) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer2D<Int>(width: 2, height: 3); array.setElement(1, at: -1, 0) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer2D<Int>(width: 2, height: 3); array.setElement(1, at: 2, 0) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer2D<Int>(width: 2, height: 3); array.setElement(1, at: 0, -1) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer2D<Int>(width: 2, height: 3); array.setElement(1, at: 0, 3) }
     }
 
     @Test func elementAtRejectsInvalidCoordinates3D() async {
@@ -39,12 +39,12 @@
     }
 
     @Test func setElementRejectsInvalidCoordinates3D() async {
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4).setElement(1, at: -1, 0, 0) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4).setElement(1, at: 2, 0, 0) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4).setElement(1, at: 0, -1, 0) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4).setElement(1, at: 0, 3, 0) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4).setElement(1, at: 0, 0, -1) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4).setElement(1, at: 0, 0, 4) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4); array.setElement(1, at: -1, 0, 0) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4); array.setElement(1, at: 2, 0, 0) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4); array.setElement(1, at: 0, -1, 0) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4); array.setElement(1, at: 0, 3, 0) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4); array.setElement(1, at: 0, 0, -1) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4); array.setElement(1, at: 0, 0, 4) }
     }
 
     @Test func elementAtRejectsInvalidCoordinates4D() async {
@@ -59,14 +59,14 @@
     }
 
     @Test func setElementRejectsInvalidCoordinates4D() async {
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: -1, 0, 0, 0) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 2, 0, 0, 0) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, -1, 0, 0) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 3, 0, 0) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 0, -1, 0) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 0, 4, 0) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 0, 0, -1) }
-      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5).setElement(1, at: 0, 0, 0, 5) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5); array.setElement(1, at: -1, 0, 0, 0) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5); array.setElement(1, at: 2, 0, 0, 0) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5); array.setElement(1, at: 0, -1, 0, 0) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5); array.setElement(1, at: 0, 3, 0, 0) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5); array.setElement(1, at: 0, 0, -1, 0) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5); array.setElement(1, at: 0, 0, 4, 0) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5); array.setElement(1, at: 0, 0, 0, -1) }
+      await #expect(processExitsWith: .signal(expectedSwiftTrapSignal)) { var array = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5); array.setElement(1, at: 0, 0, 0, 5) }
     }
   }
 #endif

@@ -35,5 +35,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 現在なし。
 
-過去のreconciliation済みentryは
-`Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`を参照する。
+過去のreconciliation済みentryは次を参照する。
+
+- `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`
+- `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-14.md`

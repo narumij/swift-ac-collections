@@ -28,7 +28,9 @@ rendered contentの完全性、利用者による理解、および将来のwarn
 
 ## 継続検証範囲
 
-PR CIで継続生成する対象は、上記5 targetすべてとする。targetごとにcommand、output、log、終了statusを分離し、
+2026-10-14のmodule名移行後、PR CIで継続生成する対象は、上記5 targetのうち旧名2 targetを互換facadeとして
+維持し、新しい`ElementBufferModule`と`OptionalElementBufferModule`を加えた7 targetとする。targetごとに
+command、output、log、終了statusを分離し、
 一つのtargetの結果で他targetの成否を推定しない。
 
 既存の`RedBlackTreeCollections` documentation jobとGitHub Pages公開は、利用者向け公開物を生成する別責務である。
@@ -44,18 +46,21 @@ GitHub Pagesは既存の利用者向け文書とpackageの入口を担い、READ
 各moduleへ導線を置く。API referenceの生成・hostingと、repositoryが編集する利用者向け説明を分離する。
 
 2026-10-13時点で、`https://github.com/narumij/swift-ac-collections.git`はSwift Package Indexのcanonical
-`packages.json`に見つからず、package pageとmodule別documentation URLも確認できなかった。登録は1.0 release後の
-中間ゴールとし、それまではrepository CIで各targetのDocC生成可能性を維持する。
+`packages.json`に見つからず、package pageとmodule別documentation URLも確認できなかった。0.9.x release後に
+Swift Package Indexへ登録し、外部build・互換性判定・DocC生成で見つかった不足を1.0品質gateへ入力する。
+それまではrepository CIで各targetのDocC生成可能性を維持する。
 
-1.0 release後、Swift Package Indexへのpackage登録とDocC build成立を確認する。登録後にpackage pageの
+0.9.x release後、Swift Package Indexへのpackage登録とDocC build成立を確認する。登録後にpackage pageの
 `Do you maintain this package?`から提供されるMarkdownを正として互換性badgeをREADMEへ追加し、READMEまたは
 Pagesからmodule別API referenceへの導線を接続する。badge URLやdocumentation URLを登録前に推測して固定しない。
+Swift Package Indexの結果は1.0適合を単独で証明しないが、登録、build、互換性表示、DocC公開が成立しない場合は、
+不足を解消または残余リスクとして判断するまで1.0品質gateを閉じない。
 
 ## 段階導入
 
-1. PR CIに5 targetの個別生成とdiagnostic artifact採取を追加する。生成commandの非zero終了はtargetごとのfailureとして
+1. PR CIに対象targetの個別生成とdiagnostic artifact採取を追加する。生成commandの非zero終了はtargetごとのfailureとして
    観測するが、初期段階では`--warnings-as-errors`を付けない。
-2. Ubuntu runner上でtoolchain crashとrepository由来diagnosticを区別し、5 targetの再現可能な結果を得る。
+2. Ubuntu runner上でtoolchain crashとrepository由来diagnosticを区別し、対象targetの再現可能な結果を得る。
 3. 安定したtargetからrequiredな継続生成へ移す。順序は実測上の安定性で決め、moduleの重要度や文書完成度を
    推測して先取りしない。
 4. `--warnings-as-errors`の採用は、各targetの利用者向け文書がその品質gateを受け入れられる段階で別途判断する。
@@ -65,7 +70,7 @@ Pagesからmodule別API referenceへの導線を接続する。badge URLやdocum
 ## 後続境界
 
 2026-10-13、PR限定の`public-target-documentation` matrix jobを`.github/workflows/ci.yml`へ実装した。
-5 targetは個別entryとなり、`fail-fast: false`、job単位の`continue-on-error: true`、target別output・diagnostic・
+当初の5 targetは個別entryとなり、`fail-fast: false`、job単位の`continue-on-error: true`、target別output・diagnostic・
 artifact、および`if: always()`のartifact uploadを持つ。DocC commandはpipelineの実statusを記録して同じstatusで
 終了するため、job全体を非blockingにしてもtarget failure自体を隠さない。
 

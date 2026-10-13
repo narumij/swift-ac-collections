@@ -105,8 +105,8 @@ presence mapとpayloadを別々の連続storageに保持する。`element`と`se
 
 ## 根拠
 
-- 公開実装: `Sources/OptionalArrayModule/OptionalElementBuffer.swift`
-- 現行Test as Specification: `Tests/OptionalArrayModuleTests/`
-- 品質プロファイル: `Sources/OptionalArrayModule/Documentation/Quality-Profile.md`
+- 公開実装: `Sources/OptionalElementBufferModule/OptionalElementBuffer.swift`
+- 現行Test as Specification: `Tests/OptionalElementBufferModuleTests/`
+- 品質プロファイル: `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md`
 - 現在評価: `Maintanance/OptionalArrayModule/CurrentQualityAssessment.md`
 - 体系監査と判断記録: `Maintanance/OptionalArrayModule/OptionalArrayAudit.md`

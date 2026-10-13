@@ -89,6 +89,23 @@ retrospective replay、smell判定スキームの各試験へ必要な知見を�
 共有試験は別taskとして残した。その後のユーザー判断で、Claude用独立試験だけを継続し、Codex用DBと
 共有スキームの継続試験は終了した。
 
+## `FROZEN`二義性の補助観測（2026-10-14）
+
+Claudeが現行Registryの`FROZEN` 32行を、precedence前提、中間ゴール・親gate、明示再開、その他に分類し、
+状態と依存表現が食い違う候補を抽出した。Codexは`CP-20261014-001`として返却された根拠を現行Registryと
+照合し、補助観測として受け入れた。新規stable IDは作らず、常設node `GRAPH-001`へ統合する。
+
+- `OPT-064`は本文で`OPT-072`完了を開始条件としていたため、欠落していた`SEQUENCE`辺をRegistryへ追加した。
+- `RBT-005`はrepository外のconsumer移行を待つため、状態を`FROZEN`から`WAITING_EXTERNAL`へ修正した。
+- `RBT-004`のOR条件は、必須AND前提だけを記録するprecedenceへ追加しない。
+- `RBT-007`は将来phaseのユーザー承認を待つtaskであり、現在の判断要求へ昇格させず`FROZEN`を維持する。
+- `OPT-053`と`BARE-032`は既存前提が完了しているが、`FROZEN`の明示再開境界と現在のgoal proximityを
+  優先し、自動的に`WAITING_USER`へ移さない。ユーザーの「taskとして消滅しそう」は見通しであり、
+  採否判断として扱わない。
+
+この観測から、充足済みprecedence辺を履歴へ移す際には、後続taskの状態、再開条件、現在の中間ゴールとの
+関係を同時に見直す必要がある。一方、前提充足だけで`FROZEN`を自動昇格させてはならない。
+
 ## Local visualization PoC
 
 2026-10-08、Claude専用のlocal projectionから、現在のready周辺と中間goal観点をSVG／PNGへ描く

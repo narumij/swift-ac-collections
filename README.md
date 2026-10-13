@@ -14,7 +14,7 @@ swift-ac-collections is a Swift library that provides a variety of data structur
 These sorted sets and dictionaries are designed to
 **make it practical to solve [AtCoder][atcoder] problems that assume C++ `std::set` / `std::multiset`, with usable performance in Swift.**
 
-[![CI](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml/badge.svg)](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml)
+[![CI](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml/badge.svg?event=pull_request)](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml?query=event%3Apull_request)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Usage

@@ -52,8 +52,8 @@ Swift利用者が期待する言語特性や安全性を
 |---|---|
 | RedBlackTreeCollections | 1.0提供対象として品質成立を目指す。 |
 | PermutationModule | Swift 6.4以降の1.0提供対象として品質成立を目指す。 |
-| OptionalArrayModule | 明示的なpackage traitで有効化する実験的データ構造として、留保付きで1.0の対象に残す。安定APIと同じ保証を既成事実とせず、実験提供に必要な品質境界を別途成立させる。 |
-| BareArrayModule | 1.0提供対象から除外する。実装を放棄せず、source、仕様、test、benchmark、安全性、および既存利用への影響を保守する。 |
+| OptionalElementBufferModule | 明示的なpackage traitで有効化する実験的データ構造として、留保付きで1.0の対象に残す。安定APIと同じ保証を既成事実とせず、実験提供に必要な品質境界を別途成立させる。 |
+| ElementBufferModule | 1.0提供対象から除外する。実装を放棄せず、source、仕様、test、benchmark、安全性、および既存利用への影響を保守する。 |
 
 留保付きまたは提供対象外という位置づけは、有効化または保守する範囲の正確性、メモリ安全性、要素寿命、
 初期化と破棄、およびbuild・test可能性を自動的に軽減しない。package traitも、性能上の未達や未検証を
@@ -266,8 +266,8 @@ AI同士の評価が一致したことを、
 |---|---|
 | RedBlackTreeCollections | [`Quality-Profile.md`](../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md) |
 | PermutationModule | [`Quality-Profile.md`](../Sources/PermutationModule/Documentation/Quality-Profile.md) |
-| OptionalArrayModule | [`Quality-Profile.md`](../Sources/OptionalArrayModule/Documentation/Quality-Profile.md) |
-| BareArrayModule | [`Quality-Profile.md`](../Sources/BareArrayModule/Documentation/Quality-Profile.md) |
+| OptionalElementBufferModule | [`Quality-Profile.md`](../Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md) |
+| ElementBufferModule | [`Quality-Profile.md`](../Sources/ElementBufferModule/Documentation/Quality-Profile.md) |
 
 各品質プロファイルは、上位品質要求を変更または複製せず、
 対象モジュールにおける意味、重点領域、仕様、証拠、および

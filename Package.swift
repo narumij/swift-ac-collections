@@ -197,8 +197,12 @@ let package = Package(
         "RedBlackTreeModule",
         "PermutationModule",
         .target(
+          name: "OptionalElementBufferModule",
+          condition: .when(traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"])),
+        .target(
           name: "OptionalArrayModule",
           condition: .when(traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"])),
+        "ElementBufferModule",
         "BareArrayModule",
       ],
       swiftSettings: _settings + [
@@ -298,7 +302,7 @@ let package = Package(
     ),
 
     .target(
-      name: "OptionalArrayModule",
+      name: "OptionalElementBufferModule",
       exclude: [
         "Documentation"
       ],
@@ -307,16 +311,25 @@ let package = Package(
         .strictMemorySafety()
       ]
     ),
+    .target(
+      name: "OptionalArrayModule",
+      dependencies: ["OptionalElementBufferModule"],
+      path: "Sources/_OptionalArrayModule",
+      swiftSettings: [
+        .strictMemorySafety()
+      ]
+    ),
     .testTarget(
-      name: "OptionalArrayModuleTests",
+      name: "OptionalElementBufferModuleTests",
       dependencies: [
+        "OptionalElementBufferModule",
         "OptionalArrayModule"
       ],
       swiftSettings: _settings
     ),
 
     .target(
-      name: "BareArrayModule",
+      name: "ElementBufferModule",
       exclude: [
         "Documentation"
       ],
@@ -325,9 +338,18 @@ let package = Package(
         .strictMemorySafety()
       ]
     ),
+    .target(
+      name: "BareArrayModule",
+      dependencies: ["ElementBufferModule"],
+      path: "Sources/_BareArrayModule",
+      swiftSettings: [
+        .strictMemorySafety()
+      ]
+    ),
     .testTarget(
-      name: "BareArrayModuleTests",
+      name: "ElementBufferModuleTests",
       dependencies: [
+        "ElementBufferModule",
         "BareArrayModule"
       ],
       swiftSettings: _settings

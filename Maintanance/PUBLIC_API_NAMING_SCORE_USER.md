@@ -1,6 +1,6 @@
 # Public API naming score — User
 
-Status: fixed ballot copied. Scoring has not been started or authorized.
+Status: user scoring authorized and in progress. No scores recorded yet.
 
 Copy the accepted candidate IDs and concise spellings from `PUBLIC_API_NAMING_BALLOT.md`. The user
 records a whole-number score from 1 through 10. No written reason is required.

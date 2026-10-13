@@ -9,6 +9,11 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
+**実行待ち: Public API名ballotのClaude独立採点**
+
+固定済みArray命名ballotを、User・Codexの採点を読まず独立採点する。候補生成、ballot修正、採用判断、
+統合は行わない。
+
 **完了: Array命名ballot draftの独立検査**
 
 Claudeが候補網羅、意味分離、重複処理、契約変更の混入、現行sourceとの一致を独立検査した。
@@ -36,6 +41,42 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
+
+## Current assignment: Public API名ballotのClaude独立採点
+
+### Objective
+
+`PUBLIC_API_NAMING_BALLOT.md`の全候補を独立に評価し、`PUBLIC_API_NAMING_SCORE_CLAUDE.md`へ
+1〜10の整数点、短い理由、重要な懸念を記録する。
+
+### Inputs
+
+Read only:
+
+- Registryの`API-006`行;
+- `Maintanance/PUBLIC_API_NAMING_BALLOT.md`;
+- 現行の`Sources/BareArrayModule/BareArray.swift`;
+- 現行の`Sources/OptionalArrayModule/OptinalArray.swift`;
+- 両moduleの公開Quality Profile。
+
+`PUBLIC_API_NAMING_SCORE_USER.md`と`PUBLIC_API_NAMING_SCORE_CODEX.md`は読まない。
+
+### Evaluation
+
+role accuracy、call-site readability、family coherence、necessary distinction、migration cost、
+promise accuracy、Validation fitnessを総合的な観点として使う。機械的な加算は行わない。
+各候補を同じsection内の代替案として評価し、他sectionの選択を勝手に確定しない。
+
+### Boundaries
+
+- 変更できるのは`Maintanance/PUBLIC_API_NAMING_SCORE_CLAUDE.md`だけ。
+- 候補、ballot、source、test、Registry、User・Codex scoreを変更しない。
+- 推奨winner、採用、平均、統合結果を作らない。
+- build、test、benchmark、commitは行わない。
+
+### Completion
+
+全29候補のscore、reason、material concernを埋め、statusを完了へ変更する。結果の受入と統合はCodexが行う。
 
 ## Current assignment: Array命名ballot draftの独立検査
 

@@ -1,6 +1,6 @@
 # Public API naming score — Claude
 
-Status: fixed ballot copied. Scoring has not been started or authorized.
+Status: Claude scoring authorized and awaiting independent execution. No scores recorded yet.
 
 Copy the accepted candidate IDs and concise spellings from `PUBLIC_API_NAMING_BALLOT.md`. Claude
 records a whole-number score from 1 through 10, its reason, and any material concern.

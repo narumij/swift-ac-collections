@@ -6,11 +6,11 @@ import XCTest
 final class OptionalArray_7_CoordinateValueAccessTests: XCTestCase {
 
   func testSetAndElementReachEveryPosition() {
-    var one = OptionalElementBuffer<Int>(capacity: 5)
+    let one = OptionalElementBuffer<Int>(capacity: 5)
     for x in 0..<5 { one.setElement(x, at: x) }
     for x in 0..<5 { XCTAssertEqual(one.element(at: x), x) }
 
-    var two = OptionalElementBuffer2D<Int>(width: 2, height: 3)
+    let two = OptionalElementBuffer2D<Int>(width: 2, height: 3)
     for y in 0..<3 {
       for x in 0..<2 { two.setElement(y * 2 + x, at: x, y) }
     }
@@ -20,7 +20,7 @@ final class OptionalArray_7_CoordinateValueAccessTests: XCTestCase {
       }
     }
 
-    var three = OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4)
+    let three = OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4)
     for z in 0..<4 {
       for y in 0..<3 {
         for x in 0..<2 { three.setElement((z * 3 + y) * 2 + x, at: x, y, z) }
@@ -36,7 +36,7 @@ final class OptionalArray_7_CoordinateValueAccessTests: XCTestCase {
       }
     }
 
-    var four = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5)
+    let four = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5)
     for w in 0..<5 {
       for z in 0..<4 {
         for y in 0..<3 {
@@ -60,26 +60,26 @@ final class OptionalArray_7_CoordinateValueAccessTests: XCTestCase {
   }
 
   func testSetElementChangesSelectedPositionOnly() {
-    var one = OptionalElementBuffer<Int>(capacity: 3)
+    let one = OptionalElementBuffer<Int>(capacity: 3)
     one.setElement(11, at: 1)
     XCTAssertNil(one.element(at: 0))
     XCTAssertEqual(one.element(at: 1), 11)
     XCTAssertNil(one.element(at: 2))
 
-    var two = OptionalElementBuffer2D<Int>(width: 2, height: 3)
+    let two = OptionalElementBuffer2D<Int>(width: 2, height: 3)
     two.setElement(22, at: 1, 2)
     XCTAssertEqual(two.element(at: 1, 2), 22)
     XCTAssertNil(two.element(at: 0, 2))
     XCTAssertNil(two.element(at: 1, 1))
 
-    var three = OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4)
+    let three = OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4)
     three.setElement(33, at: 1, 2, 3)
     XCTAssertEqual(three.element(at: 1, 2, 3), 33)
     XCTAssertNil(three.element(at: 0, 2, 3))
     XCTAssertNil(three.element(at: 1, 1, 3))
     XCTAssertNil(three.element(at: 1, 2, 2))
 
-    var four = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5)
+    let four = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5)
     four.setElement(44, at: 1, 2, 3, 4)
     XCTAssertEqual(four.element(at: 1, 2, 3, 4), 44)
     XCTAssertNil(four.element(at: 0, 2, 3, 4))
@@ -103,7 +103,7 @@ final class OptionalArray_7_CoordinateValueAccessTests: XCTestCase {
 
     var destroyed: [Int] = []
     do {
-      var array = OptionalElementBuffer<Box>(capacity: 1)
+      let array = OptionalElementBuffer<Box>(capacity: 1)
       array.setElement(Box(id: 10) { destroyed.append($0) }, at: 0)
       array.setElement(Box(id: 11) { destroyed.append($0) }, at: 0)
       XCTAssertEqual(destroyed, [10])
@@ -113,7 +113,7 @@ final class OptionalArray_7_CoordinateValueAccessTests: XCTestCase {
     }
 
     do {
-      var array = OptionalElementBuffer2D<Box>(width: 1, height: 1)
+      let array = OptionalElementBuffer2D<Box>(width: 1, height: 1)
       array.setElement(Box(id: 20) { destroyed.append($0) }, at: 0, 0)
       array.setElement(Box(id: 21) { destroyed.append($0) }, at: 0, 0)
       XCTAssertEqual(destroyed, [10, 11, 20])
@@ -123,7 +123,7 @@ final class OptionalArray_7_CoordinateValueAccessTests: XCTestCase {
     }
 
     do {
-      var array = OptionalElementBuffer3D<Box>(width: 1, height: 1, depth: 1)
+      let array = OptionalElementBuffer3D<Box>(width: 1, height: 1, depth: 1)
       array.setElement(Box(id: 30) { destroyed.append($0) }, at: 0, 0, 0)
       array.setElement(Box(id: 31) { destroyed.append($0) }, at: 0, 0, 0)
       XCTAssertEqual(destroyed, [10, 11, 20, 21, 30])
@@ -133,7 +133,7 @@ final class OptionalArray_7_CoordinateValueAccessTests: XCTestCase {
     }
 
     do {
-      var array = OptionalElementBuffer4D<Box>(size0: 1, size1: 1, size2: 1, size3: 1)
+      let array = OptionalElementBuffer4D<Box>(size0: 1, size1: 1, size2: 1, size3: 1)
       array.setElement(Box(id: 40) { destroyed.append($0) }, at: 0, 0, 0, 0)
       array.setElement(Box(id: 41) { destroyed.append($0) }, at: 0, 0, 0, 0)
       XCTAssertEqual(destroyed, [10, 11, 20, 21, 30, 31, 40])

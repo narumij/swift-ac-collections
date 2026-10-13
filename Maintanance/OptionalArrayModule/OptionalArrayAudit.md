@@ -2,6 +2,17 @@
 
 最終更新: 2026-10-08 / Codex
 
+## 現行提供境界への追補（2026-10-14）
+
+Linux performance CIの境界比較により、更新APIの`mutating`化が2D・3D direct workloadの
+性能回帰境界であることを確認した。現行split storage実装は一般Swift向けの既定提供から外し、
+`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitを選んだ場合だけ`AcCollections`から再公開する。
+1D〜4Dの`setElement`と`removeAll()`はnonmutatingへ戻した。
+
+これは競技用途向け低レベル部品のopt-in提供を維持する判断であり、一般Swift向けの利用可能性、
+thread-safe containerとしての保証、またはSwift 6.4以降向けの最終storage方式を確定しない。
+一般提供方式と性能の再検討は独立した凍結taskへ分離した。
+
 ## 現行公開面への追補（2026-10-13）
 
 本監査の公開29宣言ledgerは、連鎖subscriptと非所有Viewを主要経路としていた2026-10-08時点の

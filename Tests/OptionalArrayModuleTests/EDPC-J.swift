@@ -9,7 +9,7 @@ import OptionalArrayModule
 
 func EDPC_J(N: Int) {
 
-  nonisolated(unsafe) var ___rec_cache: OptionalElementBuffer3D<Double> = .init(
+  let ___rec_cache: OptionalElementBuffer3D<Double> = .init(
     width: 310, height: 310, depth: 310)
 
   func rec(_ i: Int, _ j: Int, _ k: Int) -> Double {

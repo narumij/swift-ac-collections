@@ -48,7 +48,7 @@ strict memory safety、`-Ounchecked`の境界を扱う。2026-10-13、deprecated
 | QR-03 安全性 | `@unchecked Sendable`が許す移送・共有の範囲が妥当である | 未検証 | 所有4型に条件付き適合がある。compile testは1Dのみ | 2D〜4Dの表面確認、移送後の所有、並行共有・data raceの意味的Validationは未実施 |
 | QR-03 安全性 | `-Ounchecked`で省略される事前条件との境界が受入可能である | 未検証 | 公開コメントは検査省略可能性を明示する | `-Ounchecked`構成の実行、範囲・次元違反時の扱いは評価していない |
 | QR-04 理解可能性 | nil状態、座標と軸順、`removeAll()`、失敗条件を公開文書から確認できる | 確認済み | 現行公開面のdocumentation commentを実装と照合済みで、過去にDocCをwarnings-as-errors付きで生成できた | 削除後のDocC再生成と、一般利用者が誤解なく使えることのValidationは未実施 |
-| QR-05 利用可能性 | SwiftPMと`AcCollections`再公開経路で利用できる | 確認済み | OptionalArrayModule build、facade再公開test 1件、DocC生成が現行macOS環境で成功。repository外の一時SwiftPM consumerで直接module import、`AcCollections` import、`PermutationModule`との共存をbuild・実行 | 現行packageの公開productは`AcCollections`だけで、直接module importはtransitive visibilityの証拠。恒久fixture、他platform・toolchainは未確認 |
+| QR-05 利用可能性 | traitを選んだ競技用途で`AcCollections`再公開経路を利用できる | 確認済み | `ENABLE_OPTIONAL_ELEMENT_BUFFER`付きfacade test、OptionalArrayModule専用test、Benchmark package buildが現行macOS環境で成功 | 一般Swift向け既定提供は取り下げ。repository外consumerと他platform・toolchainは新しいtrait境界で未確認 |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | EDPC-J・EDPC-Lはtest targetのcompile evidenceであり、単一file利用許諾もsourceにある | 正答、実提出、実行時間、メモリ使用量は確認していない |
 | QR-06 持続可能性 | 変更後に公開面、状態、寿命、次元、停止契約を再確認できる | 部分確認 | 番号付きTest as Specification、座標access直接仕様群、Debug・Release・ASanのCI job、および2D・3D memoization accessの回帰workloadがある。これらを含むPR #192のremote CIはall greenで、OptionalArrayModuleのDocC生成も個別に成功した | CIのDocC対象にOptionalArrayは含まれず、documentation commentの変更後もDocC生成を継続して再確認できる自動経路はない |
 
@@ -226,6 +226,28 @@ mutable bindingへ追従させた。条件付き`@unchecked Sendable`は維持�
 実測binary、assembly、CPU、toolchain、base / head JSONを照合し、命令列差、配置差、環境差を切り分けるまで、
 製品実装またはbenchmark harnessのいずれを原因とも確定しない。
 
+### Linux CI境界比較と提供範囲の再判断（2026-10-14）
+
+manual performance CIで同一runner上の三境界を比較した。`a1c51a2`から`13f23f0b`への
+`mutating`化では、2D・3D direct cold / warmの4 workloadが1.640〜2.304倍遅くなった。
+`13f23f0b`から`215be94b`へのescaping capture除去では4件すべてが1.189〜1.372倍改善したが、
+変更前`a1c51a2`と最終`215be94b`の直接比較では1.354〜1.720倍の回帰が残った。
+したがって、`mutating`化が回帰境界で、capture除去は部分回復である。
+
+この結果と利用目的を再確認し、現行split storage実装を一般Swift向けの既定提供として性能回帰付きで
+維持しない。`OptionalElementBuffer`は当面、競技プログラミング等で明示的に選ぶ低レベル部品として
+`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitによるopt-in提供へ下げ、1D〜4Dの`setElement`と
+`removeAll()`をnonmutatingへ戻す。`Sendable`をthread-safe containerの保証とは扱わず、
+domain間移送上の必要性と同一instanceの並行更新を利用者が避ける境界は残る。
+
+Swift 6.4以降向けに、split storageを維持するか、`Element?` storageと標準`MutableRef`を利用する
+一般提供方式へ再設計するかは別の凍結調査とする。現在の判断から将来方式や性能を確定しない。
+
+実装後、trait無効のXcode Build for Testing、trait有効のfacade再公開test、OptionalArrayModuleの
+通常35件とDeath Test 21件、Benchmark packageのrelease buildが成功した。問題となった2D・3Dの
+direct cold / warm 4 workloadもsize 16・256・4096、3 cyclesで完走した。この短縮実測は実行経路の
+確認であり、正式な性能assessmentや旧commitとの性能比判定ではない。
+
 ## 判断の整理
 
 - 1D所有型名は横断命名判断でunsuffixedの`OptionalElementBuffer`に確定し、実装反映も完了した。
@@ -235,8 +257,10 @@ mutable bindingへ追従させた。条件付き`@unchecked Sendable`は維持�
   境界8件、deprecated View経路28件へ分離でき、製品判断を追加せず警告0件へ整理できた。
 - deprecatedだった連鎖subscriptとViewを削除し、利用例・test・benchmarkを座標accessへ移行した。
 - 性能、一般利用、競技利用、`-Ounchecked`は証拠不足であり、成功とも失敗とも判断しない。
-- `Sendable`は、domain間移送という製品上の必要性を確認した一方、現行の共有borrowとnonmutatingな
-  storage更新が並行更新を型で拒否しないことを確認した。適合維持・変更は後続調査まで判断しない。
+- `Sendable`はdomain間移送上の必要性から維持する。一方、現行の共有borrowとnonmutatingなstorage更新は
+  並行更新を型で拒否しないため、thread-safe containerとして一般提供する根拠にはしない。
+- 現行split storage実装は`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitによるopt-in提供へ下げ、更新APIを
+  nonmutatingへ戻す。Swift 6.4以降向け一般提供方式の再設計は凍結する。
 - 多次元accessの測定条件は、OptionalArrayの既存用途とBareArrayで確定済みのshape・計測境界から
   導ける。新しい製品仕様や性能比の受入水準を決めないため、設計時のユーザー判断は発生しない。
 

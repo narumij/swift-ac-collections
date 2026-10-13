@@ -6,7 +6,7 @@ final class OptionalArray_5_RemoveAllTests: XCTestCase {
   // MARK: - OptionalElementBuffer
 
   func testOptionalArray1DRemoveAll() {
-    var array = OptionalElementBuffer<Int>(capacity: 3)
+    let array = OptionalElementBuffer<Int>(capacity: 3)
 
     array.setElement(1, at: 0)
     array.setElement(2, at: 1)
@@ -22,7 +22,7 @@ final class OptionalArray_5_RemoveAllTests: XCTestCase {
   // MARK: - OptionalElementBuffer2D
 
   func testOptionalArray2DRemoveAll() {
-    var array = OptionalElementBuffer2D<Int>(
+    let array = OptionalElementBuffer2D<Int>(
       width: 2,
       height: 2)
 
@@ -38,7 +38,7 @@ final class OptionalArray_5_RemoveAllTests: XCTestCase {
   // MARK: - OptionalElementBuffer3D
 
   func testOptionalArray3DRemoveAll() {
-    var array = OptionalElementBuffer3D<Int>(
+    let array = OptionalElementBuffer3D<Int>(
       width: 2,
       height: 2,
       depth: 2)
@@ -53,7 +53,7 @@ final class OptionalArray_5_RemoveAllTests: XCTestCase {
   // MARK: - OptionalElementBuffer4D
 
   func testOptionalArray4DRemoveAll() {
-    var array = OptionalElementBuffer4D<Int>(
+    let array = OptionalElementBuffer4D<Int>(
       size0: 2,
       size1: 2,
       size2: 2,

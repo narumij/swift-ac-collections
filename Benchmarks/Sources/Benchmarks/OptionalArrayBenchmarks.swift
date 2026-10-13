@@ -245,7 +245,7 @@ extension Benchmark {
       input: Int.self
     ) { size in
       return { timer in
-        var array = OptionalElementBuffer<Int>(capacity: size)
+        let array = OptionalElementBuffer<Int>(capacity: size)
         var checksum = 0
         timer.measure {
           for i in 0..<size {
@@ -267,7 +267,7 @@ extension Benchmark {
       input: Int.self
     ) { size in
       return { timer in
-        var array = OptionalElementBuffer<Int>(capacity: size)
+        let array = OptionalElementBuffer<Int>(capacity: size)
         for i in 0..<size {
           array.setElement(i, at: i)
         }
@@ -290,7 +290,7 @@ extension Benchmark {
     ) { size in
       let shape = optionalArray2DShape(for: size)
       return { timer in
-        var array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
+        let array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
         var checksum = 0
         timer.measure {
           var value = 0
@@ -317,7 +317,7 @@ extension Benchmark {
     ) { size in
       let shape = optionalArray2DShape(for: size)
       return { timer in
-        var array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
+        let array = OptionalElementBuffer2D<Int>(width: shape.width, height: shape.height)
         var value = 0
         for y in 0..<shape.height {
           for x in 0..<shape.width {
@@ -346,7 +346,7 @@ extension Benchmark {
     ) { size in
       let shape = optionalArray3DShape(for: size)
       return { timer in
-        var array = OptionalElementBuffer3D<Int>(
+        let array = OptionalElementBuffer3D<Int>(
           width: shape.width, height: shape.height, depth: shape.depth)
         var checksum = 0
         timer.measure {
@@ -376,7 +376,7 @@ extension Benchmark {
     ) { size in
       let shape = optionalArray3DShape(for: size)
       return { timer in
-        var array = OptionalElementBuffer3D<Int>(
+        let array = OptionalElementBuffer3D<Int>(
           width: shape.width, height: shape.height, depth: shape.depth)
         var value = 0
         for z in 0..<shape.depth {

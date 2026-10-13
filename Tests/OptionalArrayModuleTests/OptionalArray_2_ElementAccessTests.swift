@@ -6,7 +6,7 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
   // MARK: - OptionalElementBuffer
 
   func testOptionalArray1DSetAndGet() {
-    var array = OptionalElementBuffer<Int>(capacity: 3)
+    let array = OptionalElementBuffer<Int>(capacity: 3)
 
     array.setElement(10, at: 0)
     array.setElement(30, at: 2)
@@ -17,7 +17,7 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
   }
 
   func testOptionalArray1DAssignNil() {
-    var array = OptionalElementBuffer<Int>(capacity: 3)
+    let array = OptionalElementBuffer<Int>(capacity: 3)
 
     array.setElement(123, at: 1)
     XCTAssertEqual(array.element(at: 1), 123)
@@ -27,7 +27,7 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
   }
 
   func testOptionalArray1DDirectMethods() {
-    var array = OptionalElementBuffer<Int>(capacity: 2)
+    let array = OptionalElementBuffer<Int>(capacity: 2)
     XCTAssertNil(array.element(at: 1))
     array.setElement(10, at: 1)
     XCTAssertEqual(array.element(at: 1), 10)
@@ -38,7 +38,7 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
   // MARK: - OptionalElementBuffer2D
 
   func testOptionalArray2DSetAndGet() {
-    var array = OptionalElementBuffer2D<Int>(
+    let array = OptionalElementBuffer2D<Int>(
       width: 2,
       height: 2)
 
@@ -51,7 +51,7 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
   }
 
   func testOptionalArray2DDirectMethods() {
-    var array = OptionalElementBuffer2D<Int>(width: 2, height: 3)
+    let array = OptionalElementBuffer2D<Int>(width: 2, height: 3)
     XCTAssertNil(array.element(at: 1, 2))
     array.setElement(20, at: 1, 2)
     XCTAssertEqual(array.element(at: 1, 2), 20)
@@ -63,7 +63,7 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
   // MARK: - OptionalElementBuffer3D
 
   func testOptionalArray3DSetAndGet() {
-    var array = OptionalElementBuffer3D<Int>(
+    let array = OptionalElementBuffer3D<Int>(
       width: 2,
       height: 2,
       depth: 2)
@@ -75,7 +75,7 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
   }
 
   func testOptionalArray3DDirectMethods() {
-    var array = OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4)
+    let array = OptionalElementBuffer3D<Int>(width: 2, height: 3, depth: 4)
     XCTAssertNil(array.element(at: 1, 2, 3))
     array.setElement(30, at: 1, 2, 3)
     XCTAssertEqual(array.element(at: 1, 2, 3), 30)
@@ -87,7 +87,7 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
   // MARK: - OptionalElementBuffer4D
 
   func testOptionalArray4DSetAndGet() {
-    var array = OptionalElementBuffer4D<Int>(
+    let array = OptionalElementBuffer4D<Int>(
       size0: 2,
       size1: 2,
       size2: 2,
@@ -100,7 +100,7 @@ final class OptionalArray_2_ElementAccessTests: XCTestCase {
   }
 
   func testOptionalArray4DDirectMethods() {
-    var array = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5)
+    let array = OptionalElementBuffer4D<Int>(size0: 2, size1: 3, size2: 4, size3: 5)
     XCTAssertNil(array.element(at: 1, 2, 3, 4))
     array.setElement(40, at: 1, 2, 3, 4)
     XCTAssertEqual(array.element(at: 1, 2, 3, 4), 40)

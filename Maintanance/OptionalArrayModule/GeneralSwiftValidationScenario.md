@@ -1,5 +1,8 @@
 # OptionalElementBuffer利用Validation scenario
 
+> **現在状態:** 一般Swift向け既定提供の再設計まで凍結。現行の
+> `ENABLE_OPTIONAL_ELEMENT_BUFFER`による競技用途向けopt-in提供の受入には使用しない。
+
 > **文書状態:** scenario設計とScenario Aの実行記録。Scenario B・C、製品品質判定、公開判断の実施記録ではない。
 >
 > 本書は`OptionalElementBuffer`の利用可能性と理解可能性を、既存の実装・仕様testとは異なる経路で観測する

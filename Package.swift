@@ -77,6 +77,10 @@ var _settings: [SwiftSetting] =
 
     .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
 
+    .define(
+      "ENABLE_OPTIONAL_ELEMENT_BUFFER",
+      .when(traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"])),
+
     .define("GRAPHVIZ_DEBUG", .when(traits: ["GRAPHVIZ_DEBUG"])),
 
     .define("DEATH_TEST", .when(platforms: [.macOS])),
@@ -136,6 +140,11 @@ let package = Package(
       name: "BENCHMARK"
     ),
     .trait(
+      name: "ENABLE_OPTIONAL_ELEMENT_BUFFER",
+      description:
+        "Expose OptionalElementBuffer through AcCollections. This low-level competitive-programming utility is opt-in while its general-purpose Swift contract is being reconsidered."
+    ),
+    .trait(
       name: "GRAPHVIZ_DEBUG"
     ),
     .trait(
@@ -187,7 +196,9 @@ let package = Package(
         "RedBlackTreeCollections",
         "RedBlackTreeModule",
         "PermutationModule",
-        "OptionalArrayModule",
+        .target(
+          name: "OptionalArrayModule",
+          condition: .when(traits: ["ENABLE_OPTIONAL_ELEMENT_BUFFER"])),
         "BareArrayModule",
       ],
       swiftSettings: _settings + [

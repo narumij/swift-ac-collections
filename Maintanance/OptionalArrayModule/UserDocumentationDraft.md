@@ -90,7 +90,8 @@ presence mapとpayloadを別々の連続storageに保持する。`element`と`se
 
 - 現行APIは1Dから4Dの所有型と座標accessである。過去の連鎖subscriptと非所有Viewは削除済みである。
 - 標準`Collection`へは適合しない。`indices`は最外軸の有効範囲を表す。
-- SwiftPMの`OptionalArrayModule`から利用でき、`AcCollections`からも再公開される。
+- SwiftPM依存で`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitを選んだ場合に、`AcCollections`から再公開される。
+- 現行実装は主として競技プログラミング向けのopt-in低レベル部品であり、一般Swift向けの既定提供ではない。
 - 競技プログラミングでの単一file利用を意識したsourceだが、現時点の証拠はEDPC利用例のcompileまでである。
   実提出の正答、実行時間、メモリ使用量は保証しない。
 

@@ -20,6 +20,9 @@
 ## 対象
 
 主な対象は、`Sources/OptionalArrayModule/OptionalElementBuffer.swift`の所有1D〜4D型とその座標accessである。
+これらは既定の`AcCollections`公開面ではなく、`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitで明示的に有効化する
+低レベル部品として提供する。現行提供は主として競技プログラミング用途を想定し、一般Swift向けの
+既定提供やthread-safe containerとしての保証を意味しない。
 旧連鎖subscriptと非所有View 1D〜3Dは削除済みであり、品質保証対象に含めない。
 
 OptionalArrayは、要素ごとの有無を保持し、単一の連続storage上でoptional要素を扱う低レベル配列部品である。標準`Collection`への適合、一般的な配列API、任意の所有権管理を暗黙に要求へ含めない。
@@ -32,7 +35,7 @@ OptionalArrayは、要素ごとの有無を保持し、単一の連続storage上
 | QR-02 性能効率性 | 連続storage、presence mapとpayload、O(1)要素access、allocation、および`removeAll()`の特性が目的に適する | sourceの計算量根拠、将来のbenchmark、CI performance evidence |
 | QR-03 安全性 | raw pointer、初期化済み要素の寿命、`~Copyable`所有型、`@unchecked Sendable`、範囲・寸法検査の境界を維持する | 寿命test、Death Test、監査記録、Sanitizer、strict memory safety診断 |
 | QR-04 理解可能性 | nil状態、座標と軸順、`removeAll()`、失敗条件を理解できる | documentation comment、利用者向け文書、Test as Specification |
-| QR-05 利用可能性 | SwiftPM、`AcCollections`再公開、および競技用途の単一file・利用例経路で利用できる | facade test、package設定、単一file検証、EDPC利用例、CI、実利用記録 |
+| QR-05 利用可能性 | SwiftPM traitによる`AcCollections` opt-in再公開、および競技用途の単一file・利用例経路で利用できる | facade test、package設定、単一file検証、EDPC利用例、CI、実利用記録 |
 | QR-06 持続可能性 | 次元別の重複実装を変更しても、状態・寿命・安全性・性能を再確認できる | 番号付きTest as Specification、監査記録、CI、将来の性能証拠 |
 
 この表は網羅的な個別テスト対応表ではない。各性質の詳細は、担当するTest as Specification、公開契約、監査記録、または測定記録で扱う。
@@ -126,7 +129,9 @@ CI設定は、実際に検証するtoolchain、platform、build configuration、
 
 ### 5. 利用可能性
 
-一般Swift開発については、SwiftPMによる導入、`AcCollections`からの再公開、対象toolchain・platform、および他moduleとの共存を扱う。
+現行提供については、SwiftPMの`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitによる明示的な導入、
+`AcCollections`からの条件付き再公開、対象toolchain・platform、および他moduleとの共存を扱う。
+trait無効時には`AcCollections`から公開しない。一般Swift向けの既定提供は将来の再設計判断まで保証しない。
 
 競技用途については、単一fileとしてのbuild、EDPC利用例のcompile、実際の提出、正答、実行時間、およびメモリ使用量を区別する。compileやsample成功だけから、実提出または利用目的上のValidation成功を推定しない。
 

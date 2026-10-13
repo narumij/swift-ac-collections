@@ -1,9 +1,9 @@
 # BareArray / OptionalArray object and API naming draft
 
-Status: the three candidate submissions have been reconciled with the current public surface and an
-independently inspected ballot draft exists. The ballot is not fixed until the user decides whether
-the marked review-informed Codex supplements are eligible for the same scoring round. No public name
-or API in this document is adopted.
+Status: the three candidate submissions have been reconciled with the current public surface. The
+independently inspected ballot was fixed after the user accepted the marked review-informed Codex
+supplements for the same scoring round. Independent scoring and product decisions remain incomplete.
+No public name or API in this document is adopted.
 
 ## Purpose
 
@@ -132,7 +132,8 @@ entry compares one naming decision, not that every submitted phrase is forced on
 Codex later added `PresenceBuffer`, `MemoizationTable`, `elementReference`, and direct `MutableRef`
 alternatives while reconciling the submissions with the current surface. Those entries are explicitly
 marked as review-informed supplements. Their meanings survived independent inspection, but their
-eligibility alongside the original submissions remains a separate user decision before scoring.
+eligibility alongside the original submissions was accepted by the user on 2026-10-13. This does not
+make the supplements independent submissions and does not adopt them as public names.
 
 ### Current semantic screen
 

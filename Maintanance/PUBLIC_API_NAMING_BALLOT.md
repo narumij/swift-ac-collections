@@ -1,9 +1,8 @@
 # Public API naming ballot
 
-Status: Array naming ballot draft independently inspected against the reconciled current surface.
-One eligibility decision remains before the ballot can be fixed for scoring: whether the explicitly
-marked review-informed Codex supplements participate alongside the original independent submissions.
-No candidate is ranked or adopted.
+Status: accepted fixed Array naming ballot for independent scoring. The user accepted inclusion of
+the explicitly marked review-informed Codex supplements on 2026-10-13. Candidate provenance remains
+visible; no candidate is ranked or adopted.
 
 ## Purpose
 
@@ -117,5 +116,5 @@ has no corresponding borrowed-reference surface.
 | Contract changes are separated from spelling choices. | verified | Closure mutation, operation addition, and product exclusion are listed separately |
 | Owner roles are independently selectable. | verified | `BO-*` and `PO-*` are separate sections |
 | Suffix, value access, reference method, type, and property are independent. | verified | `DS-*`, `VA-*`, `BR-*`, `RT-*`, and `RP-*` |
-| Submitted meanings and known concerns are preserved. | verified with one eligibility reservation | Claude independently traced the submitted candidates; review-informed Codex supplements remain visibly marked and require the eligibility decision above |
-| Candidate set is complete enough for scoring. | conditional | No missing current-surface naming alternative was found; fix the supplement eligibility before scoring |
+| Submitted meanings and known concerns are preserved. | verified | Claude independently traced the submitted candidates; review-informed Codex supplements remain visibly marked |
+| Candidate set is complete enough for scoring. | accepted | No missing current-surface naming alternative was found; the user accepted the marked supplements for this scoring round |

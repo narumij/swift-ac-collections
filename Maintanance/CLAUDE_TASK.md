@@ -15,6 +15,9 @@ Claudeが候補網羅、意味分離、重複処理、契約変更の混入、�
 Codexは帰属、BareArray限定scope、後続候補の所在を修正した。review-informed Codex supplementを
 独立提出と同じballotへ含めるかだけはユーザー判断として残す。
 
+2026-10-13、ユーザーがreview-informed supplement 4件の包含を承認し、Codexがballotを固定した。
+独立採点はまだ開始していない。
+
 **完了: OptionalArray／BareArray deprecated公開面削除後の独立目視検査**
 
 CodexがOptionalArrayとBareArrayの旧連鎖subscript・非所有Viewを削除し、現行の座標accessへtest・

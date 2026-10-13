@@ -24,13 +24,16 @@ WorkerとReceiverが、最小限の共通境界から協働を始め、実際の
 ## 初期構成
 
 - `AGENTS_CANDIDATE.md`: WorkerとReceiverに共通する最小限の権限境界。
-- `RECEIVER_CODEX_BOOTSTRAP.md`: Receiverの固定役割候補。
-- `RECEIVER_CODEX_INTAKE_CONTRACT_TEMPLATE.md`: 一回の仕事の切り出しと受入に使う局所契約候補。
-- `PRIME_CONSULTATION_TEMPLATE.md`: Receiverがユーザーの選んだPrime Codexへ助言を求め、回答を
+- `Receiver/RECEIVER_CODEX_BOOTSTRAP.md`: Receiverの固定役割候補。
+- `Receiver/RECEIVER_CODEX_INTAKE_CONTRACT_TEMPLATE.md`: 一回の仕事の切り出しと受入に使う局所契約候補。
+- `Receiver/PRIME_CONSULTATION_TEMPLATE.md`: Receiverがユーザーの選んだPrime Codexへ助言を求め、回答を
   対象projectで再検証するための質問・回答表。
-- `COLLABORATION_INTERVIEW_TASK.md`: Receiverの変化と協働負荷を縦断観測する中立的なinterview task。
-- `COLLABORATION_INTERVIEW_TEMPLATE.md`: Receiver本人、ユーザー、現物、Prime・第三者の評価を分けて
-  記録するtemplate。
+- `Receiver/RECEIVER_OBSERVATIONS.md`: Receiverが面白い、意外、あとで話したいと感じたことを任意で残す
+  自由記述log。
+- `Receiver/COLLABORATION_INTERVIEW_TASK.md`: Receiverから見たユーザーのマネジメントと協働負荷を
+  節目で縦断観測するinterview task。
+- `Receiver/COLLABORATION_INTERVIEW_TEMPLATE.md`: ユーザーのマネジメント評価、現物、Prime・第三者の
+  評価を分けて記録するtemplate。
 
 Worker用bootstrapと作業契約は、別projectでの試行範囲が定まったときに、このfolder向けの候補を作る。
 現行repositoryの`Orientation/WORKER_CODEX_*`を自動的に正本または移植元としない。
@@ -47,12 +50,12 @@ file変更を許可しない。実験を開始するときは、ユーザーが�
 
 例:
 
-> `RECEIVER_CODEX_BOOTSTRAP.md`に従ってReceiverとして起動し、このprojectで、次のWorker成果を独立検収して。
+> `Receiver/RECEIVER_CODEX_BOOTSTRAP.md`に従ってReceiverとして起動し、このprojectで、次のWorker成果を独立検収して。
 > 対象は……、期待する結果は……。
 
 相談から始める場合:
 
-> `RECEIVER_CODEX_BOOTSTRAP.md`に従ってReceiverとして、このprojectの進め方を相談したい。
+> `Receiver/RECEIVER_CODEX_BOOTSTRAP.md`に従ってReceiverとして、このprojectの進め方を相談したい。
 > いま気になっているのは……。
 
 既存の受取契約があればそのpathも指定する。契約がなくても具体的なゴールが与えられていれば、Receiverが
@@ -62,7 +65,7 @@ file変更を許可しない。実験を開始するときは、ユーザーが�
 ## Prime Codexへの相談
 
 Receiverが対象projectの正本、実装、test、compiler、履歴、測定などを確認しても探索方針を定めにくく、
-Prime Codexの過去経験が助けになる場合は、`PRIME_CONSULTATION_TEMPLATE.md`へ質問を整理できる。
+Prime Codexの過去経験が助けになる場合は、`Receiver/PRIME_CONSULTATION_TEMPLATE.md`へ質問を整理できる。
 
 Primeは役割名や上位承認者ではなく、ユーザーが相談先に選んだ個体である。ユーザーは別conversationへ
 質問表を渡し、回答をReceiverへ戻すtransportだけを担う。質問の分解、回答の転記、証拠との照合、採否判断を
@@ -94,9 +97,12 @@ ReceiverはPrimeの回答を助言として受け取り、対象projectの現物
 
 ## Interview
 
-初回作業後、Worker受入後、異なる協働者の追加後などに、`COLLABORATION_INTERVIEW_TASK.md`を使って
-変化を観測する。詳細な成功例を先に読ませて望ましい回答を教えず、Receiver本人の自己評価、ユーザーの
-評価、repository上の事実、Prime・第三者の助言を分離する。
+初回作業後、Worker受入後、異なる協働者の追加後などに、`Receiver/COLLABORATION_INTERVIEW_TASK.md`を使って
+変化を観測する。詳細な成功例を先に読ませて望ましい回答を教えず、Receiverによるユーザーの
+マネジメント評価、repository上の事実、Prime・第三者の助言を分離する。
 
-ユーザーの評価は付加情報ではない。相談のしやすさ、不要な判断要求、認知負荷、責務の引受け方、信頼の
-変化を知る一次資料として、ユーザー自身の表現と具体的な出来事を残す。
+ユーザーのマネジメント評価は、ユーザーがReceiverを採点する欄ではない。Receiverが、ユーザーの判断、
+委譲、介入、停止、受入、認知負荷の扱いを、具体的な出来事へ接続して自分の言葉で評価する。
+
+自由な観測と感想は`Receiver/RECEIVER_OBSERVATIONS.md`へ任意で残す。interviewはそのlogを参照できるが、
+interviewの質問で感想を生成させたり、構造化された回答へ置き換えたりしない。

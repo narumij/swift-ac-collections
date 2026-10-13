@@ -84,6 +84,6 @@ Receiverは観測事実と必要性をユーザーへ示し、管理方法を一
 
 ## 作成結果
 
-2026-10-13、固定候補を`../CollaborationBootstrap/RECEIVER_CODEX_BOOTSTRAP.md`、案件固有の候補を
-`../CollaborationBootstrap/RECEIVER_CODEX_INTAKE_CONTRACT_TEMPLATE.md`へ作成した。共通境界候補と設計の
+2026-10-13、固定候補を`../CollaborationBootstrap/Receiver/RECEIVER_CODEX_BOOTSTRAP.md`、案件固有の候補を
+`../CollaborationBootstrap/Receiver/RECEIVER_CODEX_INTAKE_CONTRACT_TEMPLATE.md`へ作成した。共通境界候補と設計の
 入口も同folderへ分離した。いずれも未採用であり、現行operationの参照先ではない。

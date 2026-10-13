@@ -9,10 +9,12 @@ This report combines the completed User, Codex, and Claude score records without
 scores. It exposes strength of preference, disagreement, reasons, concerns, and unresolved product
 judgments. It does not select or adopt a public name.
 
-The scorers used the numeric scale differently. The user used only 1 through 5, while Codex used 4
-through 9 and Claude used 2 through 8. Therefore a cross-scorer sum, mean, or raw spread is not a
-shared utility measure. Read each score relative to that scorer's alternatives in the same section.
-The spread is retained only as a locator for visible disagreement, not as a decision rule.
+The scorers used the numeric scale differently. The user used 5 as roughly neutral; a score of 1 may
+mean either “unclear” or “tends toward rejection.” Codex used 4 through 9 and Claude used 2 through 8.
+Therefore a cross-scorer sum, mean, raw spread, or unqualified interpretation of a user's 1 is not a
+shared utility measure. Read each score relative to that scorer's alternatives in the same section,
+and clarify the meaning of a 1 only where it affects a decision. The spread is retained only as a
+locator for visible disagreement, not as a decision rule.
 
 ## Combined scores
 
@@ -57,8 +59,8 @@ discussion even when their numerical scores match.
 | Candidate IDs | Observation | Evidence or reason | Discussion needed |
 | --- | --- | --- | --- |
 | `BO-01`–`BO-06` | No shared owner-name leader | User's relative leader is `BareElements`; Codex favors `ElementBuffer`; Claude favors current `BareArray` | Decide whether semantic improvement justifies migration and whether “Array” value-semantic expectations are acceptable |
-| `PO-01`–`PO-10` | Strong conflict over intended role | User favors `OptionalCache`; Codex favors state-model names; Claude's relative leaders include current `OptionalArray`, `SlotArray`, and `MemoTable` | Decide whether the public name should describe memoization use, storage state, or compatibility |
-| `DS-01`–`DS-03` | Direct user/AI disagreement | User strongly rejects unsuffixed 1D and ties explicit rank with current asymmetry; both AIs strongly prefer unsuffixed 1D | Establish the user's reason and decide whether symmetry means adding `1D` or removing it |
+| `PO-01`–`PO-10` | Different relative leaders; low scores need clarification | User's relative leader is `OptionalCache`; Codex favors state-model names; Claude's relative leaders include current `OptionalArray`, `SlotArray`, and `MemoTable`. User scores of 1 may mean unclear or rejection | Decide whether the public name should describe memoization use, storage state, or compatibility, clarifying only viable 1-point candidates |
+| `DS-01`–`DS-03` | Apparent user/AI disagreement requiring clarification | User gave unsuffixed 1D a 1 and the other two choices 5; both AIs strongly prefer unsuffixed 1D. The 1 alone does not say whether the proposal was unclear or rejected | Establish what the three rules mean to the user and then decide whether symmetry means adding `1D`, removing it, or preserving current names |
 | `VA-01`, `VA-02` | Direct vocabulary disagreement | User slightly prefers `value`; both AIs prefer current `element` because it preserves element identity and existing evidence | Decide whether shorter call-site language outweighs the semantic distinction and migration |
 | `BR-01`–`BR-03` | User is indifferent; AIs split | User assigns all three 5; Codex favors explicit alternatives; Claude favors current `reference` | Decide how much mutability and result kind the method itself must state |
 | `RT-01`–`RT-03` | Relative convergence on direct `MutableRef` | `RT-03` is the highest result-type score for all three scorers, although absolute scores differ | Confirm whether removing the `Reference` alias is acceptable compatibility cost |
@@ -70,7 +72,7 @@ discussion even when their numerical scores match.
 | --- | --- | --- | --- |
 | `BO-*` | Whether BareArray remains in the eventual product | A rename has different value if the family is later excluded | Keep the product-scope decision separate; naming can remain provisional until that boundary is known |
 | `PO-*` | Whether general storage use or memoization is the intended public identity | Both are compatible with the current mechanism, but they make different promises | User product-positioning decision for the presence-tracked owner |
-| `DS-*` | Why the user rejects unsuffixed 1D | The raw score shows a strong preference but no reason was required | Ask for the governing naming principle before deciding suffixes |
+| `DS-*` | Whether unsuffixed 1D was unclear or rejected, and why | The user's 1 carries either meaning and no reason was required | Explain the concrete resulting names, then ask for the governing naming principle before deciding suffixes |
 | `RT-*` | Compatibility policy for removing the `Reference` alias | Scores assess clarity but do not authorize source breakage | User decision on alias retention, deprecation, or direct removal |
 | `RP-*` | Desired abstraction level of the safe borrowed wrapper | Both names accurately emphasize different aspects | User decision informed by representative call sites and the intended mental model |
 
@@ -88,4 +90,3 @@ split so that one answer does not silently decide another spelling.
 | Borrowed reference method | `BR-01`–`BR-03` | Compact compatibility versus explicit mutation or reference projection | Which fact belongs in the method name | `ARRAY-011` |
 | Borrowed result type | `RT-01`–`RT-03` | Contextual alias, fully explicit type, or direct compact type | Alias compatibility policy | `ARRAY-012` |
 | Borrowed result property | `RP-01`, `RP-02` | Pointer/reference accuracy versus approachable vocabulary | Intended wrapper mental model | `ARRAY-013` |
-

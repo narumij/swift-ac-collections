@@ -2,6 +2,11 @@
 
 Status: completed independently on 2026-10-13. Codex and Claude scores were not read before submission.
 
+Post-submission scale clarification: 5 was used as a roughly neutral score. A score of 1 may mean
+either that the candidate was unclear to the user or that the user tended to want to reject it. The
+raw score alone must not distinguish those meanings; ask only where the distinction matters to a
+decision.
+
 Copy the accepted candidate IDs and concise spellings from `PUBLIC_API_NAMING_BALLOT.md`. The user
 records a whole-number score from 1 through 10. No written reason is required.
 

@@ -8,9 +8,10 @@
 - Out of scope: AtCoder 2025 compatibility mode, borrowed Span experiment, performance acceptance,
   public-documentation medium, and product API changes
 
-This document designs a Validation scenario. It does not claim that general Swift usage has already
-been validated. Existing builds and tests verify selected properties of the implementation; they do
-not establish that an external user can select, install, understand, and safely use the API.
+This document designs a Validation scenario and records the completed Path 1 consumer Verification.
+It does not claim that general Swift comprehension has already been validated. Existing builds,
+tests, and the external consumer verify selected properties; they do not establish that an external
+user can select, understand, and safely use the API without assistance.
 
 ## Validation question
 
@@ -177,3 +178,45 @@ This scenario identifies representative users, independent installation paths, b
 misuse probes, observations, result categories, and the boundary between automated Verification and
 human comprehension Validation. It does not start either execution unit and makes no product-policy
 decision.
+
+## Path 1 execution record — 2026-10-13
+
+### Fixed conditions
+
+- candidate commit: `fc2aaf866b63f6e6ea38f615f669c085f41727df`
+- consumer: an ephemeral SwiftPM package outside the repository
+- Swift: Apple Swift 6.4 (`swiftlang-6.4.0.34.1`)
+- OS: macOS 27.0.1 (Build 26A434)
+- architecture: arm64
+- configuration: SwiftPM debug
+- swift-algorithms: exact version 1.2.1, resolved over the network by the consumer
+
+The consumer used the candidate worktree as a local path dependency. The package exposes only the
+`AcCollections` library product, so every executable target declared that product dependency. The
+direct `PermutationModule` import therefore verifies current transitive module visibility, not an
+independently published module product.
+
+### Commands and results
+
+- `swift run --disable-sandbox DirectConsumer`: succeeded (`direct-ok`)
+- `swift run --disable-sandbox FacadeConsumer`: succeeded (`facade-ok`)
+- `swift run --disable-sandbox CoexistConsumer`: succeeded (`coexist-ok`)
+
+The direct consumer produced exactly three orders from `[0, 0, 1]` and exactly four successor orders
+from `[2, 1, 3]`. It consumed every View immediately for a checksum, copied persistent values with
+`Array(permutation)`, returned the saved arrays from a function, and read them after owner destruction.
+The facade consumer enumerated all six orders of `[1, 2, 3]` through `AcCollections`. The coexistence
+consumer imported `Algorithms` and `PermutationModule`, called swift-algorithms
+`permutations(ofCount:)` and this package's `nextPermutations()` in one source file, and observed no
+name-resolution conflict.
+
+SwiftPM reported that its user cache was not writable, but dependency resolution, build, and execution
+all succeeded. The fixture remains temporary and was not added to the repository.
+
+### Classification and boundary
+
+Package installation and direct import, facade reachability, swift-algorithms coexistence, immediate
+View consumption, and owned result persistence are confirmed for the fixed candidate and environment.
+This does not validate unaided human comprehension, competitive use, performance, other platforms or
+toolchains, the borrowed implementation, or AtCoder 2025 compatibility mode. Paths 2 and 3 remain
+unexecuted and require participant selection by the user.

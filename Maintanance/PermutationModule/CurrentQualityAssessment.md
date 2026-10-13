@@ -148,8 +148,13 @@ PermutationModuleを最初の適用対象として、上位品質要求QR-01〜Q
 | QR-01 正確性 | 現在順からの辞書順列挙、境界、重複、非Int Index、入力不変、終了、および有効なViewのCollection契約が成立する | 確認済み | G1列挙12件、G3 Collection 6件、範囲外Death Test 5件を含む現行通常版Test as Specification。Codexが累積44件の成功を独立確認 | 有限な例と構成に対するVerificationであり、任意入力の数学的証明ではない |
 | QR-03 安全性 | 単一bufferの所有、要素寿命、View失効、範囲拒否、および`~Copyable`境界が現行契約どおり成立する | 確認済み | G2のpositive control 1件・失効Death Test 9件、G4所有・破棄7件、G0 compiler fixtureのcompile-pass 1件・期待するcompile-fail 3件、strict memory safety適用下のbuild | `-Ounchecked`での保証、全並行実行、borrowed版のcompile-time寿命契約を証明しない |
 | QR-04 理解可能性 | 後続順列、手動反復、一時View、失効条件、Index、失敗条件、計算量、類似APIとの差を利用者が確認できる | 部分確認 | 公開source、Quality Profile、G0〜G5が契約入力として揃った | 独立した利用者向け本文と一般Swift利用者によるValidationは未実施 |
-| QR-05 利用可能性 | 通常版をSwiftPMと`AcCollections` facadeから利用し、swift-algorithmsと共存できる | 確認済み | G5共存2件、`AcCollections`再公開1件、公開表面runtime test 3件、compiler fixture 4経路。候補commitのCI greenをユーザーが報告 | package consumerによる一般利用ValidationとAtCoder 2025互換modeは別証拠 |
+| QR-05 利用可能性 | 通常版をSwiftPMと`AcCollections` facadeから利用し、swift-algorithmsと共存できる | 確認済み | G5共存2件、`AcCollections`再公開1件、公開表面runtime test 3件、compiler fixture 4経路。repository外の一時SwiftPM consumerで直接module import、facade、swift-algorithms 1.2.1との実呼出し、View即時消費、所有配列保存をbuild・実行 | 現行packageの公開productは`AcCollections`だけで、直接module importはtransitive visibilityの証拠。一般利用者の無誘導理解とAtCoder 2025互換modeは別証拠 |
 | QR-06 持続可能性 | 公開面、列挙、View失効、Collection、所有・破棄、共存・再公開を変更後に再確認できる | 部分確認 | 現行契約をG0〜G5、compiler fixture、benchmark経路へ分離し、Debug／Release、Codex独立検収、CI greenを取得 | PermutationのDocC生成を継続確認する自動経路とborrowed版compiler fixtureは未整備 |
+
+candidate `fc2aaf86`をlocal path dependencyにしたrepository外SwiftPM consumerをApple Swift 6.4、
+macOS 27.0.1、arm64、debugで実行した。`[0,0,1]`の3順列、`[2,1,3]`からの4後続、Viewの即時checksum、
+`Array(permutation)`で所有化した結果のowner破棄後の読出し、`AcCollections` facade、およびconsumerが直接
+解決したswift-algorithms 1.2.1との同一source内の呼び分けが成功した。一時fixtureは恒久化していない。
 
 ## 移行前評価・調査記録（2026-10-11）
 

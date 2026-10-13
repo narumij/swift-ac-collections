@@ -86,7 +86,14 @@ remote到達を確認した。release後の記録用branchとして、同tagか�
 greenを確認し、PR #191でも両moduleのbase / current測定自体は成立した。PR #191のjob全体はPermutationの
 borrowed版からruntime-check版への方式切替を回帰として検出して赤となったため、同PRのmerge commitを
 方式切替後のbaselineとした。PR #193では方式差を通常回帰から分離した比較契約でperformance jobの
-all greenを確認した。C++とのmacOS外部assessmentは後続とし、性能比の受入判断は暫定実測後まで発生させない。
+all greenを確認した。
+
+続くPR #194では、OptionalElementBufferの`mutating`追従によるLinux性能回帰を三境界比較で特定し、
+escaping capture除去だけでは変更前の性能へ戻らないことを確認した。一般提供のまま回帰を受け入れず、
+`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitによるopt-in提供へ限定して更新APIを`nonmutating`へ戻した。
+trait無効時と有効時のbuild、専用test、benchmark build、通常CIのall greenを確認し、同PRをmainへ合流した。
+Swift 6.4以降の一般提供方式とC++とのmacOS外部assessmentは後続とし、性能比の受入判断は暫定実測後まで
+発生させない。
 
 **凍結中の中間ゴール（前任conversationの残存記録）:**
 

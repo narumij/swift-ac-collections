@@ -65,3 +65,8 @@ ElementBuffer系module名移行の最終状態として、`BareArrayModule`と`O
   `OptionalElementBufferModule.docc/OptionalElementBufferModule.md`を追加し、両targetを
   `--warnings-as-errors`付きで生成して成功した。生成済みJSONでも新module名のoverviewと4公開型への
   symbol linkが採用されたことを確認した。
+- Claudeの第2回独立目視検査で、Bare利用者向けドラフトに削除済みmoduleからの導入経路が残るMUST-FIXを
+  検出した。両draftのmodule名、`AcCollections` DocCのOptional trait境界、ElementBuffer landing pageの案内、
+  両auditの現行・履歴pathとOptionalのDocC CI記述を修正した。`AcCollections`と`ElementBufferModule`のDocCを
+  `--warnings-as-errors`付きで再生成して成功し、指摘を受け入れた。公開コメント拡充、公開媒体の言語、
+  release向け移行説明は後続ドキュメント作業として分離した。

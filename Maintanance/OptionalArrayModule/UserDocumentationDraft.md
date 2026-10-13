@@ -1,4 +1,4 @@
-# OptionalArrayModule利用者向け文書 本文ドラフト
+# OptionalElementBufferModule利用者向け文書 本文ドラフト
 
 > **文書状態:** 内部レビュー用ドラフト。公開文書ではない。
 >
@@ -7,7 +7,7 @@
 
 ## 概要
 
-OptionalArrayModuleは、各位置が「未設定」または一つの値を持つ、1Dから4Dの固定shape bufferを提供する。
+OptionalElementBufferModuleは、各位置が「未設定」または一つの値を持つ、1Dから4Dの固定shape bufferを提供する。
 未設定を表す特別な番兵値を`Element`の中から選ぶ必要がなく、各slotを`Element?`として読み書きできる。
 
 主な用途は、多次元の状態を整数座標で管理するメモ化である。標準`Array`や`Collection`の代替として一般的な

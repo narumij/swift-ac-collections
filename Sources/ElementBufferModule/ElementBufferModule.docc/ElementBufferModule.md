@@ -15,5 +15,5 @@ import AcCollections
 ```
 
 The module provides ``ElementBuffer``, ``ElementBuffer2D``, ``ElementBuffer3D``, and
-``ElementBuffer4D``. Consult each type's documentation for its axis order, preconditions, and
-borrowing rules.
+``ElementBuffer4D``. Consult each type's documentation for its axis order and initializer
+preconditions.

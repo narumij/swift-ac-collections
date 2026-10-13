@@ -41,10 +41,10 @@ thread-safe containerとしての保証、またはSwift 6.4以降向けの最�
 | 外部性能 | Swift・C++番兵workloadと暫定chartは成立しているが、受入可能な性能比は未決 | 既存の`OPT-053`と`OPT-054`を正本とし、重複taskを作らない |
 | 次元名体系 | 現行名で実装、仕様test、本文は整合するが、0.6.0到達範囲判断前の再判断が残る | 既存の`OPT-045`を正本とし、品質評価から結論を先取りしない |
 | `@unchecked Sendable` | domain間移送の必要性と4型の条件付き適合を確認した一方、共有borrowからnonmutatingなstorage更新を並行に呼べる | 移送の利便性を維持しながら同一storageの並行更新を型・所有権で拒否できるか、独立した後続調査へ分ける |
-| 一般Swift利用 | SwiftPM build、module直接利用、`AcCollections`再公開はrepository内で確認済み | repository外consumerでのVerificationと、利用者が本文から正しく使えるかのValidationを分ける前段scenarioが必要 |
+| 一般Swift利用 | SwiftPM buildとmodule直接利用を確認済み。`AcCollections`からの再公開はtraitによるopt-in | repository外consumerでのVerificationと、利用者が本文から正しく使えるかのValidationを分ける前段scenarioが必要 |
 | 競技利用 | EDPC-J / EDPC-Lはcompile evidenceで、実提出・正答・時間・memoryの証拠ではない | 一般利用と混ぜず、scenario設計で対象環境、課題、証拠、実行時期を分ける |
 | `-Ounchecked` | 事前条件検査が省略され得ることをsourceと本文が明示する | OptionalArray単独で安全回復を保証しない。1.0が保証するbuild configurationの横断判断へ渡し、新しいmodule taskは作らない |
-| DocC継続確認 | 現行targetの個別DocC生成は成功済みだが、repository CIはOptionalArray DocCを継続生成しない | 公開媒体と全moduleのdocumentation CI設計で扱い、OptionalArray固有taskを重複登録しない |
+| DocC継続確認 | 現行targetの個別DocC生成とrepository CIでの継続生成を確認済み | 公開媒体と全moduleのdocumentation CI設計で扱い、OptionalArray固有taskを重複登録しない |
 
 ### 分離する後続候補
 
@@ -67,7 +67,7 @@ OptionalArrayの公開契約を、実装、test、git履歴に照らして閉じ
 
 ## 範囲と受入基準
 
-対象は `Sources/OptionalElementBufferModule/OptinalArray.swift` の公開7型・公開宣言29件、および
+対象は `Sources/OptionalElementBufferModule/OptionalElementBuffer.swift` の公開7型・公開宣言29件、および
 `Tests/OptionalElementBufferModuleTests` の番号付き仕様test 8ファイルと利用例2ファイルである。
 
 完了には次をすべて満たす。
@@ -437,7 +437,7 @@ safety、コメントドック全件整備、test file全体の番号整理へ�
 
 変更file:
 
-- `Sources/OptionalElementBufferModule/OptinalArray.swift`: 1D〜4Dのinitializerだけを変更した。
+- 当時の`Sources/OptionalArrayModule/OptinalArray.swift`: 1D〜4Dのinitializerだけを変更した。
   - 各次元の`>= 0`を、積の計算より前に`precondition`で検査する。
   - 2Dは`multipliedReportingOverflow`で積を求め、overflowを`precondition`で拒否する。
   - 3D / 4Dは、0の次元があれば積を0とする。無ければ`multipliedReportingOverflow`を順に適用し、
@@ -494,7 +494,7 @@ Debug／ReleaseのOptionalArray testを実行し、新しいdefectを見つけ�
 
 2026-10-08 / Claude Opus 5.5（`claude-opus-5-5`）。未commit。
 
-- `Sources/OptionalElementBufferModule/OptinalArray.swift`: `OptionalArray4D.subscript`のgetterだけを変更した。
+- 当時の`Sources/OptionalArrayModule/OptinalArray.swift`: `OptionalArray4D.subscript`のgetterだけを変更した。
   `size0` / `size1` / `size2`のいずれかが0ならoffsetを0とし、途中の積を評価しない。すべて非zeroなら現行の
   `size0 * size1 * size2 * position`のまま。返すViewの次元（`width: size0, height: size1, depth: size2`）は変えていない。
 - `Tests/OptionalElementBufferModuleTests/OptionalArrayTests.swift`: `testOptionalArray4DZeroVolumeOuterSubscriptReachesEmptyViews`を追加した。

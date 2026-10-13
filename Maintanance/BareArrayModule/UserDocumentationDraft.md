@@ -1,4 +1,4 @@
-# BareArrayModule利用者向け文書 本文ドラフト
+# ElementBufferModule利用者向け文書 本文ドラフト
 
 > **文書状態:** 内部レビュー用ドラフト。公開文書ではない。
 >
@@ -7,7 +7,7 @@
 
 ## 概要
 
-BareArrayModuleは、要素を一つの連続storageに所有する1Dから4Dの固定shape bufferを提供する。
+ElementBufferModuleは、要素を一つの連続storageに所有する1Dから4Dの固定shape bufferを提供する。
 動的計画法などで、大きな多次元領域を整数座標で読み書きする用途を想定している。
 
 すべてのslotはinitializerで値を持ち、最後にbufferが破棄されるまで設定済みである。標準`Array`や`Collection`の代替として
@@ -120,7 +120,7 @@ bufferが破棄されると、全要素の寿命も終了する。公開のcopy�
 
 - 現行APIは1Dから4Dの所有型、座標value access、および条件付きの借用参照である。過去の連鎖subscriptと非所有Viewは削除済みである。
 - 標準`Collection`へは適合しない。`indices`は最外軸の有効範囲を表す。
-- SwiftPMの`BareArrayModule`から利用でき、`AcCollections`からも再公開される。
+- SwiftPMの`AcCollections`から利用できる。
 - 競技プログラミングでのcopy & paste利用を想定したsourceだが、現時点で実問題・実提出の正答、実行時間、
   メモリ使用量を保証するValidation証拠は未確認である。
 

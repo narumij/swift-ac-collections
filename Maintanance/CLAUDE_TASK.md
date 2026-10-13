@@ -9,6 +9,12 @@ Repository evidence establishes factual correctness; product decisions remain wi
 
 ## Current job status
 
+**完了（Codex受入済み）: ElementBuffer系名称移行と利用者向け文書の独立目視検査（第2回）**
+
+旧facade削除後に新module側のDocC landing pageが欠落していた問題を補修した。Claudeは今回、実行系だけでなく
+公開DocC、Maintenance上の利用者向けドラフト、公開sourceのdocumentation comment、および移行記録を横断し、
+旧名削除による文書欠落、現行提供境界との矛盾、利用者導線の断絶をread-onlyで検査する。
+
 **完了（Codex受入済み）: ElementBuffer系旧名互換target削除後の独立目視検査**
 
 Codexが`BareArrayModule`と`OptionalArrayModule`のfacade targetを削除し、新moduleだけをpackageとDocC CIへ
@@ -93,7 +99,188 @@ benchmark・文書を移行した作業について、下記のbounded assignmen
 この節だけでジョブの有無を判断する。Archived recordsを現行ジョブとして読み替えない。状態が変わった
 ときは、assignment本文より先にこの節を更新する。
 
-## Active assignment: ElementBuffer系旧名互換target削除後の独立目視検査
+## Completed assignment: ElementBuffer系名称移行と利用者向け文書の独立目視検査（第2回）
+
+### Objective
+
+`ARRAY-018`の補修後の状態を独立に読み、`BareArrayModule`／`OptionalArrayModule`から
+`ElementBufferModule`／`OptionalElementBufferModule`への名称移行と旧facade削除によって、利用者へ必要な
+文書や導線が失われていないか確認する。新DocC landing pageだけを見て受け入れず、公開sourceのdocumentation
+comment、Maintenance上の利用者向けドラフト、traitによる提供境界、現行の移行記録を相互に照合する。
+
+これはread-only reviewである。文書の採用、公開範囲、本文修正、Registry受入はCodexが担当する。
+
+### Start state
+
+- Branch: `develop/misc/66`。
+- HEAD: `29f88f79` (`Restore ElementBuffer DocC landing pages`)。
+- `origin/develop/misc/66`より3 commit先行しており、pushは保留中。
+- 検査開始後にshared worktreeが変化した場合は停止し、結果を混ぜない。
+
+### Required reading and inspection
+
+次だけを読む。
+
+1. root `CLAUDE.md`。
+2. `PROGRESS_OVERVIEW.md`の`ARRAY-015`〜`ARRAY-018`行、`OPT-064`、`OPT-072`、`BARE-035`、
+   `BARE-042`行、および`ARRAY-018`に対応するprecedence行。
+3. `ARRAY_MODULE_TARGET_MIGRATION.md`、`ARRAY_MODULE_TARGET_MIGRATION_EXECUTION.md`、
+   `ARRAY_MODULE_COMPATIBILITY_TARGET_RETIREMENT.md`。
+4. 次の公開側文書とsource。
+   - `Sources/AcCollections/AcCollections.docc/AcCollections.md`
+   - `Sources/ElementBufferModule/ElementBufferModule.docc/ElementBufferModule.md`
+   - `Sources/OptionalElementBufferModule/OptionalElementBufferModule.docc/OptionalElementBufferModule.md`
+   - 両moduleの`Documentation/Quality-Profile.md`
+   - 両moduleのSwift sourceにあるpublic declarationとdocumentation comment
+5. 次の利用者向けドラフトと監査記録。
+   - `BareArrayModule/UserDocumentationDraft.md`
+   - `OptionalArrayModule/UserDocumentationDraft.md`
+   - `BareArrayModule/BareArrayAudit.md`
+   - `OptionalArrayModule/OptionalArrayAudit.md`
+6. `Package.swift`のproduct、trait、対象target定義と、`Sources/AcCollections/AcCollections.swift`。
+7. `git diff origin/develop/misc/66..HEAD --`のうち、上記対象と旧facade削除に直接関係する差分。
+
+Archived、Git履歴、RedBlackTree、Permutation、benchmark、test実装、他taskは読まない。
+
+### Review questions
+
+1. 旧facadeのDocC削除によって失われた説明が、新moduleのlanding pageまたは利用者向けドラフトに必要十分な形で
+   残っているか。旧facade固有の説明と、新moduleへ移すべき説明を区別する。
+2. `ElementBufferModule`の通常提供と`OptionalElementBufferModule`のtrait opt-in提供が、Package manifest、
+   `AcCollections`、DocC landing page、品質プロファイル、利用者向けドラフトの間で一致しているか。
+3. module名、import例、公開型名、1D〜4D、座標access、非`Collection`性、借用参照、optionalの未設定状態に、
+   現行sourceと矛盾する記述がないか。
+4. Maintenance上のドラフトを公開DocC本文と誤認させる記録や、反対に公開DocCがドラフト本文を包含済みと
+   誤認させる記録がないか。
+5. 新moduleのDocC入口から公開型へ到達できるか。現時点で公開されない品質・管理文書への存在しないlinkや、
+   旧module名の公開URLを前提にした導線がないか。
+6. 名称移行の完了記録が、文書ドラフトの完成やValidationまで完了したかのように範囲を広げていないか。
+7. 今回の移行taskで直すべき欠落と、後続の利用者向け文書taskで扱う改善を分離できるか。
+
+### Return
+
+このassignment直下へ、次を記録する。
+
+- 検査したbranch、HEAD、差分基準。
+- `MUST-FIX`、`SHOULD-FIX`、`LATER`、`QUESTION`に分けた指摘。なければ明記する。
+- 各指摘について、移行taskの欠陥か、後続ドキュメント作業か、その根拠。
+- 旧module名の残存を、誤り、意図した履歴・管理座標、利用者向け移行説明へ分類した結果。
+- `accept`、`accept after MUST-FIX`、`revise and review again`のいずれか一つ。
+- 検査の限界と、Claudeが変更したfile。
+
+### Boundaries
+
+- build、test、DocC、benchmarkを実行しない。Codexの実行結果を独立検証済みとはみなさない。
+- source、公開文書、ドラフト、正本文書、Registryを変更しない。
+- 新しい公開契約、名称、提供方式、文書形式を決定しない。
+- 後続ドキュメント改善を今回の名称移行のMUST-FIXへ膨らませない。
+- commit、push、branch操作、PR操作、他agentへの委任を行わない。
+- 変更してよいのは、このassignmentのReturn節だけ。
+
+### Completion
+
+上記7観点を現在の状態へ照合し、名称移行の受入阻害点と後続ドキュメント作業を分離してReturnを書いたら完了。
+
+### Return
+
+2026-10-14 Claude（Opus 5.5）。read-onlyの目視検査。build、test、DocCは実行していない。
+
+- **検査した状態:** branch `develop/misc/66`、HEAD `29f88f79`。`origin/develop/misc/66`より3 commit先行で、開始状態と一致した。
+  検査中にworktreeは変化していない（変更は`CLAUDE_TASK.md`だけ）。差分の基準は`origin/develop/misc/66..HEAD`。
+  現在の状態全体は、HEADのfileを直接読んで照合した。
+- 前回のMUST-FIX（compiler fixtureの`import BareArrayModule`）は、`Maintanance/`の外に残っていないことを確認した。
+
+#### MUST-FIX
+
+- **M-1 `BareArrayModule/UserDocumentationDraft.md`の123行「SwiftPMの`BareArrayModule`から利用でき、`AcCollections`からも再公開される。」**
+  （移行taskの欠陥）
+  - 旧名targetは`ARRAY-018`で削除されたので、現在は存在しない導入経路を書いている。
+  - `ARRAY_MODULE_TARGET_MIGRATION_EXECUTION.md`の実行範囲7「現行の利用者向け正本文書にあるmodule名と現行source pathを更新する」の対象で、更新が漏れている。
+  - draftは非公開だが、`BARE-042`のValidationでparticipantへ渡す本文なので、誤った導入経路が観測を歪める。
+  - 最小修正: `AcCollections`から利用できる、の一文にする（`ElementBufferModule`は製品の公開単位ではないので、直接importの経路は書かない）。
+
+#### SHOULD-FIX
+
+- **S-1 両draftの本文の主語が旧module名のまま。**（移行taskの漏れ。ただし非公開draft）
+  - `BareArrayModule/UserDocumentationDraft.md`の1・10行（「BareArrayModuleは…」）。
+  - `OptionalArrayModule/UserDocumentationDraft.md`の1・10行（「OptionalArrayModuleは…」）。
+  - 実行範囲7の対象。folder名は管理座標なので、変えなくてよい。
+- **S-2 `AcCollections.docc/AcCollections.md`の説明が、trait opt-inの提供境界と矛盾する。**（移行taskではなく、`314f45e0`のopt-in化に伴う追従漏れ）
+  - 「re-exports … optional-slot arrays」を、条件なしで書いている。
+  - 「The current policy is to include every collection module shipped by the package」と書いている。
+  - `AcCollections.swift`と`Package.swift`では、`OptionalElementBufferModule`は`ENABLE_OPTIONAL_ELEMENT_BUFFER`のときだけ再公開される。
+  - 公開DocCなので、利用者は既定で使えると誤読しうる。
+  - 型の呼び方「bare multidimensional arrays」「optional-slot arrays」も、旧名称の時代の語のまま。
+- **S-3 新しい`ElementBufferModule.md`の「Consult each type's documentation for its axis order, preconditions, and borrowing rules」が、行き先のない参照になっている。**（今回の補修で入った文言）
+  - `ElementBuffer.swift`の`element(at:)`、`setElement(_:at:)`、`reference(at:)`には、1D〜4Dのどれにもdocumentation commentがない。
+  - 型のdoc commentにも、借用の規則や`reference(at:)`のApple OS 27の条件は書かれていない。
+  - 最小修正: 文言を、実在する説明（軸順、initializerの事前条件）に合わせて弱める。doc commentの追加はL-1へ。
+
+#### LATER（後続の利用者向け文書task）
+
+- **L-1** ElementBufferの座標access 3種と`reference(at:)`のdocumentation comment（借用寿命、Apple OS 27の可用性）。
+  draftの71・91行にはある説明で、公開sourceへ移すかどうかは文書taskの判断。
+- **L-2** landing pageは英語、型のdoc commentは日本語で、言語が混在している。公開媒体の判断（`DOC`系）で扱う。
+- **L-3** `OptionalArrayModule/OptionalArrayAudit.md`の47行「repository CIはOptionalArray DocCを継続生成しない」は、現在のCI（5 targetに`OptionalElementBufferModule`を含む）と食い違う。
+  同じ表の「一般Swift利用 … `AcCollections`再公開は確認済み」も、opt-in化の前の記述。日付つき評価の表として読むなら履歴だが、現在形で書かれている。
+- **L-4（範囲外の観察）** `AcCollections.md`の「permutation sequence」。Permutationは今回の対象外なので、照合していない。
+- **L-5** 旧moduleをtransitiveにimportしていた外部利用者向けの移行説明（CHANGELOGやrelease note）は、まだない。
+  library productは`AcCollections`だけなので、影響は小さい見込み。release taskで扱う。
+
+#### QUESTION
+
+- **Q-1 両auditに、現存しない合成pathがある。** 例: `BareArrayAudit.md`の19・139行`Sources/ElementBufferModule/BareArray.swift`、
+  `OptionalArrayAudit.md`の70・295・440・497行`Sources/OptionalElementBufferModule/OptinalArray.swift`。
+  どちらのfileも現在は存在しない。directory名だけが新しく、file名は当時のままの形に見える。
+  移行時の一括置換で履歴のpathが書き換わった可能性がある（Git履歴は境界外なので未確認）。
+  履歴として当時のpathへ戻すのか、現在のpathへ揃えるのかは、Codexの判断を仰ぎたい。
+
+#### 各指摘の帰属の根拠
+
+- M-1とS-1は、`ARRAY-016`の実行範囲7と、`ARRAY-018`の旧target削除で生じた現行記述の誤りなので、移行taskの欠陥。
+- S-2は、提供境界を変えたopt-in化の追従漏れ。S-3は今回の補修の文言の問題。どちらも名称移行の受入阻害ではない。
+- LATERは、公開sourceの説明の拡充、または媒体・release判断に属する。
+
+#### 7観点
+
+1. 旧facadeのDocCが持っていたのは「旧名は互換facadeで、新しいcodeは`AcCollections`を使う」だけ。
+   この導入指示は、新landing page 2つへ移っている（Optional側はtrait条件つき）。旧facade固有の互換説明は、facadeと一緒に消えてよい。
+2. manifest、`AcCollections.swift`、Optionalのlanding page、Optionalの品質プロファイル、Optionalのdraftの93行は、opt-inで一致している。不一致は`AcCollections.md`（S-2）だけ。
+3. module名: M-1・S-1。型名、1D〜4D、座標access、非`Collection`はsourceと一致する。借用参照の説明はlanding page側に根拠がない（S-3）。
+4. 両draftの冒頭に「内部レビュー用ドラフト。公開文書ではない」とある。landing pageもdraftの包含を主張していない。誤認させる記録はない。
+5. landing pageは4型へのsymbol linkだけで、非公開文書へのlinkや旧URLを前提にした導線はない。
+   実際にlinkが解決するかは、DocCを実行していないので未確認（Codexの生成結果は独立検証とみなしていない）。
+6. `ARRAY-018`の完了記録は、DocC入口の補修までで、draftの完成やValidationの完了を主張していない。
+7. 上記の分類のとおり分離できる。
+
+#### 旧名の残存の分類（対象範囲内）
+
+- **誤り:** Bare draftの123行（M-1）、両draftの1・10行（S-1）、両auditの合成path（Q-1、要判断）。
+- **意図した履歴・管理座標:** `Maintanance/BareArrayModule/`・`OptionalArrayModule/`のfolder名と、それを指す品質プロファイルの正本表。
+  audit内の当時のtest filter名（`--filter BareArrayModuleTests`等）と`generate-documentation --target BareArrayModule`。移行計画と実行記録。
+- **利用者向け移行説明:** 現在はない（L-5）。
+
+#### 判定
+
+**`accept after MUST-FIX`。**
+
+#### 限界・変更したfile
+
+- DocC、build、testは実行していない。Git履歴は読んでいない（Q-1の由来は未確認）。
+- 変更したfileは、`Maintanance/CLAUDE_TASK.md`のこのReturn節だけ。
+
+#### Prime acceptance
+
+CodexはMUST-FIXを受け入れ、両利用者向けドラフトのmodule名とBare側の削除済み導入経路を現行状態へ
+更新した。SHOULD-FIXのうち現行事実の誤りも受け入れ、`AcCollections`のtrait境界とElementBuffer landing pageの
+案内を修正した。Q-1はGit履歴でrename前後の実在pathを確認し、現在範囲は現行path、日付つき履歴は当時のpathへ
+分離して修正した。Optional auditのDocC CIとtrait境界も現行事実へ更新した。
+
+`AcCollections`と`ElementBufferModule`のDocCを`--warnings-as-errors`付きで生成して成功し、検索と
+`git diff --check`でも修正対象の現行記述が残らないことを確認した。L-1、L-2、L-4、L-5は今回の移行受入を
+妨げない後続ドキュメント作業として残し、第2回目視検査を受け入れた。
+
+## Completed assignment: ElementBuffer系旧名互換target削除後の独立目視検査
 
 ### Objective
 

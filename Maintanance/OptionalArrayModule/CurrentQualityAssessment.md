@@ -48,7 +48,7 @@ strict memory safety、`-Ounchecked`の境界を扱う。2026-10-13、deprecated
 | QR-03 安全性 | `@unchecked Sendable`が許す移送・共有の範囲が妥当である | 未検証 | 所有4型に条件付き適合がある。compile testは1Dのみ | 2D〜4Dの表面確認、移送後の所有、並行共有・data raceの意味的Validationは未実施 |
 | QR-03 安全性 | `-Ounchecked`で省略される事前条件との境界が受入可能である | 未検証 | 公開コメントは検査省略可能性を明示する | `-Ounchecked`構成の実行、範囲・次元違反時の扱いは評価していない |
 | QR-04 理解可能性 | nil状態、座標と軸順、`removeAll()`、失敗条件を公開文書から確認できる | 確認済み | 現行公開面のdocumentation commentを実装と照合済みで、過去にDocCをwarnings-as-errors付きで生成できた | 削除後のDocC再生成と、一般利用者が誤解なく使えることのValidationは未実施 |
-| QR-05 利用可能性 | SwiftPMと`AcCollections`再公開経路で利用できる | 確認済み | OptionalArrayModule build、facade再公開test 1件、DocC生成が現行macOS環境で成功 | 他platform、外部packageとの共存、実利用は未確認 |
+| QR-05 利用可能性 | SwiftPMと`AcCollections`再公開経路で利用できる | 確認済み | OptionalArrayModule build、facade再公開test 1件、DocC生成が現行macOS環境で成功。repository外の一時SwiftPM consumerで直接module import、`AcCollections` import、`PermutationModule`との共存をbuild・実行 | 現行packageの公開productは`AcCollections`だけで、直接module importはtransitive visibilityの証拠。恒久fixture、他platform・toolchainは未確認 |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | EDPC-J・EDPC-Lはtest targetのcompile evidenceであり、単一file利用許諾もsourceにある | 正答、実提出、実行時間、メモリ使用量は確認していない |
 | QR-06 持続可能性 | 変更後に公開面、状態、寿命、次元、停止契約を再確認できる | 部分確認 | 番号付きTest as Specification、座標access直接仕様群、Debug・Release・ASanのCI job、および2D・3D memoization accessの回帰workloadがある。これらを含むPR #192のremote CIはall greenで、OptionalArrayModuleのDocC生成も個別に成功した | CIのDocC対象にOptionalArrayは含まれず、documentation commentの変更後もDocC生成を継続して再確認できる自動経路はない |
 
@@ -69,6 +69,10 @@ strict memory safety、`-Ounchecked`の境界を扱う。2026-10-13、deprecated
   3反復し、全件のchecksum検証に成功。
 - `Benchmarks/Libraries/CI.json`は30 task・60 size・最大64kを70.4秒で完走。OptionalArray 4件を
   通常CI libraryの選択対象として実行した。
+- candidate `215be94b`をlocal path dependencyにしたrepository外SwiftPM consumerをApple Swift 6.4、
+  macOS 27.0.1、arm64、debugで実行。直接module import、`AcCollections`再公開、`PermutationModule`との
+  共存の3 executableがbuild・runに成功した。多次元の内側寸法はpublic propertyから取得できず、consumerが
+  shapeを保持する必要があることを理解可能性の観測候補として残した。
 
 SwiftPM user cacheが書込み不可である環境警告と、ASan build時にOptionalArray testの`var` 1件、
 RedBlackTree testの未使用値2件のwarningが出た。製品OptionalArrayModuleの通常buildにはwarningがない。

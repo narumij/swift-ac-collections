@@ -12,7 +12,7 @@
 - 種別: `DISCOVERY`
 - 担当: Codex
 - 現在の中間ゴールへの近さ: `DIRECT`
-- 評価日: 2026-10-11
+- 評価日: 2026-10-13
 
 現在の状態、ID、担当、および依存はTask Registryを正本とする。
 
@@ -40,18 +40,18 @@
 
 | 上位要求 | 品質主張 | 評価 | 現在の証拠 | 未確認範囲・残余リスク |
 | --- | --- | --- | --- | --- |
-| QR-01 正確性 | 初期化、nil状態、次元、offset、subscript、View、writeback、`removeAll()`、破棄が公開契約どおり動作する | 確認済み | Debug・Releaseで通常test 35件とDeath Test 26件が成功。非対称次元、zero dimension、積overflow、別storage View代入、参照要素寿命を含む | 有限な型、寸法、操作列によるVerificationであり、任意入力の証明ではない |
+| QR-01 正確性 | 初期化、nil状態、次元、offset、subscript、View、writeback、`removeAll()`、破棄が公開契約どおり動作する | 確認済み | 既存契約に加え、1D〜4Dの座標accessを非対称shape全座標、選択位置だけの更新、値・nil遷移、参照要素のexactly-once破棄、全軸boundsで直接仕様化。追加11件を含む全76 testが成功 | 有限な型、寸法、操作列によるVerificationであり、任意入力の証明ではない |
 | QR-02 性能効率性 | presence mapとpayloadの連続storage、O(1) access、線形初期化・破棄という実装特性が公開説明と一致する | 確認済み | sourceとdocumentation commentを照合。要素accessとView生成は定数回のoffset計算、初期化・`removeAll()`・破棄はcapacityに比例する | 実装構造上の計算量であり、実行時間、allocation cost、最適化結果を証明しない |
 | QR-02 性能効率性 | 利用目的に対する外部性能が十分である | 未検証 | 2D・3Dのcold / warm memoization benchmarkはCIへ登録済み | C++ nested vector番兵版との外部比較結果と性能比の受入水準は未確定 |
-| QR-03 安全性 | storage確保・要素寿命・範囲・次元・writeback拒否が検証した経路で成立する | 確認済み | Debug・Releaseに加え、ASanで通常test 35件とDeath Test 26件が成功し、OptionalArray由来のSanitizer failureはなかった | ASanと有限のtest経路で観測できないunsafe操作の正しさまでは証明しない |
+| QR-03 安全性 | storage確保・要素寿命・範囲・次元・writeback拒否が検証した経路で成立する | 確認済み | ASanを含むremote CIが成功。現行座標accessについて参照要素の置換・nil遷移と、1D〜4D全軸の負値・上限に対するread / write trapを直接仕様化した | ASanと有限のtest経路で観測できないunsafe操作の正しさまでは証明しない |
 | QR-03 安全性 | deprecated非所有Viewを所有元より長く保持できない | 部分確認 | View 3型は`~Escapable`で、所有元とView間の寿命依存を宣言している | compiler escape fixtureによる独立した反証確認はない。deprecated互換面であり、現行座標access APIの採用条件にはしない |
-| QR-03 安全性 | strict memory safety下で公開APIとunsafe境界が成立する | 確認済み | 所有4型とView 3型を`@safe`に分類し、低レベル操作をscoped `unsafe`へ限定。targetへ`.strictMemorySafety()`を恒久適用し、単独typecheck警告0・エラー0、Build for Testing成功、全65 test成功 | strict設定はunsafe実装自体の正しさを証明せず、境界の明示と未注釈操作の検出を提供する |
+| QR-03 安全性 | strict memory safety下で公開APIとunsafe境界が成立する | 確認済み | 所有4型とView 3型を`@safe`に分類し、低レベル操作をscoped `unsafe`へ限定。targetへ`.strictMemorySafety()`を恒久適用し、単独typecheck警告0・エラー0、Build for Testing成功、現行全76 test成功 | strict設定はunsafe実装自体の正しさを証明せず、境界の明示と未注釈操作の検出を提供する |
 | QR-03 安全性 | `@unchecked Sendable`が許す移送・共有の範囲が妥当である | 未検証 | 所有4型に条件付き適合がある。compile testは1Dのみ | 2D〜4Dの表面確認、移送後の所有、並行共有・data raceの意味的Validationは未実施 |
 | QR-03 安全性 | `-Ounchecked`で省略される事前条件との境界が受入可能である | 未検証 | 公開コメントは検査省略可能性を明示する | `-Ounchecked`構成の実行、範囲・次元・writeback違反時の扱いは評価していない |
 | QR-04 理解可能性 | nil状態、所有と非所有、軸順、`removeAll()`、失敗条件を公開文書から確認できる | 確認済み | 公開29宣言のdocumentation commentを監査済みで、DocCをwarnings-as-errors付きで生成できた | 文書と実装のVerificationであり、一般利用者が誤解なく使えることのValidationではない |
 | QR-05 利用可能性 | SwiftPMと`AcCollections`再公開経路で利用できる | 確認済み | OptionalArrayModule build、facade再公開test 1件、DocC生成が現行macOS環境で成功 | 他platform、外部packageとの共存、実利用は未確認 |
 | QR-05 利用可能性 | 競技プログラミングで実用できる | 未検証 | EDPC-J・EDPC-Lはtest targetのcompile evidenceであり、単一file利用許諾もsourceにある | 正答、実提出、実行時間、メモリ使用量は確認していない |
-| QR-06 持続可能性 | 変更後に公開面、状態、寿命、次元、停止契約を再確認できる | 部分確認 | 番号付きTest as Specification 8群、Debug・Release・ASanのCI job、および2D・3D memoization accessの回帰workloadがある。評価時にはOptionalArrayModuleのDocC生成も個別に成功した | 現行commitのremote CI成功は未確認。CIのDocC対象にOptionalArrayは含まれず、documentation commentの変更後もDocC生成を継続して再確認できる自動経路はない |
+| QR-06 持続可能性 | 変更後に公開面、状態、寿命、次元、停止契約を再確認できる | 部分確認 | 番号付きTest as Specification、座標access直接仕様群、Debug・Release・ASanのCI job、および2D・3D memoization accessの回帰workloadがある。これらを含むPR #192のremote CIはall greenで、OptionalArrayModuleのDocC生成も個別に成功した | CIのDocC対象にOptionalArrayは含まれず、documentation commentの変更後もDocC生成を継続して再確認できる自動経路はない |
 
 ## 実行記録
 

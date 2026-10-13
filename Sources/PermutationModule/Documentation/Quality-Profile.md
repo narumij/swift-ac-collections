@@ -51,11 +51,9 @@ AtCoder 2025互換modeは同じ製品目的へ関係するが、公開表面、�
 通常版の外部または内部から観察可能な契約について、実行可能な正本は、runtime-check付き
 `NextPermutations`へ対応するTest as Specificationとする。
 
-`Tests/PermutationTests/NextPermutationsSequence/`の番号付きテスト群は旧COW契約を対象としており、
-現在は`#if false`で退避されている。これらは新契約へ維持、置換、廃止する性質を棚卸しする入力であり、
-現行通常版のTest as Specificationまたは成功証拠ではない。
-
-新しいTest as Specificationは、少なくとも次の担当領域を分離する。file名と番号は棚卸し時に確定する。
+現行通常版のTest as Specificationは`Tests/PermutationTests/NextPermutations/`にあり、次の担当領域を
+分離する。runtimeでは表現できない非copy、非`Sequence`、直接初期化不可などの表面契約は、
+`Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`のcompiler fixtureが担当する。
 
 | 担当領域 | 主な検証対象 |
 | --- | --- |
@@ -65,6 +63,9 @@ AtCoder 2025互換modeは同じ製品目的へ関係するが、公開表面、�
 | 所有と破棄 | 入力からの初期copy、要素の初期化・破棄対応、iterator破棄時の全要素解放 |
 | 共存 | `AcCollections`再公開、他moduleとの名前解決、toolchain別manifestの公開範囲 |
 | 境界 | Viewの有効期間、0始まりのIndex、subscriptの範囲検査、および停止条件 |
+
+`Tests/PermutationTests/NextPermutationsSequence/`の番号付きテスト群は旧COW契約を対象としており、
+`#if false`で退避された履歴資料である。現行通常版のTest as Specificationまたは成功証拠には用いない。
 
 View失効と範囲外accessの拒否は、通常runtime testとprocessを分離するDeath Testで検証経路を分ける。
 `~Copyable`や公開表面の否定的要件などruntimeで表現できない性質には、必要に応じてcompiler fixtureを用いる。
@@ -194,7 +195,7 @@ toolchain固有の最適化事象や未再現の性能事象は、原因と適�
 | --- | --- |
 | リポジトリ全体の上位品質要求 | `Maintanance/QUALITY_REQUIREMENTS.md` |
 | 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
-| 通常版の観察可能な仕様 | runtime-check契約のTest as Specification（再構築中）。現在は`Sources/PermutationModule/NextPermutations.swift`の公開契約と`Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`を参照し、退避中の旧testを現行仕様と扱わない |
+| 通常版の観察可能な仕様 | `Tests/PermutationTests/NextPermutations/`のruntime Test as Specificationと`Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`のcompiler fixture。分類、受入境界、実行証拠は`Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`を参照し、退避中の旧testを現行仕様と扱わない |
 | AtCoder 2025互換modeの観察可能な仕様 | `Tests/PermutationTests/AtCoder2025Compatibility/` |
 | 公開APIとdocumentation comment | `Sources/PermutationModule/NextPermutations.swift`および互換modeのsource |
 | 性能測定対象 | `Benchmarks/Sources/Benchmarks/PermutationBenchmarks.swift` |

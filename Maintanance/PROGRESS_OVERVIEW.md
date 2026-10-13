@@ -174,6 +174,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `RBT-032` | `FROZEN` | Codex | [DISCOVERY] RedBlackTree 0.6.0現行品質アセスメント | 2026-10-13、Codex復旧中の中断taskとして凍結。ユーザーの明示的な再開指示後、既存の試験結果と不足する再現証拠を照合してから継続する | `RedBlackTreeModule/CurrentQualityAssessment.md` |
 | `RBT-033` | `PROPOSED` | Codex | [DISCOVERY] macOS ASan＋Swift Testing Death Test実行経路の成立確認 | lifetime balance検査をtraitで除外しても子プロセスでASan runtimeが遅延ロードされる事象について、Swift Testing実行基盤、macOS環境、Linux CIとの差を切り分け、製品不具合と検証経路不成立を区別する | `RedBlackTreeModule/CurrentQualityAssessment.md` / `Package.swift` |
 | `RBT-034` | `FROZEN` | User / Codex | [EXECUTION] RedBlackTree 1.0品質アセスメント完成 | 1.0品質ゲートの再開後、再現可能な証拠一式を備え、要求・主張・反証・未検証領域・残余リスクを接続した品質アセスメントを完成させる | `RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
+| `RBT-035` | `FROZEN` | Claude / Codex | [DISCOVERY] RedBlackTreeチューニングの落ち穂拾い | ユーザーの明示的な再開指示後、過去の実装・benchmark・Git履歴・チューニング記録を現行コードと照合し、取りこぼした改善候補、未反映の知見、再検証が必要な仮説を発見する。性能変更は行わず、実測と判断が必要な後続taskへ分離する | `RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` / `Benchmarks/` |
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
@@ -187,6 +188,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-054` | `DONE` | Claude / Codex | [EXECUTION] runtime-check Permutation View失効Death Test | G2のpositive control 1件とDeath Test 9件を追加し、旧scratch 2件をexact signal契約へ昇格。ClaudeのDebug／Release各33件成功に加え、CodexがXcodeで対象33件の成功を独立確認 | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` |
 | `PERM-055` | `DONE` | Claude / Codex | [EXECUTION] runtime-check Permutation所有・破棄仕様test | G4の内部仕様test 7件を追加し、source独立性、4破棄経路、奇数suffix反転、escaped Viewとstorage寿命の分離を固定。ClaudeのDebug／Release各40件成功に加え、CodexがXcodeで累積40件の成功を独立確認 | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` |
 | `PERM-056` | `DONE` | Claude / Codex | [EXECUTION] runtime-check Permutation公開表面・共存仕様test | G0／G5のruntime 5件とcompiler fixture 4経路を追加。ClaudeのDebug／Release成功に加え、CodexがXcode 44件、AcCollections再公開1件、compile-pass 1件・compile-fail 3件を独立確認 | `PermutationModule/RuntimeCheckedPermutationTestPlan.md` |
+| `PERM-057` | `DONE` | Codex | [EXECUTION] Permutation品質正本の現在性同期 | G0〜G5、独立検収、CI greenをQuality ProfileとCurrent Quality Assessmentへ反映し、旧COW版38件と再構築前の記述を現行評価から分離 | `PermutationModule/CurrentQualityAssessment.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` / `PermutationModule/RuntimeCheckedPermutationTestPlan.md` |
+| `PERM-058` | `DONE` | Codex | [EXECUTION] Permutation利用者向け文書本文ドラフト | 公開媒体を決めず、公開契約と現行品質評価に接続した内部本文ドラフトを作成し、2026-10-13にユーザーが本文を受入 | `PermutationModule/UserDocumentationDraft.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` / `PermutationModule/CurrentQualityAssessment.md` |
+| `PERM-059` | `PROPOSED` | Codex / Claude | [DISCOVERY] Tests側NextPermutations Sequence化試験実装 | productionと公開APIを変更せず、Tests内のadapterでruntime-check版`NextPermutations`を`Sequence`として扱う試験実装を作り、列挙契約、View寿命、所有権、copyの発生、性能差を観測する。採用可否は決めず、結果と判断候補を別taskへ返す | `PermutationModule/CurrentQualityAssessment.md` / `PermutationModule/RuntimeCheckedPermutationTestPlan.md` / `Tests/PermutationTests/` |
 | `OPT-006` | `FROZEN` | Codex | [DISCOVERY] OptionalArray品質評価の文書作業後レビュー | `OPT-005`とユーザードキュメント作業の完了後に再評価し、1.0判断前に解消する不足を独立task候補へ分離 | `OptionalArrayModule/OptionalArrayAudit.md` |
 | `OPT-044` | `FROZEN` | User | [DECISION] OptionalArray 1D所有型名の再判断 | 0.6.0の到達範囲判断前に、`OptionalArray1D`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
 | `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `OptionalArrayModule/OptionalArrayAudit.md` / `RELEASE_0_6_0.md` |
@@ -235,6 +239,8 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `PERM-054` | `PERM-052` | `SEQUENCE` | runtime失効契約とborrowed契約の分離確定後、View失効Death Testを実装する |
 | `PERM-055` | `PERM-052` | `SEQUENCE` | 旧COW内部probeの処遇確定後、現行owned bufferの所有・破棄仕様testを実装する |
 | `PERM-056` | `PERM-052` | `SEQUENCE` | 現行公開表面とretired表面の分類確定後、compiler表面・共存・再公開testを実装する |
+| `PERM-057` | `PERM-056` | `SEQUENCE` | G0〜G5の実装と独立検収が完了してから、品質正本を現行証拠へ同期する |
+| `PERM-058` | `PERM-057` | `SEQUENCE` | 現行契約と証拠へ同期した品質正本を入力に、利用者向け本文を起草する |
 | `OPS-028` | `OPS-030` | `SEQUENCE` | ユーザーが未採用初稿とレビュー論点を確認してから、Codexが候補を再構成する |
 | `API-004` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、ユーザーが他者から独立して採点する |
 | `API-005` | `API-002` | `PARALLEL_JOIN` | Codexによるballot編成・検証後、Codexが他者から独立して採点する |

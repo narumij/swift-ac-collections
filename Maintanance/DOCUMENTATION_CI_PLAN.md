@@ -44,12 +44,15 @@ GitHub Pagesは既存の利用者向け文書とpackageの入口を担い、READ
 各moduleへ導線を置く。API referenceの生成・hostingと、repositoryが編集する利用者向け説明を分離する。
 
 2026-10-13時点で、`https://github.com/narumij/swift-ac-collections.git`はSwift Package Indexのcanonical
-`packages.json`に見つからず、package pageとmodule別documentation URLも確認できなかった。登録は1.0 release後の
-中間ゴールとし、それまではrepository CIで各targetのDocC生成可能性を維持する。
+`packages.json`に見つからず、package pageとmodule別documentation URLも確認できなかった。0.9.x release後に
+Swift Package Indexへ登録し、外部build・互換性判定・DocC生成で見つかった不足を1.0品質gateへ入力する。
+それまではrepository CIで各targetのDocC生成可能性を維持する。
 
-1.0 release後、Swift Package Indexへのpackage登録とDocC build成立を確認する。登録後にpackage pageの
+0.9.x release後、Swift Package Indexへのpackage登録とDocC build成立を確認する。登録後にpackage pageの
 `Do you maintain this package?`から提供されるMarkdownを正として互換性badgeをREADMEへ追加し、READMEまたは
 Pagesからmodule別API referenceへの導線を接続する。badge URLやdocumentation URLを登録前に推測して固定しない。
+Swift Package Indexの結果は1.0適合を単独で証明しないが、登録、build、互換性表示、DocC公開が成立しない場合は、
+不足を解消または残余リスクとして判断するまで1.0品質gateを閉じない。
 
 ## 段階導入
 

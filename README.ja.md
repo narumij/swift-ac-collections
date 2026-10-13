@@ -16,7 +16,7 @@ swift-ac-collections は、
 [AtCoder][atcoder] の問題を、Swift でも実用的な性能で解けるようにする」**
 ことを目的として設計されています。
 
-[![CI](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml/badge.svg)](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml)
+[![CI](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml/badge.svg?event=pull_request)](https://github.com/narumij/swift-ac-collections/actions/workflows/ci.yml?query=event%3Apull_request)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## 利用方法

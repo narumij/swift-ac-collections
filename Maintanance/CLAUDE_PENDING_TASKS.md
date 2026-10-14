@@ -48,6 +48,22 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 成果・検証: 作成済み。V4草案4件に同じ内容がないことをgrepで確認した（`User/MEMO.md`にユーザー自身の自己紹介文があるだけ）。
 - Codex reconciliation: 未処理
 
+### `CP-20261014-003` — 最小オリエンテーション草案（生成元と持ち主の表）
+
+- queue状態: `AWAITING_CODEX`
+- 発見元・ユーザー指示: 2026-10-14の会話。「生成元の考え方」と「持ち主の表」の2つだけで新しい会話のAIを
+  立ち上げられるか、という話の後、ユーザーが「ちょっとドラフトつくって、それ」と明示依頼した。
+- 種別候補: `EXECUTION`（草案作成のみ）
+- 対象範囲: `Maintanance/MINIMAL_ORIENTATION_DRAFT.md`の新規作成。
+- 対象外: 採用、Orientation V4への統合、`AGENTS.md`・`CLAUDE.md`の変更、比較実験の実施。
+- 完了条件: 生成元（3つの問い）、持ち主の表、既存規則の導出例、確かめ方の案を一つの草案にまとめる。
+- 前提・既存task候補: `CP-20261014-002`（参考資料）。作業中のOrientation V4との関係はCodexとユーザーが判断する。
+- 担当候補・受入担当: 姫（Claude）実行 / Codex受入。
+- 停止条件: 持ち主の表の事実が正本と食い違えば、草案側を直す。
+- 成果・検証: 作成済み。持ち主の表は`AGENTS.md`（Repository operation authority、Ownership boundaries、Xcode agent
+  boundary）とRegistryの文書ランク節を読んで照合した。比較実験は未実施。
+- Codex reconciliation: 未処理
+
 過去のreconciliation済みentryは次を参照する。
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`

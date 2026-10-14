@@ -14,12 +14,54 @@
 
 extension Collection where Element: Comparable {
 
+  /// Creates an iterator over this order and its lexicographic successors.
+  ///
+  /// The first call to ``NextPermutations/next()`` returns the collection's current element order.
+  /// Later calls return only its lexicographic successors. This does not enumerate orders that
+  /// precede the collection's starting order. Elements that compare equal do not produce duplicate
+  /// value orderings.
+  ///
+  /// The iterator copies the elements into one owned buffer when it is created. Advancing mutates
+  /// that buffer in place and returns a temporary view of its current contents; it does not allocate
+  /// or copy all elements for every result.
+  ///
+  /// Consume each returned view before calling `next()` again. To preserve a result, copy it into
+  /// an owning collection such as `Array` while the view is valid.
+  ///
+  /// ```swift
+  /// var permutations = [2, 1, 3].nextPermutations()
+  /// while let permutation = permutations.next() {
+  ///   print(Array(permutation))
+  /// }
+  /// // [2, 1, 3]
+  /// // [2, 3, 1]
+  /// // [3, 1, 2]
+  /// // [3, 2, 1]
+  /// ```
+  ///
+  /// - Returns: A noncopyable iterator that owns a copy of this collection's elements.
+  /// - Complexity: O(n), where n is the number of elements in the collection.
   @inlinable
   public func nextPermutations() -> NextPermutations<Element> {
     .init(copying: self)
   }
 }
 
+/// An iterator over an element order and its lexicographic successors.
+///
+/// `NextPermutations` owns a single mutable buffer initialized from its source collection. The
+/// first result is the source's current order; each later result is the next lexicographic order.
+/// An empty collection, a single element, an all-equal order, and an order with no successor each
+/// produce their current order once.
+///
+/// This type is noncopyable and intentionally does not conform to `Sequence`. Iterate manually
+/// with ``next()`` and finish using each returned ``Permutation`` before advancing again. Calling
+/// `next()` invalidates every previously returned view, including when the call returns `nil`.
+/// Destroying the iterator also invalidates its views. Accessing an invalid view stops execution
+/// with a precondition failure.
+///
+/// Advancing by one step mutates the owned buffer in place. It performs no per-result allocation or
+/// full-buffer copy.
 @safe
 public struct NextPermutations<Value: Comparable>: ~Copyable {
 
@@ -58,6 +100,19 @@ public struct NextPermutations<Value: Comparable>: ~Copyable {
     unsafe elements.deallocate()
   }
 
+  /// Returns the current element order, then advances through its lexicographic successors.
+  ///
+  /// On the first call, this method returns the order copied from the source collection. On each
+  /// subsequent call, it rearranges the same buffer to its next lexicographic order before returning
+  /// it. After the last order has been returned, this method returns `nil`; later calls also return
+  /// `nil`.
+  ///
+  /// Calling this method invalidates all previously returned views before producing its result. Read
+  /// or otherwise consume a view before advancing. To retain an order, create an owning copy such as
+  /// `Array(permutation)` while the view is still valid.
+  ///
+  /// - Returns: A temporary view of the current order, or `nil` after the final order.
+  /// - Complexity: O(n) in the worst case, where n is the number of elements.
   @inlinable
   public mutating func next() -> Permutation? {
     gateKeeper.closeCurrentView()
@@ -117,6 +172,16 @@ public struct NextPermutations<Value: Comparable>: ~Copyable {
 
 extension NextPermutations {
 
+  /// A temporary random-access view of one permutation.
+  ///
+  /// The view uses zero-based integer indices and refers to its iterator's mutable element buffer.
+  /// Copying a view does not copy its elements: all copies share the same validity period. The view
+  /// remains valid only until the iterator's next mutating `next()` call or until the iterator is
+  /// destroyed. Accessing ``startIndex``, ``endIndex``, or a subscript after invalidation stops
+  /// execution with a precondition failure.
+  ///
+  /// To preserve the element order beyond that boundary, copy it into an owning collection such as
+  /// `Array` while it is valid.
   @safe
   public struct Permutation: RandomAccessCollection {
     public typealias Element = Value
@@ -147,18 +212,36 @@ extension NextPermutations {
       self.generation = generation
     }
 
+    /// The position of the first element, always zero.
+    ///
+    /// Accessing this property after the view is invalidated stops execution with a precondition
+    /// failure.
+    ///
+    /// - Complexity: O(1).
     @inlinable
     public var startIndex: Int {
       precondition(!gateKeeper.isClosed(generation: generation), "Permutation view is no longer valid")
       return 0
     }
 
+    /// The position one past the last element.
+    ///
+    /// Accessing this property after the view is invalidated stops execution with a precondition
+    /// failure.
+    ///
+    /// - Complexity: O(1).
     @inlinable
     public var endIndex: Int {
       precondition(!gateKeeper.isClosed(generation: generation), "Permutation view is no longer valid")
       return _count
     }
 
+    /// Returns the element at the given zero-based position.
+    ///
+    /// Accessing this subscript after the view is invalidated, or with a position outside
+    /// `startIndex..<endIndex`, stops execution with a precondition failure.
+    ///
+    /// - Complexity: O(1).
     @inlinable
     public subscript(position: Int) -> Element {
       precondition(!gateKeeper.isClosed(generation: generation), "Permutation view is no longer valid")

@@ -2,13 +2,15 @@
 
 最終更新: 2026-10-14 / Codex
 
-この文書のTask Registryを、CodexとClaudeが作業を再開するときの唯一の入口とする。まずRegistry
-だけを読み、選択したtask行が示す詳細正本だけを追加で読む。2026-10-07までの完了チェック、判断待ち、
+この文書のTask Registryを、CodexとClaudeが現在の作業状態を確認するときの唯一の入口とする。
+開始時は、本書の文書の権限・配置の規定と、Task Registry、Task precedence、Registry rulesを確認する。
+仕事を選択してから、そのtask行が示す詳細正本だけを追加で読む。2026-10-07までの完了チェック、判断待ち、
 旧サマリーは`Archived/PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`へ移した。
 2026-10-09までの`DONE`・`EXCLUDED` task行と、それらだけに向かう完了済みprecedence辺は
 `Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-09.md`へ移した。以後2026-10-11までに完了・除外した行と
 充足済みprecedence辺は`Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-11.md`へ移した。
-現行Registryには状態が変わり得るtaskだけを残す。2026-10-12までに完了・除外した行と
+現行Registryは残作業を管理し、履歴へ移す前の`DONE`・`EXCLUDED`行が残ることもある。
+これらの行は残作業や着手候補として扱わない。2026-10-12までに完了・除外した行と
 充足済みprecedence辺は`Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-12.md`へ移した。
 2026-10-13に完了・除外した行と充足済みprecedence辺は
 `Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-13.md`へ移した。
@@ -261,7 +263,9 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 - 状態は`PROPOSED`、`ACTIVE`、`WAITING_USER`、`WAITING_EXTERNAL`、`FROZEN`、`USER_ONLY`、`EXCLUDED`、`DONE`、`ARCHIVED`のいずれかとする。
 - `PROPOSED`は忘失防止のtask候補であり、範囲、完了条件、担当、詳細正本、必須依存を確定して状態を更新するまで着手・委任しない。
 - `FROZEN`は明示的な再開指示なしに着手しない。
-- `USER_ONLY`はユーザー専任とし、AIは着手、代行、催促を行わない。
+- `USER_ONLY`はユーザー専任とし、AIはtask本体への着手、代行、委任、催促を行わない。ユーザーが
+  整理・レビュー・検証などの補助を明示的に依頼した場合は、その範囲だけを行い、task本体の代行や
+  完了の受入とは扱わない。
 - `WAITING_EXTERNAL`は外部条件が解消するまで着手可能とみなさない。
 - Task precedenceには内部task間の必須AND前提だけを記録する。
 - Task precedenceのFlowは、前提taskの後に後続taskを始める`SEQUENCE`、または並行を許可して
@@ -269,5 +273,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 - 新規または内容更新したtaskの項目名は、`[DECISION]`、`[EXECUTION]`、`[DISCOVERY]`のいずれかで始める。
 - `DECISION`は一つのユーザー判断だけを含む。複数の判断がある場合は登録前または発見時に分割する。
 - `EXECUTION`と`DISCOVERY`はノー判断taskとし、未確定の判断をagentが補って完了させない。
-- Task Registryの確定更新はCodexが担当する。
-- 優先順位は、ユーザーの最新指示、Task Registry、詳細正本、Archivedと過去ログの順とする。
+- Task Registryの確定更新は、その仕事を明示的に割り当てられたCodexが担当する。担当欄の名称を読む
+  だけでは、この文書を読んだ個体への割当は成立しない。
+- 現在の作業状態についての優先順位は、ユーザーの最新指示、Task Registry、詳細正本、Archivedと過去ログ
+  の順とする。この順位やtaskの委任から、上位文書の編集・正本採用・参照切替・配置変更の権限を作らない。

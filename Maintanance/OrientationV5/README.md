@@ -17,7 +17,7 @@
 
 - 基準となる候補：[AGENTS_SWIFT_AC_CANDIDATE_V3.md](../AGENTS_SWIFT_AC_CANDIDATE_V3.md)。協働の前提、成果物の変更権限、判断を一つかゼロにする分解を含む版。
 - 改訂元：`Maintanance/Orientation/`内の`CODEX_ORIENTATION_V4.md`、`TASK_ORIENTATION_V4.md`、`AI_COLLABORATION_PHILOSOPHY_V4.md`、`CODEX_TASK_OPERATION_PLAYBOOK_V4.md`。
-- 制度との照合：`Maintanance/PROGRESS_OVERVIEW.md`の文書権限・配置、task種別、採番、依存、Registry rules。
+- 作成時の制度との照合：当時の`Maintanance/PROGRESS_OVERVIEW.md`の文書権限・配置、task種別、採番、依存、Registry rules。
 - 関連資料との照合：同Orientationフォルダの`TASK_DECOMPOSITION_AND_REORGANIZATION.md`、`TASK_DEPENDENCY_IDENTIFICATION_DRAFT.md`、`TASK_DEPENDENCY_RUNTIME_STOP.md`。
 - 説明の補足：`Maintanance/EFFECT_GRADIENT_REFERENCE.md`と、この会話での「Haskell、リファクタリングの分解とインライン、コンパイラ最適化と似ている」というユーザーの補足。
 
@@ -58,6 +58,12 @@
 ユーザーの採用指示により、V5の4文書を一組の正本として採用し、現行`AGENTS.md`の明示的なオリエンテーション参照先を`CODEX_ORIENTATION_V5.md`へ切り替えた。Task Registryにも採用結果を記録した。
 
 旧V4は履歴と由来を保つため移動・改名・削除しない。現行の入口はV5とし、旧版に現在の運用を決める別の決定権を持たせない。
+
+## 進捗 V2への接続（2026-10-14）
+
+ユーザーの接続指示により、通常の現在地の入口を[進捗 V2](../ProgressV2/PROGRESS_OVERVIEW_V2.md)へ揃えた。task・依存は[taskの記録](../ProgressV2/TASK_REGISTRY_V2.md)、操作時の制度・採番・文書権限は[制度の参照](../ProgressV2/TASK_RULES_V2.md)を使う。入口・taskオリエンテーション・playbookの参照を変更し、V5の協働原理と権限の境界は維持した。
+
+2026-10-15にユーザーから受領したフレッシュ会話の報告により、V2の通常入口から現状と採番手順を読み取れることを確認した。実際の更新操作や製品作業の有効性は未検証。接続した範囲と、まだ確かめていないことは[V2の作成・接続記録](../ProgressV2/README.md)に残す。上のV5採用時の経緯と資料は、作成時の記録として保持する。
 
 ## 確認の範囲
 

@@ -1,6 +1,8 @@
 # Task履歴SQLite索引のメンテナンス手順
 
-> 候補・未採用。2026-10-14時点では、SQLite本体・抽出器・専用の更新コマンドは未実装。本書は実装後の運用手順を定める案であり、実在する専用コマンドとして使えるものはまだない。索引の意味と限界は[制度の参照](TASK_RULES_V2.md#履歴の照合とsqlite索引)に従う。
+> 採用済み。2026-10-15、ユーザーの採用指示により、本書と抽出器`Utilities/Maintenance/TaskHistoryIndex.py`、およびその抽出規則・等級規則を採用した。同日、V3オーサーの調査のため、ユーザーの依頼でrepository内に初回作成した（HEAD `35d1f604`まで、5506 commits）。実在するコマンドは末尾の節、試作時の確認結果と規則の詳細は[補助資料](TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md)を参照する。索引の意味と限界は[制度の参照](TASK_RULES_V2.md#履歴の照合とsqlite索引)に従う。
+>
+> 2026-10-14の作成時点の状態：候補・未採用。SQLite本体・抽出器・専用の更新コマンドは未実装。
 
 ## 目的と置き場
 
@@ -104,3 +106,40 @@ sqlite3 -noinit -readonly -batch -bail \
 実装を受け入れるときに、ソースの配置、初回作成・差分更新・状態表示・検索・再作成の実在するコマンドを本書へ追記する。対象範囲、mergeの比較方法、IDの抽出規則、DB構造の版と、失敗時の再開・切替方法も確定した実装に合わせる。
 
 それまでは、上のGit確認と既存DB向け検査以外を実行可能なコマンドとして扱わない。本書の作成は、抽出器の実装完了や運用開始を意味しない。
+
+### 2026-10-15に採用した実装
+
+抽出器は`Utilities/Maintenance/TaskHistoryIndex.py`（Python 3標準libraryのみ）。リポジトリ直下で実行し、`--db`を省略すると`Maintanance/TaskHistoryIndex/task_history.sqlite3`を使う。現在の版はschema 3・rule 2。
+
+| 操作 | コマンド |
+| --- | --- |
+| 初回作成 | `python3 Utilities/Maintenance/TaskHistoryIndex.py build [--ref REF]` |
+| 再作成 | `python3 Utilities/Maintenance/TaskHistoryIndex.py build --replace [--ref REF]` |
+| 差分更新 | `python3 Utilities/Maintenance/TaskHistoryIndex.py update [--ref REF]` |
+| 状態表示 | `python3 Utilities/Maintenance/TaskHistoryIndex.py status` |
+| 結果の確認 | `python3 Utilities/Maintenance/TaskHistoryIndex.py verify` |
+| ID検索 | `python3 Utilities/Maintenance/TaskHistoryIndex.py search TASK-ID` |
+| Registry行変化（参考資料） | `python3 Utilities/Maintenance/TaskHistoryIndex.py changes [--grade structural\|routine\|candidate] [--task TASK-ID]` |
+
+- 対象範囲：開始時に`--ref`（既定は`HEAD`）をSHAへ解決し、そこから到達できる全commit。
+- mergeの比較：第一親と比較し、rootは空treeと比較する。出現ごとに比較元の親を残す。差分は文脈0行、rename検出なし、binaryは対象外。
+- IDの抽出規則：採番表の18 prefixに固定する。prefixが増えたらrule版を上げて再作成する。
+- Registry行変化：merge以外のcommitで、ACTIVE・FROZENだった行の状態・本文の変化を等級つきで記録し、全行に`参考資料`の印を付ける。等級は介入の有無を決めない。
+- 失敗時の再開・切替：作成は別名の一時DBで検査してから置き換え、journalはrollback方式（WALを使わない）。更新は200 commitごとに確定し、中断後は`update`で未確定分から再実行する。lock fileが残った場合は、更新元が動いていないことを確かめてから消す。
+
+#### 場面ごとのメンテ操作
+
+| 場面 | いつ | コマンド | 行うこと |
+| --- | --- | --- | --- |
+| 通常メンテ | 検索したいcommitが収録範囲より新しいとき | `routine [--ref REF]` | 差分更新、結果の確認、今回追加した範囲（commit数・出現数・Registry行変化の等級別件数）の報告をまとめて行う |
+| アーカイブ時メンテ | [圧縮・アーカイブ手順](TASK_REGISTRY_ARCHIVE.md)の手順4で、現行から外す前。commit後の見直しにも使える | `archive-check --worktree`、または`archive-check [REV]` | Registryから外した表の行（task行・依存辺）が、Archivedへそのまま保存され、Registryから保存先へ辿れるかを照合する。DBを使わない |
+| 介入後メンテ | ユーザーの介入（再開・停止・方針変更など）がRegistryへ反映された後 | 未commitなら`intervention --worktree`、commit後は`intervention [--since REV]` | ACTIVE・FROZENだったtaskの行変化のうち、`structural`・`candidate`を一覧する。commit後はDBへ取り込んでから一覧する |
+
+- `archive-check`が照合するのは表の行だけである。本文・見出しの保存と意味の確認は、アーカイブ手順のとおり人が行う。問題を出した行は外さずに残すか、理由を確かめて判断する。
+  - 「Archivedに原文がない」：保存せずに外したtask行。
+  - 「移動と同時に書き換え」：保存先の行が移す前の内容と違う。移す前の内容と照合する。
+  - 「外した依存辺がArchivedにない」：前提が満たされた証拠か、不要になった理由を辿れるか確かめる。
+  - 「Registryから辿れない保存先」：「過去の記録への入口」へのリンクを確かめる。
+- `intervention --worktree`はDBへ書かない。DBに入るのはcommitした変化だけである。介入だったかどうかは、一覧を手掛かりに原文で確かめる。
+
+規則の詳細と、採用時点の確認結果は[補助資料](TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md)に記す。

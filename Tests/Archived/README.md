@@ -8,3 +8,8 @@
 ## 2026-10-06移動分
 
 - `TESTING_REFERENCE.md`: 2026-10-03時点の旧`TESTING.md`
+
+## 2026-10-15移動分
+
+- `TESTING_HISTORY_2026-10-15.md`: `Tests/TESTING.md`から移した完了済みの作業記録、旧監査手順、完了した判断待ち項目、
+  2026-10-08時点の旧handoff

@@ -39,6 +39,21 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ## 採番待ち
 
+### `CP-20261015-006` — `Tests/TESTING.md`の古い記載のアーカイブ
+
+- queue状態: `AWAITING_CODEX`
+- 発見元・ユーザー指示: 2026-10-15の会話。Test as Specificationの維持確認の後、ユーザーが`Tests/TESTING.md`を示し
+  「これ若干古いんで、古い記載をアーカイブしてほしい」と依頼した。
+- 種別候補: `EXECUTION`
+- 対象範囲: 完了済みの作業記録・旧handoff・旧監査手順を`Tests/Archived/TESTING_HISTORY_2026-10-15.md`へ原文のまま移し、
+  `Tests/TESTING.md`を現在の状態・有効な方針だけに整える。`Tests/Archived/README.md`へ移動分を追記する。
+- 対象外: 有効な方針（テスト層の区分、凍結中の削除候補、ABC328E実提出の凍結）と優先事項の内容変更、Registry。
+- 完了条件: 移した節が原文のまま保存され、TESTING.mdから辿れる。現在地は確かめた事実だけにする。
+- 担当候補・受入担当: 姫（Claude）実行 / Codex受入。
+- 停止条件: 方針か作業記録か判別できない節は移さずに残す。
+- 成果・検証: 実施済み（詳細は会話で差分を提示）。
+- Codex reconciliation: 未処理
+
 現在なし。
 
 過去のreconciliation済みentryは次を参照する。

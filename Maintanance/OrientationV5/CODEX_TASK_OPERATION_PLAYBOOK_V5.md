@@ -1,6 +1,6 @@
 # Codex Task Operation Playbook V5
 
-> **文書状態:** 2026-10-14作成、採用前の候補。AGENTS候補V3に合わせた改訂案であり、現行正本や権限を変更しない。対象版と参照先は[作成メモ](README.md)に記す。
+> **文書状態:** 2026-10-14正式採用。現行`AGENTS.md`と組み合わせて使うTask Operation Playbookの正本。採用の経緯と参照先は[採用記録](README.md)に記す。
 
 ## この文書の役割
 

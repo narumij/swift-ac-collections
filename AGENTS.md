@@ -17,7 +17,7 @@
 ## Orientation request
 
 When the user says `オリエンテーション` or otherwise asks Codex to orient
-itself to this repository, read `Maintanance/Orientation/CODEX_ORIENTATION_V3.md` in full and
+itself to this repository, read `Maintanance/Orientation/CODEX_ORIENTATION_V4.md` in full and
 follow the reading and confirmation guidance in that document.
 
 This is an explicit user-requested orientation path, not routine startup reading.
@@ -135,6 +135,16 @@ The user describes their character as:
 
 Preserve this description without reinterpreting it as an instruction
 or behavioral rule.
+
+The user prefers Haskell-inspired reasoning.
+
+When organizing work, consider purity versus side effects,
+whether a task is still needed, and whether it can be replaced
+by something semantically equivalent.
+
+When explaining rules or decisions, use analogies to types,
+states, and the distinction between pure computation and IO
+when they help clarify the reasoning.
 
 A correction, clarification, or scope change to a proposed action
 changes the proposal, but does not by itself authorize execution.
@@ -278,8 +288,8 @@ activate `PROPOSED` work, or authorize action on `USER_ONLY` tasks.
 
 ## Xcode agent boundary
 
-When Codex is running inside Xcode, do not start internal sub-agents or use background agent delegation. Xcode conversations do not provide a reliable handoff and return path for those agents, and attempting to use them may leave the Prime Codex conversation waiting without a usable response.
+When Codex is running inside Xcode, do not start internal sub-agents or use background agent delegation. Xcode conversations do not provide a reliable handoff and return path for those agents, and attempting to use them may leave the 調整役Codex conversation waiting without a usable response.
 
-To delegate work to another Codex in Xcode, Prime Codex must write a bounded assignment to `Maintanance/WORKER_TASK.md`. The user then opens a separate Xcode Codex conversation and directs it to read that file. Worker Codex performs only the recorded assignment and writes its result to the designated return section. Prime Codex independently reviews the returned evidence and decides whether to accept and integrate the work.
+To delegate work to another Codex in Xcode, 調整役Codex must write a bounded assignment to `Maintanance/WORKER_TASK.md`. The user then opens a separate Xcode Codex conversation and directs it to read that file. Worker Codex performs only the recorded assignment and writes its result to the designated return section. 調整役Codex independently reviews the returned evidence and decides whether to accept and integrate the work.
 
 This workflow is not fully autonomous because the user must open the separate Xcode conversation. Treat that step as an environment-imposed transport operation, not as delegation of task decomposition, evidence transfer, acceptance, or task management to the user. Do not treat an internal sub-agent invocation as a substitute for this file-based handoff.

@@ -66,3 +66,21 @@ Archived全体を探索しない。
 
 - `CLAUDE_TASK_HISTORY_2026-10-14.md`: 2026-10-14までの完了assignment、Return、Codex受入記録
 - `PROGRESS_OVERVIEW_COMPLETED_2026-10-14.md`: 2026-10-14に完了・除外したtask行、充足済みprecedence、完了した中間ゴール
+- `AGENTS_MD_NAMED_CODEX_REVIEW.md`、`AGENTS_MD_REVIEW_80MS.md`、`AGENTS_MD_REVIEW_CHATGPT.md`、
+  `AGENTS_MD_REVIEW_FRESH_CODEX.md`、`AGENTS_MD_REVIEW_PRIME.md`、`AGENTS_MD_REVIEW_V3_AUTHOR.md`:
+  `DONE`の`OPS-032`（名前持ちCodexによる`AGENTS.md`再現性レビュー）の統合記録と個別review。一式で移したので
+  相互参照は切れていない。Registryの`OPS-032`行の詳細正本パスを`Archived/`へ更新した
+- `Orientation/`へ、現行の参照がない旧Orientation 14本を移した（ユーザー依頼、2026-10-14）。移した基準は、
+  Task Registry、`AGENTS.md`、Orientation V4の4本、Orientation V5候補、`WORKER_TASK.md`のどこからも
+  参照されていないこと。現行V4一式と、V4・V5・Registryから参照される資料は`Orientation/`に残した
+  - 旧版: `CODEX_ORIENTATION.md`、`CODEX_ORIENTATION_V2.md`、`CODEX_ORIENTATION_V3.md`、`TASK_ORIENTATION.md`、
+    `TASK_ORIENTATION_V3.md`、`AI_COLLABORATION_PHILOSOPHY.md`、`AI_COLLABORATION_PHILOSOPHY_V3.md`
+  - 旧版のレビュー: `CODEX_ORIENTATION_CONCISENESS_REVIEW.md`、`CODEX_ORIENTATION_V2_REVIEW.md`、
+    `CODEX_ORIENTATION_V3_REVIEW.md`、`CODEX_ORIENTATION_VERSION_COMPARISON_REVIEW.md`
+  - その他: `ACCEPTANCE_CODEX_BOOTSTRAP_TASK.md`、`TASK_REGISTRY_COMMON_STATE_USAGE.md`、
+    `TASK_REGISTRY_RARE_STATE_USAGE.md`
+  - 名前だけが残る箇所: `Orientation/WORKER_CODEX_BOOTSTRAP_TASK.md`は本文で`CODEX_ORIENTATION_V3.md`に触れる
+    （リンクではない）。`TASK_CANONICAL_DOCUMENT_MAP.md`は当時の対応を写した調査記録なので、旧パスのまま残した
+
+同日、`Maintanance/CollaborationBootstrap/`（swift-ac-library用の協働bootstrap候補一式）は、Archivedではなく
+ユーザーの指定で`Maintanance/User/CollaborationBootstrap/`へ移した。今後Astraが順次ブラッシュアップする。

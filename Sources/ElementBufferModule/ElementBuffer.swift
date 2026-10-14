@@ -12,6 +12,8 @@
 // コピペで提出に使っていただいて構いません。
 // 提出の際のライセンス記載は不要です。
 
+// TODO: コピペでAtCoder提出可能なこと
+
 /// 競技プログラミング用1次元配列
 ///
 /// ヒープ領域に確保される軽量な配列です。
@@ -426,38 +428,49 @@ extension ElementBuffer4D: @unchecked Sendable where Element: Sendable {}
 
 extension ElementBuffer {
 
-  @available(anyAppleOS 27.0, *)
-  @inlinable
-  @_lifetime(&self)
-  public mutating func reference(at position: Int) -> MutableRef<Element> {
-    precondition(0 <= position && position < count)
-    return unsafe .init(unsafeAddress: payload + position, mutating: &self)
-  }
+  #if swift(>=6.4)
+    @available(anyAppleOS 27.0, *)
+    @inlinable
+    @_lifetime(&self)
+    public mutating func reference(at position: Int) -> MutableRef<Element> {
+      precondition(0 <= position && position < count)
+      return unsafe .init(unsafeAddress: payload + position, mutating: &self)
+    }
+  #endif
 
+  // TODO: CI等で6.2テスト可能になったら6.4で提供不可にする
+  //  #if swift(<6.4)
   @inlinable
   public func element(at position: Int) -> Element {
     precondition(0 <= position && position < count)
     return unsafe payload[position]
   }
 
+  // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
+  // 一般供用としてはmutable必須なので、一般供用不可となる
   @inlinable
   public func setElement(_ newValue: consuming Element, at position: Int) {
     precondition(0 <= position && position < count)
     unsafe payload[position] = newValue
   }
+  //  #endif
 }
 
 extension ElementBuffer2D {
 
-  @available(anyAppleOS 27.0, *)
-  @inlinable
-  @_lifetime(&self)
-  public mutating func reference(at x: Int, _ y: Int) -> MutableRef<Element> {
-    precondition(0 <= x && x < width)
-    precondition(0 <= y && y < height)
-    return unsafe .init(unsafeAddress: payload + y * width + x, mutating: &self)
-  }
+  #if swift(>=6.4)
+    @available(anyAppleOS 27.0, *)
+    @inlinable
+    @_lifetime(&self)
+    public mutating func reference(at x: Int, _ y: Int) -> MutableRef<Element> {
+      precondition(0 <= x && x < width)
+      precondition(0 <= y && y < height)
+      return unsafe .init(unsafeAddress: payload + y * width + x, mutating: &self)
+    }
+  #endif
 
+  // TODO: CI等で6.2テスト可能になったら6.4で提供不可にする
+  //  #if swift(<6.4)
   @inlinable
   public func element(at x: Int, _ y: Int) -> Element {
     precondition(0 <= x && x < width)
@@ -465,26 +478,33 @@ extension ElementBuffer2D {
     return unsafe payload[y * width + x]
   }
 
+  // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
+  // 一般供用としてはmutable必須なので、一般供用不可となる
   @inlinable
   public func setElement(_ newValue: consuming Element, at x: Int, _ y: Int) {
     precondition(0 <= x && x < width)
     precondition(0 <= y && y < height)
     unsafe payload[y * width + x] = newValue
   }
+  //  #endif
 }
 
 extension ElementBuffer3D {
 
-  @available(anyAppleOS 27.0, *)
-  @inlinable
-  @_lifetime(&self)
-  public mutating func reference(at x: Int, _ y: Int, _ z: Int) -> MutableRef<Element> {
-    precondition(0 <= x && x < width)
-    precondition(0 <= y && y < height)
-    precondition(0 <= z && z < depth)
-    return unsafe .init(unsafeAddress: payload + (z * height + y) * width + x, mutating: &self)
-  }
+  #if swift(>=6.4)
+    @available(anyAppleOS 27.0, *)
+    @inlinable
+    @_lifetime(&self)
+    public mutating func reference(at x: Int, _ y: Int, _ z: Int) -> MutableRef<Element> {
+      precondition(0 <= x && x < width)
+      precondition(0 <= y && y < height)
+      precondition(0 <= z && z < depth)
+      return unsafe .init(unsafeAddress: payload + (z * height + y) * width + x, mutating: &self)
+    }
+  #endif
 
+  // TODO: CI等で6.2テスト可能になったら6.4で提供不可にする
+  //  #if swift(<6.4)
   @inlinable
   public func element(at x: Int, _ y: Int, _ z: Int) -> Element {
     precondition(0 <= x && x < width)
@@ -493,6 +513,8 @@ extension ElementBuffer3D {
     return unsafe payload[(z * height + y) * width + x]
   }
 
+  // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
+  // 一般供用としてはmutable必須なので、一般供用不可となる
   @inlinable
   public func setElement(_ newValue: consuming Element, at x: Int, _ y: Int, _ z: Int) {
     precondition(0 <= x && x < width)
@@ -500,24 +522,29 @@ extension ElementBuffer3D {
     precondition(0 <= z && z < depth)
     unsafe payload[(z * height + y) * width + x] = newValue
   }
+  //  #endif
 }
 
 extension ElementBuffer4D {
 
-  @available(anyAppleOS 27.0, *)
-  @inlinable
-  @_lifetime(&self)
-  public mutating func reference(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> MutableRef<Element> {
-    precondition(0 <= x && x < size0)
-    precondition(0 <= y && y < size1)
-    precondition(0 <= z && z < size2)
-    precondition(0 <= w && w < size3)
-    return unsafe .init(
-      unsafeAddress:
-        payload + ((w * size2 + z) * size1 + y) * size0 + x,
-      mutating: &self)
-  }
+  #if swift(>=6.4)
+    @available(anyAppleOS 27.0, *)
+    @inlinable
+    @_lifetime(&self)
+    public mutating func reference(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> MutableRef<Element> {
+      precondition(0 <= x && x < size0)
+      precondition(0 <= y && y < size1)
+      precondition(0 <= z && z < size2)
+      precondition(0 <= w && w < size3)
+      return unsafe .init(
+        unsafeAddress:
+          payload + ((w * size2 + z) * size1 + y) * size0 + x,
+        mutating: &self)
+    }
+  #endif
 
+  // TODO: CI等で6.2テスト可能になったら6.4で提供不可にする
+  //  #if swift(<6.4)
   @inlinable
   public func element(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> Element {
     precondition(0 <= x && x < size0)
@@ -527,6 +554,8 @@ extension ElementBuffer4D {
     return unsafe payload[((w * size2 + z) * size1 + y) * size0 + x]
   }
 
+  // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
+  // 一般供用としてはmutable必須なので、一般供用不可となる
   @inlinable
   public func setElement(
     _ newValue: consuming Element, at x: Int, _ y: Int, _ z: Int, _ w: Int
@@ -537,4 +566,5 @@ extension ElementBuffer4D {
     precondition(0 <= w && w < size3)
     unsafe payload[((w * size2 + z) * size1 + y) * size0 + x] = newValue
   }
+  //  #endif
 }

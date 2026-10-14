@@ -64,6 +64,20 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   boundary）とRegistryの文書ランク節を読んで照合した。比較実験は未実施。
 - Codex reconciliation: 未処理
 
+### `CP-20261014-004` — 変化量・知っていること・タイムラグのドラフト
+
+- queue状態: `AWAITING_CODEX`
+- 発見元・ユーザー指示: 2026-10-14の会話。ユーザーが「ここだけにするのもったいないから、ドラフト文書化ほしいな」と明示依頼した。
+- 種別候補: `EXECUTION`（草案作成のみ）
+- 対象範囲: `Maintanance/CHANGE_KNOWLEDGE_LAG_DRAFT.md`の新規作成。
+- 対象外: 採用、参考資料・ポスター・Orientationへの反映、commit規約の変更。
+- 完了条件: 所有と占有、課題グラフと問題グラフ、変化量、3本目の軸、タイムラグ、保留を確定として扱うときの決断・信任・責任（同日追記）、commit↔task差し戻しの観測を一つの草案にまとめる。
+- 前提・既存task候補: `CP-20261014-002`、`CP-20261014-003`の続き。`GRAPH-001`（commit↔task対応表）。
+- 担当候補・受入担当: 姫（Claude）実行 / Codex受入。
+- 停止条件: 観測の数値が正本（git履歴・Registry）と食い違えば草案側を直す。
+- 成果・検証: 作成済み。差し戻し4件は該当commitのRegistry差分を読んで確認した。性能CIの仮説は未検証。
+- Codex reconciliation: 未処理
+
 過去のreconciliation済みentryは次を参照する。
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`

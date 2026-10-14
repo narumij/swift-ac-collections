@@ -1,210 +1,163 @@
-# AGENTS.md 再現性レビュー — ChatGPT（チャッピー）
+# AGENTS.md 再現性レビュー — ChatGPT（チャッピー）／返却
 
-## Task
+## Task and scope
 
-- Registry ID: `OPS-032`
-- Reviewer: ChatGPT（チャッピー）
-- Type: `DISCOVERY`
-- この文書一枚を、このreviewerへのtask依頼兼return表とする。
+- Registry ID: `OPS-032`; reviewer: ChatGPT (GPT-6); type: `DISCOVERY`.
+- Scope: attached `AGENTS.md` and `JUDGMENT_COORDINATES_DRAFT.md` against the judgment coordinates. No source/Registry modifications, Git operations, or policy adoption.
+- **Independence disclaimer:** reviewer saw the previous Claude review and discussed G-1/G-2/G-4 and Task ID incidents **before** receiving this assignment. Phase 1 is a *pre-comparison written evaluation*, **not a blind or independent discovery**. There is no valid basis for calling overlapping findings independent corroboration.
 
-## What this review can establish
+## Prior involvement and exposure (recorded before Phase 1 assessment)
 
-同じ判断座標を渡されたreviewerが、事前露出を記録したうえで、既存Claudeレビューとの比較前に
-現行`AGENTS.md`をどう評価するかを記録する。他reviewerの回答からは分離するが、判断座標や既に受けた露出から
-独立したreviewではない。
-
-このreviewだけでは、座標系自体の正しさ、他の判断体系に対する優位性、座標系外の問題を十分発見できること、
-または共通資料に由来する相関した見落としがないことを証明しない。
-
-## Prior involvement and exposure
-
-次をPhase 1開始前に記録する。
-
-- 既存reviewへの露出。
-- `AGENTS.md`、Orientation、関連規則の執筆・改訂への関与。
-- 判断座標の成立への関与。
-- 既知の事故や議論への参加。
-- 事前に知っていた期待所見。
-
-Known at assignment creation:
-
-- Prime Codex側では、ChatGPTが事前に読んだ資料、議論、期待所見を確定していない。
-- ユーザーまたはreviewerが、Phase 1開始前に判明している事実をReviewer recordへ記録する。
-
-Reviewer record:
-
-- 
+- Existing review: `AGENTS_MD_COORDINATE_REVIEW.md` in previous conversation; knew G-1 (persistent allocator state), G-2 (acceptance evidence scope), G-4 (reopening final work). Also knew its R-1–R-5 and a leftover historical-tense inconsistency.
+- Contributed commentary to successive `CHANGE_KNOWLEDGE_LAG_DRAFT.md` and `JUDGMENT_COORDINATES_DRAFT.md` iterations: scoped certainty/evidence, time-lag/double counting, delegated vs legal responsibility, demand vs fourth axis, task ID contract vs allocation state, finality vs collaborative handoff.
+- Familiar with user/Codex rules and incidents from conversation, including branch/commit/push authorizations, `PERM-029`, `OPT-070`, and the Task Registry ID-reuse investigation.
+- Did not author or independently validate repository `AGENTS.md`; no repository Git access or live CI evidence in supplied attachments. Inputs contain historical assertions not independently checked against original repository commits.
+- Expected findings before review: stable-ID allocator state, scoped acceptance proofs, reopening authority. These are seeded/exposed, not new discoveries.
 
 ## Reproduction inputs
 
-Phase 1開始前に、同じ入力を読んだか後から確認できる値を記録する。hash取得は読み取り操作として行い、
-対象fileを変更しない。
-
-- Started at:
-- Reviewer/model or surface:
-- Conversation context supplied before this task:
-- HEAD:
-- Worktree changes present at start:
-- `AGENTS.md` content hash:
-- `JUDGMENT_COORDINATES_DRAFT.md` content hash:
-- This review table SHA-256 before Phase 1 response: fileを受け取った直後、reviewerが編集する前のUTF-8 bytesを計算する。値の記入後に完成fileと一致することは要求しない。
-
+- Review date: 2026-10-14 (JST); start/end wall-clock timestamps: **UNKNOWN** (tool environment does not establish trustworthy execution time).
+- Model/surface: ChatGPT GPT-6, chat with extensive previous review context.
+- Supplied prior context: this thread's judgments and earlier Claude review; not a fresh worker.
+- HEAD: **UNKNOWN**; worktree changes at start: **UNKNOWN**. Received standalone file copies, not a verified working-tree snapshot.
+- `AGENTS.md` SHA-256 (attached bytes): `9b495bcd38231d44aad3dcd4155101a6f3de8b83ab9362ab03819b47edddcf08`.
+- `JUDGMENT_COORDINATES_DRAFT.md` SHA-256 (attached bytes): `3ad6cb16e1c182addaf25065379c2d8b65033c9ed89c7b1f87c296a3f3714edc`.
+- Unedited assignment table SHA-256: `fc349da3b60b3b931596876688b059d3a3f6c5b8b24fb9fc5f299d58382d7c89`.
+- Paths: conversation-mounted copies in `/mnt/data/`; no claim of byte identity with current repository HEAD.
 
 ## Phase 1: pre-comparison evaluation
 
-### Required reading
+### Reading and disclosure
 
-1. repository rootの現行`AGENTS.md`（評価対象）。
-2. `JUDGMENT_COORDINATES_DRAFT.md`（評価基準）。
-
-Phase 1を固定するまで、次を新たに読まない。
-
-- `AGENTS_MD_COORDINATE_REVIEW.md`。
-- 他reviewerのreview表。
-- 統合表。
-
-すでに読んでいる内容は忘れたふりをせず、Prior involvement and exposureへ書く。
-
-### Boundary
-
-- `AGENTS.md`、関連資料、Task Registryを変更しない。
-- Orientationや草案を採用・失効させない。
-- 新しい規則を安心のためだけに追加しない。
-- UNKNOWNを推測で閉じない。
+Read supplied AGENTS and coordinates. **Did not newly open Claude review during Phase 1**; its relevant content had already been seen in earlier conversation, so this is not blindness. No files edited except this return artifact. Findings distinguish text-supported claims from repository-history observations that remain unchecked here.
 
 ### Section index
 
-これはfindingの単位ではなく、確認漏れを防ぐ索引である。期待所見は書かない。
+| Ref | Section | Checked | Phase 1 reading |
+|---|---|---|---|
+| A | Startup / Orientation request | YES | Registry-first and opt-in orientation; potential collision only if explicit current user request overrides startup. |
+| B | User-facing management boundary | YES | Delegated operational discretion bounded by user authority; intervention suspension stated. |
+| C | SSoT / Agreement / Knowledge and Facts | YES | Controlling source and evidence/consensus distinction stated. |
+| D | Communication principles | YES | Clarification not execution; check observables first; two-sided error controls. |
+| E | Haskell-inspired reasoning | YES | Explicitly analogy, not literal authority model. |
+| F | Goal relevance and proximity | YES | DIRECT/NEAR/FAR/LATER/OUTSIDE, with caveat proximity not priority. |
+| G | Stable task IDs | YES | Persistence contract, no in-document allocator state. |
+| H | Repository operation authority | YES | Separate immediate approvals; routine must not override. |
+| I | Claude pending queue | YES | Temporary IDs distinguished from acceptance/Registry. |
+| J | Conversation reference IDs | YES | Presentation coordinates separate from permanent IDs. |
+| K | Japanese input confirmations | YES | Single named authorization, no bundled acts. |
+| L | Evaluation and impression records | YES | Uses named source; not personality profiling. |
+| M | Routine shorthand | YES | Five steps; commit permission interaction needs explicit precedence in use. |
+| N | Ownership boundaries | YES | Registry and docs owner; Claude reference explicitly. |
+| O | Xcode agent boundary | YES | File handoff, no internal agents in Xcode. |
+| P | Whole document | YES | Long but functionally partitioned; some table/state facts live elsewhere. |
 
-| Ref | `AGENTS.md`の対象 | Checked |
-| --- | --- | --- |
-| A | Startup / Orientation request | — |
-| B | User-facing management boundary | — |
-| C | SSoT / Agreement / Knowledge and Facts | — |
-| D | Communication principles | — |
-| E | Haskell-inspired reasoning | — |
-| F | Goal relevance and proximity | — |
-| G | Stable task IDs | — |
-| H | Repository operation authority | — |
-| I | Claude pending queue | — |
-| J | Conversation reference IDs | — |
-| K | Japanese input confirmations | — |
-| L | Evaluation and impression records | — |
-| M | Routine shorthand | — |
-| N | Ownership boundaries | — |
-| O | Xcode agent boundary | — |
-| P | 文書全体 | — |
+### Findings
 
-### Finding schema
+Evidence classes: **TEXT** direct quoted document content; **INFERENCE** reviewer reasoning; **EXPOSED** already known from Claude; **REPO-UNVERIFIED** alleged external history not checked here.
 
-一つの規則、一つの主張、または一つの権限境界につき一件とする。同じsectionへ複数findingを書いてよい。
+| ID | Target and claim | Type | Decision | Evidence | Countercheck / limitation | Impact | Minimal direction |
+|---|---|---|---|---|---|---|---|
+| F01 | Startup establishes Registry as task-state SSoT, not as universal truth; latest user message outranks Registry (`AGENTS.md` §Startup). | FACT/PRINCIPLE | KEEP | TEXT | Registry may be stale; SSoT is controlling record, not infallibility. | Prevents accidental resurrection. | Keep. |
+| F02 | Operational autonomy and policy authority separated; intervention can revoke delegation (§User-facing management boundary). | FACT/PRINCIPLE | KEEP | TEXT | What counts as intervention requires concrete context. | Limits unilateral decisions. | Keep, no new rule inferred. |
+| F03 | Correction/clarification does not itself authorize action (§Communication principles). | FACT | KEEP | TEXT | Specific subsequent instruction may independently authorize. | Distinguishes scope from permission. | Keep. |
+| F04 | `Stable task IDs` forbids reuse but does not supply durable used-ID counter or full-history index (`AGENTS.md` §Stable task IDs). | STATE | MISSING | TEXT + EXPOSED | State may exist in Registry or other file not supplied. Therefore 'repo-wide absent' is UNKNOWN. | Misallocation / ambiguous historic references. | Inspect allocator SSoT; if absent, put durable state in owner-chosen canonical place. |
+| F05 | Routine accepts when conditions met but does not explicitly require naming what claim, verification environment, or quality dimension is evidenced (§Routine). | EVIDENCE | MISSING | TEXT + EXPOSED | Detailed task docs might already store this; no canonical examples provided. | `DONE` may conceal remaining performance claims. | First inspect existing acceptance records; write only genuinely missing scope. |
+| F06 | No express rule spelling out owner-authorized reopening/notification of downstream dependents (§SSoT, intervention, routine). | FACT/PRINCIPLE | UNKNOWN | TEXT + EXPOSED | General user authority and preservation rules may already suffice, and '確定は捨' is a draft metaphor. | Retrospective corrections may mutate accepted contracts invisibly. | Confirm real case/need before rule addition; owner decides. |
+| F07 | Routine contains commit steps 2/5, and §Repository operation authority requires explicit per-operation approval immediately before each commit. | FACT | KEEP (clarity risk) | TEXT + reviewer inference | Both clauses can be read consistently; routine does not say it overrides permission. | Ambiguous shorthand could lead to unauthorized commits. | Preserve strict permission; at most a cross-reference if observed misuse. |
+| F08 | `FROZEN` restart authority independent from task need; `USER_ONLY` nondelegable (§Stable task IDs). | FACT | KEEP | TEXT | No claim that a need disappearing cancels freeze status. | Avoids task/effect conflation. | Keep. |
+| F09 | Goal proximity supports demand without turning distance into numeric priority (§Goal relevance). | PRINCIPLE | KEEP | TEXT | Needs can be unclear even to user; may require limited discovery. | Limits gratuitous work. | Keep. |
+| F10 | Temporary conversation IDs and pending task IDs must not become stable task identifiers (§pending queue; §Conversation IDs). | STATE/FACT | KEEP | TEXT | No direct execution evidence. | Avoids false stable identity. | Keep. |
+| F11 | Reading/checking facts, written ownership, and user confirmation encode the effect/owner/evidence coordinates across AGENTS. | PRINCIPLE | KEEP | TEXT + INFERENCE | Fit to the coordinates does **not** show that agents apply them correctly. | Explains current rules without adding rules. | Keep as descriptive mapping. |
+| F12 | 'Validation' after intervention is blocked (§User-facing management boundary). This applies even if earlier tests were authorized. | FACT | KEEP | TEXT | Must identify affected work rather than globally block unrelated work. | Prevents changes under revoked delegation. | Keep. |
 
-種類（複数可）:
+### Reverse trace: coordinates → AGENTS.md
 
-- `PRINCIPLE`: 判断原理から導く対象。
-- `FACT`: repository固有の事実または権限境界。
-- `STATE`: 規則を実行するための永続状態。
-- `EVIDENCE`: 主張を成立させる証拠または確定範囲。
-
-判定:
-
-- `KEEP`
-- `SIMPLIFY`
-- `CONFLICT`
-- `MISSING`
-- `UNKNOWN`
-
-| Finding | 対象箇所・正確な主張 | 種類 | 判定 | 根拠の種類 | 根拠 | 反証候補 | 影響 | 最小変更方向または非変更理由 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|  |  |  |  | 観測事実 / 正本の事実 / ユーザーの言葉 / reviewerの推論 |  |  |  |  |
-
-### Reverse trace: coordinates to AGENTS.md
-
-座標系が必要とする要素が`AGENTS.md`のどこで実装されているか、規則化不要か、欠落かを確認する。
-
-| 座標または需要 | 実装箇所 | 規則化不要 / 実装済み / 欠落 / 不明 | 根拠 |
-| --- | --- | --- | --- |
-| 効果と取消可能性 |  |  |  |
-| 持ち主と委任 |  |  |  |
-| 知っている範囲と証拠 |  |  |  |
-| 需要と目標への寄与 |  |  |  |
-
-固定4行で終えず、座標系から必要な主張を抽出して行を追加する。大分類へ畳んだだけで確認済みにしない。
+| Demand / coordinate / relevant claim | Existing implementation | Status | Reason |
+|---|---|---|---|
+| Need before doing | §Goal relevance; §Routine | IMPLEMENTED | Necessity and proximity checked before task selection. |
+| Effect reach/reversibility | §Repository operation authority; §Xcode agent boundary; §User-facing boundary | IMPLEMENTED/PARTIAL | Operations grouped by permission, not exhaustive quantitative effect scale; exhaustive taxonomy not required. |
+| Owner: separate authority and entrusted work | §User-facing boundary; §Ownership; §Stable task IDs | IMPLEMENTED | Named reserved decisions and task ownership. |
+| Start authority distinct from content change | §Communication principles | IMPLEMENTED | Explicitly separates execution authorization. |
+| Revocable delegation on intervention | §User-facing boundary | IMPLEMENTED | Stop/inspect-only/until reauthorized. |
+| Epistemic scope vs agreement | §SSoT; §Agreement; §Knowledge and Facts | IMPLEMENTED | Consensus not evidence. |
+| Answer from compiler/primary source before asking | §Communication principles; §SSoT; §Agreement | PARTIAL | General observability rule; no rigid 1→5 sequence necessary. |
+| Certainty applies to exact claims/evidence | §Routine, §SSoT | PARTIAL | Generic acceptance condition, scoped evidence may be in task canonical documents (unseen). |
+| Stable identity and persistent allocation | §Stable task IDs | PARTIAL | Identity contract present; allocation state not visible in AGENTS. |
+| Accepted work reopening authority | §User-facing boundary, §Communication principles | PARTIAL/UNKNOWN | Could be implied by ownership; explicit acceptance reopening not assessed in actual workflow. |
+| Review independence / conclusive evidence | §Agreement; §Knowledge and Facts | IMPLEMENTED | Multiple agreeing models not treated as proof. |
+| Need-based task elimination; laziness | §Goal relevance; §Routine | PARTIAL | Does not explicitly prescribe every task-refactoring idea; no mandatory rule inferred. |
+| Confidence→shared handoff (`捨`) | §SSoT; §Ownership; §User-facing boundary | CONCEPTUAL/NOT REQUIRED | Draft metaphor is not automatically a new rule. |
+| Legal liability / product final responsibility | §User-facing management boundary; §Repository authority | FACT/PARTIAL | Actual legal allocation not determined by AGENTS wording; don't infer it. |
 
 ### Phase 1 conclusion
 
-- Conclusion:
-- Recommended changes:
-- Reasons to preserve current text:
-- Unknowns:
+Most AGENTS clauses are consistent with the coordinates as a *descriptive lens*. Confirmed from supplied text: stable ID non-reuse contract, delegated-vs-reserved authority, explicit start permission, commit/push controls, demand proximity. **Not confirmed repo-wide:** existence of an ID allocator, evidence recorded in task-specific acceptance documents, operation of reopening protocol. F04–F06 overlap previously known Claude findings and are **not independently discovered**. F07 is a textual ambiguity worth watching, not a demonstrated violation. The smallest justified direction is to check missing state/records before editing policy.
+
+- Recommendation: KEEP most; inspect allocator and existing acceptance records; don't change AGENTS merely to restate principles.
+- Counterhypothesis: Apparently missing behaviors may be implemented by canonical task detail documents or operational instructions.
+- Unknowns: repository HEAD, real task registry/current allocator, live acceptance examples, actual Codex behavior, impact of changes.
 
 ### Phase 1 freeze
 
-- Completed at:
-- Declaration: Phase 1をここで固定した / 未完了
-- Phase 1 freeze SHA-256:
-- Hash rule: UTF-8、改行LF。`## Phase 1: pre-comparison evaluation`の見出しからこのHash rule行までを対象とし、`Phase 1 freeze SHA-256:`の値部分は空文字として正規化する。後続の訂正、Phase 2、Phase 3は対象外。
-- 以後Phase 1本文を修正しない。誤りは次の追記欄へ残す。
+- Completed at: **not independently timestamped**.
+- Declaration: **Phase 1 fixed; all subsequent findings appear only in Phase 2 or 3**.
+- Phase 1 freeze SHA-256: a83b1ceaed4e1cb6de93cb753e226f31bb7e42fc69ebc7b785af403b5b6c4774
+- Hash rule: UTF-8, LF. Hash from `## Phase 1: pre-comparison evaluation` through this Hash rule line inclusive; normalize SHA value to empty string. Subsequent sections excluded.
 
 ### Phase 1 corrections after freeze
 
-- 
+- None at freeze. See Phase 2 and Phase 3 for additions; do not silently rewrite Phase 1.
 
 ## Phase 2: provenance and evidence check
 
-Phase 1固定後、必要な論点について次を役割どおりに読む。
+- Available: full supplied coordinates document; its observation summary; original `AGENTS.md` text. Not available for direct audit: source Git checkout, original Registry history/diffs, live CI evidence, other source drafts (unless previously summarized in conversation).
+- Confirmed by text: `AGENTS.md` has non-reuse rule (§Stable task IDs), immediate distinct permission (§Repository operation authority), owner boundaries (§User-facing), and routine structure.
+- Coordinates' observation summary claims 7 IDs reused, 4 reopened tasks, and 169 commits/88 task-linked. These are **claims in the supplied document**, not newly verified Git observations in this review.
+- Clarification supported by AGENTS text: the reuse ban did **not** disappear from AGENTS when a Registry copy was archived. Thus 'regulation was gone' is not a sound account of repository's governing text; root cause persistent allocation state absent remains a working hypothesis pending inspection of canonical allocator.
+- F04 supported as 'not recorded in AGENTS', *not* 'absent anywhere'. F05 likewise supported as 'not required by routine prose', *not* 'not recorded in any task'. F06 governance may be implicit; practical necessity unresolved.
+- Additional issue from reading draft: the terms '確定' as evidence-valid claim and as acceptance/commit/release state share a label. These should stay proposition-scoped and status-scoped in reasoning; **do not infer that commit/release alone verifies product claims**.
+- Counterevidence: §Repository operation authority explicitly prevents routine shorthand from granting commit permission, so F07 is **clarity risk**, not contradiction.
+- Missing provenance checks: did not `git show` referenced commits; did not inspect Registry; did not independently reproduce ID allocator timeline or CI regressions. Reported limitation, not falsely closed.
 
-- 来歴・導出確認: `EFFECT_GRADIENT_REFERENCE.md`、`MINIMAL_ORIENTATION_DRAFT.md`、`CHANGE_KNOWLEDGE_LAG_DRAFT.md`。
-- 補助語彙: `JUDGMENT_COORDINATES_BUDDHISM_NOTE.md`。比喩の一致を規則の証拠にしない。
-- 観測事実: 各資料が明示するGit履歴、Registry差分、具体的事故。必要な範囲だけ原資料へ戻る。
+## Phase 3: comparison with existing Claude review
 
-記録:
+- Phase 1 recorded before new reading of Claude document in this execution, **but prior knowledge of its contents was substantial**. Comparison assesses consistency, not review independence.
 
-- Phase 1 findings supported:
-- Phase 1 findings weakened or contradicted:
-- New findings from provenance or observations:
-- Claims still lacking independent evidence:
-- Important findings for which supporting evidence was searched:
-- Important findings for which counterevidence was searched:
-- Searches not performed, and why:
-- Findings checked one step deeper against Git history or a source diff:
-- Corrections to Phase 1（元の記録は残す）:
+| ChatGPT finding | Claude finding | Match | Exposure | Comparison |
+|---|---|---|---|---|
+| F04 stable-ID allocator | G-1 | MATCH | DIRECTLY DISCLOSED | Both distinguish identifier contract from needed state. |
+| F05 acceptance claim/proof | G-2 | MATCH | DIRECTLY DISCLOSED | Both distinguish workload execution from performance conclusion; record formatting still open. |
+| F06 reopening | G-4 | MATCH/PARTIAL | DIRECTLY DISCLOSED | Same gap; ChatGPT less certain whether another protocol is necessary. |
+| F02 delegated authority | Section mapping/User-facing boundary | MATCH | INDIRECT / PRIOR EXPOSURE | Both see authority boundary already present. |
+| F03 clarification not permission | R-3 | MATCH | DIRECTLY DISCLOSED | Already in coordinates and AGENTS. |
+| F09 goal proximity | R-1 | MATCH | DIRECTLY DISCLOSED | Both map demand stages to existing rule. |
+| F07 routine/commit authorization | No distinct Claude issue (repository authority marked derivable) | PARTIAL | TEXTUAL / PRE-EXPOSED | ChatGPT highlights misreading potential; permission rule resolves it. No observed bug. |
+| F01/F08/F10 baseline task-state identity | Claude section mapping | PARTIAL | COMMON INPUT | Matching normative text is not an independent observation. |
 
-## Phase 3: comparison with the existing Claude review
-
-Phase 2後に`AGENTS_MD_COORDINATE_REVIEW.md`を読む。Phase 1と2を書き換えず、次を追記する。
-
-- Matched findings not seeded by the assignment:
-- Matched findings indirectly prompted by the schema or coordinates:
-- Matched findings directly disclosed by the assignment or prior exposure:
-- Findings only in the Claude review:
-- Findings only in this review:
-- Disagreements and their evidence:
-- Whether comparison changes the recommended direction:
-
-一致の分類は次で固定する。
-
-- `MATCH`: 対象となる規則または欠落と、原因の説明が同じ。推奨方向の違いは一致を妨げない。
-- `PARTIAL`: 一方が他方を包含する、または対象は同じだが原因の説明が一部だけ一致する。
-- `NO_MATCH`: 対象または原因が異なる。単に同じsectionへ言及しただけの場合を含む。
-- `NOT_COMPARABLE`: 粒度または証拠範囲が異なり、安全に対応付けられない。
+- Matched non-seeded independently discovered findings: **none can be certified**, because shared prior discussion and review exposure are extensive.
+- Findings only in Claude report: G-3 rationale for user irrevocable choices (minor explanatory gap); historical log of R-4/R-5 incorporation. Neither demands a change to AGENTS.
+- Findings only here: explicit *potential* Routine commit-shorthand ambiguity, and the distinction between proposition-based and operational status '確定'. Both are analytic cautions, not evidenced production defects.
+- Disagreement: not fundamental; difference in confidence about G-2/G-4 as AGENTS additions. Confirm underlying task records and owner decisions before converting them into new rules.
+- Conclusion: consistent readings conditional on common exposure. **No independent replication claim**.
 
 ## Completion checklist
 
-- [ ] Section indexを全件確認した。
-- [ ] 各重要findingに対象箇所と根拠を記録した。
-- [ ] 各重要findingについて反証候補を一度探した。
-- [ ] 観測事実、正本の事実、ユーザーの言葉、reviewerの推論を分離した。
-- [ ] UNKNOWNを無理に閉じていない。
-- [ ] 座標系から`AGENTS.md`への逆向き照合を行った。
-- [ ] 推奨変更がなくても非変更理由を説明した。
-- [ ] Phase 1の完了時刻と固定宣言を記録した。
-- [ ] 対象2文書とreview表の入力hash、reviewer条件、開始状態を記録した。
-- [ ] Phase 2と3で得た知識をPhase 1へ逆流させていない。
-- [ ] 一致を非seed、間接prompt、直接開示に分け、事前定義した基準で照合した。
+- [x] Checked all named AGENTS sections (against supplied file).
+- [x] Traced material findings to exact sections and type of evidence.
+- [x] Recorded counterhypotheses and available textual counterevidence.
+- [x] Distinguished file facts, source claims, and inference.
+- [x] Preserved UNKNOWN for unseen repository facts.
+- [x] Completed reverse trace beyond three axis labels.
+- [x] Explained no-change positions.
+- [x] Phase 1 frozen with computed hash (not a trusted independent wall-clock timestamp).
+- [x] Input bytes and context/exposure recorded.
+- [x] Kept Phase 1 text separate from later comparison.
+- [x] Classified matches by exposure; zero independent corroborations claimed.
+- [ ] HEAD/worktree and exact historical commit/diff verification (not supplied; not silently passed).
 
 ## Completion
 
-- Status: not started.
-- Files changed: this review table only.
-- No repository operation is authorized.
+- Status: **Completed as a constrained attached-file review; repository history/HEAD checks NOT COMPLETED**.
+- Files changed: **this returned review report only**.
+- No repo operations executed or authorized. This report is evidence for Prime/user to accept or reject; no changes to governing sources.

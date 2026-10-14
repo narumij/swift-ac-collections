@@ -2,7 +2,7 @@
 
 > 2026-10-14、ユーザーの接続指示により、現在のtask状態と依存関係の参照・更新先を本書へ切り替えた。使い方は[入口](PROGRESS_OVERVIEW_V2.md)、変更点と切替の経緯は[作成・接続記録](README.md)を参照する。
 
-本文のコード表記のファイルパスは、すべてリポジトリ直下を基準とする。別ファイルへのMarkdownリンクはこのV2一式の中を指す。
+本文のコード表記のファイルパスは、すべてリポジトリ直下を基準とする。別ファイルへのMarkdownリンクは本書からの相対パスで示す。
 
 ## Task Registry
 
@@ -21,7 +21,7 @@
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | ready判定を維持する常設nodeとして`ACTIVE`を保つ。個別assignmentや実行中ジョブを意味せず、必要なときだけ現行Registryとの一致を確認 | `Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
-| `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、当時のV2による試行目的と、再開時の現行playbookへの更新要否を再確認して再現性検証へ進む。旧V2・V3と旧templateは当時の経緯を確かめる資料として扱う。完成済みRegistryを移植する旧templateは2026-10-13に履歴化 | `Maintanance/Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Maintanance/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V3.md` / `Maintanance/Archived/Orientation/PROGRESS_OVERVIEW_TEMPLATE.md` / `Maintanance/OrientationV5/CODEX_TASK_OPERATION_PLAYBOOK_V5.md` |
+| `OPS-001` | `FROZEN` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-08、ユーザー指示により保留。明示的な再開指示後、当時のV2による試行目的と、再開時の現行playbookへの更新要否を再確認して再現性検証へ進む。旧V2・V3と旧templateは当時の経緯を確かめる資料として扱う。完成済みRegistryを移植する旧templateは2026-10-13に履歴化 | 起点（現行playbook）：`Maintanance/OrientationV5/CODEX_TASK_OPERATION_PLAYBOOK_V5.md`。経緯資料：`Maintanance/Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Maintanance/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V3.md` / `Maintanance/Archived/Orientation/PROGRESS_OVERVIEW_TEMPLATE.md` |
 | `OPS-028` | `WAITING_USER` | Codex | [EXECUTION] 作業Codex用ブートストラップの作成 | 固定bootstrapとtask契約templateの未採用初稿を作成し、独立レビューで読み取り、operation権限、workspace、返却経路、実証境界の修正点を抽出。ユーザーレビュー後に候補を再構成する | `Maintanance/Orientation/WORKER_CODEX_BOOTSTRAP_TASK.md` / `Maintanance/Orientation/WORKER_CODEX_BOOTSTRAP.md` / `Maintanance/Orientation/WORKER_CODEX_TASK_CONTRACT_TEMPLATE.md` |
 | `OPS-030` | `USER_ONLY` | User | [DECISION] 作業Codex用ブートストラップ候補のレビュー | 任意の時点で未採用初稿とレビュー論点を読み、Codexが候補を再構成してよいか、追加または変更する設計意図があるかを一つのレビュー結果として返す。AIは着手・代行・催促しない | `Maintanance/Orientation/WORKER_CODEX_BOOTSTRAP_TASK.md` / `Maintanance/Orientation/WORKER_CODEX_BOOTSTRAP.md` / `Maintanance/Orientation/WORKER_CODEX_TASK_CONTRACT_TEMPLATE.md` |
 
@@ -51,9 +51,9 @@
 | `RBT-034` | `FROZEN` | User / Codex | [EXECUTION] RedBlackTree 1.0品質アセスメント完成 | 1.0品質ゲートの再開後、再現可能な証拠一式を備え、要求・主張・反証・未検証領域・残余リスクを接続した品質アセスメントを完成させる | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
 | `RBT-035` | `FROZEN` | Claude / Codex | [DISCOVERY] RedBlackTreeチューニングの落ち穂拾い | ユーザーの明示的な再開指示後、過去の実装・benchmark・Git履歴・チューニング記録を現行コードと照合し、取りこぼした改善候補、未反映の知見、再検証が必要な仮説を発見する。性能変更は行わず、実測と判断が必要な後続taskへ分離する | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` / `Benchmarks/` |
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後 | `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
+| `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後、ユーザーがこのtaskを明示的に再開 | `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `WAITING_EXTERNAL` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
-| `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認 | `Maintanance/StrictMemorySafetyReadiness.md` |
+| `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認し、このtaskを明示的に再開 | `Maintanance/StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-009` | `FROZEN` | User / Codex | [DECISION] runtime-check実装の再審査 | ユーザードキュメント作業後、1.0中間ゴールへ移行した時点、または`-Ounchecked`が主要構成と判明した時点で再開し、現行実装を1.0へ採用するか一つだけ判断 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
 | `QUALITY-001` | `FROZEN` | User / Codex | 汎用基盤ライブラリとしての1.0採用品質ゲート | Index契約確定後、ユーザーが明示的に再開 | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
@@ -129,35 +129,34 @@
 
 ### 直近達成した目標
 
-Array系benchmark・OptionalElementBuffer opt-in・ElementBuffer系名称移行を完了した。詳細は`Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-14.md`に保存されている。
+- 2026-10-09、三対象のTest as Specification整理を受け、0.5.1の製品上の到達範囲とrelease検討開始を決定した（`RELEASE-005`）。同日、全公開対象のコメントドック・レビュー用ドラフトを0.5.2の製品上の到達範囲として採用し、release検討開始を決定した（`RELEASE-006`）。判断の記録は`Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-11.md`、各版の詳細は`Maintanance/Archived/Canonical/RELEASE_0_5_1.md`と`Maintanance/Archived/Canonical/RELEASE_0_5_2.md`にある。
+- 2026-10-13、Permutation、OptionalElementBuffer（当時OptionalArray）、ElementBuffer（当時BareArray）の利用者向け内部本文ドラフトを、ユーザーがドラフトとして受け入れた（`PERM-058`・`OPT-059`・`BARE-040`）。公開可能な初版の完成は含まない。受入記録は`Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-13.md`にある。
+- Array系benchmark・OptionalElementBuffer opt-in・ElementBuffer系名称移行を完了した。詳細は`Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-14.md`に保存されている。
+
+以上は当時の対象と範囲についての達成記録である。その後の変更を含む現在の仕様・文書・品質まで検証済みとは扱わない。
 
 ### 後続の中間ゴール
 
-- Permutation、OptionalArray、BareArrayのTest as Specification整理が完了した時点で、0.5.1の
-  製品上の到達範囲を決め、release工程へ進むか判断できる状態にする。
-- Permutationの利用者向け文書ドラフトを、公開契約と品質評価に接続し、ユーザーが本文をレビューできる
-  状態にする。公開可能な初版の完成はこのゴールに含めない。
-- OptionalArrayの利用者向け文書ドラフトを、公開契約と品質評価に接続し、ユーザーが本文をレビューできる
-  状態にする。公開可能な初版の完成はこのゴールに含めない。
-- BareArrayの利用者向け文書ドラフトを、監査で確定した公開契約に接続し、ユーザーが本文をレビューできる
-  状態にする。公開可能な初版の完成はこのゴールに含めない。
+提供範囲と必要な品質は`Maintanance/QUALITY_REQUIREMENTS.md`の「1.0に向けた開発対象」に従う。
+
 - 三対象の文書ドラフト作業を通じて作業方式を習熟した後、RedBlackTreeに見えていない残作業を確認し、
   Codexのユーザードキュメント作業フェーズへ渡せる状態にする。
-- 全公開対象のコメントドックについて、公開契約に接続したドラフトが揃った時点で、0.5.2の製品上の
-  到達範囲を決め、release工程へ進むか判断できる状態にする。
 - 全公開対象の利用者向けドキュメントが公開可能な初版として揃った時点で、0.6.0の製品上の到達範囲を
   決め、release工程へ進むか判断できる状態にする。
-- ユーザードキュメント作業後、OptionalArrayのISO/IEC 25010観点の品質評価を再評価し、
-  1.0判断前に解消する不足をtaskへ分離できる状態にする。
-- 再評価後、OptionalArrayを1.0として採用できるか判断可能な状態にする。
-- BareArrayのユーザードキュメント作業後、性能基準、View寿命、storage再設計、strict memory safetyを
-  再評価し、BareArrayを1.0として採用できるか判断可能な状態にする。
+- ユーザードキュメント作業後、OptionalElementBufferのISO/IEC 25010観点の品質評価を再評価し、
+  留保付きの実験的提供に必要な品質境界に照らして、不足をtaskへ分離できる状態にする。
+- 再評価後、OptionalElementBufferを留保付きの実験的提供として1.0へ含めるための品質境界が
+  成立しているか判断可能な状態にする。
 - RedBlackTreeのユーザードキュメント作業後、汎用基盤ライブラリの1.0として採用できるか判断可能な
   状態にする。この段階でruntime-check実装を再審査し、その結論とIndex契約を1.0品質ゲートへ渡す。
 - 0.9.x release後、Swift Package Indexへpackageを登録し、module別DocCの生成と互換性表示を確認する。登録後に
   SPIが提供するbadgeとmodule別API referenceへの導線をREADMEまたはPagesへ接続し、結果を1.0品質gateへ渡す。
 - 保留中の運用playbookをユーザー指示で再開した後、このrepositoryで得たtask運用知見を、
   別projectでもCodexが同程度の管理品質を再現できる移植可能な形へ整理する。
+
+### 取り下げた目標
+
+ElementBuffer（旧BareArray）の「1.0として採用できるか判断可能な状態にする」という目標は、現行品質要求で1.0提供対象外となっているため、2026-10-15の整理で取り下げた。代替の中間ゴールは設けず、既存の保守方針は品質要求に従う。元の目標文は[修正前原文](../Archived/PROGRESS_V2_GOALS_BEFORE_2026-10-15.md)に保存している。
 
 ### 遠い将来の目標候補
 
@@ -184,7 +183,7 @@ Array系benchmark・OptionalElementBuffer opt-in・ElementBuffer系名称移行�
 | `OPS-032` | `DONE` | Prime Codex / 80ms Codex / V3オーサー / ChatGPT | [DISCOVERY] 名前持ちCodexによる`AGENTS.md`再現性レビュー | 2026-10-14、4者の個別reviewを統合。全員が既存議論へ露出済みのためblindな独立再現とはせず、既知所見の適用再現、Routine commit許可の共通追加所見、Xcode handoffのPrime固有所見を証拠種別つきで分離した。このtaskの完了時点ではAGENTS変更は未承認であり、後の採用は`OPS-035`に記録 | `Maintanance/Archived/AGENTS_MD_NAMED_CODEX_REVIEW.md` |
 | `OPS-033` | `DONE` | Prime Codex | [EXECUTION] `AGENTS.md`原案R1の4者レビュー配布準備 | 2026-10-14、draft・master・4票のR1本文hash一致、4票が識別番号以外byte一致、一枚ごとの共通依頼・対象本文・返却欄を確認。01〜04をPrime Codex、80ms Codex、V3オーサー、ChatGPTへ割り当て、各票を渡せる状態にした。このtaskは配布準備までを完了範囲とし、返却・統合は`OPS-034`、後の採用は`OPS-035`に記録 | `Maintanance/AgentsReview/AGENTS_REVIEW_MASTER.md` |
 | `OPS-034` | `DONE` | Prime Codex / 80ms Codex / V3オーサー / ChatGPT | [DISCOVERY] `AGENTS.md`原案R1の4者初読レビューと統合 | 2026-10-14、4票の返却と事前接触記録を確認し、文言、具体場面、反証を照合して統合。R1は協働の入口として骨格を保てるが実効性は未観測。必須修正は確定せず、依頼と合意、許可範囲、権限返還、俯瞰対象を任意の表現改善候補として分離した。このtaskの完了時点では現行`AGENTS.md`への採用・反映は未実施であり、後の採用は`OPS-035`に記録 | `Maintanance/AgentsReview/AGENTS_REVIEW_MASTER.integrated.md` |
-| `OPS-035` | `DONE` | User / Codex | [EXECUTION] 現行`AGENTS.md`とOrientation V5の正本採用・参照切替 | 2026-10-14、ユーザーが現行`AGENTS.md`を採用・修正し、続く正式採用指示によりV5の4文書を一組の正本として採用。`AGENTS.md`の明示的なオリエンテーション参照先を`OrientationV5/CODEX_ORIENTATION_V5.md`へ切り替え、各文書の状態欄と採用記録を整合した。旧V4は履歴として現在位置に残す | `AGENTS.md` / `Maintanance/OrientationV5/README.md` / `Maintanance/OrientationV5/CODEX_ORIENTATION_V5.md` / `Maintanance/OrientationV5/TASK_ORIENTATION_V5.md` / `Maintanance/OrientationV5/AI_COLLABORATION_PHILOSOPHY_V5.md` / `Maintanance/OrientationV5/CODEX_TASK_OPERATION_PLAYBOOK_V5.md` |
+| `OPS-035` | `DONE` | User / Codex | [EXECUTION] 現行`AGENTS.md`とOrientation V5の正本採用・参照切替 | 2026-10-14、ユーザーが現行`AGENTS.md`を採用・修正し、続く正式採用指示によりV5の4文書を一組の正本として採用。`AGENTS.md`の明示的なオリエンテーション参照先を`Maintanance/OrientationV5/CODEX_ORIENTATION_V5.md`へ切り替え、各文書の状態欄と採用記録を整合した。旧V4は履歴として現在位置に残す | `AGENTS.md` / `Maintanance/OrientationV5/README.md` / `Maintanance/OrientationV5/CODEX_ORIENTATION_V5.md` / `Maintanance/OrientationV5/TASK_ORIENTATION_V5.md` / `Maintanance/OrientationV5/AI_COLLABORATION_PHILOSOPHY_V5.md` / `Maintanance/OrientationV5/CODEX_TASK_OPERATION_PLAYBOOK_V5.md` |
 
 ## 過去の記録への入口
 
@@ -196,3 +195,4 @@ Array系benchmark・OptionalElementBuffer opt-in・ElementBuffer系名称移行�
 - `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-12.md`
 - `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-13.md`
 - `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-14.md`
+- [目標の記録の修正前原文（2026-10-15）](../Archived/PROGRESS_V2_GOALS_BEFORE_2026-10-15.md)：0.5.1・0.5.2、三対象の本文ドラフト、旧提供方針による目標を含む。現在の目標や実行指示としては扱わない。

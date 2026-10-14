@@ -73,6 +73,41 @@ Orientation文書は、AIがrepositoryの目的、責任境界、および実務
 
 ## Task Registry
 
+### Task ID採番状態
+
+次の表を、Task Registry IDのprefixごとの**最後に使用した番号**を保持する正本とする。現行Registryから
+Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤りや重複が判明したtaskも使用済みに含める。
+行の削除、移動、状態変更、改名、またはtaskの統合を理由に番号を戻さず、欠番を再利用しない。
+
+既存prefixでtaskを新規登録するときは、この表の最後の番号へ1を加えたIDを使い、**新しいtask行の追加と同じ編集で**
+表の番号も更新する。採番したtaskを同じ編集で取りやめた場合も、その番号は使用済みとして表に残す。新しいprefixを
+導入するときは、既存のRegistryとArchivedに同じprefixがないことを確認し、最初のtask行と同じ編集でそのprefixを
+表へ追加する。採番待ちqueueの仮ID、conversation reference ID、release専用Registryの内部IDはこの表の対象外とする。
+
+初期値は2026-10-14時点の現行Registry、`Archived/PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`、および
+`Archived/PROGRESS_OVERVIEW_COMPLETED_*.md`のtask行を照合して復元した。
+
+| Prefix | 最後に使用した番号 |
+| --- | ---: |
+| `API` | `010` |
+| `ARRAY` | `018` |
+| `BARE` | `043` |
+| `BENCH` | `001` |
+| `CPP` | `002` |
+| `DOC` | `027` |
+| `EVAL` | `001` |
+| `FIT` | `007` |
+| `GRAPH` | `019` |
+| `HIST` | `001` |
+| `OPS` | `034` |
+| `OPT` | `072` |
+| `PERF` | `005` |
+| `PERM` | `064` |
+| `QUALITY` | `003` |
+| `RBT` | `035` |
+| `RELEASE` | `077` |
+| `TEST` | `004` |
+
 **現在の律速:** 外部（`swift-collections` ContainersPreviewの`Container.Index`要件）。
 Index契約と関連taskは、この外部条件が安定するまで最終確定できない。
 
@@ -158,6 +193,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 | `OPS-031` | `DONE` | User / Codex | [EXECUTION] Orientation V4正本採用とplaybook参照切替 | 2026-10-14、ユーザーの採用指示を受け、V4三文書とTask Operation Playbook V4の冒頭へ正本採用を明記し、V4から辿るplaybook参照をV4へ統一。旧版の移動・アーカイブは行わない | `Orientation/CODEX_ORIENTATION_V4.md` / `Orientation/TASK_ORIENTATION_V4.md` / `Orientation/AI_COLLABORATION_PHILOSOPHY_V4.md` / `Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V4.md` |
 | `OPS-032` | `DONE` | Prime Codex / 80ms Codex / V3オーサー / ChatGPT | [DISCOVERY] 名前持ちCodexによる`AGENTS.md`再現性レビュー | 2026-10-14、4者の個別reviewを統合。全員が既存議論へ露出済みのためblindな独立再現とはせず、既知所見の適用再現、Routine commit許可の共通追加所見、Xcode handoffのPrime固有所見を証拠種別つきで分離した。AGENTS変更は未承認 | `AGENTS_MD_NAMED_CODEX_REVIEW.md` |
 | `OPS-033` | `DONE` | Prime Codex | [EXECUTION] `AGENTS.md`原案R1の4者レビュー配布準備 | 2026-10-14、draft・master・4票のR1本文hash一致、4票が識別番号以外byte一致、一枚ごとの共通依頼・対象本文・返却欄を確認。01〜04をPrime Codex、80ms Codex、V3オーサー、ChatGPTへ割り当て、各票を渡せる状態にした。配布、返却、統合、現行`AGENTS.md`への採用・反映は未実施 | `AgentsReview/AGENTS_REVIEW_MASTER.md` |
+| `OPS-034` | `DONE` | Prime Codex / 80ms Codex / V3オーサー / ChatGPT | [DISCOVERY] `AGENTS.md`原案R1の4者初読レビューと統合 | 2026-10-14、4票の返却と事前接触記録を確認し、文言、具体場面、反証を照合して統合。R1は協働の入口として骨格を保てるが実効性は未観測。必須修正は確定せず、依頼と合意、許可範囲、権限返還、俯瞰対象を任意の表現改善候補として分離した。現行`AGENTS.md`への採用・反映は未実施 | `AgentsReview/AGENTS_REVIEW_MASTER.integrated.md` |
 | `RELEASE-020` | `FROZEN` | Codex | [EXECUTION] 0.6.0でGitHub Pages更新元をrelease tagへ一本化 | 0.5.xではmain pushとrelease tag pushの双方によるdeploy競合を許容。0.6.0のrelease工程でmain由来のdeployを停止し、tag commitから生成・検証した利用者向け文書だけがPagesを更新することを確認 | `RELEASE_0_6_0.md` |
 | `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | ユーザーがゴールを定め、人間だけでも現在位置、次の操作、完了証拠、停止点を追える一枚の工程表を作成する。0.5.xで実際に使って観測し、0.6.xで磨く。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `User/RELEASE_PROCESS.md` |
 | `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | ユーザーが、定義した品質要求に対して不足する工程仕様、判定基準、証拠取得方法、停止・復旧手順を補い、V&V可能な状態にする。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `User/RELEASE_PROCESS.md` |

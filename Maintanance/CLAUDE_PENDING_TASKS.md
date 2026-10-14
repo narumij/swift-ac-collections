@@ -78,6 +78,22 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 成果・検証: 作成済み。差し戻し4件は該当commitのRegistry差分を読んで確認した。性能CIの仮説は未検証。
 - Codex reconciliation: 未処理
 
+### `CP-20261014-005` — 判断の座標系の統合草案とAGENTS.md再評価
+
+- queue状態: `AWAITING_CODEX`
+- 発見元・ユーザー指示: 2026-10-14の会話。ユーザーが「これまでの3文書を姫がまとめ直して、ちゃっぴーと揉んで、確定し、
+  そのあとのAGENTS.mdをその観点で評価し直したい」と述べ、手順の確認に「いえす」と答えた。
+- 種別候補: `EXECUTION`（統合と評価）、確定は`DECISION`（ユーザー）
+- 対象範囲: (1) `Maintanance/JUDGMENT_COORDINATES_DRAFT.md`の新規作成、(2) ChatGPTレビューの反映、
+  (3) ユーザーの確定、(4) 確定した観点での`AGENTS.md`の評価文書（読むだけ）。
+- 対象外: `AGENTS.md`・`CLAUDE.md`・Registryの変更、統合元3文書の削除。
+- 完了条件: (1)〜(4)。(4)は評価結果を書いた時点で完了し、`AGENTS.md`を直すかはPrimeとユーザーが決める。
+- 前提・既存task候補: `CP-20261014-002`〜`004`の統合。
+- 担当候補・受入担当: 姫（Claude）実行 / ユーザー確定 / Codex受入。
+- 停止条件: (2)の後、ユーザーの確定まで(4)に進まない。
+- 成果・検証: (1)作成済み。補足資料`Maintanance/JUDGMENT_COORDINATES_BUDDHISM_NOTE.md`もユーザーの提案で追加。持ち主の表は`MINIMAL_ORIENTATION_DRAFT.md`の照合済みの内容を写し、tag pushにreleaseと注記した（`AGENTS.md`の「tag push are user-operated」と照合）。
+- Codex reconciliation: 未処理
+
 過去のreconciliation済みentryは次を参照する。
 
 - `Archived/CLAUDE_PENDING_TASKS_RECONCILED_2026-10-13.md`

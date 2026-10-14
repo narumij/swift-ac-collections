@@ -39,7 +39,7 @@ thread-safe containerとしての保証、またはSwift 6.4以降向けの最�
 | 論点 | 現在の証拠 | 今回の扱い |
 | --- | --- | --- |
 | 外部性能 | Swift・C++番兵workloadと暫定chartは成立しているが、受入可能な性能比は未決 | 既存の`OPT-053`と`OPT-054`を正本とし、重複taskを作らない |
-| 次元名体系 | 現行名で実装、仕様test、本文は整合するが、0.6.0到達範囲判断前の再判断が残る | 既存の`OPT-045`を正本とし、品質評価から結論を先取りしない |
+| 次元名体系 | 現行名、仕様test、本文、両ElementBuffer familyの横断命名判断が整合する | 旧`OPT-045`は横断命名判断へ吸収済みで、0.6.0の未解決前提にしない |
 | `@unchecked Sendable` | domain間移送の必要性と4型の条件付き適合を確認した一方、共有borrowからnonmutatingなstorage更新を並行に呼べる | 移送の利便性を維持しながら同一storageの並行更新を型・所有権で拒否できるか、独立した後続調査へ分ける |
 | 一般Swift利用 | SwiftPM buildとmodule直接利用を確認済み。`AcCollections`からの再公開はtraitによるopt-in | repository外consumerでのVerificationと、利用者が本文から正しく使えるかのValidationを分ける前段scenarioが必要 |
 | 競技利用 | EDPC-J / EDPC-Lはcompile evidenceで、実提出・正答・時間・memoryの証拠ではない | 一般利用と混ぜず、scenario設計で対象環境、課題、証拠、実行時期を分ける |
@@ -965,10 +965,11 @@ OptionalArrayは正式公開前であるため、既存名の維持やsource com
 
 - `OPT-044`: 後発の横断命名判断`ARRAY-009`へ吸収。1Dはunsuffixedの
   `OptionalElementBuffer`を採用し、`ARRAY-007`で実装反映まで完了した。
-- `OPT-045`: 2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、一つの次元名体系を判断する。
+- `OPT-045`: 後発の横断命名判断へ吸収。2D・3Dの意味名と4Dの`size0`〜`size3`を両moduleで維持する。
 
-`OPT-045`は、0.6.0の到達範囲判断前に行う。`OPT-044`は後発判断へ吸収済みであり、
-別の未解決判断として再開しない。
+`OPT-044`と`OPT-045`は後発判断へ吸収済みであり、別の未解決判断として再開しない。連鎖subscriptと
+Viewの削除後、現行の座標accessは最内軸から`x`・`y`・`z`・`w`の順で、4Dの`size0`最内という契約と
+対立しない。
 
 Codex acceptance（2026-10-09）: Claude初稿と第三者AIの補完調査を独立評価し、1D所有型名と多次元labelを
 別々に判断できる材料が揃ったため受け入れた。第三者AIは`OptionalArray1D`と現行labelの維持を推奨した。

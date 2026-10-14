@@ -30,13 +30,14 @@
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `RELEASE-020` | `FROZEN` | Codex | [EXECUTION] 0.6.0でGitHub Pages更新元をrelease tagへ一本化 | 0.5.xではmain pushとrelease tag pushの双方によるdeploy競合を許容。0.6.0のrelease工程でmain由来のdeployを停止し、tag commitから生成・検証した利用者向け文書だけがPagesを更新することを確認 | `Maintanance/RELEASE_0_6_0.md` |
-| `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | ユーザーがゴールを定め、人間だけでも現在位置、次の操作、完了証拠、停止点を追える一枚の工程表を作成する。0.5.xで実際に使って観測し、0.6.xで磨く。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `Maintanance/User/RELEASE_PROCESS.md` |
-| `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | ユーザーが、定義した品質要求に対して不足する工程仕様、判定基準、証拠取得方法、停止・復旧手順を補い、V&V可能な状態にする。AIは開始、代行、催促を行わず、依頼された場合だけ整理・レビューを補助する | `Maintanance/User/RELEASE_PROCESS.md` |
+| `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | 一枚の工程表の原型は2026-10-12に作成され、その後、旧release資料の一本化、AGENTS.mdを残す区間、AI分担境界が実績に基づいて追記済み。残るのは、実際のreleaseで現在位置・次の操作・完了証拠・停止点を追えるかをユーザーが観測し、工程表として受け入れること。AIは完了を代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` |
+| `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | 工程表には基本操作、CI確認、候補・最終tag、AI分担境界まで記載済み。定義した品質要求に対する判定基準、証拠取得方法、失敗時の停止・復旧手順など、V&Vに必要な未充当部分をユーザーが補う。AIは不足が解消したと代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/QUALITY_REQUIREMENTS.md` |
 | `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `Maintanance/User/RELEASE_PROCESS.md` |
-| `DOC-010` | `FROZEN` | Codex | [DISCOVERY] BareArrayの定性的性能表現の再検討 | 2026-10-09、比較対象はSwiftの`[[Element]]`であり、COWと連鎖subscriptによる深刻な性能劣化を単一連続storageと非所有Viewで迂回する設計意図があると確認。アンカリングを避けるため、ユーザー指示による再訪まで文言判断を保留 | `Maintanance/Archived/Canonical/RELEASE_0_5_2.md` / `Maintanance/ElementBufferModule/ElementBufferAudit.md` |
+| `DOC-010` | `FROZEN` | Codex | [DISCOVERY] ElementBufferの定性的性能表現の再検討 | 2026-10-09に確認した`[[Element]]`との比較意図は、当時の連鎖subscript・非所有Viewを含む設計の履歴である。その公開面は削除され、現行は単一連続storageの座標value accessと借用参照であるため、旧根拠から現行文言を確定しない。ユーザーの明示再開後、現在の操作、比較対象、測定証拠に照らして「C言語の配列に近いアクセス性能」を維持できるか再検討する | `Maintanance/Archived/Canonical/RELEASE_0_5_2.md` / `Maintanance/ElementBufferModule/ElementBufferAudit.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` |
 | `DOC-026` | `FROZEN` | User / Codex | [EXECUTION] Swift Package Indexへのpackage登録 | 0.9.x release後にユーザーが明示的に再開し、公式PackageListへ`https://github.com/narumij/swift-ac-collections.git`を追加する外部PRを準備・提出して、package page、互換性表示、module別DocC build結果を確認する | `Maintanance/DOCUMENTATION_CI_PLAN.md` / `Package.swift` |
 | `DOC-027` | `FROZEN` | Codex | [EXECUTION] Swift Package Index公開導線のREADME・Pages反映 | `DOC-026`完了後、SPI package pageの`Do you maintain this package?`が提示するMarkdownを正として互換性badgeをREADMEへ追加し、確認できたmodule別DocC URLへの導線をREADMEまたはPagesへ接続する | `Maintanance/DOCUMENTATION_CI_PLAN.md` / `README.md` |
-| `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | 全公開対象の利用者向けドキュメント初版完成後、0.6.0へ含める到達範囲を一つに定め、release工程へ進むか判断 | `Maintanance/RELEASE_0_6_0.md` |
+| `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | `RELEASE-078`で、0.5.3後の公開面、現行品質区分、文書の完成状態、および旧開始条件の差を判断材料として揃えた後、ユーザーが0.6.0へ含める到達範囲とrelease工程へ進むかを一つに決定する。調査完了だけでは凍結を解除しない | `Maintanance/RELEASE_0_6_0.md` / `Maintanance/QUALITY_REQUIREMENTS.md` / `Package.swift` |
+| `RELEASE-078` | `PROPOSED` | Codex | [DISCOVERY] 0.6.0開始条件と現行提供区分の再照合 | 0.5.3後の公開面、利用者向け文書、`QUALITY_REQUIREMENTS.md`の1.0提供区分、および`RELEASE_0_6_0.md`の旧開始条件を照合し、0.6.0の対象候補、必要な文書入力、条件付き依存、残る一つずつのユーザー判断を整理する。release範囲、提供停止、名称、公開契約は決定せず、範囲・完了条件・担当・詳細正本・必須依存を確認して状態を更新するまで着手しない | `Maintanance/RELEASE_0_6_0.md` / `Maintanance/QUALITY_REQUIREMENTS.md` / `Package.swift` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |
 
 ### RedBlackTreeと品質ゲート
 
@@ -45,13 +46,13 @@
 | `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる | `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-010` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲートのうち公開Index表現と完了範囲 | Container要件の安定後、公開Indexと内部`SealError`の分離、1.0での完了範囲を決定 | `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、互換性を再評価して決定 | `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalArray、BareArrayのユーザードキュメント作業で方式を習熟した後、ユーザーが再開。workflowと4公開型のoutlineを現在のAPI、test、設計資料と照合し、本文作成へ渡せる状態を確認 | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
+| `RBT-014` | `FROZEN` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalElementBuffer、ElementBufferの利用者向け文書作業による方式習熟は完了済み。ユーザーの明示的な再開後、workflowと4公開型のoutlineを現在のAPI、test、設計資料へ再照合し、本文作成へ渡せる状態を確認する | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
 | `RBT-032` | `FROZEN` | Codex | [DISCOVERY] RedBlackTree 0.6.0現行品質アセスメント | 2026-10-13、Codex復旧中の中断taskとして凍結。ユーザーの明示的な再開指示後、既存の試験結果と不足する再現証拠を照合してから継続する | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` |
 | `RBT-033` | `PROPOSED` | Codex | [DISCOVERY] macOS ASan＋Swift Testing Death Test実行経路の成立確認 | lifetime balance検査をtraitで除外しても子プロセスでASan runtimeが遅延ロードされる事象について、Swift Testing実行基盤、macOS環境、Linux CIとの差を切り分け、製品不具合と検証経路不成立を区別する | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Package.swift` |
 | `RBT-034` | `FROZEN` | User / Codex | [EXECUTION] RedBlackTree 1.0品質アセスメント完成 | 1.0品質ゲートの再開後、再現可能な証拠一式を備え、要求・主張・反証・未検証領域・残余リスクを接続した品質アセスメントを完成させる | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
 | `RBT-035` | `FROZEN` | Claude / Codex | [DISCOVERY] RedBlackTreeチューニングの落ち穂拾い | ユーザーの明示的な再開指示後、過去の実装・benchmark・Git履歴・チューニング記録を現行コードと照合し、取りこぼした改善候補、未反映の知見、再検証が必要な仮説を発見する。性能変更は行わず、実測と判断が必要な後続taskへ分離する | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` / `Benchmarks/` |
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の現行契約を維持するか一つだけ再判断 | `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-004` | `FROZEN` | Codex | Debug限定Comparable群・Balanced群 | Index契約またはexecutable API Matrix方針の確定後、ユーザーがこのtaskを明示的に再開 | `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
+| `RBT-004` | `FROZEN` | Codex | 残存するDebug限定Comparable群・Balanced群 | Debug限定`Result: Comparable`はユーザー介入で削除済み。残る`_LazyTieWrap`・`_NodePtrSealing`・`_LazyTie`の比較宣言とBalanced群について、Index契約またはexecutable API Matrix方針の確定後、ユーザーがこのtaskを明示的に再開 | `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `WAITING_EXTERNAL` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後 | `Maintanance/EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-007` | `FROZEN` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | ユーザーが段階3を承認し、このtaskを明示的に再開 | `Maintanance/StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | concurrency契約を扱う明示的な再開指示 | `Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
@@ -77,7 +78,7 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `OPT-045` | `FROZEN` | User | [DECISION] OptionalArray次元名体系の再判断 | 0.6.0の到達範囲判断前に、2D・3Dの意味名と4Dの`size0`〜`size3`を維持するか、AI間で整理した選択肢から一つ判断。0.5.2のコメントドック作業は現行名で先行する | `Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md` / `Maintanance/RELEASE_0_6_0.md` |
+| `OPT-045` | `EXCLUDED` | User | [DECISION] OptionalElementBuffer次元名体系の再判断 | 後発の横断命名判断へ吸収。2026-10-15、名称決定時に次元名も同時に決定済みだったことをユーザー確認。2D・3Dの`width`・`height`・`depth`と4Dの`size0`〜`size3`を両moduleで維持し、連鎖subscript・View削除後の座標accessとも整合するため、旧判断taskを独立に実行せずrelease前提にも残さない | `Maintanance/PUBLIC_API_NAMING_DECISIONS.md` / `Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md` / `Maintanance/ArrayObjectAndAPINamingDraft.md` |
 | `OPT-072` | `FROZEN` | User / Codex / Claude | [DISCOVERY] Swift 6.4以降向けOptionalElementBuffer一般提供方式 | split storageを維持する案と、`Element?` storage・標準`MutableRef`を使う案について、性能測定を含む成立条件、証拠、未確定の判断を整理する。調査の完了に方式の採用や再設計の実施は含めない。現在の競技用途向けopt-in提供を妨げず、ユーザーの明示再開まで着手しない | `Maintanance/OptionalElementBufferModule/CurrentQualityAssessment.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` |
 | `OPT-064` | `FROZEN` | User / Codex | [EXECUTION] OptionalArray一般利用理解Validation試行 | `OPT-072`の調査結果を必要とするが、その完了だけでは開始しない。一般Swift向け提供方式の採用判断と、検証する公開surface・説明がそろうまで凍結を保つ。明示再開後、設計非参加者が本文と公開surfaceから用途、座標順、nil遷移、所有・並行利用境界を理解できるか観測する。再開に向けて不足する判断・実行は別taskへ分ける | `Maintanance/OptionalElementBufferModule/GeneralSwiftValidationScenario.md` / `Maintanance/OptionalElementBufferModule/UserDocumentationDraft.md` / `Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md` |
 | `OPT-065` | `PROPOSED` | User / Codex | [EXECUTION] OptionalArray競技利用Validation試行 | ユーザーが問題・judge・提出可否を決めた後、未計算状態を持つ固定shapeの多次元メモ化問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない | `Maintanance/OptionalElementBufferModule/GeneralSwiftValidationScenario.md` / `Tests/OptionalElementBufferModuleTests/EDPC-J.swift` / `Tests/OptionalElementBufferModuleTests/EDPC-L.swift` |
@@ -86,9 +87,9 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `BARE-035` | `PROPOSED` | Codex | [DISCOVERY] BareArray提供停止の実施境界整理 | package、facade、文書、移行、release、既存利用への影響を確認し、提供停止を局所的に実施できるtaskへ分解する | `Sources/ElementBufferModule/Documentation/Quality-Profile.md` / `Package.swift` |
-| `BARE-042` | `PROPOSED` | User / Codex | [EXECUTION] ElementBuffer利用理解Validation試行 | 設計非参加者へ利用者向け本文と公開surfaceだけを提示し、座標順、`indices`、value accessと借用参照、提供環境、非Collection性、性能説明を無誘導で観測する。参加者選定と外部接触はユーザーが行う | `Maintanance/ElementBufferModule/GeneralSwiftValidationScenario.md` / `Maintanance/ElementBufferModule/UserDocumentationDraft.md` |
-| `BARE-043` | `PROPOSED` | User / Codex | [EXECUTION] ElementBuffer競技利用Validation試行 | ユーザーが問題・judge・提出可否を決めた後、固定shapeの多次元storageを必要とする実問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない | `Maintanance/ElementBufferModule/GeneralSwiftValidationScenario.md` |
+| `BARE-035` | `FROZEN` | Codex | [DISCOVERY] ElementBuffer提供停止の実施境界整理 | 1.0提供対象外という現行区分だけからpackage上の提供停止を導かない。ユーザーが提供停止の検討を明示的に再開した場合に限り、package、facade、文書、移行、release、既存利用への影響を現在の公開面へ再照合し、局所的な後続taskへ分解する | `Maintanance/QUALITY_REQUIREMENTS.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` / `Package.swift` |
+| `BARE-042` | `EXCLUDED` | User / Codex | [EXECUTION] ElementBuffer利用理解Validation試行 | 2026-10-15、ElementBufferは1.0提供対象外となり、現行目標は実装・仕様・test・benchmark・安全性・既存利用影響の保守であるため、一般利用者向け提供を前提にした理解Validationは現在の成果に不要として残作業から外した。将来、一般提供を再検討する場合は当時の公開面と目的から新しいtaskとして組み直す | `Maintanance/ElementBufferModule/GeneralSwiftValidationScenario.md` / `Maintanance/ElementBufferModule/UserDocumentationDraft.md` / `Maintanance/QUALITY_REQUIREMENTS.md` |
+| `BARE-043` | `EXCLUDED` | User / Codex | [EXECUTION] ElementBuffer競技利用Validation試行 | 2026-10-15、ElementBufferは1.0提供対象外で、現行目標に実問題への外部提出による採用Validationを必要としないため残作業から外した。既存利用の保守証拠や将来の提供再検討が具体化した場合は、問題・環境・必要な判断を現在の目的から新しく定める | `Maintanance/ElementBufferModule/GeneralSwiftValidationScenario.md` / `Maintanance/QUALITY_REQUIREMENTS.md` |
 
 ### 移行史
 
@@ -117,8 +118,8 @@
 | `PERM-064` | `PERM-063` | `SEQUENCE` | 旧名baselineと新名HEADを対応付けるworkflowを先にmergeしてgreenを確認してから、benchmark titleを変更する |
 | `OPS-028` | `OPS-030` | `SEQUENCE` | ユーザーが未採用初稿とレビュー論点を確認してから、Codexが候補を再構成する |
 | `RELEASE-020` | `RELEASE-007` | `SEQUENCE` | 0.6.0の到達範囲とrelease開始を決定してから、Pages更新元の一本化をrelease工程として実施する |
+| `RELEASE-007` | `RELEASE-078` | `SEQUENCE` | 0.5.3後の公開面、現行提供区分、文書状態、および旧0.6.0開始条件の差を判断材料として揃えてから、0.6.0の範囲とrelease開始を決定する |
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |
-| `RELEASE-007` | `OPT-045` | `PARALLEL_JOIN` | 利用者向け文書作業は現行名で先行できるが、0.6.0の到達範囲判断前に次元名体系を確定する |
 | `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |
 
 「AまたはB」の条件はANDの辺二本に変えず、task行に残す。例えば`RBT-004`の再開条件はORである。また、1.0品質ゲートの「再開」と「完了」は異なる。`QUALITY-002`・`QUALITY-003`をゲート完了まで待たせる逆向きの辺は作らない。

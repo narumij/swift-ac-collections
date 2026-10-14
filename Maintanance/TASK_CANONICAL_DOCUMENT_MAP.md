@@ -186,8 +186,8 @@
 | `OPT-041` | `Sources/OptionalElementBufferModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
 | `OPT-042` | `Sources/OptionalElementBufferModule/Documentation/QualityAssessment-ISO25010.md` | 2026-10-09 |  |
 | `OPT-043` | `Archived/Canonical/ARRAY_NAMING_REVIEW.md` / `Archived/Canonical/CHATGPT_ARRAY_NAMING_REVIEW_REQUEST.md` | 2026-10-11 |  |
-| `OPT-044` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` / `RELEASE_0_6_0.md` | 現行 |  |
-| `OPT-045` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` / `RELEASE_0_6_0.md` | 現行 |  |
+| `OPT-044` | `PUBLIC_API_NAMING_DECISIONS.md` / `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-13 | 後発の横断命名判断へ吸収し、独立taskから除外 |
+| `OPT-045` | `PUBLIC_API_NAMING_DECISIONS.md` / `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-15 | 後発の横断命名判断へ吸収し、独立taskから除外 |
 | `OPT-046` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-11 |  |
 | `OPT-047` | `OptionalElementBufferModule/CurrentQualityAssessment.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
 | `OPT-048` | `OptionalElementBufferModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` | 現行 |  |

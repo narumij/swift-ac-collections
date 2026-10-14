@@ -305,7 +305,7 @@ workload、比較対象に基づいて新しい評価を設計し、今回の固
 | ID | 種別 | 近さ | 内容 | 必要性 |
 | --- | --- | --- | --- | --- |
 | `BARE-006` | 既存`DISCOVERY` | `DIRECT` | BareArray多次元access性能測定設計 | 2D・3Dの連鎖accessをC++ nested vectorと同一条件で測るworkloadと、CI回帰・外部assessmentの境界を確定済み |
-| `DOC-010` | 既存`DISCOVERY` | `NEAR` | BareArrayの定性的性能表現の再検討 | 実装意図と未測定の外部性能を混同せず、利用者向け表現を再検討する |
+| `DOC-010` | 既存`DISCOVERY` | `NEAR` | ElementBufferの定性的性能表現の再検討 | 旧連鎖subscript・非所有Viewを含む比較意図を履歴として分離し、現行の座標value access・借用参照と未測定の外部性能を混同せず、利用者向け表現を再検討する |
 | `BARE-017` | `DISCOVERY` | `DIRECT` | BareArray利用Validation scenario設計 | QR-04・QR-05について、一般Swift利用と競技利用の代表scenario、導入経路、観測方法、必要な後続判断を整理する |
 | `BARE-028` | `EXECUTION` | `DIRECT` | Claude手直し後の差分再検証 | Claudeのレビューと手直しが受け入れられた後、変更影響範囲の検証を再実行して完了ゲートへ渡す |
 

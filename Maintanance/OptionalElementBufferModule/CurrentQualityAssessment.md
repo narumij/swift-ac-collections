@@ -251,8 +251,7 @@ direct cold / warm 4 workloadもsize 16・256・4096、3 cyclesで完走した�
 ## 判断の整理
 
 - 1D所有型名は横断命名判断でunsuffixedの`OptionalElementBuffer`に確定し、実装反映も完了した。
-  次元名体系の再判断は0.6.0到達範囲判断の前に残るが、現行APIのVerificationを妨げないため、
-  今回の品質評価の前提にはしない。
+  次元名体系も同じ判断で現行維持に確定しており、旧`OPT-045`を0.6.0到達範囲判断の前提に残さない。
 - 旧31診断という評価は現行sourceに対して失効した。再取得した40件は、所有型分類4件、allocation
   境界8件、deprecated View経路28件へ分離でき、製品判断を追加せず警告0件へ整理できた。
 - deprecatedだった連鎖subscriptとViewを削除し、利用例・test・benchmarkを座標accessへ移行した。

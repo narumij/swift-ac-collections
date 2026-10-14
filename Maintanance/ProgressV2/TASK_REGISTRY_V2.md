@@ -60,6 +60,7 @@
 | `QUALITY-001` | `FROZEN` | User / Codex | 汎用基盤ライブラリとしての1.0採用品質ゲート | Index契約確定後、ユーザーが明示的に再開 | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
 | `QUALITY-002` | `FROZEN` | Codex | [EXECUTION] 1.0品質保証CIの構成・証拠化 | 1.0品質ゲートの再開後、Ubuntu 24.04 LTS / x86_64のGitHub-hosted runnerで合意済みの品質試験を実行し、commit、workflow run、runner image、kernel、architecture、CPU、Swift、依存解決、選択試験、完全log、終了statusを証拠として残す。変動するrunner上の絶対性能は判定対象に含めない | `Maintanance/Current/QUALITY_REQUIREMENTS.md` / `Tests/TESTING.md` / `.github/workflows/candidate.yml` |
 | `QUALITY-003` | `FROZEN` | Codex | [EXECUTION] Apple platforms 27提供境界のmanifest反映・build確認 | 1.0品質ゲートの再開後、対象Apple platformごとの最低deployment versionをmanifestへ反映し、64-bitのplatform別build・導入経路を確認する。macOS 27 / arm64以外はbuild証拠と実行品質を区別する | `Maintanance/Current/QUALITY_REQUIREMENTS.md` / `Package.swift` |
+| `QUALITY-004` | `PROPOSED` | Codex | [DISCOVERY] 品質評価棚卸し | 四対象の評価・証拠・現行提供区分と既存taskを照合し、残る品質課題、記録不整合、既存taskで扱う範囲と未充当部分を整理する。初期抽出結果は詳細正本へ保存済み。開始時に対象版・範囲・完了条件・必須依存を確認して有効化する。個別課題の解消、公開契約・提供方針の採用、凍結解除は含めない | `Maintanance/Current/QUALITY_ASSESSMENT_INVENTORY.md` |
 
 ### Permutation
 

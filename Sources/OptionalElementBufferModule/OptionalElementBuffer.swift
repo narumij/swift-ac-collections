@@ -12,6 +12,8 @@
 // コピペで提出に使っていただいて構いません。
 // 提出の際のライセンス記載は不要です。
 
+// TODO: コピペでAtCoder提出可能なこと
+
 /// メモ化用配列
 ///
 /// 配列ベースのメモ化に用いる配列です。
@@ -85,6 +87,8 @@ extension OptionalElementBuffer {
     return unsafe payload[position]
   }
 
+  // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
+  // 一般供用としてはmutable必須なので、一般供用不可となる
   /// `position`の要素を設定します。`nil`はslotを未設定状態へ戻します。
   @inlinable
   public func setElement(_ newValue: consuming Element?, at position: Int) {
@@ -101,7 +105,7 @@ extension OptionalElementBuffer {
   }
 }
 
-extension OptionalElementBuffer: @unchecked Sendable where Element: Sendable { }
+extension OptionalElementBuffer: @unchecked Sendable where Element: Sendable {}
 
 extension OptionalElementBuffer {
 
@@ -201,6 +205,8 @@ extension OptionalElementBuffer2D {
     return unsafe payload[offset]
   }
 
+  // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
+  // 一般供用としてはmutable必須なので、一般供用不可となる
   /// `(x, y)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
   @inlinable
   public func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int) {
@@ -219,7 +225,7 @@ extension OptionalElementBuffer2D {
   }
 }
 
-extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable { }
+extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable {}
 
 /// メモ化用配列
 ///
@@ -318,6 +324,8 @@ extension OptionalElementBuffer3D {
     return unsafe payload[offset]
   }
 
+  // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
+  // 一般供用としてはmutable必須なので、一般供用不可となる
   /// `(x, y, z)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
   @inlinable
   public func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int, _ z: Int) {
@@ -337,7 +345,7 @@ extension OptionalElementBuffer3D {
   }
 }
 
-extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable { }
+extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable {}
 
 /// メモ化用配列
 ///
@@ -439,6 +447,8 @@ extension OptionalElementBuffer4D {
     return unsafe payload[offset]
   }
 
+  // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
+  // 一般供用としてはmutable必須なので、一般供用不可となる
   /// `(x, y, z, w)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
   @inlinable
   public func setElement(
@@ -461,4 +471,4 @@ extension OptionalElementBuffer4D {
   }
 }
 
-extension OptionalElementBuffer4D: @unchecked Sendable where Element: Sendable { }
+extension OptionalElementBuffer4D: @unchecked Sendable where Element: Sendable {}

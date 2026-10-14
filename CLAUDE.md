@@ -1,9 +1,13 @@
 # Session Startup
 
-At the beginning of every session, read only the Task Registry at the top of
-`Maintanance/PROGRESS_OVERVIEW.md` to establish current task state. Then read the detailed canonical
-document linked from the selected task row. Do not scan all maintenance or Archived documents by
-default.
+At the beginning of every session, use [Progress V2](Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md)
+as the entry point. Read the relevant rows in [Task Registry V2](Maintanance/ProgressV2/TASK_REGISTRY_V2.md)
+and the detailed canonical document linked from the selected task row. Consult only the necessary sections of
+[Task Rules V2](Maintanance/ProgressV2/TASK_RULES_V2.md) before an operation that requires them.
+Do not scan all maintenance or Archived documents by default.
+
+For the authority of historical records, including the retired `Maintanance/PROGRESS_OVERVIEW.md`,
+follow [AGENTS.md — 現在の仕事と正本](AGENTS.md#現在の仕事と正本).
 
 For work under `Tests/`, read `Tests/CLAUDE.md` after the Task Registry and follow its instructions.
 

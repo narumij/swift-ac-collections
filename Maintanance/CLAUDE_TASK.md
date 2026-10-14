@@ -9,13 +9,21 @@ the user.
 
 ## Current job status
 
-**現在のjobなし。**
+**この文書で管理する現在のjobなし。**
+
+ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
+この節のjob有無と、queueの未処理記録は区別する。
 
 Completed assignments and their Return records through 2026-10-14 are preserved in
 `Archived/CLAUDE_TASK_HISTORY_2026-10-14.md`. Earlier history remains in `Archived/CLAUDE_TASK_HISTORY.md`.
 
-Frozen work, remaining tasks, ownership, dependencies, and restart conditions are defined only by the Task Registry in
-`PROGRESS_OVERVIEW.md`. Do not reconstruct a current assignment from either history file.
+Use [Progress V2](ProgressV2/PROGRESS_OVERVIEW_V2.md) as the current entry point. Frozen work, remaining tasks,
+assignees, dependencies, and restart conditions are recorded in [Task Registry V2](ProgressV2/TASK_REGISTRY_V2.md).
+Task rules, numbering, and document authority are defined in [Task Rules V2](ProgressV2/TASK_RULES_V2.md).
+Current assignments must follow the current request and explicit delegation, not a Registry assignee name alone.
+
+For the authority of historical records, including these Return records and the retired `PROGRESS_OVERVIEW.md`,
+follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と正本).
 
 ## Active assignment
 

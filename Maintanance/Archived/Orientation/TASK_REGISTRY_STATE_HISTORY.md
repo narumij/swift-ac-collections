@@ -430,7 +430,7 @@ repository内では解消できない外部待ちを分離する変更だった�
 
 状態集合は8状態のまま変わらなかった。一方、文書構造は大きく縮小された。
 
-- 旧サマリー、完了チェック、判断待ち等が`Archived/PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`へ移された。
+- 旧サマリー、完了チェック、判断待ち等が`Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-07.md`へ移された。
 - 独立していた`状態表示`のtableが現行文書から削除された。
 - 状態集合は`Registry rules`の一行へ集約された。
 - Task precedenceは現行Registryの独立sectionとして残された。

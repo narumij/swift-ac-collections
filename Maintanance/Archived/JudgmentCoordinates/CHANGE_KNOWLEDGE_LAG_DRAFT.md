@@ -219,7 +219,7 @@ Archivedへ移り、10-10に別内容の`[DISCOVERY]`（iterator copy独立性�
 
 使い回さない規則は第一世代にあった（ユーザー）。git履歴では、`e4aa207d`（10-06、Task Registry導入）で
 「IDは作成後に変更・再利用しない」がRegistryに入り、`236434ff`（10-07、完了履歴のArchived移動）で完了済みの履歴と
-一緒に`Archived/PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`へ移って、現行のRegistryから消えている。
+一緒に`Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-07.md`へ移って、現行のRegistryから消えている。
 生きている規則が、終わった履歴と一緒に片付けられた形である。
 
 使い回しの条件は**正本の不一致**だった（ユーザーの見立てを履歴で確認）。使用済み番号の正本が現行Registryと

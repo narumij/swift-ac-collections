@@ -16,7 +16,7 @@
 記録の基準日: 2026-10-14 / Codex
 
 切替前は、この文書を現在の作業状態の入口とし、文書の権限・配置、Registry、依存、規則を開始時に確認する構成だった。2026-10-07までの完了チェック、判断待ち、
-旧サマリーは`Archived/PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`へ移した。
+旧サマリーは`Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-07.md`へ移した。
 2026-10-09までの`DONE`・`EXCLUDED` task行と、それらだけに向かう完了済みprecedence辺は
 `Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-09.md`へ移した。以後2026-10-11までに完了・除外した行と
 充足済みprecedence辺は`Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-11.md`へ移した。
@@ -105,7 +105,7 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 導入するときは、既存のRegistryとArchivedに同じprefixがないことを確認し、最初のtask行と同じ編集でそのprefixを
 表へ追加する。採番待ちqueueの仮ID、conversation reference ID、release専用Registryの内部IDはこの表の対象外とする。
 
-初期値は2026-10-14時点の現行Registry、`Archived/PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`、および
+初期値は2026-10-14時点の現行Registry、`Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-07.md`、および
 `Archived/PROGRESS_OVERVIEW_COMPLETED_*.md`のtask行を照合して復元した。
 
 | Prefix | 最後に使用した番号 |

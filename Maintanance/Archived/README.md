@@ -37,7 +37,7 @@ Archived全体を探索しない。
 
 ## 2026-10-07移動分
 
-- `PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`: Registry軽量化前の進捗、完了チェック、判断待ち一覧
+- `PROGRESS_OVERVIEW_COMPLETED_2026-10-07.md`: Registry軽量化前の進捗、完了チェック、判断待ち一覧
 - `MAINTENANCE_HISTORY_2026-10-07.md`: 文書運用の旧dashboard、履歴、handoff
 - `EXTERNAL_TYPE_EXTENSION_AUDIT_HISTORY_2026-10-07.md`: Gate A/B、実装batch、独立レビュー、compile実験の全記録
 
@@ -87,6 +87,8 @@ Archived全体を探索しない。
 
 ## 2026-10-15移動分
 
+- `TASK_REGISTRY_ARCHIVED_2026-10-15.md`: V2切替後に現行Registryから圧縮した完了・除外20件の原文
+- `Worker/`: 完了したBareArray本文レビューと、残作業から除外したWorker bootstrap・task契約候補
 - `PROGRESS_OVERVIEW_RETIRED_2026-10-15.md`: V2接続後に失効済みと明示されていた旧進捗一覧の全文。現在のtask状態・制度・権限・着手条件ではない
 - `JudgmentCoordinates/`: 判断座標の統合元、補足、`AGENTS.md`再評価。`OPS-037`完了後の経緯・参考資料
 - `EffectGradientPoster/`: 副作用の勾配と二軸整理を視覚化したSVG・PNG

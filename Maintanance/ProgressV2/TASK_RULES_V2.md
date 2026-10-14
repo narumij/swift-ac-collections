@@ -42,7 +42,7 @@ taskは判断一つかゼロになるまで分解する。新規登録・内容�
 | `EXCLUDED` | 必要性の消失や対象外などの理由で残作業から外した記録。実施成功や前提充足とはみなさない |
 | `ARCHIVED` | 履歴へ移した記録。読むことによって現在の仕事へ復活させない |
 
-`GRAPH-001`は常設の支援nodeとして`ACTIVE`を保つ個別の取り決めがある。現在の個別assignmentや実行中ジョブを意味しない。この意味をすべての`ACTIVE`へ一般化せず、各行の条件を読む。
+`GRAPH-001`と`HIST-001`は常設の支援nodeとして`ACTIVE`を保つ個別の取り決めがある。現在の個別assignmentや実行中ジョブを意味しない。この意味をすべての`ACTIVE`へ一般化せず、各行の条件を読む。
 
 外部待ちの仕事を開始できないことと、待っている条件が解消したかを任された範囲で確認することは分ける。凍結解除やユーザー専任の制限を、この確認から導かない。
 
@@ -71,7 +71,7 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 導入するときは、既存のRegistryとArchivedに同じprefixがないことを確認し、最初のtask行と同じ編集でそのprefixを
 表へ追加する。採番待ちqueueの仮ID、conversation reference ID、release専用Registryの内部IDはこの表の対象外とする。
 
-初期値は2026-10-14時点の現行Registry、`Maintanance/Archived/PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`、および
+初期値は2026-10-14時点の現行Registry、`Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-07.md`、および
 `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_*.md`のtask行を照合して復元した。
 
 | Prefix | 最後に使用した番号 |

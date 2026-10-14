@@ -21,15 +21,11 @@
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | ready判定を維持する常設nodeとして`ACTIVE`を保つ。個別assignmentや実行中ジョブを意味せず、必要なときだけ現行Registryとの一致を確認 | `Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
-| `OPS-001` | `EXCLUDED` | Codex | [DISCOVERY] Codex task運用playbookの移植可能化 | 2026-10-15、ユーザー判断により残作業から除外。現行V5 playbookと旧版・旧templateは現在の効力区分を変えず、必要になった場合も本taskを自動復活させない | 起点（現行playbook）：`Maintanance/OrientationV5/CODEX_TASK_OPERATION_PLAYBOOK_V5.md`。経緯資料：`Maintanance/Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md` / `Maintanance/Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V3.md` / `Maintanance/Archived/Orientation/PROGRESS_OVERVIEW_TEMPLATE.md` |
-| `OPS-028` | `EXCLUDED` | Codex | [EXECUTION] 作業Codex用ブートストラップの作成 | 2026-10-15、ユーザー判断により候補の再構成を含む残作業から除外。作成済みの未採用初稿とレビュー記録は採用せず、現在位置に保持する | `Maintanance/Worker/WORKER_CODEX_BOOTSTRAP_TASK.md` / `Maintanance/Worker/WORKER_CODEX_BOOTSTRAP.md` / `Maintanance/Worker/WORKER_CODEX_TASK_CONTRACT_TEMPLATE.md` |
-| `OPS-030` | `EXCLUDED` | User | [DECISION] 作業Codex用ブートストラップ候補のレビュー | 2026-10-15、ユーザー判断によりレビューを不要として残作業から除外。未採用初稿の採用や、別taskの完了を意味しない | `Maintanance/Worker/WORKER_CODEX_BOOTSTRAP_TASK.md` / `Maintanance/Worker/WORKER_CODEX_BOOTSTRAP.md` / `Maintanance/Worker/WORKER_CODEX_TASK_CONTRACT_TEMPLATE.md` |
 
 ### 公開とリリース
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `RELEASE-020` | `EXCLUDED` | Codex | [EXECUTION] 0.6.0でGitHub Pages更新元をrelease tagへ一本化 | 2026-10-15、Pages更新元を扱う時期が0.6.0 release工程からSwift Package Index登録時へ変わったため、旧境界のtaskを残作業から除外。SPI登録時の具体的な仕事への統合・採番・着手は行わない | `Maintanance/Current/RELEASE_0_6_0.md` / `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` |
 | `RELEASE-072` | `USER_ONLY` | User | [EXECUTION] 人間向けリリース工程表の作成 | 一枚の工程表の原型は2026-10-12に作成され、その後、旧release資料の一本化、AGENTS.mdを残す区間、AI分担境界が実績に基づいて追記済み。残るのは、実際のreleaseで現在位置・次の操作・完了証拠・停止点を追えるかをユーザーが観測し、工程表として受け入れること。AIは完了を代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` |
 | `RELEASE-075` | `USER_ONLY` | User | [EXECUTION] リリース工程の不足仕様充当 | 工程表には基本操作、CI確認、候補・最終tag、AI分担境界まで記載済み。定義した品質要求に対する判定基準、証拠取得方法、失敗時の停止・復旧手順など、V&Vに必要な未充当部分をユーザーが補う。AIは不足が解消したと代行判断せず、依頼された整理・レビューだけを補助する | `Maintanance/User/RELEASE_PROCESS.md` / `Maintanance/Current/QUALITY_REQUIREMENTS.md` |
 | `RELEASE-076` | `USER_ONLY` | User | [EXECUTION] リリース工程のValidation & Verification | ユーザーが、充当後の工程仕様について、定義した品質要求を満たすことと、意図したリリース目的に適合することを確認する。AIは開始、代行、催促を行わず、依頼された場合だけ検証・レビューを補助する | `Maintanance/User/RELEASE_PROCESS.md` |
@@ -37,20 +33,18 @@
 | `DOC-026` | `FROZEN` | User / Codex | [EXECUTION] Swift Package Indexへのpackage登録 | 0.9.x release後にユーザーが明示的に再開し、公式PackageListへ`https://github.com/narumij/swift-ac-collections.git`を追加する外部PRを準備・提出して、package page、互換性表示、module別DocC build結果を確認する | `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` / `Package.swift` |
 | `DOC-027` | `FROZEN` | Codex | [EXECUTION] Swift Package Index公開導線のREADME・Pages反映 | `DOC-026`完了後、SPI package pageの`Do you maintain this package?`が提示するMarkdownを正として互換性badgeをREADMEへ追加し、確認できたmodule別DocC URLへの導線をREADMEまたはPagesへ接続する | `Maintanance/Current/DOCUMENTATION_CI_PLAN.md` / `README.md` |
 | `RELEASE-007` | `FROZEN` | User / Codex | [DECISION] 0.6.0の到達範囲とrelease検討開始 | `RELEASE-078`で、0.5.3後の公開面、現行品質区分、文書の完成状態、および旧開始条件の差を判断材料として揃えた後、ユーザーが0.6.0へ含める到達範囲とrelease工程へ進むかを一つに決定する。調査完了だけでは凍結を解除しない | `Maintanance/Current/RELEASE_0_6_0.md` / `Maintanance/Current/QUALITY_REQUIREMENTS.md` / `Package.swift` |
-| `RELEASE-078` | `PROPOSED` | Codex | [DISCOVERY] 0.6.0開始条件と現行提供区分の再照合 | 0.5.3後の公開面、利用者向け文書、`QUALITY_REQUIREMENTS.md`の1.0提供区分、および`RELEASE_0_6_0.md`の旧開始条件を照合し、0.6.0の対象候補、必要な文書入力、条件付き依存、残る一つずつのユーザー判断を整理する。release範囲、提供停止、名称、公開契約は決定せず、範囲・完了条件・担当・詳細正本・必須依存を確認して状態を更新するまで着手しない | `Maintanance/Current/RELEASE_0_6_0.md` / `Maintanance/Current/QUALITY_REQUIREMENTS.md` / `Package.swift` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |
+| `RELEASE-078` | `PROPOSED` | Codex | [DISCOVERY] 0.6.0開始条件と現行提供区分の再照合 | `QUALITY-004`の品質棚卸し完了後、0.5.3後の公開面、利用者向け文書、`QUALITY_REQUIREMENTS.md`の1.0提供区分、および`RELEASE_0_6_0.md`の旧開始条件を照合し、0.6.0の対象候補、必要な文書入力、条件付き依存、残る一つずつのユーザー判断を整理する。release範囲、提供停止、名称、公開契約は決定せず、範囲・完了条件・担当・詳細正本・必須依存を確認して状態を更新するまで着手しない | `Maintanance/Current/RELEASE_0_6_0.md` / `Maintanance/Current/QUALITY_REQUIREMENTS.md` / `Package.swift` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |
 
 ### RedBlackTreeと品質ゲート
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる。再開時は現行API・設計と外部要件を照合し、旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
-| `RBT-010` | `EXCLUDED` | User / Codex | Index完了ゲートのうち公開Index表現と完了範囲 | 2026-10-15、ユーザー判断により`RBT-011`と同じ仕事として残作業から除外。外部条件の充足やIndex契約の完了を意味せず、残る判断は`RBT-011`と親ゲート`RBT-001`で扱う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、現行API・設計と外部要件を照合して互換性を再評価し、採否を決定する。旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-014` | `WAITING_USER` | Codex | RedBlackTree文書workflowと4型outlineのAPI照合 | Permutation、OptionalElementBuffer、ElementBufferの利用者向け文書作業による方式習熟は完了済み。赤黒木の利用者向け文書作業へ進めるというユーザー指示を待ち、その後、workflowと4公開型のoutlineを現在のAPI、test、設計資料へ再照合し、本文作成へ渡せる状態を確認する。状態変更だけでは実作業を開始しない | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` |
-| `RBT-032` | `DONE` | Codex | [DISCOVERY] RedBlackTree 0.6.0現行品質アセスメント | 2026-10-15、commit `36f821a4`をmacOS 27.0.1 / arm64 / Apple Swift 6.4で再評価。Debug・Release・process-exit系2 suiteを除くASan本体・DocCは成功。ASan＋Death Testは子プロセスのruntime注入経路が成立せず、製品不具合と区別して未検証のまま残した。環境、依存、選択条件、完全log、終了statusを証拠packageへ保存し、0.6.0で主張できる範囲と未確定領域を分離して完了 | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Maintanance/RedBlackTreeModule/Evidence/RBT-032-2026-10-15/README.md` |
 | `RBT-033` | `PROPOSED` | Codex | [DISCOVERY] macOS ASan＋Swift Testing Death Test実行経路の成立確認 | lifetime balance検査をtraitで除外しても子プロセスでASan runtimeが遅延ロードされる事象について、Swift Testing実行基盤、macOS環境、Linux CIとの差を切り分け、製品不具合と検証経路不成立を区別する | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Package.swift` |
 | `RBT-034` | `FROZEN` | User / Codex | [EXECUTION] RedBlackTree 1.0品質アセスメント完成 | 1.0品質ゲートの再開後、再現可能な証拠一式を備え、要求・主張・反証・未検証領域・残余リスクを接続した品質アセスメントを完成させる | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
-| `RBT-035` | `FROZEN` | Claude / Codex | [DISCOVERY] RedBlackTreeチューニングの落ち穂拾い | ユーザーの明示的な再開指示後、過去の実装・benchmark・Git履歴・チューニング記録を現行コードと照合し、取りこぼした改善候補、未反映の知見、再検証が必要な仮説を発見する。性能変更は行わず、実測と判断が必要な後続taskへ分離する | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` / `Benchmarks/` |
+| `RBT-035` | `FROZEN` | 姫 / 80ms | [DISCOVERY] RedBlackTreeチューニングの落ち穂拾い | ユーザーの明示的な再開指示後、過去の実装・benchmark・Git履歴・チューニング記録を現行コードと照合し、取りこぼした改善候補、未反映の知見、再検証が必要な仮説を発見する。性能変更は行わず、実測と判断が必要な後続taskへ分離する | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` / `Benchmarks/` |
 | `RBT-026` | `FROZEN` | User / Codex | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 利用者向け文書作業フェーズで、現行View APIと実装を確認し、View外だがbase treeでは有効なIndexを黙って読み書きし得る性質を踏まえ、O(1)と呼び出し側事前条件の契約を維持するか一つだけ再判断する。旧残task文書は論点の経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix-View.md` / `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-004` | `FROZEN` | Codex | 残存するDebug限定Comparable群・Balanced群 | Debug限定`Result: Comparable`はユーザー介入で削除済み。`RBT-011`でIndexの`Comparable`採否が確定した後、残る`_LazyTieWrap`・`_NodePtrSealing`・`_LazyTie`の比較宣言とBalanced群について、ユーザーがこのtaskを明示的に再開 | `Maintanance/Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
 | `RBT-005` | `FROZEN` | Codex | Memoize群の公開終了／正式API化 | 外部consumer 2件の移行後、ユーザーがこのtaskを明示的に再開。consumer移行だけでは自動再開しない | `Maintanance/Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md` |
@@ -79,8 +73,6 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `OPT-045` | `EXCLUDED` | User | [DECISION] OptionalElementBuffer次元名体系の再判断 | 後発の横断命名判断へ吸収。2026-10-15、名称決定時に次元名も同時に決定済みだったことをユーザー確認。2D・3Dの`width`・`height`・`depth`と4Dの`size0`〜`size3`を両moduleで維持し、連鎖subscript・View削除後の座標accessとも整合するため、旧判断taskを独立に実行せずrelease前提にも残さない | `Maintanance/Current/PUBLIC_API_NAMING_DECISIONS.md` / `Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md` / `Maintanance/Archived/ArrayModuleMigration/ArrayObjectAndAPINamingDraft.md` |
-| `OPT-072` | `EXCLUDED` | User | [DISCOVERY] Swift 6.4以降向けOptionalElementBuffer一般提供方式 | 2026-10-15、AI独走で生じた調査taskであるため、ユーザー判断により残作業から除外。現在の競技用途向けopt-in提供を維持し、split storageと`Element?` storage・標準`MutableRef`の比較調査を、このtaskから再開・実行しない | `Maintanance/OptionalElementBufferModule/CurrentQualityAssessment.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` |
 | `OPT-064` | `FROZEN` | User / Codex | [EXECUTION] OptionalElementBuffer一般利用理解Validation試行 | 一般Swift向け提供方式の採用判断と、検証する公開surface・説明がそろうまで凍結を保つ。明示再開後、設計非参加者が本文と公開surfaceから用途、座標順、nil遷移、所有・並行利用境界を理解できるか観測する。再開に向けて不足する判断・実行は別taskへ分ける | `Maintanance/OptionalElementBufferModule/GeneralSwiftValidationScenario.md` / `Maintanance/OptionalElementBufferModule/UserDocumentationDraft.md` / `Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md` |
 | `OPT-065` | `PROPOSED` | User / Codex | [EXECUTION] OptionalElementBuffer競技利用Validation試行 | ユーザーが問題・judge・提出可否を決めた後、未計算状態を持つ固定shapeの多次元メモ化問題で提出source、正否、実行時間、メモリを記録する。C++級性能や一般Swift利用へ一般化しない | `Maintanance/OptionalElementBufferModule/GeneralSwiftValidationScenario.md` / `Tests/OptionalElementBufferModuleTests/EDPC-J.swift` / `Tests/OptionalElementBufferModuleTests/EDPC-L.swift` |
 
@@ -89,14 +81,12 @@
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `BARE-035` | `FROZEN` | Codex | [DISCOVERY] ElementBuffer提供停止の実施境界整理 | 1.0提供対象外という現行区分だけからpackage上の提供停止を導かない。ユーザーが提供停止の検討を明示的に再開した場合に限り、package、facade、文書、移行、release、既存利用への影響を現在の公開面へ再照合し、局所的な後続taskへ分解する | `Maintanance/Current/QUALITY_REQUIREMENTS.md` / `Sources/ElementBufferModule/Documentation/Quality-Profile.md` / `Package.swift` |
-| `BARE-042` | `EXCLUDED` | User / Codex | [EXECUTION] ElementBuffer利用理解Validation試行 | 2026-10-15、ElementBufferは1.0提供対象外となり、現行目標は実装・仕様・test・benchmark・安全性・既存利用影響の保守であるため、一般利用者向け提供を前提にした理解Validationは現在の成果に不要として残作業から外した。将来、一般提供を再検討する場合は当時の公開面と目的から新しいtaskとして組み直す | `Maintanance/ElementBufferModule/GeneralSwiftValidationScenario.md` / `Maintanance/ElementBufferModule/UserDocumentationDraft.md` / `Maintanance/Current/QUALITY_REQUIREMENTS.md` |
-| `BARE-043` | `EXCLUDED` | User / Codex | [EXECUTION] ElementBuffer競技利用Validation試行 | 2026-10-15、ElementBufferは1.0提供対象外で、現行目標に実問題への外部提出による採用Validationを必要としないため残作業から外した。既存利用の保守証拠や将来の提供再検討が具体化した場合は、問題・環境・必要な判断を現在の目的から新しく定める | `Maintanance/ElementBufferModule/GeneralSwiftValidationScenario.md` / `Maintanance/Current/QUALITY_REQUIREMENTS.md` |
 
 ### 移行史
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `HIST-001` | `FROZEN` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 2026-10-13、現時点の整理を一段落として凍結。ユーザーの明示的な再開指示後、本紙の説明または証拠別紙へ追加する必要がある範囲だけを再開する | `Maintanance/RefactoringFromAtCoder2025/README.md` / `Maintanance/RefactoringFromAtCoder2025/EVIDENCE.md` |
+| `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する | `Maintanance/RefactoringFromAtCoder2025/README.md` / `Maintanance/RefactoringFromAtCoder2025/EVIDENCE.md` |
 
 ## Task precedence
 
@@ -116,6 +106,7 @@
 | `RBT-026` | `RBT-014` | `SEQUENCE` | 現行APIとの照合を判断材料として揃えてからMapped Values契約を再判断する |
 | `PERM-044` | `PERM-043` | `SEQUENCE` | C++標準に匹敵すると判定する性能比上限を確定してから、保存したmacOS測定証拠へ適用する |
 | `PERM-064` | `PERM-063` | `SEQUENCE` | 旧名baselineと新名HEADを対応付けるworkflowを先にmergeしてgreenを確認してから、benchmark titleを変更する |
+| `RELEASE-078` | `QUALITY-004` | `SEQUENCE` | 現行提供区分に照らした品質課題と証拠の棚卸しを揃えてから、0.6.0開始条件と対象候補を再照合する |
 | `RELEASE-007` | `RELEASE-078` | `SEQUENCE` | 0.5.3後の公開面、現行提供区分、文書状態、および旧0.6.0開始条件の差を判断材料として揃えてから、0.6.0の範囲とrelease開始を決定する |
 | `RELEASE-076` | `RELEASE-075` | `SEQUENCE` | 不足仕様を充当して検証可能な工程にしてから、Validation & Verificationを行う |
 | `DOC-027` | `DOC-026` | `SEQUENCE` | SPI登録と実在するpackage page・module別DocC URLを確認してから、badgeと公開導線をrepositoryへ反映する |
@@ -172,28 +163,11 @@ ElementBuffer（旧BareArray）の「1.0として採用できるか判断可能�
 - 1.0ゲート（`QUALITY-001`）との境界
 - RedBlackTreeのデバッグ用memberを`#if DEBUG`へ揃えるか
 
-## 履歴へ移す前の完了記録
-
-以下は完了済みであり、残作業・着手候補に含めない。履歴へ移すときは、[圧縮・アーカイブ手順](TASK_REGISTRY_ARCHIVE.md)に従う。
-
-| ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
-| --- | --- | --- | --- | --- | --- |
-| `OPS-031` | `DONE` | User / Codex | [EXECUTION] Orientation V4正本採用とplaybook参照切替 | 2026-10-14、ユーザーの採用指示を受け、V4三文書とTask Operation Playbook V4の冒頭へ正本採用を明記し、V4から辿るplaybook参照をV4へ統一。後にV5へ切り替え、2026-10-15にV4一式を履歴化した | `Maintanance/Archived/Orientation/CODEX_ORIENTATION_V4.md` / `Maintanance/Archived/Orientation/TASK_ORIENTATION_V4.md` / `Maintanance/Archived/Orientation/AI_COLLABORATION_PHILOSOPHY_V4.md` / `Maintanance/Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V4.md` |
-| `OPS-032` | `DONE` | Prime Codex / 80ms Codex / V3オーサー / ChatGPT | [DISCOVERY] 名前持ちCodexによる`AGENTS.md`再現性レビュー | 2026-10-14、4者の個別reviewを統合。全員が既存議論へ露出済みのためblindな独立再現とはせず、既知所見の適用再現、Routine commit許可の共通追加所見、Xcode handoffのPrime固有所見を証拠種別つきで分離した。このtaskの完了時点ではAGENTS変更は未承認であり、後の採用は`OPS-035`に記録 | `Maintanance/Archived/AGENTS_MD_NAMED_CODEX_REVIEW.md` |
-| `OPS-033` | `DONE` | Prime Codex | [EXECUTION] `AGENTS.md`原案R1の4者レビュー配布準備 | 2026-10-14、draft・master・4票のR1本文hash一致、4票が識別番号以外byte一致、一枚ごとの共通依頼・対象本文・返却欄を確認。01〜04をPrime Codex、80ms Codex、V3オーサー、ChatGPTへ割り当て、各票を渡せる状態にした。このtaskは配布準備までを完了範囲とし、返却・統合は`OPS-034`、後の採用は`OPS-035`に記録 | `Maintanance/Archived/AgentsReview/AGENTS_REVIEW_MASTER.md` |
-| `OPS-034` | `DONE` | Prime Codex / 80ms Codex / V3オーサー / ChatGPT | [DISCOVERY] `AGENTS.md`原案R1の4者初読レビューと統合 | 2026-10-14、4票の返却と事前接触記録を確認し、文言、具体場面、反証を照合して統合。R1は協働の入口として骨格を保てるが実効性は未観測。必須修正は確定せず、依頼と合意、許可範囲、権限返還、俯瞰対象を任意の表現改善候補として分離した。このtaskの完了時点では現行`AGENTS.md`への採用・反映は未実施であり、後の採用は`OPS-035`に記録 | `Maintanance/Archived/AgentsReview/AGENTS_REVIEW_MASTER.integrated.md` |
-| `OPS-035` | `DONE` | User / Codex | [EXECUTION] 現行`AGENTS.md`とOrientation V5の正本採用・参照切替 | 2026-10-14、ユーザーが現行`AGENTS.md`を採用・修正し、続く正式採用指示によりV5の4文書を一組の正本として採用。`AGENTS.md`の明示的なオリエンテーション参照先を`Maintanance/OrientationV5/CODEX_ORIENTATION_V5.md`へ切り替え、各文書の状態欄と採用記録を整合した。旧V4は履歴として現在位置に残す | `AGENTS.md` / `Maintanance/OrientationV5/README.md` / `Maintanance/OrientationV5/CODEX_ORIENTATION_V5.md` / `Maintanance/OrientationV5/TASK_ORIENTATION_V5.md` / `Maintanance/OrientationV5/AI_COLLABORATION_PHILOSOPHY_V5.md` / `Maintanance/OrientationV5/CODEX_TASK_OPERATION_PLAYBOOK_V5.md` |
-| `OPS-036` | `DONE` | User / Claude / Codex | [EXECUTION] Task履歴SQLite索引の試作・採用・初回作成 | 2026-10-15、Astraの手順案を基にClaudeが抽出器、Registry行変化、通常・アーカイブ・介入後メンテ操作を試作し、ユーザーが規則と実装を採用。Codexが既定DBを現在HEADまで更新して整合を確認し、一時entry 5件を一つの成果として受け入れた。索引はtask IDとcommitの探索を助ける参考資料であり、介入・完了・採用の意味判断やRegistryを代替しない | `Utilities/Maintenance/TaskHistoryIndex.py` / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md` / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md` / `Maintanance/ProgressV2/TASK_RULES_V2.md` |
-| `OPS-037` | `DONE` | User / Claude / ChatGPT / Codex | [EXECUTION] 判断座標の参考資料化・統合と`AGENTS.md`再評価 | 2026-10-14、副作用の勾配、最小orientation、変化・知識・時間差を参考資料と草案へまとめ、判断座標へ統合。ユーザーの確定とChatGPTレビューを経て`AGENTS.md`を再評価し、この成果を後続の4者レビューとV5採用へ渡した。一時entry 4件はこの成果へ統合するが、各草案・参考資料を現行規則や指示として復活させない | `Maintanance/Archived/JudgmentCoordinates/EFFECT_GRADIENT_REFERENCE.md` / `Maintanance/Archived/JudgmentCoordinates/MINIMAL_ORIENTATION_DRAFT.md` / `Maintanance/Archived/JudgmentCoordinates/CHANGE_KNOWLEDGE_LAG_DRAFT.md` / `Maintanance/Archived/JudgmentCoordinates/JUDGMENT_COORDINATES_DRAFT.md` / `Maintanance/Archived/JudgmentCoordinates/JUDGMENT_COORDINATES_BUDDHISM_NOTE.md` / `Maintanance/Archived/JudgmentCoordinates/AGENTS_MD_COORDINATE_REVIEW.md` / `Maintanance/Archived/AgentsReview/AGENTS_REVIEW_MASTER.integrated.md` |
-| `OPS-038` | `DONE` | User / Codex | [EXECUTION] 現行横断資料の`Maintanance/Current/`集約 | 2026-10-15、ユーザーの配置指示により、直下に散在していた現行の正本・運用資料9件を`Maintanance/Current/`へ集約し、Registry、品質文書、関連する現行資料の参照を追従した。明示された8文書と、`AGENTS.md`が固定パスで参照する`CONVERSATION_REFERENCE_IDS.md`は現在位置を維持。この時点では失効した旧進捗、完了作業記録、未採用草案を対象外とし、後続の`OPS-039`・`OPS-040`でArchivedへ移した。文書の権限・task状態・凍結条件は変更していない | `Maintanance/Current/README.md` / `Maintanance/ProgressV2/TASK_RULES_V2.md` |
-| `OPS-039` | `DONE` | User / Codex | [EXECUTION] 失効済み旧進捗一覧のアーカイブ | 2026-10-15、ユーザーの指示により、V2接続後は履歴としてだけ残っていた旧`Maintanance/PROGRESS_OVERVIEW.md`全文をArchivedへ移し、V2の履歴入口とアーカイブ索引から辿れるようにした。現在の品質文書とtest作業入口に残っていた旧Registry参照はV2へ更新。旧task・制度を復活させず、現在のtask状態・依存・権限は変更していない | `Maintanance/Archived/PROGRESS_OVERVIEW_RETIRED_2026-10-15.md` / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md` |
-| `OPS-040` | `DONE` | User / Codex | [EXECUTION] メンテナンス直下と旧Orientationの役割別整理 | 2026-10-15、ユーザーの指示により、直下に残っていた完了資料・snapshot・ポスターと、完了済み`AgentsReview/`・`EffectGradientPoster/`・旧`Orientation/`を役割別にArchivedへ移した。未完了のWorker候補3件は`Maintanance/Worker/`、現行の技術補助とtask-fit資料はそれぞれ`Current/`と`ProgressV2/`へ分離し、状態と効力を保った。現行文書と完了記録の参照を追従し、履歴資料を現行規則やtaskへ復活させていない | `Maintanance/Archived/README.md` / `Maintanance/Worker/README.md` / `Maintanance/Current/README.md` / `Maintanance/ProgressV2/AGENT_TASK_FIT_INTERVIEW.md` |
-
 ## 過去の記録への入口
 
 完了・除外・判断の経緯を調べる必要が生じたときだけ、対象IDや変更を絞って参照する。
 
-- `Maintanance/Archived/PROGRESS_OVERVIEW_HISTORY_2026-10-07.md`
+- `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-07.md`
 - `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-09.md`
 - `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-11.md`
 - `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-12.md`
@@ -202,3 +176,4 @@ ElementBuffer（旧BareArray）の「1.0として採用できるか判断可能�
 - [V2切替後に失効・退役した旧進捗全文（2026-10-15移動）](../Archived/PROGRESS_OVERVIEW_RETIRED_2026-10-15.md)：旧task表・制度・説明を含む履歴。現在の状態や着手条件には使わない。
 - [判断座標関連資料](../Archived/JudgmentCoordinates/README.md)、[ElementBuffer系名称移行記録](../Archived/ArrayModuleMigration/README.md)、[task棚卸しsnapshot](../Archived/TaskInventory/README.md)、[協働ポスター](../Archived/Posters/README.md)：2026-10-15に直下から移動した完了記録・参考資料。
 - [目標の記録の修正前原文（2026-10-15）](../Archived/PROGRESS_V2_GOALS_BEFORE_2026-10-15.md)：0.5.1・0.5.2、三対象の本文ドラフト、旧提供方針による目標を含む。現在の目標や実行指示としては扱わない。
+- [V2切替後の完了・除外20件（2026-10-15圧縮）](../Archived/TASK_REGISTRY_ARCHIVED_2026-10-15.md)：`OPS-001`・`OPS-028`・`OPS-030`・`OPS-031`〜`OPS-040`・`RELEASE-020`・`RBT-010`・`RBT-032`・`OPT-045`・`OPT-072`・`BARE-042`・`BARE-043`の原文。現在の仕事へ復活させない。

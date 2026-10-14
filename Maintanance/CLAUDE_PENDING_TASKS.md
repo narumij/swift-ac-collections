@@ -33,7 +33,20 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ## 採番待ち
 
-現在なし。
+### `CP-20261014-002` — 副作用の勾配とタスクリファクタリングの参考資料化
+
+- queue状態: `AWAITING_CODEX`
+- 発見元・ユーザー指示: 2026-10-14の会話。ユーザーが「それ、参考資料化したいな」と明示依頼した。
+- 種別候補: `EXECUTION`（文書作成のみ）
+- 対象範囲: `Maintanance/EFFECT_GRADIENT_REFERENCE.md`の新規作成。
+- 対象外: `AGENTS.md`、`User/`、Orientation文書、Task Registryへの反映。規則化や正本採用。
+- 完了条件: 会話で整理した副作用の勾配、タスクリファクタリング改訂版、Haskell対応、注意点、由来を、
+  正本を上書きしない参考資料として一つの文書にまとめる。
+- 前提・既存task候補: なし。Orientation V4草案（作業中）との関係づけはCodexとユーザーが判断する。
+- 担当候補・受入担当: 姫（Claude）実行 / Codex受入。
+- 停止条件: 既存正本との矛盾が見つかった場合は、参考資料側を直し、正本は触らない。
+- 成果・検証: 作成済み。V4草案4件に同じ内容がないことをgrepで確認した（`User/MEMO.md`にユーザー自身の自己紹介文があるだけ）。
+- Codex reconciliation: 未処理
 
 過去のreconciliation済みentryは次を参照する。
 

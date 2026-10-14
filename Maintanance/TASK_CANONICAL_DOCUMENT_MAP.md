@@ -256,17 +256,17 @@
 | `QUALITY-001` | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` | 現行 |  |
 | `QUALITY-002` | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` / `CLAUDE_TASK.md`<br>`QUALITY_REQUIREMENTS.md` / `Tests/TESTING.md` / `.github/workflows/candidate.yml` | 2026-10-11<br>現行 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
 | `QUALITY-003` | `PermutationModule/CurrentQualityAssessment.md` / `QUALITY_REQUIREMENTS.md`<br>`QUALITY_REQUIREMENTS.md` / `Package.swift` | 2026-10-11<br>現行 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
-| `RBT-001` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行 |  |
+| `RBT-001` | `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`<br>`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行<br>履歴 | Archived文書は起源・経緯だけに使う。 |
 | `RBT-002` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 2026-10-09 |  |
 | `RBT-003` | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` | 2026-10-09 |  |
 | `RBT-004` | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` | 現行 |  |
 | `RBT-005` | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` | 現行 |  |
 | `RBT-006` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 2026-10-09 |  |
 | `RBT-007` | `StrictMemorySafetyReadiness.md` | 現行 |  |
-| `RBT-008` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行 |  |
+| `RBT-008` | `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/Buffer/UnsafeTreeV2+BufferHeader.swift`<br>`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行<br>履歴 | Archived文書は起源・経緯だけに使う。 |
 | `RBT-009` | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` | 現行 |  |
-| `RBT-010` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行 |  |
-| `RBT-011` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行 |  |
+| `RBT-010` | `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`<br>`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行<br>履歴 | Archived文書は起源・経緯だけに使う。 |
+| `RBT-011` | `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`<br>`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行<br>履歴 | Archived文書は起源・経緯だけに使う。 |
 | `RBT-012` | `Tests/RedBlackTreeTests/` | 2026-10-09 |  |
 | `RBT-013` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 2026-10-09 |  |
 | `RBT-014` | `Sources/RedBlackTreeCollections/Documentation/Head/DOCUMENTATION_WORKFLOW.md` | 現行 |  |
@@ -281,7 +281,7 @@
 | `RBT-023` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 2026-10-09 |  |
 | `RBT-024` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 2026-10-09 |  |
 | `RBT-025` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 2026-10-09 |  |
-| `RBT-026` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行 |  |
+| `RBT-026` | `Sources/RedBlackTreeCollections/Documentation/API-Matrix-View.md` / `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md`<br>`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行<br>履歴 | Archived文書は起源・経緯だけに使う。 |
 | `RBT-027` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 2026-10-09 |  |
 | `RBT-028` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 2026-10-09 |  |
 | `RBT-029` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 2026-10-09 |  |

@@ -13,10 +13,16 @@ ElementBufferModuleは、要素を一つの連続storageに所有する1Dから4
 すべてのslotはinitializerで値を持ち、最後にbufferが破棄されるまで設定済みである。標準`Array`や`Collection`の代替として
 一般的なcollection APIを提供する型ではない。
 
+現行版は`AcCollections`から利用できるが、1.0提供対象からは除外されている。
+競技用途を意識した実装と既存利用を保守する位置づけであり、現在の値更新方式を一般Swift向けの
+コンテナとして提供するものではない。
+
 ## 基本的な使い方
 
 ```swift
-var table = ElementBuffer2D(repeating: 0, width: 4, height: 3)
+import AcCollections
+
+let table = ElementBuffer2D(repeating: 0, width: 4, height: 3)
 
 table.setElement(42, at: 2, 1)
 let value = table.element(at: 2, 1) // 42
@@ -66,10 +72,13 @@ for z in buffer.indices {
 
 値を一回読む、または一回入れ替える場合はこれらのmethodを使う。
 
+現行の`setElement`は、競技用途での更新性能を優先してnonmutating methodとしている。
+このため`let`で保持したbufferも更新でき、`let`や借用で渡すことだけでは内容が読み取り専用にならない。
+
 ## `MutableRef`による借用参照
 
-Swift 6.4とApple OS 27以降の組み合わせでは、mutating `reference(at:)`がSwift標準ライブラリの
-`MutableRef<Element>`を返す。
+mutating `reference(at:)`はSwift標準ライブラリの`MutableRef<Element>`を返す。
+Swift 6.4以降が必要で、Apple platformでは対応するOS 27以降を要求する。
 `value`を通じて、ownerの同じslotをscope内で繰り返し読み書きできる。
 
 ```swift
@@ -88,15 +97,17 @@ let value = buffer.element(at: 2) // 3
 ownerより長くescapeさせるコードはcompilerに拒否される。referenceを保持したままownerへ独立にaccessするのではなく、
 借用scope内でreferenceを使い終える。
 
-`reference(at:)`は、Swift 6.4 toolchainと対応するApple OS 27以降で利用できる。
 旧OS・旧toolchain向けの同名互換型は提供しない。
 
 ## 所有権と要素寿命
 
 4つの所有型は`~Copyable`であり、暗黙に複製できない。各型がstorageとその全要素を所有する。
 bufferが破棄されると、全要素の寿命も終了する。公開のcopy操作は提供しない。
+`Element`がclassの場合、bufferが手放すのは保持していた参照であり、別の参照が残っていればinstanceは存続する。
 
-`Element: Sendable`のとき所有型も`@unchecked Sendable`である。ただし、これは同じinstanceへの無同期な並行accessを許可する説明ではない。
+`Element: Sendable`のとき所有型も`@unchecked Sendable`である。ただし、この適合や`~Copyable`は、
+同じinstanceへの無同期な並行accessを許可するものではない。`setElement`は借用先からも呼べるため、
+同じinstanceへの並行更新や、更新中の読み取りは避ける。
 借用参照を含む並行利用の意味的な保証範囲は現在未検証である。
 
 ## 事前条件と空のshape
@@ -130,11 +141,14 @@ bufferが破棄されると、全要素の寿命も終了する。公開のcopy�
 - `MutableRef`の利点より先に、owner依存寿命と可変借用の制約を強調しすぎていないか。
 - 1Dから4Dの座標順と、`indices`が最外軸だけを返すことを、例から正しく読み取れるか。
 - 標準`MutableRef`を直接使い、旧環境向け互換型を提供しない境界が分かりやすいか。
+- sourceには、Swift 6.2でのCI検証後にSwift 6.4向けvalue accessを外すTODOがある。
+  対応する条件分岐はまだ無効なので、本文は現行APIを説明し、変更済みとは扱わない。
 - 性能特性は計算量だけに留め、外部比較を保証しない現段階の境界でよいか。
 
 ## 根拠
 
 - 公開実装: `Sources/ElementBufferModule/ElementBuffer.swift`
+- 提供方針: `Maintanance/Current/QUALITY_REQUIREMENTS.md`の「1.0に向けた開発対象」
 - 現行Test as Specification: `Tests/ElementBufferModuleTests/`
 - 借用寿命compiler fixture: `Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/`
 - 品質プロファイル: `Sources/ElementBufferModule/Documentation/Quality-Profile.md`

@@ -13,10 +13,18 @@ OptionalElementBufferModuleは、各位置が「未設定」または一つの�
 主な用途は、多次元の状態を整数座標で管理するメモ化である。標準`Array`や`Collection`の代替として一般的な
 collection APIを提供する型ではない。
 
+現行版は、主として競技プログラミング向けに明示的に有効化して使う、実験的な低レベル部品である。
+更新時の性能を優先した現在の方式を、一般Swift向けのコンテナとして提供するものではない。
+
 ## 基本的な使い方
 
+SwiftPM依存で`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitを有効にし、`AcCollections`をimportする。
+traitが無効のままでは、以下の型は`AcCollections`から利用できない。
+
 ```swift
-var memo = OptionalElementBuffer2D<Int>(width: 4, height: 3)
+import AcCollections
+
+let memo = OptionalElementBuffer2D<Int>(width: 4, height: 3)
 
 if memo.element(at: 2, 1) == nil {
   memo.setElement(42, at: 2, 1)
@@ -28,6 +36,9 @@ memo.setElement(nil, at: 2, 1)     // 未設定へ戻す
 
 initializerの直後は、すべてのslotが未設定である。`element`は未設定の位置で`nil`を返し、
 `setElement`は値を保存する。`setElement(nil, ...)`は現在の要素を破棄し、そのslotを未設定へ戻す。
+
+現行の`setElement`と`removeAll()`はnonmutating methodなので、`let`で保持したbufferも更新できる。
+`let`や借用で渡すことだけでは、内容が読み取り専用になるわけではない。
 
 ## 型と座標
 
@@ -65,9 +76,11 @@ for z in buffer.indices {
 
 同じslotへ新しい値を設定すると、旧い要素は破棄される。`nil`への変更、`removeAll()`、buffer自体の破棄でも、
 それぞれ対象の要素寿命が終了する。
+`Element`がclassの場合、bufferが手放すのは保持していた参照であり、別の参照が残っていればinstanceは存続する。
 
-`Element: Sendable`のとき所有型も`@unchecked Sendable`である。ただし、これは同じinstanceへの無同期な並行accessを許可する説明ではない。
-並行利用の意味的な保証範囲は現在未検証である。
+`Element: Sendable`のとき所有型も`@unchecked Sendable`である。ただし、現行の更新APIは、
+同じinstanceへの共有borrowからの並行更新を型で拒否しない。同じinstanceへの並行更新や、更新中の読み取りは避ける。
+`Sendable`適合があることを、これらの並行利用の安全性の根拠にしない。
 
 ## 事前条件と空のshape
 
@@ -90,8 +103,8 @@ presence mapとpayloadを別々の連続storageに保持する。`element`と`se
 
 - 現行APIは1Dから4Dの所有型と座標accessである。過去の連鎖subscriptと非所有Viewは削除済みである。
 - 標準`Collection`へは適合しない。`indices`は最外軸の有効範囲を表す。
-- SwiftPM依存で`ENABLE_OPTIONAL_ELEMENT_BUFFER` traitを選んだ場合に、`AcCollections`から再公開される。
-- 現行実装は主として競技プログラミング向けのopt-in低レベル部品であり、一般Swift向けの既定提供ではない。
+- 1.0に向けては、明示的なtraitによる実験的提供として留保付きで対象に残す方針である。
+  安定APIと同じ保証を既成事実とはしない。
 - 競技プログラミングでの単一file利用を意識したsourceだが、現時点の証拠はEDPC利用例のcompileまでである。
   実提出の正答、実行時間、メモリ使用量は保証しない。
 
@@ -99,13 +112,14 @@ presence mapとpayloadを別々の連続storageに保持する。`element`と`se
 
 - 「番兵値を必要としない固定shapeのメモ化buffer」という目的が、初見の利用者に通じるか。
 - 1Dから4Dの座標順と、`indices`が最外軸だけを返すことを、例から正しく読み取れるか。
-- move-only所有、`Sendable`、および並行access非保証の境界が過不足ないか。
+- `let`でも更新できることと、`~Copyable`や`Sendable`が並行更新の安全性を保証しないことが伝わるか。
 - 性能特性は計算量だけに留め、外部比較を保証しない現段階の境界でよいか。
-- 4Dの`size0`〜`size3`は現行APIとして説明しつつ、将来の次元名体系の判断を本文で先取りしていないか。
+- 4Dの`size0`〜`size3`と座標`(x, y, z, w)`の対応が読み取れるか。
 
 ## 根拠
 
 - 公開実装: `Sources/OptionalElementBufferModule/OptionalElementBuffer.swift`
+- 提供方針: `Maintanance/Current/QUALITY_REQUIREMENTS.md`の「1.0に向けた開発対象」
 - 現行Test as Specification: `Tests/OptionalElementBufferModuleTests/`
 - 品質プロファイル: `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md`
 - 現在評価: `Maintanance/OptionalElementBufferModule/CurrentQualityAssessment.md`

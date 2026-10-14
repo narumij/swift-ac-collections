@@ -163,7 +163,7 @@ Test as Specification、実装、CI、利用者向け文書を根拠としてISO
 - PermutationModule: `Sendable`はSwift 6以降で対応する方針で確定済み。第1バッチ
   (`Permutations`と`Nexts where C: Sendable`、コンパイル時テスト)は実装・検証済み。
   共有CoW bufferを持つ`IteratorN`/`SubSequenceN`も、Bufferの`final`化、変更前detachの
-  根拠コメント、Taskを跨ぐ回帰テストとともに対応済み(`Maintanance/StrictMemorySafetyReadiness.md`
+  根拠コメント、Taskを跨ぐ回帰テストとともに対応済み(`Maintanance/Current/StrictMemorySafetyReadiness.md`
   §9)。`All`系・`unsafe`系の削除、
   `Tests/PermutationTests/NextPermutation.swift`(未参照の旧世代実装)の削除、
   `nextPermutations()`と公開戻り値型への`///`コメントドック整備は完了済み。

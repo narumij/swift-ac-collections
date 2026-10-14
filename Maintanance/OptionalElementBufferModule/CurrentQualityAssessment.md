@@ -3,7 +3,7 @@
 ## 文書の役割
 
 この文書は、OptionalArrayModuleの0.6.0時点の現行品質評価を記録する。
-上位品質要求は`Maintanance/QUALITY_REQUIREMENTS.md`、モジュールへの適用と証拠境界は
+上位品質要求は`Maintanance/Current/QUALITY_REQUIREMENTS.md`、モジュールへの適用と証拠境界は
 `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md`を正本とする。
 体系監査と過去の判断は`OptionalElementBufferAudit.md`を参照するが、旧評価の判定は継承しない。
 

@@ -4,7 +4,7 @@
 
 この文書は、リポジトリ全体の上位品質要求をElementBufferModuleへ適用し、このモジュールで重視する品質、仕様の正本、検証証拠、および未確定領域の扱いを定める。
 
-この文書だけで品質要求を新設または変更しない。上位品質要求の正本は`Maintanance/QUALITY_REQUIREMENTS.md`である。ISO/IEC 25010は品質観点を見落とさないための参照モデルとして用い、上位品質要求と並ぶ別の要求体系にはしない。
+この文書だけで品質要求を新設または変更しない。上位品質要求の正本は`Maintanance/Current/QUALITY_REQUIREMENTS.md`である。ISO/IEC 25010は品質観点を見落とさないための参照モデルとして用い、上位品質要求と並ぶ別の要求体系にはしない。
 
 ## 文書の位置づけ
 
@@ -161,7 +161,7 @@ CI設定は、実際に検証するtoolchain、platform、build configuration、
 
 | 対象 | 正本 |
 | --- | --- |
-| リポジトリ全体の上位品質要求 | `Maintanance/QUALITY_REQUIREMENTS.md` |
+| リポジトリ全体の上位品質要求 | `Maintanance/Current/QUALITY_REQUIREMENTS.md` |
 | 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
 | 観察可能な仕様 | `Tests/ElementBufferModuleTests/`の番号付きTest as Specification |
 | 公開APIとdocumentation comment | `Sources/ElementBufferModule/ElementBuffer.swift` |
@@ -171,5 +171,5 @@ CI設定は、実際に検証するtoolchain、platform、build configuration、
 
 ## 関連文書
 
-- [上位品質要求](../../../Maintanance/QUALITY_REQUIREMENTS.md)
+- [上位品質要求](../../../Maintanance/Current/QUALITY_REQUIREMENTS.md)
 - [旧品質評価・調査記録（2026-10-09時点）](../../../Maintanance/Archived/Quality/BareArray_QualityAssessment-ISO25010_2026-10-09.md)

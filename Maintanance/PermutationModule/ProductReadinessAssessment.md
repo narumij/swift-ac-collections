@@ -51,7 +51,7 @@
   および製品版との境界は`HumanAITuningReport.md`に記録する。
 
 `Sendable`対応と公開コメントドックは、その後の作業で実施済み。Sendableの安全性根拠は
-`Maintanance/StrictMemorySafetyReadiness.md` §9を参照。
+`Maintanance/Current/StrictMemorySafetyReadiness.md` §9を参照。
 
 ## 公開添字の境界チェックと計測(2026-10-03)
 

@@ -6,7 +6,7 @@
 および過去事例を管理するCodex側の正本である。
 
 benchmark自体の試験方法やtest suiteの運用は扱わない。taskの状態は
-`PROGRESS_OVERVIEW.md`のTask Registry、実際のworkflowとlibrary構成は`.github/workflows/`と
+`../ProgressV2/TASK_REGISTRY_V2.md`、実際のworkflowとlibrary構成は`.github/workflows/`と
 `Benchmarks/Libraries/`がそれぞれ正本である。
 
 ## 手動実行

@@ -38,12 +38,12 @@ OptionalArrayの1D所有型名は、後発の横断命名判断でunsuffixedの
 
 1. 前versionからの差分と未完了のversion固有要件を確認し、0.6.0へ含める変更と後続へ残す変更を分ける。
 2. ユーザーへ、0.6.0の製品上の到達範囲とrelease作業を開始するかを一問で確認する。
-3. Yesの場合だけ、`User/RELEASE_PROCESS.md`を`_ReleaseTask/`へコピーし、versionを実値へ置き換える。
+3. Yesの場合だけ、`../User/RELEASE_PROCESS.md`を`_ReleaseTask/`へコピーし、versionを実値へ置き換える。
 4. 確定したbranch方式、必要な品質gate、下記の0.6.0固有taskを人間向け工程表と通常Task Registryへ反映する。
 5. release中の状態と証拠は人間向け工程表と各工程の正本へ記録し、完了または中止時にこの文書と通常Task Registryへ還元する。
 
 2026-10-13、旧release checklist、release専用Task Registry方式、およびrehearsal templateは採用せず
-Archivedへ移した。人間向け工程の正本は`User/RELEASE_PROCESS.md`とする。
+Archivedへ移した。人間向け工程の正本は`../User/RELEASE_PROCESS.md`とする。
 
 ## 0.6.0固有要件
 

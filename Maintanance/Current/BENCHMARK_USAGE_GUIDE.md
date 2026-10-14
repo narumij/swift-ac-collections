@@ -8,7 +8,7 @@ benchmarkのtask定義と登録は`Benchmarks/Sources/`、chartとtaskの構成�
 
 個別の品質判定、性能目標、受入水準は各moduleの品質文書が持つ。performance CIの変更境界は
 `PERFORMANCE_CI_CHANGE_GUIDE.md`、回帰の履歴探索は
-`Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`を参照する。
+`../Archived/Canonical/PERFORMANCE_REGRESSION_BISECTION.md`を参照する。
 
 ## 最初に区別すること
 

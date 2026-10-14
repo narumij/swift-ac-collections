@@ -3,11 +3,11 @@
 > **文書状態:** 製品品質要求の正本（2026-10-11、ユーザーがChappy V4を正本として採用し、版・作者を含まない名前へ改名）。
 > 非規範的な参照資料は[`QUALITY_REQUIREMENTS_REFERENCE.md`](QUALITY_REQUIREMENTS_REFERENCE.md)、
 > 元になった独立ドラフトは
-> [`Archived/QualityRequirements/QUALITY_REQUIREMENTS_CLAUDE_V2.md`](Archived/QualityRequirements/QUALITY_REQUIREMENTS_CLAUDE_V2.md)等を参照する。
+> [`Archived/QualityRequirements/QUALITY_REQUIREMENTS_CLAUDE_V2.md`](../Archived/QualityRequirements/QUALITY_REQUIREMENTS_CLAUDE_V2.md)等を参照する。
 
 ## 1. 位置づけ
 
-本書は、[`User/CONCEPT_DEFINITION.md`](User/CONCEPT_DEFINITION.md)を上位概念として、
+本書は、[`User/CONCEPT_DEFINITION.md`](../User/CONCEPT_DEFINITION.md)を上位概念として、
 ISO/IEC 25010:2023を参照し、
 swift-ac-collectionsの製品品質要求を定義する。
 
@@ -264,10 +264,10 @@ AI同士の評価が一致したことを、
 
 | モジュール | 品質プロファイル |
 |---|---|
-| RedBlackTreeCollections | [`Quality-Profile.md`](../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md) |
-| PermutationModule | [`Quality-Profile.md`](../Sources/PermutationModule/Documentation/Quality-Profile.md) |
-| OptionalElementBufferModule | [`Quality-Profile.md`](../Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md) |
-| ElementBufferModule | [`Quality-Profile.md`](../Sources/ElementBufferModule/Documentation/Quality-Profile.md) |
+| RedBlackTreeCollections | [`Quality-Profile.md`](../../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md) |
+| PermutationModule | [`Quality-Profile.md`](../../Sources/PermutationModule/Documentation/Quality-Profile.md) |
+| OptionalElementBufferModule | [`Quality-Profile.md`](../../Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md) |
+| ElementBufferModule | [`Quality-Profile.md`](../../Sources/ElementBufferModule/Documentation/Quality-Profile.md) |
 
 各品質プロファイルは、上位品質要求を変更または複製せず、
 対象モジュールにおける意味、重点領域、仕様、証拠、および

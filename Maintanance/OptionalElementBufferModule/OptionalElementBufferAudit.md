@@ -295,7 +295,7 @@ OptionalArray関係のcommit messageは、2026-06の4件がすべて「bare, opt
 | 競技プログラミング用の低レベル公開部品としての位置づけ | sourceの冒頭コメントとdoc comment | `OptinalArray.swift:12-13`の「コピペで提出に使っていただいて構いません。提出の際のライセンス記載は不要です」（`40d09031`、2026-06-08から）。型のdoc commentは「メモ化用配列」（`6fd45542`から）。EDPC-J / EDPC-Lの利用例（`55d19905`）。`README.md`にはOptionalArrayの記載が無い。facadeは2026-10-05から無条件に再公開（`d421972b`、`AcCollections.swift:3`） | 実装事実のみ（用途を示すコメントと利用例はあるが、公開部品として維持するという決定の記録は無い） |
 | `OptionalArray1D`の型名（BareArrayの1D所有型は`BareArray`） | `-S"OptionalArray1D"`、`-S"BareArray1D"` | 導入の`6fd45542`（2026-06-07）から`OptionalArray1D`。BareArrayは同じcommitから1D所有型が`BareArray`で、`BareArray1D`という所有型の記録は無い（`BareArray1D`の検索に当たるのは`1b461564`以降の`BareArray1DView`）。`1b461564`（2026-06-08）で両moduleの`*Slice*`が`*View`へ改名された。2026-10-07以前の追加メニューに「`OptionalArray`の名称を再検討する」と「`BareArray`の名称を再検討する」があった（`Archived/PROGRESS_OVERVIEW_HISTORY_2026-10-07.md:350-351`、未着手のchecklist）。Registry `OPT-001`は「体系監査・名称再検討」 | 実装事実のみ（名称の再検討は課題として記録されているが、決定は無い） |
 | 2D〜4Dの次元property名（2D / 3Dの`width`・`height`・`depth`、4Dの`size0`〜`size3`） | `-S"size0"`、`-S"width"`、BareArrayのinit | 導入の`6fd45542`から同じ名前（`size0`は`1b461564` / `cc0293ba`でも変更されている）。BareArrayのinitも同じ体系（`BareArray.swift:94,103,171,181,249,260`）。名前を選んだ理由の記録は見つからない | 実装事実のみ |
-| 不正次元（負値・zero・積overflow）の契約 | `-S"init(capacity"`、`StrictMemorySafetyReadiness.md`、`Tests/TESTING.md` | 導入時からinitに次元の検査は無い（`6fd45542`）。現挙動はOPT-022で実測した。本文95-96行目に「不正次元をどう扱うかのユーザー決定は確認できていない」とある。検索範囲の文書に、不正次元の契約を決めた記録は無い | 履歴なし |
+| 不正次元（負値・zero・積overflow）の契約 | `-S"init(capacity"`、`Maintanance/Current/StrictMemorySafetyReadiness.md`、`Tests/TESTING.md` | 導入時からinitに次元の検査は無い（`6fd45542`）。現挙動はOPT-022で実測した。本文95-96行目に「不正次元をどう扱うかのユーザー決定は確認できていない」とある。検索範囲の文書に、不正次元の契約を決めた記録は無い | 履歴なし |
 
 停止事項: なし。どの候補にも明示的な決定は見つからず、判断候補は4件とも未決のままである（本文の既存結論と一致）。
 4件の選択肢や方針は書いていない。
@@ -866,7 +866,7 @@ T233（`indices`だけ）。alias検出testが**なし**: 2D所有の行stride�
 | --- | --- |
 | 導入 | `9b100953`（2026-06-10、メッセージ「sendable」）。所有4型へL99等の4行を追加。同じcommitでBareArray 4型にも同形を追加 |
 | 後続変更 | `git log -S Sendable`の対象は`9b100953`とtest追加の`7d4c45af`（2026-10-02）だけ。適合宣言の行は導入後変わっていない |
-| 記録された理由 | OptionalArrayについての理由は見つからない（commitメッセージ、`CHANGELOG.md`、`Tests/TESTING.md`、`Maintanance/`をgrep）。近い記録はPermutationModuleのユーザー決定「Swift 6+の`Sendable`対応は必須」（`StrictMemorySafetyReadiness.md:252`）だが、対象はPermutationで、OptionalArrayに及ぶかは未記録 |
+| 記録された理由 | OptionalArrayについての理由は見つからない（commitメッセージ、`CHANGELOG.md`、`Tests/TESTING.md`、`Maintanance/`をgrep）。近い記録はPermutationModuleのユーザー決定「Swift 6+の`Sendable`対応は必須」（`Maintanance/Current/StrictMemorySafetyReadiness.md:252`）だが、対象はPermutationで、OptionalArrayに及ぶかは未記録 |
 | `@unchecked`の技術的事実 | 保持する`UnsafeMutablePointer`が`Sendable`でないため、検査付きの適合は書けない |
 | 現行test | T277（1Dだけ、compileのみ）。`Tests/TESTING.md`は追加を2026-10-03 Claude（Sonnet 5）と記録しており、commit日（10-02）と1日ずれる。並行利用の実行testは無い |
 | 未記録 | 導入理由。許される並行利用の範囲（移送だけか共有もか）。View 3型を適合から外した理由 |

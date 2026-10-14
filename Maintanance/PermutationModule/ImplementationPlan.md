@@ -83,6 +83,6 @@
 - `Sendable`対応はSwift 6以降に必要とする方針で確定し、全公開型で実施済み。
   `IteratorN`/`SubSequenceN`は、共有CoW bufferの`final`化と変更前detachを根拠に
   `@unchecked Sendable where C.Element: Sendable`へ適合した。詳細は
-  `Maintanance/StrictMemorySafetyReadiness.md` §9を参照。公開APIのコメントドックも整備済み。
+  `Maintanance/Current/StrictMemorySafetyReadiness.md` §9を参照。公開APIのコメントドックも整備済み。
 - `PermutationModule`への`.strictMemorySafety()`も恒久適用済み。内部Bufferのunsafe操作は
   所有境界ごとのscoped `unsafe`へ整理し、strict設定下で警告0件を確認した。

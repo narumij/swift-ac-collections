@@ -12,7 +12,7 @@ performance閾値、および実装方式は変更しない。
 - 通常CIの`CI.json`は、そのうちbatched sequential / shuffledの2件を登録している。
 - source冒頭は、結果継続性のため旧名を維持したと説明している。
 - 実際に測定する型は`NextPermutationsSequence.Permutation`であり、表示名だけが旧い。
-- `PERFORMANCE_CI_CHANGE_GUIDE.md`は、task名変更時にworkflow互換を先にmergeしてgreenを確認し、その後の
+- `Maintanance/Current/PERFORMANCE_CI_CHANGE_GUIDE.md`は、task名変更時にworkflow互換を先にmergeしてgreenを確認し、その後の
   独立変更でtitleをrenameする二段階境界を要求する。
 
 ## 確定する新名称

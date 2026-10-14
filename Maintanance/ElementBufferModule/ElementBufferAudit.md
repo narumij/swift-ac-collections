@@ -22,7 +22,7 @@ BareArrayの公開契約をsource、test、git履歴、OptionalArrayとの対応
 - 公開適合: 所有型4型の`@unchecked Sendable`
 - test: `Tests/ElementBufferModuleTests`の3ファイル、38件
 - 比較資料: `Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md`
-- safety資料: `Maintanance/StrictMemorySafetyReadiness.md`
+- safety資料: `Maintanance/Current/StrictMemorySafetyReadiness.md`
 
 2026-10-09の再開時点で、strict memory safetyの段階対応、境界Death Test、参照型寿命、clone所有権の
 証拠は存在する。一方、BareArray固有の公開宣言ledgerはまだ作成されていない。`BARE-002`の「途中成果」は

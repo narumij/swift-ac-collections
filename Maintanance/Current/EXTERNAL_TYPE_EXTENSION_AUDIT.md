@@ -4,7 +4,7 @@
 
 この文書は未完clusterの状態と再開条件だけを保持する。Gate A/Bの抽出、各batchの実装結果、
 独立レビュー、compile実験を含む2026-10-07までの全文は
-`Archived/EXTERNAL_TYPE_EXTENSION_AUDIT_HISTORY_2026-10-07.md`へ移した。
+`../Archived/EXTERNAL_TYPE_EXTENSION_AUDIT_HISTORY_2026-10-07.md`へ移した。
 
 ## Current status
 

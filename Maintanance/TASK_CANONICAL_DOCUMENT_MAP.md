@@ -19,14 +19,14 @@
 | `API-004` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_USER.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
 | `API-005` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CODEX.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
 | `API-006` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CLAUDE.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_BALLOT.md` | 現行 |  |
-| `API-007` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_USER.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CODEX.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CLAUDE.md` | 現行 |  |
+| `API-007` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `Current/PUBLIC_API_NAMING_DECISIONS.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_USER.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CODEX.md` / `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_CLAUDE.md` | 現行 |  |
 | `ARRAY-001` | `StrictMemorySafetyReadiness.md` | 2026-10-12 |  |
 | `ARRAY-002` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CODEX.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
 | `ARRAY-003` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_CLAUDE.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
 | `ARRAY-004` | `Archived/ARRAY_NAMING_RANKING_CODEX.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 | 旧ranking draftを独立採点方式で置換。 |
-| `ARRAY-005` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
-| `ARRAY-006` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
-| `ARRAY-007` | `PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
+| `ARRAY-005` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `Current/PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
+| `ARRAY-006` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` / `Current/PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
+| `ARRAY-007` | `Current/PUBLIC_API_NAMING_DECISIONS.md` / `ArrayObjectAndAPINamingDraft.md` | 現行 |  |
 | `ARRAY-008` | `Archived/PublicAPINaming/PUBLIC_API_NAMING_CANDIDATES_USER.md` / `ArrayObjectAndAPINamingDraft.md` | 2026-10-12 |  |
 | `BARE-001` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
 | `BARE-002` | `ElementBufferModule/ElementBufferAudit.md` | 2026-10-11 |  |
@@ -190,7 +190,7 @@
 | `OPT-045` | `PUBLIC_API_NAMING_DECISIONS.md` / `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-15 | 後発の横断命名判断へ吸収し、独立taskから除外 |
 | `OPT-046` | `OptionalElementBufferModule/OptionalElementBufferAudit.md` | 2026-10-11 |  |
 | `OPT-047` | `OptionalElementBufferModule/CurrentQualityAssessment.md` / `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md` | 2026-10-12 |  |
-| `OPT-048` | `OptionalElementBufferModule/CurrentQualityAssessment.md` / `StrictMemorySafetyReadiness.md` | 現行 |  |
+| `OPT-048` | `OptionalElementBufferModule/CurrentQualityAssessment.md` / `Current/StrictMemorySafetyReadiness.md` | 現行 |  |
 | `OPT-049` | `OptionalElementBufferModule/CurrentQualityAssessment.md` | 2026-10-12 |  |
 | `OPT-050` | `OptionalElementBufferModule/CurrentQualityAssessment.md` | 2026-10-12 |  |
 | `OPT-051` | `OptionalElementBufferModule/CurrentQualityAssessment.md` | 2026-10-12 |  |
@@ -254,15 +254,15 @@
 | `PERM-050` | `Sources/PermutationModule/BorrowedNextPermutations.swift` / `PermutationModule/NextPermutationsImplementationExploration.md` | 2026-10-12 |  |
 | `PERM-051` | `Sources/PermutationModule/BorrowedNextPermutations.swift` / `Tests/PermutationTests/BorrowedNextPermutations/` / `Sources/PermutationModule/Documentation/Quality-Profile.md` | 現行 |  |
 | `QUALITY-001` | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` | 現行 |  |
-| `QUALITY-002` | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` / `CLAUDE_TASK.md`<br>`QUALITY_REQUIREMENTS.md` / `Tests/TESTING.md` / `.github/workflows/candidate.yml` | 2026-10-11<br>現行 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
-| `QUALITY-003` | `PermutationModule/CurrentQualityAssessment.md` / `QUALITY_REQUIREMENTS.md`<br>`QUALITY_REQUIREMENTS.md` / `Package.swift` | 2026-10-11<br>現行 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
+| `QUALITY-002` | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` / `Sources/PermutationModule/Documentation/Quality-Profile.md` / `CLAUDE_TASK.md`<br>`Current/QUALITY_REQUIREMENTS.md` / `Tests/TESTING.md` / `.github/workflows/candidate.yml` | 2026-10-11<br>現行 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
+| `QUALITY-003` | `PermutationModule/CurrentQualityAssessment.md` / `Current/QUALITY_REQUIREMENTS.md`<br>`Current/QUALITY_REQUIREMENTS.md` / `Package.swift` | 2026-10-11<br>現行 | 表記差あり。変更理由またはID再利用を履歴確認する。 |
 | `RBT-001` | `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`<br>`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行<br>履歴 | Archived文書は起源・経緯だけに使う。 |
 | `RBT-002` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 2026-10-09 |  |
 | `RBT-003` | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` | 2026-10-09 |  |
-| `RBT-004` | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` | 現行 |  |
-| `RBT-005` | `EXTERNAL_TYPE_EXTENSION_AUDIT.md` | 現行 |  |
+| `RBT-004` | `Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md` | 現行 |  |
+| `RBT-005` | `Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md` | 現行 |  |
 | `RBT-006` | `Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 2026-10-09 |  |
-| `RBT-007` | `StrictMemorySafetyReadiness.md` | 現行 |  |
+| `RBT-007` | `Current/StrictMemorySafetyReadiness.md` | 現行 |  |
 | `RBT-008` | `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Implements/UnsafeTreeV2/Buffer/UnsafeTreeV2+BufferHeader.swift`<br>`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行<br>履歴 | Archived文書は起源・経緯だけに使う。 |
 | `RBT-009` | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` | 現行 |  |
 | `RBT-010` | `Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`<br>`Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` | 現行<br>履歴 | Archived文書は起源・経緯だけに使う。 |
@@ -296,7 +296,7 @@
 | `RELEASE-004` | `Archived/Canonical/RELEASE_0_5_0.md` | 2026-10-09 |  |
 | `RELEASE-005` | `Archived/Canonical/RELEASE_0_5_1.md` | 2026-10-11 |  |
 | `RELEASE-006` | `Archived/Canonical/RELEASE_0_5_2.md` | 2026-10-11 |  |
-| `RELEASE-007` | `RELEASE_0_6_0.md` | 現行 |  |
+| `RELEASE-007` | `Current/RELEASE_0_6_0.md` | 現行 |  |
 | `RELEASE-008` | `Archived/Canonical/RELEASE_0_5_1.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
 | `RELEASE-009` | `Archived/RELEASE_CHECKLIST.md` / `Archived/Canonical/RELEASE_0_5_1.md` / `User/RELEASE_PROCESS.md` | 2026-10-13 |  |
 | `RELEASE-010` | `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
@@ -309,7 +309,7 @@
 | `RELEASE-017` | `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
 | `RELEASE-018` | `Archived/RELEASE_TEMPLATE_BRANCH_DESIGN.md` | 2026-10-11 |  |
 | `RELEASE-019` | `Archived/RELEASE_TEMPLATE_BRANCH_DESIGN.md` | 2026-10-11 |  |
-| `RELEASE-020` | `RELEASE_0_6_0.md` | 現行 |  |
+| `RELEASE-020` | `Current/RELEASE_0_6_0.md` | 現行 |  |
 | `RELEASE-021` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
 | `RELEASE-022` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |
 | `RELEASE-023` | `Archived/Canonical/RELEASE_0_5_2.md` / `Archived/RELEASE_CHECKLIST.md` | 2026-10-11 |  |

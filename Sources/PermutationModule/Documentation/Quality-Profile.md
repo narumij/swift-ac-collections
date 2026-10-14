@@ -4,7 +4,7 @@
 
 この文書は、リポジトリ全体の上位品質要求をPermutationModuleへ適用し、このモジュールで重視する品質、仕様の正本、検証証拠、および未確定領域の扱いを定める。
 
-この文書だけで品質要求を新設または変更しない。上位品質要求の正本は`Maintanance/QUALITY_REQUIREMENTS.md`である。ISO/IEC 25010は品質観点を見落とさないための参照モデルとして用い、上位品質要求と並ぶ別の要求体系にはしない。
+この文書だけで品質要求を新設または変更しない。上位品質要求の正本は`Maintanance/Current/QUALITY_REQUIREMENTS.md`である。ISO/IEC 25010は品質観点を見落とさないための参照モデルとして用い、上位品質要求と並ぶ別の要求体系にはしない。
 
 ## 文書の位置づけ
 
@@ -193,7 +193,7 @@ toolchain固有の最適化事象や未再現の性能事象は、原因と適�
 
 | 対象 | 正本 |
 | --- | --- |
-| リポジトリ全体の上位品質要求 | `Maintanance/QUALITY_REQUIREMENTS.md` |
+| リポジトリ全体の上位品質要求 | `Maintanance/Current/QUALITY_REQUIREMENTS.md` |
 | 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
 | 通常版の観察可能な仕様 | `Tests/PermutationTests/NextPermutations/`のruntime Test as Specificationと`Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`のcompiler fixture。分類、受入境界、実行証拠は`Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`を参照し、退避中の旧testを現行仕様と扱わない |
 | AtCoder 2025互換modeの観察可能な仕様 | `Tests/PermutationTests/AtCoder2025Compatibility/` |
@@ -204,5 +204,5 @@ toolchain固有の最適化事象や未再現の性能事象は、原因と適�
 
 ## 関連文書
 
-- [上位品質要求](../../../Maintanance/QUALITY_REQUIREMENTS.md)
+- [上位品質要求](../../../Maintanance/Current/QUALITY_REQUIREMENTS.md)
 - [旧品質評価・調査記録（2026-10-09時点）](../../../Maintanance/Archived/Quality/Permutation_QualityAssessment-ISO25010_2026-10-09.md)

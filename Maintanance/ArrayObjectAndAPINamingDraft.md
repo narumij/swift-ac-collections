@@ -1,6 +1,6 @@
 # BareArray / OptionalArray object and API naming draft
 
-Status: naming decisions are complete. `PUBLIC_API_NAMING_DECISIONS.md` is authoritative. This
+Status: naming decisions are complete. `Current/PUBLIC_API_NAMING_DECISIONS.md` is authoritative. This
 document preserves the deliberation and provides the bounded implementation handoff; it does not
 authorize the frozen production rename task by itself.
 
@@ -29,7 +29,7 @@ cross-review. Current names remain candidates; their presence in production does
 8. After all three submissions, Codex combines them in `Archived/PublicAPINaming/PUBLIC_API_NAMING_SCORE_REPORT.md` without
    treating totals, averages, or agreement as adoption.
 9. The scored result is discussed. The user makes each public-name decision, and the conclusion is
-   recorded in `PUBLIC_API_NAMING_DECISIONS.md`.
+   recorded in `Current/PUBLIC_API_NAMING_DECISIONS.md`.
 10. Only after those decisions are implementation, Test as Specification, benchmark stabilization,
    baseline merge, and CI registration performed.
 

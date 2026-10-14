@@ -60,7 +60,7 @@ ElementBuffer系でもこの薄い互換facade方式を採用方向とし、現�
 1. `Package.swift`のtarget、dependency、trait条件、test targetを列挙する。
 2. production、test、benchmark、compiler fixture、CI、DocC、maintenance文書、単一file生成物にある
    `import`とmodule名依存を、構成条件とともに確認する。
-   performance CIについては`PERFORMANCE_CI_CHANGE_GUIDE.md`を正本とし、target・module renameが
+   performance CIについては`Current/PERFORMANCE_CI_CHANGE_GUIDE.md`を正本とし、target・module renameが
    benchmark sourceの完全なtask title、HEADからbaselineへ渡すlibrary定義、結果名の正規化、および
    base・currentそれぞれのharness buildへ与える影響を分ける。
 3. repository外consumerで現在成立している直接importと`AcCollections`再公開経路への影響を分ける。

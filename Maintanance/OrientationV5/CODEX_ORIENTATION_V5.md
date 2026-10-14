@@ -66,8 +66,8 @@ taskを作るときの判断の分け方と、実行中に判断点が現れた�
 | 判断の分解、不要な仕事の除去、依存、着手と完了 | [taskオリエンテーション](TASK_ORIENTATION_V5.md) |
 | 実行・停止・受入・記録の扱い | [Task Operation Playbook](CODEX_TASK_OPERATION_PLAYBOOK_V5.md) |
 | この組み立て方の理由、Haskellやリファクタリングとの対応 | [AI協働の基本思想](AI_COLLABORATION_PHILOSOPHY_V5.md) |
-| unsafe storage、CoW、IndexやViewの寿命、性能など、選択taskの技術的な難所 | `Maintanance/Orientation/AI_TECHNICAL_ORIENTATION.md` |
-| 担当適性や委任範囲を検討するための観測 | `Maintanance/Orientation/AGENT_TASK_FIT_INTERVIEW.md`。観測自体を割当の根拠にはしない |
+| unsafe storage、CoW、IndexやViewの寿命、性能など、選択taskの技術的な難所 | `Maintanance/Current/AI_TECHNICAL_ORIENTATION.md` |
+| 担当適性や委任範囲を検討するための観測 | `Maintanance/ProgressV2/AGENT_TASK_FIT_INTERVIEW.md`。観測自体を割当の根拠にはしない |
 | 現行資料では解けない過去の判断理由 | 問いに対応する過去記録のみ |
 
 ## 文脈や前提を失ったとき

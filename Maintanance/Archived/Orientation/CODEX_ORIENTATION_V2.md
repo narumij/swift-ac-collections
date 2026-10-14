@@ -124,7 +124,7 @@ Task Registryは、この蓄積を捨てて導入した帳票ではない。長�
 
 ### Task処理ポスター
 
-![品質をAIに任せる仕組み — Codexのtask処理](../AI_TASK_PROCESS_POSTER.png)
+![品質をAIに任せる仕組み — Codexのtask処理](../Posters/AI_TASK_PROCESS_POSTER.png)
 
 中間ゴールから必要な事実、判断、実行を分け、必須依存とgoal proximityからnextを選ぶ。readyはnextを意味せず、
 `LATER`や`OUTSIDE`を惰性で進めない。新しい判断点やcycleを見つけたら停止して分解し直す。詳細は

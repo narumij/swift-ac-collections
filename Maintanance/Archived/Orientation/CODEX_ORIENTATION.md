@@ -124,7 +124,7 @@ orientationへ現在状態や履歴を再び集積し、この分離を元の長
 
 ### Task処理ポスター
 
-![品質をAIに任せる仕組み — Codexのtask処理](../AI_TASK_PROCESS_POSTER.png)
+![品質をAIに任せる仕組み — Codexのtask処理](../Posters/AI_TASK_PROCESS_POSTER.png)
 
 このポスターは、task登録そのものを成果と取り違えないための実務上の入口である。まず会話から中間ゴールと
 今回どこまで進むかを受け取り、到達状態から必要な事実、ユーザー判断、実行を分ける。その後、必須の前提だけを

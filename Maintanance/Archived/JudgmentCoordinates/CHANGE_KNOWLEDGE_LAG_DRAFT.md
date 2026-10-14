@@ -50,7 +50,7 @@ Swiftの`borrowing`／`inout`／`consuming`とも対応する。
 
 ## 4. 3本目の軸：本当に知っているか
 
-前半では、原理はすべて次の2軸の言い換えだと整理した（`EffectGradientPoster/TWO_AXES_POSTER.svg`）。
+前半では、原理はすべて次の2軸の言い換えだと整理した（`../EffectGradientPoster/TWO_AXES_POSTER.svg`）。
 
 1. 効果はどこまで届き、取り消せるか
 2. それは誰の持ち物か

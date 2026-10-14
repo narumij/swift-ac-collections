@@ -88,6 +88,13 @@ Archived全体を探索しない。
 ## 2026-10-15移動分
 
 - `PROGRESS_OVERVIEW_RETIRED_2026-10-15.md`: V2接続後に失効済みと明示されていた旧進捗一覧の全文。現在のtask状態・制度・権限・着手条件ではない
+- `JudgmentCoordinates/`: 判断座標の統合元、補足、`AGENTS.md`再評価。`OPS-037`完了後の経緯・参考資料
+- `EffectGradientPoster/`: 副作用の勾配と二軸整理を視覚化したSVG・PNG
+- `AgentsReview/`: `AGENTS.md`原案、4者レビュー票、master、統合結果
+- `ArrayModuleMigration/`: ElementBuffer系target・module名称移行と互換target削除、および先行する命名検討の完了記録
+- `TaskInventory/`: 凍結taskとtask ID・詳細正本対応の調査snapshot
+- `Posters/`: AI協働手順の生成済みSVG・PNG。現行規則の正本ではない
+- `Orientation/`: V5以前のOrientation、旧playbook、依存整理資料、task状態の調査履歴
 - `CLAUDE_PENDING_TASKS_RECONCILED_2026-10-15.md`: 2026-10-14の判断座標関連4件と
   2026-10-15のTask履歴SQLite索引関連5件を正式記録へ統合した後の一時entry原文。
   正式な完了記録はTask Registryの`OPS-037`と`OPS-036`であり、この文書は現行の依頼・規則・着手条件ではない

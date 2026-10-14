@@ -16,6 +16,7 @@
 | [TASK_REGISTRY_ARCHIVE.md](TASK_REGISTRY_ARCHIVE.md) | 原文をArchivedへ保存し、現行から辿れるようにする圧縮手順。整理するときだけ参照 |
 | [TASK_HISTORY_INDEX_MAINTENANCE.md](TASK_HISTORY_INDEX_MAINTENANCE.md) | 採用済みSQLite索引のメンテナンス手順。索引を扱うときだけ参照 |
 | [TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md](TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md) | 抽出規則、試作時の確認結果、限界を残す補助資料 |
+| [AGENT_TASK_FIT_INTERVIEW.md](AGENT_TASK_FIT_INTERVIEW.md) | 担当適性と委任範囲を検討するための観測資料。割当の根拠そのものにはしない |
 | 本書 | 作成根拠・変更点・接続の経緯と確認範囲。通常起動時には読まない |
 
 ## 作成の基準

@@ -2,7 +2,7 @@
 """Generate the current AI task process poster (V3).
 
 The poster is a visual summary, not an authoritative process definition.
-Output: Maintanance/AI_TASK_PROCESS_POSTER.svg
+Output: Maintanance/Archived/Posters/AI_TASK_PROCESS_POSTER.svg
 """
 
 from html import escape
@@ -162,6 +162,6 @@ text(1200, 2250, "task運用 = 事実へ接続し、欠けた前提と判断を�
 text(1200, 2298, "Registryはそのための索引。Routineは一周を呼び出すinterface。", 25, 600, "#d7dce4", "middle")
 
 svg = f'<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 {W} {H}">' + "".join(out) + "</svg>"
-path = Path(__file__).resolve().parents[2] / "Maintanance" / "AI_TASK_PROCESS_POSTER.svg"
+path = Path(__file__).resolve().parents[2] / "Maintanance" / "Archived" / "Posters" / "AI_TASK_PROCESS_POSTER.svg"
 path.write_text(svg, encoding="utf-8")
 print(path)

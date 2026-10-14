@@ -50,10 +50,10 @@
 
 | 票 | 担当者 | 配布・返却状況 | 事前接触・追加入力の記録 |
 | --- | --- | --- | --- |
-| [01](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_01.md) | Prime Codex | 初稿受領・統合済み | 事前接触あり。原案成立過程、旧レビュー、正本、配布準備。新たな他資料の参照なしとの申告 |
-| [02](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_02.md) | 80ms Codex | 初稿受領・統合済み | 事前接触あり。判断座標、運用文書、先行レビューと方法の議論。新たな他資料の参照なしとの申告 |
-| [03](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_03.md) | V3オーサー（配布記録。返却名義はXcode上のCodex） | 初稿受領・統合済み | 事前接触あり。判断座標、効果勾配のポスター、旧レビューと方法の議論。新たな他資料の参照なしとの申告 |
-| [04](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_04.md) | ChatGPT（チャッピー） | 初稿受領・統合済み | 事前接触あり。座標系形成、草案・改訂・先行レビュー。返却欄のみ。新たな他資料の参照なしとの申告 |
+| [01](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_01.md) | Prime Codex | 初稿受領・統合済み | 事前接触あり。原案成立過程、旧レビュー、正本、配布準備。新たな他資料の参照なしとの申告 |
+| [02](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_02.md) | 80ms Codex | 初稿受領・統合済み | 事前接触あり。判断座標、運用文書、先行レビューと方法の議論。新たな他資料の参照なしとの申告 |
+| [03](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_03.md) | V3オーサー（配布記録。返却名義はXcode上のCodex） | 初稿受領・統合済み | 事前接触あり。判断座標、効果勾配のポスター、旧レビューと方法の議論。新たな他資料の参照なしとの申告 |
+| [04](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_04.md) | ChatGPT（チャッピー） | 初稿受領・統合済み | 事前接触あり。座標系形成、草案・改訂・先行レビュー。返却欄のみ。新たな他資料の参照なしとの申告 |
 
 新しい会話かどうかだけで事前接触を判断しない。関与や接触がある担当者の所見も扱えるが、未接触者の初読と混ぜて説明しない。
 
@@ -72,7 +72,7 @@
 
 | 論点 | 出典の票・所見 | 確認できた根拠と範囲 | 別の読み・反証・未確認事項 | 提案する扱いと理由 |
 | --- | --- | --- | --- | --- |
-| 原案を協働の入口として使うこと | [01・所見](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_01.md:97) 5・6／[02・所見](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_02.md:93) 1／[03・所見](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_03.md:94) 2・5／[04・所見](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_04.md:87) F-1・F-4〜F-9 | R1には、委任内で進めること、不明な権限を確認すること、独立した仕事を続けること、証拠の範囲で報告することが明記されている。4票とも入口として次段階へ進める評価。 | 01〜03は表現の補足を検討・推奨し、04は必須変更なし。現状のままの採用について全員が同じ結論を出したわけではない。実際の行動は未観測。 | 骨格を保って検討を続ける。これらの所見から具体的な役職・管理体系・操作権限の一覧を原案へ戻す必要は導けない。 |
+| 原案を協働の入口として使うこと | [01・所見](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_01.md:97) 5・6／[02・所見](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_02.md:93) 1／[03・所見](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_03.md:94) 2・5／[04・所見](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_04.md:87) F-1・F-4〜F-9 | R1には、委任内で進めること、不明な権限を確認すること、独立した仕事を続けること、証拠の範囲で報告することが明記されている。4票とも入口として次段階へ進める評価。 | 01〜03は表現の補足を検討・推奨し、04は必須変更なし。現状のままの採用について全員が同じ結論を出したわけではない。実際の行動は未観測。 | 骨格を保って検討を続ける。これらの所見から具体的な役職・管理体系・操作権限の一覧を原案へ戻す必要は導けない。 |
 | 現在の依頼と既存の取り決めが食い違う場合 | 01・1、02・3 | R1はどの合意が有効かの詳細な優先順位を列挙していない。両票は、その判断が曖昧な場合を懸念している。 | R1にはすでに「権限が不明な部分は確認する」がある。新しい依頼が既存の取り決めを明確に変更している場合と、有効な取り決めを判別できない場合は違う。 | 確認経路の具体例として表現を整える候補。詳細な優先順位表や、「以前の合意と違えば常に停止」という規則は追加しない。 |
 | 同じ許可の再確認と、別の操作への許可の拡張 | 02・2 | 「同じ許可を繰り返し求めない」とあるが、許可の対象・期間・回数そのものは個別の依頼や合意から得る必要がある。 | R1は「任された範囲について」と限定し、必要性等による権限拡張を禁じている。許可を無制限に再利用できるとする文言はない。 | 原案の欠陥とは確定しない。「許可は与えられた範囲で使う」という意味を明瞭にする言い換えは候補。操作ごとの新しい承認手順は導入しない。 |
 | 成果の引渡しと、変更権限の返還 | 01・2、02・4、03・3、04・F-10・場面2 | R1の停止条件は、成果を引き渡したことに加え「その部分を変更する権限を持ち主へ返した後」である。01・03は途中報告との境界の曖昧さを指摘。02は運用側の合意で扱えるとし、04は文面が権限を返した場合に限定されていると読む。 | 01・03の「受入」や「確定として扱う旨の明示」を停止条件とする案は、現文と同じ意味とは限らない。成果を受け入れた後も修正の委任が続く場合を、04は反例として挙げている。 | 受入を権限返還と同一視する変更は、そのまま採らない。修正するなら、報告・受入だけではなく変更権限を返した場合に限定する意味を保って表現を整える。具体的な返還条件は依頼・合意で確認する。 |
@@ -170,8 +170,8 @@ R1の文言は次のとおりである。
 
 | ファイル | SHA-256 |
 | --- | --- |
-| [AGENTS_REVIEW_MASTER.md](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_MASTER.md) | `0067fc59bcb2f3e1851131432e474741cd8c14b92a5c5761b447742697b549e1` |
-| [AGENTS_REVIEW_01.md](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_01.md) | `80448520641d1d65d58ef0b35ef7f51728c5d111c28abd240c601fe601a8c1d6` |
-| [AGENTS_REVIEW_02.md](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_02.md) | `895bd9380318217e3c7405966c4b044f82970afc510f6726710b13d9b14b2ddd` |
-| [AGENTS_REVIEW_03.md](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_03.md) | `a381425a1e4c7fd911ba7b4b29582b5aa4de31dc6bfee6b573792bf95b06b9f1` |
-| [AGENTS_REVIEW_04.md](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/AgentsReview/AGENTS_REVIEW_04.md) | `d06e359d7ab0054b57262aa3ea26ebfef2dc8d99931bcd0af62a452dd3518607` |
+| [AGENTS_REVIEW_MASTER.md](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_MASTER.md) | `0067fc59bcb2f3e1851131432e474741cd8c14b92a5c5761b447742697b549e1` |
+| [AGENTS_REVIEW_01.md](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_01.md) | `80448520641d1d65d58ef0b35ef7f51728c5d111c28abd240c601fe601a8c1d6` |
+| [AGENTS_REVIEW_02.md](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_02.md) | `895bd9380318217e3c7405966c4b044f82970afc510f6726710b13d9b14b2ddd` |
+| [AGENTS_REVIEW_03.md](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_03.md) | `a381425a1e4c7fd911ba7b4b29582b5aa4de31dc6bfee6b573792bf95b06b9f1` |
+| [AGENTS_REVIEW_04.md](/Users/narumij/Documents/GitHub/swift-ac-collections/Maintanance/Archived/AgentsReview/AGENTS_REVIEW_04.md) | `d06e359d7ab0054b57262aa3ea26ebfef2dc8d99931bcd0af62a452dd3518607` |

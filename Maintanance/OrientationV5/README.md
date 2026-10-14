@@ -15,11 +15,11 @@
 
 ## 合わせた版と資料
 
-- 基準となる候補：[AGENTS_SWIFT_AC_CANDIDATE_V3.md](../AGENTS_SWIFT_AC_CANDIDATE_V3.md)。協働の前提、成果物の変更権限、判断を一つかゼロにする分解を含む版。
-- 改訂元：`Maintanance/Orientation/`内の`CODEX_ORIENTATION_V4.md`、`TASK_ORIENTATION_V4.md`、`AI_COLLABORATION_PHILOSOPHY_V4.md`、`CODEX_TASK_OPERATION_PLAYBOOK_V4.md`。
+- 基準となる候補：[AGENTS_SWIFT_AC_CANDIDATE_V3.md](../User/AGENTS_SWIFT_AC_CANDIDATE_V3.md)。協働の前提、成果物の変更権限、判断を一つかゼロにする分解を含む版。
+- 改訂元：`Maintanance/Archived/Orientation/`内の`CODEX_ORIENTATION_V4.md`、`TASK_ORIENTATION_V4.md`、`AI_COLLABORATION_PHILOSOPHY_V4.md`、`CODEX_TASK_OPERATION_PLAYBOOK_V4.md`。
 - 作成時の制度との照合：当時の`Maintanance/PROGRESS_OVERVIEW.md`の文書権限・配置、task種別、採番、依存、Registry rules。
-- 関連資料との照合：同Orientationフォルダの`TASK_DECOMPOSITION_AND_REORGANIZATION.md`、`TASK_DEPENDENCY_IDENTIFICATION_DRAFT.md`、`TASK_DEPENDENCY_RUNTIME_STOP.md`。
-- 説明の補足：`Maintanance/EFFECT_GRADIENT_REFERENCE.md`と、この会話での「Haskell、リファクタリングの分解とインライン、コンパイラ最適化と似ている」というユーザーの補足。
+- 関連資料との照合：`Maintanance/Archived/Orientation/`内の`TASK_DECOMPOSITION_AND_REORGANIZATION.md`、`TASK_DEPENDENCY_IDENTIFICATION_DRAFT.md`、`TASK_DEPENDENCY_RUNTIME_STOP.md`。
+- 説明の補足：`Maintanance/Archived/JudgmentCoordinates/EFFECT_GRADIENT_REFERENCE.md`と、この会話での「Haskell、リファクタリングの分解とインライン、コンパイラ最適化と似ている」というユーザーの補足。
 
 参照したAGENTS候補V3のSHA-256：`7a6fec176ad301c04b3b2a99fb05943e98f8d43ae7aa3c4fd4d5d600fad2f1f7`
 

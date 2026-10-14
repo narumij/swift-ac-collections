@@ -1,7 +1,7 @@
-# Codex Task Operation Playbook V4
+# Codex Task Operation Playbook V3
 
-> **文書状態:** 2026-10-14、ユーザー判断により現行playbookの正本として採用。
-> V3を基礎として作成。旧版の配置変更は別途の明示的な承認まで行わない。
+> **文書状態:** 2026-10-12、ユーザー判断により現行playbookの正本として採用。
+> 旧版は`Archived/Orientation/CODEX_TASK_OPERATION_PLAYBOOK_V2.md`へ保存した。
 
 ## 目的
 
@@ -250,14 +250,14 @@ Codexは、会話をtaskへ翻訳し、答えの所在と必須依存を発見�
 sessionをまたいで同じ現在地へ戻れるか、答えの所在へ辿れるか、受入後に次の仕事を導けるか、判断を
 増やしていないか、管理コストが成果を上回っていないかを観測する。実際に必要になった構造だけを追加する。
 
-このV4は`swift-ac-collections`の履歴と作者判断から作成した。別projectで同じ自走能力を再現できるかは
+このV3は`swift-ac-collections`の履歴と作者判断から作成した。別projectで同じ自走能力を再現できるかは
 未検証であり、移植可能性は現行の凍結taskとして別に扱う。
 
 ## 詳細資料
 
 - [`TASK_REGISTRY_STATE_HISTORY.md`](TASK_REGISTRY_STATE_HISTORY.md):
   handoffからTask Registryへ至る成立史の調査記録。
-- [`../TASK_CANONICAL_DOCUMENT_MAP.md`](../TASK_CANONICAL_DOCUMENT_MAP.md):
+- [`../TaskInventory/TASK_CANONICAL_DOCUMENT_MAP.md`](../TaskInventory/TASK_CANONICAL_DOCUMENT_MAP.md):
   task IDと詳細正本表記の対応および差異の調査表。
 - [`TASK_DECOMPOSITION_AND_REORGANIZATION.md`](TASK_DECOMPOSITION_AND_REORGANIZATION.md):
   判断削減、task分解、インライン化、およびgraph再構成。
@@ -265,7 +265,7 @@ sessionをまたいで同じ現在地へ戻れるか、答えの所在へ辿れ�
   後続成果に欠けた必須前提を発見する観点。
 - [`TASK_DEPENDENCY_RUNTIME_STOP.md`](TASK_DEPENDENCY_RUNTIME_STOP.md):
   実行中の成立条件に疑義が生じた場合の停止と再開。
-- [`../Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md`](../Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md):
+- [`../Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md`](../../Graph/AI_GRAPH_RETROSPECTIVE_REPLAY.md):
   Task precedence、`SEQUENCE`、`PARALLEL_JOIN`の導出と追試。
 
 詳細資料は通常作業の開始時に通読しない。Task Registryから選択したtaskについて、答えまたは背景を持つ

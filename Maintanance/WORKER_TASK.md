@@ -2,7 +2,7 @@
 
 Status: Experimental file-based handoff. This interface is not yet adopted as routine operation.
 
-The fixed role and boundaries are defined in `Orientation/WORKER_CODEX_BOOTSTRAP.md`. Worker
+The fixed role and boundaries are defined in `Worker/WORKER_CODEX_BOOTSTRAP.md`. Worker
 execution does not accept or complete the repository task. Prime Codex independently reviews the
 return and owns every correction, Registry update, and completion decision.
 
@@ -52,7 +52,7 @@ return section and stop. Commits ahead of the remote are not a stop condition.
 
 Read only these files, in this order:
 
-1. `Orientation/WORKER_CODEX_BOOTSTRAP.md` in full.
+1. `Worker/WORKER_CODEX_BOOTSTRAP.md` in full.
 2. This assignment in full.
 3. `ElementBufferModule/UserDocumentationDraft.md`.
 4. `Sources/BareArrayModule/ElementBuffer.swift`.
@@ -144,7 +144,7 @@ Status: review completed; awaiting Prime review.
 
 ### Checked files
 
-- `Maintanance/Orientation/WORKER_CODEX_BOOTSTRAP.md`
+- `Maintanance/Worker/WORKER_CODEX_BOOTSTRAP.md`
 - `Maintanance/WORKER_TASK.md`
 - `Maintanance/ElementBufferModule/UserDocumentationDraft.md`
 - `Sources/BareArrayModule/ElementBuffer.swift`

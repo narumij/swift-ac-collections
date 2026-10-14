@@ -86,7 +86,7 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 | `FIT` | `007` |
 | `GRAPH` | `019` |
 | `HIST` | `001` |
-| `OPS` | `039` |
+| `OPS` | `040` |
 | `OPT` | `072` |
 | `PERF` | `005` |
 | `PERM` | `064` |
@@ -120,7 +120,7 @@ AIは品質要求、設計、評価、task、およびrelease判断の前提と�
 
 ### Orientation文書
 
-現行の参照先は`Maintanance/OrientationV5/`である。`Maintanance/Orientation/`に残る文書も、それぞれの採用状態と変更権限を確認して扱う。
+現行の参照先は`Maintanance/OrientationV5/`である。旧版と関連資料は`Maintanance/Archived/Orientation/`に保存し、現行の権限や指示として扱わない。
 
 Orientation文書は、AIがrepositoryの目的、責任境界、および実務へ入るための上位正本群である。
 ユーザーから委任された範囲では、AIも草案作成、レビュー、および内容編集へ参加できる。

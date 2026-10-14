@@ -16,7 +16,6 @@
 - Index契約確定後に、公開コメント、Design、API Matrix、DocC Topicsを最終同期する。
 - テストの現在地は`Tests/TESTING.md`、全体進捗は`ProgressV2/PROGRESS_OVERVIEW_V2.md`を入口とする。
 - 現行の横断資料は`Current/README.md`から辿る。
-- Claudeの現行権限とhandoffは`CLAUDE_TASK.md`、完了履歴は`Archived/CLAUDE_TASK_HISTORY.md`を正とする。
 
 ## Document roles
 

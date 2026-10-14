@@ -86,7 +86,7 @@ Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤り
 | `FIT` | `007` |
 | `GRAPH` | `019` |
 | `HIST` | `001` |
-| `OPS` | `035` |
+| `OPS` | `036` |
 | `OPT` | `072` |
 | `PERF` | `005` |
 | `PERM` | `064` |
@@ -155,9 +155,9 @@ Orientation文書は、AIがrepositoryの目的、責任境界、および実務
 
 ## 履歴の照合とSQLite索引
 
-Gitはcommitの履歴、MarkdownのRegistryと決定記録は現在の仕事・判断、SQLiteはGit履歴から再生成できる検索用索引を担う。SQLite索引は未実装であり、V2の利用をその完成待ちにしない。
+Gitはcommitの履歴、MarkdownのRegistryと決定記録は現在の仕事・判断、SQLiteはGit履歴から再生成できる検索用索引を担う。2026-10-15、ユーザーの採用指示により抽出器と運用規則を採用し、repository内の索引を初回作成した。索引がない・古い・壊れた場合も、V2の利用や独立した製品作業を一律に停止しない。
 
-生成物の予定配置は`Maintanance/TaskHistoryIndex/`とし、SQLite本体と付随ファイルをGitの対象外にする。抽出器・検索手順を実装する場合、それらのソースは生成物とは分けてGit管理する。V2のMarkdown一式はGit管理対象とする。
+生成物は`Maintanance/TaskHistoryIndex/`へ置き、SQLite本体と付随ファイルをGitの対象外にする。抽出器`Utilities/Maintenance/TaskHistoryIndex.py`と検索・更新手順は生成物から分けてGit管理する。V2のMarkdown一式もGit管理対象とする。
 
 最初の索引は、commit・task ID・出現箇所（メッセージ、追加行、削除行）と元のファイルへの経路を保持する。どのref・commit範囲まで抽出したかも分かるようにする。索引の役割は、必要な履歴を絞って原文へ戻ることである。
 

@@ -105,7 +105,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 
 ### `CP-20261015-001` — Task履歴SQLite索引の抽出器試作
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: 2026-10-15の会話。ユーザーが`ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md`を示して整備を依頼し、
 - 
   範囲の選択肢から「c：ignore設定とscript試作まで」を指定した。手順書のドラフトはAstra、試作の実施は姫（Claude）と明示された。
@@ -130,11 +130,11 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
     (2) mergeは第一親との差分、rename検出なし（削除と追加として記録）、binaryは対象外。(3) DBはrollback journal（WALを使わない）。
     (4) scriptの配置を`Utilities/Maintenance/`とした。
   - 未実施: 手順書への実在コマンド追記、repository内の`Maintanance/TaskHistoryIndex/`への初回作成。
-- Codex reconciliation: 未処理
+- Codex reconciliation: `OPS-036`へ統合し、抽出器・採用規則・初回DBを一つの完了成果として受け入れた。
 
 ### `CP-20261015-002` — Task履歴索引へのRegistry行変化（介入の参考資料印）の追加
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: 2026-10-15の会話。過去資料から介入を拾う方法として、「その時点でACTIVEまたはFROZENだったtaskに影響したか」を
   Registry行の変化で見る案を話し、ユーザーが「あくまでDB」に参考資料の印を持つ形を求め、「ひきうけてくれるなら是非やって欲しい」と依頼した。
 - 種別候補: `EXECUTION`（試作のみ）
@@ -154,12 +154,11 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   - 試作で仮置きした判断（採用時に要判断）: (1) 等級は structural＝FROZENから他状態・ACTIVE→FROZEN、routine＝ACTIVE→DONE、candidate＝その他。
     FROZEN→DONE・FROZEN→EXCLUDEDもstructuralに入る（再開・除外の指示を経たとみなす）。(2) merge commitは対象外。
     (3) 2026-10-04より前の別文書上のtaskは対象外。(4) 指示語の検出は補助情報で、等級には使わない。
-- Codex reconciliation: 未処理
-- Codex reconciliation: 未処理
+- Codex reconciliation: `OPS-036`へ統合。等級は介入の意味を自動確定しない参考資料として受け入れた。
 
 ### `CP-20261015-003` — Task履歴索引の補助資料作成と採用反映
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: 2026-10-15の会話。ユーザーが手順書を示して「これの補助資料でも作って書いておいて」と依頼し、続けて
   「めんどいから採用でいいよ」「文句でたら修正する」と、`CP-20261015-001`・`002`の成果の採用を指示した。
 - 種別候補: `EXECUTION`（文書作成）、採用は`DECISION`（ユーザー、同日決定）
@@ -173,11 +172,11 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 成果・検証: 作成済み。補助資料の使用例を一時directoryで実行し、`build`・`verify`・`search`・`changes`・`status`が動くことを確認した（一時directoryは削除済み）。
   手順書の既存本文は書き換えず、作成時点の状態を状態欄に残した。
   Codexへの連絡事項: `TASK_RULES_V2.md`「履歴の照合とSQLite索引」の「SQLite索引は未実装」が採用後の状態と合わなくなった。
-- Codex reconciliation: 未処理
+- Codex reconciliation: `OPS-036`へ統合。採用済み実装としてV2の制度・作成接続記録を現状へ更新した。
 
 ### `CP-20261015-004` — Task履歴索引の場面ごとのメンテ操作と補助資料の配置
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: 2026-10-15の会話。ユーザーが「通常メンテ操作、アーカイブ時メンテ操作、介入後メンテ操作が必要」と述べ、
   続けて補助資料について「資料ここにはいちしといて」と`Maintanance/ProgressV2/`を指定した。
 - 種別候補: `EXECUTION`
@@ -192,11 +191,11 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
   `archive-check`の照合キーを初版から直した（状態の列を含めて誤認したため）。過去のアーカイブcommit 7件のうち3件で指摘が出たが、
   いずれも現行のアーカイブ手順以前の操作で、記録に残すだけにした。
   Codexへの連絡事項: `TASK_REGISTRY_ARCHIVE.md`の手順4から`archive-check --worktree`へ案内するかは、手順の持ち主の判断に残した。
-- Codex reconciliation: 未処理
+- Codex reconciliation: `OPS-036`へ統合。3操作を採用済み抽出器の運用面として受け入れた。
 
 ### `CP-20261015-005` — Task履歴索引のrepository内初回作成
 
-- queue状態: `AWAITING_CODEX`
+- queue状態: `RECONCILED`
 - 発見元・ユーザー指示: 2026-10-15の会話。ユーザーが「V3オーサーに調査してもらってて、DBがないっていうからここにきてる」と述べ、DBの作成を求めた。
 - 種別候補: `EXECUTION`
 - 対象範囲: `Maintanance/TaskHistoryIndex/task_history.sqlite3`の初回作成（`build`）と`verify`。手順書・補助資料の「未作成」の記述の更新。
@@ -207,7 +206,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 停止条件: なし。
 - 成果・検証: 作成済み。HEAD `35d1f604`まで5506 commits、出現16544件、Registry行変化336件、schema 3・rule 2、`verify` ok。
   DBは`.gitignore`の対象（`git check-ignore`で確認）で、約6.6MB。未commitのscript・文書の変更は収録範囲に入らない。
-- Codex reconciliation: 未処理
+- Codex reconciliation: `OPS-036`へ統合。Codexが既定DBを現在HEAD `f132c6a5`まで更新し、`verify`成功を確認した。
 
 過去のreconciliation済みentryは次を参照する。
 

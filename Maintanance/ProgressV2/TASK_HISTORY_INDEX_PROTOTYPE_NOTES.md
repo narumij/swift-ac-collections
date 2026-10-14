@@ -2,14 +2,14 @@
 
 > 補助資料。2026-10-15、姫（Claude）が試作した抽出器について、[メンテナンス手順](TASK_HISTORY_INDEX_MAINTENANCE.md)（ドラフト：Astra）との対応、規則、確認結果をまとめる。同日、ユーザーの採用指示により、手順書・抽出器・下記の規則を採用し、手順書へ実在コマンドを追記した。本書は手順書の本文、索引の意味と限界を定める[制度の参照](TASK_RULES_V2.md#履歴の照合とsqlite索引)、およびTask Registryを上書きしない。
 >
-> 採番待ちqueue：`CP-20261015-001`（抽出器）、`CP-20261015-002`（Registry行変化）、`CP-20261015-003`（本書）、`CP-20261015-004`（場面ごとのメンテ操作）
+> `CP-20261015-001`〜`005`は、2026-10-15に`OPS-036`へ統合して受け入れた。
 
 ## 置き場
 
 | 対象 | 配置 | 状態 |
 | --- | --- | --- |
 | 抽出器 | [`Utilities/Maintenance/TaskHistoryIndex.py`](../../Utilities/Maintenance/TaskHistoryIndex.py) | 2026-10-15に採用。Python 3標準libraryのみ |
-| SQLite本体 | `Maintanance/TaskHistoryIndex/task_history.sqlite3`（scriptの既定値） | 2026-10-15に初回作成（HEAD `35d1f604`まで）。`.gitignore`の`/Maintanance/TaskHistoryIndex/`で除外済み |
+| SQLite本体 | `Maintanance/TaskHistoryIndex/task_history.sqlite3`（scriptの既定値） | 2026-10-15に初回作成し、Codex受入時にHEAD `f132c6a5`まで更新・検証。`.gitignore`の`/Maintanance/TaskHistoryIndex/`で除外済み |
 | 一時DB・lock | DBと同じdirectoryの`<DB名>.building-<pid>`・`<DB名>.lock` | 実行中だけ存在する |
 
 ## コマンド
@@ -113,7 +113,6 @@ Registry行変化の内訳は次のとおり。会話中の手集計（307件）
 - 介入はチャットや未commitの編集で起きることが多く、文書に残るのはAIによる言い換えが中心である。DBはその痕跡を拾うだけで、介入だったかは原文とユーザー・Codexの判断で決める。
 - 出現がないことは未使用の証拠にならない。番号の出現からRegistryの状態や採番表を変えない（手順書・制度の参照と同じ）。
 
-## 未実施
+## 受入後も残ること
 
-- [制度の参照](TASK_RULES_V2.md#履歴の照合とsqlite索引)の「SQLite索引は未実装」の記述の更新、およびTask Registryへの反映（Codexの照合待ち）。
-- `candidate`の個別判定。
+- `candidate`は介入の可能性を絞る参考資料であり、必要な対象だけ原文・実物・ユーザー指示と照合する。全件の個別判定を索引導入の完了条件にはしない。

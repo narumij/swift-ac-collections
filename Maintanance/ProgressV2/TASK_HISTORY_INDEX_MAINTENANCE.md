@@ -10,9 +10,9 @@ commitに現れるtask IDを検索し、必要な履歴へ短くたどれる状�
 
 | 対象 | 配置と扱い |
 | --- | --- |
-| SQLite本体 | 予定名は`Maintanance/TaskHistoryIndex/task_history.sqlite3`。生成物としてGitから除外 |
+| SQLite本体 | `Maintanance/TaskHistoryIndex/task_history.sqlite3`。生成物としてGitから除外 |
 | 一時DB・更新log・DB付随ファイル | 同じ`Maintanance/TaskHistoryIndex/`内。Gitから除外 |
-| 抽出器・検索手順 | 実装時にGit管理する。生成物のフォルダには置かない |
+| 抽出器・検索手順 | `Utilities/Maintenance/TaskHistoryIndex.py`と本書をGit管理する。生成物のフォルダには置かない |
 | この手順 | `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md`。V2文書とともにGit管理 |
 
 ## メンテナンスが必要なとき

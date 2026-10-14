@@ -5,8 +5,8 @@
 2026-10-14、候補として作成後、ユーザーの「接続してフレッシュで疎通かな」という指示により、通常の参照・更新先をV2へ切り替えた。2026-10-15に受領したフレッシュ会話の返却により、通常入口からの読み取り疎通を確認した。taskの再開や役割の割当は行っていない。
 
 - V2文書の配置先：`Maintanance/ProgressV2/`。Git管理対象。
-- SQLite生成物の予定配置：`Maintanance/TaskHistoryIndex/`。リポジトリの`.gitignore`へ除外設定を追加済み。SQLite本体は未作成。
-- SQLite索引と抽出器は未実装。作成・差分更新・照合・再作成のメンテナンス手順を別紙に用意した。
+- SQLite生成物の配置：`Maintanance/TaskHistoryIndex/`。リポジトリの`.gitignore`で除外し、2026-10-15にSQLite本体を初回作成した。
+- SQLite索引と抽出器は2026-10-15にユーザーが採用した。実在する操作はメンテナンス手順、抽出規則・試作時の確認・限界は補助資料に記録している。
 
 | ファイル | 役割 |
 | --- | --- |
@@ -14,7 +14,8 @@
 | [TASK_REGISTRY_V2.md](TASK_REGISTRY_V2.md) | task行・依存関係・後続目標・完了記録 |
 | [TASK_RULES_V2.md](TASK_RULES_V2.md) | 操作時に参照する制度・採番表・文書権限 |
 | [TASK_REGISTRY_ARCHIVE.md](TASK_REGISTRY_ARCHIVE.md) | 原文をArchivedへ保存し、現行から辿れるようにする圧縮手順。整理するときだけ参照 |
-| [TASK_HISTORY_INDEX_MAINTENANCE.md](TASK_HISTORY_INDEX_MAINTENANCE.md) | SQLite索引のメンテナンス手順案。索引を扱うときだけ参照 |
+| [TASK_HISTORY_INDEX_MAINTENANCE.md](TASK_HISTORY_INDEX_MAINTENANCE.md) | 採用済みSQLite索引のメンテナンス手順。索引を扱うときだけ参照 |
+| [TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md](TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md) | 抽出規則、試作時の確認結果、限界を残す補助資料 |
 | 本書 | 作成根拠・変更点・接続の経緯と確認範囲。通常起動時には読まない |
 
 ## 作成の基準
@@ -58,7 +59,7 @@ ID、状態、担当、既存の種別、依存辺の接続とFlow、使用済�
 - `AGENTS.md`の開始時案内をV2入口へ変更し、必要な制度を操作前に参照する構成へ合わせた。文書権限・配置維持例外・採番・種別・依存の参照先もV2へ揃えた。
 - Orientation V5の入口・taskオリエンテーション・playbookの運用参照と採用記録を合わせた。思想の本文には変更が不要だった。
 - 旧`Maintanance/PROGRESS_OVERVIEW.md`をV2への案内と切替前の記録にした。旧参照からもV2へ進めるようにし、過去資料の移動・改名・削除は行っていない。
-- V2の入口・Registry・制度の状態表記を、接続済みの参照・更新先として揃えた。SQLite手順は引き続き案であり、索引と抽出器は未実装。
+- V2の入口・Registry・制度の状態表記を、接続済みの参照・更新先として揃えた。後の2026-10-15にSQLite索引・抽出器・運用規則を採用し、初回DBを作成した。
 
 今回の`AGENTS.md`編集はユーザーの接続指示の範囲に限る。一般の編集権限を変更していない。判断一つかゼロ、凍結、ユーザー専任、操作権限の境界、およびtask行・依存辺・採番値は接続前から変更していない。
 

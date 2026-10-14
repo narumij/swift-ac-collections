@@ -2,6 +2,7 @@
 
 このディレクトリには、現在のテスト運用から外れた履歴資料を置く。
 
+2026-10-15、ユーザーの指示により`Tests/Archived/`から`Maintanance/Archived/TestDashboard/`へ移した。
 現在の状態と作業入口は`Tests/TESTING.md`を正とし、Archived内の旧handoff、未完了表現、
 当時の次タスクを明示的な再開指示なしに現在の作業指示として扱わない。
 

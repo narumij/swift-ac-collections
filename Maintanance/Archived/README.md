@@ -100,3 +100,10 @@ Archived全体を探索しない。
 - `CLAUDE_PENDING_TASKS_RECONCILED_2026-10-15.md`: 2026-10-14の判断座標関連4件と
   2026-10-15のTask履歴SQLite索引関連5件を正式記録へ統合した後の一時entry原文。
   正式な完了記録はTask Registryの`OPS-037`と`OPS-036`であり、この文書は現行の依頼・規則・着手条件ではない
+
+## 2026-10-15 TestDashboard移動分
+
+- `TestDashboard/`: 旧`Tests/Archived/`を、ユーザーの指示によりフォルダごと移した。`TESTING_REFERENCE.md`
+  （2026-10-03時点の旧`Tests/TESTING.md`）、`TESTING_HISTORY_2026-10-15.md`（同日に`Tests/TESTING.md`から移した完了記録）、
+  および索引の`README.md`を収める。Archived内の過去の文書にある`Tests/Archived/…`の記述は当時のパスであり、
+  現在は`Maintanance/Archived/TestDashboard/…`を指す。

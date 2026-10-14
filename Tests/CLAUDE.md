@@ -15,7 +15,7 @@ Before changing files:
    treat it as the current task. Codex-to-Claude work requests in that file
    must be written in English.
 3. Read only the task-relevant portions of `Tests/TESTING.md`.
-4. Search `Tests/Archived/TESTING_REFERENCE.md` only when the current task requires
+4. Search `Maintanance/Archived/TestDashboard/TESTING_REFERENCE.md` only when the current task requires
    historical context or a detailed legacy procedure. Do not read it from
    beginning to end by default.
 5. Inspect the relevant implementation, tests, fixtures, and API matrices

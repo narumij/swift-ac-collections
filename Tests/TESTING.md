@@ -1,8 +1,8 @@
 # テストメンテナンス・ダッシュボード
 
 現在情報だけを保持する。作業規則は `Tests/CLAUDE.md`、CodexからClaudeへの依頼は
-`Maintanance/CLAUDE_TASK.md`、2026-10-03以前の詳細は `Tests/Archived/TESTING_REFERENCE.md`、2026-10-15までに完了した
-作業記録と旧handoffは `Tests/Archived/TESTING_HISTORY_2026-10-15.md` にある。
+`Maintanance/CLAUDE_TASK.md`、2026-10-03以前の詳細は `Maintanance/Archived/TestDashboard/TESTING_REFERENCE.md`、2026-10-15までに完了した
+作業記録と旧handoffは `Maintanance/Archived/TestDashboard/TESTING_HISTORY_2026-10-15.md` にある。
 参照資料は必要な箇所だけ検索し、通常は通読しない。
 
 ## 目的
@@ -63,7 +63,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
 
 ## 直近の引き継ぎ
 
-- `Tests/TESTING.md`の古い記載を`Tests/Archived/TESTING_HISTORY_2026-10-15.md`へ原文のまま移した。
+- `Tests/TESTING.md`の古い記載を`Maintanance/Archived/TestDashboard/TESTING_HISTORY_2026-10-15.md`へ原文のまま移した。
 - ElementBuffer系の仕様testのファイル名は改名前の`BareArray_*`・`OptionalArray_*`のまま。監査の正本がこの名前を
   引用しているため、改名するかは未決定（記録なし）。
 - test内に未使用変数の警告が数件ある（`RedBlackTreeInternal_ComparatorsTests.swift`など）。仕様には影響しない。

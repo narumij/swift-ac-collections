@@ -87,6 +87,7 @@ Archived全体を探索しない。
 
 ## 2026-10-15移動分
 
+- `PROGRESS_OVERVIEW_RETIRED_2026-10-15.md`: V2接続後に失効済みと明示されていた旧進捗一覧の全文。現在のtask状態・制度・権限・着手条件ではない
 - `CLAUDE_PENDING_TASKS_RECONCILED_2026-10-15.md`: 2026-10-14の判断座標関連4件と
   2026-10-15のTask履歴SQLite索引関連5件を正式記録へ統合した後の一時entry原文。
   正式な完了記録はTask Registryの`OPS-037`と`OPS-036`であり、この文書は現行の依頼・規則・着手条件ではない

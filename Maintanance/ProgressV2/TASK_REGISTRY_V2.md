@@ -188,6 +188,7 @@ ElementBuffer（旧BareArray）の「1.0として採用できるか判断可能�
 | `OPS-036` | `DONE` | User / Claude / Codex | [EXECUTION] Task履歴SQLite索引の試作・採用・初回作成 | 2026-10-15、Astraの手順案を基にClaudeが抽出器、Registry行変化、通常・アーカイブ・介入後メンテ操作を試作し、ユーザーが規則と実装を採用。Codexが既定DBを現在HEADまで更新して整合を確認し、一時entry 5件を一つの成果として受け入れた。索引はtask IDとcommitの探索を助ける参考資料であり、介入・完了・採用の意味判断やRegistryを代替しない | `Utilities/Maintenance/TaskHistoryIndex.py` / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md` / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_PROTOTYPE_NOTES.md` / `Maintanance/ProgressV2/TASK_RULES_V2.md` |
 | `OPS-037` | `DONE` | User / Claude / ChatGPT / Codex | [EXECUTION] 判断座標の参考資料化・統合と`AGENTS.md`再評価 | 2026-10-14、副作用の勾配、最小orientation、変化・知識・時間差を参考資料と草案へまとめ、判断座標へ統合。ユーザーの確定とChatGPTレビューを経て`AGENTS.md`を再評価し、この成果を後続の4者レビューとV5採用へ渡した。一時entry 4件はこの成果へ統合するが、各草案・参考資料を現行規則や指示として復活させない | `Maintanance/EFFECT_GRADIENT_REFERENCE.md` / `Maintanance/MINIMAL_ORIENTATION_DRAFT.md` / `Maintanance/CHANGE_KNOWLEDGE_LAG_DRAFT.md` / `Maintanance/JUDGMENT_COORDINATES_DRAFT.md` / `Maintanance/JUDGMENT_COORDINATES_BUDDHISM_NOTE.md` / `Maintanance/AGENTS_MD_COORDINATE_REVIEW.md` / `Maintanance/AgentsReview/AGENTS_REVIEW_MASTER.integrated.md` |
 | `OPS-038` | `DONE` | User / Codex | [EXECUTION] 現行横断資料の`Maintanance/Current/`集約 | 2026-10-15、ユーザーの配置指示により、直下に散在していた現行の正本・運用資料9件を`Maintanance/Current/`へ集約し、Registry、品質文書、関連する現行資料の参照を追従した。明示された8文書と、`AGENTS.md`が固定パスで参照する`CONVERSATION_REFERENCE_IDS.md`は現在位置を維持。失効した旧進捗、完了作業記録、未採用草案は集約対象外とし、文書の権限・task状態・凍結条件を変更していない | `Maintanance/Current/README.md` / `Maintanance/ProgressV2/TASK_RULES_V2.md` |
+| `OPS-039` | `DONE` | User / Codex | [EXECUTION] 失効済み旧進捗一覧のアーカイブ | 2026-10-15、ユーザーの指示により、V2接続後は履歴としてだけ残っていた旧`Maintanance/PROGRESS_OVERVIEW.md`全文をArchivedへ移し、V2の履歴入口とアーカイブ索引から辿れるようにした。現在の品質文書とtest作業入口に残っていた旧Registry参照はV2へ更新。旧task・制度を復活させず、現在のtask状態・依存・権限は変更していない | `Maintanance/Archived/PROGRESS_OVERVIEW_RETIRED_2026-10-15.md` / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md` |
 
 ## 過去の記録への入口
 
@@ -199,4 +200,5 @@ ElementBuffer（旧BareArray）の「1.0として採用できるか判断可能�
 - `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-12.md`
 - `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-13.md`
 - `Maintanance/Archived/PROGRESS_OVERVIEW_COMPLETED_2026-10-14.md`
+- [V2切替後に失効・退役した旧進捗全文（2026-10-15移動）](../Archived/PROGRESS_OVERVIEW_RETIRED_2026-10-15.md)：旧task表・制度・説明を含む履歴。現在の状態や着手条件には使わない。
 - [目標の記録の修正前原文（2026-10-15）](../Archived/PROGRESS_V2_GOALS_BEFORE_2026-10-15.md)：0.5.1・0.5.2、三対象の本文ドラフト、旧提供方針による目標を含む。現在の目標や実行指示としては扱わない。

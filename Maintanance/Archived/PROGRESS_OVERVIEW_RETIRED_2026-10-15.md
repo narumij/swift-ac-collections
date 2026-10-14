@@ -1,10 +1,13 @@
 # 開発・メンテナンス進捗一覧 — 旧本文は失効（V2への案内）
 
-> 2026-10-14、ユーザーの接続指示により、現在の入口を[進捗 V2](ProgressV2/PROGRESS_OVERVIEW_V2.md)へ切り替えた。現在のtask・依存は[Task Registry V2](ProgressV2/TASK_REGISTRY_V2.md)、制度・採番・文書権限は[Task制度 V2](ProgressV2/TASK_RULES_V2.md)を参照・更新する。この旧版へ現在の状態を追記しない。
+> アーカイブ記録：2026-10-15に`Maintanance/PROGRESS_OVERVIEW.md`から全文を移動した。
+> 移動時点で既に失効していた旧進捗本文であり、現在の指示・規則・権限・着手条件ではない。
+
+> 2026-10-14、ユーザーの接続指示により、現在の入口を[進捗 V2](../ProgressV2/PROGRESS_OVERVIEW_V2.md)へ切り替えた。現在のtask・依存は[Task Registry V2](../ProgressV2/TASK_REGISTRY_V2.md)、制度・採番・文書権限は[Task制度 V2](../ProgressV2/TASK_RULES_V2.md)を参照・更新する。この旧版へ現在の状態を追記しない。
 
 **以下の旧本文全体は失効した履歴である。** 2026-10-15、ユーザー指示により明示した。旧本文を現在の指示・規則・権限・着手条件の根拠にせず、現行記録の欠落や矛盾を埋める代替正本にも使わない。
 
-このファイルがArchived外にあること、他の文書から参照されていること、旧本文に「正本」「現在」「規則」と書かれていることは、現行の効力を与えない。履歴の効力と復帰は、[AGENTS.mdの「現在の仕事と正本」](../AGENTS.md#現在の仕事と正本)に従う。
+このファイルがArchived外にあること、他の文書から参照されていること、旧本文に「正本」「現在」「規則」と書かれていることは、現行の効力を与えない。履歴の効力と復帰は、[AGENTS.mdの「現在の仕事と正本」](../../AGENTS.md#現在の仕事と正本)に従う。
 
 過去の事実や判断の調査に必要な原文として、配置と旧本文を保存する。通常の開始時は上記V2へ進み、以下を通読しない。
 
@@ -27,7 +30,7 @@
 
 ## 正本整理時の配置維持例外
 
-> 以下は旧記録。現在の参照・更新先は[V2の該当箇所](ProgressV2/TASK_RULES_V2.md#正本整理時の配置維持例外)。
+> 以下は旧記録。現在の参照・更新先は[V2の該当箇所](../ProgressV2/TASK_RULES_V2.md#正本整理時の配置維持例外)。
 
 正本整理、役割別のfolder分け、またはArchivedへの移動を行う場合でも、次のMarkdownは現在位置から
 移動または改名しない。この表は配置だけの例外を定め、各文書の権限、正本性、内容の更新規則は変更しない。
@@ -42,7 +45,7 @@
 
 ## 文書ランクと変更権限
 
-> 以下は旧記録。現在の参照・更新先は[V2の該当箇所](ProgressV2/TASK_RULES_V2.md#文書ランクと変更権限)。
+> 以下は旧記録。現在の参照・更新先は[V2の該当箇所](../ProgressV2/TASK_RULES_V2.md#文書ランクと変更権限)。
 
 文書を読めること、編集へ参加できること、正本として採用できること、および配置を変更できることを
 同じ権限として扱わない。上位文書の変更統制は、下位taskの実行権限から自動的には導かれない。
@@ -87,11 +90,11 @@ Orientation文書は、AIがrepositoryの目的、責任境界、および実務
 
 ## Task Registry
 
-> 以下は旧記録。現在の参照・更新先は[V2の該当箇所](ProgressV2/TASK_REGISTRY_V2.md#task-registry)。
+> 以下は旧記録。現在の参照・更新先は[V2の該当箇所](../ProgressV2/TASK_REGISTRY_V2.md#task-registry)。
 
 ### Task ID採番状態
 
-> 以下は旧記録。現在の参照・更新先は[V2の該当箇所](ProgressV2/TASK_RULES_V2.md#task-id採番状態)。
+> 以下は旧記録。現在の参照・更新先は[V2の該当箇所](../ProgressV2/TASK_RULES_V2.md#task-id採番状態)。
 
 次の表を、Task Registry IDのprefixごとの**最後に使用した番号**を保持する正本とする。現行Registryから
 Archivedへ移したtask、`DONE`・`EXCLUDED`になったtask、後から誤りや重複が判明したtaskも使用済みに含める。
@@ -255,7 +258,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 
 ## Task precedence
 
-> 以下は旧記録。現在の参照・更新先は[V2の該当箇所](ProgressV2/TASK_REGISTRY_V2.md#task-precedence)。
+> 以下は旧記録。現在の参照・更新先は[V2の該当箇所](../ProgressV2/TASK_REGISTRY_V2.md#task-precedence)。
 
 | 後続task | 前提task | Flow | 制約 |
 | --- | --- | --- | --- |
@@ -280,7 +283,7 @@ taskを新規登録または次に更新するときは、項目名の先頭へ�
 
 ## Registry rules
 
-> 以下は旧記録。現在の参照・更新先は[V2の該当箇所](ProgressV2/TASK_RULES_V2.md)。
+> 以下は旧記録。現在の参照・更新先は[V2の該当箇所](../ProgressV2/TASK_RULES_V2.md)。
 
 - 状態は`PROPOSED`、`ACTIVE`、`WAITING_USER`、`WAITING_EXTERNAL`、`FROZEN`、`USER_ONLY`、`EXCLUDED`、`DONE`、`ARCHIVED`のいずれかとする。
 - `PROPOSED`は忘失防止のtask候補であり、範囲、完了条件、担当、詳細正本、必須依存を確定して状態を更新するまで着手・委任しない。

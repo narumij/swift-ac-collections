@@ -194,7 +194,7 @@ toolchain固有の最適化事象や未再現の性能事象は、原因と適�
 | 対象 | 正本 |
 | --- | --- |
 | リポジトリ全体の上位品質要求 | `Maintanance/Current/QUALITY_REQUIREMENTS.md` |
-| 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
+| 現在のtask状態、所有者、依存、再開条件 | `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |
 | 通常版の観察可能な仕様 | `Tests/PermutationTests/NextPermutations/`のruntime Test as Specificationと`Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`のcompiler fixture。分類、受入境界、実行証拠は`Maintanance/PermutationModule/RuntimeCheckedPermutationTestPlan.md`を参照し、退避中の旧testを現行仕様と扱わない |
 | AtCoder 2025互換modeの観察可能な仕様 | `Tests/PermutationTests/AtCoder2025Compatibility/` |
 | 公開APIとdocumentation comment | `Sources/PermutationModule/NextPermutations.swift`および互換modeのsource |

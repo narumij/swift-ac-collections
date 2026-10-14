@@ -153,7 +153,7 @@ Fixtureは契約を観測するための参照実装であり、製品ストレ�
 | 対象 | 正本 |
 | --- | --- |
 | リポジトリ全体の上位品質要求 | `Maintanance/Current/QUALITY_REQUIREMENTS.md` |
-| 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
+| 現在のtask状態、所有者、依存、再開条件 | `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |
 | 公開APIの存在と4型への展開 | `API-Matrix.md` |
 | 外部または内部から観察可能な仕様 | Test as Specification |
 | テストで使用するFixture | `Tests/RedBlackTreeFixture/Fixtures.md` |

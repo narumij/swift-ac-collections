@@ -172,7 +172,7 @@ trait無効時には`AcCollections`から公開しない。一般Swift向けの�
 | 対象 | 正本 |
 | --- | --- |
 | リポジトリ全体の上位品質要求 | `Maintanance/Current/QUALITY_REQUIREMENTS.md` |
-| 現在のtask状態、所有者、依存、再開条件 | `Maintanance/PROGRESS_OVERVIEW.md`のTask Registry |
+| 現在のtask状態、所有者、依存、再開条件 | `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` |
 | 観察可能な仕様 | `Tests/OptionalElementBufferModuleTests/`の番号付きTest as Specification |
 | 公開APIとdocumentation comment | `Sources/OptionalElementBufferModule/OptionalElementBuffer.swift` |
 | 公開面の棚卸し、判断、証拠の所在 | `Maintanance/OptionalElementBufferModule/OptionalElementBufferAudit.md` |

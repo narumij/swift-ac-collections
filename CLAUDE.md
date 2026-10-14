@@ -6,7 +6,7 @@ and the detailed canonical document linked from the selected task row. Consult o
 [Task Rules V2](Maintanance/ProgressV2/TASK_RULES_V2.md) before an operation that requires them.
 Do not scan all maintenance or Archived documents by default.
 
-For the authority of historical records, including the retired `Maintanance/PROGRESS_OVERVIEW.md`,
+For the authority of historical records, including `Maintanance/Archived/PROGRESS_OVERVIEW_RETIRED_2026-10-15.md`,
 follow [AGENTS.md — 現在の仕事と正本](AGENTS.md#現在の仕事と正本).
 
 For work under `Tests/`, read `Tests/CLAUDE.md` after the Task Registry and follow its instructions.

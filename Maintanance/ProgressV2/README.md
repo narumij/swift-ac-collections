@@ -20,7 +20,7 @@
 
 ## 作成の基準
 
-- 元ファイル：`Maintanance/PROGRESS_OVERVIEW.md`
+- 元ファイル：`Maintanance/Archived/PROGRESS_OVERVIEW_RETIRED_2026-10-15.md`（V2作成時は`Maintanance/PROGRESS_OVERVIEW.md`）
 - 読み取り時のGit HEAD：`1af43a5f8df9b41655699a3cc17a87e30a7a30ec`
 - 元ファイルのSHA-256：`e494b1b400d70284b5c957b9f52019fdb1d744162ad762ffee21cb25266fcb0a`
 - 50 task、18依存辺、18 prefixの使用済み番号を引き継いだ。
@@ -58,7 +58,7 @@ ID、状態、担当、既存の種別、依存辺の接続とFlow、使用済�
 
 - `AGENTS.md`の開始時案内をV2入口へ変更し、必要な制度を操作前に参照する構成へ合わせた。文書権限・配置維持例外・採番・種別・依存の参照先もV2へ揃えた。
 - Orientation V5の入口・taskオリエンテーション・playbookの運用参照と採用記録を合わせた。思想の本文には変更が不要だった。
-- 旧`Maintanance/PROGRESS_OVERVIEW.md`をV2への案内と切替前の記録にした。旧参照からもV2へ進めるようにし、過去資料の移動・改名・削除は行っていない。
+- 旧`Maintanance/PROGRESS_OVERVIEW.md`をV2への案内と切替前の記録にした。2026-10-15、その役目を終えた旧版全文を`Maintanance/Archived/PROGRESS_OVERVIEW_RETIRED_2026-10-15.md`へ移した。
 - V2の入口・Registry・制度の状態表記を、接続済みの参照・更新先として揃えた。後の2026-10-15にSQLite索引・抽出器・運用規則を採用し、初回DBを作成した。
 
 今回の`AGENTS.md`編集はユーザーの接続指示の範囲に限る。一般の編集権限を変更していない。判断一つかゼロ、凍結、ユーザー専任、操作権限の境界、およびtask行・依存辺・採番値は接続前から変更していない。

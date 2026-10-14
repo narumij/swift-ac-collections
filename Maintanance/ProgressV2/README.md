@@ -13,6 +13,7 @@
 | [PROGRESS_OVERVIEW_V2.md](PROGRESS_OVERVIEW_V2.md) | 起動時の短い入口と現在の目標 |
 | [TASK_REGISTRY_V2.md](TASK_REGISTRY_V2.md) | task行・依存関係・後続目標・完了記録 |
 | [TASK_RULES_V2.md](TASK_RULES_V2.md) | 操作時に参照する制度・採番表・文書権限 |
+| [TASK_REGISTRY_ARCHIVE.md](TASK_REGISTRY_ARCHIVE.md) | 原文をArchivedへ保存し、現行から辿れるようにする圧縮手順。整理するときだけ参照 |
 | [TASK_HISTORY_INDEX_MAINTENANCE.md](TASK_HISTORY_INDEX_MAINTENANCE.md) | SQLite索引のメンテナンス手順案。索引を扱うときだけ参照 |
 | 本書 | 作成根拠・変更点・接続の経緯と確認範囲。通常起動時には読まない |
 

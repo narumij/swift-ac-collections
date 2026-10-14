@@ -91,7 +91,10 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 - 前提・既存task候補: `CP-20261014-002`〜`004`の統合。
 - 担当候補・受入担当: 姫（Claude）実行 / ユーザー確定 / Codex受入。
 - 停止条件: (2)の後、ユーザーの確定まで(4)に進まない。
-- 成果・検証: (1)作成済み。補足資料`Maintanance/JUDGMENT_COORDINATES_BUDDHISM_NOTE.md`もユーザーの提案で追加。持ち主の表は`MINIMAL_ORIENTATION_DRAFT.md`の照合済みの内容を写し、tag pushにreleaseと注記した（`AGENTS.md`の「tag push are user-operated」と照合）。
+- 成果・検証: (1)作成済み。補足資料`Maintanance/JUDGMENT_COORDINATES_BUDDHISM_NOTE.md`もユーザーの提案で追加。(2)ChatGPTレビュー反映済み。(3)ユーザー「もうほぼ確定。90％ぐらい」。(4)`Maintanance/AGENTS_MD_COORDINATE_REVIEW.md`作成済み（`AGENTS.md`は読むだけ）。
+  評価中に、ID再利用禁止が`AGENTS.md`に10-06からあったと確認した。草案2本の「規則が消えた」は言い過ぎだが、
+  確定済みの草案は触らず、訂正は評価文書の側に置いた（ユーザー「かくていしたものはさわっちゃだめ」）。
+  その後ユーザーが評価結果を残り10％の差し戻しと位置づけ、「それでやって」と指示したので、統合草案に訂正とR-1〜R-5を反映した。持ち主の表は`MINIMAL_ORIENTATION_DRAFT.md`の照合済みの内容を写し、tag pushにreleaseと注記した（`AGENTS.md`の「tag push are user-operated」と照合）。
 - Codex reconciliation: 未処理
 
 過去のreconciliation済みentryは次を参照する。

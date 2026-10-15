@@ -13,40 +13,40 @@ Round 1初回採点用。採点者: ユーザー。候補集合と意味・懸�
 
 | 対象surface | 候補シンボル | Candidate ID | Score（1〜9） | 支持理由 | 反証・懸念 | 他candidateとの関係 |
 | --- | --- | --- | --- | --- | --- | --- |
-| Module名 | `PermutationModule` | `MN-01` |  |  |  |  |
-| Module名 | `LexicographicPermutationModule` | `MN-02` |  |  |  |  |
-| Module名 | `NextPermutationModule` | `MN-03` |  |  |  |  |
-| 通常版入口 | `nextPermutations()` | `NE-01` |  |  |  |  |
-| 通常版入口 | `lexicographicPermutationSuffix()` | `NE-02` |  |  |  |  |
-| 通常版入口 | `remainingPermutations()` | `NE-03` |  |  |  |  |
-| 通常版入口 | `lexicographicPermutationCursor()` | `NE-04` |  |  |  |  |
-| 通常版入口 | `checkedNextPermutations()` | `NE-05` |  |  |  |  |
-| 通常版入口 | `permutationsFromCurrentOrder()` | `NE-06` |  |  |  |  |
-| 通常版owner | `NextPermutations` | `NO-01` |  |  |  |  |
-| 通常版owner | `LexicographicPermutationSuffix` | `NO-02` |  |  |  |  |
-| 通常版owner | `RemainingPermutations` | `NO-03` |  |  |  |  |
-| 通常版owner | `LexicographicPermutationCursor` | `NO-04` |  |  |  |  |
-| 通常版owner | `CheckedNextPermutations` | `NO-05` |  |  |  |  |
-| 通常版owner | `NextPermutationCursor` | `NO-06` |  |  |  |  |
-| 通常版一時view | `Permutation` | `NV-01` |  |  |  |  |
-| 通常版一時view | `View` | `NV-02` |  |  |  |  |
-| 通常版一時view | `CurrentPermutation` | `NV-03` |  |  |  |  |
-| 通常版一時view | `CurrentPermutationView` | `NV-04` |  |  |  |  |
-| 通常版一時view | `EphemeralPermutation` | `NV-05` |  |  |  |  |
-| borrowed版入口 | `borrowedNextPermutations()` | `BE-01` |  |  |  |  |
-| borrowed版入口 | `borrowedLexicographicPermutationSuffix()` | `BE-02` |  |  |  |  |
-| borrowed版入口 | `borrowedRemainingPermutations()` | `BE-03` |  |  |  |  |
-| borrowed版入口 | `borrowedLexicographicPermutationCursor()` | `BE-04` |  |  |  |  |
-| borrowed版入口 | `nextPermutationSpans()` | `BE-05` |  |  |  |  |
-| borrowed版入口 | `lendingNextPermutations()` | `BE-06` |  |  |  |  |
-| borrowed版owner | `BorrowedNextPermutations` | `BO-01` |  |  |  |  |
-| borrowed版owner | `BorrowedLexicographicPermutationSuffix` | `BO-02` |  |  |  |  |
-| borrowed版owner | `BorrowedRemainingPermutations` | `BO-03` |  |  |  |  |
-| borrowed版owner | `BorrowedLexicographicPermutationCursor` | `BO-04` |  |  |  |  |
-| borrowed版owner | `NextPermutationSpans` | `BO-05` |  |  |  |  |
-| borrowed版owner | `BorrowedNextPermutationCursor` | `BO-06` |  |  |  |  |
-| 補助宣言名 | `Value` | `GP-01` |  |  |  |  |
-| 補助宣言名 | `Element` | `GP-02` |  |  |  |  |
+| Module名 | `PermutationModule` | `MN-01` | 4 | とくなし | swift-algorithmとのかぶり | わからない |
+| Module名 | `LexicographicPermutationModule` | `MN-02` | 1 |  | 趣味じゃない | わからない |
+| Module名 | `NextPermutationModule` | `MN-03` | 5 |  |  | わからない |
+| 通常版入口 | `nextPermutations()` | `NE-01` | 5 |  |  | わからない |
+| 通常版入口 | `lexicographicPermutationSuffix()` | `NE-02` | 1 |  | 趣味じゃない | わからない |
+| 通常版入口 | `remainingPermutations()` | `NE-03` | 1 |  | 趣味じゃない | わからない |
+| 通常版入口 | `lexicographicPermutationCursor()` | `NE-04` |  1|  | 趣味じゃない | わからない |
+| 通常版入口 | `checkedNextPermutations()` | `NE-05` | 1 |  | 趣味じゃない | わからない |
+| 通常版入口 | `permutationsFromCurrentOrder()` | `NE-06` | 1 |  | 長すぎる | わからない |
+| 通常版owner | `NextPermutations` | `NO-01` | 5 |  |  | わからない |
+| 通常版owner | `LexicographicPermutationSuffix` | `NO-02` | 1 |  | 趣味じゃない | わからない |
+| 通常版owner | `RemainingPermutations` | `NO-03` | 1 |  | 趣味じゃない | わからない |
+| 通常版owner | `LexicographicPermutationCursor` | `NO-04` | 1 |  | 趣味じゃない | わからない |
+| 通常版owner | `CheckedNextPermutations` | `NO-05` | 1 |  | 趣味じゃない | わからない |
+| 通常版owner | `NextPermutationCursor` | `NO-06` | 2 |  | Cursorは意味的にSwift側で凍結されている印象だから | わからない |
+| 通常版一時view | `Permutation` | `NV-01` | 5 |  |  | わからない |
+| 通常版一時view | `View` | `NV-02` | 4 |  |  | わからない |
+| 通常版一時view | `CurrentPermutation` | `NV-03` | 4 |  |  | わからない |
+| 通常版一時view | `CurrentPermutationView` | `NV-04` |  4|  |  | わからない |
+| 通常版一時view | `EphemeralPermutation` | `NV-05` |  1|  | 趣味じゃない | わからない |
+| borrowed版入口 | `borrowedNextPermutations()` | `BE-01` | 5 |  |  | わからない |
+| borrowed版入口 | `borrowedLexicographicPermutationSuffix()` | `BE-02` | 1 |  | 趣味じゃない | わからない |
+| borrowed版入口 | `borrowedRemainingPermutations()` | `BE-03` | 1 |  | 趣味じゃない | わからない |
+| borrowed版入口 | `borrowedLexicographicPermutationCursor()` | `BE-04` | 1 |  | 趣味じゃない | わからない |
+| borrowed版入口 | `nextPermutationSpans()` | `BE-05` | 2 |  |  | わからない |
+| borrowed版入口 | `lendingNextPermutations()` | `BE-06` | 1 |  | 趣味じゃない | わからない |
+| borrowed版owner | `BorrowedNextPermutations` | `BO-01` | 5 |  |  | わからない |
+| borrowed版owner | `BorrowedLexicographicPermutationSuffix` | `BO-02` | 1 |  | 趣味じゃない | わからない |
+| borrowed版owner | `BorrowedRemainingPermutations` | `BO-03` | 1 |  | 趣味じゃない | わからない |
+| borrowed版owner | `BorrowedLexicographicPermutationCursor` | `BO-04` | 1 |  | 趣味じゃない | わからない |
+| borrowed版owner | `NextPermutationSpans` | `BO-05` | 2 |  |  | わからない |
+| borrowed版owner | `BorrowedNextPermutationCursor` | `BO-06` | 1 |  | ursorは意味的にSwift側で凍結されている印象だから  | わからない |
+| 補助宣言名 | `Value` | `GP-01` | 4 |  | どっちでもいい |  |
+| 補助宣言名 | `Element` | `GP-02` | 5 |  | どっちでもいい |  |
 
 ## 採点完了確認
 

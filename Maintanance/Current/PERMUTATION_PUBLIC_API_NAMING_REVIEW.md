@@ -69,6 +69,19 @@ PermutationModuleの現行公開surfaceが、現在の並びを含む辞書順�
 - 決定正本と対象scope、未決事項、依存関係が一致している。
 - 未決のscopeは未決として残り、調査完了だけで採用またはrenameへ進んでいない。
 
+## ユーザーの暫定判断
+
+2026-10-15、Round 1統合報告のうち三者の理由が同方向だった次の三項目を、ユーザーが暫定確定した。
+正式な採用正本への記録とrename判断は、残るsurfaceの決定後に行う。
+
+| 対象 | 暫定名 | Candidate ID | 状態 |
+| --- | --- | --- | --- |
+| 通常版入口 | `nextPermutations()` | `NE-01` | 暫定確定 |
+| borrowed版入口 | `borrowedNextPermutations()` | `BE-01` | 暫定確定 |
+| borrowed版owner | `BorrowedNextPermutations` | `BO-01` | 暫定確定 |
+
+未決: module名、通常版owner、通常版一時view、generic parameter名。
+
 ## 対象外
 
 - production、test、benchmark、fixture、文書のrename実施
@@ -87,6 +100,11 @@ PermutationModuleの現行公開surfaceが、現在の並びを含む辞書順�
 - `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_USER_ROUND1.md`
 - `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND1.md`
 - `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_V3_ROUND1.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_ROUND1_REPORT.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_ROUND2_INPUT.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_USER_ROUND2.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND2.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_V3_ROUND2.md`
 - `Sources/PermutationModule/NextPermutations.swift`
 - `Sources/PermutationModule/BorrowedNextPermutations.swift`
 - `Sources/PermutationModule/PermutationModule.docc/PermutationModule.md`

@@ -9,7 +9,7 @@ the user.
 
 ## Current job status
 
-**`PERM-069`の姫Round 1独立採点を依頼中。**
+**`PERM-069`の姫Round 2再採点を依頼中。**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -27,7 +27,44 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 
 ## Active assignment
 
-### PERM-069-HIME-R1 — PermutationModule公開API名称 Round 1採点
+### PERM-069-HIME-R2 — PermutationModule公開API名称 Round 2採点
+
+#### Objective
+
+Round 1で対立が残った4判断・9候補について、三者のRound 1理由を読んだうえで再評価する。
+Round 1は上書きせず、採用、rename、公開契約変更は行わない。
+
+#### Inputs
+
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_ROUND2_INPUT.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND2.md`
+- 理由の原記録が必要な場合だけ、三者のRound 1採点表
+
+#### Work and boundaries
+
+- 姫用Round 2表の全9行へ点、維持・変更理由、他者理由への賛同・反証を記入する。
+- User・V3のRound 2採点は完了まで読まない。
+- 候補集合、ID、シンボル、Round 1欄を変更しない。
+- 他者採点表、production、test、DocC、Registry、名称決定正本を変更しない。
+- 採用、rename、commitを行わない。
+- 完了後、この節のReturnへ完了時刻、変更ファイル、未採点行、独立性への影響を記録する。
+
+#### Return
+
+返却待ち: `PERM-069-HIME-R2`（採点完了 2026-10-15 14:00 JST / Claude Opus 5.5）
+
+- 変更ファイル: `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND2.md`の9行（Round 2点、維持・変更の理由、他者理由への賛同・反証）と、
+  この`Return`欄のみ。候補集合・ID・シンボル・Round 1欄は変更していない。commitしていない。
+- 未採点行: なし。
+- 読んだもの: Round 2共通入力、姫用Round 2表、User・V3のRound 1採点表の対象9候補と`NE-01`・`BE-01`・`BO-01`の行、
+  `PERMUTATION_PUBLIC_API_NAMING_REVIEW.md`の暫定確定3項目（grepで該当行のみ）。User・V3のRound 2採点は読んでいない。
+- 追加の確認: `GP-02`について、一時directory（削除済み）でgeneric parameter`Element`の非コピーownerとnested `RandomAccessCollection`が
+  typealiasなしでcompileし、`Permutation.Element`が外側の`Element`に解決することを確かめた。最小の試験codeで、実sourceの`@inlinable`等は含まない。
+- 主な変更理由: 入口・borrowed ownerの暫定確定で、`NO-01`（`BorrowedNextPermutations`との対）と`MN-03`（入口との語幹一致）を上げ、`NO-06`・`NV-02`を下げた。
+
+### Completed Round 1 assignment
+
+### PERM-069-HIME-R1 — PermutationModule公開API名称 Round 1採点（返却済み）
 
 #### Objective
 
@@ -50,7 +87,15 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 
 #### Return
 
-（姫が完了時に記入する。）
+返却待ち: `PERM-069-HIME-R1`（採点完了 2026-10-15 13:40 JST / Claude Opus 5.5）
+
+- 変更ファイル: `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND1.md`の採点34行の記入と、この`Return`欄のみ。
+  候補集合・Candidate ID・シンボル欄・完了確認の節は変更していない。commitしていない。
+- 未採点行: なし（34行すべてに`1`〜`9`の点、支持理由、反証・懸念、他candidateとの関係を記入）。
+- 独立性への影響: `USER`・`V3`のRound 1採点表は読んでいない（作業中、`PERMUTATION_PUBLIC_API_NAMING_SCORE_V3_ROUND1.md`がgit上でstage済みと
+  表示されたが、開いていない）。読んだのはballotと姫用採点表、および`PERM-067`で照合済みの現行source・testの範囲だけ。
+  ballotに他者の候補名・意図・懸念が載っているのは、固定入力として扱った。
+- 自分の提出候補（姫`A`〜`C`由来）は、ballotの懸念欄と同じ基準で採点し、支持理由に「姫提出」と明記した。
 
 ### Completed assignment
 

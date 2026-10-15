@@ -25,7 +25,7 @@ the user.
 
 ## Current job status
 
-**`PERM-069`の作り直した姫Round 4採点を依頼中。**
+**`PERM-069`の作り直した姫Round 4採点と、`BARE-046`のElementBuffer Test as Specレビュー反映を依頼中。**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -70,6 +70,36 @@ Round 3と同じ4候補を同じ尺度で再採点し、点数だけでは残ら
 #### Return
 
 返却待ち: `PERM-069-HIME-R4B`
+
+### BARE-046-HIME — ElementBuffer Test as Specレビュー反映
+
+#### Objective
+
+`Maintanance/Current/ELEMENTBUFFER_TEST_AS_SPEC_REVIEW.md`の指摘A〜Eについて、既存契約を検出できるtestとcompiler fixtureを補強する。
+production実装や公開契約は変更しない。
+
+#### Inputs
+
+- `Maintanance/Current/ELEMENTBUFFER_TEST_AS_SPEC_REVIEW.md`
+- 同文書の各項目が示す`Tests/ElementBufferModuleTests/`の既存test
+- `Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/`
+- `Utilities/Maintenance/VerifyBareArrayCompilerDiagnostics.sh`
+
+#### Work and boundaries
+
+- 詳細正本のA〜Eを、それぞれ追加・既存で充足・契約上の判断待ちのいずれかへ対応づける。
+- 必要な通常test、Death Test、compiler fixtureと検証scriptだけを変更する。
+- 追加した検査と関連する既存testを実行し、toolchain、OS、構成、実行方法、件数と結果を残す。
+- compiler拒否例は、意図した診断を確認し、借用終了後に許される正常例と対応づける。
+- production、公開API、性能基準、供用方針、Registry、品質文書、DocCを変更しない。
+- 新しい契約判断や実装修正が必要になった場合は、その項目の事実と再現を記録して停止する。期待値を弱めたりproductionを変更してtestを通したりしない。
+- Swift 6.4での成功をSwift 6.2 toolchainの検証として扱わず、新しい6.2検証基盤は作らない。
+- commitしない。
+- 完了後、この節のReturnと詳細正本の返却欄へ、A〜Eの対応、変更ファイル、実行環境と結果、未実施、残る判断点、production変更がないことを記録する。
+
+#### Return
+
+返却待ち: `BARE-046-HIME`
 
 ### Canceled Round 4 assignment
 

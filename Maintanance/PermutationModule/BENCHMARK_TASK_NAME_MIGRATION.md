@@ -5,7 +5,9 @@
 ユーザー指示によりPERM-063はEXCLUDED。必要なworkflow互換処理はPERM-064内の先行工程へ統合した。以下のPERM-063凍結・再開待ちの記述は過去の整理であり、現行条件ではない。[現行正本](../Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md)に従う。二段階のmerge・検証境界は維持する。
 
 
-## 現行の扱い 2026-10-16
+## 統合前の扱い（2026-10-16の履歴）
+
+以下は工程統合前の記録であり、凍結・再開条件として適用しない。現在の状態と工程は冒頭の現行正本を参照する。
 
 Astra整理。これは完了済みmodule移行のmain到達確認とは別の、後段に延期したbenchmark表示名整理である。現行sourceの4 titleとCI登録2件には`Permutations.SubSequenceN`が残る。今回の照合で完了とは扱わず、PERM-063の凍結を維持する。PERM-064は同日、ユーザーの追加指示でACTIVEへ復帰した。先行依存を保ち、[現行正本](../Current/PERMUTATION_BENCHMARK_TITLE_MIGRATION.md)に従う。
 
@@ -22,7 +24,7 @@ Astra整理。これは完了済みmodule移行のmain到達確認とは別の�
 通常CI表示が旧内部型名`Permutations.SubSequenceN`を名乗る乖離を解消する。workload、測定境界、反復回数、
 performance閾値、および実装方式は変更しない。
 
-## 現在の事実
+## 当初計画時点の事実
 
 - `PermutationBenchmarks.swift`には旧内部型名を含むtitleが4件ある。
 - 通常CIの`CI.json`は、そのうちbatched sequential / shuffledの2件を登録している。
@@ -67,7 +69,7 @@ performance閾値、および実装方式は変更しない。
 - workflow互換の終了はこの移行の完了条件に含めない。baselineでno-opとなった後も、過去commit比較と将来renameに
   利用できる一般的な互換処理として扱う。
 
-## 当時の再開条件（上記の現行扱いで更新）
+## 当時の再開条件（工程統合により失効）
 
 現在の旧facade target削除PRを完了した後、ユーザーがbenchmark表示名移行の開始を明示したときに
 `PERM-063`から再開する。文書ドラフトの現在の中間ゴールより優先して割り込ませる必要はない。

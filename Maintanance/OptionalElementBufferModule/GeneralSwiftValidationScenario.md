@@ -1,7 +1,7 @@
 # OptionalElementBuffer利用Validation scenario
 
-> **現在状態:** 一般Swift向け既定提供の再設計まで凍結。現行の
-> `ENABLE_OPTIONAL_ELEMENT_BUFFER`による競技用途向けopt-in提供の受入には使用しない。
+> **現在の扱い（2026-10-16）:** `OPT-064`は品質側への移行により独立taskから除外済み。文書の利用理解確認は[文書Validation計画](../Current/DOCUMENTATION_VALIDATION_PLAN_DRAFT.md)へ引き継ぐ。競技利用の試行は`OPT-065`として[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)で管理する。旧taskの凍結解除を着手条件にしない。
+> 本書のscenarioと実行記録は同じ場所に保持する。この整理は試行の実施・受入や、一般提供への変更を意味しない。Scenario Aの結果だけを現行opt-in提供の受入根拠にはしない。
 
 > **文書状態:** scenario設計とScenario Aの実行記録。Scenario B・C、製品品質判定、公開判断の実施記録ではない。
 >

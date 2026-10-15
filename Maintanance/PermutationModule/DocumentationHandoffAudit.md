@@ -3,7 +3,7 @@
 最終更新: 2026-10-08 / Codex
 
 本書はcommit `15c8f965`前後の旧COW実装を利用者向け文書作業へ渡した時点の証拠packageであり、
-現行API ledgerではない。現在の公開契約と検証状態は`Sources/PermutationModule/Documentation/Quality-Profile.md`、
+現行API ledgerではない。現在の公開契約と検証状態は`Sources/NextPermutationModule/Documentation/Quality-Profile.md`、
 `CurrentQualityAssessment.md`、`RuntimeCheckedPermutationTestPlan.md`、`BorrowedPermutationTestPlan.md`を参照する。
 
 ## 目的

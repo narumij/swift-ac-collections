@@ -110,7 +110,9 @@ swift run --disable-sandbox -c release benchmark run \
 - 次の`next()`後の旧Viewと、所有者破棄後のViewがpreconditionで停止することを確認した。
 - 通常列挙と上記失効条件の暫定testを`PermutationTests/EtcTests.swift`へ置いた。
 
-## 残る作業
+## 探索時点で残っていた作業
+
+以下は探索時点の記録であり、現在の未完了一覧・凍結解除条件として使用しない。現在の状態は[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)、検証結果は[現行品質評価](CurrentQualityAssessment.md)を参照する。技術候補と探索結果は本書に保持する。
 
 - 旧Test as Specificationを新しい一時View契約に対して棚卸しする。
 - 暫定testを通常test、Death Test、所有・破棄testへ分類する。

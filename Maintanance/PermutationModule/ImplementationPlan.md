@@ -3,7 +3,7 @@
 本書は `Maintanance/CLAUDE_TASK.md` のユーザー最終決定(バリアント削減、2026-10-03)に
 基づき実施した `PermutationModule` の公開API削除の記録である。削除前の調査所見は
 `Maintanance/PermutationModule/ProductReadinessAssessment.md`に残す。現行の公開契約は
-`Sources/PermutationModule/Documentation/Quality-Profile.md`、Test as Specificationの再構成状態は
+`Sources/NextPermutationModule/Documentation/Quality-Profile.md`、Test as Specificationの再構成状態は
 `RuntimeCheckedPermutationTestPlan.md`と`BorrowedPermutationTestPlan.md`を正本とする。旧COW契約の
 `Tests/PermutationTests/NextPermutationsSequence/`は履歴資料であり、現行適合の根拠には用いない。
 
@@ -78,7 +78,9 @@
 - AtCoder環境での実提出という目的を達成したため、ユーザー専任項目を完了とする。最速80msの枝は
   unsafeな上限実験であり、製品版Permutationの採用根拠や正式な外部性能assessmentとは扱わない。
 
-## 保留・凍結中の判断
+## 当時の判断・対応記録
+
+以下は旧実装について記録された判断と実施結果であり、現在の凍結状態を示さない。現在の作業状態は[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)を参照する。
 
 - `Sendable`対応はSwift 6以降に必要とする方針で確定し、全公開型で実施済み。
   `IteratorN`/`SubSequenceN`は、共有CoW bufferの`final`化と変更前detachを根拠に

@@ -1,11 +1,14 @@
-# OptionalArrayModule Current Quality Assessment
+# OptionalElementBufferModule Current Quality Assessment
 
 ## 文書の役割
 
-この文書は、OptionalArrayModuleの0.6.0時点の現行品質評価を記録する。
+この文書は、OptionalElementBufferModuleの0.6.0時点の現行品質評価を記録する。
 上位品質要求は`Maintanance/Current/QUALITY_REQUIREMENTS.md`、モジュールへの適用と証拠境界は
 `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md`を正本とする。
 体系監査と過去の判断は`OptionalElementBufferAudit.md`を参照するが、旧評価の判定は継承しない。
+
+
+> 2026-10-16、進捗表示を整理。以下の評価日・実行結果・当時の型名は、その時点の記録として保持する。現在の作業状態は[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)、提供方針は上記の品質要求・Quality Profileを参照する。
 
 ## Task
 

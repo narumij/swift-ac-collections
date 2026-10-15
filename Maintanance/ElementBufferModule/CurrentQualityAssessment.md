@@ -1,11 +1,14 @@
-# BareArrayModule Current Quality Assessment
+# ElementBufferModule Current Quality Assessment
 
 ## 文書の役割
 
-この文書は、BareArrayModuleの現行品質評価taskの詳細正本である。
+この文書は、ElementBufferModuleの現行品質評価taskの詳細正本である。
 上位品質要求は`Maintanance/Current/QUALITY_REQUIREMENTS.md`、モジュールへの適用と証拠境界は
 `Sources/ElementBufferModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、Quality Profileの現在性確認、現在評価の作業範囲、完了条件、結果を管理する。
+
+
+> 2026-10-16、進捗表示を整理。以下の評価日・実行結果・当時の型名は、その時点の記録として保持する。現在の作業状態は[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)、提供方針は上記の品質要求・Quality Profileを参照する。
 
 ## 現行の供用区分の訂正（2026-10-15）
 

@@ -3,10 +3,12 @@
 最終更新: 2026-10-09 / Codex
 
 本書の通常版に関する記述は、互換modeを構成した時点の旧COW実装を基準とする履歴である。互換modeの
-実装・検証記録は維持するが、現行通常版の契約は`Sources/PermutationModule/Documentation/Quality-Profile.md`、
+実装・検証記録は維持するが、現行通常版の契約は`Sources/NextPermutationModule/Documentation/Quality-Profile.md`、
 検証状態は`CurrentQualityAssessment.md`を参照する。
 
-## 実装タスク境界
+## 当時の実装タスク境界
+
+以下の計画・凍結条件・末尾の残作業は当時の記録であり、現在の着手条件や未完了一覧ではない。現在の作業状態は[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)を参照する。実装・検証の記録は本書に保持する。
 
 最初の「現行契約の基準固定」は互換modeから独立した先頭taskとし、その成果を後続するすべての
 互換mode taskの入力にする。Task Registryで明示的に再開されるまでは、各taskの凍結を維持する。
@@ -325,7 +327,7 @@ AtCoderへ貼り付ける単一ファイルの生成はPackage切替とは別問
 - 通常版と互換版の仕様testを条件で分離する。CIの別job化は`prepare/compatible/2`統合後に行う。
 - 互換版の存在を理由に、現行仕様書へunsafe APIを現役APIとして掲載しない。
 
-## 完了後に残すこと
+## 当時、完了後に残すとしたこと（現在の未完了一覧ではない）
 
 - `prepare/compatible/2`統合後、通常版と互換版の機能testをCIの別jobにする。互換性能計測は行わない。
 - ABC328Eへの外部提出はユーザー専任とし、agentは着手・代行・催促しない。

@@ -9,7 +9,7 @@ the user.
 
 ## Current job status
 
-**`PERM-067`の姫候補は返却済み。新しいjobなし。**
+**`PERM-069`の姫Round 1独立採点を依頼中。**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -26,6 +26,33 @@ For the authority of historical records, including these Return records and the 
 follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と正本).
 
 ## Active assignment
+
+### PERM-069-HIME-R1 — PermutationModule公開API名称 Round 1採点
+
+#### Objective
+
+固定済みballotの34候補を、他者のRound 1採点を読まずに姫自身の尺度で採点する。採点は判断材料であり、
+候補の採用、rename、公開契約変更ではない。
+
+#### Inputs
+
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_BALLOT.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND1.md`
+
+#### Work and boundaries
+
+- 姫用採点表の全34行へ`1`〜`9`の点、支持理由、反証・懸念、必要なfamily関係を記入する。
+- `USER`・`V3`のRound 1採点表は、姫の採点完了まで読まない。
+- 候補集合、Candidate ID、シンボル欄を変更しない。
+- production、test、DocC、ballot、Registry、名称決定正本、他者採点表を変更しない。
+- 合計・平均・順位による採用判断、候補追加、rename、commitを行わない。
+- 完了後、この節のReturnへ採点完了時刻、変更ファイル、未採点行の有無、独立性への影響を記録する。
+
+#### Return
+
+（姫が完了時に記入する。）
+
+### Completed assignment
 
 ### PERM-067-HIME — PermutationModule公開API名称候補の提出（返却済み）
 

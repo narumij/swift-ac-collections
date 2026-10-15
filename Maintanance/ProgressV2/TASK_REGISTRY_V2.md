@@ -27,8 +27,6 @@
 | `OPS-044` | `ACTIVE` | 現在委任された調整担当（Registry更新はCodex） | [EXECUTION] Task Registry運用の恒久管理 | 現在の目標・task状態・依存・採番・文書権限・履歴への経路を維持する常設node。個別の登録・受入・圧縮の完了でDONE・履歴化しない。維持文書と関連資料の範囲はProgressV2/README.mdを参照する。状態変更前に最新指示と正本を確認し、具体的な更新・圧縮は現在の委任と操作規則に従う。常時実行中・読み手への任命・上位規則の変更許可を意味しない | `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` / `Maintanance/ProgressV2/TASK_RULES_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md` / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md` / `Maintanance/ProgressV2/README.md` |
 | `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md` |
 | `OPS-046` | `ACTIVE` | 現在委任された調整担当（初回記録：Astra） | [EXECUTION] 調整ノウハウの継続蓄積 | 調整実務の発見・失敗・訂正を、根拠と適用範囲付きで蓄積する常設node。個別追記の完了ではDONE・履歴化しない。人物評のふりかえり、Registryの制度維持とは区別する。定期記入・毎回通読・読み手への任命を意味しない。知見を規則やユーザー決定へ自動昇格させない | `Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md` |
-| `OPS-045` | `DONE` | Claude（姫） / Astra（受入） | [DISCOVERY] 圧縮後のタスク健全性検査 | 2026-10-16、Claudeの検査返却・占有返却をAstraが確認し、独立照合して受入。確認した指摘は修正済み。検査範囲外を全件保証へ広げない。ユーザーのコミット許可を受領し完了 | `Maintanance/Current/MAINTENANCE_HEALTH_CHECK_2026-10-16.md` |
-| `DOC-031` | `DONE` | Claude（姫） / Astra（受入） | [DISCOVERY] 文書リンク健全性検査 | 2026-10-16、Claudeの検査返却・占有返却をAstraが確認し、独立照合して受入。確認した指摘は修正済み。検査範囲外を全件保証へ広げない。ユーザーのコミット許可を受領し完了 | `Maintanance/Current/MAINTENANCE_HEALTH_CHECK_2026-10-16.md` |
 
 ### 公開とリリース
 
@@ -45,8 +43,6 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `RBT-046` | `DONE` | Astra（受入） | [EXECUTION] 最終横断の検査不足X1・X2補完 | 2026-10-16、X1・X2を独立受入。Debug 986＋133、Release 834＋120成功。占有返却済み。実装はf2aa435eへcommit済み、今回の受入記録についてもユーザーのcommit許可を受領。製品品質全体の合格とは区別する | `Maintanance/Quality/0.6.0-1/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` / `Maintanance/CLAUDE_TASK.md` |
-| `RBT-041` | `DONE` | Astra | [DISCOVERY] 赤黒木Test as Spec：4型の最終横断 | 2026-10-16、補完後の静的横断レビュー完了。SetのBound公開動作のRelease露出（X1）と共通View三種のthrowing erase検査（X2）を補完候補として正本に記録。製品不具合の実証・修正は未実施。追加補完はRBT-046へ発注。ユーザーのcommit許可を受領 | `Maintanance/Quality/0.6.0-1/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
 | `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる。再開時は現行API・設計と外部要件を照合し、旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、現行API・設計と外部要件を照合して互換性を再評価し、採否を決定する。旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-034` | `ACTIVE` | User / Codex | [EXECUTION] RedBlackTree 1.0品質アセスメント完成 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。対象版と評価範囲を固定して、既存証拠・反証・未検証・残余リスクを接続する。0.6.0評価や型別test補完を最初からやり直さず、差分と不足を扱う。今回の棚卸しでは評価実行・合格判定を行わない。 | 保存済み参照資料：`Maintanance/Quality/0.6.0-1/RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
@@ -58,7 +54,6 @@
 | `QUALITY-001` | `ACTIVE` | User / Codex | [DECISION] 汎用基盤ライブラリとしての1.0採用品質ゲート | 2026-10-16のユーザー棚卸し指示でゲートを有効化。Index契約、runtime-check再審査、品質アセスメント、環境別証拠、SPI登録・公開導線を完了前に合流し、1.0として受け入れるかユーザーが判断する。Index待ちは並行可能な証拠整理を止めない。SPI後の人間レビュー方針は文書Validation計画を参照し、実施範囲は同計画のレビュー結果で具体化する。材料未充足のまま合格・公開しない。 | `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
 | `QUALITY-002` | `ACTIVE` | Codex | [EXECUTION] 1.0品質保証CIの構成・証拠化 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。Ubuntu 24.04 LTS / x86_64の既存CI成功と保存済み証拠を先に照合し、不足する合意済み試験・環境情報・完全log・終了statusを補う。変動runnerの絶対性能判定は含めない。今回CI変更・起動は行わず、具体的な実行範囲は着手時に固定する。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Tests/TESTING.md` / `.github/workflows/candidate.yml` |
 | `QUALITY-003` | `ACTIVE` | Codex | [EXECUTION] Apple platforms 27提供境界のmanifest反映・build確認 | 2026-10-16、1.0ゲート復帰に伴い提供環境の整備として有効化。上位品質要求の暫定Apple platforms 27・64-bit方針に従い、manifest宣言とplatform別build・導入証拠の不足を照合して反映する。buildと実行品質を区別する。今回manifest変更・buildは実施せず、新しい提供範囲の判断は代行しない。 | `Maintanance/Quality/QUALITY_REQUIREMENTS.md` / `Package.swift` |
-| `QUALITY-004` | `EXCLUDED` | Codex | [DISCOVERY] 品質評価棚卸し | 2026-10-16、ユーザー判断で継続更新を取りやめ、次の品質試験で再棚卸しする。初期結果は今回の記録として保持。個別課題の解消・全完了条件の達成を意味しない | `Maintanance/Quality/0.6.0-1/QUALITY_ASSESSMENT_INVENTORY.md` / `Maintanance/Archived/QUALITY-004_EXCLUDED_2026-10-16.md` |
 | `QUALITY-005` | `ACTIVE` | User / Codex | [DECISION] SPI登録前の公開準備判定 | 2026-10-16のユーザー棚卸し指示でゲートを有効化。対象版の公開情報・品質証拠・不足を揃え、SPIへ登録してよいかをユーザーが一つ判断する。対象は0.7.0の公開版（tag・commitはrelease後に特定）、判定未実施。登録可の判断、0.7.0 release後という時期、DOC-026の明示実行指示を維持し、今回登録を開始しない。 | `Maintanance/Current/SPI_REGISTRATION_GATE.md` |
 
 ### Permutation
@@ -86,7 +81,6 @@
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `HIST-001` | `ACTIVE` | V3オーサー | [DISCOVERY] AtCoder 2025移行史 | 移行史へ接続すべき新しい事実・証拠が見つかったときに受け入れる常設nodeとして`ACTIVE`を保つ。個別調査や追記が常時実行中であることを意味せず、必要な範囲が具体化したときだけ本紙または証拠別紙へ反映する | `Maintanance/RefactoringFromAtCoder2025/README.md` / `Maintanance/RefactoringFromAtCoder2025/EVIDENCE.md` |
-| `HIST-002` | `DONE` | V3オーサー / Astra（受入） | [DISCOVERY] 移行史の追加探索：残したもの・撤去したもの | 2026-10-16、UnsafeNodeの2026-01-18〜22の移設・実質変更をGitで独立照合し受入。EVIDENCEへ反映済み。作者意図・当時のtest成功は未確認。ユーザーのcommit許可を受領。親HIST-001は継続 | `Maintanance/Current/HIST_002_EXPLORATION.md` |
 
 ## Task precedence
 
@@ -110,7 +104,6 @@
 
 以下は上記の未完了依存と区別する。前提の受入済みは後続の自動開始を意味しない。
 
-- `RBT-041`の受入済み入力：`RBT-040`。個別レビューを入力とする。RBT-045までの補完も独立受入済みで、最終横断はレビュー完了・commit確認待ち。証拠は[完了行と元の依存辺](../Archived/TASK_REGISTRY_COMPLETED_AFTER_RECONCILIATION_2026-10-16.md)および該当行の詳細正本を参照。
 - `PERM-062`の受入済み入力：`PERM-065`。公開surfaceだけを渡す利用理解Validationの前に、喪失した公開APIコメントを現行契約に合わせて回復する。証拠は[完了行と元の依存辺](../Archived/TASK_REGISTRY_COMPLETED_AFTER_RECONCILIATION_2026-10-16.md)および該当行の詳細正本を参照。
 
 「AまたはB」の条件はANDの辺二本に変えず、task行に残す。整理済みの`RBT-004`の旧依存・旧資料のOR例を再開根拠にしない。また、1.0品質ゲートの「再開」と「完了」は異なる。`QUALITY-002`・`QUALITY-003`をゲート完了まで待たせる逆向きの辺は作らない。
@@ -170,6 +163,8 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 - RedBlackTreeのデバッグ用memberを`#if DEBUG`へ揃えるか
 
 ## 過去の記録への入口
+
+- [完了5件・除外1件と旧前提説明（品質資料整理後の圧縮）](../Archived/TASK_REGISTRY_ARCHIVED_2026-10-16_QUALITY_ROUND.md)：`OPS-045`・`DOC-031`・`RBT-041`・`RBT-046`・`HIST-002`・`QUALITY-004`。元の状態・受入範囲・証拠への参照を保存。
 
 - [Permutation公開API削減の実施記録](../Archived/PermutationImplementation_2026-10-16/ImplementationPlan.md)：2026-10-16、ユーザー指示で旧ImplementationPlanを全文保存。旧実装の判断・検証の経緯として参照する。
 

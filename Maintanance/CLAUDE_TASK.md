@@ -29,7 +29,7 @@ the user.
 
 ## Current job status
 
-**現在、Claudeへの実行中assignmentなし。**
+**Current assignment: `OPT-074-HIME` — OptionalElementBuffer Test as Specification review follow-up. Prepared for handoff; execution has not been observed.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -48,6 +48,23 @@ For the authority of historical records, including these Return records and the 
 follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と正本).
 
 ## Active assignment
+
+### OPT-074-HIME — OptionalElementBuffer Test as Specification review follow-up
+
+- Registry ID: `OPT-074` (registered before this request).
+- Assigned by Astra under the user's 2026-10-15 request to review specifications and request Claude implementation if needed.
+- Read `Current/OPTIONAL_ELEMENTBUFFER_TEST_AS_SPEC_REVIEW.md`. Implement findings A–E against the existing contract; do not redesign the API.
+- Editable scope: `Tests/OptionalElementBufferModuleTests/`; dedicated retained fixtures and runner under `Utilities/Maintenance/CompilerDiagnostics/OptionalElementBufferPublicSurface/`; the Claude Return section of that review document and this assignment's Return section. A minimal execution note in `Tests/TESTING.md` is allowed if required by its workflow.
+- Preserve the review findings, other assignments, and unrelated changes. No production, manifest, Registry, numbering, public-document, concurrency-policy, or performance changes. Do not commit.
+- Inspect existing fixtures before adding helpers. Keep normal compile controls beside expected failures and check the intended diagnostic, not merely a nonzero exit.
+- Run affected Debug and Release tests, including the relevant Death Tests, and compiler fixtures. Record exact commands, toolchain, actual test discovery/execution, results and omissions. Follow `Tests/CLAUDE.md` and relevant `Tests/TESTING.md` instructions.
+- If a specification decision or production defect blocks a case, preserve the reproducer and report it; do not weaken assertions or change production. Return all completed work and identify the blocked scope.
+- Codex will independently review acceptance and Registry state. This assignment does not authorize unrelated or frozen work.
+
+#### Return (`OPT-074`)
+
+Not returned.
+
 
 ### CLAUDE-TASK-MAINT-2026-10-15 — CLAUDE_TASK受入済み節の圧縮・履歴整理
 

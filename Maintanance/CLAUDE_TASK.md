@@ -65,4 +65,7 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 
 #### Return (`OPT-074`)
 
-Not returned.
+Returned 2026-10-15 by Claude. Work is in `427b155a`; no further diff. Re-ran Debug and Release
+(49 XCTest + 25 Death Tests each) and the compiler fixture, all exit 0. No remaining work, concerns,
+specification questions, or production defects. Assigned scope released. Details:
+`Current/OPTIONAL_ELEMENTBUFFER_TEST_AS_SPEC_REVIEW.md` § Claude返却欄.

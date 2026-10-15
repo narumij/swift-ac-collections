@@ -74,7 +74,16 @@ Codexによる独立確認後、記録保存のコミット許可待ちをWAITIN
 
 ## Claude返却欄
 
-未返却。
+2026-10-15、姫が返却。前セッションの作業は`427b155a`に保存済みで、その後の追加差分はない。返却に当たり、前セッションの記憶に頼らず保存済みの差分を読み直し、下記を自分で再実行した。
+
+- 反映：A＝`_2`のnested Optional三状態（1D〜4D）、B＝`_6`の共有参照・取得参照の寿命と値型取得結果の独立（1D〜4D）、C＝`_5`の反復removeAllと全位置再利用（1D〜4D）、D＝`_5`のゼロ寸法での反復removeAllと`_97`の座標0へのread／値write／nil write拒否（各軸ゼロ）、E＝`Utilities/Maintenance/CompilerDiagnostics/OptionalElementBufferPublicSurface/`の正常target・Copyable要求拒否4件・consume後使用拒否4件。共通の補助は`OptionalBufferProbe.swift`（公開APIへの転送だけ）。
+- 環境：macOS arm64、Apple Swift 6.4（swiftlang-6.4.0.34.1）、基準HEAD `4750431f`。
+- `swift test --filter OptionalElementBufferModuleTests`：終了0。XCTest 49件、Death Test 25件（2 suites）、全件成功。
+- `swift test -c release --filter OptionalElementBufferModuleTests`：終了0。XCTest 49件、Death Test 25件、全件成功。姫の環境では通常ReleaseのdSYM生成は失敗しなかった（Astra記録の権限制限は環境差）。
+- `sh Utilities/Maintenance/CompilerDiagnostics/OptionalElementBufferPublicSurface/verify.sh`：終了0。期待した診断文の件数と全error件数の一致まで確認。
+- production・manifest・`Tests/TESTING.md`は変更していない。
+- 懸念・残作業：なし。仕様判断が必要な点や製品不具合は見つかっていない。未実施はLinux・Swift 6.2・ASan・mutation試験で、Astraの受入範囲と同じ。
+- 占有返却：OPT-074の編集範囲（上記test・fixture・本欄・依頼票の返却欄）を手放す。
 
 ## Astra受入確認欄
 

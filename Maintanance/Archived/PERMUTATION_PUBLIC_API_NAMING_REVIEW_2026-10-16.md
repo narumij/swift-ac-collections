@@ -1,8 +1,10 @@
+> 2026-10-16、役目を終えた記録としてアーカイブ。元文書：`Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_REVIEW.md`。本文は履歴として保持し、現行の指示・権限にしない。相対リンクのみ補正。
+
 # PermutationModule公開API名称レビュー
 
 ## 状態
 
-名称調査・審議の経緯を残す文書。名称は2026-10-15に[名称決定正本](PUBLIC_API_NAMING_DECISIONS.md)へ確定記録され、新名を主入口・旧名を互換入口とする[移行](PERMUTATION_MODULE_MIGRATION_PLAN.md)も受け入れ済み。以下の工程記述を未実施の指示として使わない。2026-10-16の棚卸しで、重複するPERM-071を移行受入へ吸収して除外した。
+名称調査・審議の経緯を残す文書。名称は2026-10-15に[名称決定正本](../Current/PUBLIC_API_NAMING_DECISIONS.md)へ確定記録され、新名を主入口・旧名を互換入口とする[移行](../Current/PERMUTATION_MODULE_MIGRATION_PLAN.md)も受け入れ済み。以下の工程記述を未実施の指示として使わない。2026-10-16の棚卸しで、重複するPERM-071を移行受入へ吸収して除外した。
 
 ## 目的
 

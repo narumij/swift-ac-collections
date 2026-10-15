@@ -47,4 +47,4 @@
 - `PERM-046`：`EXCLUDED`。現行品質要求はNextPermutationModuleをSwift 6.4以降の提供対象とし、manifestも6.4。6.2ソース成立の証拠や互換modeを、packageの6.2提供義務へ広げない。現行の需要がないversion-specific manifest調査を除外。
 - `PERM-071`：`EXCLUDED`。名称の決定と移行受入でscope・名称・generic parameter・新旧入口・compile/DocCを照合済み。独立したゲート確認は移行受入へ吸収。現行レビュー文書の未決表現だけ訂正し、重複taskを除外。
 
-原文の状態をEXCLUDEDに書き換えず、今回の処理を上に分離した。[棚卸し結果](../Current/FROZEN_TASK_RECONCILIATION_2026-10-16.md)から根拠へ辿れる。番号は使用済みのまま保持する。
+原文の状態をEXCLUDEDに書き換えず、今回の処理を上に分離した。[棚卸し結果](FROZEN_TASK_RECONCILIATION_2026-10-16.md)から根拠へ辿れる。番号は使用済みのまま保持する。

@@ -9,7 +9,7 @@ the user.
 
 ## Current job status
 
-**`PERM-069`の姫Round 2採点は返却済み。新しいjobなし。**
+**`PERM-069`の姫Round 3最終比較は返却・受入済み。新しいjobなし。**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -26,6 +26,43 @@ For the authority of historical records, including these Return records and the 
 follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と正本).
 
 ## Active assignment
+
+### PERM-069-HIME-R3 — PermutationModule公開API名称 Round 3最終比較
+
+#### Objective
+
+未決のmodule名と通常版一時viewについて、各2候補を最終比較し、判断群ごとに一つの選好を明示する。
+過去roundは上書きせず、AIの選好を採用判断として扱わない。
+
+#### Inputs
+
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_ROUND3_INPUT.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND3.md`
+- 必要な場合だけRound 1・2の原採点と統合報告
+
+#### Work and boundaries
+
+- 4候補を再採点し、各判断群で一つを選好する。
+- 選好理由、選ばない候補を退ける決め手、残る留保を記録する。
+- User・V3のRound 3表は完了まで読まない。
+- 候補集合、ID、シンボル、Round 2欄を変更しない。
+- 他者表、production、test、DocC、Registry、名称決定正本を変更しない。
+- 採用、rename、commitを行わない。
+- 完了後、この節のReturnへ完了時刻、変更ファイル、未回答、独立性への影響を記録する。
+
+#### Return
+
+返却済み: `PERM-069-HIME-R3`（回答完了 2026-10-15 13:56 JST / Claude Opus 5.5。当初14:20と誤記、ファイル更新時刻で訂正。Codex受入 2026-10-15）
+
+- 変更ファイル: `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND3.md`の比較表4行と判断群ごとの回答2行、およびこの`Return`欄のみ。
+  候補集合・ID・シンボル・Round 2欄は変更していない。commitしていない。
+- 未回答: なし。
+- 選好: Module名は`MN-03`（`NextPermutationModule`、7点、`MN-01`は5点）。通常版一時viewは`NV-01`（`Permutation`、7点、`NV-03`は5点）。
+- 留保: `MN-03`は互換modeで同じmoduleに全順列の`unsafePermutations()`があり名前と完全には一致しないこと、将来の範囲拡張で再renameが要りうること。
+  `NV-01`はDocCと失効時のprecondition messageで「view」であることを示し続ける必要があること。
+- 独立性への影響: User・V3のRound 3表は読んでいない。読んだのはRound 3共通入力、姫用Round 3表、Round 2までの自分の記録のみ。
+
+### Completed Round 2 assignment
 
 ### PERM-069-HIME-R2 — PermutationModule公開API名称 Round 2採点（返却済み）
 
@@ -51,7 +88,7 @@ Round 1は上書きせず、採用、rename、公開契約変更は行わない�
 
 #### Return
 
-返却待ち: `PERM-069-HIME-R2`（採点完了 2026-10-15 14:00 JST / Claude Opus 5.5）
+返却待ち: `PERM-069-HIME-R2`（採点完了 2026-10-15 13:50頃 JST / Claude Opus 5.5。当初14:00と誤記、ファイル更新時刻とcommit 99891c37で訂正）
 
 - 変更ファイル: `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND2.md`の9行（Round 2点、維持・変更の理由、他者理由への賛同・反証）と、
   この`Return`欄のみ。候補集合・ID・シンボル・Round 1欄は変更していない。commitしていない。

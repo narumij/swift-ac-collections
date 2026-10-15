@@ -28,10 +28,10 @@
 
 | 対象 | 現行の提供区分 | 評価の起点 |
 | --- | --- | --- |
-| RedBlackTreeCollections | 1.0提供対象 | [現行品質評価](RedBlackTreeModule/CurrentQualityAssessment.md) / [品質プロファイル](../../../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md) |
-| NextPermutationModule（旧PermutationModule互換入口あり） | Swift 6.4以降の1.0提供対象 | [現行品質評価](PermutationModule/CurrentQualityAssessment.md) / [品質プロファイル](../../../Sources/NextPermutationModule/Documentation/Quality-Profile.md) |
-| OptionalElementBufferModule | traitで明示的に有効化する、留保付きの実験的提供 | [現行品質評価](OptionalElementBufferModule/CurrentQualityAssessment.md) / [品質プロファイル](../../../Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md) |
-| ElementBufferModule | 1.0提供対象。Swift 6.2は1.0競技供用、Swift 6.4は1.0一般供用（2026-10-15ユーザー訂正） | [現行品質評価](ElementBufferModule/CurrentQualityAssessment.md) / [品質プロファイル](../../../Sources/ElementBufferModule/Documentation/Quality-Profile.md) |
+| RedBlackTreeCollections | 1.0提供対象 | [現行品質評価](RedBlackTreeModule/CurrentQualityAssessment.md) / [品質プロファイル](../Profiles/RedBlackTreeCollections.md) |
+| NextPermutationModule（旧PermutationModule互換入口あり） | Swift 6.4以降の1.0提供対象 | [現行品質評価](PermutationModule/CurrentQualityAssessment.md) / [品質プロファイル](../Profiles/NextPermutationModule.md) |
+| OptionalElementBufferModule | traitで明示的に有効化する、留保付きの実験的提供 | [現行品質評価](OptionalElementBufferModule/CurrentQualityAssessment.md) / [品質プロファイル](../Profiles/OptionalElementBufferModule.md) |
+| ElementBufferModule | 1.0提供対象。Swift 6.2は1.0競技供用、Swift 6.4は1.0一般供用（2026-10-15ユーザー訂正） | [現行品質評価](ElementBufferModule/CurrentQualityAssessment.md) / [品質プロファイル](../Profiles/ElementBufferModule.md) |
 
 品質評価の一巡は、確認済みと不足を整理した到達点である。全品質要求の充足や公開可能な文書の完成を意味しない。
 実験提供・保守対象にも、実際に利用する範囲の正確性、メモリ安全性、要素寿命、build・test可能性は必要である。
@@ -69,7 +69,7 @@
 | --- | --- | --- | --- | --- |
 | (B-1) | 赤黒木のASan下の停止契約 | 通常Death Testと、process-exit系2 suiteを除いたASanは成功。両者を組み合わせる経路は子プロセスのruntime注入で失敗しており、当該構成は未検証 | 製品不具合と検証経路不成立を分け、未検証の契約・構成と必要な切り分けを特定する | `RBT-033`。[評価と反証](RedBlackTreeModule/CurrentQualityAssessment.md) / [保存された証拠](RedBlackTreeModule/Evidence/RBT-032-2026-10-15/README.md) |
 | (B-2) | Permutation借用版の寿命検証を継続実行する証拠 | runtime test 25件は成功。compile-pass／compile-failは一時clientの結果で、repository内の再実行可能なfixtureが不足 | 既存結果を保ったまま、寿命契約のどの検証を再実行できる形にする必要があるかを特定する。通常版G0〜G5の未完成とは扱わない | `PERM-051`。[借用版の計画と返却](PermutationModule/BorrowedPermutationTestPlan.md) / [現行証拠の区分](PermutationModule/CurrentQualityAssessment.md) |
-| (B-3) | 赤黒木・Permutationの外部性能主張 | 回帰証拠や比較測定はある。Permutationには特定workloadでC++比約1.08〜1.12倍の測定があるが、製品の外部性能判定は未完 | 対象操作・入力・構成・現行契約・比較相手・受入水準と既存証拠を対応づけ、不足だけを特定する。C++との挙動比較を性能証拠にしない | Permutationは`PERM-043`・`PERM-044`。赤黒木は対応する評価範囲を確認する。[Permutationの測定記録](PermutationModule/CurrentQualityAssessment.md) / [赤黒木の性能証拠境界](../../../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md) |
+| (B-3) | 赤黒木・Permutationの外部性能主張 | 回帰証拠や比較測定はある。Permutationには特定workloadでC++比約1.08〜1.12倍の測定があるが、製品の外部性能判定は未完 | 対象操作・入力・構成・現行契約・比較相手・受入水準と既存証拠を対応づけ、不足だけを特定する。C++との挙動比較を性能証拠にしない | Permutationは`PERM-043`・`PERM-044`。赤黒木は対応する評価範囲を確認する。[Permutationの測定記録](PermutationModule/CurrentQualityAssessment.md) / [赤黒木の性能証拠境界](../Profiles/RedBlackTreeCollections.md) |
 | (B-4) | 提供対象の環境宣言と実証 | 暫定方針はApple platforms 27以降・64-bit Linux。現行manifestのplatform宣言はmacOS 15で、方針反映と環境別証拠は別taskに残る | 提供区分ごとに、宣言・導入・build・実行の確認済み範囲と不足を分ける。Linux CIの既存成功を「未実施」へ戻さず、要求する証拠との差を示す | `QUALITY-002`・`QUALITY-003`。[提供環境の方針](../QUALITY_REQUIREMENTS.md) / [manifest](../../../Package.swift) / [candidate CI](../../../.github/workflows/candidate.yml) |
 
 ### (C) 利用目的と記録の現在性
@@ -88,7 +88,7 @@
 - PermutationのABC328E実提出探索は`PERM-002`として完了済み。最速80msのunsafe枝は製品候補から除外されており、現行安全契約の製品性能へ転用しない。
 - OptionalElementBufferの固定外部性能比を決めて正式評価する旧taskは、実験提供への限定により除外済み。一般提供方式の再設計は別の凍結調査である。
 - OptionalElementBufferの過去の`mutating`化による性能回帰を、nonmutatingへ戻した現行版の不具合としてそのまま計上しない。現在の性能保証とは別に、測定時点を保存する。
-- ElementBufferの評価を「1.0提供対象外」のため不要とした整理は、2026-10-15のユーザー訂正で失効した。Swift 6.2の1.0競技供用とSwift 6.4の1.0一般供用を分け、用途ごとの証拠と未検証範囲を扱う。旧taskの除外・凍結を自動解除せず、評価済みとも扱わない。設計理由と定性的性能表現の判断は[品質プロファイル](../../../Sources/ElementBufferModule/Documentation/Quality-Profile.md#供用区分と設計判断)を参照する。
+- ElementBufferの評価を「1.0提供対象外」のため不要とした整理は、2026-10-15のユーザー訂正で失効した。Swift 6.2の1.0競技供用とSwift 6.4の1.0一般供用を分け、用途ごとの証拠と未検証範囲を扱う。旧taskの除外・凍結を自動解除せず、評価済みとも扱わない。設計理由と定性的性能表現の判断は[品質プロファイル](../Profiles/ElementBufferModule.md#供用区分と設計判断)を参照する。
 - 次元名体系の再判断、旧公開Viewの監査、完了済みのTest as Specification整理を、古い記述だけから復活させない。
 
 ## 完了条件と成果

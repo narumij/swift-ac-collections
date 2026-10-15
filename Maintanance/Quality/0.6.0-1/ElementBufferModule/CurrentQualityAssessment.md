@@ -4,7 +4,7 @@
 
 この文書は、ElementBufferModuleの現行品質評価taskの詳細正本である。
 上位品質要求は`Maintanance/Quality/QUALITY_REQUIREMENTS.md`、モジュールへの適用と証拠境界は
-`Sources/ElementBufferModule/Documentation/Quality-Profile.md`を正本とする。
+`Maintanance/Quality/Profiles/ElementBufferModule.md`を正本とする。
 本書はそれらを変更せず、Quality Profileの現在性確認、現在評価の作業範囲、完了条件、結果を管理する。
 
 

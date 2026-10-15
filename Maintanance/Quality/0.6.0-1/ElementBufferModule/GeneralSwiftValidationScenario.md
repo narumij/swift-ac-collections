@@ -24,7 +24,7 @@
 - 公開surfaceと実装: `Sources/ElementBufferModule/ElementBuffer.swift`
 - 観察可能な仕様: `Tests/ElementBufferModuleTests/`
 - 利用者への説明: `Maintanance/UserDocuments/ElementBufferModule/UserDocumentationDraft.md`
-- 品質と証拠の境界: `Sources/ElementBufferModule/Documentation/Quality-Profile.md`
+- 品質と証拠の境界: `Maintanance/Quality/Profiles/ElementBufferModule.md`
 - 現在評価: `Maintanance/Quality/0.6.0-1/ElementBufferModule/CurrentQualityAssessment.md`
 
 ### 固定する情報

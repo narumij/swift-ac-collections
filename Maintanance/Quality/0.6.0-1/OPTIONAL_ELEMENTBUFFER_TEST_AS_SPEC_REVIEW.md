@@ -11,7 +11,7 @@
 ## 読んだ根拠
 
 - `Sources/OptionalElementBufferModule/OptionalElementBuffer.swift`：公開契約と1D〜4Dの実装全文。
-- `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md`。
+- `Maintanance/Quality/Profiles/OptionalElementBufferModule.md`。
 - `Tests/OptionalElementBufferModuleTests/OptionalArray_0_PublicSurfaceTests.swift`、`_1_InitializationTests.swift`、`_2_ElementAccessTests.swift`、`_4_IndicesTests.swift`、`_5_RemoveAllTests.swift`、`_6_ReferenceLifetimeTests.swift`、`_7_CoordinateValueAccessTests.swift`、`_97_CoordinateValueAccessDeathTests.swift`、`_99_DeathTests.swift`（共通prefixは`OptionalArray`）。
 - `Utilities/Maintenance/CompilerDiagnostics/`を検索し、OptionalElementBuffer専用の所有型compiler fixtureは見つからなかった。
 

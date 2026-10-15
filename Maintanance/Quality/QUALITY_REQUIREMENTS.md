@@ -274,10 +274,10 @@ AI同士の評価が一致したことを、
 
 | モジュール | 品質プロファイル |
 |---|---|
-| RedBlackTreeCollections | [`Quality-Profile.md`](../../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md) |
-| NextPermutationModule | [`Quality-Profile.md`](../../Sources/NextPermutationModule/Documentation/Quality-Profile.md) |
-| OptionalElementBufferModule | [`Quality-Profile.md`](../../Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md) |
-| ElementBufferModule | [`Quality-Profile.md`](../../Sources/ElementBufferModule/Documentation/Quality-Profile.md) |
+| RedBlackTreeCollections | [`Quality-Profile.md`](Profiles/RedBlackTreeCollections.md) |
+| NextPermutationModule | [`Quality-Profile.md`](Profiles/NextPermutationModule.md) |
+| OptionalElementBufferModule | [`Quality-Profile.md`](Profiles/OptionalElementBufferModule.md) |
+| ElementBufferModule | [`Quality-Profile.md`](Profiles/ElementBufferModule.md) |
 
 各品質プロファイルは、上位品質要求を変更または複製せず、
 対象モジュールにおける意味、重点領域、仕様、証拠、および

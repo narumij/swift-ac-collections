@@ -219,5 +219,5 @@ toolchain固有の最適化事象や未再現の性能事象は、原因と適�
 
 ## 関連文書
 
-- [上位品質要求](../../../Maintanance/Quality/QUALITY_REQUIREMENTS.md)
-- [旧品質評価・調査記録（2026-10-09時点）](../../../Maintanance/Archived/Quality/Permutation_QualityAssessment-ISO25010_2026-10-09.md)
+- [上位品質要求](../QUALITY_REQUIREMENTS.md)
+- [旧品質評価・調査記録（2026-10-09時点）](../../Archived/Quality/Permutation_QualityAssessment-ISO25010_2026-10-09.md)

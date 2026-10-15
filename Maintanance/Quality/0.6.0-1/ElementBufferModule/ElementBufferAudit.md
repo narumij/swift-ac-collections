@@ -2,7 +2,7 @@
 
 > **現在状態（2026-10-13）:** 本文の29宣言ledgerとView・writebackに関する記録は、削除前の公開面を
 > 保存する履歴である。所有型の旧連鎖subscriptと`BareArray1DView`〜`BareArray3DView`は削除済み。
-> 現行公開面と品質境界は`Sources/ElementBufferModule/Documentation/Quality-Profile.md`、現在の検証結果は
+> 現行公開面と品質境界は`Maintanance/Quality/Profiles/ElementBufferModule.md`、現在の検証結果は
 > `Maintanance/Quality/0.6.0-1/ElementBufferModule/CurrentQualityAssessment.md`を正とする。
 
 最終更新: 2026-10-09 / Codex

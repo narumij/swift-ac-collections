@@ -19,7 +19,7 @@
 
 | ID | 理由と引継ぎ先 |
 | --- | --- |
-| DOC-010 | [ElementBuffer品質プロファイル](../../Sources/ElementBufferModule/Documentation/Quality-Profile.md)の「供用区分と設計判断」に、ユーザーによる定性的性能表現の維持判断が記録済み。文言の再判断という独立作業を除外。新しい比較測定や性能適合が完了したことにはしない |
+| DOC-010 | [ElementBuffer品質プロファイル](../Quality/Profiles/ElementBufferModule.md)の「供用区分と設計判断」に、ユーザーによる定性的性能表現の維持判断が記録済み。文言の再判断という独立作業を除外。新しい比較測定や性能適合が完了したことにはしない |
 | BARE-035 | [現行品質要求](../Quality/QUALITY_REQUIREMENTS.md)でElementBufferは1.0競技供用・一般供用の対象。旧「対象外」から残った提供停止検討には現在の需要がなく除外。提供停止を将来の義務として残さない |
 | PERM-046 | 現行品質要求はNextPermutationModuleをSwift 6.4以降の対象とし、[manifest](../../Package.swift)も6.4。6.2向けソース利用やAtCoder互換modeを、package全体の6.2提供義務に広げない。version-specific manifest調査は現行範囲から除外 |
 | PERM-071 | [名称決定](../Current/PUBLIC_API_NAMING_DECISIONS.md)、[移行計画の完了記録](../Current/PERMUTATION_MODULE_MIGRATION_PLAN.md)、[独立受入とPR/main到達記録](PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md)で、名称・新旧入口・generic parameter・compile/DocC等が照合済み。ゲート確認を受入へ吸収して除外。名称レビュー冒頭の「未決定」を訂正し、決定正本と移行へ接続した |

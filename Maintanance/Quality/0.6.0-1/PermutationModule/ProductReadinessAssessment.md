@@ -4,7 +4,7 @@
 `Maintanance/CLAUDE_TASK.md`のユーザー最終決定に基づき、本書で削除候補として
 扱っていた`All`系・`unsafe`系の公開APIは実際に削除済み(実施記録は
 `../../../Archived/PermutationImplementation_2026-10-16/ImplementationPlan.md`を参照)。本書は当時の調査結果・判断根拠の記録として残し、現行APIの契約と
-検証状態は`Sources/NextPermutationModule/Documentation/Quality-Profile.md`、
+検証状態は`Maintanance/Quality/Profiles/NextPermutationModule.md`、
 `Maintanance/Quality/0.6.0-1/PermutationModule/RuntimeCheckedPermutationTestPlan.md`、[過去の試験記録](BorrowedPermutationTestPlan.md)を参照する。
 
 ## 存在理由(`release/AtCoder/2025`ブランチのREADME.mdより)

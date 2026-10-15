@@ -131,6 +131,6 @@ borrowed版とAtCoder 2025互換modeは、公開表面、寿命契約、build条
 - borrowed版の公開実装・利用例: `Sources/NextPermutationModule/BorrowedNextPermutations.swift`
 - 現行Test as Specification: `Tests/PermutationTests/NextPermutations/`
 - compiler表面: `Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`
-- 品質プロファイル: `Sources/NextPermutationModule/Documentation/Quality-Profile.md`
+- 品質プロファイル: `Maintanance/Quality/Profiles/NextPermutationModule.md`
 - 現在評価: `Maintanance/Quality/0.6.0-1/PermutationModule/CurrentQualityAssessment.md`
 - 再構成と検収記録: `Maintanance/Quality/0.6.0-1/PermutationModule/RuntimeCheckedPermutationTestPlan.md`

@@ -11,6 +11,7 @@ Quality/
 ├── CONCEPT_DEFINITION.md
 ├── QUALITY_REQUIREMENTS.md
 ├── QUALITY_REQUIREMENTS_REFERENCE.md
+├── Profiles/  # モジュール別の継続的な品質プロファイル
 ├── Current/   # 次回用。現在は空（.gitkeepのみ）
 └── 0.6.0-1/   # 今回までの品質確認一式を保存
 ```
@@ -48,6 +49,15 @@ Quality/
 - [品質要求の非規範的参照資料](QUALITY_REQUIREMENTS_REFERENCE.md)
 - [前回の品質評価棚卸し（保存記録）](0.6.0-1/QUALITY_ASSESSMENT_INVENTORY.md)
 
+## モジュール別の品質プロファイル
+
+2026-10-16、ユーザー指示でSources側から集約した。継続的な品質基準・境界と仕様・証拠の接続先を扱い、一周ごとの試験結果とは分けて保持する。配置変更によって要求や品質判定は変更しない。
+
+- [OptionalElementBufferModule](Profiles/OptionalElementBufferModule.md)
+- [RedBlackTreeCollections](Profiles/RedBlackTreeCollections.md)
+- [NextPermutationModule](Profiles/NextPermutationModule.md)
+- [ElementBufferModule](Profiles/ElementBufferModule.md)
+
 ## 保存した資料一覧
 
 - [ElementBufferModule / CurrentQualityAssessment](0.6.0-1/ElementBufferModule/CurrentQualityAssessment.md)
@@ -76,4 +86,4 @@ Quality/
 - [StrictMemorySafetyReadiness](../Current/StrictMemorySafetyReadiness.md)：作業判断・着手条件を持つ品質ゲートのためCurrentに配置。
 - [旧Permutation製品化所見](0.6.0-1/PermutationModule/ProductReadinessAssessment.md)
 
-ASan調査の再現source・ログは`../Current/ASAN_DEATH_TEST_EVIDENCE_2026-10-16`に同梱する。今回の集約は配置の整理であり、旧評価の継承・退役判定・再試験開始を意味しない。Sources側の品質プロファイル、テスト運用手順、実測データは実装・実行との接続を保つため元の場所を維持する。
+ASan調査の再現source・ログは`../Current/ASAN_DEATH_TEST_EVIDENCE_2026-10-16`に同梱する。今回の集約は配置の整理であり、旧評価の継承・退役判定・再試験開始を意味しない。品質プロファイルは`Profiles/`へ集約した。テスト運用手順と実測データは実装・実行との接続を保つため元の場所を維持する。

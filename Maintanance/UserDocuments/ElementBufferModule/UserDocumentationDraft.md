@@ -152,6 +152,6 @@ bufferが破棄されると、全要素の寿命も終了する。公開のcopy�
 - 提供方針: `Maintanance/Quality/QUALITY_REQUIREMENTS.md`の「1.0に向けた開発対象」
 - 現行Test as Specification: `Tests/ElementBufferModuleTests/`
 - 借用寿命compiler fixture: `Utilities/Maintenance/CompilerDiagnostics/BareArrayMutableRefLifetime/`
-- 品質プロファイル: `Sources/ElementBufferModule/Documentation/Quality-Profile.md`
+- 品質プロファイル: `Maintanance/Quality/Profiles/ElementBufferModule.md`
 - 現在評価: `Maintanance/Quality/0.6.0-1/ElementBufferModule/CurrentQualityAssessment.md`
 - 体系監査と判断記録: `Maintanance/Quality/0.6.0-1/ElementBufferModule/ElementBufferAudit.md`

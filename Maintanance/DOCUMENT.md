@@ -42,7 +42,7 @@
 
 | ファイル・入口 | 役割・扱い | 恒久taskとの関係 |
 | --- | --- | --- |
-| [赤黒木](../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md)、[Permutation](../Sources/NextPermutationModule/Documentation/Quality-Profile.md)、[OptionalElementBuffer](../Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md)、[ElementBuffer](../Sources/ElementBufferModule/Documentation/Quality-Profile.md)の品質プロファイル | module別の品質主張・境界 | `DOC-030`では文書整合を扱う。品質の判断・検証は品質要求と各評価taskによる |
+| [赤黒木](Quality/Profiles/RedBlackTreeCollections.md)、[Permutation](Quality/Profiles/NextPermutationModule.md)、[OptionalElementBuffer](Quality/Profiles/OptionalElementBufferModule.md)、[ElementBuffer](Quality/Profiles/ElementBufferModule.md)の品質プロファイル | module別の品質主張・境界 | `DOC-030`では文書整合を扱う。品質の判断・検証は品質要求と各評価taskによる |
 | [Benchmark結果一覧](../Benchmarks/Results.md)、[macOS品質評価資料](../Benchmarks/QualityAssessment/macOS/) | 計測結果の入口、評価説明、生成結果・証拠が混在 | `DOC-030`では導線を維持する。結果の有効範囲・保存・再測定は関係する品質・性能taskで扱う |
 
 ### 開発用

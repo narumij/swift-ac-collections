@@ -182,5 +182,5 @@ trait無効時には`AcCollections`から公開しない。一般Swift向けの�
 
 ## 関連文書
 
-- [上位品質要求](../../../Maintanance/Quality/QUALITY_REQUIREMENTS.md)
-- [旧品質評価・調査記録（2026-10-08時点）](../../../Maintanance/Archived/Quality/OptionalArray_QualityAssessment-ISO25010_2026-10-08.md)
+- [上位品質要求](../QUALITY_REQUIREMENTS.md)
+- [旧品質評価・調査記録（2026-10-08時点）](../../Archived/Quality/OptionalArray_QualityAssessment-ISO25010_2026-10-08.md)

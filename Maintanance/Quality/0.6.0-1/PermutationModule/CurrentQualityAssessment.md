@@ -13,7 +13,7 @@
 
 この文書は、NextPermutationModuleの現行品質評価taskの詳細正本である。
 上位品質要求は`Maintanance/Quality/QUALITY_REQUIREMENTS.md`、モジュールへの適用と
-証拠境界は`Sources/NextPermutationModule/Documentation/Quality-Profile.md`を正本とする。
+証拠境界は`Maintanance/Quality/Profiles/NextPermutationModule.md`を正本とする。
 本書はそれらを変更せず、現在評価の作業範囲、完了条件、結果を管理する。
 
 ## 公開名称決定の品質評価への反映（2026-10-15、Astra）

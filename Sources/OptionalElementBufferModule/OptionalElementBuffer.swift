@@ -20,6 +20,8 @@
 /// 未初期化値の番兵を用意することなく利用できます。
 /// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
 /// `setElement(_:at:)`へ`nil`を渡すと、設定済みの要素を破棄して未設定状態へ戻します。
+/// この型はコピーできません。`setElement(_:at:)`と`removeAll()`はnonmutatingなので、
+/// `let`で保持したbufferの内容も更新できます。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @safe public struct OptionalElementBuffer<Element>: ~Copyable {
@@ -80,6 +82,8 @@ extension OptionalElementBuffer {
   public var indices: Range<Int> { 0..<count }
 
   /// `position`の要素を返します。未設定なら`nil`を返します。
+  ///
+  /// - Precondition: `position`は`0..<capacity`の範囲内でなければなりません。
   @inlinable
   public func element(at position: Int) -> Element? {
     precondition(0 <= position && position < count)
@@ -90,6 +94,8 @@ extension OptionalElementBuffer {
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
   // 一般供用としてはmutable必須なので、一般供用不可となる
   /// `position`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  ///
+  /// - Precondition: `position`は`0..<capacity`の範囲内でなければなりません。
   @inlinable
   public func setElement(_ newValue: consuming Element?, at position: Int) {
     precondition(0 <= position && position < count)
@@ -127,6 +133,8 @@ extension OptionalElementBuffer {
 /// 未初期化値の番兵を用意することなく利用できます。
 /// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
 /// 座標は`(x, y)`の順で、`width`が最内軸、`height`が最外軸です。
+/// この型はコピーできません。`setElement(_:at:_:)`と`removeAll()`はnonmutatingなので、
+/// `let`で保持したbufferの内容も更新できます。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
@@ -196,6 +204,8 @@ extension OptionalElementBuffer2D {
   public var indices: Range<Int> { 0..<height }
 
   /// `(x, y)`の要素を返します。未設定なら`nil`を返します。
+  ///
+  /// - Precondition: `x`は`0..<width`、`y`は`0..<height`の範囲内でなければなりません。
   @inlinable
   public func element(at x: Int, _ y: Int) -> Element? {
     precondition(0 <= x && x < width)
@@ -208,6 +218,8 @@ extension OptionalElementBuffer2D {
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
   // 一般供用としてはmutable必須なので、一般供用不可となる
   /// `(x, y)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  ///
+  /// - Precondition: `x`は`0..<width`、`y`は`0..<height`の範囲内でなければなりません。
   @inlinable
   public func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int) {
     precondition(0 <= x && x < width)
@@ -233,6 +245,8 @@ extension OptionalElementBuffer2D: @unchecked Sendable where Element: Sendable {
 /// 未初期化値の番兵を用意することなく利用できます。
 /// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
 /// 座標は`(x, y, z)`の順で、`width`が最内軸、`depth`が最外軸です。
+/// この型はコピーできません。`setElement(_:at:_:_:)`と`removeAll()`はnonmutatingなので、
+/// `let`で保持したbufferの内容も更新できます。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
@@ -314,6 +328,9 @@ extension OptionalElementBuffer3D {
 extension OptionalElementBuffer3D {
 
   /// `(x, y, z)`の要素を返します。未設定なら`nil`を返します。
+  ///
+  /// - Precondition: `x`は`0..<width`、`y`は`0..<height`、`z`は`0..<depth`の
+  ///   範囲内でなければなりません。
   @inlinable
   public func element(at x: Int, _ y: Int, _ z: Int) -> Element? {
     precondition(0 <= x && x < width)
@@ -327,6 +344,9 @@ extension OptionalElementBuffer3D {
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
   // 一般供用としてはmutable必須なので、一般供用不可となる
   /// `(x, y, z)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  ///
+  /// - Precondition: `x`は`0..<width`、`y`は`0..<height`、`z`は`0..<depth`の
+  ///   範囲内でなければなりません。
   @inlinable
   public func setElement(_ newValue: consuming Element?, at x: Int, _ y: Int, _ z: Int) {
     precondition(0 <= x && x < width)
@@ -354,6 +374,8 @@ extension OptionalElementBuffer3D: @unchecked Sendable where Element: Sendable {
 /// 各slotは未設定状態、または一つの`Element`を所有する設定済み状態のどちらかです。
 /// 座標は`(x, y, z, w)`の順で、`size0`が最内軸、
 /// `size3`が最外軸です。
+/// この型はコピーできません。`setElement(_:at:_:_:_:)`と`removeAll()`はnonmutatingなので、
+/// `let`で保持したbufferの内容も更新できます。
 /// `Element`が`Sendable`なら、配列も`Sendable`です。
 /// `-Ounchecked`では、記載された事前条件の実行時検査が省略される場合があります。
 @frozen
@@ -436,6 +458,9 @@ extension OptionalElementBuffer4D {
   public var indices: Range<Int> { 0..<size3 }
 
   /// `(x, y, z, w)`の要素を返します。未設定なら`nil`を返します。
+  ///
+  /// - Precondition: `x`は`0..<size0`、`y`は`0..<size1`、`z`は`0..<size2`、
+  ///   `w`は`0..<size3`の範囲内でなければなりません。
   @inlinable
   public func element(at x: Int, _ y: Int, _ z: Int, _ w: Int) -> Element? {
     precondition(0 <= x && x < size0)
@@ -450,6 +475,9 @@ extension OptionalElementBuffer4D {
   // MEMO: mutableにすると実行検査が増えるので競技プログラミングとしてうれしくない
   // 一般供用としてはmutable必須なので、一般供用不可となる
   /// `(x, y, z, w)`の要素を設定します。`nil`はslotを未設定状態へ戻します。
+  ///
+  /// - Precondition: `x`は`0..<size0`、`y`は`0..<size1`、`z`は`0..<size2`、
+  ///   `w`は`0..<size3`の範囲内でなければなりません。
   @inlinable
   public func setElement(
     _ newValue: consuming Element?, at x: Int, _ y: Int, _ z: Int, _ w: Int

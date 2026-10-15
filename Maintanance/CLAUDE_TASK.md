@@ -9,7 +9,7 @@ the user.
 
 ## Current job status
 
-**`PERM-069`の姫Round 4自由記述を依頼中。**
+**`PERM-069`の旧Round 4依頼は開始前に中止。新しいjobなし。**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -27,7 +27,7 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 
 ## Active assignment
 
-### PERM-069-HIME-R4 — PermutationModule公開API名称 Round 4自由記述
+### Canceled assignment: PERM-069-HIME-R4 — PermutationModule公開API名称 Round 4自由記述
 
 #### Objective
 
@@ -52,7 +52,8 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 
 #### Return
 
-返却待ち: `PERM-069-HIME-R4`
+2026-10-15、回答開始前にユーザー指示で中止。既存の採点表へ自由記述欄を加える依頼を、別形式の自由記述文書へ変更していたため。
+回答・成果・返却なし。作り直したRound 4はまだ依頼していない。
 
 ### Completed Round 3 assignment
 

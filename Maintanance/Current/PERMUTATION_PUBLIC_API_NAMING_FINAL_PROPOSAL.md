@@ -97,7 +97,7 @@ Module名`NextPermutationModule`への既存の三者同意は、この追加回
 
 | 対象 | 回答 | 理由・条件 |
 | --- | --- | --- |
-| 通常版一時Viewの型名 `NextPermutations.Permutation` を維持 | 未回答 | |
+| 通常版一時Viewの型名 `NextPermutations.Permutation` を維持 | 同意 | 2026-10-15 18:45 JST。型宣言の衝突はない（既存回答の調査どおり）。意味の重なりについては、名前より文書と診断で補う方が確実と判断した：現行sourceの型説明はすでに冒頭で「A temporary random-access view of one permutation」とし、次の`next()`での失効と`Array`へのcopyを明記している。失効時のprecondition messageも「Permutation view is no longer valid」でviewであることを示す。`CurrentPermutation`等へ変えても失効の契約が名前から伝わるわけではない点はAstraの理由に同意する。既存回答の「判断保留」は、ユーザーの懸念を未解消と扱ったためで、ユーザーが対象を確認して同意した後の回答としてこの欄を優先する。独立性：回答前にユーザーとV3の既存回答、ユーザーの追加回答を読んでいる |
 
 ### V3：一時View名の訂正・追加回答
 

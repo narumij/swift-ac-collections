@@ -6,7 +6,7 @@
 基づき実施した `PermutationModule` の公開API削除の記録である。削除前の調査所見は
 `Maintanance/Quality/Unversioned/PermutationModule/ProductReadinessAssessment.md`に残す。現行の公開契約は
 `Sources/NextPermutationModule/Documentation/Quality-Profile.md`、Test as Specificationの再構成状態は
-`Maintanance/Quality/CrossVersion/PermutationModule/RuntimeCheckedPermutationTestPlan.md`と[過去の試験記録](../../Quality/Unversioned/PermutationModule/BorrowedPermutationTestPlan.md)を正本とする。旧COW契約の
+`Maintanance/Quality/CrossVersion/PermutationModule/RuntimeCheckedPermutationTestPlan.md`と[過去の試験記録](../../Quality/0.6.0-1/PermutationModule/BorrowedPermutationTestPlan.md)を正本とする。旧COW契約の
 `Tests/PermutationTests/NextPermutationsSequence/`は履歴資料であり、現行適合の根拠には用いない。
 
 ## 実施したこと(2026-10-03、完了)

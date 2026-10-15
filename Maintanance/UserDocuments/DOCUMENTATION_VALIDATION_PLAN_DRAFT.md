@@ -10,7 +10,7 @@
 
 ## 目的と評価対象
 
-[品質要求](QUALITY_REQUIREMENTS.md)のQR-04（理解可能性）とQR-05（利用可能性）を中心に、QR-03（安全性）の境界を利用者が扱えるかを確かめる。仕様どおりの説明でも、用途選択や安全な利用につながらない場合は、説明の構成だけでなく要求・APIとの関係も課題にする。
+[品質要求](../Quality/QUALITY_REQUIREMENTS.md)のQR-04（理解可能性）とQR-05（利用可能性）を中心に、QR-03（安全性）の境界を利用者が扱えるかを確かめる。仕様どおりの説明でも、用途選択や安全な利用につながらない場合は、説明の構成だけでなく要求・APIとの関係も課題にする。
 
 対象は利用者向けREADME、生成済みDocC、公開APIコメント、およびそこから利用者が辿れる説明。内部の管理文書・設計経緯・Test as Specificationを読まなくても使えるかを評価する。日本語READMEから英語DocCへ進む導線も、言語を含めて観測する。
 
@@ -90,8 +90,8 @@ SPI登録と対象版のDocC公開・導線確認が済んだ後、1.0品質判�
 
 ## 既存の計画との接続
 
-- [Permutation利用理解案](CrossVersion/PermutationModule/GeneralSwiftValidationScenario.md)：一時View・保存・類似API選択の課題を再利用する候補。実行taskは`PERM-062`であり、本案の作成で開始しない。
-- [OptionalElementBuffer利用理解案](CrossVersion/OptionalElementBufferModule/GeneralSwiftValidationScenario.md)：nil遷移・再利用・所有境界の課題を再利用する候補。2026-10-16、ユーザー指示により`OPT-064`は品質移行済みとして独立taskから除外した。用途、座標順、nil遷移、所有・並行利用境界の理解確認を本計画へ引き継ぎ、現行の提供区分・対象版に合わせて具体化する。旧taskの再開は不要だが、本計画の実施・受入済みや一般提供への変更を意味しない。[旧記録](../Archived/OPT-064_EXCLUDED_2026-10-16.md)を保存した。`OPT-065`の競技提出は本計画の文書利用試行とは別に扱う。
-- [品質棚卸し](QUALITY_ASSESSMENT_INVENTORY.md)：観測された不足を品質課題へ接続する。既存taskと重複する課題は、新規採番の前に統合先を確認する。
+- [Permutation利用理解案](../Quality/0.6.0-1/PermutationModule/GeneralSwiftValidationScenario.md)：一時View・保存・類似API選択の課題を再利用する候補。実行taskは`PERM-062`であり、本案の作成で開始しない。
+- [OptionalElementBuffer利用理解案](../Quality/0.6.0-1/OptionalElementBufferModule/GeneralSwiftValidationScenario.md)：nil遷移・再利用・所有境界の課題を再利用する候補。2026-10-16、ユーザー指示により`OPT-064`は品質移行済みとして独立taskから除外した。用途、座標順、nil遷移、所有・並行利用境界の理解確認を本計画へ引き継ぎ、現行の提供区分・対象版に合わせて具体化する。旧taskの再開は不要だが、本計画の実施・受入済みや一般提供への変更を意味しない。[旧記録](../Archived/OPT-064_EXCLUDED_2026-10-16.md)を保存した。`OPT-065`の競技提出は本計画の文書利用試行とは別に扱う。
+- [品質棚卸し](../Quality/0.6.0-1/QUALITY_ASSESSMENT_INVENTORY.md)：観測された不足を品質課題へ接続する。既存taskと重複する課題は、新規採番の前に統合先を確認する。
 
 次の実行案は、ElementBufferの一件について課題文・観測者用の判定根拠・返却欄を用意し、Astraが試行すること。人間レビューゲートの方針と、具体的な外部接触・他moduleの凍結解除・試行開始は分ける。SPI登録と公開導線は既存の`DOC-026`・`DOC-027`で扱い、その状態や再開条件を本案から変更しない。

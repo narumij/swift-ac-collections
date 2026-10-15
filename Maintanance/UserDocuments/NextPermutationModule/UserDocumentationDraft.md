@@ -132,5 +132,5 @@ borrowed版とAtCoder 2025互換modeは、公開表面、寿命契約、build条
 - 現行Test as Specification: `Tests/PermutationTests/NextPermutations/`
 - compiler表面: `Utilities/Maintenance/CompilerDiagnostics/PermutationPublicSurface/`
 - 品質プロファイル: `Sources/NextPermutationModule/Documentation/Quality-Profile.md`
-- 現在評価: `Maintanance/Quality/CrossVersion/PermutationModule/CurrentQualityAssessment.md`
-- 再構成と検収記録: `Maintanance/Quality/CrossVersion/PermutationModule/RuntimeCheckedPermutationTestPlan.md`
+- 現在評価: `Maintanance/Quality/0.6.0-1/PermutationModule/CurrentQualityAssessment.md`
+- 再構成と検収記録: `Maintanance/Quality/0.6.0-1/PermutationModule/RuntimeCheckedPermutationTestPlan.md`

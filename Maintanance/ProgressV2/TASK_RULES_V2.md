@@ -123,9 +123,9 @@ AIは、自ら作成した成果物をこのfolderへ独自判断で新規作成
 `AGENTS.md`はrepository内で最上位の統治文書であり、AIの編集対象外とする。下位文書、task、または
 実装上の都合によって変更、迂回、失効、移動、改名、またはアーカイブしない。
 
-### `Maintanance/User/CONCEPT_DEFINITION.md`
+### `Maintanance/Quality/CONCEPT_DEFINITION.md`
 
-`Maintanance/User/CONCEPT_DEFINITION.md`は、ユーザーが定める製品目的の最上位正本であり、AIの編集対象外とする。
+`Maintanance/Quality/CONCEPT_DEFINITION.md`は、ユーザーが定める製品目的の最上位正本であり、AIの編集対象外とする。
 AIは品質要求、設計、評価、task、およびrelease判断の前提として参照できるが、内容を変更、補完、再解釈して
 上書き、移動、改名、またはアーカイブしない。変更が必要な場合は、ユーザーだけが判断して反映する。
 
@@ -168,7 +168,7 @@ Orientation文書は、AIがrepositoryの目的、責任境界、および実務
 | `Maintanance/USER_MANAGEMENT_INTERVIEW_CLAUDE.md` | Claudeによる独立したマネジメント評価の記録 |
 | `Maintanance/CLAUDE_OBSERVATIONS.md` | Claude本人の任意の観察を本人の声のまま保持する場所 |
 | `Maintanance/CODEX_OBSERVATIONS.md` | Codex本人の任意の観察を本人の声のまま保持する場所 |
-| `Maintanance/User/CONCEPT_DEFINITION.md` | ユーザーが定める製品目的の最上位正本であり、ユーザー専有の現在位置と権限境界を保持する |
+| `Maintanance/Quality/CONCEPT_DEFINITION.md` | ユーザーが定める製品目的の最上位正本であり、ユーザー専有の現在位置と権限境界を保持する |
 
 ## 履歴の照合とSQLite索引
 

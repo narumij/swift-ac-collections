@@ -4,7 +4,7 @@
 
 ## Validation計画のレビュー（旧DOC-032）
 
-[Validation計画ドラフト](../Quality/DOCUMENTATION_VALIDATION_PLAN_DRAFT.md)の目的・対象・試行方法・判定境界を確認し、指摘または修正不要というレビュー結果を残す到達点。結果はまだ未記録。
+[Validation計画ドラフト](../UserDocuments/DOCUMENTATION_VALIDATION_PLAN_DRAFT.md)の目的・対象・試行方法・判定境界を確認し、指摘または修正不要というレビュー結果を残す到達点。結果はまだ未記録。
 
 計画のレビューと、SPI登録後の公開ドキュメントの人間レビューは別の到達点である。後者の条件は計画本文に従い、今回まとめて達成扱いにしない。試行開始や既存taskの凍結解除も含まない。
 

@@ -23,6 +23,6 @@
 
 ## 資料
 
-- [既存監査](../Quality/EXTERNAL_TYPE_EXTENSION_AUDIT.md)
+- [既存監査](EXTERNAL_TYPE_EXTENSION_AUDIT.md)
 - [ユーザー判断扱いにする前の記録](../Archived/RBT-005_BEFORE_USER_DECISION_2026-10-16.md)
 - [今回の訂正前の記録](../Archived/RBT-005_BEFORE_DEPENDENCY_DISCOVERY_2026-10-16.md)

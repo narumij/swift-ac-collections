@@ -23,7 +23,7 @@ RBT-004・014・035、DOC-032はEXCLUDEDのまま履歴化する。RBT-045は独
 - [比較演算類の経緯](../Current/RED_BLACK_TREE_COMPARISON_DECLARATIONS_CONTEXT.md)
 - [Balanced系の保存意図](../Current/RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md)
 - [マイルストーン](../MILESTONES.md)
-- [MultiMap受入証拠と最終横断の入力](../Quality/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md)
+- [MultiMap受入証拠と最終横断の入力](../Quality/0.6.0-1/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md)
 
 ## DONEへの確定
 

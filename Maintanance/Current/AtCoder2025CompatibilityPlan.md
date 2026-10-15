@@ -4,7 +4,7 @@
 
 本書の通常版に関する記述は、互換modeを構成した時点の旧COW実装を基準とする履歴である。互換modeの
 実装・検証記録は維持するが、現行通常版の契約は`Sources/NextPermutationModule/Documentation/Quality-Profile.md`、
-検証状態は`Maintanance/Quality/CrossVersion/PermutationModule/CurrentQualityAssessment.md`を参照する。
+検証状態は`Maintanance/Quality/0.6.0-1/PermutationModule/CurrentQualityAssessment.md`を参照する。
 
 ## 将来の統合予定と手順再構築（2026-10-16）
 

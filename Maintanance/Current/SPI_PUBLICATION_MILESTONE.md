@@ -8,13 +8,13 @@
 
 ## 到達条件
 
-0.7.0 release後、対象版について[登録前の公開準備判定](../Quality/SPI_REGISTRATION_GATE.md)でユーザーが登録可と判断し、登録実行を委任する。DOC-026で登録し、実在するpackage page・互換性表示・module別DocC結果を確認する。続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。この一連が成立したことを証拠とともに記録する。
+0.7.0 release後、対象版について[登録前の公開準備判定](SPI_REGISTRATION_GATE.md)でユーザーが登録可と判断し、登録実行を委任する。DOC-026で登録し、実在するpackage page・互換性表示・module別DocC結果を確認する。続いてDOC-027でSPI提示のbadgeと確認済みURLをREADME・Pagesへ接続する。この一連が成立したことを証拠とともに記録する。
 
 QUALITY-005の完了だけでは登録可とは限らず、判断内容を確認する。実行taskは有効な計画として依存条件で待たせ、追加の凍結解除を要求しない。現在の作業状態は[Registry](../ProgressV2/TASK_REGISTRY_V2.md)を参照する。
 
 ## 後続
 
-公開後、文書が落ち着いた時点から1.0品質判断までの間に[文書Validation計画](../Quality/DOCUMENTATION_VALIDATION_PLAN_DRAFT.md)の人間レビューへ接続する。SPI公開の成立だけで文書の利用理解や1.0品質を合格にしない。具体的な登録・導線作業の資料は[文書CI計画](DOCUMENTATION_CI_PLAN.md)を参照する。
+公開後、文書が落ち着いた時点から1.0品質判断までの間に[文書Validation計画](../UserDocuments/DOCUMENTATION_VALIDATION_PLAN_DRAFT.md)の人間レビューへ接続する。SPI公開の成立だけで文書の利用理解や1.0品質を合格にしない。具体的な登録・導線作業の資料は[文書CI計画](DOCUMENTATION_CI_PLAN.md)を参照する。
 
 ## 判断と到達証拠
 

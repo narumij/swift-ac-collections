@@ -27,7 +27,7 @@
 
 ## 参照
 
-- [現行品質評価](../Quality/0.6.x/RedBlackTreeModule/CurrentQualityAssessment.md)
+- [現行品質評価](../Quality/0.6.0-1/RedBlackTreeModule/CurrentQualityAssessment.md)
 - [品質プロファイル](../../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md)
 - [benchmark資料](../../Benchmarks)
 - [整理前の原文](../Archived/RBT-035_BEFORE_USER_DECISION_2026-10-16.md)

@@ -7,7 +7,7 @@
 
 ## 1. 位置づけ
 
-本書は、[`User/CONCEPT_DEFINITION.md`](../User/CONCEPT_DEFINITION.md)を上位概念として、
+本書は、[`CONCEPT_DEFINITION.md`](CONCEPT_DEFINITION.md)を上位概念として、
 ISO/IEC 25010:2023を参照し、
 swift-ac-collectionsの製品品質要求を定義する。
 

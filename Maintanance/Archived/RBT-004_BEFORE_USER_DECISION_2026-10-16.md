@@ -22,7 +22,7 @@ Debug限定`Result: Comparable`はユーザー介入で削除済み。`RBT-011`�
 
 ## 既存資料
 
-- [Maintanance/Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md](../Quality/EXTERNAL_TYPE_EXTENSION_AUDIT.md)
+- [Maintanance/Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md](../Current/EXTERNAL_TYPE_EXTENSION_AUDIT.md)
 
 ## 今後の判断記録
 

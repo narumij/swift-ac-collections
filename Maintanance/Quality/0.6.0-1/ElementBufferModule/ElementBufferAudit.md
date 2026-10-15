@@ -3,7 +3,7 @@
 > **現在状態（2026-10-13）:** 本文の29宣言ledgerとView・writebackに関する記録は、削除前の公開面を
 > 保存する履歴である。所有型の旧連鎖subscriptと`BareArray1DView`〜`BareArray3DView`は削除済み。
 > 現行公開面と品質境界は`Sources/ElementBufferModule/Documentation/Quality-Profile.md`、現在の検証結果は
-> `Maintanance/Quality/0.6.x/ElementBufferModule/CurrentQualityAssessment.md`を正とする。
+> `Maintanance/Quality/0.6.0-1/ElementBufferModule/CurrentQualityAssessment.md`を正とする。
 
 最終更新: 2026-10-09 / Codex
 
@@ -21,8 +21,8 @@ BareArrayの公開契約をsource、test、git履歴、OptionalArrayとの対応
 - 公開宣言: 型7、所有型initializer 8、subscript 7、`indices` 7の計29件
 - 公開適合: 所有型4型の`@unchecked Sendable`
 - test: `Tests/ElementBufferModuleTests`の3ファイル、38件
-- 比較資料: `Maintanance/Quality/CrossVersion/OptionalElementBufferModule/OptionalElementBufferAudit.md`
-- safety資料: `Maintanance/Quality/StrictMemorySafetyReadiness.md`
+- 比較資料: `Maintanance/Quality/0.6.0-1/OptionalElementBufferModule/OptionalElementBufferAudit.md`
+- safety資料: `Maintanance/Current/StrictMemorySafetyReadiness.md`
 
 2026-10-09の再開時点で、strict memory safetyの段階対応、境界Death Test、参照型寿命、clone所有権の
 証拠は存在する。一方、BareArray固有の公開宣言ledgerはまだ作成されていない。`BARE-002`の「途中成果」は

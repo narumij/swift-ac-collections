@@ -10,6 +10,6 @@
 
 ## 参照
 
-- [既存監査](../Quality/EXTERNAL_TYPE_EXTENSION_AUDIT.md)
+- [既存監査](EXTERNAL_TYPE_EXTENSION_AUDIT.md)
 - [整理前の原文](../Archived/RBT-004_EXCLUDED_2026-10-16.md)
 - [Balanced系の保存意図](RED_BLACK_TREE_BALANCED_DESIGN_INTENT.md)

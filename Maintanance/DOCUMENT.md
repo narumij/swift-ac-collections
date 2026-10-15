@@ -177,3 +177,5 @@ swift package --disable-sandbox -c release \
 - [NextPermutations実装探索レポート](Technical/NextPermutationsImplementationExploration.md)：候補・反証・暫定性能と実装選択の経緯。
 
 - [NextPermutations Sequence実験](Technical/NextPermutationsSequenceExperiment.md)：tests-only adapterの観測結果と判断境界。
+
+利用者向け文書の理解確認は[文書Validation計画](UserDocuments/DOCUMENTATION_VALIDATION_PLAN_DRAFT.md)で扱う。SPI公開後の人間レビューまでを含む計画草案であり、移動は計画の受入・試行開始を意味しない。

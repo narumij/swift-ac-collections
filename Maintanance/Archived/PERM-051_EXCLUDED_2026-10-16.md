@@ -1,6 +1,6 @@
 # PERM-051 除外記録
 
-2026-10-16、Astra記録。ユーザーが「品質側に移行してるからいらない」と判断したため、独立taskをEXCLUDEDとして残作業から外した。品質側の論点は[仕様レビュー](../Quality/PERMUTATION_TEST_AS_SPEC_REVIEW.md)を参照する。fixture整備を完了した意味ではなく、旧taskの再開を要求しない。新規の重複taskは作らない。
+2026-10-16、Astra記録。ユーザーが「品質側に移行してるからいらない」と判断したため、独立taskをEXCLUDEDとして残作業から外した。品質側の論点は[仕様レビュー](../Quality/0.6.0-1/PERMUTATION_TEST_AS_SPEC_REVIEW.md)を参照する。fixture整備を完了した意味ではなく、旧taskの再開を要求しない。新規の重複taskは作らない。
 
 ## 除外前のRegistry行
 
@@ -28,7 +28,7 @@ runtime仕様test 25件を受け入れ、2026-10-13にも対象25件成功を再
 
 ## 既存資料
 
-- [Maintanance/PermutationModule/BorrowedPermutationTestPlan.md](../Quality/Unversioned/PermutationModule/BorrowedPermutationTestPlan.md)
+- [Maintanance/PermutationModule/BorrowedPermutationTestPlan.md](../Quality/0.6.0-1/PermutationModule/BorrowedPermutationTestPlan.md)
 - `Sources/PermutationModule/BorrowedNextPermutations.swift`（Registry記載の参照先。現位置は未確認）
 - [Tests/PermutationTests/BorrowedNextPermutations/](../../Tests/PermutationTests/BorrowedNextPermutations)
 

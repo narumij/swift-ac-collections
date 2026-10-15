@@ -4,7 +4,7 @@
 
 ## 範囲
 
-macOSの成功記録と失敗記録を比較し、隔離再現で成立する起動経路を探索する。製品・既存試験・CIは変更しない。旧証拠は[0.6.0評価の証拠](0.6.x/RedBlackTreeModule/Evidence/RBT-032-2026-10-15/README.md)に保存済み。
+macOSの成功記録と失敗記録を比較し、隔離再現で成立する起動経路を探索する。製品・既存試験・CIは変更しない。旧証拠は[0.6.0評価の証拠](../Quality/0.6.0-1/RedBlackTreeModule/Evidence/RBT-032-2026-10-15/README.md)に保存済み。
 
 ## 調査中
 
@@ -28,7 +28,7 @@ Swift 6.4 (swiftlang-6.4.0.34.1)、arm64。現在のASan CIはLinuxでENABLE_DEA
 
 ## 再現
 
-[証拠フォルダ](../Current/ASAN_DEATH_TEST_EVIDENCE_2026-10-16)のPackage.swiftを隔離ディレクトリの根へ、Probe.swiftをTests/ProbeTests/へ配置する。
+[証拠フォルダ](ASAN_DEATH_TEST_EVIDENCE_2026-10-16)のPackage.swiftを隔離ディレクトリの根へ、Probe.swiftをTests/ProbeTests/へ配置する。
 
 ```sh
 CLANG_MODULE_CACHE_PATH=/tmp/astra-asan-module-cache swift test --package-path /tmp/astra-asan-probe --disable-sandbox --sanitize address --build-system native

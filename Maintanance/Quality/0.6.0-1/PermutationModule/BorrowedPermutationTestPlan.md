@@ -1,5 +1,5 @@
 > 2026-10-16、ユーザー指示でアーカイブ。元の文書：`Maintanance/PermutationModule/BorrowedPermutationTestPlan.md`。全文を保存。独立作業は整理済み。PERM-047はEXCLUDED、PERM-051も品質側への引継ぎによりEXCLUDED。runtime test 25件は受入済みだが、全検証の完了を意味しない。残課題は現行の品質レビューで扱う。
-> 現行の品質資料：[品質評価](../../CrossVersion/PermutationModule/CurrentQualityAssessment.md)、[仕様レビュー](../../PERMUTATION_TEST_AS_SPEC_REVIEW.md)。本文中の旧パス・型名・指示は記録当時のもの。
+> 現行の品質資料：[品質評価](CurrentQualityAssessment.md)、[仕様レビュー](../PERMUTATION_TEST_AS_SPEC_REVIEW.md)。本文中の旧パス・型名・指示は記録当時のもの。
 
 # Borrowed Permutation Test as Specification Plan
 

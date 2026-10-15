@@ -53,7 +53,7 @@ GitHub Pagesは既存の利用者向け文書とpackageの入口を担い、READ
 Swift Package Indexへ登録し、外部build・互換性判定・DocC生成で見つかった不足を1.0品質gateへ入力する。
 それまではrepository CIで各targetのDocC生成可能性を維持する。
 
-登録前に[SPI登録前ゲート](../Quality/SPI_REGISTRATION_GATE.md)で、対象版の公開情報から初見の利用者が採用・利用を判断できるかを確認し、ユーザーが登録可否を判断する。
+登録前に[SPI登録前ゲート](SPI_REGISTRATION_GATE.md)で、対象版の公開情報から初見の利用者が採用・利用を判断できるかを確認し、ユーザーが登録可否を判断する。
 この判定は1.0適合判定とは分け、登録後に得られるSPIの結果を登録前の必須証拠にはしない。
 
 登録可の判断を得た対象版について、0.7.0 release後、Swift Package Indexへのpackage登録とDocC build成立を確認する。登録後にpackage pageの

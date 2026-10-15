@@ -22,7 +22,7 @@
 
 ## 既存資料
 
-- [Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md](../Quality/0.6.x/RedBlackTreeModule/CurrentQualityAssessment.md)
+- [Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md](../Quality/0.6.0-1/RedBlackTreeModule/CurrentQualityAssessment.md)
 - [Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md](../../Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md)
 - [Benchmarks/](../../Benchmarks)
 

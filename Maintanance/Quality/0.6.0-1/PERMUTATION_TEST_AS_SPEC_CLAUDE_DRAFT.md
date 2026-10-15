@@ -6,7 +6,7 @@ The user authorized dispatch before closing OPT-074 acceptance records. Claude h
 
 ## Objective and inputs
 
-Address findings B–D in `Maintanance/Quality/PERMUTATION_TEST_AS_SPEC_REVIEW.md` against the current NextPermutationModule implementation. Preserve the existing public contract. Finding A belongs to frozen PERM-051 and is excluded.
+Address findings B–D in `Maintanance/Quality/0.6.0-1/PERMUTATION_TEST_AS_SPEC_REVIEW.md` against the current NextPermutationModule implementation. Preserve the existing public contract. Finding A belongs to frozen PERM-051 and is excluded.
 
 Read the relevant current source comments, Tests/CLAUDE.md and task-relevant Tests/TESTING.md sections before editing. Recheck baseline and concurrent changes at dispatch; this draft was prepared at 4f8c9aef.
 

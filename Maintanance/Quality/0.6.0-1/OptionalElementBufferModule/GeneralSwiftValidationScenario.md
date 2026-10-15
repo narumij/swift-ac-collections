@@ -1,6 +1,6 @@
 # OptionalElementBuffer利用Validation scenario
 
-> **現在の扱い（2026-10-16）:** `OPT-064`は品質側への移行により独立taskから除外済み。文書の利用理解確認は[文書Validation計画](../../DOCUMENTATION_VALIDATION_PLAN_DRAFT.md)へ引き継ぐ。競技利用の試行は`OPT-065`として[Task Registry](../../../ProgressV2/TASK_REGISTRY_V2.md)で管理する。旧taskの凍結解除を着手条件にしない。
+> **現在の扱い（2026-10-16）:** `OPT-064`は品質側への移行により独立taskから除外済み。文書の利用理解確認は[文書Validation計画](../../../UserDocuments/DOCUMENTATION_VALIDATION_PLAN_DRAFT.md)へ引き継ぐ。競技利用の試行は`OPT-065`として[Task Registry](../../../ProgressV2/TASK_REGISTRY_V2.md)で管理する。旧taskの凍結解除を着手条件にしない。
 > 本書のscenarioと実行記録は同じ場所に保持する。この整理は試行の実施・受入や、一般提供への変更を意味しない。Scenario Aの結果だけを現行opt-in提供の受入根拠にはしない。
 
 > **文書状態:** scenario設計とScenario Aの実行記録。Scenario B・C、製品品質判定、公開判断の実施記録ではない。
@@ -27,7 +27,7 @@
 - 観察可能な仕様: `Tests/OptionalElementBufferModuleTests/`
 - 利用者への説明: `Maintanance/UserDocuments/OptionalElementBufferModule/UserDocumentationDraft.md`
 - 品質と証拠の境界: `Sources/OptionalElementBufferModule/Documentation/Quality-Profile.md`
-- 現在評価: `Maintanance/Quality/0.6.x/OptionalElementBufferModule/CurrentQualityAssessment.md`
+- 現在評価: `Maintanance/Quality/0.6.0-1/OptionalElementBufferModule/CurrentQualityAssessment.md`
 
 ### 固定する情報
 

@@ -5,7 +5,7 @@
 扱っていた`All`系・`unsafe`系の公開APIは実際に削除済み(実施記録は
 `../../../Archived/PermutationImplementation_2026-10-16/ImplementationPlan.md`を参照)。本書は当時の調査結果・判断根拠の記録として残し、現行APIの契約と
 検証状態は`Sources/NextPermutationModule/Documentation/Quality-Profile.md`、
-`Maintanance/Quality/CrossVersion/PermutationModule/RuntimeCheckedPermutationTestPlan.md`、[過去の試験記録](BorrowedPermutationTestPlan.md)を参照する。
+`Maintanance/Quality/0.6.0-1/PermutationModule/RuntimeCheckedPermutationTestPlan.md`、[過去の試験記録](BorrowedPermutationTestPlan.md)を参照する。
 
 ## 存在理由(`release/AtCoder/2025`ブランチのREADME.mdより)
 
@@ -51,7 +51,7 @@
   および製品版との境界は`../../../Technical/HumanAITuningReport.md`に記録する。
 
 `Sendable`対応と公開コメントドックは、その後の作業で実施済み。Sendableの安全性根拠は
-`Maintanance/Quality/StrictMemorySafetyReadiness.md` §9を参照。
+`Maintanance/Current/StrictMemorySafetyReadiness.md` §9を参照。
 
 ## 公開添字の境界チェックと計測(2026-10-03)
 

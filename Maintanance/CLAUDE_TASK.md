@@ -29,7 +29,7 @@ the user.
 
 ## Current job status
 
-Additional inspections `OPS-045` and `DOC-031` are issued below; begin only after releasing the currently occupied work scope. They do not supersede the test batch.
+Inspections `OPS-045` and `DOC-031` were returned and accepted by Astra on 2026-10-16; the user authorized committing the closure and both are DONE. No new Claude assignment is issued by this status.
 
 **Current batch: `RBT-043-HIME` → `RBT-044-HIME` → `RBT-045-HIME`, issued together. RBT-043, RBT-044 and RBT-045 have been accepted by Astra; RBT-045 is DONE; final cross-type review is eligible. RBT-042 is DONE.**
 
@@ -51,7 +51,7 @@ Current assignments must follow the current request and explicit delegation, not
 For the authority of historical records, including these Return records and the retired `PROGRESS_OVERVIEW.md`,
 follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と正本).
 
-## Active assignment batch
+## Accepted assignment batch (historical request)
 
 Author: Astra. The user requested preparation and issuance of all three stages together. Execute serially: MultiSet, Dictionary, then MultiMap. This changes dispatch timing, not the acceptance gates. After each stage, return evidence and release its scope; wait for Astra's independent acceptance recorded in the gate below before starting the next. Do not infer acceptance from your own tests, a review-complete status, or issuance of this batch. If interrupted, resume from the recorded gate and return, not memory. No new request document is needed for the next stage once its gate is cleared.
 
@@ -59,7 +59,7 @@ Author: Astra. The user requested preparation and issuance of all three stages t
 | --- | --- |
 | RBT-043 | Accepted by Astra on 2026-10-16; scope released; user authorized commit; DONE |
 | RBT-044 | Accepted by Astra on 2026-10-16; scope released; user authorized commit; DONE |
-| RBT-045 | Open: RBT-044 formally returned, scope released, and independently accepted by Astra on 2026-10-16. Proceed with MM1–MM4 below after checking current files. |
+| RBT-045 | Accepted by Astra on 2026-10-16; scope released; committed and DONE |
 
 
 ### RBT-043-HIME — MultiSet Test as Specification follow-up M1–M5

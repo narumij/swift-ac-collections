@@ -44,7 +44,7 @@ taskは判断一つかゼロになるまで分解する。新規登録・内容�
 | `EXCLUDED` | 必要性の消失や対象外などの理由で残作業から外した記録。実施成功や前提充足とはみなさない |
 | `ARCHIVED` | 履歴へ移した記録。読むことによって現在の仕事へ復活させない |
 
-`GRAPH-001`・`HIST-001`・`DOC-030`・`OPS-043`・`TEST-005`・`OPS-044`は常設の支援nodeとして`ACTIVE`を保つ個別の取り決めがある。現在の個別assignmentや実行中ジョブを意味しない。この意味をすべての`ACTIVE`へ一般化せず、各行の条件を読む。
+`GRAPH-001`・`HIST-001`・`DOC-030`・`OPS-043`・`TEST-005`・`OPS-044`・`OPS-046`・`OPS-047`は常設の支援nodeとして`ACTIVE`を保つ個別の取り決めがある。現在の個別assignmentや実行中ジョブを意味しない。この意味をすべての`ACTIVE`へ一般化せず、各行の条件を読む。
 
 外部待ちの仕事を開始できないことと、待っている条件が解消したかを任された範囲で確認することは分ける。凍結解除やユーザー専任の制限を、この確認から導かない。
 
@@ -61,6 +61,9 @@ Task precedenceには、内部task間の必須AND前提だけを記録する。F
 記録を現行から履歴へ移すときは、[圧縮・アーカイブ手順](TASK_REGISTRY_ARCHIVE.md)を参照する。
 
 ## Task ID採番状態
+
+過去の記録には同一IDを別の仕事へ再利用した例がある。確認例は2026-10-11のQUALITY-002（品質profile共通骨格レビュー）・QUALITY-003（0.5.x評価環境）と、2026-10-12に登録された現在の同IDの仕事。履歴照合ではIDだけで結合せず、記録ファイル・日付またはcommit・項目名を併せて特定する。過去のDONEを現在の同IDへ転用しない。旧記録の再採番はせず、今後の再利用禁止と採番表は維持する。
+
 
 採番時に参照する。普段の仕事選択のために、番号表を読み直す必要はない。
 
@@ -157,6 +160,7 @@ Orientation文書は、AIがrepositoryの目的、責任境界、および実務
 | --- | --- |
 | `Tests/TESTING.md` / `Tests/CLAUDE.md` / `Tests/RedBlackTreeFixture/Fixtures.md` | テスト整備の恒久task `TEST-005` の維持文書。個別作業の完了を理由に移動・改名・アーカイブしない |
 | `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` / `Maintanance/ProgressV2/TASK_RULES_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md` / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md` / `Maintanance/ProgressV2/README.md` | Task Registry運用の恒久task `OPS-044` の維持文書。個別作業や圧縮の完了を理由に移動・改名・アーカイブしない |
+| `Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md` / `Maintanance/MILESTONES.md` | 恒久task OPS-046・OPS-047の維持文書。個別作業の完了によって移動・履歴化しない。配置変更はユーザーの明示指示に従う |
 | `Maintanance/DOCUMENT.md` | 文書整備の恒久task `DOC-030` の維持文書。個別作業の完了や文書整理で移動・改名・アーカイブせず、配置変更はユーザーの明示指示に従う |
 | `Maintanance/USER_MANAGEMENT_INTERVIEW_ASTRA.md` | 協働のふりかえりの恒久task `OPS-043` に紐付くAstraの評価記録 |
 | `Maintanance/ASTRA_OBSERVATIONS.md` | 同taskに紐付くAstra本人の任意の観察を本人の声のまま保持する場所 |

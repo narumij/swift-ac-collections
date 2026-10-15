@@ -66,7 +66,7 @@ dependencies: [
 
 After enabling the trait, import `AcCollections` normally to use the one- through four-dimensional
 `OptionalElementBuffer` types. For more about configuring dependency traits, see
-[Adding dependencies to a Swift package](https://docs.swift.org/swiftpm/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits).
+[Adding dependencies to a Swift package](https://docs.swift.org/latest/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits).
 
 ## Branch Strategy
 

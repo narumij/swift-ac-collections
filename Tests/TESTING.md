@@ -29,7 +29,7 @@ Swift Collectionsの`ContainersPreview`が安定した時点で行うIndex契約
   compatibility smoke testは、facade targetの終了に合わせて削除した。
 - ElementBufferModule: 番号付き仕様群（`BareArray_0_`〜`BareArray_7_`）、Death Test、借用参照のDeath Testを維持する。
   旧subscript・Viewのdeprecated指定は削除済みで、Sourcesにdeprecated指定はない。1.0提供対象外で、保守範囲は
-  `Maintanance/QUALITY_REQUIREMENTS.md`に従う。旧`BareArrayModule`のcompatibility smoke testは、facade targetの終了に
+  `Maintanance/Current/QUALITY_REQUIREMENTS.md`に従う。旧`BareArrayModule`のcompatibility smoke testは、facade targetの終了に
   合わせて削除した。2026-10-13時点の詳細記録は移動分にある。
 - PermutationModule: runtime-check View通常版は有効な通常runtime test 2件（Span反復1件・手動列挙1件）と
   失効Death Test 2件だけが現行契約を直接確認し、旧COW版38件は`#if false`の履歴資料である。

@@ -4,13 +4,13 @@
 
 ## 目的と現在の扱い
 
-GitHubにある`swift-ac-memoize`と`Memoize`について、このリポジトリへの依存状況を調べるDISCOVERY task。ユーザー指示によりACTIVEへ変更した。担当はCodex。状態の正本は[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)。今回行ったのはtaskの訂正であり、調査結果はまだない。
+ユーザー指定のローカルcheckout `swift-ac-memoize`と`Memoization`について、このリポジトリへの依存状況を調べるDISCOVERY task。ユーザー指示によりACTIVEへ変更した。担当はCodex。状態の正本は[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)。今回行ったのはtaskの訂正であり、調査結果はまだない。
 
 ユーザーの説明では、もともと必要だったのはこの依存調査である。AIに調査を引き受けてもらえそうになく、進行が負担になって凍結していた。ユーザーによる方針判断待ちとして整理したのは誤りだった。
 
 ## 調べる範囲と返すもの
 
-- GitHub上の対象リポジトリを特定し、URLと調査対象のbranch・commitまたはversionを記録する。同名だけで対象を決めない。
+- `/Users/narumij/Documents/GitHub/swift-ac-memoize/`と`/Users/narumij/Documents/GitHub/Memoization/`を調べる。remote URL、branch・commit、未commit差分を記録し、ローカル状態と公開版を混同しない。以前の`Memoize`表記は対象名の誤りとして訂正する。
 - 各対象の依存宣言と実際の利用コードから、このリポジトリのどの製品・module・APIに依存しているかを確認する。
 - Memoize関連部分の変更・削除がどの利用箇所に影響するか、移行が必要かを根拠付きで整理する。必要に応じて対象を絞ったコンパイル確認を行い、確認済みと未確認を分ける。
 - 二つのリポジトリについて依存先・利用箇所・影響・残る不明点をまとめれば、調査の返却条件を満たす。その結果を基に必要な判断や作業を具体化する。

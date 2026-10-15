@@ -66,7 +66,7 @@ dependencies: [
 
 traitを有効にした後は、通常どおり`AcCollections`をimportすると1Dから4Dの
 `OptionalElementBuffer`を利用できます。SwiftPMのtrait設定については、
-[Swift Package Managerの案内](https://docs.swift.org/swiftpm/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits)を参照してください。
+[Swift Package Managerの案内](https://docs.swift.org/latest/documentation/packagemanagerdocs/addingdependencies/#Packages-with-Traits)を参照してください。
 
 @Snippet(path: "swift-ac-collections/Snippets/RBTSetHead_1", slice: "first")
 

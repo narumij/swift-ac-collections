@@ -27,8 +27,8 @@
 | `OPS-044` | `ACTIVE` | 現在委任された調整担当（Registry更新はCodex） | [EXECUTION] Task Registry運用の恒久管理 | 現在の目標・task状態・依存・採番・文書権限・履歴への経路を維持する常設node。個別の登録・受入・圧縮の完了でDONE・履歴化しない。維持文書と関連資料の範囲はProgressV2/README.mdを参照する。状態変更前に最新指示と正本を確認し、具体的な更新・圧縮は現在の委任と操作規則に従う。常時実行中・読み手への任命・上位規則の変更許可を意味しない | `Maintanance/ProgressV2/PROGRESS_OVERVIEW_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_V2.md` / `Maintanance/ProgressV2/TASK_RULES_V2.md` / `Maintanance/ProgressV2/TASK_REGISTRY_ARCHIVE.md` / `Maintanance/ProgressV2/TASK_HISTORY_INDEX_MAINTENANCE.md` / `Maintanance/ProgressV2/README.md` |
 | `OPS-047` | `ACTIVE` | 現在委任された調整担当 | [EXECUTION] マイルストーン管理の恒久維持 | 到達点・成立条件・関連task・ユーザー判断と証拠への参照を維持する常設node。個々の到達や更新でDONE・履歴化しない。作業状態はRegistry、到達条件と判断は版別・SPI正本へ置く。定期実行・読み手への任命・公開や判断の代行を意味しない | `Maintanance/MILESTONES.md` |
 | `OPS-046` | `ACTIVE` | 現在委任された調整担当（初回記録：Astra） | [EXECUTION] 調整ノウハウの継続蓄積 | 調整実務の発見・失敗・訂正を、根拠と適用範囲付きで蓄積する常設node。個別追記の完了ではDONE・履歴化しない。人物評のふりかえり、Registryの制度維持とは区別する。定期記入・毎回通読・読み手への任命を意味しない。知見を規則やユーザー決定へ自動昇格させない | `Maintanance/ProgressV2/COORDINATION_KNOW_HOW.md` |
-| `OPS-045` | `ACTIVE` | Claude（姫） / Astra（受入） | [DISCOVERY] 圧縮後のタスク健全性検査 | ユーザーが圧縮後の検査を委任。既存の作業中scopeを終了・返却してから、task ID・状態・依存・採番・恒久文書の紐付け・履歴への経路と未完了条件の保存を読み取り検査し、根拠付きの指摘と未確認範囲を返す。登録・凍結解除・受入判断・本文修正はしない。返却とAstraの確認後、コミット判断をユーザーへ返す | `Maintanance/Current/MAINTENANCE_HEALTH_CHECK_2026-10-16.md` |
-| `DOC-031` | `ACTIVE` | Claude（姫） / Astra（受入） | [DISCOVERY] 文書リンク健全性検査 | ユーザーが圧縮後の検査を委任。既存の作業中scopeを終了・返却してから、現行の管理文書とDOCUMENT.md掲載の外部文書を対象にローカル参照・見出し・移動先・外部URLの確認範囲を区別して検査する。今回移動した履歴と原文への経路も確認する。問題・根拠・修正候補・未確認を返すだけとし、資料の移動・本文修正・CIや重い生成処理は行わない。返却とAstraの確認後、コミット判断をユーザーへ返す | `Maintanance/Current/MAINTENANCE_HEALTH_CHECK_2026-10-16.md` |
+| `OPS-045` | `DONE` | Claude（姫） / Astra（受入） | [DISCOVERY] 圧縮後のタスク健全性検査 | 2026-10-16、Claudeの検査返却・占有返却をAstraが確認し、独立照合して受入。確認した指摘は修正済み。検査範囲外を全件保証へ広げない。ユーザーのコミット許可を受領し完了 | `Maintanance/Current/MAINTENANCE_HEALTH_CHECK_2026-10-16.md` |
+| `DOC-031` | `DONE` | Claude（姫） / Astra（受入） | [DISCOVERY] 文書リンク健全性検査 | 2026-10-16、Claudeの検査返却・占有返却をAstraが確認し、独立照合して受入。確認した指摘は修正済み。検査範囲外を全件保証へ広げない。ユーザーのコミット許可を受領し完了 | `Maintanance/Current/MAINTENANCE_HEALTH_CHECK_2026-10-16.md` |
 
 ### 公開とリリース
 
@@ -50,7 +50,7 @@
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、現行API・設計と外部要件を照合して互換性を再評価し、採否を決定する。旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-034` | `ACTIVE` | User / Codex | [EXECUTION] RedBlackTree 1.0品質アセスメント完成 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。対象版と評価範囲を固定して、既存証拠・反証・未検証・残余リスクを接続する。0.6.0評価や型別test補完を最初からやり直さず、差分と不足を扱う。今回の棚卸しでは評価実行・合格判定を行わない。 | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
 | `RBT-026` | `ACTIVE` | User（判断） / Astra・Claude（姫）（議論・材料整理） | [DECISION] Mapped Values ViewのO(1)範囲契約再検討 | 2026-10-16、ユーザーが姫との議論を経て決める課題として復帰を指示。関連する現行APIの照合結果（旧RBT-014から保持、未確認）を入力に、範囲外Indexの動作・呼び出し側前提・性能と互換性の影響を議論し、現行契約を維持するかユーザーが判断して理由と範囲を記録する。正式発注・議論は未実施。実装変更は後続へ分ける | `Maintanance/Current/MAPPED_VALUES_VIEW_CONTRACT_DECISION.md` |
-| `RBT-005` | `ACTIVE` | Codex | [DISCOVERY] swift-ac-memoize・Memoizeの依存状況調査 | 2026-10-16、ユーザー説明により判断待ちから訂正。GitHubの対象2件を特定し、このrepositoryへの依存宣言・実利用API・変更影響・移行の要否を根拠付きで返す。外部移行完了を調査開始条件にしない。調査未実施。製品方針決定・削除・外部変更は含めない | `Maintanance/Current/MEMOIZE_DEPENDENCY_INVESTIGATION.md` |
+| `RBT-005` | `ACTIVE` | Codex | [DISCOVERY] swift-ac-memoize・Memoizationの依存状況調査 | 2026-10-16、ユーザー説明により判断待ちから訂正。ユーザー指定のローカル2件（swift-ac-memoize・Memoization）を起点に、このrepositoryへの依存宣言・実利用API・変更影響・移行の要否を根拠付きで返す。外部移行完了を調査開始条件にしない。調査未実施。製品方針決定・削除・外部変更は含めない | `Maintanance/Current/MEMOIZE_DEPENDENCY_INVESTIGATION.md` |
 | `RBT-007` | `ACTIVE` | User / Codex | RedBlackTreeCollectionsのstrict memory safety全面適用 | 2026-10-15、ユーザー指示により有効化。現行readiness、対象範囲、必要な検証を照合して進める。状態変更だけでは実装操作を開始しない | `Maintanance/Current/StrictMemorySafetyReadiness.md` |
 | `RBT-008` | `FROZEN` | User / Codex | `lazyDetach`等の並行初期化保証 | 性能と所有構造への影響から、ユーザー判断で最後の最後まで凍結。所有構造・生成コスト・アクセス性能を評価できる段階で、ユーザーの明示的な再開指示があった場合のみ再検討する。1.0必須ゲートや自動再開条件にはしない | `Maintanance/Current/Frozen/LAZY_INITIALIZATION_FREEZE_DECISION.md` |
 | `RBT-009` | `ACTIVE` | User / Codex | [DECISION] runtime-check実装の再審査 | 2026-10-16のユーザー棚卸し指示で1.0前の判断ゲートとして有効化。Design-RuntimeChecksの再審査材料を揃え、現行実装を1.0へ受け入れるかユーザーが一つ判断する。検査の変更・弱化は今回行わず、現行防御を維持する。資料収集や測定は対象・範囲を具体化してから実施する。 | `Sources/RedBlackTreeCollections/Documentation/Design/Design-RuntimeChecks.md` |
@@ -108,7 +108,7 @@
 
 以下は上記の未完了依存と区別する。前提の受入済みは後続の自動開始を意味しない。
 
-- `RBT-041`の受入済み入力：`RBT-040`。個別レビューを入力とする。これだけでは着手せず、RBT-045までの補完受入ゲートも必要。証拠は[完了行と元の依存辺](../Archived/TASK_REGISTRY_COMPLETED_AFTER_RECONCILIATION_2026-10-16.md)および該当行の詳細正本を参照。
+- `RBT-041`の受入済み入力：`RBT-040`。個別レビューを入力とする。RBT-045までの補完も独立受入済みで、最終横断は着手可能・未実施。証拠は[完了行と元の依存辺](../Archived/TASK_REGISTRY_COMPLETED_AFTER_RECONCILIATION_2026-10-16.md)および該当行の詳細正本を参照。
 - `PERM-062`の受入済み入力：`PERM-065`。公開surfaceだけを渡す利用理解Validationの前に、喪失した公開APIコメントを現行契約に合わせて回復する。証拠は[完了行と元の依存辺](../Archived/TASK_REGISTRY_COMPLETED_AFTER_RECONCILIATION_2026-10-16.md)および該当行の詳細正本を参照。
 
 「AまたはB」の条件はANDの辺二本に変えず、task行に残す。整理済みの`RBT-004`の旧依存・旧資料のOR例を再開根拠にしない。また、1.0品質ゲートの「再開」と「完了」は異なる。`QUALITY-002`・`QUALITY-003`をゲート完了まで待たせる逆向きの辺は作らない。

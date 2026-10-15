@@ -39,7 +39,7 @@ AtCoder 2025互換modeは同じ製品目的へ関係するが、公開表面、�
 
 改名時はQR-04・QR-05・QR-06に対応して、moduleの導入・import、`AcCollections`からの再公開、
 公開型の名前解決、DocCの入口・symbol link、使用例、および関連する検証経路の整合を確認する。
-旧module名の互換targetは維持する。具体構成と検証工程は`Maintanance/Current/PERMUTATION_MODULE_MIGRATION_PLAN.md`、今回の受入範囲は`Maintanance/Current/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md`を参照する。
+旧module名の互換targetは維持する。具体構成と検証工程は`Maintanance/Current/PERMUTATION_MODULE_MIGRATION_PLAN.md`、今回の受入範囲は`Maintanance/Archived/PermutationMigration_2026-10-16/PERMUTATION_MODULE_MIGRATION_ACCEPTANCE.md`を参照する。
 
 通常版一時Viewはnested名`Permutation`を維持する。名前だけで寿命契約を伝えたとは扱わず、
 型の冒頭説明・使用例・失効時の診断で、一時Viewであること、次の`next()`やowner破棄で失効すること、

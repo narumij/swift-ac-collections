@@ -184,3 +184,13 @@ Counted references:
 - Links rendered by GitHub with different slug rules for unusual punctuation.
 
 DOC-031 scope released. No inspected document was edited.
+
+## Astra acceptance — 2026-10-16
+
+HEAD `db3ee2bd`から返却とscope releaseを確認。両検査を受入、commit確認待ち。QUALITY-002/003のID衝突は10-11 archiveとe5abf435のRegistryを独立比較して確認。番号は変更せず履歴の同定規則を追記した。恒久nodeの列挙・維持文書、RBT-045の古いgate文言、処理済みCP-20261015-007を修正した。queue原文はArchivedへ保存しPERM-072の回答・集約・DONE記録に照合した。
+
+参照の移動漏れ2件を実ファイルと照合して修正。README日英のSwiftPM URLは代替の公式/latest/ページへの到達を独立確認して変更した。外部anchor・全URL・DocC生成は独立再検査していない。Claudeの101文書の全件検査や全履歴を繰り返したという意味ではなく、返却の方法・限界と具体的指摘の照合による受入である。履歴のパスは一括変更しない。任意提案の基準パス注記は今回必須修正にしない。
+
+RBT-041は既に着手可能。次の仕事の選択と発注は現在のRegistryとユーザー依頼に従い、検査受入を製品品質全体の合格とは扱わない。
+
+2026-10-16、ユーザーのcommit許可を受領。OPS-045・DOC-031をDONEとして受入記録と修正を保存する。

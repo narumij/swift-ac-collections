@@ -31,6 +31,21 @@ Swift 6.2で成立したため削除した。
 
 AtCoder 2025互換modeは同じ製品目的へ関係するが、公開表面、実装、build条件、および検証経路が通常版と異なる。通常版の証拠を互換modeへ、互換modeの証拠を通常版へ自動的に適用しない。
 
+## 公開名称と改名時の品質境界
+
+採用名は`NextPermutationModule`と、通常版一時Viewの`NextPermutations.Permutation`である。
+名称・理由・互換方針の正本は`Maintanance/Current/PUBLIC_API_NAMING_DECISIONS.md`とする。
+本書の`PermutationModule`およびsource pathは改名前の現行実装を指す。名称決定だけで改名済みとは扱わない。
+
+改名時はQR-04・QR-05・QR-06に対応して、moduleの導入・import、`AcCollections`からの再公開、
+公開型の名前解決、DocCの入口・symbol link、使用例、および関連する検証経路の整合を確認する。
+旧module名の互換targetを残すかは未決であり、実装前に名称決定正本で確定する。
+
+通常版一時Viewはnested名`Permutation`を維持する。名前だけで寿命契約を伝えたとは扱わず、
+型の冒頭説明・使用例・失効時の診断で、一時Viewであること、次の`next()`やowner破棄で失効すること、
+保存には`Array`等へのcopyが必要なことを維持する。列挙・所有・失効の契約は改名によって変えない。
+三者の名称合意は、利用者が契約を理解できるというValidationの証拠には代えない。
+
 ## 上位品質要求との接続
 
 | 上位要求 | PermutationModuleでの主な意味 | 主な仕様・証拠の接続先 |

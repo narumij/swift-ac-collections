@@ -7,6 +7,34 @@
 証拠境界は`Sources/PermutationModule/Documentation/Quality-Profile.md`を正本とする。
 本書はそれらを変更せず、現在評価の作業範囲、完了条件、結果を管理する。
 
+## 公開名称決定の品質評価への反映（2026-10-15、Astra）
+
+名称決定の正本`Maintanance/Current/PUBLIC_API_NAMING_DECISIONS.md`に基づき、
+採用module名を`NextPermutationModule`、通常版一時View名を`NextPermutations.Permutation`とする。
+後者は現行名の維持である。三者回答の根拠は
+`Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_FINAL_PROPOSAL.md`に保存されている。
+
+本書の旧評価と実行記録にある`PermutationModule`は、その時点の対象名として保持する。
+現行source・配置もまだ同名であり、採用名でのbuild・導入・DocC検証が済んだとは扱わない。
+通常・borrowedの入口とowner、およびgeneric parameterの既存の暫定判断を、今回の二対象の決定で
+正式決定へ繰り上げない。
+
+### 後続タスクへ切り出す内容
+
+以下はタスク化の入力であり、今回の文書反映では登録・着手しない。
+
+| 区分 | 残る仕事 | 完了時に残す内容 |
+| --- | --- | --- |
+| 判断 | 旧`PermutationModule`の互換targetを残すかを決める | 名称決定正本に互換方針と移行範囲を記録する。既存の名称最終決定taskで扱い、重複して新設しない |
+| 実装 | 方針確定後、採用module名をmanifest・依存・再公開・source配置・import・公開文書へ反映する | 選んだ移行方式に従い、対象範囲を揃える。test・compiler fixture・benchmark・CI・文書生成の参照先も影響範囲に含める |
+| Verification | 改名後の導入・名前解決・文書導線と既存契約の継続を確認する | 対象版・構成と、build、公開surface／再公開test、関連Test as Specification、DocC生成・link確認の結果。旧名の扱いは決定した互換方針どおりか確認する |
+| 文書確認 | 通常版一時Viewの説明・例・診断を維持する | `NextPermutations.Permutation`が一時Viewであり、次の`next()`やowner破棄で失効し、保存にはcopyが必要と読み取れることをsource・DocCで照合する |
+
+benchmarkの参照先変更と、計測task名・baselineの移行は別の影響として確認する。
+module改名から、凍結中のbenchmark名移行やSequence検討の再開は導かない。
+名称の合意はQR-04の利用理解Validationや品質全体の達成判定を代替しない。
+既存の利用理解Validationへ、採用名と改名後の公開文書を評価対象として渡す。
+
 ## 現行runtime-check版の証拠同期（2026-10-13）
 
 現行Permutationには、証拠の役割が異なる三つの系統がある。

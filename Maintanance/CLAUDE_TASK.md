@@ -9,7 +9,7 @@ the user.
 
 ## Current job status
 
-**`PERM-069`の姫Round 3最終比較は返却・受入済み。新しいjobなし。**
+**`PERM-069`の姫Round 4自由記述を依頼中。**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -26,6 +26,35 @@ For the authority of historical records, including these Return records and the 
 follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と正本).
 
 ## Active assignment
+
+### PERM-069-HIME-R4 — PermutationModule公開API名称 Round 4自由記述
+
+#### Objective
+
+未決のmodule名と通常版一時viewについて、最終決定者へ渡す比較材料を自由記述で補う。
+採用、不採用、順位、点数、一つへの絞り込みは求めず、AIの意見をユーザー判断として扱わない。
+
+#### Inputs
+
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_ROUND4_INPUT.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_NOTES_HIME_ROUND4.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_ROUND3_REPORT.md`
+
+#### Work and boundaries
+
+- 共通入力の自由記述項目から、判断に役立つものを答えられる範囲で記録する。全項目を埋める必要はない。
+- User・V3のRound 4記述は完了まで読まない。
+- 採用、不採用、順位、点数、一候補への絞り込みを回答として要求しない。
+- 新しい候補、契約変更、rename実装案を混ぜず、発見した場合は別論点として明示する。
+- 他者の回答表、共通入力、production、test、DocC、Registry、名称決定正本を変更しない。
+- commitしない。
+- 完了後、この節のReturnへ完了時刻、変更ファイル、未記述でも支障のない項目、追加論点、独立性への影響を記録する。
+
+#### Return
+
+返却待ち: `PERM-069-HIME-R4`
+
+### Completed Round 3 assignment
 
 ### PERM-069-HIME-R3 — PermutationModule公開API名称 Round 3最終比較
 

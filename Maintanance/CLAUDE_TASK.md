@@ -9,7 +9,7 @@ the user.
 
 ## Current job status
 
-**`PERM-067`のうち、姫による独立候補提出を依頼中。**
+**`PERM-067`の姫候補は返却済み。新しいjobなし。**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -27,7 +27,7 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 
 ## Active assignment
 
-### PERM-067-HIME — PermutationModule公開API名称候補の独立提出
+### PERM-067-HIME — PermutationModule公開API名称候補の提出（返却済み）
 
 #### Objective
 
@@ -84,4 +84,17 @@ PermutationModuleの現行6 surfaceについて、姫自身の名称候補を独
 
 #### Return
 
-（姫が完了時に、作成ファイル、照合範囲、候補概要、未解決事項、独立性への影響、変更ファイルを記録する。）
+返却待ち: `PERM-067-HIME`（2026-10-15 13:20 JST / Claude Opus 5.5）
+
+- 作成ファイル: `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_CANDIDATES_HIME.md`（共通提出表の書式）。
+- 照合範囲: `NextPermutations.swift`、`BorrowedNextPermutations.swift`、互換modeの`PermutationsAtCoder2025.swift`（宣言部）、
+  `PermutationModule.docc/PermutationModule.md`、`UserDocumentationDraft.md`、`Tests/PermutationTests/`の通常版・borrowed版・互換modeの
+  file一覧と共存test、swift-algorithmsの公開名（`.build/checkouts`）。提出表の固定契約と現物は一致した。
+- 候補概要: module A-1（維持）・A-2。family B-1（全維持）、B-2（viewを`View`へ）、B-3（borrowed版を`nextPermutationSpans()`/`NextPermutationSpans`へ）、
+  B-4（ownerを`NextPermutationCursor`へ）。surface単位 C-1（入口`permutationsFromCurrentOrder()`）、C-2（view`CurrentPermutation`）、
+  C-3（generic parameter名を`Element`にそろえる）。順位付け・採点はしていない。
+- 未解決事項（D、名称候補と分離）: D-1 互換modeで同じ`nextPermutations()`がAtCoder 2025版の`Sequence`を指す、D-2 初回に現在の並びを返すことと`next`の食い違い、
+  D-3 borrowed版がSwift 6.4以上だけでfamilyと提供範囲がずれる、D-4 複数形が`for-in`を誘うこと（`PERM-060`凍結の範囲）。
+- 独立性への影響: ユーザー・V3の候補、`Maintanance/Archived/PublicAPINaming/`、`PUBLIC_API_NAMING_DECISIONS.md`は読んでいない。
+  提出時点で他者の候補fileは存在しなかった。
+- 変更ファイル: 上記候補文書の新規作成と、この`Return`欄の記入のみ。commitしていない。

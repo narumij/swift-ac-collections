@@ -22,7 +22,7 @@ PermutationModuleの現行公開surfaceが、現在の並びを含む辞書順�
 
 ## 役割
 
-- ユーザー、姫、V3は、他の二者の案を読む前に候補を独立提出する。
+- ユーザー、姫、V3は候補を提出する。他者案を見てもよいが、候補の出典と閲覧後の反応を残す。
 - Codexは現行surfaceとの照合、候補の集計、固定ballotと採点表、Registryの最終更新を担当する。
 - ユーザー、姫、V3は固定後の同じ採点表へ独立に採点する。後から理由を読み再評価する場合は、初回採点を
   上書きせずroundを分ける。
@@ -31,8 +31,8 @@ PermutationModuleの現行公開surfaceが、現在の並びを含む辞書順�
 ## 工程
 
 1. 現行source、Test as Specification、DocC、利用者向け本文から、各公開名が指す役割と契約を固定する。
-2. ユーザー、姫、V3が、現行名の維持を含む候補を独立に提出する。意味、call site、familyの予測可能性、
-   誤読、互換コストを添える。
+2. ユーザー、姫、V3が、現行名の維持を含む候補を提出する。意味、call site、familyの予測可能性、
+   誤読、互換コストを添え、他者案を見て加えた案や反応は出典を残す。
 3. Codexが候補を出典つきで集計する。名前だけの変更と、列挙範囲・所有・寿命・`Sequence`適合などの
    契約変更を分離し、必要な判断単位だけを固定ballotと採点表へまとめる。
 4. ユーザーが採点表の候補範囲と分離を確認した後、ユーザー、姫、V3が独立採点を開始する。
@@ -46,7 +46,7 @@ PermutationModuleの現行公開surfaceが、現在の並びを含む辞書順�
 ### 候補提出
 
 - 現行6 surfaceの意味と相互関係が、現行実装・test・公開文書に照合されている。
-- ユーザー、姫、V3の独立提出がそろい、他案を読んだ後の補足は独立案と区別されている。
+- ユーザー、姫、V3の候補がそろい、候補と反応の出典が追跡できる。
 
 ### 候補集計・採点表
 
@@ -80,6 +80,9 @@ PermutationModuleの現行公開surfaceが、現在の並びを含む辞書順�
 ## 根拠
 
 - `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_CANDIDATE_FORM.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_CANDIDATES_USER.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_CANDIDATES_HIME.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_CANDIDATES_V3.md`
 - `Sources/PermutationModule/NextPermutations.swift`
 - `Sources/PermutationModule/BorrowedNextPermutations.swift`
 - `Sources/PermutationModule/PermutationModule.docc/PermutationModule.md`

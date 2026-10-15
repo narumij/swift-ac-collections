@@ -59,8 +59,8 @@ borrowed owner`BorrowedNextPermutations`、generic parameter`Element`は、既�
 
 | 対象 | 回答 | 理由・条件 |
 | --- | --- | --- |
-| `NextPermutationModule` | 未回答 | |
-| `Permutation`維持 | 未回答 | |
+| `NextPermutationModule` | 同意 | そもそもこれにしたいことが一連のタスクの動機だったから。反対2だったら諦めたけど |
+| `Permutation`維持 | 不同意 | 誰も確認してくれてないけど、これはかぶりがありそう |
 
 ### Claude姫回答欄
 

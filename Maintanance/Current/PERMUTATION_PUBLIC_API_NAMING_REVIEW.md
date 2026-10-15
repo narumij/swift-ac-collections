@@ -79,8 +79,10 @@ PermutationModuleの現行公開surfaceが、現在の並びを含む辞書順�
 | 通常版入口 | `nextPermutations()` | `NE-01` | 暫定確定 |
 | borrowed版入口 | `borrowedNextPermutations()` | `BE-01` | 暫定確定 |
 | borrowed版owner | `BorrowedNextPermutations` | `BO-01` | 暫定確定 |
+| 通常版owner | `NextPermutations` | `NO-01` | 暫定確定 |
+| 通常版ownerのgeneric parameter | `Element` | `GP-02` | 暫定確定。実sourceのcompile・DocC確認はrename実装時の受入条件 |
 
-未決: module名、通常版owner、通常版一時view、generic parameter名。
+未決: module名、通常版一時view。
 
 ## 対象外
 
@@ -105,6 +107,7 @@ PermutationModuleの現行公開surfaceが、現在の並びを含む辞書順�
 - `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_USER_ROUND2.md`
 - `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND2.md`
 - `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_V3_ROUND2.md`
+- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_ROUND2_REPORT.md`
 - `Sources/PermutationModule/NextPermutations.swift`
 - `Sources/PermutationModule/BorrowedNextPermutations.swift`
 - `Sources/PermutationModule/PermutationModule.docc/PermutationModule.md`

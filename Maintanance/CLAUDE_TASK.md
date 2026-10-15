@@ -9,7 +9,7 @@ the user.
 
 ## Current job status
 
-**`PERM-069`の姫Round 2再採点を依頼中。**
+**`PERM-069`の姫Round 2採点は返却済み。新しいjobなし。**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。
@@ -27,7 +27,7 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 
 ## Active assignment
 
-### PERM-069-HIME-R2 — PermutationModule公開API名称 Round 2採点
+### PERM-069-HIME-R2 — PermutationModule公開API名称 Round 2採点（返却済み）
 
 #### Objective
 

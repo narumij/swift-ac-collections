@@ -21,7 +21,7 @@
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
 | `GRAPH-001` | `ACTIVE` | Claude | Claude用task graph DBの独立試験 | ready判定を維持する常設nodeとして`ACTIVE`を保つ。個別assignmentや実行中ジョブを意味せず、必要なときだけ現行Registryとの一致を確認 | `Maintanance/Graph/TASK_GRAPH_DB_EXPERIMENT.md` |
-| `DOC-030` | `ACTIVE` | Codex | [EXECUTION] 文書整備の恒久管理 | 文書の役割・整備方法・参照関係を維持する常設node。個別の文書作業の完了だけではDONE・履歴化しない。常時実行中や読み手への編集委任を意味せず、具体的な作業は現在の依頼と権限に従う。維持文書は配置維持の指定に従い残す | `Maintanance/DOCUMENT.md` |
+| `DOC-030` | `ACTIVE` | Codex | [EXECUTION] 文書整備の恒久管理 | 文書の役割・整備方法・参照関係を維持する常設node。リンク切れの点検・修正と移動・改名時の参照元確認を含み、対象と方法は詳細正本の「リンクと参照先の保守」に従う。個別の文書作業の完了だけではDONE・履歴化しない。常時実行中や読み手への編集委任を意味せず、具体的な作業は現在の依頼と権限に従う。維持文書は配置維持の指定に従い残す | `Maintanance/DOCUMENT.md` |
 
 ### 公開とリリース
 

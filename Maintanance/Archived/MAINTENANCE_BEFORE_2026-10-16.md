@@ -5,7 +5,7 @@
 本書は履歴であり、現行の指示・規則・着手条件としての効力を持たない。
 
 以下の原文は変更せず保存した。原文内の `ProgressV2/`・`Current/`・`Archived/` は元の `Maintanance/` 基準、`Sources/`・`Tests/` はリポジトリ直下基準の表記である。
-参照入口：[現在の手引き](../MAINTENANCE.md)、[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)、[前回までの履歴](MAINTENANCE_HISTORY_2026-10-07.md)。
+参照入口：[現在の手引き](../DOCUMENT.md)、[Task Registry](../ProgressV2/TASK_REGISTRY_V2.md)、[前回までの履歴](MAINTENANCE_HISTORY_2026-10-07.md)。
 
 整理時の照合：Index関連はRBT-001・RBT-011、凍結群はRBT-004・RBT-005、赤黒木の文書作業はRBT-014で扱われている。Permutationには現行コメント回復・名称決定・移行・仕様testの個別記録があり、旧handoffの一律の再開待ちを現行条件として転記しない。過去の監査・整理の完了記述は履歴として保存し、現在の全体品質の保証には使わない。taskの状態・依存・再開条件は変更していない。
 

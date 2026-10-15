@@ -27,9 +27,11 @@ the user.
 
 調整役が`CLAUDE_TASK.md`で依頼する仕事は、事前にTask Registryへ登録し、依頼本文に固定IDを記載する。未登録なら、登録してから依頼する。
 
+Claudeが自分の感想・観察を`Maintanance/CLAUDE_OBSERVATIONS.md`へ追記する常設の委任は、個別依頼の編集対象に同書が含まれていなくても有効とする。都度の確認は不要であり、記入は任意とする。本作業や必要な報告を妨げない範囲で行う。
+
 ## Current job status
 
-**Active request: RBT-046-HIME — final cross-type findings X1 and X2.** Registered before issuance; authorized by the user on 2026-10-16. Read the bounded request below. Earlier batches are accepted history.
+**RBT-046-HIME accepted by Astra on 2026-10-16.** X1 and X2 are complete; scope released. Implementation is committed in `f2aa435e`; the user authorized committing the acceptance records; RBT-046 is DONE. No new assignment is issued. The request and original Return below are retained as evidence.
 
 ### RBT-046-HIME — Set Bound Release coverage and throwing View erase
 

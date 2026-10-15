@@ -1,7 +1,7 @@
 # RedBlackTree Test as Spec 仕様レビュー
 
 作成者：Astra。2026-10-15。ユーザー指定の「4型をざっと横断 → 型順 → 最後に再横断」を記録する詳細正本。
-状態と依存関係の正本は `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`。初回横断・4型の仕様レビュー・型別補完の受入を完了。2026-10-16の最終横断で追加の検査不足2件を記録した。レビューは完了・commit確認待ちで、追加補完は未実施。
+状態と依存関係の正本は `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`。初回横断・4型の仕様レビュー・型別補完の受入を完了。2026-10-16の最終横断で追加の検査不足2件を記録した。レビューは完了。追加補完X1・X2も2026-10-16に独立受入済みで、ユーザーのcommit許可を受領し、RBT-046はDONE。
 
 ## 目的と境界
 
@@ -404,3 +404,22 @@ X1・X2はTest as Specの追加補完候補で、製品不具合を実証した�
 初回横断→四型順のレビューと補完→最終横断、という今回のレビュー工程は完了。RBT-041をWAITING_USER（commit確認待ち）とする。製品品質全体の合格や追加補完の完了ではない。
 
 2026-10-16、ユーザーがX1・X2の姫への依頼とcommitを指示。RBT-046を事前登録し、CLAUDE_TASK.mdへ限定依頼を掲載した。RBT-041はレビュー完了としてDONE。補完の実行・受入は未実施。
+
+
+### 最終横断の追加補完の独立受入（RBT-046、2026-10-16、Astra）
+
+対象commitは`f2aa435e`（基準`48a71417`）。Claudeの返却と占有返却を確認し、4テストファイルの差分をX1・X2へ照合した。製品コードの変更はない。
+
+- X1：SetのBound公開動作14件がReleaseでも実行される。既存公開アサーションを移し、逆転範囲の無変更・predicate非呼出しを保持。内部のisValid・copy count等はDebug条件内に残っている。
+- X2：KeyOnly・KeyValue・MappedValuesの部分範囲で固有エラーの伝播、throw後の非呼出し、範囲外の保持、共有元の内容不変を検査している。Map系はvalueも観測する。変更側の巻戻しや範囲内の特定の途中状態を契約に追加していない。
+
+Astra独立実行：Apple Swift 6.4（swiftlang-6.4.0.34.1）、macOS arm64。通常寿命検査・Death Tests有効。
+
+- `swift test --disable-sandbox --build-system native -c debug --filter RedBlackTreeTests`：exit 0、986 XCTest＋133 Swift Testing／17 suites成功。
+- `swift test --disable-sandbox --build-system native -c release -Xswiftc -gnone --filter RedBlackTreeTests`：exit 0、834 XCTest＋120 Swift Testing／11 suites成功。Set公開Bound14件と追加View3件の実行・成功も確認。
+- ログ：`/tmp/astra-rbt046-debug.log`、`/tmp/astra-rbt046-release.log`。
+- 互換構成では変更対象が除外されるguardを静的確認した。互換build成功はClaudeの返却証拠であり、Astraは再実行していない。Linux、Swift 6.2、ASan、全target、mutation検証は今回の独立確認外。
+
+X1・X2を受入。追加修正・未決契約・製品不具合は見つからなかった。今回の4型レビュー工程と、その最終横断の追加補完まで完了した。製品品質全体の合格とは区別する。実装はユーザーの直接指示によりClaudeがcommit済み。RBT-046は今回の受入記録のcommit確認待ちとしてWAITING_USERとする。
+
+2026-10-16、ユーザーのcommit指示を受領。受入記録と常設の感想追記許可を保存し、RBT-046をDONEとする。感想文書自体の編集・commitはユーザーが行う。

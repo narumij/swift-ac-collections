@@ -29,9 +29,28 @@ the user.
 
 ## Current job status
 
+**Active request: RBT-046-HIME — final cross-type findings X1 and X2.** Registered before issuance; authorized by the user on 2026-10-16. Read the bounded request below. Earlier batches are accepted history.
+
+### RBT-046-HIME — Set Bound Release coverage and throwing View erase
+
+Author: Astra. Registry ID: `RBT-046`.
+
+- Fixed input: X1 and X2 in `Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md`, section “4型の最終横断”. Implement only these two test gaps. Follow `Tests/CLAUDE.md`, relevant `Tests/TESTING.md` and `Tests/RedBlackTreeFixture/Fixtures.md`.
+- X1: In the existing Set BoundExpression test file, separate public-result assertions so they execute in normal Debug and Release. Preserve Debug-only `isValid`, `_copyCount` and other internal observations under their current guards. Include reversed bounds with unchanged contents and zero predicate calls. Reuse existing cases; do not duplicate the entire suite.
+- X2: Add focused throwing `erase(where:)` cases for KeyOnlyRangeView, KeyValueRangeView and MappedValuesView in their existing test files. Use representative nonempty partial ranges, process an element before throwing a distinct error, and check the original error, no calls after throw, no out-of-range visits or changes, and unchanged shared original. Observe both keys and values for Map variants. Reuse fixtures and normal lifetime checks. Do not require rollback or specify an undocumented partially mutated receiver state. Cover the three distinct wrappers, not every container/view/input combination.
+- Editable scope: `Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_16_BoundExpressionTests.swift`; the three numbered 0/1/2 test files in `Tests/RedBlackTreeTests/RedBlackTreeView/`; a concise handoff in `Tests/TESTING.md`; this request's Return. No production, shared fixtures, manifest, CI, public docs, Registry, numbering, fixed review input, or other tests.
+- If an existing case already covers an item, cite exact evidence rather than duplicate it. A production defect or unresolved contract stops the affected item: preserve the reproducer and report it. Do not weaken assertions or change production to obtain green tests.
+- Check baseline and concurrent changes before editing. Run focused changed suites, then RedBlackTreeTests in Debug and Release, including actual Death Tests and normal lifetime balance. Check whether changed cases compile in compatibility mode; preserve guards and distinguish excluded cases from executed ones. Record commands, toolchain, counts, failures, skips and unexecuted environments. Native build / disabling debug info may be used if required by the local build environment; document it.
+- Return results separately for X1 and X2, changed paths, evidence and remaining limitations, then explicitly release the scope. No commit or push authorization. Astra independently verifies and updates Registry. This request does not reopen previous completed batches.
+
+#### Return (`RBT-046`) — reserved for Claude
+
+Not returned.
+
+
 Inspections `OPS-045` and `DOC-031` were returned and accepted by Astra on 2026-10-16; the user authorized committing the closure and both are DONE. No new Claude assignment is issued by this status.
 
-**Current batch: `RBT-043-HIME` → `RBT-044-HIME` → `RBT-045-HIME`, issued together. RBT-043, RBT-044 and RBT-045 have been accepted by Astra; RBT-045 is DONE; final cross-type review is eligible. RBT-042 is DONE.**
+**Current batch: `RBT-043-HIME` → `RBT-044-HIME` → `RBT-045-HIME`, issued together. RBT-043, RBT-044 and RBT-045 have been accepted by Astra; RBT-045 is DONE; final cross-type review is complete; its additional findings are assigned as RBT-046 above. RBT-042 is DONE.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。

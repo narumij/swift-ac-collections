@@ -1,7 +1,7 @@
 # RedBlackTree Test as Spec 仕様レビュー
 
 作成者：Astra。2026-10-15。ユーザー指定の「4型をざっと横断 → 型順 → 最後に再横断」を記録する詳細正本。
-状態と依存関係の正本は `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`。初回横断と4型の仕様レビューを記録済み。型別補完はSetまで受入済みで、MultiSet以降と最終横断は未完了。
+状態と依存関係の正本は `Maintanance/ProgressV2/TASK_REGISTRY_V2.md`。初回横断・4型の仕様レビュー・型別補完の受入を完了。2026-10-16の最終横断で追加の検査不足2件を記録した。レビューは完了・commit確認待ちで、追加補完は未実施。
 
 ## 目的と境界
 
@@ -359,3 +359,48 @@ Astra独立実行（Apple Swift 6.4、macOS arm64、通常の寿命検査有効�
 MM1〜MM4を受入。RBT-045はcommit確認待ちのWAITING_USER。4型の正式返却・独立受入が揃い、RBT-041最終横断の着手条件は充足した。最終横断自体はまだ実施していない。
 
 2026-10-16、ユーザーが圧縮・アーカイブ後のcommitを指示。受入済みRBT-045をDONEとして履歴化した。最終横断RBT-041は着手可能・未実施。
+
+
+### 4型の最終横断（RBT-041、2026-10-16、Astra）
+
+基準HEAD：`cfd6c137`。作業ツリーは開始時点でclean。直近`813b286b`からの差分はClaudeの振り返り2文書のみで、対象source/testへの変更なし。今回のレビューは静的照合であり、test・production・公開契約は変更せず、追加発注・採番も行っていない。
+
+#### 照合範囲と証拠
+
+四型の型別補完・受入記録を入力に、番号付きInsertion/Removal/Sequence・Transforming/ValueSemantics/BoundExpression/RangeViewと範囲predicateのsubprocess回帰を横断した。API-Matrix、API-Matrix-View、DSLの関連契約と、共通View三種のerase実装・UnsafeTreeV2のBound解決を照合した。ファイル名は以下の表と指摘から辿る。全API全構成の網羅監査ではない。
+
+| 観点 | 確認結果と根拠 |
+| --- | --- |
+| 固有の更新・削除契約 | Setのhint付き等価参照のinsert/update、MultiSetの同値個体・削除済みIndex、Dictionaryのdefault評価・Optional三状態、MultiMapの削除済みIndexと重複valueを、各型の`*_5_InsertionTests.swift`で区別している。固有APIを全型へ機械的に要求しない |
+| エラー伝播 | Set/MultiSetの`*_1_SequenceTests.swift`・四型の`*_6_RemovalTests.swift`、DictionaryのInsertion/Utility、MultiMapのTransformingAndCombiningに、エラー・呼出し停止・入力または共有元の保持の検査がある。四型`*_99_DeathTests.swift`の`predicateErrorPropagatesFromIndexRange`と`...IndexRangeExpression`は8経路を保護する。共通Viewの不足はX2へ分離 |
+| 参照寿命 | SetのValueSemantics、MultiSetの同一参照複数格納、Dictionary/MultiMapのRemovalに、共有コピー・返却旧値・最終所有者の解放を区別した証拠がある。deep copyや例外時の全巻戻しは追加契約にしていない |
+| Map系の値観測 | `_13_ValueSemanticsTests.swift`の基本ケースは依然key中心だが、追加されたRemovalの共有元value、共通`RedBlackTreeView_0_MappedValuesViewTests.swift`のsetter/swapの値比較、MultiMap `_8_RangeViewTests.swift`の重複値swapと共有元比較で補う。基本ケースの見た目だけを理由に同じ不足を再登録しない |
+| Bound構成差 | MultiSet/Dictionary/MultiMapは公開動作classをReleaseにも露出、内部観測はDebug側。SetのみX1が残る |
+| MappedValues境界 | 共通View testは有効Indexでのsetter/swapとCoW・非比較経路を確認。範囲所属を呼出し側事前条件とするAPI-Matrix-Viewを維持。範囲外の有効Indexを必ずtrapさせる要求は新設せず、既存RBT-026へ委ねる |
+| 重複Bound | `.lessThanOrEqual(k)`はDSLのfind成功時の位置を使う説明と共通実装が一致。MultiMapの特定valueを要求しない検査は妥当。重複群の最後という契約を追加しない |
+
+#### X1：SetのBound公開動作がDebug限定のまま（補完候補）
+
+根拠：`Tests/RedBlackTreeTests/RedBlackTreeSet/RedBlackTreeSet_16_BoundExpressionTests.swift:8`の`DEBUG && !COMPATIBLE_ATCODER_2025`が、公開結果だけの`testEraseBounds`、`testEraseBoundsWhere`、`testEraseReversedBoundsRemovesNothing`、`testEraseReversedBoundsWhereRemovesNothingAndSkipsPredicate`等も囲む。後段のRelease対象classはdistanceであり、この削除検査の代替ではない。
+
+Set `_4_SearchTests.swift`に通常lower/upperBound検索、`_17_RangeViewTests.swift`にIndex範囲・逆転Viewの既存検査はあるため、Setの範囲全体が未検査という指摘ではない。他三型で済んだ「公開Bound結果と内部観測の分離」がSetに未反映で、Releaseだけの不具合をこれらのケースでは検出できない。
+
+補完案：他三型と同様、公開結果の検査をReleaseでも実行できるclassへ分離する。`isValid`・`_copyCount`など内部観測の条件を一括解除しない。新しいAPI契約や大量の重複ケースを追加せず、特に逆転範囲の無変更とpredicate非呼出しをReleaseで確認する。
+
+#### X2：共通View三種のthrowing eraseに常設の例外経路テストがない（補完候補）
+
+根拠：`Sources/RedBlackTreeCollections/RedBlackTreeView/RedBlackTreeRangeView+KeyOnly.swift:274`、`RedBlackTreeRangeView+KeyValue.swift:343`、`RedBlackTreeMappedValuesView.swift:308`はいずれも`rethrows`の`erase(where:)`を持つ。KeyValueはElement変換、MappedValuesはvalue抽出を挟む独自wrapperで、コンテナ本体の`erase(_safeRange:where:)`を経由しない。
+
+`Tests/RedBlackTreeTests/RedBlackTreeView/`の3つの通常testファイルには正常predicate・削除・寿命の検査があるが、意図的なthrowはない。四型のRangeViewTestsと関連呼出しの検索でも該当する常設例外検査を確認できなかった。先の調査で一時的にSet Viewのthrowを試した記録はあるが、保持された回帰テストや他の二つのwrapperの証拠ではない。
+
+補完案：四型すべての全組合せではなく、KeyOnly / KeyValue / MappedValuesの入口を代表する小さなケースを用意する。非空の部分範囲で途中まで処理して固有エラーを投げ、エラーの同一性、後続predicate非呼出し、範囲外に触れないこと、共有元の内容不変を観測する。Map系はkeyだけでなくvalueを比較する。変更側の巻戻しや未記載の途中状態を固定しない。必要な参照寿命は既存fixture・寿命検査を利用し、製品不具合が出たら修正判断を分離する。
+
+#### 完了範囲と次へ渡すもの
+
+X1・X2はTest as Specの追加補完候補で、製品不具合を実証したものではない。公開契約の新規判断は不要と考えるが、補完中に未決契約や製品不具合が現れた場合は別に扱う。新規task・Claude依頼は未作成。
+
+直近の受入時には同じ赤黒木source/testに対してDebug 979 XCTest＋133 Swift Testing、Release 817＋120が成功している。今回その実行をやり直してはいない。成功件数でX1・X2の不足を埋めた扱いにしない。Linux・Swift 6.2・ASan・互換構成の全面再検査・全APIのmutation検証・並行初期化保証は今回の確認外。
+
+初回横断→四型順のレビューと補完→最終横断、という今回のレビュー工程は完了。RBT-041をWAITING_USER（commit確認待ち）とする。製品品質全体の合格や追加補完の完了ではない。
+
+2026-10-16、ユーザーがX1・X2の姫への依頼とcommitを指示。RBT-046を事前登録し、CLAUDE_TASK.mdへ限定依頼を掲載した。RBT-041はレビュー完了としてDONE。補完の実行・受入は未実施。

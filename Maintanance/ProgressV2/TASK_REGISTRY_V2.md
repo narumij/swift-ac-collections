@@ -45,7 +45,8 @@
 
 | ID | 状態 | 担当 | 項目 | 再開・完了条件 | 詳細正本 |
 | --- | --- | --- | --- | --- | --- |
-| `RBT-041` | `ACTIVE` | Astra | [DISCOVERY] 赤黒木Test as Spec：4型の最終横断 | 2026-10-16、RBT-045までの型別補完・正式返却・独立検証・受入が揃い着手可能。最終横断は未実施。レビュー完了だけでは通過しない。4型の最終成果で型間不整合・共通実装の未検証・重複指摘・見落としを整理する。契約・実装・test修正は含めない | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
+| `RBT-046` | `ACTIVE` | Claude（姫） / Astra（受入） | [EXECUTION] 最終横断の検査不足X1・X2補完 | ユーザー指示で発注。SetのBound公開検査をReleaseへ分離し、共通View三種のthrowing eraseを限定検証する。現行契約を維持し、Debug/Release・構成条件と占有返却を独立受入する。production不具合・未決契約は該当項目を止めて返す | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` / `Maintanance/CLAUDE_TASK.md` |
+| `RBT-041` | `DONE` | Astra | [DISCOVERY] 赤黒木Test as Spec：4型の最終横断 | 2026-10-16、補完後の静的横断レビュー完了。SetのBound公開動作のRelease露出（X1）と共通View三種のthrowing erase検査（X2）を補完候補として正本に記録。製品不具合の実証・修正は未実施。追加補完はRBT-046へ発注。ユーザーのcommit許可を受領 | `Maintanance/Current/RED_BLACK_TREE_TEST_AS_SPEC_REVIEW.md` |
 | `RBT-001` | `WAITING_EXTERNAL` | User / Codex | Index完了ゲート | 公開Index表現・完了範囲と`Comparable`採否を確定し、Index契約全体を閉じる。再開時は現行API・設計と外部要件を照合し、旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-011` | `WAITING_EXTERNAL` | User / Codex | Indexの`Comparable`採否 | `swift-collections`の要件が安定または正式化した後、現行API・設計と外部要件を照合して互換性を再評価し、採否を決定する。旧残task文書は経緯だけに使う | 現行確認：`Sources/RedBlackTreeCollections/Documentation/API-Matrix.md` / `Sources/RedBlackTreeCollections/Documentation/Design/Design-MemorySafety.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md`。履歴：`Maintanance/Archived/Canonical/RED_BLACK_TREE_REMAINING_TASKS.md` |
 | `RBT-034` | `ACTIVE` | User / Codex | [EXECUTION] RedBlackTree 1.0品質アセスメント完成 | 2026-10-16、1.0ゲート復帰に伴い証拠準備の仕事として有効化。対象版と評価範囲を固定して、既存証拠・反証・未検証・残余リスクを接続する。0.6.0評価や型別test補完を最初からやり直さず、差分と不足を扱う。今回の棚卸しでは評価実行・合格判定を行わない。 | `Maintanance/RedBlackTreeModule/CurrentQualityAssessment.md` / `Sources/RedBlackTreeCollections/Documentation/Quality-Profile.md` |
@@ -108,7 +109,7 @@
 
 以下は上記の未完了依存と区別する。前提の受入済みは後続の自動開始を意味しない。
 
-- `RBT-041`の受入済み入力：`RBT-040`。個別レビューを入力とする。RBT-045までの補完も独立受入済みで、最終横断は着手可能・未実施。証拠は[完了行と元の依存辺](../Archived/TASK_REGISTRY_COMPLETED_AFTER_RECONCILIATION_2026-10-16.md)および該当行の詳細正本を参照。
+- `RBT-041`の受入済み入力：`RBT-040`。個別レビューを入力とする。RBT-045までの補完も独立受入済みで、最終横断はレビュー完了・commit確認待ち。証拠は[完了行と元の依存辺](../Archived/TASK_REGISTRY_COMPLETED_AFTER_RECONCILIATION_2026-10-16.md)および該当行の詳細正本を参照。
 - `PERM-062`の受入済み入力：`PERM-065`。公開surfaceだけを渡す利用理解Validationの前に、喪失した公開APIコメントを現行契約に合わせて回復する。証拠は[完了行と元の依存辺](../Archived/TASK_REGISTRY_COMPLETED_AFTER_RECONCILIATION_2026-10-16.md)および該当行の詳細正本を参照。
 
 「AまたはB」の条件はANDの辺二本に変えず、task行に残す。整理済みの`RBT-004`の旧依存・旧資料のOR例を再開根拠にしない。また、1.0品質ゲートの「再開」と「完了」は異なる。`QUALITY-002`・`QUALITY-003`をゲート完了まで待たせる逆向きの辺は作らない。

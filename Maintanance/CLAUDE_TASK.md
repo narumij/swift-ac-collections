@@ -29,7 +29,7 @@ the user.
 
 ## Current job status
 
-**Current assignment: `OPT-074-HIME` — OptionalElementBuffer Test as Specification review follow-up. Implementation accepted by Astra after independent verification on 2026-10-15; the user authorized committing the implementation and acceptance record on 2026-10-15. See the Astra acceptance record in `Current/OPTIONAL_ELEMENTBUFFER_TEST_AS_SPEC_REVIEW.md`.**
+**Current assignment: `OPT-074-HIME` — ACTIVE, awaiting Claude’s completion and handback confirmation. Astra independently verified the saved changes (`427b155a`), but Claude’s remaining work, concerns, and release of the assigned scope have not been confirmed. The earlier DONE status was corrected by user direction on 2026-10-15.**
 
 ユーザーがClaudeへ直接依頼した採番前の作業は、[採番待ちqueue](CLAUDE_PENDING_TASKS.md)に記録する。
 この節のjob有無と、queueの未処理記録は区別する。

@@ -219,3 +219,4 @@ ElementBuffer（旧BareArray）の1.0に向けた目標は、2026-10-15の整理
 - [目標の記録の修正前原文（2026-10-15）](../Archived/PROGRESS_V2_GOALS_BEFORE_2026-10-15.md)：0.5.1・0.5.2、三対象の本文ドラフト、旧提供方針による目標を含む。現在の目標や実行指示としては扱わない。
 - [V2切替後の完了・除外20件（2026-10-15圧縮）](../Archived/TASK_REGISTRY_ARCHIVED_2026-10-15.md)：`OPS-001`・`OPS-028`・`OPS-030`・`OPS-031`〜`OPS-040`・`RELEASE-020`・`RBT-010`・`RBT-032`・`OPT-045`・`OPT-072`・`BARE-042`・`BARE-043`の原文。現在の仕事へ復活させない。
 - [完了13件と完了済み後続の依存辺4本（2026-10-15・第2回圧縮）](../Archived/TASK_REGISTRY_ARCHIVED_2026-10-15_2.md)：`BARE-044`・`BARE-045`・`BARE-046`・`DOC-028`・`DOC-029`・`OPS-041`・`OPS-042`・`OPT-073`・`PERM-066`・`PERM-067`・`PERM-068`・`PERM-069`・`PERM-072`の原文。未完了taskの前提である`PERM-065`・`PERM-070`は現行表に残す。
+- [文書整備手引きの整理前全文（2026-10-16）](../Archived/MAINTENANCE_BEFORE_2026-10-16.md)：MAINTENANCE.mdの旧dashboard・handoffと整備規則の原文。現行の状態・着手条件は本Registryと詳細正本で確認する。

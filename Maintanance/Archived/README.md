@@ -88,6 +88,7 @@ Archived全体を探索しない。
 ## 2026-10-15移動分
 
 - `CLAUDE_TASK_HISTORY_2026-10-15.md`: 2026-10-15に受入済みまたは中止済みとなったClaude assignmentとReturnの原文
+- `CLAUDE_TASK_HISTORY_2026-10-15_2.md`: 同日後から受入済み・`DONE`となった`OPS-041`（CLAUDE_TASK圧縮）の節の原文
 - `TASK_REGISTRY_ARCHIVED_2026-10-15.md`: V2切替後に現行Registryから圧縮した完了・除外20件の原文
 - `Worker/`: 完了したBareArray本文レビューと、残作業から除外したWorker bootstrap・task契約候補
 - `PROGRESS_OVERVIEW_RETIRED_2026-10-15.md`: V2接続後に失効済みと明示されていた旧進捗一覧の全文。現在のtask状態・制度・権限・着手条件ではない
@@ -102,6 +103,8 @@ Archived全体を探索しない。
   2026-10-15のTask履歴SQLite索引関連5件を正式記録へ統合した後の一時entry原文。
   正式な完了記録はTask Registryの`OPS-037`と`OPS-036`であり、この文書は現行の依頼・規則・着手条件ではない
 - `CLAUDE_PENDING_TASKS_RECONCILED_2026-10-15_2.md`: 同日後から照合された`CP-20261015-006`（正式記録は`OPS-042`）の一時entry原文
+- `PublicAPINaming/Permutation/`: 完了したPermutation公開API名称検討（`PERM-067`〜`PERM-069`・`PERM-072`）の候補、採点、統合、最終提案
+- `Reviews/`: 完了task専用のレビュー正本。現在の仕様や着手条件としては使わない
 
 ## 2026-10-15 TestDashboard移動分
 

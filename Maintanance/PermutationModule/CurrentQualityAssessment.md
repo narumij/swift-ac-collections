@@ -12,7 +12,7 @@
 名称決定の正本`Maintanance/Current/PUBLIC_API_NAMING_DECISIONS.md`に基づき、
 採用module名を`NextPermutationModule`、通常版一時View名を`NextPermutations.Permutation`とする。
 後者は現行名の維持である。三者回答の根拠は
-`Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_FINAL_PROPOSAL.md`に保存されている。
+`Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_FINAL_PROPOSAL.md`に保存されている。
 
 本書の旧評価と実行記録にある`PermutationModule`は、その時点の対象名として保持する。
 現行source・配置もまだ同名であり、採用名でのbuild・導入・DocC検証が済んだとは扱わない。

@@ -43,7 +43,7 @@ CodexがstableなRegistry IDを採番できない間に、ユーザーとClaude�
 ### `CP-20261015-007` — `PERM-072` Astra最終提案への姫回答
 
 - queue状態: `AWAITING_CODEX`
-- 発見元・ユーザー指示: 2026-10-15 18:30頃の会話。ユーザーが`Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_FINAL_PROPOSAL.md`を示し、
+- 発見元・ユーザー指示: 2026-10-15 18:30頃の会話。ユーザーが`Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_FINAL_PROPOSAL.md`を示し、
   CLAUDE_TASK.mdでの依頼を経ずに「未採番タスクで処理して」と指示した。
 - 種別候補: `EXECUTION`
 - 対象範囲: 同文書の「Claude姫回答欄」2行の記入だけ。

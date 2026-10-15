@@ -143,6 +143,6 @@
 
 ## L. Round 1採点表
 
-- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_USER_ROUND1.md`
-- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND1.md`
-- `Maintanance/Current/PERMUTATION_PUBLIC_API_NAMING_SCORE_V3_ROUND1.md`
+- `Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_SCORE_USER_ROUND1.md`
+- `Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_SCORE_HIME_ROUND1.md`
+- `Maintanance/Archived/PublicAPINaming/Permutation/PERMUTATION_PUBLIC_API_NAMING_SCORE_V3_ROUND1.md`

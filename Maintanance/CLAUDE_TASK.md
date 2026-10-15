@@ -38,6 +38,8 @@ Completed assignments and their Return records through 2026-10-14 are preserved 
 `Archived/CLAUDE_TASK_HISTORY_2026-10-14.md`. Earlier history remains in `Archived/CLAUDE_TASK_HISTORY.md`.
 Assignments accepted on 2026-10-15 (`PERM-067-HIME`, `PERM-069-HIME-R1`〜`R4B` including the canceled R4, and
 `BARE-046-HIME`) are preserved in [CLAUDE_TASK_HISTORY_2026-10-15.md](Archived/CLAUDE_TASK_HISTORY_2026-10-15.md).
+The later accepted `CLAUDE-TASK-MAINT-2026-10-15` (`OPS-041`) is preserved in
+[CLAUDE_TASK_HISTORY_2026-10-15_2.md](Archived/CLAUDE_TASK_HISTORY_2026-10-15_2.md).
 
 Use [Progress V2](ProgressV2/PROGRESS_OVERVIEW_V2.md) as the current entry point. Frozen work, remaining tasks,
 assignees, dependencies, and restart conditions are recorded in [Task Registry V2](ProgressV2/TASK_REGISTRY_V2.md).
@@ -64,23 +66,3 @@ follow [AGENTS.md — 現在の仕事と正本](../AGENTS.md#現在の仕事と�
 #### Return (`OPT-074`)
 
 Not returned.
-
-
-### CLAUDE-TASK-MAINT-2026-10-15 — CLAUDE_TASK受入済み節の圧縮・履歴整理
-
-本書冒頭に記録された、受入済み節の圧縮に関するユーザーの常設委任を一度実行する。
-実施条件は常設委任の本文に従い、この依頼で追加・変更しない。commitしない。
-
-#### Return (`OPS-041`)
-
-受入済み: `CLAUDE-TASK-MAINT-2026-10-15`（完了 2026-10-15 17:37 JST / Claude Opus 5.5、Codex受入 2026-10-15）
-
-- 移動: `PERM-069-HIME-R4B`、`BARE-046-HIME`、中止した`PERM-069-HIME-R4`、`R3`、`R2`、`R1`、`PERM-067-HIME`の節（旧57〜342行）を、
-  新規の`Archived/CLAUDE_TASK_HISTORY_2026-10-15.md`へ移した。親taskはRegistryで`PERM-067`・`PERM-069`・`BARE-046`とも`DONE`。
-  中止したR4は回答・成果なしで閉じた節であり、未受入・作業中ではないため同時に移した。
-- 原文の保存: 移した範囲と履歴ファイルの本文を`diff`で照合し、一致を確認した（要約・改変なし）。移動範囲に相対リンクはなく、調整は不要だった。
-  既存の履歴2ファイルは変更していない。
-- 参照経路: `Current job status`節の履歴案内に、新しい履歴ファイルへのリンクを1文追加した。
-- 動かしていないもの: 冒頭の規則と常設委任、`Current job status`に追加した履歴案内1文以外の同節、この節。受入判断・Registryは変更していない。commitしていない。
-- 訂正（2026-10-15、Codex）: Codexが受入時に上記2行の自己矛盾を見落とした。ユーザー指摘を受け、「動かしていないもの」を履歴案内1文以外へ限定して訂正した。Claudeの返却内容を再評価・要約したものではない。
-- Codex独立照合: 圧縮前の本書から移動対象見出し以降を抽出し、新しい履歴の同範囲と`diff`で比較して完全一致を確認。履歴への参照先も実在する。

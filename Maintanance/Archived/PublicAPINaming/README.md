@@ -7,5 +7,7 @@ These files are historical evidence, not active decision sources. The authoritat
 names remain in `Maintanance/Current/PUBLIC_API_NAMING_DECISIONS.md`. The historical API structure and its
 implementation-facing summary remain in `Maintanance/Archived/ArrayModuleMigration/ArrayObjectAndAPINamingDraft.md`.
 
+`Permutation/` preserves the completed Permutation-specific candidate, scoring, and final-proposal records from 2026-10-15.
+
 Do not reopen naming work merely because an archived record contains an unselected candidate or
 an unresolved observation from an earlier round.
